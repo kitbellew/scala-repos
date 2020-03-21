@@ -28,15 +28,12 @@ trait FlatClassPath extends ClassFileLookup[AbstractFile] {
   // solution for a given type of FlatClassPath
   override def findClass(
       className: String): Option[ClassRepresentation[AbstractFile]] = {
-    val (pkg, simpleClassName) = PackageNameUtils.separatePkgAndClassNames(
-      className)
+    val (pkg, simpleClassName) = PackageNameUtils
+      .separatePkgAndClassNames(className)
 
-    val foundClassFromClassFiles = classes(pkg)
-      .find(_.name == simpleClassName)
+    val foundClassFromClassFiles = classes(pkg).find(_.name == simpleClassName)
 
-    def findClassInSources =
-      sources(pkg)
-        .find(_.name == simpleClassName)
+    def findClassInSources = sources(pkg).find(_.name == simpleClassName)
 
     foundClassFromClassFiles orElse findClassInSources
   }

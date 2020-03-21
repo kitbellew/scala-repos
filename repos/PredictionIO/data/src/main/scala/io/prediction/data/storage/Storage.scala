@@ -125,14 +125,18 @@ object Storage extends Logging {
 
   private val sourceTypesRegex = """PIO_STORAGE_SOURCES_([^_]+)_TYPE""".r
 
-  private val sourceKeys: Seq[String] = sys.env.keys.toSeq.flatMap { k =>
-    sourceTypesRegex findFirstIn k match {
-      case Some(sourceTypesRegex(sourceType)) =>
-        Seq(sourceType)
-      case None =>
-        Nil
+  private val sourceKeys: Seq[String] = sys
+    .env
+    .keys
+    .toSeq
+    .flatMap { k =>
+      sourceTypesRegex findFirstIn k match {
+        case Some(sourceTypesRegex(sourceType)) =>
+          Seq(sourceType)
+        case None =>
+          Nil
+      }
     }
-  }
 
   if (sourceKeys.size == 0)
     warn("There is no properly configured data source.")
@@ -149,14 +153,18 @@ object Storage extends Logging {
   private val repositoryNamesRegex =
     """PIO_STORAGE_REPOSITORIES_([^_]+)_NAME""".r
 
-  private val repositoryKeys: Seq[String] = sys.env.keys.toSeq.flatMap { k =>
-    repositoryNamesRegex findFirstIn k match {
-      case Some(repositoryNamesRegex(repositoryName)) =>
-        Seq(repositoryName)
-      case None =>
-        Nil
+  private val repositoryKeys: Seq[String] = sys
+    .env
+    .keys
+    .toSeq
+    .flatMap { k =>
+      repositoryNamesRegex findFirstIn k match {
+        case Some(repositoryNamesRegex(repositoryName)) =>
+          Seq(repositoryName)
+        case None =>
+          Nil
+      }
     }
-  }
 
   if (repositoryKeys.size == 0) {
     warn("There is no properly configured repository.")
@@ -256,7 +264,8 @@ object Storage extends Logging {
     try {
       val keyedPath = sourcesPrefixPath(k)
       val sourceType = sys.env(prefixPath(keyedPath, "TYPE"))
-      val props = sys.env
+      val props = sys
+        .env
         .filter(t => t._1.startsWith(keyedPath))
         .map(t => t._1.replace(s"${keyedPath}_", "") -> t._2)
       val clientConfig = StorageClientConfig(
@@ -374,9 +383,8 @@ object Storage extends Logging {
     info("Test writing to Event Store (App Id 0)...")
     // use appId=0 for testing purpose
     eventsDb.init(0)
-    eventsDb.insert(
-      Event(event = "test", entityType = "test", entityId = "test"),
-      0)
+    eventsDb
+      .insert(Event(event = "test", entityType = "test", entityId = "test"), 0)
     eventsDb.remove(0)
     eventsDb.close()
   }
@@ -416,16 +424,20 @@ object Storage extends Logging {
 
   def config: Map[String, Map[String, Map[String, String]]] =
     Map(
-      "sources" -> s2cm.toMap.map {
-        case (source, clientMeta) =>
-          source -> clientMeta
-            .map { cm =>
-              Map(
-                "type" -> cm.sourceType,
-                "config" -> cm.config.properties
-                  .map(t => s"${t._1} -> ${t._2}")
-                  .mkString(", "))
-            }
-            .getOrElse(Map.empty)
-      })
+      "sources" -> s2cm
+        .toMap
+        .map {
+          case (source, clientMeta) =>
+            source -> clientMeta
+              .map { cm =>
+                Map(
+                  "type" -> cm.sourceType,
+                  "config" -> cm
+                    .config
+                    .properties
+                    .map(t => s"${t._1} -> ${t._2}")
+                    .mkString(", "))
+              }
+              .getOrElse(Map.empty)
+        })
 }

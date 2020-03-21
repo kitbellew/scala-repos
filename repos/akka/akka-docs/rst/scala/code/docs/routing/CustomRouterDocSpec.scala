@@ -50,8 +50,8 @@ akka.actor.deployment {
   class RedundancyRoutingLogic(nbrCopies: Int) extends RoutingLogic {
     val roundRobin = RoundRobinRoutingLogic()
     def select(message: Any, routees: immutable.IndexedSeq[Routee]): Routee = {
-      val targets = (1 to nbrCopies).map(_ =>
-        roundRobin.select(message, routees))
+      val targets = (1 to nbrCopies)
+        .map(_ => roundRobin.select(message, routees))
       SeveralRoutees(targets)
     }
   }
@@ -143,9 +143,8 @@ class CustomRouterDocSpec
       expectMsg("important")
 
     //#usage-2
-    val redundancy2: ActorRef = system.actorOf(
-      FromConfig.props(),
-      name = "redundancy2")
+    val redundancy2: ActorRef = system
+      .actorOf(FromConfig.props(), name = "redundancy2")
     redundancy2 ! "very important"
     //#usage-2
 

@@ -108,11 +108,13 @@ private[spark] trait Logging {
 
   protected def initializeLogIfNecessary(isInterpreter: Boolean): Unit = {
     if (!Logging.initialized) {
-      Logging.initLock.synchronized {
-        if (!Logging.initialized) {
-          initializeLogging(isInterpreter)
+      Logging
+        .initLock
+        .synchronized {
+          if (!Logging.initialized) {
+            initializeLogging(isInterpreter)
+          }
         }
-      }
     }
   }
 
@@ -133,8 +135,9 @@ private[spark] trait Logging {
         Option(Utils.getSparkClassLoader.getResource(defaultLogProps)) match {
           case Some(url) =>
             PropertyConfigurator.configure(url)
-            System.err.println(
-              s"Using Spark's default log4j profile: $defaultLogProps")
+            System
+              .err
+              .println(s"Using Spark's default log4j profile: $defaultLogProps")
           case None =>
             System.err.println(s"Spark was unable to load $defaultLogProps")
         }
@@ -148,8 +151,9 @@ private[spark] trait Logging {
         val replLevel = Option(replLogger.getLevel()).getOrElse(Level.WARN)
         if (replLevel != rootLogger.getEffectiveLevel()) {
           System.err.printf("Setting default log level to \"%s\".\n", replLevel)
-          System.err.println(
-            "To adjust logging level use sc.setLogLevel(newLevel).")
+          System
+            .err
+            .println("To adjust logging level use sc.setLogLevel(newLevel).")
           rootLogger.setLevel(replLevel)
         }
       }

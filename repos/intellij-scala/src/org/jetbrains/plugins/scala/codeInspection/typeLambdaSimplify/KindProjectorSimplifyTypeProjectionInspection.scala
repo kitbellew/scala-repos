@@ -71,18 +71,20 @@ class KindProjectorSimplifyTypeProjectionInspection
           tp: ScTypeParam,
           param: ScParameterizedType,
           isInsideParam: Boolean): Boolean = {
-        param.typeArgs.exists {
-          case p: ScParameterizedType
-              if isInsideParam && p.designator.presentableText == tp.name =>
-            true
-          case p: ScParameterizedType
-              if occursInsideParameterized(tp, p, isInsideParam = true) =>
-            true
-          case ta if isInsideParam && ta.presentableText == tp.name =>
-            true
-          case _ =>
-            false
-        }
+        param
+          .typeArgs
+          .exists {
+            case p: ScParameterizedType
+                if isInsideParam && p.designator.presentableText == tp.name =>
+              true
+            case p: ScParameterizedType
+                if occursInsideParameterized(tp, p, isInsideParam = true) =>
+              true
+            case ta if isInsideParam && ta.presentableText == tp.name =>
+              true
+            case _ =>
+              false
+          }
       }
 
       alias.aliasedType match {
@@ -103,23 +105,24 @@ class KindProjectorSimplifyTypeProjectionInspection
           if (valid) {
             val typeParamIt = typeParam.iterator
             var currentTypeParam: Option[ScTypeParam] = Some(typeParamIt.next())
-            val newTypeArgs = paramType.typeArgs.map { ta =>
-              currentTypeParam match {
-                case Some(tpt) if ta.presentableText == tpt.name =>
-                  currentTypeParam =
-                    if (typeParamIt.hasNext)
-                      Some(typeParamIt.next())
-                    else
-                      None
-                  tpt.getText.replace(tpt.name, "?")
-                case _ =>
-                  ta.presentableText
+            val newTypeArgs = paramType
+              .typeArgs
+              .map { ta =>
+                currentTypeParam match {
+                  case Some(tpt) if ta.presentableText == tpt.name =>
+                    currentTypeParam =
+                      if (typeParamIt.hasNext)
+                        Some(typeParamIt.next())
+                      else
+                        None
+                    tpt.getText.replace(tpt.name, "?")
+                  case _ =>
+                    ta.presentableText
+                }
               }
-            }
             if (!typeParamIt.hasNext && currentTypeParam.isEmpty) {
               Some(
-                s"${paramType.designator}${newTypeArgs
-                  .mkString(start = "[", sep = ",", end = "]")}")
+                s"${paramType.designator}${newTypeArgs.mkString(start = "[", sep = ",", end = "]")}")
             } else
               None
           } else
@@ -143,15 +146,19 @@ class KindProjectorSimplifyTypeProjectionInspection
                         case Some(refinement) =>
                           refinement.types match {
                             case Seq(alias: ScTypeAliasDefinition)
-                                if alias.nameId.getText == projection.nameId.getText =>
+                                if alias.nameId.getText == projection
+                                  .nameId
+                                  .getText =>
                               val aliasParam = alias.typeParameters
                               projection.parent match {
                                 case Some(p: ScParameterizedTypeElement)
-                                    if p.typeArgList.typeArgs.size == aliasParam.size =>
+                                    if p.typeArgList.typeArgs.size == aliasParam
+                                      .size =>
                                 //should be handled by AppliedTypeLambdaCanBeSimplifiedInspection
                                 case _ if aliasParam.nonEmpty =>
-                                  if (alias.typeParameters.forall(
-                                        canConvertBounds)) {
+                                  if (alias
+                                        .typeParameters
+                                        .forall(canConvertBounds)) {
                                     def simplified(): String = {
                                       tryConvertToInlineSyntax(alias) match {
                                         case Some(inline) =>
@@ -161,7 +168,8 @@ class KindProjectorSimplifyTypeProjectionInspection
                                           val styleSettings =
                                             ScalaCodeStyleSettings.getInstance(
                                               projection.getProject)
-                                          if (styleSettings.REPLACE_LAMBDA_WITH_GREEK_LETTER) {
+                                          if (styleSettings
+                                                .REPLACE_LAMBDA_WITH_GREEK_LETTER) {
                                             builder.append("λ")
                                           } else {
                                             builder.append("Lambda")
@@ -169,7 +177,8 @@ class KindProjectorSimplifyTypeProjectionInspection
                                           builder.append("[")
                                           val parameters = aliasParam.map {
                                             param: ScTypeParam =>
-                                              if (param.isCovariant || param.isContravariant || boundsDefined(
+                                              if (param.isCovariant || param
+                                                    .isContravariant || boundsDefined(
                                                     param)) {
                                                 s"`${param.getText}`"
                                               } else
@@ -188,8 +197,8 @@ class KindProjectorSimplifyTypeProjectionInspection
                                                 sep = "",
                                                 end = ""))
                                           builder.append(" => ")
-                                          builder.append(
-                                            alias.aliasedType.getOrAny)
+                                          builder
+                                            .append(alias.aliasedType.getOrAny)
                                           builder.append("]")
                                           builder.toString()
                                       }
@@ -235,9 +244,8 @@ class KindProjectorSimplifyTypeProjectionQuickFix(
     if (!elem.isValid)
       return
 
-    val te = ScalaPsiElementFactory.createTypeElementFromText(
-      replacement,
-      elem.getManager)
+    val te = ScalaPsiElementFactory
+      .createTypeElementFromText(replacement, elem.getManager)
     elem.replace(te)
   }
 }

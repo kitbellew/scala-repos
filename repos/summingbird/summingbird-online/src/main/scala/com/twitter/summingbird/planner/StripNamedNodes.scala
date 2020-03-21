@@ -94,28 +94,33 @@ object StripNamedNode {
       * Each bag of irreducibles can point to more than one node because not all nodes have anything
       * irreducible (such as NamedProducer, IdentityKeyedProducer, MergedProducer, etc...)
       */
-    val oldIrrToNode: Map[Map[Any, Int], List[Producer[P, Any]]] =
-      dependants.nodes.groupBy(transIrr)
+    val oldIrrToNode: Map[Map[Any, Int], List[Producer[P, Any]]] = dependants
+      .nodes
+      .groupBy(transIrr)
 
     /**
       * Basically do a graph walk on the list of irreducibles for each node
       */
     val newNames: Map[Producer[P, Any], List[String]] =
-      newDependants.nodes.map { n =>
-        val newNodeIrr = transIrr(n)
-        oldIrrToNode.get(newNodeIrr) match {
-          case Some(oldProdList) => // get the name in the original graph
-            // Find the longest list of names
-            val oldNames = oldProdList.map(dependants.namesOf(_)).maxBy(_.size)
-            n -> oldNames.map(_.id)
-          case None =>
-            val newLine = "\n"
-            sys.error(
-              s"Node $n in the new node has no corresponding node in the original graph: ${tail}.\n" +
-                s"new: ${newNodeIrr}\n" +
-                s"old: ${oldIrrToNode.mkString(newLine)}")
-        }
-      }(breakOut)
+      newDependants
+        .nodes
+        .map { n =>
+          val newNodeIrr = transIrr(n)
+          oldIrrToNode.get(newNodeIrr) match {
+            case Some(oldProdList) => // get the name in the original graph
+              // Find the longest list of names
+              val oldNames = oldProdList
+                .map(dependants.namesOf(_))
+                .maxBy(_.size)
+              n -> oldNames.map(_.id)
+            case None =>
+              val newLine = "\n"
+              sys.error(
+                s"Node $n in the new node has no corresponding node in the original graph: ${tail}.\n" +
+                  s"new: ${newNodeIrr}\n" +
+                  s"old: ${oldIrrToNode.mkString(newLine)}")
+          }
+        }(breakOut)
     (newNames, newTail)
   }
 }

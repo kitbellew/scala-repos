@@ -47,8 +47,8 @@ object M0 {
     Console.println(partition[Int](List(7, 2, 1, 5, 4, 3, 8, 6), (x => x < 9)));
     Console.println;
 
-    Console.println(
-      quicksort[Int]((x, y) => x < y)(List(7, 2, 1, 5, 4, 3, 8, 6)));
+    Console
+      .println(quicksort[Int]((x, y) => x < y)(List(7, 2, 1, 5, 4, 3, 8, 6)));
     Console.println;
   }
 }
@@ -93,8 +93,8 @@ object M1 {
     Console.println(partition[Int](List(7, 2, 1, 5, 4, 3, 8, 6), (x => x < 9)));
     Console.println;
 
-    Console.println(
-      quicksort[Int]((x, y) => x < y)(List(7, 2, 1, 5, 4, 3, 8, 6)));
+    Console
+      .println(quicksort[Int]((x, y) => x < y)(List(7, 2, 1, 5, 4, 3, 8, 6)));
     Console.println;
   }
 }

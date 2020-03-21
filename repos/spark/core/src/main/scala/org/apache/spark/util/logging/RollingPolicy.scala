@@ -82,8 +82,8 @@ private[spark] class TimeBasedRollingPolicy(
     val now = System.currentTimeMillis()
     val targetTime =
       (
-        math.ceil(
-          now.toDouble / rolloverIntervalMillis) * rolloverIntervalMillis
+        math
+          .ceil(now.toDouble / rolloverIntervalMillis) * rolloverIntervalMillis
       ).toLong
     logDebug(s"Next rollover time is $targetTime")
     targetTime

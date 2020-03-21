@@ -122,11 +122,10 @@ object FastEvalEngineWorkflow {
 
       val result = getDataSourceResult(
         workflow = workflow,
-        prefix = new DataSourcePrefix(prefix))
-        .mapValues {
-          case (td, _, _) =>
-            preparator.prepareBase(workflow.sc, td)
-        }
+        prefix = new DataSourcePrefix(prefix)).mapValues {
+        case (td, _, _) =>
+          preparator.prepareBase(workflow.sc, td)
+      }
 
       cache += Tuple2(prefix, result)
     }
@@ -138,7 +137,8 @@ object FastEvalEngineWorkflow {
       prefix: AlgorithmsPrefix): Map[EX, RDD[(QX, Seq[P])]] = {
 
     val algoMap: Map[AX, BaseAlgorithm[PD, _, Q, P]] =
-      prefix.algorithmParamsList
+      prefix
+        .algorithmParamsList
         .map {
           case (algoName, algoParams) => {
             try {
@@ -172,10 +172,9 @@ object FastEvalEngineWorkflow {
     // Model Train
     val algoModelsMap: Map[EX, Map[AX, Any]] = getPreparatorResult(
       workflow,
-      new PreparatorPrefix(prefix))
-      .mapValues { pd =>
-        algoMap.mapValues(_.trainBase(workflow.sc, pd))
-      }
+      new PreparatorPrefix(prefix)).mapValues { pd =>
+      algoMap.mapValues(_.trainBase(workflow.sc, pd))
+    }
 
     // Predict
     val dataSourceResult = FastEvalEngineWorkflow.getDataSourceResult(
@@ -183,7 +182,8 @@ object FastEvalEngineWorkflow {
       prefix = new DataSourcePrefix(prefix))
 
     val algoResult: Map[EX, RDD[(QX, Seq[P])]] =
-      dataSourceResult.par
+      dataSourceResult
+        .par
         .map {
           case (ex, (td, ei, iqaRDD)) => {
             val modelsMap: Map[AX, Any] = algoModelsMap(ex)
@@ -194,10 +194,8 @@ object FastEvalEngineWorkflow {
                 {
                   val algo = algoMap(ax)
                   val model = modelsMap(ax)
-                  val rawPredicts: RDD[(QX, P)] = algo.batchPredictBase(
-                    workflow.sc,
-                    model,
-                    qs)
+                  val rawPredicts: RDD[(QX, P)] = algo
+                    .batchPredictBase(workflow.sc, model, qs)
 
                   val predicts: RDD[(QX, (AX, P))] = rawPredicts.map {
                     case (qx, p) =>
@@ -207,7 +205,8 @@ object FastEvalEngineWorkflow {
                 }
               }
 
-            val unionAlgoPredicts: RDD[(QX, Seq[P])] = workflow.sc
+            val unionAlgoPredicts: RDD[(QX, Seq[P])] = workflow
+              .sc
               .union(algoPredicts)
               .groupByKey
               .mapValues { ps =>
@@ -259,31 +258,32 @@ object FastEvalEngineWorkflow {
       val evalQAsMap = dataSourceResult.mapValues(_._3)
       val evalInfoMap = dataSourceResult.mapValues(_._2)
 
-      val servingQPAMap: Map[EX, RDD[(Q, P, A)]] = algoPredictsMap
-        .map {
-          case (ex, psMap) => {
-            val qasMap: RDD[(QX, (Q, A))] = evalQAsMap(ex)
-            val qpsaMap: RDD[(QX, Q, Seq[P], A)] = psMap
-              .join(qasMap)
-              .map {
-                case (qx, t) =>
-                  (qx, t._2._1, t._1, t._2._2)
-              }
-
-            val qpaMap: RDD[(Q, P, A)] = qpsaMap.map {
-              case (qx, q, ps, a) =>
-                (q, serving.serveBase(q, ps), a)
+      val servingQPAMap: Map[EX, RDD[(Q, P, A)]] = algoPredictsMap.map {
+        case (ex, psMap) => {
+          val qasMap: RDD[(QX, (Q, A))] = evalQAsMap(ex)
+          val qpsaMap: RDD[(QX, Q, Seq[P], A)] = psMap
+            .join(qasMap)
+            .map {
+              case (qx, t) =>
+                (qx, t._2._1, t._1, t._2._2)
             }
-            (ex, qpaMap)
+
+          val qpaMap: RDD[(Q, P, A)] = qpsaMap.map {
+            case (qx, q, ps, a) =>
+              (q, serving.serveBase(q, ps), a)
           }
+          (ex, qpaMap)
         }
+      }
 
       val servingResult =
-        (0 until evalQAsMap.size).map { ex =>
-          {
-            (evalInfoMap(ex), servingQPAMap(ex))
+        (0 until evalQAsMap.size)
+          .map { ex =>
+            {
+              (evalInfoMap(ex), servingQPAMap(ex))
+            }
           }
-        }.toSeq
+          .toSeq
 
       cache += Tuple2(prefix, servingResult)
     }

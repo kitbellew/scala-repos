@@ -102,12 +102,18 @@ private[spark] object SerializationDebugger extends Logging {
           case _: String =>
             List.empty
           case _
-              if o.getClass.isArray && o.getClass.getComponentType.isPrimitive =>
+              if o.getClass.isArray && o
+                .getClass
+                .getComponentType
+                .isPrimitive =>
             List.empty
 
           // Traverse non primitive array.
           case a: Array[_]
-              if o.getClass.isArray && !o.getClass.getComponentType.isPrimitive =>
+              if o.getClass.isArray && !o
+                .getClass
+                .getComponentType
+                .isPrimitive =>
             val elem = s"array (class ${a.getClass.getName}, size ${a.length})"
             visitArray(o.asInstanceOf[Array[_]], elem :: stack)
 
@@ -349,10 +355,13 @@ private[spark] object SerializationDebugger extends Logging {
   implicit class ObjectStreamClassMethods(val desc: ObjectStreamClass)
       extends AnyVal {
     def getSlotDescs: Array[ObjectStreamClass] = {
-      reflect.GetClassDataLayout.invoke(desc).asInstanceOf[Array[Object]].map {
-        classDataSlot =>
+      reflect
+        .GetClassDataLayout
+        .invoke(desc)
+        .asInstanceOf[Array[Object]]
+        .map { classDataSlot =>
           reflect.DescField.get(classDataSlot).asInstanceOf[ObjectStreamClass]
-      }
+        }
     }
 
     def hasWriteObjectMethod: Boolean = {
@@ -400,16 +409,16 @@ private[spark] object SerializationDebugger extends Logging {
 
     /** ObjectStreamClass.hasWriteObjectMethod */
     val HasWriteObjectMethod: Method = {
-      val f = classOf[ObjectStreamClass].getDeclaredMethod(
-        "hasWriteObjectMethod")
+      val f = classOf[ObjectStreamClass]
+        .getDeclaredMethod("hasWriteObjectMethod")
       f.setAccessible(true)
       f
     }
 
     /** ObjectStreamClass.hasWriteReplaceMethod */
     val HasWriteReplaceMethod: Method = {
-      val f = classOf[ObjectStreamClass].getDeclaredMethod(
-        "hasWriteReplaceMethod")
+      val f = classOf[ObjectStreamClass]
+        .getDeclaredMethod("hasWriteReplaceMethod")
       f.setAccessible(true)
       f
     }

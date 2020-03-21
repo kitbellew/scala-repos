@@ -201,7 +201,10 @@ object CatalystTypeConverters {
           new GenericArrayData(s.map(elementConverter.toCatalyst).toArray)
         case i: JavaIterable[_] =>
           val iter = i.iterator
-          val convertedIterable = scala.collection.mutable.ArrayBuffer
+          val convertedIterable = scala
+            .collection
+            .mutable
+            .ArrayBuffer
             .empty[Any]
           while (iter.hasNext) {
             val item = iter.next()
@@ -296,9 +299,11 @@ object CatalystTypeConverters {
   private case class StructConverter(structType: StructType)
       extends CatalystTypeConverter[Any, Row, InternalRow] {
 
-    private[this] val converters = structType.fields.map { f =>
-      getConverterForType(f.dataType)
-    }
+    private[this] val converters = structType
+      .fields
+      .map { f =>
+        getConverterForType(f.dataType)
+      }
 
     override def toCatalystImpl(scalaValue: Any): InternalRow =
       scalaValue match {

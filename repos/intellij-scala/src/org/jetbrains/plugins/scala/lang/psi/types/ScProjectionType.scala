@@ -126,26 +126,31 @@ class ScProjectionType private (
           val args: ArrayBuffer[ScExistentialArgument] =
             new ArrayBuffer[ScExistentialArgument]()
           val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
-            ta.typeParameters.map(tp =>
-              (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
-            ta.typeParameters.map(tp => {
-              val name = tp.name + "$$"
-              args += new ScExistentialArgument(
-                name,
-                Nil,
-                types.Nothing,
-                types.Any)
-              ScTypeVariable(name)
-            })
+            ta
+              .typeParameters
+              .map(tp => (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
+            ta
+              .typeParameters
+              .map(tp => {
+                val name = tp.name + "$$"
+                args += new ScExistentialArgument(
+                  name,
+                  Nil,
+                  types.Nothing,
+                  types.Any)
+                ScTypeVariable(name)
+              })
           )
           val s = actualSubst.followed(genericSubst)
           Some(
             AliasType(
               ta,
-              ta.lowerBound.map(scType =>
-                ScExistentialType(s.subst(scType), args.toList)),
-              ta.upperBound.map(scType =>
-                ScExistentialType(s.subst(scType), args.toList))
+              ta
+                .lowerBound
+                .map(scType => ScExistentialType(s.subst(scType), args.toList)),
+              ta
+                .upperBound
+                .map(scType => ScExistentialType(s.subst(scType), args.toList))
             ))
         case _ =>
           None
@@ -218,7 +223,9 @@ class ScProjectionType private (
     val emptySubst = new ScSubstitutor(Map.empty, Map.empty, Some(projected))
     val resolvePlace = {
       def fromClazz(clazz: ScTypeDefinition): PsiElement = {
-        clazz.extendsBlock.templateBody
+        clazz
+          .extendsBlock
+          .templateBody
           .flatMap(_.asInstanceOf[ScTemplateBodyImpl].getLastChildStub.toOption)
           .getOrElse(clazz.extendsBlock)
       }
@@ -252,7 +259,8 @@ class ScProjectionType private (
       val proc = resolveProcessor(ValueSet(CLASS), name)
       proc.processType(projected, resolvePlace, ResolveState.initial)
       val candidates = proc.candidates
-      if (candidates.length == 1 && candidates(0).element
+      if (candidates.length == 1 && candidates(0)
+            .element
             .isInstanceOf[PsiNamedElement]) {
         val defaultSubstitutor = emptySubst followed candidates(0).substitutor
         if (superReference) {
@@ -281,7 +289,8 @@ class ScProjectionType private (
         val proc = resolveProcessor(ValueSet(VAL, OBJECT), name)
         proc.processType(projected, resolvePlace, ResolveState.initial)
         val candidates = proc.candidates
-        if (candidates.length == 1 && candidates(0).element
+        if (candidates.length == 1 && candidates(0)
+              .element
               .isInstanceOf[PsiNamedElement]) {
           //todo: superMemberSubstitutor? However I don't know working example for this case
           Some(
@@ -378,11 +387,8 @@ class ScProjectionType private (
             val subst = actualSubst
             val tp = subst.subst(a.getType(TypingContext.empty).getOrAny)
             if (ScType.isSingletonType(tp)) {
-              val resInner = Equivalence.equivInner(
-                tp,
-                this,
-                uSubst,
-                falseUndef)
+              val resInner = Equivalence
+                .equivInner(tp, this, uSubst, falseUndef)
               if (resInner._1)
                 return resInner
             }
@@ -412,11 +418,8 @@ class ScProjectionType private (
                 Some(projected)) followed actualSubst
               t.getType(TypingContext.empty) match {
                 case Success(tp, _) if ScType.isSingletonType(tp) =>
-                  return Equivalence.equivInner(
-                    s.subst(tp),
-                    r,
-                    uSubst,
-                    falseUndef)
+                  return Equivalence
+                    .equivInner(s.subst(tp), r, uSubst, falseUndef)
                 case _ =>
               }
             case _ =>
@@ -425,17 +428,12 @@ class ScProjectionType private (
             case o: ScObject =>
             case t: ScTypedDefinition =>
               val s: ScSubstitutor =
-                new ScSubstitutor(
-                  Map.empty,
-                  Map.empty,
-                  Some(p1)) followed proj2.actualSubst
+                new ScSubstitutor(Map.empty, Map.empty, Some(p1)) followed proj2
+                  .actualSubst
               t.getType(TypingContext.empty) match {
                 case Success(tp, _) if ScType.isSingletonType(tp) =>
-                  return Equivalence.equivInner(
-                    s.subst(tp),
-                    this,
-                    uSubst,
-                    falseUndef)
+                  return Equivalence
+                    .equivInner(s.subst(tp), this, uSubst, falseUndef)
                 case _ =>
               }
             case _ =>
@@ -452,11 +450,8 @@ class ScProjectionType private (
               case Success(singl, _) if ScType.isSingletonType(singl) =>
                 val newSubst = actualSubst.followed(
                   new ScSubstitutor(Map.empty, Map.empty, Some(projected)))
-                Equivalence.equivInner(
-                  r,
-                  newSubst.subst(singl),
-                  uSubst,
-                  falseUndef)
+                Equivalence
+                  .equivInner(r, newSubst.subst(singl), uSubst, falseUndef)
               case _ =>
                 (false, uSubst)
             }
@@ -539,13 +534,11 @@ case class ScThisType(clazz: ScTemplateDefinition) extends ValueType {
           if elem.isStable =>
         elem.getType(TypingContext.empty) match {
           case Success(singl, _) if ScType.isSingletonType(singl) =>
-            val newSubst = p.actualSubst.followed(
-              new ScSubstitutor(Map.empty, Map.empty, Some(tp)))
-            Equivalence.equivInner(
-              this,
-              newSubst.subst(singl),
-              uSubst,
-              falseUndef)
+            val newSubst = p
+              .actualSubst
+              .followed(new ScSubstitutor(Map.empty, Map.empty, Some(tp)))
+            Equivalence
+              .equivInner(this, newSubst.subst(singl), uSubst, falseUndef)
           case _ =>
             (false, uSubst)
         }
@@ -602,25 +595,32 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
         val args: ArrayBuffer[ScExistentialArgument] =
           new ArrayBuffer[ScExistentialArgument]()
         val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
-          ta.typeParameters.map(tp =>
-            (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
-          ta.typeParameters.map(tp => {
-            val name = tp.name + "$$"
-            args += new ScExistentialArgument(
-              name,
-              Nil,
-              types.Nothing,
-              types.Any)
-            ScTypeVariable(name)
-          })
+          ta
+            .typeParameters
+            .map(tp => (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
+          ta
+            .typeParameters
+            .map(tp => {
+              val name = tp.name + "$$"
+              args += new ScExistentialArgument(
+                name,
+                Nil,
+                types.Nothing,
+                types.Any)
+              ScTypeVariable(name)
+            })
         )
         Some(
           AliasType(
             ta,
-            ta.lowerBound.map(scType =>
-              ScExistentialType(genericSubst.subst(scType), args.toList)),
-            ta.upperBound.map(scType =>
-              ScExistentialType(genericSubst.subst(scType), args.toList))
+            ta
+              .lowerBound
+              .map(scType =>
+                ScExistentialType(genericSubst.subst(scType), args.toList)),
+            ta
+              .upperBound
+              .map(scType =>
+                ScExistentialType(genericSubst.subst(scType), args.toList))
           ))
       case _ =>
         None

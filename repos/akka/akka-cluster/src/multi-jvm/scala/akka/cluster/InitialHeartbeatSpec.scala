@@ -53,7 +53,8 @@ abstract class InitialHeartbeatSpec
           awaitAssert(
             {
               cluster.sendCurrentClusterState(testActor)
-              expectMsgType[CurrentClusterState].members
+              expectMsgType[CurrentClusterState]
+                .members
                 .map(_.address) should contain(secondAddress)
             },
             interval = 50.millis)
@@ -65,7 +66,8 @@ abstract class InitialHeartbeatSpec
           awaitAssert(
             {
               cluster.sendCurrentClusterState(testActor)
-              expectMsgType[CurrentClusterState].members
+              expectMsgType[CurrentClusterState]
+                .members
                 .map(_.address) should contain(firstAddress)
             },
             interval = 50.millis)

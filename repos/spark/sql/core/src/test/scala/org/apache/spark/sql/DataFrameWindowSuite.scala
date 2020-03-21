@@ -79,8 +79,8 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
     df.registerTempTable("window_table")
     checkAnswer(
       df.select(
-        lead("value", 2, "n/a").over(
-          Window.partitionBy("key").orderBy("value"))),
+        lead("value", 2, "n/a")
+          .over(Window.partitionBy("key").orderBy("value"))),
       Seq(
         Row("1"),
         Row("1"),
@@ -104,8 +104,8 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
     df.registerTempTable("window_table")
     checkAnswer(
       df.select(
-        lag("value", 2, "n/a").over(
-          Window.partitionBy($"key").orderBy($"value"))),
+        lag("value", 2, "n/a")
+          .over(Window.partitionBy($"key").orderBy($"value"))),
       Seq(
         Row("n/a"),
         Row("n/a"),
@@ -194,8 +194,8 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
             .partitionBy($"value")
             .orderBy($"key")
             .rowsBetween(Long.MinValue, 0)),
-        last("key").over(
-          Window.partitionBy($"value").orderBy($"key").rowsBetween(-1, 1))
+        last("key")
+          .over(Window.partitionBy($"value").orderBy($"key").rowsBetween(-1, 1))
       ),
       Seq(
         Row(1, 1, 1, 1),
@@ -320,7 +320,8 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
       ("b", 2)).toDF("key", "value")
     val window = Window.orderBy()
     checkAnswer(
-      df.groupBy($"key")
+      df
+        .groupBy($"key")
         .agg(sum($"value"), sum(sum($"value")).over(window) - sum($"value")),
       Seq(Row("a", 6, 9), Row("b", 9, 6)))
   }
@@ -329,13 +330,9 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
     val udaf =
       new UserDefinedAggregateFunction {
         def inputSchema: StructType =
-          new StructType()
-            .add("a", LongType)
-            .add("b", LongType)
+          new StructType().add("a", LongType).add("b", LongType)
 
-        def bufferSchema: StructType =
-          new StructType()
-            .add("product", LongType)
+        def bufferSchema: StructType = new StructType().add("product", LongType)
 
         def dataType: DataType = LongType
 
@@ -364,8 +361,7 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
       ("a", 2, -1),
       ("b", 4, 7),
       ("b", 3, 8),
-      ("b", 2, 4))
-      .toDF("key", "a", "b")
+      ("b", 2, 4)).toDF("key", "a", "b")
     val window = Window
       .partitionBy($"key")
       .orderBy($"a")
@@ -391,8 +387,7 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
       ("a", 2),
       ("b", 4),
       ("b", 3),
-      ("b", 2))
-      .toDF("key", "value")
+      ("b", 2)).toDF("key", "value")
     val window = Window.orderBy()
     checkAnswer(
       df.select(

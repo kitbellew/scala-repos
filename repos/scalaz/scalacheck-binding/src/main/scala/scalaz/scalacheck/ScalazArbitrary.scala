@@ -123,8 +123,9 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
     oneOf(LT, EQ, GT))
 
   private[this] def withSize[A](size: Int)(f: Int => Gen[A]): Gen[Stream[A]] = {
-    Applicative[Gen].sequence(Stream.fill(size)(Gen.choose(1, size))).flatMap {
-      s =>
+    Applicative[Gen]
+      .sequence(Stream.fill(size)(Gen.choose(1, size)))
+      .flatMap { s =>
         val ns =
           Traverse[Stream]
             .traverseS(s) { n =>
@@ -143,7 +144,7 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
             .flatten
 
         Applicative[Gen].sequence(ns.map(f))
-    }
+      }
   }
 
   private[scalaz] def treeGenSized[A: NotNothing](size: Int)(implicit
@@ -152,17 +153,21 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
       case n if n <= 1 =>
         A.arbitrary.map(a => Tree.Leaf(a))
       case 2 =>
-        arb[(A, A)].arbitrary.map {
-          case (a1, a2) =>
-            Tree.Node(a1, Stream(Tree.Leaf(a2)))
-        }
+        arb[(A, A)]
+          .arbitrary
+          .map {
+            case (a1, a2) =>
+              Tree.Node(a1, Stream(Tree.Leaf(a2)))
+          }
       case 3 =>
-        arb[(A, A, A)].arbitrary.flatMap {
-          case (a1, a2, a3) =>
-            Gen.oneOf(
-              Tree.Node(a1, Stream(Tree.Leaf(a2), Tree.Leaf(a3))),
-              Tree.Node(a1, Stream(Tree.Node(a2, Stream(Tree.Leaf(a3))))))
-        }
+        arb[(A, A, A)]
+          .arbitrary
+          .flatMap {
+            case (a1, a2, a3) =>
+              Gen.oneOf(
+                Tree.Node(a1, Stream(Tree.Leaf(a2), Tree.Leaf(a3))),
+                Tree.Node(a1, Stream(Tree.Node(a2, Stream(Tree.Leaf(a3))))))
+          }
       case _ =>
         withSize(size - 1)(treeGenSized[A]).flatMap { as =>
           A.arbitrary.map(a => Tree.Node(a, as))
@@ -178,9 +183,11 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
       withSize(n)(treeGenSized[A])
 
     val parent: Int => Gen[TreeLoc.Parent[A]] = { n =>
-      Gen.choose(0, n - 1).flatMap { x1 =>
-        Apply[Gen].tuple3(forest(x1), A.arbitrary, forest(n - x1 - 1))
-      }
+      Gen
+        .choose(0, n - 1)
+        .flatMap { x1 =>
+          Apply[Gen].tuple3(forest(x1), A.arbitrary, forest(n - x1 - 1))
+        }
     }
 
     for {
@@ -197,8 +204,9 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
   }
 
   implicit def IterableArbitrary[A: Arbitrary]: Arbitrary[Iterable[A]] =
-    Apply[Arbitrary].apply2[A, List[A], Iterable[A]](arb[A], arb[List[A]])(
-      (a, list) => a :: list)
+    Apply[Arbitrary]
+      .apply2[A, List[A], Iterable[A]](arb[A], arb[List[A]])((a, list) =>
+        a :: list)
 
   implicit def TreeLocArbitrary[A: Arbitrary]: Arbitrary[TreeLoc[A]] =
     Arbitrary(Gen.sized(n => Gen.choose(0, n).flatMap(treeLocGenSized[A])))
@@ -422,8 +430,8 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
       B: Arbitrary,
       C: Arbitrary,
       D: Arbitrary]: Arbitrary[LazyTuple4[A, B, C, D]] =
-    Applicative[Arbitrary].apply4(arb[A], arb[B], arb[C], arb[D])(
-      LazyTuple4(_, _, _, _))
+    Applicative[Arbitrary]
+      .apply4(arb[A], arb[B], arb[C], arb[D])(LazyTuple4(_, _, _, _))
 
   implicit def heapArbitrary[A](implicit O: Order[A], A: Arbitrary[List[A]]) = {
     Functor[Arbitrary].map(A)(as => Heap.fromData(as))
@@ -463,7 +471,8 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
       A: Arbitrary[List[A]],
       E: Enum[A]): Arbitrary[Diev[A]] =
     Functor[Arbitrary].map(A)(
-      _.grouped(2).foldLeft(Diev.empty[A]) { (working, possiblePair) =>
+      _.grouped(2)
+      .foldLeft(Diev.empty[A]) { (working, possiblePair) =>
         possiblePair match {
           case first :: second :: Nil =>
             working + ((first, second))

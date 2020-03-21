@@ -441,7 +441,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         Some(ord))
     sorter.insertAll(elements.iterator)
     assert(
-      sorter.partitionedIterator
+      sorter
+        .partitionedIterator
         .map(p => (p._1, p._2.toSet))
         .toSet === expected)
     sorter.stop()
@@ -455,7 +456,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         None)
     sorter2.insertAll(elements.iterator)
     assert(
-      sorter2.partitionedIterator
+      sorter2
+        .partitionedIterator
         .map(p => (p._1, p._2.toSet))
         .toSet === expected)
     sorter2.stop()
@@ -469,7 +471,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         Some(ord))
     sorter3.insertAll(elements.iterator)
     assert(
-      sorter3.partitionedIterator
+      sorter3
+        .partitionedIterator
         .map(p => (p._1, p._2.toSet))
         .toSet === expected)
     sorter3.stop()
@@ -483,7 +486,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         None)
     sorter4.insertAll(elements.iterator)
     assert(
-      sorter4.partitionedIterator
+      sorter4
+        .partitionedIterator
         .map(p => (p._1, p._2.toSet))
         .toSet === expected)
     sorter4.stop()
@@ -567,12 +571,16 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     }
 
     assertSpilled(sc, "cogroup") {
-      val rdd1 = sc.parallelize(0 until size).map { i =>
-        (i / 2, i)
-      }
-      val rdd2 = sc.parallelize(0 until size).map { i =>
-        (i / 2, i)
-      }
+      val rdd1 = sc
+        .parallelize(0 until size)
+        .map { i =>
+          (i / 2, i)
+        }
+      val rdd2 = sc
+        .parallelize(0 until size)
+        .map { i =>
+          (i / 2, i)
+        }
       val result = rdd1.cogroup(rdd2, numReduceTasks).collect()
       assert(result.length === size / 2)
       result.foreach {
@@ -598,17 +606,21 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         .sortByKey(numPartitions = numReduceTasks)
         .collect()
       val expected =
-        (0 until size).map { i =>
-          (i / 2, i)
-        }.toArray
+        (0 until size)
+          .map { i =>
+            (i / 2, i)
+          }
+          .toArray
       assert(result.length === size)
-      result.zipWithIndex.foreach {
-        case ((k, _), i) =>
-          val (expectedKey, _) = expected(i)
-          assert(
-            k === expectedKey,
-            s"Value for $i was wrong: expected $expectedKey, got $k")
-      }
+      result
+        .zipWithIndex
+        .foreach {
+          case ((k, _), i) =>
+            val (expectedKey, _) = expected(i)
+            assert(
+              k === expectedKey,
+              s"Value for $i was wrong: expected $expectedKey, got $k")
+        }
     }
   }
 
@@ -637,12 +649,14 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     if (withFailures) {
       intercept[SparkException] {
         sorter.insertAll(
-          (0 until size).iterator.map { i =>
-            if (i == size - 1) {
-              throw new SparkException("intentional failure")
-            }
-            (i, i)
-          })
+          (0 until size)
+            .iterator
+            .map { i =>
+              if (i == size - 1) {
+                throw new SparkException("intentional failure")
+              }
+              (i, i)
+            })
       }
     } else {
       sorter.insertAll((0 until size).iterator.map(i => (i, i)))
@@ -666,12 +680,14 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       (size / 4).toString)
     sc = new SparkContext("local", "test", conf)
     val diskBlockManager = sc.env.blockManager.diskBlockManager
-    val data = sc.parallelize(0 until size, 2).map { i =>
-      if (withFailures && i == size - 1) {
-        throw new SparkException("intentional failure")
+    val data = sc
+      .parallelize(0 until size, 2)
+      .map { i =>
+        if (withFailures && i == size - 1) {
+          throw new SparkException("intentional failure")
+        }
+        (i, i)
       }
-      (i, i)
-    }
 
     assertSpilled(sc, "test shuffle cleanup") {
       if (withFailures) {
@@ -727,41 +743,48 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         Some(new HashPartitioner(3)),
         ord)
     sorter.insertAll(
-      (0 until size).iterator.map { i =>
-        (i / 4, i)
-      })
+      (0 until size)
+        .iterator
+        .map { i =>
+          (i / 4, i)
+        })
     if (withSpilling) {
       assert(sorter.numSpills > 0, "sorter did not spill")
     } else {
       assert(sorter.numSpills === 0, "sorter spilled")
     }
     val results =
-      sorter.partitionedIterator.map {
-        case (p, vs) =>
-          (p, vs.toSet)
-      }.toSet
-    val expected =
-      (0 until 3).map { p =>
-        var v =
-          (0 until size)
-            .map { i =>
-              (i / 4, i)
-            }
-            .filter {
-              case (k, _) =>
-                k % 3 == p
-            }
-            .toSet
-        if (withPartialAgg) {
-          v = v
-            .groupBy(_._1)
-            .mapValues { s =>
-              s.map(_._2).sum
-            }
-            .toSet
+      sorter
+        .partitionedIterator
+        .map {
+          case (p, vs) =>
+            (p, vs.toSet)
         }
-        (p, v.toSet)
-      }.toSet
+        .toSet
+    val expected =
+      (0 until 3)
+        .map { p =>
+          var v =
+            (0 until size)
+              .map { i =>
+                (i / 4, i)
+              }
+              .filter {
+                case (k, _) =>
+                  k % 3 == p
+              }
+              .toSet
+          if (withPartialAgg) {
+            v = v
+              .groupBy(_._1)
+              .mapValues { s =>
+                s.map(_._2).sum
+              }
+              .toSet
+          }
+          (p, v.toSet)
+        }
+        .toSet
     assert(results === expected)
   }
 
@@ -813,8 +836,9 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
 
     assert(thrown.getClass === classOf[IllegalArgumentException])
     assert(
-      thrown.getMessage.contains(
-        "Comparison method violates its general contract"))
+      thrown
+        .getMessage
+        .contains("Comparison method violates its general contract"))
     sorter1.stop()
 
     // Using aggregation and external spill to make sure ExternalSorter using
@@ -843,12 +867,14 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
 
     // To validate the hash ordering of key
     var minKey = Int.MinValue
-    sorter2.iterator.foreach {
-      case (k, v) =>
-        val h = k.hashCode()
-        assert(h >= minKey)
-        minKey = h
-    }
+    sorter2
+      .iterator
+      .foreach {
+        case (k, v) =>
+          val h = k.hashCode()
+          assert(h >= minKey)
+          minKey = h
+      }
 
     sorter2.stop()
   }
@@ -863,20 +889,18 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     sc = new SparkContext("local", "test", conf)
     // Avoid aggregating here to make sure we're not also using ExternalAppendOnlyMap
     // No spilling
-    AccumulatorSuite.verifyPeakExecutionMemorySet(
-      sc,
-      "external sorter without spilling") {
-      assertNotSpilled(sc, "verify peak memory") {
-        sc.parallelize(1 to spillThreshold / 2, 2).repartition(100).count()
+    AccumulatorSuite
+      .verifyPeakExecutionMemorySet(sc, "external sorter without spilling") {
+        assertNotSpilled(sc, "verify peak memory") {
+          sc.parallelize(1 to spillThreshold / 2, 2).repartition(100).count()
+        }
       }
-    }
     // With spilling
-    AccumulatorSuite.verifyPeakExecutionMemorySet(
-      sc,
-      "external sorter with spilling") {
-      assertSpilled(sc, "verify peak memory") {
-        sc.parallelize(1 to spillThreshold * 3, 2).repartition(100).count()
+    AccumulatorSuite
+      .verifyPeakExecutionMemorySet(sc, "external sorter with spilling") {
+        assertSpilled(sc, "verify peak memory") {
+          sc.parallelize(1 to spillThreshold * 3, 2).repartition(100).count()
+        }
       }
-    }
   }
 }

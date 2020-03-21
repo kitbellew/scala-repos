@@ -74,8 +74,8 @@ private[mllib] class SlidingRDD[T: ClassTag](
   }
 
   override def getPreferredLocations(split: Partition): Seq[String] =
-    firstParent[T].preferredLocations(
-      split.asInstanceOf[SlidingRDDPartition[T]].prev)
+    firstParent[T]
+      .preferredLocations(split.asInstanceOf[SlidingRDDPartition[T]].prev)
 
   override def getPartitions: Array[Partition] = {
     val parentPartitions = parent.partitions

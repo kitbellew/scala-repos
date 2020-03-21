@@ -69,7 +69,8 @@ class AsyncRDDActionsSuite
     zeroPartRdd.foreachAsync(i => Unit).get()
 
     val accum = sc.accumulator(0)
-    sc.parallelize(1 to 1000, 3)
+    sc
+      .parallelize(1 to 1000, 3)
       .foreachAsync { i =>
         accum += 1
       }
@@ -81,7 +82,8 @@ class AsyncRDDActionsSuite
     zeroPartRdd.foreachPartitionAsync(iter => Unit).get()
 
     val accum = sc.accumulator(0)
-    sc.parallelize(1 to 1000, 9)
+    sc
+      .parallelize(1 to 1000, 9)
       .foreachPartitionAsync { iter =>
         accum += 1
       }
@@ -203,16 +205,12 @@ class AsyncRDDActionsSuite
     * Awaiting FutureAction results
     */
   test("FutureAction result, infinite wait") {
-    val f = sc
-      .parallelize(1 to 100, 4)
-      .countAsync()
+    val f = sc.parallelize(1 to 100, 4).countAsync()
     assert(Await.result(f, Duration.Inf) === 100)
   }
 
   test("FutureAction result, finite wait") {
-    val f = sc
-      .parallelize(1 to 100, 4)
-      .countAsync()
+    val f = sc.parallelize(1 to 100, 4).countAsync()
     assert(Await.result(f, Duration(30, "seconds")) === 100)
   }
 
@@ -240,10 +238,12 @@ class AsyncRDDActionsSuite
       }
     val starter = Smuggle(new Semaphore(0))
     starter.drainPermits()
-    val rdd = sc.parallelize(1 to 100, 4).mapPartitions { itr =>
-      starter.acquire(1);
-      itr
-    }
+    val rdd = sc
+      .parallelize(1 to 100, 4)
+      .mapPartitions { itr =>
+        starter.acquire(1);
+        itr
+      }
     val f = action(rdd)
     f.onComplete(_ => ())(fakeExecutionContext)
     // Here we verify that registering the callback didn't cause a thread to be consumed.

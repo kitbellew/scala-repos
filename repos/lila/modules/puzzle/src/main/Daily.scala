@@ -15,7 +15,9 @@ private[puzzle] final class Daily(
     renderer: ActorSelection,
     scheduler: Scheduler) {
 
-  private val cache = lila.memo.AsyncCache
+  private val cache = lila
+    .memo
+    .AsyncCache
     .single[Option[DailyPuzzle]](f = find, timeToLive = 30 minutes)
 
   def apply(): Fu[Option[DailyPuzzle]] = cache apply true
@@ -35,12 +37,14 @@ private[puzzle] final class Daily(
 
   private def makeDaily(puzzle: Puzzle): Fu[Option[DailyPuzzle]] = {
     import makeTimeout.short
-    ~puzzle.fenAfterInitialMove.map { fen =>
-      renderer ? RenderDaily(puzzle, fen, puzzle.initialMove) map {
-        case html: play.twirl.api.Html =>
-          DailyPuzzle(html, puzzle.color, puzzle.id).some
+    ~puzzle
+      .fenAfterInitialMove
+      .map { fen =>
+        renderer ? RenderDaily(puzzle, fen, puzzle.initialMove) map {
+          case html: play.twirl.api.Html =>
+            DailyPuzzle(html, puzzle.color, puzzle.id).some
+        }
       }
-    }
   } recover {
     case e: Exception =>
       logger.warn("make daily", e)

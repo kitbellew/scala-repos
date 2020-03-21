@@ -58,8 +58,8 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
 
     checkIncrementalTypeChange(context)
 
-    context.processMessage(
-      new ProgressMessage("Searching for compilable files..."))
+    context
+      .processMessage(new ProgressMessage("Searching for compilable files..."))
 
     val sourceDependencies = SourceDependenciesProviderService
       .getSourceDependenciesFor(chunk)
@@ -78,11 +78,13 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
       return ExitCode.NOTHING_DONE
 
     if (hasBuildModules(chunk))
-      return ExitCode.NOTHING_DONE // *.scala files in SBT "build" modules are rightly excluded from compilation
+      return ExitCode
+        .NOTHING_DONE // *.scala files in SBT "build" modules are rightly excluded from compilation
 
     if (!hasScalaModules(chunk)) {
       val message =
-        "skipping Scala files without a Scala SDK in module(s) " + chunk.getPresentableShortName
+        "skipping Scala files without a Scala SDK in module(s) " + chunk
+          .getPresentableShortName
       context.processMessage(
         new CompilerMessage("scala", BuildMessage.Kind.WARNING, message))
       return ExitCode.NOTHING_DONE
@@ -103,7 +105,10 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
       }
     }
 
-    val delta = context.getProjectDescriptor.dataManager.getMappings
+    val delta = context
+      .getProjectDescriptor
+      .dataManager
+      .getMappings
       .createDelta()
     val callback = delta.getCallback
 
@@ -213,7 +218,8 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
 
     for {
       target <- chunk.getTargets.asScala
-      tempRoot <- project.getBuildRootIndex
+      tempRoot <- project
+        .getBuildRootIndex
         .getTempTargetRoots(target, context)
         .asScala
     } {

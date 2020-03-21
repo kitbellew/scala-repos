@@ -128,12 +128,14 @@ private[sql] object SparkPlanGraph {
         val node = exchanges(planInfo.children.head)
         edges += SparkPlanGraphEdge(node.id, parent.id)
       case name =>
-        val metrics = planInfo.metrics.map { metric =>
-          SQLPlanMetric(
-            metric.name,
-            metric.accumulatorId,
-            SQLMetrics.getMetricParam(metric.metricParam))
-        }
+        val metrics = planInfo
+          .metrics
+          .map { metric =>
+            SQLPlanMetric(
+              metric.name,
+              metric.accumulatorId,
+              SQLMetrics.getMetricParam(metric.metricParam))
+          }
         val node =
           new SparkPlanGraphNode(
             nodeIdGenerator.getAndIncrement(),
@@ -153,15 +155,17 @@ private[sql] object SparkPlanGraph {
         if (parent != null) {
           edges += SparkPlanGraphEdge(node.id, parent.id)
         }
-        planInfo.children.foreach(
-          buildSparkPlanGraphNode(
-            _,
-            nodeIdGenerator,
-            nodes,
-            edges,
-            node,
-            subgraph,
-            exchanges))
+        planInfo
+          .children
+          .foreach(
+            buildSparkPlanGraphNode(
+              _,
+              nodeIdGenerator,
+              nodes,
+              edges,
+              node,
+              subgraph,
+              exchanges))
     }
   }
 }

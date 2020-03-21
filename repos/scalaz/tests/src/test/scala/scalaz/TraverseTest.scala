@@ -16,16 +16,18 @@ object TraverseTest extends SpecLite {
     // ghci> traverse (\x -> writer (x, x)) ["1", "2", "3"] |> runWriter
     // (["1","2","3"],"123")
     "apply effects in order" in {
-      val s: Writer[String, List[Int]] = List(1, 2, 3).traverseU(x =>
-        Writer(x.toString, x))
+      val s: Writer[String, List[Int]] = List(1, 2, 3)
+        .traverseU(x => Writer(x.toString, x))
       s.run must_=== (("123", List(1, 2, 3)))
     }
 
     "indexed" ! forAll { xs: List[Byte] =>
-      Traverse[List].indexed(xs) must_=== xs.zipWithIndex.map {
-        case (a, b) =>
-          (b, a)
-      }
+      Traverse[List].indexed(xs) must_=== xs
+        .zipWithIndex
+        .map {
+          case (a, b) =>
+            (b, a)
+        }
     }
 
     "traverse through option effect" in {
@@ -68,8 +70,8 @@ object TraverseTest extends SpecLite {
 
   "stream" should {
     "apply effects in order" in {
-      val s: Writer[String, Stream[Int]] = Stream(1, 2, 3).traverseU(x =>
-        Writer(x.toString, x))
+      val s: Writer[String, Stream[Int]] = Stream(1, 2, 3)
+        .traverseU(x => Writer(x.toString, x))
       s.run must_=== (("123", Stream(1, 2, 3)))
     }
 

@@ -84,13 +84,19 @@ class PostgresIntegrationSuite extends DockerJDBCIntegrationSuite {
     assert(!rows(0).getBoolean(4))
     // BIT(10)'s come back as ASCII strings of ten ASCII 0's and 1's...
     assert(
-      java.util.Arrays.equals(
-        rows(0).getAs[Array[Byte]](5),
-        Array[Byte](49, 48, 48, 48, 49, 48, 48, 49, 48, 49)))
+      java
+        .util
+        .Arrays
+        .equals(
+          rows(0).getAs[Array[Byte]](5),
+          Array[Byte](49, 48, 48, 48, 49, 48, 48, 49, 48, 49)))
     assert(
-      java.util.Arrays.equals(
-        rows(0).getAs[Array[Byte]](6),
-        Array[Byte](0xDE.toByte, 0xAD.toByte, 0xBE.toByte, 0xEF.toByte)))
+      java
+        .util
+        .Arrays
+        .equals(
+          rows(0).getAs[Array[Byte]](6),
+          Array[Byte](0xDE.toByte, 0xAD.toByte, 0xBE.toByte, 0xEF.toByte)))
     assert(rows(0).getBoolean(7))
     assert(rows(0).getString(8) == "172.16.0.42")
     assert(rows(0).getString(9) == "192.168.0.0/16")
@@ -108,16 +114,22 @@ class PostgresIntegrationSuite extends DockerJDBCIntegrationSuite {
     df.write.jdbc(jdbcUrl, "public.barcopy", new Properties)
     // Test that written numeric type has same DataType as input
     assert(
-      sqlContext.read
+      sqlContext
+        .read
         .jdbc(jdbcUrl, "public.barcopy", new Properties)
         .schema(13)
         .dataType ==
         ArrayType(DecimalType(2, 2), true))
     // Test write null values.
-    df.select(
-        df.queryExecution.analyzed.output.map { a =>
-          Column(Literal.create(null, a.dataType)).as(a.name)
-        }: _*)
+    df
+      .select(
+        df
+          .queryExecution
+          .analyzed
+          .output
+          .map { a =>
+            Column(Literal.create(null, a.dataType)).as(a.name)
+          }: _*)
       .write
       .jdbc(jdbcUrl, "public.barcopy2", new Properties)
   }

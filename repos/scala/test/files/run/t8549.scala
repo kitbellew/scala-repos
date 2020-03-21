@@ -10,7 +10,8 @@ import scala.reflect.io.File
 //
 // Use this to re-establish a baseline for serialization compatibility.
 object Test extends App {
-  val overwrite: Option[File] = sys.props
+  val overwrite: Option[File] = sys
+    .props
     .get("overwrite.source")
     .map(s => new File(new java.io.File(s)))
 
@@ -29,12 +30,14 @@ object Test extends App {
 
   def patch(file: File, line: Int, prevResult: String, result: String) {
     amend(file) { content =>
-      content.lines.toList.zipWithIndex
+      content
+        .lines
+        .toList
+        .zipWithIndex
         .map {
           case (content, i) if i == line - 1 =>
-            val newContent = content.replaceAllLiterally(
-              quote(prevResult),
-              quote(result))
+            val newContent = content
+              .replaceAllLiterally(quote(prevResult), quote(result))
             if (newContent != content)
               println(s"- $content\n+ $newContent\n")
             newContent
@@ -54,7 +57,9 @@ object Test extends App {
     val newComment =
       s"  // Generated on $timestamp with Scala ${scala.util.Properties.versionString})"
     amend(file) { content =>
-      content.lines.toList
+      content
+        .lines
+        .toList
         .map { f =>
           f.replaceAll("""^ +// Generated on.*""", newComment)
         }

@@ -20,12 +20,10 @@ import akka.event.Logging
   * Top level supervisor for internal Camel actors
   */
 private[camel] class CamelSupervisor extends Actor with CamelSupport {
-  private val activationTracker = context.actorOf(
-    Props[ActivationTracker],
-    "activationTracker")
-  private val registry: ActorRef = context.actorOf(
-    Props(classOf[Registry], activationTracker),
-    "registry")
+  private val activationTracker = context
+    .actorOf(Props[ActivationTracker], "activationTracker")
+  private val registry: ActorRef = context
+    .actorOf(Props(classOf[Registry], activationTracker), "registry")
 
   override val supervisorStrategy =
     OneForOneStrategy() {
@@ -133,13 +131,16 @@ private[camel] class Registry(activationTracker: ActorRef)
         decision: SupervisorStrategy.Directive): Unit =
       cause match {
         case _: ActorActivationException | _: ActorDeActivationException ⇒
-          try context.system.eventStream.publish {
-            Logging.Error(
-              cause.getCause,
-              child.path.toString,
-              getClass,
-              cause.getMessage)
-          } catch {
+          try context
+            .system
+            .eventStream
+            .publish {
+              Logging.Error(
+                cause.getCause,
+                child.path.toString,
+                getClass,
+                cause.getMessage)
+            } catch {
             case NonFatal(_) ⇒
           }
         case _ ⇒
@@ -175,14 +176,18 @@ private[camel] class Registry(activationTracker: ActorRef)
       }
       producerRegistrar forward msg
     case DeRegister(actorRef) ⇒
-      producers.find(_ == actorRef).foreach { p ⇒
-        deRegisterProducer(p)
-        producers -= p
-      }
-      consumers.find(_ == actorRef).foreach { c ⇒
-        deRegisterConsumer(c)
-        consumers -= c
-      }
+      producers
+        .find(_ == actorRef)
+        .foreach { p ⇒
+          deRegisterProducer(p)
+          producers -= p
+        }
+      consumers
+        .find(_ == actorRef)
+        .foreach { c ⇒
+          deRegisterConsumer(c)
+          consumers -= c
+        }
   }
 
   private def deRegisterConsumer(actorRef: ActorRef) {

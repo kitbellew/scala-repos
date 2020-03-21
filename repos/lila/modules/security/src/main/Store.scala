@@ -100,11 +100,13 @@ object Store {
   def setFingerprint(id: String, fingerprint: String): Fu[String] = {
     import java.util.Base64
     import org.apache.commons.codec.binary.Hex
-    scala.concurrent.Future {
-      Base64.getEncoder encodeToString {
-        Hex decodeHex fingerprint.toArray
-      } take 8
-    } flatMap { hash =>
+    scala
+      .concurrent
+      .Future {
+        Base64.getEncoder encodeToString {
+          Hex decodeHex fingerprint.toArray
+        } take 8
+      } flatMap { hash =>
       storeColl.update(
         BSONDocument("_id" -> id),
         BSONDocument("$set" -> BSONDocument("fp" -> hash))) inject hash

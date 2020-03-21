@@ -52,16 +52,16 @@ class DataMapSpec extends Specification {
     }
 
     "get List of String data" in {
-      properties.get[List[String]]("prop5") must beEqualTo(
-        List("a", "b", "c", "c"))
+      properties
+        .get[List[String]]("prop5") must beEqualTo(List("a", "b", "c", "c"))
       properties.getOpt[List[String]]("prop5") must beEqualTo(
         Some(List("a", "b", "c", "c")))
     }
 
     "get Set of String data" in {
       properties.get[Set[String]]("prop5") must beEqualTo(Set("a", "b", "c"))
-      properties.getOpt[Set[String]]("prop5") must beEqualTo(
-        Some(Set("a", "b", "c")))
+      properties
+        .getOpt[Set[String]]("prop5") must beEqualTo(Some(Set("a", "b", "c")))
     }
 
     "get Double data" in {

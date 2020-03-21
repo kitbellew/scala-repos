@@ -44,27 +44,32 @@ object StormPlanTopology extends Properties("StormDag") {
 
   implicit def testStore: Storm#Store[Int, Int] =
     MergeableStoreFactory.from {
-      MergeableStore.fromStore[(Int, BatchID), Int](
-        new JMapStore[(Int, BatchID), Int]())
+      MergeableStore
+        .fromStore[(Int, BatchID), Int](new JMapStore[(Int, BatchID), Int]())
     }
 
   implicit def arbSource1: Arbitrary[Producer[Storm, Int]] =
     Arbitrary(
-      Gen.listOfN(5000, Arbitrary.arbitrary[Int]).map { x: List[Int] =>
-        Storm.source(TraversableSpout(x))
-      })
+      Gen
+        .listOfN(5000, Arbitrary.arbitrary[Int])
+        .map { x: List[Int] =>
+          Storm.source(TraversableSpout(x))
+        })
   implicit def arbSource2: Arbitrary[KeyedProducer[Storm, Int, Int]] =
     Arbitrary(
-      Gen.listOfN(5000, Arbitrary.arbitrary[(Int, Int)]).map {
-        x: List[(Int, Int)] =>
+      Gen
+        .listOfN(5000, Arbitrary.arbitrary[(Int, Int)])
+        .map { x: List[(Int, Int)] =>
           IdentityKeyedProducer(Storm.source(TraversableSpout(x)))
-      })
+        })
 
   implicit def arbService2: Arbitrary[Storm#Service[Int, Int]] =
     Arbitrary(
-      Arbitrary.arbitrary[Int => Option[Int]].map { fn =>
-        ReadableServiceFactory[Int, Int](() => ReadableStore.fromFn(fn))
-      })
+      Arbitrary
+        .arbitrary[Int => Option[Int]]
+        .map { fn =>
+          ReadableServiceFactory[Int, Int](() => ReadableStore.fromFn(fn))
+        })
 
   lazy val genDag: Gen[TailProducer[Storm, Any]] =
     for {

@@ -73,8 +73,8 @@ import java.util.concurrent.{
 class ExecutorBasedEventDrivenDispatcher(
     _name: String,
     val throughput: Int = Dispatchers.THROUGHPUT,
-    val throughputDeadlineTime: Int =
-      Dispatchers.THROUGHPUT_DEADLINE_TIME_MILLIS,
+    val throughputDeadlineTime: Int = Dispatchers
+      .THROUGHPUT_DEADLINE_TIME_MILLIS,
     val mailboxType: MailboxType = Dispatchers.MAILBOX_TYPE,
     val config: ThreadPoolConfig = ThreadPoolConfig())
     extends MessageDispatcher {
@@ -179,8 +179,8 @@ class ExecutorBasedEventDrivenDispatcher(
   private[akka] def start {}
 
   private[akka] def shutdown {
-    val old = executorService.getAndSet(
-      config.createLazyExecutorService(threadFactory))
+    val old = executorService
+      .getAndSet(config.createLazyExecutorService(threadFactory))
     if (old ne null) {
       old.shutdownNow()
     }
@@ -189,7 +189,9 @@ class ExecutorBasedEventDrivenDispatcher(
   private[akka] def registerForExecution(
       mbox: MessageQueue with ExecutableMailbox): Unit = {
     if (mbox.dispatcherLock.tryLock()) {
-      if (active.isOn && !mbox.suspended.locked) { //If the dispatcher is active and the actor not suspended
+      if (active.isOn && !mbox
+            .suspended
+            .locked) { //If the dispatcher is active and the actor not suspended
         try {
           executorService.get() execute mbox
         } catch {
@@ -199,7 +201,8 @@ class ExecutorBasedEventDrivenDispatcher(
             throw e
         }
       } else {
-        mbox.dispatcherLock
+        mbox
+          .dispatcherLock
           .unlock() //If the dispatcher isn't active or if the actor is suspended, unlock the dispatcher lock
       }
     }
@@ -258,8 +261,9 @@ trait ExecutableMailbox extends Runnable {
           val isDeadlineEnabled = dispatcher.throughputDeadlineTime > 0
           val deadlineNs =
             if (isDeadlineEnabled)
-              System.nanoTime + TimeUnit.MILLISECONDS.toNanos(
-                dispatcher.throughputDeadlineTime)
+              System.nanoTime + TimeUnit
+                .MILLISECONDS
+                .toNanos(dispatcher.throughputDeadlineTime)
             else
               0
           do {

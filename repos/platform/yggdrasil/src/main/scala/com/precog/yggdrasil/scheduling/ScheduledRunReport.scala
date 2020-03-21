@@ -36,9 +36,8 @@ import shapeless._
 object ScheduledRunReport {
   import com.precog.common.ingest.JavaSerialization._
 
-  implicit val iso = Iso.hlist(
-    ScheduledRunReport.apply _,
-    ScheduledRunReport.unapply _)
+  implicit val iso = Iso
+    .hlist(ScheduledRunReport.apply _, ScheduledRunReport.unapply _)
 
   val schemaV1 =
     "id" :: "startedAt" :: "endedAt" :: "records" :: "messages" :: HNil

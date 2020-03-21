@@ -271,7 +271,8 @@ private[akka] class TLSActor(
   val userHasData =
     new TransferState {
       def isReady =
-        !corkUser && userInChoppingBlock.isReady && lastHandshakeStatus != NEED_UNWRAP
+        !corkUser && userInChoppingBlock
+          .isReady && lastHandshakeStatus != NEED_UNWRAP
       def isCompleted =
         inputBunch.isCancelled(UserIn) || inputBunch.isDepleted(UserIn)
     }
@@ -283,16 +284,15 @@ private[akka] class TLSActor(
     }
 
   // bidirectional case
-  val outbound =
-    (userHasData || engineNeedsWrap) && outputBunch.demandAvailableFor(
-      TransportOut)
+  val outbound = (userHasData || engineNeedsWrap) && outputBunch
+    .demandAvailableFor(TransportOut)
   val inbound = (
     transportInChoppingBlock && outputBunch.demandAvailableFor(UserOut)
   ) || userOutCancelled
 
   // half-closed
-  val outboundHalfClosed =
-    engineNeedsWrap && outputBunch.demandAvailableFor(TransportOut)
+  val outboundHalfClosed = engineNeedsWrap && outputBunch
+    .demandAvailableFor(TransportOut)
   val inboundHalfClosed = transportInChoppingBlock && engineInboundOpen
 
   val bidirectional =
@@ -368,8 +368,8 @@ private[akka] class TLSActor(
   private def doInbound(
       isOutboundClosed: Boolean,
       inboundState: TransferState): Boolean =
-    if (inputBunch.isDepleted(
-          TransportIn) && transportInChoppingBlock.isEmpty) {
+    if (inputBunch.isDepleted(TransportIn) && transportInChoppingBlock
+          .isEmpty) {
       if (tracing)
         log.debug("closing inbound")
       try engine.closeInbound()
@@ -379,8 +379,8 @@ private[akka] class TLSActor(
       }
       completeOrFlush()
       false
-    } else if (inboundState != inboundHalfClosed && outputBunch.isCancelled(
-                 UserOut)) {
+    } else if (inboundState != inboundHalfClosed && outputBunch
+                 .isCancelled(UserOut)) {
       if (!isOutboundClosed && closing.ignoreCancel) {
         if (tracing)
           log.debug("ignoring UserIn cancellation")

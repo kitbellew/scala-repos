@@ -83,16 +83,18 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
       withServer(Seq("play.http.filters" -> classOf[CsrfFilters].getName)) {
         case _ =>
           Action(
-            _.body.asFormUrlEncoded
-              .flatMap(_.get("foo"))
-              .flatMap(_.headOption)
-              .map(Results.Ok(_))
-              .getOrElse(Results.NotFound))
+            _.body
+            .asFormUrlEncoded
+            .flatMap(_.get("foo"))
+            .flatMap(_.headOption)
+            .map(Results.Ok(_))
+            .getOrElse(Results.NotFound))
       } {
         val token = crypto.generateSignedToken
         import play.api.Play.current
         await(
-          WS.url("http://localhost:" + testServerPort)
+          WS
+            .url("http://localhost:" + testServerPort)
             .withSession(TokenName -> token)
             .post(Map("foo" -> "bar", TokenName -> token))).body must_== "bar"
       }
@@ -126,7 +128,8 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
       testServerPort) {
       val token = crypto.generateSignedToken
       val response = await(
-        WS.url("http://localhost:" + port)
+        WS
+          .url("http://localhost:" + port)
           .withSession(TokenName -> token)
           .withHeaders(CONTENT_TYPE -> "application/x-www-form-urlencoded")
           .post(
@@ -193,8 +196,8 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
           "play.http.filters" -> classOf[CsrfFilters].getName) ++ {
           if (sendUnauthorizedResult)
             Seq(
-              "play.filters.csrf.errorHandler" -> classOf[
-                CustomErrorHandler].getName)
+              "play.filters.csrf.errorHandler" -> classOf[CustomErrorHandler]
+                .getName)
           else
             Nil
         }
@@ -238,9 +241,11 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
             "play.http.filters" -> classOf[CsrfFilters].getName)) {
           case _ =>
             Action { implicit req =>
-              CSRF.getToken(req).map { token =>
-                Results.Ok(token.value)
-              } getOrElse Results.NotFound
+              CSRF
+                .getToken(req)
+                .map { token =>
+                  Results.Ok(token.value)
+                } getOrElse Results.NotFound
             }
         } {
           import play.api.Play.current

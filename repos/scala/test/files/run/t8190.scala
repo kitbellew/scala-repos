@@ -102,16 +102,16 @@ object Test extends App with Overloads {
   }
   def check(): Unit = {
     println("checking exhaustiveness in scala.reflect.api.Universe...")
-    var types = typeOf[scala.reflect.api.Universe].members
+    var types = typeOf[scala.reflect.api.Universe]
+      .members
       .filter(sym => sym.isType && !sym.isClass)
       .map(_.name.toString)
     types = types.filter(
       _ != "ModifiersCreator"
     ) // type ModifiersCreator = ModifiersExtractor
     types = types.filter(_ != "FlagSet") // type FlagSet
-    types = types.filter(
-      _ != "RuntimeClass"
-    ) // type RuntimeClass = java.lang.Class[_]
+    types = types
+      .filter(_ != "RuntimeClass") // type RuntimeClass = java.lang.Class[_]
     types = types.filter(_ != "JavaArgument") // deprecated
     types = types.filter(_ != "LiteralArgument") // deprecated
     types = types.filter(_ != "ArrayArgument") // deprecated

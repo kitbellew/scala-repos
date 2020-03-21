@@ -180,10 +180,8 @@ abstract class UnCurry
         val ex = meth.newValue(nme.ex, body.pos) setInfo extpe
         val argType =
           restpe withAnnotation (AnnotationInfo marker UncheckedClass.tpe)
-        val pat = gen.mkBindForCase(
-          ex,
-          NonLocalReturnControlClass,
-          List(argType))
+        val pat = gen
+          .mkBindForCase(ex, NonLocalReturnControlClass, List(argType))
         val rhs = (IF((ex DOT nme.key)() OBJ_EQ Ident(key))
           THEN ((ex DOT nme.value)())
           ELSE (Throw(Ident(ex))))
@@ -384,7 +382,8 @@ abstract class UnCurry
             if (isJava)
               mkArray
             else if (args.isEmpty)
-              gen.mkNil // avoid needlessly double-wrapping an empty argument list
+              gen
+                .mkNil // avoid needlessly double-wrapping an empty argument list
             else
               arrayToSequence(mkArray, varargsElemType)
           }
@@ -454,7 +453,8 @@ abstract class UnCurry
     private def isSelfSynchronized(ddef: DefDef) =
       ddef.rhs match {
         case Apply(fn @ TypeApply(Select(sel, _), _), _) =>
-          fn.symbol == Object_synchronized && sel.symbol == ddef.symbol.enclClass && !ddef.symbol.enclClass.isTrait
+          fn.symbol == Object_synchronized && sel
+            .symbol == ddef.symbol.enclClass && !ddef.symbol.enclClass.isTrait
         case _ =>
           false
       }
@@ -475,7 +475,8 @@ abstract class UnCurry
           tree
       }
     def isNonLocalReturn(ret: Return) =
-      ret.symbol != currentOwner.enclMethod || currentOwner.isLazy || currentOwner.isAnonymousFunction
+      ret.symbol != currentOwner.enclMethod || currentOwner
+        .isLazy || currentOwner.isAnonymousFunction
 
 // ------ The tree transformers --------------------------------------------------------
 
@@ -491,9 +492,8 @@ abstract class UnCurry
       /* Transform tree `t` to { def f = t; f } where `f` is a fresh name */
       def liftTree(tree: Tree) = {
         debuglog("lifting tree at: " + (tree.pos))
-        val sym = currentOwner.newMethod(
-          unit.freshTermName("liftedTree"),
-          tree.pos)
+        val sym = currentOwner
+          .newMethod(unit.freshTermName("liftedTree"), tree.pos)
         sym.setInfo(MethodType(List(), tree.tpe))
         tree.changeOwner(currentOwner -> sym)
         localTyper.typedPos(tree.pos)(
@@ -511,11 +511,14 @@ abstract class UnCurry
 
       // true if the target is a lambda body that's been lifted into a method
       def isLiftedLambdaBody(target: Tree) =
-        target.symbol.isLocalToBlock && target.symbol.isArtifact && target.symbol.name
+        target.symbol.isLocalToBlock && target.symbol.isArtifact && target
+          .symbol
+          .name
           .containsName(nme.ANON_FUN_NAME)
 
-      val result = (if ((sym ne null) && sym.elisionLevel.exists(
-                          _ < settings.elidebelow.value))
+      val result = (if ((sym ne null) && sym
+                          .elisionLevel
+                          .exists(_ < settings.elidebelow.value))
                       replaceElidableTree(tree)
                     else
                       translateSynchronized(tree) match {
@@ -523,12 +526,8 @@ abstract class UnCurry
                           // Remove default argument trees from parameter ValDefs, SI-4812
                           val vparamssNoRhs = dd.vparamss mapConserve (
                             _ mapConserve { p =>
-                              treeCopy.ValDef(
-                                p,
-                                p.mods,
-                                p.name,
-                                p.tpt,
-                                EmptyTree)
+                              treeCopy
+                                .ValDef(p, p.mods, p.name, p.tpt, EmptyTree)
                             }
                           )
 
@@ -589,8 +588,9 @@ abstract class UnCurry
                             super.transform(tree)
 
                         case Apply(fn, args) =>
-                          val needLift =
-                            needTryLift || !fn.symbol.isLabel // SI-6749, no need to lift in args to label jumps.
+                          val needLift = needTryLift || !fn
+                            .symbol
+                            .isLabel // SI-6749, no need to lift in args to label jumps.
                           withNeedLift(needLift) {
                             val formals = fn.tpe.paramTypes
                             treeCopy.Apply(
@@ -610,7 +610,8 @@ abstract class UnCurry
                           }
 
                         case Assign(lhs, _)
-                            if lhs.symbol.owner != currentMethod || lhs.symbol
+                            if lhs.symbol.owner != currentMethod || lhs
+                              .symbol
                               .hasFlag(LAZY | ACCESSOR) =>
                           withNeedLift(needLift = true) {
                             super.transform(tree)
@@ -740,11 +741,13 @@ abstract class UnCurry
             // (only pure methods are typed as ConstantType). We could also do this for methods with arguments,
             // after ensuring the arguments are not referenced.
             val literalRhsIfConst =
-              if (newParamss.head.isEmpty) { // We know newParamss.length == 1 from above
+              if (newParamss
+                    .head
+                    .isEmpty) { // We know newParamss.length == 1 from above
                 ddSym.info.resultType match {
                   case tp @ ConstantType(value) =>
-                    Literal(
-                      value) setType tp setPos newRhs.pos // inlining of gen.mkAttributedQualifier(tp)
+                    Literal(value) setType tp setPos newRhs
+                      .pos // inlining of gen.mkAttributedQualifier(tp)
                   case _ =>
                     newRhs
                 }
@@ -900,7 +903,8 @@ abstract class UnCurry
                     }
                   val info = info0.normalize
                   val tempValName = unit freshTermName (p.name + "$")
-                  val newSym = dd.symbol
+                  val newSym = dd
+                    .symbol
                     .newTermSymbol(tempValName, p.pos, SYNTHETIC)
                     .setInfo(info)
                   atPos(p.pos)(
@@ -912,10 +916,12 @@ abstract class UnCurry
 
         val allParams = paramTransforms map (_.param)
         val (packedParams, tempVals) =
-          paramTransforms.collect {
-            case Packed(param, tempVal) =>
-              (param, tempVal)
-          }.unzip
+          paramTransforms
+            .collect {
+              case Packed(param, tempVal) =>
+                (param, tempVal)
+            }
+            .unzip
 
         val rhs1 =
           if (rhs == EmptyTree || tempVals.isEmpty)
@@ -977,8 +983,12 @@ abstract class UnCurry
       val theTyper = typer.atOwner(dd, currentClass)
       val flatparams = flatdd.symbol.paramss.head
       val isRepeated = enteringUncurry(
-        dd.symbol.info.paramss.flatten.map(sym =>
-          definitions.isRepeatedParamType(sym.tpe)))
+        dd
+          .symbol
+          .info
+          .paramss
+          .flatten
+          .map(sym => definitions.isRepeatedParamType(sym.tpe)))
 
       // create the type
       val forwformals =
@@ -1046,7 +1056,8 @@ abstract class UnCurry
         }
 
       // check if the method with that name and those arguments already exists in the template
-      currentClass.info
+      currentClass
+        .info
         .member(forwsym.name)
         .alternatives
         .find(s => s != forwsym && s.tpe.matches(forwsym.tpe)) match {

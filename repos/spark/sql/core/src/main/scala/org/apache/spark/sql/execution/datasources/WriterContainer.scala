@@ -81,9 +81,11 @@ private[sql] abstract class BaseWriterContainer(
   @transient
   private val jobContext: JobContext = job
 
-  private val speculationEnabled: Boolean =
-    relation.sqlContext.sparkContext.conf
-      .getBoolean("spark.speculation", defaultValue = false)
+  private val speculationEnabled: Boolean = relation
+    .sqlContext
+    .sparkContext
+    .conf
+    .getBoolean("spark.speculation", defaultValue = false)
 
   // The following fields are initialized and used on both driver and executor side.
   @transient
@@ -112,7 +114,8 @@ private[sql] abstract class BaseWriterContainer(
     // This UUID is sent to executor side together with the serialized `Configuration` object within
     // the `Job` instance.  `OutputWriters` on the executor side should use this UUID to generate
     // unique task output files.
-    job.getConfiguration
+    job
+      .getConfiguration
       .set("spark.sql.sources.writeJobUUID", uniqueWriteJobId.toString)
 
     // Order of the following two lines is important.  For Hadoop 1, TaskAttemptContext constructor
@@ -157,11 +160,8 @@ private[sql] abstract class BaseWriterContainer(
       path: String,
       bucketId: Option[Int] = None): OutputWriter = {
     try {
-      outputWriterFactory.newInstance(
-        path,
-        bucketId,
-        dataSchema,
-        taskAttemptContext)
+      outputWriterFactory
+        .newInstance(path, bucketId, dataSchema, taskAttemptContext)
     } catch {
       case e: org.apache.hadoop.fs.FileAlreadyExistsException =>
         if (outputCommitter
@@ -254,7 +254,8 @@ private[sql] abstract class BaseWriterContainer(
 
   private def setupConf(): Unit = {
     serializableConf.value.set("mapred.job.id", jobId.toString)
-    serializableConf.value
+    serializableConf
+      .value
       .set("mapred.tip.id", taskAttemptId.getTaskID.toString)
     serializableConf.value.set("mapred.task.id", taskAttemptId.toString)
     serializableConf.value.setBoolean("mapred.task.is.map", true)
@@ -369,13 +370,17 @@ private[sql] class DynamicPartitionWriterContainer(
 
   private val bucketSpec = relation.bucketSpec
 
-  private val bucketColumns: Seq[Attribute] = bucketSpec.toSeq.flatMap { spec =>
-    spec.bucketColumnNames.map(c => inputSchema.find(_.name == c).get)
-  }
+  private val bucketColumns: Seq[Attribute] = bucketSpec
+    .toSeq
+    .flatMap { spec =>
+      spec.bucketColumnNames.map(c => inputSchema.find(_.name == c).get)
+    }
 
-  private val sortColumns: Seq[Attribute] = bucketSpec.toSeq.flatMap { spec =>
-    spec.sortColumnNames.map(c => inputSchema.find(_.name == c).get)
-  }
+  private val sortColumns: Seq[Attribute] = bucketSpec
+    .toSeq
+    .flatMap { spec =>
+      spec.sortColumnNames.map(c => inputSchema.find(_.name == c).get)
+    }
 
   private def bucketIdExpression: Option[Expression] =
     bucketSpec.map { spec =>
@@ -387,20 +392,22 @@ private[sql] class DynamicPartitionWriterContainer(
 
   // Expressions that given a partition key build a string like: col1=val/col2=val/...
   private def partitionStringExpression: Seq[Expression] = {
-    partitionColumns.zipWithIndex.flatMap {
-      case (c, i) =>
-        val escaped = ScalaUDF(
-          PartitioningUtils.escapePathName _,
-          StringType,
-          Seq(Cast(c, StringType)),
-          Seq(StringType))
-        val str = If(IsNull(c), Literal(defaultPartitionName), escaped)
-        val partitionName = Literal(c.name + "=") :: str :: Nil
-        if (i == 0)
-          partitionName
-        else
-          Literal(Path.SEPARATOR) :: partitionName
-    }
+    partitionColumns
+      .zipWithIndex
+      .flatMap {
+        case (c, i) =>
+          val escaped = ScalaUDF(
+            PartitioningUtils.escapePathName _,
+            StringType,
+            Seq(Cast(c, StringType)),
+            Seq(StringType))
+          val str = If(IsNull(c), Literal(defaultPartitionName), escaped)
+          val partitionName = Literal(c.name + "=") :: str :: Nil
+          if (i == 0)
+            partitionName
+          else
+            Literal(Path.SEPARATOR) :: partitionName
+      }
   }
 
   private def getBucketIdFromKey(key: InternalRow): Option[Int] =
@@ -457,9 +464,8 @@ private[sql] class DynamicPartitionWriterContainer(
     val getOutputRow = UnsafeProjection.create(dataColumns, inputSchema)
 
     // Returns the partition path given a partition key.
-    val getPartitionString = UnsafeProjection.create(
-      Concat(partitionStringExpression) :: Nil,
-      partitionColumns)
+    val getPartitionString = UnsafeProjection
+      .create(Concat(partitionStringExpression) :: Nil, partitionColumns)
 
     // Sorts the data before write, so that we only need one writer at the same time.
     // TODO: inject a local sort operator in planning.
@@ -481,10 +487,13 @@ private[sql] class DynamicPartitionWriterContainer(
         identity
       } else {
         UnsafeProjection.create(
-          sortingExpressions.dropRight(sortColumns.length).zipWithIndex.map {
-            case (expr, ordinal) =>
-              BoundReference(ordinal, expr.dataType, expr.nullable)
-          })
+          sortingExpressions
+            .dropRight(sortColumns.length)
+            .zipWithIndex
+            .map {
+              case (expr, ordinal) =>
+                BoundReference(ordinal, expr.dataType, expr.nullable)
+            })
       }
 
     val sortedIterator = sorter.sortedIterator()

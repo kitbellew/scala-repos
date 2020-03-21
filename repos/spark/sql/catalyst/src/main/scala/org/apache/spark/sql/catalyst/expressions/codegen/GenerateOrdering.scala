@@ -54,12 +54,14 @@ object GenerateOrdering
     */
   def create(schema: StructType): BaseOrdering = {
     create(
-      schema.zipWithIndex.map {
-        case (field, ordinal) =>
-          SortOrder(
-            BoundReference(ordinal, field.dataType, nullable = true),
-            Ascending)
-      })
+      schema
+        .zipWithIndex
+        .map {
+          case (field, ordinal) =>
+            SortOrder(
+              BoundReference(ordinal, field.dataType, nullable = true),
+              Ascending)
+        })
   }
 
   /**
@@ -67,10 +69,14 @@ object GenerateOrdering
     * (i.e. ascending order by field 1, then field 2, ..., then field n.
     */
   def genComparisons(ctx: CodegenContext, schema: StructType): String = {
-    val ordering = schema.fields.map(_.dataType).zipWithIndex.map {
-      case (dt, index) =>
-        new SortOrder(BoundReference(index, dt, nullable = true), Ascending)
-    }
+    val ordering = schema
+      .fields
+      .map(_.dataType)
+      .zipWithIndex
+      .map {
+        case (dt, index) =>
+          new SortOrder(BoundReference(index, dt, nullable = true), Ascending)
+      }
     genComparisons(ctx, ordering)
   }
 
@@ -198,11 +204,13 @@ object LazilyGeneratedOrdering {
     */
   def forSchema(schema: StructType): LazilyGeneratedOrdering = {
     new LazilyGeneratedOrdering(
-      schema.zipWithIndex.map {
-        case (field, ordinal) =>
-          SortOrder(
-            BoundReference(ordinal, field.dataType, nullable = true),
-            Ascending)
-      })
+      schema
+        .zipWithIndex
+        .map {
+          case (field, ordinal) =>
+            SortOrder(
+              BoundReference(ordinal, field.dataType, nullable = true),
+              Ascending)
+        })
   }
 }

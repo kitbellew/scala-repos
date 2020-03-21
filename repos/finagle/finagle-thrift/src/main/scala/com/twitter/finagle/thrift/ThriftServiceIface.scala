@@ -134,12 +134,15 @@ object ThriftServiceIface {
           if (result.successField.isDefined) {
             methodStats.successCounter.incr()
           } else {
-            result.firstException.map { ex =>
-              methodStats.failuresCounter.incr()
-              methodStats.failuresScope
-                .counter(Throwables.mkString(ex): _*)
-                .incr()
-            }
+            result
+              .firstException
+              .map { ex =>
+                methodStats.failuresCounter.incr()
+                methodStats
+                  .failuresScope
+                  .counter(Throwables.mkString(ex): _*)
+                  .incr()
+              }
           }
         }
       }

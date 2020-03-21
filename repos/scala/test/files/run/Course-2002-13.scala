@@ -329,7 +329,8 @@ object Prolog {
             Console.println("no")
           } else {
             val s: Subst =
-              solutions.head
+              solutions
+                .head
                 .filter(b => tvs contains b.name)
                 .map(b => Binding(b.name, b.term map solutions.head))
                 .reverse;

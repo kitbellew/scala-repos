@@ -105,10 +105,12 @@ class VersionedBatchedStoreTest extends WordSpec {
       val fnC = sample[(Int) => List[(Int, Int)]]
 
       // Add a time:
-      val inWithTime = original.zipWithIndex.map {
-        case (item, time) =>
-          (time.toLong, item)
-      }
+      val inWithTime = original
+        .zipWithIndex
+        .map {
+          case (item, time) =>
+            (time.toLong, item)
+        }
 
       // get time interval for the input
       val intr = TestUtil.toTimeInterval(0L, original.size.toLong)

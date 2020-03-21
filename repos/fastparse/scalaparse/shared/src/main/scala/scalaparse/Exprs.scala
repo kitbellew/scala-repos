@@ -39,9 +39,8 @@ trait Exprs extends Core with Types with Xml {
       val Generator = P(`<-` ~/ Expr ~ Guard.?)
       val Assign = P(`=` ~/ Expr)
       val Enumerator = P(
-        Semis ~ `val`.? ~ TypeOrBindPattern ~/ (
-          Generator | Assign
-        ) | Semis.? ~ Guard)
+        Semis ~ `val`.? ~ TypeOrBindPattern ~/ (Generator | Assign) | Semis
+          .? ~ Guard)
       P(TypeOrBindPattern ~ Generator ~~ Enumerator.repX)
     }
 
@@ -91,9 +90,8 @@ trait Exprs extends Core with Types with Xml {
     val MatchAscriptionSuffix = P(`match` ~/ "{" ~ CaseClauses | Ascription)
     val ExprPrefix = P(WL ~ CharIn("-+!~") ~~ !syntax.Basic.OpChar ~ WS)
     val ExprSuffix = P(
-      (WL ~ "." ~/ Id | WL ~ TypeArgs | NoSemis ~ ArgList).repX ~~ (
-        NoSemis ~ `_`
-      ).?)
+      (WL ~ "." ~/ Id | WL ~ TypeArgs | NoSemis ~ ArgList)
+        .repX ~~ (NoSemis ~ `_`).?)
     val PrefixExpr = P(ExprPrefix.? ~ SimpleExpr)
 
     // Intermediate `WL` needs to always be non-cutting, because you need to
@@ -157,9 +155,9 @@ trait Exprs extends Core with Types with Xml {
     // Need to lookahead for `class` and `object` because
     // the block { case object X } is not a case clause!
     val CaseClause: P0 = P(
-      `case` ~ !(
-        `class` | `object`
-      ) ~/ Pattern ~ ExprCtx.Guard.? ~ `=>` ~ Block)
+      `case` ~ !(`class` | `object`) ~/ Pattern ~ ExprCtx
+        .Guard
+        .? ~ `=>` ~ Block)
     P(CaseClause.rep(1) ~ "}")
   }
 }

@@ -7,9 +7,9 @@ import syntax.either._
 object MonadTransTest extends SpecLite {
 
   "liftM" in {
-    MonadTrans[OptionT]
-      .liftM(List(1, 2, 3))
-      .run must_=== (List(some(1), some(2), some(3)))
+    MonadTrans[OptionT].liftM(List(1, 2, 3)).run must_=== (
+      List(some(1), some(2), some(3))
+    )
   }
 
   "liftMU" in {

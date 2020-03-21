@@ -36,10 +36,13 @@ trait PublisherEvents[T] {
 
   private def forSubscription(f: BoundedSubscription[T, _] => Any)(implicit
       ec: ExecutionContext): Future[Unit] = {
-    publisher.subscription.future.map { sn =>
-      f(sn)
-      ()
-    }
+    publisher
+      .subscription
+      .future
+      .map { sn =>
+        f(sn)
+        ()
+      }
   }
 
   def onSubscribe()(implicit ec: ExecutionContext): Unit = {

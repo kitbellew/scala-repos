@@ -34,11 +34,13 @@ class DirichletTest extends FunSuite with Checkers {
 
   test("logDraw of SparseVector") {
     val g = new Dirichlet(SparseVector(7)(1 -> 1e-5, 3 -> 5.0, 5 -> 50.0))
-    Array.fill(1000)(g.logDraw()).foreach { (d: SparseVector[Double]) =>
-      assert(d(1) > Double.NegativeInfinity)
-      assert(d.activeSize == 3)
-      assert(abs(exp(softmax(d.activeValuesIterator)) - 1.0) < 0.0000001, d)
-    }
+    Array
+      .fill(1000)(g.logDraw())
+      .foreach { (d: SparseVector[Double]) =>
+        assert(d(1) > Double.NegativeInfinity)
+        assert(d.activeSize == 3)
+        assert(abs(exp(softmax(d.activeValuesIterator)) - 1.0) < 0.0000001, d)
+      }
   }
 
 }

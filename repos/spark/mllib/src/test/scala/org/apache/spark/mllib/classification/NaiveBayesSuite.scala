@@ -74,10 +74,13 @@ object NaiveBayesSuite {
             case Multinomial =>
               val mult = BrzMultinomial(BDV(_theta(y)))
               val emptyMap = (0 until D).map(x => (x, 0.0)).toMap
-              val counts = emptyMap ++ mult.sample(sample).groupBy(x => x).map {
-                case (index, reps) =>
-                  (index, reps.size.toDouble)
-              }
+              val counts = emptyMap ++ mult
+                .sample(sample)
+                .groupBy(x => x)
+                .map {
+                  case (index, reps) =>
+                    (index, reps.size.toDouble)
+                }
               counts.toArray.sortBy(_._1).map(_._2)
             case _ =>
               // This should never happen.
@@ -110,10 +113,12 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
   import NaiveBayes.{Multinomial, Bernoulli}
 
   def validatePrediction(predictions: Seq[Double], input: Seq[LabeledPoint]) {
-    val numOfPredictions = predictions.zip(input).count {
-      case (prediction, expected) =>
-        prediction != expected.label
-    }
+    val numOfPredictions = predictions
+      .zip(input)
+      .count {
+        case (prediction, expected) =>
+          prediction != expected.label
+      }
     // At least 80% of the predictions should be on.
     assert(numOfPredictions < input.length / 5)
   }
@@ -162,24 +167,16 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
       Array(0.10, 0.10, 0.70, 0.10) // label 2
     ).map(_.map(math.log))
 
-    val testData = NaiveBayesSuite.generateNaiveBayesInput(
-      pi,
-      theta,
-      nPoints,
-      42,
-      Multinomial)
+    val testData = NaiveBayesSuite
+      .generateNaiveBayesInput(pi, theta, nPoints, 42, Multinomial)
     val testRDD = sc.parallelize(testData, 2)
     testRDD.cache()
 
     val model = NaiveBayes.train(testRDD, 1.0, Multinomial)
     validateModelFit(pi, theta, model)
 
-    val validationData = NaiveBayesSuite.generateNaiveBayesInput(
-      pi,
-      theta,
-      nPoints,
-      17,
-      Multinomial)
+    val validationData = NaiveBayesSuite
+      .generateNaiveBayesInput(pi, theta, nPoints, 17, Multinomial)
     val validationRDD = sc.parallelize(validationData, 2)
 
     // Test prediction on RDD.
@@ -193,15 +190,19 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
       validationData)
 
     // Test posteriors
-    validationData.map(_.features).foreach { features =>
-      val predicted = model.predictProbabilities(features).toArray
-      assert(predicted.sum ~== 1.0 relTol 1.0e-10)
-      val expected = expectedMultinomialProbabilities(model, features)
-      expected.zip(predicted).foreach {
-        case (e, p) =>
-          assert(e ~== p relTol 1.0e-10)
+    validationData
+      .map(_.features)
+      .foreach { features =>
+        val predicted = model.predictProbabilities(features).toArray
+        assert(predicted.sum ~== 1.0 relTol 1.0e-10)
+        val expected = expectedMultinomialProbabilities(model, features)
+        expected
+          .zip(predicted)
+          .foreach {
+            case (e, p) =>
+              assert(e ~== p relTol 1.0e-10)
+          }
       }
-    }
   }
 
   /**
@@ -237,24 +238,16 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
         0.30) // label 2
     ).map(_.map(math.log))
 
-    val testData = NaiveBayesSuite.generateNaiveBayesInput(
-      pi,
-      theta,
-      nPoints,
-      45,
-      Bernoulli)
+    val testData = NaiveBayesSuite
+      .generateNaiveBayesInput(pi, theta, nPoints, 45, Bernoulli)
     val testRDD = sc.parallelize(testData, 2)
     testRDD.cache()
 
     val model = NaiveBayes.train(testRDD, 1.0, Bernoulli)
     validateModelFit(pi, theta, model)
 
-    val validationData = NaiveBayesSuite.generateNaiveBayesInput(
-      pi,
-      theta,
-      nPoints,
-      20,
-      Bernoulli)
+    val validationData = NaiveBayesSuite
+      .generateNaiveBayesInput(pi, theta, nPoints, 20, Bernoulli)
     val validationRDD = sc.parallelize(validationData, 2)
 
     // Test prediction on RDD.
@@ -268,15 +261,19 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
       validationData)
 
     // Test posteriors
-    validationData.map(_.features).foreach { features =>
-      val predicted = model.predictProbabilities(features).toArray
-      assert(predicted.sum ~== 1.0 relTol 1.0e-10)
-      val expected = expectedBernoulliProbabilities(model, features)
-      expected.zip(predicted).foreach {
-        case (e, p) =>
-          assert(e ~== p relTol 1.0e-10)
+    validationData
+      .map(_.features)
+      .foreach { features =>
+        val predicted = model.predictProbabilities(features).toArray
+        assert(predicted.sum ~== 1.0 relTol 1.0e-10)
+        val expected = expectedBernoulliProbabilities(model, features)
+        expected
+          .zip(predicted)
+          .foreach {
+            case (e, p) =>
+              assert(e ~== p relTol 1.0e-10)
+          }
       }
-    }
   }
 
   /**
@@ -395,10 +392,9 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     // Save model as version 1.0, load it back, and compare.
     try {
-      val data = NaiveBayesModel.SaveLoadV1_0.Data(
-        model.labels,
-        model.pi,
-        model.theta)
+      val data = NaiveBayesModel
+        .SaveLoadV1_0
+        .Data(model.labels, model.pi, model.theta)
       NaiveBayesModel.SaveLoadV1_0.save(sc, path, data)
       val sameModel = NaiveBayesModel.load(sc, path)
       assert(model.labels === sameModel.labels)
@@ -418,15 +414,16 @@ class NaiveBayesClusterSuite
   test("task size should be small in both training and prediction") {
     val m = 10
     val n = 200000
-    val examples = sc.parallelize(0 until m, 2).mapPartitionsWithIndex {
-      (idx, iter) =>
+    val examples = sc
+      .parallelize(0 until m, 2)
+      .mapPartitionsWithIndex { (idx, iter) =>
         val random = new Random(idx)
         iter.map { i =>
           LabeledPoint(
             random.nextInt(2),
             Vectors.dense(Array.fill(n)(random.nextDouble())))
         }
-    }
+      }
     // If we serialize data directly in the task closure, the size of the serialized task
     // would be greater than 1MB and hence Spark would throw an error.
     val model = NaiveBayes.train(examples)

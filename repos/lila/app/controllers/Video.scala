@@ -33,7 +33,9 @@ object Video extends LilaController {
               videos => Ok(html.video.search(videos, control))
             }
           case None =>
-            env.api.video
+            env
+              .api
+              .video
               .byTags(ctx.me, control.filter.tags, getInt("page") | 1) zip
               env.api.video.count.apply map {
               case (videos, count) =>
@@ -51,9 +53,14 @@ object Video extends LilaController {
             fuccess(NotFound(html.video.notFound(control)))
           case Some(video) =>
             env.api.video.similar(ctx.me, video, 9) zip
-              ctx.userId.?? { userId =>
-                env.api.view.add(View.make(videoId = video.id, userId = userId))
-              } map {
+              ctx
+                .userId
+                .?? { userId =>
+                  env
+                    .api
+                    .view
+                    .add(View.make(videoId = video.id, userId = userId))
+                } map {
               case (similar, _) =>
                 Ok(html.video.show(video, similar, control))
             }

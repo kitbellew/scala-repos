@@ -16,8 +16,8 @@ class HoconQuoteHandler
   override protected def isNonClosedLiteral(
       iterator: HighlighterIterator,
       chars: CharSequence) =
-    iterator.getStart >= iterator.getEnd - 1 || chars.charAt(
-      iterator.getEnd - 1) != '\"'
+    iterator.getStart >= iterator.getEnd - 1 || chars
+      .charAt(iterator.getEnd - 1) != '\"'
 
   def getConcatenatableStringTokenTypes = TokenSet.EMPTY
 

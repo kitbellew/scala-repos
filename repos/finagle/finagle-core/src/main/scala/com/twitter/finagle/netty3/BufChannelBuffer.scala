@@ -211,7 +211,8 @@ private class BufChannelBuffer(val buf: Buf, endianness: ByteOrder)
   }
 
   def getBytes(index: Int, dst: Array[Byte], dstIndex: Int, length: Int) {
-    if (index < 0 || dstIndex < 0 || index + length > buf.length || dstIndex + length > dst.length)
+    if (index < 0 || dstIndex < 0 || index + length > buf
+          .length || dstIndex + length > dst.length)
       throw new IndexOutOfBoundsException()
 
     buf.slice(index, index + length).write(dst, dstIndex)

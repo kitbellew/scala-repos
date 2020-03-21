@@ -24,7 +24,9 @@ private[sbt] object ForkTests {
 
     import std.TaskExtra._
     val dummyLoader =
-      this.getClass.getClassLoader // can't provide the loader for test classes, which is in another jvm
+      this
+        .getClass
+        .getClassLoader // can't provide the loader for test classes, which is in another jvm
     def all(work: Seq[ClassLoader => Unit]) = work.fork(f => f(dummyLoader))
 
     val main =
@@ -49,102 +51,108 @@ private[sbt] object ForkTests {
       fork: ForkOptions,
       log: Logger,
       parallel: Boolean): Task[TestOutput] =
-    std.TaskExtra.task {
-      val server = new ServerSocket(0)
-      val testListeners = opts.testListeners flatMap {
-        case tl: TestsListener =>
-          Some(tl)
-        case _ =>
-          None
-      }
+    std
+      .TaskExtra
+      .task {
+        val server = new ServerSocket(0)
+        val testListeners = opts.testListeners flatMap {
+          case tl: TestsListener =>
+            Some(tl)
+          case _ =>
+            None
+        }
 
-      object Acceptor extends Runnable {
-        val resultsAcc = mutable.Map.empty[String, SuiteResult]
-        lazy val result = TestOutput(
-          overall(resultsAcc.values.map(_.result)),
-          resultsAcc.toMap,
-          Iterable.empty)
+        object Acceptor extends Runnable {
+          val resultsAcc = mutable.Map.empty[String, SuiteResult]
+          lazy val result = TestOutput(
+            overall(resultsAcc.values.map(_.result)),
+            resultsAcc.toMap,
+            Iterable.empty)
 
-        def run() {
-          val socket =
-            try {
-              server.accept()
-            } catch {
-              case e: java.net.SocketException =>
-                log.error(
-                  "Could not accept connection from test agent: " + e.getClass + ": " + e.getMessage)
-                log.trace(e)
-                server.close()
-                return
-            }
-          val os = new ObjectOutputStream(socket.getOutputStream)
-          // Must flush the header that the constructor writes, otherwise the ObjectInputStream on the other end may block indefinitely
-          os.flush()
-          val is = new ObjectInputStream(socket.getInputStream)
-
-          try {
-            val config = new ForkConfiguration(log.ansiCodesSupported, parallel)
-            os.writeObject(config)
-
-            val taskdefs = opts.tests.map(t =>
-              new TaskDef(
-                t.name,
-                forkFingerprint(t.fingerprint),
-                t.explicitlySpecified,
-                t.selectors))
-            os.writeObject(taskdefs.toArray)
-
-            os.writeInt(runners.size)
-            for ((testFramework, mainRunner) <- runners) {
-              os.writeObject(testFramework.implClassNames.toArray)
-              os.writeObject(mainRunner.args)
-              os.writeObject(mainRunner.remoteArgs)
-            }
+          def run() {
+            val socket =
+              try {
+                server.accept()
+              } catch {
+                case e: java.net.SocketException =>
+                  log.error(
+                    "Could not accept connection from test agent: " + e
+                      .getClass + ": " + e.getMessage)
+                  log.trace(e)
+                  server.close()
+                  return
+              }
+            val os = new ObjectOutputStream(socket.getOutputStream)
+            // Must flush the header that the constructor writes, otherwise the ObjectInputStream on the other end may block indefinitely
             os.flush()
+            val is = new ObjectInputStream(socket.getInputStream)
 
-            new React(is, os, log, opts.testListeners, resultsAcc).react()
-          } finally {
-            is.close();
-            os.close();
-            socket.close()
+            try {
+              val config =
+                new ForkConfiguration(log.ansiCodesSupported, parallel)
+              os.writeObject(config)
+
+              val taskdefs = opts
+                .tests
+                .map(t =>
+                  new TaskDef(
+                    t.name,
+                    forkFingerprint(t.fingerprint),
+                    t.explicitlySpecified,
+                    t.selectors))
+              os.writeObject(taskdefs.toArray)
+
+              os.writeInt(runners.size)
+              for ((testFramework, mainRunner) <- runners) {
+                os.writeObject(testFramework.implClassNames.toArray)
+                os.writeObject(mainRunner.args)
+                os.writeObject(mainRunner.remoteArgs)
+              }
+              os.flush()
+
+              new React(is, os, log, opts.testListeners, resultsAcc).react()
+            } finally {
+              is.close();
+              os.close();
+              socket.close()
+            }
           }
         }
+
+        try {
+          testListeners.foreach(_.doInit())
+          val acceptorThread = new Thread(Acceptor)
+          acceptorThread.start()
+
+          val fullCp = classpath ++: Seq(
+            IO.classLocationFile[ForkMain],
+            IO.classLocationFile[Framework])
+          val options = Seq(
+            "-classpath",
+            fullCp mkString File.pathSeparator,
+            classOf[ForkMain].getCanonicalName,
+            server.getLocalPort.toString)
+          val ec = Fork.java(fork, options)
+          val result =
+            if (ec != 0)
+              TestOutput(
+                TestResult.Error,
+                Map(
+                  "Running java with options " + options.mkString(
+                    " ") + " failed with exit code " + ec -> SuiteResult.Error),
+                Iterable.empty)
+            else {
+              // Need to wait acceptor thread to finish its business
+              acceptorThread.join()
+              Acceptor.result
+            }
+
+          testListeners.foreach(_.doComplete(result.overall))
+          result
+        } finally {
+          server.close()
+        }
       }
-
-      try {
-        testListeners.foreach(_.doInit())
-        val acceptorThread = new Thread(Acceptor)
-        acceptorThread.start()
-
-        val fullCp = classpath ++: Seq(
-          IO.classLocationFile[ForkMain],
-          IO.classLocationFile[Framework])
-        val options = Seq(
-          "-classpath",
-          fullCp mkString File.pathSeparator,
-          classOf[ForkMain].getCanonicalName,
-          server.getLocalPort.toString)
-        val ec = Fork.java(fork, options)
-        val result =
-          if (ec != 0)
-            TestOutput(
-              TestResult.Error,
-              Map(
-                "Running java with options " + options.mkString(
-                  " ") + " failed with exit code " + ec -> SuiteResult.Error),
-              Iterable.empty)
-          else {
-            // Need to wait acceptor thread to finish its business
-            acceptorThread.join()
-            Acceptor.result
-          }
-
-        testListeners.foreach(_.doComplete(result.overall))
-        result
-      } finally {
-        server.close()
-      }
-    }
 
   private[this] def forkFingerprint(
       f: Fingerprint): Fingerprint with Serializable =

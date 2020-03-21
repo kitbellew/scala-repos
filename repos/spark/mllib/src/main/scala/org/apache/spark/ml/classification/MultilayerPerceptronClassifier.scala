@@ -191,7 +191,8 @@ class MultilayerPerceptronClassifier @Since("1.5.0") (
     val topology = FeedForwardTopology.multiLayerPerceptron(myLayers, true)
     val FeedForwardTrainer =
       new FeedForwardTrainer(topology, myLayers(0), myLayers.last)
-    FeedForwardTrainer.LBFGSOptimizer
+    FeedForwardTrainer
+      .LBFGSOptimizer
       .setConvergenceTol($(tol))
       .setNumIterations($(maxIter))
     FeedForwardTrainer.setStackSize($(blockSize))

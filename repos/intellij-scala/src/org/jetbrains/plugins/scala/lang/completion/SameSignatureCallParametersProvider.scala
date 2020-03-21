@@ -113,9 +113,8 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
     if (elementType != ScalaTokenTypes.tIDENTIFIER)
       return
     val call = PsiTreeUtil.getContextOfType(position, classOf[ScMethodCall])
-    val args = PsiTreeUtil.getContextOfType(
-      position,
-      classOf[ScArgumentExprList])
+    val args = PsiTreeUtil
+      .getContextOfType(position, classOf[ScArgumentExprList])
     if (call == null || args == null)
       return
     val index = args.invocationCount - 1
@@ -123,38 +122,45 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
       case ref: ScReferenceExpression =>
         ref.qualifier match {
           case Some(s: ScSuperReference) =>
-            val function = PsiTreeUtil.getContextOfType(
-              ref,
-              classOf[ScFunction])
+            val function = PsiTreeUtil
+              .getContextOfType(ref, classOf[ScFunction])
             if (function != null && function.name == ref.refName) {
               val variants = ref.getSimpleVariants(
                 implicits = false,
                 filterNotNamedVariants = false)
-              val signatures = variants.toSeq
+              val signatures = variants
+                .toSeq
                 .map {
                   case ScalaResolveResult(fun: ScMethodLike, subst) =>
                     val params = fun.effectiveParameterClauses
                     if (params.length > index)
-                      params(index).effectiveParameters.map(p =>
-                        (
-                          p.name,
-                          subst.subst(p.getType(TypingContext.empty).getOrAny)))
+                      params(index)
+                        .effectiveParameters
+                        .map(p =>
+                          (
+                            p.name,
+                            subst
+                              .subst(p.getType(TypingContext.empty).getOrAny)))
                     else
                       Seq.empty
                   case ScalaResolveResult(method: PsiMethod, subst) =>
                     if (index != 0)
                       Seq.empty
                     else
-                      method.getParameterList.getParameters.toSeq.map {
-                        case p: PsiParameter =>
-                          (
-                            p.name,
-                            subst.subst(
-                              ScType.create(
-                                p.getType,
-                                position.getProject,
-                                position.getResolveScope)))
-                      }
+                      method
+                        .getParameterList
+                        .getParameters
+                        .toSeq
+                        .map {
+                          case p: PsiParameter =>
+                            (
+                              p.name,
+                              subst.subst(
+                                ScType.create(
+                                  p.getType,
+                                  position.getProject,
+                                  position.getResolveScope)))
+                        }
                   case _ =>
                     Seq.empty
                 }
@@ -178,13 +184,11 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
     val elementType = position.getNode.getElementType
     if (elementType != ScalaTokenTypes.tIDENTIFIER)
       return
-    PsiTreeUtil.getContextOfType(
-      position,
-      classOf[ScTemplateDefinition]) match {
+    PsiTreeUtil
+      .getContextOfType(position, classOf[ScTemplateDefinition]) match {
       case c: ScClass =>
-        val args = PsiTreeUtil.getContextOfType(
-          position,
-          classOf[ScArgumentExprList])
+        val args = PsiTreeUtil
+          .getContextOfType(position, classOf[ScArgumentExprList])
         val constructor = args.getContext.asInstanceOf[ScConstructor]
         val index = constructor.arguments.indexOf(args)
         val typeElement = constructor.typeElement
@@ -197,16 +201,20 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
                       clazz.hasTypeParameters &&
                         typeElement.isInstanceOf[ScParameterizedTypeElement]
                     ) =>
-                  clazz.constructors.toSeq
+                  clazz
+                    .constructors
+                    .toSeq
                     .map {
                       case fun: ScMethodLike =>
                         val params = fun.effectiveParameterClauses
                         if (params.length > index)
-                          params(index).effectiveParameters.map(p =>
-                            (
-                              p.name,
-                              subst.subst(
-                                p.getType(TypingContext.empty).getOrAny)))
+                          params(index)
+                            .effectiveParameters
+                            .map(p =>
+                              (
+                                p.name,
+                                subst.subst(
+                                  p.getType(TypingContext.empty).getOrAny)))
                         else
                           Seq.empty
                     }
@@ -216,22 +224,28 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
                       clazz.hasTypeParameters &&
                         typeElement.isInstanceOf[ScParameterizedTypeElement]
                     ) =>
-                  clazz.getConstructors.toSeq
+                  clazz
+                    .getConstructors
+                    .toSeq
                     .map {
                       case c: PsiMethod =>
                         if (index != 0)
                           Seq.empty
                         else
-                          c.getParameterList.getParameters.toSeq.map {
-                            case p: PsiParameter =>
-                              (
-                                p.name,
-                                subst.subst(
-                                  ScType.create(
-                                    p.getType,
-                                    typeElement.getProject,
-                                    typeElement.getResolveScope)))
-                          }
+                          c
+                            .getParameterList
+                            .getParameters
+                            .toSeq
+                            .map {
+                              case p: PsiParameter =>
+                                (
+                                  p.name,
+                                  subst.subst(
+                                    ScType.create(
+                                      p.getType,
+                                      typeElement.getProject,
+                                      typeElement.getResolveScope)))
+                            }
                     }
                     .filter(_.length > 1)
                 case _ =>
@@ -292,9 +306,12 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
                   .getContextOfType(element, classOf[ScArgumentExprList])
                 if (exprs == null)
                   return
-                context.getEditor.getCaretModel.moveToOffset(
-                  exprs.getTextRange.getEndOffset
-                ) // put caret after )
+                context
+                  .getEditor
+                  .getCaretModel
+                  .moveToOffset(
+                    exprs.getTextRange.getEndOffset
+                  ) // put caret after )
               }
             })
         element.putUserData(

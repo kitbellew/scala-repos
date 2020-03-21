@@ -34,8 +34,8 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
         null
       else
         qual.substring(0, index)
-    val tuple: (ArrayBuffer[ScImportStmt], Long) = position.getUserData(
-      ScalaExplicitlyImportedWeigher.key)
+    val tuple: (ArrayBuffer[ScImportStmt], Long) = position
+      .getUserData(ScalaExplicitlyImportedWeigher.key)
     var buffer: ArrayBuffer[ScImportStmt] =
       if (tuple != null)
         tuple._1
@@ -154,7 +154,8 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
     val positionFile: PsiFile = position.getContainingFile
     if (!positionFile.isInstanceOf[ScalaFile])
       return 0
-    if (positionFile != null && elementFile != null && positionFile.getOriginalFile == elementFile.getOriginalFile) {
+    if (positionFile != null && elementFile != null && positionFile
+          .getOriginalFile == elementFile.getOriginalFile) {
       return 3
     }
     element match {

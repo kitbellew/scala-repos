@@ -51,8 +51,9 @@ class ArgHelpTest extends WordSpec with Matchers {
         helpCalled = true)
 
       val args = List(OptionalArg("name", "Name of person"))
-      val config = Config.unitTestDefault.setArgs(
-        Args(List("--help", "--name", "Bill", "--phone", "111")))
+      val config = Config
+        .unitTestDefault
+        .setArgs(Args(List("--help", "--name", "Bill", "--phone", "111")))
 
       intercept[HelpException] {
         helper.validatedDescribe(args, job).waitFor(config, Local(true)).get
@@ -66,8 +67,9 @@ class ArgHelpTest extends WordSpec with Matchers {
       val args = List(
         OptionalArg("name", "Name of person"),
         OptionalArg("phone", "Person's phone"))
-      val config = Config.unitTestDefault.setArgs(
-        Args(List("--name", "Bill", "--phone", "111")))
+      val config = Config
+        .unitTestDefault
+        .setArgs(Args(List("--name", "Bill", "--phone", "111")))
 
       val returnValues =
         ArgHelp.validatedDescribe(args, job).waitFor(config, Local(true)).get
@@ -80,8 +82,10 @@ class ArgHelpTest extends WordSpec with Matchers {
       val args = List(
         OptionalArg("name", "Name of person"),
         OptionalArg("phone", "Person's phone"))
-      val config = Config.unitTestDefault.setArgs(
-        Args(List("--name", "Bill", "--phone", "111", "--address", "123")))
+      val config = Config
+        .unitTestDefault
+        .setArgs(
+          Args(List("--name", "Bill", "--phone", "111", "--address", "123")))
 
       intercept[DescriptionValidationException] {
         ArgHelp

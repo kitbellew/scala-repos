@@ -42,9 +42,8 @@ object PartitionUtil {
 
           (0 until valueConverter.arity).foreach(idx =>
             value.set(idx, te.getObject(idx)))
-          (0 until partitionConverter.arity)
-            .foreach(idx =>
-              partition.set(idx, te.getObject(idx + valueConverter.arity)))
+          (0 until partitionConverter.arity).foreach(idx =>
+            partition.set(idx, te.getObject(idx + valueConverter.arity)))
 
           val valueTE = new TupleEntry(toFields(0, valueConverter.arity), value)
           val partitionTE =

@@ -55,7 +55,8 @@ object StreamConverters {
       f: function.Creator[OutputStream],
       autoFlush: Boolean): javadsl.Sink[ByteString, CompletionStage[IOResult]] =
     new Sink(
-      scaladsl.StreamConverters
+      scaladsl
+        .StreamConverters
         .fromOutputStream(() ⇒ f.create(), autoFlush)
         .toCompletionStage())
 
@@ -111,7 +112,8 @@ object StreamConverters {
       in: function.Creator[InputStream],
       chunkSize: Int): javadsl.Source[ByteString, CompletionStage[IOResult]] =
     new Source(
-      scaladsl.StreamConverters
+      scaladsl
+        .StreamConverters
         .fromInputStream(() ⇒ in.create(), chunkSize)
         .toCompletionStage())
 

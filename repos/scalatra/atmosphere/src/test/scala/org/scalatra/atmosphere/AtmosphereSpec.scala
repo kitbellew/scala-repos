@@ -140,13 +140,16 @@ class AtmosphereSpec extends MutableScalatraSpec {
       val client: Client[
         DefaultOptions,
         DefaultOptionsBuilder,
-        DefaultRequestBuilder] = ClientFactory.getDefault.newClient
+        DefaultRequestBuilder] = ClientFactory
+        .getDefault
+        .newClient
         .asInstanceOf[Client[
           DefaultOptions,
           DefaultOptionsBuilder,
           DefaultRequestBuilder]]
 
-      val req = client.newRequestBuilder
+      val req = client
+        .newRequestBuilder
         .method(Request.METHOD.GET)
         .uri(baseUrl + "/test1")
         .transport(Request.TRANSPORT.WEBSOCKET)

@@ -28,7 +28,8 @@ final case class Insert(
     )
   }
   override def getDumpInfo =
-    super.getDumpInfo
+    super
+      .getDumpInfo
       .copy(mainInfo = allFields.mkString("allFields=[", ", ", "]"))
 }
 

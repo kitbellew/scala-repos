@@ -306,8 +306,8 @@ private[hive] trait HiveInspectors {
       case poi: WritableConstantStringObjectInspector =>
         UTF8String.fromString(poi.getWritableConstantValue.toString)
       case poi: WritableConstantHiveVarcharObjectInspector =>
-        UTF8String.fromString(
-          poi.getWritableConstantValue.getHiveVarchar.getValue)
+        UTF8String
+          .fromString(poi.getWritableConstantValue.getHiveVarchar.getValue)
       case poi: WritableConstantHiveCharObjectInspector =>
         UTF8String.fromString(poi.getWritableConstantValue.getHiveChar.getValue)
       case poi: WritableConstantHiveDecimalObjectInspector =>
@@ -353,7 +353,9 @@ private[hive] trait HiveInspectors {
       case li: StandardConstantListObjectInspector =>
         // take the value from the list inspector object, rather than the input data
         val values =
-          li.getWritableConstantValue.asScala
+          li
+            .getWritableConstantValue
+            .asScala
             .map(unwrap(_, li.getListElementObjectInspector))
             .toArray
         new GenericArrayData(values)
@@ -419,11 +421,13 @@ private[hive] trait HiveInspectors {
             pi.getPrimitiveJavaObject(data)
         }
       case li: ListObjectInspector =>
-        Option(li.getList(data)).map { l =>
-          val values =
-            l.asScala.map(unwrap(_, li.getListElementObjectInspector)).toArray
-          new GenericArrayData(values)
-        }.orNull
+        Option(li.getList(data))
+          .map { l =>
+            val values =
+              l.asScala.map(unwrap(_, li.getListElementObjectInspector)).toArray
+            new GenericArrayData(values)
+          }
+          .orNull
       case mi: MapObjectInspector =>
         val map = mi.getMap(data)
         if (map == null) {
@@ -444,8 +448,12 @@ private[hive] trait HiveInspectors {
       case si: StructObjectInspector =>
         val allRefs = si.getAllStructFieldRefs
         InternalRow.fromSeq(
-          allRefs.asScala.map(r =>
-            unwrap(si.getStructFieldData(data, r), r.getFieldObjectInspector)))
+          allRefs
+            .asScala
+            .map(r =>
+              unwrap(
+                si.getStructFieldData(data, r),
+                r.getFieldObjectInspector)))
     }
 
   /**
@@ -500,7 +508,9 @@ private[hive] trait HiveInspectors {
 
       case soi: StandardStructObjectInspector =>
         val schema = dataType.asInstanceOf[StructType]
-        val wrappers = soi.getAllStructFieldRefs.asScala
+        val wrappers = soi
+          .getAllStructFieldRefs
+          .asScala
           .zip(schema.fields)
           .map {
             case (ref, field) =>
@@ -510,7 +520,9 @@ private[hive] trait HiveInspectors {
           if (o != null) {
             val struct = soi.create()
             val row = o.asInstanceOf[InternalRow]
-            soi.getAllStructFieldRefs.asScala
+            soi
+              .getAllStructFieldRefs
+              .asScala
               .zip(wrappers)
               .zipWithIndex
               .foreach {
@@ -718,7 +730,8 @@ private[hive] trait HiveInspectors {
       case x: ListObjectInspector =>
         val list = new java.util.ArrayList[Object]
         val tpe = dataType.asInstanceOf[ArrayType].elementType
-        a.asInstanceOf[ArrayData]
+        a
+          .asInstanceOf[ArrayData]
           .foreach(
             tpe,
             (_, e) => {
@@ -855,9 +868,8 @@ private[hive] trait HiveInspectors {
       case Literal(value, ArrayType(dt, _)) =>
         val listObjectInspector = toInspector(dt)
         if (value == null) {
-          ObjectInspectorFactory.getStandardConstantListObjectInspector(
-            listObjectInspector,
-            null)
+          ObjectInspectorFactory
+            .getStandardConstantListObjectInspector(listObjectInspector, null)
         } else {
           val list = new java.util.ArrayList[Object]()
           value
@@ -867,18 +879,15 @@ private[hive] trait HiveInspectors {
               (_, e) => {
                 list.add(wrap(e, listObjectInspector, dt))
               })
-          ObjectInspectorFactory.getStandardConstantListObjectInspector(
-            listObjectInspector,
-            list)
+          ObjectInspectorFactory
+            .getStandardConstantListObjectInspector(listObjectInspector, list)
         }
       case Literal(value, MapType(keyType, valueType, _)) =>
         val keyOI = toInspector(keyType)
         val valueOI = toInspector(valueType)
         if (value == null) {
-          ObjectInspectorFactory.getStandardConstantMapObjectInspector(
-            keyOI,
-            valueOI,
-            null)
+          ObjectInspectorFactory
+            .getStandardConstantMapObjectInspector(keyOI, valueOI, null)
         } else {
           val map = value.asInstanceOf[MapData]
           val jmap = new java.util.HashMap[Any, Any](map.numElements())
@@ -890,10 +899,8 @@ private[hive] trait HiveInspectors {
               jmap.put(wrap(k, keyOI, keyType), wrap(v, valueOI, valueType))
             })
 
-          ObjectInspectorFactory.getStandardConstantMapObjectInspector(
-            keyOI,
-            valueOI,
-            jmap)
+          ObjectInspectorFactory
+            .getStandardConstantMapObjectInspector(keyOI, valueOI, jmap)
         }
       // We will enumerate all of the possible constant expressions, throw exception if we missed
       case Literal(_, dt) =>
@@ -911,11 +918,14 @@ private[hive] trait HiveInspectors {
     inspector match {
       case s: StructObjectInspector =>
         StructType(
-          s.getAllStructFieldRefs.asScala.map(f =>
-            types.StructField(
-              f.getFieldName,
-              inspectorToDataType(f.getFieldObjectInspector),
-              nullable = true)))
+          s
+            .getAllStructFieldRefs
+            .asScala
+            .map(f =>
+              types.StructField(
+                f.getFieldName,
+                inspectorToDataType(f.getFieldObjectInspector),
+                nullable = true)))
       case l: ListObjectInspector =>
         ArrayType(inspectorToDataType(l.getListElementObjectInspector))
       case m: MapObjectInspector =>

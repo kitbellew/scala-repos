@@ -205,8 +205,8 @@ class NodeJSEnv private (
         val len = js2jvm.readInt()
         val carr =
           Array.fill(len) {
-            comSocket.setSoTimeout(
-              (optDeadline.millisLeft min Int.MaxValue).toInt)
+            comSocket
+              .setSoTimeout((optDeadline.millisLeft min Int.MaxValue).toInt)
             js2jvm.readChar()
           }
 
@@ -340,12 +340,15 @@ class NodeJSEnv private (
 
     /** Rewrites a library virtual file to a require statement if possible */
     protected def requireLibrary(dep: ResolvedJSDependency): VirtualJSFile = {
-      dep.info.commonJSName.fold(dep.lib) { varname =>
-        val fname = dep.lib.name
-        libCache.materialize(dep.lib)
-        new MemVirtualJSFile(s"require-$fname")
-          .withContent(s"""$varname = require("${escapeJS(fname)}");""")
-      }
+      dep
+        .info
+        .commonJSName
+        .fold(dep.lib) { varname =>
+          val fname = dep.lib.name
+          libCache.materialize(dep.lib)
+          new MemVirtualJSFile(s"require-$fname")
+            .withContent(s"""$varname = require("${escapeJS(fname)}");""")
+        }
     }
 
     // Send code to Stdin

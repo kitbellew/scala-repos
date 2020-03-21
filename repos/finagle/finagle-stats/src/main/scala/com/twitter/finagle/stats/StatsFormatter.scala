@@ -24,19 +24,21 @@ private[stats] sealed trait StatsFormatter {
     results ++= values.gauges
     results ++= values.counters
 
-    values.histograms.foreach {
-      case (name, snapshot) =>
-        results += histoName(name, "count") -> snapshot.count
-        results += histoName(name, "sum") -> snapshot.sum
-        results += histoName(name, labelAverage) -> snapshot.avg
-        results += histoName(name, labelMin) -> snapshot.min
-        results += histoName(name, labelMax) -> snapshot.max
+    values
+      .histograms
+      .foreach {
+        case (name, snapshot) =>
+          results += histoName(name, "count") -> snapshot.count
+          results += histoName(name, "sum") -> snapshot.sum
+          results += histoName(name, labelAverage) -> snapshot.avg
+          results += histoName(name, labelMin) -> snapshot.min
+          results += histoName(name, labelMax) -> snapshot.max
 
-        for (p <- snapshot.percentiles) {
-          val percentileName = histoName(name, labelPercentile(p.getQuantile))
-          results += percentileName -> p.getValue
-        }
-    }
+          for (p <- snapshot.percentiles) {
+            val percentileName = histoName(name, labelPercentile(p.getQuantile))
+            results += percentileName -> p.getValue
+          }
+      }
     results
   }
 

@@ -41,8 +41,9 @@ class ExpressionTypeCheckingSuite extends SparkFunSuite {
       assertSuccess(expr)
     }
     assert(
-      e.getMessage.contains(
-        s"cannot resolve '${expr.sql}' due to data type mismatch:"))
+      e
+        .getMessage
+        .contains(s"cannot resolve '${expr.sql}' due to data type mismatch:"))
     assert(e.getMessage.contains(errorMessage))
   }
 

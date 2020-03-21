@@ -306,8 +306,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           /* Normal non-Array call */
           def genDefaultCall = {
             // reflective method call machinery
-            val invokeName =
-              MethodClass.tpe member nme.invoke_ // scala.reflect.Method.invoke(...)
+            val invokeName = MethodClass.tpe member nme
+              .invoke_ // scala.reflect.Method.invoke(...)
             def cache =
               REF(
                 reflectiveMethodCache(ad.symbol.name.toString, paramTypes)
@@ -387,9 +387,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
            */
           def genArrayCallWithTest =
             IF(
-              (
-                qual1() GETCLASS ()
-              ) DOT nme.isArray) THEN genArrayCall ELSE genDefaultCall
+              (qual1() GETCLASS ()) DOT nme
+                .isArray) THEN genArrayCall ELSE genDefaultCall
 
           localTyper typed (
             if (isMaybeBoxed && isJavaValueMethod)
@@ -435,7 +434,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
               case tpe @ OverloadedType(pre, alts) =>
                 reporter.warning(
                   ad.pos,
-                  s"Overloaded type reached the backend! This is a bug in scalac.\n     Symbol: ${ad.symbol}\n  Overloads: $tpe\n  Arguments: " + ad.args
+                  s"Overloaded type reached the backend! This is a bug in scalac.\n     Symbol: ${ad.symbol}\n  Overloads: $tpe\n  Arguments: " + ad
+                    .args
                     .map(_.tpe)
                 )
                 alts filter (
@@ -454,8 +454,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
                 abort(ad.symbol.toString)
             }
           typedPos {
-            val sym =
-              currentOwner.newValue(mkTerm("qual"), ad.pos) setInfo qual0.tpe
+            val sym = currentOwner
+              .newValue(mkTerm("qual"), ad.pos) setInfo qual0.tpe
             qual = REF(sym)
 
             BLOCK(
@@ -576,8 +576,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
         case Apply(
               fn @ Select(qual, _),
               (arg @ Literal(Constant(symname: String))) :: Nil)
-            if treeInfo.isQualifierSafeToElide(
-              qual) && fn.symbol == Symbol_apply && !currentClass.isTrait =>
+            if treeInfo.isQualifierSafeToElide(qual) && fn
+              .symbol == Symbol_apply && !currentClass.isTrait =>
           super.transform(
             treeCopy.ApplyDynamic(
               tree,
@@ -596,16 +596,18 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
                   wrapRefArrayMeth,
                   List(arg @ StripCast(ArrayValue(_, _)))),
                 _))
-            if wrapRefArrayMeth.symbol == currentRun.runDefinitions.Predef_wrapRefArray && appMeth.symbol == ArrayModule_genericApply =>
+            if wrapRefArrayMeth.symbol == currentRun
+              .runDefinitions
+              .Predef_wrapRefArray && appMeth
+              .symbol == ArrayModule_genericApply =>
           super.transform(arg)
         case Apply(
               appMeth,
               List(
                 elem0,
                 Apply(wrapArrayMeth, List(rest @ ArrayValue(elemtpt, _)))))
-            if wrapArrayMeth.symbol == Predef_wrapArray(
-              elemtpt.tpe) && appMeth.symbol == ArrayModule_apply(
-              elemtpt.tpe) =>
+            if wrapArrayMeth.symbol == Predef_wrapArray(elemtpt.tpe) && appMeth
+              .symbol == ArrayModule_apply(elemtpt.tpe) =>
           super.transform(
             treeCopy.ArrayValue(rest, rest.elemtpt, elem0 :: rest.elems))
 

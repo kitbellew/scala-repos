@@ -23,10 +23,12 @@ object Test {
 
     try {
       val matches = unmatchedLeft.flatMap { lind: Int =>
-        val dists = unmatchedRight.seq.map { rind: Int =>
-          val dist = Random.nextInt
-          (rind, dist)
-        }
+        val dists = unmatchedRight
+          .seq
+          .map { rind: Int =>
+            val dist = Random.nextInt
+            (rind, dist)
+          }
         dists
       }
     } catch {

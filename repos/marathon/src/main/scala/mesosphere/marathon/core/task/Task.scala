@@ -43,20 +43,26 @@ sealed trait Task {
     }
 
   def mesosStatus: Option[MesosProtos.TaskStatus] = {
-    launched.flatMap(_.status.mesosStatus).orElse {
-      launchedMesosId.map { mesosId =>
-        val taskStatusBuilder = MesosProtos.TaskStatus.newBuilder
-          .setState(TaskState.TASK_STAGING)
-          .setTaskId(mesosId)
+    launched
+      .flatMap(_.status.mesosStatus)
+      .orElse {
+        launchedMesosId.map { mesosId =>
+          val taskStatusBuilder = MesosProtos
+            .TaskStatus
+            .newBuilder
+            .setState(TaskState.TASK_STAGING)
+            .setTaskId(mesosId)
 
-        agentInfo.agentId.foreach { slaveId =>
-          taskStatusBuilder.setSlaveId(
-            MesosProtos.SlaveID.newBuilder().setValue(slaveId))
+          agentInfo
+            .agentId
+            .foreach { slaveId =>
+              taskStatusBuilder
+                .setSlaveId(MesosProtos.SlaveID.newBuilder().setValue(slaveId))
+            }
+
+          taskStatusBuilder.build()
         }
-
-        taskStatusBuilder.build()
       }
-    }
   }
 
   def ipAddresses: Iterable[MesosProtos.NetworkInfo.IPAddress] =
@@ -118,8 +124,8 @@ object Task {
               current <- status.mesosStatus
               update <- taskStatus.mesosStatus
               newStatus <- updatedHealthOrState(current, update)
-            } yield TaskStateChange.Update(
-              copy(status = status.copy(mesosStatus = Some(newStatus))))
+            } yield TaskStateChange
+              .Update(copy(status = status.copy(mesosStatus = Some(newStatus))))
 
           healthOrStateChange.getOrElse {
             log.debug(
@@ -130,13 +136,13 @@ object Task {
 
         // failure case: Launch
         case _: TaskStateOp.Launch =>
-          TaskStateChange.Failure(
-            "Unable to handle Launch op on LaunchedEphemeral")
+          TaskStateChange
+            .Failure("Unable to handle Launch op on LaunchedEphemeral")
 
         // failure case: Timeout
         case TaskStateOp.ReservationTimeout =>
-          TaskStateChange.Failure(
-            "Unable to handle Timeout op on LaunchedEphemeral")
+          TaskStateChange
+            .Failure("Unable to handle Timeout op on LaunchedEphemeral")
       }
   }
 
@@ -178,8 +184,8 @@ object Task {
 
         // failure case: MesosUpdate
         case _: TaskStateOp.MesosUpdate =>
-          TaskStateChange.Failure(
-            "Unable to handle MesosUpdate op on Reserved task")
+          TaskStateChange
+            .Failure("Unable to handle MesosUpdate op on Reserved task")
       }
   }
 
@@ -218,7 +224,9 @@ object Task {
             Task.Reserved(
               taskId = taskId,
               agentInfo = agentInfo,
-              reservation = reservation.copy(state = Task.Reservation.State
+              reservation = reservation.copy(state = Task
+                .Reservation
+                .State
                 .Suspended(timeout = None))))
 
         // case 3: health or state updated
@@ -228,8 +236,8 @@ object Task {
               current <- status.mesosStatus
               update <- taskStatus.mesosStatus
               newStatus <- updatedHealthOrState(current, update)
-            } yield TaskStateChange.Update(
-              copy(status = status.copy(mesosStatus = Some(newStatus))))
+            } yield TaskStateChange
+              .Update(copy(status = status.copy(mesosStatus = Some(newStatus))))
 
           healthOrStateChange.getOrElse {
             log.debug(
@@ -240,13 +248,13 @@ object Task {
 
         // failure case: Launch
         case _: TaskStateOp.Launch =>
-          TaskStateChange.Failure(
-            "Unable to handle Launch op on LaunchedOnReservation}")
+          TaskStateChange
+            .Failure("Unable to handle Launch op on LaunchedOnReservation}")
 
         // failure case: Timeout
         case TaskStateOp.ReservationTimeout =>
-          TaskStateChange.Failure(
-            "Unable to handle Timeout op on LaunchedOnReservation")
+          TaskStateChange
+            .Failure("Unable to handle Timeout op on LaunchedOnReservation")
       }
   }
 
@@ -274,7 +282,8 @@ object Task {
     tasks.iterator.map(task => task.taskId -> task).toMap
 
   case class Id(idString: String) {
-    lazy val mesosTaskId: MesosProtos.TaskID = MesosProtos.TaskID
+    lazy val mesosTaskId: MesosProtos.TaskID = MesosProtos
+      .TaskID
       .newBuilder()
       .setValue(idString)
       .build()
@@ -285,8 +294,8 @@ object Task {
   object Id {
     private val appDelimiter = "."
     private val TaskIdRegex = """^(.+)[\._]([^_\.]+)$""".r
-    private val uuidGenerator = Generators.timeBasedGenerator(
-      EthernetAddress.fromInterface())
+    private val uuidGenerator = Generators
+      .timeBasedGenerator(EthernetAddress.fromInterface())
 
     def appId(taskId: String): PathId = {
       taskId match {
@@ -369,15 +378,15 @@ object Task {
 
   case class LocalVolumeId(appId: PathId, containerPath: String, uuid: String) {
     import LocalVolumeId._
-    lazy val idString =
-      appId.safePath + delimiter + containerPath + delimiter + uuid
+    lazy val idString = appId
+      .safePath + delimiter + containerPath + delimiter + uuid
 
     override def toString: String = s"LocalVolume [$idString]"
   }
 
   object LocalVolumeId {
-    private val uuidGenerator = Generators.timeBasedGenerator(
-      EthernetAddress.fromInterface())
+    private val uuidGenerator = Generators
+      .timeBasedGenerator(EthernetAddress.fromInterface())
     private val delimiter = "#"
     private val LocalVolumeEncoderRE =
       s"^([^.]+)[$delimiter]([^.]+)[$delimiter]([^.]+)$$".r

@@ -67,17 +67,18 @@ private[v1] class OneStageResource(ui: SparkUI) {
       @QueryParam("quantiles") quantileString: String)
       : TaskMetricDistributions = {
     withStageAttempt(stageId, stageAttemptId) { stage =>
-      val quantiles = quantileString.split(",").map { s =>
-        try {
-          s.toDouble
-        } catch {
-          case nfe: NumberFormatException =>
-            throw new BadParameterException("quantiles", "double", s)
+      val quantiles = quantileString
+        .split(",")
+        .map { s =>
+          try {
+            s.toDouble
+          } catch {
+            case nfe: NumberFormatException =>
+              throw new BadParameterException("quantiles", "double", s)
+          }
         }
-      }
-      AllStagesResource.taskMetricDistributions(
-        stage.ui.taskData.values,
-        quantiles)
+      AllStagesResource
+        .taskMetricDistributions(stage.ui.taskData.values, quantiles)
     }
   }
 
@@ -93,7 +94,10 @@ private[v1] class OneStageResource(ui: SparkUI) {
       @DefaultValue("ID")
       @QueryParam("sortBy") sortBy: TaskSorting): Seq[TaskData] = {
     withStageAttempt(stageId, stageAttemptId) { stage =>
-      val tasks = stage.ui.taskData.values
+      val tasks = stage
+        .ui
+        .taskData
+        .values
         .map {
           AllStagesResource.convertTaskData
         }
@@ -129,12 +133,14 @@ private[v1] class OneStageResource(ui: SparkUI) {
             _.stageId == stageId
           }
           .map { info =>
-            val ui = listener.stageIdToData.getOrElse(
-              (info.stageId, info.attemptId),
-              // this is an internal error -- we should always have uiData
-              throw new SparkException(
-                s"no stage ui data found for stage: ${info.stageId}:${info.attemptId}")
-            )
+            val ui = listener
+              .stageIdToData
+              .getOrElse(
+                (info.stageId, info.attemptId),
+                // this is an internal error -- we should always have uiData
+                throw new SparkException(
+                  s"no stage ui data found for stage: ${info.stageId}:${info.attemptId}")
+              )
             StageStatusInfoUi(status, info, ui)
           }
       }
@@ -174,13 +180,15 @@ object OneStageResource {
           case ID =>
             td.taskId
           case INCREASING_RUNTIME =>
-            td.taskMetrics
+            td
+              .taskMetrics
               .map {
                 _.executorRunTime
               }
               .getOrElse(-1L)
           case DECREASING_RUNTIME =>
-            -td.taskMetrics
+            -td
+              .taskMetrics
               .map {
                 _.executorRunTime
               }

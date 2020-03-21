@@ -68,12 +68,10 @@ class ZkAnnouncerTest extends FunSuite with BeforeAndAfter {
     try {
       val ann = new ZkAnnouncer(factory)
       val res = new ZkResolver(factory)
-      val addr1 = Address.Inet(
-        new InetSocketAddress(port1),
-        Addr.Metadata.empty)
-      val addr2 = Address.Inet(
-        new InetSocketAddress(port2),
-        Addr.Metadata.empty)
+      val addr1 = Address
+        .Inet(new InetSocketAddress(port1), Addr.Metadata.empty)
+      val addr2 = Address
+        .Inet(new InetSocketAddress(port2), Addr.Metadata.empty)
 
       Await.ready(ann.announce(addr2.addr, "%s!0!addr2".format(hostPath)))
       va2 = res.bind("%s!addr2".format(hostPath))
@@ -94,8 +92,8 @@ class ZkAnnouncerTest extends FunSuite with BeforeAndAfter {
       }
     } catch {
       case e: TestFailedDueToTimeoutException =>
-        var exceptionString = "#%d eventually failed.\n".format(
-          failedEventually)
+        var exceptionString = "#%d eventually failed.\n"
+          .format(failedEventually)
 
         if (va1 != null) {
           exceptionString += "va1 status: %s\n".format(Var.sample(va1).toString)
@@ -129,8 +127,8 @@ class ZkAnnouncerTest extends FunSuite with BeforeAndAfter {
     val addr2 = Address.Inet(new InetSocketAddress(port2), Addr.Metadata.empty)
 
     val anm1 = Await.result(ann.announce(addr1.addr, "%s!0".format(hostPath)))
-    val anm2 = Await.result(
-      ann.announce(addr2.addr, "%s!0!addr2".format(hostPath)))
+    val anm2 = Await
+      .result(ann.announce(addr2.addr, "%s!0!addr2".format(hostPath)))
     val va1 = res.bind(hostPath)
     val va2 = res.bind("%s!addr2".format(hostPath))
 
@@ -156,8 +154,8 @@ class ZkAnnouncerTest extends FunSuite with BeforeAndAfter {
     val addr2 = Address.Inet(new InetSocketAddress(port2), Addr.Metadata.empty)
 
     val anm1 = Await.result(ann.announce(addr1.addr, "%s!0".format(hostPath)))
-    val anm2 = Await.result(
-      ann.announce(addr2.addr, "%s!0!addr2".format(hostPath)))
+    val anm2 = Await
+      .result(ann.announce(addr2.addr, "%s!0!addr2".format(hostPath)))
     val va1 = res.bind(hostPath)
     val va2 = res.bind("%s!addr2".format(hostPath))
 

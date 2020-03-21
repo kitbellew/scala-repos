@@ -199,9 +199,13 @@ object CompileServer {
 
     val i = args.indexOf("-p")
     if (i >= 0 && args.length > i + 1) {
-      scala.util.control.Exception.ignoring(classOf[NumberFormatException]) {
-        port = args(i + 1).toInt
-      }
+      scala
+        .util
+        .control
+        .Exception
+        .ignoring(classOf[NumberFormatException]) {
+          port = args(i + 1).toInt
+        }
     }
 
     // Create instance rather than extend to pass a port parameter.
@@ -214,19 +218,20 @@ object CompileServer {
       server.echo("Redirect dir is " + redirectDir)
     }
 
-    Console.withErr(
-      createRedirect(redirectDir, "scala-compile-server-err.log")) {
-      Console.withOut(
-        createRedirect(redirectDir, "scala-compile-server-out.log")) {
-        Console.err.println(
-          "...starting server on socket " + server.port + "...")
-        Console.err.flush()
-        server.compileSocket setPort server.port
-        startupCallback()
-        server.run()
+    Console
+      .withErr(createRedirect(redirectDir, "scala-compile-server-err.log")) {
+        Console.withOut(
+          createRedirect(redirectDir, "scala-compile-server-out.log")) {
+          Console
+            .err
+            .println("...starting server on socket " + server.port + "...")
+          Console.err.flush()
+          server.compileSocket setPort server.port
+          startupCallback()
+          server.run()
 
-        server.compileSocket deletePort server.port
+          server.compileSocket deletePort server.port
+        }
       }
-    }
   }
 }

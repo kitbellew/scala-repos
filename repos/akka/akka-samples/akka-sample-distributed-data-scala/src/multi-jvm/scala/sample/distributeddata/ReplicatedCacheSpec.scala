@@ -17,8 +17,8 @@ object ReplicatedCacheSpec extends MultiNodeConfig {
   val node3 = role("node-3")
 
   commonConfig(
-    ConfigFactory.parseString(
-      """
+    ConfigFactory
+      .parseString("""
     akka.loglevel = INFO
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
     akka.log-dead-letters-during-shutdown = off

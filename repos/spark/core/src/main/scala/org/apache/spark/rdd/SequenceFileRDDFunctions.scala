@@ -65,7 +65,8 @@ class SequenceFileRDDFunctions[
         // We get the type of the Writable class by looking at the apply method which converts
         // from T to Writable. Since we have two apply methods we filter out the one which
         // is not of the form "java.lang.Object apply(java.lang.Object)"
-        implicitly[T => Writable].getClass
+        implicitly[T => Writable]
+          .getClass
           .getDeclaredMethods()
           .filter(m =>
             m.getReturnType().toString != "class java.lang.Object" &&
@@ -99,7 +100,8 @@ class SequenceFileRDDFunctions[
       val convertValue = self.valueClass != valueWritableClass
 
       logInfo(
-        "Saving as sequence file of type (" + keyWritableClass.getSimpleName + "," +
+        "Saving as sequence file of type (" + keyWritableClass
+          .getSimpleName + "," +
           valueWritableClass.getSimpleName + ")")
       val format = classOf[SequenceFileOutputFormat[Writable, Writable]]
       val jobConf = new JobConf(self.context.hadoopConfiguration)

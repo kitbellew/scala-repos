@@ -77,10 +77,12 @@ object TestGraphGenerators {
       testStore: P#Store[Int, Int],
       sink1: P#Sink[Int],
       sink2: P#Sink[(Int, Int)]): Gen[KeyedProducer[P, Int, Int]] = {
-    val deps = Producer.transitiveDependenciesOf(p).collect {
-      case x: KeyedProducer[_, _, _] =>
-        x.asInstanceOf[KeyedProducer[P, Int, Int]]
-    }
+    val deps = Producer
+      .transitiveDependenciesOf(p)
+      .collect {
+        case x: KeyedProducer[_, _, _] =>
+          x.asInstanceOf[KeyedProducer[P, Int, Int]]
+      }
     if (deps.size == 1)
       genProd2
     else
@@ -94,10 +96,13 @@ object TestGraphGenerators {
       testStore: P#Store[Int, Int],
       sink1: P#Sink[Int],
       sink2: P#Sink[(Int, Int)]): Gen[Producer[P, Int]] = {
-    val deps = Producer.transitiveDependenciesOf(p).filter(_ == p).collect {
-      case x: Producer[_, _] =>
-        x.asInstanceOf[Producer[P, Int]]
-    }
+    val deps = Producer
+      .transitiveDependenciesOf(p)
+      .filter(_ == p)
+      .collect {
+        case x: Producer[_, _] =>
+          x.asInstanceOf[Producer[P, Int]]
+      }
     if (deps.size == 1)
       genProd1
     else
@@ -111,10 +116,12 @@ object TestGraphGenerators {
       testStore: P#Store[Int, Int],
       sink1: P#Sink[Int],
       sink2: P#Sink[(Int, Int)]): Gen[TailProducer[P, Any]] = {
-    val validDeps = Producer.transitiveDependenciesOf(p).collect {
-      case x: TailProducer[_, _] =>
-        x.asInstanceOf[TailProducer[P, Any]]
-    }
+    val validDeps = Producer
+      .transitiveDependenciesOf(p)
+      .collect {
+        case x: TailProducer[_, _] =>
+          x.asInstanceOf[TailProducer[P, Any]]
+      }
     if (validDeps.size == 0)
       summed
     else

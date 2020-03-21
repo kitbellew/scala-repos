@@ -130,10 +130,12 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
         seed = 42)
       val centers2 = model2.clusterCenters
 
-      centers1.zip(centers2).foreach {
-        case (c1, c2) =>
-          assert(c1 ~== c2 absTol 1e-14)
-      }
+      centers1
+        .zip(centers2)
+        .foreach {
+          case (c1, c2) =>
+            assert(c1 ~== c2 absTol 1e-14)
+        }
     }
   }
 
@@ -269,7 +271,8 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
     var model = KMeans.train(rdd, k = 5, maxIterations = 1)
 
     assert(
-      model.clusterCenters
+      model
+        .clusterCenters
         .sortBy(VectorWithCompare(_))
         .zip(points.sortBy(VectorWithCompare(_)))
         .forall(x => x._1 ~== (x._2) absTol 1e-5))
@@ -277,7 +280,8 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
     // Iterations of Lloyd's should not change the answer either
     model = KMeans.train(rdd, k = 5, maxIterations = 10)
     assert(
-      model.clusterCenters
+      model
+        .clusterCenters
         .sortBy(VectorWithCompare(_))
         .zip(points.sortBy(VectorWithCompare(_)))
         .forall(x => x._1 ~== (x._2) absTol 1e-5))
@@ -285,7 +289,8 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
     // Neither should more runs
     model = KMeans.train(rdd, k = 5, maxIterations = 10, runs = 5)
     assert(
-      model.clusterCenters
+      model
+        .clusterCenters
         .sortBy(VectorWithCompare(_))
         .zip(points.sortBy(VectorWithCompare(_)))
         .forall(x => x._1 ~== (x._2) absTol 1e-5))
@@ -303,12 +308,8 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     for (initMode <- Seq(RANDOM, K_MEANS_PARALLEL)) {
       // Two iterations are sufficient no matter where the initial centers are.
-      val model = KMeans.train(
-        rdd,
-        k = 2,
-        maxIterations = 2,
-        runs = 1,
-        initMode)
+      val model = KMeans
+        .train(rdd, k = 2, maxIterations = 2, runs = 1, initMode)
 
       val predicts = model.predict(rdd).collect()
 
@@ -374,15 +375,18 @@ object KMeansSuite extends SparkFunSuite {
 
   def checkEqual(a: KMeansModel, b: KMeansModel): Unit = {
     assert(a.k === b.k)
-    a.clusterCenters.zip(b.clusterCenters).foreach {
-      case (ca: SparseVector, cb: SparseVector) =>
-        assert(ca === cb)
-      case (ca: DenseVector, cb: DenseVector) =>
-        assert(ca === cb)
-      case _ =>
-        throw new AssertionError(
-          "checkEqual failed since the two clusters were not identical.\n")
-    }
+    a
+      .clusterCenters
+      .zip(b.clusterCenters)
+      .foreach {
+        case (ca: SparseVector, cb: SparseVector) =>
+          assert(ca === cb)
+        case (ca: DenseVector, cb: DenseVector) =>
+          assert(ca === cb)
+        case _ =>
+          throw new AssertionError(
+            "checkEqual failed since the two clusters were not identical.\n")
+      }
   }
 }
 

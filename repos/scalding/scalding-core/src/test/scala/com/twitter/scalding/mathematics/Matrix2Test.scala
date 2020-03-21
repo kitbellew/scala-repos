@@ -114,7 +114,8 @@ class Matrix2RowRowHad(args: Args) extends Job(args) {
 
   val row1 = mat1.getRow(1)
   val rowSum = row1 #*# row1
-  rowSum.toTypedPipe
+  rowSum
+    .toTypedPipe
     .map {
       case (x, idx, v) =>
         (idx, v)
@@ -226,18 +227,22 @@ class Matrix2PropJob(args: Args) extends Job(args) {
 
   val tsv2 = TypedText.tsv[(Int, Double)]("col")
   val col = MatrixLiteral(
-    TypedPipe.from(tsv2).map {
-      case (idx, v) =>
-        (idx, (), v)
-    },
+    TypedPipe
+      .from(tsv2)
+      .map {
+        case (idx, v) =>
+          (idx, (), v)
+      },
     NoClue)
 
   val tsv3 = TypedText.tsv[(Int, Double)]("row")
   val row = MatrixLiteral(
-    TypedPipe.from(tsv3).map {
-      case (idx, v) =>
-        ((), idx, v)
-    },
+    TypedPipe
+      .from(tsv3)
+      .map {
+        case (idx, v) =>
+          ((), idx, v)
+      },
     NoClue)
 
   mat
@@ -326,14 +331,18 @@ class Matrix2Test extends WordSpec with Matchers {
 
   def toSparseMat[Row, Col, V](
       iter: Iterable[(Row, Col, V)]): Map[(Row, Col), V] = {
-    iter.map { it =>
-      ((it._1, it._2), it._3)
-    }.toMap
+    iter
+      .map { it =>
+        ((it._1, it._2), it._3)
+      }
+      .toMap
   }
   def oneDtoSparseMat[Idx, V](iter: Iterable[(Idx, V)]): Map[(Idx, Idx), V] = {
-    iter.map { it =>
-      ((it._1, it._1), it._2)
-    }.toMap
+    iter
+      .map { it =>
+        ((it._1, it._1), it._2)
+      }
+      .toMap
   }
 
   "A MatrixSum job" should {
@@ -405,8 +414,8 @@ class Matrix2Test extends WordSpec with Matchers {
               toSparseMat(ob) shouldBe result
             }
         }(
-          implicitly[
-            TypeDescriptor[(Int, Int, (Double, Double, Double))]].converter)
+          implicitly[TypeDescriptor[(Int, Int, (Double, Double, Double))]]
+            .converter)
         .runHadoop
         .finish
     }

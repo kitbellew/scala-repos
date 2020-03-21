@@ -97,11 +97,8 @@ class BrokerPartitionInfo(
     */
   def updateInfo(topics: Set[String], correlationId: Int) {
     var topicsMetadata: Seq[TopicMetadata] = Nil
-    val topicMetadataResponse = ClientUtils.fetchTopicMetadata(
-      topics,
-      brokers,
-      producerConfig,
-      correlationId)
+    val topicMetadataResponse = ClientUtils
+      .fetchTopicMetadata(topics, brokers, producerConfig, correlationId)
     topicsMetadata = topicMetadataResponse.topicsMetadata
     // throw partition specific exception
     topicsMetadata.foreach(tmd => {
@@ -114,17 +111,20 @@ class BrokerPartitionInfo(
             tmd,
             tmd.topic,
             Errors.forCode(tmd.errorCode).exception.getClass))
-      tmd.partitionsMetadata.foreach(pmd => {
-        if (pmd.errorCode != Errors.NONE.code && pmd.errorCode == Errors.LEADER_NOT_AVAILABLE.code) {
-          warn(
-            "Error while fetching metadata %s for topic partition [%s,%d]: [%s]"
-              .format(
-                pmd,
-                tmd.topic,
-                pmd.partitionId,
-                Errors.forCode(pmd.errorCode).exception.getClass))
-        } // any other error code (e.g. ReplicaNotAvailable) can be ignored since the producer does not need to access the replica and isr metadata
-      })
+      tmd
+        .partitionsMetadata
+        .foreach(pmd => {
+          if (pmd.errorCode != Errors.NONE.code && pmd
+                .errorCode == Errors.LEADER_NOT_AVAILABLE.code) {
+            warn(
+              "Error while fetching metadata %s for topic partition [%s,%d]: [%s]"
+                .format(
+                  pmd,
+                  tmd.topic,
+                  pmd.partitionId,
+                  Errors.forCode(pmd.errorCode).exception.getClass))
+          } // any other error code (e.g. ReplicaNotAvailable) can be ignored since the producer does not need to access the replica and isr metadata
+        })
     })
     producerPool.updateProducer(topicsMetadata)
   }

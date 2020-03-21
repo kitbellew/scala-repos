@@ -23,8 +23,8 @@ object SSLSampleConfigs {
   val keyStorePath =
     new File(this.getClass.getResource("/keystore").toURI).getAbsolutePath
   val untrustedKeyStorePath =
-    new File(
-      this.getClass.getResource("/untrusted-keystore").toURI).getAbsolutePath
+    new File(this.getClass.getResource("/untrusted-keystore").toURI)
+      .getAbsolutePath
   val trustStorePath =
     new File(this.getClass.getResource("/truststore").toURI).getAbsolutePath
 

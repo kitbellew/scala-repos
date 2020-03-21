@@ -115,15 +115,18 @@ class QueueingHandler(
     super.publish(record)
 
   private[this] def loop(): Future[Unit] = {
-    queue.poll().map(doPublish).respond {
-      case Return(_) =>
-        loop()
-      case Throw(QueueClosedException) => // indicates we should shutdown
-      case Throw(e)                    =>
-        // `doPublish` can throw, and we want to keep on publishing...
-        e.printStackTrace()
-        loop()
-    }
+    queue
+      .poll()
+      .map(doPublish)
+      .respond {
+        case Return(_) =>
+          loop()
+        case Throw(QueueClosedException) => // indicates we should shutdown
+        case Throw(e)                    =>
+          // `doPublish` can throw, and we want to keep on publishing...
+          e.printStackTrace()
+          loop()
+      }
   }
 
   // begin polling for log records
@@ -142,9 +145,11 @@ class QueueingHandler(
 
   override def flush(): Unit = {
     // Publish all records in queue
-    queue.drain().map { records =>
-      records.foreach(doPublish)
-    }
+    queue
+      .drain()
+      .map { records =>
+        records.foreach(doPublish)
+      }
 
     // Propagate flush
     super.flush()
@@ -154,8 +159,11 @@ class QueueingHandler(
     * Called when record dropped.  Default is to log to console.
     */
   protected def onOverflow(record: javalog.LogRecord): Unit = {
-    Console.err.println(
-      String
-        .format("[%s] log queue overflow - record dropped", Time.now.toString))
+    Console
+      .err
+      .println(
+        String.format(
+          "[%s] log queue overflow - record dropped",
+          Time.now.toString))
   }
 }

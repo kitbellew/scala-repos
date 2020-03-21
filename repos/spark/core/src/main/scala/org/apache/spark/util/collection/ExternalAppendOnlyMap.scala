@@ -103,9 +103,8 @@ class ExternalAppendOnlyMap[K, V, C](
     * NOTE: Setting this too low can cause excessive copying when serializing, since some serializers
     * grow internal data structures by growing + copying every time the number of objects doubles.
     */
-  private val serializerBatchSize = sparkConf.getLong(
-    "spark.shuffle.spill.batchSize",
-    10000)
+  private val serializerBatchSize = sparkConf
+    .getLong("spark.shuffle.spill.batchSize", 10000)
 
   // Number of bytes spilled in total
   private var _diskBytesSpilled = 0L
@@ -195,12 +194,8 @@ class ExternalAppendOnlyMap[K, V, C](
   override protected[this] def spill(collection: SizeTracker): Unit = {
     val (blockId, file) = diskBlockManager.createTempLocalBlock()
     curWriteMetrics = new ShuffleWriteMetrics()
-    var writer = blockManager.getDiskWriter(
-      blockId,
-      file,
-      ser,
-      fileBufferSize,
-      curWriteMetrics)
+    var writer = blockManager
+      .getDiskWriter(blockId, file, ser, fileBufferSize, curWriteMetrics)
     var objectsWritten = 0
 
     // List of batch sizes (bytes) in the order they are written to disk
@@ -227,12 +222,8 @@ class ExternalAppendOnlyMap[K, V, C](
         if (objectsWritten == serializerBatchSize) {
           flush()
           curWriteMetrics = new ShuffleWriteMetrics()
-          writer = blockManager.getDiskWriter(
-            blockId,
-            file,
-            ser,
-            fileBufferSize,
-            curWriteMetrics)
+          writer = blockManager
+            .getDiskWriter(blockId, file, ser, fileBufferSize, curWriteMetrics)
         }
       }
       if (objectsWritten > 0) {
@@ -298,8 +289,8 @@ class ExternalAppendOnlyMap[K, V, C](
     private val sortedMap = CompletionIterator[(K, C), Iterator[(K, C)]](
       currentMap.destructiveSortedIterator(keyComparator),
       freeCurrentMap())
-    private val inputStreams = (Seq(sortedMap) ++ spilledMaps).map(it =>
-      it.buffered)
+    private val inputStreams = (Seq(sortedMap) ++ spilledMaps)
+      .map(it => it.buffered)
 
     inputStreams.foreach { it =>
       val kcPairs = new ArrayBuffer[(K, C)]
@@ -503,9 +494,8 @@ class ExternalAppendOnlyMap[K, V, C](
 
         val bufferedStream =
           new BufferedInputStream(ByteStreams.limit(fileStream, end - start))
-        val compressedStream = blockManager.wrapForCompression(
-          blockId,
-          bufferedStream)
+        val compressedStream = blockManager
+          .wrapForCompression(blockId, bufferedStream)
         ser.deserializeStream(compressedStream)
       } else {
         // No more batches left

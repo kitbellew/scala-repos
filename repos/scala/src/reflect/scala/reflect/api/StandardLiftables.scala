@@ -10,9 +10,11 @@ trait StandardLiftables {
     private def lift[T: Liftable](value: T): Tree =
       implicitly[Liftable[T]].apply(value)
     private def selectScala(names: Name*) =
-      names.tail.foldLeft(ScalaDot(names.head)) {
-        Select(_, _)
-      }
+      names
+        .tail
+        .foldLeft(ScalaDot(names.head)) {
+          Select(_, _)
+        }
     private def callScala(names: Name*)(args: List[Tree]) =
       Apply(selectScala(names: _*), args)
     private def callCollection(name: Name)(args: List[Tree]) =

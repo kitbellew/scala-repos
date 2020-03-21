@@ -209,9 +209,8 @@ class AppUpdateTest extends MarathonSpec {
     assert(AppUpdate(version = Some(Timestamp.now())).onlyVersionOrIdSet)
 
     assert(
-      AppUpdate(
-        id = Some("foo".toPath),
-        version = Some(Timestamp.now())).onlyVersionOrIdSet)
+      AppUpdate(id = Some("foo".toPath), version = Some(Timestamp.now()))
+        .onlyVersionOrIdSet)
 
     intercept[Exception] {
       AppUpdate(cmd = Some("foo"), version = Some(Timestamp.now()))
@@ -249,8 +248,12 @@ class AppUpdateTest extends MarathonSpec {
         cmd = Some("sleep 2"),
         version = Some(Timestamp(2))))
     assert(
-      attempt.failed.get.getMessage.contains(
-        "The 'version' field may only be combined with the 'id' field."))
+      attempt
+        .failed
+        .get
+        .getMessage
+        .contains(
+          "The 'version' field may only be combined with the 'id' field."))
   }
 
   test("update may not have both uris and fetch") {

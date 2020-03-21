@@ -227,7 +227,8 @@ class LogManagerTest {
         "We should have created the right number of logs",
         partition + 1,
         logManager.allLogs.size)
-      val counts = logManager.allLogs
+      val counts = logManager
+        .allLogs
         .groupBy(_.dir.getParent)
         .values
         .map(_.size)
@@ -302,14 +303,16 @@ class LogManagerTest {
       new OffsetCheckpoint(
         new File(logDir, logManager.RecoveryPointCheckpointFile)).read()
 
-    topicAndPartitions.zip(logs).foreach {
-      case (tp, log) => {
-        assertEquals(
-          "Recovery point should equal checkpoint",
-          checkpoints(tp),
-          log.recoveryPoint)
+    topicAndPartitions
+      .zip(logs)
+      .foreach {
+        case (tp, log) => {
+          assertEquals(
+            "Recovery point should equal checkpoint",
+            checkpoints(tp),
+            log.recoveryPoint)
+        }
       }
-    }
   }
 
   private def createLogManager(

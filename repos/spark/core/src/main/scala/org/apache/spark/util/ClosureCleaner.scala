@@ -441,8 +441,8 @@ private[util] class FieldAccessFinder(
         for (cl <- fields.keys if cl.getName == owner.replace('/', '.')) {
           // Check for calls a getter method for a variable in an interpreter wrapper object.
           // This means that the corresponding field will be accessed, so we should save it.
-          if (op == INVOKEVIRTUAL && owner.endsWith("$iwC") && !name.endsWith(
-                "$outer")) {
+          if (op == INVOKEVIRTUAL && owner.endsWith("$iwC") && !name
+                .endsWith("$outer")) {
             fields(cl) += name
           }
           // Optionally visit other methods to find fields that are transitively referenced

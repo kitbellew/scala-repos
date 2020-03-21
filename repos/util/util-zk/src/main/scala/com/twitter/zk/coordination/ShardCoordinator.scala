@@ -68,17 +68,19 @@ class ShardCoordinator(zk: ZkClient, path: String, numShards: Int) {
       } flatMap { availableIds =>
         // Iteratively (brute force) attempt to create a node for the next lowest available ID until
         // a Shard is successfully created (race resolution).
-        availableIds.tail.foldLeft(createShardNode(availableIds.head, permit)) {
-          (futureShardOption, id) =>
-            futureShardOption flatMap { shardOption =>
-              shardOption match {
-                case Some(shard) =>
-                  Future.value(shardOption)
-                case None =>
-                  createShardNode(id, permit)
+        availableIds
+          .tail
+          .foldLeft(createShardNode(availableIds.head, permit)) {
+            (futureShardOption, id) =>
+              futureShardOption flatMap { shardOption =>
+                shardOption match {
+                  case Some(shard) =>
+                    Future.value(shardOption)
+                  case None =>
+                    createShardNode(id, permit)
+                }
               }
-            }
-        }
+          }
       } flatMap { shardOption =>
         shardOption map {
           Future.value(_)

@@ -53,7 +53,9 @@ object CodeGenTools {
   }
 
   private def resetOutput(compiler: Global): Unit = {
-    compiler.settings.outputDirs
+    compiler
+      .settings
+      .outputDirs
       .setSingleOutput(new VirtualDirectory("(memory)", None))
   }
 
@@ -73,9 +75,8 @@ object CodeGenTools {
     val args = (CommandLineParser tokenize defaultArgs) ++ (
       CommandLineParser tokenize extraArgs
     )
-    val (_, nonSettingsArgs) = settings.processArguments(
-      args,
-      processAll = true)
+    val (_, nonSettingsArgs) = settings
+      .processArguments(args, processAll = true)
     if (nonSettingsArgs.nonEmpty)
       showError("invalid compiler flags: " + nonSettingsArgs.mkString(" "))
     new Global(settings, new StoreReporter)
@@ -110,9 +111,12 @@ object CodeGenTools {
   def checkReport(
       compiler: Global,
       allowMessage: StoreReporter#Info => Boolean = _ => false): Unit = {
-    val disallowed = reporter(compiler).infos.toList.filter(
-      !allowMessage(_)
-    ) // toList prevents an infer-non-wildcard-existential warning.
+    val disallowed = reporter(compiler)
+      .infos
+      .toList
+      .filter(
+        !allowMessage(_)
+      ) // toList prevents an infer-non-wildcard-existential warning.
     if (disallowed.nonEmpty) {
       val msg = disallowed.mkString("\n")
       assert(
@@ -211,9 +215,11 @@ object CodeGenTools {
       code: String,
       allowMessage: StoreReporter#Info => Boolean = _ => false)
       : List[MethodNode] = {
-    compileClasses(compiler)(
-      s"class C { $code }",
-      allowMessage = allowMessage).head.methods.asScala.toList
+    compileClasses(compiler)(s"class C { $code }", allowMessage = allowMessage)
+      .head
+      .methods
+      .asScala
+      .toList
       .filterNot(_.name == "<init>")
   }
 
@@ -329,7 +335,10 @@ object CodeGenTools {
       else
         query
     val insns =
-      method.instructions.iterator.asScala
+      method
+        .instructions
+        .iterator
+        .asScala
         .filter(i => textify(i) contains instrPart)
         .toList
     if (useNext)
@@ -346,8 +355,8 @@ object CodeGenTools {
       handlerIndex: Int): Unit = {
     val insVec = instructions.toVector
     assertTrue(
-      h.start == insVec(startIndex) && h.end == insVec(
-        endIndex) && h.handler == insVec(handlerIndex))
+      h.start == insVec(startIndex) && h.end == insVec(endIndex) && h
+        .handler == insVec(handlerIndex))
   }
 
   import scala.language.implicitConversions

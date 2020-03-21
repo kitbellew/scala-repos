@@ -34,7 +34,8 @@ class NewPackageObjectAction
       .map(_.getQualifiedName)
       .exists(!_.isEmpty)
 
-    val module: Module = e.getDataContext
+    val module: Module = e
+      .getDataContext
       .getData(LangDataKeys.MODULE.getName)
       .asInstanceOf[Module]
     val isEnabled: Boolean = Option(module).exists(_.hasScala)

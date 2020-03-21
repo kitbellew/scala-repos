@@ -16,13 +16,13 @@ class JavaAccessorMethodOverridenAsEmptyParenInspection
 
   def actionFor(holder: ProblemsHolder) = {
     case f: ScFunction if f.isEmptyParen =>
-      f.superMethods.headOption match { // f.superMethod returns None for some reason
+      f
+        .superMethods
+        .headOption match { // f.superMethod returns None for some reason
         case Some(_: ScalaPsiElement) => // do nothing
         case Some(method) if method.isAccessor =>
-          holder.registerProblem(
-            f.nameId,
-            getDisplayName,
-            new RemoveParentheses(f))
+          holder
+            .registerProblem(f.nameId, getDisplayName, new RemoveParentheses(f))
         case _ =>
       }
   }

@@ -186,21 +186,20 @@ class ScPackagingImpl private (
       ProgressManager.checkCanceled()
       val p = ScPackageImpl(
         JavaPsiFacade.getInstance(getProject).findPackage(pName))
-      if (p != null && !p.processDeclarations(
-            processor,
-            state,
-            lastParent,
-            place)) {
+      if (p != null && !p
+            .processDeclarations(processor, state, lastParent, place)) {
         return false
       }
 
       findPackageObject(place.getResolveScope) match {
         case Some(po) =>
           var newState = state
-          po.getType(TypingContext.empty).foreach {
-            case tp: ScType =>
-              newState = state.put(BaseProcessor.FROM_TYPE_KEY, tp)
-          }
+          po
+            .getType(TypingContext.empty)
+            .foreach {
+              case tp: ScType =>
+                newState = state.put(BaseProcessor.FROM_TYPE_KEY, tp)
+            }
           if (!po.processDeclarations(processor, newState, lastParent, place))
             return false
         case _ =>
@@ -208,19 +207,13 @@ class ScPackagingImpl private (
     }
 
     if (lastParent != null && lastParent.getContext == this) {
-      if (!super[ScImportsHolder].processDeclarations(
-            processor,
-            state,
-            lastParent,
-            place))
+      if (!super[ScImportsHolder]
+            .processDeclarations(processor, state, lastParent, place))
         return false
 
       if (ScalaFileImpl.isProcessLocalClasses(lastParent) &&
-          !super[ScDeclarationSequenceHolder].processDeclarations(
-            processor,
-            state,
-            lastParent,
-            place))
+          !super[ScDeclarationSequenceHolder]
+            .processDeclarations(processor, state, lastParent, place))
         return false
     }
 
@@ -236,8 +229,9 @@ class ScPackagingImpl private (
 
   def getBodyText: String = {
     if (isExplicit) {
-      val startOffset = findChildByType[PsiElement](
-        ScalaTokenTypes.tLBRACE).getTextRange.getEndOffset - getTextRange.getStartOffset
+      val startOffset = findChildByType[PsiElement](ScalaTokenTypes.tLBRACE)
+        .getTextRange
+        .getEndOffset - getTextRange.getStartOffset
       val text = getText
       val endOffset =
         if (text.apply(text.length - 1) == '}') {

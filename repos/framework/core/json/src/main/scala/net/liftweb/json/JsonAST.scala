@@ -597,10 +597,12 @@ object JsonAST {
           case JObject(fs) if (fs find p).isDefined =>
             return fs find p
           case JObject(fs) =>
-            fs.flatMap {
-              case JField(n, v) =>
-                find(v)
-            }.headOption
+            fs
+              .flatMap {
+                case JField(n, v) =>
+                  find(v)
+              }
+              .headOption
           case JArray(l) =>
             l.flatMap(find _).headOption
           case _ =>
@@ -625,10 +627,12 @@ object JsonAST {
           case _ if p(json) =>
             Some(json)
           case JObject(fs) =>
-            fs.flatMap {
-              case JField(n, v) =>
-                find(v)
-            }.headOption
+            fs
+              .flatMap {
+                case JField(n, v) =>
+                  find(v)
+              }
+              .headOption
           case JArray(l) =>
             l.flatMap(find _).headOption
           case _ =>
@@ -897,10 +901,12 @@ object JsonAST {
   case class JObject(obj: List[JField]) extends JValue {
     type Values = Map[String, Any]
     def values = {
-      obj.map {
-        case JField(name, value) =>
-          (name, value.values): (String, Any)
-      }.toMap
+      obj
+        .map {
+          case JField(name, value) =>
+            (name, value.values): (String, Any)
+        }
+        .toMap
     }
 
     override def equals(that: Any): Boolean =
@@ -954,7 +960,8 @@ object JsonAST {
           case '\t' =>
             "\\t"
           case c
-              if ((c >= '\u0000' && c < '\u0020')) || settings.escapeChars
+              if ((c >= '\u0000' && c < '\u0020')) || settings
+                .escapeChars
                 .contains(c) =>
             "\\u%04x".format(c: Int)
 
@@ -1243,17 +1250,21 @@ object JsonDSL extends JsonDSL
 trait JsonDSL extends Implicits {
   implicit def seq2jvalue[A <% JValue](s: Traversable[A]) =
     JArray(
-      s.toList.map { a =>
-        val v: JValue = a;
-        v
-      })
+      s
+        .toList
+        .map { a =>
+          val v: JValue = a;
+          v
+        })
 
   implicit def map2jvalue[A <% JValue](m: Map[String, A]) =
     JObject(
-      m.toList.map {
-        case (k, v) =>
-          JField(k, v)
-      })
+      m
+        .toList
+        .map {
+          case (k, v) =>
+            JField(k, v)
+        })
 
   implicit def option2jvalue[A <% JValue](opt: Option[A]): JValue =
     opt match {

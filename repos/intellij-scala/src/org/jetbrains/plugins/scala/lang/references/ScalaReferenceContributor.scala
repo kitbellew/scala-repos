@@ -51,10 +51,10 @@ class InterpolatedStringReferenceProvider extends PsiReferenceProvider {
         Array.empty
       case l: ScLiteral
           if (l.isString || l.isMultiLineString) && l.getText.contains("$") =>
-        val interpolated = ScalaPsiElementFactory.createExpressionFromText(
-          "s" + l.getText,
-          l.getContext)
-        interpolated.getChildren
+        val interpolated = ScalaPsiElementFactory
+          .createExpressionFromText("s" + l.getText, l.getContext)
+        interpolated
+          .getChildren
           .filter {
             case r: ScInterpolatedStringPartReference =>
               false
@@ -113,8 +113,8 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
       return Collections.emptyList[PsiFileSystemItem]
     val modules: java.util.List[Module] = new util.ArrayList[Module]
     modules.add(thisModule)
-    var moduleRootManager: ModuleRootManager = ModuleRootManager.getInstance(
-      thisModule)
+    var moduleRootManager: ModuleRootManager = ModuleRootManager
+      .getInstance(thisModule)
     ContainerUtil.addAll(modules, moduleRootManager.getDependencies: _*)
     val result: java.util.List[PsiFileSystemItem] =
       new java.util.ArrayList[PsiFileSystemItem]
@@ -135,7 +135,8 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
       for (root <- sourceRoots) {
         val directory: PsiDirectory = psiManager.findDirectory(root)
         if (directory != null) {
-          val aPackage: PsiPackage = JavaDirectoryService.getInstance
+          val aPackage: PsiPackage = JavaDirectoryService
+            .getInstance
             .getPackage(directory)
           if (aPackage != null && aPackage.name != null) {
             try {
@@ -193,11 +194,8 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
           range: TextRange,
           index: Int,
           text: String): FileReference = {
-        FilePathReferenceProvider.this.createFileReference(
-          this,
-          range,
-          index,
-          text)
+        FilePathReferenceProvider.this
+          .createFileReference(this, range, index, text)
       }
 
       protected override def getReferenceCompletionFilter

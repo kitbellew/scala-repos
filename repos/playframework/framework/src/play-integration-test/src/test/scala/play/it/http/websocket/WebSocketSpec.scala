@@ -134,10 +134,8 @@ trait WebSocketSpec
         Source.maybe[ExtendedMessage].via(flow).runWith(consumeFrames)
       }
       frames must contain(
-        exactly(
-          textFrame(be_==("a")),
-          textFrame(be_==("b")),
-          closeFrame()).inOrder)
+        exactly(textFrame(be_==("a")), textFrame(be_==("b")), closeFrame())
+          .inOrder)
     }
   }
 
@@ -330,9 +328,11 @@ trait WebSocketSpec
       "allow consuming messages" in allowConsumingMessages { _ => consumed =>
         WebSocket.using[String] { req =>
           (
-            Iteratee.getChunks[String].map { result =>
-              consumed.success(result)
-            },
+            Iteratee
+              .getChunks[String]
+              .map { result =>
+                consumed.success(result)
+              },
             Enumerator.empty)
         }
       }
@@ -354,7 +354,9 @@ trait WebSocketSpec
           val tick =
             Enumerator.unfoldM(()) { _ =>
               val p = Promise[Option[(Unit, String)]]()
-              app.actorSystem.scheduler
+              app
+                .actorSystem
+                .scheduler
                 .scheduleOnce(100.millis)(p.success(Some(() -> "foo")))
               p.future
             }
@@ -483,8 +485,8 @@ trait WebSocketSpec
 
       "allow rejecting a websocket with a result" in allowRejectingTheWebSocketWithAResult {
         _ => statusCode =>
-          WebSocketSpecJavaActions.allowRejectingAWebSocketWithAResult(
-            statusCode)
+          WebSocketSpecJavaActions
+            .allowRejectingAWebSocketWithAResult(statusCode)
       }
 
     }

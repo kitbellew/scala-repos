@@ -148,12 +148,12 @@ private[serverset2] trait EventStats {
   private[this] lazy val createdCounter = stats.counter(Created.name)
   private[this] lazy val dataChangedCounter = stats.counter(DataChanged.name)
   private[this] lazy val deletedCounter = stats.counter(Deleted.name)
-  private[this] lazy val childrenChangedCounter = stats.counter(
-    ChildrenChanged.name)
-  private[this] lazy val dataWatchRemovedCounter = stats.counter(
-    DataWatchRemoved.name)
-  private[this] lazy val childWatchRemovedCounter = stats.counter(
-    ChildWatchRemoved.name)
+  private[this] lazy val childrenChangedCounter = stats
+    .counter(ChildrenChanged.name)
+  private[this] lazy val dataWatchRemovedCounter = stats
+    .counter(DataWatchRemoved.name)
+  private[this] lazy val childWatchRemovedCounter = stats
+    .counter(ChildWatchRemoved.name)
 
   protected def EventFilter(event: NodeEvent): NodeEvent = {
     event match {
@@ -193,34 +193,36 @@ object SessionStats {
     Var.async[WatchState](WatchState.Pending) { v =>
       val stateTracker = new StateTracker(statsReceiver, interval, timer)
 
-      underlying.changes.respond { w: WatchState =>
-        w match {
-          case WatchState.SessionState(newState) =>
-            stateTracker.transition(newState)
+      underlying
+        .changes
+        .respond { w: WatchState =>
+          w match {
+            case WatchState.SessionState(newState) =>
+              stateTracker.transition(newState)
 
-            newState match {
-              case Unknown =>
-                unknownCounter.incr()
-              case AuthFailed =>
-                authFailedCounter.incr()
-              case Disconnected =>
-                disconnectedCounter.incr()
-              case Expired =>
-                expiredCounter.incr()
-              case SyncConnected =>
-                syncConnectedCounter.incr()
-              case NoSyncConnected =>
-                noSyncConnectedCounter.incr()
-              case ConnectedReadOnly =>
-                connectedReadOnlyCounter.incr()
-              case SaslAuthenticated =>
-                saslAuthenticatedCounter.incr()
-            }
-          case _ =>
-            ()
+              newState match {
+                case Unknown =>
+                  unknownCounter.incr()
+                case AuthFailed =>
+                  authFailedCounter.incr()
+                case Disconnected =>
+                  disconnectedCounter.incr()
+                case Expired =>
+                  expiredCounter.incr()
+                case SyncConnected =>
+                  syncConnectedCounter.incr()
+                case NoSyncConnected =>
+                  noSyncConnectedCounter.incr()
+                case ConnectedReadOnly =>
+                  connectedReadOnlyCounter.incr()
+                case SaslAuthenticated =>
+                  saslAuthenticatedCounter.incr()
+              }
+            case _ =>
+              ()
+          }
+          v() = w
         }
-        v() = w
-      }
 
       stateTracker
     }

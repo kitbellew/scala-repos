@@ -67,31 +67,32 @@ trait BlockLoadSpec[M[+_]]
       })
 
     val projections =
-      List(actualSchema).map { subschema =>
-        val stream = sampleData.data flatMap { jv =>
-          val back =
-            subschema.foldLeft[JValue](
-              JObject(JField("key", jv \ "key") :: Nil)) {
-              case (obj, (jpath, ctype)) => {
-                val vpath = JPath(JPathField("value") :: jpath.nodes)
-                val valueAtPath = jv.get(vpath)
+      List(actualSchema)
+        .map { subschema =>
+          val stream = sampleData.data flatMap { jv =>
+            val back =
+              subschema
+                .foldLeft[JValue](JObject(JField("key", jv \ "key") :: Nil)) {
+                  case (obj, (jpath, ctype)) => {
+                    val vpath = JPath(JPathField("value") :: jpath.nodes)
+                    val valueAtPath = jv.get(vpath)
 
-                if (compliesWithSchema(valueAtPath, ctype)) {
-                  obj.set(vpath, valueAtPath)
-                } else {
-                  obj
+                    if (compliesWithSchema(valueAtPath, ctype)) {
+                      obj.set(vpath, valueAtPath)
+                    } else {
+                      obj
+                    }
+                  }
                 }
-              }
-            }
 
-          if (back \ "value" == JUndefined)
-            None
-          else
-            Some(back)
-        }
+            if (back \ "value" == JUndefined)
+              None
+            else
+              Some(back)
+          }
 
-        Path("/test") -> Projection(stream)
-      } toMap
+          Path("/test") -> Projection(stream)
+        } toMap
 
   }
 
@@ -100,7 +101,8 @@ trait BlockLoadSpec[M[+_]]
 
     val expected = sample.data flatMap { jv =>
       val back =
-        module.schema
+        module
+          .schema
           .foldLeft[JValue](JObject(JField("key", jv \ "key") :: Nil)) {
             case (obj, (jpath, ctype)) => {
               val vpath = JPath(JPathField("value") :: jpath.nodes)
@@ -123,7 +125,8 @@ trait BlockLoadSpec[M[+_]]
     }
 
     val result =
-      module.Table
+      module
+        .Table
         .constString(Set("/test"))
         .load("dummyAPIKey", Schema.mkType(cschema).get)
         .flatMap(t => EitherT.right(t.toJson))
@@ -267,8 +270,8 @@ trait BlockLoadSpec[M[+_]]
   def testLoadSample5 = {
     val sampleData = SampleData(
       (
-        JParser.parseUnsafe(
-          """[
+        JParser
+          .parseUnsafe("""[
         {
           "value":{
             "cfnYTg92dg":"gu",

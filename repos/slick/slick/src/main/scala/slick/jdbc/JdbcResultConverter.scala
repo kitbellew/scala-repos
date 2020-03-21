@@ -22,7 +22,8 @@ class BaseResultConverter[
   def update(value: T, pr: ResultSet) = ti.updateValue(value, pr, idx)
   def set(value: T, pp: PreparedStatement) = ti.setValue(value, pp, idx)
   override def getDumpInfo =
-    super.getDumpInfo
+    super
+      .getDumpInfo
       .copy(mainInfo = s"idx=$idx, name=$name", attrInfo = ": " + ti)
   def width = 1
 }
@@ -92,15 +93,17 @@ class DefaultingResultConverter[
   def update(value: T, pr: ResultSet) = ti.updateValue(value, pr, idx)
   def set(value: T, pp: PreparedStatement) = ti.setValue(value, pp, idx)
   override def getDumpInfo =
-    super.getDumpInfo.copy(
-      mainInfo = s"idx=$idx, default=" + {
-        try default()
-        catch {
-          case e: Throwable =>
-            "[" + e.getClass.getName + "]"
-        }
-      },
-      attrInfo = ": " + ti)
+    super
+      .getDumpInfo
+      .copy(
+        mainInfo = s"idx=$idx, default=" + {
+          try default()
+          catch {
+            case e: Throwable =>
+              "[" + e.getClass.getName + "]"
+          }
+        },
+        attrInfo = ": " + ti)
   def width = 1
 }
 

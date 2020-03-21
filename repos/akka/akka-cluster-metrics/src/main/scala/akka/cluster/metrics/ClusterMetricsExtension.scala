@@ -43,7 +43,8 @@ class ClusterMetricsExtension(system: ExtendedActorSystem) extends Extension {
     *
     * Supervision strategy.
     */
-  private[metrics] val strategy = system.dynamicAccess
+  private[metrics] val strategy = system
+    .dynamicAccess
     .createInstanceFor[SupervisorStrategy](
       SupervisorStrategyProvider,
       immutable.Seq(classOf[Config] -> SupervisorStrategyConfiguration))
@@ -78,7 +79,8 @@ class ClusterMetricsExtension(system: ExtendedActorSystem) extends Extension {
     * events published by extension on the system event bus.
     */
   def unsubscribe(metricsListenter: ActorRef): Unit = {
-    system.eventStream
+    system
+      .eventStream
       .unsubscribe(metricsListenter, classOf[ClusterMetricsEvent])
   }
 

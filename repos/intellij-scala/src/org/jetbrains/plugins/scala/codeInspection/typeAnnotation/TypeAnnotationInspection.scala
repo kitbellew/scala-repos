@@ -39,7 +39,9 @@ class TypeAnnotationInspection extends AbstractInspection {
       inspect(
         value.bindings.head,
         kindOf(value) + " value",
-        value.declaredElements.headOption
+        value
+          .declaredElements
+          .headOption
           .map(ScalaPsiUtil.superValsSignatures(_, withSelfType = true))
           .exists(_.nonEmpty),
         value.expr.exists(isSimple),
@@ -56,7 +58,9 @@ class TypeAnnotationInspection extends AbstractInspection {
       inspect(
         variable.bindings.head,
         kindOf(variable) + " variable",
-        variable.declaredElements.headOption
+        variable
+          .declaredElements
+          .headOption
           .map(ScalaPsiUtil.superValsSignatures(_, withSelfType = true))
           .exists(_.nonEmpty),
         variable.expr.exists(isSimple),
@@ -67,7 +71,8 @@ class TypeAnnotationInspection extends AbstractInspection {
       )
 
     case method: ScFunctionDefinition
-        if method.hasAssign && !method.hasExplicitType && !method.isSecondaryConstructor =>
+        if method.hasAssign && !method.hasExplicitType && !method
+          .isSecondaryConstructor =>
       val settings = ScalaCodeStyleSettings.getInstance(holder.getProject)
 
       inspect(
@@ -145,7 +150,9 @@ class TypeAnnotationInspection extends AbstractInspection {
     if (requirement == TypeAnnotationRequirement.Required.ordinal &&
         (!isSimple || simplePolicy == TypeAnnotationPolicy.Regular.ordinal) &&
         (
-          overridingPolicy == TypeAnnotationPolicy.Regular.ordinal || !isOverriding
+          overridingPolicy == TypeAnnotationPolicy
+            .Regular
+            .ordinal || !isOverriding
         )) {
       holder.registerProblem(
         element,

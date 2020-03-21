@@ -211,7 +211,8 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
           } match {
             case Seq() ⇒
               throw new NotSerializableException(
-                "No configured serialization-bindings for class [%s]" format clazz.getName)
+                "No configured serialization-bindings for class [%s]" format clazz
+                  .getName)
             case possibilities ⇒
               if (!unique(possibilities))
                 log.warning(
@@ -245,9 +246,11 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     * loading is performed by the system’s [[akka.actor.DynamicAccess]].
     */
   def serializerOf(serializerFQN: String): Try[Serializer] =
-    system.dynamicAccess.createInstanceFor[Serializer](
-      serializerFQN,
-      List(classOf[ExtendedActorSystem] -> system)) recoverWith {
+    system
+      .dynamicAccess
+      .createInstanceFor[Serializer](
+        serializerFQN,
+        List(classOf[ExtendedActorSystem] -> system)) recoverWith {
       case _: NoSuchMethodException ⇒
         system.dynamicAccess.createInstanceFor[Serializer](serializerFQN, Nil)
     }
@@ -275,7 +278,8 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   // The reason for this special case is for backwards compatibility so that we still can
   // include "com.google.protobuf.GeneratedMessage" = proto in configured serialization-bindings.
   private def checkGoogleProtobuf(className: String): Boolean =
-    (!className.startsWith("com.google.protobuf") || system.dynamicAccess
+    (!className.startsWith("com.google.protobuf") || system
+      .dynamicAccess
       .getClassFor[Any](className)
       .isSuccess)
 
@@ -317,8 +321,9 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
         (v.identifier, v)
     }
 
-  private val isJavaSerializationWarningEnabled = settings.config.getBoolean(
-    "akka.actor.warn-about-java-serializer-usage")
+  private val isJavaSerializationWarningEnabled = settings
+    .config
+    .getBoolean("akka.actor.warn-about-java-serializer-usage")
 
   private def shouldWarnAboutJavaSerializer(
       serializedClass: Class[_],

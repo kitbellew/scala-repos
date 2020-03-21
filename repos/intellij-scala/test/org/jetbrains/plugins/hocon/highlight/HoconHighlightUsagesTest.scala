@@ -20,8 +20,9 @@ class HoconHighlightUsagesTest extends LightPlatformCodeInsightFixtureTestCase {
       .testHighlightUsages(testName + ".conf")
       .toSeq
       .map { rh =>
-        val logicalStart = myFixture.getEditor.offsetToLogicalPosition(
-          rh.getStartOffset)
+        val logicalStart = myFixture
+          .getEditor
+          .offsetToLogicalPosition(rh.getStartOffset)
         val length = rh.getEndOffset - rh.getStartOffset
         (logicalStart.line, logicalStart.column, length)
       }

@@ -144,7 +144,8 @@ trait MarathonConf
         Set("*")
     }
 
-  lazy val defaultAcceptedResourceRolesSet = defaultAcceptedResourceRoles.get
+  lazy val defaultAcceptedResourceRolesSet = defaultAcceptedResourceRoles
+    .get
     .getOrElse(expectedResourceRoles)
 
   lazy val defaultAcceptedResourceRoles = opt[String](
@@ -245,8 +246,8 @@ trait MarathonConf
   lazy val artifactStore = opt[String](
     "artifact_store",
     descr = "URL to the artifact store. " +
-      s"""Supported store types ${StorageProvider.examples.keySet
-        .mkString(", ")}. """ +
+      s"""Supported store types ${StorageProvider.examples.keySet.mkString(
+        ", ")}. """ +
       s"""Example: ${StorageProvider.examples.values.mkString(", ")}""",
     validate = StorageProvider.isValidUrl,
     noshort = true

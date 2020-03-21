@@ -215,7 +215,8 @@ private[runtime] object RuntimeString {
     checkNull(thiz)
     if (other == null) {
       throw new NullPointerException()
-    } else if (toffset < 0 || ooffset < 0 || toffset + len > thiz.length || ooffset + len > other.length) {
+    } else if (toffset < 0 || ooffset < 0 || toffset + len > thiz
+                 .length || ooffset + len > other.length) {
       false
     } else if (len <= 0) {
       true
@@ -438,7 +439,10 @@ private[runtime] object RuntimeString {
 
   @inline
   private def fromCharCode(charCodes: Int*): String = {
-    js.Dynamic.global.String
+    js
+      .Dynamic
+      .global
+      .String
       .applyDynamic("fromCharCode")(charCodes.asInstanceOf[Seq[js.Any]]: _*)
       .asInstanceOf[String]
   }

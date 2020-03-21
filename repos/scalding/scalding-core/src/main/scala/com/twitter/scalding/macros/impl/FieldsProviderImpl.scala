@@ -143,8 +143,9 @@ object FieldsProviderImpl {
     case class OptionBuilder(of: FieldBuilder) extends FieldBuilder {
       // Options just use Object as the type, due to the way cascading works on number types
       def columnTypes =
-        of.columnTypes.map(_ =>
-          q"""_root_.scala.Predef.classOf[_root_.java.lang.Object]""")
+        of
+          .columnTypes
+          .map(_ => q"""_root_.scala.Predef.classOf[_root_.java.lang.Object]""")
       def names = of.names
     }
     case class CaseClassBuilder(prefix: String, members: Vector[FieldBuilder])
@@ -198,16 +199,17 @@ object FieldsProviderImpl {
       }
 
     def expandMethod(outerTpe: Type): Vector[(Type, String)] =
-      outerTpe.declarations
+      outerTpe
+        .declarations
         .collect {
           case m: MethodSymbol if m.isCaseAccessor =>
             m
         }
         .map { accessorMethod =>
           val fieldName = accessorMethod.name.toTermName.toString
-          val fieldType = accessorMethod.returnType.asSeenFrom(
-            outerTpe,
-            outerTpe.typeSymbol.asClass)
+          val fieldType = accessorMethod
+            .returnType
+            .asSeenFrom(outerTpe, outerTpe.typeSymbol.asClass)
           (fieldType, fieldName)
         }
         .toVector

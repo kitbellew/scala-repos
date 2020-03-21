@@ -52,7 +52,8 @@ class JDBCPEvents(
       .map(_.getMillis)
       .getOrElse((DateTime.now + 1.years).getMillis)
     val par =
-      scala.math
+      scala
+        .math
         .min(
           new Duration(upper - lower).getStandardDays,
           config.properties.getOrElse("PARTITIONS", "4").toLong)
@@ -67,12 +68,12 @@ class JDBCPEvents(
     val targetEntityTypeClause = targetEntityType
       .map(
         _.map(x => s"and targetEntityType = '$x'")
-          .getOrElse("and targetEntityType is null"))
+        .getOrElse("and targetEntityType is null"))
       .getOrElse("")
     val targetEntityIdClause = targetEntityId
       .map(
         _.map(x => s"and targetEntityId = '$x'")
-          .getOrElse("and targetEntityId is null"))
+        .getOrElse("and targetEntityId is null"))
       .getOrElse("")
     val q = s"""
       select

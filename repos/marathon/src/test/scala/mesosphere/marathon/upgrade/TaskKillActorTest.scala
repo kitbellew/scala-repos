@@ -53,28 +53,32 @@ class TaskKillActorTest
 
     watch(ref)
 
-    system.eventStream.publish(
-      MesosStatusUpdateEvent(
-        "",
-        taskA.taskId,
-        "TASK_KILLED",
-        "",
-        PathId.empty,
-        "",
-        Nil,
-        Nil,
-        ""))
-    system.eventStream.publish(
-      MesosStatusUpdateEvent(
-        "",
-        taskB.taskId,
-        "TASK_KILLED",
-        "",
-        PathId.empty,
-        "",
-        Nil,
-        Nil,
-        ""))
+    system
+      .eventStream
+      .publish(
+        MesosStatusUpdateEvent(
+          "",
+          taskA.taskId,
+          "TASK_KILLED",
+          "",
+          PathId.empty,
+          "",
+          Nil,
+          Nil,
+          ""))
+    system
+      .eventStream
+      .publish(
+        MesosStatusUpdateEvent(
+          "",
+          taskB.taskId,
+          "TASK_KILLED",
+          "",
+          PathId.empty,
+          "",
+          Nil,
+          Nil,
+          ""))
 
     Await.result(promise.future, 5.seconds) should be(())
     verify(driver).killTask(taskA.taskId.mesosTaskId)
@@ -190,28 +194,32 @@ class TaskKillActorTest
 
     ref ! SynchronizeTasks
 
-    system.eventStream.publish(
-      MesosStatusUpdateEvent(
-        "",
-        taskA.taskId,
-        "TASK_KILLED",
-        "",
-        PathId.empty,
-        "",
-        Nil,
-        Nil,
-        ""))
-    system.eventStream.publish(
-      MesosStatusUpdateEvent(
-        "",
-        taskB.taskId,
-        "TASK_KILLED",
-        "",
-        PathId.empty,
-        "",
-        Nil,
-        Nil,
-        ""))
+    system
+      .eventStream
+      .publish(
+        MesosStatusUpdateEvent(
+          "",
+          taskA.taskId,
+          "TASK_KILLED",
+          "",
+          PathId.empty,
+          "",
+          Nil,
+          Nil,
+          ""))
+    system
+      .eventStream
+      .publish(
+        MesosStatusUpdateEvent(
+          "",
+          taskB.taskId,
+          "TASK_KILLED",
+          "",
+          PathId.empty,
+          "",
+          Nil,
+          Nil,
+          ""))
 
     Await.result(promise.future, 5.seconds) should be(())
     verify(driver, times(2)).killTask(taskA.launchedMesosId.get)

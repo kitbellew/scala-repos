@@ -156,7 +156,8 @@ class CrossValidatorSuite
     assert(cv.getNumFolds === cv2.getNumFolds)
 
     assert(cv2.getEvaluator.isInstanceOf[BinaryClassificationEvaluator])
-    val evaluator2 = cv2.getEvaluator
+    val evaluator2 = cv2
+      .getEvaluator
       .asInstanceOf[BinaryClassificationEvaluator]
     assert(evaluator.uid === evaluator2.uid)
     assert(evaluator.getMetricName === evaluator2.getMetricName)
@@ -171,9 +172,8 @@ class CrossValidatorSuite
             s" LogisticRegression but found ${other.getClass.getName}")
     }
 
-    CrossValidatorSuite.compareParamMaps(
-      cv.getEstimatorParamMaps,
-      cv2.getEstimatorParamMaps)
+    CrossValidatorSuite
+      .compareParamMaps(cv.getEstimatorParamMaps, cv2.getEstimatorParamMaps)
   }
 
   test("read/write: CrossValidator with complex estimator") {
@@ -212,9 +212,8 @@ class CrossValidatorSuite
     assert(cv2.getEvaluator.isInstanceOf[BinaryClassificationEvaluator])
     assert(cv.getEvaluator.uid === cv2.getEvaluator.uid)
 
-    CrossValidatorSuite.compareParamMaps(
-      cv.getEstimatorParamMaps,
-      cv2.getEstimatorParamMaps)
+    CrossValidatorSuite
+      .compareParamMaps(cv.getEstimatorParamMaps, cv2.getEstimatorParamMaps)
 
     cv2.getEstimator match {
       case pipeline2: Pipeline =>
@@ -235,9 +234,8 @@ class CrossValidatorSuite
             assert(
               lrcv2.getEvaluator.isInstanceOf[BinaryClassificationEvaluator])
             assert(lrEvaluator.uid === lrcv2.getEvaluator.uid)
-            CrossValidatorSuite.compareParamMaps(
-              lrParamMaps,
-              lrcv2.getEstimatorParamMaps)
+            CrossValidatorSuite
+              .compareParamMaps(lrParamMaps, lrcv2.getEstimatorParamMaps)
           case other =>
             throw new AssertionError(
               "Loaded Pipeline expected stages (HashingTF, CrossValidator)" +
@@ -270,8 +268,7 @@ class CrossValidatorSuite
   }
 
   test("read/write: CrossValidatorModel") {
-    val lr = new LogisticRegression()
-      .setThreshold(0.6)
+    val lr = new LogisticRegression().setThreshold(0.6)
     val lrModel =
       new LogisticRegressionModel(lr.uid, Vectors.dense(1.0, 2.0), 1.2)
         .setThreshold(0.6)
@@ -281,7 +278,8 @@ class CrossValidatorSuite
       .addGrid(lr.regParam, Array(0.1, 0.2))
       .build()
     val cv = new CrossValidatorModel("cvUid", lrModel, Array(0.3, 0.6))
-    cv.set(cv.estimator, lr)
+    cv
+      .set(cv.estimator, lr)
       .set(cv.evaluator, evaluator)
       .set(cv.numFolds, 20)
       .set(cv.estimatorParamMaps, paramMaps)
@@ -292,7 +290,8 @@ class CrossValidatorSuite
     assert(cv.getNumFolds === cv2.getNumFolds)
 
     assert(cv2.getEvaluator.isInstanceOf[BinaryClassificationEvaluator])
-    val evaluator2 = cv2.getEvaluator
+    val evaluator2 = cv2
+      .getEvaluator
       .asInstanceOf[BinaryClassificationEvaluator]
     assert(evaluator.uid === evaluator2.uid)
     assert(evaluator.getMetricName === evaluator2.getMetricName)
@@ -307,9 +306,8 @@ class CrossValidatorSuite
             s" LogisticRegression but found ${other.getClass.getName}")
     }
 
-    CrossValidatorSuite.compareParamMaps(
-      cv.getEstimatorParamMaps,
-      cv2.getEstimatorParamMaps)
+    CrossValidatorSuite
+      .compareParamMaps(cv.getEstimatorParamMaps, cv2.getEstimatorParamMaps)
 
     cv2.bestModel match {
       case lrModel2: LogisticRegressionModel =>
@@ -336,15 +334,19 @@ object CrossValidatorSuite extends SparkFunSuite {
       pMaps: Array[ParamMap],
       pMaps2: Array[ParamMap]): Unit = {
     assert(pMaps.length === pMaps2.length)
-    pMaps.zip(pMaps2).foreach {
-      case (pMap, pMap2) =>
-        assert(pMap.size === pMap2.size)
-        pMap.toSeq.foreach {
-          case ParamPair(p, v) =>
-            assert(pMap2.contains(p))
-            assert(pMap2(p) === v)
-        }
-    }
+    pMaps
+      .zip(pMaps2)
+      .foreach {
+        case (pMap, pMap2) =>
+          assert(pMap.size === pMap2.size)
+          pMap
+            .toSeq
+            .foreach {
+              case ParamPair(p, v) =>
+                assert(pMap2.contains(p))
+                assert(pMap2(p) === v)
+            }
+      }
   }
 
   abstract class MyModel extends Model[MyModel]

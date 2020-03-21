@@ -23,14 +23,18 @@ class ScPatternArgumentListImpl(node: ASTNode)
   def patterns = {
     val children: Seq[ScPattern] = findChildrenByClassScala[ScPattern](
       classOf[ScPattern])
-    val grandChildrenInBlockExpr: Seq[ScPattern] = this.getChildren
+    val grandChildrenInBlockExpr: Seq[ScPattern] = this
+      .getChildren
       .filter {
         _.isInstanceOf[ScBlockExpr]
       }
       .flatMap { s =>
-        s.getChildren.filter(_.isInstanceOf[ScPattern]).map {
-          _.asInstanceOf[ScPattern]
-        }
+        s
+          .getChildren
+          .filter(_.isInstanceOf[ScPattern])
+          .map {
+            _.asInstanceOf[ScPattern]
+          }
       }
     children ++ grandChildrenInBlockExpr
   }

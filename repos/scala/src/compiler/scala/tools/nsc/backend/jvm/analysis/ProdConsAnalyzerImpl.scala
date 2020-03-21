@@ -113,8 +113,8 @@ trait ProdConsAnalyzerImpl {
         _consumersOfOutputsFrom
           .get(insn)
           .map(v =>
-            v.indices
-              .flatMap(v.apply)(collection.breakOut): Set[AbstractInsnNode])
+            v.indices.flatMap(v.apply)(collection.breakOut): Set[
+              AbstractInsnNode])
           .getOrElse(Set.empty)
     }
 
@@ -141,7 +141,10 @@ trait ProdConsAnalyzerImpl {
             val (sourceValue, sourceValueSlot) = copyOperationSourceValue(
               insn,
               producedSlot)
-            sourceValue.insns.iterator.asScala
+            sourceValue
+              .insns
+              .iterator
+              .asScala
               .flatMap(initialProducers(_, sourceValueSlot))
               .toSet
           }

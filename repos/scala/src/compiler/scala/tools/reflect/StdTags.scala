@@ -29,7 +29,8 @@ trait StdTags {
       m,
       new TypeCreator {
         def apply[U <: ApiUniverse with Singleton](m: Mirror[U]): U#Type =
-          m.staticClass(classTag[T].runtimeClass.getName)
+          m
+            .staticClass(classTag[T].runtimeClass.getName)
             .toTypeConstructor
             .asInstanceOf[U#Type]
       }

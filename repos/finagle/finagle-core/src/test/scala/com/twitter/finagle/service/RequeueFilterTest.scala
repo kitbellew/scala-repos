@@ -139,18 +139,20 @@ class RequeueFilterTest extends FunSuite {
 
       var expectedDelay = minDelay
 
-      1.to(scheduleLength).foreach { attempt =>
-        assert(!response.isDefined)
+      1
+        .to(scheduleLength)
+        .foreach { attempt =>
+          assert(!response.isDefined)
 
-        // trigger the next retry by advancing past the delay
-        timeControl.advance(expectedDelay)
-        timer.tick()
+          // trigger the next retry by advancing past the delay
+          timeControl.advance(expectedDelay)
+          timer.tick()
 
-        // using exponential policy, keep up.
-        expectedDelay *= 2
+          // using exponential policy, keep up.
+          expectedDelay *= 2
 
-        assert(attempt == stats.counter("requeues")())
-      }
+          assert(attempt == stats.counter("requeues")())
+        }
 
       // at this point we should have exhausted our budget
       assert(1 == stats.counter("budget_exhausted")())

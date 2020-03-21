@@ -31,8 +31,8 @@ trait MethodSynthesis {
           Ident(sym))
 
     private def isOverride(name: TermName) =
-      clazzMember(name).alternatives exists (sym =>
-        !sym.isDeferred && (sym.owner != clazz))
+      clazzMember(name)
+        .alternatives exists (sym => !sym.isDeferred && (sym.owner != clazz))
 
     def newMethodFlags(name: TermName) = {
       val overrideFlag =
@@ -79,10 +79,10 @@ trait MethodSynthesis {
         original: Symbol,
         f: Symbol => Tree,
         name: Name): Tree = {
-      val m = original.cloneSymbol(
-        clazz,
-        newMethodFlags(original),
-        name) setPos clazz.pos.focus
+      val m = original
+        .cloneSymbol(clazz, newMethodFlags(original), name) setPos clazz
+        .pos
+        .focus
       finishMethod(clazz.info.decls enter m, f)
     }
 
@@ -119,8 +119,9 @@ trait MethodSynthesis {
         val default = DEFAULT ==> Throw(
           IndexOutOfBoundsExceptionClass.tpe_*,
           fn(arg0, nme.toString_))
-        val cases =
-          range.map(num => CASE(LIT(num)) ==> f(num)).toList :+ default
+        val cases = range
+          .map(num => CASE(LIT(num)) ==> f(num))
+          .toList :+ default
 
         Match(arg0, cases)
       }
@@ -206,11 +207,13 @@ trait MethodSynthesis {
         tree: Tree,
         ann: AnnotationInfo,
         defaultTarget: Symbol) {
-      global.reporter.warning(
-        ann.pos,
-        s"no valid targets for annotation on ${tree.symbol} - it is discarded unused. " +
-          s"You may specify targets with meta-annotations, e.g. @($ann @${defaultTarget.name})"
-      )
+      global
+        .reporter
+        .warning(
+          ann.pos,
+          s"no valid targets for annotation on ${tree.symbol} - it is discarded unused. " +
+            s"You may specify targets with meta-annotations, e.g. @($ann @${defaultTarget.name})"
+        )
     }
 
     def addDerivedTrees(typer: Typer, stat: Tree): List[Tree] =
@@ -261,8 +264,7 @@ trait MethodSynthesis {
               // Shouldn't happen, but let's give ourselves a reasonable error when it does
               context.error(
                 cd.pos,
-                s"Internal error: Symbol for synthetic factory method not found among ${context.unit.synthetics.keys
-                  .mkString(", ")}")
+                s"Internal error: Symbol for synthetic factory method not found among ${context.unit.synthetics.keys.mkString(", ")}")
               // Soldier on for the sake of the presentation compiler
               List(cd)
           }
@@ -460,8 +462,8 @@ trait MethodSynthesis {
       def derivedSym: Symbol = {
         // Only methods will do! Don't want to pick up any stray
         // companion objects of the same name.
-        val result =
-          enclClass.info decl name filter (x => x.isMethod && x.isSynthetic)
+        val result = enclClass
+          .info decl name filter (x => x.isMethod && x.isSynthetic)
         if (result == NoSymbol || result.isOverloaded)
           context.error(
             tree.pos,
@@ -524,7 +526,8 @@ trait MethodSynthesis {
                 tree.tpt.duplicate setPos tree.tpt.pos.focus
               )
             case _ if isDeferred =>
-              TypeTree() setOriginal tree.tpt // keep type tree of original abstract field
+              TypeTree() setOriginal tree
+                .tpt // keep type tree of original abstract field
             case _ =>
               TypeTree(getterTp)
           }
@@ -569,7 +572,8 @@ trait MethodSynthesis {
           else
             gen.mkAssignAndReturn(basisSym, rhs1)
 
-        derivedSym setPos tree.pos // cannot set it at createAndEnterSymbol because basisSym can possibly still have NoPosition
+        derivedSym setPos tree
+          .pos // cannot set it at createAndEnterSymbol because basisSym can possibly still have NoPosition
         val ddefRes = DefDef(
           derivedSym,
           new ChangeOwnerAndModuleClassTraverser(basisSym, derivedSym)(body))

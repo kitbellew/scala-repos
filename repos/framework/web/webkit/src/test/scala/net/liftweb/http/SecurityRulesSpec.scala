@@ -34,8 +34,8 @@ class HttpsRulesSpec extends Specification {
     }
 
     "generate a correct Strict-Transport-Security header without sub-domains" in {
-      HttpsRules(Some(Duration(1440, SECONDS)), false).headers must_== List(
-        "Strict-Transport-Security" -> "max-age=1440")
+      HttpsRules(Some(Duration(1440, SECONDS)), false)
+        .headers must_== List("Strict-Transport-Security" -> "max-age=1440")
     }
 
     "generate a correct Strict-Transport-Security header including sub-domains" in {
@@ -48,8 +48,8 @@ class HttpsRulesSpec extends Specification {
 class ContentSecurityPolicySpec extends Specification {
   "ContentSecurityPolicy" should {
     "default to accepting images from everywhere" in {
-      ContentSecurityPolicy().imageSources must_== List(
-        ContentSourceRestriction.All)
+      ContentSecurityPolicy()
+        .imageSources must_== List(ContentSourceRestriction.All)
     }
 
     "default to allowing script eval and script sources only from self" in {
@@ -59,8 +59,8 @@ class ContentSecurityPolicySpec extends Specification {
     }
 
     "default to allowing everything else only from self" in {
-      ContentSecurityPolicy().defaultSources must_== List(
-        ContentSourceRestriction.Self)
+      ContentSecurityPolicy()
+        .defaultSources must_== List(ContentSourceRestriction.Self)
       ContentSecurityPolicy().connectSources must_== Nil
       ContentSecurityPolicy().fontSources must_== Nil
       ContentSecurityPolicy().frameSources must_== Nil
@@ -82,8 +82,8 @@ class ContentSecurityPolicySpec extends Specification {
     }
 
     "default to reporting to the CSP default report URI" in {
-      ContentSecurityPolicy().reportUri must_== Some(
-        ContentSecurityPolicy.defaultReportUri)
+      ContentSecurityPolicy()
+        .reportUri must_== Some(ContentSecurityPolicy.defaultReportUri)
     }
 
     "provide [X-]Content-Security-Policy if enforcement is enabled" in {
@@ -223,8 +223,8 @@ class SecurityRulesSpec extends Specification {
     }
 
     "default to same-origin frame restrictions" in {
-      SecurityRules().frameRestrictions must_== Some(
-        FrameRestrictions.SameOrigin)
+      SecurityRules()
+        .frameRestrictions must_== Some(FrameRestrictions.SameOrigin)
     }
 
     "default to enforcing in no modes and logging in all modes" in {

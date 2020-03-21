@@ -97,9 +97,8 @@ abstract class CommonWriteAheadLogTests(
     }
 
     val logDirectoryPath = new Path(testDir)
-    val fileSystem = HdfsUtils.getFileSystemForPath(
-      logDirectoryPath,
-      hadoopConf)
+    val fileSystem = HdfsUtils
+      .getFileSystemForPath(logDirectoryPath, hadoopConf)
     assert(fileSystem.exists(logDirectoryPath) === true)
 
     // Read data using manager and verify
@@ -534,11 +533,10 @@ class BatchedWriteAheadLogSuite
     super.beforeEach()
     wal = mock[WriteAheadLog]
     walHandle = mock[WriteAheadLogRecordHandle]
-    walBatchingThreadPool = ThreadUtils.newDaemonFixedThreadPool(
-      8,
-      "wal-test-thread-pool")
-    walBatchingExecutionContext = ExecutionContext.fromExecutorService(
-      walBatchingThreadPool)
+    walBatchingThreadPool = ThreadUtils
+      .newDaemonFixedThreadPool(8, "wal-test-thread-pool")
+    walBatchingExecutionContext = ExecutionContext
+      .fromExecutorService(walBatchingThreadPool)
   }
 
   override def afterEach(): Unit = {
@@ -557,8 +555,8 @@ class BatchedWriteAheadLogSuite
       BatchAllocationEvent(null, null),
       BatchCleanupEvent(Nil))
 
-    val buffers = events.map(e =>
-      Record(ByteBuffer.wrap(Utils.serialize(e)), 0L, null))
+    val buffers = events
+      .map(e => Record(ByteBuffer.wrap(Utils.serialize(e)), 0L, null))
     val batched = BatchedWriteAheadLog.aggregate(buffers)
     val deaggregate = BatchedWriteAheadLog
       .deaggregate(batched)
@@ -830,9 +828,8 @@ object WriteAheadLogSuite {
   /** Get the log files in a directory. */
   def getLogFilesInDirectory(directory: String): Seq[String] = {
     val logDirectoryPath = new Path(directory)
-    val fileSystem = HdfsUtils.getFileSystemForPath(
-      logDirectoryPath,
-      hadoopConf)
+    val fileSystem = HdfsUtils
+      .getFileSystemForPath(logDirectoryPath, hadoopConf)
 
     if (fileSystem.exists(logDirectoryPath) &&
         fileSystem.getFileStatus(logDirectoryPath).isDirectory) {

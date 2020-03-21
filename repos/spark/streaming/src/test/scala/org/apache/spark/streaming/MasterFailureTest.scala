@@ -114,7 +114,8 @@ private[streaming] object MasterFailureTest extends Logging {
         val updateFunc = (values: Seq[Long], state: Option[Long]) => {
           Some(values.foldLeft(0L)(_ + _) + state.getOrElse(0L))
         }
-        st.flatMap(_.split(" "))
+        st
+          .flatMap(_.split(" "))
           .map(x => (x, 1L))
           .updateStateByKey[Long](updateFunc)
           .checkpoint(batchDuration * 5)
@@ -248,7 +249,8 @@ private[streaming] object MasterFailureTest extends Logging {
     while (!isLastOutputGenerated && !isTimedOut) {
       // Get the output buffer
       val outputQueue =
-        ssc.graph
+        ssc
+          .graph
           .getOutputStreams()
           .head
           .asInstanceOf[TestOutputStream[T]]
@@ -380,8 +382,8 @@ private[streaming] class KillingThread(
           5000
         else
           2000
-      val killWaitTime =
-        minKillWaitTime + math.abs(Random.nextLong % maxKillWaitTime)
+      val killWaitTime = minKillWaitTime + math
+        .abs(Random.nextLong % maxKillWaitTime)
       logInfo("Kill wait time = " + killWaitTime)
       Thread.sleep(killWaitTime)
       logInfo(

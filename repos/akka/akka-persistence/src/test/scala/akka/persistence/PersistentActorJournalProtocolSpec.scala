@@ -122,30 +122,38 @@ class PersistentActorJournalProtocolSpec
     withClue(s"$w: ") {
       w.persistentActor should ===(subject)
       w.messages.size should ===(msgs.size)
-      w.messages.zip(msgs).foreach {
-        case (AtomicWrite(writes), msg) ⇒
-          writes.size should ===(msg.msg.size)
-          writes.zip(msg.msg).foreach {
-            case (PersistentRepr(evt, _), m) ⇒
-              evt should ===(m)
-          }
-        case x ⇒
-          fail(s"unexpected $x")
-      }
+      w
+        .messages
+        .zip(msgs)
+        .foreach {
+          case (AtomicWrite(writes), msg) ⇒
+            writes.size should ===(msg.msg.size)
+            writes
+              .zip(msg.msg)
+              .foreach {
+                case (PersistentRepr(evt, _), m) ⇒
+                  evt should ===(m)
+              }
+          case x ⇒
+            fail(s"unexpected $x")
+        }
     }
     w
   }
 
   def confirm(w: WriteMessages): Unit = {
     journal.send(w.persistentActor, WriteMessagesSuccessful)
-    w.messages.foreach {
-      case AtomicWrite(msgs) ⇒
-        msgs.foreach(msg ⇒
-          w.persistentActor
-            .tell(WriteMessageSuccess(msg, w.actorInstanceId), msg.sender))
-      case NonPersistentRepr(msg, sender) ⇒
-        w.persistentActor.tell(msg, sender)
-    }
+    w
+      .messages
+      .foreach {
+        case AtomicWrite(msgs) ⇒
+          msgs.foreach(msg ⇒
+            w
+              .persistentActor
+              .tell(WriteMessageSuccess(msg, w.actorInstanceId), msg.sender))
+        case NonPersistentRepr(msg, sender) ⇒
+          w.persistentActor.tell(msg, sender)
+      }
   }
 
   def startActor(name: String): ActorRef = {

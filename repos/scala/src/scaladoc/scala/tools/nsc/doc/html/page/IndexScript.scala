@@ -27,13 +27,16 @@ class IndexScript(universe: doc.Universe) extends Page {
 
   val packages = {
     val pairs =
-      allPackagesWithTemplates.toIterable
+      allPackagesWithTemplates
+        .toIterable
         .map(
           _ match {
             case (pack, templates) => {
               val merged = mergeByQualifiedName(templates)
 
-              val ary = merged.keys.toList
+              val ary = merged
+                .keys
+                .toList
                 .sortBy(_.toLowerCase)
                 .map(key => {
                   val pairs = merged(key).flatMap { t: DocTemplateEntity =>
@@ -78,20 +81,26 @@ class IndexScript(universe: doc.Universe) extends Page {
   def allPackagesWithTemplates = {
     Map(
       allPackages.map((key) => {
-        key -> key.templates.collect {
-          case t: DocTemplateEntity
-              if !t.isPackage && !universe.settings.hardcoded.isExcluded(
-                t.qualifiedName) =>
-            t
-        }
+        key -> key
+          .templates
+          .collect {
+            case t: DocTemplateEntity
+                if !t.isPackage && !universe
+                  .settings
+                  .hardcoded
+                  .isExcluded(t.qualifiedName) =>
+              t
+          }
       }): _*)
   }
 
   /** Gets the short description i.e. the first sentence of the docstring */
   def shortDesc(mbr: MemberEntity): String =
-    mbr.comment.fold("") { c =>
-      inlineToStr(c.short).replaceAll("\n", "")
-    }
+    mbr
+      .comment
+      .fold("") { c =>
+        inlineToStr(c.short).replaceAll("\n", "")
+      }
 
   /** Returns the json representation of the supplied members */
   def membersToJSON(entities: List[MemberEntity]): JSONType =
@@ -106,11 +115,11 @@ class IndexScript(universe: doc.Universe) extends Page {
       */
     def memberTail: MemberEntity => String = {
       case d: Def =>
-        d.valueParams //List[List[ValueParam]]
+        d
+          .valueParams //List[List[ValueParam]]
           .map { params =>
             params.map(p => p.name + ": " + p.resultType.name).mkString(", ")
-          }
-          .mkString("(", ")(", "): " + d.resultType.name)
+          }.mkString("(", ")(", "): " + d.resultType.name)
       case v: Val =>
         ": " + v.resultType.name
     }
@@ -138,7 +147,8 @@ class IndexScript(universe: doc.Universe) extends Page {
       JSONObject(
         Map(
           "label" -> m.definitionName.replaceAll(".*#", ""), // member name
-          "member" -> m.definitionName
+          "member" -> m
+            .definitionName
             .replaceFirst("#", "."), // full member name
           "tail" -> memberTail(m),
           "kind" -> memberKindToString(m), // modifiers i.e. "abstract def"

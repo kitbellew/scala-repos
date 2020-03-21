@@ -21,8 +21,8 @@ class WebSocketDirectivesExamplesSpec extends RoutingSpec {
       Flow[Message].mapConcat {
         case tm: TextMessage ⇒
           TextMessage(
-            Source.single("Hello ") ++ tm.textStream ++ Source.single(
-              "!")) :: Nil
+            Source.single("Hello ") ++ tm.textStream ++ Source
+              .single("!")) :: Nil
         case bm: BinaryMessage ⇒
           // ignore binary messages but drain content to avoid the stream being clogged
           bm.dataStream.runWith(Sink.ignore)
@@ -63,8 +63,8 @@ class WebSocketDirectivesExamplesSpec extends RoutingSpec {
       Flow[Message].mapConcat {
         case tm: TextMessage ⇒
           TextMessage(
-            Source.single("Hello ") ++ tm.textStream ++ Source.single(
-              "!")) :: Nil
+            Source.single("Hello ") ++ tm.textStream ++ Source
+              .single("!")) :: Nil
         case bm: BinaryMessage ⇒
           // ignore binary messages but drain content to avoid the stream being clogged
           bm.dataStream.runWith(Sink.ignore)

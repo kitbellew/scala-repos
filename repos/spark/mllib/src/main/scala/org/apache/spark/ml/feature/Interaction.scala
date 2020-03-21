@@ -139,29 +139,33 @@ class Interaction @Since("1.6.0") (override val uid: String)
         case nominal: NominalAttribute =>
           math.max(
             1,
-            nominal.getNumValues.getOrElse(
-              throw new SparkException(
-                "Nominal features must have attr numValues defined.")))
+            nominal
+              .getNumValues
+              .getOrElse(
+                throw new SparkException(
+                  "Nominal features must have attr numValues defined.")))
         case _ =>
           1 // numeric feature
       }
     }
-    features.map { f =>
-      val numFeatures =
-        f.dataType match {
-          case _: NumericType | BooleanType =>
-            Array(getNumFeatures(Attribute.fromStructField(f)))
-          case _: VectorUDT =>
-            val attrs = AttributeGroup
-              .fromStructField(f)
-              .attributes
-              .getOrElse(
-                throw new SparkException(
-                  "Vector attributes must be defined for interaction."))
-            attrs.map(getNumFeatures).toArray
-        }
-      new FeatureEncoder(numFeatures)
-    }.toArray
+    features
+      .map { f =>
+        val numFeatures =
+          f.dataType match {
+            case _: NumericType | BooleanType =>
+              Array(getNumFeatures(Attribute.fromStructField(f)))
+            case _: VectorUDT =>
+              val attrs = AttributeGroup
+                .fromStructField(f)
+                .attributes
+                .getOrElse(
+                  throw new SparkException(
+                    "Vector attributes must be defined for interaction."))
+              attrs.map(getNumFeatures).toArray
+          }
+        new FeatureEncoder(numFeatures)
+      }
+      .toArray
   }
 
   /**
@@ -175,35 +179,38 @@ class Interaction @Since("1.6.0") (override val uid: String)
     */
   private def getFeatureAttrs(features: Seq[StructField]): AttributeGroup = {
     var featureAttrs: Seq[Attribute] = Nil
-    features.reverse.foreach { f =>
-      val encodedAttrs =
-        f.dataType match {
-          case _: NumericType | BooleanType =>
-            val attr = Attribute.decodeStructField(f, preserveName = true)
-            if (attr == UnresolvedAttribute) {
-              encodedFeatureAttrs(
-                Seq(NumericAttribute.defaultAttr.withName(f.name)),
-                None)
-            } else if (!attr.name.isDefined) {
-              encodedFeatureAttrs(Seq(attr.withName(f.name)), None)
-            } else {
-              encodedFeatureAttrs(Seq(attr), None)
+    features
+      .reverse
+      .foreach { f =>
+        val encodedAttrs =
+          f.dataType match {
+            case _: NumericType | BooleanType =>
+              val attr = Attribute.decodeStructField(f, preserveName = true)
+              if (attr == UnresolvedAttribute) {
+                encodedFeatureAttrs(
+                  Seq(NumericAttribute.defaultAttr.withName(f.name)),
+                  None)
+              } else if (!attr.name.isDefined) {
+                encodedFeatureAttrs(Seq(attr.withName(f.name)), None)
+              } else {
+                encodedFeatureAttrs(Seq(attr), None)
+              }
+            case _: VectorUDT =>
+              val group = AttributeGroup.fromStructField(f)
+              encodedFeatureAttrs(group.attributes.get, Some(group.name))
+          }
+        if (featureAttrs.isEmpty) {
+          featureAttrs = encodedAttrs
+        } else {
+          featureAttrs = encodedAttrs.flatMap { head =>
+            featureAttrs.map { tail =>
+              NumericAttribute
+                .defaultAttr
+                .withName(head.name.get + ":" + tail.name.get)
             }
-          case _: VectorUDT =>
-            val group = AttributeGroup.fromStructField(f)
-            encodedFeatureAttrs(group.attributes.get, Some(group.name))
-        }
-      if (featureAttrs.isEmpty) {
-        featureAttrs = encodedAttrs
-      } else {
-        featureAttrs = encodedAttrs.flatMap { head =>
-          featureAttrs.map { tail =>
-            NumericAttribute.defaultAttr.withName(
-              head.name.get + ":" + tail.name.get)
           }
         }
       }
-    }
     new AttributeGroup($(outputCol), featureAttrs.toArray)
   }
 
@@ -230,20 +237,27 @@ class Interaction @Since("1.6.0") (override val uid: String)
       parts.flatten.mkString("_")
     }
 
-    inputAttrs.zipWithIndex.flatMap {
-      case (nominal: NominalAttribute, i) =>
-        if (nominal.values.isDefined) {
-          nominal.values.get.map(v =>
-            BinaryAttribute.defaultAttr.withName(
-              format(i, nominal.name, Some(v))))
-        } else {
-          Array.tabulate(nominal.getNumValues.get)(j =>
-            BinaryAttribute.defaultAttr.withName(
-              format(i, nominal.name, Some(j.toString))))
-        }
-      case (a: Attribute, i) =>
-        Seq(NumericAttribute.defaultAttr.withName(format(i, a.name, None)))
-    }
+    inputAttrs
+      .zipWithIndex
+      .flatMap {
+        case (nominal: NominalAttribute, i) =>
+          if (nominal.values.isDefined) {
+            nominal
+              .values
+              .get
+              .map(v =>
+                BinaryAttribute
+                  .defaultAttr
+                  .withName(format(i, nominal.name, Some(v))))
+          } else {
+            Array.tabulate(nominal.getNumValues.get)(j =>
+              BinaryAttribute
+                .defaultAttr
+                .withName(format(i, nominal.name, Some(j.toString))))
+          }
+        case (a: Attribute, i) =>
+          Seq(NumericAttribute.defaultAttr.withName(format(i, a.name, None)))
+      }
   }
 
   @Since("1.6.0")

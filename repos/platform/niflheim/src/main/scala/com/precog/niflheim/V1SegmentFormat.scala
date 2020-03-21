@@ -156,16 +156,20 @@ object V1SegmentFormat extends SegmentFormat {
         segment: ArraySegment[A],
         codec: Codec[A]): Validation[IOException, PrecogUnit] = {
       var maxSize = Codec.BitSetCodec.maxSize(segment.defined) + 4
-      segment.defined.foreach { row =>
-        maxSize += codec.maxSize(segment.values(row))
-      }
+      segment
+        .defined
+        .foreach { row =>
+          maxSize += codec.maxSize(segment.values(row))
+        }
 
       writeChunk(channel, maxSize) { buffer =>
         buffer.putInt(segment.values.length)
         Codec.BitSetCodec.writeUnsafe(segment.defined, buffer)
-        segment.defined.foreach { row =>
-          codec.writeUnsafe(segment.values(row), buffer)
-        }
+        segment
+          .defined
+          .foreach { row =>
+            codec.writeUnsafe(segment.values(row), buffer)
+          }
         PrecogUnit
       }
     }
@@ -173,8 +177,9 @@ object V1SegmentFormat extends SegmentFormat {
     private def writeBooleanSegment(
         channel: WritableByteChannel,
         segment: BooleanSegment) = {
-      val maxSize = Codec.BitSetCodec.maxSize(
-        segment.defined) + Codec.BitSetCodec.maxSize(segment.values) + 4
+      val maxSize = Codec.BitSetCodec.maxSize(segment.defined) + Codec
+        .BitSetCodec
+        .maxSize(segment.values) + 4
       writeChunk(channel, maxSize) { buffer =>
         buffer.putInt(segment.length)
         Codec.BitSetCodec.writeUnsafe(segment.defined, buffer)
@@ -243,7 +248,8 @@ object V1SegmentFormat extends SegmentFormat {
   private def getCodecFor[A](ctype: CValueType[A]): Codec[A] =
     ctype match {
       case CPeriod =>
-        Codec.LongCodec
+        Codec
+          .LongCodec
           .as[Period](_.toStandardDuration.getMillis, new Period(_))
       case CBoolean =>
         Codec.BooleanCodec

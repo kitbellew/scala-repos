@@ -148,9 +148,11 @@ object InputWrapper {
       case a @ Apply(Select(Apply(_, t :: Nil), tp), fmt) =>
         if (t.tpe <:< c.weakTypeOf[TaskKey[T]]) {
           val tsTyped = c.Expr[TaskKey[T]](t)
-          val newTree = c.universe.reify {
-            Previous.runtime[T](tsTyped.splice)(format.splice)
-          }
+          val newTree = c
+            .universe
+            .reify {
+              Previous.runtime[T](tsTyped.splice)(format.splice)
+            }
           wrapPrevious[T](c)(newTree, a.pos)
         } else
           c.abort(a.pos, s"Internal sbt error. Unexpected type ${t.tpe.widen}")

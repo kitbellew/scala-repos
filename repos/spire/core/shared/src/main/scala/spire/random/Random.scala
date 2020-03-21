@@ -184,18 +184,22 @@ abstract class Random[+A, G <: Generator](val op: Op[A]) {
   def right: Random[Right[Nothing, A], G] = map(Right(_))
 
   def option: Random[Option[A], G] =
-    companion.boolean.flatMap(b =>
-      if (b)
-        some
-      else
-        companion.constant(None))
+    companion
+      .boolean
+      .flatMap(b =>
+        if (b)
+          some
+        else
+          companion.constant(None))
 
   def or[B](that: Random[B, G]): Random[Either[A, B], G] =
-    companion.boolean.flatMap(b =>
-      if (b)
-        left
-      else
-        that.right)
+    companion
+      .boolean
+      .flatMap(b =>
+        if (b)
+          left
+        else
+          that.right)
 
   def and[B](that: Random[B, G]): Random[(A, B), G] =
     for {

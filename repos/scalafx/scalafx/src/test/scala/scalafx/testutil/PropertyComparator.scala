@@ -31,9 +31,7 @@ import java.lang.reflect.Method
 trait PropertyComparator extends AbstractComparator {
 
   private def getScalaFXProperties(scalafxClass: Class[_]) = {
-    scalafxClass.getMethods
-      .map(m => m.getName)
-      .toSet
+    scalafxClass.getMethods.map(m => m.getName).toSet
   }
 
   protected def getDesirableMethodName(javaMethod: Method): String =
@@ -42,8 +40,8 @@ trait PropertyComparator extends AbstractComparator {
   protected def isSpecialMethodName(name: String) =
     super.isImplementation(name) ||
       (name == "applyTo") || (name == "create") || (name == "build") ||
-      name.endsWith("Property") || name.startsWith("get") || name.startsWith(
-      "set") || name.startsWith("is")
+      name.endsWith("Property") || name.startsWith("get") || name
+      .startsWith("set") || name.startsWith("is")
 
   private def assertProperties(
       javaFxProperties: Set[String],
@@ -58,7 +56,8 @@ trait PropertyComparator extends AbstractComparator {
   private def getProperties(javafxClass: Class[_]): Set[String] = {
     val javafxRegex = """(.*)Property""".r
     val javaFxProperties =
-      javafxClass.getDeclaredMethods
+      javafxClass
+        .getDeclaredMethods
         .filter(super.isPublicMethod)
         .filterNot(m => super.isImplementation(m.getName))
         .map(m => javafxRegex.findFirstMatchIn(m.getName))

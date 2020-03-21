@@ -246,8 +246,9 @@ object System {
         "java.vm.specification.name",
         "Java Virtual Machine Specification")
       sysProp.setProperty("java.vm.name", "Scala.js")
-      linkingInfo.linkerVersion.foreach(v =>
-        sysProp.setProperty("java.vm.version", v))
+      linkingInfo
+        .linkerVersion
+        .foreach(v => sysProp.setProperty("java.vm.version", v))
       sysProp.setProperty("java.specification.version", "1.8")
       sysProp.setProperty("java.specification.vendor", "Oracle Corporation")
       sysProp.setProperty(

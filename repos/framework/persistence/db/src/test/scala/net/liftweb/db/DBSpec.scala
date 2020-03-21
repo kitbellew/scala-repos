@@ -53,10 +53,12 @@ class DBSpec extends Specification with Mockito {
 
       DB.buildLoanWrapper(true) {
         DB.appendPostTransaction(DefaultConnectionIdentifier, m.f _)
-        DB.currentConnection.map { c =>
-          DB.exec(c, "stuff") { dummy =>
+        DB
+          .currentConnection
+          .map { c =>
+            DB.exec(c, "stuff") { dummy =>
+            }
           }
-        }
       }
       there was one(activeConnection).commit
       there was one(m).f(true)
@@ -74,10 +76,12 @@ class DBSpec extends Specification with Mockito {
       tryo(
         lw.apply {
           DB.appendPostTransaction(DefaultConnectionIdentifier, m.f _)
-          DB.currentConnection.map { c =>
-            DB.exec(c, "stuff") { dummy =>
+          DB
+            .currentConnection
+            .map { c =>
+              DB.exec(c, "stuff") { dummy =>
+              }
             }
-          }
           throw new RuntimeException("oh no")
           42
         })

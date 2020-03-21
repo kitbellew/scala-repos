@@ -76,15 +76,17 @@ class ScalaLineMarkerProvider(
       element.getTextRange,
       null,
       Pass.UPDATE_ALL,
-      NullableFunction.NULL
+      NullableFunction
+        .NULL
         .asInstanceOf[com.intellij.util.Function[PsiElement, String]],
       null,
       GutterIconRenderer.Alignment.RIGHT)
   }
 
   def addSeparatorInfo(info: LineMarkerInfo[_ <: PsiElement]) = {
-    info.separatorColor = colorsManager.getGlobalScheme.getColor(
-      CodeInsightColors.METHOD_SEPARATORS_COLOR)
+    info.separatorColor = colorsManager
+      .getGlobalScheme
+      .getColor(CodeInsightColors.METHOD_SEPARATORS_COLOR)
     info.separatorPlacement = SeparatorPlacement.TOP
     info
   }
@@ -128,8 +130,9 @@ class ScalaLineMarkerProvider(
         return null
 
       def containsNamedElement(holder: ScDeclaredElementsHolder) =
-        holder.declaredElements.exists(
-          _.asInstanceOf[ScNamedElement].nameId == element)
+        holder
+          .declaredElements
+          .exists(_.asInstanceOf[ScNamedElement].nameId == element)
 
       (parent, parent.getParent) match {
         case (method: ScFunction, _: ScTemplateBody)
@@ -158,9 +161,8 @@ class ScalaLineMarkerProvider(
                 return null
             }
           for (z <- bindings)
-            signatures ++= ScalaPsiUtil.superValsSignatures(
-              z,
-              withSelfType = true)
+            signatures ++= ScalaPsiUtil
+              .superValsSignatures(z, withSelfType = true)
           val icon =
             if (GutterUtil.isOverrides(x, signatures))
               OVERRIDING_METHOD_ICON
@@ -178,9 +180,8 @@ class ScalaLineMarkerProvider(
             return marker(token, icon, typez)
           }
         case (x: ScObject, _: ScTemplateBody) if x.nameId == element =>
-          val signatures = ScalaPsiUtil.superValsSignatures(
-            x,
-            withSelfType = true)
+          val signatures = ScalaPsiUtil
+            .superValsSignatures(x, withSelfType = true)
           val icon =
             if (GutterUtil.isOverrides(x, signatures))
               OVERRIDING_METHOD_ICON
@@ -323,10 +324,8 @@ private object GutterUtil {
         }
       val overrides = new ArrayBuffer[PsiNamedElement]
       for (member <- members)
-        overrides ++= ScalaOverridingMemberSearcher.search(
-          member,
-          deep = false,
-          withSelfType = true)
+        overrides ++= ScalaOverridingMemberSearcher
+          .search(member, deep = false, withSelfType = true)
       if (overrides.nonEmpty) {
         val icon =
           if (!GutterUtil.isAbstract(member))

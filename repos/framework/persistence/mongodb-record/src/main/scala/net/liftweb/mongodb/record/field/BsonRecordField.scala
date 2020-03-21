@@ -114,9 +114,12 @@ class BsonRecordListField[OwnerType <: BsonRecord[
   override def setFromDBObject(dbo: DBObject): Box[List[SubRecordType]] =
     setBox(
       Full(
-        dbo.keySet.toList.map(k => {
-          valueMeta.fromDBObject(dbo.get(k.toString).asInstanceOf[DBObject])
-        })))
+        dbo
+          .keySet
+          .toList
+          .map(k => {
+            valueMeta.fromDBObject(dbo.get(k.toString).asInstanceOf[DBObject])
+          })))
 
   override def asJValue: JValue = JArray(value.map(_.asJValue))
 

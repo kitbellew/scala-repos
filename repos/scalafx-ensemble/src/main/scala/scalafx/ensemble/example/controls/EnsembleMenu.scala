@@ -59,8 +59,10 @@ class EnsembleMenu extends EnsembleExample {
               new Menu("Author Info") {
                 graphic = new ImageView {
                   image = new Image(
-                    this.getClass.getResourceAsStream(
-                      "/scalafx/ensemble/images/crumb-selected-focused.png"))
+                    this
+                      .getClass
+                      .getResourceAsStream(
+                        "/scalafx/ensemble/images/crumb-selected-focused.png"))
                   margin = Insets(0, 0, 0, 5)
                 }
                 items = List(

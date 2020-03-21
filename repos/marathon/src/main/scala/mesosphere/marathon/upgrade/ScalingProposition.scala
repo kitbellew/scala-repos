@@ -23,9 +23,8 @@ object ScalingProposition {
           toKillMap.contains(k)
       }
     // overall number of tasks that need to be killed
-    val killCount = math.max(
-      runningTasks.size - scaleTo,
-      sentencedAndRunningMap.size)
+    val killCount = math
+      .max(runningTasks.size - scaleTo, sentencedAndRunningMap.size)
     // tasks that should be killed to meet constraints – pass notSentenced & consider the sentenced 'already killed'
     val killToMeetConstraints = meetConstraints(
       notSentencedAndRunningMap.values,
@@ -36,7 +35,9 @@ object ScalingProposition {
     val ordered =
       sentencedAndRunningMap.values.toSeq ++
         killToMeetConstraints.toSeq ++
-        rest.values.toSeq
+        rest
+          .values
+          .toSeq
           .sortBy(
             _.launched.flatMap(_.status.startedAt).getOrElse(Timestamp.zero))
           .reverse

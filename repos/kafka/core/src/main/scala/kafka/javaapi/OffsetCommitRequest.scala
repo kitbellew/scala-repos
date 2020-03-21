@@ -31,12 +31,14 @@ class OffsetCommitRequest(
 
       requestInfo.toMap
     }
-    kafka.api.OffsetCommitRequest(
-      groupId = groupId,
-      requestInfo = scalaMap,
-      versionId = versionId,
-      correlationId = correlationId,
-      clientId = clientId)
+    kafka
+      .api
+      .OffsetCommitRequest(
+        groupId = groupId,
+        requestInfo = scalaMap,
+        versionId = versionId,
+        correlationId = correlationId,
+        clientId = clientId)
   }
 
   def this(

@@ -108,10 +108,13 @@ private[regression] trait IsotonicRegressionBase
       } else {
         lit(1.0)
       }
-    dataset.select(col($(labelCol)), f, w).rdd.map {
-      case Row(label: Double, feature: Double, weight: Double) =>
-        (label, feature, weight)
-    }
+    dataset
+      .select(col($(labelCol)), f, w)
+      .rdd
+      .map {
+        case Row(label: Double, feature: Double, weight: Double) =>
+          (label, feature, weight)
+      }
   }
 
   /**
@@ -336,7 +339,8 @@ object IsotonicRegressionModel extends MLReadable[IsotonicRegressionModel] {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
+      val data = sqlContext
+        .read
         .parquet(dataPath)
         .select("boundaries", "predictions", "isotonic")
         .head()

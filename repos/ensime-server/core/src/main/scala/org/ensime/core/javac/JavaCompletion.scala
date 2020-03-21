@@ -77,8 +77,8 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       (
         if (ImportSubtypeRegexp.findFirstMatchIn(preceding).isDefined) {
           // Erase the trailing partial subtype (it breaks type resolution).
-          val patched = s.substring(0, indexAfterTarget) + " " + s.substring(
-            indexAfterTarget + defaultPrefix.length + 1);
+          val patched = s.substring(0, indexAfterTarget) + " " + s
+            .substring(indexAfterTarget + defaultPrefix.length + 1);
           (
             pathToPoint(
               SourceFileInfo(info.file, Some(patched), None),
@@ -106,9 +106,8 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
         } else if (isMemberAccess) {
           // TODO how to avoid allocating a new string? buffer of immutable string slices?
           // Erase the trailing partial member (it breaks type resolution).
-          val patched =
-            s.substring(0, indexAfterTarget) + ".wait()" + s.substring(
-              indexAfterTarget + defaultPrefix.length + 1);
+          val patched = s.substring(0, indexAfterTarget) + ".wait()" + s
+            .substring(indexAfterTarget + defaultPrefix.length + 1);
           (
             pathToPoint(
               SourceFileInfo(info.file, Some(patched), None),
@@ -204,9 +203,11 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       (
         Option(info.getElements.getPackageElement(pkg)) map {
           p: PackageElement =>
-            p.getEnclosedElements().flatMap { e =>
-              filterElement(info, e, prefix, caseSense, true, false)
-            }
+            p
+              .getEnclosedElements()
+              .flatMap { e =>
+                filterElement(info, e, prefix, caseSense, true, false)
+              }
         }
       ).getOrElse(List())
     candidates.toList
@@ -324,9 +325,11 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
         el match {
           case tel: TypeElement => {
             val elements: Elements = info.getElements()
-            elements.getAllMembers(tel).flatMap { e =>
-              filterElement(info, e, prefix, caseSense, importing, false)
-            }
+            elements
+              .getAllMembers(tel)
+              .flatMap { e =>
+                filterElement(info, e, prefix, caseSense, importing, false)
+              }
           }
           case e => {
             log.warn("Unrecognized type element " + e)
@@ -346,7 +349,8 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       s,
       CompletionSignature(
         List(
-          e.getParameters()
+          e
+            .getParameters()
             .map { p =>
               (p.getSimpleName.toString, p.asType.toString)
             }
@@ -395,9 +399,11 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
 
   private def localTypeName(tm: TypeMirror) = {
     val s = tm.toString
-    val (front, back) = s.split("\\.").partition { s =>
-      s.forall(Character.isLowerCase)
-    }
+    val (front, back) = s
+      .split("\\.")
+      .partition { s =>
+        s.forall(Character.isLowerCase)
+      }
     if (back.isEmpty)
       s
     else

@@ -54,7 +54,8 @@ abstract class TestConfigurationProducer(configurationType: ConfigurationType)
         case Some((testElement, resConfig))
             if testElement != null && resConfig != null =>
           sourceElement.set(testElement)
-          val cfg = resConfig.getConfiguration
+          val cfg = resConfig
+            .getConfiguration
             .asInstanceOf[AbstractTestRunConfiguration]
           configuration.setTestClassPath(cfg.getTestClassPath)
           configuration.setGeneratedName(cfg.suggestedName)
@@ -94,13 +95,15 @@ abstract class TestConfigurationProducer(configurationType: ConfigurationType)
       } else {
         (
           context.getModule == configurationModule ||
-          context.getRunManager
+          context
+            .getRunManager
             .getConfigurationTemplate(getConfigurationFactory)
             .getConfiguration
             .asInstanceOf[AbstractTestRunConfiguration]
             .getConfigurationModule
             .getModule == configurationModule
-        ) && configuration.getTestClassPath == null && configuration.getTestName == null
+        ) && configuration.getTestClassPath == null && configuration
+          .getTestName == null
       }
     } else
       false

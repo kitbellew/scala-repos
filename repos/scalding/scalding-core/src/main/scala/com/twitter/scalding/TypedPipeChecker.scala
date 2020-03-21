@@ -25,7 +25,8 @@ object TypedPipeChecker {
     * Execute a TypedPipe in memory and return the result as a List
     */
   def inMemoryToList[T](output: TypedPipe[T]): List[T] =
-    output.toIterableExecution
+    output
+      .toIterableExecution
       .waitFor(Config.unitTestDefault, Local(strictSources = true))
       .get
       .toList

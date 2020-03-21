@@ -60,16 +60,18 @@ class LocalSbtWatcherExec extends SbtWatcherExec {
     private var stop = false
 
     def startMain() = {
-      try Executors.newSingleThreadExecutor().submit {
-        new Runnable {
-          override def run() {
-            while (!stop) {
-              readString()
-              Thread.sleep(MAGIC_SLEEP_TIME_MILLIS) //interrupt point
+      try Executors
+        .newSingleThreadExecutor()
+        .submit {
+          new Runnable {
+            override def run() {
+              while (!stop) {
+                readString()
+                Thread.sleep(MAGIC_SLEEP_TIME_MILLIS) //interrupt point
+              }
             }
           }
-        }
-      } catch {
+        } catch {
         case _: InterruptedException => //ignored
       }
 

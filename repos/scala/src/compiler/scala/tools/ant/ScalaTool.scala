@@ -89,19 +89,22 @@ class ScalaTool extends ScalaMatchingTask {
 
   /** Sets the platforms attribute. */
   def setPlatforms(input: String) = {
-    platforms = input.split(",").toList.flatMap { s: String =>
-      val st = s.trim
-      if (Platforms.isPermissible(st))
-        (
-          if (input != "")
-            List(st)
-          else
-            Nil
-        )
-      else {
-        buildError("Platform " + st + " does not exist.")
+    platforms = input
+      .split(",")
+      .toList
+      .flatMap { s: String =>
+        val st = s.trim
+        if (Platforms.isPermissible(st))
+          (
+            if (input != "")
+              List(st)
+            else
+              Nil
+          )
+        else {
+          buildError("Platform " + st + " does not exist.")
+        }
       }
-    }
   }
 
   /** Sets the classpath with which to run the tool.
@@ -137,17 +140,20 @@ class ScalaTool extends ScalaMatchingTask {
 
   /** Sets JVM properties that will be set whilst running the tool. */
   def setProperties(input: String) = {
-    properties = input.split(",").toList.flatMap { s: String =>
-      val st = s.trim
-      val stArray = st.split("=", 2)
-      if (stArray.length == 2) {
-        if (input != "")
-          List((stArray(0), stArray(1)))
-        else
-          Nil
-      } else
-        buildError("Property " + st + " is not formatted properly.")
-    }
+    properties = input
+      .split(",")
+      .toList
+      .flatMap { s: String =>
+        val st = s.trim
+        val stArray = st.split("=", 2)
+        if (stArray.length == 2) {
+          if (input != "")
+            List((stArray(0), stArray(1)))
+          else
+            Nil
+        } else
+          buildError("Property " + st + " is not formatted properly.")
+      }
   }
 
   /** Sets flags to be passed to the Java interpreter. */

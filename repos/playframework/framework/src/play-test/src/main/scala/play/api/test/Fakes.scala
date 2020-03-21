@@ -59,8 +59,8 @@ case class FakeRequest[A](
       headers: Headers = this.headers,
       remoteAddress: String = this.remoteAddress,
       secure: Boolean = this.secure,
-      clientCertificateChain: Option[Seq[X509Certificate]] =
-        this.clientCertificateChain,
+      clientCertificateChain: Option[Seq[X509Certificate]] = this
+        .clientCertificateChain,
       body: B = this.body): FakeRequest[B] = {
     new FakeRequest[B](
       method,
@@ -83,8 +83,11 @@ case class FakeRequest[A](
   /**
     * The request query String
     */
-  lazy val queryString: Map[String, Seq[String]] =
-    play.core.parsers.FormUrlEncodedParser.parse(rawQueryString)
+  lazy val queryString: Map[String, Seq[String]] = play
+    .core
+    .parsers
+    .FormUrlEncodedParser
+    .parse(rawQueryString)
 
   /**
     * Constructs a new request with additional headers. Any existing headers of the same name will be replaced.
@@ -230,8 +233,8 @@ case class FakeApplication(
     additionalConfiguration: Map[String, _ <: Any] = Map.empty,
     @deprecated("Use dependency injection", "2.5.0") withGlobal: Option[
       GlobalSettings] = None,
-    withRoutes: PartialFunction[(String, String), Handler] =
-      PartialFunction.empty)
+    withRoutes: PartialFunction[(String, String), Handler] = PartialFunction
+      .empty)
     extends Application {
 
   private val app: Application =

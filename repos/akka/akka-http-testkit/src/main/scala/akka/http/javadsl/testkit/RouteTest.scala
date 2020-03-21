@@ -65,7 +65,8 @@ abstract class RouteTest extends AllDirectives {
       scalaRoute: ScalaRoute,
       request: HttpRequest,
       defaultHostInfo: DefaultHostInfo): TestResponse = {
-    val effectiveRequest = request.asScala
+    val effectiveRequest = request
+      .asScala
       .withEffectiveUri(
         securedConnection = defaultHostInfo.isSecuredConnection(),
         defaultHostHeader = defaultHostInfo.getHost().asScala)

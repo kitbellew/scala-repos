@@ -104,8 +104,8 @@ class EncoderErrorMessageSuite extends SparkFunSuite {
     assert(
       errorMsg4.contains(s"""field (class: "scala.Array", name: "name4")"""))
     assert(
-      errorMsg4.contains(
-        s"""array element class: "${clsName[NonEncodable]}""""))
+      errorMsg4
+        .contains(s"""array element class: "${clsName[NonEncodable]}""""))
 
     val errorMsg5 =
       intercept[UnsupportedOperationException](
@@ -116,8 +116,8 @@ class EncoderErrorMessageSuite extends SparkFunSuite {
       errorMsg5.contains(s"""field (class: "scala.Option", name: "name5")"""))
     assert(errorMsg5.contains(s"""option value class: "scala.Array""""))
     assert(
-      errorMsg5.contains(
-        s"""array element class: "${clsName[NonEncodable]}""""))
+      errorMsg5
+        .contains(s"""array element class: "${clsName[NonEncodable]}""""))
   }
 
   private def clsName[T: ClassTag]: String =

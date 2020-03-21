@@ -49,7 +49,9 @@ class NettyServer(
     val actorSystem: ActorSystem)(implicit val materializer: Materializer)
     extends Server {
 
-  private val nettyConfig = config.configuration.underlying
+  private val nettyConfig = config
+    .configuration
+    .underlying
     .getConfig("play.server.netty")
   private val maxInitialLineLength = nettyConfig.getInt("maxInitialLineLength")
   private val maxHeaderSize = nettyConfig.getInt("maxHeaderSize")
@@ -112,8 +114,11 @@ class NettyServer(
         case other =>
           other
       }
-    config.entrySet().asScala.filterNot(_.getKey.startsWith("child.")).foreach {
-      option =>
+    config
+      .entrySet()
+      .asScala
+      .filterNot(_.getKey.startsWith("child."))
+      .foreach { option =>
         if (ChannelOption.exists(option.getKey)) {
           setOption(
             ChannelOption.valueOf(option.getKey),
@@ -129,7 +134,7 @@ class NettyServer(
                 "Valid values can be found at http://netty.io/4.0/api/io/netty/channel/ChannelOption.html")
           }
         }
-    }
+      }
   }
 
   /**
@@ -158,8 +163,7 @@ class NettyServer(
         ChannelOption.AUTO_READ,
         java.lang.Boolean.FALSE
       ) // publisher does ctx.read()
-      .handler(channelPublisher)
-      .localAddress(address)
+      .handler(channelPublisher).localAddress(address)
 
     setOptions(bootstrap.option, nettyConfig.getConfig("option"))
 
@@ -188,12 +192,14 @@ class NettyServer(
         sslEngineProvider.map { sslEngineProvider =>
           val sslEngine = sslEngineProvider.createSSLEngine()
           sslEngine.setUseClientMode(false)
-          if (config.configuration
+          if (config
+                .configuration
                 .getBoolean("play.server.https.wantClientAuth")
                 .getOrElse(false)) {
             sslEngine.setWantClientAuth(true)
           }
-          if (config.configuration
+          if (config
+                .configuration
                 .getBoolean("play.server.https.needClientAuth")
                 .getOrElse(false)) {
             sslEngine.setNeedClientAuth(true)
@@ -301,7 +307,8 @@ class NettyServer(
   }
 
   override lazy val mainAddress = {
-    (httpChannel orElse httpsChannel).get
+    (httpChannel orElse httpsChannel)
+      .get
       .localAddress()
       .asInstanceOf[InetSocketAddress]
   }
@@ -335,8 +342,10 @@ object NettyServer {
   implicit val provider = new NettyServerProvider
 
   def main(args: Array[String]) {
-    System.err.println(
-      s"NettyServer.main is deprecated. Please start your Play server with the ${ProdServerStart.getClass.getName}.main.")
+    System
+      .err
+      .println(
+        s"NettyServer.main is deprecated. Please start your Play server with the ${ProdServerStart.getClass.getName}.main.")
     ProdServerStart.main(args)
   }
 
@@ -384,8 +393,8 @@ trait NettyServerComponents {
       application.actorSystem)(application.materializer)
   }
 
-  lazy val environment: Environment = Environment.simple(mode =
-    serverConfig.mode)
+  lazy val environment: Environment = Environment
+    .simple(mode = serverConfig.mode)
   lazy val sourceMapper: Option[SourceMapper] = None
   lazy val webCommands: WebCommands = new DefaultWebCommands
   lazy val configuration: Configuration = Configuration(ConfigFactory.load())

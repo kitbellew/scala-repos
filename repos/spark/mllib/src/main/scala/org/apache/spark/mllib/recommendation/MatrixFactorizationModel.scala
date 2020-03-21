@@ -139,29 +139,37 @@ class MatrixFactorizationModel @Since("0.8.0") (
       usersProducts)
 
     if (usersCount < productsCount) {
-      val users = userFeatures.join(usersProducts).map {
-        case (user, (uFeatures, product)) =>
-          (product, (user, uFeatures))
-      }
-      users.join(productFeatures).map {
-        case (product, ((user, uFeatures), pFeatures)) =>
-          Rating(
-            user,
-            product,
-            blas.ddot(uFeatures.length, uFeatures, 1, pFeatures, 1))
-      }
+      val users = userFeatures
+        .join(usersProducts)
+        .map {
+          case (user, (uFeatures, product)) =>
+            (product, (user, uFeatures))
+        }
+      users
+        .join(productFeatures)
+        .map {
+          case (product, ((user, uFeatures), pFeatures)) =>
+            Rating(
+              user,
+              product,
+              blas.ddot(uFeatures.length, uFeatures, 1, pFeatures, 1))
+        }
     } else {
-      val products = productFeatures.join(usersProducts.map(_.swap)).map {
-        case (product, (pFeatures, user)) =>
-          (user, (product, pFeatures))
-      }
-      products.join(userFeatures).map {
-        case (user, ((product, pFeatures), uFeatures)) =>
-          Rating(
-            user,
-            product,
-            blas.ddot(uFeatures.length, uFeatures, 1, pFeatures, 1))
-      }
+      val products = productFeatures
+        .join(usersProducts.map(_.swap))
+        .map {
+          case (product, (pFeatures, user)) =>
+            (user, (product, pFeatures))
+        }
+      products
+        .join(userFeatures)
+        .map {
+          case (user, ((product, pFeatures), uFeatures)) =>
+            Rating(
+              user,
+              product,
+              blas.ddot(uFeatures.length, uFeatures, 1, pFeatures, 1))
+        }
     }
   }
 
@@ -309,19 +317,21 @@ object MatrixFactorizationModel extends Loader[MatrixFactorizationModel] {
       num: Int): RDD[(Int, Array[(Int, Double)])] = {
     val srcBlocks = blockify(rank, srcFeatures)
     val dstBlocks = blockify(rank, dstFeatures)
-    val ratings = srcBlocks.cartesian(dstBlocks).flatMap {
-      case ((srcIds, srcFactors), (dstIds, dstFactors)) =>
-        val m = srcIds.length
-        val n = dstIds.length
-        val ratings = srcFactors.transpose.multiply(dstFactors)
-        val output = new Array[(Int, (Int, Double))](m * n)
-        var k = 0
-        ratings.foreachActive { (i, j, r) =>
-          output(k) = (srcIds(i), (dstIds(j), r))
-          k += 1
-        }
-        output.toSeq
-    }
+    val ratings = srcBlocks
+      .cartesian(dstBlocks)
+      .flatMap {
+        case ((srcIds, srcFactors), (dstIds, dstFactors)) =>
+          val m = srcIds.length
+          val n = dstIds.length
+          val ratings = srcFactors.transpose.multiply(dstFactors)
+          val output = new Array[(Int, (Int, Double))](m * n)
+          var k = 0
+          ratings.foreachActive { (i, j, r) =>
+            output(k) = (srcIds(i), (dstIds(j), r))
+            k += 1
+          }
+          output.toSeq
+      }
     ratings.topByKey(num)(Ordering.by(_._2))
   }
 
@@ -334,20 +344,22 @@ object MatrixFactorizationModel extends Loader[MatrixFactorizationModel] {
     val blockSize = 4096 // TODO: tune the block size
     val blockStorage = rank * blockSize
     features.mapPartitions { iter =>
-      iter.grouped(blockSize).map { grouped =>
-        val ids = mutable.ArrayBuilder.make[Int]
-        ids.sizeHint(blockSize)
-        val factors = mutable.ArrayBuilder.make[Double]
-        factors.sizeHint(blockStorage)
-        var i = 0
-        grouped.foreach {
-          case (id, factor) =>
-            ids += id
-            factors ++= factor
-            i += 1
+      iter
+        .grouped(blockSize)
+        .map { grouped =>
+          val ids = mutable.ArrayBuilder.make[Int]
+          ids.sizeHint(blockSize)
+          val factors = mutable.ArrayBuilder.make[Double]
+          factors.sizeHint(blockStorage)
+          var i = 0
+          grouped.foreach {
+            case (id, factor) =>
+              ids += id
+              factors ++= factor
+              i += 1
+          }
+          (ids.result(), new DenseMatrix(rank, i, factors.result()))
         }
-        (ids.result(), new DenseMatrix(rank, i, factors.result()))
-      }
     }
   }
 
@@ -399,7 +411,8 @@ object MatrixFactorizationModel extends Loader[MatrixFactorizationModel] {
           )))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(metadataPath(path))
       model.userFeatures.toDF("id", "features").write.parquet(userPath(path))
-      model.productFeatures
+      model
+        .productFeatures
         .toDF("id", "features")
         .write
         .parquet(productPath(path))
@@ -412,14 +425,22 @@ object MatrixFactorizationModel extends Loader[MatrixFactorizationModel] {
       assert(className == thisClassName)
       assert(formatVersion == thisFormatVersion)
       val rank = (metadata \ "rank").extract[Int]
-      val userFeatures = sqlContext.read.parquet(userPath(path)).rdd.map {
-        case Row(id: Int, features: Seq[_]) =>
-          (id, features.asInstanceOf[Seq[Double]].toArray)
-      }
-      val productFeatures = sqlContext.read.parquet(productPath(path)).rdd.map {
-        case Row(id: Int, features: Seq[_]) =>
-          (id, features.asInstanceOf[Seq[Double]].toArray)
-      }
+      val userFeatures = sqlContext
+        .read
+        .parquet(userPath(path))
+        .rdd
+        .map {
+          case Row(id: Int, features: Seq[_]) =>
+            (id, features.asInstanceOf[Seq[Double]].toArray)
+        }
+      val productFeatures = sqlContext
+        .read
+        .parquet(productPath(path))
+        .rdd
+        .map {
+          case Row(id: Int, features: Seq[_]) =>
+            (id, features.asInstanceOf[Seq[Double]].toArray)
+        }
       new MatrixFactorizationModel(rank, userFeatures, productFeatures)
     }
 

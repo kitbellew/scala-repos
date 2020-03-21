@@ -52,8 +52,8 @@ object ConnectionTestApp {
   }
 
   def sendPoolFuture(uri: Uri, id: Int): Unit = {
-    val responseFuture: Future[HttpResponse] = Http().singleRequest(
-      buildRequest(uri))
+    val responseFuture: Future[HttpResponse] = Http()
+      .singleRequest(buildRequest(uri))
 
     responseFuture.onComplete(r ⇒ handleResponse(r, id))
   }

@@ -280,7 +280,9 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
     val loggingEvent = loggingEventCaptor.getValue
     assert(loggingEvent.getThrowableInformation !== null)
     assert(
-      loggingEvent.getThrowableInformation.getThrowable
+      loggingEvent
+        .getThrowableInformation
+        .getThrowable
         .isInstanceOf[IOException])
   }
 
@@ -313,12 +315,17 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
     // Make sure no IOException errors have been logged as a result of appender closing gracefully
     verify(mockAppender, atLeast(0)).doAppend(loggingEventCaptor.capture)
     import scala.collection.JavaConverters._
-    loggingEventCaptor.getAllValues.asScala.foreach { loggingEvent =>
-      assert(
-        loggingEvent.getThrowableInformation === null
-          || !loggingEvent.getThrowableInformation.getThrowable
-            .isInstanceOf[IOException])
-    }
+    loggingEventCaptor
+      .getAllValues
+      .asScala
+      .foreach { loggingEvent =>
+        assert(
+          loggingEvent.getThrowableInformation === null
+            || !loggingEvent
+              .getThrowableInformation
+              .getThrowable
+              .isInstanceOf[IOException])
+      }
   }
 
   /**
@@ -359,7 +366,9 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
 
   /** Delete all the generated rolledover files */
   def cleanup() {
-    testFile.getParentFile.listFiles
+    testFile
+      .getParentFile
+      .listFiles
       .filter { file =>
         file.getName.startsWith(testFile.getName)
       }

@@ -133,7 +133,8 @@ abstract class ApplicabilityTestBase extends SimpleTestCase {
   }
 
   private def problemsIn(file: ScalaFile): List[ApplicabilityProblem] = {
-    for (ref <- file.depthFirst
+    for (ref <- file
+           .depthFirst
            .filterByType(classOf[ScReferenceElement])
            .toList;
          result <- ref.advancedResolve.toList;

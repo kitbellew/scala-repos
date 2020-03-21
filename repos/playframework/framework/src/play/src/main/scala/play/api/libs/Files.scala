@@ -100,10 +100,8 @@ object Files {
     def moveTo(to: File, replace: Boolean = false): File = {
       try {
         if (replace)
-          JFiles.move(
-            file.toPath,
-            to.toPath,
-            StandardCopyOption.REPLACE_EXISTING)
+          JFiles
+            .move(file.toPath, to.toPath, StandardCopyOption.REPLACE_EXISTING)
         else
           JFiles.move(file.toPath, to.toPath)
       } catch {
@@ -139,7 +137,8 @@ object Files {
       * is currently running.
       */
     private def currentCreator: TemporaryFileCreator =
-      Play.privateMaybeApplication
+      Play
+        .privateMaybeApplication
         .fold[TemporaryFileCreator](SingletonTemporaryFileCreator)(creatorCache)
 
     /**

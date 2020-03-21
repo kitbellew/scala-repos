@@ -73,24 +73,28 @@ object QueryExamplesSpec extends Specification with MongoTestKit {
     val pebblesId = UUID.randomUUID
     val bammbammId = UUID.randomUUID
 
-    val fred = Person.createRecord
+    val fred = Person
+      .createRecord
       .name("Flinstone, Fred")
       .birthDate(fredsBirthDate.getTime)
       .childId(pebblesId)
       .petId(dinoId)
       .save()
-    val wilma = Person.createRecord
+    val wilma = Person
+      .createRecord
       .name("Flinstone, Wilma")
       .birthDate(wilmasBirthDate.getTime)
       .childId(pebblesId)
       .petId(dinoId)
       .save()
-    val barney = Person.createRecord
+    val barney = Person
+      .createRecord
       .name("Rubble, Barney")
       .birthDate(barneysBirthDate.getTime)
       .childId(bammbammId)
       .save()
-    val betty = Person.createRecord
+    val betty = Person
+      .createRecord
       .name("Rubble, Betty")
       .birthDate(bettysBirthDate.getTime)
       .childId(bammbammId)
@@ -108,8 +112,8 @@ object QueryExamplesSpec extends Specification with MongoTestKit {
       .filterNot(rubblesIds.contains(_)) must_== List()
 
     // query for Bamm-Bamm's and Pebbles' parents using List[UUID]
-    val pebblesAndBammBammsParents = Person.findAll(
-      ("childId" -> ("$in" -> List(pebblesId, bammbammId))))
+    val pebblesAndBammBammsParents = Person
+      .findAll(("childId" -> ("$in" -> List(pebblesId, bammbammId))))
 
     pebblesAndBammBammsParents.length must_== 4
 
@@ -128,8 +132,8 @@ object QueryExamplesSpec extends Specification with MongoTestKit {
     rubbles.map(_.id.get).filterNot(rubblesIds.contains(_)) must_== List()
 
     // query for the Flinstones using a Pattern
-    val flinstones = Person.findAll(
-      ("name" -> Pattern.compile("^flinst", Pattern.CASE_INSENSITIVE)))
+    val flinstones = Person
+      .findAll(("name" -> Pattern.compile("^flinst", Pattern.CASE_INSENSITIVE)))
 
     flinstones.length must_== 2
     flinstones.map(_.id.get).filterNot(flinstonesIds.contains(_)) must_== List()

@@ -33,7 +33,8 @@ class AnalysisSuite extends AnalysisTest {
       (1 to 100)
         .map(_ => testRelation)
         .fold[LogicalPlan](testRelation) { (a, b) =>
-          a.select(UnresolvedStar(None))
+          a
+            .select(UnresolvedStar(None))
             .select('a)
             .unionAll(b.select(UnresolvedStar(None)))
         }
@@ -257,11 +258,11 @@ class AnalysisSuite extends AnalysisTest {
     checkAnalysis(plan, expected)
 
     // CreateStruct is a special case that we should not trim Alias for it.
-    plan = testRelation.select(
-      CreateStruct(Seq(a, (a + 1).as("a+1"))).as("col"))
+    plan = testRelation
+      .select(CreateStruct(Seq(a, (a + 1).as("a+1"))).as("col"))
     checkAnalysis(plan, plan)
-    plan = testRelation.select(
-      CreateStructUnsafe(Seq(a, (a + 1).as("a+1"))).as("col"))
+    plan = testRelation
+      .select(CreateStructUnsafe(Seq(a, (a + 1).as("a+1"))).as("col"))
     checkAnalysis(plan, plan)
   }
 
@@ -379,8 +380,8 @@ class AnalysisSuite extends AnalysisTest {
     val relation = LocalRelation(
       'a.struct('x.int),
       'b.struct('x.int.withNullability(false)))
-    val plan = relation.select(
-      CaseWhen(Seq((Literal(true), 'a.attr)), 'b).as("val"))
+    val plan = relation
+      .select(CaseWhen(Seq((Literal(true), 'a.attr)), 'b).as("val"))
     assertAnalysisSuccess(plan)
   }
 

@@ -31,8 +31,9 @@ private[netty4] object Netty4Transporter {
           .BufferSizes(sendBufSize, recvBufSize) = params[Transport.BufferSizes]
 
         // max connect timeout is ~24.8 days
-        val compensatedConnectTimeoutMs =
-          (compensation + connectTimeout).inMillis.min(Int.MaxValue)
+        val compensatedConnectTimeoutMs = (compensation + connectTimeout)
+          .inMillis
+          .min(Int.MaxValue)
 
         val bootstrap = new Bootstrap()
           .group(WorkerPool)
@@ -47,12 +48,11 @@ private[netty4] object Netty4Transporter {
           ) // backpressure! no reads on transport => no reads on the socket
           .option[JInt](
             ChannelOption.CONNECT_TIMEOUT_MILLIS,
-            compensatedConnectTimeoutMs.toInt)
-          .handler(init)
+            compensatedConnectTimeoutMs.toInt).handler(init)
 
         val Transport.Liveness(_, _, keepAlive) = params[Transport.Liveness]
-        keepAlive.foreach(
-          bootstrap.option[JBool](ChannelOption.SO_KEEPALIVE, _))
+        keepAlive
+          .foreach(bootstrap.option[JBool](ChannelOption.SO_KEEPALIVE, _))
         sendBufSize.foreach(bootstrap.option[JInt](ChannelOption.SO_SNDBUF, _))
         recvBufSize.foreach(bootstrap.option[JInt](ChannelOption.SO_RCVBUF, _))
 

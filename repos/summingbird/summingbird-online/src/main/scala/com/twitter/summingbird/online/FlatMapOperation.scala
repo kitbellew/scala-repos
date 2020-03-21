@@ -53,23 +53,27 @@ trait FlatMapOperation[-T, +U] extends Serializable with Closeable {
       def apply(t: T) =
         self(t).flatMap { tr =>
           val next: Seq[Future[TraversableOnce[V]]] =
-            tr.map {
-              fmo.apply(_)
-            }.toIndexedSeq
+            tr
+              .map {
+                fmo.apply(_)
+              }
+              .toIndexedSeq
           Future.collect(next).map(_.flatten) // flatten the inner
         }
 
       override def maybeFlush = {
-        self.maybeFlush.flatMap { x: TraversableOnce[U] =>
-          val z: IndexedSeq[Future[TraversableOnce[V]]] =
-            x.map(fmo.apply(_)).toIndexedSeq
-          val w: Future[Seq[V]] = Future.collect(z).map(_.flatten)
-          for {
-            ws <- w
-            maybes <- fmo.maybeFlush
-            maybeSeq = maybes.toSeq
-          } yield ws ++ maybeSeq
-        }
+        self
+          .maybeFlush
+          .flatMap { x: TraversableOnce[U] =>
+            val z: IndexedSeq[Future[TraversableOnce[V]]] =
+              x.map(fmo.apply(_)).toIndexedSeq
+            val w: Future[Seq[V]] = Future.collect(z).map(_.flatten)
+            for {
+              ws <- w
+              maybes <- fmo.maybeFlush
+              maybeSeq = maybes.toSeq
+            } yield ws ++ maybeSeq
+          }
       }
       override def close {
         self.close;
@@ -102,9 +106,11 @@ class FunctionKeyFlatMapOperation[K1, K2, V](
   val boxed = Externalizer(fm)
   def apply(t: (K1, V)) = {
     Future.value(
-      boxed.get(t._1).map { newK =>
-        (newK, t._2)
-      })
+      boxed
+        .get(t._1)
+        .map { newK =>
+          (newK, t._2)
+        })
   }
 }
 
@@ -139,28 +145,34 @@ object FlatMapOperation {
       lazy val fm = fmSupplier
       lazy val store = storeSupplier.serviceStore()
       override def apply(t: T) =
-        fm.apply(t).flatMap { trav: TraversableOnce[(K, V)] =>
-          val resultList = trav.toSeq // Can't go through this twice
-          val keySet: Set[K] =
-            resultList.map {
-              _._1
-            }.toSet
+        fm
+          .apply(t)
+          .flatMap { trav: TraversableOnce[(K, V)] =>
+            val resultList = trav.toSeq // Can't go through this twice
+            val keySet: Set[K] =
+              resultList
+                .map {
+                  _._1
+                }
+                .toSet
 
-          if (keySet.isEmpty)
-            Future.value(Map.empty)
-          else {
-            // Do the lookup
-            val mres: Map[K, Future[Option[JoinedV]]] = store.multiGet(keySet)
-            val resultFutures =
-              resultList.map {
-                case (k, v) =>
-                  mres(k).map {
-                    k -> (v, _)
+            if (keySet.isEmpty)
+              Future.value(Map.empty)
+            else {
+              // Do the lookup
+              val mres: Map[K, Future[Option[JoinedV]]] = store.multiGet(keySet)
+              val resultFutures =
+                resultList
+                  .map {
+                    case (k, v) =>
+                      mres(k).map {
+                        k -> (v, _)
+                      }
                   }
-              }.toIndexedSeq
-            Future.collect(resultFutures)
+                  .toIndexedSeq
+              Future.collect(resultFutures)
+            }
           }
-        }
 
       override def close {
         fm.close

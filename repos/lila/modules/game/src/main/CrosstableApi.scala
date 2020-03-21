@@ -24,8 +24,9 @@ final class CrosstableApi(coll: Coll) {
 
   def apply(u1: String, u2: String): Fu[Option[Crosstable]] =
     coll.find(select(u1, u2)).one[Crosstable] orElse create(u1, u2) recoverWith
-      lila.db.recoverDuplicateKey(_ =>
-        coll.find(select(u1, u2)).one[Crosstable])
+      lila
+        .db
+        .recoverDuplicateKey(_ => coll.find(select(u1, u2)).one[Crosstable])
 
   def nbGames(u1: String, u2: String): Fu[Int] =
     coll.find(select(u1, u2), BSONDocument("n" -> true)).one[BSONDocument] map {
@@ -36,7 +37,8 @@ final class CrosstableApi(coll: Coll) {
     game.userIds.distinct.sorted match {
       case List(u1, u2) =>
         val result = Result(game.id, game.winnerUserId)
-        val bsonResult = Crosstable.crosstableBSONHandler
+        val bsonResult = Crosstable
+          .crosstableBSONHandler
           .writeResult(result, u1)
         val bson = BSONDocument(
           "$inc" -> BSONDocument(
@@ -98,9 +100,11 @@ final class CrosstableApi(coll: Coll) {
             .collect[List](maxGames)
             .map {
               _.flatMap { doc =>
-                doc.getAs[String](Game.BSONFields.id).map { id =>
-                  Result(id, doc.getAs[String](Game.BSONFields.winnerId))
-                }
+                doc
+                  .getAs[String](Game.BSONFields.id)
+                  .map { id =>
+                    Result(id, doc.getAs[String](Game.BSONFields.winnerId))
+                  }
               }.reverse
             }
           nbGames <- gameColl.count(selector.some)
@@ -115,11 +119,14 @@ final class CrosstableApi(coll: Coll) {
               Match(selector),
               List(GroupField(Game.BSONFields.winnerId)("nb" -> SumValue(1))))
             .map(
-              _.documents.foldLeft(ctDraft) {
+              _.documents
+              .foldLeft(ctDraft) {
                 case (ct, obj) =>
-                  obj.getAs[Int]("nb").fold(ct) { nb =>
-                    ct.addWins(obj.getAs[String]("_id"), nb)
-                  }
+                  obj
+                    .getAs[Int]("nb")
+                    .fold(ct) { nb =>
+                      ct.addWins(obj.getAs[String]("_id"), nb)
+                    }
               })
 
           _ <- coll insert crosstable

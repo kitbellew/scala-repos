@@ -3080,9 +3080,8 @@ object functions {
       Try(
         ScalaReflection.schemaFor(typeTag[A1]).dataType :: ScalaReflection
           .schemaFor(typeTag[A2])
-          .dataType :: ScalaReflection
-          .schemaFor(typeTag[A3])
-          .dataType :: Nil).toOption
+          .dataType :: ScalaReflection.schemaFor(typeTag[A3]).dataType :: Nil)
+        .toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,
@@ -3104,9 +3103,8 @@ object functions {
           .schemaFor(typeTag[A2])
           .dataType :: ScalaReflection
           .schemaFor(typeTag[A3])
-          .dataType :: ScalaReflection
-          .schemaFor(typeTag[A4])
-          .dataType :: Nil).toOption
+          .dataType :: ScalaReflection.schemaFor(typeTag[A4]).dataType :: Nil)
+        .toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,
@@ -3136,9 +3134,8 @@ object functions {
           .schemaFor(typeTag[A3])
           .dataType :: ScalaReflection
           .schemaFor(typeTag[A4])
-          .dataType :: ScalaReflection
-          .schemaFor(typeTag[A5])
-          .dataType :: Nil).toOption
+          .dataType :: ScalaReflection.schemaFor(typeTag[A5]).dataType :: Nil)
+        .toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,
@@ -3171,9 +3168,8 @@ object functions {
           .schemaFor(typeTag[A4])
           .dataType :: ScalaReflection
           .schemaFor(typeTag[A5])
-          .dataType :: ScalaReflection
-          .schemaFor(typeTag[A6])
-          .dataType :: Nil).toOption
+          .dataType :: ScalaReflection.schemaFor(typeTag[A6]).dataType :: Nil)
+        .toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,
@@ -3209,9 +3205,8 @@ object functions {
           .schemaFor(typeTag[A5])
           .dataType :: ScalaReflection
           .schemaFor(typeTag[A6])
-          .dataType :: ScalaReflection
-          .schemaFor(typeTag[A7])
-          .dataType :: Nil).toOption
+          .dataType :: ScalaReflection.schemaFor(typeTag[A7]).dataType :: Nil)
+        .toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,
@@ -3250,9 +3245,8 @@ object functions {
           .schemaFor(typeTag[A6])
           .dataType :: ScalaReflection
           .schemaFor(typeTag[A7])
-          .dataType :: ScalaReflection
-          .schemaFor(typeTag[A8])
-          .dataType :: Nil).toOption
+          .dataType :: ScalaReflection.schemaFor(typeTag[A8]).dataType :: Nil)
+        .toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,
@@ -3294,9 +3288,8 @@ object functions {
           .schemaFor(typeTag[A7])
           .dataType :: ScalaReflection
           .schemaFor(typeTag[A8])
-          .dataType :: ScalaReflection
-          .schemaFor(typeTag[A9])
-          .dataType :: Nil).toOption
+          .dataType :: ScalaReflection.schemaFor(typeTag[A9]).dataType :: Nil)
+        .toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,
@@ -3341,9 +3334,8 @@ object functions {
           .schemaFor(typeTag[A8])
           .dataType :: ScalaReflection
           .schemaFor(typeTag[A9])
-          .dataType :: ScalaReflection
-          .schemaFor(typeTag[A10])
-          .dataType :: Nil).toOption
+          .dataType :: ScalaReflection.schemaFor(typeTag[A10]).dataType :: Nil)
+        .toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,

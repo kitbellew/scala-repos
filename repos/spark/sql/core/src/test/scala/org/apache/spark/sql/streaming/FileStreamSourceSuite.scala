@@ -105,7 +105,9 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
       } else {
         reader.stream()
       }
-    df.queryExecution.analyzed
+    df
+      .queryExecution
+      .analyzed
       .collect {
         case StreamingRelation(s: FileStreamSource, _) =>
           s
@@ -175,7 +177,8 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
           schema = None)
       }
       assert(
-        "Unable to infer schema.  It must be specified manually.;" === e.getMessage)
+        "Unable to infer schema.  It must be specified manually.;" === e
+          .getMessage)
     }
   }
 
@@ -221,7 +224,8 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
           schema = None)
       }
       assert(
-        "Unable to infer schema.  It must be specified manually.;" === e.getMessage)
+        "Unable to infer schema.  It must be specified manually.;" === e
+          .getMessage)
     }
   }
 

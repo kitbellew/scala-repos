@@ -134,7 +134,8 @@ class InteractionSuite
     val df = data.select(
       col("a").as(
         "a",
-        NominalAttribute.defaultAttr
+        NominalAttribute
+          .defaultAttr
           .withValues(Array("up", "down", "left"))
           .toMetadata()),
       col("b").as("b", groupAttr.toMetadata()))

@@ -137,7 +137,8 @@ private[stat] object ChiSqTest extends Logging {
 
       if (labels == null) {
         // Do this only once for the first column since labels are invariant across features.
-        labels = pairCounts.keys
+        labels = pairCounts
+          .keys
           .filter(_._1 == startCol)
           .map(_._3)
           .toArray
@@ -146,22 +147,28 @@ private[stat] object ChiSqTest extends Logging {
           .toMap
       }
       val numLabels = labels.size
-      pairCounts.keys.groupBy(_._1).foreach {
-        case (col, keys) =>
-          val features = keys.map(_._2).toArray.distinct.zipWithIndex.toMap
-          val numRows = features.size
-          val contingency =
-            new BDM(numRows, numLabels, new Array[Double](numRows * numLabels))
-          keys.foreach {
-            case (_, feature, label) =>
-              val i = features(feature)
-              val j = labels(label)
-              contingency(i, j) += pairCounts((col, feature, label))
-          }
-          results(col) = chiSquaredMatrix(
-            Matrices.fromBreeze(contingency),
-            methodName)
-      }
+      pairCounts
+        .keys
+        .groupBy(_._1)
+        .foreach {
+          case (col, keys) =>
+            val features = keys.map(_._2).toArray.distinct.zipWithIndex.toMap
+            val numRows = features.size
+            val contingency =
+              new BDM(
+                numRows,
+                numLabels,
+                new Array[Double](numRows * numLabels))
+            keys.foreach {
+              case (_, feature, label) =>
+                val i = features(feature)
+                val j = labels(label)
+                contingency(i, j) += pairCounts((col, feature, label))
+            }
+            results(col) = chiSquaredMatrix(
+              Matrices.fromBreeze(contingency),
+              methodName)
+        }
       batch += 1
     }
     results
@@ -218,31 +225,33 @@ private[stat] object ChiSqTest extends Logging {
 
     // compute chi-squared statistic
     val statistic =
-      obsArr.zip(expArr).foldLeft(0.0) {
-        case (stat, (obs, exp)) =>
-          if (exp == 0.0) {
-            if (obs == 0.0) {
-              throw new IllegalArgumentException(
-                "Chi-squared statistic undefined for input vectors due"
-                  + " to 0.0 values in both observed and expected.")
-            } else {
-              return new ChiSqTestResult(
-                0.0,
-                size - 1,
-                Double.PositiveInfinity,
-                PEARSON.name,
-                NullHypothesis.goodnessOfFit.toString)
+      obsArr
+        .zip(expArr)
+        .foldLeft(0.0) {
+          case (stat, (obs, exp)) =>
+            if (exp == 0.0) {
+              if (obs == 0.0) {
+                throw new IllegalArgumentException(
+                  "Chi-squared statistic undefined for input vectors due"
+                    + " to 0.0 values in both observed and expected.")
+              } else {
+                return new ChiSqTestResult(
+                  0.0,
+                  size - 1,
+                  Double.PositiveInfinity,
+                  PEARSON.name,
+                  NullHypothesis.goodnessOfFit.toString)
+              }
             }
-          }
-          if (scale == 1.0) {
-            stat + method.chiSqFunc(obs, exp)
-          } else {
-            stat + method.chiSqFunc(obs, exp * scale)
-          }
-      }
+            if (scale == 1.0) {
+              stat + method.chiSqFunc(obs, exp)
+            } else {
+              stat + method.chiSqFunc(obs, exp * scale)
+            }
+        }
     val df = size - 1
-    val pValue =
-      1.0 - new ChiSquaredDistribution(df).cumulativeProbability(statistic)
+    val pValue = 1.0 - new ChiSquaredDistribution(df)
+      .cumulativeProbability(statistic)
     new ChiSqTestResult(
       pValue,
       df,
@@ -314,8 +323,8 @@ private[stat] object ChiSqTest extends Logging {
         methodName,
         NullHypothesis.independence.toString)
     } else {
-      val pValue =
-        1.0 - new ChiSquaredDistribution(df).cumulativeProbability(statistic)
+      val pValue = 1.0 - new ChiSquaredDistribution(df)
+        .cumulativeProbability(statistic)
       new ChiSqTestResult(
         pValue,
         df,

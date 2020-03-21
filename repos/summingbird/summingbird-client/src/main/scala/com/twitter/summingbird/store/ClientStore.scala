@@ -205,8 +205,8 @@ class ClientStore[K, V: Semigroup](
         collector.asInstanceOf[FutureCollector[(K1, Iterable[BatchID])]])
 
     val m: Future[Map[K1, FOpt[V]]] = fOnlineKeys.map { onlineKeys =>
-      val onlineResult: Map[(K1, BatchID), FOpt[V]] = onlineStore.multiGet(
-        onlineKeys)
+      val onlineResult: Map[(K1, BatchID), FOpt[V]] = onlineStore
+        .multiGet(onlineKeys)
       val liftedOnline: Map[K1, Future[Seq[Option[(BatchID, V)]]]] =
         pivotBatches(onlineResult)
       val merged: Map[K1, FOpt[(BatchID, V)]] = mergeResults(

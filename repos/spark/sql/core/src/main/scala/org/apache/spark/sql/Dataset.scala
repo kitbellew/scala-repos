@@ -230,21 +230,26 @@ class Dataset[T] private[sql] (
   private implicit def classTag = unresolvedTEncoder.clsTag
 
   protected[sql] def resolve(colName: String): NamedExpression = {
-    queryExecution.analyzed
+    queryExecution
+      .analyzed
       .resolveQuoted(colName, sqlContext.sessionState.analyzer.resolver)
       .getOrElse {
         throw new AnalysisException(
-          s"""Cannot resolve column name "$colName" among (${schema.fieldNames
-            .mkString(", ")})""")
+          s"""Cannot resolve column name "$colName" among (${schema.fieldNames.mkString(
+            ", ")})""")
       }
   }
 
   protected[sql] def numericColumns: Seq[Expression] = {
-    schema.fields.filter(_.dataType.isInstanceOf[NumericType]).map { n =>
-      queryExecution.analyzed
-        .resolveQuoted(n.name, sqlContext.sessionState.analyzer.resolver)
-        .get
-    }
+    schema
+      .fields
+      .filter(_.dataType.isInstanceOf[NumericType])
+      .map { n =>
+        queryExecution
+          .analyzed
+          .resolveQuoted(n.name, sqlContext.sessionState.analyzer.resolver)
+          .get
+      }
   }
 
   /**
@@ -273,25 +278,27 @@ class Dataset[T] private[sql] (
           Row(o)
       }
       .map { row =>
-        row.toSeq.map { cell =>
-          val str =
-            cell match {
-              case null =>
-                "null"
-              case binary: Array[Byte] =>
-                binary.map("%02X".format(_)).mkString("[", " ", "]")
-              case array: Array[_] =>
-                array.mkString("[", ", ", "]")
-              case seq: Seq[_] =>
-                seq.mkString("[", ", ", "]")
-              case _ =>
-                cell.toString
-            }
-          if (truncate && str.length > 20)
-            str.substring(0, 17) + "..."
-          else
-            str
-        }: Seq[String]
+        row
+          .toSeq
+          .map { cell =>
+            val str =
+              cell match {
+                case null =>
+                  "null"
+                case binary: Array[Byte] =>
+                  binary.map("%02X".format(_)).mkString("[", " ", "]")
+                case array: Array[_] =>
+                  array.mkString("[", ", ", "]")
+                case seq: Seq[_] =>
+                  seq.mkString("[", ", ", "]")
+                case _ =>
+                  cell.toString
+              }
+            if (truncate && str.length > 20)
+              str.substring(0, 17) + "..."
+            else
+              str
+          }: Seq[String]
       }
 
     formatString(rows, numRows, hasMoreData, truncate)
@@ -348,16 +355,20 @@ class Dataset[T] private[sql] (
     require(
       schema.size == colNames.size,
       "The number of columns doesn't match.\n" +
-        s"Old column names (${schema.size}): " + schema.fields
+        s"Old column names (${schema.size}): " + schema
+        .fields
         .map(_.name)
         .mkString(", ") + "\n" +
         s"New column names (${colNames.size}): " + colNames.mkString(", ")
     )
 
-    val newCols = logicalPlan.output.zip(colNames).map {
-      case (oldAttribute, newName) =>
-        Column(oldAttribute).as(newName)
-    }
+    val newCols = logicalPlan
+      .output
+      .zip(colNames)
+      .map {
+        case (oldAttribute, newName) =>
+          Column(oldAttribute).as(newName)
+      }
     select(newCols: _*)
   }
 
@@ -387,11 +398,15 @@ class Dataset[T] private[sql] (
     */
   override def explain(extended: Boolean): Unit = {
     val explain = ExplainCommand(queryExecution.logical, extended = extended)
-    sqlContext.executePlan(explain).executedPlan.executeCollect().foreach {
-      // scalastyle:off println
-      r => println(r.getString(0))
-      // scalastyle:on println
-    }
+    sqlContext
+      .executePlan(explain)
+      .executedPlan
+      .executeCollect()
+      .foreach {
+        // scalastyle:off println
+        r => println(r.getString(0))
+        // scalastyle:on println
+      }
   }
 
   /**
@@ -409,9 +424,11 @@ class Dataset[T] private[sql] (
     * @since 1.6.0
     */
   def dtypes: Array[(String, String)] =
-    schema.fields.map { field =>
-      (field.name, field.dataType.toString)
-    }
+    schema
+      .fields
+      .map { field =>
+        (field.name, field.dataType.toString)
+      }
 
   /**
     * Returns all column names as an array.
@@ -691,16 +708,21 @@ class Dataset[T] private[sql] (
     // Otherwise, find the trivially true predicates and automatically resolves them to both sides.
     // By the time we get here, since we have already run analysis, all attributes should've been
     // resolved and become AttributeReference.
-    val cond = plan.condition.map {
-      _.transform {
-        case catalyst.expressions
-              .EqualTo(a: AttributeReference, b: AttributeReference)
-            if a.sameRef(b) =>
-          catalyst.expressions.EqualTo(
-            withPlan(plan.left).resolve(a.name),
-            withPlan(plan.right).resolve(b.name))
+    val cond = plan
+      .condition
+      .map {
+        _.transform {
+          case catalyst
+                .expressions
+                .EqualTo(a: AttributeReference, b: AttributeReference)
+              if a.sameRef(b) =>
+            catalyst
+              .expressions
+              .EqualTo(
+                withPlan(plan.left).resolve(a.name),
+                withPlan(plan.right).resolve(b.name))
+        }
       }
-    }
 
     withPlan {
       plan.copy(condition = cond)
@@ -755,9 +777,8 @@ class Dataset[T] private[sql] (
           Alias(CreateStruct(rightOutput), "_2")()
       }
 
-    implicit val tuple2Encoder: Encoder[(T, U)] = ExpressionEncoder.tuple(
-      this.unresolvedTEncoder,
-      other.unresolvedTEncoder)
+    implicit val tuple2Encoder: Encoder[(T, U)] = ExpressionEncoder
+      .tuple(this.unresolvedTEncoder, other.unresolvedTEncoder)
     withTypedPlan[(T, U)](other, encoderFor[(T, U)]) { (left, right) =>
       Project(leftData :: rightData :: Nil, joined.analyzed)
     }
@@ -999,8 +1020,8 @@ class Dataset[T] private[sql] (
     */
   protected def selectUntyped(columns: TypedColumn[_, _]*): Dataset[_] = {
     val encoders = columns.map(_.encoder)
-    val namedColumns = columns.map(
-      _.withInputType(resolvedTEncoder, logicalPlan.output).named)
+    val namedColumns = columns
+      .map(_.withInputType(resolvedTEncoder, logicalPlan.output).named)
     val execution =
       new QueryExecution(sqlContext, Project(namedColumns, logicalPlan))
 
@@ -1289,8 +1310,8 @@ class Dataset[T] private[sql] (
   @Experimental
   @scala.annotation.varargs
   def groupByKey(cols: Column*): KeyValueGroupedDataset[Row, T] = {
-    val withKeyColumns =
-      logicalPlan.output ++ cols.map(_.expr).map(UnresolvedAlias(_))
+    val withKeyColumns = logicalPlan
+      .output ++ cols.map(_.expr).map(UnresolvedAlias(_))
     val withKey = Project(withKeyColumns, logicalPlan)
     val executed = sqlContext.executePlan(withKey)
 
@@ -1629,9 +1650,11 @@ class Dataset[T] private[sql] (
       f: Row => TraversableOnce[A]): DataFrame = {
     val schema = ScalaReflection.schemaFor[A].dataType.asInstanceOf[StructType]
 
-    val elementTypes = schema.toAttributes.map { attr =>
-      (attr.dataType, attr.nullable, attr.name)
-    }
+    val elementTypes = schema
+      .toAttributes
+      .map { attr =>
+        (attr.dataType, attr.nullable, attr.name)
+      }
     val names = schema.toAttributes.map(_.name)
     val convert = CatalystTypeConverters.createToCatalystConverter(schema)
 
@@ -1813,7 +1836,8 @@ class Dataset[T] private[sql] (
     val expression =
       col match {
         case Column(u: UnresolvedAttribute) =>
-          queryExecution.analyzed
+          queryExecution
+            .analyzed
             .resolveQuoted(u.name, sqlContext.sessionState.analyzer.resolver)
             .getOrElse(u)
         case Column(expr: Expression) =>
@@ -1848,13 +1872,15 @@ class Dataset[T] private[sql] (
     withTypedPlan {
       val groupCols = colNames.map(resolve)
       val groupColExprIds = groupCols.map(_.exprId)
-      val aggCols = logicalPlan.output.map { attr =>
-        if (groupColExprIds.contains(attr.exprId)) {
-          attr
-        } else {
-          Alias(new First(attr).toAggregateExpression(), attr.name)()
+      val aggCols = logicalPlan
+        .output
+        .map { attr =>
+          if (groupColExprIds.contains(attr.exprId)) {
+            attr
+          } else {
+            Alias(new First(attr).toAggregateExpression(), attr.name)()
+          }
         }
-      }
       Aggregate(groupCols, aggCols, logicalPlan)
     }
 
@@ -1926,10 +1952,14 @@ class Dataset[T] private[sql] (
           val row = agg(aggExprs.head, aggExprs.tail: _*).head().toSeq
 
           // Pivot the data so each summary is one row
-          row.grouped(outputCols.size).toSeq.zip(statistics).map {
-            case (aggregation, (statistic, _)) =>
-              Row(statistic :: aggregation.toList: _*)
-          }
+          row
+            .grouped(outputCols.size)
+            .toSeq
+            .zip(statistics)
+            .map {
+              case (aggregation, (statistic, _)) =>
+                Row(statistic :: aggregation.toList: _*)
+            }
         } else {
           // If there are no output columns, just output a single column that contains the stats.
           statistics.map {
@@ -1941,8 +1971,8 @@ class Dataset[T] private[sql] (
       // All columns are string type
       val schema =
         StructType(
-          StructField("summary", StringType) :: outputCols.map(
-            StructField(_, StringType))).toAttributes
+          StructField("summary", StringType) :: outputCols
+            .map(StructField(_, StringType))).toAttributes
       LocalRelation.fromExternalRows(schema, ret)
     }
 
@@ -2184,7 +2214,8 @@ class Dataset[T] private[sql] (
   def collectAsList(): java.util.List[T] =
     withCallback("collectAsList", toDF()) { _ =>
       withNewExecutionId {
-        val values = queryExecution.executedPlan
+        val values = queryExecution
+          .executedPlan
           .executeCollect()
           .map(boundTEncoder.fromRow)
         java.util.Arrays.asList(values: _*)
@@ -2350,9 +2381,11 @@ class Dataset[T] private[sql] (
     * @since 1.6.0
     */
   lazy val rdd: RDD[T] = {
-    queryExecution.toRdd.mapPartitions { rows =>
-      rows.map(boundTEncoder.fromRow)
-    }
+    queryExecution
+      .toRdd
+      .mapPartitions { rows =>
+        rows.map(boundTEncoder.fromRow)
+      }
   }
 
   /**
@@ -2398,30 +2431,32 @@ class Dataset[T] private[sql] (
     */
   def toJSON: Dataset[String] = {
     val rowSchema = this.schema
-    val rdd = queryExecution.toRdd.mapPartitions { iter =>
-      val writer = new CharArrayWriter()
-      // create the Generator without separator inserted between 2 records
-      val gen = new JsonFactory()
-        .createGenerator(writer)
-        .setRootValueSeparator(null)
+    val rdd = queryExecution
+      .toRdd
+      .mapPartitions { iter =>
+        val writer = new CharArrayWriter()
+        // create the Generator without separator inserted between 2 records
+        val gen = new JsonFactory()
+          .createGenerator(writer)
+          .setRootValueSeparator(null)
 
-      new Iterator[String] {
-        override def hasNext: Boolean = iter.hasNext
-        override def next(): String = {
-          JacksonGenerator(rowSchema, gen)(iter.next())
-          gen.flush()
+        new Iterator[String] {
+          override def hasNext: Boolean = iter.hasNext
+          override def next(): String = {
+            JacksonGenerator(rowSchema, gen)(iter.next())
+            gen.flush()
 
-          val json = writer.toString
-          if (hasNext) {
-            writer.reset()
-          } else {
-            gen.close()
+            val json = writer.toString
+            if (hasNext) {
+              writer.reset()
+            } else {
+              gen.close()
+            }
+
+            json
           }
-
-          json
         }
       }
-    }
     import sqlContext.implicits._
     rdd.toDS
   }
@@ -2436,12 +2471,14 @@ class Dataset[T] private[sql] (
     */
   def inputFiles: Array[String] = {
     val files: Seq[String] =
-      logicalPlan.collect {
-        case LogicalRelation(fsBasedRelation: FileRelation, _, _) =>
-          fsBasedRelation.inputFiles
-        case fr: FileRelation =>
-          fr.inputFiles
-      }.flatten
+      logicalPlan
+        .collect {
+          case LogicalRelation(fsBasedRelation: FileRelation, _, _) =>
+            fsBasedRelation.inputFiles
+          case fr: FileRelation =>
+            fr.inputFiles
+        }
+        .flatten
     files.toSet.toArray
   }
 
@@ -2483,9 +2520,12 @@ class Dataset[T] private[sql] (
   private def withCallback[U](name: String, df: DataFrame)(
       action: DataFrame => U) = {
     try {
-      df.queryExecution.executedPlan.foreach { plan =>
-        plan.resetMetrics()
-      }
+      df
+        .queryExecution
+        .executedPlan
+        .foreach { plan =>
+          plan.resetMetrics()
+        }
       val start = System.nanoTime()
       val result = action(df)
       val end = System.nanoTime()
@@ -2501,9 +2541,12 @@ class Dataset[T] private[sql] (
   private def withTypedCallback[A, B](name: String, ds: Dataset[A])(
       action: Dataset[A] => B) = {
     try {
-      ds.queryExecution.executedPlan.foreach { plan =>
-        plan.resetMetrics()
-      }
+      ds
+        .queryExecution
+        .executedPlan
+        .foreach { plan =>
+          plan.resetMetrics()
+        }
       val start = System.nanoTime()
       val result = action(ds)
       val end = System.nanoTime()

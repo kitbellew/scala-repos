@@ -66,9 +66,12 @@ class PowerIterationClusteringSuite
       .setMaxIterations(40)
       .run(sc.parallelize(similarities, 2))
     val predictions = Array.fill(2)(mutable.Set.empty[Long])
-    model.assignments.collect().foreach { a =>
-      predictions(a.cluster) += a.id
-    }
+    model
+      .assignments
+      .collect()
+      .foreach { a =>
+        predictions(a.cluster) += a.id
+      }
     assert(predictions.toSet == Set((0 until n1).toSet, (n1 until n).toSet))
 
     val model2 = new PowerIterationClustering()
@@ -77,9 +80,12 @@ class PowerIterationClusteringSuite
       .setInitializationMode("degree")
       .run(sc.parallelize(similarities, 2))
     val predictions2 = Array.fill(2)(mutable.Set.empty[Long])
-    model2.assignments.collect().foreach { a =>
-      predictions2(a.cluster) += a.id
-    }
+    model2
+      .assignments
+      .collect()
+      .foreach { a =>
+        predictions2(a.cluster) += a.id
+      }
     assert(predictions2.toSet == Set((0 until n1).toSet, (n1 until n).toSet))
   }
 
@@ -113,9 +119,12 @@ class PowerIterationClusteringSuite
       .setMaxIterations(40)
       .run(graph)
     val predictions = Array.fill(2)(mutable.Set.empty[Long])
-    model.assignments.collect().foreach { a =>
-      predictions(a.cluster) += a.id
-    }
+    model
+      .assignments
+      .collect()
+      .foreach { a =>
+        predictions(a.cluster) += a.id
+      }
     assert(predictions.toSet == Set((0 until n1).toSet, (n1 until n).toSet))
 
     val model2 = new PowerIterationClustering()
@@ -124,9 +133,12 @@ class PowerIterationClusteringSuite
       .setInitializationMode("degree")
       .run(sc.parallelize(similarities, 2))
     val predictions2 = Array.fill(2)(mutable.Set.empty[Long])
-    model2.assignments.collect().foreach { a =>
-      predictions2(a.cluster) += a.id
-    }
+    model2
+      .assignments
+      .collect()
+      .foreach { a =>
+        predictions2(a.cluster) += a.id
+      }
     assert(predictions2.toSet == Set((0 until n1).toSet, (n1 until n).toSet))
   }
 
@@ -166,10 +178,13 @@ class PowerIterationClusteringSuite
       Array(1.0 / 2.0, 0.0, 1.0 / 2.0, 0.0))
     // scalastyle:on
     val w = normalize(sc.parallelize(similarities, 2))
-    w.edges.collect().foreach {
-      case Edge(i, j, x) =>
-        assert(x ~== expected(i.toInt)(j.toInt) absTol 1e-14)
-    }
+    w
+      .edges
+      .collect()
+      .foreach {
+        case Edge(i, j, x) =>
+          assert(x ~== expected(i.toInt)(j.toInt) absTol 1e-14)
+      }
     val v0 = sc.parallelize(
       Seq[(Long, Double)]((0, 0.1), (1, 0.2), (2, 0.3), (3, 0.4)),
       2)

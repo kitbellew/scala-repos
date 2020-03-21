@@ -118,14 +118,17 @@ object Template extends Logging {
     } getOrElse {
       (
         sys.props.get("http.proxyHost"),
-        sys.props.get("http.proxyPort").map { p =>
-          try {
-            Some(p.toInt)
-          } catch {
-            case e: NumberFormatException =>
-              None
-          }
-        } getOrElse None)
+        sys
+          .props
+          .get("http.proxyPort")
+          .map { p =>
+            try {
+              Some(p.toInt)
+            } catch {
+              case e: NumberFormatException =>
+                None
+            }
+          } getOrElse None)
     }
 
     (host, port) match {
@@ -151,28 +154,35 @@ object Template extends Logging {
       }
     val newReposCache = reposCache ++ (
       try {
-        repos.map { repo =>
-          val url = s"https://api.github.com/repos/$repo/$apiType"
-          val http = httpOptionalProxy(url)
-          val response = reposCache.get(repo).map { cache =>
-            cache.headers.get("ETag").map { etag =>
-              http.header("If-None-Match", etag).asString
-            } getOrElse {
+        repos
+          .map { repo =>
+            val url = s"https://api.github.com/repos/$repo/$apiType"
+            val http = httpOptionalProxy(url)
+            val response = reposCache
+              .get(repo)
+              .map { cache =>
+                cache
+                  .headers
+                  .get("ETag")
+                  .map { etag =>
+                    http.header("If-None-Match", etag).asString
+                  } getOrElse {
+                  http.asString
+                }
+              } getOrElse {
               http.asString
             }
-          } getOrElse {
-            http.asString
+
+            val body =
+              if (response.code == 304) {
+                reposCache(repo).body
+              } else {
+                response.body
+              }
+
+            repo -> GitHubCache(headers = response.headers, body = body)
           }
-
-          val body =
-            if (response.code == 304) {
-              reposCache(repo).body
-            } else {
-              response.body
-            }
-
-          repo -> GitHubCache(headers = response.headers, body = body)
-        }.toMap
+          .toMap
       } catch {
         case e: ConnectException =>
           githubConnectErrorMessage(e)
@@ -204,8 +214,8 @@ object Template extends Logging {
 
   def meta(repo: String, name: String, org: String): Unit = {
     try {
-      httpOptionalProxy(
-        s"http://meta.prediction.io/templates/$repo/$org/$name").asString
+      httpOptionalProxy(s"http://meta.prediction.io/templates/$repo/$org/$name")
+        .asString
     } catch {
       case e: Throwable =>
         debug("Template metadata unavailable.")
@@ -221,9 +231,11 @@ object Template extends Logging {
         "The following is a list of template IDs registered on " +
           "PredictionIO Template Gallery:")
       println()
-      templates.sortBy(_.repo.toLowerCase).foreach { template =>
-        println(template.repo)
-      }
+      templates
+        .sortBy(_.repo.toLowerCase)
+        .foreach { template =>
+          println(template.repo)
+        }
       println()
       println(
         "Notice that it is possible use any GitHub repository as your " +
@@ -250,17 +262,19 @@ object Template extends Logging {
       "tags",
       ".templates-cache")
 
-    repos.get(ca.template.repository).map { repo =>
-      try {
-        read[List[GitHubTag]](repo.body)
-      } catch {
-        case e: MappingException =>
-          error(
-            s"Either ${ca.template.repository} is not a valid GitHub " +
-              "repository, or it does not have any tag. Aborting.")
-          return 1
-      }
-    } getOrElse {
+    repos
+      .get(ca.template.repository)
+      .map { repo =>
+        try {
+          read[List[GitHubTag]](repo.body)
+        } catch {
+          case e: MappingException =>
+            error(
+              s"Either ${ca.template.repository} is not a valid GitHub " +
+                "repository, or it does not have any tag. Aborting.")
+            return 1
+        }
+      } getOrElse {
       error(s"Failed to retrieve ${ca.template.repository}. Aborting.")
       return 1
     }
@@ -322,12 +336,18 @@ object Template extends Logging {
       return 1
     }
 
-    val tag = ca.template.version.map { v =>
-      tags.find(_.name == v).getOrElse {
-        println(s"${ca.template.repository} does not have tag $v. Aborting.")
-        return 1
-      }
-    } getOrElse tags.head
+    val tag = ca
+      .template
+      .version
+      .map { v =>
+        tags
+          .find(_.name == v)
+          .getOrElse {
+            println(
+              s"${ca.template.repository} does not have tag $v. Aborting.")
+            return 1
+          }
+      } getOrElse tags.head
 
     println(s"Using tag ${tag.name}")
     val url =
@@ -343,10 +363,12 @@ object Template extends Logging {
       }
     val finalTrial =
       try {
-        trial.location.map { loc =>
-          println(s"Redirecting to $loc")
-          httpOptionalProxy(loc).asBytes
-        } getOrElse trial
+        trial
+          .location
+          .map { loc =>
+            println(s"Redirecting to $loc")
+            httpOptionalProxy(loc).asBytes
+          } getOrElse trial
       } catch {
         case e: ConnectException =>
           githubConnectErrorMessage(e)
@@ -426,11 +448,10 @@ object Template extends Logging {
       filesToModify.foreach { ftm =>
         println(s"Processing $ftm...")
         val fileContent = Source.fromFile(ftm).getLines()
-        val processedLines = fileContent.map(
-          _.replaceAllLiterally(pkgName, organization))
-        FileUtils.writeStringToFile(
-          new File(ftm),
-          processedLines.mkString("\n"))
+        val processedLines = fileContent
+          .map(_.replaceAllLiterally(pkgName, organization))
+        FileUtils
+          .writeStringToFile(new File(ftm), processedLines.mkString("\n"))
       }
     } getOrElse {
       error(
@@ -450,14 +471,16 @@ object Template extends Logging {
   def verifyTemplateMinVersion(templateJsonFile: File): Unit = {
     val metadata = templateMetaData(templateJsonFile)
 
-    metadata.pioVersionMin.foreach { pvm =>
-      if (Version(BuildInfo.version) < Version(pvm)) {
-        error(
-          s"This engine template requires at least PredictionIO $pvm. " +
-            s"The template may not work with PredictionIO ${BuildInfo.version}.")
-        sys.exit(1)
+    metadata
+      .pioVersionMin
+      .foreach { pvm =>
+        if (Version(BuildInfo.version) < Version(pvm)) {
+          error(
+            s"This engine template requires at least PredictionIO $pvm. " +
+              s"The template may not work with PredictionIO ${BuildInfo.version}.")
+          sys.exit(1)
+        }
       }
-    }
   }
 
 }

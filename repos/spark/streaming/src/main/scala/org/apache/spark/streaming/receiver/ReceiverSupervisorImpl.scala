@@ -74,32 +74,34 @@ private[streaming] class ReceiverSupervisorImpl(
   }
 
   /** Remote RpcEndpointRef for the ReceiverTracker */
-  private val trackerEndpoint = RpcUtils.makeDriverRef(
-    "ReceiverTracker",
-    env.conf,
-    env.rpcEnv)
+  private val trackerEndpoint = RpcUtils
+    .makeDriverRef("ReceiverTracker", env.conf, env.rpcEnv)
 
   /** RpcEndpointRef for receiving messages from the ReceiverTracker in the driver */
-  private val endpoint = env.rpcEnv.setupEndpoint(
-    "Receiver-" + streamId + "-" + System.currentTimeMillis(),
-    new ThreadSafeRpcEndpoint {
-      override val rpcEnv: RpcEnv = env.rpcEnv
+  private val endpoint = env
+    .rpcEnv
+    .setupEndpoint(
+      "Receiver-" + streamId + "-" + System.currentTimeMillis(),
+      new ThreadSafeRpcEndpoint {
+        override val rpcEnv: RpcEnv = env.rpcEnv
 
-      override def receive: PartialFunction[Any, Unit] = {
-        case StopReceiver =>
-          logInfo("Received stop signal")
-          ReceiverSupervisorImpl.this.stop("Stopped by driver", None)
-        case CleanupOldBlocks(threshTime) =>
-          logDebug("Received delete old batch signal")
-          cleanupOldBlocks(threshTime)
-        case UpdateRateLimit(eps) =>
-          logInfo(s"Received a new rate limit: $eps.")
-          registeredBlockGenerators.asScala.foreach { bg =>
-            bg.updateRate(eps)
-          }
+        override def receive: PartialFunction[Any, Unit] = {
+          case StopReceiver =>
+            logInfo("Received stop signal")
+            ReceiverSupervisorImpl.this.stop("Stopped by driver", None)
+          case CleanupOldBlocks(threshTime) =>
+            logDebug("Received delete old batch signal")
+            cleanupOldBlocks(threshTime)
+          case UpdateRateLimit(eps) =>
+            logInfo(s"Received a new rate limit: $eps.")
+            registeredBlockGenerators
+              .asScala
+              .foreach { bg =>
+                bg.updateRate(eps)
+              }
+        }
       }
-    }
-  )
+    )
 
   /** Unique block ids if one wants to add blocks directly */
   private val newBlockId = new AtomicLong(System.currentTimeMillis())
@@ -168,9 +170,8 @@ private[streaming] class ReceiverSupervisorImpl(
       blockIdOption: Option[StreamBlockId]) {
     val blockId = blockIdOption.getOrElse(nextBlockId)
     val time = System.currentTimeMillis
-    val blockStoreResult = receivedBlockHandler.storeBlock(
-      blockId,
-      receivedBlock)
+    val blockStoreResult = receivedBlockHandler
+      .storeBlock(blockId, receivedBlock)
     logDebug(
       s"Pushed block $blockId in ${(System.currentTimeMillis - time)} ms")
     val numRecords = blockStoreResult.numRecords
@@ -193,15 +194,19 @@ private[streaming] class ReceiverSupervisorImpl(
   }
 
   override protected def onStart() {
-    registeredBlockGenerators.asScala.foreach {
-      _.start()
-    }
+    registeredBlockGenerators
+      .asScala
+      .foreach {
+        _.start()
+      }
   }
 
   override protected def onStop(message: String, error: Option[Throwable]) {
-    registeredBlockGenerators.asScala.foreach {
-      _.stop()
-    }
+    registeredBlockGenerators
+      .asScala
+      .foreach {
+        _.stop()
+      }
     env.rpcEnv.stop(endpoint)
   }
 
@@ -220,17 +225,19 @@ private[streaming] class ReceiverSupervisorImpl(
       error: Option[Throwable]) {
     logInfo("Deregistering receiver " + streamId)
     val errorString = error.map(Throwables.getStackTraceAsString).getOrElse("")
-    trackerEndpoint.askWithRetry[Boolean](
-      DeregisterReceiver(streamId, message, errorString))
+    trackerEndpoint
+      .askWithRetry[Boolean](DeregisterReceiver(streamId, message, errorString))
     logInfo("Stopped receiver " + streamId)
   }
 
   override def createBlockGenerator(
       blockGeneratorListener: BlockGeneratorListener): BlockGenerator = {
     // Cleanup BlockGenerators that have already been stopped
-    val stoppedGenerators = registeredBlockGenerators.asScala.filter {
-      _.isStopped()
-    }
+    val stoppedGenerators = registeredBlockGenerators
+      .asScala
+      .filter {
+        _.isStopped()
+      }
     stoppedGenerators.foreach(registeredBlockGenerators.remove(_))
 
     val newBlockGenerator =

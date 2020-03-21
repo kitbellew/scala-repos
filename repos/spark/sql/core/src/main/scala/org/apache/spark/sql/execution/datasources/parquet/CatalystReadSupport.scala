@@ -60,15 +60,14 @@ private[parquet] class CatalystReadSupport
   override def init(context: InitContext): ReadContext = {
     catalystRequestedSchema = {
       val conf = context.getConfiguration
-      val schemaString = conf.get(
-        CatalystReadSupport.SPARK_ROW_REQUESTED_SCHEMA)
+      val schemaString = conf
+        .get(CatalystReadSupport.SPARK_ROW_REQUESTED_SCHEMA)
       assert(schemaString != null, "Parquet requested schema not set.")
       StructType.fromString(schemaString)
     }
 
-    val parquetRequestedSchema = CatalystReadSupport.clipParquetSchema(
-      context.getFileSchema,
-      catalystRequestedSchema)
+    val parquetRequestedSchema = CatalystReadSupport
+      .clipParquetSchema(context.getFileSchema, catalystRequestedSchema)
 
     new ReadContext(parquetRequestedSchema, Map.empty[String, String].asJava)
   }
@@ -175,8 +174,8 @@ private[parquet] object CatalystReadSupport {
 
     // Unannotated repeated group should be interpreted as required list of required element, so
     // list element type is just the group itself.  Clip it.
-    if (parquetList.getOriginalType == null && parquetList.isRepetition(
-          Repetition.REPEATED)) {
+    if (parquetList.getOriginalType == null && parquetList
+          .isRepetition(Repetition.REPEATED)) {
       clipParquetType(parquetList, elementType)
     } else {
       assert(
@@ -309,8 +308,9 @@ private[parquet] object CatalystReadSupport {
           t.copy(keyType = expand(t.keyType), valueType = expand(t.valueType))
 
         case t: StructType =>
-          val expandedFields = t.fields.map(f =>
-            f.copy(dataType = expand(f.dataType)))
+          val expandedFields = t
+            .fields
+            .map(f => f.copy(dataType = expand(f.dataType)))
           t.copy(fields = expandedFields)
 
         case t: UserDefinedType[_] =>

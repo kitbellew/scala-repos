@@ -54,7 +54,8 @@ class CreateAggregates extends Phase {
                   case (s, n) =>
                     (s, Pure(n))
                 }
-                val from2 = sources.init
+                val from2 = sources
+                  .init
                   .foldRight(sources.last._2) {
                     case ((_, n), z) =>
                       Join(
@@ -74,20 +75,24 @@ class CreateAggregates extends Phase {
                     case _ =>
                       val len = sources.length
                       val it = Iterator.iterate(s1)(_ => ElementSymbol(2))
-                      sources.zipWithIndex.map {
-                        case ((s, _), i) =>
-                          val l = List.iterate(s1, i + 1)(_ => ElementSymbol(2))
-                          s -> (
-                            if (i == len - 1)
-                              l
-                            else
-                              l :+ ElementSymbol(1)
-                          )
-                      }.toMap
+                      sources
+                        .zipWithIndex
+                        .map {
+                          case ((s, _), i) =>
+                            val l =
+                              List.iterate(s1, i + 1)(_ => ElementSymbol(2))
+                            s -> (
+                              if (i == len - 1)
+                                l
+                              else
+                                l :+ ElementSymbol(1)
+                            )
+                        }
+                        .toMap
                   }
                 logger.debug("Replacement paths: " + repl)
-                val scope = Type.Scope(
-                  s1 -> from2.nodeType.asCollectionType.elementType)
+                val scope = Type
+                  .Scope(s1 -> from2.nodeType.asCollectionType.elementType)
                 val replNodes = repl.mapValues(ss => FwdPath(ss).infer(scope))
                 logger.debug(
                   "Replacement path nodes: ",
@@ -116,17 +121,19 @@ class CreateAggregates extends Phase {
       case Bind(s1, f1, Pure(StructNode(defs1), ts1)) =>
         logger.debug("Inlining mapping Bind under Aggregate", a)
         val defs1M = defs1.iterator.toMap
-        val sel = a.select.replace(
-          {
-            case FwdPath(s :: f :: rest) if s == a.sym =>
-              rest
-                .foldLeft(defs1M(f)) {
-                  case (n, s) =>
-                    n.select(s)
-                }
-                .infer()
-          },
-          keepType = true)
+        val sel = a
+          .select
+          .replace(
+            {
+              case FwdPath(s :: f :: rest) if s == a.sym =>
+                rest
+                  .foldLeft(defs1M(f)) {
+                    case (n, s) =>
+                      n.select(s)
+                  }
+                  .infer()
+            },
+            keepType = true)
         val a2 = Aggregate(s1, f1, sel) :@ a.nodeType
         logger.debug("Inlining mapping Bind under Aggregate", a2)
         inlineMap(a2)
@@ -141,12 +148,14 @@ class CreateAggregates extends Phase {
       outer: TermSymbol): (Node, Map[TermSymbol, Aggregate]) =
     n match {
       case a @ Aggregate(s1, f1, sel1) =>
-        if (a.findNode {
-              case n: PathElement =>
-                n.sym == outer
-              case _ =>
-                false
-            }.isDefined)
+        if (a
+              .findNode {
+                case n: PathElement =>
+                  n.sym == outer
+                case _ =>
+                  false
+              }
+              .isDefined)
           (a, Map.empty)
         else {
           val s, f = new AnonSymbol

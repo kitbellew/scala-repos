@@ -223,9 +223,11 @@ class DeploymentPlanTest
     val instances: Int = 10
 
     val apps: Set[AppDefinition] =
-      (1 to 4).map { i =>
-        AppDefinition(s"/test/$i".toPath, Some("cmd"), instances = instances)
-      }.toSet
+      (1 to 4)
+        .map { i =>
+          AppDefinition(s"/test/$i".toPath, Some("cmd"), instances = instances)
+        }
+        .toSet
 
     val targetGroup = Group(id = "/test".toPath, apps = apps, groups = Set())
 
@@ -418,8 +420,9 @@ class DeploymentPlanTest
 
   // regression test for #765
   test("Should create non-empty deployment plan when only args have changed") {
-    val versionInfo: FullVersionInfo = AppDefinition.VersionInfo.forNewConfig(
-      Timestamp(10))
+    val versionInfo: FullVersionInfo = AppDefinition
+      .VersionInfo
+      .forNewConfig(Timestamp(10))
     val app = AppDefinition(
       id = "/test".toPath,
       cmd = Some("sleep 5"),
@@ -526,7 +529,8 @@ class DeploymentPlanTest
     val f = new Fixture()
 
     When("We update the upgrade strategy to the default strategy")
-    val app2 = f.validResident
+    val app2 = f
+      .validResident
       .copy(upgradeStrategy = AppDefinition.DefaultUpgradeStrategy)
     val group2 = f.group.copy(apps = Set(app2))
     val plan2 = DeploymentPlan(f.group, group2)

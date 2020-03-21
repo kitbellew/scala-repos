@@ -84,7 +84,8 @@ class NewHadoopRDD[K, V](
   @transient
   protected val jobId = new JobID(jobTrackerId, id)
 
-  private val shouldCloneJobConf = sparkContext.conf
+  private val shouldCloneJobConf = sparkContext
+    .conf
     .getBoolean("spark.hadoop.cloneConf", false)
 
   def getConf: Configuration = {
@@ -97,16 +98,18 @@ class NewHadoopRDD[K, V](
       // Unfortunately, this clone can be very expensive.  To avoid unexpected performance
       // regressions for workloads and Hadoop versions that do not suffer from these thread-safety
       // issues, this cloning is disabled by default.
-      NewHadoopRDD.CONFIGURATION_INSTANTIATION_LOCK.synchronized {
-        logDebug("Cloning Hadoop Configuration")
-        // The Configuration passed in is actually a JobConf and possibly contains credentials.
-        // To keep those credentials properly we have to create a new JobConf not a Configuration.
-        if (conf.isInstanceOf[JobConf]) {
-          new JobConf(conf)
-        } else {
-          new Configuration(conf)
+      NewHadoopRDD
+        .CONFIGURATION_INSTANTIATION_LOCK
+        .synchronized {
+          logDebug("Cloning Hadoop Configuration")
+          // The Configuration passed in is actually a JobConf and possibly contains credentials.
+          // To keep those credentials properly we have to create a new JobConf not a Configuration.
+          if (conf.isInstanceOf[JobConf]) {
+            new JobConf(conf)
+          } else {
+            new Configuration(conf)
+          }
         }
-      }
     } else {
       conf
     }
@@ -177,9 +180,8 @@ class NewHadoopRDD[K, V](
         private var reader = format.createRecordReader(
           split.serializableHadoopSplit.value,
           hadoopAttemptContext)
-        reader.initialize(
-          split.serializableHadoopSplit.value,
-          hadoopAttemptContext)
+        reader
+          .initialize(split.serializableHadoopSplit.value, hadoopAttemptContext)
 
         // Register an on-task-completion callback to close the input stream.
         context.addTaskCompletionListener(context => close())
@@ -209,7 +211,8 @@ class NewHadoopRDD[K, V](
           if (!finished) {
             inputMetrics.incRecordsReadInternal(1)
           }
-          if (inputMetrics.recordsRead % SparkHadoopUtil.UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
+          if (inputMetrics.recordsRead % SparkHadoopUtil
+                .UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
             updateBytesRead()
           }
           (reader.getCurrentKey, reader.getCurrentValue)
@@ -233,9 +236,13 @@ class NewHadoopRDD[K, V](
             }
             if (getBytesReadCallback.isDefined) {
               updateBytesRead()
-            } else if (split.serializableHadoopSplit.value
+            } else if (split
+                         .serializableHadoopSplit
+                         .value
                          .isInstanceOf[FileSplit] ||
-                       split.serializableHadoopSplit.value
+                       split
+                         .serializableHadoopSplit
+                         .value
                          .isInstanceOf[CombineFileSplit]) {
               // If we can't get the bytes read from the FS stats, fall back to the split size,
               // which may be inaccurate.
@@ -270,7 +277,8 @@ class NewHadoopRDD[K, V](
       HadoopRDD.SPLIT_INFO_REFLECTIONS match {
         case Some(c) =>
           try {
-            val infos = c.newGetLocationInfo
+            val infos = c
+              .newGetLocationInfo
               .invoke(split)
               .asInstanceOf[Array[AnyRef]]
             Some(HadoopRDD.convertSplitLocationInfo(infos))

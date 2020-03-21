@@ -239,8 +239,8 @@ class ScalaReflectionSuite extends SparkFunSuite {
       true)
     val dataType = schemaFor[PrimitiveData].dataType
     assert(
-      CatalystTypeConverters.createToCatalystConverter(dataType)(
-        data) === convertedData)
+      CatalystTypeConverters
+        .createToCatalystConverter(dataType)(data) === convertedData)
   }
 
   test("convert Option[Product] to catalyst") {
@@ -265,8 +265,8 @@ class ScalaReflectionSuite extends SparkFunSuite {
       true,
       InternalRow(1, 1, 1, 1, 1, 1, true))
     assert(
-      CatalystTypeConverters.createToCatalystConverter(dataType)(
-        data) === convertedData)
+      CatalystTypeConverters
+        .createToCatalystConverter(dataType)(data) === convertedData)
   }
 
   test("infer schema from case class with multiple constructors") {
@@ -334,15 +334,17 @@ class ScalaReflectionSuite extends SparkFunSuite {
         (0 until 100).foreach { _ =>
           val loader =
             new URLClassLoader(Array.empty, Utils.getContextOrSparkClassLoader)
-          (0 until 10).par.foreach { _ =>
-            val cl = Thread.currentThread.getContextClassLoader
-            try {
-              Thread.currentThread.setContextClassLoader(loader)
-              exec()
-            } finally {
-              Thread.currentThread.setContextClassLoader(cl)
+          (0 until 10)
+            .par
+            .foreach { _ =>
+              val cl = Thread.currentThread.getContextClassLoader
+              try {
+                Thread.currentThread.setContextClassLoader(loader)
+                exec()
+              } finally {
+                Thread.currentThread.setContextClassLoader(cl)
+              }
             }
-          }
         }
       }
   }

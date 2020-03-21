@@ -285,8 +285,8 @@ object TestSubscriber {
       * Expect and return a stream element.
       */
     def expectNext(): I = {
-      val t = probe.remainingOr(
-        probe.testKitSettings.SingleExpectDefaultTimeout.dilated)
+      val t = probe
+        .remainingOr(probe.testKitSettings.SingleExpectDefaultTimeout.dilated)
       probe.receiveOne(t) match {
         case null ⇒
           throw new AssertionError(

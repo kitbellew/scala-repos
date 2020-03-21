@@ -25,7 +25,8 @@ object LookupJoinedTest {
   // Not defined if there is a collision in K and T, so make those unique:
   def genList(maxTime: Int, maxKey: Int, sz: Int): List[(Int, Int, Int)] = {
     val rng = new java.util.Random
-    (0 until sz).view
+    (0 until sz)
+      .view
       .map { _ =>
         (rng.nextInt(maxTime), rng.nextInt(maxKey), rng.nextInt)
       }
@@ -48,14 +49,18 @@ class LookupJoinerJob(args: Args) extends Job(args) {
   val in1 = TypedTsv[(Int, Int, Int)]("input1")
 
   LookupJoin(
-    TypedPipe.from(in0).map {
-      case (t, k, v) =>
-        (t, (k, v))
-    },
-    TypedPipe.from(in1).map {
-      case (t, k, v) =>
-        (t, (k, v))
-    })
+    TypedPipe
+      .from(in0)
+      .map {
+        case (t, k, v) =>
+          (t, (k, v))
+      },
+    TypedPipe
+      .from(in1)
+      .map {
+        case (t, k, v) =>
+          (t, (k, v))
+      })
     .map {
       case (t, (k, (v, opt))) =>
         (t.toString, k.toString, v.toString, opt.toString)
@@ -64,14 +69,18 @@ class LookupJoinerJob(args: Args) extends Job(args) {
 
   LookupJoin
     .rightSumming(
-      TypedPipe.from(in0).map {
-        case (t, k, v) =>
-          (t, (k, v))
-      },
-      TypedPipe.from(in1).map {
-        case (t, k, v) =>
-          (t, (k, v))
-      })
+      TypedPipe
+        .from(in0)
+        .map {
+          case (t, k, v) =>
+            (t, (k, v))
+        },
+      TypedPipe
+        .from(in1)
+        .map {
+          case (t, k, v) =>
+            (t, (k, v))
+        })
     .map {
       case (t, (k, (v, opt))) =>
         (t.toString, k.toString, v.toString, opt.toString)
@@ -92,17 +101,19 @@ class LookupJoinedTest extends WordSpec with Matchers {
       val ord = Ordering.by { tkw: (T, K, W) =>
         tkw._1
       }
-      serv.get(k).flatMap { in1s =>
-        in1s
-          .filter {
-            case (t1, _, _) =>
-              Ordering[T].lt(t1, t)
-          }
-          .reduceOption(ord.max(_, _))
-          .map {
-            _._3
-          }
-      }
+      serv
+        .get(k)
+        .flatMap { in1s =>
+          in1s
+            .filter {
+              case (t1, _, _) =>
+                Ordering[T].lt(t1, t)
+            }
+            .reduceOption(ord.max(_, _))
+            .map {
+              _._3
+            }
+        }
     }
     in0.map {
       case (t, k, v) =>
@@ -120,21 +131,22 @@ class LookupJoinedTest extends WordSpec with Matchers {
       in1
         .groupBy(_._2)
         .mapValues {
-          _.toList.sorted
-            .scanLeft(None: Option[(T, K, W)]) { (old, newer) =>
-              old
-                .map {
-                  case (_, _, w) =>
-                    (newer._1, newer._2, Semigroup.plus(w, newer._3))
-                }
-                .orElse(Some(newer))
-            }
-            .filter {
-              _.isDefined
-            }
-            .map {
-              _.get
-            }
+          _.toList
+          .sorted
+          .scanLeft(None: Option[(T, K, W)]) { (old, newer) =>
+            old
+              .map {
+                case (_, _, w) =>
+                  (newer._1, newer._2, Semigroup.plus(w, newer._3))
+              }
+              .orElse(Some(newer))
+          }
+          .filter {
+            _.isDefined
+          }
+          .map {
+            _.get
+          }
         }
         .toMap // Force the map
 
@@ -142,17 +154,19 @@ class LookupJoinedTest extends WordSpec with Matchers {
       val ord = Ordering.by { tkw: (T, K, W) =>
         tkw._1
       }
-      serv.get(k).flatMap { in1s =>
-        in1s
-          .filter {
-            case (t1, _, _) =>
-              Ordering[T].lt(t1, t)
-          }
-          .reduceOption(ord.max(_, _))
-          .map {
-            _._3
-          }
-      }
+      serv
+        .get(k)
+        .flatMap { in1s =>
+          in1s
+            .filter {
+              case (t1, _, _) =>
+                Ordering[T].lt(t1, t)
+            }
+            .reduceOption(ord.max(_, _))
+            .map {
+              _._3
+            }
+        }
     }
     in0.map {
       case (t, k, v) =>
@@ -198,14 +212,18 @@ class WindowLookupJoinerJob(args: Args) extends Job(args) {
 
   LookupJoin
     .withWindow(
-      TypedPipe.from(in0).map {
-        case (t, k, v) =>
-          (t, (k, v))
-      },
-      TypedPipe.from(in1).map {
-        case (t, k, v) =>
-          (t, (k, v))
-      })(gate _)
+      TypedPipe
+        .from(in0)
+        .map {
+          case (t, k, v) =>
+            (t, (k, v))
+        },
+      TypedPipe
+        .from(in1)
+        .map {
+          case (t, k, v) =>
+            (t, (k, v))
+        })(gate _)
     .map {
       case (t, (k, (v, opt))) =>
         (t.toString, k.toString, v.toString, opt.toString)
@@ -228,17 +246,19 @@ class WindowLookupJoinedTest extends WordSpec with Matchers {
       val ord = Ordering.by { tkw: (Int, K, W) =>
         tkw._1
       }
-      serv.get(k).flatMap { in1s =>
-        in1s
-          .filter {
-            case (t1, _, _) =>
-              (t1 < t) && ((t.toLong - t1.toLong) < win)
-          }
-          .reduceOption(ord.max(_, _))
-          .map {
-            _._3
-          }
-      }
+      serv
+        .get(k)
+        .flatMap { in1s =>
+          in1s
+            .filter {
+              case (t1, _, _) =>
+                (t1 < t) && ((t.toLong - t1.toLong) < win)
+            }
+            .reduceOption(ord.max(_, _))
+            .map {
+              _._3
+            }
+        }
     }
     in0.map {
       case (t, k, v) =>

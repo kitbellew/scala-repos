@@ -55,16 +55,12 @@ class ConvertImplicitBoundsToImplicitParameter
 object ConvertImplicitBoundsToImplicitParameter {
 
   def canBeConverted(element: PsiElement): Boolean = {
-    val paramTypeElement: ScTypeBoundsOwner = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScTypeBoundsOwner],
-      false)
-    val scTypeParamOwner: ScTypeParametersOwner = PsiTreeUtil.getParentOfType(
-      paramTypeElement,
-      classOf[ScTypeParametersOwner],
-      true)
-    paramTypeElement != null && paramTypeElement.hasImplicitBound && !scTypeParamOwner
-      .isInstanceOf[ScTrait]
+    val paramTypeElement: ScTypeBoundsOwner = PsiTreeUtil
+      .getParentOfType(element, classOf[ScTypeBoundsOwner], false)
+    val scTypeParamOwner: ScTypeParametersOwner = PsiTreeUtil
+      .getParentOfType(paramTypeElement, classOf[ScTypeParametersOwner], true)
+    paramTypeElement != null && paramTypeElement
+      .hasImplicitBound && !scTypeParamOwner.isInstanceOf[ScTrait]
   }
 
   def doConversion(element: PsiElement): Seq[ScParameter] = {
@@ -74,10 +70,8 @@ object ConvertImplicitBoundsToImplicitParameter {
       function: ScMethodLike,
       paramOwner: ScParameterOwner,
       typeParamOwner: ScTypeParametersOwner) =
-      PsiTreeUtil.getParentOfType(
-        element,
-        classOf[ScParameterOwner],
-        false) match {
+      PsiTreeUtil
+        .getParentOfType(element, classOf[ScParameterOwner], false) match {
         case x: ScFunction =>
           (x, x, x)
         case x: ScClass =>
@@ -97,14 +91,12 @@ object ConvertImplicitBoundsToImplicitParameter {
         paramClause.delete()
         function.effectiveParameterClauses.lastOption match {
           case Some(implicitParamClause) if implicitParamClause.isImplicit =>
-            val newClause = ScalaPsiElementFactory.createClauseFromText(
-              implicitParamClause.getText,
-              manager)
+            val newClause = ScalaPsiElementFactory
+              .createClauseFromText(implicitParamClause.getText, manager)
             val addedParametersCount = newClause.parameters.size
             for (p <- paramClause.parameters) {
-              val newParam = ScalaPsiElementFactory.createParameterFromText(
-                p.getText,
-                manager)
+              val newParam = ScalaPsiElementFactory
+                .createParameterFromText(p.getText, manager)
               newClause.addParameter(newParam)
             }
             val addedClause =
@@ -121,14 +113,14 @@ object ConvertImplicitBoundsToImplicitParameter {
             // for a constructor, might need to add an empty parameter section before the
             // implicit section.
             val extra =
-              function.effectiveParameterClauses
+              function
+                .effectiveParameterClauses
                 .drop(declaredClauses.size)
                 .headOption
             var result: Seq[ScParameter] = Seq.empty
             for (c <- extra) {
-              val newClause = ScalaPsiElementFactory.createClauseFromText(
-                c.getText,
-                manager)
+              val newClause = ScalaPsiElementFactory
+                .createClauseFromText(c.getText, manager)
               val addedParametersCount = c.parameters.size
               val addedClause =
                 function.parameterList.addClause(newClause).clauses.last

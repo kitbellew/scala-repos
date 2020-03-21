@@ -54,11 +54,15 @@ object EngineServerPluginContext extends Logging {
     val pluginParams = mutable.Map[String, JValue]()
     val serviceLoader = ServiceLoader.load(classOf[EngineServerPlugin])
     val variantJson = parse(stringFromFile(engineVariant))
-    (variantJson \ "plugins").extractOpt[JObject].foreach { pluginDefs =>
-      pluginDefs.obj.foreach {
-        pluginParams += _
+    (variantJson \ "plugins")
+      .extractOpt[JObject]
+      .foreach { pluginDefs =>
+        pluginDefs
+          .obj
+          .foreach {
+            pluginParams += _
+          }
       }
-    }
     serviceLoader foreach { service =>
       pluginParams.get(service.pluginName) map { params =>
         if ((params \ "enabled").extractOrElse(false)) {

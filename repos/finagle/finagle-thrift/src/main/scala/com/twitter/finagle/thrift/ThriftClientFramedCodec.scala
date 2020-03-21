@@ -103,18 +103,21 @@ private[thrift] class ThriftClientChannelBufferEncoder
           ChannelBuffers.wrappedBuffer(request.message))
         if (request.oneway) {
           // oneway RPCs are satisfied when the write is complete.
-          e.getFuture.addListener(
-            new ChannelFutureListener {
-              override def operationComplete(f: ChannelFuture): Unit =
-                if (f.isSuccess) {
-                  Channels.fireMessageReceived(ctx, ChannelBuffers.EMPTY_BUFFER)
-                } else if (f.isCancelled) {
-                  Channels
-                    .fireExceptionCaught(ctx, new CancelledRequestException)
-                } else {
-                  Channels.fireExceptionCaught(ctx, f.getCause)
-                }
-            })
+          e
+            .getFuture
+            .addListener(
+              new ChannelFutureListener {
+                override def operationComplete(f: ChannelFuture): Unit =
+                  if (f.isSuccess) {
+                    Channels
+                      .fireMessageReceived(ctx, ChannelBuffers.EMPTY_BUFFER)
+                  } else if (f.isCancelled) {
+                    Channels
+                      .fireExceptionCaught(ctx, new CancelledRequestException)
+                  } else {
+                    Channels.fireExceptionCaught(ctx, f.getCause)
+                  }
+              })
         }
 
       case _ =>
@@ -172,9 +175,11 @@ private[finagle] case class ThriftClientPreparer(
         val stat = stats.stat("codec_connection_preparation_latency_ms")
         override def apply(conn: ClientConnection) = {
           val elapsed = Stopwatch.start()
-          super.apply(conn).ensure {
-            stat.add(elapsed().inMilliseconds)
-          }
+          super
+            .apply(conn)
+            .ensure {
+              stat.add(elapsed().inMilliseconds)
+            }
         }
       }
     } else {

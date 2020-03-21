@@ -26,8 +26,8 @@ import akka.testkit.AkkaSpec
 class InputStreamSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
   import system.dispatcher
 
-  val settings = ActorMaterializerSettings(system).withDispatcher(
-    "akka.actor.default-dispatcher")
+  val settings = ActorMaterializerSettings(system)
+    .withDispatcher("akka.actor.default-dispatcher")
   implicit val materializer = ActorMaterializer(settings)
 
   val timeout = 300.milliseconds
@@ -173,8 +173,7 @@ class InputStreamSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
     "successfully read several chunks at once" in assertAllStagesStopped {
       val bytes = List.fill(4)(randomByteString(4))
       val sinkProbe = TestProbe()
-      val inputStream = Source[ByteString](bytes)
-        .runWith(testSink(sinkProbe))
+      val inputStream = Source[ByteString](bytes).runWith(testSink(sinkProbe))
 
       //need to wait while all elements arrive to sink
       bytes foreach { _ ⇒
@@ -249,7 +248,8 @@ class InputStreamSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
           .supervisor
           .tell(StreamSupervisor.GetChildren, testActor)
         val ref =
-          expectMsgType[Children].children
+          expectMsgType[Children]
+            .children
             .find(_.path.toString contains "inputStreamSink")
             .get
         assertDispatcher(ref, "akka.stream.default-blocking-io-dispatcher")

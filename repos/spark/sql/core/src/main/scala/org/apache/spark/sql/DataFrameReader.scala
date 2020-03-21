@@ -140,9 +140,8 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
       userSpecifiedSchema = userSpecifiedSchema,
       className = source,
       options = extraOptions.toMap)
-    Dataset.newDataFrame(
-      sqlContext,
-      LogicalRelation(dataSource.resolveRelation()))
+    Dataset
+      .newDataFrame(sqlContext, LogicalRelation(dataSource.resolveRelation()))
   }
 
   /**
@@ -190,9 +189,8 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
       userSpecifiedSchema = userSpecifiedSchema,
       className = source,
       options = extraOptions.toMap)
-    Dataset.newDataFrame(
-      sqlContext,
-      StreamingRelation(dataSource.createSource()))
+    Dataset
+      .newDataFrame(sqlContext, StreamingRelation(dataSource.createSource()))
   }
 
   /**
@@ -274,10 +272,12 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
       table: String,
       predicates: Array[String],
       connectionProperties: Properties): DataFrame = {
-    val parts: Array[Partition] = predicates.zipWithIndex.map {
-      case (part, i) =>
-        JDBCPartition(part, i): Partition
-    }
+    val parts: Array[Partition] = predicates
+      .zipWithIndex
+      .map {
+        case (part, i) =>
+          JDBCPartition(part, i): Partition
+      }
     jdbc(url, table, parts, connectionProperties)
   }
 
@@ -439,8 +439,11 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
   def table(tableName: String): DataFrame = {
     Dataset.newDataFrame(
       sqlContext,
-      sqlContext.sessionState.catalog.lookupRelation(
-        sqlContext.sessionState.sqlParser.parseTableIdentifier(tableName)))
+      sqlContext
+        .sessionState
+        .catalog
+        .lookupRelation(
+          sqlContext.sessionState.sqlParser.parseTableIdentifier(tableName)))
   }
 
   /**

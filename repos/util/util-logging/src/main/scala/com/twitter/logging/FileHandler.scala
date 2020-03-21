@@ -287,8 +287,8 @@ class FileHandler(
         .listFiles(
           new FilenameFilter {
             def accept(f: File, fname: String): Boolean =
-              fname != name && fname.startsWith(prefixName) && fname.endsWith(
-                filenameSuffix)
+              fname != name && fname.startsWith(prefixName) && fname
+                .endsWith(filenameSuffix)
           })
         .sortBy(_.getName)
 

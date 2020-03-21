@@ -24,12 +24,10 @@ class StringCodec extends CodecFactory[String, String] {
                 new DelimiterBasedFrameDecoder(
                   100,
                   Delimiters.lineDelimiter: _*))
-              pipeline.addLast(
-                "stringDecoder",
-                new StringDecoder(Charsets.Utf8))
-              pipeline.addLast(
-                "stringEncoder",
-                new StringEncoder(Charsets.Utf8))
+              pipeline
+                .addLast("stringDecoder", new StringDecoder(Charsets.Utf8))
+              pipeline
+                .addLast("stringEncoder", new StringEncoder(Charsets.Utf8))
               pipeline
             }
           }

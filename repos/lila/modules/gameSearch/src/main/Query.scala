@@ -136,16 +136,19 @@ object Query {
     options(1 to 5, "y", "%d year{s} ago")
 
   val statuses =
-    Status.finishedNotCheated.map {
-      case s if s.is(_.Timeout) =>
-        none
-      case s if s.is(_.NoStart) =>
-        none
-      case s if s.is(_.Outoftime) =>
-        Some(s.id -> "Clock Flag")
-      case s if s.is(_.VariantEnd) =>
-        Some(s.id -> "Variant End")
-      case s =>
-        Some(s.id -> s.toString)
-    }.flatten
+    Status
+      .finishedNotCheated
+      .map {
+        case s if s.is(_.Timeout) =>
+          none
+        case s if s.is(_.NoStart) =>
+          none
+        case s if s.is(_.Outoftime) =>
+          Some(s.id -> "Clock Flag")
+        case s if s.is(_.VariantEnd) =>
+          Some(s.id -> "Variant End")
+        case s =>
+          Some(s.id -> s.toString)
+      }
+      .flatten
 }

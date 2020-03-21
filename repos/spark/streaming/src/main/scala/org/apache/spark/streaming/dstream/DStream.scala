@@ -200,8 +200,9 @@ abstract class DStream[T: ClassTag](
 
     // Set the checkpoint interval to be slideDuration or 10 seconds, which ever is larger
     if (mustCheckpoint && checkpointDuration == null) {
-      checkpointDuration =
-        slideDuration * math.ceil(Seconds(10) / slideDuration).toInt
+      checkpointDuration = slideDuration * math
+        .ceil(Seconds(10) / slideDuration)
+        .toInt
       logInfo(s"Checkpoint interval automatically set to $checkpointDuration")
     }
 
@@ -244,7 +245,10 @@ abstract class DStream[T: ClassTag](
     )
 
     require(
-      checkpointDuration == null || context.sparkContext.checkpointDir.isDefined,
+      checkpointDuration == null || context
+        .sparkContext
+        .checkpointDir
+        .isDefined,
       "The checkpoint directory has not been set. Please set it by StreamingContext.checkpoint()."
     )
 
@@ -256,8 +260,8 @@ abstract class DStream[T: ClassTag](
     )
 
     require(
-      checkpointDuration == null || checkpointDuration.isMultipleOf(
-        slideDuration),
+      checkpointDuration == null || checkpointDuration
+        .isMultipleOf(slideDuration),
       s"The checkpoint interval for ${this.getClass.getSimpleName} has been set to " +
         s" $checkpointDuration which not a multiple of its slide time ($slideDuration). " +
         s"Please set it to a multiple of $slideDuration."
@@ -318,8 +322,8 @@ abstract class DStream[T: ClassTag](
   private[streaming] def isTimeValid(time: Time): Boolean = {
     if (!isInitialized) {
       throw new SparkException(this + " has not been initialized")
-    } else if (time <= zeroTime || !(time - zeroTime).isMultipleOf(
-                 slideDuration)) {
+    } else if (time <= zeroTime || !(time - zeroTime)
+                 .isMultipleOf(slideDuration)) {
       logInfo(
         s"Time $time is invalid as zeroTime is $zeroTime" +
           s" , slideDuration is $slideDuration and difference is ${time - zeroTime}")
@@ -337,43 +341,47 @@ abstract class DStream[T: ClassTag](
   private[streaming] final def getOrCompute(time: Time): Option[RDD[T]] = {
     // If RDD was already generated, then retrieve it from HashMap,
     // or else compute the RDD
-    generatedRDDs.get(time).orElse {
-      // Compute the RDD if time is valid (e.g. correct time in a sliding window)
-      // of RDD generation, else generate nothing.
-      if (isTimeValid(time)) {
+    generatedRDDs
+      .get(time)
+      .orElse {
+        // Compute the RDD if time is valid (e.g. correct time in a sliding window)
+        // of RDD generation, else generate nothing.
+        if (isTimeValid(time)) {
 
-        val rddOption =
-          createRDDWithLocalProperties(time, displayInnerRDDOps = false) {
-            // Disable checks for existing output directories in jobs launched by the streaming
-            // scheduler, since we may need to write output to an existing directory during checkpoint
-            // recovery; see SPARK-4835 for more details. We need to have this call here because
-            // compute() might cause Spark jobs to be launched.
-            PairRDDFunctions.disableOutputSpecValidation.withValue(true) {
-              compute(time)
+          val rddOption =
+            createRDDWithLocalProperties(time, displayInnerRDDOps = false) {
+              // Disable checks for existing output directories in jobs launched by the streaming
+              // scheduler, since we may need to write output to an existing directory during checkpoint
+              // recovery; see SPARK-4835 for more details. We need to have this call here because
+              // compute() might cause Spark jobs to be launched.
+              PairRDDFunctions
+                .disableOutputSpecValidation
+                .withValue(true) {
+                  compute(time)
+                }
             }
+
+          rddOption.foreach {
+            case newRDD =>
+              // Register the generated RDD for caching and checkpointing
+              if (storageLevel != StorageLevel.NONE) {
+                newRDD.persist(storageLevel)
+                logDebug(
+                  s"Persisting RDD ${newRDD.id} for time $time to $storageLevel")
+              }
+              if (checkpointDuration != null && (time - zeroTime)
+                    .isMultipleOf(checkpointDuration)) {
+                newRDD.checkpoint()
+                logInfo(
+                  s"Marking RDD ${newRDD.id} for time $time for checkpointing")
+              }
+              generatedRDDs.put(time, newRDD)
           }
-
-        rddOption.foreach {
-          case newRDD =>
-            // Register the generated RDD for caching and checkpointing
-            if (storageLevel != StorageLevel.NONE) {
-              newRDD.persist(storageLevel)
-              logDebug(
-                s"Persisting RDD ${newRDD.id} for time $time to $storageLevel")
-            }
-            if (checkpointDuration != null && (time - zeroTime).isMultipleOf(
-                  checkpointDuration)) {
-              newRDD.checkpoint()
-              logInfo(
-                s"Marking RDD ${newRDD.id} for time $time for checkpointing")
-            }
-            generatedRDDs.put(time, newRDD)
+          rddOption
+        } else {
+          None
         }
-        rddOption
-      } else {
-        None
       }
-    }
   }
 
   /**
@@ -398,8 +406,9 @@ abstract class DStream[T: ClassTag](
       ssc.sparkContext.getLocalProperty(CallSite.SHORT_FORM),
       ssc.sparkContext.getLocalProperty(CallSite.LONG_FORM))
     val prevScope = ssc.sparkContext.getLocalProperty(scopeKey)
-    val prevScopeNoOverride = ssc.sparkContext.getLocalProperty(
-      scopeNoOverrideKey)
+    val prevScopeNoOverride = ssc
+      .sparkContext
+      .getLocalProperty(scopeNoOverrideKey)
 
     try {
       if (displayInnerRDDOps) {
@@ -474,16 +483,18 @@ abstract class DStream[T: ClassTag](
     if (unpersistData) {
       logDebug(
         s"Unpersisting old RDDs: ${oldRDDs.values.map(_.id).mkString(", ")}")
-      oldRDDs.values.foreach { rdd =>
-        rdd.unpersist(false)
-        // Explicitly remove blocks of BlockRDD
-        rdd match {
-          case b: BlockRDD[_] =>
-            logInfo(s"Removing blocks of RDD $b of time $time")
-            b.removeBlocks()
-          case _ =>
+      oldRDDs
+        .values
+        .foreach { rdd =>
+          rdd.unpersist(false)
+          // Explicitly remove blocks of BlockRDD
+          rdd match {
+            case b: BlockRDD[_] =>
+              logInfo(s"Removing blocks of RDD $b of time $time")
+              b.removeBlocks()
+            case _ =>
+          }
         }
-      }
     }
     logDebug(
       s"Cleared ${oldRDDs.size} RDDs that were older than " +

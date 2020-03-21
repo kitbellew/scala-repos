@@ -102,14 +102,19 @@ object AccumulatorSpec extends org.specs2.mutable.Specification {
 
     "be compatible with Java accumulator" in {
       "Java asScala" in withMaterializer { implicit m =>
-        val sink = sum.toSink.mapMaterializedValue(
-          new JFn[CompletionStage[Int], Future[Int]] {
-            def apply(f: CompletionStage[Int]): Future[Int] =
-              FutureConverters.toScala(f)
-          })
+        val sink = sum
+          .toSink
+          .mapMaterializedValue(
+            new JFn[CompletionStage[Int], Future[Int]] {
+              def apply(f: CompletionStage[Int]): Future[Int] =
+                FutureConverters.toScala(f)
+            })
 
         sawait(
-          play.api.libs.streams
+          play
+            .api
+            .libs
+            .streams
             .Accumulator(sink.asScala)
             .run(source.asScala)) must_== 6
       }

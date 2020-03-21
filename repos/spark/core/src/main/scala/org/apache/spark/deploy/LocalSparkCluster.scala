@@ -55,15 +55,12 @@ private[spark] class LocalSparkCluster(
       .set("spark.shuffle.service.enabled", "false")
 
     /* Start the Master */
-    val (rpcEnv, webUiPort, _) = Master.startRpcEnvAndEndpoint(
-      localHostname,
-      0,
-      0,
-      _conf)
+    val (rpcEnv, webUiPort, _) = Master
+      .startRpcEnvAndEndpoint(localHostname, 0, 0, _conf)
     masterWebUIPort = webUiPort
     masterRpcEnvs += rpcEnv
-    val masterUrl =
-      "spark://" + Utils.localHostNameForURI() + ":" + rpcEnv.address.port
+    val masterUrl = "spark://" + Utils
+      .localHostNameForURI() + ":" + rpcEnv.address.port
     val masters = Array(masterUrl)
 
     /* Start the Workers */

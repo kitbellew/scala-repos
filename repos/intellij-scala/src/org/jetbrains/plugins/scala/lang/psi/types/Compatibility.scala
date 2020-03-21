@@ -92,10 +92,12 @@ object Compatibility {
                   case function1: ScTrait =>
                     ScParameterizedType(
                       ScType.designator(function1),
-                      function1.typeParameters.map(tp =>
-                        new ScUndefinedType(
-                          new ScTypeParameterType(tp, ScSubstitutor.empty),
-                          1))) match {
+                      function1
+                        .typeParameters
+                        .map(tp =>
+                          new ScUndefinedType(
+                            new ScTypeParameterType(tp, ScSubstitutor.empty),
+                            1))) match {
                       case funTp: ScParameterizedType =>
                         val secondArg = funTp.typeArgs(1)
                         Conformance
@@ -222,8 +224,8 @@ object Compatibility {
     val clashedAssignments = clashedAssignmentsIn(exprs)
 
     if (clashedAssignments.nonEmpty) {
-      val problems = clashedAssignments.map(
-        new ParameterSpecifiedMultipleTimes(_))
+      val problems = clashedAssignments
+        .map(new ParameterSpecifiedMultipleTimes(_))
       return ConformanceExtResult(problems)
     }
 
@@ -246,11 +248,14 @@ object Compatibility {
     if (exprs.length < minParams) {
       val count = minParams - exprs.length
       val problems = new ArrayBuffer[ApplicabilityProblem]()
-      parameters.reverseIterator.foreach { param =>
-        if (!param.isRepeated && !param.isDefault && problems.length < count) {
-          problems += new MissedValueParameter(param)
+      parameters
+        .reverseIterator
+        .foreach { param =>
+          if (!param.isRepeated && !param
+                .isDefault && problems.length < count) {
+            problems += new MissedValueParameter(param)
+          }
         }
-      }
       return ConformanceExtResult(problems.toSeq, undefSubst)
     }
 
@@ -287,23 +292,22 @@ object Compatibility {
               isShapesResolve,
               Some(expectedType))
             ._1
-        typeResult.toOption.toList.flatMap { exprType =>
-          val conforms = Conformance.conforms(
-            paramType,
-            exprType,
-            checkWeak = true)
-          matched ::= (param, expr.expr)
-          matchedTypes ::= (param, exprType)
-          if (!conforms) {
-            List(new TypeMismatch(expr.expr, paramType))
-          } else {
-            undefSubst += Conformance.undefinedSubst(
-              paramType,
-              exprType,
-              checkWeak = true)
-            List.empty
+        typeResult
+          .toOption
+          .toList
+          .flatMap { exprType =>
+            val conforms = Conformance
+              .conforms(paramType, exprType, checkWeak = true)
+            matched ::= (param, expr.expr)
+            matchedTypes ::= (param, exprType)
+            if (!conforms) {
+              List(new TypeMismatch(expr.expr, paramType))
+            } else {
+              undefSubst += Conformance
+                .undefinedSubst(paramType, exprType, checkWeak = true)
+              List.empty
+            }
           }
-        }
       }
     }
 
@@ -335,10 +339,8 @@ object Compatibility {
                      Some(expectedType))
                    .tr)
               yield {
-                val conforms = Conformance.conforms(
-                  tp,
-                  exprType,
-                  checkWeak = true)
+                val conforms = Conformance
+                  .conforms(tp, exprType, checkWeak = true)
                 if (!conforms) {
                   return ConformanceExtResult(
                     Seq(new TypeMismatch(expr, tp)),
@@ -349,10 +351,8 @@ object Compatibility {
                 } else {
                   matched ::= (param, expr)
                   matchedTypes ::= (param, exprType)
-                  undefSubst += Conformance.undefinedSubst(
-                    tp,
-                    exprType,
-                    checkWeak = true)
+                  undefSubst += Conformance
+                    .undefinedSubst(tp, exprType, checkWeak = true)
                 }
               }
           } else {
@@ -370,8 +370,8 @@ object Compatibility {
               else
                 assign.getRExpression.getOrElse(assign)
             }
-            problems :::= doNoNamed(
-              Expression(extractExpression(assign))).reverse
+            problems :::= doNoNamed(Expression(extractExpression(assign)))
+              .reverse
           } else {
             if (!checkNames)
               return ConformanceExtResult(
@@ -395,19 +395,15 @@ object Compatibility {
                          isShapesResolve,
                          Some(expectedType))
                        .tr) {
-                  val conforms = Conformance.conforms(
-                    paramType,
-                    exprType,
-                    checkWeak = true)
+                  val conforms = Conformance
+                    .conforms(paramType, exprType, checkWeak = true)
                   if (!conforms) {
                     problems ::= TypeMismatch(expr, paramType)
                   } else {
                     matched ::= (param, expr)
                     matchedTypes ::= (param, exprType)
-                    undefSubst += Conformance.undefinedSubst(
-                      paramType,
-                      exprType,
-                      checkWeak = true)
+                    undefSubst += Conformance
+                      .undefinedSubst(paramType, exprType, checkWeak = true)
                   }
                 }
               case _ =>
@@ -464,10 +460,8 @@ object Compatibility {
                  isShapesResolve,
                  Some(expectedType))
                ._1) {
-          val conforms = Conformance.conforms(
-            paramType,
-            exprType,
-            checkWeak = true)
+          val conforms = Conformance
+            .conforms(paramType, exprType, checkWeak = true)
           if (!conforms) {
             return ConformanceExtResult(
               Seq(
@@ -482,16 +476,15 @@ object Compatibility {
           } else {
             matched ::= (parameters.last, exprs(k).expr)
             matchedTypes ::= (parameters.last, exprType)
-            undefSubst += Conformance.undefinedSubst(
-              paramType,
-              exprType,
-              checkWeak = true)
+            undefSubst += Conformance
+              .undefinedSubst(paramType, exprType, checkWeak = true)
           }
         }
         k = k + 1
       }
     } else {
-      if (exprs.length == parameters.length - 1 && !namedMode && parameters.last.isRepeated)
+      if (exprs.length == parameters
+            .length - 1 && !namedMode && parameters.last.isRepeated)
         return ConformanceExtResult(
           Seq.empty,
           undefSubst,
@@ -503,10 +496,12 @@ object Compatibility {
         for ((parameter: Parameter, b) <- parameters.zip(used)
              if !b && !parameter.isDefault)
           yield MissedValueParameter(parameter)
-      defaultParameterUsed = parameters.zip(used).exists {
-        case (param, bool) =>
-          !bool && param.isDefault
-      }
+      defaultParameterUsed = parameters
+        .zip(used)
+        .exists {
+          case (param, bool) =>
+            !bool && param.isDefault
+        }
       if (missed.nonEmpty)
         return ConformanceExtResult(
           missed,
@@ -547,8 +542,9 @@ object Compatibility {
 
   def toParameter(p: ScParameter, substitutor: ScSubstitutor): Parameter = {
     val t = substitutor.subst(p.getType(TypingContext.empty).getOrNothing)
-    val default = p.getDefaultExpression.flatMap(
-      _.getType().toOption.map(substitutor.subst))
+    val default = p
+      .getDefaultExpression
+      .flatMap(_.getType().toOption.map(substitutor.subst))
     new Parameter(
       p.name,
       p.deprecatedName,
@@ -606,9 +602,12 @@ object Compatibility {
 
         checkConformanceExt(
           checkNames = false,
-          parameters = synthetic.paramClauses.head.map { p =>
-            p.copy(paramType = substitutor.subst(p.paramType))
-          },
+          parameters = synthetic
+            .paramClauses
+            .head
+            .map { p =>
+              p.copy(paramType = substitutor.subst(p.paramType))
+            },
           exprs = exprs,
           checkWithImplicits = checkWithImplicits,
           isShapesResolve = isShapesResolve
@@ -617,15 +616,17 @@ object Compatibility {
         if (!fun.hasParameterClause && argClauses.nonEmpty)
           return ConformanceExtResult(Seq(new DoesNotTakeParameters))
 
-        val parameters: Seq[ScParameter] =
-          fun.effectiveParameterClauses.headOption.toList
-            .flatMap(_.effectiveParameters)
+        val parameters: Seq[ScParameter] = fun
+          .effectiveParameterClauses
+          .headOption
+          .toList
+          .flatMap(_.effectiveParameters)
 
         val clashedAssignments = clashedAssignmentsIn(exprs)
 
         if (clashedAssignments.nonEmpty) {
-          val problems = clashedAssignments.map(
-            new ParameterSpecifiedMultipleTimes(_))
+          val problems = clashedAssignments
+            .map(new ParameterSpecifiedMultipleTimes(_))
           return ConformanceExtResult(problems)
         }
 
@@ -644,8 +645,8 @@ object Compatibility {
           return ConformanceExtResult(arguments.map(ExcessArgument))
         }
 
-        val obligatory = parameters.filter(p =>
-          !p.isDefaultParam && !p.isRepeatedParameter)
+        val obligatory = parameters
+          .filter(p => !p.isDefaultParam && !p.isRepeatedParameter)
         val shortage = obligatory.size - exprs.length
         if (shortage > 0)
           return ConformanceExtResult(
@@ -668,8 +669,8 @@ object Compatibility {
         val clashedAssignments = clashedAssignmentsIn(exprs)
 
         if (clashedAssignments.nonEmpty) {
-          val problems = clashedAssignments.map(
-            new ParameterSpecifiedMultipleTimes(_))
+          val problems = clashedAssignments
+            .map(new ParameterSpecifiedMultipleTimes(_))
           return ConformanceExtResult(problems)
         }
 
@@ -688,25 +689,27 @@ object Compatibility {
           return ConformanceExtResult(part.map(ExcessArgument))
         }
 
-        val obligatory = parameters.filter(p =>
-          !p.isDefaultParam && !p.isRepeatedParameter)
+        val obligatory = parameters
+          .filter(p => !p.isDefaultParam && !p.isRepeatedParameter)
         val shortage = obligatory.size - exprs.length
 
         if (shortage > 0) {
-          val part = obligatory.takeRight(shortage).map { p =>
-            val t = p.getType(TypingContext.empty).getOrAny
-            new Parameter(
-              p.name,
-              p.deprecatedName,
-              t,
-              t,
-              p.isDefaultParam,
-              p.isRepeatedParameter,
-              p.isCallByNameParameter,
-              p.index,
-              Some(p),
-              p.getDefaultExpression.flatMap(_.getType().toOption))
-          }
+          val part = obligatory
+            .takeRight(shortage)
+            .map { p =>
+              val t = p.getType(TypingContext.empty).getOrAny
+              new Parameter(
+                p.name,
+                p.deprecatedName,
+                t,
+                t,
+                p.isDefaultParam,
+                p.isRepeatedParameter,
+                p.isCallByNameParameter,
+                p.index,
+                Some(p),
+                p.getDefaultExpression.flatMap(_.getType().toOption))
+            }
           return ConformanceExtResult(part.map(new MissedValueParameter(_)))
         }
 

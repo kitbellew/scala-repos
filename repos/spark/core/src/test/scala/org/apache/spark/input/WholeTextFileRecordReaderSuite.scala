@@ -58,9 +58,11 @@ class WholeTextFileRecordReaderSuite
 
     // Set the block size of local file system to test whether files are split right or not.
     sc.hadoopConfiguration.setLong("fs.local.block.size", 32)
-    sc.hadoopConfiguration.set(
-      "io.compression.codecs",
-      "org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec")
+    sc
+      .hadoopConfiguration
+      .set(
+        "io.compression.codecs",
+        "org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec")
     factory = new CompressionCodecFactory(sc.hadoopConfiguration)
   }
 
@@ -81,8 +83,8 @@ class WholeTextFileRecordReaderSuite
       if (compress) {
         val codec = new GzipCodec
         val path = s"${inputDir.toString}/$fileName${codec.getDefaultExtension}"
-        codec.createOutputStream(
-          new DataOutputStream(new FileOutputStream(path)))
+        codec
+          .createOutputStream(new DataOutputStream(new FileOutputStream(path)))
       } else {
         val path = s"${inputDir.toString}/$fileName"
         new DataOutputStream(new FileOutputStream(path))
@@ -102,10 +104,12 @@ class WholeTextFileRecordReaderSuite
     val dir = Utils.createTempDir()
     logInfo(s"Local disk address is ${dir.toString}.")
 
-    WholeTextFileRecordReaderSuite.files.foreach {
-      case (filename, contents) =>
-        createNativeFile(dir, filename, contents, false)
-    }
+    WholeTextFileRecordReaderSuite
+      .files
+      .foreach {
+        case (filename, contents) =>
+          createNativeFile(dir, filename, contents, false)
+      }
 
     val res = sc.wholeTextFiles(dir.toString, 3).collect()
 
@@ -119,8 +123,8 @@ class WholeTextFileRecordReaderSuite
         WholeTextFileRecordReaderSuite.fileNames.contains(shortName),
         s"Missing file name $filename.")
       assert(
-        contents === new Text(
-          WholeTextFileRecordReaderSuite.files(shortName)).toString,
+        contents === new Text(WholeTextFileRecordReaderSuite.files(shortName))
+          .toString,
         s"file $filename contents can not match.")
     }
 
@@ -131,10 +135,12 @@ class WholeTextFileRecordReaderSuite
     val dir = Utils.createTempDir()
     logInfo(s"Local disk address is ${dir.toString}.")
 
-    WholeTextFileRecordReaderSuite.files.foreach {
-      case (filename, contents) =>
-        createNativeFile(dir, filename, contents, true)
-    }
+    WholeTextFileRecordReaderSuite
+      .files
+      .foreach {
+        case (filename, contents) =>
+          createNativeFile(dir, filename, contents, true)
+      }
 
     val res = sc.wholeTextFiles(dir.toString, 3).collect()
 
@@ -149,8 +155,8 @@ class WholeTextFileRecordReaderSuite
         WholeTextFileRecordReaderSuite.fileNames.contains(shortName),
         s"Missing file name $filename.")
       assert(
-        contents === new Text(
-          WholeTextFileRecordReaderSuite.files(shortName)).toString,
+        contents === new Text(WholeTextFileRecordReaderSuite.files(shortName))
+          .toString,
         s"file $filename contents can not match.")
     }
 
@@ -162,8 +168,8 @@ class WholeTextFileRecordReaderSuite
   * Files to be tested are defined here.
   */
 object WholeTextFileRecordReaderSuite {
-  private val testWords: IndexedSeq[Byte] = "Spark is easy to use.\n".map(
-    _.toByte)
+  private val testWords: IndexedSeq[Byte] = "Spark is easy to use.\n"
+    .map(_.toByte)
 
   private val fileNames = Array("part-00000", "part-00001", "part-00002")
   private val fileLengths = Array(10, 100, 1000)

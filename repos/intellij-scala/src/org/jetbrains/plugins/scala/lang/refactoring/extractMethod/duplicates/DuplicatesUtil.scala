@@ -80,8 +80,10 @@ object DuplicatesUtil {
       element: PsiElement,
       size: Int): Option[Seq[PsiElement]] = {
     val siblingIterator = element.nextSiblings
-    val siblings =
-      element +: siblingIterator.withFilter(isSignificant).take(size - 1).toSeq
+    val siblings = element +: siblingIterator
+      .withFilter(isSignificant)
+      .take(size - 1)
+      .toSeq
     if (siblings.size < size)
       None
     else
@@ -102,8 +104,8 @@ object DuplicatesUtil {
     val highlighter = new util.ArrayList[RangeHighlighter](1)
     highlightDuplicate(project, editor, duplicate, highlighter)
     val range = duplicate.textRange
-    val logicalPosition: LogicalPosition = editor.offsetToLogicalPosition(
-      range.getStartOffset)
+    val logicalPosition: LogicalPosition = editor
+      .offsetToLogicalPosition(range.getStartOffset)
     expandAllRegionsCoveringRange(project, editor, range)
     editor.getScrollingModel.scrollTo(logicalPosition, ScrollType.MAKE_VISIBLE)
 
@@ -217,11 +219,13 @@ object DuplicatesUtil {
       .getFoldRegionsAtOffset(editor, textRange.getStartOffset)
     val anyCollapsed: Boolean = foldRegions.exists(!_.isExpanded)
     if (anyCollapsed) {
-      editor.getFoldingModel.runBatchFoldingOperation(
-        new Runnable {
-          def run() =
-            foldRegions.filterNot(_.isExpanded).foreach(_.setExpanded(true))
-        })
+      editor
+        .getFoldingModel
+        .runBatchFoldingOperation(
+          new Runnable {
+            def run() =
+              foldRegions.filterNot(_.isExpanded).foreach(_.setExpanded(true))
+          })
     }
   }
 
@@ -231,7 +235,8 @@ object DuplicatesUtil {
       duplicate: DuplicateMatch,
       highlighters: util.Collection[RangeHighlighter]) {
     val colorsManager: EditorColorsManager = EditorColorsManager.getInstance
-    val attributes: TextAttributes = colorsManager.getGlobalScheme
+    val attributes: TextAttributes = colorsManager
+      .getGlobalScheme
       .getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES)
     val range = duplicate.textRange
     HighlightManager

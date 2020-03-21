@@ -63,13 +63,12 @@ class MesosStateStore(state: State, timeout: Duration) extends PersistentStore {
     futureToFuture(state.fetch(key))
       .map(throwOnNull)
       .flatMap { variable =>
-        futureToFuture(state.expunge(variable))
-          .map {
-            case java.lang.Boolean.TRUE =>
-              true
-            case java.lang.Boolean.FALSE =>
-              false
-          }
+        futureToFuture(state.expunge(variable)).map {
+          case java.lang.Boolean.TRUE =>
+            true
+          case java.lang.Boolean.FALSE =>
+            false
+        }
       }
       .recover(mapException(s"Can not delete entity with key $key"))
   }

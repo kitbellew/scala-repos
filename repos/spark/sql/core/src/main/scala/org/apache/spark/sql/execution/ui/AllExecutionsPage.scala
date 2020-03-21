@@ -43,9 +43,8 @@ private[ui] class AllExecutionsPage(parent: SQLTab)
             parent,
             "Running Queries",
             currentTime,
-            listener.getRunningExecutions
-              .sortBy(_.submissionTime)
-              .reverse).toNodeSeq
+            listener.getRunningExecutions.sortBy(_.submissionTime).reverse)
+            .toNodeSeq
       }
       if (listener.getCompletedExecutions.nonEmpty) {
         _content ++=
@@ -53,9 +52,8 @@ private[ui] class AllExecutionsPage(parent: SQLTab)
             parent,
             "Completed Queries",
             currentTime,
-            listener.getCompletedExecutions
-              .sortBy(_.submissionTime)
-              .reverse).toNodeSeq
+            listener.getCompletedExecutions.sortBy(_.submissionTime).reverse)
+            .toNodeSeq
       }
       if (listener.getFailedExecutions.nonEmpty) {
         _content ++=
@@ -63,9 +61,8 @@ private[ui] class AllExecutionsPage(parent: SQLTab)
             parent,
             "Failed Queries",
             currentTime,
-            listener.getFailedExecutions
-              .sortBy(_.submissionTime)
-              .reverse).toNodeSeq
+            listener.getFailedExecutions.sortBy(_.submissionTime).reverse)
+            .toNodeSeq
       }
       _content
     }
@@ -92,30 +89,39 @@ private[ui] abstract class ExecutionTable(
       currentTime: Long,
       executionUIData: SQLExecutionUIData): Seq[Node] = {
     val submissionTime = executionUIData.submissionTime
-    val duration =
-      executionUIData.completionTime.getOrElse(currentTime) - submissionTime
+    val duration = executionUIData
+      .completionTime
+      .getOrElse(currentTime) - submissionTime
 
-    val runningJobs = executionUIData.runningJobs.map { jobId =>
-      <a href={
-        jobURL(jobId)
-      }>{
-        jobId.toString
-      }</a><br/>
-    }
-    val succeededJobs = executionUIData.succeededJobs.sorted.map { jobId =>
-      <a href={
-        jobURL(jobId)
-      }>{
-        jobId.toString
-      }</a><br/>
-    }
-    val failedJobs = executionUIData.failedJobs.sorted.map { jobId =>
-      <a href={
-        jobURL(jobId)
-      }>{
-        jobId.toString
-      }</a><br/>
-    }
+    val runningJobs = executionUIData
+      .runningJobs
+      .map { jobId =>
+        <a href={
+          jobURL(jobId)
+        }>{
+          jobId.toString
+        }</a><br/>
+      }
+    val succeededJobs = executionUIData
+      .succeededJobs
+      .sorted
+      .map { jobId =>
+        <a href={
+          jobURL(jobId)
+        }>{
+          jobId.toString
+        }</a><br/>
+      }
+    val failedJobs = executionUIData
+      .failedJobs
+      .sorted
+      .map { jobId =>
+        <a href={
+          jobURL(jobId)
+        }>{
+          jobId.toString
+        }</a><br/>
+      }
     <tr>
       <td>
         {

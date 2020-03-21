@@ -30,8 +30,8 @@ object UnapplyInference extends App {
     import scalaz._, Scalaz._
     val ls = List(1, 2, 3)
     val traverseOpt: Option[List[Int]] = ls.traverse(a => some(a))
-    val traverseState: State[Int, List[Int]] = ls.traverse[State[Int, ?], Int](
-      a => State((x: Int) => (x + 1, a)))
+    val traverseState: State[Int, List[Int]] = ls
+      .traverse[State[Int, ?], Int](a => State((x: Int) => (x + 1, a)))
   }
 
   // With Unapply (in the signature of traverseU)

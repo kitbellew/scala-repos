@@ -13,7 +13,12 @@ import scala.language.experimental.{macros => smacros}
 trait RequiredBinaryComparators extends RequiredBinaryComparatorsConfig {
 
   implicit def ordSer[T]: OrderedSerialization[T] =
-    macro com.twitter.scalding.serialization.macros.impl
+    macro com
+      .twitter
+      .scalding
+      .serialization
+      .macros
+      .impl
       .OrderedSerializationProviderImpl[T]
 
 }
@@ -21,7 +26,12 @@ trait RequiredBinaryComparators extends RequiredBinaryComparatorsConfig {
 object RequiredBinaryComparators {
 
   implicit def orderedSerialization[T]: OrderedSerialization[T] =
-    macro com.twitter.scalding.serialization.macros.impl
+    macro com
+      .twitter
+      .scalding
+      .serialization
+      .macros
+      .impl
       .OrderedSerializationProviderImpl[T]
 }
 
@@ -30,7 +40,12 @@ object RequiredBinaryComparators {
   */
 trait RequiredBinaryComparatorsExecutionApp extends ExecutionApp {
   implicit def ordSer[T]: OrderedSerialization[T] =
-    macro com.twitter.scalding.serialization.macros.impl
+    macro com
+      .twitter
+      .scalding
+      .serialization
+      .macros
+      .impl
       .OrderedSerializationProviderImpl[T]
 
   override def config(inputArgs: Array[String]): (Config, Mode) = {

@@ -31,7 +31,8 @@ object InfixType {
     var count = 0
     markerList = infixTypeMarker :: markerList
     builder.getTokenType match {
-      case ScalaTokenTypes.tUNDER => //wildcard is possible for infix types, like for parameterized. No bounds possible
+      case ScalaTokenTypes
+            .tUNDER => //wildcard is possible for infix types, like for parameterized. No bounds possible
         val typeMarker = builder.mark()
         builder.advanceLexer()
         typeMarker.done(ScalaElementTypes.WILDCARD_TYPE)
@@ -48,9 +49,8 @@ object InfixType {
         }
     }
     var assoc: Int = 0 //this mark associativity: left - 1, right - -1
-    while (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER && (
-             !builder.newlineBeforeCurrentToken
-           ) &&
+    while (builder.getTokenType == ScalaTokenTypes
+             .tIDENTIFIER && (!builder.newlineBeforeCurrentToken) &&
            (!star || builder.getTokenText != "*") && (
              !isPattern || builder.getTokenText != "|"
            )) {
@@ -86,7 +86,8 @@ object InfixType {
         builder.error(ScalaBundle.message("compound.type.expected"))
       }
       builder.getTokenType match {
-        case ScalaTokenTypes.tUNDER => //wildcard is possible for infix types, like for parameterized. No bounds possible
+        case ScalaTokenTypes
+              .tUNDER => //wildcard is possible for infix types, like for parameterized. No bounds possible
           val typeMarker = builder.mark()
           builder.advanceLexer()
           typeMarker.done(ScalaElementTypes.WILDCARD_TYPE)

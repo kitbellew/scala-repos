@@ -28,7 +28,9 @@ class DefaultOSGiLogger extends DefaultLogger {
     var messagesToLog: Vector[LogEvent] = Vector()
     //the Default Logger needs to be aware of the LogService which is published on the EventStream
     context.system.eventStream.subscribe(self, classOf[LogService])
-    context.system.eventStream
+    context
+      .system
+      .eventStream
       .unsubscribe(self, UnregisteringLogService.getClass)
 
     /**

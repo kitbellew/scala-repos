@@ -16,7 +16,10 @@ trait Reifiers {
   def reifyTree(universe: Tree, mirror: Tree, tree: Tree): Tree = {
     assert(ExprClass != NoSymbol)
     val result =
-      scala.reflect.reify.`package`
+      scala
+        .reflect
+        .reify
+        .`package`
         .reifyTree(self.universe)(callsiteTyper, universe, mirror, tree)
     logFreeVars(enclosingPosition, result)
     result
@@ -29,22 +32,32 @@ trait Reifiers {
       concrete: Boolean = false): Tree = {
     assert(TypeTagsClass != NoSymbol)
     val result =
-      scala.reflect.reify.`package`.reifyType(self.universe)(
-        callsiteTyper,
-        universe,
-        mirror,
-        tpe,
-        concrete)
+      scala
+        .reflect
+        .reify
+        .`package`
+        .reifyType(self.universe)(
+          callsiteTyper,
+          universe,
+          mirror,
+          tpe,
+          concrete)
     logFreeVars(enclosingPosition, result)
     result
   }
 
   def reifyRuntimeClass(tpe: Type, concrete: Boolean = true): Tree =
-    scala.reflect.reify.`package`
+    scala
+      .reflect
+      .reify
+      .`package`
       .reifyRuntimeClass(universe)(callsiteTyper, tpe, concrete = concrete)
 
   def reifyEnclosingRuntimeClass: Tree =
-    scala.reflect.reify.`package`
+    scala
+      .reflect
+      .reify
+      .`package`
       .reifyEnclosingRuntimeClass(universe)(callsiteTyper)
 
   def unreifyTree(tree: Tree): Tree = {
@@ -76,14 +89,12 @@ trait Reifiers {
       symtab.syms map (sym => symtab.symDef(sym)) foreach {
         case FreeTermDef(_, _, binding, _, origin)
             if universe.settings.logFreeTerms && binding.tpe == null =>
-          reporter.echo(
-            position,
-            "free term: %s %s".format(showRaw(binding), origin))
+          reporter
+            .echo(position, "free term: %s %s".format(showRaw(binding), origin))
         case FreeTypeDef(_, _, binding, _, origin)
             if universe.settings.logFreeTypes && binding.tpe == null =>
-          reporter.echo(
-            position,
-            "free type: %s %s".format(showRaw(binding), origin))
+          reporter
+            .echo(position, "free type: %s %s".format(showRaw(binding), origin))
         case _ =>
         // do nothing
       }

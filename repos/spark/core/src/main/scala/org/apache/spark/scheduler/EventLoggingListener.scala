@@ -69,15 +69,13 @@ private[spark] class EventLoggingListener(
       sparkConf,
       SparkHadoopUtil.get.newConfiguration(sparkConf))
 
-  private val shouldCompress = sparkConf.getBoolean(
-    "spark.eventLog.compress",
-    false)
-  private val shouldOverwrite = sparkConf.getBoolean(
-    "spark.eventLog.overwrite",
-    false)
+  private val shouldCompress = sparkConf
+    .getBoolean("spark.eventLog.compress", false)
+  private val shouldOverwrite = sparkConf
+    .getBoolean("spark.eventLog.overwrite", false)
   private val testing = sparkConf.getBoolean("spark.eventLog.testing", false)
-  private val outputBufferSize =
-    sparkConf.getInt("spark.eventLog.buffer.kb", 100) * 1024
+  private val outputBufferSize = sparkConf
+    .getInt("spark.eventLog.buffer.kb", 100) * 1024
   private val fileSystem = Utils.getHadoopFileSystem(logBaseDir, hadoopConf)
   private val compressionCodec =
     if (shouldCompress) {
@@ -129,9 +127,8 @@ private[spark] class EventLoggingListener(
     /* The Hadoop LocalFileSystem (r1.0.4) has known issues with syncing (HADOOP-7844).
      * Therefore, for local files, use FileOutputStream instead. */
     val dstream =
-      if ((
-            isDefaultLocal && uri.getScheme == null
-          ) || uri.getScheme == "file") {
+      if ((isDefaultLocal && uri.getScheme == null) || uri
+            .getScheme == "file") {
         new FileOutputStream(uri.getPath)
       } else {
         hadoopDataStream = Some(fileSystem.create(path))
@@ -352,9 +349,8 @@ private[spark] object EventLoggingListener extends Logging {
     val logName = log.getName.stripSuffix(IN_PROGRESS)
     val codecName: Option[String] = logName.split("\\.").tail.lastOption
     val codec = codecName.map { c =>
-      codecMap.getOrElseUpdate(
-        c,
-        CompressionCodec.createCodec(new SparkConf, c))
+      codecMap
+        .getOrElseUpdate(c, CompressionCodec.createCodec(new SparkConf, c))
     }
 
     try {

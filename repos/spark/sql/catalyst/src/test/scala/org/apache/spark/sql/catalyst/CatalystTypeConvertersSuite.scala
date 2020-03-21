@@ -39,8 +39,8 @@ class CatalystTypeConvertersSuite extends SparkFunSuite {
   test("null handling in rows") {
     val schema = StructType(
       simpleTypes.map(t => StructField(t.getClass.getName, t)))
-    val convertToCatalyst = CatalystTypeConverters.createToCatalystConverter(
-      schema)
+    val convertToCatalyst = CatalystTypeConverters
+      .createToCatalystConverter(schema)
     val convertToScala = CatalystTypeConverters.createToScalaConverter(schema)
 
     val scalaRow = Row.fromSeq(Seq.fill(simpleTypes.length)(null))
@@ -63,7 +63,7 @@ class CatalystTypeConvertersSuite extends SparkFunSuite {
 
   test("option handling in createToCatalystConverter") {
     assert(
-      CatalystTypeConverters.createToCatalystConverter(IntegerType)(
-        Some(123)) === 123)
+      CatalystTypeConverters
+        .createToCatalystConverter(IntegerType)(Some(123)) === 123)
   }
 }

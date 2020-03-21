@@ -20,9 +20,8 @@ trait Errors {
   // hence we don't crash here, but nicely report a typechecking error and bail out asap
 
   def CannotReifyType(tpe: Type) = {
-    val msg = "implementation restriction: cannot reify type %s (%s)".format(
-      tpe,
-      tpe.kind)
+    val msg = "implementation restriction: cannot reify type %s (%s)"
+      .format(tpe, tpe.kind)
     throw new ReificationException(defaultErrorPosition, msg)
   }
 
@@ -53,7 +52,9 @@ trait Errors {
       |the splice cannot be resolved statically, which means there is a cross-stage evaluation involved.
       |cross-stage evaluations need to be invoked explicitly, so we're showing you this error.
       |if you're sure this is not an oversight, add scala-compiler.jar to the classpath,
-      |import `scala.tools.reflect.Eval` and call `<your expr>.eval` instead.""".trim.stripMargin
+      |import `scala.tools.reflect.Eval` and call `<your expr>.eval` instead."""
+        .trim
+        .stripMargin
     throw new ReificationException(tree.pos, msg)
   }
 

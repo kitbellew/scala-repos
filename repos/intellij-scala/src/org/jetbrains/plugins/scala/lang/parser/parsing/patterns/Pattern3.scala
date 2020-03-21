@@ -30,7 +30,8 @@ object Pattern3 {
       backupMarker.drop()
       return false
     }
-    while (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER && builder.getTokenText != "|") {
+    while (builder.getTokenType == ScalaTokenTypes
+             .tIDENTIFIER && builder.getTokenText != "|") {
       count = count + 1
       val s = builder.getTokenText
 

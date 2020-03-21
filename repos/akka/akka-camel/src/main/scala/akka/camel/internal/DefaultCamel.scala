@@ -38,10 +38,12 @@ private[camel] class DefaultCamel(val system: ExtendedActorSystem)
     ctx.setName(system.name)
     ctx.setStreamCaching(settings.StreamingCache)
     ctx.addComponent("akka", new ActorComponent(this, system))
-    ctx.getTypeConverterRegistry.addTypeConverter(
-      classOf[FiniteDuration],
-      classOf[String],
-      DurationTypeConverter)
+    ctx
+      .getTypeConverterRegistry
+      .addTypeConverter(
+        classOf[FiniteDuration],
+        classOf[String],
+        DurationTypeConverter)
     ctx
   }
 
@@ -103,16 +105,12 @@ private[camel] class DefaultCamel(val system: ExtendedActorSystem)
   def activationFutureFor(endpoint: ActorRef)(implicit
       timeout: Timeout,
       executor: ExecutionContext): Future[ActorRef] =
-    (
-      supervisor
-        .ask(AwaitActivation(endpoint))(timeout)
-      )
-      .map[ActorRef]({
-        case EndpointActivated(`endpoint`) ⇒
-          endpoint
-        case EndpointFailedToActivate(`endpoint`, cause) ⇒
-          throw cause
-      })
+    (supervisor.ask(AwaitActivation(endpoint))(timeout)).map[ActorRef]({
+      case EndpointActivated(`endpoint`) ⇒
+        endpoint
+      case EndpointFailedToActivate(`endpoint`, cause) ⇒
+        throw cause
+    })
 
   /**
     * Produces a Future which will be completed when the given endpoint has been deactivated or
@@ -124,14 +122,10 @@ private[camel] class DefaultCamel(val system: ExtendedActorSystem)
   def deactivationFutureFor(endpoint: ActorRef)(implicit
       timeout: Timeout,
       executor: ExecutionContext): Future[ActorRef] =
-    (
-      supervisor
-        .ask(AwaitDeActivation(endpoint))(timeout)
-      )
-      .map[ActorRef]({
-        case EndpointDeActivated(`endpoint`) ⇒
-          endpoint
-        case EndpointFailedToDeActivate(`endpoint`, cause) ⇒
-          throw cause
-      })
+    (supervisor.ask(AwaitDeActivation(endpoint))(timeout)).map[ActorRef]({
+      case EndpointDeActivated(`endpoint`) ⇒
+        endpoint
+      case EndpointFailedToDeActivate(`endpoint`, cause) ⇒
+        throw cause
+    })
 }

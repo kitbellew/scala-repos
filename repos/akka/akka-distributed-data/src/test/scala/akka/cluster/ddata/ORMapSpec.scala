@@ -110,7 +110,8 @@ class ORMapSpec extends WordSpec with Matchers {
     }
 
     "illustrate the danger of using remove+put to replace an entry" in {
-      val m1 = ORMap.empty
+      val m1 = ORMap
+        .empty
         .put(node1, "a", GSet.empty + "A")
         .put(node1, "b", GSet.empty + "B")
       val m2 = ORMap.empty.put(node2, "c", GSet.empty + "C")
@@ -203,7 +204,8 @@ class ORMapSpec extends WordSpec with Matchers {
     }
 
     "be able to update ORSet entry with remove -> merge -> put" in {
-      val m1 = ORMap.empty
+      val m1 = ORMap
+        .empty
         .put(node1, "a", ORSet.empty.add(node1, "A"))
         .put(
           node1,
@@ -232,7 +234,8 @@ class ORMapSpec extends WordSpec with Matchers {
     }
 
     "have unapply extractor" in {
-      val m1 = ORMap.empty
+      val m1 = ORMap
+        .empty
         .put(node1, "a", Flag(true))
         .put(node2, "b", Flag(false))
       val m2: ORMap[Flag] = m1

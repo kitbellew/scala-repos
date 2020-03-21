@@ -229,12 +229,17 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
     * List all tables in the specified database, including temporary tables.
     */
   def listTables(db: String): Seq[TableIdentifier] = {
-    val dbTables = externalCatalog.listTables(db).map { t =>
-      TableIdentifier(t, Some(db))
-    }
-    val _tempTables = tempTables.keys().asScala.map { t =>
-      TableIdentifier(t)
-    }
+    val dbTables = externalCatalog
+      .listTables(db)
+      .map { t =>
+        TableIdentifier(t, Some(db))
+      }
+    val _tempTables = tempTables
+      .keys()
+      .asScala
+      .map { t =>
+        TableIdentifier(t)
+      }
     dbTables ++ _tempTables
   }
 
@@ -242,9 +247,11 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
     * List all matching tables in the specified database, including temporary tables.
     */
   def listTables(db: String, pattern: String): Seq[TableIdentifier] = {
-    val dbTables = externalCatalog.listTables(db, pattern).map { t =>
-      TableIdentifier(t, Some(db))
-    }
+    val dbTables = externalCatalog
+      .listTables(db, pattern)
+      .map { t =>
+        TableIdentifier(t, Some(db))
+      }
     val regex = pattern.replaceAll("\\*", ".*").r
     val _tempTables = tempTables
       .keys()
@@ -299,11 +306,8 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
       parts: Seq[TablePartitionSpec],
       ignoreIfNotExists: Boolean): Unit = {
     val db = tableName.database.getOrElse(currentDb)
-    externalCatalog.dropPartitions(
-      db,
-      tableName.table,
-      parts,
-      ignoreIfNotExists)
+    externalCatalog
+      .dropPartitions(db, tableName.table, parts, ignoreIfNotExists)
   }
 
   /**
@@ -457,8 +461,8 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
         "rename does not support moving functions across databases")
     }
     val db = oldName.database.getOrElse(currentDb)
-    if (oldName.database.isDefined || !tempFunctions.containsKey(
-          oldName.funcName)) {
+    if (oldName.database.isDefined || !tempFunctions
+          .containsKey(oldName.funcName)) {
       externalCatalog.renameFunction(db, oldName.funcName, newName.funcName)
     } else {
       val func = tempFunctions.remove(oldName.funcName)
@@ -490,9 +494,11 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
     * List all matching functions in the specified database, including temporary functions.
     */
   def listFunctions(db: String, pattern: String): Seq[FunctionIdentifier] = {
-    val dbFunctions = externalCatalog.listFunctions(db, pattern).map { f =>
-      FunctionIdentifier(f, Some(db))
-    }
+    val dbFunctions = externalCatalog
+      .listFunctions(db, pattern)
+      .map { f =>
+        FunctionIdentifier(f, Some(db))
+      }
     val regex = pattern.replaceAll("\\*", ".*").r
     val _tempFunctions = tempFunctions
       .keys()

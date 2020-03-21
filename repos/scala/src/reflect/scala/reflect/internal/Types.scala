@@ -98,10 +98,10 @@ trait Types
   /** In case anyone wants to turn on type parameter bounds being used
     *  to seed type constraints.
     */
-  private final val propagateParameterBoundsToTypeVars =
-    sys.props contains "scalac.debug.prop-constraints"
-  private final val sharperSkolems =
-    sys.props contains "scalac.experimental.sharper-skolems"
+  private final val propagateParameterBoundsToTypeVars = sys
+    .props contains "scalac.debug.prop-constraints"
+  private final val sharperSkolems = sys
+    .props contains "scalac.experimental.sharper-skolems"
 
   protected val enableTypeVarExperimentals = settings.Xexperimental.value
 
@@ -181,9 +181,8 @@ trait Types
        // BoundedWildcardTypes reach here during erroneous compilation: neg/t6258
        // Higher-kinded exclusion is because [x]CC[x] compares =:= to CC: pos/t3800
        // Otherwise, if newtp =:= underlying, don't rewrap it.
-       else if (!newtp.isWildcard && !newtp.isHigherKinded && (
-                  newtp =:= underlying
-                ))
+       else if (!newtp.isWildcard && !newtp
+                  .isHigherKinded && (newtp =:= underlying))
          this
        else
          rewrap(newtp))
@@ -246,16 +245,16 @@ trait Types
           widen.erasure
         case _ =>
           var result: Type = transformedType(this)
-          result =
-            result.normalize match { // necessary to deal with erasures of HK types, typeConstructor won't work
-              case PolyType(undets, underlying) =>
-                existentialAbstraction(
-                  undets,
-                  underlying
-                ) // we don't want undets in the result
-              case _ =>
-                result
-            }
+          result = result
+            .normalize match { // necessary to deal with erasures of HK types, typeConstructor won't work
+            case PolyType(undets, underlying) =>
+              existentialAbstraction(
+                undets,
+                underlying
+              ) // we don't want undets in the result
+            case _ =>
+              result
+          }
           // erasure screws up all ThisTypes for modules into PackageTypeRefs
           // we need to unscrew them, or certain typechecks will fail mysteriously
           // http://groups.google.com/group/scala-internals/browse_thread/thread/6d3277ae21b6d581
@@ -276,8 +275,8 @@ trait Types
     // the only thingies that we want to splice are: 1) type parameters, 2) abstract type members
     // the thingies that we don't want to splice are: 1) concrete types (obviously), 2) existential skolems
     def isSpliceable = {
-      this.isInstanceOf[
-        TypeRef] && typeSymbol.isAbstractType && !typeSymbol.isExistential
+      this.isInstanceOf[TypeRef] && typeSymbol.isAbstractType && !typeSymbol
+        .isExistential
     }
 
     def companion = {
@@ -1661,9 +1660,8 @@ trait Types
     override def narrow: Type = typeSymbol.thisType
 
     override def isStructuralRefinement: Boolean =
-      typeSymbol.isAnonOrRefinementClass && (
-        decls exists symbolIsPossibleInRefinement
-      )
+      typeSymbol
+        .isAnonOrRefinementClass && (decls exists symbolIsPossibleInRefinement)
 
     protected def shouldForceScope =
       settings.debug || parents.isEmpty || !decls.isEmpty
@@ -2562,7 +2560,8 @@ trait Types
         //      other type, which has to be related to this type for that to make sense).
         //
         def seenFromOwnerInstantiated(tp: Type): Type =
-          tp.asSeenFrom(pre, sym.owner)
+          tp
+            .asSeenFrom(pre, sym.owner)
             .instantiateTypeParams(formals, argsOrDummies)
 
         tp match {
@@ -2787,8 +2786,8 @@ trait Types
             }
           } else if (isTupleTypeDirect(this))
             tupleTypeString
-          else if (sym.isAliasType && prefixChain.exists(
-                     _.termSymbol.isSynthetic) && (this ne dealias))
+          else if (sym.isAliasType && prefixChain
+                     .exists(_.termSymbol.isSynthetic) && (this ne dealias))
             "" + dealias
           else
             ""
@@ -3611,8 +3610,8 @@ trait Types
          tv.linkSuspended(this)
          TypeVar.trace(
            "applyArgs",
-           "In " + originLocation + ", apply args " + newArgs.mkString(
-             ", ") + " to " + originName)(tv)
+           "In " + originLocation + ", apply args " + newArgs
+             .mkString(", ") + " to " + originName)(tv)
        } else
          TypeVar(typeSymbol).setInst(ErrorType))
     // newArgs.length may differ from args.length (could've been empty before)
@@ -3703,7 +3702,8 @@ trait Types
     protected final def sharesConstraints(other: Type): Boolean =
       other match {
         case other: TypeVar =>
-          constr == other.constr // SI-8237 avoid cycles. Details in pos/t8237.scala
+          constr == other
+            .constr // SI-8237 avoid cycles. Details in pos/t8237.scala
         case _ =>
           false
       }
@@ -4196,16 +4196,18 @@ trait Types
     if (!sym.isOverridableMember || sym.owner == pre.typeSymbol)
       sym
     else
-      pre.nonPrivateMember(sym.name).suchThat { sym =>
-        // SI-7928 `isModuleNotMethod` is here to avoid crashing with spuriously "overloaded" module accessor and module symbols.
-        //         These appear after refchecks eliminates ModuleDefs that implement an interface.
-        //         Here, we exclude the module symbol, which allows us to bind to the accessor.
-        // SI-8054 We must only do this after refchecks, otherwise we exclude the module symbol which does not yet have an accessor!
-        val isModuleWithAccessor = phase.refChecked && sym.isModuleNotMethod
-        sym.isType || (
-          !isModuleWithAccessor && sym.isStable && !sym.hasVolatileType
-        )
-      } orElse sym
+      pre
+        .nonPrivateMember(sym.name)
+        .suchThat { sym =>
+          // SI-7928 `isModuleNotMethod` is here to avoid crashing with spuriously "overloaded" module accessor and module symbols.
+          //         These appear after refchecks eliminates ModuleDefs that implement an interface.
+          //         Here, we exclude the module symbol, which allows us to bind to the accessor.
+          // SI-8054 We must only do this after refchecks, otherwise we exclude the module symbol which does not yet have an accessor!
+          val isModuleWithAccessor = phase.refChecked && sym.isModuleNotMethod
+          sym.isType || (
+            !isModuleWithAccessor && sym.isStable && !sym.hasVolatileType
+          )
+        } orElse sym
   }
 
   /** Convert a `super` prefix to a this-type if `sym` is abstract or final. */
@@ -4297,9 +4299,8 @@ trait Types
         sym
     // don't expand cyclical type alias
     // we require that object is initialized, thus info.typeParams instead of typeParams.
-    if (sym1.isAliasType && sameLength(
-          sym1.info.typeParams,
-          args) && !sym1.lockOK)
+    if (sym1.isAliasType && sameLength(sym1.info.typeParams, args) && !sym1
+          .lockOK)
       throw new RecoverableCyclicReference(sym1)
 
     val pre1 =
@@ -4321,9 +4322,8 @@ trait Types
   def copyTypeRef(tp: Type, pre: Type, sym: Symbol, args: List[Type]): Type =
     tp match {
       case TypeRef(pre0, sym0, _) if pre == pre0 && sym0.name == sym.name =>
-        if (sym.isAliasType && sameLength(
-              sym.info.typeParams,
-              args) && !sym.lockOK)
+        if (sym.isAliasType && sameLength(sym.info.typeParams, args) && !sym
+              .lockOK)
           throw new RecoverableCyclicReference(sym)
 
         TypeRef(pre, sym, args)
@@ -4679,9 +4679,9 @@ trait Types
       tparams: List[Symbol]): List[Symbol] = {
     val eparams =
       mapWithIndex(tparams)((tparam, i) =>
-        clazz.newExistential(
-          newTypeName("?" + i),
-          clazz.pos) setInfo tparam.info.bounds)
+        clazz.newExistential(newTypeName("?" + i), clazz.pos) setInfo tparam
+          .info
+          .bounds)
 
     eparams map (_ substInfo (tparams, eparams))
   }
@@ -5238,10 +5238,8 @@ trait Types
               res2,
               alwaysMatchSimple = true)
           case TypeRef(_, sym, Nil) =>
-            params1.isEmpty && sym.isModuleClass && matchesType(
-              res1,
-              tp2,
-              alwaysMatchSimple)
+            params1.isEmpty && sym
+              .isModuleClass && matchesType(res1, tp2, alwaysMatchSimple)
           case _ =>
             false
         }
@@ -5358,8 +5356,10 @@ trait Types
             val tp2 = sym2.tpe
             (
               tp1 =:= tp2 ||
-              syms1isJava && tp2.typeSymbol == ObjectClass && tp1.typeSymbol == AnyClass ||
-              syms2isJava && tp1.typeSymbol == ObjectClass && tp2.typeSymbol == AnyClass
+              syms1isJava && tp2.typeSymbol == ObjectClass && tp1
+                .typeSymbol == AnyClass ||
+              syms2isJava && tp1.typeSymbol == ObjectClass && tp2
+                .typeSymbol == AnyClass
             ) &&
             matchingParams(rest1, rest2, syms1isJava, syms2isJava)
         }
@@ -5385,9 +5385,9 @@ trait Types
       targs: List[Type]): List[TypeBounds] =
     mapList(tparams)(
       _.info
-        .asSeenFrom(pre, owner)
-        .instantiateTypeParams(tparams, targs)
-        .bounds)
+      .asSeenFrom(pre, owner)
+      .instantiateTypeParams(tparams, targs)
+      .bounds)
 
   def elimAnonymousClass(t: Type) =
     t match {
@@ -5856,41 +5856,30 @@ object TypesStats {
   val nestedLubCount = Statistics.newCounter("#all lubs/glbs")
   val findMemberCount = Statistics.newCounter("#findMember ops")
   val findMembersCount = Statistics.newCounter("#findMembers ops")
-  val noMemberCount = Statistics.newSubCounter(
-    "  of which not found",
-    findMemberCount)
-  val multMemberCount = Statistics.newSubCounter(
-    "  of which multiple overloaded",
-    findMemberCount)
+  val noMemberCount = Statistics
+    .newSubCounter("  of which not found", findMemberCount)
+  val multMemberCount = Statistics
+    .newSubCounter("  of which multiple overloaded", findMemberCount)
   val typerNanos = Statistics.newTimer("time spent typechecking", "typer")
   val lubNanos = Statistics.newStackableTimer("time spent in lubs", typerNanos)
-  val subtypeNanos = Statistics.newStackableTimer(
-    "time spent in <:<",
-    typerNanos)
-  val findMemberNanos = Statistics.newStackableTimer(
-    "time spent in findmember",
-    typerNanos)
-  val findMembersNanos = Statistics.newStackableTimer(
-    "time spent in findmembers",
-    typerNanos)
-  val asSeenFromNanos = Statistics.newStackableTimer(
-    "time spent in asSeenFrom",
-    typerNanos)
-  val baseTypeSeqNanos = Statistics.newStackableTimer(
-    "time spent in baseTypeSeq",
-    typerNanos)
-  val baseClassesNanos = Statistics.newStackableTimer(
-    "time spent in baseClasses",
-    typerNanos)
-  val compoundBaseTypeSeqCount = Statistics.newSubCounter(
-    "  of which for compound types",
-    baseTypeSeqCount)
-  val typerefBaseTypeSeqCount = Statistics.newSubCounter(
-    "  of which for typerefs",
-    baseTypeSeqCount)
-  val singletonBaseTypeSeqCount = Statistics.newSubCounter(
-    "  of which for singletons",
-    baseTypeSeqCount)
+  val subtypeNanos = Statistics
+    .newStackableTimer("time spent in <:<", typerNanos)
+  val findMemberNanos = Statistics
+    .newStackableTimer("time spent in findmember", typerNanos)
+  val findMembersNanos = Statistics
+    .newStackableTimer("time spent in findmembers", typerNanos)
+  val asSeenFromNanos = Statistics
+    .newStackableTimer("time spent in asSeenFrom", typerNanos)
+  val baseTypeSeqNanos = Statistics
+    .newStackableTimer("time spent in baseTypeSeq", typerNanos)
+  val baseClassesNanos = Statistics
+    .newStackableTimer("time spent in baseClasses", typerNanos)
+  val compoundBaseTypeSeqCount = Statistics
+    .newSubCounter("  of which for compound types", baseTypeSeqCount)
+  val typerefBaseTypeSeqCount = Statistics
+    .newSubCounter("  of which for typerefs", baseTypeSeqCount)
+  val singletonBaseTypeSeqCount = Statistics
+    .newSubCounter("  of which for singletons", baseTypeSeqCount)
   val typeOpsStack = Statistics.newTimerStack()
 
   /* Commented out, because right now this does not inline, so creates a closure which will distort statistics

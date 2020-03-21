@@ -24,8 +24,8 @@ object Trophy {
           key = "zugMiracle",
           name = "Zug miracle",
           icon = none,
-          url =
-            "http://lichess.org/qa/259/how-do-you-get-a-zug-miracle-trophy".some,
+          url = "http://lichess.org/qa/259/how-do-you-get-a-zug-miracle-trophy"
+            .some,
           none)
 
     object WayOfBerserk

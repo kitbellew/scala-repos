@@ -12,19 +12,21 @@ object JsData extends lila.Steroids {
 
   def history(infos: UserInfos) =
     Json.obj(
-      "attempts" -> infos.history.map { a =>
-        Json.obj(
-          "puzzleId" -> a.puzzleId,
-          "date" -> a.date,
-          "win" -> a.win,
-          "time" -> a.time,
-          "puzzleRating" -> a.puzzleRating,
-          "puzzleRatingDiff" -> a.puzzleRatingDiff,
-          "userRating" -> a.userRating,
-          "userRatingDiff" -> a.userRatingDiff,
-          "vote" -> a.vote
-        )
-      })
+      "attempts" -> infos
+        .history
+        .map { a =>
+          Json.obj(
+            "puzzleId" -> a.puzzleId,
+            "date" -> a.date,
+            "win" -> a.win,
+            "time" -> a.time,
+            "puzzleRating" -> a.puzzleRating,
+            "puzzleRatingDiff" -> a.puzzleRatingDiff,
+            "userRating" -> a.userRating,
+            "userRatingDiff" -> a.userRatingDiff,
+            "vote" -> a.vote
+          )
+        })
 
   def apply(
       puzzle: Puzzle,
@@ -74,14 +76,16 @@ object JsData extends lila.Steroids {
           "rating" -> i.user.perfs.puzzle.intRating,
           "history" -> i.history.nonEmpty.option(Json.toJson(i.chart)))
       },
-      "difficulty" -> ctx.isAuth.option {
-        Json.obj(
-          "choices" -> JsArray(
-            translatedDifficultyChoices.map {
-              case (k, v) =>
-                Json.arr(k, v)
-            }),
-          "current" -> ctx.pref.puzzleDifficulty)
-      }
+      "difficulty" -> ctx
+        .isAuth
+        .option {
+          Json.obj(
+            "choices" -> JsArray(
+              translatedDifficultyChoices.map {
+                case (k, v) =>
+                  Json.arr(k, v)
+              }),
+            "current" -> ctx.pref.puzzleDifficulty)
+        }
     )
 }

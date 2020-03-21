@@ -88,18 +88,24 @@ class RandomSamplerSuite extends SparkFunSuite with Matchers {
   // increasing integers: {0, 1, 2, ...}.  This works because that is how I generate them,
   // and the samplers preserve their input order
   def gaps(data: Iterator[Int]): Iterator[Int] = {
-    data.sliding(2).withPartial(false).map { x =>
-      x(1) - x(0)
-    }
+    data
+      .sliding(2)
+      .withPartial(false)
+      .map { x =>
+        x(1) - x(0)
+      }
   }
 
   // Returns the cumulative distribution from a histogram
   def cumulativeDist(hist: Array[Int]): Array[Double] = {
     val n = hist.sum.toDouble
     assert(n > 0.0)
-    hist.scanLeft(0)(_ + _).drop(1).map {
-      _.toDouble / n
-    }
+    hist
+      .scanLeft(0)(_ + _)
+      .drop(1)
+      .map {
+        _.toDouble / n
+      }
   }
 
   // Returns aligned cumulative distributions from two arrays of data
@@ -164,8 +170,8 @@ class RandomSamplerSuite extends SparkFunSuite with Matchers {
     c2 should be(Array(0.2, 0.6, 0.8, 1.0))
     KSD(c1, c2) should be(0.2 +- 0.000001)
     KSD(c2, c1) should be(KSD(c1, c2))
-    gaps(List(0, 1, 1, 2, 4, 11).iterator).toArray should be(
-      Array(1, 0, 1, 2, 7))
+    gaps(List(0, 1, 1, 2, 4, 11).iterator)
+      .toArray should be(Array(1, 0, 1, 2, 7))
   }
 
   test("sanity check medianKSD against references") {
@@ -298,8 +304,8 @@ class RandomSamplerSuite extends SparkFunSuite with Matchers {
     // Array iterator (indexable type)
     d = medianKSD(
       gaps(
-        sampler.sample(
-          Iterator.from(0).take(20 * sampleSize).toArray.iterator)),
+        sampler
+          .sample(Iterator.from(0).take(20 * sampleSize).toArray.iterator)),
       gaps(sample(Iterator.from(0), 0.1)))
     d should be < D
 
@@ -482,8 +488,8 @@ class RandomSamplerSuite extends SparkFunSuite with Matchers {
     // Array iterator (indexable type)
     d = medianKSD(
       gaps(
-        sampler.sample(
-          Iterator.from(0).take(20 * sampleSize).toArray.iterator)),
+        sampler
+          .sample(Iterator.from(0).take(20 * sampleSize).toArray.iterator)),
       gaps(sampleWR(Iterator.from(0), 0.1)))
     d should be < D
 

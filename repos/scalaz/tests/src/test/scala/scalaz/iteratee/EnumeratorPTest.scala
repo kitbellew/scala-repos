@@ -17,9 +17,8 @@ object EnumeratorPTest extends SpecLite {
       val cf = cogroupE[Int, Int, Id]
       val enumR = cf(enum, enum2)
 
-      (
-        consume[Either3[Int, (Int, Int), Int], Id, List] &= enumR.apply[Id]
-      ).run must_=== (
+      (consume[Either3[Int, (Int, Int), Int], Id, List] &= enumR.apply[Id])
+        .run must_=== (
         List(
           left3(1),
           right3(2),
@@ -50,9 +49,8 @@ object EnumeratorPTest extends SpecLite {
         },
         enum3)
 
-      (
-        consume[Either3[Int, (Int, Int), Int], Id, List] &= enumR.apply[Id]
-      ).run must_=== (
+      (consume[Either3[Int, (Int, Int), Int], Id, List] &= enumR.apply[Id])
+        .run must_=== (
         List(
           left3(1),
           left3(2),
@@ -76,9 +74,8 @@ object EnumeratorPTest extends SpecLite {
     val enum1 = enumPStream[Int, Id](Stream(1, 5, 9))
     val enum2 = enumPStream[Int, Id](Stream(2, 3, 6))
     val enum3 = enumPStream[Int, Id](Stream(4, 7, 8))
-    (
-      consume[Int, Id, List] &= mergeAll(enum1, enum2, enum3).apply[Id]
-    ).run must_=== (List(1, 2, 3, 4, 5, 6, 7, 8, 9))
+    (consume[Int, Id, List] &= mergeAll(enum1, enum2, enum3).apply[Id])
+      .run must_=== (List(1, 2, 3, 4, 5, 6, 7, 8, 9))
   }
 }
 

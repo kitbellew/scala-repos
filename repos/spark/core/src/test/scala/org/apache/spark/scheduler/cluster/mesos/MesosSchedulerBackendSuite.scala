@@ -120,12 +120,12 @@ class MesosSchedulerBackendSuite
       mesosSchedulerBackend.createResource("cpus", 4),
       mesosSchedulerBackend.createResource("mem", 1024))
     // uri is null.
-    val (executorInfo, _) = mesosSchedulerBackend.createExecutorInfo(
-      resources,
-      "test-id")
+    val (executorInfo, _) = mesosSchedulerBackend
+      .createExecutorInfo(resources, "test-id")
     val executorResources = executorInfo.getResourcesList
     val cpus =
-      executorResources.asScala
+      executorResources
+        .asScala
         .find(_.getName.equals("cpus"))
         .get
         .getScalar
@@ -162,18 +162,16 @@ class MesosSchedulerBackendSuite
       mesosSchedulerBackend.createResource("cpus", 4),
       mesosSchedulerBackend.createResource("mem", 1024))
     // uri is null.
-    val (executorInfo, _) = mesosSchedulerBackend.createExecutorInfo(
-      resources,
-      "test-id")
+    val (executorInfo, _) = mesosSchedulerBackend
+      .createExecutorInfo(resources, "test-id")
     assert(
       executorInfo.getCommand.getValue ===
         s" /mesos-home/bin/spark-class ${classOf[MesosExecutorBackend].getName}")
 
     // uri exists.
     conf.set("spark.executor.uri", "hdfs:///test-app-1.0.0.tgz")
-    val (executorInfo1, _) = mesosSchedulerBackend.createExecutorInfo(
-      resources,
-      "test-id")
+    val (executorInfo1, _) = mesosSchedulerBackend
+      .createExecutorInfo(resources, "test-id")
     assert(
       executorInfo1.getCommand.getValue ===
         s"cd test-app-1*;  ./bin/spark-class ${classOf[MesosExecutorBackend].getName}")
@@ -446,13 +444,15 @@ class MesosSchedulerBackendSuite
     val executorResources = taskInfo.getExecutor.getResourcesList.asScala
     assert(
       executorResources.exists { r =>
-        r.getName.equals("mem") && r.getScalar.getValue
-          .equals(484.0) && r.getRole.equals("prod")
+        r.getName.equals("mem") && r.getScalar.getValue.equals(484.0) && r
+          .getRole
+          .equals("prod")
       })
     assert(
       executorResources.exists { r =>
-        r.getName.equals("cpus") && r.getScalar.getValue
-          .equals(1.0) && r.getRole.equals("prod")
+        r.getName.equals("cpus") && r.getScalar.getValue.equals(1.0) && r
+          .getRole
+          .equals("prod")
       })
   }
 }

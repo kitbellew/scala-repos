@@ -40,11 +40,13 @@ class ScalaKeywordCompletionContributor extends ScalaCompletionContributor {
       keywords: String*) {
     extend(
       CompletionType.BASIC,
-      PlatformPatterns.psiElement.and(
-        new FilterPattern(
-          new AndFilter(
-            new NotFilter(new LeftNeighbour(new TextFilter("."))),
-            filter))),
+      PlatformPatterns
+        .psiElement
+        .and(
+          new FilterPattern(
+            new AndFilter(
+              new NotFilter(new LeftNeighbour(new TextFilter("."))),
+              filter))),
       new CompletionProvider[CompletionParameters] {
         def addCompletions(
             parameters: CompletionParameters,
@@ -66,9 +68,11 @@ class ScalaKeywordCompletionContributor extends ScalaCompletionContributor {
       keywords: String*) {
     extend(
       CompletionType.BASIC,
-      PlatformPatterns.psiElement.and(
-        new FilterPattern(
-          new AndFilter(new LeftNeighbour(new TextFilter(".")), filter))),
+      PlatformPatterns
+        .psiElement
+        .and(
+          new FilterPattern(
+            new AndFilter(new LeftNeighbour(new TextFilter(".")), filter))),
       new CompletionProvider[CompletionParameters] {
         def addCompletions(
             parameters: CompletionParameters,

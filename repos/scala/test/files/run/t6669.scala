@@ -22,7 +22,10 @@ object Test extends App {
   baos.reset
 
   (scala.Console withOut ps) {
-    scala.tools.scalap.Main
+    scala
+      .tools
+      .scalap
+      .Main
       .main(Array("-verbose", "-cp", "whatever", "java.lang.Object"))
   }
 

@@ -97,7 +97,9 @@ object RoutesFileParserSpec extends Specification {
     "parse method with more than 22 arguments" in {
       parseRoute(
         "GET /s p.c.m(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int, g: Int, h: Int, i: Int, j: Int, k: String, l: String, m: String, n: String, " +
-          "o: String, p: String, q: Option[Int], r: Option[Int], s: Option[Int], t: Option[Int], u: Option[String], v: Float, w: Float, x: Int)").call.parameters must_==
+          "o: String, p: String, q: Option[Int], r: Option[Int], s: Option[Int], t: Option[Int], u: Option[String], v: Float, w: Float, x: Int)")
+        .call
+        .parameters must_==
         Some(
           Seq(
             Parameter("a", "Int", None, None),
@@ -128,25 +130,36 @@ object RoutesFileParserSpec extends Specification {
     }
 
     "parse argument type" in {
-      parseRoute(
-        "GET /s p.c.m(i: Int)").call.parameters.get.head.typeName must_== "Int"
+      parseRoute("GET /s p.c.m(i: Int)")
+        .call
+        .parameters
+        .get
+        .head
+        .typeName must_== "Int"
     }
 
     "parse argument default value" in {
-      parseRoute(
-        "GET /s p.c.m(i: Int ?= 3)").call.parameters.get.head.default must beSome(
-        "3")
+      parseRoute("GET /s p.c.m(i: Int ?= 3)")
+        .call
+        .parameters
+        .get
+        .head
+        .default must beSome("3")
     }
 
     "parse argument fixed value" in {
-      parseRoute(
-        "GET /s p.c.m(i: Int = 3)").call.parameters.get.head.fixed must beSome(
-        "3")
+      parseRoute("GET /s p.c.m(i: Int = 3)")
+        .call
+        .parameters
+        .get
+        .head
+        .fixed must beSome("3")
     }
 
     "parse argument with complex name" in {
-      parseRoute(
-        "GET /s p.c.m(`b[]`: List[String] ?= [])").call.parameters must_== Some(
+      parseRoute("GET /s p.c.m(`b[]`: List[String] ?= [])")
+        .call
+        .parameters must_== Some(
         Seq(Parameter("`b[]`", "List[String]", None, Some("[]"))))
     }
 
@@ -166,9 +179,8 @@ object RoutesFileParserSpec extends Specification {
     }
 
     "parse a comment with a route" in {
-      parseRoute(
-        "# some comment\nGET /s p.c.m").comments must containTheSameElementsAs(
-        Seq(Comment(" some comment")))
+      parseRoute("# some comment\nGET /s p.c.m")
+        .comments must containTheSameElementsAs(Seq(Comment(" some comment")))
     }
 
     "throw an error for an unexpected line" in parseError("foo")

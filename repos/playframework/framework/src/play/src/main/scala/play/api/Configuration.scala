@@ -32,8 +32,8 @@ object Configuration {
     .defaults()
     .setAllowMissing(false)
 
-  private[this] lazy val dontAllowMissingConfig = ConfigFactory.load(
-    dontAllowMissingConfigOptions)
+  private[this] lazy val dontAllowMissingConfig = ConfigFactory
+    .load(dontAllowMissingConfigOptions)
 
   private[play] def load(
       classLoader: ClassLoader,
@@ -73,7 +73,8 @@ object Configuration {
           setting("config.file").map(fileName =>
             ConfigFactory.parseFileAnySyntax(new File(fileName.toString)))
         } getOrElse {
-          val parseOptions = ConfigParseOptions.defaults
+          val parseOptions = ConfigParseOptions
+            .defaults
             .setClassLoader(classLoader)
             .setAllowMissing(allowMissingApplicationConf)
           ConfigFactory.defaultApplication(parseOptions)
@@ -83,15 +84,13 @@ object Configuration {
       // Resolve another .conf file so that we can override values in Akka's
       // reference.conf, but still make it possible for users to override
       // Play's values in their application.conf.
-      val playOverridesConfig: Config = ConfigFactory.parseResources(
-        classLoader,
-        "play/reference-overrides.conf")
+      val playOverridesConfig: Config = ConfigFactory
+        .parseResources(classLoader, "play/reference-overrides.conf")
 
       // Resolve reference.conf ourselves because ConfigFactory.defaultReference resolves
       // values, and we won't have a value for `play.server.dir` until all our config is combined.
-      val referenceConfig: Config = ConfigFactory.parseResources(
-        classLoader,
-        "reference.conf")
+      val referenceConfig: Config = ConfigFactory
+        .parseResources(classLoader, "reference.conf")
 
       // Combine all the config together into one big config
       val combinedConfig: Config = Seq(
@@ -157,8 +156,8 @@ object Configuration {
       }
 
     Configuration(
-      ConfigFactory.parseMap(
-        toJava(data).asInstanceOf[java.util.Map[String, AnyRef]]))
+      ConfigFactory
+        .parseMap(toJava(data).asInstanceOf[java.util.Map[String, AnyRef]]))
   }
 
   /**
@@ -968,11 +967,11 @@ case class Configuration(underlying: Config) {
       key: String,
       deprecatedKey: String): FiniteDuration = {
     new FiniteDuration(
-      getNanoseconds(deprecatedKey).fold(
-        underlying.getDuration(key, TimeUnit.NANOSECONDS)) { value =>
-        Logger.warn(s"$deprecatedKey is deprecated, use $key instead")
-        value
-      },
+      getNanoseconds(deprecatedKey)
+        .fold(underlying.getDuration(key, TimeUnit.NANOSECONDS)) { value =>
+          Logger.warn(s"$deprecatedKey is deprecated, use $key instead")
+          value
+        },
       TimeUnit.NANOSECONDS)
   }
 
@@ -1058,10 +1057,12 @@ private[play] class PlayConfig(val underlying: Config) {
       } else {
         underlying.getConfig(prototypePath.replace("$path", path))
       }
-    get[Map[String, Config]](path).map {
-      case (key, config) =>
-        key -> new PlayConfig(config.withFallback(prototype))
-    }.toMap
+    get[Map[String, Config]](path)
+      .map {
+        case (key, config) =>
+          key -> new PlayConfig(config.withFallback(prototype))
+      }
+      .toMap
   }
 
   /**
@@ -1221,8 +1222,8 @@ private[play] object ConfigLoader {
     _.getConfigList).map(_.asScala)
 
   implicit val playConfigLoader = configLoader.map(new PlayConfig(_))
-  implicit val seqPlayConfigLoader = seqConfigLoader.map(
-    _.map(new PlayConfig(_)))
+  implicit val seqPlayConfigLoader = seqConfigLoader
+    .map(_.map(new PlayConfig(_)))
 
   /**
     * Loads a value, interpreting a null value as None and any other value as Some(value).

@@ -132,8 +132,8 @@ abstract class ClusterShardingGracefulShutdownSpec(
   val storageLocations = List(
     "akka.persistence.journal.leveldb.dir",
     "akka.persistence.journal.leveldb-shared.store.dir",
-    "akka.persistence.snapshot-store.local.dir").map(s ⇒
-    new File(system.settings.config.getString(s)))
+    "akka.persistence.snapshot-store.local.dir")
+    .map(s ⇒ new File(system.settings.config.getString(s)))
 
   override protected def atStartup() {
     runOn(first) {
@@ -203,11 +203,13 @@ abstract class ClusterShardingGracefulShutdownSpec(
       awaitAssert {
         val p = TestProbe()
         val regionAddresses =
-          (1 to 100).map { n ⇒
-            region.tell(n, p.ref)
-            p.expectMsg(1.second, n)
-            p.lastSender.path.address
-          }.toSet
+          (1 to 100)
+            .map { n ⇒
+              region.tell(n, p.ref)
+              p.expectMsg(1.second, n)
+              p.lastSender.path.address
+            }
+            .toSet
         regionAddresses.size should be(2)
       }
       enterBarrier("after-2")

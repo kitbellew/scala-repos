@@ -15,7 +15,8 @@ class VerifySymbols extends Phase {
         n match {
           case FwdPath(s :: _) if !syms.contains(s) =>
             val all =
-              n2.collectAll[(TermSymbol, Node)] {
+              n2
+                .collectAll[(TermSymbol, Node)] {
                   case d: DefNode =>
                     d.generators
                 }

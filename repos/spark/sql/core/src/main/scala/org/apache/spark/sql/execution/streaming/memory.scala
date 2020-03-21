@@ -124,7 +124,8 @@ class MemorySink(schema: StructType) extends Sink with Logging {
 
   override def addBatch(nextBatch: Batch): Unit =
     synchronized {
-      nextBatch.data
+      nextBatch
+        .data
         .collect() // 'compute' the batch's data and record the batch
       batches.append(nextBatch)
     }

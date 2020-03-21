@@ -106,18 +106,24 @@ object HRavenHistoryService extends HistoryService {
       .flatMap { flows =>
         Try {
           // Ugly mutable code to add task info to flows
-          flows.asScala.foreach { flow =>
-            flow.getJobs.asScala.foreach { job =>
-              // client.fetchTaskDetails might throw IOException
-              val tasks = client.fetchTaskDetails(
-                flow.getCluster,
-                job.getJobId,
-                TaskDetailFields)
-              job.addTasks(tasks)
+          flows
+            .asScala
+            .foreach { flow =>
+              flow
+                .getJobs
+                .asScala
+                .foreach { job =>
+                  // client.fetchTaskDetails might throw IOException
+                  val tasks = client.fetchTaskDetails(
+                    flow.getCluster,
+                    job.getJobId,
+                    TaskDetailFields)
+                  job.addTasks(tasks)
+                }
             }
-          }
 
-          val successfulFlows = flows.asScala
+          val successfulFlows = flows
+            .asScala
             .filter(_.getHdfsBytesRead > 0)
             .take(max)
           if (successfulFlows.isEmpty) {
@@ -149,14 +155,20 @@ object HRavenHistoryService extends HistoryService {
     val stepNum = step.getStepNum
 
     def findMatchingJobStep(pastFlow: Flow) =
-      pastFlow.getJobs.asScala.find { step =>
-        try {
-          step.getConfiguration.get("cascading.flow.step.num").toInt == stepNum
-        } catch {
-          case _: NumberFormatException =>
-            false
-        }
-      } orElse {
+      pastFlow
+        .getJobs
+        .asScala
+        .find { step =>
+          try {
+            step
+              .getConfiguration
+              .get("cascading.flow.step.num")
+              .toInt == stepNum
+          } catch {
+            case _: NumberFormatException =>
+              false
+          }
+        } orElse {
         LOG.warn("No matching job step in the retrieved hRaven flow.")
         None
       }
@@ -166,12 +178,14 @@ object HRavenHistoryService extends HistoryService {
       val hostRegex = """(.*):\d+""".r
 
       // first try resource manager (for Hadoop v2), then fallback to job tracker
-      conf.getFirstKey(RESOURCE_MANAGER_KEY, JOBTRACKER_KEY).flatMap {
-        // extract hostname from hostname:port
-        case hostRegex(host) =>
-          // convert hostname -> cluster name (e.g. dw2@smf1)
-          Try(client.getCluster(host))
-      }
+      conf
+        .getFirstKey(RESOURCE_MANAGER_KEY, JOBTRACKER_KEY)
+        .flatMap {
+          // extract hostname from hostname:port
+          case hostRegex(host) =>
+            // convert hostname -> cluster name (e.g. dw2@smf1)
+            Try(client.getCluster(host))
+        }
     }
 
     val flowsTry =
@@ -218,9 +232,12 @@ object HRavenHistoryService extends HistoryService {
           step.getVersion,
           "")
         // update HRavenHistoryService.TaskDetailFields when consuming additional task fields from hraven below
-        tasks = step.getTasks.asScala.map { t =>
-          Task(t.getType, t.getStatus, t.getStartTime, t.getFinishTime)
-        }
+        tasks = step
+          .getTasks
+          .asScala
+          .map { t =>
+            Task(t.getType, t.getStatus, t.getStartTime, t.getFinishTime)
+          }
       } yield toFlowStepHistory(keys, step, tasks)
     }
 

@@ -20,9 +20,8 @@ object AtLeastOnceDeliveryCrashSpec {
           super.supervisorStrategy.decider.applyOrElse(t, (_: Any) ⇒ Escalate)
       }
 
-    val crashingActor = context.actorOf(
-      Props(new CrashingActor(testProbe)),
-      "CrashingActor")
+    val crashingActor = context
+      .actorOf(Props(new CrashingActor(testProbe)), "CrashingActor")
 
     def receive: Receive = {
       case msg ⇒

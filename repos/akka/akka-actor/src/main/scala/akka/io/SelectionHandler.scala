@@ -127,12 +127,15 @@ private[io] object SelectionHandler {
           cause: Throwable,
           decision: SupervisorStrategy.Directive): Unit =
         if (cause.isInstanceOf[DeathPactException]) {
-          try context.system.eventStream.publish {
-            Logging.Debug(
-              child.path.toString,
-              getClass,
-              "Closed after handler termination")
-          } catch {
+          try context
+            .system
+            .eventStream
+            .publish {
+              Logging.Debug(
+                child.path.toString,
+                getClass,
+                "Closed after handler termination")
+            } catch {
             case NonFatal(_) ⇒
           }
         } else
@@ -187,7 +190,8 @@ private[io] object SelectionHandler {
                 }
               }
             }
-            keys.clear() // we need to remove the selected keys from the set, otherwise they remain selected
+            keys
+              .clear() // we need to remove the selected keys from the set, otherwise they remain selected
           }
           wakeUp.set(false)
         }
@@ -347,11 +351,14 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
               case e ⇒
                 e.getMessage
             }
-          context.system.eventStream.publish(
-            Logging.Debug(
-              child.path.toString,
-              classOf[SelectionHandler],
-              logMessage))
+          context
+            .system
+            .eventStream
+            .publish(
+              Logging.Debug(
+                child.path.toString,
+                classOf[SelectionHandler],
+                logMessage))
         } catch {
           case NonFatal(_) ⇒
         }

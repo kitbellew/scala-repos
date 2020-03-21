@@ -35,13 +35,11 @@ object RouterSpec extends PlaySpecification {
       contentAsString(result2) must equalTo("false")
       // Bind boolean values from 1 and 0 integers too
       contentAsString(
-        route(
-          implicitApp,
-          FakeRequest(GET, "/take-bool?b=1")).get) must equalTo("true")
+        route(implicitApp, FakeRequest(GET, "/take-bool?b=1"))
+          .get) must equalTo("true")
       contentAsString(
-        route(
-          implicitApp,
-          FakeRequest(GET, "/take-bool?b=0")).get) must equalTo("false")
+        route(implicitApp, FakeRequest(GET, "/take-bool?b=0"))
+          .get) must equalTo("false")
     }
     "from the path" in new WithApplication() {
       val Some(result) = route(
@@ -54,13 +52,11 @@ object RouterSpec extends PlaySpecification {
       contentAsString(result2) must equalTo("false")
       // Bind boolean values from 1 and 0 integers too
       contentAsString(
-        route(
-          implicitApp,
-          FakeRequest(GET, "/take-bool-2/1")).get) must equalTo("true")
+        route(implicitApp, FakeRequest(GET, "/take-bool-2/1"))
+          .get) must equalTo("true")
       contentAsString(
-        route(
-          implicitApp,
-          FakeRequest(GET, "/take-bool-2/0")).get) must equalTo("false")
+        route(implicitApp, FakeRequest(GET, "/take-bool-2/0"))
+          .get) must equalTo("false")
     }
   }
 
@@ -139,7 +135,9 @@ object RouterSpec extends PlaySpecification {
         queryEncoded: String) = {
       val expected =
         s"/urlcoding/$dynamicEncoded/$staticEncoded?q=$queryEncoded"
-      val call = controllers.routes.Application
+      val call = controllers
+        .routes
+        .Application
         .urlcoding(dynamicDecoded, staticDecoded, queryDecoded)
       call.url must equalTo(expected)
     }
@@ -171,7 +169,10 @@ object RouterSpec extends PlaySpecification {
   "allow reverse routing of routes includes" in new WithApplication() {
     // Force the router to bootstrap the prefix
     implicitApp.injector.instanceOf[play.api.routing.Router]
-    controllers.module.routes.ModuleController
+    controllers
+      .module
+      .routes
+      .ModuleController
       .index()
       .url must_== "/module/index"
   }
@@ -179,7 +180,8 @@ object RouterSpec extends PlaySpecification {
   "document the router" in new WithApplication() {
     // The purpose of this test is to alert anyone that changes the format of the router documentation that
     // it is being used by Swagger. So if you do change it, please let Tony Tam know at tony at wordnik dot com.
-    val someRoute = implicitApp.injector
+    val someRoute = implicitApp
+      .injector
       .instanceOf[play.api.routing.Router]
       .documentation
       .find(r => r._1 == "GET" && r._2.startsWith("/with/"))
@@ -190,7 +192,9 @@ object RouterSpec extends PlaySpecification {
   }
 
   "reverse routes complex query params " in new WithApplication() {
-    controllers.routes.Application
+    controllers
+      .routes
+      .Application
       .takeListTickedParam(List(1, 2, 3))
       .url must_== "/take-list-tick-param?b[]=1&b[]=2&b[]=3"
   }
@@ -201,22 +205,30 @@ object RouterSpec extends PlaySpecification {
 
   "The assets reverse route support" should {
     "fingerprint assets" in new WithApplication() {
-      controllers.routes.Assets
+      controllers
+        .routes
+        .Assets
         .versioned("css/main.css")
         .url must_== "/public/css/abcd1234-main.css"
     }
     "selected the minified version" in new WithApplication() {
-      controllers.routes.Assets
+      controllers
+        .routes
+        .Assets
         .versioned("css/minmain.css")
         .url must_== "/public/css/abcd1234-minmain-min.css"
     }
     "work for non fingerprinted assets" in new WithApplication() {
-      controllers.routes.Assets
+      controllers
+        .routes
+        .Assets
         .versioned("css/nonfingerprinted.css")
         .url must_== "/public/css/nonfingerprinted.css"
     }
     "selected the minified non fingerprinted version" in new WithApplication() {
-      controllers.routes.Assets
+      controllers
+        .routes
+        .Assets
         .versioned("css/nonfingerprinted-minmain.css")
         .url must_== "/public/css/nonfingerprinted-minmain-min.css"
     }

@@ -42,8 +42,9 @@ abstract class TypeInferenceTestBase
     TestUtils.getTestDataPath + "/typeInference/"
 
   protected def doInjectorTest(injector: SyntheticMembersInjector): Unit = {
-    val extensionPoint = Extensions.getRootArea.getExtensionPoint(
-      SyntheticMembersInjector.EP_NAME)
+    val extensionPoint = Extensions
+      .getRootArea
+      .getExtensionPoint(SyntheticMembersInjector.EP_NAME)
     extensionPoint.registerExtension(injector)
     try {
       doTest()
@@ -101,8 +102,8 @@ abstract class TypeInferenceTestBase
           lastPsi.getNode.getElementType match {
             case ScalaTokenTypes.tLINE_COMMENT =>
               text.substring(2).trim
-            case ScalaTokenTypes.tBLOCK_COMMENT |
-                ScalaTokenTypes.tDOC_COMMENT =>
+            case ScalaTokenTypes.tBLOCK_COMMENT | ScalaTokenTypes
+                  .tDOC_COMMENT =>
               val resText = text.substring(2, text.length - 2).trim
               if (resText.startsWith(fewVariantsMarker)) {
                 val results = resText
@@ -123,16 +124,16 @@ abstract class TypeInferenceTestBase
             expr.expectedType() match {
               case Some(et) =>
                 fail(
-                  "found unexpected expected type: %s".format(
-                    ScType.presentableText(et)))
+                  "found unexpected expected type: %s"
+                    .format(ScType.presentableText(et)))
               case None => // all good
             }
           case ExpectedPattern(expectedExpectedTypeText) =>
             val actualExpectedType = expr
               .expectedType()
               .getOrElse(sys.error("no expected type"))
-            val actualExpectedTypeText = ScType.presentableText(
-              actualExpectedType)
+            val actualExpectedTypeText = ScType
+              .presentableText(actualExpectedType)
             assertEquals(expectedExpectedTypeText, actualExpectedTypeText)
           case SimplifiedPattern(expectedText) =>
             assertEquals(

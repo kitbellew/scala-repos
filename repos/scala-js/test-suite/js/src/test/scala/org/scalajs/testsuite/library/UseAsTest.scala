@@ -149,7 +149,8 @@ class UseAsScalaTypesTest {
       def foo(x: Int): Int = ???
     }
 
-    js.use(new A)
+    js
+      .use(new A)
       .as[
         JSTypeMember {
           type R = Int
@@ -301,7 +302,8 @@ class UseAsScalaTypesTest {
 
   @Test
   def should_support_anonymous_types(): Unit = {
-    js.use(
+    js
+      .use(
         new {
           @JSExport
           def m(a: Int, b: String): js.Object = ???

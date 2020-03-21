@@ -206,7 +206,9 @@ final class BackoffSupervisor(
           oneForOne.withinTimeRange,
           oneForOne.loggingEnabled) {
           case ex ⇒
-            val defaultDirective: Directive = super.supervisorStrategy.decider
+            val defaultDirective: Directive = super
+              .supervisorStrategy
+              .decider
               .applyOrElse(ex, (_: Any) ⇒ Escalate)
 
             strategy.decider.applyOrElse(ex, (_: Any) ⇒ defaultDirective)
@@ -286,7 +288,9 @@ private[akka] trait HandleBackoff {
       startChild()
       reset match {
         case AutoReset(resetBackoff) ⇒
-          val _ = context.system.scheduler
+          val _ = context
+            .system
+            .scheduler
             .scheduleOnce(resetBackoff, self, ResetRestartCount(restartCount))
         case _ ⇒ // ignore
       }

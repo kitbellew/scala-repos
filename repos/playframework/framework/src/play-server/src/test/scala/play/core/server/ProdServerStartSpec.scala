@@ -41,8 +41,8 @@ object ProdServerStartSpec extends Specification {
     try Right(f)
     catch {
       case ExitException(message, cause, _) =>
-        val causeMessage: Option[String] = cause.flatMap(c =>
-          Option(c.getMessage))
+        val causeMessage: Option[String] = cause
+          .flatMap(c => Option(c.getMessage))
         Left((message, causeMessage))
     }
 

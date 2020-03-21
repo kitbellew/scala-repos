@@ -235,9 +235,11 @@ object ProductOrderedBuf {
     )
 
     def validType(curType: Type): Boolean = {
-      validTypes.find { t =>
-        curType <:< t
-      }.isDefined
+      validTypes
+        .find { t =>
+          curType <:< t
+        }
+        .isDefined
     }
 
     // The `_.get` is safe since it's always preceded by a matching
@@ -245,9 +247,11 @@ object ProductOrderedBuf {
     @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
     def symbolFor(subType: Type): Type = {
       val superType =
-        validTypes.find { t =>
-          subType.erasure <:< t
-        }.get
+        validTypes
+          .find { t =>
+            subType.erasure <:< t
+          }
+          .get
       subType.baseType(superType.typeSymbol)
     }
 
@@ -267,16 +271,17 @@ object ProductOrderedBuf {
 
     val dispatcher = buildDispatcher
     val elementData: List[(c.universe.Type, TermName, TreeOrderedBuf[c.type])] =
-      outerType.declarations
+      outerType
+        .declarations
         .collect {
           case m: MethodSymbol =>
             m
         }
         .filter(m => m.name.toTermName.toString.startsWith("_"))
         .map { accessorMethod =>
-          val fieldType = accessorMethod.returnType.asSeenFrom(
-            outerType,
-            outerType.typeSymbol.asClass)
+          val fieldType = accessorMethod
+            .returnType
+            .asSeenFrom(outerType, outerType.typeSymbol.asClass)
           val b: TreeOrderedBuf[c.type] = dispatcher(fieldType)
           (fieldType, accessorMethod.name.toTermName, b)
         }

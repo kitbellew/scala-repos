@@ -75,22 +75,25 @@ trait Filter extends EssentialFilter {
         })
 
         Accumulator.flatten(
-          bodyAccumulator.future.map { it =>
-            it.mapFuture { simpleResult =>
-                // When the iteratee is done, we can redeem the promised result that was returned to the filter
-                promisedResult.success(simpleResult)
-                result
-              }
-              .recoverWith {
-                case t: Throwable =>
-                  // If the iteratee finishes with an error, fail the promised result that was returned to the
-                  // filter with the same error. Note, we MUST use tryFailure here as it's possible that a)
-                  // promisedResult was already completed successfully in the mapM method above but b) calculating
-                  // the result in that method caused an error, so we ended up in this recover block anyway.
-                  promisedResult.tryFailure(t)
+          bodyAccumulator
+            .future
+            .map { it =>
+              it
+                .mapFuture { simpleResult =>
+                  // When the iteratee is done, we can redeem the promised result that was returned to the filter
+                  promisedResult.success(simpleResult)
                   result
-              }
-          })
+                }
+                .recoverWith {
+                  case t: Throwable =>
+                    // If the iteratee finishes with an error, fail the promised result that was returned to the
+                    // filter with the same error. Note, we MUST use tryFailure here as it's possible that a)
+                    // promisedResult was already completed successfully in the mapM method above but b) calculating
+                    // the result in that method caused an error, so we ended up in this recover block anyway.
+                    promisedResult.tryFailure(t)
+                    result
+                }
+            })
       }
 
     }
@@ -139,9 +142,11 @@ object FilterChain {
     new EssentialAction {
       def apply(rh: RequestHeader): Accumulator[ByteString, Result] = {
         val chain =
-          filters.reverse.foldLeft(action) { (a, i) =>
-            i(a)
-          }
+          filters
+            .reverse
+            .foldLeft(action) { (a, i) =>
+              i(a)
+            }
         chain(rh)
       }
     }

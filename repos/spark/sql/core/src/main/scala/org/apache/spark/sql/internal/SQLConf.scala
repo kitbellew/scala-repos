@@ -35,7 +35,9 @@ import org.apache.spark.util.Utils
 
 object SQLConf {
 
-  private val sqlConfEntries = java.util.Collections
+  private val sqlConfEntries = java
+    .util
+    .Collections
     .synchronizedMap(new java.util.HashMap[String, SQLConfEntry[_]]())
 
   /**
@@ -695,7 +697,9 @@ class SQLConf
 
   /** Only low degree of contention is expected for conf, thus NOT using ConcurrentHashMap. */
   @transient
-  protected[spark] val settings = java.util.Collections
+  protected[spark] val settings = java
+    .util
+    .Collections
     .synchronizedMap(new java.util.HashMap[String, String]())
 
   /** ************************ Spark SQL Params/Hints ******************* */
@@ -798,10 +802,12 @@ class SQLConf
   /** Set Spark SQL configuration properties. */
   def setConf(props: Properties): Unit =
     settings.synchronized {
-      props.asScala.foreach {
-        case (k, v) =>
-          setConfString(k, v)
-      }
+      props
+        .asScala
+        .foreach {
+          case (k, v) =>
+            setConfString(k, v)
+        }
     }
 
   /** Set the given Spark SQL configuration property using a `string` value. */
@@ -887,7 +893,9 @@ class SQLConf
     */
   def getAllDefinedConfs: Seq[(String, String, String)] =
     sqlConfEntries.synchronized {
-      sqlConfEntries.values.asScala
+      sqlConfEntries
+        .values
+        .asScala
         .filter(_.isPublic)
         .map { entry =>
           (entry.key, entry.defaultValueString, entry.doc)

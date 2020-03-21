@@ -18,12 +18,14 @@ object Api extends LilaController {
         Json.obj(
           "api" -> Json.obj(
             "current" -> api.currentVersion,
-            "olds" -> api.oldVersions.map { old =>
-              Json.obj(
-                "version" -> old.version,
-                "deprecatedAt" -> old.deprecatedAt,
-                "unsupportedAt" -> old.unsupportedAt)
-            }
+            "olds" -> api
+              .oldVersions
+              .map { old =>
+                Json.obj(
+                  "version" -> old.version,
+                  "deprecatedAt" -> old.deprecatedAt,
+                  "unsupportedAt" -> old.unsupportedAt)
+              }
           ),
           "app" -> Json.obj("current" -> app.currentVersion)
         )) as JSON

@@ -54,8 +54,8 @@ case class SortOrder(child: Expression, direction: SortDirection)
     if (RowOrdering.isOrderable(dataType)) {
       TypeCheckResult.TypeCheckSuccess
     } else {
-      TypeCheckResult.TypeCheckFailure(
-        s"cannot sort data type ${dataType.simpleString}")
+      TypeCheckResult
+        .TypeCheckFailure(s"cannot sort data type ${dataType.simpleString}")
     }
   }
 

@@ -70,7 +70,8 @@ trait JDBCColumnarTableModuleConfig {}
 
 object JDBCColumnarTableModule {
   def escapePath(path: String) =
-    path.toList
+    path
+      .toList
       .map {
         case '[' =>
           "PCLBRACKET"
@@ -100,7 +101,8 @@ object JDBCColumnarTableModule {
     val parts = initial.split("PCUPPER")
 
     if (parts.length > 1) {
-      parts.head.toLowerCase + parts.tail
+      parts.head.toLowerCase + parts
+        .tail
         .map { ucSeg =>
           val (ucChar, rest) = ucSeg.splitAt(1)
           ucChar.toUpperCase + rest.toLowerCase
@@ -263,7 +265,8 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                 case pgo: PGobject =>
                   pgo.getType match {
                     case "hstore" =>
-                      pgo.getValue
+                      pgo
+                        .getValue
                         .split(",|=>")
                         .toList
                         .map { v =>
@@ -285,8 +288,8 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                             buildColumns += (hsRef -> column)
 
                           case invalid =>
-                            logger.error(
-                              "Invalid pair in hstore value: " + invalid)
+                            logger
+                              .error("Invalid pair in hstore value: " + invalid)
                         }
 
                     case "json" =>
@@ -433,40 +436,42 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                 case dbName :: tableName :: Nil =>
                   M.point {
                     try {
-                      databaseMap.get(dbName).map {
-                        url =>
-                          // Extra split/take at the end is because we can only map to column level. While hstore and json column types
-                          // will end up with deepeer paths, they cannot be queried against in PostgreSQL
-                          val columns = jTypeToProperties(tpe, Set()).map { c =>
-                            c.split('.').head
-                          }
-                          val query = Query(
-                            "SELECT %s FROM %s".format(
-                              if (columns.isEmpty)
-                                "*"
-                              else
-                                columns.mkString(","),
-                              tableName),
-                            yggConfig.maxSliceSize)
+                      databaseMap
+                        .get(dbName)
+                        .map {
+                          url =>
+                            // Extra split/take at the end is because we can only map to column level. While hstore and json column types
+                            // will end up with deepeer paths, they cannot be queried against in PostgreSQL
+                            val columns = jTypeToProperties(tpe, Set()).map {
+                              c => c.split('.').head
+                            }
+                            val query = Query(
+                              "SELECT %s FROM %s".format(
+                                if (columns.isEmpty)
+                                  "*"
+                                else
+                                  columns.mkString(","),
+                                tableName),
+                              yggConfig.maxSliceSize)
 
-                          logger.debug("Running query: " + query)
+                            logger.debug("Running query: " + query)
 
-                          val connGen = () => DriverManager.getConnection(url)
+                            val connGen = () => DriverManager.getConnection(url)
 
-                          val (slice, nextSkip) = makeSlice(connGen, query, 0)
-                          Some(
-                            slice,
-                            nextSkip
-                              .map(InLoad(connGen, query, _, xs))
-                              .getOrElse(InitialLoad(xs)))
-                      } getOrElse {
+                            val (slice, nextSkip) = makeSlice(connGen, query, 0)
+                            Some(
+                              slice,
+                              nextSkip
+                                .map(InLoad(connGen, query, _, xs))
+                                .getOrElse(InitialLoad(xs)))
+                        } getOrElse {
                         throw new Exception(
                           "Database %s is not configured" format dbName)
                       }
                     } catch {
                       case t =>
-                        logger.error(
-                          "Failure during JDBC query: " + t.getMessage)
+                        logger
+                          .error("Failure during JDBC query: " + t.getMessage)
                         // FIXME: We should be able to throw here and terminate the query, but something in BlueEyes is hanging when we do so
                         //throw new Exception("Failure during JDBC query: " + t.getMessage)
                         None
@@ -475,7 +480,8 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
                 case err =>
                   sys.error(
-                    "JDBC path " + path.path + " does not have the form /dbName/tableName; rollups not yet supported.")
+                    "JDBC path " + path
+                      .path + " does not have the form /dbName/tableName; rollups not yet supported.")
               }
 
             case InitialLoad(Nil) =>

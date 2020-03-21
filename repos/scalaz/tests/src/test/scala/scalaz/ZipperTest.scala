@@ -484,16 +484,19 @@ object ZipperTest extends SpecLite {
   "findZ shouldn't change elements" ! forAll {
     (xs: Stream[Int], ys: Stream[Int], f: Int, n: Int, m: Int) =>
       val p = (i: Int) => i < n && i > m
-      zipper(xs, f, ys).findZ(p).map { z =>
-        z.toStream == zipper(xs, f, ys).toStream
-      } getOrElse !(xs.find(p).isDefined || ys.find(p).isDefined || p(f))
+      zipper(xs, f, ys)
+        .findZ(p)
+        .map { z =>
+          z.toStream == zipper(xs, f, ys).toStream
+        } getOrElse !(xs.find(p).isDefined || ys.find(p).isDefined || p(f))
   }
 
   "findZor returns some of find or an alternative" ! forAll {
     (z: Zipper[Int], n: Int, m: Int, alt: Zipper[Int]) =>
       val p = (i: Int) => i < n && i > m
 
-      if (z.lefts.find(p).isDefined || p(z.focus) || z.rights
+      if (z.lefts.find(p).isDefined || p(z.focus) || z
+            .rights
             .find(p)
             .isDefined) {
         p(z.findZor(p, alt).focus) must_== (true)
@@ -558,20 +561,24 @@ object ZipperTest extends SpecLite {
   "findNext should not blow the stack" ! forAll(minSizeIntZipper(10 * 1000)) {
     z =>
       var limit = 10 * 1000
-      z.start.findNext { x =>
-        limit -= 1;
-        limit > 0
-      }
+      z
+        .start
+        .findNext { x =>
+          limit -= 1;
+          limit > 0
+        }
       true
   }
 
   "findPrevious should not blow the stack" ! forAll(
     minSizeIntZipper(10 * 1000)) { z =>
     var limit = 10 * 1000
-    z.end.findPrevious { x =>
-      limit -= 1;
-      limit > 0
-    }
+    z
+      .end
+      .findPrevious { x =>
+        limit -= 1;
+        limit > 0
+      }
     true
   }
 
@@ -613,13 +620,17 @@ object ZipperTest extends SpecLite {
   "positions should return a zippers with all possible positions of a zipper" ! forAll {
     z: Zipper[Int] =>
       val indeces =
-        z.positions.map {
-          _.index
-        }.toStream
+        z
+          .positions
+          .map {
+            _.index
+          }
+          .toStream
       indeces.min must_=== (0)
       indeces.max must_=== (z.length - 1)
       indeces.sorted must_=== (indeces)
-      z.positions
+      z
+        .positions
         .map {
           _.toStream
         }

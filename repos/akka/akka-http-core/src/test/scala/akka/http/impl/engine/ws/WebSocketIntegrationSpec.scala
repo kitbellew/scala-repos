@@ -38,10 +38,12 @@ class WebSocketIntegrationSpec
           {
             case HttpRequest(_, _, headers, _, _) ⇒
               val upgrade =
-                headers.collectFirst {
-                  case u: UpgradeToWebSocket ⇒
-                    u
-                }.get
+                headers
+                  .collectFirst {
+                    case u: UpgradeToWebSocket ⇒
+                      u
+                  }
+                  .get
               upgrade.handleMessages(
                 Flow
                   .fromSinkAndSource(Sink.ignore, Source.fromPublisher(source)),
@@ -59,16 +61,10 @@ class WebSocketIntegrationSpec
             Keep.left))
 
         response.futureValue.response.status.isSuccess should ===(true)
-        sink
-          .request(10)
-          .expectNoMsg(500.millis)
+        sink.request(10).expectNoMsg(500.millis)
 
-        source
-          .sendNext(TextMessage("hello"))
-          .sendComplete()
-        sink
-          .expectNext(TextMessage("hello"))
-          .expectComplete()
+        source.sendNext(TextMessage("hello")).sendComplete()
+        sink.expectNext(TextMessage("hello")).expectComplete()
 
         binding.unbind()
       }
@@ -80,10 +76,12 @@ class WebSocketIntegrationSpec
           {
             case HttpRequest(_, _, headers, _, _) ⇒
               val upgrade =
-                headers.collectFirst {
-                  case u: UpgradeToWebSocket ⇒
-                    u
-                }.get
+                headers
+                  .collectFirst {
+                    case u: UpgradeToWebSocket ⇒
+                      u
+                  }
+                  .get
               upgrade.handleMessages(
                 Flow
                   .fromSinkAndSource(Sink.ignore, Source.fromPublisher(source)),
@@ -95,7 +93,8 @@ class WebSocketIntegrationSpec
         val binding = Await.result(bindingFuture, 3.seconds)
         val myPort = binding.localAddress.getPort
 
-        val ((response, breaker), sink) = Source.empty
+        val ((response, breaker), sink) = Source
+          .empty
           .viaMat {
             Http()
               .webSocketClientLayer(
@@ -113,18 +112,12 @@ class WebSocketIntegrationSpec
           .run()
 
         response.futureValue.response.status.isSuccess should ===(true)
-        sink
-          .request(10)
-          .expectNoMsg(1500.millis)
+        sink.request(10).expectNoMsg(1500.millis)
 
         breaker.value.get.get.complete()
 
-        source
-          .sendNext(TextMessage("hello"))
-          .sendComplete()
-        sink
-          .expectNext(TextMessage("hello"))
-          .expectComplete()
+        source.sendNext(TextMessage("hello")).sendComplete()
+        sink.expectNext(TextMessage("hello")).expectComplete()
 
         binding.unbind()
       }
@@ -136,10 +129,12 @@ class WebSocketIntegrationSpec
           {
             case HttpRequest(_, _, headers, _, _) ⇒
               val upgrade =
-                headers.collectFirst {
-                  case u: UpgradeToWebSocket ⇒
-                    u
-                }.get
+                headers
+                  .collectFirst {
+                    case u: UpgradeToWebSocket ⇒
+                      u
+                  }
+                  .get
               upgrade.handleMessages(Flow.apply, None)
           },
           interface = "localhost",
@@ -175,8 +170,8 @@ class WebSocketIntegrationSpec
 
             // convert to int so we can connect to merge
             val mapMsgToInt = b.add(Flow[Message].map(_ ⇒ -1))
-            val mapIntToMsg = b.add(
-              Flow[Int].map(x ⇒ TextMessage.Strict(s"Sending: $x")))
+            val mapIntToMsg = b
+              .add(Flow[Int].map(x ⇒ TextMessage.Strict(s"Sending: $x")))
 
             // source we want to use to send message to the connected websocket sink
             val rangeSource = b.add(Source(1 to N))
@@ -191,10 +186,12 @@ class WebSocketIntegrationSpec
           {
             case HttpRequest(_, _, headers, _, _) ⇒
               val upgrade =
-                headers.collectFirst {
-                  case u: UpgradeToWebSocket ⇒
-                    u
-                }.get
+                headers
+                  .collectFirst {
+                    case u: UpgradeToWebSocket ⇒
+                      u
+                  }
+                  .get
               upgrade.handleMessages(handler, None)
           },
           interface = "localhost",
@@ -205,7 +202,8 @@ class WebSocketIntegrationSpec
 
         @volatile
         var messages = 0
-        val (breaker, completion) = Source.maybe
+        val (breaker, completion) = Source
+          .maybe
           .viaMat {
             Http()
               .webSocketClientLayer(

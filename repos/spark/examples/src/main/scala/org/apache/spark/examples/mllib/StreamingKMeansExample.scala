@@ -54,9 +54,11 @@ object StreamingKMeansExample {
 
   def main(args: Array[String]) {
     if (args.length != 5) {
-      System.err.println(
-        "Usage: StreamingKMeansExample " +
-          "<trainingDir> <testDir> <batchDuration> <numClusters> <numDimensions>")
+      System
+        .err
+        .println(
+          "Usage: StreamingKMeansExample " +
+            "<trainingDir> <testDir> <batchDuration> <numClusters> <numDimensions>")
       System.exit(1)
     }
 

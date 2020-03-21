@@ -125,7 +125,9 @@ abstract class RestartFirstSeedNodeSpec
           awaitAssert(
             Cluster(restartedSeed1System).readView.members.size should ===(3))
           awaitAssert(
-            Cluster(restartedSeed1System).readView.members
+            Cluster(restartedSeed1System)
+              .readView
+              .members
               .map(_.status) should ===(Set(Up)))
         }
       }

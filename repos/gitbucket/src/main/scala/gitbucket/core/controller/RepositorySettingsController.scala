@@ -120,9 +120,12 @@ trait RepositorySettingsControllerBase extends ControllerBase {
         repository.owner,
         repository.name,
         form.description,
-        repository.repository.parentUserName.map { _ =>
-          repository.repository.isPrivate
-        } getOrElse form.isPrivate)
+        repository
+          .repository
+          .parentUserName
+          .map { _ =>
+            repository.repository.isPrivate
+          } getOrElse form.isPrivate)
       // Change repository name
       if (repository.name != form.repositoryName) {
         // Update database
@@ -171,7 +174,8 @@ trait RepositorySettingsControllerBase extends ControllerBase {
         // Change repository HEAD
         using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
           git =>
-            git.getRepository
+            git
+              .getRepository
               .updateRef(Constants.HEAD, true)
               .link(Constants.R_HEADS + form.defaultBranch)
         }
@@ -195,7 +199,8 @@ trait RepositorySettingsControllerBase extends ControllerBase {
             repository.owner,
             repository.name,
             org.joda.time.LocalDateTime.now.minusWeeks(1).toDate).toSet
-        val knownContexts = (lastWeeks ++ protection.status.contexts).toSeq
+        val knownContexts = (lastWeeks ++ protection.status.contexts)
+          .toSeq
           .sortBy(identity)
         html.branchprotection(
           repository,
@@ -323,10 +328,12 @@ trait RepositorySettingsControllerBase extends ControllerBase {
               if (repository.commitCount == 0)
                 List.empty
               else
-                git.log
+                git
+                  .log
                   .add(
-                    git.getRepository.resolve(
-                      repository.repository.defaultBranch))
+                    git
+                      .getRepository
+                      .resolve(repository.repository.defaultBranch))
                   .setMaxCount(4)
                   .call
                   .iterator
@@ -342,11 +349,13 @@ trait RepositorySettingsControllerBase extends ControllerBase {
               repositoryInfo = repository,
               commits = pushedCommit,
               repositoryOwner = ownerAccount,
-              oldId = commits.lastOption
+              oldId = commits
+                .lastOption
                 .map(_.id)
                 .map(ObjectId.fromString)
                 .getOrElse(ObjectId.zeroId()),
-              newId = commits.headOption
+              newId = commits
+                .headOption
                 .map(_.id)
                 .map(ObjectId.fromString)
                 .getOrElse(ObjectId.zeroId())
@@ -368,28 +377,32 @@ trait RepositorySettingsControllerBase extends ControllerBase {
           }
 
           contentType = formats("json")
-          org.json4s.jackson.Serialization.write(
-            Map(
-              "url" -> url,
-              "request" -> Await.result(
-                reqFuture
-                  .map(req =>
-                    Map(
-                      "headers" -> _headers(req.getAllHeaders),
-                      "payload" -> json))
-                  .recover(toErrorMap),
-                20 seconds),
-              "responce" -> Await.result(
-                resFuture
-                  .map(res =>
-                    Map(
-                      "status" -> res.getStatusLine(),
-                      "body" -> EntityUtils.toString(res.getEntity()),
-                      "headers" -> _headers(res.getAllHeaders())))
-                  .recover(toErrorMap),
-                20 seconds
-              )
-            ))
+          org
+            .json4s
+            .jackson
+            .Serialization
+            .write(
+              Map(
+                "url" -> url,
+                "request" -> Await.result(
+                  reqFuture
+                    .map(req =>
+                      Map(
+                        "headers" -> _headers(req.getAllHeaders),
+                        "payload" -> json))
+                    .recover(toErrorMap),
+                  20 seconds),
+                "responce" -> Await.result(
+                  resFuture
+                    .map(res =>
+                      Map(
+                        "status" -> res.getStatusLine(),
+                        "body" -> EntityUtils.toString(res.getEntity()),
+                        "headers" -> _headers(res.getAllHeaders())))
+                    .recover(toErrorMap),
+                  20 seconds
+                )
+              ))
       }
     })
 
@@ -467,12 +480,12 @@ trait RepositorySettingsControllerBase extends ControllerBase {
       LockUtil.lock(s"${repository.owner}/${repository.name}") {
         deleteRepository(repository.owner, repository.name)
 
-        FileUtils.deleteDirectory(
-          getRepositoryDir(repository.owner, repository.name))
+        FileUtils
+          .deleteDirectory(getRepositoryDir(repository.owner, repository.name))
         FileUtils.deleteDirectory(
           getWikiRepositoryDir(repository.owner, repository.name))
-        FileUtils.deleteDirectory(
-          getTemporaryDir(repository.owner, repository.name))
+        FileUtils
+          .deleteDirectory(getTemporaryDir(repository.owner, repository.name))
       }
       redirect(s"/${repository.owner}")
     })
@@ -486,10 +499,8 @@ trait RepositorySettingsControllerBase extends ControllerBase {
           name: String,
           value: String,
           messages: Messages): Option[String] =
-        if (getWebHook(
-              params("owner"),
-              params("repository"),
-              value).isDefined != needExists) {
+        if (getWebHook(params("owner"), params("repository"), value)
+              .isDefined != needExists) {
           Some(
             if (needExists) {
               "URL had not been registered yet."
@@ -507,9 +518,13 @@ trait RepositorySettingsControllerBase extends ControllerBase {
           name: String,
           params: Map[String, String],
           messages: Messages): Set[WebHook.Event] = {
-        WebHook.Event.values.flatMap { t =>
-          params.get(name + "." + t.name).map(_ => t)
-        }.toSet
+        WebHook
+          .Event
+          .values
+          .flatMap { t =>
+            params.get(name + "." + t.name).map(_ => t)
+          }
+          .toSet
       }
       def validate(
           name: String,
@@ -558,13 +573,18 @@ trait RepositorySettingsControllerBase extends ControllerBase {
           value: String,
           params: Map[String, String],
           messages: Messages): Option[String] =
-        params.get("repository").filter(_ != value).flatMap { _ =>
-          params.get("owner").flatMap { userName =>
-            getRepositoryNamesOfUser(userName)
-              .find(_ == value)
-              .map(_ => "Repository already exists.")
+        params
+          .get("repository")
+          .filter(_ != value)
+          .flatMap { _ =>
+            params
+              .get("owner")
+              .flatMap { userName =>
+                getRepositoryNamesOfUser(userName)
+                  .find(_ == value)
+                  .map(_ => "Repository already exists.")
+              }
           }
-        }
     }
 
   /**
@@ -583,13 +603,15 @@ trait RepositorySettingsControllerBase extends ControllerBase {
             if (x.userName == params("owner")) {
               Some("This is current repository owner.")
             } else {
-              params.get("repository").flatMap { repositoryName =>
-                getRepositoryNamesOfUser(x.userName)
-                  .find(_ == repositoryName)
-                  .map { _ =>
-                    "User already has same repository."
-                  }
-              }
+              params
+                .get("repository")
+                .flatMap { repositoryName =>
+                  getRepositoryNamesOfUser(x.userName)
+                    .find(_ == repositoryName)
+                    .map { _ =>
+                      "User already has same repository."
+                    }
+                }
             }
         }
     }

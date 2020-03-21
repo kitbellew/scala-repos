@@ -49,7 +49,13 @@ object OffsetCommitRequest extends Logging {
       if (versionId >= 1)
         buffer.getInt
       else
-        org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_GENERATION_ID
+        org
+          .apache
+          .kafka
+          .common
+          .requests
+          .OffsetCommitRequest
+          .DEFAULT_GENERATION_ID
 
     val memberId: String =
       if (versionId >= 1)
@@ -62,7 +68,13 @@ object OffsetCommitRequest extends Logging {
       if (versionId >= 2)
         buffer.getLong
       else
-        org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_RETENTION_TIME
+        org
+          .apache
+          .kafka
+          .common
+          .requests
+          .OffsetCommitRequest
+          .DEFAULT_RETENTION_TIME
 
     val topicCount = buffer.getInt
     val pairs = (1 to topicCount).flatMap(_ => {
@@ -76,7 +88,13 @@ object OffsetCommitRequest extends Logging {
           if (versionId == 1)
             buffer.getLong
           else
-            org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_TIMESTAMP
+            org
+              .apache
+              .kafka
+              .common
+              .requests
+              .OffsetCommitRequest
+              .DEFAULT_TIMESTAMP
         }
         val metadata = readShortString(buffer)
 
@@ -104,12 +122,27 @@ case class OffsetCommitRequest(
     versionId: Short = OffsetCommitRequest.CurrentVersion,
     correlationId: Int = 0,
     clientId: String = OffsetCommitRequest.DefaultClientId,
-    groupGenerationId: Int =
-      org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_GENERATION_ID,
-    memberId: String =
-      org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_MEMBER_ID,
-    retentionMs: Long =
-      org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_RETENTION_TIME)
+    groupGenerationId: Int = org
+      .apache
+      .kafka
+      .common
+      .requests
+      .OffsetCommitRequest
+      .DEFAULT_GENERATION_ID,
+    memberId: String = org
+      .apache
+      .kafka
+      .common
+      .requests
+      .OffsetCommitRequest
+      .DEFAULT_MEMBER_ID,
+    retentionMs: Long = org
+      .apache
+      .kafka
+      .common
+      .requests
+      .OffsetCommitRequest
+      .DEFAULT_RETENTION_TIME)
     extends RequestOrResponse(Some(ApiKeys.OFFSET_COMMIT.id)) {
 
   assert(
@@ -143,14 +176,16 @@ case class OffsetCommitRequest(
       t1 => { // topic -> Map[TopicAndPartition, OffsetMetadataAndError]
         writeShortString(buffer, t1._1) // topic
         buffer.putInt(t1._2.size) // number of partitions for this topic
-        t1._2.foreach(t2 => {
-          buffer.putInt(t2._1.partition)
-          buffer.putLong(t2._2.offset)
-          // version 1 specific data
-          if (versionId == 1)
-            buffer.putLong(t2._2.commitTimestamp)
-          writeShortString(buffer, t2._2.metadata)
-        })
+        t1
+          ._2
+          .foreach(t2 => {
+            buffer.putInt(t2._1.partition)
+            buffer.putLong(t2._2.offset)
+            // version 1 specific data
+            if (versionId == 1)
+              buffer.putLong(t2._2.commitTimestamp)
+            writeShortString(buffer, t2._2.metadata)
+          })
       })
   }
 

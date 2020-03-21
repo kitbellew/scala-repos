@@ -89,9 +89,11 @@ trait ListInstances extends ListInstances0 {
         //   (a, fbs) => F.apply2(f(a), fbs)(_ :: _)
         // }
 
-        DList.fromList(l).foldr(F.point(List[B]())) { (a, fbs) =>
-          F.apply2(f(a), fbs)(_ :: _)
-        }
+        DList
+          .fromList(l)
+          .foldr(F.point(List[B]())) { (a, fbs) =>
+            F.apply2(f(a), fbs)(_ :: _)
+          }
       }
 
       override def traverseS[S, A, B](l: List[A])(
@@ -328,8 +330,8 @@ trait ListFunctions {
       case h :: t =>
         Monad[M].bind(p(h))(b =>
           if (b)
-            Monad[M].map(spanM(t)(p))((k: (List[A], List[A])) =>
-              (h :: k._1, k._2))
+            Monad[M]
+              .map(spanM(t)(p))((k: (List[A], List[A])) => (h :: k._1, k._2))
           else
             Monad[M].point(Nil, as))
 

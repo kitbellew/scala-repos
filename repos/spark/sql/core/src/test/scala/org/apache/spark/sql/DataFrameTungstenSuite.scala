@@ -69,9 +69,7 @@ class DataFrameTungstenSuite extends QueryTest with SharedSQLContext {
           .add("b4", DoubleType)
           .add(
             "b5",
-            new StructType()
-              .add("b5a", IntegerType)
-              .add("b5b", StringType))
+            new StructType().add("b5a", IntegerType).add("b5b", StringType))
           .add("b6", StringType)
       )
 

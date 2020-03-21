@@ -46,7 +46,8 @@ object Common {
     */
   def size(f: Hfs, conf: JobConf): Long = {
     val fs = f.getPath.getFileSystem(conf)
-    fs.globStatus(f.getPath)
+    fs
+      .globStatus(f.getPath)
       .map { s =>
         fs.getContentSummary(s.getPath).getLength
       }
@@ -126,10 +127,12 @@ case class FallbackEstimator(
   private val LOG = LoggerFactory.getLogger(this.getClass)
 
   override def estimateReducers(info: FlowStrategyInfo): Option[Int] =
-    first.estimateReducers(info).orElse {
-      LOG.warn(s"$first estimator failed. Falling back to $fallback.")
-      fallback.estimateReducers(info)
-    }
+    first
+      .estimateReducers(info)
+      .orElse {
+        LOG.warn(s"$first estimator failed. Falling back to $fallback.")
+        fallback.estimateReducers(info)
+      }
 }
 
 object ReducerEstimatorStepStrategy extends FlowStepStrategy[JobConf] {
@@ -187,9 +190,8 @@ object ReducerEstimatorStepStrategy extends FlowStepStrategy[JobConf] {
       conf.set(EstimatorConfig.originalNumReducers, stepNumReducers)
 
     // whether we should override explicitly-specified numReducers
-    val overrideExplicit = conf.getBoolean(
-      Config.ReducerEstimatorOverride,
-      false)
+    val overrideExplicit = conf
+      .getBoolean(Config.ReducerEstimatorOverride, false)
 
     Option(conf.get(Config.ReducerEstimators)).map { clsNames =>
       val clsLoader = Thread.currentThread.getContextClassLoader
@@ -206,9 +208,8 @@ object ReducerEstimatorStepStrategy extends FlowStepStrategy[JobConf] {
       val numReducers = combinedEstimator.estimateReducers(info)
 
       // save the estimate in the JobConf which should be saved by hRaven
-      conf.setInt(
-        EstimatorConfig.estimatedNumReducers,
-        numReducers.getOrElse(-1))
+      conf
+        .setInt(EstimatorConfig.estimatedNumReducers, numReducers.getOrElse(-1))
 
       // set number of reducers
       if (!setExplicitly || overrideExplicit) {

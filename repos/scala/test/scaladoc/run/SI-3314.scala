@@ -53,11 +53,8 @@ object Test extends ScaladocModelTest {
           doc._value(day).resultType.refEntity(0)._1 == LinkToMember(
             doc._classMbr("Value"),
             doc),
-          doc
-            ._value(day)
-            .resultType
-            .refEntity(0)
-            ._1 + " == LinkToMember(" + doc.qualifiedName + ".Value)"
+          doc._value(day).resultType.refEntity(0)._1 + " == LinkToMember(" + doc
+            .qualifiedName + ".Value)"
         )
       }
     }
@@ -113,7 +110,8 @@ object Test extends ScaladocModelTest {
             .valueParams(0)(0)
             .resultType
             .refEntity(0)
-            ._1 + " == LinkToMember(" + ref.qualifiedName + ") (in " + doc + "." + method + ")"
+            ._1 + " == LinkToMember(" + ref
+            .qualifiedName + ") (in " + doc + "." + method + ")"
         )
       }
     }

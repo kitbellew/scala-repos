@@ -65,8 +65,8 @@ object ReachingDefintionsCollector {
     // instructions in given fragment
     val fragmentInstructions = filterByFragment(cfg, fragment)
 
-    val inputInfos = computeInputVaribles(fragmentInstructions).filter(info =>
-      !isVisible(info.element, place))
+    val inputInfos = computeInputVaribles(fragmentInstructions)
+      .filter(info => !isVisible(info.element, place))
     val outputInfos = computeOutputVariables(fragmentInstructions, dfaResult)
 
     FragmentVariableInfos(inputInfos, outputInfos)
@@ -79,7 +79,8 @@ object ReachingDefintionsCollector {
     def checkResolve(ref: PsiElement) =
       ref match {
         case r: ScReferenceElement =>
-          r.multiResolve(false)
+          r
+            .multiResolve(false)
             .map(_.getElement)
             .exists(PsiEquivalenceUtil.areElementsEquivalent(_, element))
         case _ =>
@@ -125,8 +126,7 @@ object ReachingDefintionsCollector {
           val decl = createDeclarationFromText(
             s"val dummyVal: ${element.name}",
             place.getContext,
-            place)
-            .asInstanceOf[ScValueDeclaration]
+            place).asInstanceOf[ScValueDeclaration]
           decl.typeElement match {
             case Some(st: ScSimpleTypeElement) =>
               st.reference.exists(checkResolve)

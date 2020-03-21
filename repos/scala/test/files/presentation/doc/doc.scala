@@ -115,10 +115,16 @@ object Test extends InteractiveTest {
               println("Couldn't parse")
             case Some(_) =>
               val sym = compiler.ask { () =>
-                val toplevel = compiler.rootMirror.EmptyPackage.info
+                val toplevel = compiler
+                  .rootMirror
+                  .EmptyPackage
+                  .info
                   .decl(TypeName(name))
                 if (toplevel eq NoSymbol) {
-                  val clazz = compiler.rootMirror.EmptyPackage.info
+                  val clazz = compiler
+                    .rootMirror
+                    .EmptyPackage
+                    .info
                     .decl(TypeName(className))
                   val term = clazz.info.decl(TermName(name))
                   if (term eq NoSymbol)
@@ -170,7 +176,10 @@ object Test extends InteractiveTest {
           existsText(c.body, text)
       }
     val (derived, base) = compiler.ask { () =>
-      val derived = compiler.rootMirror.RootPackage.info
+      val derived = compiler
+        .rootMirror
+        .RootPackage
+        .info
         .decl(newTermName("p"))
         .info
         .decl(newTypeName("Derived"))

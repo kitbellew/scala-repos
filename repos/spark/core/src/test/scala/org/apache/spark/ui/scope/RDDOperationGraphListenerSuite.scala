@@ -228,9 +228,11 @@ class RDDOperationGraphListenerSuite extends SparkFunSuite {
     val jobId = jobIdCounter
     listener.onJobStart(new SparkListenerJobStart(jobId, 0, stageInfos))
     // Also start all stages that belong to this job
-    stageInfos.map(_.stageId).foreach { sid =>
-      startStage(sid, listener)
-    }
+    stageInfos
+      .map(_.stageId)
+      .foreach { sid =>
+        startStage(sid, listener)
+      }
     jobIdCounter += 1
     jobId
   }

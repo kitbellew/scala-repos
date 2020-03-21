@@ -42,8 +42,9 @@ abstract class IntroduceParameterTestBase
     import _root_.junit.framework.Assert._
     val project = getProjectAdapter
     val filePath = folderPath + getTestName(false) + ".scala"
-    val file = LocalFileSystem.getInstance.findFileByPath(
-      filePath.replace(File.separatorChar, '/'))
+    val file = LocalFileSystem
+      .getInstance
+      .findFileByPath(filePath.replace(File.separatorChar, '/'))
     assert(file != null, "file " + filePath + " not found")
     val fileText = StringUtil.convertLineSeparators(
       FileUtil.loadFile(new File(file.getCanonicalPath), CharsetToolkit.UTF8))
@@ -59,9 +60,8 @@ abstract class IntroduceParameterTestBase
       "Not specified end marker in test case. Use /*end*/ in scala file for this.")
 
     val fileEditorManager = FileEditorManager.getInstance(project)
-    val editor = fileEditorManager.openTextEditor(
-      new OpenFileDescriptor(project, file, startOffset),
-      false)
+    val editor = fileEditorManager
+      .openTextEditor(new OpenFileDescriptor(project, file, startOffset), false)
 
     var res: String = null
 
@@ -125,7 +125,8 @@ abstract class IntroduceParameterTestBase
               assert(
                 collectedData.isDefined,
                 "Could not collect data for introduce parameter")
-              val data = collectedData.get
+              val data = collectedData
+                .get
                 .copy(paramName = paramName, replaceAll = replaceAllOccurrences)
 
               val paramInfo =

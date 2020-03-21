@@ -97,8 +97,8 @@ object CommitState {
   def combine(statuses: Set[CommitState]): CommitState = {
     if (statuses.isEmpty) {
       PENDING
-    } else if (statuses.contains(CommitState.ERROR) || statuses.contains(
-                 CommitState.FAILURE)) {
+    } else if (statuses.contains(CommitState.ERROR) || statuses
+                 .contains(CommitState.FAILURE)) {
       FAILURE
     } else if (statuses.contains(CommitState.PENDING)) {
       PENDING

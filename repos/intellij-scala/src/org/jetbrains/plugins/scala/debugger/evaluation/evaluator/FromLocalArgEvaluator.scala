@@ -10,8 +10,8 @@ import scala.util.Try
   */
 case class FromLocalArgEvaluator(delegate: Evaluator) extends Evaluator {
   override def evaluate(context: EvaluationContextImpl): AnyRef =
-    evaluateNotFromField(delegate, context).getOrElse(
-      FromLocalArgEvaluator.skipMarker)
+    evaluateNotFromField(delegate, context)
+      .getOrElse(FromLocalArgEvaluator.skipMarker)
 
   override def getModifier: Modifier = null
 
@@ -21,8 +21,8 @@ case class FromLocalArgEvaluator(delegate: Evaluator) extends Evaluator {
       context: EvaluationContextImpl): Option[AnyRef] = {
     evaluator match {
       case ScalaBoxingEvaluator(inner) =>
-        evaluateNotFromField(inner, context).map(
-          ScalaBoxingEvaluator.box(_, context))
+        evaluateNotFromField(inner, context)
+          .map(ScalaBoxingEvaluator.box(_, context))
       case _: ScalaFieldEvaluator =>
         None
       case ScalaDuplexEvaluator(

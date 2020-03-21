@@ -171,8 +171,8 @@ class ScalaDocumentationProvider extends CodeDocumentationProvider {
         }
 
         if (pack != "")
-          buffer.append(
-            "<font size=\"-1\"><b>" + escapeHtml(pack) + "</b></font>")
+          buffer
+            .append("<font size=\"-1\"><b>" + escapeHtml(pack) + "</b></font>")
 
         buffer.append("<PRE>")
         buffer.append(parseAnnotations(clazz, ScType.urlText))
@@ -305,7 +305,8 @@ class ScalaDocumentationProvider extends CodeDocumentationProvider {
             buffer.append(
               " = " +
                 ScType.urlText(
-                  definition.aliasedTypeElement
+                  definition
+                    .aliasedTypeElement
                     .getType(TypingContext.empty)
                     .getOrAny))
           case _ =>
@@ -478,9 +479,8 @@ object ScalaDocumentationProvider {
 
             member match {
               case named: ScNamedElement =>
-                ScalaPsiUtil.superValsSignatures(
-                  named,
-                  withSelfType = false) map {
+                ScalaPsiUtil
+                  .superValsSignatures(named, withSelfType = false) map {
                   case sig =>
                     sig.namedElement
                 } foreach {
@@ -558,7 +558,8 @@ object ScalaDocumentationProvider {
       elem: ScParameterOwner,
       typeToString: ScType => String,
       spaces: Int): String = {
-    elem.allClauses
+    elem
+      .allClauses
       .map(parseParameterClause(_, typeToString, spaces))
       .mkString("\n")
   }
@@ -575,7 +576,8 @@ object ScalaDocumentationProvider {
         ", "
       else
         ",\n" + buffer
-    elem.parameters
+    elem
+      .parameters
       .map(parseParameter(_, typeToString))
       .mkString(
         if (elem.isImplicit)
@@ -609,8 +611,8 @@ object ScalaDocumentationProvider {
     def processProbablyJavaDocCommentWithOwner(owner: PsiDocCommentOwner) {
       owner.getDocComment match {
         case scalaComment: ScDocComment =>
-          for (docTag <- scalaComment.findTagsByName(
-                 Set(PARAM_TAG, TYPE_PARAM_TAG).contains _)) {
+          for (docTag <- scalaComment
+                 .findTagsByName(Set(PARAM_TAG, TYPE_PARAM_TAG).contains _)) {
             docTag.name match {
               case PARAM_TAG =>
                 registerInheritedParam(inheritedParams, docTag)
@@ -634,11 +636,11 @@ object ScalaDocumentationProvider {
       for (param <- owner.parameters) {
         if (inheritedParams contains param.name) {
           val paramText = inheritedParams.get(param.name).get.getText
-          buffer append leadingAsterisks append paramText.substring(
-            0,
-            paramText.lastIndexOf("\n") + 1)
+          buffer append leadingAsterisks append paramText
+            .substring(0, paramText.lastIndexOf("\n") + 1)
         } else {
-          buffer append leadingAsterisks append PARAM_TAG append " " append param.name append "\n"
+          buffer append leadingAsterisks append PARAM_TAG append " " append param
+            .name append "\n"
         }
       }
     }
@@ -652,8 +654,12 @@ object ScalaDocumentationProvider {
             .append(paramText.substring(0, paramText.lastIndexOf("\n") + 1))
         } else if (inheritedTParams.contains("<" + tparam + ">")) {
           val paramTag = inheritedTParams.get("<" + tparam.name + ">").get
-          val descriptionText = paramTag.getText.substring(
-            paramTag.getValueElement.getTextOffset + paramTag.getValueElement.getTextLength)
+          val descriptionText = paramTag
+            .getText
+            .substring(
+              paramTag.getValueElement.getTextOffset + paramTag
+                .getValueElement
+                .getTextLength)
           val parameterName = paramTag.getValueElement.getText
 
           buffer
@@ -690,8 +696,8 @@ object ScalaDocumentationProvider {
       case function: ScFunction =>
         val parents = function.findSuperMethods()
         var returnTag: String = null
-        val needReturnTag =
-          function.getReturnType != null && !function.hasUnitResultType
+        val needReturnTag = function.getReturnType != null && !function
+          .hasUnitResultType
 
         for (parent <- parents) {
           processProbablyJavaDocCommentWithOwner(parent)
@@ -706,7 +712,8 @@ object ScalaDocumentationProvider {
               case _ =>
             }
             if (inherRetTag != null) {
-              returnTag = inherRetTag.getText
+              returnTag = inherRetTag
+                .getText
                 .substring(0, inherRetTag.getText.lastIndexOf("\n") + 1)
             }
           }
@@ -721,29 +728,35 @@ object ScalaDocumentationProvider {
             .append(leadingAsterisks)
             .append(MyScaladocParsing.THROWS_TAG)
             .append(" ")
-          annotation.constructor.args.foreach(a =>
-            a.exprs.headOption.map {
-              case exprHead =>
-                exprHead.getType(TypingContext.empty) match {
-                  case Success(head, _) =>
-                    head match {
-                      case ScParameterizedType(_, args) =>
-                        args.headOption match {
-                          case a: Some[ScType] =>
-                            ScType.extractClass(
-                              a.get,
-                              Option(function.getProject)) match {
-                              case Some(clazz) =>
-                                buffer append clazz.qualifiedName
+          annotation
+            .constructor
+            .args
+            .foreach(a =>
+              a
+                .exprs
+                .headOption
+                .map {
+                  case exprHead =>
+                    exprHead.getType(TypingContext.empty) match {
+                      case Success(head, _) =>
+                        head match {
+                          case ScParameterizedType(_, args) =>
+                            args.headOption match {
+                              case a: Some[ScType] =>
+                                ScType.extractClass(
+                                  a.get,
+                                  Option(function.getProject)) match {
+                                  case Some(clazz) =>
+                                    buffer append clazz.qualifiedName
+                                  case _ =>
+                                }
                               case _ =>
                             }
                           case _ =>
                         }
                       case _ =>
                     }
-                  case _ =>
-                }
-            })
+                })
 
           buffer.append(" \n")
         }
@@ -852,8 +865,8 @@ object ScalaDocumentationProvider {
         buffer.append(
           ScType.urlText(seq.head.getType(TypingContext.empty).getOrAny) + "\n")
         for (i <- 1 until seq.length)
-          buffer append " with " + ScType.urlText(
-            seq(i).getType(TypingContext.empty).getOrAny)
+          buffer append " with " + ScType
+            .urlText(seq(i).getType(TypingContext.empty).getOrAny)
       case None =>
         buffer.append(
           "<a href=\"psi_element://scala.ScalaObject\"><code>ScalaObject</code></a>")
@@ -956,14 +969,16 @@ object ScalaDocumentationProvider {
       elem: PsiDocCommentOwner,
       withDescription: Boolean = false): String = {
     def getParams(fun: ScParameterOwner): String = {
-      fun.parameters
+      fun
+        .parameters
         .map((param: ScParameter) => "int     " + escapeHtml(param.name))
         .mkString("(", ",\n", ")")
     }
 
     def getTypeParams(fun: ScTypeParametersOwner): String = {
       if (fun.typeParameters.nonEmpty) {
-        fun.typeParameters
+        fun
+          .typeParameters
           .map(param => escapeHtml(param.name))
           .mkString("<", " , ", ">")
       } else {
@@ -1008,14 +1023,14 @@ object ScalaDocumentationProvider {
               JavaDocumentationProvider.generateExternalJavadoc(
                 dummyFile.getClasses.apply(0).getAllMethods.apply(0))
             case _: ScTypeDefinition | _: ScTypeAlias =>
-              JavaDocumentationProvider.generateExternalJavadoc(
-                dummyFile.getClasses.apply(0))
+              JavaDocumentationProvider
+                .generateExternalJavadoc(dummyFile.getClasses.apply(0))
             case _: PsiMethod =>
               JavaDocumentationProvider.generateExternalJavadoc(
                 dummyFile.getClasses.apply(0).getAllMethods.apply(0))
             case _ =>
-              JavaDocumentationProvider.generateExternalJavadoc(
-                dummyFile.getClasses.apply(0))
+              JavaDocumentationProvider
+                .generateExternalJavadoc(dummyFile.getClasses.apply(0))
           }
         val (s1, s2) =
           elem.containingClass match {
@@ -1055,8 +1070,9 @@ object ScalaDocumentationProvider {
           case method: PsiMethod =>
             var superSignature: MethodSignatureBackedByPsiMethod = null
             try {
-              superSignature =
-                SuperMethodsSearch.search(method, null, true, false).findFirst
+              superSignature = SuperMethodsSearch
+                .search(method, null, true, false)
+                .findFirst
             } catch {
               case e: IndexNotReadyException =>
             }
@@ -1090,21 +1106,25 @@ object ScalaDocumentationProvider {
             commentBody.append("<br/><br/>")
             isFirst = false
           }
-          element.getNode
+          element
+            .getNode
             .getChildren(null)
             .foreach(node => visitElementInner(node.getPsi))
           commentBody.append("<br/><br/>")
         case MyScaladocParsing.SEE_TAG =>
-          element.getNode
+          element
+            .getNode
             .getChildren(null)
             .foreach(node => visitElementInner(node.getPsi, commentBody))
           commentBody.append("</dl>")
         case MyScaladocParsing.INHERITDOC_TAG =>
-          element.getNode
+          element
+            .getNode
             .getChildren(null)
             .foreach(node => visitElementInner(node.getPsi, commentBody))
         case _ =>
-          element.getNode
+          element
+            .getNode
             .getChildren(null)
             .foreach(node => visitElementInner(node.getPsi, tagsPart))
       }
@@ -1151,7 +1171,11 @@ object ScalaDocumentationProvider {
                 result.append(element.getText)
             }
           case ScalaDocTokenType.DOC_TAG_VALUE_TOKEN
-              if element.getParent.getParent.getFirstChild.getText == MyScaladocParsing.TYPE_PARAM_TAG =>
+              if element
+                .getParent
+                .getParent
+                .getFirstChild
+                .getText == MyScaladocParsing.TYPE_PARAM_TAG =>
             result.append("<" + element.getText + ">")
           case ScalaDocTokenType.DOC_INNER_CODE_TAG =>
             result.append(" <pre> {@code ")
@@ -1165,7 +1189,11 @@ object ScalaDocumentationProvider {
                 6
             result.append("<h" + headerSize + ">")
           case ScalaDocTokenType.DOC_HEADER =>
-            if (element.getParent.getFirstChild.getNode.getElementType == ScalaDocTokenType.VALID_DOC_HEADER) {
+            if (element
+                  .getParent
+                  .getFirstChild
+                  .getNode
+                  .getElementType == ScalaDocTokenType.VALID_DOC_HEADER) {
               val headerSize =
                 if (element.getText.length() <= 6)
                   element.getText.length()
@@ -1180,7 +1208,11 @@ object ScalaDocumentationProvider {
           case ScalaDocTokenType.DOC_LINK_TAG =>
             result.append("{@link ")
           case ScalaDocTokenType.DOC_LINK_CLOSE_TAG =>
-            if (element.getParent.getNode.getFirstChildNode.getElementType == ScalaDocTokenType.DOC_HTTP_LINK_TAG) {
+            if (element
+                  .getParent
+                  .getNode
+                  .getFirstChildNode
+                  .getElementType == ScalaDocTokenType.DOC_HTTP_LINK_TAG) {
               val linkText = element.getPrevSibling.getText
               if (linkText.trim().contains(" ")) {
                 val trimmedText = linkText.trim()
@@ -1198,19 +1230,25 @@ object ScalaDocumentationProvider {
             }
           case ScalaDocTokenType.DOC_COMMENT_DATA
               if element.getParent.isInstanceOf[ScDocTag] &&
-                element.getParent
+                element
+                  .getParent
                   .asInstanceOf[ScDocTag]
                   .name == MyScaladocParsing.SEE_TAG =>
             result.append("<dd>").append(element.getText.trim()).append("</dd>")
           case ScalaDocTokenType.DOC_COMMENT_DATA
-              if element.getPrevSibling != null && element.getPrevSibling.getNode.getElementType == ScalaDocTokenType.DOC_HTTP_LINK_TAG =>
+              if element.getPrevSibling != null && element
+                .getPrevSibling
+                .getNode
+                .getElementType == ScalaDocTokenType.DOC_HTTP_LINK_TAG =>
             if (!element.getText.trim().contains(" ")) {
               result.append(element.getText)
             }
           case _
               if replaceWikiScheme.contains(element.getText) &&
                 (
-                  element.getParent.getFirstChild == element || element.getParent.getLastChild == element
+                  element.getParent.getFirstChild == element || element
+                    .getParent
+                    .getLastChild == element
                 ) =>
             val prefix =
               if (element.getParent.getFirstChild == element)
@@ -1219,9 +1257,11 @@ object ScalaDocumentationProvider {
                 "</"
             result.append(prefix + replaceWikiScheme.get(element.getText).get)
           case _
-              if element.getParent.getLastChild == element && // do not swap this & last cases
-                replaceWikiScheme.contains(
-                  element.getParent.getFirstChild.getText) =>
+              if element
+                .getParent
+                .getLastChild == element && // do not swap this & last cases
+                replaceWikiScheme
+                  .contains(element.getParent.getFirstChild.getText) =>
             result.append(element.getText).append("</")
             result.append(
               replaceWikiScheme
@@ -1306,7 +1346,10 @@ object ScalaDocumentationProvider {
       return ""
     if (!member.getParent.getParent.getParent.isInstanceOf[ScTypeDefinition])
       return ""
-    member.containingClass.name + " " + member.containingClass.getPresentation.getLocationString + "\n"
+    member.containingClass.name + " " + member
+      .containingClass
+      .getPresentation
+      .getLocationString + "\n"
   }
 
   private def getOneLine(s: String): String = {
@@ -1344,8 +1387,8 @@ object ScalaDocumentationProvider {
       buffer.append(locationString.substring(1, length - 1))
     if (buffer.nonEmpty)
       buffer.append("\n")
-    buffer.append(
-      ScalaPsiUtil.getModifiersPresentableText(clazz.getModifierList))
+    buffer
+      .append(ScalaPsiUtil.getModifiersPresentableText(clazz.getModifierList))
     buffer.append(
       clazz match {
         case _: ScObject =>
@@ -1409,8 +1452,8 @@ object ScalaDocumentationProvider {
       }
     val buffer = new StringBuilder
     buffer.append(getMemberHeader(member))
-    buffer.append(
-      ScalaPsiUtil.getModifiersPresentableText(member.getModifierList))
+    buffer
+      .append(ScalaPsiUtil.getModifiersPresentableText(member.getModifierList))
     member match {
       case value: ScValue =>
         buffer.append("val ")
@@ -1454,8 +1497,8 @@ object ScalaDocumentationProvider {
     val buffer = new StringBuilder
     buffer.append("Pattern: ")
     buffer.append(binding.name)
-    val typez = subst.subst(
-      subst.subst(binding.getType(TypingContext.empty).getOrAny))
+    val typez = subst
+      .subst(subst.subst(binding.getType(TypingContext.empty).getOrAny))
     if (typez != null)
       buffer.append(": " + ScType.presentableText(typez))
 
@@ -1496,9 +1539,8 @@ object ScalaDocumentationProvider {
     (
       parameter match {
         case clParameter: ScClassParameter =>
-          val clazz = PsiTreeUtil.getParentOfType(
-            clParameter,
-            classOf[ScTypeDefinition])
+          val clazz = PsiTreeUtil
+            .getParentOfType(clParameter, classOf[ScTypeDefinition])
 
           if (clazz == null)
             defaultText

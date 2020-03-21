@@ -41,12 +41,11 @@ class SbtResolverIndex private (
     val gaMap = mutable.HashMap.empty[String, mutable.Set[String]]
     val gavMap = mutable.HashMap.empty[String, mutable.Set[String]]
     def processArtifact(artifact: ArtifactInfo) {
-      agMap.getOrElseUpdate(
-        artifact.getArtifactId,
-        mutable.Set.empty) += artifact.getGroupId
-      gaMap.getOrElseUpdate(
-        artifact.getGroupId,
-        mutable.Set.empty) += artifact.getArtifactId
+      agMap
+        .getOrElseUpdate(artifact.getArtifactId, mutable.Set.empty) += artifact
+        .getGroupId
+      gaMap.getOrElseUpdate(artifact.getGroupId, mutable.Set.empty) += artifact
+        .getArtifactId
       gavMap.getOrElseUpdate(
         SbtResolverUtils.joinGroupArtifact(artifact),
         mutable.Set.empty) += artifact.getVersion
@@ -118,8 +117,8 @@ class SbtResolverIndex private (
   def artifacts(group: String) = groupToArtifactMap.getOrEmpty(group)
 
   def versions(group: String, artifact: String) =
-    groupArtifactToVersionMap.getOrEmpty(
-      SbtResolverUtils.joinGroupArtifact(group, artifact))
+    groupArtifactToVersionMap
+      .getOrEmpty(SbtResolverUtils.joinGroupArtifact(group, artifact))
 
   def isLocal: Boolean =
     kind == SbtResolver.Kind.Ivy || root.startsWith("file:")

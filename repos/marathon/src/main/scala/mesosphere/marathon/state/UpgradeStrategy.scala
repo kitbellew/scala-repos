@@ -9,7 +9,8 @@ case class UpgradeStrategy(
     minimumHealthCapacity: Double,
     maximumOverCapacity: Double = 1.0) {
   def toProto: UpgradeStrategyDefinition =
-    UpgradeStrategyDefinition.newBuilder
+    UpgradeStrategyDefinition
+      .newBuilder
       .setMinimumHealthCapacity(minimumHealthCapacity)
       .setMaximumOverCapacity(maximumOverCapacity)
       .build

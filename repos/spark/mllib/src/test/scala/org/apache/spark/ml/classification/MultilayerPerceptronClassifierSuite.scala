@@ -101,9 +101,7 @@ class MultilayerPerceptronClassifierSuite
     val lr = new LogisticRegressionWithLBFGS()
       .setIntercept(true)
       .setNumClasses(numClasses)
-    lr.optimizer
-      .setRegParam(0.0)
-      .setNumIterations(numIterations)
+    lr.optimizer.setRegParam(0.0).setNumIterations(numIterations)
     val lrModel = lr.run(rdd)
     val lrPredictionAndLabels = lrModel
       .predict(rdd.map(_.features))

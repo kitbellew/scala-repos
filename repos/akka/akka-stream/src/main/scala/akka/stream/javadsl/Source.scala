@@ -49,16 +49,19 @@ object Source {
     */
   def maybe[T]: Source[T, CompletableFuture[Optional[T]]] = {
     new Source(
-      scaladsl.Source.maybe[T].mapMaterializedValue {
-        scalaOptionPromise: Promise[Option[T]] ⇒
+      scaladsl
+        .Source
+        .maybe[T]
+        .mapMaterializedValue { scalaOptionPromise: Promise[Option[T]] ⇒
           val javaOptionPromise = new CompletableFuture[Optional[T]]()
           scalaOptionPromise.completeWith(
-            javaOptionPromise.toScala
+            javaOptionPromise
+              .toScala
               .map(_.asScala)(
                 akka.dispatch.ExecutionContexts.sameThreadExecutionContext))
 
           javaOptionPromise
-      })
+        })
   }
 
   /**
@@ -220,11 +223,14 @@ object Source {
       f: function.Function[S, CompletionStage[Optional[Pair[S, E]]]])
       : Source[E, NotUsed] =
     new Source(
-      scaladsl.Source.unfoldAsync(s)((s: S) ⇒
-        f.apply(s)
-          .toScala
-          .map(_.asScala.map(_.toScala))(
-            akka.dispatch.ExecutionContexts.sameThreadExecutionContext)))
+      scaladsl
+        .Source
+        .unfoldAsync(s)((s: S) ⇒
+          f
+            .apply(s)
+            .toScala
+            .map(_.asScala.map(_.toScala))(
+              akka.dispatch.ExecutionContexts.sameThreadExecutionContext)))
 
   /**
     * Create a `Source` that immediately ends the stream with the `cause` failure to every connected `Sink`.
@@ -309,8 +315,10 @@ object Source {
       else
         Seq()
     new Source(
-      scaladsl.Source.combine(first.asScala, second.asScala, seq: _*)(num ⇒
-        strategy.apply(num)))
+      scaladsl
+        .Source
+        .combine(first.asScala, second.asScala, seq: _*)(num ⇒
+          strategy.apply(num)))
   }
 
   /**
@@ -345,7 +353,8 @@ object Source {
   def queue[T](bufferSize: Int, overflowStrategy: OverflowStrategy)
       : Source[T, SourceQueueWithComplete[T]] =
     new Source(
-      scaladsl.Source
+      scaladsl
+        .Source
         .queue[T](bufferSize, overflowStrategy)
         .mapMaterializedValue(new SourceQueueAdapter(_)))
 
@@ -1607,10 +1616,12 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     java.util.List[Out @uncheckedVariance],
     javadsl.Source[Out @uncheckedVariance, NotUsed]], Mat] =
     new Source(
-      delegate.prefixAndTail(n).map {
-        case (taken, tail) ⇒
-          akka.japi.Pair(taken.asJava, tail.asJava)
-      })
+      delegate
+        .prefixAndTail(n)
+        .map {
+          case (taken, tail) ⇒
+            akka.japi.Pair(taken.asJava, tail.asJava)
+        })
 
   /**
     * This operation demultiplexes the incoming stream into separate output

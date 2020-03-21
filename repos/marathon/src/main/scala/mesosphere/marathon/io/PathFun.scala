@@ -45,10 +45,15 @@ trait PathFun {
           case other: URLConnection =>
             other
         }
-      scala.concurrent.blocking(connection.getHeaderFields).asScala.toMap.map {
-        case (key, list) =>
-          (key, list.asScala.toList)
-      }
+      scala
+        .concurrent
+        .blocking(connection.getHeaderFields)
+        .asScala
+        .toMap
+        .map {
+          case (key, list) =>
+            (key, list.asScala.toList)
+        }
     }
 
 }

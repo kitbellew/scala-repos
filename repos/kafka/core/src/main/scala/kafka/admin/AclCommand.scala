@@ -88,7 +88,8 @@ object AclCommand {
       for ((resource, acls) <- resourceToAcl) {
         val acls = resourceToAcl(resource)
         println(
-          s"Adding ACLs for resource `${resource}`: $Newline ${acls.map("\t" + _).mkString(Newline)} $Newline")
+          s"Adding ACLs for resource `${resource}`: $Newline ${acls.map(
+            "\t" + _).mkString(Newline)} $Newline")
         authorizer.addAcls(acls, resource)
       }
 
@@ -107,9 +108,8 @@ object AclCommand {
             authorizer.removeAcls(resource)
         } else {
           if (confirmAction(
-                s"Are you sure you want to remove ACLs: $Newline ${acls
-                  .map("\t" + _)
-                  .mkString(Newline)} $Newline from resource `${resource}`? (y/n)"))
+                s"Are you sure you want to remove ACLs: $Newline ${acls.map("\t" + _).mkString(
+                  Newline)} $Newline from resource `${resource}`? (y/n)"))
             authorizer.removeAcls(acls, resource)
         }
       }
@@ -130,7 +130,8 @@ object AclCommand {
 
       for ((resource, acls) <- resourceToAcls)
         println(
-          s"Current ACLs for resource `${resource}`: $Newline ${acls.map("\t" + _).mkString(Newline)} $Newline")
+          s"Current ACLs for resource `${resource}`: $Newline ${acls.map(
+            "\t" + _).mkString(Newline)} $Newline")
     }
   }
 
@@ -139,8 +140,9 @@ object AclCommand {
     var resourceToAcls = Map.empty[Resource, Set[Acl]]
 
     //if none of the --producer or --consumer options are specified , just construct ACLs from CLI options.
-    if (!opts.options.has(opts.producerOpt) && !opts.options.has(
-          opts.consumerOpt)) {
+    if (!opts.options.has(opts.producerOpt) && !opts
+          .options
+          .has(opts.consumerOpt)) {
       resourceToAcls ++= getCliResourceToAcls(opts)
     }
 
@@ -161,8 +163,8 @@ object AclCommand {
 
   private def getProducerResourceToAcls(
       opts: AclCommandOptions): Map[Resource, Set[Acl]] = {
-    val topics: Set[Resource] = getResource(opts).filter(
-      _.resourceType == Topic)
+    val topics: Set[Resource] = getResource(opts)
+      .filter(_.resourceType == Topic)
 
     val acls = getAcl(opts, Set(Write, Describe))
 
@@ -175,8 +177,8 @@ object AclCommand {
       opts: AclCommandOptions): Map[Resource, Set[Acl]] = {
     val resources = getResource(opts)
 
-    val topics: Set[Resource] = getResource(opts).filter(
-      _.resourceType == Topic)
+    val topics: Set[Resource] = getResource(opts)
+      .filter(_.resourceType == Topic)
     val groups: Set[Resource] = resources.filter(_.resourceType == Group)
 
     //Read,Describe on topic, Read on consumerGroup + Create on cluster
@@ -220,7 +222,8 @@ object AclCommand {
 
   private def getAcl(opts: AclCommandOptions): Set[Acl] = {
     val operations =
-      opts.options
+      opts
+        .options
         .valuesOf(opts.operationsOpt)
         .asScala
         .map(operation => Operation.fromString(operation.trim))
@@ -257,7 +260,8 @@ object AclCommand {
       principalOptionSpec: ArgumentAcceptingOptionSpec[String])
       : Set[KafkaPrincipal] = {
     if (opts.options.has(principalOptionSpec))
-      opts.options
+      opts
+        .options
         .valuesOf(principalOptionSpec)
         .asScala
         .map(s => KafkaPrincipal.fromString(s.trim))
@@ -271,7 +275,8 @@ object AclCommand {
       dieIfNoResourceFound: Boolean = true): Set[Resource] = {
     var resources = Set.empty[Resource]
     if (opts.options.has(opts.topicOpt))
-      opts.options
+      opts
+        .options
         .valuesOf(opts.topicOpt)
         .asScala
         .foreach(topic => resources += new Resource(Topic, topic.trim))
@@ -280,7 +285,8 @@ object AclCommand {
       resources += Resource.ClusterResource
 
     if (opts.options.has(opts.groupOpt))
-      opts.options
+      opts
+        .options
         .valuesOf(opts.groupOpt)
         .asScala
         .foreach(group => resources += new Resource(Group, group.trim))
@@ -306,8 +312,7 @@ object AclCommand {
       if ((acls.map(_.operation) -- validOps).nonEmpty)
         CommandLineUtils.printUsageAndDie(
           opts.parser,
-          s"ResourceType ${resource.resourceType} only supports operations ${validOps
-            .mkString(",")}")
+          s"ResourceType ${resource.resourceType} only supports operations ${validOps.mkString(",")}")
     }
   }
 
@@ -352,9 +357,8 @@ object AclCommand {
       .ofType(classOf[String])
 
     val addOpt = parser.accepts("add", "Indicates you are trying to add ACLs.")
-    val removeOpt = parser.accepts(
-      "remove",
-      "Indicates you are trying to remove ACLs.")
+    val removeOpt = parser
+      .accepts("remove", "Indicates you are trying to remove ACLs.")
     val listOpt = parser.accepts(
       "list",
       "List ACLs for the specified resource, use --topic <topic> or --group <group> or --cluster to specify a resource.")
@@ -431,10 +435,8 @@ object AclCommand {
     val options = parser.parse(args: _*)
 
     def checkArgs() {
-      CommandLineUtils.checkRequiredArgs(
-        parser,
-        options,
-        authorizerPropertiesOpt)
+      CommandLineUtils
+        .checkRequiredArgs(parser, options, authorizerPropertiesOpt)
 
       val actions = Seq(addOpt, removeOpt, listOpt).count(options.has)
       if (actions != 1)

@@ -20,7 +20,8 @@ trait ContentEncodingSupport extends Handler {
   private def encodedResponse(
       req: HttpServletRequest,
       res: HttpServletResponse): HttpServletResponse = {
-    Conneg.preferredEncoding
+    Conneg
+      .preferredEncoding
       .map { encoding =>
         val encoded = encoding(res)
         ScalatraBase.onRenderedCompleted { _ =>

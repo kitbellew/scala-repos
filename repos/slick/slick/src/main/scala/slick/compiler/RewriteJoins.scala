@@ -219,24 +219,28 @@ class RewriteJoins extends Phase {
           stopOnMatch = true)
         val Bind(_, _, Pure(StructNode(struct1), pts)) = b
         val foundRefs =
-          sRefs.map {
-            case (p, pOnBGen) =>
-              (
-                p,
+          sRefs
+            .map {
+              case (p, pOnBGen) =>
                 (
-                  pOnBGen, /*None: Option[Symbol]*/ struct1
-                    .find {
-                      case (s, n) =>
-                        pOnBGen == n
-                    }
-                    .map(_._1)))
-          }.toMap
-        logger.debug(
-          "Found references in predicate: " + foundRefs.mkString(", "))
-        val newDefs = foundRefs.filter(_._2._2.isEmpty).map {
-          case (p, (pOnBGen, _)) =>
-            (p, (pOnBGen, new AnonSymbol))
-        }
+                  p,
+                  (
+                    pOnBGen, /*None: Option[Symbol]*/ struct1
+                      .find {
+                        case (s, n) =>
+                          pOnBGen == n
+                      }
+                      .map(_._1)))
+            }
+            .toMap
+        logger
+          .debug("Found references in predicate: " + foundRefs.mkString(", "))
+        val newDefs = foundRefs
+          .filter(_._2._2.isEmpty)
+          .map {
+            case (p, (pOnBGen, _)) =>
+              (p, (pOnBGen, new AnonSymbol))
+          }
         logger.debug("New references for predicate: " + newDefs.mkString(", "))
         val allRefs = foundRefs.collect {
           case (p, (_, Some(s))) =>
@@ -274,8 +278,8 @@ class RewriteJoins extends Phase {
         }
         val res = Filter(fs, Bind(b.generator, from1, sel), pred).infer()
         logger.debug(
-          "Hoisted Filter out of Bind (invalidated: " + tss.mkString(
-            ", ") + ") in:",
+          "Hoisted Filter out of Bind (invalidated: " + tss
+            .mkString(", ") + ") in:",
           res)
         (res, tss)
       case _ =>
@@ -301,28 +305,34 @@ class RewriteJoins extends Phase {
         sn: StructNode,
         ok: TermSymbol,
         illegal: Set[TermSymbol]): (StructNode, Map[TermSymbol, Node]) = {
-      val (illegalDefs, legalDefs) = sn.elements.toSeq.partition(t =>
-        hasRefTo(t._2, illegal))
+      val (illegalDefs, legalDefs) = sn
+        .elements
+        .toSeq
+        .partition(t => hasRefTo(t._2, illegal))
       if (illegalDefs.isEmpty)
         (sn, Map.empty)
       else {
         logger.debug(
-          "Pulling refs to [" + illegal.mkString(
-            ", ") + "] with OK base " + ok + " out of:",
+          "Pulling refs to [" + illegal
+            .mkString(", ") + "] with OK base " + ok + " out of:",
           sn)
         val requiredOkPaths =
           illegalDefs
             .flatMap(
-              _._2.collect {
+              _._2
+              .collect {
                 case p @ FwdPath(s :: _) if s == ok =>
                   p
-              }.toSeq)
+              }
+              .toSeq)
             .toSet
         val existingOkDefs =
-          legalDefs.collect {
-            case (s, p @ FwdPath(s2 :: _)) if s2 == ok =>
-              (p, s)
-          }.toMap
+          legalDefs
+            .collect {
+              case (s, p @ FwdPath(s2 :: _)) if s2 == ok =>
+                (p, s)
+            }
+            .toMap
         val createDefs =
           (requiredOkPaths -- existingOkDefs.keySet)
             .map(p => (new AnonSymbol, p))
@@ -381,7 +391,8 @@ class RewriteJoins extends Phase {
     if (l1m.isEmpty && r1m.isEmpty)
       (j, Map.empty)
     else {
-      val on1 = j.on
+      val on1 = j
+        .on
         .replace(
           {
             case p @ FwdPath(r1 :: rest)
@@ -447,15 +458,15 @@ class RewriteJoins extends Phase {
             JoinType.Inner,
             on1) =>
         logger.debug(
-          "Trying to rearrange join conditions (alsoPull: " + alsoPull.mkString(
-            ", ") + ") in:",
+          "Trying to rearrange join conditions (alsoPull: " + alsoPull
+            .mkString(", ") + ") in:",
           j)
         val pull = alsoPull + s1
         val j2b = rearrangeJoinConditions(j2a, pull)
-        val (on1Down, on1Keep) = splitConjunctions(on1).partition(p =>
-          hasRefTo(p, Set(s2)) && !hasRefTo(p, pull))
-        val (on2Up, on2Keep) = splitConjunctions(j2b.on).partition(p =>
-          hasRefTo(p, pull))
+        val (on1Down, on1Keep) = splitConjunctions(on1)
+          .partition(p => hasRefTo(p, Set(s2)) && !hasRefTo(p, pull))
+        val (on2Up, on2Keep) = splitConjunctions(j2b.on)
+          .partition(p => hasRefTo(p, pull))
         if (on1Down.nonEmpty || on2Up.nonEmpty) {
           val refS2 = Ref(s2) :@ j2b.nodeType.asCollectionType.elementType
           val on1b = and(
@@ -510,7 +521,8 @@ class RewriteJoins extends Phase {
         def isAliasing(s: ConstArray[(TermSymbol, Node)]) =
           s.forall {
             case (_, n) =>
-              n.collect(
+              n
+                .collect(
                   {
                     case Path(_) =>
                       true
@@ -570,32 +582,38 @@ class RewriteJoins extends Phase {
     else
       ns.reduceLeft { (p1, p2) =>
         val t1 = p1.nodeType.structural
-        Library.And.typed(
+        Library
+          .And
+          .typed(
+            if (t1.isInstanceOf[OptionType])
+              t1
+            else
+              p2.nodeType.structural,
+            p1,
+            p2)
+      }
+
+  def and(p1Opt: Option[Node], p2: Node): Node =
+    p1Opt.fold(p2) { p1 =>
+      val t1 = p1.nodeType.structural
+      Library
+        .And
+        .typed(
           if (t1.isInstanceOf[OptionType])
             t1
           else
             p2.nodeType.structural,
           p1,
           p2)
-      }
-
-  def and(p1Opt: Option[Node], p2: Node): Node =
-    p1Opt.fold(p2) { p1 =>
-      val t1 = p1.nodeType.structural
-      Library.And.typed(
-        if (t1.isInstanceOf[OptionType])
-          t1
-        else
-          p2.nodeType.structural,
-        p1,
-        p2)
     }
 
   def hasRefTo(n: Node, s: Set[TermSymbol]): Boolean =
-    n.findNode {
-      case Ref(s2) if s contains s2 =>
-        true
-      case _ =>
-        false
-    }.isDefined
+    n
+      .findNode {
+        case Ref(s2) if s contains s2 =>
+          true
+        case _ =>
+          false
+      }
+      .isDefined
 }

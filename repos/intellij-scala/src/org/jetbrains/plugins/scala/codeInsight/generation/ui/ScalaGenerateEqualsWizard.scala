@@ -67,8 +67,8 @@ private class ScalaGenerateEqualsWizardBuilder(
     if (needEquals) {
       val panel =
         new ScalaMemberSelectionPanel(
-          CodeInsightBundle.message(
-            "generate.equals.hashcode.equals.fields.chooser.title"),
+          CodeInsightBundle
+            .message("generate.equals.hashcode.equals.fields.chooser.title"),
           classFields,
           null)
       panel.getTable.setMemberInfoModel(new ScalaEqualsMemberInfoModel)
@@ -90,8 +90,8 @@ private class ScalaGenerateEqualsWizardBuilder(
       null
   private val hashCodePanel =
     if (needHashCode) {
-      val title = CodeInsightBundle.message(
-        "generate.equals.hashcode.hashcode.fields.chooser.title")
+      val title = CodeInsightBundle
+        .message("generate.equals.hashcode.hashcode.fields.chooser.title")
       val panel =
         new ScalaMemberSelectionPanel(title, hashCodeMemberInfos, null)
       panel.getTable.setMemberInfoModel(new ScalaHashCodeMemberInfoModel)

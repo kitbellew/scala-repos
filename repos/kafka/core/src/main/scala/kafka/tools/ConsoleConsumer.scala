@@ -104,29 +104,36 @@ object ConsoleConsumer extends Logging {
       System.exit(1)
     }
 
-    if (!config.options.has(config.deleteConsumerOffsetsOpt) && config.options
+    if (!config.options.has(config.deleteConsumerOffsetsOpt) && config
+          .options
           .has(config.resetBeginningOpt) &&
         checkZkPathExists(
           config.options.valueOf(config.zkConnectOpt),
-          "/consumers/" + config.consumerProps.getProperty(
-            "group.id") + "/offsets")) {
-      System.err.println(
-        "Found previous offset information for this group " + config.consumerProps
-          .getProperty("group.id")
-          + ". Please use --delete-consumer-offsets to delete previous offsets metadata")
+          "/consumers/" + config
+            .consumerProps
+            .getProperty("group.id") + "/offsets")) {
+      System
+        .err
+        .println(
+          "Found previous offset information for this group " + config
+            .consumerProps
+            .getProperty("group.id")
+            + ". Please use --delete-consumer-offsets to delete previous offsets metadata")
       System.exit(1)
     }
   }
 
   def addShutdownHook(consumer: BaseConsumer, conf: ConsumerConfig) {
-    Runtime.getRuntime.addShutdownHook(
-      new Thread() {
-        override def run() {
-          consumer.stop()
+    Runtime
+      .getRuntime
+      .addShutdownHook(
+        new Thread() {
+          override def run() {
+            consumer.stop()
 
-          shutdownLatch.await()
-        }
-      })
+            shutdownLatch.await()
+          }
+        })
   }
 
   def process(
@@ -207,15 +214,18 @@ object ConsoleConsumer extends Logging {
         "largest")
     props.put("zookeeper.connect", config.zkConnectionStr)
 
-    if (!config.options.has(config.deleteConsumerOffsetsOpt) && config.options
+    if (!config.options.has(config.deleteConsumerOffsetsOpt) && config
+          .options
           .has(config.resetBeginningOpt) &&
         checkZkPathExists(
           config.options.valueOf(config.zkConnectOpt),
           "/consumers/" + props.getProperty("group.id") + "/offsets")) {
-      System.err.println(
-        "Found previous offset information for this group " + props.getProperty(
-          "group.id")
-          + ". Please use --delete-consumer-offsets to delete previous offsets metadata")
+      System
+        .err
+        .println(
+          "Found previous offset information for this group " + props
+            .getProperty("group.id")
+            + ". Please use --delete-consumer-offsets to delete previous offsets metadata")
       System.exit(1)
     }
 
@@ -340,9 +350,8 @@ object ConsoleConsumer extends Logging {
       .withRequiredArg
       .describedAs("metrics directory")
       .ofType(classOf[java.lang.String])
-    val useNewConsumerOpt = parser.accepts(
-      "new-consumer",
-      "Use the new consumer implementation.")
+    val useNewConsumerOpt = parser
+      .accepts("new-consumer", "Use the new consumer implementation.")
     val bootstrapServerOpt = parser
       .accepts("bootstrap-server")
       .withRequiredArg
@@ -407,10 +416,10 @@ object ConsoleConsumer extends Logging {
         true
       else
         false
-    val messageFormatterClass = Class.forName(
-      options.valueOf(messageFormatterOpt))
-    val formatterArgs = CommandLineUtils.parseKeyValueArgs(
-      options.valuesOf(messageFormatterArgOpt).asScala)
+    val messageFormatterClass = Class
+      .forName(options.valueOf(messageFormatterOpt))
+    val formatterArgs = CommandLineUtils
+      .parseKeyValueArgs(options.valuesOf(messageFormatterArgOpt).asScala)
     val maxMessages =
       if (options.has(maxMessagesOpt))
         options.valueOf(maxMessagesOpt).intValue
@@ -440,13 +449,11 @@ object ConsoleConsumer extends Logging {
     if (options.has(csvMetricsReporterEnabledOpt)) {
       val csvReporterProps = new Properties()
       csvReporterProps.put("kafka.metrics.polling.interval.secs", "5")
-      csvReporterProps.put(
-        "kafka.metrics.reporters",
-        "kafka.metrics.KafkaCSVMetricsReporter")
+      csvReporterProps
+        .put("kafka.metrics.reporters", "kafka.metrics.KafkaCSVMetricsReporter")
       if (options.has(metricsDirectoryOpt))
-        csvReporterProps.put(
-          "kafka.csv.metrics.dir",
-          options.valueOf(metricsDirectoryOpt))
+        csvReporterProps
+          .put("kafka.csv.metrics.dir", options.valueOf(metricsDirectoryOpt))
       else
         csvReporterProps.put("kafka.csv.metrics.dir", "kafka_metrics")
       csvReporterProps.put("kafka.csv.metrics.reporter.enabled", "true")
@@ -616,11 +623,8 @@ class ChecksumMessageFormatter extends MessageFormatter {
           -1,
           Message.MagicValue_V1).checksum
       else
-        new Message(
-          value,
-          key,
-          Message.NoTimestamp,
-          Message.MagicValue_V0).checksum
+        new Message(value, key, Message.NoTimestamp, Message.MagicValue_V0)
+          .checksum
     output.println(topicStr + "checksum:" + chksum)
   }
 }

@@ -93,9 +93,11 @@ private[sql] object PartitioningUtils {
       basePaths: Set[Path]): PartitionSpec = {
     // First, we need to parse every partition's path and see if we can find partition values.
     val (partitionValues, optDiscoveredBasePaths) =
-      paths.map { path =>
-        parsePartition(path, defaultPartitionName, typeInference, basePaths)
-      }.unzip
+      paths
+        .map { path =>
+          parsePartition(path, defaultPartitionName, typeInference, basePaths)
+        }
+        .unzip
 
     // We create pairs of (path -> path's partition value) here
     // If the corresponding partition value is None, the pair will be skipped
@@ -139,12 +141,14 @@ private[sql] object PartitioningUtils {
       val fields = {
         val PartitionValues(columnNames, literals) =
           resolvedPartitionValues.head
-        columnNames.zip(literals).map {
-          case (name, Literal(_, dataType)) =>
-            // We always assume partition columns are nullable since we've no idea whether null values
-            // will be appended in the future.
-            StructField(name, dataType, nullable = true)
-        }
+        columnNames
+          .zip(literals)
+          .map {
+            case (name, Literal(_, dataType)) =>
+              // We always assume partition columns are nullable since we've no idea whether null values
+              // will be appended in the future.
+              StructField(name, dataType, nullable = true)
+          }
       }
 
       // Finally, we create `Partition`s based on paths and resolved partition values.
@@ -219,9 +223,8 @@ private[sql] object PartitioningUtils {
         //    i.e. currentPath.getParent == null. For the example of "/table/a=1/",
         //    the top level dir is "/table".
         finished =
-          (
-            maybeColumn.isEmpty && !columns.isEmpty
-          ) || currentPath.getParent == null
+          (maybeColumn.isEmpty && !columns.isEmpty) || currentPath
+            .getParent == null
 
         if (!finished) {
           // For the above example, currentPath will be "/table/".
@@ -296,10 +299,12 @@ private[sql] object PartitioningUtils {
       }
 
       // Fills resolved literals back to each partition
-      values.zipWithIndex.map {
-        case (d, index) =>
-          d.copy(literals = resolvedValues.map(_(index)))
-      }
+      values
+        .zipWithIndex
+        .map {
+          case (d, index) =>
+            d.copy(literals = resolvedValues.map(_(index)))
+        }
     }
   }
 
@@ -412,10 +417,12 @@ private[sql] object PartitioningUtils {
     val equality = columnNameEquality(caseSensitive)
     StructType(
       partitionColumns.map { col =>
-        schema.find(f => equality(f.name, col)).getOrElse {
-          throw new RuntimeException(
-            s"Partition column $col not found in schema $schema")
-        }
+        schema
+          .find(f => equality(f.name, col))
+          .getOrElse {
+            throw new RuntimeException(
+              s"Partition column $col not found in schema $schema")
+          }
       }).asNullable
   }
 

@@ -43,14 +43,16 @@ case class PathPattern(parts: Seq[PathPart]) {
       decode: Boolean,
       groupCount: Int): Matcher => Either[Throwable, String] =
     matcher =>
-      Exception.allCatch[String].either {
-        if (decode) {
-          val group = matcher.group(groupCount)
-          // If param is not correctly encoded, get path will return null, so we prepend a / to it
-          new URI("/" + group).getPath.drop(1)
-        } else
-          matcher.group(groupCount)
-      }
+      Exception
+        .allCatch[String]
+        .either {
+          if (decode) {
+            val group = matcher.group(groupCount)
+            // If param is not correctly encoded, get path will return null, so we prepend a / to it
+            new URI("/" + group).getPath.drop(1)
+          } else
+            matcher.group(groupCount)
+        }
 
   private lazy val (regex, groups) = {
     Some(
@@ -68,10 +70,12 @@ case class PathPattern(parts: Seq[PathPart]) {
               s._3 + 1 + Pattern.compile(r).matcher("").groupCount)
           }
         }
-      }).map {
-      case (r, g, _) =>
-        Pattern.compile("^" + r + "$") -> g
-    }.get
+      })
+      .map {
+        case (r, g, _) =>
+          Pattern.compile("^" + r + "$") -> g
+      }
+      .get
   }
 
   /**
@@ -84,21 +88,25 @@ case class PathPattern(parts: Seq[PathPart]) {
     val matcher = regex.matcher(path)
     if (matcher.matches) {
       Some(
-        groups.map {
-          case (name, g) =>
-            name -> g(matcher)
-        }.toMap)
+        groups
+          .map {
+            case (name, g) =>
+              name -> g(matcher)
+          }
+          .toMap)
     } else {
       None
     }
   }
 
   override def toString =
-    parts.map {
-      case DynamicPart(name, constraint, _) =>
-        "$" + name + "<" + constraint + ">"
-      case StaticPart(path) =>
-        path
-    }.mkString
+    parts
+      .map {
+        case DynamicPart(name, constraint, _) =>
+          "$" + name + "<" + constraint + ">"
+        case StaticPart(path) =>
+          path
+      }
+      .mkString
 
 }

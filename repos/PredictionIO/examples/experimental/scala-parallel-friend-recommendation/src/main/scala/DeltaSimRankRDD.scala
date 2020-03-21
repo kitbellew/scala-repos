@@ -88,10 +88,7 @@ object DeltaSimRankRDD {
 
   def getOutdegreeMap(
       g: Graph[Int, Int]): scala.collection.Map[VertexId, Long] = {
-    g.edges
-      .map(edge => (edge.srcId, 1L))
-      .reduceByKey(_ + _)
-      .collectAsMap()
+    g.edges.map(edge => (edge.srcId, 1L)).reduceByKey(_ + _).collectAsMap()
   }
 
   def compute(
@@ -132,30 +129,34 @@ object DeltaSimRankRDD {
     var counter = 0.toLong
     val hash = Map[VertexId, Long]()
 
-    val v = g.vertices.map(pair => {
-      hash(pair._1) = counter
-      counter += 1
-      (counter - 1, pair._2)
-    })
-
-    val e = g.edges.map((e: Edge[Int]) => {
-      if (hash.contains(e.srcId)) {
-        e.srcId = hash(e.srcId)
-      } else {
-        hash += (e.srcId -> counter)
+    val v = g
+      .vertices
+      .map(pair => {
+        hash(pair._1) = counter
         counter += 1
-        e.srcId = counter - 1
-      }
+        (counter - 1, pair._2)
+      })
 
-      if (hash.contains(e.dstId)) {
-        e.dstId = hash(e.dstId)
-      } else {
-        hash += (e.dstId -> counter)
-        counter += 1
-        e.dstId = counter - 1
-      }
-      e
-    })
+    val e = g
+      .edges
+      .map((e: Edge[Int]) => {
+        if (hash.contains(e.srcId)) {
+          e.srcId = hash(e.srcId)
+        } else {
+          hash += (e.srcId -> counter)
+          counter += 1
+          e.srcId = counter - 1
+        }
+
+        if (hash.contains(e.dstId)) {
+          e.dstId = hash(e.dstId)
+        } else {
+          hash += (e.dstId -> counter)
+          counter += 1
+          e.dstId = counter - 1
+        }
+        e
+      })
 
     val g2 = Graph(v, e)
     g2

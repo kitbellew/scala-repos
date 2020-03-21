@@ -24,8 +24,8 @@ class RequestRendererSpec
     extends FreeSpec
     with Matchers
     with BeforeAndAfterAll {
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
     akka.event-handlers = ["akka.testkit.TestEventListener"]
     akka.loglevel = WARNING""")
   implicit val system = ActorSystem(getClass.getSimpleName, testConf)

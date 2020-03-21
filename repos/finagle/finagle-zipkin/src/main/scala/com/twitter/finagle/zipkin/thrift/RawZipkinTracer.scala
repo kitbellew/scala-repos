@@ -37,9 +37,7 @@ object RawZipkinTracer {
       // using an arbitrary, but bounded number of waiters to avoid memory leaks
       .hostConnectionMaxWaiters(250)
       // somewhat arbitrary, but bounded timeouts
-      .timeout(1.second)
-      .daemon(true)
-      .build()
+      .timeout(1.second).daemon(true).build()
 
     new Scribe.FinagledClient(
       new TracelessFilter andThen transport,
@@ -292,14 +290,16 @@ private[thrift] class RawZipkinTracer(
               FalseBB
           ).duplicate(),
           thrift.AnnotationType.BOOL)
-      case tracing.Annotation
+      case tracing
+            .Annotation
             .BinaryAnnotation(key: String, value: Array[Byte]) =>
         binaryAnnotation(
           record,
           key,
           ByteBuffer.wrap(value),
           thrift.AnnotationType.BYTES)
-      case tracing.Annotation
+      case tracing
+            .Annotation
             .BinaryAnnotation(key: String, value: ByteBuffer) =>
         binaryAnnotation(record, key, value, thrift.AnnotationType.BYTES)
       case tracing.Annotation.BinaryAnnotation(key: String, value: Short) =>
@@ -332,7 +332,8 @@ private[thrift] class RawZipkinTracer(
           key,
           ByteBuffer.wrap(value.getBytes),
           thrift.AnnotationType.STRING)
-      case tracing.Annotation
+      case tracing
+            .Annotation
             .BinaryAnnotation(key: String, value) => // Throw error?
       case tracing.Annotation.LocalAddr(ia: InetSocketAddress) =>
         setEndpoint(record, ia)
@@ -383,8 +384,8 @@ private[thrift] class RawZipkinTracer(
     */
   protected def annotate(record: Record, value: String) {
     spanMap.update(record.traceId) { span =>
-      span.addAnnotation(
-        ZipkinAnnotation(record.timestamp, value, span.endpoint))
+      span
+        .addAnnotation(ZipkinAnnotation(record.timestamp, value, span.endpoint))
     }
   }
 }

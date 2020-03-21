@@ -13,10 +13,10 @@ object Mappings {
   val variant = number.verifying(Config.variants contains _)
   val variantWithFen = number.verifying(Config.variantsWithFen contains _)
   val aiVariants = number.verifying(Config.aiVariants contains _)
-  val variantWithVariants = number.verifying(
-    Config.variantsWithVariants contains _)
-  val variantWithFenAndVariants = number.verifying(
-    Config.variantsWithFenAndVariants contains _)
+  val variantWithVariants = number
+    .verifying(Config.variantsWithVariants contains _)
+  val variantWithFenAndVariants = number
+    .verifying(Config.variantsWithFenAndVariants contains _)
   val time = of[Double].verifying(HookConfig validateTime _)
   val increment = number.verifying(HookConfig validateIncrement _)
   val days = number(min = 1, max = 14)

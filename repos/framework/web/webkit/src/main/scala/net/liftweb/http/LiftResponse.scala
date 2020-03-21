@@ -53,8 +53,8 @@ case class CreatedResponse(
 
   def code = 201
 
-  val headers: List[(String, String)] = S.getResponseHeaders(
-    ("Content-Type" -> mime) :: addlHeaders)
+  val headers: List[(String, String)] = S
+    .getResponseHeaders(("Content-Type" -> mime) :: addlHeaders)
 
   def cookies: List[HTTPCookie] = Nil
 
@@ -75,8 +75,8 @@ object CreatedResponse {
   def apply(
       json: JsonAST.JValue,
       addlHeaders: List[(String, String)]): LiftResponse = {
-    val headers: List[(String, String)] =
-      S.getResponseHeaders(Nil) ++ addlHeaders
+    val headers: List[(String, String)] = S
+      .getResponseHeaders(Nil) ++ addlHeaders
 
     new JsonResponse(
       new JsExp {
@@ -748,10 +748,8 @@ trait NodeResponse extends LiftResponse {
     }
   }
 
-  protected lazy val _encoding: String = LiftRules.calculateXmlHeader(
-    this,
-    out,
-    headers.ciGet("Content-Type"))
+  protected lazy val _encoding: String = LiftRules
+    .calculateXmlHeader(this, out, headers.ciGet("Content-Type"))
 
   def toResponse = {
     val bos = new ByteArrayOutputStream(64000)
@@ -843,13 +841,15 @@ case class XhtmlResponse(
   val docType: Box[String] = htmlProperties.docType
 
   protected override def writeDocType(writer: Writer): Unit = {
-    htmlProperties.htmlOutputHeader.foreach {
-      writer.append
-    }
+    htmlProperties
+      .htmlOutputHeader
+      .foreach {
+        writer.append
+      }
   }
 
-  override protected lazy val _encoding: String =
-    htmlProperties.encoding openOr ""
+  override protected lazy val _encoding: String = htmlProperties
+    .encoding openOr ""
 
   val headers: List[(String, String)] =
     _headers.find(_._1 equalsIgnoreCase "content-type") match {
@@ -878,8 +878,8 @@ case class XmlMimeResponse(
 
   def code = 200
 
-  val headers: List[(String, String)] = S.getResponseHeaders(
-    ("Content-Type" -> mime) :: addlHeaders)
+  val headers: List[(String, String)] = S
+    .getResponseHeaders(("Content-Type" -> mime) :: addlHeaders)
 
   def cookies: List[HTTPCookie] = Nil
 
@@ -895,8 +895,8 @@ class XmlResponse(
     extends XmlNodeResponse {
   def docType = Empty
 
-  val headers: List[(String, String)] = S.getResponseHeaders(
-    ("Content-Type" -> mime) :: addlHeaders)
+  val headers: List[(String, String)] = S
+    .getResponseHeaders(("Content-Type" -> mime) :: addlHeaders)
 
   def out: Node = xml
 }

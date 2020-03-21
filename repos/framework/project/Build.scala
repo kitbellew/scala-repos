@@ -28,9 +28,11 @@ import com.typesafe.sbt.web.SbtWeb.autoImport._
   */
 object MatchingModule {
   def unapply(file: Attributed[File]): Option[(String, String, String)] = {
-    file.get(moduleID.key).map { moduleInfo =>
-      (moduleInfo.organization, moduleInfo.name, moduleInfo.revision)
-    }
+    file
+      .get(moduleID.key)
+      .map { moduleInfo =>
+        (moduleInfo.organization, moduleInfo.name, moduleInfo.revision)
+      }
   }
 }
 
@@ -72,35 +74,32 @@ object BuildDef extends Build {
     json_ext,
     util)
 
-  lazy val common = coreProject("common")
-    .settings(
-      description := "Common Libraties and Utilities",
-      libraryDependencies ++= Seq(
-        slf4j_api,
-        logback,
-        slf4j_log4j12,
-        scala_xml,
-        scala_parser))
+  lazy val common = coreProject("common").settings(
+    description := "Common Libraties and Utilities",
+    libraryDependencies ++= Seq(
+      slf4j_api,
+      logback,
+      slf4j_log4j12,
+      scala_xml,
+      scala_parser))
 
   lazy val actor = coreProject("actor")
     .dependsOn(common)
     .settings(description := "Simple Actor", parallelExecution in Test := false)
 
-  lazy val markdown = coreProject("markdown")
-    .settings(
-      description := "Markdown Parser",
-      parallelExecution in Test := false,
-      libraryDependencies <++= scalaVersion { sv =>
-        Seq(scalatest, junit, scala_xml, scala_parser)
-      })
+  lazy val markdown = coreProject("markdown").settings(
+    description := "Markdown Parser",
+    parallelExecution in Test := false,
+    libraryDependencies <++= scalaVersion { sv =>
+      Seq(scalatest, junit, scala_xml, scala_parser)
+    })
 
-  lazy val json = coreProject("json")
-    .settings(
-      description := "JSON Library",
-      parallelExecution in Test := false,
-      libraryDependencies <++= scalaVersion { sv =>
-        Seq(scalap(sv), paranamer)
-      })
+  lazy val json = coreProject("json").settings(
+    description := "JSON Library",
+    parallelExecution in Test := false,
+    libraryDependencies <++= scalaVersion { sv =>
+      Seq(scalap(sv), paranamer)
+    })
 
   lazy val documentationHelpers = coreProject("documentation-helpers")
     .settings(description := "Documentation Helpers")
@@ -206,8 +205,7 @@ object BuildDef extends Build {
     .dependsOn(util, webkit)
     .settings(libraryDependencies += mockito_all)
 
-  lazy val proto = persistenceProject("proto")
-    .dependsOn(webkit)
+  lazy val proto = persistenceProject("proto").dependsOn(webkit)
 
   lazy val mapper = persistenceProject("mapper")
     .dependsOn(db, proto)
@@ -222,8 +220,7 @@ object BuildDef extends Build {
       }
     )
 
-  lazy val record = persistenceProject("record")
-    .dependsOn(proto)
+  lazy val record = persistenceProject("record").dependsOn(proto)
 
   lazy val squeryl_record = persistenceProject("squeryl-record")
     .dependsOn(record, db)
@@ -278,10 +275,12 @@ object BuildDef extends Build {
         apiMappings ++= {
           val cp: Seq[Attributed[File]] = (fullClasspath in Compile).value
 
-          findManagedDependency(cp, "org.scala-lang.modules", "scala-xml").map {
-            case (revision, file) =>
-              (file -> url("http://www.scala-lang.org/api/" + version))
-          }.toMap
+          findManagedDependency(cp, "org.scala-lang.modules", "scala-xml")
+            .map {
+              case (revision, file) =>
+                (file -> url("http://www.scala-lang.org/api/" + version))
+            }
+            .toMap
         }
       )
   }

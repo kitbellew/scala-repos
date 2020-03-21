@@ -30,18 +30,17 @@ private[http] object MessageToFrameRenderer {
           FrameEvent.fullFrame(Opcode.Continuation, None, _, fin = false)) ++
         Source.single(FrameEvent.emptyLastContinuationFrame)
 
-    Flow[Message]
-      .flatMapConcat {
-        case BinaryMessage.Strict(data) ⇒
-          strictFrames(Opcode.Binary, data)
-        case bm: BinaryMessage ⇒
-          streamedFrames(Opcode.Binary, bm.dataStream)
-        case TextMessage.Strict(text) ⇒
-          strictFrames(Opcode.Text, ByteString(text, "UTF-8"))
-        case tm: TextMessage ⇒
-          streamedFrames(
-            Opcode.Text,
-            tm.textStream.transform(() ⇒ new Utf8Encoder))
-      }
+    Flow[Message].flatMapConcat {
+      case BinaryMessage.Strict(data) ⇒
+        strictFrames(Opcode.Binary, data)
+      case bm: BinaryMessage ⇒
+        streamedFrames(Opcode.Binary, bm.dataStream)
+      case TextMessage.Strict(text) ⇒
+        strictFrames(Opcode.Text, ByteString(text, "UTF-8"))
+      case tm: TextMessage ⇒
+        streamedFrames(
+          Opcode.Text,
+          tm.textStream.transform(() ⇒ new Utf8Encoder))
+    }
   }
 }

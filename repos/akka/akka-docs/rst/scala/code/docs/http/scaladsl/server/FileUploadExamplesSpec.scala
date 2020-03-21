@@ -29,20 +29,24 @@ class FileUploadExamplesSpec extends RoutingSpec {
         entity(as[Multipart.FormData]) { formData =>
           // collect all parts of the multipart as it arrives into a map
           val allPartsF: Future[Map[String, Any]] =
-            formData.parts
+            formData
+              .parts
               .mapAsync[(String, Any)](1) {
 
                 case b: BodyPart if b.name == "file" =>
                   // stream into a file as the chunks of it arrives and return a future
                   // file to where it got stored
                   val file = File.createTempFile("upload", "tmp")
-                  b.entity.dataBytes
+                  b
+                    .entity
+                    .dataBytes
                     .runWith(FileIO.toFile(file))
                     .map(_ => (b.name -> file))
 
                 case b: BodyPart =>
                   // collect form field values
-                  b.toStrict(2.seconds)
+                  b
+                    .toStrict(2.seconds)
                     .map(strict => (b.name -> strict.entity.data.utf8String))
 
               }
@@ -78,10 +82,13 @@ class FileUploadExamplesSpec extends RoutingSpec {
     val csvUploads =
       path("metadata" / LongNumber) { id =>
         entity(as[Multipart.FormData]) { formData =>
-          val done: Future[Done] = formData.parts
+          val done: Future[Done] = formData
+            .parts
             .mapAsync(1) {
               case b: BodyPart if b.filename.exists(_.endsWith(".csv")) =>
-                b.entity.dataBytes
+                b
+                  .entity
+                  .dataBytes
                   .via(splitLines)
                   .map(_.utf8String.split(",").toVector)
                   .runForeach(csv =>

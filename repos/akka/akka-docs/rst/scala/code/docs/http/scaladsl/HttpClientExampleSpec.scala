@@ -68,8 +68,8 @@ class HttpClientExampleSpec extends WordSpec with Matchers {
     implicit val system = ActorSystem()
     implicit val materializer = ActorMaterializer()
 
-    val responseFuture: Future[HttpResponse] = Http().singleRequest(
-      HttpRequest(uri = "http://akka.io"))
+    val responseFuture: Future[HttpResponse] = Http()
+      .singleRequest(HttpRequest(uri = "http://akka.io"))
     //#single-request-example
   }
 
@@ -93,16 +93,15 @@ class HttpClientExampleSpec extends WordSpec with Matchers {
       val http = Http(context.system)
 
       override def preStart() = {
-        http
-          .singleRequest(HttpRequest(uri = "http://akka.io"))
-          .pipeTo(self)
+        http.singleRequest(HttpRequest(uri = "http://akka.io")).pipeTo(self)
       }
 
       def receive = {
         case HttpResponse(StatusCodes.OK, headers, entity, _) =>
           log.info(
-            "Got response, body: " + entity.dataBytes.runFold(ByteString(""))(
-              _ ++ _))
+            "Got response, body: " + entity
+              .dataBytes
+              .runFold(ByteString(""))(_ ++ _))
         case HttpResponse(code, _, _, _) =>
           log.info("Request failed, response code: " + code)
       }

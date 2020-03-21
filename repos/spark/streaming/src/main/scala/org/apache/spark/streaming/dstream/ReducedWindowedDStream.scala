@@ -38,13 +38,15 @@ private[streaming] class ReducedWindowedDStream[K: ClassTag, V: ClassTag](
   require(
     _windowDuration.isMultipleOf(parent.slideDuration),
     "The window duration of ReducedWindowedDStream (" + _windowDuration + ") " +
-      "must be multiple of the slide duration of parent DStream (" + parent.slideDuration + ")"
+      "must be multiple of the slide duration of parent DStream (" + parent
+      .slideDuration + ")"
   )
 
   require(
     _slideDuration.isMultipleOf(parent.slideDuration),
     "The slide duration of ReducedWindowedDStream (" + _slideDuration + ") " +
-      "must be multiple of the slide duration of parent DStream (" + parent.slideDuration + ")"
+      "must be multiple of the slide duration of parent DStream (" + parent
+      .slideDuration + ")"
   )
 
   // Reduce each batch of data using reduceByKey which will be further reduced by window

@@ -89,15 +89,16 @@ object EventService {
   object ServiceConfig {
     def fromConfiguration(config: Configuration) = {
       (
-        ServiceLocation.fromConfig(
-          config.detach("eventService")) |@| ServiceLocation.fromConfig(
-          config.detach("bifrost"))
+        ServiceLocation
+          .fromConfig(config.detach("eventService")) |@| ServiceLocation
+          .fromConfig(config.detach("bifrost"))
       ) { (serviceLoc, shardLoc) =>
         ServiceConfig(
           serviceLocation = serviceLoc,
           shardLocation = shardLoc,
-          ingestTimeout = akka.util.Timeout(
-            config[Long]("insert.timeout", 10000L)),
+          ingestTimeout = akka
+            .util
+            .Timeout(config[Long]("insert.timeout", 10000L)),
           ingestBatchSize = config[Int]("ingest.batch_size", 500),
           ingestMaxFields = config[Int]("ingest.max_fields", 1024),
           ingestTmpDir = config
@@ -106,8 +107,9 @@ object EventService {
             .orElse(
               Option(File.createTempFile("ingest.tmpfile", null).getParentFile))
             .get, //fail fast
-          deleteTimeout = akka.util.Timeout(
-            config[Long]("delete.timeout", 10000L))
+          deleteTimeout = akka
+            .util
+            .Timeout(config[Long]("delete.timeout", 10000L))
         )
       }
     }

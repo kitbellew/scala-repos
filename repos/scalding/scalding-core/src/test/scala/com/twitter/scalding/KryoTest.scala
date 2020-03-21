@@ -55,9 +55,8 @@ class KryoTest extends WordSpec with Matchers {
   def getSerialization = {
     val conf = new Configuration
     val chillConf = new HadoopConfig(conf)
-    ConfiguredInstantiator.setReflect(
-      chillConf,
-      classOf[serialization.KryoHadoop])
+    ConfiguredInstantiator
+      .setReflect(chillConf, classOf[serialization.KryoHadoop])
     new KryoSerialization(conf)
   }
 
@@ -150,9 +149,9 @@ class KryoTest extends WordSpec with Matchers {
     }
     "handle arrays" in {
       def arrayRT[T](arr: Array[T]) {
-        serializationRT(List(arr))(0)
-          .asInstanceOf[Array[T]]
-          .toList shouldBe (arr.toList)
+        serializationRT(List(arr))(0).asInstanceOf[Array[T]].toList shouldBe (
+          arr.toList
+        )
       }
       arrayRT(Array(0))
       arrayRT(Array(0.1))
@@ -181,10 +180,12 @@ class KryoTest extends WordSpec with Matchers {
       val bigList = (1 to 100000).toList
       val list2 = deserObj[List[Int]](bigList.getClass, serObj(bigList))
       //Specs, it turns out, also doesn't deal with giant lists well:
-      list2.zip(bigList).foreach {
-        case (l, r) =>
-          l shouldBe r
-      }
+      list2
+        .zip(bigList)
+        .foreach {
+          case (l, r) =>
+            l shouldBe r
+        }
     }
   }
 }

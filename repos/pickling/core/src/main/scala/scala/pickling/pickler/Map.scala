@@ -42,24 +42,36 @@ trait MapPicklers {
         identity[Map[Any, Any]]) { tpe =>
         MapPicklerHelper.tupleTagExtractor(tpe)
       } _
-    currentRuntime.picklers.registerPicklerUnpicklerGenerator(
-      "scala.collection.immutable.Map",
-      generator)
-    currentRuntime.picklers.registerPicklerUnpicklerGenerator(
-      "scala.collection.immutable.Map.Map1",
-      generator)
-    currentRuntime.picklers.registerPicklerUnpicklerGenerator(
-      "scala.collection.immutable.Map.Map2",
-      generator)
-    currentRuntime.picklers.registerPicklerUnpicklerGenerator(
-      "scala.collection.immutable.Map.Map3",
-      generator)
-    currentRuntime.picklers.registerPicklerUnpicklerGenerator(
-      "scala.collection.immutable.Map.Map4",
-      generator)
-    currentRuntime.picklers.registerPicklerUnpicklerGenerator(
-      "scala.collection.immutable.HashMap.HashTrieMap",
-      generator)
+    currentRuntime
+      .picklers
+      .registerPicklerUnpicklerGenerator(
+        "scala.collection.immutable.Map",
+        generator)
+    currentRuntime
+      .picklers
+      .registerPicklerUnpicklerGenerator(
+        "scala.collection.immutable.Map.Map1",
+        generator)
+    currentRuntime
+      .picklers
+      .registerPicklerUnpicklerGenerator(
+        "scala.collection.immutable.Map.Map2",
+        generator)
+    currentRuntime
+      .picklers
+      .registerPicklerUnpicklerGenerator(
+        "scala.collection.immutable.Map.Map3",
+        generator)
+    currentRuntime
+      .picklers
+      .registerPicklerUnpicklerGenerator(
+        "scala.collection.immutable.Map.Map4",
+        generator)
+    currentRuntime
+      .picklers
+      .registerPicklerUnpicklerGenerator(
+        "scala.collection.immutable.HashMap.HashTrieMap",
+        generator)
   }
 }
 
@@ -100,8 +112,10 @@ trait MutableMapPicklers {
         identity[mutable.Map[Any, Any]]) { tpe =>
         MapPicklerHelper.tupleTagExtractor(tpe)
       } _
-    currentRuntime.picklers.registerPicklerUnpicklerGenerator(
-      "scala.collection.mutable.Map",
-      generator)
+    currentRuntime
+      .picklers
+      .registerPicklerUnpicklerGenerator(
+        "scala.collection.mutable.Map",
+        generator)
   }
 }

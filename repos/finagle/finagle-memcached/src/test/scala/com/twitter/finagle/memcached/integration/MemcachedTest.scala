@@ -36,9 +36,8 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
     server1 = TestMemcachedServer.start()
     server2 = TestMemcachedServer.start()
     if (server1.isDefined && server2.isDefined) {
-      val n = Name.bound(
-        Address(server1.get.address),
-        Address(server2.get.address))
+      val n = Name
+        .bound(Address(server1.get.address), Address(server2.get.address))
       client = Memcached.client.newRichClient(n, clientName)
     }
   }
@@ -67,10 +66,12 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
   test("get") {
     Await.result(client.set("foo", Buf.Utf8("bar")))
     Await.result(client.set("baz", Buf.Utf8("boing")))
-    val result = Await.result(client.get(Seq("foo", "baz", "notthere"))).map {
-      case (key, Buf.Utf8(value)) =>
-        (key, value)
-    }
+    val result = Await
+      .result(client.get(Seq("foo", "baz", "notthere")))
+      .map {
+        case (key, Buf.Utf8(value)) =>
+          (key, value)
+      }
     assert(result == Map("foo" -> "bar", "baz" -> "boing"))
   }
 
@@ -228,10 +229,10 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
   }
 
   test("re-hash when a bad host is ejected") {
-    val n = Name.bound(
-      Address(server1.get.address),
-      Address(server2.get.address))
-    client = Memcached.client
+    val n = Name
+      .bound(Address(server1.get.address), Address(server2.get.address))
+    client = Memcached
+      .client
       .configured(FailureAccrualFactory.Param(1, () => 10.minutes))
       .configured(Memcached.param.EjectFailedHost(true))
       .newRichClient(n, "test_client")
@@ -273,9 +274,12 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
 
   test("GlobalRegistry pipelined client") {
     val expectedKey = Seq("client", "memcached", clientName, "is_pipelining")
-    val isPipelining = GlobalRegistry.get.iterator.exists { e =>
-      e.key == expectedKey && e.value == "true"
-    }
+    val isPipelining = GlobalRegistry
+      .get
+      .iterator
+      .exists { e =>
+        e.key == expectedKey && e.value == "true"
+      }
     assert(isPipelining)
   }
 
@@ -291,9 +295,12 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
           .hostConnectionLimit(1))
       .build()
 
-    val isPipelining = GlobalRegistry.get.iterator.exists { e =>
-      e.key == expectedKey && e.value == "false"
-    }
+    val isPipelining = GlobalRegistry
+      .get
+      .iterator
+      .exists { e =>
+        e.key == expectedKey && e.value == "false"
+      }
     assert(isPipelining)
   }
 
@@ -319,7 +326,8 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
     val timer = new MockTimer
     val statsReceiver = new InMemoryStatsReceiver
 
-    val client = Memcached.client
+    val client = Memcached
+      .client
       .configured(FailureAccrualFactory.Param(1, () => 10.minutes))
       .configured(Memcached.param.EjectFailedHost(true))
       .configured(param.Timer(timer))

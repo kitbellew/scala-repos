@@ -83,9 +83,8 @@ class KryoSerializer {
       builder.result()
     }
   }
-  kryo.register(
-    List(1).getClass,
-    new TraversableSerializer(List.newBuilder[Int]))
+  kryo
+    .register(List(1).getClass, new TraversableSerializer(List.newBuilder[Int]))
   kryo.register(
     Vector(1).getClass,
     new TraversableSerializer(Vector.newBuilder[Int]))

@@ -145,9 +145,12 @@ class ScSubstitutor(
     if (level > ScSubstitutor.followLimit)
       throw new RuntimeException(
         "Too much followers for substitutor: " + this.toString)
-    if (follower == null && tvMap.size + aliasesMap.size == 0 && updateThisType.isEmpty && !myDependentMethodTypesFunDefined)
+    if (follower == null && tvMap.size + aliasesMap.size == 0 && updateThisType
+          .isEmpty && !myDependentMethodTypesFunDefined)
       s
-    else if (s.getFollower == null && s.tvMap.size + s.aliasesMap.size == 0 && s.updateThisType.isEmpty && !s.myDependentMethodTypesFunDefined)
+    else if (s.getFollower == null && s.tvMap.size + s.aliasesMap.size == 0 && s
+               .updateThisType
+               .isEmpty && !s.myDependentMethodTypesFunDefined)
       this
     else {
       val res =
@@ -325,9 +328,8 @@ class ScSubstitutor(
                             case Some((cl: PsiClass, _)) =>
                               if (cl == clazz)
                                 tp
-                              else if (ScalaPsiUtil.cachedDeepIsInheritor(
-                                         cl,
-                                         clazz))
+                              else if (ScalaPsiUtil
+                                         .cachedDeepIsInheritor(cl, clazz))
                                 tp
                               else
                                 null
@@ -382,9 +384,8 @@ class ScSubstitutor(
                             case Some(cl) =>
                               if (cl == clazz)
                                 return tp
-                              else if (ScalaPsiUtil.cachedDeepIsInheritor(
-                                         cl,
-                                         clazz))
+                              else if (ScalaPsiUtil
+                                         .cachedDeepIsInheritor(cl, clazz))
                                 return tp
                             case _ =>
                           }
@@ -556,8 +557,9 @@ class ScSubstitutor(
             comps.map(substInternal),
             signatureMap.map {
               case (s: Signature, tp: ScType) =>
-                val pTypes: List[Seq[() => ScType]] = s.substitutedTypes.map(
-                  _.map(f => () => substInternal(f())))
+                val pTypes: List[Seq[() => ScType]] = s
+                  .substitutedTypes
+                  .map(_.map(f => () => substInternal(f())))
                 val tParams: Array[TypeParameter] =
                   if (s.typeParams.length == 0)
                     TypeParameter.EMPTY_ARRAY
@@ -615,10 +617,10 @@ class ScSubstitutor(
 class ScUndefinedSubstitutor(
     val upperMap: Map[(String, PsiElement), HashSet[ScType]] = HashMap.empty,
     val lowerMap: Map[(String, PsiElement), HashSet[ScType]] = HashMap.empty,
-    val upperAdditionalMap: Map[(String, PsiElement), HashSet[ScType]] =
-      HashMap.empty,
-    val lowerAdditionalMap: Map[(String, PsiElement), HashSet[ScType]] =
-      HashMap.empty) {
+    val upperAdditionalMap: Map[(String, PsiElement), HashSet[ScType]] = HashMap
+      .empty,
+    val lowerAdditionalMap: Map[(String, PsiElement), HashSet[ScType]] = HashMap
+      .empty) {
 
   def copy(
       upperMap: Map[(String, PsiElement), HashSet[ScType]] = upperMap,
@@ -637,7 +639,8 @@ class ScUndefinedSubstitutor(
   type Name = (String, PsiElement)
 
   def isEmpty: Boolean =
-    upperMap.isEmpty && lowerMap.isEmpty && upperAdditionalMap.isEmpty && lowerAdditionalMap.isEmpty
+    upperMap.isEmpty && lowerMap.isEmpty && upperAdditionalMap
+      .isEmpty && lowerAdditionalMap.isEmpty
 
   //todo: this is can be rewritten in more fast way
   def addSubst(subst: ScUndefinedSubstitutor): ScUndefinedSubstitutor = {

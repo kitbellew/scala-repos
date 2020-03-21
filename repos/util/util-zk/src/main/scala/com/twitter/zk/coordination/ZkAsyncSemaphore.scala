@@ -47,8 +47,8 @@ class ZkAsyncSemaphore(
 
   private[this] val pathSeparator = "/"
   private[this] val permitPrefix = "permit-"
-  private[this] val permitNodePathPrefix = Seq(path, permitPrefix).mkString(
-    pathSeparator)
+  private[this] val permitNodePathPrefix = Seq(path, permitPrefix)
+    .mkString(pathSeparator)
   private[this] val futureSemaphoreNode = createSemaphoreNode()
   private[this] val waitq =
     new ConcurrentLinkedQueue[(Promise[ZkSemaphorePermit], ZNode)]
@@ -149,15 +149,17 @@ class ZkAsyncSemaphore(
       !_.isEmpty
     }
     val head = Future.value(zk(pathSeparator + nodes.head))
-    nodes.tail.foldLeft(head) { (futureParent, child) =>
-      futureParent flatMap { parent =>
-        val newParent = parent(child)
-        newParent.create() rescue {
-          case err: KeeperException.NodeExistsException =>
-            Future.value(newParent)
+    nodes
+      .tail
+      .foldLeft(head) { (futureParent, child) =>
+        futureParent flatMap { parent =>
+          val newParent = parent(child)
+          newParent.create() rescue {
+            case err: KeeperException.NodeExistsException =>
+              Future.value(newParent)
+          }
         }
       }
-    }
   }
 
   /**
@@ -241,8 +243,8 @@ class ZkAsyncSemaphore(
     while (waitqIterator.hasNext) {
       val (promise, _) = waitqIterator.next()
       waitqIterator.remove()
-      promise.setException(
-        PermitNodeException("ZooKeeper client session expired."))
+      promise
+        .setException(PermitNodeException("ZooKeeper client session expired."))
     }
   }
 
@@ -274,7 +276,8 @@ class ZkAsyncSemaphore(
           believers
       }
       val cardinalityOfMax =
-        permitsToBelievers.values
+        permitsToBelievers
+          .values
           .filter({
             _ == numBelieversOfMax
           })
@@ -315,6 +318,6 @@ object ZkAsyncSemaphore {
   case class LackOfConsensusException(msg: String) extends Exception(msg)
   case class PermitMismatchException(msg: String) extends Exception(msg)
   case class PermitNodeException(msg: String) extends Exception(msg)
-  private val MaxWaitersExceededException = Future.exception(
-    new RejectedExecutionException("Max waiters exceeded"))
+  private val MaxWaitersExceededException = Future
+    .exception(new RejectedExecutionException("Max waiters exceeded"))
 }

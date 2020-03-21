@@ -50,14 +50,10 @@ class UnsafeKVExternalSorterSuite extends SparkFunSuite with SharedSQLContext {
 
   private val rand = new Random(42)
   for (i <- 0 until 6) {
-    val keySchema = RandomDataGenerator.randomSchema(
-      rand,
-      rand.nextInt(10) + 1,
-      keyTypes)
-    val valueSchema = RandomDataGenerator.randomSchema(
-      rand,
-      rand.nextInt(10) + 1,
-      valueTypes)
+    val keySchema = RandomDataGenerator
+      .randomSchema(rand, rand.nextInt(10) + 1, keyTypes)
+    val valueSchema = RandomDataGenerator
+      .randomSchema(rand, rand.nextInt(10) + 1, valueTypes)
     testKVSorter(keySchema, valueSchema, spill = i > 3)
   }
 
@@ -79,10 +75,10 @@ class UnsafeKVExternalSorterSuite extends SparkFunSuite with SharedSQLContext {
       valueSchema: StructType,
       spill: Boolean): Unit = {
     // Create the data converters
-    val kExternalConverter = CatalystTypeConverters.createToCatalystConverter(
-      keySchema)
-    val vExternalConverter = CatalystTypeConverters.createToCatalystConverter(
-      valueSchema)
+    val kExternalConverter = CatalystTypeConverters
+      .createToCatalystConverter(keySchema)
+    val vExternalConverter = CatalystTypeConverters
+      .createToCatalystConverter(valueSchema)
     val kConverter = UnsafeProjection.create(keySchema)
     val vConverter = UnsafeProjection.create(valueSchema)
 
@@ -182,8 +178,8 @@ class UnsafeKVExternalSorterSuite extends SparkFunSuite with SharedSQLContext {
     sorter.cleanupResources()
 
     val keyOrdering = InterpretedOrdering.forSchema(keySchema.map(_.dataType))
-    val valueOrdering = InterpretedOrdering.forSchema(
-      valueSchema.map(_.dataType))
+    val valueOrdering = InterpretedOrdering
+      .forSchema(valueSchema.map(_.dataType))
     val kvOrdering =
       new Ordering[(InternalRow, InternalRow)] {
         override def compare(
@@ -200,20 +196,22 @@ class UnsafeKVExternalSorterSuite extends SparkFunSuite with SharedSQLContext {
 
     // Testing to make sure output from the sorter is sorted by key
     var prevK: InternalRow = null
-    out.zipWithIndex.foreach {
-      case ((k, v), i) =>
-        if (prevK != null) {
-          assert(
-            keyOrdering.compare(prevK, k) <= 0,
-            s"""
+    out
+      .zipWithIndex
+      .foreach {
+        case ((k, v), i) =>
+          if (prevK != null) {
+            assert(
+              keyOrdering.compare(prevK, k) <= 0,
+              s"""
              |key is not in sorted order:
              |previous key: $prevK
              |current key : $k
              """.stripMargin
-          )
-        }
-        prevK = k
-    }
+            )
+          }
+          prevK = k
+      }
 
     // Testing to make sure the key/value in output matches input
     assert(out.sorted(kvOrdering) === inputData.sorted(kvOrdering))
@@ -227,8 +225,8 @@ class UnsafeKVExternalSorterSuite extends SparkFunSuite with SharedSQLContext {
     val pageSize = 128
 
     val schema = StructType(StructField("b", BinaryType) :: Nil)
-    val externalConverter = CatalystTypeConverters.createToCatalystConverter(
-      schema)
+    val externalConverter = CatalystTypeConverters
+      .createToCatalystConverter(schema)
     val converter = UnsafeProjection.create(schema)
 
     val rand = new Random()

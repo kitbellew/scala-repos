@@ -53,15 +53,15 @@ class MarathonHealthCheckManagerTest
 
     system = ActorSystem(
       "test-system",
-      ConfigFactory.parseString(
-        """akka.loggers = ["akka.testkit.TestEventListener"]"""))
+      ConfigFactory
+        .parseString("""akka.loggers = ["akka.testkit.TestEventListener"]"""))
     leadershipModule = AlwaysElectedLeadershipModule(shutdownHooks)
 
     val config = new ScallopConf(Seq("--master", "foo")) with MarathonConf
     config.afterInit()
 
-    val taskTrackerModule = MarathonTestHelper.createTaskTrackerModule(
-      leadershipModule)
+    val taskTrackerModule = MarathonTestHelper
+      .createTaskTrackerModule(leadershipModule)
     taskTracker = taskTrackerModule.taskTracker
     taskCreationHandler = taskTrackerModule.taskCreationHandler
     taskUpdater = taskTrackerModule.taskUpdater
@@ -98,9 +98,8 @@ class MarathonHealthCheckManagerTest
         .status
         .mesosStatus
         .get
-    val marathonTask = MarathonTestHelper.stagedTask(
-      taskId.idString,
-      appVersion = version)
+    val marathonTask = MarathonTestHelper
+      .stagedTask(taskId.idString, appVersion = version)
 
     taskCreationHandler.created(marathonTask).futureValue
     taskUpdater.statusUpdate(appId, taskStatus).futureValue
@@ -113,7 +112,9 @@ class MarathonHealthCheckManagerTest
       version: Timestamp,
       healthy: Boolean): Unit = {
     val taskStatus =
-      mesos.TaskStatus.newBuilder
+      mesos
+        .TaskStatus
+        .newBuilder
         .setTaskId(taskId.mesosTaskId)
         .setState(mesos.TaskState.TASK_RUNNING)
         .setHealthy(healthy)
@@ -150,9 +151,8 @@ class MarathonHealthCheckManagerTest
         .mesosStatus
         .get
 
-    val marathonTask = MarathonTestHelper.stagedTask(
-      taskId.idString,
-      appVersion = app.version)
+    val marathonTask = MarathonTestHelper
+      .stagedTask(taskId.idString, appVersion = app.version)
 
     val healthCheck = HealthCheck(
       protocol = Protocol.COMMAND,
@@ -170,9 +170,8 @@ class MarathonHealthCheckManagerTest
     EventFilter
       .info(start = "Received health result for app", occurrences = 1)
       .intercept {
-        hcManager.update(
-          taskStatus.toBuilder.setHealthy(false).build,
-          app.version)
+        hcManager
+          .update(taskStatus.toBuilder.setHealthy(false).build, app.version)
       }
 
     val Seq(health2) = hcManager.status(appId, taskId).futureValue
@@ -183,9 +182,8 @@ class MarathonHealthCheckManagerTest
     EventFilter
       .info(start = "Received health result for app", occurrences = 1)
       .intercept {
-        hcManager.update(
-          taskStatus.toBuilder.setHealthy(true).build,
-          app.version)
+        hcManager
+          .update(taskStatus.toBuilder.setHealthy(true).build, app.version)
       }
 
     val Seq(health3) = hcManager.status(appId, taskId).futureValue
@@ -258,26 +256,28 @@ class MarathonHealthCheckManagerTest
     def taskStatus(
         task: MarathonTask,
         state: mesos.TaskState = mesos.TaskState.TASK_RUNNING) =
-      mesos.TaskStatus.newBuilder
-        .setTaskId(
-          mesos.TaskID
-            .newBuilder()
-            .setValue(task.getId)
-            .build)
+      mesos
+        .TaskStatus
+        .newBuilder
+        .setTaskId(mesos.TaskID.newBuilder().setValue(task.getId).build)
         .setState(state)
         .setHealthy(false)
         .build
     val healthChecks = List(0, 1, 2).map { i =>
-      (0 until i).map { j =>
-        HealthCheck(
-          protocol = Protocol.COMMAND,
-          gracePeriod = (i * 3 + j).seconds)
-      }.toSet
+      (0 until i)
+        .map { j =>
+          HealthCheck(
+            protocol = Protocol.COMMAND,
+            gracePeriod = (i * 3 + j).seconds)
+        }
+        .toSet
     }
     val versions =
-      List(0L, 1L, 2L).map {
-        Timestamp(_)
-      }.toArray
+      List(0L, 1L, 2L)
+        .map {
+          Timestamp(_)
+        }
+        .toArray
     val tasks = List(0, 1, 2).map { i =>
       MarathonTestHelper.stagedTaskForApp(appId, appVersion = versions(i))
     }
@@ -303,14 +303,13 @@ class MarathonHealthCheckManagerTest
 
     // one other task of another app
     val otherAppId = "other".toRootPath
-    val otherTask = MarathonTestHelper.stagedTaskForApp(
-      appId,
-      appVersion = Timestamp(0))
+    val otherTask = MarathonTestHelper
+      .stagedTaskForApp(appId, appVersion = Timestamp(0))
     val otherHealthChecks = Set(
       HealthCheck(protocol = Protocol.COMMAND, gracePeriod = 0.seconds))
     startTask(otherAppId, otherTask, Timestamp(42), otherHealthChecks)
-    hcManager.addAllFor(
-      appRepository.currentVersion(otherAppId).futureValue.get)
+    hcManager
+      .addAllFor(appRepository.currentVersion(otherAppId).futureValue.get)
     assert(hcManager.list(otherAppId) == otherHealthChecks)
 
     // start task 0 without running health check

@@ -53,8 +53,8 @@ private[spark] class ClientArguments(
 
   private var driverMemory: Int = Utils.DEFAULT_DRIVER_MEM_MB // MB
   private var driverCores: Int = 1
-  private val isDynamicAllocationEnabled = Utils.isDynamicAllocationEnabled(
-    sparkConf)
+  private val isDynamicAllocationEnabled = Utils
+    .isDynamicAllocationEnabled(sparkConf)
 
   parseArgs(args.toList)
   loadEnvironmentArgs()
@@ -98,15 +98,10 @@ private[spark] class ClientArguments(
       .orNull
     // If dynamic allocation is enabled, start at the configured initial number of executors.
     // Default to minExecutors if no initialExecutors is set.
-    numExecutors = YarnSparkHadoopUtil.getInitialTargetExecutorNumber(
-      sparkConf,
-      numExecutors)
-    principal = Option(principal)
-      .orElse(sparkConf.get(PRINCIPAL))
-      .orNull
-    keytab = Option(keytab)
-      .orElse(sparkConf.get(KEYTAB))
-      .orNull
+    numExecutors = YarnSparkHadoopUtil
+      .getInitialTargetExecutorNumber(sparkConf, numExecutors)
+    principal = Option(principal).orElse(sparkConf.get(PRINCIPAL)).orNull
+    keytab = Option(keytab).orElse(sparkConf.get(KEYTAB)).orNull
   }
 
   /**

@@ -79,8 +79,9 @@ class MatchToPartialFunctionInspection
       }
     }
     for (offset <- leftBraceOffset(ms)) {
-      val endOffsetInParent =
-        offset - fExprToReplace.getTextRange.getStartOffset
+      val endOffsetInParent = offset - fExprToReplace
+        .getTextRange
+        .getStartOffset
       val rangeInParent = new TextRange(0, endOffsetInParent)
       val fix = new MatchToPartialFunctionQuickFix(ms, fExprToReplace)
       holder.registerProblem(
@@ -152,12 +153,10 @@ class MatchToPartialFunctionQuickFix(
       return
 
     addNamingPatterns(matchStmtCopy, needNamingPattern(mStmt))
-    matchStmtCopy.deleteChildRange(
-      matchStmtCopy.getFirstChild,
-      leftBrace.getPrevSibling)
-    val newBlock = ScalaPsiElementFactory.createExpressionFromText(
-      matchStmtCopy.getText,
-      mStmt.getManager)
+    matchStmtCopy
+      .deleteChildRange(matchStmtCopy.getFirstChild, leftBrace.getPrevSibling)
+    val newBlock = ScalaPsiElementFactory
+      .createExpressionFromText(matchStmtCopy.getText, mStmt.getManager)
     CodeEditUtil.setOldIndentation(
       newBlock.getNode.asInstanceOf[TreeElement],
       CodeEditUtil.getOldIndentation(matchStmtCopy.getNode))
@@ -203,27 +202,30 @@ class MatchToPartialFunctionQuickFix(
       matchStmt: ScMatchStmt,
       indexes: Seq[Int]): Unit = {
     val clauses = matchStmt.caseClauses
-    val name = matchStmt.expr
+    val name = matchStmt
+      .expr
       .map(_.getText)
       .getOrElse(
         return
       )
-    indexes.map(i => clauses(i).pattern).foreach {
-      case Some(w: ScWildcardPattern) =>
-        w.replace(
-          ScalaPsiElementFactory
-            .createPatternFromText(name, matchStmt.getManager))
-      case Some(p: ScPattern) =>
-        val newPatternText =
-          if (needParentheses(p))
-            s"$name @ (${p.getText})"
-          else
-            s"$name @ ${p.getText}"
-        p.replace(
-          ScalaPsiElementFactory
-            .createPatternFromText(newPatternText, matchStmt.getManager))
-      case _ =>
-    }
+    indexes
+      .map(i => clauses(i).pattern)
+      .foreach {
+        case Some(w: ScWildcardPattern) =>
+          w.replace(
+            ScalaPsiElementFactory
+              .createPatternFromText(name, matchStmt.getManager))
+        case Some(p: ScPattern) =>
+          val newPatternText =
+            if (needParentheses(p))
+              s"$name @ (${p.getText})"
+            else
+              s"$name @ ${p.getText}"
+          p.replace(
+            ScalaPsiElementFactory
+              .createPatternFromText(newPatternText, matchStmt.getManager))
+        case _ =>
+      }
   }
 
   private def needParentheses(p: ScPattern): Boolean =

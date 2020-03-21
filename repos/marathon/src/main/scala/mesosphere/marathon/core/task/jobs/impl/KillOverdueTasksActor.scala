@@ -37,12 +37,14 @@ private[jobs] object KillOverdueTasksActor {
     def check(): Unit = {
       val now = clock.now()
       log.debug("checking for overdue tasks")
-      driverHolder.driver.foreach { driver =>
-        determineOverdueTasks(now).foreach { overdueTask =>
-          log.warn("Killing overdue {}", overdueTask.taskId)
-          driver.killTask(overdueTask.taskId.mesosTaskId)
+      driverHolder
+        .driver
+        .foreach { driver =>
+          determineOverdueTasks(now).foreach { overdueTask =>
+            log.warn("Killing overdue {}", overdueTask.taskId)
+            driver.killTask(overdueTask.taskId.mesosTaskId)
+          }
         }
-      }
     }
 
     private[this] def determineOverdueTasks(now: Timestamp): Iterable[Task] = {
@@ -52,27 +54,29 @@ private[jobs] object KillOverdueTasksActor {
       val unconfirmedExpire = now - config.taskLaunchConfirmTimeout().millis
 
       def launchedAndExpired(task: Task): Boolean = {
-        task.launched.fold(false) { launched =>
-          launched.status.mesosStatus.map(_.getState) match {
-            case None | Some(TaskState.TASK_STARTING)
-                if launched.status.stagedAt < unconfirmedExpire =>
-              log.warn(
-                s"Should kill: ${task.taskId} was launched " +
-                  s"${(launched.status.stagedAt.until(now).toSeconds)}s ago and was not confirmed yet")
-              true
+        task
+          .launched
+          .fold(false) { launched =>
+            launched.status.mesosStatus.map(_.getState) match {
+              case None | Some(TaskState.TASK_STARTING)
+                  if launched.status.stagedAt < unconfirmedExpire =>
+                log.warn(
+                  s"Should kill: ${task.taskId} was launched " +
+                    s"${(launched.status.stagedAt.until(now).toSeconds)}s ago and was not confirmed yet")
+                true
 
-            case Some(TaskState.TASK_STAGING)
-                if launched.status.stagedAt < stagedExpire =>
-              log.warn(
-                s"Should kill: ${task.taskId} was staged ${(launched.status.stagedAt.until(now).toSeconds)}s" +
-                  s" ago and has not yet started")
-              true
+              case Some(TaskState.TASK_STAGING)
+                  if launched.status.stagedAt < stagedExpire =>
+                log.warn(
+                  s"Should kill: ${task.taskId} was staged ${(launched.status.stagedAt.until(now).toSeconds)}s" +
+                    s" ago and has not yet started")
+                true
 
-            case _ =>
-              // running
-              false
+              case _ =>
+                // running
+                false
+            }
           }
-        }
       }
 
       taskTracker.tasksByAppSync.allTasks.filter(launchedAndExpired)
@@ -89,11 +93,14 @@ private class KillOverdueTasksActor(support: KillOverdueTasksActor.Support)
 
   override def preStart(): Unit = {
     import context.dispatcher
-    checkTicker = context.system.scheduler.schedule(
-      30.seconds,
-      5.seconds,
-      self,
-      KillOverdueTasksActor.Check(maybeAck = None))
+    checkTicker = context
+      .system
+      .scheduler
+      .schedule(
+        30.seconds,
+        5.seconds,
+        self,
+        KillOverdueTasksActor.Check(maybeAck = None))
   }
 
   override def postStop(): Unit = {

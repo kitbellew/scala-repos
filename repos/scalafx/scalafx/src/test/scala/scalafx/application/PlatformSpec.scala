@@ -62,8 +62,8 @@ class PlatformSpec extends FlatSpec with Matchers with RunOnApplicationThread {
   }
 
   it should "support isFxApplicationThread" in {
-    Platform.isFxApplicationThread should equal(
-      jfxa.Platform.isFxApplicationThread)
+    Platform
+      .isFxApplicationThread should equal(jfxa.Platform.isFxApplicationThread)
   }
 
   it should "support implicitExit read/write" in {

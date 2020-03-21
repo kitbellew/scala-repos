@@ -86,7 +86,8 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
       case Some(madeModel) =>
         if (!settings.scaladocQuietRun)
           println(
-            "model contains " + modelFactory.templatesCount + " documentable templates")
+            "model contains " + modelFactory
+              .templatesCount + " documentable templates")
         Some(madeModel)
       case None =>
         if (!settings.scaladocQuietRun)
@@ -119,9 +120,8 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
   def document(files: List[String]) {
     def generate() = {
       import doclet._
-      val docletClass = Class.forName(
-        settings.docgenerator.value
-      ) // default is html.Doclet
+      val docletClass = Class
+        .forName(settings.docgenerator.value) // default is html.Doclet
       val docletInstance = docletClass.newInstance().asInstanceOf[Generator]
 
       docletInstance match {

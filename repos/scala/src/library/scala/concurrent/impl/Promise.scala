@@ -323,8 +323,10 @@ private[concurrent] object Promise {
 
     @throws(classOf[Exception])
     final def result(atMost: Duration)(implicit permit: CanAwait): T =
-      ready(
-        atMost).value.get.get // ready throws TimeoutException if timeout so value.get is safe here
+      ready(atMost)
+        .value
+        .get
+        .get // ready throws TimeoutException if timeout so value.get is safe here
 
     def value: Option[Try[T]] = value0
 

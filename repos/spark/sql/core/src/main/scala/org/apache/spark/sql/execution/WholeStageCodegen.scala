@@ -155,13 +155,15 @@ trait CodegenSupport extends SparkPlan {
       variables: Seq[ExprCode],
       required: AttributeSet): String = {
     var evaluateVars = ""
-    variables.zipWithIndex.foreach {
-      case (ev, i) =>
-        if (ev.code != "" && required.contains(attributes(i))) {
-          evaluateVars += ev.code.trim + "\n"
-          ev.code = ""
-        }
-    }
+    variables
+      .zipWithIndex
+      .foreach {
+        case (ev, i) =>
+          if (ev.code != "" && required.contains(attributes(i))) {
+            evaluateVars += ev.code.trim + "\n"
+            ev.code = ""
+          }
+      }
     evaluateVars
   }
 
@@ -191,10 +193,13 @@ trait CodegenSupport extends SparkPlan {
       if (row != null) {
         ctx.currentVars = null
         ctx.INPUT_ROW = row
-        child.output.zipWithIndex.map {
-          case (attr, i) =>
-            BoundReference(i, attr.dataType, attr.nullable).gen(ctx)
-        }
+        child
+          .output
+          .zipWithIndex
+          .map {
+            case (attr, i) =>
+              BoundReference(i, attr.dataType, attr.nullable).gen(ctx)
+          }
       } else {
         input
       }
@@ -268,8 +273,9 @@ case class InputAdapter(child: SparkPlan)
       input,
       s"$input = inputs[0];")
 
-    val exprs = output.zipWithIndex.map(x =>
-      new BoundReference(x._2, x._1.dataType, true))
+    val exprs = output
+      .zipWithIndex
+      .map(x => new BoundReference(x._2, x._1.dataType, true))
     val row = ctx.freshName("row")
     ctx.INPUT_ROW = row
     ctx.currentVars = null
@@ -367,30 +373,34 @@ case class WholeStageCodegen(child: SparkPlan)
     val rdds = child.asInstanceOf[CodegenSupport].upstreams()
     assert(rdds.size <= 2, "Up to two upstream RDDs can be supported")
     if (rdds.length == 1) {
-      rdds.head.mapPartitions { iter =>
-        val clazz = CodeGenerator.compile(cleanedSource)
-        val buffer = clazz
-          .generate(references)
-          .asInstanceOf[BufferedRowIterator]
-        buffer.init(Array(iter))
-        new Iterator[InternalRow] {
-          override def hasNext: Boolean = buffer.hasNext
-          override def next: InternalRow = buffer.next()
+      rdds
+        .head
+        .mapPartitions { iter =>
+          val clazz = CodeGenerator.compile(cleanedSource)
+          val buffer = clazz
+            .generate(references)
+            .asInstanceOf[BufferedRowIterator]
+          buffer.init(Array(iter))
+          new Iterator[InternalRow] {
+            override def hasNext: Boolean = buffer.hasNext
+            override def next: InternalRow = buffer.next()
+          }
         }
-      }
     } else {
       // Right now, we support up to two upstreams.
-      rdds.head.zipPartitions(rdds(1)) { (leftIter, rightIter) =>
-        val clazz = CodeGenerator.compile(cleanedSource)
-        val buffer = clazz
-          .generate(references)
-          .asInstanceOf[BufferedRowIterator]
-        buffer.init(Array(leftIter, rightIter))
-        new Iterator[InternalRow] {
-          override def hasNext: Boolean = buffer.hasNext
-          override def next: InternalRow = buffer.next()
+      rdds
+        .head
+        .zipPartitions(rdds(1)) { (leftIter, rightIter) =>
+          val clazz = CodeGenerator.compile(cleanedSource)
+          val buffer = clazz
+            .generate(references)
+            .asInstanceOf[BufferedRowIterator]
+          buffer.init(Array(leftIter, rightIter))
+          new Iterator[InternalRow] {
+            override def hasNext: Boolean = buffer.hasNext
+            override def next: InternalRow = buffer.next()
+          }
         }
-      }
     }
   }
 
@@ -422,10 +432,12 @@ case class WholeStageCodegen(child: SparkPlan)
     } else {
       assert(input != null)
       if (input.nonEmpty) {
-        val colExprs = output.zipWithIndex.map {
-          case (attr, i) =>
-            BoundReference(i, attr.dataType, attr.nullable)
-        }
+        val colExprs = output
+          .zipWithIndex
+          .map {
+            case (attr, i) =>
+              BoundReference(i, attr.dataType, attr.nullable)
+          }
         val evaluateInputs = evaluateVariables(input)
         // generate the code to create a UnsafeRow
         ctx.currentVars = input
@@ -484,8 +496,9 @@ case class CollapseCodegenStages(conf: SQLConf) extends Rule[SparkPlan] {
   private def supportCodegen(plan: SparkPlan): Boolean =
     plan match {
       case plan: CodegenSupport if plan.supportCodegen =>
-        val willFallback = plan.expressions.exists(
-          _.find(e => !supportCodegen(e)).isDefined)
+        val willFallback = plan
+          .expressions
+          .exists(_.find(e => !supportCodegen(e)).isDefined)
         // the generated code will be huge if there are too many columns
         val haveManyColumns = plan.output.length > 200
         !willFallback && !haveManyColumns

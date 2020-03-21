@@ -18,14 +18,15 @@ private[video] final class Youtube(
   private implicit val readStatistics = Json.reads[Statistics]
   private implicit val readContentDetails = Json.reads[ContentDetails]
   private implicit val readEntry = Json.reads[Entry]
-  private implicit val readEntries: Reads[Seq[Entry]] = (__ \ "items").read(
-    Reads seq readEntry)
+  private implicit val readEntries: Reads[Seq[Entry]] = (__ \ "items")
+    .read(Reads seq readEntry)
 
   def updateAll: Funit =
     fetch flatMap { entries =>
       entries
         .map { entry =>
-          api.video
+          api
+            .video
             .setMetadata(
               entry.id,
               Metadata(
@@ -34,11 +35,17 @@ private[video] final class Youtube(
                   ~parseIntOption(entry.statistics.dislikeCount),
                 description = entry.snippet.description,
                 duration = Some(entry.contentDetails.seconds),
-                publishedAt = entry.snippet.publishedAt.flatMap { at =>
-                  scala.util.Try {
-                    new DateTime(at)
-                  }.toOption
-                }
+                publishedAt = entry
+                  .snippet
+                  .publishedAt
+                  .flatMap { at =>
+                    scala
+                      .util
+                      .Try {
+                        new DateTime(at)
+                      }
+                      .toOption
+                  }
               )
             )
             .recover {
@@ -52,7 +59,8 @@ private[video] final class Youtube(
 
   private def fetch: Fu[List[Entry]] =
     api.video.allIds flatMap { ids =>
-      WS.url(url)
+      WS
+        .url(url)
         .withQueryString(
           "id" -> scala.util.Random.shuffle(ids).take(max).mkString(","),
           "part" -> "id,statistics,snippet,contentDetails",

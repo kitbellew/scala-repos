@@ -91,13 +91,13 @@ object SiteMap {
     }
     def isSymlink(f: File) = f.getCanonicalFile != f.getAbsoluteFile
 
-    val (symlinks, normal) = (repoBase * DirectoryFilter).get.partition(dir =>
-      isSymlink(dir))
+    val (symlinks, normal) = (repoBase * DirectoryFilter)
+      .get
+      .partition(dir => isSymlink(dir))
     log.debug("Detected symlinks: " + symlinks.mkString("\n\t", "\n\t", ""))
     val subMaps =
-      singleSiteMap(
-        repoBase,
-        (repoBase * "*.html") +++ (symlinks ** "*.html")).toList ++
+      singleSiteMap(repoBase, (repoBase * "*.html") +++ (symlinks ** "*.html"))
+        .toList ++
         normal.flatMap(dir => singleSiteMap(dir, dir ** "*.html").toList)
     val index = siteMapIndex(repoBase, subMaps)
     (index, subMaps)

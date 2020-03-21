@@ -36,17 +36,19 @@ private[prediction] case class SetProp(
     val commonKeys = fields.keySet.intersect(that.fields.keySet)
 
     val common: Map[String, PropTime] =
-      commonKeys.map { k =>
-        val thisData = this.fields(k)
-        val thatData = that.fields(k)
-        // only keep the value with latest time
-        val v =
-          if (thisData.t > thatData.t)
-            thisData
-          else
-            thatData
-        (k, v)
-      }.toMap
+      commonKeys
+        .map { k =>
+          val thisData = this.fields(k)
+          val thatData = that.fields(k)
+          // only keep the value with latest time
+          val v =
+            if (thisData.t > thatData.t)
+              thisData
+            else
+              thatData
+          (k, v)
+        }
+        .toMap
 
     val combinedFields = common ++
       (this.fields -- commonKeys) ++ (that.fields -- commonKeys)
@@ -68,17 +70,19 @@ private[prediction] case class UnsetProp(fields: Map[String, Long])
     val commonKeys = fields.keySet.intersect(that.fields.keySet)
 
     val common: Map[String, Long] =
-      commonKeys.map { k =>
-        val thisData = this.fields(k)
-        val thatData = that.fields(k)
-        // only keep the value with latest time
-        val v =
-          if (thisData > thatData)
-            thisData
-          else
-            thatData
-        (k, v)
-      }.toMap
+      commonKeys
+        .map { k =>
+          val thisData = this.fields(k)
+          val thatData = that.fields(k)
+          // only keep the value with latest time
+          val v =
+            if (thisData > thatData)
+              thisData
+            else
+              thatData
+          (k, v)
+        }
+        .toMap
 
     val combinedFields = common ++
       (this.fields -- commonKeys) ++ (that.fields -- commonKeys)
@@ -132,10 +136,13 @@ private[prediction] case class EventOp(
     setProp.flatMap { set =>
       val unsetKeys: Set[String] = unsetProp
         .map(unset =>
-          unset.fields.filter {
-            case (k, v) =>
-              (v >= set.fields(k).t)
-          }.keySet)
+          unset
+            .fields
+            .filter {
+              case (k, v) =>
+                (v >= set.fields(k).t)
+            }
+            .keySet)
         .getOrElse(Set())
 
       val combinedFields = deleteEntity
@@ -144,10 +151,13 @@ private[prediction] case class EventOp(
             None
           } else {
             val deleteKeys: Set[String] =
-              set.fields.filter {
-                case (k, PropTime(kv, t)) =>
-                  (delete.t >= t)
-              }.keySet
+              set
+                .fields
+                .filter {
+                  case (k, PropTime(kv, t)) =>
+                    (delete.t >= t)
+                }
+                .keySet
             Some(set.fields -- unsetKeys -- deleteKeys)
           }
         }
@@ -181,7 +191,9 @@ private[prediction] object EventOp {
     val t = e.eventTime.getMillis
     e.event match {
       case "$set" => {
-        val fields = e.properties.fields
+        val fields = e
+          .properties
+          .fields
           .mapValues(jv => PropTime(jv, t))
           .map(identity)
 

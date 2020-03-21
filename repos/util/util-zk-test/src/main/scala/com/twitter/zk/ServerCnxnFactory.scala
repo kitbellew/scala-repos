@@ -57,18 +57,21 @@ object ServerCnxnFactory {
     val factory = {
       try {
         val inst =
-          java.lang.Class
+          java
+            .lang
+            .Class
             .forName("org.apache.zookeeper.server.NIOServerCnxnFactory")
             .newInstance
-        val call = inst.getClass.getMethod(
-          "configure",
-          sockAddr.getClass,
-          Integer.TYPE)
+        val call = inst
+          .getClass
+          .getMethod("configure", sockAddr.getClass, Integer.TYPE)
         call.invoke(inst, sockAddr, maxClients)
         inst
       } catch {
         case t: ClassNotFoundException =>
-          val constructor = java.lang.Class
+          val constructor = java
+            .lang
+            .Class
             .forName("org.apache.zookeeper.server.NIOServerCnxn$Factory")
             .getConstructor(sockAddr.getClass, Integer.TYPE)
           constructor.newInstance(sockAddr, maxClients)

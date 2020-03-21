@@ -74,24 +74,20 @@ object KafkaServer {
     val logProps = new util.HashMap[String, Object]()
     logProps.put(LogConfig.SegmentBytesProp, kafkaConfig.logSegmentBytes)
     logProps.put(LogConfig.SegmentMsProp, kafkaConfig.logRollTimeMillis)
-    logProps.put(
-      LogConfig.SegmentJitterMsProp,
-      kafkaConfig.logRollTimeJitterMillis)
-    logProps.put(
-      LogConfig.SegmentIndexBytesProp,
-      kafkaConfig.logIndexSizeMaxBytes)
-    logProps.put(
-      LogConfig.FlushMessagesProp,
-      kafkaConfig.logFlushIntervalMessages)
+    logProps
+      .put(LogConfig.SegmentJitterMsProp, kafkaConfig.logRollTimeJitterMillis)
+    logProps
+      .put(LogConfig.SegmentIndexBytesProp, kafkaConfig.logIndexSizeMaxBytes)
+    logProps
+      .put(LogConfig.FlushMessagesProp, kafkaConfig.logFlushIntervalMessages)
     logProps.put(LogConfig.FlushMsProp, kafkaConfig.logFlushIntervalMs)
     logProps.put(LogConfig.RetentionBytesProp, kafkaConfig.logRetentionBytes)
     logProps.put(
       LogConfig.RetentionMsProp,
       kafkaConfig.logRetentionTimeMillis: java.lang.Long)
     logProps.put(LogConfig.MaxMessageBytesProp, kafkaConfig.messageMaxBytes)
-    logProps.put(
-      LogConfig.IndexIntervalBytesProp,
-      kafkaConfig.logIndexIntervalBytes)
+    logProps
+      .put(LogConfig.IndexIntervalBytesProp, kafkaConfig.logIndexIntervalBytes)
     logProps.put(
       LogConfig.DeleteRetentionMsProp,
       kafkaConfig.logCleanerDeleteRetentionMs)
@@ -105,9 +101,8 @@ object KafkaServer {
     logProps.put(
       LogConfig.UncleanLeaderElectionEnableProp,
       kafkaConfig.uncleanLeaderElectionEnable)
-    logProps.put(
-      LogConfig.PreAllocateEnableProp,
-      kafkaConfig.logPreAllocateEnable)
+    logProps
+      .put(LogConfig.PreAllocateEnableProp, kafkaConfig.logPreAllocateEnable)
     logProps.put(
       LogConfig.MessageFormatVersionProp,
       kafkaConfig.logMessageFormatVersion.version)
@@ -180,7 +175,8 @@ class KafkaServer(
   val correlationId: AtomicInteger = new AtomicInteger(0)
   val brokerMetaPropsFile = "meta.properties"
   val brokerMetadataCheckpoints =
-    config.logDirs
+    config
+      .logDirs
       .map(logDir =>
         (
           logDir,
@@ -271,12 +267,13 @@ class KafkaServer(
         consumerCoordinator.startup()
 
         /* Get the authorizer and initialize it if one is specified.*/
-        authorizer = Option(config.authorizerClassName).filter(_.nonEmpty).map {
-          authorizerClassName =>
+        authorizer = Option(config.authorizerClassName)
+          .filter(_.nonEmpty)
+          .map { authorizerClassName =>
             val authZ = CoreUtils.createObject[Authorizer](authorizerClassName)
             authZ.configure(config.originals())
             authZ
-        }
+          }
 
         /* start processing requests */
         apis = new KafkaApis(
@@ -306,11 +303,13 @@ class KafkaServer(
 
         // Apply all existing client configs to the ClientIdConfigHandler to bootstrap the overrides
         // TODO: Move this logic to DynamicConfigManager
-        AdminUtils.fetchAllEntityConfigs(zkUtils, ConfigType.Client).foreach {
-          case (clientId, properties) =>
-            dynamicConfigHandlers(ConfigType.Client)
-              .processConfigChanges(clientId, properties)
-        }
+        AdminUtils
+          .fetchAllEntityConfigs(zkUtils, ConfigType.Client)
+          .foreach {
+            case (clientId, properties) =>
+              dynamicConfigHandlers(ConfigType.Client)
+                .processConfigChanges(clientId, properties)
+          }
 
         // Create the config manager. start listening to notifications
         dynamicConfigManager =
@@ -318,18 +317,20 @@ class KafkaServer(
         dynamicConfigManager.startup()
 
         /* tell everyone we are alive */
-        val listeners = config.advertisedListeners.map {
-          case (protocol, endpoint) =>
-            if (endpoint.port == 0)
-              (
-                protocol,
-                EndPoint(
-                  endpoint.host,
-                  socketServer.boundPort(protocol),
-                  endpoint.protocolType))
-            else
-              (protocol, endpoint)
-        }
+        val listeners = config
+          .advertisedListeners
+          .map {
+            case (protocol, endpoint) =>
+              if (endpoint.port == 0)
+                (
+                  protocol,
+                  EndPoint(
+                    endpoint.host,
+                    socketServer.boundPort(protocol),
+                    endpoint.protocolType))
+              else
+                (protocol, endpoint)
+          }
         kafkaHealthcheck = new KafkaHealthcheck(
           config.brokerId,
           listeners,
@@ -369,15 +370,16 @@ class KafkaServer(
         ""
     }
 
-    val secureAclsEnabled =
-      JaasUtils.isZkSecurityEnabled() && config.zkEnableSecureAcls
+    val secureAclsEnabled = JaasUtils.isZkSecurityEnabled() && config
+      .zkEnableSecureAcls
 
     if (config.zkEnableSecureAcls && !secureAclsEnabled) {
       throw new java.lang.SecurityException(
         "zkEnableSecureAcls is true, but the verification of the JAAS login file failed.")
     }
     if (chroot.length > 1) {
-      val zkConnForChrootCreation = config.zkConnect
+      val zkConnForChrootCreation = config
+        .zkConnect
         .substring(0, config.zkConnect.indexOf("/"))
       val zkClientForChrootCreation = ZkUtils(
         zkConnForChrootCreation,
@@ -413,8 +415,8 @@ class KafkaServer(
   private def controlledShutdown() {
 
     def node(broker: Broker): Node = {
-      val brokerEndPoint = broker.getBrokerEndPoint(
-        config.interBrokerSecurityProtocol)
+      val brokerEndPoint = broker
+        .getBrokerEndPoint(config.interBrokerSecurityProtocol)
       new Node(brokerEndPoint.id, brokerEndPoint.host, brokerEndPoint.port)
     }
 
@@ -492,14 +494,13 @@ class KafkaServer(
           if (prevController != null) {
             try {
 
-              if (!networkClient.blockingReady(
-                    node(prevController),
-                    socketTimeoutMs))
+              if (!networkClient
+                    .blockingReady(node(prevController), socketTimeoutMs))
                 throw socketTimeoutException
 
               // send the controlled shutdown request
-              val requestHeader = networkClient.nextRequestHeader(
-                ApiKeys.CONTROLLED_SHUTDOWN_KEY)
+              val requestHeader = networkClient
+                .nextRequestHeader(ApiKeys.CONTROLLED_SHUTDOWN_KEY)
               val send =
                 new RequestSend(
                   node(prevController).idString,
@@ -519,7 +520,9 @@ class KafkaServer(
 
               val shutdownResponse =
                 new ControlledShutdownResponse(clientResponse.responseBody)
-              if (shutdownResponse.errorCode == Errors.NONE.code && shutdownResponse.partitionsRemaining.isEmpty) {
+              if (shutdownResponse.errorCode == Errors
+                    .NONE
+                    .code && shutdownResponse.partitionsRemaining.isEmpty) {
                 shutdownSucceeded = true
                 info("Controlled shutdown succeeded")
               } else {
@@ -527,8 +530,8 @@ class KafkaServer(
                   "Remaining partitions to move: %s".format(
                     shutdownResponse.partitionsRemaining.asScala.mkString(",")))
                 info(
-                  "Error code from controller: %d".format(
-                    shutdownResponse.errorCode))
+                  "Error code from controller: %d"
+                    .format(shutdownResponse.errorCode))
               }
             } catch {
               case ioe: IOException =>
@@ -603,19 +606,23 @@ class KafkaServer(
               channel.send(request)
 
               response = channel.receive()
-              val shutdownResponse = kafka.api.ControlledShutdownResponse
+              val shutdownResponse = kafka
+                .api
+                .ControlledShutdownResponse
                 .readFrom(response.payload())
-              if (shutdownResponse.errorCode == Errors.NONE.code && shutdownResponse.partitionsRemaining != null &&
+              if (shutdownResponse
+                    .errorCode == Errors.NONE.code && shutdownResponse
+                    .partitionsRemaining != null &&
                   shutdownResponse.partitionsRemaining.size == 0) {
                 shutdownSucceeded = true
                 info("Controlled shutdown succeeded")
               } else {
                 info(
-                  "Remaining partitions to move: %s".format(
-                    shutdownResponse.partitionsRemaining.mkString(",")))
+                  "Remaining partitions to move: %s"
+                    .format(shutdownResponse.partitionsRemaining.mkString(",")))
                 info(
-                  "Error code from controller: %d".format(
-                    shutdownResponse.errorCode))
+                  "Error code from controller: %d"
+                    .format(shutdownResponse.errorCode))
               }
             } catch {
               case ioe: java.io.IOException =>
@@ -736,10 +743,12 @@ class KafkaServer(
     val defaultProps = KafkaServer.copyKafkaConfigToLog(config)
     val defaultLogConfig = LogConfig(defaultProps)
 
-    val configs = AdminUtils.fetchAllTopicConfigs(zkUtils).map {
-      case (topic, configs) =>
-        topic -> LogConfig.fromProps(defaultProps, configs)
-    }
+    val configs = AdminUtils
+      .fetchAllTopicConfigs(zkUtils)
+      .map {
+        case (topic, configs) =>
+          topic -> LogConfig.fromProps(defaultProps, configs)
+      }
     // read the log configurations from zookeeper
     val cleanerConfig = CleanerConfig(
       numThreads = config.logCleanerThreads,
@@ -790,12 +799,14 @@ class KafkaServer(
       throw new InconsistentBrokerIdException(
         s"Failed to match broker.id across log.dirs. This could happen if multiple brokers shared a log directory (log.dirs) " +
           s"or partial data was manually copied from another broker. Found $brokerIdSet")
-    else if (brokerId >= 0 && brokerIdSet.size == 1 && brokerIdSet.last != brokerId)
+    else if (brokerId >= 0 && brokerIdSet.size == 1 && brokerIdSet
+               .last != brokerId)
       throw new InconsistentBrokerIdException(
         s"Configured broker.id $brokerId doesn't match stored broker.id ${brokerIdSet.last} in meta.properties. " +
           s"If you moved your data, make sure your configured broker.id matches. " +
           s"If you intend to create a new broker, you should remove all data in your data directories (log.dirs).")
-    else if (brokerIdSet.size == 0 && brokerId < 0 && config.brokerIdGenerationEnable) // generate a new brokerId from Zookeeper
+    else if (brokerIdSet.size == 0 && brokerId < 0 && config
+               .brokerIdGenerationEnable) // generate a new brokerId from Zookeeper
       brokerId = generateBrokerId
     else if (brokerIdSet.size == 1) // pick broker.id from meta.properties
       brokerId = brokerIdSet.last

@@ -25,10 +25,10 @@ class IntroduceFieldSettings[T <: PsiElement](ifc: IntroduceFieldContext[T]) {
   var explicitTypeChbEnabled: Boolean = true
 
   val canBeInitInDeclaration: Boolean = ifc.canBeInitInDecl
-  val canBeInitLocalIfReplaceAll: Boolean = ifc.canBeInitLocally(replaceAll =
-    true)
-  val canBeInitLocalOneOccurrence: Boolean = ifc.canBeInitLocally(replaceAll =
-    false)
+  val canBeInitLocalIfReplaceAll: Boolean = ifc
+    .canBeInitLocally(replaceAll = true)
+  val canBeInitLocalOneOccurrence: Boolean = ifc
+    .canBeInitLocally(replaceAll = false)
   val canBeInitLocally: Boolean =
     canBeInitLocalIfReplaceAll || canBeInitLocalOneOccurrence
 

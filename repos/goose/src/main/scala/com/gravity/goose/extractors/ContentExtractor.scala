@@ -43,9 +43,8 @@ trait ContentExtractor {
 
   // PRIVATE PROPERTIES BELOW
 
-  val MOTLEY_REPLACEMENT: StringReplacement = StringReplacement.compile(
-    "&#65533;",
-    string.empty)
+  val MOTLEY_REPLACEMENT: StringReplacement = StringReplacement
+    .compile("&#65533;", string.empty)
   val ESCAPED_FRAGMENT_REPLACEMENT: StringReplacement = StringReplacement
     .compile("#!", "?_escaped_fragment_=")
   val TITLE_REPLACEMENTS: ReplaceSequence = ReplaceSequence
@@ -238,8 +237,9 @@ trait ContentExtractor {
         if ((numberOfNodes - i) <= bottomNodesForNegativeScore) {
           val booster: Float = bottomNodesForNegativeScore
             .asInstanceOf[Float] - (numberOfNodes - i).asInstanceOf[Float]
-          boostScore =
-            -math.pow(booster, 2.asInstanceOf[Float]).asInstanceOf[Float]
+          boostScore = -math
+            .pow(booster, 2.asInstanceOf[Float])
+            .asInstanceOf[Float]
           val negscore: Float = math.abs(boostScore) + negativeScoring
           if (negscore > 40) {
             boostScore = 5
@@ -248,8 +248,9 @@ trait ContentExtractor {
       }
 
       trace(
-        logPrefix + "Location Boost Score: " + boostScore + " on interation: " + i + "' id='" + node.parent.id + "' class='" + node.parent
-          .attr("class"))
+        logPrefix + "Location Boost Score: " + boostScore + " on interation: " + i + "' id='" + node
+          .parent
+          .id + "' class='" + node.parent.attr("class"))
 
       val nodeText: String = node.text
       val wordStats: WordStats = StopWords.getStopWordCount(nodeText)
@@ -273,10 +274,10 @@ trait ContentExtractor {
     for (e <- parentNodes) {
 
       trace(
-        logPrefix + "ParentNode: score='" + e.attr(
-          "gravityScore") + "' nodeCount='" + e.attr(
-          "gravityNodes") + "' id='" + e.id + "' class='" + e.attr(
-          "class") + "' ")
+        logPrefix + "ParentNode: score='" + e
+          .attr("gravityScore") + "' nodeCount='" + e
+          .attr("gravityNodes") + "' id='" + e.id + "' class='" + e
+          .attr("class") + "' ")
 
       val score: Int = getScore(e)
       if (score > topNodeScore) {
@@ -298,10 +299,10 @@ trait ContentExtractor {
     try {
       if (topNode != null) {
         trace(
-          logPrefix + "Our TOPNODE: score='" + topNode.attr(
-            "gravityScore") + "' nodeCount='" + topNode.attr(
-            "gravityNodes") + "' id='" + topNode.id + "' class='" + topNode
-            .attr("class") + "' ")
+          logPrefix + "Our TOPNODE: score='" + topNode
+            .attr("gravityScore") + "' nodeCount='" + topNode
+            .attr("gravityNodes") + "' id='" + topNode
+            .id + "' class='" + topNode.attr("class") + "' ")
         val text =
           if (topNode.text.trim.length > 100)
             topNode.text.trim.substring(0, 100) + "..."
@@ -485,15 +486,17 @@ trait ContentExtractor {
       node.parent.getElementsByTag("object").foreach(candidates.add(_))
 
       trace(
-        logPrefix + "extractVideos: Starting to extract videos. Found: " + candidates.size)
+        logPrefix + "extractVideos: Starting to extract videos. Found: " + candidates
+          .size)
 
       for (el <- candidates) {
         val attrs: Attributes = el.attributes()
         for (a <- attrs) {
           try {
             if ((
-                  a.getValue.contains(youtubeStr) || a.getValue.contains(
-                    vimdeoStr)
+                  a.getValue.contains(youtubeStr) || a
+                    .getValue
+                    .contains(vimdeoStr)
                 ) && (a.getKey == "src")) {
               trace(logPrefix + "This page has a video!: " + a.getValue)
               goodMovies += el
@@ -604,14 +607,13 @@ trait ContentExtractor {
             for {
               firstParagraph <- potentialParagraphs
               if (firstParagraph.text.length() > 0)
-              wordStats: WordStats = StopWords.getStopWordCount(
-                firstParagraph.text)
+              wordStats: WordStats = StopWords
+                .getStopWordCount(firstParagraph.text)
               paragraphScore: Int = wordStats.getStopWordCount
               siblingBaseLineScore: Double = .30
               if (
-                (
-                  baselineScoreForSiblingParagraphs * siblingBaseLineScore
-                ).toDouble < paragraphScore
+                (baselineScoreForSiblingParagraphs * siblingBaseLineScore)
+                  .toDouble < paragraphScore
               )
             } yield {
 

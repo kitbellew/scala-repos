@@ -82,7 +82,8 @@ trait FlashCookieSpec
         val response = await(ws.url("/flash").withFollowRedirects(false).get())
         val Some(flashCookie) = readFlashCookie(response)
         val response2 = await(
-          ws.url("/set-cookie")
+          ws
+            .url("/set-cookie")
             .withHeaders(
               "Cookie" -> s"${flashCookie.name.get}=${flashCookie.value.get}")
             .get())
@@ -98,10 +99,10 @@ trait FlashCookieSpec
 
     }
 
-    "honor configuration for flash.secure" in Helpers.running(
-      _.configure("play.http.flash.secure" -> true)) { _ =>
-      Flash.encodeAsCookie(Flash()).secure must beTrue
-    }
+    "honor configuration for flash.secure" in Helpers
+      .running(_.configure("play.http.flash.secure" -> true)) { _ =>
+        Flash.encodeAsCookie(Flash()).secure must beTrue
+      }
   }
 
 }

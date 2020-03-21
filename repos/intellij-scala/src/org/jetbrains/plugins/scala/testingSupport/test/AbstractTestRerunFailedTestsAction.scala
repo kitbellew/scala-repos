@@ -36,7 +36,8 @@ class AbstractTestRerunFailedTestsAction(
 
   override def getRunProfile: MyRunProfileAdapter = {
     val properties: TestConsoleProperties = getModel.getProperties
-    val configuration = properties.getConfiguration
+    val configuration = properties
+      .getConfiguration
       .asInstanceOf[AbstractTestRunConfiguration]
     new MyRunProfileAdapter(configuration) {
       def getModules: Array[Module] = configuration.getModules
@@ -62,7 +63,8 @@ class AbstractTestRerunFailedTestsAction(
         val failedTests = getFailedTests(configuration.getProject)
         val buffer = new ArrayBuffer[(String, String)]
         val classNames =
-          patcher.getClasses
+          patcher
+            .getClasses
             .map(s =>
               {
                 val i = s.lastIndexOf(".")

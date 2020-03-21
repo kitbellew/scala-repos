@@ -15,14 +15,13 @@ object GuavaCache extends Cache {
     .build[String, Object]
 
   override def get[V](key: String): Option[V] =
-    Option(cache.getIfPresent(key).asInstanceOf[Entry[V]])
-      .flatMap(e =>
-        if (e.isExpired) {
-          remove(key)
-          None
-        } else {
-          Some(e.value)
-        })
+    Option(cache.getIfPresent(key).asInstanceOf[Entry[V]]).flatMap(e =>
+      if (e.isExpired) {
+        remove(key)
+        None
+      } else {
+        Some(e.value)
+      })
 
   override def put[V](key: String, value: V, ttl: Option[Duration]): V = {
     cache.put(

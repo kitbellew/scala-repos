@@ -66,16 +66,14 @@ object FingerTreeTest extends SpecLite {
 
   "replacing last element works correctly" ! forAll {
     (tree: SequenceTree[Int], x: Int) =>
-      !tree.isEmpty ==> (
-        (tree :-| x).toStream must_=== (tree.toStream.init :+ x)
-      )
+      !tree
+        .isEmpty ==> ((tree :-| x).toStream must_=== (tree.toStream.init :+ x))
   }
 
   "replacing first element works correctly" ! forAll {
     (tree: SequenceTree[Int], x: Int) =>
-      !tree.isEmpty ==> (
-        (x |-: tree).toStream must_=== (x +: tree.toStream.tail)
-      )
+      !tree
+        .isEmpty ==> ((x |-: tree).toStream must_=== (x +: tree.toStream.tail))
   }
 
   "head and tail work correctly" ! forAll { (tree: SequenceTree[Int]) =>
@@ -112,8 +110,8 @@ object FingerTreeTest extends SpecLite {
 
     "apply effects in order" in {
       val s: Writer[String, FingerTree[Int, Int]] = streamToTree(
-        intStream.take(5)).traverseTree[Writer[String, ?], Int, Int](x =>
-        Writer(x.toString, x))
+        intStream.take(5))
+        .traverseTree[Writer[String, ?], Int, Int](x => Writer(x.toString, x))
       s.run must_=== ("12345", streamToTree(intStream.take(5)))
     }
 
@@ -138,9 +136,8 @@ object FingerTreeTest extends SpecLite {
     "not blow the stack" in {
       val tree: Option[FingerTree[Int, Int]] = streamToTree(
         intStream.take(32 * 1024)).traverseTree[Option, Int, Int](x => Some(x))
-      tree.map(_.toStream.take(100)) getOrElse Stream.empty must_=== (
-        intStream.take(100)
-      )
+      tree.map(_.toStream.take(100)) getOrElse Stream
+        .empty must_=== (intStream.take(100))
     }
 
   }
@@ -173,15 +170,19 @@ object FingerTreeTest extends SpecLite {
 
   "viewl works correctly" ! forAll { (tree: SequenceTree[Int]) =>
     val asStream = tree.toStream
-    tree.viewl.fold[Boolean](
-      true,
-      (x, t) => (x === asStream.head) && (t.toStream === asStream.tail))
+    tree
+      .viewl
+      .fold[Boolean](
+        true,
+        (x, t) => (x === asStream.head) && (t.toStream === asStream.tail))
   }
 
   "viewr works correctly" ! forAll { (tree: SequenceTree[Int]) =>
     val asStream = tree.toStream
-    tree.viewr.fold[Boolean](
-      true,
-      (i, x) => (i.toStream ≟ asStream.init) && (x ≟ asStream.last))
+    tree
+      .viewr
+      .fold[Boolean](
+        true,
+        (i, x) => (i.toStream ≟ asStream.init) && (x ≟ asStream.last))
   }
 }

@@ -22,9 +22,8 @@ trait ScBlockExpr extends ScExpression with ScBlock with ScControlFlowOwner {
     if (isAnonymousFunction)
       super.getControlFlow(policy)
     else {
-      val parent = PsiTreeUtil.getParentOfType(
-        this,
-        classOf[ScControlFlowOwner])
+      val parent = PsiTreeUtil
+        .getParentOfType(this, classOf[ScControlFlowOwner])
       parent.getControlFlow(policy)
     }
   }

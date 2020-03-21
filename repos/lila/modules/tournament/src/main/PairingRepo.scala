@@ -109,13 +109,15 @@ object PairingRepo {
           Unwind("u"),
           GroupField("u")("nb" -> SumValue(1))))
       .map {
-        _.documents.flatMap { doc =>
+        _.documents
+        .flatMap { doc =>
           doc.getAs[String]("_id") flatMap { uid =>
             doc.getAs[Int]("nb") map {
               uid -> _
             }
           }
-        }.toMap
+        }
+        .toMap
       }
   }
 
@@ -141,9 +143,11 @@ object PairingRepo {
       .collect[List]()
 
   def insert(pairing: Pairing) =
-    coll.insert {
-      pairingHandler.write(pairing) ++ BSONDocument("d" -> DateTime.now)
-    }.void
+    coll
+      .insert {
+        pairingHandler.write(pairing) ++ BSONDocument("d" -> DateTime.now)
+      }
+      .void
 
   def finish(g: lila.game.Game) =
     coll
@@ -190,9 +194,10 @@ object PairingRepo {
           Group(BSONBoolean(true))("ids" -> AddToSet("u")))
       )
       .map(
-        _.documents.headOption
-          .flatMap(_.getAs[Set[String]]("ids"))
-          .getOrElse(Set.empty[String]))
+        _.documents
+        .headOption
+        .flatMap(_.getAs[Set[String]]("ids"))
+        .getOrElse(Set.empty[String]))
 
   def playingGameIds(tourId: String): Fu[List[String]] =
     coll
@@ -200,7 +205,8 @@ object PairingRepo {
         Match(selectTour(tourId) ++ selectPlaying),
         List(Group(BSONBoolean(true))("ids" -> Push("_id"))))
       .map(
-        _.documents.headOption
-          .flatMap(_.getAs[List[String]]("ids"))
-          .getOrElse(List.empty[String]))
+        _.documents
+        .headOption
+        .flatMap(_.getAs[List[String]]("ids"))
+        .getOrElse(List.empty[String]))
 }

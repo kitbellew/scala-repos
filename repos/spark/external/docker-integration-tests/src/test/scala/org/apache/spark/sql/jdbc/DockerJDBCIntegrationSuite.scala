@@ -116,7 +116,8 @@ abstract class DockerJDBCIntegrationSuite
         .image(db.imageName)
         .networkDisabled(false)
         .env(
-          db.env
+          db
+            .env
             .map {
               case (k, v) =>
                 s"$k=$v"

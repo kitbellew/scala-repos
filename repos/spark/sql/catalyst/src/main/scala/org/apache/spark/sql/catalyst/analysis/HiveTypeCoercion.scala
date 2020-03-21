@@ -266,8 +266,10 @@ object HiveTypeCoercion {
 
         case s: Union
             if s.childrenResolved &&
-              s.children.forall(
-                _.output.length == s.children.head.output.length) && !s.resolved =>
+              s
+                .children
+                .forall(_.output.length == s.children.head.output.length) && !s
+              .resolved =>
           val newChildren: Seq[LogicalPlan] = buildNewChildrenWithWiderTypes(
             s.children)
           s.makeCopy(Array(newChildren))
@@ -320,12 +322,15 @@ object HiveTypeCoercion {
     private def widenTypes(
         plan: LogicalPlan,
         targetTypes: Seq[DataType]): LogicalPlan = {
-      val casted = plan.output.zip(targetTypes).map {
-        case (e, dt) if e.dataType != dt =>
-          Alias(Cast(e, dt), e.name)()
-        case (e, _) =>
-          e
-      }
+      val casted = plan
+        .output
+        .zip(targetTypes)
+        .map {
+          case (e, dt) if e.dataType != dt =>
+            Alias(Cast(e, dt), e.name)()
+          case (e, _) =>
+            e
+        }
       Project(casted, plan)
     }
   }
@@ -638,23 +643,27 @@ object HiveTypeCoercion {
           maybeCommonType
             .map { commonType =>
               var changed = false
-              val newBranches = c.branches.map {
-                case (condition, value) =>
+              val newBranches = c
+                .branches
+                .map {
+                  case (condition, value) =>
+                    if (value.dataType.sameType(commonType)) {
+                      (condition, value)
+                    } else {
+                      changed = true
+                      (condition, Cast(value, commonType))
+                    }
+                }
+              val newElseValue = c
+                .elseValue
+                .map { value =>
                   if (value.dataType.sameType(commonType)) {
-                    (condition, value)
+                    value
                   } else {
                     changed = true
-                    (condition, Cast(value, commonType))
+                    Cast(value, commonType)
                   }
-              }
-              val newElseValue = c.elseValue.map { value =>
-                if (value.dataType.sameType(commonType)) {
-                  value
-                } else {
-                  changed = true
-                  Cast(value, commonType)
                 }
-              }
               if (changed)
                 CaseWhen(newBranches, newElseValue)
               else
@@ -688,7 +697,9 @@ object HiveTypeCoercion {
                   Cast(right, widestType)
               If(pred, newLeft, newRight)
             }
-            .getOrElse(i) // If there is no applicable conversion, leave expression unchanged.
+            .getOrElse(
+              i
+            ) // If there is no applicable conversion, leave expression unchanged.
         // Convert If(null literal, _, _) into boolean type.
         // In the optimizer, we should short-circuit this directly into false value.
         case If(pred, left, right) if pred.dataType == NullType =>
@@ -757,24 +768,31 @@ object HiveTypeCoercion {
             .getOrElse(b) // If there is no applicable conversion, leave expression unchanged.
 
         case e: ImplicitCastInputTypes if e.inputTypes.nonEmpty =>
-          val children: Seq[Expression] = e.children.zip(e.inputTypes).map {
-            case (in, expected) =>
-              // If we cannot do the implicit cast, just use the original input.
-              implicitCast(in, expected).getOrElse(in)
-          }
+          val children: Seq[Expression] = e
+            .children
+            .zip(e.inputTypes)
+            .map {
+              case (in, expected) =>
+                // If we cannot do the implicit cast, just use the original input.
+                implicitCast(in, expected).getOrElse(in)
+            }
           e.withNewChildren(children)
 
         case e: ExpectsInputTypes if e.inputTypes.nonEmpty =>
           // Convert NullType into some specific target type for ExpectsInputTypes that don't do
           // general implicit casting.
-          val children: Seq[Expression] = e.children.zip(e.inputTypes).map {
-            case (in, expected) =>
-              if (in.dataType == NullType && !expected.acceptsType(NullType)) {
-                Literal.create(null, expected.defaultConcreteType)
-              } else {
-                in
-              }
-          }
+          val children: Seq[Expression] = e
+            .children
+            .zip(e.inputTypes)
+            .map {
+              case (in, expected) =>
+                if (in.dataType == NullType && !expected
+                      .acceptsType(NullType)) {
+                  Literal.create(null, expected.defaultConcreteType)
+                } else {
+                  in
+                }
+            }
           e.withNewChildren(children)
       }
 

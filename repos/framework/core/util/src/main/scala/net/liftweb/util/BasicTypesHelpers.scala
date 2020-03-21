@@ -114,10 +114,12 @@ trait BasicTypesHelpers {
     val ls: Seq[Node] = left.toSeq
     val rs: Seq[Node] = right.toSeq
     if (ls.length == rs.length) {
-      ls.zip(rs).foldLeft(true) {
-        case (b, (l, r)) =>
-          b && compareNode(l, r)
-      }
+      ls
+        .zip(rs)
+        .foldLeft(true) {
+          case (b, (l, r)) =>
+            b && compareNode(l, r)
+        }
     } else {
       false
     }
@@ -130,9 +132,8 @@ trait BasicTypesHelpers {
     compareXml(left.child, right.child) &&
       left.label == right.label &&
       (
-        (
-          (null eq left.prefix) && (null eq right.prefix)
-        ) || left.prefix == right.prefix
+        ((null eq left.prefix) && (null eq right.prefix)) || left
+          .prefix == right.prefix
       ) &&
       left.scope == right.scope &&
       compareMetaData(left.attributes.toList, right.attributes.toList)

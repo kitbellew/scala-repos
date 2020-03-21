@@ -147,10 +147,14 @@ final class EMLDAOptimizer extends LDAOptimizer {
     val edges: RDD[Edge[TokenCount]] = docs.flatMap {
       case (docID: Long, termCounts: Vector) =>
         // Add edges for terms with non-zero counts.
-        termCounts.toBreeze.activeIterator.filter(_._2 != 0.0).map {
-          case (term, cnt) =>
-            Edge(docID, term2index(term), cnt)
-        }
+        termCounts
+          .toBreeze
+          .activeIterator
+          .filter(_._2 != 0.0)
+          .map {
+            case (term, cnt) =>
+              Edge(docID, term2index(term), cnt)
+          }
     }
 
     // Create vertices.
@@ -172,8 +176,8 @@ final class EMLDAOptimizer extends LDAOptimizer {
     }
 
     // Partition such that edges are grouped by document
-    this.graph = Graph(docTermVertices, edges).partitionBy(
-      PartitionStrategy.EdgePartition1D)
+    this.graph = Graph(docTermVertices, edges)
+      .partitionBy(PartitionStrategy.EdgePartition1D)
     this.k = k
     this.vocabSize = docs.take(1).head._2.size
     this.checkpointInterval = lda.getCheckpointInterval
@@ -248,7 +252,8 @@ final class EMLDAOptimizer extends LDAOptimizer {
 
   private def computeGlobalTopicTotals(): TopicCounts = {
     val numTopics = k
-    graph.vertices
+    graph
+      .vertices
       .filter(isTermVertex)
       .values
       .fold(BDV.zeros[Double](numTopics))(_ += _)
@@ -459,10 +464,12 @@ final class OnlineLDAOptimizer extends LDAOptimizer {
         require(
           lda.getAsymmetricDocConcentration.size == k,
           s"alpha must have length k, got: $alpha")
-        lda.getAsymmetricDocConcentration.foreachActive {
-          case (_, x) =>
-            require(x >= 0, s"all entries in alpha must be >= 0, got: $alpha")
-        }
+        lda
+          .getAsymmetricDocConcentration
+          .foreachActive {
+            case (_, x) =>
+              require(x >= 0, s"all entries in alpha must be >= 0, got: $alpha")
+          }
         lda.getAsymmetricDocConcentration
       }
     this.eta =
@@ -533,7 +540,9 @@ final class OnlineLDAOptimizer extends LDAOptimizer {
     }
     val statsSum: BDM[Double] = stats.map(_._1).reduce(_ += _)
     expElogbetaBc.unpersist()
-    val gammat: BDM[Double] = breeze.linalg.DenseMatrix
+    val gammat: BDM[Double] = breeze
+      .linalg
+      .DenseMatrix
       .vertcat(stats.map(_._2).reduce(_ ++ _).map(_.toDenseMatrix): _*)
     val batchResult = statsSum :* expElogbeta.t
 
@@ -666,8 +675,8 @@ private[clustering] object OnlineLDAOptimizer {
       meanGammaChange = sum(abs(gammad - lastgamma)) / k
     }
 
-    val sstatsd =
-      expElogthetad.asDenseMatrix.t * (ctsVector :/ phiNorm).asDenseMatrix
+    val sstatsd = expElogthetad.asDenseMatrix.t * (ctsVector :/ phiNorm)
+      .asDenseMatrix
     (gammad, sstatsd)
   }
 }

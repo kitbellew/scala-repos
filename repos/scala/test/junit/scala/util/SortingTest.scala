@@ -71,11 +71,14 @@ class SortingTest {
     val ys = Array.range(0, xs.length)
     val zs = {
       val temp = xs.clone;
-      java.util.Arrays.sort(
-        temp,
-        new java.util.Comparator[N] {
-          def compare(a: N, b: N) = a.compare(b)
-        });
+      java
+        .util
+        .Arrays
+        .sort(
+          temp,
+          new java.util.Comparator[N] {
+            def compare(a: N, b: N) = a.compare(b)
+          });
       temp
     }
     val qxs = {
@@ -163,9 +166,8 @@ class SortingTest {
     for (size <- sizes) {
       val b = Array.fill(size)(rng.nextBoolean)
       val bfwd = Sorting.stableSort(b.clone: Seq[Boolean])
-      val bbkw = Sorting.stableSort(
-        b.clone: Seq[Boolean],
-        (x: Boolean, y: Boolean) => x && !y)
+      val bbkw = Sorting
+        .stableSort(b.clone: Seq[Boolean], (x: Boolean, y: Boolean) => x && !y)
       assertTrue(
         "All falses should be first",
         bfwd.dropWhile(_ == false).forall(_ == true))

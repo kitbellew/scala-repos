@@ -35,7 +35,10 @@ class MethodLevelOptsTest extends ClearAfterClass {
     List(Label(0), LineNumber(1, Label(0))) ::: code.toList ::: List(Label(1))
 
   def locals(c: ClassNode, m: String) =
-    findAsmMethod(c, m).localVariables.asScala.toList
+    findAsmMethod(c, m)
+      .localVariables
+      .asScala
+      .toList
       .map(l => (l.name, l.index))
       .sortBy(_._2)
 

@@ -31,10 +31,8 @@ class ReplaceEqualsOrEqualityInMethodCallExprIntention
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val methodCallExpr: ScMethodCall = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScMethodCall],
-      false)
+    val methodCallExpr: ScMethodCall = PsiTreeUtil
+      .getParentOfType(element, classOf[ScMethodCall], false)
     if (methodCallExpr == null)
       return false
 
@@ -42,7 +40,8 @@ class ReplaceEqualsOrEqualityInMethodCallExprIntention
       return false
 
     val oper =
-      methodCallExpr.getInvokedExpr
+      methodCallExpr
+        .getInvokedExpr
         .asInstanceOf[ScReferenceExpression]
         .nameId
         .getText
@@ -50,7 +49,8 @@ class ReplaceEqualsOrEqualityInMethodCallExprIntention
       return false
 
     val range: TextRange =
-      methodCallExpr.getInvokedExpr
+      methodCallExpr
+        .getInvokedExpr
         .asInstanceOf[ScReferenceExpression]
         .nameId
         .getTextRange
@@ -61,7 +61,8 @@ class ReplaceEqualsOrEqualityInMethodCallExprIntention
     val replaceOper = Map("equals" -> "==", "==" -> "equals")
     setText("Replace '" + oper + "' with '" + replaceOper(oper) + "'")
 
-    if (methodCallExpr.getInvokedExpr
+    if (methodCallExpr
+          .getInvokedExpr
           .asInstanceOf[ScReferenceExpression]
           .isQualified)
       return true
@@ -70,10 +71,8 @@ class ReplaceEqualsOrEqualityInMethodCallExprIntention
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val methodCallExpr: ScMethodCall = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScMethodCall],
-      false)
+    val methodCallExpr: ScMethodCall = PsiTreeUtil
+      .getParentOfType(element, classOf[ScMethodCall], false)
     if (methodCallExpr == null || !methodCallExpr.isValid)
       return
 
@@ -82,14 +81,16 @@ class ReplaceEqualsOrEqualityInMethodCallExprIntention
     val expr = new StringBuilder
     val replaceOper = Map("equals" -> "==", "==" -> "equals")
     val oper =
-      methodCallExpr.getInvokedExpr
+      methodCallExpr
+        .getInvokedExpr
         .asInstanceOf[ScReferenceExpression]
         .nameId
         .getText
 
     expr
       .append(
-        methodCallExpr.getInvokedExpr
+        methodCallExpr
+          .getInvokedExpr
           .asInstanceOf[ScReferenceExpression]
           .qualifier
           .get
@@ -98,9 +99,8 @@ class ReplaceEqualsOrEqualityInMethodCallExprIntention
       .append(replaceOper(oper))
       .append(methodCallExpr.args.getText)
 
-    val newMethodCallExpr = ScalaPsiElementFactory.createExpressionFromText(
-      expr.toString(),
-      element.getManager)
+    val newMethodCallExpr = ScalaPsiElementFactory
+      .createExpressionFromText(expr.toString(), element.getManager)
 
     val size = newMethodCallExpr
       .asInstanceOf[ScMethodCall]

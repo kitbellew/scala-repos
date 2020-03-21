@@ -70,9 +70,12 @@ class SimpleFunctionRegistry extends FunctionRegistry {
       name: String,
       children: Seq[Expression]): Expression = {
     val func = synchronized {
-      functionBuilders.get(name).map(_._2).getOrElse {
-        throw new AnalysisException(s"undefined function $name")
-      }
+      functionBuilders
+        .get(name)
+        .map(_._2)
+        .getOrElse {
+          throw new AnalysisException(s"undefined function $name")
+        }
     }
     func(children)
   }
@@ -90,10 +93,12 @@ class SimpleFunctionRegistry extends FunctionRegistry {
   def copy(): SimpleFunctionRegistry =
     synchronized {
       val registry = new SimpleFunctionRegistry
-      functionBuilders.iterator.foreach {
-        case (name, (info, builder)) =>
-          registry.registerFunction(name, info, builder)
-      }
+      functionBuilders
+        .iterator
+        .foreach {
+          case (name, (info, builder)) =>
+            registry.registerFunction(name, info, builder)
+        }
       registry
     }
 }
@@ -335,7 +340,8 @@ object FunctionRegistry {
         if (varargCtor.isDefined) {
           // If there is an apply method that accepts Seq[Expression], use that one.
           Try(
-            varargCtor.get
+            varargCtor
+              .get
               .newInstance(expressions)
               .asInstanceOf[Expression]) match {
             case Success(e) =>

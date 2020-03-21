@@ -259,11 +259,13 @@ trait TreeMaker[ /*@specialized(Double) */ A] {
     }
 
     val orders =
-      (0 until opts.features).map { i =>
-        val order = (0 until dependent.length).toArray
-        order.qsortBy(independent(_)(i))
-        order
-      }.toArray
+      (0 until opts.features)
+        .map { i =>
+          val order = (0 until dependent.length).toArray
+          order.qsortBy(independent(_)(i))
+          order
+        }
+        .toArray
     growTree(orders)
   }
 }
@@ -426,22 +428,25 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
   private def sliceToArray[@specialized(Double) A: Manifest](
       slice: Slice,
       zero: => A)(pf: PartialFunction[Column, Int => A]): Option[Array[A]] = {
-    slice.columns.values.collectFirst {
-      case c if pf.isDefinedAt(c) => {
-        val extract = pf(c)
-        val xs = new Array[A](slice.size)
-        var i = 0
-        while (i < xs.length) {
-          if (c.isDefinedAt(i)) {
-            xs(i) = extract(i)
-          } else {
-            xs(i) = zero
+    slice
+      .columns
+      .values
+      .collectFirst {
+        case c if pf.isDefinedAt(c) => {
+          val extract = pf(c)
+          val xs = new Array[A](slice.size)
+          var i = 0
+          while (i < xs.length) {
+            if (c.isDefinedAt(i)) {
+              xs(i) = extract(i)
+            } else {
+              xs(i) = zero
+            }
+            i += 1
           }
-          i += 1
+          xs
         }
-        xs
       }
-    }
   }
 
   private def extract[@specialized(Double) A: Manifest](table: Table)(
@@ -611,17 +616,14 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       val sampleSize = 10000
       val maxForestSize = 2000
 
-      val independentSpec = trans.DerefObjectStatic(
-        TransSpec1.Id,
-        CPathField(independent))
-      val dependentSpec = trans.DerefObjectStatic(
-        TransSpec1.Id,
-        CPathField(dependent))
+      val independentSpec = trans
+        .DerefObjectStatic(TransSpec1.Id, CPathField(independent))
+      val dependentSpec = trans
+        .DerefObjectStatic(TransSpec1.Id, CPathField(dependent))
 
       override val idPolicy = IdentityPolicy.Retain.Merge
-      lazy val alignment = MorphismAlignment.Custom(
-        IdentityPolicy.Retain.Right,
-        alignCustom _)
+      lazy val alignment = MorphismAlignment
+        .Custom(IdentityPolicy.Retain.Right, alignCustom _)
 
       def extractDependent(table: Table): M[Array[A]]
 
@@ -739,10 +741,12 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           def apply(table: Table, ctx: MorphContext): M[Table] = {
 
             lazy val models: Map[String, (JType, F)] =
-              forests.zipWithIndex.map({
-                case (elem, i) =>
-                  ("model" + (i + 1)) -> elem
-              })(collection.breakOut)
+              forests
+                .zipWithIndex
+                .map({
+                  case (elem, i) =>
+                    ("model" + (i + 1)) -> elem
+                })(collection.breakOut)
 
             lazy val specs: Seq[TransSpec1] =
               models.map({
@@ -823,8 +827,8 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         }
 
       def alignCustom(t1: Table, t2: Table): M[(Table, Morph1Apply)] = {
-        val trainingTable = t1.transform(
-          trans.DerefObjectStatic(TransSpec1.Id, paths.Value))
+        val trainingTable = t1
+          .transform(trans.DerefObjectStatic(TransSpec1.Id, paths.Value))
         val forestsM = makeForests(trainingTable)
 
         forestsM map { forests =>

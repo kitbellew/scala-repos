@@ -96,13 +96,16 @@ object LiteralGenerator {
   def decimalLiteralGen(precision: Int, scale: Int): Gen[Literal] = {
     assert(scale >= 0)
     assert(precision >= scale)
-    Arbitrary.arbBigInt.arbitrary.map { s =>
-      val a = (s % BigInt(10).pow(precision - scale)).toString()
-      val b = (s % BigInt(10).pow(scale)).abs.toString()
-      Literal.create(
-        Decimal(BigDecimal(s"$a.$b"), precision, scale),
-        DecimalType(precision, scale))
-    }
+    Arbitrary
+      .arbBigInt
+      .arbitrary
+      .map { s =>
+        val a = (s % BigInt(10).pow(precision - scale)).toString()
+        val b = (s % BigInt(10).pow(scale)).abs.toString()
+        Literal.create(
+          Decimal(BigDecimal(s"$a.$b"), precision, scale),
+          DecimalType(precision, scale))
+      }
   }
 
   lazy val stringLiteralGen: Gen[Literal] =

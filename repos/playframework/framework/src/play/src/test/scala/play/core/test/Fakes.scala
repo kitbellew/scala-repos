@@ -63,8 +63,8 @@ case class FakeRequest[A](
       headers: Headers = this.headers,
       remoteAddress: String = this.remoteAddress,
       secure: Boolean = this.secure,
-      clientCertificateChain: Option[Seq[X509Certificate]] =
-        this.clientCertificateChain,
+      clientCertificateChain: Option[Seq[X509Certificate]] = this
+        .clientCertificateChain,
       body: B = this.body): FakeRequest[B] = {
     new FakeRequest[B](
       method,
@@ -87,8 +87,11 @@ case class FakeRequest[A](
   /**
     * The request query String
     */
-  lazy val queryString: Map[String, Seq[String]] =
-    play.core.parsers.FormUrlEncodedParser.parse(rawQueryString)
+  lazy val queryString: Map[String, Seq[String]] = play
+    .core
+    .parsers
+    .FormUrlEncodedParser
+    .parse(rawQueryString)
 
   /**
     * Constructs a new request with additional headers. Any existing headers of the same name will be replaced.

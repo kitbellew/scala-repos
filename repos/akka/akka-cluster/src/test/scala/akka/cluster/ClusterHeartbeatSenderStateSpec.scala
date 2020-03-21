@@ -66,7 +66,8 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
   private def fd(
       state: ClusterHeartbeatSenderState,
       node: UniqueAddress): FailureDetectorStub =
-    state.failureDetector
+    state
+      .failureDetector
       .asInstanceOf[DefaultFailureDetectorRegistry[Address]]
       .failureDetector(node.address)
       .get
@@ -204,8 +205,10 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
         try {
           operation match {
             case Add ⇒
-              if (node != selfUniqueAddress && !state.ring.nodes.contains(
-                    node)) {
+              if (node != selfUniqueAddress && !state
+                    .ring
+                    .nodes
+                    .contains(node)) {
                 val oldUnreachable = state.oldReceiversNowUnreachable
                 state = state.addMember(node)
                 // keep unreachable
@@ -217,8 +220,10 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
               }
 
             case Remove ⇒
-              if (node != selfUniqueAddress && state.ring.nodes.contains(
-                    node)) {
+              if (node != selfUniqueAddress && state
+                    .ring
+                    .nodes
+                    .contains(node)) {
                 val oldUnreachable = state.oldReceiversNowUnreachable
                 state = state.removeMember(node)
                 // keep unreachable, unless it was the removed
@@ -237,9 +242,9 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
 
             case Unreachable ⇒
               if (node != selfUniqueAddress && state.activeReceivers(node)) {
-                state.failureDetector.heartbeat(
-                  node.address
-                ) // make sure the fd is created
+                state
+                  .failureDetector
+                  .heartbeat(node.address) // make sure the fd is created
                 fd(state, node).markNodeAsUnavailable()
                 state.failureDetector.isMonitoring(node.address) should ===(
                   true)
@@ -249,8 +254,10 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
               }
 
             case HeartbeatRsp ⇒
-              if (node != selfUniqueAddress && state.ring.nodes.contains(
-                    node)) {
+              if (node != selfUniqueAddress && state
+                    .ring
+                    .nodes
+                    .contains(node)) {
                 val oldUnreachable = state.oldReceiversNowUnreachable
                 val oldReceivers = state.activeReceivers
                 val oldRingReceivers = state.ring.myReceivers

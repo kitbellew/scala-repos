@@ -69,9 +69,8 @@ object ShapelessForProduct extends ScalaMacroTypeable {
         undefSubst.getSubstitutor match {
           case Some(subst) =>
             val productLikeType = subst.subst(undef)
-            val parts = ScPattern.extractProductParts(
-              productLikeType,
-              context.place)
+            val parts = ScPattern
+              .extractProductParts(productLikeType, context.place)
             if (parts.length == 0)
               return None
             val coloncolon = manager.getCachedClass(
@@ -95,12 +94,14 @@ object ShapelessForProduct extends ScalaMacroTypeable {
               }
             ScalaPsiUtil.getCompanionModule(c) match {
               case Some(obj: ScObject) =>
-                val elem = obj.members.find {
-                  case a: ScTypeAlias if a.name == "Aux" =>
-                    true
-                  case _ =>
-                    false
-                }
+                val elem = obj
+                  .members
+                  .find {
+                    case a: ScTypeAlias if a.name == "Aux" =>
+                      true
+                    case _ =>
+                      false
+                  }
                 if (!elem.isDefined)
                   return None
                 Some(

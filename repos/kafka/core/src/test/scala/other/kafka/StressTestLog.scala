@@ -35,15 +35,12 @@ object StressTestLog {
     val dir = TestUtils.randomPartitionLogDir(TestUtils.tempDir())
     val time = new MockTime
     val logProprties = new Properties()
-    logProprties.put(
-      LogConfig.SegmentBytesProp,
-      64 * 1024 * 1024: java.lang.Integer)
-    logProprties.put(
-      LogConfig.MaxMessageBytesProp,
-      Int.MaxValue: java.lang.Integer)
-    logProprties.put(
-      LogConfig.SegmentIndexBytesProp,
-      1024 * 1024: java.lang.Integer)
+    logProprties
+      .put(LogConfig.SegmentBytesProp, 64 * 1024 * 1024: java.lang.Integer)
+    logProprties
+      .put(LogConfig.MaxMessageBytesProp, Int.MaxValue: java.lang.Integer)
+    logProprties
+      .put(LogConfig.SegmentIndexBytesProp, 1024 * 1024: java.lang.Integer)
 
     val log =
       new Log(
@@ -97,10 +94,11 @@ object StressTestLog {
     @volatile
     var offset = 0
     override def work() {
-      val logAppendInfo = log.append(
-        TestUtils.singleMessageSet(offset.toString.getBytes))
+      val logAppendInfo = log
+        .append(TestUtils.singleMessageSet(offset.toString.getBytes))
       require(
-        logAppendInfo.firstOffset == offset && logAppendInfo.lastOffset == offset)
+        logAppendInfo.firstOffset == offset && logAppendInfo
+          .lastOffset == offset)
       offset += 1
       if (offset % 1000 == 0)
         Thread.sleep(500)

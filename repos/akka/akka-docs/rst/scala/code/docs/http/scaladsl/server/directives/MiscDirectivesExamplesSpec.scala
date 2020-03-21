@@ -15,7 +15,8 @@ class MiscDirectivesExamplesSpec extends RoutingSpec {
   "extractClientIP-example" in {
     val route = extractClientIP { ip =>
       complete(
-        "Client's ip is " + ip.toOption
+        "Client's ip is " + ip
+          .toOption
           .map(_.getHostAddress)
           .getOrElse("unknown"))
     }
@@ -33,9 +34,11 @@ class MiscDirectivesExamplesSpec extends RoutingSpec {
       path("even" / IntNumber) { i =>
         complete {
           // returns Some(evenNumberDescription) or None
-          Option(i).filter(_ % 2 == 0).map { num =>
-            s"Number $num is even."
-          }
+          Option(i)
+            .filter(_ % 2 == 0)
+            .map { num =>
+              s"Number $num is even."
+            }
         }
       }
     }

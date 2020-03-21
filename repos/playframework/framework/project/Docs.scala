@@ -68,13 +68,12 @@ object Docs {
       val filtered = raw.filter(_.getName != ".DS_Store")
       val docMappings = filtered.get pair rebase(docBase, "play/docs/content/")
 
-      val apiDocMappings =
-        (apiBase ** "*").get pair rebase(apiBase, "play/docs/content/api")
+      val apiDocMappings = (apiBase ** "*")
+        .get pair rebase(apiBase, "play/docs/content/api")
 
       // The play version is added so that resource paths are versioned
-      val webjarMappings = webjars.*** pair rebase(
-        webjars,
-        "play/docs/content/webjars/" + playVersion)
+      val webjarMappings = webjars
+        .*** pair rebase(webjars, "play/docs/content/webjars/" + playVersion)
 
       // Gather all the conf files into the project
       val referenceConfMappings = confs.map {
@@ -102,14 +101,16 @@ object Docs {
           // The play version is added so that resource paths are versioned
           val webjars = extractWebjars.value
           val playVersion = version.value
-          val webjarMappings =
-            webjars.*** pair rebase(webjars, "webjars/" + playVersion)
+          val webjarMappings = webjars
+            .*** pair rebase(webjars, "webjars/" + playVersion)
 
           // Gather all the conf files into the project
-          val referenceConfs = allConfs.value.map {
-            case (projectName, conf) =>
-              conf -> s"confs/$projectName/${conf.getName}"
-          }
+          val referenceConfs = allConfs
+            .value
+            .map {
+              case (projectName, conf) =>
+                conf -> s"confs/$projectName/${conf.getName}"
+            }
 
           docMappings ++ webjarMappings ++ referenceConfs
         }
@@ -139,7 +140,8 @@ object Docs {
 
         val label = "Play " + version
         val apiMappings = Keys.apiMappings.value
-        val externalDocsScalacOption = Opts.doc
+        val externalDocsScalacOption = Opts
+          .doc
           .externalAPI(apiMappings)
           .head
           .replace("-doc-external-doc:", "")
@@ -224,8 +226,8 @@ object Docs {
           (
             for {
               conf <- resources.filter(resource =>
-                resource.name == "reference.conf" || resource.name.endsWith(
-                  ".xml"))
+                resource
+                  .name == "reference.conf" || resource.name.endsWith(".xml"))
               id <- projectId.toSeq
             } yield id -> conf
           ).distinct
@@ -247,8 +249,8 @@ object Docs {
         task in conf in ref get structure.data
 
       // Get all the Scala sources (not the Java ones)
-      val filteredSources = taskFromProject(sources).map(
-        _.map(_.filter(_.name.endsWith(extension))))
+      val filteredSources = taskFromProject(sources)
+        .map(_.map(_.filter(_.name.endsWith(extension))))
 
       // Join them
       val tasks = filteredSources.toSeq

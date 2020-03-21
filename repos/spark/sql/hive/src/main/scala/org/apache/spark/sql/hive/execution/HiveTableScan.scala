@@ -99,10 +99,8 @@ private[hive] case class HiveTableScan(
       .flatMap(relation.columnOrdinals.get)
       .map(o => o: Integer)
 
-    HiveShim.appendReadColumns(
-      hiveConf,
-      neededColumnIDs,
-      attributes.map(_.name))
+    HiveShim
+      .appendReadColumns(hiveConf, neededColumnIDs, attributes.map(_.name))
 
     val tableDesc = relation.tableDesc
     val deserializer = tableDesc.getDeserializerClass.newInstance
@@ -115,7 +113,9 @@ private[hive] case class HiveTableScan(
         ObjectInspectorCopyOption.JAVA)
       .asInstanceOf[StructObjectInspector]
 
-    val columnTypeNames = structOI.getAllStructFieldRefs.asScala
+    val columnTypeNames = structOI
+      .getAllStructFieldRefs
+      .asScala
       .map(_.getFieldObjectInspector)
       .map(TypeInfoUtils.getTypeInfoFromObjectInspector(_).getTypeName)
       .mkString(",")
@@ -139,7 +139,9 @@ private[hive] case class HiveTableScan(
       case Some(shouldKeep) =>
         partitions.filter { part =>
           val dataTypes = relation.partitionKeys.map(_.dataType)
-          val castedValues = part.getValues.asScala
+          val castedValues = part
+            .getValues
+            .asScala
             .zip(dataTypes)
             .map {
               case (value, dataType) =>

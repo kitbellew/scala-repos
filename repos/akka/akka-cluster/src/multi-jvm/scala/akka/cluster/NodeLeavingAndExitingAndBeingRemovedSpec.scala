@@ -19,8 +19,8 @@ object NodeLeavingAndExitingAndBeingRemovedMultiJvmSpec
   commonConfig(
     debugConfig(on = false)
       .withFallback(
-        ConfigFactory.parseString(
-          "akka.cluster.auto-down-unreachable-after = 0s"))
+        ConfigFactory
+          .parseString("akka.cluster.auto-down-unreachable-after = 0s"))
       .withFallback(
         MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 }

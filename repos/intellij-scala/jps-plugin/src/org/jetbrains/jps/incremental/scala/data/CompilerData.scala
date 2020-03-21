@@ -71,19 +71,24 @@ object CompilerData {
         val globalSettings = SettingsManager.getGlobalSettings(model.getGlobal)
 
         val jvmSdk =
-          if (globalSettings.isCompileServerEnabled && JavaBuilderUtil.CONSTANT_SEARCH_SERVICE
+          if (globalSettings.isCompileServerEnabled && JavaBuilderUtil
+                .CONSTANT_SEARCH_SERVICE
                 .get(context) != null) {
             Option(globalSettings.getCompileServerSdk).flatMap { sdkName =>
               val libraries =
-                model.getGlobal.getLibraryCollection
+                model
+                  .getGlobal
+                  .getLibraryCollection
                   .getLibraries(JpsJavaSdkType.INSTANCE)
                   .asScala
               libraries.find(_.getName == sdkName).map(_.getProperties)
             }
           } else {
             Option(
-              model.getProject.getSdkReferencesTable.getSdkReference(
-                JpsJavaSdkType.INSTANCE))
+              model
+                .getProject
+                .getSdkReferencesTable
+                .getSdkReference(JpsJavaSdkType.INSTANCE))
               .flatMap(references => Option(references.resolve))
               .map(_.getProperties)
           }
@@ -136,14 +141,15 @@ object CompilerData {
         find(files, "scala-compiler", ".jar") match {
           case Left(error) =>
             Left(
-              error + " in Scala compiler classpath in Scala SDK " + sdk.getName)
+              error + " in Scala compiler classpath in Scala SDK " + sdk
+                .getName)
           case right =>
             right
         }
 
       compiler.flatMap { compilerJar =>
-        val extraJars = files.filterNot(file =>
-          file == libraryJar || file == compilerJar)
+        val extraJars = files
+          .filterNot(file => file == libraryJar || file == compilerJar)
 
         val reflectJarError = {
           readProperty(compilerJar, "compiler.properties", "version.number")
@@ -152,8 +158,12 @@ object CompilerData {
                   if version.startsWith(
                     "2.10"
                   ) => // TODO implement a better version comparison
-                find(extraJars, "scala-reflect", ".jar").left.toOption
-                  .map(_ + " in Scala compiler classpath in Scala SDK " + sdk.getName)
+                find(extraJars, "scala-reflect", ".jar")
+                  .left
+                  .toOption
+                  .map(
+                    _ + " in Scala compiler classpath in Scala SDK " + sdk
+                      .getName)
               case _ =>
                 None
             }

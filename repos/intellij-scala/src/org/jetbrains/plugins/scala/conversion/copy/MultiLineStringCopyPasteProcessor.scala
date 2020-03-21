@@ -23,8 +23,9 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
       endOffsets: Array[Int],
       text: String): String = {
     val settings = ScalaCodeStyleSettings.getInstance(file.getProject)
-    if (!file.isInstanceOf[
-          ScalaFile] || !settings.PROCESS_MARGIN_ON_COPY_PASTE || startOffsets.length != 1 || endOffsets.length != 1)
+    if (!file.isInstanceOf[ScalaFile] || !settings
+          .PROCESS_MARGIN_ON_COPY_PASTE || startOffsets
+          .length != 1 || endOffsets.length != 1)
       return null
     findOuterString(file.findElementAt(startOffsets(0))) match {
       case Some(element)
@@ -76,18 +77,21 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
   private def findOuterString(element: PsiElement): Option[PsiElement] =
     element match {
       case interpLiteral
-          if interpLiteral.getNode.getElementType == ScalaElementTypes.INTERPOLATED_STRING_LITERAL =>
+          if interpLiteral.getNode.getElementType == ScalaElementTypes
+            .INTERPOLATED_STRING_LITERAL =>
         Some(interpLiteral)
       case string
-          if MultiLineStringCopyPasteProcessor.SAFE_ELEMENTS.contains(
-            string.getNode.getElementType) =>
+          if MultiLineStringCopyPasteProcessor
+            .SAFE_ELEMENTS
+            .contains(string.getNode.getElementType) =>
         Some(findOuterString(element.getParent).getOrElse(string))
       case _ =>
         None
     }
 
   private def checkElement(element: PsiElement): Boolean =
-    element == null || !MultiLineStringCopyPasteProcessor.SAFE_ELEMENTS
+    element == null || !MultiLineStringCopyPasteProcessor
+      .SAFE_ELEMENTS
       .contains(element.getNode.getElementType)
 }
 

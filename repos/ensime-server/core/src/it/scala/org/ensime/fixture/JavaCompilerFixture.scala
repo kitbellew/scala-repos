@@ -32,10 +32,13 @@ trait JavaCompilerFixture {
     var offset = 0
     var points = Queue.empty[(Int, String)]
     val re = """@([a-z0-9\.]*)@"""
-    re.r.findAllMatchIn(contents).foreach { m =>
-      points :+= ((m.start - offset, m.group(1)))
-      offset += ((m.end - m.start))
-    }
+    re
+      .r
+      .findAllMatchIn(contents)
+      .foreach { m =>
+        points :+= ((m.start - offset, m.group(1)))
+        offset += ((m.end - m.start))
+      }
     val f =
       new File(
         config.rootDir,

@@ -90,8 +90,10 @@ private[finagle] class ExceptionRemoteInfoFactory[Req, Rep](
       .map { service =>
         val filter =
           new SimpleFilter[Req, Rep] {
-            override def apply(request: Req, service: Service[Req, Rep])
-                : Future[Rep] = service(request).rescue(requestAddRemoteInfo)
+            override def apply(
+                request: Req,
+                service: Service[Req, Rep]): Future[Rep] =
+              service(request).rescue(requestAddRemoteInfo)
           }
         filter andThen service
       }

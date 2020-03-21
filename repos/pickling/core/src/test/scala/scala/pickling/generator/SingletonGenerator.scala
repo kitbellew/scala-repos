@@ -14,7 +14,9 @@ class SingletonGeneratorTest extends FunSuite {
     implicit val p = PicklingMacros.genPicklerUnpickler[TopLevelObject.type]
     val x: TopLevelObject.type = TopLevelObject
     val pickle = scala.pickling.functions.pickle(x)
-    val y: TopLevelObject.type = scala.pickling.functions
+    val y: TopLevelObject.type = scala
+      .pickling
+      .functions
       .unpickle[TopLevelObject.type](pickle)
     assert(x == y)
   }

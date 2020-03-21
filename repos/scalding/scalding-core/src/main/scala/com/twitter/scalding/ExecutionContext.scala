@@ -55,8 +55,8 @@ trait ExecutionContext {
   private def updateStepConfigWithDescriptions(
       step: BaseFlowStep[JobConf]): Unit = {
     val conf = step.getConfig
-    getIdentifierOpt(ExecutionContext.getDesc(step)).foreach(
-      descriptionString => {
+    getIdentifierOpt(ExecutionContext.getDesc(step))
+      .foreach(descriptionString => {
         conf.set(Config.StepDescriptions, descriptionString)
       })
   }
@@ -108,8 +108,9 @@ trait ExecutionContext {
             .toList
             .map(_ => ReducerEstimatorStepStrategy)
 
-          val otherStrategies: Seq[FlowStepStrategy[JobConf]] =
-            config.getFlowStepStrategies.map {
+          val otherStrategies: Seq[FlowStepStrategy[JobConf]] = config
+            .getFlowStepStrategies
+            .map {
               case Success(fn) =>
                 fn(mode, configWithId)
               case Failure(e) =>
@@ -118,28 +119,32 @@ trait ExecutionContext {
                   e)
             }
 
-          val optionalFinalStrategy = FlowStepStrategies().sumOption(
-            reducerEstimatorStrategy ++ otherStrategies)
+          val optionalFinalStrategy = FlowStepStrategies()
+            .sumOption(reducerEstimatorStrategy ++ otherStrategies)
 
           optionalFinalStrategy.foreach { strategy =>
             flow.setFlowStepStrategy(strategy)
           }
 
-          config.getFlowListeners.foreach {
-            case Success(fn) =>
-              flow.addListener(fn(mode, configWithId))
-            case Failure(e) =>
-              throw new Exception("Failed to decode flow listener", e)
-          }
+          config
+            .getFlowListeners
+            .foreach {
+              case Success(fn) =>
+                flow.addListener(fn(mode, configWithId))
+              case Failure(e) =>
+                throw new Exception("Failed to decode flow listener", e)
+            }
 
-          config.getFlowStepListeners.foreach {
-            case Success(fn) =>
-              flow.addStepListener(fn(mode, configWithId))
-            case Failure(e) =>
-              new Exception(
-                "Failed to decode flow step listener when submitting job",
-                e)
-          }
+          config
+            .getFlowStepListeners
+            .foreach {
+              case Success(fn) =>
+                flow.addStepListener(fn(mode, configWithId))
+              case Failure(e) =>
+                new Exception(
+                  "Failed to decode flow step listener when submitting job",
+                  e)
+            }
 
         case _ =>
           ()
@@ -181,13 +186,18 @@ object ExecutionContext {
 
   private[scalding] def getDesc[T](
       baseFlowStep: BaseFlowStep[T]): Seq[String] = {
-    baseFlowStep.getGraph.vertexSet.asScala.toSeq.flatMap(
-      _ match {
-        case pipe: Pipe =>
-          RichPipe.getPipeDescriptions(pipe)
-        case _ =>
-          List() // no descriptions
-      })
+    baseFlowStep
+      .getGraph
+      .vertexSet
+      .asScala
+      .toSeq
+      .flatMap(
+        _ match {
+          case pipe: Pipe =>
+            RichPipe.getPipeDescriptions(pipe)
+          case _ =>
+            List() // no descriptions
+        })
   }
   /*
    * implicit val ec = ExecutionContext.newContext(config)

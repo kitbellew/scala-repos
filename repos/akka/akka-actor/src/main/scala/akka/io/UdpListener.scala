@@ -35,7 +35,8 @@ private[io] class UdpListener(
 
   context.watch(bind.handler) // sign death pact
 
-  val channel = bind.options
+  val channel = bind
+    .options
     .collectFirst {
       case creator: DatagramChannelCreator ⇒
         creator
@@ -59,11 +60,13 @@ private[io] class UdpListener(
         }
       channelRegistry.register(channel, OP_READ)
       log.debug("Successfully bound to [{}]", ret)
-      bind.options.foreach {
-        case o: Inet.SocketOptionV2 ⇒
-          o.afterBind(channel.socket)
-        case _ ⇒
-      }
+      bind
+        .options
+        .foreach {
+          case o: Inet.SocketOptionV2 ⇒
+            o.afterBind(channel.socket)
+          case _ ⇒
+        }
       ret
     } catch {
       case NonFatal(e) ⇒

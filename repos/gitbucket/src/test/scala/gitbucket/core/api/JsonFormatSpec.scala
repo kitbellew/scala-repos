@@ -189,8 +189,8 @@ class JsonFormatSpec extends FunSuite {
       author = Some(apiUser),
       committer = Some(apiUser),
       parents = Seq(
-        ApiCommitListItem.Parent("6dcb09b5b57875f334f61aebed695e2e4193db5e")(
-          repo1Name))
+        ApiCommitListItem
+          .Parent("6dcb09b5b57875f334f61aebed695e2e4193db5e")(repo1Name))
     )(repo1Name)
   val apiCommitListItemJson = s"""{
     "url": "${context.baseUrl}/api/v3/repos/octocat/Hello-World/commits/6dcb09b5b57875f334f61aebed695e2e4193db5e",
@@ -288,11 +288,11 @@ class JsonFormatSpec extends FunSuite {
     updated_at = date1,
     created_at = date1,
     head =
-      ApiPullRequest.Commit(sha = sha1, ref = "new-topic", repo = repository)(
-        "octocat"),
+      ApiPullRequest
+        .Commit(sha = sha1, ref = "new-topic", repo = repository)("octocat"),
     base =
-      ApiPullRequest.Commit(sha = sha1, ref = "master", repo = repository)(
-        "octocat"),
+      ApiPullRequest
+        .Commit(sha = sha1, ref = "master", repo = repository)("octocat"),
     mergeable = None,
     title = "new-feature",
     body = "Please pull these awesome changes",
@@ -415,9 +415,8 @@ class JsonFormatSpec extends FunSuite {
         case e: com.fasterxml.jackson.core.JsonParseException => {
           val p =
             java.lang.Math.max(e.getLocation.getCharOffset() - 10, 0).toInt
-          val message = json2.substring(
-            p,
-            java.lang.Math.min(p + 100, json2.length))
+          val message = json2
+            .substring(p, java.lang.Math.min(p + 100, json2.length))
           throw new com.fasterxml.jackson.core.JsonParseException(
             message + e.getMessage,
             e.getLocation)

@@ -88,8 +88,8 @@ package object linalg {
     if (mat.length == 0) {
       DenseMatrix.zeros[Double](0, 0)
     } else {
-      DenseMatrix.tabulate(mat.length, mat.head.length)((i, j) =>
-        mat(i)(j).toDouble)
+      DenseMatrix
+        .tabulate(mat.length, mat.head.length)((i, j) => mat(i)(j).toDouble)
     }
   }
 
@@ -194,8 +194,8 @@ package object linalg {
     while (i < as.length) {
       // count number of tied values at rank i
       var numTiedValuesAtI = 1
-      while (i + numTiedValuesAtI < as.length && a(
-               as(i + numTiedValuesAtI)) == a(as(i))) {
+      while (i + numTiedValuesAtI < as
+               .length && a(as(i + numTiedValuesAtI)) == a(as(i))) {
         numTiedValuesAtI += 1
       }
 
@@ -369,7 +369,13 @@ package object linalg {
   /**
     * val to determine if breeze is using natives or f2jblas
     */
-  lazy val usingNatives =
-    com.github.fommil.netlib.BLAS.getInstance.getClass.getName != "com.github.fommil.netlib.F2jBLAS"
+  lazy val usingNatives = com
+    .github
+    .fommil
+    .netlib
+    .BLAS
+    .getInstance
+    .getClass
+    .getName != "com.github.fommil.netlib.F2jBLAS"
 
 }

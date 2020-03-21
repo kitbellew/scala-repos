@@ -91,18 +91,22 @@ abstract class MemberWeaklyUpSpec
       runOn(side1: _*) {
         awaitAssert {
           clusterView.members.size should be(4)
-          clusterView.members.exists { m ⇒
-            m.address == address(second) && m.status == WeaklyUp
-          } should be(true)
+          clusterView
+            .members
+            .exists { m ⇒
+              m.address == address(second) && m.status == WeaklyUp
+            } should be(true)
         }
       }
 
       runOn(side2: _*) {
         awaitAssert {
           clusterView.members.size should be(4)
-          clusterView.members.exists { m ⇒
-            m.address == address(fifth) && m.status == WeaklyUp
-          } should be(true)
+          clusterView
+            .members
+            .exists { m ⇒
+              m.address == address(fifth) && m.status == WeaklyUp
+            } should be(true)
         }
       }
 

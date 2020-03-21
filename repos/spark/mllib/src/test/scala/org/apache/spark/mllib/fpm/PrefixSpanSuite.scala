@@ -271,9 +271,7 @@ class PrefixSpanSuite extends SparkFunSuite with MLlibTestSparkContext {
   test("PrefixSpan projections with multiple partial starts") {
     val sequences = Seq(Array(Array(1, 2), Array(1, 2, 3)))
     val rdd = sc.parallelize(sequences, 2)
-    val prefixSpan = new PrefixSpan()
-      .setMinSupport(1.0)
-      .setMaxPatternLength(2)
+    val prefixSpan = new PrefixSpan().setMinSupport(1.0).setMaxPatternLength(2)
     val model = prefixSpan.run(rdd)
     val expected = Array(
       (Array(Array(1)), 1L),
@@ -300,9 +298,7 @@ class PrefixSpanSuite extends SparkFunSuite with MLlibTestSparkContext {
       Array(Array(6)))
     val rdd = sc.parallelize(sequences, 2).cache()
 
-    val prefixSpan = new PrefixSpan()
-      .setMinSupport(0.5)
-      .setMaxPatternLength(5)
+    val prefixSpan = new PrefixSpan().setMinSupport(0.5).setMaxPatternLength(5)
 
     /*
       To verify results, create file "prefixSpanSeqs2" with content
@@ -352,9 +348,7 @@ class PrefixSpanSuite extends SparkFunSuite with MLlibTestSparkContext {
       Array(Array(6))).map(seq => seq.map(itemSet => itemSet.map(intToString)))
     val rdd = sc.parallelize(sequences, 2).cache()
 
-    val prefixSpan = new PrefixSpan()
-      .setMinSupport(0.5)
-      .setMaxPatternLength(5)
+    val prefixSpan = new PrefixSpan().setMinSupport(0.5).setMaxPatternLength(5)
 
     val model = prefixSpan.run(rdd)
     val expected = Array(
@@ -373,14 +367,18 @@ class PrefixSpanSuite extends SparkFunSuite with MLlibTestSparkContext {
       expectedValue: Array[(Array[Array[Item]], Long)],
       actualValue: Array[PrefixSpan.FreqSequence[Item]]): Unit = {
     val expectedSet =
-      expectedValue.map {
-        case (pattern: Array[Array[Item]], count: Long) =>
-          (pattern.map(itemSet => itemSet.toSet).toSeq, count)
-      }.toSet
+      expectedValue
+        .map {
+          case (pattern: Array[Array[Item]], count: Long) =>
+            (pattern.map(itemSet => itemSet.toSet).toSeq, count)
+        }
+        .toSet
     val actualSet =
-      actualValue.map { x =>
-        (x.sequence.map(_.toSet).toSeq, x.freq)
-      }.toSet
+      actualValue
+        .map { x =>
+          (x.sequence.map(_.toSet).toSeq, x.freq)
+        }
+        .toSet
     assert(expectedSet === actualSet)
   }
 

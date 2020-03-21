@@ -61,9 +61,11 @@ case class WritableSequenceFile[
     with TypedSource[(K, V)] {
 
   override val fields = f
-  override val keyType = manifest[K].runtimeClass
+  override val keyType = manifest[K]
+    .runtimeClass
     .asInstanceOf[Class[_ <: Writable]]
-  override val valueType = manifest[V].runtimeClass
+  override val valueType = manifest[V]
+    .runtimeClass
     .asInstanceOf[Class[_ <: Writable]]
 
   def setter[U <: (K, V)]: TupleSetter[U] =
@@ -95,9 +97,11 @@ case class MultipleWritableSequenceFiles[
     with TypedSource[(K, V)] {
 
   override val fields = f
-  override val keyType = manifest[K].runtimeClass
+  override val keyType = manifest[K]
+    .runtimeClass
     .asInstanceOf[Class[_ <: Writable]]
-  override val valueType = manifest[V].runtimeClass
+  override val valueType = manifest[V]
+    .runtimeClass
     .asInstanceOf[Class[_ <: Writable]]
 
   def converter[U >: (K, V)]: TupleConverter[U] =

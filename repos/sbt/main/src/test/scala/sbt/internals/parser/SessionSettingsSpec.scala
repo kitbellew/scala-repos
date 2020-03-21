@@ -12,8 +12,10 @@ import SessionSettings.SessionSetting
 
 abstract class AbstractSessionSettingsSpec(folder: String)
     extends AbstractSpec {
-  protected val rootPath =
-    getClass.getClassLoader.getResource("").getPath + folder
+  protected val rootPath = getClass
+    .getClassLoader
+    .getResource("")
+    .getPath + folder
   println(s"Reading files from: $rootPath")
   protected val rootDir = new File(rootPath)
 
@@ -43,9 +45,8 @@ abstract class AbstractSessionSettingsSpec(folder: String)
       val originalLines = Source.fromFile(file).getLines().toList
       foreach(expectedResultAndMap(file)) {
         case (expectedResultList, commands) =>
-          val resultList = SbtRefactorings.applySessionSettings(
-            (file, originalLines),
-            commands)
+          val resultList = SbtRefactorings
+            .applySessionSettings((file, originalLines), commands)
           val expected = SbtParser(file, expectedResultList)
           val result = SbtParser(file, resultList._2)
           result.settings must_== expected.settings

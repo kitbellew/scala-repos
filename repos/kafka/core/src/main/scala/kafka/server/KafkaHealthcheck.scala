@@ -67,9 +67,8 @@ class KafkaHealthcheck(
     // the default host and port are here for compatibility with older client
     // only PLAINTEXT is supported as default
     // if the broker doesn't listen on PLAINTEXT protocol, an empty endpoint will be registered and older clients will be unable to connect
-    val plaintextEndpoint = updatedEndpoints.getOrElse(
-      SecurityProtocol.PLAINTEXT,
-      new EndPoint(null, -1, null))
+    val plaintextEndpoint = updatedEndpoints
+      .getOrElse(SecurityProtocol.PLAINTEXT, new EndPoint(null, -1, null))
     zkUtils.registerBrokerInZk(
       brokerId,
       plaintextEndpoint.host,
@@ -101,8 +100,8 @@ class KafkaHealthcheck(
       register()
       info("done re-registering broker")
       info(
-        "Subscribing to %s path to watch for new topics".format(
-          ZkUtils.BrokerTopicsPath))
+        "Subscribing to %s path to watch for new topics"
+          .format(ZkUtils.BrokerTopicsPath))
     }
 
     override def handleSessionEstablishmentError(error: Throwable): Unit = {

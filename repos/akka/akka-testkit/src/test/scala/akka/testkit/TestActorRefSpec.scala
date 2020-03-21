@@ -305,7 +305,10 @@ class TestActorRefSpec
 
     "set receiveTimeout to None" in {
       val a = TestActorRef[WorkerActor]
-      a.underlyingActor.context.receiveTimeout should be theSameInstanceAs Duration.Undefined
+      a
+        .underlyingActor
+        .context
+        .receiveTimeout should be theSameInstanceAs Duration.Undefined
     }
 
     "set CallingThreadDispatcher" in {

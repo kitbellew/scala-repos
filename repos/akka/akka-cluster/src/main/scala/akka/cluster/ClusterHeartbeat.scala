@@ -145,14 +145,15 @@ private[cluster] final class ClusterHeartbeatSender
 
   def init(snapshot: CurrentClusterState): Unit = {
     val nodes: Set[UniqueAddress] = snapshot.members.map(_.uniqueAddress)
-    val unreachable: Set[UniqueAddress] = snapshot.unreachable.map(
-      _.uniqueAddress)
+    val unreachable: Set[UniqueAddress] = snapshot
+      .unreachable
+      .map(_.uniqueAddress)
     state = state.init(nodes, unreachable)
   }
 
   def addMember(m: Member): Unit =
-    if (m.uniqueAddress != selfUniqueAddress && !state.contains(
-          m.uniqueAddress))
+    if (m.uniqueAddress != selfUniqueAddress && !state
+          .contains(m.uniqueAddress))
       state = state.addMember(m.uniqueAddress)
 
   def removeMember(m: Member): Unit =
@@ -206,8 +207,8 @@ private[cluster] final class ClusterHeartbeatSender
   }
 
   def triggerFirstHeartbeat(from: UniqueAddress): Unit =
-    if (state.activeReceivers(from) && !failureDetector.isMonitoring(
-          from.address)) {
+    if (state.activeReceivers(from) && !failureDetector
+          .isMonitoring(from.address)) {
       if (verboseHeartbeat)
         log.debug(
           "Cluster Node [{}] - Trigger extra expected heartbeat from [{}]",
@@ -228,8 +229,8 @@ private[cluster] final case class ClusterHeartbeatSenderState(
     oldReceiversNowUnreachable: Set[UniqueAddress],
     failureDetector: FailureDetectorRegistry[Address]) {
 
-  val activeReceivers: Set[UniqueAddress] =
-    ring.myReceivers union oldReceiversNowUnreachable
+  val activeReceivers: Set[UniqueAddress] = ring
+    .myReceivers union oldReceiversNowUnreachable
 
   def selfAddress = ring.selfAddress
 

@@ -52,8 +52,8 @@ private[play] object WebSocketActor {
     var shutdown = false
 
     // The actor to handle the WebSocket
-    val webSocketActor = context.watch(
-      context.actorOf(createHandler(self), "handler"))
+    val webSocketActor = context
+      .watch(context.actorOf(createHandler(self), "handler"))
 
     // Use a broadcast enumerator to imperatively push messages into the WebSocket
     val channel = {

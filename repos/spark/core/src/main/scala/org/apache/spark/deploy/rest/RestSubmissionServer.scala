@@ -143,10 +143,13 @@ private[rest] abstract class RestServlet extends HttpServlet with Logging {
     val Diff(_, _, unknown) = clientSideJson.diff(serverSideJson)
     unknown match {
       case j: JObject =>
-        j.obj.map {
-          case (k, _) =>
-            k
-        }.toArray
+        j
+          .obj
+          .map {
+            case (k, _) =>
+              k
+          }
+          .toArray
       case _ =>
         Array.empty[String] // No difference
     }
@@ -154,7 +157,8 @@ private[rest] abstract class RestServlet extends HttpServlet with Logging {
 
   /** Return a human readable String representation of the exception. */
   protected def formatException(e: Throwable): String = {
-    val stackTraceString = e.getStackTrace
+    val stackTraceString = e
+      .getStackTrace
       .map {
         "\t" + _
       }
@@ -216,10 +220,12 @@ private[rest] abstract class KillRequestServlet extends RestServlet {
       request: HttpServletRequest,
       response: HttpServletResponse): Unit = {
     val submissionId = parseSubmissionId(request.getPathInfo)
-    val responseMessage = submissionId.map(handleKill).getOrElse {
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST)
-      handleError("Submission ID is missing in kill request.")
-    }
+    val responseMessage = submissionId
+      .map(handleKill)
+      .getOrElse {
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST)
+        handleError("Submission ID is missing in kill request.")
+      }
     sendResponse(responseMessage, response)
   }
 
@@ -239,10 +245,12 @@ private[rest] abstract class StatusRequestServlet extends RestServlet {
       request: HttpServletRequest,
       response: HttpServletResponse): Unit = {
     val submissionId = parseSubmissionId(request.getPathInfo)
-    val responseMessage = submissionId.map(handleStatus).getOrElse {
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST)
-      handleError("Submission ID is missing in status request.")
-    }
+    val responseMessage = submissionId
+      .map(handleStatus)
+      .getOrElse {
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST)
+        handleError("Submission ID is missing in status request.")
+      }
     sendResponse(responseMessage, response)
   }
 
@@ -268,8 +276,8 @@ private[rest] abstract class SubmitRequestServlet extends RestServlet {
       try {
         val requestMessageJson =
           Source.fromInputStream(requestServlet.getInputStream).mkString
-        val requestMessage = SubmitRestProtocolMessage.fromJson(
-          requestMessageJson)
+        val requestMessage = SubmitRestProtocolMessage
+          .fromJson(requestMessageJson)
         // The response should have already been validated on the client.
         // In case this is not true, validate it ourselves to avoid potential NPEs.
         requestMessage.validate()

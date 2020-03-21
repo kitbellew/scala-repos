@@ -34,35 +34,43 @@ object Analytics extends Logging {
 
   def main(args: Array[String]): Unit = {
     if (args.length < 2) {
-      System.err.println(
-        "Usage: Analytics <taskType> <file> --numEPart=<num_edge_partitions> [other options]")
+      System
+        .err
+        .println(
+          "Usage: Analytics <taskType> <file> --numEPart=<num_edge_partitions> [other options]")
       System.err.println("Supported 'taskType' as follows:")
       System.err.println("  pagerank    Compute PageRank")
-      System.err.println(
-        "  cc          Compute the connected components of vertices")
+      System
+        .err
+        .println("  cc          Compute the connected components of vertices")
       System.err.println("  triangles   Count the number of triangles")
       System.exit(1)
     }
 
     val taskType = args(0)
     val fname = args(1)
-    val optionsList = args.drop(2).map { arg =>
-      arg.dropWhile(_ == '-').split('=') match {
-        case Array(opt, v) =>
-          (opt -> v)
-        case _ =>
-          throw new IllegalArgumentException("Invalid argument: " + arg)
+    val optionsList = args
+      .drop(2)
+      .map { arg =>
+        arg.dropWhile(_ == '-').split('=') match {
+          case Array(opt, v) =>
+            (opt -> v)
+          case _ =>
+            throw new IllegalArgumentException("Invalid argument: " + arg)
+        }
       }
-    }
     val options = mutable.Map(optionsList: _*)
 
     val conf = new SparkConf()
     GraphXUtils.registerKryoClasses(conf)
 
-    val numEPart = options.remove("numEPart").map(_.toInt).getOrElse {
-      println("Set the number of edge partitions using --numEPart.")
-      sys.exit(1)
-    }
+    val numEPart = options
+      .remove("numEPart")
+      .map(_.toInt)
+      .getOrElse {
+        println("Set the number of edge partitions using --numEPart.")
+        sys.exit(1)
+      }
     val partitionStrategy: Option[PartitionStrategy] = options
       .remove("partStrategy")
       .map(PartitionStrategy.fromString(_))
@@ -120,7 +128,8 @@ object Analytics extends Logging {
 
         if (!outFname.isEmpty) {
           logWarning("Saving pageranks of pages to " + outFname)
-          pr.map {
+          pr
+            .map {
               case (id, r) =>
                 id + "\t" + r
             }
@@ -155,7 +164,8 @@ object Analytics extends Logging {
 
         val cc = ConnectedComponents.run(graph)
         println(
-          "Components: " + cc.vertices
+          "Components: " + cc
+            .vertices
             .map {
               case (vid, data) =>
                 data
@@ -184,11 +194,11 @@ object Analytics extends Logging {
             edgeStorageLevel = edgeStorageLevel,
             vertexStorageLevel = vertexStorageLevel)
           // TriangleCount requires the graph to be partitioned
-          .partitionBy(partitionStrategy.getOrElse(RandomVertexCut))
-          .cache()
+          .partitionBy(partitionStrategy.getOrElse(RandomVertexCut)).cache()
         val triangles = TriangleCount.run(graph)
         println(
-          "Triangles: " + triangles.vertices
+          "Triangles: " + triangles
+            .vertices
             .map {
               case (vid, data) =>
                 data.toLong

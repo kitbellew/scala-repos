@@ -32,10 +32,12 @@ class FieldFromDelayedInitInspection
     case ref: ScReferenceExpression =>
       ref.bind() match {
         case Some(FieldInDelayedInit(delayedInitClass)) =>
-          val classContainers = ref.parentsInFile.collect {
-            case td: ScTemplateDefinition =>
-              td
-          }
+          val classContainers = ref
+            .parentsInFile
+            .collect {
+              case td: ScTemplateDefinition =>
+                td
+            }
           if (!classContainers.exists(c =>
                 c == delayedInitClass || c
                   .isInheritor(delayedInitClass, deep = true)))
@@ -54,11 +56,13 @@ class FieldFromDelayedInitInspection
         case Both(
               (_: ScPatternDefinition | _: ScVariableDefinition),
               ContainingClass(clazz @ (_: ScClass | _: ScObject))) =>
-          if (srr.fromType.exists(
-                InspectionsUtil.conformsToTypeFromClass(
-                  _,
-                  "scala.DelayedInit",
-                  clazz.getProject)))
+          if (srr
+                .fromType
+                .exists(
+                  InspectionsUtil.conformsToTypeFromClass(
+                    _,
+                    "scala.DelayedInit",
+                    clazz.getProject)))
             Some(clazz)
           else
             None

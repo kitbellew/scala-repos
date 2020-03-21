@@ -160,7 +160,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       val xmlString = "<foo></foo>"
       val response =
         //#content-type
-        ws.url(url)
+        ws
+          .url(url)
           .withHeaders("Content-Type" -> "application/xml")
           .post(xmlString)
       //#content-type
@@ -254,9 +255,12 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
           }
       } { ws =>
         // #scalaws-process-json
-        val futureResult: Future[String] = ws.url(url).get().map { response =>
-          (response.json \ "person" \ "name").as[String]
-        }
+        val futureResult: Future[String] = ws
+          .url(url)
+          .get()
+          .map { response =>
+            (response.json \ "person" \ "name").as[String]
+          }
         // #scalaws-process-json
 
         await(futureResult) must_== "Steve"
@@ -275,9 +279,12 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
 
         implicit val personReads = Json.reads[Person]
 
-        val futureResult: Future[JsResult[Person]] = ws.url(url).get().map {
-          response => (response.json \ "person").validate[Person]
-        }
+        val futureResult: Future[JsResult[Person]] = ws
+          .url(url)
+          .get()
+          .map { response =>
+            (response.json \ "person").validate[Person]
+          }
         // #scalaws-process-json-with-implicit
 
         val actual = await(futureResult)
@@ -296,9 +303,12 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
           }
       } { ws =>
         // #scalaws-process-xml
-        val futureResult: Future[scala.xml.NodeSeq] = ws.url(url).get().map {
-          response => response.xml \ "message"
-        }
+        val futureResult: Future[scala.xml.NodeSeq] = ws
+          .url(url)
+          .get()
+          .map { response =>
+            response.xml \ "message"
+          }
         // #scalaws-process-xml
         await(futureResult).text must_== "Hello"
       }
@@ -309,15 +319,19 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       } { ws =>
         //#stream-count-bytes
         // Make the request
-        val futureResponse
-            : Future[StreamedResponse] = ws.url(url).withMethod("GET").stream()
+        val futureResponse: Future[StreamedResponse] = ws
+          .url(url)
+          .withMethod("GET")
+          .stream()
 
         val bytesReturned: Future[Long] = futureResponse.flatMap { res =>
           // Count the number of bytes returned
-          res.body.runWith(
-            Sink.fold[Long, ByteString](0L) { (total, bytes) =>
-              total + bytes.length
-            })
+          res
+            .body
+            .runWith(
+              Sink.fold[Long, ByteString](0L) { (total, bytes) =>
+                total + bytes.length
+              })
         }
         //#stream-count-bytes
         await(bytesReturned) must_== 10000L
@@ -345,7 +359,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
             }
 
             // materialize and run the stream
-            res.body
+            res
+              .body
               .runWith(sink)
               .andThen {
                 case result =>
@@ -373,40 +388,45 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
           Action.async {
 
             // Make the request
-            ws.url(url).withMethod("GET").stream().map {
-              case StreamedResponse(response, body) =>
-                // Check that the response was successful
-                if (response.status == 200) {
+            ws
+              .url(url)
+              .withMethod("GET")
+              .stream()
+              .map {
+                case StreamedResponse(response, body) =>
+                  // Check that the response was successful
+                  if (response.status == 200) {
 
-                  // Get the content type
-                  val contentType = response.headers
-                    .get("Content-Type")
-                    .flatMap(_.headOption)
-                    .getOrElse("application/octet-stream")
+                    // Get the content type
+                    val contentType = response
+                      .headers
+                      .get("Content-Type")
+                      .flatMap(_.headOption)
+                      .getOrElse("application/octet-stream")
 
-                  // If there's a content length, send that, otherwise return the body chunked
-                  response.headers.get("Content-Length") match {
-                    case Some(Seq(length)) =>
-                      Ok.sendEntity(
-                        HttpEntity.Streamed(
-                          body,
-                          Some(length.toLong),
-                          Some(contentType)))
-                    case _ =>
-                      Ok.chunked(body).as(contentType)
+                    // If there's a content length, send that, otherwise return the body chunked
+                    response.headers.get("Content-Length") match {
+                      case Some(Seq(length)) =>
+                        Ok.sendEntity(
+                          HttpEntity.Streamed(
+                            body,
+                            Some(length.toLong),
+                            Some(contentType)))
+                      case _ =>
+                        Ok.chunked(body).as(contentType)
+                    }
+                  } else {
+                    BadGateway
                   }
-                } else {
-                  BadGateway
-                }
-            }
+              }
           }
         //#stream-to-result
         val file = File.createTempFile("stream-to-file-", ".txt")
         await(
-          downloadFile(FakeRequest())
-            .flatMap(
-              _.body.dataStream.runFold(0L)((t, b) =>
-                t + b.length))) must_== 10000L
+          downloadFile(FakeRequest()).flatMap(
+            _.body
+            .dataStream
+            .runFold(0L)((t, b) => t + b.length))) must_== 10000L
         file.delete()
       }
 
@@ -423,10 +443,12 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
         //#stream-put
 
         val bytesReturned: Future[Long] = futureResponse.flatMap { res =>
-          res.body.runWith(
-            Sink.fold[Long, ByteString](0L) { (total, bytes) =>
-              total + bytes.length
-            })
+          res
+            .body
+            .runWith(
+              Sink.fold[Long, ByteString](0L) { (total, bytes) =>
+                total + bytes.length
+              })
         }
         //#stream-count-bytes
         await(bytesReturned) must_== 10000L
@@ -485,9 +507,12 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       //#async-result
       def wsAction =
         Action.async {
-          ws.url(url).get().map { response =>
-            Ok(response.body)
-          }
+          ws
+            .url(url)
+            .get()
+            .map { response =>
+              Ok(response.body)
+            }
         }
       status(wsAction(FakeRequest())) must_== OK
       //#async-result
@@ -559,9 +584,11 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       val logging =
         new AsyncHttpClientConfig.AdditionalChannelInitializer() {
           override def initChannel(channel: io.netty.channel.Channel): Unit = {
-            channel.pipeline.addFirst(
-              "log",
-              new io.netty.handler.logging.LoggingHandler("debug"))
+            channel
+              .pipeline
+              .addFirst(
+                "log",
+                new io.netty.handler.logging.LoggingHandler("debug"))
           }
         }
       val ahcBuilder = builder.configure()
@@ -589,7 +616,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
 
     "use logging" in withSimpleServer { ws =>
       // #curl-logger-filter
-      ws.url(s"http://localhost:$testServerPort")
+      ws
+        .url(s"http://localhost:$testServerPort")
         .withRequestFilter(AhcCurlRequestLogger())
         .put(Map("key" -> Seq("value")))
       // #curl-logger-filter

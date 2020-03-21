@@ -48,7 +48,9 @@ object PluginDescription {
   def fromXML(xml: java.io.InputStream): PluginDescription = {
     import javax.xml.parsers.DocumentBuilderFactory
     val root =
-      DocumentBuilderFactory.newInstance.newDocumentBuilder
+      DocumentBuilderFactory
+        .newInstance
+        .newDocumentBuilder
         .parse(xml)
         .getDocumentElement
     root.normalize()

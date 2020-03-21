@@ -185,11 +185,12 @@ class DecimalSuite extends SparkFunSuite with PrivateMethodTester {
   // regression test for SPARK-8359
   test("accurate precision after multiplication") {
     val decimal =
-      (
-        Decimal(Long.MaxValue, 38, 0) * Decimal(Long.MaxValue, 38, 0)
-      ).toJavaBigDecimal
+      (Decimal(Long.MaxValue, 38, 0) * Decimal(Long.MaxValue, 38, 0))
+        .toJavaBigDecimal
     assert(
-      decimal.unscaledValue.toString === "85070591730234615847396907784232501249")
+      decimal
+        .unscaledValue
+        .toString === "85070591730234615847396907784232501249")
   }
 
   // regression test for SPARK-8677

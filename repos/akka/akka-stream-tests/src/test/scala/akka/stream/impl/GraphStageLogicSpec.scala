@@ -179,7 +179,8 @@ class GraphStageLogicSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
     "emit all things before completing" in assertAllStagesStopped {
 
-      Source.empty
+      Source
+        .empty
         .via(emit1234.named("testStage"))
         .runWith(TestSink.probe)
         .request(5)
@@ -191,7 +192,8 @@ class GraphStageLogicSpec extends AkkaSpec with GraphInterpreterSpecKit {
     "emit all things before completing with two fused stages" in assertAllStagesStopped {
       val g = aggressive(Flow[Int].via(emit1234).via(emit5678))
 
-      Source.empty
+      Source
+        .empty
         .via(g)
         .runWith(TestSink.probe)
         .request(9)
@@ -202,7 +204,8 @@ class GraphStageLogicSpec extends AkkaSpec with GraphInterpreterSpecKit {
     "emit all things before completing with three fused stages" in assertAllStagesStopped {
       val g = aggressive(Flow[Int].via(emit1234).via(passThrough).via(emit5678))
 
-      Source.empty
+      Source
+        .empty
         .via(g)
         .runWith(TestSink.probe)
         .request(9)

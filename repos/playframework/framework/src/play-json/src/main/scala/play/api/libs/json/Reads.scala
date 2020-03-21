@@ -213,7 +213,9 @@ trait LowPriorityDefaultReads {
                   (JsPath(idx)) ++ p -> valerr
               }
 
-            ts.iterator.zipWithIndex
+            ts
+              .iterator
+              .zipWithIndex
               .foldLeft(Right(Vector.empty): Either[Errors, Vector[A]]) {
                 case (acc, (elt, idx)) =>
                   (acc, fromJson[A](elt)(ra)) match {
@@ -260,8 +262,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
     Json.obj(
       "__VAL__" -> knownValue,
       "__ERR__" -> key,
-      "__ARGS__" -> args.foldLeft(JsArray())((acc: JsArray, arg: JsValue) =>
-        acc :+ arg))
+      "__ARGS__" -> args
+        .foldLeft(JsArray())((acc: JsArray, arg: JsValue) => acc :+ arg))
   }
 
   /**
@@ -356,7 +358,10 @@ trait DefaultReads extends LowPriorityDefaultReads {
   implicit val bigDecReads = Reads[BigDecimal](js =>
     js match {
       case JsString(s) =>
-        scala.util.control.Exception
+        scala
+          .util
+          .control
+          .Exception
           .catching(classOf[NumberFormatException])
           .opt(JsSuccess(BigDecimal(new java.math.BigDecimal(s))))
           .getOrElse(
@@ -373,7 +378,10 @@ trait DefaultReads extends LowPriorityDefaultReads {
   implicit val javaBigDecReads = Reads[java.math.BigDecimal](js =>
     js match {
       case JsString(s) =>
-        scala.util.control.Exception
+        scala
+          .util
+          .control
+          .Exception
           .catching(classOf[NumberFormatException])
           .opt(JsSuccess(new java.math.BigDecimal(s)))
           .getOrElse(
@@ -836,7 +844,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
     val mini = "yyyy-MM-dd'T'HH:mm:ss"
 
     val WithMillisAndTz =
-      """^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}.+$""".r
+      """^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}.+$"""
+        .r
 
     val WithMillis =
       """^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}$""".r
@@ -912,8 +921,9 @@ trait DefaultReads extends LowPriorityDefaultReads {
         }
 
       private def parseDate(input: String): Option[DateTime] =
-        scala.util.control.Exception
-          .allCatch[DateTime] opt (DateTime.parse(input, df))
+        scala.util.control.Exception.allCatch[DateTime] opt (
+          DateTime.parse(input, df)
+        )
 
     }
 
@@ -962,8 +972,9 @@ trait DefaultReads extends LowPriorityDefaultReads {
         }
 
       private def parseDate(input: String): Option[LocalDate] =
-        scala.util.control.Exception
-          .allCatch[LocalDate] opt (LocalDate.parse(input, df))
+        scala.util.control.Exception.allCatch[LocalDate] opt (
+          LocalDate.parse(input, df)
+        )
     }
 
   /**
@@ -1013,8 +1024,9 @@ trait DefaultReads extends LowPriorityDefaultReads {
         }
 
       private def parseTime(input: String): Option[LocalTime] =
-        scala.util.control.Exception
-          .allCatch[LocalTime] opt (LocalTime.parse(input, df))
+        scala.util.control.Exception.allCatch[LocalTime] opt (
+          LocalTime.parse(input, df)
+        )
     }
 
   /**
@@ -1048,7 +1060,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
       def reads(json: JsValue) =
         json match {
           case JsString(str) =>
-            enum.values
+            enum
+              .values
               .find(_.toString == str)
               .map(JsSuccess(_))
               .getOrElse(
@@ -1213,7 +1226,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
                   (JsPath \ key) ++ p -> valerr
               }
 
-            m.foldLeft(Right(Map.empty): Either[Errors, Map[String, V]]) {
+            m
+              .foldLeft(Right(Map.empty): Either[Errors, Map[String, V]]) {
                 case (acc, (key, value)) =>
                   (acc, fromJson[V](value)(fmtv)) match {
                     case (Right(vs), JsSuccess(v, _)) =>

@@ -70,7 +70,8 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
   private def makeJobEvent(jobUIDatas: Seq[JobUIData]): Seq[String] = {
     jobUIDatas
       .filter { jobUIData =>
-        jobUIData.status != JobExecutionStatus.UNKNOWN && jobUIData.submissionTime.isDefined
+        jobUIData.status != JobExecutionStatus
+          .UNKNOWN && jobUIData.submissionTime.isDefined
       }
       .map { jobUIData =>
         val jobId = jobUIData.jobId
@@ -84,8 +85,8 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
             jobDescription
         val submissionTime = jobUIData.submissionTime.get
         val completionTimeOpt = jobUIData.completionTime
-        val completionTime = completionTimeOpt.getOrElse(
-          System.currentTimeMillis())
+        val completionTime = completionTimeOpt
+          .getOrElse(System.currentTimeMillis())
         val classNameByStatus =
           status match {
             case JobExecutionStatus.SUCCEEDED =>
@@ -110,8 +111,7 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
            |  'end': new Date(${completionTime}),
            |  'content': '<div class="application-timeline-content"' +
            |     'data-html="true" data-placement="top" data-toggle="tooltip"' +
-           |     'data-title="${Utility
-               .escape(escapedDesc)} (Job ${jobId})<br>' +
+           |     'data-title="${Utility.escape(escapedDesc)} (Job ${jobId})<br>' +
            |     'Status: ${status}<br>' +
            |     'Submitted: ${UIUtils.formatDate(new Date(submissionTime))}' +
            |     '${if (status != JobExecutionStatus.RUNNING) {
@@ -242,21 +242,23 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
       val (lastStageName, lastStageDescription) =
         getLastStageNameAndDescription(job)
       val duration: Option[Long] = {
-        job.submissionTime.map { start =>
-          val end = job.completionTime.getOrElse(System.currentTimeMillis())
-          end - start
-        }
+        job
+          .submissionTime
+          .map { start =>
+            val end = job.completionTime.getOrElse(System.currentTimeMillis())
+            end - start
+          }
       }
       val formattedDuration = duration
         .map(d => UIUtils.formatDuration(d))
         .getOrElse("Unknown")
-      val formattedSubmissionTime = job.submissionTime
+      val formattedSubmissionTime = job
+        .submissionTime
         .map(UIUtils.formatDate)
         .getOrElse("Unknown")
       val basePathUri = UIUtils.prependBaseUri(parent.basePath)
-      val jobDescription = UIUtils.makeDescription(
-        lastStageDescription,
-        basePathUri)
+      val jobDescription = UIUtils
+        .makeDescription(lastStageDescription, basePathUri)
 
       val detailUrl = "%s/jobs/job?id=%s".format(basePathUri, job.jobId)
       <tr id={

@@ -103,9 +103,7 @@ class OptimizeInSuite extends PlanTest {
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val correctAnswer =
-      testRelation
-        .where(Literal.create(null, BooleanType))
-        .analyze
+      testRelation.where(Literal.create(null, BooleanType)).analyze
 
     comparePlans(optimized, correctAnswer)
   }
@@ -123,9 +121,7 @@ class OptimizeInSuite extends PlanTest {
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val correctAnswer =
-      testRelation
-        .where(Literal.create(null, BooleanType))
-        .analyze
+      testRelation.where(Literal.create(null, BooleanType)).analyze
 
     comparePlans(optimized, correctAnswer)
   }
@@ -143,9 +139,7 @@ class OptimizeInSuite extends PlanTest {
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val correctAnswer =
-      testRelation
-        .select(Literal.create(null, BooleanType).as("a"))
-        .analyze
+      testRelation.select(Literal.create(null, BooleanType).as("a")).analyze
 
     comparePlans(optimized, correctAnswer)
   }

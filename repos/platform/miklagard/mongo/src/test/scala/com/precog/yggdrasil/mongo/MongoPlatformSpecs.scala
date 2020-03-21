@@ -59,13 +59,15 @@ object MongoPlatformSpecEngine extends Logging {
 
   private[this] val scheduler = Executors.newScheduledThreadPool(1)
 
-  Runtime.getRuntime.addShutdownHook(
-    new Thread() {
-      override def run() {
-        if (engine != null)
-          engine.shutdown()
-      }
-    })
+  Runtime
+    .getRuntime
+    .addShutdownHook(
+      new Thread() {
+        override def run() {
+          if (engine != null)
+            engine.shutdown()
+        }
+      })
 
   def acquire =
     lock.synchronized {
@@ -129,25 +131,29 @@ object MongoPlatformSpecEngine extends Logging {
 
     def loadFile(path: String, file: File) {
       if (file.isDirectory) {
-        file.listFiles.foreach { f =>
-          logger.debug("Found child: " + f)
-          loadFile(path + file.getName + "_", f)
-        }
+        file
+          .listFiles
+          .foreach { f =>
+            logger.debug("Found child: " + f)
+            loadFile(path + file.getName + "_", f)
+          }
       } else {
         if (file.getName.endsWith(".json")) {
           try {
             val collectionName = path + file.getName.replace(".json", "")
-            logger.debug(
-              "Loading %s into /test/%s".format(file, collectionName))
+            logger
+              .debug("Loading %s into /test/%s".format(file, collectionName))
             val collection = db.getCollection(collectionName)
             JParser.parseManyFromFile(file) match {
               case Success(data) =>
                 val objs =
-                  data.map { jv =>
-                    JsonToMongo
-                      .apply(jv.asInstanceOf[JObject])
-                      .fold(e => throw new Exception(e.toString), s => s)
-                  }.toArray
+                  data
+                    .map { jv =>
+                      JsonToMongo
+                        .apply(jv.asInstanceOf[JObject])
+                        .fold(e => throw new Exception(e.toString), s => s)
+                    }
+                    .toArray
                 collection.insert(objs, WriteConcern.FSYNC_SAFE)
 
                 // Verify that things did actually make it to disk
@@ -163,9 +169,11 @@ object MongoPlatformSpecEngine extends Logging {
       }
     }
 
-    (new File(dataDirURL.toURI)).listFiles.foreach { f =>
-      loadFile("", f)
-    }
+    (new File(dataDirURL.toURI))
+      .listFiles
+      .foreach { f =>
+        loadFile("", f)
+      }
   }
 }
 

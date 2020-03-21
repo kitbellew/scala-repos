@@ -88,9 +88,8 @@ object UidClashTest {
         case _ ⇒
           Restart
       }
-    val theRestartedOne = context.actorOf(
-      Props[RestartedActor],
-      "theRestartedOne")
+    val theRestartedOne = context
+      .actorOf(Props[RestartedActor], "theRestartedOne")
 
     def receive = {
       case PleaseRestart ⇒
@@ -108,9 +107,8 @@ class UidClashTest extends AkkaSpec {
   "The Terminated message for an old child stopped in preRestart" should {
     "not arrive after restart" in {
       val watcher = TestProbe()
-      val topActor = system.actorOf(
-        Props(classOf[RestartingActor], watcher.ref),
-        "top")
+      val topActor = system
+        .actorOf(Props(classOf[RestartingActor], watcher.ref), "top")
       watcher.watch(topActor)
 
       topActor ! PleaseRestart

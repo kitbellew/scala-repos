@@ -28,9 +28,11 @@ class DistributionSuite extends SparkFunSuite with Matchers {
   test("summary") {
     val d =
       new Distribution(
-        (1 to 100).toArray.map {
-          _.toDouble
-        })
+        (1 to 100)
+          .toArray
+          .map {
+            _.toDouble
+          })
     val stats = d.statCounter
     stats.count should be(100)
     stats.mean should be(50.5)

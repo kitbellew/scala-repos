@@ -38,8 +38,9 @@ class NonServerRunner(
       listener: String => Unit): CompilationProcess = {
     val sdk =
       Option(ProjectRootManager.getInstance(project).getProjectSdk) getOrElse {
-        val all = ProjectJdkTable.getInstance.getSdksOfType(
-          JavaSdk.getInstance())
+        val all = ProjectJdkTable
+          .getInstance
+          .getSdksOfType(JavaSdk.getInstance())
 
         if (all.isEmpty) {
           error("No JDK available")
@@ -49,10 +50,12 @@ class NonServerRunner(
         all.get(0)
       }
 
-    CompileServerLauncher.compilerJars.foreach {
-      case p =>
-        assert(p.exists(), p.getPath)
-    }
+    CompileServerLauncher
+      .compilerJars
+      .foreach {
+        case p =>
+          assert(p.exists(), p.getPath)
+      }
 
     scala.compiler.findJdkByName(sdk.getName) match {
       case Left(msg) =>

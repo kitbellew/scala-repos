@@ -30,10 +30,12 @@ object AhcConfigSpec extends Specification with Mockito {
   "AhcConfigSpec" should {
 
     def parseThis(input: String)(implicit app: play.api.Application) = {
-      val config = play.api.Configuration(
-        ConfigFactory
-          .parseString(input)
-          .withFallback(ConfigFactory.defaultReference()))
+      val config = play
+        .api
+        .Configuration(
+          ConfigFactory
+            .parseString(input)
+            .withFallback(ConfigFactory.defaultReference()))
       val parser =
         new AhcWSClientConfigParser(
           defaultWsConfig,
@@ -102,11 +104,14 @@ object AhcConfigSpec extends Specification with Mockito {
 
         actual.getReadTimeout must_== defaultWsConfig.idleTimeout.toMillis
         actual.getRequestTimeout must_== defaultWsConfig.requestTimeout.toMillis
-        actual.getConnectTimeout must_== defaultWsConfig.connectionTimeout.toMillis
+        actual
+          .getConnectTimeout must_== defaultWsConfig.connectionTimeout.toMillis
         actual.isFollowRedirect must_== defaultWsConfig.followRedirects
 
-        actual.getEnabledCipherSuites.toSeq must not contain Ciphers.deprecatedCiphers
-        actual.getEnabledProtocols.toSeq must not contain Protocols.deprecatedProtocols
+        actual.getEnabledCipherSuites.toSeq must not contain Ciphers
+          .deprecatedCiphers
+        actual.getEnabledProtocols.toSeq must not contain Protocols
+          .deprecatedProtocols
       }
 
       "use an explicit idle timeout" in {
@@ -159,7 +164,8 @@ object AhcConfigSpec extends Specification with Mockito {
 
           proxyServerSelector must not(beNull)
 
-          proxyServerSelector must not be_== ProxyServerSelector.NO_PROXY_SELECTOR
+          proxyServerSelector must not be_== ProxyServerSelector
+            .NO_PROXY_SELECTOR
         } finally {
           // Unset http.proxyHost
           System.clearProperty(ProxyUtils.PROXY_HOST)
@@ -266,7 +272,8 @@ object AhcConfigSpec extends Specification with Mockito {
           val config = defaultConfig.copy(wsClientConfig = wsConfig)
           val builder = new AhcConfigBuilder(config)
           // this only works with test:test, has a different type in test:testQuick and test:testOnly!
-          val logger = builder.logger
+          val logger = builder
+            .logger
             .asInstanceOf[ch.qos.logback.classic.Logger]
           val appender =
             new ch.qos.logback.core.read.ListAppender[ILoggingEvent]()
@@ -315,8 +322,8 @@ object AhcConfigSpec extends Specification with Mockito {
 
           val actual = builder.configureProtocols(existingProtocols, sslConfig)
 
-          actual.toSeq must containTheSameElementsAs(
-            Protocols.recommendedProtocols)
+          actual
+            .toSeq must containTheSameElementsAs(Protocols.recommendedProtocols)
         }
 
         "provide explicit protocols if specified" in {

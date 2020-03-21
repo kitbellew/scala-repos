@@ -110,8 +110,8 @@ object BindersSpec extends Specification {
       subject.unbind("key", char) must equalTo("key=" + char.toString)
     }
     "Bind query string as char" in {
-      subject.bind("key", Map("key" -> Seq(string))) must equalTo(
-        Some(Right(char)))
+      subject
+        .bind("key", Map("key" -> Seq(string))) must equalTo(Some(Right(char)))
     }
     "Fail on length > 1" in {
       subject.bind("key", Map("key" -> Seq("foo"))) must be_==(

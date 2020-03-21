@@ -184,11 +184,10 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] {
       case Commutative =>
         delta.map { flow =>
           flow.map { typedP =>
-            sumByBatches(typedP, capturedBatcher, Commutative)
-              .map {
-                case (LTuple2(k, _), (ts, v)) =>
-                  (ts, (k, v))
-              }
+            sumByBatches(typedP, capturedBatcher, Commutative).map {
+              case (LTuple2(k, _), (ts, v)) =>
+                (ts, (k, v))
+            }
           }
         }
       case NonCommutative =>
@@ -239,11 +238,10 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] {
 
     def prepareDeltas(ins: TypedPipe[(Timestamp, (K, V))])
         : TypedPipe[(K, (BatchID, (Timestamp, V)))] =
-      sumByBatches(ins, capturedBatcher, commutativity)
-        .map {
-          case (LTuple2(k, batch), (ts, v)) =>
-            (k, (batch, (ts, v)))
-        }
+      sumByBatches(ins, capturedBatcher, commutativity).map {
+        case (LTuple2(k, batch), (ts, v)) =>
+          (k, (batch, (ts, v)))
+      }
 
     /**
       * Produce a merged stream such that each BatchID, Key pair appears only one time.
@@ -277,14 +275,18 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] {
             }(BinaryOrdering.ordSer[BatchID])
         }
 
-      sorted.mapValueStream { it: Iterator[(BatchID, (Timestamp, V))] =>
-        // each BatchID appears at most once, so it fits in RAM
-        val batched: Map[BatchID, (Timestamp, V)] = groupedSum(it).toMap
-        partials(
-          (inBatch :: batches).iterator.map { bid =>
-            (bid, batched.get(bid))
-          })
-      }.toTypedPipe
+      sorted
+        .mapValueStream { it: Iterator[(BatchID, (Timestamp, V))] =>
+          // each BatchID appears at most once, so it fits in RAM
+          val batched: Map[BatchID, (Timestamp, V)] = groupedSum(it).toMap
+          partials(
+            (inBatch :: batches)
+              .iterator
+              .map { bid =>
+                (bid, batched.get(bid))
+              })
+        }
+        .toTypedPipe
     }
 
     /**
@@ -443,8 +445,10 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] {
         else
           Left(
             List(
-              "Cannot load initial timestamp " + firstDeltaTimestamp.toString + " of deltas " +
-                " at " + this.toString + " only " + readDeltaTimestamps.toString)))
+              "Cannot load initial timestamp " + firstDeltaTimestamp
+                .toString + " of deltas " +
+                " at " + this.toString + " only " + readDeltaTimestamps
+                .toString)))
 
       // Record the timespan we actually read.
       _ <- putState((readDeltaTimestamps, mode))
@@ -483,7 +487,8 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] {
       if (batcher.batchesCoveredBy(readTimespan) == Empty()) {
         Left(
           List(
-            "readTimespan is not convering at least one batch: " + readTimespan.toString))
+            "readTimespan is not convering at least one batch: " + readTimespan
+              .toString))
       } else {
         Right(())
       }

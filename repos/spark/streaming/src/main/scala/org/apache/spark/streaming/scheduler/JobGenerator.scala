@@ -50,16 +50,17 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
   private val graph = ssc.graph
 
   val clock = {
-    val clockClass = ssc.sc.conf
+    val clockClass = ssc
+      .sc
+      .conf
       .get("spark.streaming.clock", "org.apache.spark.util.SystemClock")
     try {
       Utils.classForName(clockClass).newInstance().asInstanceOf[Clock]
     } catch {
       case e: ClassNotFoundException
           if clockClass.startsWith("org.apache.spark.streaming") =>
-        val newClockClass = clockClass.replace(
-          "org.apache.spark.streaming",
-          "org.apache.spark")
+        val newClockClass = clockClass
+          .replace("org.apache.spark.streaming", "org.apache.spark")
         Utils.classForName(newClockClass).newInstance().asInstanceOf[Clock]
     }
   }
@@ -73,8 +74,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
 
   // This is marked lazy so that this is initialized after checkpoint duration has been set
   // in the context and the generator has been started.
-  private lazy val shouldCheckpoint =
-    ssc.checkpointDuration != null && ssc.checkpointDir != null
+  private lazy val shouldCheckpoint = ssc.checkpointDuration != null && ssc
+    .checkpointDir != null
 
   private lazy val checkpointWriter =
     if (shouldCheckpoint) {
@@ -154,7 +155,9 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
         // been consumed by network input DStreams, and jobs have been generated with them
         logInfo(
           "Waiting for all received blocks to be consumed for job generation")
-        while (!hasTimedOut && jobScheduler.receiverTracker.hasUnallocatedBlocks) {
+        while (!hasTimedOut && jobScheduler
+                 .receiverTracker
+                 .hasUnallocatedBlocks) {
           Thread.sleep(pollTime)
         }
         logInfo(
@@ -167,7 +170,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
 
         // Wait for the jobs to complete and checkpoints to be written
         def haveAllBatchesBeenProcessed: Boolean = {
-          lastProcessedBatch != null && lastProcessedBatch.milliseconds == stopTime
+          lastProcessedBatch != null && lastProcessedBatch
+            .milliseconds == stopTime
         }
         logInfo(
           "Waiting for jobs to be processed and checkpoints to be written")
@@ -270,9 +274,9 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
       // Allocate the related blocks when recovering from failure, because some blocks that were
       // added but not allocated, are dangling in the queue after recovering, we have to allocate
       // those blocks to the next batch, which is the batch they were supposed to go.
-      jobScheduler.receiverTracker.allocateBlocksToBatch(
-        time
-      ) // allocate received blocks to batch
+      jobScheduler
+        .receiverTracker
+        .allocateBlocksToBatch(time) // allocate received blocks to batch
       jobScheduler.submitJobSet(JobSet(time, graph.generateJobs(time)))
     }
 
@@ -290,12 +294,13 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
 
     // Checkpoint all RDDs marked for checkpointing to ensure their lineages are
     // truncated periodically. Otherwise, we may run into stack overflows (SPARK-6847).
-    ssc.sparkContext
+    ssc
+      .sparkContext
       .setLocalProperty(RDD.CHECKPOINT_ALL_MARKED_ANCESTORS, "true")
     Try {
-      jobScheduler.receiverTracker.allocateBlocksToBatch(
-        time
-      ) // allocate received blocks to batch
+      jobScheduler
+        .receiverTracker
+        .allocateBlocksToBatch(time) // allocate received blocks to batch
       graph.generateJobs(time) // generate jobs using allocated block
     } match {
       case Success(jobs) =>
@@ -320,8 +325,9 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
       // received blocks (block data not saved in any case). Otherwise, wait for
       // checkpointing of this batch to complete.
       val maxRememberDuration = graph.getMaxInputStreamRememberDuration()
-      jobScheduler.receiverTracker.cleanupOldBlocksAndBatches(
-        time - maxRememberDuration)
+      jobScheduler
+        .receiverTracker
+        .cleanupOldBlocksAndBatches(time - maxRememberDuration)
       jobScheduler.inputInfoTracker.cleanup(time - maxRememberDuration)
       markBatchFullyProcessed(time)
     }
@@ -334,21 +340,21 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
     // All the checkpoint information about which batches have been processed, etc have
     // been saved to checkpoints, so its safe to delete block metadata and data WAL files
     val maxRememberDuration = graph.getMaxInputStreamRememberDuration()
-    jobScheduler.receiverTracker.cleanupOldBlocksAndBatches(
-      time - maxRememberDuration)
+    jobScheduler
+      .receiverTracker
+      .cleanupOldBlocksAndBatches(time - maxRememberDuration)
     jobScheduler.inputInfoTracker.cleanup(time - maxRememberDuration)
     markBatchFullyProcessed(time)
   }
 
   /** Perform checkpoint for the give `time`. */
   private def doCheckpoint(time: Time, clearCheckpointDataLater: Boolean) {
-    if (shouldCheckpoint && (time - graph.zeroTime).isMultipleOf(
-          ssc.checkpointDuration)) {
+    if (shouldCheckpoint && (time - graph.zeroTime)
+          .isMultipleOf(ssc.checkpointDuration)) {
       logInfo("Checkpointing graph for time " + time)
       ssc.graph.updateCheckpointData(time)
-      checkpointWriter.write(
-        new Checkpoint(ssc, time),
-        clearCheckpointDataLater)
+      checkpointWriter
+        .write(new Checkpoint(ssc, time), clearCheckpointDataLater)
     }
   }
 

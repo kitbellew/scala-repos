@@ -32,10 +32,12 @@ object Flow {
       processorFactory: function.Creator[Pair[Processor[I, O], Mat]])
       : javadsl.Flow[I, O, Mat] =
     new Flow(
-      scaladsl.Flow.fromProcessorMat { () ⇒
-        val javaPair = processorFactory.create()
-        (javaPair.first, javaPair.second)
-      })
+      scaladsl
+        .Flow
+        .fromProcessorMat { () ⇒
+          val javaPair = processorFactory.create()
+          (javaPair.first, javaPair.second)
+        })
 
   /**
     * Creates a [Flow] which will use the given function to transform its inputs to outputs. It is equivalent
@@ -78,8 +80,9 @@ object Flow {
       source: Graph[SourceShape[O], M2],
       combine: function.Function2[M1, M2, M]): Flow[I, O, M] =
     new Flow(
-      scaladsl.Flow.fromSinkAndSourceMat(sink, source)(
-        combinerToScala(combine)))
+      scaladsl
+        .Flow
+        .fromSinkAndSourceMat(sink, source)(combinerToScala(combine)))
 }
 
 /** Create a `Flow` which can process elements of type `T`. */
@@ -1103,10 +1106,12 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     java.util.List[Out @uncheckedVariance],
     javadsl.Source[Out @uncheckedVariance, NotUsed]], Mat] =
     new Flow(
-      delegate.prefixAndTail(n).map {
-        case (taken, tail) ⇒
-          akka.japi.Pair(taken.asJava, tail.asJava)
-      })
+      delegate
+        .prefixAndTail(n)
+        .map {
+          case (taken, tail) ⇒
+            akka.japi.Pair(taken.asJava, tail.asJava)
+        })
 
   /**
     * This operation demultiplexes the incoming stream into separate output
@@ -1615,8 +1620,8 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
             Out @uncheckedVariance Pair T]] {
             def apply(b: GraphDSL.Builder[M], s: SourceShape[T])
                 : FlowShape[Out, Out @uncheckedVariance Pair T] = {
-              val zip: FanInShape2[Out, T, Out Pair T] = b.add(
-                Zip.create[Out, T])
+              val zip: FanInShape2[Out, T, Out Pair T] = b
+                .add(Zip.create[Out, T])
               b.from(s).toInlet(zip.in1)
               FlowShape(zip.in0, zip.out)
             }

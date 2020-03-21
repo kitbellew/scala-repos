@@ -59,16 +59,19 @@ private class BatchedOperations(batcher: Batcher) {
   def intersect(
       batches: Iterable[BatchID],
       ts: Interval[Timestamp]): Option[Interval[Timestamp]] =
-    BatchID.toInterval(batches).map {
-      intersect(_, ts)
-    }
+    BatchID
+      .toInterval(batches)
+      .map {
+        intersect(_, ts)
+      }
 
   def readAvailableTimes[T](
       inTimes: Interval[Timestamp],
       mode: Mode,
       in: PipeFactory[T]): Try[(Interval[Timestamp], FlowToPipe[T])] =
     // Read the delta stream for the needed times
-    in((inTimes, mode)).right
+    in((inTimes, mode))
+      .right
       .map {
         case ((availableInput, innerm), f2p) =>
           (availableInput, f2p)
@@ -80,7 +83,8 @@ private class BatchedOperations(batcher: Batcher) {
       in: PipeFactory[T]): Try[(Interval[BatchID], FlowToPipe[T])] = {
     val inTimes = batchToTimestamp(inBatches)
     // Read the delta stream for the needed times
-    in((inTimes, mode)).right
+    in((inTimes, mode))
+      .right
       .map {
         case ((availableInput, innerm), f2p) =>
           val batchesWeCanBuild = batcher.batchesCoveredBy(availableInput)

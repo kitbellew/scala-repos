@@ -109,9 +109,11 @@ class ConnectionPoolSpec
       override def testServerHandler(
           connNr: Int): HttpRequest ⇒ HttpResponse = {
         case request @ HttpRequest(_, Uri.Path("/a"), _, _, _) ⇒
-          val entity = HttpEntity.Chunked.fromData(
-            ContentTypes.`text/plain(UTF-8)`,
-            Source.fromPublisher(responseEntityPub))
+          val entity = HttpEntity
+            .Chunked
+            .fromData(
+              ContentTypes.`text/plain(UTF-8)`,
+              Source.fromPublisher(responseEntityPub))
           super.testServerHandler(connNr)(request) withEntity entity
         case x ⇒
           super.testServerHandler(connNr)(x)
@@ -273,10 +275,9 @@ class ConnectionPoolSpec
     "automatically shutdown after configured timeout periods" in new TestSetup() {
       val (_, _, _, hcp) = cachedHostConnectionPool[Int](idleTimeout = 1.second)
       val gateway = Await.result(hcp.gatewayFuture, 500.millis)
-      val PoolGateway.Running(
-        _,
-        shutdownStartedPromise,
-        shutdownCompletedPromise) = gateway.currentState
+      val PoolGateway
+        .Running(_, shutdownStartedPromise, shutdownCompletedPromise) =
+        gateway.currentState
       shutdownStartedPromise.isCompleted shouldEqual false
       shutdownCompletedPromise.isCompleted shouldEqual false
       Await.result(
@@ -346,8 +347,8 @@ class ConnectionPoolSpec
     "produce an error if the request does not have an absolute URI" in {
       val request = HttpRequest(uri = "/foo")
       val responseFuture = Http().singleRequest(request)
-      val thrown =
-        the[IllegalUriException] thrownBy Await.result(responseFuture, 1.second)
+      val thrown = the[IllegalUriException] thrownBy Await
+        .result(responseFuture, 1.second)
       thrown should have message "Cannot determine request scheme and target endpoint as HttpMethod(GET) request to /foo doesn't have an absolute URI"
     }
   }
@@ -358,10 +359,8 @@ class ConnectionPoolSpec
       autoAccept = true) {
       val (serverEndpoint2, serverHostName2, serverPort2) = TestUtils
         .temporaryServerHostnameAndPort()
-      Http().bindAndHandleSync(
-        testServerHandler(0),
-        serverHostName2,
-        serverPort2)
+      Http()
+        .bindAndHandleSync(testServerHandler(0), serverHostName2, serverPort2)
 
       val (requestIn, responseOut, responseOutSub, hcp) = superPool[Int]()
 
@@ -394,7 +393,8 @@ class ConnectionPoolSpec
     }
 
     def responseHeaders(r: HttpRequest, connNr: Int) =
-      ConnNrHeader(connNr) +: RawHeader("Req-Uri", r.uri.toString) +: r.headers
+      ConnNrHeader(connNr) +: RawHeader("Req-Uri", r.uri.toString) +: r
+        .headers
         .map(h ⇒ RawHeader("Req-" + h.name, h.value))
 
     def mapServerSideOutboundRawBytes(bytes: ByteString): ByteString = bytes

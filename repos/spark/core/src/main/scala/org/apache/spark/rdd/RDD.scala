@@ -177,7 +177,8 @@ abstract class RDD[T: ClassTag](
       newLevel: StorageLevel,
       allowOverride: Boolean): this.type = {
     // TODO: Handle changes of StorageLevel
-    if (storageLevel != StorageLevel.NONE && newLevel != storageLevel && !allowOverride) {
+    if (storageLevel != StorageLevel
+          .NONE && newLevel != storageLevel && !allowOverride) {
       throw new UnsupportedOperationException(
         "Cannot change storage level of an RDD after it was already assigned a level")
     }
@@ -246,12 +247,14 @@ abstract class RDD[T: ClassTag](
     * RDD is checkpointed or not.
     */
   final def dependencies: Seq[Dependency[_]] = {
-    checkpointRDD.map(r => List(new OneToOneDependency(r))).getOrElse {
-      if (dependencies_ == null) {
-        dependencies_ = getDependencies
+    checkpointRDD
+      .map(r => List(new OneToOneDependency(r)))
+      .getOrElse {
+        if (dependencies_ == null) {
+          dependencies_ = getDependencies
+        }
+        dependencies_
       }
-      dependencies_
-    }
   }
 
   /**
@@ -259,18 +262,22 @@ abstract class RDD[T: ClassTag](
     * RDD is checkpointed or not.
     */
   final def partitions: Array[Partition] = {
-    checkpointRDD.map(_.partitions).getOrElse {
-      if (partitions_ == null) {
-        partitions_ = getPartitions
-        partitions_.zipWithIndex.foreach {
-          case (partition, index) =>
-            require(
-              partition.index == index,
-              s"partitions($index).partition == ${partition.index}, but it should equal $index")
+    checkpointRDD
+      .map(_.partitions)
+      .getOrElse {
+        if (partitions_ == null) {
+          partitions_ = getPartitions
+          partitions_
+            .zipWithIndex
+            .foreach {
+              case (partition, index) =>
+                require(
+                  partition.index == index,
+                  s"partitions($index).partition == ${partition.index}, but it should equal $index")
+            }
         }
+        partitions_
       }
-      partitions_
-    }
   }
 
   /**
@@ -284,9 +291,11 @@ abstract class RDD[T: ClassTag](
     * RDD is checkpointed.
     */
   final def preferredLocations(split: Partition): Seq[String] = {
-    checkpointRDD.map(_.getPreferredLocations(split)).getOrElse {
-      getPreferredLocations(split)
-    }
+    checkpointRDD
+      .map(_.getPreferredLocations(split))
+      .getOrElse {
+        getPreferredLocations(split)
+      }
   }
 
   /**
@@ -311,8 +320,9 @@ abstract class RDD[T: ClassTag](
     val ancestors = new mutable.HashSet[RDD[_]]
 
     def visit(rdd: RDD[_]) {
-      val narrowDependencies = rdd.dependencies.filter(
-        _.isInstanceOf[NarrowDependency[_]])
+      val narrowDependencies = rdd
+        .dependencies
+        .filter(_.isInstanceOf[NarrowDependency[_]])
       val narrowParents = narrowDependencies.map(_.rdd)
       val narrowParentsNotVisited = narrowParents.filterNot(ancestors.contains)
       narrowParentsNotVisited.foreach { parent =>
@@ -349,13 +359,16 @@ abstract class RDD[T: ClassTag](
     val blockId = RDDBlockId(id, partition.index)
     var readCachedBlock = true
     // This method is called on executors, so we need call SparkEnv.get instead of sc.env.
-    SparkEnv.get.blockManager.getOrElseUpdate(
-      blockId,
-      storageLevel,
-      () => {
-        readCachedBlock = false
-        computeOrReadCheckpoint(partition, context)
-      }) match {
+    SparkEnv
+      .get
+      .blockManager
+      .getOrElseUpdate(
+        blockId,
+        storageLevel,
+        () => {
+          readCachedBlock = false
+          computeOrReadCheckpoint(partition, context)
+        }) match {
       case Left(blockResult) =>
         if (readCachedBlock) {
           val existingMetrics = context
@@ -611,10 +624,8 @@ abstract class RDD[T: ClassTag](
           if (!withReplacement && num >= initialCount) {
             Utils.randomizeInPlace(this.collect(), rand)
           } else {
-            val fraction = SamplingUtils.computeFractionForSampleSize(
-              num,
-              initialCount,
-              withReplacement)
+            val fraction = SamplingUtils
+              .computeFractionForSampleSize(num, initialCount, withReplacement)
             var samples = this
               .sample(withReplacement, fraction, rand.nextInt())
               .collect()
@@ -668,10 +679,7 @@ abstract class RDD[T: ClassTag](
       ord: Ordering[K],
       ctag: ClassTag[K]): RDD[T] =
     withScope {
-      this
-        .keyBy[K](f)
-        .sortByKey(ascending, numPartitions)
-        .values
+      this.keyBy[K](f).sortByKey(ascending, numPartitions).values
     }
 
   /**
@@ -1138,8 +1146,8 @@ abstract class RDD[T: ClassTag](
       }
       sc.runJob(this, reducePartition, mergeResult)
       // Get the final result out of our Option, or throw an exception if the RDD was empty
-      jobResult.getOrElse(
-        throw new UnsupportedOperationException("empty collection"))
+      jobResult
+        .getOrElse(throw new UnsupportedOperationException("empty collection"))
     }
 
   /**
@@ -1202,9 +1210,8 @@ abstract class RDD[T: ClassTag](
   def fold(zeroValue: T)(op: (T, T) => T): T =
     withScope {
       // Clone the zero value since we will also be serializing it as part of tasks
-      var jobResult = Utils.clone(
-        zeroValue,
-        sc.env.closureSerializer.newInstance())
+      var jobResult = Utils
+        .clone(zeroValue, sc.env.closureSerializer.newInstance())
       val cleanOp = sc.clean(op)
       val foldPartition = (iter: Iterator[T]) => iter.fold(zeroValue)(cleanOp)
       val mergeResult =
@@ -1267,15 +1274,14 @@ abstract class RDD[T: ClassTag](
         var partiallyAggregated = mapPartitions(it =>
           Iterator(aggregatePartition(it)))
         var numPartitions = partiallyAggregated.partitions.length
-        val scale = math.max(
-          math.ceil(math.pow(numPartitions, 1.0 / depth)).toInt,
-          2)
+        val scale = math
+          .max(math.ceil(math.pow(numPartitions, 1.0 / depth)).toInt, 2)
         // If creating an extra level doesn't help reduce
         // the wall-clock time, we stop tree aggregation.
 
         // Don't trigger TreeAggregation when it doesn't save wall-clock time
-        while (numPartitions > scale + math.ceil(
-                 numPartitions.toDouble / scale)) {
+        while (numPartitions > scale + math
+                 .ceil(numPartitions.toDouble / scale)) {
           numPartitions /= scale
           val curNumPartitions = numPartitions
           partiallyAggregated = partiallyAggregated
@@ -1439,10 +1445,12 @@ abstract class RDD[T: ClassTag](
       val n = this.partitions.length.toLong
       this.mapPartitionsWithIndex {
         case (k, iter) =>
-          iter.zipWithIndex.map {
-            case (item, i) =>
-              (item, i * n + k)
-          }
+          iter
+            .zipWithIndex
+            .map {
+              case (item, i) =>
+                (item, i * n + k)
+            }
       }
     }
 
@@ -1485,12 +1493,10 @@ abstract class RDD[T: ClassTag](
           }
 
           val left = num - buf.size
-          val p = partsScanned.until(
-            math.min(partsScanned + numPartsToTry, totalParts).toInt)
-          val res = sc.runJob(
-            this,
-            (it: Iterator[T]) => it.take(left).toArray,
-            p)
+          val p = partsScanned
+            .until(math.min(partsScanned + numPartsToTry, totalParts).toInt)
+          val res = sc
+            .runJob(this, (it: Iterator[T]) => it.take(left).toArray, p)
 
           res.foreach(buf ++= _.take(num - buf.size))
           partsScanned += p.size
@@ -1892,27 +1898,24 @@ abstract class RDD[T: ClassTag](
     * doCheckpoint() is called recursively on the parent RDDs.
     */
   private[spark] def doCheckpoint(): Unit = {
-    RDDOperationScope.withScope(
-      sc,
-      "checkpoint",
-      allowNesting = false,
-      ignoreParent = true) {
-      if (!doCheckpointCalled) {
-        doCheckpointCalled = true
-        if (checkpointData.isDefined) {
-          if (checkpointAllMarkedAncestors) {
-            // TODO We can collect all the RDDs that needs to be checkpointed, and then checkpoint
-            // them in parallel.
-            // Checkpoint parents first because our lineage will be truncated after we
-            // checkpoint ourselves
+    RDDOperationScope
+      .withScope(sc, "checkpoint", allowNesting = false, ignoreParent = true) {
+        if (!doCheckpointCalled) {
+          doCheckpointCalled = true
+          if (checkpointData.isDefined) {
+            if (checkpointAllMarkedAncestors) {
+              // TODO We can collect all the RDDs that needs to be checkpointed, and then checkpoint
+              // them in parallel.
+              // Checkpoint parents first because our lineage will be truncated after we
+              // checkpoint ourselves
+              dependencies.foreach(_.rdd.doCheckpoint())
+            }
+            checkpointData.get.checkpoint()
+          } else {
             dependencies.foreach(_.rdd.doCheckpoint())
           }
-          checkpointData.get.checkpoint()
-        } else {
-          dependencies.foreach(_.rdd.doCheckpoint())
         }
       }
-    }
   }
 
   /**
@@ -1946,7 +1949,8 @@ abstract class RDD[T: ClassTag](
           storageLevel.description
         else
           ""
-      val storageInfo = rdd.context
+      val storageInfo = rdd
+        .context
         .getRDDStorageInfo(_.id == rdd.id)
         .map(info =>
           "    CachedPartitions: %d; MemorySize: %s; ExternalBlockStoreSize: %s; DiskSize: %s"
@@ -1997,12 +2001,14 @@ abstract class RDD[T: ClassTag](
       val nextPrefix =
         (" " * leftOffset) + "|" + (" " * (partitionStr.length - leftOffset))
 
-      debugSelf(rdd).zipWithIndex.map {
-        case (desc: String, 0) =>
-          s"$partitionStr $desc"
-        case (desc: String, _) =>
-          s"$nextPrefix $desc"
-      } ++ debugChildren(rdd, nextPrefix)
+      debugSelf(rdd)
+        .zipWithIndex
+        .map {
+          case (desc: String, 0) =>
+            s"$partitionStr $desc"
+          case (desc: String, _) =>
+            s"$nextPrefix $desc"
+        } ++ debugChildren(rdd, nextPrefix)
     }
     def shuffleDebugString(
         rdd: RDD[_],
@@ -2020,12 +2026,14 @@ abstract class RDD[T: ClassTag](
         )
         + (" " * leftOffset) + "|" + (" " * (partitionStr.length - leftOffset)))
 
-      debugSelf(rdd).zipWithIndex.map {
-        case (desc: String, 0) =>
-          s"$thisPrefix+-$partitionStr $desc"
-        case (desc: String, _) =>
-          s"$nextPrefix$desc"
-      } ++ debugChildren(rdd, nextPrefix)
+      debugSelf(rdd)
+        .zipWithIndex
+        .map {
+          case (desc: String, 0) =>
+            s"$thisPrefix+-$partitionStr $desc"
+          case (desc: String, _) =>
+            s"$nextPrefix$desc"
+        } ++ debugChildren(rdd, nextPrefix)
     }
     def debugString(
         rdd: RDD[_],

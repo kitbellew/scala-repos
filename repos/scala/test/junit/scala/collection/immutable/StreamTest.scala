@@ -82,12 +82,15 @@ class StreamTest {
     // use mutable state to control an intermittent failure in filtering the Stream
     var shouldThrow = true
 
-    val wf = Stream.from(1).take(10).withFilter { n =>
-      if (shouldThrow && n == 5)
-        throw new RuntimeException("n == 5")
-      else
-        n > 5
-    }
+    val wf = Stream
+      .from(1)
+      .take(10)
+      .withFilter { n =>
+        if (shouldThrow && n == 5)
+          throw new RuntimeException("n == 5")
+        else
+          n > 5
+      }
 
     assertTrue(
       Try {

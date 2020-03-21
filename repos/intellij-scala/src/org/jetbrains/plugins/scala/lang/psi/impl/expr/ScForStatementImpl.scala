@@ -327,8 +327,8 @@ class ScForStatementImpl(node: ASTNode)
                 while (element != null && (
                          element.getTextLength < patt.getTextLength ||
                          (
-                           !element.isInstanceOf[
-                             ScPattern] && element.getTextLength == patt.getTextLength
+                           !element.isInstanceOf[ScPattern] && element
+                             .getTextLength == patt.getTextLength
                          )
                        ))
                   element = element.getParent
@@ -365,9 +365,8 @@ class ScForStatementImpl(node: ASTNode)
         }
       }
     }
-    if ((
-          enums.isEmpty && guards.isEmpty && gens.length == 1
-        ) || gens.isEmpty || res.isEmpty)
+    if ((enums.isEmpty && guards.isEmpty && gens.length == 1) || gens
+          .isEmpty || res.isEmpty)
       res
     else {
       val expr = res.get

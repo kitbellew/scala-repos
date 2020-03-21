@@ -163,9 +163,11 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
     }
 
     def nextRun(threshold: Date, task: ScheduledTask) = {
-      task.repeat.flatMap { sched =>
-        Option(sched.getNextValidTimeAfter(threshold))
-      } map { nextTime =>
+      task
+        .repeat
+        .flatMap { sched =>
+          Option(sched.getNextValidTimeAfter(threshold))
+        } map { nextTime =>
         (new DateTime(nextTime), task)
       }
     }
@@ -230,13 +232,15 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
                 task.source.prefix \/> invalidState(
                   "Path %s cannot be relativized.".format(task.source.path))
               })
-            cachingResult <- platform.vfs.executeAndCache(
-              platform,
-              basePath,
-              task.context,
-              QueryOptions(timeout = task.timeout),
-              Some(task.sink),
-              Some(task.taskName))
+            cachingResult <- platform
+              .vfs
+              .executeAndCache(
+                platform,
+                basePath,
+                task.context,
+                QueryOptions(timeout = task.timeout),
+                Some(task.sink),
+                Some(task.taskName))
 
           } yield cachingResult
 
@@ -258,18 +262,21 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
             } recoverWith {
               case t: Throwable =>
                 for {
-                  _ <- storedQueryResult.cachingJob.traverse { jobId =>
-                    jobManager.abort(jobId, t.getMessage) map {
-                      case Right(jobAbortSuccess) =>
-                        ourself ! TaskComplete(
-                          task.id,
-                          clock.now(),
-                          0,
-                          Option(t.getMessage) orElse Some(t.getClass.toString))
-                      case Left(jobAbortFailure) =>
-                        sys.error(jobAbortFailure.toString)
+                  _ <- storedQueryResult
+                    .cachingJob
+                    .traverse { jobId =>
+                      jobManager.abort(jobId, t.getMessage) map {
+                        case Right(jobAbortSuccess) =>
+                          ourself ! TaskComplete(
+                            task.id,
+                            clock.now(),
+                            0,
+                            Option(t.getMessage) orElse Some(
+                              t.getClass.toString))
+                        case Left(jobAbortFailure) =>
+                          sys.error(jobAbortFailure.toString)
+                      }
                     }
-                  }
                 } yield PrecogUnit
             }
           }

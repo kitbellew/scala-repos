@@ -27,11 +27,13 @@ import WebKeys._
 object PlaySettings {
 
   lazy val defaultJavaSettings = Seq[Setting[_]](
-    TwirlKeys.templateImports ++= TemplateImports.defaultJavaTemplateImports.asScala,
+    TwirlKeys
+      .templateImports ++= TemplateImports.defaultJavaTemplateImports.asScala,
     RoutesKeys.routesImport ++= Seq("play.libs.F"))
 
   lazy val defaultScalaSettings = Seq[Setting[_]](
-    TwirlKeys.templateImports ++= TemplateImports.defaultScalaTemplateImports.asScala)
+    TwirlKeys
+      .templateImports ++= TemplateImports.defaultScalaTemplateImports.asScala)
 
   /** Ask SBT to manage the classpath for the given configuration. */
   def manageClasspath(config: Configuration) =
@@ -45,12 +47,18 @@ object PlaySettings {
     javacOptions in (Compile, doc) := List("-encoding", "utf8"),
     libraryDependencies <+= (playPlugin) { isPlugin =>
       if (isPlugin) {
-        "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided"
+        "com.typesafe.play" %% "play" % play
+          .core
+          .PlayVersion
+          .current % "provided"
       } else {
         "com.typesafe.play" %% "play-server" % play.core.PlayVersion.current
       }
     },
-    libraryDependencies += "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test",
+    libraryDependencies += "com.typesafe.play" %% "play-test" % play
+      .core
+      .PlayVersion
+      .current % "test",
     ivyConfigurations += DocsApplication,
     playOmnidoc := !play.core.PlayVersion.current.endsWith("-SNAPSHOT"),
     playDocsName := {
@@ -60,10 +68,13 @@ object PlaySettings {
         "play-docs"
     },
     playDocsModule := Some(
-      "com.typesafe.play" %% playDocsName.value % play.core.PlayVersion.current % DocsApplication.name),
+      "com.typesafe.play" %% playDocsName
+        .value % play.core.PlayVersion.current % DocsApplication.name),
     libraryDependencies ++= playDocsModule.value.toSeq,
     manageClasspath(DocsApplication),
-    playDocsJar := (managedClasspath in DocsApplication).value.files
+    playDocsJar := (managedClasspath in DocsApplication)
+      .value
+      .files
       .find(_.getName.startsWith(playDocsName.value)),
     parallelExecution in Test := false,
     fork in Test := true,
@@ -162,8 +173,8 @@ object PlaySettings {
     },
     // Assets for testing
     public in TestAssets := (public in TestAssets).value / assetsPrefix.value,
-    fullClasspath in Test += Attributed.blank(
-      (assets in TestAssets).value.getParentFile),
+    fullClasspath in Test += Attributed
+      .blank((assets in TestAssets).value.getParentFile),
     // Settings
     devSettings := Nil,
     // Native packaging
@@ -253,10 +264,12 @@ object PlaySettings {
         val externalized = playExternalizedResources.value.map(_._1).toSet
         val copied = copyResources.value
         val toExclude =
-          copied.collect {
-            case (source, dest) if externalized(source) =>
-              dest
-          }.toSet
+          copied
+            .collect {
+              case (source, dest) if externalized(source) =>
+                dest
+            }
+            .toSet
         packageBinMappings.filterNot {
           case (file, _) =>
             toExclude(file)

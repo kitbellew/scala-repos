@@ -80,8 +80,10 @@ object KinesisWordCountASL extends Logging {
   def main(args: Array[String]) {
     // Check that all required args were passed in.
     if (args.length != 3) {
-      System.err.println(
-        """
+      System
+        .err
+        .println(
+          """
           |Usage: KinesisWordCountASL <app-name> <stream-name> <endpoint-url> <region-name>
           |
           |    <app-name> is the name of the consumer app, used to track the read data in DynamoDB
@@ -157,8 +159,8 @@ object KinesisWordCountASL extends Logging {
     val unionStreams = ssc.union(kinesisStreams)
 
     // Convert each line of Array[Byte] to String, and split into words
-    val words = unionStreams.flatMap(byteArray =>
-      new String(byteArray).split(" "))
+    val words = unionStreams
+      .flatMap(byteArray => new String(byteArray).split(" "))
 
     // Map each word to a (word, 1) tuple so we can reduce by key to count the words
     val wordCounts = words.map(word => (word, 1)).reduceByKey(_ + _)
@@ -189,8 +191,10 @@ object KinesisWordCountASL extends Logging {
 object KinesisWordProducerASL {
   def main(args: Array[String]) {
     if (args.length != 4) {
-      System.err.println(
-        """
+      System
+        .err
+        .println(
+          """
           |Usage: KinesisWordProducerASL <stream-name> <endpoint-url> <records-per-sec>
                                          <words-per-record>
           |

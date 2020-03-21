@@ -103,8 +103,8 @@ private[deploy] object IvyTestUtils {
       className: String,
       packageName: String): Seq[(String, File)] = {
     val rFilesDir = new File(dir, "R" + File.separator + "pkg")
-    Files.createParentDirs(
-      new File(rFilesDir, "R" + File.separator + "mylib.R"))
+    Files
+      .createParentDirs(new File(rFilesDir, "R" + File.separator + "mylib.R"))
     val contents = s"""myfunc <- function(x) {
         |  SparkR:::callJStatic("$packageName.$className", "myFunc", x)
         |}
@@ -215,7 +215,8 @@ private[deploy] object IvyTestUtils {
   private def ivyArtifactWriter(artifact: MavenCoordinate): String = {
     s"""<dependency org="${artifact.groupId}" name="${artifact.artifactId}"
        |            rev="${artifact.version}" force="true"
-       |            conf="compile->compile(*),master(*);runtime->runtime(*)"/>""".stripMargin
+       |            conf="compile->compile(*),master(*);runtime->runtime(*)"/>"""
+      .stripMargin
   }
 
   /** Create a pom file for this artifact. */
@@ -438,12 +439,12 @@ private[deploy] object IvyTestUtils {
       dependencies: Option[Seq[MavenCoordinate]],
       ivySettings: IvySettings): Unit = {
     // delete the artifact from the cache as well if it already exists
-    FileUtils.deleteDirectory(
-      new File(ivySettings.getDefaultCache, artifact.groupId))
+    FileUtils
+      .deleteDirectory(new File(ivySettings.getDefaultCache, artifact.groupId))
     dependencies.foreach {
       _.foreach { dep =>
-        FileUtils.deleteDirectory(
-          new File(ivySettings.getDefaultCache, dep.groupId))
+        FileUtils
+          .deleteDirectory(new File(ivySettings.getDefaultCache, dep.groupId))
       }
     }
   }

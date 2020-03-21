@@ -22,13 +22,10 @@ object PairingSystem extends AbstractPairingSystem {
       users: WaitingUsers,
       ranking: Ranking): Fu[Pairings] = {
     for {
-      lastOpponents <- PairingRepo.lastOpponents(
-        tour.id,
-        users.all,
-        Math.min(100, users.size * 4))
-      onlyTwoActivePlayers <- (tour.nbPlayers > 20).fold(
-        fuccess(false),
-        PlayerRepo.countActive(tour.id).map(2 ==))
+      lastOpponents <- PairingRepo
+        .lastOpponents(tour.id, users.all, Math.min(100, users.size * 4))
+      onlyTwoActivePlayers <- (tour.nbPlayers > 20)
+        .fold(fuccess(false), PlayerRepo.countActive(tour.id).map(2 ==))
       data = Data(tour, lastOpponents, ranking, onlyTwoActivePlayers)
       preps <- if (lastOpponents.hash.isEmpty)
         evenOrAll(data, users)
@@ -39,13 +36,15 @@ object PairingSystem extends AbstractPairingSystem {
           case _ =>
             evenOrAll(data, users)
         }
-      pairings <- preps.map { prep =>
-        UserRepo.firstGetsWhite(
-          prep.user1.some,
-          prep.user2.some) map prep.toPairing
-      }.sequenceFu
+      pairings <- preps
+        .map { prep =>
+          UserRepo.firstGetsWhite(prep.user1.some, prep.user2.some) map prep
+            .toPairing
+        }
+        .sequenceFu
     } yield pairings
-  }.chronometer
+  }
+    .chronometer
     .logIfSlow(500, pairingLogger) { pairings =>
       s"createPairings ${url(tour.id)} ${pairings.size} pairings"
     }
@@ -85,7 +84,8 @@ object PairingSystem extends AbstractPairingSystem {
               Nil
           }
       }
-  }.chronometer
+  }
+    .chronometer
     .logIfSlow(200, pairingLogger) { preps =>
       s"makePreps ${url(data.tour.id)} ${users.size} users, ${preps.size} preps"
     }
@@ -116,12 +116,14 @@ object PairingSystem extends AbstractPairingSystem {
       type Combination = List[RankedPairing]
 
       def justPlayedTogether(u1: String, u2: String): Boolean =
-        lastOpponents.hash.get(u1).contains(u2) || lastOpponents.hash
+        lastOpponents.hash.get(u1).contains(u2) || lastOpponents
+          .hash
           .get(u2)
           .contains(u1)
 
       def veryMuchJustPlayedTogether(u1: String, u2: String): Boolean =
-        lastOpponents.hash.get(u1).contains(u2) && lastOpponents.hash
+        lastOpponents.hash.get(u1).contains(u2) && lastOpponents
+          .hash
           .get(u2)
           .contains(u1)
 
@@ -210,8 +212,8 @@ object PairingSystem extends AbstractPairingSystem {
                     rp0.player -> rp1.player
                 }
               case _ =>
-                pairingLogger.warn(
-                  "Could not make smart pairings for arena tournament")
+                pairingLogger
+                  .warn("Could not make smart pairings for arena tournament")
                 players map (_.player) grouped 2 collect {
                   case List(p1, p2) =>
                     (p1, p2)

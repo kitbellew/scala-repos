@@ -163,9 +163,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
   def bootstrapMethodArg(t: Constant, pos: Position): AnyRef =
     t match {
       case Constant(mt: Type) =>
-        methodBTypeFromMethodType(
-          transformedType(mt),
-          isConstructor = false).toASMType
+        methodBTypeFromMethodType(transformedType(mt), isConstructor = false)
+          .toASMType
       case c @ Constant(sym: Symbol) =>
         staticHandleFromSymbol(sym)
       case c @ Constant(value: String) =>
@@ -313,13 +312,15 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       // parents of a java annotations. undo this for the backend (where we need classfile-level information).
       if (classSym.hasJavaAnnotationFlag)
         parents.filterNot(c =>
-          c.typeSymbol == ClassfileAnnotationClass || c.typeSymbol == AnnotationClass)
+          c.typeSymbol == ClassfileAnnotationClass || c
+            .typeSymbol == AnnotationClass)
       else
         parents
     }
 
-    val allParents =
-      classParents ++ classSym.annotations.flatMap(newParentForAnnotation)
+    val allParents = classParents ++ classSym
+      .annotations
+      .flatMap(newParentForAnnotation)
 
     // We keep the superClass when computing minimizeParents to eliminate more interfaces.
     // Example: T can be eliminated from D
@@ -348,18 +349,21 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     */
   private def memberClassesForInnerClassTable(
       classSymbol: Symbol): List[Symbol] =
-    classSymbol.info.decls.collect({
-      case sym
-          if sym.isClass && !considerAsTopLevelImplementationArtifact(sym) =>
-        sym
-      case sym
-          if sym.isModule && !considerAsTopLevelImplementationArtifact(
-            sym
-          ) => // impl classes get the lateMODULE flag in mixin
-        val r = exitingPickler(sym.moduleClass)
-        assert(r != NoSymbol, sym.fullLocationString)
-        r
-    })(collection.breakOut)
+    classSymbol
+      .info
+      .decls
+      .collect({
+        case sym
+            if sym.isClass && !considerAsTopLevelImplementationArtifact(sym) =>
+          sym
+        case sym
+            if sym.isModule && !considerAsTopLevelImplementationArtifact(
+              sym
+            ) => // impl classes get the lateMODULE flag in mixin
+          val r = exitingPickler(sym.moduleClass)
+          assert(r != NoSymbol, sym.fullLocationString)
+          r
+      })(collection.breakOut)
 
   private def setClassInfo(
       classSym: Symbol,
@@ -391,8 +395,10 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
           // Java enums have the `ACC_ABSTRACT` flag if they have a deferred method.
           // We cannot trust `hasAbstractFlag`: the ClassfileParser adds `ABSTRACT` and `SEALED` to all
           // Java enums for exhaustiveness checking.
-          val hasAbstractMethod = classSym.info.decls.exists(s =>
-            s.isMethod && s.isDeferred)
+          val hasAbstractMethod = classSym
+            .info
+            .decls
+            .exists(s => s.isMethod && s.isDeferred)
           if (hasAbstractMethod)
             ACC_ABSTRACT
           else
@@ -555,8 +561,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
               val moduleMemberClasses =
                 exitingPhase(currentRun.lambdaliftPhase)(
                   memberClassesForInnerClassTable(linkedClass))
-              moduleMemberClasses.filter(
-                classOriginallyNestedInClass(_, classSym))
+              moduleMemberClasses
+                .filter(classOriginallyNestedInClass(_, classSym))
             } else
               Nil
           }
@@ -577,8 +583,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       if (s.isJavaDefined && s.isModuleClass) {
         // We could also search in nestedClassSymbols for s.linkedClassOfClass, but sometimes that
         // returns NoSymbol, so it doesn't work.
-        val nb = nestedClassSymbols.count(mc =>
-          mc.name == s.name && mc.owner == s.owner)
+        val nb = nestedClassSymbols
+          .count(mc => mc.name == s.name && mc.owner == s.owner)
         assert(
           nb == 2,
           s"Java member module without member class: $s - $nestedClassSymbols")
@@ -587,8 +593,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         true
     })
 
-    val nestedClasses = nestedClassSymbolsNoJavaModuleClasses.map(
-      classBTypeFromSymbol)
+    val nestedClasses = nestedClassSymbolsNoJavaModuleClasses
+      .map(classBTypeFromSymbol)
 
     val nestedInfo = buildNestedInfo(classSym)
 
@@ -621,7 +627,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       devWarning(
         innerClassSym.pos,
         s"""The class symbol $innerClassSym with the term symbol ${innerClassSym.rawowner} as `rawowner` reached the backend.
-           |Most likely this indicates a stale reference to a non-existing class introduced by a macro, see SI-9392.""".stripMargin
+           |Most likely this indicates a stale reference to a non-existing class introduced by a macro, see SI-9392."""
+          .stripMargin
       )
       None
     } else {
@@ -639,7 +646,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
 
         // (2) Java compatibility. See the big comment in BTypes that summarizes the InnerClass spec.
         if ((
-              innerClassSym.isJavaDefined && innerClassSym.rawowner.isModuleClass
+              innerClassSym
+                .isJavaDefined && innerClassSym.rawowner.isModuleClass
             ) || // (1)
             (
               !isAnonymousOrLocalClass(innerClassSym) && isTopLevelModuleClass(
@@ -670,7 +678,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         // phase travel necessary: after flatten, the name includes the name of outer classes.
         // if some outer name contains $anon, a non-anon class is considered anon.
         if (exitingPickler(
-              innerClassSym.isAnonymousClass || innerClassSym.isAnonymousFunction))
+              innerClassSym.isAnonymousClass || innerClassSym
+                .isAnonymousFunction))
           None
         else
           Some(
@@ -710,7 +719,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     if (exitingPickler(currentRun.compiles(classSym)))
       buildFromSymbol // InlineInfo required for classes being compiled, we have to create the classfile attribute
     else if (!compilerSettings.YoptInlinerEnabled)
-      BTypes.EmptyInlineInfo // For other classes, we need the InlineInfo only inf the inliner is enabled.
+      BTypes
+        .EmptyInlineInfo // For other classes, we need the InlineInfo only inf the inliner is enabled.
     else {
       // For classes not being compiled, the InlineInfo is read from the classfile attribute. This
       // fixes an issue with mixed-in methods: the mixin phase enters mixin methods only to class
@@ -747,8 +757,9 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
           ClassInfo(
             superClass = Some(ObjectRef),
             interfaces = Nil,
-            flags =
-              asm.Opcodes.ACC_SUPER | asm.Opcodes.ACC_PUBLIC | asm.Opcodes.ACC_FINAL,
+            flags = asm.Opcodes.ACC_SUPER | asm.Opcodes.ACC_PUBLIC | asm
+              .Opcodes
+              .ACC_FINAL,
             nestedClasses = nested,
             nestedInfo = None,
             inlineInfo = EmptyInlineInfo.copy(isEffectivelyFinal = true)

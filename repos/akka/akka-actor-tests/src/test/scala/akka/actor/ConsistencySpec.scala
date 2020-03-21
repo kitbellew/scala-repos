@@ -40,9 +40,8 @@ object ConsistencySpec {
     def receive = {
       case step: Long ⇒
         if (lastStep != (step - 1))
-          sender() ! "Test failed: Last step %s, this step %s".format(
-            lastStep,
-            step)
+          sender() ! "Test failed: Last step %s, this step %s"
+            .format(lastStep, step)
 
         var shouldBeFortyTwo = left.value + right.value
         if (shouldBeFortyTwo != 42)
@@ -68,8 +67,8 @@ class ConsistencySpec extends AkkaSpec(ConsistencySpec.config) {
   "The Akka actor model implementation" must {
     "provide memory consistency" in {
       val noOfActors = threads + 1
-      val props = Props[ConsistencyCheckingActor].withDispatcher(
-        "consistency-dispatcher")
+      val props = Props[ConsistencyCheckingActor]
+        .withDispatcher("consistency-dispatcher")
       val actors = Vector.fill(noOfActors)(system.actorOf(props))
 
       for (i ← 0L until 100000L) {

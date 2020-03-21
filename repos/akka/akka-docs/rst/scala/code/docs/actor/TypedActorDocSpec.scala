@@ -118,8 +118,8 @@ class TypedActorDocSpec extends AkkaSpec(Map("akka.loglevel" -> "INFO")) {
 
   "create a typed actor" in {
     //#typed-actor-create1
-    val mySquarer: Squarer = TypedActor(system).typedActorOf(
-      TypedProps[SquarerImpl]())
+    val mySquarer: Squarer = TypedActor(system)
+      .typedActorOf(TypedProps[SquarerImpl]())
     //#typed-actor-create1
     //#typed-actor-create2
     val otherSquarer: Squarer = TypedActor(system).typedActorOf(
@@ -184,8 +184,8 @@ class TypedActorDocSpec extends AkkaSpec(Map("akka.loglevel" -> "INFO")) {
 
   "supercharge" in {
     //#typed-actor-supercharge-usage
-    val awesomeFooBar: Foo with Bar = TypedActor(system).typedActorOf(
-      TypedProps[FooBar]())
+    val awesomeFooBar: Foo with Bar = TypedActor(system)
+      .typedActorOf(TypedProps[FooBar]())
 
     awesomeFooBar.doFoo(10)
     val f = awesomeFooBar.doBar("yes")

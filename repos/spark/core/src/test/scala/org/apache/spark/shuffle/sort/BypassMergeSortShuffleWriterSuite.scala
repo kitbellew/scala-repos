@@ -203,13 +203,15 @@ class BypassMergeSortShuffleWriterSuite
     // case, so we could use it to validate the temp shuffle files.
     def records: Iterator[(Int, Int)] =
       Iterator((1, 1), (5, 5)) ++
-        (0 until 100000).iterator.map { i =>
-          if (i == 99990) {
-            throw new SparkException("intentional failure")
-          } else {
-            (2, 2)
+        (0 until 100000)
+          .iterator
+          .map { i =>
+            if (i == 99990) {
+              throw new SparkException("intentional failure")
+            } else {
+              (2, 2)
+            }
           }
-        }
 
     val writer =
       new BypassMergeSortShuffleWriter[Int, Int](
@@ -245,12 +247,14 @@ class BypassMergeSortShuffleWriterSuite
         conf)
     intercept[SparkException] {
       writer.write(
-        (0 until 100000).iterator.map(i => {
-          if (i == 99990) {
-            throw new SparkException("Intentional failure")
-          }
-          (i, i)
-        }))
+        (0 until 100000)
+          .iterator
+          .map(i => {
+            if (i == 99990) {
+              throw new SparkException("Intentional failure")
+            }
+            (i, i)
+          }))
     }
     assert(temporaryFilesCreated.nonEmpty)
     writer.stop( /* success = */ false)

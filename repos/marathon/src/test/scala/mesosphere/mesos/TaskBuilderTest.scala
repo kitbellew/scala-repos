@@ -98,34 +98,46 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
 
     val discoveryInfo = taskInfo.getDiscovery
     val discoveryInfoProto =
-      MesosProtos.DiscoveryInfo.newBuilder
+      MesosProtos
+        .DiscoveryInfo
+        .newBuilder
         .setVisibility(MesosProtos.DiscoveryInfo.Visibility.FRAMEWORK)
         .setName(taskInfo.getName)
         .setPorts(
-          MesosProtos.Ports.newBuilder
+          MesosProtos
+            .Ports
+            .newBuilder
             .addPorts(
-              MesosProtos.Port.newBuilder
+              MesosProtos
+                .Port
+                .newBuilder
                 .setName("http")
                 .setNumber(taskPorts(0))
                 .setProtocol("tcp")
                 .setLabels(
-                  MesosProtos.Labels
+                  MesosProtos
+                    .Labels
                     .newBuilder()
                     .addLabels(
-                      MesosProtos.Label
+                      MesosProtos
+                        .Label
                         .newBuilder()
                         .setKey("VIP")
                         .setValue("127.0.0.1:8080"))))
             .addPorts(
-              MesosProtos.Port.newBuilder
+              MesosProtos
+                .Port
+                .newBuilder
                 .setName("admin")
                 .setNumber(taskPorts(1))
                 .setProtocol("tcp")
                 .setLabels(
-                  MesosProtos.Labels
+                  MesosProtos
+                    .Labels
                     .newBuilder()
                     .addLabels(
-                      MesosProtos.Label
+                      MesosProtos
+                        .Label
                         .newBuilder()
                         .setKey("VIP")
                         .setValue("127.0.0.1:8081")))))
@@ -176,34 +188,46 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
 
     val discoveryInfo = taskInfo.getDiscovery
     val discoveryInfoProto =
-      MesosProtos.DiscoveryInfo.newBuilder
+      MesosProtos
+        .DiscoveryInfo
+        .newBuilder
         .setVisibility(MesosProtos.DiscoveryInfo.Visibility.FRAMEWORK)
         .setName(taskInfo.getName)
         .setPorts(
-          MesosProtos.Ports.newBuilder
+          MesosProtos
+            .Ports
+            .newBuilder
             .addPorts(
-              MesosProtos.Port.newBuilder
+              MesosProtos
+                .Port
+                .newBuilder
                 .setName("http")
                 .setNumber(taskPorts(0))
                 .setProtocol("tcp")
                 .setLabels(
-                  MesosProtos.Labels
+                  MesosProtos
+                    .Labels
                     .newBuilder()
                     .addLabels(
-                      MesosProtos.Label
+                      MesosProtos
+                        .Label
                         .newBuilder()
                         .setKey("VIP")
                         .setValue("127.0.0.1:8080"))))
             .addPorts(
-              MesosProtos.Port.newBuilder
+              MesosProtos
+                .Port
+                .newBuilder
                 .setName("admin")
                 .setNumber(taskPorts(1))
                 .setProtocol("udp")
                 .setLabels(
-                  MesosProtos.Labels
+                  MesosProtos
+                    .Labels
                     .newBuilder()
                     .addLabels(
-                      MesosProtos.Label
+                      MesosProtos
+                        .Label
                         .newBuilder()
                         .setKey("VIP")
                         .setValue("127.0.0.1:8081")))))
@@ -281,7 +305,10 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     assert(resource("disk") == ScalarResource("disk", 1))
     val portsResource: Resource = resource("ports")
     assert(
-      portsResource.getRanges.getRangeList.asScala
+      portsResource
+        .getRanges
+        .getRangeList
+        .asScala
         .map(range => range.getEnd - range.getBegin + 1)
         .sum == 2)
     assert(portsResource.getRole == "*")
@@ -351,7 +378,10 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     assert(resource("disk") == ScalarResource("disk", 1, "marathon"))
     val portsResource: Resource = resource("ports")
     assert(
-      portsResource.getRanges.getRangeList.asScala
+      portsResource
+        .getRanges
+        .getRangeList
+        .asScala
         .map(range => range.getEnd - range.getBegin + 1)
         .sum == 2)
     assert(portsResource.getRole == "marathon")
@@ -388,12 +418,16 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     val (taskInfo, taskPorts) = task.get
     assertTaskInfo(taskInfo, taskPorts, offer)
 
-    val expectedLabels = MesosProtos.Labels.newBuilder
+    val expectedLabels = MesosProtos
+      .Labels
+      .newBuilder
       .addAllLabels(
-        labels.map {
-          case (mKey, mValue) =>
-            MesosProtos.Label.newBuilder.setKey(mKey).setValue(mValue).build()
-        }.asJava)
+        labels
+          .map {
+            case (mKey, mValue) =>
+              MesosProtos.Label.newBuilder.setKey(mKey).setValue(mValue).build()
+          }
+          .asJava)
       .build()
     assert(taskInfo.hasLabels)
     assert(taskInfo.getLabels == expectedLabels)
@@ -425,7 +459,9 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     assert(task.isDefined)
 
     val (taskInfo, taskPorts) = task.get
-    val range = taskInfo.getResourcesList.asScala
+    val range = taskInfo
+      .getResourcesList
+      .asScala
       .find(r => r.getName == Resource.PORTS)
       .map(r => r.getRanges.getRange(0))
     assert(range.isDefined)
@@ -485,17 +521,29 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     networkInfos.size should be(1)
 
     val networkInfoProto =
-      MesosProtos.NetworkInfo.newBuilder
+      MesosProtos
+        .NetworkInfo
+        .newBuilder
         .addIpAddresses(MesosProtos.NetworkInfo.IPAddress.getDefaultInstance)
         .addAllGroups(Seq("a", "b", "c").asJava)
         .setLabels(
-          MesosProtos.Labels.newBuilder.addAllLabels(
-            Seq(
-              MesosProtos.Label.newBuilder.setKey("foo").setValue("bar").build,
-              MesosProtos.Label.newBuilder
-                .setKey("baz")
-                .setValue("buzz")
-                .build).asJava))
+          MesosProtos
+            .Labels
+            .newBuilder
+            .addAllLabels(
+              Seq(
+                MesosProtos
+                  .Label
+                  .newBuilder
+                  .setKey("foo")
+                  .setValue("bar")
+                  .build,
+                MesosProtos
+                  .Label
+                  .newBuilder
+                  .setKey("baz")
+                  .setValue("buzz")
+                  .build).asJava))
         .build
     TextFormat.shortDebugString(networkInfos.head) should equal(
       TextFormat.shortDebugString(networkInfoProto))
@@ -543,17 +591,29 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     networkInfos.size should be(1)
 
     val networkInfoProto =
-      MesosProtos.NetworkInfo.newBuilder
+      MesosProtos
+        .NetworkInfo
+        .newBuilder
         .addIpAddresses(MesosProtos.NetworkInfo.IPAddress.getDefaultInstance)
         .addAllGroups(Seq("a", "b", "c").asJava)
         .setLabels(
-          MesosProtos.Labels.newBuilder.addAllLabels(
-            Seq(
-              MesosProtos.Label.newBuilder.setKey("foo").setValue("bar").build,
-              MesosProtos.Label.newBuilder
-                .setKey("baz")
-                .setValue("buzz")
-                .build).asJava))
+          MesosProtos
+            .Labels
+            .newBuilder
+            .addAllLabels(
+              Seq(
+                MesosProtos
+                  .Label
+                  .newBuilder
+                  .setKey("foo")
+                  .setValue("bar")
+                  .build,
+                MesosProtos
+                  .Label
+                  .newBuilder
+                  .setKey("baz")
+                  .setValue("buzz")
+                  .build).asJava))
         .build
     TextFormat.shortDebugString(networkInfos.head) should equal(
       TextFormat.shortDebugString(networkInfoProto))
@@ -604,17 +664,29 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     networkInfos.size should be(1)
 
     val networkInfoProto =
-      MesosProtos.NetworkInfo.newBuilder
+      MesosProtos
+        .NetworkInfo
+        .newBuilder
         .addIpAddresses(MesosProtos.NetworkInfo.IPAddress.getDefaultInstance)
         .addAllGroups(Seq("a", "b", "c").asJava)
         .setLabels(
-          MesosProtos.Labels.newBuilder.addAllLabels(
-            Seq(
-              MesosProtos.Label.newBuilder.setKey("foo").setValue("bar").build,
-              MesosProtos.Label.newBuilder
-                .setKey("baz")
-                .setValue("buzz")
-                .build).asJava))
+          MesosProtos
+            .Labels
+            .newBuilder
+            .addAllLabels(
+              Seq(
+                MesosProtos
+                  .Label
+                  .newBuilder
+                  .setKey("foo")
+                  .setValue("bar")
+                  .build,
+                MesosProtos
+                  .Label
+                  .newBuilder
+                  .setKey("baz")
+                  .setValue("buzz")
+                  .build).asJava))
         .build
     TextFormat.shortDebugString(networkInfos.head) should equal(
       TextFormat.shortDebugString(networkInfoProto))
@@ -624,13 +696,19 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     val discoveryInfo = taskInfo.getDiscovery
 
     val discoveryInfoProto =
-      MesosProtos.DiscoveryInfo.newBuilder
+      MesosProtos
+        .DiscoveryInfo
+        .newBuilder
         .setVisibility(MesosProtos.DiscoveryInfo.Visibility.FRAMEWORK)
         .setName(taskInfo.getName)
         .setPorts(
-          MesosProtos.Ports.newBuilder
+          MesosProtos
+            .Ports
+            .newBuilder
             .addPorts(
-              MesosProtos.Port.newBuilder
+              MesosProtos
+                .Port
+                .newBuilder
                 .setName("http")
                 .setNumber(80)
                 .setProtocol("tcp")
@@ -754,11 +832,16 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     assert(task.isDefined)
 
     val (taskInfo, taskPorts) = task.get
-    val ports = taskInfo.getResourcesList.asScala
+    val ports = taskInfo
+      .getResourcesList
+      .asScala
       .find(r => r.getName == Resource.PORTS)
       .map(r =>
-        r.getRanges.getRangeList.asScala.flatMap(range =>
-          range.getBegin to range.getEnd))
+        r
+          .getRanges
+          .getRangeList
+          .asScala
+          .flatMap(range => range.getBegin to range.getEnd))
       .getOrElse(Seq.empty)
     assert(ports == taskPorts)
 
@@ -805,11 +888,16 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     assert(task.isDefined)
 
     val (taskInfo, taskPorts) = task.get
-    val ports = taskInfo.getResourcesList.asScala
+    val ports = taskInfo
+      .getResourcesList
+      .asScala
       .find(r => r.getName == Resource.PORTS)
       .map(r =>
-        r.getRanges.getRangeList.asScala.flatMap(range =>
-          range.getBegin to range.getEnd))
+        r
+          .getRanges
+          .getRangeList
+          .asScala
+          .flatMap(range => range.getBegin to range.getEnd))
       .getOrElse(Seq.empty)
     assert(ports == taskPorts)
 
@@ -879,7 +967,9 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     val app = MarathonTestHelper
       .makeBasicApp()
       .copy(constraints = Set(
-        Protos.Constraint.newBuilder
+        Protos
+          .Constraint
+          .newBuilder
           .setField("rackid")
           .setOperator(Protos.Constraint.Operator.UNIQUE)
           .build()))
@@ -908,12 +998,16 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
       .copy(
         instances = 10,
         constraints = Set(
-          Protos.Constraint.newBuilder
+          Protos
+            .Constraint
+            .newBuilder
             .setField("rackid")
             .setOperator(Protos.Constraint.Operator.GROUP_BY)
             .setValue("3")
             .build,
-          Protos.Constraint.newBuilder
+          Protos
+            .Constraint
+            .newBuilder
             .setField("hostname")
             .setOperator(Protos.Constraint.Operator.UNIQUE)
             .build
@@ -930,9 +1024,8 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
 
     def shouldBuildTask(message: String, offer: Offer) {
       val Some((taskInfo, ports)) = builder.buildIfMatches(offer, runningTasks)
-      val marathonTask = MarathonTestHelper.makeTaskFromTaskInfo(
-        taskInfo,
-        offer)
+      val marathonTask = MarathonTestHelper
+        .makeTaskFromTaskInfo(taskInfo, offer)
       runningTasks += marathonTask
     }
 
@@ -985,12 +1078,16 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
       .copy(
         instances = 10,
         constraints = Set(
-          Protos.Constraint.newBuilder
+          Protos
+            .Constraint
+            .newBuilder
             .setField("spark")
             .setOperator(Protos.Constraint.Operator.CLUSTER)
             .setValue("enabled")
             .build,
-          Protos.Constraint.newBuilder
+          Protos
+            .Constraint
+            .newBuilder
             .setField("hostname")
             .setOperator(Protos.Constraint.Operator.UNIQUE)
             .build
@@ -1007,9 +1104,8 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
 
     def shouldBuildTask(message: String, offer: Offer) {
       val Some((taskInfo, ports)) = builder.buildIfMatches(offer, runningTasks)
-      val marathonTask = MarathonTestHelper.makeTaskFromTaskInfo(
-        taskInfo,
-        offer)
+      val marathonTask = MarathonTestHelper
+        .makeTaskFromTaskInfo(taskInfo, offer)
       runningTasks += marathonTask
     }
 
@@ -1061,8 +1157,10 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
   }
 
   test("TaskContextEnv empty when no taskId given") {
-    val version = AppDefinition.VersionInfo.forNewConfig(
-      Timestamp(new DateTime(2015, 2, 3, 12, 30, DateTimeZone.UTC)))
+    val version = AppDefinition
+      .VersionInfo
+      .forNewConfig(
+        Timestamp(new DateTime(2015, 2, 3, 12, 30, DateTimeZone.UTC)))
     val app = AppDefinition(id = PathId("/app"), versionInfo = version)
     val env = TaskBuilder.taskContextEnv(app = app, taskId = None)
 
@@ -1070,12 +1168,13 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
   }
 
   test("TaskContextEnv minimal") {
-    val version = AppDefinition.VersionInfo.forNewConfig(
-      Timestamp(new DateTime(2015, 2, 3, 12, 30, DateTimeZone.UTC)))
+    val version = AppDefinition
+      .VersionInfo
+      .forNewConfig(
+        Timestamp(new DateTime(2015, 2, 3, 12, 30, DateTimeZone.UTC)))
     val app = AppDefinition(id = PathId("/app"), versionInfo = version)
-    val env = TaskBuilder.taskContextEnv(
-      app = app,
-      taskId = Some(Task.Id("taskId")))
+    val env = TaskBuilder
+      .taskContextEnv(app = app, taskId = Some(Task.Id("taskId")))
 
     assert(
       env == Map(
@@ -1090,8 +1189,10 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
   }
 
   test("TaskContextEnv all fields") {
-    val version = AppDefinition.VersionInfo.forNewConfig(
-      Timestamp(new DateTime(2015, 2, 3, 12, 30, DateTimeZone.UTC)))
+    val version = AppDefinition
+      .VersionInfo
+      .forNewConfig(
+        Timestamp(new DateTime(2015, 2, 3, 12, 30, DateTimeZone.UTC)))
     val taskId = TaskID("taskId")
     val app = AppDefinition(
       id = PathId("/app"),
@@ -1160,7 +1261,11 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
       envPrefix = None
     )
     val env: Map[String, String] =
-      command.getEnvironment.getVariablesList.asScala.toList
+      command
+        .getEnvironment
+        .getVariablesList
+        .asScala
+        .toList
         .map(v => v.getName -> v.getValue)
         .toMap
 
@@ -1192,7 +1297,11 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
       envPrefix = None
     )
     val env: Map[String, String] =
-      command.getEnvironment.getVariablesList.asScala.toList
+      command
+        .getEnvironment
+        .getVariablesList
+        .asScala
+        .toList
         .map(v => v.getName -> v.getValue)
         .toMap
 
@@ -1213,7 +1322,11 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
       envPrefix = None
     )
     val env: Map[String, String] =
-      command.getEnvironment.getVariablesList.asScala.toList
+      command
+        .getEnvironment
+        .getVariablesList
+        .asScala
+        .toList
         .map(v => v.getName -> v.getValue)
         .toMap
 
@@ -1229,7 +1342,11 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
       Seq(1000, 1001),
       Some("CUSTOM_PREFIX_"))
     val env: Map[String, String] =
-      command.getEnvironment.getVariablesList.asScala.toList
+      command
+        .getEnvironment
+        .getVariablesList
+        .asScala
+        .toList
         .map(v => v.getName -> v.getValue)
         .toMap
 
@@ -1247,8 +1364,8 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
 
     assert(Seq("HOST", "PORTS", "PORT0", "PORT1").forall(k => !env.contains(k)))
     assert(
-      Seq("MESOS_TASK_ID", "MARATHON_APP_ID", "MARATHON_APP_VERSION").forall(
-        env.contains))
+      Seq("MESOS_TASK_ID", "MARATHON_APP_ID", "MARATHON_APP_VERSION")
+        .forall(env.contains))
   }
 
   test("OnlyWhitelistedUnprefixedVariablesWithCustomPrefix") {
@@ -1259,7 +1376,11 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
       Seq(1000, 1001),
       Some("P_"))
     val env: Map[String, String] =
-      command.getEnvironment.getVariablesList.asScala.toList
+      command
+        .getEnvironment
+        .getVariablesList
+        .asScala
+        .toList
         .map(v => v.getName -> v.getValue)
         .toMap
 
@@ -1303,7 +1424,11 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
       envPrefix = None
     )
     val env: Map[String, String] =
-      command.getEnvironment.getVariablesList.asScala.toList
+      command
+        .getEnvironment
+        .getVariablesList
+        .asScala
+        .toList
         .map(v => v.getName -> v.getValue)
         .toMap
 
@@ -1339,7 +1464,11 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
       envPrefix = None
     )
     val env: Map[String, String] =
-      command.getEnvironment.getVariablesList.asScala.toList
+      command
+        .getEnvironment
+        .getVariablesList
+        .asScala
+        .toList
         .map(v => v.getName -> v.getValue)
         .toMap
 
@@ -1404,7 +1533,12 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     val Some((taskInfo, _)) = task
 
     val env: Map[String, String] =
-      taskInfo.getCommand.getEnvironment.getVariablesList.asScala.toList
+      taskInfo
+        .getCommand
+        .getEnvironment
+        .getVariablesList
+        .asScala
+        .toList
         .map(v => v.getName -> v.getValue)
         .toMap
 
@@ -1416,8 +1550,8 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     val portsFromTaskInfo = {
       val asScalaRanges =
         for {
-          resource <- taskInfo.getResourcesList.asScala
-          if resource.getName == Resource.PORTS
+          resource <- taskInfo.getResourcesList.asScala if resource
+            .getName == Resource.PORTS
           range <- resource.getRanges.getRangeList.asScala
         } yield range.getBegin to range.getEnd
       asScalaRanges.flatMap(_.iterator).toList
@@ -1459,8 +1593,8 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     val portsFromTaskInfo = {
       val asScalaRanges =
         for {
-          resource <- taskInfo.getResourcesList.asScala
-          if resource.getName == Resource.PORTS
+          resource <- taskInfo.getResourcesList.asScala if resource
+            .getName == Resource.PORTS
           range <- resource.getRanges.getRangeList.asScala
         } yield range.getBegin to range.getEnd
       asScalaRanges.flatMap(_.iterator).toSet
@@ -1508,17 +1642,25 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     assert(taskInfo.hasDiscovery)
     val discoveryInfo = taskInfo.getDiscovery
     val discoveryInfoProto =
-      MesosProtos.DiscoveryInfo.newBuilder
+      MesosProtos
+        .DiscoveryInfo
+        .newBuilder
         .setVisibility(MesosProtos.DiscoveryInfo.Visibility.FRAMEWORK)
         .setName(taskInfo.getName)
         .setPorts(
-          MesosProtos.Ports.newBuilder
+          MesosProtos
+            .Ports
+            .newBuilder
             .addPorts(
-              MesosProtos.Port.newBuilder
+              MesosProtos
+                .Port
+                .newBuilder
                 .setNumber(taskPorts(0))
                 .setProtocol("tcp"))
             .addPorts(
-              MesosProtos.Port.newBuilder
+              MesosProtos
+                .Port
+                .newBuilder
                 .setNumber(taskPorts(1))
                 .setProtocol("tcp")))
         .build

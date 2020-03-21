@@ -63,14 +63,15 @@ class CompileServerLauncher extends ApplicationComponent {
       val choice = Option(ProjectRootManager.getInstance(project).getProjectSdk)
         .orElse {
           val all =
-            ProjectJdkTable.getInstance
+            ProjectJdkTable
+              .getInstance
               .getSdksOfType(JavaSdk.getInstance())
               .asScala
           all.headOption
         }
 
-      choice.foreach(sdk =>
-        applicationSettings.COMPILE_SERVER_SDK = sdk.getName)
+      choice
+        .foreach(sdk => applicationSettings.COMPILE_SERVER_SDK = sdk.getName)
 
 //       val message = "JVM SDK is automatically selected: " + name +
 //               "\n(can be changed in Application Settings / Scala)"
@@ -78,21 +79,25 @@ class CompileServerLauncher extends ApplicationComponent {
 //         message, NotificationType.INFORMATION))
     }
 
-    findJdkByName(applicationSettings.COMPILE_SERVER_SDK).left
-      .map(_ + "\nPlease either disable Scala compile server or configure a valid JVM SDK for it.")
+    findJdkByName(applicationSettings.COMPILE_SERVER_SDK)
+      .left
+      .map(
+        _ + "\nPlease either disable Scala compile server or configure a valid JVM SDK for it.")
       .right
       .flatMap(start(project, _)) match {
       case Left(error) =>
         val title = "Cannot start Scala compile server"
         val content =
           s"<html><body>${error.replace("\n", "<br>")} <a href=''>Configure</a></body></html>"
-        Notifications.Bus.notify(
-          new Notification(
-            "scala",
-            title,
-            content,
-            NotificationType.ERROR,
-            ConfigureLinkListener))
+        Notifications
+          .Bus
+          .notify(
+            new Notification(
+              "scala",
+              title,
+              content,
+              NotificationType.ERROR,
+              ConfigureLinkListener))
         false
       case Right(_) =>
         ApplicationManager.getApplication invokeLater new Runnable {
@@ -120,8 +125,8 @@ class CompileServerLauncher extends ApplicationComponent {
             Nil
           else
             Seq(
-              "-Xbootclasspath/a:" + bootClassPathLibs.mkString(
-                File.pathSeparator))
+              "-Xbootclasspath/a:" + bootClassPathLibs
+                .mkString(File.pathSeparator))
         val classpath = (jdk.tools +: presentFiles)
           .map(_.canonicalPath)
           .mkString(File.pathSeparator)
@@ -144,9 +149,10 @@ class CompileServerLauncher extends ApplicationComponent {
           } else
             Nil
 
-        val commands =
-          jdk.executable.canonicalPath +: bootclasspathArg ++: "-cp" +: classpath +: jvmParameters ++: shutdownDelayArg ++:
-            ngRunnerFqn +: freePort.toString +: id.toString +: Nil
+        val commands = jdk
+          .executable
+          .canonicalPath +: bootclasspathArg ++: "-cp" +: classpath +: jvmParameters ++: shutdownDelayArg ++:
+          ngRunnerFqn +: freePort.toString +: id.toString +: Nil
 
         val builder = new ProcessBuilder(commands.asJava)
 
@@ -205,8 +211,9 @@ class CompileServerLauncher extends ApplicationComponent {
 
 object CompileServerLauncher {
   def instance: CompileServerLauncher =
-    ApplicationManager.getApplication.getComponent(
-      classOf[CompileServerLauncher])
+    ApplicationManager
+      .getApplication
+      .getComponent(classOf[CompileServerLauncher])
 
   def compilerJars: Seq[File] = {
     val jpsBuildersJar =
@@ -263,7 +270,8 @@ object CompileServerLauncher {
         List("-Xmx%sm".format(size))
     }
 
-    val (userMaxPermSize, otherParams) = settings.COMPILE_SERVER_JVM_PARAMETERS
+    val (userMaxPermSize, otherParams) = settings
+      .COMPILE_SERVER_JVM_PARAMETERS
       .split(" ")
       .partition(_.contains("-XX:MaxPermSize"))
 
@@ -298,10 +306,11 @@ object CompileServerLauncher {
           ScalaCompileServerSettings
             .getInstance()
             .USE_PROJECT_HOME_AS_WORKING_DIR
-        val workingDirChanged = useProjectHome && projectHome(
-          project) != serverInstance.map(_.workingDir)
-        workingDirChanged || instance.bootClasspath != withTimestamps(
-          bootClasspath(project))
+        val workingDirChanged =
+          useProjectHome && projectHome(project) != serverInstance
+            .map(_.workingDir)
+        workingDirChanged || instance
+          .bootClasspath != withTimestamps(bootClasspath(project))
     }
   }
 

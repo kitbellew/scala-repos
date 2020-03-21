@@ -92,16 +92,18 @@ abstract class ScTypeDefinitionImpl protected (
   }
 
   override def getSuperTypes: Array[PsiClassType] = {
-    superTypes.flatMap {
-      case tp =>
-        val psiType = ScType.toPsi(tp, getProject, getResolveScope)
-        psiType match {
-          case c: PsiClassType =>
-            Seq(c)
-          case _ =>
-            Seq.empty
-        }
-    }.toArray
+    superTypes
+      .flatMap {
+        case tp =>
+          val psiType = ScType.toPsi(tp, getProject, getResolveScope)
+          psiType match {
+            case c: PsiClassType =>
+              Seq(c)
+            case _ =>
+              Seq.empty
+          }
+      }
+      .toArray
   }
 
   override def isAnnotationType: Boolean = {
@@ -137,16 +139,16 @@ abstract class ScTypeDefinitionImpl protected (
               ScThisType(parentClass),
               this,
               superReference = false),
-            typeParameters.map(
-              new ScTypeParameterType(_, ScSubstitutor.empty))),
+            typeParameters
+              .map(new ScTypeParameterType(_, ScSubstitutor.empty))),
           Some(this)
         )
       } else {
         Success(
           ScParameterizedType(
             ScType.designator(this),
-            typeParameters.map(
-              new ScTypeParameterType(_, ScSubstitutor.empty))),
+            typeParameters
+              .map(new ScTypeParameterType(_, ScSubstitutor.empty))),
           Some(this))
       }
     }
@@ -210,10 +212,8 @@ abstract class ScTypeDefinitionImpl protected (
     }
 
   def getSourceMirrorClass: PsiClass = {
-    val classParent = PsiTreeUtil.getParentOfType(
-      this,
-      classOf[ScTypeDefinition],
-      true)
+    val classParent = PsiTreeUtil
+      .getParentOfType(this, classOf[ScTypeDefinition], true)
     val name = this.name
     if (classParent == null) {
       val classes: Array[PsiClass] =
@@ -256,9 +256,8 @@ abstract class ScTypeDefinitionImpl protected (
         return memberOrLocal.isLocal
       case _ =>
     }
-    containingClass == null && PsiTreeUtil.getParentOfType(
-      this,
-      classOf[ScTemplateDefinition]) != null
+    containingClass == null && PsiTreeUtil
+      .getParentOfType(this, classOf[ScTemplateDefinition]) != null
   }
 
   def nameId: PsiElement =
@@ -564,8 +563,8 @@ abstract class ScTypeDefinitionImpl protected (
     if (stub != null) {
       return stub.asInstanceOf[ScTemplateDefinitionStub].isDeprecated
     }
-    hasAnnotation("scala.deprecated").isDefined || hasAnnotation(
-      "java.lang.Deprecated").isDefined
+    hasAnnotation("scala.deprecated")
+      .isDefined || hasAnnotation("java.lang.Deprecated").isDefined
   }
 
   override def getInnerClasses: Array[PsiClass] = {
@@ -580,22 +579,24 @@ abstract class ScTypeDefinitionImpl protected (
         val res: ArrayBuffer[PsiClass] = new ArrayBuffer[PsiClass]()
         val innerClasses = ownInnerClasses
         res ++= innerClasses
-        o.members.foreach {
-          case o: ScObject =>
-            o.fakeCompanionClass match {
-              case Some(clazz) =>
-                res += o
-                res += clazz
-              case None =>
-                res += o
-            }
-          case t: ScTrait =>
-            res += t
-            res += t.fakeCompanionClass
-          case c: ScClass =>
-            res += c
-          case _ =>
-        }
+        o
+          .members
+          .foreach {
+            case o: ScObject =>
+              o.fakeCompanionClass match {
+                case Some(clazz) =>
+                  res += o
+                  res += clazz
+                case None =>
+                  res += o
+              }
+            case t: ScTrait =>
+              res += t
+              res += t.fakeCompanionClass
+            case c: ScClass =>
+              res += c
+            case _ =>
+          }
         res.toArray
       case _ =>
         ownInnerClasses

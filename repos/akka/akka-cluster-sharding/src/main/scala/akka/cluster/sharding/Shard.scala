@@ -106,8 +106,7 @@ private[akka] object Shard {
           settings,
           extractEntityId,
           extractShardId,
-          handOffStopMessage))
-        .withDeploy(Deploy.local)
+          handOffStopMessage)).withDeploy(Deploy.local)
     else
       Props(
         new Shard(
@@ -117,8 +116,7 @@ private[akka] object Shard {
           settings,
           extractEntityId,
           extractShardId,
-          handOffStopMessage))
-        .withDeploy(Deploy.local)
+          handOffStopMessage)).withDeploy(Deploy.local)
   }
 }
 
@@ -365,15 +363,17 @@ private[akka] class Shard(
 
   def getEntity(id: EntityId): ActorRef = {
     val name = URLEncoder.encode(id, "utf-8")
-    context.child(name).getOrElse {
-      log.debug("Starting entity [{}] in shard [{}]", id, shardId)
+    context
+      .child(name)
+      .getOrElse {
+        log.debug("Starting entity [{}] in shard [{}]", id, shardId)
 
-      val a = context.watch(context.actorOf(entityProps, name))
-      idByRef = idByRef.updated(a, id)
-      refById = refById.updated(id, a)
-      state = state.copy(state.entities + id)
-      a
-    }
+        val a = context.watch(context.actorOf(entityProps, name))
+        idByRef = idByRef.updated(a, id)
+        refById = refById.updated(id, a)
+        state = state.copy(state.entities + id)
+        a
+      }
   }
 }
 
@@ -470,7 +470,9 @@ private[akka] class PersistentShard(
           "Entity [{}] stopped without passivating, will restart after backoff",
           id)
         import context.dispatcher
-        context.system.scheduler
+        context
+          .system
+          .scheduler
           .scheduleOnce(entityRestartBackoff, self, RestartEntity(id))
       } else
         processChange(EntityStopped(id))(passivateCompleted)

@@ -193,7 +193,9 @@ abstract class UnreachableNodeJoinsAgainSpec
           Cluster(freshSystem).join(masterAddress)
           within(15 seconds) {
             awaitAssert(
-              Cluster(freshSystem).readView.members
+              Cluster(freshSystem)
+                .readView
+                .members
                 .map(_.address) should contain(victimAddress))
             awaitAssert(
               Cluster(freshSystem).readView.members.size should ===(

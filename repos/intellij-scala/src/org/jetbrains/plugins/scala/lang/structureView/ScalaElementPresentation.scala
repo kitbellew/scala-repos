@@ -58,8 +58,9 @@ object ScalaElementPresentation {
       else
         "this")
 
-    function.typeParametersClause.foreach(clause =>
-      presentableText.append(clause.getText))
+    function
+      .typeParametersClause
+      .foreach(clause => presentableText.append(clause.getText))
 
     if (function.paramClauses != null)
       presentableText.append(

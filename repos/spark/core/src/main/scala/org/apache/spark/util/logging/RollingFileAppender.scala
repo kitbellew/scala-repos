@@ -80,9 +80,8 @@ private[spark] class RollingFileAppender(
   private def moveFile() {
     val rolloverSuffix = rollingPolicy.generateRolledOverFileSuffix()
     val rolloverFile =
-      new File(
-        activeFile.getParentFile,
-        activeFile.getName + rolloverSuffix).getAbsoluteFile
+      new File(activeFile.getParentFile, activeFile.getName + rolloverSuffix)
+        .getAbsoluteFile
     logDebug(s"Attempting to rollover file $activeFile to file $rolloverFile")
     if (activeFile.exists) {
       if (!rolloverFile.exists) {
@@ -116,7 +115,8 @@ private[spark] class RollingFileAppender(
   private[util] def deleteOldFiles() {
     try {
       val rolledoverFiles =
-        activeFile.getParentFile
+        activeFile
+          .getParentFile
           .listFiles(
             new FileFilter {
               def accept(f: File): Boolean = {
@@ -124,8 +124,8 @@ private[spark] class RollingFileAppender(
               }
             })
           .sorted
-      val filesToBeDeleted = rolledoverFiles.take(
-        math.max(0, rolledoverFiles.length - maxRetainedFiles))
+      val filesToBeDeleted = rolledoverFiles
+        .take(math.max(0, rolledoverFiles.length - maxRetainedFiles))
       filesToBeDeleted.foreach { file =>
         logInfo(s"Deleting file executor log file ${file.getAbsolutePath}")
         file.delete()
@@ -133,7 +133,9 @@ private[spark] class RollingFileAppender(
     } catch {
       case e: Exception =>
         logError(
-          "Error cleaning logs in directory " + activeFile.getParentFile.getAbsolutePath,
+          "Error cleaning logs in directory " + activeFile
+            .getParentFile
+            .getAbsolutePath,
           e)
     }
   }
@@ -163,10 +165,14 @@ private[spark] object RollingFileAppender {
       directory: String,
       activeFileName: String): Seq[File] = {
     val rolledOverFiles =
-      new File(directory).getAbsoluteFile.listFiles.filter { file =>
-        val fileName = file.getName
-        fileName.startsWith(activeFileName) && fileName != activeFileName
-      }.sorted
+      new File(directory)
+        .getAbsoluteFile
+        .listFiles
+        .filter { file =>
+          val fileName = file.getName
+          fileName.startsWith(activeFileName) && fileName != activeFileName
+        }
+        .sorted
     val activeFile = {
       val file = new File(directory, activeFileName).getAbsoluteFile
       if (file.exists)

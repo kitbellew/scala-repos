@@ -3,12 +3,15 @@ package lila.common
 object Future {
 
   def lazyFold[T, R](futures: Stream[Fu[T]])(zero: R)(op: (R, T) => R): Fu[R] =
-    Stream.cons.unapply(futures).fold(fuccess(zero)) {
-      case (future, rest) =>
-        future flatMap { f =>
-          lazyFold(rest)(op(zero, f))(op)
-        }
-    }
+    Stream
+      .cons
+      .unapply(futures)
+      .fold(fuccess(zero)) {
+        case (future, rest) =>
+          future flatMap { f =>
+            lazyFold(rest)(op(zero, f))(op)
+          }
+      }
 
   def traverseSequentially[A, B](list: List[A])(f: A => Fu[B]): Fu[List[B]] =
     list match {

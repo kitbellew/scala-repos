@@ -108,8 +108,9 @@ class ScSelfInvocationImpl(node: ASTNode)
       }
     clazz match {
       case tp: ScTypeParametersOwner if tp.typeParameters.length > 0 =>
-        val params: Seq[TypeParameter] = tp.typeParameters.map(
-          new TypeParameter(_))
+        val params: Seq[TypeParameter] = tp
+          .typeParameters
+          .map(new TypeParameter(_))
         Success(ScTypePolymorphicType(res, params), Some(this))
       case _ =>
         Success(res, Some(this))
@@ -122,13 +123,13 @@ class ScSelfInvocationImpl(node: ASTNode)
   }
 
   def shapeMultiType(i: Int): Seq[TypeResult[ScType]] = {
-    bindMultiInternal(shapeResolve = true).map(pe =>
-      workWithBindInternal(Some(pe), i))
+    bindMultiInternal(shapeResolve = true)
+      .map(pe => workWithBindInternal(Some(pe), i))
   }
 
   def multiType(i: Int): Seq[TypeResult[ScType]] = {
-    bindMultiInternal(shapeResolve = false).map(pe =>
-      workWithBindInternal(Some(pe), i))
+    bindMultiInternal(shapeResolve = false)
+      .map(pe => workWithBindInternal(Some(pe), i))
   }
 
   override def accept(visitor: ScalaElementVisitor) {

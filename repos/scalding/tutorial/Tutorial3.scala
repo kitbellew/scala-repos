@@ -46,8 +46,9 @@ class Tutorial3(args: Args) extends Job(args) {
   val input = TextLine(args("input"))
   val output = TextLine("tutorial/data/output3.txt")
 
-  input.read
-  /**
+  input
+    .read
+    /**
     flatMap is like map, but instead of returning a single item from the
     function, we return a collection of items. Each of these items will create
     a new entry in the data stream; here, we'll end up with a new entry for each word.
@@ -60,7 +61,5 @@ class Tutorial3(args: Args) extends Job(args) {
     For interest, though, let's stash a copy of the data before we do that.
     write() returns the pipe, so we can keep chaining our pipeline.
     **/
-    .write(Tsv("tutorial/data/tmp3.tsv"))
-    .project('word)
-    .write(output)
+    .write(Tsv("tutorial/data/tmp3.tsv")).project('word).write(output)
 }

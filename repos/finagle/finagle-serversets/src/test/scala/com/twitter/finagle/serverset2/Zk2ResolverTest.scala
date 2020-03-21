@@ -35,8 +35,8 @@ class Zk2ResolverTest
   @volatile
   var inst: ZkInstance = _
   val stabilizationEpoch = 40.seconds
-  val stabilizationTimeout = PatienceConfiguration.Timeout(
-    stabilizationEpoch * 2)
+  val stabilizationTimeout = PatienceConfiguration
+    .Timeout(stabilizationEpoch * 2)
   val stabilizationInterval = PatienceConfiguration.Interval(5.seconds)
 
   val shardId = 42
@@ -75,10 +75,8 @@ class Zk2ResolverTest
 
     val serverSet = new ServerSetImpl(inst.zookeeperClient, "/foo/bar")
     val joinAddr = RandomSocket()
-    val status = serverSet.join(
-      joinAddr,
-      Map.empty[String, InetSocketAddress].asJava,
-      shardId)
+    val status = serverSet
+      .join(joinAddr, Map.empty[String, InetSocketAddress].asJava, shardId)
     eventually {
       assert(
         va.sample() == Addr.Bound(address(joinAddr)),
@@ -108,10 +106,8 @@ class Zk2ResolverTest
     val serverSet = new ServerSetImpl(inst.zookeeperClient, "/foo/bar")
     val serviceAddr = RandomSocket()
     val epepAddr = RandomSocket()
-    val status = serverSet.join(
-      serviceAddr,
-      Map("epep" -> epepAddr).asJava,
-      shardId)
+    val status = serverSet
+      .join(serviceAddr, Map("epep" -> epepAddr).asJava, shardId)
     eventually {
       assert(
         va1.sample() == Addr.Bound(address(serviceAddr)),

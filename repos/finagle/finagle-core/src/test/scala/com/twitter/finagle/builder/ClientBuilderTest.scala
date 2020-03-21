@@ -37,10 +37,11 @@ class ClientBuilderTest
 
     val m = new MockChannel
     when(
-      m.codec.prepareConnFactory(
-        any[ServiceFactory[String, String]],
-        any[Stack.Params]))
-      .thenReturn(preparedFactory)
+      m
+        .codec
+        .prepareConnFactory(
+          any[ServiceFactory[String, String]],
+          any[Stack.Params])).thenReturn(preparedFactory)
   }
 
   test("ClientBuilder should invoke prepareConnFactory on connection") {
@@ -72,8 +73,8 @@ class ClientBuilderTest
         build
 
         val entries = GlobalRegistry.get.toSet
-        val unspecified = entries.count(
-          _.key.startsWith(Seq("client", "not-specified")))
+        val unspecified = entries
+          .count(_.key.startsWith(Seq("client", "not-specified")))
         assert(
           unspecified == 0,
           "saw registry keys with 'not-specified' protocol")
@@ -206,15 +207,14 @@ class ClientBuilderTest
         .hostConnectionLimit(1)
         .codec(m.codec)
         .daemon(true) // don't create an exit guard
-        .hosts(Seq(m.clientAddress))
-        .reportTo(inMemory)
+        .hosts(Seq(m.clientAddress)).reportTo(inMemory)
 
       val client = builder.build()
       val numFailures = 5
 
       val service = mock[Service[String, String]]
-      when(service("123")) thenReturn Future.exception(
-        WriteException(new Exception()))
+      when(service("123")) thenReturn Future
+        .exception(WriteException(new Exception()))
       when(service.close(any[Time])) thenReturn Future.Done
       preparedServicePromise() = Return(service)
 
@@ -277,8 +277,8 @@ class ClientBuilderTest
       val client = builder.build()
 
       val service = mock[Service[String, String]]
-      when(service("123")) thenReturn Future.exception(
-        WriteException(new Exception()))
+      when(service("123")) thenReturn Future
+        .exception(WriteException(new Exception()))
       when(service.close(any[Time])) thenReturn Future.Done
       preparedServicePromise() = Return(service)
 

@@ -108,7 +108,8 @@ object WebSocketClient {
       .handler(
         new ChannelInitializer[SocketChannel] {
           def initChannel(ch: SocketChannel) = {
-            ch.pipeline()
+            ch
+              .pipeline()
               .addLast(new HttpClientCodec, new HttpObjectAggregator(8192))
           }
         })
@@ -137,12 +138,8 @@ object WebSocketClient {
         .connect(tgt.getHost, tgt.getPort)
         .toScala
         .map { channel =>
-          val handshaker = WebSocketClientHandshakerFactory.newHandshaker(
-            tgt,
-            version,
-            null,
-            false,
-            new DefaultHttpHeaders())
+          val handshaker = WebSocketClientHandshakerFactory
+            .newHandshaker(tgt, version, null, false, new DefaultHttpHeaders())
           channel
             .pipeline()
             .addLast(
@@ -177,16 +174,16 @@ object WebSocketClient {
           val publisher =
             new HandlerPublisher(ctx.executor, classOf[WebSocketFrame])
           val subscriber = new HandlerSubscriber[WebSocketFrame](ctx.executor)
-          ctx.pipeline.addAfter(
-            ctx.executor,
-            ctx.name,
-            "websocket-subscriber",
-            subscriber)
-          ctx.pipeline.addAfter(
-            ctx.executor,
-            ctx.name,
-            "websocket-publisher",
-            publisher)
+          ctx
+            .pipeline
+            .addAfter(
+              ctx.executor,
+              ctx.name,
+              "websocket-subscriber",
+              subscriber)
+          ctx
+            .pipeline
+            .addAfter(ctx.executor, ctx.name, "websocket-publisher", publisher)
 
           // Now remove ourselves from the chain
           ctx.pipeline.remove(ctx.name)
@@ -305,8 +302,8 @@ object WebSocketClient {
               }
             }
 
-            val handleConnectionTerminated = Flow[WebSocketFrame].transform(
-              () =>
+            val handleConnectionTerminated = Flow[WebSocketFrame]
+              .transform(() =>
                 new PushStage[WebSocketFrame, WebSocketFrame] {
                   def onPush(
                       elem: WebSocketFrame,
@@ -337,7 +334,9 @@ object WebSocketClient {
               frame
             }
 
-            merge.out ~> clientConnection ~> handleConnectionTerminated ~> retainForBroadcast ~> broadcast.in
+            merge
+              .out ~> clientConnection ~> handleConnectionTerminated ~> retainForBroadcast ~> broadcast
+              .in
             merge.in(0) <~ handleServerClose <~ broadcast.out(0)
 
             FlowShape(merge.in(1), broadcast.out(1))

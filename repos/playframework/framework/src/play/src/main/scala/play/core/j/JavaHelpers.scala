@@ -74,7 +74,8 @@ trait JavaHelpers {
     * @param javaResult
     */
   def createResult(javaContext: JContext, javaResult: JResult): Result = {
-    val wResult = javaResult.asScala
+    val wResult = javaResult
+      .asScala
       .withHeaders(javaContext.response.getHeaders.asScala.toSeq: _*)
       .withCookies(cookiesToScalaCookies(javaContext.response.cookies): _*)
 

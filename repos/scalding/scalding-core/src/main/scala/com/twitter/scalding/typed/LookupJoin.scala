@@ -211,8 +211,7 @@ object LookupJoin extends Serializable {
                 joined
             (Some((time, nextJoined)), None)
           }
-        }
-        .toTypedPipe
+        }.toTypedPipe
 
     // Now, get rid of residual state from the scanLeft above:
     joined.flatMap {

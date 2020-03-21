@@ -44,7 +44,8 @@ private[finagle] abstract class CumulativeGauge {
   private[this] def removeGauge(underlyingGauge: UnderlyingGauge): Unit =
     synchronized {
       // first, clean up weakrefs
-      val newUnderlying = mutable.IndexedSeq
+      val newUnderlying = mutable
+        .IndexedSeq
         .newBuilder[WeakReference[UnderlyingGauge]]
       underlying.foreach { weakRef =>
         val g = weakRef.get()
@@ -104,20 +105,24 @@ trait StatsReceiverWithCumulativeGauges extends StatsReceiver {
           "of Gauges. Indicative of a leak or code registering the same gauge more " +
           s"often than expected. (For $toString)"
       ) {
-        val largeCgs = gauges.asScala.flatMap {
-          case (ks, cg) =>
-            if (cg.totalSize >= 100000)
-              Some(ks -> cg.totalSize)
-            else
-              None
-        }
+        val largeCgs = gauges
+          .asScala
+          .flatMap {
+            case (ks, cg) =>
+              if (cg.totalSize >= 100000)
+                Some(ks -> cg.totalSize)
+              else
+                None
+          }
         if (largeCgs.isEmpty) {
           Nil
         } else {
-          largeCgs.map {
-            case (ks, size) =>
-              Issue(ks.mkString("/") + "=" + size)
-          }.toSeq
+          largeCgs
+            .map {
+              case (ks, size) =>
+                Issue(ks.mkString("/") + "=" + size)
+            }
+            .toSeq
         }
       })
   }

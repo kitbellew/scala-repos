@@ -40,16 +40,20 @@ private[http4] object ReaderUtils {
       r: Reader,
       // TODO Find a better number for bufSize, e.g. 32KiB - Buf overhead
       bufSize: Int = Int.MaxValue): Future[Unit] = {
-    r.read(bufSize).flatMap {
-      case None =>
-        trans.write(NettyHttp.LastHttpContent.EMPTY_LAST_CONTENT)
-      case Some(buf) =>
-        trans.write(chunkOfBuf(buf)).transform {
-          case Return(_) =>
-            streamChunks(trans, r, bufSize)
-          case _ =>
-            Future(r.discard())
-        }
-    }
+    r
+      .read(bufSize)
+      .flatMap {
+        case None =>
+          trans.write(NettyHttp.LastHttpContent.EMPTY_LAST_CONTENT)
+        case Some(buf) =>
+          trans
+            .write(chunkOfBuf(buf))
+            .transform {
+              case Return(_) =>
+                streamChunks(trans, r, bufSize)
+              case _ =>
+                Future(r.discard())
+            }
+      }
   }
 }

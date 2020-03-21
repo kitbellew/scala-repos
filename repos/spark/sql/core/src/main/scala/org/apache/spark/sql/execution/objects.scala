@@ -35,9 +35,8 @@ trait ObjectOperator extends SparkPlan {
   def generateToObject(
       objExpr: Expression,
       inputSchema: Seq[Attribute]): InternalRow => Any = {
-    val objectProjection = GenerateSafeProjection.generate(
-      objExpr :: Nil,
-      inputSchema)
+    val objectProjection = GenerateSafeProjection
+      .generate(objExpr :: Nil, inputSchema)
     (i: InternalRow) => objectProjection(i).get(0, objExpr.dataType)
   }
 
@@ -49,10 +48,13 @@ trait ObjectOperator extends SparkPlan {
         GenerateUnsafeProjection.generate(serializer)
       }
     val inputType =
-      serializer.head.collect {
-        case b: BoundReference =>
-          b.dataType
-      }.head
+      serializer
+        .head
+        .collect {
+          case b: BoundReference =>
+            b.dataType
+        }
+        .head
     val outputRow = new SpecificMutableRow(inputType :: Nil)
     (o: Any) => {
       outputRow(0) = o
@@ -74,11 +76,13 @@ case class MapPartitions(
   override def output: Seq[Attribute] = serializer.map(_.toAttribute)
 
   override protected def doExecute(): RDD[InternalRow] = {
-    child.execute().mapPartitionsInternal { iter =>
-      val getObject = generateToObject(deserializer, child.output)
-      val outputObject = generateToRow(serializer)
-      func(iter.map(getObject)).map(outputObject)
-    }
+    child
+      .execute()
+      .mapPartitionsInternal { iter =>
+        val getObject = generateToObject(deserializer, child.output)
+        val outputObject = generateToRow(serializer)
+        func(iter.map(getObject)).map(outputObject)
+      }
   }
 }
 
@@ -99,21 +103,23 @@ case class AppendColumns(
   private def newColumnSchema = serializer.map(_.toAttribute).toStructType
 
   override protected def doExecute(): RDD[InternalRow] = {
-    child.execute().mapPartitionsInternal { iter =>
-      val getObject = generateToObject(deserializer, child.output)
-      val combiner = GenerateUnsafeRowJoiner
-        .create(child.schema, newColumnSchema)
-      val outputObject = generateToRow(serializer)
+    child
+      .execute()
+      .mapPartitionsInternal { iter =>
+        val getObject = generateToObject(deserializer, child.output)
+        val combiner = GenerateUnsafeRowJoiner
+          .create(child.schema, newColumnSchema)
+        val outputObject = generateToRow(serializer)
 
-      iter.map { row =>
-        val newColumns = outputObject(func(getObject(row)))
+        iter.map { row =>
+          val newColumns = outputObject(func(getObject(row)))
 
-        // This operates on the assumption that we always serialize the result...
-        combiner.join(
-          row.asInstanceOf[UnsafeRow],
-          newColumns.asInstanceOf[UnsafeRow]): InternalRow
+          // This operates on the assumption that we always serialize the result...
+          combiner.join(
+            row.asInstanceOf[UnsafeRow],
+            newColumns.asInstanceOf[UnsafeRow]): InternalRow
+        }
       }
-    }
   }
 }
 
@@ -142,19 +148,21 @@ case class MapGroups(
     Seq(groupingAttributes.map(SortOrder(_, Ascending)))
 
   override protected def doExecute(): RDD[InternalRow] = {
-    child.execute().mapPartitionsInternal { iter =>
-      val grouped = GroupedIterator(iter, groupingAttributes, child.output)
+    child
+      .execute()
+      .mapPartitionsInternal { iter =>
+        val grouped = GroupedIterator(iter, groupingAttributes, child.output)
 
-      val getKey = generateToObject(keyDeserializer, groupingAttributes)
-      val getValue = generateToObject(valueDeserializer, dataAttributes)
-      val outputObject = generateToRow(serializer)
+        val getKey = generateToObject(keyDeserializer, groupingAttributes)
+        val getValue = generateToObject(valueDeserializer, dataAttributes)
+        val outputObject = generateToRow(serializer)
 
-      grouped.flatMap {
-        case (key, rowIter) =>
-          val result = func(getKey(key), rowIter.map(getValue))
-          result.map(outputObject)
+        grouped.flatMap {
+          case (key, rowIter) =>
+            val result = func(getKey(key), rowIter.map(getValue))
+            result.map(outputObject)
+        }
       }
-    }
   }
 }
 
@@ -184,27 +192,29 @@ case class CoGroup(
     ClusteredDistribution(leftGroup) :: ClusteredDistribution(rightGroup) :: Nil
 
   override def requiredChildOrdering: Seq[Seq[SortOrder]] =
-    leftGroup.map(SortOrder(_, Ascending)) :: rightGroup.map(
-      SortOrder(_, Ascending)) :: Nil
+    leftGroup.map(SortOrder(_, Ascending)) :: rightGroup
+      .map(SortOrder(_, Ascending)) :: Nil
 
   override protected def doExecute(): RDD[InternalRow] = {
-    left.execute().zipPartitions(right.execute()) { (leftData, rightData) =>
-      val leftGrouped = GroupedIterator(leftData, leftGroup, left.output)
-      val rightGrouped = GroupedIterator(rightData, rightGroup, right.output)
+    left
+      .execute()
+      .zipPartitions(right.execute()) { (leftData, rightData) =>
+        val leftGrouped = GroupedIterator(leftData, leftGroup, left.output)
+        val rightGrouped = GroupedIterator(rightData, rightGroup, right.output)
 
-      val getKey = generateToObject(keyDeserializer, leftGroup)
-      val getLeft = generateToObject(leftDeserializer, leftAttr)
-      val getRight = generateToObject(rightDeserializer, rightAttr)
-      val outputObject = generateToRow(serializer)
+        val getKey = generateToObject(keyDeserializer, leftGroup)
+        val getLeft = generateToObject(leftDeserializer, leftAttr)
+        val getRight = generateToObject(rightDeserializer, rightAttr)
+        val outputObject = generateToRow(serializer)
 
-      new CoGroupedIterator(leftGrouped, rightGrouped, leftGroup).flatMap {
-        case (key, leftResult, rightResult) =>
-          val result = func(
-            getKey(key),
-            leftResult.map(getLeft),
-            rightResult.map(getRight))
-          result.map(outputObject)
+        new CoGroupedIterator(leftGrouped, rightGrouped, leftGroup).flatMap {
+          case (key, leftResult, rightResult) =>
+            val result = func(
+              getKey(key),
+              leftResult.map(getLeft),
+              rightResult.map(getRight))
+            result.map(outputObject)
+        }
       }
-    }
   }
 }

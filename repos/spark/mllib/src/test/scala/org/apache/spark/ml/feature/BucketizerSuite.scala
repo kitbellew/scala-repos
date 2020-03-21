@@ -137,10 +137,10 @@ class BucketizerSuite
     val data = Array.fill(100)(Random.nextDouble())
     val splits: Array[Double] = Double.NegativeInfinity +:
       Array.fill(10)(Random.nextDouble()).sorted :+ Double.PositiveInfinity
-    val bsResult = Vectors.dense(
-      data.map(x => Bucketizer.binarySearchForBuckets(splits, x)))
-    val lsResult = Vectors.dense(
-      data.map(x => BucketizerSuite.linearSearchForBuckets(splits, x)))
+    val bsResult = Vectors
+      .dense(data.map(x => Bucketizer.binarySearchForBuckets(splits, x)))
+    val lsResult = Vectors
+      .dense(data.map(x => BucketizerSuite.linearSearchForBuckets(splits, x)))
     assert(bsResult ~== lsResult absTol 1e-5)
   }
 

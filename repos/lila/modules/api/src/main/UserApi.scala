@@ -48,15 +48,21 @@ private[api] final class UserApi(
           ) zip
           relationApi.countFollowing(u.id) zip
           relationApi.countFollowers(u.id) zip
-          ctx.isAuth.?? {
-            prefApi followable u.id
-          } zip
-          ctx.userId.?? {
-            relationApi.fetchRelation(_, u.id)
-          } zip
-          ctx.userId.?? {
-            relationApi.fetchFollows(u.id, _)
-          } map {
+          ctx
+            .isAuth
+            .?? {
+              prefApi followable u.id
+            } zip
+          ctx
+            .userId
+            .?? {
+              relationApi.fetchRelation(_, u.id)
+            } zip
+          ctx
+            .userId
+            .?? {
+              relationApi.fetchFollows(u.id, _)
+            } map {
           case (
                 (
                   (
@@ -67,8 +73,8 @@ private[api] final class UserApi(
             jsonView(u) ++ {
               Json.obj(
                 "url" -> makeUrl(s"@/$username"),
-                "playing" -> gameOption.map(g =>
-                  makeUrl(s"${g.gameId}/${g.color.name}")),
+                "playing" -> gameOption
+                  .map(g => makeUrl(s"${g.gameId}/${g.color.name}")),
                 "nbFollowing" -> following,
                 "nbFollowers" -> followers,
                 "count" -> Json.obj(
@@ -84,12 +90,14 @@ private[api] final class UserApi(
                   "bookmark" -> bookmarkApi.countByUser(u),
                   "me" -> nbGamesWithMe
                 )
-              ) ++ ctx.isAuth.??(
-                Json.obj(
-                  "followable" -> followable,
-                  "following" -> relation.contains(true),
-                  "blocking" -> relation.contains(false),
-                  "followsYou" -> isFollowed))
+              ) ++ ctx
+                .isAuth
+                .??(
+                  Json.obj(
+                    "followable" -> followable,
+                    "following" -> relation.contains(true),
+                    "blocking" -> relation.contains(false),
+                    "followsYou" -> isFollowed))
             }.noNull
         } map (_.some)
     }

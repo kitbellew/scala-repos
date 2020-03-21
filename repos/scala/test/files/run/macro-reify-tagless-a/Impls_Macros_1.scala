@@ -5,8 +5,10 @@ object Macros {
 
   object Impls {
     def foo[T](c: Context)(s: c.Expr[T]) =
-      c.universe.reify {
-        List[T](s.splice)
-      }
+      c
+        .universe
+        .reify {
+          List[T](s.splice)
+        }
   }
 }

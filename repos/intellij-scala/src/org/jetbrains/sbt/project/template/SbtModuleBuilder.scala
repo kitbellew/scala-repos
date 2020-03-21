@@ -64,8 +64,8 @@ class SbtModuleBuilder
   // TODO customize the path in UI when IDEA-122951 will be implemented
   private def updateModulePath() {
     val file = getModuleFilePath.toFile
-    val path =
-      file.getParent + "/" + Sbt.ModulesDirectory + "/" + file.getName.toLowerCase
+    val path = file.getParent + "/" + Sbt
+      .ModulesDirectory + "/" + file.getName.toLowerCase
     setModuleFilePath(path)
   }
 
@@ -97,8 +97,8 @@ class SbtModuleBuilder
         ExternalSystemBundle.message("settings.label.use.auto.import"))
     val createContentDirsCheckBox =
       new JCheckBox(
-        ExternalSystemBundle.message(
-          "settings.label.create.empty.content.root.directories"))
+        ExternalSystemBundle
+          .message("settings.label.create.empty.content.root.directories"))
 
     val step =
       new SdkSettingsStep(
@@ -114,14 +114,14 @@ class SbtModuleBuilder
 
           settingsStep.getContext setProjectJdk myJdkComboBox.getSelectedJdk
 
-          getExternalProjectSettings.setResolveClassifiers(
-            resolveClassifiersCheckBox.isSelected)
-          getExternalProjectSettings.setResolveJavadocs(
-            resolveJavadocsCheckBox.isSelected)
-          getExternalProjectSettings.setResolveSbtClassifiers(
-            resolveSbtClassifiersCheckBox.isSelected)
-          getExternalProjectSettings.setUseAutoImport(
-            useAutoImportCheckBox.isSelected)
+          getExternalProjectSettings
+            .setResolveClassifiers(resolveClassifiersCheckBox.isSelected)
+          getExternalProjectSettings
+            .setResolveJavadocs(resolveJavadocsCheckBox.isSelected)
+          getExternalProjectSettings
+            .setResolveSbtClassifiers(resolveSbtClassifiersCheckBox.isSelected)
+          getExternalProjectSettings
+            .setUseAutoImport(useAutoImportCheckBox.isSelected)
           getExternalProjectSettings.setCreateEmptyContentRootDirectories(
             createContentDirsCheckBox.isSelected)
         }
@@ -205,14 +205,16 @@ class SbtModuleBuilder
 
     if (!externalProjectSettings.isUseAutoImport) {
       FileDocumentManager.getInstance.saveAllDocuments()
-      ApplicationManager.getApplication.invokeLater(
-        new Runnable() {
-          override def run(): Unit =
-            ExternalSystemUtil.refreshProjects(
-              new ImportSpecBuilder(model.getProject, SbtProjectSystem.Id)
-                .forceWhenUptodate()
-                .use(ProgressExecutionMode.IN_BACKGROUND_ASYNC))
-        })
+      ApplicationManager
+        .getApplication
+        .invokeLater(
+          new Runnable() {
+            override def run(): Unit =
+              ExternalSystemUtil.refreshProjects(
+                new ImportSpecBuilder(model.getProject, SbtProjectSystem.Id)
+                  .forceWhenUptodate()
+                  .use(ProgressExecutionMode.IN_BACKGROUND_ASYNC))
+          })
     }
   }
 }

@@ -62,7 +62,9 @@ class MigrationTo0_16Test
 
     def appProtoInNewFormatAsserts(proto: Protos.ServiceDefinition) = {
       assert(
-        Seq(1000, 1001) == proto.getPortDefinitionsList.asScala
+        Seq(1000, 1001) == proto
+          .getPortDefinitionsList
+          .asScala
           .map(_.getNumber),
         proto.toString)
       assert(proto.getPortsCount == 0)
@@ -103,9 +105,8 @@ class MigrationTo0_16Test
     f.appRepo.store(appV1).futureValue
     f.appRepo.store(appV2).futureValue
 
-    val groupWithApp = emptyGroup.copy(
-      apps = Set(appV2),
-      version = Timestamp(2))
+    val groupWithApp = emptyGroup
+      .copy(apps = Set(appV2), version = Timestamp(2))
     f.groupRepo.store(f.groupRepo.zkRootName, groupWithApp).futureValue
 
     When("migrating")
@@ -136,8 +137,9 @@ class MigrationTo0_16Test
           PathId("/test"),
           cmd = Some("true"),
           portDefinitions = PortDefinitions(1000, 1001),
-          versionInfo = AppDefinition.VersionInfo.OnlyVersion(
-            Timestamp(version)))
+          versionInfo = AppDefinition
+            .VersionInfo
+            .OnlyVersion(Timestamp(version)))
         with DeprecatedSerialization
 
     new T()
@@ -147,7 +149,9 @@ class MigrationTo0_16Test
     override def toProto: Protos.ServiceDefinition = {
       val builder = super.toProto.toBuilder
 
-      builder.getPortDefinitionsList.asScala
+      builder
+        .getPortDefinitionsList
+        .asScala
         .map(_.getNumber)
         .map(builder.addPorts)
       builder.clearPortDefinitions()

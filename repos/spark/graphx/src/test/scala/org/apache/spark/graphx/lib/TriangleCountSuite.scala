@@ -29,10 +29,12 @@ class TriangleCountSuite extends SparkFunSuite with LocalSparkContext {
       val graph = Graph.fromEdgeTuples(rawEdges, true).cache()
       val triangleCount = graph.triangleCount()
       val verts = triangleCount.vertices
-      verts.collect.foreach {
-        case (vid, count) =>
-          assert(count === 1)
-      }
+      verts
+        .collect
+        .foreach {
+          case (vid, count) =>
+            assert(count === 1)
+        }
     }
   }
 
@@ -44,14 +46,16 @@ class TriangleCountSuite extends SparkFunSuite with LocalSparkContext {
       val graph = Graph.fromEdgeTuples(rawEdges, true).cache()
       val triangleCount = graph.triangleCount()
       val verts = triangleCount.vertices
-      verts.collect().foreach {
-        case (vid, count) =>
-          if (vid == 0) {
-            assert(count === 2)
-          } else {
-            assert(count === 1)
-          }
-      }
+      verts
+        .collect()
+        .foreach {
+          case (vid, count) =>
+            if (vid == 0) {
+              assert(count === 2)
+            } else {
+              assert(count === 1)
+            }
+        }
     }
   }
 
@@ -68,14 +72,16 @@ class TriangleCountSuite extends SparkFunSuite with LocalSparkContext {
       val graph = Graph.fromEdgeTuples(rawEdges, true).cache()
       val triangleCount = graph.triangleCount()
       val verts = triangleCount.vertices
-      verts.collect().foreach {
-        case (vid, count) =>
-          if (vid == 0) {
-            assert(count === 2)
-          } else {
-            assert(count === 1)
-          }
-      }
+      verts
+        .collect()
+        .foreach {
+          case (vid, count) =>
+            if (vid == 0) {
+              assert(count === 2)
+            } else {
+              assert(count === 1)
+            }
+        }
     }
   }
 
@@ -91,10 +97,12 @@ class TriangleCountSuite extends SparkFunSuite with LocalSparkContext {
         .cache()
       val triangleCount = graph.triangleCount()
       val verts = triangleCount.vertices
-      verts.collect.foreach {
-        case (vid, count) =>
-          assert(count === 1)
-      }
+      verts
+        .collect
+        .foreach {
+          case (vid, count) =>
+            assert(count === 1)
+        }
     }
   }
 

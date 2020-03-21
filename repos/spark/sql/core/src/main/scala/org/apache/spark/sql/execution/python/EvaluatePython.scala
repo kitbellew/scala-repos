@@ -67,9 +67,14 @@ object EvaluatePython {
     df.withNewExecutionId {
       val iter =
         new SerDeUtil.AutoBatchedPickler(
-          df.queryExecution.executedPlan.executeTake(n).iterator.map { row =>
-            EvaluatePython.toJava(row, df.schema)
-          })
+          df
+            .queryExecution
+            .executedPlan
+            .executeTake(n)
+            .iterator
+            .map { row =>
+              EvaluatePython.toJava(row, df.schema)
+            })
       PythonRDD.serveIterator(iter, s"serve-DataFrame")
     }
   }
@@ -178,14 +183,20 @@ object EvaluatePython {
       case (c: String, BinaryType) =>
         c.getBytes(StandardCharsets.UTF_8)
       case (c, BinaryType)
-          if c.getClass.isArray && c.getClass.getComponentType.getName == "byte" =>
+          if c.getClass.isArray && c
+            .getClass
+            .getComponentType
+            .getName == "byte" =>
         c
 
       case (c: java.util.List[_], ArrayType(elementType, _)) =>
         new GenericArrayData(
-          c.asScala.map { e =>
-            fromJava(e, elementType)
-          }.toArray)
+          c
+            .asScala
+            .map { e =>
+              fromJava(e, elementType)
+            }
+            .toArray)
 
       case (c, ArrayType(elementType, _)) if c.getClass.isArray =>
         new GenericArrayData(
@@ -205,10 +216,12 @@ object EvaluatePython {
               s"${fields.length} fields are required while ${array.length} values are provided.")
         }
         new GenericInternalRow(
-          array.zip(fields).map {
-            case (e, f) =>
-              fromJava(e, f.dataType)
-          })
+          array
+            .zip(fields)
+            .map {
+              case (e, f) =>
+                fromJava(e, f.dataType)
+            })
 
       case (_, udt: UserDefinedType[_]) =>
         fromJava(obj, udt.sqlType)

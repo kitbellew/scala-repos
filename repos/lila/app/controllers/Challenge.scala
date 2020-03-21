@@ -73,20 +73,23 @@ object Challenge extends LilaController {
   def accept(id: String) =
     Open { implicit ctx =>
       OptionFuResult(env.api byId id) { c =>
-        isForMe(c) ?? env.api.accept(c, ctx.me).flatMap {
-          case Some(pov) =>
-            negotiate(
-              html =
-                Redirect(routes.Round.watcher(pov.game.id, "white")).fuccess,
-              api = apiVersion =>
-                Env.api.roundApi.player(pov, apiVersion) map {
-                  Ok(_)
-                }) flatMap withChallengeAnonCookie(ctx.isAnon, c, false)
-          case None =>
-            negotiate(
-              html = Redirect(routes.Round.watcher(c.id, "white")).fuccess,
-              api = _ => notFoundJson("Someone else accepted the challenge"))
-        }
+        isForMe(c) ?? env
+          .api
+          .accept(c, ctx.me)
+          .flatMap {
+            case Some(pov) =>
+              negotiate(
+                html =
+                  Redirect(routes.Round.watcher(pov.game.id, "white")).fuccess,
+                api = apiVersion =>
+                  Env.api.roundApi.player(pov, apiVersion) map {
+                    Ok(_)
+                  }) flatMap withChallengeAnonCookie(ctx.isAnon, c, false)
+            case None =>
+              negotiate(
+                html = Redirect(routes.Round.watcher(c.id, "white")).fuccess,
+                api = _ => notFoundJson("Someone else accepted the challenge"))
+          }
       }
     }
 
@@ -95,16 +98,18 @@ object Challenge extends LilaController {
       c: ChallengeModel,
       owner: Boolean)(res: Result)(implicit ctx: Context): Fu[Result] =
     cond ?? {
-      GameRepo.game(c.id).map {
-        _ map { game =>
-          implicit val req = ctx.req
-          LilaCookie.cookie(
-            AnonCookie.name,
-            game.player(owner.fold(c.finalColor, !c.finalColor)).id,
-            maxAge = AnonCookie.maxAge.some,
-            httpOnly = false.some)
+      GameRepo
+        .game(c.id)
+        .map {
+          _ map { game =>
+            implicit val req = ctx.req
+            LilaCookie.cookie(
+              AnonCookie.name,
+              game.player(owner.fold(c.finalColor, !c.finalColor)).id,
+              maxAge = AnonCookie.maxAge.some,
+              httpOnly = false.some)
+          }
         }
-      }
     } map { cookieOption =>
       cookieOption.fold(res) {
         res.withCookies(_)
@@ -134,14 +139,13 @@ object Challenge extends LilaController {
   def rematchOf(gameId: String) =
     Auth { implicit ctx => me =>
       OptionFuResult(GameRepo game gameId) { g =>
-        Pov
-          .opponentOfUserId(g, me.id)
-          .flatMap(_.userId) ?? UserRepo.byId flatMap {
+        Pov.opponentOfUserId(g, me.id).flatMap(_.userId) ?? UserRepo
+          .byId flatMap {
           _ ?? { opponent =>
             restriction(opponent) flatMap {
               case Some(r) =>
-                BadRequest(
-                  jsonError(r.replace("{{user}}", opponent.username))).fuccess
+                BadRequest(jsonError(r.replace("{{user}}", opponent.username)))
+                  .fuccess
               case _ =>
                 env.api.rematchOf(g, me) map {
                   _.fold(
@@ -165,15 +169,21 @@ object Challenge extends LilaController {
           case true =>
             fuccess(s"{{user}} doesn't accept challenges from you.".some)
           case false =>
-            Env.pref.api getPref user zip Env.relation.api
+            Env.pref.api getPref user zip Env
+              .relation
+              .api
               .fetchFollows(user.id, me.id) map {
               case (pref, follow) =>
-                lila.pref.Pref.Challenge.block(
-                  me,
-                  user,
-                  pref.challenge,
-                  follow,
-                  fromCheat = me.engine && !user.engine)
+                lila
+                  .pref
+                  .Pref
+                  .Challenge
+                  .block(
+                    me,
+                    user,
+                    pref.challenge,
+                    follow,
+                    fromCheat = me.engine && !user.engine)
             }
         }
     }

@@ -45,8 +45,8 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
     val parameterBlockPrevPageSize = request.getParameter("block.prevPageSize")
 
     val blockPage = Option(parameterBlockPage).map(_.toInt).getOrElse(1)
-    val blockSortColumn = Option(parameterBlockSortColumn).getOrElse(
-      "Block Name")
+    val blockSortColumn = Option(parameterBlockSortColumn)
+      .getOrElse("Block Name")
     val blockSortDesc = Option(parameterBlockSortDesc)
       .map(_.toBoolean)
       .getOrElse(false)
@@ -86,8 +86,8 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
       try {
         val _blockTable =
           new BlockPagedTable(
-            UIUtils.prependBaseUri(
-              parent.basePath) + s"/storage/rdd/?id=${rddId}",
+            UIUtils
+              .prependBaseUri(parent.basePath) + s"/storage/rdd/?id=${rddId}",
             rddStorageInfo.partitions.get,
             blockPageSize,
             blockSortColumn,

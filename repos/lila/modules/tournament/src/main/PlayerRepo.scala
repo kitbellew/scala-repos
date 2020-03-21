@@ -140,9 +140,10 @@ object PlayerRepo {
     coll.distinct("uid", selectTour(tourId).some) map lila.db.BSON.asStrings
 
   def activeUserIds(tourId: String): Fu[List[String]] =
-    coll.distinct(
-      "uid",
-      (selectTour(tourId) ++ selectActive).some) map lila.db.BSON.asStrings
+    coll.distinct("uid", (selectTour(tourId) ++ selectActive).some) map lila
+      .db
+      .BSON
+      .asStrings
 
   def winner(tourId: String): Fu[Option[Player]] =
     coll.find(selectTour(tourId)).sort(bestSort).one[Player]
@@ -152,7 +153,9 @@ object PlayerRepo {
     coll.aggregate(
       Match(selectTour(tourId)),
       List(Sort(Descending("m")), Group(BSONNull)("uids" -> Push("uid")))) map {
-      _.documents.headOption.fold(Map.empty: Ranking) {
+      _.documents
+      .headOption
+      .fold(Map.empty: Ranking) {
         _ get "uids" match {
           case Some(BSONArray(uids)) =>
             // mutable optimized implementation

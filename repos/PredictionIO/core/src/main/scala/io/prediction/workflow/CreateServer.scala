@@ -180,17 +180,16 @@ object CreateServer extends Logging {
       WorkflowUtils.modifyLogging(sc.verbose)
       engineInstances.get(sc.engineInstanceId) map { engineInstance =>
         val engineId = sc.engineId.getOrElse(engineInstance.engineId)
-        val engineVersion = sc.engineVersion.getOrElse(
-          engineInstance.engineVersion)
+        val engineVersion = sc
+          .engineVersion
+          .getOrElse(engineInstance.engineVersion)
         engineManifests.get(engineId, engineVersion) map { manifest =>
           val engineFactoryName = engineInstance.engineFactory
-          val upgrade = actorSystem.actorOf(
-            Props(classOf[UpgradeActor], engineFactoryName))
-          actorSystem.scheduler.schedule(
-            0.seconds,
-            1.days,
-            upgrade,
-            UpgradeCheck())
+          val upgrade = actorSystem
+            .actorOf(Props(classOf[UpgradeActor], engineFactoryName))
+          actorSystem
+            .scheduler
+            .schedule(0.seconds, 1.days, upgrade, UpgradeCheck())
           val master = actorSystem.actorOf(
             Props(
               classOf[MasterActor],
@@ -218,9 +217,8 @@ object CreateServer extends Logging {
       engineLanguage: EngineLanguage.Value,
       manifest: EngineManifest): ActorRef = {
 
-    val engineParams = engine.engineInstanceToEngineParams(
-      engineInstance,
-      sc.jsonExtractor)
+    val engineParams = engine
+      .engineInstanceToEngineParams(engineInstance, sc.jsonExtractor)
 
     val kryo = KryoInstantiator.newKryoInjection
 
@@ -249,10 +247,12 @@ object CreateServer extends Logging {
       modelsFromEngineInstance,
       params = WorkflowParams())
 
-    val algorithms = engineParams.algorithmParamsList.map {
-      case (n, p) =>
-        Doer(engine.algorithmClassMap(n), p)
-    }
+    val algorithms = engineParams
+      .algorithmParamsList
+      .map {
+        case (n, p) =>
+          Doer(engine.algorithmClassMap(n), p)
+      }
 
     val servingParamsWithName = engineParams.servingParams
 
@@ -307,7 +307,8 @@ class MasterActor(
     log.info(s"Undeploying any existing engine instance at $serverUrl")
     try {
       val code =
-        scalaj.http
+        scalaj
+          .http
           .Http(s"$serverUrl/stop")
           .option(HttpOptions.allowUnsafeSSL)
           .param(ServerKey.param, ServerKey.get)
@@ -367,7 +368,8 @@ class MasterActor(
       }
     case x: ReloadServer =>
       log.info("Reload server command received.")
-      val latestEngineInstance = CreateServer.engineInstances
+      val latestEngineInstance = CreateServer
+        .engineInstances
         .getLatestCompleted(
           manifest.id,
           manifest.version,
@@ -401,9 +403,12 @@ class MasterActor(
       if (retry > 0) {
         retry -= 1
         log.error(s"Bind failed. Retrying... ($retry more trial(s))")
-        context.system.scheduler.scheduleOnce(1.seconds) {
-          self ! BindServer()
-        }
+        context
+          .system
+          .scheduler
+          .scheduleOnce(1.seconds) {
+            self ! BindServer()
+          }
       } else {
         log.error("Bind failed. Shutting down.")
         system.shutdown
@@ -415,9 +420,8 @@ class MasterActor(
       engineInstance: EngineInstance,
       engineFactoryName: String,
       manifest: EngineManifest): ActorRef = {
-    val (engineLanguage, engineFactory) = WorkflowUtils.getEngine(
-      engineFactoryName,
-      getClass.getClassLoader)
+    val (engineLanguage, engineFactory) = WorkflowUtils
+      .getEngine(engineFactoryName, getClass.getClassLoader)
     val engine = engineFactory()
 
     // EngineFactory return a base engine, which may not be deployable.
@@ -464,9 +468,8 @@ class ServerActor[Q, P](
   def actorRefFactory: ActorContext = context
 
   implicit val timeout = Timeout(5, TimeUnit.SECONDS)
-  val pluginsActorRef = context.actorOf(
-    Props(classOf[PluginsActor], args.engineVariant),
-    "PluginsActor")
+  val pluginsActorRef = context
+    .actorOf(Props(classOf[PluginsActor], args.engineVariant), "PluginsActor")
   val pluginContext = EngineServerPluginContext(log, args.engineVariant)
 
   def receive: Actor.Receive = runRoute(myRoute)
@@ -485,7 +488,8 @@ class ServerActor[Q, P](
   def remoteLog(logUrl: String, logPrefix: String, message: String): Unit = {
     implicit val formats = Utils.json4sDefaultFormats
     try {
-      scalaj.http
+      scalaj
+        .http
         .Http(logUrl)
         .postData(
           logPrefix + write(
@@ -559,10 +563,12 @@ class ServerActor[Q, P](
                 // finally Serving.serve.
                 val supplementedQuery = serving.supplementBase(query)
                 // TODO: Parallelize the following.
-                val predictions = algorithms.zipWithIndex.map {
-                  case (a, ai) =>
-                    a.predictBase(models(ai), supplementedQuery)
-                }
+                val predictions = algorithms
+                  .zipWithIndex
+                  .map {
+                    case (a, ai) =>
+                      a.predictBase(models(ai), supplementedQuery)
+                  }
                 // Notice that it is by design to call Serving.serve with the
                 // *original* query.
                 val prediction = serving.serveBase(query, predictions)
@@ -624,7 +630,8 @@ class ServerActor[Q, P](
                     // At this point args.accessKey should be Some(String).
                     val accessKey = args.accessKey.getOrElse("")
                     val f: Future[Int] = future {
-                      scalaj.http
+                      scalaj
+                        .http
                         .Http(
                           s"http://${args.eventServerIp}:${args.eventServerPort}/" +
                             s"events.json?accessKey=$accessKey")
@@ -658,10 +665,13 @@ class ServerActor[Q, P](
                     predictionJValue
 
                 val pluginResult =
-                  pluginContext.outputBlockers.values.foldLeft(result) {
-                    case (r, p) =>
-                      p.process(engineInstance, queryJValue, r, pluginContext)
-                  }
+                  pluginContext
+                    .outputBlockers
+                    .values
+                    .foldLeft(result) {
+                      case (r, p) =>
+                        p.process(engineInstance, queryJValue, r, pluginContext)
+                    }
 
                 // Bookkeeping
                 val servingEndTime = DateTime.now
@@ -716,9 +726,12 @@ class ServerActor[Q, P](
         authenticate(withAccessKeyFromFile) { request =>
           post {
             complete {
-              context.system.scheduler.scheduleOnce(1.seconds) {
-                context.actorSelection("/user/master") ! StopServer()
-              }
+              context
+                .system
+                .scheduler
+                .scheduleOnce(1.seconds) {
+                  context.actorSelection("/user/master") ! StopServer()
+                }
               "Shutting down..."
             }
           }
@@ -734,22 +747,26 @@ class ServerActor[Q, P](
             complete {
               Map(
                 "plugins" -> Map(
-                  "outputblockers" -> pluginContext.outputBlockers.map {
-                    case (n, p) =>
-                      n -> Map(
-                        "name" -> p.pluginName,
-                        "description" -> p.pluginDescription,
-                        "class" -> p.getClass.getName,
-                        "params" -> pluginContext.pluginParams(p.pluginName))
-                  },
-                  "outputsniffers" -> pluginContext.outputSniffers.map {
-                    case (n, p) =>
-                      n -> Map(
-                        "name" -> p.pluginName,
-                        "description" -> p.pluginDescription,
-                        "class" -> p.getClass.getName,
-                        "params" -> pluginContext.pluginParams(p.pluginName))
-                  }
+                  "outputblockers" -> pluginContext
+                    .outputBlockers
+                    .map {
+                      case (n, p) =>
+                        n -> Map(
+                          "name" -> p.pluginName,
+                          "description" -> p.pluginDescription,
+                          "class" -> p.getClass.getName,
+                          "params" -> pluginContext.pluginParams(p.pluginName))
+                    },
+                  "outputsniffers" -> pluginContext
+                    .outputSniffers
+                    .map {
+                      case (n, p) =>
+                        n -> Map(
+                          "name" -> p.pluginName,
+                          "description" -> p.pluginDescription,
+                          "class" -> p.getClass.getName,
+                          "params" -> pluginContext.pluginParams(p.pluginName))
+                    }
                 ))
             }
           }

@@ -95,18 +95,16 @@ private[spark] object JettyUtils extends Logging {
               "%s;charset=utf-8".format(servletParams.contentType))
             response.setStatus(HttpServletResponse.SC_OK)
             val result = servletParams.responder(request)
-            response.setHeader(
-              "Cache-Control",
-              "no-cache, no-store, must-revalidate")
+            response
+              .setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
             response.setHeader("X-Frame-Options", xFrameOptionsValue)
             // scalastyle:off println
             response.getWriter.println(servletParams.extractFn(result))
             // scalastyle:on println
           } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED)
-            response.setHeader(
-              "Cache-Control",
-              "no-cache, no-store, must-revalidate")
+            response
+              .setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
             response.sendError(
               HttpServletResponse.SC_UNAUTHORIZED,
               "User is not authorized to access this page.")
@@ -193,9 +191,8 @@ private[spark] object JettyUtils extends Logging {
           beforeRedirect(request)
           // Make sure we don't end up with "//" in the middle
           val newUrl =
-            new URL(
-              new URL(request.getRequestURL.toString),
-              prefixedDestPath).toString
+            new URL(new URL(request.getRequestURL.toString), prefixedDestPath)
+              .toString
           response.sendRedirect(newUrl)
         }
         // SPARK-5983 ensure TRACE is not supported
@@ -213,9 +210,8 @@ private[spark] object JettyUtils extends Logging {
       resourceBase: String,
       path: String): ServletContextHandler = {
     val contextHandler = new ServletContextHandler
-    contextHandler.setInitParameter(
-      "org.eclipse.jetty.servlet.Default.gzip",
-      "false")
+    contextHandler
+      .setInitParameter("org.eclipse.jetty.servlet.Default.gzip", "false")
     val staticHandler = new DefaultServlet
     val holder = new ServletHolder(staticHandler)
     Option(Utils.getSparkClassLoader.getResource(resourceBase)) match {
@@ -257,7 +253,8 @@ private[spark] object JettyUtils extends Logging {
             }
 
           val prefix = s"spark.$filter.param."
-          conf.getAll
+          conf
+            .getAll
             .filter {
               case (k, v) =>
                 k.length() > prefix.length() && k.startsWith(prefix)
@@ -267,12 +264,15 @@ private[spark] object JettyUtils extends Logging {
                 holder.setInitParameter(k.substring(prefix.length()), v)
             }
 
-          val enumDispatcher = java.util.EnumSet.of(
-            DispatcherType.ASYNC,
-            DispatcherType.ERROR,
-            DispatcherType.FORWARD,
-            DispatcherType.INCLUDE,
-            DispatcherType.REQUEST)
+          val enumDispatcher = java
+            .util
+            .EnumSet
+            .of(
+              DispatcherType.ASYNC,
+              DispatcherType.ERROR,
+              DispatcherType.FORWARD,
+              DispatcherType.INCLUDE,
+              DispatcherType.REQUEST)
           handlers.foreach {
             case (handler) =>
               handler.addFilter(holder, "/*", enumDispatcher)
@@ -314,23 +314,25 @@ private[spark] object JettyUtils extends Logging {
       httpConnector.setPort(currentPort)
       connectors += httpConnector
 
-      sslOptions.createJettySslContextFactory().foreach { factory =>
-        // If the new port wraps around, do not try a privileged port.
-        val securePort =
-          if (currentPort != 0) {
-            (currentPort + 400 - 1024) % (65536 - 1024) + 1024
-          } else {
-            0
-          }
-        val scheme = "https"
-        // Create a connector on port securePort to listen for HTTPS requests
-        val connector = new SslSelectChannelConnector(factory)
-        connector.setPort(securePort)
-        connectors += connector
+      sslOptions
+        .createJettySslContextFactory()
+        .foreach { factory =>
+          // If the new port wraps around, do not try a privileged port.
+          val securePort =
+            if (currentPort != 0) {
+              (currentPort + 400 - 1024) % (65536 - 1024) + 1024
+            } else {
+              0
+            }
+          val scheme = "https"
+          // Create a connector on port securePort to listen for HTTPS requests
+          val connector = new SslSelectChannelConnector(factory)
+          connector.setPort(securePort)
+          connectors += connector
 
-        // redirect the HTTP requests to HTTPS port
-        collection.addHandler(createRedirectHttpsHandler(securePort, scheme))
-      }
+          // redirect the HTTP requests to HTTPS port
+          collection.addHandler(createRedirectHttpsHandler(securePort, scheme))
+        }
 
       gzipHandlers.foreach(collection.addHandler)
       connectors.foreach(_.setHost(hostName))

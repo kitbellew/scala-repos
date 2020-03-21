@@ -65,8 +65,7 @@ object ShardRegion {
         coordinatorPath,
         extractEntityId,
         extractShardId,
-        PoisonPill))
-      .withDeploy(Deploy.local)
+        PoisonPill)).withDeploy(Deploy.local)
 
   /**
     * Marker type of entity identifier (`String`).
@@ -404,8 +403,9 @@ class ShardRegion(
 
   // sort by age, oldest first
   val ageOrdering = Member.ageOrdering
-  var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet.empty(
-    ageOrdering)
+  var membersByAge: immutable.SortedSet[Member] = immutable
+    .SortedSet
+    .empty(ageOrdering)
 
   var regions = Map.empty[ActorRef, Set[ShardId]]
   var regionByShard = Map.empty[ShardId, ActorRef]
@@ -423,11 +423,10 @@ class ShardRegion(
     }
 
   import context.dispatcher
-  val retryTask = context.system.scheduler.schedule(
-    retryInterval,
-    retryInterval,
-    self,
-    Retry)
+  val retryTask = context
+    .system
+    .scheduler
+    .schedule(retryInterval, retryInterval, self, Retry)
   var retryCount = 0
 
   // subscribe to MemberEvent, re-subscribe when restart
@@ -450,8 +449,10 @@ class ShardRegion(
     }
 
   def coordinatorSelection: Option[ActorSelection] =
-    membersByAge.headOption.map(m ⇒
-      context.actorSelection(RootActorPath(m.address) + coordinatorPath))
+    membersByAge
+      .headOption
+      .map(m ⇒
+        context.actorSelection(RootActorPath(m.address) + coordinatorPath))
 
   var coordinator: Option[ActorRef] = None
 
@@ -493,8 +494,9 @@ class ShardRegion(
 
   def receiveClusterState(state: CurrentClusterState): Unit = {
     changeMembers(
-      immutable.SortedSet.empty(ageOrdering) union state.members.filter(m ⇒
-        m.status == MemberStatus.Up && matchingRole(m)))
+      immutable.SortedSet.empty(ageOrdering) union state
+        .members
+        .filter(m ⇒ m.status == MemberStatus.Up && matchingRole(m)))
   }
 
   def receiveClusterEvent(evt: ClusterDomainEvent): Unit =
@@ -520,9 +522,8 @@ class ShardRegion(
       case HostShard(shard) ⇒
         log.debug("Host Shard [{}] ", shard)
         regionByShard = regionByShard.updated(shard, self)
-        regions = regions.updated(
-          self,
-          regions.getOrElse(self, Set.empty) + shard)
+        regions = regions
+          .updated(self, regions.getOrElse(self, Set.empty) + shard)
 
         //Start the shard, if already started this does nothing
         getShard(shard)
@@ -539,9 +540,8 @@ class ShardRegion(
           case _ ⇒
         }
         regionByShard = regionByShard.updated(shard, ref)
-        regions = regions.updated(
-          ref,
-          regions.getOrElse(ref, Set.empty) + shard)
+        regions = regions
+          .updated(ref, regions.getOrElse(ref, Set.empty) + shard)
 
         if (ref != self)
           context.watch(ref)
@@ -663,7 +663,9 @@ class ShardRegion(
         // if persist fails it will stop
         log.debug("Shard [{}]  terminated while not being handed off", shardId)
         if (rememberEntities) {
-          context.system.scheduler
+          context
+            .system
+            .scheduler
             .scheduleOnce(shardFailureBackoff, self, RestartShard(shardId))
         }
       }
@@ -676,10 +678,12 @@ class ShardRegion(
     askAllShards[Shard.CurrentShardState](Shard.GetCurrentShardState)
       .map { shardStates ⇒
         CurrentShardRegionState(
-          shardStates.map {
-            case (shardId, state) ⇒
-              ShardRegion.ShardState(shardId, state.entityIds)
-          }.toSet)
+          shardStates
+            .map {
+              case (shardId, state) ⇒
+                ShardRegion.ShardState(shardId, state.entityIds)
+            }
+            .toSet)
       }
       .recover {
         case x: AskTimeoutException ⇒
@@ -692,10 +696,12 @@ class ShardRegion(
     askAllShards[Shard.ShardStats](Shard.GetShardStats)
       .map { shardStats ⇒
         ShardRegionStats(
-          shardStats.map {
-            case (shardId, stats) ⇒
-              (shardId, stats.entityCount)
-          }.toMap)
+          shardStats
+            .map {
+              case (shardId, stats) ⇒
+                (shardId, stats.entityCount)
+            }
+            .toMap)
       }
       .recover {
         case x: AskTimeoutException ⇒
@@ -707,10 +713,12 @@ class ShardRegion(
   def askAllShards[T: ClassTag](msg: Any): Future[Seq[(ShardId, T)]] = {
     implicit val timeout: Timeout = 3.seconds
     Future.sequence(
-      shards.toSeq.map {
-        case (shardId, ref) ⇒
-          (ref ? msg).mapTo[T].map(t ⇒ (shardId, t))
-      })
+      shards
+        .toSeq
+        .map {
+          case (shardId, ref) ⇒
+            (ref ? msg).mapTo[T].map(t ⇒ (shardId, t))
+        })
   }
 
   private def tryCompleteGracefulShutdown() =

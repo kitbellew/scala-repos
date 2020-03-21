@@ -33,10 +33,12 @@ trait Enclosures {
   val enclosingClass: Tree = lenientEnclosure[ImplDef]
   def enclosingImpl: ImplDef = strictEnclosure[ImplDef]
   def enclosingTemplate: Template = strictEnclosure[Template]
-  val enclosingImplicits: List[ImplicitCandidate] = site.openImplicits.map(
-    _.toImplicitCandidate)
-  val enclosingMacros: List[Context] =
-    this :: universe.analyzer.openMacros // include self
+  val enclosingImplicits: List[ImplicitCandidate] = site
+    .openImplicits
+    .map(_.toImplicitCandidate)
+  val enclosingMacros: List[Context] = this :: universe
+    .analyzer
+    .openMacros // include self
   val enclosingMethod: Tree = lenientEnclosure[DefDef]
   def enclosingDef: DefDef = strictEnclosure[DefDef]
   val enclosingPosition: Position =

@@ -50,10 +50,7 @@ class AllPersistenceIdsSpec
       val src = queries.currentPersistenceIds()
       val probe = src.runWith(TestSink.probe[String])
       probe.within(10.seconds) {
-        probe
-          .request(5)
-          .expectNextUnordered("a", "b", "c")
-          .expectComplete()
+        probe.request(5).expectNextUnordered("a", "b", "c").expectComplete()
       }
     }
 
@@ -65,9 +62,7 @@ class AllPersistenceIdsSpec
       val src = queries.allPersistenceIds()
       val probe = src.runWith(TestSink.probe[String])
       probe.within(10.seconds) {
-        probe
-          .request(5)
-          .expectNextUnorderedN(List("a", "b", "c", "d"))
+        probe.request(5).expectNextUnorderedN(List("a", "b", "c", "d"))
 
         system.actorOf(TestActor.props("e")) ! "e1"
         probe.expectNext("e")

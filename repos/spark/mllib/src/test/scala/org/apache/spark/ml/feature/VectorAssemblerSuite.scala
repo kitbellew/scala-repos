@@ -85,12 +85,16 @@ class VectorAssemblerSuite
     val assembler = new VectorAssembler()
       .setInputCols(Array("x", "y", "z", "n"))
       .setOutputCol("features")
-    assembler.transform(df).select("features").collect().foreach {
-      case Row(v: Vector) =>
-        assert(
-          v === Vectors
-            .sparse(6, Array(1, 2, 4, 5), Array(1.0, 2.0, 3.0, 10.0)))
-    }
+    assembler
+      .transform(df)
+      .select("features")
+      .collect()
+      .foreach {
+        case Row(v: Vector) =>
+          assert(
+            v === Vectors
+              .sparse(6, Array(1, 2, 4, 5), Array(1.0, 2.0, 3.0, 10.0)))
+      }
   }
 
   test("transform should throw an exception in case of unsupported type") {
@@ -104,20 +108,21 @@ class VectorAssemblerSuite
       assembler.transform(df)
     }
     assert(
-      thrown.getMessage contains "VectorAssembler does not support the StringType type")
+      thrown
+        .getMessage contains "VectorAssembler does not support the StringType type")
   }
 
   test("ML attributes") {
-    val browser = NominalAttribute.defaultAttr.withValues(
-      "chrome",
-      "firefox",
-      "safari")
+    val browser = NominalAttribute
+      .defaultAttr
+      .withValues("chrome", "firefox", "safari")
     val hour = NumericAttribute.defaultAttr.withMin(0.0).withMax(24.0)
     val user =
       new AttributeGroup(
         "user",
         Array(
-          NominalAttribute.defaultAttr
+          NominalAttribute
+            .defaultAttr
             .withName("gender")
             .withValues("male", "female"),
           NumericAttribute.defaultAttr.withName("salary")))
@@ -165,11 +170,13 @@ class VectorAssemblerSuite
         .withName("user_salary")
         .withIndex(4))
     assert(
-      features.getAttr(5) === NumericAttribute.defaultAttr
+      features.getAttr(5) === NumericAttribute
+        .defaultAttr
         .withIndex(5)
         .withName("ad_0"))
     assert(
-      features.getAttr(6) === NumericAttribute.defaultAttr
+      features.getAttr(6) === NumericAttribute
+        .defaultAttr
         .withIndex(6)
         .withName("ad_1"))
   }

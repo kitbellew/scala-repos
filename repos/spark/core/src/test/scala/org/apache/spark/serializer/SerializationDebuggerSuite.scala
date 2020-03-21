@@ -126,8 +126,8 @@ class SerializationDebuggerSuite extends SparkFunSuite with BeforeAndAfterEach {
 
   test("object containing writeReplace() which returns serializable object") {
     assert(
-      find(
-        new SerializableClassWithWriteReplace(new SerializableClass1)).isEmpty)
+      find(new SerializableClassWithWriteReplace(new SerializableClass1))
+        .isEmpty)
   }
 
   test("object containing writeObject() and not serializable field") {
@@ -140,8 +140,8 @@ class SerializationDebuggerSuite extends SparkFunSuite with BeforeAndAfterEach {
 
   test("object containing writeObject() and serializable field") {
     assert(
-      find(
-        new SerializableClassWithWriteObject(new SerializableClass1)).isEmpty)
+      find(new SerializableClassWithWriteObject(new SerializableClass1))
+        .isEmpty)
   }
 
   test(

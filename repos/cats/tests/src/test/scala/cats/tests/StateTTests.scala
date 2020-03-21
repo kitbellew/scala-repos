@@ -104,15 +104,18 @@ class StateTTests extends CatsSuite {
     val input = 5
 
     val got = x.run(input)
-    val expected = xx.run(Env(input, "hello")).map {
-      case (e, i) =>
-        (e.int, i)
-    }
+    val expected = xx
+      .run(Env(input, "hello"))
+      .map {
+        case (e, i) =>
+          (e.int, i)
+      }
     got should ===(expected)
   }
 
   {
-    implicit val iso = CartesianTests.Isomorphisms
+    implicit val iso = CartesianTests
+      .Isomorphisms
       .invariant[StateT[Option, Int, ?]]
     checkAll(
       "StateT[Option, Int, Int]",

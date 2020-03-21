@@ -31,7 +31,8 @@ object TestThrows {
     println(
       name + " throws: " + method.getExceptionTypes.mkString("", ", ", ""))
     println(
-      name + " annotations: " + method.getDeclaredAnnotations
+      name + " annotations: " + method
+        .getDeclaredAnnotations
         .mkString("", ", ", ""))
   }
 

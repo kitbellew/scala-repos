@@ -17,9 +17,8 @@ class FactorialFrontend(upToN: Int, repeat: Boolean)
     extends Actor
     with ActorLogging {
 
-  val backend = context.actorOf(
-    FromConfig.props(),
-    name = "factorialBackendRouter")
+  val backend = context
+    .actorOf(FromConfig.props(), name = "factorialBackendRouter")
 
   override def preStart(): Unit = {
     sendJobs()
@@ -60,8 +59,9 @@ object FactorialFrontend {
       .withFallback(ConfigFactory.load("factorial"))
 
     val system = ActorSystem("ClusterSystem", config)
-    system.log.info(
-      "Factorials will start when 2 backend members in the cluster.")
+    system
+      .log
+      .info("Factorials will start when 2 backend members in the cluster.")
     //#registerOnUp
     Cluster(system) registerOnMemberUp {
       system.actorOf(

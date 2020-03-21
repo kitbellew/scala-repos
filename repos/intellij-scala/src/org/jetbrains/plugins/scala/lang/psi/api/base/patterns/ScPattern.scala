@@ -242,19 +242,19 @@ trait ScPattern extends ScalaPsiElement {
             substitutor
           else {
             var undefSubst =
-              fun.typeParameters.foldLeft(ScSubstitutor.empty) { (s, p) =>
-                s.bindT(
-                  (p.name, ScalaPsiUtil.getPsiElementId(p)),
-                  ScUndefinedType(new ScTypeParameterType(p, substitutor)))
-              }
-            val clazz = ScalaPsiUtil.getContextOfType(
-              this,
-              true,
-              classOf[ScTemplateDefinition])
+              fun
+                .typeParameters
+                .foldLeft(ScSubstitutor.empty) { (s, p) =>
+                  s.bindT(
+                    (p.name, ScalaPsiUtil.getPsiElementId(p)),
+                    ScUndefinedType(new ScTypeParameterType(p, substitutor)))
+                }
+            val clazz = ScalaPsiUtil
+              .getContextOfType(this, true, classOf[ScTemplateDefinition])
             clazz match {
               case clazz: ScTemplateDefinition =>
-                undefSubst = undefSubst.followed(
-                  new ScSubstitutor(ScThisType(clazz)))
+                undefSubst = undefSubst
+                  .followed(new ScSubstitutor(ScThisType(clazz)))
               case _ =>
             }
             val firstParameterType =
@@ -314,12 +314,13 @@ trait ScPattern extends ScalaPsiElement {
           if (fun.typeParameters.isEmpty)
             substitutor
           else {
-            val undefSubst = substitutor followed fun.typeParameters.foldLeft(
-              ScSubstitutor.empty) { (s, p) =>
-              s.bindT(
-                (p.name, ScalaPsiUtil.getPsiElementId(p)),
-                ScUndefinedType(new ScTypeParameterType(p, substitutor)))
-            }
+            val undefSubst = substitutor followed fun
+              .typeParameters
+              .foldLeft(ScSubstitutor.empty) { (s, p) =>
+                s.bindT(
+                  (p.name, ScalaPsiUtil.getPsiElementId(p)),
+                  ScUndefinedType(new ScTypeParameterType(p, substitutor)))
+              }
             val firstParameterRetTp =
               fun.parameters.head.getType(TypingContext.empty) match {
                 case Success(tp, _) =>
@@ -348,9 +349,11 @@ trait ScPattern extends ScalaPsiElement {
             val lastArg = args.last
             (lastArg +: BaseTypes.get(lastArg)).find {
               case ScParameterizedType(des, seqArgs) =>
-                seqArgs.length == 1 && ScType.extractClass(des).exists {
-                  clazz => clazz.qualifiedName == "scala.collection.Seq"
-                }
+                seqArgs.length == 1 && ScType
+                  .extractClass(des)
+                  .exists { clazz =>
+                    clazz.qualifiedName == "scala.collection.Seq"
+                  }
               case _ =>
                 false
             } match {
@@ -461,19 +464,22 @@ trait ScPattern extends ScalaPsiElement {
               case _ =>
             }
 
-            tuple.expectedType.flatMap {
-              case ScTupleType(comps) =>
-                for ((t, p) <- comps.iterator.zip(
-                       patternList.patterns.iterator)) {
-                  if (p == this)
-                    return Some(t)
-                }
-                None
-              case et0 if et0 == types.AnyRef || et0 == types.Any =>
-                Some(types.Any)
-              case _ =>
-                None
-            }
+            tuple
+              .expectedType
+              .flatMap {
+                case ScTupleType(comps) =>
+                  for ((t, p) <- comps
+                         .iterator
+                         .zip(patternList.patterns.iterator)) {
+                    if (p == this)
+                      return Some(t)
+                  }
+                  None
+                case et0 if et0 == types.AnyRef || et0 == types.Any =>
+                  Some(types.Any)
+                case _ =>
+                  None
+              }
           case _: ScXmlPattern =>
             val nodeClass: Option[PsiClass] = ScalaPsiManager
               .instance(getProject)
@@ -592,18 +598,21 @@ object ScPattern {
     val cp =
       new CompletionProcessor(StdKinds.methodRef, place, forName = Some(name))
     cp.processType(tp, place)
-    cp.candidatesS.flatMap {
-      case ScalaResolveResult(fun: ScFunction, subst)
-          if fun.parameters.isEmpty && fun.name == name =>
-        Seq(subst.subst(fun.returnType.getOrAny))
-      case ScalaResolveResult(b: ScBindingPattern, subst) if b.name == name =>
-        Seq(subst.subst(b.getType(TypingContext.empty).getOrAny))
-      case ScalaResolveResult(param: ScClassParameter, subst)
-          if param.name == name =>
-        Seq(subst.subst(param.getType(TypingContext.empty).getOrAny))
-      case _ =>
-        Seq.empty
-    }.headOption
+    cp
+      .candidatesS
+      .flatMap {
+        case ScalaResolveResult(fun: ScFunction, subst)
+            if fun.parameters.isEmpty && fun.name == name =>
+          Seq(subst.subst(fun.returnType.getOrAny))
+        case ScalaResolveResult(b: ScBindingPattern, subst) if b.name == name =>
+          Seq(subst.subst(b.getType(TypingContext.empty).getOrAny))
+        case ScalaResolveResult(param: ScClassParameter, subst)
+            if param.name == name =>
+          Seq(subst.subst(param.getType(TypingContext.empty).getOrAny))
+        case _ =>
+          Seq.empty
+      }
+      .headOption
   }
 
   private def extractPossibleProductParts(
@@ -647,8 +656,8 @@ object ScPattern {
           return Seq.empty
       }
 
-      val receiverType = findMember("get", returnType, place).getOrElse(
-        return Seq.empty)
+      val receiverType = findMember("get", returnType, place)
+        .getOrElse(return Seq.empty)
       extractPossibleProductParts(receiverType, place, isOneArgCaseClass)
     }
 
@@ -675,9 +684,8 @@ object ScPattern {
                           .instance(place.getProject)
                           .getCachedClass(place.getResolveScope, productFqn)
                         clazz <- ScType.extractClass(tp, Some(place.getProject))
-                      } yield clazz == productClass || clazz.isInheritor(
-                        productClass,
-                        true)
+                      } yield clazz == productClass || clazz
+                        .isInheritor(productClass, true)
                     ).filter(identity).fold(Seq(tp))(_ => productChance)
                   }
                 }

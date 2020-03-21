@@ -31,10 +31,8 @@ class SplitIfIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScIfStmt],
-      false)
+    val ifStmt: ScIfStmt = PsiTreeUtil
+      .getParentOfType(element, classOf[ScIfStmt], false)
     if (ifStmt == null)
       return false
 
@@ -55,10 +53,8 @@ class SplitIfIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScIfStmt],
-      false)
+    val ifStmt: ScIfStmt = PsiTreeUtil
+      .getParentOfType(element, classOf[ScIfStmt], false)
     if (ifStmt == null || !ifStmt.isValid)
       return
 
@@ -67,14 +63,20 @@ class SplitIfIntention extends PsiElementBaseIntentionAction {
     val cond: ScInfixExpr = ifStmt.condition.get.asInstanceOf[ScInfixExpr]
 
     val firstCond =
-      if (cond.getBaseExpr.getText.trim.startsWith(
-            "(") && cond.getBaseExpr.getText.trim.endsWith(")"))
+      if (cond.getBaseExpr.getText.trim.startsWith("(") && cond
+            .getBaseExpr
+            .getText
+            .trim
+            .endsWith(")"))
         cond.getBaseExpr.getText.trim
       else
         "(" + cond.getBaseExpr.getText.trim + ")"
     val secondCond =
-      if (cond.getArgExpr.getText.trim.startsWith(
-            "(") && cond.getArgExpr.getText.trim.endsWith(")"))
+      if (cond.getArgExpr.getText.trim.startsWith("(") && cond
+            .getArgExpr
+            .getText
+            .trim
+            .endsWith(")"))
         cond.getArgExpr.getText.trim
       else
         "(" + cond.getArgExpr.getText.trim + ")"

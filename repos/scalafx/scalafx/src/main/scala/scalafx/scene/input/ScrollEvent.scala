@@ -194,8 +194,9 @@ class ScrollEvent(override val delegate: jfxsi.ScrollEvent)
     * Gets the horizontal scrolling units for text-based scrolling.
     */
   def textDeltaXUnits: ScrollEvent.HorizontalTextScrollUnits =
-    ScrollEvent.HorizontalTextScrollUnits.jfxEnum2sfx(
-      delegate.getTextDeltaXUnits)
+    ScrollEvent
+      .HorizontalTextScrollUnits
+      .jfxEnum2sfx(delegate.getTextDeltaXUnits)
 
   /**
     * Gets the vertical text-based scroll amount.

@@ -55,8 +55,8 @@ class BinaryClassificationEvaluator @Since("1.4.0") (
     */
   @Since("1.2.0")
   val metricName: Param[String] = {
-    val allowedParams = ParamValidators.inArray(
-      Array("areaUnderROC", "areaUnderPR"))
+    val allowedParams = ParamValidators
+      .inArray(Array("areaUnderROC", "areaUnderPR"))
     new Param(
       this,
       "metricName",

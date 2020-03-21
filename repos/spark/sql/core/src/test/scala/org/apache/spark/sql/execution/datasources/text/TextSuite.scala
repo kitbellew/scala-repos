@@ -48,7 +48,8 @@ class TextSuite extends QueryTest with SharedSQLContext {
 
   test(
     "SPARK-12562 verify write.text() can handle column name beyond `value`") {
-    val df = sqlContext.read
+    val df = sqlContext
+      .read
       .text(testFile)
       .withColumnRenamed("value", "adwrasdf")
 
@@ -89,7 +90,8 @@ class TextSuite extends QueryTest with SharedSQLContext {
       case (codecName, extension) =>
         val tempDir = Utils.createTempDir()
         val tempDirPath = tempDir.getAbsolutePath
-        testDf.write
+        testDf
+          .write
           .option("compression", codecName)
           .mode(SaveMode.Overwrite)
           .text(tempDirPath)
@@ -100,40 +102,40 @@ class TextSuite extends QueryTest with SharedSQLContext {
 
     val errMsg = intercept[IllegalArgumentException] {
       val tempDirPath = Utils.createTempDir().getAbsolutePath
-      testDf.write
+      testDf
+        .write
         .option("compression", "illegal")
         .mode(SaveMode.Overwrite)
         .text(tempDirPath)
     }
     assert(
-      errMsg.getMessage.contains(
-        "Codec [illegal] is not available. " +
-          "Known codecs are"))
+      errMsg
+        .getMessage
+        .contains(
+          "Codec [illegal] is not available. " +
+            "Known codecs are"))
   }
 
   test("SPARK-13543 Write the output as uncompressed via option()") {
     val clonedConf = new Configuration(hadoopConfiguration)
-    hadoopConfiguration.set(
-      "mapreduce.output.fileoutputformat.compress",
-      "true")
     hadoopConfiguration
-      .set(
-        "mapreduce.output.fileoutputformat.compress.type",
-        CompressionType.BLOCK.toString)
-    hadoopConfiguration
-      .set(
-        "mapreduce.output.fileoutputformat.compress.codec",
-        classOf[GzipCodec].getName)
-    hadoopConfiguration.set("mapreduce.map.output.compress", "true")
+      .set("mapreduce.output.fileoutputformat.compress", "true")
     hadoopConfiguration.set(
-      "mapreduce.map.output.compress.codec",
+      "mapreduce.output.fileoutputformat.compress.type",
+      CompressionType.BLOCK.toString)
+    hadoopConfiguration.set(
+      "mapreduce.output.fileoutputformat.compress.codec",
       classOf[GzipCodec].getName)
+    hadoopConfiguration.set("mapreduce.map.output.compress", "true")
+    hadoopConfiguration
+      .set("mapreduce.map.output.compress.codec", classOf[GzipCodec].getName)
     withTempDir { dir =>
       try {
         val testDf = sqlContext.read.text(testFile)
         val tempDir = Utils.createTempDir()
         val tempDirPath = tempDir.getAbsolutePath
-        testDf.write
+        testDf
+          .write
           .option("compression", "none")
           .mode(SaveMode.Overwrite)
           .text(tempDirPath)
@@ -143,8 +145,10 @@ class TextSuite extends QueryTest with SharedSQLContext {
       } finally {
         // Hadoop 1 doesn't have `Configuration.unset`
         hadoopConfiguration.clear()
-        clonedConf.asScala.foreach(entry =>
-          hadoopConfiguration.set(entry.getKey, entry.getValue))
+        clonedConf
+          .asScala
+          .foreach(entry =>
+            hadoopConfiguration.set(entry.getKey, entry.getValue))
       }
     }
   }

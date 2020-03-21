@@ -19,16 +19,15 @@ class ScalaSyntheticProvider extends SyntheticTypeComponentProvider {
 
 object ScalaSyntheticProvider {
   def isSynthetic(typeComponent: TypeComponent): Boolean = {
-    val isScala = DebuggerUtil.isScala(
-      typeComponent.declaringType(),
-      default = false)
+    val isScala = DebuggerUtil
+      .isScala(typeComponent.declaringType(), default = false)
     if (!isScala)
       return false
 
     typeComponent match {
       case m: Method
-          if m.isConstructor && ScalaPositionManager.isAnonfunType(
-            m.declaringType()) =>
+          if m.isConstructor && ScalaPositionManager
+            .isAnonfunType(m.declaringType()) =>
         true
       case m: Method
           if m.name() == "apply" && hasSpecializationMethod(
@@ -46,7 +45,8 @@ object ScalaSyntheticProvider {
         true
       case _ =>
         val machine: VirtualMachine = typeComponent.virtualMachine
-        machine != null && machine.canGetSyntheticAttribute && typeComponent.isSynthetic
+        machine != null && machine.canGetSyntheticAttribute && typeComponent
+          .isSynthetic
     }
   }
 
@@ -104,7 +104,8 @@ object ScalaSyntheticProvider {
       else if (instr == DecompilerUtil.Opcodes.invokeStatic) {
         val nextIdx = i + 3
         val nextInstr = bytecodes(nextIdx)
-        return nextIdx == (bytecodes.length - 1) && BytecodeUtil.returnCodes
+        return nextIdx == (bytecodes.length - 1) && BytecodeUtil
+          .returnCodes
           .contains(nextInstr)
       } else
         return false

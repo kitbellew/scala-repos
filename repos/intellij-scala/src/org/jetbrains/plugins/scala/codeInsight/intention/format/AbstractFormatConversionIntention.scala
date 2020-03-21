@@ -38,10 +38,12 @@ abstract class AbstractFormatConversionIntention(
         list
     }
     val results = candidates.map(parser.parse)
-    candidates.zip(results).collectFirst {
-      case (candidate, Some(parts)) =>
-        (candidate, parts)
-    }
+    candidates
+      .zip(results)
+      .collectFirst {
+        case (candidate, Some(parts)) =>
+          (candidate, parts)
+      }
   }
 
   override def isAvailable(

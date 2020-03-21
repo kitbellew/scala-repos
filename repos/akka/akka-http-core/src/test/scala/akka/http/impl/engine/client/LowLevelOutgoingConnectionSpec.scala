@@ -205,7 +205,9 @@ class LowLevelOutgoingConnectionSpec
             |
             |""")
 
-        val whenComplete = expectResponse().entity.dataBytes
+        val whenComplete = expectResponse()
+          .entity
+          .dataBytes
           .runWith(Sink.ignore)
         whenComplete.futureValue should be(akka.Done)
       }
@@ -292,7 +294,8 @@ class LowLevelOutgoingConnectionSpec
         sub.sendComplete()
 
         val InvalidContentLengthException(info) = netOut.expectError()
-        info.summary shouldEqual "HTTP message had declared Content-Length 8 but entity data stream amounts to 2 bytes less"
+        info
+          .summary shouldEqual "HTTP message had declared Content-Length 8 but entity data stream amounts to 2 bytes less"
         netInSub.sendComplete()
         responsesSub.request(1)
         responses.expectError(One2OneBidiFlow.OutputTruncationException)
@@ -323,7 +326,8 @@ class LowLevelOutgoingConnectionSpec
         sub.sendNext(ByteString("XYZ"))
 
         val InvalidContentLengthException(info) = netOut.expectError()
-        info.summary shouldEqual "HTTP message had declared Content-Length 8 but entity data stream amounts to more bytes"
+        info
+          .summary shouldEqual "HTTP message had declared Content-Length 8 but entity data stream amounts to more bytes"
         netInSub.sendComplete()
         responsesSub.request(1)
         responses.expectError(One2OneBidiFlow.OutputTruncationException)
@@ -452,12 +456,12 @@ class LowLevelOutgoingConnectionSpec
             inside(response) {
               case HttpResponse(_, _, entity: T, _) ⇒
                 def gatherBytes =
-                  entity.dataBytes
+                  entity
+                    .dataBytes
                     .runFold(ByteString.empty)(_ ++ _)
                     .awaitResult(100.millis)
-                (
-                  the[Exception] thrownBy gatherBytes
-                ).getCause shouldEqual EntityStreamSizeException(
+                (the[Exception] thrownBy gatherBytes)
+                  .getCause shouldEqual EntityStreamSizeException(
                   limit,
                   actualSize)
             }
@@ -816,9 +820,8 @@ class LowLevelOutgoingConnectionSpec
     val responses = TestSubscriber.manualProbe[HttpResponse]()
 
     def settings = {
-      val s = ClientConnectionSettings(system)
-        .withUserAgentHeader(
-          Some(`User-Agent`(List(ProductVersion("akka-http", "test")))))
+      val s = ClientConnectionSettings(system).withUserAgentHeader(
+        Some(`User-Agent`(List(ProductVersion("akka-http", "test")))))
       if (maxResponseContentLength < 0)
         s
       else
@@ -838,8 +841,8 @@ class LowLevelOutgoingConnectionSpec
               settings,
               NoLogging)) { implicit b ⇒ client ⇒
             import GraphDSL.Implicits._
-            Source.fromPublisher(netIn) ~> Flow[ByteString].map(
-              SessionBytes(null, _)) ~> client.in2
+            Source.fromPublisher(netIn) ~> Flow[ByteString]
+              .map(SessionBytes(null, _)) ~> client.in2
             client.out1 ~> Flow[SslTlsOutbound].collect {
               case SendBytes(x) ⇒
                 x
@@ -878,8 +881,8 @@ class LowLevelOutgoingConnectionSpec
 
     def expectWireData(s: String) = {
       netOutSub.request(1)
-      netOut.expectNext().utf8String shouldEqual s.stripMarginWithNewline(
-        "\r\n")
+      netOut.expectNext().utf8String shouldEqual s
+        .stripMarginWithNewline("\r\n")
     }
 
     def closeNetworkInput(): Unit = netInSub.sendComplete()

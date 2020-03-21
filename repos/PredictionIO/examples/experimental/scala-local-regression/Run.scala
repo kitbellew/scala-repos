@@ -46,9 +46,11 @@ case class LocalDataSource(val dsp: DataSourceParams)
     // FIXME: Use different training / testing data.
     val x = lines
       .map {
-        _(1).split(' ').map {
-          _.toDouble
-        }
+        _(1)
+          .split(' ')
+          .map {
+            _.toDouble
+          }
       }
       .map { e =>
         Vector(e: _*)
@@ -71,7 +73,8 @@ case class PreparatorParams(n: Int = 0, k: Int = 0) extends Params
 case class LocalPreparator(val pp: PreparatorParams = PreparatorParams())
     extends LPreparator[PreparatorParams, TrainingData, TrainingData] {
   def prepare(td: TrainingData): TrainingData = {
-    val xyi: Vector[(Vector[Double], Double)] = td.x
+    val xyi: Vector[(Vector[Double], Double)] = td
+      .x
       .zip(td.y)
       .zipWithIndex
       .filter { e =>
@@ -111,12 +114,14 @@ class VectorSerializer
       (
         {
           case JArray(s) =>
-            s.map {
-              case JDouble(x) =>
-                x
-              case _ =>
-                0
-            }.toVector
+            s
+              .map {
+                case JDouble(x) =>
+                  x
+                case _ =>
+                  0
+              }
+              .toVector
         },
         {
           case x: Vector[Double] =>

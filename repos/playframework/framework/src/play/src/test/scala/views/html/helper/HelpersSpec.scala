@@ -115,9 +115,8 @@ object HelpersSpec extends Specification {
 
       // Make sure it doesn't have it twice, issue #478
       body.substring(
-        body.indexOf(dataTestAttr) + dataTestAttr.length) must not contain (
-        dataTestAttr
-      )
+        body.indexOf(dataTestAttr) + dataTestAttr
+          .length) must not contain (dataTestAttr)
     }
 
     "Work as a simple select" in {
@@ -216,11 +215,8 @@ object HelpersSpec extends Specification {
     "fill the fields out if less than the min but the maximum is high" in {
       renderFoo(
         form.bind(Map("foo[0]" -> "a", "foo[123]" -> "b")),
-        4) must exactly(
-        "foo[0]:a",
-        "foo[123]:b",
-        "foo[124]:",
-        "foo[125]:").inOrder
+        4) must exactly("foo[0]:a", "foo[123]:b", "foo[124]:", "foo[125]:")
+        .inOrder
     }
 
     "render the right number of fields if there's multiple sub fields at a given index when filled" in {

@@ -957,10 +957,10 @@ trait Printers extends api.Printers {
           printPosition(tree)
           printAnnotations(vd)
           val mutableOrOverride = mods.isOverride || mods.isMutable
-          val hideCtorMods =
-            mods.isParamAccessor && mods.isPrivateLocal && !mutableOrOverride
-          val hideCaseCtorMods =
-            mods.isCaseAccessor && mods.isPublic && !mutableOrOverride
+          val hideCtorMods = mods.isParamAccessor && mods
+            .isPrivateLocal && !mutableOrOverride
+          val hideCaseCtorMods = mods.isCaseAccessor && mods
+            .isPublic && !mutableOrOverride
 
           if (primaryCtorParam && !(hideCtorMods || hideCaseCtorMods)) {
             printModifiers(mods, primaryCtorParam)
@@ -1193,13 +1193,13 @@ trait Printers extends api.Printers {
           val ap: Option[Apply] =
             primaryCtr match {
               case DefDef(_, _, _, _, _, Block(ctBody, _)) =>
-                val earlyDefs =
-                  treeInfo.preSuperFields(ctBody) ::: body.filter {
-                    case td: TypeDef =>
-                      treeInfo.isEarlyDef(td)
-                    case _ =>
-                      false
-                  }
+                val earlyDefs = treeInfo
+                  .preSuperFields(ctBody) ::: body.filter {
+                  case td: TypeDef =>
+                    treeInfo.isEarlyDef(td)
+                  case _ =>
+                    false
+                }
                 if (earlyDefs.nonEmpty) {
                   print("{")
                   printColumn(earlyDefs, "", ";", "")
@@ -1282,8 +1282,9 @@ trait Printers extends api.Printers {
            * passing required type for checking
            */
           def insertBraces(body: => Unit): Unit =
-            if (parentsStack.nonEmpty && parentsStack.tail.exists(
-                  _.isInstanceOf[Match])) {
+            if (parentsStack.nonEmpty && parentsStack
+                  .tail
+                  .exists(_.isInstanceOf[Match])) {
               print("(")
               body
               print(")")
@@ -1336,8 +1337,8 @@ trait Printers extends api.Printers {
               printTp()
             // case for untypechecked trees
             case Annotated(annot, arg)
-                if (expr ne null) && (arg ne null) && expr.equalsStructure(
-                  arg) =>
+                if (expr ne null) && (arg ne null) && expr
+                  .equalsStructure(arg) =>
               printTp() // remove double arg - 5: 5: @unchecked
             case tt: TypeTree if tt.original.isInstanceOf[Annotated] =>
               printTp()
@@ -1365,8 +1366,8 @@ trait Printers extends api.Printers {
                       Select(_, methodName),
                       l2 @ List(Ident(iVDName)))),
                   l3)
-                if sVD.mods.isSynthetic && treeInfo.isLeftAssoc(
-                  methodName) && sVD.name == iVDName =>
+                if sVD.mods.isSynthetic && treeInfo
+                  .isLeftAssoc(methodName) && sVD.name == iVDName =>
               val printBlock = Block(l1, Apply(a1, l3))
               print(printBlock)
             case Apply(tree1, _)
@@ -1425,7 +1426,8 @@ trait Printers extends api.Printers {
                   checkRootPackage(q)
                 case _: Ident | _: This =>
                   val sym = tr.symbol
-                  tr.hasExistingSymbol && sym.hasPackageFlag && sym.name != nme.ROOTPKG
+                  tr.hasExistingSymbol && sym.hasPackageFlag && sym.name != nme
+                    .ROOTPKG
                 case _ =>
                   false
               }
@@ -1462,8 +1464,8 @@ trait Printers extends api.Printers {
           x match {
             case Constant(v: String) if {
                   val strValue = x.stringValue
-                  strValue.contains(LF) && strValue.contains(
-                    "\"\"\"") && strValue.size > 1
+                  strValue.contains(LF) && strValue
+                    .contains("\"\"\"") && strValue.size > 1
                 } =>
               val splitValue = x.stringValue.split(s"$LF").toList
               val multilineStringValue =
@@ -1554,8 +1556,8 @@ trait Printers extends api.Printers {
 
   /** Hook for extensions */
   def xprintTree(treePrinter: TreePrinter, tree: Tree) =
-    treePrinter.print(
-      tree.productPrefix + tree.productIterator.mkString("(", ", ", ")"))
+    treePrinter
+      .print(tree.productPrefix + tree.productIterator.mkString("(", ", ", ")"))
 
   def newCodePrinter(
       writer: PrintWriter,
@@ -1759,7 +1761,8 @@ trait Printers extends api.Printers {
             }
         case mods: Modifiers =>
           print("Modifiers(")
-          if (mods.flags != NoFlags || mods.privateWithin != tpnme.EMPTY || mods.annotations.nonEmpty)
+          if (mods.flags != NoFlags || mods.privateWithin != tpnme
+                .EMPTY || mods.annotations.nonEmpty)
             print(show(mods.flags))
           if (mods.privateWithin != tpnme.EMPTY || mods.annotations.nonEmpty) {
             print(", ");

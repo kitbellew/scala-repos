@@ -44,26 +44,35 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
   val tp2 = new TopicPartition(topic, part2)
 
   // configure the servers and clients
-  this.serverConfig.setProperty(
-    KafkaConfig.ControlledShutdownEnableProp,
-    "false"
-  ) // speed up shutdown
-  this.serverConfig.setProperty(
-    KafkaConfig.OffsetsTopicReplicationFactorProp,
-    "3"
-  ) // don't want to lose offset
+  this
+    .serverConfig
+    .setProperty(
+      KafkaConfig.ControlledShutdownEnableProp,
+      "false"
+    ) // speed up shutdown
+  this
+    .serverConfig
+    .setProperty(
+      KafkaConfig.OffsetsTopicReplicationFactorProp,
+      "3"
+    ) // don't want to lose offset
   this.serverConfig.setProperty(KafkaConfig.OffsetsTopicPartitionsProp, "1")
-  this.serverConfig.setProperty(
-    KafkaConfig.GroupMinSessionTimeoutMsProp,
-    "100"
-  ) // set small enough session timeout
-  this.serverConfig
+  this
+    .serverConfig
+    .setProperty(
+      KafkaConfig.GroupMinSessionTimeoutMsProp,
+      "100"
+    ) // set small enough session timeout
+  this
+    .serverConfig
     .setProperty(KafkaConfig.GroupMaxSessionTimeoutMsProp, "30000")
   this.producerConfig.setProperty(ProducerConfig.ACKS_CONFIG, "all")
   this.consumerConfig.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "my-test")
-  this.consumerConfig
+  this
+    .consumerConfig
     .setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
-  this.consumerConfig
+  this
+    .consumerConfig
     .setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false")
   this.consumerConfig.setProperty(ConsumerConfig.METADATA_MAX_AGE_CONFIG, "100")
 
@@ -105,7 +114,8 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     val topic2 = "topic2"
     TestUtils.createTopic(this.zkUtils, topic2, 2, serverCount, this.servers)
 
-    this.consumerConfig
+    this
+      .consumerConfig
       .setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true")
     val consumer0 =
       new KafkaConsumer(
@@ -177,8 +187,8 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     this
       .consumers(0)
       .commitSync(
-        Map[TopicPartition, OffsetAndMetadata](
-          (tp, new OffsetAndMetadata(3L))).asJava)
+        Map[TopicPartition, OffsetAndMetadata]((tp, new OffsetAndMetadata(3L)))
+          .asJava)
     assertEquals(3, this.consumers(0).committed(tp).offset)
     assertNull(this.consumers(0).committed(tp2))
 
@@ -188,8 +198,8 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     this
       .consumers(0)
       .commitSync(
-        Map[TopicPartition, OffsetAndMetadata](
-          (tp2, new OffsetAndMetadata(5L))).asJava)
+        Map[TopicPartition, OffsetAndMetadata]((tp2, new OffsetAndMetadata(5L)))
+          .asJava)
     assertEquals(3, this.consumers(0).committed(tp).offset)
     assertEquals(5, this.consumers(0).committed(tp2).offset)
 
@@ -198,8 +208,8 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     this
       .consumers(0)
       .commitAsync(
-        Map[TopicPartition, OffsetAndMetadata](
-          (tp2, new OffsetAndMetadata(7L))).asJava,
+        Map[TopicPartition, OffsetAndMetadata]((tp2, new OffsetAndMetadata(7L)))
+          .asJava,
         commitCallback)
     awaitCommitCallback(this.consumers(0), commitCallback)
     assertEquals(7, this.consumers(0).committed(tp2).offset)
@@ -227,11 +237,14 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
   @Test
   def testPartitionReassignmentCallback() {
     val listener = new TestConsumerReassignmentListener()
-    this.consumerConfig.setProperty(
-      ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG,
-      "100"
-    ) // timeout quickly to avoid slow test
-    this.consumerConfig
+    this
+      .consumerConfig
+      .setProperty(
+        ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG,
+        "100"
+      ) // timeout quickly to avoid slow test
+    this
+      .consumerConfig
       .setProperty(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, "30")
     val consumer0 =
       new KafkaConsumer(
@@ -272,11 +285,14 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
   @Test
   def testUnsubscribeTopic() {
 
-    this.consumerConfig.setProperty(
-      ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG,
-      "100"
-    ) // timeout quickly to avoid slow test
-    this.consumerConfig
+    this
+      .consumerConfig
+      .setProperty(
+        ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG,
+        "100"
+      ) // timeout quickly to avoid slow test
+    this
+      .consumerConfig
       .setProperty(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, "30")
     val consumer0 =
       new KafkaConsumer(
@@ -301,11 +317,14 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
 
   @Test
   def testPauseStateNotPreservedByRebalance() {
-    this.consumerConfig.setProperty(
-      ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG,
-      "100"
-    ) // timeout quickly to avoid slow test
-    this.consumerConfig
+    this
+      .consumerConfig
+      .setProperty(
+        ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG,
+        "100"
+      ) // timeout quickly to avoid slow test
+    this
+      .consumerConfig
       .setProperty(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, "30")
     val consumer0 =
       new KafkaConsumer(
@@ -461,8 +480,9 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
       new ConsumerRebalanceListener {
         override def onPartitionsAssigned(
             partitions: util.Collection[TopicPartition]) = {
-          partitionAssignment = collection.immutable.Set(
-            consumer.assignment().asScala.toArray: _*)
+          partitionAssignment = collection
+            .immutable
+            .Set(consumer.assignment().asScala.toArray: _*)
         }
 
         override def onPartitionsRevoked(

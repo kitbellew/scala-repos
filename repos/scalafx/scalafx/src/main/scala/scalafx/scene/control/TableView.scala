@@ -394,12 +394,14 @@ class TableView[S](
     ObjectProperty((view: TableView[S]) =>
       delegate.rowFactoryProperty.value.call(view))
   def rowFactory_=(factory: TableView[S] => TableRow[S]) {
-    delegate.rowFactoryProperty.setValue(
-      new jfxu.Callback[jfxsc.TableView[S], jfxsc.TableRow[S]] {
-        def call(v: jfxsc.TableView[S]): jfxsc.TableRow[S] = {
-          factory(v)
-        }
-      })
+    delegate
+      .rowFactoryProperty
+      .setValue(
+        new jfxu.Callback[jfxsc.TableView[S], jfxsc.TableRow[S]] {
+          def call(v: jfxsc.TableView[S]): jfxsc.TableRow[S] = {
+            factory(v)
+          }
+        })
   }
 
   /**

@@ -152,7 +152,8 @@ private[kafka] class StaticTopicCount(
       case null =>
         false
       case n: StaticTopicCount =>
-        consumerIdString == n.consumerIdString && topicCountMap == n.topicCountMap
+        consumerIdString == n.consumerIdString && topicCountMap == n
+          .topicCountMap
       case _ =>
         false
     }

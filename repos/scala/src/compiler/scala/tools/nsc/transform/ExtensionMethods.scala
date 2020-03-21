@@ -58,7 +58,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
       case tpe =>
         assert(
           tpe != NoType,
-          imeth.name + " not found in " + imeth.owner + "'s decls: " + imeth.owner.info.decls)
+          imeth.name + " not found in " + imeth
+            .owner + "'s decls: " + imeth.owner.info.decls)
         Stream(newTermName(imeth.name + "$extension"))
     }
   }
@@ -90,9 +91,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
            |
            | Candidates (signatures normalized):
            |
-           | ${candidates
-          .map(c => c.name + ":" + normalize(c.tpe, imeth.owner))
-          .mkString("\n")}
+           | ${candidates.map(c =>
+          c.name + ":" + normalize(c.tpe, imeth.owner)).mkString("\n")}
            |
            | Eligible Names: ${extensionNames(imeth).mkString(",")}" """
       )
@@ -185,9 +185,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
         extensionMeth) map (_ resetFlag COVARIANT | CONTRAVARIANT)
 
       val thisParamType = appliedType(clazz, tparamsFromClass map (_.tpeHK): _*)
-      val thisParam = extensionMeth.newValueParameter(
-        nme.SELF,
-        extensionMeth.pos) setInfo thisParamType
+      val thisParam = extensionMeth
+        .newValueParameter(nme.SELF, extensionMeth.pos) setInfo thisParamType
       val resultType = MethodType(
         List(thisParam),
         dropNullaryMethod(methodResult))
@@ -231,8 +230,10 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
               new mutable.ListBuffer[Tree]
             currentOwner.primaryConstructor.makeNotPrivate(NoSymbol)
             // SI-7859 make param accessors accessible so the erasure can generate unbox operations.
-            val paramAccessors = currentOwner.info.decls.filter(sym =>
-              sym.isParamAccessor && sym.isMethod)
+            val paramAccessors = currentOwner
+              .info
+              .decls
+              .filter(sym => sym.isParamAccessor && sym.isMethod)
             paramAccessors.foreach(_.makeNotPrivate(currentOwner))
             super.transform(tree)
           } else if (currentOwner.isStaticOwner) {
@@ -243,17 +244,20 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
             if tree.symbol.isMethodWithExtension =>
           val origMeth = tree.symbol
           val origThis = currentOwner
-          val origTpeParams = tparams.map(
-            _.symbol) ::: origThis.typeParams // method type params ++ class type params
+          val origTpeParams = tparams.map(_.symbol) ::: origThis
+            .typeParams // method type params ++ class type params
           val origParams = vparamss.flatten map (_.symbol)
           val companion = origThis.companionModule
 
           def makeExtensionMethodSymbol = {
             val extensionName = extensionNames(origMeth).head.toTermName
-            val extensionMeth = (companion.moduleClass.newMethod(
-              extensionName,
-              tree.pos.focus,
-              origMeth.flags & ~OVERRIDE & ~PROTECTED & ~PRIVATE & ~LOCAL | FINAL)
+            val extensionMeth = (companion
+              .moduleClass
+              .newMethod(
+                extensionName,
+                tree.pos.focus,
+                origMeth
+                  .flags & ~OVERRIDE & ~PROTECTED & ~PRIVATE & ~LOCAL | FINAL)
               setAnnotations origMeth.annotations)
             origMeth.removeAnnotation(
               TailrecClass
@@ -275,8 +279,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
             extensionTpeParams,
             MethodType(thiz :: Nil, extensionMono)) = newInfo
           val extensionParams = allParameters(extensionMono)
-          val extensionThis = gen.mkAttributedStableRef(
-            thiz setPos extensionMeth.pos)
+          val extensionThis = gen
+            .mkAttributedStableRef(thiz setPos extensionMeth.pos)
 
           val extensionBody: Tree = {
             val tree = rhs

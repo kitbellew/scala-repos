@@ -88,7 +88,8 @@ object LDAPUtil {
         Right(
           LDAPUserInfo(
             userName = userName,
-            fullName = ldapSettings.fullNameAttribute
+            fullName = ldapSettings
+              .fullNameAttribute
               .flatMap { fullNameAttribute =>
                 findFullName(
                   conn,
@@ -111,7 +112,8 @@ object LDAPUtil {
             Right(
               LDAPUserInfo(
                 userName = getUserNameFromMailAddress(userName),
-                fullName = ldapSettings.fullNameAttribute
+                fullName = ldapSettings
+                  .fullNameAttribute
                   .flatMap { fullNameAttribute =>
                     findFullName(
                       conn,

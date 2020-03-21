@@ -149,9 +149,11 @@ private[client] class ClientBuilder(config: ClientConfig) {
     */
   def hosts(zkHosts: Seq[InetSocketAddress]): ClientBuilder =
     hosts(
-      zkHosts.map { h =>
-        "%s:%d,".format(h.getHostName, h.getPort)
-      }.mkString)
+      zkHosts
+        .map { h =>
+          "%s:%d,".format(h.getHostName, h.getPort)
+        }
+        .mkString)
 
   /**
     * Configure builder with a session timeout.

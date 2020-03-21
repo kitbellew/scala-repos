@@ -93,7 +93,10 @@ final class LoadedBuildUnit(
     * It includes build definition and plugin classes and classes for .sbt file statements and expressions.
     */
   def classpath: Seq[File] =
-    unit.definitions.target ++ unit.plugins.classpath ++ unit.definitions.dslDefinitions.classpath
+    unit.definitions.target ++ unit.plugins.classpath ++ unit
+      .definitions
+      .dslDefinitions
+      .classpath
 
   /**
     * The class loader to use for this build unit's publicly visible code.
@@ -181,12 +184,11 @@ final class DetectedPlugins(
     val builds: DetectedModules[Build]) {
 
   /** Sequence of import expressions for the build definition.  This includes the names of the [[Plugin]], [[Build]], and [[AutoImport]] modules, but not the [[AutoPlugin]] modules. */
-  lazy val imports: Seq[String] =
-    BuildUtil.getImports(plugins.names ++ builds.names) ++
-      BuildUtil.importAllRoot(autoImports(autoPluginAutoImports)) ++
-      BuildUtil.importAll(autoImports(topLevelAutoPluginAutoImports)) ++
-      BuildUtil.importNamesRoot(
-        autoPlugins.map(_.name).filter(nonTopLevelPlugin))
+  lazy val imports: Seq[String] = BuildUtil
+    .getImports(plugins.names ++ builds.names) ++
+    BuildUtil.importAllRoot(autoImports(autoPluginAutoImports)) ++
+    BuildUtil.importAll(autoImports(topLevelAutoPluginAutoImports)) ++
+    BuildUtil.importNamesRoot(autoPlugins.map(_.name).filter(nonTopLevelPlugin))
 
   private[this] lazy val (
     autoPluginAutoImports,
@@ -368,10 +370,14 @@ object BuildStreams {
       Nil
   }
   def showAMap(a: AttributeMap): String =
-    a.entries.toSeq.sortBy(_.key.label).map {
-      case AttributeEntry(key, value) =>
-        key.label + "=" + value.toString
-    } mkString (" ")
+    a
+      .entries
+      .toSeq
+      .sortBy(_.key.label)
+      .map {
+        case AttributeEntry(key, value) =>
+          key.label + "=" + value.toString
+      } mkString (" ")
   def projectPath(
       units: Map[URI, LoadedBuildUnit],
       root: URI,
@@ -399,7 +405,7 @@ object BuildStreams {
     refTarget(GlobalScope.copy(project = Select(ref)), fallbackBase, data)
   def refTarget(scope: Scope, fallbackBase: File, data: Settings[Scope]): File =
     (
-      Keys.target in scope get data getOrElse outputDirectory(
-        fallbackBase).asFile
+      Keys.target in scope get data getOrElse outputDirectory(fallbackBase)
+        .asFile
     ) / StreamsDirectory
 }

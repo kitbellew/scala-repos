@@ -41,16 +41,16 @@ object TimeTestJVM extends SpecLite {
       ZoneId.getAvailableZoneIds.asScala.map(ZoneId.of)(collection.breakOut)))
 
   implicit val offsetDateTimeArbitrary: Arbitrary[OffsetDateTime] =
-    Apply[Arbitrary].apply2(arb[LocalDateTime], arb[ZoneOffset])(
-      OffsetDateTime.of(_, _))
+    Apply[Arbitrary]
+      .apply2(arb[LocalDateTime], arb[ZoneOffset])(OffsetDateTime.of(_, _))
 
   implicit val offsetTimeArbitrary: Arbitrary[OffsetTime] =
-    Apply[Arbitrary].apply2(arb[LocalTime], arb[ZoneOffset])(
-      OffsetTime.of(_, _))
+    Apply[Arbitrary]
+      .apply2(arb[LocalTime], arb[ZoneOffset])(OffsetTime.of(_, _))
 
   implicit val zonedDateTimeArbitrary: Arbitrary[ZonedDateTime] =
-    Apply[Arbitrary].apply2(arb[LocalDateTime], arb[ZoneId])(
-      ZonedDateTime.of(_, _))
+    Apply[Arbitrary]
+      .apply2(arb[LocalDateTime], arb[ZoneId])(ZonedDateTime.of(_, _))
 
   checkAll("DayOfWeek", ScalazProperties.enum.laws[DayOfWeek])
   checkAll("Instant", order.laws[Instant])

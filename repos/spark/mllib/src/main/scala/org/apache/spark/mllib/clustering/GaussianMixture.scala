@@ -180,9 +180,8 @@ class GaussianMixture private (
     // Get length of the input vectors
     val d = breezeData.first().length
 
-    val shouldDistributeGaussians = GaussianMixture.shouldDistributeGaussians(
-      k,
-      d)
+    val shouldDistributeGaussians = GaussianMixture
+      .shouldDistributeGaussians(k, d)
 
     // Determine initial weights and corresponding Gaussians.
     // If the user supplied an initial GMM, we use those values, otherwise
@@ -195,10 +194,8 @@ class GaussianMixture private (
           (gmm.weights, gmm.gaussians)
 
         case None => {
-          val samples = breezeData.takeSample(
-            withReplacement = true,
-            k * nSamples,
-            seed)
+          val samples = breezeData
+            .takeSample(withReplacement = true, k * nSamples, seed)
           (
             Array.fill(k)(1.0 / k),
             Array.tabulate(k) { i =>
@@ -229,7 +226,8 @@ class GaussianMixture private (
         val tuples =
           Seq.tabulate(k)(i => (sums.means(i), sums.sigmas(i), sums.weights(i)))
         val (ws, gs) =
-          sc.parallelize(tuples, numPartitions)
+          sc
+            .parallelize(tuples, numPartitions)
             .map {
               case (mean, sigma, weight) =>
                 updateWeightsAndGaussians(mean, sigma, weight, sumWeights)
@@ -328,10 +326,12 @@ private object ExpectationSum {
   def add(weights: Array[Double], dists: Array[MultivariateGaussian])(
       sums: ExpectationSum,
       x: BV[Double]): ExpectationSum = {
-    val p = weights.zip(dists).map {
-      case (weight, dist) =>
-        MLUtils.EPSILON + weight * dist.pdf(x)
-    }
+    val p = weights
+      .zip(dists)
+      .map {
+        case (weight, dist) =>
+          MLUtils.EPSILON + weight * dist.pdf(x)
+      }
     val pSum = p.sum
     sums.logLikelihood += math.log(pSum)
     var i = 0

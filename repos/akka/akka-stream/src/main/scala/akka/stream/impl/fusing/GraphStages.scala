@@ -371,8 +371,10 @@ object GraphStages {
               cancelled.set(true)
             })
 
-            cancellable.cancelFuture.onComplete(_ ⇒ callback.invoke(()))(
-              interpreter.materializer.executionContext)
+            cancellable
+              .cancelFuture
+              .onComplete(_ ⇒ callback.invoke(()))(
+                interpreter.materializer.executionContext)
           }
 
           setHandler(out, eagerTerminateOutput)
@@ -417,8 +419,9 @@ object GraphStages {
         setHandler(out, eagerTerminateOutput)
         override def preStart(): Unit = {
           val cb = getAsyncCallback[T](t ⇒ emit(out, t, () ⇒ completeStage()))
-          promise.future.foreach(cb.invoke)(
-            ExecutionContexts.sameThreadExecutionContext)
+          promise
+            .future
+            .foreach(cb.invoke)(ExecutionContexts.sameThreadExecutionContext)
         }
       }
 
@@ -464,8 +467,8 @@ object GraphStages {
                   case scala.util.Failure(t) ⇒
                     failStage(t)
                 }.invoke _
-              future.onComplete(cb)(
-                ExecutionContexts.sameThreadExecutionContext)
+              future
+                .onComplete(cb)(ExecutionContexts.sameThreadExecutionContext)
               setHandler(
                 out,
                 eagerTerminateOutput
@@ -492,11 +495,13 @@ object GraphStages {
     GraphDSL.create() { implicit builder ⇒
       import GraphDSL.Implicits._
       val concat = builder.add(stage)
-      val ds = concat.inSeq.map { inlet ⇒
-        val detacher = builder.add(GraphStages.detacher[T])
-        detacher ~> inlet
-        detacher.in
-      }
+      val ds = concat
+        .inSeq
+        .map { inlet ⇒
+          val detacher = builder.add(GraphStages.detacher[T])
+          detacher ~> inlet
+          detacher.in
+        }
       UniformFanInShape(concat.out, ds: _*)
     }
 

@@ -204,7 +204,9 @@ trait ContextErrors {
 
       def UnstableTreeError(tree: Tree) = {
         def addendum = {
-          "\n Note that " + tree.symbol + " is not stable because its type, " + tree.tpe + ", is volatile."
+          "\n Note that " + tree
+            .symbol + " is not stable because its type, " + tree
+            .tpe + ", is volatile."
         }
         issueNormalTypeError(
           tree,
@@ -322,7 +324,8 @@ trait ContextErrors {
               tpt.toString()
           }
         val msg =
-          "wrong number of type arguments for " + tptSafeString + ", should be " + tparams.length
+          "wrong number of type arguments for " + tptSafeString + ", should be " + tparams
+            .length
         issueNormalTypeError(tree, msg)
         setError(tree)
       }
@@ -343,7 +346,8 @@ trait ContextErrors {
             ""
         issueNormalTypeError(
           tree,
-          modifierString + badSymbol + " escapes its defining scope as part of type " + tree.tpe)
+          modifierString + badSymbol + " escapes its defining scope as part of type " + tree
+            .tpe)
         setError(tree)
       }
 
@@ -444,8 +448,8 @@ trait ContextErrors {
                   case NoSymbol =>
                     ""
                   case sym =>
-                    "\nNote: %s exists, but it has no companion object.".format(
-                      sym)
+                    "\nNote: %s exists, but it has no companion object."
+                      .format(sym)
                 }
               } else
                 ""
@@ -533,7 +537,8 @@ trait ContextErrors {
       def MaxFunctionArityError(fun: Tree) = {
         issueNormalTypeError(
           fun,
-          "implementation restricts functions to " + definitions.MaxFunctionArity + " parameters")
+          "implementation restricts functions to " + definitions
+            .MaxFunctionArity + " parameters")
         setError(fun)
       }
 
@@ -557,8 +562,8 @@ trait ContextErrors {
                 val example = analyzer.exampleTuplePattern(params map (_.name))
                 (pt baseType FunctionClass(1)) match {
                   case TypeRef(_, _, arg :: _)
-                      if arg.typeSymbol == TupleClass(
-                        funArity) && funArity > 1 =>
+                      if arg
+                        .typeSymbol == TupleClass(funArity) && funArity > 1 =>
                     sm"""|
                        |Note: The expected type requires a one-argument function accepting a $funArity-Tuple.
                        |      Consider a pattern matching anonymous function, `{ case $example =>  ... }`"""
@@ -642,7 +647,9 @@ trait ContextErrors {
       def AnnotationMissingArgError(tree: Tree, annType: Type, sym: Symbol) =
         NormalTypeError(
           tree,
-          "annotation " + annType.typeSymbol.fullName + " is missing argument " + sym.name)
+          "annotation " + annType
+            .typeSymbol
+            .fullName + " is missing argument " + sym.name)
 
       def NestedAnnotationError(tree: Tree, annType: Type) =
         NormalTypeError(
@@ -736,7 +743,8 @@ trait ContextErrors {
       def TooManyArgsPatternError(fun: Tree) =
         NormalTypeError(
           fun,
-          "too many arguments for unapply pattern, maximum = " + definitions.MaxTupleArity)
+          "too many arguments for unapply pattern, maximum = " + definitions
+            .MaxTupleArity)
 
       def BlackboxExtractorExpansion(fun: Tree) =
         NormalTypeError(fun, "extractor macros can only be whitebox")
@@ -817,9 +825,11 @@ trait ContextErrors {
         val f = meth.name
         val paf =
           s"$f(${meth.asMethod.paramLists map (_ map (_ => "_") mkString ",") mkString ")("})"
-        val advice = s"""
+        val advice =
+          s"""
           |Unapplied methods are only converted to functions when a function type is expected.
-          |You can make this conversion explicit by writing `$f _` or `$paf` instead of `$f`.""".stripMargin
+          |You can make this conversion explicit by writing `$f _` or `$paf` instead of `$f`."""
+            .stripMargin
         val message =
           if (meth.isMacro)
             MacroTooFewArgumentListsMessage
@@ -892,7 +902,8 @@ trait ContextErrors {
       def InferTypeWithVolatileTypeSelectionError(tree: Tree, pre: Type) =
         issueNormalTypeError(
           tree,
-          "Inferred type " + tree.tpe + " contains type selection from volatile type " + pre)
+          "Inferred type " + tree
+            .tpe + " contains type selection from volatile type " + pre)
 
       def AbstractExistentiallyOverParamerizedTpeError(tree: Tree, tp: Type) =
         issueNormalTypeError(
@@ -922,7 +933,8 @@ trait ContextErrors {
       def FinitaryError(tparam: Symbol) =
         issueSymbolTypeError(
           tparam,
-          "class graph is not finitary because type parameter " + tparam.name + " is expansively recursive")
+          "class graph is not finitary because type parameter " + tparam
+            .name + " is expansively recursive")
 
       def QualifyingClassError(tree: Tree, qual: Name) = {
         issueNormalTypeError(
@@ -944,14 +956,13 @@ trait ContextErrors {
 
       def DefDefinedTwiceError(sym0: Symbol, sym1: Symbol) = {
         // Most of this hard work is associated with SI-4893.
-        val isBug = sym0.isAbstractType && sym1.isAbstractType && (
-          sym0.name startsWith "_$"
-        )
+        val isBug = sym0.isAbstractType && sym1
+          .isAbstractType && (sym0.name startsWith "_$")
         val addendums = List(
           if (sym0.associatedFile eq sym1.associatedFile)
             Some(
-              "conflicting symbols both originated in file '%s'".format(
-                sym0.associatedFile.canonicalPath))
+              "conflicting symbols both originated in file '%s'"
+                .format(sym0.associatedFile.canonicalPath))
           else if ((
                      sym0.associatedFile ne NoAbstractFile
                    ) && (sym1.associatedFile ne NoAbstractFile))
@@ -1091,8 +1102,9 @@ trait ContextErrors {
                     este.getClassName contains "fastTrack"
                   )
                 )
-              var threshold =
-                relevantElements.reverse.indexWhere(isMacroInvoker) + 1
+              var threshold = relevantElements
+                .reverse
+                .indexWhere(isMacroInvoker) + 1
               while (threshold != relevantElements.length && isMacroInvoker(
                        relevantElements(
                          relevantElements.length - threshold - 1)))
@@ -1176,10 +1188,9 @@ trait ContextErrors {
 
     /** This file will be the death of me. */
     protected def macroImplementationNotFoundMessage(name: Name): String =
-      (
-        s"""|macro implementation not found: $name
-          |(the most common reason for that is that you cannot use macro implementations in the same compilation run that defines them)""".stripMargin
-      )
+      (s"""|macro implementation not found: $name
+          |(the most common reason for that is that you cannot use macro implementations in the same compilation run that defines them)"""
+        .stripMargin)
   }
 
   trait InferencerContextErrors {
@@ -1233,7 +1244,8 @@ trait ContextErrors {
         val ambiguousBuffered = !context.ambiguousErrors
         if (validTargets || ambiguousBuffered)
           context.issueAmbiguousError(
-            if (sym1.hasDefault && sym2.hasDefault && sym1.enclClass == sym2.enclClass) {
+            if (sym1.hasDefault && sym2.hasDefault && sym1.enclClass == sym2
+                  .enclClass) {
               val methodName = nme.defaultGetterToMethod(sym1.name)
               AmbiguousTypeError(
                 sym1.enclClass.pos,
@@ -1418,15 +1430,17 @@ trait ContextErrors {
         if (explaintypes) {
           val bounds = tparams map (tp =>
             tp.info.instantiateTypeParams(tparams, targs).bounds)
-          (targs, bounds).zipped foreach ((targ, bound) =>
-            explainTypes(bound.lo, targ))
-          (targs, bounds).zipped foreach ((targ, bound) =>
-            explainTypes(targ, bound.hi))
+          (targs, bounds)
+            .zipped foreach ((targ, bound) => explainTypes(bound.lo, targ))
+          (targs, bounds)
+            .zipped foreach ((targ, bound) => explainTypes(targ, bound.hi))
           ()
         }
 
         prefix + "type arguments " + targs.mkString("[", ",", "]") +
-          " do not conform to " + tparams.head.owner + "'s type parameter bounds " +
+          " do not conform to " + tparams
+          .head
+          .owner + "'s type parameter bounds " +
           (tparams map (_.defString)).mkString("[", ",", "]")
       }
 
@@ -1549,9 +1563,8 @@ trait ContextErrors {
             val error =
               new NormalTypeErrorFromCyclicReference(
                 tree,
-                typer.cyclicReferenceMessage(
-                  sym,
-                  info.tree) getOrElse ex.getMessage)
+                typer.cyclicReferenceMessage(sym, info.tree) getOrElse ex
+                  .getMessage)
             issueTypeError(error)
           case _ =>
             contextNamerErrorGen.issue(TypeErrorWithUnderlyingTree(tree, ex))
@@ -1607,9 +1620,8 @@ trait ContextErrors {
                 "outside of"
               else
                 "in"
-            " %s package object %s".format(
-              inOrOut,
-              "" + prevSym.effectiveOwner.name)
+            " %s package object %s"
+              .format(inOrOut, "" + prevSym.effectiveOwner.name)
           } else
             ""
 
@@ -1671,8 +1683,8 @@ trait ContextErrors {
       def AbstractMemberWithModiferError(sym: Symbol, flag: Int) =
         issueSymbolTypeError(
           sym,
-          "abstract member may not have " + Flags.flagsToString(
-            flag.toLong) + " modifier")
+          "abstract member may not have " + Flags
+            .flagsToString(flag.toLong) + " modifier")
 
       def IllegalModifierCombination(sym: Symbol, flag1: Int, flag2: Int) =
         issueSymbolTypeError(
@@ -1821,9 +1833,9 @@ trait ContextErrors {
 
     def WarnAfterNonSilentRecursiveInference(param: Symbol, arg: Tree)(implicit
         context: Context) = {
-      val note =
-        "failed to determine if '" + param.name + " = ...' is a named argument or an assignment expression.\n" +
-          "an explicit type is required for the definition mentioned in the error message above."
+      val note = "failed to determine if '" + param
+        .name + " = ...' is a named argument or an assignment expression.\n" +
+        "an explicit type is required for the definition mentioned in the error message above."
       context.warning(arg.pos, note)
     }
 

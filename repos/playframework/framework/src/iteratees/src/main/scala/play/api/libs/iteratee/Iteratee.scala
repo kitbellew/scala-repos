@@ -643,28 +643,29 @@ trait Iteratee[E, +A] {
     */
   def flatMap[B](f: A => Iteratee[E, B])(implicit
       ec: ExecutionContext): Iteratee[E, B] = {
-    self.pureFlatFoldNoEC { // safe: folder either yields value immediately or executes with another EC
-      case Step.Done(a, Input.Empty) =>
-        executeIteratee(f(a))(
-          ec /* still on same thread; let executeIteratee do preparation */ )
-      case Step.Done(a, e) =>
-        executeIteratee(f(a))(
-          ec /* still on same thread; let executeIteratee do preparation */ )
-          .pureFlatFold {
-            case Step.Done(a, _) =>
-              Done(a, e)
-            case Step.Cont(k) =>
-              k(e)
-            case Step.Error(msg, e) =>
-              Error(msg, e)
-          }(dec)
-      case Step.Cont(k) => {
-        implicit val pec = ec.prepare()
-        Cont((in: Input[E]) => executeIteratee(k(in))(dec).flatMap(f)(pec))
+    self
+      .pureFlatFoldNoEC { // safe: folder either yields value immediately or executes with another EC
+        case Step.Done(a, Input.Empty) =>
+          executeIteratee(f(a))(
+            ec /* still on same thread; let executeIteratee do preparation */ )
+        case Step.Done(a, e) =>
+          executeIteratee(f(a))(
+            ec /* still on same thread; let executeIteratee do preparation */ )
+            .pureFlatFold {
+              case Step.Done(a, _) =>
+                Done(a, e)
+              case Step.Cont(k) =>
+                k(e)
+              case Step.Error(msg, e) =>
+                Error(msg, e)
+            }(dec)
+        case Step.Cont(k) => {
+          implicit val pec = ec.prepare()
+          Cont((in: Input[E]) => executeIteratee(k(in))(dec).flatMap(f)(pec))
+        }
+        case Step.Error(msg, e) =>
+          Error(msg, e)
       }
-      case Step.Error(msg, e) =>
-        Error(msg, e)
-    }
   }
 
   /**
@@ -789,7 +790,8 @@ trait Iteratee[E, +A] {
 
     def recoveringIteratee(it: Iteratee[E, A]): Iteratee[E, B] = {
       val futureRecoveringIteratee: Future[Iteratee[E, B]] =
-        it.pureFlatFold[E, B] {
+        it
+          .pureFlatFold[E, B] {
             case Step.Cont(k) =>
               Cont { input: Input[E] =>
                 val orig: Iteratee[E, A] = k(input)

@@ -24,8 +24,8 @@ class ResponseRendererSpec
     extends FreeSpec
     with Matchers
     with BeforeAndAfterAll {
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
     akka.event-handlers = ["akka.testkit.TestEventListener"]
     akka.loglevel = WARNING""")
   implicit val system = ActorSystem(getClass.getSimpleName, testConf)
@@ -671,8 +671,7 @@ class ResponseRendererSpec
             s"""${resProto.value} 200 OK
                  |Server: akka-http/1.0.0
                  |Date: Thu, 25 Aug 2011 09:10:29 GMT
-                 |${renCH
-              .fold("")(_ + "\n")}Content-Type: text/plain; charset=UTF-8
+                 |${renCH.fold("")(_ + "\n")}Content-Type: text/plain; charset=UTF-8
                  |${if (resCD)
               ""
             else
@@ -737,8 +736,8 @@ class ResponseRendererSpec
       }
 
     override def currentTimeMillis() =
-      DateTime(
-        2011, 8, 25, 9, 10, 29).clicks // provide a stable date for testing
+      DateTime(2011, 8, 25, 9, 10, 29)
+        .clicks // provide a stable date for testing
   }
 
   def source[T](elems: T*) = Source(elems.toList)

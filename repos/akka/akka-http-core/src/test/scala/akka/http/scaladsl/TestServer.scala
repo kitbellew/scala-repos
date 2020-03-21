@@ -16,8 +16,8 @@ import com.typesafe.config.{ConfigFactory, Config}
 import HttpMethods._
 
 object TestServer extends App {
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
     akka.loglevel = INFO
     akka.log-dead-letters = off
     akka.stream.materializer.debug.fuzzing-mode = off
@@ -86,12 +86,11 @@ object TestServer extends App {
     Flow[Message] // just let message flow directly to the output
 
   def greeterWebSocketService: Flow[Message, Message, NotUsed] =
-    Flow[Message]
-      .collect {
-        case TextMessage.Strict(name) ⇒
-          TextMessage(s"Hello '$name'")
-        case tm: TextMessage ⇒
-          TextMessage(Source.single("Hello ") ++ tm.textStream)
-        // ignore binary messages
-      }
+    Flow[Message].collect {
+      case TextMessage.Strict(name) ⇒
+        TextMessage(s"Hello '$name'")
+      case tm: TextMessage ⇒
+        TextMessage(Source.single("Hello ") ++ tm.textStream)
+      // ignore binary messages
+    }
 }

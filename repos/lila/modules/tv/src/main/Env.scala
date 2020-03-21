@@ -42,9 +42,12 @@ final class Env(
         import reactivemongo.bson._
         private val coll = db("flag")
         def get =
-          coll.find(BSONDocument("_id" -> "streamer")).one[BSONDocument].map {
-            ~_.flatMap(_.getAs[String]("text"))
-          }
+          coll
+            .find(BSONDocument("_id" -> "streamer"))
+            .one[BSONDocument]
+            .map {
+              ~_.flatMap(_.getAs[String]("text"))
+            }
         def set(text: String) =
           coll
             .update(
@@ -55,16 +58,21 @@ final class Env(
       })
 
   object isStreamer {
-    private val cache = lila.memo.MixedCache.single[Set[String]](
-      f = streamerList.lichessIds,
-      timeToLive = 10 seconds,
-      default = Set.empty,
-      logger = logger)
+    private val cache = lila
+      .memo
+      .MixedCache
+      .single[Set[String]](
+        f = streamerList.lichessIds,
+        timeToLive = 10 seconds,
+        default = Set.empty,
+        logger = logger)
     def apply(id: String) = cache get true contains id
   }
 
   object streamsOnAir {
-    private val cache = lila.memo.AsyncCache
+    private val cache = lila
+      .memo
+      .AsyncCache
       .single[List[StreamOnAir]](f = streaming.onAir, timeToLive = 2 seconds)
     def all = cache(true)
   }

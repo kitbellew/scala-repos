@@ -104,18 +104,20 @@ private class ThresholdFailureDetector(
 
     p.within(busyTimeout).onFailure(onBusyTimeout)
 
-    p.within(closeTimeout).transform {
-      case Return(_) =>
-        val rtt = nanoTime() - timestampNs
-        pingLatencyStat.add(rtt.toFloat / 1000)
-        maxPingNs.add(rtt)
-        markOpen()
-        Future.sleep(minPeriod - rtt.nanoseconds) before loop()
-      case Throw(ex) =>
-        failureHandler.record(statsReceiver, ex)
-        markClosed()
-        Future.exception(ex)
-    }
+    p
+      .within(closeTimeout)
+      .transform {
+        case Return(_) =>
+          val rtt = nanoTime() - timestampNs
+          pingLatencyStat.add(rtt.toFloat / 1000)
+          maxPingNs.add(rtt)
+          markOpen()
+          Future.sleep(minPeriod - rtt.nanoseconds) before loop()
+        case Throw(ex) =>
+          failureHandler.record(statsReceiver, ex)
+          markClosed()
+          Future.exception(ex)
+      }
   }
 
   // Note that we assume that the underlying ping() mechanism will

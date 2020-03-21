@@ -257,10 +257,10 @@ class LAFuture[T](val scheduler: LAScheduler) {
       if (!satisfied && !aborted) {
         aborted = true
         failure = e
-        onFailure.foreach(f =>
-          LAFuture.executeWithObservers(scheduler, () => f(e)))
-        onComplete.foreach(f =>
-          LAFuture.executeWithObservers(scheduler, () => f(e)))
+        onFailure
+          .foreach(f => LAFuture.executeWithObservers(scheduler, () => f(e)))
+        onComplete
+          .foreach(f => LAFuture.executeWithObservers(scheduler, () => f(e)))
         onComplete = Nil
         onFailure = Nil
         toDo = Nil
@@ -389,18 +389,21 @@ object LAFuture {
       }
       var gotCnt = 0
 
-      future.toList.zipWithIndex.foreach {
-        case (f, idx) =>
-          f.foreach { v =>
-            sync.synchronized {
-              vals.insert(idx, Full(v))
-              gotCnt += 1
-              if (gotCnt >= len) {
-                ret.satisfy(vals.toList.flatten)
+      future
+        .toList
+        .zipWithIndex
+        .foreach {
+          case (f, idx) =>
+            f.foreach { v =>
+              sync.synchronized {
+                vals.insert(idx, Full(v))
+                gotCnt += 1
+                if (gotCnt >= len) {
+                  ret.satisfy(vals.toList.flatten)
+                }
               }
             }
-          }
-      }
+        }
     }
 
     ret
@@ -427,26 +430,29 @@ object LAFuture {
       }
       var gotCnt = 0
 
-      future.toList.zipWithIndex.foreach {
-        case (f, idx) =>
-          f.foreach { vb =>
-            sync.synchronized {
-              vb match {
-                case Full(v) => {
-                  vals.insert(idx, Full(v))
-                  gotCnt += 1
-                  if (gotCnt >= len) {
-                    ret.satisfy(Full(vals.toList.flatten))
+      future
+        .toList
+        .zipWithIndex
+        .foreach {
+          case (f, idx) =>
+            f.foreach { vb =>
+              sync.synchronized {
+                vb match {
+                  case Full(v) => {
+                    vals.insert(idx, Full(v))
+                    gotCnt += 1
+                    if (gotCnt >= len) {
+                      ret.satisfy(Full(vals.toList.flatten))
+                    }
                   }
-                }
 
-                case eb: EmptyBox => {
-                  ret.satisfy(eb)
+                  case eb: EmptyBox => {
+                    ret.satisfy(eb)
+                  }
                 }
               }
             }
-          }
-      }
+        }
     }
 
     ret

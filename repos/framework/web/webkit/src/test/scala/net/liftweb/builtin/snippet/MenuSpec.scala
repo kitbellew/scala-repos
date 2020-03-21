@@ -39,11 +39,13 @@ object MenuSpec extends Specification {
     val siteMap = SiteMap(
       sitemap.Menu.i("foobar") / "foo" / "bar",
       sitemap.Menu.i("foobaz") / "foo" / "baz",
-      sitemap.Menu.param[Param](
-        "foobiz",
-        "foobiz",
-        s => Full(Param(s)),
-        p => p.s) / "foo" / "biz" / *
+      sitemap
+        .Menu
+        .param[Param](
+          "foobiz",
+          "foobiz",
+          s => Full(Param(s)),
+          p => p.s) / "foo" / "biz" / *
     )
 
     f(siteMap)
@@ -56,9 +58,11 @@ object MenuSpec extends Specification {
       testS(mockReq) {
         val rules = new LiftRules()
         rules.setSiteMap(siteMap)
-        LiftRulesMocker.devTestLiftRulesInstance.doWith(rules) {
-          f
-        }
+        LiftRulesMocker
+          .devTestLiftRulesInstance
+          .doWith(rules) {
+            f
+          }
       }
     }
   }

@@ -70,7 +70,9 @@ private[remote] class FailureInjectorTransportAdapter(
 
   private def rng = ThreadLocalRandom.current()
   private val log = Logging(extendedSystem, getClass.getName)
-  private val shouldDebugLog: Boolean = extendedSystem.settings.config
+  private val shouldDebugLog: Boolean = extendedSystem
+    .settings
+    .config
     .getBoolean("akka.remote.gremlin.debug")
 
   @volatile
@@ -128,12 +130,14 @@ private[remote] class FailureInjectorTransportAdapter(
           "Simulated failure of association to " + remoteAddress))
     else
       statusPromise.completeWith(
-        wrappedTransport.associate(remoteAddress).map { handle ⇒
-          addressChaosTable.putIfAbsent(
-            handle.remoteAddress.copy(protocol = "", system = ""),
-            PassThru)
-          new FailureInjectorHandle(handle, this)
-        })
+        wrappedTransport
+          .associate(remoteAddress)
+          .map { handle ⇒
+            addressChaosTable.putIfAbsent(
+              handle.remoteAddress.copy(protocol = "", system = ""),
+              PassThru)
+            new FailureInjectorHandle(handle, this)
+          })
   }
 
   def notify(ev: AssociationEvent): Unit =
@@ -197,8 +201,8 @@ private[remote] class FailureInjectorTransportAdapter(
     }
 
   def chaosMode(remoteAddress: Address): GremlinMode = {
-    val mode = addressChaosTable.get(
-      remoteAddress.copy(protocol = "", system = ""))
+    val mode = addressChaosTable
+      .get(remoteAddress.copy(protocol = "", system = ""))
     if (mode eq null)
       PassThru
     else
@@ -222,11 +226,13 @@ private[remote] final case class FailureInjectorHandle(
   private var upstreamListener: HandleEventListener = null
 
   override val readHandlerPromise: Promise[HandleEventListener] = Promise()
-  readHandlerPromise.future.onSuccess {
-    case listener: HandleEventListener ⇒
-      upstreamListener = listener
-      wrappedHandle.readHandlerPromise.success(this)
-  }
+  readHandlerPromise
+    .future
+    .onSuccess {
+      case listener: HandleEventListener ⇒
+        upstreamListener = listener
+        wrappedHandle.readHandlerPromise.success(this)
+    }
 
   override def write(payload: ByteString): Boolean =
     if (!gremlinAdapter.shouldDropOutbound(
@@ -240,10 +246,8 @@ private[remote] final case class FailureInjectorHandle(
   override def disassociate(): Unit = wrappedHandle.disassociate()
 
   override def notify(ev: HandleEvent): Unit =
-    if (!gremlinAdapter.shouldDropInbound(
-          wrappedHandle.remoteAddress,
-          ev,
-          "handler.notify"))
+    if (!gremlinAdapter
+          .shouldDropInbound(wrappedHandle.remoteAddress, ev, "handler.notify"))
       upstreamListener notify ev
 
 }

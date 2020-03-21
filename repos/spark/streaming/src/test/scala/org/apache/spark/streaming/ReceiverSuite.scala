@@ -184,8 +184,9 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
 
     // the first and last block may be incomplete, so we slice them out
     val validBlocks = recordedBlocks.drop(1).dropRight(1)
-    val averageBlockSize =
-      validBlocks.map(block => block.size).sum / validBlocks.size
+    val averageBlockSize = validBlocks
+      .map(block => block.size)
+      .sum / validBlocks.size
 
     assert(
       averageBlockSize >= minExpectedMessagesPerBlock &&

@@ -71,7 +71,9 @@ class DelayedFactoryTest extends FunSuite {
   }
 
   def numWaitersCheckFactory(factory: ServiceFactory[Int, Int], num: Int) {
-    factory.getClass.getDeclaredMethods
+    factory
+      .getClass
+      .getDeclaredMethods
       .find(_.getName == "numWaiters")
       .foreach { meth =>
         assert(meth.invoke(factory) == num)
@@ -218,8 +220,8 @@ class DelayedFactoryTest extends FunSuite {
       }
 
       test(
-        "%s: a factory that's closed prematurely should still close".format(
-          name)) {
+        "%s: a factory that's closed prematurely should still close"
+          .format(name)) {
         val ctx = helpFn()
         import ctx._
 

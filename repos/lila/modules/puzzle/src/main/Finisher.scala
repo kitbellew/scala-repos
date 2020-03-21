@@ -28,13 +28,18 @@ private[puzzle] final class Finisher(api: PuzzleApi, puzzleColl: Coll) {
           data.isWin.fold(Glicko.Result.Win, Glicko.Result.Loss))
         val date = DateTime.now
         val puzzlePerf =
-          puzzle.perf.addOrReset(
-            _.puzzle.crazyGlicko,
-            s"puzzle ${puzzle.id} user")(puzzleRating, date)
+          puzzle
+            .perf
+            .addOrReset(_.puzzle.crazyGlicko, s"puzzle ${puzzle.id} user")(
+              puzzleRating,
+              date)
         val userPerf =
-          user.perfs.puzzle.addOrReset(
-            _.puzzle.crazyGlicko,
-            s"puzzle ${puzzle.id}")(userRating, date)
+          user
+            .perfs
+            .puzzle
+            .addOrReset(_.puzzle.crazyGlicko, s"puzzle ${puzzle.id}")(
+              userRating,
+              date)
         val a =
           new Attempt(
             id = Attempt.makeId(puzzle.id, user.id),
@@ -58,8 +63,9 @@ private[puzzle] final class Finisher(api: PuzzleApi, puzzleColl: Coll) {
                   Puzzle.BSONFields.wins -> BSONInteger(
                     data.isWin ? 1 | 0))) ++ BSONDocument(
                 "$set" -> BSONDocument(
-                  Puzzle.BSONFields.perf -> Perf.perfBSONHandler.write(
-                    puzzlePerf)))
+                  Puzzle.BSONFields.perf -> Perf
+                    .perfBSONHandler
+                    .write(puzzlePerf)))
             ) zip UserRepo.setPerf(user.id, "puzzle", userPerf)
           }
         ) recover lila.db.recoverDuplicateKey(_ => ()) inject (a -> none)

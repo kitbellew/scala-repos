@@ -101,7 +101,11 @@ class RuntimePickler(
       // println(s"creating runtime pickler to pickle $fldClass field of class ${picklee.getClass.getName}")
       val fldTag = FastTypeTag.mkRaw(fldClass, mirror)
       // debug(s"!!! finding pickler for field with class ${fldClass.getName}")
-      val fldPickler = scala.pickling.internal.currentRuntime.picklers
+      val fldPickler = scala
+        .pickling
+        .internal
+        .currentRuntime
+        .picklers
         .genPickler(classLoader, fldClass, fldTag)
         .asInstanceOf[Pickler[Any]]
       //debug(s"looked up field pickler: $fldPickler")
@@ -190,7 +194,11 @@ class RuntimePickler(
       // the same decision.
       // debug(s"creating tag for field of class ${fldClass.getName}")
       val fldTag = FastTypeTag.mkRaw(fldClass, mirror)
-      val fldPickler = scala.pickling.internal.currentRuntime.picklers
+      val fldPickler = scala
+        .pickling
+        .internal
+        .currentRuntime
+        .picklers
         .genPickler(classLoader, fldClass, fldTag)
         .asInstanceOf[Pickler[Any]]
       // debug(s"looked up field pickler: $fldPickler")
@@ -254,28 +262,30 @@ class RuntimePickler(
 
   def mkPickler: Pickler[_] = {
     new Pickler[Any] {
-      val fields: List[Logic] = cir.fields.flatMap { fir =>
-        if (fir.accessor.nonEmpty)
-          List(
-            if (fir.tpe.typeSymbol.isEffectivelyFinal)
-              new EffectivelyFinalLogic(fir)
-            else if (fir.tpe.typeSymbol.asType.isAbstractType)
-              new AbstractLogic(fir)
-            else
-              new DefaultLogic(fir))
-        else
-          try {
-            val javaField = clazz.getDeclaredField(fir.name)
+      val fields: List[Logic] = cir
+        .fields
+        .flatMap { fir =>
+          if (fir.accessor.nonEmpty)
             List(
               if (fir.tpe.typeSymbol.isEffectivelyFinal)
-                new PrivateEffectivelyFinalJavaFieldLogic(fir, javaField)
+                new EffectivelyFinalLogic(fir)
+              else if (fir.tpe.typeSymbol.asType.isAbstractType)
+                new AbstractLogic(fir)
               else
-                new PrivateJavaFieldLogic(fir, javaField))
-          } catch {
-            case e: java.lang.NoSuchFieldException =>
-              List()
-          }
-      }
+                new DefaultLogic(fir))
+          else
+            try {
+              val javaField = clazz.getDeclaredField(fir.name)
+              List(
+                if (fir.tpe.typeSymbol.isEffectivelyFinal)
+                  new PrivateEffectivelyFinalJavaFieldLogic(fir, javaField)
+                else
+                  new PrivateJavaFieldLogic(fir, javaField))
+            } catch {
+              case e: java.lang.NoSuchFieldException =>
+                List()
+            }
+        }
 
       def putFields(picklee: Any, builder: PBuilder): Unit = {
         val im = mirror.reflect(picklee)

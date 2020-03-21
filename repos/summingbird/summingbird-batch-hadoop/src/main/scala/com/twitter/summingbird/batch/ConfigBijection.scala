@@ -38,7 +38,8 @@ private[summingbird] object ConfigBijection {
         conf
       }
       override def invert(config: Configuration) =
-        config.asScala
+        config
+          .asScala
           .foldLeft(Map[String, AnyRef]()) { (m, entry) =>
             val k = entry.getKey
             val v = entry.getValue

@@ -147,8 +147,8 @@ class Signature(
       !isField(this) ^ isField(other)
     }
 
-    ScalaPsiUtil.convertMemberName(name) == ScalaPsiUtil.convertMemberName(
-      other.name) &&
+    ScalaPsiUtil.convertMemberName(name) == ScalaPsiUtil
+      .convertMemberName(other.name) &&
     (
       (
         typeParams.length == other.typeParams.length && paramTypesEquiv(other)
@@ -172,7 +172,8 @@ class Signature(
           ps2.method.getResolveScope)
         val psiSig1 = ps1.method.getSignature(psiSub1)
         val psiSig2 = ps2.method.getSignature(psiSub2)
-        MethodSignatureUtil.METHOD_PARAMETERS_ERASURE_EQUALITY
+        MethodSignatureUtil
+          .METHOD_PARAMETERS_ERASURE_EQUALITY
           .equals(psiSig1, psiSig2)
       case _ =>
         false
@@ -193,9 +194,8 @@ class Signature(
     import org.jetbrains.plugins.scala.lang.psi.types.Signature._
 
     var undefSubst = uSubst
-    if (paramLength != other.paramLength && !(
-          paramLength.sum == 0 && other.paramLength.sum == 0
-        ))
+    if (paramLength != other
+          .paramLength && !(paramLength.sum == 0 && other.paramLength.sum == 0))
       return (false, undefSubst)
     if (hasRepeatedParam != other.hasRepeatedParam)
       return (false, undefSubst)
@@ -309,7 +309,8 @@ object PhysicalSignature {
   def typesEval(method: PsiMethod): List[Seq[() => ScType]] =
     method match {
       case fun: ScFunction =>
-        fun.effectiveParameterClauses
+        fun
+          .effectiveParameterClauses
           .map(clause =>
             ScalaPsiUtil.mapToLazyTypesSeq(clause.effectiveParameters))
           .toList

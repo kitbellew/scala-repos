@@ -95,11 +95,8 @@ class BindingSpec extends Specification {
         Binding(builder.field, conv, implicitly[TypeConverterFactory[String]])(
           manifest[String],
           builder.valueManifest)
-      container(
-        Right(
-          Some(
-            "joske"
-              .asInstanceOf[container.S]))).validation must_== "joske".success
+      container(Right(Some("joske".asInstanceOf[container.S])))
+        .validation must_== "joske".success
     }
 
   }
@@ -310,7 +307,9 @@ class BindingSpec extends Specification {
       field.validator must not(beEmpty)
       field.validator.get.apply("hello".success).isSuccess must beTrue
       field.validator.get.apply("".success).isSuccess must beFalse
-      field.validator.get
+      field
+        .validator
+        .get
         .apply(null.asInstanceOf[String].success)
         .isSuccess must beFalse
     }
@@ -327,7 +326,9 @@ class BindingSpec extends Specification {
       val field = newBinding[Seq[String]].notEmpty
       field.validator must not(beEmpty)
       field.validator.get.apply(Success(Seq("hello"))).isSuccess must beTrue
-      field.validator.get
+      field
+        .validator
+        .get
         .apply(Success(Seq.empty[String]))
         .isSuccess must beFalse
     }

@@ -65,7 +65,9 @@ class ObservableSetSpec[T]
       generatedSet should be theSameInstanceAs (originalSet)
     } else {
       generatedSet should not be theSameInstanceAs(originalSet)
-      generatedSet.getClass.getInterfaces
+      generatedSet
+        .getClass
+        .getInterfaces
         .contains(classOf[ObservableSet[Int]]) should be(true)
     }
   }

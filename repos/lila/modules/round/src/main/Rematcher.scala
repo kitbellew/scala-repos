@@ -129,7 +129,9 @@ private[round] final class Rematcher(
       game: Game,
       color: ChessColor,
       users: List[User]): lila.game.Player = {
-    val player = lila.game.Player
+    val player = lila
+      .game
+      .Player
       .make(color = color, aiLevel = game.opponent(color).aiLevel)
     game
       .player(!color)

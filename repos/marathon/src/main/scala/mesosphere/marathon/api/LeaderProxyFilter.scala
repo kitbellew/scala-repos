@@ -196,7 +196,8 @@ trait RequestForwarder {
 
 class JavaUrlConnectionRequestForwarder @Inject() (
     @Named(
-      JavaUrlConnectionRequestForwarder.NAMED_LEADER_PROXY_SSL_CONTEXT) sslContext: SSLContext,
+      JavaUrlConnectionRequestForwarder
+        .NAMED_LEADER_PROXY_SSL_CONTEXT) sslContext: SSLContext,
     leaderProxyConf: LeaderProxyConf,
     @Named(ModuleNames.HOST_PORT) myHostPort: String)
     extends RequestForwarder {
@@ -229,8 +230,8 @@ class JavaUrlConnectionRequestForwarder @Inject() (
               s"unexpected connection type: ${connection.getClass}")
         }
 
-      connection.setConnectTimeout(
-        leaderProxyConf.leaderProxyConnectionTimeout())
+      connection
+        .setConnectTimeout(leaderProxyConf.leaderProxyConnectionTimeout())
       connection.setReadTimeout(leaderProxyConf.leaderProxyReadTimeout())
       connection.setInstanceFollowRedirects(false)
 
@@ -252,8 +253,8 @@ class JavaUrlConnectionRequestForwarder @Inject() (
         //
         // The host header is used to choose the correct virtual host and should be set to the hostname
         // of the URL for HTTP 1.1. Thus we do not preserve it, even though Marathon does not care.
-        if !name.equalsIgnoreCase("host") && !name.equalsIgnoreCase(
-          "connection")
+        if !name.equalsIgnoreCase("host") && !name
+          .equalsIgnoreCase("connection")
         headerValues <- Option(request.getHeaders(name))
         headerValue <- headerValues.asScala
       } {

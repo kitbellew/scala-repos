@@ -87,12 +87,14 @@ private[deploy] class SparkSubmitArguments(
     if (verbose)
       SparkSubmit.printStream.println(s"Using properties file: $propertiesFile")
     Option(propertiesFile).foreach { filename =>
-      Utils.getPropertiesFromFile(filename).foreach {
-        case (k, v) =>
-          defaultProperties(k) = v
-          if (verbose)
-            SparkSubmit.printStream.println(s"Adding default property: $k=$v")
-      }
+      Utils
+        .getPropertiesFromFile(filename)
+        .foreach {
+          case (k, v) =>
+            defaultProperties(k) = v
+            if (verbose)
+              SparkSubmit.printStream.println(s"Adding default property: $k=$v")
+        }
     }
     // scalastyle:on println
     defaultProperties
@@ -120,8 +122,8 @@ private[deploy] class SparkSubmitArguments(
     */
   private def mergeDefaultSparkProperties(): Unit = {
     // Use common defaults file, if not specified by user
-    propertiesFile = Option(propertiesFile).getOrElse(
-      Utils.getDefaultPropertiesFile(env))
+    propertiesFile = Option(propertiesFile)
+      .getOrElse(Utils.getDefaultPropertiesFile(env))
     // Honor --conf before the defaults file
     defaultSparkProperties.foreach {
       case (k, v) =>
@@ -270,8 +272,8 @@ private[deploy] class SparkSubmitArguments(
     }
 
     if (master.startsWith("yarn")) {
-      val hasHadoopEnv =
-        env.contains("HADOOP_CONF_DIR") || env.contains("YARN_CONF_DIR")
+      val hasHadoopEnv = env.contains("HADOOP_CONF_DIR") || env
+        .contains("YARN_CONF_DIR")
       if (!hasHadoopEnv && !Utils.isTesting) {
         throw new Exception(
           s"When running with master '$master' " +
@@ -301,8 +303,8 @@ private[deploy] class SparkSubmitArguments(
         "Requesting submission statuses is only supported in standalone or Mesos mode!")
     }
     if (submissionToRequestStatusFor == null) {
-      SparkSubmit.printErrorAndExit(
-        "Please specify a submission to request status for.")
+      SparkSubmit
+        .printErrorAndExit("Please specify a submission to request status for.")
     }
   }
 
@@ -397,8 +399,8 @@ private[deploy] class SparkSubmitArguments(
       case KILL_SUBMISSION =>
         submissionToKill = value
         if (action != null) {
-          SparkSubmit.printErrorAndExit(
-            s"Action cannot be both $action and $KILL.")
+          SparkSubmit
+            .printErrorAndExit(s"Action cannot be both $action and $KILL.")
         }
         action = KILL
 
@@ -506,12 +508,14 @@ private[deploy] class SparkSubmitArguments(
     if (unknownParam != null) {
       outStream.println("Unknown/unsupported param " + unknownParam)
     }
-    val command = sys.env
+    val command = sys
+      .env
       .get("_SPARK_CMD_USAGE")
       .getOrElse(
         """Usage: spark-submit [options] <app jar | python file> [app arguments]
         |Usage: spark-submit --kill [submission ID] --master [spark://...]
-        |Usage: spark-submit --status [submission ID] --master [spark://...]""".stripMargin)
+        |Usage: spark-submit --status [submission ID] --master [spark://...]"""
+          .stripMargin)
     outStream.println(command)
 
     val mem_mb = Utils.DEFAULT_DRIVER_MEM_MB

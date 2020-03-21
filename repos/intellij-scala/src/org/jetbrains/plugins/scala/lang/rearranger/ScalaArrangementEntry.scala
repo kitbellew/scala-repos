@@ -65,7 +65,8 @@ class ScalaArrangementEntry(
   override def equals(o: Any) =
     o match {
       case other: ScalaArrangementEntry =>
-        other.getStartOffset == startOffset && other.getEndOffset == endOffset &&
+        other.getStartOffset == startOffset && other
+          .getEndOffset == endOffset &&
           other.getType == entryType && other.getParent == parent
       case _ =>
         false

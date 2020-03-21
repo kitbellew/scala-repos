@@ -45,8 +45,8 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
     zookeeperServer.startNetwork()
 
     // connect to zookeeper server
-    zookeeperClient = zookeeperServer.createClient(
-      ZooKeeperClient.digestCredentials("user", "pass"))
+    zookeeperClient = zookeeperServer
+      .createClient(ZooKeeperClient.digestCredentials("user", "pass"))
 
     // create serverset
     serverSet = new CompoundServerSet(
@@ -67,8 +67,8 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
     zookeeperClient.get().setData(zkPath, output.toByteArray, -1)
 
     // a separate client which only does zk discovery for integration test
-    zookeeperClient = zookeeperServer.createClient(
-      ZooKeeperClient.digestCredentials("user", "pass"))
+    zookeeperClient = zookeeperServer
+      .createClient(ZooKeeperClient.digestCredentials("user", "pass"))
   }
 
   override def afterEach() {
@@ -144,7 +144,8 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
     test("node key remap") {
       // turn on detecting key remapping
       val output: ByteArrayOutputStream = new ByteArrayOutputStream
-      CachePoolConfig.jsonCodec
+      CachePoolConfig
+        .jsonCodec
         .serialize(CachePoolConfig(5, detectKeyRemapping = true), output)
       zookeeperClient.get().setData(zkPath, output.toByteArray, -1)
 
@@ -164,7 +165,8 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
       currentMembers = myPool.members
 
       // turn off detecting key remapping
-      CachePoolConfig.jsonCodec
+      CachePoolConfig
+        .jsonCodec
         .serialize(CachePoolConfig(5, detectKeyRemapping = false), output)
       zookeeperClient.get().setData(zkPath, output.toByteArray, -1)
       assert(waitForMemberSize(myPool, 5, 5))
@@ -179,7 +181,8 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
         myPool.members + " should equal to " + currentMembers)
 
       /***** remap shard key while adding keys should not take effect ******/
-      CachePoolConfig.jsonCodec
+      CachePoolConfig
+        .jsonCodec
         .serialize(CachePoolConfig(5, detectKeyRemapping = true), output)
       zookeeperClient.get().setData(zkPath, output.toByteArray, -1)
       assert(waitForMemberSize(myPool, 5, 5))

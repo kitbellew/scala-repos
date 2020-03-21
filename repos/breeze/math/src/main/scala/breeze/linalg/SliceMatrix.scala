@@ -82,8 +82,8 @@ object SliceMatrix {
       override def map(
           from: SliceMatrix[K1, K2, V],
           fn: ((Int, Int), V) => V2): DenseMatrix[V2] = {
-        DenseMatrix.tabulate(from.rows, from.cols)((i, j) =>
-          fn((i, j), from(i, j)))
+        DenseMatrix
+          .tabulate(from.rows, from.cols)((i, j) => fn((i, j), from(i, j)))
       }
 
       override def mapActive(

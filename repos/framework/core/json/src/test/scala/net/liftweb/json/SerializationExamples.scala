@@ -200,8 +200,8 @@ object SerializationExamples extends Specification {
 }
 
 object ShortTypeHintExamples extends TypeHintExamples {
-  implicit val formats = Serialization.formats(
-    ShortTypeHints(classOf[Fish] :: classOf[Dog] :: Nil))
+  implicit val formats = Serialization
+    .formats(ShortTypeHints(classOf[Fish] :: classOf[Dog] :: Nil))
 
   "Deserialization succeeds even if jsonClass is not the first field" in {
     val ser = """{"animals":[],"pet":{"name":"pluto","jsonClass":"Dog"}}"""
@@ -339,7 +339,8 @@ object CustomSerializerExamples extends Specification {
         (
           {
             case JObject(List(JField("$dt", JString(s)))) =>
-              format.dateFormat
+              format
+                .dateFormat
                 .parse(s)
                 .getOrElse(
                   throw new MappingException("Can't parse " + s + " to Date"))
@@ -358,7 +359,8 @@ object CustomSerializerExamples extends Specification {
           case JArray(xs) =>
             val t = ptype.getOrElse(
               throw new MappingException("parameterized type not known"))
-            xs.map(x =>
+            xs
+              .map(x =>
                 Extraction.extract(
                   x,
                   TypeInfo(

@@ -243,25 +243,26 @@ trait DiagramDirectiveParser {
             case HideNodesRegex(last) =>
               val matcher = NodeSpecPattern.matcher(entry)
               while (matcher.find()) {
-                val classPattern = Pattern.compile(
-                  preparePattern(matcher.group()))
+                val classPattern = Pattern
+                  .compile(preparePattern(matcher.group()))
                 hideNodesFilter0 ::= classPattern
               }
             case HideEdgesRegex(last) =>
               val matcher = NodeSpecPattern.matcher(entry)
               while (matcher.find()) {
-                val class1Pattern = Pattern.compile(
-                  preparePattern(matcher.group()))
+                val class1Pattern = Pattern
+                  .compile(preparePattern(matcher.group()))
                 assert(matcher.find()) // it's got to be there, just matched it!
-                val class2Pattern = Pattern.compile(
-                  preparePattern(matcher.group()))
+                val class2Pattern = Pattern
+                  .compile(preparePattern(matcher.group()))
                 hideEdgesFilter0 ::= ((class1Pattern, class2Pattern))
               }
             case "" =>
             // don't need to do anything about it
             case _ =>
               warning(
-                "Could not understand diagram annotation in " + template.kind + " " + template.qualifiedName +
+                "Could not understand diagram annotation in " + template
+                  .kind + " " + template.qualifiedName +
                   ": unmatched entry \"" + entry + "\".\n" +
                   "  This could be because:\n" +
                   "   - you forgot to separate entries by commas\n" +
@@ -292,7 +293,8 @@ trait DiagramDirectiveParser {
               hideEdgesFilter = hideEdgesFilter0
             )
 
-        if (settings.docDiagramsDebug && result != NoDiagramAtAll && result != FullDiagram)
+        if (settings
+              .docDiagramsDebug && result != NoDiagramAtAll && result != FullDiagram)
           settings.printMsg(
             template.kind + " " + template.qualifiedName + " filter: " + result)
         tFilter += System.currentTimeMillis

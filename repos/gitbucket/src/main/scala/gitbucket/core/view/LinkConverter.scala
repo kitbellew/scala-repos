@@ -49,13 +49,13 @@ trait LinkConverter {
     escaped
     // convert username/project@SHA to link
       .replaceBy(
-        "(?<=(^|\\W))([a-zA-Z0-9\\-_]+)/([a-zA-Z0-9\\-_\\.]+)@([a-f0-9]{40})(?=(\\W|$))".r) {
-        m =>
-          getAccountByUserName(m.group(2)).map { _ =>
-            s"""<a href="${context.path}/${m.group(2)}/${m.group(3)}/commit/${m
-              .group(4)}">${m.group(2)}/${m
-              .group(3)}@${m.group(4).substring(0, 7)}</a>"""
-          }
+        "(?<=(^|\\W))([a-zA-Z0-9\\-_]+)/([a-zA-Z0-9\\-_\\.]+)@([a-f0-9]{40})(?=(\\W|$))"
+          .r) { m =>
+        getAccountByUserName(m.group(2)).map { _ =>
+          s"""<a href="${context.path}/${m.group(2)}/${m.group(
+            3)}/commit/${m.group(4)}">${m.group(2)}/${m.group(3)}@${m.group(
+            4).substring(0, 7)}</a>"""
+        }
       }
       // convert username/project#Num to link
       .replaceBy(
@@ -65,8 +65,9 @@ trait LinkConverter {
         getIssue(m.group(2), m.group(3), m.group(4)) match {
           case Some(issue) if (issue.isPullRequest) =>
             Some(
-              s"""<a href="${context.path}/${m.group(2)}/${m.group(3)}/pull/${m
-                .group(4)}">${m.group(2)}/${m.group(3)}#${m.group(4)}</a>""")
+              s"""<a href="${context.path}/${m.group(2)}/${m.group(
+                3)}/pull/${m.group(4)}">${m.group(2)}/${m.group(3)}#${m.group(
+                4)}</a>""")
           case Some(_) =>
             Some(
               s"""<a href="${context.path}/${m.group(2)}/${m.group(
@@ -81,8 +82,8 @@ trait LinkConverter {
         ("(?<=(^|\\W))([a-zA-Z0-9\\-_]+)@([a-f0-9]{40})(?=(\\W|$))").r) { m =>
         getAccountByUserName(m.group(2)).map { _ =>
           s"""<a href="${context.path}/${m.group(
-            2)}/${repository.name}/commit/${m.group(3)}">${m
-            .group(2)}@${m.group(3).substring(0, 7)}</a>"""
+            2)}/${repository.name}/commit/${m.group(3)}">${m.group(
+            2)}@${m.group(3).substring(0, 7)}</a>"""
         }
       }
       // convert username#Num to link
@@ -94,13 +95,13 @@ trait LinkConverter {
           case Some(issue) if (issue.isPullRequest) =>
             Some(
               s"""<a href="${context.path}/${m.group(
-                2)}/${repository.name}/pull/${m.group(3)}">${m.group(2)}#${m
-                .group(3)}</a>""")
+                2)}/${repository.name}/pull/${m.group(3)}">${m.group(
+                2)}#${m.group(3)}</a>""")
           case Some(_) =>
             Some(
               s"""<a href="${context.path}/${m.group(
-                2)}/${repository.name}/issues/${m.group(3)}">${m.group(2)}#${m
-                .group(3)}</a>""")
+                2)}/${repository.name}/issues/${m.group(3)}">${m.group(
+                2)}#${m.group(3)}</a>""")
           case None =>
             Some(s"""${m.group(2)}#${m.group(3)}""")
         }
@@ -116,12 +117,12 @@ trait LinkConverter {
         getIssue(repository.owner, repository.name, m.group(3)) match {
           case Some(issue) if (issue.isPullRequest) =>
             Some(
-              s"""<a href="${context.path}/${repository.owner}/${repository.name}/pull/${m
-                .group(3)}">${prefix}${m.group(3)}</a>""")
+              s"""<a href="${context.path}/${repository.owner}/${repository.name}/pull/${m.group(
+                3)}">${prefix}${m.group(3)}</a>""")
           case Some(_) =>
             Some(
-              s"""<a href="${context.path}/${repository.owner}/${repository.name}/issues/${m
-                .group(3)}">${prefix}${m.group(3)}</a>""")
+              s"""<a href="${context.path}/${repository.owner}/${repository.name}/issues/${m.group(
+                3)}">${prefix}${m.group(3)}</a>""")
           case None =>
             Some(s"""${m.group(2)}${m.group(3)}""")
         }

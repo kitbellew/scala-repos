@@ -38,8 +38,8 @@ private[twitter] class StreamServerDispatcher[Req: RequestType](
         service(RT.specialize(from(httpReq))) ensure eos.setDone()
       case invalid =>
         eos.setDone()
-        Future.exception(
-          new IllegalArgumentException(s"Invalid message: $invalid"))
+        Future
+          .exception(new IllegalArgumentException(s"Invalid message: $invalid"))
     }
 
   protected def handle(rep: StreamResponse) = {

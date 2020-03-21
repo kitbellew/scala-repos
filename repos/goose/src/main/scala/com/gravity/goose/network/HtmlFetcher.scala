@@ -110,28 +110,24 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
 
     try {
       val localContext: HttpContext = new BasicHttpContext
-      localContext.setAttribute(
-        ClientContext.COOKIE_STORE,
-        HtmlFetcher.emptyCookieStore)
+      localContext
+        .setAttribute(ClientContext.COOKIE_STORE, HtmlFetcher.emptyCookieStore)
       httpget = new HttpGet(cleanUrl)
-      HttpProtocolParams.setUserAgent(
-        httpClient.getParams,
-        config.getBrowserUserAgent());
+      HttpProtocolParams
+        .setUserAgent(httpClient.getParams, config.getBrowserUserAgent());
 
       val params = httpClient.getParams
-      HttpConnectionParams.setConnectionTimeout(
-        params,
-        config.getConnectionTimeout())
+      HttpConnectionParams
+        .setConnectionTimeout(params, config.getConnectionTimeout())
       HttpConnectionParams.setSoTimeout(params, config.getSocketTimeout())
 
       trace(
-        "Setting UserAgent To: " + HttpProtocolParams.getUserAgent(
-          httpClient.getParams))
+        "Setting UserAgent To: " + HttpProtocolParams
+          .getUserAgent(httpClient.getParams))
       val response: HttpResponse = httpClient.execute(httpget, localContext)
 
-      HttpStatusValidator.validate(
-        cleanUrl,
-        response.getStatusLine.getStatusCode) match {
+      HttpStatusValidator
+        .validate(cleanUrl, response.getStatusLine.getStatusCode) match {
         case Left(ex) =>
           throw ex
         case _ =>
@@ -226,8 +222,8 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
             ) == true || (mimeType == "application/xml") == true) {
           return Some(htmlResult)
         } else {
-          if (htmlResult.contains("<title>") == true && htmlResult.contains(
-                "<p>") == true) {
+          if (htmlResult.contains("<title>") == true && htmlResult
+                .contains("<p>") == true) {
             return Some(htmlResult)
           }
           trace("GRVBIGFAIL: " + mimeType + " - " + cleanUrl)
@@ -284,10 +280,10 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
     httpParams.setParameter("Cache-Control", "max-age=0")
     httpParams.setParameter("http.connection.stalecheck", false)
     val schemeRegistry: SchemeRegistry = new SchemeRegistry
-    schemeRegistry.register(
-      new Scheme("http", 80, PlainSocketFactory.getSocketFactory))
-    schemeRegistry.register(
-      new Scheme("https", 443, SSLSocketFactory.getSocketFactory))
+    schemeRegistry
+      .register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory))
+    schemeRegistry
+      .register(new Scheme("https", 443, SSLSocketFactory.getSocketFactory))
     val cm = new ThreadSafeClientConnManager(schemeRegistry)
     cm.setMaxTotal(20000)
     cm.setDefaultMaxPerRoute(500)

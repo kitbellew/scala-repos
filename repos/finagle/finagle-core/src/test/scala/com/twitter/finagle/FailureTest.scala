@@ -83,9 +83,8 @@ class FailureTest
 
   test("Failure.show") {
     assert(
-      Failure("ok", Failure.Restartable | Failure.Interrupted).show == Failure(
-        "ok",
-        Failure.Interrupted))
+      Failure("ok", Failure.Restartable | Failure.Interrupted)
+        .show == Failure("ok", Failure.Interrupted))
     val inner = new Exception
     assert(Failure.wrap(inner).show == inner)
     assert(Failure.wrap(Failure.wrap(inner)).show == inner)
@@ -127,7 +126,8 @@ class FailureTest
       Failure(
         "abc",
         new Exception,
-        Failure.Interrupted | Failure.Restartable | Failure.Naming | Failure.Wrapped),
+        Failure.Interrupted | Failure.Restartable | Failure.Naming | Failure
+          .Wrapped),
       Failure("abc"),
       new Exception)
     val categories = Seq(

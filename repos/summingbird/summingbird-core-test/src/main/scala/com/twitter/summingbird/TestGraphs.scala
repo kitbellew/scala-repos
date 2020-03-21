@@ -74,52 +74,54 @@ object TestGraphs {
     leftAndRight
       .groupBy(_._1)
       .mapValues {
-        _.map(_._2).toList
-          .sortBy(identity)
-          .scanLeft((
+        _.map(_._2)
+        .toList
+        .sortBy(identity)
+        .scanLeft(
+          (
             Option.empty[(Long, (U, Option[V]))],
             Option.empty[(Long, (Option[V], V))])) {
-            case ((_, None), (time, Left(u))) =>
-              /*
-               * This is a lookup, but there is no value for this key
-               */
-              val joinResult = Some((time, (u, None)))
-              val sumResult = Semigroup
-                .sumOption(valuesFn(time, (u, None)))
-                .map(v => (time, (None, v._2)))
-              (joinResult, sumResult)
-            case ((_, Some((_, (optv, v)))), (time, Left(u))) =>
-              /*
-               * This is a lookup, and there is an existing value
-               */
-              val currentV = Some(
-                sum(optv, v)
-              ) // isn't u already a sum and optu prev value?
-              val joinResult = Some((time, (u, currentV)))
-              val sumResult = Semigroup
-                .sumOption(valuesFn(time, (u, currentV)))
-                .map(v => (time, (currentV, v._2)))
-              (joinResult, sumResult)
-            case ((_, None), (time, Right(v))) =>
-              /*
-               * This is merging in new data into the store not coming in from the service
-               * (either from the store history or from a merge after the leftJoin, but
-               * There was previously no data.
-               */
-              val joinResult = None
-              val sumResult = Some((time, (None, v)))
-              (joinResult, sumResult)
-            case ((_, Some((_, (optv, oldv)))), (time, Right(v))) =>
-              /*
-               * This is the case where we are updating a non-empty key. This should
-               * only be triggered by a merged data-stream after the join since
-               * store initialization
-               */
-              val joinResult = None
-              val currentV = Some(sum(optv, oldv))
-              val sumResult = Some((time, (currentV, v)))
-              (joinResult, sumResult)
-          }
+          case ((_, None), (time, Left(u))) =>
+            /*
+             * This is a lookup, but there is no value for this key
+             */
+            val joinResult = Some((time, (u, None)))
+            val sumResult = Semigroup
+              .sumOption(valuesFn(time, (u, None)))
+              .map(v => (time, (None, v._2)))
+            (joinResult, sumResult)
+          case ((_, Some((_, (optv, v)))), (time, Left(u))) =>
+            /*
+             * This is a lookup, and there is an existing value
+             */
+            val currentV = Some(
+              sum(optv, v)
+            ) // isn't u already a sum and optu prev value?
+            val joinResult = Some((time, (u, currentV)))
+            val sumResult = Semigroup
+              .sumOption(valuesFn(time, (u, currentV)))
+              .map(v => (time, (currentV, v._2)))
+            (joinResult, sumResult)
+          case ((_, None), (time, Right(v))) =>
+            /*
+             * This is merging in new data into the store not coming in from the service
+             * (either from the store history or from a merge after the leftJoin, but
+             * There was previously no data.
+             */
+            val joinResult = None
+            val sumResult = Some((time, (None, v)))
+            (joinResult, sumResult)
+          case ((_, Some((_, (optv, oldv)))), (time, Right(v))) =>
+            /*
+             * This is the case where we are updating a non-empty key. This should
+             * only be triggered by a merged data-stream after the join since
+             * store initialization
+             */
+            val joinResult = None
+            val currentV = Some(sum(optv, oldv))
+            val sumResult = Some((time, (currentV, v)))
+            (joinResult, sumResult)
+        }
       }
       .toList
   }
@@ -155,10 +157,7 @@ object TestGraphs {
       source: Producer[P, T],
       store: P#Store[K, V])(
       fn: T => TraversableOnce[(K, V)]): TailProducer[P, (K, (Option[V], V))] =
-    source
-      .flatMap(fn)
-      .name("FM")
-      .sumByKey(store)
+    source.flatMap(fn).name("FM").sumByKey(store)
 
   def twinStepOptionMapFlatMapScala[T1, T2, K, V: Monoid](
       source: TraversableOnce[T1])(
@@ -172,29 +171,25 @@ object TestGraphs {
       fnA: T1 => Option[T2],
       fnB: T2 => TraversableOnce[(K, V)])
       : TailProducer[P, (K, (Option[V], V))] =
-    source
-      .optionMap(fnA)
-      .flatMap(fnB)
-      .sumByKey(store)
+    source.optionMap(fnA).flatMap(fnB).sumByKey(store)
 
   def singleStepMapKeysInScala[T, K1, K2, V: Monoid](
       source: TraversableOnce[T])(
       fnA: T => TraversableOnce[(K1, V)],
       fnB: K1 => TraversableOnce[K2]): Map[K2, V] =
     MapAlgebra.sumByKey(
-      source.flatMap(fnA).flatMap { x =>
-        fnB(x._1).map((_, x._2))
-      })
+      source
+        .flatMap(fnA)
+        .flatMap { x =>
+          fnB(x._1).map((_, x._2))
+        })
 
   def singleStepMapKeysJob[P <: Platform[P], T, K1, K2, V: Monoid](
       source: Producer[P, T],
       store: P#Store[K2, V])(
       fnA: T => TraversableOnce[(K1, V)],
       fnB: K1 => TraversableOnce[K2]): TailProducer[P, (K2, (Option[V], V))] =
-    source
-      .flatMap(fnA)
-      .flatMapKeys(fnB)
-      .sumByKey(store)
+    source.flatMap(fnA).flatMapKeys(fnB).sumByKey(store)
 
   def repeatedTupleLeftJoinInScala[T, U, JoinedU, K, V: Monoid](
       source: TraversableOnce[T])(service: K => Option[JoinedU])(
@@ -323,18 +318,19 @@ object TestGraphs {
         _.map {
           case (time, (k, joinedu)) =>
             (k, joinedu)
-        }.groupBy(_._1)
-          .mapValues { l =>
-            scanSum(l.iterator.map(_._2)).toList
-          }
-          .toIterable
-          .flatMap {
-            case (k, lv) =>
-              lv.map {
-                case (optju, ju) =>
-                  (k, (optju, ju))
-              }
-          }
+        }
+        .groupBy(_._1)
+        .mapValues { l =>
+          scanSum(l.iterator.map(_._2)).toList
+        }
+        .toIterable
+        .flatMap {
+          case (k, lv) =>
+            lv.map {
+              case (optju, ju) =>
+                (k, (optju, ju))
+            }
+        }
       }
       .toIterable
       .flatMap {
@@ -363,28 +359,29 @@ object TestGraphs {
     val resultStream: List[(Long, (K, (U, Option[JoinedU])))] = leftAndRight
       .groupBy(_._1)
       .mapValues {
-        _.map(_._2).toList
-          .sortBy(identity)
-          .scanLeft(
-            Option.empty[(Long, JoinedU)],
-            Option.empty[(Long, U, Option[JoinedU])]) {
-            case ((None, result), (time, Left(u))) => {
-              // The was no value previously
-              (None, Some((time, u, None)))
-            }
-            case ((prev @ Some((oldt, ju)), result), (time, Left(u))) => {
-              // gate the time for window join?
-              (prev, Some((time, u, Some(ju))))
-            }
-            case ((None, result), (time, Right(joined))) => {
-              (Some((time, joined)), None)
-            }
-
-            case ((Some((oldt, oldJ)), result), (time, Right(joined))) => {
-              val nextJoined = Semigroup.plus(oldJ, joined)
-              (Some((time, nextJoined)), None)
-            }
+        _.map(_._2)
+        .toList
+        .sortBy(identity)
+        .scanLeft(
+          Option.empty[(Long, JoinedU)],
+          Option.empty[(Long, U, Option[JoinedU])]) {
+          case ((None, result), (time, Left(u))) => {
+            // The was no value previously
+            (None, Some((time, u, None)))
           }
+          case ((prev @ Some((oldt, ju)), result), (time, Left(u))) => {
+            // gate the time for window join?
+            (prev, Some((time, u, Some(ju))))
+          }
+          case ((None, result), (time, Right(joined))) => {
+            (Some((time, joined)), None)
+          }
+
+          case ((Some((oldt, oldJ)), result), (time, Right(joined))) => {
+            val nextJoined = Semigroup.plus(oldJ, joined)
+            (Some((time, nextJoined)), None)
+          }
+        }
       }
       .toList
       .flatMap {
@@ -458,25 +455,23 @@ object TestGraphs {
     val resultStream = loopJoinInScala(leftAndRight, flatMapValuesFn)
 
     // compute the final store result after join
-    val rightStream = resultStream
-      .flatMap {
-        case (k, lopts) =>
-          lopts.map {
-            case ((_, optoptv)) =>
-              (k, optoptv)
-          }
-      }
+    val rightStream = resultStream.flatMap {
+      case (k, lopts) =>
+        lopts.map {
+          case ((_, optoptv)) =>
+            (k, optoptv)
+        }
+    }
 
     // compute the final store result after join
     MapAlgebra.sumByKey(
-      rightStream
-        .flatMap {
-          case (k, opt) =>
-            opt.map {
-              case (time, (optv, v)) =>
-                (k, v)
-            }
-        } // drop time and opt[v]
+      rightStream.flatMap {
+        case (k, opt) =>
+          opt.map {
+            case (time, (optv, v)) =>
+              (k, v)
+          }
+      } // drop time and opt[v]
     )
   }
 
@@ -520,23 +515,21 @@ object TestGraphs {
     // scan left to join the left values and the right summing result stream
     val resultStream = loopJoinInScala(leftAndRight, flatMapValuesFn)
 
-    val leftStream = resultStream
-      .flatMap {
-        case (k, lopts) =>
-          lopts.map {
-            case ((optuoptv, _)) =>
-              (k, optuoptv)
-          }
-      }
+    val leftStream = resultStream.flatMap {
+      case (k, lopts) =>
+        lopts.map {
+          case ((optuoptv, _)) =>
+            (k, optuoptv)
+        }
+    }
 
-    val rightStream = resultStream
-      .flatMap {
-        case (k, lopts) =>
-          lopts.map {
-            case ((_, optoptv)) =>
-              (k, optoptv)
-          }
-      }
+    val rightStream = resultStream.flatMap {
+      case (k, lopts) =>
+        lopts.map {
+          case ((_, optoptv)) =>
+            (k, optoptv)
+        }
+    }
 
     // compute the first store using the join stream as input
     val storeAfterFlatMap = MapAlgebra.sumByKey(
@@ -557,14 +550,13 @@ object TestGraphs {
 
     // compute the final store result after join
     val storeAfterJoin = MapAlgebra.sumByKey(
-      rightStream
-        .flatMap {
-          case (k, opt) =>
-            opt.map {
-              case (time, (optv, v)) =>
-                (k, v)
-            }
-        } // drop time and opt[v]
+      rightStream.flatMap {
+        case (k, opt) =>
+          opt.map {
+            case (time, (optv, v)) =>
+              (k, v)
+          }
+      } // drop time and opt[v]
     )
 
     (storeAfterJoin, storeAfterFlatMap)
@@ -587,9 +579,7 @@ object TestGraphs {
       .flatMapValues(valuesFlatMap1)
       .sumByKey(storeAndService)
 
-    val indepSum: Summer[P, K, V1] = join
-      .flatMap(flatMapFn)
-      .sumByKey(store)
+    val indepSum: Summer[P, K, V1] = join.flatMap(flatMapFn).sumByKey(store)
 
     indepSum.also(dependentSum)
   }
@@ -682,9 +672,7 @@ object TestGraphs {
   def mapOnlyJob[P <: Platform[P], T, U](
       source: Producer[P, T],
       sink: P#Sink[U])(mapOp: T => TraversableOnce[U]): TailProducer[P, U] =
-    source
-      .flatMap(mapOp)
-      .write(sink)
+    source.flatMap(mapOp).write(sink)
 
   def lookupJob[P <: Platform[P], T, U](
       source: Producer[P, T],
@@ -699,7 +687,8 @@ object TestGraphs {
       .write(sink)
 
   def lookupJobInScala[T, U](in: List[T], srv: (T) => Option[U]): List[(T, U)] =
-    in.map { t =>
+    in
+      .map { t =>
         (t, srv(t))
       }
       .collect {
@@ -712,11 +701,7 @@ object TestGraphs {
       store: P#Store[K, V],
       fn: K => List[K2],
       store2: P#Store[K2, V]): TailProducer[P, (K2, (Option[V], V))] =
-    source
-      .sumByKey(store)
-      .mapValues(_._2)
-      .flatMapKeys(fn)
-      .sumByKey(store2)
+    source.sumByKey(store).mapValues(_._2).flatMapKeys(fn).sumByKey(store2)
 
   def twoSumByKeyInScala[K1, V: Semigroup, K2](
       in: List[(K1, V)],
@@ -733,12 +718,14 @@ object TestGraphs {
           lv.map((k, _))
       }
     val v2 =
-      sumStream.map {
-        case (k, (_, v)) =>
-          fn(k).map {
-            (_, v)
-          }
-      }.flatten
+      sumStream
+        .map {
+          case (k, (_, v)) =>
+            fn(k).map {
+              (_, v)
+            }
+        }
+        .flatten
     val sum2 = MapAlgebra.sumByKey(v2)
     (sum1, sum2)
   }
@@ -787,21 +774,23 @@ class TestGraphs[P <: Platform[
     // Use the supplied platform to execute the source into the
     // supplied store.
     val plan = platform.plan {
-      TestGraphs.diamondJob(sourceMaker(items), currentSink, currentStore)(fnA)(
-        fnB)
+      TestGraphs
+        .diamondJob(sourceMaker(items), currentSink, currentStore)(fnA)(fnB)
     }
     run(platform, plan)
     val lookupFn = toLookupFn(currentStore)
-    TestGraphs.diamondJobInScala(items)(fnA)(fnB).forall {
-      case (k, v) =>
-        val lv = lookupFn(k).getOrElse(Monoid.zero)
-        val eqv = Equiv[V].equiv(v, lv)
-        if (!eqv) {
-          println(
-            s"in diamondChecker: $k, $v is scala result, but platform gave $lv")
-        }
-        eqv
-    } && toSinkChecker(currentSink, items)
+    TestGraphs
+      .diamondJobInScala(items)(fnA)(fnB)
+      .forall {
+        case (k, v) =>
+          val lv = lookupFn(k).getOrElse(Monoid.zero)
+          val eqv = Equiv[V].equiv(v, lv)
+          if (!eqv) {
+            println(
+              s"in diamondChecker: $k, $v is scala result, but platform gave $lv")
+          }
+          eqv
+      } && toSinkChecker(currentSink, items)
   }
 
   /**
@@ -824,11 +813,13 @@ class TestGraphs[P <: Platform[
     }
     run(platform, plan)
     val lookupFn = toLookupFn(currentStore)
-    TestGraphs.singleStepInScala(items)(fn).forall {
-      case (k, v) =>
-        val lv = lookupFn(k).getOrElse(Monoid.zero)
-        Equiv[V].equiv(v, lv)
-    }
+    TestGraphs
+      .singleStepInScala(items)(fn)
+      .forall {
+        case (k, v) =>
+          val lv = lookupFn(k).getOrElse(Monoid.zero)
+          Equiv[V].equiv(v, lv)
+      }
   }
 
   /**

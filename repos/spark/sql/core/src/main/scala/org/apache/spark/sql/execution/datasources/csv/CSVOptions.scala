@@ -73,8 +73,8 @@ private[sql] class CSVOptions(
     }
   }
 
-  val delimiter = CSVTypeCast.toChar(
-    parameters.getOrElse("sep", parameters.getOrElse("delimiter", ",")))
+  val delimiter = CSVTypeCast
+    .toChar(parameters.getOrElse("sep", parameters.getOrElse("delimiter", ",")))
   private val parseMode = parameters.getOrElse("mode", "PERMISSIVE")
   val charset = parameters.getOrElse(
     "encoding",

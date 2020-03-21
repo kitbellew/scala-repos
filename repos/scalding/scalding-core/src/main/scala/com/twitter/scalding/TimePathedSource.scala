@@ -88,10 +88,9 @@ abstract class TimeSeqPathedSource(
     extends FileSource {
 
   override def hdfsPaths =
-    patterns
-      .flatMap { pattern: String =>
-        Globifier(pattern)(tz).globify(dateRange)
-      }
+    patterns.flatMap { pattern: String =>
+      Globifier(pattern)(tz).globify(dateRange)
+    }
 
   /**
     * Override this if you have for instance an hourly pattern but want to run every 6 hours.
@@ -125,8 +124,9 @@ abstract class TimeSeqPathedSource(
     getPathStatuses(conf).forall {
       case (path, good) =>
         if (!good) {
-          System.err.println(
-            "[ERROR] Path: " + path + " is missing in: " + toString)
+          System
+            .err
+            .println("[ERROR] Path: " + path + " is missing in: " + toString)
         }
         good
     }
@@ -164,10 +164,9 @@ abstract class TimePathedSource(
     TimePathedSource.writePathFor(pattern, dateRange, tz)
 
   override def localPaths =
-    patterns
-      .flatMap { pattern: String =>
-        Globifier(pattern)(tz).globify(dateRange)
-      }
+    patterns.flatMap { pattern: String =>
+      Globifier(pattern)(tz).globify(dateRange)
+    }
 }
 
 /*
@@ -180,11 +179,8 @@ abstract class MostRecentGoodSource(p: String, dr: DateRange, t: TimeZone)
     "MostRecentGoodSource(" + p + ", " + dr + ", " + t + ")"
 
   override protected def goodHdfsPaths(hdfsMode: Hdfs) =
-    getPathStatuses(hdfsMode.jobConf).toList.reverse
-      .find(_._2)
-      .map(_._1)
+    getPathStatuses(hdfsMode.jobConf).toList.reverse.find(_._2).map(_._1)
 
   override def hdfsReadPathsAreGood(conf: Configuration) =
-    getPathStatuses(conf)
-      .exists(_._2)
+    getPathStatuses(conf).exists(_._2)
 }

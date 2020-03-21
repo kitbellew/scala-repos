@@ -57,10 +57,10 @@ class ReplayListenerSuite extends SparkFunSuite with BeforeAndAfter {
       None)
     val applicationEnd = SparkListenerApplicationEnd(1000L)
     // scalastyle:off println
-    writer.println(
-      compact(render(JsonProtocol.sparkEventToJson(applicationStart))))
-    writer.println(
-      compact(render(JsonProtocol.sparkEventToJson(applicationEnd))))
+    writer
+      .println(compact(render(JsonProtocol.sparkEventToJson(applicationStart))))
+    writer
+      .println(compact(render(JsonProtocol.sparkEventToJson(applicationEnd))))
     // scalastyle:on println
     writer.close()
 
@@ -76,11 +76,11 @@ class ReplayListenerSuite extends SparkFunSuite with BeforeAndAfter {
     }
     assert(eventMonster.loggedEvents.size === 2)
     assert(
-      eventMonster.loggedEvents(0) === JsonProtocol.sparkEventToJson(
-        applicationStart))
+      eventMonster.loggedEvents(0) === JsonProtocol
+        .sparkEventToJson(applicationStart))
     assert(
-      eventMonster.loggedEvents(1) === JsonProtocol.sparkEventToJson(
-        applicationEnd))
+      eventMonster.loggedEvents(1) === JsonProtocol
+        .sparkEventToJson(applicationEnd))
   }
 
   // This assumes the correctness of EventLoggingListener
@@ -90,9 +90,11 @@ class ReplayListenerSuite extends SparkFunSuite with BeforeAndAfter {
 
   // This assumes the correctness of EventLoggingListener
   test("End-to-end replay with compression") {
-    CompressionCodec.ALL_COMPRESSION_CODECS.foreach { codec =>
-      testApplicationReplay(Some(codec))
-    }
+    CompressionCodec
+      .ALL_COMPRESSION_CODECS
+      .foreach { codec =>
+        testApplicationReplay(Some(codec))
+      }
   }
 
   /* ----------------- *
@@ -127,9 +129,8 @@ class ReplayListenerSuite extends SparkFunSuite with BeforeAndAfter {
     assert(!eventLog.isDirectory)
 
     // Replay events
-    val logData = EventLoggingListener.openEventLog(
-      eventLog.getPath(),
-      fileSystem)
+    val logData = EventLoggingListener
+      .openEventLog(eventLog.getPath(), fileSystem)
     val eventMonster = new EventMonster(conf)
     try {
       val replayer = new ReplayListenerBus()
@@ -143,13 +144,15 @@ class ReplayListenerSuite extends SparkFunSuite with BeforeAndAfter {
     assert(sc.eventLogger.isDefined)
     val originalEvents = sc.eventLogger.get.loggedEvents
     val replayedEvents = eventMonster.loggedEvents
-    originalEvents.zip(replayedEvents).foreach {
-      case (e1, e2) =>
-        // Don't compare the JSON here because accumulators in StageInfo may be out of order
-        JsonProtocolSuite.assertEquals(
-          JsonProtocol.sparkEventFromJson(e1),
-          JsonProtocol.sparkEventFromJson(e2))
-    }
+    originalEvents
+      .zip(replayedEvents)
+      .foreach {
+        case (e1, e2) =>
+          // Don't compare the JSON here because accumulators in StageInfo may be out of order
+          JsonProtocolSuite.assertEquals(
+            JsonProtocol.sparkEventFromJson(e1),
+            JsonProtocol.sparkEventFromJson(e2))
+      }
   }
 
   /**

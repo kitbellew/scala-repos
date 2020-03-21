@@ -92,15 +92,19 @@ class FlowSectionSpec extends AkkaSpec(FlowSectionSpec.config) {
 
       Source(0 to 2).via(f1).via(f2).runWith(Sink.ignore)
 
-      defaultDispatcher.receiveN(3).foreach {
-        case s: String ⇒
-          s should include("akka.test.stream-dispatcher")
-      }
+      defaultDispatcher
+        .receiveN(3)
+        .foreach {
+          case s: String ⇒
+            s should include("akka.test.stream-dispatcher")
+        }
 
-      customDispatcher.receiveN(3).foreach {
-        case s: String ⇒
-          s should include("my-dispatcher1")
-      }
+      customDispatcher
+        .receiveN(3)
+        .foreach {
+          case s: String ⇒
+            s should include("my-dispatcher1")
+        }
     }
 
     def sendThreadNameTo[T](probe: ActorRef)(element: T) = {

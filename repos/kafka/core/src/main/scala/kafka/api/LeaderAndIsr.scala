@@ -88,7 +88,10 @@ case class PartitionStateInfo(
         4 /* leader broker id */ +
         4 /* leader epoch */ +
         4 /* number of replicas in isr */ +
-        4 * leaderIsrAndControllerEpoch.leaderAndIsr.isr.size /* replicas in isr */ +
+        4 * leaderIsrAndControllerEpoch
+          .leaderAndIsr
+          .isr
+          .size /* replicas in isr */ +
         4 /* zk version */ +
         4 /* replication factor */ +
         allReplicas.size * 4
@@ -97,8 +100,8 @@ case class PartitionStateInfo(
 
   override def toString(): String = {
     val partitionStateInfo = new StringBuilder
-    partitionStateInfo.append(
-      "(LeaderAndIsrInfo:" + leaderIsrAndControllerEpoch.toString)
+    partitionStateInfo
+      .append("(LeaderAndIsrInfo:" + leaderIsrAndControllerEpoch.toString)
     partitionStateInfo.append(",ReplicationFactor:" + replicationFactor + ")")
     partitionStateInfo.append(",AllReplicas:" + allReplicas.mkString(",") + ")")
     partitionStateInfo.toString()

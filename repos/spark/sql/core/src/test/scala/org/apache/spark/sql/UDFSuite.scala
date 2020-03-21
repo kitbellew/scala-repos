@@ -65,7 +65,8 @@ class UDFSuite extends QueryTest with SharedSQLContext {
     withTempPath { dir =>
       val data = sparkContext.parallelize(0 to 10, 2).toDF("id")
       data.write.parquet(dir.getCanonicalPath)
-      sqlContext.read
+      sqlContext
+        .read
         .parquet(dir.getCanonicalPath)
         .registerTempTable("test_table")
       val answer = sql("select input_file_name() from test_table")
@@ -103,11 +104,13 @@ class UDFSuite extends QueryTest with SharedSQLContext {
   }
 
   test("ZeroArgument UDF") {
-    sqlContext.udf.register(
-      "random0",
-      () => {
-        Math.random()
-      })
+    sqlContext
+      .udf
+      .register(
+        "random0",
+        () => {
+          Math.random()
+        })
     assert(sql("SELECT random0()").head().getDouble(0) >= 0.0)
   }
 
@@ -117,11 +120,13 @@ class UDFSuite extends QueryTest with SharedSQLContext {
   }
 
   test("UDF in a WHERE") {
-    sqlContext.udf.register(
-      "oneArgFilter",
-      (n: Int) => {
-        n > 80
-      })
+    sqlContext
+      .udf
+      .register(
+        "oneArgFilter",
+        (n: Int) => {
+          n > 80
+        })
 
     val df = sparkContext
       .parallelize((1 to 100).map(i => TestData(i, i.toString)))
@@ -133,11 +138,13 @@ class UDFSuite extends QueryTest with SharedSQLContext {
   }
 
   test("UDF in a HAVING") {
-    sqlContext.udf.register(
-      "havingFilter",
-      (n: Long) => {
-        n > 5
-      })
+    sqlContext
+      .udf
+      .register(
+        "havingFilter",
+        (n: Long) => {
+          n > 5
+        })
 
     val df = Seq(
       ("red", 1),
@@ -158,11 +165,13 @@ class UDFSuite extends QueryTest with SharedSQLContext {
   }
 
   test("UDF in a GROUP BY") {
-    sqlContext.udf.register(
-      "groupFunction",
-      (n: Int) => {
-        n > 10
-      })
+    sqlContext
+      .udf
+      .register(
+        "groupFunction",
+        (n: Int) => {
+          n > 10
+        })
 
     val df = Seq(
       ("red", 1),
@@ -181,26 +190,34 @@ class UDFSuite extends QueryTest with SharedSQLContext {
   }
 
   test("UDFs everywhere") {
-    sqlContext.udf.register(
-      "groupFunction",
-      (n: Int) => {
-        n > 10
-      })
-    sqlContext.udf.register(
-      "havingFilter",
-      (n: Long) => {
-        n > 2000
-      })
-    sqlContext.udf.register(
-      "whereFilter",
-      (n: Int) => {
-        n < 150
-      })
-    sqlContext.udf.register(
-      "timesHundred",
-      (n: Long) => {
-        n * 100
-      })
+    sqlContext
+      .udf
+      .register(
+        "groupFunction",
+        (n: Int) => {
+          n > 10
+        })
+    sqlContext
+      .udf
+      .register(
+        "havingFilter",
+        (n: Long) => {
+          n > 2000
+        })
+    sqlContext
+      .udf
+      .register(
+        "whereFilter",
+        (n: Int) => {
+          n < 150
+        })
+    sqlContext
+      .udf
+      .register(
+        "timesHundred",
+        (n: Long) => {
+          n * 100
+        })
 
     val df = Seq(
       ("red", 1),
@@ -221,9 +238,11 @@ class UDFSuite extends QueryTest with SharedSQLContext {
   }
 
   test("struct UDF") {
-    sqlContext.udf.register(
-      "returnStruct",
-      (f1: String, f2: String) => FunctionResult(f1, f2))
+    sqlContext
+      .udf
+      .register(
+        "returnStruct",
+        (f1: String, f2: String) => FunctionResult(f1, f2))
 
     val result = sql("SELECT returnStruct('test', 'test2') as ret")
       .select($"ret.f1")
@@ -246,36 +265,48 @@ class UDFSuite extends QueryTest with SharedSQLContext {
   }
 
   test("udf in different types") {
-    sqlContext.udf.register(
-      "testDataFunc",
-      (n: Int, s: String) => {
-        (n, s)
-      })
-    sqlContext.udf.register(
-      "decimalDataFunc",
-      (a: java.math.BigDecimal, b: java.math.BigDecimal) => {
-        (a, b)
-      })
-    sqlContext.udf.register(
-      "binaryDataFunc",
-      (a: Array[Byte], b: Int) => {
-        (a, b)
-      })
-    sqlContext.udf.register(
-      "arrayDataFunc",
-      (data: Seq[Int], nestedData: Seq[Seq[Int]]) => {
-        (data, nestedData)
-      })
-    sqlContext.udf.register(
-      "mapDataFunc",
-      (data: scala.collection.Map[Int, String]) => {
-        data
-      })
-    sqlContext.udf.register(
-      "complexDataFunc",
-      (m: Map[String, Int], a: Seq[Int], b: Boolean) => {
-        (m, a, b)
-      })
+    sqlContext
+      .udf
+      .register(
+        "testDataFunc",
+        (n: Int, s: String) => {
+          (n, s)
+        })
+    sqlContext
+      .udf
+      .register(
+        "decimalDataFunc",
+        (a: java.math.BigDecimal, b: java.math.BigDecimal) => {
+          (a, b)
+        })
+    sqlContext
+      .udf
+      .register(
+        "binaryDataFunc",
+        (a: Array[Byte], b: Int) => {
+          (a, b)
+        })
+    sqlContext
+      .udf
+      .register(
+        "arrayDataFunc",
+        (data: Seq[Int], nestedData: Seq[Seq[Int]]) => {
+          (data, nestedData)
+        })
+    sqlContext
+      .udf
+      .register(
+        "mapDataFunc",
+        (data: scala.collection.Map[Int, String]) => {
+          data
+        })
+    sqlContext
+      .udf
+      .register(
+        "complexDataFunc",
+        (m: Map[String, Int], a: Seq[Int], b: Boolean) => {
+          (m, a, b)
+        })
 
     checkAnswer(
       sql(
@@ -317,11 +348,13 @@ class UDFSuite extends QueryTest with SharedSQLContext {
 
   test(
     "SPARK-11716 UDFRegistration does not include the input data type in returned UDF") {
-    val myUDF = sqlContext.udf.register(
-      "testDataFunc",
-      (n: Int, s: String) => {
-        (n, s.toInt)
-      })
+    val myUDF = sqlContext
+      .udf
+      .register(
+        "testDataFunc",
+        (n: Int, s: String) => {
+          (n, s.toInt)
+        })
 
     // Without the fix, this will fail because we fail to cast data type of b to string
     // because myUDF does not know its input data type. With the fix, this query should not

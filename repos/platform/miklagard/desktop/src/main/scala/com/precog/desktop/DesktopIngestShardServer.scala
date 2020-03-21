@@ -61,8 +61,8 @@ object DesktopIngestShardServer
   val caveatMessage = None
 
   val actorSystem = ActorSystem("desktopExecutorActorSystem")
-  implicit val executionContext = ExecutionContext.defaultExecutionContext(
-    actorSystem)
+  implicit val executionContext = ExecutionContext
+    .defaultExecutionContext(actorSystem)
   implicit val M: Monad[Future] = new FutureMonad(executionContext)
 
   def runGUI(config: Configuration): Option[Future[PrecogUnit]] = {
@@ -116,8 +116,9 @@ object DesktopIngestShardServer
 
               appFrame.pack()
 
-              val iconUrl = ClassLoader.getSystemClassLoader.getResource(
-                "LargeIcon.png")
+              val iconUrl = ClassLoader
+                .getSystemClassLoader
+                .getResource("LargeIcon.png")
               logger.debug("Loaded icon: " + iconUrl)
               appFrame.setIconImage(Toolkit.getDefaultToolkit.getImage(iconUrl))
 
@@ -157,18 +158,20 @@ object DesktopIngestShardServer
       throw new Exception("Time out waiting on kafka port to open")
     }
 
-    Runtime.getRuntime.addShutdownHook(
-      new Thread {
-        override def run() = {
-          logger.info("Shutting down embedded kafka instances")
-          kafka.shutdown
-          kafka.awaitShutdown
+    Runtime
+      .getRuntime
+      .addShutdownHook(
+        new Thread {
+          override def run() = {
+            logger.info("Shutting down embedded kafka instances")
+            kafka.shutdown
+            kafka.awaitShutdown
 
-          logger.info("Kafka shutdown complete, stopping ZK")
-          zookeeper.stop
-          logger.info("ZK shutdown complete")
-        }
-      })
+            logger.info("Kafka shutdown complete, stopping ZK")
+            zookeeper.stop
+            logger.info("ZK shutdown complete")
+          }
+        })
 
     guiNotifier.foreach(_("Internal services started, bringing up Precog"))
 
@@ -176,7 +179,8 @@ object DesktopIngestShardServer
       _.onSuccess {
         case (runningState, stoppable) =>
           guiNotifier.foreach(_("Precog startup complete"))
-      }.map { _ =>
+      }
+      .map { _ =>
         PrecogUnit
       }
     }
@@ -196,7 +200,8 @@ object DesktopIngestShardServer
       jobManager)
 
     val stoppable = Stoppable.fromFuture {
-      platform.shutdown
+      platform
+        .shutdown
         .onComplete { _ =>
           logger.info("Platform shutdown complete")
         }
@@ -270,8 +275,8 @@ object DesktopIngestShardServer
 
   def startZookeeperStandalone(config: Configuration): EmbeddedZK = {
     val serverConfig = new ServerConfig
-    serverConfig.parse(
-      Array[String](config[String]("port"), config[String]("dataDir")))
+    serverConfig
+      .parse(Array[String](config[String]("port"), config[String]("dataDir")))
 
     val server = new EmbeddedZK
 
@@ -351,7 +356,10 @@ object LaunchLabcoat {
     @tailrec
     def doLaunch() {
       if (waitForPorts) {
-        java.awt.Desktop.getDesktop
+        java
+          .awt
+          .Desktop
+          .getDesktop
           .browse(new java.net.URI("http://localhost:%s".format(jettyPort)))
       } else {
         import javax.swing.JOptionPane

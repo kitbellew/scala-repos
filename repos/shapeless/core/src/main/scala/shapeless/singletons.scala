@@ -408,9 +408,11 @@ class SingletonTypeMacros(val c: whitebox.Context)
     val tTpe = tTag.tpe
     val tc = tcTag.tpe.typeConstructor
     val tcParam = tc.typeParams(1)
-    val tcTpe = c.internal.polyType(
-      List(tcParam),
-      appliedType(tc, List(tTpe, tcParam.asType.toType)))
+    val tcTpe = c
+      .internal
+      .polyType(
+        List(tcParam),
+        appliedType(tc, List(tTpe, tcParam.asType.toType)))
     convertInstanceImplNatAux(i, tcTpe)
   }
 

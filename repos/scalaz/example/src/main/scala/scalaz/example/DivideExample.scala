@@ -9,8 +9,8 @@ object DivideExample {
   final case class User(id: Int, name: String)
 
   object User {
-    implicit val instance: Order[User] = Divide[Order].deriving2(
-      Function.unlift(unapply))
+    implicit val instance: Order[User] = Divide[Order]
+      .deriving2(Function.unlift(unapply))
   }
 
 }

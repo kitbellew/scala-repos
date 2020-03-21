@@ -185,9 +185,8 @@ final class GBTClassifier @Since("1.4.0") (
     val numFeatures = oldDataset.first().features.size
     val boostingStrategy = super
       .getOldBoostingStrategy(categoricalFeatures, OldAlgo.Classification)
-    val (baseLearners, learnerWeights) = GradientBoostedTrees.run(
-      oldDataset,
-      boostingStrategy)
+    val (baseLearners, learnerWeights) = GradientBoostedTrees
+      .run(oldDataset, boostingStrategy)
     new GBTClassificationModel(uid, baseLearners, learnerWeights, numFeatures)
   }
 
@@ -201,8 +200,8 @@ object GBTClassifier {
   // The losses below should be lowercase.
   /** Accessor for supported loss settings: logistic */
   @Since("1.4.0")
-  final val supportedLossTypes: Array[String] = Array("logistic").map(
-    _.toLowerCase)
+  final val supportedLossTypes: Array[String] = Array("logistic")
+    .map(_.toLowerCase)
 }
 
 /**
@@ -261,8 +260,8 @@ final class GBTClassificationModel private[ml] (
   override protected def predict(features: Vector): Double = {
     // TODO: When we add a generic Boosting class, handle transform there?  SPARK-7129
     // Classifies by thresholding sum of weighted tree predictions
-    val treePredictions = _trees.map(
-      _.rootNode.predictImpl(features).prediction)
+    val treePredictions = _trees
+      .map(_.rootNode.predictImpl(features).prediction)
     val prediction = blas.ddot(numTrees, treePredictions, 1, _treeWeights, 1)
     if (prediction > 0.0)
       1.0
@@ -301,10 +300,12 @@ private[ml] object GBTClassificationModel {
       "Cannot convert GradientBoostedTreesModel" +
         s" with algo=${oldModel.algo} (old API) to GBTClassificationModel (new API)."
     )
-    val newTrees = oldModel.trees.map { tree =>
-      // parent for each tree is null since there is no good way to set this.
-      DecisionTreeRegressionModel.fromOld(tree, null, categoricalFeatures)
-    }
+    val newTrees = oldModel
+      .trees
+      .map { tree =>
+        // parent for each tree is null since there is no good way to set this.
+        DecisionTreeRegressionModel.fromOld(tree, null, categoricalFeatures)
+      }
     val uid =
       if (parent != null)
         parent.uid

@@ -104,10 +104,13 @@ object CsvParser {
 
     // first line is either header, or needs to be processed
     val fields = Vec(firstLine).take(locs)
-    fields.toSeq.zipWithIndex.map {
-      case (s, i) =>
-        addToBuffer(s, i)
-    }
+    fields
+      .toSeq
+      .zipWithIndex
+      .map {
+        case (s, i) =>
+          addToBuffer(s, i)
+      }
 
     // parse remaining rows
     var str: String = null

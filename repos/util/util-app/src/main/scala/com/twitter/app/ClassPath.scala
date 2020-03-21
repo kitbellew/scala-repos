@@ -171,9 +171,8 @@ private object ClassPath {
         Some(uri)
       else
         Some(
-          new File(
-            jarFile.getParentFile,
-            path.replace('/', File.separatorChar)).toURI)
+          new File(jarFile.getParentFile, path.replace('/', File.separatorChar))
+            .toURI)
     } catch {
       case _: URISyntaxException =>
         None

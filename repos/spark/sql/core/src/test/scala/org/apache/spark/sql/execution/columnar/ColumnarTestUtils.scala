@@ -77,8 +77,8 @@ object ColumnarTestUtils {
         case MAP(_) =>
           ArrayBasedMapData(
             Map(
-              Random.nextInt() -> UTF8String.fromString(
-                Random.nextString(Random.nextInt(32)))))
+              Random.nextInt() -> UTF8String
+                .fromString(Random.nextString(Random.nextInt(32)))))
         case _ =>
           throw new IllegalArgumentException(s"Unknown column type $columnType")
       }
@@ -113,10 +113,12 @@ object ColumnarTestUtils {
 
   def makeRandomRow(columnTypes: Seq[ColumnType[_]]): InternalRow = {
     val row = new GenericMutableRow(columnTypes.length)
-    makeRandomValues(columnTypes).zipWithIndex.foreach {
-      case (value, index) =>
-        row(index) = value
-    }
+    makeRandomValues(columnTypes)
+      .zipWithIndex
+      .foreach {
+        case (value, index) =>
+          row(index) = value
+      }
     row
   }
 

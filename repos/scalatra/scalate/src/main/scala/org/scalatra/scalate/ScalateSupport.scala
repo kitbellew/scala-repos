@@ -37,11 +37,13 @@ object ScalateSupport {
   def scalateTemplateEngine(
       ctx: String,
       init: => TemplateEngine): TemplateEngine = {
-    templateEngineInstances.get(ctx).getOrElse {
-      val engine = init
-      engine.workingDirectory = new java.io.File(engine.workingDirectory, ctx)
-      templateEngineInstances.putIfAbsent(ctx, engine).getOrElse(engine)
-    }
+    templateEngineInstances
+      .get(ctx)
+      .getOrElse {
+        val engine = init
+        engine.workingDirectory = new java.io.File(engine.workingDirectory, ctx)
+        templateEngineInstances.putIfAbsent(ctx, engine).getOrElse(engine)
+      }
   }
 }
 

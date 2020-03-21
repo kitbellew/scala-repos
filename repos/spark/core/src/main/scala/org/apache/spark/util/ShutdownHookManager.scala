@@ -59,15 +59,17 @@ private[spark] object ShutdownHookManager extends Logging {
     logInfo("Shutdown hook called")
     // we need to materialize the paths to delete because deleteRecursively removes items from
     // shutdownDeletePaths as we are traversing through it.
-    shutdownDeletePaths.toArray.foreach { dirPath =>
-      try {
-        logInfo("Deleting directory " + dirPath)
-        Utils.deleteRecursively(new File(dirPath))
-      } catch {
-        case e: Exception =>
-          logError(s"Exception while deleting Spark temp dir: $dirPath", e)
+    shutdownDeletePaths
+      .toArray
+      .foreach { dirPath =>
+        try {
+          logInfo("Deleting directory " + dirPath)
+          Utils.deleteRecursively(new File(dirPath))
+        } catch {
+          case e: Exception =>
+            logError(s"Exception while deleting Spark temp dir: $dirPath", e)
+        }
       }
-    }
   }
 
   // Register the path to be deleted via shutdown hook
@@ -184,7 +186,11 @@ private[util] class SparkShutdownHookManager {
       new Runnable() {
         override def run(): Unit = runAll()
       }
-    org.apache.hadoop.util.ShutdownHookManager
+    org
+      .apache
+      .hadoop
+      .util
+      .ShutdownHookManager
       .get()
       .addShutdownHook(hookTask, FileSystem.SHUTDOWN_HOOK_PRIORITY + 30)
   }

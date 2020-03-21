@@ -103,26 +103,28 @@ class ScalaTypeValidator(
       commonParent: PsiElement,
       name: String): ArrayBuffer[(PsiNamedElement, String)] = {
     val buf = new ArrayBuffer[(PsiNamedElement, String)]
-    commonParent.depthFirst.foreach {
-      case typeAlias: ScTypeAlias if typeAlias.getName == name =>
-        buf += ((typeAlias, messageForTypeAliasMember(name)))
-        true
-      case typeParametr: ScTypeParam if typeParametr.getName == name =>
-        buf += ((typeParametr, messageForTypeAliasMember(name)))
-        true
-      case typeDefinition: ScTypeDefinition =>
-        if ((typeDefinition.getName == name) &&
-            (
-              PsiTreeUtil.getParentOfType(
-                typeDefinition,
-                classOf[ScFunctionDefinition]) == null
-            )) {
-          buf += ((typeDefinition, messageForClassMember(name)))
-        }
-        true
-      case _ =>
-        true
-    }
+    commonParent
+      .depthFirst
+      .foreach {
+        case typeAlias: ScTypeAlias if typeAlias.getName == name =>
+          buf += ((typeAlias, messageForTypeAliasMember(name)))
+          true
+        case typeParametr: ScTypeParam if typeParametr.getName == name =>
+          buf += ((typeParametr, messageForTypeAliasMember(name)))
+          true
+        case typeDefinition: ScTypeDefinition =>
+          if ((typeDefinition.getName == name) &&
+              (
+                PsiTreeUtil.getParentOfType(
+                  typeDefinition,
+                  classOf[ScFunctionDefinition]) == null
+              )) {
+            buf += ((typeDefinition, messageForClassMember(name)))
+          }
+          true
+        case _ =>
+          true
+      }
     buf
   }
 
@@ -132,12 +134,10 @@ class ScalaTypeValidator(
   }
 
   private def messageForTypeAliasMember(name: String) =
-    ScalaBundle.message(
-      "introduced.typealias.will.conflict.with.type.name",
-      name)
+    ScalaBundle
+      .message("introduced.typealias.will.conflict.with.type.name", name)
 
   private def messageForClassMember(name: String) =
-    ScalaBundle.message(
-      "introduced.typealias.will.conflict.with.class.name",
-      name)
+    ScalaBundle
+      .message("introduced.typealias.will.conflict.with.class.name", name)
 }

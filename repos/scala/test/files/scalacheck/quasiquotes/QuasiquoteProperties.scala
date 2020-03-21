@@ -23,7 +23,10 @@ trait Helpers {
 
   object simplify extends Transformer {
     object SimplifiedName {
-      val st = scala.reflect.runtime.universe
+      val st = scala
+        .reflect
+        .runtime
+        .universe
         .asInstanceOf[scala.reflect.internal.SymbolTable]
       val FreshName = new st.FreshNameExtractor
       def unapply[T <: Name](name: T): Option[T] =
@@ -60,18 +63,22 @@ trait Helpers {
 
   implicit class TestSimilarListTree(lst: List[Tree]) {
     def ≈(other: List[Tree]) =
-      (lst.length == other.length) && lst.zip(other).forall {
-        case (t1, t2) =>
-          t1 ≈ t2
-      }
+      (lst.length == other.length) && lst
+        .zip(other)
+        .forall {
+          case (t1, t2) =>
+            t1 ≈ t2
+        }
   }
 
   implicit class TestSimilarListListTree(lst: List[List[Tree]]) {
     def ≈(other: List[List[Tree]]) =
-      (lst.length == other.length) && lst.zip(other).forall {
-        case (l1, l2) =>
-          l1 ≈ l2
-      }
+      (lst.length == other.length) && lst
+        .zip(other)
+        .forall {
+          case (l1, l2) =>
+            l1 ≈ l2
+        }
   }
 
   implicit class TestSimilarName(name: Name) {

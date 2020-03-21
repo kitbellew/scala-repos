@@ -124,8 +124,9 @@ class ScParameterizedType private (
     this match {
       case ScParameterizedType(ScDesignatorType(ta: ScTypeAlias), args) =>
         val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
-          ta.typeParameters.map(tp =>
-            (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
+          ta
+            .typeParameters
+            .map(tp => (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
           args)
         Some(
           AliasType(
@@ -137,8 +138,9 @@ class ScParameterizedType private (
         val ta: ScTypeAlias = p.actualElement.asInstanceOf[ScTypeAlias]
         val subst: ScSubstitutor = p.actualSubst
         val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
-          ta.typeParameters.map(tp =>
-            (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
+          ta
+            .typeParameters
+            .map(tp => (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
           args)
         val s = subst.followed(genericSubst)
         Some(
@@ -245,32 +247,36 @@ class ScParameterizedType private (
         val des =
           ScType.extractDesignated(designator, withoutAliases = false) match {
             case Some((n: ScTypeParametersOwner, _)) =>
-              n.typeParameters.map {
-                case tp if tp.isContravariant =>
-                  -1
-                case tp if tp.isCovariant =>
-                  1
-                case _ =>
-                  0
-              }
+              n
+                .typeParameters
+                .map {
+                  case tp if tp.isContravariant =>
+                    -1
+                  case tp if tp.isCovariant =>
+                    1
+                  case _ =>
+                    0
+                }
             case _ =>
               Seq.empty
           }
         ScParameterizedType(
           designator
             .recursiveVarianceUpdateModifiable(newData, update, variance),
-          typeArgs.zipWithIndex.map {
-            case (ta, i) =>
-              val v =
-                if (i < des.length)
-                  des(i)
-                else
-                  0
-              ta.recursiveVarianceUpdateModifiable(
-                newData,
-                update,
-                v * variance)
-          }
+          typeArgs
+            .zipWithIndex
+            .map {
+              case (ta, i) =>
+                val v =
+                  if (i < des.length)
+                    des(i)
+                  else
+                    0
+                ta.recursiveVarianceUpdateModifiable(
+                  newData,
+                  update,
+                  v * variance)
+            }
         )
     }
   }
@@ -287,19 +293,19 @@ class ScParameterizedType private (
         val subst =
           new ScSubstitutor(
             Map(
-              tpt.args.zip(args).map {
-                case (tpt: ScTypeParameterType, tp: ScType) =>
-                  (
-                    (tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)),
-                    tp)
-              }: _*),
+              tpt
+                .args
+                .zip(args)
+                .map {
+                  case (tpt: ScTypeParameterType, tp: ScType) =>
+                    (
+                      (tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)),
+                      tp)
+                }: _*),
             Map.empty,
             None)
-        var t: (Boolean, ScUndefinedSubstitutor) = Conformance.conformsInner(
-          subst.subst(upper),
-          r,
-          Set.empty,
-          uSubst)
+        var t: (Boolean, ScUndefinedSubstitutor) = Conformance
+          .conformsInner(subst.subst(upper), r, Set.empty, uSubst)
         if (!t._1)
           return (false, uSubst)
         t = Conformance.conformsInner(r, subst.subst(lower), Set.empty, t._2)
@@ -347,11 +353,8 @@ class ScParameterizedType private (
       case (
             ScParameterizedType(_, _),
             ScParameterizedType(designator1, typeArgs1)) =>
-        var t = Equivalence.equivInner(
-          designator,
-          designator1,
-          undefinedSubst,
-          falseUndef)
+        var t = Equivalence
+          .equivInner(designator, designator1, undefinedSubst, falseUndef)
         if (!t._1)
           return (false, undefinedSubst)
         undefinedSubst = t._2
@@ -394,8 +397,8 @@ class ScParameterizedType private (
   private def getStandardType(
       prefix: String): Option[(ScTypeDefinition, Seq[ScType])] = {
     def startsWith(clazz: PsiClass, qualNamePrefix: String) =
-      clazz.qualifiedName != null && clazz.qualifiedName.startsWith(
-        qualNamePrefix)
+      clazz
+        .qualifiedName != null && clazz.qualifiedName.startsWith(qualNamePrefix)
 
     ScType.extractClassType(designator) match {
       case Some((clazz: ScTypeDefinition, sub)) if startsWith(clazz, prefix) =>
@@ -510,9 +513,12 @@ case class ScTypeParameterType(
       },
       ptp match {
         case tp: ScTypeParam =>
-          tp.typeParameters.toList.map {
-            new ScTypeParameterType(_, s)
-          }
+          tp
+            .typeParameters
+            .toList
+            .map {
+              new ScTypeParameterType(_, s)
+            }
         case _ =>
           ptp.getTypeParameters.toList.map(new ScTypeParameterType(_, s))
       },
@@ -525,10 +531,12 @@ case class ScTypeParameterType(
           new Suspension[ScType]({ () =>
             s.subst(
               ScCompoundType(
-                ptp.getExtendsListTypes
+                ptp
+                  .getExtendsListTypes
                   .map(ScType.create(_, ptp.getProject))
                   .toSeq ++
-                  ptp.getImplementsListTypes
+                  ptp
+                    .getImplementsListTypes
                     .map(ScType.create(_, ptp.getProject))
                     .toSeq,
                 Map.empty,

@@ -154,14 +154,16 @@ case class SimpleFilteredScan(from: Int, to: Int)(
       }
 
     def eval(a: Int) = {
-      val c = (a - 1 + 'a').toChar.toString * 5 + (
-        a - 1 + 'a'
-      ).toChar.toString.toUpperCase * 5
-      filters.forall(translateFilterOnA(_)(a)) && filters.forall(
-        translateFilterOnC(_)(c))
+      val c = (a - 1 + 'a').toChar.toString * 5 + (a - 1 + 'a')
+        .toChar
+        .toString
+        .toUpperCase * 5
+      filters.forall(translateFilterOnA(_)(a)) && filters
+        .forall(translateFilterOnC(_)(c))
     }
 
-    sqlContext.sparkContext
+    sqlContext
+      .sparkContext
       .parallelize(from to to)
       .filter(eval)
       .map(i =>
@@ -448,15 +450,18 @@ class FilteredScanSuite
 
     test(s"PushDown Returns $expectedCount: $sqlString") {
       // These tests check a particular plan, disable whole stage codegen.
-      caseInsensitiveContext.conf
+      caseInsensitiveContext
+        .conf
         .setConf(SQLConf.WHOLESTAGE_CODEGEN_ENABLED, false)
       try {
         val queryExecution = sql(sqlString).queryExecution
         val rawPlan =
-          queryExecution.executedPlan.collect {
-            case p: execution.DataSourceScan =>
-              p
-          } match {
+          queryExecution
+            .executedPlan
+            .collect {
+              case p: execution.DataSourceScan =>
+                p
+            } match {
             case Seq(p) =>
               p
             case _ =>
@@ -467,10 +472,14 @@ class FilteredScanSuite
 
         val table = caseInsensitiveContext.table("oneToTenFiltered")
         val relation =
-          table.queryExecution.logical.collectFirst {
-            case LogicalRelation(r, _, _) =>
-              r
-          }.get
+          table
+            .queryExecution
+            .logical
+            .collectFirst {
+              case LogicalRelation(r, _, _) =>
+                r
+            }
+            .get
 
         assert(
           relation
@@ -484,9 +493,11 @@ class FilteredScanSuite
               queryExecution)
         }
       } finally {
-        caseInsensitiveContext.conf.setConf(
-          SQLConf.WHOLESTAGE_CODEGEN_ENABLED,
-          SQLConf.WHOLESTAGE_CODEGEN_ENABLED.defaultValue.get)
+        caseInsensitiveContext
+          .conf
+          .setConf(
+            SQLConf.WHOLESTAGE_CODEGEN_ENABLED,
+            SQLConf.WHOLESTAGE_CODEGEN_ENABLED.defaultValue.get)
       }
     }
   }

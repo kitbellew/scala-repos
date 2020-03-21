@@ -579,7 +579,8 @@ private[akka] final class PromiseActorRef private (
 
   @inline
   private[this] def watchedBy: Set[ActorRef] =
-    Unsafe.instance
+    Unsafe
+      .instance
       .getObjectVolatile(this, watchedByOffset)
       .asInstanceOf[Set[ActorRef]]
 
@@ -587,11 +588,9 @@ private[akka] final class PromiseActorRef private (
   private[this] def updateWatchedBy(
       oldWatchedBy: Set[ActorRef],
       newWatchedBy: Set[ActorRef]): Boolean =
-    Unsafe.instance.compareAndSwapObject(
-      this,
-      watchedByOffset,
-      oldWatchedBy,
-      newWatchedBy)
+    Unsafe
+      .instance
+      .compareAndSwapObject(this, watchedByOffset, oldWatchedBy, newWatchedBy)
 
   @tailrec // Returns false if the Promise is already completed
   private[this] final def addWatcher(watcher: ActorRef): Boolean =
@@ -639,7 +638,11 @@ private[akka] final class PromiseActorRef private (
   override def getParent: InternalActorRef = provider.tempContainer
 
   def internalCallingThreadExecutionContext: ExecutionContext =
-    provider.guardian.underlying.systemImpl.internalCallingThreadExecutionContext
+    provider
+      .guardian
+      .underlying
+      .systemImpl
+      .internalCallingThreadExecutionContext
 
   /**
     * Contract of this method:
@@ -711,14 +714,19 @@ private[akka] final class PromiseActorRef private (
                 existenceConfirmed = true,
                 addressTerminated = false))
         } else
-          System.err.println(
-            "BUG: illegal Watch(%s,%s) for %s".format(watchee, watcher, this))
+          System
+            .err
+            .println(
+              "BUG: illegal Watch(%s,%s) for %s".format(watchee, watcher, this))
       case Unwatch(watchee, watcher) ⇒
         if (watchee == this && watcher != this)
           remWatcher(watcher)
         else
-          System.err.println(
-            "BUG: illegal Unwatch(%s,%s) for %s".format(watchee, watcher, this))
+          System
+            .err
+            .println(
+              "BUG: illegal Unwatch(%s,%s) for %s"
+                .format(watchee, watcher, this))
       case _ ⇒
     }
 

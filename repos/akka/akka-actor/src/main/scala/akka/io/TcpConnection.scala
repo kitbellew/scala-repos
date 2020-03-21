@@ -361,8 +361,8 @@ private[io] abstract class TcpConnection(
         unsignDeathPact()
         if (TraceLogging)
           log.debug("Got Close command but write is still pending.")
-        context.become(
-          closingWithPendingWrite(info, closeCommander, closedEvent))
+        context
+          .become(closingWithPendingWrite(info, closeCommander, closedEvent))
       case ConfirmedClosed ⇒ // shutdown output and wait for confirmation
         if (TraceLogging)
           log.debug("Got ConfirmedClose command, sending FIN.")
@@ -419,7 +419,8 @@ private[io] abstract class TcpConnection(
     }
 
   def abort(): Unit = {
-    try channel.socket
+    try channel
+      .socket
       .setSoLinger(true, 0) // causes the following close() to send TCP RST
     catch {
       case NonFatal(e) ⇒

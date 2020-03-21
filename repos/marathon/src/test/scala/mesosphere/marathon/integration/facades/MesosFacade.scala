@@ -32,7 +32,8 @@ object MesosFacade {
       resources.isEmpty || resources.values.forall(_.isEmpty)
 
     override def toString: String = {
-      s"{" + resources.toSeq
+      s"{" + resources
+        .toSeq
         .sortBy(_._1)
         .map {
           case (k, v) =>
@@ -44,12 +45,14 @@ object MesosFacade {
   object ITResources {
     def empty: ITResources = new ITResources(Map.empty)
     def apply(vals: (String, Any)*): ITResources = {
-      val resources = vals.toMap.mapValues {
-        case value: Double =>
-          ITResourceScalarValue(value)
-        case portsString: String =>
-          ITResourcePortValue(portsString)
-      }
+      val resources = vals
+        .toMap
+        .mapValues {
+          case value: Double =>
+            ITResourceScalarValue(value)
+          case portsString: String =>
+            ITResourcePortValue(portsString)
+        }
       ITResources(resources)
     }
   }

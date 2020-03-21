@@ -22,13 +22,16 @@ class ManMaker extends Task {
   private var manout: Option[File] = None
 
   def setCommand(input: String) {
-    command = input.split(",").toList.flatMap { s =>
-      val st = s.trim()
-      if (st != "")
-        List(st)
-      else
-        Nil
-    }
+    command = input
+      .split(",")
+      .toList
+      .flatMap { s =>
+        val st = s.trim()
+        if (st != "")
+          List(st)
+        else
+          Nil
+      }
   }
 
   def setHtmlout(input: File) {

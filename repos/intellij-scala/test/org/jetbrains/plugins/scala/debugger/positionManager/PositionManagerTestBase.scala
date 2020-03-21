@@ -36,8 +36,8 @@ abstract class PositionManagerTestBase extends ScalaDebuggerTestCase {
         }
         val classNames = classes.asScala.map(_.name())
         Assert.assertTrue(
-          s"Wrong classes are found at ${position.toString} (found: ${classNames
-            .mkString(", ")}, expected: $className",
+          s"Wrong classes are found at ${position.toString} (found: ${classNames.mkString(
+            ", ")}, expected: $className",
           classNames.contains(className))
       }
     }
@@ -67,8 +67,10 @@ abstract class PositionManagerTestBase extends ScalaDebuggerTestCase {
       for ((position, locationSet) <- sourcePositions.zip(expectedLocations)) {
         val foundLocations: Set[Loc] = managed {
           val classes = posManager.getAllClasses(position)
-          val locations = classes.asScala.flatMap(refType =>
-            posManager.locationsOfLine(refType, position).asScala)
+          val locations = classes
+            .asScala
+            .flatMap(refType =>
+              posManager.locationsOfLine(refType, position).asScala)
           locations.foreach(checkSourcePosition(position, _))
           locations.map(toSimpleLocation).toSet
         }
@@ -92,8 +94,8 @@ abstract class PositionManagerTestBase extends ScalaDebuggerTestCase {
     var offset = cleanedText.indexOf(offsetMarker)
     while (offset >= 0) {
       offsets += offset
-      cleanedText = cleanedText.substring(0, offset) + cleanedText.substring(
-        offset + offsetMarker.length)
+      cleanedText = cleanedText.substring(0, offset) + cleanedText
+        .substring(offset + offsetMarker.length)
       offset = cleanedText.indexOf(offsetMarker)
     }
 

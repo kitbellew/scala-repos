@@ -135,7 +135,8 @@ trait BasicProfile extends BasicActionComponent {
     * exists at this path, an empty Config object is returned. */
   protected[this] def loadProfileConfig: Config = {
     def findConfigName(classes: Vector[Class[_]]): Option[String] =
-      classes.iterator
+      classes
+        .iterator
         .map { cl =>
           val n = cl.getName
           if (n.startsWith("slick.") && n.endsWith("Profile"))

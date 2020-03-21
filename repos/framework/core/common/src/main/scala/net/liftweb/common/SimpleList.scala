@@ -113,7 +113,10 @@ final case class SimpleList[T](underlying: List[T]) extends JavaList[T] {
 
   def toArray(): Array[Object] = {
     val len = underlying.length
-    val ret = java.lang.reflect.Array
+    val ret = java
+      .lang
+      .reflect
+      .Array
       .newInstance(classOf[Object], len)
       .asInstanceOf[Array[Object]]
 
@@ -131,7 +134,10 @@ final case class SimpleList[T](underlying: List[T]) extends JavaList[T] {
   def toArray[X](in: Array[X with Object]): Array[X with Object] = {
     val clz = in.getClass.getComponentType()
     val len = underlying.length
-    val ret = java.lang.reflect.Array
+    val ret = java
+      .lang
+      .reflect
+      .Array
       .newInstance(clz, len)
       .asInstanceOf[Array[X with Object]]
 
@@ -275,7 +281,10 @@ final case class SimpleVector[T](underlying: Vector[T]) extends JavaList[T] {
 
   def toArray(): Array[Object] = {
     val len = underlying.length
-    val ret = java.lang.reflect.Array
+    val ret = java
+      .lang
+      .reflect
+      .Array
       .newInstance(classOf[Object], len)
       .asInstanceOf[Array[Object]]
 
@@ -291,7 +300,10 @@ final case class SimpleVector[T](underlying: Vector[T]) extends JavaList[T] {
   def toArray[X](in: Array[X with Object]): Array[X with Object] = {
     val clz = in.getClass.getComponentType()
     val len = underlying.length
-    val ret = java.lang.reflect.Array
+    val ret = java
+      .lang
+      .reflect
+      .Array
       .newInstance(clz, len)
       .asInstanceOf[Array[X with Object]]
 

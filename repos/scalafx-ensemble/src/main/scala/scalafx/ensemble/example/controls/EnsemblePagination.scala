@@ -55,10 +55,12 @@ class EnsemblePagination extends EnsembleExample {
     val images =
       for (i <- 0 until 7)
         yield {
-          val ipStream = this.getClass.getResourceAsStream(
-            "/scalafx/ensemble/images/animals-200x200/animal" + (
-              i + 1
-            ) + ".jpg")
+          val ipStream = this
+            .getClass
+            .getResourceAsStream(
+              "/scalafx/ensemble/images/animals-200x200/animal" + (
+                i + 1
+              ) + ".jpg")
           new Image(ipStream)
         }
 

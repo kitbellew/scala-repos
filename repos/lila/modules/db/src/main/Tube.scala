@@ -24,9 +24,8 @@ case class BsTube[Doc](handler: BSONHandler[BSONDocument, Doc])
       case Success(doc) =>
         Some(doc)
       case Failure(err) =>
-        logger.error(
-          s"[tube] Cannot read ${lila.db.BSON.debug(bson)}\n$err\n",
-          err)
+        logger
+          .error(s"[tube] Cannot read ${lila.db.BSON.debug(bson)}\n$err\n", err)
         None
     }
 
@@ -133,24 +132,30 @@ object JsTube {
       ).json.prune
 
     def readDate(field: Symbol) =
-      (__ \ field).json.update(
-        of[JsObject] map { o =>
-          (o \ "$date").toOption err s"Can't read date of $o"
-        })
+      (__ \ field)
+        .json
+        .update(
+          of[JsObject] map { o =>
+            (o \ "$date").toOption err s"Can't read date of $o"
+          })
 
     def readDateOpt(field: Symbol) = readDate(field) orElse json.reader
 
     def writeDate(field: Symbol) =
-      (__ \ field).json.update(
-        of[JsNumber] map { millis =>
-          Json.obj("$date" -> millis)
-        })
+      (__ \ field)
+        .json
+        .update(
+          of[JsNumber] map { millis =>
+            Json.obj("$date" -> millis)
+          })
 
     def writeDateOpt(field: Symbol) =
-      (__ \ field).json.update(
-        of[JsNumber] map { millis =>
-          Json.obj("$date" -> millis)
-        }) orElse json.reader
+      (__ \ field)
+        .json
+        .update(
+          of[JsNumber] map { millis =>
+            Json.obj("$date" -> millis)
+          }) orElse json.reader
 
     def merge(obj: JsObject) = __.read[JsObject] map (obj ++)
   }

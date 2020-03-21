@@ -72,9 +72,12 @@ case class PartitionedDelimitedSource[P, T](
   val types: Array[Class[_]] = {
     if (classOf[scala.Product].isAssignableFrom(mt.runtimeClass)) {
       //Assume this is a Tuple:
-      mt.typeArguments.map {
-        _.runtimeClass
-      }.toArray
+      mt
+        .typeArguments
+        .map {
+          _.runtimeClass
+        }
+        .toArray
     } else {
       //Assume there is only a single item
       Array(mt.runtimeClass)
@@ -94,8 +97,7 @@ case class PartitionedDelimitedSource[P, T](
         strict,
         quote,
         types,
-        safe)
-        .asInstanceOf[Scheme[_, _, _, _, _]])
+        safe).asInstanceOf[Scheme[_, _, _, _, _]])
     scheme.setSinkFields(fields)
     scheme
   }
@@ -112,8 +114,7 @@ case class PartitionedDelimitedSource[P, T](
         strict,
         quote,
         types,
-        safe)
-        .asInstanceOf[Scheme[Properties, InputStream, OutputStream, _, _]]
+        safe).asInstanceOf[Scheme[Properties, InputStream, OutputStream, _, _]]
     scheme.setSinkFields(fields)
     scheme
   }

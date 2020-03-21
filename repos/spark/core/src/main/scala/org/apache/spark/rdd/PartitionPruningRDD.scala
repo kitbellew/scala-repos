@@ -39,7 +39,8 @@ private[spark] class PruneDependency[T](
     extends NarrowDependency[T](rdd) {
 
   @transient
-  val partitions: Array[Partition] = rdd.partitions
+  val partitions: Array[Partition] = rdd
+    .partitions
     .filter(s => partitionFilterFunc(s.index))
     .zipWithIndex
     .map {

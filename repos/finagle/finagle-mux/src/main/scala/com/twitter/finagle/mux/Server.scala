@@ -310,16 +310,20 @@ private[twitter] class ServerDispatcher(
 
   Local.letClear {
     Trace.letTracer(tracer) {
-      Contexts.local.let(RemoteInfo.Upstream.AddressCtx, trans.remoteAddress) {
-        trans.peerCertificate match {
-          case None =>
-            loop()
-          case Some(cert) =>
-            Contexts.local.let(Transport.peerCertCtx, cert) {
+      Contexts
+        .local
+        .let(RemoteInfo.Upstream.AddressCtx, trans.remoteAddress) {
+          trans.peerCertificate match {
+            case None =>
               loop()
-            }
+            case Some(cert) =>
+              Contexts
+                .local
+                .let(Transport.peerCertCtx, cert) {
+                  loop()
+                }
+          }
         }
-      }
     }
   }
 
@@ -432,22 +436,24 @@ private[finagle] object Processor
       service: Service[Request, Response]): Future[Message] = {
     val contextBufs = tdispatch.contexts.map(ContextsToBufs)
 
-    Contexts.broadcast.letUnmarshal(contextBufs) {
-      if (tdispatch.dtab.nonEmpty)
-        Dtab.local ++= tdispatch.dtab
-      service(Request(tdispatch.dst, ChannelBufferBuf.Owned(tdispatch.req)))
-        .transform {
-          case Return(rep) =>
-            Future.value(
-              RdispatchOk(tdispatch.tag, Nil, BufChannelBuffer(rep.body)))
+    Contexts
+      .broadcast
+      .letUnmarshal(contextBufs) {
+        if (tdispatch.dtab.nonEmpty)
+          Dtab.local ++= tdispatch.dtab
+        service(Request(tdispatch.dst, ChannelBufferBuf.Owned(tdispatch.req)))
+          .transform {
+            case Return(rep) =>
+              Future.value(
+                RdispatchOk(tdispatch.tag, Nil, BufChannelBuffer(rep.body)))
 
-          case Throw(f: Failure) if f.isFlagged(Failure.Restartable) =>
-            Future.value(RdispatchNack(tdispatch.tag, Nil))
+            case Throw(f: Failure) if f.isFlagged(Failure.Restartable) =>
+              Future.value(RdispatchNack(tdispatch.tag, Nil))
 
-          case Throw(exc) =>
-            Future.value(RdispatchError(tdispatch.tag, Nil, exc.toString))
-        }
-    }
+            case Throw(exc) =>
+              Future.value(RdispatchError(tdispatch.tag, Nil, exc.toString))
+          }
+      }
   }
 
   private[this] def dispatch(
@@ -478,7 +484,7 @@ private[finagle] object Processor
       case Message.Tping(tag) =>
         Future.value(Message.Rping(tag))
       case m =>
-        Future.exception(
-          new IllegalArgumentException(s"Cannot process message $m"))
+        Future
+          .exception(new IllegalArgumentException(s"Cannot process message $m"))
     }
 }

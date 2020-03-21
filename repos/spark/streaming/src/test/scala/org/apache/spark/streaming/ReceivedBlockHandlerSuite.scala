@@ -116,12 +116,14 @@ class ReceivedBlockHandlerSuite
         case (data, blockIds, storeResults) =>
           // Verify the data in block manager is correct
           val storedData =
-            blockIds.flatMap { blockId =>
-              blockManager
-                .getLocalValues(blockId)
-                .map(_.data.map(_.toString).toList)
-                .getOrElse(List.empty)
-            }.toList
+            blockIds
+              .flatMap { blockId =>
+                blockManager
+                  .getLocalValues(blockId)
+                  .map(_.data.map(_.toString).toList)
+                  .getOrElse(List.empty)
+              }
+              .toList
           storedData shouldEqual data
 
           // Verify that the store results are instances of BlockManagerBasedStoreResult
@@ -146,12 +148,14 @@ class ReceivedBlockHandlerSuite
         case (data, blockIds, storeResults) =>
           // Verify the data in block manager is correct
           val storedData =
-            blockIds.flatMap { blockId =>
-              blockManager
-                .getLocalValues(blockId)
-                .map(_.data.map(_.toString).toList)
-                .getOrElse(List.empty)
-            }.toList
+            blockIds
+              .flatMap { blockId =>
+                blockManager
+                  .getLocalValues(blockId)
+                  .map(_.data.map(_.toString).toList)
+                  .getOrElse(List.empty)
+              }
+              .toList
           storedData shouldEqual data
 
           // Verify that the store results are instances of WriteAheadLogBasedStoreResult
@@ -459,20 +463,20 @@ class ReceivedBlockHandlerSuite
   private def testErrorHandling(receivedBlockHandler: ReceivedBlockHandler) {
     // Handle error in iterator (e.g. divide-by-zero error)
     intercept[Exception] {
-      val iterator = (10 to (-10, -1)).toIterator.map {
-        _ / 0
-      }
-      receivedBlockHandler.storeBlock(
-        StreamBlockId(1, 1),
-        IteratorBlock(iterator))
+      val iterator = (10 to (-10, -1))
+        .toIterator
+        .map {
+          _ / 0
+        }
+      receivedBlockHandler
+        .storeBlock(StreamBlockId(1, 1), IteratorBlock(iterator))
     }
 
     // Handler error in block manager storing (e.g. too big block)
     intercept[SparkException] {
       val byteBuffer = ByteBuffer.wrap(new Array[Byte](blockManagerSize + 1))
-      receivedBlockHandler.storeBlock(
-        StreamBlockId(1, 1),
-        ByteBufferBlock(byteBuffer))
+      receivedBlockHandler
+        .storeBlock(StreamBlockId(1, 1), ByteBufferBlock(byteBuffer))
     }
   }
 

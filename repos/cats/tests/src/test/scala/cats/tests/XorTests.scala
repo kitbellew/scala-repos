@@ -60,8 +60,8 @@ class XorTests extends CatsSuite {
       OrderLaws[ListWrapper[String] Xor ListWrapper[Int]].partialOrder)
     checkAll(
       "PartialOrder[ListWrapper[String] Xor ListWrapper[Int]]",
-      SerializableTests.serializable(
-        PartialOrder[ListWrapper[String] Xor ListWrapper[Int]]))
+      SerializableTests
+        .serializable(PartialOrder[ListWrapper[String] Xor ListWrapper[Int]]))
   }
 
   {
@@ -72,8 +72,8 @@ class XorTests extends CatsSuite {
       OrderLaws[ListWrapper[String] Xor ListWrapper[Int]].eqv)
     checkAll(
       "Eq[ListWrapper[String] Xor ListWrapper[Int]]",
-      SerializableTests.serializable(
-        Eq[ListWrapper[String] Xor ListWrapper[Int]]))
+      SerializableTests
+        .serializable(Eq[ListWrapper[String] Xor ListWrapper[Int]]))
   }
 
   implicit val arbitraryXor: Arbitrary[Xor[Int, String]] = Arbitrary {
@@ -111,13 +111,17 @@ class XorTests extends CatsSuite {
 
   test("catchNonFatal catches non-fatal exceptions") {
     assert(
-      Xor.catchNonFatal {
-        "foo".toInt
-      }.isLeft)
+      Xor
+        .catchNonFatal {
+          "foo".toInt
+        }
+        .isLeft)
     assert(
-      Xor.catchNonFatal {
-        throw new Throwable("blargh")
-      }.isLeft)
+      Xor
+        .catchNonFatal {
+          throw new Throwable("blargh")
+        }
+        .isLeft)
   }
 
   test("fromTry is left for failed Try") {
@@ -184,10 +188,12 @@ class XorTests extends CatsSuite {
 
   test("recover recovers handled values") {
     val xor = Xor.left[String, Int]("xor")
-    xor.recover {
-      case "xor" =>
-        5
-    }.isRight should ===(true)
+    xor
+      .recover {
+        case "xor" =>
+          5
+      }
+      .isRight should ===(true)
   }
 
   test("recover ignores unhandled values") {
@@ -208,10 +214,12 @@ class XorTests extends CatsSuite {
 
   test("recoverWith recovers handled values") {
     val xor = Xor.left[String, Int]("xor")
-    xor.recoverWith {
-      case "xor" =>
-        Xor.right[String, Int](5)
-    }.isRight should ===(true)
+    xor
+      .recoverWith {
+        case "xor" =>
+          Xor.right[String, Int](5)
+      }
+      .isRight should ===(true)
   }
 
   test("recoverWith ignores unhandled values") {

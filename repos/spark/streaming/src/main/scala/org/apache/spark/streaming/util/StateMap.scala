@@ -142,12 +142,15 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
 
   /** Get all the keys and states whose updated time is older than the give threshold time */
   override def getByTime(threshUpdatedTime: Long): Iterator[(K, S, Long)] = {
-    val oldStates = parentStateMap.getByTime(threshUpdatedTime).filter {
-      case (key, value, _) =>
-        !deltaMap.contains(key)
-    }
+    val oldStates = parentStateMap
+      .getByTime(threshUpdatedTime)
+      .filter {
+        case (key, value, _) =>
+          !deltaMap.contains(key)
+      }
 
-    val updatedStates = deltaMap.iterator
+    val updatedStates = deltaMap
+      .iterator
       .filter {
         case (_, stateInfo) =>
           !stateInfo.deleted && stateInfo.updateTime < threshUpdatedTime
@@ -162,12 +165,15 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
   /** Get all the keys and states in this map. */
   override def getAll(): Iterator[(K, S, Long)] = {
 
-    val oldStates = parentStateMap.getAll().filter {
-      case (key, _, _) =>
-        !deltaMap.contains(key)
-    }
+    val oldStates = parentStateMap
+      .getAll()
+      .filter {
+        case (key, _, _) =>
+          !deltaMap.contains(key)
+      }
 
-    val updatedStates = deltaMap.iterator
+    val updatedStates = deltaMap
+      .iterator
       .filter {
         !_._2.deleted
       }
@@ -244,10 +250,9 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
         ("    " * (deltaChainLength - 1)) + "+--- "
       } else
         ""
-    parentStateMap.toDebugString() + "\n" + deltaMap.iterator.mkString(
-      tabs,
-      "\n" + tabs,
-      "")
+    parentStateMap.toDebugString() + "\n" + deltaMap
+      .iterator
+      .mkString(tabs, "\n" + tabs, "")
   }
 
   override def toString(): String = {
@@ -305,7 +310,8 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
       outputStream.writeLong(updateTime)
 
       if (doCompaction) {
-        newParentSessionStore.deltaMap
+        newParentSessionStore
+          .deltaMap
           .update(key, StateInfo(state, updateTime, deleted = false))
       }
     }
@@ -340,9 +346,8 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
     // First read the approximate number of records to expect and allocate properly size
     // OpenHashMap
     val parentStateMapSizeHint = inputStream.readInt()
-    val newStateMapInitialCapacity = math.max(
-      parentStateMapSizeHint,
-      DEFAULT_INITIAL_CAPACITY)
+    val newStateMapInitialCapacity = math
+      .max(parentStateMapSizeHint, DEFAULT_INITIAL_CAPACITY)
     val newParentSessionStore =
       new OpenHashMapBasedStateMap[K, S](
         initialCapacity = newStateMapInitialCapacity,
@@ -360,7 +365,8 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
         val key = obj.asInstanceOf[K]
         val state = inputStream.readObject().asInstanceOf[S]
         val updateTime = inputStream.readLong()
-        newParentSessionStore.deltaMap
+        newParentSessionStore
+          .deltaMap
           .update(key, StateInfo(state, updateTime, deleted = false))
       }
     }

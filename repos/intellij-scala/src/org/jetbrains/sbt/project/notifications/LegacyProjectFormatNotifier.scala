@@ -23,8 +23,8 @@ class LegacyProjectFormatNotifier(project: Project)
     if (!sbtSettings.sbtSupportSuggested) {
       val modules = ModuleManager.getInstance(project).getModules.toSeq
 
-      val fromGenIdea = modules.exists(
-        _.getModuleFilePath.contains(".idea_modules"))
+      val fromGenIdea = modules
+        .exists(_.getModuleFilePath.contains(".idea_modules"))
 
       if (fromGenIdea) {
         sbtSettings.sbtSupportSuggested = true

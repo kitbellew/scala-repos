@@ -38,12 +38,14 @@ class SbtNotificationListener
   private def processOutput(text: String) {
     text match {
       case WarningMessage(message) =>
-        Notifications.Bus.notify(
-          new Notification(
-            "scala",
-            "SBT project import",
-            message,
-            NotificationType.WARNING))
+        Notifications
+          .Bus
+          .notify(
+            new Notification(
+              "scala",
+              "SBT project import",
+              message,
+              NotificationType.WARNING))
       case _ => // do nothing
     }
   }

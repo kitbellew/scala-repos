@@ -75,8 +75,8 @@ abstract class MBeanSpec
         mbeanServer.getAttribute(mbeanName, "Leader") should ===("")
         mbeanServer.getAttribute(mbeanName, "Members") should ===("")
         mbeanServer.getAttribute(mbeanName, "Unreachable") should ===("")
-        mbeanServer.getAttribute(mbeanName, "MemberStatus") should ===(
-          "Removed")
+        mbeanServer
+          .getAttribute(mbeanName, "MemberStatus") should ===("Removed")
       }
       awaitClusterUp(first)
       runOn(first) {
@@ -114,8 +114,8 @@ abstract class MBeanSpec
         mbeanServer.getAttribute(mbeanName, "MemberStatus") should ===("Up"))
       val expectedMembers = roles.sorted.map(address(_)).mkString(",")
       awaitAssert(
-        mbeanServer.getAttribute(mbeanName, "Members") should ===(
-          expectedMembers))
+        mbeanServer
+          .getAttribute(mbeanName, "Members") should ===(expectedMembers))
       val expectedLeader = address(roleOfLeader())
       awaitAssert(
         mbeanServer.getAttribute(mbeanName, "Leader") should ===(
@@ -140,19 +140,22 @@ abstract class MBeanSpec
         awaitAssert(
           mbeanServer.getAttribute(mbeanName, "Unreachable") should ===(
             fourthAddress.toString))
-        val expectedMembers = Seq(first, second, third, fourth).sorted
+        val expectedMembers = Seq(first, second, third, fourth)
+          .sorted
           .map(address(_))
           .mkString(",")
         awaitAssert(
-          mbeanServer.getAttribute(mbeanName, "Members") should ===(
-            expectedMembers))
+          mbeanServer
+            .getAttribute(mbeanName, "Members") should ===(expectedMembers))
       }
       enterBarrier("fourth-unreachable")
 
       runOn(first) {
-        val sortedNodes = Vector(first, second, third, fourth).sorted
+        val sortedNodes = Vector(first, second, third, fourth)
+          .sorted
           .map(address(_))
-        val unreachableObservedBy = Vector(first, second, third).sorted
+        val unreachableObservedBy = Vector(first, second, third)
+          .sorted
           .map(address(_))
         val expectedJson = s"""{
              |  "self-address": "${address(first)}",
@@ -246,12 +249,13 @@ abstract class MBeanSpec
       runOn(first, second) {
         awaitMembersUp(2)
         assertMembers(clusterView.members, first, second)
-        val expectedMembers = Seq(first, second).sorted
+        val expectedMembers = Seq(first, second)
+          .sorted
           .map(address(_))
           .mkString(",")
         awaitAssert(
-          mbeanServer.getAttribute(mbeanName, "Members") should ===(
-            expectedMembers))
+          mbeanServer
+            .getAttribute(mbeanName, "Members") should ===(expectedMembers))
       }
       runOn(third) {
         awaitCond(cluster.isTerminated)

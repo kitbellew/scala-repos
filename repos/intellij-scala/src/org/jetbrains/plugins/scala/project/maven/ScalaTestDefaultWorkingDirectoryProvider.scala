@@ -13,6 +13,6 @@ abstract class ScalaTestDefaultWorkingDirectoryProvider {
 
 object ScalaTestDefaultWorkingDirectoryProvider {
   val EP_NAME: ExtensionPointName[ScalaTestDefaultWorkingDirectoryProvider] =
-    ExtensionPointName.create(
-      "org.intellij.scala.scalaTestDefaultWorkingDirectoryProvider")
+    ExtensionPointName
+      .create("org.intellij.scala.scalaTestDefaultWorkingDirectoryProvider")
 }

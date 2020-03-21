@@ -23,7 +23,9 @@ sealed class ScalaFormattingModelBuilder extends FormattingModelBuilder {
       settings: CodeStyleSettings): FormattingModel = {
     val node: ASTNode = element.getNode
     assert(node != null)
-    val containingFile: PsiFile = element.getContainingFile.getViewProvider
+    val containingFile: PsiFile = element
+      .getContainingFile
+      .getViewProvider
       .getPsi(ScalaFileType.SCALA_LANGUAGE)
     assert(containingFile != null, element.getContainingFile)
     val astNode: ASTNode = containingFile.getNode
@@ -62,17 +64,23 @@ object ScalaFormattingModelBuilder {
         whiteSpace: String,
         leafElement: ASTNode): String = {
       if (!myCanModifyAllWhiteSpaces) {
-        if (ScalaTokenTypes.WHITES_SPACES_FOR_FORMATTER_TOKEN_SET.contains(
-              leafElement.getElementType))
+        if (ScalaTokenTypes
+              .WHITES_SPACES_FOR_FORMATTER_TOKEN_SET
+              .contains(leafElement.getElementType))
           return null
       }
       var elementTypeToUse: IElementType = TokenType.WHITE_SPACE
       val prevNode: ASTNode = TreeUtil.prevLeaf(leafElement)
-      if (prevNode != null && ScalaTokenTypes.WHITES_SPACES_FOR_FORMATTER_TOKEN_SET
+      if (prevNode != null && ScalaTokenTypes
+            .WHITES_SPACES_FOR_FORMATTER_TOKEN_SET
             .contains(prevNode.getElementType)) {
         elementTypeToUse = prevNode.getElementType
       }
-      com.intellij.psi.formatter.FormatterUtil
+      com
+        .intellij
+        .psi
+        .formatter
+        .FormatterUtil
         .replaceWhiteSpace(whiteSpace, leafElement, elementTypeToUse, textRange)
       whiteSpace
     }

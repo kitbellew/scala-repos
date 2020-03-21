@@ -209,9 +209,8 @@ trait SystemServices {
         }
       }
     reg.onRegister {
-      telephonyManager.listen(
-        callStateListener,
-        PhoneStateListener.LISTEN_CALL_STATE)
+      telephonyManager
+        .listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE)
     }
     reg.onUnregister {
       telephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_NONE)
@@ -227,9 +226,8 @@ trait SystemServices {
         }
       }
     reg.onRegister {
-      telephonyManager.listen(
-        callStateListener,
-        PhoneStateListener.LISTEN_CELL_LOCATION)
+      telephonyManager
+        .listen(callStateListener, PhoneStateListener.LISTEN_CELL_LOCATION)
     }
     reg.onUnregister {
       telephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_NONE)

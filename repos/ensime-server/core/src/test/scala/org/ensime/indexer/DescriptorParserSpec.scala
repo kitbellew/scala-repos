@@ -71,13 +71,12 @@ class DescriptorParserSpec extends EnsimeSpec {
 
     // of course, SUN break their own rules for package names (capitals)
     Try(
-      parseType(
-        "Lcom/sun/tools/corba/se/idl/toJavaPortable/NameModifierImpl;")).success
+      parseType("Lcom/sun/tools/corba/se/idl/toJavaPortable/NameModifierImpl;"))
+      .success
 
     // hmmm, apache, what???? dashes in package names????
-    Try(
-      parseType(
-        "Lorg/spark-project/guava/annotations/VisibleForTesting;")).success
+    Try(parseType("Lorg/spark-project/guava/annotations/VisibleForTesting;"))
+      .success
   }
 
   it should "be invertible" in {

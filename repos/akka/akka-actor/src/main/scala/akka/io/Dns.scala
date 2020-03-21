@@ -93,7 +93,8 @@ class DnsExt(system: ExtendedActorSystem) extends IO.Extension {
     val ProviderObjectName: String = ResolverConfig.getString("provider-object")
   }
 
-  val provider: DnsProvider = system.dynamicAccess
+  val provider: DnsProvider = system
+    .dynamicAccess
     .getClassFor[DnsProvider](Settings.ProviderObjectName)
     .get
     .newInstance()

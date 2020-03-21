@@ -47,10 +47,12 @@ class FileStreamSource(
   private var maxBatchId = metadataLog.getLatest().map(_._1).getOrElse(-1L)
 
   private val seenFiles = new OpenHashSet[String]
-  metadataLog.get(None, maxBatchId).foreach {
-    case (batchId, files) =>
-      files.foreach(seenFiles.add)
-  }
+  metadataLog
+    .get(None, maxBatchId)
+    .foreach {
+      case (batchId, files) =>
+        files.foreach(seenFiles.add)
+    }
 
   /** Returns the schema of the data from this source */
   override lazy val schema: StructType = {
@@ -132,7 +134,8 @@ class FileStreamSource(
   }
 
   private def fetchAllFiles(): Seq[String] = {
-    fs.listStatus(new Path(path))
+    fs
+      .listStatus(new Path(path))
       .filterNot(_.getPath.getName.startsWith("_"))
       .map(_.getPath.toUri.toString)
   }

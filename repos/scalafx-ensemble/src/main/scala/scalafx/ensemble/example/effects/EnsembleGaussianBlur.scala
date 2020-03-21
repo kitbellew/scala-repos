@@ -52,13 +52,15 @@ class EnsembleGaussianBlur extends EnsembleExample {
       children = List(
         new ImageView {
           image = new Image(
-            this.getClass
+            this
+              .getClass
               .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
           effect = new GaussianBlur()
         },
         new ImageView {
           image = new Image(
-            this.getClass
+            this
+              .getClass
               .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
           effect = new GaussianBlur() {
             radius = 5d

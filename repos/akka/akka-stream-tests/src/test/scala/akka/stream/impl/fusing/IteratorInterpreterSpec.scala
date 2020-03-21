@@ -39,9 +39,8 @@ class IteratorInterpreterSpec extends AkkaSpec {
 
     "work with ops that need extra pull for complete" in {
       val itr =
-        new IteratorInterpreter[Int, Int](
-          (1 to 10).iterator,
-          Seq(NaiveTake(1))).iterator
+        new IteratorInterpreter[Int, Int]((1 to 10).iterator, Seq(NaiveTake(1)))
+          .iterator
 
       itr.toSeq should be(Seq(1))
     }

@@ -71,7 +71,11 @@ object WrappedDictionary {
   // it requires support for any type of key
 
   private object Cache {
-    val safeHasOwnProperty = Dynamic.global.Object.prototype.hasOwnProperty
+    val safeHasOwnProperty = Dynamic
+      .global
+      .Object
+      .prototype
+      .hasOwnProperty
       .asInstanceOf[ThisFunction1[Dictionary[_], String, Boolean]]
   }
 

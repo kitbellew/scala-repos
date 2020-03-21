@@ -31,7 +31,8 @@ class FreeApplicativeTests extends CatsSuite {
       }
     }
 
-  implicit val iso = CartesianTests.Isomorphisms
+  implicit val iso = CartesianTests
+    .Isomorphisms
     .invariant[FreeApplicative[Option, ?]]
 
   checkAll(

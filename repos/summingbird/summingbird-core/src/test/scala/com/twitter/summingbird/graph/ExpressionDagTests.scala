@@ -197,7 +197,8 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
     forAll(genForm) { form =>
       val (dag, id) = ExpressionDag(form, toLiteral)
       type BoolT[T] = Boolean // constant type function
-      dag.idToExp
+      dag
+        .idToExp
         .collect(
           new GenPartial[HMap[Id, ExpressionDag[Formula]#E]#Pair, BoolT] {
             def apply[T] = {

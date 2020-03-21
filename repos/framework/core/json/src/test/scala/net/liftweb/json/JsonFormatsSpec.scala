@@ -25,14 +25,20 @@ import org.specs2.mutable.Specification
 object JsonFormatsSpec extends Specification with TypeHintExamples {
   "JsonFormats Specification".title
 
-  implicit val formats =
-    ShortTypeHintExamples.formats + FullTypeHintExamples.formats.typeHints
+  implicit val formats = ShortTypeHintExamples
+    .formats + FullTypeHintExamples.formats.typeHints
 
-  val hintsForFish = ShortTypeHintExamples.formats.typeHints
+  val hintsForFish = ShortTypeHintExamples
+    .formats
+    .typeHints
     .hintFor(classOf[Fish])
-  val hintsForDog = ShortTypeHintExamples.formats.typeHints
+  val hintsForDog = ShortTypeHintExamples
+    .formats
+    .typeHints
     .hintFor(classOf[Dog])
-  val hintsForAnimal = FullTypeHintExamples.formats.typeHints
+  val hintsForAnimal = FullTypeHintExamples
+    .formats
+    .typeHints
     .hintFor(classOf[Animal])
 
   "hintsFor across composite formats" in {

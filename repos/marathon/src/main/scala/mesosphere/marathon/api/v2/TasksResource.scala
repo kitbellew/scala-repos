@@ -67,9 +67,13 @@ class TasksResource @Inject() (
 
       val taskList = taskTracker.tasksByAppSync
 
-      val tasks = taskList.appTasksMap.values.view.flatMap { app =>
-        app.tasks.view.map(t => app.appId -> t)
-      }
+      val tasks = taskList
+        .appTasksMap
+        .values
+        .view
+        .flatMap { app =>
+          app.tasks.view.map(t => app.appId -> t)
+        }
 
       val appIds = taskList.allAppIdsWithTasks
 
@@ -77,23 +81,27 @@ class TasksResource @Inject() (
         appIds.map(appId => appId -> result(groupManager.app(appId))).toMap
 
       val appToPorts =
-        appIdsToApps.map {
-          case (appId, app) =>
-            appId -> app.map(_.servicePorts).getOrElse(Nil)
-        }.toMap
+        appIdsToApps
+          .map {
+            case (appId, app) =>
+              appId -> app.map(_.servicePorts).getOrElse(Nil)
+          }
+          .toMap
 
       val health =
-        appIds.flatMap { appId =>
-          result(healthCheckManager.statuses(appId))
-        }.toMap
+        appIds
+          .flatMap { appId =>
+            result(healthCheckManager.statuses(appId))
+          }
+          .toMap
 
       val enrichedTasks: IterableView[EnrichedTask, Iterable[_]] =
         for {
           (appId, task) <- tasks
           app <- appIdsToApps(appId)
           if isAuthorized(ViewApp, app)
-          if statusSet.isEmpty || task.mesosStatus.exists(s =>
-            statusSet(s.getState))
+          if statusSet
+            .isEmpty || task.mesosStatus.exists(s => statusSet(s.getState))
         } yield {
           EnrichedTask(
             appId,
@@ -115,8 +123,10 @@ class TasksResource @Inject() (
       ok(
         EndpointsHelper.appsToEndpointString(
           taskTracker,
-          result(groupManager.rootGroup()).transitiveApps.toSeq.filter(app =>
-            isAuthorized(ViewApp, app)),
+          result(groupManager.rootGroup())
+            .transitiveApps
+            .toSeq
+            .filter(app => isAuthorized(ViewApp, app)),
           "\t"))
     }
 
@@ -136,14 +146,16 @@ class TasksResource @Inject() (
     authenticated(req) { implicit identity =>
       val taskIds = (Json.parse(body) \ "ids").as[Set[String]]
       val tasksToAppId =
-        taskIds.map { id =>
-          try {
-            id -> Task.Id.appId(id)
-          } catch {
-            case e: MatchError =>
-              throw new BadRequestException(s"Invalid task id '$id'.")
+        taskIds
+          .map { id =>
+            try {
+              id -> Task.Id.appId(id)
+            } catch {
+              case e: MatchError =>
+                throw new BadRequestException(s"Invalid task id '$id'.")
+            }
           }
-        }.toMap
+          .toMap
 
       def scaleAppWithKill(toKill: Map[PathId, Iterable[Task]]): Response = {
         deploymentResult(result(taskKiller.killAndScale(toKill, force)))
@@ -151,7 +163,8 @@ class TasksResource @Inject() (
 
       def killTasks(toKill: Map[PathId, Iterable[Task]]): Response = {
         val affectedApps =
-          tasksToAppId.values
+          tasksToAppId
+            .values
             .flatMap(appId => result(groupManager.app(appId)))
             .toSeq
         // FIXME (gkleiman): taskKiller.kill a few lines below also checks authorization, but we need to check ALL before

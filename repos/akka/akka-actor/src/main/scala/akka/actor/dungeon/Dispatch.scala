@@ -26,18 +26,21 @@ private[akka] trait Dispatch {
 
   @inline
   final def mailbox: Mailbox =
-    Unsafe.instance
+    Unsafe
+      .instance
       .getObjectVolatile(this, AbstractActorCell.mailboxOffset)
       .asInstanceOf[Mailbox]
 
   @tailrec
   final def swapMailbox(newMailbox: Mailbox): Mailbox = {
     val oldMailbox = mailbox
-    if (!Unsafe.instance.compareAndSwapObject(
-          this,
-          AbstractActorCell.mailboxOffset,
-          oldMailbox,
-          newMailbox))
+    if (!Unsafe
+          .instance
+          .compareAndSwapObject(
+            this,
+            AbstractActorCell.mailboxOffset,
+            oldMailbox,
+            newMailbox))
       swapMailbox(newMailbox)
     else
       oldMailbox
@@ -102,8 +105,8 @@ private[akka] trait Dispatch {
 
     if (sendSupervise) {
       // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
-      parent.sendSystemMessage(
-        akka.dispatch.sysmsg.Supervise(self, async = false))
+      parent
+        .sendSystemMessage(akka.dispatch.sysmsg.Supervise(self, async = false))
     }
     this
   }
@@ -134,20 +137,24 @@ private[akka] trait Dispatch {
 
   private def handleException: Catcher[Unit] = {
     case e: InterruptedException ⇒
-      system.eventStream.publish(
-        Error(
-          e,
-          self.path.toString,
-          clazz(actor),
-          "interrupted during message send"))
+      system
+        .eventStream
+        .publish(
+          Error(
+            e,
+            self.path.toString,
+            clazz(actor),
+            "interrupted during message send"))
       Thread.currentThread.interrupt()
     case NonFatal(e) ⇒
-      system.eventStream.publish(
-        Error(
-          e,
-          self.path.toString,
-          clazz(actor),
-          "swallowing exception during message send"))
+      system
+        .eventStream
+        .publish(
+          Error(
+            e,
+            self.path.toString,
+            clazz(actor),
+            "swallowing exception during message send"))
   }
 
   // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅

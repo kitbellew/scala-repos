@@ -146,23 +146,22 @@ object Thrift
 
     // We must do 'preparation' this way in order to let Finagle set up tracing & so on.
     val stack: Stack[ServiceFactory[ThriftClientRequest, Array[Byte]]] =
-      StackClient.newStack
-        .replace(StackClient.Role.prepConn, preparer)
+      StackClient.newStack.replace(StackClient.Role.prepConn, preparer)
   }
 
   case class Client(
-      stack: Stack[ServiceFactory[ThriftClientRequest, Array[Byte]]] =
-        Client.stack,
-      params: Stack.Params =
-        StackClient.defaultParams + ProtocolLibrary("thrift"))
+      stack: Stack[ServiceFactory[ThriftClientRequest, Array[Byte]]] = Client
+        .stack,
+      params: Stack.Params = StackClient
+        .defaultParams + ProtocolLibrary("thrift"))
       extends StdStackClient[ThriftClientRequest, Array[Byte], Client]
       with WithSessionPool[Client]
       with WithDefaultLoadBalancer[Client]
       with ThriftRichClient {
 
     protected def copy1(
-        stack: Stack[ServiceFactory[ThriftClientRequest, Array[Byte]]] =
-          this.stack,
+        stack: Stack[ServiceFactory[ThriftClientRequest, Array[Byte]]] = this
+          .stack,
         params: Stack.Params = this.params): Client = copy(stack, params)
 
     protected lazy val Label(defaultClientName) = params[Label]
@@ -216,8 +215,8 @@ object Thrift
       val classifier =
         if (params.contains[com.twitter.finagle.param.ResponseClassifier]) {
           ThriftResponseClassifier.usingDeserializeCtx(
-            params[
-              com.twitter.finagle.param.ResponseClassifier].responseClassifier)
+            params[com.twitter.finagle.param.ResponseClassifier]
+              .responseClassifier)
         } else {
           ThriftResponseClassifier.DeserializeCtxOnly
         }
@@ -309,15 +308,15 @@ object Thrift
         }
       }
 
-    val stack: Stack[ServiceFactory[Array[Byte], Array[Byte]]] =
-      StackServer.newStack
-        .replace(StackServer.Role.preparer, preparer)
+    val stack: Stack[ServiceFactory[Array[Byte], Array[Byte]]] = StackServer
+      .newStack
+      .replace(StackServer.Role.preparer, preparer)
   }
 
   case class Server(
       stack: Stack[ServiceFactory[Array[Byte], Array[Byte]]] = Server.stack,
-      params: Stack.Params =
-        StackServer.defaultParams + ProtocolLibrary("thrift"))
+      params: Stack.Params = StackServer
+        .defaultParams + ProtocolLibrary("thrift"))
       extends StdStackServer[Array[Byte], Array[Byte], Server]
       with ThriftRichServer {
     protected def copy1(

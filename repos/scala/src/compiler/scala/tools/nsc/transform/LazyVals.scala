@@ -119,7 +119,8 @@ abstract class LazyVals
 
                   if (enclMethod != NoSymbol) {
                     val enclClass = sym.enclClass
-                    if (enclClass != NoSymbol && enclMethod == enclClass.enclMethod)
+                    if (enclClass != NoSymbol && enclMethod == enclClass
+                          .enclMethod)
                       enclClass
                     else
                       enclMethod
@@ -143,8 +144,9 @@ abstract class LazyVals
                       LAZY
                   ) | ACCESSOR)
                 (rhs1, sDef)
-              } else if (sym.hasAllFlags(
-                           MODULE | METHOD) && !sym.owner.isTrait) {
+              } else if (sym.hasAllFlags(MODULE | METHOD) && !sym
+                           .owner
+                           .isTrait) {
                 rhs match {
                   case b @ Block(
                         (assign @ Assign(moduleRef, _)) :: Nil,
@@ -164,9 +166,11 @@ abstract class LazyVals
                       localTyper.typedPos(tree.pos)(fastPath),
                       localTyper.typedPos(tree.pos)(slowPath))
                   case rhs =>
-                    global.reporter.error(
-                      tree.pos,
-                      "Unexpected tree on the RHS of a module accessor: " + rhs)
+                    global
+                      .reporter
+                      .error(
+                        tree.pos,
+                        "Unexpected tree on the RHS of a module accessor: " + rhs)
                     (rhs, EmptyTree)
                 }
               } else {
@@ -202,11 +206,11 @@ abstract class LazyVals
             }
 
             val innerClassBitmaps =
-              if (!added && currentOwner.isClass && bitmaps.contains(
-                    currentOwner)) {
+              if (!added && currentOwner.isClass && bitmaps
+                    .contains(currentOwner)) {
                 // add bitmap to inner class if necessary
-                val toAdd0 = bitmaps(currentOwner).map(s =>
-                  typed(ValDef(s, ZERO)))
+                val toAdd0 = bitmaps(currentOwner)
+                  .map(s => typed(ValDef(s, ZERO)))
                 toAdd0.foreach(t => {
                   if (currentOwner.info.decl(t.symbol.name) == NoSymbol) {
                     t.symbol.setFlag(PROTECTED)
@@ -245,8 +249,8 @@ abstract class LazyVals
             l
 
         case l @ LabelDef(name0, params0, block @ Block(stats0, expr))
-            if name0.startsWith(nme.WHILE_PREFIX) || name0.startsWith(
-              nme.DO_WHILE_PREFIX) =>
+            if name0.startsWith(nme.WHILE_PREFIX) || name0
+              .startsWith(nme.DO_WHILE_PREFIX) =>
           val stats1 = super.transformTrees(stats0)
           if (LocalLazyValFinder.find(stats1))
             deriveLabelDef(l)(_ =>

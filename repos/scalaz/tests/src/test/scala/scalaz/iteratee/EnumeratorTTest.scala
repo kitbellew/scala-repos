@@ -44,9 +44,8 @@ object EnumeratorTTest extends SpecLite {
 
   "flatMap" in {
     val enum = enumStream[Int, Id](Stream(1, 2, 3))
-    (
-      consume[Int, Id, List] &= enum.flatMap(i => enum.map(_ + i))
-    ).run must_=== (List(2, 3, 4, 3, 4, 5, 4, 5, 6))
+    (consume[Int, Id, List] &= enum.flatMap(i => enum.map(_ + i)))
+      .run must_=== (List(2, 3, 4, 3, 4, 5, 4, 5, 6))
   }
 
   "flatten in a generalized fashion" in {
@@ -63,23 +62,20 @@ object EnumeratorTTest extends SpecLite {
 
   "zipWithIndex" in {
     val enum = enumStream[Int, Id](Stream(3, 4, 5))
-    (consume[(Int, Long), Id, List] &= enum.zipWithIndex).run must_=== (
-      List((3, 0L), (4, 1L), (5, 2L))
-    )
+    (consume[(Int, Long), Id, List] &= enum.zipWithIndex)
+      .run must_=== (List((3, 0L), (4, 1L), (5, 2L)))
   }
 
   "zipWithIndex" in {
     val enum = enumStream[Int, Id](Stream(3, 4, 5))
-    (consume[(Int, Long), Id, List] &= enum.zipWithIndex).run must_=== (
-      List((3, 0L), (4, 1L), (5, 2L))
-    )
+    (consume[(Int, Long), Id, List] &= enum.zipWithIndex)
+      .run must_=== (List((3, 0L), (4, 1L), (5, 2L)))
   }
 
   "zipWithIndex in combination with another function" in {
     val enum = enumStream[Int, Id](Stream(3, 4, 4, 5))
-    (consume[(Int, Long), Id, List] &= enum.uniq.zipWithIndex).run must_=== (
-      List((3, 0L), (4, 1L), (5, 2L))
-    )
+    (consume[(Int, Long), Id, List] &= enum.uniq.zipWithIndex)
+      .run must_=== (List((3, 0L), (4, 1L), (5, 2L)))
   }
 
   "lift" in {
@@ -95,7 +91,9 @@ object EnumeratorTTest extends SpecLite {
   "allow for nesting of monads" in {
     type OIO[α] = OptionT[IO, α]
     val enum = enumIterator[Int, OIO](List(1, 2, 3).iterator)
-    (consume[Int, OIO, List] &= enum.map(_ * 2)).run.run
+    (consume[Int, OIO, List] &= enum.map(_ * 2))
+      .run
+      .run
       .unsafePerformIO() must_=== (Some(List(2, 4, 6)))
   }
 

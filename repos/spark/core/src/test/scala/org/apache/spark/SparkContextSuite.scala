@@ -87,8 +87,8 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
     sc = SparkContext.getOrCreate(conf)
 
     assert(sc.getConf.get("spark.app.name").equals("test"))
-    sc2 = SparkContext.getOrCreate(
-      new SparkConf().setAppName("test2").setMaster("local"))
+    sc2 = SparkContext
+      .getOrCreate(new SparkConf().setAppName("test2").setMaster("local"))
     assert(sc2.getConf.get("spark.app.name").equals("test"))
     assert(sc === sc2)
     assert(sc eq sc2)
@@ -126,8 +126,8 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
     val absolutePath1 = file1.getAbsolutePath
 
     val file2 = File.createTempFile("someprefix2", "somesuffix2", dir)
-    val relativePath =
-      file2.getParent + "/../" + file2.getParentFile.getName + "/" + file2.getName
+    val relativePath = file2
+      .getParent + "/../" + file2.getParentFile.getName + "/" + file2.getName
     val absolutePath2 = file2.getAbsolutePath
 
     try {
@@ -140,7 +140,8 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
         new SparkContext(new SparkConf().setAppName("test").setMaster("local"))
       sc.addFile(file1.getAbsolutePath)
       sc.addFile(relativePath)
-      sc.parallelize(Array(1), 1)
+      sc
+        .parallelize(Array(1), 1)
         .map(x => {
           val gotten1 = new File(SparkFiles.get(file1.getName))
           val gotten2 = new File(SparkFiles.get(file2.getName))
@@ -189,7 +190,8 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
       sc =
         new SparkContext(new SparkConf().setAppName("test").setMaster("local"))
       sc.addFile(neptune.getAbsolutePath, true)
-      sc.parallelize(Array(1), 1)
+      sc
+        .parallelize(Array(1), 1)
         .map(x => {
           val sep = File.separator
           if (!new File(SparkFiles.get(neptune.getName + sep + alien1.getName))
@@ -199,8 +201,8 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
           }
           if (!new File(
                 SparkFiles.get(
-                  neptune.getName + sep + saturn.getName + sep + alien2.getName))
-                .exists()) {
+                  neptune.getName + sep + saturn.getName + sep + alien2
+                    .getName)).exists()) {
             throw new SparkException("can't access file in nested directory")
           }
           if (new File(
@@ -304,14 +306,16 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
       // Test textFile, hadoopFile, and newAPIHadoopFile for file1 and file2
       assert(sc.textFile(filepath1 + "," + filepath2).count() == 5L)
       assert(
-        sc.hadoopFile(
+        sc
+          .hadoopFile(
             filepath1 + "," + filepath2,
             classOf[TextInputFormat],
             classOf[LongWritable],
             classOf[Text])
           .count() == 5L)
       assert(
-        sc.newAPIHadoopFile(
+        sc
+          .newAPIHadoopFile(
             filepath1 + "," + filepath2,
             classOf[NewTextInputFormat],
             classOf[LongWritable],
@@ -320,17 +324,20 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
 
       // Test textFile, hadoopFile, and newAPIHadoopFile for file3, file4, and file5
       assert(
-        sc.textFile(filepath3 + "," + filepath4 + "," + filepath5)
+        sc
+          .textFile(filepath3 + "," + filepath4 + "," + filepath5)
           .count() == 5L)
       assert(
-        sc.hadoopFile(
+        sc
+          .hadoopFile(
             filepath3 + "," + filepath4 + "," + filepath5,
             classOf[TextInputFormat],
             classOf[LongWritable],
             classOf[Text])
           .count() == 5L)
       assert(
-        sc.newAPIHadoopFile(
+        sc
+          .newAPIHadoopFile(
             filepath3 + "," + filepath4 + "," + filepath5,
             classOf[NewTextInputFormat],
             classOf[LongWritable],

@@ -79,8 +79,9 @@ class GammaTest
 
   test("logDraw for small values") {
     val g = new Gamma(0.0001, 1)
-    val mav = breeze.stats.meanAndVariance(
-      Array.fill(100000)(g.logDraw()).map(math.exp _))
+    val mav = breeze
+      .stats
+      .meanAndVariance(Array.fill(100000)(g.logDraw()).map(math.exp _))
     assert(
       (paramsClose(mav.mean -> mav.variance, g.mean -> g.variance)),
       (mav.mean -> mav.variance) -> (g.mean -> g.variance))

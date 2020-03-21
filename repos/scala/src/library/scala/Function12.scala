@@ -55,19 +55,8 @@ trait Function12[
               x10: T10,
               x11: T11,
               x12: T12) =>
-            self.apply(
-              x1,
-              x2,
-              x3,
-              x4,
-              x5,
-              x6,
-              x7,
-              x8,
-              x9,
-              x10,
-              x11,
-              x12)).curried
+            self.apply(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12))
+        .curried
   }
 
   /** Creates a tupled version of this function: instead of 12 arguments,

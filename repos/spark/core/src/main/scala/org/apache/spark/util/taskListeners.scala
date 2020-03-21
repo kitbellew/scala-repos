@@ -55,7 +55,8 @@ private[spark] class TaskCompletionListenerException(
     if (errorMessages.size == 1) {
       errorMessages.head
     } else {
-      errorMessages.zipWithIndex
+      errorMessages
+        .zipWithIndex
         .map {
           case (msg, i) =>
             s"Exception $i: $msg"

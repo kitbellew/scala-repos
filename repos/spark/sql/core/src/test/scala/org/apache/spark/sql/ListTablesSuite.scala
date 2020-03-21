@@ -41,7 +41,9 @@ class ListTablesSuite
   }
 
   after {
-    sqlContext.sessionState.catalog
+    sqlContext
+      .sessionState
+      .catalog
       .unregisterTable(TableIdentifier("ListTablesSuiteTable"))
   }
 
@@ -54,7 +56,9 @@ class ListTablesSuite
       sql("SHOW tables").filter("tableName = 'ListTablesSuiteTable'"),
       Row("ListTablesSuiteTable", true))
 
-    sqlContext.sessionState.catalog
+    sqlContext
+      .sessionState
+      .catalog
       .unregisterTable(TableIdentifier("ListTablesSuiteTable"))
     assert(
       sqlContext
@@ -73,7 +77,9 @@ class ListTablesSuite
       sql("show TABLES in DB").filter("tableName = 'ListTablesSuiteTable'"),
       Row("ListTablesSuiteTable", true))
 
-    sqlContext.sessionState.catalog
+    sqlContext
+      .sessionState
+      .catalog
       .unregisterTable(TableIdentifier("ListTablesSuiteTable"))
     assert(
       sqlContext

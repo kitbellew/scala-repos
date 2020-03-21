@@ -195,11 +195,9 @@ trait TimePeriodSpecs[M[+_]]
         dag.AbsoluteLoad(Const(CString("/hom/timerange"))(line))(line)
 
       def deref(field: String) = {
-        dag.Join(
-          DerefObject,
-          Cross(None),
-          objects,
-          Const(CString(field))(line))(line)
+        dag
+          .Join(DerefObject, Cross(None), objects, Const(CString(field))(line))(
+            line)
       }
 
       def createObject2(field: String, op1: Op1) = {

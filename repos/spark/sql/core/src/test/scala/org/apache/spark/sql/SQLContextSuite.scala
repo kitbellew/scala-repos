@@ -80,7 +80,10 @@ class SQLContextSuite extends SparkFunSuite with SharedSparkContext {
     val sqlContext = SQLContext.getOrCreate(sc)
     sqlContext.experimental.extraOptimizations = Seq(DummyRule)
     assert(
-      sqlContext.sessionState.optimizer.batches
+      sqlContext
+        .sessionState
+        .optimizer
+        .batches
         .flatMap(_.rules)
         .contains(DummyRule))
   }

@@ -209,23 +209,27 @@ object Flaggable {
 
     def parse(in: String): Map[K, V] = {
       val tuples =
-        in.split(',').foldLeft(Seq.empty[String]) {
-          case (acc, s) if !s.contains('=') =>
-            // In order to support comma-separated values, we concatenate
-            // consecutive tokens that don't contain equals signs.
-            acc.init :+ (acc.last + ',' + s)
-          case (acc, s) =>
-            acc :+ s
-        }
+        in
+          .split(',')
+          .foldLeft(Seq.empty[String]) {
+            case (acc, s) if !s.contains('=') =>
+              // In order to support comma-separated values, we concatenate
+              // consecutive tokens that don't contain equals signs.
+              acc.init :+ (acc.last + ',' + s)
+            case (acc, s) =>
+              acc :+ s
+          }
 
-      tuples.map { tup =>
-        tup.split("=") match {
-          case Array(k, v) =>
-            (kflag.parse(k), vflag.parse(v))
-          case _ =>
-            throw new IllegalArgumentException("not a 'k=v'")
+      tuples
+        .map { tup =>
+          tup.split("=") match {
+            case Array(k, v) =>
+              (kflag.parse(k), vflag.parse(v))
+            case _ =>
+              throw new IllegalArgumentException("not a 'k=v'")
+          }
         }
-      }.toMap
+        .toMap
     }
 
     override def show(out: Map[K, V]) = {
@@ -621,9 +625,11 @@ class Flags(
     }
 
   private[app] def finishParsing(): Unit = {
-    flags.values.foreach {
-      _.finishParsing()
-    }
+    flags
+      .values
+      .foreach {
+        _.finishParsing()
+      }
   }
 
   private[this] def resolveGlobalFlag(f: String) =
@@ -907,8 +913,9 @@ class Flags(
       classLoader: ClassLoader = this.getClass.getClassLoader)
       : Iterable[Flag[_]] =
     synchronized {
-      var flags =
-        TreeSet[Flag[_]]()(Ordering.by(_.name)) ++ this.flags.valuesIterator
+      var flags = TreeSet[Flag[_]]()(Ordering.by(_.name)) ++ this
+        .flags
+        .valuesIterator
 
       if (includeGlobal) {
         flags ++= GlobalFlag.getAll(classLoader).iterator
@@ -1005,7 +1012,10 @@ class GlobalFlag[T] private[app] (
       try Some(flaggable.parse(p))
       catch {
         case NonFatal(exc) =>
-          java.util.logging.Logger
+          java
+            .util
+            .logging
+            .Logger
             .getLogger("")
             .log(
               java.util.logging.Level.SEVERE,

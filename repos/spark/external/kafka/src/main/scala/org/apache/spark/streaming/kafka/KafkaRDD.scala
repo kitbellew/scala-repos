@@ -54,18 +54,21 @@ private[kafka] class KafkaRDD[K: ClassTag, V: ClassTag, U <: Decoder[
     with Logging
     with HasOffsetRanges {
   override def getPartitions: Array[Partition] = {
-    offsetRanges.zipWithIndex.map {
-      case (o, i) =>
-        val (host, port) = leaders(TopicAndPartition(o.topic, o.partition))
-        new KafkaRDDPartition(
-          i,
-          o.topic,
-          o.partition,
-          o.fromOffset,
-          o.untilOffset,
-          host,
-          port)
-    }.toArray
+    offsetRanges
+      .zipWithIndex
+      .map {
+        case (o, i) =>
+          val (host, port) = leaders(TopicAndPartition(o.topic, o.partition))
+          new KafkaRDDPartition(
+            i,
+            o.topic,
+            o.partition,
+            o.fromOffset,
+            o.untilOffset,
+            host,
+            port)
+      }
+      .toArray
   }
 
   override def count(): Long = offsetRanges.map(_.count).sum
@@ -80,7 +83,8 @@ private[kafka] class KafkaRDD[K: ClassTag, V: ClassTag, U <: Decoder[
   override def isEmpty(): Boolean = count == 0L
 
   override def take(num: Int): Array[R] = {
-    val nonEmptyPartitions = this.partitions
+    val nonEmptyPartitions = this
+      .partitions
       .map(_.asInstanceOf[KafkaRDDPartition])
       .filter(_.count > 0)
 
@@ -160,11 +164,13 @@ private[kafka] class KafkaRDD[K: ClassTag, V: ClassTag, U <: Decoder[
         s"offsets ${part.fromOffset} -> ${part.untilOffset}")
 
     val kc = new KafkaCluster(kafkaParams)
-    val keyDecoder = classTag[U].runtimeClass
+    val keyDecoder = classTag[U]
+      .runtimeClass
       .getConstructor(classOf[VerifiableProperties])
       .newInstance(kc.config.props)
       .asInstanceOf[Decoder[K]]
-    val valueDecoder = classTag[T].runtimeClass
+    val valueDecoder = classTag[T]
+      .runtimeClass
       .getConstructor(classOf[VerifiableProperties])
       .newInstance(kc.config.props)
       .asInstanceOf[Decoder[V]]
@@ -176,7 +182,8 @@ private[kafka] class KafkaRDD[K: ClassTag, V: ClassTag, U <: Decoder[
     // to minimize number of kafka metadata requests
     private def connectLeader: SimpleConsumer = {
       if (context.attemptNumber > 0) {
-        kc.connectLeader(part.topic, part.partition)
+        kc
+          .connectLeader(part.topic, part.partition)
           .fold(
             errs =>
               throw new SparkException(
@@ -281,17 +288,21 @@ private[kafka] object KafkaRDD {
       messageHandler: MessageAndMetadata[K, V] => R)
       : KafkaRDD[K, V, U, T, R] = {
     val leaders =
-      untilOffsets.map {
-        case (tp, lo) =>
-          tp -> (lo.host, lo.port)
-      }.toMap
+      untilOffsets
+        .map {
+          case (tp, lo) =>
+            tp -> (lo.host, lo.port)
+        }
+        .toMap
 
     val offsetRanges =
-      fromOffsets.map {
-        case (tp, fo) =>
-          val uo = untilOffsets(tp)
-          OffsetRange(tp.topic, tp.partition, fo, uo.offset)
-      }.toArray
+      fromOffsets
+        .map {
+          case (tp, fo) =>
+            val uo = untilOffsets(tp)
+            OffsetRange(tp.topic, tp.partition, fo, uo.offset)
+        }
+        .toArray
 
     new KafkaRDD[K, V, U, T, R](
       sc,

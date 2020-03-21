@@ -17,9 +17,8 @@ object PostRepoTroll extends PostRepo(true)
 
 sealed abstract class PostRepo(troll: Boolean) {
 
-  private lazy val trollFilter = troll.fold(
-    Json.obj(),
-    Json.obj("troll" -> false))
+  private lazy val trollFilter = troll
+    .fold(Json.obj(), Json.obj("troll" -> false))
 
   def byCategAndId(categSlug: String, id: String): Fu[Option[Post]] =
     $find.one(selectCateg(categSlug) ++ $select(id))
@@ -83,12 +82,18 @@ sealed abstract class PostRepo(troll: Boolean) {
   def sortQuery = $sort.createdAsc
 
   def userIdsByTopicId(topicId: String): Fu[List[String]] =
-    postTube.coll.distinct(
-      "userId",
-      BSONDocument("topicId" -> topicId).some) map lila.db.BSON.asStrings
+    postTube
+      .coll
+      .distinct("userId", BSONDocument("topicId" -> topicId).some) map lila
+      .db
+      .BSON
+      .asStrings
 
   def idsByTopicId(topicId: String): Fu[List[String]] =
-    postTube.coll.distinct(
-      "_id",
-      BSONDocument("topicId" -> topicId).some) map lila.db.BSON.asStrings
+    postTube
+      .coll
+      .distinct("_id", BSONDocument("topicId" -> topicId).some) map lila
+      .db
+      .BSON
+      .asStrings
 }

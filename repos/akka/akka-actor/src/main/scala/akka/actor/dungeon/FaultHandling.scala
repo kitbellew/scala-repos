@@ -60,11 +60,13 @@ private[akka] trait FaultHandling {
     */
   protected def faultRecreate(cause: Throwable): Unit =
     if (actor == null) {
-      system.eventStream.publish(
-        Error(
-          self.path.toString,
-          clazz(actor),
-          "changing Recreate into Create after " + cause))
+      system
+        .eventStream
+        .publish(
+          Error(
+            self.path.toString,
+            clazz(actor),
+            "changing Recreate into Create after " + cause))
       faultCreate()
     } else if (isNormal) {
       val failedActor = actor
@@ -90,7 +92,8 @@ private[akka] trait FaultHandling {
       }
       assert(
         mailbox.isSuspended,
-        "mailbox must be suspended during restart, status=" + mailbox.currentStatus)
+        "mailbox must be suspended during restart, status=" + mailbox
+          .currentStatus)
       if (!setChildrenTerminationReason(ChildrenContainer.Recreation(cause)))
         finishRecreate(cause, failedActor)
     } else {
@@ -116,18 +119,22 @@ private[akka] trait FaultHandling {
     */
   protected def faultResume(causedByFailure: Throwable): Unit = {
     if (actor == null) {
-      system.eventStream.publish(
-        Error(
-          self.path.toString,
-          clazz(actor),
-          "changing Resume into Create after " + causedByFailure))
+      system
+        .eventStream
+        .publish(
+          Error(
+            self.path.toString,
+            clazz(actor),
+            "changing Resume into Create after " + causedByFailure))
       faultCreate()
     } else if (actor.context == null && causedByFailure != null) {
-      system.eventStream.publish(
-        Error(
-          self.path.toString,
-          clazz(actor),
-          "changing Resume into Restart after " + causedByFailure))
+      system
+        .eventStream
+        .publish(
+          Error(
+            self.path.toString,
+            clazz(actor),
+            "changing Resume into Restart after " + causedByFailure))
       faultRecreate(causedByFailure)
     } else {
       val perp = perpetrator
@@ -146,7 +153,8 @@ private[akka] trait FaultHandling {
   protected def faultCreate(): Unit = {
     assert(
       mailbox.isSuspended,
-      "mailbox must be suspended during failed creation, status=" + mailbox.currentStatus)
+      "mailbox must be suspended during failed creation, status=" + mailbox
+        .currentStatus)
     assert(perpetrator == self)
 
     setReceiveTimeout(Duration.Undefined)
@@ -240,8 +248,8 @@ private[akka] trait FaultHandling {
             e,
             self.path.toString,
             clazz(actor),
-            "emergency stop: exception in failure handling for " + t.getClass + Logging
-              .stackTraceFor(t)))
+            "emergency stop: exception in failure handling for " + t
+              .getClass + Logging.stackTraceFor(t)))
         try children foreach stop
         finally finishTerminate()
       }
@@ -330,19 +338,17 @@ private[akka] trait FaultHandling {
        * killed in preRestart and re-created in postRestart
        */
       case Some(stats) if stats.uid == f.uid ⇒
-        if (!actor.supervisorStrategy.handleFailure(
-              this,
-              f.child,
-              f.cause,
-              stats,
-              getAllChildStats))
+        if (!actor
+              .supervisorStrategy
+              .handleFailure(this, f.child, f.cause, stats, getAllChildStats))
           throw f.cause
       case Some(stats) ⇒
         publish(
           Debug(
             self.path.toString,
             clazz(actor),
-            "dropping Failed(" + f.cause + ") from old child " + f.child + " (uid=" + stats.uid + " != " + f.uid + ")"))
+            "dropping Failed(" + f.cause + ") from old child " + f
+              .child + " (uid=" + stats.uid + " != " + f.uid + ")"))
       case None ⇒
         publish(
           Debug(

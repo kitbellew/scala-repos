@@ -18,13 +18,16 @@ trait GameHelper {
   def cdnUrl(path: String): String
 
   def povOpenGraph(pov: Pov) =
-    lila.app.ui.OpenGraph(
-      image = cdnUrl(routes.Export.png(pov.game.id).url).some,
-      title = titleGame(pov.game),
-      url =
-        s"$netBaseUrl${routes.Round.watcher(pov.game.id, pov.color.name).url}",
-      description = describePov(pov)
-    )
+    lila
+      .app
+      .ui
+      .OpenGraph(
+        image = cdnUrl(routes.Export.png(pov.game.id).url).some,
+        title = titleGame(pov.game),
+        url =
+          s"$netBaseUrl${routes.Round.watcher(pov.game.id, pov.color.name).url}",
+        description = describePov(pov)
+      )
 
   def titleGame(g: Game) = {
     val speed = chess.Speed(g.clock).name
@@ -40,9 +43,11 @@ trait GameHelper {
       if (game.imported)
         "imported"
       else
-        game.clock.fold(chess.Speed.Correspondence.name) { c =>
-          s"${chess.Speed(c.some).name} (${c.show})"
-        }
+        game
+          .clock
+          .fold(chess.Speed.Correspondence.name) { c =>
+            s"${chess.Speed(c.some).name} (${c.show})"
+          }
     val mode = game.mode.name
     val variant =
       if (game.variant == chess.variant.FromPosition)
@@ -140,14 +145,22 @@ trait GameHelper {
     Namer.player(player, withRating, withTitle)(lightUser)
 
   def playerText(player: Player, withRating: Boolean = false) =
-    player.aiLevel.fold(
-      player.userId.flatMap(lightUser).fold(player.name | "Anon.") { u =>
-        player.rating.ifTrue(withRating).fold(u.titleName) { r =>
-          s"${u.titleName} ($r)"
-        }
-      }) { level =>
-      s"A.I. level $level"
-    }
+    player
+      .aiLevel
+      .fold(
+        player
+          .userId
+          .flatMap(lightUser)
+          .fold(player.name | "Anon.") { u =>
+            player
+              .rating
+              .ifTrue(withRating)
+              .fold(u.titleName) { r =>
+                s"${u.titleName} ($r)"
+              }
+          }) { level =>
+        s"A.I. level $level"
+      }
 
   val berserkIconSpan = """<span data-icon="`"></span>"""
   val berserkIconSpanHtml = Html(berserkIconSpan)
@@ -176,9 +189,11 @@ trait GameHelper {
         case None =>
           val klass = cssClass.??(" " + _)
           val content =
-            player.aiLevel.fold(player.name | User.anonymous) {
-              aiName(_, withRating)
-            }
+            player
+              .aiLevel
+              .fold(player.name | User.anonymous) {
+                aiName(_, withRating)
+              }
           s"""<span class="user_link$klass">$content$statusIcon</span>"""
         case Some(user) =>
           val klass = userClass(user.id, cssClass, withOnline)
@@ -190,8 +205,8 @@ trait GameHelper {
           val content = playerUsername(player, withRating)
           val diff =
             (player.ratingDiff ifTrue withDiff).fold(Html(""))(showRatingDiff)
-          val mark = engine ?? s"""<span class="engine_mark" title="${trans
-            .thisPlayerUsesChessComputerAssistance()}"></span>"""
+          val mark =
+            engine ?? s"""<span class="engine_mark" title="${trans.thisPlayerUsesChessComputerAssistance()}"></span>"""
           val dataIcon = withOnline ?? """data-icon="r""""
           val space =
             if (withOnline)

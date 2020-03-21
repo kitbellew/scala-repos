@@ -94,8 +94,8 @@ class AccumulatorSuite
     val maxI = 1000
     for (nThreads <- List(1, 10)) { // test single & multi-threaded
       sc = new SparkContext("local[" + nThreads + "]", "test")
-      val acc: Accumulable[mutable.Set[Any], Any] = sc.accumulable(
-        new mutable.HashSet[Any]())
+      val acc: Accumulable[mutable.Set[Any], Any] = sc
+        .accumulable(new mutable.HashSet[Any]())
       val d = sc.parallelize(1 to maxI)
       d.foreach { x =>
         acc += x
@@ -112,8 +112,8 @@ class AccumulatorSuite
     val maxI = 1000
     for (nThreads <- List(1, 10)) { // test single & multi-threaded
       sc = new SparkContext("local[" + nThreads + "]", "test")
-      val acc: Accumulable[mutable.Set[Any], Any] = sc.accumulable(
-        new mutable.HashSet[Any]())
+      val acc: Accumulable[mutable.Set[Any], Any] = sc
+        .accumulable(new mutable.HashSet[Any]())
       val d = sc.parallelize(1 to maxI)
       an[SparkException] should be thrownBy {
         d.foreach { x =>
@@ -158,8 +158,8 @@ class AccumulatorSuite
     val maxI = 1000
     for (nThreads <- List(1, 10)) { // test single & multi-threaded
       sc = new SparkContext("local[" + nThreads + "]", "test")
-      val acc: Accumulable[mutable.Set[Any], Any] = sc.accumulable(
-        new mutable.HashSet[Any]())
+      val acc: Accumulable[mutable.Set[Any], Any] = sc
+        .accumulable(new mutable.HashSet[Any]())
       val groupedInts = (1 to (maxI / 20)).map { x =>
         (20 * (x - 1) to 20 * x).toSet
       }
@@ -175,8 +175,8 @@ class AccumulatorSuite
   test("garbage collection") {
     // Create an accumulator and let it go out of scope to test that it's properly garbage collected
     sc = new SparkContext("local", "test")
-    var acc: Accumulable[mutable.Set[Any], Any] = sc.accumulable(
-      new mutable.HashSet[Any]())
+    var acc: Accumulable[mutable.Set[Any], Any] = sc
+      .accumulable(new mutable.HashSet[Any]())
     val accId = acc.id
     val ref = WeakReference(acc)
 
@@ -346,12 +346,16 @@ class AccumulatorSuite
       taskBytes,
       Thread.currentThread.getContextClassLoader)
     // Assert that executors see only zeros
-    taskDeser.externalAccums.foreach { a =>
-      assert(a.localValue == a.zero)
-    }
-    taskDeser.internalAccums.foreach { a =>
-      assert(a.localValue == a.zero)
-    }
+    taskDeser
+      .externalAccums
+      .foreach { a =>
+        assert(a.localValue == a.zero)
+      }
+    taskDeser
+      .internalAccums
+      .foreach { a =>
+        assert(a.localValue == a.zero)
+      }
   }
 
 }
@@ -373,8 +377,9 @@ private[spark] object AccumulatorSuite {
     sc.listenerBus.waitUntilEmpty(10 * 1000)
     val accums = listener.getCompletedStageInfos.flatMap(_.accumulables.values)
     val isSet = accums.exists { a =>
-      a.name == Some(PEAK_EXECUTION_MEMORY) && a.value.exists(
-        _.asInstanceOf[Long] > 0L)
+      a.name == Some(PEAK_EXECUTION_MEMORY) && a
+        .value
+        .exists(_.asInstanceOf[Long] > 0L)
     }
     if (!isSet) {
       throw new TestFailedException(

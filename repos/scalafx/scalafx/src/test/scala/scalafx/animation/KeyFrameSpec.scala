@@ -67,8 +67,8 @@ class KeyFrameSpec
       new jfxe.EventHandler[jfxe.ActionEvent] {
         def handle(p1: jfxe.ActionEvent) {}
       }
-    KeyFrame(10 ms, onFinished = finishHandler).onFinished should equal(
-      finishHandler)
+    KeyFrame(10 ms, onFinished = finishHandler)
+      .onFinished should equal(finishHandler)
   }
 
   it should "have a simpler syntax for finish handlers" in {
@@ -140,8 +140,8 @@ class KeyFrameSpec
   it should "have a convenient apply construction format and property access for values" in {
     val doubleProperty = new DoubleProperty(null, "sample")
     val frames = Set(KeyValue(doubleProperty, 50d))
-    KeyFrame(10 ms, values = frames).values should equal(
-      setAsJavaSet(frames.map(_.delegate)))
+    KeyFrame(10 ms, values = frames)
+      .values should equal(setAsJavaSet(frames.map(_.delegate)))
   }
 
   it should "support the at(duration) {value} syntax" in {

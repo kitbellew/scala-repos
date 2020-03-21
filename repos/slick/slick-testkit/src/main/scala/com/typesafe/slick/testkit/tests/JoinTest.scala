@@ -100,8 +100,8 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       _ = r1 shouldBe Set(("a", Some("a")), ("b", Some("b")), ("c", None))
       // Nested left outer, lift primitive value
       q2 = (
-        (xs.map(_.b) joinLeft ys.map(_.b) on (_ === _)) joinLeft ys.map(
-          _.b) on (_._1 === _)
+        (xs.map(_.b) joinLeft ys.map(_.b) on (_ === _)) joinLeft ys
+          .map(_.b) on (_._1 === _)
       ).to[Set]
       r2 <- mark("q2", q2.result)
       r2t: Set[((String, Option[String]), Option[String])] = r2
@@ -165,8 +165,8 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       // Nested right outer, lift primitive value
       // (left-associative; not symmetrical to the nested left outer case)
       q7 = (
-        (ys.map(_.b) joinRight xs.map(_.b) on (_ === _)) joinRight xs.map(
-          _.b) on (_._2 === _)
+        (ys.map(_.b) joinRight xs.map(_.b) on (_ === _)) joinRight xs
+          .map(_.b) on (_._2 === _)
       ).to[Set]
       r7 <- mark("q7", q7.result)
       rt: Set[(Option[(Option[String], String)], String)] = r7
@@ -336,9 +336,8 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
         _ <- mark("q5b", q5b.result)
           .map(_.map(_._2).toSet shouldBe Set(0L, 1L, 2L, 3L))
         q6 = for {
-          ((c, p), i) <- (
-            categories.sortBy(_.id) zip posts.sortBy(_.id)
-          ).zipWithIndex
+          ((c, p), i) <- (categories.sortBy(_.id) zip posts.sortBy(_.id))
+            .zipWithIndex
         } yield (c.id, p.category, i)
         _ <- mark("q6", q6.result)
           .map(_ shouldBe List((1, -1, 0), (2, 1, 1), (3, 2, 2), (4, 3, 3)))
@@ -401,7 +400,8 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       as ++= Seq(1, 2, 3),
       bs ++= Seq(1, 2, 4, 5),
       cs ++= Seq(1, 2, 4, 6),
-      q1.result
+      q1
+        .result
         .named("q1")
         .map(_.toSet shouldBe Set((1, Some(1)), (2, Some(2)), (3, None))),
       q2.result.named("q2").map(_.toSet shouldBe Set((1, 1), (2, 2))),

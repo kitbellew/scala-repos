@@ -36,12 +36,11 @@ object ScaldingILoop {
           .iterate(currentDir)(new File(_).getParent)
           .takeWhile(_ != "/")
 
-        children: Array[File] = Option(new File(ancestor).listFiles)
-          .getOrElse {
-            println(
-              s"The directory '$ancestor' could not be accessed while looking for '$filename'")
-            Array.empty
-          }
+        children: Array[File] = Option(new File(ancestor).listFiles).getOrElse {
+          println(
+            s"The directory '$ancestor' could not be accessed while looking for '$filename'")
+          Array.empty
+        }
 
         child <- children if child.toString.endsWith(filename)
       } yield child
@@ -124,9 +123,12 @@ class ScaldingILoop(in: Option[BufferedReader], out: JPrintWriter)
         case s: GenericRunnerSettings =>
           val cwd = System.getProperty("user.dir")
 
-          ScaldingILoop.findAllUpPath(cwd)(".scalding_repl").reverse.foreach {
-            f => s.loadfiles.appendToValue(f.toString)
-          }
+          ScaldingILoop
+            .findAllUpPath(cwd)(".scalding_repl")
+            .reverse
+            .foreach { f =>
+              s.loadfiles.appendToValue(f.toString)
+            }
         case _ =>
           ()
       }

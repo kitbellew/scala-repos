@@ -374,7 +374,8 @@ object JsonParser {
             fail("expected boolean")
           case 'f' =>
             fieldNameMode = true
-            if (buf.next == 'a' && buf.next == 'l' && buf.next == 's' && buf.next == 'e') {
+            if (buf.next == 'a' && buf.next == 'l' && buf.next == 's' && buf
+                  .next == 'e') {
               return BoolVal(false)
             }
             fail("expected boolean")

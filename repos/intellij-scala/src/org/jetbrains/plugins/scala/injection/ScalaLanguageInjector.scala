@@ -84,7 +84,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
       host
         .depthFirst {
           case injectedExpr: ScExpression
-              if injectedExpr.getParent
+              if injectedExpr
+                .getParent
                 .isInstanceOf[ScInterpolatedStringLiteral] =>
             false
           case _ =>
@@ -142,7 +143,9 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
 
     val annotation = annotationOwner flatMap {
       _.getAnnotations find {
-        _.getQualifiedName == myInjectionConfiguration.getAdvancedConfiguration.getLanguageAnnotationClass
+        _.getQualifiedName == myInjectionConfiguration
+          .getAdvancedConfiguration
+          .getLanguageAnnotationClass
       }
     }
 
@@ -209,8 +212,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
         val injection = injections.next()
 
         if (injection acceptsPsiElement host) {
-          val language =
-            InjectedLanguage findLanguageById injection.getInjectedLanguageId
+          val language = InjectedLanguage findLanguageById injection
+            .getInjectedLanguageId
           if (language != null) {
             val injectedLanguage = InjectedLanguage.create(
               injection.getInjectedLanguageId,
@@ -315,9 +318,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
 
           literals filter {
             case interpolated: ScInterpolatedStringLiteral
-                if interpolated.reference exists (
-                  mapping containsKey _.getText
-                ) =>
+                if interpolated
+                  .reference exists (mapping containsKey _.getText) =>
               true
             case _ =>
               false
@@ -367,7 +369,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
     if (l.isInstanceOf[ScMethodCall])
       None
     else
-      l.asOptionOf[ScReferenceElement]
+      l
+        .asOptionOf[ScReferenceElement]
         .flatMap(_.resolve().toOption)
         .map(contextOf)
         .flatMap(_.asOptionOf[PsiAnnotationOwner with PsiElement])
@@ -379,7 +382,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
       if (index == -1)
         None
       else
-        methodInv.getEffectiveInvokedExpr
+        methodInv
+          .getEffectiveInvokedExpr
           .asOptionOf[ScReferenceExpression] flatMap { ref =>
           ref.resolve().toOption match {
             case Some(f: ScFunction) =>
@@ -393,8 +397,9 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
               if (parameters.isEmpty)
                 None
               else
-                parameters(
-                  index.min(parameters.size - 1)).getModifierList.toOption
+                parameters(index.min(parameters.size - 1))
+                  .getModifierList
+                  .toOption
             case _ =>
               None
           }
@@ -492,9 +497,8 @@ object ScalaLanguageInjector {
   }
 
   def withInjectionSupport[T](action: LanguageInjectionSupport => T) =
-    Extensions getExtensions LanguageInjectionSupport.EP_NAME find (
-      _.getId == "scala"
-    ) map action
+    Extensions getExtensions LanguageInjectionSupport
+      .EP_NAME find (_.getId == "scala") map action
 
   def performSimpleInjection(
       literals: scala.Seq[ScLiteral],

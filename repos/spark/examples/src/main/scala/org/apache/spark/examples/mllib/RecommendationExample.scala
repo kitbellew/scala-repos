@@ -48,10 +48,12 @@ object RecommendationExample {
       case Rating(user, product, rate) =>
         (user, product)
     }
-    val predictions = model.predict(usersProducts).map {
-      case Rating(user, product, rate) =>
-        ((user, product), rate)
-    }
+    val predictions = model
+      .predict(usersProducts)
+      .map {
+        case Rating(user, product, rate) =>
+          ((user, product), rate)
+      }
     val ratesAndPreds = ratings
       .map {
         case Rating(user, product, rate) =>
@@ -69,9 +71,8 @@ object RecommendationExample {
 
     // Save and load model
     model.save(sc, "target/tmp/myCollaborativeFilter")
-    val sameModel = MatrixFactorizationModel.load(
-      sc,
-      "target/tmp/myCollaborativeFilter")
+    val sameModel = MatrixFactorizationModel
+      .load(sc, "target/tmp/myCollaborativeFilter")
     // $example off$
   }
 }

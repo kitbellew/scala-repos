@@ -57,12 +57,18 @@ private[hive] case class CreateTableAsSelect(
       import org.apache.hadoop.mapred.TextInputFormat
 
       val withFormat = tableDesc.withNewStorage(
-        inputFormat = tableDesc.storage.inputFormat
+        inputFormat = tableDesc
+          .storage
+          .inputFormat
           .orElse(Some(classOf[TextInputFormat].getName)),
-        outputFormat = tableDesc.storage.outputFormat
+        outputFormat = tableDesc
+          .storage
+          .outputFormat
           .orElse(
             Some(classOf[HiveIgnoreKeyTextOutputFormat[Text, Text]].getName)),
-        serde = tableDesc.storage.serde
+        serde = tableDesc
+          .storage
+          .serde
           .orElse(Some(classOf[LazySimpleSerDe].getName))
       )
 
@@ -70,20 +76,27 @@ private[hive] case class CreateTableAsSelect(
         if (withFormat.schema.isEmpty) {
           // Hive doesn't support specifying the column list for target table in CTAS
           // However we don't think SparkSQL should follow that.
-          tableDesc.copy(schema = query.output.map { c =>
-            CatalogColumn(
-              c.name,
-              HiveMetastoreTypes.toMetastoreType(c.dataType))
-          })
+          tableDesc.copy(schema = query
+            .output
+            .map { c =>
+              CatalogColumn(
+                c.name,
+                HiveMetastoreTypes.toMetastoreType(c.dataType))
+            })
         } else {
           withFormat
         }
 
-      hiveContext.sessionState.catalog.client
+      hiveContext
+        .sessionState
+        .catalog
+        .client
         .createTable(withSchema, ignoreIfExists = false)
 
       // Get the Metastore Relation
-      hiveContext.sessionState.catalog
+      hiveContext
+        .sessionState
+        .catalog
         .lookupRelation(tableIdentifier, None) match {
         case r: MetastoreRelation =>
           r

@@ -40,8 +40,9 @@ class OfferMatcherManagerActorTest
     }
 
     When("The list of offer matchers is fetched")
-    val orderedMatchers = manager.underlyingActor.offerMatchers(
-      f.reservedOffer(appId))
+    val orderedMatchers = manager
+      .underlyingActor
+      .offerMatchers(f.reservedOffer(appId))
 
     Then("The list is sorted in the correct order")
     orderedMatchers should have size num.toLong
@@ -55,14 +56,17 @@ class OfferMatcherManagerActorTest
     val f = new Fixture
     val appId = PathId("/some/app")
     val manager = f.offerMatcherManager
-    1.to(num).flatMap(_ => Seq(f.matcher(), f.matcher(Some(appId)))).map {
-      matcher =>
+    1
+      .to(num)
+      .flatMap(_ => Seq(f.matcher(), f.matcher(Some(appId))))
+      .map { matcher =>
         manager ? OfferMatcherManagerDelegate.AddOrUpdateMatcher(matcher)
-    }
+      }
 
     When("The list of offer matchers is fetched")
-    val sortedMatchers = manager.underlyingActor.offerMatchers(
-      f.reservedOffer(appId))
+    val sortedMatchers = manager
+      .underlyingActor
+      .offerMatchers(f.reservedOffer(appId))
 
     Then("The list is sorted in the correct order")
     sortedMatchers should have size 2 * num.toLong

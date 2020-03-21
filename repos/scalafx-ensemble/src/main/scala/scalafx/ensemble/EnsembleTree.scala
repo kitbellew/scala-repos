@@ -97,10 +97,10 @@ object EnsembleTree {
                 val sampleName = ExampleInfo.formatAddSpaces(leafName)
                 val img =
                   new ImageView {
-                    val filePath = ExampleInfo.thumbnailPath(
-                      leafName,
-                      groupName)
-                    val inputStream = this.getClass
+                    val filePath = ExampleInfo
+                      .thumbnailPath(leafName, groupName)
+                    val inputStream = this
+                      .getClass
                       .getResourceAsStream(filePath)
                     if (inputStream == null) {
                       throw new IOException(
@@ -117,10 +117,13 @@ object EnsembleTree {
                     styleClass += "sample-tile"
                     onAction = (ae: ActionEvent) => {
                       Ensemble.splitPane.items.remove(1)
-                      Ensemble.splitPane.items.add(
-                        1,
-                        PageDisplayer.choosePage(
-                          groupName + " > " + sampleName))
+                      Ensemble
+                        .splitPane
+                        .items
+                        .add(
+                          1,
+                          PageDisplayer
+                            .choosePage(groupName + " > " + sampleName))
                     }
                   }
                 EnsembleThumbNail(button)
@@ -147,13 +150,15 @@ class EnsembleTree(
     * returns the entire tree
     */
   def getTree: List[TreeItem[String]] =
-    tree.map {
-      case (name, items) =>
-        new TreeItem[String](name) {
-          expanded = true
-          children = items
-        }
-    }.toList
+    tree
+      .map {
+        case (name, items) =>
+          new TreeItem[String](name) {
+            expanded = true
+            children = items
+          }
+      }
+      .toList
 
   def getThumbs(keyName: String) = thumbnails(keyName)
 

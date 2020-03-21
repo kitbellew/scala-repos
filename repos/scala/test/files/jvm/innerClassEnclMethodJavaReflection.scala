@@ -16,8 +16,8 @@ object Test extends App {
       "$anonfun")
 
     def ok(t: Throwable) = {
-      allowedMissingPackages.exists(p =>
-        t.getMessage.replace('/', '.').contains(p))
+      allowedMissingPackages
+        .exists(p => t.getMessage.replace('/', '.').contains(p))
     }
 
     def unapply(t: Throwable): Option[Throwable] =
@@ -38,7 +38,8 @@ object Test extends App {
 
     def flatten(f: AbstractFile, s: String): Iterator[(AbstractFile, String)] =
       if (f.isClassContainer)
-        f.iterator
+        f
+          .iterator
           .map(ch =>
             (
               ch,

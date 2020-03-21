@@ -63,7 +63,8 @@ class CommandWithConfirmationValidation extends ParamsOnlyCommand {
   val name: Field[String] = asString("name").notBlank
   val passwordConfirmation: Field[String] =
     asString("passwordConfirmation").notBlank
-  val password: Field[String] = asString("password").notBlank
+  val password: Field[String] = asString("password")
+    .notBlank
     .validForConfirmation(passwordConfirmation)
 }
 
@@ -180,8 +181,10 @@ class CommandSpec extends Specification {
           }
 
         afterBinding {
-          _fullname =
-            a.validation.toOption.get + " " + lower.validation.toOption.get
+          _fullname = a.validation.toOption.get + " " + lower
+            .validation
+            .toOption
+            .get
         }
       }
 
@@ -193,8 +196,8 @@ class CommandSpec extends Specification {
       form.bindTo(params)
 
       form.fullName must beSome[String]
-      form.fullName.get must_== params("name").toUpperCase + " " + params(
-        "surname").toLowerCase
+      form.fullName.get must_== params("name")
+        .toUpperCase + " " + params("surname").toLowerCase
     }
   }
 }

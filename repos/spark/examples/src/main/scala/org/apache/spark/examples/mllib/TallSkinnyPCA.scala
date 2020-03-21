@@ -45,10 +45,12 @@ object TallSkinnyPCA {
     val sc = new SparkContext(conf)
 
     // Load and parse the data file.
-    val rows = sc.textFile(args(0)).map { line =>
-      val values = line.split(' ').map(_.toDouble)
-      Vectors.dense(values)
-    }
+    val rows = sc
+      .textFile(args(0))
+      .map { line =>
+        val values = line.split(' ').map(_.toDouble)
+        Vectors.dense(values)
+      }
     val mat = new RowMatrix(rows)
 
     // Compute principal components.

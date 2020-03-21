@@ -46,7 +46,9 @@ package scala.collection.immutable.redblacktree {
       } else {
         for {
           oddOrEven <- choose(0, 2)
-          tryRed = oddOrEven.sample.get % 2 == 0 // work around arbitrary[Boolean] bug
+          tryRed = oddOrEven
+            .sample
+            .get % 2 == 0 // work around arbitrary[Boolean] bug
           isRed = parentIsBlack && tryRed
           nextLevel = if (isRed)
             level
@@ -340,8 +342,8 @@ package scala.collection.immutable.redblacktree {
     property("slice") =
       forAll(genInput) {
         case (tree, parm, newTree) =>
-          iterator(tree).slice(parm._1, parm._2).toList == iterator(
-            newTree).toList
+          iterator(tree).slice(parm._1, parm._2).toList == iterator(newTree)
+            .toList
       }
   }
 }

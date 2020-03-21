@@ -74,20 +74,24 @@ trait IntegrationTest {
       root.getValue.isInstanceOf[TestStructureViewElement] && {
         val presentation =
           root.getValue.asInstanceOf[TreeElement].getPresentation
-        presentation.isInstanceOf[
-          TestItemRepresentation] && presentation.getPresentableText == nodeName &&
+        presentation.isInstanceOf[TestItemRepresentation] && presentation
+          .getPresentableText == nodeName &&
         presentation
           .asInstanceOf[TestItemRepresentation]
           .testStatus == status &&
         parentName.map(currentParentName == _).getOrElse(true)
       } ||
-      root.getChildren.toList.exists(
-        helper(
-          _,
-          root.getValue
-            .asInstanceOf[TreeElement]
-            .getPresentation
-            .getPresentableText))
+      root
+        .getChildren
+        .toList
+        .exists(
+          helper(
+            _,
+            root
+              .getValue
+              .asInstanceOf[TreeElement]
+              .getPresentation
+              .getPresentableText))
     }
 
     var res = false
@@ -122,7 +126,8 @@ trait IntegrationTest {
       generatedName: String = ""): Boolean = {
     val config = configAndSettings.getConfiguration
     val testConfig = config.asInstanceOf[AbstractTestRunConfiguration]
-    testConfig.testKind == TestKind.ALL_IN_PACKAGE && testConfig.getTestPackagePath == packageName
+    testConfig.testKind == TestKind.ALL_IN_PACKAGE && testConfig
+      .getTestPackagePath == packageName
   }
 
   protected def checkConfig(
@@ -160,7 +165,9 @@ trait IntegrationTest {
     if (root.isLeaf && !names.contains(root.getName))
       true
     else
-      !names.contains(root.getName) && root.getChildren.toList
+      !names.contains(root.getName) && root
+        .getChildren
+        .toList
         .forall(checkResultTreeDoesNotHaveNodes(_, names))
   }
 
@@ -206,7 +213,8 @@ trait IntegrationTest {
       if (children.isEmpty && conditions.size == 1)
         Some(List(root))
       else
-        children.toList
+        children
+          .toList
           .map(getPathFromResultTree(_, conditions.tail, allowTail))
           .find(_.isDefined)
           .flatten
@@ -333,9 +341,8 @@ trait IntegrationTest {
     assert(testPathOpt.isDefined)
     val test = testPathOpt.get.last
     val project = getProject
-    val location = test.getLocation(
-      project,
-      GlobalSearchScope.projectScope(project))
+    val location = test
+      .getLocation(project, GlobalSearchScope.projectScope(project))
     val psiElement = location.getPsiElement
     val psiFile = psiElement.getContainingFile
     val textRange = psiElement.getTextRange

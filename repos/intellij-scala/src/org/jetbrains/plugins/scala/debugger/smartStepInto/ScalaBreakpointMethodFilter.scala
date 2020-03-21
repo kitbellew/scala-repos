@@ -62,16 +62,18 @@ class ScalaBreakpointMethodFilter(
     val method: Method = location.method
     psiMethod match {
       case None => //is created for fun expression
-        method.name == "apply" || method.name.startsWith(
-          "apply$") || ScalaPositionManager.isIndyLambda(method)
+        method.name == "apply" || method
+          .name
+          .startsWith("apply$") || ScalaPositionManager.isIndyLambda(method)
       case Some(m) =>
         val javaName = inReadAction(
           if (m.isConstructor)
             "<init>"
           else
             ScalaNamesUtil.toJavaName(m.name))
-        javaName == method.name && signatureMatches(
-          method) && !ScalaPositionManager.shouldSkip(location, process)
+        javaName == method
+          .name && signatureMatches(method) && !ScalaPositionManager
+          .shouldSkip(location, process)
 
     }
   }
@@ -136,7 +138,10 @@ object ScalaBreakpointMethodFilter {
   @Nullable
   private def stmtsForTemplate(
       tp: ScTemplateDefinition): Seq[ScBlockStatement] = {
-    val membersAndExprs = tp.extendsBlock.templateBody.toSeq
+    val membersAndExprs = tp
+      .extendsBlock
+      .templateBody
+      .toSeq
       .flatMap(tb => tb.members ++ tb.exprs)
     membersAndExprs
       .collect {

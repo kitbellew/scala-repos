@@ -27,8 +27,8 @@ class ScalaByTypeWeigher extends CompletionWeigher {
       location: CompletionLocation): Comparable[_] = {
     import KindWeights._
 
-    val position = ScalaCompletionUtil.positionFromParameters(
-      location.getCompletionParameters)
+    val position = ScalaCompletionUtil
+      .positionFromParameters(location.getCompletionParameters)
     val context = location.getProcessingContext
 
     val isAfterNew = ScalaAfterNewCompletionUtil.isAfterNew(position, context)

@@ -16,24 +16,30 @@ object StackRegistry {
     // reflection of params to case classes.
     // TODO: we might be able to make this avoid reflection with Showable
     val modules: Seq[Module] =
-      stack.tails.map { node =>
-        val raw = node.head.parameters.map { p =>
-          params(p)
-        }
-        val reflected =
-          raw.foldLeft(Seq.empty[(String, String)]) {
-            case (seq, p: Product) =>
-              // TODO: many case classes have a $outer field because they close over an outside scope.
-              // this is not very useful, and it might make sense to filter them out in the future.
-              val fields = p.getClass.getDeclaredFields.map(_.getName).toSeq
-              val values = p.productIterator.map(_.toString).toSeq
-              seq ++ fields.zipAll(values, "<unknown>", "<unknown>")
+      stack
+        .tails
+        .map { node =>
+          val raw = node
+            .head
+            .parameters
+            .map { p =>
+              params(p)
+            }
+          val reflected =
+            raw.foldLeft(Seq.empty[(String, String)]) {
+              case (seq, p: Product) =>
+                // TODO: many case classes have a $outer field because they close over an outside scope.
+                // this is not very useful, and it might make sense to filter them out in the future.
+                val fields = p.getClass.getDeclaredFields.map(_.getName).toSeq
+                val values = p.productIterator.map(_.toString).toSeq
+                seq ++ fields.zipAll(values, "<unknown>", "<unknown>")
 
-            case (seq, _) =>
-              seq
-          }
-        Module(node.head.role.name, node.head.description, reflected)
-      }.toSeq
+              case (seq, _) =>
+                seq
+            }
+          Module(node.head.role.name, node.head.description, reflected)
+        }
+        .toSeq
 
     val name: String = params[Label].label
     val protocolLibrary: String = params[ProtocolLibrary].name
@@ -118,41 +124,45 @@ trait StackRegistry {
 
   private[this] def addEntries(entry: Entry): Unit = {
     val gRegistry = GlobalRegistry.get
-    entry.modules.foreach {
-      case Module(paramName, _, reflected) =>
-        reflected.foreach {
-          case (field, value) =>
-            val key = Seq(
-              registryName,
-              entry.protocolLibrary,
-              entry.name,
-              entry.addr,
-              paramName,
-              field)
-            if (gRegistry.put(key, value).isEmpty)
-              numEntries.incrementAndGet()
-        }
-    }
+    entry
+      .modules
+      .foreach {
+        case Module(paramName, _, reflected) =>
+          reflected.foreach {
+            case (field, value) =>
+              val key = Seq(
+                registryName,
+                entry.protocolLibrary,
+                entry.name,
+                entry.addr,
+                paramName,
+                field)
+              if (gRegistry.put(key, value).isEmpty)
+                numEntries.incrementAndGet()
+          }
+      }
   }
 
   private[this] def removeEntries(entry: Entry): Unit = {
     val gRegistry = GlobalRegistry.get
     val name = entry.name
-    entry.modules.foreach {
-      case Module(paramName, _, reflected) =>
-        reflected.foreach {
-          case (field, value) =>
-            val key = Seq(
-              registryName,
-              entry.protocolLibrary,
-              name,
-              entry.addr,
-              paramName,
-              field)
-            if (gRegistry.remove(key).isDefined)
-              numEntries.decrementAndGet()
-        }
-    }
+    entry
+      .modules
+      .foreach {
+        case Module(paramName, _, reflected) =>
+          reflected.foreach {
+            case (field, value) =>
+              val key = Seq(
+                registryName,
+                entry.protocolLibrary,
+                name,
+                entry.addr,
+                paramName,
+                field)
+              if (gRegistry.remove(key).isDefined)
+                numEntries.decrementAndGet()
+          }
+      }
   }
 
   /** Returns the number of entries */

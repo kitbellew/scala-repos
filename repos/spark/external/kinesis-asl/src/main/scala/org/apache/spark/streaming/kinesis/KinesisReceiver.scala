@@ -301,9 +301,8 @@ private[kinesis] class KinesisReceiver[T](
     * for next block. Internally, this is synchronized with `rememberAddedRange()`.
     */
   private def finalizeRangesForCurrentBlock(blockId: StreamBlockId): Unit = {
-    blockIdToSeqNumRanges.put(
-      blockId,
-      SequenceNumberRanges(seqNumRangesInCurrentBlock.toArray))
+    blockIdToSeqNumRanges
+      .put(blockId, SequenceNumberRanges(seqNumRangesInCurrentBlock.toArray))
     seqNumRangesInCurrentBlock.clear()
     logDebug(s"Generated block $blockId has $blockIdToSeqNumRanges")
   }
@@ -341,9 +340,11 @@ private[kinesis] class KinesisReceiver[T](
     // Update the latest sequence number that have been successfully stored for each shard
     // Note that we are doing this sequentially because the array of sequence number ranges
     // is assumed to be
-    rangesToReport.ranges.foreach { range =>
-      shardIdToLatestStoredSeqNum.put(range.shardId, range.toSeqNumber)
-    }
+    rangesToReport
+      .ranges
+      .foreach { range =>
+        shardIdToLatestStoredSeqNum.put(range.shardId, range.toSeqNumber)
+      }
   }
 
   /**

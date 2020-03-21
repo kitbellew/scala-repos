@@ -197,8 +197,8 @@ class SliceSpec extends Specification with ArbitrarySlice with ScalaCheck {
         val slice = Slice.concat(slices)
         // This is terrible, but there isn't an immediately easy way to test
         // without duplicating concat.
-        toCValues(slice).map(stripUndefineds) must_== fakeConcat(slices).map(
-          stripUndefineds)
+        toCValues(slice).map(stripUndefineds) must_== fakeConcat(slices)
+          .map(stripUndefineds)
       }
     }
   }

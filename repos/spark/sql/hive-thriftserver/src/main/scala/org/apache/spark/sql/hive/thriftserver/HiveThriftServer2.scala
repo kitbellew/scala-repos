@@ -70,9 +70,10 @@ object HiveThriftServer2 extends Logging {
     listener = new HiveThriftServer2Listener(server, sqlContext.conf)
     sqlContext.sparkContext.addSparkListener(listener)
     uiTab =
-      if (sqlContext.sparkContext.getConf.getBoolean(
-            "spark.ui.enabled",
-            true)) {
+      if (sqlContext
+            .sparkContext
+            .getConf
+            .getBoolean("spark.ui.enabled", true)) {
         Some(new ThriftServerTab(sqlContext.sparkContext))
       } else {
         None
@@ -104,9 +105,10 @@ object HiveThriftServer2 extends Logging {
         new HiveThriftServer2Listener(server, SparkSQLEnv.hiveContext.conf)
       SparkSQLEnv.sparkContext.addSparkListener(listener)
       uiTab =
-        if (SparkSQLEnv.sparkContext.getConf.getBoolean(
-              "spark.ui.enabled",
-              true)) {
+        if (SparkSQLEnv
+              .sparkContext
+              .getConf
+              .getBoolean("spark.ui.enabled", true)) {
           Some(new ThriftServerTab(SparkSQLEnv.sparkContext))
         } else {
           None
@@ -181,10 +183,10 @@ object HiveThriftServer2 extends Logging {
     private var onlineSessionNum: Int = 0
     private val sessionList = new mutable.LinkedHashMap[String, SessionInfo]
     private val executionList = new mutable.LinkedHashMap[String, ExecutionInfo]
-    private val retainedStatements = conf.getConf(
-      SQLConf.THRIFTSERVER_UI_STATEMENT_LIMIT)
-    private val retainedSessions = conf.getConf(
-      SQLConf.THRIFTSERVER_UI_SESSION_LIMIT)
+    private val retainedStatements = conf
+      .getConf(SQLConf.THRIFTSERVER_UI_STATEMENT_LIMIT)
+    private val retainedSessions = conf
+      .getConf(SQLConf.THRIFTSERVER_UI_SESSION_LIMIT)
     private var totalRunning = 0
 
     def getOnlineSessionNum: Int =
@@ -295,18 +297,24 @@ object HiveThriftServer2 extends Logging {
     private def trimExecutionIfNecessary() = {
       if (executionList.size > retainedStatements) {
         val toRemove = math.max(retainedStatements / 10, 1)
-        executionList.filter(_._2.finishTimestamp != 0).take(toRemove).foreach {
-          s => executionList.remove(s._1)
-        }
+        executionList
+          .filter(_._2.finishTimestamp != 0)
+          .take(toRemove)
+          .foreach { s =>
+            executionList.remove(s._1)
+          }
       }
     }
 
     private def trimSessionIfNecessary() = {
       if (sessionList.size > retainedSessions) {
         val toRemove = math.max(retainedSessions / 10, 1)
-        sessionList.filter(_._2.finishTimestamp != 0).take(toRemove).foreach {
-          s => sessionList.remove(s._1)
-        }
+        sessionList
+          .filter(_._2.finishTimestamp != 0)
+          .take(toRemove)
+          .foreach { s =>
+            sessionList.remove(s._1)
+          }
       }
 
     }

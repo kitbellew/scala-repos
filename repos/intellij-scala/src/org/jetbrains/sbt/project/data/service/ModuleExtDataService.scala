@@ -58,8 +58,10 @@ object ModuleExtDataService {
         data = dataNode.getData
       } {
         module.configureScalaCompilerSettingsFrom("SBT", data.scalacOptions)
-        data.scalaVersion.foreach(version =>
-          configureScalaSdk(module, version, data.scalacClasspath))
+        data
+          .scalaVersion
+          .foreach(version =>
+            configureScalaSdk(module, version, data.scalacClasspath))
         configureOrInheritSdk(module, data.jdk)
         configureLanguageLevel(module, data.javacOptions)
         configureJavacOptions(module, data.javacOptions)
@@ -76,8 +78,8 @@ object ModuleExtDataService {
           .find(_.scalaVersion.contains(compilerVersion))
           .orElse(
             scalaLibraries.find(
-              _.scalaVersion.exists(
-                _.toLanguageLevel == compilerVersion.toLanguageLevel)))
+              _.scalaVersion
+              .exists(_.toLanguageLevel == compilerVersion.toLanguageLevel)))
 
         scalaLibrary match {
           case Some(library) if !library.isScalaSdk =>
@@ -113,8 +115,8 @@ object ModuleExtDataService {
         .javaLanguageLevelFrom(javacOptions)
         .orElse(moduleSdk.flatMap(SdkUtils.defaultJavaLanguageLevelIn))
       languageLevel.foreach { level =>
-        val extension = model.getModuleExtension(
-          classOf[LanguageLevelModuleExtensionImpl])
+        val extension = model
+          .getModuleExtension(classOf[LanguageLevelModuleExtensionImpl])
         extension.setLanguageLevel(level)
       }
     }

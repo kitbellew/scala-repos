@@ -458,9 +458,11 @@ private[metrics] final case class MetricsGossip(nodes: Set[NodeMetrics]) {
     * Adds new remote [[NodeMetrics]] and merges existing from a remote gossip.
     */
   def merge(otherGossip: MetricsGossip): MetricsGossip =
-    otherGossip.nodes.foldLeft(this) { (gossip, nodeMetrics) ⇒
-      gossip :+ nodeMetrics
-    }
+    otherGossip
+      .nodes
+      .foldLeft(this) { (gossip, nodeMetrics) ⇒
+        gossip :+ nodeMetrics
+      }
 
   /**
     * Adds new local [[NodeMetrics]], or merges an existing.

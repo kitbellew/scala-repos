@@ -135,8 +135,8 @@ private[finagle] class FailFastFactory[Req, Rep](
 
   private[this] val futureExc = Future.exception(exc)
 
-  private[this] val markedAvailableCounter = statsReceiver.counter(
-    "marked_available")
+  private[this] val markedAvailableCounter = statsReceiver
+    .counter("marked_available")
   private[this] val markedDeadCounter = statsReceiver.counter("marked_dead")
 
   private[this] val unhealthyForMsGauge =

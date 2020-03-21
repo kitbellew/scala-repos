@@ -34,7 +34,8 @@ trait LocationLineManager {
 
   import self.caches._
 
-  private val syntheticProvider = SyntheticTypeComponentProvider.EP_NAME
+  private val syntheticProvider = SyntheticTypeComponentProvider
+    .EP_NAME
     .findExtension(classOf[ScalaSyntheticProvider])
 
   def clearLocationLineCaches(): Unit = {
@@ -45,18 +46,18 @@ trait LocationLineManager {
 
   def exactLineNumber(location: Location): Int = {
     checkAndUpdateCaches(location.declaringType())
-    customizedLocationsCache.getOrElse(
-      location,
-      ScalaPositionManager.checkedLineNumber(location))
+    customizedLocationsCache
+      .getOrElse(location, ScalaPositionManager.checkedLineNumber(location))
   }
 
   def shouldSkip(location: Location): Boolean = {
     if (!DebuggerUtil.isScala(location.declaringType(), default = false))
       return false
 
-    val synth =
-      DebuggerSettings.getInstance().SKIP_SYNTHETIC_METHODS && syntheticProvider
-        .isSynthetic(location.method())
+    val synth = DebuggerSettings
+      .getInstance()
+      .SKIP_SYNTHETIC_METHODS && syntheticProvider
+      .isSynthetic(location.method())
     synth || exactLineNumber(location) < 0
   }
 
@@ -74,8 +75,9 @@ trait LocationLineManager {
 
     checkAndUpdateCaches(refType)
 
-    val nonCustomized = jvmLocations.asScala.filterNot(
-      customizedLocationsCache.contains)
+    val nonCustomized = jvmLocations
+      .asScala
+      .filterNot(customizedLocationsCache.contains)
     val customized = customizedLocations(refType, line)
     (nonCustomized ++ customized).filter(!shouldSkip(_))
   }
@@ -96,9 +98,8 @@ trait LocationLineManager {
 
     val key = (location.declaringType(), customLine)
     val old = lineToCustomizedLocationCache.getOrElse(key, Seq.empty)
-    lineToCustomizedLocationCache.update(
-      key,
-      (old :+ location).sortBy(_.codeIndex()))
+    lineToCustomizedLocationCache
+      .update(key, (old :+ location).sortBy(_.codeIndex()))
   }
 
   private def computeCustomizedLocationsFor(refType: ReferenceType): Unit = {
@@ -143,9 +144,8 @@ trait LocationLineManager {
         if (lineNumber < 0)
           return true
 
-        val linePosition = SourcePosition.createFromLine(
-          containingFile,
-          lineNumber)
+        val linePosition = SourcePosition
+          .createFromLine(containingFile, lineNumber)
         val elem = nonWhitespaceElement(linePosition)
         val parent = PsiTreeUtil.getParentOfType(
           elem,
@@ -162,8 +162,8 @@ trait LocationLineManager {
         location <- methods.flatMap(_.allLineLocations().asScala)
       } {
         if (shouldPointAtStartLine(location)) {
-          val significantElem = DebuggerUtil.getSignificantElement(
-            generatingElem)
+          val significantElem = DebuggerUtil
+            .getSignificantElement(generatingElem)
           val lineNumber = elementStartLine(significantElem)
           if (lineNumber != ScalaPositionManager.checkedLineNumber(location))
             cacheCustomLine(location, lineNumber)
@@ -197,17 +197,20 @@ trait LocationLineManager {
           if (iloadCode.isEmpty)
             return
 
-          method.allLineLocations().asScala.foreach {
-            case loc
-                if BytecodeUtil
-                  .readIload(loc.codeIndex().toInt, bytecodes) == iloadCode =>
-              cacheCustomLine(loc, -1)
-            case _ =>
-          }
+          method
+            .allLineLocations()
+            .asScala
+            .foreach {
+              case loc
+                  if BytecodeUtil
+                    .readIload(loc.codeIndex().toInt, bytecodes) == iloadCode =>
+                cacheCustomLine(loc, -1)
+              case _ =>
+            }
         }
 
-        val iconst_0Locations = caseLineLocations.filter(l =>
-          BytecodeUtil.isIconst_0(l.codeIndex().toInt, bytecodes))
+        val iconst_0Locations = caseLineLocations
+          .filter(l => BytecodeUtil.isIconst_0(l.codeIndex().toInt, bytecodes))
 
         iconst_0Locations.foreach { l =>
           cacheCustomLine(l, -1)
@@ -234,8 +237,8 @@ trait LocationLineManager {
             None
         }
 
-        val notCustomizedYet = caseLinesLocations.map(
-          _.filter(!customizedLocationsCache.contains(_)))
+        val notCustomizedYet = caseLinesLocations
+          .map(_.filter(!customizedLocationsCache.contains(_)))
         val repeating = notCustomizedYet.filter(_.size > 1)
         val lastLocations = repeating.map(_.last)
         val withStoreCode =
@@ -252,15 +255,19 @@ trait LocationLineManager {
         if (loadCode.isEmpty)
           return
 
-        val loadLocations = method.allLineLocations().asScala.filter { l =>
-          BytecodeUtil.readLoadCode(l.codeIndex().toInt, bytecodes) == loadCode
-        }
+        val loadLocations = method
+          .allLineLocations()
+          .asScala
+          .filter { l =>
+            BytecodeUtil
+              .readLoadCode(l.codeIndex().toInt, bytecodes) == loadCode
+          }
         loadLocations.foreach(cacheCustomLine(_, -1))
       }
 
       def skipBaseLineExtraLocations(method: Method, baseLine: Int): Unit = {
-        val locations = locationsOfLine(method, baseLine).filter(
-          !customizedLocationsCache.contains(_))
+        val locations = locationsOfLine(method, baseLine)
+          .filter(!customizedLocationsCache.contains(_))
         if (locations.size <= 1)
           return
 
@@ -281,8 +288,8 @@ trait LocationLineManager {
           BytecodeUtil.returnCodes.contains(bytecodes(l.codeIndex().toInt))
         }
 
-        (loadExpressionValueLocations ++ returnLocations).foreach(
-          cacheCustomLine(_, -1))
+        (loadExpressionValueLocations ++ returnLocations)
+          .foreach(cacheCustomLine(_, -1))
       }
 
       def customizeFor(caseClauses: ScCaseClauses): Unit = {
@@ -326,10 +333,12 @@ trait LocationLineManager {
         }
       }
 
-      val allCaseClauses = generatingElem.breadthFirst.collect {
-        case cc: ScCaseClauses =>
-          cc
-      }
+      val allCaseClauses = generatingElem
+        .breadthFirst
+        .collect {
+          case cc: ScCaseClauses =>
+            cc
+        }
       allCaseClauses.foreach(customizeFor)
     }
 

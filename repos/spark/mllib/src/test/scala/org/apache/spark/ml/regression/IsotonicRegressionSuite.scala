@@ -32,17 +32,17 @@ class IsotonicRegressionSuite
   private def generateIsotonicInput(labels: Seq[Double]): DataFrame = {
     sqlContext
       .createDataFrame(
-        labels.zipWithIndex.map {
-          case (label, i) =>
-            (label, i.toDouble, 1.0)
-        })
+        labels
+          .zipWithIndex
+          .map {
+            case (label, i) =>
+              (label, i.toDouble, 1.0)
+          })
       .toDF("label", "features", "weight")
   }
 
   private def generatePredictionInput(features: Seq[Double]): DataFrame = {
-    sqlContext
-      .createDataFrame(features.map(Tuple1.apply))
-      .toDF("features")
+    sqlContext.createDataFrame(features.map(Tuple1.apply)).toDF("features")
   }
 
   test("isotonic regression predictions") {
@@ -174,8 +174,7 @@ class IsotonicRegressionSuite
           (5.0, Vectors.sparse(2, Array(1), Array(3.0)))))
       .toDF("label", "features")
 
-    val ir = new IsotonicRegression()
-      .setFeatureIndex(1)
+    val ir = new IsotonicRegression().setFeatureIndex(1)
 
     val model = ir.fit(dataset)
 

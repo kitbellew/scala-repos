@@ -13,9 +13,11 @@ final class StreamerList(
   import StreamerList._
 
   def get: Fu[List[Streamer]] =
-    store.get.map { text =>
-      validate(text)._1
-    }
+    store
+      .get
+      .map { text =>
+        validate(text)._1
+      }
 
   def find(id: String): Fu[Option[Streamer]] = get map (_ find (_.id == id))
 

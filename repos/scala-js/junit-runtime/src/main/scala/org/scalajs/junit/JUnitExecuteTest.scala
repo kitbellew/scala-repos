@@ -39,9 +39,11 @@ final class JUnitExecuteTest(
     } else {
       def runWithOrWithoutQuietMode[T](block: => T): T = {
         if (runner.runSettings.quiet) {
-          scala.Console.withOut(new ByteArrayOutputStream()) {
-            block
-          }
+          scala
+            .Console
+            .withOut(new ByteArrayOutputStream()) {
+              block
+            }
         } else {
           block
         }
@@ -118,7 +120,8 @@ final class JUnitExecuteTest(
           for (method <- jUnitMetadata.afterMethod)
             classMetadata.invoke(testClassInstance, method.name)
 
-          if (testAnnotation.timeout != 0 && testAnnotation.timeout <= timeInSeconds) {
+          if (testAnnotation.timeout != 0 && testAnnotation
+                .timeout <= timeInSeconds) {
             richLogger.warn(
               "Timeout: took " + timeInSeconds + " sec, expected " +
                 (testAnnotation.timeout.toDouble / 1000) + " sec")
@@ -131,8 +134,8 @@ final class JUnitExecuteTest(
               Some(ex))
             val selector =
               new NestedTestSelector(fullyQualifiedName, method.name)
-            eventHandler.handle(
-              new JUnitEvent(taskDef, Status.Failure, selector))
+            eventHandler
+              .handle(new JUnitEvent(taskDef, Status.Failure, selector))
         }
       }
     }

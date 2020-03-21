@@ -72,8 +72,14 @@ private[sql] case class InsertIntoHadoopFsRelation(
 
   override def run(sqlContext: SQLContext): Seq[Row] = {
     // Most formats don't do well with duplicate columns, so lets not allow that
-    if (query.schema.fieldNames.length != query.schema.fieldNames.distinct.length) {
-      val duplicateColumns = query.schema.fieldNames
+    if (query.schema.fieldNames.length != query
+          .schema
+          .fieldNames
+          .distinct
+          .length) {
+      val duplicateColumns = query
+        .schema
+        .fieldNames
         .groupBy(identity)
         .collect {
           case (x, ys) if ys.length > 1 =>
@@ -87,9 +93,8 @@ private[sql] case class InsertIntoHadoopFsRelation(
 
     val hadoopConf = sqlContext.sparkContext.hadoopConfiguration
     val fs = outputPath.getFileSystem(hadoopConf)
-    val qualifiedOutputPath = outputPath.makeQualified(
-      fs.getUri,
-      fs.getWorkingDirectory)
+    val qualifiedOutputPath = outputPath
+      .makeQualified(fs.getUri, fs.getWorkingDirectory)
 
     val pathExists = fs.exists(qualifiedOutputPath)
     val doInsertion =
@@ -157,7 +162,8 @@ private[sql] case class InsertIntoHadoopFsRelation(
         writerContainer.driverSideSetup()
 
         try {
-          sqlContext.sparkContext
+          sqlContext
+            .sparkContext
             .runJob(queryExecution.toRdd, writerContainer.writeRows _)
           writerContainer.commitJob()
           refreshFunction()

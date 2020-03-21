@@ -54,7 +54,8 @@ object Framing {
       allowTruncation: FramingTruncation)
       : Flow[ByteString, ByteString, NotUsed] = {
     val truncationAllowed = allowTruncation == FramingTruncation.ALLOW
-    scaladsl.Framing
+    scaladsl
+      .Framing
       .delimiter(delimiter, maximumFrameLength, truncationAllowed)
       .asJava
   }
@@ -78,7 +79,8 @@ object Framing {
       fieldLength: Int,
       fieldOffset: Int,
       maximumFrameLength: Int): Flow[ByteString, ByteString, NotUsed] =
-    scaladsl.Framing
+    scaladsl
+      .Framing
       .lengthField(fieldLength, fieldOffset, maximumFrameLength)
       .asJava
 
@@ -101,7 +103,8 @@ object Framing {
       fieldOffset: Int,
       maximumFrameLength: Int,
       byteOrder: ByteOrder): Flow[ByteString, ByteString, NotUsed] =
-    scaladsl.Framing
+    scaladsl
+      .Framing
       .lengthField(fieldLength, fieldOffset, maximumFrameLength, byteOrder)
       .asJava
 

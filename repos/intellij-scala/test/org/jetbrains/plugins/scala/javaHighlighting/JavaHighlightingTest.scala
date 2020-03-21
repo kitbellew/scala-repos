@@ -554,12 +554,15 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
     val allInfo = myFixture.doHighlighting()
 
     import scala.collection.JavaConverters._
-    allInfo.asScala.toList.collect {
-      case highlightInfo
-          if highlightInfo.`type`.getSeverity(
-            null) == HighlightSeverity.ERROR =>
-        new Error(highlightInfo.getText, highlightInfo.getDescription)
-    }
+    allInfo
+      .asScala
+      .toList
+      .collect {
+        case highlightInfo
+            if highlightInfo.`type`.getSeverity(null) == HighlightSeverity
+              .ERROR =>
+          new Error(highlightInfo.getText, highlightInfo.getDescription)
+      }
   }
 
   def messagesFromScalaCode(
@@ -573,14 +576,16 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
     val annotator = new ScalaAnnotator
 
     getFile.depthFirst.foreach(annotator.annotate(_, mock))
-    mock.annotations.filter {
-      case Error(_, null) | Error(null, _) =>
-        false
-      case Error(_, _) =>
-        true
-      case _ =>
-        false
-    }
+    mock
+      .annotations
+      .filter {
+        case Error(_, null) | Error(null, _) =>
+          false
+        case Error(_, _) =>
+          true
+        case _ =>
+          false
+      }
   }
 
   def assertMatches[T](actual: T)(pattern: PartialFunction[T, Unit]) {

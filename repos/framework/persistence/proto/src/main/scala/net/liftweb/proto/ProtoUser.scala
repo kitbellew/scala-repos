@@ -588,11 +588,11 @@ trait ProtoUser {
     */
   final case object AddUserMenusUnder extends Loc.LocParam[Any]
 
-  private lazy val AfterUnapply = SiteMap.buildMenuMatcher(
-    _ == AddUserMenusAfter)
+  private lazy val AfterUnapply = SiteMap
+    .buildMenuMatcher(_ == AddUserMenusAfter)
   private lazy val HereUnapply = SiteMap.buildMenuMatcher(_ == AddUserMenusHere)
-  private lazy val UnderUnapply = SiteMap.buildMenuMatcher(
-    _ == AddUserMenusUnder)
+  private lazy val UnderUnapply = SiteMap
+    .buildMenuMatcher(_ == AddUserMenusUnder)
 
   /**
     * The SiteMap mutator function
@@ -674,7 +674,8 @@ trait ProtoUser {
 
   def logUserIn(who: TheUserType, postLogin: () => Nothing): Nothing = {
     if (destroySessionOnLogin) {
-      S.session
+      S
+        .session
         .openOrThrowException("we have a session here")
         .destroySessionAndContinueInNewSession(() => {
           logUserIn(who)
@@ -988,7 +989,8 @@ trait ProtoUser {
 
   def login = {
     if (S.post_?) {
-      S.param("username")
+      S
+        .param("username")
         .flatMap(username => findUserByUserName(username)) match {
         case Full(user)
             if user.validated_? &&
@@ -1118,8 +1120,8 @@ trait ProtoUser {
       case Full(user) if user.validated_? =>
         user.resetUniqueId().save
         val resetLink = S.hostAndPath +
-          passwordResetPath.mkString("/", "/", "/") + urlEncode(
-          user.getUniqueId())
+          passwordResetPath
+            .mkString("/", "/", "/") + urlEncode(user.getUniqueId())
 
         val email: String = user.getEmail
 
@@ -1264,9 +1266,8 @@ trait ProtoUser {
 
     val bind = {
       // Use the same password input for both new password fields.
-      val passwordInput = SHtml.password_*(
-        "",
-        LFuncHolder(s => newPassword = s))
+      val passwordInput = SHtml
+        .password_*("", LFuncHolder(s => newPassword = s))
 
       ".old-password" #> SHtml.password("", s => oldPassword = s) &
         ".new-password" #> passwordInput &

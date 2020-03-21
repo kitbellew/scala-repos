@@ -81,9 +81,11 @@ class TestStore[K, V](
         if (initBatch == b)
           (
             batches(b),
-            initStore.map {
-              tset(_)
-            }.toBuffer)
+            initStore
+              .map {
+                tset(_)
+              }
+              .toBuffer)
         else
           (batches(b), Buffer.empty[Tuple])
       }
@@ -91,9 +93,11 @@ class TestStore[K, V](
 
   // Call this after you compute to check the results of the
   def lastToIterable: Iterable[(K, V)] =
-    sourceToBuffer(batches(writtenBatches.max)).toIterable.map { tup =>
-      tconv(new TupleEntry(tup))
-    }
+    sourceToBuffer(batches(writtenBatches.max))
+      .toIterable
+      .map { tup =>
+        tconv(new TupleEntry(tup))
+      }
 
   val batcher = inBatcher
   val ordering = ord

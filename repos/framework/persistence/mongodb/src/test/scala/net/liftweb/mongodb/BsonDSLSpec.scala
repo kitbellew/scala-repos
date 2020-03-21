@@ -58,9 +58,8 @@ object BsonDSLSpec extends Specification {
     }
 
     "Convert Pattern properly" in {
-      val ptrn: Pattern = Pattern.compile(
-        "^Mongo",
-        Pattern.MULTILINE | Pattern.CASE_INSENSITIVE)
+      val ptrn: Pattern = Pattern
+        .compile("^Mongo", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE)
       val qry: JObject = ("ptrn" -> ptrn)
       val dbo: DBObject = JObjectParser.parse(qry)(DefaultFormats)
       val ptrn2: Pattern = dbo.get("ptrn").asInstanceOf[Pattern]
@@ -71,9 +70,8 @@ object BsonDSLSpec extends Specification {
 
     "Convert List[Pattern] properly" in {
       val ptrnList =
-        Pattern.compile(
-          "^Mongo1",
-          Pattern.MULTILINE | Pattern.CASE_INSENSITIVE) ::
+        Pattern
+          .compile("^Mongo1", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE) ::
           Pattern.compile("^Mongo2", Pattern.CASE_INSENSITIVE) ::
           Pattern.compile("^Mongo3") :: Nil
       val qry: JObject = ("ptrns" -> ptrnList)
@@ -112,8 +110,8 @@ object BsonDSLSpec extends Specification {
     }
 
     "Convert List[UUID] properly" in {
-      val uuidList =
-        UUID.randomUUID :: UUID.randomUUID :: UUID.randomUUID :: Nil
+      val uuidList = UUID.randomUUID :: UUID.randomUUID :: UUID
+        .randomUUID :: Nil
       val qry: JObject = ("ids" -> uuidList)
       val dbo: DBObject = JObjectParser.parse(qry)(DefaultFormats)
       val uuidList2: List[UUID] = dbo

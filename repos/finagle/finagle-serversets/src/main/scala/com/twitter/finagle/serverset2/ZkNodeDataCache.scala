@@ -62,17 +62,20 @@ private[serverset2] abstract class ZkNodeDataCache[Entity](
   private[this] val zkSession = new AtomicReference(ZkSession.nil)
 
   protected[this] def loadEntity(path: String): Future[Seq[Entity]] =
-    zkSession.get.immutableDataOf(clusterPath + "/" + path).map {
-      case Some(Buf.Utf8(data)) =>
-        val results = parseNode(path, data)
-        // avoid string concatenation cost if not logging debug
-        if (logger.isLoggable(Level.DEBUG)) {
-          logger.debug(s"$path retrieved ${results.length} for ${entityType}")
-        }
-        results
-      case None =>
-        Nil
-    }
+    zkSession
+      .get
+      .immutableDataOf(clusterPath + "/" + path)
+      .map {
+        case Some(Buf.Utf8(data)) =>
+          val results = parseNode(path, data)
+          // avoid string concatenation cost if not logging debug
+          if (logger.isLoggable(Level.DEBUG)) {
+            logger.debug(s"$path retrieved ${results.length} for ${entityType}")
+          }
+          results
+        case None =>
+          Nil
+      }
 
   private[this] val underlying: LoadingCache[String, Future[Seq[Entity]]] =
     CacheBuilder
@@ -85,8 +88,8 @@ private[serverset2] abstract class ZkNodeDataCache[Entity](
 
   private[this] val asMap = underlying.asMap
 
-  private[this] val entityCache = EvictingCache.lazily(
-    new LoadingFutureCache(underlying))
+  private[this] val entityCache = EvictingCache
+    .lazily(new LoadingFutureCache(underlying))
 
   private[this] val gauge =
     statsReceiver.addGauge(s"numberOf${entityType}Nodes") {

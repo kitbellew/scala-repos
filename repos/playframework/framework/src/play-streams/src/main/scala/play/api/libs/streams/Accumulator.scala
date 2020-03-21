@@ -144,7 +144,10 @@ private class SinkAccumulator[-E, +A](wrappedSink: => Sink[E, Future[A]])
   import scala.annotation.unchecked.{uncheckedVariance => uV}
 
   def asJava: play.libs.streams.Accumulator[E @uV, A @uV] = {
-    play.libs.streams.Accumulator
+    play
+      .libs
+      .streams
+      .Accumulator
       .fromSink(sink.mapMaterializedValue(FutureConverters.toJava).asJava)
   }
 }
@@ -210,20 +213,24 @@ object Accumulator {
       implicit materializer: Materializer): Sink[E, Future[A]] = {
     import play.api.libs.iteratee.Execution.Implicits.trampoline
 
-    Sink.asPublisher[E](fanout = false).mapMaterializedValue { publisher =>
-      future
-        .recover {
-          case error =>
-            new SinkAccumulator(
-              Sink.cancelled[E].mapMaterializedValue(_ => Future.failed(error)))
-        }
-        .flatMap { accumulator =>
-          Source
-            .fromPublisher(publisher)
-            .toMat(accumulator.toSink)(Keep.right)
-            .run()
-        }
-    }
+    Sink
+      .asPublisher[E](fanout = false)
+      .mapMaterializedValue { publisher =>
+        future
+          .recover {
+            case error =>
+              new SinkAccumulator(
+                Sink
+                  .cancelled[E]
+                  .mapMaterializedValue(_ => Future.failed(error)))
+          }
+          .flatMap { accumulator =>
+            Source
+              .fromPublisher(publisher)
+              .toMat(accumulator.toSink)(Keep.right)
+              .run()
+          }
+      }
   }
 
   /**

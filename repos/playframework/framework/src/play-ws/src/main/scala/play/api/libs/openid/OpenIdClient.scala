@@ -97,7 +97,8 @@ object OpenID {
       axRequired: Seq[(String, String)] = Seq.empty,
       axOptional: Seq[(String, String)] = Seq.empty,
       realm: Option[String] = None)(implicit app: Application) =
-    app.injector
+    app
+      .injector
       .instanceOf[OpenIdClient]
       .redirectURL(openID, callbackURL, axRequired, axOptional, realm)
 
@@ -154,7 +155,8 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
       .discoverServer(openID)
       .map({ server =>
         val (claimedId, identity) =
-          if (server.protocolVersion != "http://specs.openid.net/auth/2.0/server")
+          if (server
+                .protocolVersion != "http://specs.openid.net/auth/2.0/server")
             (claimedIdCandidate, server.delegate.getOrElse(claimedIdCandidate))
           else
             (
@@ -223,7 +225,8 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
     val fields = (queryString - "openid.mode" + (
       "openid.mode" -> Seq("check_authentication")
     ))
-    ws.url(server.url)
+    ws
+      .url(server.url)
       .post(fields)
       .map(response => {
         if (response.status == 200 && response.body.contains("is_valid:true")) {
@@ -251,8 +254,8 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
         else
           Seq("openid.ax.if_available" -> axOptional.map(_._1).mkString(","))
 
-      val definitions = (axRequired ++ axOptional).map(attribute =>
-        ("openid.ax.type." + attribute._1 -> attribute._2))
+      val definitions = (axRequired ++ axOptional)
+        .map(attribute => ("openid.ax.type." + attribute._1 -> attribute._2))
 
       Seq(
         "openid.ns.ax" -> "http://openid.net/srv/ax/1.0",
@@ -341,7 +344,8 @@ class WsDiscovery @Inject() (ws: WSClient) extends Discovery {
     */
   def discoverServer(openID: String): Future[OpenIDServer] = {
     val discoveryUrl = normalizeIdentifier(openID)
-    ws.url(discoveryUrl)
+    ws
+      .url(discoveryUrl)
       .get()
       .map(response => {
         val maybeOpenIdServer = new XrdsResolver()

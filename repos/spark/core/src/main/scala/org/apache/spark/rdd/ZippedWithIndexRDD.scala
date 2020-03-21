@@ -50,7 +50,8 @@ private[spark] class ZippedWithIndexRDD[T: ClassTag](prev: RDD[T])
     } else if (n == 1) {
       Array(0L)
     } else {
-      prev.context
+      prev
+        .context
         .runJob(
           prev,
           Utils.getIteratorSize _,
@@ -61,20 +62,24 @@ private[spark] class ZippedWithIndexRDD[T: ClassTag](prev: RDD[T])
   }
 
   override def getPartitions: Array[Partition] = {
-    firstParent[T].partitions.map(x =>
-      new ZippedWithIndexRDDPartition(x, startIndices(x.index)))
+    firstParent[T]
+      .partitions
+      .map(x => new ZippedWithIndexRDDPartition(x, startIndices(x.index)))
   }
 
   override def getPreferredLocations(split: Partition): Seq[String] =
-    firstParent[T].preferredLocations(
-      split.asInstanceOf[ZippedWithIndexRDDPartition].prev)
+    firstParent[T]
+      .preferredLocations(split.asInstanceOf[ZippedWithIndexRDDPartition].prev)
 
   override def compute(
       splitIn: Partition,
       context: TaskContext): Iterator[(T, Long)] = {
     val split = splitIn.asInstanceOf[ZippedWithIndexRDDPartition]
-    firstParent[T].iterator(split.prev, context).zipWithIndex.map { x =>
-      (x._1, split.startIndex + x._2)
-    }
+    firstParent[T]
+      .iterator(split.prev, context)
+      .zipWithIndex
+      .map { x =>
+        (x._1, split.startIndex + x._2)
+      }
   }
 }

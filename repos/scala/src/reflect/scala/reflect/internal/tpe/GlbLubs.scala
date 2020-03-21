@@ -34,8 +34,9 @@ private[internal] trait GlbLubs {
       }
     }
 
-    val sorted = btsMap.toList.sortWith((x, y) =>
-      x._1.typeSymbol isLess y._1.typeSymbol)
+    val sorted = btsMap
+      .toList
+      .sortWith((x, y) => x._1.typeSymbol isLess y._1.typeSymbol)
     val maxSeqLength = sorted.map(_._2.size).max
     val padded = sorted map (_._2.padTo(maxSeqLength, NoType))
     val transposed = padded.transpose
@@ -451,7 +452,8 @@ private[internal] trait GlbLubs {
             val syms = narrowts map (t =>
               // SI-7602 With erroneous code, we could end up with overloaded symbols after filtering
               //         so `suchThat` unsuitable.
-              t.nonPrivateMember(proto.name)
+              t
+                .nonPrivateMember(proto.name)
                 .filter(sym =>
                   sym.tpe matches prototp.substThis(lubThisType.typeSymbol, t)))
 
@@ -474,7 +476,8 @@ private[internal] trait GlbLubs {
                   TypeBounds(
                     glb(bnds map (_.lo), depth.decr),
                     lub(bnds map (_.hi), depth.decr))
-                lubRefined.typeSymbol
+                lubRefined
+                  .typeSymbol
                   .newAbstractType(proto.name.toTypeName, proto.pos)
                   .setInfoOwnerAdjusted(lubBounds(symtypes map (_.bounds)))
               }

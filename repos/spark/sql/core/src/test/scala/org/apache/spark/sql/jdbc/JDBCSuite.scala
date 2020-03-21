@@ -135,8 +135,8 @@ class JDBCSuite
         "create table test.strtypes (a BINARY(20), b VARCHAR(20), "
           + "c VARCHAR_IGNORECASE(20), d CHAR(20), e BLOB, f CLOB)")
       .executeUpdate()
-    val stmt = conn.prepareStatement(
-      "insert into test.strtypes values (?, ?, ?, ?, ?, ?)")
+    val stmt = conn
+      .prepareStatement("insert into test.strtypes values (?, ?, ?, ?, ?, ?)")
     stmt.setBytes(1, testBytes)
     stmt.setString(2, "Sensitive")
     stmt.setString(3, "Insensitive")
@@ -258,7 +258,8 @@ class JDBCSuite
       assert(
         node.child.isInstanceOf[org.apache.spark.sql.execution.DataSourceScan])
       assert(
-        node.child
+        node
+          .child
           .asInstanceOf[DataSourceScan]
           .nodeName
           .contains("JDBCRelation"))
@@ -370,9 +371,9 @@ class JDBCSuite
     // correctly handles this case by assigning `requiredColumns` properly. See PR 10427 for more
     // discussions.
     assert(
-      sql(
-        "SELECT COUNT(1) FROM foobar WHERE NAME = 'mary'").collect.toSet === Set(
-        Row(1)))
+      sql("SELECT COUNT(1) FROM foobar WHERE NAME = 'mary'")
+        .collect
+        .toSet === Set(Row(1)))
   }
 
   test("SELECT * WHERE (quoted strings)") {
@@ -465,7 +466,8 @@ class JDBCSuite
 
   test("Basic API") {
     assert(
-      sqlContext.read
+      sqlContext
+        .read
         .jdbc(urlWithUserAndPass, "TEST.PEOPLE", new Properties)
         .collect()
         .length === 3)
@@ -475,7 +477,8 @@ class JDBCSuite
     val properties = new Properties
     properties.setProperty("fetchSize", "2")
     assert(
-      sqlContext.read
+      sqlContext
+        .read
         .jdbc(urlWithUserAndPass, "TEST.PEOPLE", properties)
         .collect()
         .length === 3)
@@ -483,7 +486,8 @@ class JDBCSuite
 
   test("Partitioning via JDBCPartitioningInfo API") {
     assert(
-      sqlContext.read
+      sqlContext
+        .read
         .jdbc(
           urlWithUserAndPass,
           "TEST.PEOPLE",
@@ -499,7 +503,8 @@ class JDBCSuite
   test("Partitioning via list-of-where-clauses API") {
     val parts = Array[String]("THEID < 2", "THEID >= 2")
     assert(
-      sqlContext.read
+      sqlContext
+        .read
         .jdbc(urlWithUserAndPass, "TEST.PEOPLE", parts, new Properties)
         .collect()
         .length === 3)
@@ -507,18 +512,21 @@ class JDBCSuite
 
   test("Partitioning on column that might have null values.") {
     assert(
-      sqlContext.read
+      sqlContext
+        .read
         .jdbc(urlWithUserAndPass, "TEST.EMP", "theid", 0, 4, 3, new Properties)
         .collect()
         .length === 4)
     assert(
-      sqlContext.read
+      sqlContext
+        .read
         .jdbc(urlWithUserAndPass, "TEST.EMP", "THEID", 0, 4, 3, new Properties)
         .collect()
         .length === 4)
     // partitioning on a nullable quoted column
     assert(
-      sqlContext.read
+      sqlContext
+        .read
         .jdbc(
           urlWithUserAndPass,
           "TEST.EMP",
@@ -587,10 +595,12 @@ class JDBCSuite
   }
 
   test("test DATE types") {
-    val rows = sqlContext.read
+    val rows = sqlContext
+      .read
       .jdbc(urlWithUserAndPass, "TEST.TIMETYPES", new Properties)
       .collect()
-    val cachedRows = sqlContext.read
+    val cachedRows = sqlContext
+      .read
       .jdbc(urlWithUserAndPass, "TEST.TIMETYPES", new Properties)
       .cache()
       .collect()
@@ -598,15 +608,17 @@ class JDBCSuite
       rows(0).getAs[java.sql.Date](1) === java.sql.Date.valueOf("1996-01-01"))
     assert(rows(1).getAs[java.sql.Date](1) === null)
     assert(
-      cachedRows(0).getAs[java.sql.Date](1) === java.sql.Date
-        .valueOf("1996-01-01"))
+      cachedRows(0)
+        .getAs[java.sql.Date](1) === java.sql.Date.valueOf("1996-01-01"))
   }
 
   test("test DATE types in cache") {
-    val rows = sqlContext.read
+    val rows = sqlContext
+      .read
       .jdbc(urlWithUserAndPass, "TEST.TIMETYPES", new Properties)
       .collect()
-    sqlContext.read
+    sqlContext
+      .read
       .jdbc(urlWithUserAndPass, "TEST.TIMETYPES", new Properties)
       .cache()
       .registerTempTable("mycached_date")
@@ -614,12 +626,13 @@ class JDBCSuite
     assert(
       rows(0).getAs[java.sql.Date](1) === java.sql.Date.valueOf("1996-01-01"))
     assert(
-      cachedRows(0).getAs[java.sql.Date](1) === java.sql.Date
-        .valueOf("1996-01-01"))
+      cachedRows(0)
+        .getAs[java.sql.Date](1) === java.sql.Date.valueOf("1996-01-01"))
   }
 
   test("test types for null value") {
-    val rows = sqlContext.read
+    val rows = sqlContext
+      .read
       .jdbc(urlWithUserAndPass, "TEST.NULLTYPES", new Properties)
       .collect()
     assert((0 to 14).forall(i => rows(0).isNullAt(i)))
@@ -667,12 +680,12 @@ class JDBCSuite
 
   test("Remap types via JdbcDialects") {
     JdbcDialects.registerDialect(testH2Dialect)
-    val df = sqlContext.read.jdbc(
-      urlWithUserAndPass,
-      "TEST.PEOPLE",
-      new Properties)
+    val df = sqlContext
+      .read
+      .jdbc(urlWithUserAndPass, "TEST.PEOPLE", new Properties)
     assert(
-      df.schema
+      df
+        .schema
         .filter(_.dataType != org.apache.spark.sql.types.StringType)
         .isEmpty)
     val rows = df.collect()
@@ -854,10 +867,9 @@ class JDBCSuite
     // Regression test for bug SPARK-11788
     val timestamp = java.sql.Timestamp.valueOf("2001-02-20 11:22:33.543543");
     val date = java.sql.Date.valueOf("1995-01-01")
-    val jdbcDf = sqlContext.read.jdbc(
-      urlWithUserAndPass,
-      "TEST.TIMETYPES",
-      new Properties)
+    val jdbcDf = sqlContext
+      .read
+      .jdbc(urlWithUserAndPass, "TEST.TIMETYPES", new Properties)
     val rows = jdbcDf.where($"B" > date && $"C" > timestamp).collect()
     assert(
       rows(0).getAs[java.sql.Date](1) === java.sql.Date.valueOf("1996-01-01"))
@@ -869,25 +881,35 @@ class JDBCSuite
   test("test credentials in the properties are not in plan output") {
     val df = sql("SELECT * FROM parts")
     val explain = ExplainCommand(df.queryExecution.logical, extended = true)
-    sqlContext.executePlan(explain).executedPlan.executeCollect().foreach { r =>
-      assert(!List("testPass", "testUser").exists(r.toString.contains))
-    }
+    sqlContext
+      .executePlan(explain)
+      .executedPlan
+      .executeCollect()
+      .foreach { r =>
+        assert(!List("testPass", "testUser").exists(r.toString.contains))
+      }
     // test the JdbcRelation toString output
-    df.queryExecution.analyzed.collect {
-      case r: LogicalRelation =>
-        assert(r.relation.toString == "JDBCRelation(TEST.PEOPLE)")
-    }
+    df
+      .queryExecution
+      .analyzed
+      .collect {
+        case r: LogicalRelation =>
+          assert(r.relation.toString == "JDBCRelation(TEST.PEOPLE)")
+      }
   }
 
   test("test credentials in the connection url are not in the plan output") {
-    val df = sqlContext.read.jdbc(
-      urlWithUserAndPass,
-      "TEST.PEOPLE",
-      new Properties)
+    val df = sqlContext
+      .read
+      .jdbc(urlWithUserAndPass, "TEST.PEOPLE", new Properties)
     val explain = ExplainCommand(df.queryExecution.logical, extended = true)
-    sqlContext.executePlan(explain).executedPlan.executeCollect().foreach { r =>
-      assert(!List("testPass", "testUser").exists(r.toString.contains))
-    }
+    sqlContext
+      .executePlan(explain)
+      .executedPlan
+      .executeCollect()
+      .foreach { r =>
+        assert(!List("testPass", "testUser").exists(r.toString.contains))
+      }
   }
 
   test("SPARK 12941: The data type mapping for StringType to Oracle") {

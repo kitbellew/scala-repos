@@ -20,12 +20,13 @@ object XmlBodyParserSpec extends PlaySpecification {
         xml: String,
         contentType: Option[String],
         encoding: String,
-        bodyParser: BodyParser[NodeSeq] = BodyParsers.parse.tolerantXml(
-          1048576))(implicit mat: Materializer) = {
+        bodyParser: BodyParser[NodeSeq] = BodyParsers
+          .parse
+          .tolerantXml(1048576))(implicit mat: Materializer) = {
       await(
         bodyParser(
-          FakeRequest().withHeaders(
-            contentType.map(CONTENT_TYPE -> _).toSeq: _*))
+          FakeRequest()
+            .withHeaders(contentType.map(CONTENT_TYPE -> _).toSeq: _*))
           .run(Source.single(ByteString(xml, encoding))))
     }
 
@@ -168,10 +169,12 @@ object XmlBodyParserSpec extends PlaySpecification {
       val f = File.createTempFile("xxe", ".txt")
       FileUtils.writeStringToFile(f, "I shouldn't be there!")
       f.deleteOnExit()
-      val xml = s"""<?xml version="1.0" encoding="ISO-8859-1"?>
+      val xml =
+        s"""<?xml version="1.0" encoding="ISO-8859-1"?>
                   | <!DOCTYPE foo [
                   |   <!ELEMENT foo ANY >
-                  |   <!ENTITY xxe SYSTEM "${f.toURI}">]><foo>hello&xxe;</foo>""".stripMargin
+                  |   <!ENTITY xxe SYSTEM "${f.toURI}">]><foo>hello&xxe;</foo>"""
+          .stripMargin
 
       parse(xml, Some("text/xml; charset=iso-8859-1"), "iso-8859-1") must beLeft
     }

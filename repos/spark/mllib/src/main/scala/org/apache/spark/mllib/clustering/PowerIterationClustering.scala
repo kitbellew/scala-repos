@@ -101,13 +101,15 @@ object PowerIterationClusteringModel
 
       val k = (metadata \ "k").extract[Int]
       val assignments = sqlContext.read.parquet(Loader.dataPath(path))
-      Loader.checkSchema[PowerIterationClustering.Assignment](
-        assignments.schema)
+      Loader
+        .checkSchema[PowerIterationClustering.Assignment](assignments.schema)
 
-      val assignmentsRDD = assignments.rdd.map {
-        case Row(id: Long, cluster: Int) =>
-          PowerIterationClustering.Assignment(id, cluster)
-      }
+      val assignmentsRDD = assignments
+        .rdd
+        .map {
+          case Row(id: Long, cluster: Int) =>
+            PowerIterationClustering.Assignment(id, cluster)
+        }
 
       new PowerIterationClusteringModel(k, assignmentsRDD)
     }
@@ -292,13 +294,12 @@ object PowerIterationClustering extends Logging {
       mergeMsg = _ + _,
       TripletFields.EdgeOnly
     )
-    Graph(vD, graph.edges)
-      .mapTriplets(
-        e => e.attr / math.max(e.srcAttr, MLUtils.EPSILON),
-        new TripletFields(
-          /* useSrc */ true,
-          /* useDst */ false,
-          /* useEdge */ true))
+    Graph(vD, graph.edges).mapTriplets(
+      e => e.attr / math.max(e.srcAttr, MLUtils.EPSILON),
+      new TripletFields(
+        /* useSrc */ true,
+        /* useDst */ false,
+        /* useEdge */ true))
   }
 
   /**
@@ -325,13 +326,12 @@ object PowerIterationClustering extends Logging {
       },
       mergeMsg = _ + _,
       TripletFields.EdgeOnly)
-    Graph(vD, gA.edges)
-      .mapTriplets(
-        e => e.attr / math.max(e.srcAttr, MLUtils.EPSILON),
-        new TripletFields(
-          /* useSrc */ true,
-          /* useDst */ false,
-          /* useEdge */ true))
+    Graph(vD, gA.edges).mapTriplets(
+      e => e.attr / math.max(e.srcAttr, MLUtils.EPSILON),
+      new TripletFields(
+        /* useSrc */ true,
+        /* useDst */ false,
+        /* useEdge */ true))
   }
 
   /**
@@ -343,7 +343,8 @@ object PowerIterationClustering extends Logging {
     */
   private[clustering] def randomInit(
       g: Graph[Double, Double]): Graph[Double, Double] = {
-    val r = g.vertices
+    val r = g
+      .vertices
       .mapPartitionsWithIndex(
         (part, iter) => {
           val random = new XORShiftRandom(part)
@@ -434,10 +435,7 @@ object PowerIterationClustering extends Logging {
       v: VertexRDD[Double],
       k: Int): VertexRDD[Int] = {
     val points = v.mapValues(x => Vectors.dense(x)).cache()
-    val model = new KMeans()
-      .setK(k)
-      .setSeed(0L)
-      .run(points.values)
+    val model = new KMeans().setK(k).setSeed(0L).run(points.values)
     points.mapValues(p => model.predict(p)).cache()
   }
 }

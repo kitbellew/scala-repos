@@ -367,16 +367,18 @@ trait SortedPaginatorSnippet[T, C]
     * to contain a link to a page that renders that column sorted.
     */
   override def paginate: CssSel = {
-    val headerTransforms = headers.zipWithIndex.map {
-      case ((binding, _), colIndex) =>
-        s".$binding *" #> { ns: NodeSeq =>
-          <a href={
-            sortedPageUrl(first, sortedBy(colIndex))
-          }>{
-            ns
-          }</a>
-        }
-    }
+    val headerTransforms = headers
+      .zipWithIndex
+      .map {
+        case ((binding, _), colIndex) =>
+          s".$binding *" #> { ns: NodeSeq =>
+            <a href={
+              sortedPageUrl(first, sortedBy(colIndex))
+            }>{
+              ns
+            }</a>
+          }
+      }
 
     headerTransforms.foldLeft(super.paginate)(_ & _)
   }

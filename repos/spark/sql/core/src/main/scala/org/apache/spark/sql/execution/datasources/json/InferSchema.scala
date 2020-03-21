@@ -255,47 +255,51 @@ private[sql] object InferSchema {
     * Returns the most general data type for two given data types.
     */
   def compatibleType(t1: DataType, t2: DataType): DataType = {
-    HiveTypeCoercion.findTightestCommonTypeOfTwo(t1, t2).getOrElse {
-      // t1 or t2 is a StructType, ArrayType, or an unexpected type.
-      (t1, t2) match {
-        // Double support larger range than fixed decimal, DecimalType.Maximum should be enough
-        // in most case, also have better precision.
-        case (DoubleType, _: DecimalType) | (_: DecimalType, DoubleType) =>
-          DoubleType
-
-        case (t1: DecimalType, t2: DecimalType) =>
-          val scale = math.max(t1.scale, t2.scale)
-          val range = math.max(t1.precision - t1.scale, t2.precision - t2.scale)
-          if (range + scale > 38) {
-            // DecimalType can't support precision > 38
+    HiveTypeCoercion
+      .findTightestCommonTypeOfTwo(t1, t2)
+      .getOrElse {
+        // t1 or t2 is a StructType, ArrayType, or an unexpected type.
+        (t1, t2) match {
+          // Double support larger range than fixed decimal, DecimalType.Maximum should be enough
+          // in most case, also have better precision.
+          case (DoubleType, _: DecimalType) | (_: DecimalType, DoubleType) =>
             DoubleType
-          } else {
-            DecimalType(range + scale, scale)
-          }
 
-        case (StructType(fields1), StructType(fields2)) =>
-          val newFields = (fields1 ++ fields2)
-            .groupBy(field => field.name)
-            .map {
-              case (name, fieldTypes) =>
-                val dataType = fieldTypes.view
-                  .map(_.dataType)
-                  .reduce(compatibleType)
-                StructField(name, dataType, nullable = true)
+          case (t1: DecimalType, t2: DecimalType) =>
+            val scale = math.max(t1.scale, t2.scale)
+            val range = math
+              .max(t1.precision - t1.scale, t2.precision - t2.scale)
+            if (range + scale > 38) {
+              // DecimalType can't support precision > 38
+              DoubleType
+            } else {
+              DecimalType(range + scale, scale)
             }
-          StructType(newFields.toSeq.sortBy(_.name))
 
-        case (
-              ArrayType(elementType1, containsNull1),
-              ArrayType(elementType2, containsNull2)) =>
-          ArrayType(
-            compatibleType(elementType1, elementType2),
-            containsNull1 || containsNull2)
+          case (StructType(fields1), StructType(fields2)) =>
+            val newFields = (fields1 ++ fields2)
+              .groupBy(field => field.name)
+              .map {
+                case (name, fieldTypes) =>
+                  val dataType = fieldTypes
+                    .view
+                    .map(_.dataType)
+                    .reduce(compatibleType)
+                  StructField(name, dataType, nullable = true)
+              }
+            StructType(newFields.toSeq.sortBy(_.name))
 
-        // strings and every string is a Json object.
-        case (_, _) =>
-          StringType
+          case (
+                ArrayType(elementType1, containsNull1),
+                ArrayType(elementType2, containsNull2)) =>
+            ArrayType(
+              compatibleType(elementType1, elementType2),
+              containsNull1 || containsNull2)
+
+          // strings and every string is a Json object.
+          case (_, _) =>
+            StringType
+        }
       }
-    }
   }
 }

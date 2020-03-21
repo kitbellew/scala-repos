@@ -16,8 +16,8 @@ class HoconFormatter(settings: CodeStyleSettings) {
   import org.jetbrains.plugins.hocon.parser.HoconElementType._
 
   val commonSettings = settings.getCommonSettings(HoconLanguage)
-  val customSettings = settings.getCustomSettings(
-    classOf[HoconCustomCodeStyleSettings])
+  val customSettings = settings
+    .getCustomSettings(classOf[HoconCustomCodeStyleSettings])
 
   private def beforeCommentOnNewLineSpacing(
       parent: ASTNode,
@@ -91,17 +91,18 @@ class HoconFormatter(settings: CodeStyleSettings) {
       Spacing.createSpacing(spaces, spaces, 0, keepLineBreaks, maxBlankLines)
     }
 
-    val lineBreakEnsuringSpacing = Spacing.createSpacing(
-      0,
-      0,
-      1,
-      keepLineBreaks,
-      maxBlankLines)
+    val lineBreakEnsuringSpacing = Spacing
+      .createSpacing(0, 0, 1, keepLineBreaks, maxBlankLines)
 
-    val isLineBreakBetween = parent.getText
+    val isLineBreakBetween = parent
+      .getText
       .subSequence(
-        leftChild.getTextRange.getEndOffset - parent.getTextRange.getStartOffset,
-        rightChild.getTextRange.getStartOffset - parent.getTextRange.getStartOffset)
+        leftChild.getTextRange.getEndOffset - parent
+          .getTextRange
+          .getStartOffset,
+        rightChild.getTextRange.getStartOffset - parent
+          .getTextRange
+          .getStartOffset)
       .charIterator
       .contains('\n')
 
@@ -221,9 +222,8 @@ class HoconFormatter(settings: CodeStyleSettings) {
         case Some(Colon) =>
           Wrap.createWrap(customSettings.OBJECT_FIELDS_WITH_COLON_WRAP, true)
         case Some(Equals | PlusEquals) =>
-          Wrap.createWrap(
-            customSettings.OBJECT_FIELDS_WITH_ASSIGNMENT_WRAP,
-            true)
+          Wrap
+            .createWrap(customSettings.OBJECT_FIELDS_WITH_ASSIGNMENT_WRAP, true)
         case _ =>
           null
       }
@@ -245,9 +245,8 @@ class HoconFormatter(settings: CodeStyleSettings) {
       else
         null
 
-    val includeInnerWrap = Wrap.createWrap(
-      customSettings.INCLUDED_RESOURCE_WRAP,
-      true)
+    val includeInnerWrap = Wrap
+      .createWrap(customSettings.INCLUDED_RESOURCE_WRAP, true)
 
   }
 
@@ -342,22 +341,26 @@ class HoconFormatter(settings: CodeStyleSettings) {
         Iterator.empty
       case HoconFileElementType | Object =>
         // immediately expand ObjectEntries element
-        node.childrenIterator.flatMap(child =>
-          child.getElementType match {
-            case ObjectEntries =>
-              getChildren(child)
-            case _ =>
-              Iterator(child)
-          })
+        node
+          .childrenIterator
+          .flatMap(child =>
+            child.getElementType match {
+              case ObjectEntries =>
+                getChildren(child)
+              case _ =>
+                Iterator(child)
+            })
       case ObjectEntries =>
         // immediately expand ObjectField into its doc comments and keyed field
-        node.childrenIterator.flatMap(child =>
-          child.getElementType match {
-            case ObjectField =>
-              getChildren(child)
-            case _ =>
-              Iterator(child)
-          })
+        node
+          .childrenIterator
+          .flatMap(child =>
+            child.getElementType match {
+              case ObjectField =>
+                getChildren(child)
+              case _ =>
+                Iterator(child)
+            })
       case _ =>
         node.childrenIterator
     }

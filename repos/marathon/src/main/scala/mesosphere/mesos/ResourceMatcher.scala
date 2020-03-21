@@ -59,18 +59,27 @@ object ResourceMatcher {
             Map.empty
           else {
             import scala.collection.JavaConverters._
-            resource.getReservation.getLabels.getLabelsList.asScala.iterator.map {
-              label => label.getKey -> label.getValue
-            }.toMap
+            resource
+              .getReservation
+              .getLabels
+              .getLabelsList
+              .asScala
+              .iterator
+              .map { label =>
+                label.getKey -> label.getValue
+              }
+              .toMap
           }
-        requiredLabels.labels.forall {
-          case (k, v) =>
-            labelMap.get(k).contains(v)
-        }
+        requiredLabels
+          .labels
+          .forall {
+            case (k, v) =>
+              labelMap.get(k).contains(v)
+          }
       }
 
-      noAssociatedDisk && acceptedRoles(
-        resource.getRole) && resource.hasReservation == reserved && hasRequiredLabels
+      noAssociatedDisk && acceptedRoles(resource.getRole) && resource
+        .hasReservation == reserved && hasRequiredLabels
     }
 
     override def toString: String = {
@@ -114,8 +123,10 @@ object ResourceMatcher {
       runningTasks: => Iterable[Task],
       selector: ResourceSelector): Option[ResourceMatch] = {
 
-    val groupedResources: Map[Role, mutable.Buffer[Protos.Resource]] =
-      offer.getResourcesList.asScala.groupBy(_.getName)
+    val groupedResources: Map[Role, mutable.Buffer[Protos.Resource]] = offer
+      .getResourcesList
+      .asScala
+      .groupBy(_.getName)
 
     val scalarResourceMatch = matchScalarResource(groupedResources, selector) _
 
@@ -153,9 +164,11 @@ object ResourceMatcher {
 
     def meetsAllConstraints: Boolean = {
       lazy val tasks = runningTasks
-      val badConstraints = app.constraints.filterNot { constraint =>
-        Constraints.meetsConstraint(tasks, offer, constraint)
-      }
+      val badConstraints = app
+        .constraints
+        .filterNot { constraint =>
+          Constraints.meetsConstraint(tasks, offer, constraint)
+        }
 
       if (badConstraints.nonEmpty && log.isInfoEnabled) {
         log.info(
@@ -215,10 +228,8 @@ object ResourceMatcher {
                 Option(nextResource.getReservation)
               else
                 None
-            val consumedValue = ScalarMatch.Consumption(
-              consume,
-              nextResource.getRole,
-              reservation)
+            val consumedValue = ScalarMatch
+              .Consumption(consume, nextResource.getRole, reservation)
             findMatches(
               newValueLeft,
               resourcesLeft.tail,

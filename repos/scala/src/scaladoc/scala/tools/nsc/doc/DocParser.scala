@@ -78,7 +78,8 @@ object DocParser {
     def raw: String = docDef.comment.raw
 
     override def toString =
-      (nameChain.init
+      (nameChain
+        .init
         .map(x =>
           if (x.isTypeName)
             x + "#"

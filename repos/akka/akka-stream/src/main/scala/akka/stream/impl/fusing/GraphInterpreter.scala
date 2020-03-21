@@ -110,7 +110,8 @@ private[akka] object GraphInterpreter {
       val outs: Array[Outlet[_]],
       val outOwners: Array[Int]) {
     require(
-      ins.length == inOwners.length && inOwners.length == outs.length && outs.length == outOwners.length)
+      ins.length == inOwners.length && inOwners.length == outs.length && outs
+        .length == outOwners.length)
 
     def connectionCount: Int = ins.length
 
@@ -212,10 +213,13 @@ private[akka] object GraphInterpreter {
     }
 
     override def toString: String = {
-      val stageList = stages.iterator.zip(originalAttributes.iterator).map {
-        case (stage, attr) ⇒
-          s"${stage.module}    [${attr.attributeList.mkString(", ")}]"
-      }
+      val stageList = stages
+        .iterator
+        .zip(originalAttributes.iterator)
+        .map {
+          case (stage, attr) ⇒
+            s"${stage.module}    [${attr.attributeList.mkString(", ")}]"
+        }
       "GraphAssembly\n  " +
         stageList.mkString("[ ", "\n    ", "\n  ]") + "\n  " +
         ins.mkString("[", ",", "]") + "\n  " +

@@ -224,8 +224,8 @@ class FastScalac extends Scalac {
     val tokens = fscOptions ++ (sourceFiles map (_.getPath))
     tempArgFile writeAll encodeScalacArgsFile(tokens)
 
-    val paths =
-      List(Some(tempArgFile.toAbsolute.path), argfile).flatten map (_.toString)
+    val paths = List(Some(tempArgFile.toAbsolute.path), argfile)
+      .flatten map (_.toString)
     val res = execWithArgFiles(java, paths)
 
     if (failonerror && res != 0)

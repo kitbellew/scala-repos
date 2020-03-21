@@ -235,7 +235,8 @@ class LogSegmentTest {
         seg.append(i, messages(i, i.toString))
       val offsetToBeginCorruption = TestUtils.random.nextInt(messagesAppended)
       // start corrupting somewhere in the middle of the chosen record all the way to the end
-      val position = seg.log
+      val position = seg
+        .log
         .searchFor(offsetToBeginCorruption, 0)
         .position + TestUtils.random.nextInt(15)
       TestUtils.writeNonsenseToFile(
@@ -328,10 +329,8 @@ class LogSegmentTest {
         true)
     segments += segReopen
 
-    val readAgain = segReopen.read(
-      startOffset = 55,
-      maxSize = 200,
-      maxOffset = None)
+    val readAgain = segReopen
+      .read(startOffset = 55, maxSize = 200, maxOffset = None)
     assertEquals(ms2.toList, readAgain.messageSet.toList)
     val size = segReopen.log.sizeInBytes()
     val position = segReopen.log.channel.position

@@ -245,8 +245,8 @@ private[mutable] abstract class ParHashMapCombiner[K, V](
           b.headPtr
         else
           null)
-      val insertcount = combinerTaskSupport.executeAndWaitResult(
-        new FillBlocks(bucks, table, 0, bucks.length))
+      val insertcount = combinerTaskSupport
+        .executeAndWaitResult(new FillBlocks(bucks, table, 0, bucks.length))
       table.setSize(insertcount)
       // TODO compare insertcount and size to see if compression is needed
       val c = table.hashTableContents
@@ -373,9 +373,12 @@ private[mutable] abstract class ParHashMapCombiner[K, V](
       this.result += that.result
     }
     def shouldSplitFurther =
-      howmany > scala.collection.parallel.thresholdFromSize(
-        ParHashMapCombiner.numblocks,
-        combinerTaskSupport.parallelismLevel)
+      howmany > scala
+        .collection
+        .parallel
+        .thresholdFromSize(
+          ParHashMapCombiner.numblocks,
+          combinerTaskSupport.parallelismLevel)
   }
 }
 
@@ -387,5 +390,6 @@ private[parallel] object ParHashMapCombiner {
 
   def apply[K, V] =
     new ParHashMapCombiner[K, V](
-      HashTable.defaultLoadFactor) {} // was: with EnvironmentPassingCombiner[(K, V), ParHashMap[K, V]]
+      HashTable
+        .defaultLoadFactor) {} // was: with EnvironmentPassingCombiner[(K, V), ParHashMap[K, V]]
 }

@@ -26,9 +26,7 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
 
   private val depData = Dependants(tail)
   private val forkedNodes =
-    depData.nodes
-      .filter(depData.fanOut(_).exists(_ > 1))
-      .toSet
+    depData.nodes.filter(depData.fanOut(_).exists(_ > 1)).toSet
   private def distinctAddToList[T](l: List[T], n: T): List[T] =
     if (l.contains(n))
       l
@@ -323,10 +321,12 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
     List[CNode](),
     Set())
   require(
-    nodeSet.collect {
-      case n @ SourceNode(_) =>
-        n
-    }.size > 0,
+    nodeSet
+      .collect {
+        case n @ SourceNode(_) =>
+          n
+      }
+      .size > 0,
     "Valid nodeSet should have at least one source node")
 }
 
@@ -340,9 +340,11 @@ object OnlinePlan {
     // but its easier to look at laws in a summer -> source manner
     // We also drop all Nodes with no members(may occur when we visit a node already seen and its the first in that Node)
     val reversedNodeSet =
-      nodesSet.filter(_.members.size > 0).foldLeft(List[Node[P]]()) {
-        (nodes, n) => n.reverse :: nodes
-      }
+      nodesSet
+        .filter(_.members.size > 0)
+        .foldLeft(List[Node[P]]()) { (nodes, n) =>
+          n.reverse :: nodes
+        }
     Dag(tail, nameMap, strippedTail, reversedNodeSet)
   }
 }

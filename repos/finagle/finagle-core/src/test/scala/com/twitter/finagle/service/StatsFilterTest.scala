@@ -80,14 +80,18 @@ class StatsFilterTest extends FunSuite {
     assert(res.isDefined)
     assert(Await.ready(res).poll.get.isThrow)
 
-    val sourced = receiver.counters.filterKeys {
-      _.exists(_ == "sourcedfailures")
-    }
+    val sourced = receiver
+      .counters
+      .filterKeys {
+        _.exists(_ == "sourcedfailures")
+      }
     assert(sourced.size == 0)
 
-    val unsourced = receiver.counters.filterKeys {
-      _.exists(_ == "failures")
-    }
+    val unsourced = receiver
+      .counters
+      .filterKeys {
+        _.exists(_ == "failures")
+      }
     assert(unsourced.size == 2)
     assert(unsourced(Seq("failures")) == 1)
     assert(
@@ -110,17 +114,21 @@ class StatsFilterTest extends FunSuite {
     assert(res.isDefined)
     assert(Await.ready(res).poll.get.isThrow)
 
-    val sourced = receiver.counters.filterKeys {
-      _.exists(_ == "sourcedfailures")
-    }
+    val sourced = receiver
+      .counters
+      .filterKeys {
+        _.exists(_ == "sourcedfailures")
+      }
     assert(sourced.size == 2)
     assert(sourced(Seq("sourcedfailures", "bogus")) == 1)
     assert(
       sourced(Seq("sourcedfailures", "bogus", classOf[Failure].getName())) == 1)
 
-    val unsourced = receiver.counters.filterKeys {
-      _.exists(_ == "failures")
-    }
+    val unsourced = receiver
+      .counters
+      .filterKeys {
+        _.exists(_ == "failures")
+      }
     assert(unsourced.size == 2)
     assert(unsourced(Seq("failures")) == 1)
     assert(unsourced(Seq("failures", classOf[Failure].getName())) == 1)
@@ -207,9 +215,11 @@ class StatsFilterTest extends FunSuite {
     promise.setException(e)
     val res = statsService("foo")
 
-    val unsourced = receiver.counters.filterKeys {
-      _.exists(_ == "failures")
-    }
+    val unsourced = receiver
+      .counters
+      .filterKeys {
+        _.exists(_ == "failures")
+      }
 
     assert(unsourced.size == 3)
     assert(unsourced(Seq("failures")) == 1)

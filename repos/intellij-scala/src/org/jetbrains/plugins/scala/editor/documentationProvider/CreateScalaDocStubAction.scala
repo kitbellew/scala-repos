@@ -45,9 +45,8 @@ class CreateScalaDocStubAction
 
     if (editor == null)
       return
-    val file = PsiUtilBase.getPsiFileInEditor(
-      editor,
-      CommonDataKeys.PROJECT.getData(context))
+    val file = PsiUtilBase
+      .getPsiFileInEditor(editor, CommonDataKeys.PROJECT.getData(context))
     if (file.getLanguage != ScalaFileType.SCALA_LANGUAGE)
       return
 
@@ -91,7 +90,8 @@ class CreateScalaDocStubAction
             val docRange = docOwner.getDocComment.getTextRange
             extensions inWriteAction {
               CodeStyleManager getInstance project reformatText (
-                docOwner.getContainingFile, docRange.getStartOffset, docRange.getEndOffset + 2
+                docOwner.getContainingFile, docRange.getStartOffset, docRange
+                  .getEndOffset + 2
               )
             }
           }
@@ -182,7 +182,8 @@ class CreateScalaDocStubAction
               PsiDocumentManager getInstance project commitDocument psiDocument
               val range = docOwner.getDocComment.getTextRange
               CodeStyleManager getInstance project reformatText (
-                docOwner.getContainingFile, range.getStartOffset, range.getEndOffset
+                docOwner.getContainingFile, range.getStartOffset, range
+                  .getEndOffset
               )
             }
           }

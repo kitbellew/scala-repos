@@ -32,23 +32,27 @@ object WebSpecSpecBoot {
     // Add this so that withTemplateFor test works
     LiftRules.addToPackages("net.liftweb.mockweb")
 
-    LiftRules.statelessRewrite.append {
-      case RewriteRequest(
-            ParsePath(List("test", "stateless"), _, _, _),
-            _,
-            _) => {
-        RewriteResponse(List("stateless", "works"))
+    LiftRules
+      .statelessRewrite
+      .append {
+        case RewriteRequest(
+              ParsePath(List("test", "stateless"), _, _, _),
+              _,
+              _) => {
+          RewriteResponse(List("stateless", "works"))
+        }
       }
-    }
 
-    LiftRules.statefulRewrite.append {
-      case RewriteRequest(
-            ParsePath(List("test", "stateful"), _, _, _),
-            _,
-            _) => {
-        RewriteResponse(List("stateful", "works"))
+    LiftRules
+      .statefulRewrite
+      .append {
+        case RewriteRequest(
+              ParsePath(List("test", "stateful"), _, _, _),
+              _,
+              _) => {
+          RewriteResponse(List("stateful", "works"))
+        }
       }
-    }
   }
 }
 

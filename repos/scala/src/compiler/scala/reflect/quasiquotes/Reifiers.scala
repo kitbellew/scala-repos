@@ -33,7 +33,9 @@ trait Reifiers {
     /** Map that stores freshly generated names linked to the corresponding names in the reified tree.
       *  This information is used to reify names created by calls to freshTermName and freshTypeName.
       */
-    val nameMap = collection.mutable.HashMap
+    val nameMap = collection
+      .mutable
+      .HashMap
       .empty[Name, Set[TermName]]
       .withDefault { _ =>
         Set()
@@ -67,32 +69,35 @@ trait Reifiers {
     def wrap(tree: Tree) =
       if (isReifyingExpressions) {
         val freshdefs =
-          nameMap.iterator.map {
-            case (origname, names) =>
-              assert(names.size == 1)
-              val FreshName(prefix) = origname
-              val nameTypeName =
-                if (origname.isTermName)
-                  tpnme.TermName
-                else
-                  tpnme.TypeName
-              val freshName =
-                if (origname.isTermName)
-                  nme.freshTermName
-                else
-                  nme.freshTypeName
-              // q"val ${names.head}: $u.$nameTypeName = $u.internal.reificationSupport.$freshName($prefix)"
-              ValDef(
-                NoMods,
-                names.head,
-                Select(u, nameTypeName),
-                Apply(
-                  Select(
-                    Select(Select(u, nme.internal), nme.reificationSupport),
-                    freshName),
-                  Literal(Constant(prefix)) :: Nil)
-              )
-          }.toList
+          nameMap
+            .iterator
+            .map {
+              case (origname, names) =>
+                assert(names.size == 1)
+                val FreshName(prefix) = origname
+                val nameTypeName =
+                  if (origname.isTermName)
+                    tpnme.TermName
+                  else
+                    tpnme.TypeName
+                val freshName =
+                  if (origname.isTermName)
+                    nme.freshTermName
+                  else
+                    nme.freshTypeName
+                // q"val ${names.head}: $u.$nameTypeName = $u.internal.reificationSupport.$freshName($prefix)"
+                ValDef(
+                  NoMods,
+                  names.head,
+                  Select(u, nameTypeName),
+                  Apply(
+                    Select(
+                      Select(Select(u, nme.internal), nme.reificationSupport),
+                      freshName),
+                    Literal(Constant(prefix)) :: Nil)
+                )
+            }
+            .toList
         // q"..$freshdefs; $tree"
         SyntacticBlock(freshdefs :+ tree)
       } else {
@@ -130,11 +135,14 @@ trait Reifiers {
             val guard = nameMap
               .collect {
                 case (_, nameset) if nameset.size >= 2 =>
-                  nameset.toList.sliding(2).map {
-                    case List(n1, n2) =>
-                      // q"$n1 == $n2"
-                      Apply(Select(Ident(n1), nme.EQ), List(Ident(n2)))
-                  }
+                  nameset
+                    .toList
+                    .sliding(2)
+                    .map {
+                      case List(n1, n2) =>
+                        // q"$n1 == $n2"
+                        Apply(Select(Ident(n1), nme.EQ), List(Ident(n2)))
+                    }
               }
               .flatten
               .reduceOption[Tree] { (l, r) =>
@@ -182,9 +190,11 @@ trait Reifiers {
 
     def reifyFillingHoles(tree: Tree): Tree = {
       val reified = reifyTree(tree)
-      holeMap.unused.foreach { hole =>
-        c.abort(holeMap(hole).pos, s"Don't know how to $action here")
-      }
+      holeMap
+        .unused
+        .foreach { hole =>
+          c.abort(holeMap(hole).pos, s"Don't know how to $action here")
+        }
       wrap(reified)
     }
 
@@ -664,12 +674,14 @@ trait Reifiers {
       if (m == NoMods)
         super.reifyModifiers(m)
       else {
-        val (modsPlaceholders, annots) = m.annotations.partition {
-          case ModsPlaceholder(_) =>
-            true
-          case _ =>
-            false
-        }
+        val (modsPlaceholders, annots) = m
+          .annotations
+          .partition {
+            case ModsPlaceholder(_) =>
+              true
+            case _ =>
+              false
+          }
         val (mods, flags) = modsPlaceholders
           .map {
             case ModsPlaceholder(hole: ApplyHole) =>
@@ -763,10 +775,12 @@ trait Reifiers {
       if (m == NoMods)
         super.reifyModifiers(m)
       else {
-        val mods = m.annotations.collect {
-          case ModsPlaceholder(hole: UnapplyHole) =>
-            hole
-        }
+        val mods = m
+          .annotations
+          .collect {
+            case ModsPlaceholder(hole: UnapplyHole) =>
+              hole
+          }
         mods match {
           case hole :: Nil =>
             if (m.annotations.length != 1)

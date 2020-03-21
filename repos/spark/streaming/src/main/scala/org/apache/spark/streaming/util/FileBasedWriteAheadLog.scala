@@ -65,8 +65,8 @@ private[streaming] class FileBasedWriteAheadLog(
     "WriteAheadLogManager" + callerName.map(c => s" for $c").getOrElse("")
   }
   private val forkJoinPool = ThreadUtils.newForkJoinPool(threadpoolName, 20)
-  private val executionContext = ExecutionContext.fromExecutorService(
-    forkJoinPool)
+  private val executionContext = ExecutionContext
+    .fromExecutorService(forkJoinPool)
 
   override protected def logName = {
     getClass.getName.stripSuffix("$") +
@@ -180,11 +180,9 @@ private[streaming] class FileBasedWriteAheadLog(
     }
     logInfo(
       s"Attempting to clear ${oldLogFiles.size} old log files in $logDirectory " +
-        s"older than $threshTime: ${oldLogFiles
-          .map {
-            _.path
-          }
-          .mkString("\n")}")
+        s"older than $threshTime: ${oldLogFiles.map {
+          _.path
+        }.mkString("\n")}")
 
     def deleteFile(walInfo: LogInfo): Unit = {
       try {
@@ -258,16 +256,17 @@ private[streaming] class FileBasedWriteAheadLog(
   private def initializeOrRecover(): Unit =
     synchronized {
       val logDirectoryPath = new Path(logDirectory)
-      val fileSystem = HdfsUtils.getFileSystemForPath(
-        logDirectoryPath,
-        hadoopConf)
+      val fileSystem = HdfsUtils
+        .getFileSystemForPath(logDirectoryPath, hadoopConf)
 
       if (fileSystem.exists(logDirectoryPath) &&
           fileSystem.getFileStatus(logDirectoryPath).isDirectory) {
         val logFileInfo = logFilesTologInfo(
-          fileSystem.listStatus(logDirectoryPath).map {
-            _.getPath
-          })
+          fileSystem
+            .listStatus(logDirectoryPath)
+            .map {
+              _.getPath
+            })
         pastLogs.clear()
         pastLogs ++= logFileInfo
         logInfo(
@@ -298,7 +297,8 @@ private[streaming] object FileBasedWriteAheadLog {
 
   def getCallerName(): Option[String] = {
     val blacklist = Seq("WriteAheadLog", "Logging", "java.lang", "scala.")
-    Thread.currentThread
+    Thread
+      .currentThread
       .getStackTrace()
       .map(_.getClassName)
       .find { c =>

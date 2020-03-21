@@ -78,10 +78,13 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
 
     // Canonicalizer will remove all naming information, we should add it back by adding an extra
     // Project and alias the outputs.
-    val aliasedOutput = canonicalizedPlan.output.zip(outputNames).map {
-      case (attr, name) =>
-        Alias(attr.withQualifiers(Nil), name)()
-    }
+    val aliasedOutput = canonicalizedPlan
+      .output
+      .zip(outputNames)
+      .map {
+        case (attr, name) =>
+          Alias(attr.withQualifiers(Nil), name)()
+      }
     val finalPlan = Project(
       aliasedOutput,
       SubqueryAlias(finalName, canonicalizedPlan))
@@ -186,9 +189,8 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
         sample
           .map {
             case (lowerBound, upperBound) =>
-              val fraction = math.min(
-                100,
-                math.max(0, (upperBound - lowerBound) * 100))
+              val fraction = math
+                .min(100, math.max(0, (upperBound - lowerBound) * 100))
               qualifiedName + " TABLESAMPLE(" + fraction + " PERCENT)"
           }
           .getOrElse(qualifiedName)
@@ -250,14 +252,19 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
 
   private def scriptTransformationToSQL(plan: ScriptTransformation): String = {
     val ioSchema = plan.ioschema.asInstanceOf[HiveScriptIOSchema]
-    val inputRowFormatSQL = ioSchema.inputRowFormatSQL.getOrElse(
-      throw new UnsupportedOperationException(
-        s"unsupported row format ${ioSchema.inputRowFormat}"))
-    val outputRowFormatSQL = ioSchema.outputRowFormatSQL.getOrElse(
-      throw new UnsupportedOperationException(
-        s"unsupported row format ${ioSchema.outputRowFormat}"))
+    val inputRowFormatSQL = ioSchema
+      .inputRowFormatSQL
+      .getOrElse(
+        throw new UnsupportedOperationException(
+          s"unsupported row format ${ioSchema.inputRowFormat}"))
+    val outputRowFormatSQL = ioSchema
+      .outputRowFormatSQL
+      .getOrElse(
+        throw new UnsupportedOperationException(
+          s"unsupported row format ${ioSchema.outputRowFormat}"))
 
-    val outputSchema = plan.output
+    val outputSchema = plan
+      .output
       .map { attr =>
         s"${attr.sql} ${attr.dataType.simpleString}"
       }
@@ -362,13 +369,15 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
     // Assumption: Aggregate's groupingExpressions is composed of
     // 1) the attributes of aliased group by expressions
     // 2) gid, which is always the last one
-    val groupByAttributes = agg.groupingExpressions
+    val groupByAttributes = agg
+      .groupingExpressions
       .dropRight(1)
       .map(_.asInstanceOf[Attribute])
     // Assumption: Project's projectList is composed of
     // 1) the original output (Project's child.output),
     // 2) the aliased group by expressions.
-    val groupByExprs = project.projectList
+    val groupByExprs = project
+      .projectList
       .drop(numOriginalOutput)
       .map(_.asInstanceOf[Alias].child)
     val groupingSQL = groupByExprs.map(_.sql).mkString(", ")
@@ -376,52 +385,59 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
     // a map from group by attributes to the original group by expressions.
     val groupByAttrMap = AttributeMap(groupByAttributes.zip(groupByExprs))
 
-    val groupingSet: Seq[Seq[Expression]] = expand.projections.map { project =>
-      // Assumption: expand.projections is composed of
-      // 1) the original output (Project's child.output),
-      // 2) group by attributes(or null literal)
-      // 3) gid, which is always the last one in each project in Expand
-      project.drop(numOriginalOutput).dropRight(1).collect {
-        case attr: Attribute if groupByAttrMap.contains(attr) =>
-          groupByAttrMap(attr)
+    val groupingSet: Seq[Seq[Expression]] = expand
+      .projections
+      .map { project =>
+        // Assumption: expand.projections is composed of
+        // 1) the original output (Project's child.output),
+        // 2) group by attributes(or null literal)
+        // 3) gid, which is always the last one in each project in Expand
+        project
+          .drop(numOriginalOutput)
+          .dropRight(1)
+          .collect {
+            case attr: Attribute if groupByAttrMap.contains(attr) =>
+              groupByAttrMap(attr)
+          }
       }
-    }
     val groupingSetSQL = "GROUPING SETS(" +
       groupingSet
         .map(e => s"(${e.map(_.sql).mkString(", ")})")
         .mkString(", ") + ")"
 
-    val aggExprs = agg.aggregateExpressions.map {
-      case aggExpr =>
-        val originalAggExpr = aggExpr.transformDown {
-          // grouping_id() is converted to VirtualColumn.groupingIdName by Analyzer. Revert it back.
-          case ar: AttributeReference if ar == gid =>
-            GroupingID(Nil)
-          case ar: AttributeReference if groupByAttrMap.contains(ar) =>
-            groupByAttrMap(ar)
-          case a @ Cast(
-                BitwiseAnd(
-                  ShiftRight(
-                    ar: AttributeReference,
-                    Literal(value: Any, IntegerType)),
-                  Literal(1, IntegerType)),
-                ByteType) if ar == gid =>
-            // for converting an expression to its original SQL format grouping(col)
-            val idx = groupByExprs.length - 1 - value.asInstanceOf[Int]
-            groupByExprs.lift(idx).map(Grouping).getOrElse(a)
-        }
+    val aggExprs = agg
+      .aggregateExpressions
+      .map {
+        case aggExpr =>
+          val originalAggExpr = aggExpr.transformDown {
+            // grouping_id() is converted to VirtualColumn.groupingIdName by Analyzer. Revert it back.
+            case ar: AttributeReference if ar == gid =>
+              GroupingID(Nil)
+            case ar: AttributeReference if groupByAttrMap.contains(ar) =>
+              groupByAttrMap(ar)
+            case a @ Cast(
+                  BitwiseAnd(
+                    ShiftRight(
+                      ar: AttributeReference,
+                      Literal(value: Any, IntegerType)),
+                    Literal(1, IntegerType)),
+                  ByteType) if ar == gid =>
+              // for converting an expression to its original SQL format grouping(col)
+              val idx = groupByExprs.length - 1 - value.asInstanceOf[Int]
+              groupByExprs.lift(idx).map(Grouping).getOrElse(a)
+          }
 
-        originalAggExpr match {
-          // Ancestor operators may reference the output of this grouping set, and we use exprId to
-          // generate a unique name for each attribute, so we should make sure the transformed
-          // aggregate expression won't change the output, i.e. exprId and alias name should remain
-          // the same.
-          case ne: NamedExpression if ne.exprId == aggExpr.exprId =>
-            ne
-          case e =>
-            Alias(e, normalizedName(aggExpr))(exprId = aggExpr.exprId)
-        }
-    }
+          originalAggExpr match {
+            // Ancestor operators may reference the output of this grouping set, and we use exprId to
+            // generate a unique name for each attribute, so we should make sure the transformed
+            // aggregate expression won't change the output, i.e. exprId and alias name should remain
+            // the same.
+            case ne: NamedExpression if ne.exprId == aggExpr.exprId =>
+              ne
+            case e =>
+              Alias(e, normalizedName(aggExpr))(exprId = aggExpr.exprId)
+          }
+      }
 
     build(
       "SELECT",
@@ -529,9 +545,11 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
         * columns with their real names.
         */
       private def aliasColumns(table: SQLTable): LogicalPlan = {
-        val aliasedOutput = table.output.map { attr =>
-          Alias(attr, normalizedName(attr))(exprId = attr.exprId)
-        }
+        val aliasedOutput = table
+          .output
+          .map { attr =>
+            Alias(attr, normalizedName(attr))(exprId = attr.exprId)
+          }
         addSubquery(Project(aliasedOutput, table))
       }
     }

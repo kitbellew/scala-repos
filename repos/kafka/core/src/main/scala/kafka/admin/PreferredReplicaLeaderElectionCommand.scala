@@ -131,10 +131,10 @@ object PreferredReplicaLeaderElectionCommand extends Logging {
       partitionsUndergoingPreferredReplicaElection: scala.collection.Set[
         TopicAndPartition]) {
     val zkPath = ZkUtils.PreferredReplicaLeaderElectionPath
-    val partitionsList = partitionsUndergoingPreferredReplicaElection.map(e =>
-      Map("topic" -> e.topic, "partition" -> e.partition))
-    val jsonData = Json.encode(
-      Map("version" -> 1, "partitions" -> partitionsList))
+    val partitionsList = partitionsUndergoingPreferredReplicaElection
+      .map(e => Map("topic" -> e.topic, "partition" -> e.partition))
+    val jsonData = Json
+      .encode(Map("version" -> 1, "partitions" -> partitionsList))
     try {
       zkUtils.createPersistentPath(zkPath, jsonData)
       info("Created preferred replica election path with %s".format(jsonData))
@@ -145,8 +145,8 @@ object PreferredReplicaLeaderElectionCommand extends Logging {
             .parsePreferredReplicaElectionData(zkUtils.readData(zkPath)._1)
         throw new AdminOperationException(
           "Preferred replica leader election currently in progress for " +
-            "%s. Aborting operation".format(
-              partitionsUndergoingPreferredReplicaElection))
+            "%s. Aborting operation"
+              .format(partitionsUndergoingPreferredReplicaElection))
       case e2: Throwable =>
         throw new AdminOperationException(e2.toString)
     }
@@ -159,11 +159,10 @@ class PreferredReplicaLeaderElectionCommand(
     extends Logging {
   def moveLeaderToPreferredReplica() = {
     try {
-      val validPartitions = partitions.filter(p =>
-        validatePartition(zkUtils, p.topic, p.partition))
-      PreferredReplicaLeaderElectionCommand.writePreferredReplicaElectionData(
-        zkUtils,
-        validPartitions)
+      val validPartitions = partitions
+        .filter(p => validatePartition(zkUtils, p.topic, p.partition))
+      PreferredReplicaLeaderElectionCommand
+        .writePreferredReplicaElectionData(zkUtils, validPartitions)
     } catch {
       case e: Throwable =>
         throw new AdminCommandFailedException("Admin command failed", e)

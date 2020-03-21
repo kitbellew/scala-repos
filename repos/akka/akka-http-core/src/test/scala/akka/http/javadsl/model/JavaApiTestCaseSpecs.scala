@@ -22,15 +22,15 @@ class JavaApiTestCaseSpecs extends FreeSpec with MustMatchers {
     }
     "handleRequest" - {
       "wrong method" in {
-        JavaApiTestCases.handleRequest(
-          model.HttpRequest(model.HttpMethods.HEAD)) must be(
+        JavaApiTestCases
+          .handleRequest(model.HttpRequest(model.HttpMethods.HEAD)) must be(
           model.HttpResponse(
             model.StatusCodes.MethodNotAllowed,
             entity = "Unsupported method"))
       }
       "missing path" in {
-        JavaApiTestCases.handleRequest(
-          model.HttpRequest(uri = "/blubber")) must be(
+        JavaApiTestCases
+          .handleRequest(model.HttpRequest(uri = "/blubber")) must be(
           model.HttpResponse(model.StatusCodes.NotFound, entity = "Not found"))
       }
       "happy path" - {
@@ -40,8 +40,8 @@ class JavaApiTestCaseSpecs extends FreeSpec with MustMatchers {
             model.HttpResponse(entity = "Hello Peter!"))
         }
         "without name parameter" in {
-          JavaApiTestCases.handleRequest(
-            model.HttpRequest(uri = "/hello")) must be(
+          JavaApiTestCases
+            .handleRequest(model.HttpRequest(uri = "/hello")) must be(
             model.HttpResponse(entity = "Hello Mister X!"))
         }
       }
@@ -49,8 +49,9 @@ class JavaApiTestCaseSpecs extends FreeSpec with MustMatchers {
     "addAuthentication" in {
       JavaApiTestCases.addAuthentication(model.HttpRequest()) must be(
         model.HttpRequest(headers = immutable.Seq(
-          model.headers.Authorization(
-            BasicHttpCredentials("username", "password")))))
+          model
+            .headers
+            .Authorization(BasicHttpCredentials("username", "password")))))
     }
     "removeCookies" in {
       val testRequest = model
@@ -69,13 +70,17 @@ class JavaApiTestCaseSpecs extends FreeSpec with MustMatchers {
         Uri.create("/order?orderId=123&session=abcdefghijkl"))
     }
     "create HttpsContext" in {
-      akka.http.javadsl.ConnectionContext.https(
-        SSLContext.getDefault,
-        Optional.empty[java.util.Collection[String]],
-        Optional.empty[java.util.Collection[String]],
-        Optional.empty[TLSClientAuth],
-        Optional.empty[SSLParameters]
-      ) mustNot be(null)
+      akka
+        .http
+        .javadsl
+        .ConnectionContext
+        .https(
+          SSLContext.getDefault,
+          Optional.empty[java.util.Collection[String]],
+          Optional.empty[java.util.Collection[String]],
+          Optional.empty[TLSClientAuth],
+          Optional.empty[SSLParameters]
+        ) mustNot be(null)
     }
   }
 }

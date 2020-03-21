@@ -275,23 +275,29 @@ object ASMConverters {
 
     private def convertHandlers(
         method: t.MethodNode): List[ExceptionHandler] = {
-      method.tryCatchBlocks.asScala.map(h =>
-        ExceptionHandler(
-          applyLabel(h.start),
-          applyLabel(h.end),
-          applyLabel(h.handler),
-          Option(h.`type`)))(collection.breakOut)
+      method
+        .tryCatchBlocks
+        .asScala
+        .map(h =>
+          ExceptionHandler(
+            applyLabel(h.start),
+            applyLabel(h.end),
+            applyLabel(h.handler),
+            Option(h.`type`)))(collection.breakOut)
     }
 
     private def convertLocalVars(method: t.MethodNode): List[LocalVariable] = {
-      method.localVariables.asScala.map(v =>
-        LocalVariable(
-          v.name,
-          v.desc,
-          Option(v.signature),
-          applyLabel(v.start),
-          applyLabel(v.end),
-          v.index))(collection.breakOut)
+      method
+        .localVariables
+        .asScala
+        .map(v =>
+          LocalVariable(
+            v.name,
+            v.desc,
+            Option(v.signature),
+            applyLabel(v.start),
+            applyLabel(v.end),
+            v.index))(collection.breakOut)
     }
   }
 
@@ -387,20 +393,24 @@ object ASMConverters {
   def applyToMethod(asmMethod: t.MethodNode, method: Method): Unit = {
     val asmLabel = createLabelNodes(method.instructions)
     method.instructions.foreach(visitMethod(asmMethod, _, asmLabel))
-    method.handlers.foreach(h =>
-      asmMethod.visitTryCatchBlock(
-        asmLabel(h.start),
-        asmLabel(h.end),
-        asmLabel(h.handler),
-        h.desc.orNull))
-    method.localVars.foreach(v =>
-      asmMethod.visitLocalVariable(
-        v.name,
-        v.desc,
-        v.signature.orNull,
-        asmLabel(v.start),
-        asmLabel(v.end),
-        v.index))
+    method
+      .handlers
+      .foreach(h =>
+        asmMethod.visitTryCatchBlock(
+          asmLabel(h.start),
+          asmLabel(h.end),
+          asmLabel(h.handler),
+          h.desc.orNull))
+    method
+      .localVars
+      .foreach(v =>
+        asmMethod.visitLocalVariable(
+          v.name,
+          v.desc,
+          v.signature.orNull,
+          asmLabel(v.start),
+          asmLabel(v.end),
+          v.index))
   }
 
   private def createLabelNodes(

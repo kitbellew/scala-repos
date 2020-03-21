@@ -153,7 +153,8 @@ private[spark] object UIUtils extends Logging {
   // Yarn has to go through a proxy so the base uri is provided and has to be on all links
   def uiRoot: String = {
     // SPARK-11484 - Use the proxyBase set by the AM, if not found then use env.
-    sys.props
+    sys
+      .props
       .get("spark.ui.proxyBase")
       .orElse(sys.env.get("APPLICATION_WEB_PROXY_BASE"))
       .getOrElse("")
@@ -268,20 +269,22 @@ private[spark] object UIUtils extends Logging {
         appName
       else
         appName.take(32) + "..."
-    val header = activeTab.headerTabs.map { tab =>
-      <li class={
-        if (tab == activeTab)
-          "active"
-        else
-          ""
-      }>
+    val header = activeTab
+      .headerTabs
+      .map { tab =>
+        <li class={
+          if (tab == activeTab)
+            "active"
+          else
+            ""
+        }>
         <a href={
-        prependBaseUri(activeTab.basePath, "/" + tab.prefix + "/")
-      }>{
-        tab.name
-      }</a>
+          prependBaseUri(activeTab.basePath, "/" + tab.prefix + "/")
+        }>{
+          tab.name
+        }</a>
       </li>
-    }
+      }
     val helpButton: Seq[Node] = helpText
       .map(tooltip(_, "bottom"))
       .getOrElse(Seq.empty)
@@ -444,12 +447,14 @@ private[spark] object UIUtils extends Logging {
       if (newlinesInHeader) {
         <ul class="unstyled">
           {
-          header.split("\n").map {
-            case t =>
-              <li> {
-                t
-              } </li>
-          }
+          header
+            .split("\n")
+            .map {
+              case t =>
+                <li> {
+                  t
+                } </li>
+            }
         }
         </ul>
       } else {
@@ -458,15 +463,18 @@ private[spark] object UIUtils extends Logging {
     }
 
     val headerRow: Seq[Node] = {
-      headers.view.zipWithIndex.map { x =>
-        <th width={
-          colWidthAttr
-        } class={
-          getClass(x._2)
-        }>{
-          getHeaderContent(x._1)
-        }</th>
-      }
+      headers
+        .view
+        .zipWithIndex
+        .map { x =>
+          <th width={
+            colWidthAttr
+          } class={
+            getClass(x._2)
+          }>{
+            getHeaderContent(x._1)
+          }</th>
+        }
     }
     <table class={
       listingTableClass
@@ -493,8 +501,8 @@ private[spark] object UIUtils extends Logging {
     val completeWidth = "width: %s%%".format((completed.toDouble / total) * 100)
     // started + completed can be > total when there are speculative tasks
     val boundedStarted = math.min(started, total - completed)
-    val startWidth = "width: %s%%".format(
-      (boundedStarted.toDouble / total) * 100)
+    val startWidth = "width: %s%%"
+      .format((boundedStarted.toDouble / total) * 100)
 
     <div class="progress">
       <span style="text-align:center; position:absolute; width:100%; left:0;">
@@ -570,7 +578,9 @@ private[spark] object UIUtils extends Logging {
       <div id="dag-viz-metadata" style="display:none">
         {
       graphs.map { g =>
-        val stageId = g.rootCluster.id
+        val stageId = g
+          .rootCluster
+          .id
           .replaceAll(RDDOperationGraph.STAGE_CLUSTER_PREFIX, "")
         val skipped = g.rootCluster.name.contains("skipped").toString
         <div class="stage-metadata" stage-id={
@@ -582,29 +592,36 @@ private[spark] object UIUtils extends Logging {
           RDDOperationGraph.makeDotFile(g)
         }</div>
               {
-          g.incomingEdges.map { e =>
-            <div class="incoming-edge">{
-              e.fromId
-            },{
-              e.toId
-            }</div>
-          }
+          g
+            .incomingEdges
+            .map { e =>
+              <div class="incoming-edge">{
+                e.fromId
+              },{
+                e.toId
+              }</div>
+            }
         }
               {
-          g.outgoingEdges.map { e =>
-            <div class="outgoing-edge">{
-              e.fromId
-            },{
-              e.toId
-            }</div>
-          }
+          g
+            .outgoingEdges
+            .map { e =>
+              <div class="outgoing-edge">{
+                e.fromId
+              },{
+                e.toId
+              }</div>
+            }
         }
               {
-          g.rootCluster.getCachedNodes.map { n =>
-            <div class="cached-rdd">{
-              n.id
-            }</div>
-          }
+          g
+            .rootCluster
+            .getCachedNodes
+            .map { n =>
+              <div class="cached-rdd">{
+                n.id
+              }</div>
+            }
         }
             </div>
       }
@@ -639,8 +656,8 @@ private[spark] object UIUtils extends Logging {
     // as HTML, otherwise render as escaped string
     try {
       // Try to load the description as unescaped HTML
-      val xml = XML.loadString(
-        s"""<span class="description-input">$desc</span>""")
+      val xml = XML
+        .loadString(s"""<span class="description-input">$desc</span>""")
 
       // Verify that this has only anchors and span (we are wrapping in span)
       val allowedNodeLabels = Set("a", "span")

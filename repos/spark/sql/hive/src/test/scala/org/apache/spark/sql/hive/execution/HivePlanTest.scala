@@ -32,8 +32,9 @@ class HivePlanTest extends QueryTest with TestHiveSingleton {
     val optimized =
       sql("SELECT cos(null) AS c FROM t").queryExecution.optimizedPlan
     val correctAnswer =
-      sql(
-        "SELECT cast(null as double) AS c FROM t").queryExecution.optimizedPlan
+      sql("SELECT cast(null as double) AS c FROM t")
+        .queryExecution
+        .optimizedPlan
 
     comparePlans(optimized, correctAnswer)
   }
@@ -47,10 +48,12 @@ class HivePlanTest extends QueryTest with TestHiveSingleton {
       sum($"val").over(window.rangeBetween(-1, 1)))
     val plan = query.queryExecution.analyzed
     assert(
-      plan.collect {
-        case w: logical.Window =>
-          w
-      }.size === 1,
+      plan
+        .collect {
+          case w: logical.Window =>
+            w
+        }
+        .size === 1,
       "Should have only 1 Window operator.")
   }
 }

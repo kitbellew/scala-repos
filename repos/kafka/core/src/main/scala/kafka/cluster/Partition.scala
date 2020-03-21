@@ -70,10 +70,8 @@ class Partition(
    * In addition to the leader, the controller can also send the epoch of the controller that elected the leader for
    * each partition. */
   private var controllerEpoch: Int = KafkaController.InitialControllerEpoch - 1
-  this.logIdent = "Partition [%s,%d] on broker %d: ".format(
-    topic,
-    partitionId,
-    localBrokerId)
+  this.logIdent = "Partition [%s,%d] on broker %d: "
+    .format(topic, partitionId, localBrokerId)
 
   private def isReplicaLocal(replicaId: Int): Boolean =
     (replicaId == localBrokerId)
@@ -110,11 +108,10 @@ class Partition(
           val config = LogConfig.fromProps(
             logManager.defaultConfig.originals,
             AdminUtils.fetchEntityConfig(zkUtils, ConfigType.Topic, topic))
-          val log = logManager.createLog(
-            TopicAndPartition(topic, partitionId),
-            config)
-          val checkpoint = replicaManager.highWatermarkCheckpoints(
-            log.dir.getParentFile.getAbsolutePath)
+          val log = logManager
+            .createLog(TopicAndPartition(topic, partitionId), config)
+          val checkpoint = replicaManager
+            .highWatermarkCheckpoints(log.dir.getParentFile.getAbsolutePath)
           val offsetMap = checkpoint.read
           if (!offsetMap.contains(TopicAndPartition(topic, partitionId)))
             info(
@@ -216,7 +213,8 @@ class Partition(
         leaderEpoch = partitionStateInfo.leaderEpoch
         zkVersion = partitionStateInfo.zkVersion
         val isNewLeader =
-          if (leaderReplicaIdOpt.isDefined && leaderReplicaIdOpt.get == localBrokerId) {
+          if (leaderReplicaIdOpt
+                .isDefined && leaderReplicaIdOpt.get == localBrokerId) {
             false
           } else {
             leaderReplicaIdOpt = Some(localBrokerId)
@@ -263,7 +261,8 @@ class Partition(
       leaderEpoch = partitionStateInfo.leaderEpoch
       zkVersion = partitionStateInfo.zkVersion
 
-      if (leaderReplicaIdOpt.isDefined && leaderReplicaIdOpt.get == newLeaderBrokerId) {
+      if (leaderReplicaIdOpt
+            .isDefined && leaderReplicaIdOpt.get == newLeaderBrokerId) {
         false
       } else {
         leaderReplicaIdOpt = Some(newLeaderBrokerId)
@@ -322,12 +321,11 @@ class Partition(
                 replica.logEndOffset.offsetDiff(leaderHW) >= 0) {
               val newInSyncReplicas = inSyncReplicas + replica
               info(
-                "Expanding ISR for partition [%s,%d] from %s to %s"
-                  .format(
-                    topic,
-                    partitionId,
-                    inSyncReplicas.map(_.brokerId).mkString(","),
-                    newInSyncReplicas.map(_.brokerId).mkString(",")))
+                "Expanding ISR for partition [%s,%d] from %s to %s".format(
+                  topic,
+                  partitionId,
+                  inSyncReplicas.map(_.brokerId).mkString(","),
+                  newInSyncReplicas.map(_.brokerId).mkString(",")))
               // update ISR in ZK and cache
               updateIsr(newInSyncReplicas)
               replicaManager.isrExpandRate.mark()
@@ -407,11 +405,11 @@ class Partition(
     */
   private def maybeIncrementLeaderHW(leaderReplica: Replica): Boolean = {
     val allLogEndOffsets = inSyncReplicas.map(_.logEndOffset)
-    val newHighWatermark = allLogEndOffsets.min(
-      new LogOffsetMetadata.OffsetOrdering)
+    val newHighWatermark = allLogEndOffsets
+      .min(new LogOffsetMetadata.OffsetOrdering)
     val oldHighWatermark = leaderReplica.highWatermark
-    if (oldHighWatermark.messageOffset < newHighWatermark.messageOffset || oldHighWatermark
-          .onOlderSegment(newHighWatermark)) {
+    if (oldHighWatermark.messageOffset < newHighWatermark
+          .messageOffset || oldHighWatermark.onOlderSegment(newHighWatermark)) {
       leaderReplica.highWatermark = newHighWatermark
       debug(
         "High watermark for partition [%s,%d] updated to %s"
@@ -495,8 +493,8 @@ class Partition(
     val leaderLogEndOffset = leaderReplica.logEndOffset
     val candidateReplicas = inSyncReplicas - leaderReplica
 
-    val laggingReplicas = candidateReplicas.filter(r =>
-      (time.milliseconds - r.lastCaughtUpTimeMs) > maxLagMs)
+    val laggingReplicas = candidateReplicas
+      .filter(r => (time.milliseconds - r.lastCaughtUpTimeMs) > maxLagMs)
     if (laggingReplicas.size > 0)
       debug(
         "Lagging replicas for partition %s are %s".format(
@@ -600,8 +598,8 @@ class Partition(
     partitionString.append("Topic: " + topic)
     partitionString.append("; Partition: " + partitionId)
     partitionString.append("; Leader: " + leaderReplicaIdOpt)
-    partitionString.append(
-      "; AssignedReplicas: " + assignedReplicaMap.keys.mkString(","))
+    partitionString
+      .append("; AssignedReplicas: " + assignedReplicaMap.keys.mkString(","))
     partitionString.append(
       "; InSyncReplicas: " + inSyncReplicas.map(_.brokerId).mkString(","))
     partitionString.toString()

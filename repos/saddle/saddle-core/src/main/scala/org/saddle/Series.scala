@@ -755,10 +755,10 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
       for ((k, taker) <- grps) { // For each pivot label grouping,
         val gIdx = lft.take(taker) //   use group's (lft) row index labels
         val ixer = rix.join(gIdx) //   to compute map to final (rix) locations;
-        val vals = values.take(
-          taker
-        ) // Take values corresponding to current pivot label
-        val v = ixer.rTake
+        val vals = values
+          .take(taker) // Take values corresponding to current pivot label
+        val v = ixer
+          .rTake
           .map(vals.take(_))
           .getOrElse(vals) //   map values to be in correspondence to rix
         result(loc) = v //   and save resulting col vec in array.
@@ -827,7 +827,8 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
       how: JoinType = LeftJoin): Frame[X, Int, T] = {
     val tmpFrame = other.joinS(this, how)
     Frame(
-      tmpFrame.values.last +: tmpFrame.values
+      tmpFrame.values.last +: tmpFrame
+        .values
         .slice(0, tmpFrame.values.length - 1),
       tmpFrame.rowIx,
       IndexIntRange(other.colIx.length + 1))
@@ -848,7 +849,8 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
       how: JoinType = LeftJoin): Frame[X, Int, Any] = {
     val tmpFrame = other.joinAnyS(this, how)
     Panel(
-      tmpFrame.values.last +: tmpFrame.values
+      tmpFrame.values.last +: tmpFrame
+        .values
         .slice(0, tmpFrame.values.length - 1),
       tmpFrame.rowIx,
       IndexIntRange(other.colIx.length + 1))
@@ -995,9 +997,8 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
   override def equals(other: Any): Boolean =
     other match {
       case s: Series[_, _] =>
-        (this eq s) || (
-          length == s.length
-        ) && index == s.index && values == s.values
+        (this eq s) || (length == s.length) && index == s.index && values == s
+          .values
       case _ =>
         false
     }

@@ -40,12 +40,14 @@ case class HttpComponentsClientResponse(res: HttpResponse)
   }
 
   def headers = {
-    res.getAllHeaders.foldLeft(Map[String, Seq[String]]()) { (hmap, header) =>
-      val Array(name, value) = Array(header.getName, header.getValue)
-      val values = hmap.getOrElse(name, Seq())
+    res
+      .getAllHeaders
+      .foldLeft(Map[String, Seq[String]]()) { (hmap, header) =>
+        val Array(name, value) = Array(header.getName, header.getValue)
+        val values = hmap.getOrElse(name, Seq())
 
-      hmap + (name -> (values :+ value))
-    }
+        hmap + (name -> (values :+ value))
+      }
   }
 }
 
@@ -158,8 +160,9 @@ trait HttpComponentsClient extends Client {
           throw new IllegalArgumentException(
             """|HTTP %s does not support enclosing an entity.
                |Please remove the value from `body` parameter
-               |or use POST/PUT/PATCH instead.""".stripMargin.format(
-              req.getMethod))
+               |or use POST/PUT/PATCH instead."""
+              .stripMargin
+              .format(req.getMethod))
         }
     }
   }
@@ -179,8 +182,8 @@ trait HttpComponentsClient extends Client {
           new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
         params.foreach {
           case (name, value) =>
-            multipartEntity.addPart(
-              new FormBodyPart(name, new StringBody(value)))
+            multipartEntity
+              .addPart(new FormBodyPart(name, new StringBody(value)))
         }
 
         files.foreach {
@@ -194,8 +197,9 @@ trait HttpComponentsClient extends Client {
         throw new IllegalArgumentException(
           """|HTTP %s does not support enclosing an entity.
              |Please remove the value from `body` parameter
-             |or use POST/PUT/PATCH instead.""".stripMargin.format(
-            req.getMethod))
+             |or use POST/PUT/PATCH instead."""
+            .stripMargin
+            .format(req.getMethod))
     }
   }
 

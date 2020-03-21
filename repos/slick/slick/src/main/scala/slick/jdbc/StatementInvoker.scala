@@ -53,7 +53,8 @@ abstract class StatementInvoker[+R] extends Invoker[R] {
             val meta = rs.getMetaData
             Vector(
               1.to(meta.getColumnCount).map(_.toString),
-              1.to(meta.getColumnCount)
+              1
+                .to(meta.getColumnCount)
                 .map(idx => meta.getColumnLabel(idx))
                 .to[ArrayBuffer])
           } else
@@ -74,8 +75,9 @@ abstract class StatementInvoker[+R] extends Invoker[R] {
                   .foreach(s => StatementInvoker.resultLogger.debug(s))
                 val rest = rowCount - logBuffer.length
                 if (rest > 0)
-                  StatementInvoker.resultLogger.debug(
-                    s"$rest more rows read ($rowCount total)")
+                  StatementInvoker
+                    .resultLogger
+                    .debug(s"$rest more rows read ($rowCount total)")
               }
             }
           }

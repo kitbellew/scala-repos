@@ -51,9 +51,7 @@ private[http] object WebSocket {
     FrameEventOrError,
     FrameEvent,
     FrameEvent,
-    NotUsed] =
-    Masking(serverSide, maskingRandomFactory)
-      .named("ws-masking")
+    NotUsed] = Masking(serverSide, maskingRandomFactory).named("ws-masking")
 
   /**
     * The layer that implements all low-level frame handling, like handling control frames, collecting messages
@@ -131,21 +129,19 @@ private[http] object WebSocket {
                 TextMessage.Strict(text)
               case first @ TextMessagePart(text, false) ⇒
                 TextMessage(
-                  (Source.single(first) ++ remaining)
-                    .collect {
-                      case t: TextMessagePart if t.data.nonEmpty ⇒
-                        t.data
-                    })
+                  (Source.single(first) ++ remaining).collect {
+                    case t: TextMessagePart if t.data.nonEmpty ⇒
+                      t.data
+                  })
               case BinaryMessagePart(data, true) ⇒
                 SubSource.kill(remaining)
                 BinaryMessage.Strict(data)
               case first @ BinaryMessagePart(data, false) ⇒
                 BinaryMessage(
-                  (Source.single(first) ++ remaining)
-                    .collect {
-                      case t: BinaryMessagePart if t.data.nonEmpty ⇒
-                        t.data
-                    })
+                  (Source.single(first) ++ remaining).collect {
+                    case t: BinaryMessagePart if t.data.nonEmpty ⇒
+                      t.data
+                  })
             }
           ) :: Nil
       }
@@ -159,15 +155,10 @@ private[http] object WebSocket {
         .collect {
           case m: MessageDataPart ⇒
             m
-        }
-        .via(collectMessage)
-        .concatSubstreams
-        .named("ws-prepare-messages")
+        }.via(collectMessage).concatSubstreams.named("ws-prepare-messages")
 
     def renderMessages: Flow[Message, FrameStart, NotUsed] =
-      MessageToFrameRenderer
-        .create(serverSide)
-        .named("ws-render-messages")
+      MessageToFrameRenderer.create(serverSide).named("ws-render-messages")
 
     BidiFlow.fromGraph(
       GraphDSL

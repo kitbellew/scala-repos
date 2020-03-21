@@ -46,8 +46,8 @@ class AppDefinitionAppInfoTest extends MarathonSpec with GivenWhenThen {
     val extended = AppInfo(app, maybeDeployments = Some(deployments))
 
     Then("the result contains all fields of the app plus the deployments")
-    val expectedJson = Json.toJson(app).as[JsObject] ++ Json.obj(
-      "deployments" -> Seq(Json.obj("id" -> "deployment1")))
+    val expectedJson = Json.toJson(app).as[JsObject] ++ Json
+      .obj("deployments" -> Seq(Json.obj("id" -> "deployment1")))
     JsonTestHelper.assertThatJsonOf(extended).correspondsToJsonOf(expectedJson)
   }
 
@@ -65,8 +65,8 @@ class AppDefinitionAppInfoTest extends MarathonSpec with GivenWhenThen {
           "tasksStaged" -> 3,
           "tasksRunning" -> 5,
           "tasksHealthy" -> 4,
-          "tasksUnhealthy" -> 1) ++ Json.obj(
-        "deployments" -> Seq(Json.obj("id" -> "deployment1")))
+          "tasksUnhealthy" -> 1) ++ Json
+        .obj("deployments" -> Seq(Json.obj("id" -> "deployment1")))
     JsonTestHelper.assertThatJsonOf(extended).correspondsToJsonOf(expectedJson)
   }
 
@@ -75,7 +75,8 @@ class AppDefinitionAppInfoTest extends MarathonSpec with GivenWhenThen {
     val lastTaskFailure =
       new TaskFailure(
         appId = PathId("/myapp"),
-        taskId = mesos.TaskID
+        taskId = mesos
+          .TaskID
           .newBuilder()
           .setValue("myapp.2da6109e-4cce-11e5-98c1-be5b2935a987")
           .build(),

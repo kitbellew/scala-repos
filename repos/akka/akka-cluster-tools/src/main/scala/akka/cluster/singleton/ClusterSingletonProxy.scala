@@ -168,8 +168,9 @@ final class ClusterSingletonProxy(
   var singleton: Option[ActorRef] = None
   // sort by age, oldest first
   val ageOrdering = Member.ageOrdering
-  var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet.empty(
-    ageOrdering)
+  var membersByAge: immutable.SortedSet[Member] = immutable
+    .SortedSet
+    .empty(ageOrdering)
 
   var buffer = new java.util.LinkedList[(Any, ActorRef)]
 
@@ -199,8 +200,9 @@ final class ClusterSingletonProxy(
 
   def handleInitial(state: CurrentClusterState): Unit = {
     trackChange { () ⇒
-      membersByAge =
-        immutable.SortedSet.empty(ageOrdering) union state.members.collect {
+      membersByAge = immutable.SortedSet.empty(ageOrdering) union state
+        .members
+        .collect {
           case m if m.status == MemberStatus.Up && matchingRole(m) ⇒
             m
         }
@@ -218,11 +220,14 @@ final class ClusterSingletonProxy(
     singleton = None
     cancelTimer()
     identifyTimer = Some(
-      context.system.scheduler.schedule(
-        0 milliseconds,
-        singletonIdentificationInterval,
-        self,
-        ClusterSingletonProxy.TryToIdentifySingleton))
+      context
+        .system
+        .scheduler
+        .schedule(
+          0 milliseconds,
+          singletonIdentificationInterval,
+          self,
+          ClusterSingletonProxy.TryToIdentifySingleton))
   }
 
   def trackChange(block: () ⇒ Unit): Unit = {
@@ -280,11 +285,13 @@ final class ClusterSingletonProxy(
     case _: ActorIdentity ⇒ // do nothing
     case ClusterSingletonProxy.TryToIdentifySingleton
         if identifyTimer.isDefined ⇒
-      membersByAge.headOption.foreach { oldest ⇒
-        val singletonAddress = RootActorPath(oldest.address) / singletonPath
-        log.debug("Trying to identify singleton at [{}]", singletonAddress)
-        context.actorSelection(singletonAddress) ! Identify(identifyId)
-      }
+      membersByAge
+        .headOption
+        .foreach { oldest ⇒
+          val singletonAddress = RootActorPath(oldest.address) / singletonPath
+          log.debug("Trying to identify singleton at [{}]", singletonAddress)
+          context.actorSelection(singletonAddress) ! Identify(identifyId)
+        }
     case Terminated(ref) ⇒
       if (singleton.exists(_ == ref)) {
         // buffering mode, identification of new will start when old node is removed

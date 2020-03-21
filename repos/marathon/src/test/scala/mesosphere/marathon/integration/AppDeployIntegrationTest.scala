@@ -84,10 +84,8 @@ class AppDeployIntegrationTest
     val app: AppDefinition = createAFailingAppResultingInBackOff()
 
     When("we force deploy a working configuration")
-    val deployment2 = marathon.updateApp(
-      app.id,
-      AppUpdate(cmd = Some("sleep 120; true")),
-      force = true)
+    val deployment2 = marathon
+      .updateApp(app.id, AppUpdate(cmd = Some("sleep 120; true")), force = true)
 
     Then("The app deployment is created")
     deployment2.code should be(200) //Created
@@ -101,10 +99,8 @@ class AppDeployIntegrationTest
     val app: AppDefinition = createAFailingAppResultingInBackOff()
 
     When("we force deploy a scale change")
-    val deployment2 = marathon.updateApp(
-      app.id,
-      AppUpdate(instances = Some(3)),
-      force = true)
+    val deployment2 = marathon
+      .updateApp(app.id, AppUpdate(instances = Some(3)), force = true)
 
     Then("The app deployment is created")
     deployment2.code should be(200) //Created
@@ -361,9 +357,8 @@ class AppDeployIntegrationTest
 
     When("The app is updated")
     val check = appProxyCheck(appId, "v2", state = true)
-    val update = marathon.updateApp(
-      v1.id,
-      AppUpdate(cmd = appProxy(appId, "v2", 1).cmd))
+    val update = marathon
+      .updateApp(v1.id, AppUpdate(cmd = appProxy(appId, "v2", 1).cmd))
 
     Then("The app gets updated")
     update.code should be(200)
@@ -647,7 +642,8 @@ class AppDeployIntegrationTest
 
   test("stop (forcefully delete) a deployment") {
     Given("a new app with constraints that cannot be fulfilled")
-    val c = Protos.Constraint
+    val c = Protos
+      .Constraint
       .newBuilder()
       .setField("nonExistent")
       .setOperator(Operator.CLUSTER)
@@ -683,7 +679,8 @@ class AppDeployIntegrationTest
 
   test("rollback a deployment") {
     Given("a new app with constraints that cannot be fulfilled")
-    val c = Protos.Constraint
+    val c = Protos
+      .Constraint
       .newBuilder()
       .setField("nonExistent")
       .setOperator(Operator.CLUSTER)
@@ -712,11 +709,10 @@ class AppDeployIntegrationTest
     Then("the deployment should be gone")
     waitForEvent("deployment_failed")
     waitForEvent("deployment_success")
-    WaitTestSupport.waitUntil(
-      "Deployments get removed from the queue",
-      30.seconds) {
-      marathon.listDeploymentsForBaseGroup().value.isEmpty
-    }
+    WaitTestSupport
+      .waitUntil("Deployments get removed from the queue", 30.seconds) {
+        marathon.listDeploymentsForBaseGroup().value.isEmpty
+      }
 
     Then("the app should also be gone")
     marathon.app(appId).code should be(404)

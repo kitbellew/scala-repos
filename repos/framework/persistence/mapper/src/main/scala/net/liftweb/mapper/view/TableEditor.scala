@@ -310,52 +310,52 @@ trait ItemsListEditor[T <: Mapper[T]] {
         unsavedScript
       }
 
-    val bindRemovedItems = items.removed.map { item =>
-      "^" #> customBind(item) andThen
-        ".fields" #> eachField(
-          item,
-          { f: MappedField[_, T] =>
-            ".form" #> <strike>{
-              f.asHtml
-            }</strike>
-          }) &
-          ".removeBtn" #> SHtml.submit(
-            ?("Remove"),
-            () => onRemove(item),
-            noPrompt) &
-          ".msg" #> Text(?("Deleted"))
-    }
+    val bindRemovedItems = items
+      .removed
+      .map { item =>
+        "^" #> customBind(item) andThen
+          ".fields" #> eachField(
+            item,
+            { f: MappedField[_, T] =>
+              ".form" #> <strike>{
+                f.asHtml
+              }</strike>
+            }) &
+            ".removeBtn" #> SHtml
+              .submit(?("Remove"), () => onRemove(item), noPrompt) &
+            ".msg" #> Text(?("Deleted"))
+      }
 
-    val bindRegularItems = items.items.map { item =>
-      "^" #> customBind(item) andThen
-        ".fields" #> eachField(
-          item,
-          { f: MappedField[_, T] =>
-            ".form" #> f.toForm
-          }) &
-          ".removeBtn" #> SHtml.submit(
-            ?("Remove"),
-            () => onRemove(item),
-            noPrompt) &
-          ".msg" #> {
-            item.validate match {
-              case Nil =>
-                if (!item.saved_?)
-                  Text(?("New"))
-                else if (item.dirty_?)
-                  Text(?("Unsaved"))
-                else
-                  NodeSeq.Empty
-              case errors =>
-                <ul>{
-                  errors.flatMap(e =>
-                    <li>{
-                      e.msg
-                    }</li>)
-                }</ul>
+    val bindRegularItems = items
+      .items
+      .map { item =>
+        "^" #> customBind(item) andThen
+          ".fields" #> eachField(
+            item,
+            { f: MappedField[_, T] =>
+              ".form" #> f.toForm
+            }) &
+            ".removeBtn" #> SHtml
+              .submit(?("Remove"), () => onRemove(item), noPrompt) &
+            ".msg" #> {
+              item.validate match {
+                case Nil =>
+                  if (!item.saved_?)
+                    Text(?("New"))
+                  else if (item.dirty_?)
+                    Text(?("Unsaved"))
+                  else
+                    NodeSeq.Empty
+                case errors =>
+                  <ul>{
+                    errors.flatMap(e =>
+                      <li>{
+                        e.msg
+                      }</li>)
+                  }</ul>
+              }
             }
-          }
-    }
+      }
 
     "^ >*" #> optScript andThen
       ".fields *" #> {

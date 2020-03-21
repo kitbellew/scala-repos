@@ -122,7 +122,8 @@ trait Node extends Dumpable {
               cln.substring(0, cln.length - 1)
             else
               cln.replaceFirst(".*\\$", "")
-          val args = p.productIterator
+          val args = p
+            .productIterator
             .filterNot(_.isInstanceOf[Node])
             .mkString(", ")
           (n, args)
@@ -209,16 +210,20 @@ final case class StructNode(elements: ConstArray[(TermSymbol, Node)])
   val children = elements.map(_._2)
   override protected[this] def rebuild(ch: ConstArray[Node]) =
     new StructNode(
-      elements.zip(ch).map {
-        case ((s, _), n) =>
-          (s, n)
-      })
+      elements
+        .zip(ch)
+        .map {
+          case ((s, _), n) =>
+            (s, n)
+        })
   def generators = elements
   protected[this] def rebuildWithSymbols(gen: ConstArray[TermSymbol]): Node =
-    copy(elements = elements.zip(gen).map {
-      case (e, s) =>
-        (s, e._2)
-    })
+    copy(elements = elements
+      .zip(gen)
+      .map {
+        case (e, s) =>
+          (s, e._2)
+      })
 
   override protected def buildType: Type =
     StructType(
@@ -245,9 +250,11 @@ class LiteralNode(
     with SimplyTypedNode {
   type Self = LiteralNode
   override def getDumpInfo =
-    super.getDumpInfo.copy(
-      name = "LiteralNode",
-      mainInfo = s"$value (volatileHint=$volatileHint)")
+    super
+      .getDumpInfo
+      .copy(
+        name = "LiteralNode",
+        mainInfo = s"$value (volatileHint=$volatileHint)")
   protected[this] def rebuild = new LiteralNode(buildType, value, volatileHint)
 
   override def hashCode =
@@ -477,10 +484,12 @@ final case class SortBy(
   protected[this] def rebuild(ch: ConstArray[Node]) =
     copy(
       from = ch(0),
-      by = by.zip(ch.tail).map {
-        case ((_, o), n) =>
-          (n, o)
-      })
+      by = by
+        .zip(ch.tail)
+        .map {
+          case ((_, o), n) =>
+            (n, o)
+        })
   override def childNames =
     ("from " + generator) +: by.zipWithIndex.map("by" + _._2).toSeq
   protected[this] def rebuildWithSymbols(gen: ConstArray[TermSymbol]) =
@@ -668,11 +677,13 @@ final case class Union(left: Node, right: Node, all: Boolean)
   protected[this] def rebuild(left: Node, right: Node) =
     copy(left = left, right = right)
   override def getDumpInfo =
-    super.getDumpInfo.copy(mainInfo =
-      if (all)
-        "all"
-      else
-        "")
+    super
+      .getDumpInfo
+      .copy(mainInfo =
+        if (all)
+          "all"
+        else
+          "")
   override def childNames = Seq("left", "right")
   protected def buildType = left.nodeType
 }
@@ -695,9 +706,8 @@ final case class Bind(generator: TermSymbol, from: Node, select: Node)
   def withInferredType(scope: Type.Scope, typeChildren: Boolean): Self = {
     val from2 = from.infer(scope, typeChildren)
     val from2Type = from2.nodeType.asCollectionType
-    val select2 = select.infer(
-      scope + (generator -> from2Type.elementType),
-      typeChildren)
+    val select2 = select
+      .infer(scope + (generator -> from2Type.elementType), typeChildren)
     val withCh =
       if ((from2 eq from) && (select2 eq select))
         this
@@ -802,7 +812,8 @@ final case class Select(in: Node, field: TermSymbol)
   override def getDumpInfo =
     Path.unapply(this) match {
       case Some(l) =>
-        super.getDumpInfo
+        super
+          .getDumpInfo
           .copy(name = "Path", mainInfo = l.reverseIterator.mkString("."))
       case None =>
         super.getDumpInfo
@@ -892,9 +903,11 @@ object Path {
 object FwdPath {
   def apply(ch: List[TermSymbol]): PathElement = {
     var p: PathElement = Ref(ch.head)
-    ch.tail.foreach { sym =>
-      p = Select(p, sym)
-    }
+    ch
+      .tail
+      .foreach { sym =>
+        p = Select(p, sym)
+      }
     p
   }
   def unapply(n: PathElement): Option[List[TermSymbol]] = {
@@ -931,9 +944,11 @@ final case class TableNode(
       NominalType(identity, UnassignedType))
   def rebuild = copy()(profileTable)
   override def getDumpInfo =
-    super.getDumpInfo.copy(
-      name = "Table",
-      mainInfo = schemaName.map(_ + ".").getOrElse("") + tableName)
+    super
+      .getDumpInfo
+      .copy(
+        name = "Table",
+        mainInfo = schemaName.map(_ + ".").getOrElse("") + tableName)
 }
 
 /** A node that represents an SQL sequence. */
@@ -978,17 +993,19 @@ final case class IfThenElse(clauses: ConstArray[Node]) extends SimplyTypedNode {
       keepType: Boolean,
       pred: Int => Boolean): IfThenElse = {
     var equal = true
-    val mapped = clauses.zipWithIndex.map {
-      case (n, i) =>
-        val n2 =
-          if (pred(i))
-            f(n)
-          else
-            n
-        if (n2 ne n)
-          equal = false
-        n2
-    }
+    val mapped = clauses
+      .zipWithIndex
+      .map {
+        case (n, i) =>
+          val n2 =
+            if (pred(i))
+              f(n)
+            else
+              n
+          if (n2 ne n)
+            equal = false
+          n2
+      }
     val this2 =
       if (equal)
         this
@@ -1004,10 +1021,14 @@ final case class IfThenElse(clauses: ConstArray[Node]) extends SimplyTypedNode {
   def mapResultClauses(f: Node => Node, keepType: Boolean = false) =
     mapClauses(f, keepType, (i => i % 2 == 1 || i == clauses.length - 1))
   def ifThenClauses: Iterator[(Node, Node)] =
-    clauses.iterator.grouped(2).withPartial(false).map {
-      case List(i, t) =>
-        (i, t)
-    }
+    clauses
+      .iterator
+      .grouped(2)
+      .withPartial(false)
+      .map {
+        case List(i, t) =>
+          (i, t)
+      }
   def elseClause = clauses.last
 
   /** Return a null-extended version of a single-column IfThenElse expression */
@@ -1094,11 +1115,13 @@ final case class CompiledStatement(
   type Self = CompiledStatement
   def rebuild = copy()
   override def getDumpInfo =
-    super.getDumpInfo.copy(mainInfo =
-      if (statement contains '\n')
-        statement
-      else
-        ("\"" + statement + "\""))
+    super
+      .getDumpInfo
+      .copy(mainInfo =
+        if (statement contains '\n')
+          statement
+        else
+          ("\"" + statement + "\""))
 }
 
 /** A client-side type mapping */

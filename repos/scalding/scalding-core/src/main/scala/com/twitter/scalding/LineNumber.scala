@@ -78,7 +78,8 @@ object LineNumber {
         None
 
     val scaldingJobCaller = headOption(
-      stack.iterator
+      stack
+        .iterator
         .filter { se =>
           se.getClassName.startsWith(scaldingPrefix)
         }
@@ -87,7 +88,6 @@ object LineNumber {
           jobClass.isAssignableFrom(cls)
         })
 
-    scaldingJobCaller
-      .orElse(nonScalding)
+    scaldingJobCaller.orElse(nonScalding)
   }
 }

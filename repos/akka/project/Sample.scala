@@ -27,8 +27,13 @@ object Sample {
     (ti: BuildLoader.TransformInfo) =>
       ti.base.name match {
         case s if s.startsWith("akka-sample") =>
-          ti.unit.copy(loadedDefinitions = ti.unit.definitions.copy(projects =
-            libraryToProjectDeps(ti.unit.definitions.projects)))
+          ti
+            .unit
+            .copy(loadedDefinitions = ti
+              .unit
+              .definitions
+              .copy(projects = libraryToProjectDeps(
+                ti.unit.definitions.projects)))
         case _ =>
           ti.unit
       }
@@ -43,21 +48,25 @@ object Sample {
     (project: Project) =>
       project.settings(
         buildDependencies := {
-          val projectDependencies = libraryDependencies.value.collect {
-            case module if module.organization == akkaOrganization =>
-              ProjectRef(file("").toURI, module.name)
-          }
+          val projectDependencies = libraryDependencies
+            .value
+            .collect {
+              case module if module.organization == akkaOrganization =>
+                ProjectRef(file("").toURI, module.name)
+            }
           val dependencies = buildDependencies.value
-          val classpathWithProjectDependencies = dependencies.classpath.map {
-            case (proj, deps) if proj.project == project.id =>
-              // add project dependency for every akka library dependency
-              (
-                proj,
-                deps ++ projectDependencies.map(
-                  ResolvedClasspathDependency(_, None)))
-            case (project, deps) =>
-              (project, deps)
-          }
+          val classpathWithProjectDependencies = dependencies
+            .classpath
+            .map {
+              case (proj, deps) if proj.project == project.id =>
+                // add project dependency for every akka library dependency
+                (
+                  proj,
+                  deps ++ projectDependencies
+                    .map(ResolvedClasspathDependency(_, None)))
+              case (project, deps) =>
+                (project, deps)
+            }
           BuildDependencies(
             classpathWithProjectDependencies,
             dependencies.aggregate)
@@ -66,18 +75,21 @@ object Sample {
   private val excludeLibraryDependencies =
     (project: Project) =>
       project.settings(
-        libraryDependencies := libraryDependencies.value.map {
-          case module if module.organization == akkaOrganization =>
-            /**
-              * Exclude self, so it is still possible to know what project dependencies to add.
-              * This leaves all transitive dependencies (such as typesafe-config library).
-              * However it means that if a sample uses typesafe-config library it must have a
-              * library dependency which has a direct transitive dependency to typesafe-config.
-              */
-            module.excludeAll(ExclusionRule(organization = module.organization))
-          case module =>
-            module
-        })
+        libraryDependencies := libraryDependencies
+          .value
+          .map {
+            case module if module.organization == akkaOrganization =>
+              /**
+                * Exclude self, so it is still possible to know what project dependencies to add.
+                * This leaves all transitive dependencies (such as typesafe-config library).
+                * However it means that if a sample uses typesafe-config library it must have a
+                * library dependency which has a direct transitive dependency to typesafe-config.
+                */
+              module
+                .excludeAll(ExclusionRule(organization = module.organization))
+            case module =>
+              module
+          })
 
   /**
     * AutoPlugins are not enabled for externally loaded projects.

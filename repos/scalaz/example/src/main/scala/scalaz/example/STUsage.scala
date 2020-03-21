@@ -54,12 +54,8 @@ object STUsage extends App {
       } yield (key(a), a))
 
   assert(
-    binSort(
-      12,
-      (_: String).length,
-      List("twenty four", "one", "")).toList.flatten === List(
-      "",
-      "one",
-      "twenty four"))
+    binSort(12, (_: String).length, List("twenty four", "one", ""))
+      .toList
+      .flatten === List("", "one", "twenty four"))
   assert(compiles === 1)
 }

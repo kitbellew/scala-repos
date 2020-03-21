@@ -91,7 +91,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
         // NOTE: This circumvents implicit conversion for the contents on List
         // ids must containInOrder(
         //   td.allCompanies.sortBy(_.name.get).map(_.id))
-        ids.mkString("(", ",", ")") must_== td.allCompanies
+        ids.mkString("(", ",", ")") must_== td
+          .allCompanies
           .sortBy(_.name.get)
           .map(_.id)
           .mkString("(", ",", ")")
@@ -133,8 +134,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
           // There are three companies
           companiesAndEmployeesWithSameName must haveSize(3)
           // One company has the same name as an employee, two don't
-          companiesAndEmployeesWithSameName.filter(ce =>
-            ce.measures == 0) must haveSize(2)
+          companiesAndEmployeesWithSameName
+            .filter(ce => ce.measures == 0) must haveSize(2)
 
           val employeesWithSameAdminSetting =
             join(employees, employees.leftOuter)((e1, e2) =>
@@ -357,7 +358,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
 
     "support the CRUDify trait" >> {
       transaction {
-        val company = Company.create
+        val company = Company
+          .create
           .name("CRUDify Company")
           .created(Calendar.getInstance())
           .country(Countries.USA)
@@ -383,7 +385,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
     }
 
     "Support Optimistic Locking" >> {
-      val company = Company.create
+      val company = Company
+        .create
         .name("Optimistic Company")
         .created(Calendar.getInstance())
         .country(Countries.USA)
@@ -432,8 +435,12 @@ class SquerylRecordSpec extends Specification with AroundExample {
       val columnDefinition = new PostgreSqlAdapter()
         .writeColumnDeclaration(fieldMetaData, false, MySchema)
       columnDefinition.endsWith(
-        "numeric(" + Company.employeeSatisfaction.context
-          .getPrecision() + "," + Company.employeeSatisfaction.scale + ")") must_== true
+        "numeric(" + Company
+          .employeeSatisfaction
+          .context
+          .getPrecision() + "," + Company
+          .employeeSatisfaction
+          .scale + ")") must_== true
     }
 
     "Properly reset the dirty_? flag after loading entities" >> inTransaction {

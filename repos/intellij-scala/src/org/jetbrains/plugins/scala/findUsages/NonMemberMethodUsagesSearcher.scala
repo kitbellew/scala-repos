@@ -36,12 +36,8 @@ class NonMemberMethodUsagesSearcher
             consumer.process(t)
           }
         }
-      ReferencesSearch.searchOptimized(
-        method,
-        searchScope,
-        false,
-        collector,
-        newConsumer)
+      ReferencesSearch
+        .searchOptimized(method, searchScope, false, collector, newConsumer)
     }
   }
 }

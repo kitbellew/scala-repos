@@ -156,9 +156,8 @@ class SchedulerActionsTest
     val app = AppDefinition(id = PathId("/myapp"))
     val tasksOfApp = AppTasks.forTasks(app.id, Iterable(task))
     val orphanedApp = AppDefinition(id = PathId("/orphan"))
-    val tasksOfOrphanedApp = AppTasks.forTasks(
-      orphanedApp.id,
-      Iterable(orphanedTask))
+    val tasksOfOrphanedApp = AppTasks
+      .forTasks(orphanedApp.id, Iterable(orphanedTask))
 
     when(taskTracker.tasksByApp()).thenReturn(
       Future.successful(TasksByApp.of(tasksOfApp, tasksOfOrphanedApp)))

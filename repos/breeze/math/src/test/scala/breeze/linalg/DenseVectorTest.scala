@@ -24,8 +24,8 @@ class DenseVectorTest extends FunSuite with Checkers {
 
   def assertClose(a: Complex, b: Complex) =
     assert(
-      math.abs(a.real - b.real) < TOLERANCE && math.abs(
-        a.imag - b.imag) < TOLERANCE)
+      math.abs(a.real - b.real) < TOLERANCE && math
+        .abs(a.imag - b.imag) < TOLERANCE)
 
   test("update/valueAt properly works") {
     val v = DenseVector(2f, 0f, 3f, 2f, -1f)
@@ -441,10 +441,8 @@ class DenseVectorTest extends FunSuite with Checkers {
     assert(util.Arrays.equals(a(1 until 3 by 1).toArray, Array(2, 3)))
 
     val b =
-      DenseVector(
-        1d * breeze.math.i,
-        0d * breeze.math.i,
-        2d * breeze.math.i).toArray
+      DenseVector(1d * breeze.math.i, 0d * breeze.math.i, 2d * breeze.math.i)
+        .toArray
     //assert( util.Arrays.equals( b.toArray, Array(1d*breeze.math.i, 0d, 2d)) )
     assert(b(0) == Complex(0, 1))
     assert(b(1) == Complex(0, 0))
@@ -565,15 +563,21 @@ class DenseVectorOps_DoubleTest
     val N = 30
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Double].map {
-          _ % 1e100
-        }
-        y <- Arbitrary.arbitrary[Double].map {
-          _ % 1e100
-        }
-        z <- Arbitrary.arbitrary[Double].map {
-          _ % 1e100
-        }
+        x <- Arbitrary
+          .arbitrary[Double]
+          .map {
+            _ % 1e100
+          }
+        y <- Arbitrary
+          .arbitrary[Double]
+          .map {
+            _ % 1e100
+          }
+        z <- Arbitrary
+          .arbitrary[Double]
+          .map {
+            _ % 1e100
+          }
         n <- Gen.choose(1, N)
         stride <- Gen.choose(1, 4)
         offset <- Gen.choose(0, 5)
@@ -595,9 +599,11 @@ class DenseVectorOps_DoubleTest
 
   def genScalar: Arbitrary[Double] =
     Arbitrary(
-      Arbitrary.arbitrary[Double].map {
-        _ % 1e10
-      })
+      Arbitrary
+        .arbitrary[Double]
+        .map {
+          _ % 1e10
+        })
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -610,15 +616,21 @@ class DenseVectorOps_IntTest
       : Arbitrary[(DenseVector[Int], DenseVector[Int], DenseVector[Int])] = {
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Int].map {
-          _ % 1000
-        }
-        y <- Arbitrary.arbitrary[Int].map {
-          _ % 1000
-        }
-        z <- Arbitrary.arbitrary[Int].map {
-          _ % 1000
-        }
+        x <- Arbitrary
+          .arbitrary[Int]
+          .map {
+            _ % 1000
+          }
+        y <- Arbitrary
+          .arbitrary[Int]
+          .map {
+            _ % 1000
+          }
+        z <- Arbitrary
+          .arbitrary[Int]
+          .map {
+            _ % 1000
+          }
         n <- Gen.choose(1, N)
       } yield {
         (
@@ -631,9 +643,11 @@ class DenseVectorOps_IntTest
 
   def genScalar: Arbitrary[Int] =
     Arbitrary(
-      Arbitrary.arbitrary[Int].map {
-        _ % 1000
-      })
+      Arbitrary
+        .arbitrary[Int]
+        .map {
+          _ % 1000
+        })
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -679,15 +693,21 @@ class DenseVectorOps_FloatTest
     (DenseVector[Float], DenseVector[Float], DenseVector[Float])] = {
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Float].map {
-          _ % 1000
-        }
-        y <- Arbitrary.arbitrary[Float].map {
-          _ % 1000
-        }
-        z <- Arbitrary.arbitrary[Float].map {
-          _ % 1000
-        }
+        x <- Arbitrary
+          .arbitrary[Float]
+          .map {
+            _ % 1000
+          }
+        y <- Arbitrary
+          .arbitrary[Float]
+          .map {
+            _ % 1000
+          }
+        z <- Arbitrary
+          .arbitrary[Float]
+          .map {
+            _ % 1000
+          }
         n <- Gen.choose(1, N)
         stride <- Gen.choose(1, 4)
         offset <- Gen.choose(0, 5)
@@ -708,7 +728,9 @@ class DenseVectorOps_FloatTest
 
   def genScalar: Arbitrary[Float] =
     Arbitrary(
-      Arbitrary.arbitrary[Float].map {
-        _ % 1000
-      })
+      Arbitrary
+        .arbitrary[Float]
+        .map {
+          _ % 1000
+        })
 }

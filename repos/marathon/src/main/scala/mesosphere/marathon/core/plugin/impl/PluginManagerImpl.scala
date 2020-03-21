@@ -40,8 +40,7 @@ private[plugin] class PluginManagerImpl(
     */
   private[this] def load[T](implicit ct: ClassTag[T]): PluginHolder[T] = {
     log.info(
-      s"Loading plugins implementing '${ct.runtimeClass.getName}' from these urls: [${urls
-        .mkString(", ")}]")
+      s"Loading plugins implementing '${ct.runtimeClass.getName}' from these urls: [${urls.mkString(", ")}]")
     def configure(plugin: T, definition: PluginDefinition): T =
       plugin match {
         case cf: PluginConfiguration if definition.configuration.isDefined =>
@@ -54,11 +53,11 @@ private[plugin] class PluginManagerImpl(
         case _ =>
           plugin
       }
-    val serviceLoader = ServiceLoader.load(
-      ct.runtimeClass.asInstanceOf[Class[T]],
-      classLoader)
+    val serviceLoader = ServiceLoader
+      .load(ct.runtimeClass.asInstanceOf[Class[T]], classLoader)
     val providers = serviceLoader.iterator().asScala.toSeq
-    val plugins = definitions.plugins
+    val plugins = definitions
+      .plugins
       .filter(_.plugin == ct.runtimeClass.getName)
       .map { definition =>
         providers
@@ -128,7 +127,9 @@ object PluginManagerImpl {
         new PluginManagerImpl(conf, descriptor, sources.map(_.toURI.toURL))
       }
 
-    configuredPluginManager.get.getOrElse(
-      new PluginManagerImpl(conf, PluginDefinitions(Seq.empty), Seq.empty))
+    configuredPluginManager
+      .get
+      .getOrElse(
+        new PluginManagerImpl(conf, PluginDefinitions(Seq.empty), Seq.empty))
   }
 }

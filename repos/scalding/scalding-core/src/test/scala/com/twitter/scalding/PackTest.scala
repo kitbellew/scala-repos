@@ -115,7 +115,8 @@ class FatContainer {
 case class IntCaseClass(firstValue: Int, secondValue: Int)
 
 class ContainerPopulationJob(args: Args) extends Job(args) {
-  Tsv("input").read
+  Tsv("input")
+    .read
     .mapTo((0, 1) -> ('firstValue, 'secondValue)) { v: (Int, Int) =>
       v
     }
@@ -127,7 +128,8 @@ class ContainerPopulationJob(args: Args) extends Job(args) {
 }
 
 class ContainerToPopulationJob(args: Args) extends Job(args) {
-  Tsv("input").read
+  Tsv("input")
+    .read
     .mapTo((0, 1) -> ('firstValue, 'secondValue)) { v: (Int, Int) =>
       v
     }
@@ -135,7 +137,8 @@ class ContainerToPopulationJob(args: Args) extends Job(args) {
     .unpackTo[IntContainer]('combined -> ('firstValue, 'secondValue))
     .write(Tsv("output"))
 
-  Tsv("input").read
+  Tsv("input")
+    .read
     .mapTo((0, 1) -> ('firstValue, 'secondValue)) { v: (Int, Int) =>
       v
     }
@@ -145,7 +148,8 @@ class ContainerToPopulationJob(args: Args) extends Job(args) {
 }
 
 class FatContainerPopulationJob(args: Args) extends Job(args) {
-  Tsv("input").read
+  Tsv("input")
+    .read
     .mapTo((0, 1) -> ('firstValue, 'secondValue)) { v: (Int, Int) =>
       v
     }
@@ -158,7 +162,8 @@ class FatContainerPopulationJob(args: Args) extends Job(args) {
 }
 
 class FatContainerToPopulationJob(args: Args) extends Job(args) {
-  Tsv("input").read
+  Tsv("input")
+    .read
     .mapTo((0, 1) -> ('firstValue, 'secondValue)) { v: (Int, Int) =>
       v
     }

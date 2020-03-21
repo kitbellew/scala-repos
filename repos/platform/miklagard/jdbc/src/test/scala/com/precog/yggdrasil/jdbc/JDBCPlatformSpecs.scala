@@ -137,10 +137,12 @@ object JDBCPlatformSpecEngine extends Logging {
 
     def loadFile(path: String, file: File) {
       if (file.isDirectory) {
-        file.listFiles.foreach { f =>
-          logger.debug("Found child: " + f)
-          loadFile(path + file.getName + "_", f)
-        }
+        file
+          .listFiles
+          .foreach { f =>
+            logger.debug("Found child: " + f)
+            loadFile(path + file.getName + "_", f)
+          }
       } else {
         if (file.getName.endsWith(".json")) {
           try {
@@ -151,13 +153,15 @@ object JDBCPlatformSpecEngine extends Logging {
               case Success(data) =>
                 val rows: Seq[Seq[(String, (String, String))]] = data.map {
                   jv =>
-                    jv.flattenWithPath.map {
-                      case (p, v) =>
-                        (
-                          JDBCColumnarTableModule.escapePath(
-                            p.toString.drop(1)),
-                          jvToSQL(v))
-                    }
+                    jv
+                      .flattenWithPath
+                      .map {
+                        case (p, v) =>
+                          (
+                            JDBCColumnarTableModule
+                              .escapePath(p.toString.drop(1)),
+                            jvToSQL(v))
+                      }
                 }
 
                 // Two passes: first one constructs a schema for the table, second inserts data
@@ -194,10 +198,8 @@ object JDBCPlatformSpecEngine extends Logging {
                     val columns = properties.map(_._1).mkString(", ")
                     val values = properties.map(_._2._2).mkString(", ")
 
-                    val insert = "INSERT INTO %s (%s) VALUES (%s);".format(
-                      tableName,
-                      columns,
-                      values)
+                    val insert = "INSERT INTO %s (%s) VALUES (%s);"
+                      .format(tableName, columns, values)
 
                     logger.debug("Inserting with " + insert)
 
@@ -213,8 +215,8 @@ object JDBCPlatformSpecEngine extends Logging {
                 val conn2 = DriverManager.getConnection(dbURL)
                 val stmt2 = conn2.createStatement
 
-                val rs = stmt2.executeQuery(
-                  "SELECT COUNT(*) AS total FROM " + tableName)
+                val rs = stmt2
+                  .executeQuery("SELECT COUNT(*) AS total FROM " + tableName)
 
                 rs.next
 
@@ -236,9 +238,11 @@ object JDBCPlatformSpecEngine extends Logging {
       }
     }
 
-    (new File(dataDirURL.toURI)).listFiles.foreach { f =>
-      loadFile("", f)
-    }
+    (new File(dataDirURL.toURI))
+      .listFiles
+      .foreach { f =>
+        loadFile("", f)
+      }
   }
 }
 

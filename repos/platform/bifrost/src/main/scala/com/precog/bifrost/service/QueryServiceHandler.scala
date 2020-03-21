@@ -110,12 +110,12 @@ abstract class QueryServiceHandler[A](implicit M: Monad[Future])
 
     opts.output match {
       case FileContent.TextCSV =>
-        response.copy(headers =
-          response.headers + `Content-Type`(text / csv) + `Content-Disposition`(
-            attachment(Some("results.csv"))))
+        response.copy(headers = response
+          .headers + `Content-Type`(text / csv) + `Content-Disposition`(
+          attachment(Some("results.csv"))))
       case _ =>
-        response.copy(headers =
-          response.headers + `Content-Type`(application / json))
+        response
+          .copy(headers = response.headers + `Content-Type`(application / json))
     }
   }
 
@@ -141,8 +141,8 @@ abstract class QueryServiceHandler[A](implicit M: Monad[Future])
                 new DateTime
               ) //CLOCK!!!!!!
               result <- executor.execute(query, ctx, opts)
-              httpResponse <- EitherT.right(
-                extractResponse(request, result, opts.output))
+              httpResponse <- EitherT
+                .right(extractResponse(request, result, opts.output))
             } yield {
               appendHeaders(opts) {
                 httpResponse
@@ -183,22 +183,25 @@ class AnalysisServiceHandler(
               Path.Root,
               path.prefix getOrElse Path.Root,
               clock.now())
-            val cacheDirectives = request.headers
+            val cacheDirectives = request
+              .headers
               .header[`Cache-Control`]
               .toSeq
               .flatMap(_.directives)
             logger.debug(
               "Received analysis request with cache directives: " + cacheDirectives)
 
-            val cacheControl0 = CacheControl.fromCacheDirectives(
-              cacheDirectives: _*)
+            val cacheControl0 = CacheControl
+              .fromCacheDirectives(cacheDirectives: _*)
             // Internally maxAge/maxStale are compared against ms times
-            platform.vfs.executeStoredQuery(
-              platform,
-              scheduler,
-              context,
-              path,
-              queryOptions.copy(cacheControl = cacheControl0)) map { sqr =>
+            platform
+              .vfs
+              .executeStoredQuery(
+                platform,
+                scheduler,
+                context,
+                path,
+                queryOptions.copy(cacheControl = cacheControl0)) map { sqr =>
               HttpResponse(
                 OK,
                 headers = HttpHeaders(
@@ -306,22 +309,14 @@ class SyncQueryServiceHandler(
                 case Some((buffer, tail)) =>
                   M.point(Some((buffer, Some(tail))))
                 case None =>
-                  val warningsM = jobManager.listMessages(
-                    jobId,
-                    channels.Warning,
-                    None)
-                  val errorsM = jobManager.listMessages(
-                    jobId,
-                    channels.Error,
-                    None)
-                  val serverErrorsM = jobManager.listMessages(
-                    jobId,
-                    channels.ServerError,
-                    None)
-                  val serverWarningsM = jobManager.listMessages(
-                    jobId,
-                    channels.ServerWarning,
-                    None)
+                  val warningsM = jobManager
+                    .listMessages(jobId, channels.Warning, None)
+                  val errorsM = jobManager
+                    .listMessages(jobId, channels.Error, None)
+                  val serverErrorsM = jobManager
+                    .listMessages(jobId, channels.ServerError, None)
+                  val serverWarningsM = jobManager
+                    .listMessages(jobId, channels.ServerWarning, None)
                   (
                     warningsM |@| errorsM |@| serverErrorsM |@| serverWarningsM
                   ) { (warnings, errors, serverErrors, serverWarnings) =>
@@ -330,8 +325,8 @@ class SyncQueryServiceHandler(
                         JArray(errors.toList map (_.value)).renderCompact,
                         JArray(warnings.toList map (_.value)).renderCompact,
                         JArray(serverErrors.toList map (_.value)).renderCompact,
-                        JArray(
-                          serverWarnings.toList map (_.value)).renderCompact
+                        JArray(serverWarnings.toList map (_.value))
+                          .renderCompact
                     )
                     Some((CharBuffer.wrap(suffix), None))
                   }

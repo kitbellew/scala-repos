@@ -51,7 +51,8 @@ class AdaptiveGradientTest extends OptimizeTestBase {
         2) / result.size < 2e-3
       if (!ok) {
         sys.error(
-          "min " + init + " with reg: " + sgd.regularizationConstant + "gives " + result + " should be " + targetValue)
+          "min " + init + " with reg: " + sgd
+            .regularizationConstant + "gives " + result + " should be " + targetValue)
       }
       ok
     }

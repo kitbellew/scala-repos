@@ -91,8 +91,8 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
   private def testBinary(
       c: (Expression, Expression) => Expression,
       f: (Double, Double) => Double,
-      domain: Iterable[(Double, Double)] = (-20 to 20).map(v =>
-        (v * 0.1, v * -0.1)),
+      domain: Iterable[(Double, Double)] = (-20 to 20)
+        .map(v => (v * 0.1, v * -0.1)),
       expectNull: Boolean = false,
       expectNaN: Boolean = false): Unit = {
     if (expectNull) {
@@ -158,8 +158,8 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       inputRow: InternalRow = EmptyRow): Unit = {
 
     val plan = generateProject(
-      GenerateMutableProjection.generate(
-        Alias(expression, s"Optimized($expression)")() :: Nil)(),
+      GenerateMutableProjection
+        .generate(Alias(expression, s"Optimized($expression)")() :: Nil)(),
       expression)
 
     val actual = plan(inputRow).get(0, expression.dataType)
@@ -682,21 +682,23 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
         Seq.fill[Short](7)(31415)
 
     val intResults: Seq[Int] = Seq(
-      314000000, 314200000, 314160000, 314159000, 314159300,
-      314159270) ++ Seq.fill(7)(314159265)
+      314000000, 314200000, 314160000, 314159000, 314159300, 314159270) ++ Seq
+      .fill(7)(314159265)
 
     val longResults: Seq[Long] = Seq(
       31415926536000000L, 31415926535900000L, 31415926535900000L,
       31415926535898000L, 31415926535897900L, 31415926535897930L) ++
       Seq.fill(7)(31415926535897932L)
 
-    scales.zipWithIndex.foreach {
-      case (scale, i) =>
-        checkEvaluation(Round(doublePi, scale), doubleResults(i), EmptyRow)
-        checkEvaluation(Round(shortPi, scale), shortResults(i), EmptyRow)
-        checkEvaluation(Round(intPi, scale), intResults(i), EmptyRow)
-        checkEvaluation(Round(longPi, scale), longResults(i), EmptyRow)
-    }
+    scales
+      .zipWithIndex
+      .foreach {
+        case (scale, i) =>
+          checkEvaluation(Round(doublePi, scale), doubleResults(i), EmptyRow)
+          checkEvaluation(Round(shortPi, scale), shortResults(i), EmptyRow)
+          checkEvaluation(Round(intPi, scale), intResults(i), EmptyRow)
+          checkEvaluation(Round(longPi, scale), longResults(i), EmptyRow)
+      }
 
     val bdResults: Seq[BigDecimal] = Seq(
       BigDecimal(3.0),
@@ -716,13 +718,15 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       checkEvaluation(Round(bdPi, scale), null, EmptyRow)
     }
 
-    DataTypeTestUtils.numericTypes.foreach { dataType =>
-      checkEvaluation(Round(Literal.create(null, dataType), Literal(2)), null)
-      checkEvaluation(
-        Round(
-          Literal.create(null, dataType),
-          Literal.create(null, IntegerType)),
-        null)
-    }
+    DataTypeTestUtils
+      .numericTypes
+      .foreach { dataType =>
+        checkEvaluation(Round(Literal.create(null, dataType), Literal(2)), null)
+        checkEvaluation(
+          Round(
+            Literal.create(null, dataType),
+            Literal.create(null, IntegerType)),
+          null)
+      }
   }
 }

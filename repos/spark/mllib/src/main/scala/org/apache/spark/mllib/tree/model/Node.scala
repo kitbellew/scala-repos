@@ -254,7 +254,9 @@ private[spark] object Node {
     if (nodeIndex == 0) {
       throw new IllegalArgumentException(s"0 is not a valid node index.")
     } else {
-      java.lang.Integer
+      java
+        .lang
+        .Integer
         .numberOfTrailingZeros(java.lang.Integer.highestOneBit(nodeIndex))
     }
 

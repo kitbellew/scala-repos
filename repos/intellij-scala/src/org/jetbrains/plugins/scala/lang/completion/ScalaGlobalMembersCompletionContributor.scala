@@ -121,8 +121,8 @@ class ScalaGlobalMembersCompletionContributor
           return false
         val qualifiedName = containingClass.qualifiedName + "." + member.name
         for (excluded <- CodeInsightSettings.getInstance.EXCLUDED_PACKAGES) {
-          if (qualifiedName == excluded || qualifiedName.startsWith(
-                excluded + ".")) {
+          if (qualifiedName == excluded || qualifiedName
+                .startsWith(excluded + ".")) {
             return false
           }
         }
@@ -143,8 +143,9 @@ class ScalaGlobalMembersCompletionContributor
       result: CompletionResultSet,
       originalFile: PsiFile,
       originalType: ScType) {
-    FeatureUsageTracker.getInstance.triggerFeatureUsed(
-      JavaCompletionFeatures.GLOBAL_MEMBER_NAME)
+    FeatureUsageTracker
+      .getInstance
+      .triggerFeatureUsed(JavaCompletionFeatures.GLOBAL_MEMBER_NAME)
     val scope: GlobalSearchScope = ref.getResolveScope
     val file = ref.getContainingFile
 
@@ -220,12 +221,14 @@ class ScalaGlobalMembersCompletionContributor
     }
     val candidates = proc.candidates.map(convertible.forMap(_, originalType))
 
-    ref.getVariants(implicits = false, filterNotNamedVariants = false).foreach {
-      case ScalaLookupItem(elem: PsiNamedElement) =>
-        addElemToSet(elem)
-      case elem: PsiNamedElement =>
-        addElemToSet(elem)
-    }
+    ref
+      .getVariants(implicits = false, filterNotNamedVariants = false)
+      .foreach {
+        case ScalaLookupItem(elem: PsiNamedElement) =>
+          addElemToSet(elem)
+        case elem: PsiNamedElement =>
+          addElemToSet(elem)
+      }
 
     val iterator = candidates.iterator
     while (iterator.hasNext) {
@@ -259,15 +262,18 @@ class ScalaGlobalMembersCompletionContributor
       result: CompletionResultSet,
       originalFile: PsiFile,
       invocationCount: Int) {
-    FeatureUsageTracker.getInstance.triggerFeatureUsed(
-      JavaCompletionFeatures.GLOBAL_MEMBER_NAME)
+    FeatureUsageTracker
+      .getInstance
+      .triggerFeatureUsed(JavaCompletionFeatures.GLOBAL_MEMBER_NAME)
     val matcher: PrefixMatcher = result.getPrefixMatcher
     val scope: GlobalSearchScope = ref.getResolveScope
     val file = ref.getContainingFile
 
     var hintShown: Boolean = false
     def showHint(shouldImport: Boolean) {
-      if (!hintShown && !shouldImport && CompletionService.getCompletionService.getAdvertisementText == null) {
+      if (!hintShown && !shouldImport && CompletionService
+            .getCompletionService
+            .getAdvertisementText == null) {
         val actionId = IdeActions.ACTION_SHOW_INTENTION_ACTIONS
         val shortcut: String = KeymapUtil.getFirstKeyboardShortcutText(
           ActionManager.getInstance.getAction(actionId))
@@ -321,27 +327,26 @@ class ScalaGlobalMembersCompletionContributor
         elemsSet.contains(elem)
     }
 
-    ref.getVariants(implicits = false, filterNotNamedVariants = false).foreach {
-      case ScalaLookupItem(elem) =>
-        addElemToSet(elem)
-      case elem: PsiNamedElement =>
-        addElemToSet(elem)
-    }
+    ref
+      .getVariants(implicits = false, filterNotNamedVariants = false)
+      .foreach {
+        case ScalaLookupItem(elem) =>
+          addElemToSet(elem)
+        case elem: PsiNamedElement =>
+          addElemToSet(elem)
+      }
 
     val namesCache = ScalaShortNamesCacheManager.getInstance(ref.getProject)
 
-    val methodNamesIterator =
-      namesCache.getAllMethodNames.iterator ++ namesCache.getAllJavaMethodNames.iterator
+    val methodNamesIterator = namesCache
+      .getAllMethodNames
+      .iterator ++ namesCache.getAllJavaMethodNames.iterator
 
     def isAccessible(member: PsiMember, containingClass: PsiClass): Boolean = {
       invocationCount >= 3 || (
-        ResolveUtils.isAccessible(
-          member,
-          ref,
-          forCompletion = true) && ResolveUtils.isAccessible(
-          containingClass,
-          ref,
-          forCompletion = true)
+        ResolveUtils
+          .isAccessible(member, ref, forCompletion = true) && ResolveUtils
+          .isAccessible(containingClass, ref, forCompletion = true)
       )
     }
 
@@ -380,8 +385,10 @@ class ScalaGlobalMembersCompletionContributor
                     case o: ScObject =>
                       o.functionsByName(methodName)
                     case _ =>
-                      containingClass.getAllMethods.toSeq.filter(m =>
-                        m.name == methodName)
+                      containingClass
+                        .getAllMethods
+                        .toSeq
+                        .filter(m => m.name == methodName)
                   }
                 if (overloads.size == 1) {
                   result.addElement(

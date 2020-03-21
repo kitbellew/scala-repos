@@ -345,8 +345,9 @@ object HttpRequest {
       uri.toEffectiveHttpRequestUri(host, port, securedConnection)
     } else // http://tools.ietf.org/html/rfc7230#section-5.4
     if (hostHeader.isEmpty || uri.authority.isEmpty && hostHeader.get.isEmpty ||
-        hostHeader.get.host.equalsIgnoreCase(
-          uri.authority.host) && hostHeader.get.port == uri.authority.port)
+        hostHeader.get.host.equalsIgnoreCase(uri.authority.host) && hostHeader
+          .get
+          .port == uri.authority.port)
       uri
     else
       throw IllegalUriException(

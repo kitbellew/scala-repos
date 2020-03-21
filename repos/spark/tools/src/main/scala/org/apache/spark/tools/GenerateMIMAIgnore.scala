@@ -59,8 +59,8 @@ object GenerateMIMAIgnore {
 
     for (className <- classes) {
       try {
-        val classSymbol = mirror.classSymbol(
-          Class.forName(className, false, classLoader))
+        val classSymbol = mirror
+          .classSymbol(Class.forName(className, false, classLoader))
         val moduleSymbol = mirror.staticModule(className)
         val directlyPrivateSpark =
           isPackagePrivate(classSymbol) ||
@@ -72,8 +72,8 @@ object GenerateMIMAIgnore {
           val maybeOuter = className.toString.takeWhile(_ != '$')
           if (maybeOuter != className) {
             isPackagePrivate(
-              mirror.classSymbol(
-                Class.forName(maybeOuter, false, classLoader))) ||
+              mirror
+                .classSymbol(Class.forName(maybeOuter, false, classLoader))) ||
             isPackagePrivateModule(mirror.staticModule(maybeOuter))
           } else {
             false
@@ -113,7 +113,8 @@ object GenerateMIMAIgnore {
       case t: Throwable =>
         // scalastyle:off println
         println(
-          "[WARN] Unable to detect inner functions for class:" + classSymbol.fullName)
+          "[WARN] Unable to detect inner functions for class:" + classSymbol
+            .fullName)
         // scalastyle:on println
         Seq.empty[String]
     }
@@ -121,7 +122,9 @@ object GenerateMIMAIgnore {
 
   private def getAnnotatedOrPackagePrivateMembers(
       classSymbol: unv.ClassSymbol) = {
-    classSymbol.typeSignature.members
+    classSymbol
+      .typeSignature
+      .members
       .filterNot(x =>
         x.fullName.startsWith("java") || x.fullName.startsWith("scala"))
       .filter(x => isPackagePrivate(x))
@@ -164,7 +167,8 @@ object GenerateMIMAIgnore {
     */
   private def getClasses(packageName: String): Set[String] = {
     val finder = ClassFinder()
-    finder.getClasses
+    finder
+      .getClasses
       .map(_.name)
       .filter(_.startsWith(packageName))
       .filterNot(shouldExclude)

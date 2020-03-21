@@ -27,8 +27,8 @@ final class JUnitTask(val taskDef: TaskDef, runner: JUnitBaseRunner)
     if (runner.runSettings.verbose)
       richLogger.info(c("Test run started", INFO))
 
-    val bootstrapperName =
-      taskDef.fullyQualifiedName + "$scalajs$junit$bootstrapper"
+    val bootstrapperName = taskDef
+      .fullyQualifiedName + "$scalajs$junit$bootstrapper"
 
     val startTime = System.nanoTime
 

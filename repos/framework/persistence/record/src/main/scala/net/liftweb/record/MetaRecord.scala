@@ -104,8 +104,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     classOf[LifecycleCallbacks].isAssignableFrom(m.getReturnType)
 
   private def isField(m: Method) = {
-    val ret =
-      !m.isSynthetic && classOf[Field[_, _]].isAssignableFrom(m.getReturnType)
+    val ret = !m.isSynthetic && classOf[Field[_, _]]
+      .isAssignableFrom(m.getReturnType)
     ret
   }
 
@@ -124,7 +124,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
       }
 
     // sort each list based on having the most specific type and use that method
-    val realMeth = map.values
+    val realMeth = map
+      .values
       .map(
         _.sortWith {
           case (a, b) =>
@@ -308,8 +309,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     setFieldsFromJValue(inst, JsonParser.parse(json))
 
   def foreachCallback(inst: BaseRecord, f: LifecycleCallbacks => Any) {
-    lifecycleCallbacks.foreach(m =>
-      f(m._2.invoke(inst).asInstanceOf[LifecycleCallbacks]))
+    lifecycleCallbacks
+      .foreach(m => f(m._2.invoke(inst).asInstanceOf[LifecycleCallbacks]))
   }
 
   /**
@@ -324,8 +325,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
       case Full(template) =>
         toForm(inst, template)
       case _ =>
-        fieldList.flatMap(
-          _.field(inst).toForm.openOr(NodeSeq.Empty) ++ Text("\n"))
+        fieldList
+          .flatMap(_.field(inst).toForm.openOr(NodeSeq.Empty) ++ Text("\n"))
     }
   }
 

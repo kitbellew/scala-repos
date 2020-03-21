@@ -134,8 +134,9 @@ object JavaTypeInference {
         // TODO: we should only collect properties that have getter and setter. However, some tests
         // pass in scala case class as java bean class which doesn't have getter and setter.
         val beanInfo = Introspector.getBeanInfo(typeToken.getRawType)
-        val properties = beanInfo.getPropertyDescriptors.filterNot(
-          _.getName == "class")
+        val properties = beanInfo
+          .getPropertyDescriptors
+          .filterNot(_.getName == "class")
         val fields = properties.map { property =>
           val returnType =
             typeToken.method(property.getReadMethod).getReturnType
@@ -149,7 +150,8 @@ object JavaTypeInference {
   private def getJavaBeanProperties(
       beanClass: Class[_]): Array[PropertyDescriptor] = {
     val beanInfo = Introspector.getBeanInfo(beanClass)
-    beanInfo.getPropertyDescriptors
+    beanInfo
+      .getPropertyDescriptors
       .filter(p => p.getReadMethod != null && p.getWriteMethod != null)
   }
 
@@ -351,23 +353,25 @@ object JavaTypeInference {
         assert(properties.length > 0)
 
         val setters =
-          properties.map { p =>
-            val fieldName = p.getName
-            val fieldType = typeToken.method(p.getReadMethod).getReturnType
-            val (_, nullable) = inferDataType(fieldType)
-            val constructor = constructorFor(
-              fieldType,
-              Some(addToPath(fieldName)))
-            val setter =
-              if (nullable) {
-                constructor
-              } else {
-                AssertNotNull(
-                  constructor,
-                  Seq("currently no type path record in java"))
-              }
-            p.getWriteMethod.getName -> setter
-          }.toMap
+          properties
+            .map { p =>
+              val fieldName = p.getName
+              val fieldType = typeToken.method(p.getReadMethod).getReturnType
+              val (_, nullable) = inferDataType(fieldType)
+              val constructor = constructorFor(
+                fieldType,
+                Some(addToPath(fieldName)))
+              val setter =
+                if (nullable) {
+                  constructor
+                } else {
+                  AssertNotNull(
+                    constructor,
+                    Seq("currently no type path record in java"))
+                }
+              p.getWriteMethod.getName -> setter
+            }
+            .toMap
 
         val newInstance = NewInstance(
           other,

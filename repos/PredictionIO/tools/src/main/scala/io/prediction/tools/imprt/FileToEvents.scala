@@ -68,14 +68,16 @@ object FileToEvents extends Logging {
       val channelMap =
         channels.getByAppid(args.appId).map(c => (c.name, c.id)).toMap
 
-      val channelId: Option[Int] = args.channel.map { ch =>
-        if (!channelMap.contains(ch)) {
-          error(s"Channel ${ch} doesn't exist in this app.")
-          sys.exit(1)
-        }
+      val channelId: Option[Int] = args
+        .channel
+        .map { ch =>
+          if (!channelMap.contains(ch)) {
+            error(s"Channel ${ch} doesn't exist in this app.")
+            sys.exit(1)
+          }
 
-        channelMap(ch)
-      }
+          channelMap(ch)
+        }
 
       val channelStr = args.channel.map(n => " Channel " + n).getOrElse("")
 
@@ -87,14 +89,18 @@ object FileToEvents extends Logging {
         mode = "Import",
         batch = "App ID " + args.appId + channelStr,
         executorEnv = Runner.envStringToMap(args.env))
-      val rdd = sc.textFile(args.inputPath).filter(_.trim.nonEmpty).map {
-        json =>
-          Try(read[Event](json)).recoverWith {
-            case e: Throwable =>
-              error(s"\nmalformed json => $json")
-              Failure(e)
-          }.get
-      }
+      val rdd = sc
+        .textFile(args.inputPath)
+        .filter(_.trim.nonEmpty)
+        .map { json =>
+          Try(read[Event](json))
+            .recoverWith {
+              case e: Throwable =>
+                error(s"\nmalformed json => $json")
+                Failure(e)
+            }
+            .get
+        }
       val events = Storage.getPEvents()
       events.write(events = rdd, appId = args.appId, channelId = channelId)(sc)
       info("Events are imported.")

@@ -84,9 +84,8 @@ private[mesos] class MesosClusterDispatcher(
 
   def start(): Unit = {
     webUi.bind()
-    scheduler.frameworkUrl = conf.get(
-      "spark.mesos.dispatcher.webui.url",
-      webUi.activeWebUiUrl)
+    scheduler.frameworkUrl = conf
+      .get("spark.mesos.dispatcher.webui.url", webUi.activeWebUiUrl)
     scheduler.start()
     server.start()
   }
@@ -110,10 +109,12 @@ private[mesos] object MesosClusterDispatcher extends Logging {
     val dispatcherArgs = new MesosClusterDispatcherArguments(args, conf)
     conf.setMaster(dispatcherArgs.masterUrl)
     conf.setAppName(dispatcherArgs.name)
-    dispatcherArgs.zookeeperUrl.foreach { z =>
-      conf.set("spark.deploy.recoveryMode", "ZOOKEEPER")
-      conf.set("spark.deploy.zookeeper.url", z)
-    }
+    dispatcherArgs
+      .zookeeperUrl
+      .foreach { z =>
+        conf.set("spark.deploy.recoveryMode", "ZOOKEEPER")
+        conf.set("spark.deploy.zookeeper.url", z)
+      }
     val dispatcher = new MesosClusterDispatcher(dispatcherArgs, conf)
     dispatcher.start()
     ShutdownHookManager.addShutdownHook { () =>

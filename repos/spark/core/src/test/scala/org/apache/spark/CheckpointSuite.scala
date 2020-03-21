@@ -67,7 +67,8 @@ trait RDDCheckpointTester {
 
     // Find serialized sizes before and after the checkpoint
     logInfo(
-      "RDD before checkpoint: " + operatedRDD + "\n" + operatedRDD.toDebugString)
+      "RDD before checkpoint: " + operatedRDD + "\n" + operatedRDD
+        .toDebugString)
     val (rddSizeBeforeCheckpoint, partitionSizeBeforeCheckpoint) =
       getSerializedSizes(operatedRDD)
     checkpoint(operatedRDD, reliableCheckpoint)
@@ -82,8 +83,8 @@ trait RDDCheckpointTester {
     // Test whether the checkpoint file has been created
     if (reliableCheckpoint) {
       assert(operatedRDD.getCheckpointFile.nonEmpty)
-      val recoveredRDD = sparkContext.checkpointFile[U](
-        operatedRDD.getCheckpointFile.get)
+      val recoveredRDD = sparkContext
+        .checkpointFile[U](operatedRDD.getCheckpointFile.get)
       assert(collectFunc(recoveredRDD) === result)
       assert(recoveredRDD.partitioner === operatedRDD.partitioner)
     }
@@ -96,7 +97,11 @@ trait RDDCheckpointTester {
 
     // Test whether the partitions have been changed to the new Hadoop partitions
     assert(
-      operatedRDD.partitions.toList === operatedRDD.checkpointData.get.getPartitions.toList)
+      operatedRDD.partitions.toList === operatedRDD
+        .checkpointData
+        .get
+        .getPartitions
+        .toList)
 
     // Test whether the number of partitions is same as before
     assert(operatedRDD.partitions.length === numPartitions)
@@ -248,8 +253,8 @@ trait RDDCheckpointTester {
     * have large size.
     */
   protected def generateFatPairRDD(): RDD[(Int, Int)] = {
-    new FatPairRDD(sparkContext.makeRDD(1 to 100, 4), partitioner).mapValues(
-      x => x)
+    new FatPairRDD(sparkContext.makeRDD(1 to 100, 4), partitioner)
+      .mapValues(x => x)
   }
 }
 
@@ -324,8 +329,8 @@ class CheckpointSuite
           output.close()
         }
 
-        val newRDD = sc.checkpointFile[(Int, Int)](
-          rddWithPartitioner.getCheckpointFile.get)
+        val newRDD = sc
+          .checkpointFile[(Int, Int)](rddWithPartitioner.getCheckpointFile.get)
         assert(
           newRDD.collect().toSet === rddWithPartitioner.collect().toSet,
           "RDD not recovered")
@@ -372,7 +377,8 @@ class CheckpointSuite
     val result = parCollection.collect()
     if (reliableCheckpoint) {
       assert(
-        sc.checkpointFile[Int](parCollection.getCheckpointFile.get)
+        sc
+          .checkpointFile[Int](parCollection.getCheckpointFile.get)
           .collect() === result)
     }
     assert(parCollection.dependencies != Nil)
@@ -393,13 +399,18 @@ class CheckpointSuite
     val result = blockRDD.collect()
     if (reliableCheckpoint) {
       assert(
-        sc.checkpointFile[String](blockRDD.getCheckpointFile.get)
+        sc
+          .checkpointFile[String](blockRDD.getCheckpointFile.get)
           .collect() === result)
     }
     assert(blockRDD.dependencies != Nil)
     assert(blockRDD.partitions.length === numPartitions)
     assert(
-      blockRDD.partitions.toList === blockRDD.checkpointData.get.getPartitions.toList)
+      blockRDD.partitions.toList === blockRDD
+        .checkpointData
+        .get
+        .getPartitions
+        .toList)
     assert(blockRDD.collect() === result)
   }
 
@@ -459,7 +470,10 @@ class CheckpointSuite
     val splitAfterCheckpoint = serializeDeserialize(
       coalesced.partitions.head.asInstanceOf[CoalescedRDDPartition])
     assert(
-      splitAfterCheckpoint.parents.head.getClass != splitBeforeCheckpoint.parents.head.getClass,
+      splitAfterCheckpoint.parents.head.getClass != splitBeforeCheckpoint
+        .parents
+        .head
+        .getClass,
       "CoalescedRDDPartition.parents not updated after parent RDD is checkpointed"
     )
   }

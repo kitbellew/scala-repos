@@ -33,7 +33,8 @@ trait NodePrinters {
           s = "List\\[List\\[.*?\\].*?\\]".r.replaceAllIn(s, "List")
           s = "List\\[.*?\\]".r.replaceAllIn(s, "List")
           s = s.replace("immutable.this.Nil", "List()")
-          s = """internal\.reificationSupport\.FlagsRepr\((\d+)[lL]\)""".r
+          s = """internal\.reificationSupport\.FlagsRepr\((\d+)[lL]\)"""
+            .r
             .replaceAllIn(
               s,
               m => {
@@ -41,7 +42,8 @@ trait NodePrinters {
                 show(m.group(1).toLong)
               })
           s = s.replace("Modifiers(0L, TypeName(\"\"), List())", "Modifiers()")
-          s = """Modifiers\((\d+)[lL], TypeName\("(.*?)"\), List\((.*?)\)\)""".r
+          s = """Modifiers\((\d+)[lL], TypeName\("(.*?)"\), List\((.*?)\)\)"""
+            .r
             .replaceAllIn(
               s,
               m => {
@@ -69,10 +71,11 @@ trait NodePrinters {
           s
         })
 
-      val isExpr =
-        reification.length > 0 && reification(0).trim.startsWith("Expr[")
+      val isExpr = reification
+        .length > 0 && reification(0).trim.startsWith("Expr[")
       var rtree = reification dropWhile (
-        !_.trim.startsWith(
+        !_.trim
+        .startsWith(
           s"val ${nme.UNIVERSE_SHORT}: U = ${nme.MIRROR_UNTYPED}.universe;")
       )
       rtree = rtree drop 2

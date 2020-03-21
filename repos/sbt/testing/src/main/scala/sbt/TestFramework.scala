@@ -298,8 +298,8 @@ object TestFramework {
     val interfaceJar = IO.classLocationFile(classOf[testing.Framework])
     val interfaceFilter =
       (name: String) =>
-        name.startsWith("org.scalatools.testing.") || name.startsWith(
-          "sbt.testing.")
+        name.startsWith("org.scalatools.testing.") || name
+          .startsWith("sbt.testing.")
     val notInterfaceFilter = (name: String) => !interfaceFilter(name)
     val dual =
       new DualLoader(
@@ -309,11 +309,8 @@ object TestFramework {
         getClass.getClassLoader,
         interfaceFilter,
         x => false)
-    val main = ClasspathUtilities.makeLoader(
-      classpath,
-      dual,
-      scalaInstance,
-      tempDir)
+    val main = ClasspathUtilities
+      .makeLoader(classpath, dual, scalaInstance, tempDir)
     // TODO - There's actually an issue with the classpath facility such that unmanagedScalaInstances are not added
     // to the classpath correctly.  We have a temporary workaround here.
     val cp: Seq[File] =

@@ -38,13 +38,15 @@ object Scaladoc extends AutoPlugin {
           baseDirectory in ThisBuild) map scaladocOptions,
         autoAPIMappings := CliOptions.scaladocAutoAPI.get)) ++
       Seq(validateDiagrams in Compile := true) ++
-      CliOptions.scaladocDiagramsEnabled.ifTrue(
-        doc in Compile := {
-          val docs = (doc in Compile).value
-          if ((validateDiagrams in Compile).value)
-            scaladocVerifier(docs)
-          docs
-        })
+      CliOptions
+        .scaladocDiagramsEnabled
+        .ifTrue(
+          doc in Compile := {
+            val docs = (doc in Compile).value
+            if ((validateDiagrams in Compile).value)
+              scaladocVerifier(docs)
+            docs
+          })
   }
 
   def scaladocOptions(ver: String, base: File): List[String] = {
@@ -123,7 +125,9 @@ object UnidocRoot extends AutoPlugin {
 
   override def trigger = noTrigger
 
-  val akkaSettings = UnidocRoot.CliOptions.genjavadocEnabled
+  val akkaSettings = UnidocRoot
+    .CliOptions
+    .genjavadocEnabled
     .ifTrue(
       Seq(
         javacOptions in (JavaUnidoc, unidoc) ++= Seq("-Xdoclint:none"),
@@ -156,7 +160,8 @@ object UnidocRoot extends AutoPlugin {
   }
 
   override lazy val projectSettings =
-    CliOptions.genjavadocEnabled
+    CliOptions
+      .genjavadocEnabled
       .ifTrue(scalaJavaUnidocSettings)
       .getOrElse(scalaUnidocSettings) ++
       settings(
@@ -179,7 +184,9 @@ object Unidoc extends AutoPlugin {
   override def trigger = allRequirements
   override def requires = plugins.JvmPlugin
 
-  override lazy val projectSettings = UnidocRoot.CliOptions.genjavadocEnabled
+  override lazy val projectSettings = UnidocRoot
+    .CliOptions
+    .genjavadocEnabled
     .ifTrue(
       genjavadocExtraSettings ++ Seq(
         scalacOptions in Compile += "-P:genjavadoc:fabricateParams=true",

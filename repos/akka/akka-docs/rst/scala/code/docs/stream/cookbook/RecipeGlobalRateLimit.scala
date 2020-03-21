@@ -42,19 +42,20 @@ class RecipeGlobalRateLimit extends RecipeSpec {
 
       private var waitQueue = immutable.Queue.empty[ActorRef]
       private var permitTokens = maxAvailableTokens
-      private val replenishTimer = system.scheduler.schedule(
-        initialDelay = tokenRefreshPeriod,
-        interval = tokenRefreshPeriod,
-        receiver = self,
-        ReplenishTokens)
+      private val replenishTimer = system
+        .scheduler
+        .schedule(
+          initialDelay = tokenRefreshPeriod,
+          interval = tokenRefreshPeriod,
+          receiver = self,
+          ReplenishTokens)
 
       override def receive: Receive = open
 
       val open: Receive = {
         case ReplenishTokens =>
-          permitTokens = math.min(
-            permitTokens + tokenRefreshAmount,
-            maxAvailableTokens)
+          permitTokens = math
+            .min(permitTokens + tokenRefreshAmount, maxAvailableTokens)
         case WantToPass =>
           permitTokens -= 1
           sender() ! MayPass
@@ -64,9 +65,8 @@ class RecipeGlobalRateLimit extends RecipeSpec {
 
       val closed: Receive = {
         case ReplenishTokens =>
-          permitTokens = math.min(
-            permitTokens + tokenRefreshAmount,
-            maxAvailableTokens)
+          permitTokens = math
+            .min(permitTokens + tokenRefreshAmount, maxAvailableTokens)
           releaseWaiting()
         case WantToPass =>
           waitQueue = waitQueue.enqueue(sender())

@@ -101,11 +101,10 @@ object IntroduceVariableTestUtil {
         .get
 
     val fileEncloser = ScalaRefactoringUtil.fileEncloser(startOffset, file)
-    val occurrences = ScalaRefactoringUtil.getTypeElementOccurrences(
-      typeElement,
-      fileEncloser)
-    val container = ScalaRefactoringUtil.enclosingContainer(
-      PsiTreeUtil.findCommonParent(occurrences: _*))
+    val occurrences = ScalaRefactoringUtil
+      .getTypeElementOccurrences(typeElement, fileEncloser)
+    val container = ScalaRefactoringUtil
+      .enclosingContainer(PsiTreeUtil.findCommonParent(occurrences: _*))
 
     val containerOne = getContainerOne(
       startOffset,

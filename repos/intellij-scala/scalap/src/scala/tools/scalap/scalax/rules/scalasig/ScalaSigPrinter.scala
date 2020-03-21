@@ -150,8 +150,9 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
   def isCaseClassObject(o: ObjectSymbol): Boolean = {
     val TypeRefType(prefix, classSymbol: ClassSymbol, typeArgs) = o.infoType
     o.isFinal && (
-      classSymbol.children.find(x =>
-        x.isCase && x.isInstanceOf[MethodSymbol]) match {
+      classSymbol
+        .children
+        .find(x => x.isCase && x.isInstanceOf[MethodSymbol]) match {
         case Some(_) =>
           true
         case None =>
@@ -327,12 +328,14 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
   }
 
   def getPrinterByConstructor(c: ClassSymbol): String = {
-    c.children.find {
-      case m: MethodSymbol if m.name == CONSTRUCTOR_NAME =>
-        true
-      case _ =>
-        false
-    } match {
+    c
+      .children
+      .find {
+        case m: MethodSymbol if m.name == CONSTRUCTOR_NAME =>
+          true
+        case _ =>
+          false
+      } match {
       case Some(m: MethodSymbol) =>
         val baos = new ByteArrayOutputStream
         val stream = new PrintStream(baos)
@@ -433,12 +436,14 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
 
     def _pmt(mt: FunctionType) {
 
-      val paramEntries = mt.paramSymbols.map({
-        case ms: MethodSymbol =>
-          pe(ms)
-        case _ =>
-          "^___^"
-      })
+      val paramEntries = mt
+        .paramSymbols
+        .map({
+          case ms: MethodSymbol =>
+            pe(ms)
+          case _ =>
+            "^___^"
+        })
 
       // Print parameter clauses
       print(
@@ -449,7 +454,10 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
                 "implicit "
               //for Scala 2.9
               case mt: MethodType
-                  if mt.paramSymbols.nonEmpty && mt.paramSymbols.head.isImplicit =>
+                  if mt.paramSymbols.nonEmpty && mt
+                    .paramSymbols
+                    .head
+                    .isImplicit =>
                 "implicit "
               case _ =>
                 ""
@@ -515,9 +523,13 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     indent()
     printModifiers(m)
     if (m.isAccessor) {
-      val indexOfSetter = m.parent.get.children.indexWhere(x =>
-        x.isInstanceOf[MethodSymbol] &&
-          x.asInstanceOf[MethodSymbol].name == n + "_$eq")
+      val indexOfSetter = m
+        .parent
+        .get
+        .children
+        .indexWhere(x =>
+          x.isInstanceOf[MethodSymbol] &&
+            x.asInstanceOf[MethodSymbol].name == n + "_$eq")
       print(
         if (indexOfSetter > 0)
           "var "
@@ -695,7 +707,9 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
             case _: String =>
               "java.lang.String"
             case c: Class[_] =>
-              "java.lang.Class[" + c.getComponentType.getCanonicalName
+              "java.lang.Class[" + c
+                .getComponentType
+                .getCanonicalName
                 .replace("$", ".") + "]"
             case ExternalSymbol(_, Some(parent), _) =>
               parent.path //enum value
@@ -736,14 +750,14 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
                       case t: TypeBoundsType =>
                         false
                       case RefinedType(symbol, refs) =>
-                        symbol == parent || !refs.forall(tp =>
-                          !checkContainsSelf(Some(tp), parent))
+                        symbol == parent || !refs
+                          .forall(tp => !checkContainsSelf(Some(tp), parent))
                       case ClassInfoType(symbol, refs) =>
-                        symbol == parent || !refs.forall(tp =>
-                          !checkContainsSelf(Some(tp), parent))
+                        symbol == parent || !refs
+                          .forall(tp => !checkContainsSelf(Some(tp), parent))
                       case ClassInfoTypeWithCons(symbol, refs, _) =>
-                        symbol == parent || !refs.forall(tp =>
-                          !checkContainsSelf(Some(tp), parent))
+                        symbol == parent || !refs
+                          .forall(tp => !checkContainsSelf(Some(tp), parent))
                       case ImplicitMethodType(resultType, _) =>
                         false
                       case MethodType(resultType, _) =>
@@ -967,11 +981,13 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     "\\$hash" -> "#"
   )
   val pattern = Pattern.compile(
-    _syms.keys.foldLeft("")((x, y) =>
-      if (x == "")
-        y
-      else
-        x + "|" + y))
+    _syms
+      .keys
+      .foldLeft("")((x, y) =>
+        if (x == "")
+          y
+        else
+          x + "|" + y))
   val placeholderPattern = "_\\$(\\d)+"
 
   private val keywordList = Set(
@@ -1039,7 +1055,9 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         /** Is character a math or other symbol in Unicode?  */
         def isSpecial(c: Char) = {
           val chtp = Character.getType(c)
-          chtp == Character.MATH_SYMBOL.toInt || chtp == Character.OTHER_SYMBOL.toInt
+          chtp == Character.MATH_SYMBOL.toInt || chtp == Character
+            .OTHER_SYMBOL
+            .toInt
         }
 
         /** Can character form part of a Scala operator name? */
@@ -1070,8 +1088,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
           false
       }
       val result = NameTransformer.decode(name)
-      if (!isIdentifier(result) || keywordList.contains(
-            result) || result == "=")
+      if (!isIdentifier(result) || keywordList
+            .contains(result) || result == "=")
         "`" + result + "`"
       else
         result

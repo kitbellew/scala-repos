@@ -102,8 +102,9 @@ object LocSpec extends Specification {
       testS(mockReq) {
         testReq(mockReq) { req =>
           val rrq = new RewriteRequest(req.path, GetRequest, req.request)
-          val rewriteFn = testLoc.rewrite.openOrThrowException(
-            "No rewrite function")
+          val rewriteFn = testLoc
+            .rewrite
+            .openOrThrowException("No rewrite function")
 
           rewriteFn(rrq) must not(throwA[Exception])
           rewriteFn(rrq)._2 must_== Empty

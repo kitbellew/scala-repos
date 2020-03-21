@@ -36,10 +36,13 @@ final class Vertex(val label: String, var neighbors: List[Vertex])
     (this ne other) &&
     this.label == other.label && (
       this.neighbors.length == other.neighbors.length &&
-      this.neighbors.zip(other.neighbors).forall {
-        case (thisv, otherv) =>
-          thisv.label == otherv.label
-      }
+      this
+        .neighbors
+        .zip(other.neighbors)
+        .forall {
+          case (thisv, otherv) =>
+            thisv.label == otherv.label
+        }
     )
   }
 
@@ -58,10 +61,13 @@ final class Graph extends Serializable {
   def sameAs(other: Graph): Boolean = {
     (this ne other) &&
     this.vertices.length == other.vertices.length &&
-    this.vertices.zip(other.vertices).forall {
-      case (thisv, otherv) =>
-        thisv.sameAs(otherv)
-    }
+    this
+      .vertices
+      .zip(other.vertices)
+      .forall {
+        case (thisv, otherv) =>
+          thisv.sameAs(otherv)
+      }
   }
 }
 
@@ -110,8 +116,8 @@ object GraphReader extends RegexParsers {
             val vertexOpt = vertices.get(targetLabel)
 
             if (vertexOpt.isEmpty) {
-              val newVertex = graph.addVertex(
-                new Vertex(names(targetLabel), List()))
+              val newVertex = graph
+                .addVertex(new Vertex(names(targetLabel), List()))
               vertices.put(targetLabel, newVertex)
               newVertex
             } else {
@@ -182,8 +188,8 @@ object WikiGraphPicklingBench extends WikiGraphBenchmark {
   implicit val ColonColonVertexTag = FastTypeTag
     .materializeFastTypeTag[::[Vertex]]
   import scala.reflect.runtime.{universe => ru}
-  implicit val myLittlePony: ru.Mirror = ru.runtimeMirror(
-    getClass.getClassLoader)
+  implicit val myLittlePony: ru.Mirror = ru
+    .runtimeMirror(getClass.getClassLoader)
   implicit val VectorVertexTag = FastTypeTag
     .materializeFastTypeTag[Vector[Vertex]]
   implicit val ListVertexTag = FastTypeTag.materializeFastTypeTag[List[Vertex]]

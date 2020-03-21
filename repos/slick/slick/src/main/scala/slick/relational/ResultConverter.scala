@@ -86,10 +86,14 @@ final case class ProductResultConverter[
   }
 
   override def getDumpInfo =
-    super.getDumpInfo.copy(children = elementConverters.zipWithIndex.map {
-      case (ch, i) =>
-        ((i + 1).toString, ch)
-    })
+    super
+      .getDumpInfo
+      .copy(children = elementConverters
+        .zipWithIndex
+        .map {
+          case (ch, i) =>
+            ((i + 1).toString, ch)
+        })
 }
 
 /** Result converter that can write to multiple sub-converters and read from the first one */
@@ -124,15 +128,19 @@ final case class CompoundResultConverter[
   }
 
   override def getDumpInfo =
-    super.getDumpInfo.copy(children = childConverters.zipWithIndex.map {
-      case (ch, i) =>
-        (
-          if (i == 0)
-            "*"
-          else
-            "-",
-          ch)
-    })
+    super
+      .getDumpInfo
+      .copy(children = childConverters
+        .zipWithIndex
+        .map {
+          case (ch, i) =>
+            (
+              if (i == 0)
+                "*"
+              else
+                "-",
+              ch)
+        })
 }
 
 final class UnitResultConverter[M <: ResultConverterDomain]
@@ -152,15 +160,17 @@ final class GetOrElseResultConverter[M <: ResultConverterDomain, T](
   def set(value: T, pp: Writer) = child.set(Some(value), pp)
   def width = child.width
   override def getDumpInfo =
-    super.getDumpInfo.copy(
-      mainInfo = (
-        try default().toString
-        catch {
-          case e: Throwable =>
-            "[" + e.getClass.getName + "]"
-        }
-      ),
-      children = Vector(("child", child)))
+    super
+      .getDumpInfo
+      .copy(
+        mainInfo = (
+          try default().toString
+          catch {
+            case e: Throwable =>
+              "[" + e.getClass.getName + "]"
+          }
+        ),
+        children = Vector(("child", child)))
 }
 
 final class IsDefinedResultConverter[M <: ResultConverterDomain](
@@ -204,7 +214,8 @@ final case class OptionRebuildingResultConverter[M <: ResultConverterDomain, T](
     throw new SlickException("Cannot insert/update non-primitive Option value")
   def width = discriminator.width + data.width
   override def getDumpInfo =
-    super.getDumpInfo
+    super
+      .getDumpInfo
       .copy(children = Vector(("discriminator", discriminator), ("data", data)))
 }
 
@@ -230,9 +241,11 @@ abstract class SimpleFastPathResultConverter[M <: ResultConverterDomain, T](
   def set(value: T, pp: Writer) = rc.set(value, pp)
 
   override def getDumpInfo =
-    super.getDumpInfo.copy(
-      name = "SimpleFastPathResultConverter",
-      mainInfo = "",
-      children = Vector(("rc", rc)))
+    super
+      .getDumpInfo
+      .copy(
+        name = "SimpleFastPathResultConverter",
+        mainInfo = "",
+        children = Vector(("rc", rc)))
   def width = rc.width
 }

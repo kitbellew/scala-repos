@@ -83,8 +83,9 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
   def isCaseClassObject(o: ObjectSymbol): Boolean = {
     val TypeRefType(_, classSymbol: ClassSymbol, _) = o.infoType
     o.isFinal && (
-      classSymbol.children.find(x =>
-        x.isCase && x.isInstanceOf[MethodSymbol]) match {
+      classSymbol
+        .children
+        .find(x => x.isCase && x.isInstanceOf[MethodSymbol]) match {
         case Some(_) =>
           true
         case None =>
@@ -194,12 +195,14 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
   }
 
   def getPrinterByConstructor(c: ClassSymbol) = {
-    c.children.find {
-      case m: MethodSymbol if m.name == CONSTRUCTOR_NAME =>
-        true
-      case _ =>
-        false
-    } match {
+    c
+      .children
+      .find {
+        case m: MethodSymbol if m.name == CONSTRUCTOR_NAME =>
+          true
+        case _ =>
+          false
+      } match {
       case Some(m: MethodSymbol) =>
         val baos = new ByteArrayOutputStream
         val stream = new PrintStream(baos)
@@ -240,12 +243,14 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
 
     def _pmt(mt: MethodType) = {
 
-      val paramEntries = mt.paramSymbols.map({
-        case ms: MethodSymbol =>
-          ms.name + ": " + toString(ms.infoType)(TypeFlags(true))
-        case _ =>
-          "^___^"
-      })
+      val paramEntries = mt
+        .paramSymbols
+        .map({
+          case ms: MethodSymbol =>
+            ms.name + ": " + toString(ms.infoType)(TypeFlags(true))
+          case _ =>
+            "^___^"
+        })
       val implicitWord =
         mt.paramSymbols.headOption match {
           case Some(p) if p.isImplicit =>
@@ -306,9 +311,13 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
     indent()
     printModifiers(m)
     if (m.isAccessor) {
-      val indexOfSetter = m.parent.get.children.indexWhere(x =>
-        x.isInstanceOf[MethodSymbol] &&
-          x.asInstanceOf[MethodSymbol].name == n + "_$eq")
+      val indexOfSetter = m
+        .parent
+        .get
+        .children
+        .indexWhere(x =>
+          x.isInstanceOf[MethodSymbol] &&
+            x.asInstanceOf[MethodSymbol].name == n + "_$eq")
       print(
         if (indexOfSetter > 0)
           "var "
@@ -441,7 +450,9 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
             case _: String =>
               "java.lang.String"
             case c: Class[_] =>
-              "java.lang.Class[" + c.getComponentType.getCanonicalName
+              "java.lang.Class[" + c
+                .getComponentType
+                .getCanonicalName
                 .replace("$", ".") + "]"
           }
         )
@@ -585,11 +596,13 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
     "\\$hash" -> "#"
   )
   val pattern = Pattern.compile(
-    _syms.keys.foldLeft("")((x, y) =>
-      if (x == "")
-        y
-      else
-        x + "|" + y))
+    _syms
+      .keys
+      .foldLeft("")((x, y) =>
+        if (x == "")
+          y
+        else
+          x + "|" + y))
   val placeholderPattern = "_\\$(\\d)+"
 
   private def stripPrivatePrefix(name: String) = {

@@ -338,14 +338,17 @@ object QueryStringBindable {
       extends QueryStringBindable[A] {
 
     def bind(key: String, params: Map[String, Seq[String]]) =
-      params.get(key).flatMap(_.headOption).map { p =>
-        try {
-          Right(parse(p))
-        } catch {
-          case e: Exception =>
-            Left(error(key, e))
+      params
+        .get(key)
+        .flatMap(_.headOption)
+        .map { p =>
+          try {
+            Right(parse(p))
+          } catch {
+            case e: Exception =>
+              Left(error(key, e))
+          }
         }
-      }
     def unbind(key: String, value: A) = key + "=" + serialize(value)
   }
 
@@ -371,13 +374,16 @@ object QueryStringBindable {
     */
   implicit object bindableChar extends QueryStringBindable[Char] {
     def bind(key: String, params: Map[String, Seq[String]]) =
-      params.get(key).flatMap(_.headOption).map { value =>
-        if (value.length != 1)
-          Left(
-            s"Cannot parse parameter $key with value '$value' as Char: $key must be exactly one digit in length.")
-        else
-          Right(value.charAt(0))
-      }
+      params
+        .get(key)
+        .flatMap(_.headOption)
+        .map { value =>
+          if (value.length != 1)
+            Left(
+              s"Cannot parse parameter $key with value '$value' as Char: $key must be exactly one digit in length.")
+          else
+            Right(value.charAt(0))
+        }
     def unbind(key: String, value: Char) = key + "=" + value.toString
   }
 
@@ -521,7 +527,8 @@ object QueryStringBindable {
             .getOrElse(Right(Optional.empty[T])))
       }
       def unbind(key: String, value: Optional[T]) = {
-        value.asScala
+        value
+          .asScala
           .map(implicitly[QueryStringBindable[T]].unbind(key, _))
           .getOrElse("")
       }
@@ -638,7 +645,9 @@ object QueryStringBindable {
     new QueryStringBindable[T] {
       def bind(key: String, params: Map[String, Seq[String]]) = {
         try {
-          val o = ct.runtimeClass.newInstance
+          val o = ct
+            .runtimeClass
+            .newInstance
             .asInstanceOf[T]
             .bind(key, params.mapValues(_.toArray).asJava)
           if (o.isPresent) {

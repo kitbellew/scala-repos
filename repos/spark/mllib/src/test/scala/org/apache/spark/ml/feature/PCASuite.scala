@@ -66,12 +66,16 @@ class PCASuite
     // copied model must have the same parent.
     MLTestingUtils.checkCopy(pca)
 
-    pca.transform(df).select("pca_features", "expected").collect().foreach {
-      case Row(x: Vector, y: Vector) =>
-        assert(
-          x ~== y absTol 1e-5,
-          "Transformed vector is different with expected vector.")
-    }
+    pca
+      .transform(df)
+      .select("pca_features", "expected")
+      .collect()
+      .foreach {
+        case Row(x: Vector, y: Vector) =>
+          assert(
+            x ~== y absTol 1e-5,
+            "Transformed vector is different with expected vector.")
+      }
   }
 
   test("PCA read/write") {

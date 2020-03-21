@@ -42,10 +42,14 @@ class FundepMaterializationBundle(
     val sym = c.weakTypeOf[T].typeSymbol
     if (!sym.isClass || !sym.asClass.isCaseClass)
       c.abort(c.enclosingPosition, s"$sym is not a case class")
-    val fields = sym.info.decls.toList.collect {
-      case x: TermSymbol if x.isVal && x.isCaseAccessor =>
-        x
-    }
+    val fields = sym
+      .info
+      .decls
+      .toList
+      .collect {
+        case x: TermSymbol if x.isVal && x.isCaseAccessor =>
+          x
+      }
 
     def mkTpt() = {
       val core = Ident(TupleClass(fields.length) orElse UnitClass)

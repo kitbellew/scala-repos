@@ -199,9 +199,8 @@ object Framing {
 
     @tailrec
     private def doParse(ctx: Context[ByteString]): SyncDirective = {
-      val possibleMatchPos = buffer.indexOf(
-        firstSeparatorByte,
-        from = nextPossibleMatch)
+      val possibleMatchPos = buffer
+        .indexOf(firstSeparatorByte, from = nextPossibleMatch)
       if (possibleMatchPos > maximumLineBytes)
         ctx.fail(
           new FramingException(

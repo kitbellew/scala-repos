@@ -48,8 +48,8 @@ final class OpenAddressHashArray[
       manElem: ClassTag[V],
       zero: Zero[V]) = {
     this(
-      OpenAddressHashArray.emptyIndexArray(
-        OpenAddressHashArray.calculateSize(initialSize)),
+      OpenAddressHashArray
+        .emptyIndexArray(OpenAddressHashArray.calculateSize(initialSize)),
       default.makeArray(OpenAddressHashArray.calculateSize(initialSize)),
       0,
       size,

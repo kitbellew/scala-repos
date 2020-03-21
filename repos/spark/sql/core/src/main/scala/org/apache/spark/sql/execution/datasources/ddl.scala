@@ -117,11 +117,16 @@ case class CreateTempTableUsing(
       userSpecifiedSchema = userSpecifiedSchema,
       className = provider,
       options = options)
-    sqlContext.sessionState.catalog.registerTable(
-      tableIdent,
-      Dataset
-        .newDataFrame(sqlContext, LogicalRelation(dataSource.resolveRelation()))
-        .logicalPlan)
+    sqlContext
+      .sessionState
+      .catalog
+      .registerTable(
+        tableIdent,
+        Dataset
+          .newDataFrame(
+            sqlContext,
+            LogicalRelation(dataSource.resolveRelation()))
+          .logicalPlan)
 
     Seq.empty[Row]
   }
@@ -145,9 +150,12 @@ case class CreateTempTableUsingAsSelect(
       bucketSpec = None,
       options = options)
     val result = dataSource.write(mode, df)
-    sqlContext.sessionState.catalog.registerTable(
-      tableIdent,
-      Dataset.newDataFrame(sqlContext, LogicalRelation(result)).logicalPlan)
+    sqlContext
+      .sessionState
+      .catalog
+      .registerTable(
+        tableIdent,
+        Dataset.newDataFrame(sqlContext, LogicalRelation(result)).logicalPlan)
 
     Seq.empty[Row]
   }

@@ -30,16 +30,18 @@ class SslTest extends FunSuite {
     certChainInput.setupCAFile.setExecutable(true)
     certChainInput.makeCertFile.setExecutable(true)
     // this process requires an openssl executable
-    val process = Runtime.getRuntime.exec(
-      Array[String](
-        certChainInput.setupCAPath,
-        certChainInput.makeCertPath,
-        certChainInput.openSSLIntConfPath,
-        certChainInput.openSSLRootConfPath
-      ), // command
-      null, // null == inherit the environment of the current process
-      certChainInput.setupCADirPath.toFile // working dir
-    )
+    val process = Runtime
+      .getRuntime
+      .exec(
+        Array[String](
+          certChainInput.setupCAPath,
+          certChainInput.makeCertPath,
+          certChainInput.openSSLIntConfPath,
+          certChainInput.openSSLRootConfPath
+        ), // command
+        null, // null == inherit the environment of the current process
+        certChainInput.setupCADirPath.toFile // working dir
+      )
     process.waitFor()
     assert(process.exitValue == 0)
   } catch {
@@ -81,9 +83,12 @@ class SslTest extends FunSuite {
                   17280
               }
             val response = Response(Version.Http11, Status.Ok)
-            request.headerMap.get("X-Transport-Cipher").foreach { cipher =>
-              response.headerMap.set("X-Transport-Cipher", cipher)
-            }
+            request
+              .headerMap
+              .get("X-Transport-Cipher")
+              .foreach { cipher =>
+                response.headerMap.set("X-Transport-Cipher", cipher)
+              }
             response.content = makeContent(requestedBytes)
             response.contentLength = requestedBytes
             response
@@ -157,9 +162,12 @@ class SslTest extends FunSuite {
                   17280
               }
             val response = Response(Version.Http11, Status.Ok)
-            request.headerMap.get("X-Transport-Cipher").foreach { cipher =>
-              response.headerMap.set("X-Transport-Cipher", cipher)
-            }
+            request
+              .headerMap
+              .get("X-Transport-Cipher")
+              .foreach { cipher =>
+                response.headerMap.set("X-Transport-Cipher", cipher)
+              }
             response.content = makeContent(requestedBytes)
             response.contentLength = requestedBytes
 

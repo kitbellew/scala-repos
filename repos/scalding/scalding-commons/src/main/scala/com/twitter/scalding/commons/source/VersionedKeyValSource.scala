@@ -255,16 +255,14 @@ class VersionedKeyValSource[K, V](
   }
 
   override def toString =
-    "%s path:%s,sourceVersion:%s,sinkVersion:%s".format(
-      getClass(),
-      path,
-      sourceVersion,
-      sinkVersion)
+    "%s path:%s,sourceVersion:%s,sinkVersion:%s"
+      .format(getClass(), path, sourceVersion, sinkVersion)
 
   override def equals(other: Any) =
     if (other.isInstanceOf[VersionedKeyValSource[_, _]]) {
       val otherSrc = other.asInstanceOf[VersionedKeyValSource[K, V]]
-      otherSrc.path == path && otherSrc.sourceVersion == sourceVersion && otherSrc.sinkVersion == sinkVersion
+      otherSrc.path == path && otherSrc
+        .sourceVersion == sourceVersion && otherSrc.sinkVersion == sinkVersion
     } else {
       false
     }
@@ -307,10 +305,12 @@ class TypedRichPipeEx[K: Ordering, V: Monoid](pipe: TypedPipe[(K, V)])
               (k, v, 0)
           }
 
-        val newPairs = pipe.sumByLocalKeys.map {
-          case (k, v) =>
-            (k, v, 1)
-        }
+        val newPairs = pipe
+          .sumByLocalKeys
+          .map {
+            case (k, v) =>
+              (k, v, 1)
+          }
 
         (oldPairs ++ newPairs)
           .groupBy {

@@ -43,14 +43,12 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
     zookeeperServerPort = zookeeperServer.getPort()
 
     // connect to zookeeper server
-    zookeeperClient = zookeeperServer.createClient(
-      ZooKeeperClient.digestCredentials("user", "pass"))
+    zookeeperClient = zookeeperServer
+      .createClient(ZooKeeperClient.digestCredentials("user", "pass"))
 
     // create serverset
-    val serverSet = ServerSets.create(
-      zookeeperClient,
-      ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
-      zkPath)
+    val serverSet = ServerSets
+      .create(zookeeperClient, ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL, zkPath)
     zkServerSetCluster = new ZookeeperServerSetCluster(serverSet)
 
     // start five memcached server and join the cluster
@@ -98,7 +96,8 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
 
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined) {
     test("with unmanaged regular zk serverset") {
-      val client = Memcached.client
+      val client = Memcached
+        .client
         .newTwemcacheClient(
           "zk!localhost:" + zookeeperServerPort + "!" + zkPath)
         .asInstanceOf[PartitionedClient]
@@ -125,7 +124,8 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
 
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined)
     test("with managed cache pool") {
-      val client = Memcached.client
+      val client = Memcached
+        .client
         .newTwemcacheClient(
           "twcache!localhost:" + zookeeperServerPort + "!" + zkPath)
         .asInstanceOf[PartitionedClient]
@@ -157,9 +157,12 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
     }
 
   test("with static servers list") {
-    val client = Memcached.client.newRichClient(
-      "twcache!localhost:%d,localhost:%d"
-        .format(testServers(0).address.getPort, testServers(1).address.getPort))
+    val client = Memcached
+      .client
+      .newRichClient(
+        "twcache!localhost:%d,localhost:%d".format(
+          testServers(0).address.getPort,
+          testServers(1).address.getPort))
 
     Await.result(client.delete("foo"))
     assert(Await.result(client.get("foo")) == None)

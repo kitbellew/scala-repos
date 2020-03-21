@@ -40,8 +40,8 @@ class ScalaByNameWeigher extends CompletionWeigher {
       element: LookupElement,
       location: CompletionLocation): Comparable[_] = {
     val textForPosition = new mutable.HashMap[PsiElement, String]
-    val position = ScalaCompletionUtil.positionFromParameters(
-      location.getCompletionParameters)
+    val position = ScalaCompletionUtil
+      .positionFromParameters(location.getCompletionParameters)
     val context = location.getProcessingContext
 
     def extractVariableNameFromPosition: Option[String] = {
@@ -49,7 +49,9 @@ class ScalaByNameWeigher extends CompletionWeigher {
         val result = position.getContext.getContext.getContext
         result match {
           case typedDeclaration: ScTypedDeclaration =>
-            val result = typedDeclaration.declaredElements.headOption
+            val result = typedDeclaration
+              .declaredElements
+              .headOption
               .map(_.name)
             if (result.isDefined)
               textForPosition.put(position, result.get)
@@ -76,14 +78,16 @@ class ScalaByNameWeigher extends CompletionWeigher {
         val newTemplateDefinition = Option(
           PsiTreeUtil
             .getContextOfType(position, classOf[ScNewTemplateDefinition]))
-        val result = newTemplateDefinition.map(_.getContext).flatMap {
-          case patterDef: ScPatternDefinition =>
-            patterDef.bindings.headOption.map(_.name)
-          case assignement: ScAssignStmt =>
-            assignement.assignName
-          case _ =>
-            None
-        }
+        val result = newTemplateDefinition
+          .map(_.getContext)
+          .flatMap {
+            case patterDef: ScPatternDefinition =>
+              patterDef.bindings.headOption.map(_.name)
+            case assignement: ScAssignStmt =>
+              assignement.assignName
+            case _ =>
+              None
+          }
 
         if (result.isDefined)
           textForPosition.put(position, result.get)
@@ -93,8 +97,8 @@ class ScalaByNameWeigher extends CompletionWeigher {
       Option(
         textForPosition.getOrElse(
           position,
-          afterColonType.getOrElse(
-            asBindingPattern.getOrElse(afterNew.orNull))))
+          afterColonType
+            .getOrElse(asBindingPattern.getOrElse(afterNew.orNull))))
     }
 
     def handleByText(element: PsiNamedElement): Option[Integer] = {
@@ -117,10 +121,8 @@ class ScalaByNameWeigher extends CompletionWeigher {
         else if (Math.abs(text.length - element.getName.length) > maxDist)
           None
         else {
-          val distance = EditDistance.optimalAlignment(
-            element.getName,
-            text,
-            false)
+          val distance = EditDistance
+            .optimalAlignment(element.getName, text, false)
           if (distance > maxDist)
             None
           else

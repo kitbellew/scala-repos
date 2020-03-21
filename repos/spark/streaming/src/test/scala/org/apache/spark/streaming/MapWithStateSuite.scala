@@ -46,16 +46,20 @@ class MapWithStateSuite
   protected val batchDuration = Seconds(1)
 
   before {
-    StreamingContext.getActive().foreach {
-      _.stop(stopSparkContext = false)
-    }
+    StreamingContext
+      .getActive()
+      .foreach {
+        _.stop(stopSparkContext = false)
+      }
     checkpointDir = Utils.createTempDir("checkpoint")
   }
 
   after {
-    StreamingContext.getActive().foreach {
-      _.stop(stopSparkContext = false)
-    }
+    StreamingContext
+      .getActive()
+      .foreach {
+        _.stop(stopSparkContext = false)
+      }
     if (checkpointDir != null) {
       Utils.deleteRecursively(checkpointDir)
     }
@@ -263,13 +267,13 @@ class MapWithStateSuite
       new TestInputStream[(String, Int)](ssc, Seq.empty, numPartitions = 2)
 
     // Defining StateSpec inline with mapWithState and simple function implicitly gets the types
-    val simpleFunctionStateStream1 = inputStream.mapWithState(
-      StateSpec.function(simpleFunc).numPartitions(1))
+    val simpleFunctionStateStream1 = inputStream
+      .mapWithState(StateSpec.function(simpleFunc).numPartitions(1))
     testTypes(simpleFunctionStateStream1)
 
     // Separately defining StateSpec with simple function requires explicitly specifying types
-    val simpleFuncSpec = StateSpec.function[String, Int, Double, Long](
-      simpleFunc)
+    val simpleFuncSpec = StateSpec
+      .function[String, Int, Double, Long](simpleFunc)
     val simpleFunctionStateStream2 = inputStream.mapWithState(simpleFuncSpec)
     testTypes(simpleFunctionStateStream2)
 
@@ -279,15 +283,15 @@ class MapWithStateSuite
     testTypes(advFunctionStateStream1)
 
     // Defining StateSpec inline with mapWithState and advanced func implicitly gets the types
-    val advFunctionStateStream2 = inputStream.mapWithState(
-      StateSpec.function(simpleFunc).numPartitions(1))
+    val advFunctionStateStream2 = inputStream
+      .mapWithState(StateSpec.function(simpleFunc).numPartitions(1))
     testTypes(advFunctionStateStream2)
 
     // Defining StateSpec inline with mapWithState and advanced func implicitly gets the types
-    val advFuncSpec2 = StateSpec.function[String, Int, Double, Long](
-      advancedFunc)
-    val advFunctionStateStream3 = inputStream.mapWithState[Double, Long](
-      advFuncSpec2)
+    val advFuncSpec2 = StateSpec
+      .function[String, Int, Double, Long](advancedFunc)
+    val advFunctionStateStream3 = inputStream
+      .mapWithState[Double, Long](advFuncSpec2)
     testTypes(advFunctionStateStream3)
   }
 
@@ -481,8 +485,8 @@ class MapWithStateSuite
         val inputStream = new TestInputStream(ssc, Seq.empty[Seq[Int]], 2)
           .map(_ -> 1)
         val dummyFunc = (key: Int, value: Option[Int], state: State[Int]) => 0
-        val mapWithStateStream = inputStream.mapWithState(
-          StateSpec.function(dummyFunc))
+        val mapWithStateStream = inputStream
+          .mapWithState(StateSpec.function(dummyFunc))
         val internalmapWithStateStream =
           mapWithStateStream invokePrivate privateMethod()
 
@@ -494,7 +498,8 @@ class MapWithStateSuite
         ssc.start() // should initialize all the checkpoint durations
         assert(mapWithStateStream.checkpointDuration === null)
         assert(
-          internalmapWithStateStream.checkpointDuration === expectedCheckpointDuration)
+          internalmapWithStateStream
+            .checkpointDuration === expectedCheckpointDuration)
       } finally {
         ssc.stop(stopSparkContext = false)
       }
@@ -616,11 +621,13 @@ class MapWithStateSuite
       expected.size === collected.size,
       s"number of collected $typ (${collected.size}) different from expected (${expected.size})" +
         debugString)
-    expected.zip(collected).foreach {
-      case (c, e) =>
-        assert(
-          c.toSet === e.toSet,
-          s"collected $typ is different from expected $debugString")
-    }
+    expected
+      .zip(collected)
+      .foreach {
+        case (c, e) =>
+          assert(
+            c.toSet === e.toSet,
+            s"collected $typ is different from expected $debugString")
+      }
   }
 }

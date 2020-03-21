@@ -57,10 +57,8 @@ private[mllib] class KMeansPMMLModelExport(model: KMeansModel)
         fields(i) = FieldName.create("field_" + i)
         dataDictionary.addDataFields(
           new DataField(fields(i), OpType.CONTINUOUS, DataType.DOUBLE))
-        miningSchema
-          .addMiningFields(
-            new MiningField(fields(i))
-              .setUsageType(FieldUsageType.ACTIVE))
+        miningSchema.addMiningFields(
+          new MiningField(fields(i)).setUsageType(FieldUsageType.ACTIVE))
         clusteringModel.addClusteringFields(
           new ClusteringField(fields(i))
             .setCompareFunction(CompareFunctionType.ABS_DIFF))

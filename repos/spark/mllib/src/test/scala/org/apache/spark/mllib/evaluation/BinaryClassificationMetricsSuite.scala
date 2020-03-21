@@ -57,8 +57,8 @@ class BinaryClassificationMetricsSuite
     assertSequencesMatch(metrics.thresholds().collect(), expectedThresholds)
     assertTupleSequencesMatch(metrics.roc().collect(), expectedROCCurve)
     assert(
-      metrics.areaUnderROC() ~== AreaUnderCurve.of(
-        expectedROCCurve) absTol 1e-5)
+      metrics.areaUnderROC() ~== AreaUnderCurve
+        .of(expectedROCCurve) absTol 1e-5)
     assertTupleSequencesMatch(metrics.pr().collect(), expectedPRCurve)
     assert(
       metrics.areaUnderPR() ~== AreaUnderCurve.of(expectedPRCurve) absTol 1e-5)
@@ -93,10 +93,12 @@ class BinaryClassificationMetricsSuite
     val numFalsePositives = Seq(0, 1, 2, 3)
     val numPositives = 4
     val numNegatives = 3
-    val precisions = numTruePositives.zip(numFalsePositives).map {
-      case (t, f) =>
-        t.toDouble / (t + f)
-    }
+    val precisions = numTruePositives
+      .zip(numFalsePositives)
+      .map {
+        case (t, f) =>
+          t.toDouble / (t + f)
+      }
     val recalls = numTruePositives.map(t => t.toDouble / numPositives)
     val fpr = numFalsePositives.map(f => f.toDouble / numNegatives)
     val rocCurve = Seq((0.0, 0.0)) ++ fpr.zip(recalls) ++ Seq((1.0, 1.0))

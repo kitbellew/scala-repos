@@ -95,7 +95,8 @@ private[spark] class HttpServer(
   private def doStart(startPort: Int): (Server, Int) = {
     val server = new Server()
 
-    val connector = securityManager.fileServerSSLOptions
+    val connector = securityManager
+      .fileServerSSLOptions
       .createJettySslContextFactory()
       .map(new SslSocketConnector(_))
       .getOrElse(new SocketConnector)

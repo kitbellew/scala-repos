@@ -58,7 +58,10 @@ class TransactionTest extends AsyncTest[JdbcTestDB] {
           _ <- GetTransactionality.map(_ shouldBe (2, false))
           _ = throw new ExpectedException
         } yield ()
-      ).transactionally.transactionally.failed
+      )
+        .transactionally
+        .transactionally
+        .failed
         .map(_ should (_.isInstanceOf[ExpectedException]))
     } andThen { // fused successful transaction
       (ts += 5).andThen(ts += 6).transactionally

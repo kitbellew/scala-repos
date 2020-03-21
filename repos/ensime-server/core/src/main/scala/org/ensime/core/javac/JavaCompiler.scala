@@ -63,10 +63,8 @@ class JavaCompiler(
           fm
         case _ =>
           // TODO: take a charset for each invocation
-          val fm = compiler.getStandardFileManager(
-            listener,
-            null,
-            DefaultCharset)
+          val fm = compiler
+            .getStandardFileManager(listener, null, DefaultCharset)
           sharedFileManager = Some(fm)
           fm
       }
@@ -98,9 +96,11 @@ class JavaCompiler(
 
   def askLinkPos(fqn: JavaFqn, file: SourceFileInfo): Option[SourcePosition] = {
     val infos = typecheckForUnits(List(file))
-    infos.headOption.flatMap { info =>
-      findInCompiledUnit(info, fqn)
-    }
+    infos
+      .headOption
+      .flatMap { info =>
+        findInCompiledUnit(info, fqn)
+      }
   }
 
   def askTypeAtPoint(file: SourceFileInfo, offset: Int): Option[TypeInfo] = {
@@ -166,24 +166,28 @@ class JavaCompiler(
       file: SourceFileInfo,
       offset: Int): Option[(CompilationInfo, TreePath)] = {
     val infos = typecheckForUnits(List(file))
-    infos.headOption.flatMap { info =>
-      val path = Option(new TreeUtilities(info).pathFor(offset))
-      path.map { p =>
-        (info, p)
+    infos
+      .headOption
+      .flatMap { info =>
+        val path = Option(new TreeUtilities(info).pathFor(offset))
+        path.map { p =>
+          (info, p)
+        }
       }
-    }
   }
 
   protected def scopeForPoint(
       file: SourceFileInfo,
       offset: Int): Option[(CompilationInfo, Scope)] = {
     val infos = typecheckForUnits(List(file))
-    infos.headOption.flatMap { info =>
-      val path = Option(new TreeUtilities(info).scopeFor(offset))
-      path.map { p =>
-        (info, p)
+    infos
+      .headOption
+      .flatMap { info =>
+        val path = Option(new TreeUtilities(info).scopeFor(offset))
+        path.map { p =>
+          (info, p)
+        }
       }
-    }
   }
 
   private def typeMirrorToTypeInfo(tm: TypeMirror): TypeInfo = {
@@ -213,8 +217,8 @@ class JavaCompiler(
     try {
       task.parse()
       task.analyze()
-      log.info(
-        "Parsed and analyzed: " + (System.currentTimeMillis() - t) + "ms")
+      log
+        .info("Parsed and analyzed: " + (System.currentTimeMillis() - t) + "ms")
     } catch {
       case e @ (
             _: Abort | _: ArrayIndexOutOfBoundsException | _: AssertionError
@@ -228,9 +232,11 @@ class JavaCompiler(
     // We only want the compilation units for inputs, but we need to typecheck them w.r.t
     // the full working set.
     val inputJfos =
-      inputs.map { sf =>
-        internSource(sf).toUri
-      }.toSet
+      inputs
+        .map { sf =>
+          internSource(sf).toUri
+        }
+        .toSet
     val task = getTask("none", silencer, workingSet.values)
     val t = System.currentTimeMillis()
     try {

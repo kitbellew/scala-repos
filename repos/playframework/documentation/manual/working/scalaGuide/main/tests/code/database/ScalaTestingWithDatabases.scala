@@ -136,8 +136,11 @@ object ScalaTestingWithDatabases extends Specification {
         _.getConnection().getMetaData.getDatabaseProductName must_== "H2")
     }
 
-    "allow running evolutions" in play.api.db.Databases.withInMemory() {
-      database =>
+    "allow running evolutions" in play
+      .api
+      .db
+      .Databases
+      .withInMemory() { database =>
         //#apply-evolutions
         import play.api.db.evolutions._
 
@@ -148,10 +151,13 @@ object ScalaTestingWithDatabases extends Specification {
         Evolutions.cleanupEvolutions(database)
         //#cleanup-evolutions
         ok
-    }
+      }
 
-    "allow running static evolutions" in play.api.db.Databases.withInMemory() {
-      database =>
+    "allow running static evolutions" in play
+      .api
+      .db
+      .Databases
+      .withInMemory() { database =>
         //#apply-evolutions-simple
         import play.api.db.evolutions._
 
@@ -176,9 +182,12 @@ object ScalaTestingWithDatabases extends Specification {
         connection
           .prepareStatement("select * from test")
           .executeQuery() must throwAn[SQLException]
-    }
+      }
 
-    "allow running evolutions from a custom path" in play.api.db.Databases
+    "allow running evolutions from a custom path" in play
+      .api
+      .db
+      .Databases
       .withInMemory() { database =>
         //#apply-evolutions-custom-path
         import play.api.db.evolutions._
@@ -190,7 +199,10 @@ object ScalaTestingWithDatabases extends Specification {
         ok
       }
 
-    "allow play to manage evolutions for you" in play.api.db.Databases
+    "allow play to manage evolutions for you" in play
+      .api
+      .db
+      .Databases
       .withInMemory() { database =>
         //#with-evolutions
         import play.api.db.evolutions._

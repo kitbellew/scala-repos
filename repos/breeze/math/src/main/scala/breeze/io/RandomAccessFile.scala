@@ -419,11 +419,8 @@ class RandomAccessFile(file: File, arg0: String = "r")(implicit
     //the following is a hack to avoid the heavier Scala for loop
     var c = 0
     while (c < n) {
-      tr(c) = converter.bytesToInt32(
-        ba(c * 4),
-        ba(c * 4 + 1),
-        ba(c * 4 + 2),
-        ba(c * 4 + 3))
+      tr(c) = converter
+        .bytesToInt32(ba(c * 4), ba(c * 4 + 1), ba(c * 4 + 2), ba(c * 4 + 3))
       c += 1
     }
     //for(c <- 0 until n) tr(c) = bytesToInt16(ba(c), ba(c + 1))
@@ -499,11 +496,8 @@ class RandomAccessFile(file: File, arg0: String = "r")(implicit
     //the following is a hack to avoid the heavier Scala for loop
     var c = 0
     while (c < n) {
-      tr(c) = converter.bytesToUInt32(
-        ba(c * 4),
-        ba(c * 4 + 1),
-        ba(c * 4 + 2),
-        ba(c * 4 + 3))
+      tr(c) = converter
+        .bytesToUInt32(ba(c * 4), ba(c * 4 + 1), ba(c * 4 + 2), ba(c * 4 + 3))
       c += 1
     }
     //for(c <- 0 until n) tr(c) = bytesToInt16(ba(c), ba(c + 1))
@@ -538,15 +532,8 @@ class RandomAccessFile(file: File, arg0: String = "r")(implicit
   @throws(classOf[IOException])
   def readInt64(): Long = {
     val ba = readByte(8)
-    converter.bytesToInt64(
-      ba(0),
-      ba(1),
-      ba(2),
-      ba(3),
-      ba(4),
-      ba(5),
-      ba(6),
-      ba(7))
+    converter
+      .bytesToInt64(ba(0), ba(1), ba(2), ba(3), ba(4), ba(5), ba(6), ba(7))
   }
 
   /** Tries to read n Int64s from the current getFilePointer().
@@ -632,15 +619,8 @@ class RandomAccessFile(file: File, arg0: String = "r")(implicit
   @throws(classOf[IOException])
   final def readUInt64(): ULong = {
     val ba = readByte(8)
-    converter.bytesToUInt64(
-      ba(0),
-      ba(1),
-      ba(2),
-      ba(3),
-      ba(4),
-      ba(5),
-      ba(6),
-      ba(7))
+    converter
+      .bytesToUInt64(ba(0), ba(1), ba(2), ba(3), ba(4), ba(5), ba(6), ba(7))
   }
 
   /** Tries to read n UInt64s from the current getFilePointer().
@@ -797,16 +777,19 @@ class RandomAccessFile(file: File, arg0: String = "r")(implicit
     var c = 0
     while (c < n) {
       val c8 = c * 8
-      tr(c) = java.lang.Double.longBitsToDouble(
-        converter.bytesToInt64(
-          ba(c8),
-          ba(c8 + 1),
-          ba(c8 + 2),
-          ba(c8 + 3),
-          ba(c8 + 4),
-          ba(c8 + 5),
-          ba(c8 + 6),
-          ba(c8 + 7)))
+      tr(c) = java
+        .lang
+        .Double
+        .longBitsToDouble(
+          converter.bytesToInt64(
+            ba(c8),
+            ba(c8 + 1),
+            ba(c8 + 2),
+            ba(c8 + 3),
+            ba(c8 + 4),
+            ba(c8 + 5),
+            ba(c8 + 6),
+            ba(c8 + 7)))
       c += 1
     }
     //for(c <- 0 until n) tr(c) = bytesToInt16(ba(c), ba(c + 1))
@@ -827,8 +810,11 @@ class RandomAccessFile(file: File, arg0: String = "r")(implicit
     var c = 0
     while (c < n) {
       val c4 = c * 4
-      tr(c) = java.lang.Float.intBitsToFloat(
-        converter.bytesToInt32(ba(c4), ba(c4 + 1), ba(c4 + 2), ba(c4 + 3)))
+      tr(c) = java
+        .lang
+        .Float
+        .intBitsToFloat(
+          converter.bytesToInt32(ba(c4), ba(c4 + 1), ba(c4 + 2), ba(c4 + 3)))
       c += 1
     }
     //for(c <- 0 until n) tr(c) = bytesToInt16(ba(c), ba(c + 1))

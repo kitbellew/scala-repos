@@ -167,21 +167,24 @@ object ScalaGenerationInfo {
       case e: ScBlockExpr =>
         val statements = e.statements
         if (statements.length == 0) {
-          editor.getCaretModel.moveToOffset(
-            body.getTextRange.getStartOffset + 1)
+          editor
+            .getCaretModel
+            .moveToOffset(body.getTextRange.getStartOffset + 1)
         } else {
           val range =
             new TextRange(
               statements(0).getTextRange.getStartOffset,
               statements(statements.length - 1).getTextRange.getEndOffset)
           editor.getCaretModel.moveToOffset(range.getStartOffset)
-          editor.getSelectionModel
+          editor
+            .getSelectionModel
             .setSelection(range.getStartOffset, range.getEndOffset)
         }
       case _ =>
         val range = body.getTextRange
         editor.getCaretModel.moveToOffset(range.getStartOffset)
-        editor.getSelectionModel
+        editor
+          .getSelectionModel
           .setSelection(range.getStartOffset, range.getEndOffset)
     }
   }
@@ -235,10 +238,13 @@ object ScalaGenerationInfo {
             .map(_.parameters.map(_.name).mkString("(", ", ", ")"))
             .mkString
         case method: PsiMethod =>
-          if (method.isAccessor && method.getParameterList.getParametersCount == 0)
+          if (method
+                .isAccessor && method.getParameterList.getParametersCount == 0)
             ""
           else
-            method.getParameterList.getParameters
+            method
+              .getParameterList
+              .getParameters
               .map(paramText)
               .mkString("(", ", ", ")")
       }
@@ -271,12 +277,10 @@ object ScalaGenerationInfo {
     properties.setProperty(
       FileTemplate.ATTRIBUTE_RETURN_TYPE,
       ScType.presentableText(returnType))
-    properties.setProperty(
-      FileTemplate.ATTRIBUTE_DEFAULT_RETURN_VALUE,
-      standardValue)
-    properties.setProperty(
-      FileTemplate.ATTRIBUTE_CALL_SUPER,
-      callSuperText(td, method))
+    properties
+      .setProperty(FileTemplate.ATTRIBUTE_DEFAULT_RETURN_VALUE, standardValue)
+    properties
+      .setProperty(FileTemplate.ATTRIBUTE_CALL_SUPER, callSuperText(td, method))
     properties.setProperty(
       "Q_MARK",
       ScalaGenerationInfo.defaultValue(returnType, td.getContainingFile))

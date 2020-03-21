@@ -283,10 +283,12 @@ trait MapTest {
       extends ju.AbstractMap[K, V] {
     def entrySet(): java.util.Set[java.util.Map.Entry[K, V]] = {
       setAsJavaSet(
-        inner.map {
-          case (k, v) =>
-            new ju.AbstractMap.SimpleImmutableEntry(k, v)
-        }.toSet)
+        inner
+          .map {
+            case (k, v) =>
+              new ju.AbstractMap.SimpleImmutableEntry(k, v)
+          }
+          .toSet)
     }
   }
 
@@ -597,7 +599,8 @@ trait MapTest {
 
 object MapFactory {
   def allFactories: Iterator[MapFactory] =
-    HashMapFactory.allFactories ++ SortedMapFactory.allFactories ++ ConcurrentMapFactory.allFactories
+    HashMapFactory.allFactories ++ SortedMapFactory
+      .allFactories ++ ConcurrentMapFactory.allFactories
 }
 
 trait MapFactory {

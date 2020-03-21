@@ -56,7 +56,9 @@ class HoconHighlightKeyUsagesHandler(
     lazy val allValidPathsInFile =
       findPaths(psiFile).map(_.startingValidKeys).toList
 
-    val foundKeys = targets.iterator.asScala
+    val foundKeys = targets
+      .iterator
+      .asScala
       .flatMap(_.allKeysFromToplevel)
       .flatMap {
         case keys @ (firstKey :: _) =>
@@ -90,9 +92,12 @@ class HoconHighlightKeyUsagesHandler(
                 None
             }
           def fromPaths =
-            if (firstKey.enclosingEntries eq firstKey.getContainingFile.toplevelEntries)
-              allValidPathsInFile.iterator.flatMap(pathKeys =>
-                fromPath(keys, pathKeys))
+            if (firstKey.enclosingEntries eq firstKey
+                  .getContainingFile
+                  .toplevelEntries)
+              allValidPathsInFile
+                .iterator
+                .flatMap(pathKeys => fromPath(keys, pathKeys))
             else
               Iterator.empty
 

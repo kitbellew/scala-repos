@@ -120,7 +120,8 @@ private[spark] object SerDeUtil extends Logging {
     * It is only used by pyspark.sql.
     */
   def toJavaArray(jrdd: JavaRDD[Any]): JavaRDD[Array[_]] = {
-    jrdd.rdd
+    jrdd
+      .rdd
       .map {
         case objs: JArrayList[_] =>
           objs.toArray
@@ -163,9 +164,11 @@ private[spark] object SerDeUtil extends Logging {
     * PySpark.
     */
   private[spark] def javaToPython(jRDD: JavaRDD[_]): JavaRDD[Array[Byte]] = {
-    jRDD.rdd.mapPartitions { iter =>
-      new AutoBatchedPickler(iter)
-    }
+    jRDD
+      .rdd
+      .mapPartitions { iter =>
+        new AutoBatchedPickler(iter)
+      }
   }
 
   /**
@@ -174,7 +177,8 @@ private[spark] object SerDeUtil extends Logging {
   def pythonToJava(
       pyRDD: JavaRDD[Array[Byte]],
       batched: Boolean): JavaRDD[Any] = {
-    pyRDD.rdd
+    pyRDD
+      .rdd
       .mapPartitions { iter =>
         initialize()
         val unpickle = new Unpickler

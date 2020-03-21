@@ -93,7 +93,8 @@ class SecurityServiceHandlers(
       (request: HttpRequest[Future[JValue]]) =>
         Success { (authAPIKey: APIKey) =>
           for {
-            content <- request.content
+            content <- request
+              .content
               .toSuccess(badRequest(missingContentMessage))
               .sequence[Future, JValue]
             response <- content.map(create(authAPIKey, _)).sequence[Future, R]
@@ -132,7 +133,8 @@ class SecurityServiceHandlers(
 
         case Failure(e) =>
           logger.warn(
-            "The API key request body \n" + requestBody.renderPretty + "\n was invalid: " + e)
+            "The API key request body \n" + requestBody
+              .renderPretty + "\n was invalid: " + e)
           Promise successful badRequest(
             "Invalid new API key request body.",
             Some(e.message))
@@ -152,17 +154,20 @@ class SecurityServiceHandlers(
       (request: HttpRequest[Future[JValue]]) =>
         Success {
           // since having an api key means you can see the details, we don't check perms.
-          request.parameters.get('apikey).map { apiKey =>
-            // The authkey is intentionally undocumented and only used internally.
-            apiKeyFinder
-              .findAPIKey(apiKey, request.parameters.get('authkey))
-              .map { k =>
-                if (k.isDefined)
-                  ok(k)
-                else
-                  notFound("Unable to find API key " + apiKey)
-              }
-          } getOrElse {
+          request
+            .parameters
+            .get('apikey)
+            .map { apiKey =>
+              // The authkey is intentionally undocumented and only used internally.
+              apiKeyFinder
+                .findAPIKey(apiKey, request.parameters.get('authkey))
+                .map { k =>
+                  if (k.isDefined)
+                    ok(k)
+                  else
+                    notFound("Unable to find API key " + apiKey)
+                }
+            } getOrElse {
             Promise successful badRequest("Missing API key from request URL.")
           }
         }
@@ -230,7 +235,8 @@ class SecurityServiceHandlers(
 
         case Failure(e) =>
           logger.warn(
-            "Unable to parse grant ID from \n" + requestBody.renderPretty + "\n: " + e)
+            "Unable to parse grant ID from \n" + requestBody
+              .renderPretty + "\n: " + e)
           Promise successful badRequest(
             "Invalid add grant request body.",
             Some("Invalid add grant request body: " + e))
@@ -240,11 +246,13 @@ class SecurityServiceHandlers(
     val service =
       (request: HttpRequest[Future[JValue]]) =>
         Success {
-          val apiKeyV = request.parameters
+          val apiKeyV = request
+            .parameters
             .get('apikey)
             .toSuccess(badRequest("Missing API key from request URL"))
           for {
-            contentV <- request.content
+            contentV <- request
+              .content
               .toSuccess(badRequest("Missing body content for grant creation."))
               .sequence[Future, JValue]
             response <- (
@@ -322,7 +330,8 @@ class SecurityServiceHandlers(
 
         case Failure(e) =>
           logger.warn(
-            "The grant creation request body \n" + requestBody.renderPretty + "\n was invalid: " + e)
+            "The grant creation request body \n" + requestBody
+              .renderPretty + "\n was invalid: " + e)
           Promise successful badRequest(
             "Invalid new grant request body.",
             Some(e.message))
@@ -410,11 +419,13 @@ class SecurityServiceHandlers(
     val service =
       (request: HttpRequest[Future[JValue]]) =>
         Success { (authAPIKey: APIKey) =>
-          val parentIdV = request.parameters
+          val parentIdV = request
+            .parameters
             .get('grantId)
             .toSuccess(badRequest("Missing grant ID from request URL"))
           for {
-            contentV <- request.content
+            contentV <- request
+              .content
               .toSuccess(badRequest("Missing body content for grant creation."))
               .sequence[Future, JValue]
             response <- (
@@ -479,8 +490,10 @@ class SecurityServiceHandlers(
     val service =
       (request: HttpRequest[Future[JValue]]) =>
         Success { (authAPIKey: APIKey, path: Path) =>
-          val atO: Option[Validation[Extractor.Error, DateTime]] =
-            request.parameters.get('at).map(JString(_).validated[DateTime])
+          val atO: Option[Validation[Extractor.Error, DateTime]] = request
+            .parameters
+            .get('at)
+            .map(JString(_).validated[DateTime])
           atO.getOrElse(Success(clock.now())) match {
             case Success(at) =>
               apiKeyManager.validGrants(authAPIKey, Some(at)) map { grants =>

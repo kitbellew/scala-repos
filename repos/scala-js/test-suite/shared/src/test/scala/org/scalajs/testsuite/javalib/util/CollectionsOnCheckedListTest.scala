@@ -31,9 +31,11 @@ trait CollectionsCheckedListTest extends CollectionsOnListTest {
         s"checkedList(${originalFactory.implementationName})"
 
       override def empty[E](implicit ct: ClassTag[E]): ju.List[E] = {
-        ju.Collections.checkedList(
-          originalFactory.empty[E],
-          ct.runtimeClass.asInstanceOf[Class[E]])
+        ju
+          .Collections
+          .checkedList(
+            originalFactory.empty[E],
+            ct.runtimeClass.asInstanceOf[Class[E]])
       }
 
       override def allowsMutationThroughIterator: Boolean =

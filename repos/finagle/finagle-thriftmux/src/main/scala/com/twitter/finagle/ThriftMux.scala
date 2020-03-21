@@ -120,7 +120,8 @@ object ThriftMux
   }
 
   case class Client(
-      muxer: StackClient[mux.Request, mux.Response] = Mux.client
+      muxer: StackClient[mux.Request, mux.Response] = Mux
+        .client
         .copy(stack = BaseClientStack)
         .configured(ProtocolLibrary("thriftmux")))
       extends StackBasedClient[ThriftClientRequest, Array[Byte]]
@@ -143,8 +144,8 @@ object ThriftMux
 
     override protected lazy val Stats(stats) = params[Stats]
 
-    protected val Thrift.param
-      .ProtocolFactory(protocolFactory) = params[Thrift.param.ProtocolFactory]
+    protected val Thrift.param.ProtocolFactory(protocolFactory) = params[
+      Thrift.param.ProtocolFactory]
 
     def withParams(ps: Stack.Params): Client =
       copy(muxer = muxer.withParams(ps))
@@ -166,8 +167,8 @@ object ThriftMux
     def withProtocolFactory(pf: TProtocolFactory): Client =
       configured(Thrift.param.ProtocolFactory(pf))
 
-    private[this] val Thrift.param
-      .ClientId(clientId) = params[Thrift.param.ClientId]
+    private[this] val Thrift.param.ClientId(clientId) = params[
+      Thrift.param.ClientId]
 
     private[this] object ThriftMuxToMux
         extends Filter[ThriftClientRequest, Array[
@@ -328,8 +329,8 @@ object ThriftMux
     protected def newListener(): Listener[In, Out] = {
       val Stats(sr) = params[Stats]
       val scoped = sr.scope("thriftmux")
-      val Thrift.param
-        .ProtocolFactory(pf) = params[Thrift.param.ProtocolFactory]
+      val Thrift.param.ProtocolFactory(pf) = params[
+        Thrift.param.ProtocolFactory]
 
       // Create a Listener with a pipeline that can downgrade the connection
       // to vanilla thrift.
@@ -349,18 +350,22 @@ object ThriftMux
         service: Service[mux.Request, mux.Response]): Closable = {
       val param.Tracer(tracer) = params[param.Tracer]
 
-      val negotiatedTrans = mux.Handshake.server(
-        trans = transport,
-        version = Mux.LatestVersion,
-        headers = _ => Nil,
-        negotiate = mux.Handshake.NoopNegotiator)
+      val negotiatedTrans = mux
+        .Handshake
+        .server(
+          trans = transport,
+          version = Mux.LatestVersion,
+          headers = _ => Nil,
+          negotiate = mux.Handshake.NoopNegotiator)
 
-      mux.ServerDispatcher.newRequestResponse(
-        negotiatedTrans,
-        service,
-        mux.lease.exp.ClockedDrainer.flagged,
-        tracer,
-        muxStatsReceiver)
+      mux
+        .ServerDispatcher
+        .newRequestResponse(
+          negotiatedTrans,
+          service,
+          mux.lease.exp.ClockedDrainer.flagged,
+          tracer,
+          muxStatsReceiver)
     }
   }
 
@@ -389,10 +394,8 @@ object ThriftMux
           case e @ RetryPolicy.RetryableWriteException(_) =>
             Future.exception(e)
           case e if !e.isInstanceOf[TException] =>
-            val msg = UncaughtAppExceptionFilter.writeExceptionMessage(
-              request.body,
-              e,
-              protocolFactory)
+            val msg = UncaughtAppExceptionFilter
+              .writeExceptionMessage(request.body, e, protocolFactory)
             Future.value(mux.Response(msg))
         }
     }
@@ -432,8 +435,8 @@ object ThriftMux
 
     def params: Stack.Params = muxer.params
 
-    protected val Thrift.param
-      .ProtocolFactory(protocolFactory) = params[Thrift.param.ProtocolFactory]
+    protected val Thrift.param.ProtocolFactory(protocolFactory) = params[
+      Thrift.param.ProtocolFactory]
 
     override val Thrift.param.MaxReusableBufferSize(maxThriftBufferSize) =
       params[Thrift.param.MaxReusableBufferSize]
@@ -471,9 +474,8 @@ object ThriftMux
     def serve(
         addr: SocketAddress,
         factory: ServiceFactory[Array[Byte], Array[Byte]]): ListeningServer = {
-      muxer.serve(
-        addr,
-        MuxToArrayFilter.andThen(tracingFilter).andThen(factory))
+      muxer
+        .serve(addr, MuxToArrayFilter.andThen(tracingFilter).andThen(factory))
     }
 
     // Java-friendly forwarders

@@ -185,7 +185,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
 
       def emitVars = storedBinders.nonEmpty
 
-      private lazy val (stored, substed) = (subPatBinders, subPatRefs).zipped
+      private lazy val (stored, substed) = (subPatBinders, subPatRefs)
+        .zipped
         .partition {
           case (sym, _) =>
             storedBinders(sym)
@@ -207,9 +208,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         * (Even though we don't do so anymore -- see SI-5158, SI-5739 and SI-6070.)
         */
       override def subPatternsAsSubstitution =
-        Substitution(
-          subPatBinders,
-          subPatRefs) >> super.subPatternsAsSubstitution
+        Substitution(subPatBinders, subPatRefs) >> super
+          .subPatternsAsSubstitution
 
       def bindSubPats(in: Tree): Tree =
         if (!emitVars)
@@ -239,10 +239,12 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
           else {
             // only store binders actually used
             val (subPatBindersStored, subPatRefsStored) =
-              stored.filter {
-                case (b, _) =>
-                  usedBinders(b)
-              }.unzip
+              stored
+                .filter {
+                  case (b, _) =>
+                    usedBinders(b)
+                }
+                .unzip
             Block(
               map2(subPatBindersStored.toList, subPatRefsStored.toList)(
                 ValDef(_, _)),
@@ -435,7 +437,9 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
           // this also includes methods and (possibly nested) objects inside of methods.
           def definedInStaticLocation(tp: Type): Boolean = {
             def isStatic(tp: Type): Boolean =
-              if (tp == NoType || tp.typeSymbol.isPackageClass || tp == NoPrefix)
+              if (tp == NoType || tp
+                    .typeSymbol
+                    .isPackageClass || tp == NoPrefix)
                 true
               else if (tp.typeSymbol.isModuleClass)
                 isStatic(tp.prefix)
@@ -457,9 +461,11 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
                 // by `Select(q, outerAccessor(outerSym.owner)) OBJ_EQ expectedPrefix`
                 // if there's an outer accessor, otherwise the condition becomes `true`
                 // TODO: centralize logic whether there's an outer accessor and use here?
-                val synthOuterGetter = expectedTp.typeSymbol.newMethod(
-                  vpmName.outer,
-                  newFlags = SYNTHETIC | ARTIFACT) setInfo expectedPrefix
+                val synthOuterGetter = expectedTp
+                  .typeSymbol
+                  .newMethod(
+                    vpmName.outer,
+                    newFlags = SYNTHETIC | ARTIFACT) setInfo expectedPrefix
                 val outerTest = (
                   Select(
                     codegen._asInstanceOf(testedBinder, expectedTp),
@@ -809,8 +815,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
             val synthCatchAll =
               if (casesNoSubstOnly.nonEmpty && {
                     val nonTrivLast = casesNoSubstOnly.last
-                    nonTrivLast.nonEmpty && nonTrivLast.head
-                      .isInstanceOf[BodyTreeMaker]
+                    nonTrivLast
+                      .nonEmpty && nonTrivLast.head.isInstanceOf[BodyTreeMaker]
                   })
                 None
               else

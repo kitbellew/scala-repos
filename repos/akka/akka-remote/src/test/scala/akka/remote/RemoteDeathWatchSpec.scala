@@ -14,8 +14,8 @@ import akka.event.Logging.Warning
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
 class RemoteDeathWatchSpec
     extends AkkaSpec(
-      ConfigFactory.parseString(
-        """
+      ConfigFactory
+        .parseString("""
 akka {
     actor {
         provider = "akka.remote.RemoteActorRefProvider"
@@ -42,9 +42,11 @@ akka {
       .withFallback(system.settings.config))
 
   override def beforeTermination() {
-    system.eventStream.publish(
-      TestEvent.Mute(
-        EventFilter.warning(pattern = "received dead letter.*Disassociate")))
+    system
+      .eventStream
+      .publish(
+        TestEvent.Mute(
+          EventFilter.warning(pattern = "received dead letter.*Disassociate")))
   }
 
   override def afterTermination() {
@@ -138,8 +140,8 @@ akka {
 
     probe.expectNoMsg(5.seconds)
     system.eventStream.subscribe(probe.ref, classOf[Warning])
-    probe.expectNoMsg(
-      RARP(system).provider.remoteSettings.RetryGateClosedFor * 2)
+    probe
+      .expectNoMsg(RARP(system).provider.remoteSettings.RetryGateClosedFor * 2)
   }
 
 }

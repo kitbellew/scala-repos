@@ -124,7 +124,8 @@ private[play] class PlayRequestHandler(val server: NettyServer)
         handleAction(recovered, requestHeader, request, Some(app))
 
       case Right((ws: WebSocket, app))
-          if requestHeader.headers
+          if requestHeader
+            .headers
             .get(HeaderNames.UPGRADE)
             .exists(_.equalsIgnoreCase("websocket")) =>
         logger.trace("Serving this request with: " + ws)
@@ -135,7 +136,8 @@ private[play] class PlayRequestHandler(val server: NettyServer)
           else
             "ws"
         val wsUrl = s"$wsProtocol://${requestHeader.host}${requestHeader.path}"
-        val bufferLimit = app.configuration
+        val bufferLimit = app
+          .configuration
           .getBytes("play.websocket.buffer.limit")
           .getOrElse(65536L)
           .asInstanceOf[Int]
@@ -156,9 +158,8 @@ private[play] class PlayRequestHandler(val server: NettyServer)
               handleAction(action, requestHeader, request, Some(app))
             case Right(flow) =>
               import app.materializer
-              val processor = WebSocketHandler.messageFlowToFrameProcessor(
-                flow,
-                bufferLimit)
+              val processor = WebSocketHandler
+                .messageFlowToFrameProcessor(flow, bufferLimit)
               Future.successful(
                 new DefaultWebSocketHttpResponse(
                   request.getProtocolVersion,
@@ -169,11 +170,13 @@ private[play] class PlayRequestHandler(val server: NettyServer)
           }
           .recoverWith {
             case error =>
-              app.errorHandler.onServerError(requestHeader, error).flatMap {
-                result =>
+              app
+                .errorHandler
+                .onServerError(requestHeader, error)
+                .flatMap { result =>
                   val action = EssentialAction(_ => Accumulator.done(result))
                   handleAction(action, requestHeader, request, Some(app))
-              }
+                }
           }
 
       //handle bad websocket request
@@ -313,16 +316,12 @@ private[play] class PlayRequestHandler(val server: NettyServer)
       }
       .map {
         case result =>
-          val cleanedResult = ServerResultUtils.cleanFlashCookie(
-            requestHeader,
-            result)
-          val validated = ServerResultUtils.validateResult(
-            requestHeader,
-            cleanedResult)
-          modelConversion.convertResult(
-            validated,
-            requestHeader,
-            request.getProtocolVersion)
+          val cleanedResult = ServerResultUtils
+            .cleanFlashCookie(requestHeader, result)
+          val validated = ServerResultUtils
+            .validateResult(requestHeader, cleanedResult)
+          modelConversion
+            .convertResult(validated, requestHeader, request.getProtocolVersion)
       }
   }
 

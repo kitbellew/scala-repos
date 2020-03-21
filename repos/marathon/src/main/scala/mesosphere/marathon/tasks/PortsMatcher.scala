@@ -74,18 +74,22 @@ class PortsMatcher(
       requiredPorts: Seq[Int],
       failLog: Boolean): Option[Seq[PortWithRole]] = {
     takeEnoughPortsOrNone(expectedSize = requiredPorts.size) {
-      requiredPorts.iterator.map { (port: Int) =>
-        offeredPortRanges.find(_.contains(port)).map { offeredRange =>
-          PortWithRole(offeredRange.role, port, offeredRange.reservation)
-        } orElse {
-          if (failLog)
-            log.info(
-              s"Offer [${offer.getId.getValue}]. $resourceSelector. " +
-                s"Couldn't find host port $port (of ${requiredPorts.mkString(", ")}) " +
-                s"in any offered range for app [${app.id}]")
-          None
+      requiredPorts
+        .iterator
+        .map { (port: Int) =>
+          offeredPortRanges
+            .find(_.contains(port))
+            .map { offeredRange =>
+              PortWithRole(offeredRange.role, port, offeredRange.reservation)
+            } orElse {
+            if (failLog)
+              log.info(
+                s"Offer [${offer.getId.getValue}]. $resourceSelector. " +
+                  s"Couldn't find host port $port (of ${requiredPorts.mkString(", ")}) " +
+                  s"in any offered range for app [${app.id}]")
+            None
+          }
         }
-      }
     }
   }
 
@@ -117,36 +121,38 @@ class PortsMatcher(
 
       // available ports without the ports that have been preset in the port mappings
       val availablePortsWithoutStaticHostPorts: Iterator[PortWithRole] =
-        shuffledAvailablePorts.filter(portWithRole =>
-          !hostPortsFromMappings(portWithRole.port))
+        shuffledAvailablePorts
+          .filter(portWithRole => !hostPortsFromMappings(portWithRole.port))
 
-      mappings.iterator.map {
-        case PortMapping(
-              containerPort,
-              hostPort,
-              servicePort,
-              protocol,
-              name,
-              labels) if hostPort == 0 =>
-          if (!availablePortsWithoutStaticHostPorts.hasNext) {
-            log.info(
-              s"Offer [${offer.getId.getValue}]. $resourceSelector. " +
-                s"Insufficient ports in offer for app [${app.id}]")
-            None
-          } else {
-            Option(availablePortsWithoutStaticHostPorts.next())
-          }
-        case pm: PortMapping =>
-          offeredPortRanges.find(_.contains(pm.hostPort)) match {
-            case Some(PortRange(role, _, _, reservation)) =>
-              Some(PortWithRole(role, pm.hostPort, reservation))
-            case None =>
+      mappings
+        .iterator
+        .map {
+          case PortMapping(
+                containerPort,
+                hostPort,
+                servicePort,
+                protocol,
+                name,
+                labels) if hostPort == 0 =>
+            if (!availablePortsWithoutStaticHostPorts.hasNext) {
               log.info(
                 s"Offer [${offer.getId.getValue}]. $resourceSelector. " +
-                  s"Cannot find range with host port ${pm.hostPort} for app [${app.id}]")
+                  s"Insufficient ports in offer for app [${app.id}]")
               None
-          }
-      }
+            } else {
+              Option(availablePortsWithoutStaticHostPorts.next())
+            }
+          case pm: PortMapping =>
+            offeredPortRanges.find(_.contains(pm.hostPort)) match {
+              case Some(PortRange(role, _, _, reservation)) =>
+                Some(PortWithRole(role, pm.hostPort, reservation))
+              case None =>
+                log.info(
+                  s"Offer [${offer.getId.getValue}]. $resourceSelector. " +
+                    s"Cannot find range with host port ${pm.hostPort} for app [${app.id}]")
+                None
+            }
+        }
     }
   }
 

@@ -39,8 +39,8 @@ private[ui] case class BatchUIData(
     val processingEndTime: Option[Long],
     val outputOperations: mutable.HashMap[OutputOpId, OutputOperationUIData] =
       mutable.HashMap(),
-    var outputOpIdSparkJobIdPairs: Iterable[OutputOpIdAndSparkJobId] =
-      Seq.empty) {
+    var outputOpIdSparkJobIdPairs: Iterable[OutputOpIdAndSparkJobId] = Seq
+      .empty) {
 
   /**
     * Time taken for the first job of this batch to start processing from the time this batch
@@ -96,9 +96,11 @@ private[ui] case class BatchUIData(
     * Return the number of completed output operations.
     */
   def numCompletedOutputOp: Int =
-    outputOperations.values.count { op =>
-      op.failureReason.isEmpty && op.endTime.nonEmpty
-    }
+    outputOperations
+      .values
+      .count { op =>
+        op.failureReason.isEmpty && op.endTime.nonEmpty
+      }
 
   /**
     * Return if this batch has any output operations
@@ -110,8 +112,9 @@ private[ui] object BatchUIData {
 
   def apply(batchInfo: BatchInfo): BatchUIData = {
     val outputOperations = mutable.HashMap[OutputOpId, OutputOperationUIData]()
-    outputOperations ++= batchInfo.outputOperationInfos.mapValues(
-      OutputOperationUIData.apply)
+    outputOperations ++= batchInfo
+      .outputOperationInfos
+      .mapValues(OutputOperationUIData.apply)
     new BatchUIData(
       batchInfo.batchTime,
       batchInfo.streamIdToInputInfo,

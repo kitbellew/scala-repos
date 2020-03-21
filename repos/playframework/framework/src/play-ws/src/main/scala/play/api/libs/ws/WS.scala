@@ -441,9 +441,11 @@ trait WSRequest {
     if (headers.contains("Content-Type")) {
       withBody(wsBody)
     } else {
-      wrt.contentType.fold(withBody(wsBody)) { contentType =>
-        withBody(wsBody).withHeaders("Content-Type" -> contentType)
-      }
+      wrt
+        .contentType
+        .fold(withBody(wsBody)) { contentType =>
+          withBody(wsBody).withHeaders("Content-Type" -> contentType)
+        }
     }
   }
 
@@ -520,10 +522,13 @@ trait WSRequest {
       consumer: WSResponseHeaders => Iteratee[Array[Byte], A])(implicit
       wrt: Writeable[T],
       ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] = {
-    withMethod("PATCH").withBody(body).streamWithEnumerator().flatMap {
-      case (response, enumerator) =>
-        enumerator(consumer(response))
-    }
+    withMethod("PATCH")
+      .withBody(body)
+      .streamWithEnumerator()
+      .flatMap {
+        case (response, enumerator) =>
+          enumerator(consumer(response))
+      }
   }
 
   /**
@@ -556,10 +561,13 @@ trait WSRequest {
       consumer: WSResponseHeaders => Iteratee[Array[Byte], A])(implicit
       wrt: Writeable[T],
       ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] = {
-    withMethod("POST").withBody(body).streamWithEnumerator().flatMap {
-      case (response, enumerator) =>
-        enumerator(consumer(response))
-    }
+    withMethod("POST")
+      .withBody(body)
+      .streamWithEnumerator()
+      .flatMap {
+        case (response, enumerator) =>
+          enumerator(consumer(response))
+      }
   }
 
   /**
@@ -592,10 +600,13 @@ trait WSRequest {
       consumer: WSResponseHeaders => Iteratee[Array[Byte], A])(implicit
       wrt: Writeable[T],
       ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] = {
-    withMethod("PUT").withBody(body).streamWithEnumerator().flatMap {
-      case (response, enumerator) =>
-        enumerator(consumer(response))
-    }
+    withMethod("PUT")
+      .withBody(body)
+      .streamWithEnumerator()
+      .flatMap {
+        case (response, enumerator) =>
+          enumerator(consumer(response))
+      }
   }
 
   /**

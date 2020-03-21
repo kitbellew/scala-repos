@@ -55,8 +55,8 @@ class ALSSuite
     for (numBlocks <- Seq(1, 2, 5, 10, 20, 50, 100)) {
       val encoder = new LocalIndexEncoder(numBlocks)
       val maxLocalIndex = Int.MaxValue / numBlocks
-      val tests = Seq.fill(5)(
-        (random.nextInt(numBlocks), random.nextInt(maxLocalIndex))) ++
+      val tests = Seq
+        .fill(5)((random.nextInt(numBlocks), random.nextInt(maxLocalIndex))) ++
         Seq((0, 0), (numBlocks - 1, maxLocalIndex))
       tests.foreach {
         case (blockId, localIndex) =>
@@ -86,8 +86,7 @@ class ALSSuite
       Vectors.dense(ne0.ata) ~== Vectors.dense(33.0, 42.0, 54.0) relTol 1e-8)
     assert(Vectors.dense(ne0.atb) ~== Vectors.dense(51.0, 66.0) relTol 1e-8)
 
-    val ne1 = new NormalEquation(2)
-      .add(Array(7.0f, 8.0f), 9.0)
+    val ne1 = new NormalEquation(2).add(Array(7.0f, 8.0f), 9.0)
     ne0.merge(ne1)
     // NumPy code that computes the expected values:
     // A = np.matrix("1 2; 4 5; 7 8")
@@ -124,8 +123,7 @@ class ALSSuite
       .add(Array(1.0f, 2.0f), 4.0)
       .add(Array(1.0f, 3.0f), 9.0)
       .add(Array(1.0f, 4.0f), 16.0)
-    val ne1 = new NormalEquation(k)
-      .merge(ne0)
+    val ne1 = new NormalEquation(k).merge(ne0)
 
     val chol = new CholeskySolver
     val x0 = chol.solve(ne0, 0.0).map(_.toDouble)
@@ -341,8 +339,10 @@ class ALSSuite
       ids += random.nextInt()
     }
     val width = b - a
-    ids.toSeq.sorted.map(id =>
-      (id, Array.fill(rank)(a + random.nextFloat() * width)))
+    ids
+      .toSeq
+      .sorted
+      .map(id => (id, Array.fill(rank)(a + random.nextFloat() * width)))
   }
 
   /**
@@ -549,22 +549,16 @@ class ALSSuite
       rank = 2,
       noiseStd = 0.01)
 
-    val longRatings = ratings.map(r =>
-      Rating(r.user.toLong, r.item.toLong, r.rating))
-    val (longUserFactors, _) = ALS.train(
-      longRatings,
-      rank = 2,
-      maxIter = 4,
-      seed = 0)
+    val longRatings = ratings
+      .map(r => Rating(r.user.toLong, r.item.toLong, r.rating))
+    val (longUserFactors, _) = ALS
+      .train(longRatings, rank = 2, maxIter = 4, seed = 0)
     assert(longUserFactors.first()._1.getClass === classOf[Long])
 
-    val strRatings = ratings.map(r =>
-      Rating(r.user.toString, r.item.toString, r.rating))
-    val (strUserFactors, _) = ALS.train(
-      strRatings,
-      rank = 2,
-      maxIter = 4,
-      seed = 0)
+    val strRatings = ratings
+      .map(r => Rating(r.user.toString, r.item.toString, r.rating))
+    val (strUserFactors, _) = ALS
+      .train(strRatings, rank = 2, maxIter = 4, seed = 0)
     assert(strUserFactors.first()._1.getClass === classOf[String])
   }
 
@@ -574,14 +568,11 @@ class ALSSuite
       numItems = 40,
       rank = 2,
       noiseStd = 0.01)
-    val (userFactors, itemFactors) = ALS.train(
-      ratings,
-      rank = 2,
-      maxIter = 4,
-      nonnegative = true,
-      seed = 0)
+    val (userFactors, itemFactors) = ALS
+      .train(ratings, rank = 2, maxIter = 4, nonnegative = true, seed = 0)
     def isNonnegative(factors: RDD[(Int, Array[Float])]): Boolean = {
-      factors.values
+      factors
+        .values
         .map {
           _.forall(_ >= 0.0)
         }
@@ -685,7 +676,8 @@ class ALSSuite
     }
     assert(model.rank === model2.rank)
     def getFactors(df: DataFrame): Set[(Int, Array[Float])] = {
-      df.select("id", "features")
+      df
+        .select("id", "features")
         .collect()
         .map {
           case r =>

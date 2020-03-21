@@ -77,9 +77,8 @@ class ScalaPullUpProcessor(
       } {
         handleOldMember(info)
 
-        templateBody.addBefore(
-          ScalaPsiElementFactory.createNewLine(manager),
-          anchor)
+        templateBody
+          .addBefore(ScalaPsiElementFactory.createNewLine(manager), anchor)
         val added = templateBody
           .addBefore(memberCopy, anchor)
           .asInstanceOf[ScMember]
@@ -88,9 +87,8 @@ class ScalaPullUpProcessor(
         else
           movedDefinitions += added
       }
-      templateBody.addBefore(
-        ScalaPsiElementFactory.createNewLine(manager),
-        anchor)
+      templateBody
+        .addBefore(ScalaPsiElementFactory.createNewLine(manager), anchor)
 
       ScalaChangeContextUtil.decodeContextInfo(movedDefinitions)
     }
@@ -105,16 +103,15 @@ class ScalaPullUpProcessor(
   private def reformatAfter() {
     val documentManager = PsiDocumentManager.getInstance(project)
     val csManager = CodeStyleManager.getInstance(project)
-    val targetDocument = documentManager.getDocument(
-      targetClass.getContainingFile)
+    val targetDocument = documentManager
+      .getDocument(targetClass.getContainingFile)
     documentManager.doPostponedOperationsAndUnblockDocument(targetDocument)
     csManager.reformat(targetClass)
-    val sourceDocument = documentManager.getDocument(
-      sourceClass.getContainingFile)
+    val sourceDocument = documentManager
+      .getDocument(sourceClass.getContainingFile)
     documentManager.doPostponedOperationsAndUnblockDocument(sourceDocument)
-    csManager.adjustLineIndent(
-      sourceClass.getContainingFile,
-      sourceClass.getTextRange)
+    csManager
+      .adjustLineIndent(sourceClass.getContainingFile, sourceClass.getTextRange)
   }
 
   private def memberCopiesToExtract(
@@ -181,16 +178,20 @@ class ScalaPullUpProcessor(
         Seq(copy.getText)
       case valDef: ScPatternDefinition =>
         val copy = valDef.copy().asInstanceOf[ScPatternDefinition]
-        copy.bindings.collect {
-          case b: ScBindingPattern =>
-            "val " + textForBinding(b)
-        }
+        copy
+          .bindings
+          .collect {
+            case b: ScBindingPattern =>
+              "val " + textForBinding(b)
+          }
       case varDef: ScVariableDefinition =>
         val copy = varDef.copy().asInstanceOf[ScVariableDefinition]
-        copy.bindings.collect {
-          case b: ScBindingPattern =>
-            "var " + textForBinding(b)
-        }
+        copy
+          .bindings
+          .collect {
+            case b: ScBindingPattern =>
+              "var " + textForBinding(b)
+          }
       case ta: ScTypeAliasDefinition =>
         val copy = ta.copy().asInstanceOf[ScTypeAliasDefinition]
         Seq(

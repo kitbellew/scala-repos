@@ -23,8 +23,8 @@ object JepsenInspiredInsertSpec extends MultiNodeConfig {
   val n5 = role("n5")
 
   commonConfig(
-    ConfigFactory.parseString(
-      """
+    ConfigFactory
+      .parseString("""
     akka.loglevel = INFO
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
     akka.log-dead-letters = off
@@ -65,10 +65,13 @@ class JepsenInspiredInsertSpec
   val expectedData = (0 until totalCount).toSet
   val data: Map[RoleName, Seq[Int]] = {
     val nodeIndex =
-      nodes.zipWithIndex.map {
-        case (n, i) ⇒
-          i -> n
-      }.toMap
+      nodes
+        .zipWithIndex
+        .map {
+          case (n, i) ⇒
+            i -> n
+        }
+        .toMap
     (0 until totalCount).groupBy(i ⇒ nodeIndex(i % nodeCount))
   }
   lazy val myData: Seq[Int] = data(myself)

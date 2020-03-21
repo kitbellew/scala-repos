@@ -138,7 +138,8 @@ case class GetStructField(
   override def toString: String =
     s"$child.${name.getOrElse(childSchema(ordinal).name)}"
   override def sql: String =
-    child.sql + s".${quoteIdentifier(name.getOrElse(childSchema(ordinal).name))}"
+    child
+      .sql + s".${quoteIdentifier(name.getOrElse(childSchema(ordinal).name))}"
 
   protected override def nullSafeEval(input: Any): Any =
     input.asInstanceOf[InternalRow].get(ordinal, childSchema(ordinal).dataType)
@@ -227,8 +228,10 @@ case class GetArrayStructFields(
             if ($row.isNullAt($ordinal)) {
               $values[$j] = null;
             } else {
-              $values[$j] = ${ctx
-          .getValue(row, field.dataType, ordinal.toString)};
+              $values[$j] = ${ctx.getValue(
+          row,
+          field.dataType,
+          ordinal.toString)};
             }
           }
         }
@@ -268,8 +271,8 @@ case class GetArrayItem(child: Expression, ordinal: Expression)
   protected override def nullSafeEval(value: Any, ordinal: Any): Any = {
     val baseValue = value.asInstanceOf[ArrayData]
     val index = ordinal.asInstanceOf[Number].intValue()
-    if (index >= baseValue.numElements() || index < 0 || baseValue.isNullAt(
-          index)) {
+    if (index >= baseValue.numElements() || index < 0 || baseValue
+          .isNullAt(index)) {
       null
     } else {
       baseValue.get(index, dataType)
@@ -365,8 +368,10 @@ case class GetMapValue(child: Expression, key: Expression)
         int $index = 0;
         boolean $found = false;
         while ($index < $length && !$found) {
-          final ${ctx
-          .javaType(keyType)} $key = ${ctx.getValue(keys, keyType, index)};
+          final ${ctx.javaType(keyType)} $key = ${ctx.getValue(
+          keys,
+          keyType,
+          index)};
           if (${ctx.genEqual(keyType, key, eval2)}) {
             $found = true;
           } else {

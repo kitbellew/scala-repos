@@ -37,8 +37,8 @@ import akka.http.scaladsl.util.FastFuture
 import akka.http.scaladsl.util.FastFuture._
 
 class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
     akka.event-handlers = ["akka.testkit.TestEventListener"]
     akka.loglevel = WARNING
     akka.http.parsing.max-header-value-length = 32
@@ -237,8 +237,8 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       "request start" in new Test {
         Seq(start, "rest") should generalMultiParseTo(
           Right(
-            baseRequest.withEntity(
-              HttpEntity.Chunked(`application/pdf`, source()))),
+            baseRequest
+              .withEntity(HttpEntity.Chunked(`application/pdf`, source()))),
           Left(
             EntityStreamError(
               ErrorInfo("Illegal character 'r' in chunk start")))
@@ -284,8 +284,8 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
             |
             |""") should generalMultiParseTo(
           Right(
-            baseRequest.withEntity(
-              Chunked(`application/pdf`, source(LastChunk)))))
+            baseRequest
+              .withEntity(Chunked(`application/pdf`, source(LastChunk)))))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
@@ -569,7 +569,8 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       override def equals(other: scala.Any): Boolean =
         other match {
           case other: StrictEqualHttpRequest ⇒
-            this.req.copy(entity = HttpEntity.Empty) == other.req
+            this.req.copy(entity = HttpEntity.Empty) == other
+              .req
               .copy(entity = HttpEntity.Empty) &&
               this.req.entity.toStrict(awaitAtMost).awaitResult(awaitAtMost) ==
                 other.req.entity.toStrict(awaitAtMost).awaitResult(awaitAtMost)
@@ -613,10 +614,8 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
     def generalRawMultiParseTo(
         parser: HttpRequestParser,
         expected: Either[RequestOutput, HttpRequest]*): Matcher[Seq[String]] =
-      equal(expected.map(strictEqualify))
-        .matcher[
-          Seq[
-            Either[RequestOutput, StrictEqualHttpRequest]]] compose multiParse(
+      equal(expected.map(strictEqualify)).matcher[Seq[
+        Either[RequestOutput, StrictEqualHttpRequest]]] compose multiParse(
         parser)
 
     def multiParse(parser: HttpRequestParser)(input: Seq[String])
@@ -659,8 +658,9 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
           Source.fromFuture {
             x match {
               case Right(request) ⇒
-                compactEntity(request.entity).fast.map(x ⇒
-                  Right(request.withEntity(x)))
+                compactEntity(request.entity)
+                  .fast
+                  .map(x ⇒ Right(request.withEntity(x)))
               case Left(error) ⇒
                 FastFuture.successful(Left(error))
             }
@@ -681,18 +681,23 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
     private def compactEntity(entity: RequestEntity): Future[RequestEntity] =
       entity match {
         case x: Chunked ⇒
-          compactEntityChunks(x.chunks).fast.map(compacted ⇒
-            x.copy(chunks = source(compacted: _*)))
+          compactEntityChunks(x.chunks)
+            .fast
+            .map(compacted ⇒ x.copy(chunks = source(compacted: _*)))
         case _ ⇒
           entity.toStrict(awaitAtMost)
       }
 
     private def compactEntityChunks(
         data: Source[ChunkStreamPart, Any]): Future[Seq[ChunkStreamPart]] =
-      data.limit(100000).runWith(Sink.seq).fast.recover {
-        case _: NoSuchElementException ⇒
-          Nil
-      }
+      data
+        .limit(100000)
+        .runWith(Sink.seq)
+        .fast
+        .recover {
+          case _: NoSuchElementException ⇒
+            Nil
+        }
 
     def prep(response: String) = response.stripMarginWithNewline("\r\n")
   }

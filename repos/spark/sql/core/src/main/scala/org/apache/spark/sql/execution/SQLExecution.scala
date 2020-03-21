@@ -50,22 +50,28 @@ private[sql] object SQLExecution {
       val r =
         try {
           val callSite = Utils.getCallSite()
-          sqlContext.sparkContext.listenerBus.post(
-            SparkListenerSQLExecutionStart(
-              executionId,
-              callSite.shortForm,
-              callSite.longForm,
-              queryExecution.toString,
-              SparkPlanInfo.fromSparkPlan(queryExecution.executedPlan),
-              System.currentTimeMillis()
-            ))
+          sqlContext
+            .sparkContext
+            .listenerBus
+            .post(
+              SparkListenerSQLExecutionStart(
+                executionId,
+                callSite.shortForm,
+                callSite.longForm,
+                queryExecution.toString,
+                SparkPlanInfo.fromSparkPlan(queryExecution.executedPlan),
+                System.currentTimeMillis()
+              ))
           try {
             body
           } finally {
-            sqlContext.sparkContext.listenerBus.post(
-              SparkListenerSQLExecutionEnd(
-                executionId,
-                System.currentTimeMillis()))
+            sqlContext
+              .sparkContext
+              .listenerBus
+              .post(
+                SparkListenerSQLExecutionEnd(
+                  executionId,
+                  System.currentTimeMillis()))
           }
         } finally {
           sc.setLocalProperty(EXECUTION_ID_KEY, null)

@@ -38,8 +38,8 @@ object ImportMembersUtil {
         true
       case _ childOf(ScPostfixExpr(qual: ScReferenceExpression, `ref`)) =>
         true
-      case ScReferenceExpression.withQualifier(
-            qualRef: ScReferenceExpression) =>
+      case ScReferenceExpression
+            .withQualifier(qualRef: ScReferenceExpression) =>
         true
       case stCodeRef: ScStableCodeReferenceElement =>
         stCodeRef.qualifier.isDefined
@@ -55,8 +55,8 @@ object ImportMembersUtil {
     ref.resolve() match {
       case Both(member: PsiMember, named: PsiNamedElement) =>
         ScalaPsiUtil.hasStablePath(named) && (
-          member.hasModifierProperty(
-            PsiModifier.STATIC) || member.containingClass == null
+          member.hasModifierProperty(PsiModifier.STATIC) || member
+            .containingClass == null
         )
       case named: PsiNamedElement =>
         ScalaPsiUtil.hasStablePath(named)
@@ -75,7 +75,8 @@ object ImportMembersUtil {
           ) =>
         val call = ScalaPsiElementFactory.createEquivMethodCall(inf)
         val replacedCall = inf.replace(call).asInstanceOf[ScMethodCall]
-        val ref = replacedCall.getInvokedExpr
+        val ref = replacedCall
+          .getInvokedExpr
           .asInstanceOf[ScReferenceExpression]
         replaceWithName(ref, name)
       case _ childOf (
@@ -126,14 +127,15 @@ object ImportMembersUtil {
             val replacedCall = inf
               .replaceExpression(call, removeParenthesis = true)
               .asInstanceOf[ScMethodCall]
-            val ref = replacedCall.getInvokedExpr
+            val ref = replacedCall
+              .getInvokedExpr
               .asInstanceOf[ScReferenceExpression]
             replaceAndBind(ref, name, toBind)
           case _ childOf (
                 postfix @ ScPostfixExpr(qual: ScReferenceExpression, `oldRef`)
               ) =>
-            val refExpr = ScalaPsiElementFactory.createEquivQualifiedReference(
-              postfix)
+            val refExpr = ScalaPsiElementFactory
+              .createEquivQualifiedReference(postfix)
             val withDot = postfix
               .replaceExpression(refExpr, removeParenthesis = true)
               .asInstanceOf[ScReferenceExpression]
@@ -146,12 +148,10 @@ object ImportMembersUtil {
                 case _ =>
                   None
               }
-            val refExpr = ScalaPsiElementFactory.createExpressionFromText(
-              name,
-              oldRef.getManager)
-            val replaced = expr.replaceExpression(
-              refExpr,
-              removeParenthesis = true)
+            val refExpr = ScalaPsiElementFactory
+              .createExpressionFromText(name, oldRef.getManager)
+            val replaced = expr
+              .replaceExpression(refExpr, removeParenthesis = true)
             replaced
               .asInstanceOf[ScReferenceExpression]
               .bindToElement(toBind, clazz)
@@ -191,10 +191,8 @@ object ImportMembersUtil {
       }
     }
     val lessThan: (PsiReference, PsiReference) => Boolean = { (ref1, ref2) =>
-      PsiTreeUtil.isAncestor(
-        actuallyReplaced(ref2),
-        actuallyReplaced(ref1),
-        true)
+      PsiTreeUtil
+        .isAncestor(actuallyReplaced(ref2), actuallyReplaced(ref1), true)
     }
     usages.toSeq.sortWith(lessThan)
   }

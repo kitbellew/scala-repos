@@ -169,10 +169,8 @@ class ScalaFindUsagesHandler(
           isSingleFile,
           this)
       case _ =>
-        super.getFindUsagesDialog(
-          isSingleFile,
-          toShowInNewTab,
-          mustOpenInNewTab)
+        super
+          .getFindUsagesDialog(isSingleFile, toShowInNewTab, mustOpenInNewTab)
     }
   }
 
@@ -203,40 +201,51 @@ class ScalaFindUsagesHandler(
           if element.isInstanceOf[ScTypeDefinition] =>
         val clazz = element.asInstanceOf[ScTypeDefinition]
         if (s.isMembersUsages) {
-          clazz.members.foreach {
-            case fun: ScFunction =>
-              if (!super.processElementUsages(fun, processor, options))
-                return false
-            case v: ScValue =>
-              v.declaredElements.foreach { d =>
-                if (!super.processElementUsages(d, processor, options))
+          clazz
+            .members
+            .foreach {
+              case fun: ScFunction =>
+                if (!super.processElementUsages(fun, processor, options))
                   return false
-              }
-            case v: ScVariable =>
-              v.declaredElements.foreach { d =>
-                if (!super.processElementUsages(d, processor, options))
+              case v: ScValue =>
+                v
+                  .declaredElements
+                  .foreach { d =>
+                    if (!super.processElementUsages(d, processor, options))
+                      return false
+                  }
+              case v: ScVariable =>
+                v
+                  .declaredElements
+                  .foreach { d =>
+                    if (!super.processElementUsages(d, processor, options))
+                      return false
+                  }
+              case ta: ScTypeAlias =>
+                if (!super.processElementUsages(ta, processor, options))
                   return false
-              }
-            case ta: ScTypeAlias =>
-              if (!super.processElementUsages(ta, processor, options))
-                return false
-            case c: ScTypeDefinition =>
-              if (!super.processElementUsages(c, processor, options))
-                return false
-            case c: ScPrimaryConstructor =>
-              if (!super.processElementUsages(c, processor, options))
-                return false
-          }
+              case c: ScTypeDefinition =>
+                if (!super.processElementUsages(c, processor, options))
+                  return false
+              case c: ScPrimaryConstructor =>
+                if (!super.processElementUsages(c, processor, options))
+                  return false
+            }
           clazz match {
             case c: ScClass =>
               c.constructor match {
                 case Some(constr) =>
-                  constr.effectiveParameterClauses.foreach { clause =>
-                    clause.effectiveParameters.foreach { param =>
-                      if (!super.processElementUsages(c, processor, options))
-                        return false
+                  constr
+                    .effectiveParameterClauses
+                    .foreach { clause =>
+                      clause
+                        .effectiveParameters
+                        .foreach { param =>
+                          if (!super
+                                .processElementUsages(c, processor, options))
+                            return false
+                        }
                     }
-                  }
                 case _ =>
               }
             case _ =>
@@ -277,9 +286,8 @@ class ScalaFindUsagesHandler(
     inReadAction {
       element match {
         case function: ScFunction if !function.isLocal =>
-          for (elem <- ScalaOverridingMemberSearcher.search(
-                 function,
-                 deep = true)) {
+          for (elem <- ScalaOverridingMemberSearcher
+                 .search(function, deep = true)) {
             val processed = super.processElementUsages(elem, processor, options)
             if (!processed)
               return false

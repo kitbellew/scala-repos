@@ -52,13 +52,16 @@ class TaskSchedulerImplSuite
     // probability of that happening is 2^-1000 (so sufficiently small to be considered
     // negligible).
     val numTrials = 1000
-    val selectedExecutorIds = 1.to(numTrials).map { _ =>
-      val taskSet = FakeTask.createTaskSet(1)
-      taskScheduler.submitTasks(taskSet)
-      val taskDescriptions = taskScheduler.resourceOffers(workerOffers).flatten
-      assert(1 === taskDescriptions.length)
-      taskDescriptions(0).executorId
-    }
+    val selectedExecutorIds = 1
+      .to(numTrials)
+      .map { _ =>
+        val taskSet = FakeTask.createTaskSet(1)
+        taskScheduler.submitTasks(taskSet)
+        val taskDescriptions =
+          taskScheduler.resourceOffers(workerOffers).flatten
+        assert(1 === taskDescriptions.length)
+        taskDescriptions(0).executorId
+      }
     val count = selectedExecutorIds.count(_ == workerOffers(0).executorId)
     assert(count > 0)
     assert(count < numTrials)
@@ -92,8 +95,9 @@ class TaskSchedulerImplSuite
       new WorkerOffer("executor0", "host0", numFreeCores),
       new WorkerOffer("executor1", "host1", numFreeCores))
     taskScheduler.submitTasks(taskSet)
-    taskDescriptions =
-      taskScheduler.resourceOffers(singleCoreWorkerOffers).flatten
+    taskDescriptions = taskScheduler
+      .resourceOffers(singleCoreWorkerOffers)
+      .flatten
     assert(0 === taskDescriptions.length)
 
     // Now change the offers to have 2 cores in one executor and verify if it
@@ -102,8 +106,9 @@ class TaskSchedulerImplSuite
       new WorkerOffer("executor0", "host0", taskCpus),
       new WorkerOffer("executor1", "host1", numFreeCores))
     taskScheduler.submitTasks(taskSet)
-    taskDescriptions =
-      taskScheduler.resourceOffers(multiCoreWorkerOffers).flatten
+    taskDescriptions = taskScheduler
+      .resourceOffers(multiCoreWorkerOffers)
+      .flatten
     assert(1 === taskDescriptions.length)
     assert("executor0" === taskDescriptions(0).executorId)
   }
@@ -145,8 +150,9 @@ class TaskSchedulerImplSuite
     // still be processed without error
     taskScheduler.submitTasks(taskSet)
     taskScheduler.submitTasks(FakeTask.createTaskSet(1))
-    taskDescriptions =
-      taskScheduler.resourceOffers(multiCoreWorkerOffers).flatten
+    taskDescriptions = taskScheduler
+      .resourceOffers(multiCoreWorkerOffers)
+      .flatten
     assert(taskDescriptions.map(_.executorId) === Seq("executor0"))
   }
 

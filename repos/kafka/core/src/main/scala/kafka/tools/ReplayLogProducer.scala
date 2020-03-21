@@ -52,8 +52,8 @@ object ReplayLogProducer extends Logging {
     consumerProps.put("socket.receive.buffer.bytes", (2 * 1024 * 1024).toString)
     val consumerConfig = new ConsumerConfig(consumerProps)
     val consumerConnector: ConsumerConnector = Consumer.create(consumerConfig)
-    val topicMessageStreams = consumerConnector.createMessageStreams(
-      Predef.Map(config.inputTopic -> config.numThreads))
+    val topicMessageStreams = consumerConnector
+      .createMessageStreams(Predef.Map(config.inputTopic -> config.numThreads))
     var threadList = List[ZKConsumerThread]()
     for ((topic, streamList) <- topicMessageStreams)
       for (stream <- streamList)
@@ -127,11 +127,8 @@ object ReplayLogProducer extends Logging {
 
     val options = parser.parse(args: _*)
 
-    CommandLineUtils.checkRequiredArgs(
-      parser,
-      options,
-      brokerListOpt,
-      inputTopicOpt)
+    CommandLineUtils
+      .checkRequiredArgs(parser, options, brokerListOpt, inputTopicOpt)
 
     val zkConnect = options.valueOf(zkConnectOpt)
     val brokerList = options.valueOf(brokerListOpt)
@@ -143,8 +140,8 @@ object ReplayLogProducer extends Logging {
     val reportingInterval = options.valueOf(reportingIntervalOpt).intValue
     val isSync = options.has(syncOpt)
     import scala.collection.JavaConversions._
-    val producerProps = CommandLineUtils.parseKeyValueArgs(
-      options.valuesOf(propertyOpt))
+    val producerProps = CommandLineUtils
+      .parseKeyValueArgs(options.valuesOf(propertyOpt))
     producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, brokerList)
     producerProps.put(
       ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,

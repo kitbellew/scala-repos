@@ -108,12 +108,14 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
   }
 
   def init() = {
-    DumbService.getInstance(project).smartInvokeLater {
-      toRunnable {
-        loadCachedInjectors()
-        rescanAllJars()
+    DumbService
+      .getInstance(project)
+      .smartInvokeLater {
+        toRunnable {
+          loadCachedInjectors()
+          rescanAllJars()
+        }
       }
-    }
   }
 
   override def initComponent(): Unit = {
@@ -175,8 +177,9 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
         LOG.warn(
           s"Failed to load injector cache, continuing with empty(${e.getMessage})")
         InjectorPersistentCache(
-          ScalaPluginVersionVerifier.getPluginVersion.getOrElse(
-            Version.Snapshot),
+          ScalaPluginVersionVerifier
+            .getPluginVersion
+            .getOrElse(Version.Snapshot),
           new util.HashMap())
     } finally {
       if (stream != null)
@@ -200,8 +203,9 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
 
   private def verifyLibraryCache(
       cache: InjectorPersistentCache): InjectorPersistentCache = {
-    if (ScalaPluginVersionVerifier.getPluginVersion.exists(
-          _ != cache.pluginVersion))
+    if (ScalaPluginVersionVerifier
+          .getPluginVersion
+          .exists(_ != cache.pluginVersion))
       InjectorPersistentCache(
         ScalaPluginVersionVerifier.getPluginVersion.get,
         new util.HashMap())
@@ -216,10 +220,13 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
         LOG.warn(s"Injector $injector has no sources, skipping")
         None
       } else {
-        val sourcesValid = injector.sources.forall { source =>
-          VirtualFileManager.getInstance.findFileByUrl(
-            s"jar://${manifest.jarPath}!/$source") != null
-        }
+        val sourcesValid = injector
+          .sources
+          .forall { source =>
+            VirtualFileManager
+              .getInstance
+              .findFileByUrl(s"jar://${manifest.jarPath}!/$source") != null
+          }
         if (!sourcesValid) {
           LOG.warn(s"Injector $injector has invalid source roots")
           None
@@ -243,7 +250,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
 
     def verifyDescriptor(
         descriptor: PluginDescriptor): Option[PluginDescriptor] = {
-      if (descriptor.since > descriptor.until || descriptor.since == descriptor.until) {
+      if (descriptor.since > descriptor.until || descriptor
+            .since == descriptor.until) {
         LOG.warn(s"Plugin descriptor since >= until in $descriptor")
         None
       } else if (descriptor.injectors.isEmpty) {
@@ -278,15 +286,16 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
           None
       }
     checkedDescriptor.map(descriptor =>
-      manifest.copy(pluginDescriptors = Seq(descriptor))(
-        manifest.isBlackListed))
+      manifest
+        .copy(pluginDescriptors = Seq(descriptor))(manifest.isBlackListed))
   }
 
   private def loadCachedInjectors() = {
     import scala.collection.JavaConversions._
     val allProjectJars = getAllJarsWithManifest.map(_.getPath).toSet
     val cachedProjectJars =
-      jarCache.cache
+      jarCache
+        .cache
         .filter(cacheItem => allProjectJars.contains(s"${cacheItem._1}!/"))
         .values
     var numLoaded = 0
@@ -309,8 +318,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
       .flatMap(f => extractLibraryManifest(f))
       .filterNot(jarCache.cache.values().contains)
     val validManifests = parsedManifests.flatMap(verifyManifest)
-    val candidates = validManifests.map(manifest =>
-      manifest -> findMatchingInjectors(manifest))
+    val candidates = validManifests
+      .map(manifest => manifest -> findMatchingInjectors(manifest))
     LOG.trace(s"Found ${candidates.size} new jars with embedded extensions")
     if (candidates.nonEmpty)
       askUser(candidates)
@@ -323,8 +332,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
       INJECTOR_MANIFEST_NAME,
       GlobalSearchScope.allScope(project))
     psiFiles.map(f =>
-      jarFS.getJarRootForLocalFile(
-        jarFS.getVirtualFileForJar(f.getVirtualFile)))
+      jarFS
+        .getJarRootForLocalFile(jarFS.getVirtualFileForJar(f.getVirtualFile)))
   }
 
   private def isJarCacheUpToDate(manifest: JarManifest): Boolean = {
@@ -369,22 +378,23 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
   private def loadInjector(
       jarManifest: JarManifest,
       injectorDescriptor: InjectorDescriptor) = {
-    myClassLoader.addUrl(
-      getInjectorCacheDir(jarManifest)(injectorDescriptor).toURI.toURL)
+    myClassLoader
+      .addUrl(getInjectorCacheDir(jarManifest)(injectorDescriptor).toURI.toURL)
     val injectors = findMatchingInjectors(jarManifest)
     for (injector <- injectors) {
-      loadedInjectors
-        .getOrElseUpdate(
-          getClass.getClassLoader.loadClass(injector.iface),
-          mutable.HashSet(injector.impl)) += injector.impl
+      loadedInjectors.getOrElseUpdate(
+        getClass.getClassLoader.loadClass(injector.iface),
+        mutable.HashSet(injector.impl)) += injector.impl
     }
   }
 
   private def findMatchingPluginDescriptor(
       libraryManifest: JarManifest): Option[PluginDescriptor] = {
-    val curVer = ScalaPluginVersionVerifier.getPluginVersion.getOrElse(
-      Version.Snapshot)
-    libraryManifest.pluginDescriptors
+    val curVer = ScalaPluginVersionVerifier
+      .getPluginVersion
+      .getOrElse(Version.Snapshot)
+    libraryManifest
+      .pluginDescriptors
       .find(d => (curVer > d.since && curVer < d.until) || curVer.isSnapshot)
   }
 
@@ -416,16 +426,18 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
         .getInstance()
         .findFileByUrl("jar://" + jar.getAbsolutePath + "!/")
       if (root != null) {
-        injectorDescriptor.sources.flatMap(path => {
-          Option(root.findFileByRelativePath(path))
-            .map { f =>
-              if (f.isDirectory)
-                f.getChildren.filter(!_.isDirectory).map(copyToTmpDir).toSeq
-              else
-                Seq(copyToTmpDir(f))
-            }
-            .getOrElse(Seq.empty)
-        })
+        injectorDescriptor
+          .sources
+          .flatMap(path => {
+            Option(root.findFileByRelativePath(path))
+              .map { f =>
+                if (f.isDirectory)
+                  f.getChildren.filter(!_.isDirectory).map(copyToTmpDir).toSeq
+                else
+                  Seq(copyToTmpDir(f))
+              }
+              .getOrElse(Seq.empty)
+          })
       } else {
         Error.noJarFound(jar)
       }
@@ -443,7 +455,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
       candidates: ManifestToDescriptors): ManifestToDescriptors = {
     val (accepted, rejected) = ackProvider.showReviewDialogAndFilter(candidates)
     for ((manifest, _) <- rejected) {
-      jarCache.cache
+      jarCache
+        .cache
         .put(manifest.jarPath, manifest.copy()(isBlackListed = true))
     }
     accepted
@@ -544,30 +557,36 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
     // get application classloader urls using reflection :(
     ApplicationManager.getApplication.getClass.getClassLoader match {
       case cl: java.net.URLClassLoader =>
-        val v = cl.getClass.getMethods
+        val v = cl
+          .getClass
+          .getMethods
           .find(_.getName == "getURLs")
           .map(
             _.invoke(ApplicationManager.getApplication.getClass.getClassLoader)
-              .asInstanceOf[Array[URL]]
-              .map(u => new File(u.getFile)))
+            .asInstanceOf[Array[URL]]
+            .map(u => new File(u.getFile)))
           .getOrElse(Array())
         buffer ++= v
       case cl: com.intellij.util.lang.UrlClassLoader =>
-        val v = cl.getClass.getMethods
+        val v = cl
+          .getClass
+          .getMethods
           .find(_.getName == "getUrls")
           .map(
             _.invoke(ApplicationManager.getApplication.getClass.getClassLoader)
-              .asInstanceOf[java.util.List[URL]]
-              .map(u => new File(u.getFile)))
+            .asInstanceOf[java.util.List[URL]]
+            .map(u => new File(u.getFile)))
           .getOrElse(Seq.empty)
         buffer ++= v
       case other =>
-        val v = other.getClass.getMethods
+        val v = other
+          .getClass
+          .getMethods
           .find(_.getName == "getUrls")
           .map(
             _.invoke(ApplicationManager.getApplication.getClass.getClassLoader)
-              .asInstanceOf[java.util.List[URL]]
-              .map(u => new File(u.getFile)))
+            .asInstanceOf[java.util.List[URL]]
+            .map(u => new File(u.getFile)))
           .getOrElse(Seq.empty)
         buffer ++= v
     }
@@ -591,8 +610,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
 
   private def removeIdeaModule() = {
     val model = ModuleManager.getInstance(project).getModifiableModel
-    val module = model.findModuleByName(
-      INJECTOR_MODULE_NAME.replaceAll("\\.iml$", ""))
+    val module = model
+      .findModuleByName(INJECTOR_MODULE_NAME.replaceAll("\\.iml$", ""))
     if (module != null) {
       model.disposeModule(module)
       model.commit()

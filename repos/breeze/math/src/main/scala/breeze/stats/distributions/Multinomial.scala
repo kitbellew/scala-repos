@@ -81,10 +81,13 @@ case class Multinomial[T, I](params: T)(implicit
     val aliases = DenseVector.zeros[Int](nOutcomes)
 
     val probs = DenseVector(
-      params.iterator.map {
-        case (label, param) =>
-          param / sum * nOutcomes
-      }.toArray)
+      params
+        .iterator
+        .map {
+          case (label, param) =>
+            param / sum * nOutcomes
+        }
+        .toArray)
     val (iSmaller, iLarger) = (0 until nOutcomes).partition(probs(_) < 1d)
     val smaller = mutable.Stack(iSmaller: _*)
     val larger = mutable.Stack(iLarger: _*)

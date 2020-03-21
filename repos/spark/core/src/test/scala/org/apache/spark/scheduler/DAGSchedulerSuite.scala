@@ -190,12 +190,14 @@ class DAGSchedulerSuite
     new BlockManagerMaster(null, conf, true) {
       override def getLocations(
           blockIds: Array[BlockId]): IndexedSeq[Seq[BlockManagerId]] = {
-        blockIds.map {
-          _.asRDDId
+        blockIds
+          .map {
+            _.asRDDId
             .map(id => (id.rddId -> id.splitIndex))
             .flatMap(key => cacheLocations.get(key))
             .getOrElse(Seq())
-        }.toIndexedSeq
+          }
+          .toIndexedSeq
       }
       override def removeExecutor(execId: String) {
         // don't need to propagate to the driver, which we don't have
@@ -521,8 +523,9 @@ class DAGSchedulerSuite
       }
     submit(unserializableRdd, Array(0))
     assert(
-      failure.getMessage.startsWith(
-        "Job aborted due to stage failure: Task not serializable:"))
+      failure
+        .getMessage
+        .startsWith("Job aborted due to stage failure: Task not serializable:"))
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
     assert(sparkListener.failedStages.contains(0))
     assert(sparkListener.failedStages.size === 1)
@@ -706,12 +709,16 @@ class DAGSchedulerSuite
     checkStageId(stageId, attemptIdx, stageAttempt)
     complete(
       stageAttempt,
-      stageAttempt.tasks.zipWithIndex.map {
-        case (task, idx) =>
-          (
-            Success,
-            makeMapStatus("host" + ('A' + idx).toChar, numShufflePartitions))
-      }.toSeq)
+      stageAttempt
+        .tasks
+        .zipWithIndex
+        .map {
+          case (task, idx) =>
+            (
+              Success,
+              makeMapStatus("host" + ('A' + idx).toChar, numShufflePartitions))
+        }
+        .toSeq)
   }
 
   /**
@@ -730,17 +737,21 @@ class DAGSchedulerSuite
     checkStageId(stageId, attemptIdx, stageAttempt)
     complete(
       stageAttempt,
-      stageAttempt.tasks.zipWithIndex.map {
-        case (task, idx) =>
-          (
-            FetchFailed(
-              makeBlockManagerId("hostA"),
-              shuffleDep.shuffleId,
-              0,
-              idx,
-              "ignored"),
-            null)
-      }.toSeq
+      stageAttempt
+        .tasks
+        .zipWithIndex
+        .map {
+          case (task, idx) =>
+            (
+              FetchFailed(
+                makeBlockManagerId("hostA"),
+                shuffleDep.shuffleId,
+                0,
+                idx,
+                "ignored"),
+              null)
+        }
+        .toSeq
     )
   }
 
@@ -758,10 +769,13 @@ class DAGSchedulerSuite
     val stageAttempt = taskSets.last
     checkStageId(stageId, attemptIdx, stageAttempt)
     assert(scheduler.stageIdToStage(stageId).isInstanceOf[ResultStage])
-    val taskResults = stageAttempt.tasks.zipWithIndex.map {
-      case (task, idx) =>
-        (Success, partitionToResult(idx))
-    }
+    val taskResults = stageAttempt
+      .tasks
+      .zipWithIndex
+      .map {
+        case (task, idx) =>
+          (Success, partitionToResult(idx))
+      }
     complete(stageAttempt, taskResults.toSeq)
   }
 
@@ -799,9 +813,11 @@ class DAGSchedulerSuite
     sc.listenerBus.waitUntilEmpty(1000)
     assert(ended === true)
     assert(
-      results === (0 until parts).map { idx =>
-        idx -> 42
-      }.toMap)
+      results === (0 until parts)
+        .map { idx =>
+          idx -> 42
+        }
+        .toMap)
     assertDataStructuresEmpty()
   }
 
@@ -844,8 +860,9 @@ class DAGSchedulerSuite
         jobResult match {
           case JobFailed(reason) =>
             assert(
-              reason.getMessage.contains(
-                "ResultStage 1 () has failed the maximum"))
+              reason
+                .getMessage
+                .contains("ResultStage 1 () has failed the maximum"))
           case other =>
             fail(s"expected JobFailed, not $other")
         }
@@ -1318,7 +1335,8 @@ class DAGSchedulerSuite
     val stageFailureMessage = "Exception failure in map stage"
     failed(taskSets(0), stageFailureMessage)
     assert(
-      failure.getMessage === s"Job aborted due to stage failure: $stageFailureMessage")
+      failure
+        .getMessage === s"Job aborted due to stage failure: $stageFailureMessage")
 
     // Listener bus should get told about the map stage failing, but not the reduce stage
     // (since the reduce stage hasn't been started yet).
@@ -1597,9 +1615,11 @@ class DAGSchedulerSuite
     assert(sparkListener.failedStages.toSet === Set(0, 2))
 
     assert(
-      listener1.failureMessage === s"Job aborted due to stage failure: $stageFailureMessage")
+      listener1
+        .failureMessage === s"Job aborted due to stage failure: $stageFailureMessage")
     assert(
-      listener2.failureMessage === s"Job aborted due to stage failure: $stageFailureMessage")
+      listener2
+        .failureMessage === s"Job aborted due to stage failure: $stageFailureMessage")
     assertDataStructuresEmpty()
   }
 
@@ -1863,9 +1883,11 @@ class DAGSchedulerSuite
         })
 
     // Run this on executors
-    sc.parallelize(1 to 10, 2).foreach { item =>
-      acc.add(1)
-    }
+    sc
+      .parallelize(1 to 10, 2)
+      .foreach { item =>
+        acc.add(1)
+      }
 
     // Make sure we can still run commands
     assert(sc.parallelize(1 to 10, 2).count() === 10)
@@ -2046,7 +2068,8 @@ class DAGSchedulerSuite
 
   test("Spark exceptions should include call site in stack trace") {
     val e = intercept[SparkException] {
-      sc.parallelize(1 to 10, 2)
+      sc
+        .parallelize(1 to 10, 2)
         .map { _ =>
           throw new RuntimeException("uh-oh!")
         }
@@ -2374,7 +2397,8 @@ class DAGSchedulerSuite
     */
   private def assertLocations(taskSet: TaskSet, hosts: Seq[Seq[String]]) {
     assert(hosts.size === taskSet.tasks.size)
-    for ((taskLocs, expectedLocs) <- taskSet.tasks
+    for ((taskLocs, expectedLocs) <- taskSet
+           .tasks
            .map(_.preferredLocations)
            .zip(hosts)) {
       assert(taskLocs.map(_.host).toSet === expectedLocs.toSet)
@@ -2425,9 +2449,11 @@ class DAGSchedulerSuite
     val accumUpdates =
       reason match {
         case Success =>
-          task.initialAccumulators.map { a =>
-            a.toInfo(Some(a.zero), None)
-          }
+          task
+            .initialAccumulators
+            .map { a =>
+              a.toInfo(Some(a.zero), None)
+            }
         case ef: ExceptionFailure =>
           ef.accumUpdates
         case _ =>

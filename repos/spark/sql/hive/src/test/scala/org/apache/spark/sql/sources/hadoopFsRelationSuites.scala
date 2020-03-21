@@ -165,20 +165,23 @@ abstract class HadoopFsRelationTest
         val schema = new StructType()
           .add("index", IntegerType, nullable = false)
           .add("col", dataType, nullable = true)
-        val rdd = sqlContext.sparkContext.parallelize(
-          (1 to 10).map(i => Row(i, dataGenerator())))
+        val rdd = sqlContext
+          .sparkContext
+          .parallelize((1 to 10).map(i => Row(i, dataGenerator())))
         val df = sqlContext
           .createDataFrame(rdd, schema)
           .orderBy("index")
           .coalesce(1)
 
-        df.write
+        df
+          .write
           .mode("overwrite")
           .format(dataSourceName)
           .option("dataSchema", df.schema.json)
           .save(path)
 
-        val loadedDF = sqlContext.read
+        val loadedDF = sqlContext
+          .read
           .format(dataSourceName)
           .option("dataSchema", df.schema.json)
           .schema(df.schema)
@@ -192,17 +195,20 @@ abstract class HadoopFsRelationTest
 
   test("save()/load() - non-partitioned table - Overwrite") {
     withTempPath { file =>
-      testDF.write
+      testDF
+        .write
         .mode(SaveMode.Overwrite)
         .format(dataSourceName)
         .save(file.getCanonicalPath)
-      testDF.write
+      testDF
+        .write
         .mode(SaveMode.Overwrite)
         .format(dataSourceName)
         .save(file.getCanonicalPath)
 
       checkAnswer(
-        sqlContext.read
+        sqlContext
+          .read
           .format(dataSourceName)
           .option("path", file.getCanonicalPath)
           .option("dataSchema", dataSchema.json)
@@ -213,17 +219,20 @@ abstract class HadoopFsRelationTest
 
   test("save()/load() - non-partitioned table - Append") {
     withTempPath { file =>
-      testDF.write
+      testDF
+        .write
         .mode(SaveMode.Overwrite)
         .format(dataSourceName)
         .save(file.getCanonicalPath)
-      testDF.write
+      testDF
+        .write
         .mode(SaveMode.Append)
         .format(dataSourceName)
         .save(file.getCanonicalPath)
 
       checkAnswer(
-        sqlContext.read
+        sqlContext
+          .read
           .format(dataSourceName)
           .option("dataSchema", dataSchema.json)
           .load(file.getCanonicalPath)
@@ -236,7 +245,8 @@ abstract class HadoopFsRelationTest
   test("save()/load() - non-partitioned table - ErrorIfExists") {
     withTempDir { file =>
       intercept[AnalysisException] {
-        testDF.write
+        testDF
+          .write
           .format(dataSourceName)
           .mode(SaveMode.ErrorIfExists)
           .save(file.getCanonicalPath)
@@ -246,7 +256,8 @@ abstract class HadoopFsRelationTest
 
   test("save()/load() - non-partitioned table - Ignore") {
     withTempDir { file =>
-      testDF.write
+      testDF
+        .write
         .mode(SaveMode.Ignore)
         .format(dataSourceName)
         .save(file.getCanonicalPath)
@@ -259,14 +270,16 @@ abstract class HadoopFsRelationTest
 
   test("save()/load() - partitioned table - simple queries") {
     withTempPath { file =>
-      partitionedTestDF.write
+      partitionedTestDF
+        .write
         .format(dataSourceName)
         .mode(SaveMode.ErrorIfExists)
         .partitionBy("p1", "p2")
         .save(file.getCanonicalPath)
 
       checkQueries(
-        sqlContext.read
+        sqlContext
+          .read
           .format(dataSourceName)
           .option("dataSchema", dataSchema.json)
           .load(file.getCanonicalPath))
@@ -275,20 +288,23 @@ abstract class HadoopFsRelationTest
 
   test("save()/load() - partitioned table - Overwrite") {
     withTempPath { file =>
-      partitionedTestDF.write
+      partitionedTestDF
+        .write
         .format(dataSourceName)
         .mode(SaveMode.Overwrite)
         .partitionBy("p1", "p2")
         .save(file.getCanonicalPath)
 
-      partitionedTestDF.write
+      partitionedTestDF
+        .write
         .format(dataSourceName)
         .mode(SaveMode.Overwrite)
         .partitionBy("p1", "p2")
         .save(file.getCanonicalPath)
 
       checkAnswer(
-        sqlContext.read
+        sqlContext
+          .read
           .format(dataSourceName)
           .option("dataSchema", dataSchema.json)
           .load(file.getCanonicalPath),
@@ -298,20 +314,23 @@ abstract class HadoopFsRelationTest
 
   test("save()/load() - partitioned table - Append") {
     withTempPath { file =>
-      partitionedTestDF.write
+      partitionedTestDF
+        .write
         .format(dataSourceName)
         .mode(SaveMode.Overwrite)
         .partitionBy("p1", "p2")
         .save(file.getCanonicalPath)
 
-      partitionedTestDF.write
+      partitionedTestDF
+        .write
         .format(dataSourceName)
         .mode(SaveMode.Append)
         .partitionBy("p1", "p2")
         .save(file.getCanonicalPath)
 
       checkAnswer(
-        sqlContext.read
+        sqlContext
+          .read
           .format(dataSourceName)
           .option("dataSchema", dataSchema.json)
           .load(file.getCanonicalPath),
@@ -322,20 +341,23 @@ abstract class HadoopFsRelationTest
 
   test("save()/load() - partitioned table - Append - new partition values") {
     withTempPath { file =>
-      partitionedTestDF1.write
+      partitionedTestDF1
+        .write
         .format(dataSourceName)
         .mode(SaveMode.Overwrite)
         .partitionBy("p1", "p2")
         .save(file.getCanonicalPath)
 
-      partitionedTestDF2.write
+      partitionedTestDF2
+        .write
         .format(dataSourceName)
         .mode(SaveMode.Append)
         .partitionBy("p1", "p2")
         .save(file.getCanonicalPath)
 
       checkAnswer(
-        sqlContext.read
+        sqlContext
+          .read
           .format(dataSourceName)
           .option("dataSchema", dataSchema.json)
           .load(file.getCanonicalPath),
@@ -346,7 +368,8 @@ abstract class HadoopFsRelationTest
   test("save()/load() - partitioned table - ErrorIfExists") {
     withTempDir { file =>
       intercept[AnalysisException] {
-        partitionedTestDF.write
+        partitionedTestDF
+          .write
           .format(dataSourceName)
           .mode(SaveMode.ErrorIfExists)
           .partitionBy("p1", "p2")
@@ -357,7 +380,8 @@ abstract class HadoopFsRelationTest
 
   test("save()/load() - partitioned table - Ignore") {
     withTempDir { file =>
-      partitionedTestDF.write
+      partitionedTestDF
+        .write
         .format(dataSourceName)
         .mode(SaveMode.Ignore)
         .save(file.getCanonicalPath)
@@ -369,7 +393,8 @@ abstract class HadoopFsRelationTest
   }
 
   test("saveAsTable()/load() - non-partitioned table - Overwrite") {
-    testDF.write
+    testDF
+      .write
       .format(dataSourceName)
       .mode(SaveMode.Overwrite)
       .option("dataSchema", dataSchema.json)
@@ -381,7 +406,8 @@ abstract class HadoopFsRelationTest
   }
 
   test("saveAsTable()/load() - non-partitioned table - Append") {
-    testDF.write
+    testDF
+      .write
       .format(dataSourceName)
       .mode(SaveMode.Overwrite)
       .saveAsTable("t")
@@ -399,7 +425,8 @@ abstract class HadoopFsRelationTest
 
     withTempTable("t") {
       intercept[AnalysisException] {
-        testDF.write
+        testDF
+          .write
           .format(dataSourceName)
           .mode(SaveMode.ErrorIfExists)
           .saveAsTable("t")
@@ -417,7 +444,8 @@ abstract class HadoopFsRelationTest
   }
 
   test("saveAsTable()/load() - partitioned table - simple queries") {
-    partitionedTestDF.write
+    partitionedTestDF
+      .write
       .format(dataSourceName)
       .mode(SaveMode.Overwrite)
       .option("dataSchema", dataSchema.json)
@@ -444,14 +472,16 @@ abstract class HadoopFsRelationTest
   }
 
   test("saveAsTable()/load() - partitioned table - Overwrite") {
-    partitionedTestDF.write
+    partitionedTestDF
+      .write
       .format(dataSourceName)
       .mode(SaveMode.Overwrite)
       .option("dataSchema", dataSchema.json)
       .partitionBy("p1", "p2")
       .saveAsTable("t")
 
-    partitionedTestDF.write
+    partitionedTestDF
+      .write
       .format(dataSourceName)
       .mode(SaveMode.Overwrite)
       .option("dataSchema", dataSchema.json)
@@ -464,14 +494,16 @@ abstract class HadoopFsRelationTest
   }
 
   test("saveAsTable()/load() - partitioned table - Append") {
-    partitionedTestDF.write
+    partitionedTestDF
+      .write
       .format(dataSourceName)
       .mode(SaveMode.Overwrite)
       .option("dataSchema", dataSchema.json)
       .partitionBy("p1", "p2")
       .saveAsTable("t")
 
-    partitionedTestDF.write
+    partitionedTestDF
+      .write
       .format(dataSourceName)
       .mode(SaveMode.Append)
       .option("dataSchema", dataSchema.json)
@@ -487,14 +519,16 @@ abstract class HadoopFsRelationTest
 
   test(
     "saveAsTable()/load() - partitioned table - Append - new partition values") {
-    partitionedTestDF1.write
+    partitionedTestDF1
+      .write
       .format(dataSourceName)
       .mode(SaveMode.Overwrite)
       .option("dataSchema", dataSchema.json)
       .partitionBy("p1", "p2")
       .saveAsTable("t")
 
-    partitionedTestDF2.write
+    partitionedTestDF2
+      .write
       .format(dataSourceName)
       .mode(SaveMode.Append)
       .option("dataSchema", dataSchema.json)
@@ -508,7 +542,8 @@ abstract class HadoopFsRelationTest
 
   test(
     "saveAsTable()/load() - partitioned table - Append - mismatched partition columns") {
-    partitionedTestDF1.write
+    partitionedTestDF1
+      .write
       .format(dataSourceName)
       .mode(SaveMode.Overwrite)
       .option("dataSchema", dataSchema.json)
@@ -517,7 +552,8 @@ abstract class HadoopFsRelationTest
 
     // Using only a subset of all partition columns
     intercept[Throwable] {
-      partitionedTestDF2.write
+      partitionedTestDF2
+        .write
         .format(dataSourceName)
         .mode(SaveMode.Append)
         .option("dataSchema", dataSchema.json)
@@ -531,7 +567,8 @@ abstract class HadoopFsRelationTest
 
     withTempTable("t") {
       intercept[AnalysisException] {
-        partitionedTestDF.write
+        partitionedTestDF
+          .write
           .format(dataSourceName)
           .mode(SaveMode.ErrorIfExists)
           .option("dataSchema", dataSchema.json)
@@ -545,7 +582,8 @@ abstract class HadoopFsRelationTest
     Seq.empty[(Int, String)].toDF().registerTempTable("t")
 
     withTempTable("t") {
-      partitionedTestDF.write
+      partitionedTestDF
+        .write
         .format(dataSourceName)
         .mode(SaveMode.Ignore)
         .option("dataSchema", dataSchema.json)
@@ -558,13 +596,15 @@ abstract class HadoopFsRelationTest
 
   test("Hadoop style globbing") {
     withTempPath { file =>
-      partitionedTestDF.write
+      partitionedTestDF
+        .write
         .format(dataSourceName)
         .mode(SaveMode.Overwrite)
         .partitionBy("p1", "p2")
         .save(file.getCanonicalPath)
 
-      val df = sqlContext.read
+      val df = sqlContext
+        .read
         .format(dataSourceName)
         .option("dataSchema", dataSchema.json)
         .option("basePath", file.getCanonicalPath)
@@ -581,7 +621,9 @@ abstract class HadoopFsRelationTest
         path.makeQualified(fs.getUri, fs.getWorkingDirectory).toString
       }
 
-      val actualPaths = df.queryExecution.analyzed
+      val actualPaths = df
+        .queryExecution
+        .analyzed
         .collectFirst {
           case LogicalRelation(relation: HadoopFsRelation, _, _) =>
             relation.location.paths.map(_.toString).toSet
@@ -614,13 +656,15 @@ abstract class HadoopFsRelationTest
         'f)
 
       withTempTable("t") {
-        input.write
+        input
+          .write
           .format(dataSourceName)
           .mode(SaveMode.Overwrite)
           .partitionBy("ps1", "p2", "pf1", "f")
           .saveAsTable("t")
 
-        input.write
+        input
+          .write
           .format(dataSourceName)
           .mode(SaveMode.Append)
           .partitionBy("ps1", "p2", "pf1", "f")
@@ -637,7 +681,8 @@ abstract class HadoopFsRelationTest
     "SPARK-7616: adjust column name order accordingly when saving partitioned table") {
     val df = (1 to 3).map(i => (i, s"val_$i", i * 2)).toDF("a", "b", "c")
 
-    df.write
+    df
+      .write
       .format(dataSourceName)
       .mode(SaveMode.Overwrite)
       .partitionBy("c", "a")
@@ -667,7 +712,8 @@ abstract class HadoopFsRelationTest
         .save(path)
 
       assertResult(10000) {
-        sqlContext.read
+        sqlContext
+          .read
           .format(dataSourceName)
           .option(
             "dataSchema",
@@ -684,7 +730,8 @@ abstract class HadoopFsRelationTest
     try {
       val df = sqlContext.range(1, 10).toDF("i")
       withTempPath { dir =>
-        df.write
+        df
+          .write
           .mode("append")
           .format(dataSourceName)
           .save(dir.getCanonicalPath)
@@ -699,12 +746,14 @@ abstract class HadoopFsRelationTest
         // Because there data already exists,
         // this append should succeed because we will use the output committer associated
         // with file format and AlwaysFailOutputCommitter will not be used.
-        df.write
+        df
+          .write
           .mode("append")
           .format(dataSourceName)
           .save(dir.getCanonicalPath)
         checkAnswer(
-          sqlContext.read
+          sqlContext
+            .read
             .format(dataSourceName)
             .option("dataSchema", df.schema.json)
             .load(dir.getCanonicalPath),
@@ -712,7 +761,8 @@ abstract class HadoopFsRelationTest
 
         // This will fail because AlwaysFailOutputCommitter is used when we do append.
         intercept[Exception] {
-          df.write
+          df
+            .write
             .mode("overwrite")
             .format(dataSourceName)
             .save(dir.getCanonicalPath)
@@ -731,7 +781,8 @@ abstract class HadoopFsRelationTest
         // this append will fail because AlwaysFailOutputCommitter is used when we do append
         // and there is no existing data.
         intercept[Exception] {
-          df.write
+          df
+            .write
             .mode("append")
             .format(dataSourceName)
             .save(dir.getCanonicalPath)
@@ -740,8 +791,9 @@ abstract class HadoopFsRelationTest
     } finally {
       // Hadoop 1 doesn't have `Configuration.unset`
       hadoopConfiguration.clear()
-      clonedConf.asScala.foreach(entry =>
-        hadoopConfiguration.set(entry.getKey, entry.getValue))
+      clonedConf
+        .asScala
+        .foreach(entry => hadoopConfiguration.set(entry.getKey, entry.getValue))
     }
   }
 
@@ -754,14 +806,16 @@ abstract class HadoopFsRelationTest
     ).toDF("a", "b", "c", "d", "e")
     withTempDir { file =>
       intercept[AnalysisException] {
-        df.write
+        df
+          .write
           .format(dataSourceName)
           .partitionBy("c", "d", "e")
           .save(file.getCanonicalPath)
       }
     }
     intercept[AnalysisException] {
-      df.write
+      df
+        .write
         .format(dataSourceName)
         .partitionBy("c", "d", "e")
         .saveAsTable("t")
@@ -771,7 +825,9 @@ abstract class HadoopFsRelationTest
   test(
     "SPARK-9899 Disable customized output committer when speculation is on") {
     val clonedConf = new Configuration(hadoopConfiguration)
-    val speculationEnabled = sqlContext.sparkContext.conf
+    val speculationEnabled = sqlContext
+      .sparkContext
+      .conf
       .getBoolean("spark.speculation", defaultValue = false)
 
     try {
@@ -788,7 +844,8 @@ abstract class HadoopFsRelationTest
         val df = sqlContext.range(10).toDF().coalesce(1)
         df.write.format(dataSourceName).save(dir.getCanonicalPath)
         checkAnswer(
-          sqlContext.read
+          sqlContext
+            .read
             .format(dataSourceName)
             .option("dataSchema", df.schema.json)
             .load(dir.getCanonicalPath),
@@ -797,9 +854,12 @@ abstract class HadoopFsRelationTest
     } finally {
       // Hadoop 1 doesn't have `Configuration.unset`
       hadoopConfiguration.clear()
-      clonedConf.asScala.foreach(entry =>
-        hadoopConfiguration.set(entry.getKey, entry.getValue))
-      sqlContext.sparkContext.conf
+      clonedConf
+        .asScala
+        .foreach(entry => hadoopConfiguration.set(entry.getKey, entry.getValue))
+      sqlContext
+        .sparkContext
+        .conf
         .set("spark.speculation", speculationEnabled.toString)
     }
   }

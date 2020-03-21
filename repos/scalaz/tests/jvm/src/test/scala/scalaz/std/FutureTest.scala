@@ -26,19 +26,23 @@ class FutureTest extends SpecLite {
 
     implicit def futureEqual[A: Equal] =
       Equal[Throwable \/ A] contramap { future: Future[A] =>
-        val futureWithError = future.map(\/-(_)).recover {
-          case e =>
-            -\/(e)
-        }
+        val futureWithError = future
+          .map(\/-(_))
+          .recover {
+            case e =>
+              -\/(e)
+          }
         Await.result(futureWithError, duration)
       }
 
     implicit def futureShow[A: Show]: Show[Future[A]] =
       Contravariant[Show].contramap(Show[String \/ A]) { future: Future[A] =>
-        val futureWithError = future.map(\/-(_)).recover {
-          case e =>
-            -\/(e.toString)
-        }
+        val futureWithError = future
+          .map(\/-(_))
+          .recover {
+            case e =>
+              -\/(e.toString)
+          }
         Await.result(futureWithError, duration)
       }
 
@@ -78,8 +82,8 @@ class FutureTest extends SpecLite {
   }
 
   "Nondeterminism[Future]" should {
-    implicit val es: ExecutionContext = ExecutionContext.fromExecutor(
-      Executors.newFixedThreadPool(1))
+    implicit val es: ExecutionContext = ExecutionContext
+      .fromExecutor(Executors.newFixedThreadPool(1))
 
     "fetch first completed future in chooseAny" ! forAll { (xs: Vector[Int]) =>
       val promises = Vector.fill(xs.size)(Promise[Int]())
@@ -90,10 +94,13 @@ class FutureTest extends SpecLite {
         is match {
           case i :: is0 =>
             promises(i).complete(scala.util.Try(xs(i)))
-            Nondeterminism[Future].chooseAny(fs).get.flatMap {
-              case (x, fs0) =>
-                loop(is0, fs0, acc :+ x)
-            }
+            Nondeterminism[Future]
+              .chooseAny(fs)
+              .get
+              .flatMap {
+                case (x, fs0) =>
+                  loop(is0, fs0, acc :+ x)
+              }
           case Nil =>
             Future(acc)
         }
@@ -109,10 +116,12 @@ class FutureTest extends SpecLite {
     "gather maintains order" ! forAll { (xs: List[Int]) =>
       val promises = Vector.fill(xs.size)(Promise[Int]())
       val f = Nondeterminism[Future].gather(promises.map(_.future))
-      (promises zip xs).reverseIterator.foreach {
-        case (p, x) =>
-          p.complete(scala.util.Try(x))
-      }
+      (promises zip xs)
+        .reverseIterator
+        .foreach {
+          case (p, x) =>
+            p.complete(scala.util.Try(x))
+        }
       Await.result(f, duration) must_== xs
     }
   }

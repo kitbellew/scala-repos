@@ -71,7 +71,10 @@ trait ClassTag[T]
       case java.lang.Void.TYPE =>
         new Array[Unit](len).asInstanceOf[Array[T]]
       case _ =>
-        java.lang.reflect.Array
+        java
+          .lang
+          .reflect
+          .Array
           .newInstance(runtimeClass, len)
           .asInstanceOf[Array[T]]
     }
@@ -91,8 +94,8 @@ trait ClassTag[T]
             x.isInstanceOf[Byte] && runtimeClass.isAssignableFrom(classOf[Byte])
           )
           || (
-            x.isInstanceOf[Short] && runtimeClass.isAssignableFrom(
-              classOf[Short])
+            x.isInstanceOf[Short] && runtimeClass
+              .isAssignableFrom(classOf[Short])
           )
           || (
             x.isInstanceOf[Char] && runtimeClass.isAssignableFrom(classOf[Char])
@@ -104,16 +107,16 @@ trait ClassTag[T]
             x.isInstanceOf[Long] && runtimeClass.isAssignableFrom(classOf[Long])
           )
           || (
-            x.isInstanceOf[Float] && runtimeClass.isAssignableFrom(
-              classOf[Float])
+            x.isInstanceOf[Float] && runtimeClass
+              .isAssignableFrom(classOf[Float])
           )
           || (
-            x.isInstanceOf[Double] && runtimeClass.isAssignableFrom(
-              classOf[Double])
+            x.isInstanceOf[Double] && runtimeClass
+              .isAssignableFrom(classOf[Double])
           )
           || (
-            x.isInstanceOf[Boolean] && runtimeClass.isAssignableFrom(
-              classOf[Boolean])
+            x.isInstanceOf[Boolean] && runtimeClass
+              .isAssignableFrom(classOf[Boolean])
           )
           || (
             x.isInstanceOf[Unit] && runtimeClass.isAssignableFrom(classOf[Unit])
@@ -137,8 +140,8 @@ trait ClassTag[T]
   private[this] def unapplyImpl(
       x: Any,
       primitiveCls: java.lang.Class[_]): Option[T] =
-    if (runtimeClass.isInstance(x) || runtimeClass.isAssignableFrom(
-          primitiveCls))
+    if (runtimeClass.isInstance(x) || runtimeClass
+          .isAssignableFrom(primitiveCls))
       Some(x.asInstanceOf[T])
     else
       None
@@ -146,9 +149,8 @@ trait ClassTag[T]
   // case class accessories
   override def canEqual(x: Any) = x.isInstanceOf[ClassTag[_]]
   override def equals(x: Any) =
-    x.isInstanceOf[ClassTag[_]] && this.runtimeClass == x
-      .asInstanceOf[ClassTag[_]]
-      .runtimeClass
+    x.isInstanceOf[ClassTag[_]] && this
+      .runtimeClass == x.asInstanceOf[ClassTag[_]].runtimeClass
   override def hashCode = scala.runtime.ScalaRunTime.hash(runtimeClass)
   override def toString = {
     def prettyprint(clazz: jClass[_]): String =

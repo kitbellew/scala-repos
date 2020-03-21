@@ -78,28 +78,30 @@ private[http4] class HttpClientDispatcher(
             Future.Done
 
         // 2. Drain the Transport into Response body.
-        val repF = trans.read().flatMap {
-          case res: NettyHttp.HttpResponse if isNack(res) =>
-            p.updateIfEmpty(NackFailure)
-            Future.Done
+        val repF = trans
+          .read()
+          .flatMap {
+            case res: NettyHttp.HttpResponse if isNack(res) =>
+              p.updateIfEmpty(NackFailure)
+              Future.Done
 
-          case rep: NettyHttp.HttpResponse =>
-            // unchunked response
-            val finagleRep = Bijections.netty.responseToFinagle(rep)
-            p.updateIfEmpty(Return(finagleRep))
-            Future.Done
+            case rep: NettyHttp.HttpResponse =>
+              // unchunked response
+              val finagleRep = Bijections.netty.responseToFinagle(rep)
+              p.updateIfEmpty(Return(finagleRep))
+              Future.Done
 
-          case rep: NettyHttp.HttpContent =>
-            // chunked response
-            val coll = Transport.collate(trans, readChunk)
-            p.updateIfEmpty(Return(Response(req.version, Status.Ok, coll)))
-            coll
+            case rep: NettyHttp.HttpContent =>
+              // chunked response
+              val coll = Transport.collate(trans, readChunk)
+              p.updateIfEmpty(Return(Response(req.version, Status.Ok, coll)))
+              coll
 
-          case invalid =>
-            // relies on GenSerialClientDispatcher satisfying `p`
-            Future.exception(
-              new IllegalArgumentException(s"invalid message '$invalid'"))
-        }
+            case invalid =>
+              // relies on GenSerialClientDispatcher satisfying `p`
+              Future.exception(
+                new IllegalArgumentException(s"invalid message '$invalid'"))
+          }
 
         Future.join(reqStreamF, repF).unit
 

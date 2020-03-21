@@ -37,7 +37,8 @@ sealed trait Node[P <: Platform[P]] {
   def getName(dag: Dag[P]): String = dag.getNodeName(this)
 
   def collapseNamedNodes(sanitize: String => String): String = {
-    val membersCombined = members.reverse
+    val membersCombined = members
+      .reverse
       .collect {
         case NamedProducer(_, n) =>
           sanitize(n)
@@ -58,7 +59,9 @@ sealed trait Node[P <: Platform[P]] {
   def toStringWithPrefix(prefix: String): String = {
     prefix + getNameFallback + "\n" + members.foldLeft("") {
       case (str, producer) =>
-        str + prefix + "\t" + producer.getClass.getName
+        str + prefix + "\t" + producer
+          .getClass
+          .getName
           .replaceFirst("com.twitter.summingbird.", "") + "\n"
     }
   }
@@ -214,19 +217,23 @@ object Dag {
       sanitizeName: String => String): Dag[P] = {
 
     require(
-      registry.collect {
-        case n @ SourceNode(_) =>
-          n
-      }.size > 0,
+      registry
+        .collect {
+          case n @ SourceNode(_) =>
+            n
+        }
+        .size > 0,
       "Valid registries should have at least one source node")
 
     def buildProducerToNodeLookUp(
         stormNodeSet: List[Node[P]]): Map[Producer[P, _], Node[P]] = {
       stormNodeSet.foldLeft(Map[Producer[P, _], Node[P]]()) {
         (curRegistry, stormNode) =>
-          stormNode.members.foldLeft(curRegistry) { (innerRegistry, producer) =>
-            (innerRegistry + (producer -> stormNode))
-          }
+          stormNode
+            .members
+            .foldLeft(curRegistry) { (innerRegistry, producer) =>
+              (innerRegistry + (producer -> stormNode))
+            }
       }
     }
     val producerToNode = buildProducerToNodeLookUp(registry)
@@ -241,13 +248,15 @@ object Dag {
         // Here we are building the Dag's connection topology.
         // We visit every producer and connect the Node's represented by its dependant and dependancies.
         // Producers which live in the same node will result in a NOP in connect.
-        stormNode.members.foldLeft(curDag) { (innerDag, dependantProducer) =>
-          Producer
-            .dependenciesOf(dependantProducer)
-            .foldLeft(innerDag) { (dag, dep) =>
-              dag.connect(dep, dependantProducer)
-            }
-        }
+        stormNode
+          .members
+          .foldLeft(curDag) { (innerDag, dependantProducer) =>
+            Producer
+              .dependenciesOf(dependantProducer)
+              .foldLeft(innerDag) { (dag, dep) =>
+                dag.connect(dep, dependantProducer)
+              }
+          }
       }
 
     def tryGetName(
@@ -273,29 +282,33 @@ object Dag {
         dag: Dag[P],
         outerNodeToName: Map[Node[P], String],
         usedNames: Set[String]): (Map[Node[P], String], Set[String]) = {
-      dag.dependenciesOf(dep).foldLeft((outerNodeToName, usedNames)) {
-        case ((nodeToName, taken), n) =>
-          val name = tryGetName(
-            nodeToName(dep) + "-" + n.shortName(sanitizeName),
-            taken)
-          val useName =
-            nodeToName.get(n) match {
-              case None =>
-                name
-              case Some(otherName) =>
-                if (otherName.split("-").size > name.split("-").size)
+      dag
+        .dependenciesOf(dep)
+        .foldLeft((outerNodeToName, usedNames)) {
+          case ((nodeToName, taken), n) =>
+            val name = tryGetName(
+              nodeToName(dep) + "-" + n.shortName(sanitizeName),
+              taken)
+            val useName =
+              nodeToName.get(n) match {
+                case None =>
                   name
-                else
-                  otherName
-            }
-          genNames(n, dag, nodeToName + (n -> useName), taken + useName)
-      }
+                case Some(otherName) =>
+                  if (otherName.split("-").size > name.split("-").size)
+                    name
+                  else
+                    otherName
+              }
+            genNames(n, dag, nodeToName + (n -> useName), taken + useName)
+        }
     }
 
     def allTails(dag: Dag[P]): List[Node[P]] = {
-      dag.nodes.filter { m =>
-        dag.dependantsOf(m).size == 0
-      }
+      dag
+        .nodes
+        .filter { m =>
+          dag.dependantsOf(m).size == 0
+        }
     }
 
     //start with the true tail

@@ -34,16 +34,18 @@ class WrappedTSInMergeable[K, V](self: Mergeable[K, V])
 
   override def multiMerge[K1 <: K](
       kvs: Map[K1, (Timestamp, V)]): Map[K1, Future[Option[(Timestamp, V)]]] =
-    self.multiMerge(kvs.mapValues(_._2)).map {
-      case (k, futOpt) =>
-        (
-          k,
-          futOpt.map { opt =>
-            opt.map { v =>
-              (kvs(k)._1, v)
-            }
-          })
-    }
+    self
+      .multiMerge(kvs.mapValues(_._2))
+      .map {
+        case (k, futOpt) =>
+          (
+            k,
+            futOpt.map { opt =>
+              opt.map { v =>
+                (kvs(k)._1, v)
+              }
+            })
+      }
 }
 
 object MergeableStoreFactoryAlgebra {

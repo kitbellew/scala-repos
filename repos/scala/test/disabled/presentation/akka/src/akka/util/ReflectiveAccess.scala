@@ -32,7 +32,8 @@ object ReflectiveAccess {
     * @author <a href="http://jonasboner.com">Jonas Bon&#233;r</a>
     */
   object Remote {
-    val TRANSPORT = Config.config
+    val TRANSPORT = Config
+      .config
       .getString("akka.remote.layer", "akka.remote.netty.NettyRemoteSupport")
 
     private[akka] val configDefaultAddress =
@@ -249,7 +250,9 @@ object ReflectiveAccess {
         val second =
           try {
             Right(
-              Thread.currentThread.getContextClassLoader
+              Thread
+                .currentThread
+                .getContextClassLoader
                 .loadClass(fqn)
                 .asInstanceOf[Class[T]])
           } catch {

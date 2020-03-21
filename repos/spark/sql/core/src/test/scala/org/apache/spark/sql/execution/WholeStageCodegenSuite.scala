@@ -41,7 +41,8 @@ class WholeStageCodegenSuite extends SparkPlanTest with SharedSQLContext {
       plan
         .find(p =>
           p.isInstanceOf[WholeStageCodegen] &&
-            p.asInstanceOf[WholeStageCodegen]
+            p
+              .asInstanceOf[WholeStageCodegen]
               .child
               .isInstanceOf[TungstenAggregate])
         .isDefined)
@@ -55,7 +56,8 @@ class WholeStageCodegenSuite extends SparkPlanTest with SharedSQLContext {
       plan
         .find(p =>
           p.isInstanceOf[WholeStageCodegen] &&
-            p.asInstanceOf[WholeStageCodegen]
+            p
+              .asInstanceOf[WholeStageCodegen]
               .child
               .isInstanceOf[TungstenAggregate])
         .isDefined)
@@ -63,18 +65,22 @@ class WholeStageCodegenSuite extends SparkPlanTest with SharedSQLContext {
   }
 
   test("BroadcastHashJoin should be included in WholeStageCodegen") {
-    val rdd = sqlContext.sparkContext.makeRDD(
-      Seq(Row(1, "1"), Row(1, "1"), Row(2, "2")))
+    val rdd = sqlContext
+      .sparkContext
+      .makeRDD(Seq(Row(1, "1"), Row(1, "1"), Row(2, "2")))
     val schema = new StructType().add("k", IntegerType).add("v", StringType)
     val smallDF = sqlContext.createDataFrame(rdd, schema)
     val df = sqlContext
       .range(10)
       .join(broadcast(smallDF), col("k") === col("id"))
     assert(
-      df.queryExecution.executedPlan
+      df
+        .queryExecution
+        .executedPlan
         .find(p =>
           p.isInstanceOf[WholeStageCodegen] &&
-            p.asInstanceOf[WholeStageCodegen]
+            p
+              .asInstanceOf[WholeStageCodegen]
               .child
               .isInstanceOf[BroadcastHashJoin])
         .isDefined)

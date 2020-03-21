@@ -25,17 +25,17 @@ case class ClusterMetricsSettings(config: Config) {
       case id ⇒
         id
     }
-  val PeriodicTasksInitialDelay: FiniteDuration = cc.getMillisDuration(
-    "periodic-tasks-initial-delay")
-  val NativeLibraryExtractFolder: String = cc.getString(
-    "native-library-extract-folder")
+  val PeriodicTasksInitialDelay: FiniteDuration = cc
+    .getMillisDuration("periodic-tasks-initial-delay")
+  val NativeLibraryExtractFolder: String = cc
+    .getString("native-library-extract-folder")
 
   // Supervisor.
   val SupervisorName: String = cc.getString("supervisor.name")
-  val SupervisorStrategyProvider: String = cc.getString(
-    "supervisor.strategy.provider")
-  val SupervisorStrategyConfiguration: Config = cc.getConfig(
-    "supervisor.strategy.configuration")
+  val SupervisorStrategyProvider: String = cc
+    .getString("supervisor.strategy.provider")
+  val SupervisorStrategyConfiguration: Config = cc
+    .getConfig("supervisor.strategy.configuration")
 
   // Collector.
   val CollectorEnabled: Boolean = cc.getBoolean("collector.enabled")

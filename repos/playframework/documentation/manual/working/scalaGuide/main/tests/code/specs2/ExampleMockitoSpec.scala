@@ -14,8 +14,8 @@ class ExampleMockitoSpec extends Specification with Mockito {
   "MyService#isDailyData" should {
     "return true if the data is from today" in {
       val mockDataService = mock[DataService]
-      mockDataService.findData returns Data(retrievalDate =
-        new java.util.Date())
+      mockDataService
+        .findData returns Data(retrievalDate = new java.util.Date())
 
       val myService =
         new MyService() {
@@ -49,8 +49,8 @@ class MyService {
 
     (
       retrievalDate.get(Calendar.YEAR) == today.get(Calendar.YEAR)
-      && retrievalDate.get(Calendar.DAY_OF_YEAR) == today.get(
-        Calendar.DAY_OF_YEAR)
+      && retrievalDate.get(Calendar.DAY_OF_YEAR) == today
+        .get(Calendar.DAY_OF_YEAR)
     )
   }
 }

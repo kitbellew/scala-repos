@@ -24,8 +24,9 @@ abstract class TestAllResolveTestBase
     import _root_.junit.framework.Assert._
 
     val filePath = folderPath + getTestName(false) + ".scala"
-    val file = LocalFileSystem.getInstance.findFileByPath(
-      filePath.replace(File.separatorChar, '/'))
+    val file = LocalFileSystem
+      .getInstance
+      .findFileByPath(filePath.replace(File.separatorChar, '/'))
     assert(file != null, "file " + filePath + " not found")
     val fileText = StringUtil.convertLineSeparators(
       FileUtil.loadFile(new File(file.getCanonicalPath), CharsetToolkit.UTF8))
@@ -37,7 +38,9 @@ abstract class TestAllResolveTestBase
           val resolve = ref.resolve()
           assertNotNull(
             "Failed on reference: " + ref.getText + ". Reference Range: (" +
-              ref.getTextRange.getStartOffset + ", " + ref.getTextRange.getEndOffset + ")",
+              ref.getTextRange.getStartOffset + ", " + ref
+              .getTextRange
+              .getEndOffset + ")",
             resolve)
           super.visitReference(ref)
         }

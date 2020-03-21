@@ -128,8 +128,8 @@ abstract class ClusterShardingLeavingSpec(
   val storageLocations = List(
     "akka.persistence.journal.leveldb.dir",
     "akka.persistence.journal.leveldb-shared.store.dir",
-    "akka.persistence.snapshot-store.local.dir").map(s ⇒
-    new File(system.settings.config.getString(s)))
+    "akka.persistence.snapshot-store.local.dir")
+    .map(s ⇒ new File(system.settings.config.getString(s)))
 
   override protected def atStartup() {
     runOn(first) {
@@ -155,9 +155,13 @@ abstract class ClusterShardingLeavingSpec(
       startSharding()
       within(15.seconds) {
         awaitAssert(
-          cluster.state.members.exists { m ⇒
-            m.uniqueAddress == cluster.selfUniqueAddress && m.status == MemberStatus.Up
-          } should be(true))
+          cluster
+            .state
+            .members
+            .exists { m ⇒
+              m.uniqueAddress == cluster
+                .selfUniqueAddress && m.status == MemberStatus.Up
+            } should be(true))
       }
     }
     enterBarrier(from.name + "-joined")
@@ -202,9 +206,8 @@ abstract class ClusterShardingLeavingSpec(
 
     "initialize shards" in {
       runOn(first) {
-        val shardLocations = system.actorOf(
-          Props[ShardLocations],
-          "shardLocations")
+        val shardLocations = system
+          .actorOf(Props[ShardLocations], "shardLocations")
         val locations =
           (
             for (n ← 1 to 10)

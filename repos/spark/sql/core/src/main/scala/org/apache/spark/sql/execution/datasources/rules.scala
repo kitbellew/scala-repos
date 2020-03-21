@@ -96,21 +96,23 @@ private[sql] object PreInsertCastAndRename extends Rule[LogicalPlan] {
       insertInto: InsertIntoTable,
       expectedOutput: Seq[Attribute],
       child: LogicalPlan): InsertIntoTable = {
-    val newChildOutput = expectedOutput.zip(child.output).map {
-      case (expected, actual) =>
-        val needCast = !expected.dataType.sameType(actual.dataType)
-        // We want to make sure the filed names in the data to be inserted exactly match
-        // names in the schema.
-        val needRename = expected.name != actual.name
-        (needCast, needRename) match {
-          case (true, _) =>
-            Alias(Cast(actual, expected.dataType), expected.name)()
-          case (false, true) =>
-            Alias(actual, expected.name)()
-          case (_, _) =>
-            actual
-        }
-    }
+    val newChildOutput = expectedOutput
+      .zip(child.output)
+      .map {
+        case (expected, actual) =>
+          val needCast = !expected.dataType.sameType(actual.dataType)
+          // We want to make sure the filed names in the data to be inserted exactly match
+          // names in the schema.
+          val needRename = expected.name != actual.name
+          (needCast, needRename) match {
+            case (true, _) =>
+              Alias(Cast(actual, expected.dataType), expected.name)()
+            case (false, true) =>
+              Alias(actual, expected.name)()
+            case (_, _) =>
+              actual
+          }
+      }
 
     if (newChildOutput == child.output) {
       insertInto
@@ -214,10 +216,12 @@ private[sql] case class PreWriteCheck(catalog: Catalog)
             // (the relation is a BaseRelation).
             case l @ LogicalRelation(dest: BaseRelation, _, _) =>
               // Get all input data source relations of the query.
-              val srcRelations = c.child.collect {
-                case LogicalRelation(src: BaseRelation, _, _) =>
-                  src
-              }
+              val srcRelations = c
+                .child
+                .collect {
+                  case LogicalRelation(src: BaseRelation, _, _) =>
+                    src
+                }
               if (srcRelations.contains(dest)) {
                 failAnalysis(
                   s"Cannot overwrite table ${c.tableIdent} that is also being read from.")

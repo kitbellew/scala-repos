@@ -527,8 +527,11 @@ class LinearRegressionModel private[ml] (
       : (LinearRegressionModel, String) = {
     $(predictionCol) match {
       case "" =>
-        val predictionColName =
-          "prediction_" + java.util.UUID.randomUUID.toString()
+        val predictionColName = "prediction_" + java
+          .util
+          .UUID
+          .randomUUID
+          .toString()
         (
           copy(ParamMap.empty).setPredictionCol(predictionColName),
           predictionColName)
@@ -606,7 +609,8 @@ object LinearRegressionModel extends MLReadable[LinearRegressionModel] {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
+      val data = sqlContext
+        .read
         .format("parquet")
         .load(dataPath)
         .select("intercept", "coefficients")
@@ -821,9 +825,11 @@ class LinearRegressionSummary private[regression] (
         } else {
           model.coefficients.toArray
         }
-      estimate.zip(coefficientStandardErrors).map { x =>
-        x._1 / x._2
-      }
+      estimate
+        .zip(coefficientStandardErrors)
+        .map { x =>
+          x._1 / x._2
+        }
     }
   }
 
@@ -974,8 +980,8 @@ private class LeastSquaresAggregator(
     (coefficientsArray, offset, coefficientsArray.length)
   }
 
-  private val effectiveCoefficientsVector = Vectors.dense(
-    effectiveCoefficientsArray)
+  private val effectiveCoefficientsVector = Vectors
+    .dense(effectiveCoefficientsArray)
 
   private val gradientSumArray = Array.ofDim[Double](dim)
 

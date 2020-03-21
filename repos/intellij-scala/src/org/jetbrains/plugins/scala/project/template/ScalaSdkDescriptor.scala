@@ -28,8 +28,9 @@ case class ScalaSdkDescriptor(
   override protected val libraryType: LibraryType[ScalaLibraryProperties] =
     ScalaLibraryType.instance
 
-  override protected val libraryName: String =
-    s"$languageName-sdk-" + version.map(_.number).getOrElse("Unknown")
+  override protected val libraryName: String = s"$languageName-sdk-" + version
+    .map(_.number)
+    .getOrElse("Unknown")
 
   override protected def libraryProperties: ScalaLibraryProperties = {
     val properties = new ScalaLibraryProperties()
@@ -83,8 +84,8 @@ trait SdkDescriptor {
 object ScalaSdkDescriptor extends SdkDescriptorCompanion {
   override protected val requiredBinaries: Set[Artifact] = Set()
 
-  override protected val libraryArtifacts =
-    Artifact.values - Artifact.ScalaCompiler
+  override protected val libraryArtifacts = Artifact.values - Artifact
+    .ScalaCompiler
 
   override protected def createSdkDescriptor(
       version: Option[Version],
@@ -124,7 +125,8 @@ trait SdkDescriptorCompanion {
     }
 
     val reflectRequired = binaryComponents.exists {
-      _.version.exists {
+      _.version
+      .exists {
         _.toLanguageLevel.exists(_ >= Scala_2_10)
       }
     }
@@ -144,15 +146,15 @@ trait SdkDescriptorCompanion {
       requiredBinaryArtifacts -- existingBinaryArtifacts
 
     if (missingBinaryArtifacts.isEmpty) {
-      val compilerBinaries = binaryComponents.filter(it =>
-        requiredBinaryArtifacts.contains(it.artifact))
+      val compilerBinaries = binaryComponents
+        .filter(it => requiredBinaryArtifacts.contains(it.artifact))
 
-      val libraryBinaries = binaryComponents.filter(it =>
-        libraryArtifacts.contains(it.artifact))
-      val librarySources = sourceComponents.filter(it =>
-        libraryArtifacts.contains(it.artifact))
-      val libraryDocs = docComponents.filter(it =>
-        libraryArtifacts.contains(it.artifact))
+      val libraryBinaries = binaryComponents
+        .filter(it => libraryArtifacts.contains(it.artifact))
+      val librarySources = sourceComponents
+        .filter(it => libraryArtifacts.contains(it.artifact))
+      val libraryDocs = docComponents
+        .filter(it => libraryArtifacts.contains(it.artifact))
 
       val libraryVersion = binaryComponents
         .find(_.artifact == ScalaLibrary)

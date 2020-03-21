@@ -43,13 +43,15 @@ object Insight extends LilaController {
               cache <- env.api userCache user
               prefId <- env.share getPrefId user
             } yield Ok(
-              html.insight.index(
-                u = user,
-                cache = cache,
-                prefId = prefId,
-                ui = env.jsonView.ui(cache.ecos),
-                question = env.jsonView.question(metric, dimension, filters),
-                stale = s == Stale))
+              html
+                .insight
+                .index(
+                  u = user,
+                  cache = cache,
+                  prefId = prefId,
+                  ui = env.jsonView.ui(cache.ecos),
+                  question = env.jsonView.question(metric, dimension, filters),
+                  stale = s == Stale))
         }
       }
     }
@@ -58,18 +60,22 @@ object Insight extends LilaController {
     OpenBody(BodyParsers.parse.json) { implicit ctx =>
       import lila.insight.JsonQuestion, JsonQuestion._
       Accessible(username) { user =>
-        ctx.body.body
+        ctx
+          .body
+          .body
           .validate[JsonQuestion]
           .fold(
             err => BadRequest(jsonError(err.toString)).fuccess,
             qJson =>
-              qJson.question.fold(BadRequest.fuccess) { q =>
-                env.api.ask(q, user) map
-                  lila.insight.Chart.fromAnswer(Env.user.lightUser) map
-                  env.jsonView.chart.apply map {
-                  Ok(_)
+              qJson
+                .question
+                .fold(BadRequest.fuccess) { q =>
+                  env.api.ask(q, user) map
+                    lila.insight.Chart.fromAnswer(Env.user.lightUser) map
+                    env.jsonView.chart.apply map {
+                    Ok(_)
+                  }
                 }
-              }
           )
       }
     }

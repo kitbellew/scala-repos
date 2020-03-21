@@ -9,8 +9,8 @@ object CharPredicates {
     block != null &&
     block != java.lang.Character.UnicodeBlock.SPECIALS
   }
-  lazy val isMathSymbol = MacroUtils.preCompute(
-    _.getType == Character.MATH_SYMBOL)
-  lazy val isOtherSymbol = MacroUtils.preCompute(
-    _.getType == Character.OTHER_SYMBOL)
+  lazy val isMathSymbol = MacroUtils
+    .preCompute(_.getType == Character.MATH_SYMBOL)
+  lazy val isOtherSymbol = MacroUtils
+    .preCompute(_.getType == Character.OTHER_SYMBOL)
 }

@@ -8,35 +8,35 @@ object ManifestScalaType {
 
   def apply[T](mf: Manifest[T]): ScalaType = {
     /* optimization */
-    if (mf.runtimeClass == classOf[Int] || mf.runtimeClass == classOf[
-          java.lang.Integer])
+    if (mf.runtimeClass == classOf[Int] || mf
+          .runtimeClass == classOf[java.lang.Integer])
       ManifestScalaType.IntType
-    else if (mf.runtimeClass == classOf[Long] || mf.runtimeClass == classOf[
-               java.lang.Long])
+    else if (mf.runtimeClass == classOf[Long] || mf
+               .runtimeClass == classOf[java.lang.Long])
       ManifestScalaType.LongType
-    else if (mf.runtimeClass == classOf[Byte] || mf.runtimeClass == classOf[
-               java.lang.Byte])
+    else if (mf.runtimeClass == classOf[Byte] || mf
+               .runtimeClass == classOf[java.lang.Byte])
       ManifestScalaType.ByteType
-    else if (mf.runtimeClass == classOf[Short] || mf.runtimeClass == classOf[
-               java.lang.Short])
+    else if (mf.runtimeClass == classOf[Short] || mf
+               .runtimeClass == classOf[java.lang.Short])
       ManifestScalaType.ShortType
-    else if (mf.runtimeClass == classOf[Float] || mf.runtimeClass == classOf[
-               java.lang.Float])
+    else if (mf.runtimeClass == classOf[Float] || mf
+               .runtimeClass == classOf[java.lang.Float])
       ManifestScalaType.FloatType
-    else if (mf.runtimeClass == classOf[Double] || mf.runtimeClass == classOf[
-               java.lang.Double])
+    else if (mf.runtimeClass == classOf[Double] || mf
+               .runtimeClass == classOf[java.lang.Double])
       ManifestScalaType.DoubleType
-    else if (mf.runtimeClass == classOf[BigInt] || mf.runtimeClass == classOf[
-               java.math.BigInteger])
+    else if (mf.runtimeClass == classOf[BigInt] || mf
+               .runtimeClass == classOf[java.math.BigInteger])
       ManifestScalaType.BigIntType
-    else if (mf.runtimeClass == classOf[
-               BigDecimal] || mf.runtimeClass == classOf[java.math.BigDecimal])
+    else if (mf.runtimeClass == classOf[BigDecimal] || mf
+               .runtimeClass == classOf[java.math.BigDecimal])
       ManifestScalaType.BigDecimalType
-    else if (mf.runtimeClass == classOf[Boolean] || mf.runtimeClass == classOf[
-               java.lang.Boolean])
+    else if (mf.runtimeClass == classOf[Boolean] || mf
+               .runtimeClass == classOf[java.lang.Boolean])
       ManifestScalaType.BooleanType
-    else if (mf.runtimeClass == classOf[String] || mf.runtimeClass == classOf[
-               java.lang.String])
+    else if (mf.runtimeClass == classOf[String] || mf
+               .runtimeClass == classOf[java.lang.String])
       ManifestScalaType.StringType
     else if (mf.runtimeClass == classOf[java.util.Date])
       ManifestScalaType.DateType
@@ -64,9 +64,8 @@ object ManifestScalaType {
   def apply(
       erasure: Class[_],
       typeArgs: Seq[ScalaType] = Seq.empty): ScalaType = {
-    val mf = ManifestFactory.manifestOf(
-      erasure,
-      typeArgs.map(ManifestFactory.manifestOf(_)))
+    val mf = ManifestFactory
+      .manifestOf(erasure, typeArgs.map(ManifestFactory.manifestOf(_)))
     ManifestScalaType(mf)
   }
 
@@ -110,7 +109,8 @@ object ManifestScalaType {
     override def typeVars = {
       if (_typeVars == null)
         _typeVars = Map.empty[TypeVariable[_], ScalaType] ++
-          erasure.getTypeParameters
+          erasure
+            .getTypeParameters
             .map(_.asInstanceOf[TypeVariable[_]])
             .toList
             .zip(manifest.typeArguments map (ManifestScalaType(_)))
@@ -158,19 +158,21 @@ class ManifestScalaType(val manifest: Manifest[_]) extends ScalaType {
   //    _typeArgs
   //  }
 
-  val typeArgs =
-    manifest.typeArguments.map(ta => Reflector.scalaTypeOf(ta)) ++ (
-      if (erasure.isArray)
-        List(Reflector.scalaTypeOf(erasure.getComponentType))
-      else
-        Nil
-    )
+  val typeArgs = manifest
+    .typeArguments
+    .map(ta => Reflector.scalaTypeOf(ta)) ++ (
+    if (erasure.isArray)
+      List(Reflector.scalaTypeOf(erasure.getComponentType))
+    else
+      Nil
+  )
 
   private[this] var _typeVars: Map[TypeVariable[_], ScalaType] = null
   def typeVars = {
     if (_typeVars == null)
       _typeVars = Map.empty ++
-        erasure.getTypeParameters
+        erasure
+          .getTypeParameters
           .map(_.asInstanceOf[TypeVariable[_]])
           .toList
           .zip(manifest.typeArguments map (ManifestScalaType(_)))
@@ -290,9 +292,8 @@ class ManifestScalaType(val manifest: Manifest[_]) extends ScalaType {
       ManifestScalaType.NumberType
     /* end optimization */
     else {
-      val mf = ManifestFactory.manifestOf(
-        erasure,
-        typeArgs.map(ManifestFactory.manifestOf(_)))
+      val mf = ManifestFactory
+        .manifestOf(erasure, typeArgs.map(ManifestFactory.manifestOf(_)))
       val st = new CopiedManifestScalaType(mf, typeVars, isPrimitive)
       if (typeArgs.isEmpty)
         types.replace(mf, st)

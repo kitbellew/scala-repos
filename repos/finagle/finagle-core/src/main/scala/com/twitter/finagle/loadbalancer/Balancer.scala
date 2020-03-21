@@ -138,9 +138,11 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] {
         u match {
           case NewList(svcFactories) =>
             val newFactories = svcFactories.toSet
-            val (transfer, closed) = dist.vector.partition { node =>
-              newFactories.contains(node.factory)
-            }
+            val (transfer, closed) = dist
+              .vector
+              .partition { node =>
+                newFactories.contains(node.factory)
+              }
 
             for (node <- closed)
               node.close()

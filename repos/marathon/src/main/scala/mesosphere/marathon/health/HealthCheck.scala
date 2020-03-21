@@ -24,7 +24,9 @@ case class HealthCheck(
     extends MarathonState[Protos.HealthCheckDefinition, HealthCheck] {
 
   def toProto: Protos.HealthCheckDefinition = {
-    val builder = Protos.HealthCheckDefinition.newBuilder
+    val builder = Protos
+      .HealthCheckDefinition
+      .newBuilder
       .setProtocol(this.protocol)
       .setGracePeriodSeconds(this.gracePeriod.toSeconds.toInt)
       .setIntervalSeconds(this.interval.toSeconds.toInt)
@@ -93,7 +95,9 @@ case class HealthCheck(
           assert(
             command.isDefined,
             "A command is required when using the COMMAND health check protocol.")
-          MesosProtos.HealthCheck.newBuilder
+          MesosProtos
+            .HealthCheck
+            .newBuilder
             .setCommand(this.command.get.toProto)
 
         case Protocol.HTTP =>

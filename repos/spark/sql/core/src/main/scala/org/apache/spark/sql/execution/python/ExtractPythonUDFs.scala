@@ -37,11 +37,13 @@ private[spark] object ExtractPythonUDFs extends Rule[LogicalPlan] {
 
       case plan: LogicalPlan if plan.resolved =>
         // Extract any PythonUDFs from the current operator.
-        val udfs = plan.expressions.flatMap(
-          _.collect {
-            case udf: PythonUDF =>
-              udf
-          })
+        val udfs = plan
+          .expressions
+          .flatMap(
+            _.collect {
+              case udf: PythonUDF =>
+                udf
+            })
         if (udfs.isEmpty) {
           // If there aren't any, we are done.
           plan
@@ -53,20 +55,25 @@ private[spark] object ExtractPythonUDFs extends Rule[LogicalPlan] {
               var evaluation: EvaluatePython = null
 
               // Rewrite the child that has the input required for the UDF
-              val newChildren = plan.children.map { child =>
-                // Check to make sure that the UDF can be evaluated with only the input of this child.
-                // Other cases are disallowed as they are ambiguous or would require a cartesian
-                // product.
-                if (udf.references.subsetOf(child.outputSet)) {
-                  evaluation = EvaluatePython(udf, child)
-                  evaluation
-                } else if (udf.references.intersect(child.outputSet).nonEmpty) {
-                  sys.error(
-                    s"Invalid PythonUDF $udf, requires attributes from more than one child.")
-                } else {
-                  child
+              val newChildren = plan
+                .children
+                .map { child =>
+                  // Check to make sure that the UDF can be evaluated with only the input of this child.
+                  // Other cases are disallowed as they are ambiguous or would require a cartesian
+                  // product.
+                  if (udf.references.subsetOf(child.outputSet)) {
+                    evaluation = EvaluatePython(udf, child)
+                    evaluation
+                  } else if (udf
+                               .references
+                               .intersect(child.outputSet)
+                               .nonEmpty) {
+                    sys.error(
+                      s"Invalid PythonUDF $udf, requires attributes from more than one child.")
+                  } else {
+                    child
+                  }
                 }
-              }
 
               assert(
                 evaluation != null,

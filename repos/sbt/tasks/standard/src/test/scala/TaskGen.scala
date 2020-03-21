@@ -15,8 +15,8 @@ object TaskGen extends std.TaskExtra {
   val MaxTasksGen = choose(0, MaxTasks)
   val MaxWorkersGen = choose(1, MaxWorkers)
   val MaxJoinGen = choose(0, MaxJoin)
-  val TaskListGen = MaxTasksGen.flatMap(size =>
-    Gen.listOfN(size, Arbitrary.arbInt.arbitrary))
+  val TaskListGen = MaxTasksGen
+    .flatMap(size => Gen.listOfN(size, Arbitrary.arbInt.arbitrary))
 
   def run[T](
       root: Task[T],

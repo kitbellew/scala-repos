@@ -50,17 +50,20 @@ object ScTypeUtil {
       case p: ScProjectionType =>
         p.actualElement match {
           case v: ScBindingPattern =>
-            v.getType(TypingContext.empty)
+            v
+              .getType(TypingContext.empty)
               .map(p.actualSubst.subst)
               .toOption
               .flatMap(removeTypeDesignator)
           case v: ScFieldId =>
-            v.getType(TypingContext.empty)
+            v
+              .getType(TypingContext.empty)
               .map(p.actualSubst.subst)
               .toOption
               .flatMap(removeTypeDesignator)
           case v: ScParameter =>
-            v.getType(TypingContext.empty)
+            v
+              .getType(TypingContext.empty)
               .map(p.actualSubst.subst)
               .toOption
               .flatMap(removeTypeDesignator)

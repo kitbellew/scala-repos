@@ -80,9 +80,8 @@ abstract class MLWriter extends BaseReadWrite with Logging {
     val hadoopConf = sc.hadoopConfiguration
     val outputPath = new Path(path)
     val fs = outputPath.getFileSystem(hadoopConf)
-    val qualifiedOutputPath = outputPath.makeQualified(
-      fs.getUri,
-      fs.getWorkingDirectory)
+    val qualifiedOutputPath = outputPath
+      .makeQualified(fs.getUri, fs.getWorkingDirectory)
     if (fs.exists(qualifiedOutputPath)) {
       if (shouldOverwrite) {
         logInfo(s"Path $path already exists. It will be overwritten.")
@@ -233,10 +232,12 @@ private[ml] object DefaultParamsWriter {
       .asInstanceOf[Seq[ParamPair[Any]]]
     val jsonParams = paramMap.getOrElse(
       render(
-        params.map {
-          case ParamPair(p, v) =>
-            p.name -> parse(p.jsonEncode(v))
-        }.toList))
+        params
+          .map {
+            case ParamPair(p, v) =>
+              p.name -> parse(p.jsonEncode(v))
+          }
+          .toList))
     val basicMetadata = ("class" -> cls) ~
       ("timestamp" -> System.currentTimeMillis()) ~
       ("sparkVersion" -> sc.version) ~

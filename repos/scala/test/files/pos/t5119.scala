@@ -6,15 +6,17 @@ object Test {
         f: V[_] => ({
           type l[T] = Either[VL[T], VR[T]]
         })#l[_]) = {
-      backing.view.map {
-        case (k, v) =>
-          f(v) match {
-            case Left(l) =>
-              Left((k, l))
-            case Right(r) =>
-              Right((k, r))
-          }
-      }
+      backing
+        .view
+        .map {
+          case (k, v) =>
+            f(v) match {
+              case Left(l) =>
+                Left((k, l))
+              case Right(r) =>
+                Right((k, r))
+            }
+        }
     }
   }
 }

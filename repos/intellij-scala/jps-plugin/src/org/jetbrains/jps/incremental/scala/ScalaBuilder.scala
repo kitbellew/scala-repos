@@ -41,8 +41,8 @@ object ScalaBuilder {
       modules: Set[JpsModule],
       client: Client): Either[String, ModuleLevelBuilder.ExitCode] = {
 
-    context.processMessage(
-      new ProgressMessage("Reading compilation settings..."))
+    context
+      .processMessage(new ProgressMessage("Reading compilation settings..."))
 
     for {
       sbtData <- sbtData
@@ -67,23 +67,25 @@ object ScalaBuilder {
     }
 
     def getPreviousIncrementalType: Option[IncrementalityType] = {
-      storageFile.filter(_.exists).flatMap { file =>
-        val result =
-          using(
-            new DataInputStream(
-              new BufferedInputStream(new FileInputStream(file)))) { in =>
-            try {
-              Some(IncrementalityType.valueOf(in.readUTF()))
-            } catch {
-              case _: IOException | _: IllegalArgumentException |
-                  _: NullPointerException =>
-                None
+      storageFile
+        .filter(_.exists)
+        .flatMap { file =>
+          val result =
+            using(
+              new DataInputStream(
+                new BufferedInputStream(new FileInputStream(file)))) { in =>
+              try {
+                Some(IncrementalityType.valueOf(in.readUTF()))
+              } catch {
+                case _: IOException | _: IllegalArgumentException |
+                    _: NullPointerException =>
+                  None
+              }
             }
-          }
-        if (result.isEmpty)
-          file.delete()
-        result
-      }
+          if (result.isEmpty)
+            file.delete()
+          result
+        }
     }
 
     def setPreviousIncrementalType(incrType: IncrementalityType) {
@@ -103,7 +105,11 @@ object ScalaBuilder {
       context.getProjectDescriptor.setFSCache(FSCache.NO_CACHE)
       try {
         val directory =
-          context.getProjectDescriptor.dataManager.getDataPaths.getDataStorageRoot
+          context
+            .getProjectDescriptor
+            .dataManager
+            .getDataPaths
+            .getDataStorageRoot
         FileUtil.delete(directory)
       } catch {
         case e: Exception =>
@@ -156,9 +162,11 @@ object ScalaBuilder {
 
   def hasBuildModules(chunk: ModuleChunk): Boolean = {
     import _root_.scala.collection.JavaConversions._
-    chunk.getModules.exists(
-      _.getName.endsWith("-build")
-    ) // gen-idea doesn't use the SBT module type
+    chunk
+      .getModules
+      .exists(
+        _.getName.endsWith("-build")
+      ) // gen-idea doesn't use the SBT module type
   }
 
   def projectSettings(context: CompileContext) =
@@ -167,7 +175,9 @@ object ScalaBuilder {
   def isMakeProject(context: CompileContext): Boolean =
     JavaBuilderUtil.isCompileJavaIncrementally(context) && {
       for {
-        chunk <- context.getProjectDescriptor.getBuildTargetIndex
+        chunk <- context
+          .getProjectDescriptor
+          .getBuildTargetIndex
           .getSortedTargetChunks(context)
           .asScala
         target <- chunk.getTargets.asScala
@@ -213,8 +223,9 @@ object ScalaBuilder {
       compilationData: CompilationData,
       client: Client) {
     val hasScalaFacet = modules.exists(SettingsManager.hasScalaSdk)
-    val hasScalaLibrary = compilationData.classpath.exists(
-      _.getName.startsWith("scala-library"))
+    val hasScalaLibrary = compilationData
+      .classpath
+      .exists(_.getName.startsWith("scala-library"))
 
     if (hasScalaFacet && !hasScalaLibrary) {
       val names = modules.map(_.getName).mkString(", ")
@@ -224,10 +235,11 @@ object ScalaBuilder {
   }
 
   private def getServer(context: CompileContext): Server = {
-    val settings = SettingsManager.getGlobalSettings(
-      context.getProjectDescriptor.getModel.getGlobal)
+    val settings = SettingsManager
+      .getGlobalSettings(context.getProjectDescriptor.getModel.getGlobal)
 
-    if (settings.isCompileServerEnabled && JavaBuilderUtil.CONSTANT_SEARCH_SERVICE
+    if (settings.isCompileServerEnabled && JavaBuilderUtil
+          .CONSTANT_SEARCH_SERVICE
           .get(context) != null) {
       cleanLocalServerCache()
       new RemoteServer(

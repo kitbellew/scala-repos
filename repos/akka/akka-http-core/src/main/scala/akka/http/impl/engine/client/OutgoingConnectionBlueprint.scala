@@ -78,8 +78,8 @@ private[http] object OutgoingConnectionBlueprint {
           }
         }
 
-        val bypassFanout = b.add(
-          Broadcast[RequestRenderingContext](2, eagerCancel = true))
+        val bypassFanout = b
+          .add(Broadcast[RequestRenderingContext](2, eagerCancel = true))
 
         val terminationMerge = b.add(TerminationMerge)
 
@@ -232,8 +232,9 @@ private[http] object OutgoingConnectionBlueprint {
                   headers,
                   entityCreator,
                   closeRequested) ⇒
-              val entity = createEntity(
-                entityCreator) withSizeLimit parserSettings.maxContentLength
+              val entity =
+                createEntity(entityCreator) withSizeLimit parserSettings
+                  .maxContentLength
               push(out, HttpResponse(statusCode, headers, entity, protocol))
               if (closeRequested)
                 completeStage()

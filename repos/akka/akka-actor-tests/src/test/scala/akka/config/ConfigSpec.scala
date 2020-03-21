@@ -61,8 +61,8 @@ class ConfigSpec
 
         settings.Loggers.size should ===(1)
         settings.Loggers.head should ===(classOf[DefaultLogger].getName)
-        getStringList("akka.loggers").get(0) should ===(
-          classOf[DefaultLogger].getName)
+        getStringList("akka.loggers")
+          .get(0) should ===(classOf[DefaultLogger].getName)
 
         getDuration(
           "akka.logger-startup-timeout",

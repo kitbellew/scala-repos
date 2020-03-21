@@ -271,8 +271,9 @@ object State {
       def handleError(t: Throwable): State = handleException(t, s, log)
       def fail = {
         import BasicCommandStrings.Compat.{FailureWall => CompatFailureWall}
-        val remaining = s.remainingCommands.dropWhile(c =>
-          c != FailureWall && c != CompatFailureWall)
+        val remaining = s
+          .remainingCommands
+          .dropWhile(c => c != FailureWall && c != CompatFailureWall)
         if (remaining.isEmpty)
           applyOnFailure(s, Nil, exit(ok = false))
         else
@@ -296,11 +297,17 @@ object State {
         s.copy(exitHooks = Set.empty)
       }
       def locked[T](file: File)(t: => T): T =
-        s.configuration.provider.scalaProvider.launcher.globalLock.apply(
-          file,
-          new Callable[T] {
-            def call = t
-          })
+        s
+          .configuration
+          .provider
+          .scalaProvider
+          .launcher
+          .globalLock
+          .apply(
+            file,
+            new Callable[T] {
+              def call = t
+            })
 
       def interactive = getBoolean(s, BasicKeys.interactive, false)
       def setInteractive(i: Boolean) = s.put(BasicKeys.interactive, i)

@@ -50,7 +50,8 @@ object ReflectionUtils {
     * order they were declared.
     */
   def fieldsOf[T](c: Class[T]): List[String] =
-    c.getDeclaredFields
+    c
+      .getDeclaredFields
       .map { f =>
         f.getName
       }
@@ -110,8 +111,10 @@ class ReflectionSetter[T](fields: Fields)(implicit m: Manifest[T])
   // make these defs instead of vals
   // TODO: filter by isAccessible, which somehow seems to fail
   def methodMap =
-    m.runtimeClass.getDeclaredMethods
-    // Keep only methods with 0 parameter types
+    m
+      .runtimeClass
+      .getDeclaredMethods
+      // Keep only methods with 0 parameter types
       .filter { m =>
         m.getParameterTypes.length == 0
       }
@@ -124,7 +127,9 @@ class ReflectionSetter[T](fields: Fields)(implicit m: Manifest[T])
 
   // TODO: filter by isAccessible, which somehow seems to fail
   def fieldMap =
-    m.runtimeClass.getDeclaredFields
+    m
+      .runtimeClass
+      .getDeclaredFields
       .groupBy {
         _.getName
       }
@@ -158,19 +163,25 @@ class ReflectionSetter[T](fields: Fields)(implicit m: Manifest[T])
       .orElse(getValueFromField(fieldName))
       .getOrElse(
         throw new TupleUnpackerException(
-          "Unrecognized field: " + fieldName + " for class: " + m.runtimeClass.getName))
+          "Unrecognized field: " + fieldName + " for class: " + m
+            .runtimeClass
+            .getName))
   }
 
   private def getValueFromField(fieldName: String): Option[(T => AnyRef)] = {
-    fieldMap.get(fieldName).map { f => (x: T) =>
-      f.get(x)
-    }
+    fieldMap
+      .get(fieldName)
+      .map { f => (x: T) =>
+        f.get(x)
+      }
   }
 
   private def getValueFromMethod(methodName: String): Option[(T => AnyRef)] = {
-    methodMap.get(methodName).map { m => (x: T) =>
-      m.invoke(x)
-    }
+    methodMap
+      .get(methodName)
+      .map { m => (x: T) =>
+        m.invoke(x)
+      }
   }
 
   private def upperFirst(s: String) =

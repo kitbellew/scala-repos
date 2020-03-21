@@ -62,11 +62,10 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
     def flatOpt[T](o: Option[Option[T]]): Option[T] = o.flatMap(identity)
 
     implicit val ord = ordering
-    LookupJoin(incoming, servStream, reducers)
-      .map {
-        case (t, (k, (w, optoptv))) =>
-          (t, (k, (w, flatOpt(optoptv))))
-      }
+    LookupJoin(incoming, servStream, reducers).map {
+      case (t, (k, (w, optoptv))) =>
+        (t, (k, (w, flatOpt(optoptv))))
+    }
   }
 
   protected def batchedLookup[W](
@@ -105,58 +104,62 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
       val batchOps = new BatchedOperations(batcher)
 
       val coveringBatches = batchOps.coverIt(timeSpan)
-      readLast(coveringBatches.min, mode).right.flatMap {
-        batchLastFlow =>
-          val (startingBatch, init) = batchLastFlow
-          val streamBatches = BatchID
-            .range(startingBatch.next, coveringBatches.max)
-          val batchStreams = streamBatches.map { b =>
-            (b, readStream(b, mode))
-          }
-          // only produce continuous output, so stop at the first none:
-          val existing = batchStreams
-            .takeWhile {
-              _._2.isDefined
+      readLast(coveringBatches.min, mode)
+        .right
+        .flatMap {
+          batchLastFlow =>
+            val (startingBatch, init) = batchLastFlow
+            val streamBatches = BatchID
+              .range(startingBatch.next, coveringBatches.max)
+            val batchStreams = streamBatches.map { b =>
+              (b, readStream(b, mode))
             }
-            .collect {
-              case (batch, Some(flow)) =>
-                (batch, flow)
-            }
-
-          if (existing.isEmpty) {
-            Left(
-              List(
-                "[ERROR] Could not load any batches of the service stream in: " + toString + " for: " + timeSpan.toString))
-          } else {
-            val inBatches = List(startingBatch) ++ existing.map {
-              _._1
-            }
-            val bInt =
-              BatchID
-                .toInterval(inBatches)
-                .get // by construction this is an interval, so this can't throw
-            val toRead = batchOps
-              .intersect(bInt, timeSpan) // No need to read more than this
-            getKeys((toRead, mode)).right
-              .map {
-                case ((available, outM), getFlow) =>
-                  /*
-                   * Note we can open more batches than we need to join, but
-                   * we will deal with that when we do the join (by filtering first,
-                   * then grouping on (key, batchID) to parallelize.
-                   */
-                  (
-                    (available, outM),
-                    Scalding.limitTimes(
-                      available,
-                      batchedLookup(
-                        available,
-                        getFlow,
-                        batchLastFlow,
-                        existing)))
+            // only produce continuous output, so stop at the first none:
+            val existing = batchStreams
+              .takeWhile {
+                _._2.isDefined
               }
-          }
-      }
+              .collect {
+                case (batch, Some(flow)) =>
+                  (batch, flow)
+              }
+
+            if (existing.isEmpty) {
+              Left(
+                List(
+                  "[ERROR] Could not load any batches of the service stream in: " + toString + " for: " + timeSpan
+                    .toString))
+            } else {
+              val inBatches = List(startingBatch) ++ existing.map {
+                _._1
+              }
+              val bInt =
+                BatchID
+                  .toInterval(inBatches)
+                  .get // by construction this is an interval, so this can't throw
+              val toRead = batchOps
+                .intersect(bInt, timeSpan) // No need to read more than this
+              getKeys((toRead, mode))
+                .right
+                .map {
+                  case ((available, outM), getFlow) =>
+                    /*
+                     * Note we can open more batches than we need to join, but
+                     * we will deal with that when we do the join (by filtering first,
+                     * then grouping on (key, batchID) to parallelize.
+                     */
+                    (
+                      (available, outM),
+                      Scalding.limitTimes(
+                        available,
+                        batchedLookup(
+                          available,
+                          getFlow,
+                          batchLastFlow,
+                          existing)))
+                }
+            }
+        }
     })
 }
 

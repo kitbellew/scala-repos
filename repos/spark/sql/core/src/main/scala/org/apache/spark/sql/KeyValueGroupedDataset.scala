@@ -58,12 +58,10 @@ class KeyValueGroupedDataset[K, V] private[sql] (
   private implicit val unresolvedKEncoder = encoderFor(kEncoder)
   private implicit val unresolvedVEncoder = encoderFor(vEncoder)
 
-  private val resolvedKEncoder = unresolvedKEncoder.resolve(
-    groupingAttributes,
-    OuterScopes.outerScopes)
-  private val resolvedVEncoder = unresolvedVEncoder.resolve(
-    dataAttributes,
-    OuterScopes.outerScopes)
+  private val resolvedKEncoder = unresolvedKEncoder
+    .resolve(groupingAttributes, OuterScopes.outerScopes)
+  private val resolvedVEncoder = unresolvedVEncoder
+    .resolve(dataAttributes, OuterScopes.outerScopes)
 
   private def logicalPlan = queryExecution.analyzed
   private def sqlContext = queryExecution.sqlContext
@@ -202,9 +200,8 @@ class KeyValueGroupedDataset[K, V] private[sql] (
   def reduce(f: (V, V) => V): Dataset[(K, V)] = {
     val func = (key: K, it: Iterator[V]) => Iterator((key, it.reduce(f)))
 
-    implicit val resultEncoder = ExpressionEncoder.tuple(
-      unresolvedKEncoder,
-      unresolvedVEncoder)
+    implicit val resultEncoder = ExpressionEncoder
+      .tuple(unresolvedKEncoder, unresolvedVEncoder)
     flatMapGroups(func)
   }
 
@@ -239,8 +236,8 @@ class KeyValueGroupedDataset[K, V] private[sql] (
     */
   protected def aggUntyped(columns: TypedColumn[_, _]*): Dataset[_] = {
     val encoders = columns.map(_.encoder)
-    val namedColumns = columns.map(
-      _.withInputType(resolvedVEncoder, dataAttributes).named)
+    val namedColumns = columns
+      .map(_.withInputType(resolvedVEncoder, dataAttributes).named)
     val keyColumn =
       if (resolvedKEncoder.flat) {
         assert(groupingAttributes.length == 1)

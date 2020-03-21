@@ -121,7 +121,8 @@ class FileStoreHandler(
     NotServed,
     (APIKey, Path) => Future[HttpResponse[JValue]]] =
     (request: HttpRequest[ByteChunk]) => {
-      val contentType0 = request.headers
+      val contentType0 = request
+        .headers
         .header[`Content-Type`]
         .flatMap(_.mimeTypes.headOption)
         .toSuccess("Unable to determine content type for file create.")
@@ -133,7 +134,8 @@ class FileStoreHandler(
       }
 
       (
-        pathf0.toValidationNel |@| contentType0.toValidationNel |@| storeMode0.toValidationNel
+        pathf0.toValidationNel |@| contentType0.toValidationNel |@| storeMode0
+          .toValidationNel
       ) { (pathf, contentType, storeMode) => (apiKey: APIKey, path: Path) =>
         {
           val timestamp = clock.now()
@@ -167,8 +169,8 @@ class FileStoreHandler(
                       // TODO: Raise/remove this limit
                       case b if b.length > 614400 =>
                         logger.error(
-                          "Rejecting excessive file upload of size %d".format(
-                            b.length))
+                          "Rejecting excessive file upload of size %d"
+                            .format(b.length))
                         -\/(
                           badRequest(
                             "File uploads are currently limited to 600KB"))

@@ -144,7 +144,9 @@ class PerformanceSpec
     with ImplicitSender {
   import PerformanceSpec._
 
-  val loadCycles = system.settings.config
+  val loadCycles = system
+    .settings
+    .config
     .getInt("akka.persistence.performance.cycles.load")
 
   def stressPersistentActor(

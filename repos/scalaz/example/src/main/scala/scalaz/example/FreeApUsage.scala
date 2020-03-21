@@ -57,8 +57,7 @@ object FreeApUsage extends App {
       def apply[A](fa: ParseOp[A]) =
         fa match {
           case s @ ParseInt(_) =>
-            toOption(input)(s)
-              .toSuccessNel(s"${s.key} not found with type Int")
+            toOption(input)(s).toSuccessNel(s"${s.key} not found with type Int")
           case s @ ParseString(_) =>
             toOption(input)(s)
               .toSuccessNel(s"${s.key} not found with type String")

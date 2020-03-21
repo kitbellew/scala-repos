@@ -39,7 +39,8 @@ class InsertIntoHiveTableSuite
   import hiveContext.implicits._
   import hiveContext.sql
 
-  val testData = hiveContext.sparkContext
+  val testData = hiveContext
+    .sparkContext
     .parallelize((1 to 100).map(i => TestData(i, i.toString)))
     .toDF()
 
@@ -96,9 +97,11 @@ class InsertIntoHiveTableSuite
   test("SPARK-4052: scala.collection.Map as value type of MapType") {
     val schema = StructType(
       StructField("m", MapType(StringType, StringType), true) :: Nil)
-    val rowRDD = hiveContext.sparkContext.parallelize(
-      (1 to 100).map(i =>
-        Row(scala.collection.mutable.HashMap(s"key$i" -> s"value$i"))))
+    val rowRDD = hiveContext
+      .sparkContext
+      .parallelize(
+        (1 to 100).map(i =>
+          Row(scala.collection.mutable.HashMap(s"key$i" -> s"value$i"))))
     val df = hiveContext.createDataFrame(rowRDD, schema)
     df.registerTempTable("tableWithMapValue")
     sql("CREATE TABLE hiveTableWithMapValue(m MAP <STRING, STRING>)")
@@ -145,9 +148,11 @@ class InsertIntoHiveTableSuite
     def listFolders(path: File, acc: List[String]): List[List[String]] = {
       val dir = path.listFiles()
       val folders =
-        dir.filter { e =>
-          e.isDirectory && !e.getName().startsWith(stagingDir)
-        }.toList
+        dir
+          .filter { e =>
+            e.isDirectory && !e.getName().startsWith(stagingDir)
+          }
+          .toList
       if (folders.isEmpty) {
         List(acc.reverse)
       } else {
@@ -161,8 +166,8 @@ class InsertIntoHiveTableSuite
       "p1=a" :: "p2=b" :: "p3=c" :: "p4=c" :: "p5=4" :: Nil
     )
     assert(
-      listFolders(tmpDir, List()).sortBy(_.toString()) === expected.sortBy(
-        _.toString))
+      listFolders(tmpDir, List()).sortBy(_.toString()) === expected
+        .sortBy(_.toString))
     sql("DROP TABLE table_with_partition")
     sql("DROP TABLE tmp_table")
   }
@@ -170,8 +175,9 @@ class InsertIntoHiveTableSuite
   test("Insert ArrayType.containsNull == false") {
     val schema = StructType(
       Seq(StructField("a", ArrayType(StringType, containsNull = false))))
-    val rowRDD = hiveContext.sparkContext.parallelize(
-      (1 to 100).map(i => Row(Seq(s"value$i"))))
+    val rowRDD = hiveContext
+      .sparkContext
+      .parallelize((1 to 100).map(i => Row(Seq(s"value$i"))))
     val df = hiveContext.createDataFrame(rowRDD, schema)
     df.registerTempTable("tableWithArrayValue")
     sql("CREATE TABLE hiveTableWithArrayValue(a Array <STRING>)")
@@ -191,8 +197,9 @@ class InsertIntoHiveTableSuite
         StructField(
           "m",
           MapType(StringType, StringType, valueContainsNull = false))))
-    val rowRDD = hiveContext.sparkContext.parallelize(
-      (1 to 100).map(i => Row(Map(s"key$i" -> s"value$i"))))
+    val rowRDD = hiveContext
+      .sparkContext
+      .parallelize((1 to 100).map(i => Row(Map(s"key$i" -> s"value$i"))))
     val df = hiveContext.createDataFrame(rowRDD, schema)
     df.registerTempTable("tableWithMapValue")
     sql("CREATE TABLE hiveTableWithMapValue(m Map <STRING, STRING>)")
@@ -212,8 +219,9 @@ class InsertIntoHiveTableSuite
         StructField(
           "s",
           StructType(Seq(StructField("f", StringType, nullable = false))))))
-    val rowRDD = hiveContext.sparkContext.parallelize(
-      (1 to 100).map(i => Row(Row(s"value$i"))))
+    val rowRDD = hiveContext
+      .sparkContext
+      .parallelize((1 to 100).map(i => Row(Row(s"value$i"))))
     val df = hiveContext.createDataFrame(rowRDD, schema)
     df.registerTempTable("tableWithStructValue")
     sql("CREATE TABLE hiveTableWithStructValue(s Struct <f: STRING>)")
@@ -228,12 +236,14 @@ class InsertIntoHiveTableSuite
   }
 
   test("SPARK-5498:partition schema does not match table schema") {
-    val testData = hiveContext.sparkContext
+    val testData = hiveContext
+      .sparkContext
       .parallelize((1 to 10).map(i => TestData(i, i.toString)))
       .toDF()
     testData.registerTempTable("testData")
 
-    val testDatawithNull = hiveContext.sparkContext
+    val testDatawithNull = hiveContext
+      .sparkContext
       .parallelize((1 to 10).map(i => ThreeCloumntable(i, i.toString, null)))
       .toDF()
 

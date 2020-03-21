@@ -31,7 +31,8 @@ private[spark] object RUtils {
     * Get the SparkR package path in the local spark distribution.
     */
   def localSparkRPackagePath: Option[String] = {
-    val sparkHome = sys.env
+    val sparkHome = sys
+      .env
       .get("SPARK_HOME")
       .orElse(sys.props.get("spark.test.home"))
     sparkHome.map(Seq(_, "R", "lib").mkString(File.separator))
@@ -57,10 +58,10 @@ private[spark] object RUtils {
           sparkConf.get("spark.submit.deployMode", "client"))
       }
 
-    val isYarnCluster =
-      master != null && master.contains("yarn") && deployMode == "cluster"
-    val isYarnClient =
-      master != null && master.contains("yarn") && deployMode == "client"
+    val isYarnCluster = master != null && master
+      .contains("yarn") && deployMode == "cluster"
+    val isYarnClient = master != null && master
+      .contains("yarn") && deployMode == "client"
 
     // In YARN mode, the SparkR package is distributed as an archive symbolically
     // linked to the "sparkr" file in the current directory and additional R packages

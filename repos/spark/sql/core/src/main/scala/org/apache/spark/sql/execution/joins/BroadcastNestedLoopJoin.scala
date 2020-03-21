@@ -81,8 +81,9 @@ case class BroadcastNestedLoopJoin(
       case RightOuter =>
         left.output.map(_.withNullability(true)) ++ right.output
       case FullOuter =>
-        left.output.map(_.withNullability(true)) ++ right.output.map(
-          _.withNullability(true))
+        left.output.map(_.withNullability(true)) ++ right
+          .output
+          .map(_.withNullability(true))
       case LeftSemi =>
         left.output
       case x =>
@@ -105,19 +106,23 @@ case class BroadcastNestedLoopJoin(
     */
   private def innerJoin(
       relation: Broadcast[Array[InternalRow]]): RDD[InternalRow] = {
-    streamed.execute().mapPartitionsInternal { streamedIter =>
-      val buildRows = relation.value
-      val joinedRow = new JoinedRow
+    streamed
+      .execute()
+      .mapPartitionsInternal { streamedIter =>
+        val buildRows = relation.value
+        val joinedRow = new JoinedRow
 
-      streamedIter.flatMap { streamedRow =>
-        val joinedRows = buildRows.iterator.map(r => joinedRow(streamedRow, r))
-        if (condition.isDefined) {
-          joinedRows.filter(boundCondition)
-        } else {
-          joinedRows
+        streamedIter.flatMap { streamedRow =>
+          val joinedRows = buildRows
+            .iterator
+            .map(r => joinedRow(streamedRow, r))
+          if (condition.isDefined) {
+            joinedRows.filter(boundCondition)
+          } else {
+            joinedRows
+          }
         }
       }
-    }
   }
 
   /**
@@ -128,60 +133,62 @@ case class BroadcastNestedLoopJoin(
     */
   private def outerJoin(
       relation: Broadcast[Array[InternalRow]]): RDD[InternalRow] = {
-    streamed.execute().mapPartitionsInternal { streamedIter =>
-      val buildRows = relation.value
-      val joinedRow = new JoinedRow
-      val nulls = new GenericMutableRow(broadcast.output.size)
+    streamed
+      .execute()
+      .mapPartitionsInternal { streamedIter =>
+        val buildRows = relation.value
+        val joinedRow = new JoinedRow
+        val nulls = new GenericMutableRow(broadcast.output.size)
 
-      // Returns an iterator to avoid copy the rows.
-      new Iterator[InternalRow] {
-        // current row from stream side
-        private var streamRow: InternalRow = null
-        // have found a match for current row or not
-        private var foundMatch: Boolean = false
-        // the matched result row
-        private var resultRow: InternalRow = null
-        // the next index of buildRows to try
-        private var nextIndex: Int = 0
+        // Returns an iterator to avoid copy the rows.
+        new Iterator[InternalRow] {
+          // current row from stream side
+          private var streamRow: InternalRow = null
+          // have found a match for current row or not
+          private var foundMatch: Boolean = false
+          // the matched result row
+          private var resultRow: InternalRow = null
+          // the next index of buildRows to try
+          private var nextIndex: Int = 0
 
-        private def findNextMatch(): Boolean = {
-          if (streamRow == null) {
-            if (!streamedIter.hasNext) {
-              return false
+          private def findNextMatch(): Boolean = {
+            if (streamRow == null) {
+              if (!streamedIter.hasNext) {
+                return false
+              }
+              streamRow = streamedIter.next()
+              nextIndex = 0
+              foundMatch = false
             }
-            streamRow = streamedIter.next()
-            nextIndex = 0
-            foundMatch = false
-          }
-          while (nextIndex < buildRows.length) {
-            resultRow = joinedRow(streamRow, buildRows(nextIndex))
-            nextIndex += 1
-            if (boundCondition(resultRow)) {
-              foundMatch = true
-              return true
+            while (nextIndex < buildRows.length) {
+              resultRow = joinedRow(streamRow, buildRows(nextIndex))
+              nextIndex += 1
+              if (boundCondition(resultRow)) {
+                foundMatch = true
+                return true
+              }
+            }
+            if (!foundMatch) {
+              resultRow = joinedRow(streamRow, nulls)
+              streamRow = null
+              true
+            } else {
+              resultRow = null
+              streamRow = null
+              findNextMatch()
             }
           }
-          if (!foundMatch) {
-            resultRow = joinedRow(streamRow, nulls)
-            streamRow = null
-            true
-          } else {
+
+          override def hasNext(): Boolean = {
+            resultRow != null || findNextMatch()
+          }
+          override def next(): InternalRow = {
+            val r = resultRow
             resultRow = null
-            streamRow = null
-            findNextMatch()
+            r
           }
-        }
-
-        override def hasNext(): Boolean = {
-          resultRow != null || findNextMatch()
-        }
-        override def next(): InternalRow = {
-          val r = resultRow
-          resultRow = null
-          r
         }
       }
-    }
   }
 
   /**
@@ -192,17 +199,19 @@ case class BroadcastNestedLoopJoin(
   private def leftSemiJoin(
       relation: Broadcast[Array[InternalRow]]): RDD[InternalRow] = {
     assert(buildSide == BuildRight)
-    streamed.execute().mapPartitionsInternal { streamedIter =>
-      val buildRows = relation.value
-      val joinedRow = new JoinedRow
+    streamed
+      .execute()
+      .mapPartitionsInternal { streamedIter =>
+        val buildRows = relation.value
+        val joinedRow = new JoinedRow
 
-      if (condition.isDefined) {
-        streamedIter.filter(l =>
-          buildRows.exists(r => boundCondition(joinedRow(l, r))))
-      } else {
-        streamedIter.filter(r => !buildRows.isEmpty)
+        if (condition.isDefined) {
+          streamedIter
+            .filter(l => buildRows.exists(r => boundCondition(joinedRow(l, r))))
+        } else {
+          streamedIter.filter(r => !buildRows.isEmpty)
+        }
       }
-    }
   }
 
   /**
@@ -294,9 +303,8 @@ case class BroadcastNestedLoopJoin(
       buf.toSeq
     }
 
-    sparkContext.union(
-      matchedStreamRows,
-      sparkContext.makeRDD(notMatchedBroadcastRows))
+    sparkContext
+      .union(matchedStreamRows, sparkContext.makeRDD(notMatchedBroadcastRows))
   }
 
   protected override def doExecute(): RDD[InternalRow] = {

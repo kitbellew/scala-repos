@@ -61,8 +61,8 @@ object AssetsSpec extends Specification {
     }
 
     "look up assets with percent-encoded resource paths" in {
-      Assets.resourceNameAt("/x", "1%20+%202%20=%203") must beSome(
-        "/x/1 + 2 = 3")
+      Assets
+        .resourceNameAt("/x", "1%20+%202%20=%203") must beSome("/x/1 + 2 = 3")
       Assets.resourceNameAt("/x", "foo%20bar.txt") must beSome("/x/foo bar.txt")
       Assets.resourceNameAt("/x", "foo+bar%3A%20baz.txt") must beSome(
         "/x/foo+bar: baz.txt")
@@ -95,8 +95,8 @@ object AssetsSpec extends Specification {
       Assets.resourceNameAt("/a/b", "../b/c/d") must beSome("/a/b/../b/c/d")
       Assets.resourceNameAt("/a/b", "c/../d") must beSome("/a/b/c/../d")
       Assets.resourceNameAt("/a/b", "c/d/..") must beSome("/a/b/c/d/..")
-      Assets.resourceNameAt("/a/b", "c/d/../../x") must beSome(
-        "/a/b/c/d/../../x")
+      Assets
+        .resourceNameAt("/a/b", "c/d/../../x") must beSome("/a/b/c/d/../../x")
       Assets.resourceNameAt("/a/b", "../../a/b/c/d") must beSome(
         "/a/b/../../a/b/c/d")
     }
@@ -109,11 +109,14 @@ object AssetsSpec extends Specification {
     }
 
     "use the unescaped path when finding the last modified date of an asset" in {
-      val url = AssetsSpec.getClass.getClassLoader
+      val url = AssetsSpec
+        .getClass
+        .getClassLoader
         .getResource("file withspace.css")
       val assetInfo = new AssetInfo("file withspace.css", url, None, None)
-      val lastModified = ResponseHeader.httpDateFormat.parseDateTime(
-        assetInfo.lastModified.get)
+      val lastModified = ResponseHeader
+        .httpDateFormat
+        .parseDateTime(assetInfo.lastModified.get)
       // If it uses the escaped path, the file won't be found, and so last modified will be 0
       lastModified.toDate.getTime must_!= 0
     }

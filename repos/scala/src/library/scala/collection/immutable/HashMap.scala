@@ -629,10 +629,8 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
 
             // collision
             if (thislsb == thatlsb) {
-              val m = thiselems(thisi).merge0(
-                thatelems(thati),
-                level + 5,
-                merger)
+              val m = thiselems(thisi)
+                .merge0(thatelems(thati), level + 5, merger)
               totalelems += m.size
               merged(i) = m
               thisbm = thisbm & ~thislsb

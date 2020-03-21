@@ -54,8 +54,9 @@ class GoToExpandedMacroCallProviderExt extends LineMarkerProvider {
             Pass.UPDATE_OVERRIDEN_MARKERS,
             new Function[PsiElement, String] {
               def fun(param: PsiElement): String = {
-                if (!ScalaMacroDebuggingUtil.macrosToExpand.contains(
-                      macroCall)) {
+                if (!ScalaMacroDebuggingUtil
+                      .macrosToExpand
+                      .contains(macroCall)) {
                   "Expand macro"
                 } else {
                   "Collapse macro"

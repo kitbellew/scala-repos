@@ -95,9 +95,11 @@ class SnapshotSerializer(val system: ExtendedActorSystem)
     // serialize actor references with full address information (defaultAddress)
     transportInformation match {
       case Some(ti) ⇒
-        Serialization.currentTransportInformation.withValue(ti) {
-          serialize()
-        }
+        Serialization
+          .currentTransportInformation
+          .withValue(ti) {
+            serialize()
+          }
       case None ⇒
         serialize()
     }
@@ -223,7 +225,8 @@ object SnapshotSerializer {
     val uidOffset = superOffset + offset
     val clazz: Seq[Byte] = baus.toByteArray.slice(superOffset, uidOffset)
     val knownClazz: Seq[Byte] = key.take(offset)
-    val uid: Seq[Byte] = baus.toByteArray
+    val uid: Seq[Byte] = baus
+      .toByteArray
       .slice(uidOffset, uidOffset + replacement.length)
     // only attempt to patch if we know the target class
     if (clazz == knownClazz) {

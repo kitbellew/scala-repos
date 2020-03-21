@@ -30,9 +30,11 @@ object LockManager {
       override def executeSequentially[T](key: String)(future: => Future[T])(
           implicit ec: ExecutionContext): Future[T] = {
         val lock = locks.get(key)
-        scala.concurrent.blocking {
-          lock.acquire()
-        }
+        scala
+          .concurrent
+          .blocking {
+            lock.acquire()
+          }
         val result = future
         result.onComplete { _ =>
           lock.release()

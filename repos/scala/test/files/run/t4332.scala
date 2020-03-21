@@ -36,10 +36,13 @@ object Test extends DirectTest {
     val needOverride =
       inheritedFromGenericCollection filterNot isExempt filter returnsView
 
-    val grouped = needOverride.groupBy(_.owner).toSeq.sortBy {
-      case (owner, _) =>
-        viewType baseTypeIndex owner
-    }
+    val grouped = needOverride
+      .groupBy(_.owner)
+      .toSeq
+      .sortBy {
+        case (owner, _) =>
+          viewType baseTypeIndex owner
+      }
     val report = grouped
       .map {
         case (owner, syms) =>

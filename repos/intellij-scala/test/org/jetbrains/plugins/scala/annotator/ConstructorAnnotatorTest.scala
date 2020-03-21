@@ -130,9 +130,12 @@ class ConstructorAnnotatorTest extends SimpleTestCase {
     Compatibility.seqClass = seq
 
     try {
-      file.depthFirst.filterByType(classOf[ScConstructor]).foreach {
-        annotator.annotateConstructor(_, mock)
-      }
+      file
+        .depthFirst
+        .filterByType(classOf[ScConstructor])
+        .foreach {
+          annotator.annotateConstructor(_, mock)
+        }
 
       mock.annotations
     } finally {

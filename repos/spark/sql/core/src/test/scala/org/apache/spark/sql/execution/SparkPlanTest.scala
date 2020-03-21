@@ -188,8 +188,9 @@ object SparkPlanTest {
           return Some(errorMessage)
       }
 
-    SQLTestUtils.compareAnswers(actualAnswer, expectedAnswer, sortAnswers).map {
-      errorMessage =>
+    SQLTestUtils
+      .compareAnswers(actualAnswer, expectedAnswer, sortAnswers)
+      .map { errorMessage =>
         s"""
          | Results do not match.
          | Actual result Spark plan:
@@ -198,7 +199,7 @@ object SparkPlanTest {
          | $expectedOutputPlan
          | $errorMessage
        """.stripMargin
-    }
+      }
   }
 
   /**
@@ -234,14 +235,15 @@ object SparkPlanTest {
           return Some(errorMessage)
       }
 
-    SQLTestUtils.compareAnswers(sparkAnswer, expectedAnswer, sortAnswers).map {
-      errorMessage =>
+    SQLTestUtils
+      .compareAnswers(sparkAnswer, expectedAnswer, sortAnswers)
+      .map { errorMessage =>
         s"""
          | Results do not match for Spark plan:
          | $outputPlan
          | $errorMessage
        """.stripMargin
-    }
+      }
   }
 
   private def executePlan(
@@ -249,19 +251,22 @@ object SparkPlanTest {
       sqlContext: SQLContext): Seq[Row] = {
     // A very simple resolver to make writing tests easier. In contrast to the real resolver
     // this is always case sensitive and does not try to handle scoping or complex type resolution.
-    val resolvedPlan = sqlContext.sessionState.prepareForExecution.execute(
-      outputPlan transform {
-        case plan: SparkPlan =>
-          val inputMap =
-            plan.children.flatMap(_.output).map(a => (a.name, a)).toMap
-          plan transformExpressions {
-            case UnresolvedAttribute(Seq(u)) =>
-              inputMap.getOrElse(
-                u,
-                sys.error(
-                  s"Invalid Test: Cannot resolve $u given input $inputMap"))
-          }
-      })
+    val resolvedPlan = sqlContext
+      .sessionState
+      .prepareForExecution
+      .execute(
+        outputPlan transform {
+          case plan: SparkPlan =>
+            val inputMap =
+              plan.children.flatMap(_.output).map(a => (a.name, a)).toMap
+            plan transformExpressions {
+              case UnresolvedAttribute(Seq(u)) =>
+                inputMap.getOrElse(
+                  u,
+                  sys.error(
+                    s"Invalid Test: Cannot resolve $u given input $inputMap"))
+            }
+        })
     resolvedPlan.executeCollectPublic().toSeq
   }
 }

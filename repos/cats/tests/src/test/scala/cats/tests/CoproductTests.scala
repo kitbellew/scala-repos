@@ -58,13 +58,15 @@ class CoproductTests extends CatsSuite {
       stringEq: Eq[String]): Eq[Show[A]] =
     new Eq[Show[A]] {
       def eqv(f: Show[A], g: Show[A]): Boolean = {
-        val samples = List.fill(100)(arbA.arbitrary.sample).collect {
-          case Some(a) =>
-            a
-          case None =>
-            sys.error(
-              "Could not generate arbitrary values to compare two Show[A]")
-        }
+        val samples = List
+          .fill(100)(arbA.arbitrary.sample)
+          .collect {
+            case Some(a) =>
+              a
+            case None =>
+              sys.error(
+                "Could not generate arbitrary values to compare two Show[A]")
+          }
         samples.forall(s => stringEq.eqv(f.show(s), g.show(s)))
       }
     }

@@ -48,10 +48,7 @@ class StreamFileDocSpec extends AkkaSpec(UnboundedMailboxConfig) {
 
     //#file-source
 
-    val foreach: Future[IOResult] = FileIO
-      .fromFile(file)
-      .to(Sink.ignore)
-      .run()
+    val foreach: Future[IOResult] = FileIO.fromFile(file).to(Sink.ignore).run()
     //#file-source
   }
 

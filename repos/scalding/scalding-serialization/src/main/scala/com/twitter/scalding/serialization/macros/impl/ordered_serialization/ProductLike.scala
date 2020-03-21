@@ -64,8 +64,8 @@ object ProductLike {
         val target = freshT("target")
         q"""
           val $target = $element.$accessorSymbol
-            $currentHash = _root_.com.twitter.scalding.serialization.MurmurHashUtils.mixH1($currentHash, ${tBuf
-          .hash(target)})
+            $currentHash = _root_.com.twitter.scalding.serialization.MurmurHashUtils.mixH1($currentHash, ${tBuf.hash(
+          target)})
           """
     }
 
@@ -210,7 +210,6 @@ object ProductLike {
           """)
         case (None, (tree, valname)) =>
           Some(q"""$tree; $valname""")
-      }
-      .getOrElse(q"""0""") // all 0 size products are equal
+      }.getOrElse(q"""0""") // all 0 size products are equal
   }
 }

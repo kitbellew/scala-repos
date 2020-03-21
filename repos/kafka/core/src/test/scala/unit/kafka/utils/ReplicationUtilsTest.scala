@@ -82,8 +82,8 @@ class ReplicationUtilsTest extends ZooKeeperTestHarness {
       .anyTimes()
     EasyMock.replay(logManager)
 
-    val replicaManager = EasyMock.createMock(
-      classOf[kafka.server.ReplicaManager])
+    val replicaManager = EasyMock
+      .createMock(classOf[kafka.server.ReplicaManager])
     EasyMock.expect(replicaManager.config).andReturn(configs.head)
     EasyMock.expect(replicaManager.logManager).andReturn(logManager)
     EasyMock

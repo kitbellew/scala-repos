@@ -275,8 +275,8 @@ class ORSetSpec extends WordSpec with Matchers {
         "K1" -> VersionVector(nodeA, 3L),
         "K2" -> VersionVector(TreeMap(nodeB -> 6L, nodeC -> 2L)))
 
-      ORSet.mergeCommonKeys(commonKeys, thisSet, thatSet) should be(
-        expectedDots)
+      ORSet
+        .mergeCommonKeys(commonKeys, thisSet, thatSet) should be(expectedDots)
     }
 
     "verify mergeDisjointKeys" in {
@@ -292,8 +292,8 @@ class ORSetSpec extends WordSpec with Matchers {
         "K4" -> VersionVector(nodeD, 8L)
       ) // "a" -> 3 removed, optimized to include only those unseen
 
-      ORSet.mergeDisjointKeys(keys, elements, vvector, acc) should be(
-        expectedDots)
+      ORSet
+        .mergeDisjointKeys(keys, elements, vvector, acc) should be(expectedDots)
     }
 
     "verify disjoint merge" in {

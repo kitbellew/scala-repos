@@ -58,17 +58,17 @@ class RichFlowDef(val fd: FlowDef) {
     Option(left).getOrElse(right)
 
   private[this] def mergeLeft[K, V](left: JMap[K, V], right: JMap[K, V]) {
-    right.asScala.foreach {
-      case (k, v) =>
-        if (!left.containsKey(k))
-          left.put(k, v)
-    }
+    right
+      .asScala
+      .foreach {
+        case (k, v) =>
+          if (!left.containsKey(k))
+            left.put(k, v)
+      }
   }
   private[this] def appendLeft[T](left: JList[T], right: JList[T]) {
     val existing = left.asScala.toSet
-    right.asScala
-      .filterNot(existing)
-      .foreach(left.add)
+    right.asScala.filterNot(existing).foreach(left.add)
   }
 
   /**
@@ -89,8 +89,8 @@ class RichFlowDef(val fd: FlowDef) {
           (
             current.copy(
               sourceMap = oFS.sourceMap ++ current.sourceMap,
-              flowConfigUpdates =
-                oFS.flowConfigUpdates ++ current.flowConfigUpdates),
+              flowConfigUpdates = oFS.flowConfigUpdates ++ current
+                .flowConfigUpdates),
             ())
         }
       }
@@ -132,16 +132,14 @@ class RichFlowDef(val fd: FlowDef) {
     val headNames: Set[String] =
       upipes
         .filter(_.getPrevious.length == 0) // implies _ is a head
-        .map(_.getName)
-        .toSet
+        .map(_.getName).toSet
 
-    headNames
-      .foreach { head =>
-        // TODO: make sure we handle checkpoints correctly
-        if (!newSrcs.containsKey(head)) {
-          newFd.addSource(head, sourceTaps.get(head))
-        }
+    headNames.foreach { head =>
+      // TODO: make sure we handle checkpoints correctly
+      if (!newSrcs.containsKey(head)) {
+        newFd.addSource(head, sourceTaps.get(head))
       }
+    }
 
     val sinks = fd.getSinks
     if (sinks.containsKey(pipe.getName)) {
@@ -152,7 +150,8 @@ class RichFlowDef(val fd: FlowDef) {
       .get(fd)
       .foreach { thisFS =>
         val subFlowState =
-          thisFS.sourceMap
+          thisFS
+            .sourceMap
             .foldLeft(Map[String, Source]()) {
               case (newfs, kv @ (name, source)) =>
                 if (headNames(name))

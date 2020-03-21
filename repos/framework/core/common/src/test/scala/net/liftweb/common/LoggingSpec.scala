@@ -95,8 +95,8 @@ object LoggingSpec extends Specification {
         info("Starting test")
         trace(
           "result",
-          l.foldLeft(0)(trace("lhs", _) + trace("rhs", _))) must_== l.foldLeft(
-          0)(_ + _)
+          l.foldLeft(0)(trace("lhs", _) + trace("rhs", _))) must_== l
+          .foldLeft(0)(_ + _)
         val x = 1
       }
       MyObj.x

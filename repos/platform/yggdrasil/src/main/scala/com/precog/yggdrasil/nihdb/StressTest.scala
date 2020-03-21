@@ -61,8 +61,8 @@ class StressTest {
     actorSystem.actorOf(Props(makechef))
   }
 
-  val chef = actorSystem.actorOf(
-    Props[Chef].withRouter(RoundRobinRouter(chefs)))
+  val chef = actorSystem
+    .actorOf(Props[Chef].withRouter(RoundRobinRouter(chefs)))
 
   val owner: AccountId = "account999"
 
@@ -170,19 +170,21 @@ class StressTest {
       timeit("  finished cooking")
 
       import scalaz._
-      val length = NIHDBProjection.wrap(nihdb).flatMap { projection =>
-        val stream =
-          StreamT.unfoldM[Future, Unit, Option[Long]](None) { key =>
-            projection
-              .getBlockAfter(key, None)
-              .map(
-                _.map {
-                  case BlockProjectionData(_, maxKey, _) =>
-                    ((), Some(maxKey))
-                })
-          }
-        stream.length
-      }
+      val length = NIHDBProjection
+        .wrap(nihdb)
+        .flatMap { projection =>
+          val stream =
+            StreamT.unfoldM[Future, Unit, Option[Long]](None) { key =>
+              projection
+                .getBlockAfter(key, None)
+                .map(
+                  _.map {
+                    case BlockProjectionData(_, maxKey, _) =>
+                      ((), Some(maxKey))
+                  })
+            }
+          stream.length
+        }
 
       Await.result(length, Duration(300, "seconds"))
       timeit2("  evaluated")

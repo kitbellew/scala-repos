@@ -111,9 +111,12 @@ trait PersistentStoreTest
         manager.initialize().futureValue
       case _ => //ignore
     }
-    persistentStore.allIds().futureValue.foreach { entry =>
-      persistentStore.delete(entry).futureValue
-    }
+    persistentStore
+      .allIds()
+      .futureValue
+      .foreach { entry =>
+        persistentStore.delete(entry).futureValue
+      }
   }
 
   def persistentStore: PersistentStore

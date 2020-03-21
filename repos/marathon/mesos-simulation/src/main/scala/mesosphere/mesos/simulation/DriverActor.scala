@@ -80,15 +80,16 @@ class DriverActor(schedulerProps: Props) extends Actor {
   private[this] var periodicOffers: Option[Cancellable] = None
   private[this] var scheduler: ActorRef = _
 
-  private[this] var tasks: Map[String, TaskStatus] = Map.empty.withDefault {
-    taskId =>
+  private[this] var tasks: Map[String, TaskStatus] = Map
+    .empty
+    .withDefault { taskId =>
       TaskStatus
         .newBuilder()
         .setSource(TaskStatus.Source.SOURCE_SLAVE)
         .setTaskId(TaskID.newBuilder().setValue(taskId).build())
         .setState(TaskState.TASK_LOST)
         .build()
-  }
+    }
 
   //scalastyle:off magic.number
   private[this] def offer: Offer = {
@@ -116,7 +117,8 @@ class DriverActor(schedulerProps: Props) extends Actor {
             .setName("ports")
             .setType(Value.Type.RANGES)
             .setRanges(
-              Value.Ranges
+              Value
+                .Ranges
                 .newBuilder()
                 .addRange(
                   Value.Range.newBuilder().setBegin(10000).setEnd(20000)))
@@ -134,8 +136,10 @@ class DriverActor(schedulerProps: Props) extends Actor {
 
     import context.dispatcher
     periodicOffers = Some(
-      context.system.scheduler.schedule(1.second, 1.seconds)(
-        scheduler ! offers))
+      context
+        .system
+        .scheduler
+        .schedule(1.second, 1.seconds)(scheduler ! offers))
   }
 
   override def postStop(): Unit = {
@@ -185,7 +189,8 @@ class DriverActor(schedulerProps: Props) extends Actor {
         if (taskStatuses.isEmpty) {
           tasks.values.foreach(scheduler ! _)
         } else {
-          taskStatuses.iterator
+          taskStatuses
+            .iterator
             .map(_.getTaskId.getValue)
             .map(tasks)
             .foreach(scheduler ! _)
@@ -196,9 +201,13 @@ class DriverActor(schedulerProps: Props) extends Actor {
   private[this] def extractTaskInfos(
       ops: Iterable[Offer.Operation]): Iterable[TaskInfo] = {
     import scala.collection.JavaConverters._
-    ops.filter(_.getType == Offer.Operation.Type.LAUNCH).flatMap { op =>
-      Option(op.getLaunch).map(_.getTaskInfosList.asScala).getOrElse(Seq.empty)
-    }
+    ops
+      .filter(_.getType == Offer.Operation.Type.LAUNCH)
+      .flatMap { op =>
+        Option(op.getLaunch)
+          .map(_.getTaskInfosList.asScala)
+          .getOrElse(Seq.empty)
+      }
   }
 
   private[this] def simulateTaskLaunch(
@@ -206,25 +215,31 @@ class DriverActor(schedulerProps: Props) extends Actor {
       tasksToLaunch: Iterable[TaskInfo]): Unit = {
     if (random.nextDouble() > 0.001) {
       log.debug(s"launch tasksToLaunch $offers, $tasksToLaunch")
-      tasksToLaunch.map(_.getTaskId).foreach {
-        scheduleStatusChange(
-          toState = TaskState.TASK_STAGING,
-          afterDuration = 1.second,
-          create = true)
-      }
+      tasksToLaunch
+        .map(_.getTaskId)
+        .foreach {
+          scheduleStatusChange(
+            toState = TaskState.TASK_STAGING,
+            afterDuration = 1.second,
+            create = true)
+        }
 
       if (random.nextDouble() > 0.001) {
-        tasksToLaunch.map(_.getTaskId).foreach {
-          scheduleStatusChange(
-            toState = TaskState.TASK_RUNNING,
-            afterDuration = 5.seconds)
-        }
+        tasksToLaunch
+          .map(_.getTaskId)
+          .foreach {
+            scheduleStatusChange(
+              toState = TaskState.TASK_RUNNING,
+              afterDuration = 5.seconds)
+          }
       } else {
-        tasksToLaunch.map(_.getTaskId).foreach {
-          scheduleStatusChange(
-            toState = TaskState.TASK_FAILED,
-            afterDuration = 5.seconds)
-        }
+        tasksToLaunch
+          .map(_.getTaskId)
+          .foreach {
+            scheduleStatusChange(
+              toState = TaskState.TASK_FAILED,
+              afterDuration = 5.seconds)
+          }
       }
     } else {
       log.debug("simulating lost launch")
@@ -236,8 +251,8 @@ class DriverActor(schedulerProps: Props) extends Actor {
       create: Boolean): Unit = {
     if (create || tasks.contains(status.getTaskId.getValue)) {
       status.getState match {
-        case TaskState.TASK_ERROR | TaskState.TASK_FAILED |
-            TaskState.TASK_FINISHED | TaskState.TASK_LOST =>
+        case TaskState.TASK_ERROR | TaskState.TASK_FAILED | TaskState
+              .TASK_FINISHED | TaskState.TASK_LOST =>
           tasks -= status.getTaskId.getValue
         case _ =>
           tasks += (status.getTaskId.getValue -> status)
@@ -265,7 +280,9 @@ class DriverActor(schedulerProps: Props) extends Actor {
       .setState(toState)
       .build()
     import context.dispatcher
-    context.system.scheduler
+    context
+      .system
+      .scheduler
       .scheduleOnce(afterDuration, self, ChangeTaskStatus(newStatus, create))
   }
 

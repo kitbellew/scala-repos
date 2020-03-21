@@ -127,12 +127,14 @@ case class ProducerRequest(
       foldedTopics +
         shortStringLength(currTopic._1) +
         4 + /* the number of partitions */ {
-        currTopic._2.foldLeft(0)((foldedPartitions, currPartition) => {
-          foldedPartitions +
-            4 + /* partition id */
-          4 + /* byte-length of serialized messages */
-          currPartition._2.sizeInBytes
-        })
+        currTopic
+          ._2
+          .foldLeft(0)((foldedPartitions, currPartition) => {
+            foldedPartitions +
+              4 + /* partition id */
+            4 + /* byte-length of serialized messages */
+            currPartition._2.sizeInBytes
+          })
       }
     })
   }

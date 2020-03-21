@@ -48,8 +48,8 @@ case class GroupUpdate(
       .getOrElse(current.apps)
       .map(toApp(current.id, _, timestamp))
     val effectiveDependencies =
-      dependencies.fold(current.dependencies)(
-        _.map(_.canonicalPath(current.id)))
+      dependencies
+        .fold(current.dependencies)(_.map(_.canonicalPath(current.id)))
     Group(
       current.id,
       effectiveApps,

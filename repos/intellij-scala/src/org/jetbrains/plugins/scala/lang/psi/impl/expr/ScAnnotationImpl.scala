@@ -71,7 +71,8 @@ class ScAnnotationImpl private (
       attributeName: String): PsiAnnotationMemberValue = {
     constructor.args match {
       case Some(args) =>
-        args.exprs
+        args
+          .exprs
           .map(expr =>
             expr match {
               case ass: ScAssignStmt =>
@@ -145,7 +146,8 @@ class ScAnnotationImpl private (
                        .isInstanceOf[PsiWhiteSpace]
                    ))
               prev = prev.getPrevSibling
-            if (prev != null && prev.getNode.getElementType == ScalaTokenTypes.tCOMMA) {
+            if (prev != null && prev.getNode.getElementType == ScalaTokenTypes
+                  .tCOMMA) {
               elem.delete()
               prev.delete()
             } else {
@@ -155,7 +157,8 @@ class ScAnnotationImpl private (
                          .isInstanceOf[PsiWhiteSpace]
                      ))
                 next = next.getNextSibling
-              if (next != null && next.getNode.getElementType == ScalaTokenTypes.tCOMMA) {
+              if (next != null && next.getNode.getElementType == ScalaTokenTypes
+                    .tCOMMA) {
                 elem.delete()
                 next.delete()
               } else {
@@ -185,14 +188,15 @@ class ScAnnotationImpl private (
         if (params.length == 1 && !params(0).isInstanceOf[ScAssignStmt]) {
           params(0).replace(
             ScalaPsiElementFactory.createExpressionFromText(
-              PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME + " = " + params(
-                0).getText,
+              PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME + " = " + params(0)
+                .getText,
               params(0).getManager))
         }
         var allowNoName: Boolean = params.length == 0 &&
           (
-            PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME.equals(
-              attributeName) || null == attributeName
+            PsiAnnotation
+              .DEFAULT_REFERENCED_METHOD_NAME
+              .equals(attributeName) || null == attributeName
           )
         var namePrefix: String = null
         if (allowNoName) {

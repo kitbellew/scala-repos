@@ -33,9 +33,9 @@ class GraphUnzipSpec extends AkkaSpec {
           GraphDSL.create() { implicit b ⇒
             val unzip = b.add(Unzip[Int, String]())
             Source(List(1 -> "a", 2 -> "b", 3 -> "c")) ~> unzip.in
-            unzip.out1 ~> Flow[String].buffer(
-              16,
-              OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c2)
+            unzip.out1 ~> Flow[String]
+              .buffer(16, OverflowStrategy.backpressure) ~> Sink
+              .fromSubscriber(c2)
             unzip.out0 ~> Flow[Int]
               .buffer(16, OverflowStrategy.backpressure)
               .map(_ * 2) ~> Sink.fromSubscriber(c1)

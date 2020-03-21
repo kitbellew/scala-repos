@@ -85,9 +85,8 @@ class HttpMuxerTest extends FunSuite {
         .contentString == fooBarPrefix)
 
     assert(
-      Await
-        .result(muxService(Request("/foo/boo/baz")))
-        .status == Status.NotFound)
+      Await.result(muxService(Request("/foo/boo/baz"))).status == Status
+        .NotFound)
 
     assert(
       Await
@@ -95,9 +94,8 @@ class HttpMuxerTest extends FunSuite {
         .contentString == fooBooBaz)
 
     assert(
-      Await
-        .result(muxService(Request("/foo/barblah")))
-        .status == Status.NotFound)
+      Await.result(muxService(Request("/foo/barblah"))).status == Status
+        .NotFound)
   }
 
   test("exact matching is handled correctly") {
@@ -107,14 +105,12 @@ class HttpMuxerTest extends FunSuite {
         .contentString == exactMatch)
 
     assert(
-      Await
-        .result(muxService(Request("/exact/match/")))
-        .status == Status.NotFound)
+      Await.result(muxService(Request("/exact/match/"))).status == Status
+        .NotFound)
 
     assert(
-      Await
-        .result(muxService(Request("/exact/match/nested")))
-        .status == Status.NotFound)
+      Await.result(muxService(Request("/exact/match/nested"))).status == Status
+        .NotFound)
   }
 
   test("""special cases "" and "/" are handled correctly""") {
@@ -132,9 +128,8 @@ class HttpMuxerTest extends FunSuite {
     assert(
       Await.result(emptyStringMux(Request(""))).contentString == specialCase)
     assert(
-      Await
-        .result(emptyStringMux(Request("/anything")))
-        .status == Status.NotFound)
+      Await.result(emptyStringMux(Request("/anything"))).status == Status
+        .NotFound)
   }
 
   test("Registering a service with an existing name will overwrite the old") {

@@ -35,11 +35,8 @@ class EngineSuite extends FunSuite with Inside with SharedSparkContext {
       servingParams = LServing1.Params(3)
     )
 
-    val models = engine.train(
-      sc,
-      engineParams,
-      engineInstanceId = "",
-      params = WorkflowParams())
+    val models = engine
+      .train(sc, engineParams, engineInstanceId = "", params = WorkflowParams())
 
     val pd = ProcessedData(1, TrainingData(0))
 
@@ -70,11 +67,8 @@ class EngineSuite extends FunSuite with Inside with SharedSparkContext {
     val model21 = PAlgo3.Model(21, pd)
     val model22 = PAlgo3.Model(22, pd)
 
-    val models = engine.train(
-      sc,
-      engineParams,
-      engineInstanceId = "",
-      params = WorkflowParams())
+    val models = engine
+      .train(sc, engineParams, engineInstanceId = "", params = WorkflowParams())
 
     val pModel21 = PersistentModelManifest(model21.getClass.getName)
     val pModel22 = PersistentModelManifest(model22.getClass.getName)
@@ -108,11 +102,8 @@ class EngineSuite extends FunSuite with Inside with SharedSparkContext {
     val model22 = LAlgo3.Model(22, pd)
 
     //val models = engine.train(sc, engineParams, WorkflowParams())
-    val models = engine.train(
-      sc,
-      engineParams,
-      engineInstanceId = "",
-      params = WorkflowParams())
+    val models = engine
+      .train(sc, engineParams, engineInstanceId = "", params = WorkflowParams())
 
     val pModel20 = PersistentModelManifest(model20.getClass.getName)
     val pModel21 = PersistentModelManifest(model21.getClass.getName)
@@ -154,11 +145,8 @@ class EngineSuite extends FunSuite with Inside with SharedSparkContext {
     val model25 = NAlgo3.Model(25, pd)
 
     //val models = engine.train(sc, engineParams, WorkflowParams())
-    val models = engine.train(
-      sc,
-      engineParams,
-      engineInstanceId = "",
-      params = WorkflowParams())
+    val models = engine
+      .train(sc, engineParams, engineInstanceId = "", params = WorkflowParams())
 
     val pModel21 = PersistentModelManifest(model21.getClass.getName)
     val pModel22 = PersistentModelManifest(model22.getClass.getName)

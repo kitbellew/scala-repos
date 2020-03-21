@@ -88,9 +88,12 @@ object Xml {
           case g: Group =>
             g.nodes.toList.flatMap(x => x :: descendant(x))
           case _ =>
-            n.child.toList.flatMap { x =>
-              x :: descendant(x)
-            }
+            n
+              .child
+              .toList
+              .flatMap { x =>
+                x :: descendant(x)
+              }
         }
 
       !descendant(node).find(_.isInstanceOf[Elem]).isDefined
@@ -170,12 +173,14 @@ object Xml {
           val allLabels = nodes.map(_.label)
           if (array_?(allLabels)) {
             val arr = XArray(
-              nodes.toList.flatMap { n =>
-                if (leaf_?(n) && n.attributes.length == 0)
-                  XValue(n.text) :: Nil
-                else
-                  buildNodes(n)
-              })
+              nodes
+                .toList
+                .flatMap { n =>
+                  if (leaf_?(n) && n.attributes.length == 0)
+                    XValue(n.text) :: Nil
+                  else
+                    buildNodes(n)
+                })
             XLeaf((allLabels(0), arr), Nil) :: Nil
           } else
             nodes.toList.flatMap(buildNodes)

@@ -116,9 +116,8 @@ class CoarseMesosSchedulerBackendSuite
     val taskInfos = verifyTaskLaunched("o1")
     assert(taskInfos.size() == 1)
 
-    val cpus = backend.getResource(
-      taskInfos.iterator().next().getResourcesList,
-      "cpus")
+    val cpus = backend
+      .getResource(taskInfos.iterator().next().getResourcesList, "cpus")
     assert(cpus == executorCores)
   }
 
@@ -132,9 +131,8 @@ class CoarseMesosSchedulerBackendSuite
     val taskInfos = verifyTaskLaunched("o1")
     assert(taskInfos.size() == 1)
 
-    val cpus = backend.getResource(
-      taskInfos.iterator().next().getResourcesList,
-      "cpus")
+    val cpus = backend
+      .getResource(taskInfos.iterator().next().getResourcesList, "cpus")
     assert(cpus == offerCores)
   }
 
@@ -148,9 +146,8 @@ class CoarseMesosSchedulerBackendSuite
     val taskInfos = verifyTaskLaunched("o1")
     assert(taskInfos.size() == 1)
 
-    val cpus = backend.getResource(
-      taskInfos.iterator().next().getResourcesList,
-      "cpus")
+    val cpus = backend
+      .getResource(taskInfos.iterator().next().getResourcesList, "cpus")
     assert(cpus == maxCores)
   }
 
@@ -274,18 +271,24 @@ class CoarseMesosSchedulerBackendSuite
   private def offerResources(
       offers: List[(Int, Int)],
       startId: Int = 1): Unit = {
-    val mesosOffers = offers.zipWithIndex.map {
-      case (offer, i) =>
-        createOffer(s"o${i + startId}", s"s${i + startId}", offer._1, offer._2)
-    }
+    val mesosOffers = offers
+      .zipWithIndex
+      .map {
+        case (offer, i) =>
+          createOffer(
+            s"o${i + startId}",
+            s"s${i + startId}",
+            offer._1,
+            offer._2)
+      }
 
     backend.resourceOffers(driver, mesosOffers.asJava)
   }
 
   private def verifyTaskLaunched(
       offerId: String): java.util.Collection[TaskInfo] = {
-    val captor = ArgumentCaptor.forClass(
-      classOf[java.util.Collection[TaskInfo]])
+    val captor = ArgumentCaptor
+      .forClass(classOf[java.util.Collection[TaskInfo]])
     verify(driver, times(1)).launchTasks(
       Matchers.eq(Collections.singleton(createOfferId(offerId))),
       captor.capture())
@@ -338,10 +341,7 @@ class CoarseMesosSchedulerBackendSuite
       .setScalar(Scalar.newBuilder().setValue(cpu))
     builder
       .setId(createOfferId(offerId))
-      .setFrameworkId(
-        FrameworkID
-          .newBuilder()
-          .setValue("f1"))
+      .setFrameworkId(FrameworkID.newBuilder().setValue("f1"))
       .setSlaveId(SlaveID.newBuilder().setValue(slaveId))
       .setHostname(s"host${slaveId}")
       .build()

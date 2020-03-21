@@ -65,9 +65,8 @@ class YarnAllocatorSuite
   sparkConf.set(SPARK_JARS, Seq("notarealjar.jar"))
   sparkConf.set("spark.yarn.launchContainers", "false")
 
-  val appAttemptId = ApplicationAttemptId.newInstance(
-    ApplicationId.newInstance(0, 0),
-    0)
+  val appAttemptId = ApplicationAttemptId
+    .newInstance(ApplicationId.newInstance(0, 0), 0)
 
   // Resource returned by YARN.  YARN can give larger containers than requested, so give 6 cores
   // instead of the 5 requested and 3 GB instead of the 2 requested.
@@ -265,16 +264,16 @@ class YarnAllocatorSuite
     handler.handleAllocatedContainers(Array(container1, container2))
 
     handler.requestTotalExecutorsWithPreferredLocalities(1, 0, Map.empty)
-    handler.executorIdToContainer.keys.foreach { id =>
-      handler.killExecutor(id)
-    }
+    handler
+      .executorIdToContainer
+      .keys
+      .foreach { id =>
+        handler.killExecutor(id)
+      }
 
     val statuses = Seq(container1, container2).map { c =>
-      ContainerStatus.newInstance(
-        c.getId(),
-        ContainerState.COMPLETE,
-        "Finished",
-        0)
+      ContainerStatus
+        .newInstance(c.getId(), ContainerState.COMPLETE, "Finished", 0)
     }
     handler.updateResourceRequests()
     handler.processCompletedContainers(statuses.toSeq)
@@ -295,11 +294,8 @@ class YarnAllocatorSuite
     handler.requestTotalExecutorsWithPreferredLocalities(2, 0, Map())
 
     val statuses = Seq(container1, container2).map { c =>
-      ContainerStatus.newInstance(
-        c.getId(),
-        ContainerState.COMPLETE,
-        "Failed",
-        -1)
+      ContainerStatus
+        .newInstance(c.getId(), ContainerState.COMPLETE, "Failed", -1)
     }
     handler.updateResourceRequests()
     handler.processCompletedContainers(statuses.toSeq)

@@ -16,13 +16,15 @@ class ScalaRenameClassQuickFix(clazz: ScTypeDefinition, name: String)
       "Rename Type Definition " + clazz.name + " to " + name,
       clazz) {
   def doApplyFix(project: Project): Unit = {
-    ApplicationManager.getApplication.invokeLater(
-      new Runnable {
-        def run() {
-          val td = getElement
-          RefactoringFactory.getInstance(project).createRename(td, name).run()
-        }
-      })
+    ApplicationManager
+      .getApplication
+      .invokeLater(
+        new Runnable {
+          def run() {
+            val td = getElement
+            RefactoringFactory.getInstance(project).createRename(td, name).run()
+          }
+        })
   }
 
   override def getFamilyName: String = "Rename Type Definition"

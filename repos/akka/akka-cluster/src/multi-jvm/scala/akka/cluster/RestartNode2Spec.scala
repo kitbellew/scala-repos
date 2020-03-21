@@ -27,8 +27,8 @@ object RestartNode2SpecMultiJvmSpec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false)
       .withFallback(
-        ConfigFactory.parseString(
-          """
+        ConfigFactory
+          .parseString("""
       akka.cluster.auto-down-unreachable-after = 2s
       akka.cluster.retry-unsuccessful-join-after = 3s
       akka.remote.retry-gate-closed-for = 45s
@@ -134,7 +134,9 @@ abstract class RestartNode2SpecSpec
           awaitAssert(
             Cluster(restartedSeed1System).readView.members.size should be(2))
           awaitAssert(
-            Cluster(restartedSeed1System).readView.members
+            Cluster(restartedSeed1System)
+              .readView
+              .members
               .map(_.status) should be(Set(Up)))
         }
       }

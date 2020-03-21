@@ -99,15 +99,15 @@ class ClusterDomainEventSpec extends WordSpec with Matchers {
     }
 
     "be produced for members in unreachable" in {
-      val reachability1 = Reachability.empty
+      val reachability1 = Reachability
+        .empty
         .unreachable(aUp.uniqueAddress, cUp.uniqueAddress)
         .unreachable(aUp.uniqueAddress, eUp.uniqueAddress)
       val g1 = Gossip(
         members = SortedSet(aUp, bUp, cUp, eUp),
         overview = GossipOverview(reachability = reachability1))
-      val reachability2 = reachability1.unreachable(
-        aUp.uniqueAddress,
-        bDown.uniqueAddress)
+      val reachability2 = reachability1
+        .unreachable(aUp.uniqueAddress, bDown.uniqueAddress)
       val g2 = Gossip(
         members = SortedSet(aUp, cUp, bDown, eDown),
         overview = GossipOverview(reachability = reachability2))
@@ -120,7 +120,8 @@ class ClusterDomainEventSpec extends WordSpec with Matchers {
     }
 
     "be produced for members becoming reachable after unreachable" in {
-      val reachability1 = Reachability.empty
+      val reachability1 = Reachability
+        .empty
         .unreachable(aUp.uniqueAddress, cUp.uniqueAddress)
         .reachable(aUp.uniqueAddress, cUp.uniqueAddress)
         .unreachable(aUp.uniqueAddress, eUp.uniqueAddress)

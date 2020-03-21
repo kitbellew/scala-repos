@@ -75,10 +75,8 @@ trait ScNamedElement
           null
       }
 
-    val parentMember: ScMember = PsiTreeUtil.getParentOfType(
-      this,
-      classOf[ScMember],
-      false)
+    val parentMember: ScMember = PsiTreeUtil
+      .getParentOfType(this, classOf[ScMember], false)
     new ItemPresentation {
       def getPresentableText: String = name
       def getTextAttributesKey: TextAttributesKey = null

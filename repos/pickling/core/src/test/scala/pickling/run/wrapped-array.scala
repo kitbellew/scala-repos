@@ -23,9 +23,8 @@ class WrappedArrayTest extends FunSuite {
         implicitly[FastTypeTag[WrappedArray.ofRef[AnyRef]]]
 
       def pickle(coll: WrappedArray.ofRef[AnyRef], builder: PBuilder): Unit = {
-        builder.beginEntry(
-          coll,
-          implicitly[FastTypeTag[WrappedArray.ofRef[AnyRef]]])
+        builder
+          .beginEntry(coll, implicitly[FastTypeTag[WrappedArray.ofRef[AnyRef]]])
 
         builder.beginCollection(coll.size)
         coll.foreach { (elem: AnyRef) =>
@@ -37,7 +36,9 @@ class WrappedArrayTest extends FunSuite {
               elemClass,
               mirror
             ) // slow: `mkRaw` is called for each element
-            val pickler = internal.currentRuntime.picklers
+            val pickler = internal
+              .currentRuntime
+              .picklers
               .genPickler(classLoader, elemClass, elemTag)
               .asInstanceOf[Pickler[AnyRef]]
             pickler.pickle(elem, b)
@@ -51,14 +52,19 @@ class WrappedArrayTest extends FunSuite {
         val reader = preader.beginCollection()
         val length = reader.readLength()
         val elemClass = (new Object).getClass
-        val newArray = java.lang.reflect.Array
+        val newArray = java
+          .lang
+          .reflect
+          .Array
           .newInstance(elemClass, length)
           .asInstanceOf[Array[AnyRef]]
         var i = 0
         while (i < length) {
           val r = reader.readElement()
           val elemTag = r.beginEntry()
-          val elemUnpickler = internal.currentRuntime.picklers
+          val elemUnpickler = internal
+            .currentRuntime
+            .picklers
             .genUnpickler(mirror, elemTag)
           val elem = elemUnpickler.unpickle(elemTag, r)
           r.endEntry()
@@ -70,12 +76,18 @@ class WrappedArrayTest extends FunSuite {
       }
     }
   // TODO - This is kind of a hack because we don't really know the full tag, and we're tagging the instance with a partial tag.
-  internal.currentRuntime.picklers.registerPickler(
-    "scala.collection.mutable.WrappedArray.ofRef",
-    mkAnyRefWrappedArrayPickler)
-  internal.currentRuntime.picklers.registerUnpickler(
-    "scala.collection.mutable.WrappedArray.ofRef[java.lang.Object]",
-    mkAnyRefWrappedArrayPickler)
+  internal
+    .currentRuntime
+    .picklers
+    .registerPickler(
+      "scala.collection.mutable.WrappedArray.ofRef",
+      mkAnyRefWrappedArrayPickler)
+  internal
+    .currentRuntime
+    .picklers
+    .registerUnpickler(
+      "scala.collection.mutable.WrappedArray.ofRef[java.lang.Object]",
+      mkAnyRefWrappedArrayPickler)
 
   test("main") {
     val l = List(Rating(10), Rating(5), Rating(2))

@@ -64,8 +64,8 @@ class ScTypeProjectionImpl(node: ASTNode)
       .resolveWithCaching(this, MyResolver, true, incomplete)
 
   def getVariants: Array[Object] = {
-    val isInImport: Boolean =
-      ScalaPsiUtil.getParentOfType(this, classOf[ScImportStmt]) != null
+    val isInImport: Boolean = ScalaPsiUtil
+      .getParentOfType(this, classOf[ScImportStmt]) != null
     doResolve(new CompletionProcessor(getKinds(incomplete = true), this))
       .flatMap {
         case res: ScalaResolveResult =>
@@ -104,17 +104,19 @@ class ScTypeProjectionImpl(node: ASTNode)
       processor.doNotCheckAccessibility()
     val projected = typeElement.getType(TypingContext.empty).getOrAny
     processor.processType(projected, this)
-    val res = processor.candidates.map { r: ScalaResolveResult =>
-      r.element match {
-        case mem: PsiMember if mem.containingClass != null =>
-          new ScalaResolveResult(
-            mem,
-            r.substitutor /*.bindO(mem.getContainingClass, projected, this)*/,
-            r.importsUsed)
-        case _ =>
-          r: ResolveResult
+    val res = processor
+      .candidates
+      .map { r: ScalaResolveResult =>
+        r.element match {
+          case mem: PsiMember if mem.containingClass != null =>
+            new ScalaResolveResult(
+              mem,
+              r.substitutor /*.bindO(mem.getContainingClass, projected, this)*/,
+              r.importsUsed)
+          case _ =>
+            r: ResolveResult
+        }
       }
-    }
     if (accessibilityCheck && res.length == 0)
       return doResolve(processor, accessibilityCheck = false)
     res

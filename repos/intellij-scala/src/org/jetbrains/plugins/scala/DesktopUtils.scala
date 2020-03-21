@@ -33,19 +33,22 @@ object DesktopUtils {
   }
 
   def browse(url: String) {
-    val supported = Desktop.isDesktopSupported && Desktop.getDesktop
+    val supported = Desktop.isDesktopSupported && Desktop
+      .getDesktop
       .isSupported(Desktop.Action.BROWSE)
 
     if (supported)
       Desktop.getDesktop.browse(new URI(url))
     else
-      Notifications.Bus.notify(
-        new Notification(
-          "scala",
-          "Problem opening web page",
-          MessageFormat.format(url),
-          NotificationType.WARNING,
-          Listener))
+      Notifications
+        .Bus
+        .notify(
+          new Notification(
+            "scala",
+            "Problem opening web page",
+            MessageFormat.format(url),
+            NotificationType.WARNING,
+            Listener))
   }
 
   private object Listener extends NotificationListener.Adapter {

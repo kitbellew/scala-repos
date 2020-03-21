@@ -62,9 +62,11 @@ trait BaseLimit extends UnaryNode with CodegenSupport {
   override def outputOrdering: Seq[SortOrder] = child.outputOrdering
   override def outputPartitioning: Partitioning = child.outputPartitioning
   protected override def doExecute(): RDD[InternalRow] =
-    child.execute().mapPartitions { iter =>
-      iter.take(limit)
-    }
+    child
+      .execute()
+      .mapPartitions { iter =>
+        iter.take(limit)
+      }
 
   override def upstreams(): Seq[RDD[InternalRow]] = {
     child.asInstanceOf[CodegenSupport].upstreams()
@@ -151,9 +153,12 @@ case class TakeOrderedAndProject(
   protected override def doExecute(): RDD[InternalRow] = {
     val ord = new LazilyGeneratedOrdering(sortOrder, child.output)
     val localTopK: RDD[InternalRow] = {
-      child.execute().map(_.copy()).mapPartitions { iter =>
-        org.apache.spark.util.collection.Utils.takeOrdered(iter, limit)(ord)
-      }
+      child
+        .execute()
+        .map(_.copy())
+        .mapPartitions { iter =>
+          org.apache.spark.util.collection.Utils.takeOrdered(iter, limit)(ord)
+        }
     }
     val shuffled =
       new ShuffledRowRDD(
@@ -164,7 +169,12 @@ case class TakeOrderedAndProject(
           serializer))
     shuffled.mapPartitions { iter =>
       val topK =
-        org.apache.spark.util.collection.Utils
+        org
+          .apache
+          .spark
+          .util
+          .collection
+          .Utils
           .takeOrdered(iter.map(_.copy()), limit)(ord)
       if (projectList.isDefined) {
         val proj = UnsafeProjection.create(projectList.get, child.output)

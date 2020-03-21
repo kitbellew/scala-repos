@@ -48,7 +48,8 @@ import scala.collection.mutable
 // TODO merge with UnusedImportPass (?)
 class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
     extends TextEditorHighlightingPass(file.getProject, editor.getDocument) {
-  val findUsageProvider: FindUsagesProvider = LanguageFindUsages.INSTANCE
+  val findUsageProvider: FindUsagesProvider = LanguageFindUsages
+    .INSTANCE
     .forLanguage(ScalaFileType.SCALA_LANGUAGE)
   val highlightInfos = mutable.Buffer[HighlightInfo]()
 
@@ -107,11 +108,13 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
     if (!config.checkLocalAssign && !config.checkLocalUnused)
       return
 
-    sFile.depthFirst.foreach {
-      case x: ScDeclaredElementsHolder =>
-        processDeclaredElementHolder(x, state)
-      case _ =>
-    }
+    sFile
+      .depthFirst
+      .foreach {
+        case x: ScDeclaredElementsHolder =>
+          processDeclaredElementHolder(x, state)
+        case _ =>
+      }
 
     highlightInfos ++= annotations.map(HighlightInfo.fromAnnotation)
   }
@@ -145,8 +148,10 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
       case _: ScTemplateBody =>
         x match {
           case mem: ScMember
-              if mem.getModifierList.accessModifier.exists(
-                _.isUnqualifiedPrivateOrThis) =>
+              if mem
+                .getModifierList
+                .accessModifier
+                .exists(_.isUnqualifiedPrivateOrThis) =>
             processLocalDeclaredElementHolder(x, state)
           case _ => // ignore.
         }
@@ -209,21 +214,20 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
               }
             }
           holder.retrieveUnusedReferencesInfo(runnable)
-          if (!used && state.config.checkLocalUnused && !isUnusedSymbolSuppressed(
-                decElem)) {
+          if (!used && state
+                .config
+                .checkLocalUnused && !isUnusedSymbolSuppressed(decElem)) {
             hasAtLeastOneUnusedHighlight = true
             val elementTypeDesc = findUsageProvider.getType(declElementHolder)
             val severity = state.config.localUnusedSeverity
-            val message = "%s '%s' is never used".format(
-              elementTypeDesc,
-              decElem.name)
-            val key = HighlightDisplayKey.find(
-              ScalaUnusedSymbolInspection.ShortName)
+            val message = "%s '%s' is never used"
+              .format(elementTypeDesc, decElem.name)
+            val key = HighlightDisplayKey
+              .find(ScalaUnusedSymbolInspection.ShortName)
             val range = decElem.nameId.getTextRange
-            val annotation = state.annotationHolder.createAnnotation(
-              severity,
-              range,
-              message)
+            val annotation = state
+              .annotationHolder
+              .createAnnotation(severity, range, message)
             annotation.registerFix(new DeleteElementFix(elem), range, key)
             state.annotations += annotation
           }
@@ -250,10 +254,9 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
           .getStartOffset
       val end = declElementHolder.getTextRange.getEndOffset
       val range = TextRange.create(start, end)
-      val annotation = state.annotationHolder.createAnnotation(
-        severity,
-        new TextRange(start, end),
-        message)
+      val annotation = state
+        .annotationHolder
+        .createAnnotation(severity, new TextRange(start, end), message)
       val key = HighlightDisplayKey.find(VarCouldBeValInspection.ShortName)
       val fix =
         new VarToValFix(
@@ -268,22 +271,21 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
   override def getInfos: java.util.List[HighlightInfo] = highlightInfos.toList
 
   private def isUnusedSymbolSuppressed(element: PsiElement) = {
-    inspectionSuppressor.isSuppressedFor(
-      element,
-      ScalaUnusedSymbolInspection.ShortName)
+    inspectionSuppressor
+      .isSuppressedFor(element, ScalaUnusedSymbolInspection.ShortName)
   }
 
   private def isVarCouldBeValSuppressed(element: PsiElement) = {
-    inspectionSuppressor.isSuppressedFor(
-      element,
-      VarCouldBeValInspection.ShortName)
+    inspectionSuppressor
+      .isSuppressedFor(element, VarCouldBeValInspection.ShortName)
   }
 }
 
 class DeleteElementFix(element: PsiElement) extends IntentionAction {
   def getText: String = {
-    val provider: FindUsagesProvider = LanguageFindUsages.INSTANCE.forLanguage(
-      ScalaFileType.SCALA_LANGUAGE)
+    val provider: FindUsagesProvider = LanguageFindUsages
+      .INSTANCE
+      .forLanguage(ScalaFileType.SCALA_LANGUAGE)
     element match {
       case n: ScNamedElement =>
         val elementToClassify = ScalaPsiUtil.nameContext(n)

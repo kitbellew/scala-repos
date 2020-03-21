@@ -55,12 +55,10 @@ object PersistentActorBoundedStashingSpec {
        |akka.persistence.internal-stash-overflow-strategy = "%s"
        |""".stripMargin
 
-  val throwConfig = String.format(
-    templateConfig,
-    "akka.persistence.ThrowExceptionConfigurator")
-  val discardConfig = String.format(
-    templateConfig,
-    "akka.persistence.DiscardConfigurator")
+  val throwConfig = String
+    .format(templateConfig, "akka.persistence.ThrowExceptionConfigurator")
+  val discardConfig = String
+    .format(templateConfig, "akka.persistence.DiscardConfigurator")
   val replyToConfig = String.format(
     templateConfig,
     "akka.persistence.PersistentActorBoundedStashingSpec$ReplyToWithRejectConfigurator")
@@ -72,17 +70,19 @@ class SteppingInMemPersistentActorBoundedStashingSpec(strategyConfig: String)
       SteppingInmemJournal
         .config("persistence-bounded-stash")
         .withFallback(
-          PersistenceSpec
-            .config(
-              "stepping-inmem",
-              "SteppingInMemPersistentActorBoundedStashingSpec",
-              extraConfig = Some(strategyConfig))))
+          PersistenceSpec.config(
+            "stepping-inmem",
+            "SteppingInMemPersistentActorBoundedStashingSpec",
+            extraConfig = Some(strategyConfig))))
     with BeforeAndAfterEach
     with ImplicitSender {
 
   override def atStartup: Unit = {
-    system.eventStream.publish(
-      Mute(EventFilter.warning(pattern = ".*received dead letter from.*Cmd.*")))
+    system
+      .eventStream
+      .publish(
+        Mute(
+          EventFilter.warning(pattern = ".*received dead letter from.*Cmd.*")))
   }
 
   override def beforeEach(): Unit =

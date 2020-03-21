@@ -88,7 +88,11 @@ private[r] object SQLUtils {
           throw new IllegalArgumentException(
             "Key type of a map must be string or character")
         }
-        org.apache.spark.sql.types
+        org
+          .apache
+          .spark
+          .sql
+          .types
           .MapType(getSQLDataType(keyType), getSQLDataType(valueType))
       case r"\Astruct<(.+)${fieldsStr}>\Z" =>
         if (fieldsStr(fieldsStr.length - 1) == ',') {
@@ -145,9 +149,11 @@ private[r] object SQLUtils {
     val dis = new DataInputStream(bis)
     val num = SerDe.readInt(dis)
     Row.fromSeq(
-      (0 until num).map { i =>
-        doConversion(SerDe.readObject(dis), schema.fields(i).dataType)
-      }.toSeq)
+      (0 until num)
+        .map { i =>
+          doConversion(SerDe.readObject(dis), schema.fields(i).dataType)
+        }
+        .toSeq)
   }
 
   private[this] def rowToRBytes(row: Row): Array[Byte] = {

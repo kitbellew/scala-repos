@@ -29,10 +29,11 @@ private class ScalaModuleConversionProcessor(context: ConversionContext)
 
     val scalaStandardLibraryReference = ScalaProjectConverter
       .findStandardScalaLibraryIn(module)
-    val scalaStandardLibrary = scalaStandardLibraryReference.flatMap(
-      _.resolveIn(context))
-    val scalaCompilerLibrary = scalaFacet.compilerLibrary.flatMap(
-      _.resolveIn(context))
+    val scalaStandardLibrary = scalaStandardLibraryReference
+      .flatMap(_.resolveIn(context))
+    val scalaCompilerLibrary = scalaFacet
+      .compilerLibrary
+      .flatMap(_.resolveIn(context))
 
     scalaCompilerLibrary.foreach { compilerLibrary =>
       val existingScalaSdk = createdSdks.find(_.isEquivalentTo(compilerLibrary))

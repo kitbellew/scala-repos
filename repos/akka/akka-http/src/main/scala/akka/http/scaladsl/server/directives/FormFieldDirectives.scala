@@ -68,13 +68,20 @@ object FormFieldDirectives extends FormFieldDirectives {
 
     extract { ctx ⇒
       import ctx.{executionContext, materializer}
-      Unmarshal(ctx.request.entity).to[StrictForm].fast.flatMap { form ⇒
-        val fields = form.fields.collect {
-          case (name, field) if name.nonEmpty ⇒
-            Unmarshal(field).to[String].map(fieldString ⇒ (name, fieldString))
+      Unmarshal(ctx.request.entity)
+        .to[StrictForm]
+        .fast
+        .flatMap { form ⇒
+          val fields = form
+            .fields
+            .collect {
+              case (name, field) if name.nonEmpty ⇒
+                Unmarshal(field)
+                  .to[String]
+                  .map(fieldString ⇒ (name, fieldString))
+            }
+          Future.sequence(fields)
         }
-        Future.sequence(fields)
-      }
     }.flatMap { sequenceF ⇒
       onComplete(sequenceF).flatMap {
         case Success(x) ⇒
@@ -179,8 +186,8 @@ object FormFieldDirectives extends FormFieldDirectives {
     }
     private def filter[T](fieldName: String, fu: FSFFOU[T])(implicit
         sfu: SFU): Directive1[T] =
-      extract(fieldOfForm(fieldName, fu)).flatMap(r ⇒
-        handleFieldResult(fieldName, r))
+      extract(fieldOfForm(fieldName, fu))
+        .flatMap(r ⇒ handleFieldResult(fieldName, r))
     implicit def forString(implicit
         sfu: SFU,
         fu: FSFFU[String]): FieldDefAux[String, Directive1[String]] =
@@ -268,12 +275,16 @@ object FormFieldDirectives extends FormFieldDirectives {
         sfu: SFU): Directive1[Iterable[T]] =
       extract { ctx ⇒
         import ctx.{executionContext, materializer}
-        sfu(ctx.request.entity).fast.flatMap(form ⇒
-          Future.sequence(
-            form.fields.collect {
-              case (`fieldName`, value) ⇒
-                fu(value)
-            }))
+        sfu(ctx.request.entity)
+          .fast
+          .flatMap(form ⇒
+            Future.sequence(
+              form
+                .fields
+                .collect {
+                  case (`fieldName`, value) ⇒
+                    fu(value)
+                }))
       }.flatMap { result ⇒
         handleFieldResult(fieldName, result)
       }

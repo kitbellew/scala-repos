@@ -45,12 +45,14 @@ class IntegralDeltaSuite extends SparkFunSuite {
         if (input.isEmpty) {
           Seq.empty[Long]
         } else {
-          (input.tail, input.init).zipped.map {
-            case (x: Int, y: Int) =>
-              (x - y).toLong
-            case (x: Long, y: Long) =>
-              x - y
-          }
+          (input.tail, input.init)
+            .zipped
+            .map {
+              case (x: Int, y: Int) =>
+                (x - y).toLong
+              case (x: Long, y: Long) =>
+                x - y
+            }
         }
 
       input.map { value =>
@@ -69,12 +71,14 @@ class IntegralDeltaSuite extends SparkFunSuite {
           0
         } else {
           val oneBoolean = columnType.defaultSize
-          1 + oneBoolean + deltas.map { d =>
-            if (math.abs(d) <= Byte.MaxValue)
-              1
-            else
-              1 + oneBoolean
-          }.sum
+          1 + oneBoolean + deltas
+            .map { d =>
+              if (math.abs(d) <= Byte.MaxValue)
+                1
+              else
+                1 + oneBoolean
+            }
+            .sum
         }
       )
 
@@ -93,15 +97,17 @@ class IntegralDeltaSuite extends SparkFunSuite {
         assertResult(input.head, "The first value is wrong")(
           columnType.extract(buffer))
 
-        (input.tail, deltas).zipped.foreach { (value, delta) =>
-          if (math.abs(delta) <= Byte.MaxValue) {
-            assertResult(delta, "Wrong delta")(buffer.get())
-          } else {
-            assertResult(Byte.MinValue, "Expecting escaping mark here")(
-              buffer.get())
-            assertResult(value, "Wrong value")(columnType.extract(buffer))
+        (input.tail, deltas)
+          .zipped
+          .foreach { (value, delta) =>
+            if (math.abs(delta) <= Byte.MaxValue) {
+              assertResult(delta, "Wrong delta")(buffer.get())
+            } else {
+              assertResult(Byte.MinValue, "Expecting escaping mark here")(
+                buffer.get())
+              assertResult(value, "Wrong value")(columnType.extract(buffer))
+            }
           }
-        }
       }
 
       // -------------

@@ -66,9 +66,8 @@ object ApplicationBuild extends Build {
           (sources ** "*").get
         },
         // trump sbt-web into not looking at public/
-        resourceDirectory in Assets := (
-          sourceDirectory in Compile
-        ).value / "assets"
+        resourceDirectory in Assets := (sourceDirectory in Compile)
+          .value / "assets"
       ))
 
   lazy val modules = Seq(
@@ -134,18 +133,17 @@ object ApplicationBuild extends Build {
     new sbt.ClasspathDependency(_, None)
   }
 
-  lazy val api = project("api", moduleCPDeps)
-    .settings(
-      libraryDependencies ++= provided(
-        play.api,
-        hasher,
-        config,
-        apache,
-        jgit,
-        findbugs,
-        RM,
-        kamon.core,
-        kamon.statsd)) aggregate (moduleRefs: _*)
+  lazy val api = project("api", moduleCPDeps).settings(
+    libraryDependencies ++= provided(
+      play.api,
+      hasher,
+      config,
+      apache,
+      jgit,
+      findbugs,
+      RM,
+      kamon.core,
+      kamon.statsd)) aggregate (moduleRefs: _*)
 
   lazy val puzzle = project("puzzle", Seq(common, memo, hub, db, user, rating))
     .settings(libraryDependencies ++= provided(play.api, RM, PRM))

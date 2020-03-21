@@ -132,7 +132,8 @@ private[sql] case class JDBCRelation(
   }
 
   override def insert(data: DataFrame, overwrite: Boolean): Unit = {
-    data.write
+    data
+      .write
       .mode(
         if (overwrite)
           SaveMode.Overwrite

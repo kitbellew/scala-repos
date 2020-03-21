@@ -8,9 +8,14 @@ import profile.simple._
 trait ActivityService {
 
   def deleteOldActivities(limit: Int)(implicit s: Session): Int = {
-    Activities.map(_.activityId).sortBy(_ desc).drop(limit).firstOption.map {
-      id => Activities.filter(_.activityId <= id.bind).delete
-    } getOrElse 0
+    Activities
+      .map(_.activityId)
+      .sortBy(_ desc)
+      .drop(limit)
+      .firstOption
+      .map { id =>
+        Activities.filter(_.activityId <= id.bind).delete
+      } getOrElse 0
   }
 
   def getActivitiesByUser(activityUserName: String, isPublic: Boolean)(implicit

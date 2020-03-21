@@ -279,12 +279,11 @@ object Pickler {
     *  constructor of the class via `Class.forName(<name of class>).newInstance()`.
     */
   def javaInstancePickler[T <: AnyRef]: Pickler[T] =
-    (stringPickler labelled "$new")
-      .wrapped { name =>
-        Class.forName(name).newInstance().asInstanceOf[T]
-      } {
-        _.getClass.getName
-      }
+    (stringPickler labelled "$new").wrapped { name =>
+      Class.forName(name).newInstance().asInstanceOf[T]
+    } {
+      _.getClass.getName
+    }
 
   /** A picklers that handles iterators. It pickles all values
     *  returned by an iterator separated by commas.

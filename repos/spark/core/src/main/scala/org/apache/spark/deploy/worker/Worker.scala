@@ -74,8 +74,8 @@ private[deploy] class Worker(
   // For worker and executor IDs
   private def createDateFormat = new SimpleDateFormat("yyyyMMddHHmmss")
   // Send a heartbeat every (heartbeat timeout) / 4 milliseconds
-  private val HEARTBEAT_MILLIS =
-    conf.getLong("spark.worker.timeout", 60) * 1000 / 4
+  private val HEARTBEAT_MILLIS = conf
+    .getLong("spark.worker.timeout", 60) * 1000 / 4
 
   // Model retries to connect to the master, after Hadoop's model.
   // The first six attempts to reconnect are in shorter intervals (between 5 and 15 seconds)
@@ -97,16 +97,14 @@ private[deploy] class Worker(
     60
       * REGISTRATION_RETRY_FUZZ_MULTIPLIER))
 
-  private val CLEANUP_ENABLED = conf.getBoolean(
-    "spark.worker.cleanup.enabled",
-    false)
+  private val CLEANUP_ENABLED = conf
+    .getBoolean("spark.worker.cleanup.enabled", false)
   // How often worker will clean up old app folders
   private val CLEANUP_INTERVAL_MILLIS =
     conf.getLong("spark.worker.cleanup.interval", 60 * 30) * 1000
   // TTL for app folders/data;  after TTL expires it will be cleaned up
-  private val APP_DATA_RETENTION_SECONDS = conf.getLong(
-    "spark.worker.cleanup.appDataTtl",
-    7 * 24 * 3600)
+  private val APP_DATA_RETENTION_SECONDS = conf
+    .getLong("spark.worker.cleanup.appDataTtl", 7 * 24 * 3600)
 
   private val testing: Boolean = sys.props.contains("spark.testing")
   private var master: Option[RpcEndpointRef] = None
@@ -157,10 +155,8 @@ private[deploy] class Worker(
 
   private var connectionAttemptCount = 0
 
-  private val metricsSystem = MetricsSystem.createMetricsSystem(
-    "worker",
-    conf,
-    securityMgr)
+  private val metricsSystem = MetricsSystem
+    .createMetricsSystem("worker", conf, securityMgr)
   private val workerSource = new WorkerSource(this)
 
   private var registerMasterFutures: Array[JFuture[_]] = null
@@ -171,7 +167,8 @@ private[deploy] class Worker(
   // time so that we can register with all masters.
   private val registerMasterThreadPool = ThreadUtils.newDaemonCachedThreadPool(
     "worker-register-master-threadpool",
-    masterRpcAddresses.length // Make sure we can register with all masters at the same time
+    masterRpcAddresses
+      .length // Make sure we can register with all masters at the same time
   )
 
   var coresUsed = 0
@@ -415,7 +412,9 @@ private[deploy] class Worker(
       msg match {
         case RegisteredWorker(masterRef, masterWebUiUrl) =>
           logInfo(
-            "Successfully registered with master " + masterRef.address.toSparkURL)
+            "Successfully registered with master " + masterRef
+              .address
+              .toSparkURL)
           registered = true
           changeMaster(masterRef, masterWebUiUrl)
           forwordMessageScheduler.scheduleAtFixedRate(
@@ -444,11 +443,13 @@ private[deploy] class Worker(
             )
           }
 
-          val execs = executors.values.map { e =>
-            new ExecutorDescription(e.appId, e.execId, e.cores, e.state)
-          }
-          masterRef.send(
-            WorkerLatestState(workerId, execs.toList, drivers.keys.toSeq))
+          val execs = executors
+            .values
+            .map { e =>
+              new ExecutorDescription(e.appId, e.execId, e.cores, e.state)
+            }
+          masterRef
+            .send(WorkerLatestState(workerId, execs.toList, drivers.keys.toSeq))
 
         case RegisterWorkerFailed(message) =>
           if (!registered) {
@@ -503,11 +504,15 @@ private[deploy] class Worker(
 
       case MasterChanged(masterRef, masterWebUiUrl) =>
         logInfo(
-          "Master has changed, new master is at " + masterRef.address.toSparkURL)
+          "Master has changed, new master is at " + masterRef
+            .address
+            .toSparkURL)
         changeMaster(masterRef, masterWebUiUrl)
 
-        val execs = executors.values.map(e =>
-          new ExecutorDescription(e.appId, e.execId, e.cores, e.state))
+        val execs = executors
+          .values
+          .map(e =>
+            new ExecutorDescription(e.appId, e.execId, e.cores, e.state))
         masterRef.send(
           WorkerSchedulerStateResponse(
             workerId,
@@ -699,16 +704,18 @@ private[deploy] class Worker(
   }
 
   private def maybeCleanupApplication(id: String): Unit = {
-    val shouldCleanup =
-      finishedApps.contains(id) && !executors.values.exists(_.appId == id)
+    val shouldCleanup = finishedApps
+      .contains(id) && !executors.values.exists(_.appId == id)
     if (shouldCleanup) {
       finishedApps -= id
-      appDirectories.remove(id).foreach { dirList =>
-        logInfo(s"Cleaning up local directories for application $id")
-        dirList.foreach { dir =>
-          Utils.deleteRecursively(new File(dir))
+      appDirectories
+        .remove(id)
+        .foreach { dirList =>
+          logInfo(s"Cleaning up local directories for application $id")
+          dirList.foreach { dir =>
+            Utils.deleteRecursively(new File(dir))
+          }
         }
-      }
       shuffleService.applicationRemoved(id)
     }
   }
@@ -748,10 +755,12 @@ private[deploy] class Worker(
     // do not need to protect with locks since both WorkerPage and Restful server get data through
     // thread-safe RpcEndPoint
     if (finishedExecutors.size > retainedExecutors) {
-      finishedExecutors.take(math.max(finishedExecutors.size / 10, 1)).foreach {
-        case (executorId, _) =>
-          finishedExecutors.remove(executorId)
-      }
+      finishedExecutors
+        .take(math.max(finishedExecutors.size / 10, 1))
+        .foreach {
+          case (executorId, _) =>
+            finishedExecutors.remove(executorId)
+        }
     }
   }
 
@@ -759,10 +768,12 @@ private[deploy] class Worker(
     // do not need to protect with locks since both WorkerPage and Restful server get data through
     // thread-safe RpcEndPoint
     if (finishedDrivers.size > retainedDrivers) {
-      finishedDrivers.take(math.max(finishedDrivers.size / 10, 1)).foreach {
-        case (driverId, _) =>
-          finishedDrivers.remove(driverId)
-      }
+      finishedDrivers
+        .take(math.max(finishedDrivers.size / 10, 1))
+        .foreach {
+          case (driverId, _) =>
+            finishedDrivers.remove(driverId)
+        }
     }
   }
 
@@ -876,10 +887,12 @@ private[deploy] object Worker extends Logging {
 
   def isUseLocalNodeSSLConfig(cmd: Command): Boolean = {
     val pattern = """\-Dspark\.ssl\.useNodeLocalConf\=(.+)""".r
-    val result = cmd.javaOpts.collectFirst {
-      case pattern(_result) =>
-        _result.toBoolean
-    }
+    val result = cmd
+      .javaOpts
+      .collectFirst {
+        case pattern(_result) =>
+          _result.toBoolean
+      }
     result.getOrElse(false)
   }
 
@@ -887,12 +900,15 @@ private[deploy] object Worker extends Logging {
     val prefix = "spark.ssl."
     val useNLC = "spark.ssl.useNodeLocalConf"
     if (isUseLocalNodeSSLConfig(cmd)) {
-      val newJavaOpts = cmd.javaOpts
+      val newJavaOpts = cmd
+        .javaOpts
         .filter(opt => !opt.startsWith(s"-D$prefix")) ++
-        conf.getAll.collect {
-          case (key, value) if key.startsWith(prefix) =>
-            s"-D$key=$value"
-        } :+
+        conf
+          .getAll
+          .collect {
+            case (key, value) if key.startsWith(prefix) =>
+              s"-D$key=$value"
+          } :+
         s"-D$useNLC=true"
       cmd.copy(javaOpts = newJavaOpts)
     } else {

@@ -55,7 +55,8 @@ class CallingThreadDispatcherModelSpec
 
   override def interceptedDispatcher(): MessageDispatcherInterceptor = {
     // use new id for each test, since the MessageDispatcherInterceptor holds state
-    system.dispatchers
+    system
+      .dispatchers
       .lookup("test-calling-thread-" + dispatcherCount.incrementAndGet())
       .asInstanceOf[MessageDispatcherInterceptor]
   }

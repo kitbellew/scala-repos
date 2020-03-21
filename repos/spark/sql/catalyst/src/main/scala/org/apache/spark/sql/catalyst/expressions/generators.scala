@@ -112,7 +112,8 @@ case class Explode(child: Expression)
   override def children: Seq[Expression] = child :: Nil
 
   override def checkInputDataTypes(): TypeCheckResult = {
-    if (child.dataType.isInstanceOf[ArrayType] || child.dataType
+    if (child.dataType.isInstanceOf[ArrayType] || child
+          .dataType
           .isInstanceOf[MapType]) {
       TypeCheckResult.TypeCheckSuccess
     } else {

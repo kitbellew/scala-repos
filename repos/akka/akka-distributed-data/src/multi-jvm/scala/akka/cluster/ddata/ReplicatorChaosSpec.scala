@@ -21,8 +21,8 @@ object ReplicatorChaosSpec extends MultiNodeConfig {
   val fifth = role("fifth")
 
   commonConfig(
-    ConfigFactory.parseString(
-      """
+    ConfigFactory
+      .parseString("""
     akka.loglevel = INFO
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
     akka.cluster.roles = ["backend"]

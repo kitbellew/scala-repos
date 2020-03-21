@@ -93,16 +93,18 @@ class MultivariateGaussianTest extends FunSuite with Checkers {
       Prop.forAll { (distr: MultivariateGaussian) =>
         // try twice, and only fail if both fail.
         // just a little more robustness...
-        Iterator.range(0, 2).exists { _ =>
-          val sample = DenseVector.horzcat(distr.sample(numSamples): _*)
-          val vari = cov(sample.t)
+        Iterator
+          .range(0, 2)
+          .exists { _ =>
+            val sample = DenseVector.horzcat(distr.sample(numSamples): _*)
+            val vari = cov(sample.t)
 
-          if (max(abs(vari - distr.variance)) > VARIANCE_TOLERANCE) {
-            println("Expected " + distr.variance + " but got " + vari)
-            false
-          } else
-            true
-        }
+            if (max(abs(vari - distr.variance)) > VARIANCE_TOLERANCE) {
+              println("Expected " + distr.variance + " but got " + vari)
+              false
+            } else
+              true
+          }
       })
   }
 }

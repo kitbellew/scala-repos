@@ -158,17 +158,23 @@ private[impl] class OfferMatcherManagerActor private (
     //the persistence id of a volume encodes the app id
     //we use this information as filter criteria
     val appReservations =
-      offer.getResourcesList.asScala
+      offer
+        .getResourcesList
+        .asScala
         .filter(r =>
-          r.hasDisk && r.getDisk.hasPersistence && r.getDisk.getPersistence.hasId)
+          r.hasDisk && r.getDisk.hasPersistence && r
+            .getDisk
+            .getPersistence
+            .hasId)
         .map(_.getDisk.getPersistence.getId)
         .collect {
           case LocalVolumeId(volumeId) =>
             volumeId.appId
         }
         .toSet
-    val (reserved, normal) = matchers.toSeq.partition(
-      _.precedenceFor.exists(appReservations))
+    val (reserved, normal) = matchers
+      .toSeq
+      .partition(_.precedenceFor.exists(appReservations))
     //1 give the offer to the matcher waiting for a reservation
     //2 give the offer to anybody else
     //3 randomize both lists to be fair
@@ -179,31 +185,28 @@ private[impl] class OfferMatcherManagerActor private (
     case ActorOfferMatcher.MatchOffer(deadline, offer: Offer)
         if !offersWanted =>
       log.debug(s"Ignoring offer ${offer.getId.getValue}: No one interested.")
-      sender() ! OfferMatcher.MatchedTaskOps(
-        offer.getId,
-        Seq.empty,
-        resendThisOffer = false)
+      sender() ! OfferMatcher
+        .MatchedTaskOps(offer.getId, Seq.empty, resendThisOffer = false)
 
     case ActorOfferMatcher.MatchOffer(deadline, offer: Offer) =>
       log.debug(s"Start processing offer ${offer.getId.getValue}")
 
       // setup initial offer data
       val randomizedMatchers = offerMatchers(offer)
-      val data = OfferMatcherManagerActor.OfferData(
-        offer,
-        deadline,
-        sender(),
-        randomizedMatchers,
-        Seq.empty)
+      val data = OfferMatcherManagerActor
+        .OfferData(offer, deadline, sender(), randomizedMatchers, Seq.empty)
       offerQueues += offer.getId -> data
       metrics.currentOffersGauge.setValue(offerQueues.size)
 
       // deal with the timeout
       import context.dispatcher
-      context.system.scheduler.scheduleOnce(
-        clock.now().until(deadline),
-        self,
-        MatchTimeout(offer.getId))
+      context
+        .system
+        .scheduler
+        .scheduleOnce(
+          clock.now().until(deadline),
+          self,
+          MatchTimeout(offer.getId))
 
       // process offer for the first time
       scheduleNextMatcherOrFinish(data)
@@ -262,8 +265,8 @@ private[impl] class OfferMatcherManagerActor private (
           scheduleNextMatcherOrFinish(nextData)
 
         case None =>
-          addedOps.foreach(
-            _.reject(s"offer '${offerId.getValue}' already timed out"))
+          addedOps
+            .foreach(_.reject(s"offer '${offerId.getValue}' already timed out"))
       }
 
     case MatchTimeout(offerId) =>
@@ -320,10 +323,8 @@ private[impl] class OfferMatcherManagerActor private (
   private[this] def sendMatchResult(
       data: OfferData,
       resendThisOffer: Boolean): Unit = {
-    data.sender ! OfferMatcher.MatchedTaskOps(
-      data.offer.getId,
-      data.ops,
-      resendThisOffer)
+    data.sender ! OfferMatcher
+      .MatchedTaskOps(data.offer.getId, data.ops, resendThisOffer)
     offerQueues -= data.offer.getId
     metrics.currentOffersGauge.setValue(offerQueues.size)
     //scalastyle:off magic.number

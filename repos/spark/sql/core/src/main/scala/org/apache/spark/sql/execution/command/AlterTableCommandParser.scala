@@ -72,22 +72,24 @@ object AlterTableCommandParser {
   private def parsePartitionSpec(node: ASTNode): Map[String, String] = {
     node match {
       case Token("TOK_PARTSPEC", partitions) =>
-        partitions.map {
-          // Note: sometimes there's a "=", "<" or ">" between the key and the value
-          // (e.g. when dropping all partitions with value > than a certain constant)
-          case Token("TOK_PARTVAL", ident :: conj :: constant :: Nil) =>
-            (
-              cleanAndUnquoteString(ident.text),
-              cleanAndUnquoteString(constant.text))
-          case Token("TOK_PARTVAL", ident :: constant :: Nil) =>
-            (
-              cleanAndUnquoteString(ident.text),
-              cleanAndUnquoteString(constant.text))
-          case Token("TOK_PARTVAL", ident :: Nil) =>
-            (cleanAndUnquoteString(ident.text), null)
-          case _ =>
-            parseFailed("Invalid ALTER TABLE command", node)
-        }.toMap
+        partitions
+          .map {
+            // Note: sometimes there's a "=", "<" or ">" between the key and the value
+            // (e.g. when dropping all partitions with value > than a certain constant)
+            case Token("TOK_PARTVAL", ident :: conj :: constant :: Nil) =>
+              (
+                cleanAndUnquoteString(ident.text),
+                cleanAndUnquoteString(constant.text))
+            case Token("TOK_PARTVAL", ident :: constant :: Nil) =>
+              (
+                cleanAndUnquoteString(ident.text),
+                cleanAndUnquoteString(constant.text))
+            case Token("TOK_PARTVAL", ident :: Nil) =>
+              (cleanAndUnquoteString(ident.text), null)
+            case _ =>
+              parseFailed("Invalid ALTER TABLE command", node)
+          }
+          .toMap
       case _ =>
         parseFailed("Expected partition spec in ALTER TABLE command", node)
     }
@@ -110,23 +112,25 @@ object AlterTableCommandParser {
   private def extractTableProps(node: ASTNode): Map[String, String] = {
     node match {
       case Token("TOK_TABLEPROPERTIES", propsList) =>
-        propsList.flatMap {
-          case Token("TOK_TABLEPROPLIST", props) =>
-            props.map {
-              case Token("TOK_TABLEPROPERTY", key :: value :: Nil) =>
-                val k = cleanAndUnquoteString(key.text)
-                val v =
-                  value match {
-                    case Token("TOK_NULL", Nil) =>
-                      null
-                    case _ =>
-                      cleanAndUnquoteString(value.text)
-                  }
-                (k, v)
-            }
-          case _ =>
-            parseFailed("Invalid ALTER TABLE command", node)
-        }.toMap
+        propsList
+          .flatMap {
+            case Token("TOK_TABLEPROPLIST", props) =>
+              props.map {
+                case Token("TOK_TABLEPROPERTY", key :: value :: Nil) =>
+                  val k = cleanAndUnquoteString(key.text)
+                  val v =
+                    value match {
+                      case Token("TOK_NULL", Nil) =>
+                        null
+                      case _ =>
+                        cleanAndUnquoteString(value.text)
+                    }
+                  (k, v)
+              }
+            case _ =>
+              parseFailed("Invalid ALTER TABLE command", node)
+          }
+          .toMap
       case _ =>
         parseFailed("Expected table properties in ALTER TABLE command", node)
     }
@@ -204,14 +208,18 @@ object AlterTableCommandParser {
           b.tail match {
             case Token("TOK_TABCOLNAME", children) :: numBucketsNode :: Nil =>
               val (cols, directions) =
-                children.map {
-                  case Token("TOK_TABSORTCOLNAMEASC", Token(col, Nil) :: Nil) =>
-                    (col, Ascending)
-                  case Token(
-                        "TOK_TABSORTCOLNAMEDESC",
-                        Token(col, Nil) :: Nil) =>
-                    (col, Descending)
-                }.unzip
+                children
+                  .map {
+                    case Token(
+                          "TOK_TABSORTCOLNAMEASC",
+                          Token(col, Nil) :: Nil) =>
+                      (col, Ascending)
+                    case Token(
+                          "TOK_TABSORTCOLNAMEDESC",
+                          Token(col, Nil) :: Nil) =>
+                      (col, Descending)
+                  }
+                  .unzip
               (cols, directions, numBucketsNode.text.toInt)
             case numBucketsNode :: Nil =>
               (Nil, Nil, numBucketsNode.text.toInt)
@@ -328,26 +336,28 @@ object AlterTableCommandParser {
         //            :     +- 'col3'
         //            +- 'loc2'
         val skewedMaps =
-          locationMaps.flatMap {
-            case Token("TOK_SKEWED_LOCATION_MAP", col :: loc :: Nil) =>
-              col match {
-                case Token(const, Nil) =>
-                  Seq(
-                    (
-                      cleanAndUnquoteString(const),
-                      cleanAndUnquoteString(loc.text)))
-                case Token(
-                      "TOK_TABCOLVALUES",
-                      Token("TOK_TABCOLVALUE", keys) :: Nil) =>
-                  keys.map { k =>
-                    (
-                      cleanAndUnquoteString(k.text),
-                      cleanAndUnquoteString(loc.text))
-                  }
-              }
-            case _ =>
-              parseFailed("Invalid ALTER TABLE command", node)
-          }.toMap
+          locationMaps
+            .flatMap {
+              case Token("TOK_SKEWED_LOCATION_MAP", col :: loc :: Nil) =>
+                col match {
+                  case Token(const, Nil) =>
+                    Seq(
+                      (
+                        cleanAndUnquoteString(const),
+                        cleanAndUnquoteString(loc.text)))
+                  case Token(
+                        "TOK_TABCOLVALUES",
+                        Token("TOK_TABCOLVALUE", keys) :: Nil) =>
+                    keys.map { k =>
+                      (
+                        cleanAndUnquoteString(k.text),
+                        cleanAndUnquoteString(loc.text))
+                    }
+                }
+              case _ =>
+                parseFailed("Invalid ALTER TABLE command", node)
+            }
+            .toMap
         AlterTableSkewedLocation(tableIdent, skewedMaps)(node.source)
 
       // ALTER TABLE table_name ADD [IF NOT EXISTS] PARTITION spec [LOCATION 'loc1']
@@ -428,7 +438,8 @@ object AlterTableCommandParser {
         // Right now this just stores the values, but we should figure out how to get the keys.
         val fFormat = fileFormat
           .map {
-            _.children.map { n =>
+            _.children
+            .map { n =>
               cleanAndUnquoteString(n.text)
             }
           }
@@ -483,18 +494,20 @@ object AlterTableCommandParser {
         }
         val restrict = getClauseOption("TOK_RESTRICT", args).isDefined
         val cascade = getClauseOption("TOK_CASCADE", args).isDefined
-        val comment = args.headOption.map {
-          case Token("TOK_ALTERTABLE_CHANGECOL_AFTER_POSITION", _) =>
-            null
-          case Token("TOK_RESTRICT", _) =>
-            null
-          case Token("TOK_CASCADE", _) =>
-            null
-          case Token(commentStr, Nil) =>
-            cleanAndUnquoteString(commentStr)
-          case _ =>
-            parseFailed("Invalid ALTER TABLE command", node)
-        }
+        val comment = args
+          .headOption
+          .map {
+            case Token("TOK_ALTERTABLE_CHANGECOL_AFTER_POSITION", _) =>
+              null
+            case Token("TOK_RESTRICT", _) =>
+              null
+            case Token("TOK_CASCADE", _) =>
+              null
+            case Token(commentStr, Nil) =>
+              cleanAndUnquoteString(commentStr)
+            case _ =>
+              parseFailed("Invalid ALTER TABLE command", node)
+          }
         AlterTableChangeCol(
           tableIdent,
           partition,

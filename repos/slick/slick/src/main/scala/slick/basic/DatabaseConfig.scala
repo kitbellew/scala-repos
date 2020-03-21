@@ -79,32 +79,36 @@ object DatabaseConfig {
                       ""
                     else
                       path + ".")
-    val n = config.getStringOpt(basePath + "profile").getOrElse {
-      val nOld = config.getStringOpt(basePath + "driver").map {
-        case "slick.driver.DerbyDriver$" =>
-          "slick.jdbc.DerbyProfile$"
-        case "slick.driver.H2Driver$" =>
-          "slick.jdbc.H2Profile$"
-        case "slick.driver.HsqldbDriver$" =>
-          "slick.jdbc.HsqldbProfile$"
-        case "slick.driver.MySQLDriver$" =>
-          "slick.jdbc.MySQLProfile$"
-        case "slick.driver.PostgresDriver$" =>
-          "slick.jdbc.PostgresProfile$"
-        case "slick.driver.SQLiteDriver$" =>
-          "slick.jdbc.SQLiteProfile$"
-        case "slick.memory.MemoryDriver$" =>
-          "slick.memory.MemoryProfile$"
-        case n =>
-          n
+    val n = config
+      .getStringOpt(basePath + "profile")
+      .getOrElse {
+        val nOld = config
+          .getStringOpt(basePath + "driver")
+          .map {
+            case "slick.driver.DerbyDriver$" =>
+              "slick.jdbc.DerbyProfile$"
+            case "slick.driver.H2Driver$" =>
+              "slick.jdbc.H2Profile$"
+            case "slick.driver.HsqldbDriver$" =>
+              "slick.jdbc.HsqldbProfile$"
+            case "slick.driver.MySQLDriver$" =>
+              "slick.jdbc.MySQLProfile$"
+            case "slick.driver.PostgresDriver$" =>
+              "slick.jdbc.PostgresProfile$"
+            case "slick.driver.SQLiteDriver$" =>
+              "slick.jdbc.SQLiteProfile$"
+            case "slick.memory.MemoryDriver$" =>
+              "slick.memory.MemoryProfile$"
+            case n =>
+              n
+          }
+        if (nOld.isDefined)
+          logger.warn(
+            s"Use `${basePath}profile` instead of `${basePath}driver`. The latter is deprecated since Slick 3.2 and will be removed.")
+        nOld.getOrElse(
+          config.getString(basePath + "profile")
+        ) // trigger the correct error
       }
-      if (nOld.isDefined)
-        logger.warn(
-          s"Use `${basePath}profile` instead of `${basePath}driver`. The latter is deprecated since Slick 3.2 and will be removed.")
-      nOld.getOrElse(
-        config.getString(basePath + "profile")
-      ) // trigger the correct error
-    }
 
     val untypedP =
       try {
@@ -124,14 +128,16 @@ object DatabaseConfig {
         s"Configured profile $n does not conform to requested profile ${pClass.getName}")
     val root = config
     new DatabaseConfig[P] {
-      lazy val db: P#Backend#Database = profile.backend.createDatabase(
-        root,
-        (
-          if (path.isEmpty)
-            ""
-          else
-            path + "."
-        ) + "db")
+      lazy val db: P#Backend#Database = profile
+        .backend
+        .createDatabase(
+          root,
+          (
+            if (path.isEmpty)
+              ""
+            else
+              path + "."
+          ) + "db")
       val profile: P = untypedP.asInstanceOf[P]
       val driver: P = untypedP.asInstanceOf[P]
       lazy val config: Config =

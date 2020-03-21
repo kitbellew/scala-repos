@@ -67,69 +67,79 @@ trait MilestonesControllerBase extends ControllerBase {
 
   get("/:owner/:repository/issues/milestones/:milestoneId/edit")(
     collaboratorsOnly { repository =>
-      params("milestoneId").toIntOpt.map { milestoneId =>
-        html.edit(
-          getMilestone(repository.owner, repository.name, milestoneId),
-          repository)
-      } getOrElse NotFound
+      params("milestoneId")
+        .toIntOpt
+        .map { milestoneId =>
+          html.edit(
+            getMilestone(repository.owner, repository.name, milestoneId),
+            repository)
+        } getOrElse NotFound
     })
 
   post(
     "/:owner/:repository/issues/milestones/:milestoneId/edit",
     milestoneForm)(
     collaboratorsOnly { (form, repository) =>
-      params("milestoneId").toIntOpt.flatMap {
-        milestoneId =>
-          getMilestone(repository.owner, repository.name, milestoneId).map {
-            milestone =>
-              updateMilestone(
-                milestone.copy(
-                  title = form.title,
-                  description = form.description,
-                  dueDate = form.dueDate))
-              redirect(
-                s"/${repository.owner}/${repository.name}/issues/milestones")
-          }
-      } getOrElse NotFound
+      params("milestoneId")
+        .toIntOpt
+        .flatMap {
+          milestoneId =>
+            getMilestone(repository.owner, repository.name, milestoneId).map {
+              milestone =>
+                updateMilestone(
+                  milestone.copy(
+                    title = form.title,
+                    description = form.description,
+                    dueDate = form.dueDate))
+                redirect(
+                  s"/${repository.owner}/${repository.name}/issues/milestones")
+            }
+        } getOrElse NotFound
     })
 
   get("/:owner/:repository/issues/milestones/:milestoneId/close")(
     collaboratorsOnly { repository =>
-      params("milestoneId").toIntOpt.flatMap { milestoneId =>
-        getMilestone(repository.owner, repository.name, milestoneId).map {
-          milestone =>
-            closeMilestone(milestone)
-            redirect(
-              s"/${repository.owner}/${repository.name}/issues/milestones")
-        }
-      } getOrElse NotFound
+      params("milestoneId")
+        .toIntOpt
+        .flatMap { milestoneId =>
+          getMilestone(repository.owner, repository.name, milestoneId).map {
+            milestone =>
+              closeMilestone(milestone)
+              redirect(
+                s"/${repository.owner}/${repository.name}/issues/milestones")
+          }
+        } getOrElse NotFound
     })
 
   get("/:owner/:repository/issues/milestones/:milestoneId/open")(
     collaboratorsOnly { repository =>
-      params("milestoneId").toIntOpt.flatMap { milestoneId =>
-        getMilestone(repository.owner, repository.name, milestoneId).map {
-          milestone =>
-            openMilestone(milestone)
-            redirect(
-              s"/${repository.owner}/${repository.name}/issues/milestones")
-        }
-      } getOrElse NotFound
+      params("milestoneId")
+        .toIntOpt
+        .flatMap { milestoneId =>
+          getMilestone(repository.owner, repository.name, milestoneId).map {
+            milestone =>
+              openMilestone(milestone)
+              redirect(
+                s"/${repository.owner}/${repository.name}/issues/milestones")
+          }
+        } getOrElse NotFound
     })
 
   get("/:owner/:repository/issues/milestones/:milestoneId/delete")(
     collaboratorsOnly { repository =>
-      params("milestoneId").toIntOpt.flatMap { milestoneId =>
-        getMilestone(repository.owner, repository.name, milestoneId).map {
-          milestone =>
-            deleteMilestone(
-              repository.owner,
-              repository.name,
-              milestone.milestoneId)
-            redirect(
-              s"/${repository.owner}/${repository.name}/issues/milestones")
-        }
-      } getOrElse NotFound
+      params("milestoneId")
+        .toIntOpt
+        .flatMap { milestoneId =>
+          getMilestone(repository.owner, repository.name, milestoneId).map {
+            milestone =>
+              deleteMilestone(
+                repository.owner,
+                repository.name,
+                milestone.milestoneId)
+              redirect(
+                s"/${repository.owner}/${repository.name}/issues/milestones")
+          }
+        } getOrElse NotFound
     })
 
 }

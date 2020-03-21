@@ -301,56 +301,64 @@ class SparkListenerSuite
         w(i) -> (0 to (i % 5))
       }
       .setName("shuffle input 2")
-    val d4 = d2.cogroup(d3, numSlices).map {
-      case (k, (v1, v2)) =>
-        w(k) -> (v1.size, v2.size)
-    }
+    val d4 = d2
+      .cogroup(d3, numSlices)
+      .map {
+        case (k, (v1, v2)) =>
+          w(k) -> (v1.size, v2.size)
+      }
     d4.setName("A Cogroup")
     d4.collectAsMap()
 
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
     listener.stageInfos.size should be(4)
-    listener.stageInfos.foreach {
-      case (stageInfo, taskInfoMetrics) =>
-        /**
-          * Small test, so some tasks might take less than 1 millisecond, but average should be greater
-          * than 0 ms.
-          */
-        checkNonZeroAvg(
-          taskInfoMetrics.map(_._2.executorRunTime),
-          stageInfo + " executorRunTime")
-        checkNonZeroAvg(
-          taskInfoMetrics.map(_._2.executorDeserializeTime),
-          stageInfo + " executorDeserializeTime")
+    listener
+      .stageInfos
+      .foreach {
+        case (stageInfo, taskInfoMetrics) =>
+          /**
+            * Small test, so some tasks might take less than 1 millisecond, but average should be greater
+            * than 0 ms.
+            */
+          checkNonZeroAvg(
+            taskInfoMetrics.map(_._2.executorRunTime),
+            stageInfo + " executorRunTime")
+          checkNonZeroAvg(
+            taskInfoMetrics.map(_._2.executorDeserializeTime),
+            stageInfo + " executorDeserializeTime")
 
-        /* Test is disabled (SEE SPARK-2208)
+          /* Test is disabled (SEE SPARK-2208)
       if (stageInfo.rddInfos.exists(_.name == d4.name)) {
         checkNonZeroAvg(
           taskInfoMetrics.map(_._2.shuffleReadMetrics.get.fetchWaitTime),
           stageInfo + " fetchWaitTime")
       }
-         */
+           */
 
-        taskInfoMetrics.foreach {
-          case (taskInfo, taskMetrics) =>
-            taskMetrics.resultSize should be > (0L)
-            if (stageInfo.rddInfos.exists(info =>
-                  info.name == d2.name || info.name == d3.name)) {
-              taskMetrics.inputMetrics should not be ('defined)
-              taskMetrics.outputMetrics should not be ('defined)
-              taskMetrics.shuffleWriteMetrics should be('defined)
-              taskMetrics.shuffleWriteMetrics.get.bytesWritten should be > (0L)
-            }
-            if (stageInfo.rddInfos.exists(_.name == d4.name)) {
-              taskMetrics.shuffleReadMetrics should be('defined)
-              val sm = taskMetrics.shuffleReadMetrics.get
-              sm.totalBlocksFetched should be(2 * numSlices)
-              sm.localBlocksFetched should be(2 * numSlices)
-              sm.remoteBlocksFetched should be(0)
-              sm.remoteBytesRead should be(0L)
-            }
-        }
-    }
+          taskInfoMetrics.foreach {
+            case (taskInfo, taskMetrics) =>
+              taskMetrics.resultSize should be > (0L)
+              if (stageInfo
+                    .rddInfos
+                    .exists(info =>
+                      info.name == d2.name || info.name == d3.name)) {
+                taskMetrics.inputMetrics should not be ('defined)
+                taskMetrics.outputMetrics should not be ('defined)
+                taskMetrics.shuffleWriteMetrics should be('defined)
+                taskMetrics.shuffleWriteMetrics.get.bytesWritten should be > (
+                  0L
+                )
+              }
+              if (stageInfo.rddInfos.exists(_.name == d4.name)) {
+                taskMetrics.shuffleReadMetrics should be('defined)
+                val sm = taskMetrics.shuffleReadMetrics.get
+                sm.totalBlocksFetched should be(2 * numSlices)
+                sm.localBlocksFetched should be(2 * numSlices)
+                sm.remoteBlocksFetched should be(0)
+                sm.remoteBytesRead should be(0L)
+              }
+          }
+      }
   }
 
   test("onTaskGettingResult() called when result fetched remotely") {
@@ -386,10 +394,13 @@ class SparkListenerSuite
     sc.addSparkListener(listener)
 
     // Make a task whose result is larger than the RPC message size
-    val result = sc.parallelize(Seq(1), 1).map(2 * _).reduce {
-      case (x, y) =>
-        x
-    }
+    val result = sc
+      .parallelize(Seq(1), 1)
+      .map(2 * _)
+      .reduce {
+        case (x, y) =>
+          x
+      }
     assert(result === 2)
 
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
@@ -432,7 +443,9 @@ class SparkListenerSuite
     finishTime = System.currentTimeMillis + WAIT_TIMEOUT_MILLIS
     listener.synchronized {
       var remainingWait = finishTime - System.currentTimeMillis
-      while (listener.endedTasks.size < listener.startedTasks.size && remainingWait > 0) {
+      while (listener.endedTasks.size < listener
+               .startedTasks
+               .size && remainingWait > 0) {
         listener.wait(finishTime - System.currentTimeMillis)
         remainingWait = finishTime - System.currentTimeMillis
       }
@@ -473,9 +486,15 @@ class SparkListenerSuite
         classOf[ListenerThatAcceptsSparkConf].getName + "," +
           classOf[BasicJobCounter].getName)
     sc = new SparkContext(conf)
-    sc.listenerBus.listeners.asScala
+    sc
+      .listenerBus
+      .listeners
+      .asScala
       .count(_.isInstanceOf[BasicJobCounter]) should be(1)
-    sc.listenerBus.listeners.asScala
+    sc
+      .listenerBus
+      .listeners
+      .asScala
       .count(_.isInstanceOf[ListenerThatAcceptsSparkConf]) should be(1)
   }
 

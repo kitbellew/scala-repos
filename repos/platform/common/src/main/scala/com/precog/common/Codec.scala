@@ -856,7 +856,9 @@ object Codec {
       }
 
       val len = rec(bs.toList, 0, size, 0)
-      java.util.Arrays
+      java
+        .util
+        .Arrays
         .copyOf(bytes, (len >>> 3) + 1) // The +1 covers the extra 2 '0' bits.
     }
 
@@ -1021,7 +1023,9 @@ object Codec {
       }
 
       val len = rec(RawBitSet.toList(bs), 0, size, 0)
-      java.util.Arrays
+      java
+        .util
+        .Arrays
         .copyOf(bytes, (len >>> 3) + 1) // The +1 covers the extra 2 '0' bits.
     }
 

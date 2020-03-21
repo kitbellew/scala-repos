@@ -41,23 +41,23 @@ class ScalaMethodImplementor extends MethodImplementor {
     (
       for {
         td <- inClass.asOptionOf[ScTemplateDefinition].toSeq
-        member <- ScalaOIUtil.getMembersToImplement(td).collect {
-          case mm: ScMethodMember if mm.getElement == method =>
-            mm
-        }
+        member <- ScalaOIUtil
+          .getMembersToImplement(td)
+          .collect {
+            case mm: ScMethodMember if mm.getElement == method =>
+              mm
+          }
       } yield {
         val specifyType =
           ScalaApplicationSettings.getInstance().SPECIFY_RETURN_TYPE_EXPLICITLY
-        val body = ScalaGenerationInfo.defaultValue(
-          member.scType,
-          inClass.getContainingFile)
-        val prototype = ScalaPsiElementFactory
-          .createOverrideImplementMethod(
-            member.sign,
-            inClass.getManager,
-            needsOverrideModifier = true,
-            specifyType,
-            body)
+        val body = ScalaGenerationInfo
+          .defaultValue(member.scType, inClass.getContainingFile)
+        val prototype = ScalaPsiElementFactory.createOverrideImplementMethod(
+          member.sign,
+          inClass.getManager,
+          needsOverrideModifier = true,
+          specifyType,
+          body)
         prototypeToBaseMethod += (prototype -> method)
         prototype
       }
@@ -94,10 +94,8 @@ private class ScalaPsiMethodGenerationInfo(
         val sign = new PhysicalSignature(method, ScSubstitutor.empty)
         val methodMember = new ScMethodMember(sign, isOverride = false)
 
-        member = ScalaGenerationInfo.insertMethod(
-          methodMember,
-          td,
-          findAnchor(td, baseMethod))
+        member = ScalaGenerationInfo
+          .insertMethod(methodMember, td, findAnchor(td, baseMethod))
       case _ =>
         super.insert(aClass, anchor, before)
     }
@@ -117,9 +115,8 @@ private class ScalaPsiMethodGenerationInfo(
     if (baseMethod == null)
       return null
 
-    var prevBaseMethod: PsiMethod = PsiTreeUtil.getPrevSiblingOfType(
-      baseMethod,
-      classOf[PsiMethod])
+    var prevBaseMethod: PsiMethod = PsiTreeUtil
+      .getPrevSiblingOfType(baseMethod, classOf[PsiMethod])
 
     while (prevBaseMethod != null) {
       td.findMethodBySignature(prevBaseMethod, checkBases = false) match {
@@ -130,14 +127,12 @@ private class ScalaPsiMethodGenerationInfo(
         case _ =>
       }
 
-      prevBaseMethod = PsiTreeUtil.getPrevSiblingOfType(
-        prevBaseMethod,
-        classOf[PsiMethod])
+      prevBaseMethod = PsiTreeUtil
+        .getPrevSiblingOfType(prevBaseMethod, classOf[PsiMethod])
     }
 
-    var nextBaseMethod: PsiMethod = PsiTreeUtil.getNextSiblingOfType(
-      baseMethod,
-      classOf[PsiMethod])
+    var nextBaseMethod: PsiMethod = PsiTreeUtil
+      .getNextSiblingOfType(baseMethod, classOf[PsiMethod])
 
     while (nextBaseMethod != null) {
       td.findMethodBySignature(nextBaseMethod, checkBases = false) match {
@@ -147,9 +142,8 @@ private class ScalaPsiMethodGenerationInfo(
           return method
         case _ =>
       }
-      nextBaseMethod = PsiTreeUtil.getNextSiblingOfType(
-        nextBaseMethod,
-        classOf[PsiMethod])
+      nextBaseMethod = PsiTreeUtil
+        .getNextSiblingOfType(nextBaseMethod, classOf[PsiMethod])
     }
 
     null

@@ -86,10 +86,12 @@ class EventLoggingListenerSuite
   }
 
   test("Basic event logging with compression") {
-    CompressionCodec.ALL_COMPRESSION_CODECS.foreach { codec =>
-      testEventLogging(compressionCodec = Some(
-        CompressionCodec.getShortName(codec)))
-    }
+    CompressionCodec
+      .ALL_COMPRESSION_CODECS
+      .foreach { codec =>
+        testEventLogging(compressionCodec = Some(
+          CompressionCodec.getShortName(codec)))
+      }
   }
 
   test("End-to-end event logging") {
@@ -97,10 +99,12 @@ class EventLoggingListenerSuite
   }
 
   test("End-to-end event logging with compression") {
-    CompressionCodec.ALL_COMPRESSION_CODECS.foreach { codec =>
-      testApplicationEventLogging(compressionCodec = Some(
-        CompressionCodec.getShortName(codec)))
-    }
+    CompressionCodec
+      .ALL_COMPRESSION_CODECS
+      .foreach { codec =>
+        testApplicationEventLogging(compressionCodec = Some(
+          CompressionCodec.getShortName(codec)))
+      }
   }
 
   test("Log overwriting") {
@@ -184,9 +188,8 @@ class EventLoggingListenerSuite
     eventLogger.stop()
 
     // Verify file contains exactly the two events logged
-    val logData = EventLoggingListener.openEventLog(
-      new Path(eventLogger.logPath),
-      fileSystem)
+    val logData = EventLoggingListener
+      .openEventLog(new Path(eventLogger.logPath), fileSystem)
     try {
       val lines = readLines(logData)
       val logStart = SparkListenerLogStart(SPARK_VERSION)
@@ -238,9 +241,8 @@ class EventLoggingListenerSuite
     eventExistenceListener.assertAllCallbacksInvoked()
 
     // Make sure expected events exist in the log file.
-    val logData = EventLoggingListener.openEventLog(
-      new Path(eventLogger.logPath),
-      fileSystem)
+    val logData = EventLoggingListener
+      .openEventLog(new Path(eventLogger.logPath), fileSystem)
     val logStart = SparkListenerLogStart(SPARK_VERSION)
     val lines = readLines(logData)
     val eventSet = mutable

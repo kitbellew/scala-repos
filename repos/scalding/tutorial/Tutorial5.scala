@@ -53,19 +53,23 @@ class Tutorial5(args: Args) extends Job(args) {
   the 'num field to be 'score. Also, we want to normalize
   the words to be lowercase.
   **/
-  val scores = TextLine(args("words")).read
+  val scores = TextLine(args("words"))
+    .read
     .rename('offset, 'score)
     .map('line -> 'dictWord) { line: String =>
       line.toLowerCase
     }
     .project('score, 'dictWord)
 
-  TextLine(args("input")).read
-  //split and normalize to lowercase
+  TextLine(args("input"))
+    .read
+    //split and normalize to lowercase
     .flatMap('line -> 'word) { line: String =>
-      line.split("\\s").map {
-        _.toLowerCase
-      }
+      line
+        .split("\\s")
+        .map {
+          _.toLowerCase
+        }
     }
     /**
     When we join, we need to specify which fields from each side of the join should match.
@@ -80,6 +84,5 @@ class Tutorial5(args: Args) extends Job(args) {
     **/
     .groupBy('line) { group =>
       group.sum[Double]('score)
-    }
-    .write(Tsv(args("output")))
+    }.write(Tsv(args("output")))
 }

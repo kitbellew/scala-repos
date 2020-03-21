@@ -111,11 +111,14 @@ object Bounds {
         }
       getNamedElement match {
         case t: ScTemplateDefinition =>
-          t.superTypes
+          t
+            .superTypes
             .map(tp => new Options(subst.subst(tp)))
             .filter(!_.isEmpty)
         case p: PsiClass =>
-          p.getSupers.toSeq
+          p
+            .getSupers
+            .toSeq
             .map(cl => new Options(ScType.designator(cl)))
             .filter(!_.isEmpty)
         case a: ScTypeAlias =>
@@ -189,9 +192,11 @@ object Bounds {
                 case td: ScTemplateDefinition =>
                   td.superTypes
                 case _ =>
-                  drv.getSuperTypes.map { t =>
-                    ScType.create(t, drv.getProject)
-                  }
+                  drv
+                    .getSuperTypes
+                    .map { t =>
+                      ScType.create(t, drv.getProject)
+                    }
               }
             val iterator = superTypes.iterator
             while (iterator.hasNext) {
@@ -222,7 +227,8 @@ object Bounds {
             bClass.tp match {
               case ScParameterizedType(_, typeArgs) =>
                 return Some(
-                  bClass.getTypeParameters
+                  bClass
+                    .getTypeParameters
                     .zip(typeArgs)
                     .foldLeft(ScSubstitutor.empty) {
                       case (subst: ScSubstitutor, (ptp, typez)) =>
@@ -585,10 +591,12 @@ object Bounds {
       case (Some(superSubst1), Some(superSubst2)) =>
         val tp = ScParameterizedType(
           baseClassDesignator,
-          baseClass.getTypeParameters.map(tp =>
-            ScalaPsiManager
-              .instance(baseClass.getNamedElement.getProject)
-              .typeVariable(tp)))
+          baseClass
+            .getTypeParameters
+            .map(tp =>
+              ScalaPsiManager
+                .instance(baseClass.getNamedElement.getProject)
+                .typeVariable(tp)))
         val tp1 = superSubst1.subst(tp).asInstanceOf[ScParameterizedType]
         val tp2 = superSubst2.subst(tp).asInstanceOf[ScParameterizedType]
         val resTypeArgs = new ArrayBuffer[ScType]

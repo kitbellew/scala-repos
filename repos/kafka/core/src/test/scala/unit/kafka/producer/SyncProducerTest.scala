@@ -38,8 +38,8 @@ class SyncProducerTest extends KafkaServerTestHarness {
   // turning off controlled shutdown since testProducerCanTimeout() explicitly shuts down request handler pool.
   def generateConfigs() =
     List(
-      KafkaConfig.fromProps(
-        TestUtils.createBrokerConfigs(1, zkConnect, false).head))
+      KafkaConfig
+        .fromProps(TestUtils.createBrokerConfigs(1, zkConnect, false).head))
 
   private def produceRequest(
       topic: String,
@@ -158,8 +158,8 @@ class SyncProducerTest extends KafkaServerTestHarness {
       new ByteBufferMessageSet(
         compressionCodec = NoCompressionCodec,
         messages = message1)
-    val response1 = producer.send(
-      produceRequest("test", 0, messageSet1, acks = 1))
+    val response1 = producer
+      .send(produceRequest("test", 0, messageSet1, acks = 1))
 
     assertEquals(1, response1.status.count(_._2.error != Errors.NONE.code))
     assertEquals(
@@ -167,15 +167,15 @@ class SyncProducerTest extends KafkaServerTestHarness {
       response1.status(TopicAndPartition("test", 0)).error)
     assertEquals(-1L, response1.status(TopicAndPartition("test", 0)).offset)
 
-    val safeSize = configs(
-      0).messageMaxBytes - Message.MinMessageOverhead - Message.TimestampLength - MessageSet.LogOverhead - 1
+    val safeSize = configs(0).messageMaxBytes - Message
+      .MinMessageOverhead - Message.TimestampLength - MessageSet.LogOverhead - 1
     val message2 = new Message(new Array[Byte](safeSize))
     val messageSet2 =
       new ByteBufferMessageSet(
         compressionCodec = NoCompressionCodec,
         messages = message2)
-    val response2 = producer.send(
-      produceRequest("test", 0, messageSet2, acks = 1))
+    val response2 = producer
+      .send(produceRequest("test", 0, messageSet2, acks = 1))
 
     assertEquals(1, response1.status.count(_._2.error != Errors.NONE.code))
     assertEquals(
@@ -248,12 +248,15 @@ class SyncProducerTest extends KafkaServerTestHarness {
     assertNotNull(response)
     assertEquals(request.correlationId, response.correlationId)
     assertEquals(3, response.status.size)
-    response.status.values.foreach {
-      case ProducerResponseStatus(error, nextOffset, timestamp) =>
-        assertEquals(Errors.UNKNOWN_TOPIC_OR_PARTITION.code, error)
-        assertEquals(-1L, nextOffset)
-        assertEquals(Message.NoTimestamp, timestamp)
-    }
+    response
+      .status
+      .values
+      .foreach {
+        case ProducerResponseStatus(error, nextOffset, timestamp) =>
+          assertEquals(Errors.UNKNOWN_TOPIC_OR_PARTITION.code, error)
+          assertEquals(-1L, nextOffset)
+          assertEquals(Message.NoTimestamp, timestamp)
+      }
 
     // #2 - test that we get correct offsets when partition is owned by broker
     AdminUtils.createTopic(zkUtils, "topic1", 1, 1)

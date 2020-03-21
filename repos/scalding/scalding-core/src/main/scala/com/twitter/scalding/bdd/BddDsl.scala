@@ -94,8 +94,8 @@ trait BddDsl extends FieldConversions with PipeOperationsConversions {
       conv: TupleConverter[OutputType]) {
 
     class DummyJob(args: Args) extends Job(args) {
-      val inputPipes: List[RichPipe] = sources.map(testSource =>
-        RichPipe(testSource.asSource.read))
+      val inputPipes: List[RichPipe] = sources
+        .map(testSource => RichPipe(testSource.asSource.read))
 
       val outputPipe = RichPipe(operation(inputPipes))
 

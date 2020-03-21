@@ -188,8 +188,8 @@ final class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
 
     idleTimeout match {
       case d: FiniteDuration ⇒
-        tcpFlow.join(
-          BidiFlow.bidirectionalIdleTimeout[ByteString, ByteString](d))
+        tcpFlow
+          .join(BidiFlow.bidirectionalIdleTimeout[ByteString, ByteString](d))
       case _ ⇒
         tcpFlow
     }

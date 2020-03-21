@@ -17,10 +17,8 @@ class ScalaMissingForBodyFixer extends ScalaFixer {
       editor: Editor,
       processor: ScalaSmartEnterProcessor,
       psiElement: PsiElement): OperationPerformed = {
-    val forStatement = PsiTreeUtil.getParentOfType(
-      psiElement,
-      classOf[ScForStatement],
-      false)
+    val forStatement = PsiTreeUtil
+      .getParentOfType(psiElement, classOf[ScForStatement], false)
     if (forStatement == null)
       return NoOperation
 

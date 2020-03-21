@@ -116,12 +116,19 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
       isFirstRow: Boolean,
       sparkJob: JobUIData): Seq[Node] = {
     val duration: Option[Long] = {
-      sparkJob.submissionTime.map { start =>
-        val end = sparkJob.completionTime.getOrElse(System.currentTimeMillis())
-        end - start
-      }
+      sparkJob
+        .submissionTime
+        .map { start =>
+          val end = sparkJob
+            .completionTime
+            .getOrElse(System.currentTimeMillis())
+          end - start
+        }
     }
-    val lastFailureReason = sparkJob.stageIds.sorted.reverse
+    val lastFailureReason = sparkJob
+      .stageIds
+      .sorted
+      .reverse
       .flatMap(sparkListener.stageIdToInfo.get)
       .dropWhile(_.failureReason == None)
       .take(1)
@@ -308,15 +315,17 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
         sparkJobs.size,
         true,
         sparkJobs.head)
-      val tailRows = sparkJobs.tail.map { sparkJob =>
-        generateJobRow(
-          outputOpData,
-          description,
-          formattedOutputOpDuration,
-          sparkJobs.size,
-          false,
-          sparkJob)
-      }
+      val tailRows = sparkJobs
+        .tail
+        .map { sparkJob =>
+          generateJobRow(
+            outputOpData,
+            description,
+            formattedOutputOpDuration,
+            sparkJobs.size,
+            false,
+            sparkJob)
+        }
       (firstRow ++ tailRows).flatten
     }
   }
@@ -341,11 +350,17 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
   }
 
   private def getJobData(sparkJobId: SparkJobId): Option[JobUIData] = {
-    sparkListener.activeJobs.get(sparkJobId).orElse {
-      sparkListener.completedJobs.find(_.jobId == sparkJobId).orElse {
-        sparkListener.failedJobs.find(_.jobId == sparkJobId)
+    sparkListener
+      .activeJobs
+      .get(sparkJobId)
+      .orElse {
+        sparkListener
+          .completedJobs
+          .find(_.jobId == sparkJobId)
+          .orElse {
+            sparkListener.failedJobs.find(_.jobId == sparkJobId)
+          }
       }
-    }
   }
 
   private def generateOutputOperationStatusForUI(failure: String): String = {
@@ -365,7 +380,8 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
     * Generate the job table for the batch.
     */
   private def generateJobTable(batchUIData: BatchUIData): Seq[Node] = {
-    val outputOpIdToSparkJobIds = batchUIData.outputOpIdSparkJobIdPairs
+    val outputOpIdToSparkJobIds = batchUIData
+      .outputOpIdSparkJobIdPairs
       .groupBy(_.outputOpId)
       .map {
         case (outputOpId, outputOpIdAndSparkJobIds) =>
@@ -373,17 +389,16 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
           (outputOpId, outputOpIdAndSparkJobIds.map(_.sparkJobId).toSeq.sorted)
       }
 
-    val outputOps: Seq[(OutputOperationUIData, Seq[SparkJobId])] =
-      batchUIData.outputOperations
-        .map {
-          case (outputOpId, outputOperation) =>
-            val sparkJobIds = outputOpIdToSparkJobIds.getOrElse(
-              outputOpId,
-              Seq.empty)
-            (outputOperation, sparkJobIds)
-        }
-        .toSeq
-        .sortBy(_._1.id)
+    val outputOps: Seq[(OutputOperationUIData, Seq[SparkJobId])] = batchUIData
+      .outputOperations
+      .map {
+        case (outputOpId, outputOperation) =>
+          val sparkJobIds = outputOpIdToSparkJobIds
+            .getOrElse(outputOpId, Seq.empty)
+          (outputOperation, sparkJobIds)
+      }
+      .toSeq
+      .sortBy(_._1.id)
     sparkListener.synchronized {
       val outputOpWithJobs = outputOps.map {
         case (outputOpData, sparkJobIds) =>
@@ -422,26 +437,36 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
         batchTime.milliseconds,
         streamingListener.batchDuration)
 
-      val batchUIData = streamingListener.getBatchUIData(batchTime).getOrElse {
-        throw new IllegalArgumentException(
-          s"Batch $formattedBatchTime does not exist")
-      }
+      val batchUIData = streamingListener
+        .getBatchUIData(batchTime)
+        .getOrElse {
+          throw new IllegalArgumentException(
+            s"Batch $formattedBatchTime does not exist")
+        }
 
-      val formattedSchedulingDelay = batchUIData.schedulingDelay
+      val formattedSchedulingDelay = batchUIData
+        .schedulingDelay
         .map(SparkUIUtils.formatDuration)
         .getOrElse("-")
-      val formattedProcessingTime = batchUIData.processingDelay
+      val formattedProcessingTime = batchUIData
+        .processingDelay
         .map(SparkUIUtils.formatDuration)
         .getOrElse("-")
-      val formattedTotalDelay = batchUIData.totalDelay
+      val formattedTotalDelay = batchUIData
+        .totalDelay
         .map(SparkUIUtils.formatDuration)
         .getOrElse("-")
 
       val inputMetadatas =
-        batchUIData.streamIdToInputInfo.values.flatMap { inputInfo =>
-          inputInfo.metadataDescription.map(desc =>
-            inputInfo.inputStreamId -> desc)
-        }.toSeq
+        batchUIData
+          .streamIdToInputInfo
+          .values
+          .flatMap { inputInfo =>
+            inputInfo
+              .metadataDescription
+              .map(desc => inputInfo.inputStreamId -> desc)
+          }
+          .toSeq
       val summary: NodeSeq =
         <div>
         <ul class="unstyled">
@@ -542,8 +567,8 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
       rowspan: Int): Seq[Node] = {
     outputOp.failureReason match {
       case Some(failureReason) =>
-        val failureReasonForUI = UIUtils.createOutputOperationFailureForUI(
-          failureReason)
+        val failureReasonForUI = UIUtils
+          .createOutputOperationFailureForUI(failureReason)
         UIUtils.failureReasonCell(
           failureReasonForUI,
           rowspan,

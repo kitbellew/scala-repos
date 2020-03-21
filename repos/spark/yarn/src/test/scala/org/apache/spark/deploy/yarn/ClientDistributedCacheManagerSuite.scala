@@ -115,7 +115,8 @@ class ClientDistributedCacheManagerSuite
     assert(env("SPARK_YARN_CACHE_FILES_TIME_STAMPS") === "0")
     assert(env("SPARK_YARN_CACHE_FILES_FILE_SIZES") === "0")
     assert(
-      env("SPARK_YARN_CACHE_FILES_VISIBILITIES") === LocalResourceVisibility.PRIVATE
+      env("SPARK_YARN_CACHE_FILES_VISIBILITIES") === LocalResourceVisibility
+        .PRIVATE
         .name())
 
     distMgr.setDistArchivesEnv(env)
@@ -295,7 +296,8 @@ class ClientDistributedCacheManagerSuite
     assert(env("SPARK_YARN_CACHE_ARCHIVES_TIME_STAMPS") === "10")
     assert(env("SPARK_YARN_CACHE_ARCHIVES_FILE_SIZES") === "20")
     assert(
-      env("SPARK_YARN_CACHE_ARCHIVES_VISIBILITIES") === LocalResourceVisibility.PRIVATE
+      env("SPARK_YARN_CACHE_ARCHIVES_VISIBILITIES") === LocalResourceVisibility
+        .PRIVATE
         .name())
 
     distMgr.setDistFilesEnv(env)

@@ -67,8 +67,8 @@ object Decompiler {
               val bytes = parts.reduceLeft(Array.concat(_, _))
 
               val length = ByteCodecs.decode(bytes)
-              val scalaSig = ScalaSigAttributeParsers.parse(
-                ByteCode(bytes.take(length)))
+              val scalaSig = ScalaSigAttributeParsers
+                .parse(ByteCode(bytes.take(length)))
               scalaSig
           }
         case Some(other) =>
@@ -117,14 +117,19 @@ object Decompiler {
     val sourceFileName = {
       classFile.attribute(SOURCE_FILE) match {
         case Some(attr: Attribute) =>
-          val SourceFileInfo(index: Int) = SourceFileAttributeParser.parse(
-            attr.byteCode)
+          val SourceFileInfo(index: Int) = SourceFileAttributeParser
+            .parse(attr.byteCode)
           val c = classFile.header.constants(index)
           val sBytes: Array[Byte] =
             c match {
               case s: String =>
                 s.getBytes(UTF8)
-              case scala.tools.scalap.scalax.rules.scalasig
+              case scala
+                    .tools
+                    .scalap
+                    .scalax
+                    .rules
+                    .scalasig
                     .StringBytesPair(s: String, bytes: Array[Byte]) =>
                 bytes
               case _ =>

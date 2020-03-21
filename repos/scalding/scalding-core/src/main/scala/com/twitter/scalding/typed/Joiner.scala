@@ -28,9 +28,11 @@ object Joiner extends java.io.Serializable {
   }
 
   def hashInner2[K, V, U] = { (key: K, v: V, itu: Iterable[U]) =>
-    itu.iterator.map {
-      (v, _)
-    }
+    itu
+      .iterator
+      .map {
+        (v, _)
+      }
   }
   def hashLeft2[K, V, U] = { (key: K, v: V, itu: Iterable[U]) =>
     asOuter(itu.iterator).map {

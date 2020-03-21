@@ -249,7 +249,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
             // The projection of the query can either be a normal projection, an aggregation
             // (if there is a group by) or a script transformation.
             val withProject: LogicalPlan = transformation.getOrElse {
-              val selectExpressions = select.children
+              val selectExpressions = select
+                .children
                 .flatMap(selExprNodeToExpr)
                 .map(UnresolvedAlias(_))
               Seq(
@@ -355,7 +356,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
                       withDistinct))
                 case (None, None, None, Some(clusterExprs)) =>
                   Sort(
-                    clusterExprs.children
+                    clusterExprs
+                      .children
                       .map(nodeToExpr)
                       .map(SortOrder(_, Ascending)),
                     global = false,
@@ -377,14 +379,16 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
 
             // Collect all window specifications defined in the WINDOW clause.
             val windowDefinitions = windowClause.map(
-              _.children.collect {
+              _.children
+              .collect {
                 case Token(
                       "TOK_WINDOWDEF",
                       Token(windowName, Nil) :: Token(
                         "TOK_WINDOWSPEC",
                         spec) :: Nil) =>
                   windowName -> nodesToWindowSpecification(spec)
-              }.toMap)
+              }
+              .toMap)
             // Handle cases like
             // window w1 as (partition by p_mfgr order by p_name
             //               range between 2 preceding and 2 following),
@@ -406,8 +410,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
 
             // TOK_INSERT_INTO means to add files to the table.
             // TOK_DESTINATION means to overwrite the table.
-            val resultDestination = (intoClause orElse destClause).getOrElse(
-              sys.error("No destination found."))
+            val resultDestination = (intoClause orElse destClause)
+              .getOrElse(sys.error("No destination found."))
             val overwrite = intoClause.isEmpty
             nodeToDest(resultDestination, withWindowDefinitions, overwrite)
         }
@@ -490,9 +494,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
               // adjust the fraction.
               require(
                 fraction.toDouble >= (0.0 - RandomSampler.roundingEpsilon)
-                  && fraction.toDouble <= (
-                    100.0 + RandomSampler.roundingEpsilon
-                  ),
+                  && fraction
+                    .toDouble <= (100.0 + RandomSampler.roundingEpsilon),
                 s"Sampling fraction ($fraction) must be on interval [0, 100]"
               )
               Sample(
@@ -568,10 +571,12 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
 
     joinConditionToken match {
       case Token("TOK_USING", columnList :: Nil) :: Nil =>
-        val colNames = columnList.children.collect {
-          case Token(name, Nil) =>
-            UnresolvedAttribute(name)
-        }
+        val colNames = columnList
+          .children
+          .collect {
+            case Token(name, Nil) =>
+              UnresolvedAttribute(name)
+          }
         (UsingJoin(joinType, colNames), None)
       /* Join expression specified using ON clause */
       case _ =>
@@ -609,7 +614,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
 
         val partitionKeys = partitionClause
           .map(
-            _.children.map {
+            _.children
+            .map {
               // Parse partitions. We also make keys case insensitive.
               case Token(
                     "TOK_PARTVAL",
@@ -617,7 +623,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
                 cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
               case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
                 cleanIdentifier(key.toLowerCase) -> None
-            }.toMap)
+            }
+            .toMap)
           .getOrElse(Map.empty)
 
         InsertIntoTable(
@@ -639,7 +646,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
 
         val partitionKeys = partitionClause
           .map(
-            _.children.map {
+            _.children
+            .map {
               // Parse partitions. We also make keys case insensitive.
               case Token(
                     "TOK_PARTVAL",
@@ -647,7 +655,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
                 cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
               case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
                 cleanIdentifier(key.toLowerCase) -> None
-            }.toMap)
+            }
+            .toMap)
           .getOrElse(Map.empty)
 
         InsertIntoTable(
@@ -927,9 +936,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         Literal(strings.map(s => ParseUtils.unescapeSQLString(s.text)).mkString)
 
       case ast if ast.tokenType == SparkSqlParser.TinyintLiteral =>
-        Literal.create(
-          ast.text.substring(0, ast.text.length() - 1).toByte,
-          ByteType)
+        Literal
+          .create(ast.text.substring(0, ast.text.length() - 1).toByte, ByteType)
 
       case ast if ast.tokenType == SparkSqlParser.SmallintLiteral =>
         Literal.create(
@@ -937,9 +945,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           ShortType)
 
       case ast if ast.tokenType == SparkSqlParser.BigintLiteral =>
-        Literal.create(
-          ast.text.substring(0, ast.text.length() - 1).toLong,
-          LongType)
+        Literal
+          .create(ast.text.substring(0, ast.text.length() - 1).toLong, LongType)
 
       case ast if ast.tokenType == SparkSqlParser.DoubleLiteral =>
         Literal(ast.text.toDouble)
@@ -1006,8 +1013,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
                 case _ =>
                   noParseRule(s"Interval($name)", e)
               }
-            interval = interval.add(
-              CalendarInterval.fromSingleUnitString(unit, value))
+            interval = interval
+              .add(CalendarInterval.fromSingleUnitString(unit, value))
             updated = true
           case _ =>
         }

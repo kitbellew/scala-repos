@@ -51,8 +51,8 @@ import scala.collection.mutable.ArrayBuffer
   * Date: 11.01.2010
   */
 class ScalaExtractMethodHandler extends RefactoringActionHandler {
-  private val REFACTORING_NAME: String = ScalaBundle.message(
-    "extract.method.title")
+  private val REFACTORING_NAME: String = ScalaBundle
+    .message("extract.method.title")
 
   def invoke(
       project: Project,
@@ -98,16 +98,11 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
     }
     if (!editor.getSelectionModel.hasSelection)
       return
-    val elements: Seq[PsiElement] = ScalaRefactoringUtil.selectedElements(
-      editor,
-      file,
-      trimComments = false)
+    val elements: Seq[PsiElement] = ScalaRefactoringUtil
+      .selectedElements(editor, file, trimComments = false)
 
-    val hasWarnings = ScalaRefactoringUtil.showNotPossibleWarnings(
-      elements,
-      project,
-      editor,
-      REFACTORING_NAME)
+    val hasWarnings = ScalaRefactoringUtil
+      .showNotPossibleWarnings(elements, project, editor, REFACTORING_NAME)
     if (hasWarnings)
       return
 
@@ -127,18 +122,16 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
     }
 
     def returnType: Option[ScType] = {
-      val fun = PsiTreeUtil.getParentOfType(
-        elements.head,
-        classOf[ScFunctionDefinition])
+      val fun = PsiTreeUtil
+        .getParentOfType(elements.head, classOf[ScFunctionDefinition])
       if (fun == null)
         return None
       var result: Option[ScType] = None
       val visitor =
         new ScalaRecursiveElementVisitor {
           override def visitReturnStatement(ret: ScReturnStmt) {
-            val newFun = PsiTreeUtil.getParentOfType(
-              ret,
-              classOf[ScFunctionDefinition])
+            val newFun = PsiTreeUtil
+              .getParentOfType(ret, classOf[ScFunctionDefinition])
             if (newFun == fun) {
               result = Some(fun.returnType.getOrElse(psi.types.Unit))
             }
@@ -150,7 +143,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       result
     }
 
-    val (lastReturn, lastExprType) = elements.reverse
+    val (lastReturn, lastExprType) = elements
+      .reverse
       .collectFirst {
         case expr: ScExpression =>
           (
@@ -171,7 +165,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       return
     }
     val array = elements.toArray
-    if (ApplicationManager.getApplication.isUnitTestMode && siblings.length > 0) {
+    if (ApplicationManager.getApplication.isUnitTestMode && siblings
+          .length > 0) {
       invokeDialog(
         project,
         editor,
@@ -223,8 +218,9 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       assert(
         parent.getTextRange != null,
         "TextRange is null: " + parent.getText)
-      stopAtScope == null || stopAtScope.getTextRange.contains(
-        parent.getTextRange)
+      stopAtScope == null || stopAtScope
+        .getTextRange
+        .contains(parent.getTextRange)
     }
 
     val res = new ArrayBuffer[PsiElement]
@@ -281,8 +277,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
           case td: ScTypeDefinition =>
             td.parent
           case ScalaPsiUtil.inNameContext(varDef: ScVariableDefinition)
-              if ScalaPsiUtil.isLValue(ref) && !elements.exists(
-                _.isAncestorOf(varDef)) =>
+              if ScalaPsiUtil.isLValue(ref) && !elements
+                .exists(_.isAncestorOf(varDef)) =>
             varDef.parent
           case member: PsiMember =>
             member.containingClass.toOption
@@ -292,11 +288,13 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       }
       defScope match {
         case Some(clazz: PsiClass) =>
-          commonParent.parentsInFile.collectFirst {
-            case td: ScTemplateDefinition
-                if td == clazz || td.isInheritor(clazz, deep = true) =>
-              td
-          }
+          commonParent
+            .parentsInFile
+            .collectFirst {
+              case td: ScTemplateDefinition
+                  if td == clazz || td.isInheritor(clazz, deep = true) =>
+                td
+            }
         case local @ Some(_) =>
           local
         case _ =>
@@ -337,9 +335,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       smallestScope: Boolean,
       lastExprType: Option[ScType]) {
 
-    val info = ReachingDefintionsCollector.collectVariableInfo(
-      elements,
-      sibling)
+    val info = ReachingDefintionsCollector
+      .collectVariableInfo(elements, sibling)
 
     val input = info.inputVariables
     val output = info.outputVariables
@@ -406,9 +403,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
     def local(text: String) = ScalaBundle.message("extract.local.method", text)
     element.getParent match {
       case tbody: ScTemplateBody =>
-        PsiTreeUtil.getParentOfType(
-          tbody,
-          classOf[ScTemplateDefinition]) match {
+        PsiTreeUtil
+          .getParentOfType(tbody, classOf[ScTemplateDefinition]) match {
           case o: ScObject =>
             s"Extract method to object ${o.name}"
           case c: ScClass =>

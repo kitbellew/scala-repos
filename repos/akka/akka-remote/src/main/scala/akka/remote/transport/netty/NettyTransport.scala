@@ -90,12 +90,15 @@ object NettyFutureBridge {
             if (future.isCompleteSuccess)
               future.getGroup
             else
-              throw future.iterator.asScala.collectFirst {
-                case f if f.isCancelled ⇒
-                  new CancellationException
-                case f if !f.isSuccess ⇒
-                  f.getCause
-              } getOrElse new IllegalStateException(
+              throw future
+                .iterator
+                .asScala
+                .collectFirst {
+                  case f if f.isCancelled ⇒
+                    new CancellationException
+                  case f if !f.isSuccess ⇒
+                    f.getCause
+                } getOrElse new IllegalStateException(
                 "Error reported in ChannelGroupFuture, but no error found in individual futures."))
       })
     p.future
@@ -147,8 +150,8 @@ class NettyTransportSettings(config: Config) {
         Some(other)
     }
 
-  val ConnectionTimeout: FiniteDuration = config.getMillisDuration(
-    "connection-timeout")
+  val ConnectionTimeout: FiniteDuration = config
+    .getMillisDuration("connection-timeout")
 
   val WriteBufferHighWaterMark: Option[Int] = optionSize(
     "write-buffer-high-water-mark")
@@ -266,15 +269,18 @@ private[netty] trait CommonHandlers extends NettyHelpers {
       None) match {
       case Some(localAddress) ⇒
         val handle = createHandle(channel, localAddress, remoteAddress)
-        handle.readHandlerPromise.future.onSuccess {
-          case listener: HandleEventListener ⇒
-            registerListener(
-              channel,
-              listener,
-              msg,
-              remoteSocketAddress.asInstanceOf[InetSocketAddress])
-            channel.setReadable(true)
-        }
+        handle
+          .readHandlerPromise
+          .future
+          .onSuccess {
+            case listener: HandleEventListener ⇒
+              registerListener(
+                channel,
+                listener,
+                msg,
+                remoteSocketAddress.asInstanceOf[InetSocketAddress])
+              channel.setReadable(true)
+          }
         op(handle)
 
       case _ ⇒
@@ -409,7 +415,8 @@ class NettyTransport(
   import NettyTransport._
   import settings._
 
-  implicit val executionContext: ExecutionContext = settings.UseDispatcherForIo
+  implicit val executionContext: ExecutionContext = settings
+    .UseDispatcherForIo
     .orElse(
       RARP(system).provider.remoteSettings.Dispatcher match {
         case "" ⇒
@@ -573,14 +580,18 @@ class NettyTransport(
       bootstrap.setOption(
         "receiveBufferSizePredictorFactory",
         new FixedReceiveBufferSizePredictorFactory(ReceiveBufferSize.get))
-    settings.ReceiveBufferSize.foreach(sz ⇒
-      bootstrap.setOption("receiveBufferSize", sz))
-    settings.SendBufferSize.foreach(sz ⇒
-      bootstrap.setOption("sendBufferSize", sz))
-    settings.WriteBufferHighWaterMark.foreach(sz ⇒
-      bootstrap.setOption("writeBufferHighWaterMark", sz))
-    settings.WriteBufferLowWaterMark.foreach(sz ⇒
-      bootstrap.setOption("writeBufferLowWaterMark", sz))
+    settings
+      .ReceiveBufferSize
+      .foreach(sz ⇒ bootstrap.setOption("receiveBufferSize", sz))
+    settings
+      .SendBufferSize
+      .foreach(sz ⇒ bootstrap.setOption("sendBufferSize", sz))
+    settings
+      .WriteBufferHighWaterMark
+      .foreach(sz ⇒ bootstrap.setOption("writeBufferHighWaterMark", sz))
+    settings
+      .WriteBufferLowWaterMark
+      .foreach(sz ⇒ bootstrap.setOption("writeBufferLowWaterMark", sz))
     bootstrap
   }
 
@@ -600,19 +611,22 @@ class NettyTransport(
     val bootstrap = setupBootstrap(
       new ClientBootstrap(clientChannelFactory),
       clientPipelineFactory(remoteAddress))
-    bootstrap.setOption(
-      "connectTimeoutMillis",
-      settings.ConnectionTimeout.toMillis)
+    bootstrap
+      .setOption("connectTimeoutMillis", settings.ConnectionTimeout.toMillis)
     bootstrap.setOption("tcpNoDelay", settings.TcpNodelay)
     bootstrap.setOption("keepAlive", settings.TcpKeepalive)
-    settings.ReceiveBufferSize.foreach(sz ⇒
-      bootstrap.setOption("receiveBufferSize", sz))
-    settings.SendBufferSize.foreach(sz ⇒
-      bootstrap.setOption("sendBufferSize", sz))
-    settings.WriteBufferHighWaterMark.foreach(sz ⇒
-      bootstrap.setOption("writeBufferHighWaterMark", sz))
-    settings.WriteBufferLowWaterMark.foreach(sz ⇒
-      bootstrap.setOption("writeBufferLowWaterMark", sz))
+    settings
+      .ReceiveBufferSize
+      .foreach(sz ⇒ bootstrap.setOption("receiveBufferSize", sz))
+    settings
+      .SendBufferSize
+      .foreach(sz ⇒ bootstrap.setOption("sendBufferSize", sz))
+    settings
+      .WriteBufferHighWaterMark
+      .foreach(sz ⇒ bootstrap.setOption("writeBufferHighWaterMark", sz))
+    settings
+      .WriteBufferLowWaterMark
+      .foreach(sz ⇒ bootstrap.setOption("writeBufferLowWaterMark", sz))
     bootstrap
   }
 
@@ -677,10 +691,12 @@ class NettyTransport(
                   s"Unknown local address type [${newServerChannel.getLocalAddress.getClass.getName}]")
             }
             localAddress = address
-            associationListenerPromise.future.onSuccess {
-              case listener ⇒
-                newServerChannel.setReadable(true)
-            }
+            associationListenerPromise
+              .future
+              .onSuccess {
+                case listener ⇒
+                  newServerChannel.setReadable(true)
+              }
             (address, associationListenerPromise)
           case None ⇒
             throw new NettyTransportException(
@@ -718,7 +734,8 @@ class NettyTransport(
             bootstrap.connect(socketAddress)) map { channel ⇒
             if (EnableSsl)
               blocking {
-                channel.getPipeline
+                channel
+                  .getPipeline
                   .get(classOf[SslHandler])
                   .handshake()
                   .awaitUninterruptibly()
@@ -737,10 +754,13 @@ class NettyTransport(
                       remoteAddress,
                       readyChannel,
                       NettyTransport.this)
-                  handle.readHandlerPromise.future.onSuccess {
-                    case listener ⇒
-                      udpConnectionTable.put(addr, listener)
-                  }
+                  handle
+                    .readHandlerPromise
+                    .future
+                    .onSuccess {
+                      case listener ⇒
+                        udpConnectionTable.put(addr, listener)
+                    }
                   handle
                 case unknown ⇒
                   throw new NettyTransportException(

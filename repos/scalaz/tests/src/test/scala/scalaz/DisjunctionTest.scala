@@ -49,7 +49,8 @@ object DisjunctionTest extends SpecLite {
       case Baz =>
         1
     }) must_=== -\/(Bar)
-    \/.right[Foo, Int](1).recover({
+    \/.right[Foo, Int](1)
+    .recover({
       case Bar =>
         4
     }) must_=== \/-(1)
@@ -92,9 +93,8 @@ object DisjunctionTest extends SpecLite {
     import syntax.apply._
 
     3.right[String].validationNel must_=== 3.successNel[String]
-    (
-      "hello".left[Int].validationNel |@| "world".left[Int].validationNel
-    ).tupled must_===
+    ("hello".left[Int].validationNel |@| "world".left[Int].validationNel)
+      .tupled must_===
       ("hello".failureNel[Int] |@| "world".failureNel[Int]).tupled
   }
 }

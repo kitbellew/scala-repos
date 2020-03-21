@@ -315,7 +315,8 @@ abstract class ClassfileParser {
           val start = firstExpecting(index, CONSTANT_NAMEANDTYPE)
           val name = getName(in.getChar(start).toInt)
           // create a dummy symbol for method types
-          val dummy = ownerTpe.typeSymbol
+          val dummy = ownerTpe
+            .typeSymbol
             .newMethod(name.toTermName, ownerTpe.typeSymbol.pos)
           val tpe = getType(dummy, in.getChar(start + 2).toInt)
           // fix the return type, which is blindly set to the class currently parsed
@@ -379,8 +380,9 @@ abstract class ClassfileParser {
           case CONSTANT_DOUBLE =>
             in.getDouble(start + 1)
           case CONSTANT_CLASS =>
-            getClassOrArrayType(
-              index).typeSymbol.tpe_* // !!! Is this necessary or desirable?
+            getClassOrArrayType(index)
+              .typeSymbol
+              .tpe_* // !!! Is this necessary or desirable?
           case _ =>
             errorBadTag(start)
         })
@@ -639,10 +641,8 @@ abstract class ClassfileParser {
     } else {
       val name = readName()
       val info = readType()
-      val sym = ownerForFlags(jflags).newValue(
-        name.toTermName,
-        NoPosition,
-        sflags)
+      val sym = ownerForFlags(jflags)
+        .newValue(name.toTermName, NoPosition, sflags)
 
       // Note: the info may be overwritten later with a generic signature
       // parsed from SignatureATTR
@@ -689,10 +689,8 @@ abstract class ClassfileParser {
         skipAttributes()
       } else {
         val name = readName()
-        val sym = ownerForFlags(jflags).newMethod(
-          name.toTermName,
-          NoPosition,
-          sflags)
+        val sym = ownerForFlags(jflags)
+          .newMethod(name.toTermName, NoPosition, sflags)
         var info = pool.getType(sym, u2)
         if (name == nme.CONSTRUCTOR)
           info match {
@@ -709,7 +707,8 @@ abstract class ClassfileParser {
                      * ClassfileParser for 1 executes, and clazz.owner is the package.
                      */
                     assert(
-                      params.head.tpe.typeSymbol == clazz.owner || clazz.owner.hasPackageFlag,
+                      params.head.tpe.typeSymbol == clazz
+                        .owner || clazz.owner.hasPackageFlag,
                       params.head.tpe.typeSymbol + ": " + clazz.owner)
                     params.tail
                   case _ =>
@@ -801,8 +800,8 @@ abstract class ClassfileParser {
                         val bounds =
                           variance match {
                             case '+' =>
-                              TypeBounds.upper(
-                                objToAny(sig2type(tparams, skiptvs)))
+                              TypeBounds
+                                .upper(objToAny(sig2type(tparams, skiptvs)))
                             case '-' =>
                               val tp = sig2type(tparams, skiptvs)
                               // sig2type seems to return AnyClass regardless of the situation:
@@ -834,7 +833,9 @@ abstract class ClassfileParser {
                 // isMonomorphicType is false if the info is incomplete, as it usually is here
                 // so have to check unsafeTypeParams.isEmpty before worrying about raw type case below,
                 // or we'll create a boatload of needless existentials.
-                else if (classSym.isMonomorphicType || classSym.unsafeTypeParams.isEmpty)
+                else if (classSym.isMonomorphicType || classSym
+                           .unsafeTypeParams
+                           .isEmpty)
                   tp
                 else
                   debuglogResult(s"raw type from $classSym") {
@@ -1039,7 +1040,8 @@ abstract class ClassfileParser {
               scalaSigAnnot match {
                 case Some(san: AnnotationInfo) =>
                   val bytes =
-                    san.assocs
+                    san
+                      .assocs
                       .find({
                         _._1 == nme.bytes
                       })
@@ -1047,12 +1049,8 @@ abstract class ClassfileParser {
                       ._2
                       .asInstanceOf[ScalaSigBytes]
                       .bytes
-                  unpickler.unpickle(
-                    bytes,
-                    0,
-                    clazz,
-                    staticModule,
-                    in.file.name)
+                  unpickler
+                    .unpickle(bytes, 0, clazz, staticModule, in.file.name)
                 case None =>
                   throw new RuntimeException(
                     "Scala class file does not contain Scala annotation")
@@ -1081,7 +1079,8 @@ abstract class ClassfileParser {
               case pkg =>
                 pkg.fullName(File.separatorChar) + File.separator + srcfileLeaf
             }
-          srcfile0 = settings.outputDirs
+          srcfile0 = settings
+            .outputDirs
             .srcFilesFor(in.file, srcpath)
             .find(_.exists)
         case tpnme.CodeATTR =>
@@ -1286,14 +1285,10 @@ abstract class ClassfileParser {
         if (file == NoAbstractFile) {
           (newStub(name.toTypeName), newStub(name.toTermName))
         } else {
-          val cls = owner.newClass(
-            name.toTypeName,
-            NoPosition,
-            sflags) setInfo completer
-          val mod = owner.newModule(
-            name.toTermName,
-            NoPosition,
-            sflags) setInfo completer
+          val cls = owner
+            .newClass(name.toTypeName, NoPosition, sflags) setInfo completer
+          val mod = owner
+            .newModule(name.toTermName, NoPosition, sflags) setInfo completer
           mod.moduleClass setInfo loaders.moduleClassLoader
           List(cls, mod.moduleClass) foreach (_.associatedFile = file)
           (cls, mod)

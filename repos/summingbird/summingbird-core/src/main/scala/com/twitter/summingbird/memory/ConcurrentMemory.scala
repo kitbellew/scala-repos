@@ -174,11 +174,14 @@ class ConcurrentMemory(implicit
   type ProdCons[T] = Prod[Any]
 
   def counter(group: Group, name: Name): Option[Long] =
-    MemoryStatProvider.getCountersForJob(jobID).flatMap {
-      _.get(group.getString + "/" + name.getString).map {
-        _.get
+    MemoryStatProvider
+      .getCountersForJob(jobID)
+      .flatMap {
+        _.get(group.getString + "/" + name.getString)
+        .map {
+          _.get
+        }
       }
-    }
 
   /**
     * This is the main recursive function that plans "that" to
@@ -268,8 +271,8 @@ class ConcurrentMemory(implicit
 
           case other =>
             sys.error(
-              "%s encountered, which should have been optimized away".format(
-                other))
+              "%s encountered, which should have been optimized away"
+                .format(other))
         }
     }
 
@@ -298,10 +301,12 @@ class ConcurrentMemory(implicit
       .orElse(ValueFlatMapToFlatMap)
 
     val deps = Dependants(optimize(prod, ourRule))
-    val heads = deps.nodes.collect {
-      case s @ Source(_) =>
-        s
-    }
+    val heads = deps
+      .nodes
+      .collect {
+        case s @ Source(_) =>
+          s
+      }
     heads
       .foldLeft(
         (HMap.empty[ProdCons, PhysicalNode], NullPlan: ConcurrentMemoryPlan)) {

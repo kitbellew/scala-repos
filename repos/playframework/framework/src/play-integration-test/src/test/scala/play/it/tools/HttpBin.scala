@@ -53,12 +53,16 @@ object HttpBinApplication {
             // Anything else
             case m: play.api.mvc.AnyContentAsMultipartFormData @unchecked =>
               Json.obj(
-                "form" -> m.mdf.dataParts.map {
-                  case (k, v) =>
-                    k -> JsString(v.mkString)
-                },
+                "form" -> m
+                  .mdf
+                  .dataParts
+                  .map {
+                    case (k, v) =>
+                      k -> JsString(v.mkString)
+                  },
                 "file" -> JsString(
-                  m.mdf
+                  m
+                    .mdf
                     .file("upload")
                     .map(v => FileUtils.readFileToString(v.ref.file))
                     .getOrElse(""))
@@ -154,8 +158,8 @@ object HttpBinApplication {
   val responseHeaders: Routes = {
     case GET(p"/response-header") =>
       Action { request =>
-        Ok("").withHeaders(
-          request.queryString.mapValues(_.mkString(",")).toSeq: _*)
+        Ok("")
+          .withHeaders(request.queryString.mapValues(_.mkString(",")).toSeq: _*)
       }
   }
 
@@ -173,7 +177,8 @@ object HttpBinApplication {
   val redirectTo: Routes = {
     case GET(p"/redirect-to") =>
       Action { request =>
-        request.queryString
+        request
+          .queryString
           .get("url")
           .map { u =>
             Redirect(u.head)
@@ -198,10 +203,14 @@ object HttpBinApplication {
     case GET(p"/cookies/set") =>
       Action { request =>
         Redirect("/cookies").withCookies(
-          request.queryString.mapValues(_.head).toSeq.map {
-            case (k, v) =>
-              Cookie(k, v)
-          }: _*)
+          request
+            .queryString
+            .mapValues(_.head)
+            .toSeq
+            .map {
+              case (k, v) =>
+                Cookie(k, v)
+            }: _*)
       }
   }
 
@@ -216,7 +225,8 @@ object HttpBinApplication {
   val basicAuth: Routes = {
     case GET(p"/basic-auth/$username/$password") =>
       Action { request =>
-        request.headers
+        request
+          .headers
           .get("Authorization")
           .flatMap { authorization =>
             authorization
@@ -225,8 +235,13 @@ object HttpBinApplication {
               .headOption
               .filter { encoded =>
                 new String(
-                  org.apache.commons.codec.binary.Base64.decodeBase64(
-                    encoded.getBytes)).split(":").toList match {
+                  org
+                    .apache
+                    .commons
+                    .codec
+                    .binary
+                    .Base64
+                    .decodeBase64(encoded.getBytes)).split(":").toList match {
                   case u :: p :: Nil if u == username && password == p =>
                     true
                   case _ =>
@@ -236,8 +251,8 @@ object HttpBinApplication {
               .map(_ => Ok(Json.obj("authenticated" -> true)))
           }
           .getOrElse {
-            Unauthorized.withHeaders(
-              "WWW-Authenticate" -> """Basic realm="Secured"""")
+            Unauthorized
+              .withHeaders("WWW-Authenticate" -> """Basic realm="Secured"""")
           }
       }
   }
@@ -247,9 +262,11 @@ object HttpBinApplication {
       Action { request =>
         val body = requestHeaderWriter.writes(request).as[JsObject]
 
-        val content = 0.to(param.toInt).map { index =>
-          body ++ Json.obj("id" -> index)
-        }
+        val content = 0
+          .to(param.toInt)
+          .map { index =>
+            body ++ Json.obj("id" -> index)
+          }
 
         Ok.chunked(Source(content)).as("application/json")
       }
@@ -369,7 +386,8 @@ object HttpBinApplication {
       with AhcWSComponents {
       def router =
         SimpleRouter(
-          PartialFunction.empty
+          PartialFunction
+            .empty
             .orElse(getIp)
             .orElse(getUserAgent)
             .orElse(getHeaders)

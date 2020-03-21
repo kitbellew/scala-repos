@@ -22,9 +22,12 @@ object Jackson {
   def jsonAs[T](clazz: Class[T]): Unmarshaller[T] = jsonAs(objectMapper, clazz)
   def jsonAs[T](objectMapper: ObjectMapper, clazz: Class[T]): Unmarshaller[T] =
     UnmarshallerImpl[T] {
-      unmarshalling.Unmarshaller
+      unmarshalling
+        .Unmarshaller
         .messageUnmarshallerFromEntityUnmarshaller { // isn't implicitly inferred for unknown reasons
-          unmarshalling.Unmarshaller.stringUnmarshaller
+          unmarshalling
+            .Unmarshaller
+            .stringUnmarshaller
             .forContentTypes(`application/json`)
             .map { jsonString ⇒
               val reader = objectMapper.reader(clazz)
@@ -35,10 +38,12 @@ object Jackson {
 
   private def jsonMarshaller(objectMapper: ObjectMapper): Marshaller[AnyRef] =
     MarshallerImpl[AnyRef] { implicit ec ⇒
-      marshalling.Marshaller.StringMarshaller.wrap(`application/json`) {
-        (value: AnyRef) ⇒
+      marshalling
+        .Marshaller
+        .StringMarshaller
+        .wrap(`application/json`) { (value: AnyRef) ⇒
           val writer = objectMapper.writer()
           writer.writeValueAsString(value)
-      }
+        }
     }
 }

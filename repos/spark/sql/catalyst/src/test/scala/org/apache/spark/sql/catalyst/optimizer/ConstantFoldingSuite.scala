@@ -45,15 +45,10 @@ class ConstantFoldingSuite extends PlanTest {
   val testRelation = LocalRelation('a.int, 'b.int, 'c.int)
 
   test("eliminate subqueries") {
-    val originalQuery = testRelation
-      .subquery('y)
-      .select('a)
+    val originalQuery = testRelation.subquery('y).select('a)
 
     val optimized = Optimize.execute(originalQuery.analyze)
-    val correctAnswer =
-      testRelation
-        .select('a.attr)
-        .analyze
+    val correctAnswer = testRelation.select('a.attr).analyze
 
     comparePlans(optimized, correctAnswer)
   }
@@ -95,13 +90,12 @@ class ConstantFoldingSuite extends PlanTest {
   test(
     "Constant folding test: expressions have attribute references and literals in " +
       "arithmetic operations") {
-    val originalQuery = testRelation
-      .select(
-        Literal(2) + Literal(3) + 'a as Symbol("c1"),
-        'a + Literal(2) + Literal(3) as Symbol("c2"),
-        Literal(2) * 'a + Literal(4) as Symbol("c3"),
-        'a * (Literal(3) + Literal(4)) as Symbol("c4")
-      )
+    val originalQuery = testRelation.select(
+      Literal(2) + Literal(3) + 'a as Symbol("c1"),
+      'a + Literal(2) + Literal(3) as Symbol("c2"),
+      Literal(2) * 'a + Literal(4) as Symbol("c3"),
+      'a * (Literal(3) + Literal(4)) as Symbol("c4")
+    )
 
     val optimized = Optimize.execute(originalQuery.analyze)
 
@@ -120,37 +114,33 @@ class ConstantFoldingSuite extends PlanTest {
   test(
     "Constant folding test: expressions have attribute references and literals in " +
       "predicates") {
-    val originalQuery = testRelation
-      .where(
+    val originalQuery = testRelation.where(
+      (
+        ('a > 1 && Literal(1) === Literal(1)) ||
+          ('a < 10 && Literal(1) === Literal(2)) ||
+          (Literal(1) === Literal(1) && 'b > 1) ||
+          (Literal(1) === Literal(2) && 'b < 10)
+      ) &&
         (
-          ('a > 1 && Literal(1) === Literal(1)) ||
-            ('a < 10 && Literal(1) === Literal(2)) ||
-            (Literal(1) === Literal(1) && 'b > 1) ||
-            (Literal(1) === Literal(2) && 'b < 10)
-        ) &&
-          (
-            ('a > 1 || Literal(1) === Literal(1)) &&
-              ('a < 10 || Literal(1) === Literal(2)) &&
-              (Literal(1) === Literal(1) || 'b > 1) &&
-              (Literal(1) === Literal(2) || 'b < 10)
-          ))
+          ('a > 1 || Literal(1) === Literal(1)) &&
+            ('a < 10 || Literal(1) === Literal(2)) &&
+            (Literal(1) === Literal(1) || 'b > 1) &&
+            (Literal(1) === Literal(2) || 'b < 10)
+        ))
 
     val optimized = Optimize.execute(originalQuery.analyze)
 
     val correctAnswer =
-      testRelation
-        .where(('a > 1 || 'b > 1) && ('a < 10 && 'b < 10))
-        .analyze
+      testRelation.where(('a > 1 || 'b > 1) && ('a < 10 && 'b < 10)).analyze
 
     comparePlans(optimized, correctAnswer)
   }
 
   test("Constant folding test: expressions have foldable functions") {
-    val originalQuery = testRelation
-      .select(
-        Cast(Literal("2"), IntegerType) + Literal(3) + 'a as Symbol("c1"),
-        Coalesce(Seq(Cast(Literal("abc"), IntegerType), Literal(3))) as Symbol(
-          "c2"))
+    val originalQuery = testRelation.select(
+      Cast(Literal("2"), IntegerType) + Literal(3) + 'a as Symbol("c1"),
+      Coalesce(Seq(Cast(Literal("abc"), IntegerType), Literal(3))) as Symbol(
+        "c2"))
 
     val optimized = Optimize.execute(originalQuery.analyze)
 
@@ -247,11 +237,7 @@ class ConstantFoldingSuite extends PlanTest {
 
     val optimized = Optimize.execute(originalQuery.analyze)
 
-    val correctAnswer =
-      testRelation
-        .select('a)
-        .where(Literal(true))
-        .analyze
+    val correctAnswer = testRelation.select('a).where(Literal(true)).analyze
 
     comparePlans(optimized, correctAnswer)
   }

@@ -28,7 +28,9 @@ class TaskStatusModuleTest extends FunSuite with BeforeAndAfter {
 
   test("observable forAll unsubscribe works") {
     var received = List.empty[TaskStatusUpdate]
-    val subscription = module.taskStatusObservables.forAll
+    val subscription = module
+      .taskStatusObservables
+      .forAll
       .subscribe(received :+= _)
     subscription.unsubscribe()
     val aa: TaskStatusUpdate =
@@ -39,7 +41,8 @@ class TaskStatusModuleTest extends FunSuite with BeforeAndAfter {
 
   test("observable forAppId includes only app status updates") {
     var received = List.empty[TaskStatusUpdate]
-    module.taskStatusObservables
+    module
+      .taskStatusObservables
       .forAppId(PathId("/a/a"))
       .foreach(received :+= _)
     val aa: TaskStatusUpdate =
@@ -53,7 +56,8 @@ class TaskStatusModuleTest extends FunSuite with BeforeAndAfter {
 
   test("observable forAppId unsubscribe works") {
     var received = List.empty[TaskStatusUpdate]
-    val subscription = module.taskStatusObservables
+    val subscription = module
+      .taskStatusObservables
       .forAppId(PathId("/a/a"))
       .subscribe(received :+= _)
     subscription.unsubscribe()

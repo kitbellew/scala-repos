@@ -137,8 +137,9 @@ object ReplicaVerificationTool extends Logging {
       clientId,
       maxWaitMs)
     val brokerMap = topicsMetadataResponse.brokers.map(b => (b.id, b)).toMap
-    val filteredTopicMetadata = topicsMetadataResponse.topicsMetadata.filter(
-      topicMetadata =>
+    val filteredTopicMetadata = topicsMetadataResponse
+      .topicsMetadata
+      .filter(topicMetadata =>
         if (topicWhiteListFiler.isTopicAllowed(
               topicMetadata.topic,
               excludeInternalTopics = false))
@@ -147,12 +148,16 @@ object ReplicaVerificationTool extends Logging {
           false)
     val topicPartitionReplicaList: Seq[TopicPartitionReplica] =
       filteredTopicMetadata.flatMap(topicMetadataResponse =>
-        topicMetadataResponse.partitionsMetadata.flatMap(partitionMetadata =>
-          partitionMetadata.replicas.map(broker =>
-            TopicPartitionReplica(
-              topic = topicMetadataResponse.topic,
-              partitionId = partitionMetadata.partitionId,
-              replicaId = broker.id))))
+        topicMetadataResponse
+          .partitionsMetadata
+          .flatMap(partitionMetadata =>
+            partitionMetadata
+              .replicas
+              .map(broker =>
+                TopicPartitionReplica(
+                  topic = topicMetadataResponse.topic,
+                  partitionId = partitionMetadata.partitionId,
+                  replicaId = broker.id))))
     debug("Selected topic partitions: " + topicPartitionReplicaList)
     val topicAndPartitionsPerBroker: Map[Int, Seq[TopicAndPartition]] =
       topicPartitionReplicaList
@@ -178,12 +183,14 @@ object ReplicaVerificationTool extends Logging {
     val leadersPerBroker: Map[Int, Seq[TopicAndPartition]] =
       filteredTopicMetadata
         .flatMap(topicMetadataResponse =>
-          topicMetadataResponse.partitionsMetadata.map(partitionMetadata =>
-            (
-              new TopicAndPartition(
-                topicMetadataResponse.topic,
-                partitionMetadata.partitionId),
-              partitionMetadata.leader.get.id)))
+          topicMetadataResponse
+            .partitionsMetadata
+            .map(partitionMetadata =>
+              (
+                new TopicAndPartition(
+                  topicMetadataResponse.topic,
+                  partitionMetadata.partitionId),
+                partitionMetadata.leader.get.id)))
         .groupBy(_._2)
         .mapValues(topicAndPartitionAndLeaderIds =>
           topicAndPartitionAndLeaderIds.map {
@@ -218,13 +225,15 @@ object ReplicaVerificationTool extends Logging {
             doVerification = (brokerId == verificationBrokerId))
       }
 
-    Runtime.getRuntime.addShutdownHook(
-      new Thread() {
-        override def run() {
-          info("Stopping all fetchers")
-          fetcherThreads.foreach(_.shutdown())
-        }
-      })
+    Runtime
+      .getRuntime
+      .addShutdownHook(
+        new Thread() {
+          override def run() {
+            info("Stopping all fetchers")
+            fetcherThreads.foreach(_.shutdown())
+          }
+        })
     fetcherThreads.foreach(_.start())
     println(
       ReplicaVerificationTool
@@ -283,18 +292,20 @@ private class ReplicaBuffer(
 
   private def initialize() {
     for (topicAndPartition <- expectedReplicasPerTopicAndPartition.keySet)
-      messageSetCache.put(
-        topicAndPartition,
-        new Pool[Int, FetchResponsePartitionData])
+      messageSetCache
+        .put(topicAndPartition, new Pool[Int, FetchResponsePartitionData])
     setInitialOffsets()
   }
 
   private def offsetResponseStringWithError(
       offsetResponse: OffsetResponse): String = {
-    offsetResponse.partitionErrorAndOffsets.filter {
-      case (topicAndPartition, partitionOffsetsResponse) =>
-        partitionOffsetsResponse.error != Errors.NONE.code
-    }.mkString
+    offsetResponse
+      .partitionErrorAndOffsets
+      .filter {
+        case (topicAndPartition, partitionOffsetsResponse) =>
+          partitionOffsetsResponse.error != Errors.NONE.code
+      }
+      .mkString
   }
 
   private def setInitialOffsets() {
@@ -319,12 +330,13 @@ private class ReplicaBuffer(
       assert(
         !offsetResponse.hasError,
         offsetResponseStringWithError(offsetResponse))
-      offsetResponse.partitionErrorAndOffsets.foreach {
-        case (topicAndPartition, partitionOffsetResponse) =>
-          fetchOffsetMap.put(
-            topicAndPartition,
-            partitionOffsetResponse.offsets.head)
-      }
+      offsetResponse
+        .partitionErrorAndOffsets
+        .foreach {
+          case (topicAndPartition, partitionOffsetResponse) =>
+            fetchOffsetMap
+              .put(topicAndPartition, partitionOffsetResponse.offsets.head)
+        }
     }
   }
 
@@ -345,15 +357,17 @@ private class ReplicaBuffer(
     for ((topicAndPartition, fetchResponsePerReplica) <- messageSetCache) {
       debug("Verifying " + topicAndPartition)
       assert(
-        fetchResponsePerReplica.size == expectedReplicasPerTopicAndPartition(
-          topicAndPartition),
-        "fetched " + fetchResponsePerReplica.size + " replicas for " + topicAndPartition + ", but expected "
+        fetchResponsePerReplica
+          .size == expectedReplicasPerTopicAndPartition(topicAndPartition),
+        "fetched " + fetchResponsePerReplica
+          .size + " replicas for " + topicAndPartition + ", but expected "
           + expectedReplicasPerTopicAndPartition(
             topicAndPartition) + " replicas"
       )
       val messageIteratorMap = fetchResponsePerReplica.map {
         case (replicaId, fetchResponse) =>
-          replicaId -> fetchResponse.messages
+          replicaId -> fetchResponse
+            .messages
             .asInstanceOf[ByteBufferMessageSet]
             .shallowIterator
       }
@@ -369,9 +383,8 @@ private class ReplicaBuffer(
               val messageAndOffset = messageIterator.next()
 
               // only verify up to the high watermark
-              if (messageAndOffset.offset >= fetchResponsePerReplica
-                    .get(replicaId)
-                    .hw)
+              if (messageAndOffset
+                    .offset >= fetchResponsePerReplica.get(replicaId).hw)
                 isMessageInAllReplicas = false
               else {
                 messageInfoFromFirstReplicaOpt match {
@@ -383,20 +396,31 @@ private class ReplicaBuffer(
                         messageAndOffset.nextOffset,
                         messageAndOffset.message.checksum))
                   case Some(messageInfoFromFirstReplica) =>
-                    if (messageInfoFromFirstReplica.offset != messageAndOffset.offset) {
+                    if (messageInfoFromFirstReplica.offset != messageAndOffset
+                          .offset) {
                       println(
-                        ReplicaVerificationTool.getCurrentTimeString + ": partition " + topicAndPartition
-                          + ": replica " + messageInfoFromFirstReplica.replicaId + "'s offset "
-                          + messageInfoFromFirstReplica.offset + " doesn't match replica "
+                        ReplicaVerificationTool
+                          .getCurrentTimeString + ": partition " + topicAndPartition
+                          + ": replica " + messageInfoFromFirstReplica
+                          .replicaId + "'s offset "
+                          + messageInfoFromFirstReplica
+                            .offset + " doesn't match replica "
                           + replicaId + "'s offset " + messageAndOffset.offset)
                       System.exit(1)
                     }
-                    if (messageInfoFromFirstReplica.checksum != messageAndOffset.message.checksum)
+                    if (messageInfoFromFirstReplica
+                          .checksum != messageAndOffset.message.checksum)
                       println(
-                        ReplicaVerificationTool.getCurrentTimeString + ": partition "
-                          + topicAndPartition + " has unmatched checksum at offset " + messageAndOffset.offset + "; replica "
-                          + messageInfoFromFirstReplica.replicaId + "'s checksum " + messageInfoFromFirstReplica.checksum
-                          + "; replica " + replicaId + "'s checksum " + messageAndOffset.message.checksum)
+                        ReplicaVerificationTool
+                          .getCurrentTimeString + ": partition "
+                          + topicAndPartition + " has unmatched checksum at offset " + messageAndOffset
+                          .offset + "; replica "
+                          + messageInfoFromFirstReplica
+                            .replicaId + "'s checksum " + messageInfoFromFirstReplica
+                          .checksum
+                          + "; replica " + replicaId + "'s checksum " + messageAndOffset
+                          .message
+                          .checksum)
                 }
               }
             } else
@@ -431,8 +455,9 @@ private class ReplicaBuffer(
     val currentTimeMs = SystemTime.milliseconds
     if (currentTimeMs - lastReportTime > reportInterval) {
       println(
-        ReplicaVerificationTool.dateFormat.format(
-          new Date(currentTimeMs)) + ": max lag is "
+        ReplicaVerificationTool
+          .dateFormat
+          .format(new Date(currentTimeMs)) + ": max lag is "
           + maxLag + " for partition " + maxLagTopicAndPartition + " at offset " + offsetWithMaxLag
           + " among " + messageSetCache.size + " partitions")
       lastReportTime = currentTimeMs
@@ -490,13 +515,13 @@ private class ReplicaFetcher(
     }
 
     if (response != null) {
-      response.data.foreach {
-        case (topicAndPartition, partitionData) =>
-          replicaBuffer.addFetchedData(
-            topicAndPartition,
-            sourceBroker.id,
-            partitionData)
-      }
+      response
+        .data
+        .foreach {
+          case (topicAndPartition, partitionData) =>
+            replicaBuffer
+              .addFetchedData(topicAndPartition, sourceBroker.id, partitionData)
+        }
     } else {
       for (topicAndPartition <- topicAndPartitions)
         replicaBuffer.addFetchedData(

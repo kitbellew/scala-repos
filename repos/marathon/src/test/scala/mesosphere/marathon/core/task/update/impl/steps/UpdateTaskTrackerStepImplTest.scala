@@ -28,10 +28,12 @@ class UpdateTaskTrackerStepImplTest
 
     Given("a running task and a working taskTracker")
     val existingTask = runningMarathonTask
-    val status = runningTaskStatus.toBuilder
+    val status = runningTaskStatus
+      .toBuilder
       .setState(TaskState.TASK_RUNNING)
       .build()
-    f.taskUpdater
+    f
+      .taskUpdater
       .statusUpdate(appId, status)
       .asInstanceOf[Future[Unit]] returns Future.successful(())
 
@@ -50,7 +52,8 @@ class UpdateTaskTrackerStepImplTest
 
     Given("a running task and a broken taskTracker")
     val existingTask = stagedMarathonTask
-    val status = runningTaskStatus.toBuilder
+    val status = runningTaskStatus
+      .toBuilder
       .setState(TaskState.TASK_RUNNING)
       .build()
     f.taskUpdater.statusUpdate(appId, status).asInstanceOf[Future[Unit]] returns
@@ -58,7 +61,8 @@ class UpdateTaskTrackerStepImplTest
 
     When("processUpdate is called")
     val eventualFailure =
-      f.step
+      f
+        .step
         .processUpdate(updateTimestamp, existingTask, status)
         .failed
         .futureValue
@@ -95,8 +99,8 @@ class UpdateTaskTrackerStepImplTest
     .withAgentInfo(_.copy(host = host))
     .withNetworking(Task.HostPorts(portsList))
 
-  private[this] val runningMarathonTask = stagedMarathonTask.withStatus(
-    _.copy(startedAt = Some(Timestamp(2))))
+  private[this] val runningMarathonTask = stagedMarathonTask
+    .withStatus(_.copy(startedAt = Some(Timestamp(2))))
 
   class Fixture {
     lazy val taskUpdater = mock[TaskUpdater]

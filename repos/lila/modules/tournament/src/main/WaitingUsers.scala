@@ -35,10 +35,12 @@ private[tournament] case class WaitingUsers(
 
   def waiting = {
     val since = date minusSeconds waitSeconds
-    hash.collect {
-      case (u, d) if d.isBefore(since) =>
-        u
-    }.toList
+    hash
+      .collect {
+        case (u, d) if d.isBefore(since) =>
+          u
+      }
+      .toList
   }
 
   def update(us: Set[String], clock: Option[chess.Clock]) = {
@@ -47,9 +49,11 @@ private[tournament] case class WaitingUsers(
       date = newDate,
       clock = clock,
       hash = hash.filterKeys(us.contains) ++
-        us.filterNot(hash.contains).map {
-          _ -> newDate
-        })
+        us
+          .filterNot(hash.contains)
+          .map {
+            _ -> newDate
+          })
   }
 
   def intersect(us: Seq[String]) = copy(hash = hash filterKeys us.contains)

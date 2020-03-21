@@ -14,18 +14,14 @@ object JsObjectSpec extends Specification {
     }
 
     "merge correctly when the source object is empty" in {
-      val populatedObj = Json.obj(
-        "field1" -> 123,
-        "field2" -> "abc",
-        "field3" -> JsNull)
+      val populatedObj = Json
+        .obj("field1" -> 123, "field2" -> "abc", "field3" -> JsNull)
       populatedObj.deepMerge(Json.obj()) must beEqualTo(populatedObj)
     }
 
     "merge correctly when the incoming object is empty" in {
-      val populatedObj = Json.obj(
-        "field1" -> 123,
-        "field2" -> "abc",
-        "field3" -> JsNull)
+      val populatedObj = Json
+        .obj("field1" -> 123, "field2" -> "abc", "field3" -> JsNull)
       Json.obj().deepMerge(populatedObj) must beEqualTo(populatedObj)
     }
   }

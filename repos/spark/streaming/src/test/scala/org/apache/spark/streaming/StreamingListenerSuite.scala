@@ -65,16 +65,20 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
     val batchInfosSubmitted = collector.batchInfosSubmitted
     batchInfosSubmitted should have size 4
 
-    batchInfosSubmitted.asScala.foreach(info => {
-      info.schedulingDelay should be(None)
-      info.processingDelay should be(None)
-      info.totalDelay should be(None)
-    })
+    batchInfosSubmitted
+      .asScala
+      .foreach(info => {
+        info.schedulingDelay should be(None)
+        info.processingDelay should be(None)
+        info.totalDelay should be(None)
+      })
 
-    batchInfosSubmitted.asScala.foreach { info =>
-      info.numRecords should be(1L)
-      info.streamIdToInputInfo should be(Map(0 -> StreamInputInfo(0, 1L)))
-    }
+    batchInfosSubmitted
+      .asScala
+      .foreach { info =>
+        info.numRecords should be(1L)
+        info.streamIdToInputInfo should be(Map(0 -> StreamInputInfo(0, 1L)))
+      }
 
     isInIncreasingOrder(
       batchInfosSubmitted.asScala.map(_.submissionTime)) should be(true)
@@ -83,17 +87,21 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
     val batchInfosStarted = collector.batchInfosStarted
     batchInfosStarted should have size 4
 
-    batchInfosStarted.asScala.foreach(info => {
-      info.schedulingDelay should not be None
-      info.schedulingDelay.get should be >= 0L
-      info.processingDelay should be(None)
-      info.totalDelay should be(None)
-    })
+    batchInfosStarted
+      .asScala
+      .foreach(info => {
+        info.schedulingDelay should not be None
+        info.schedulingDelay.get should be >= 0L
+        info.processingDelay should be(None)
+        info.totalDelay should be(None)
+      })
 
-    batchInfosStarted.asScala.foreach { info =>
-      info.numRecords should be(1L)
-      info.streamIdToInputInfo should be(Map(0 -> StreamInputInfo(0, 1L)))
-    }
+    batchInfosStarted
+      .asScala
+      .foreach { info =>
+        info.numRecords should be(1L)
+        info.streamIdToInputInfo should be(Map(0 -> StreamInputInfo(0, 1L)))
+      }
 
     isInIncreasingOrder(
       batchInfosStarted.asScala.map(_.submissionTime)) should be(true)
@@ -104,19 +112,23 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
     val batchInfosCompleted = collector.batchInfosCompleted
     batchInfosCompleted should have size 4
 
-    batchInfosCompleted.asScala.foreach(info => {
-      info.schedulingDelay should not be None
-      info.processingDelay should not be None
-      info.totalDelay should not be None
-      info.schedulingDelay.get should be >= 0L
-      info.processingDelay.get should be >= 0L
-      info.totalDelay.get should be >= 0L
-    })
+    batchInfosCompleted
+      .asScala
+      .foreach(info => {
+        info.schedulingDelay should not be None
+        info.processingDelay should not be None
+        info.totalDelay should not be None
+        info.schedulingDelay.get should be >= 0L
+        info.processingDelay.get should be >= 0L
+        info.totalDelay.get should be >= 0L
+      })
 
-    batchInfosCompleted.asScala.foreach { info =>
-      info.numRecords should be(1L)
-      info.streamIdToInputInfo should be(Map(0 -> StreamInputInfo(0, 1L)))
-    }
+    batchInfosCompleted
+      .asScala
+      .foreach { info =>
+        info.numRecords should be(1L)
+        info.streamIdToInputInfo should be(Map(0 -> StreamInputInfo(0, 1L)))
+      }
 
     isInIncreasingOrder(
       batchInfosCompleted.asScala.map(_.submissionTime)) should be(true)
@@ -249,7 +261,9 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
 
     // Post a Streaming event after stopping StreamingContext
     val receiverInfoStopped = ReceiverInfo(0, "test", false, "localhost", "0")
-    ssc.scheduler.listenerBus
+    ssc
+      .scheduler
+      .listenerBus
       .post(StreamingListenerReceiverStopped(receiverInfoStopped))
     ssc.sparkContext.listenerBus.waitUntilEmpty(1000)
     // The StreamingListener should not receive any event
@@ -290,16 +304,20 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
       }
     }
     _ssc.stop()
-    failureReasonsCollector.failureReasons.synchronized {
-      failureReasonsCollector.failureReasons.toMap
-    }
+    failureReasonsCollector
+      .failureReasons
+      .synchronized {
+        failureReasonsCollector.failureReasons.toMap
+      }
   }
 
   /** Check if a sequence of numbers is in increasing order */
   def isInIncreasingOrder(data: Iterable[Long]): Boolean = {
-    !data.sliding(2).exists { itr =>
-      itr.size == 2 && itr.head > itr.tail.head
-    }
+    !data
+      .sliding(2)
+      .exists { itr =>
+        itr.size == 2 && itr.head > itr.tail.head
+      }
   }
 }
 
@@ -363,8 +381,8 @@ class OutputOperationInfoCollector extends StreamingListener {
   override def onOutputOperationCompleted(
       outputOperationCompleted: StreamingListenerOutputOperationCompleted)
       : Unit = {
-    completedOutputOperationIds.add(
-      outputOperationCompleted.outputOperationInfo.id)
+    completedOutputOperationIds
+      .add(outputOperationCompleted.outputOperationInfo.id)
   }
 }
 
@@ -395,11 +413,14 @@ class FailureReasonsCollector extends StreamingListener {
   override def onOutputOperationCompleted(
       outputOperationCompleted: StreamingListenerOutputOperationCompleted)
       : Unit = {
-    outputOperationCompleted.outputOperationInfo.failureReason.foreach { f =>
-      failureReasons.synchronized {
-        failureReasons(outputOperationCompleted.outputOperationInfo.id) = f
+    outputOperationCompleted
+      .outputOperationInfo
+      .failureReason
+      .foreach { f =>
+        failureReasons.synchronized {
+          failureReasons(outputOperationCompleted.outputOperationInfo.id) = f
+        }
       }
-    }
   }
 }
 

@@ -77,8 +77,9 @@ private[sql] class DefaultSource extends FileFormat with DataSourceRegister {
         val shortOrcCompressionCodecNames =
           OrcRelation.shortOrcCompressionCodecNames
         if (!shortOrcCompressionCodecNames.contains(codecName.toLowerCase)) {
-          val availableCodecs = shortOrcCompressionCodecNames.keys.map(
-            _.toLowerCase)
+          val availableCodecs = shortOrcCompressionCodecNames
+            .keys
+            .map(_.toLowerCase)
           throw new IllegalArgumentException(
             s"Codec [$codecName] " +
               s"is not available. Available codecs are ${availableCodecs.mkString(", ")}.")
@@ -87,11 +88,14 @@ private[sql] class DefaultSource extends FileFormat with DataSourceRegister {
       }
 
     compressionCodec.foreach { codecName =>
-      job.getConfiguration.set(
-        OrcTableProperties.COMPRESSION.getPropName,
-        OrcRelation.shortOrcCompressionCodecNames
-          .getOrElse(codecName, CompressionKind.NONE)
-          .name())
+      job
+        .getConfiguration
+        .set(
+          OrcTableProperties.COMPRESSION.getPropName,
+          OrcRelation
+            .shortOrcCompressionCodecNames
+            .getOrElse(codecName, CompressionKind.NONE)
+            .name())
     }
 
     job.getConfiguration match {
@@ -156,8 +160,8 @@ private[orc] class OrcOutputWriter(
 
   // Object inspector converted from the schema of the relation to be written.
   private val structOI = {
-    val typeInfo = TypeInfoUtils.getTypeInfoFromTypeString(
-      HiveMetastoreTypes.toMetastoreType(dataSchema))
+    val typeInfo = TypeInfoUtils
+      .getTypeInfoFromTypeString(HiveMetastoreTypes.toMetastoreType(dataSchema))
 
     OrcStruct
       .createObjectInspector(typeInfo.asInstanceOf[StructTypeInfo])
@@ -264,8 +268,8 @@ private[orc] case class OrcTableScan(
     val deserializer = new OrcSerde
     val maybeStructOI = OrcFileOperator.getObjectInspector(path, Some(conf))
     val mutableRow = new SpecificMutableRow(attributes.map(_.dataType))
-    val unsafeProjection = UnsafeProjection.create(
-      StructType.fromAttributes(nonPartitionKeyAttrs))
+    val unsafeProjection = UnsafeProjection
+      .create(StructType.fromAttributes(nonPartitionKeyAttrs))
 
     // SPARK-8501: ORC writes an empty schema ("struct<>") to an ORC file if the file contains zero
     // rows, and thus couldn't give a proper ObjectInspector.  In this case we just return an empty
@@ -273,10 +277,13 @@ private[orc] case class OrcTableScan(
     maybeStructOI
       .map { soi =>
         val (fieldRefs, fieldOrdinals) =
-          nonPartitionKeyAttrs.zipWithIndex.map {
-            case (attr, ordinal) =>
-              soi.getStructFieldRef(attr.name) -> ordinal
-          }.unzip
+          nonPartitionKeyAttrs
+            .zipWithIndex
+            .map {
+              case (attr, ordinal) =>
+                soi.getStructFieldRef(attr.name) -> ordinal
+            }
+            .unzip
         val unwrappers = fieldRefs.map(unwrapperFor)
         // Map each tuple to a row object
         iterator.map { value =>
@@ -305,10 +312,12 @@ private[orc] case class OrcTableScan(
 
     // Tries to push down filters if ORC filter push-down is enabled
     if (sqlContext.conf.orcFilterPushDown) {
-      OrcFilters.createFilter(filters).foreach { f =>
-        conf.set(OrcTableScan.SARG_PUSHDOWN, f.toKryo)
-        conf.setBoolean(ConfVars.HIVEOPTINDEXFILTER.varname, true)
-      }
+      OrcFilters
+        .createFilter(filters)
+        .foreach { f =>
+          conf.set(OrcTableScan.SARG_PUSHDOWN, f.toKryo)
+          conf.setBoolean(ConfVars.HIVEOPTINDEXFILTER.varname, true)
+        }
     }
 
     // Figure out the actual schema from the ORC source (without partition columns) so that we
@@ -329,7 +338,8 @@ private[orc] case class OrcTableScan(
     val inputFormatClass = classOf[OrcInputFormat]
       .asInstanceOf[Class[_ <: MapRedInputFormat[NullWritable, Writable]]]
 
-    val rdd = sqlContext.sparkContext
+    val rdd = sqlContext
+      .sparkContext
       .hadoopRDD(
         conf.asInstanceOf[JobConf],
         inputFormatClass,

@@ -97,9 +97,8 @@ private[spark] class DTStatsAggregator(
   def getImpurityCalculator(
       featureOffset: Int,
       binIndex: Int): ImpurityCalculator = {
-    impurityAggregator.getCalculator(
-      allStats,
-      featureOffset + binIndex * statsSize)
+    impurityAggregator
+      .getCalculator(allStats, featureOffset + binIndex * statsSize)
   }
 
   /**

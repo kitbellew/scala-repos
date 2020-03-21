@@ -78,9 +78,8 @@ private[streaming] object WriteAheadLogUtils extends Logging {
   }
 
   def isBatchingEnabled(conf: SparkConf, isDriver: Boolean): Boolean = {
-    isDriver && conf.getBoolean(
-      DRIVER_WAL_BATCHING_CONF_KEY,
-      defaultValue = true)
+    isDriver && conf
+      .getBoolean(DRIVER_WAL_BATCHING_CONF_KEY, defaultValue = true)
   }
 
   /**
@@ -93,9 +92,8 @@ private[streaming] object WriteAheadLogUtils extends Logging {
 
   def shouldCloseFileAfterWrite(conf: SparkConf, isDriver: Boolean): Boolean = {
     if (isDriver) {
-      conf.getBoolean(
-        DRIVER_WAL_CLOSE_AFTER_WRITE_CONF_KEY,
-        defaultValue = false)
+      conf
+        .getBoolean(DRIVER_WAL_CLOSE_AFTER_WRITE_CONF_KEY, defaultValue = false)
     } else {
       conf.getBoolean(
         RECEIVER_WAL_CLOSE_AFTER_WRITE_CONF_KEY,

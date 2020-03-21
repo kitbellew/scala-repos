@@ -178,7 +178,9 @@ class MongoQueryExecutor(
                 if (db == null)
                   JArray(Nil)
                 else
-                  db.getCollectionNames.asScala
+                  db
+                    .getCollectionNames
+                    .asScala
                     .map { d =>
                       d + "/"
                     }

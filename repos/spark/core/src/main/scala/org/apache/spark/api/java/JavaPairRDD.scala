@@ -971,7 +971,11 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     */
   def repartitionAndSortWithinPartitions(
       partitioner: Partitioner): JavaPairRDD[K, V] = {
-    val comp = com.google.common.collect.Ordering
+    val comp = com
+      .google
+      .common
+      .collect
+      .Ordering
       .natural()
       .asInstanceOf[Comparator[K]]
     repartitionAndSortWithinPartitions(partitioner, comp)
@@ -1009,7 +1013,11 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     * order of the keys).
     */
   def sortByKey(ascending: Boolean): JavaPairRDD[K, V] = {
-    val comp = com.google.common.collect.Ordering
+    val comp = com
+      .google
+      .common
+      .collect
+      .Ordering
       .natural()
       .asInstanceOf[Comparator[K]]
     sortByKey(comp, ascending)
@@ -1022,7 +1030,11 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     * order of the keys).
     */
   def sortByKey(ascending: Boolean, numPartitions: Int): JavaPairRDD[K, V] = {
-    val comp = com.google.common.collect.Ordering
+    val comp = com
+      .google
+      .common
+      .collect
+      .Ordering
       .natural()
       .asInstanceOf[Comparator[K]]
     sortByKey(comp, ascending, numPartitions)
@@ -1148,16 +1160,16 @@ object JavaPairRDD {
   private[spark] def cogroupResult2ToJava[K: ClassTag, V, W1, W2](
       rdd: RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2]))])
       : RDD[(K, (JIterable[V], JIterable[W1], JIterable[W2]))] = {
-    rddToPairRDDFunctions(rdd).mapValues(x =>
-      (x._1.asJava, x._2.asJava, x._3.asJava))
+    rddToPairRDDFunctions(rdd)
+      .mapValues(x => (x._1.asJava, x._2.asJava, x._3.asJava))
   }
 
   private[spark] def cogroupResult3ToJava[K: ClassTag, V, W1, W2, W3](
       rdd: RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2], Iterable[W3]))])
       : RDD[
         (K, (JIterable[V], JIterable[W1], JIterable[W2], JIterable[W3]))] = {
-    rddToPairRDDFunctions(rdd).mapValues(x =>
-      (x._1.asJava, x._2.asJava, x._3.asJava, x._4.asJava))
+    rddToPairRDDFunctions(rdd)
+      .mapValues(x => (x._1.asJava, x._2.asJava, x._3.asJava, x._4.asJava))
   }
 
   def fromRDD[K: ClassTag, V: ClassTag](rdd: RDD[(K, V)]): JavaPairRDD[K, V] = {

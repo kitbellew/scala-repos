@@ -148,14 +148,12 @@ class TungstenAggregationIterator(
       val bufferAttributes = aggregateFunctions.flatMap(_.aggBufferAttributes)
       val groupingKeySchema = StructType.fromAttributes(groupingAttributes)
       val bufferSchema = StructType.fromAttributes(bufferAttributes)
-      val unsafeRowJoiner = GenerateUnsafeRowJoiner.create(
-        groupingKeySchema,
-        bufferSchema)
+      val unsafeRowJoiner = GenerateUnsafeRowJoiner
+        .create(groupingKeySchema, bufferSchema)
 
       (currentGroupingKey: UnsafeRow, currentBuffer: MutableRow) => {
-        unsafeRowJoiner.join(
-          currentGroupingKey,
-          currentBuffer.asInstanceOf[UnsafeRow])
+        unsafeRowJoiner
+          .join(currentGroupingKey, currentBuffer.asInstanceOf[UnsafeRow])
       }
     } else {
       super.generateResultProjection()
@@ -177,8 +175,8 @@ class TungstenAggregationIterator(
   private[this] val hashMap =
     new UnsafeFixedWidthAggregationMap(
       initialAggregationBuffer,
-      StructType.fromAttributes(
-        aggregateFunctions.flatMap(_.aggBufferAttributes)),
+      StructType
+        .fromAttributes(aggregateFunctions.flatMap(_.aggBufferAttributes)),
       StructType.fromAttributes(groupingExpressions.map(_.toAttribute)),
       TaskContext.get().taskMemoryManager(),
       1024 * 16, // initial capacity
@@ -196,8 +194,8 @@ class TungstenAggregationIterator(
       // If there is no grouping expressions, we can just reuse the same buffer over and over again.
       // Note that it would be better to eliminate the hash map entirely in the future.
       val groupingKey = groupingProjection.apply(null)
-      val buffer: UnsafeRow = hashMap.getAggregationBufferFromUnsafeRow(
-        groupingKey)
+      val buffer: UnsafeRow = hashMap
+        .getAggregationBufferFromUnsafeRow(groupingKey)
       while (inputIter.hasNext) {
         val newInput = inputIter.next()
         processRow(buffer, newInput)

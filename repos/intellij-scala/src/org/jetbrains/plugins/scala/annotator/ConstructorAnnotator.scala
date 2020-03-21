@@ -26,7 +26,9 @@ trait ConstructorAnnotator {
         return
       case _ =>
     }
-    val resolved = constructor.reference.toList
+    val resolved = constructor
+      .reference
+      .toList
       .flatMap(_.resolveAllConstructors)
 
     resolved match {
@@ -44,67 +46,67 @@ trait ConstructorAnnotator {
             argsElement,
             "Unspecified value parameters: " + missed.mkString(", "))
 
-        r.problems.foreach {
-          case ExcessArgument(argument) =>
-            holder.createErrorAnnotation(
-              argument,
-              "Too many arguments for constructor")
-          case TypeMismatch(expression, expectedType) =>
-            if (expression != null)
-              for (t <- expression.getType(TypingContext.empty)) {
-                //TODO show parameter name
-                val (expectedText, actualText) = ScTypePresentation.different(
-                  expectedType,
-                  t)
-                val message = ScalaBundle.message(
-                  "type.mismatch.expected.actual",
-                  expectedText,
-                  actualText)
-                val annotation = holder.createErrorAnnotation(
-                  expression,
-                  message)
-                annotation.registerFix(ReportHighlightingErrorQuickFix)
+        r
+          .problems
+          .foreach {
+            case ExcessArgument(argument) =>
+              holder.createErrorAnnotation(
+                argument,
+                "Too many arguments for constructor")
+            case TypeMismatch(expression, expectedType) =>
+              if (expression != null)
+                for (t <- expression.getType(TypingContext.empty)) {
+                  //TODO show parameter name
+                  val (expectedText, actualText) = ScTypePresentation
+                    .different(expectedType, t)
+                  val message = ScalaBundle.message(
+                    "type.mismatch.expected.actual",
+                    expectedText,
+                    actualText)
+                  val annotation = holder
+                    .createErrorAnnotation(expression, message)
+                  annotation.registerFix(ReportHighlightingErrorQuickFix)
+                }
+              else {
+                //TODO investigate case when expression is null. It's possible when new Expression(ScType)
               }
-            else {
-              //TODO investigate case when expression is null. It's possible when new Expression(ScType)
-            }
-          case MissedValueParameter(_) => // simultaneously handled above
-          case UnresolvedParameter(
-                _
-              ) => // don't show function inapplicability, unresolved
-          case MalformedDefinition() =>
-            holder.createErrorAnnotation(
-              constructor.typeElement,
-              "Constructor has malformed definition")
-          case ExpansionForNonRepeatedParameter(expression) =>
-            holder.createErrorAnnotation(
-              expression,
-              "Expansion for non-repeated parameter")
-          case PositionalAfterNamedArgument(argument) =>
-            holder.createErrorAnnotation(
-              argument,
-              "Positional after named argument")
-          case ParameterSpecifiedMultipleTimes(assignment) =>
-            holder.createErrorAnnotation(
-              assignment.getLExpression,
-              "Parameter specified multiple times")
-          case WrongTypeParameterInferred => //todo: ?
-          case ExpectedTypeMismatch       => //will be reported later
-          case DefaultTypeParameterMismatch(expected, actual) =>
-            constructor.typeArgList match {
-              case Some(tpArgList) =>
-                val message: String = ScalaBundle.message(
-                  "type.mismatch.default.args.expected.actual",
-                  expected,
-                  actual)
-                holder.createErrorAnnotation(tpArgList, message)
-              case _ =>
-            }
-          case _ =>
-            holder.createErrorAnnotation(
-              argsElement,
-              "Not applicable." /* TODO + signatureOf(f)*/ )
-        }
+            case MissedValueParameter(_) => // simultaneously handled above
+            case UnresolvedParameter(
+                  _
+                ) => // don't show function inapplicability, unresolved
+            case MalformedDefinition() =>
+              holder.createErrorAnnotation(
+                constructor.typeElement,
+                "Constructor has malformed definition")
+            case ExpansionForNonRepeatedParameter(expression) =>
+              holder.createErrorAnnotation(
+                expression,
+                "Expansion for non-repeated parameter")
+            case PositionalAfterNamedArgument(argument) =>
+              holder.createErrorAnnotation(
+                argument,
+                "Positional after named argument")
+            case ParameterSpecifiedMultipleTimes(assignment) =>
+              holder.createErrorAnnotation(
+                assignment.getLExpression,
+                "Parameter specified multiple times")
+            case WrongTypeParameterInferred => //todo: ?
+            case ExpectedTypeMismatch       => //will be reported later
+            case DefaultTypeParameterMismatch(expected, actual) =>
+              constructor.typeArgList match {
+                case Some(tpArgList) =>
+                  val message: String = ScalaBundle.message(
+                    "type.mismatch.default.args.expected.actual",
+                    expected,
+                    actual)
+                  holder.createErrorAnnotation(tpArgList, message)
+                case _ =>
+              }
+            case _ =>
+              holder.createErrorAnnotation(
+                argsElement,
+                "Not applicable." /* TODO + signatureOf(f)*/ )
+          }
       case results =>
         holder.createErrorAnnotation(
           constructor.typeElement,
@@ -122,13 +124,15 @@ trait ConstructorAnnotator {
           case Some(c: ScPrimaryConstructor) => //it's ok
           case Some(fun: ScFunction)         =>
             //check order
-            if (fun.getTextRange.getStartOffset > constr.getTextRange.getStartOffset) {
+            if (fun.getTextRange.getStartOffset > constr
+                  .getTextRange
+                  .getStartOffset) {
               val annotation = holder.createErrorAnnotation(
                 self,
-                ScalaBundle.message(
-                  "called.constructor.definition.must.precede"))
-              annotation.setHighlightType(
-                ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+                ScalaBundle
+                  .message("called.constructor.definition.must.precede"))
+              annotation
+                .setHighlightType(ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
             }
           case _ =>
         }
@@ -138,8 +142,8 @@ trait ConstructorAnnotator {
             val annotation = holder.createErrorAnnotation(
               constr,
               ScalaBundle.message("constructor.invocation.expected"))
-            annotation.setHighlightType(
-              ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+            annotation
+              .setHighlightType(ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
           case _ => //nothing to do in decompiled stuff
         }
     }

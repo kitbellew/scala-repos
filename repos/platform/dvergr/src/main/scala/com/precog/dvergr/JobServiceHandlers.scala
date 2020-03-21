@@ -549,8 +549,8 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
                         BadRequest,
                         content = Some(
                           JString(
-                            "Invalid 'state given: %s is not a string.".format(
-                              other.renderCompact)))))
+                            "Invalid 'state given: %s is not a string."
+                              .format(other.renderCompact)))))
                 }
             }
           }
@@ -602,8 +602,8 @@ class CreateResultHandler(jobs: JobManager[Future])(implicit
               BadRequest,
               content = Some(
                 ByteChunk(
-                  "Missing required 'jobId parameter or request body.".getBytes(
-                    "UTF-8")))))
+                  "Missing required 'jobId parameter or request body."
+                    .getBytes("UTF-8")))))
         })
     }
 

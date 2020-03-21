@@ -40,11 +40,13 @@ class GroupedIteratorSuite extends SparkFunSuite {
       schema.toAttributes)
 
     val result =
-      grouped.map {
-        case (key, data) =>
-          assert(key.numFields == 1)
-          key.getInt(0) -> data.map(encoder.fromRow).toSeq
-      }.toSeq
+      grouped
+        .map {
+          case (key, data) =>
+            assert(key.numFields == 1)
+            key.getInt(0) -> data.map(encoder.fromRow).toSeq
+        }
+        .toSeq
 
     assert(
       result ==
@@ -72,11 +74,13 @@ class GroupedIteratorSuite extends SparkFunSuite {
       schema.toAttributes)
 
     val result =
-      grouped.map {
-        case (key, data) =>
-          assert(key.numFields == 2)
-          (key.getInt(0), key.getLong(1), data.map(encoder.fromRow).toSeq)
-      }.toSeq
+      grouped
+        .map {
+          case (key, data) =>
+            assert(key.numFields == 2)
+            (key.getInt(0), key.getLong(1), data.map(encoder.fromRow).toSeq)
+        }
+        .toSeq
 
     assert(
       result ==

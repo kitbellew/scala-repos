@@ -20,7 +20,9 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery {
   import Key._
 
   private lazy val replayDispatcherId = config.getString("replay-dispatcher")
-  private lazy val replayDispatcher = context.system.dispatchers
+  private lazy val replayDispatcher = context
+    .system
+    .dispatchers
     .lookup(replayDispatcherId)
 
   def asyncReadHighestSequenceNr(
@@ -78,8 +80,8 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery {
       if (iter.hasNext) {
         val nextEntry = iter.peekNext()
         val nextKey = keyFromBytes(nextEntry.getKey)
-        if (key.persistenceId == nextKey.persistenceId && key.sequenceNr == nextKey.sequenceNr && isDeletionKey(
-              nextKey)) {
+        if (key.persistenceId == nextKey.persistenceId && key
+              .sequenceNr == nextKey.sequenceNr && isDeletionKey(nextKey)) {
           iter.next()
           true
         } else

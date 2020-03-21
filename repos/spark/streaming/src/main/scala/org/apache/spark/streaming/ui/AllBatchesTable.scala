@@ -54,8 +54,8 @@ private[ui] abstract class BatchTableBase(
       batch.outputOperations.flatMap(_._2.failureReason).headOption
     firstFailureReason
       .map { failureReason =>
-        val failureReasonForUI = UIUtils.createOutputOperationFailureForUI(
-          failureReason)
+        val failureReasonForUI = UIUtils
+          .createOutputOperationFailureForUI(failureReason)
         UIUtils.failureReasonCell(
           failureReasonForUI,
           rowspan = 1,

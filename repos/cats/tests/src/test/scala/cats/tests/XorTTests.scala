@@ -11,7 +11,8 @@ import algebra.laws.OrderLaws
 class XorTTests extends CatsSuite {
   implicit val eq0 = XorT.xorTEq[List, String, String Xor Int]
   implicit val eq1 = XorT.xorTEq[XorT[List, String, ?], String, Int](eq0)
-  implicit val iso = CartesianTests.Isomorphisms
+  implicit val iso = CartesianTests
+    .Isomorphisms
     .invariant[XorT[List, String, ?]]
   checkAll(
     "XorT[List, String, Int]",
@@ -71,8 +72,8 @@ class XorTTests extends CatsSuite {
       OrderLaws[XorT[ListWrapper, String, Int]].partialOrder)
     checkAll(
       "PartialOrder[XorT[ListWrapper, String, Int]]",
-      SerializableTests.serializable(
-        PartialOrder[XorT[ListWrapper, String, Int]]))
+      SerializableTests
+        .serializable(PartialOrder[XorT[ListWrapper, String, Int]]))
   }
 
   {
@@ -92,8 +93,8 @@ class XorTTests extends CatsSuite {
       SemigroupKTests[XorT[Option, ListWrapper[String], ?]].semigroupK[Int])
     checkAll(
       "SemigroupK[XorT[Option, ListWrapper[String], ?]]",
-      SerializableTests.serializable(
-        SemigroupK[XorT[Option, ListWrapper[String], ?]]))
+      SerializableTests
+        .serializable(SemigroupK[XorT[Option, ListWrapper[String], ?]]))
   }
 
   // make sure that the Monad and Traverse instances don't result in ambiguous
@@ -151,10 +152,12 @@ class XorTTests extends CatsSuite {
 
   test("recover recovers handled values") {
     val xort = XorT.left[Id, String, Int]("xort")
-    xort.recover {
-      case "xort" =>
-        5
-    }.isRight should ===(true)
+    xort
+      .recover {
+        case "xort" =>
+          5
+      }
+      .isRight should ===(true)
   }
 
   test("recover ignores unhandled values") {
@@ -175,10 +178,12 @@ class XorTTests extends CatsSuite {
 
   test("recoverWith recovers handled values") {
     val xort = XorT.left[Id, String, Int]("xort")
-    xort.recoverWith {
-      case "xort" =>
-        XorT.right[Id, String, Int](5)
-    }.isRight should ===(true)
+    xort
+      .recoverWith {
+        case "xort" =>
+          XorT.right[Id, String, Int](5)
+      }
+      .isRight should ===(true)
   }
 
   test("recoverWith ignores unhandled values") {

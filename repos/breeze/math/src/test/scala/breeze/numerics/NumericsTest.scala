@@ -94,8 +94,8 @@ class NumericsTest extends FunSuite with Checkers with Matchers {
   test("exp(digamma(x)) ≈ x - .5, x >= 10") {
     check(
       Prop.forAll { (a: Double) =>
-        a.abs < 10 || a.abs > Double.MaxValue / 2 || exp(
-          breeze.numerics.digamma(a.abs)) =~= (a.abs - .5)
+        a.abs < 10 || a.abs > Double
+          .MaxValue / 2 || exp(breeze.numerics.digamma(a.abs)) =~= (a.abs - .5)
       })
   }
 

@@ -11,25 +11,35 @@ private final class MoveMonitor(system: ActorSystem, channel: ActorRef) {
     lila.mon.round.move.full.count()
   }
 
-  Kamon.metrics.subscribe(
-    "histogram",
-    "round.move.full",
-    system.actorOf(
-      Props(
-        new Actor {
-          def receive = {
-            case tick: TickMetricSnapshot =>
-              tick.metrics.collectFirst {
-                case (entity, snapshot) if entity.category == "histogram" =>
-                  snapshot
-              } flatMap (_ histogram "histogram") foreach { h =>
-                if (!h.isEmpty)
-                  channel ! lila.socket.Channel.Publish(
-                    lila.socket.Socket.makeMessage(
-                      "mlat",
-                      (h.sum / h.numberOfMeasurements / 1000000).toInt))
-              }
-          }
-        }))
-  )
+  Kamon
+    .metrics
+    .subscribe(
+      "histogram",
+      "round.move.full",
+      system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case tick: TickMetricSnapshot =>
+                tick
+                  .metrics
+                  .collectFirst {
+                    case (entity, snapshot) if entity.category == "histogram" =>
+                      snapshot
+                  } flatMap (_ histogram "histogram") foreach { h =>
+                  if (!h.isEmpty)
+                    channel ! lila
+                      .socket
+                      .Channel
+                      .Publish(
+                        lila
+                          .socket
+                          .Socket
+                          .makeMessage(
+                            "mlat",
+                            (h.sum / h.numberOfMeasurements / 1000000).toInt))
+                }
+            }
+          }))
+    )
 }

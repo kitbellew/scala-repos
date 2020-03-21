@@ -32,8 +32,8 @@ class TaskIdTest extends FunSuite with Matchers {
   }
 
   test("Old TaskIds can be converted even if they have underscores in them") {
-    val taskId = Task.Id(
-      TaskID.newBuilder().setValue("app_foo_bar_0-12345678").build)
+    val taskId = Task
+      .Id(TaskID.newBuilder().setValue("app_foo_bar_0-12345678").build)
     taskId.appId should equal("/app/foo/bar".toRootPath)
   }
 }

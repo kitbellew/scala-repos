@@ -67,9 +67,8 @@ object IsotonicRegressionExample {
 
     // Save and load model
     model.save(sc, "target/tmp/myIsotonicRegressionModel")
-    val sameModel = IsotonicRegressionModel.load(
-      sc,
-      "target/tmp/myIsotonicRegressionModel")
+    val sameModel = IsotonicRegressionModel
+      .load(sc, "target/tmp/myIsotonicRegressionModel")
     // $example off$
   }
 }

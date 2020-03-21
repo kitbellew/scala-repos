@@ -111,7 +111,8 @@ case class ArrayType(elementType: DataType, containsNull: Boolean)
       def compare(x: ArrayData, y: ArrayData): Int = {
         val leftArray = x
         val rightArray = y
-        val minLength = scala.math
+        val minLength = scala
+          .math
           .min(leftArray.numElements(), rightArray.numElements())
         var i = 0
         while (i < minLength) {

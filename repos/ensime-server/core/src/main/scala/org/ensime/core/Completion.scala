@@ -94,7 +94,9 @@ trait CompletionControl {
         else
           maxResultsArg
 
-      val preceding = inputP.source.content
+      val preceding = inputP
+        .source
+        .content
         .slice(Math.max(0, inputP.point - 100), inputP.point)
 
       val defaultPrefix =
@@ -119,12 +121,8 @@ trait CompletionControl {
           val contents = Array.ofDim[Char](orig.length + 1)
           System.arraycopy(orig, 0, contents, 0, point)
           contents(point) = 'a'
-          System.arraycopy(
-            orig,
-            point,
-            contents,
-            point + 1,
-            orig.length - point)
+          System
+            .arraycopy(orig, point, contents, point + 1, orig.length - point)
 
           // uses the same VirtualFile as the original
           val src = new BatchSourceFile(inputP.source.file, contents)
@@ -169,7 +167,8 @@ trait CompletionControl {
                       if (patched)
                         ""
                       else
-                        src.content
+                        src
+                          .content
                           .slice(fun.pos.startOrCursor, fun.pos.endOrCursor)
                           .mkString
                     Some(
@@ -339,7 +338,8 @@ trait CompletionControl {
           case m @ ScopeMember(sym, tpe, accessible, viaView) =>
             val p = sym.pos
             val inSymbol = p.isRange && (
-              context.offset >= p.startOrCursor && context.offset <= p.endOrCursor
+              context.offset >= p.startOrCursor && context.offset <= p
+                .endOrCursor
             )
             if (!sym.isConstructor && !inSymbol) {
               buff ++= toCompletionInfo(
@@ -367,8 +367,8 @@ trait CompletionControl {
         Seq()
     }
 
-    buff.toList ++ typeSearchResults.getOrElse(Nil) ++ keywordCompletions(
-      context.prefix)
+    buff.toList ++ typeSearchResults
+      .getOrElse(Nil) ++ keywordCompletions(context.prefix)
 
   }
 
@@ -500,14 +500,16 @@ object CompletionUtil {
     askRes
       .map {
         case s: SymbolSearchResults =>
-          s.syms.map { s =>
-            CompletionInfo(
-              s.localName,
-              CompletionSignature(List.empty, s.name, false),
-              isCallable = false,
-              40,
-              None)
-          }
+          s
+            .syms
+            .map { s =>
+              CompletionInfo(
+                s.localName,
+                CompletionSignature(List.empty, s.name, false),
+                isCallable = false,
+                40,
+                None)
+            }
         case unknown =>
           throw new IllegalStateException(
             "Unexpected response type from request:" + unknown)

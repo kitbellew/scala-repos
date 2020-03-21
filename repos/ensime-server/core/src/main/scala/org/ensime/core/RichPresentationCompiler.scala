@@ -103,8 +103,8 @@ trait RichCompilerControl
       memberName: Option[String],
       signatureString: Option[String]): Option[DocSigPair] =
     askOption {
-      symbolMemberByName(typeFullName, memberName, signatureString).flatMap(
-        docSignature(_, None))
+      symbolMemberByName(typeFullName, memberName, signatureString)
+        .flatMap(docSignature(_, None))
     }.flatten
 
   def askSymbolInfoAt(p: Position): Option[SymbolInfo] =
@@ -115,8 +115,8 @@ trait RichCompilerControl
       memberName: Option[String],
       signatureString: Option[String]): Option[SymbolInfo] =
     askOption(
-      symbolMemberByName(fqn, memberName, signatureString).map(
-        SymbolInfo(_))).flatten
+      symbolMemberByName(fqn, memberName, signatureString).map(SymbolInfo(_)))
+      .flatten
 
   def askTypeInfoAt(p: Position): Option[TypeInfo] =
     askOption(typeAt(p).map(TypeInfo(_, PosNeededYes))).flatten
@@ -143,9 +143,11 @@ trait RichCompilerControl
              val syms = roots.flatMap {
                symbolByName(restOfPath, _)
              }
-             syms.find(_.tpe != NoType).map { sym =>
-               TypeInfo(sym.tpe)
-             }
+             syms
+               .find(_.tpe != NoType)
+               .map { sym =>
+                 TypeInfo(sym.tpe)
+               }
            })
         yield infos
     ).flatten
@@ -263,8 +265,7 @@ trait RichCompilerControl
     askOption(linkPos(sym, createSourceFile(path)))
 
   def askStructure(fileInfo: SourceFile): List[StructureViewMember] =
-    askOption(structureView(fileInfo))
-      .getOrElse(List.empty)
+    askOption(structureView(fileInfo)).getOrElse(List.empty)
 
 }
 
@@ -328,9 +329,11 @@ class RichPresentationCompiler(
     allSources = allSources.filter {
       _.file.exists
     }
-    val deleted = symsByFile.keys.filter {
-      !_.exists
-    }
+    val deleted = symsByFile
+      .keys
+      .filter {
+        !_.exists
+      }
     for (f <- deleted) {
       removeDeleted(f)
     }
@@ -472,13 +475,16 @@ class RichPresentationCompiler(
               rawName.dropRight(1)
             else
               rawName
-          val candidates = owner.info.members.filter { s =>
-            s.nameString == nm && (
-              (
-                module && s.isModule
-              ) || (!module && (!s.isModule || s.hasPackageFlag))
-            )
-          }
+          val candidates = owner
+            .info
+            .members
+            .filter { s =>
+              s.nameString == nm && (
+                (module && s.isModule) || (
+                  !module && (!s.isModule || s.hasPackageFlag)
+                )
+              )
+            }
           val exact = signatureString.flatMap { s =>
             candidates.find(_.signatureString == s)
           }
@@ -509,7 +515,8 @@ class RichPresentationCompiler(
 
   private def noDefinitionFound(tree: Tree) = {
     logger.warn(
-      "No definition found. Please report to https://github.com/ensime/ensime-server/issues/492 with description of what did you expected. symbolAt for " + tree.getClass + ": " + tree)
+      "No definition found. Please report to https://github.com/ensime/ensime-server/issues/492 with description of what did you expected. symbolAt for " + tree
+        .getClass + ": " + tree)
     Nil
   }
 
@@ -584,18 +591,24 @@ class RichPresentationCompiler(
         class CompilerGlobalIndexes extends GlobalIndexes {
           val global = RichPresentationCompiler.this
           val sym = s.asInstanceOf[global.Symbol]
-          val cuIndexes = this.global.unitOfFile.values.map { u =>
-            CompilationUnitIndex(u.body)
-          }
-          val index = GlobalIndex(cuIndexes.toList)
-          val result = index.occurences(sym).map {
-            _.pos match {
-              case p: RangePosition =>
-                p
-              case p =>
-                new RangePosition(p.source, p.point, p.point, p.point)
+          val cuIndexes = this
+            .global
+            .unitOfFile
+            .values
+            .map { u =>
+              CompilationUnitIndex(u.body)
             }
-          }
+          val index = GlobalIndex(cuIndexes.toList)
+          val result = index
+            .occurences(sym)
+            .map {
+              _.pos match {
+                case p: RangePosition =>
+                  p
+                case p =>
+                  new RangePosition(p.source, p.point, p.point, p.point)
+              }
+            }
         }
         val gi = new CompilerGlobalIndexes
         gi.result

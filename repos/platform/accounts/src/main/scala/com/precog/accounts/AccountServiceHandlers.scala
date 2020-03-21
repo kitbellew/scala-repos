@@ -132,11 +132,14 @@ class AccountServiceHandlers(
   def withAccountAdmin[A](request: HttpRequest[_], auth: Account)(
       f: Account => Future[HttpResponse[JValue]])(implicit
       executor: ExecutionContext): Future[HttpResponse[JValue]] = {
-    request.parameters.get('accountId).map { accountId =>
-      withAccountAdmin(accountId, auth, request) {
-        f
-      }
-    } getOrElse {
+    request
+      .parameters
+      .get('accountId)
+      .map { accountId =>
+        withAccountAdmin(accountId, auth, request) {
+          f
+        }
+      } getOrElse {
       Future(
         HttpResponse[JValue](
           HttpStatus(BadRequest, "Missing accountId in request URI."),
@@ -152,18 +155,20 @@ class AccountServiceHandlers(
         Success {
           request.parameters.get('email) match {
             case Some(email) =>
-              accountManager.findAccountByEmail(email).map { found =>
-                HttpResponse(
-                  HttpStatus(OK),
-                  content = found
-                    .map { account =>
-                      JArray(
-                        JObject("accountId" -> account.accountId.serialize))
-                    }
-                    .orElse {
-                      Some(JArray())
-                    })
-              }
+              accountManager
+                .findAccountByEmail(email)
+                .map { found =>
+                  HttpResponse(
+                    HttpStatus(OK),
+                    content = found
+                      .map { account =>
+                        JArray(
+                          JObject("accountId" -> account.accountId.serialize))
+                      }
+                      .orElse {
+                        Some(JArray())
+                      })
+                }
 
             case None =>
               Promise.successful(
@@ -201,7 +206,8 @@ class AccountServiceHandlers(
             }
 
           logger.debug(
-            "Looking up account ids with account: " + auth.accountId + " for API key: " + keyToFind)
+            "Looking up account ids with account: " + auth
+              .accountId + " for API key: " + keyToFind)
 
           def followIssuers(
               currentKey: APIKey,
@@ -209,20 +215,22 @@ class AccountServiceHandlers(
             logger.debug(
               "Finding account for %s with remaining %s"
                 .format(currentKey, remaining))
-            accountManager.findAccountByAPIKey(currentKey).flatMap {
-              case Some(accountId) =>
-                logger.debug(
-                  "Found account for API key: " + keyToFind + " = " + accountId)
-                Promise.successful(Some(accountId))
+            accountManager
+              .findAccountByAPIKey(currentKey)
+              .flatMap {
+                case Some(accountId) =>
+                  logger.debug(
+                    "Found account for API key: " + keyToFind + " = " + accountId)
+                  Promise.successful(Some(accountId))
 
-              case None if remaining.nonEmpty =>
-                followIssuers(remaining.head, remaining.tail)
+                case None if remaining.nonEmpty =>
+                  followIssuers(remaining.head, remaining.tail)
 
-              case None =>
-                logger.warn(
-                  "Exhausted parent chain trying to find account for " + keyToFind)
-                Promise.successful(None)
-            }
+                case None =>
+                  logger.warn(
+                    "Exhausted parent chain trying to find account for " + keyToFind)
+                  Promise.successful(None)
+              }
           }
 
           accountManager
@@ -235,25 +243,27 @@ class AccountServiceHandlers(
 
               case None =>
                 // No account found, so we need to look up the issuer chain
-                apiKeyFinder.findAPIKey(keyToFind, Some(rootAPIKey)).flatMap {
-                  case Some(APIKeyDetails(_, _, _, _, Nil)) =>
-                    // We must be looking at the root key
-                    logger.warn(
-                      "Empty parent chain trying to find account for " + keyToFind)
-                    Promise.successful(None)
+                apiKeyFinder
+                  .findAPIKey(keyToFind, Some(rootAPIKey))
+                  .flatMap {
+                    case Some(APIKeyDetails(_, _, _, _, Nil)) =>
+                      // We must be looking at the root key
+                      logger.warn(
+                        "Empty parent chain trying to find account for " + keyToFind)
+                      Promise.successful(None)
 
-                  case Some(APIKeyDetails(_, _, _, _, issuers)) =>
-                    logger.debug(
-                      "No account found for %s, trying issuers %s"
-                        .format(keyToFind, issuers))
-                    followIssuers(issuers.head, issuers.tail)
+                    case Some(APIKeyDetails(_, _, _, _, issuers)) =>
+                      logger.debug(
+                        "No account found for %s, trying issuers %s"
+                          .format(keyToFind, issuers))
+                      followIssuers(issuers.head, issuers.tail)
 
-                  case None =>
-                    logger.warn(
-                      "API key not found trying to find account for %s!".format(
-                        keyToFind))
-                    Promise.successful(None)
-                }
+                    case None =>
+                      logger.warn(
+                        "API key not found trying to find account for %s!"
+                          .format(keyToFind))
+                      Promise.successful(None)
+                  }
             }
             .map { accountId =>
               HttpResponse[JValue](
@@ -288,8 +298,8 @@ class AccountServiceHandlers(
                 case (JString(email), JString(password), profile) =>
                   logger.debug("About to create account for email " + email)
                   for {
-                    existingAccountOpt <- accountManager.findAccountByEmail(
-                      email)
+                    existingAccountOpt <- accountManager
+                      .findAccountByEmail(email)
                     accountResponse <- existingAccountOpt map {
                       account =>
                         logger.warn(
@@ -440,84 +450,91 @@ class AccountServiceHandlers(
       HttpResponse[JValue]]] =
       (request: HttpRequest[Future[JValue]]) => {
         Success {
-          request.parameters
+          request
+            .parameters
             .get('accountId)
             .flatMap { accountId =>
-              request.content.map { futureContent =>
-                futureContent.flatMap { jvalue =>
-                  (jvalue \ "email").validated[String] match {
-                    case Success(requestEmail) =>
-                      accountManager.findAccountById(accountId).flatMap {
-                        case Some(account) =>
-                          if (account.email == requestEmail) {
-                            accountManager.generateResetToken(account).map {
-                              resetToken =>
-                                try {
-                                  val params = Map(
-                                    "token" -> resetToken,
-                                    "requestor" -> remoteIpFrom(request),
-                                    "accountId" -> account.accountId,
-                                    "time" -> (new java.util.Date).toString)
+              request
+                .content
+                .map { futureContent =>
+                  futureContent.flatMap { jvalue =>
+                    (jvalue \ "email").validated[String] match {
+                      case Success(requestEmail) =>
+                        accountManager
+                          .findAccountById(accountId)
+                          .flatMap {
+                            case Some(account) =>
+                              if (account.email == requestEmail) {
+                                accountManager
+                                  .generateResetToken(account)
+                                  .map { resetToken =>
+                                    try {
+                                      val params = Map(
+                                        "token" -> resetToken,
+                                        "requestor" -> remoteIpFrom(request),
+                                        "accountId" -> account.accountId,
+                                        "time" -> (new java.util.Date).toString)
 
-                                  emailer.sendEmail(
-                                    Seq(account.email),
-                                    "reset.subj.mustache",
-                                    Seq(
-                                      "reset.eml.txt.mustache" -> "text/plain",
-                                      "reset.eml.html.mustache" -> "text/html"),
-                                    params)
+                                      emailer.sendEmail(
+                                        Seq(account.email),
+                                        "reset.subj.mustache",
+                                        Seq(
+                                          "reset.eml.txt.mustache" -> "text/plain",
+                                          "reset.eml.html.mustache" -> "text/html"),
+                                        params)
+                                      HttpResponse[JValue](
+                                        HttpStatus(OK),
+                                        content = Some(
+                                          JString(
+                                            "A reset token has been sent to the account email on file")))
+                                    } catch {
+                                      case t =>
+                                        logger.error(
+                                          "Failure sending account password reset email",
+                                          t)
+                                        HttpResponse[JValue](
+                                          HttpStatus(InternalServerError),
+                                          content = Some(
+                                            JString(
+                                              "Provided email does not match account for " + accountId)))
+                                    }
+                                  }
+                              } else {
+                                logger.warn(
+                                  "Password reset request for account %s did not match email on file (%s provided)"
+                                    .format(accountId, requestEmail))
+                                Future(
                                   HttpResponse[JValue](
-                                    HttpStatus(OK),
+                                    HttpStatus(Forbidden),
                                     content = Some(
                                       JString(
-                                        "A reset token has been sent to the account email on file")))
-                                } catch {
-                                  case t =>
-                                    logger.error(
-                                      "Failure sending account password reset email",
-                                      t)
-                                    HttpResponse[JValue](
-                                      HttpStatus(InternalServerError),
-                                      content = Some(
-                                        JString(
-                                          "Provided email does not match account for " + accountId)))
-                                }
-                            }
-                          } else {
-                            logger.warn(
-                              "Password reset request for account %s did not match email on file (%s provided)"
-                                .format(accountId, requestEmail))
-                            Future(
-                              HttpResponse[JValue](
-                                HttpStatus(Forbidden),
-                                content = Some(
-                                  JString(
-                                    "Provided email does not match account for " + accountId))))
+                                        "Provided email does not match account for " + accountId))))
+                              }
+
+                            case None =>
+                              logger.warn(
+                                "Password reset request on non-existent account " + accountId)
+                              Future(
+                                HttpResponse[JValue](
+                                  HttpStatus(NotFound),
+                                  content = Some(
+                                    JString(
+                                      "Unable to find Account " + accountId))))
                           }
 
-                        case None =>
-                          logger.warn(
-                            "Password reset request on non-existent account " + accountId)
-                          Future(
-                            HttpResponse[JValue](
-                              HttpStatus(NotFound),
-                              content = Some(
-                                JString(
-                                  "Unable to find Account " + accountId))))
-                      }
-
-                    case Failure(error) =>
-                      logger.warn(
-                        "Password reset request for account %s without body"
-                          .format(accountId))
-                      Future(
-                        HttpResponse[JValue](
-                          HttpStatus(BadRequest, "Invalid request body"),
-                          content = Some(
-                            JString("Missing/invalid email in request body"))))
+                      case Failure(error) =>
+                        logger.warn(
+                          "Password reset request for account %s without body"
+                            .format(accountId))
+                        Future(
+                          HttpResponse[JValue](
+                            HttpStatus(BadRequest, "Invalid request body"),
+                            content = Some(
+                              JString(
+                                "Missing/invalid email in request body"))))
+                    }
                   }
                 }
-              }
             }
             .getOrElse {
               Future(
@@ -539,15 +556,19 @@ class AccountServiceHandlers(
       (request: HttpRequest[Future[JValue]]) => {
         Success {
           (
-            request.parameters
+            request
+              .parameters
               .get('accountId)
               .toSuccess(NonEmptyList("Missing account ID in request URI")) |@|
-              request.parameters
+              request
+                .parameters
                 .get('resetToken)
                 .toSuccess(
                   NonEmptyList("Missing reset token in request URI")) |@|
-              request.content.toSuccess(
-                NonEmptyList("Missing POST body (new password) in request"))
+              request
+                .content
+                .toSuccess(
+                  NonEmptyList("Missing POST body (new password) in request"))
           ).apply { (accountId, resetToken, futureContent) =>
             futureContent.flatMap { jvalue =>
               jvalue.validated[String]("password") match {
@@ -621,9 +642,8 @@ class AccountServiceHandlers(
               futureContent flatMap { jvalue =>
                 (jvalue \ "password").validated[String] match {
                   case Success(newPassword) =>
-                    accountManager.updateAccountPassword(
-                      account,
-                      newPassword) map {
+                    accountManager
+                      .updateAccountPassword(account, newPassword) map {
                       case true =>
                         logger.info(
                           "Password for account %s successfully updated by %s"
@@ -683,41 +703,43 @@ class AccountServiceHandlers(
       (request: HttpRequest[Future[JValue]]) => {
         Success { (auth: Account) =>
           withAccountAdmin(request, auth) { account =>
-            request.content.map { futureContent =>
-              futureContent flatMap { jvalue =>
-                (jvalue \ "type").validated[String] match {
-                  case Success(planType) =>
-                    accountManager.updateAccount(
-                      account.copy(plan = new AccountPlan(planType))) map {
-                      case true =>
-                        logger.info(
-                          "Plan changed for %s to %s from %s".format(
-                            account.accountId,
-                            planType,
-                            remoteIpFrom(request)))
-                        HttpResponse[JValue](OK, content = None)
-                      case _ =>
-                        logger.error(
-                          "Plan change to %s for account %s by %s failed"
-                            .format(
-                              planType,
+            request
+              .content
+              .map { futureContent =>
+                futureContent flatMap { jvalue =>
+                  (jvalue \ "type").validated[String] match {
+                    case Success(planType) =>
+                      accountManager.updateAccount(
+                        account.copy(plan = new AccountPlan(planType))) map {
+                        case true =>
+                          logger.info(
+                            "Plan changed for %s to %s from %s".format(
                               account.accountId,
+                              planType,
                               remoteIpFrom(request)))
-                        Responses.failure(
-                          InternalServerError,
-                          "Account update failed, please contact support.")
-                    }
+                          HttpResponse[JValue](OK, content = None)
+                        case _ =>
+                          logger.error(
+                            "Plan change to %s for account %s by %s failed"
+                              .format(
+                                planType,
+                                account.accountId,
+                                remoteIpFrom(request)))
+                          Responses.failure(
+                            InternalServerError,
+                            "Account update failed, please contact support.")
+                      }
 
-                  case Failure(error) =>
-                    Future(
-                      HttpResponse[JValue](
-                        HttpStatus(BadRequest, "Invalid request body."),
-                        content = Some(
-                          JString(
-                            "Could not determine new account type from request body."))))
+                    case Failure(error) =>
+                      Future(
+                        HttpResponse[JValue](
+                          HttpStatus(BadRequest, "Invalid request body."),
+                          content = Some(
+                            JString(
+                              "Could not determine new account type from request body."))))
+                  }
                 }
-              }
-            } getOrElse {
+              } getOrElse {
               Future(
                 HttpResponse[JValue](
                   HttpStatus(BadRequest, "Request body missing."),
@@ -743,8 +765,8 @@ class AccountServiceHandlers(
       (request: HttpRequest[Future[JValue]]) => {
         Success { (auth: Account) =>
           withAccountAdmin(request, auth) { account =>
-            accountManager.updateAccount(
-              account.copy(plan = AccountPlan.Free)) map {
+            accountManager
+              .updateAccount(account.copy(plan = AccountPlan.Free)) map {
               case true =>
                 logger.info(
                   "Account plan for %s deleted (converted to free plan) by %s"
@@ -800,22 +822,24 @@ class AccountServiceHandlers(
       (request: HttpRequest[Future[JValue]]) => {
         Success { (auth: Account) =>
           withAccountAdmin(request, auth) { account =>
-            accountManager.deleteAccount(account.accountId).map {
-              case Some(_) =>
-                logger.warn(
-                  "Account %s deleted by %s"
-                    .format(account.accountId, remoteIpFrom(request)))
-                HttpResponse[JValue](HttpStatus(NoContent))
-              case None =>
-                logger.error(
-                  "Account %s deletion by %s failed"
-                    .format(account.accountId, remoteIpFrom(request)))
-                HttpResponse[JValue](
-                  HttpStatus(InternalServerError),
-                  content = Some(
-                    JString(
-                      "Account deletion failed, please contact support.")))
-            }
+            accountManager
+              .deleteAccount(account.accountId)
+              .map {
+                case Some(_) =>
+                  logger.warn(
+                    "Account %s deleted by %s"
+                      .format(account.accountId, remoteIpFrom(request)))
+                  HttpResponse[JValue](HttpStatus(NoContent))
+                case None =>
+                  logger.error(
+                    "Account %s deletion by %s failed"
+                      .format(account.accountId, remoteIpFrom(request)))
+                  HttpResponse[JValue](
+                    HttpStatus(InternalServerError),
+                    content = Some(
+                      JString(
+                        "Account deletion failed, please contact support.")))
+              }
           }
         }
       }

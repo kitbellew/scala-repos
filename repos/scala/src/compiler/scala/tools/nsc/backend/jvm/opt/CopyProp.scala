@@ -124,9 +124,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
         it.next() match {
           case vi: VarInsnNode if isStore(vi) && hasNoCons(vi, vi.`var`) =>
             val canElim = vi.getOpcode != ASTORE || {
-              val currentFieldValueProds = prodCons.initialProducersForValueAt(
-                vi,
-                vi.`var`)
+              val currentFieldValueProds = prodCons
+                .initialProducersForValueAt(vi, vi.`var`)
               currentFieldValueProds.size == 1 && (
                 currentFieldValueProds.head match {
                   case ParameterProducer(0) =>
@@ -143,11 +142,10 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
             if (canElim)
               storesToDrop += vi
             else {
-              val prods = prodCons.producersForValueAt(
-                vi,
-                prodCons.frameAt(vi).stackTop)
-              val isStoreNull =
-                prods.size == 1 && prods.head.getOpcode == ACONST_NULL
+              val prods = prodCons
+                .producersForValueAt(vi, prodCons.frameAt(vi).stackTop)
+              val isStoreNull = prods
+                .size == 1 && prods.head.getOpcode == ACONST_NULL
               toNullOut += ((vi, isStoreNull))
             }
 
@@ -210,7 +208,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
       // instruction (and its inputs) will be removed, otherwise a POP is inserted after
       val queue = mutable.Queue.empty[ProducedValue]
       // Contains constructor invocations for values that can be eliminated if unused.
-      val sideEffectFreeConstructorCalls = mutable.ArrayBuffer
+      val sideEffectFreeConstructorCalls = mutable
+        .ArrayBuffer
         .empty[MethodInsnNode]
 
       // instructions to remove (we don't change the bytecode while analyzing it. this allows
@@ -486,7 +485,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
           changed = true
         }
 
-        for (mi <- sideEffectFreeConstructorCalls.toList) { // toList to allow removing elements while traversing
+        for (mi <- sideEffectFreeConstructorCalls
+               .toList) { // toList to allow removing elements while traversing
           val frame = prodCons.frameAt(mi)
           val stackTop = frame.stackTop
           val numArgs = Type.getArgumentTypes(mi.desc).length
@@ -499,8 +499,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
                 mi,
                 numArgs + 1
               ) // removes the producers of args and receiver
-            } else if (receiverProd.getOpcode == DUP && toRemove.contains(
-                         receiverProd)) {
+            } else if (receiverProd.getOpcode == DUP && toRemove
+                         .contains(receiverProd)) {
               val dupProds = producersIfSingleConsumer(
                 receiverProd,
                 prodCons.frameAt(receiverProd).stackTop)
@@ -670,7 +670,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
           if (pairStartStack.nonEmpty) {
             (pairStartStack.top, top) match {
               case ((ldNull: InsnNode, depends), store: VarInsnNode)
-                  if ldNull.getOpcode == ACONST_NULL && store.getOpcode == ASTORE =>
+                  if ldNull.getOpcode == ACONST_NULL && store
+                    .getOpcode == ASTORE =>
                 pairStartStack.pop()
                 addDepends(mkRemovePair(store, ldNull, depends.toList))
                 // example: store; (null; store;) (store; load;) load

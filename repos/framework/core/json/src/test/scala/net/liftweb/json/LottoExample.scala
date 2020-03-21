@@ -43,12 +43,14 @@ object LottoExample extends Specification {
         ("draw-date" -> lotto.`draw-date`.map(_.toString)) ~
         (
           "winners" ->
-            lotto.winners.map { w =>
-              (
-                ("winner-id" -> w.`winner-id`) ~
-                  ("numbers" -> w.numbers)
-              )
-            }
+            lotto
+              .winners
+              .map { w =>
+                (
+                  ("winner-id" -> w.`winner-id`) ~
+                    ("numbers" -> w.numbers)
+                )
+              }
         ))
 
   "Parse Lotto" in {

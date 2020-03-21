@@ -136,10 +136,12 @@ class PackageCollectionFillerSpec extends FlatSpec with RunOnApplicationThread {
     jfxc.FXCollections.observableArrayList("A", "B", "C")
 
   private def getOriginalNodeObservableList: jfxc.ObservableList[jfxs.Node] =
-    jfxc.FXCollections.observableArrayList(
-      new jfxsc.Button("Button 1"),
-      new jfxsc.TextField("TextField 2"),
-      new jfxsc.Hyperlink("Hyperlink 3"))
+    jfxc
+      .FXCollections
+      .observableArrayList(
+        new jfxsc.Button("Button 1"),
+        new jfxsc.TextField("TextField 2"),
+        new jfxsc.Hyperlink("Hyperlink 3"))
 
   "fillCollection" should "clean originalCollection if receives null" in {
     executeAndTestChanges(getOriginalStringObservableList, null)

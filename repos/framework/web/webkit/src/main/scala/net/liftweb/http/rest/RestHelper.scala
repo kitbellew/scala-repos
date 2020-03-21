@@ -388,8 +388,8 @@ trait RestHelper extends LiftRules.DispatchPF {
           () => {
             pf(r).box match {
               case Full(resp) =>
-                val selType = selection(r).openOrThrowException(
-                  "Full because pass isDefinedAt")
+                val selType = selection(r)
+                  .openOrThrowException("Full because pass isDefinedAt")
                 if (cvt.isDefinedAt((selType, resp, r)))
                   Full(cvt((selType, resp, r)))
                 else
@@ -437,8 +437,8 @@ trait RestHelper extends LiftRules.DispatchPF {
     serveType(jxSel)(pf)(
       new PartialFunction[(JsonXmlSelect, Any, Req), LiftResponse] {
         def isDefinedAt(p: (JsonXmlSelect, Any, Req)) =
-          convertAutoJsonXmlAble.isDefinedAt(
-            (p._1, AutoJsonXmlAble(p._2), p._3))
+          convertAutoJsonXmlAble
+            .isDefinedAt((p._1, AutoJsonXmlAble(p._2), p._3))
 
         def apply(p: (JsonXmlSelect, Any, Req)) =
           convertAutoJsonXmlAble.apply((p._1, AutoJsonXmlAble(p._2), p._3))

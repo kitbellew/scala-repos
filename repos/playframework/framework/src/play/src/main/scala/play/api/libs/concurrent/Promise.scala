@@ -49,9 +49,12 @@ object Promise {
       ec: ExecutionContext): Future[A] = {
     val p = SPromise[A]()
     val app = play.api.Play.privateMaybeApplication.get
-    app.actorSystem.scheduler.scheduleOnce(FiniteDuration(duration, unit)) {
-      p.complete(Try(message))
-    }
+    app
+      .actorSystem
+      .scheduler
+      .scheduleOnce(FiniteDuration(duration, unit)) {
+        p.complete(Try(message))
+      }
     p.future
   }
 

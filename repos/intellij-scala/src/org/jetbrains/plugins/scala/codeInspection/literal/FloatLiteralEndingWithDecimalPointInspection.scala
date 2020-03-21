@@ -29,9 +29,8 @@ class MakeDoubleFix(lit: ScLiteral)
       lit) {
   def doApplyFix(project: Project) {
     val l = getElement
-    val exp = ScalaPsiElementFactory.createExpressionFromText(
-      l.getText.dropRight(1) + "d",
-      l.getManager)
+    val exp = ScalaPsiElementFactory
+      .createExpressionFromText(l.getText.dropRight(1) + "d", l.getManager)
     l.replace(exp)
   }
 }
@@ -42,9 +41,8 @@ class MakeFloatFix(lit: ScLiteral)
       lit) {
   def doApplyFix(project: Project) {
     val l = getElement
-    val exp = ScalaPsiElementFactory.createExpressionFromText(
-      l.getText.dropRight(1) + "f",
-      l.getManager)
+    val exp = ScalaPsiElementFactory
+      .createExpressionFromText(l.getText.dropRight(1) + "f", l.getManager)
     l.replace(exp)
   }
 }
@@ -55,9 +53,8 @@ class AddZeroAfterDecimalPoint(lit: ScLiteral)
       lit) {
   def doApplyFix(project: Project) {
     val l = getElement
-    val exp = ScalaPsiElementFactory.createExpressionFromText(
-      l.getText + "0",
-      l.getManager)
+    val exp = ScalaPsiElementFactory
+      .createExpressionFromText(l.getText + "0", l.getManager)
     l.replace(exp)
   }
 }

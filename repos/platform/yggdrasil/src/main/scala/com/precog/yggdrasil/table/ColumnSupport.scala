@@ -41,9 +41,9 @@ class BitsetColumn(definedAt: BitSet) {
           'x'
         else
           '_'
-    getClass.getName + "(" + (
-      0 until limit
-    ).map(repr).mkString("[", ",", "]") + ", " + limit + ")"
+    getClass.getName + "(" + (0 until limit)
+      .map(repr)
+      .mkString("[", ",", "]") + ", " + limit + ")"
   }
 }
 
@@ -240,8 +240,8 @@ class SparsenColumn[T <: Column](delegate: T, idx: Array[Int], toSize: Int) {
   val remap: Array[Int] = fill(Array.fill[Int](toSize)(-1), 0)
 
   def isDefinedAt(row: Int) =
-    row >= 0 && row < toSize && remap(row) != -1 && delegate.isDefinedAt(
-      remap(row))
+    row >= 0 && row < toSize && remap(row) != -1 && delegate
+      .isDefinedAt(remap(row))
 }
 
 class InfiniteColumn {

@@ -42,8 +42,8 @@ object Parsing {
         Iteratee.flatten(
           inner.fold1(
             (a, e) =>
-              Future.successful(
-                Done(Done(a, e), Input.Empty: Input[Array[Byte]])),
+              Future
+                .successful(Done(Done(a, e), Input.Empty: Input[Array[Byte]])),
             k => Future.successful(Cont(step(Array[Byte](), Cont(k)))),
             (err, r) => throw new Exception()
           )(dec))
@@ -56,8 +56,8 @@ object Parsing {
         if (piece.length < needleSize) {
           (previousMatches, piece)
         } else {
-          val fullMatch = Range(needleSize - 1, -1, -1).forall(scan =>
-            needle(scan) == piece(scan + startScan))
+          val fullMatch = Range(needleSize - 1, -1, -1)
+            .forall(scan => needle(scan) == piece(scan + startScan))
           if (fullMatch) {
             val (prefix, suffix) = piece.splitAt(startScan)
             val (matched, left) = suffix.splitAt(needleSize)
@@ -115,12 +115,14 @@ object Parsing {
                       .foldLeft(Future.successful(Array[Byte]() -> Cont(k))) {
                         (p, m) =>
                           p.flatMap(i =>
-                            i._2.fold1(
-                              (a, e) =>
-                                Future.successful(
-                                  (i._1 ++ m.content, Done(a, e))),
-                              k => Future.successful((i._1, k(Input.El(m)))),
-                              (err, e) => throw new Exception())(dec))(dec)
+                            i
+                              ._2
+                              .fold1(
+                                (a, e) =>
+                                  Future.successful(
+                                    (i._1 ++ m.content, Done(a, e))),
+                                k => Future.successful((i._1, k(Input.El(m)))),
+                                (err, e) => throw new Exception())(dec))(dec)
                       }
                   fed.flatMap {
                     case (ss, i) =>

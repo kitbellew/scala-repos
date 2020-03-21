@@ -52,8 +52,8 @@ object MinMembersOfRoleBeforeUpMultiJvmSpec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false)
       .withFallback(
-        ConfigFactory.parseString(
-          "akka.cluster.role.backend.min-nr-of-members = 2"))
+        ConfigFactory
+          .parseString("akka.cluster.role.backend.min-nr-of-members = 2"))
       .withFallback(
         MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 

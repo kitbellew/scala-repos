@@ -20,9 +20,11 @@ class DebugTest
     with IsolatedProjectFixture
     with DebugTestUtils {
 
-  val original = EnsimeConfigFixture.DebugTestProject.copy(javaLibs =
-    Nil // no need to index the JRE
-  )
+  val original = EnsimeConfigFixture
+    .DebugTestProject
+    .copy(javaLibs =
+      Nil // no need to index the JRE
+    )
 
   // TODO This is broken because step in our case is stepping into
   // the classloader for inner class rather than doing a user

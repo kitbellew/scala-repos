@@ -199,7 +199,9 @@ private[parquet] class CatalystRowConverter(
   // Converters for each field.
   private val fieldConverters
       : Array[Converter with HasParentContainerUpdater] = {
-    parquetType.getFields.asScala
+    parquetType
+      .getFields
+      .asScala
       .zip(catalystType)
       .zipWithIndex
       .map {
@@ -310,8 +312,8 @@ private[parquet] class CatalystRowConverter(
             val buf = value.toByteBuffer.order(ByteOrder.LITTLE_ENDIAN)
             val timeOfDayNanos = buf.getLong
             val julianDay = buf.getInt
-            updater.setLong(
-              DateTimeUtils.fromJulianDay(julianDay, timeOfDayNanos))
+            updater
+              .setLong(DateTimeUtils.fromJulianDay(julianDay, timeOfDayNanos))
           }
         }
 

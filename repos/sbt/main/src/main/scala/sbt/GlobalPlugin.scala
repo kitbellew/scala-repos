@@ -48,7 +48,8 @@ object GlobalPlugin {
       base: File,
       s: State,
       config: LoadBuildConfiguration): (BuildStructure, State) = {
-    val newInject = config.injectSettings
+    val newInject = config
+      .injectSettings
       .copy(global = config.injectSettings.global ++ globalPluginSettings)
     val globalConfig = config.copy(
       injectSettings = newInject,
@@ -75,15 +76,17 @@ object GlobalPlugin {
     val taskInit = Def.task {
       val intcp = (internalDependencyClasspath in Runtime).value
       val prods = (exportedProducts in Runtime).value
-      val depMap =
-        projectDescriptors.value + ivyModule.value.dependencyMapping(state.log)
+      val depMap = projectDescriptors
+        .value + ivyModule.value.dependencyMapping(state.log)
       // If we reference it directly (if it's an executionRoot) then it forces an update, which is not what we want.
       val updateReport =
-        Def.taskDyn {
-          Def.task {
-            update.value
+        Def
+          .taskDyn {
+            Def.task {
+              update.value
+            }
           }
-        }.value
+          .value
 
       GlobalPluginData(
         projectID.value,
@@ -93,8 +96,8 @@ object GlobalPlugin {
         (fullClasspath in Runtime).value,
         (prods ++ intcp).distinct)(updateReport)
     }
-    val resolvedTaskInit =
-      taskInit mapReferenced Project.mapScope(Scope replaceThis p)
+    val resolvedTaskInit = taskInit mapReferenced Project
+      .mapScope(Scope replaceThis p)
     val task = resolvedTaskInit evaluate data
     val roots = resolvedTaskInit.dependencies
     evaluate(state, structure, task, roots)
@@ -107,10 +110,8 @@ object GlobalPlugin {
     import EvaluateTask._
     withStreams(structure, state) { str =>
       val nv = nodeView(state, str, roots)
-      val config = EvaluateTask.extractedTaskConfig(
-        Project.extract(state),
-        structure,
-        state)
+      val config = EvaluateTask
+        .extractedTaskConfig(Project.extract(state), structure, state)
       val (newS, result) =
         runTask(t, state, str, structure.index.triggers, config)(nv)
       (newS, processResult(result, newS.log))
@@ -120,8 +121,8 @@ object GlobalPlugin {
     Project.inScope(Scope.GlobalScope in LocalRootProject)(
       Seq(
         organization := SbtArtifacts.Organization,
-        onLoadMessage <<= Keys.baseDirectory(
-          "Loading global plugins from " + _),
+        onLoadMessage <<= Keys
+          .baseDirectory("Loading global plugins from " + _),
         name := "global-plugin",
         sbtPlugin := true,
         version := "0.0"

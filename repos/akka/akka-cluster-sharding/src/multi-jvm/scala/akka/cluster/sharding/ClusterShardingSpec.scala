@@ -239,8 +239,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
   val storageLocations = List(
     "akka.persistence.journal.leveldb.dir",
     "akka.persistence.journal.leveldb-shared.store.dir",
-    "akka.persistence.snapshot-store.local.dir").map(s ⇒
-    new File(system.settings.config.getString(s)))
+    "akka.persistence.snapshot-store.local.dir")
+    .map(s ⇒ new File(system.settings.config.getString(s)))
 
   override protected def atStartup() {
     runOn(controller) {
@@ -293,16 +293,13 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
             "3600s"}
       """)
         .withFallback(system.settings.config.getConfig("akka.cluster.sharding"))
-      val settings = ClusterShardingSettings(cfg).withRememberEntities(
-        rememberEntities)
+      val settings = ClusterShardingSettings(cfg)
+        .withRememberEntities(rememberEntities)
       if (settings.stateStoreMode == "persistence")
         ShardCoordinator.props(typeName, settings, allocationStrategy)
       else
-        ShardCoordinator.props(
-          typeName,
-          settings,
-          allocationStrategy,
-          replicator)
+        ShardCoordinator
+          .props(typeName, settings, allocationStrategy, replicator)
     }
 
     List(
@@ -396,8 +393,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
       enterBarrier("peristence-started")
 
       runOn(first, second, third, fourth, fifth, sixth) {
-        system.actorSelection(node(controller) / "user" / "store") ! Identify(
-          None)
+        system
+          .actorSelection(node(controller) / "user" / "store") ! Identify(None)
         val sharedStore = expectMsgType[ActorIdentity].ref.get
         SharedLeveldbJournal.setStore(sharedStore, system)
       }
@@ -446,8 +443,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         region ! EntityEnvelope(2, Increment)
         region ! Get(2)
         expectMsg(3)
-        lastSender.path should ===(
-          node(second) / "user" / "counterRegion" / "2" / "2")
+        lastSender
+          .path should ===(node(second) / "user" / "counterRegion" / "2" / "2")
 
         region ! Get(11)
         expectMsg(1)
@@ -455,8 +452,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         lastSender.path should ===(region.path / "11" / "11")
         region ! Get(12)
         expectMsg(1)
-        lastSender.path should ===(
-          node(second) / "user" / "counterRegion" / "0" / "12")
+        lastSender
+          .path should ===(node(second) / "user" / "counterRegion" / "0" / "12")
       }
       enterBarrier("first-update")
 
@@ -576,14 +573,14 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         region ! EntityEnvelope(3, Increment)
         region ! Get(3)
         expectMsg(11)
-        lastSender.path should ===(
-          node(third) / "user" / "counterRegion" / "3" / "3")
+        lastSender
+          .path should ===(node(third) / "user" / "counterRegion" / "3" / "3")
 
         region ! EntityEnvelope(4, Increment)
         region ! Get(4)
         expectMsg(21)
-        lastSender.path should ===(
-          node(fourth) / "user" / "counterRegion" / "4" / "4")
+        lastSender
+          .path should ===(node(fourth) / "user" / "counterRegion" / "4" / "4")
       }
       enterBarrier("first-update")
 
@@ -655,9 +652,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
             for (n ← 1 to 10) {
               rebalancingRegion.tell(Get(n), probe.ref)
               probe.expectMsgType[Int]
-              if (probe.lastSender.path == rebalancingRegion.path / (
-                    n % 12
-                  ).toString / n.toString)
+              if (probe.lastSender.path == rebalancingRegion.path / (n % 12)
+                    .toString / n.toString)
                 count += 1
             }
             count should be >= (2)
@@ -700,8 +696,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
     enterBarrier("extension-started")
     runOn(fifth) {
       //#counter-usage
-      val counterRegion: ActorRef = ClusterSharding(system).shardRegion(
-        "Counter")
+      val counterRegion: ActorRef = ClusterSharding(system)
+        .shardRegion("Counter")
       counterRegion ! Get(123)
       expectMsg(0)
 
@@ -741,8 +737,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         extractEntityId = extractEntityId,
         extractShardId = extractShardId)
 
-      val counterRegionViaGet: ActorRef = ClusterSharding(system).shardRegion(
-        "ApiTest")
+      val counterRegionViaGet: ActorRef = ClusterSharding(system)
+        .shardRegion("ApiTest")
 
       counterRegionViaStart should equal(counterRegionViaGet)
     }

@@ -13,7 +13,8 @@ object Test extends App {
     |       pickler;   6;  serialize symbol tables
     |     refchecks;   7;  reference/override checking, translate nested objects
     |  selectiveanf;   8;
-    |      liftcode;   9;  reify trees""".stripMargin
+    |      liftcode;   9;  reify trees"""
+      .stripMargin
       .split("\n")
       .map {
         _.trim()
@@ -22,7 +23,8 @@ object Test extends App {
       .toList
 
   val fields =
-    csv.head
+    csv
+      .head
       .split(";")
       .map {
         _.trim()

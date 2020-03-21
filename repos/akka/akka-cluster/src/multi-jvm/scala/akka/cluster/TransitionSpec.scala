@@ -94,7 +94,10 @@ abstract class TransitionSpec
         val oldCount = clusterView.latestStats.gossipStats.receivedGossipCount
         enterBarrier("before-gossip-" + gossipBarrierCounter)
         awaitCond {
-          clusterView.latestStats.gossipStats.receivedGossipCount != oldCount // received gossip
+          clusterView
+            .latestStats
+            .gossipStats
+            .receivedGossipCount != oldCount // received gossip
         }
         // gossip chat will synchronize the views
         awaitCond((Set(fromRole, toRole) diff seenLatestGossip).isEmpty)

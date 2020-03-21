@@ -92,7 +92,8 @@ trait SecurityService
                                 }
                             } ~
                             jsonAPIKey(k =>
-                              handlers.apiKeyManager
+                              handlers
+                                .apiKeyManager
                                 .findAPIKey(k)
                                 .map(_.map(_.apiKey))) {
                               path("/apikeys/") {

@@ -216,10 +216,9 @@ object TimeHelpersSpec
     }
 
     "provide a parseInternetDate function to parse a string formatted using the internet format" in forAllTimeZones {
-      parseInternetDate(
-        internetDateFormatter.format(now)).getTime.toLong must beCloseTo(
-        now.getTime.toLong,
-        1000L)
+      parseInternetDate(internetDateFormatter.format(now))
+        .getTime
+        .toLong must beCloseTo(now.getTime.toLong, 1000L)
     }
     "provide a parseInternetDate function returning new Date(0) if the input date cant be parsed" in forAllTimeZones {
       parseInternetDate("unparsable") must_== new Date(0)
@@ -305,8 +304,8 @@ trait TimeAmountsGen {
       s <- choose(0, 59)
       ml <- choose(0, 999)
     } yield (
-      TimeSpan(
-        weeks(w) + days(d) + hours(h) + minutes(m) + seconds(s) + ml).toString,
+      TimeSpan(weeks(w) + days(d) + hours(h) + minutes(m) + seconds(s) + ml)
+        .toString,
       (w, "week") :: (d, "day") :: (h, "hour") :: (m, "minute") :: (
         s,
         "second") :: (ml, "milli") :: Nil)

@@ -67,12 +67,14 @@ final class FreeGroup[A] private (val terms: Vector[Either[A, A]])
           case Right(h) =>
             h.toString
         }
-      val tail = terms.tail.map {
-        case Left(x) =>
-          s" |-| $x"
-        case Right(x) =>
-          s" |+| $x"
-      }
+      val tail = terms
+        .tail
+        .map {
+          case Left(x) =>
+            s" |-| $x"
+          case Right(x) =>
+            s" |+| $x"
+        }
       init + tail.mkString
     }
 }

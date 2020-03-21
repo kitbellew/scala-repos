@@ -32,9 +32,11 @@ object IteratorSumLaws extends Properties("IteratorSumLaws") {
   property("groupedSum on a single key is <= 1 size") = forAll {
     (key0: Int, in: List[Long]) =>
       groupedSum(
-        in.iterator.map { v =>
-          (key0, v)
-        }).size <= 1
+        in
+          .iterator
+          .map { v =>
+            (key0, v)
+          }).size <= 1
   }
   property("groupedSum never empty if input is non-empty") = forAll {
     (in: List[(Int, Long)]) =>
@@ -54,10 +56,12 @@ object IteratorSumLaws extends Properties("IteratorSumLaws") {
   }
   property("partials passes through keys-values") = forAll {
     (in: List[(Int, Long)]) =>
-      partials(in.iterator).map {
-        case (k, (o, v)) =>
-          (k, v)
-      }.toList == in
+      partials(in.iterator)
+        .map {
+          case (k, (o, v)) =>
+            (k, v)
+        }
+        .toList == in
   }
   property("partials gives partial sums") = forAll { (in: List[(Int, Long)]) =>
     val s = partials(in.iterator).toList

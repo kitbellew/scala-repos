@@ -79,8 +79,8 @@ class HoconPsiParser extends PsiParser {
     var newLineSuppressedIndex: Int = 0
 
     def newLinesBeforeCurrentToken =
-      builder.rawTokenIndex > newLineSuppressedIndex && builder.rawLookup(
-        -1) == LineBreakingWhitespace
+      builder.rawTokenIndex > newLineSuppressedIndex && builder
+        .rawLookup(-1) == LineBreakingWhitespace
 
     def suppressNewLine(): Unit = {
       newLineSuppressedIndex = builder.rawTokenIndex
@@ -104,7 +104,8 @@ class HoconPsiParser extends PsiParser {
       matches(UnquotedChars) && builder.getTokenText == str
 
     def matchesUnquoted(pattern: Regex) =
-      matches(UnquotedChars) && pattern.pattern
+      matches(UnquotedChars) && pattern
+        .pattern
         .matcher(builder.getTokenText)
         .matches
 
@@ -165,12 +166,14 @@ class HoconPsiParser extends PsiParser {
       val marker = builder.mark()
 
       val unclosedQuotedString = builder.getTokenType == QuotedString &&
-        !ProperlyClosedQuotedString.pattern
+        !ProperlyClosedQuotedString
+          .pattern
           .matcher(builder.getTokenText)
           .matches
-      val unclosedMultilineString =
-        builder.getTokenType == MultilineString && !builder.getTokenText
-          .endsWith("\"\"\"")
+      val unclosedMultilineString = builder
+        .getTokenType == MultilineString && !builder
+        .getTokenText
+        .endsWith("\"\"\"")
 
       advanceLexer()
 
@@ -477,8 +480,8 @@ class HoconPsiParser extends PsiParser {
         advanceLexer()
 
         val gotPeriod = matches(Period)
-        val noPeriodWhitespace =
-          gotPeriod && builder.rawTokenIndex == integerRawTokenIdx + 1
+        val noPeriodWhitespace = gotPeriod && builder
+          .rawTokenIndex == integerRawTokenIdx + 1
 
         if (gotPeriod) {
           textBuilder ++= builder.getTokenText
@@ -486,8 +489,8 @@ class HoconPsiParser extends PsiParser {
         }
 
         val gotDecimalPart = gotPeriod && matchesUnquoted(DecimalPartPattern)
-        val noDecimalPartWhitespace =
-          gotDecimalPart && builder.rawTokenIndex == integerRawTokenIdx + 2
+        val noDecimalPartWhitespace = gotDecimalPart && builder
+          .rawTokenIndex == integerRawTokenIdx + 2
 
         if (gotDecimalPart) {
           textBuilder ++= builder.getTokenText

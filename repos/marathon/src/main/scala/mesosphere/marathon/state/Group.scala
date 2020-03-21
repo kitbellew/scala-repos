@@ -28,7 +28,8 @@ case class Group(
     Group.fromProto(GroupDefinition.parseFrom(bytes))
 
   override def toProto: GroupDefinition = {
-    GroupDefinition.newBuilder
+    GroupDefinition
+      .newBuilder
       .setId(id.toString)
       .setVersion(version.toString)
       .addAllApps(apps.map(_.toProto))
@@ -147,22 +148,23 @@ case class Group(
     if (gid.isEmpty)
       this //group already exists
     else {
-      val (change, remaining) = groups.partition(
-        _.id.restOf(id).root == gid.root)
-      val toUpdate = change.headOption.getOrElse(
-        Group.empty.copy(id = id.append(gid.rootPath)))
+      val (change, remaining) = groups
+        .partition(_.id.restOf(id).root == gid.root)
+      val toUpdate = change
+        .headOption
+        .getOrElse(Group.empty.copy(id = id.append(gid.rootPath)))
       this.copy(groups = remaining + toUpdate.makeGroup(gid.child))
     }
   }
 
-  lazy val transitiveApps: Set[AppDefinition] =
-    this.apps ++ groups.flatMap(_.transitiveApps)
+  lazy val transitiveApps: Set[AppDefinition] = this.apps ++ groups
+    .flatMap(_.transitiveApps)
 
-  lazy val transitiveGroups: Set[Group] =
-    groups.flatMap(_.transitiveGroups) + this
+  lazy val transitiveGroups: Set[Group] = groups
+    .flatMap(_.transitiveGroups) + this
 
-  lazy val transitiveAppGroups: Set[Group] = transitiveGroups.filter(
-    _.apps.nonEmpty)
+  lazy val transitiveAppGroups: Set[Group] = transitiveGroups
+    .filter(_.apps.nonEmpty)
 
   lazy val applicationDependencies: List[(AppDefinition, AppDefinition)] = {
     var result = List.empty[(AppDefinition, AppDefinition)]
@@ -203,9 +205,12 @@ case class Group(
 
   def appsWithNoDependencies: Set[AppDefinition] = {
     val g = dependencyGraph
-    g.vertexSet.filter { v =>
-      g.outDegreeOf(v) == 0
-    }.toSet
+    g
+      .vertexSet
+      .filter { v =>
+        g.outDegreeOf(v) == 0
+      }
+      .toSet
   }
 
   def hasNonCyclicDependencies: Boolean = {
@@ -286,15 +291,17 @@ object Group {
       validator: Validator[Group]): Validator[Group] = {
     new Validator[Group] {
       override def apply(group: Group): Result = {
-        maxApps.filter(group.transitiveApps.size > _).map { num =>
-          Failure(
-            Set(
-              RuleViolation(
-                group,
-                s"""This Marathon instance may only handle up to $num Apps!
+        maxApps
+          .filter(group.transitiveApps.size > _)
+          .map { num =>
+            Failure(
+              Set(
+                RuleViolation(
+                  group,
+                  s"""This Marathon instance may only handle up to $num Apps!
                 |(Override with command line option --max_apps)""".stripMargin,
-                None)))
-        } getOrElse Success
+                  None)))
+          } getOrElse Success
       } and validator(group)
     }
   }
@@ -315,32 +322,40 @@ object Group {
   private def validPorts: Validator[Group] = {
     new Validator[Group] {
       override def apply(group: Group): Result = {
-        val groupViolations = group.apps.flatMap { app =>
-          val ruleViolations = app.containerServicePorts.toSeq.flatMap {
-            servicePorts =>
-              for {
-                existingApp <- group.transitiveApps.toList
-                if existingApp.id != app.id // in case of an update, do not compare the app against itself
-                existingServicePort <- existingApp.portMappings.toList.flatten
-                  .map(_.servicePort)
-                if existingServicePort != 0 // ignore zero ports, which will be chosen at random
-                if servicePorts contains existingServicePort
-              } yield RuleViolation(
-                app.id,
-                s"Requested service port $existingServicePort conflicts with a service port in app ${existingApp.id}",
-                None)
-          }
+        val groupViolations = group
+          .apps
+          .flatMap { app =>
+            val ruleViolations = app
+              .containerServicePorts
+              .toSeq
+              .flatMap { servicePorts =>
+                for {
+                  existingApp <- group.transitiveApps.toList
+                  if existingApp.id != app
+                    .id // in case of an update, do not compare the app against itself
+                  existingServicePort <- existingApp
+                    .portMappings
+                    .toList
+                    .flatten
+                    .map(_.servicePort)
+                  if existingServicePort != 0 // ignore zero ports, which will be chosen at random
+                  if servicePorts contains existingServicePort
+                } yield RuleViolation(
+                  app.id,
+                  s"Requested service port $existingServicePort conflicts with a service port in app ${existingApp.id}",
+                  None)
+              }
 
-          if (ruleViolations.isEmpty)
-            None
-          else
-            Some(
-              GroupViolation(
-                app,
-                "app contains conflicting ports",
-                None,
-                ruleViolations.toSet))
-        }
+            if (ruleViolations.isEmpty)
+              None
+            else
+              Some(
+                GroupViolation(
+                  app,
+                  "app contains conflicting ports",
+                  None,
+                  ruleViolations.toSet))
+          }
 
         if (groupViolations.isEmpty)
           Success

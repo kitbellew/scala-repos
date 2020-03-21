@@ -49,9 +49,8 @@ case class ScalaMethodEvaluator(
   private def getOrUpdateMethod(
       referenceType: ReferenceType,
       findMethod: ReferenceType => Method): Option[Method] = {
-    jdiMethodsCache.getOrElseUpdate(
-      referenceType,
-      Option(findMethod(referenceType)))
+    jdiMethodsCache
+      .getOrElseUpdate(referenceType, Option(findMethod(referenceType)))
   }
 
   def evaluate(context: EvaluationContextImpl): AnyRef = {
@@ -61,15 +60,15 @@ case class ScalaMethodEvaluator(
     if (debugProcess != prevProcess) {
       initCache(debugProcess)
     }
-    val requiresSuperObject: Boolean =
-      objectEvaluator.isInstanceOf[ScSuperEvaluator] ||
-        (
-          objectEvaluator.isInstanceOf[DisableGC] &&
-            objectEvaluator
-              .asInstanceOf[DisableGC]
-              .getDelegate
-              .isInstanceOf[ScSuperEvaluator]
-        )
+    val requiresSuperObject: Boolean = objectEvaluator
+      .isInstanceOf[ScSuperEvaluator] ||
+      (
+        objectEvaluator.isInstanceOf[DisableGC] &&
+          objectEvaluator
+            .asInstanceOf[DisableGC]
+            .getDelegate
+            .isInstanceOf[ScSuperEvaluator]
+      )
     val obj: AnyRef = DebuggerUtil.unwrapScalaRuntimeObjectRef {
       objectEvaluator.evaluate(context)
     }
@@ -93,10 +92,8 @@ case class ScalaMethodEvaluator(
         obj match {
           case o: ObjectReference =>
             val qualifierType = o.referenceType()
-            debugProcess.findClass(
-              context,
-              qualifierType.name,
-              qualifierType.classLoader)
+            debugProcess
+              .findClass(context, qualifierType.name, qualifierType.classLoader)
           case obj: ClassType =>
             debugProcess.findClass(context, obj.name, context.getClassLoader)
           case _ =>
@@ -107,15 +104,14 @@ case class ScalaMethodEvaluator(
           signature.getName(debugProcess)
         else
           null
-      var mName: String = DebuggerUtilsEx.methodName(
-        referenceType.name,
-        methodName,
-        sign)
+      var mName: String = DebuggerUtilsEx
+        .methodName(referenceType.name, methodName, sign)
       def findMethod(referenceType: ReferenceType): Method = {
         import scala.collection.JavaConversions._
         def sortedMethodCandidates: List[Method] = {
           val allMethods = referenceType.allMethods()
-          allMethods.toList
+          allMethods
+            .toList
             .collect {
               case method if !localMethod && method.name() == methodName =>
                 (method, 1)
@@ -145,10 +141,8 @@ case class ScalaMethodEvaluator(
           }
           if (jdiMethod == null && localMethod) {
             for (method <- sortedMethodCandidates if jdiMethod == null) {
-              mName = DebuggerUtilsEx.methodName(
-                referenceType.name,
-                method.name(),
-                sign)
+              mName = DebuggerUtilsEx
+                .methodName(referenceType.name, method.name(), sign)
               jdiMethod = referenceType
                 .asInstanceOf[ClassType]
                 .concreteMethodByName(mName, signature.getName(debugProcess))
@@ -177,21 +171,23 @@ case class ScalaMethodEvaluator(
             else {
               val newFiltered = filtered.filter(m => {
                 var result = true
-                ApplicationManager.getApplication.runReadAction(
-                  new Runnable {
-                    def run() {
-                      try {
-                        val lines = methodPosition.map(_.getLine)
-                        result = m
-                          .allLineLocations()
-                          .exists(l =>
-                            lines.contains(
-                              ScalaPositionManager.checkedLineNumber(l)))
-                      } catch {
-                        case e: Exception => //ignore
+                ApplicationManager
+                  .getApplication
+                  .runReadAction(
+                    new Runnable {
+                      def run() {
+                        try {
+                          val lines = methodPosition.map(_.getLine)
+                          result = m
+                            .allLineLocations()
+                            .exists(l =>
+                              lines.contains(
+                                ScalaPositionManager.checkedLineNumber(l)))
+                        } catch {
+                          case e: Exception => //ignore
+                        }
                       }
-                    }
-                  })
+                    })
                 result
               })
               if (newFiltered.isEmpty)
@@ -236,10 +232,9 @@ case class ScalaMethodEvaluator(
           case Some(tr) =>
             val className: String = tr.getName(context.getDebugProcess)
             if (className != null) {
-              context.getDebugProcess.findClass(
-                context,
-                className,
-                context.getClassLoader) match {
+              context
+                .getDebugProcess
+                .findClass(context, className, context.getClassLoader) match {
                 case c: ClassType =>
                   _refType = c
                 case _ =>
@@ -262,10 +257,9 @@ case class ScalaMethodEvaluator(
           case Some(tr) =>
             val className: String = tr.getName(context.getDebugProcess)
             if (className != null) {
-              context.getDebugProcess.findClass(
-                context,
-                className,
-                context.getClassLoader) match {
+              context
+                .getDebugProcess
+                .findClass(context, className, context.getClassLoader) match {
                 case c: ClassType =>
                   return debugProcess.invokeMethod(
                     context,
@@ -299,12 +293,14 @@ case class ScalaMethodEvaluator(
       args: Seq[AnyRef],
       jdiMethod: Method): Seq[AnyRef] = {
     val argTypeNames = jdiMethod.argumentTypeNames()
-    args.zipWithIndex.map {
-      case (DebuggerUtil.scalaRuntimeRefTo(value), idx)
-          if !DebuggerUtil.isScalaRuntimeRef(argTypeNames.get(idx)) =>
-        value
-      case (arg, _) =>
-        arg
-    }
+    args
+      .zipWithIndex
+      .map {
+        case (DebuggerUtil.scalaRuntimeRefTo(value), idx)
+            if !DebuggerUtil.isScalaRuntimeRef(argTypeNames.get(idx)) =>
+          value
+        case (arg, _) =>
+          arg
+      }
   }
 }

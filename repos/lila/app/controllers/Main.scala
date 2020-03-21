@@ -22,21 +22,26 @@ object Main extends LilaController {
     OpenBody { implicit ctx =>
       implicit val req = ctx.body
       fuccess {
-        blindForm.bindFromRequest.fold(
-          err => BadRequest,
-          {
-            case (enable, redirect) =>
-              Redirect(redirect) withCookies lila.common.LilaCookie.cookie(
-                Env.api.Accessibility.blindCookieName,
-                if (enable == "0")
-                  ""
-                else
-                  Env.api.Accessibility.hash,
-                maxAge = Env.api.Accessibility.blindCookieMaxAge.some,
-                httpOnly = true.some
-              )
-          }
-        )
+        blindForm
+          .bindFromRequest
+          .fold(
+            err => BadRequest,
+            {
+              case (enable, redirect) =>
+                Redirect(redirect) withCookies lila
+                  .common
+                  .LilaCookie
+                  .cookie(
+                    Env.api.Accessibility.blindCookieName,
+                    if (enable == "0")
+                      ""
+                    else
+                      Env.api.Accessibility.hash,
+                    maxAge = Env.api.Accessibility.blindCookieMaxAge.some,
+                    httpOnly = true.some
+                  )
+            }
+          )
       }
     }
 
@@ -113,9 +118,11 @@ object Main extends LilaController {
         .branch("jslog")
         .info(s"${ctx.req.remoteAddress} ${ctx.userId} $referer")
       lila.mon.cheat.cssBot()
-      ctx.userId.?? {
-        Env.report.api.autoBotReport(_, referer)
-      }
+      ctx
+        .userId
+        .?? {
+          Env.report.api.autoBotReport(_, referer)
+        }
       lila.game.GameRepo pov id map {
         _ ?? lila.game.GameRepo.setBorderAlert
       } inject Ok

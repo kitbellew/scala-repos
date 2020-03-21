@@ -50,9 +50,11 @@ final class JsonView(
         "createdBy" -> tour.createdBy,
         "system" -> tour.system.toString.toLowerCase,
         "fullName" -> tour.fullName,
-        "greatPlayer" -> GreatPlayer.wikiUrl(tour.name).map { url =>
-          Json.obj("name" -> tour.name, "url" -> url)
-        },
+        "greatPlayer" -> GreatPlayer
+          .wikiUrl(tour.name)
+          .map { url =>
+            Json.obj("name" -> tour.name, "url" -> url)
+          },
         "nbPlayers" -> tour.nbPlayers,
         "minutes" -> tour.minutes,
         "clock" -> clockJson(tour.clock),
@@ -65,8 +67,9 @@ final class JsonView(
         "schedule" -> tour.schedule.map(scheduleJson),
         "secondsToFinish" -> tour.isStarted.option(tour.secondsToFinish),
         "secondsToStart" -> tour.isCreated.option(tour.secondsToStart),
-        "startsAt" -> tour.isCreated.option(
-          ISODateTimeFormat.dateTime.print(tour.startsAt)),
+        "startsAt" -> tour
+          .isCreated
+          .option(ISODateTimeFormat.dateTime.print(tour.startsAt)),
         "pairings" -> data.pairings,
         "standing" -> stand,
         "me" -> myInfo.map(myInfoJson),
@@ -91,10 +94,12 @@ final class JsonView(
   def playerInfo(info: PlayerInfoExt): Fu[JsObject] =
     for {
       ranking <- cached ranking info.tour
-      pairings <- PairingRepo.finishedByPlayerChronological(
-        info.tour.id,
-        info.user.id)
-      sheet = info.tour.system.scoringSystem
+      pairings <- PairingRepo
+        .finishedByPlayerChronological(info.tour.id, info.user.id)
+      sheet = info
+        .tour
+        .system
+        .scoringSystem
         .sheet(info.tour, info.user.id, pairings)
       tpr <- performance(info.tour, info.player, pairings)
     } yield info match {
@@ -168,19 +173,17 @@ final class JsonView(
 
   private def computeStanding(tour: Tournament, page: Int): Fu[JsObject] =
     for {
-      rankedPlayers <- PlayerRepo.bestByTourWithRankByPage(
-        tour.id,
-        10,
-        page max 1)
+      rankedPlayers <- PlayerRepo
+        .bestByTourWithRankByPage(tour.id, 10, page max 1)
       sheets <- rankedPlayers
         .map { p =>
-          PairingRepo.finishedByPlayerChronological(
-            tour.id,
-            p.player.userId) map { pairings =>
-            p.player.userId -> tour.system.scoringSystem.sheet(
-              tour,
-              p.player.userId,
-              pairings)
+          PairingRepo
+            .finishedByPlayerChronological(tour.id, p.player.userId) map {
+            pairings =>
+              p.player.userId -> tour
+                .system
+                .scoringSystem
+                .sheet(tour, p.player.userId, pairings)
           }
         }
         .sequenceFu
@@ -189,26 +192,30 @@ final class JsonView(
       "page" -> page,
       "players" -> rankedPlayers.map(playerJson(sheets, tour)))
 
-  private val firstPageCache = lila.memo.AsyncCache[String, JsObject](
-    (id: String) =>
-      TournamentRepo byId id flatten s"No such tournament: $id" flatMap {
-        computeStanding(_, 1)
-      },
-    timeToLive = 1 second)
+  private val firstPageCache = lila
+    .memo
+    .AsyncCache[String, JsObject](
+      (id: String) =>
+        TournamentRepo byId id flatten s"No such tournament: $id" flatMap {
+          computeStanding(_, 1)
+        },
+      timeToLive = 1 second)
 
-  private val cachableData = lila.memo.AsyncCache[String, CachableData](
-    id =>
-      for {
-        pairings <- PairingRepo.recentByTour(id, 40)
-        tour <- TournamentRepo byId id
-        featured <- tour ?? fetchFeaturedGame
-        podium <- podiumJson(id)
-      } yield CachableData(
-        JsArray(pairings map pairingJson),
-        featured map featuredJson,
-        podium),
-    timeToLive = 1 second
-  )
+  private val cachableData = lila
+    .memo
+    .AsyncCache[String, CachableData](
+      id =>
+        for {
+          pairings <- PairingRepo.recentByTour(id, 40)
+          tour <- TournamentRepo byId id
+          featured <- tour ?? fetchFeaturedGame
+          podium <- podiumJson(id)
+        } yield CachableData(
+          JsArray(pairings map pairingJson),
+          featured map featuredJson,
+          podium),
+      timeToLive = 1 second
+    )
 
   private def featuredJson(featured: FeaturedGame) = {
     val game = featured.game
@@ -264,12 +271,15 @@ final class JsonView(
     sheet match {
       case s: arena.ScoringSystem.Sheet =>
         val o = Json.obj(
-          "scores" -> s.scores.reverse.map { score =>
-            if (score.flag == arena.ScoringSystem.Normal)
-              JsNumber(score.value)
-            else
-              Json.arr(score.value, score.flag.id)
-          },
+          "scores" -> s
+            .scores
+            .reverse
+            .map { score =>
+              if (score.flag == arena.ScoringSystem.Normal)
+                JsNumber(score.value)
+              else
+                Json.arr(score.value, score.flag.id)
+            },
           "total" -> s.total
         )
         s.onFire.fold(o + ("fire" -> JsBoolean(true)), o)
@@ -303,20 +313,24 @@ final class JsonView(
   private def podiumJson(id: String): Fu[Option[JsArray]] =
     TournamentRepo finishedById id flatMap {
       _ ?? { tour =>
-        PlayerRepo.bestByTourWithRank(id, 3).flatMap {
-          _.map {
-            case rp @ RankedPlayer(_, player) =>
-              for {
-                pairings <- PairingRepo
-                  .finishedByPlayerChronological(tour.id, player.userId)
-                sheet = tour.system.scoringSystem
-                  .sheet(tour, player.userId, pairings)
-                tpr <- performance(tour, player, pairings)
-              } yield playerJson(sheet.some, tour, rp) ++ Json.obj(
-                "nb" -> sheetNbs(player.userId, sheet, pairings),
-                "performance" -> tpr)
-          }.sequenceFu
-        } map { l =>
+        PlayerRepo
+          .bestByTourWithRank(id, 3)
+          .flatMap {
+            _.map {
+              case rp @ RankedPlayer(_, player) =>
+                for {
+                  pairings <- PairingRepo
+                    .finishedByPlayerChronological(tour.id, player.userId)
+                  sheet = tour
+                    .system
+                    .scoringSystem
+                    .sheet(tour, player.userId, pairings)
+                  tpr <- performance(tour, player, pairings)
+                } yield playerJson(sheet.some, tour, rp) ++ Json.obj(
+                  "nb" -> sheetNbs(player.userId, sheet, pairings),
+                  "performance" -> tpr)
+            }.sequenceFu
+          } map { l =>
           JsArray(l).some
         }
       }

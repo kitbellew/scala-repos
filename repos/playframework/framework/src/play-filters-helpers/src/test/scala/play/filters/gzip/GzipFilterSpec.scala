@@ -38,8 +38,8 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
       |codings are assigned a qvalue of 0, except the identity coding which gets q=0.001,
       |which is the lowest possible acceptable qvalue.
       |This seems to be the most consistent behaviour with respect to the other "accept"
-      |header fields described in sect 14.1-5.""".stripMargin in withApplication(
-      Ok("meep")) { implicit mat =>
+      |header fields described in sect 14.1-5."""
+      .stripMargin in withApplication(Ok("meep")) { implicit mat =>
       val (plain, gzipped) = (None, Some("gzip"))
 
       "Accept-Encoding of request" || "Response" |
@@ -87,8 +87,8 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
 
     "not gzip HEAD requests" in withApplication(Ok) { implicit mat =>
       checkNotGzipped(
-        route(
-          FakeRequest("HEAD", "/").withHeaders(ACCEPT_ENCODING -> "gzip")).get,
+        route(FakeRequest("HEAD", "/").withHeaders(ACCEPT_ENCODING -> "gzip"))
+          .get,
         "")
     }
 
@@ -137,8 +137,8 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
       Ok("hello").withHeaders(VARY -> "original")) { implicit mat =>
       val result = makeGzipRequest
       checkGzipped(result)
-      header(VARY, result) must beSome.which(header =>
-        header contains "original,")
+      header(VARY, result) must beSome
+        .which(header => header contains "original,")
     }
 
     "preserve original Vary header values and not duplicate case-insensitive ACCEPT-ENCODING" in withApplication(
@@ -201,9 +201,12 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
       mat: Materializer) = {
     checkGzipped(result)
     val resultBody = contentAsBytes(result)
-    await(result).body.contentLength.foreach { cl =>
-      resultBody.length must_== cl
-    }
+    await(result)
+      .body
+      .contentLength
+      .foreach { cl =>
+        resultBody.length must_== cl
+      }
     gunzip(resultBody) must_== body
   }
 

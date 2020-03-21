@@ -82,8 +82,9 @@ final class JsonView(
                 "provisional" -> opponent.provisional.option(true),
                 "offeringRematch" -> opponent.isOfferingRematch.option(true),
                 "offeringDraw" -> opponent.isOfferingDraw.option(true),
-                "proposingTakeback" -> opponent.isProposingTakeback.option(
-                  true),
+                "proposingTakeback" -> opponent
+                  .isProposingTakeback
+                  .option(true),
                 "onGame" -> (opponent.isAi || socket.onGame(opponent.color)),
                 "isGone" -> (!opponent.isAi && socket.isGone(opponent.color)),
                 "checks" -> checkCount(game, opponent.color),
@@ -321,9 +322,8 @@ final class JsonView(
       game: Game,
       forUser: Option[User]): Fu[Option[lila.chat.UserChat]] =
     forUser ?? { user =>
-      chatApi.userChat find s"${game.id}/w" map (_ forUser user.some) map (
-        _.some
-      )
+      chatApi
+        .userChat find s"${game.id}/w" map (_ forUser user.some) map (_.some)
     }
 
   private def getUsers(game: Game) =
@@ -365,7 +365,9 @@ final class JsonView(
 
   private def animationDuration(pov: Pov, pref: Pref) =
     math.round {
-      animationFactor(pref) * baseAnimationDuration.toMillis * pov.game.finished
+      animationFactor(pref) * baseAnimationDuration.toMillis * pov
+        .game
+        .finished
         .fold(
           1,
           math.max(

@@ -55,10 +55,12 @@ class DocServerStart {
                   Some(Results.Redirect("/@report"))
                 } else {
                   Some(
-                    Results.Ok.sendFile(
-                      translationReport.call(),
-                      inline = true,
-                      fileName = _ => "report.html"))
+                    Results
+                      .Ok
+                      .sendFile(
+                        translationReport.call(),
+                        inline = true,
+                        fileName = _ => "report.html"))
                 }
               } else
                 None)
@@ -70,9 +72,8 @@ class DocServerStart {
       port = Some(port),
       mode = Mode.Test,
       properties = System.getProperties)
-    val serverProvider: ServerProvider = ServerProvider.fromConfiguration(
-      getClass.getClassLoader,
-      config.configuration)
+    val serverProvider: ServerProvider = ServerProvider
+      .fromConfiguration(getClass.getClassLoader, config.configuration)
     val context = ServerProvider.Context(
       config,
       applicationProvider,

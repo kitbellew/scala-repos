@@ -67,9 +67,8 @@ class KryoSerializer(conf: SparkConf)
     with Logging
     with Serializable {
 
-  private val bufferSizeKb = conf.getSizeAsKb(
-    "spark.kryoserializer.buffer",
-    "64k")
+  private val bufferSizeKb = conf
+    .getSizeAsKb("spark.kryoserializer.buffer", "64k")
 
   if (bufferSizeKb >= ByteUnit.GiB.toKiB(2)) {
     throw new IllegalArgumentException(
@@ -87,12 +86,10 @@ class KryoSerializer(conf: SparkConf)
   }
   private val maxBufferSize = ByteUnit.MiB.toBytes(maxBufferSizeMb).toInt
 
-  private val referenceTracking = conf.getBoolean(
-    "spark.kryo.referenceTracking",
-    true)
-  private val registrationRequired = conf.getBoolean(
-    "spark.kryo.registrationRequired",
-    false)
+  private val referenceTracking = conf
+    .getBoolean("spark.kryo.referenceTracking", true)
+  private val registrationRequired = conf
+    .getBoolean("spark.kryo.registrationRequired", false)
   private val userRegistrators = conf
     .get("spark.kryo.registrator", "")
     .split(',')
@@ -113,8 +110,8 @@ class KryoSerializer(conf: SparkConf)
     kryo.setRegistrationRequired(registrationRequired)
 
     val oldClassLoader = Thread.currentThread.getContextClassLoader
-    val classLoader = defaultClassLoader.getOrElse(
-      Thread.currentThread.getContextClassLoader)
+    val classLoader = defaultClassLoader
+      .getOrElse(Thread.currentThread.getContextClassLoader)
 
     // Allow disabling Kryo reference tracking if user knows their object graphs don't have loops.
     // Do this before we invoke the user registrator so the user registrator can override this.
@@ -138,9 +135,8 @@ class KryoSerializer(conf: SparkConf)
     kryo.register(classOf[SerializableJobConf], new KryoJavaSerializer())
     kryo.register(classOf[PythonBroadcast], new KryoJavaSerializer())
 
-    kryo.register(
-      classOf[GenericRecord],
-      new GenericAvroSerializer(avroSchemas))
+    kryo
+      .register(classOf[GenericRecord], new GenericAvroSerializer(avroSchemas))
     kryo.register(
       classOf[GenericData.Record],
       new GenericAvroSerializer(avroSchemas))
@@ -150,10 +146,9 @@ class KryoSerializer(conf: SparkConf)
       // Use the default classloader when calling the user registrator.
       Thread.currentThread.setContextClassLoader(classLoader)
       // Register classes given through spark.kryo.classesToRegister.
-      classesToRegister
-        .foreach { className =>
-          kryo.register(Class.forName(className, true, classLoader))
-        }
+      classesToRegister.foreach { className =>
+        kryo.register(Class.forName(className, true, classLoader))
+      }
       // Allow the user to register their own classes by setting spark.kryo.registrator.
       userRegistrators
         .map(
@@ -185,8 +180,8 @@ class KryoSerializer(conf: SparkConf)
     kryo.register(classOf[Array[Tuple5[Any, Any, Any, Any, Any]]])
     kryo.register(classOf[Array[Tuple6[Any, Any, Any, Any, Any, Any]]])
     kryo.register(classOf[Array[Tuple7[Any, Any, Any, Any, Any, Any, Any]]])
-    kryo.register(
-      classOf[Array[Tuple8[Any, Any, Any, Any, Any, Any, Any, Any]]])
+    kryo
+      .register(classOf[Array[Tuple8[Any, Any, Any, Any, Any, Any, Any, Any]]])
     kryo.register(
       classOf[Array[Tuple9[Any, Any, Any, Any, Any, Any, Any, Any, Any]]])
     kryo.register(

@@ -90,8 +90,8 @@ final class SbtHandler(
     }
   def newRemote(server: IPC.Server): Process = {
     val launcherJar = launcher.getAbsolutePath
-    val globalBase =
-      "-Dsbt.global.base=" + (new File(directory, "global")).getAbsolutePath
+    val globalBase = "-Dsbt.global.base=" + (new File(directory, "global"))
+      .getAbsolutePath
     val args = "java" :: (
       launchOpts.toList ++ (
         globalBase :: "-jar" :: launcherJar :: ("<" + server.port) :: Nil

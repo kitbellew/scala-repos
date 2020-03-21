@@ -59,14 +59,16 @@ object GenerateUnsafeProjection
       input: String,
       fieldTypes: Seq[DataType],
       bufferHolder: String): String = {
-    val fieldEvals = fieldTypes.zipWithIndex.map {
-      case (dt, i) =>
-        val fieldName = ctx.freshName("fieldName")
-        val code =
-          s"final ${ctx.javaType(dt)} $fieldName = ${ctx.getValue(input, dt, i.toString)};"
-        val isNull = s"$input.isNullAt($i)"
-        ExprCode(code, isNull, fieldName)
-    }
+    val fieldEvals = fieldTypes
+      .zipWithIndex
+      .map {
+        case (dt, i) =>
+          val fieldName = ctx.freshName("fieldName")
+          val code =
+            s"final ${ctx.javaType(dt)} $fieldName = ${ctx.getValue(input, dt, i.toString)};"
+          val isNull = s"$input.isNullAt($i)"
+          ExprCode(code, isNull, fieldName)
+      }
 
     s"""
       if ($input instanceof UnsafeRow) {
@@ -112,43 +114,46 @@ object GenerateUnsafeProjection
         s"$rowWriter.reset();"
       }
 
-    val writeFields = inputs.zip(inputTypes).zipWithIndex.map {
-      case ((input, dataType), index) =>
-        val dt =
-          dataType match {
-            case udt: UserDefinedType[_] =>
-              udt.sqlType
-            case other =>
-              other
-          }
-        val tmpCursor = ctx.freshName("tmpCursor")
+    val writeFields = inputs
+      .zip(inputTypes)
+      .zipWithIndex
+      .map {
+        case ((input, dataType), index) =>
+          val dt =
+            dataType match {
+              case udt: UserDefinedType[_] =>
+                udt.sqlType
+              case other =>
+                other
+            }
+          val tmpCursor = ctx.freshName("tmpCursor")
 
-        val setNull =
-          dt match {
-            case t: DecimalType if t.precision > Decimal.MAX_LONG_DIGITS =>
-              // Can't call setNullAt() for DecimalType with precision larger than 18.
-              s"$rowWriter.write($index, (Decimal) null, ${t.precision}, ${t.scale});"
-            case _ =>
-              s"$rowWriter.setNullAt($index);"
-          }
+          val setNull =
+            dt match {
+              case t: DecimalType if t.precision > Decimal.MAX_LONG_DIGITS =>
+                // Can't call setNullAt() for DecimalType with precision larger than 18.
+                s"$rowWriter.write($index, (Decimal) null, ${t.precision}, ${t.scale});"
+              case _ =>
+                s"$rowWriter.setNullAt($index);"
+            }
 
-        val writeField =
-          dt match {
-            case t: StructType =>
-              s"""
+          val writeField =
+            dt match {
+              case t: StructType =>
+                s"""
               // Remember the current cursor so that we can calculate how many bytes are
               // written later.
               final int $tmpCursor = $bufferHolder.cursor;
               ${writeStructToBuffer(
-                ctx,
-                input.value,
-                t.map(_.dataType),
-                bufferHolder)}
+                  ctx,
+                  input.value,
+                  t.map(_.dataType),
+                  bufferHolder)}
               $rowWriter.setOffsetAndSize($index, $tmpCursor, $bufferHolder.cursor - $tmpCursor);
             """
 
-            case a @ ArrayType(et, _) =>
-              s"""
+              case a @ ArrayType(et, _) =>
+                s"""
               // Remember the current cursor so that we can calculate how many bytes are
               // written later.
               final int $tmpCursor = $bufferHolder.cursor;
@@ -157,8 +162,8 @@ object GenerateUnsafeProjection
               $rowWriter.alignToWords($bufferHolder.cursor - $tmpCursor);
             """
 
-            case m @ MapType(kt, vt, _) =>
-              s"""
+              case m @ MapType(kt, vt, _) =>
+                s"""
               // Remember the current cursor so that we can calculate how many bytes are
               // written later.
               final int $tmpCursor = $bufferHolder.cursor;
@@ -167,23 +172,23 @@ object GenerateUnsafeProjection
               $rowWriter.alignToWords($bufferHolder.cursor - $tmpCursor);
             """
 
-            case t: DecimalType =>
-              s"$rowWriter.write($index, ${input.value}, ${t.precision}, ${t.scale});"
+              case t: DecimalType =>
+                s"$rowWriter.write($index, ${input.value}, ${t.precision}, ${t.scale});"
 
-            case NullType =>
-              ""
+              case NullType =>
+                ""
 
-            case _ =>
-              s"$rowWriter.write($index, ${input.value});"
-          }
+              case _ =>
+                s"$rowWriter.write($index, ${input.value});"
+            }
 
-        if (input.isNull == "false") {
-          s"""
+          if (input.isNull == "false") {
+            s"""
             ${input.code}
             ${writeField.trim}
           """
-        } else {
-          s"""
+          } else {
+            s"""
             ${input.code}
             if (${input.isNull}) {
               ${setNull.trim}
@@ -191,8 +196,8 @@ object GenerateUnsafeProjection
               ${writeField.trim}
             }
           """
-        }
-    }
+          }
+      }
 
     s"""
       $resetWriter

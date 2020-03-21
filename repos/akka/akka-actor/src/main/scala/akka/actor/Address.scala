@@ -48,7 +48,10 @@ final case class Address private (
 
   // store hashCode
   @transient
-  override lazy val hashCode: Int = scala.util.hashing.MurmurHash3
+  override lazy val hashCode: Int = scala
+    .util
+    .hashing
+    .MurmurHash3
     .productHash(this)
 
   /**

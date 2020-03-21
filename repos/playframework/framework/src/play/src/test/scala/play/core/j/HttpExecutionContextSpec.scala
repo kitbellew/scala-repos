@@ -37,8 +37,8 @@ object HttpExecutionContextSpec
       hec.execute(
         new Runnable {
           def run() = {
-            hecFromThread.offer(
-              HttpExecutionContext.fromThread(ExecutionContext.global))
+            hecFromThread
+              .offer(HttpExecutionContext.fromThread(ExecutionContext.global))
           }
         })
 
@@ -49,8 +49,8 @@ object HttpExecutionContextSpec
         .execute(
           new Runnable {
             def run() = {
-              actualClassLoader.offer(
-                Thread.currentThread().getContextClassLoader())
+              actualClassLoader
+                .offer(Thread.currentThread().getContextClassLoader())
               actualHttpContext.offer(Http.Context.current.get())
             }
           })

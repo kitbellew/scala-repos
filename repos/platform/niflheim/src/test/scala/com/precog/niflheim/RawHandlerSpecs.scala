@@ -50,7 +50,9 @@ object RawHandlerSpecs extends Specification with ScalaCheck {
     f
   }
 
-  implicit val ordering = scala.math.Ordering
+  implicit val ordering = scala
+    .math
+    .Ordering
     .by[(String, CType), String](_.toString)
 
   def slurp(f: File): String =
@@ -155,8 +157,8 @@ object RawHandlerSpecs extends Specification with ScalaCheck {
       val s2 = h2.snapshot(None).segments
       val s2R = h2.snapshotRef(None).segments
 
-      implicit val ord: Ordering[Segment] = Ordering.by[Segment, String](
-        _.toString)
+      implicit val ord: Ordering[Segment] = Ordering
+        .by[Segment, String](_.toString)
 
       events.toSet must_== Set(18)
       s2.sorted must_== s1.sorted
@@ -357,9 +359,8 @@ object RawHandlerSpecs extends Specification with ScalaCheck {
       val struct3 = h.structure
       struct1.toSet must_== Set()
       struct2.toSet must_== Set(ColumnRef(cpa, CString))
-      struct3.toSet must_== Set(
-        ColumnRef(cpa, CString),
-        ColumnRef(cpb, CString))
+      struct3
+        .toSet must_== Set(ColumnRef(cpa, CString), ColumnRef(cpb, CString))
 
       val snap3 = h.snapshot(None).segments
       val snap3R = h.snapshotRef(None).segments

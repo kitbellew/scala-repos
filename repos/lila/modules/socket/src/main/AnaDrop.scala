@@ -20,9 +20,12 @@ case class AnaDrop(
         val fen = chess.format.Forsyth >> game
         Step(
           ply = game.turns,
-          move = game.pgnMoves.lastOption.map { san =>
-            Step.Move(Uci(drop), san)
-          },
+          move = game
+            .pgnMoves
+            .lastOption
+            .map { san =>
+              Step.Move(Uci(drop), san)
+            },
           fen = fen,
           check = game.situation.check,
           dests = Some(movable ?? game.situation.destinations),

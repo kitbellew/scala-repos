@@ -208,15 +208,17 @@ private[akka] class RemoteSystemDaemon(
                 val isTerminating =
                   !terminating.whileOff {
                     val parent = supervisor.asInstanceOf[InternalActorRef]
-                    val actor = system.provider.actorOf(
-                      system,
-                      props,
-                      parent,
-                      p,
-                      systemService = false,
-                      Some(deploy),
-                      lookupDeploy = true,
-                      async = false)
+                    val actor = system
+                      .provider
+                      .actorOf(
+                        system,
+                        props,
+                        parent,
+                        p,
+                        systemService = false,
+                        Some(deploy),
+                        lookupDeploy = true,
+                        async = false)
                     addChild(childName, actor)
                     actor.sendSystemMessage(Watch(actor, this))
                     actor.start()

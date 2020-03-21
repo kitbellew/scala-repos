@@ -60,10 +60,12 @@ class ScTypeParamElementType[Func <: ScTypeParam]
         case None =>
           ""
       }
-    val viewText = psi.viewTypeElement.map(te =>
-      StringRef.fromString(te.getText))
-    val contextText = psi.contextBoundTypeElement.map(te =>
-      StringRef.fromString(te.getText))
+    val viewText = psi
+      .viewTypeElement
+      .map(te => StringRef.fromString(te.getText))
+    val contextText = psi
+      .contextBoundTypeElement
+      .map(te => StringRef.fromString(te.getText))
     val typeParameterText = psi.getText
     new ScTypeParamStubImpl(
       parentStub.asInstanceOf[StubElement[PsiElement]],

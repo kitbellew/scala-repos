@@ -100,8 +100,8 @@ abstract class CreateTypeDefinitionQuickFix(
           val currentDir = dirs
             .find(PsiTreeUtil.isAncestor(_, ref, true))
             .orElse(
-              dirs.find(
-                ScalaPsiUtil.getModule(_) == ScalaPsiUtil.getModule(ref)))
+              dirs
+                .find(ScalaPsiUtil.getModule(_) == ScalaPsiUtil.getModule(ref)))
           currentDir.getOrElse(dirs(0))
       }
     createClassInDirectory(directory)
@@ -109,9 +109,11 @@ abstract class CreateTypeDefinitionQuickFix(
 
   private def createInnerClassIn(target: ScTemplateDefinition): Unit = {
     val extBlock = target.extendsBlock
-    val targetBody = extBlock.templateBody.getOrElse(
-      extBlock.add(
-        ScalaPsiElementFactory.createTemplateBody(target.getManager)))
+    val targetBody = extBlock
+      .templateBody
+      .getOrElse(
+        extBlock
+          .add(ScalaPsiElementFactory.createTemplateBody(target.getManager)))
     createClassIn(targetBody, Some(targetBody.getLastChild))
   }
 
@@ -119,15 +121,14 @@ abstract class CreateTypeDefinitionQuickFix(
       parent: PsiElement,
       anchorAfter: Option[PsiElement]): Unit = {
     try {
-      if (!FileModificationService.getInstance.preparePsiElementForWrite(
-            parent))
+      if (!FileModificationService
+            .getInstance
+            .preparePsiElementForWrite(parent))
         return
 
       val text = s"${kind.keyword} $name"
-      val newTd = ScalaPsiElementFactory.createTemplateDefinitionFromText(
-        text,
-        parent,
-        parent.getFirstChild)
+      val newTd = ScalaPsiElementFactory
+        .createTemplateDefinitionFromText(text, parent, parent.getFirstChild)
       val anchor = anchorAfter.orNull
       parent.addBefore(
         ScalaPsiElementFactory.createNewLine(parent.getManager),
@@ -152,9 +153,8 @@ abstract class CreateTypeDefinitionQuickFix(
             case td: ScTypeDefinition if td.isTopLevel =>
               "Top level in this file"
             case _ childOf (tb: ScTemplateBody) =>
-              val containingClass = PsiTreeUtil.getParentOfType(
-                tb,
-                classOf[ScTemplateDefinition])
+              val containingClass = PsiTreeUtil
+                .getParentOfType(tb, classOf[ScTemplateDefinition])
               s"Inner in ${containingClass.name}"
             case _ =>
               "Local scope"
@@ -238,14 +238,15 @@ abstract class CreateTypeDefinitionQuickFix(
 
     val template = builder.buildTemplate()
     val targetFile = clazz.getContainingFile
-    val isScalaConsole =
-      targetFile.getName == ScalaLanguageConsoleView.SCALA_CONSOLE
+    val isScalaConsole = targetFile.getName == ScalaLanguageConsoleView
+      .SCALA_CONSOLE
 
     if (!isScalaConsole) {
       val newEditor = positionCursor(clazz.nameId)
       if (template.getSegmentsCount != 0) {
         val range = clazz.getTextRange
-        newEditor.getDocument
+        newEditor
+          .getDocument
           .deleteString(range.getStartOffset, range.getEndOffset)
         TemplateManager
           .getInstance(clazz.getProject)
@@ -279,10 +280,8 @@ abstract class CreateTypeDefinitionQuickFix(
       case cl: ScClass =>
         val constr = cl.constructor.get
         val text = parametersText(ref)
-        val parameters = ScalaPsiElementFactory.createParamClausesWithContext(
-          text,
-          constr,
-          constr.getFirstChild)
+        val parameters = ScalaPsiElementFactory
+          .createParamClausesWithContext(text, constr, constr.getFirstChild)
         constr.parameterList.replace(parameters)
       case _ =>
     }

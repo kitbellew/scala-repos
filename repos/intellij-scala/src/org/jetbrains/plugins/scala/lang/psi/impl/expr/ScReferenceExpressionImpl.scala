@@ -106,8 +106,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
       return this
     element match {
       case _: ScTrait | _: ScClass =>
-        ScalaPsiUtil.getCompanionModule(
-          element.asInstanceOf[ScTypeDefinition]) match {
+        ScalaPsiUtil
+          .getCompanionModule(element.asInstanceOf[ScTypeDefinition]) match {
           case Some(obj: ScObject) =>
             bindToElement(obj, containingClass)
           case _ =>
@@ -186,8 +186,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
   override def getVariants(
       implicits: Boolean,
       filterNotNamedVariants: Boolean): Array[Object] = {
-    val isInImport: Boolean =
-      ScalaPsiUtil.getParentOfType(this, classOf[ScImportStmt]) != null
+    val isInImport: Boolean = ScalaPsiUtil
+      .getParentOfType(this, classOf[ScImportStmt]) != null
 
     getSimpleVariants(implicits, filterNotNamedVariants).flatMap {
       case res: ScalaResolveResult =>
@@ -324,8 +324,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
                                     if (simple.singleton) {
                                       simple.reference match {
                                         case Some(ref)
-                                            if ref.refName == p.name && ref
-                                              .resolve() == p =>
+                                            if ref.refName == p
+                                              .name && ref.resolve() == p =>
                                           found = true
                                         case _ =>
                                       }
@@ -367,10 +367,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
           s.subst(fun.polymorphicType)
         //prevent infinite recursion for recursive pattern reference
         case Some(ScalaResolveResult(self: ScSelfTypeElement, _)) =>
-          val clazz = PsiTreeUtil.getContextOfType(
-            self,
-            true,
-            classOf[ScTemplateDefinition])
+          val clazz = PsiTreeUtil
+            .getContextOfType(self, true, classOf[ScTemplateDefinition])
           ScThisReferenceImpl.getThisTypeForTypeDefinition(clazz, this) match {
             case success: Success[ScType] =>
               success.get
@@ -427,20 +425,16 @@ class ScReferenceExpressionImpl(node: ASTNode)
             case Some(fT) if param.isVal && stableTypeRequired =>
               ScProjectionType(fT, param, superReference = false)
             case Some(ScThisType(clazz))
-                if owner != null && PsiTreeUtil.isContextAncestor(
-                  owner,
-                  this,
-                  true) &&
+                if owner != null && PsiTreeUtil
+                  .isContextAncestor(owner, this, true) &&
                   stableTypeRequired && owner
                   .isInstanceOf[ScTypeDefinition] && owner == clazz =>
               ScType.designator(
                 param
               ) //todo: think about projection from this type?
             case _
-                if owner != null && PsiTreeUtil.isContextAncestor(
-                  owner,
-                  this,
-                  true) &&
+                if owner != null && PsiTreeUtil
+                  .isContextAncestor(owner, this, true) &&
                   stableTypeRequired && !owner.isInstanceOf[ScTypeDefinition] =>
               ScType.designator(param)
             case _ =>
@@ -556,7 +550,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
           ScType.designator(pack)
         case Some(ScalaResolveResult(clazz: ScClass, s)) if clazz.isCase =>
           s.subst(
-            clazz.constructor
+            clazz
+              .constructor
               .getOrElse(
                 return Failure(
                   "Case Class hasn't primary constructor",
@@ -638,11 +633,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
                       } yield qualifier
                   }
               }
-            ResolveUtils.javaPolymorphicType(
-              method,
-              s,
-              getResolveScope,
-              returnType)
+            ResolveUtils
+              .javaPolymorphicType(method, s, getResolveScope, returnType)
           } else {
             ResolveUtils.javaPolymorphicType(method, s, getResolveScope)
           }
@@ -742,7 +734,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
       case _ =>
         getContext match {
           case sugar: ScSugarCallExpr if sugar.operation == this =>
-            sugar.getBaseExpr
+            sugar
+              .getBaseExpr
               .getNonValueType(TypingContext.empty)
               .map {
                 case t: ScTypePolymorphicType =>

@@ -61,7 +61,11 @@ class AgentDocSpec extends AkkaSpec {
     def longRunningOrBlockingFunction =
       (i: Int) => i * 1 // Just for the example code
     def someExecutionContext() =
-      scala.concurrent.ExecutionContext.Implicits.global // Just for the example code
+      scala
+        .concurrent
+        .ExecutionContext
+        .Implicits
+        .global // Just for the example code
     //#send-off
     // the ExecutionContext you want to run the function on
     implicit val ec = someExecutionContext()

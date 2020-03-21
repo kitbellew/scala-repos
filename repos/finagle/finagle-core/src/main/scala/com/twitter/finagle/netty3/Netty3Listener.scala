@@ -308,9 +308,8 @@ case class Netty3Listener[In, Out](
           pipeline.addFirst("channelLogger", channelSnooper)
 
         if (!statsReceiver.isNull)
-          pipeline.addFirst(
-            "channelStatsHandler",
-            channelStatsHandler(statsReceiver))
+          pipeline
+            .addFirst("channelStatsHandler", channelStatsHandler(statsReceiver))
 
         // Apply read timeouts *after* request decoding, preventing
         // death from clients trying to DoS by slowly trickling in
@@ -423,8 +422,8 @@ private[netty3] class ServerBridge[In, Out](
     val channel = e.getChannel
     channels.add(channel)
 
-    val transport = Transport.cast[In, Out](
-      new ChannelTransport[Any, Any](channel))
+    val transport = Transport
+      .cast[In, Out](new ChannelTransport[Any, Any](channel))
     serveTransport(transport)
     super.channelOpen(ctx, e)
   }

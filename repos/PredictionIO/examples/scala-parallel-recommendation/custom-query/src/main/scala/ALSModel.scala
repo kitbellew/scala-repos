@@ -24,11 +24,11 @@ class ALSModel(
       sc: SparkContext): Boolean = {
 
     productFeatures.saveAsObjectFile(s"/tmp/${id}/productFeatures")
-    sc.parallelize(Seq(itemStringIntMap))
+    sc
+      .parallelize(Seq(itemStringIntMap))
       .saveAsObjectFile(s"/tmp/${id}/itemStringIntMap")
     // HOWTO: save items too as part of algo model
-    sc.parallelize(Seq(items))
-      .saveAsObjectFile(s"/tmp/${id}/items")
+    sc.parallelize(Seq(items)).saveAsObjectFile(s"/tmp/${id}/items")
     true
   }
 
@@ -46,11 +46,10 @@ object ALSModel extends IPersistentModelLoader[ALSAlgorithmParams, ALSModel] {
   def apply(id: String, params: ALSAlgorithmParams, sc: Option[SparkContext]) =
     new ALSModel(
       productFeatures = sc.get.objectFile(s"/tmp/${id}/productFeatures"),
-      itemStringIntMap = sc.get
+      itemStringIntMap = sc
+        .get
         .objectFile[BiMap[String, Int]](s"/tmp/${id}/itemStringIntMap")
         .first,
       // HOWTO: read items too as part of algo model
-      items = sc.get
-        .objectFile[Map[Int, Item]](s"/tmp/${id}/items")
-        .first)
+      items = sc.get.objectFile[Map[Int, Item]](s"/tmp/${id}/items").first)
 }

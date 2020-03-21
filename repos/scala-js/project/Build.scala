@@ -52,10 +52,10 @@ object Build extends sbt.Build {
     "Whether we should partest the current scala version (and fail if we can't)")
 
   val previousVersion = "0.6.8"
-  val previousSJSBinaryVersion = ScalaJSCrossVersion.binaryScalaJSVersion(
-    previousVersion)
-  val previousBinaryCrossVersion = CrossVersion.binaryMapped(v =>
-    s"sjs${previousSJSBinaryVersion}_$v")
+  val previousSJSBinaryVersion = ScalaJSCrossVersion
+    .binaryScalaJSVersion(previousVersion)
+  val previousBinaryCrossVersion = CrossVersion
+    .binaryMapped(v => s"sjs${previousSJSBinaryVersion}_$v")
 
   val scalaVersionsUsedForPublishing: Set[String] = Set(
     "2.10.6",
@@ -102,8 +102,9 @@ object Build extends sbt.Build {
         /* Filter out e:info.apiURL as it expects 0.6.7-SNAPSHOT, whereas the
          * artifact we're looking for has 0.6.6 (for example).
          */
-        val prevExtraAttributes = thisProjectID.extraAttributes.filterKeys(
-          _ != "e:info.apiURL")
+        val prevExtraAttributes = thisProjectID
+          .extraAttributes
+          .filterKeys(_ != "e:info.apiURL")
         val prevProjectID =
           (thisProjectID.organization % thisProjectID.name % previousVersion)
             .cross(previousCrossVersion)
@@ -507,7 +508,8 @@ object Build extends sbt.Build {
     base = file("compiler"),
     settings = commonSettings ++ publishSettings ++ Seq(
       name := "Scala.js compiler",
-      crossVersion := CrossVersion.full, // because compiler api is not binary compatible
+      crossVersion := CrossVersion
+        .full, // because compiler api is not binary compatible
       libraryDependencies ++= Seq(
         "org.scala-lang" % "scala-compiler" % scalaVersion.value,
         "org.scala-lang" % "scala-reflect" % scalaVersion.value,
@@ -517,28 +519,36 @@ object Build extends sbt.Build {
         val testOutDir =
           (streams.value.cacheDirectory / "scalajs-compiler-test")
         IO.createDirectory(testOutDir)
-        sys.props("scala.scalajs.compiler.test.output") =
-          testOutDir.getAbsolutePath
+        sys.props("scala.scalajs.compiler.test.output") = testOutDir
+          .getAbsolutePath
         sys.props("scala.scalajs.compiler.test.scalajslib") =
           (packageBin in (library, Compile)).value.getAbsolutePath
         sys.props("scala.scalajs.compiler.test.scalalib") = {
 
           def isScalaLib(att: Attributed[File]) = {
-            att.metadata.get(moduleID.key).exists { mId =>
-              mId.organization == "org.scala-lang" &&
-              mId.name == "scala-library" &&
-              mId.revision == scalaVersion.value
-            }
+            att
+              .metadata
+              .get(moduleID.key)
+              .exists { mId =>
+                mId.organization == "org.scala-lang" &&
+                mId.name == "scala-library" &&
+                mId.revision == scalaVersion.value
+              }
           }
 
           val lib = (managedClasspath in Test).value.find(isScalaLib)
-          lib.map(_.data.getAbsolutePath).getOrElse {
-            streams.value.log.error(
-              "Couldn't find Scala library on the classpath. CP: " + (
-                managedClasspath in Test
-              ).value);
-            ""
-          }
+          lib
+            .map(_.data.getAbsolutePath)
+            .getOrElse {
+              streams
+                .value
+                .log
+                .error(
+                  "Couldn't find Scala library on the classpath. CP: " + (
+                    managedClasspath in Test
+                  ).value);
+              ""
+            }
         }
       },
       exportJars := true
@@ -624,7 +634,8 @@ object Build extends sbt.Build {
         runner.run(streams.value.log, scalaJSConsole.value)
       }
     }
-  ).withScalaJSCompiler
+  )
+    .withScalaJSCompiler
     .dependsOn(javalibEx, testSuite % "test->test", irProjectJS)
 
   lazy val jsEnvs: Project = Project(
@@ -636,7 +647,8 @@ object Build extends sbt.Build {
         libraryDependencies ++= Seq(
           "io.apigee" % "rhino" % "1.7R5pre4",
           "org.webjars" % "envjs" % "1.2",
-          "com.novocode" % "junit-interface" % "0.9" % "test") ++ ScalaJSPluginInternal.phantomJSJettyModules
+          "com.novocode" % "junit-interface" % "0.9" % "test") ++ ScalaJSPluginInternal
+          .phantomJSJettyModules
           .map(_ % "provided"),
         previousArtifactSetting,
         binaryIssueFilters ++= BinaryIncompatibilities.JSEnvs
@@ -817,11 +829,13 @@ object Build extends sbt.Build {
           val ver = scalaVersion.value
           val base = baseDirectory.value
           val parts = ver.split(Array('.', '-'))
-          val verList = parts.inits.map { ps =>
-            val len = ps.mkString(".").length
-            // re-read version, since we lost '.' and '-'
-            ver.substring(0, len)
-          }
+          val verList = parts
+            .inits
+            .map { ps =>
+              val len = ps.mkString(".").length
+              // re-read version, since we lost '.' and '-'
+              ver.substring(0, len)
+            }
           def dirStr(v: String) =
             if (v.isEmpty)
               "overrides"
@@ -966,7 +980,8 @@ object Build extends sbt.Build {
     base = file("stubs"),
     settings = commonSettings ++ publishSettings ++ Seq(
       name := "Scala.js Stubs",
-      libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value,
+      libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion
+        .value,
       previousArtifactSetting)
   )
 
@@ -1030,7 +1045,8 @@ object Build extends sbt.Build {
       commonSettings ++ publishSettings ++ fatalWarningsSettings ++ Seq(
         name := "Scala.js JUnit test plugin",
         crossVersion := CrossVersion.full,
-        libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value,
+        libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion
+          .value,
         exportJars := true
       )
   )
@@ -1294,7 +1310,8 @@ object Build extends sbt.Build {
         }
       }
     )
-  ).withScalaJSCompiler
+  )
+    .withScalaJSCompiler
     .dependsOn(library, jUnitRuntime, jasmineTestFramework % "test")
 
   lazy val testSuiteJVM: Project = Project(
@@ -1412,7 +1429,8 @@ object Build extends sbt.Build {
       fork in Test := true,
       javaOptions in Test += "-Xmx1G",
       // Override the dependency of partest - see #1889
-      dependencyOverrides += "org.scala-lang" % "scala-library" % scalaVersion.value % "test",
+      dependencyOverrides += "org.scala-lang" % "scala-library" % scalaVersion
+        .value % "test",
       testFrameworks ++= {
         if (shouldPartest.value)
           Seq(new TestFramework("scala.tools.partest.scalajs.Framework"))

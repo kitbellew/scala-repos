@@ -21,8 +21,8 @@ trait PredefinedToResponseMarshallers
       m: ToEntityMarshaller[T]): ToResponseMarshaller[T] =
     fromStatusCodeAndHeadersAndValue compose (t ⇒ (status, headers, t))
 
-  implicit val fromResponse: TRM[HttpResponse] = Marshaller.opaque(
-    ConstantFun.scalaIdentityFunction)
+  implicit val fromResponse: TRM[HttpResponse] = Marshaller
+    .opaque(ConstantFun.scalaIdentityFunction)
 
   implicit val fromStatusCode: TRM[StatusCode] =
     Marshaller.withOpenCharset(`text/plain`) { (status, charset) ⇒

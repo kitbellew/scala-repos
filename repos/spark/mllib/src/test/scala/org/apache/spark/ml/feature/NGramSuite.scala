@@ -36,9 +36,7 @@ class NGramSuite
   import org.apache.spark.ml.feature.NGramSuite._
 
   test("default behavior yields bigram features") {
-    val nGram = new NGram()
-      .setInputCol("inputTokens")
-      .setOutputCol("nGrams")
+    val nGram = new NGram().setInputCol("inputTokens").setOutputCol("nGrams")
     val dataset = sqlContext.createDataFrame(
       Seq(
         NGramTestData(
@@ -65,8 +63,8 @@ class NGramSuite
       .setInputCol("inputTokens")
       .setOutputCol("nGrams")
       .setN(4)
-    val dataset = sqlContext.createDataFrame(
-      Seq(NGramTestData(Array(), Array())))
+    val dataset = sqlContext
+      .createDataFrame(Seq(NGramTestData(Array(), Array())))
     testNGram(nGram, dataset)
   }
 
@@ -92,7 +90,8 @@ class NGramSuite
 object NGramSuite extends SparkFunSuite {
 
   def testNGram(t: NGram, dataset: DataFrame): Unit = {
-    t.transform(dataset)
+    t
+      .transform(dataset)
       .select("nGrams", "wantedNGrams")
       .collect()
       .foreach {

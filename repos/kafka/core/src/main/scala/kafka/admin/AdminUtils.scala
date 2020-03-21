@@ -166,8 +166,8 @@ object AdminUtils extends Logging {
             currentPartitionId % brokerArray.length == 0
           ))
         nextReplicaShift += 1
-      val firstReplicaIndex =
-        (currentPartitionId + startIndex) % brokerArray.length
+      val firstReplicaIndex = (currentPartitionId + startIndex) % brokerArray
+        .length
       val replicaBuffer = mutable.ArrayBuffer(brokerArray(firstReplicaIndex))
       for (j <- 0 until replicationFactor - 1)
         replicaBuffer += brokerArray(
@@ -189,10 +189,12 @@ object AdminUtils extends Logging {
       fixedStartIndex: Int,
       startPartitionId: Int): Map[Int, Seq[Int]] = {
     val brokerRackMap =
-      brokerMetadatas.collect {
-        case BrokerMetadata(id, Some(rack)) =>
-          id -> rack
-      }.toMap
+      brokerMetadatas
+        .collect {
+          case BrokerMetadata(id, Some(rack)) =>
+            id -> rack
+        }
+        .toMap
     val numRacks = brokerRackMap.values.toSet.size
     val arrangedBrokerList = getRackAlternatedBrokerList(brokerRackMap)
     val numBrokers = arrangedBrokerList.size
@@ -235,12 +237,12 @@ object AdminUtils extends Logging {
           //    that do not have any replica, or
           // 2. the broker has already assigned a replica AND there is one or more brokers that do not have replica assigned
           if ((
-                !racksWithReplicas.contains(
-                  rack) || racksWithReplicas.size == numRacks
+                !racksWithReplicas.contains(rack) || racksWithReplicas
+                  .size == numRacks
               )
               && (
-                !brokersWithReplicas.contains(
-                  broker) || brokersWithReplicas.size == numBrokers
+                !brokersWithReplicas.contains(broker) || brokersWithReplicas
+                  .size == numBrokers
               )) {
             replicaBuffer += broker
             racksWithReplicas += rack
@@ -291,7 +293,8 @@ object AdminUtils extends Logging {
 
   private[admin] def getInverseMap(
       brokerRackMap: Map[Int, String]): Map[String, Seq[Int]] = {
-    brokerRackMap.toSeq
+    brokerRackMap
+      .toSeq
       .map {
         case (id, rack) =>
           (rack, id)
@@ -304,10 +307,12 @@ object AdminUtils extends Logging {
         case (rack, rackAndIdList) =>
           (
             rack,
-            rackAndIdList.map {
-              case (_, id) =>
-                id
-            }.sorted)
+            rackAndIdList
+              .map {
+                case (_, id) =>
+                  id
+              }
+              .sorted)
       }
   }
 
@@ -327,8 +332,8 @@ object AdminUtils extends Logging {
       replicaAssignmentStr: String = "",
       checkBrokerAvailable: Boolean = true,
       rackAwareMode: RackAwareMode = RackAwareMode.Enforced) {
-    val existingPartitionsReplicaList = zkUtils.getReplicaAssignmentForTopics(
-      List(topic))
+    val existingPartitionsReplicaList = zkUtils
+      .getReplicaAssignmentForTopics(List(topic))
     if (existingPartitionsReplicaList.size == 0)
       throw new AdminOperationException(
         "The topic %s does not exist".format(topic))
@@ -352,8 +357,8 @@ object AdminUtils extends Logging {
       if (replicaAssignmentStr == null || replicaAssignmentStr == "") {
         val startIndex = math.max(
           0,
-          brokerMetadatas.indexWhere(
-            _.id >= existingReplicaListForPartitionZero.head))
+          brokerMetadatas
+            .indexWhere(_.id >= existingReplicaListForPartitionZero.head))
         AdminUtils.assignReplicasToBrokers(
           brokerMetadatas,
           partitionsToAdd,
@@ -368,17 +373,19 @@ object AdminUtils extends Logging {
           checkBrokerAvailable)
 
     // check if manual assignment has the right replication factor
-    val unmatchedRepFactorList = newPartitionReplicaList.values.filter(p =>
-      (p.size != existingReplicaListForPartitionZero.size))
+    val unmatchedRepFactorList = newPartitionReplicaList
+      .values
+      .filter(p => (p.size != existingReplicaListForPartitionZero.size))
     if (unmatchedRepFactorList.size != 0)
       throw new AdminOperationException(
         "The replication factor in manual replication assignment " +
-          " is not equal to the existing replication factor for the topic " + existingReplicaListForPartitionZero.size)
+          " is not equal to the existing replication factor for the topic " + existingReplicaListForPartitionZero
+          .size)
 
     info(
       "Add partition list for %s is %s".format(topic, newPartitionReplicaList))
-    val partitionReplicaList = existingPartitionsReplicaList.map(p =>
-      p._1.partition -> p._2)
+    val partitionReplicaList = existingPartitionsReplicaList
+      .map(p => p._1.partition -> p._2)
     // add the new list
     partitionReplicaList ++= newPartitionReplicaList
     AdminUtils.createOrUpdateTopicPartitionAssignmentPathInZK(
@@ -405,10 +412,12 @@ object AdminUtils extends Logging {
       if (brokerList.size != brokerList.toSet.size)
         throw new AdminOperationException(
           "duplicate brokers in replica assignment: " + brokerList)
-      if (checkBrokerAvailable && !brokerList.toSet.subsetOf(
-            availableBrokerList))
+      if (checkBrokerAvailable && !brokerList
+            .toSet
+            .subsetOf(availableBrokerList))
         throw new AdminOperationException(
-          "some specified brokers not available. specified brokers: " + brokerList.toString +
+          "some specified brokers not available. specified brokers: " + brokerList
+            .toString +
             "available broker:" + availableBrokerList.toString)
       ret.put(partitionId, brokerList.toList)
       if (ret(partitionId).size != ret(startPartitionId).size)
@@ -500,7 +509,8 @@ object AdminUtils extends Logging {
       .map(brokerIds => allBrokers.filter(b => brokerIds.contains(b.id)))
       .getOrElse(allBrokers)
     val brokersWithRack = brokers.filter(_.rack.nonEmpty)
-    if (rackAwareMode == RackAwareMode.Enforced && brokersWithRack.nonEmpty && brokersWithRack.size < brokers.size) {
+    if (rackAwareMode == RackAwareMode.Enforced && brokersWithRack
+          .nonEmpty && brokersWithRack.size < brokers.size) {
       throw new AdminOperationException(
         "Not all brokers have rack information. Add --disable-rack-aware in command line" +
           " to make replica assignment without rack information.")
@@ -525,10 +535,8 @@ object AdminUtils extends Logging {
       topicConfig: Properties = new Properties,
       rackAwareMode: RackAwareMode = RackAwareMode.Enforced) {
     val brokerMetadatas = getBrokerMetadatas(zkUtils, rackAwareMode)
-    val replicaAssignment = AdminUtils.assignReplicasToBrokers(
-      brokerMetadatas,
-      partitions,
-      replicationFactor)
+    val replicaAssignment = AdminUtils
+      .assignReplicasToBrokers(brokerMetadatas, partitions, replicationFactor)
     AdminUtils.createOrUpdateTopicPartitionAssignmentPathInZK(
       zkUtils,
       topic,
@@ -556,8 +564,8 @@ object AdminUtils extends Logging {
           "Topic \"%s\" already exists.".format(topic))
       else if (Topic.hasCollisionChars(topic)) {
         val allTopics = zkUtils.getAllTopics()
-        val collidingTopics = allTopics.filter(t =>
-          Topic.hasCollision(topic, t))
+        val collidingTopics = allTopics
+          .filter(t => Topic.hasCollision(topic, t))
         if (collidingTopics.nonEmpty) {
           throw new InvalidTopicException(
             "Topic \"%s\" collides with existing topics: %s"
@@ -566,10 +574,12 @@ object AdminUtils extends Logging {
       }
     }
 
-    partitionReplicaAssignment.values.foreach(reps =>
-      require(
-        reps.size == reps.toSet.size,
-        "Duplicate replica assignment found: " + partitionReplicaAssignment))
+    partitionReplicaAssignment
+      .values
+      .foreach(reps =>
+        require(
+          reps.size == reps.toSet.size,
+          "Duplicate replica assignment found: " + partitionReplicaAssignment))
 
     // Configs only matter if a topic is being created. Changing configs via AlterTopic is not supported
     if (!update) {
@@ -657,8 +667,8 @@ object AdminUtils extends Logging {
     writeEntityConfig(zkUtils, entityType, entityName, configs)
 
     // create the change notification
-    val seqNode =
-      ZkUtils.EntityConfigChangesPath + "/" + EntityConfigChangeZnodePrefix
+    val seqNode = ZkUtils
+      .EntityConfigChangesPath + "/" + EntityConfigChangeZnodePrefix
     val content = Json.encode(getConfigChangeZnodeData(entityType, entityName))
     zkUtils.zkClient.createPersistentSequential(seqNode, content)
   }
@@ -697,7 +707,8 @@ object AdminUtils extends Logging {
       zkUtils: ZkUtils,
       entityType: String,
       entity: String): Properties = {
-    val str: String = zkUtils.zkClient
+    val str: String = zkUtils
+      .zkClient
       .readData(getEntityConfigPath(entityType, entity), true)
     val props = new Properties()
     if (str != null) {
@@ -757,8 +768,8 @@ object AdminUtils extends Logging {
       topics: Set[String],
       zkUtils: ZkUtils): Set[MetadataResponse.TopicMetadata] = {
     val cachedBrokerInfo = new mutable.HashMap[Int, Broker]()
-    topics.map(topic =>
-      fetchTopicMetadataFromZk(topic, zkUtils, cachedBrokerInfo))
+    topics
+      .map(topic => fetchTopicMetadataFromZk(topic, zkUtils, cachedBrokerInfo))
   }
 
   private def fetchTopicMetadataFromZk(
@@ -770,14 +781,14 @@ object AdminUtils extends Logging {
     if (zkUtils.pathExists(getTopicPath(topic))) {
       val topicPartitionAssignment =
         zkUtils.getPartitionAssignmentForTopics(List(topic)).get(topic).get
-      val sortedPartitions = topicPartitionAssignment.toList.sortWith(
-        (m1, m2) => m1._1 < m2._1)
+      val sortedPartitions = topicPartitionAssignment
+        .toList
+        .sortWith((m1, m2) => m1._1 < m2._1)
       val partitionMetadata = sortedPartitions.map { partitionMap =>
         val partition = partitionMap._1
         val replicas = partitionMap._2
-        val inSyncReplicas = zkUtils.getInSyncReplicasForPartition(
-          topic,
-          partition)
+        val inSyncReplicas = zkUtils
+          .getInSyncReplicasForPartition(topic, partition)
         val leader = zkUtils.getLeaderForPartition(topic, partition)
         debug(
           "replicas = " + replicas + ", in sync replicas = " + inSyncReplicas + ", leader = " + leader)
@@ -789,7 +800,8 @@ object AdminUtils extends Logging {
           leaderInfo = leader match {
             case Some(l) =>
               try {
-                getBrokerInfoFromCache(zkUtils, cachedBrokerInfo, List(l)).head
+                getBrokerInfoFromCache(zkUtils, cachedBrokerInfo, List(l))
+                  .head
                   .getNode(protocol)
               } catch {
                 case e: Throwable =>

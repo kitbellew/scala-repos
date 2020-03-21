@@ -168,8 +168,7 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
   test("Bug: SPARK-10251") {
     val ser =
       new KryoSerializer(
-        conf.clone.set("spark.kryo.registrationRequired", "true"))
-        .newInstance()
+        conf.clone.set("spark.kryo.registrationRequired", "true")).newInstance()
     def check[T: ClassTag](t: T) {
       assert(ser.deserialize[T](ser.serialize(t)) === t)
     }
@@ -296,14 +295,16 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
 
   test("kryo with SerializableHyperLogLog") {
     assert(
-      sc.parallelize(Array(1, 2, 3, 2, 3, 3, 2, 3, 1))
+      sc
+        .parallelize(Array(1, 2, 3, 2, 3, 3, 2, 3, 1))
         .countApproxDistinct(0.01) === 3)
   }
 
   test("kryo with reduce") {
     val control = 1 :: 2 :: Nil
     val result =
-      sc.parallelize(control, 2)
+      sc
+        .parallelize(control, 2)
         .map(new ClassWithoutNoArgConstructor(_))
         .reduce((t1, t2) => new ClassWithoutNoArgConstructor(t1.x + t2.x))
         .x
@@ -315,7 +316,8 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
     // zeroValue must not be a ClassWithoutNoArgConstructor instance because it will be
     // serialized by the Java serializer.
     val result =
-      sc.parallelize(control, 2)
+      sc
+        .parallelize(control, 2)
         .map(new ClassWithoutNoArgConstructor(_))
         .fold(null)((t1, t2) => {
           val t1x =
@@ -496,9 +498,8 @@ class KryoSerializerAutoResetDisabledSuite
     extends SparkFunSuite
     with SharedSparkContext {
   conf.set("spark.serializer", classOf[KryoSerializer].getName)
-  conf.set(
-    "spark.kryo.registrator",
-    classOf[RegistratorWithoutAutoReset].getName)
+  conf
+    .set("spark.kryo.registrator", classOf[RegistratorWithoutAutoReset].getName)
   conf.set("spark.kryo.referenceTracking", "true")
   conf.set("spark.shuffle.manager", "sort")
   conf.set("spark.shuffle.sort.bypassMergeThreshold", "200")
@@ -506,7 +507,8 @@ class KryoSerializerAutoResetDisabledSuite
   test("sort-shuffle with bypassMergeSort (SPARK-7873)") {
     val myObject = ("Hello", "World")
     assert(
-      sc.parallelize(Seq.fill(100)(myObject))
+      sc
+        .parallelize(Seq.fill(100)(myObject))
         .repartition(2)
         .collect()
         .toSet === Set(myObject))
@@ -531,8 +533,8 @@ class KryoSerializerAutoResetDisabledSuite
       serStream.close()
       baos.toByteArray
     }
-    val deserializationStream = serInstance.deserializeStream(
-      new ByteArrayInputStream(worldWorld))
+    val deserializationStream = serInstance
+      .deserializeStream(new ByteArrayInputStream(worldWorld))
     assert(deserializationStream.readValue[Any]() === world)
     deserializationStream.close()
     assert(serInstance.deserialize[Any](helloHello) === (hello, hello))

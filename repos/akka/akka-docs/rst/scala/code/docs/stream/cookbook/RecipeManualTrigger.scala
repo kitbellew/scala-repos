@@ -64,8 +64,8 @@ class RecipeManualTrigger extends RecipeSpec {
       val graph = RunnableGraph.fromGraph(
         GraphDSL.create() { implicit builder =>
           import GraphDSL.Implicits._
-          val zip = builder.add(
-            ZipWith((msg: Message, trigger: Trigger) => msg))
+          val zip = builder
+            .add(ZipWith((msg: Message, trigger: Trigger) => msg))
 
           elements ~> zip.in0
           triggerSource ~> zip.in1

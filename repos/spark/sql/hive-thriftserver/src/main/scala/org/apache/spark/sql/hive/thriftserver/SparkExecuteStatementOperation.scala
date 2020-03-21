@@ -64,12 +64,16 @@ private[hive] class SparkExecuteStatementOperation(
       new TableSchema(Arrays.asList(new FieldSchema("Result", "string", "")))
     } else {
       logInfo(s"Result Schema: ${result.queryExecution.analyzed.output}")
-      val schema = result.queryExecution.analyzed.output.map { attr =>
-        new FieldSchema(
-          attr.name,
-          HiveMetastoreTypes.toMetastoreType(attr.dataType),
-          "")
-      }
+      val schema = result
+        .queryExecution
+        .analyzed
+        .output
+        .map { attr =>
+          new FieldSchema(
+            attr.name,
+            HiveMetastoreTypes.toMetastoreType(attr.dataType),
+            "")
+        }
       new TableSchema(schema.asJava)
     }
   }
@@ -109,8 +113,8 @@ private[hive] class SparkExecuteStatementOperation(
       case TimestampType =>
         to += from.getAs[Timestamp](ordinal)
       case BinaryType | _: ArrayType | _: StructType | _: MapType =>
-        val hiveString = HiveContext.toHiveString(
-          (from.get(ordinal), dataTypes(ordinal)))
+        val hiveString = HiveContext
+          .toHiveString((from.get(ordinal), dataTypes(ordinal)))
         to += hiveString
     }
   }
@@ -119,9 +123,8 @@ private[hive] class SparkExecuteStatementOperation(
     validateDefaultFetchOrientation(order)
     assertState(OperationState.FINISHED)
     setHasResultSet(true)
-    val resultRowSet: RowSet = RowSetFactory.create(
-      getResultSetSchema,
-      getProtocolVersion)
+    val resultRowSet: RowSet = RowSetFactory
+      .create(getResultSetSchema, getProtocolVersion)
     if (!iter.hasNext) {
       resultRowSet
     } else {
@@ -219,16 +222,20 @@ private[hive] class SparkExecuteStatementOperation(
       hiveContext.executionHive.state.getConf.getClassLoader
     Thread.currentThread().setContextClassLoader(executionHiveClassLoader)
 
-    HiveThriftServer2.listener.onStatementStart(
-      statementId,
-      parentSession.getSessionHandle.getSessionId.toString,
-      statement,
-      statementId,
-      parentSession.getUsername)
+    HiveThriftServer2
+      .listener
+      .onStatementStart(
+        statementId,
+        parentSession.getSessionHandle.getSessionId.toString,
+        statement,
+        statementId,
+        parentSession.getUsername)
     hiveContext.sparkContext.setJobGroup(statementId, statement)
-    sessionToActivePool.get(parentSession.getSessionHandle).foreach { pool =>
-      hiveContext.sparkContext.setLocalProperty("spark.scheduler.pool", pool)
-    }
+    sessionToActivePool
+      .get(parentSession.getSessionHandle)
+      .foreach { pool =>
+        hiveContext.sparkContext.setLocalProperty("spark.scheduler.pool", pool)
+      }
     try {
       result = hiveContext.sql(statement)
       logDebug(result.queryExecution.toString())
@@ -239,7 +246,8 @@ private[hive] class SparkExecuteStatementOperation(
             s"Setting spark.scheduler.pool=$value for future statements in this session.")
         case _ =>
       }
-      HiveThriftServer2.listener
+      HiveThriftServer2
+        .listener
         .onStatementParsed(statementId, result.queryExecution.toString())
       iter = {
         val useIncrementalCollect =
@@ -267,10 +275,12 @@ private[hive] class SparkExecuteStatementOperation(
         val currentState = getStatus().getState()
         logError(s"Error executing query, currentState $currentState, ", e)
         setState(OperationState.ERROR)
-        HiveThriftServer2.listener.onStatementError(
-          statementId,
-          e.getMessage,
-          SparkUtils.exceptionString(e))
+        HiveThriftServer2
+          .listener
+          .onStatementError(
+            statementId,
+            e.getMessage,
+            SparkUtils.exceptionString(e))
         throw new HiveSQLException(e.toString)
     }
     setState(OperationState.FINISHED)

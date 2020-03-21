@@ -92,8 +92,10 @@ class ReplSuite extends SparkFunSuite {
 
     // Make sure the value we set in the caller to interpret is propagated in the thread that
     // interprets the command.
-    Main.interp.interpret(
-      "org.apache.spark.repl.Main.sparkContext.getLocalProperty(\"someKey\")")
+    Main
+      .interp
+      .interpret(
+        "org.apache.spark.repl.Main.sparkContext.getLocalProperty(\"someKey\")")
     assert(out.toString.contains("someValue"))
 
     Main.sparkContext.stop()
@@ -208,9 +210,11 @@ class ReplSuite extends SparkFunSuite {
         |file.count()
         |file.count()
         |file.count()
-      """.stripMargin.format(
-        StringEscapeUtils.escapeJava(
-          tempDir.getAbsolutePath + File.separator + "input"))
+      """
+        .stripMargin
+        .format(
+          StringEscapeUtils
+            .escapeJava(tempDir.getAbsolutePath + File.separator + "input"))
     )
     assertDoesNotContain("error:", output)
     assertDoesNotContain("Exception", output)

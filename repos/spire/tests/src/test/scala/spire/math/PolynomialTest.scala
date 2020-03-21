@@ -182,10 +182,13 @@ class PolynomialCheck
     forAll { (rs1: List[Rational], rs2: List[Rational], r: Rational) =>
       def xyz(rs: List[Rational]): Polynomial[Rational] =
         Polynomial(
-          rs.take(4).zipWithIndex.map {
-            case (c, e) =>
-              Term(c, e)
-          })
+          rs
+            .take(4)
+            .zipWithIndex
+            .map {
+              case (c, e) =>
+                Term(c, e)
+            })
 
       val (p1, p2) = (xyz(rs1), xyz(rs2))
       val p3 = p1 compose p2
@@ -350,8 +353,8 @@ class PolynomialTest extends FunSuite {
     assert(p.toDense.monic === Polynomial.dense(Array(r"2/1", r"8/1", r"1/1")))
     assert(p.toDense.derivative === Polynomial.dense(Array(r"2/1", r"1/2")))
     assert(
-      p.toDense.integral === Polynomial.dense(
-        Array(r"0", r"1/2", r"1/1", r"1/12")))
+      p.toDense.integral === Polynomial
+        .dense(Array(r"0", r"1/2", r"1/1", r"1/12")))
 
   }
 
@@ -372,9 +375,8 @@ class PolynomialTest extends FunSuite {
 
     assert(p1 + p2 === Polynomial.dense(Array(r"1/1", r"5/1", r"1/2")))
     assert(
-      (
-        legDense(2) * legDense(3)
-      ).coeffsArray === Array(r"0", r"3/4", r"0", r"-7/2", r"0", r"15/4"))
+      (legDense(2) * legDense(3))
+        .coeffsArray === Array(r"0", r"3/4", r"0", r"-7/2", r"0", r"15/4"))
     assert(p1 % p2 === Polynomial("-x"))
     assert(p1 /~ p2 === Polynomial("1"))
 

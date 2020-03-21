@@ -35,9 +35,11 @@ class TableDump(maxColumnWidth: Int = 20) {
       data: IndexedSeq[IndexedSeq[Any]]): IndexedSeq[String] = {
     val columns = headers(0).length
     val texts = headers.map(formatLine) ++ data.map(formatLine)
-    val widths = 0.until(columns).map { idx =>
-      math.min(maxColumnWidth, texts.map(_.apply(idx).length).max)
-    }
+    val widths = 0
+      .until(columns)
+      .map { idx =>
+        math.min(maxColumnWidth, texts.map(_.apply(idx).length).max)
+      }
     val buf = new ArrayBuffer[String](data.length + 4)
     buf += cBlue + widths
       .map(l => dashes.substring(0, l + 2))
@@ -60,7 +62,8 @@ class TableDump(maxColumnWidth: Int = 20) {
             cYellow
           else
             cGreen
-        buf += (line, widths).zipped
+        buf += (line, widths)
+          .zipped
           .map((s, len) => color + " " + pad(s, len) + " ")
           .mkString(cBlue + box(10), cBlue + box(10), cBlue + box(10) + cNormal)
         if (lno == headers.length - 1)
@@ -68,7 +71,8 @@ class TableDump(maxColumnWidth: Int = 20) {
             .map(l => dashes.substring(0, l + 2))
             .mkString(box(4), box(5), box(6)) + cNormal
       } else {
-        buf += (line, widths).zipped
+        buf += (line, widths)
+          .zipped
           .map((s, len) => cNormal + " " + pad(s, len) + " ")
           .mkString(cBlue + box(10), cBlue + box(10), cBlue + box(10) + cNormal)
       }

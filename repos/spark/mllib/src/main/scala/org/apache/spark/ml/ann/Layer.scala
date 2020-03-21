@@ -796,25 +796,31 @@ private[ann] class DataStacker(stackSize: Int, inputSize: Int, outputSize: Int)
         }
       } else {
         data.mapPartitions { it =>
-          it.grouped(stackSize).map { seq =>
-            val size = seq.size
-            val bigVector =
-              new Array[Double](inputSize * size + outputSize * size)
-            var i = 0
-            seq.foreach {
-              case (in, out) =>
-                System
-                  .arraycopy(in.toArray, 0, bigVector, i * inputSize, inputSize)
-                System.arraycopy(
-                  out.toArray,
-                  0,
-                  bigVector,
-                  inputSize * size + i * outputSize,
-                  outputSize)
-                i += 1
+          it
+            .grouped(stackSize)
+            .map { seq =>
+              val size = seq.size
+              val bigVector =
+                new Array[Double](inputSize * size + outputSize * size)
+              var i = 0
+              seq.foreach {
+                case (in, out) =>
+                  System.arraycopy(
+                    in.toArray,
+                    0,
+                    bigVector,
+                    i * inputSize,
+                    inputSize)
+                  System.arraycopy(
+                    out.toArray,
+                    0,
+                    bigVector,
+                    inputSize * size + i * outputSize,
+                    outputSize)
+                  i += 1
+              }
+              (0.0, Vectors.dense(bigVector))
             }
-            (0.0, Vectors.dense(bigVector))
-          }
         }
       }
     stackedData

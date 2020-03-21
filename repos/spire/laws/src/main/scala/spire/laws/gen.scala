@@ -25,13 +25,11 @@ object gen {
 
   lazy val ulong: Gen[ULong] = arbitrary[Long].map(new ULong(_))
 
-  lazy val trilean: Gen[Trilean] = Gen.oneOf(
-    Trilean.True,
-    Trilean.False,
-    Trilean.Unknown)
+  lazy val trilean: Gen[Trilean] = Gen
+    .oneOf(Trilean.True, Trilean.False, Trilean.Unknown)
 
-  lazy val fixedScale: Gen[FixedScale] = arbitrary[Short].map(n =>
-    new FixedScale(n & 0xffff))
+  lazy val fixedScale: Gen[FixedScale] = arbitrary[Short]
+    .map(n => new FixedScale(n & 0xffff))
 
   lazy val fixedPoint: Gen[FixedPoint] = arbitrary[Long].map(new FixedPoint(_))
 
@@ -223,9 +221,12 @@ object gen {
       images(j) = i
     }
     Perm(
-      images.zipWithIndex.filter {
-        case (p, i) =>
-          p != i
-      }.toMap)
+      images
+        .zipWithIndex
+        .filter {
+          case (p, i) =>
+            p != i
+        }
+        .toMap)
   }
 }

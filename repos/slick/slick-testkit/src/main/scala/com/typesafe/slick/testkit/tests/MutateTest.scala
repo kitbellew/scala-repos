@@ -16,7 +16,8 @@ class MutateTest extends AsyncTest[JdbcTestDB] {
       val data = TableQuery[Data]
 
       var seenEndMarker = false
-      db.run(
+      db
+        .run(
           data.schema.create >> (
             data ++= Seq((1, "a"), (2, "b"), (3, "c"), (4, "d"))
           ))
@@ -35,7 +36,8 @@ class MutateTest extends AsyncTest[JdbcTestDB] {
         }
         .flatMap { _ =>
           seenEndMarker shouldBe false
-          db.run(data.sortBy(_.id).result)
+          db
+            .run(data.sortBy(_.id).result)
             .map(_ shouldBe Seq((1, "aa"), (3, "c"), (4, "d"), (5, "ee")))
         }
     }
@@ -67,7 +69,8 @@ class MutateTest extends AsyncTest[JdbcTestDB] {
         }
       }.flatMap { _ =>
         seenEndMarker shouldBe true
-        db.run(ts.to[Set].result)
+        db
+          .run(ts.to[Set].result)
           .map(_ shouldBe Set((2, 5), (2, 6), (2, 7), (2, 8), (3, 9)))
       }
     }

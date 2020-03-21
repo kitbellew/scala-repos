@@ -13,7 +13,8 @@ object Test {
       println(s"!! ExecutionContext.global == $ec")
 
     val u =
-      ExecutionContext.global
+      ExecutionContext
+        .global
         .asInstanceOf[{
           def executor: Executor
         }]

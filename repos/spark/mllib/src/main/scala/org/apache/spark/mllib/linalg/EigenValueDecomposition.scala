@@ -79,9 +79,8 @@ private[mllib] object EigenValueDecomposition {
     iparam(6) = 1
 
     require(
-      n * ncv.toLong <= Integer.MAX_VALUE && ncv * (
-        ncv.toLong + 8
-      ) <= Integer.MAX_VALUE,
+      n * ncv.toLong <= Integer
+        .MAX_VALUE && ncv * (ncv.toLong + 8) <= Integer.MAX_VALUE,
       s"k = $k and/or n = $n are too large to compute an eigendecomposition")
 
     var ido = new intW(0)
@@ -197,7 +196,9 @@ private[mllib] object EigenValueDecomposition {
     // number of computed eigenvalues, might be smaller than k
     val computed = iparam(4)
 
-    val eigenPairs = java.util.Arrays
+    val eigenPairs = java
+      .util
+      .Arrays
       .copyOfRange(d, 0, computed)
       .zipWithIndex
       .map { r =>
@@ -209,14 +210,16 @@ private[mllib] object EigenValueDecomposition {
 
     // copy eigenvectors in descending order of eigenvalues
     val sortedU = BDM.zeros[Double](n, computed)
-    sortedEigenPairs.zipWithIndex.foreach { r =>
-      val b = r._2 * n
-      var i = 0
-      while (i < n) {
-        sortedU.data(b + i) = r._1._2(i)
-        i += 1
+    sortedEigenPairs
+      .zipWithIndex
+      .foreach { r =>
+        val b = r._2 * n
+        var i = 0
+        while (i < n) {
+          sortedU.data(b + i) = r._1._2(i)
+          i += 1
+        }
       }
-    }
 
     (BDV[Double](sortedEigenPairs.map(_._1)), sortedU)
   }

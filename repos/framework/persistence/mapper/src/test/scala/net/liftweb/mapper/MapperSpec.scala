@@ -87,8 +87,8 @@ class MapperSpec extends Specification with BeforeExample {
           archer.moose.get must_== Empty
           notNull.moose.get must_== Full(99L)
 
-          val disabled = SampleModel.find(
-            By(SampleModel.status, SampleStatus.Disabled))
+          val disabled = SampleModel
+            .find(By(SampleModel.status, SampleStatus.Disabled))
 
           val meow = SampleTag
             .find(By(SampleTag.tag, "Meow"))
@@ -107,13 +107,15 @@ class MapperSpec extends Specification with BeforeExample {
 
         "should use displayNameCalculator for displayName" in {
           val localeCalculator = LiftRules.localeCalculator
-          SampleModel.firstName.displayName must_== "DEFAULT:SampleModel.firstName"
+          SampleModel
+            .firstName
+            .displayName must_== "DEFAULT:SampleModel.firstName"
 
           LiftRules.localeCalculator = (request: Box[HTTPRequest]) =>
-            request
-              .flatMap(_.locale)
-              .openOr(new Locale("xx", "YY"))
-          SampleModel.firstName.displayName must_== "xx_YY:SampleModel.firstName"
+            request.flatMap(_.locale).openOr(new Locale("xx", "YY"))
+          SampleModel
+            .firstName
+            .displayName must_== "xx_YY:SampleModel.firstName"
 
           LiftRules.localeCalculator = localeCalculator
           success
@@ -205,7 +207,8 @@ class MapperSpec extends Specification with BeforeExample {
 
         "enforce NOT NULL" in {
           val nullString: String = null
-          SampleModel.create
+          SampleModel
+            .create
             .firstName("Not Null")
             .notNull(nullString)
             .save must throwA[java.sql.SQLException]

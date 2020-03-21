@@ -45,10 +45,13 @@ package object config {
   private[spark] val EXECUTOR_USER_CLASS_PATH_FIRST = ConfigBuilder(
     "spark.executor.userClassPathFirst").booleanConf.withDefault(false)
 
-  private[spark] val IS_PYTHON_APP = ConfigBuilder(
-    "spark.yarn.isPython").internal.booleanConf.withDefault(false)
+  private[spark] val IS_PYTHON_APP = ConfigBuilder("spark.yarn.isPython")
+    .internal
+    .booleanConf
+    .withDefault(false)
 
-  private[spark] val CPUS_PER_TASK = ConfigBuilder("spark.task.cpus").intConf
+  private[spark] val CPUS_PER_TASK = ConfigBuilder("spark.task.cpus")
+    .intConf
     .withDefault(1)
 
   private[spark] val DYN_ALLOCATION_MIN_EXECUTORS = ConfigBuilder(

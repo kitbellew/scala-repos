@@ -63,9 +63,8 @@ private[remote] class DefaultMessageDispatcher(
 
     import provider.remoteSettings._
 
-    lazy val payload: AnyRef = MessageSerializer.deserialize(
-      system,
-      serializedMessage)
+    lazy val payload: AnyRef = MessageSerializer
+      .deserialize(system, serializedMessage)
     def payloadClass: Class[_] =
       if (payload eq null)
         null
@@ -94,10 +93,10 @@ private[remote] class DefaultMessageDispatcher(
         payload match {
           case sel: ActorSelectionMessage ⇒
             if (UntrustedMode && (
-                  !TrustedSelectionPaths.contains(
-                    sel.elements.mkString("/", "/", "")) ||
-                  sel.msg
-                    .isInstanceOf[PossiblyHarmful] || l != provider.rootGuardian
+                  !TrustedSelectionPaths
+                    .contains(sel.elements.mkString("/", "/", "")) ||
+                  sel.msg.isInstanceOf[PossiblyHarmful] || l != provider
+                    .rootGuardian
                 ))
               log.debug(
                 "operating in UntrustedMode, dropping inbound actor selection to [{}], " +
@@ -270,11 +269,14 @@ private[remote] class ReliableDeliverySupervisor(
   import ReliableDeliverySupervisor._
   import context.dispatcher
 
-  val autoResendTimer = context.system.scheduler.schedule(
-    settings.SysResendTimeout,
-    settings.SysResendTimeout,
-    self,
-    AttemptSysMsgRedelivery)
+  val autoResendTimer = context
+    .system
+    .scheduler
+    .schedule(
+      settings.SysResendTimeout,
+      settings.SysResendTimeout,
+      self,
+      AttemptSysMsgRedelivery)
 
   private var bufferWasInUse = false
 
@@ -399,10 +401,13 @@ private[remote] class ReliableDeliverySupervisor(
       currentHandle = None
       context.parent ! StoppedReading(self)
       if (resendBuffer.nonAcked.nonEmpty || resendBuffer.nacked.nonEmpty)
-        context.system.scheduler.scheduleOnce(
-          settings.SysResendTimeout,
-          self,
-          AttemptSysMsgRedelivery)
+        context
+          .system
+          .scheduler
+          .scheduleOnce(
+            settings.SysResendTimeout,
+            self,
+            AttemptSysMsgRedelivery)
       goToIdle()
     case g @ GotUid(receivedUid, _) ⇒
       bailoutAt = None
@@ -425,7 +430,9 @@ private[remote] class ReliableDeliverySupervisor(
       if (earlyUngateRequested)
         self ! Ungate
       else
-        context.system.scheduler
+        context
+          .system
+          .scheduler
           .scheduleOnce(settings.RetryGateClosedFor, self, Ungate)
       context.become(gated(writerTerminated = true, earlyUngateRequested))
     case IsIdle ⇒
@@ -433,9 +440,11 @@ private[remote] class ReliableDeliverySupervisor(
     case Ungate ⇒
       if (!writerTerminated) {
         // Ungate was sent from EndpointManager, but we must wait for Terminated first.
-        context.become(
-          gated(writerTerminated = false, earlyUngateRequested = true))
-      } else if (resendBuffer.nonAcked.nonEmpty || resendBuffer.nacked.nonEmpty) {
+        context
+          .become(gated(writerTerminated = false, earlyUngateRequested = true))
+      } else if (resendBuffer.nonAcked.nonEmpty || resendBuffer
+                   .nacked
+                   .nonEmpty) {
         // If we talk to a system we have not talked to before (or has given up talking to in the past) stop
         // system delivery attempts after the specified time. This act will drop the pending system messages and gate the
         // remote address at the EndpointManager level stopping this actor. In case the remote system becomes reachable
@@ -497,10 +506,13 @@ private[remote] class ReliableDeliverySupervisor(
   private def goToIdle(): Unit = {
     if (bufferWasInUse && maxSilenceTimer.isEmpty)
       maxSilenceTimer = Some(
-        context.system.scheduler.scheduleOnce(
-          settings.QuarantineSilentSystemTimeout,
-          self,
-          TooLongIdle))
+        context
+          .system
+          .scheduler
+          .scheduleOnce(
+            settings.QuarantineSilentSystemTimeout,
+            self,
+            TooLongIdle))
     context.become(idle)
   }
 
@@ -697,10 +709,13 @@ private[remote] class EndpointWriter(
   import EndpointWriter._
   import context.dispatcher
 
-  val extendedSystem: ExtendedActorSystem = context.system
+  val extendedSystem: ExtendedActorSystem = context
+    .system
     .asInstanceOf[ExtendedActorSystem]
   val remoteMetrics = RemoteMetricsExtension(extendedSystem)
-  val backoffDispatcher = context.system.dispatchers
+  val backoffDispatcher = context
+    .system
+    .dispatchers
     .lookup("akka.remote.backoff-remote-dispatcher")
 
   var reader: Option[ActorRef] = None
@@ -745,11 +760,10 @@ private[remote] class EndpointWriter(
 
   val ackIdleTimer = {
     val interval = settings.SysMsgAckTimeout / 2
-    context.system.scheduler.schedule(
-      interval,
-      interval,
-      self,
-      AckIdleCheckTimer)
+    context
+      .system
+      .scheduler
+      .schedule(interval, interval, self, AckIdleCheckTimer)
   }
 
   override def preStart(): Unit = {
@@ -773,8 +787,8 @@ private[remote] class EndpointWriter(
     handle foreach {
       _.disassociate(stopReason)
     }
-    eventPublisher.notifyListeners(
-      DisassociatedEvent(localAddress, remoteAddress, inbound))
+    eventPublisher
+      .notifyListeners(DisassociatedEvent(localAddress, remoteAddress, inbound))
   }
 
   def receive =
@@ -798,13 +812,12 @@ private[remote] class EndpointWriter(
         Logging.DebugLevel)
     case Handle(inboundHandle) ⇒
       // Assert handle == None?
-      context.parent ! ReliableDeliverySupervisor.GotUid(
-        inboundHandle.handshakeInfo.uid,
-        remoteAddress)
+      context.parent ! ReliableDeliverySupervisor
+        .GotUid(inboundHandle.handshakeInfo.uid, remoteAddress)
       handle = Some(inboundHandle)
       reader = startReadEndpoint(inboundHandle)
-      eventPublisher.notifyListeners(
-        AssociatedEvent(localAddress, remoteAddress, inbound))
+      eventPublisher
+        .notifyListeners(AssociatedEvent(localAddress, remoteAddress, inbound))
       becomeWritingOrSendBufferedMessages()
   }
 
@@ -826,7 +839,9 @@ private[remote] class EndpointWriter(
     case FlushAndStop ⇒
       // Flushing is postponed after the pending writes
       buffer offer FlushAndStop
-      context.system.scheduler
+      context
+        .system
+        .scheduler
         .scheduleOnce(settings.FlushWait, self, FlushAndStopTimeout)
     case FlushAndStopTimeout ⇒
       // enough
@@ -855,17 +870,14 @@ private[remote] class EndpointWriter(
     maxWriteCount = math.max(writeCount, maxWriteCount)
     if (writeCount <= SendBufferBatchSize) {
       fullBackoff = true
-      adaptiveBackoffNanos = math.min(
-        (adaptiveBackoffNanos * 1.2).toLong,
-        MaxAdaptiveBackoffNanos)
+      adaptiveBackoffNanos = math
+        .min((adaptiveBackoffNanos * 1.2).toLong, MaxAdaptiveBackoffNanos)
     } else if (writeCount >= maxWriteCount * 0.6)
-      adaptiveBackoffNanos = math.max(
-        (adaptiveBackoffNanos * 0.9).toLong,
-        MinAdaptiveBackoffNanos)
+      adaptiveBackoffNanos = math
+        .max((adaptiveBackoffNanos * 0.9).toLong, MinAdaptiveBackoffNanos)
     else if (writeCount <= maxWriteCount * 0.2)
-      adaptiveBackoffNanos = math.min(
-        (adaptiveBackoffNanos * 1.1).toLong,
-        MaxAdaptiveBackoffNanos)
+      adaptiveBackoffNanos = math
+        .min((adaptiveBackoffNanos * 1.1).toLong, MaxAdaptiveBackoffNanos)
 
     writeCount = 0
   }
@@ -951,7 +963,9 @@ private[remote] class EndpointWriter(
     if (fullBackoff) {
       fullBackoffCount += 1
       fullBackoff = false
-      context.system.scheduler
+      context
+        .system
+        .scheduler
         .scheduleOnce(settings.BackoffPeriod, self, BackoffTimer)
     } else {
       smallBackoffCount += 1
@@ -995,8 +1009,7 @@ private[remote] class EndpointWriter(
         case Some(h) ⇒
           if (provider.remoteSettings.LogSend) {
             def msgLog =
-              s"RemoteMessage: [${s.message}] to [${s.recipient}]<+[${s.recipient.path}] from [${s.senderOption
-                .getOrElse(extendedSystem.deadLetters)}]"
+              s"RemoteMessage: [${s.message}] to [${s.recipient}]<+[${s.recipient.path}] from [${s.senderOption.getOrElse(extendedSystem.deadLetters)}]"
             log.debug("sending message {}", msgLog)
           }
 
@@ -1131,13 +1144,15 @@ private[remote] class EndpointWriter(
   private def serializeMessage(msg: Any): SerializedMessage =
     handle match {
       case Some(h) ⇒
-        Serialization.currentTransportInformation.withValue(
-          Serialization.Information(h.localAddress, extendedSystem)) {
-          (
-            MessageSerializer
-              .serialize(extendedSystem, msg.asInstanceOf[AnyRef])
-            )
-        }
+        Serialization
+          .currentTransportInformation
+          .withValue(
+            Serialization.Information(h.localAddress, extendedSystem)) {
+            (
+              MessageSerializer
+                .serialize(extendedSystem, msg.asInstanceOf[AnyRef])
+              )
+          }
       case None ⇒
         throw new EndpointException(
           "Internal error: No handle was present during serialization of outbound message.")
@@ -1224,9 +1239,8 @@ private[remote] class EndpointReader(
     @tailrec
     def updateSavedState(key: Link, expectedState: ResendState): Unit = {
       if (expectedState eq null) {
-        if (receiveBuffers.putIfAbsent(
-              key,
-              ResendState(uid, ackedReceiveBuffer)) ne null)
+        if (receiveBuffers
+              .putIfAbsent(key, ResendState(uid, ackedReceiveBuffer)) ne null)
           updateSavedState(key, receiveBuffers.get(key))
       } else if (!receiveBuffers.replace(
                    key,

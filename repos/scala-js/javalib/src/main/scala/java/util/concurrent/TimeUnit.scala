@@ -129,9 +129,11 @@ object TimeUnit {
   def values(): Array[TimeUnit] = _values.clone()
 
   def valueOf(name: String): TimeUnit = {
-    _values.find(_.name == name).getOrElse {
-      throw new IllegalArgumentException("No enum const TimeUnit." + name)
-    }
+    _values
+      .find(_.name == name)
+      .getOrElse {
+        throw new IllegalArgumentException("No enum const TimeUnit." + name)
+      }
   }
 
   private def x(a: Long, b: Long, max: Long): Long = {

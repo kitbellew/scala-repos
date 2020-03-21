@@ -117,8 +117,9 @@ class ZookeeperConsumerConnectorTest
           .map(x => header + server.config.brokerId + "-" + partition + "-" + x)
         messages ++= ms
         import JavaConversions._
-        javaProducer.send(
-          ms.map(
+        javaProducer
+          .send(
+            ms.map(
               new KeyedMessage[Int, String](
                 topic,
                 partition,
@@ -143,8 +144,8 @@ class ZookeeperConsumerConnectorTest
   private def toJavaMap(
       scalaMap: Map[String, Int]): java.util.Map[String, java.lang.Integer] = {
     val javaMap = new java.util.HashMap[String, java.lang.Integer]()
-    scalaMap.foreach(m =>
-      javaMap.put(m._1, m._2.asInstanceOf[java.lang.Integer]))
+    scalaMap
+      .foreach(m => javaMap.put(m._1, m._2.asInstanceOf[java.lang.Integer]))
     javaMap
   }
 }

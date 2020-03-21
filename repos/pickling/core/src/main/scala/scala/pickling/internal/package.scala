@@ -54,16 +54,17 @@ package object internal {
     def isEffectivelyPrimitive =
       throw new Exception("use Type.isEffectivelyPrimitive instead")
     def isNotNullable =
-      sym.isClass && (
-        sym.asClass.isPrimitive || sym.asClass.isDerivedValueClass
-      )
+      sym
+        .isClass && (sym.asClass.isPrimitive || sym.asClass.isDerivedValueClass)
     def isNullable = sym.isClass && !isNotNullable
   }
   def currentMirror: ru.Mirror = currentRuntime.currentMirror
 
   private[pickling] def typeToString(tpe: Type): String = tpe.key
 
-  private val typeFromStringCache = scala.collection.concurrent
+  private val typeFromStringCache = scala
+    .collection
+    .concurrent
     .TrieMap[String, Type]()
   private[pickling] def typeFromString(mirror: Mirror, stpe: String): Type = {
     // TODO: find out why typeFromString is called repeatedly for scala.Predef.String (at least in the evactor1 bench)
@@ -92,8 +93,8 @@ package object internal {
             val tycon = sym.asType.toTypeConstructor
             appliedType(
               tycon,
-              appliedTypeArgs.map(starg =>
-                typeFromString(mirror, starg.toString)))
+              appliedTypeArgs
+                .map(starg => typeFromString(mirror, starg.toString)))
           case None =>
             sys.error(s"fatal: cannot unpickle $stpe")
         }
@@ -108,8 +109,8 @@ package object internal {
     def key: String = {
       tpe.normalize match {
         case ExistentialType(tparams, TypeRef(pre, sym, targs))
-            if targs.nonEmpty && targs.forall(targ =>
-              tparams.contains(targ.typeSymbol)) =>
+            if targs.nonEmpty && targs
+              .forall(targ => tparams.contains(targ.typeSymbol)) =>
           TypeRef(pre, sym, Nil).key
         case TypeRef(pre, sym, targs) if pre.typeSymbol.isModuleClass =>
           sym.fullName +
@@ -134,7 +135,10 @@ package object internal {
         case TypeRef(_, sym: ClassSymbol, _) if sym.isPrimitive =>
           true
         case TypeRef(_, sym, eltpe :: Nil)
-            if sym == ArrayClass && eltpe.typeSymbol.isClass && eltpe.typeSymbol.asClass.isPrimitive =>
+            if sym == ArrayClass && eltpe.typeSymbol.isClass && eltpe
+              .typeSymbol
+              .asClass
+              .isPrimitive =>
           true
         case _ =>
           false

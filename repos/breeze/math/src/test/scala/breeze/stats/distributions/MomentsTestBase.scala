@@ -45,16 +45,19 @@ trait MomentsTestBase[T] extends FunSuite with Checkers {
       Prop.forAll { (distr: Distr) =>
         // try twice, and only fail if both fail.
         // just a little more robustness...
-        Iterator.range(0, numFailures).exists { _ =>
-          val sample = distr.sample(numSamples).map(asDouble _)
-          val vari = variance(sample)
+        Iterator
+          .range(0, numFailures)
+          .exists { _ =>
+            val sample = distr.sample(numSamples).map(asDouble _)
+            val vari = variance(sample)
 
-          if ((vari - distr.variance).abs / (vari max 1) > VARIANCE_TOLERANCE) {
-            println("Expected " + distr.variance + " but got " + vari)
-            false
-          } else
-            true
-        }
+            if ((vari - distr.variance)
+                  .abs / (vari max 1) > VARIANCE_TOLERANCE) {
+              println("Expected " + distr.variance + " but got " + vari)
+              false
+            } else
+              true
+          }
       })
   }
 

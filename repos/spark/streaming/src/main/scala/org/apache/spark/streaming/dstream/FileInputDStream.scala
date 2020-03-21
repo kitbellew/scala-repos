@@ -96,9 +96,11 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
     */
   private val minRememberDurationS = {
     Seconds(
-      ssc.conf.getTimeAsSeconds(
-        "spark.streaming.fileStream.minRememberDuration",
-        ssc.conf.get("spark.streaming.minRememberDuration", "60s")))
+      ssc
+        .conf
+        .getTimeAsSeconds(
+          "spark.streaming.fileStream.minRememberDuration",
+          ssc.conf.get("spark.streaming.minRememberDuration", "60s")))
   }
 
   // This is a def so that it works during checkpoint recovery:
@@ -183,8 +185,8 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
   /** Clear the old time-to-files mappings along with old RDDs */
   protected[streaming] override def clearMetadata(time: Time) {
     batchTimeToSelectedFiles.synchronized {
-      val oldFiles = batchTimeToSelectedFiles.filter(
-        _._1 < (time - rememberDuration))
+      val oldFiles = batchTimeToSelectedFiles
+        .filter(_._1 < (time - rememberDuration))
       batchTimeToSelectedFiles --= oldFiles.keys
       recentlySelectedFiles --= oldFiles.values.flatten
       logInfo(
@@ -212,7 +214,8 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
       // Calculate ignore threshold
       val modTimeIgnoreThreshold = math.max(
         initialModTimeIgnoreThreshold, // initial threshold based on newFilesOnly setting
-        currentTime - durationToRemember.milliseconds // trailing end of the remember window
+        currentTime - durationToRemember
+          .milliseconds // trailing end of the remember window
       )
       logDebug(
         s"Getting new files for time $currentTime, " +
@@ -300,12 +303,14 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
       val rdd =
         serializableConfOpt.map(_.value) match {
           case Some(config) =>
-            context.sparkContext.newAPIHadoopFile(
-              file,
-              fm.runtimeClass.asInstanceOf[Class[F]],
-              km.runtimeClass.asInstanceOf[Class[K]],
-              vm.runtimeClass.asInstanceOf[Class[V]],
-              config)
+            context
+              .sparkContext
+              .newAPIHadoopFile(
+                file,
+                fm.runtimeClass.asInstanceOf[Class[F]],
+                km.runtimeClass.asInstanceOf[Class[K]],
+                vm.runtimeClass.asInstanceOf[Class[V]],
+                config)
           case None =>
             context.sparkContext.newAPIHadoopFile[K, V, F](file)
         }
@@ -374,19 +379,22 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
     override def cleanup(time: Time) {}
 
     override def restore() {
-      hadoopFiles.toSeq.sortBy(_._1)(Time.ordering).foreach {
-        case (t, f) => {
-          // Restore the metadata in both files and generatedRDDs
-          logInfo(
-            "Restoring files for time " + t + " - " +
-              f.mkString("[", ", ", "]"))
-          batchTimeToSelectedFiles.synchronized {
-            batchTimeToSelectedFiles += ((t, f))
+      hadoopFiles
+        .toSeq
+        .sortBy(_._1)(Time.ordering)
+        .foreach {
+          case (t, f) => {
+            // Restore the metadata in both files and generatedRDDs
+            logInfo(
+              "Restoring files for time " + t + " - " +
+                f.mkString("[", ", ", "]"))
+            batchTimeToSelectedFiles.synchronized {
+              batchTimeToSelectedFiles += ((t, f))
+            }
+            recentlySelectedFiles ++= f
+            generatedRDDs += ((t, filesToRDD(f)))
           }
-          recentlySelectedFiles ++= f
-          generatedRDDs += ((t, filesToRDD(f)))
         }
-      }
     }
 
     override def toString: String = {

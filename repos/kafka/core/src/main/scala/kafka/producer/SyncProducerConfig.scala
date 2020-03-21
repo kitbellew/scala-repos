@@ -47,9 +47,8 @@ trait SyncProducerConfigShared {
   val sendBufferBytes = props.getInt("send.buffer.bytes", 100 * 1024)
 
   /* the client application sending the producer requests */
-  val clientId = props.getString(
-    "client.id",
-    SyncProducerConfig.DefaultClientId)
+  val clientId = props
+    .getString("client.id", SyncProducerConfig.DefaultClientId)
 
   /*
    * The number of acknowledgments the producer requires the leader to have received before considering a request complete.

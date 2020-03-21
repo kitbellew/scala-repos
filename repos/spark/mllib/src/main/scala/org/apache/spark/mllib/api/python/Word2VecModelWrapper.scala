@@ -56,7 +56,8 @@ private[python] class Word2VecModelWrapper(model: Word2VecModel) {
   }
 
   def getVectors: JMap[String, JList[Float]] = {
-    model.getVectors
+    model
+      .getVectors
       .map({
         case (k, v) =>
           (k, v.toList.asJava)

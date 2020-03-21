@@ -81,9 +81,8 @@ case class ReuseExchange(conf: SQLConf) extends Rule[SparkPlan] {
     plan.transformUp {
       case exchange: Exchange =>
         // the exchanges that have same results usually also have same schemas (same column names).
-        val sameSchema = exchanges.getOrElseUpdate(
-          exchange.schema,
-          ArrayBuffer[Exchange]())
+        val sameSchema = exchanges
+          .getOrElseUpdate(exchange.schema, ArrayBuffer[Exchange]())
         val samePlan = sameSchema.find { e =>
           exchange.sameResult(e)
         }

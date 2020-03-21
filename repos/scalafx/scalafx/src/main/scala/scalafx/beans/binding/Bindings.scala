@@ -194,8 +194,8 @@ trait Bindings {
     def choose[T](chooseExpression: ObservableValue[T, T]) =
       new ObjectConditionBuilder[T](
         whenBuilder.`then`(
-          ObservableValue.sfxObservableValue2jfxObjectValue[T](
-            chooseExpression)))
+          ObservableValue
+            .sfxObservableValue2jfxObjectValue[T](chooseExpression)))
     def choose[T](chooseExpression: jfxbv.ObservableObjectValue[T]) =
       new ObjectConditionBuilder[T](whenBuilder.`then`(chooseExpression))
     def choose[T](chooseExpression: T) =
@@ -246,8 +246,8 @@ trait Bindings {
     // explicit conversion needed due to T(Any) typed method
     def otherwise(otherwiseExpression: ObservableValue[T, T]) =
       whenBuilder.otherwise(
-        ObservableValue.sfxObservableValue2jfxObjectValue[T](
-          otherwiseExpression))
+        ObservableValue
+          .sfxObservableValue2jfxObjectValue[T](otherwiseExpression))
     def otherwise(otherwiseExpression: jfxbv.ObservableObjectValue[T]) =
       whenBuilder.otherwise(otherwiseExpression)
     def otherwise(otherwiseExpression: T) =

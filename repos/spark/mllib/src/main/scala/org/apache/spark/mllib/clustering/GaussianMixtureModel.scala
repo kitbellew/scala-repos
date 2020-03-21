@@ -124,10 +124,12 @@ class GaussianMixtureModel @Since("1.3.0") (
       dists: Array[MultivariateGaussian],
       weights: Array[Double],
       k: Int): Array[Double] = {
-    val p = weights.zip(dists).map {
-      case (weight, dist) =>
-        MLUtils.EPSILON + weight * dist.pdf(pt)
-    }
+    val p = weights
+      .zip(dists)
+      .map {
+        case (weight, dist) =>
+          MLUtils.EPSILON + weight * dist.pdf(pt)
+      }
     val pSum = p.sum
     for (i <- 0 until k) {
       p(i) /= pSum
@@ -181,10 +183,12 @@ object GaussianMixtureModel extends Loader[GaussianMixtureModel] {
       val dataArray = dataFrame.select("weight", "mu", "sigma").collect()
 
       val (weights, gaussians) =
-        dataArray.map {
-          case Row(weight: Double, mu: Vector, sigma: Matrix) =>
-            (weight, new MultivariateGaussian(mu, sigma))
-        }.unzip
+        dataArray
+          .map {
+            case Row(weight: Double, mu: Vector, sigma: Matrix) =>
+              (weight, new MultivariateGaussian(mu, sigma))
+          }
+          .unzip
 
       new GaussianMixtureModel(weights.toArray, gaussians.toArray)
     }

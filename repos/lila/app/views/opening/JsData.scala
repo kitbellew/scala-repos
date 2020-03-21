@@ -30,21 +30,24 @@ object JsData extends lila.Steroids {
             "fen" -> opening.fen,
             "color" -> opening.color.name,
             "moves" -> JsArray(
-              opening.qualityMoves.map {
-                case QualityMove(move, quality) =>
-                  Json.obj(
-                    "uci" -> move.first,
-                    "san" -> move.line.headOption,
-                    "cp" -> move.cp,
-                    "line" -> move.line.mkString(" "),
-                    "quality" -> quality.name)
-              }),
+              opening
+                .qualityMoves
+                .map {
+                  case QualityMove(move, quality) =>
+                    Json.obj(
+                      "uci" -> move.first,
+                      "san" -> move.line.headOption,
+                      "cp" -> move.cp,
+                      "line" -> move.line.mkString(" "),
+                      "quality" -> quality.name)
+                }),
             "url" -> s"$netBaseUrl${routes.Opening.show(opening.id)}",
             "identified" -> identified
           ),
           "pref" -> Json.obj("coords" -> ctx.pref.coords),
           "animation" -> Json.obj(
-            "duration" -> ctx.pref.animationFactor * animationDuration.toMillis),
+            "duration" -> ctx.pref.animationFactor * animationDuration
+              .toMillis),
           "attempt" -> attempt.map { a =>
             Json.obj("userRatingDiff" -> a.userRatingDiff, "win" -> a.win)
           },

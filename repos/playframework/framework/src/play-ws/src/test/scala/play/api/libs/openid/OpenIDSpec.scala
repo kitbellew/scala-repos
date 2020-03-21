@@ -69,8 +69,8 @@ object OpenIDSpec extends Specification with Mockito {
       isValidOpenIDRequest(query)
 
       query.get("openid.ax.mode") must_== Some(Seq("fetch_request"))
-      query.get("openid.ns.ax") must_== Some(
-        Seq("http://openid.net/srv/ax/1.0"))
+      query
+        .get("openid.ns.ax") must_== Some(Seq("http://openid.net/srv/ax/1.0"))
       query.get("openid.ax.required") must_== Some(Seq("email"))
       query.get("openid.ax.type.email") must_== Some(
         Seq("http://schema.openid.net/contact/email"))
@@ -92,8 +92,8 @@ object OpenIDSpec extends Specification with Mockito {
       isValidOpenIDRequest(query)
 
       query.get("openid.ax.mode") must_== Some(Seq("fetch_request"))
-      query.get("openid.ns.ax") must_== Some(
-        Seq("http://openid.net/srv/ax/1.0"))
+      query
+        .get("openid.ns.ax") must_== Some(Seq("http://openid.net/srv/ax/1.0"))
       query.get("openid.ax.if_available") must_== Some(Seq("email"))
       query.get("openid.ax.type.email") must_== Some(
         Seq("http://schema.openid.net/contact/email"))
@@ -117,8 +117,8 @@ object OpenIDSpec extends Specification with Mockito {
       isValidOpenIDRequest(query)
 
       query.get("openid.ax.mode") must_== Some(Seq("fetch_request"))
-      query.get("openid.ns.ax") must_== Some(
-        Seq("http://openid.net/srv/ax/1.0"))
+      query
+        .get("openid.ns.ax") must_== Some(Seq("http://openid.net/srv/ax/1.0"))
       query.get("openid.ax.required") must_== Some(Seq("first"))
       query.get("openid.ax.type.first") must_== Some(
         Seq("http://axschema.org/namePerson/first"))
@@ -133,9 +133,8 @@ object OpenIDSpec extends Specification with Mockito {
       val openId = new WsOpenIdClient(ws, new WsDiscovery(ws))
 
       val responseQueryString = openIdResponse
-      val userInfo = Await.result(
-        openId.verifiedId(setupMockRequest(responseQueryString)),
-        dur)
+      val userInfo = Await
+        .result(openId.verifiedId(setupMockRequest(responseQueryString)), dur)
 
       "the claimedId must be present" in {
         userInfo.id must be equalTo claimedId
@@ -149,8 +148,8 @@ object OpenIDSpec extends Specification with Mockito {
         val verificationQuery = argument.getValue
 
         "openid.mode was set to check_authentication" in {
-          verificationQuery.get("openid.mode") must_== Some(
-            Seq("check_authentication"))
+          verificationQuery
+            .get("openid.mode") must_== Some(Seq("check_authentication"))
         }
 
         "every query parameter apart from openid.mode is used in the verification request" in {
@@ -175,9 +174,8 @@ object OpenIDSpec extends Specification with Mockito {
         "openid.op_endpoint" -> Seq(spoofedEndpoint)
       )
 
-      Await.result(
-        openId.verifiedId(setupMockRequest(responseQueryString)),
-        dur)
+      Await
+        .result(openId.verifiedId(setupMockRequest(responseQueryString)), dur)
 
       "direct verification does not use the openid.op_endpoint that is part of the query string" in {
         ws.urls contains (spoofedEndpoint) must beFalse
@@ -205,7 +203,9 @@ object OpenIDSpec extends Specification with Mockito {
       ws.response.status returns OK thenReturns OK
       ws.response.header(HeaderNames.CONTENT_TYPE) returns Some(
         "application/xrds+xml") thenReturns Some("text/plain")
-      ws.response.xml returns scala.xml.XML
+      ws.response.xml returns scala
+        .xml
+        .XML
         .loadString(readFixture("discovery/xrds/simple-op.xml"))
       ws.response.body returns "is_valid:false\n"
 
@@ -223,7 +223,9 @@ object OpenIDSpec extends Specification with Mockito {
       ws.response.status returns OK thenReturns OK
       ws.response.header(HeaderNames.CONTENT_TYPE) returns Some(
         "application/xrds+xml") thenReturns Some("text/plain")
-      ws.response.xml returns scala.xml.XML
+      ws.response.xml returns scala
+        .xml
+        .XML
         .loadString(readFixture("discovery/xrds/simple-op.xml"))
       ws.response.body returns "is_valid:false\n"
 
@@ -244,9 +246,8 @@ object OpenIDSpec extends Specification with Mockito {
 
       val responseQueryString = (openIdResponse - "openid.op_endpoint")
 
-      val userInfo = Await.result(
-        openId.verifiedId(setupMockRequest(responseQueryString)),
-        dur)
+      val userInfo = Await
+        .result(openId.verifiedId(setupMockRequest(responseQueryString)), dur)
 
       "the claimedId must be present" in {
         userInfo.id must be equalTo claimedId
@@ -268,9 +269,13 @@ object OpenIDSpec extends Specification with Mockito {
     ws.response.status returns OK thenReturns OK
     ws.response.header(HeaderNames.CONTENT_TYPE) returns Some(
       "application/xrds+xml") thenReturns Some("text/plain")
-    ws.response.xml returns scala.xml.XML
+    ws.response.xml returns scala
+      .xml
+      .XML
       .loadString(readFixture("discovery/xrds/simple-op.xml"))
-    ws.response.body returns "is_valid:true\n" // http://openid.net/specs/openid-authentication-2_0.html#kvform
+    ws
+      .response
+      .body returns "is_valid:true\n" // http://openid.net/specs/openid-authentication-2_0.html#kvform
     ws
   }
 

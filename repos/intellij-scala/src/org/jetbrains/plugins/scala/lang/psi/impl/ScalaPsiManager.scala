@@ -294,9 +294,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
             .isInstanceOf[PsiClassWrapper]
         }
 
-      ArrayUtil.mergeArrays(
-        classes,
-        SyntheticClassProducer.getAllClasses(fqn, scope))
+      ArrayUtil
+        .mergeArrays(classes, SyntheticClassProducer.getAllClasses(fqn, scope))
     }
     if (DumbService.getInstance(project).isDumb)
       return Array.empty
@@ -402,49 +401,56 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
       syntheticPackages.clear()
     }
 
-    project.getMessageBus.connect.subscribe(
-      PsiModificationTracker.TOPIC,
-      new PsiModificationTracker.Listener {
-        def modificationCountChanged() {
-          clearOnChange()
-          val count =
-            PsiModificationTracker.SERVICE
-              .getInstance(project)
-              .getOutOfCodeBlockModificationCount
-          if (outOfCodeBlockModCount != count) {
-            outOfCodeBlockModCount = count
+    project
+      .getMessageBus
+      .connect
+      .subscribe(
+        PsiModificationTracker.TOPIC,
+        new PsiModificationTracker.Listener {
+          def modificationCountChanged() {
+            clearOnChange()
+            val count =
+              PsiModificationTracker
+                .SERVICE
+                .getInstance(project)
+                .getOutOfCodeBlockModificationCount
+            if (outOfCodeBlockModCount != count) {
+              outOfCodeBlockModCount = count
+              clearOnOutOfCodeBlockChange()
+            }
+          }
+
+          @volatile
+          private var outOfCodeBlockModCount: Long = 0L
+        }
+      )
+
+    project
+      .getMessageBus
+      .connect
+      .subscribe(
+        ProjectTopics.PROJECT_ROOTS,
+        new ModuleRootListener {
+          def beforeRootsChange(event: ModuleRootEvent) {}
+
+          def rootsChanged(event: ModuleRootEvent) {
+            clearOnChange()
             clearOnOutOfCodeBlockChange()
           }
+
+          LowMemoryWatcher.register(
+            new Runnable {
+              def run(): Unit = {
+                clearCacheOnLowMemory.foreach(_.clear())
+                Conformance.cache.clear()
+                Equivalence.cache.clear()
+                ScParameterizedType.substitutorCache.clear()
+                ScalaPsiUtil.collectImplicitObjectsCache.clear()
+                ImplicitCollector.cache.clear()
+              }
+            })
         }
-
-        @volatile
-        private var outOfCodeBlockModCount: Long = 0L
-      }
-    )
-
-    project.getMessageBus.connect.subscribe(
-      ProjectTopics.PROJECT_ROOTS,
-      new ModuleRootListener {
-        def beforeRootsChange(event: ModuleRootEvent) {}
-
-        def rootsChanged(event: ModuleRootEvent) {
-          clearOnChange()
-          clearOnOutOfCodeBlockChange()
-        }
-
-        LowMemoryWatcher.register(
-          new Runnable {
-            def run(): Unit = {
-              clearCacheOnLowMemory.foreach(_.clear())
-              Conformance.cache.clear()
-              Equivalence.cache.clear()
-              ScParameterizedType.substitutorCache.clear()
-              ScalaPsiUtil.collectImplicitObjectsCache.clear()
-              ImplicitCollector.cache.clear()
-            }
-          })
-      }
-    )
+      )
   }
 
   private val syntheticPackagesCreator = new SyntheticPackageCreator(project)
@@ -497,9 +503,12 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
     tp match {
       case stp: ScTypeParam =>
         val inner =
-          stp.typeParameters.map {
-            typeVariable(_)
-          }.toList
+          stp
+            .typeParameters
+            .map {
+              typeVariable(_)
+            }
+            .toList
         val lower = () => stp.lowerBound.getOrNothing
         val upper = () => stp.upperBound.getOrAny
         // todo rework for error handling!
@@ -514,7 +523,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
   }
 
   def getStableTypeAliasesNames: Seq[String] = {
-    val keys = StubIndex.getInstance
+    val keys = StubIndex
+      .getInstance
       .getAllKeys(ScalaIndexKeys.STABLE_ALIAS_NAME_KEY, project)
     import scala.collection.JavaConversions._
     keys.toSeq
@@ -568,8 +578,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
 }
 
 object ScalaPsiManager {
-  val TYPE_VARIABLE_KEY: Key[ScTypeParameterType] = Key.create(
-    "type.variable.key")
+  val TYPE_VARIABLE_KEY: Key[ScTypeParameterType] = Key
+    .create("type.variable.key")
 
   def instance(project: Project) =
     project.getComponent(classOf[ScalaPsiManager])

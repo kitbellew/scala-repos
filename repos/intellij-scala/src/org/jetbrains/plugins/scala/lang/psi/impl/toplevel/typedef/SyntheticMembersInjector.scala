@@ -108,10 +108,8 @@ object SyntheticMembersInjector {
           case _ =>
             source
         }
-      val function = ScalaPsiElementFactory.createMethodWithContext(
-        template,
-        context,
-        source)
+      val function = ScalaPsiElementFactory
+        .createMethodWithContext(template, context, source)
       function.setSynthetic(context)
       function.syntheticContainingClass = Some(source)
       if (withOverride ^ !function.hasModifierProperty("override"))
@@ -141,10 +139,8 @@ object SyntheticMembersInjector {
               source
           }
         ).extendsBlock
-      val td = ScalaPsiElementFactory.createTypeDefinitionWithContext(
-        template,
-        context,
-        source)
+      val td = ScalaPsiElementFactory
+        .createTypeDefinitionWithContext(template, context, source)
       td.syntheticContainingClass = Some(source)
       def updateSynthetic(element: ScMember): Unit = {
         element match {
@@ -188,10 +184,8 @@ object SyntheticMembersInjector {
           case _ =>
             source
         }
-      buffer += ScalaPsiElementFactory.createTypeElementFromText(
-        supers,
-        context,
-        source)
+      buffer += ScalaPsiElementFactory
+        .createTypeElementFromText(supers, context, source)
     } catch {
       case p: ProcessCanceledException =>
         throw p

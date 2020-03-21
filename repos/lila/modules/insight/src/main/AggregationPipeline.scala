@@ -13,7 +13,8 @@ private final class AggregationPipeline {
   import Entry.{BSONFields => F}
 
   private lazy val movetimeIdDispatcher =
-    MovetimeRange.reversedNoInf
+    MovetimeRange
+      .reversedNoInf
       .foldLeft[BSONValue](BSONInteger(MovetimeRange.MTRInf.id)) {
         case (acc, mtr) =>
           BSONDocument(
@@ -27,7 +28,8 @@ private final class AggregationPipeline {
     "$cond" -> BSONArray(
       BSONDocument("$eq" -> BSONArray("$" + F.moves("i"), 0)),
       MaterialRange.Equal.id,
-      MaterialRange.reversedButEqualAndLast
+      MaterialRange
+        .reversedButEqualAndLast
         .foldLeft[BSONValue](BSONInteger(MaterialRange.Up4.id)) {
           case (acc, mat) =>
             BSONDocument(
@@ -93,16 +95,20 @@ private final class AggregationPipeline {
       userId: String): NonEmptyList[PipelineOperator] = {
     import question.{dimension, metric, filters}
     val gameMatcher = combineDocs(
-      question.filters.collect {
-        case f if f.dimension.isInGame =>
-          f.matcher
-      })
+      question
+        .filters
+        .collect {
+          case f if f.dimension.isInGame =>
+            f.matcher
+        })
     def matchMoves(extraMatcher: BSONDocument = BSONDocument()) =
       combineDocs(
-        extraMatcher :: question.filters.collect {
-          case f if f.dimension.isInMove =>
-            f.matcher
-        }).some.filterNot(_.isEmpty) map Match
+        extraMatcher :: question
+          .filters
+          .collect {
+            case f if f.dimension.isInMove =>
+              f.matcher
+          }).some.filterNot(_.isEmpty) map Match
     def projectForMove =
       Project(
         BSONDocument({
@@ -212,8 +218,8 @@ private final class AggregationPipeline {
                   BSONDocument(
                     "v" -> BSONDocument("$divide" -> BSONArray("$v", "$nb")),
                     "nb" -> true,
-                    "ids" -> BSONDocument(
-                      "$slice" -> BSONArray("$ids", 4)))).some
+                    "ids" -> BSONDocument("$slice" -> BSONArray("$ids", 4))))
+                  .some
               )
             case M.Movetime =>
               List(

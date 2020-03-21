@@ -161,8 +161,8 @@ object RandomDataGenerator {
               // January 1, 1970, 00:00:00 GMT for "9999-12-31 23:59:59.999999".
               milliseconds = rand.nextLong() % 253402329599999L
             }
-            DateTimeUtils.toJavaDate(
-              (milliseconds / DateTimeUtils.MILLIS_PER_DAY).toInt)
+            DateTimeUtils
+              .toJavaDate((milliseconds / DateTimeUtils.MILLIS_PER_DAY).toInt)
           }
           Some(generator)
         case TimestampType =>
@@ -257,7 +257,9 @@ object RandomDataGenerator {
             yield { () =>
               {
                 val length = rand.nextInt(MAX_MAP_SIZE)
-                val keys = scala.collection.mutable
+                val keys = scala
+                  .collection
+                  .mutable
                   .HashSet(Seq.fill(length)(keyGenerator()): _*)
                 // In case the number of different keys is not enough, set a max iteration to avoid
                 // infinite loop.
@@ -276,8 +278,8 @@ object RandomDataGenerator {
             field => forType(field.dataType, nullable = field.nullable, rand)
           }
           if (maybeFieldGenerators.forall(_.isDefined)) {
-            val fieldGenerators: Seq[() => Any] = maybeFieldGenerators.map(
-              _.get)
+            val fieldGenerators: Seq[() => Any] = maybeFieldGenerators
+              .map(_.get)
             Some(() => Row.fromSeq(fieldGenerators.map(_.apply())))
           } else {
             None
@@ -287,8 +289,8 @@ object RandomDataGenerator {
           val maybeSqlTypeGenerator = forType(udt.sqlType, nullable, rand)
           // Because random data generator at here returns scala value, we need to
           // convert it to catalyst value to call udt's deserialize.
-          val toCatalystType = CatalystTypeConverters.createToCatalystConverter(
-            udt.sqlType)
+          val toCatalystType = CatalystTypeConverters
+            .createToCatalystConverter(udt.sqlType)
 
           if (maybeSqlTypeGenerator.isDefined) {
             val sqlTypeGenerator = maybeSqlTypeGenerator.get
@@ -327,43 +329,41 @@ object RandomDataGenerator {
   // Generates a random row for `schema`.
   def randomRow(rand: Random, schema: StructType): Row = {
     val fields = mutable.ArrayBuffer.empty[Any]
-    schema.fields.foreach { f =>
-      f.dataType match {
-        case ArrayType(childType, nullable) => {
-          val data =
-            if (f.nullable && rand.nextFloat() <= PROBABILITY_OF_NULL) {
-              null
-            } else {
-              val arr = mutable.ArrayBuffer.empty[Any]
-              val n = 1 // rand.nextInt(10)
-              var i = 0
-              val generator = RandomDataGenerator.forType(
-                childType,
-                nullable,
-                rand)
-              assert(generator.isDefined, "Unsupported type")
-              val gen = generator.get
-              while (i < n) {
-                arr += gen()
-                i += 1
+    schema
+      .fields
+      .foreach { f =>
+        f.dataType match {
+          case ArrayType(childType, nullable) => {
+            val data =
+              if (f.nullable && rand.nextFloat() <= PROBABILITY_OF_NULL) {
+                null
+              } else {
+                val arr = mutable.ArrayBuffer.empty[Any]
+                val n = 1 // rand.nextInt(10)
+                var i = 0
+                val generator = RandomDataGenerator
+                  .forType(childType, nullable, rand)
+                assert(generator.isDefined, "Unsupported type")
+                val gen = generator.get
+                while (i < n) {
+                  arr += gen()
+                  i += 1
+                }
+                arr
               }
-              arr
-            }
-          fields += data
+            fields += data
+          }
+          case StructType(children) => {
+            fields += randomRow(rand, StructType(children))
+          }
+          case _ =>
+            val generator = RandomDataGenerator
+              .forType(f.dataType, f.nullable, rand)
+            assert(generator.isDefined, "Unsupported type")
+            val gen = generator.get
+            fields += gen()
         }
-        case StructType(children) => {
-          fields += randomRow(rand, StructType(children))
-        }
-        case _ =>
-          val generator = RandomDataGenerator.forType(
-            f.dataType,
-            f.nullable,
-            rand)
-          assert(generator.isDefined, "Unsupported type")
-          val gen = generator.get
-          fields += gen()
       }
-    }
     Row.fromSeq(fields)
   }
 }

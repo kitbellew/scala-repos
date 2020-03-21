@@ -47,15 +47,17 @@ class NaiveBayesSuite
       Array(0.10, 0.10, 0.70, 0.10) // label 2
     ).map(_.map(math.log))
 
-    dataset = sqlContext.createDataFrame(
-      generateNaiveBayesInput(pi, theta, 100, 42))
+    dataset = sqlContext
+      .createDataFrame(generateNaiveBayesInput(pi, theta, 100, 42))
   }
 
   def validatePrediction(predictionAndLabels: DataFrame): Unit = {
-    val numOfErrorPredictions = predictionAndLabels.collect().count {
-      case Row(prediction: Double, label: Double) =>
-        prediction != label
-    }
+    val numOfErrorPredictions = predictionAndLabels
+      .collect()
+      .count {
+        case Row(prediction: Double, label: Double) =>
+          prediction != label
+      }
     // At least 80% of the predictions should be on.
     assert(numOfErrorPredictions < predictionAndLabels.count() / 5)
   }
@@ -76,8 +78,10 @@ class NaiveBayesSuite
   def expectedMultinomialProbabilities(
       model: NaiveBayesModel,
       feature: Vector): Vector = {
-    val logClassProbs: BV[Double] =
-      model.pi.toBreeze + model.theta.multiply(feature).toBreeze
+    val logClassProbs: BV[Double] = model.pi.toBreeze + model
+      .theta
+      .multiply(feature)
+      .toBreeze
     val classProbs = logClassProbs.toArray.map(math.exp)
     val classProbsSum = classProbs.sum
     Vectors.dense(classProbs.map(_ / classProbsSum))
@@ -88,10 +92,13 @@ class NaiveBayesSuite
       feature: Vector): Vector = {
     val negThetaMatrix = model.theta.map(v => math.log(1.0 - math.exp(v)))
     val negFeature = Vectors.dense(feature.toArray.map(v => 1.0 - v))
-    val piTheta: BV[Double] =
-      model.pi.toBreeze + model.theta.multiply(feature).toBreeze
-    val logClassProbs: BV[Double] =
-      piTheta + negThetaMatrix.multiply(negFeature).toBreeze
+    val piTheta: BV[Double] = model.pi.toBreeze + model
+      .theta
+      .multiply(feature)
+      .toBreeze
+    val logClassProbs: BV[Double] = piTheta + negThetaMatrix
+      .multiply(negFeature)
+      .toBreeze
     val classProbs = logClassProbs.toArray.map(math.exp)
     val classProbsSum = classProbs.sum
     Vectors.dense(classProbs.map(_ / classProbsSum))
@@ -101,21 +108,23 @@ class NaiveBayesSuite
       featureAndProbabilities: DataFrame,
       model: NaiveBayesModel,
       modelType: String): Unit = {
-    featureAndProbabilities.collect().foreach {
-      case Row(features: Vector, probability: Vector) => {
-        assert(probability.toArray.sum ~== 1.0 relTol 1.0e-10)
-        val expected =
-          modelType match {
-            case Multinomial =>
-              expectedMultinomialProbabilities(model, features)
-            case Bernoulli =>
-              expectedBernoulliProbabilities(model, features)
-            case _ =>
-              throw new UnknownError(s"Invalid modelType: $modelType.")
-          }
-        assert(probability ~== expected relTol 1.0e-10)
+    featureAndProbabilities
+      .collect()
+      .foreach {
+        case Row(features: Vector, probability: Vector) => {
+          assert(probability.toArray.sum ~== 1.0 relTol 1.0e-10)
+          val expected =
+            modelType match {
+              case Multinomial =>
+                expectedMultinomialProbabilities(model, features)
+              case Bernoulli =>
+                expectedBernoulliProbabilities(model, features)
+              case _ =>
+                throw new UnknownError(s"Invalid modelType: $modelType.")
+            }
+          assert(probability ~== expected relTol 1.0e-10)
+        }
       }
-    }
   }
 
   test("params") {

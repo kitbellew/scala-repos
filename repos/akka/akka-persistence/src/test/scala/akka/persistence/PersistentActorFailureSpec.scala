@@ -58,10 +58,12 @@ object PersistentActorFailureSpec {
     def isWrong(messages: immutable.Seq[AtomicWrite]): Boolean =
       messages.exists {
         case a: AtomicWrite ⇒
-          a.payload.exists {
-            case PersistentRepr(Evt(s: String), _) ⇒
-              s.contains("wrong")
-          }
+          a
+            .payload
+            .exists {
+              case PersistentRepr(Evt(s: String), _) ⇒
+                s.contains("wrong")
+            }
         case _ ⇒
           false
       }
@@ -70,11 +72,13 @@ object PersistentActorFailureSpec {
         messages: immutable.Seq[AtomicWrite]): immutable.Seq[Try[Unit]] =
       messages.collect {
         case a: AtomicWrite ⇒
-          a.payload.collectFirst {
-            case PersistentRepr(Evt(s: String), _: Long)
-                if s.contains("not serializable") ⇒
-              s
-          } match {
+          a
+            .payload
+            .collectFirst {
+              case PersistentRepr(Evt(s: String), _: Long)
+                  if s.contains("not serializable") ⇒
+                s
+            } match {
             case Some(s) ⇒
               Failure(new SimulatedSerializationException(s))
             case None ⇒
@@ -185,8 +189,9 @@ class PersistentActorFailureSpec
   import PersistentActorFailureSpec._
   import PersistentActorSpec._
 
-  system.eventStream.publish(
-    TestEvent.Mute(EventFilter[akka.pattern.AskTimeoutException]()))
+  system
+    .eventStream
+    .publish(TestEvent.Mute(EventFilter[akka.pattern.AskTimeoutException]()))
 
   def prepareFailingRecovery(): Unit = {
     val persistentActor = namedPersistentActor[FailingRecovery]
@@ -360,9 +365,8 @@ class PersistentActorFailureSpec
       expectMsg(List("a-1", "a-2", "c-1", "c-2"))
 
       // Create yet another one with same persistenceId, b-1 and b-2 discarded during replay
-      EventFilter.warning(
-        start = "Invalid replayed event",
-        occurrences = 2) intercept {
+      EventFilter
+        .warning(start = "Invalid replayed event", occurrences = 2) intercept {
         val p3 = namedPersistentActor[Behavior1PersistentActor]
         p3 ! GetState
         expectMsg(List("a-1", "a-2", "c-1", "c-2"))

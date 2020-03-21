@@ -55,7 +55,8 @@ private[spark] class RBackend {
     bootstrap.childHandler(
       new ChannelInitializer[SocketChannel]() {
         def initChannel(ch: SocketChannel): Unit = {
-          ch.pipeline()
+          ch
+            .pipeline()
             .addLast("encoder", new ByteArrayEncoder())
             .addLast(
               "frameDecoder",

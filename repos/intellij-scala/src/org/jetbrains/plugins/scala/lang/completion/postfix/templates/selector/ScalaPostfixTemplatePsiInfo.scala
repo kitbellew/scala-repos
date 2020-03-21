@@ -32,7 +32,8 @@ class ScalaPostfixTemplatePsiInfo extends PostfixTemplatePsiInfo {
               "true"
             case id: ScReferenceExpression
                 if id.getNode.getChildren(null).length == 1 &&
-                  id.getNode
+                  id
+                    .getNode
                     .getChildren(null)
                     .apply(0)
                     .getElementType == ScalaTokenTypes.tIDENTIFIER =>
@@ -60,7 +61,8 @@ class ScalaPostfixTemplatePsiInfo extends PostfixTemplatePsiInfo {
         res
       case _ =>
         throw new IllegalArgumentException(
-          "Attempted adding negation through template for element " + element.getText
+          "Attempted adding negation through template for element " + element
+            .getText
             + " which is not a valid boolean expression.")
     }
 
@@ -68,7 +70,6 @@ class ScalaPostfixTemplatePsiInfo extends PostfixTemplatePsiInfo {
       context: PsiElement,
       prefix: String,
       suffix: String): PsiElement =
-    ScalaPsiElementFactory.createExpressionFromText(
-      prefix + context.getText + suffix,
-      context)
+    ScalaPsiElementFactory
+      .createExpressionFromText(prefix + context.getText + suffix, context)
 }

@@ -490,8 +490,7 @@ trait TypedPipe[+T] extends Serializable {
     lazy val rng = new java.util.Random(123) // seed this so it is repeatable
     groupBy { _ =>
       rng.nextInt(partitions)
-    }(TypedPipe.identityOrdering)
-      .withReducers(partitions)
+    }(TypedPipe.identityOrdering).withReducers(partitions)
   }
 
   /**
@@ -695,15 +694,17 @@ trait TypedPipe[+T] extends Serializable {
     */
   def make[U >: T](dest: Source with TypedSink[T] with TypedSource[U])
       : Execution[TypedPipe[U]] =
-    Execution.getMode.flatMap { mode =>
-      try {
-        dest.validateTaps(mode)
-        Execution.from(TypedPipe.from(dest))
-      } catch {
-        case ivs: InvalidSourceException =>
-          writeThrough(dest)
+    Execution
+      .getMode
+      .flatMap { mode =>
+        try {
+          dest.validateTaps(mode)
+          Execution.from(TypedPipe.from(dest))
+        } catch {
+          case ivs: InvalidSourceException =>
+            writeThrough(dest)
+        }
       }
-    }
 
   /** Just keep the keys, or ._1 (if this type is a Tuple2) */
   def keys[K](implicit ev: <:<[T, (K, Any)]): TypedPipe[K] =
@@ -855,8 +856,8 @@ trait TypedPipe[+T] extends Serializable {
     TypedPipeFactory({ (flowDef, mode) =>
       val fields = trapSink.sinkFields
       // TODO: with diamonds in the graph, this might not be correct
-      val pipe = RichPipe.assignName(
-        fork.toPipe[T](fields)(flowDef, mode, trapSink.setter))
+      val pipe = RichPipe
+        .assignName(fork.toPipe[T](fields)(flowDef, mode, trapSink.setter))
       flowDef.addTrap(pipe, trapSink.createTap(Write)(mode))
       TypedPipe.from[U](pipe, fields)(flowDef, mode, conv)
     })
@@ -979,10 +980,7 @@ final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
     Execution.from(this)
 
   override def sum[U >: T](implicit plus: Semigroup[U]): ValuePipe[U] =
-    Semigroup
-      .sumOption[U](iterable)
-      .map(LiteralValue(_))
-      .getOrElse(EmptyValue)
+    Semigroup.sumOption[U](iterable).map(LiteralValue(_)).getOrElse(EmptyValue)
 
   override def sumByLocalKeys[K, V](implicit
       ev: T <:< (K, V),
@@ -1092,14 +1090,16 @@ class TypedPipeFactory[T] private (
   }
 
   override def toIterableExecution: Execution[Iterable[T]] =
-    Execution.getConfigMode.flatMap {
-      case (conf, mode) =>
-        // This can only terminate in TypedPipeInst, which will
-        // keep the reference to this flowDef
-        val flowDef = new FlowDef
-        val (nextPipe, stackTraces) = unwrap(this, Array())(flowDef, mode)
-        nextPipe.toIterableExecution
-    }
+    Execution
+      .getConfigMode
+      .flatMap {
+        case (conf, mode) =>
+          // This can only terminate in TypedPipeInst, which will
+          // keep the reference to this flowDef
+          val flowDef = new FlowDef
+          val (nextPipe, stackTraces) = unwrap(this, Array())(flowDef, mode)
+          nextPipe.toIterableExecution
+      }
 
   @annotation.tailrec
   private def unwrap(pipe: TypedPipe[T], st: Array[StackTraceElement])(implicit
@@ -1250,17 +1250,20 @@ class TypedPipeInst[T] private[scalding] (
       case Some((tap, fields, Converter(conv))) =>
         // To convert from java iterator to scala below
         import scala.collection.JavaConverters._
-        Execution.getConfigMode.map {
-          case (conf, m) =>
-            // Verify the mode has not changed due to invalid TypedPipe DAG construction
-            checkMode(m)
-            new Iterable[T] {
-              def iterator =
-                m.openForRead(conf, tap)
-                  .asScala
-                  .map(tup => conv(tup.selectEntry(fields)))
-            }
-        }
+        Execution
+          .getConfigMode
+          .map {
+            case (conf, m) =>
+              // Verify the mode has not changed due to invalid TypedPipe DAG construction
+              checkMode(m)
+              new Iterable[T] {
+                def iterator =
+                  m
+                    .openForRead(conf, tap)
+                    .asScala
+                    .map(tup => conv(tup.selectEntry(fields)))
+              }
+          }
       case _ =>
         forceToDiskExecution.flatMap(_.toIterableExecution)
     }

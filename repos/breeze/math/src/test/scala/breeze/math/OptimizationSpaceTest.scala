@@ -331,15 +331,21 @@ class DenseOptimizationSpaceTest_Double
     (DenseMatrix[Double], DenseMatrix[Double], DenseMatrix[Double])] = {
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Double].map {
-          _ % 1e100
-        }
-        y <- Arbitrary.arbitrary[Double].map {
-          _ % 1e100
-        }
-        z <- Arbitrary.arbitrary[Double].map {
-          _ % 1e100
-        }
+        x <- Arbitrary
+          .arbitrary[Double]
+          .map {
+            _ % 1e100
+          }
+        y <- Arbitrary
+          .arbitrary[Double]
+          .map {
+            _ % 1e100
+          }
+        z <- Arbitrary
+          .arbitrary[Double]
+          .map {
+            _ % 1e100
+          }
       } yield {
         (
           DenseMatrix.fill(N, N)(math.random * x),
@@ -353,15 +359,21 @@ class DenseOptimizationSpaceTest_Double
     (DenseVector[Double], DenseVector[Double], DenseVector[Double])] = {
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Double].map {
-          _ % 1e100
-        }
-        y <- Arbitrary.arbitrary[Double].map {
-          _ % 1e100
-        }
-        z <- Arbitrary.arbitrary[Double].map {
-          _ % 1e100
-        }
+        x <- Arbitrary
+          .arbitrary[Double]
+          .map {
+            _ % 1e100
+          }
+        y <- Arbitrary
+          .arbitrary[Double]
+          .map {
+            _ % 1e100
+          }
+        z <- Arbitrary
+          .arbitrary[Double]
+          .map {
+            _ % 1e100
+          }
       } yield {
         (
           DenseVector.fill(N)(math.random * x),
@@ -373,9 +385,11 @@ class DenseOptimizationSpaceTest_Double
 
   def genScalar: Arbitrary[Double] =
     Arbitrary(
-      Arbitrary.arbitrary[Double].map {
-        _ % 1e10
-      })
+      Arbitrary
+        .arbitrary[Double]
+        .map {
+          _ % 1e10
+        })
 }
 
 class SparseOptimizationSpaceTest_Double
@@ -391,9 +405,11 @@ class SparseOptimizationSpaceTest_Double
 
   def genScalar: Arbitrary[Double] =
     Arbitrary(
-      Arbitrary.arbitrary[Double].map {
-        _ % 1e10
-      })
+      Arbitrary
+        .arbitrary[Double]
+        .map {
+          _ % 1e10
+        })
 
   val arbColIndex = Arbitrary(Gen.choose[Int](0, N - 1))
   val arbRowIndex = Arbitrary(Gen.choose[Int](0, M - 1))

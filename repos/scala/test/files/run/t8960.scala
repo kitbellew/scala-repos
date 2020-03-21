@@ -11,13 +11,17 @@ object Test extends App {
       o.getClass.getName
     )
 
-    val Some(f) = o.getClass.getDeclaredFields
+    val Some(f) = o
+      .getClass
+      .getDeclaredFields
       .find(_.getName == "serialVersionUID")
     assert(f.getLong(null) == 0L)
   }
 
   def testIndyLambda(o: AnyRef, sp: Boolean = false) = {
-    val isSpecialized = o.getClass.getInterfaces
+    val isSpecialized = o
+      .getClass
+      .getInterfaces
       .exists(_.getName contains "$sp")
     assert(sp == isSpecialized, o.getClass.getName)
   }

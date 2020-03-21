@@ -122,15 +122,17 @@ class DirectKafkaStreamSuite
           logInfo(s"${o.topic} ${o.partition} ${o.fromOffset} ${o.untilOffset}")
         }
         val collected =
-          rdd.mapPartitionsWithIndex { (i, iter) =>
-            // For each partition, get size of the range in the partition,
-            // and the number of items in the partition
-            val off = offsetRanges(i)
-            val all = iter.toSeq
-            val partSize = all.size
-            val rangeSize = off.untilOffset - off.fromOffset
-            Iterator((partSize, rangeSize))
-          }.collect
+          rdd
+            .mapPartitionsWithIndex { (i, iter) =>
+              // For each partition, get size of the range in the partition,
+              // and the number of items in the partition
+              val off = offsetRanges(i)
+              val all = iter.toSeq
+              val partSize = all.size
+              val rangeSize = off.untilOffset - off.fromOffset
+              Iterator((partSize, rangeSize))
+            }
+            .collect
 
         // Verify whether number of elements in each partition
         // matches with the corresponding offset range
@@ -162,7 +164,8 @@ class DirectKafkaStreamSuite
       "auto.offset.reset" -> "largest")
     val kc = new KafkaCluster(kafkaParams)
     def getLatestOffset(): Long = {
-      kc.getLatestLeaderOffsets(Set(topicPartition))
+      kc
+        .getLatestLeaderOffsets(Set(topicPartition))
         .right
         .get(topicPartition)
         .offset
@@ -218,7 +221,8 @@ class DirectKafkaStreamSuite
       "auto.offset.reset" -> "largest")
     val kc = new KafkaCluster(kafkaParams)
     def getLatestOffset(): Long = {
-      kc.getLatestLeaderOffsets(Set(topicPartition))
+      kc
+        .getLatestLeaderOffsets(Set(topicPartition))
         .right
         .get(topicPartition)
         .offset
@@ -282,9 +286,11 @@ class DirectKafkaStreamSuite
       }
       kafkaTestUtils.sendMessages(
         topic,
-        strings.map {
-          _ -> 1
-        }.toMap)
+        strings
+          .map {
+            _ -> 1
+          }
+          .toMap)
       eventually(timeout(10 seconds), interval(50 milliseconds)) {
         assert(
           strings.forall {
@@ -324,9 +330,12 @@ class DirectKafkaStreamSuite
 
     // This is ensure all the data is eventually receiving only once
     stateStream.foreachRDD { (rdd: RDD[(String, Int)]) =>
-      rdd.collect().headOption.foreach { x =>
-        DirectKafkaStreamSuite.total = x._2
-      }
+      rdd
+        .collect()
+        .headOption
+        .foreach { x =>
+          DirectKafkaStreamSuite.total = x._2
+        }
     }
     ssc.start()
 
@@ -339,16 +348,20 @@ class DirectKafkaStreamSuite
     val offsetRangesBeforeStop = getOffsetRanges(kafkaStream)
     assert(offsetRangesBeforeStop.size >= 1, "No offset ranges generated")
     assert(
-      offsetRangesBeforeStop.head._2.forall {
-        _.fromOffset === 0
-      },
+      offsetRangesBeforeStop
+        .head
+        ._2
+        .forall {
+          _.fromOffset === 0
+        },
       "starting offset not zero")
     ssc.stop()
     logInfo("====== RESTARTING ========")
 
     // Recover context from checkpoints
     ssc = new StreamingContext(testDir.getAbsolutePath)
-    val recoveredStream = ssc.graph
+    val recoveredStream = ssc
+      .graph
       .getInputStreams()
       .head
       .asInstanceOf[DStream[(String, String)]]
@@ -513,7 +526,8 @@ class DirectKafkaStreamSuite
 
     // Used for assertion failure messages.
     def dataToString: String =
-      collectedData.asScala
+      collectedData
+        .asScala
         .map(_.mkString("[", ",", "]"))
         .mkString("{", ", ", "}")
 
@@ -553,7 +567,8 @@ class DirectKafkaStreamSuite
   /** Get the generated offset ranges from the DirectKafkaStream */
   private def getOffsetRanges[K, V](
       kafkaStream: DStream[(K, V)]): Seq[(Time, Array[OffsetRange])] = {
-    kafkaStream.generatedRDDs
+    kafkaStream
+      .generatedRDDs
       .mapValues { rdd =>
         rdd.asInstanceOf[KafkaRDD[K, V, _, _, (K, V)]].offsetRanges
       }

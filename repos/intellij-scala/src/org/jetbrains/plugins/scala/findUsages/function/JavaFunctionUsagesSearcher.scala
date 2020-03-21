@@ -37,15 +37,17 @@ class JavaFunctionUsagesSearcher
           new TextOccurenceProcessor {
             def execute(element: PsiElement, offsetInElement: Int): Boolean = {
               val references = inReadAction(element.getReferences)
-              for (ref <- references if ref.getRangeInElement.contains(
-                     offsetInElement) && !collectedReferences.contains(ref)) {
+              for (ref <- references if ref
+                     .getRangeInElement
+                     .contains(offsetInElement) && !collectedReferences
+                     .contains(ref)) {
                 inReadAction {
                   ref match {
                     case refElement: PsiReferenceExpression =>
                       refElement.resolve match {
                         case f: ScFunctionWrapper
-                            if f.function == method && !consumer.process(
-                              refElement) =>
+                            if f.function == method && !consumer
+                              .process(refElement) =>
                           return false
                         case t: StaticPsiMethodWrapper
                             if t.getNavigationElement == method && !consumer
@@ -60,8 +62,9 @@ class JavaFunctionUsagesSearcher
               true
             }
           }
-        val helper: PsiSearchHelper = PsiSearchHelper.SERVICE.getInstance(
-          queryParameters.getProject)
+        val helper: PsiSearchHelper = PsiSearchHelper
+          .SERVICE
+          .getInstance(queryParameters.getProject)
         if (name == "")
           return true
         helper.processElementsWithWord(

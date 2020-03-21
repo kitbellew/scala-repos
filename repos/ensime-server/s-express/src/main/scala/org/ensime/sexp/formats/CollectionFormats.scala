@@ -213,10 +213,9 @@ trait CollectionFormats {
           case SexpData(data) =>
             (data(start), data(end), data(step), data(inclusive)) match {
               case (s, e, st, incl) if BooleanFormat.read(incl) =>
-                im.NumericRange.inclusive(
-                  s.convertTo[E],
-                  e.convertTo[E],
-                  st.convertTo[E])
+                im
+                  .NumericRange
+                  .inclusive(s.convertTo[E], e.convertTo[E], st.convertTo[E])
               case (s, e, st, incl) =>
                 im.NumericRange(s.convertTo[E], e.convertTo[E], st.convertTo[E])
               case _ =>

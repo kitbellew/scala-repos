@@ -486,10 +486,8 @@ trait GroupSolver
       }
 
       case expr
-          if listTicVars(Some(b), expr, sigma).isEmpty && !listTicVars(
-            None,
-            expr,
-            sigma).isEmpty =>
+          if listTicVars(Some(b), expr, sigma)
+            .isEmpty && !listTicVars(None, expr, sigma).isEmpty =>
         (None, Set(Error(expr, ConstraintsWithinInnerSolve)))
 
       case _ if listTicVars(Some(b), expr, sigma).isEmpty =>
@@ -529,8 +527,8 @@ trait GroupSolver
     }
 
     case t @ TicVar(_, `tv`) =>
-      !free && t.binding == SolveBinding(b) || free && t.binding == FreeBinding(
-        b)
+      !free && t.binding == SolveBinding(b) || free && t
+        .binding == FreeBinding(b)
   }
 
   private def enterLet(sigma: Sigma, let: Let, actuals: Vector[Expr]): Sigma = {

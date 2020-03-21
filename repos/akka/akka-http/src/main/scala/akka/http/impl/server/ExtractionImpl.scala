@@ -16,7 +16,9 @@ private[http] trait ExtractionImplBase[T] extends RequestVal[T] {
   def resultClass: Class[T] = classTag.runtimeClass.asInstanceOf[Class[T]]
 
   def get(ctx: RequestContext): T =
-    ctx.request.asScala
+    ctx
+      .request
+      .asScala
       .header[ExtractionMap]
       .flatMap(_.get(this))
       .getOrElse(throw new RuntimeException(s"Value wasn't extracted! $this"))

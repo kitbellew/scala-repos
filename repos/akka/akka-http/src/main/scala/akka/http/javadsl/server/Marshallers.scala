@@ -91,7 +91,7 @@ object Marshallers {
       contentType: ContentType,
       convert: function.Function[T, HttpResponse]): Marshaller[T] =
     MarshallerImpl { _ ⇒
-      ScalaMarshaller.withFixedContentType(contentType.asScala)(t ⇒
-        convert(t).asScala)
+      ScalaMarshaller
+        .withFixedContentType(contentType.asScala)(t ⇒ convert(t).asScala)
     }
 }

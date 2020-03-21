@@ -112,7 +112,8 @@ object Serbench extends Benchmark {
   def benchmark(name: String)(f: => Any) = run(name, 20000, 20000)(f)
 
   def deserialize(array: Array[Byte]) =
-    new ObjectInputStream(new ByteArrayInputStream(array)).readObject
+    new ObjectInputStream(new ByteArrayInputStream(array))
+      .readObject
       .asInstanceOf[Project]
 
   def serialize(project: Project) = {

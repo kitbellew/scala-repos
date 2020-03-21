@@ -40,8 +40,8 @@ object Reflect {
       try cls.getDeclaredMethod(name, args: _*)
       catch {
         case nsf: NoSuchMethodException =>
-          if ((cls.getSuperclass != null) && cls.getSuperclass != classOf[
-                Object] && cls.getSuperclass != cls)
+          if ((cls.getSuperclass != null) && cls
+                .getSuperclass != classOf[Object] && cls.getSuperclass != cls)
             getMethodHelper(cls.getSuperclass)
           else
             throw new PicklingException(

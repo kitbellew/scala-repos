@@ -27,8 +27,8 @@ class FlowDocSpec extends AkkaSpec {
     source.map(_ => 0) // has no effect on source, since it's immutable
     source.runWith(Sink.fold(0)(_ + _)) // 55
 
-    val zeroes = source.map(_ =>
-      0) // returns new Source[Int], with `map()` appended
+    val zeroes = source
+      .map(_ => 0) // returns new Source[Int], with `map()` appended
     zeroes.runWith(Sink.fold(0)(_ + _)) // 0
     //#source-immutable
   }
@@ -79,10 +79,8 @@ class FlowDocSpec extends AkkaSpec {
     import scala.concurrent.duration._
     case object Tick
 
-    val timer = Source.tick(
-      initialDelay = 1.second,
-      interval = 1.seconds,
-      tick = () => Tick)
+    val timer = Source
+      .tick(initialDelay = 1.second, interval = 1.seconds, tick = () => Tick)
 
     val timerCancel: Cancellable = Sink.ignore.runWith(timer)
     timerCancel.cancel()
@@ -253,11 +251,7 @@ class FlowDocSpec extends AkkaSpec {
 
   "defining asynchronous boundaries" in {
     //#flow-async
-    Source(List(1, 2, 3))
-      .map(_ + 1)
-      .async
-      .map(_ * 2)
-      .to(Sink.ignore)
+    Source(List(1, 2, 3)).map(_ + 1).async.map(_ * 2).to(Sink.ignore)
     //#flow-async
   }
 }

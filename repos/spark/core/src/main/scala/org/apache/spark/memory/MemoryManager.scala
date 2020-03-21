@@ -53,8 +53,8 @@ private[spark] abstract class MemoryManager(
 
   storageMemoryPool.incrementPoolSize(storageMemory)
   onHeapExecutionMemoryPool.incrementPoolSize(onHeapExecutionMemory)
-  offHeapExecutionMemoryPool.incrementPoolSize(
-    conf.getSizeAsBytes("spark.memory.offHeap.size", 0))
+  offHeapExecutionMemoryPool
+    .incrementPoolSize(conf.getSizeAsBytes("spark.memory.offHeap.size", 0))
 
   /**
     * Total available memory for storage, in bytes. This amount can vary over time, depending on
@@ -160,7 +160,8 @@ private[spark] abstract class MemoryManager(
     */
   final def executionMemoryUsed: Long =
     synchronized {
-      onHeapExecutionMemoryPool.memoryUsed + offHeapExecutionMemoryPool.memoryUsed
+      onHeapExecutionMemoryPool.memoryUsed + offHeapExecutionMemoryPool
+        .memoryUsed
     }
 
   /**
@@ -222,8 +223,8 @@ private[spark] abstract class MemoryManager(
         case MemoryMode.OFF_HEAP =>
           offHeapExecutionMemoryPool.poolSize
       }
-    val size = ByteArrayMethods.nextPowerOf2(
-      maxTungstenMemory / cores / safetyFactor)
+    val size = ByteArrayMethods
+      .nextPowerOf2(maxTungstenMemory / cores / safetyFactor)
     val default = math.min(maxPageSize, math.max(minPageSize, size))
     conf.getSizeAsBytes("spark.buffer.pageSize", default)
   }

@@ -76,8 +76,8 @@ import ManagedQueryTestSupport._
 class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
   val actorSystem = ActorSystem("managedQueryModuleSpec")
   val jobActorSystem = ActorSystem("managedQueryModuleSpecJobs")
-  implicit val executionContext = ExecutionContext.defaultExecutionContext(
-    actorSystem)
+  implicit val executionContext = ExecutionContext
+    .defaultExecutionContext(actorSystem)
   implicit val M: Monad[Future] with Comonad[Future] =
     new blueeyes.bkka.UnsafeFutureComonad(
       executionContext,
@@ -173,11 +173,13 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
   }
 
   step {
-    actorSystem.scheduler.schedule(
-      Duration(0, "milliseconds"),
-      Duration(clock.duration, "milliseconds")) {
-      ticker ! Tick
-    }
+    actorSystem
+      .scheduler
+      .schedule(
+        Duration(0, "milliseconds"),
+        Duration(clock.duration, "milliseconds")) {
+        ticker ! Tick
+      }
     startup.run.copoint
   }
 

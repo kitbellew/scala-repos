@@ -100,8 +100,8 @@ object RenameSuperMembersUtil {
       return
     }
     val allElements = superMembers :+ element
-    val classes: Seq[PsiClass] = allElements.map(
-      PsiTreeUtil.getParentOfType(_, classOf[PsiClass], false))
+    val classes: Seq[PsiClass] = allElements
+      .map(PsiTreeUtil.getParentOfType(_, classOf[PsiClass], false))
     val oneSuperClass = superMembers.size == 1
     val renameAllMarkerObject = ScalaPsiElementFactory.createObjectWithContext(
       "object RenameAll",
@@ -190,7 +190,8 @@ object RenameSuperMembersUtil {
         }
 
         override def getContainerText(clazz: PsiClass, name: String): String = {
-          if (clazz == renameAllMarkerObject || clazz == classes.last || oneSuperClass)
+          if (clazz == renameAllMarkerObject || clazz == classes
+                .last || oneSuperClass)
             null //don't show package name
           else
             super.getContainerText(clazz, name)
@@ -260,8 +261,8 @@ object RenameSuperMembersUtil {
       else
         TypeDefinitionMembers.getTypes(aClass)
     val forName = types.forName(named.name)._1
-    val typeAliases = forName.filter(ta =>
-      ScalaNamesUtil.scalaName(ta._1) == named.name)
+    val typeAliases = forName
+      .filter(ta => ScalaNamesUtil.scalaName(ta._1) == named.name)
     typeAliases.flatMap(ta => ta._2.supers.map(_.info))
   }
 

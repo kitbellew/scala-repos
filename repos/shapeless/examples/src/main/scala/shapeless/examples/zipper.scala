@@ -103,7 +103,8 @@ object ZipperExamples extends App {
 
   // All together in a single pass ...
   val singlePass =
-    z.down
+    z
+      .down
       .put("King Agamemnon")
       .right
       .put(8000)

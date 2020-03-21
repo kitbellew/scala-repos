@@ -62,7 +62,8 @@ class ConstraintPropagationSuite extends SparkFunSuite {
     assert(tr.analyze.constraints.isEmpty)
 
     assert(
-      tr.where('a.attr > 10)
+      tr
+        .where('a.attr > 10)
         .select('c.attr, 'b.attr)
         .analyze
         .constraints
@@ -74,7 +75,8 @@ class ConstraintPropagationSuite extends SparkFunSuite {
         Seq(resolveColumn(tr, "a") > 10, IsNotNull(resolveColumn(tr, "a")))))
 
     verifyConstraints(
-      tr.where('a.attr > 10)
+      tr
+        .where('a.attr > 10)
         .select('c.attr, 'a.attr)
         .where('c.attr =!= 100)
         .analyze
@@ -94,7 +96,8 @@ class ConstraintPropagationSuite extends SparkFunSuite {
     assert(tr.analyze.constraints.isEmpty)
 
     val aliasedRelation =
-      tr.where('c.attr > 10 && 'a.attr < 5)
+      tr
+        .where('c.attr > 10 && 'a.attr < 5)
         .groupBy('a, 'c, 'b)('a, 'c.as("c1"), count('a).as("a3"))
         .select('c1, 'a)
         .analyze
@@ -115,7 +118,8 @@ class ConstraintPropagationSuite extends SparkFunSuite {
     val tr = LocalRelation('a.int, 'b.string, 'c.int)
 
     assert(
-      tr.where('c.attr > 10)
+      tr
+        .where('c.attr > 10)
         .select('a.as('x), 'b.as('y))
         .analyze
         .constraints
@@ -148,10 +152,7 @@ class ConstraintPropagationSuite extends SparkFunSuite {
     assert(
       tr1
         .where('a.attr > 10)
-        .unionAll(
-          tr2
-            .where('e.attr > 10)
-            .unionAll(tr3.where('i.attr > 10)))
+        .unionAll(tr2.where('e.attr > 10).unionAll(tr3.where('i.attr > 10)))
         .analyze
         .constraints
         .isEmpty)
@@ -159,10 +160,7 @@ class ConstraintPropagationSuite extends SparkFunSuite {
     verifyConstraints(
       tr1
         .where('a.attr > 10)
-        .unionAll(
-          tr2
-            .where('d.attr > 10)
-            .unionAll(tr3.where('g.attr > 10)))
+        .unionAll(tr2.where('d.attr > 10).unionAll(tr3.where('g.attr > 10)))
         .analyze
         .constraints,
       ExpressionSet(

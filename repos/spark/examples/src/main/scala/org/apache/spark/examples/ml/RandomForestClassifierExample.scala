@@ -38,7 +38,8 @@ object RandomForestClassifierExample {
 
     // $example on$
     // Load and parse the data file, converting it to a DataFrame.
-    val data = sqlContext.read
+    val data = sqlContext
+      .read
       .format("libsvm")
       .load("data/mllib/sample_libsvm_data.txt")
 

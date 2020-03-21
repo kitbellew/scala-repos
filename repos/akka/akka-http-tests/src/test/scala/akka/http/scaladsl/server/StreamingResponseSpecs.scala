@@ -19,7 +19,8 @@ class StreamingResponseSpecs extends RoutingSpec {
     "should render empty string if stream was empty" in {
 
       val src = Source.empty[ByteString]
-      val entity = HttpEntity.Chunked
+      val entity = HttpEntity
+        .Chunked
         .fromData(ContentTypes.`application/json`, src)
       val response = HttpResponse(status = StatusCodes.OK, entity = entity)
       val route = complete(response)

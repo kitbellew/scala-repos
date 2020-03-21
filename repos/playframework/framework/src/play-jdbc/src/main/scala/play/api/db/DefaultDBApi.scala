@@ -22,15 +22,17 @@ class DefaultDBApi(
   import DefaultDBApi._
 
   lazy val databases: Seq[Database] = {
-    configuration.map {
-      case (name, config) =>
-        val pool = ConnectionPool.fromConfig(
-          config.getString("pool"),
-          injector,
-          environment,
-          defaultConnectionPool)
-        new PooledDatabase(name, config, environment, pool)
-    }.toSeq
+    configuration
+      .map {
+        case (name, config) =>
+          val pool = ConnectionPool.fromConfig(
+            config.getString("pool"),
+            injector,
+            environment,
+            defaultConnectionPool)
+          new PooledDatabase(name, config, environment, pool)
+      }
+      .toSeq
   }
 
   private lazy val databaseByName: Map[String, Database] = {

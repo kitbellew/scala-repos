@@ -19,15 +19,8 @@ case class AiConfig(
   val strictFen = true
 
   def >> =
-    (
-      variant.id,
-      timeMode.id,
-      time,
-      increment,
-      days,
-      level,
-      color.name,
-      fen).some
+    (variant.id, timeMode.id, time, increment, days, level, color.name, fen)
+      .some
 
   def game =
     fenGame { chessGame =>

@@ -112,7 +112,8 @@ trait GenTrees {
         // see `Metalevels` for more info about metalevel breaches
         // and about how we deal with splices that contain them
         val isMetalevelBreach = splicee exists (sub =>
-          sub.hasSymbolField && sub.symbol != NoSymbol && sub.symbol.metalevel > 0)
+          sub.hasSymbolField && sub
+            .symbol != NoSymbol && sub.symbol.metalevel > 0)
         val isRuntimeEval =
           splicee exists (sub => sub.hasSymbolField && sub.symbol == ExprSplice)
         if (isMetalevelBreach || isRuntimeEval) {
@@ -226,8 +227,8 @@ trait GenTrees {
       // then we can reify the scrutinee as a symless AST and that will definitely be hygienic
       // why? because then typechecking of a scrutinee doesn't depend on the environment external to the quasiquote
       // otherwise we need to reify the corresponding type
-      if (sym.isLocalToReifee || tpe.isLocalToReifee || treeInfo
-            .isWildcardStarType(tree))
+      if (sym.isLocalToReifee || tpe
+            .isLocalToReifee || treeInfo.isWildcardStarType(tree))
         reifyProduct(tree)
       else {
         if (reifyDebug)

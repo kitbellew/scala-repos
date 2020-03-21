@@ -244,7 +244,8 @@ trait RankSpecs extends EvalStackSpecs {
         val input =
           """
           | campaigns := //campaigns 
-          | campaigns where std::stats::rank(campaigns.cpm * campaigns.cpm) = 36""".stripMargin
+          | campaigns where std::stats::rank(campaigns.cpm * campaigns.cpm) = 36"""
+            .stripMargin
 
         val results = evalE(input)
 
@@ -303,7 +304,8 @@ trait RankSpecs extends EvalStackSpecs {
           | histogram := solve 'cpm
           |  {count: count(campaigns.cpm where campaigns.cpm = 'cpm), age: 'cpm}
           |
-          | histogram with {rank: std::stats::rank(neg histogram.count)}""".stripMargin
+          | histogram with {rank: std::stats::rank(neg histogram.count)}"""
+            .stripMargin
 
         val results = eval(input)
 
@@ -351,7 +353,8 @@ trait RankSpecs extends EvalStackSpecs {
         val input =
           """
           | campaigns := //campaigns 
-          | campaigns where std::stats::denseRank(campaigns.cpm) = 3""".stripMargin
+          | campaigns where std::stats::denseRank(campaigns.cpm) = 3"""
+            .stripMargin
 
         val results = evalE(input)
 

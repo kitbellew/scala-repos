@@ -87,10 +87,13 @@ final class ChiSqSelector(override val uid: String)
 
   override def fit(dataset: DataFrame): ChiSqSelectorModel = {
     transformSchema(dataset.schema, logging = true)
-    val input = dataset.select($(labelCol), $(featuresCol)).rdd.map {
-      case Row(label: Double, features: Vector) =>
-        LabeledPoint(label, features)
-    }
+    val input = dataset
+      .select($(labelCol), $(featuresCol))
+      .rdd
+      .map {
+        case Row(label: Double, features: Vector) =>
+          LabeledPoint(label, features)
+      }
     val chiSqSelector = new feature.ChiSqSelector($(numTopFeatures)).fit(input)
     copyValues(new ChiSqSelectorModel(uid, chiSqSelector).setParent(this))
   }
@@ -164,7 +167,10 @@ final class ChiSqSelectorModel private[ml] (
     val origAttrGroup = AttributeGroup.fromStructField(schema($(featuresCol)))
     val featureAttributes: Array[Attribute] =
       if (origAttrGroup.attributes.nonEmpty) {
-        origAttrGroup.attributes.get.zipWithIndex
+        origAttrGroup
+          .attributes
+          .get
+          .zipWithIndex
           .filter(x => selector.contains(x._2))
           .map(_._1)
       } else {
@@ -211,7 +217,8 @@ object ChiSqSelectorModel extends MLReadable[ChiSqSelectorModel] {
     override def load(path: String): ChiSqSelectorModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
+      val data = sqlContext
+        .read
         .parquet(dataPath)
         .select("selectedFeatures")
         .head()

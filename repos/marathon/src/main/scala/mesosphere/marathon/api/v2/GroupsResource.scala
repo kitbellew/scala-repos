@@ -92,12 +92,14 @@ class GroupsResource @Inject() (
           .map(info => ok(info))
 
       def groupResponse(id: PathId) =
-        infoService.selectGroup(id, allAuthorized, appEmbed, groupEmbed).map {
-          case Some(info) =>
-            ok(info)
-          case None =>
-            unknownGroup(id)
-        }
+        infoService
+          .selectGroup(id, allAuthorized, appEmbed, groupEmbed)
+          .map {
+            case Some(info) =>
+              ok(info)
+            case None =>
+              unknownGroup(id)
+          }
 
       def groupVersionResponse(id: PathId, version: Timestamp) =
         infoService
@@ -110,11 +112,15 @@ class GroupsResource @Inject() (
           }
 
       def versionsResponse(groupId: PathId) = {
-        groupManager.group(groupId).map { maybeGroup =>
-          withAuthorization(ViewGroup, maybeGroup, unknownGroup(groupId)) { _ =>
-            result(groupManager.versions(groupId).map(versions => ok(versions)))
+        groupManager
+          .group(groupId)
+          .map { maybeGroup =>
+            withAuthorization(ViewGroup, maybeGroup, unknownGroup(groupId)) {
+              _ =>
+                result(
+                  groupManager.versions(groupId).map(versions => ok(versions)))
+            }
           }
-        }
       }
 
       val response: Future[Response] =
@@ -171,7 +177,8 @@ class GroupsResource @Inject() (
       req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       withValid(Json.parse(body).as[GroupUpdate]) { groupUpdate =>
-        val effectivePath = groupUpdate.id
+        val effectivePath = groupUpdate
+          .id
           .map(_.canonicalPath(id.toRootPath))
           .getOrElse(id.toRootPath)
         val rootGroup = result(groupManager.rootGroup())
@@ -311,23 +318,28 @@ class GroupsResource @Inject() (
       groupUpdate: GroupUpdate,
       newVersion: Timestamp)(implicit identity: Identity) = {
     def versionChange =
-      groupUpdate.version.map { targetVersion =>
-        checkAuthorization(UpdateGroup, group)
-        val versionedGroup = result(groupManager.group(group.id, targetVersion))
-          .map(checkAuthorization(ViewGroup, _))
-          .map(_.update(group.id, Predef.identity, newVersion))
-        versionedGroup.getOrElse(
-          throw new IllegalArgumentException(
-            s"Group $group.id not available in version $targetVersion"))
-      }
+      groupUpdate
+        .version
+        .map { targetVersion =>
+          checkAuthorization(UpdateGroup, group)
+          val versionedGroup = result(
+            groupManager.group(group.id, targetVersion))
+            .map(checkAuthorization(ViewGroup, _))
+            .map(_.update(group.id, Predef.identity, newVersion))
+          versionedGroup.getOrElse(
+            throw new IllegalArgumentException(
+              s"Group $group.id not available in version $targetVersion"))
+        }
 
     def scaleChange =
-      groupUpdate.scaleBy.map { scale =>
-        checkAuthorization(UpdateGroup, group)
-        group.updateApps(newVersion) { app =>
-          app.copy(instances = (app.instances * scale).ceil.toInt)
+      groupUpdate
+        .scaleBy
+        .map { scale =>
+          checkAuthorization(UpdateGroup, group)
+          group.updateApps(newVersion) { app =>
+            app.copy(instances = (app.instances * scale).ceil.toInt)
+          }
         }
-      }
 
     def createOrUpdateChange = {
       // groupManager.update always passes a group, even if it doesn't exist

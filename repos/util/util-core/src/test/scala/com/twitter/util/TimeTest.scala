@@ -588,24 +588,24 @@ class TimeTest extends {
 
     "max" in {
       assert(
-        (
-          10.seconds.afterEpoch max 5.seconds.afterEpoch
-        ) == 10.seconds.afterEpoch)
+        (10.seconds.afterEpoch max 5.seconds.afterEpoch) == 10
+          .seconds
+          .afterEpoch)
       assert(
-        (
-          5.seconds.afterEpoch max 10.seconds.afterEpoch
-        ) == 10.seconds.afterEpoch)
+        (5.seconds.afterEpoch max 10.seconds.afterEpoch) == 10
+          .seconds
+          .afterEpoch)
     }
 
     "min" in {
       assert(
-        (
-          10.seconds.afterEpoch min 5.seconds.afterEpoch
-        ) == 5.seconds.afterEpoch)
+        (10.seconds.afterEpoch min 5.seconds.afterEpoch) == 5
+          .seconds
+          .afterEpoch)
       assert(
-        (
-          5.seconds.afterEpoch min 10.seconds.afterEpoch
-        ) == 5.seconds.afterEpoch)
+        (5.seconds.afterEpoch min 10.seconds.afterEpoch) == 5
+          .seconds
+          .afterEpoch)
     }
 
     "moreOrLessEquals" in {

@@ -165,7 +165,8 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     map.insert(4, nullInt)
     map.insert(nullInt, 8)
     map.insert(nullInt, nullInt)
-    val result = map.iterator
+    val result = map
+      .iterator
       .toSet[(Int, ArrayBuffer[Int])]
       .map(kv => (kv._1, kv._2.sorted))
     assert(
@@ -304,12 +305,16 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     }
 
     assertSpilled(sc, "cogroup") {
-      val rdd1 = sc.parallelize(0 until size).map { i =>
-        (i / 2, i)
-      }
-      val rdd2 = sc.parallelize(0 until size).map { i =>
-        (i / 2, i)
-      }
+      val rdd1 = sc
+        .parallelize(0 until size)
+        .map { i =>
+          (i / 2, i)
+        }
+      val rdd2 = sc
+        .parallelize(0 until size)
+        .map { i =>
+          (i / 2, i)
+        }
       val result = rdd1.cogroup(rdd2).collect()
       assert(result.length === size / 2)
       result.foreach {
@@ -478,31 +483,31 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
         spillThreshold.toString)
     sc = new SparkContext("local", "test", conf)
     // No spilling
-    AccumulatorSuite.verifyPeakExecutionMemorySet(
-      sc,
-      "external map without spilling") {
-      assertNotSpilled(sc, "verify peak memory") {
-        sc.parallelize(1 to spillThreshold / 2, 2)
-          .map { i =>
-            (i, i)
-          }
-          .reduceByKey(_ + _)
-          .count()
+    AccumulatorSuite
+      .verifyPeakExecutionMemorySet(sc, "external map without spilling") {
+        assertNotSpilled(sc, "verify peak memory") {
+          sc
+            .parallelize(1 to spillThreshold / 2, 2)
+            .map { i =>
+              (i, i)
+            }
+            .reduceByKey(_ + _)
+            .count()
+        }
       }
-    }
     // With spilling
-    AccumulatorSuite.verifyPeakExecutionMemorySet(
-      sc,
-      "external map with spilling") {
-      assertSpilled(sc, "verify peak memory") {
-        sc.parallelize(1 to spillThreshold * 3, 2)
-          .map { i =>
-            (i, i)
-          }
-          .reduceByKey(_ + _)
-          .count()
+    AccumulatorSuite
+      .verifyPeakExecutionMemorySet(sc, "external map with spilling") {
+        assertSpilled(sc, "verify peak memory") {
+          sc
+            .parallelize(1 to spillThreshold * 3, 2)
+            .map { i =>
+              (i, i)
+            }
+            .reduceByKey(_ + _)
+            .count()
+        }
       }
-    }
   }
 
 }

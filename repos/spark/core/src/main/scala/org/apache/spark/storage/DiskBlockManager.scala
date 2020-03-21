@@ -37,9 +37,8 @@ private[spark] class DiskBlockManager(
     deleteFilesOnStop: Boolean)
     extends Logging {
 
-  private[spark] val subDirsPerLocalDir = conf.getInt(
-    "spark.diskStore.subDirectories",
-    64)
+  private[spark] val subDirsPerLocalDir = conf
+    .getInt("spark.diskStore.subDirectories", 64)
 
   /* Create one local directory for each path mentioned in spark.local.dir; then, inside this
    * directory, create multiple subdirectories that we will hash files into, in order to avoid
@@ -139,27 +138,30 @@ private[spark] class DiskBlockManager(
     * be deleted on JVM exit when using the external shuffle service.
     */
   private def createLocalDirs(conf: SparkConf): Array[File] = {
-    Utils.getConfiguredLocalDirs(conf).flatMap { rootDir =>
-      try {
-        val localDir = Utils.createDirectory(rootDir, "blockmgr")
-        logInfo(s"Created local directory at $localDir")
-        Some(localDir)
-      } catch {
-        case e: IOException =>
-          logError(
-            s"Failed to create local dir in $rootDir. Ignoring this directory.",
-            e)
-          None
+    Utils
+      .getConfiguredLocalDirs(conf)
+      .flatMap { rootDir =>
+        try {
+          val localDir = Utils.createDirectory(rootDir, "blockmgr")
+          logInfo(s"Created local directory at $localDir")
+          Some(localDir)
+        } catch {
+          case e: IOException =>
+            logError(
+              s"Failed to create local dir in $rootDir. Ignoring this directory.",
+              e)
+            None
+        }
       }
-    }
   }
 
   private def addShutdownHook(): AnyRef = {
-    ShutdownHookManager.addShutdownHook(
-      ShutdownHookManager.TEMP_DIR_SHUTDOWN_PRIORITY + 1) { () =>
-      logInfo("Shutdown hook called")
-      DiskBlockManager.this.doStop()
-    }
+    ShutdownHookManager
+      .addShutdownHook(ShutdownHookManager.TEMP_DIR_SHUTDOWN_PRIORITY + 1) {
+        () =>
+          logInfo("Shutdown hook called")
+          DiskBlockManager.this.doStop()
+      }
   }
 
   /** Cleanup local dirs and stop shuffle sender. */

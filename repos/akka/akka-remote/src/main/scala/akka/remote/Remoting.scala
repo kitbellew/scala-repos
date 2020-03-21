@@ -95,16 +95,14 @@ private[remote] object Remoting {
 
           case _ ⇒
             throw new RemoteTransportException(
-              s"Multiple transports are available for [$remote]: [${responsibleTransports
-                .mkString(",")}]. " +
+              s"Multiple transports are available for [$remote]: [${responsibleTransports.mkString(",")}]. " +
                 "Remoting cannot decide which transport to use to reach the remote system. Change your configuration " +
                 "so that only one transport is responsible for the address.",
               null)
         }
       case None ⇒
         throw new RemoteTransportException(
-          s"No transport is loaded for protocol: [${remote.protocol}], available protocols: [${transportMapping.keys
-            .mkString(", ")}]",
+          s"No transport is loaded for protocol: [${remote.protocol}], available protocols: [${transportMapping.keys.mkString(", ")}]",
           null)
     }
   }
@@ -182,18 +180,20 @@ private[remote] class Remoting(
         }
 
         import system.dispatcher
-        (manager ? ShutdownAndFlush).mapTo[Boolean].andThen {
-          case Success(flushSuccessful) ⇒
-            if (!flushSuccessful)
-              log.warning(
-                "Shutdown finished, but flushing might not have been successful and some messages might have been dropped. " +
-                  "Increase akka.remote.flush-wait-on-shutdown to a larger value to avoid this.")
-            finalize()
+        (manager ? ShutdownAndFlush)
+          .mapTo[Boolean]
+          .andThen {
+            case Success(flushSuccessful) ⇒
+              if (!flushSuccessful)
+                log.warning(
+                  "Shutdown finished, but flushing might not have been successful and some messages might have been dropped. " +
+                    "Increase akka.remote.flush-wait-on-shutdown to a larger value to avoid this.")
+              finalize()
 
-          case Failure(e) ⇒
-            notifyError("Failure during shutdown of remoting.", e)
-            finalize()
-        } map { _ ⇒
+            case Failure(e) ⇒
+              notifyError("Failure during shutdown of remoting.", e)
+              finalize()
+          } map { _ ⇒
           Done
         } // RARP needs only akka.Done, not a boolean
       case None ⇒
@@ -221,9 +221,8 @@ private[remote] class Remoting(
             Promise()
           manager ! Listen(addressesPromise)
 
-          val transports: Seq[(AkkaProtocolTransport, Address)] = Await.result(
-            addressesPromise.future,
-            StartupTimeout.duration)
+          val transports: Seq[(AkkaProtocolTransport, Address)] = Await
+            .result(addressesPromise.future, StartupTimeout.duration)
           if (transports.isEmpty)
             throw new RemoteTransportException(
               "No transport drivers were loaded.",
@@ -238,9 +237,11 @@ private[remote] class Remoting(
           }
 
           defaultAddress = transports.head._2
-          addresses = transports.map {
-            _._2
-          }.toSet
+          addresses = transports
+            .map {
+              _._2
+            }
+            .toSet
 
           log.info(
             "Remoting started; listening on addresses :" + addresses
@@ -557,11 +558,10 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
     .max(1.second)
     .min(10.seconds)
 
-  val pruneTimerCancellable: Cancellable = context.system.scheduler.schedule(
-    pruneInterval,
-    pruneInterval,
-    self,
-    Prune)
+  val pruneTimerCancellable: Cancellable = context
+    .system
+    .scheduler
+    .schedule(pruneInterval, pruneInterval, self, Prune)
 
   var pendingReadHandoffs = Map[ActorRef, AkkaProtocolHandle]()
   var stashedInbound = Map[ActorRef, Vector[InboundAssociation]]()
@@ -609,14 +609,16 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
             reason.getMessage,
             causedBy
           )
-          endpoints.markAsFailed(
-            sender(),
-            Deadline.now + settings.RetryGateClosedFor)
+          endpoints
+            .markAsFailed(sender(), Deadline.now + settings.RetryGateClosedFor)
         }
         disassiciationInfo.foreach {
           case AssociationHandle.Quarantined ⇒
-            context.system.eventStream.publish(
-              ThisActorSystemQuarantinedEvent(localAddress, remoteAddress))
+            context
+              .system
+              .eventStream
+              .publish(
+                ThisActorSystemQuarantinedEvent(localAddress, remoteAddress))
           case _ ⇒ // do nothing
         }
         Stop
@@ -629,9 +631,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
             remoteAddress,
             settings.RetryGateClosedFor.toMillis
           )
-          endpoints.markAsFailed(
-            sender(),
-            Deadline.now + settings.RetryGateClosedFor)
+          endpoints
+            .markAsFailed(sender(), Deadline.now + settings.RetryGateClosedFor)
         }
         Stop
 
@@ -657,9 +658,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
             remoteAddress,
             settings.RetryGateClosedFor.toMillis
           )
-          endpoints.markAsFailed(
-            sender(),
-            Deadline.now + settings.RetryGateClosedFor)
+          endpoints
+            .markAsFailed(sender(), Deadline.now + settings.RetryGateClosedFor)
         }
         Stop
 
@@ -670,9 +670,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
           case _ ⇒
             log.error(e, e.getMessage)
         }
-        endpoints.markAsFailed(
-          sender(),
-          Deadline.now + settings.RetryGateClosedFor)
+        endpoints
+          .markAsFailed(sender(), Deadline.now + settings.RetryGateClosedFor)
         Stop
     }
 
@@ -740,9 +739,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
             address,
             settings.RetryGateClosedFor.toMillis
           )
-          endpoints.markAsFailed(
-            endpoint,
-            Deadline.now + settings.RetryGateClosedFor)
+          endpoints
+            .markAsFailed(endpoint, Deadline.now + settings.RetryGateClosedFor)
         case (Some(Pass(endpoint, Some(currentUid), _)), Some(quarantineUid))
             if currentUid == quarantineUid ⇒
           context.stop(endpoint)
@@ -874,9 +872,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         } yield flushStatus && shutdownStatus
       ) pipeTo sender()
 
-      pendingReadHandoffs.valuesIterator foreach (
-        _.disassociate(AssociationHandle.Shutdown)
-      )
+      pendingReadHandoffs
+        .valuesIterator foreach (_.disassociate(AssociationHandle.Shutdown))
 
       // Ignore all other writes
       normalShutdown = true
@@ -901,8 +898,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
             pendingReadHandoffs.get(endpoint) foreach (_.disassociate())
             pendingReadHandoffs += endpoint -> handle
             endpoint ! EndpointWriter.TakeOver(handle, self)
-            endpoints.writableEndpointWithPolicyFor(
-              handle.remoteAddress) match {
+            endpoints
+              .writableEndpointWithPolicyFor(handle.remoteAddress) match {
               case Some(Pass(ep, _, _)) ⇒
                 ep ! ReliableDeliverySupervisor.Ungate
               case _ ⇒
@@ -913,8 +910,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
                   handle.handshakeInfo.uid))
               handle.disassociate(AssociationHandle.Quarantined)
             else
-              endpoints.writableEndpointWithPolicyFor(
-                handle.remoteAddress) match {
+              endpoints
+                .writableEndpointWithPolicyFor(handle.remoteAddress) match {
                 case Some(Pass(ep, None, _)) ⇒
                   // Idle writer will never send a GotUid or a Terminated so we need to "provoke it"
                   // to get an unstash event
@@ -950,9 +947,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
   private def createAndRegisterEndpoint(
       handle: AkkaProtocolHandle,
       refuseUid: Option[Int]): Unit = {
-    val writing =
-      settings.UsePassiveConnections && !endpoints.hasWritableEndpointFor(
-        handle.remoteAddress)
+    val writing = settings.UsePassiveConnections && !endpoints
+      .hasWritableEndpointFor(handle.remoteAddress)
     eventPublisher.notifyListeners(
       AssociatedEvent(
         handle.localAddress,
@@ -1003,7 +999,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
           // The chain at this point:
           //   Driver
           val driver =
-            extendedSystem.dynamicAccess
+            extendedSystem
+              .dynamicAccess
               .createInstanceFor[Transport](fqn, args)
               .recover({
 
@@ -1030,9 +1027,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
               .foldLeft(driver) {
                 (t: Transport, provider: TransportAdapterProvider) ⇒
                   // The TransportAdapterProvider will wrap the given Transport and returns with a wrapped one
-                  provider.create(
-                    t,
-                    context.system.asInstanceOf[ExtendedActorSystem])
+                  provider
+                    .create(t, context.system.asInstanceOf[ExtendedActorSystem])
               }
 
           // Apply AkkaProtocolTransport wrapper to the end of the chain
@@ -1145,9 +1141,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
 
   override def postStop(): Unit = {
     pruneTimerCancellable.cancel()
-    pendingReadHandoffs.valuesIterator foreach (
-      _.disassociate(AssociationHandle.Shutdown)
-    )
+    pendingReadHandoffs
+      .valuesIterator foreach (_.disassociate(AssociationHandle.Shutdown))
 
     if (!normalShutdown) {
       // Remaining running endpoints are children, so they will clean up themselves.

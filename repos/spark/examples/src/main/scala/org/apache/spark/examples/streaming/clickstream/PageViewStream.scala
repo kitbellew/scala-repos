@@ -37,9 +37,11 @@ object PageViewStream {
   def main(args: Array[String]) {
     if (args.length != 3) {
       System.err.println("Usage: PageViewStream <metric> <host> <port>")
-      System.err.println(
-        "<metric> must be one of pageCounts, slidingPageCounts," +
-          " errorRatePerZipCode, activeUserCount, popularUsersSeen")
+      System
+        .err
+        .println(
+          "<metric> must be one of pageCounts, slidingPageCounts," +
+            " errorRatePerZipCode, activeUserCount, popularUsersSeen")
       System.exit(1)
     }
     StreamingExamples.setStreamingLogLevels()
@@ -96,8 +98,10 @@ object PageViewStream {
       .map("Unique active users: " + _)
 
     // An external dataset we want to join to this stream
-    val userList = ssc.sparkContext.parallelize(
-      Seq(1 -> "Patrick Wendell", 2 -> "Reynold Xin", 3 -> "Matei Zaharia"))
+    val userList = ssc
+      .sparkContext
+      .parallelize(
+        Seq(1 -> "Patrick Wendell", 2 -> "Reynold Xin", 3 -> "Matei Zaharia"))
 
     metric match {
       case "pageCounts" =>

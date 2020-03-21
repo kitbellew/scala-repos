@@ -27,10 +27,8 @@ class AlgebraInvariantTests extends CatsSuite {
           y
     }
 
-  val genMonoidInt: Gen[Monoid[Int]] = Gen.oneOf(
-    implicitly[Monoid[Int]],
-    intMultiplication,
-    maxInt)
+  val genMonoidInt: Gen[Monoid[Int]] = Gen
+    .oneOf(implicitly[Monoid[Int]], intMultiplication, maxInt)
 
   implicit val arbMonoidInt: Arbitrary[Monoid[Int]] = Arbitrary(genMonoidInt)
 

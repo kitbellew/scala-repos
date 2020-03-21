@@ -44,11 +44,13 @@ object Tournament extends LilaController {
                 UserRepo.allSortToints(10) map {
                 case (((visible, scheduled), finished), leaderboard) =>
                   Ok(
-                    html.tournament.home(
-                      scheduled,
-                      finished,
-                      leaderboard,
-                      env scheduleJsonView visible))
+                    html
+                      .tournament
+                      .home(
+                        scheduled,
+                        finished,
+                        leaderboard,
+                        env scheduleJsonView visible))
               } map NoCache
           },
         api = _ =>
@@ -99,8 +101,8 @@ object Tournament extends LilaController {
                 get("playerInfo").?? {
                   env.api.playerInfo(tour.id, _)
                 } zip
-                  getBool("socketVersion").??(
-                    env version tour.id map some) flatMap {
+                  getBool("socketVersion")
+                    .??(env version tour.id map some) flatMap {
                   case (playerInfoExt, socketVersion) =>
                     env.jsonView(
                       tour,
@@ -221,13 +223,17 @@ object Tournament extends LilaController {
     AuthBody { implicit ctx => implicit me =>
       NoLame {
         implicit val req = ctx.body
-        env.forms.create.bindFromRequest.fold(
-          err => BadRequest(html.tournament.form(err, env.forms)).fuccess,
-          setup =>
-            env.api.createTournament(setup, me) map { tour =>
-              Redirect(routes.Tournament.show(tour.id))
-            }
-        )
+        env
+          .forms
+          .create
+          .bindFromRequest
+          .fold(
+            err => BadRequest(html.tournament.form(err, env.forms)).fuccess,
+            setup =>
+              env.api.createTournament(setup, me) map { tour =>
+                Redirect(routes.Tournament.show(tour.id))
+              }
+          )
       }
     }
 

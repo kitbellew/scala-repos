@@ -169,7 +169,9 @@ trait BaseSerializer extends Serializer {
     * INTERNAL API
     */
   private[akka] def identifierFromConfig: Int =
-    system.settings.config
+    system
+      .settings
+      .config
       .getInt(s"""${SerializationIdentifiers}."${getClass.getName}"""")
 }
 
@@ -243,9 +245,11 @@ class JavaSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
   def toBinary(o: AnyRef): Array[Byte] = {
     val bos = new ByteArrayOutputStream
     val out = new ObjectOutputStream(bos)
-    JavaSerializer.currentSystem.withValue(system) {
-      out.writeObject(o)
-    }
+    JavaSerializer
+      .currentSystem
+      .withValue(system) {
+        out.writeObject(o)
+      }
     out.close()
     bos.toByteArray
   }
@@ -256,9 +260,11 @@ class JavaSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
         system.dynamicAccess.classLoader,
         new ByteArrayInputStream(bytes))
     val obj =
-      JavaSerializer.currentSystem.withValue(system) {
-        in.readObject
-      }
+      JavaSerializer
+        .currentSystem
+        .withValue(system) {
+          in.readObject
+        }
     in.close()
     obj
   }

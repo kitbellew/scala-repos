@@ -30,7 +30,8 @@ class ScalaParameterTableModelItem(
   override def isEllipsisType: Boolean = parameter.isRepeatedParameter
 
   def updateType(problems: ListBuffer[String] = ListBuffer()): Unit = {
-    if (parameter.scType != null && typeText == parameter.scType.presentableText)
+    if (parameter
+          .scType != null && typeText == parameter.scType.presentableText)
       return
 
     var trimmed = typeText.trim
@@ -42,9 +43,8 @@ class ScalaParameterTableModelItem(
     }
 
     if (typeText.isEmpty) {
-      problems += RefactoringBundle.message(
-        "changeSignature.no.type.for.parameter",
-        parameter.getName)
+      problems += RefactoringBundle
+        .message("changeSignature.no.type.for.parameter", parameter.getName)
       return
     }
 

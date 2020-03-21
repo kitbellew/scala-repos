@@ -362,14 +362,16 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
 
       val bytes = baos.toByteArray
 
-      JavaSerializer.currentSystem.withValue(esys) {
-        val in = new ObjectInputStream(new ByteArrayInputStream(bytes))
-        val readA = in.readObject
+      JavaSerializer
+        .currentSystem
+        .withValue(esys) {
+          val in = new ObjectInputStream(new ByteArrayInputStream(bytes))
+          val readA = in.readObject
 
-        a.isInstanceOf[ActorRefWithCell] should ===(true)
-        readA.isInstanceOf[ActorRefWithCell] should ===(true)
-        (readA eq a) should ===(true)
-      }
+          a.isInstanceOf[ActorRefWithCell] should ===(true)
+          readA.isInstanceOf[ActorRefWithCell] should ===(true)
+          (readA eq a) should ===(true)
+        }
 
       val ser = new JavaSerializer(esys)
       val readA = ser.fromBinary(bytes, None)
@@ -421,15 +423,17 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       watch(ref)
       expectTerminated(ref)
 
-      JavaSerializer.currentSystem.withValue(sysImpl) {
-        val in =
-          new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
-        in.readObject should ===(
-          new EmptyLocalActorRef(
-            sysImpl.provider,
-            ref.path,
-            system.eventStream))
-      }
+      JavaSerializer
+        .currentSystem
+        .withValue(sysImpl) {
+          val in =
+            new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
+          in.readObject should ===(
+            new EmptyLocalActorRef(
+              sysImpl.provider,
+              ref.path,
+              system.eventStream))
+        }
     }
 
     "support nested actorOfs" in {
@@ -456,8 +460,8 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
     }
 
     "support advanced nested actorOfs" in {
-      val a = system.actorOf(
-        Props(new OuterActor(system.actorOf(Props(new InnerActor)))))
+      val a = system
+        .actorOf(Props(new OuterActor(system.actorOf(Props(new InnerActor)))))
       val inner = Await.result(a ? "innerself", timeout.duration)
 
       Await.result(a ? a, timeout.duration) should ===(a)

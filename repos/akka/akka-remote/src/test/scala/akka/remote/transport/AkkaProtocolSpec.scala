@@ -78,16 +78,14 @@ class AkkaProtocolSpec
   val codec = AkkaPduProtobufCodec
 
   val testMsg =
-    WireFormats.SerializedMessage
+    WireFormats
+      .SerializedMessage
       .newBuilder()
       .setSerializerId(0)
       .setMessage(PByteString.copyFromUtf8("foo"))
       .build
-  val testEnvelope = codec.constructMessage(
-    localAkkaAddress,
-    testActor,
-    testMsg,
-    None)
+  val testEnvelope = codec
+    .constructMessage(localAkkaAddress, testActor, testMsg, None)
   val testMsgPdu: ByteString = codec.constructPayload(testEnvelope)
 
   def testHeartbeat = InboundPayload(codec.constructHeartbeat)
@@ -139,7 +137,8 @@ class AkkaProtocolSpec
             if sender == localAddress && recipient == remoteAddress ⇒
           codec.decodePdu(payload) match {
             case Associate(info) ⇒
-              info.cookie == cookie && info.origin == localAddress && info.uid == uid
+              info.cookie == cookie && info.origin == localAddress && info
+                .uid == uid
             case _ ⇒
               false
           }
@@ -206,8 +205,9 @@ class AkkaProtocolSpec
             h
         }
 
-      wrappedHandle.readHandlerPromise.success(
-        ActorHandleEventListener(testActor))
+      wrappedHandle
+        .readHandlerPromise
+        .success(ActorHandleEventListener(testActor))
 
       failureDetector.called should ===(true)
 
@@ -242,12 +242,14 @@ class AkkaProtocolSpec
       reader ! testAssociate(uid = 33, cookie = None)
 
       awaitCond(
-        registry.logSnapshot.exists {
-          case DisassociateAttempt(requester, remote) ⇒
-            true
-          case _ ⇒
-            false
-        })
+        registry
+          .logSnapshot
+          .exists {
+            case DisassociateAttempt(requester, remote) ⇒
+              true
+            case _ ⇒
+              false
+          })
     }
 
     "in outbound mode delay readiness until hadnshake finished" in {
@@ -313,12 +315,14 @@ class AkkaProtocolSpec
       reader ! testAssociate(uid = 33, Some("xyzzy"))
 
       awaitCond(
-        registry.logSnapshot.exists {
-          case DisassociateAttempt(requester, remote) ⇒
-            true
-          case _ ⇒
-            false
-        })
+        registry
+          .logSnapshot
+          .exists {
+            case DisassociateAttempt(requester, remote) ⇒
+              true
+            case _ ⇒
+              false
+          })
     }
 
     "accept incoming associations with correct cookie" in {
@@ -351,8 +355,9 @@ class AkkaProtocolSpec
             h
         }
 
-      wrappedHandle.readHandlerPromise.success(
-        ActorHandleEventListener(testActor))
+      wrappedHandle
+        .readHandlerPromise
+        .success(ActorHandleEventListener(testActor))
 
       failureDetector.called should ===(true)
 
@@ -421,8 +426,9 @@ class AkkaProtocolSpec
             fail()
         }
 
-      wrappedHandle.readHandlerPromise.success(
-        ActorHandleEventListener(testActor))
+      wrappedHandle
+        .readHandlerPromise
+        .success(ActorHandleEventListener(testActor))
 
       reader ! testDisassociate(AssociationHandle.Unknown)
 
@@ -462,8 +468,9 @@ class AkkaProtocolSpec
             fail()
         }
 
-      wrappedHandle.readHandlerPromise.success(
-        ActorHandleEventListener(testActor))
+      wrappedHandle
+        .readHandlerPromise
+        .success(ActorHandleEventListener(testActor))
 
       reader ! Disassociated(AssociationHandle.Unknown)
 
@@ -503,8 +510,9 @@ class AkkaProtocolSpec
             fail()
         }
 
-      wrappedHandle.readHandlerPromise.success(
-        ActorHandleEventListener(testActor))
+      wrappedHandle
+        .readHandlerPromise
+        .success(ActorHandleEventListener(testActor))
 
       //wait for one heartbeat
       awaitCond(lastActivityIsHeartbeat(registry))
@@ -549,8 +557,9 @@ class AkkaProtocolSpec
 
       stateActor ! Disassociated(AssociationHandle.Unknown)
 
-      wrappedHandle.readHandlerPromise.success(
-        ActorHandleEventListener(testActor))
+      wrappedHandle
+        .readHandlerPromise
+        .success(ActorHandleEventListener(testActor))
 
       expectMsg(Disassociated(AssociationHandle.Unknown))
 

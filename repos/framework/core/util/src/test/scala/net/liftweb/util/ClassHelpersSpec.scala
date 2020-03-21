@@ -184,10 +184,8 @@ object ClassHelpersSpec extends Specification {
       invokeMethod(classOf[String], "", "length") must_== Full(0)
     }
     "return a Full can with the result if the method is an existing static method on the class" in {
-      invokeMethod(
-        classOf[java.util.Calendar],
-        null,
-        "getInstance").isEmpty must_== false
+      invokeMethod(classOf[java.util.Calendar], null, "getInstance")
+        .isEmpty must_== false
     }
     "throw an exception if the method throws an exception" in {
       class SpecificException extends Exception

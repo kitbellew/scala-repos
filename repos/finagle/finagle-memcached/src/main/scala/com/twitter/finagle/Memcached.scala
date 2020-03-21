@@ -194,8 +194,8 @@ object Memcached
     }
 
     object NumReps {
-      implicit val param = Stack.Param(
-        NumReps(KetamaPartitionedClient.DefaultNumReps))
+      implicit val param = Stack
+        .Param(NumReps(KetamaPartitionedClient.DefaultNumReps))
     }
   }
 
@@ -224,7 +224,8 @@ object Memcached
       * has a single pipelined connection.
       */
     def newStack: Stack[ServiceFactory[Command, Response]] =
-      StackClient.newStack
+      StackClient
+        .newStack
         .replace(
           LoadBalancerFactory.role,
           ConcurrentLoadBalancerFactory.module[Command, Response])
@@ -244,20 +245,24 @@ object Memcached
       label: String,
       hasher: String,
       isPipelining: Boolean): Unit = {
-    GlobalRegistry.get.put(
-      Seq(
-        ClientRegistry.registryName,
-        Client.ProtocolLibraryName,
-        label,
-        "is_pipelining"),
-      isPipelining.toString)
-    GlobalRegistry.get.put(
-      Seq(
-        ClientRegistry.registryName,
-        Client.ProtocolLibraryName,
-        label,
-        "key_hasher"),
-      hasher)
+    GlobalRegistry
+      .get
+      .put(
+        Seq(
+          ClientRegistry.registryName,
+          Client.ProtocolLibraryName,
+          label,
+          "is_pipelining"),
+        isPipelining.toString)
+    GlobalRegistry
+      .get
+      .put(
+        Seq(
+          ClientRegistry.registryName,
+          Client.ProtocolLibraryName,
+          label,
+          "key_hasher"),
+        hasher)
   }
 
   /**
@@ -287,7 +292,8 @@ object Memcached
         transport: Transport[In, Out]): Service[Command, Response] =
       new PipeliningDispatcher(
         transport,
-        params[finagle.param.Stats].statsReceiver
+        params[finagle.param.Stats]
+          .statsReceiver
           .scope(GenSerialClientDispatcher.StatsScope))
 
     def newTwemcacheClient(dest: Name, label: String): TwemcacheClient = {

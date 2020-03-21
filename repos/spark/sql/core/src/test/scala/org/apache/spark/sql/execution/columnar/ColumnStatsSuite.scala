@@ -65,7 +65,9 @@ class ColumnStatsSuite extends SparkFunSuite {
 
     test(s"$columnStatsName: empty") {
       val columnStats = columnStatsClass.newInstance()
-      columnStats.collectedStatistics.values
+      columnStats
+        .collectedStatistics
+        .values
         .zip(initialStatistics.values)
         .foreach {
           case (actual, expected) =>
@@ -77,14 +79,16 @@ class ColumnStatsSuite extends SparkFunSuite {
       import org.apache.spark.sql.execution.columnar.ColumnarTestUtils._
 
       val columnStats = columnStatsClass.newInstance()
-      val rows =
-        Seq.fill(10)(makeRandomRow(columnType)) ++ Seq.fill(10)(makeNullRow(1))
+      val rows = Seq.fill(10)(makeRandomRow(columnType)) ++ Seq
+        .fill(10)(makeNullRow(1))
       rows.foreach(columnStats.gatherStats(_, 0))
 
       val values = rows
         .take(10)
         .map(_.get(0, columnType.dataType).asInstanceOf[T#InternalType])
-      val ordering = columnType.dataType.ordering
+      val ordering = columnType
+        .dataType
+        .ordering
         .asInstanceOf[Ordering[T#InternalType]]
       val stats = columnStats.collectedStatistics
 
@@ -93,12 +97,14 @@ class ColumnStatsSuite extends SparkFunSuite {
       assertResult(10, "Wrong null count")(stats.values(2))
       assertResult(20, "Wrong row count")(stats.values(3))
       assertResult(stats.values(4), "Wrong size in bytes") {
-        rows.map { row =>
-          if (row.isNullAt(0))
-            4
-          else
-            columnType.actualSize(row, 0)
-        }.sum
+        rows
+          .map { row =>
+            if (row.isNullAt(0))
+              4
+            else
+              columnType.actualSize(row, 0)
+          }
+          .sum
       }
     }
   }
@@ -111,7 +117,9 @@ class ColumnStatsSuite extends SparkFunSuite {
 
     test(s"$columnStatsName: empty") {
       val columnStats = new DecimalColumnStats(15, 10)
-      columnStats.collectedStatistics.values
+      columnStats
+        .collectedStatistics
+        .values
         .zip(initialStatistics.values)
         .foreach {
           case (actual, expected) =>
@@ -123,14 +131,16 @@ class ColumnStatsSuite extends SparkFunSuite {
       import org.apache.spark.sql.execution.columnar.ColumnarTestUtils._
 
       val columnStats = new DecimalColumnStats(15, 10)
-      val rows =
-        Seq.fill(10)(makeRandomRow(columnType)) ++ Seq.fill(10)(makeNullRow(1))
+      val rows = Seq.fill(10)(makeRandomRow(columnType)) ++ Seq
+        .fill(10)(makeNullRow(1))
       rows.foreach(columnStats.gatherStats(_, 0))
 
       val values = rows
         .take(10)
         .map(_.get(0, columnType.dataType).asInstanceOf[T#InternalType])
-      val ordering = columnType.dataType.ordering
+      val ordering = columnType
+        .dataType
+        .ordering
         .asInstanceOf[Ordering[T#InternalType]]
       val stats = columnStats.collectedStatistics
 
@@ -139,12 +149,14 @@ class ColumnStatsSuite extends SparkFunSuite {
       assertResult(10, "Wrong null count")(stats.values(2))
       assertResult(20, "Wrong row count")(stats.values(3))
       assertResult(stats.values(4), "Wrong size in bytes") {
-        rows.map { row =>
-          if (row.isNullAt(0))
-            4
-          else
-            columnType.actualSize(row, 0)
-        }.sum
+        rows
+          .map { row =>
+            if (row.isNullAt(0))
+              4
+            else
+              columnType.actualSize(row, 0)
+          }
+          .sum
       }
     }
   }

@@ -61,8 +61,9 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
       val name = stage.name
       val status = stage.getStatusString
       val submissionTime = stage.submissionTime.get
-      val completionTime = stage.completionTime.getOrElse(
-        System.currentTimeMillis())
+      val completionTime = stage
+        .completionTime
+        .getOrElse(System.currentTimeMillis())
 
       // The timeline library treats contents as HTML, so we have to escape them; for the
       // data-title attribute string we have to escape them twice since that's in a string.
@@ -75,8 +76,7 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
          |  'end': new Date(${completionTime}),
          |  'content': '<div class="job-timeline-content" data-toggle="tooltip"' +
          |   'data-placement="top" data-html="true"' +
-         |   'data-title="${Utility
-           .escape(escapedName)} (Stage ${stageId}.${attemptId})<br>' +
+         |   'data-title="${Utility.escape(escapedName)} (Stage ${stageId}.${attemptId})<br>' +
          |   'Status: ${status.toUpperCase}<br>' +
          |   'Submitted: ${UIUtils.formatDate(new Date(submissionTime))}' +
          |   '${if (status != "running") {
@@ -201,27 +201,29 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
             jobId
           }</p>
           </div>
-        return UIUtils.headerSparkPage(
-          s"Details for Job $jobId",
-          content,
-          parent)
+        return UIUtils
+          .headerSparkPage(s"Details for Job $jobId", content, parent)
       }
       val jobData = jobDataOption.get
       val isComplete = jobData.status != JobExecutionStatus.RUNNING
-      val stages = jobData.stageIds.map { stageId =>
-        // This could be empty if the JobProgressListener hasn't received information about the
-        // stage or if the stage information has been garbage collected
-        listener.stageIdToInfo.getOrElse(
-          stageId,
-          new StageInfo(
-            stageId,
-            0,
-            "Unknown",
-            0,
-            Seq.empty,
-            Seq.empty,
-            "Unknown"))
-      }
+      val stages = jobData
+        .stageIds
+        .map { stageId =>
+          // This could be empty if the JobProgressListener hasn't received information about the
+          // stage or if the stage information has been garbage collected
+          listener
+            .stageIdToInfo
+            .getOrElse(
+              stageId,
+              new StageInfo(
+                stageId,
+                0,
+                "Unknown",
+                0,
+                Seq.empty,
+                Seq.empty,
+                "Unknown"))
+        }
 
       val activeStages = Buffer[StageInfo]()
       val completedStages = Buffer[StageInfo]()
@@ -271,11 +273,11 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
           isFairScheduler = parent.isFairScheduler)
 
       val shouldShowActiveStages = activeStages.nonEmpty
-      val shouldShowPendingStages =
-        !isComplete && pendingOrSkippedStages.nonEmpty
+      val shouldShowPendingStages = !isComplete && pendingOrSkippedStages
+        .nonEmpty
       val shouldShowCompletedStages = completedStages.nonEmpty
-      val shouldShowSkippedStages =
-        isComplete && pendingOrSkippedStages.nonEmpty
+      val shouldShowSkippedStages = isComplete && pendingOrSkippedStages
+        .nonEmpty
       val shouldShowFailedStages = failedStages.nonEmpty
 
       val summary: NodeSeq =

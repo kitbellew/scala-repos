@@ -84,19 +84,25 @@ class UserDefinedTypeSuite
     MyLabeledPoint(0.0, new MyDenseVector(Array(0.2, 2.0)))).toDF()
 
   test("register user type: MyDenseVector for MyLabeledPoint") {
-    val labels: RDD[Double] = pointsRDD.select('label).rdd.map {
-      case Row(v: Double) =>
-        v
-    }
+    val labels: RDD[Double] = pointsRDD
+      .select('label)
+      .rdd
+      .map {
+        case Row(v: Double) =>
+          v
+      }
     val labelsArrays: Array[Double] = labels.collect()
     assert(labelsArrays.size === 2)
     assert(labelsArrays.contains(1.0))
     assert(labelsArrays.contains(0.0))
 
-    val features: RDD[MyDenseVector] = pointsRDD.select('features).rdd.map {
-      case Row(v: MyDenseVector) =>
-        v
-    }
+    val features: RDD[MyDenseVector] = pointsRDD
+      .select('features)
+      .rdd
+      .map {
+        case Row(v: MyDenseVector) =>
+          v
+      }
     val featuresArrays: Array[MyDenseVector] = features.collect()
     assert(featuresArrays.size === 2)
     assert(featuresArrays.contains(new MyDenseVector(Array(0.1, 1.0))))
@@ -104,7 +110,8 @@ class UserDefinedTypeSuite
   }
 
   test("UDTs and UDFs") {
-    sqlContext.udf
+    sqlContext
+      .udf
       .register("testType", (d: MyDenseVector) => d.isInstanceOf[MyDenseVector])
     pointsRDD.registerTempTable("points")
     checkAnswer(
@@ -141,12 +148,14 @@ class UserDefinedTypeSuite
     val df = Seq((1, new MyDenseVector(Array(0.1, 1.0)))).toDF("int", "vec")
     df.collect()(0).getAs[MyDenseVector](1)
     df.take(1)(0).getAs[MyDenseVector](1)
-    df.limit(1)
+    df
+      .limit(1)
       .groupBy('int)
       .agg(first('vec))
       .collect()(0)
       .getAs[MyDenseVector](0)
-    df.orderBy('int)
+    df
+      .orderBy('int)
       .limit(1)
       .groupBy('int)
       .agg(first('vec))
@@ -182,8 +191,8 @@ class UserDefinedTypeSuite
     val toScalaConverter = CatalystTypeConverters.createToScalaConverter(udt)
     assert(toScalaConverter(null) === null)
 
-    val toCatalystConverter = CatalystTypeConverters.createToCatalystConverter(
-      udt)
+    val toCatalystConverter = CatalystTypeConverters
+      .createToCatalystConverter(udt)
     assert(toCatalystConverter(null) === null)
 
   }

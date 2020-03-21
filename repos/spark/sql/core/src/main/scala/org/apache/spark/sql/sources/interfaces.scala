@@ -635,10 +635,8 @@ class HDFSFileCatalog(
   private def listLeafFiles(
       paths: Seq[Path]): mutable.LinkedHashSet[FileStatus] = {
     if (paths.length >= sqlContext.conf.parallelPartitionDiscoveryThreshold) {
-      HadoopFsRelation.listLeafFilesInParallel(
-        paths,
-        hadoopConf,
-        sqlContext.sparkContext)
+      HadoopFsRelation
+        .listLeafFilesInParallel(paths, hadoopConf, sqlContext.sparkContext)
     } else {
       val statuses = paths
         .flatMap { path =>
@@ -693,9 +691,11 @@ class HDFSFileCatalog(
 
         PartitionSpec(
           userProvidedSchema,
-          spec.partitions.map { part =>
-            part.copy(values = castPartitionValuesToUserSchema(part.values))
-          })
+          spec
+            .partitions
+            .map { part =>
+              part.copy(values = castPartitionValuesToUserSchema(part.values))
+            })
       case _ =>
         PartitioningUtils.parsePartitions(
           leafDirs,
@@ -766,8 +766,8 @@ private[sql] object HadoopFsRelation extends Logging {
     // The only reason that we are not doing it now is that Parquet needs to find those
     // metadata files from leaf files returned by this methods. We should refactor
     // this logic to not mix metadata files with data files.
-    pathName == "_SUCCESS" || pathName == "_temporary" || pathName.startsWith(
-      ".")
+    pathName == "_SUCCESS" || pathName == "_temporary" || pathName
+      .startsWith(".")
   }
 
   // We don't filter files/directories whose name start with "_" except "_temporary" here, as

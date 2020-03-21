@@ -257,10 +257,12 @@ object Enumerator {
         val result = Promise[Iteratee[E, A]]()
 
         def redeemResultIfNotYet(r: Iteratee[E, A]) {
-          if (attending.single.transformIfDefined {
-                case Some(_) =>
-                  None
-              })
+          if (attending
+                .single
+                .transformIfDefined {
+                  case Some(_) =>
+                    None
+                })
             result.success(r)
         }
 
@@ -292,7 +294,8 @@ object Enumerator {
                   }(dec)
                 Iteratee.flatten(nextI)
               case Input.EOF => {
-                if (attending.single
+                if (attending
+                      .single
                       .transformAndGet {
                         _.map(f)
                       }
@@ -307,20 +310,23 @@ object Enumerator {
           }
           Cont(step)
         }
-        val ps = es.zipWithIndex
+        val ps = es
+          .zipWithIndex
           .map {
             case (e, index) =>
               e |>> iteratee[E](_.patch(index, Seq(true), 1))
           }
           .map(_.flatMap(_.pureFold(any => ())(dec)))
 
-        Future.sequence(ps).onComplete {
-          case Success(_) =>
-            redeemResultIfNotYet(iter.single())
-          case Failure(e) =>
-            result.failure(e)
+        Future
+          .sequence(ps)
+          .onComplete {
+            case Success(_) =>
+              redeemResultIfNotYet(iter.single())
+            case Failure(e) =>
+              result.failure(e)
 
-        }
+          }
 
         result.future
       }
@@ -347,10 +353,12 @@ object Enumerator {
         val result = Promise[Iteratee[E2, A]]()
 
         def redeemResultIfNotYet(r: Iteratee[E2, A]) {
-          if (attending.single.transformIfDefined {
-                case Some(_) =>
-                  None
-              })
+          if (attending
+                .single
+                .transformIfDefined {
+                  case Some(_) =>
+                    None
+                })
             result.success(r)
         }
 
@@ -382,9 +390,11 @@ object Enumerator {
                   }(dec)
                 Iteratee.flatten(nextI)
               case Input.EOF => {
-                if (attending.single.transformAndGet {
-                      _.map(f)
-                    } == Some((false, false))) {
+                if (attending
+                      .single
+                      .transformAndGet {
+                        _.map(f)
+                      } == Some((false, false))) {
                   p.complete(Try(Iteratee.flatten(i.feed(Input.EOF))))
                 } else {
                   p.success(i)
@@ -406,13 +416,15 @@ object Enumerator {
         }
         val r1 = e1 |>>| itE1
         val r2 = e2 |>>| itE2
-        r1.flatMap(_ => r2).onComplete {
-          case Success(_) =>
-            redeemResultIfNotYet(iter.single())
-          case Failure(e) =>
-            result.failure(e)
+        r1
+          .flatMap(_ => r2)
+          .onComplete {
+            case Success(_) =>
+              redeemResultIfNotYet(iter.single())
+            case Failure(e) =>
+              result.failure(e)
 
-        }
+          }
         result.future
       }
 

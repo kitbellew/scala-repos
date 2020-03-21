@@ -115,10 +115,12 @@ final case class ParameterSwitch(
   override def childNames = cases.map("[" + _._1 + "]").toSeq :+ "default"
   protected[this] def rebuild(ch: ConstArray[Node]): Self =
     copy(
-      cases = cases.zip(ch).map {
-        case (c, n) =>
-          (c._1, n)
-      },
+      cases = cases
+        .zip(ch)
+        .map {
+          case (c, n) =>
+            (c._1, n)
+        },
       default = ch.last)
   protected def buildType = default.nodeType
   def nodeMapServerSide(keepType: Boolean, r: Node => Node): Self = {

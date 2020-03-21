@@ -149,9 +149,8 @@ class IntroduceExplicitParameterIntention
         case _ =>
       }
 
-      val newParam = ScalaPsiElementFactory.createParameterFromText(
-        un,
-        element.getManager)
+      val newParam = ScalaPsiElementFactory
+        .createParameterFromText(un, element.getManager)
       underscoreToParam.put(u, newParam)
     }
 
@@ -171,9 +170,8 @@ class IntroduceExplicitParameterIntention
     val diff = buf.length
     buf.append(expr.getText)
 
-    val newExpr = ScalaPsiElementFactory.createExpressionFromText(
-      buf.toString(),
-      element.getManager)
+    val newExpr = ScalaPsiElementFactory
+      .createExpressionFromText(buf.toString(), element.getManager)
 
     inWriteAction {
       val document = editor.getDocument
@@ -211,8 +209,8 @@ class IntroduceExplicitParameterIntention
               lookupExpr,
               true)
 
-            val dependantParam = file.findElementAt(
-              offsets(parameter.name) + diff)
+            val dependantParam = file
+              .findElementAt(offsets(parameter.name) + diff)
             builder.replaceElement(
               dependantParam,
               parameter.name + "_1",
@@ -300,11 +298,13 @@ class IntroduceExplicitParameterIntention
                 val name: String = template.getSegmentName(i)
                 var attributes: TextAttributes = null
                 if (name == params.get(index).get) {
-                  attributes = colorsManager.getGlobalScheme.getAttributes(
-                    EditorColors.WRITE_SEARCH_RESULT_ATTRIBUTES)
+                  attributes = colorsManager
+                    .getGlobalScheme
+                    .getAttributes(EditorColors.WRITE_SEARCH_RESULT_ATTRIBUTES)
                 } else if (name == depends.get(index).get) {
-                  attributes = colorsManager.getGlobalScheme.getAttributes(
-                    EditorColors.SEARCH_RESULT_ATTRIBUTES)
+                  attributes = colorsManager
+                    .getGlobalScheme
+                    .getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES)
                 }
                 if (attributes != null)
                   rangesToHighlight.put(segmentOffset, attributes)
@@ -337,7 +337,9 @@ class IntroduceExplicitParameterIntention
       editor: Editor): Option[ScExpression] = {
     var element: PsiElement = _element
     if (!element.getParent.isInstanceOf[ScUnderscoreSection]) {
-      if (element.getTextRange.getStartOffset == editor.getCaretModel.getOffset) {
+      if (element.getTextRange.getStartOffset == editor
+            .getCaretModel
+            .getOffset) {
         val offset = element.getTextRange.getStartOffset - 1
         if (offset < 0)
           return None
@@ -353,7 +355,8 @@ class IntroduceExplicitParameterIntention
             val offset = editor.getCaretModel.getOffset
             for (u <- underscores) {
               val range: TextRange = u.getTextRange
-              if (range.getStartOffset <= offset && offset <= range.getEndOffset)
+              if (range.getStartOffset <= offset && offset <= range
+                    .getEndOffset)
                 return Some(expression)
             }
             return None

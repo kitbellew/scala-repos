@@ -72,14 +72,16 @@ class WebSocketDirectivesSpec extends RoutingSpec {
         "http://localhost/",
         Flow[Message],
         List("other")) ~> websocketMultipleProtocolRoute ~> check {
-        rejections.collect {
-          case UnsupportedWebSocketSubprotocolRejection(p) ⇒
-            p
-        }.toSet shouldEqual Set("greeter", "echo")
+        rejections
+          .collect {
+            case UnsupportedWebSocketSubprotocolRejection(p) ⇒
+              p
+          }
+          .toSet shouldEqual Set("greeter", "echo")
       }
 
-      WS("http://localhost/", Flow[Message], List("other")) ~> Route.seal(
-        websocketMultipleProtocolRoute) ~> check {
+      WS("http://localhost/", Flow[Message], List("other")) ~> Route
+        .seal(websocketMultipleProtocolRoute) ~> check {
         status shouldEqual StatusCodes.BadRequest
         responseAs[String] shouldEqual "None of the websocket subprotocols offered in the request are supported. Supported are 'echo','greeter'."
         header[`Sec-WebSocket-Protocol`].get.protocols.toSet shouldEqual Set(
@@ -115,9 +117,8 @@ class WebSocketDirectivesSpec extends RoutingSpec {
     }
 
   def echo: Flow[Message, Message, Any] =
-    Flow[Message]
-      .buffer(
-        1,
-        OverflowStrategy.backpressure
-      ) // needed because a noop flow hasn't any buffer that would start processing
+    Flow[Message].buffer(
+      1,
+      OverflowStrategy.backpressure
+    ) // needed because a noop flow hasn't any buffer that would start processing
 }

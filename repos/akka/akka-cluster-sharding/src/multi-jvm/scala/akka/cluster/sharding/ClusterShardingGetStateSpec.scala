@@ -49,8 +49,8 @@ object ClusterShardingGetStateSpecConfig extends MultiNodeConfig {
   val second = role("second")
 
   commonConfig(
-    ConfigFactory.parseString(
-      """
+    ConfigFactory
+      .parseString("""
     akka.loglevel = INFO
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
     akka.remote.log-remote-lifecycle-events = off

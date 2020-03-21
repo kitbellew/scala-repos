@@ -30,9 +30,6 @@ private[deploy] class ExecutorDescription(
     extends Serializable {
 
   override def toString: String =
-    "ExecutorState(appId=%s, execId=%d, cores=%d, state=%s)".format(
-      appId,
-      execId,
-      cores,
-      state)
+    "ExecutorState(appId=%s, execId=%d, cores=%d, state=%s)"
+      .format(appId, execId, cores, state)
 }

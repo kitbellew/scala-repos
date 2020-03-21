@@ -64,14 +64,17 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
   }
 
   def refs = {
-    extendsBlock.templateParents.toSeq.flatMap(_.typeElements).map {
-      refElement =>
+    extendsBlock
+      .templateParents
+      .toSeq
+      .flatMap(_.typeElements)
+      .map { refElement =>
         val tuple: Option[(PsiClass, ScSubstitutor)] = refElement
           .getType(TypingContext.empty)
           .toOption
           .flatMap(ScType.extractClassType(_, Some(getProject)))
         (refElement, tuple)
-    }
+      }
   }
 
   def innerExtendsListTypes = {
@@ -83,10 +86,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
           (
             for (te <- tp1.allTypeElements;
                  t = te.getType(TypingContext.empty).getOrAny;
-                 asPsi = ScType.toPsi(
-                   t,
-                   getProject,
-                   GlobalSearchScope.allScope(getProject))
+                 asPsi = ScType
+                   .toPsi(t, getProject, GlobalSearchScope.allScope(getProject))
                  if asPsi.isInstanceOf[PsiClassType])
               yield asPsi.asInstanceOf[PsiClassType]
           ).toArray[PsiClassType]
@@ -335,8 +336,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
         case (_, n) =>
           n.info.asInstanceOf[PhysicalSignature]
       } ++
-      syntheticMethodsNoOverride.map(
-        new PhysicalSignature(_, ScSubstitutor.empty))
+      syntheticMethodsNoOverride
+        .map(new PhysicalSignature(_, ScSubstitutor.empty))
 
   def allMethodsIncludingSelfType: Iterable[PhysicalSignature] = {
     selfType match {
@@ -356,8 +357,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
                 case (_, n) =>
                   n.info.asInstanceOf[PhysicalSignature]
               } ++
-              syntheticMethodsNoOverride.map(
-                new PhysicalSignature(_, ScSubstitutor.empty))
+              syntheticMethodsNoOverride
+                .map(new PhysicalSignature(_, ScSubstitutor.empty))
           case _ =>
             allMethods
         }
@@ -508,13 +509,9 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
           case _ =>
             extendsBlock match {
               case e: ScExtendsBlock if e != null =>
-                if (PsiTreeUtil.isContextAncestor(
-                      e,
-                      place,
-                      true) || !PsiTreeUtil.isContextAncestor(
-                      this,
-                      place,
-                      true)) {
+                if (PsiTreeUtil
+                      .isContextAncestor(e, place, true) || !PsiTreeUtil
+                      .isContextAncestor(this, place, true)) {
                   this match {
                     case t: ScTypeDefinition
                         if selfTypeElement != None &&
@@ -576,18 +573,24 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
               }
           }
         if (ScalaPsiUtil.isLineTerminator(before.getPsi))
-          body.getNode.addChild(
-            ScalaPsiElementFactory.createNewLineNode(member.getManager),
-            before)
+          body
+            .getNode
+            .addChild(
+              ScalaPsiElementFactory.createNewLineNode(member.getManager),
+              before)
         body.getNode.addChild(member.getNode, before)
         if (!ScalaPsiUtil.isLineTerminator(before.getPsi))
-          body.getNode.addChild(
-            ScalaPsiElementFactory.createNewLineNode(member.getManager),
-            before)
+          body
+            .getNode
+            .addChild(
+              ScalaPsiElementFactory.createNewLineNode(member.getManager),
+              before)
         else
-          body.getNode.replaceChild(
-            before,
-            ScalaPsiElementFactory.createNewLineNode(member.getManager))
+          body
+            .getNode
+            .replaceChild(
+              before,
+              ScalaPsiElementFactory.createNewLineNode(member.getManager))
       case None =>
         val eBlockNode: ASTNode = extendsBlock.getNode
         eBlockNode.addChild(
@@ -646,7 +649,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
                   case _ =>
                     false
                 }
-              if (value && c.name == baseName && c.qualifiedName == baseQualifiedName && value)
+              if (value && c.name == baseName && c
+                    .qualifiedName == baseQualifiedName && value)
                 return true
               if (deep && isInheritorInner(base, c, deep))
                 return true

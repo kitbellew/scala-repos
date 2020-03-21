@@ -75,10 +75,12 @@ private[cluster] class ClusterRemoteWatcher(
 
   def receiveClusterEvent: Actor.Receive = {
     case state: CurrentClusterState ⇒
-      clusterNodes = state.members.collect {
-        case m if m.address != selfAddress ⇒
-          m.address
-      }
+      clusterNodes = state
+        .members
+        .collect {
+          case m if m.address != selfAddress ⇒
+            m.address
+        }
       clusterNodes foreach takeOverResponsibility
       unreachable = unreachable diff clusterNodes
     case MemberUp(m) ⇒

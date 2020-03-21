@@ -202,7 +202,8 @@ class Dispatchers(
         val args = List(
           classOf[Config] -> cfg,
           classOf[DispatcherPrerequisites] -> prerequisites)
-        prerequisites.dynamicAccess
+        prerequisites
+          .dynamicAccess
           .createInstanceFor[MessageDispatcherConfigurator](fqn, args)
           .recover({
             case exception ⇒
@@ -251,8 +252,8 @@ private[akka] object BalancingDispatcherConfigurator {
   private val defaultRequirement = ConfigFactory.parseString(
     "mailbox-requirement = akka.dispatch.MultipleConsumerSemantics")
   def amendConfig(config: Config): Config =
-    if (config.getString(
-          "mailbox-requirement") != Mailboxes.NoMailboxRequirement)
+    if (config.getString("mailbox-requirement") != Mailboxes
+          .NoMailboxRequirement)
       config
     else
       defaultRequirement.withFallback(config)
@@ -281,15 +282,15 @@ class BalancingDispatcherConfigurator(
     val mailboxType =
       if (config.hasPath("mailbox")) {
         val mt = mailboxes.lookup(config.getString("mailbox"))
-        if (!requirement.isAssignableFrom(
-              mailboxes.getProducedMessageQueueType(mt)))
+        if (!requirement
+              .isAssignableFrom(mailboxes.getProducedMessageQueueType(mt)))
           throw new IllegalArgumentException(
             s"BalancingDispatcher [$id] has 'mailbox' [${mt.getClass}] which is incompatible with 'mailbox-requirement' [$requirement]")
         mt
       } else if (config.hasPath("mailbox-type")) {
         val mt = mailboxes.lookup(id)
-        if (!requirement.isAssignableFrom(
-              mailboxes.getProducedMessageQueueType(mt)))
+        if (!requirement
+              .isAssignableFrom(mailboxes.getProducedMessageQueueType(mt)))
           throw new IllegalArgumentException(
             s"BalancingDispatcher [$id] has 'mailbox-type' [${mt.getClass}] which is incompatible with 'mailbox-requirement' [$requirement]")
         mt
@@ -330,13 +331,15 @@ class PinnedDispatcherConfigurator(
       case e: ThreadPoolExecutorConfigurator ⇒
         e.threadPoolConfig
       case other ⇒
-        prerequisites.eventStream.publish(
-          Warning(
-            "PinnedDispatcherConfigurator",
-            this.getClass,
-            "PinnedDispatcher [%s] not configured to use ThreadPoolExecutor, falling back to default config."
-              .format(config.getString("id"))
-          ))
+        prerequisites
+          .eventStream
+          .publish(
+            Warning(
+              "PinnedDispatcherConfigurator",
+              this.getClass,
+              "PinnedDispatcher [%s] not configured to use ThreadPoolExecutor, falling back to default config."
+                .format(config.getString("id"))
+            ))
         ThreadPoolConfig()
     }
 

@@ -61,7 +61,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
     // this part is interesting to unpicklers
     def hasSetter = setter.isDefined
     def isErasedParam =
-      isParam && accessor.isEmpty // TODO: this should somehow communicate with the constructors phase!
+      isParam && accessor
+        .isEmpty // TODO: this should somehow communicate with the constructors phase!
     def isNonParam = !isParam
   }
 
@@ -83,10 +84,12 @@ class IRs[U <: Universe with Singleton](val uni: U) {
           (Nil, rtpe)
       }
 
-    val allAccessors = tpe.declarations.collect {
-      case meth: MethodSymbol if meth.isAccessor || meth.isParamAccessor =>
-        meth
-    }
+    val allAccessors = tpe
+      .declarations
+      .collect {
+        case meth: MethodSymbol if meth.isAccessor || meth.isParamAccessor =>
+          meth
+      }
 
     val (filteredAccessors, _) = allAccessors.partition(notMarkedTransient)
 
@@ -117,63 +120,69 @@ class IRs[U <: Universe with Singleton](val uni: U) {
     val javaFieldIRs =
       if (isJava) {
         // candidates for setter/getter combo
-        val candidates = tpe.declarations.collect {
-          case sym: MethodSymbol if sym.name.toString.startsWith("get") =>
-            sym.name.toString.substring(3)
-        }
-        tpe.declarations.flatMap {
-          case sym: MethodSymbol if sym.name.toString.startsWith("set") =>
-            val shortName = sym.name.toString.substring(3)
-            if (candidates
-                  .find(_ == shortName)
-                  .nonEmpty && shortName.length > 0) {
-              val rawSymTpe =
-                sym.typeSignatureIn(rawTpeOfOwner) match {
-                  case MethodType(List(param), _) =>
-                    param.typeSignature
-                  case _ =>
-                    throw PicklingException(
-                      "expected method type for method ${sym.name.toString}")
-                }
-              val symTpe = existentialAbstraction(quantified, rawSymTpe)
+        val candidates = tpe
+          .declarations
+          .collect {
+            case sym: MethodSymbol if sym.name.toString.startsWith("get") =>
+              sym.name.toString.substring(3)
+          }
+        tpe
+          .declarations
+          .flatMap {
+            case sym: MethodSymbol if sym.name.toString.startsWith("set") =>
+              val shortName = sym.name.toString.substring(3)
+              if (candidates.find(_ == shortName).nonEmpty && shortName
+                    .length > 0) {
+                val rawSymTpe =
+                  sym.typeSignatureIn(rawTpeOfOwner) match {
+                    case MethodType(List(param), _) =>
+                      param.typeSignature
+                    case _ =>
+                      throw PicklingException(
+                        "expected method type for method ${sym.name.toString}")
+                  }
+                val symTpe = existentialAbstraction(quantified, rawSymTpe)
 
-              List(
-                FieldIR(
-                  shortName,
-                  symTpe,
-                  None,
-                  None,
-                  Some(JavaProperty(shortName, tpe.toString, sym.isPublic))))
-            } else {
+                List(
+                  FieldIR(
+                    shortName,
+                    symTpe,
+                    None,
+                    None,
+                    Some(JavaProperty(shortName, tpe.toString, sym.isPublic))))
+              } else {
+                List()
+              }
+
+            case _ =>
               List()
-            }
-
-          case _ =>
-            List()
-        }
+          }
       } else {
         List()
       }
 
     (
-      tpe.declarations.collect {
-        case sym: MethodSymbol
-            if !sym.isParamAccessor && sym.isSetter && sym.accessed != NoSymbol =>
-          val rawSymTpe =
-            sym.getter.typeSignatureIn(rawTpeOfOwner) match {
-              case NullaryMethodType(ntpe) =>
-                ntpe;
-              case ntpe =>
-                ntpe
-            }
-          val symTpe = existentialAbstraction(quantified, rawSymTpe)
-          FieldIR(
-            sym.getter.name.toString,
-            symTpe,
-            None,
-            Some(sym.getter.asMethod))
-      }
-    ).toList ++ javaFieldIRs
+      tpe
+        .declarations
+        .collect {
+          case sym: MethodSymbol
+              if !sym.isParamAccessor && sym.isSetter && sym
+                .accessed != NoSymbol =>
+            val rawSymTpe =
+              sym.getter.typeSignatureIn(rawTpeOfOwner) match {
+                case NullaryMethodType(ntpe) =>
+                  ntpe;
+                case ntpe =>
+                  ntpe
+              }
+            val symTpe = existentialAbstraction(quantified, rawSymTpe)
+            FieldIR(
+              sym.getter.name.toString,
+              symTpe,
+              None,
+              Some(sym.getter.asMethod))
+        }
+      ).toList ++ javaFieldIRs
   }
 
   def newClassIR(tpe: Type): ClassIR = {
@@ -188,7 +197,10 @@ class IRs[U <: Universe with Singleton](val uni: U) {
     val primaryCtor =
       tpe.declaration(nme.CONSTRUCTOR) match {
         case overloaded: TermSymbol =>
-          overloaded.alternatives.head.asMethod // NOTE: primary ctor is always the first in the list
+          overloaded
+            .alternatives
+            .head
+            .asMethod // NOTE: primary ctor is always the first in the list
         case primaryCtor: MethodSymbol =>
           primaryCtor
         case NoSymbol =>
@@ -197,12 +209,14 @@ class IRs[U <: Universe with Singleton](val uni: U) {
 
     // we need all accessors to filter out transient ctor params
     // main diff: members instead of declarations
-    val allAccessors = tpe.declarations.collect {
-      case meth: MethodSymbol if meth.isAccessor || meth.isParamAccessor =>
-        meth
-    }
-    val (filteredAccessors, transientAccessors) = allAccessors.partition(
-      notMarkedTransient)
+    val allAccessors = tpe
+      .declarations
+      .collect {
+        case meth: MethodSymbol if meth.isAccessor || meth.isParamAccessor =>
+          meth
+      }
+    val (filteredAccessors, transientAccessors) = allAccessors
+      .partition(notMarkedTransient)
 
     val primaryCtorParamsOpt =
       if (primaryCtor.isMethod)
@@ -214,31 +228,34 @@ class IRs[U <: Universe with Singleton](val uni: U) {
       primaryCtor != NoSymbol &&
         primaryCtorParamsOpt.nonEmpty &&
         (
-          primaryCtorParamsOpt.get.forall { preSym =>
-            // println(s"!!! tpe ${tpe.toString}, ctor param $preSym:")
-            val notTransient = !transientAccessors.exists(_.name == preSym.name)
-            // println(s"$notTransient")
-            if (notTransient) {
-              val symOpt = //tpe.declaration(preSym.name)
-                filteredAccessors.find(_.name == preSym.name)
-              symOpt match {
-                case None =>
-                  false
-                case Some(sym) =>
-                  val isVal = sym.asTerm.isVal
-                  val getterExists = sym.asTerm.getter != NoSymbol
-                  // println(s"$isVal (public: ${sym.asTerm.isPublic}, isParamAcc: ${sym.asTerm.isParamAccessor}), $getterExists (${sym.asTerm.getter}, public: ${sym.asTerm.getter.isPublic})")
-                  (isVal && sym.asTerm.isPublic) || (
-                    getterExists && sym.asTerm.getter.isPublic
-                  )
-              }
-            } else
-              false
+          primaryCtorParamsOpt
+            .get
+            .forall { preSym =>
+              // println(s"!!! tpe ${tpe.toString}, ctor param $preSym:")
+              val notTransient =
+                !transientAccessors.exists(_.name == preSym.name)
+              // println(s"$notTransient")
+              if (notTransient) {
+                val symOpt = //tpe.declaration(preSym.name)
+                  filteredAccessors.find(_.name == preSym.name)
+                symOpt match {
+                  case None =>
+                    false
+                  case Some(sym) =>
+                    val isVal = sym.asTerm.isVal
+                    val getterExists = sym.asTerm.getter != NoSymbol
+                    // println(s"$isVal (public: ${sym.asTerm.isPublic}, isParamAcc: ${sym.asTerm.isParamAccessor}), $getterExists (${sym.asTerm.getter}, public: ${sym.asTerm.getter.isPublic})")
+                    (isVal && sym.asTerm.isPublic) || (
+                      getterExists && sym.asTerm.getter.isPublic
+                    )
+                }
+              } else
+                false
 
-            // println(s"$notTransient, $isMethod, $getterExists, $getterIsMetod")
-            // notTransient && isMethod && getterExists && getterIsMetod
-          }
-        )
+              // println(s"$notTransient, $isMethod, $getterExists, $getterIsMetod")
+              // notTransient && isMethod && getterExists && getterIsMetod
+            }
+          )
 
     val (quantified, rawTpe) =
       tpe match {
@@ -254,39 +271,42 @@ class IRs[U <: Universe with Singleton](val uni: U) {
     def fieldIRsUsingCtor(): List[FieldIR] = {
       // collect:
       // (a) all ctor params
-      val ctorFieldIRs = primaryCtorParamsOpt.get.map { s =>
-        val sym = s.asTerm // already tested
-        val baseSym =
-          if (sym.isVal)
-            sym
-          else
-            sym.getter.asMethod
+      val ctorFieldIRs = primaryCtorParamsOpt
+        .get
+        .map { s =>
+          val sym = s.asTerm // already tested
+          val baseSym =
+            if (sym.isVal)
+              sym
+            else
+              sym.getter.asMethod
 
-        val baseSymTpe = baseSym.typeSignature
-          .asSeenFrom(rawTpe, rawTpe.typeSymbol.asClass)
-        // println(s"baseSymTpe: ${baseSymTpe.toString}")
+          val baseSymTpe = baseSym
+            .typeSignature
+            .asSeenFrom(rawTpe, rawTpe.typeSymbol.asClass)
+          // println(s"baseSymTpe: ${baseSymTpe.toString}")
 
-        val rawSymTpe =
-          baseSymTpe match {
-            case NullaryMethodType(ntpe) =>
-              ntpe;
-            case ntpe =>
-              ntpe
-          }
-        val symTpe = existentialAbstraction(quantified, rawSymTpe)
+          val rawSymTpe =
+            baseSymTpe match {
+              case NullaryMethodType(ntpe) =>
+                ntpe;
+              case ntpe =>
+                ntpe
+            }
+          val symTpe = existentialAbstraction(quantified, rawSymTpe)
 
-        FieldIR(
-          sym.name.toString,
-          symTpe,
-          if (sym.isVal)
-            Some(sym)
-          else
-            None,
-          if (sym.isVal)
-            None
-          else
-            Some(sym.getter.asMethod))
-      }
+          FieldIR(
+            sym.name.toString,
+            symTpe,
+            if (sym.isVal)
+              Some(sym)
+            else
+              None,
+            if (sym.isVal)
+              None
+            else
+              Some(sym.getter.asMethod))
+        }
 
       // (b) non-abstract vars (also private ones)
       val allNonAbstractVars = baseClasses.flatMap { baseClass =>
@@ -305,10 +325,12 @@ class IRs[U <: Universe with Singleton](val uni: U) {
       // (a) all vals or vars (even if abstract!!)
       val fieldIRs1 = baseClasses.flatMap { baseClass =>
         val stpe = tpe.baseType(baseClass)
-        val allGetters = stpe.declarations.collect {
-          case sym: MethodSymbol if sym.isGetter && notMarkedTransient(sym) =>
-            sym
-        }
+        val allGetters = stpe
+          .declarations
+          .collect {
+            case sym: MethodSymbol if sym.isGetter && notMarkedTransient(sym) =>
+              sym
+          }
 
         // println(s"allGetters of $baseClass: ${allGetters.mkString(",")}")
 
@@ -330,10 +352,14 @@ class IRs[U <: Universe with Singleton](val uni: U) {
         // also add ctor params that are not accessors (need Java reflection for those!)
         val reflectionGetters = {
           if (primaryCtor.isMethod) {
-            primaryCtor.asMethod.paramss.flatten.filter { s =>
-              val acc = allAccessors.find(_.name == s.name)
-              acc.isEmpty
-            }
+            primaryCtor
+              .asMethod
+              .paramss
+              .flatten
+              .filter { s =>
+                val acc = allAccessors.find(_.name == s.name)
+                acc.isEmpty
+              }
           } else
             List()
         }
@@ -400,12 +426,14 @@ class IRs[U <: Universe with Singleton](val uni: U) {
   // TODO: minimal versus verbose PickleFormat. i.e. someone might want all concrete inherited fields in their pickle
 
   def notMarkedTransient(sym: TermSymbol): Boolean = {
-    val tr = scala.util.Try {
-      (
-        sym.accessed == NoSymbol
-      ) || // if there is no backing field, then it cannot be marked transient
-      !sym.accessed.annotations.exists(_.tpe =:= typeOf[scala.transient])
-    }
+    val tr = scala
+      .util
+      .Try {
+        (
+          sym.accessed == NoSymbol
+        ) || // if there is no backing field, then it cannot be marked transient
+        !sym.accessed.annotations.exists(_.tpe =:= typeOf[scala.transient])
+      }
     tr.isFailure || tr.get
   }
 
@@ -415,35 +443,44 @@ class IRs[U <: Universe with Singleton](val uni: U) {
     val ctor =
       tp.declaration(nme.CONSTRUCTOR) match {
         case overloaded: TermSymbol =>
-          overloaded.alternatives.head.asMethod // NOTE: primary ctor is always the first in the list
+          overloaded
+            .alternatives
+            .head
+            .asMethod // NOTE: primary ctor is always the first in the list
         case primaryCtor: MethodSymbol =>
           primaryCtor
         case NoSymbol =>
           NoSymbol
       }
 
-    val allAccessors = tp.declarations.collect {
-      case meth: MethodSymbol if meth.isAccessor || meth.isParamAccessor =>
-        meth
-    }
+    val allAccessors = tp
+      .declarations
+      .collect {
+        case meth: MethodSymbol if meth.isAccessor || meth.isParamAccessor =>
+          meth
+      }
 
-    val (filteredAccessors, transientAccessors) = allAccessors.partition(
-      notMarkedTransient)
+    val (filteredAccessors, transientAccessors) = allAccessors
+      .partition(notMarkedTransient)
 
     val ctorParams =
       if (ctor != NoSymbol)
-        ctor.asMethod.paramss.flatten.flatMap { sym =>
-          if (transientAccessors.exists(acc =>
-                acc.name.toString == sym.name.toString))
-            List()
-          else
-            List(sym.asTerm)
-        }
+        ctor
+          .asMethod
+          .paramss
+          .flatten
+          .flatMap { sym =>
+            if (transientAccessors
+                  .exists(acc => acc.name.toString == sym.name.toString))
+              List()
+            else
+              List(sym.asTerm)
+          }
       else
         Nil
 
-    val (paramAccessors, otherAccessors) = allAccessors.partition(
-      _.isParamAccessor)
+    val (paramAccessors, otherAccessors) = allAccessors
+      .partition(_.isParamAccessor)
 
     def mkFieldIR(
         sym: TermSymbol,
@@ -471,7 +508,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
       mkFieldIR(sym, Some(sym), paramAccessors.find(_.name == sym.name)))
     val varGetters = otherAccessors.collect {
       case meth
-          if meth.isGetter && meth.accessed != NoSymbol && meth.accessed.asTerm.isVar =>
+          if meth.isGetter && meth
+            .accessed != NoSymbol && meth.accessed.asTerm.isVar =>
         meth
     }
     val varFields = varGetters.map(sym => mkFieldIR(sym, None, Some(sym)))
@@ -488,7 +526,9 @@ class IRs[U <: Universe with Singleton](val uni: U) {
 
   private val f3 =
     (c: C) =>
-      c.tpe.baseClasses
+      c
+        .tpe
+        .baseClasses
         .map(superSym => c.tpe.baseType(superSym))
         .map(tp => ClassIR(tp, null, fields(tp)))
 

@@ -276,9 +276,11 @@ class ScalaControlFlowBuilder(
       // for breaks
       //addPendingEdge(ws, myHead)
       ws.condition.foreach(_.accept(this))
-      ws.body.foreach { b =>
-        b.accept(this)
-      }
+      ws
+        .body
+        .foreach { b =>
+          b.accept(this)
+        }
       checkPendingEdges(instr)
       // add backward edge
       if (myHead != null)
@@ -291,8 +293,8 @@ class ScalaControlFlowBuilder(
     val matchedParams = call.matchedParameters
     def isByNameOrFunction(arg: ScExpression) = {
       val param = matchedParams.toMap.get(arg)
-      param.isEmpty || param.exists(_.isByName) || param.exists(p =>
-        ScFunctionType.isFunctionType(p.paramType))
+      param.isEmpty || param.exists(_.isByName) || param
+        .exists(p => ScFunctionType.isFunctionType(p.paramType))
     }
     val receiver = call.getInvokedExpr
     if (receiver != null) {
@@ -587,11 +589,13 @@ class ScalaControlFlowBuilder(
         tb.accept(this)
         val head = Option(myHead).getOrElse(tryStmtInstr)
         advancePendingEdges(tb, tryStmt)
-        tryStmt.finallyBlock.fold {
-          addPendingEdge(tryStmt, head)
-        } { fblock =>
-          myTransitionInstructions += ((head, FinallyInfo(fblock)))
-        }
+        tryStmt
+          .finallyBlock
+          .fold {
+            addPendingEdge(tryStmt, head)
+          } { fblock =>
+            myTransitionInstructions += ((head, FinallyInfo(fblock)))
+          }
       }
 
       // remove exceptions
@@ -600,34 +604,36 @@ class ScalaControlFlowBuilder(
       }
 
       def processCatch(fin: InstructionImpl) =
-        tryStmt.catchBlock.map { cb =>
-          cb.expression match {
-            case Some(b: ScBlockExpr) if b.hasCaseClauses =>
-              for (cc <- b.caseClauses.toSeq.flatMap(_.caseClauses)) {
-                myHead = tryStmtInstr
-                cc.accept(this)
-                if (fin == null) {
-                  advancePendingEdges(cc, tryStmt)
-                  addPendingEdge(tryStmt, myHead)
-                } else {
-                  addEdge(myHead, fin)
+        tryStmt
+          .catchBlock
+          .map { cb =>
+            cb.expression match {
+              case Some(b: ScBlockExpr) if b.hasCaseClauses =>
+                for (cc <- b.caseClauses.toSeq.flatMap(_.caseClauses)) {
+                  myHead = tryStmtInstr
+                  cc.accept(this)
+                  if (fin == null) {
+                    advancePendingEdges(cc, tryStmt)
+                    addPendingEdge(tryStmt, myHead)
+                  } else {
+                    addEdge(myHead, fin)
+                  }
+                  myHead = null
                 }
-                myHead = null
-              }
-            case _ =>
-              for (cc <- cb.expression) {
-                myHead = tryStmtInstr
-                cc.accept(this)
-                if (fin == null) {
-                  advancePendingEdges(cc, tryStmt)
-                  addPendingEdge(tryStmt, myHead)
-                } else {
-                  addEdge(myHead, fin)
+              case _ =>
+                for (cc <- cb.expression) {
+                  myHead = tryStmtInstr
+                  cc.accept(this)
+                  if (fin == null) {
+                    advancePendingEdges(cc, tryStmt)
+                    addPendingEdge(tryStmt, myHead)
+                  } else {
+                    addEdge(myHead, fin)
+                  }
+                  myHead = null
                 }
-                myHead = null
-              }
+            }
           }
-        }
 
       if (fBlock == null) {
         processCatch((null))

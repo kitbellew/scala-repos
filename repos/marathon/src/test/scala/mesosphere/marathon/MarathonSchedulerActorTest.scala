@@ -101,8 +101,9 @@ class MarathonSchedulerActorTest
     when(repo.allPathIds()).thenReturn(Future.successful(Seq(app.id)))
     when(taskTracker.appTasksSync(app.id)).thenReturn(Iterable.empty[Task])
     when(taskTracker.tasksByAppSync).thenReturn(
-      TaskTracker.TasksByApp.of(
-        TaskTracker.AppTasks.forTasks("nope".toPath, tasks)))
+      TaskTracker
+        .TasksByApp
+        .of(TaskTracker.AppTasks.forTasks("nope".toPath, tasks)))
     when(taskTracker.appTasksSync("nope".toPath)).thenReturn(tasks)
     when(repo.currentVersion(app.id)).thenReturn(Future.successful(Some(app)))
     when(taskTracker.countLaunchedAppTasksSync(app.id)).thenReturn(0)
@@ -184,8 +185,8 @@ class MarathonSchedulerActorTest
 
       expectMsg(5.seconds, TasksKilled(app.id, Set(taskA.taskId)))
 
-      val Some(taskFailureEvent) = TaskFailure.FromMesosStatusUpdateEvent(
-        statusUpdateEvent)
+      val Some(taskFailureEvent) = TaskFailure
+        .FromMesosStatusUpdateEvent(statusUpdateEvent)
 
       awaitAssert(
         verify(taskFailureEventRepository, times(1))
@@ -318,17 +319,19 @@ class MarathonSchedulerActorTest
     when(driver.killTask(taskA.taskId.mesosTaskId)).thenAnswer(
       new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
-          system.eventStream.publish(
-            MesosStatusUpdateEvent(
-              slaveId = "",
-              taskId = taskA.taskId,
-              taskStatus = "TASK_KILLED",
-              message = "",
-              appId = app.id,
-              host = "",
-              ipAddresses = Nil,
-              ports = Nil,
-              version = app.version.toString))
+          system
+            .eventStream
+            .publish(
+              MesosStatusUpdateEvent(
+                slaveId = "",
+                taskId = taskA.taskId,
+                taskStatus = "TASK_KILLED",
+                message = "",
+                appId = app.id,
+                host = "",
+                ipAddresses = Nil,
+                ports = Nil,
+                version = app.version.toString))
           Status.DRIVER_RUNNING
         }
       })

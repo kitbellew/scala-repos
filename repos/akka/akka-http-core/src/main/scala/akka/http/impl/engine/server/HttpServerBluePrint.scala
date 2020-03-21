@@ -139,9 +139,8 @@ private[http] object HttpServerBluePrint {
       extends GraphStage[FlowShape[RequestOutput, HttpRequest]] {
     val in = Inlet[RequestOutput]("PrepareRequests.in")
     val out = Outlet[HttpRequest]("PrepareRequests.out")
-    override val shape: FlowShape[RequestOutput, HttpRequest] = FlowShape.of(
-      in,
-      out)
+    override val shape: FlowShape[RequestOutput, HttpRequest] = FlowShape
+      .of(in, out)
 
     override def createLogic(inheritedAttributes: Attributes) =
       new GraphStageLogic(shape) with InHandler with OutHandler {
@@ -178,19 +177,21 @@ private[http] object HttpServerBluePrint {
                   _,
                   _) ⇒
               val effectiveMethod =
-                if (method == HttpMethods.HEAD && settings.transparentHeadRequests)
+                if (method == HttpMethods.HEAD && settings
+                      .transparentHeadRequests)
                   HttpMethods.GET
                 else
                   method
               val effectiveHeaders =
                 if (settings.remoteAddressHeader && remoteAddress.isDefined)
-                  headers.`Remote-Address`(
-                    RemoteAddress(remoteAddress.get)) +: hdrs
+                  headers
+                    .`Remote-Address`(RemoteAddress(remoteAddress.get)) +: hdrs
                 else
                   hdrs
 
-              val entity = createEntity(
-                entityCreator) withSizeLimit settings.parserSettings.maxContentLength
+              val entity = createEntity(entityCreator) withSizeLimit settings
+                .parserSettings
+                .maxContentLength
               push(
                 out,
                 HttpRequest(
@@ -375,8 +376,8 @@ private[http] object HttpServerBluePrint {
           new InHandler {
             def onPush(): Unit = {
               val request = grab(requestIn)
-              val (entity, requestEnd) = HttpEntity.captureTermination(
-                request.entity)
+              val (entity, requestEnd) = HttpEntity
+                .captureTermination(request.entity)
               val access =
                 new TimeoutAccessImpl(
                   request,
@@ -447,12 +448,14 @@ private[http] object HttpServerBluePrint {
     import materializer.executionContext
 
     set {
-      requestEnd.fast.map(_ ⇒
-        new TimeoutSetup(
-          Deadline.now,
-          schedule(initialTimeout, this),
-          initialTimeout,
-          this))
+      requestEnd
+        .fast
+        .map(_ ⇒
+          new TimeoutSetup(
+            Deadline.now,
+            schedule(initialTimeout, this),
+            initialTimeout,
+            this))
     }
 
     override def apply(request: HttpRequest) =
@@ -465,9 +468,11 @@ private[http] object HttpServerBluePrint {
     //#
 
     def clear(): Unit = // best effort timeout cancellation
-      get.fast.foreach(setup ⇒
-        if (setup.scheduledTask ne null)
-          setup.scheduledTask.cancel())
+      get
+        .fast
+        .foreach(setup ⇒
+          if (setup.scheduledTask ne null)
+            setup.scheduledTask.cancel())
 
     override def updateTimeout(timeout: Duration): Unit =
       update(timeout, null: HttpRequest ⇒ HttpResponse)
@@ -563,7 +568,8 @@ private[http] object HttpServerBluePrint {
               grab(requestParsingIn) match {
                 case r: RequestStart ⇒
                   openRequests = openRequests.enqueue(r)
-                  messageEndPending = r.createEntity
+                  messageEndPending = r
+                    .createEntity
                     .isInstanceOf[StreamedEntityCreator[_, _]]
                   val rs =
                     if (r.expect100Continue) {
@@ -613,9 +619,11 @@ private[http] object HttpServerBluePrint {
                 log.warning(
                   """Sending 2xx response before end of request was received...
                 |Note that the connection will be closed after this response. Also, many clients will not read early responses!
-                |Consider waiting for the request end before dispatching this response!""".stripMargin)
+                |Consider waiting for the request end before dispatching this response!"""
+                    .stripMargin)
               val close = requestStart.closeRequested ||
-                requestStart.expect100Continue && oneHundredContinueResponsePending ||
+                requestStart
+                  .expect100Continue && oneHundredContinueResponsePending ||
                 isClosed(requestParsingIn) && openRequests.isEmpty ||
                 isEarlyResponse
               emit(
@@ -922,7 +930,8 @@ private[http] object HttpServerBluePrint {
                   sinkIn.cancel()
                 }
               })
-            WebSocket.framing
+            WebSocket
+              .framing
               .join(frameHandler)
               .runWith(Source.empty, sinkIn.sink)(subFusingMaterializer)
           } else {
@@ -973,7 +982,8 @@ private[http] object HttpServerBluePrint {
                 override def onDownstreamFinish(): Unit = cancel(fromNet)
               })
 
-            WebSocket.framing
+            WebSocket
+              .framing
               .join(frameHandler)
               .runWith(sourceOut.source, sinkIn.sink)(subFusingMaterializer)
           }

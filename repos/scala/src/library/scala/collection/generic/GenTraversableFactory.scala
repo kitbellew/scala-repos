@@ -226,11 +226,9 @@ abstract class GenTraversableFactory[CC[X] <: GenTraversable[
     if (step == zero)
       throw new IllegalArgumentException("zero step")
     val b = newBuilder[T]
-    b sizeHint immutable.NumericRange.count(
-      start,
-      end,
-      step,
-      isInclusive = false)
+    b sizeHint immutable
+      .NumericRange
+      .count(start, end, step, isInclusive = false)
     var i = start
     while (if (step < zero)
              end < i

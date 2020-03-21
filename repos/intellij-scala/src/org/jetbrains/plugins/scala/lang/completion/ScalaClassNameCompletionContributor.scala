@@ -118,16 +118,17 @@ object ScalaClassNameCompletionContributor {
     val expectedTypesAfterNew: Array[ScType] =
       if (afterNewPattern.accepts(dummyPosition, context)) {
         val element = dummyPosition
-        val newExpr = PsiTreeUtil.getContextOfType(
-          element,
-          classOf[ScNewTemplateDefinition])
+        val newExpr = PsiTreeUtil
+          .getContextOfType(element, classOf[ScNewTemplateDefinition])
         //todo: probably we need to remove all abstracts here according to variance
-        newExpr.expectedTypes().map {
-          case ScAbstractType(_, lower, upper) =>
-            upper
-          case tp =>
-            tp
-        }
+        newExpr
+          .expectedTypes()
+          .map {
+            case ScAbstractType(_, lower, upper) =>
+              upper
+            case tp =>
+              tp
+          }
       } else
         Array.empty
     val (position, inString) =
@@ -135,8 +136,8 @@ object ScalaClassNameCompletionContributor {
         case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tMULTILINE_STRING =>
           val position = dummyPosition
           //It's ok here to use parameters.getPosition
-          val offsetInString =
-            parameters.getOffset - parameters.getPosition.getTextRange.getStartOffset + 1
+          val offsetInString = parameters
+            .getOffset - parameters.getPosition.getTextRange.getStartOffset + 1
           val interpolated = ScalaPsiElementFactory.createExpressionFromText(
             "s" + position.getText,
             position.getContext.getContext)
@@ -152,19 +153,14 @@ object ScalaClassNameCompletionContributor {
     val lookingForAnnotations: Boolean = psiElement
       .afterLeaf("@")
       .accepts(position)
-    val isInImport = ScalaPsiUtil.getContextOfType(
-      position,
-      false,
-      classOf[ScImportStmt]) != null
-    val stableRefElement = ScalaPsiUtil.getContextOfType(
-      position,
-      false,
-      classOf[ScStableCodeReferenceElement])
-    val refElement = ScalaPsiUtil.getContextOfType(
-      position,
-      false,
-      classOf[ScReferenceElement])
-    val onlyClasses = stableRefElement != null && !stableRefElement.getContext
+    val isInImport = ScalaPsiUtil
+      .getContextOfType(position, false, classOf[ScImportStmt]) != null
+    val stableRefElement = ScalaPsiUtil
+      .getContextOfType(position, false, classOf[ScStableCodeReferenceElement])
+    val refElement = ScalaPsiUtil
+      .getContextOfType(position, false, classOf[ScReferenceElement])
+    val onlyClasses = stableRefElement != null && !stableRefElement
+      .getContext
       .isInstanceOf[ScConstructorPattern]
 
     val renamesMap = new mutable.HashMap[String, (String, PsiNamedElement)]()
@@ -172,38 +168,42 @@ object ScalaClassNameCompletionContributor {
 
     refElement match {
       case ref: PsiReference =>
-        ref.getVariants.foreach {
-          case s: ScalaLookupItem =>
-            s.isRenamed match {
-              case Some(name) =>
-                renamesMap += ((s.element.name, (name, s.element)))
-                reverseRenamesMap += ((name, s.element))
-              case None =>
-            }
-          case _ =>
-        }
+        ref
+          .getVariants
+          .foreach {
+            case s: ScalaLookupItem =>
+              s.isRenamed match {
+                case Some(name) =>
+                  renamesMap += ((s.element.name, (name, s.element)))
+                  reverseRenamesMap += ((name, s.element))
+                case None =>
+              }
+            case _ =>
+          }
       case _ =>
     }
 
     def addTypeForCompletion(typeToImport: TypeToImport) {
-      val isExcluded: Boolean = ApplicationManager.getApplication.runReadAction(
-        new Computable[Boolean] {
-          def compute: Boolean = {
-            typeToImport match {
-              case ClassTypeToImport(classToImport) =>
-                JavaCompletionUtil.isInExcludedPackage(classToImport, false)
-              case TypeAliasToImport(alias) =>
-                val containingClass = alias.containingClass
-                if (containingClass == null)
-                  return false
-                JavaCompletionUtil.isInExcludedPackage(containingClass, false)
-              case PrefixPackageToImport(pack) =>
-                JavaProjectCodeInsightSettings
-                  .getSettings(pack.getProject)
-                  .isExcluded(pack.getQualifiedName)
+      val isExcluded: Boolean = ApplicationManager
+        .getApplication
+        .runReadAction(
+          new Computable[Boolean] {
+            def compute: Boolean = {
+              typeToImport match {
+                case ClassTypeToImport(classToImport) =>
+                  JavaCompletionUtil.isInExcludedPackage(classToImport, false)
+                case TypeAliasToImport(alias) =>
+                  val containingClass = alias.containingClass
+                  if (containingClass == null)
+                    return false
+                  JavaCompletionUtil.isInExcludedPackage(containingClass, false)
+                case PrefixPackageToImport(pack) =>
+                  JavaProjectCodeInsightSettings
+                    .getSettings(pack.getProject)
+                    .isExcluded(pack.getQualifiedName)
+              }
             }
-          }
-        })
+          })
       if (isExcluded)
         return
 
@@ -260,14 +260,17 @@ object ScalaClassNameCompletionContributor {
 
     val project = position.getProject
 
-    val checkSynthetic = parameters.getOriginalFile.scalaLanguageLevel
+    val checkSynthetic = parameters
+      .getOriginalFile
+      .scalaLanguageLevel
       .map(_ < Scala_2_9)
       .getOrElse(true)
 
     for {
       clazz <- SyntheticClasses.get(project).all.valuesIterator
-      if checkSynthetic || !ScType.baseTypesQualMap.contains(
-        clazz.qualifiedName)
+      if checkSynthetic || !ScType
+        .baseTypesQualMap
+        .contains(clazz.qualifiedName)
     } addTypeForCompletion(ClassTypeToImport(clazz))
 
     val prefixMatcher = result.getPrefixMatcher

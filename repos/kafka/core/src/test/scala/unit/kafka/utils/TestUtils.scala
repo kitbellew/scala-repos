@@ -294,11 +294,13 @@ object TestUtils extends Logging {
       replicationFactor,
       topicConfig)
     // wait until the update metadata request for new topic reaches all servers
-    (0 until numPartitions).map {
-      case i =>
-        TestUtils.waitUntilMetadataIsPropagated(servers, topic, i)
-        i -> TestUtils.waitUntilLeaderIsElectedOrChanged(zkUtils, topic, i)
-    }.toMap
+    (0 until numPartitions)
+      .map {
+        case i =>
+          TestUtils.waitUntilMetadataIsPropagated(servers, topic, i)
+          i -> TestUtils.waitUntilLeaderIsElectedOrChanged(zkUtils, topic, i)
+      }
+      .toMap
   }
 
   /**
@@ -318,11 +320,14 @@ object TestUtils extends Logging {
       topic,
       partitionReplicaAssignment)
     // wait until the update metadata request for new topic reaches all servers
-    partitionReplicaAssignment.keySet.map {
-      case i =>
-        TestUtils.waitUntilMetadataIsPropagated(servers, topic, i)
-        i -> TestUtils.waitUntilLeaderIsElectedOrChanged(zkUtils, topic, i)
-    }.toMap
+    partitionReplicaAssignment
+      .keySet
+      .map {
+        case i =>
+          TestUtils.waitUntilMetadataIsPropagated(servers, topic, i)
+          i -> TestUtils.waitUntilLeaderIsElectedOrChanged(zkUtils, topic, i)
+      }
+      .toMap
   }
 
   /**
@@ -541,9 +546,8 @@ object TestUtils extends Logging {
           securityProtocol == SecurityProtocol.SSL,
           trustStoreFile,
           certAlias))
-    props.put(
-      CommonClientConfigs.SECURITY_PROTOCOL_CONFIG,
-      securityProtocol.name)
+    props
+      .put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, securityProtocol.name)
     props
   }
 
@@ -575,9 +579,8 @@ object TestUtils extends Logging {
     producerProps.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, maxBlockMs.toString)
     producerProps.put(ProducerConfig.BUFFER_MEMORY_CONFIG, bufferSize.toString)
     producerProps.put(ProducerConfig.RETRIES_CONFIG, retries.toString)
-    producerProps.put(
-      ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG,
-      requestTimeoutMs.toString)
+    producerProps
+      .put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, requestTimeoutMs.toString)
 
     /* Only use these if not already set */
     val defaultProps = Map(
@@ -599,8 +602,8 @@ object TestUtils extends Logging {
      */
     if (!producerProps.containsKey(
           CommonClientConfigs.SECURITY_PROTOCOL_CONFIG))
-      producerProps.putAll(
-        producerSecurityConfigs(securityProtocol, trustStoreFile))
+      producerProps
+        .putAll(producerSecurityConfigs(securityProtocol, trustStoreFile))
 
     new KafkaProducer[K, V](producerProps, keySerializer, valueSerializer)
   }
@@ -645,9 +648,12 @@ object TestUtils extends Logging {
     val defaultProps = Map(
       ConsumerConfig.RETRY_BACKOFF_MS_CONFIG -> "100",
       ConsumerConfig.RECONNECT_BACKOFF_MS_CONFIG -> "200",
-      ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.ByteArrayDeserializer",
-      ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.ByteArrayDeserializer",
-      ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG -> partitionAssignmentStrategy,
+      ConsumerConfig
+        .KEY_DESERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.ByteArrayDeserializer",
+      ConsumerConfig
+        .VALUE_DESERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.ByteArrayDeserializer",
+      ConsumerConfig
+        .PARTITION_ASSIGNMENT_STRATEGY_CONFIG -> partitionAssignmentStrategy,
       ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG -> sessionTimeout.toString,
       ConsumerConfig.GROUP_ID_CONFIG -> groupId
     )
@@ -666,8 +672,8 @@ object TestUtils extends Logging {
      */
     if (!consumerProps.containsKey(
           CommonClientConfigs.SECURITY_PROTOCOL_CONFIG))
-      consumerProps.putAll(
-        consumerSecurityConfigs(securityProtocol, trustStoreFile))
+      consumerProps
+        .putAll(consumerSecurityConfigs(securityProtocol, trustStoreFile))
 
     new KafkaConsumer[Array[Byte], Array[Byte]](consumerProps)
   }
@@ -748,8 +754,8 @@ object TestUtils extends Logging {
   }
 
   def deleteBrokersInZk(zkUtils: ZkUtils, ids: Seq[Int]): Seq[Broker] = {
-    val brokers = ids.map(id =>
-      new Broker(id, "localhost", 6667, SecurityProtocol.PLAINTEXT))
+    val brokers = ids
+      .map(id => new Broker(id, "localhost", 6667, SecurityProtocol.PLAINTEXT))
     brokers.foreach(b => zkUtils.deletePath(ZkUtils.BrokerIdsPath + "/" + b))
     brokers
   }
@@ -797,8 +803,8 @@ object TestUtils extends Logging {
       correlationId: Int = 0,
       clientId: String): ProducerRequest = {
     val data = topics.flatMap(topic =>
-      partitions.map(partition =>
-        (TopicAndPartition(topic, partition), message)))
+      partitions
+        .map(partition => (TopicAndPartition(topic, partition), message)))
     new ProducerRequest(
       correlationId,
       clientId,
@@ -817,9 +823,8 @@ object TestUtils extends Logging {
         val partition = leaderForPartition._1
         val leader = leaderForPartition._2
         try {
-          val currentLeaderAndIsrOpt = zkUtils.getLeaderAndIsrForPartition(
-            topic,
-            partition)
+          val currentLeaderAndIsrOpt = zkUtils
+            .getLeaderAndIsrForPartition(topic, partition)
           var newLeaderAndIsr: LeaderAndIsr = null
           if (currentLeaderAndIsrOpt == None)
             newLeaderAndIsr = new LeaderAndIsr(leader, List(leader))
@@ -1000,7 +1005,9 @@ object TestUtils extends Logging {
     TestUtils.waitUntilTrue(
       () =>
         servers.foldLeft(true) { (result, server) =>
-          val partitionStateOpt = server.apis.metadataCache
+          val partitionStateOpt = server
+            .apis
+            .metadataCache
             .getPartitionInfo(topic, partition)
           partitionStateOpt match {
             case None =>
@@ -1027,7 +1034,8 @@ object TestUtils extends Logging {
     TestUtils.waitUntilTrue(
       () =>
         servers.exists { server =>
-          server.replicaManager
+          server
+            .replicaManager
             .getPartition(topic, partition)
             .exists(_.leaderReplicaIfLocal().isDefined)
         },
@@ -1057,9 +1065,8 @@ object TestUtils extends Logging {
       topic: String,
       partitionToBeReassigned: Int,
       assignedReplicas: Seq[Int]) {
-    val inSyncReplicas = zkUtils.getInSyncReplicasForPartition(
-      topic,
-      partitionToBeReassigned)
+    val inSyncReplicas = zkUtils
+      .getInSyncReplicasForPartition(topic, partitionToBeReassigned)
     // in sync replicas should not have any replica that is not in the new assigned replicas
     val phantomInSyncReplicas = inSyncReplicas.toSet -- assignedReplicas.toSet
     assertTrue(
@@ -1110,7 +1117,8 @@ object TestUtils extends Logging {
   def verifyNonDaemonThreadsStatus(threadNamePrefix: String) {
     assertEquals(
       0,
-      Thread.getAllStackTraces
+      Thread
+        .getAllStackTraces
         .keySet()
         .toArray
         .map(_.asInstanceOf[Thread])
@@ -1250,7 +1258,9 @@ object TestUtils extends Logging {
                  ) || (i < nMessagesPerThread)) {
             assertTrue(iterator.hasNext)
             val message =
-              iterator.next.message // will throw a timeout exception if the message isn't there
+              iterator
+                .next
+                .message // will throw a timeout exception if the message isn't there
             messages ::= message
             debug("received message: " + message)
             i += 1
@@ -1260,7 +1270,8 @@ object TestUtils extends Logging {
             if (shouldGetAllMessages) {
               // swallow the exception
               debug(
-                "consumer timed out after receiving " + messages.length + " message(s).")
+                "consumer timed out after receiving " + messages
+                  .length + " message(s).")
             } else {
               throw e
             }
@@ -1276,8 +1287,8 @@ object TestUtils extends Logging {
       topic: String,
       numPartitions: Int,
       servers: Seq[KafkaServer]) {
-    val topicAndPartitions = (0 until numPartitions).map(
-      TopicAndPartition(topic, _))
+    val topicAndPartitions = (0 until numPartitions)
+      .map(TopicAndPartition(topic, _))
     // wait until admin path for delete topic is deleted, signaling completion of topic deletion
     TestUtils.waitUntilTrue(
       () => !zkUtils.pathExists(getDeleteTopicPath(topic)),
@@ -1294,7 +1305,8 @@ object TestUtils extends Logging {
       () =>
         servers.forall(server =>
           topicAndPartitions.forall(tp =>
-            server.replicaManager
+            server
+              .replicaManager
               .getPartition(tp.topic, tp.partition) == None)),
       "Replica manager's should have deleted all of this topic's partitions"
     )
@@ -1302,18 +1314,21 @@ object TestUtils extends Logging {
     assertTrue(
       "Replica logs not deleted after delete topic is complete",
       servers.forall(server =>
-        topicAndPartitions.forall(tp =>
-          server.getLogManager().getLog(tp).isEmpty))
+        topicAndPartitions
+          .forall(tp => server.getLogManager().getLog(tp).isEmpty))
     )
     // ensure that topic is removed from all cleaner offsets
     TestUtils.waitUntilTrue(
       () =>
         servers.forall(server =>
           topicAndPartitions.forall { tp =>
-            val checkpoints = server.getLogManager().logDirs.map { logDir =>
-              new OffsetCheckpoint(
-                new File(logDir, "cleaner-offset-checkpoint")).read()
-            }
+            val checkpoints = server
+              .getLogManager()
+              .logDirs
+              .map { logDir =>
+                new OffsetCheckpoint(
+                  new File(logDir, "cleaner-offset-checkpoint")).read()
+              }
             checkpoints.forall(checkpointsPerLogDir =>
               !checkpointsPerLogDir.contains(tp))
           }),
@@ -1345,12 +1360,8 @@ object TestUtils extends Logging {
       throw new Exception("SSL enabled but no trustStoreFile provided")
     }
 
-    val sslConfigs = TestSslUtils.createSslConfig(
-      clientCert,
-      true,
-      mode,
-      trustStore,
-      certAlias)
+    val sslConfigs = TestSslUtils
+      .createSslConfig(clientCert, true, mode, trustStore, certAlias)
 
     val sslProps = new Properties()
     sslConfigs.foreach {
@@ -1407,11 +1418,13 @@ object TestUtils extends Logging {
     val exceptions = ArrayBuffer[Throwable]()
     try {
       val runnables =
-        functions.map { function =>
-          new Callable[Unit] {
-            override def call(): Unit = function()
+        functions
+          .map { function =>
+            new Callable[Unit] {
+              override def call(): Unit = function()
+            }
           }
-        }.asJava
+          .asJava
       val futures =
         threadPool
           .invokeAll(runnables, timeoutMs, TimeUnit.MILLISECONDS)

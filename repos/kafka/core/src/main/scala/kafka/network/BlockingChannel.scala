@@ -60,7 +60,8 @@ class BlockingChannel(
           channel.socket.setSoTimeout(readTimeoutMs)
           channel.socket.setKeepAlive(true)
           channel.socket.setTcpNoDelay(true)
-          channel.socket
+          channel
+            .socket
             .connect(new InetSocketAddress(host, port), connectTimeoutMs)
 
           writeChannel = channel

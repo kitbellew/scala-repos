@@ -74,7 +74,8 @@ trait PojoSRTestSupport extends Suite with BeforeAndAfterAll {
     * Convenience method to find a bundle by symbolic name
     */
   def bundleForName(name: String) =
-    context.getBundles
+    context
+      .getBundles
       .find(_.getSymbolicName == name)
       .getOrElse(
         fail("Unable to find bundle with symbolic name %s".format(name)))
@@ -100,8 +101,8 @@ trait PojoSRTestSupport extends Suite with BeforeAndAfterAll {
           if (deadline.isOverdue())
             fail("Gave up waiting for service of type %s".format(serviceType))
           else {
-            Thread.sleep(
-              (step min deadline.timeLeft max Duration.Zero).toMillis)
+            Thread
+              .sleep((step min deadline.timeLeft max Duration.Zero).toMillis)
             poll(step, deadline)
           }
         case some ⇒

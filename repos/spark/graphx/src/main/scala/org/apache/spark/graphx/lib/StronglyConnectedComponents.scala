@@ -79,7 +79,8 @@ object StronglyConnectedComponents {
           .cache()
 
         // get all vertices to be removed
-        val finalVertices = sccWorkGraph.vertices
+        val finalVertices = sccWorkGraph
+          .vertices
           .filter {
             case (vid, (scc, isFinal)) =>
               isFinal

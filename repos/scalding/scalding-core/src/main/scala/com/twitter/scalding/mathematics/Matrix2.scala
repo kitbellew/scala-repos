@@ -129,9 +129,8 @@ sealed trait Matrix2[R, C, V] extends Serializable {
       mj: MatrixJoiner2): Matrix2[R, C2, VecV] = {
 
     //This cast will always succeed:
-    lazy val joinedBool = mj.join(
-      this.asInstanceOf[Matrix2[R, C, Boolean]],
-      vec)
+    lazy val joinedBool = mj
+      .join(this.asInstanceOf[Matrix2[R, C, Boolean]], vec)
     implicit val ord2: Ordering[C2] = vec.colOrd
     lazy val resultPipe = joinedBool
       .flatMap {
@@ -157,7 +156,8 @@ sealed trait Matrix2[R, C, V] extends Serializable {
       ev: =:=[R, Unit],
       mon: Monoid[V],
       mj: MatrixJoiner2): Matrix2[Unit, C2, V] =
-    mat.transpose
+    mat
+      .transpose
       .propagate(this.transpose.asInstanceOf[Matrix2[C, Unit, V]])
       .transpose
 
@@ -191,17 +191,23 @@ sealed trait Matrix2[R, C, V] extends Serializable {
       num: Numeric[V],
       mj: MatrixJoiner2): Matrix2[R, C, Double] = {
     val matD = MatrixLiteral(
-      this.toTypedPipe.map {
-        case (r, c, x) =>
-          (r, c, num.toDouble(x))
-      },
+      this
+        .toTypedPipe
+        .map {
+          case (r, c, x) =>
+            (r, c, num.toDouble(x))
+        },
       this.sizeHint)
     lazy val result = MatrixLiteral(
-      this.toTypedPipe.map {
-        case (r, c, x) =>
-          (r, c, num.toDouble(x) * num.toDouble(x))
-      },
-      this.sizeHint).sumColVectors.toTypedPipe
+      this
+        .toTypedPipe
+        .map {
+          case (r, c, x) =>
+            (r, c, num.toDouble(x) * num.toDouble(x))
+        },
+      this.sizeHint)
+      .sumColVectors
+      .toTypedPipe
       .map {
         case (r, c, x) =>
           (r, r, 1 / scala.math.sqrt(x))
@@ -219,12 +225,16 @@ sealed trait Matrix2[R, C, V] extends Serializable {
       num: Numeric[V],
       mj: MatrixJoiner2): Matrix2[R, C, Double] = {
     val matD = MatrixLiteral(
-      this.toTypedPipe.map {
-        case (r, c, x) =>
-          (r, c, num.toDouble(x).abs)
-      },
+      this
+        .toTypedPipe
+        .map {
+          case (r, c, x) =>
+            (r, c, num.toDouble(x).abs)
+        },
       this.sizeHint)
-    lazy val result = matD.sumColVectors.toTypedPipe
+    lazy val result = matD
+      .sumColVectors
+      .toTypedPipe
       .map {
         case (r, c, x) =>
           (r, r, 1 / x)
@@ -338,15 +348,21 @@ class DefaultMatrixJoiner(sizeRatioThreshold: Long) extends MatrixJoiner2 {
       right: Matrix2[C, C2, V2]): TypedPipe[(C, ((R, V), (C2, V2)))] = {
     implicit val cOrd: Ordering[C] = left.colOrd
     val one =
-      left.toTypedPipe.map {
-        case (r, c, v) =>
-          (c, (r, v))
-      }.group
+      left
+        .toTypedPipe
+        .map {
+          case (r, c, v) =>
+            (c, (r, v))
+        }
+        .group
     val two =
-      right.toTypedPipe.map {
-        case (c, c2, v2) =>
-          (c, (c2, v2))
-      }.group
+      right
+        .toTypedPipe
+        .map {
+          case (c, c2, v2) =>
+            (c, (c2, v2))
+        }
+        .group
     val sizeOne = left.sizeHint.total.getOrElse(BigInt(1L))
     val sizeTwo = right.sizeHint.total.getOrElse(BigInt(1L))
 
@@ -428,8 +444,8 @@ case class Product[R, C, C2, V](
 
   private lazy val optimal: Boolean = expressions.isDefined
 
-  private lazy val isSpecialCase: Boolean =
-    right.isInstanceOf[OneC[_, _]] || left.isInstanceOf[OneR[_, _]]
+  private lazy val isSpecialCase: Boolean = right
+    .isInstanceOf[OneC[_, _]] || left.isInstanceOf[OneR[_, _]]
 
   private lazy val specialCase: TypedPipe[(R, C2, V)] = {
     val leftMatrix = right.isInstanceOf[OneC[_, _]]
@@ -444,7 +460,8 @@ case class Product[R, C, C2, V](
           val ord: Ordering[C] = right.rowOrd
           right.toTypedPipe.groupBy(x => x._1)(ord)
         }
-      ).mapValues {
+      )
+        .mapValues {
           _._3
         }
         .sum(localRing)
@@ -542,7 +559,9 @@ case class Product[R, C, C2, V](
     left.transpose,
     ring)
   override def negate(implicit g: Group[V]): Product[R, C, C2, V] = {
-    if (left.sizeHint.total.getOrElse(BigInt(0L)) > right.sizeHint.total
+    if (left.sizeHint.total.getOrElse(BigInt(0L)) > right
+          .sizeHint
+          .total
           .getOrElse(BigInt(0L))) {
       Product(left, right.negate, ring, expressions)
     } else {
@@ -554,23 +573,24 @@ case class Product[R, C, C2, V](
     * Trace(A B) = Trace(B A) so we optimize to choose the lowest cost item
     */
   override def trace(implicit mon: Monoid[V], ev1: =:=[R, C2]): Scalar2[V] = {
-    val (cost1, plan1) = Matrix2.optimize(
-      this.asInstanceOf[Matrix2[Any, Any, V]])
+    val (cost1, plan1) = Matrix2
+      .optimize(this.asInstanceOf[Matrix2[Any, Any, V]])
     val (cost2, plan2) = Matrix2.optimize(
       Product(
         right.asInstanceOf[Matrix2[C, R, V]],
         left.asInstanceOf[Matrix2[R, C, V]],
         ring,
-        None)
-        .asInstanceOf[Matrix2[Any, Any, V]])
+        None).asInstanceOf[Matrix2[Any, Any, V]])
 
     if (cost1 > cost2) {
       val product2 = plan2.asInstanceOf[Product[C, R, C, V]]
       val ord = left.colOrd
-      val filtered = product2.toOuterSum.filter {
-        case (c1, c2, _) =>
-          ord.equiv(c1, c2)
-      }
+      val filtered = product2
+        .toOuterSum
+        .filter {
+          case (c1, c2, _) =>
+            ord.equiv(c1, c2)
+        }
       Scalar2(
         product2
           .computePipe(filtered)
@@ -582,10 +602,12 @@ case class Product[R, C, C2, V](
     } else {
       val product1 = plan1.asInstanceOf[Product[R, C, R, V]]
       val ord = left.rowOrd
-      val filtered = product1.toOuterSum.filter {
-        case (r1, r2, _) =>
-          ord.equiv(r1, r2)
-      }
+      val filtered = product1
+        .toOuterSum
+        .filter {
+          case (r1, r2, _) =>
+            ord.equiv(r1, r2)
+        }
       Scalar2(
         product1
           .computePipe(filtered)
@@ -636,8 +658,10 @@ case class Sum[R, C, V](
 
   override lazy val toTypedPipe: TypedPipe[(R, C, V)] = {
     if (left.equals(right)) {
-      left.optimizedSelf.toTypedPipe.map(v =>
-        (v._1, v._2, mon.plus(v._3, v._3)))
+      left
+        .optimizedSelf
+        .toTypedPipe
+        .map(v => (v._1, v._2, mon.plus(v._3, v._3)))
     } else {
       collectAddends(this)
         .reduce((x, y) => x ++ y)
@@ -701,20 +725,29 @@ case class HadamardProduct[R, C, V](
   // TODO: optimize / combine with Sums: https://github.com/tomtau/scalding/issues/14#issuecomment-22971582
   override lazy val toTypedPipe: TypedPipe[(R, C, V)] = {
     if (left.equals(right)) {
-      left.optimizedSelf.toTypedPipe.map(v =>
-        (v._1, v._2, ring.times(v._3, v._3)))
+      left
+        .optimizedSelf
+        .toTypedPipe
+        .map(v => (v._1, v._2, ring.times(v._3, v._3)))
     } else {
       // tracking values which were reduced (multiplied by non-zero) or non-reduced (multiplied by zero) with a boolean
       (
-        left.optimizedSelf.toTypedPipe.map {
-          case (r, c, v) =>
-            (r, c, (v, false))
-        } ++
-          right.optimizedSelf.toTypedPipe.map {
+        left
+          .optimizedSelf
+          .toTypedPipe
+          .map {
             case (r, c, v) =>
               (r, c, (v, false))
-          }
-      ).groupBy(x => (x._1, x._2))
+          } ++
+          right
+            .optimizedSelf
+            .toTypedPipe
+            .map {
+              case (r, c, v) =>
+                (r, c, (v, false))
+            }
+      )
+        .groupBy(x => (x._1, x._2))
         .mapValues {
           _._3
         }
@@ -735,7 +768,9 @@ case class HadamardProduct[R, C, V](
       rowOrd)
   override val sizeHint = left.sizeHint #*# right.sizeHint
   override def negate(implicit g: Group[V]): HadamardProduct[R, C, V] =
-    if (left.sizeHint.total.getOrElse(BigInt(0L)) > right.sizeHint.total
+    if (left.sizeHint.total.getOrElse(BigInt(0L)) > right
+          .sizeHint
+          .total
           .getOrElse(BigInt(0L)))
       HadamardProduct(left, right.negate, ring)
     else
@@ -798,13 +833,17 @@ trait Scalar2[V] extends Serializable {
       mj: MatrixJoiner2): Matrix2[R, C, V] =
     that match {
       case p @ Product(left, right, _, expressions) =>
-        if (left.sizeHint.total.getOrElse(BigInt(0L)) > right.sizeHint.total
+        if (left.sizeHint.total.getOrElse(BigInt(0L)) > right
+              .sizeHint
+              .total
               .getOrElse(BigInt(0L)))
           Product(left, (this * right), ring, expressions)(p.joiner)
         else
           Product(this * left, right, ring, expressions)(p.joiner)
       case HadamardProduct(left, right, _) =>
-        if (left.sizeHint.total.getOrElse(BigInt(0L)) > right.sizeHint.total
+        if (left.sizeHint.total.getOrElse(BigInt(0L)) > right
+              .sizeHint
+              .total
               .getOrElse(BigInt(0L)))
           HadamardProduct(left, (this * right), ring)
         else
@@ -814,17 +853,16 @@ trait Scalar2[V] extends Serializable {
       case m @ MatrixLiteral(_, _) =>
         timesLiteral(m) // handle literals here
       case x @ OneC() =>
-        Product(OneC[Unit, V](), toMatrix, ring)
-          .asInstanceOf[Matrix2[R, C, V]]
+        Product(OneC[Unit, V](), toMatrix, ring).asInstanceOf[Matrix2[R, C, V]]
       case x @ OneR() =>
-        Product(toMatrix, OneR[Unit, V](), ring)
-          .asInstanceOf[Matrix2[R, C, V]]
+        Product(toMatrix, OneR[Unit, V](), ring).asInstanceOf[Matrix2[R, C, V]]
     }
 
   def divMatrix[R, C](that: Matrix2[R, C, V])(implicit
       f: Field[V]): MatrixLiteral[R, C, V] =
     MatrixLiteral(
-      that.toTypedPipe
+      that
+        .toTypedPipe
         .mapWithValue(value) {
           case ((r, c, v), optV) =>
             (r, c, f.div(v, optV.getOrElse(f.zero)))
@@ -834,7 +872,8 @@ trait Scalar2[V] extends Serializable {
   def timesLiteral[R, C](that: Matrix2[R, C, V])(implicit
       ring: Ring[V]): MatrixLiteral[R, C, V] =
     MatrixLiteral(
-      that.toTypedPipe
+      that
+        .toTypedPipe
         .mapWithValue(value) {
           case ((r, c, v), optV) =>
             (r, c, ring.times(optV.getOrElse(ring.zero), v))
@@ -910,7 +949,8 @@ object Matrix2 {
               p,
               k + 1,
               j) +
-              (p(i).sizeHint * (p(k).sizeHint * p(j).sizeHint)).total
+              (p(i).sizeHint * (p(k).sizeHint * p(j).sizeHint))
+                .total
                 .getOrElse(BigInt(0L))
           if (cost < subchainCosts((i, j))) {
             subchainCosts.put((i, j), cost)

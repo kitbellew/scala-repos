@@ -42,7 +42,8 @@ class EnsembleInsetText extends EnsembleExample {
   def getContent = {
     //StyleSheets are added
     val insetTextCss =
-      this.getClass
+      this
+        .getClass
         .getResource("/scalafx/ensemble/css/InsetText.css")
         .toExternalForm
     new VBox {

@@ -590,9 +590,11 @@ trait IterableSplitter[+T]
     def remaining = self.remaining
     def dup: IterableSplitter[S] = self.dup map f
     def split: Seq[IterableSplitter[S]] =
-      self.split.map {
-        _ map f
-      }
+      self
+        .split
+        .map {
+          _ map f
+        }
   }
 
   override def map[S](f: T => S) = new Mapped(f)
@@ -755,9 +757,11 @@ trait SeqSplitter[+T]
     override def split: Seq[SeqSplitter[S]] =
       super.split.asInstanceOf[Seq[SeqSplitter[S]]]
     def psplit(sizes: Int*): Seq[SeqSplitter[S]] =
-      self.psplit(sizes: _*).map {
-        _ map f
-      }
+      self
+        .psplit(sizes: _*)
+        .map {
+          _ map f
+        }
   }
 
   override def map[S](f: T => S) = new Mapped(f)
@@ -775,14 +779,16 @@ trait SeqSplitter[+T]
         // split sizes
         var appendMiddle = false
         val szcum = sizes.scanLeft(0)(_ + _)
-        val splitsizes = sizes.zip(szcum.init zip szcum.tail).flatMap { t =>
-          val (sz, (from, until)) = t
-          if (from < selfrem && until > selfrem) {
-            appendMiddle = true
-            Seq(selfrem - from, until - selfrem)
-          } else
-            Seq(sz)
-        }
+        val splitsizes = sizes
+          .zip(szcum.init zip szcum.tail)
+          .flatMap { t =>
+            val (sz, (from, until)) = t
+            if (from < selfrem && until > selfrem) {
+              appendMiddle = true
+              Seq(selfrem - from, until - selfrem)
+            } else
+              Seq(sz)
+          }
         val (selfszfrom, thatszfrom) = splitsizes
           .zip(szcum.init)
           .span(_._2 < selfrem)
@@ -802,8 +808,8 @@ trait SeqSplitter[+T]
         // appended last in self with first in rest if necessary
         if (appendMiddle)
           selfs.init ++ Seq(
-            selfs.last.appendParSeq[U, SeqSplitter[U]](
-              thats.head)) ++ thats.tail
+            selfs.last.appendParSeq[U, SeqSplitter[U]](thats.head)) ++ thats
+            .tail
         else
           selfs ++ thats
       } else

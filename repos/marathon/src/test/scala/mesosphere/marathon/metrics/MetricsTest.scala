@@ -50,8 +50,8 @@ class MetricsTest extends MarathonSpec with MockitoSugar {
     assert(instance.getClass.getName.contains("EnhancerByGuice"))
 
     assert(
-      metrics.className(
-        instance.getClass) == "mesosphere.marathon.metrics.FooBar")
+      metrics
+        .className(instance.getClass) == "mesosphere.marathon.metrics.FooBar")
   }
 
   test("Metrics caches the class names") {
@@ -69,10 +69,8 @@ class MetricsTest extends MarathonSpec with MockitoSugar {
     "Metrics#name should use a dot to separate the class name and the method name") {
     val expectedName =
       "service.mesosphere.marathon.core.task.tracker.TaskTracker.write-request-time"
-    val actualName = metrics.name(
-      "service",
-      classOf[TaskTracker],
-      "write-request-time")
+    val actualName = metrics
+      .name("service", classOf[TaskTracker], "write-request-time")
 
     assert(expectedName.equals(actualName))
   }

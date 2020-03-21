@@ -20,7 +20,8 @@ object PlayTime {
         fuccess(pt)
       case None =>
         {
-          gameTube.coll
+          gameTube
+            .coll
             .find(
               BSONDocument(
                 Game.BSONFields.playerUids -> user.id,

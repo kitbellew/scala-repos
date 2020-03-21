@@ -13,8 +13,8 @@ object Test extends BytecodeTest {
   }
 
   val publicStatic = Flags.ACC_PUBLIC | Flags.ACC_STATIC
-  val publicAbstractInterface =
-    Flags.ACC_PUBLIC | Flags.ACC_ABSTRACT | Flags.ACC_INTERFACE
+  val publicAbstractInterface = Flags.ACC_PUBLIC | Flags.ACC_ABSTRACT | Flags
+    .ACC_INTERFACE
 
   def innerClassNodes(className: String): List[InnerClassNode] = {
     loadClassNode(className).innerClasses.asScala.toList.sortBy(_.name)
@@ -423,8 +423,8 @@ object Test extends BytecodeTest {
       "ImplClassesAreTopLevel$B2$1",
       "ImplClassesAreTopLevel$B3$1",
       "ImplClassesAreTopLevel$$anon$14",
-      "ImplClassesAreTopLevel$$anon$15").foreach(
-      assertEnclosingMethod(_, "ImplClassesAreTopLevel", null, null))
+      "ImplClassesAreTopLevel$$anon$15")
+      .foreach(assertEnclosingMethod(_, "ImplClassesAreTopLevel", null, null))
 
     // encl meth n
     List("ImplClassesAreTopLevel$B4$1", "ImplClassesAreTopLevel$$anon$16")

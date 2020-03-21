@@ -22,8 +22,8 @@ final case class ConvergenceMultiNodeConfig(failureDetectorPuppet: Boolean)
   commonConfig(
     debugConfig(on = false)
       .withFallback(
-        ConfigFactory.parseString(
-          "akka.cluster.failure-detector.threshold = 4"))
+        ConfigFactory
+          .parseString("akka.cluster.failure-detector.threshold = 4"))
       .withFallback(MultiNodeClusterSpec.clusterConfig(failureDetectorPuppet)))
 }
 
@@ -102,10 +102,12 @@ abstract class ConvergenceSpec(multiNodeConfig: ConvergenceMultiNodeConfig)
       }
 
       def memberStatus(address: Address): Option[MemberStatus] =
-        clusterView.members.collectFirst {
-          case m if m.address == address ⇒
-            m.status
-        }
+        clusterView
+          .members
+          .collectFirst {
+            case m if m.address == address ⇒
+              m.status
+          }
 
       enterBarrier("after-join")
 

@@ -196,7 +196,8 @@ class ContentDiagramDepth(pack: ContentDiagram) extends DepthInfo {
   private[this] var _maxDepth = 0
   private[this] var _nodeDepth = Map[Node, Int]()
   private[this] var seedNodes = Set[Node]()
-  private[this] val invertedEdges: Map[Node, List[Node]] = pack.edges
+  private[this] val invertedEdges: Map[Node, List[Node]] = pack
+    .edges
     .flatMap({
       case (node: Node, outgoing: List[Node]) =>
         outgoing.map((_, node))
@@ -207,7 +208,9 @@ class ContentDiagramDepth(pack: ContentDiagram) extends DepthInfo {
         (k, values.map(_._2))
     })
     .withDefaultValue(Nil)
-  private[this] val directEdges: Map[Node, List[Node]] = pack.edges.toMap
+  private[this] val directEdges: Map[Node, List[Node]] = pack
+    .edges
+    .toMap
     .withDefaultValue(Nil)
 
   // seed base nodes, to minimize noise - they can't all have parents, else there would only be cycles
@@ -216,8 +219,8 @@ class ContentDiagramDepth(pack: ContentDiagram) extends DepthInfo {
   while (!seedNodes.isEmpty) {
     var newSeedNodes = Set[Node]()
     for (node <- seedNodes) {
-      val depth =
-        1 + (-1 :: directEdges(node).map(_nodeDepth.getOrElse(_, -1))).max
+      val depth = 1 + (-1 :: directEdges(node).map(_nodeDepth.getOrElse(_, -1)))
+        .max
       if (depth != _nodeDepth.getOrElse(node, -1)) {
         _nodeDepth += (node -> depth)
         newSeedNodes ++= invertedEdges(node)

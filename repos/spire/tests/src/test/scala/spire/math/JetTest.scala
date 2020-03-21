@@ -236,8 +236,8 @@ class JetTest extends FunSuite with Matchers {
 
     def a_times_b[@sp(Double) T: Field: Trig](x: T): T = a(x) * b(x)
     a_times_b(jx).real should be(a(x) * b(x))
-    a_times_b(jx).infinitesimal(0) should be(
-      da(x) * b(x) + a(x) * db(x) +- maxError)
+    a_times_b(jx)
+      .infinitesimal(0) should be(da(x) * b(x) + a(x) * db(x) +- maxError)
 
     def a_div_b[@sp(Double) T: Field: Trig](x: T): T = a(x) / b(x)
     a_div_b(jx).real should be(a(x) / b(x))

@@ -109,7 +109,8 @@ object JavaWebSocket extends JavaHelpers {
 
   // -- Json (JsonNode)
 
-  implicit val jsonFrame = MessageFlowTransformer.stringMessageFlowTransformer
+  implicit val jsonFrame = MessageFlowTransformer
+    .stringMessageFlowTransformer
     .map(play.libs.Json.parse, play.libs.Json.stringify)
 
   def ofJson(retrieveWebSocket: => LegacyWebSocket[JsonNode]): WebSocket =

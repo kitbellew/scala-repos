@@ -49,10 +49,14 @@ object RoutesCompiler {
               .map(m => new File(m.trim.drop(11)))
 
             def mapLine(generatedLine: Int): Option[Int] = {
-              lines.view.take(generatedLine).reverse.collectFirst {
-                case LineMarker(line) =>
-                  Integer.parseInt(line)
-              }
+              lines
+                .view
+                .take(generatedLine)
+                .reverse
+                .collectFirst {
+                  case LineMarker(line) =>
+                    Integer.parseInt(line)
+                }
             }
           })
       } else {
@@ -98,14 +102,17 @@ object RoutesCompiler {
 
     val routeFile = task.file.getAbsoluteFile
 
-    RoutesFileParser.parse(routeFile).right.map { rules =>
-      val generated = generator.generate(task, namespace, rules)
-      generated.map {
-        case (filename, content) =>
-          val file = new File(generatedDir, filename)
-          FileUtils.writeStringToFile(file, content, implicitly[Codec].name)
-          file
+    RoutesFileParser
+      .parse(routeFile)
+      .right
+      .map { rules =>
+        val generated = generator.generate(task, namespace, rules)
+        generated.map {
+          case (filename, content) =>
+            val file = new File(generatedDir, filename)
+            FileUtils.writeStringToFile(file, content, implicitly[Codec].name)
+            file
+        }
       }
-    }
   }
 }

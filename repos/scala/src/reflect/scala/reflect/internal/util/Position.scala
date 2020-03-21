@@ -112,7 +112,8 @@ sealed abstract class DefinedPosition extends Position {
   override def equals(that: Any) =
     that match {
       case that: DefinedPosition =>
-        source.file == that.source.file && start == that.start && point == that.point && end == that.end
+        source.file == that.source.file && start == that.start && point == that
+          .point && end == that.end
       case _ =>
         false
     }

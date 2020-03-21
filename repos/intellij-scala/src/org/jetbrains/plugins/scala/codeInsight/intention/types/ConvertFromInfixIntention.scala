@@ -36,10 +36,8 @@ class ConvertFromInfixIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val infixTypeElement: ScInfixTypeElement = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScInfixTypeElement],
-      false)
+    val infixTypeElement: ScInfixTypeElement = PsiTreeUtil
+      .getParentOfType(element, classOf[ScInfixTypeElement], false)
     val elementToReplace =
       infixTypeElement.getParent match {
         case x: ScParenthesisedTypeElement =>
@@ -50,13 +48,11 @@ class ConvertFromInfixIntention extends PsiElementBaseIntentionAction {
 
     if (element == null)
       return
-    val newTypeText =
-      infixTypeElement.ref.getText + "[" + infixTypeElement.lOp.getText + ", " + infixTypeElement.rOp
-        .map(_.getText)
-        .getOrElse("") + "]"
-    val newTypeElement = ScalaPsiElementFactory.createTypeElementFromText(
-      newTypeText,
-      element.getManager)
+    val newTypeText = infixTypeElement.ref.getText + "[" + infixTypeElement
+      .lOp
+      .getText + ", " + infixTypeElement.rOp.map(_.getText).getOrElse("") + "]"
+    val newTypeElement = ScalaPsiElementFactory
+      .createTypeElementFromText(newTypeText, element.getManager)
     val replaced = elementToReplace.replace(newTypeElement)
     UndoUtil.markPsiFileForUndo(replaced.getContainingFile)
   }

@@ -39,13 +39,15 @@ class BatchedDeltaService[K, V: Semigroup](
   override def ordering = store.ordering
   override def batcher = store.batcher
   override def readStream(batchID: BatchID, mode: Mode) =
-    deltas.readStream(batchID, mode).map { fp =>
-      fp.map { pipe =>
-        pipe.mapValues { kv: (K, V) =>
-          (kv._1, Some(kv._2))
-        } // case confused compiler here
+    deltas
+      .readStream(batchID, mode)
+      .map { fp =>
+        fp.map { pipe =>
+          pipe.mapValues { kv: (K, V) =>
+            (kv._1, Some(kv._2))
+          } // case confused compiler here
+        }
       }
-    }
   override def readLast(exclusiveUB: BatchID, mode: Mode) =
     store.readLast(exclusiveUB, mode)
 

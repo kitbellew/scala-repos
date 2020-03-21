@@ -45,16 +45,18 @@ object WorksheetViewerInfo {
     val factory = EditorFactory.getInstance()
 
     while (i.hasNext) {
-      i.next().foreach {
-        case e: EditorImpl =>
-          if (!e.isDisposed)
-            try {
-              factory.releaseEditor(e)
-            } catch {
-              case _: Exception => //ignore
-            }
-        case _ =>
-      }
+      i
+        .next()
+        .foreach {
+          case e: EditorImpl =>
+            if (!e.isDisposed)
+              try {
+                factory.releaseEditor(e)
+              } catch {
+                case _: Exception => //ignore
+              }
+          case _ =>
+        }
     }
   }
 

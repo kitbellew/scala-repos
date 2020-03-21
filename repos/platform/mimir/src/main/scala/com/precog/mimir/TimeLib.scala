@@ -130,9 +130,8 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           case (c1: StrColumn, c2: StrColumn) =>
             new DateColumn {
               def isDefinedAt(row: Int) =
-                c1.isDefinedAt(row) && c2.isDefinedAt(row) && isValidFormat(
-                  c1(row),
-                  c2(row))
+                c1.isDefinedAt(row) && c2
+                  .isDefinedAt(row) && isValidFormat(c1(row), c2(row))
 
               def apply(row: Int): DateTime = {
                 val time = c1(row)
@@ -209,8 +208,8 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       def newColumn(c1: DateColumn, c2: StrColumn): DateColumn =
         new DateColumn {
           def isDefinedAt(row: Int) =
-            c1.isDefinedAt(row) && c2.isDefinedAt(row) && isValidTimeZone(
-              c2(row))
+            c1.isDefinedAt(row) && c2
+              .isDefinedAt(row) && isValidTimeZone(c2(row))
 
           def apply(row: Int) = {
             val time = c1(row)
@@ -584,8 +583,8 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           case (c1: NumColumn, c2: StrColumn) =>
             new DateColumn {
               def isDefinedAt(row: Int) =
-                checkDefined(c1, c2, row) && c1(row) >= Long.MinValue && c1(
-                  row) <= Long.MaxValue
+                checkDefined(c1, c2, row) && c1(row) >= Long
+                  .MinValue && c1(row) <= Long.MaxValue
 
               def apply(row: Int) = {
                 val time = c1(row)
@@ -599,8 +598,8 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           case (c1: DoubleColumn, c2: StrColumn) =>
             new DateColumn {
               def isDefinedAt(row: Int) =
-                checkDefined(c1, c2, row) && c1(row) >= Long.MinValue && c1(
-                  row) <= Long.MaxValue
+                checkDefined(c1, c2, row) && c1(row) >= Long
+                  .MinValue && c1(row) <= Long.MaxValue
 
               def apply(row: Int) = {
                 val time = c1(row)

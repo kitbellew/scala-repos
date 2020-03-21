@@ -50,8 +50,8 @@ object ThriftServiceIfaceExample {
     //#thriftclientapi
 
     //#thriftclientapi-call
-    val result: Future[Log.Result] = clientServiceIface.log(
-      Log.Args("hello", 1))
+    val result: Future[Log.Result] = clientServiceIface
+      .log(Log.Args("hello", 1))
     //#thriftclientapi-call
 
     Await.result(result)
@@ -104,8 +104,8 @@ object ThriftServiceIfaceExample {
     //#thriftclientapi-methodiface
 
     //#thriftclientapi-method-adapter
-    val filteredMethodIface: LoggerService[Future] = Thrift.newMethodIface(
-      clientServiceIface.copy(log = filteredLog))
+    val filteredMethodIface: LoggerService[Future] = Thrift
+      .newMethodIface(clientServiceIface.copy(log = filteredLog))
     Await.result(filteredMethodIface.log("ping", 3).map(println))
     //#thriftclientapi-method-adapter
   }

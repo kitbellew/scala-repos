@@ -171,11 +171,13 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
     // TODO Get rid of this when we break backward binary compatibility
     private lazy val hasNewRuntimeLong = {
-      val rtLongClass = classEmitter.linkedClassByName(
-        LongImpl.RuntimeLongClass)
-      rtLongClass.memberMethods.exists { linkedMethod =>
-        linkedMethod.tree.name.name == LongImpl.initFromParts
-      }
+      val rtLongClass = classEmitter
+        .linkedClassByName(LongImpl.RuntimeLongClass)
+      rtLongClass
+        .memberMethods
+        .exists { linkedMethod =>
+          linkedMethod.tree.name.name == LongImpl.initFromParts
+        }
     }
 
     // Synthetic variables
@@ -250,8 +252,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
       val translateRestParam =
         outputMode match {
-          case OutputMode.ECMAScript51Global |
-              OutputMode.ECMAScript51Isolated =>
+          case OutputMode.ECMAScript51Global | OutputMode
+                .ECMAScript51Isolated =>
             params.nonEmpty && params.last.rest
           case _ =>
             false
@@ -472,8 +474,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
             val superCtorCall = {
               outputMode match {
-                case OutputMode.ECMAScript51Global |
-                    OutputMode.ECMAScript51Isolated =>
+                case OutputMode.ECMAScript51Global | OutputMode
+                      .ECMAScript51Isolated =>
                   val superCtor = genRawJSClassConstructor(
                     getSuperClassOfJSClass(linkedClass))
 
@@ -539,8 +541,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                     js.StringLiteral("writable") -> js.BooleanLiteral(true),
                     js.StringLiteral("value") -> transformExpr(zeroOf(ftpe))
                   ))
-                val descriptors = js.ObjectConstr(
-                  List(transformedName -> descriptor))
+                val descriptors = js
+                  .ObjectConstr(List(transformedName -> descriptor))
                 js.Apply(defineProperties, List(js.This(), descriptors))
               }
 
@@ -636,20 +638,24 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     def unnestOrSpread(args: List[Tree])(
         makeStat: (List[Tree], Env) => js.Tree)(implicit env: Env): js.Tree = {
       val (argsNoSpread, argsWereSpread) =
-        args.map {
-          case JSSpread(items) =>
-            (items, true)
-          case arg =>
-            (arg, false)
-        }.unzip
+        args
+          .map {
+            case JSSpread(items) =>
+              (items, true)
+            case arg =>
+              (arg, false)
+          }
+          .unzip
 
       unnest(argsNoSpread) { (newArgsNoSpread, env) =>
-        val newArgs = newArgsNoSpread.zip(argsWereSpread).map {
-          case (newItems, true) =>
-            JSSpread(newItems)(newItems.pos)
-          case (newArg, false) =>
-            newArg
-        }
+        val newArgs = newArgsNoSpread
+          .zip(argsWereSpread)
+          .map {
+            case (newItems, true) =>
+              JSSpread(newItems)(newItems.pos)
+            case (newArg, false) =>
+              newArg
+          }
         makeStat(newArgs, env)
       }
     }
@@ -1033,11 +1039,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           val elems =
             (rhs: @unchecked) match {
               case VarRef(rhsIdent) =>
-                for (RecordType.Field(
-                       fName,
-                       fOrigName,
-                       fTpe,
-                       fMutable) <- fields)
+                for (RecordType
+                       .Field(fName, fOrigName, fTpe, fMutable) <- fields)
                   yield VarRef(
                     makeRecordFieldIdent(rhsIdent, fName, fOrigName))(fTpe)
             }
@@ -1074,8 +1077,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         */
       def extractLet(inner: Tree => js.Tree): js.Tree = {
         outputMode match {
-          case OutputMode.ECMAScript51Global |
-              OutputMode.ECMAScript51Isolated =>
+          case OutputMode.ECMAScript51Global | OutputMode
+                .ECMAScript51Isolated =>
             inner(lhs)
           case OutputMode.ECMAScript6 =>
             lhs match {
@@ -1221,7 +1224,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                   else
                     transformStat(finalizer)
 
-                if (newHandler != js.EmptyTree && newFinalizer != js.EmptyTree) {
+                if (newHandler != js.EmptyTree && newFinalizer != js
+                      .EmptyTree) {
                   /* The Google Closure Compiler wrongly eliminates finally blocks, if
                    * the catch block throws an exception.
                    * Issues: #563, google/closure-compiler#186
@@ -2426,9 +2430,13 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       encodeClassVar(linkedClass.encodedName)
     } else {
       require(linkedClass.jsName.isDefined)
-      linkedClass.jsName.get.split("\\.").foldLeft(envField("g")) {
-        (prev, part) => genBracketSelect(prev, js.StringLiteral(part))
-      }
+      linkedClass
+        .jsName
+        .get
+        .split("\\.")
+        .foldLeft(envField("g")) { (prev, part) =>
+          genBracketSelect(prev, js.StringLiteral(part))
+        }
     }
   }
 

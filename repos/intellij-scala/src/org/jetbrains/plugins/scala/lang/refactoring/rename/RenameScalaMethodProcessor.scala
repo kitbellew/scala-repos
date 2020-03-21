@@ -88,11 +88,8 @@ class RenameScalaMethodProcessor
       newName: String,
       usages: Array[UsageInfo],
       listener: RefactoringElementListener) {
-    ScalaRenameUtil.doRenameGenericNamedElement(
-      psiElement,
-      newName,
-      usages,
-      listener)
+    ScalaRenameUtil
+      .doRenameGenericNamedElement(psiElement, newName, usages, listener)
   }
 }
 
@@ -177,7 +174,10 @@ class PrepareRenameScalaMethodProcessor extends RenamePsiElementProcessor {
             function.getProject,
             ScalaBundle.message("rename.getters.and.setters.title"))
         dialog.show()
-        if (dialog.getExitCode == DialogWrapper.OK_EXIT_CODE || ApplicationManager.getApplication.isUnitTestMode) {
+        if (dialog
+              .getExitCode == DialogWrapper.OK_EXIT_CODE || ApplicationManager
+              .getApplication
+              .isUnitTestMode) {
           addGettersAndSetters()
         }
       }

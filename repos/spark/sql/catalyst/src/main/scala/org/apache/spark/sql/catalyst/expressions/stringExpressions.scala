@@ -128,7 +128,8 @@ case class ConcatWs(children: Seq[Expression])
 
       val evals = children.map(_.gen(ctx))
       val (varargCount, varargBuild) =
-        children.tail
+        children
+          .tail
           .zip(evals.tail)
           .map {
             case (child, eval) =>
@@ -539,7 +540,8 @@ case class StringLocate(substr: Expression, str: Expression, start: Expression)
         if (l == null) {
           null
         } else {
-          l.asInstanceOf[UTF8String]
+          l
+            .asInstanceOf[UTF8String]
             .indexOf(r.asInstanceOf[UTF8String], s.asInstanceOf[Int]) + 1
         }
       }
@@ -952,7 +954,12 @@ case class Base64(child: Expression)
 
   protected override def nullSafeEval(bytes: Any): Any = {
     UTF8String.fromBytes(
-      org.apache.commons.codec.binary.Base64
+      org
+        .apache
+        .commons
+        .codec
+        .binary
+        .Base64
         .encodeBase64(bytes.asInstanceOf[Array[Byte]]))
   }
 
@@ -979,7 +986,12 @@ case class UnBase64(child: Expression)
   override def inputTypes: Seq[DataType] = Seq(StringType)
 
   protected override def nullSafeEval(string: Any): Any =
-    org.apache.commons.codec.binary.Base64
+    org
+      .apache
+      .commons
+      .codec
+      .binary
+      .Base64
       .decodeBase64(string.asInstanceOf[UTF8String].toString)
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
@@ -1010,8 +1022,8 @@ case class Decode(bin: Expression, charset: Expression)
 
   protected override def nullSafeEval(input1: Any, input2: Any): Any = {
     val fromCharset = input2.asInstanceOf[UTF8String].toString
-    UTF8String.fromString(
-      new String(input1.asInstanceOf[Array[Byte]], fromCharset))
+    UTF8String
+      .fromString(new String(input1.asInstanceOf[Array[Byte]], fromCharset))
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {

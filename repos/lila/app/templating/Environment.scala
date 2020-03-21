@@ -39,7 +39,8 @@ object Environment
     with TournamentHelper
     with SimulHelper {
 
-  implicit val LilaHtmlMonoid = scalaz.Monoid
+  implicit val LilaHtmlMonoid = scalaz
+    .Monoid
     .instance[Html]((a, b) => Html(a.body + b.body), Html(""))
 
   type FormWithCaptcha = (play.api.data.Form[_], lila.common.Captcha)

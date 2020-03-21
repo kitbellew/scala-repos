@@ -77,8 +77,7 @@ class DataSource(val dsp: DataSourceParams)
             }
           }
         followEvent
-      }
-      .cache()
+      }.cache()
 
     new TrainingData(users = usersRDD, followEvents = followEventsRDD)
   }

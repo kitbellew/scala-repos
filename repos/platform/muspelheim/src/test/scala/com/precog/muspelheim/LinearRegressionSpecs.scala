@@ -322,10 +322,12 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       val resultCount = evalE(input2)
 
       val count =
-        resultCount.collectFirst {
-          case (_, SDecimal(d)) =>
-            d.toInt
-        }.get
+        resultCount
+          .collectFirst {
+            case (_, SDecimal(d)) =>
+              d.toInt
+          }
+          .get
       result must haveSize(count)
 
       result must haveAllElementsLike {
@@ -629,10 +631,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
     }
 
     def testPredict(model: Map[String, SValue]) = {
-      model.keySet mustEqual Set(
-        "fit",
-        "confidenceInterval",
-        "predictionInterval")
+      model
+        .keySet mustEqual Set("fit", "confidenceInterval", "predictionInterval")
 
       model("fit") must beLike {
         case SDecimal(_) =>
@@ -669,10 +669,12 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       val resultsCount = evalE(input2)
 
       val count =
-        resultsCount.collectFirst {
-          case (_, SDecimal(d)) =>
-            d.toInt
-        }.get
+        resultsCount
+          .collectFirst {
+            case (_, SDecimal(d)) =>
+              d.toInt
+          }
+          .get
       results must haveSize(count)
 
       results must haveAllElementsLike {
@@ -765,10 +767,12 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       val resultsCount = evalE(input2)
 
       val count =
-        resultsCount.collectFirst {
-          case (_, SDecimal(d)) =>
-            d.toInt
-        }.get
+        resultsCount
+          .collectFirst {
+            case (_, SDecimal(d)) =>
+              d.toInt
+          }
+          .get
       results must haveSize(count)
 
       results must haveAllElementsLike {

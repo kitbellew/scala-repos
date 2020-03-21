@@ -117,17 +117,19 @@ object Component {
   def discoverIn(files: Seq[File]): Seq[Component] = {
     val patterns = (Artifact.values ++ DottyArtifact.values).flatMap {
       artifact =>
-        Kind.values.map(kind =>
-          (kind.patternFor(artifact.prefix), artifact, kind))
+        Kind
+          .values
+          .map(kind => (kind.patternFor(artifact.prefix), artifact, kind))
     }
 
-    files.filter(it => it.isFile && it.getName.endsWith(".jar")).flatMap {
-      file =>
+    files
+      .filter(it => it.isFile && it.getName.endsWith(".jar"))
+      .flatMap { file =>
         patterns.collect {
           case (pattern, artifact, kind)
               if pattern.matcher(file.getName).matches =>
             Component(artifact, kind, artifact.versionOf(file), file)
         }
-    }
+      }
   }
 }

@@ -24,9 +24,11 @@ object CompositeCertificateException {
     while (cause != null) {
       cause match {
         case composite: CompositeCertificateException =>
-          composite.getSourceExceptions.foreach { sourceException =>
-            block(sourceException)
-          }
+          composite
+            .getSourceExceptions
+            .foreach { sourceException =>
+              block(sourceException)
+            }
         case other =>
           block(other)
       }

@@ -31,7 +31,8 @@ object VectorIndexerExample {
     val sqlContext = new SQLContext(sc)
 
     // $example on$
-    val data = sqlContext.read
+    val data = sqlContext
+      .read
       .format("libsvm")
       .load("data/mllib/sample_libsvm_data.txt")
 

@@ -16,8 +16,8 @@ class ScalaFunctionItemPresentation(
     private val isInherited: Boolean)
     extends ScalaItemPresentation(element) {
   def getPresentableText: String = {
-    ScalaElementPresentation.getMethodPresentableText(
-      myElement.asInstanceOf[ScFunction])
+    ScalaElementPresentation
+      .getMethodPresentableText(myElement.asInstanceOf[ScFunction])
   }
   override def getTextAttributesKey: TextAttributesKey = {
     if (isInherited)

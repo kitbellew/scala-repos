@@ -39,7 +39,9 @@ class ScalaCompletionStatistician extends CompletionStatistician {
       // return empty statistic when using  scala completion but ScalaLookupItem didn't use.
       // otherwise will be computed java statistic that may lead to ClassCastError
       case e
-          if location.getCompletionParameters.getOriginalFile
+          if location
+            .getCompletionParameters
+            .getOriginalFile
             .isInstanceOf[ScalaFile] =>
         StatisticsInfo.EMPTY
       case _ =>

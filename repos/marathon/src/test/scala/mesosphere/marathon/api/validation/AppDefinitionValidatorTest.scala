@@ -256,7 +256,8 @@ class AppDefinitionValidatorTest
       "mesos_role",
       "mesos_authentication_secret_file")
     val f = new Fixture
-    val container = f.validDockerContainer
+    val container = f
+      .validDockerContainer
       .copy(volumes = Seq(f.validPersistentVolume))
     assert(validate(container).isSuccess)
   }
@@ -264,50 +265,60 @@ class AppDefinitionValidatorTest
   test("valid docker volume, but cli parameter are not provided") {
     AllConf.SuppliedOptionNames = Set.empty
     val f = new Fixture
-    val container = f.validDockerContainer
+    val container = f
+      .validDockerContainer
       .copy(volumes = Seq(f.validPersistentVolume))
     assert(validate(container).isFailure)
   }
 
   test("docker volume with missing containerPath is invalid") {
     val f = new Fixture
-    val container = f.validDockerContainer
+    val container = f
+      .validDockerContainer
       .copy(volumes = Seq(f.validDockerVolume.copy(containerPath = "")))
     assert(validate(container).isFailure)
   }
 
   test("docker volume with missing hostPath is invalid") {
     val f = new Fixture
-    val container = f.validDockerContainer
+    val container = f
+      .validDockerContainer
       .copy(volumes = Seq(f.validDockerVolume.copy(hostPath = "")))
     assert(validate(container).isFailure)
   }
 
   test("persistent volume with missing containerPath is invalid") {
     val f = new Fixture
-    val container = f.validDockerContainer
+    val container = f
+      .validDockerContainer
       .copy(volumes = Seq(f.validPersistentVolume.copy(containerPath = "")))
     assert(validate(container).isFailure)
   }
 
   test("persistent volume with mode RO is invalid") {
     val f = new Fixture
-    val container = f.validDockerContainer.copy(volumes = Seq(
-      f.validPersistentVolume.copy(mode = mesos.Volume.Mode.RO)))
+    val container = f
+      .validDockerContainer
+      .copy(volumes = Seq(
+        f.validPersistentVolume.copy(mode = mesos.Volume.Mode.RO)))
     assert(validate(container).isFailure)
   }
 
   test("persistent volume with size 0 is invalid") {
     val f = new Fixture
-    val container = f.validDockerContainer.copy(volumes = Seq(
-      f.validPersistentVolume.copy(persistent = PersistentVolumeInfo(0))))
+    val container = f
+      .validDockerContainer
+      .copy(volumes = Seq(
+        f.validPersistentVolume.copy(persistent = PersistentVolumeInfo(0))))
     assert(validate(container).isFailure)
   }
 
   test("persistent volume with size < 0 is invalid") {
     val f = new Fixture
-    val container = f.validDockerContainer.copy(volumes = Seq(
-      f.validPersistentVolume.copy(persistent = PersistentVolumeInfo(-1))))
+    val container = f
+      .validDockerContainer
+      .copy(volumes = Seq(
+        f.validPersistentVolume.copy(persistent = PersistentVolumeInfo(-1))))
     assert(validate(container).isFailure)
   }
 

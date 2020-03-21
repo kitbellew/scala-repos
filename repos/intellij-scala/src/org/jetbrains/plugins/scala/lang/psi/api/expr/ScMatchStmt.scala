@@ -21,14 +21,17 @@ trait ScMatchStmt extends ScExpression {
       case null =>
         Seq.empty
       case c =>
-        c.caseClauses.map { (clause: ScCaseClause) =>
-          clause.expr match {
-            case Some(expr) =>
-              expr
-            case None =>
-              ScalaPsiElementFactory.createExpressionFromText("{}", getManager)
+        c
+          .caseClauses
+          .map { (clause: ScCaseClause) =>
+            clause.expr match {
+              case Some(expr) =>
+                expr
+              case None =>
+                ScalaPsiElementFactory
+                  .createExpressionFromText("{}", getManager)
+            }
           }
-        }
     }
 
   def getCaseClauses: ScCaseClauses =

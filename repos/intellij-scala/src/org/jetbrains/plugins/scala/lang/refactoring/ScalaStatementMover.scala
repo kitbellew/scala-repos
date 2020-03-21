@@ -116,8 +116,9 @@ class ScalaStatementMover extends LineMover {
   private def rangeOf(e: PsiElement, editor: Editor) = {
     val begin =
       editor.offsetToLogicalPosition(e.getTextRange.getStartOffset).line
-    val end =
-      editor.offsetToLogicalPosition(e.getTextRange.getEndOffset).line + 1
+    val end = editor
+      .offsetToLogicalPosition(e.getTextRange.getEndOffset)
+      .line + 1
     new LineRange(begin, end)
   }
 
@@ -128,10 +129,12 @@ class ScalaStatementMover extends LineMover {
       line: Int): Option[PsiElement] = {
     val edges = edgeLeafsOf(line, editor, file)
 
-    val left = edges._1.flatMap(
-      PsiTreeUtil.getParentOfType(_, cl, false).toOption)
-    val right = edges._2.flatMap(
-      PsiTreeUtil.getParentOfType(_, cl, false).toOption)
+    val left = edges
+      ._1
+      .flatMap(PsiTreeUtil.getParentOfType(_, cl, false).toOption)
+    val right = edges
+      ._2
+      .flatMap(PsiTreeUtil.getParentOfType(_, cl, false).toOption)
 
     left
       .zip(right)
@@ -152,7 +155,8 @@ class ScalaStatementMover extends LineMover {
     val span = start.to(end)
 
     def firstLeafOf(seq: Seq[Int]) =
-      seq.view
+      seq
+        .view
         .flatMap(file.getNode.findLeafElementAt(_).toOption.toSeq)
         .filter(!_.getPsi.isInstanceOf[PsiWhiteSpace])
         .map(_.getPsi)

@@ -62,7 +62,9 @@ class PerformanceSpec
           }
         }
 
-      val iterations = system.settings.config
+      val iterations = system
+        .settings
+        .config
         .getInt("akka.typed.PerformanceSpec.iterations")
 
       def `01 when warming up`(): Unit =

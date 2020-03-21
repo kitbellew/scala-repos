@@ -63,7 +63,8 @@ private[akka] trait BatchingExecutor extends Executor {
     protected final def resubmitUnbatched(): Boolean = {
       val current = _tasksLocal.get()
       _tasksLocal.remove()
-      if ((current eq this) && !current.isEmpty) { // Resubmit ourselves if something bad happened and we still have work to do
+      if ((current eq this) && !current
+            .isEmpty) { // Resubmit ourselves if something bad happened and we still have work to do
         unbatchedExecute(current) //TODO what if this submission fails?
         true
       } else
@@ -136,9 +137,8 @@ private[akka] trait BatchingExecutor extends Executor {
             newBatch
           ) // If we aren't in batching mode yet, enqueue batch
         case batch ⇒
-          batch.add(
-            runnable
-          ) // If we are already in batching mode, add to batch
+          batch
+            .add(runnable) // If we are already in batching mode, add to batch
       }
     } else
       unbatchedExecute(

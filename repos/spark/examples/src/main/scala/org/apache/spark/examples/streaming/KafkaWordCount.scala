@@ -46,8 +46,10 @@ import org.apache.spark.streaming.kafka._
 object KafkaWordCount {
   def main(args: Array[String]) {
     if (args.length < 4) {
-      System.err.println(
-        "Usage: KafkaWordCount <zkQuorum> <group> <topics> <numThreads>")
+      System
+        .err
+        .println(
+          "Usage: KafkaWordCount <zkQuorum> <group> <topics> <numThreads>")
       System.exit(1)
     }
 
@@ -78,9 +80,11 @@ object KafkaWordCountProducer {
 
   def main(args: Array[String]) {
     if (args.length < 4) {
-      System.err.println(
-        "Usage: KafkaWordCountProducer <metadataBrokerList> <topic> " +
-          "<messagesPerSec> <wordsPerMessage>")
+      System
+        .err
+        .println(
+          "Usage: KafkaWordCountProducer <metadataBrokerList> <topic> " +
+            "<messagesPerSec> <wordsPerMessage>")
       System.exit(1)
     }
 

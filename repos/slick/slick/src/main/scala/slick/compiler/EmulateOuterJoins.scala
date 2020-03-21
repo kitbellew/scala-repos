@@ -51,11 +51,15 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
               Filter(
                 lgen2,
                 assignFreshSymbols(left),
-                Library.Not.typed(
-                  on.nodeType,
-                  Library.Exists.typed(
+                Library
+                  .Not
+                  .typed(
                     on.nodeType,
-                    Filter(rgen2, assignFreshSymbols(right), on2)))),
+                    Library
+                      .Exists
+                      .typed(
+                        on.nodeType,
+                        Filter(rgen2, assignFreshSymbols(right), on2)))),
               Pure(
                 ProductNode(
                   ConstArray(
@@ -101,11 +105,15 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
               Filter(
                 rgen2,
                 assignFreshSymbols(right),
-                Library.Not.typed(
-                  on.nodeType,
-                  Library.Exists.typed(
+                Library
+                  .Not
+                  .typed(
                     on.nodeType,
-                    Filter(lgen2, assignFreshSymbols(left), on2)))),
+                    Library
+                      .Exists
+                      .typed(
+                        on.nodeType,
+                        Filter(lgen2, assignFreshSymbols(left), on2)))),
               Pure(
                 ProductNode(
                   ConstArray(
@@ -139,17 +147,21 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
   /** Assign new TypeSymbols to a subtree that needs to be copied into multiple places. */
   def assignFreshSymbols(n: Node): Node = {
     val typeSyms =
-      n.collect {
-        case n: TypeGenerator =>
-          n.identity
-      }.toSet
+      n
+        .collect {
+          case n: TypeGenerator =>
+            n.identity
+        }
+        .toSet
     val repl =
-      typeSyms.map {
-        case ts: TableIdentitySymbol =>
-          ts -> new AnonTableIdentitySymbol
-        case ts =>
-          ts -> new AnonTypeSymbol
-      }.toMap
+      typeSyms
+        .map {
+          case ts: TableIdentitySymbol =>
+            ts -> new AnonTableIdentitySymbol
+          case ts =>
+            ts -> new AnonTypeSymbol
+        }
+        .toMap
     def replaceTS(t: Type): Type =
       (
         t match {
@@ -160,7 +172,8 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
         }
       ).mapChildren(replaceTS)
     //repl.foreach { case (ts1, ts2) => global.get(ts1).foreach(t => global += ts2 -> replaceTS(t)) }
-    n.replace(
+    n
+      .replace(
         {
           case n: TableNode =>
             n.copy(identity = repl(n.identity)

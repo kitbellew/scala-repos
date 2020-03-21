@@ -89,13 +89,19 @@ object Formats {
   private def parsing[T](parse: String => T, errMsg: String, errArgs: Seq[Any])(
       key: String,
       data: Map[String, String]): Either[Seq[FormError], T] = {
-    stringFormat.bind(key, data).right.flatMap { s =>
-      scala.util.control.Exception
-        .allCatch[T]
-        .either(parse(s))
-        .left
-        .map(e => Seq(FormError(key, errMsg, errArgs)))
-    }
+    stringFormat
+      .bind(key, data)
+      .right
+      .flatMap { s =>
+        scala
+          .util
+          .control
+          .Exception
+          .allCatch[T]
+          .either(parse(s))
+          .left
+          .map(e => Seq(FormError(key, errMsg, errArgs)))
+      }
   }
 
   private def numberFormatter[T](
@@ -155,33 +161,40 @@ object Formats {
       override val format = Some(("format.real", Nil))
 
       def bind(key: String, data: Map[String, String]) = {
-        Formats.stringFormat.bind(key, data).right.flatMap { s =>
-          scala.util.control.Exception
-            .allCatch[BigDecimal]
-            .either {
-              val bd = BigDecimal(s)
-              precision
-                .map({
-                  case (p, s) =>
-                    if (bd.precision - bd.scale > p - s) {
-                      throw new java.lang.ArithmeticException(
-                        "Invalid precision")
-                    }
-                    bd.setScale(s)
-                })
-                .getOrElse(bd)
-            }
-            .left
-            .map { e =>
-              Seq(
-                precision match {
-                  case Some((p, s)) =>
-                    FormError(key, "error.real.precision", Seq(p, s))
-                  case None =>
-                    FormError(key, "error.real", Nil)
-                })
-            }
-        }
+        Formats
+          .stringFormat
+          .bind(key, data)
+          .right
+          .flatMap { s =>
+            scala
+              .util
+              .control
+              .Exception
+              .allCatch[BigDecimal]
+              .either {
+                val bd = BigDecimal(s)
+                precision
+                  .map({
+                    case (p, s) =>
+                      if (bd.precision - bd.scale > p - s) {
+                        throw new java.lang.ArithmeticException(
+                          "Invalid precision")
+                      }
+                      bd.setScale(s)
+                  })
+                  .getOrElse(bd)
+              }
+              .left
+              .map { e =>
+                Seq(
+                  precision match {
+                    case Some((p, s)) =>
+                      FormError(key, "error.real.precision", Seq(p, s))
+                    case None =>
+                      FormError(key, "error.real", Nil)
+                  })
+              }
+          }
       }
 
       def unbind(key: String, value: BigDecimal) =
@@ -208,14 +221,16 @@ object Formats {
       override val format = Some(("format.boolean", Nil))
 
       def bind(key: String, data: Map[String, String]) = {
-        Right(data.get(key).getOrElse("false")).right.flatMap {
-          case "true" =>
-            Right(true)
-          case "false" =>
-            Right(false)
-          case _ =>
-            Left(Seq(FormError(key, "error.boolean", Nil)))
-        }
+        Right(data.get(key).getOrElse("false"))
+          .right
+          .flatMap {
+            case "true" =>
+              Right(true)
+            case "false" =>
+              Right(false)
+            case _ =>
+              Left(Seq(FormError(key, "error.boolean", Nil)))
+          }
       }
 
       def unbind(key: String, value: Boolean) = Map(key -> value.toString)
@@ -235,7 +250,11 @@ object Formats {
     new Formatter[Date] {
 
       val jodaTimeZone = org.joda.time.DateTimeZone.forTimeZone(timeZone)
-      val formatter = org.joda.time.format.DateTimeFormat
+      val formatter = org
+        .joda
+        .time
+        .format
+        .DateTimeFormat
         .forPattern(pattern)
         .withZone(jodaTimeZone)
       def dateParse(data: String) = formatter.parseDateTime(data).toDate
@@ -247,8 +266,8 @@ object Formats {
 
       def unbind(key: String, value: Date) =
         Map(
-          key -> formatter.print(
-            new org.joda.time.DateTime(value).withZone(jodaTimeZone)))
+          key -> formatter
+            .print(new org.joda.time.DateTime(value).withZone(jodaTimeZone)))
     }
 
   /**
@@ -296,12 +315,18 @@ object Formats {
     */
   def jodaDateTimeFormat(
       pattern: String,
-      timeZone: org.joda.time.DateTimeZone =
-        org.joda.time.DateTimeZone.getDefault)
-      : Formatter[org.joda.time.DateTime] =
+      timeZone: org.joda.time.DateTimeZone = org
+        .joda
+        .time
+        .DateTimeZone
+        .getDefault): Formatter[org.joda.time.DateTime] =
     new Formatter[org.joda.time.DateTime] {
 
-      val formatter = org.joda.time.format.DateTimeFormat
+      val formatter = org
+        .joda
+        .time
+        .format
+        .DateTimeFormat
         .forPattern(pattern)
         .withZone(timeZone)
 

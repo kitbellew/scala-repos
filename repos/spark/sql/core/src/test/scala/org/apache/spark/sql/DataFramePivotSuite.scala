@@ -87,9 +87,11 @@ class DataFramePivotSuite extends QueryTest with SharedSQLContext {
   test("pivot max values enforced") {
     sqlContext.conf.setConf(SQLConf.DATAFRAME_PIVOT_MAX_VALUES, 1)
     intercept[AnalysisException](courseSales.groupBy("year").pivot("course"))
-    sqlContext.conf.setConf(
-      SQLConf.DATAFRAME_PIVOT_MAX_VALUES,
-      SQLConf.DATAFRAME_PIVOT_MAX_VALUES.defaultValue.get)
+    sqlContext
+      .conf
+      .setConf(
+        SQLConf.DATAFRAME_PIVOT_MAX_VALUES,
+        SQLConf.DATAFRAME_PIVOT_MAX_VALUES.defaultValue.get)
   }
 
   test("pivot with UnresolvedFunction") {

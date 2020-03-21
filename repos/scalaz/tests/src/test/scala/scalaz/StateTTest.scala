@@ -86,7 +86,8 @@ object StateTTest extends SpecLite {
   "StateT can be trampolined without stack overflow" in {
     import scalaz.Free._
     val result =
-      (0 to 4000).toList
+      (0 to 4000)
+        .toList
         .map(i =>
           StateT[Trampoline, Int, Int]((ii: Int) => Trampoline.done((i, i))))
         .foldLeft(StateT((s: Int) => Trampoline.done((s, s))))((a, b) =>

@@ -25,7 +25,8 @@ object Comment {
         commentMarker.drop()
         return false
     }
-    while (builder.getTokenType != ScalaXmlTokenTypes.XML_COMMENT_END && builder.getTokenType != null) {
+    while (builder.getTokenType != ScalaXmlTokenTypes
+             .XML_COMMENT_END && builder.getTokenType != null) {
       if (builder.getTokenType == ScalaXmlTokenTypes.XML_BAD_CHARACTER)
         builder error ErrMsg("xml.wrong.character")
       builder.advanceLexer()

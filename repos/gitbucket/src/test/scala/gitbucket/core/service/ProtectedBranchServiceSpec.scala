@@ -75,16 +75,12 @@ class ProtectedBranchServiceSpec
         generateNewUserWithDBRepository("user1", "repo1")
         enableBranchProtection("user1", "repo1", "branch", false, Nil)
         assert(
-          getProtectedBranchInfo(
-            "user1",
-            "repo1",
-            "branch").includeAdministrators == false)
+          getProtectedBranchInfo("user1", "repo1", "branch")
+            .includeAdministrators == false)
         enableBranchProtection("user1", "repo1", "branch", true, Nil)
         assert(
-          getProtectedBranchInfo(
-            "user1",
-            "repo1",
-            "branch").includeAdministrators == false)
+          getProtectedBranchInfo("user1", "repo1", "branch")
+            .includeAdministrators == false)
       }
     }
     it("getProtectedBranchList") {
@@ -94,10 +90,8 @@ class ProtectedBranchServiceSpec
         enableBranchProtection("user1", "repo1", "branch2", false, Seq("fuga"))
         enableBranchProtection("user1", "repo1", "branch3", true, Seq("hoge"))
         assert(
-          getProtectedBranchList("user1", "repo1").toSet == Set(
-            "branch",
-            "branch2",
-            "branch3"))
+          getProtectedBranchList("user1", "repo1")
+            .toSet == Set("branch", "branch2", "branch3"))
       }
     }
     it("getBranchProtectedReason on force push from admin") {

@@ -160,8 +160,8 @@ object ScalaPluginUpdater {
         InstalledPluginsState.getInstance().getInstalledPlugins
       val pluginIdString: String = pluginId.getIdString
       import scala.collection.JavaConversions._
-      while (installedPlugins.exists(
-               _.getPluginId.getIdString == pluginIdString)) {
+      while (installedPlugins
+               .exists(_.getPluginId.getIdString == pluginIdString)) {
         installedPlugins.remove(pluginIdString)
       }
     } catch {
@@ -213,9 +213,8 @@ object ScalaPluginUpdater {
         try {
           val resp = XML.load(u)
           val text =
-            (
-              (resp \\ "idea-plugin").head \ "idea-version" \ "@since-build"
-            ).text
+            ((resp \\ "idea-plugin").head \ "idea-version" \ "@since-build")
+              .text
           val remoteBuildNumber = BuildNumber.fromString(text)
           if (localBuildNumber.compareTo(remoteBuildNumber) < 0)
             suggestIdeaUpdate(branch.toString, text)
@@ -267,14 +266,17 @@ object ScalaPluginUpdater {
         None
     }
     def isUpToDatePlatform(result: CheckForUpdateResult) =
-      result.getUpdatedChannel.getLatestBuild.getNumber
+      result
+        .getUpdatedChannel
+        .getLatestBuild
+        .getNumber
         .compareTo(infoImpl.getBuild) <= 0
     def isBetaOrEAPPlatform = infoImpl.isEAP || infoImpl.isBetaOrRC
     val notification =
       getPlatformUpdateResult match {
         case Some(result)
-            if isUpToDatePlatform(
-              result) && !isBetaOrEAPPlatform && appSettings.ASK_PLATFORM_UPDATE => // platform is up to date - suggest eap
+            if isUpToDatePlatform(result) && !isBetaOrEAPPlatform && appSettings
+              .ASK_PLATFORM_UPDATE => // platform is up to date - suggest eap
           val message =
             s"Your IDEA is outdated to use with $branch branch.<br/>Would you like to switch IDEA channel to EAP?" +
               s"""<p/><a href="Yes">Yes</a>\n""" +
@@ -322,36 +324,41 @@ object ScalaPluginUpdater {
       .removeDocumentListener(updateListener)
     if (lastUpdateTime == 0L || System
           .currentTimeMillis() - lastUpdateTime > TimeUnit.DAYS.toMillis(1)) {
-      ApplicationManager.getApplication.executeOnPooledThread(
-        new Runnable {
-          override def run() = {
-            val buildNumber = ApplicationInfo.getInstance().getBuild.asString()
-            val pluginVersion = pluginDescriptor.getVersion
-            val os = URLEncoder.encode(
-              SystemInfo.OS_NAME + " " + SystemInfo.OS_VERSION,
-              CharsetToolkit.UTF8)
-            val uid = UpdateChecker.getInstallationUID(
-              PropertiesComponent.getInstance())
-            val url =
-              s"https://plugins.jetbrains.com/plugins/list?pluginId=$scalaPluginId&build=$buildNumber&pluginVersion=$pluginVersion&os=$os&uuid=$uid"
-            PropertiesComponent
-              .getInstance()
-              .setValue(key, System.currentTimeMillis().toString)
-            doneUpdating = true
-            try {
-              HttpRequests
-                .request(url)
-                .connect(
-                  new HttpRequests.RequestProcessor[Unit] {
-                    override def process(request: Request) =
-                      JDOMUtil.load(request.getReader())
-                  })
-            } catch {
-              case e: Throwable =>
-                LOG.warn(e)
+      ApplicationManager
+        .getApplication
+        .executeOnPooledThread(
+          new Runnable {
+            override def run() = {
+              val buildNumber = ApplicationInfo
+                .getInstance()
+                .getBuild
+                .asString()
+              val pluginVersion = pluginDescriptor.getVersion
+              val os = URLEncoder.encode(
+                SystemInfo.OS_NAME + " " + SystemInfo.OS_VERSION,
+                CharsetToolkit.UTF8)
+              val uid = UpdateChecker
+                .getInstallationUID(PropertiesComponent.getInstance())
+              val url =
+                s"https://plugins.jetbrains.com/plugins/list?pluginId=$scalaPluginId&build=$buildNumber&pluginVersion=$pluginVersion&os=$os&uuid=$uid"
+              PropertiesComponent
+                .getInstance()
+                .setValue(key, System.currentTimeMillis().toString)
+              doneUpdating = true
+              try {
+                HttpRequests
+                  .request(url)
+                  .connect(
+                    new HttpRequests.RequestProcessor[Unit] {
+                      override def process(request: Request) =
+                        JDOMUtil.load(request.getReader())
+                    })
+              } catch {
+                case e: Throwable =>
+                  LOG.warn(e)
+              }
             }
-          }
-        })
+          })
     }
   }
 
@@ -386,7 +393,8 @@ object ScalaPluginUpdater {
               other
           }
       }
-    val stream = getClass.getClassLoader
+    val stream = getClass
+      .getClassLoader
       .getResource("META-INF/plugin.xml")
       .openStream()
     val document = new RuleTransformer(versionPatcher)
@@ -401,18 +409,20 @@ object ScalaPluginUpdater {
   def patchPluginVersionReflection() = {
     // crime of reflection goes below - workaround until force updating is available
     try {
-      val hack: Field = classOf[IdeaPluginDescriptorImpl].getDeclaredField(
-        "myVersion")
+      val hack: Field = classOf[IdeaPluginDescriptorImpl]
+        .getDeclaredField("myVersion")
       hack.setAccessible(true)
       hack.set(pluginDescriptor, "0.0.0")
     } catch {
       case _: NoSuchFieldException | _: IllegalAccessException =>
-        Notifications.Bus.notify(
-          new Notification(
-            updGroupId,
-            "Scala Plugin Update",
-            "Please remove and reinstall Scala plugin to finish downgrading",
-            NotificationType.INFORMATION))
+        Notifications
+          .Bus
+          .notify(
+            new Notification(
+              updGroupId,
+              "Scala Plugin Update",
+              "Please remove and reinstall Scala plugin to finish downgrading",
+              NotificationType.INFORMATION))
     }
   }
 

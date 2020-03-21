@@ -26,7 +26,9 @@ case class TaskFailure(
   }
 
   override def toProto: Protos.TaskFailure = {
-    val taskFailureBuilder = Protos.TaskFailure.newBuilder
+    val taskFailureBuilder = Protos
+      .TaskFailure
+      .newBuilder
       .setAppId(appId.toString)
       .setTaskId(taskId)
       .setState(state)

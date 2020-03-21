@@ -202,8 +202,8 @@ trait TransformSpec[M[+_]]
         table.transform {
           Map1(
             DerefObjectStatic(Leaf(Source), CPathField("value")),
-            lookupF2(Nil, "mod").applyr(CLong(2)) andThen lookupF2(Nil, "eq")
-              .applyr(CLong(0)))
+            lookupF2(Nil, "mod")
+              .applyr(CLong(2)) andThen lookupF2(Nil, "eq").applyr(CLong(0)))
         })
 
       val expected = sample.data flatMap { jv =>
@@ -361,9 +361,11 @@ trait TransformSpec[M[+_]]
             })
         })
 
-      val expected = sample.data.map { jv =>
-        jv(JPath(fieldHead))
-      } flatMap {
+      val expected = sample
+        .data
+        .map { jv =>
+          jv(JPath(fieldHead))
+        } flatMap {
         case JUndefined =>
           None
         case jv =>
@@ -392,9 +394,11 @@ trait TransformSpec[M[+_]]
             })
         })
 
-      val expected = sample.data.map { jv =>
-        jv(JPath(fieldHead))
-      } flatMap {
+      val expected = sample
+        .data
+        .map { jv =>
+          jv(JPath(fieldHead))
+        } flatMap {
         case JUndefined =>
           None
         case jv =>
@@ -534,12 +538,14 @@ trait TransformSpec[M[+_]]
           case _ =>
             sys.error("expected JArray")
         }
-      ).map { k =>
-        {
-          JObject(
-            List(JField("value", k), JField("key", JArray(List(JNum(0))))))
+      )
+        .map { k =>
+          {
+            JObject(
+              List(JField("value", k), JField("key", JArray(List(JNum(0))))))
+          }
         }
-      }.toStream
+        .toStream
 
     val sample = SampleData(data)
     val table = fromSample(sample)
@@ -569,9 +575,8 @@ trait TransformSpec[M[+_]]
       Leaf(SourceRight),
       CPathField("value"))
 
-    val wrappedValueSpec = trans.WrapObject(
-      Equal(leftValueSpec, rightValueSpec),
-      "value")
+    val wrappedValueSpec = trans
+      .WrapObject(Equal(leftValueSpec, rightValueSpec), "value")
 
     val results = toJson(
       table.cross(table2)(
@@ -835,8 +840,8 @@ trait TransformSpec[M[+_]]
       (jv \? ".value.value1").nonEmpty && (jv \? ".value.value2").nonEmpty
 
     val genBase: Gen[SampleData] =
-      sample(_ =>
-        Seq(JPath("value1") -> CLong, JPath("value2") -> CLong)).arbitrary
+      sample(_ => Seq(JPath("value1") -> CLong, JPath("value2") -> CLong))
+        .arbitrary
     implicit val gen: Arbitrary[SampleData] = Arbitrary {
       genBase map { sd =>
         SampleData(
@@ -878,8 +883,8 @@ trait TransformSpec[M[+_]]
   }
 
   def testEqual1 = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser
+      .parseUnsafe("""[
       {
         "value":{
           "value1":-1503074360046022108,
@@ -1089,8 +1094,8 @@ trait TransformSpec[M[+_]]
   }
 
   def testInnerObjectConcatEmptyObject = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser
+      .parseUnsafe("""[
       {"foo": {}, "bar": {"ack": 12}},
       {"foo": {}, "bar": {"ack": 12, "bak": 13}},
       {"foo": {"ook": 99}, "bar": {}},
@@ -1139,8 +1144,8 @@ trait TransformSpec[M[+_]]
   }
 
   def testOuterObjectConcatEmptyObject = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser
+      .parseUnsafe("""[
       {"foo": {}, "bar": {"ack": 12}},
       {"foo": {}, "bar": {"ack": 12, "bak": 13}},
       {"foo": {"ook": 99}, "bar": {}},
@@ -1566,8 +1571,8 @@ trait TransformSpec[M[+_]]
   }
 
   def testInnerArrayConcatEmptyArray = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser
+      .parseUnsafe("""[
       {"foo": [], "bar": [12]},
       {"foo": [], "bar": [12, 13]},
       {"foo": [99], "bar": []},
@@ -1613,8 +1618,8 @@ trait TransformSpec[M[+_]]
   }
 
   def testOuterArrayConcatEmptyArray = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser
+      .parseUnsafe("""[
       {"foo": [], "bar": [12]},
       {"foo": [], "bar": [12, 13]},
       {"foo": [99], "bar": []},
@@ -1725,10 +1730,12 @@ trait TransformSpec[M[+_]]
     }
 
     check { (sample: SampleData) =>
-      val toDelete = sample.schema.flatMap({
-        case (_, schema) =>
-          randomDeletionMask(schema)
-      })
+      val toDelete = sample
+        .schema
+        .flatMap({
+          case (_, schema) =>
+            randomDeletionMask(schema)
+        })
       toDelete.isDefined ==> {
         val table = fromSample(sample)
 
@@ -1741,9 +1748,11 @@ trait TransformSpec[M[+_]]
               Set(CPathField(field.name)))
           })
 
-        val expected = sample.data.flatMap { jv =>
-          (jv \ "value").delete(JPath(field))
-        }
+        val expected = sample
+          .data
+          .flatMap { jv =>
+            (jv \ "value").delete(JPath(field))
+          }
 
         result.copoint must_== expected
       }
@@ -2062,8 +2071,8 @@ trait TransformSpec[M[+_]]
   }
 
   def testIsTypeObject = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser
+      .parseUnsafe("""[
       {"key":[1], "value": 23},
       {"key":[1, "bax"], "value": 24},
       {"key":[2], "value": "foo"},
@@ -2201,8 +2210,8 @@ trait TransformSpec[M[+_]]
   }
 
   def testIsTypeTrivial = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser
+      .parseUnsafe("""[
       {"key":[2,1,1],"value":[]},
       {"key":[2,2,2],"value":{"dx":[8.342062585288287E+307]}}]
     """)
@@ -2396,8 +2405,8 @@ trait TransformSpec[M[+_]]
   }
 
   def testTypedObject = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser
+      .parseUnsafe("""[
       {"key":[1, 3], "value": {"foo": 23}},
       {"key":[2, 4], "value": {}}
     ]""")
@@ -2415,8 +2424,8 @@ trait TransformSpec[M[+_]]
               "key" -> JArrayUnfixedT)))
       })
 
-    val JArray(expected) = JParser.parseUnsafe(
-      """[
+    val JArray(expected) = JParser
+      .parseUnsafe("""[
       {"key":[1, 3], "value": {"foo": 23}},
       {"key":[2, 4]}
     ]""")
@@ -2487,8 +2496,8 @@ trait TransformSpec[M[+_]]
               "key" -> JArrayUnfixedT)))
       })
 
-    val JArray(expected) = JParser.parseUnsafe(
-      """[
+    val JArray(expected) = JParser
+      .parseUnsafe("""[
       {"key": [1, 2], "value": [2, true] },
       {"key": [3, 4] }
     ]""")
@@ -2700,16 +2709,18 @@ trait TransformSpec[M[+_]]
       })
 
     val (_, expected) =
-      sample.data.foldLeft((BigDecimal(0), Vector.empty[JValue])) {
-        case ((a, s), jv) => {
-          (jv \ "value") match {
-            case JNum(i) =>
-              (a + i, s :+ JNum(a + i))
-            case _ =>
-              (a, s)
+      sample
+        .data
+        .foldLeft((BigDecimal(0), Vector.empty[JValue])) {
+          case ((a, s), jv) => {
+            (jv \ "value") match {
+              case JNum(i) =>
+                (a + i, s :+ JNum(a + i))
+              case _ =>
+                (a, s)
+            }
           }
         }
-      }
 
     results.copoint must_== expected.toStream
   }
@@ -2739,16 +2750,18 @@ trait TransformSpec[M[+_]]
       })
 
     val (_, expected) =
-      sample.data.foldLeft((BigDecimal(0), Vector.empty[JValue])) {
-        case ((a, s), jv) => {
-          (jv \ "value") match {
-            case JNum(i) =>
-              (a + i, s :+ JNum(a + i))
-            case _ =>
-              (a, s)
+      sample
+        .data
+        .foldLeft((BigDecimal(0), Vector.empty[JValue])) {
+          case ((a, s), jv) => {
+            (jv \ "value") match {
+              case JNum(i) =>
+                (a + i, s :+ JNum(a + i))
+              case _ =>
+                (a, s)
+            }
           }
         }
-      }
 
     results.copoint must_== expected.toStream
   }
@@ -2765,16 +2778,18 @@ trait TransformSpec[M[+_]]
         })
 
       val (_, expected) =
-        sample.data.foldLeft((BigDecimal(0), Vector.empty[JValue])) {
-          case ((a, s), jv) => {
-            (jv \ "value") match {
-              case JNum(i) =>
-                (a + i, s :+ JNum(a + i))
-              case _ =>
-                (a, s)
+        sample
+          .data
+          .foldLeft((BigDecimal(0), Vector.empty[JValue])) {
+            case ((a, s), jv) => {
+              (jv \ "value") match {
+                case JNum(i) =>
+                  (a + i, s :+ JNum(a + i))
+                case _ =>
+                  (a, s)
+              }
             }
           }
-        }
 
       results.copoint must_== expected.toStream
     }
@@ -2912,28 +2927,30 @@ trait TransformSpec[M[+_]]
 
       val filtered = jv.flattenWithPath filter {
         case (JPath(JPathField("value"), tail @ _*), leaf) =>
-          included.get(JPath(tail: _*)).exists { ctpes =>
-            leaf match {
-              case JBool(_) =>
-                ctpes.contains(CBoolean)
-              case JString(_) =>
-                ctpes.contains(CString)
-              case JNum(_) =>
-                ctpes.contains(CLong) || ctpes.contains(CDouble) || ctpes
-                  .contains(CNum)
-              case JNull =>
-                ctpes.contains(CNull)
-              case JObject(elements) =>
-                // if elements is nonempty, then leaf is a nonempty object and consequently can't conform
-                // to any leaf type.
-                elements.isEmpty && ctpes.contains(CEmptyObject)
+          included
+            .get(JPath(tail: _*))
+            .exists { ctpes =>
+              leaf match {
+                case JBool(_) =>
+                  ctpes.contains(CBoolean)
+                case JString(_) =>
+                  ctpes.contains(CString)
+                case JNum(_) =>
+                  ctpes.contains(CLong) || ctpes.contains(CDouble) || ctpes
+                    .contains(CNum)
+                case JNull =>
+                  ctpes.contains(CNull)
+                case JObject(elements) =>
+                  // if elements is nonempty, then leaf is a nonempty object and consequently can't conform
+                  // to any leaf type.
+                  elements.isEmpty && ctpes.contains(CEmptyObject)
 
-              case JArray(elements) =>
-                // if elements is nonempty, then leaf is a nonemtpy array and consequently can't conform
-                // to any leaf type.
-                elements.isEmpty && ctpes.contains(CEmptyArray)
+                case JArray(elements) =>
+                  // if elements is nonempty, then leaf is a nonemtpy array and consequently can't conform
+                  // to any leaf type.
+                  elements.isEmpty && ctpes.contains(CEmptyArray)
+              }
             }
-          }
 
         case (JPath(JPathField("key"), _*), _) =>
           true

@@ -124,9 +124,11 @@ object Cors {
       */
     protected[this] def addExposedHeaders(response: Response): Response = {
       if (policy.exposedHeaders.nonEmpty) {
-        response.headers.add(
-          "Access-Control-Expose-Headers",
-          policy.exposedHeaders.mkString(", "))
+        response
+          .headers
+          .add(
+            "Access-Control-Expose-Headers",
+            policy.exposedHeaders.mkString(", "))
       }
       response
     }
@@ -162,7 +164,8 @@ object Cors {
     protected[this] def setMethod(
         response: Response,
         methods: Seq[String]): Response = {
-      response.headers
+      response
+        .headers
         .set("Access-Control-Allow-Methods", methods.mkString(", "))
       response
     }
@@ -173,7 +176,8 @@ object Cors {
       */
     protected[this] def setMaxAge(response: Response): Response = {
       policy.maxAge foreach { maxAge =>
-        response.headers
+        response
+          .headers
           .add("Access-Control-Max-Age", maxAge.inSeconds.toString)
       }
       response
@@ -202,7 +206,8 @@ object Cors {
         response: Response,
         headers: Seq[String]): Response = {
       if (headers.nonEmpty) {
-        response.headers
+        response
+          .headers
           .set("Access-Control-Allow-Headers", headers.mkString(", "))
       }
       response

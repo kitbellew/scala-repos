@@ -88,20 +88,26 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
     frameworkId.foreach { id =>
       fwInfoBuilder.setId(FrameworkID.newBuilder().setValue(id).build())
     }
-    conf.getOption("spark.mesos.principal").foreach { principal =>
-      fwInfoBuilder.setPrincipal(principal)
-      credBuilder.setPrincipal(principal)
-    }
-    conf.getOption("spark.mesos.secret").foreach { secret =>
-      credBuilder.setSecret(ByteString.copyFromUtf8(secret))
-    }
+    conf
+      .getOption("spark.mesos.principal")
+      .foreach { principal =>
+        fwInfoBuilder.setPrincipal(principal)
+        credBuilder.setPrincipal(principal)
+      }
+    conf
+      .getOption("spark.mesos.secret")
+      .foreach { secret =>
+        credBuilder.setSecret(ByteString.copyFromUtf8(secret))
+      }
     if (credBuilder.hasSecret && !fwInfoBuilder.hasPrincipal) {
       throw new SparkException(
         "spark.mesos.principal must be configured when spark.mesos.secret is set")
     }
-    conf.getOption("spark.mesos.role").foreach { role =>
-      fwInfoBuilder.setRole(role)
-    }
+    conf
+      .getOption("spark.mesos.role")
+      .foreach { role =>
+        fwInfoBuilder.setRole(role)
+      }
     if (credBuilder.hasPrincipal) {
       new MesosSchedulerDriver(
         scheduler,
@@ -207,31 +213,33 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
       amountToUse: Double): (List[Resource], List[Resource]) = {
     var remain = amountToUse
     var requestedResources = new ArrayBuffer[Resource]
-    val remainingResources = resources.asScala.map {
-      case r => {
-        if (remain > 0 &&
-            r.getType == Value.Type.SCALAR &&
-            r.getScalar.getValue > 0.0 &&
-            r.getName == resourceName) {
-          val usage = Math.min(remain, r.getScalar.getValue)
-          requestedResources += createResource(
-            resourceName,
-            usage,
-            Some(r.getRole))
-          remain -= usage
-          createResource(
-            resourceName,
-            r.getScalar.getValue - usage,
-            Some(r.getRole))
-        } else {
-          r
+    val remainingResources = resources
+      .asScala
+      .map {
+        case r => {
+          if (remain > 0 &&
+              r.getType == Value.Type.SCALAR &&
+              r.getScalar.getValue > 0.0 &&
+              r.getName == resourceName) {
+            val usage = Math.min(remain, r.getScalar.getValue)
+            requestedResources += createResource(
+              resourceName,
+              usage,
+              Some(r.getRole))
+            remain -= usage
+            createResource(
+              resourceName,
+              r.getScalar.getValue - usage,
+              Some(r.getRole))
+          } else {
+            r
+          }
         }
       }
-    }
 
     // Filter any resource that has depleted.
-    val filteredResources = remainingResources.filter(r =>
-      r.getType != Value.Type.SCALAR || r.getScalar.getValue > 0.0)
+    val filteredResources = remainingResources
+      .filter(r => r.getType != Value.Type.SCALAR || r.getScalar.getValue > 0.0)
 
     (filteredResources.toList, requestedResources.toList)
   }
@@ -261,7 +269,8 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
     */
   protected def toAttributeMap(
       offerAttributes: JList[Attribute]): Map[String, GeneratedMessage] = {
-    offerAttributes.asScala
+    offerAttributes
+      .asScala
       .map(attr => {
         val attrValue =
           attr.getType match {
@@ -386,27 +395,33 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
     *         (whichever is larger)
     */
   def executorMemory(sc: SparkContext): Int = {
-    sc.conf.getInt(
-      "spark.mesos.executor.memoryOverhead",
-      math
-        .max(
-          MEMORY_OVERHEAD_FRACTION * sc.executorMemory,
-          MEMORY_OVERHEAD_MINIMUM)
-        .toInt) +
+    sc
+      .conf
+      .getInt(
+        "spark.mesos.executor.memoryOverhead",
+        math
+          .max(
+            MEMORY_OVERHEAD_FRACTION * sc.executorMemory,
+            MEMORY_OVERHEAD_MINIMUM)
+          .toInt) +
       sc.executorMemory
   }
 
   def setupUris(uris: String, builder: CommandInfo.Builder): Unit = {
-    uris.split(",").foreach { uri =>
-      builder.addUris(CommandInfo.URI.newBuilder().setValue(uri.trim()))
-    }
+    uris
+      .split(",")
+      .foreach { uri =>
+        builder.addUris(CommandInfo.URI.newBuilder().setValue(uri.trim()))
+      }
   }
 
   protected def getRejectOfferDurationForUnmetConstraints(
       sc: SparkContext): Long = {
-    sc.conf.getTimeAsSeconds(
-      "spark.mesos.rejectOfferDurationForUnmetConstraints",
-      "120s")
+    sc
+      .conf
+      .getTimeAsSeconds(
+        "spark.mesos.rejectOfferDurationForUnmetConstraints",
+        "120s")
   }
 
 }

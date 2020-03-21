@@ -32,14 +32,20 @@ private object Level {
 
 private object ProjectLevel extends Level("project", "Project") {
   def librariesIn(context: ConversionContext) =
-    context.getProjectLibrariesSettings.getProjectLibraries.asScala
+    context
+      .getProjectLibrariesSettings
+      .getProjectLibraries
+      .asScala
       .map(LibraryData(_))
       .toSeq
 }
 
 private object ApplicationLevel extends Level("application", "Global") {
   def librariesIn(context: ConversionContext) =
-    LibraryTablesRegistrar.getInstance.getLibraryTable.getLibraries
+    LibraryTablesRegistrar
+      .getInstance
+      .getLibraryTable
+      .getLibraries
       .map(LibraryData(_))
       .toSeq
 }

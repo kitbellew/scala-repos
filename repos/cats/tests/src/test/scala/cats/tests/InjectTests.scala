@@ -100,10 +100,10 @@ class InjectTests extends CatsSuite {
       } yield k(x + y)
 
     forAll { (x: Int, y: Int) =>
-      val expr1: Free[T, Int] = Inject.inject[T, Test1Algebra, Int](
-        Test1(x, Free.pure))
-      val expr2: Free[T, Int] = Inject.inject[T, Test2Algebra, Int](
-        Test2(y, Free.pure))
+      val expr1: Free[T, Int] = Inject
+        .inject[T, Test1Algebra, Int](Test1(x, Free.pure))
+      val expr2: Free[T, Int] = Inject
+        .inject[T, Test2Algebra, Int](Test2(y, Free.pure))
       val res = distr[T, Int](expr1 >> expr2)
       res == Some(Free.pure(x + y)) should ===(true)
     }

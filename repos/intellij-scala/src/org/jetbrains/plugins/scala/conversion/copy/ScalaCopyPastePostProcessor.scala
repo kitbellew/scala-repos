@@ -64,8 +64,10 @@ class ScalaCopyPastePostProcessor
                      reference <- element.asOptionOf[ScReferenceElement];
                      dependency <- Dependency.dependencyFor(reference)
                      if dependency.isExternal;
-                     range = dependency.source.getTextRange.shiftRight(
-                       -startOffset)) {
+                     range = dependency
+                       .source
+                       .getTextRange
+                       .shiftRight(-startOffset)) {
                   if (System.currentTimeMillis > timeBound) {
                     Log.warn(
                       "Time-out while collecting dependencies in %s:\n%s"
@@ -95,10 +97,12 @@ class ScalaCopyPastePostProcessor
             file.getName,
             file.getText.substring(startOffsets(0), endOffsets(0))))
       case e: Exception =>
-        val selections = (startOffsets, endOffsets).zipped.map((a, b) =>
-          file.getText.substring(a, b))
-        val attachments = selections.zipWithIndex.map(p =>
-          new Attachment(s"Selection-${p._2 + 1}.scala", p._1))
+        val selections = (startOffsets, endOffsets)
+          .zipped
+          .map((a, b) => file.getText.substring(a, b))
+        val attachments = selections
+          .zipWithIndex
+          .map(p => new Attachment(s"Selection-${p._2 + 1}.scala", p._1))
         Log.error(
           LogMessageEx.createEvent(
             e.getMessage,
@@ -183,15 +187,17 @@ class ScalaCopyPastePostProcessor
           if !association.isSatisfiedIn(element)
         } yield Binding(
           element,
-          association.path.asString(
-            ScalaCodeStyleSettings
-              .getInstance(project)
-              .isImportMembersUsingUnderScore))
+          association
+            .path
+            .asString(
+              ScalaCodeStyleSettings
+                .getInstance(project)
+                .isImportMembersUsingUnderScore))
       ).filter {
         case Binding(_, path) =>
           val index = path.lastIndexOf('.')
-          index != -1 && !Set("scala", "java.lang", "scala.Predef").contains(
-            path.substring(0, index))
+          index != -1 && !Set("scala", "java.lang", "scala.Predef")
+            .contains(path.substring(0, index))
       }
 
     if (bindings.isEmpty)

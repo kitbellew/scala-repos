@@ -72,13 +72,13 @@ case class DataSource(
   /** A map to maintain backward compatibility in case we move data sources around. */
   private val backwardCompatibilityMap = Map(
     "org.apache.spark.sql.jdbc" -> classOf[jdbc.DefaultSource].getCanonicalName,
-    "org.apache.spark.sql.jdbc.DefaultSource" -> classOf[
-      jdbc.DefaultSource].getCanonicalName,
+    "org.apache.spark.sql.jdbc.DefaultSource" -> classOf[jdbc.DefaultSource]
+      .getCanonicalName,
     "org.apache.spark.sql.json" -> classOf[json.DefaultSource].getCanonicalName,
-    "org.apache.spark.sql.json.DefaultSource" -> classOf[
-      json.DefaultSource].getCanonicalName,
-    "org.apache.spark.sql.parquet" -> classOf[
-      parquet.DefaultSource].getCanonicalName,
+    "org.apache.spark.sql.json.DefaultSource" -> classOf[json.DefaultSource]
+      .getCanonicalName,
+    "org.apache.spark.sql.parquet" -> classOf[parquet.DefaultSource]
+      .getCanonicalName,
     "org.apache.spark.sql.parquet.DefaultSource" -> classOf[
       parquet.DefaultSource].getCanonicalName,
     "com.databricks.spark.csv" -> classOf[csv.DefaultSource].getCanonicalName
@@ -91,7 +91,8 @@ case class DataSource(
     val loader = Utils.getContextOrSparkClassLoader
     val serviceLoader = ServiceLoader.load(classOf[DataSourceRegister], loader)
 
-    serviceLoader.asScala
+    serviceLoader
+      .asScala
       .filter(_.shortName().equalsIgnoreCase(provider))
       .toList match {
       // the provider format did not match any given registered aliases
@@ -144,21 +145,22 @@ case class DataSource(
           "path", {
             throw new IllegalArgumentException("'path' is not specified")
           })
-        val metadataPath = caseInsensitiveOptions.getOrElse(
-          "metadataPath",
-          s"$path/_metadata")
+        val metadataPath = caseInsensitiveOptions
+          .getOrElse("metadataPath", s"$path/_metadata")
 
         val allPaths = caseInsensitiveOptions.get("path")
         val globbedPaths =
-          allPaths.toSeq.flatMap { path =>
-            val hdfsPath = new Path(path)
-            val fs = hdfsPath.getFileSystem(
-              sqlContext.sparkContext.hadoopConfiguration)
-            val qualified = hdfsPath.makeQualified(
-              fs.getUri,
-              fs.getWorkingDirectory)
-            SparkHadoopUtil.get.globPathIfNecessary(qualified)
-          }.toArray
+          allPaths
+            .toSeq
+            .flatMap { path =>
+              val hdfsPath = new Path(path)
+              val fs = hdfsPath
+                .getFileSystem(sqlContext.sparkContext.hadoopConfiguration)
+              val qualified = hdfsPath
+                .makeQualified(fs.getUri, fs.getWorkingDirectory)
+              SparkHadoopUtil.get.globPathIfNecessary(qualified)
+            }
+            .toArray
 
         val fileCatalog: FileCatalog =
           new HDFSFileCatalog(sqlContext, options, globbedPaths, None)
@@ -234,15 +236,16 @@ case class DataSource(
         case (format: FileFormat, _) =>
           val allPaths = caseInsensitiveOptions.get("path") ++ paths
           val globbedPaths =
-            allPaths.flatMap { path =>
-              val hdfsPath = new Path(path)
-              val fs = hdfsPath.getFileSystem(
-                sqlContext.sparkContext.hadoopConfiguration)
-              val qualified = hdfsPath.makeQualified(
-                fs.getUri,
-                fs.getWorkingDirectory)
-              SparkHadoopUtil.get.globPathIfNecessary(qualified)
-            }.toArray
+            allPaths
+              .flatMap { path =>
+                val hdfsPath = new Path(path)
+                val fs = hdfsPath
+                  .getFileSystem(sqlContext.sparkContext.hadoopConfiguration)
+                val qualified = hdfsPath
+                  .makeQualified(fs.getUri, fs.getWorkingDirectory)
+                SparkHadoopUtil.get.globPathIfNecessary(qualified)
+              }
+              .toArray
 
           // If they gave a schema, then we try and figure out the types of the partition columns
           // from that schema.
@@ -297,7 +300,8 @@ case class DataSource(
 
   /** Writes the give [[DataFrame]] out to this [[DataSource]]. */
   def write(mode: SaveMode, data: DataFrame): BaseRelation = {
-    if (data.schema
+    if (data
+          .schema
           .map(_.dataType)
           .exists(_.isInstanceOf[CalendarIntervalType])) {
       throw new AnalysisException(
@@ -320,8 +324,8 @@ case class DataSource(
                 "path", {
                   throw new IllegalArgumentException("'path' is not specified")
                 }))
-          val fs = path.getFileSystem(
-            sqlContext.sparkContext.hadoopConfiguration)
+          val fs = path
+            .getFileSystem(sqlContext.sparkContext.hadoopConfiguration)
           path.makeQualified(fs.getUri, fs.getWorkingDirectory)
         }
 
@@ -339,8 +343,9 @@ case class DataSource(
           }
 
         val dataSchema = StructType(
-          data.schema.filterNot(f =>
-            partitionColumns.exists(equality(_, f.name))))
+          data
+            .schema
+            .filterNot(f => partitionColumns.exists(equality(_, f.name))))
 
         // If we are appending to a table that already exists, make sure the partitioning matches
         // up.  If we fail to load the table for whatever reason, ignore the check.

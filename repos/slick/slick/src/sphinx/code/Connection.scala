@@ -30,8 +30,8 @@ object Connection extends App {
   if (false) {
     val dataSource = null.asInstanceOf[slick.jdbc.DatabaseUrlDataSource]
     //#forDatabaseURL
-    val db = Database.forDataSource(
-      dataSource: slick.jdbc.DatabaseUrlDataSource)
+    val db = Database
+      .forDataSource(dataSource: slick.jdbc.DatabaseUrlDataSource)
     //#forDatabaseURL
   }
   if (false) {
@@ -48,9 +48,8 @@ object Connection extends App {
   };
   {
     //#forURL
-    val db = Database.forURL(
-      "jdbc:h2:mem:test1;DB_CLOSE_DELAY=-1",
-      driver = "org.h2.Driver")
+    val db = Database
+      .forURL("jdbc:h2:mem:test1;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver")
     //#forURL
     db.close
   };
@@ -136,26 +135,32 @@ object Connection extends App {
           coffees ++= Seq(
             ("Cold_Drip", new SerialBlob(Array[Byte](101))),
             ("Dutch_Coffee", new SerialBlob(Array[Byte](49))))
-        ).flatMap { _ =>
-          DBIO.failed(new Exception("Roll it back"))
-        }.transactionally
+        )
+          .flatMap { _ =>
+            DBIO.failed(new Exception("Roll it back"))
+          }
+          .transactionally
 
-      val errorHandleAction = rollbackAction.asTry.flatMap {
-        case Failure(e: Throwable) =>
-          DBIO.successful(e.getMessage)
-        case Success(_) =>
-          DBIO.successful("never reached")
-      }
+      val errorHandleAction = rollbackAction
+        .asTry
+        .flatMap {
+          case Failure(e: Throwable) =>
+            DBIO.successful(e.getMessage)
+          case Success(_) =>
+            DBIO.successful("never reached")
+        }
 
       // Here we show that that coffee count is the same before and after the attempted insert.
       // We also show that the result of the action is filled in with the exception's message.
-      val f = db.run(countAction zip errorHandleAction zip countAction).map {
-        case ((initialCount, result), finalCount) =>
-          // init: 5, final: 5, result: Roll it back
-          println(
-            s"init: ${initialCount}, final: ${finalCount}, result: ${result}")
-          result
-      }
+      val f = db
+        .run(countAction zip errorHandleAction zip countAction)
+        .map {
+          case ((initialCount, result), finalCount) =>
+            // init: 5, final: 5, result: Roll it back
+            println(
+              s"init: ${initialCount}, final: ${finalCount}, result: ${result}")
+            result
+        }
 
       //#rollback
       assert(Await.result(f, Duration.Inf) == "Roll it back")

@@ -24,8 +24,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
   /** This map contains a binding (class -> info) if
     *  the class with this info at phase mixinPhase has been treated for mixin composition
     */
-  private val treatedClassInfos =
-    perRunCaches.newMap[Symbol, Type]() withDefaultValue NoType
+  private val treatedClassInfos = perRunCaches
+    .newMap[Symbol, Type]() withDefaultValue NoType
 
   /** Map a lazy, mixedin field accessor to its trait member accessor */
   private val initializer = perRunCaches.newMap[Symbol, Symbol]()
@@ -55,8 +55,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
       && !sym.hasAllFlags(LIFTED | MODULE | METHOD)
       && !sym.isConstructor
       && (
-        !sym.hasFlag(notPRIVATE | LIFTED) || sym.hasFlag(
-          ACCESSOR | SUPERACCESSOR | MODULE)
+        !sym.hasFlag(notPRIVATE | LIFTED) || sym
+          .hasFlag(ACCESSOR | SUPERACCESSOR | MODULE)
       ))
 
   private def isFieldWithBitmap(field: Symbol) = {
@@ -119,15 +119,15 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
 // --------- type transformation -----------------------------------------------
 
   def isConcreteAccessor(member: Symbol) =
-    member.hasAccessorFlag && (
-      !member.isDeferred || (member hasFlag lateDEFERRED)
-    )
+    member
+      .hasAccessorFlag && (!member.isDeferred || (member hasFlag lateDEFERRED))
 
   /** Is member overridden (either directly or via a bridge) in base class sequence `bcs`? */
   def isOverriddenAccessor(member: Symbol, bcs: List[Symbol]): Boolean =
     beforeOwnPhase {
       def hasOverridingAccessor(clazz: Symbol) = {
-        clazz.info
+        clazz
+          .info
           .nonPrivateDecl(member.name)
           .alternatives
           .exists(sym =>
@@ -211,10 +211,10 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
             STABLE
         )
         // TODO preserve pre-erasure info?
-        clazz.newMethod(
-          field.getterName,
-          field.pos,
-          newFlags) setInfo MethodType(Nil, field.info)
+        clazz
+          .newMethod(field.getterName, field.pos, newFlags) setInfo MethodType(
+          Nil,
+          field.info)
       }
 
       /* Create a new setter. Setters are never private or local. They are
@@ -284,7 +284,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
            if isImplementedStatically(member)) {
         member overridingSymbol clazz match {
           case NoSymbol =>
-            if (clazz.info
+            if (clazz
+                  .info
                   .findMember(member.name, 0, 0L, stableOnly = false)
                   .alternatives contains member)
               cloneAndAddMixinMember(mixinClass, member)
@@ -337,7 +338,9 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
                       .newValue(mixinMember.localName, mixinMember.pos)
                       .setInfo(mixinMember.tpe.resultType)
                   }
-                  sym updateInfo mixinMember.tpe.resultType // info at current phase
+                  sym updateInfo mixinMember
+                    .tpe
+                    .resultType // info at current phase
 
                   val newFlags = ((PrivateLocal)
                     | (mixinMember getFlag MUTABLE | LAZY)
@@ -422,8 +425,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
                   && !(
                     currentOwner.isGetter && currentOwner.accessed == sym
                   ) // getter
-                  && !definitions.isPrimitiveValueClass(
-                    sym.tpe.resultType.typeSymbol)
+                  && !definitions
+                    .isPrimitiveValueClass(sym.tpe.resultType.typeSymbol)
                   && sym.owner == templ.symbol.owner
                   && !sym.isLazy
                   && !tree.isDef) {
@@ -454,10 +457,9 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
   class MixinTransformer(unit: CompilationUnit) extends Transformer {
 
     /** The rootContext used for typing */
-    private val rootContext = erasure.NoContext.make(
-      EmptyTree,
-      rootMirror.RootClass,
-      newScope)
+    private val rootContext = erasure
+      .NoContext
+      .make(EmptyTree, rootMirror.RootClass, newScope)
 
     /** The typer */
     private var localTyper: erasure.Typer = _
@@ -662,8 +664,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
 
         def createBitmap: Symbol = {
           val bitmapKind = bitmapKindForCategory(category)
-          val sym =
-            clazz0.newVariable(bitmapName, clazz0.pos) setInfo bitmapKind.tpe
+          val sym = clazz0
+            .newVariable(bitmapName, clazz0.pos) setInfo bitmapKind.tpe
           enteringTyper(sym addAnnotation VolatileAttr)
 
           category match {
@@ -1244,11 +1246,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
           // mark fields which can be nulled afterward
           lazyValNullables = nullableFields(templ) withDefaultValue Set()
           // add all new definitions to current class or interface
-          treeCopy.Template(
-            tree,
-            parents1,
-            self,
-            addNewDefs(currentOwner, body))
+          treeCopy
+            .Template(tree, parents1, self, addNewDefs(currentOwner, body))
 
         case Select(qual, name) if sym.owner.isTrait && !sym.isMethod =>
           // refer to fields in some trait an abstract getter in the interface.
@@ -1262,8 +1261,9 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
         case Assign(Apply(lhs @ Select(qual, _), List()), rhs) =>
           // assign to fields in some trait via an abstract setter in the interface.
           // Note that the case above has added the empty application.
-          val setter =
-            lhs.symbol.setterIn(lhs.symbol.owner.tpe.typeSymbol) setPos lhs.pos
+          val setter = lhs
+            .symbol
+            .setterIn(lhs.symbol.owner.tpe.typeSymbol) setPos lhs.pos
 
           typedPos(tree.pos)((qual DOT setter)(rhs))
 

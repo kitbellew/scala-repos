@@ -188,7 +188,9 @@ object PluginDiscovery {
   private[this] def incompatiblePlugins(
       data: PluginData,
       t: LinkageError): Nothing = {
-    val evicted = data.report.toList
+    val evicted = data
+      .report
+      .toList
       .flatMap(_.configurations.flatMap(_.evicted))
     val evictedModules =
       evicted map { id =>

@@ -55,14 +55,10 @@ object PersistencePluginProxySpec {
       s"""
       |akka.extensions = ["akka.persistence.Persistence"]
       |akka.persistence.journal.auto-start-journals = [""]
-      |akka.persistence.journal.proxy.target-journal-address = "${system
-           .asInstanceOf[ExtendedActorSystem]
-           .provider
-           .getDefaultAddress}"
-      |akka.persistence.snapshot-store.proxy.target-snapshot-store-address = "${system
-           .asInstanceOf[ExtendedActorSystem]
-           .provider
-           .getDefaultAddress}"
+      |akka.persistence.journal.proxy.target-journal-address = "${system.asInstanceOf[
+           ExtendedActorSystem].provider.getDefaultAddress}"
+      |akka.persistence.snapshot-store.proxy.target-snapshot-store-address = "${system.asInstanceOf[
+           ExtendedActorSystem].provider.getDefaultAddress}"
     """.stripMargin)
 
   class ExamplePersistentActor(probe: ActorRef, name: String)
@@ -94,7 +90,8 @@ object PersistencePluginProxySpec {
 
 class PersistencePluginProxySpec
     extends AkkaSpec(
-      PersistencePluginProxySpec.startTargetConfig withFallback PersistencePluginProxySpec.config)
+      PersistencePluginProxySpec
+        .startTargetConfig withFallback PersistencePluginProxySpec.config)
     with Cleanup {
   import PersistencePluginProxySpec._
 
@@ -129,10 +126,10 @@ class PersistencePluginProxySpec
       probeA.expectMsg("a1")
       probeB.expectMsg("b1")
 
-      val recoveredAppA = systemA.actorOf(
-        Props(classOf[ExampleApp], probeA.ref))
-      val recoveredAppB = systemB.actorOf(
-        Props(classOf[ExampleApp], probeB.ref))
+      val recoveredAppA = systemA
+        .actorOf(Props(classOf[ExampleApp], probeA.ref))
+      val recoveredAppB = systemB
+        .actorOf(Props(classOf[ExampleApp], probeB.ref))
 
       recoveredAppA ! "a2"
       recoveredAppB ! "b2"

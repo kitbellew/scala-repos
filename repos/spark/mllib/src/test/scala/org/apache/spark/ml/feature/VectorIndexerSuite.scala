@@ -91,25 +91,27 @@ class VectorIndexerSuite
     assert(densePoints1Seq.head.size != densePoints2Seq.head.size)
     def checkPair(dvSeq: Seq[Vector], svSeq: Seq[Vector]): Unit = {
       assert(
-        dvSeq.zip(svSeq).forall {
-          case (dv, sv) =>
-            dv.toArray === sv.toArray
-        },
+        dvSeq
+          .zip(svSeq)
+          .forall {
+            case (dv, sv) =>
+              dv.toArray === sv.toArray
+          },
         "typo in unit test")
     }
     checkPair(densePoints1Seq, sparsePoints1Seq)
     checkPair(densePoints2Seq, sparsePoints2Seq)
 
-    densePoints1 = sqlContext.createDataFrame(
-      sc.parallelize(densePoints1Seq, 2).map(FeatureData))
-    sparsePoints1 = sqlContext.createDataFrame(
-      sc.parallelize(sparsePoints1Seq, 2).map(FeatureData))
-    densePoints2 = sqlContext.createDataFrame(
-      sc.parallelize(densePoints2Seq, 2).map(FeatureData))
-    sparsePoints2 = sqlContext.createDataFrame(
-      sc.parallelize(sparsePoints2Seq, 2).map(FeatureData))
-    badPoints = sqlContext.createDataFrame(
-      sc.parallelize(badPointsSeq, 2).map(FeatureData))
+    densePoints1 = sqlContext
+      .createDataFrame(sc.parallelize(densePoints1Seq, 2).map(FeatureData))
+    sparsePoints1 = sqlContext
+      .createDataFrame(sc.parallelize(sparsePoints1Seq, 2).map(FeatureData))
+    densePoints2 = sqlContext
+      .createDataFrame(sc.parallelize(densePoints2Seq, 2).map(FeatureData))
+    sparsePoints2 = sqlContext
+      .createDataFrame(sc.parallelize(sparsePoints2Seq, 2).map(FeatureData))
+    badPoints = sqlContext
+      .createDataFrame(sc.parallelize(badPointsSeq, 2).map(FeatureData))
   }
 
   private def getIndexer: VectorIndexer =
@@ -122,8 +124,8 @@ class VectorIndexerSuite
   }
 
   test("Cannot fit an empty DataFrame") {
-    val rdd = sqlContext.createDataFrame(
-      sc.parallelize(Array.empty[Vector], 2).map(FeatureData))
+    val rdd = sqlContext
+      .createDataFrame(sc.parallelize(Array.empty[Vector], 2).map(FeatureData))
     val vectorIndexer = getIndexer
     intercept[IllegalArgumentException] {
       vectorIndexer.fit(rdd)
@@ -190,8 +192,8 @@ class VectorIndexerSuite
         assert(categoryMaps.keys.toSet === categoricalFeatures)
         val transformed = model.transform(data).select("indexed")
         val indexedRDD: RDD[Vector] = transformed.rdd.map(_.getAs[Vector](0))
-        val featureAttrs = AttributeGroup.fromStructField(
-          transformed.schema("indexed"))
+        val featureAttrs = AttributeGroup
+          .fromStructField(transformed.schema("indexed"))
         assert(featureAttrs.name === "indexed")
         assert(featureAttrs.attributes.get.length === model.numFeatures)
         categoricalFeatures.foreach { feature: Int =>
@@ -270,14 +272,16 @@ class VectorIndexerSuite
         .rdd
         .map(_.getAs[Vector](0))
         .collect()
-      points.zip(indexedPoints).foreach {
-        case (orig: SparseVector, indexed: SparseVector) =>
-          assert(orig.indices.length == indexed.indices.length)
-        case _ =>
-          throw new UnknownError(
-            "Unit test has a bug in it."
-          ) // should never happen
-      }
+      points
+        .zip(indexedPoints)
+        .foreach {
+          case (orig: SparseVector, indexed: SparseVector) =>
+            assert(orig.indices.length == indexed.indices.length)
+          case _ =>
+            throw new UnknownError(
+              "Unit test has a bug in it."
+            ) // should never happen
+        }
     }
     checkSparsity(sparsePoints1, maxCategories = 2)
     checkSparsity(sparsePoints2, maxCategories = 2)
@@ -285,13 +289,15 @@ class VectorIndexerSuite
 
   test("Preserve metadata") {
     // For continuous features, preserve name and stats.
-    val featureAttributes: Array[Attribute] = point1maxes.zipWithIndex.map {
-      case (maxVal, i) =>
-        NumericAttribute.defaultAttr.withName(i.toString).withMax(maxVal)
-    }
+    val featureAttributes: Array[Attribute] = point1maxes
+      .zipWithIndex
+      .map {
+        case (maxVal, i) =>
+          NumericAttribute.defaultAttr.withName(i.toString).withMax(maxVal)
+      }
     val attrGroup = new AttributeGroup("features", featureAttributes)
-    val densePoints1WithMeta = densePoints1.select(
-      densePoints1("features").as("features", attrGroup.toMetadata()))
+    val densePoints1WithMeta = densePoints1
+      .select(densePoints1("features").as("features", attrGroup.toMetadata()))
     val vectorIndexer = getIndexer.setMaxCategories(2)
     val model = vectorIndexer.fit(densePoints1WithMeta)
     // Check that ML metadata are preserved.
@@ -301,17 +307,19 @@ class VectorIndexerSuite
         .fromStructField(indexedPoints.schema("indexed"))
         .attributes
         .get
-    featureAttributes.zip(transAttributes).foreach {
-      case (orig, trans) =>
-        assert(orig.name === trans.name)
-        (orig, trans) match {
-          case (orig: NumericAttribute, trans: NumericAttribute) =>
-            assert(orig.max.nonEmpty && orig.max === trans.max)
-          case _ =>
-          // do nothing
-          // TODO: Once input features marked as categorical are handled correctly, check that here.
-        }
-    }
+    featureAttributes
+      .zip(transAttributes)
+      .foreach {
+        case (orig, trans) =>
+          assert(orig.name === trans.name)
+          (orig, trans) match {
+            case (orig: NumericAttribute, trans: NumericAttribute) =>
+              assert(orig.max.nonEmpty && orig.max === trans.max)
+            case _ =>
+            // do nothing
+            // TODO: Once input features marked as categorical are handled correctly, check that here.
+          }
+      }
   }
 
   test("VectorIndexer read/write") {

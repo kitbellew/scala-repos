@@ -219,8 +219,14 @@ object DBIOAction {
     implicit val ec = DBIO.sameThreadExecutionContext
     def sequenceGroupAsM(g: Vector[DBIOAction[R, NoStream, E]])
         : DBIOAction[M[R], NoStream, E] = {
-      if (g.head.isInstanceOf[
-            SynchronousDatabaseAction[_, _, _, _]]) { // fuse synchronous group
+      if (g
+            .head
+            .isInstanceOf[
+              SynchronousDatabaseAction[
+                _,
+                _,
+                _,
+                _]]) { // fuse synchronous group
         new SynchronousDatabaseAction.Fused[M[R], NoStream, BasicBackend, E] {
           def run(context: BasicBackend#Context) = {
             val b = cbf()
@@ -239,19 +245,22 @@ object DBIOAction {
     def sequenceGroupAsSeq(g: Vector[DBIOAction[R, NoStream, E]])
         : DBIOAction[Seq[R], NoStream, E] = {
       if (g.length == 1) {
-        if (g.head.isInstanceOf[
-              SynchronousDatabaseAction[
-                _,
-                _,
-                _,
-                _]]) { // fuse synchronous group
+        if (g
+              .head
+              .isInstanceOf[
+                SynchronousDatabaseAction[
+                  _,
+                  _,
+                  _,
+                  _]]) { // fuse synchronous group
           new SynchronousDatabaseAction.Fused[
             Seq[R],
             NoStream,
             BasicBackend,
             E] {
             def run(context: BasicBackend#Context) =
-              g.head
+              g
+                .head
                 .asInstanceOf[SynchronousDatabaseAction[
                   R,
                   NoStream,
@@ -263,12 +272,14 @@ object DBIOAction {
         } else
           g.head.map(_ :: Nil)
       } else {
-        if (g.head.isInstanceOf[
-              SynchronousDatabaseAction[
-                _,
-                _,
-                _,
-                _]]) { // fuse synchronous group
+        if (g
+              .head
+              .isInstanceOf[
+                SynchronousDatabaseAction[
+                  _,
+                  _,
+                  _,
+                  _]]) { // fuse synchronous group
           new SynchronousDatabaseAction.Fused[
             Seq[R],
             NoStream,
@@ -334,7 +345,7 @@ object DBIOAction {
           g.foreach(
             _.asInstanceOf[
               SynchronousDatabaseAction[Any, NoStream, BasicBackend, E]]
-              .run(context))
+            .run(context))
         }
         override def nonFusedEquivalentAction =
           AndThenAction[Unit, NoStream, E](g)
@@ -351,10 +362,14 @@ object DBIOAction {
         case n =>
           val last = grouped.length - 1
           val as =
-            grouped.iterator.zipWithIndex.map {
-              case (g, i) =>
-                sequenceGroup(g, i == last)
-            }.toVector
+            grouped
+              .iterator
+              .zipWithIndex
+              .map {
+                case (g, i) =>
+                  sequenceGroup(g, i == last)
+              }
+              .toVector
           AndThenAction[Unit, NoStream, E](as)
       }
     }
@@ -469,10 +484,12 @@ case class AndThenAction[R, +S <: NoStream, -E <: Effect](
   def getDumpInfo =
     DumpInfo(
       "andThen",
-      children = as.zipWithIndex.map {
-        case (a, i) =>
-          (String.valueOf(i + 1), a)
-      })
+      children = as
+        .zipWithIndex
+        .map {
+          case (a, i) =>
+            (String.valueOf(i + 1), a)
+        })
 
   override def andThen[R2, S2 <: NoStream, E2 <: Effect](
       a: DBIOAction[R2, S2, E2]): DBIOAction[R2, S2, E with E2] =
@@ -492,10 +509,12 @@ case class SequenceAction[R, +R2, -E <: Effect](
   def getDumpInfo =
     DumpInfo(
       "sequence",
-      children = as.zipWithIndex.map {
-        case (a, i) =>
-          (String.valueOf(i + 1), a)
-      })
+      children = as
+        .zipWithIndex
+        .map {
+          case (a, i) =>
+            (String.valueOf(i + 1), a)
+        })
 }
 
 /** A DBIOAction that represents a `cleanUp` operation for sequencing in the DBIOAction monad. */
@@ -614,8 +633,10 @@ trait SynchronousDatabaseAction[
       case a: SynchronousDatabaseAction.FusedAndThenAction[_, _, _, _] =>
         new SynchronousDatabaseAction.FusedAndThenAction[R2, S2, B, E with E2](
           self.asInstanceOf[SynchronousDatabaseAction[Any, S2, B, E with E2]] +:
-            a.as.asInstanceOf[IndexedSeq[
-              SynchronousDatabaseAction[Any, S2, B, E with E2]]])
+            a
+              .as
+              .asInstanceOf[IndexedSeq[
+                SynchronousDatabaseAction[Any, S2, B, E with E2]]])
       case a: SynchronousDatabaseAction[_, _, _, _] =>
         new SynchronousDatabaseAction.FusedAndThenAction[R2, S2, B, E with E2](
           Vector(
@@ -665,7 +686,8 @@ trait SynchronousDatabaseAction[
                   catch ignoreFollowOnError
                   throw ex
               }
-            a.asInstanceOf[SynchronousDatabaseAction[Any, S, B, E2]]
+            a
+              .asInstanceOf[SynchronousDatabaseAction[Any, S, B, E2]]
               .run(context)
             res
           }
@@ -760,8 +782,10 @@ object SynchronousDatabaseAction {
             E with E2](
             as.asInstanceOf[IndexedSeq[
               SynchronousDatabaseAction[Any, S2, B, E with E2]]] ++
-              a.as.asInstanceOf[IndexedSeq[
-                SynchronousDatabaseAction[Any, S2, B, E with E2]]])
+              a
+                .as
+                .asInstanceOf[IndexedSeq[
+                  SynchronousDatabaseAction[Any, S2, B, E with E2]]])
         case a: SynchronousDatabaseAction[_, _, _, _] =>
           new SynchronousDatabaseAction.FusedAndThenAction[
             R2,
@@ -792,7 +816,8 @@ object SynchronousDatabaseAction {
                 SynchronousDatabaseAction[Any, NoStream, BasicBackend, Effect]]
               .run(context)
             val a2 = f(b)
-            a2.asInstanceOf[SynchronousDatabaseAction[R, S, BasicBackend, E]]
+            a2
+              .asInstanceOf[SynchronousDatabaseAction[R, S, BasicBackend, E]]
               .run(context)
           }
           override def nonFusedEquivalentAction = a
@@ -815,7 +840,8 @@ object SynchronousDatabaseAction {
                 case NonFatal(ex) =>
                   try {
                     val a2 = f(Some(ex))
-                    a2.asInstanceOf[SynchronousDatabaseAction[
+                    a2
+                      .asInstanceOf[SynchronousDatabaseAction[
                         Any,
                         NoStream,
                         BasicBackend,
@@ -828,7 +854,8 @@ object SynchronousDatabaseAction {
                   throw ex
               }
             val a2 = f(None)
-            a2.asInstanceOf[
+            a2
+              .asInstanceOf[
                 SynchronousDatabaseAction[Any, NoStream, BasicBackend, Effect]]
               .run(context)
             res

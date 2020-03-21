@@ -164,7 +164,8 @@ private[akka] trait MultiStreamOutputProcessorLike
   protected def nextId(): Long
 
   // stream keys will be removed from this map on cancellation/subscription-timeout, never assume a key is present
-  private val substreamOutputs = mutable.Map
+  private val substreamOutputs = mutable
+    .Map
     .empty[SubstreamKey, SubstreamOutput]
 
   protected def createSubstreamOutput(): SubstreamOutput = {
@@ -214,7 +215,8 @@ private[akka] trait MultiStreamOutputProcessorLike
         case Some(sub) ⇒
           if (demand < 1) // According to Reactive Streams Spec 3.9, with non-positive demand must yield onError
             sub.error(
-              ReactiveStreamsCompliance.numberOfElementsInRequestMustBePositiveException)
+              ReactiveStreamsCompliance
+                .numberOfElementsInRequestMustBePositiveException)
           else
             sub.enqueueOutputDemand(demand)
         case _ ⇒ // ignore...
@@ -273,5 +275,6 @@ private[akka] abstract class MultiStreamOutputProcessor(
   }
 
   override def activeReceive: Receive =
-    primaryInputs.subreceive orElse primaryOutputs.subreceive orElse outputSubstreamManagement
+    primaryInputs.subreceive orElse primaryOutputs
+      .subreceive orElse outputSubstreamManagement
 }

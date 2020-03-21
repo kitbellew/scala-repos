@@ -713,10 +713,8 @@ trait BaseCometActor
     */
   def jsonToIncludeInCode: JsCmd = _jsonToIncludeCode
 
-  private lazy val (_sendJson, _jsonToIncludeCode) = S.createJsonFunc(
-    Full(_defaultPrefix),
-    onJsonError,
-    receiveJson _)
+  private lazy val (_sendJson, _jsonToIncludeCode) = S
+    .createJsonFunc(Full(_defaultPrefix), onJsonError, receiveJson _)
 
   /**
     * Set this method to true to have the Json call code included in the Comet output
@@ -1038,8 +1036,8 @@ trait BaseCometActor
 
     case ShutdownIfPastLifespan =>
       for {
-        ls <- lifespan
-        if listeners.isEmpty && (lastListenerTime + ls.millis + 1000L) < millis
+        ls <- lifespan if listeners
+          .isEmpty && (lastListenerTime + ls.millis + 1000L) < millis
       } {
         this ! ShutDown
       }
@@ -1526,11 +1524,13 @@ private[http] class XmlOrJsCmd(
       notices)
 
   val xml = _xml.flatMap(content =>
-    S.session.map(s =>
-      s.processSurroundAndInclude("JS SetHTML id: " + id, content)))
+    S
+      .session
+      .map(s => s.processSurroundAndInclude("JS SetHTML id: " + id, content)))
   val fixedXhtml = _fixedXhtml.flatMap(content =>
-    S.session.map(s =>
-      s.processSurroundAndInclude("JS SetHTML id: " + id, content)))
+    S
+      .session
+      .map(s => s.processSurroundAndInclude("JS SetHTML id: " + id, content)))
 
   /**
     * Returns the JsCmd that will be sent to client
@@ -1550,30 +1550,36 @@ private[http] class XmlOrJsCmd(
         case (Full(xml), _, false) =>
           LiftRules.jsArtifacts.setHtml(id, Helpers.stripHead(xml))
         case (Full(xml), Full(js), true) =>
-          LiftRules.jsArtifacts.setHtml(
-            id + "_outer",
-            (
-              spanFunc(Helpers.stripHead(xml)) ++ fixedXhtml.openOr(Text(""))
-            )) & JsCmds.JsTry(js, false)
+          LiftRules
+            .jsArtifacts
+            .setHtml(
+              id + "_outer",
+              (
+                spanFunc(Helpers.stripHead(xml)) ++ fixedXhtml.openOr(Text(""))
+              )) & JsCmds.JsTry(js, false)
         case (Full(xml), _, true) =>
-          LiftRules.jsArtifacts.setHtml(
-            id + "_outer",
-            (spanFunc(Helpers.stripHead(xml)) ++ fixedXhtml.openOr(Text(""))))
+          LiftRules
+            .jsArtifacts
+            .setHtml(
+              id + "_outer",
+              (spanFunc(Helpers.stripHead(xml)) ++ fixedXhtml.openOr(Text(""))))
         case (_, Full(js), _) =>
           js
         case _ =>
           JsCmds.Noop
       }
     val fullUpdateJs =
-      LiftRules.cometUpdateExceptionHandler.vend.foldLeft(updateJs) {
-        (commands, catchHandler) =>
+      LiftRules
+        .cometUpdateExceptionHandler
+        .vend
+        .foldLeft(updateJs) { (commands, catchHandler) =>
           JsCmds.Run(
             "try{" +
               commands.toJsCmd +
               "}catch(e){" +
               catchHandler.toJsCmd +
               "}")
-      }
+        }
 
     var ret: JsCmd = JsCmds.JsTry(JsCmds.Run("destroy_" + id + "();"), false) &
       fullUpdateJs &

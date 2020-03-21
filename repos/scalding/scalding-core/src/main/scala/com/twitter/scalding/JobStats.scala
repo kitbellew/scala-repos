@@ -34,17 +34,21 @@ object JobStats {
 
   private def counterMap(
       stats: CascadingStats): Map[String, Map[String, Long]] =
-    stats.getCounterGroups.asScala.map { group =>
-      (
-        group,
-        stats
-          .getCountersFor(group)
-          .asScala
-          .map { counter =>
-            (counter, stats.getCounterValue(group, counter))
-          }
-          .toMap)
-    }.toMap
+    stats
+      .getCounterGroups
+      .asScala
+      .map { group =>
+        (
+          group,
+          stats
+            .getCountersFor(group)
+            .asScala
+            .map { counter =>
+              (counter, stats.getCounterValue(group, counter))
+            }
+            .toMap)
+      }
+      .toMap
 
   private def statsMap(stats: CascadingStats): Map[String, Any] =
     Map(

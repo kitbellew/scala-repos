@@ -187,8 +187,10 @@ class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   test("Test CTAS #4") {
-    val s4 = """CREATE TABLE page_view
-        |STORED BY 'storage.handler.class.name' AS SELECT * FROM src""".stripMargin
+    val s4 =
+      """CREATE TABLE page_view
+        |STORED BY 'storage.handler.class.name' AS SELECT * FROM src"""
+        .stripMargin
     intercept[AnalysisException] {
       extractTableDesc(s4)
     }
@@ -248,15 +250,17 @@ class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   test("use native json_tuple instead of hive's UDTF in LATERAL VIEW") {
-    val plan = parser.parsePlan(
-      """
+    val plan = parser
+      .parsePlan("""
         |SELECT *
         |FROM (SELECT '{"f1": "value1", "f2": 12}' json) test
         |LATERAL VIEW json_tuple(json, 'f1', 'f2') jt AS a, b
       """.stripMargin)
 
     assert(
-      plan.children.head
+      plan
+        .children
+        .head
         .asInstanceOf[Generate]
         .generator
         .isInstanceOf[JsonTuple])

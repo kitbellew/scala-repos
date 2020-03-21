@@ -106,7 +106,8 @@ private[akkahttp] class ModelConversion(
         case HttpEntity.Chunked(contentType, _) =>
           Seq((CONTENT_TYPE, contentType.value))
       }
-    val normalHeaders: Seq[(String, String)] = request.headers
+    val normalHeaders: Seq[(String, String)] = request
+      .headers
       .filter(_.isNot(`Raw-Request-URI`.lowercaseName))
       .map(rh => rh.name -> rh.value)
     new Headers(entityHeaders ++ normalHeaders)
@@ -149,9 +150,8 @@ private[akkahttp] class ModelConversion(
       convertedHeaders,
       result,
       protocol)
-    val connectionHeader = ServerResultUtils.determineConnectionHeader(
-      requestHeaders,
-      result)
+    val connectionHeader = ServerResultUtils
+      .determineConnectionHeader(requestHeaders, result)
     val closeHeader = connectionHeader.header.map(Connection(_))
     HttpResponse(
       status = result.header.status,
@@ -167,8 +167,10 @@ private[akkahttp] class ModelConversion(
       protocol: HttpProtocol): ResponseEntity = {
 
     val contentType =
-      result.body.contentType.fold(ContentTypes.NoContentType: ContentType) {
-        ct =>
+      result
+        .body
+        .contentType
+        .fold(ContentTypes.NoContentType: ContentType) { ct =>
           HttpHeader.parse(CONTENT_TYPE, ct) match {
             case HttpHeader.ParsingResult.Ok(`Content-Type`(akkaCt), _) =>
               akkaCt
@@ -176,7 +178,7 @@ private[akkahttp] class ModelConversion(
               ContentTypes.NoContentType
           }
 
-      }
+        }
 
     result.body match {
       case PlayHttpEntity.Strict(data, _) =>
@@ -207,7 +209,8 @@ private[akkahttp] class ModelConversion(
       .map {
         case (name, value) =>
           HttpHeader.parse(name, value) match {
-            case HttpHeader.ParsingResult
+            case HttpHeader
+                  .ParsingResult
                   .Ok(header, errors /* errors are ignored if Ok */ ) =>
               header
             case HttpHeader.ParsingResult.Error(error) =>

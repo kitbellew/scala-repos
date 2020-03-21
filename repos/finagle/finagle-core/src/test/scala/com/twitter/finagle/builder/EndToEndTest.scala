@@ -188,8 +188,7 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
       .cluster(cluster)
       .codec(StringCodec)
       .daemon(true) // don't create an exit guard
-      .hostConnectionLimit(1)
-      .build()
+      .hostConnectionLimit(1).build()
 
     // create a pending request; delete the server from cluster
     //  then verify the request can still finish
@@ -220,9 +219,7 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
       .cluster(cluster)
       .codec(StringCodec)
       .daemon(true) // don't create an exit guard
-      .hostConnectionLimit(1)
-      .hostConnectionMaxWaiters(5)
-      .build()
+      .hostConnectionLimit(1).hostConnectionMaxWaiters(5).build()
 
     val responses = new Array[Future[String]](5)
     0 until 5 foreach { i =>
@@ -236,11 +233,13 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
         override def run = cluster.add(server.boundAddress)
       }
 
-    cluster.ready.map { _ =>
-      0 until 5 foreach { i =>
-        assert(Await.result(responses(i), 1.second) == i.toString)
+    cluster
+      .ready
+      .map { _ =>
+        0 until 5 foreach { i =>
+          assert(Await.result(responses(i), 1.second) == i.toString)
+        }
       }
-    }
     thread.start()
     thread.join()
   }
@@ -305,8 +304,8 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
       }
     }
 
-    val serviceCreationFailures = mem.counters(
-      Seq("client", "service_creation", "failures"))
+    val serviceCreationFailures = mem
+      .counters(Seq("client", "service_creation", "failures"))
     val requeues = mem.counters.get(Seq("client", "retries", "requeues"))
 
     // initial write exception and no requeues

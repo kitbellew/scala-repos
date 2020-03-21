@@ -55,7 +55,8 @@ class BucketedReadSuite
 
   test("read bucketed data") {
     withTable("bucketed_table") {
-      df.write
+      df
+        .write
         .format("parquet")
         .partitionBy("i")
         .bucketBy(8, "j", "k")
@@ -97,14 +98,16 @@ class BucketedReadSuite
       val BucketSpec(numBuckets, bucketColumnNames, _) = bucketSpec
       // Limit: bucket pruning only works when the bucket column has one and only one column
       assert(bucketColumnNames.length == 1)
-      val bucketColumnIndex = bucketedDataFrame.schema.fieldIndex(
-        bucketColumnNames.head)
-      val bucketColumn = bucketedDataFrame.schema.toAttributes(
-        bucketColumnIndex)
+      val bucketColumnIndex = bucketedDataFrame
+        .schema
+        .fieldIndex(bucketColumnNames.head)
+      val bucketColumn = bucketedDataFrame
+        .schema
+        .toAttributes(bucketColumnIndex)
       val matchedBuckets = new BitSet(numBuckets)
       bucketValues.foreach { value =>
-        matchedBuckets.set(
-          DataSourceStrategy.getBucketId(bucketColumn, numBuckets, value))
+        matchedBuckets
+          .set(DataSourceStrategy.getBucketId(bucketColumn, numBuckets, value))
       }
 
       // Filter could hide the bug in bucket pruning. Thus, skipping all the filters
@@ -113,13 +116,16 @@ class BucketedReadSuite
       val rdd = plan.find(_.isInstanceOf[DataSourceScan])
       assert(rdd.isDefined, plan)
 
-      val checkedResult = rdd.get.execute().mapPartitionsWithIndex {
-        case (index, iter) =>
-          if (matchedBuckets.get(index % numBuckets) && iter.nonEmpty)
-            Iterator(index)
-          else
-            Iterator()
-      }
+      val checkedResult = rdd
+        .get
+        .execute()
+        .mapPartitionsWithIndex {
+          case (index, iter) =>
+            if (matchedBuckets.get(index % numBuckets) && iter.nonEmpty)
+              Iterator(index)
+            else
+              Iterator()
+        }
       // TODO: These tests are not testing the right columns.
 //      // checking if all the pruned buckets are empty
 //      val invalidBuckets = checkedResult.collect().toList
@@ -138,7 +144,8 @@ class BucketedReadSuite
       val numBuckets = 8
       val bucketSpec = BucketSpec(numBuckets, Seq("j"), Nil)
       // json does not support predicate push-down, and thus json is used here
-      df.write
+      df
+        .write
         .format("json")
         .partitionBy("i")
         .bucketBy(numBuckets, "j")
@@ -174,7 +181,8 @@ class BucketedReadSuite
       val numBuckets = 8
       val bucketSpec = BucketSpec(numBuckets, Seq("j"), Nil)
       // json does not support predicate push-down, and thus json is used here
-      df.write
+      df
+        .write
         .format("json")
         .bucketBy(numBuckets, "j")
         .saveAsTable("bucketed_table")
@@ -194,7 +202,8 @@ class BucketedReadSuite
       val numBuckets = 8
       val bucketSpec = BucketSpec(numBuckets, Seq("j"), Nil)
       // json does not support predicate push-down, and thus json is used here
-      nullDF.write
+      nullDF
+        .write
         .format("json")
         .partitionBy("i")
         .bucketBy(numBuckets, "j")
@@ -221,7 +230,8 @@ class BucketedReadSuite
       val numBuckets = 8
       val bucketSpec = BucketSpec(numBuckets, Seq("j"), Nil)
       // json does not support predicate push-down, and thus json is used here
-      df.write
+      df
+        .write
         .format("json")
         .partitionBy("i")
         .bucketBy(numBuckets, "j")
@@ -298,17 +308,21 @@ class BucketedReadSuite
             .sort("df1.k", "df2.k"))
 
         assert(joined.queryExecution.executedPlan.isInstanceOf[SortMergeJoin])
-        val joinOperator = joined.queryExecution.executedPlan
+        val joinOperator = joined
+          .queryExecution
+          .executedPlan
           .asInstanceOf[SortMergeJoin]
 
         assert(
-          joinOperator.left
+          joinOperator
+            .left
             .find(_.isInstanceOf[ShuffleExchange])
             .isDefined == shuffleLeft,
           s"expected shuffle in plan to be $shuffleLeft but found\n${joinOperator.left}"
         )
         assert(
-          joinOperator.right
+          joinOperator
+            .right
             .find(_.isInstanceOf[ShuffleExchange])
             .isDefined == shuffleRight,
           s"expected shuffle in plan to be $shuffleRight but found\n${joinOperator.right}"
@@ -404,7 +418,8 @@ class BucketedReadSuite
 
   test("avoid shuffle when grouping keys are equal to bucket keys") {
     withTable("bucketed_table") {
-      df1.write
+      df1
+        .write
         .format("parquet")
         .bucketBy(8, "i", "j")
         .saveAsTable("bucketed_table")
@@ -416,7 +431,9 @@ class BucketedReadSuite
         df1.groupBy("i", "j").agg(max("k")).sort("i", "j"))
 
       assert(
-        agged.queryExecution.executedPlan
+        agged
+          .queryExecution
+          .executedPlan
           .find(_.isInstanceOf[ShuffleExchange])
           .isEmpty)
     }
@@ -433,7 +450,9 @@ class BucketedReadSuite
         df1.groupBy("i", "j").agg(max("k")).sort("i", "j"))
 
       assert(
-        agged.queryExecution.executedPlan
+        agged
+          .queryExecution
+          .executedPlan
           .find(_.isInstanceOf[ShuffleExchange])
           .isEmpty)
     }

@@ -189,12 +189,16 @@ case class ScExistentialType(
         val subst =
           new ScSubstitutor(
             Map(
-              a.tpt.args.zip(args).map {
-                case (tpt: ScTypeParameterType, tp: ScType) =>
-                  (
-                    (tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)),
-                    tp)
-              }: _*),
+              a
+                .tpt
+                .args
+                .zip(args)
+                .map {
+                  case (tpt: ScTypeParameterType, tp: ScType) =>
+                    (
+                      (tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)),
+                      tp)
+                }: _*),
             Map.empty,
             None)
         val upper: ScType =
@@ -245,11 +249,8 @@ case class ScExistentialType(
       case ex: ScExistentialType =>
         val simplified = ex.simplify()
         if (ex != simplified)
-          return Equivalence.equivInner(
-            this,
-            simplified,
-            undefinedSubst,
-            falseUndef)
+          return Equivalence
+            .equivInner(this, simplified, undefinedSubst, falseUndef)
         val list = wildcards.zip(ex.wildcards)
         val iterator = list.iterator
         while (iterator.hasNext) {
@@ -286,20 +287,24 @@ case class ScExistentialType(
           comps.foreach(checkRecursive(_, newSet))
           signatureMap.foreach {
             case (s, rt) =>
-              s.substitutedTypes.foreach(
-                _.foreach(f => checkRecursive(f(), newSet)))
-              s.typeParams.foreach {
-                case tParam: TypeParameter =>
-                  tParam.update {
-                    case tp: ScType =>
-                      checkRecursive(tp, newSet);
-                      tp
-                  }
-              }
+              s
+                .substitutedTypes
+                .foreach(_.foreach(f => checkRecursive(f(), newSet)))
+              s
+                .typeParams
+                .foreach {
+                  case tParam: TypeParameter =>
+                    tParam.update {
+                      case tp: ScType =>
+                        checkRecursive(tp, newSet);
+                        tp
+                    }
+                }
               checkRecursive(rt, newSet)
           }
           typeMap.foreach(
-            _._2.updateTypes {
+            _._2
+            .updateTypes {
               case tp: ScType =>
                 checkRecursive(tp, newSet);
                 tp
@@ -329,10 +334,12 @@ case class ScExistentialType(
           checkRecursive(ex.quantified, newSet)
           if (ex eq this)
             newSet = rejected ++ ex.wildcards.map(_.name)
-          ex.wildcards.foreach(ex => {
-            checkRecursive(ex.lowerBound, newSet)
-            checkRecursive(ex.upperBound, newSet)
-          })
+          ex
+            .wildcards
+            .foreach(ex => {
+              checkRecursive(ex.lowerBound, newSet)
+              checkRecursive(ex.upperBound, newSet)
+            })
         case ScProjectionType(projected, element, _) =>
           checkRecursive(projected, rejected)
         case ScParameterizedType(designator, typeArgs) =>
@@ -400,8 +407,9 @@ case class ScExistentialType(
           components,
           signatureMap.map {
             case (s, sctype) =>
-              val pTypes: List[Seq[() => ScType]] = s.substitutedTypes.map(
-                _.map(f => () => updateRecursive(f(), newSet, variance)))
+              val pTypes: List[Seq[() => ScType]] = s
+                .substitutedTypes
+                .map(_.map(f => () => updateRecursive(f(), newSet, variance)))
               val tParams: Array[TypeParameter] =
                 if (s.typeParams.length == 0)
                   TypeParameter.EMPTY_ARRAY
@@ -495,9 +503,11 @@ case class ScExistentialType(
           _wildcards.map(arg =>
             ScExistentialArgument(
               arg.name,
-              arg.args.map(arg =>
-                updateRecursive(arg, newSet, -variance)
-                  .asInstanceOf[ScTypeParameterType]),
+              arg
+                .args
+                .map(arg =>
+                  updateRecursive(arg, newSet, -variance)
+                    .asInstanceOf[ScTypeParameterType]),
               updateRecursive(arg.lowerBound, newSet, -variance),
               updateRecursive(arg.upperBound, newSet, variance)
             ))
@@ -671,28 +681,37 @@ case class ScExistentialType(
 
   override def typeDepth: Int = {
     def typeParamsDepth(typeParams: List[ScTypeParameterType]): Int = {
-      typeParams.map {
-        case typeParam =>
-          val boundsDepth = typeParam.lower.v.typeDepth
-            .max(typeParam.upper.v.typeDepth)
-          if (typeParam.args.nonEmpty) {
-            (typeParamsDepth(typeParam.args) + 1).max(boundsDepth)
-          } else
-            boundsDepth
-      }.max
+      typeParams
+        .map {
+          case typeParam =>
+            val boundsDepth = typeParam
+              .lower
+              .v
+              .typeDepth
+              .max(typeParam.upper.v.typeDepth)
+            if (typeParam.args.nonEmpty) {
+              (typeParamsDepth(typeParam.args) + 1).max(boundsDepth)
+            } else
+              boundsDepth
+        }
+        .max
     }
 
     val quantDepth = quantified.typeDepth
     if (wildcards.nonEmpty) {
       (
-        wildcards.map { wildcard =>
-          val boundsDepth = wildcard.lowerBound.typeDepth.max(
-            wildcard.upperBound.typeDepth)
-          if (wildcard.args.nonEmpty) {
-            (typeParamsDepth(wildcard.args) + 1).max(boundsDepth)
-          } else
-            boundsDepth
-        }.max + 1
+        wildcards
+          .map { wildcard =>
+            val boundsDepth = wildcard
+              .lowerBound
+              .typeDepth
+              .max(wildcard.upperBound.typeDepth)
+            if (wildcard.args.nonEmpty) {
+              (typeParamsDepth(wildcard.args) + 1).max(boundsDepth)
+            } else
+              boundsDepth
+          }
+          .max + 1
       ).max(quantDepth)
     } else
       quantDepth

@@ -72,9 +72,11 @@ object ScalaI18nUtil {
           i += 1
           i
         }
-        CachedValueProvider.Result.create(
-          topLevel,
-          PsiManager.getInstance(project).getModificationTracker)
+        CachedValueProvider
+          .Result
+          .create(
+            topLevel,
+            PsiManager.getInstance(project).getModificationTracker)
       }
     }
 
@@ -95,9 +97,8 @@ object ScalaI18nUtil {
     if (property != null)
       return true
     val annotationParams = new mutable.HashMap[String, AnyRef]
-    annotationParams.put(
-      AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER,
-      null)
+    annotationParams
+      .put(AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER, null)
     val isI18n: Boolean = mustBePropertyKey(project, expr, annotationParams)
     if (!isI18n) {
       expr.putUserData(CACHE, NULL)
@@ -189,7 +190,8 @@ object ScalaI18nUtil {
       project: Project,
       @NotNull
       expression: ScExpression): ScExpression = {
-    if (expression.isInstanceOf[PsiBinaryExpression] || expression.getParent
+    if (expression.isInstanceOf[PsiBinaryExpression] || expression
+          .getParent
           .isInstanceOf[PsiBinaryExpression]) {
       return CachedValuesManager
         .getManager(project)
@@ -315,8 +317,8 @@ object ScalaI18nUtil {
       var containedInPropertiesFile: Boolean = false
       import scala.collection.JavaConversions._
       for (propertiesFile <- propertiesFiles) {
-        containedInPropertiesFile |= propertiesFile.findPropertyByKey(
-          key) != null
+        containedInPropertiesFile |= propertiesFile
+          .findPropertyByKey(key) != null
       }
       containedInPropertiesFile
     }
@@ -424,8 +426,8 @@ object ScalaI18nUtil {
         case polyVarRef: PsiPolyVariantReference =>
           for (result <- polyVarRef.multiResolve(false)) {
             var flag = true
-            if (result.isValidResult && result.getElement
-                  .isInstanceOf[IProperty]) {
+            if (result
+                  .isValidResult && result.getElement.isInstanceOf[IProperty]) {
               val value: String =
                 result.getElement.asInstanceOf[IProperty].getValue
               var format: MessageFormat = null
@@ -507,11 +509,11 @@ object ScalaI18nUtil {
       @NotNull
       outResourceBundle: Ref[String]): Boolean = {
     val annotationAttributeValues = new mutable.HashMap[String, AnyRef]
-    annotationAttributeValues.put(
-      AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER,
-      null)
+    annotationAttributeValues
+      .put(AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER, null)
     if (mustBePropertyKey(project, expression, annotationAttributeValues)) {
-      annotationAttributeValues get AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER exists {
+      annotationAttributeValues get AnnotationUtil
+        .PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER exists {
         case bundleName: PsiElement =>
           val result = JavaPsiFacade
             .getInstance(bundleName.getProject)
@@ -538,10 +540,10 @@ object ScalaI18nUtil {
       value: String) {
     import scala.collection.JavaConversions._
     for (file <- propertiesFiles) {
-      val documentManager: PsiDocumentManager = PsiDocumentManager.getInstance(
-        project)
-      documentManager.commitDocument(
-        documentManager.getDocument(file.getContainingFile))
+      val documentManager: PsiDocumentManager = PsiDocumentManager
+        .getInstance(project)
+      documentManager
+        .commitDocument(documentManager.getDocument(file.getContainingFile))
       val existingProperty: IProperty = file.findPropertyByKey(key)
       if (existingProperty == null) {
         file.addProperty(key, value)
@@ -559,8 +561,8 @@ object ScalaI18nUtil {
         editor.getSelectionModel.getSelectionStart,
         editor.getSelectionModel.getSelectionEnd)
     }
-    val psiElement: PsiElement = psiFile.findElementAt(
-      editor.getCaretModel.getOffset)
+    val psiElement: PsiElement = psiFile
+      .findElementAt(editor.getCaretModel.getOffset)
     if (psiElement == null || psiElement.isInstanceOf[PsiWhiteSpace])
       return null
     psiElement.getTextRange

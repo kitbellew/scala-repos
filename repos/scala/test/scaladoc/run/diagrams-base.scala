@@ -55,13 +55,15 @@ object Test extends ScaladocModelTest {
       outgoing.head._2.length == 4,
       s"${outgoing.head._2} has length ${outgoing.head._2.length}, expecting 4")
 
-    val (outgoingSuperclass, outgoingImplicit) = outgoing.head._2
+    val (outgoingSuperclass, outgoingImplicit) = outgoing
+      .head
+      ._2
       .partition(_.isNormalNode)
     assert(outgoingSuperclass.length == 3)
     assert(outgoingImplicit.length == 1)
 
-    val (incomingSubclass, incomingImplicit) = incoming.partition(
-      _._1.isNormalNode)
+    val (incomingSubclass, incomingImplicit) = incoming
+      .partition(_._1.isNormalNode)
     assert(incomingSubclass.length == 2)
     assert(incomingImplicit.length == 3)
 

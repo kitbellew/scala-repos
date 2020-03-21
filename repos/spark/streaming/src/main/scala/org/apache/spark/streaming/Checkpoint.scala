@@ -66,20 +66,24 @@ private[streaming] class Checkpoint(
       .remove("spark.driver.port")
     val newReloadConf = new SparkConf(loadDefaults = true)
     propertiesToReload.foreach { prop =>
-      newReloadConf.getOption(prop).foreach { value =>
-        newSparkConf.set(prop, value)
-      }
+      newReloadConf
+        .getOption(prop)
+        .foreach { value =>
+          newSparkConf.set(prop, value)
+        }
     }
 
     // Add Yarn proxy filter specific configurations to the recovered SparkConf
     val filter = "org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter"
     val filterPrefix = s"spark.$filter.param."
-    newReloadConf.getAll.foreach {
-      case (k, v) =>
-        if (k.startsWith(filterPrefix) && k.length > filterPrefix.length) {
-          newSparkConf.set(k, v)
-        }
-    }
+    newReloadConf
+      .getAll
+      .foreach {
+        case (k, v) =>
+          if (k.startsWith(filterPrefix) && k.length > filterPrefix.length) {
+            newSparkConf.set(k, v)
+          }
+      }
 
     newSparkConf
   }
@@ -225,12 +229,10 @@ private[streaming] class CheckpointWriter(
       //
       // Note: there is only one thread writing the checkpoint files, so we don't need to worry
       // about thread-safety.
-      val checkpointFile = Checkpoint.checkpointFile(
-        checkpointDir,
-        latestCheckpointTime)
-      val backupFile = Checkpoint.checkpointBackupFile(
-        checkpointDir,
-        latestCheckpointTime)
+      val checkpointFile = Checkpoint
+        .checkpointFile(checkpointDir, latestCheckpointTime)
+      val backupFile = Checkpoint
+        .checkpointBackupFile(checkpointDir, latestCheckpointTime)
 
       while (attempts < MAX_ATTEMPTS && !stopped) {
         attempts += 1
@@ -268,9 +270,8 @@ private[streaming] class CheckpointWriter(
           }
 
           // Delete old checkpoint files
-          val allCheckpointFiles = Checkpoint.getCheckpointFiles(
-            checkpointDir,
-            Some(fs))
+          val allCheckpointFiles = Checkpoint
+            .getCheckpointFiles(checkpointDir, Some(fs))
           if (allCheckpointFiles.size > 10) {
             allCheckpointFiles
               .take(allCheckpointFiles.size - 10)
@@ -284,12 +285,10 @@ private[streaming] class CheckpointWriter(
           val finishTime = System.currentTimeMillis()
           logInfo(
             "Checkpoint for time " + checkpointTime + " saved to file '" + checkpointFile +
-              "', took " + bytes.length + " bytes and " + (
-              finishTime - startTime
-            ) + " ms")
-          jobGenerator.onCheckpointCompletion(
-            checkpointTime,
-            clearCheckpointDataLater)
+              "', took " + bytes
+              .length + " bytes and " + (finishTime - startTime) + " ms")
+          jobGenerator
+            .onCheckpointCompletion(checkpointTime, clearCheckpointDataLater)
           return
         } catch {
           case ioe: IOException =>
@@ -315,7 +314,8 @@ private[streaming] class CheckpointWriter(
           bytes,
           clearCheckpointDataLater))
       logInfo(
-        "Submitted checkpoint of time " + checkpoint.checkpointTime + " writer queue")
+        "Submitted checkpoint of time " + checkpoint
+          .checkpointTime + " writer queue")
     } catch {
       case rej: RejectedExecutionException =>
         logError(
@@ -331,9 +331,8 @@ private[streaming] class CheckpointWriter(
 
       executor.shutdown()
       val startTime = System.currentTimeMillis()
-      val terminated = executor.awaitTermination(
-        10,
-        java.util.concurrent.TimeUnit.SECONDS)
+      val terminated = executor
+        .awaitTermination(10, java.util.concurrent.TimeUnit.SECONDS)
       if (!terminated) {
         executor.shutdownNow()
       }

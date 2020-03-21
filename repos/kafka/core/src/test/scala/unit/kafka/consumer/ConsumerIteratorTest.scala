@@ -132,7 +132,8 @@ class ConsumerIteratorTest extends KafkaServerTestHarness {
         case e: UnsupportedOperationException => // this is ok
         case e2: Throwable =>
           fail(
-            "Unexpected exception when iterating the message set. " + e2.getMessage)
+            "Unexpected exception when iterating the message set. " + e2
+              .getMessage)
       }
     }
   }

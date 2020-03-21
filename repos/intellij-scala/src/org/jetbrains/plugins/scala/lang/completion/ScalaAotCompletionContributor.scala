@@ -116,12 +116,18 @@ class ScalaAotCompletionContributor extends ScalaCompletionContributor {
 
 private object ScalaAotCompletionContributor {
   def typeIdentifierIn(parameter: ScParameter): PsiElement =
-    parameter.paramType.get.depthFirst
+    parameter
+      .paramType
+      .get
+      .depthFirst
       .find(_.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER)
       .get
 
   def typeIdentifierIn(declaration: ScTypedDeclaration): PsiElement =
-    declaration.typeElement.get.depthFirst
+    declaration
+      .typeElement
+      .get
+      .depthFirst
       .find(_.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER)
       .get
 
@@ -132,10 +138,8 @@ private object ScalaAotCompletionContributor {
       s.substring(0, 1).toUpperCase + s.substring(1)
 
   def createParameterFrom(text: String, original: PsiElement): ScParameter = {
-    val clauses = ScalaPsiElementFactory.createParamClausesWithContext(
-      s"($text)",
-      original.getContext,
-      original)
+    val clauses = ScalaPsiElementFactory
+      .createParamClausesWithContext(s"($text)", original.getContext, original)
     clauses.params.head
   }
 
@@ -160,13 +164,11 @@ private class MyConsumer(
 
     val name = suggestNameFor(prefix, element.getLookupString)
 
-    val renderingDecorator = LookupElementDecorator.withRenderer(
-      element,
-      new MyElementRenderer(name, typed))
+    val renderingDecorator = LookupElementDecorator
+      .withRenderer(element, new MyElementRenderer(name, typed))
 
-    val insertionDecorator = LookupElementDecorator.withInsertHandler(
-      renderingDecorator,
-      new MyInsertHandler(name, typed))
+    val insertionDecorator = LookupElementDecorator
+      .withInsertHandler(renderingDecorator, new MyInsertHandler(name, typed))
 
     if (typed) {
       resultSet.consume(insertionDecorator)

@@ -51,9 +51,11 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
         user: Option[User],
         query: String,
         page: Int): Fu[Paginator[VideoView]] = {
-      val q = query.split(' ').map { word =>
-        s""""$word""""
-      } mkString " "
+      val q = query
+        .split(' ')
+        .map { word =>
+          s""""$word""""
+        } mkString " "
       val textScore = BSONDocument(
         "score" -> BSONDocument("$meta" -> "textScore"))
       Paginator(
@@ -154,9 +156,8 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
 
     object count {
 
-      private val cache = AsyncCache.single(
-        f = videoColl.count(none),
-        timeToLive = 1.day)
+      private val cache = AsyncCache
+        .single(f = videoColl.count(none), timeToLive = 1.day)
 
       def clearCache = cache.clear
 
@@ -177,8 +178,8 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
 
     def hasSeen(user: User, video: Video): Fu[Boolean] =
       viewColl.count(
-        BSONDocument(
-          View.BSONFields.id -> View.makeId(video.id, user.id)).some) map (0 !=)
+        BSONDocument(View.BSONFields.id -> View.makeId(video.id, user.id))
+          .some) map (0 !=)
 
     def seenVideoIds(user: User, videos: Seq[Video]): Fu[Set[Video.ID]] =
       viewColl.distinct(

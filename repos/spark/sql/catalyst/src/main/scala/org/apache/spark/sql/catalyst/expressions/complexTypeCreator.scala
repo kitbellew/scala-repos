@@ -32,9 +32,8 @@ case class CreateArray(children: Seq[Expression]) extends Expression {
   override def foldable: Boolean = children.forall(_.foldable)
 
   override def checkInputDataTypes(): TypeCheckResult =
-    TypeUtils.checkForSameTypeInputExpr(
-      children.map(_.dataType),
-      "function array")
+    TypeUtils
+      .checkForSameTypeInputExpr(children.map(_.dataType), "function array")
 
   override def dataType: DataType = {
     ArrayType(
@@ -55,7 +54,8 @@ case class CreateArray(children: Seq[Expression]) extends Expression {
       final boolean ${ev.isNull} = false;
       final Object[] $values = new Object[${children.size}];
     """ +
-      children.zipWithIndex
+      children
+        .zipWithIndex
         .map {
           case (e, i) =>
             val eval = e.gen(ctx)
@@ -82,19 +82,21 @@ case class CreateStruct(children: Seq[Expression]) extends Expression {
   override def foldable: Boolean = children.forall(_.foldable)
 
   override lazy val dataType: StructType = {
-    val fields = children.zipWithIndex.map {
-      case (child, idx) =>
-        child match {
-          case ne: NamedExpression =>
-            StructField(ne.name, ne.dataType, ne.nullable, ne.metadata)
-          case _ =>
-            StructField(
-              s"col${idx + 1}",
-              child.dataType,
-              child.nullable,
-              Metadata.empty)
-        }
-    }
+    val fields = children
+      .zipWithIndex
+      .map {
+        case (child, idx) =>
+          child match {
+            case ne: NamedExpression =>
+              StructField(ne.name, ne.dataType, ne.nullable, ne.metadata)
+            case _ =>
+              StructField(
+                s"col${idx + 1}",
+                child.dataType,
+                child.nullable,
+                Metadata.empty)
+          }
+      }
     StructType(fields)
   }
 
@@ -111,7 +113,8 @@ case class CreateStruct(children: Seq[Expression]) extends Expression {
       boolean ${ev.isNull} = false;
       final Object[] $values = new Object[${children.size}];
     """ +
-      children.zipWithIndex
+      children
+        .zipWithIndex
         .map {
           case (e, i) =>
             val eval = e.gen(ctx)
@@ -142,10 +145,12 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
     * StructType.
     */
   def flatten: Seq[NamedExpression] =
-    valExprs.zip(names).map {
-      case (v, n) =>
-        Alias(v, n.toString)()
-    }
+    valExprs
+      .zip(names)
+      .map {
+        case (v, n) =>
+          Alias(v, n.toString)()
+      }
 
   private lazy val (nameExprs, valExprs) =
     children
@@ -160,14 +165,16 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
   private lazy val names = nameExprs.map(_.eval(EmptyRow))
 
   override lazy val dataType: StructType = {
-    val fields = names.zip(valExprs).map {
-      case (name, valExpr) =>
-        StructField(
-          name.asInstanceOf[UTF8String].toString,
-          valExpr.dataType,
-          valExpr.nullable,
-          Metadata.empty)
-    }
+    val fields = names
+      .zip(valExprs)
+      .map {
+        case (name, valExpr) =>
+          StructField(
+            name.asInstanceOf[UTF8String].toString,
+            valExpr.dataType,
+            valExpr.nullable,
+            Metadata.empty)
+      }
     StructType(fields)
   }
 
@@ -177,11 +184,11 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
 
   override def checkInputDataTypes(): TypeCheckResult = {
     if (children.size % 2 != 0) {
-      TypeCheckResult.TypeCheckFailure(
-        s"$prettyName expects an even number of arguments.")
+      TypeCheckResult
+        .TypeCheckFailure(s"$prettyName expects an even number of arguments.")
     } else {
-      val invalidNames = nameExprs.filterNot(e =>
-        e.foldable && e.dataType == StringType)
+      val invalidNames = nameExprs
+        .filterNot(e => e.foldable && e.dataType == StringType)
       if (invalidNames.nonEmpty) {
         TypeCheckResult.TypeCheckFailure(
           s"Only foldable StringType expressions are allowed to appear at odd position , got :" +
@@ -205,7 +212,8 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
       boolean ${ev.isNull} = false;
       final Object[] $values = new Object[${valExprs.size}];
     """ +
-      valExprs.zipWithIndex
+      valExprs
+        .zipWithIndex
         .map {
           case (e, i) =>
             val eval = e.gen(ctx)
@@ -236,19 +244,21 @@ case class CreateStructUnsafe(children: Seq[Expression]) extends Expression {
   override lazy val resolved: Boolean = childrenResolved
 
   override lazy val dataType: StructType = {
-    val fields = children.zipWithIndex.map {
-      case (child, idx) =>
-        child match {
-          case ne: NamedExpression =>
-            StructField(ne.name, ne.dataType, ne.nullable, ne.metadata)
-          case _ =>
-            StructField(
-              s"col${idx + 1}",
-              child.dataType,
-              child.nullable,
-              Metadata.empty)
-        }
-    }
+    val fields = children
+      .zipWithIndex
+      .map {
+        case (child, idx) =>
+          child match {
+            case ne: NamedExpression =>
+              StructField(ne.name, ne.dataType, ne.nullable, ne.metadata)
+            case _ =>
+              StructField(
+                s"col${idx + 1}",
+                child.dataType,
+                child.nullable,
+                Metadata.empty)
+          }
+      }
     StructType(fields)
   }
 
@@ -291,10 +301,12 @@ case class CreateNamedStructUnsafe(children: Seq[Expression])
   private lazy val names = nameExprs.map(_.eval(EmptyRow).toString)
 
   override lazy val dataType: StructType = {
-    val fields = names.zip(valExprs).map {
-      case (name, valExpr) =>
-        StructField(name, valExpr.dataType, valExpr.nullable, Metadata.empty)
-    }
+    val fields = names
+      .zip(valExprs)
+      .map {
+        case (name, valExpr) =>
+          StructField(name, valExpr.dataType, valExpr.nullable, Metadata.empty)
+      }
     StructType(fields)
   }
 

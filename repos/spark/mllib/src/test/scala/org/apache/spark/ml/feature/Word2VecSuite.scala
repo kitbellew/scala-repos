@@ -66,10 +66,12 @@ class Word2VecSuite
         sentence
           .map(codes.apply)
           .reduce((word1, word2) =>
-            word1.zip(word2).map {
-              case (v1, v2) =>
-                v1 + v2
-            })
+            word1
+              .zip(word2)
+              .map {
+                case (v1, v2) =>
+                  v1 + v2
+              })
           .map(_ / numOfWords))
     }
 
@@ -87,16 +89,18 @@ class Word2VecSuite
 
     // These expectations are just magic values, characterizing the current
     // behavior.  The test needs to be updated to be more general, see SPARK-11502
-    val magicExp = Vectors.dense(
-      0.30153007534417237,
-      -0.6833061711354689,
-      0.5116530778733167)
-    model.transform(docDF).select("result", "expected").collect().foreach {
-      case Row(vector1: Vector, vector2: Vector) =>
-        assert(
-          vector1 ~== magicExp absTol 1e-5,
-          "Transformed vector is different with expected.")
-    }
+    val magicExp = Vectors
+      .dense(0.30153007534417237, -0.6833061711354689, 0.5116530778733167)
+    model
+      .transform(docDF)
+      .select("result", "expected")
+      .collect()
+      .foreach {
+        case Row(vector1: Vector, vector2: Vector) =>
+          assert(
+            vector1 ~== magicExp absTol 1e-5,
+            "Transformed vector is different with expected.")
+      }
   }
 
   test("getVectors") {
@@ -120,10 +124,13 @@ class Word2VecSuite
         0.5137411952018738,
         0.11731560528278351)
     )
-    val expectedVectors = codes.toSeq.sortBy(_._1).map {
-      case (w, v) =>
-        Vectors.dense(v)
-    }
+    val expectedVectors = codes
+      .toSeq
+      .sortBy(_._1)
+      .map {
+        case (w, v) =>
+          Vectors.dense(v)
+      }
 
     val docDF = doc.zip(doc).toDF("text", "alsotext")
 
@@ -134,7 +141,8 @@ class Word2VecSuite
       .setSeed(42L)
       .fit(docDF)
 
-    val realVectors = model.getVectors
+    val realVectors = model
+      .getVectors
       .sort("word")
       .select("vector")
       .rdd
@@ -154,12 +162,14 @@ class Word2VecSuite
         .dense(-0.27150997519493103, 0.4372006058692932, -0.13465698063373566)
     )
 
-    realVectors.zip(magicExpected).foreach {
-      case (real, expected) =>
-        assert(
-          real ~== expected absTol 1e-5,
-          "Actual vector is different from expected.")
-    }
+    realVectors
+      .zip(magicExpected)
+      .foreach {
+        case (real, expected) =>
+          assert(
+            real ~== expected absTol 1e-5,
+            "Actual vector is different from expected.")
+      }
   }
 
   test("findSynonyms") {
@@ -193,10 +203,12 @@ class Word2VecSuite
         .unzip
 
     assert(synonyms.toArray === Array("b", "c"))
-    expectedSimilarity.zip(similarity).map {
-      case (expected, actual) =>
-        assert(math.abs((expected - actual) / expected) < 1e-5)
-    }
+    expectedSimilarity
+      .zip(similarity)
+      .map {
+        case (expected, actual) =>
+          assert(math.abs((expected - actual) / expected) < 1e-5)
+      }
   }
 
   test("window size") {

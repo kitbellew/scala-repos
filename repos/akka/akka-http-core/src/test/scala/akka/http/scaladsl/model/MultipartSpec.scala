@@ -20,8 +20,8 @@ class MultipartSpec
     with Inside
     with BeforeAndAfterAll {
 
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
   akka.event-handlers = ["akka.testkit.TestEventListener"]
   akka.loglevel = WARNING""")
   implicit val system = ActorSystem(getClass.getSimpleName, testConf)
@@ -33,13 +33,16 @@ class MultipartSpec
       val streamed = Multipart.General(
         MediaTypes.`multipart/mixed`,
         Source(
-          Multipart.General
+          Multipart
+            .General
             .BodyPart(defaultEntity("data"), List(ETag("xzy"))) :: Nil))
       val strict = Await.result(streamed.toStrict(1.second), 1.second)
 
       strict shouldEqual Multipart.General(
         MediaTypes.`multipart/mixed`,
-        Multipart.General.BodyPart
+        Multipart
+          .General
+          .BodyPart
           .Strict(HttpEntity("data"), List(ETag("xzy"))))
     }
   }
@@ -52,8 +55,8 @@ class MultipartSpec
             Multipart.FormData.BodyPart("bar", defaultEntity("BAR")) :: Nil))
       val strict = Await.result(streamed.toStrict(1.second), 1.second)
 
-      strict shouldEqual Multipart.FormData(
-        Map("foo" -> HttpEntity("FOO"), "bar" -> HttpEntity("BAR")))
+      strict shouldEqual Multipart
+        .FormData(Map("foo" -> HttpEntity("FOO"), "bar" -> HttpEntity("BAR")))
     }
   }
 
@@ -61,25 +64,35 @@ class MultipartSpec
     "support `toStrict` on the streamed model" in {
       val streamed = Multipart.ByteRanges(
         Source(
-          Multipart.ByteRanges.BodyPart(
-            ContentRange(0, 6),
-            defaultEntity("snippet"),
-            _additionalHeaders = List(ETag("abc"))) ::
-            Multipart.ByteRanges.BodyPart(
-              ContentRange(8, 9),
-              defaultEntity("PR"),
-              _additionalHeaders = List(ETag("xzy"))) :: Nil))
+          Multipart
+            .ByteRanges
+            .BodyPart(
+              ContentRange(0, 6),
+              defaultEntity("snippet"),
+              _additionalHeaders = List(ETag("abc"))) ::
+            Multipart
+              .ByteRanges
+              .BodyPart(
+                ContentRange(8, 9),
+                defaultEntity("PR"),
+                _additionalHeaders = List(ETag("xzy"))) :: Nil))
       val strict = Await.result(streamed.toStrict(1.second), 1.second)
 
       strict shouldEqual Multipart.ByteRanges(
-        Multipart.ByteRanges.BodyPart.Strict(
-          ContentRange(0, 6),
-          HttpEntity("snippet"),
-          additionalHeaders = List(ETag("abc"))),
-        Multipart.ByteRanges.BodyPart.Strict(
-          ContentRange(8, 9),
-          HttpEntity("PR"),
-          additionalHeaders = List(ETag("xzy")))
+        Multipart
+          .ByteRanges
+          .BodyPart
+          .Strict(
+            ContentRange(0, 6),
+            HttpEntity("snippet"),
+            additionalHeaders = List(ETag("abc"))),
+        Multipart
+          .ByteRanges
+          .BodyPart
+          .Strict(
+            ContentRange(8, 9),
+            HttpEntity("PR"),
+            additionalHeaders = List(ETag("xzy")))
       )
     }
   }

@@ -55,9 +55,8 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       testUtils = new KPLBasedKinesisTestUtils()
       testUtils.createStream()
 
-      shardIdToDataAndSeqNumbers = testUtils.pushData(
-        testData,
-        aggregate = aggregateTestData)
+      shardIdToDataAndSeqNumbers = testUtils
+        .pushData(testData, aggregate = aggregateTestData)
       require(
         shardIdToDataAndSeqNumbers.size > 1,
         "Need data to be sent to multiple shards")
@@ -127,9 +126,11 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
         testUtils.regionName,
         testUtils.endpointUrl,
         fakeBlockIds(allRanges.size),
-        allRanges.map { range =>
-          SequenceNumberRanges(Array(range))
-        }.toArray)
+        allRanges
+          .map { range =>
+            SequenceNumberRanges(Array(range))
+          }
+          .toArray)
         .map { bytes =>
           new String(bytes).toInt
         }
@@ -143,9 +144,11 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
         testUtils.regionName,
         testUtils.endpointUrl,
         fakeBlockIds(allRanges.size),
-        allRanges.map { range =>
-          SequenceNumberRanges(Array(range))
-        }.toArray)
+        allRanges
+          .map { range =>
+            SequenceNumberRanges(Array(range))
+          }
+          .toArray)
         .map { bytes =>
           new String(bytes).toInt
         }
@@ -253,9 +256,11 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
     val blockIds = fakeBlockIds(numPartitions)
     blockIds.foreach(blockManager.removeBlock(_))
     (0 until numPartitionsInBM).foreach { i =>
-      val blockData = shardIdToData(shardIds(i)).iterator.map {
-        _.toString.getBytes()
-      }
+      val blockData = shardIdToData(shardIds(i))
+        .iterator
+        .map {
+          _.toString.getBytes()
+        }
       blockManager.putIterator(blockIds(i), blockData, StorageLevel.MEMORY_ONLY)
     }
 
@@ -283,20 +288,26 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
 
     // Make sure that the right sequence `numPartitionsInKinesis` are configured, and others are not
     require(
-      ranges.takeRight(numPartitionsInKinesis).forall {
-        _.ranges.forall {
-          _.streamName == testUtils.streamName
-        }
-      },
+      ranges
+        .takeRight(numPartitionsInKinesis)
+        .forall {
+          _.ranges
+          .forall {
+            _.streamName == testUtils.streamName
+          }
+        },
       "Incorrect configuration of RDD, expected ranges not set: "
     )
 
     require(
-      ranges.dropRight(numPartitionsInKinesis).forall {
-        _.ranges.forall {
-          _.streamName != testUtils.streamName
-        }
-      },
+      ranges
+        .dropRight(numPartitionsInKinesis)
+        .forall {
+          _.ranges
+          .forall {
+            _.streamName != testUtils.streamName
+          }
+        },
       "Incorrect configuration of RDD, unexpected ranges set"
     )
 

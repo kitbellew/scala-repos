@@ -159,8 +159,8 @@ sealed trait Execution[+T] extends java.io.Serializable {
   final def run(conf: Config, mode: Mode)(implicit
       cec: ConcurrentExecutionContext): Future[T] = {
     val ec = new EvalCache
-    val confWithId = conf.setScaldingExecutionId(
-      java.util.UUID.randomUUID.toString)
+    val confWithId = conf
+      .setScaldingExecutionId(java.util.UUID.randomUUID.toString)
     val result = runStats(confWithId, mode, ec)(cec).map(_._1)
     // When the final future in complete we stop the submit thread
     result.onComplete { _ =>
@@ -287,10 +287,12 @@ object Execution {
     */
   implicit def semigroup[T: Semigroup]: Semigroup[Execution[T]] =
     Semigroup.from[Execution[T]] { (a, b) =>
-      a.zip(b).map {
-        case (ta, tb) =>
-          Semigroup.plus(ta, tb)
-      }
+      a
+        .zip(b)
+        .map {
+          case (ta, tb) =>
+            Semigroup.plus(ta, tb)
+        }
     }
 
   /**
@@ -301,10 +303,12 @@ object Execution {
     */
   implicit def monoid[T: Monoid]: Monoid[Execution[T]] =
     Monoid.from(Execution.from(Monoid.zero[T])) { (a, b) =>
-      a.zip(b).map {
-        case (ta, tb) =>
-          Monoid.plus(ta, tb)
-      }
+      a
+        .zip(b)
+        .map {
+          case (ta, tb) =>
+            Monoid.plus(ta, tb)
+        }
     }
 
   /**
@@ -485,10 +489,12 @@ object Execution {
       cache.getOrElseInsert(
         conf,
         this,
-        prev.runStats(conf, mode, cache).map {
-          case tc @ (t, c) =>
-            (tc, c)
-        })
+        prev
+          .runStats(conf, mode, cache)
+          .map {
+            case tc @ (t, c) =>
+              (tc, c)
+          })
   }
   private case class ResetCounters[T](prev: Execution[T]) extends Execution[T] {
     def runStats(conf: Config, mode: Mode, cache: EvalCache)(implicit
@@ -496,10 +502,12 @@ object Execution {
       cache.getOrElseInsert(
         conf,
         this,
-        prev.runStats(conf, mode, cache).map {
-          case (t, _) =>
-            (t, ExecutionCounters.empty)
-        })
+        prev
+          .runStats(conf, mode, cache)
+          .map {
+            case (t, _) =>
+              (t, ExecutionCounters.empty)
+          })
   }
 
   private case class TransformedConfig[T](
@@ -584,7 +592,8 @@ object Execution {
     */
   def failFastSequence[T](t: Iterable[Future[T]])(implicit
       cec: ConcurrentExecutionContext): Future[List[T]] = {
-    t.foldLeft(Future.successful(Nil: List[T])) { (f, i) =>
+    t
+      .foldLeft(Future.successful(Nil: List[T])) { (f, i) =>
         failFastZip(f, i).map {
           case (tail, h) =>
             h :: tail
@@ -605,61 +614,71 @@ object Execution {
       case f @ Failure(err) =>
         if (!middleState.tryFailure(err)) {
           // the right has already succeeded
-          middleState.future.foreach {
-            case Right((_, pt)) =>
-              pt.complete(f)
-            case Left((t1, _)) => // This should never happen
-              sys.error(
-                s"Logic error: tried to set Failure($err) but Left($t1) already set")
-          }
+          middleState
+            .future
+            .foreach {
+              case Right((_, pt)) =>
+                pt.complete(f)
+              case Left((t1, _)) => // This should never happen
+                sys.error(
+                  s"Logic error: tried to set Failure($err) but Left($t1) already set")
+            }
         }
       case Success(t) =>
         // Create the next promise:
         val pu = Promise[U]()
         if (!middleState.trySuccess(Left((t, pu)))) {
           // we can't set, so the other promise beat us here.
-          middleState.future.foreach {
-            case Right((_, pt)) =>
-              pt.success(t)
-            case Left((t1, _)) => // This should never happen
-              sys.error(
-                s"Logic error: tried to set Left($t) but Left($t1) already set")
-          }
+          middleState
+            .future
+            .foreach {
+              case Right((_, pt)) =>
+                pt.success(t)
+              case Left((t1, _)) => // This should never happen
+                sys.error(
+                  s"Logic error: tried to set Left($t) but Left($t1) already set")
+            }
         }
     }
     fu.onComplete {
       case f @ Failure(err) =>
         if (!middleState.tryFailure(err)) {
           // we can't set, so the other promise beat us here.
-          middleState.future.foreach {
-            case Left((_, pu)) =>
-              pu.complete(f)
-            case Right((u1, _)) => // This should never happen
-              sys.error(
-                s"Logic error: tried to set Failure($err) but Right($u1) already set")
-          }
+          middleState
+            .future
+            .foreach {
+              case Left((_, pu)) =>
+                pu.complete(f)
+              case Right((u1, _)) => // This should never happen
+                sys.error(
+                  s"Logic error: tried to set Failure($err) but Right($u1) already set")
+            }
         }
       case Success(u) =>
         // Create the next promise:
         val pt = Promise[T]()
         if (!middleState.trySuccess(Right((u, pt)))) {
           // we can't set, so the other promise beat us here.
-          middleState.future.foreach {
-            case Left((_, pu)) =>
-              pu.success(u)
-            case Right((u1, _)) => // This should never happen
-              sys.error(
-                s"Logic error: tried to set Right($u) but Right($u1) already set")
-          }
+          middleState
+            .future
+            .foreach {
+              case Left((_, pu)) =>
+                pu.success(u)
+              case Right((u1, _)) => // This should never happen
+                sys.error(
+                  s"Logic error: tried to set Right($u) but Right($u1) already set")
+            }
         }
     }
 
-    middleState.future.flatMap {
-      case Left((t, pu)) =>
-        pu.future.map((t, _))
-      case Right((u, pt)) =>
-        pt.future.map((_, u))
-    }
+    middleState
+      .future
+      .flatMap {
+        case Left((t, pu)) =>
+          pu.future.map((t, _))
+        case Right((u, pt)) =>
+          pt.future.map((_, u))
+      }
   }
 
   private case class Zipped[S, T](one: Execution[S], two: Execution[T])
@@ -671,11 +690,10 @@ object Execution {
         this, {
           val f1 = one.runStats(conf, mode, cache)
           val f2 = two.runStats(conf, mode, cache)
-          failFastZip(f1, f2)
-            .map {
-              case ((s, ss), (t, st)) =>
-                ((s, t), Monoid.plus(ss, st))
-            }
+          failFastZip(f1, f2).map {
+            case ((s, ss), (t, st)) =>
+              ((s, t), Monoid.plus(ss, st))
+          }
         }
       )
   }
@@ -834,8 +852,8 @@ object Execution {
 
               failFastZip(otherResult, localFlowDefCountersFuture).map {
                 case (lCounters, fdCounters) =>
-                  val summedCounters: ExecutionCounters = Monoid.sum(
-                    fdCounters :: lCounters)
+                  val summedCounters: ExecutionCounters = Monoid
+                    .sum(fdCounters :: lCounters)
                   (fn(conf, mode), summedCounters)
               }
           }
@@ -1034,10 +1052,13 @@ object Execution {
       ax: Execution[A],
       bx: Execution[B],
       cx: Execution[C]): Execution[(A, B, C)] =
-    ax.zip(bx).zip(cx).map {
-      case ((a, b), c) =>
-        (a, b, c)
-    }
+    ax
+      .zip(bx)
+      .zip(cx)
+      .map {
+        case ((a, b), c) =>
+          (a, b, c)
+      }
 
   /**
     * combine several executions and run them in parallel when .run is called
@@ -1047,10 +1068,14 @@ object Execution {
       bx: Execution[B],
       cx: Execution[C],
       dx: Execution[D]): Execution[(A, B, C, D)] =
-    ax.zip(bx).zip(cx).zip(dx).map {
-      case (((a, b), c), d) =>
-        (a, b, c, d)
-    }
+    ax
+      .zip(bx)
+      .zip(cx)
+      .zip(dx)
+      .map {
+        case (((a, b), c), d) =>
+          (a, b, c, d)
+      }
 
   /**
     * combine several executions and run them in parallel when .run is called
@@ -1061,10 +1086,15 @@ object Execution {
       cx: Execution[C],
       dx: Execution[D],
       ex: Execution[E]): Execution[(A, B, C, D, E)] =
-    ax.zip(bx).zip(cx).zip(dx).zip(ex).map {
-      case ((((a, b), c), d), e) =>
-        (a, b, c, d, e)
-    }
+    ax
+      .zip(bx)
+      .zip(cx)
+      .zip(dx)
+      .zip(ex)
+      .map {
+        case ((((a, b), c), d), e) =>
+          (a, b, c, d, e)
+      }
 
   /*
    * If you have many Executions, it is better to combine them with
@@ -1086,10 +1116,12 @@ object Execution {
         case h :: tail =>
           go(
             tail,
-            h.zip(acc).map {
-              case (y, ys) =>
-                y :: ys
-            })
+            h
+              .zip(acc)
+              .map {
+                case (y, ys) =>
+                  y :: ys
+              })
       }
     // This pushes all of them onto a list, and then reverse to keep order
     go(exs.toList, from(Nil)).map(_.reverse)
@@ -1154,9 +1186,11 @@ trait ExecutionCounters {
     */
   def get(key: StatKey): Option[Long]
   def toMap: Map[StatKey, Long] =
-    keys.map { k =>
-      (k, get(k).getOrElse(0L))
-    }.toMap
+    keys
+      .map { k =>
+        (k, get(k).getOrElse(0L))
+      }
+      .toMap
 }
 
 /**
@@ -1235,9 +1269,11 @@ object ExecutionCounters {
       def zero = ExecutionCounters.empty
       def plus(left: ExecutionCounters, right: ExecutionCounters) = {
         fromMap(
-          (left.keys ++ right.keys).map { k =>
-            (k, left(k) + right(k))
-          }.toMap)
+          (left.keys ++ right.keys)
+            .map { k =>
+              (k, left(k) + right(k))
+            }
+            .toMap)
       }
     }
 }

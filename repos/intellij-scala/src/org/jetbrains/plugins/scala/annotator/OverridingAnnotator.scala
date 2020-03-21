@@ -44,7 +44,9 @@ trait OverridingAnnotator {
       case _: ScFun =>
         true
       case method: PsiMethod
-          if method.getContainingClass != null && method.getContainingClass.isInterface =>
+          if method.getContainingClass != null && method
+            .getContainingClass
+            .isInterface =>
         false
       case method: PsiMethod
           if !method.hasAbstractModifier && !method.isConstructor =>
@@ -108,50 +110,53 @@ trait OverridingAnnotator {
       v: ScValue,
       holder: AnnotationHolder,
       isInSources: Boolean) {
-    v.declaredElements.foreach(td => {
-      val valsSignaturesWithSelfType: Seq[Signature] = ScalaPsiUtil
-        .superValsSignatures(td, withSelfType = true)
-      val valsSignatures: Seq[Signature] = ScalaPsiUtil
-        .superValsSignatures(td, withSelfType = false)
-      checkStructural(v, valsSignatures, isInSources)
-      checkOverrideMembers(
-        td,
-        v,
-        valsSignaturesWithSelfType,
-        valsSignatures,
-        isConcrete,
-        "Value",
-        holder)
-    })
+    v
+      .declaredElements
+      .foreach(td => {
+        val valsSignaturesWithSelfType: Seq[Signature] = ScalaPsiUtil
+          .superValsSignatures(td, withSelfType = true)
+        val valsSignatures: Seq[Signature] = ScalaPsiUtil
+          .superValsSignatures(td, withSelfType = false)
+        checkStructural(v, valsSignatures, isInSources)
+        checkOverrideMembers(
+          td,
+          v,
+          valsSignaturesWithSelfType,
+          valsSignatures,
+          isConcrete,
+          "Value",
+          holder)
+      })
   }
 
   def checkOverrideVars(
       v: ScVariable,
       holder: AnnotationHolder,
       isInSources: Boolean) {
-    v.declaredElements.foreach(td => {
-      val valsSignaturesWithSelfType: Seq[Signature] = ScalaPsiUtil
-        .superValsSignatures(td, withSelfType = true)
-      val valsSignatures: Seq[Signature] = ScalaPsiUtil
-        .superValsSignatures(td, withSelfType = false)
-      checkStructural(v, valsSignatures, isInSources)
-      checkOverrideMembers(
-        td,
-        v,
-        valsSignaturesWithSelfType,
-        valsSignatures,
-        isConcrete,
-        "Variable",
-        holder)
-    })
+    v
+      .declaredElements
+      .foreach(td => {
+        val valsSignaturesWithSelfType: Seq[Signature] = ScalaPsiUtil
+          .superValsSignatures(td, withSelfType = true)
+        val valsSignatures: Seq[Signature] = ScalaPsiUtil
+          .superValsSignatures(td, withSelfType = false)
+        checkStructural(v, valsSignatures, isInSources)
+        checkOverrideMembers(
+          td,
+          v,
+          valsSignaturesWithSelfType,
+          valsSignatures,
+          isConcrete,
+          "Variable",
+          holder)
+      })
   }
 
   def checkOverrideClassParameters(
       v: ScClassParameter,
       holder: AnnotationHolder) {
-    val supersWithSelfType = ScalaPsiUtil.superValsSignatures(
-      v,
-      withSelfType = true)
+    val supersWithSelfType = ScalaPsiUtil
+      .superValsSignatures(v, withSelfType = true)
     val supers = ScalaPsiUtil.superValsSignatures(v, withSelfType = false)
     checkOverrideMembers(
       v,
@@ -202,8 +207,8 @@ trait OverridingAnnotator {
           member.nameId,
           ScalaBundle
             .message("member.overrides.nothing", memberType, member.name))
-        annotation.setHighlightType(
-          ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+        annotation
+          .setHighlightType(ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         annotation.registerFix(new RemoveModifierQuickFix(owner, "override"))
       }
     } else if (isConcreteElement(ScalaPsiUtil.nameContext(member))) {
@@ -216,8 +221,8 @@ trait OverridingAnnotator {
           member.nameId,
           ScalaBundle
             .message("member.needs.override.modifier", memberType, member.name))
-        annotation.setHighlightType(
-          ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+        annotation
+          .setHighlightType(ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
 
         member match {
           case param: ScClassParameter
@@ -283,8 +288,8 @@ trait OverridingAnnotator {
           member.nameId,
           ScalaBundle
             .message("can.not.override.final", memberType, member.name))
-        annotation.setHighlightType(
-          ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+        annotation
+          .setHighlightType(ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
       }
       member match {
         case f: ScFunctionDefinition =>
@@ -292,15 +297,15 @@ trait OverridingAnnotator {
             val annotation = holder.createErrorAnnotation(
               member.nameId,
               ScalaBundle.message("member.cannot.override.val", member.name))
-            annotation.setHighlightType(
-              ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+            annotation
+              .setHighlightType(ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
           }
           def annotVar() = {
             val annotation = holder.createErrorAnnotation(
               member.nameId,
               ScalaBundle.message("member.cannot.override.var", member.name))
-            annotation.setHighlightType(
-              ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+            annotation
+              .setHighlightType(ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
           }
           for (signature <- superSignatures) {
             signature match {

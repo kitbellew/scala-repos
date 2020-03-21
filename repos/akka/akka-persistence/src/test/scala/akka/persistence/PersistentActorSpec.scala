@@ -877,8 +877,8 @@ abstract class PersistentActorSpec(config: Config)
           "e-32"))
     }
     "support snapshotting" in {
-      val persistentActor1 = system.actorOf(
-        Props(classOf[SnapshottingPersistentActor], name, testActor))
+      val persistentActor1 = system
+        .actorOf(Props(classOf[SnapshottingPersistentActor], name, testActor))
       persistentActor1 ! Cmd("b")
       persistentActor1 ! "snap"
       persistentActor1 ! Cmd("c")
@@ -886,15 +886,15 @@ abstract class PersistentActorSpec(config: Config)
       persistentActor1 ! GetState
       expectMsg(List("a-1", "a-2", "b-41", "b-42", "c-41", "c-42"))
 
-      val persistentActor2 = system.actorOf(
-        Props(classOf[SnapshottingPersistentActor], name, testActor))
+      val persistentActor2 = system
+        .actorOf(Props(classOf[SnapshottingPersistentActor], name, testActor))
       expectMsg("offered")
       persistentActor2 ! GetState
       expectMsg(List("a-1", "a-2", "b-41", "b-42", "c-41", "c-42"))
     }
     "support context.become during recovery" in {
-      val persistentActor1 = system.actorOf(
-        Props(classOf[SnapshottingPersistentActor], name, testActor))
+      val persistentActor1 = system
+        .actorOf(Props(classOf[SnapshottingPersistentActor], name, testActor))
       persistentActor1 ! Cmd("b")
       persistentActor1 ! "snap"
       persistentActor1 ! Cmd("c")
@@ -1128,8 +1128,8 @@ abstract class PersistentActorSpec(config: Config)
       expectNoMsg(100.millis)
     }
     "receive RecoveryFinished if it is handled after all events have been replayed" in {
-      val persistentActor1 = system.actorOf(
-        Props(classOf[SnapshottingPersistentActor], name, testActor))
+      val persistentActor1 = system
+        .actorOf(Props(classOf[SnapshottingPersistentActor], name, testActor))
       persistentActor1 ! Cmd("b")
       persistentActor1 ! "snap"
       persistentActor1 ! Cmd("c")
@@ -1164,8 +1164,8 @@ abstract class PersistentActorSpec(config: Config)
       expectMsg("d")
     }
     "be used as a stackable modification" in {
-      val persistentActor = system.actorOf(
-        Props(classOf[StackableTestPersistentActor], testActor))
+      val persistentActor = system
+        .actorOf(Props(classOf[StackableTestPersistentActor], testActor))
       expectMsg("mixin aroundPreStart")
       expectMsg("base aroundPreStart")
       expectMsg("preStart")
@@ -1192,8 +1192,8 @@ abstract class PersistentActorSpec(config: Config)
       expectNoMsg(100.millis)
     }
     "allow multiple persists with nested persist calls" in {
-      val persistentActor = system.actorOf(
-        Props(classOf[MultipleAndNestedPersists], name, testActor))
+      val persistentActor = system
+        .actorOf(Props(classOf[MultipleAndNestedPersists], name, testActor))
       persistentActor ! "a"
       persistentActor ! "b"
 
@@ -1259,8 +1259,8 @@ abstract class PersistentActorSpec(config: Config)
         .map(_.toString) should beIndependentlyOrdered("b-", "c-")
     }
     "allow mixed nesting of persistAsync in persist calls" in {
-      val persistentActor = system.actorOf(
-        Props(classOf[NestedPersistNormalAndAsyncs], name, testActor))
+      val persistentActor = system
+        .actorOf(Props(classOf[NestedPersistNormalAndAsyncs], name, testActor))
       persistentActor ! "a"
 
       expectMsg("a")
@@ -1268,8 +1268,8 @@ abstract class PersistentActorSpec(config: Config)
         List("a-outer-1", "a-outer-2", "a-inner-async-1", "a-inner-async-2"))
     }
     "allow mixed nesting of persist in persistAsync calls" in {
-      val persistentActor = system.actorOf(
-        Props(classOf[NestedPersistAsyncsAndNormal], name, testActor))
+      val persistentActor = system
+        .actorOf(Props(classOf[NestedPersistAsyncsAndNormal], name, testActor))
       persistentActor ! "a"
 
       expectMsg("a")

@@ -70,27 +70,21 @@ class RDDOperationScopeSuite extends SparkFunSuite with BeforeAndAfter {
     var rdd1: MyCoolRDD = null
     var rdd2: MyCoolRDD = null
     var rdd3: MyCoolRDD = null
-    RDDOperationScope.withScope(
-      sc,
-      "scope1",
-      allowNesting = false,
-      ignoreParent = false) {
-      rdd1 = new MyCoolRDD(sc)
-      RDDOperationScope.withScope(
-        sc,
-        "scope2",
-        allowNesting = false,
-        ignoreParent = false) {
-        rdd2 = new MyCoolRDD(sc)
-        RDDOperationScope.withScope(
-          sc,
-          "scope3",
-          allowNesting = false,
-          ignoreParent = false) {
-          rdd3 = new MyCoolRDD(sc)
-        }
+    RDDOperationScope
+      .withScope(sc, "scope1", allowNesting = false, ignoreParent = false) {
+        rdd1 = new MyCoolRDD(sc)
+        RDDOperationScope
+          .withScope(sc, "scope2", allowNesting = false, ignoreParent = false) {
+            rdd2 = new MyCoolRDD(sc)
+            RDDOperationScope.withScope(
+              sc,
+              "scope3",
+              allowNesting = false,
+              ignoreParent = false) {
+              rdd3 = new MyCoolRDD(sc)
+            }
+          }
       }
-    }
     assert(rdd0.scope.isEmpty)
     assert(rdd1.scope.isDefined)
     assert(rdd2.scope.isDefined)
@@ -106,28 +100,22 @@ class RDDOperationScopeSuite extends SparkFunSuite with BeforeAndAfter {
     var rdd2: MyCoolRDD = null
     var rdd3: MyCoolRDD = null
     // allow nesting here
-    RDDOperationScope.withScope(
-      sc,
-      "scope1",
-      allowNesting = true,
-      ignoreParent = false) {
-      rdd1 = new MyCoolRDD(sc)
-      // stop nesting here
-      RDDOperationScope.withScope(
-        sc,
-        "scope2",
-        allowNesting = false,
-        ignoreParent = false) {
-        rdd2 = new MyCoolRDD(sc)
-        RDDOperationScope.withScope(
-          sc,
-          "scope3",
-          allowNesting = false,
-          ignoreParent = false) {
-          rdd3 = new MyCoolRDD(sc)
-        }
+    RDDOperationScope
+      .withScope(sc, "scope1", allowNesting = true, ignoreParent = false) {
+        rdd1 = new MyCoolRDD(sc)
+        // stop nesting here
+        RDDOperationScope
+          .withScope(sc, "scope2", allowNesting = false, ignoreParent = false) {
+            rdd2 = new MyCoolRDD(sc)
+            RDDOperationScope.withScope(
+              sc,
+              "scope3",
+              allowNesting = false,
+              ignoreParent = false) {
+              rdd3 = new MyCoolRDD(sc)
+            }
+          }
       }
-    }
     assert(rdd0.scope.isEmpty)
     assert(rdd1.scope.isDefined)
     assert(rdd2.scope.isDefined)
@@ -142,27 +130,21 @@ class RDDOperationScopeSuite extends SparkFunSuite with BeforeAndAfter {
     var rdd1: MyCoolRDD = null
     var rdd2: MyCoolRDD = null
     var rdd3: MyCoolRDD = null
-    RDDOperationScope.withScope(
-      sc,
-      "scope1",
-      allowNesting = true,
-      ignoreParent = false) {
-      rdd1 = new MyCoolRDD(sc)
-      RDDOperationScope.withScope(
-        sc,
-        "scope2",
-        allowNesting = true,
-        ignoreParent = false) {
-        rdd2 = new MyCoolRDD(sc)
-        RDDOperationScope.withScope(
-          sc,
-          "scope3",
-          allowNesting = true,
-          ignoreParent = false) {
-          rdd3 = new MyCoolRDD(sc)
-        }
+    RDDOperationScope
+      .withScope(sc, "scope1", allowNesting = true, ignoreParent = false) {
+        rdd1 = new MyCoolRDD(sc)
+        RDDOperationScope
+          .withScope(sc, "scope2", allowNesting = true, ignoreParent = false) {
+            rdd2 = new MyCoolRDD(sc)
+            RDDOperationScope.withScope(
+              sc,
+              "scope3",
+              allowNesting = true,
+              ignoreParent = false) {
+              rdd3 = new MyCoolRDD(sc)
+            }
+          }
       }
-    }
     assert(rdd0.scope.isEmpty)
     assert(rdd1.scope.isDefined)
     assert(rdd2.scope.isDefined)
@@ -170,8 +152,10 @@ class RDDOperationScopeSuite extends SparkFunSuite with BeforeAndAfter {
     assert(rdd1.scope.get.getAllScopes.map(_.name) === Seq("scope1"))
     assert(rdd2.scope.get.getAllScopes.map(_.name) === Seq("scope1", "scope2"))
     assert(
-      rdd3.scope.get.getAllScopes
-        .map(_.name) === Seq("scope1", "scope2", "scope3"))
+      rdd3.scope.get.getAllScopes.map(_.name) === Seq(
+        "scope1",
+        "scope2",
+        "scope3"))
   }
 
 }

@@ -292,10 +292,13 @@ object PrefixSpan extends Logging {
       val freqPrefixes = postfixes
         .flatMap { postfix =>
           largePrefixArray.flatMap { prefix =>
-            postfix.project(prefix).genPrefixItems.map {
-              case (item, postfixSize) =>
-                ((prefix.id, item), (1L, postfixSize))
-            }
+            postfix
+              .project(prefix)
+              .genPrefixItems
+              .map {
+                case (item, postfixSize) =>
+                  ((prefix.id, item), (1L, postfixSize))
+              }
           }
         }
         .reduceByKey {
@@ -332,7 +335,9 @@ object PrefixSpan extends Logging {
       val bcSmallPrefixes = sc.broadcast(smallPrefixes)
       val distributedFreqPattern = postfixes
         .flatMap { postfix =>
-          bcSmallPrefixes.value.values
+          bcSmallPrefixes
+            .value
+            .values
             .map { prefix =>
               (prefix.id, postfix.project(prefix).compressed)
             }
@@ -346,10 +351,12 @@ object PrefixSpan extends Logging {
               new LocalPrefixSpan(minCount, maxPatternLength - prefix.length)
             // TODO: We collect projected postfixes into memory. We should also compare the performance
             // TODO: of keeping them on shuffle files.
-            localPrefixSpan.run(projPostfixes.toArray).map {
-              case (pattern, count) =>
-                (prefix.items ++ pattern, count)
-            }
+            localPrefixSpan
+              .run(projPostfixes.toArray)
+              .map {
+                case (pattern, count) =>
+                  (prefix.items ++ pattern, count)
+              }
         }
       // Union local frequent patterns and distributed ones.
       freqPatterns = freqPatterns ++ distributedFreqPattern

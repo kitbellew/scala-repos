@@ -29,15 +29,16 @@ class OffsetRequest(
   val underlying = {
     val scalaMap = {
       import collection.JavaConversions._
-      (
-        requestInfo: mutable.Map[TopicAndPartition, PartitionOffsetRequestInfo]
-      ).toMap
+      (requestInfo: mutable.Map[TopicAndPartition, PartitionOffsetRequestInfo])
+        .toMap
     }
-    kafka.api.OffsetRequest(
-      requestInfo = scalaMap,
-      versionId = versionId,
-      clientId = clientId,
-      replicaId = Request.OrdinaryConsumerId)
+    kafka
+      .api
+      .OffsetRequest(
+        requestInfo = scalaMap,
+        versionId = versionId,
+        clientId = clientId,
+        replicaId = Request.OrdinaryConsumerId)
   }
 
   override def toString = underlying.toString

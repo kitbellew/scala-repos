@@ -85,10 +85,13 @@ class MarathonExceptionMapper extends ExceptionMapper[Exception] {
           "message" -> "Please specify data in JSON format",
           "details" -> e.getMessage)
       case e: JsResultException =>
-        val errors = e.errors.map {
-          case (path, errs) =>
-            Json.obj("path" -> path.toString(), "errors" -> errs.map(_.message))
-        }
+        val errors = e
+          .errors
+          .map {
+            case (path, errs) =>
+              Json
+                .obj("path" -> path.toString(), "errors" -> errs.map(_.message))
+          }
         Json.obj("message" -> s"Invalid JSON", "details" -> errors)
       case ValidationFailedException(obj, failure) =>
         Json.toJson(failure)

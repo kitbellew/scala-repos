@@ -17,11 +17,16 @@ case class FilterConfig(
       ratingRange.toString).some
 
   def render =
-    play.api.libs.json.Json.obj(
-      "variant" -> variant.map(_.key),
-      "mode" -> mode.map(_.id),
-      "speed" -> speed.map(_.id),
-      "rating" -> ratingRange.notBroad.map(rr => List(rr.min, rr.max)))
+    play
+      .api
+      .libs
+      .json
+      .Json
+      .obj(
+        "variant" -> variant.map(_.key),
+        "mode" -> mode.map(_.id),
+        "speed" -> speed.map(_.id),
+        "rating" -> ratingRange.notBroad.map(rr => List(rr.min, rr.max)))
 
   def nonEmpty =
     copy(
@@ -78,8 +83,8 @@ object FilterConfig {
           speed = r intsD "s" flatMap {
             Speed(_)
           },
-          ratingRange =
-            r strO "e" flatMap RatingRange.apply getOrElse RatingRange.default
+          ratingRange = r strO "e" flatMap RatingRange
+            .apply getOrElse RatingRange.default
         )
 
       def writes(w: BSON.Writer, o: FilterConfig) =

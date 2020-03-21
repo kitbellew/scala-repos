@@ -77,20 +77,25 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
 
   // "spark.network.timeout" uses "seconds", while `spark.storage.blockManagerSlaveTimeoutMs` uses
   // "milliseconds"
-  private val slaveTimeoutMs = sc.conf
+  private val slaveTimeoutMs = sc
+    .conf
     .getTimeAsMs("spark.storage.blockManagerSlaveTimeoutMs", "120s")
   private val executorTimeoutMs =
-    sc.conf
+    sc
+      .conf
       .getTimeAsSeconds("spark.network.timeout", s"${slaveTimeoutMs}ms") * 1000
 
   // "spark.network.timeoutInterval" uses "seconds", while
   // "spark.storage.blockManagerTimeoutIntervalMs" uses "milliseconds"
-  private val timeoutIntervalMs = sc.conf
+  private val timeoutIntervalMs = sc
+    .conf
     .getTimeAsMs("spark.storage.blockManagerTimeoutIntervalMs", "60s")
   private val checkTimeoutIntervalMs =
-    sc.conf.getTimeAsSeconds(
-      "spark.network.timeoutInterval",
-      s"${timeoutIntervalMs}ms") * 1000
+    sc
+      .conf
+      .getTimeAsSeconds(
+        "spark.network.timeoutInterval",
+        s"${timeoutIntervalMs}ms") * 1000
 
   private var timeoutCheckingTask: ScheduledFuture[_] = null
 
@@ -100,8 +105,8 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
     .newDaemonSingleThreadScheduledExecutor(
       "heartbeat-receiver-event-loop-thread")
 
-  private val killExecutorThread = ThreadUtils.newDaemonSingleThreadExecutor(
-    "kill-executor-thread")
+  private val killExecutorThread = ThreadUtils
+    .newDaemonSingleThreadExecutor("kill-executor-thread")
 
   override def onStart(): Unit = {
     timeoutCheckingTask = eventLoopThread.scheduleAtFixedRate(

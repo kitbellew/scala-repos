@@ -138,7 +138,8 @@ object LiftJavaScriptSpec extends Specification {
     }
     "create init command" in withEnglishLocale {
       S.initIfUninitted(session) {
-        val init = LiftRules.javaScriptSettings
+        val init = LiftRules
+          .javaScriptSettings
           .vend()
           .map(_.apply(session))
           .map(LiftJavaScript.initCmd(_).toJsCmd)
@@ -166,7 +167,8 @@ object LiftJavaScriptSpec extends Specification {
     "create init command with VanillaJS" in withEnglishLocale {
       S.initIfUninitted(session) {
         LiftRules.jsArtifacts = ExtCoreArtifacts
-        val init = LiftRules.javaScriptSettings
+        val init = LiftRules
+          .javaScriptSettings
           .vend()
           .map(_.apply(session))
           .map(LiftJavaScript.initCmd(_).toJsCmd)
@@ -194,8 +196,9 @@ object LiftJavaScriptSpec extends Specification {
     "create init command with custom setting" in withEnglishLocale {
       S.initIfUninitted(session) {
         LiftRules.jsArtifacts = JQueryArtifacts
-        val settings = LiftJavaScript.settings.extend(
-          JsObj("liftPath" -> "liftyStuff", "mysetting" -> 99))
+        val settings = LiftJavaScript
+          .settings
+          .extend(JsObj("liftPath" -> "liftyStuff", "mysetting" -> 99))
         val init = LiftJavaScript.initCmd(settings)
         init.toJsCmd must_== formatjs(
           List(

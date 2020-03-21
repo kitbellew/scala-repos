@@ -43,10 +43,12 @@ class BytecodeTest extends ClearAfterClass {
     val List(c) = compileClasses(compiler)(code)
 
     assertTrue(
-      getSingleMethod(c, "f").instructions
+      getSingleMethod(c, "f")
+        .instructions
         .count(_.isInstanceOf[TableSwitch]) == 1)
     assertTrue(
-      getSingleMethod(c, "g").instructions
+      getSingleMethod(c, "g")
+        .instructions
         .count(_.isInstanceOf[LookupSwitch]) == 1)
   }
 
@@ -119,7 +121,8 @@ class BytecodeTest extends ClearAfterClass {
       """.stripMargin
     val List(mirror, module) = compileClasses(compiler)(code)
 
-    val unapplyLineNumbers = getSingleMethod(module, "unapply").instructions
+    val unapplyLineNumbers = getSingleMethod(module, "unapply")
+      .instructions
       .filter(_.isInstanceOf[LineNumber])
     assert(
       unapplyLineNumbers == List(LineNumber(2, Label(0))),

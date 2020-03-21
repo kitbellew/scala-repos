@@ -184,10 +184,12 @@ trait HeapBackend extends RelationalBackend with Logging {
       else
         createUniquenessVerifier(
           idx.name,
-          idx.on.map {
-            case Select(_, f: FieldSymbol) =>
-              f
-          })
+          idx
+            .on
+            .map {
+              case Select(_, f: FieldSymbol) =>
+                f
+            })
 
     protected def createUniquenessVerifier(
         name: String,
@@ -250,15 +252,20 @@ trait HeapBackend extends RelationalBackend with Logging {
 
 object HeapBackend extends HeapBackend {
   class Column(val sym: FieldSymbol, val tpe: ScalaType[Any]) {
-    private[this] val default = sym.options.collectFirst {
-      case RelationalProfile.ColumnOption.Default(v) =>
-        v
-    }
-    private[this] val autoInc = sym.options.collectFirst {
-      case ColumnOption.AutoInc =>
-        new AtomicLong()
-    }
-    val isUnique = sym.options
+    private[this] val default = sym
+      .options
+      .collectFirst {
+        case RelationalProfile.ColumnOption.Default(v) =>
+          v
+      }
+    private[this] val autoInc = sym
+      .options
+      .collectFirst {
+        case ColumnOption.AutoInc =>
+          new AtomicLong()
+      }
+    val isUnique = sym
+      .options
       .collectFirst {
         case ColumnOption.PrimaryKey =>
           true

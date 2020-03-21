@@ -180,7 +180,8 @@ class BinaryClassificationMetrics @Since("1.3.0") (
             grouping = Int.MaxValue
           }
           counts.mapPartitions(
-            _.grouped(grouping.toInt).map { pairs =>
+            _.grouped(grouping.toInt)
+            .map { pairs =>
               // The score of the combined point will be just the first one's score
               val firstScore = pairs.head._1
               // The point will contain all counts in this chunk
@@ -191,7 +192,8 @@ class BinaryClassificationMetrics @Since("1.3.0") (
         }
       }
 
-    val agg = binnedCounts.values
+    val agg = binnedCounts
+      .values
       .mapPartitions { iter =>
         val agg = new BinaryLabelCounter()
         iter.foreach(agg += _)

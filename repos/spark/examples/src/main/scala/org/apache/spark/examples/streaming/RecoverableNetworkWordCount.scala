@@ -126,8 +126,8 @@ object RecoverableNetworkWordCount {
       // Get or register the blacklist Broadcast
       val blacklist = WordBlacklist.getInstance(rdd.sparkContext)
       // Get or register the droppedWordsCounter Accumulator
-      val droppedWordsCounter = DroppedWordsCounter.getInstance(
-        rdd.sparkContext)
+      val droppedWordsCounter = DroppedWordsCounter
+        .getInstance(rdd.sparkContext)
       // Use blacklist to drop words and use droppedWordsCounter to count them
       val counts = rdd
         .filter {
@@ -153,8 +153,10 @@ object RecoverableNetworkWordCount {
   def main(args: Array[String]) {
     if (args.length != 4) {
       System.err.println("You arguments were " + args.mkString("[", ", ", "]"))
-      System.err.println(
-        """
+      System
+        .err
+        .println(
+          """
           |Usage: RecoverableNetworkWordCount <hostname> <port> <checkpoint-directory>
           |     <output-file>. <hostname> and <port> describe the TCP server that Spark
           |     Streaming would connect to receive data. <checkpoint-directory> directory to

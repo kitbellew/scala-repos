@@ -23,19 +23,23 @@ class ContextFilterTest extends FunSuite {
           Future.value(Response())
         }
 
-    Contexts.broadcast.let(Deadline, writtenDeadline) {
-      val req = Request()
-      HttpContext.write(req)
+    Contexts
+      .broadcast
+      .let(Deadline, writtenDeadline) {
+        val req = Request()
+        HttpContext.write(req)
 
-      // Clear the deadline value in the context
-      Contexts.broadcast.letClear(Deadline) {
-        // ensure the deadline was cleared
-        assert(Deadline.current == None)
+        // Clear the deadline value in the context
+        Contexts
+          .broadcast
+          .letClear(Deadline) {
+            // ensure the deadline was cleared
+            assert(Deadline.current == None)
 
-        val rsp = Await.result(service(req))
-        assert(rsp.status == Status.Ok)
+            val rsp = Await.result(service(req))
+            assert(rsp.status == Status.Ok)
+          }
       }
-    }
   }
 
   test("does not set incorrectly encoded context headers") {

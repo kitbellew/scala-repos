@@ -119,10 +119,12 @@ class GraphInterpreterFailureModesSpec
       downstream.cancel()
       failOnPostStop()
 
-      EventFilter.error("Error during postStop in [stage]").intercept {
-        stepAll()
-        lastEvents() should be(Set.empty)
-      }
+      EventFilter
+        .error("Error during postStop in [stage]")
+        .intercept {
+          stepAll()
+          lastEvents() should be(Set.empty)
+        }
 
     }
 

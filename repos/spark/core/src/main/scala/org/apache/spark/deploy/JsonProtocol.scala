@@ -102,7 +102,9 @@ private[deploy] object JsonProtocol {
       ("memoryused" -> obj.memoryUsed) ~
       ("executors" -> obj.executors.toList.map(writeExecutorRunner)) ~
       (
-        "finishedexecutors" -> obj.finishedExecutors.toList
+        "finishedexecutors" -> obj
+          .finishedExecutors
+          .toList
           .map(writeExecutorRunner)
       )
   }

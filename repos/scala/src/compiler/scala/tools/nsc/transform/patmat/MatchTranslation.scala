@@ -23,8 +23,8 @@ trait MatchTranslation {
 
   // Always map repeated params to sequences
   private def setVarInfo(sym: Symbol, info: Type) =
-    sym setInfo debug.patmatResult(s"changing ${sym.defString} to")(
-      repeatedToSeq(info))
+    sym setInfo debug
+      .patmatResult(s"changing ${sym.defString} to")(repeatedToSeq(info))
 
   private def hasSym(t: Tree) = t.symbol != null && t.symbol != NoSymbol
 
@@ -91,7 +91,9 @@ trait MatchTranslation {
 
       def pos = tree.pos
       def tpe =
-        binder.info.dealiasWiden // the type of the variable bound to the pattern
+        binder
+          .info
+          .dealiasWiden // the type of the variable bound to the pattern
       def pt =
         unbound match {
           case Star(tpt) =>
@@ -309,9 +311,9 @@ trait MatchTranslation {
       val pt = repeatedToSeq(origPt)
 
       // val packedPt = repeatedToSeq(typer.packedType(match_, context.owner))
-      val selectorSym = freshSym(
-        selector.pos,
-        pureType(selectorTp)) setFlag treeInfo.SYNTH_CASE_FLAGS
+      val selectorSym =
+        freshSym(selector.pos, pureType(selectorTp)) setFlag treeInfo
+          .SYNTH_CASE_FLAGS
 
       // pt = Any* occurs when compiling test/files/pos/annotDepMethType.scala  with -Xexperimental
       val combined = combineCases(
@@ -356,7 +358,8 @@ trait MatchTranslation {
           }
 
           for (cases <- emitTypeSwitch(bindersAndCases, pt).toList
-               if cases forall treeInfo.isCatchCase; // must check again, since it's not guaranteed -- TODO: can we eliminate this? e.g., a type test could test for a trait or a non-trivial prefix, which are not handled by the back-end
+               if cases forall treeInfo
+                 .isCatchCase; // must check again, since it's not guaranteed -- TODO: can we eliminate this? e.g., a type test could test for a trait or a non-trivial prefix, which are not handled by the back-end
                cse <- cases)
             yield fixerUpper(matchOwner, pos)(cse).asInstanceOf[CaseDef]
         }
@@ -694,16 +697,18 @@ trait MatchTranslation {
                    x.isMutable || definitions.isRepeated(x))
                )) {
 
-             subPatBinders.zipWithIndex.flatMap {
-               case (binder, idx) =>
-                 val param = paramAccessorAt(idx)
-                 if (param.isMutable || (
-                       definitions.isRepeated(param) && !aligner.isStar
-                     ))
-                   binder :: Nil
-                 else
-                   Nil
-             }
+             subPatBinders
+               .zipWithIndex
+               .flatMap {
+                 case (binder, idx) =>
+                   val param = paramAccessorAt(idx)
+                   if (param.isMutable || (
+                         definitions.isRepeated(param) && !aligner.isStar
+                       ))
+                     binder :: Nil
+                   else
+                     Nil
+               }
            } else
              Nil)
 
@@ -757,8 +762,10 @@ trait MatchTranslation {
         // directly from the extractor's result type
         val binder = freshSym(pos, pureType(resultInMonad))
         val potentiallyMutableBinders: Set[Symbol] =
-          if (extractorApply.tpe.typeSymbol.isNonBottomSubClass(
-                OptionClass) && !aligner.isSeq)
+          if (extractorApply
+                .tpe
+                .typeSymbol
+                .isNonBottomSubClass(OptionClass) && !aligner.isSeq)
             Set.empty
           else
             // Ensures we capture unstable bound variables eagerly. These can arise under name based patmat or by indexing into mutable Seqs. See run t9003.scala

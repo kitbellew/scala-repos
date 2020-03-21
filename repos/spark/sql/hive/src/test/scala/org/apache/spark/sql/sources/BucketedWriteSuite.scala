@@ -81,7 +81,9 @@ class BucketedWriteSuite
     .toDF("i", "j", "k")
 
   def tableDir: File = {
-    val identifier = hiveContext.sessionState.sqlParser
+    val identifier = hiveContext
+      .sessionState
+      .sqlParser
       .parseTableIdentifier("bucketed_table")
     new File(
       URI.create(
@@ -105,9 +107,11 @@ class BucketedWriteSuite
       .filterNot(f => f.getName.startsWith(".") || f.getName.startsWith("_"))
 
     for (bucketFile <- allBucketFiles) {
-      val bucketId = BucketingUtils.getBucketId(bucketFile.getName).getOrElse {
-        fail(s"Unable to find the related bucket files.")
-      }
+      val bucketId = BucketingUtils
+        .getBucketId(bucketFile.getName)
+        .getOrElse {
+          fail(s"Unable to find the related bucket files.")
+        }
 
       // Remove the duplicate columns in bucketCols and sortCols;
       // Otherwise, we got analysis errors due to duplicate names
@@ -115,13 +119,16 @@ class BucketedWriteSuite
       // We may lose the type information after write(e.g. json format doesn't keep schema
       // information), here we get the types from the original dataframe.
       val types = df.select(selectedColumns.map(col): _*).schema.map(_.dataType)
-      val columns = selectedColumns.zip(types).map {
-        case (colName, dt) =>
-          col(colName).cast(dt)
-      }
+      val columns = selectedColumns
+        .zip(types)
+        .map {
+          case (colName, dt) =>
+            col(colName).cast(dt)
+        }
 
       // Read the bucket file into a dataframe, so that it's easier to test.
-      val readBack = sqlContext.read
+      val readBack = sqlContext
+        .read
         .format(source)
         .load(bucketFile.getAbsolutePath)
         .select(columns: _*)
@@ -137,9 +144,8 @@ class BucketedWriteSuite
       val qe = readBack.select(bucketCols.map(col): _*).queryExecution
       val rows = qe.toRdd.map(_.copy()).collect()
       val getBucketId = UnsafeProjection.create(
-        HashPartitioning(
-          qe.analyzed.output,
-          numBuckets).partitionIdExpression :: Nil,
+        HashPartitioning(qe.analyzed.output, numBuckets)
+          .partitionIdExpression :: Nil,
         qe.analyzed.output)
 
       for (row <- rows) {
@@ -152,7 +158,8 @@ class BucketedWriteSuite
   test("write bucketed data") {
     for (source <- Seq("parquet", "json", "orc")) {
       withTable("bucketed_table") {
-        df.write
+        df
+          .write
           .format(source)
           .partitionBy("i")
           .bucketBy(8, "j", "k")
@@ -168,7 +175,8 @@ class BucketedWriteSuite
   test("write bucketed data with sortBy") {
     for (source <- Seq("parquet", "json", "orc")) {
       withTable("bucketed_table") {
-        df.write
+        df
+          .write
           .format(source)
           .partitionBy("i")
           .bucketBy(8, "j")
@@ -190,7 +198,8 @@ class BucketedWriteSuite
   test(
     "write bucketed data with the overlapping bucketBy and partitionBy columns") {
     intercept[AnalysisException](
-      df.write
+      df
+        .write
         .partitionBy("i", "j")
         .bucketBy(8, "j", "k")
         .sortBy("k")
@@ -200,16 +209,14 @@ class BucketedWriteSuite
   test(
     "write bucketed data with the identical bucketBy and partitionBy columns") {
     intercept[AnalysisException](
-      df.write
-        .partitionBy("i")
-        .bucketBy(8, "i")
-        .saveAsTable("bucketed_table"))
+      df.write.partitionBy("i").bucketBy(8, "i").saveAsTable("bucketed_table"))
   }
 
   test("write bucketed data without partitionBy") {
     for (source <- Seq("parquet", "json", "orc")) {
       withTable("bucketed_table") {
-        df.write
+        df
+          .write
           .format(source)
           .bucketBy(8, "i", "j")
           .saveAsTable("bucketed_table")
@@ -222,7 +229,8 @@ class BucketedWriteSuite
   test("write bucketed data without partitionBy with sortBy") {
     for (source <- Seq("parquet", "json", "orc")) {
       withTable("bucketed_table") {
-        df.write
+        df
+          .write
           .format(source)
           .bucketBy(8, "i", "j")
           .sortBy("k")
@@ -238,7 +246,8 @@ class BucketedWriteSuite
     withSQLConf(SQLConf.BUCKETING_ENABLED.key -> "false") {
       for (source <- Seq("parquet", "json", "orc")) {
         withTable("bucketed_table") {
-          df.write
+          df
+            .write
             .format(source)
             .partitionBy("i")
             .bucketBy(8, "j", "k")

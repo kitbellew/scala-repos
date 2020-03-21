@@ -37,17 +37,19 @@ class TaskStatusUpdateProcessorImpl @Inject() (
 
   private[this] val log = LoggerFactory.getLogger(getClass)
 
-  private[this] val publishFutureTimer: Timer = metrics.timer(
-    metrics.name(MetricPrefixes.SERVICE, getClass, "publishFuture"))
+  private[this] val publishFutureTimer: Timer = metrics
+    .timer(metrics.name(MetricPrefixes.SERVICE, getClass, "publishFuture"))
 
-  private[this] val killUnknownTaskTimer: Timer = metrics.timer(
-    metrics.name(MetricPrefixes.SERVICE, getClass, "killUnknownTask"))
+  private[this] val killUnknownTaskTimer: Timer = metrics
+    .timer(metrics.name(MetricPrefixes.SERVICE, getClass, "killUnknownTask"))
 
   private[this] val stepTimers: Map[String, Timer] =
-    steps.map { step =>
-      step.name -> metrics.timer(
-        metrics.name(MetricPrefixes.SERVICE, getClass, s"step-${step.name}"))
-    }.toMap
+    steps
+      .map { step =>
+        step.name -> metrics.timer(
+          metrics.name(MetricPrefixes.SERVICE, getClass, s"step-${step.name}"))
+      }
+      .toMap
 
   log.info(
     "Started status update processor with steps:\n{}",
@@ -58,28 +60,30 @@ class TaskStatusUpdateProcessorImpl @Inject() (
       val now = clock.now()
       val taskId = Task.Id(status.getTaskId)
 
-      taskTracker.task(taskId).flatMap {
-        case _ if status.getState == MesosProtos.TaskState.TASK_KILLING =>
-          // introduced in Mesos 0.28.0, not yet processed
-          log.info("Ignoring TASK_KILLING update for {}", taskId)
-          acknowledge(status)
-
-        case Some(task) if task.launched.isDefined =>
-          processUpdate(
-            timestamp = now,
-            appId = taskId.appId,
-            task = task,
-            mesosStatus = status).flatMap(_ => acknowledge(status))
-        case _ =>
-          killUnknownTaskTimer {
-            if (status.getState != MesosProtos.TaskState.TASK_LOST) {
-              // If we kill a unknown task, we will get another TASK_LOST notification which leads to an endless
-              // stream of kills and TASK_LOST updates.
-              killTask(taskId.mesosTaskId)
-            }
+      taskTracker
+        .task(taskId)
+        .flatMap {
+          case _ if status.getState == MesosProtos.TaskState.TASK_KILLING =>
+            // introduced in Mesos 0.28.0, not yet processed
+            log.info("Ignoring TASK_KILLING update for {}", taskId)
             acknowledge(status)
-          }
-      }
+
+          case Some(task) if task.launched.isDefined =>
+            processUpdate(
+              timestamp = now,
+              appId = taskId.appId,
+              task = task,
+              mesosStatus = status).flatMap(_ => acknowledge(status))
+          case _ =>
+            killUnknownTaskTimer {
+              if (status.getState != MesosProtos.TaskState.TASK_LOST) {
+                // If we kill a unknown task, we will get another TASK_LOST notification which leads to an endless
+                // stream of kills and TASK_LOST updates.
+                killTask(taskId.mesosTaskId)
+              }
+              acknowledge(status)
+            }
+        }
     }
 
   private[this] def acknowledge(
@@ -103,11 +107,15 @@ class TaskStatusUpdateProcessorImpl @Inject() (
           log.debug(
             "Executing {} for [{}]",
             Array[Object](nextStep.name, mesosStatus.getTaskId.getValue): _*)
-          nextStep.processUpdate(timestamp, task, mesosStatus).map { _ =>
-            log.debug(
-              "Done with executing {} for [{}]",
-              Array[Object](nextStep.name, mesosStatus.getTaskId.getValue): _*)
-          }
+          nextStep
+            .processUpdate(timestamp, task, mesosStatus)
+            .map { _ =>
+              log.debug(
+                "Done with executing {} for [{}]",
+                Array[Object](
+                  nextStep.name,
+                  mesosStatus.getTaskId.getValue): _*)
+            }
         }
       }
     }

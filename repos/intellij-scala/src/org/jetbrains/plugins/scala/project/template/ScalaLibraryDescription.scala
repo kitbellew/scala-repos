@@ -98,7 +98,8 @@ trait ScalaLibraryDescription extends CustomLibraryDescription {
       provide: () => java.util.List[SdkChoice]): SdkSelectionDialog
 
   def sdks(contextDirectory: VirtualFile): Seq[SdkChoice] = {
-    val localSdks = Option(contextDirectory).toSeq
+    val localSdks = Option(contextDirectory)
+      .toSeq
       .map(cDir => virtualToIoFile(contextDirectory) / "lib")
       .flatMap(sdkIn)
     localSdks.map(SdkChoice(_, "Project")) ++

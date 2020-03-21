@@ -296,23 +296,25 @@ case class StructType(fields: Array[StructField])
   override def defaultSize: Int = fields.map(_.dataType.defaultSize).sum
 
   override def simpleString: String = {
-    val fieldTypes = fields.map(field =>
-      s"${field.name}:${field.dataType.simpleString}")
+    val fieldTypes = fields
+      .map(field => s"${field.name}:${field.dataType.simpleString}")
     s"struct<${fieldTypes.mkString(",")}>"
   }
 
   override def sql: String = {
-    val fieldTypes = fields.map(f =>
-      s"${quoteIdentifier(f.name)}: ${f.dataType.sql}")
+    val fieldTypes = fields
+      .map(f => s"${quoteIdentifier(f.name)}: ${f.dataType.sql}")
     s"STRUCT<${fieldTypes.mkString(", ")}>"
   }
 
   private[sql] override def simpleString(maxNumberFields: Int): String = {
     val builder = new StringBuilder
-    val fieldTypes = fields.take(maxNumberFields).map {
-      case f =>
-        s"${f.name}: ${f.dataType.simpleString(maxNumberFields)}"
-    }
+    val fieldTypes = fields
+      .take(maxNumberFields)
+      .map {
+        case f =>
+          s"${f.name}: ${f.dataType.simpleString(maxNumberFields)}"
+      }
     builder.append("struct<")
     builder.append(fieldTypes.mkString(", "))
     if (fields.length > 2) {
@@ -354,8 +356,8 @@ case class StructType(fields: Array[StructField])
   }
 
   @transient
-  private[sql] lazy val interpretedOrdering = InterpretedOrdering.forSchema(
-    this.fields.map(_.dataType))
+  private[sql] lazy val interpretedOrdering = InterpretedOrdering
+    .forSchema(this.fields.map(_.dataType))
 }
 
 object StructType extends AbstractDataType {

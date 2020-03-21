@@ -32,11 +32,8 @@ class ServerSet(
       additionalEndpoints: Map[String, InetSocketAddress] = Map.empty,
       status: CommonStatus = CommonStatus.ALIVE): Future[EndpointStatus] =
     pool {
-      underlying.join(
-        serviceEndpoint,
-        additionalEndpoints.asJava,
-        status
-      ) // blocks
+      underlying
+        .join(serviceEndpoint, additionalEndpoints.asJava, status) // blocks
     } map {
       new EndpointStatus(_, pool)
     } // wrap for async updates

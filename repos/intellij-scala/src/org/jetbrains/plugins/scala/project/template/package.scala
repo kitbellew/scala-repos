@@ -69,10 +69,12 @@ package object template {
   def jarWith[T: ClassTag]: File = {
     val tClass = implicitly[ClassTag[T]].runtimeClass
 
-    Option(PathUtil.getJarPathForClass(tClass)).map(new File(_)).getOrElse {
-      throw new RuntimeException(
-        "Jar file not found for class " + tClass.getName)
-    }
+    Option(PathUtil.getJarPathForClass(tClass))
+      .map(new File(_))
+      .getOrElse {
+        throw new RuntimeException(
+          "Jar file not found for class " + tClass.getName)
+      }
   }
 
   implicit class FileExt(val delegate: File) extends AnyVal {

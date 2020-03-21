@@ -115,9 +115,7 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds = Seq(("a", 1), ("b", 2), ("c", 3)).toDS()
 
     checkDataset(
-      ds.map(identity[(String, Int)])
-        .as[OtherTuple]
-        .map(identity[OtherTuple]),
+      ds.map(identity[(String, Int)]).as[OtherTuple].map(identity[OtherTuple]),
       OtherTuple("a", 1),
       OtherTuple("b", 2),
       OtherTuple("c", 3))
@@ -127,8 +125,7 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds = Seq(("a", 1, 3), ("b", 2, 4), ("c", 3, 5)).toDS()
 
     checkDataset(
-      ds.as[OtherTuple]
-        .map(identity[OtherTuple]),
+      ds.as[OtherTuple].map(identity[OtherTuple]),
       OtherTuple("a", 1),
       OtherTuple("b", 2),
       OtherTuple("c", 3))
@@ -403,7 +400,8 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds = Seq(("a", 10), ("a", 20), ("b", 1), ("b", 2), ("c", 1)).toDS()
 
     checkDataset(
-      ds.groupByKey(_._1)
+      ds
+        .groupByKey(_._1)
         .agg(sum("_2").as[Long], sum($"_2" + 1).as[Long], count("*")),
       ("a", 30L, 32L, 2L),
       ("b", 3L, 5L, 2L),
@@ -414,7 +412,8 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds = Seq(("a", 10), ("a", 20), ("b", 1), ("b", 2), ("c", 1)).toDS()
 
     checkDataset(
-      ds.groupByKey(_._1)
+      ds
+        .groupByKey(_._1)
         .agg(
           sum("_2").as[Long],
           sum($"_2" + 1).as[Long],
@@ -430,11 +429,15 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds1 = Seq(1 -> "a", 3 -> "abc", 5 -> "hello", 3 -> "foo").toDS()
     val ds2 = Seq(2 -> "q", 3 -> "w", 5 -> "e", 5 -> "r").toDS()
     val cogrouped =
-      ds1.groupByKey(_._1).cogroup(ds2.groupByKey(_._1)) {
-        case (key, data1, data2) =>
-          Iterator(
-            key -> (data1.map(_._2).mkString + "#" + data2.map(_._2).mkString))
-      }
+      ds1
+        .groupByKey(_._1)
+        .cogroup(ds2.groupByKey(_._1)) {
+          case (key, data1, data2) =>
+            Iterator(
+              key -> (
+                data1.map(_._2).mkString + "#" + data2.map(_._2).mkString
+              ))
+        }
 
     checkDataset(
       cogrouped,
@@ -448,11 +451,13 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds1 = Seq(1 -> ClassData("a", 1), 2 -> ClassData("b", 2)).toDS()
     val ds2 = Seq(2 -> ClassData("c", 3), 3 -> ClassData("d", 4)).toDS()
     val cogrouped =
-      ds1.groupByKey(_._1).cogroup(ds2.groupByKey(_._1)) {
-        case (key, data1, data2) =>
-          Iterator(
-            key -> (data1.map(_._2.a).mkString + data2.map(_._2.a).mkString))
-      }
+      ds1
+        .groupByKey(_._1)
+        .cogroup(ds2.groupByKey(_._1)) {
+          case (key, data1, data2) =>
+            Iterator(
+              key -> (data1.map(_._2.a).mkString + data2.map(_._2.a).mkString))
+        }
 
     checkDataset(cogrouped, 1 -> "a", 2 -> "bc", 3 -> "d")
   }
@@ -634,10 +639,12 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
 
   test("grouping key and grouped value has field with same name") {
     val ds = Seq(ClassData("a", 1), ClassData("a", 2)).toDS()
-    val agged = ds.groupByKey(d => ClassNullableData(d.a, null)).mapGroups {
-      case (key, values) =>
-        key.a + values.map(_.b).sum
-    }
+    val agged = ds
+      .groupByKey(d => ClassNullableData(d.a, null))
+      .mapGroups {
+        case (key, values) =>
+          key.a + values.map(_.b).sum
+      }
 
     checkDataset(agged, "a3")
   }
@@ -646,10 +653,12 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val left = Seq(ClassData("a", 1), ClassData("b", 2)).toDS()
     val right = Seq(ClassNullableData("a", 3), ClassNullableData("b", 4)).toDS()
     val cogrouped =
-      left.groupByKey(_.a).cogroup(right.groupByKey(_.a)) {
-        case (key, lData, rData) =>
-          Iterator(key + lData.map(_.b).sum + rData.map(_.b.toInt).sum)
-      }
+      left
+        .groupByKey(_.a)
+        .cogroup(right.groupByKey(_.a)) {
+          case (key, lData, rData) =>
+            Iterator(key + lData.map(_.b).sum + rData.map(_.b.toInt).sum)
+        }
 
     checkDataset(cogrouped, "a13", "b24")
   }

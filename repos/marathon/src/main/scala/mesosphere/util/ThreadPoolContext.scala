@@ -13,7 +13,7 @@ object ThreadPoolContext {
     * Use this context instead of the global execution context,
     * if you do blocking IO operations.
     */
-  implicit lazy val ioContext = ExecutionContext.fromExecutorService(
-    Executors.newFixedThreadPool(numberOfThreads))
+  implicit lazy val ioContext = ExecutionContext
+    .fromExecutorService(Executors.newFixedThreadPool(numberOfThreads))
 
 }

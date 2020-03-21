@@ -72,10 +72,8 @@ class TopicCommandTest
       new TopicCommandOptions(
         Array("--partitions", numPartitionsModified.toString, "--topic", topic))
     TopicCommand.alterTopic(zkUtils, alterOpts)
-    val newProps = AdminUtils.fetchEntityConfig(
-      zkUtils,
-      ConfigType.Topic,
-      topic)
+    val newProps = AdminUtils
+      .fetchEntityConfig(zkUtils, ConfigType.Topic, topic)
     assertTrue(
       "Updated properties do not contain " + cleanupKey,
       newProps.containsKey(cleanupKey))
@@ -248,10 +246,12 @@ class TopicCommandTest
           "foo"))
     TopicCommand.createTopic(zkUtils, createOpts)
 
-    var assignment = zkUtils.getReplicaAssignmentForTopics(Seq("foo")).map {
-      case (tp, replicas) =>
-        tp.partition -> replicas
-    }
+    var assignment = zkUtils
+      .getReplicaAssignmentForTopics(Seq("foo"))
+      .map {
+        case (tp, replicas) =>
+          tp.partition -> replicas
+      }
     checkReplicaDistribution(
       assignment,
       rackInfo,
@@ -265,10 +265,12 @@ class TopicCommandTest
       new TopicCommandOptions(
         Array("--partitions", alteredNumPartitions.toString, "--topic", "foo"))
     TopicCommand.alterTopic(zkUtils, alterOpts)
-    assignment = zkUtils.getReplicaAssignmentForTopics(Seq("foo")).map {
-      case (tp, replicas) =>
-        tp.partition -> replicas
-    }
+    assignment = zkUtils
+      .getReplicaAssignmentForTopics(Seq("foo"))
+      .map {
+        case (tp, replicas) =>
+          tp.partition -> replicas
+      }
     checkReplicaDistribution(
       assignment,
       rackInfo,

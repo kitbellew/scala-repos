@@ -28,8 +28,8 @@ import HttpEntity._
 import ParserOutput._
 
 class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
     akka.event-handlers = ["akka.testkit.TestEventListener"]
     akka.loglevel = WARNING
     akka.http.parsing.max-response-reason-length = 21""")
@@ -223,8 +223,8 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
             |
             |""") should generalMultiParseTo(
           Right(
-            baseResponse.withEntity(
-              Chunked(`application/pdf`, source(LastChunk)))))
+            baseResponse
+              .withEntity(Chunked(`application/pdf`, source(LastChunk)))))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
@@ -317,7 +317,8 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       override def equals(other: scala.Any): Boolean =
         other match {
           case other: StrictEqualHttpResponse ⇒
-            this.resp.copy(entity = HttpEntity.Empty) == other.resp
+            this.resp.copy(entity = HttpEntity.Empty) == other
+              .resp
               .copy(entity = HttpEntity.Empty) &&
               Await.result(this.resp.entity.toStrict(250.millis), 250.millis) ==
                 Await.result(other.resp.entity.toStrict(250.millis), 250.millis)
@@ -368,14 +369,14 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         .matcher[Seq[Either[ResponseOutput, StrictEqualHttpResponse]]] compose {
         input: Seq[String] ⇒
           collectBlocking {
-            rawParse(requestMethod, input: _*)
-              .mapAsync(1) {
-                case Right(response) ⇒
-                  compactEntity(response.entity).fast.map(x ⇒
-                    Right(response.withEntity(x)))
-                case Left(error) ⇒
-                  FastFuture.successful(Left(error))
-              }
+            rawParse(requestMethod, input: _*).mapAsync(1) {
+              case Right(response) ⇒
+                compactEntity(response.entity)
+                  .fast
+                  .map(x ⇒ Right(response.withEntity(x)))
+              case Left(error) ⇒
+                FastFuture.successful(Left(error))
+            }
           }.map(strictEqualify)
       }
 
@@ -432,8 +433,9 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
     private def compactEntity(entity: ResponseEntity): Future[ResponseEntity] =
       entity match {
         case x: HttpEntity.Chunked ⇒
-          compactEntityChunks(x.chunks).fast.map(compacted ⇒
-            x.copy(chunks = compacted))
+          compactEntityChunks(x.chunks)
+            .fast
+            .map(compacted ⇒ x.copy(chunks = compacted))
         case _ ⇒
           entity.toStrict(250.millis)
       }

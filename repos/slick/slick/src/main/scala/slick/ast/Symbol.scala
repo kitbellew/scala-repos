@@ -71,20 +71,25 @@ trait DefNode extends Node {
       f: (Option[TermSymbol], Node) => Node): Self with DefNode = {
     val gens = generators
     val ch = children
-    val all = ch.zipWithIndex.map[(Option[TermSymbol], Node)] {
-      case (ch, idx) =>
-        val o =
-          if (idx < gens.length)
-            Some(gens(idx)._1)
-          else
-            None
-        (o, ch)
-    }
+    val all = ch
+      .zipWithIndex
+      .map[(Option[TermSymbol], Node)] {
+        case (ch, idx) =>
+          val o =
+            if (idx < gens.length)
+              Some(gens(idx)._1)
+            else
+              None
+          (o, ch)
+      }
     val mapped = all.map(f.tupled)
-    if (ch.zip(mapped).force.exists {
-          case (n1, n2) =>
-            n1 ne n2
-        })
+    if (ch
+          .zip(mapped)
+          .force
+          .exists {
+            case (n1, n2) =>
+              n1 ne n2
+          })
       rebuild(mapped).asInstanceOf[Self with DefNode]
     else
       this

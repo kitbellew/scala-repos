@@ -9,8 +9,8 @@ object Dependencies {
   val akkaVersion = "2.4.2"
 
   val specsVersion = "3.6.6"
-  val specsBuild = Seq("specs2-core", "specs2-junit", "specs2-mock").map(
-    "org.specs2" %% _ % specsVersion)
+  val specsBuild = Seq("specs2-core", "specs2-junit", "specs2-mock")
+    .map("org.specs2" %% _ % specsVersion)
 
   val specsMatcherExtra = "org.specs2" %% "specs2-matcher-extra" % specsVersion
 
@@ -24,10 +24,10 @@ object Dependencies {
     "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310"
   ).map(_ % "2.7.1")
 
-  val slf4j = Seq("slf4j-api", "jul-to-slf4j", "jcl-over-slf4j").map(
-    "org.slf4j" % _ % "1.7.16")
-  val logback = Seq("logback-core", "logback-classic").map(
-    "ch.qos.logback" % _ % "1.1.4")
+  val slf4j = Seq("slf4j-api", "jul-to-slf4j", "jcl-over-slf4j")
+    .map("org.slf4j" % _ % "1.7.16")
+  val logback = Seq("logback-core", "logback-classic")
+    .map("ch.qos.logback" % _ % "1.1.4")
 
   val guava = "com.google.guava" % "guava" % "19.0"
   val findBugs =
@@ -106,8 +106,8 @@ object Dependencies {
 
   def runtime(scalaVersion: String) =
     slf4j ++
-      Seq("akka-actor", "akka-slf4j").map(
-        "com.typesafe.akka" %% _ % akkaVersion) ++
+      Seq("akka-actor", "akka-slf4j")
+        .map("com.typesafe.akka" %% _ % akkaVersion) ++
       jacksons ++
       Seq(
         "org.scala-stm" %% "scala-stm" % "0.7",
@@ -140,8 +140,8 @@ object Dependencies {
   def routesCompilerDependencies(scalaVersion: String) =
     Seq(
       "commons-io" % "commons-io" % "2.4",
-      specsMatcherExtra % Test) ++ specsBuild.map(_ % Test) ++ logback.map(
-      _ % Test) ++ scalaParserCombinators(scalaVersion)
+      specsMatcherExtra % Test) ++ specsBuild.map(_ % Test) ++ logback
+      .map(_ % Test) ++ scalaParserCombinators(scalaVersion)
 
   private def sbtPluginDep(
       sbtVersion: String,
@@ -171,8 +171,8 @@ object Dependencies {
   val sbtCoreNextVersion = "0.1.1"
 
   def forkRunProtocolDependencies(scalaBinaryVersion: String) =
-    Seq(sbtRcClient(scalaBinaryVersion)) ++ specsBuild.map(
-      _ % "test") ++ logback.map(_ % Test)
+    Seq(sbtRcClient(scalaBinaryVersion)) ++ specsBuild
+      .map(_ % "test") ++ logback.map(_ % Test)
 
   // use partial version so that non-standard scala binary versions from dbuild also work
   def sbtRcClient(scalaBinaryVersion: String): ModuleID =
@@ -218,7 +218,8 @@ object Dependencies {
       jnotify,
       sbtDep("com.typesafe.sbt" % "sbt-twirl" % BuildInfo.sbtTwirlVersion),
       sbtDep(
-        "com.typesafe.sbt" % "sbt-native-packager" % BuildInfo.sbtNativePackagerVersion),
+        "com.typesafe.sbt" % "sbt-native-packager" % BuildInfo
+          .sbtNativePackagerVersion),
       sbtDep("com.typesafe.sbt" % "sbt-web" % "1.3.0"),
       sbtDep("com.typesafe.sbt" % "sbt-js-engine" % "1.1.3")
     ) ++ specsBuild.map(_ % Test) ++ logback.map(_ % Test)
@@ -238,8 +239,8 @@ object Dependencies {
   val streamsDependencies = Seq(
     "org.reactivestreams" % "reactive-streams" % "1.0.0",
     "com.typesafe.akka" %% "akka-stream" % akkaVersion,
-    scalaJava8Compat) ++ specsBuild.map(_ % "test") ++ logback.map(
-    _ % Test) ++ javaTestDeps
+    scalaJava8Compat) ++ specsBuild.map(_ % "test") ++ logback
+    .map(_ % Test) ++ javaTestDeps
 
   def jsonDependencies(scalaVersion: String) =
     Seq(
@@ -253,26 +254,26 @@ object Dependencies {
     "org.specs2" %% "specs2-scalacheck" % specsVersion % Test,
     "org.scalacheck" %% "scalacheck" % "1.12.2" % Test)
 
-  val playServerDependencies =
-    Seq(guava % Test) ++ specsBuild.map(_ % Test) ++ logback.map(_ % Test)
+  val playServerDependencies = Seq(guava % Test) ++ specsBuild
+    .map(_ % Test) ++ logback.map(_ % Test)
 
-  val testDependencies =
-    Seq(junit) ++ specsBuild.map(_ % Test) ++ logback.map(_ % Test) ++ Seq(
-      junitInterface,
-      guava,
-      findBugs,
-      "net.sourceforge.htmlunit" % "htmlunit" % "2.20", // adds support for jQuery 2.20; can be removed as soon as fluentlenium has it in it's own dependencies
-      ("org.fluentlenium" % "fluentlenium-core" % "0.10.9")
-        .exclude("org.jboss.netty", "netty")
-    )
+  val testDependencies = Seq(junit) ++ specsBuild.map(_ % Test) ++ logback
+    .map(_ % Test) ++ Seq(
+    junitInterface,
+    guava,
+    findBugs,
+    "net.sourceforge.htmlunit" % "htmlunit" % "2.20", // adds support for jQuery 2.20; can be removed as soon as fluentlenium has it in it's own dependencies
+    ("org.fluentlenium" % "fluentlenium-core" % "0.10.9")
+      .exclude("org.jboss.netty", "netty")
+  )
 
   val playCacheDeps = "net.sf.ehcache" % "ehcache-core" % "2.6.11" +:
     (specsBuild.map(_ % Test) ++ logback.map(_ % Test))
 
   val playWsDeps =
     Seq(guava, "org.asynchttpclient" % "async-http-client" % "2.0.0-RC12") ++
-      Seq("signpost-core", "signpost-commonshttp4").map(
-        "oauth.signpost" % _ % "1.2.1.2") ++
+      Seq("signpost-core", "signpost-commonshttp4")
+        .map("oauth.signpost" % _ % "1.2.1.2") ++
       logback.map(_ % Test) ++
       (specsBuild :+ specsMatcherExtra).map(_ % Test) :+
       mockitoAll % Test

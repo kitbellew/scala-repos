@@ -118,19 +118,18 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
       val application = evolutions.reverse
       val database = databaseEvolutions()
 
-      val (nonConflictingDowns, dRest) = database.span(e =>
-        !application.headOption.exists(e.revision <= _.revision))
-      val (nonConflictingUps, uRest) = application.span(e =>
-        !database.headOption.exists(_.revision >= e.revision))
+      val (nonConflictingDowns, dRest) = database
+        .span(e => !application.headOption.exists(e.revision <= _.revision))
+      val (nonConflictingUps, uRest) = application
+        .span(e => !database.headOption.exists(_.revision >= e.revision))
 
-      val (conflictingDowns, conflictingUps) = Evolutions.conflictings(
-        dRest,
-        uRest)
+      val (conflictingDowns, conflictingUps) = Evolutions
+        .conflictings(dRest, uRest)
 
-      val ups = (nonConflictingUps ++ conflictingUps).reverseMap(e =>
-        UpScript(e))
-      val downs = (nonConflictingDowns ++ conflictingDowns).map(e =>
-        DownScript(e))
+      val ups = (nonConflictingUps ++ conflictingUps)
+        .reverseMap(e => UpScript(e))
+      val downs = (nonConflictingDowns ++ conflictingDowns)
+        .map(e => DownScript(e))
 
       downs ++ ups
     } else
@@ -193,7 +192,8 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
         }
         case DownScript(e) => {
           execute(
-            "update ${schema}play_evolutions set state = 'applying_down' where id = " + e.revision)
+            "update ${schema}play_evolutions set state = 'applying_down' where id = " + e
+              .revision)
         }
       }
     }
@@ -202,7 +202,8 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
       script match {
         case UpScript(e) => {
           execute(
-            "update ${schema}play_evolutions set state = 'applied' where id = " + e.revision)
+            "update ${schema}play_evolutions set state = 'applied' where id = " + e
+              .revision)
         }
         case DownScript(e) => {
           execute(
@@ -246,7 +247,8 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
         val message =
           e match {
             case ex: SQLException =>
-              ex.getMessage + " [ERROR:" + ex.getErrorCode + ", SQLSTATE:" + ex.getSQLState + "]"
+              ex.getMessage + " [ERROR:" + ex.getErrorCode + ", SQLSTATE:" + ex
+                .getSQLState + "]"
             case ex =>
               ex.getMessage
           }
@@ -255,18 +257,19 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
 
           connection.rollback()
 
-          val humanScript =
-            "# --- Rev:" + lastScript.evolution.revision + "," + (
-              if (lastScript.isInstanceOf[UpScript])
-                "Ups"
-              else
-                "Downs"
-            ) + " - " + lastScript.evolution.hash + "\n\n" + (
-              if (lastScript.isInstanceOf[UpScript])
-                lastScript.evolution.sql_up
-              else
-                lastScript.evolution.sql_down
-            )
+          val humanScript = "# --- Rev:" + lastScript
+            .evolution
+            .revision + "," + (
+            if (lastScript.isInstanceOf[UpScript])
+              "Ups"
+            else
+              "Downs"
+          ) + " - " + lastScript.evolution.hash + "\n\n" + (
+            if (lastScript.isInstanceOf[UpScript])
+              lastScript.evolution.sql_up
+            else
+              lastScript.evolution.sql_down
+          )
 
           throw InconsistentDatabase(
             database.name,
@@ -538,7 +541,8 @@ abstract class ResourceEvolutionsReader extends EvolutionsReader {
                 val (some, next) = lines.span(l => !isMarker(l))
                 Some(
                   (
-                    next.headOption
+                    next
+                      .headOption
                       .map(c => (mapUpsAndDowns(c), next.tail))
                       .getOrElse("" -> Nil),
                     context -> some.mkString("\n")))
@@ -592,8 +596,8 @@ class ClassLoaderEvolutionsReader(
     extends ResourceEvolutionsReader {
   def loadResource(db: String, revision: Int) = {
     Option(
-      classLoader.getResourceAsStream(
-        prefix + Evolutions.resourceName(db, revision)))
+      classLoader
+        .getResourceAsStream(prefix + Evolutions.resourceName(db, revision)))
   }
 }
 

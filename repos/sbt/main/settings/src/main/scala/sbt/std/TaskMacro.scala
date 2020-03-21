@@ -139,15 +139,19 @@ object TaskMacro {
   def taskAssignPositionT[T: c.WeakTypeTag](c: Context)(
       app: c.Expr[Task[T]]): c.Expr[Setting[Task[T]]] =
     itaskAssignPosition(c)(
-      c.universe.reify {
-        Def.valueStrict(app.splice)
-      })
+      c
+        .universe
+        .reify {
+          Def.valueStrict(app.splice)
+        })
   def taskAssignPositionPure[T: c.WeakTypeTag](c: Context)(
       app: c.Expr[T]): c.Expr[Setting[Task[T]]] =
     taskAssignPositionT(c)(
-      c.universe.reify {
-        TaskExtra.constant(app.splice)
-      })
+      c
+        .universe
+        .reify {
+          TaskExtra.constant(app.splice)
+        })
 
   def taskTransformPosition[S: c.WeakTypeTag](c: Context)(
       f: c.Expr[S => S]): c.Expr[Setting[Task[S]]] =
@@ -184,9 +188,11 @@ object TaskMacro {
   def settingAssignPure[T: c.WeakTypeTag](c: Context)(
       app: c.Expr[T]): c.Expr[Setting[T]] =
     settingAssignPosition(c)(
-      c.universe.reify {
-        Def.valueStrict(app.splice)
-      })
+      c
+        .universe
+        .reify {
+          Def.valueStrict(app.splice)
+        })
   def settingAssignPosition[T: c.WeakTypeTag](c: Context)(
       app: c.Expr[Initialize[T]]): c.Expr[Setting[T]] =
     c.Expr[Setting[T]](transformMacroImpl(c)(app.tree)(AssignInitName))
@@ -345,8 +351,8 @@ object TaskMacro {
     val ec = c.enclosingClass.symbol
     def inEmptyPackage(s: c.Symbol): Boolean =
       s != c.universe.NoSymbol && (
-        s.owner == c.mirror.EmptyPackage || s.owner == c.mirror.EmptyPackageClass || inEmptyPackage(
-          s.owner)
+        s.owner == c.mirror.EmptyPackage || s
+          .owner == c.mirror.EmptyPackageClass || inEmptyPackage(s.owner)
       )
     if (!ec.isStatic)
       name
@@ -374,9 +380,11 @@ object TaskMacro {
         iParserMacro(c)(et) { pt =>
           iTaskMacro(c)(pt)
         }
-      c.universe.reify {
-        InputTask.make(pt.splice)
-      }
+      c
+        .universe
+        .reify {
+          InputTask.make(pt.splice)
+        }
     }
 
   private[this] def iInitializeMacro[M[_], T](c: Context)(t: c.Expr[T])(
@@ -388,11 +396,10 @@ object TaskMacro {
         def apply(in: c.Tree): c.Tree = f(c.Expr[T](in)).tree
       }
     val cond = c.Expr[T](conditionInputTaskTree(c)(t.tree))
-    Instance.contImpl[T, M](
-      c,
-      InitializeInstance,
-      InputInitConvert,
-      MixedBuilder)(Left(cond), inner)
+    Instance
+      .contImpl[T, M](c, InitializeInstance, InputInitConvert, MixedBuilder)(
+        Left(cond),
+        inner)
   }
   private[this] def conditionInputTaskTree(c: Context)(t: c.Tree): c.Tree = {
     import c.universe._
@@ -492,11 +499,8 @@ object TaskMacro {
         EmptyTree
       } else {
         qual.foreach(checkQual)
-        val vd = util.freshValDef(
-          tpe,
-          qual.symbol.pos,
-          functionSym
-        ) // val $x: <tpe>
+        val vd = util
+          .freshValDef(tpe, qual.symbol.pos, functionSym) // val $x: <tpe>
         result = Some((qual, tpe, vd))
         val tree = util.refVal(original, vd) // $x
         tree.setPos(
@@ -555,9 +559,8 @@ object TaskMacro {
         val fCore = util.createFunction(param :: Nil, tx, functionSym)
         val bodyTpe = wrapTag(tag).tpe
         val fTpe = util.functionType(tpe :: Nil, bodyTpe)
-        val fTag = c.WeakTypeTag[Any](
-          fTpe
-        ) // don't know the actual type yet, so use Any
+        val fTag = c
+          .WeakTypeTag[Any](fTpe) // don't know the actual type yet, so use Any
         val fInit = expandTask(false, fCore)(fTag).tree
         inputTaskCreate(InputTaskCreateDynName, tpe, tag.tpe, p, fInit)
       case None =>

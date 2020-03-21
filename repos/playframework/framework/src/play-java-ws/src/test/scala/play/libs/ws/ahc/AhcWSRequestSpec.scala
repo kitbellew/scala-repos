@@ -49,8 +49,7 @@ class AhcWSRequestSpec extends Specification with Mockito {
           "application/x-www-form-urlencoded"
         ) // set content type by hand
         .setBody("HELLO WORLD") // and body is set to string (see #5221)
-        .asInstanceOf[AhcWSRequest]
-        .buildRequest()
+        .asInstanceOf[AhcWSRequest].buildRequest()
       req.getStringData must be_==("HELLO WORLD") // should result in byte data.
     }
 
@@ -90,9 +89,7 @@ class AhcWSRequestSpec extends Specification with Mockito {
           "Content-Length",
           "9001"
         ) // add a meaningless content length here...
-        .sign(calc)
-        .asInstanceOf[AhcWSRequest]
-        .buildRequest()
+        .sign(calc).asInstanceOf[AhcWSRequest].buildRequest()
 
       val headers = req.getHeaders
       req.getFormParams.asScala must containTheSameElementsAs(
@@ -122,19 +119,19 @@ class AhcWSRequestSpec extends Specification with Mockito {
       queryParams.size must beEqualTo(2)
       queryParams.exists(p =>
         (p.getName == "q") && (p.getValue == "playframework")) must beTrue
-      queryParams.exists(p =>
-        (p.getName == "src") && (p.getValue == "typd")) must beTrue
+      queryParams
+        .exists(p => (p.getName == "src") && (p.getValue == "typd")) must beTrue
     }
 
     "support several query string values for a parameter" in {
       val queryParams = requestWithQueryString("q=scala&q=playframework&q=fp")
       queryParams.size must beEqualTo(3)
-      queryParams.exists(p =>
-        (p.getName == "q") && (p.getValue == "scala")) must beTrue
+      queryParams
+        .exists(p => (p.getName == "q") && (p.getValue == "scala")) must beTrue
       queryParams.exists(p =>
         (p.getName == "q") && (p.getValue == "playframework")) must beTrue
-      queryParams.exists(p =>
-        (p.getName == "q") && (p.getValue == "fp")) must beTrue
+      queryParams
+        .exists(p => (p.getName == "q") && (p.getValue == "fp")) must beTrue
       queryParams.count(p => p.getName == "q") must beEqualTo(3)
     }
 

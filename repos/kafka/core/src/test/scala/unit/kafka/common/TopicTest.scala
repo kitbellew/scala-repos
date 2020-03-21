@@ -107,10 +107,12 @@ class TopicTest {
     }
 
     // Same Position
-    periodFirstMiddleLastNone.zip(underscoreFirstMiddleLastNone).foreach {
-      case (t1, t2) =>
-        assertTrue(Topic.hasCollision(t1, t2))
-    }
+    periodFirstMiddleLastNone
+      .zip(underscoreFirstMiddleLastNone)
+      .foreach {
+        case (t1, t2) =>
+          assertTrue(Topic.hasCollision(t1, t2))
+      }
 
     // Different Position
     periodFirstMiddleLastNone

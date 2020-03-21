@@ -41,8 +41,10 @@ object Example3App extends App {
 
   val items: ObservableBuffer[jfxc.ObservableList[String]] =
     new ObservableBuffer(
-      jfxc.FXCollections.observableArrayList[jfxc.ObservableList[String]](
-        (elem: jfxc.ObservableList[String]) => Array[jfxb.Observable](elem)))
+      jfxc
+        .FXCollections
+        .observableArrayList[jfxc.ObservableList[String]](
+          (elem: jfxc.ObservableList[String]) => Array[jfxb.Observable](elem)))
 
   items.onChange((_, changes) => {
     println(s"onChange(_, $changes")

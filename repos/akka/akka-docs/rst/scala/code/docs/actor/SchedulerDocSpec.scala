@@ -30,9 +30,11 @@ class SchedulerDocSpec extends AkkaSpec(Map("akka.loglevel" -> "INFO")) {
 
     //#schedule-one-off-thunk
     //Schedules a function to be executed (send a message to the testActor) after 50ms
-    system.scheduler.scheduleOnce(50 milliseconds) {
-      testActor ! System.currentTimeMillis
-    }
+    system
+      .scheduler
+      .scheduleOnce(50 milliseconds) {
+        testActor ! System.currentTimeMillis
+      }
     //#schedule-one-off-thunk
 
   }
@@ -52,11 +54,9 @@ class SchedulerDocSpec extends AkkaSpec(Map("akka.loglevel" -> "INFO")) {
 
       //This will schedule to send the Tick-message
       //to the tickActor after 0ms repeating every 50ms
-      val cancellable = system.scheduler.schedule(
-        0 milliseconds,
-        50 milliseconds,
-        tickActor,
-        Tick)
+      val cancellable = system
+        .scheduler
+        .schedule(0 milliseconds, 50 milliseconds, tickActor, Tick)
 
       //This cancels further Ticks to be sent
       cancellable.cancel()

@@ -70,8 +70,8 @@ class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
         x.qualifier match {
           case Some(qual) => {
             //get ranges for previos qualifier
-            val ranges = select(qual, editorText, cursorOffset, editor).toArray(
-              new Array[TextRange](0))
+            val ranges = select(qual, editorText, cursorOffset, editor)
+              .toArray(new Array[TextRange](0))
             for (fRange <- ranges
                  if fRange.getEndOffset == qual.getTextRange.getEndOffset) {
               //cancatenating ranges

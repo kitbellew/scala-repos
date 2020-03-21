@@ -87,7 +87,8 @@ abstract class ChangeSignatureTestBase
 
   protected def addFileToProject(fileName: String, text: String): PsiFile = {
     inWriteAction {
-      val vFile = LightPlatformTestCase.getSourceRoot
+      val vFile = LightPlatformTestCase
+        .getSourceRoot
         .createChildData(null, fileName)
       VfsUtil.saveText(vFile, text)
       val psiFile = LightPlatformTestCase.getPsiManager.findFile(vFile)
@@ -109,8 +110,8 @@ abstract class ChangeSignatureTestBase
   protected def getPsiTypeFromText(
       typeText: String,
       context: PsiElement): PsiType = {
-    val factory: JavaCodeFragmentFactory = JavaCodeFragmentFactory.getInstance(
-      getProjectAdapter)
+    val factory: JavaCodeFragmentFactory = JavaCodeFragmentFactory
+      .getInstance(getProjectAdapter)
     factory.createTypeCodeFragment(typeText, context, false).getType
   }
 

@@ -9,12 +9,13 @@ trait HexDump {
   val hex: String
   // parse multi-line hex dump where packets are delimited by '|'
   lazy val packets: Seq[Packet] = {
-    val tokens = hex.stripMargin
+    val tokens = hex
+      .stripMargin
       .split('|')
       .map(_.replace("\n", " "))
       .map(s => s.split(' ').filterNot(_ == ""))
-    val asBytes = tokens.map(
-      _.map(s => ((s(0).asDigit << 4) + s(1).asDigit).toByte))
+    val asBytes = tokens
+      .map(_.map(s => ((s(0).asDigit << 4) + s(1).asDigit).toByte))
     asBytes.map(arr => Packet(arr(3), Buffer(arr.drop(4))))
   }
 }
@@ -126,8 +127,7 @@ class PrepareOKTest extends FunSuite with HexDump {
       "expected %d param packets".format(p.numOfParams))
     val params = packets
       .drop(1) /*drop header*/
-      .take(p.numOfParams)
-      .map(Field.decode(_))
+      .take(p.numOfParams).map(Field.decode(_))
     val p1 = params(0)
     val p2 = params(1)
     assert(p1.name == "?")
@@ -141,8 +141,7 @@ class PrepareOKTest extends FunSuite with HexDump {
       "expected %d column packets".format(p.numOfCols))
     val cols = packets
       .drop(2 + p.numOfParams) /*drop header + eof + params*/
-      .take(p.numOfCols)
-      .map(Field.decode(_))
+      .take(p.numOfCols).map(Field.decode(_))
     val col = cols(0)
     assert(col.name == "col1")
   }

@@ -70,8 +70,7 @@ class StackClientTest
 
   trait Ctx {
     val sr = new InMemoryStatsReceiver
-    val client = stringClient
-      .configured(param.Stats(sr))
+    val client = stringClient.configured(param.Stats(sr))
   }
 
   after {
@@ -83,8 +82,8 @@ class StackClientTest
       // use dest when no label is set
       client.newService("inet!127.0.0.1:8080")
       eventually {
-        val counter = sr.counters(
-          Seq("inet!127.0.0.1:8080", "loadbalancer", "adds"))
+        val counter = sr
+          .counters(Seq("inet!127.0.0.1:8080", "loadbalancer", "adds"))
         assert(
           counter == 1,
           s"The instance should be to the loadbalancer once instead of $counter times.")
@@ -114,10 +113,12 @@ class StackClientTest
       client.newClient(Name.bound(Address(8080)), name)
 
       assert(
-        ClientRegistry.registrants.count { e: StackRegistry.Entry =>
-          val param.Label(actual) = e.params[param.Label]
-          name == actual
-        } == 1)
+        ClientRegistry
+          .registrants
+          .count { e: StackRegistry.Entry =>
+            val param.Label(actual) = e.params[param.Label]
+            name == actual
+          } == 1)
     })
 
   test("FailFast is respected") {
@@ -134,17 +135,13 @@ class StackClientTest
       }
 
     val alwaysFailStack =
-      new StackBuilder(stack.nilStack[String, String])
-        .push(alwaysFail)
-        .result
+      new StackBuilder(stack.nilStack[String, String]).push(alwaysFail).result
     val stk = ctx.client.stack.concat(alwaysFailStack)
 
     def newClient(
         name: String,
         failFastOn: Option[Boolean]): Service[String, String] = {
-      var stack = ctx.client
-        .configured(param.Label(name))
-        .withStack(stk)
+      var stack = ctx.client.configured(param.Label(name)).withStack(stk)
       failFastOn.foreach { ffOn =>
         stack = stack.configured(FailFast(ffOn))
       }
@@ -307,9 +304,11 @@ class StackClientTest
     val sr = new InMemoryStatsReceiver
     val client = stringClient.configured(param.Stats(sr))
 
-    val stk = client.stack.replace(
-      LoadBalancerFactory.role,
-      (_: ServiceFactory[String, String]) => stubLB)
+    val stk = client
+      .stack
+      .replace(
+        LoadBalancerFactory.role,
+        (_: ServiceFactory[String, String]) => stubLB)
 
     val cl = client
       .withStack(stk)
@@ -489,8 +488,8 @@ class StackClientTest
   test("StackBasedClient.configured is a StackClient") {
     // compilation test
     val client: StackBasedClient[String, String] = stringClient
-    val client2: StackBasedClient[String, String] = client.configured(
-      param.Label("foo"))
+    val client2: StackBasedClient[String, String] = client
+      .configured(param.Label("foo"))
     val client3: StackBasedClient[String, String] = client
       .configured[param.Label]((param.Label("foo"), param.Label.param))
   }
@@ -498,10 +497,10 @@ class StackClientTest
   test("StackClient.configured is a StackClient") {
     // compilation test
     val client: StackClient[String, String] = stringClient
-    val client2: StackClient[String, String] = client.configured(
-      param.Label("foo"))
-    val client3: StackClient[String, String] = client.configured[param.Label](
-      (param.Label("foo"), param.Label.param))
+    val client2: StackClient[String, String] = client
+      .configured(param.Label("foo"))
+    val client3: StackClient[String, String] = client
+      .configured[param.Label]((param.Label("foo"), param.Label.param))
   }
 
   test("StackClient binds to a local service via exp.Address.ServiceFactory") {
@@ -540,21 +539,23 @@ class StackClientTest
     import StackClientTest._
 
     val key = new Contexts.local.Key[String]
-    Contexts.local.let(key, "SomeCoolContext") {
-      val echoSvc = Service.mk[String, String] {
-        Future.value
+    Contexts
+      .local
+      .let(key, "SomeCoolContext") {
+        val echoSvc = Service.mk[String, String] {
+          Future.value
+        }
+        val server = stringServer.serve(
+          new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
+          echoSvc)
+        val ia = server.boundAddress.asInstanceOf[InetSocketAddress]
+
+        val client = new LocalCheckingStringClient(key)
+          .newService(Name.bound(Address(ia)), "a-label")
+
+        val result = Await.result(client("abc"), 5.seconds)
+        assert("abc" == result)
       }
-      val server = stringServer.serve(
-        new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
-        echoSvc)
-      val ia = server.boundAddress.asInstanceOf[InetSocketAddress]
-
-      val client = new LocalCheckingStringClient(key)
-        .newService(Name.bound(Address(ia)), "a-label")
-
-      val result = Await.result(client("abc"), 5.seconds)
-      assert("abc" == result)
-    }
   }
 
   test("pending request limit is per connection") {

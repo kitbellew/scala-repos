@@ -58,12 +58,14 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
       filterAnsi(s)
 
   private def logStackTrace(t: Throwable): Unit = {
-    val trace = t.getStackTrace.dropWhile { p =>
-      p.getFileName != null && {
-        p.getFileName.contains("StackTrace.scala") ||
-        p.getFileName.contains("Throwables.scala")
+    val trace = t
+      .getStackTrace
+      .dropWhile { p =>
+        p.getFileName != null && {
+          p.getFileName.contains("StackTrace.scala") ||
+          p.getFileName.contains("Throwables.scala")
+        }
       }
-    }
     val testClassName = currentTestClassName.head
     val testFileName = {
       if (settings.color)
@@ -164,10 +166,12 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
   private def findTestFileName(
       trace: Array[StackTraceElement],
       testClassName: String): String = {
-    trace.collectFirst {
-      case e if testClassName.equals(e.getClassName) =>
-        e.getFileName
-    }.orNull
+    trace
+      .collectFirst {
+        case e if testClassName.equals(e.getClassName) =>
+          e.getFileName
+      }
+      .orNull
   }
 
   private def stackTraceElementToString(

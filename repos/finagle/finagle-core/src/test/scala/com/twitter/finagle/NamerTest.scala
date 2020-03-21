@@ -195,7 +195,8 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
       Namer.global.lookup(Path.read("/$/inet")).sample()
     }
 
-    Namer.global
+    Namer
+      .global
       .lookup(Path.read("/$/inet/127.0.0.1/1234/foobar"))
       .sample() match {
       case NameTree.Leaf(bound: Name.Bound) =>
@@ -238,7 +239,8 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
 
   test("Namer.global: /$/{className}") {
     assert(
-      Namer.global
+      Namer
+        .global
         .lookup(Path.read("/$/com.twitter.finagle.TestNamer/foo"))
         .sample()
         == NameTree.Leaf(Name.Path(Path.Utf8("bar"))))
@@ -253,7 +255,8 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
           case bound: Addr.Bound =>
             assert(bound.addrs.size == 1)
             bound.addrs.head match {
-              case exp.Address
+              case exp
+                    .Address
                     .ServiceFactory(sf: ServiceFactory[Path, Path], _) =>
                 val svc = Await.result(sf())
                 val rsp = Await.result(svc(Path.Utf8("yodles")))
@@ -280,7 +283,8 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
           case bound: Addr.Bound =>
             assert(bound.addrs.size == 1)
             bound.addrs.head match {
-              case exp.Address
+              case exp
+                    .Address
                     .ServiceFactory(sf: ServiceFactory[Int, Int], _) =>
                 val svc = Await.result(sf())
                 intercept[ClassCastException] {

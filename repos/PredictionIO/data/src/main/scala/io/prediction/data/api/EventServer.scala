@@ -119,13 +119,16 @@ class EventServiceActor(
           }
           .getOrElse {
             // with accessKey in header, return appId if succeed
-            ctx.request.headers
+            ctx
+              .request
+              .headers
               .find(_.name == "Authorization")
               .map { authHeader ⇒
                 authHeader.value.split("Basic ") match {
                   case Array(_, value) ⇒
                     val appAccessKey =
-                      new String(base64Decoder.decodeBuffer(value)).trim
+                      new String(base64Decoder.decodeBuffer(value))
+                        .trim
                         .split(":")(0)
                     accessKeysClient.get(appAccessKey) match {
                       case Some(k) ⇒
@@ -154,8 +157,8 @@ class EventServiceActor(
       List()))
 
   lazy val statsActorRef = actorRefFactory.actorSelection("/user/StatsActor")
-  lazy val pluginsActorRef = actorRefFactory.actorSelection(
-    "/user/PluginsActor")
+  lazy val pluginsActorRef = actorRefFactory
+    .actorSelection("/user/PluginsActor")
 
   val route: Route =
     pathSingleSlash {
@@ -174,20 +177,24 @@ class EventServiceActor(
             complete {
               Map(
                 "plugins" -> Map(
-                  "inputblockers" -> pluginContext.inputBlockers.map {
-                    case (n, p) =>
-                      n -> Map(
-                        "name" -> p.pluginName,
-                        "description" -> p.pluginDescription,
-                        "class" -> p.getClass.getName)
-                  },
-                  "inputsniffers" -> pluginContext.inputSniffers.map {
-                    case (n, p) =>
-                      n -> Map(
-                        "name" -> p.pluginName,
-                        "description" -> p.pluginDescription,
-                        "class" -> p.getClass.getName)
-                  }
+                  "inputblockers" -> pluginContext
+                    .inputBlockers
+                    .map {
+                      case (n, p) =>
+                        n -> Map(
+                          "name" -> p.pluginName,
+                          "description" -> p.pluginDescription,
+                          "class" -> p.getClass.getName)
+                    },
+                  "inputsniffers" -> pluginContext
+                    .inputSniffers
+                    .map {
+                      case (n, p) =>
+                        n -> Map(
+                          "name" -> p.pluginName,
+                          "description" -> p.pluginDescription,
+                          "class" -> p.getClass.getName)
+                    }
                 ))
             }
           }
@@ -294,15 +301,18 @@ class EventServiceActor(
                 val events = authData.events
                 entity(as[Event]) { event =>
                   complete {
-                    if (events.isEmpty || authData.events.contains(
-                          event.event)) {
-                      pluginContext.inputBlockers.values.foreach(
-                        _.process(
-                          EventInfo(
-                            appId = appId,
-                            channelId = channelId,
-                            event = event),
-                          pluginContext))
+                    if (events
+                          .isEmpty || authData.events.contains(event.event)) {
+                      pluginContext
+                        .inputBlockers
+                        .values
+                        .foreach(
+                          _.process(
+                            EventInfo(
+                              appId = appId,
+                              channelId = channelId,
+                              event = event),
+                            pluginContext))
                       val data = eventClient
                         .futureInsert(event, appId, channelId)
                         .map { id =>
@@ -375,10 +385,10 @@ class EventServiceActor(
                           )
 
                           val parseTime = Future {
-                            val startTime = startTimeStr.map(
-                              Utils.stringToDateTime(_))
-                            val untilTime = untilTimeStr.map(
-                              Utils.stringToDateTime(_))
+                            val startTime = startTimeStr
+                              .map(Utils.stringToDateTime(_))
+                            val untilTime = untilTimeStr
+                              .map(Utils.stringToDateTime(_))
                             (startTime, untilTime)
                           }
 
@@ -394,10 +404,10 @@ class EventServiceActor(
                                     entityType = entityType,
                                     entityId = entityId,
                                     eventNames = eventName.map(List(_)),
-                                    targetEntityType = targetEntityType.map(
-                                      Some(_)),
-                                    targetEntityId = targetEntityId.map(
-                                      Some(_)),
+                                    targetEntityType = targetEntityType
+                                      .map(Some(_)),
+                                    targetEntityId = targetEntityId
+                                      .map(Some(_)),
                                     limit = limit.orElse(Some(20)),
                                     reversed = reversed
                                   )
@@ -440,15 +450,18 @@ class EventServiceActor(
                 val handleEvent
                     : PartialFunction[Try[Event], Future[Map[String, Any]]] = {
                   case Success(event) => {
-                    if (allowedEvents.isEmpty || allowedEvents.contains(
-                          event.event)) {
-                      pluginContext.inputBlockers.values.foreach(
-                        _.process(
-                          EventInfo(
-                            appId = appId,
-                            channelId = channelId,
-                            event = event),
-                          pluginContext))
+                    if (allowedEvents
+                          .isEmpty || allowedEvents.contains(event.event)) {
+                      pluginContext
+                        .inputBlockers
+                        .values
+                        .foreach(
+                          _.process(
+                            EventInfo(
+                              appId = appId,
+                              channelId = channelId,
+                              event = event),
+                            pluginContext))
                       val data = eventClient
                         .futureInsert(event, appId, channelId)
                         .map { id =>
@@ -468,7 +481,9 @@ class EventServiceActor(
                         .recover {
                           case exception =>
                             Map(
-                              "status" -> StatusCodes.InternalServerError.intValue,
+                              "status" -> StatusCodes
+                                .InternalServerError
+                                .intValue,
                               "message" -> s"${exception.getMessage()}")
                         }
                       data
@@ -707,7 +722,7 @@ object EventServer {
 
 object Run {
   def main(args: Array[String]) {
-    EventServer.createEventServer(
-      EventServerConfig(ip = "0.0.0.0", port = 7070))
+    EventServer
+      .createEventServer(EventServerConfig(ip = "0.0.0.0", port = 7070))
   }
 }

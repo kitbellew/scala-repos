@@ -164,7 +164,8 @@ class InputOutputMetricsSuite
 
   test("input metrics for new Hadoop API with coalesce") {
     val bytesRead = runAndReturnBytesRead {
-      sc.newAPIHadoopFile(
+      sc
+        .newAPIHadoopFile(
           tmpFilePath,
           classOf[NewTextInputFormat],
           classOf[LongWritable],
@@ -172,7 +173,8 @@ class InputOutputMetricsSuite
         .count()
     }
     val bytesRead2 = runAndReturnBytesRead {
-      sc.newAPIHadoopFile(
+      sc
+        .newAPIHadoopFile(
           tmpFilePath,
           classOf[NewTextInputFormat],
           classOf[LongWritable],
@@ -201,7 +203,8 @@ class InputOutputMetricsSuite
 
   test("input metrics on records read - more stages") {
     val records = runAndReturnRecordsRead {
-      sc.textFile(tmpFilePath, 4)
+      sc
+        .textFile(tmpFilePath, 4)
         .map(key => (key.length, 1))
         .reduceByKey(_ + _)
         .count()
@@ -211,7 +214,8 @@ class InputOutputMetricsSuite
 
   test("input metrics on records - New Hadoop API") {
     val records = runAndReturnRecordsRead {
-      sc.newAPIHadoopFile(
+      sc
+        .newAPIHadoopFile(
           tmpFilePath,
           classOf[NewTextInputFormat],
           classOf[LongWritable],
@@ -251,14 +255,16 @@ class InputOutputMetricsSuite
           metrics.inputMetrics.foreach(inputRead += _.recordsRead)
           metrics.outputMetrics.foreach(outputWritten += _.recordsWritten)
           metrics.shuffleReadMetrics.foreach(shuffleRead += _.recordsRead)
-          metrics.shuffleWriteMetrics.foreach(
-            shuffleWritten += _.recordsWritten)
+          metrics
+            .shuffleWriteMetrics
+            .foreach(shuffleWritten += _.recordsWritten)
         }
       })
 
     val tmpFile = new File(tmpDir, getClass.getSimpleName)
 
-    sc.textFile(tmpFilePath, 4)
+    sc
+      .textFile(tmpFilePath, 4)
       .map(key => (key, 1))
       .reduceByKey(_ + _)
       .saveAsTextFile("file://" + tmpFile.getAbsolutePath)
@@ -367,7 +373,8 @@ class InputOutputMetricsSuite
       val filePath = "file://" + file.getAbsolutePath
 
       val records = runAndReturnRecordsWritten {
-        sc.parallelize(1 to numRecords)
+        sc
+          .parallelize(1 to numRecords)
           .map(key => (key.toString, key.toString))
           .saveAsNewAPIHadoopFile[NewTextOutputFormat[String, String]](filePath)
       }
@@ -384,7 +391,11 @@ class InputOutputMetricsSuite
       sc.addSparkListener(
         new SparkListener() {
           override def onTaskEnd(taskEnd: SparkListenerTaskEnd) {
-            taskBytesWritten += taskEnd.taskMetrics.outputMetrics.get.bytesWritten
+            taskBytesWritten += taskEnd
+              .taskMetrics
+              .outputMetrics
+              .get
+              .bytesWritten
           }
         })
 
@@ -397,10 +408,12 @@ class InputOutputMetricsSuite
         val outFiles = fs
           .listStatus(outPath)
           .filter(_.getPath.getName != "_SUCCESS")
-        taskBytesWritten.zip(outFiles).foreach {
-          case (bytes, fileStatus) =>
-            assert(bytes >= fileStatus.getLen)
-        }
+        taskBytesWritten
+          .zip(outFiles)
+          .foreach {
+            case (bytes, fileStatus) =>
+              assert(bytes >= fileStatus.getLen)
+          }
       } finally {
         fs.delete(outPath, true)
       }
@@ -409,7 +422,8 @@ class InputOutputMetricsSuite
 
   test("input metrics with old CombineFileInputFormat") {
     val bytesRead = runAndReturnBytesRead {
-      sc.hadoopFile(
+      sc
+        .hadoopFile(
           tmpFilePath,
           classOf[OldCombineTextInputFormat],
           classOf[LongWritable],
@@ -422,7 +436,8 @@ class InputOutputMetricsSuite
 
   test("input metrics with new CombineFileInputFormat") {
     val bytesRead = runAndReturnBytesRead {
-      sc.newAPIHadoopFile(
+      sc
+        .newAPIHadoopFile(
           tmpFilePath,
           classOf[NewCombineTextInputFormat],
           classOf[LongWritable],

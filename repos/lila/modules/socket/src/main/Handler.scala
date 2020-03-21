@@ -53,11 +53,16 @@ object Handler {
           AnaMove parse o foreach { anaMove =>
             anaMove.step match {
               case scalaz.Success(step) =>
-                member push lila.socket.Socket.makeMessage(
-                  "step",
-                  Json.obj("step" -> step.toJson, "path" -> anaMove.path))
+                member push lila
+                  .socket
+                  .Socket
+                  .makeMessage(
+                    "step",
+                    Json.obj("step" -> step.toJson, "path" -> anaMove.path))
               case scalaz.Failure(err) =>
-                member push lila.socket.Socket
+                member push lila
+                  .socket
+                  .Socket
                   .makeMessage("stepFailure", err.toString)
             }
           }
@@ -67,11 +72,16 @@ object Handler {
           AnaDrop parse o foreach { anaDrop =>
             anaDrop.step match {
               case scalaz.Success(step) =>
-                member push lila.socket.Socket.makeMessage(
-                  "step",
-                  Json.obj("step" -> step.toJson, "path" -> anaDrop.path))
+                member push lila
+                  .socket
+                  .Socket
+                  .makeMessage(
+                    "step",
+                    Json.obj("step" -> step.toJson, "path" -> anaDrop.path))
               case scalaz.Failure(err) =>
-                member push lila.socket.Socket
+                member push lila
+                  .socket
+                  .Socket
                   .makeMessage("stepFailure", err.toString)
             }
           }
@@ -80,15 +90,20 @@ object Handler {
         AnaRateLimit(uid) {
           AnaDests parse o match {
             case Some(req) =>
-              member push lila.socket.Socket.makeMessage(
-                "dests",
-                Json.obj(
-                  "dests" -> req.dests,
-                  "path" -> req.path) ++ req.opening.?? { o =>
-                  Json.obj("opening" -> o)
-                })
+              member push lila
+                .socket
+                .Socket
+                .makeMessage(
+                  "dests",
+                  Json.obj("dests" -> req.dests, "path" -> req.path) ++ req
+                    .opening
+                    .?? { o =>
+                      Json.obj("opening" -> o)
+                    })
             case None =>
-              member push lila.socket.Socket
+              member push lila
+                .socket
+                .Socket
                 .makeMessage("destsFailure", "Bad dests request")
           }
         }

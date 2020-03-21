@@ -171,7 +171,8 @@ object Markdown {
             (link, link)
           }
 
-        val url = repository.httpUrl
+        val url = repository
+          .httpUrl
           .replaceFirst("/git/", "/")
           .stripSuffix(".git") + "/wiki/" + StringUtil.urlEncode(page)
         if (pages.contains(page)) {
@@ -205,7 +206,8 @@ object Markdown {
               paths.drop(4).mkString("/")
             else
               repository.repository.defaultBranch
-          repository.httpUrl
+          repository
+            .httpUrl
             .replaceFirst("/git/", "/")
             .stripSuffix(".git") + "/blob/" + branch + "/" + url + (
             if (isImage)
@@ -220,7 +222,8 @@ object Markdown {
               paths.last
             else
               repository.repository.defaultBranch
-          repository.httpUrl
+          repository
+            .httpUrl
             .replaceFirst("/git/", "/")
             .stripSuffix(".git") + "/blob/" + branch + "/" + url + (
             if (isImage)
@@ -230,7 +233,8 @@ object Markdown {
           )
         }
       } else {
-        repository.httpUrl
+        repository
+          .httpUrl
           .replaceFirst("/git/", "/")
           .stripSuffix(".git") + "/wiki/_blob/" + url
       }

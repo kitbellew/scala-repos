@@ -209,14 +209,12 @@ final class DecisionTreeRegressionModel private[ml] (
     }
     var output = dataset
     if ($(predictionCol).nonEmpty) {
-      output = output.withColumn(
-        $(predictionCol),
-        predictUDF(col($(featuresCol))))
+      output = output
+        .withColumn($(predictionCol), predictUDF(col($(featuresCol))))
     }
     if (isDefined(varianceCol) && $(varianceCol).nonEmpty) {
-      output = output.withColumn(
-        $(varianceCol),
-        predictVarianceUDF(col($(featuresCol))))
+      output = output
+        .withColumn($(varianceCol), predictVarianceUDF(col($(featuresCol))))
     }
     output
   }
@@ -250,9 +248,8 @@ final class DecisionTreeRegressionModel private[ml] (
     *       to determine feature importance instead.
     */
   @Since("2.0.0")
-  lazy val featureImportances: Vector = RandomForest.featureImportances(
-    this,
-    numFeatures)
+  lazy val featureImportances: Vector = RandomForest
+    .featureImportances(this, numFeatures)
 
   /** Convert to a model in the old API */
   private[ml] def toOld: OldDecisionTreeModel = {

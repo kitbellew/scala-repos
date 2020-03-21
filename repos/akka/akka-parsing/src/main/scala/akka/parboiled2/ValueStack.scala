@@ -270,9 +270,8 @@ class ValueStack private[parboiled2] (initialSize: Int, maxSize: Int)
   private def ensureSize(requiredSize: Int): Unit =
     if (buffer.length < requiredSize)
       if (requiredSize <= maxSize) {
-        val newSize = math.min(
-          math.max(buffer.length * 2, requiredSize),
-          maxSize)
+        val newSize = math
+          .min(math.max(buffer.length * 2, requiredSize), maxSize)
         val newBuffer = new Array[Any](newSize)
         System.arraycopy(buffer, 0, newBuffer, 0, _size)
         buffer = newBuffer

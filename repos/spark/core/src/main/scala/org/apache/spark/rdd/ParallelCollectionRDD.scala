@@ -104,7 +104,8 @@ private[spark] class ParallelCollectionRDD[T: ClassTag](
 
   override def getPartitions: Array[Partition] = {
     val slices = ParallelCollectionRDD.slice(data, numSlices).toArray
-    slices.indices
+    slices
+      .indices
       .map(i => new ParallelCollectionPartition(id, i, slices(i)))
       .toArray
   }
@@ -135,15 +136,18 @@ private object ParallelCollectionRDD {
     // Sequences need to be sliced at the same set of index positions for operations
     // like RDD.zip() to behave as expected
     def positions(length: Long, numSlices: Int): Iterator[(Int, Int)] = {
-      (0 until numSlices).iterator.map(i => {
-        val start = ((i * length) / numSlices).toInt
-        val end = (((i + 1) * length) / numSlices).toInt
-        (start, end)
-      })
+      (0 until numSlices)
+        .iterator
+        .map(i => {
+          val start = ((i * length) / numSlices).toInt
+          val end = (((i + 1) * length) / numSlices).toInt
+          (start, end)
+        })
     }
     seq match {
       case r: Range => {
-        positions(r.length, numSlices).zipWithIndex
+        positions(r.length, numSlices)
+          .zipWithIndex
           .map({
             case ((start, end), index) =>
               // If the range is inclusive, use inclusive range for the last slice

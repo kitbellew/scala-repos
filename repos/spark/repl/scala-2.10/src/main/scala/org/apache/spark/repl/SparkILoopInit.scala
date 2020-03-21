@@ -32,10 +32,8 @@ private[repl] trait SparkILoopInit {
       /_/
 """.format(SPARK_VERSION))
     import Properties._
-    val welcomeMsg = "Using Scala %s (%s, Java %s)".format(
-      versionString,
-      javaVmName,
-      javaVersion)
+    val welcomeMsg = "Using Scala %s (%s, Java %s)"
+      .format(versionString, javaVmName, javaVersion)
     echo(welcomeMsg)
     echo("Type in expressions to have them evaluated.")
     echo("Type :help for more information.")

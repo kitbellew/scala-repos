@@ -17,7 +17,8 @@ class FilterOutdegreeJob(args: Args) extends Job(args) {
 
   import Matrix._
 
-  val adjacencyMatrix = Tsv(args("input"), ('user1, 'user2, 'rel)).read
+  val adjacencyMatrix = Tsv(args("input"), ('user1, 'user2, 'rel))
+    .read
     .toMatrix[Long, Long, Double]('user1, 'user2, 'rel)
 
   // Each row corresponds to the outgoing edges so to compute the outdegree we sum out the columns

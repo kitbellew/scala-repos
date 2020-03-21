@@ -63,7 +63,8 @@ object GridPageRank {
 class PageRankSuite extends SparkFunSuite with LocalSparkContext {
 
   def compareRanks(a: VertexRDD[Double], b: VertexRDD[Double]): Double = {
-    a.leftJoin(b) {
+    a
+      .leftJoin(b) {
         case (id, a, bOpt) =>
           (a - bOpt.getOrElse(0.0)) * (a - bOpt.getOrElse(0.0))
       }
@@ -209,10 +210,12 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
   test("Chain PageRank") {
     withSpark { sc =>
       val chain1 = (0 until 9).map(x => (x, x + 1))
-      val rawEdges = sc.parallelize(chain1, 1).map {
-        case (s, d) =>
-          (s.toLong, d.toLong)
-      }
+      val rawEdges = sc
+        .parallelize(chain1, 1)
+        .map {
+          case (s, d) =>
+            (s.toLong, d.toLong)
+        }
       val chain = Graph.fromEdgeTuples(rawEdges, 1.0).cache()
       val resetProb = 0.15
       val tol = 0.0001
@@ -229,10 +232,12 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
   test("Chain PersonalizedPageRank") {
     withSpark { sc =>
       val chain1 = (0 until 9).map(x => (x, x + 1))
-      val rawEdges = sc.parallelize(chain1, 1).map {
-        case (s, d) =>
-          (s.toLong, d.toLong)
-      }
+      val rawEdges = sc
+        .parallelize(chain1, 1)
+        .map {
+          case (s, d) =>
+            (s.toLong, d.toLong)
+        }
       val chain = Graph.fromEdgeTuples(rawEdges, 1.0).cache()
       val resetProb = 0.15
       val tol = 0.0001

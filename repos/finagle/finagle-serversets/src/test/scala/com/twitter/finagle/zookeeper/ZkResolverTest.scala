@@ -109,8 +109,8 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
 
     test("resolve ALIVE endpoints") {
       val res = new ZkResolver(factory)
-      val va = res.bind(
-        "localhost:%d!/foo/bar/baz".format(inst.zookeeperAddress.getPort))
+      val va = res
+        .bind("localhost:%d!/foo/bar/baz".format(inst.zookeeperAddress.getPort))
       eventually {
         Var.sample(va) == Addr.Bound()
       }
@@ -123,12 +123,10 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
       val serverSet = new ServerSetImpl(inst.zookeeperClient, "/foo/bar/baz")
       val port1 = RandomSocket.nextPort()
       val port2 = RandomSocket.nextPort()
-      val sockAddr = Address.Inet(
-        new InetSocketAddress("127.0.0.1", port1),
-        Addr.Metadata.empty)
-      val blahAddr = Address.Inet(
-        new InetSocketAddress("10.0.0.1", port2),
-        Addr.Metadata.empty)
+      val sockAddr = Address
+        .Inet(new InetSocketAddress("127.0.0.1", port1), Addr.Metadata.empty)
+      val blahAddr = Address
+        .Inet(new InetSocketAddress("10.0.0.1", port2), Addr.Metadata.empty)
 
       val status = serverSet.join(
         sockAddr.addr,
@@ -197,8 +195,8 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
 
     test("resolves from the main resolver") {
       Resolver.eval(
-        "zk!localhost:%d!/foo/bar/baz!blah".format(
-          inst.zookeeperAddress.getPort))
+        "zk!localhost:%d!/foo/bar/baz!blah"
+          .format(inst.zookeeperAddress.getPort))
     }
   }
 }

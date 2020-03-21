@@ -100,8 +100,8 @@ package object debug {
       *                     causing the wrong data to be projected.
       */
     case class ColumnMetrics(
-        elementTypes: Accumulator[HashSet[String]] = sparkContext.accumulator(
-          HashSet.empty))
+        elementTypes: Accumulator[HashSet[String]] = sparkContext
+          .accumulator(HashSet.empty))
 
     val tupleCount: Accumulator[Int] = sparkContext.accumulator[Int](0)
 
@@ -112,34 +112,41 @@ package object debug {
     def dumpStats(): Unit = {
       logDebug(s"== ${child.simpleString} ==")
       logDebug(s"Tuples output: ${tupleCount.value}")
-      child.output.zip(columnStats).foreach {
-        case (attr, metric) =>
-          val actualDataTypes = metric.elementTypes.value
-            .mkString("{", ",", "}")
-          logDebug(s" ${attr.name} ${attr.dataType}: $actualDataTypes")
-      }
+      child
+        .output
+        .zip(columnStats)
+        .foreach {
+          case (attr, metric) =>
+            val actualDataTypes = metric
+              .elementTypes
+              .value
+              .mkString("{", ",", "}")
+            logDebug(s" ${attr.name} ${attr.dataType}: $actualDataTypes")
+        }
     }
 
     protected override def doExecute(): RDD[InternalRow] = {
-      child.execute().mapPartitions { iter =>
-        new Iterator[InternalRow] {
-          def hasNext: Boolean = iter.hasNext
+      child
+        .execute()
+        .mapPartitions { iter =>
+          new Iterator[InternalRow] {
+            def hasNext: Boolean = iter.hasNext
 
-          def next(): InternalRow = {
-            val currentRow = iter.next()
-            tupleCount += 1
-            var i = 0
-            while (i < numColumns) {
-              val value = currentRow.get(i, output(i).dataType)
-              if (value != null) {
-                columnStats(i).elementTypes += HashSet(value.getClass.getName)
+            def next(): InternalRow = {
+              val currentRow = iter.next()
+              tupleCount += 1
+              var i = 0
+              while (i < numColumns) {
+                val value = currentRow.get(i, output(i).dataType)
+                if (value != null) {
+                  columnStats(i).elementTypes += HashSet(value.getClass.getName)
+                }
+                i += 1
               }
-              i += 1
+              currentRow
             }
-            currentRow
           }
         }
-      }
     }
 
     override def upstreams(): Seq[RDD[InternalRow]] = {

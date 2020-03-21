@@ -117,14 +117,16 @@ private[stat] object KolmogorovSmirnovTest extends Logging {
       cdf: Double => Double): Iterator[(Double, Double)] = {
     // zip data with index (within that partition)
     // calculate local (unadjusted) empirical CDF and subtract CDF
-    partData.zipWithIndex.map {
-      case (v, ix) =>
-        // dp and dl are later adjusted by constant, when global info is available
-        val dp = (ix + 1) / n
-        val dl = ix / n
-        val cdfVal = cdf(v)
-        (dl - cdfVal, dp - cdfVal)
-    }
+    partData
+      .zipWithIndex
+      .map {
+        case (v, ix) =>
+          // dp and dl are later adjusted by constant, when global info is available
+          val dp = (ix + 1) / n
+          val dl = ix / n
+          val cdfVal = cdf(v)
+          (dl - cdfVal, dp - cdfVal)
+      }
   }
 
   /**

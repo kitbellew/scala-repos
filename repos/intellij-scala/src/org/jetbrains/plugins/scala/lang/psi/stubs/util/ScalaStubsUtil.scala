@@ -56,10 +56,14 @@ object ScalaStubsUtil {
       val extendsBlock: PsiElement = iterator.next
       val stub = extendsBlock.asInstanceOf[ScExtendsBlockImpl].getStub
       if (stub != null) {
-        if (stub.getParentStub.getStubType
+        if (stub
+              .getParentStub
+              .getStubType
               .isInstanceOf[ScTemplateDefinitionElementType[
                 _ <: ScTemplateDefinition]]) {
-          inheritors += stub.getParentStub.getPsi
+          inheritors += stub
+            .getParentStub
+            .getPsi
             .asInstanceOf[ScTemplateDefinition]
         }
       } else {

@@ -41,9 +41,8 @@ class MavenRemoteRepositoryResolver(
   private val localRepo =
     new java.io.File(settings.getDefaultIvyUserDir, s"maven-cache")
   sbt.io.IO.createDirectory(localRepo)
-  protected val session = MavenRepositorySystemFactory.newSessionImpl(
-    system,
-    localRepo)
+  protected val session = MavenRepositorySystemFactory
+    .newSessionImpl(system, localRepo)
   private val aetherRepository = {
     new org.eclipse.aether.repository.RemoteRepository.Builder(
       repo.name,

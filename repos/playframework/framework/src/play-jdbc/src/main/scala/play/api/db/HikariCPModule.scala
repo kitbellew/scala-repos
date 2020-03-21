@@ -61,10 +61,12 @@ class HikariCPConnectionPool @Inject() (environment: Environment)
       val datasource = new HikariDataSource(hikariConfig)
 
       // Bind in JNDI
-      dbConfig.jndiName.foreach { jndiName =>
-        JNDI.initialContext.rebind(jndiName, datasource)
-        logger.info(s"datasource [$name] bound to JNDI as $jndiName")
-      }
+      dbConfig
+        .jndiName
+        .foreach { jndiName =>
+          JNDI.initialContext.rebind(jndiName, datasource)
+          logger.info(s"datasource [$name] bound to JNDI as $jndiName")
+        }
 
       datasource
     } match {
@@ -115,9 +117,15 @@ class HikariCPConfig(dbConfig: DatabaseConfig, configuration: PlayConfig) {
     import scala.collection.JavaConverters._
 
     val dataSourceConfig = config.get[PlayConfig]("dataSource")
-    dataSourceConfig.underlying.root().keySet().asScala.foreach { key =>
-      hikariConfig.addDataSourceProperty(key, dataSourceConfig.get[String](key))
-    }
+    dataSourceConfig
+      .underlying
+      .root()
+      .keySet()
+      .asScala
+      .foreach { key =>
+        hikariConfig
+          .addDataSourceProperty(key, dataSourceConfig.get[String](key))
+      }
 
     def toMillis(duration: Duration) = {
       if (duration.isFinite())
@@ -128,8 +136,8 @@ class HikariCPConfig(dbConfig: DatabaseConfig, configuration: PlayConfig) {
 
     // Frequently used
     hikariConfig.setAutoCommit(config.get[Boolean]("autoCommit"))
-    hikariConfig.setConnectionTimeout(
-      toMillis(config.get[Duration]("connectionTimeout")))
+    hikariConfig
+      .setConnectionTimeout(toMillis(config.get[Duration]("connectionTimeout")))
     hikariConfig.setIdleTimeout(toMillis(config.get[Duration]("idleTimeout")))
     hikariConfig.setMaxLifetime(toMillis(config.get[Duration]("maxLifetime")))
     config
@@ -140,12 +148,12 @@ class HikariCPConfig(dbConfig: DatabaseConfig, configuration: PlayConfig) {
     config.get[Option[String]]("poolName").foreach(hikariConfig.setPoolName)
 
     // Infrequently used
-    hikariConfig.setInitializationFailFast(
-      config.get[Boolean]("initializationFailFast"))
-    hikariConfig.setIsolateInternalQueries(
-      config.get[Boolean]("isolateInternalQueries"))
-    hikariConfig.setAllowPoolSuspension(
-      config.get[Boolean]("allowPoolSuspension"))
+    hikariConfig
+      .setInitializationFailFast(config.get[Boolean]("initializationFailFast"))
+    hikariConfig
+      .setIsolateInternalQueries(config.get[Boolean]("isolateInternalQueries"))
+    hikariConfig
+      .setAllowPoolSuspension(config.get[Boolean]("allowPoolSuspension"))
     hikariConfig.setReadOnly(config.get[Boolean]("readOnly"))
     hikariConfig.setRegisterMbeans(config.get[Boolean]("registerMbeans"))
     config

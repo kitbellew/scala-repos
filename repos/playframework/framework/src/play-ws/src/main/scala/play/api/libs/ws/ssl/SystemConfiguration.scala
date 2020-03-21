@@ -23,7 +23,10 @@ class SystemConfiguration {
   def configure(config: WSClientConfig) {
 
     config.ssl.loose.allowUnsafeRenegotiation.map(configureUnsafeRenegotiation)
-    config.ssl.loose.allowLegacyHelloMessages
+    config
+      .ssl
+      .loose
+      .allowLegacyHelloMessages
       .map(configureAllowLegacyHelloMessages)
     config.ssl.checkRevocation.map(configureCheckRevocation)
   }
@@ -59,9 +62,8 @@ class SystemConfiguration {
     logger.debug(
       "configureCheckRevocation: com.sun.security.enableCRLDP = {}",
       checkRevocation.toString)
-    System.setProperty(
-      "com.sun.net.ssl.checkRevocation",
-      checkRevocation.toString)
+    System
+      .setProperty("com.sun.net.ssl.checkRevocation", checkRevocation.toString)
   }
 
   /**

@@ -105,8 +105,9 @@ class CodegenContext {
     *
     * They will be kept as member variables in generated classes like `SpecificProjection`.
     */
-  val mutableStates: mutable.ArrayBuffer[(String, String, String)] =
-    mutable.ArrayBuffer.empty[(String, String, String)]
+  val mutableStates: mutable.ArrayBuffer[(String, String, String)] = mutable
+    .ArrayBuffer
+    .empty[(String, String, String)]
 
   def addMutableState(
       javaType: String,
@@ -131,7 +132,8 @@ class CodegenContext {
   /**
     * Holding all the functions those will be added into generated class.
     */
-  val addedFunctions: mutable.Map[String, String] = mutable.Map
+  val addedFunctions: mutable.Map[String, String] = mutable
+    .Map
     .empty[String, String]
 
   def addNewFunction(funcName: String, funcCode: String): Unit = {
@@ -157,7 +159,8 @@ class CodegenContext {
   case class SubExprEliminationState(isNull: String, value: String)
 
   // Foreach expression that is participating in subexpression elimination, the state to use.
-  val subExprEliminationExprs = mutable.HashMap
+  val subExprEliminationExprs = mutable
+    .HashMap
     .empty[Expression, SubExprEliminationState]
 
   // The collection of sub-expression result resetting methods that need to be called on each row.
@@ -601,17 +604,19 @@ class CodegenContext {
       blocks.head
     } else {
       val apply = freshName("apply")
-      val functions = blocks.zipWithIndex.map {
-        case (body, i) =>
-          val name = s"${apply}_$i"
-          val code = s"""
+      val functions = blocks
+        .zipWithIndex
+        .map {
+          case (body, i) =>
+            val name = s"${apply}_$i"
+            val code = s"""
            |private void $name(InternalRow $row) {
            |  $body
            |}
          """.stripMargin
-          addNewFunction(name, code)
-          name
-      }
+            addNewFunction(name, code)
+            name
+        }
 
       functions.map(name => s"$name($row);").mkString("\n")
     }
@@ -628,8 +633,9 @@ class CodegenContext {
 
     // Get all the expressions that appear at least twice and set up the state for subexpression
     // elimination.
-    val commonExprs = equivalentExpressions.getAllEquivalentExprs.filter(
-      _.size > 1)
+    val commonExprs = equivalentExpressions
+      .getAllEquivalentExprs
+      .filter(_.size > 1)
     commonExprs.foreach(e => {
       val expr = e.head
       val fnName = freshName("evalExpr")
@@ -756,8 +762,8 @@ object CodeGenerator extends Logging {
     val evaluator = new ClassBodyEvaluator()
     evaluator.setParentClassLoader(Utils.getContextOrSparkClassLoader)
     // Cannot be under package codegen, or fail with java.lang.InstantiationException
-    evaluator.setClassName(
-      "org.apache.spark.sql.catalyst.expressions.GeneratedClass")
+    evaluator
+      .setClassName("org.apache.spark.sql.catalyst.expressions.GeneratedClass")
     evaluator.setDefaultImports(
       Array(
         classOf[Platform].getName,

@@ -186,9 +186,8 @@ class LogSegment(
               logSize // the max offset is off the end of the log, use the end of the file
             else
               mapping.position
-          min(
-            min(maxPosition, endPosition) - startPosition.position,
-            maxSize).toInt
+          min(min(maxPosition, endPosition) - startPosition.position, maxSize)
+            .toInt
         }
       }
     FetchDataInfo(offsetMetadata, log.read(startPosition.position, length))
@@ -287,10 +286,12 @@ class LogSegment(
     */
   @threadsafe
   def flush() {
-    LogFlushStats.logFlushTimer.time {
-      log.flush()
-      index.flush()
-    }
+    LogFlushStats
+      .logFlushTimer
+      .time {
+        log.flush()
+        index.flush()
+      }
   }
 
   /**

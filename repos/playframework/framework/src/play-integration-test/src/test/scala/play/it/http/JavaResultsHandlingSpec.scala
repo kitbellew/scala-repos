@@ -119,7 +119,10 @@ trait JavaResultsHandlingSpec
       new MockController {
         def action = {
           import scala.collection.JavaConverters._
-          val dataSource = akka.stream.javadsl.Source
+          val dataSource = akka
+            .stream
+            .javadsl
+            .Source
             .from(List("a", "b", "c").asJava)
           val cometSource = dataSource.via(Comet.string("callback"))
           Results.ok().chunked(cometSource)
@@ -136,7 +139,10 @@ trait JavaResultsHandlingSpec
         def action = {
           val objectNode = Json.newObject
           objectNode.put("foo", "bar")
-          val dataSource: Source[JsonNode, NotUsed] = akka.stream.javadsl.Source
+          val dataSource: Source[JsonNode, NotUsed] = akka
+            .stream
+            .javadsl
+            .Source
             .from(Arrays.asList(objectNode))
           val cometSource = dataSource.via(Comet.json("callback"))
           Results.ok().chunked(cometSource)
@@ -152,7 +158,10 @@ trait JavaResultsHandlingSpec
       new MockController {
         def action = {
           import scala.collection.JavaConverters._
-          val dataSource = akka.stream.javadsl.Source
+          val dataSource = akka
+            .stream
+            .javadsl
+            .Source
             .from(List("a", "b").asJava)
             .map {
               new akka.japi.function.Function[String, EventSource.Event] {
@@ -165,8 +174,8 @@ trait JavaResultsHandlingSpec
       }) { response =>
       response.header(CONTENT_TYPE) must beSome.like {
         case value =>
-          value.toLowerCase(
-            java.util.Locale.ENGLISH) must_== "text/event-stream"
+          value
+            .toLowerCase(java.util.Locale.ENGLISH) must_== "text/event-stream"
       }
       response.header(TRANSFER_ENCODING) must beSome("chunked")
       response.header(CONTENT_LENGTH) must beNone

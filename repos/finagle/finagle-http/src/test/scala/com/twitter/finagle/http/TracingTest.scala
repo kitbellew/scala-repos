@@ -31,9 +31,9 @@ class TracingTest extends FunSuite {
               request.headers.get(Header.SpanId) == traceId.spanId.toString)
             assert(request.headers.contains(Header.ParentSpanId) == false)
             assert(
-              request.headers
-                .get(Header.Sampled)
-                .toBoolean == traceId.sampled.get)
+              request.headers.get(Header.Sampled).toBoolean == traceId
+                .sampled
+                .get)
             assert(
               request.headers.get(Header.Flags).toLong == traceId.flags.toLong)
 

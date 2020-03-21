@@ -119,12 +119,14 @@ private[http] class FrameEventRenderer
     }
 
     val maskOffset = 2 + extraLengthBytes
-    header.mask.foreach { mask ⇒
-      data(maskOffset + 0) = ((mask & 0xFF000000) >> 24).toByte
-      data(maskOffset + 1) = ((mask & 0x00FF0000) >> 16).toByte
-      data(maskOffset + 2) = ((mask & 0x0000FF00) >> 8).toByte
-      data(maskOffset + 3) = ((mask & 0x000000FF) >> 0).toByte
-    }
+    header
+      .mask
+      .foreach { mask ⇒
+        data(maskOffset + 0) = ((mask & 0xFF000000) >> 24).toByte
+        data(maskOffset + 1) = ((mask & 0x00FF0000) >> 16).toByte
+        data(maskOffset + 2) = ((mask & 0x0000FF00) >> 8).toByte
+        data(maskOffset + 3) = ((mask & 0x000000FF) >> 0).toByte
+      }
 
     ByteString(data)
   }

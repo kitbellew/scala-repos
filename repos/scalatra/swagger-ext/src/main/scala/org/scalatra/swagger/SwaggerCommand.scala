@@ -23,36 +23,39 @@ object SwaggerCommandSupport {
 
   private[this] def createParameterList[T <: Command](obj: T)(implicit
       mf: Manifest[T]): List[Parameter] = {
-    mf.erasure.getMethods().foldLeft(List.empty[Parameter]) { (lst, fld) =>
-      if (fld.getReturnType().isAssignableFrom(classOf[Field[_]]) && fld
-            .getParameterTypes()
-            .isEmpty) {
-        val f = fld.invoke(obj).asInstanceOf[Field[Any]]
-        // remove if statement below to include header params in description again
-        if (f.valueSource == ValueSource.Header)
+    mf
+      .erasure
+      .getMethods()
+      .foldLeft(List.empty[Parameter]) { (lst, fld) =>
+        if (fld.getReturnType().isAssignableFrom(classOf[Field[_]]) && fld
+              .getParameterTypes()
+              .isEmpty) {
+          val f = fld.invoke(obj).asInstanceOf[Field[Any]]
+          // remove if statement below to include header params in description again
+          if (f.valueSource == ValueSource.Header)
+            lst
+          else {
+            Parameter(
+              f.displayName | f.name,
+              DataType(f.binding.valueManifest),
+              f.description.blankOption,
+              f.notes.blankOption,
+              paramtypeMapping(f.valueSource),
+              if (f.isRequired)
+                None
+              else
+                f.defaultValue.flatMap(_.toString.blankOption),
+              if (f.allowableValues.nonEmpty)
+                AllowableValues(f.allowableValues)
+              else
+                AllowableValues.AnyValue,
+              required = f.isRequired,
+              position = f.position
+            ) :: lst
+          }
+        } else
           lst
-        else {
-          Parameter(
-            f.displayName | f.name,
-            DataType(f.binding.valueManifest),
-            f.description.blankOption,
-            f.notes.blankOption,
-            paramtypeMapping(f.valueSource),
-            if (f.isRequired)
-              None
-            else
-              f.defaultValue.flatMap(_.toString.blankOption),
-            if (f.allowableValues.nonEmpty)
-              AllowableValues(f.allowableValues)
-            else
-              AllowableValues.AnyValue,
-            required = f.isRequired,
-            position = f.position
-          ) :: lst
-        }
-      } else
-        lst
-    }
+      }
   }
 
   private[this] def addModelFromCommand[T <: Command](

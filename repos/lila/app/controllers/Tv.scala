@@ -28,7 +28,8 @@ object Tv extends LilaController {
               Env.game.crosstableApi(pov.game) map {
               case (champions, crosstable) =>
                 Ok(
-                  html.tv
+                  html
+                    .tv
                     .sides(channel, champions, pov, crosstable, streams = Nil))
             }
           }
@@ -42,11 +43,14 @@ object Tv extends LilaController {
       val onTv = lila.round.OnTv(channel.key, flip)
       negotiate(
         html = {
-          Env.api.roundApi.watcher(
-            pov,
-            lila.api.Mobile.Api.currentVersion,
-            tv = onTv.some,
-            withOpening = false) zip
+          Env
+            .api
+            .roundApi
+            .watcher(
+              pov,
+              lila.api.Mobile.Api.currentVersion,
+              tv = onTv.some,
+              withOpening = false) zip
             Env.game.crosstableApi(game) zip
             Env.tv.tv.getChampions map {
             case ((data, cross), champions) =>
@@ -56,7 +60,9 @@ object Tv extends LilaController {
           }
         },
         api = apiVersion =>
-          Env.api.roundApi
+          Env
+            .api
+            .roundApi
             .watcher(pov, apiVersion, tv = onTv.some, withOpening = false) map {
             Ok(_)
           }
@@ -109,9 +115,14 @@ object Tv extends LilaController {
 
   def streamConfig =
     Auth { implicit ctx => me =>
-      Env.tv.streamerList.store.get.map { text =>
-        Ok(html.tv.streamConfig(Env.tv.streamerList.form.fill(text)))
-      }
+      Env
+        .tv
+        .streamerList
+        .store
+        .get
+        .map { text =>
+          Ok(html.tv.streamConfig(Env.tv.streamerList.form.fill(text)))
+        }
     }
 
   def streamConfigSave =
@@ -143,10 +154,13 @@ object Tv extends LilaController {
           NotFound
         case Some(game) =>
           Ok(
-            views.html.tv.embed(
-              Pov first game,
-              get("bg", req) | "light",
-              lila.pref.Theme(~get("theme", req)).cssClass))
+            views
+              .html
+              .tv
+              .embed(
+                Pov first game,
+                get("bg", req) | "light",
+                lila.pref.Theme(~get("theme", req)).cssClass))
       }
     }
 }

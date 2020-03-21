@@ -16,7 +16,8 @@ private[setup] object AnonConfigRepo {
   def update(req: RequestHeader)(f: UserConfig => UserConfig): Funit =
     configOption(req) flatMap {
       _ ?? { config =>
-        anonConfigTube.coll
+        anonConfigTube
+          .coll
           .update(BSONDocument("_id" -> config.id), f(config), upsert = true)
           .void
       }
@@ -38,7 +39,8 @@ private[setup] object AnonConfigRepo {
 
   def filter(req: RequestHeader): Fu[FilterConfig] =
     sessionId(req) ?? { sid =>
-      anonConfigTube.coll
+      anonConfigTube
+        .coll
         .find(BSONDocument("_id" -> sid), BSONDocument("filter" -> true))
         .one[BSONDocument] map {
         _ flatMap (_.getAs[FilterConfig]("filter"))

@@ -62,9 +62,11 @@ trait H2Profile extends JdbcProfile {
         meta: MColumn): ColumnBuilder =
       new ColumnBuilder(tableBuilder, meta) {
         override def length =
-          super.length.filter(
-            _ != Int.MaxValue
-          ) // H2 sometimes show this value, but doesn't accept it back in the DBType
+          super
+            .length
+            .filter(
+              _ != Int.MaxValue
+            ) // H2 sometimes show this value, but doesn't accept it back in the DBType
         override def default =
           rawDefault
             .map((_, tpe))
@@ -95,8 +97,8 @@ trait H2Profile extends JdbcProfile {
 
   override val columnTypes = new JdbcTypes
   override protected def computeQueryCompiler =
-    super.computeQueryCompiler
-      .replace(Phase.resolveZipJoinsRownumStyle) - Phase.fixRowNumberOrdering
+    super.computeQueryCompiler.replace(Phase.resolveZipJoinsRownumStyle) - Phase
+      .fixRowNumberOrdering
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder =
     new QueryBuilder(n, state)
   override def createUpsertBuilder(node: Insert): InsertBuilder =
@@ -110,8 +112,8 @@ trait H2Profile extends JdbcProfile {
       sym: Option[FieldSymbol]): String =
     tmd.sqlType match {
       case java.sql.Types.VARCHAR =>
-        val size = sym.flatMap(
-          _.findColumnOption[RelationalProfile.ColumnOption.Length])
+        val size = sym
+          .flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length])
         size.fold("VARCHAR")(l =>
           if (l.varying)
             s"VARCHAR(${l.length})"
@@ -173,8 +175,10 @@ trait H2Profile extends JdbcProfile {
       extends super.CountingInsertActionComposerImpl[U](compiled) {
     // H2 cannot perform server-side insert-or-update with soft insert semantics. We don't have to do
     // the same in ReturningInsertInvoker because H2 does not allow returning non-AutoInc keys anyway.
-    override protected val useServerSideUpsert = compiled.upsert.fields.forall(
-      fs => !fs.options.contains(ColumnOption.AutoInc))
+    override protected val useServerSideUpsert = compiled
+      .upsert
+      .fields
+      .forall(fs => !fs.options.contains(ColumnOption.AutoInc))
     override protected def useTransactionForUpsert = !useServerSideUpsert
   }
 }

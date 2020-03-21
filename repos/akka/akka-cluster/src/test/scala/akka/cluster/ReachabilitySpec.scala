@@ -52,7 +52,8 @@ class ReachabilitySpec extends WordSpec with Matchers {
     }
 
     "be unreachable when some observed unreachable and others reachable" in {
-      val r = Reachability.empty
+      val r = Reachability
+        .empty
         .unreachable(nodeB, nodeA)
         .unreachable(nodeC, nodeA)
         .reachable(nodeD, nodeA)
@@ -60,7 +61,8 @@ class ReachabilitySpec extends WordSpec with Matchers {
     }
 
     "be reachable when all observed reachable again" in {
-      val r = Reachability.empty
+      val r = Reachability
+        .empty
         .unreachable(nodeB, nodeA)
         .unreachable(nodeC, nodeA)
         .reachable(nodeB, nodeA)
@@ -71,7 +73,8 @@ class ReachabilitySpec extends WordSpec with Matchers {
     }
 
     "exclude observations from specific (downed) nodes" in {
-      val r = Reachability.empty
+      val r = Reachability
+        .empty
         .unreachable(nodeC, nodeA)
         .reachable(nodeC, nodeA)
         .unreachable(nodeC, nodeB)
@@ -87,7 +90,8 @@ class ReachabilitySpec extends WordSpec with Matchers {
     }
 
     "be pruned when all records of an observer are Reachable" in {
-      val r = Reachability.empty
+      val r = Reachability
+        .empty
         .unreachable(nodeB, nodeA)
         .unreachable(nodeB, nodeC)
         .unreachable(nodeD, nodeC)
@@ -120,7 +124,8 @@ class ReachabilitySpec extends WordSpec with Matchers {
     }
 
     "have correct status for a mix of nodes" in {
-      val r = Reachability.empty
+      val r = Reachability
+        .empty
         .unreachable(nodeB, nodeA)
         .unreachable(nodeC, nodeA)
         .unreachable(nodeD, nodeA)
@@ -163,7 +168,8 @@ class ReachabilitySpec extends WordSpec with Matchers {
     }
 
     "merge by picking latest version of each record" in {
-      val r1 = Reachability.empty
+      val r1 = Reachability
+        .empty
         .unreachable(nodeB, nodeA)
         .unreachable(nodeC, nodeD)
       val r2 = r1
@@ -187,7 +193,8 @@ class ReachabilitySpec extends WordSpec with Matchers {
     }
 
     "merge by taking allowed set into account" in {
-      val r1 = Reachability.empty
+      val r1 = Reachability
+        .empty
         .unreachable(nodeB, nodeA)
         .unreachable(nodeC, nodeD)
       val r2 = r1
@@ -216,7 +223,8 @@ class ReachabilitySpec extends WordSpec with Matchers {
     }
 
     "merge correctly after pruning" in {
-      val r1 = Reachability.empty
+      val r1 = Reachability
+        .empty
         .unreachable(nodeB, nodeA)
         .unreachable(nodeC, nodeD)
       val r2 = r1.unreachable(nodeA, nodeE)
@@ -249,7 +257,8 @@ class ReachabilitySpec extends WordSpec with Matchers {
     }
 
     "remove node" in {
-      val r = Reachability.empty
+      val r = Reachability
+        .empty
         .unreachable(nodeB, nodeA)
         .unreachable(nodeC, nodeD)
         .unreachable(nodeB, nodeC)

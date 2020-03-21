@@ -58,10 +58,8 @@ private[finagle] class PipelineFactory(
 
     private[this] def thriftToMux(req: ChannelBuffer): Message.Tdispatch = {
       val header = new RequestHeader
-      val request_ = InputBuffer.peelMessage(
-        ThriftMuxUtil.bufferToArray(req),
-        header,
-        protocolFactory)
+      val request_ = InputBuffer
+        .peelMessage(ThriftMuxUtil.bufferToArray(req), header, protocolFactory)
       val richHeader = new RichRequestHeader(header)
 
       val contextBuf =
@@ -336,13 +334,16 @@ private[finagle] class PipelineFactory(
           // decrement on channel closure.
           downgradedConnects.incr()
           downgradedConnectionCount.incrementAndGet()
-          ctx.getChannel.getCloseFuture.addListener(
-            new ChannelFutureListener {
-              override def operationComplete(f: ChannelFuture): Unit =
-                if (!f.isCancelled) { // on success or failure
-                  downgradedConnectionCount.decrementAndGet()
-                }
-            })
+          ctx
+            .getChannel
+            .getCloseFuture
+            .addListener(
+              new ChannelFutureListener {
+                override def operationComplete(f: ChannelFuture): Unit =
+                  if (!f.isCancelled) { // on success or failure
+                    downgradedConnectionCount.decrementAndGet()
+                  }
+              })
 
           // Add a ChannelHandler to serialize the requests since we may
           // deal with a client that pipelines requests
@@ -352,11 +353,8 @@ private[finagle] class PipelineFactory(
             new RequestSerializer(1))
           if (isTTwitterUpNegotiation(buf)) {
             pipeline.replace(this, "twitter_thrift_to_mux", new TTwitterToMux)
-            Channels.write(
-              ctx,
-              e.getFuture,
-              upNegotiationAck,
-              e.getRemoteAddress)
+            Channels
+              .write(ctx, e.getFuture, upNegotiationAck, e.getRemoteAddress)
           } else {
             pipeline.replace(this, "framed_thrift_to_mux", new TFramedToMux)
             super.messageReceived(
@@ -378,13 +376,16 @@ private[finagle] class PipelineFactory(
           // decrement on channel closure.
           thriftmuxConnects.incr()
           thriftMuxConnectionCount.incrementAndGet()
-          ctx.getChannel.getCloseFuture.addListener(
-            new ChannelFutureListener {
-              override def operationComplete(f: ChannelFuture): Unit =
-                if (!f.isCancelled) { // on success or failure
-                  thriftMuxConnectionCount.decrementAndGet()
-                }
-            })
+          ctx
+            .getChannel
+            .getCloseFuture
+            .addListener(
+              new ChannelFutureListener {
+                override def operationComplete(f: ChannelFuture): Unit =
+                  if (!f.isCancelled) { // on success or failure
+                    thriftMuxConnectionCount.decrementAndGet()
+                  }
+              })
 
           pipeline.remove(this)
           super.messageReceived(ctx, e)
@@ -412,8 +413,8 @@ private[finagle] class PipelineFactory(
   private[this] val thriftMuxConnectionCount = new AtomicInteger
 
   private[this] val thriftmuxConnects = statsReceiver.counter("connects")
-  private[this] val downgradedConnects = statsReceiver.counter(
-    "downgraded_connects")
+  private[this] val downgradedConnects = statsReceiver
+    .counter("downgraded_connects")
   private[this] val downgradedConnectionGauge =
     statsReceiver.addGauge("downgraded_connections") {
       downgradedConnectionCount.get()

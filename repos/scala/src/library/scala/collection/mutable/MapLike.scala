@@ -246,7 +246,8 @@ trait MapLike[A, B, +This <: MapLike[A, B, This] with Map[A, B]]
     * @param p  The test predicate
     */
   def retain(p: (A, B) => Boolean): this.type = {
-    for ((k, v) <- this.toList) // SI-7269 toList avoids ConcurrentModificationException
+    for ((k, v) <- this
+           .toList) // SI-7269 toList avoids ConcurrentModificationException
       if (!p(k, v))
         this -= k
 

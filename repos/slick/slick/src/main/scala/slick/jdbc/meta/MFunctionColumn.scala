@@ -29,11 +29,13 @@ object MFunctionColumn {
       functionPattern: MQName,
       columnNamePattern: String = "%") = {
     ResultSetAction[MFunctionColumn] { s =>
-      try s.metaData.getFunctionColumns(
-        functionPattern.catalog_?,
-        functionPattern.schema_?,
-        functionPattern.name,
-        columnNamePattern)
+      try s
+        .metaData
+        .getFunctionColumns(
+          functionPattern.catalog_?,
+          functionPattern.schema_?,
+          functionPattern.name,
+          columnNamePattern)
       catch {
         case _: AbstractMethodError =>
           null

@@ -11,5 +11,6 @@ object HoconElementSets {
   val Literal = Null | Boolean | Number | StringValue
   val Value = Literal | Object | Array | Substitution | Concatenation
   val ForcedLeafBlock =
-    Key | Path | UnquotedString | Number | Null | Boolean | TokenType.ERROR_ELEMENT
+    Key | Path | UnquotedString | Number | Null | Boolean | TokenType
+      .ERROR_ELEMENT
 }

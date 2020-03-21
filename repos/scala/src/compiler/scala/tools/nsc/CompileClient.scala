@@ -33,8 +33,9 @@ class StandardCompileClient extends HasCompileSocket with CompileOutputCommon {
       else
         Nil
 
-    val vmArgs =
-      settings.jvmargs.unparse ++ settings.defines.unparse ++ extraVmArgs
+    val vmArgs = settings.jvmargs.unparse ++ settings
+      .defines
+      .unparse ++ extraVmArgs
     val fscArgs = args.toList ++ command.extraFscArgs
 
     if (settings.version) {

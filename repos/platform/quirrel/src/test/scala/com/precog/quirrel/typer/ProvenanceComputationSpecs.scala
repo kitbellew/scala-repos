@@ -300,9 +300,8 @@ object ProvenanceComputationSpecs
 
     "identify tic-var as value" in {
       val tree @ Let(_, _, _, body, _) = compileSingle("a(foo) := foo a(42)")
-      body.provenance mustEqual ParamProvenance(
-        Identifier(Vector(), "foo"),
-        tree)
+      body
+        .provenance mustEqual ParamProvenance(Identifier(Vector(), "foo"), tree)
       tree.errors must beEmpty
     }
 

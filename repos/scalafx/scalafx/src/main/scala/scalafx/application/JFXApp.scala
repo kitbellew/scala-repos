@@ -125,7 +125,8 @@ object JFXApp {
   private[application] class ParametersImpl(arguments: Seq[String])
       extends Parameters {
 
-    private var namedArguments: mutable.Map[String, String] = mutable.Map
+    private var namedArguments: mutable.Map[String, String] = mutable
+      .Map
       .empty[String, String]
     private var unnamedArguments = Buffer.empty[String]
     private var filled = false

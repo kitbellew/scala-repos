@@ -95,8 +95,7 @@ private class PoolInterfaceActor(
       Flow[HttpRequest].viaMat(connectionFlow)(Keep.right),
       new InetSocketAddress(host, port),
       settings,
-      setup.log)
-      .named("PoolFlow")
+      setup.log).named("PoolFlow")
 
     Source
       .fromPublisher(ActorPublisher(self))
@@ -152,9 +151,11 @@ private class PoolInterfaceActor(
       if (totalDemand == 0) {
         // if we can't dispatch right now we buffer and dispatch when demand from the pool arrives
         if (inputBuffer.isFull) {
-          x.responsePromise.failure(
-            new BufferOverflowException(
-              s"Exceeded configured max-open-requests value of [${inputBuffer.capacity}]"))
+          x
+            .responsePromise
+            .failure(
+              new BufferOverflowException(
+                s"Exceeded configured max-open-requests value of [${inputBuffer.capacity}]"))
         } else
           inputBuffer.enqueue(x)
       } else
@@ -193,10 +194,10 @@ private class PoolInterfaceActor(
 
   def dispatchRequest(pr: PoolRequest): Unit = {
     val scheme = Uri.httpScheme(hcps.setup.connectionContext.isSecure)
-    val hostHeader = headers.Host(
-      hcps.host,
-      Uri.normalizePort(hcps.port, scheme))
-    val effectiveRequest = pr.request
+    val hostHeader = headers
+      .Host(hcps.host, Uri.normalizePort(hcps.port, scheme))
+    val effectiveRequest = pr
+      .request
       .withUri(pr.request.uri.toHttpRequestTargetOriginForm)
       .withDefaultHeaders(hostHeader)
     val retries =

@@ -777,7 +777,9 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
       def scheduleTimeout(d: FiniteDuration): Some[Cancellable] = {
         import context.dispatcher
         Some(
-          context.system.scheduler
+          context
+            .system
+            .scheduler
             .scheduleOnce(d, self, TimeoutMarker(generation)))
       }
 

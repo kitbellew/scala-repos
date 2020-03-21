@@ -31,7 +31,8 @@ object StandardTestDBs {
       override val profile =
         new H2Profile {
           override protected def computeQueryCompiler =
-            super.computeQueryCompiler
+            super
+              .computeQueryCompiler
               .addAfter(Phase.removeTakeDrop, Phase.expandSums)
         }
     }
@@ -64,8 +65,8 @@ object StandardTestDBs {
   lazy val HsqldbDisk =
     new HsqlDB("hsqldbdisk") {
       val dbName = "hsqldb-" + confName
-      val url =
-        "jdbc:hsqldb:file:" + TestkitConfig.testDBPath + "/" + dbName + ";user=SA;password=;shutdown=true;hsqldb.applog=0"
+      val url = "jdbc:hsqldb:file:" + TestkitConfig
+        .testDBPath + "/" + dbName + ";user=SA;password=;shutdown=true;hsqldb.applog=0"
       override def cleanUpBefore() = TestDB.deleteDBFiles(dbName)
       // Recreating the DB is faster than dropping everything individually
       override def dropUserArtifacts(implicit
@@ -100,7 +101,9 @@ object StandardTestDBs {
         val dropUrl = "jdbc:derby:memory:" + dbName + ";drop=true"
         try {
           await(
-            profile.backend.Database
+            profile
+              .backend
+              .Database
               .forURL(dropUrl, driver = jdbcDriver)
               .run(SimpleJdbcAction(_.connection)))
         } catch {
@@ -112,14 +115,16 @@ object StandardTestDBs {
   lazy val DerbyDisk =
     new DerbyDB("derbydisk") {
       val dbName = "derby-" + confName
-      val url =
-        "jdbc:derby:" + TestkitConfig.testDBPath + "/" + dbName + ";create=true"
+      val url = "jdbc:derby:" + TestkitConfig
+        .testDBPath + "/" + dbName + ";create=true"
       override def cleanUpBefore() = {
-        val dropUrl =
-          "jdbc:derby:" + TestkitConfig.testDBPath + "/" + dbName + ";shutdown=true"
+        val dropUrl = "jdbc:derby:" + TestkitConfig
+          .testDBPath + "/" + dbName + ";shutdown=true"
         try {
           await(
-            profile.backend.Database
+            profile
+              .backend
+              .Database
               .forURL(dropUrl, driver = jdbcDriver)
               .run(SimpleJdbcAction(_.connection)))
         } catch {
@@ -171,21 +176,25 @@ object StandardTestDBs {
         db.getTables.foreach(t => db.dropTable(t.name))
       }
       def assertTablesExist(tables: String*) =
-        profile.api.SimpleDBIO { ctx =>
-          val all = ctx.session.database.getTables.map(_.name).toSet
-          for (t <- tables) {
-            if (!all.contains(t))
-              Assert.fail("Table " + t + " should exist")
+        profile
+          .api
+          .SimpleDBIO { ctx =>
+            val all = ctx.session.database.getTables.map(_.name).toSet
+            for (t <- tables) {
+              if (!all.contains(t))
+                Assert.fail("Table " + t + " should exist")
+            }
           }
-        }
       def assertNotTablesExist(tables: String*) =
-        profile.api.SimpleDBIO { ctx =>
-          val all = ctx.session.database.getTables.map(_.name).toSet
-          for (t <- tables) {
-            if (all.contains(t))
-              Assert.fail("Table " + t + " should not exist")
+        profile
+          .api
+          .SimpleDBIO { ctx =>
+            val all = ctx.session.database.getTables.map(_.name).toSet
+            for (t <- tables) {
+              if (all.contains(t))
+                Assert.fail("Table " + t + " should not exist")
+            }
           }
-        }
     }
 
   lazy val DB2 =
@@ -257,8 +266,8 @@ object StandardTestDBs {
           }
           _ <- DBIO.sequence(constraintStatements)
           tables <- localTables
-          tableStatements = tables.map(t =>
-            sqlu"drop table #${profile.quoteIdentifier(t)}")
+          tableStatements = tables
+            .map(t => sqlu"drop table #${profile.quoteIdentifier(t)}")
           _ <- DBIO.sequence(tableStatements)
         } yield ()
       }
@@ -282,15 +291,17 @@ object StandardTestDBs {
 
       override def canGetLocalTables = false
       override def capabilities =
-        super.capabilities - TestDB.capabilities.jdbcMetaGetIndexInfo - TestDB.capabilities.transactionIsolation
+        super.capabilities - TestDB.capabilities.jdbcMetaGetIndexInfo - TestDB
+          .capabilities
+          .transactionIsolation
 
       /* Only drop and recreate the user. This is much faster than dropping
        * the tablespace. */
       override def dropUserArtifacts(implicit
           session: profile.Backend#Session) = {
         session.close()
-        val a = DBIO.sequence(
-          Seq(drop(0), create(1), create(2)).map(s => sqlu"#$s"))
+        val a = DBIO
+          .sequence(Seq(drop(0), create(1), create(2)).map(s => sqlu"#$s"))
         await(databaseFor("adminConn").run(a))
       }
     }
@@ -301,7 +312,9 @@ abstract class H2TestDB(confName: String, keepAlive: Boolean)
   val profile: Profile = H2Profile
   val jdbcDriver = "org.h2.Driver"
   override def capabilities =
-    super.capabilities - TestDB.capabilities.jdbcMetaGetFunctions - TestDB.capabilities.jdbcMetaGetClientInfoProperties
+    super.capabilities - TestDB.capabilities.jdbcMetaGetFunctions - TestDB
+      .capabilities
+      .jdbcMetaGetClientInfoProperties
   override def createDB(): profile.Backend#Database =
     database.forURL(url, driver = jdbcDriver, keepAliveConnection = keepAlive)
 }
@@ -349,7 +362,8 @@ abstract class DerbyDB(confName: String) extends InternalJdbcTestDB(confName) {
     try {
       blockingRunOnSession { implicit ec =>
         for {
-          _ <- sqlu"""create table "__derby_dummy"(x integer primary key)""".asTry
+          _ <- sqlu"""create table "__derby_dummy"(x integer primary key)"""
+            .asTry
           constraints <- sql"""select c.constraintname, t.tablename
                              from sys.sysconstraints c, sys.sysschemas s, sys.systables t
                              where c.schemaid = s.schemaid and c.tableid = t.tableid and s.schemaname = 'APP'

@@ -22,16 +22,17 @@ class BoyerMooreSpec extends WordSpec with Matchers {
     "perform identically to a regex search" in {
       val random = new Random()
       // the alphabet base is a random shuffle of 8 distinct alphanumeric chars
-      val alphabetBase
-          : IndexedSeq[Byte] = random.shuffle(0 to 255).take(8).map(_.toByte)
+      val alphabetBase: IndexedSeq[Byte] = random
+        .shuffle(0 to 255)
+        .take(8)
+        .map(_.toByte)
 
       val haystackLen = 1000
       (0 to 9) foreach { run ⇒
-        val alphabet = alphabetBase.take(
-          4 + random.nextInt(5)
-        ) // 4 to 8 distinct alphanumeric chars
-        val randomAlphabetChars = Stream.continually(
-          alphabet(random.nextInt(alphabet.length)))
+        val alphabet = alphabetBase
+          .take(4 + random.nextInt(5)) // 4 to 8 distinct alphanumeric chars
+        val randomAlphabetChars = Stream
+          .continually(alphabet(random.nextInt(alphabet.length)))
         def randomBytes(num: Int): ByteString =
           ByteString(randomAlphabetChars.take(num): _*)
         val haystack = randomBytes(haystackLen)

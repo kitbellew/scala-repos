@@ -261,8 +261,8 @@ object M5 {
 
     def probe(name: String, wire: Wire): Unit = {
       wire addAction { () =>
-        Console.println(
-          name + " " + currentTime + " new-value = " + wire.getSignal);
+        Console
+          .println(name + " " + currentTime + " new-value = " + wire.getSignal);
       }
     }
   }
@@ -587,8 +587,8 @@ abstract class BasicCircuitSimulator() extends Simulator() {
 
   def probe(name: String, wire: Wire): Unit = {
     wire addAction { () =>
-      Console.println(
-        name + " " + currentTime + " new-value = " + wire.getSignal);
+      Console
+        .println(name + " " + currentTime + " new-value = " + wire.getSignal);
     }
   }
 

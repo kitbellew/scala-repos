@@ -72,7 +72,9 @@ trait FileAndResourceDirectives {
   private def conditionalFor(length: Long, lastModified: Long): Directive0 =
     extractSettings.flatMap(settings ⇒
       if (settings.fileGetConditional) {
-        val tag = java.lang.Long
+        val tag = java
+          .lang
+          .Long
           .toHexString(lastModified ^ java.lang.Long.reverse(length))
         val lastModifiedDateTime = DateTime(
           math.min(lastModified, System.currentTimeMillis))
@@ -98,9 +100,8 @@ trait FileAndResourceDirectives {
       classLoader: ClassLoader = defaultClassLoader): Route =
     if (!resourceName.endsWith("/"))
       get {
-        Option(
-          classLoader.getResource(
-            resourceName)) flatMap ResourceFile.apply match {
+        Option(classLoader.getResource(resourceName)) flatMap ResourceFile
+          .apply match {
           case Some(ResourceFile(url, length, lastModified)) ⇒
             conditionalFor(length, lastModified) {
               if (length > 0) {
@@ -295,8 +296,8 @@ object FileAndResourceDirectives extends FileAndResourceDirectives {
             Some(ResourceFile(url, file.length(), file.lastModified()))
         case "jar" ⇒
           val path =
-            new URI(
-              url.getPath).getPath // remove "file:" prefix and normalize whitespace
+            new URI(url.getPath)
+              .getPath // remove "file:" prefix and normalize whitespace
           val bangIndex = path.indexOf('!')
           val filePath = path.substring(0, bangIndex)
           val resourcePath = path.substring(bangIndex + 2)
@@ -411,19 +412,22 @@ object DirectoryListing {
 
   def directoryMarshaller(
       renderVanityFooter: Boolean): ToEntityMarshaller[DirectoryListing] =
-    Marshaller.StringMarshaller.wrapWithEC(MediaTypes.`text/html`) {
-      implicit ec ⇒ listing ⇒
+    Marshaller
+      .StringMarshaller
+      .wrapWithEC(MediaTypes.`text/html`) { implicit ec ⇒ listing ⇒
         val DirectoryListing(path, isRoot, files) = listing
         val filesAndNames = files.map(file ⇒ file -> file.getName).sortBy(_._2)
-        val deduped = filesAndNames.zipWithIndex.flatMap {
-          case (fan @ (file, name), ix) ⇒
-            if (ix == 0 || filesAndNames(ix - 1)._2 != name)
-              Some(fan)
-            else
-              None
-        }
-        val (directoryFilesAndNames, fileFilesAndNames) = deduped.partition(
-          _._1.isDirectory)
+        val deduped = filesAndNames
+          .zipWithIndex
+          .flatMap {
+            case (fan @ (file, name), ix) ⇒
+              if (ix == 0 || filesAndNames(ix - 1)._2 != name)
+                Some(fan)
+              else
+                None
+          }
+        val (directoryFilesAndNames, fileFilesAndNames) = deduped
+          .partition(_._1.isDirectory)
         def maxNameLength(seq: Seq[(File, String)]) =
           if (seq.isEmpty)
             0
@@ -433,15 +437,15 @@ object DirectoryListing {
           maxNameLength(directoryFilesAndNames) + 1,
           maxNameLength(fileFilesAndNames))
         val sb = new java.lang.StringBuilder
-        sb.append(html(0))
+        sb
+          .append(html(0))
           .append(path)
           .append(html(1))
           .append(path)
           .append(html(2))
         if (!isRoot) {
-          val secondToLastSlash = path.lastIndexOf(
-            '/',
-            path.lastIndexOf('/', path.length - 1) - 1)
+          val secondToLastSlash = path
+            .lastIndexOf('/', path.lastIndexOf('/', path.length - 1) - 1)
           sb.append(
             "<a href=\"%s/\">../</a>\n" format path
               .substring(0, secondToLastSlash))
@@ -449,7 +453,8 @@ object DirectoryListing {
         def lastModified(file: File) =
           DateTime(file.lastModified).toIsoLikeDateTimeString
         def start(name: String) =
-          sb.append("<a href=\"")
+          sb
+            .append("<a href=\"")
             .append(path + name)
             .append("\">")
             .append(name)
@@ -461,10 +466,14 @@ object DirectoryListing {
             .append(lastModified(file))
             .append('\n')
         def renderFile(file: File, name: String) = {
-          val size = akka.http.impl.util
+          val size = akka
+            .http
+            .impl
+            .util
             .humanReadableByteCount(file.length, si = true)
           start(name).append("        ").append(lastModified(file))
-          sb.append("                ".substring(size.length))
+          sb
+            .append("                ".substring(size.length))
             .append(size)
             .append('\n')
         }
@@ -476,9 +485,10 @@ object DirectoryListing {
           sb.append("(no files)\n")
         sb.append(html(3))
         if (renderVanityFooter)
-          sb.append(html(4))
+          sb
+            .append(html(4))
             .append(DateTime.now.toIsoLikeDateTimeString)
             .append(html(5))
         sb.append(html(6)).toString
-    }
+      }
 }

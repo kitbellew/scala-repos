@@ -629,18 +629,8 @@ private[spark] object BLAS extends Serializable with Logging {
         A.numCols
       else
         A.numRows
-    nativeBLAS.dgemv(
-      tStrA,
-      mA,
-      nA,
-      alpha,
-      A.values,
-      mA,
-      x.values,
-      1,
-      beta,
-      y.values,
-      1)
+    nativeBLAS
+      .dgemv(tStrA, mA, nA, alpha, A.values, mA, x.values, 1, beta, y.values, 1)
   }
 
   /**

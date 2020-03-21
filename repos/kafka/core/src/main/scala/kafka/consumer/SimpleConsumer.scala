@@ -51,8 +51,8 @@ class SimpleConsumer(
       BlockingChannel.UseDefaultBufferSize,
       soTimeout)
   private val fetchRequestAndResponseStats =
-    FetchRequestAndResponseStatsRegistry.getFetchRequestAndResponseStats(
-      clientId)
+    FetchRequestAndResponseStatsRegistry
+      .getFetchRequestAndResponseStats(clientId)
   private var isClosed = false
 
   private def connect(): BlockingChannel = {
@@ -141,27 +141,32 @@ class SimpleConsumer(
         .getFetchRequestAndResponseStats(host, port)
         .requestTimer
     val aggregateTimer =
-      fetchRequestAndResponseStats.getFetchRequestAndResponseAllBrokersStats.requestTimer
+      fetchRequestAndResponseStats
+        .getFetchRequestAndResponseAllBrokersStats
+        .requestTimer
     aggregateTimer.time {
       specificTimer.time {
         response = sendRequest(request)
       }
     }
-    val fetchResponse = FetchResponse.readFrom(
-      response.payload(),
-      request.versionId)
+    val fetchResponse = FetchResponse
+      .readFrom(response.payload(), request.versionId)
     val fetchedSize = fetchResponse.sizeInBytes
     fetchRequestAndResponseStats
       .getFetchRequestAndResponseStats(host, port)
       .requestSizeHist
       .update(fetchedSize)
-    fetchRequestAndResponseStats.getFetchRequestAndResponseAllBrokersStats.requestSizeHist
+    fetchRequestAndResponseStats
+      .getFetchRequestAndResponseAllBrokersStats
+      .requestSizeHist
       .update(fetchedSize)
     fetchRequestAndResponseStats
       .getFetchRequestAndResponseStats(host, port)
       .throttleTimeStats
       .update(fetchResponse.throttleTimeMs, TimeUnit.MILLISECONDS)
-    fetchRequestAndResponseStats.getFetchRequestAndResponseAllBrokersStats.throttleTimeStats
+    fetchRequestAndResponseStats
+      .getFetchRequestAndResponseAllBrokersStats
+      .throttleTimeStats
       .update(fetchResponse.throttleTimeMs, TimeUnit.MILLISECONDS)
     fetchResponse
   }

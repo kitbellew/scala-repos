@@ -42,8 +42,8 @@ object SerializerSpecConfigs {
       }
     """)
 
-  val remote = ConfigFactory.parseString(
-    """
+  val remote = ConfigFactory
+    .parseString("""
       akka {
         actor {
           provider = "akka.remote.RemoteActorRefProvider"
@@ -181,9 +181,8 @@ class MessageSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
         val serializer = serialization.findSerializerFor(persistent)
 
         val bytes = serializer.toBinary(persistent)
-        val deserialized = serializer.fromBinary(
-          bytes,
-          Some(classOf[PersistentRepr]))
+        val deserialized = serializer
+          .fromBinary(bytes, Some(classOf[PersistentRepr]))
 
         deserialized should ===(persistent.withPayload(MyPayload(".b.")))
       }
@@ -213,16 +212,15 @@ class MessageSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
         // now the system is updated to version 2 with new class MyPayload2
         // and MyPayload2Serializer that handles migration from old MyPayload
         val serializer2 = serialization.serializerFor(classOf[MyPayload2])
-        val deserialized = serializer2.fromBinary(
-          bytes,
-          Some(oldEvent.getClass))
+        val deserialized = serializer2
+          .fromBinary(bytes, Some(oldEvent.getClass))
 
         deserialized should be(MyPayload2(".a.", 0))
       }
 
       "be able to deserialize data when class is removed" in {
-        val serializer = serialization.findSerializerFor(
-          PersistentRepr("x", 13, "p1", ""))
+        val serializer = serialization
+          .findSerializerFor(PersistentRepr("x", 13, "p1", ""))
 
         // It was created with:
         // val old = PersistentRepr(OldPayload('A'), 13, "p1", true, testActor)
@@ -278,8 +276,8 @@ class MessageSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
           .fromBinary(bytes, None)
           .asInstanceOf[PersistentRepr]
         deserialized.sender should not be (null)
-        val deserializedWithoutSender = deserialized.update(sender =
-          Actor.noSender)
+        val deserializedWithoutSender = deserialized
+          .update(sender = Actor.noSender)
         deserializedWithoutSender should be(expected)
       }
     }
@@ -291,9 +289,8 @@ class MessageSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
         val serializer = serialization.findSerializerFor(snap)
 
         val bytes = serializer.toBinary(snap)
-        val deserialized = serializer.fromBinary(
-          bytes,
-          Some(classOf[AtLeastOnceDeliverySnapshot]))
+        val deserialized = serializer
+          .fromBinary(bytes, Some(classOf[AtLeastOnceDeliverySnapshot]))
 
         deserialized should ===(snap)
       }
@@ -314,9 +311,8 @@ class MessageSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
         val serializer = serialization.findSerializerFor(snap)
 
         val bytes = serializer.toBinary(snap)
-        val deserialized = serializer.fromBinary(
-          bytes,
-          Some(classOf[AtLeastOnceDeliverySnapshot]))
+        val deserialized = serializer
+          .fromBinary(bytes, Some(classOf[AtLeastOnceDeliverySnapshot]))
 
         deserialized should ===(snap)
       }
@@ -340,10 +336,12 @@ object MessageSerializerRemotingSpec {
       case p @ PersistentRepr(MyPayload(data), _) ⇒
         p.sender ! s"p${data}"
       case a: AtomicWrite ⇒
-        a.payload.foreach {
-          case p @ PersistentRepr(MyPayload(data), _) ⇒
-            p.sender ! s"p${data}"
-        }
+        a
+          .payload
+          .foreach {
+            case p @ PersistentRepr(MyPayload(data), _) ⇒
+              p.sender ! s"p${data}"
+          }
     }
   }
 
@@ -361,9 +359,8 @@ class MessageSerializerRemotingSpec
   val remoteSystem = ActorSystem(
     "remote",
     remote.withFallback(customSerializers))
-  val localActor = system.actorOf(
-    Props(classOf[LocalActor], port(remoteSystem)),
-    "local")
+  val localActor = system
+    .actorOf(Props(classOf[LocalActor], port(remoteSystem)), "local")
 
   val serialization = SerializationExtension(system)
 

@@ -12,8 +12,9 @@ final class EmailAddress(disposable: DisposableEmailDomain) {
   // email was already regex-validated at this stage
   def validate(email: String): Option[String] =
     // start by lower casing the entire address
-    email.toLowerCase
-    // separate name from domain
+    email
+      .toLowerCase
+      // separate name from domain
       .split('@') match {
 
       // gmail addresses

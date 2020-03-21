@@ -62,11 +62,8 @@ trait FileDeclarationsHolder
           .processDeclarations(processor, state, lastParent, place))
       return false
 
-    if (!super[ScImportsHolder].processDeclarations(
-          processor,
-          state,
-          lastParent,
-          place))
+    if (!super[ScImportsHolder]
+          .processDeclarations(processor, state, lastParent, place))
       return false
 
     if (context != null) {
@@ -89,9 +86,8 @@ trait FileDeclarationsHolder
           if ref.refName == "_root_" && ref.qualifier == None => {
         val top = ScPackageImpl(
           ScalaPsiManager.instance(getProject).getCachedPackage("").orNull)
-        if (top != null && !processor.execute(
-              top,
-              state.put(ResolverEnv.nameKey, "_root_")))
+        if (top != null && !processor
+              .execute(top, state.put(ResolverEnv.nameKey, "_root_")))
           return false
         state.put(ResolverEnv.nameKey, null)
       }
@@ -99,18 +95,16 @@ trait FileDeclarationsHolder
           if ref.refName == "_root_" && ref.qualifier == None => {
         val top = ScPackageImpl(
           ScalaPsiManager.instance(getProject).getCachedPackage("").orNull)
-        if (top != null && !processor.execute(
-              top,
-              state.put(ResolverEnv.nameKey, "_root_")))
+        if (top != null && !processor
+              .execute(top, state.put(ResolverEnv.nameKey, "_root_")))
           return false
         state.put(ResolverEnv.nameKey, null)
       }
       case _ => {
         val defaultPackage = ScPackageImpl(
           ScalaPsiManager.instance(getProject).getCachedPackage("").orNull)
-        if (place != null && PsiTreeUtil.getParentOfType(
-              place,
-              classOf[ScPackaging]) == null) {
+        if (place != null && PsiTreeUtil
+              .getParentOfType(place, classOf[ScPackaging]) == null) {
           if (defaultPackage != null &&
               !ResolveUtils.packageProcessDeclarations(
                 defaultPackage,
@@ -119,8 +113,8 @@ trait FileDeclarationsHolder
                 null,
                 place))
             return false
-        } else if (defaultPackage != null && !BaseProcessor.isImplicitProcessor(
-                     processor)) {
+        } else if (defaultPackage != null && !BaseProcessor
+                     .isImplicitProcessor(processor)) {
           //we will add only packages
           //only packages resolve, no classes from default package
           val name =
@@ -206,15 +200,14 @@ trait FileDeclarationsHolder
             clazz match {
               case td: ScTypeDefinition if !isScalaPredefinedClass =>
                 var newState = state
-                td.getType(TypingContext.empty).foreach {
-                  case tp: ScType =>
-                    newState = state.put(BaseProcessor.FROM_TYPE_KEY, tp)
-                }
-                if (!clazz.processDeclarations(
-                      processor,
-                      newState,
-                      null,
-                      place))
+                td
+                  .getType(TypingContext.empty)
+                  .foreach {
+                    case tp: ScType =>
+                      newState = state.put(BaseProcessor.FROM_TYPE_KEY, tp)
+                  }
+                if (!clazz
+                      .processDeclarations(processor, newState, null, place))
                   return false
               case _ =>
             }
@@ -231,12 +224,8 @@ trait FileDeclarationsHolder
         ProgressManager.checkCanceled()
         val pack: PsiPackage =
           ScalaPsiManager.instance(getProject).getCachedPackage(implP).orNull
-        if (pack != null && !ResolveUtils.packageProcessDeclarations(
-              pack,
-              processor,
-              state,
-              null,
-              place))
+        if (pack != null && !ResolveUtils
+              .packageProcessDeclarations(pack, processor, state, null, place))
           return false
       }
       true
@@ -287,11 +276,8 @@ trait FileDeclarationsHolder
     }
 
     if (ScalaFileImpl.isProcessLocalClasses(lastParent) &&
-        !super[ScDeclarationSequenceHolder].processDeclarations(
-          processor,
-          state,
-          lastParent,
-          place))
+        !super[ScDeclarationSequenceHolder]
+          .processDeclarations(processor, state, lastParent, place))
       return false
 
     true

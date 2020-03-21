@@ -302,10 +302,7 @@ object JsonSpec extends org.specs2.mutable.Specification {
     }
 
     "Serialize and deserialize Jackson ObjectNodes" in {
-      val on = mapper
-        .createObjectNode()
-        .put("foo", 1)
-        .put("bar", "two")
+      val on = mapper.createObjectNode().put("foo", 1).put("bar", "two")
       val json = Json.obj("foo" -> 1, "bar" -> "two")
 
       toJson(on) must_== json and (
@@ -314,10 +311,7 @@ object JsonSpec extends org.specs2.mutable.Specification {
     }
 
     "Serialize and deserialize Jackson ArrayNodes" in {
-      val an = mapper
-        .createArrayNode()
-        .add("one")
-        .add(2)
+      val an = mapper.createArrayNode().add("one").add(2)
       val json = Json.arr("one", 2)
       toJson(an) must equalTo(json) and (
         fromJson[JsonNode](json).map(_.toString) must_== JsSuccess(an.toString)
@@ -480,8 +474,8 @@ object JsonSpec extends org.specs2.mutable.Specification {
     }
 
     "keep the insertion order on ListMap" in {
-      val test = Json.toJson(
-        ListMap("name" -> "foo", "zip" -> "foo", "city" -> "foo"))
+      val test = Json
+        .toJson(ListMap("name" -> "foo", "zip" -> "foo", "city" -> "foo"))
       val req = """{"name":"foo", "zip":"foo", "city":"foo"}"""
       test.toString must beEqualTo(Json.parse(req).toString).ignoreSpace
     }

@@ -37,9 +37,14 @@ class LogbackLoggerConfigurator extends LoggerConfigurator {
     // Get an explicitly configured resource URL
     // Fallback to a file in the conf directory if the resource wasn't found on the classpath
     def explicitResourceUrl =
-      sys.props.get("logger.resource").map { r =>
-        env.resource(r).getOrElse(new File(env.getFile("conf"), r).toURI.toURL)
-      }
+      sys
+        .props
+        .get("logger.resource")
+        .map { r =>
+          env
+            .resource(r)
+            .getOrElse(new File(env.getFile("conf"), r).toURI.toURL)
+        }
 
     // Get an explicitly configured file URL
     def explicitFileUrl =
@@ -51,8 +56,10 @@ class LogbackLoggerConfigurator extends LoggerConfigurator {
           .resource("application-logger.xml")
           .orElse(env.resource("logger.xml"))
           .isEmpty) {
-      System.err.println(
-        "application-logger.xml and logger.xml are no longer supported. Please name your file logback.xml");
+      System
+        .err
+        .println(
+          "application-logger.xml and logger.xml are no longer supported. Please name your file logback.xml");
     }
 
     // logback.xml is the documented method, logback-play-default.xml is the fallback that Play uses
@@ -121,8 +128,10 @@ class LogbackLoggerConfigurator extends LoggerConfigurator {
               case Some(url) =>
                 configurator.doConfigure(url)
               case None =>
-                System.err.println(
-                  "Could not detect a logback configuration file, not configuring logback")
+                System
+                  .err
+                  .println(
+                    "Could not detect a logback configuration file, not configuring logback")
             }
           } catch {
             case NonFatal(e) =>

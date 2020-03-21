@@ -84,8 +84,10 @@ private[server] class ForwardedHeaderHandler(
           val entry = headerEntries.next()
           configuration.parseEntry(entry) match {
             case Left(error) =>
-              ForwardedHeaderHandler.logger.debug(
-                s"Error with info in forwarding header $entry, using $prev instead: $error.")
+              ForwardedHeaderHandler
+                .logger
+                .debug(
+                  s"Error with info in forwarding header $entry, using $prev instead: $error.")
               prev
             case Right(connection) =>
               scan(connection)
@@ -140,8 +142,8 @@ private[server] object ForwardedHeaderHandler {
       * Not RFC compliant. To be compliant we need proper header field parsing.
       */
     private def unquote(s: String): String = {
-      if (s.length >= 2 && s.charAt(0) == '"' && s.charAt(
-            s.length - 1) == '"') {
+      if (s.length >= 2 && s.charAt(0) == '"' && s
+            .charAt(s.length - 1) == '"') {
         s.substring(1, s.length - 1)
       } else
         s
@@ -160,20 +162,21 @@ private[server] object ForwardedHeaderHandler {
               fhs <- headers.getAll("Forwarded")
               fh <- fhs.split(",\\s*")
             } yield fh
-          ).map(
+          )
+            .map(
               _.split(";")
-                .flatMap(s => {
-                  val splitted = s.split("=", 2)
-                  if (splitted.length < 2)
-                    Seq.empty
-                  else {
-                    // Remove surrounding quotes
-                    val name = splitted(0).toLowerCase(java.util.Locale.ENGLISH)
-                    val value = unquote(splitted(1))
-                    Seq(name -> value)
-                  }
-                })
-                .toMap)
+              .flatMap(s => {
+                val splitted = s.split("=", 2)
+                if (splitted.length < 2)
+                  Seq.empty
+                else {
+                  // Remove surrounding quotes
+                  val name = splitted(0).toLowerCase(java.util.Locale.ENGLISH)
+                  val value = unquote(splitted(1))
+                  Seq(name -> value)
+                }
+              })
+              .toMap)
             .map { paramMap: Map[String, String] =>
               ForwardedEntry(paramMap.get("for"), paramMap.get("proto"))
             }
@@ -183,10 +186,12 @@ private[server] object ForwardedHeaderHandler {
           val forHeaders = h(headers, "X-Forwarded-For")
           val protoHeaders = h(headers, "X-Forwarded-Proto")
           if (forHeaders.length == protoHeaders.length) {
-            forHeaders.zip(protoHeaders).map {
-              case (f, p) =>
-                ForwardedEntry(Some(f), Some(p))
-            }
+            forHeaders
+              .zip(protoHeaders)
+              .map {
+                case (f, p) =>
+                  ForwardedEntry(Some(f), Some(p))
+              }
           } else {
             // If the lengths vary, then discard the protoHeaders because we can't tell which
             // proto matches which header. The connections will all appear to be insecure by
@@ -214,9 +219,9 @@ private[server] object ForwardedHeaderHandler {
             case Right((Ip(address), _)) =>
               // Parsing was successful, use this connection and scan for another connection.
               val secure =
-                entry.protoString.fold(false)(
-                  _ == "https"
-                ) // Assume insecure by default
+                entry
+                  .protoString
+                  .fold(false)(_ == "https") // Assume insecure by default
               val connection = ConnectionInfo(address, secure)
               Right(connection)
             case errorOrNonIp =>

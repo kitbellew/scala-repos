@@ -120,7 +120,8 @@ object SynthBenchmark {
     if (!degFile.isEmpty) {
       val fos = new FileOutputStream(degFile)
       val pos = new PrintWriter(fos)
-      val hist = graph.vertices
+      val hist = graph
+        .vertices
         .leftJoin(graph.degrees)((id, _, optDeg) => optDeg.getOrElse(0))
         .map(p => p._2)
         .countByValue()
@@ -138,7 +139,9 @@ object SynthBenchmark {
       println(s"Total PageRank = $totalPR")
     } else if (app == "cc") {
       println("Running Connected Components")
-      val numComponents = graph.connectedComponents.vertices
+      val numComponents = graph
+        .connectedComponents
+        .vertices
         .map(_._2)
         .distinct()
         .count()

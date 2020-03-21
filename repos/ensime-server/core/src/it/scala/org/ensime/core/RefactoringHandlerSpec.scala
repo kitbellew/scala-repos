@@ -16,7 +16,8 @@ class RefactoringHandlerSpec
 
   val encoding = "UTF-16"
   def original =
-    EnsimeConfigFixture.EmptyTestProject
+    EnsimeConfigFixture
+      .EmptyTestProject
       .copy(compilerArgs = List("-encoding", encoding))
 
   // transitionary methods
@@ -95,8 +96,8 @@ class RefactoringHandlerSpec
 
       val analyzer = analyzerRef.underlyingActor
 
-      val formatted = analyzer.handleFormatFile(
-        SourceFileInfo(new File(file.path)))
+      val formatted = analyzer
+        .handleFormatFile(SourceFileInfo(new File(file.path)))
       val expectedContents = contents("package blah", "class Something {}", "")
       formatted === (expectedContents)
     }
@@ -203,8 +204,8 @@ class RefactoringHandlerSpec
             "java.lang.Integer.{valueOf => vo}",
             new File(file.path)),
           false))
-      analyzer.handleRefactorExec(
-        new ExecRefactorReq(procId, RefactorType.AddImport))
+      analyzer
+        .handleRefactorExec(new ExecRefactorReq(procId, RefactorType.AddImport))
 
       val formatted = readSrcFile(file, encoding)
 
@@ -249,8 +250,8 @@ class RefactoringHandlerSpec
           'Ignored,
           AddImportRefactorDesc("java.lang.Integer", new File(file.path)),
           false))
-      analyzer.handleRefactorExec(
-        new ExecRefactorReq(procId, RefactorType.AddImport))
+      analyzer
+        .handleRefactorExec(new ExecRefactorReq(procId, RefactorType.AddImport))
 
       val formatted = readSrcFile(file, encoding)
 
@@ -292,8 +293,8 @@ class RefactoringHandlerSpec
           'rename,
           RenameRefactorDesc("doItNow", new File(file.path), 43, 47),
           false))
-      analyzer.handleRefactorExec(
-        new ExecRefactorReq(procId, RefactorType.Rename))
+      analyzer
+        .handleRefactorExec(new ExecRefactorReq(procId, RefactorType.Rename))
       val formatted = readSrcFile(file, encoding)
       val expectedContents = contents(
         "package org.ensime.testing",

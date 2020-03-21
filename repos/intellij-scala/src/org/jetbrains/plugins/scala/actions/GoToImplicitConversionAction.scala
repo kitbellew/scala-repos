@@ -73,9 +73,12 @@ class GoToImplicitConversionAction
           else if (conv1._2.isDefined)
             conv1
           else if (additionalExpression.isDefined) {
-            val conv3 = additionalExpression.get._1.getImplicitConversions(
-              fromUnder = false,
-              expectedOption = Some(additionalExpression.get._2))
+            val conv3 = additionalExpression
+              .get
+              ._1
+              .getImplicitConversions(
+                fromUnder = false,
+                expectedOption = Some(additionalExpression.get._2))
             if (conv3._2.isDefined)
               conv3
             else
@@ -83,9 +86,12 @@ class GoToImplicitConversionAction
           } else
             conv1
         } else if (additionalExpression.isDefined) {
-          val conv3 = additionalExpression.get._1.getImplicitConversions(
-            fromUnder = false,
-            expectedOption = Some(additionalExpression.get._2))
+          val conv3 = additionalExpression
+            .get
+            ._1
+            .getImplicitConversions(
+              fromUnder = false,
+              expectedOption = Some(additionalExpression.get._2))
           if (conv3._2.isDefined)
             conv3
           else
@@ -120,16 +126,18 @@ class GoToImplicitConversionAction
       renderer.setFont(font)
       list.setFont(font)
       JListCompatibility.setCellRenderer(list, renderer)
-      list.getSelectionModel.addListSelectionListener(
-        new ListSelectionListener {
-          def valueChanged(e: ListSelectionEvent) {
-            hintAlarm.cancelAllRequests
-            val item = list.getSelectedValue.asInstanceOf[Parameters]
-            if (item == null)
-              return
-            updateHint(item, project)
-          }
-        })
+      list
+        .getSelectionModel
+        .addListSelectionListener(
+          new ListSelectionListener {
+            def valueChanged(e: ListSelectionEvent) {
+              hintAlarm.cancelAllRequests
+              val item = list.getSelectedValue.asInstanceOf[Parameters]
+              if (item == null)
+                return
+              updateHint(item, project)
+            }
+          })
       JListCompatibility.GoToImplicitConversionAction.setList(list)
 
       val builder = JBPopupFactory.getInstance.createListPopupBuilder(list)
@@ -177,12 +185,8 @@ class GoToImplicitConversionAction
     if (editor.getSelectionModel.hasSelection) {
       val selectionStart = editor.getSelectionModel.getSelectionStart
       val selectionEnd = editor.getSelectionModel.getSelectionEnd
-      val opt = ScalaRefactoringUtil.getExpression(
-        project,
-        editor,
-        file,
-        selectionStart,
-        selectionEnd)
+      val opt = ScalaRefactoringUtil
+        .getExpression(project, editor, file, selectionStart, selectionEnd)
       opt match {
         case Some((expr, _)) =>
           if (forExpr(expr))
@@ -223,7 +227,10 @@ class GoToImplicitConversionAction
                       expr.getImplicitConversions(fromUnder = true)._2.isDefined
                   ) || (
                   expr.getAdditionalExpression.isDefined &&
-                    expr.getAdditionalExpression.get._1
+                    expr
+                      .getAdditionalExpression
+                      .get
+                      ._1
                       .getImplicitConversions(
                         fromUnder = false,
                         expectedOption = Some(
@@ -246,9 +253,11 @@ class GoToImplicitConversionAction
           getExpressions(guard = true)
       }
       def chooseExpression(expr: ScExpression) {
-        editor.getSelectionModel.setSelection(
-          expr.getTextRange.getStartOffset,
-          expr.getTextRange.getEndOffset)
+        editor
+          .getSelectionModel
+          .setSelection(
+            expr.getTextRange.getStartOffset,
+            expr.getTextRange.getEndOffset)
         forExpr(expr)
       }
       if (expressions.length == 0)
@@ -297,11 +306,8 @@ class GoToImplicitConversionAction
 
   class LightBulbHint(editor: Editor, project: Project, expr: ScExpression)
       extends JLabel {
-    private final val INACTIVE_BORDER: Border = BorderFactory.createEmptyBorder(
-      4,
-      4,
-      4,
-      4)
+    private final val INACTIVE_BORDER: Border = BorderFactory
+      .createEmptyBorder(4, 4, 4, 4)
     private final val ACTIVE_BORDER: Border = BorderFactory
       .createCompoundBorder(
         BorderFactory.createLineBorder(Color.BLACK, 1),
@@ -316,8 +322,9 @@ class GoToImplicitConversionAction
       setIcon(IconLoader.findIcon("/actions/intentionBulb.png"))
 
       val toolTipText: String = KeymapUtil.getFirstKeyboardShortcutText(
-        ActionManager.getInstance.getAction(
-          IdeActions.ACTION_SHOW_INTENTION_ACTIONS))
+        ActionManager
+          .getInstance
+          .getAction(IdeActions.ACTION_SHOW_INTENTION_ACTIONS))
 
       if (toolTipText.length > 0) {
         setToolTipText(
@@ -336,7 +343,9 @@ class GoToImplicitConversionAction
 
           override def mousePressed(e: MouseEvent) {
             if (!e.isPopupTrigger && e.getButton == MouseEvent.BUTTON1) {
-              val tuple = GoToImplicitConversionAction.getList.getSelectedValue
+              val tuple = GoToImplicitConversionAction
+                .getList
+                .getSelectedValue
                 .asInstanceOf[Parameters]
               val function: ScFunction =
                 tuple.getNewExpression match {
@@ -370,7 +379,9 @@ class GoToImplicitConversionAction
     }
 
     def getCurrentItem: PsiNamedElement =
-      GoToImplicitConversionAction.getList.getSelectedValue
+      GoToImplicitConversionAction
+        .getList
+        .getSelectedValue
         .asInstanceOf[Parameters]
         .getNewExpression
 
@@ -379,7 +390,8 @@ class GoToImplicitConversionAction
       if (index < 0) {
         throw new RuntimeException("Index = " + index + " is less than zero.")
       }
-      val itemBounds: Rectangle = GoToImplicitConversionAction.getList
+      val itemBounds: Rectangle = GoToImplicitConversionAction
+        .getList
         .getCellBounds(index, index)
       if (itemBounds == null) {
         throw new RuntimeException("No bounds for index = " + index + ".")

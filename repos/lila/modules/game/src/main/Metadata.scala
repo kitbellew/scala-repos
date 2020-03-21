@@ -38,7 +38,8 @@ object PgnImport {
   def hash(pgn: String) =
     ByteArray {
       MessageDigest getInstance "MD5" digest
-        pgn.lines
+        pgn
+          .lines
           .map(_.replace(" ", ""))
           .filter(_.nonEmpty)
           .mkString("\n")

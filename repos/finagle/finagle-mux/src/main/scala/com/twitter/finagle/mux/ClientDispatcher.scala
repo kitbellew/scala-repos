@@ -96,23 +96,25 @@ private[twitter] class ClientDispatcher(trans: Transport[Message, Message])
         FutureExhaustedTagsException
       case Some(tag) =>
         val msg = f(tag)
-        trans.write(msg).transform {
-          case Return(_) =>
-            p.setInterruptHandler {
-              case cause =>
-                // We replace the current Updatable, if any, with a stand-in to reserve
-                // the tag of discarded requests until Tdiscarded is acknowledged by the
-                // peer.
-                for (u <- messages.maybeRemap(msg.tag, Empty)) {
-                  trans.write(Message.Tdiscarded(msg.tag, cause.toString))
-                  u() = Throw(cause)
-                }
-            }
-            p
-          case t @ Throw(_) =>
-            messages.unmap(tag)
-            Future.const(t.cast[Message])
-        }
+        trans
+          .write(msg)
+          .transform {
+            case Return(_) =>
+              p.setInterruptHandler {
+                case cause =>
+                  // We replace the current Updatable, if any, with a stand-in to reserve
+                  // the tag of discarded requests until Tdiscarded is acknowledged by the
+                  // peer.
+                  for (u <- messages.maybeRemap(msg.tag, Empty)) {
+                    trans.write(Message.Tdiscarded(msg.tag, cause.toString))
+                    u() = Throw(cause)
+                  }
+              }
+              p
+            case t @ Throw(_) =>
+              messages.unmap(tag)
+              Future.const(t.cast[Message])
+          }
     }
   }
 
@@ -121,8 +123,8 @@ private[twitter] class ClientDispatcher(trans: Transport[Message, Message])
 }
 
 private[twitter] object ClientDispatcher {
-  val FutureExhaustedTagsException = Future.exception(
-    Failure.rejected("Exhausted tags"))
+  val FutureExhaustedTagsException = Future
+    .exception(Failure.rejected("Exhausted tags"))
 
   val Empty: Updatable[Try[Message]] = Updatable.empty()
 
@@ -183,10 +185,13 @@ private class ReqRepFilter
         }
 
         case CanDispatch.Yes | CanDispatch.Unknown => { tag: Int =>
-          val contexts = Contexts.broadcast.marshal().map {
-            case (k, v) =>
-              (BufChannelBuffer(k), BufChannelBuffer(v))
-          }
+          val contexts = Contexts
+            .broadcast
+            .marshal()
+            .map {
+              case (k, v) =>
+                (BufChannelBuffer(k), BufChannelBuffer(v))
+            }
           Message.Tdispatch(
             tag,
             contexts.toSeq,
@@ -217,8 +222,8 @@ private class ReqRepFilter
 }
 
 private object ReqRepFilter {
-  val FutureNackedException = Future.exception(
-    Failure.rejected("The request was Nacked by the server"))
+  val FutureNackedException = Future
+    .exception(Failure.rejected("The request was Nacked by the server"))
 
   /** Indicates if our peer can accept `Tdispatch` messages. */
   object CanDispatch extends Enumeration {

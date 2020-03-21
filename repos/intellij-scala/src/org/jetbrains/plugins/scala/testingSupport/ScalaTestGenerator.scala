@@ -43,8 +43,8 @@ class ScalaTestGenerator extends TestGenerator {
               val message = CodeInsightBundle.message(
                 "intention.error.cannot.create.class.message",
                 d.getClassName)
-              val title = CodeInsightBundle.message(
-                "intention.error.cannot.create.class.title")
+              val title = CodeInsightBundle
+                .message("intention.error.cannot.create.class.title")
               Messages.showErrorDialog(project, message, title)
             }
             null
@@ -72,7 +72,8 @@ class ScalaTestGenerator extends TestGenerator {
           "Scala Class"
       }
     )
-    val typeDefinition = file.depthFirst
+    val typeDefinition = file
+      .depthFirst
       .filterByType(classOf[ScTypeDefinition])
       .next()
     val scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
@@ -84,13 +85,13 @@ class ScalaTestGenerator extends TestGenerator {
           .getCachedClass(fqName, scope, ScalaPsiManager.ClassCategory.TYPE))
       addSuperClass(typeDefinition, psiClass, fqName)
     }
-    val positionElement = typeDefinition.extendsBlock.templateBody
+    val positionElement = typeDefinition
+      .extendsBlock
+      .templateBody
       .map(_.getFirstChild)
       .getOrElse(typeDefinition)
-    var editor: Editor = CodeInsightUtil.positionCursor(
-      project,
-      file,
-      positionElement)
+    var editor: Editor = CodeInsightUtil
+      .positionCursor(project, file, positionElement)
     addTestMethods(
       editor,
       typeDefinition,
@@ -110,15 +111,15 @@ class ScalaTestGenerator extends TestGenerator {
     def addExtendsRef(refName: String) = {
       val (extendsToken, classParents) = ScalaPsiElementFactory
         .createClassTemplateParents(refName, typeDefinition.getManager)
-      val extendsAdded = extendsBlock.addBefore(
-        extendsToken,
-        extendsBlock.getFirstChild)
+      val extendsAdded = extendsBlock
+        .addBefore(extendsToken, extendsBlock.getFirstChild)
       extendsBlock.addAfter(classParents, extendsAdded)
     }
     psiClass match {
       case Some(cls) =>
         val classParents = addExtendsRef(cls.name)
-        classParents.depthFirst
+        classParents
+          .depthFirst
           .filterByType(classOf[ScStableCodeReferenceElement])
           .next()
           .bindToElement(cls)
@@ -149,10 +150,8 @@ class ScalaTestGenerator extends TestGenerator {
             generateAfter,
             typeDef,
             editor.getProject)
-          ScalaTestGenerator.addScalaTestFeatureSpecMethods(
-            methodsList,
-            psiManager,
-            body)
+          ScalaTestGenerator
+            .addScalaTestFeatureSpecMethods(methodsList, psiManager, body)
         } else if (isInheritor(typeDef, "org.scalatest.FlatSpecLike") ||
                    isInheritor(typeDef, "org.scalatest.fixture.FlatSpecLike")) {
           ScalaTestGenerator.generateScalaTestBeforeAndAfter(
@@ -173,10 +172,8 @@ class ScalaTestGenerator extends TestGenerator {
             generateAfter,
             typeDef,
             editor.getProject)
-          ScalaTestGenerator.addScalaTestFreeSpecMethods(
-            methodsList,
-            psiManager,
-            body)
+          ScalaTestGenerator
+            .addScalaTestFreeSpecMethods(methodsList, psiManager, body)
         } else if (isInheritor(typeDef, "org.scalatest.FunSpecLike") ||
                    isInheritor(typeDef, "org.scalatest.fixture.FunSpecLike")) {
           ScalaTestGenerator.generateScalaTestBeforeAndAfter(
@@ -196,10 +193,8 @@ class ScalaTestGenerator extends TestGenerator {
             generateAfter,
             typeDef,
             editor.getProject)
-          ScalaTestGenerator.addScalaTestFunSuiteMethods(
-            methodsList,
-            psiManager,
-            body)
+          ScalaTestGenerator
+            .addScalaTestFunSuiteMethods(methodsList, psiManager, body)
         } else if (isInheritor(typeDef, "org.scalatest.PropSpecLike") ||
                    isInheritor(typeDef, "org.scalatest.fixture.PropSpecLike")) {
           ScalaTestGenerator.generateScalaTestBeforeAndAfter(
@@ -207,10 +202,8 @@ class ScalaTestGenerator extends TestGenerator {
             generateAfter,
             typeDef,
             editor.getProject)
-          ScalaTestGenerator.addScalaTestPropSpecMethods(
-            methodsList,
-            psiManager,
-            body)
+          ScalaTestGenerator
+            .addScalaTestPropSpecMethods(methodsList, psiManager, body)
         } else if (isInheritor(typeDef, "org.scalatest.WordSpecLike") ||
                    isInheritor(typeDef, "org.scalatest.fixture.WordSpecLike")) {
           ScalaTestGenerator.generateScalaTestBeforeAndAfter(
@@ -558,9 +551,8 @@ object ScalaTestGenerator {
           GlobalSearchScope.allScope(project),
           ScalaPsiManager.ClassCategory.TYPE)) match {
       case Some(groupsTypeDef) =>
-        ExtractSuperUtil.addExtendsTo(
-          typeDef,
-          groupsTypeDef.asInstanceOf[ScTypeDefinition])
+        ExtractSuperUtil
+          .addExtendsTo(typeDef, groupsTypeDef.asInstanceOf[ScTypeDefinition])
         val testNames = methods.map("test" + _.getMember.getName.capitalize)
         val closingBrace = templateBody.getLastChild
         val normalIndentString = FormatterUtil.getNormalIndentString(project)

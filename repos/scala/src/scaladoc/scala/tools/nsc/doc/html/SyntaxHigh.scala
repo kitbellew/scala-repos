@@ -390,8 +390,8 @@ private[html] object SyntaxHigh {
               )) {
             if (Character.isDigit(buf(i).toInt) ||
                 (
-                  buf(i) == '.' && i + 1 < buf.length && Character.isDigit(
-                    buf(i + 1).toInt)
+                  buf(i) == '.' && i + 1 < buf.length && Character
+                    .isDigit(buf(i + 1).toInt)
                 )) {
               val s = numlit(i)
               parse("<span class=\"num\">" + s + "</span>", i + s.length)

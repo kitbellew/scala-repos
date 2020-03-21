@@ -129,7 +129,10 @@ sealed class Supervisor(
   def unlink(child: ActorRef) = supervisor.unlink(child)
 
   def children: List[ActorRef] =
-    _childActors.values.toArray.toList
+    _childActors
+      .values
+      .toArray
+      .toList
       .asInstanceOf[List[List[ActorRef]]]
       .flatten
 

@@ -52,7 +52,9 @@ abstract class PiercingShouldKeepQuarantineSpec
         enterBarrier("actor-identified")
 
         // Manually Quarantine the other system
-        RARP(system).provider.transport
+        RARP(system)
+          .provider
+          .transport
           .quarantine(node(second).address, Some(uid))
 
         // Quarantining is not immediate

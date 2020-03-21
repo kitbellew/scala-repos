@@ -55,8 +55,8 @@ trait ModelBuilders {
           .flatMap(LineSourcePositionHelper.fromFqnSymbol(_)(config, vfs))
           .flatMap { sourcePos =>
             if (sourcePos.file.getName.endsWith(".scala"))
-              askLinkPos(sym, AbstractFile.getFile(sourcePos.file)).flatMap(
-                pos => OffsetSourcePositionHelper.fromPosition(pos))
+              askLinkPos(sym, AbstractFile.getFile(sourcePos.file))
+                .flatMap(pos => OffsetSourcePositionHelper.fromPosition(pos))
             else
               Some(sourcePos)
           }
@@ -84,11 +84,13 @@ trait ModelBuilders {
         sym.owner
     }
     // Create a list of pairs [(typeSym, membersOfSym)]
-    val membersByOwner = (parentMap ++ membersMap).toList.sortWith {
-      // Sort the pairs on the subtype relation
-      case ((s1, _), (s2, _)) =>
-        s1.tpe <:< s2.tpe
-    }
+    val membersByOwner = (parentMap ++ membersMap)
+      .toList
+      .sortWith {
+        // Sort the pairs on the subtype relation
+        case ((s1, _), (s2, _)) =>
+          s1.tpe <:< s2.tpe
+      }
 
     membersByOwner.map {
       case (ownerSym, members) =>
@@ -105,9 +107,11 @@ trait ModelBuilders {
 
         // Do one top level sort by name on members, before
         // subdividing into kinds of members.
-        val sortedMembers = members.toList.sortWith { (a, b) =>
-          a.sym.nameString <= b.sym.nameString
-        }
+        val sortedMembers = members
+          .toList
+          .sortWith { (a, b) =>
+            a.sym.nameString <= b.sym.nameString
+          }
 
         // Convert type members into NamedTypeMemberInfos
         // and divide into different kinds..
@@ -129,7 +133,8 @@ trait ModelBuilders {
           } else if (decl == DeclaredAs.Field) {
             fields += info
           } else if (decl == DeclaredAs.Class || decl == DeclaredAs.Trait ||
-                     decl == DeclaredAs.Interface || decl == DeclaredAs.Object) {
+                     decl == DeclaredAs.Interface || decl == DeclaredAs
+                       .Object) {
             nestedTypes += info
           }
         }

@@ -44,7 +44,9 @@ class ApacheWatcherTest extends FlatSpec with OneInstancePerTest {
   "ApacheWatcher" should "handle session events" in {
     for (ks <- sessionEvents.keys) {
       val satisfied =
-        watcher.state.changes
+        watcher
+          .state
+          .changes
           .filter(_ == WatchState.SessionState(sessionEvents(ks)))
           .toFuture
       watcher.process(new WatchedEvent(EventType.None, ks, path))
@@ -57,7 +59,9 @@ class ApacheWatcherTest extends FlatSpec with OneInstancePerTest {
     for (ev <- nodeEvents.keys) {
       if (ev != EventType.None) {
         val determined =
-          watcher.state.changes
+          watcher
+            .state
+            .changes
             .filter(_ == WatchState.Determined(nodeEvents(ev)))
             .toFuture
         watcher.process(new WatchedEvent(ev, KeeperState.SyncConnected, path))
@@ -69,16 +73,14 @@ class ApacheWatcherTest extends FlatSpec with OneInstancePerTest {
   }
 
   "StatsWatcher" should "count session events" in {
-    val statsWatcher = SessionStats.watcher(
-      watcher.state,
-      statsReceiver,
-      5.seconds,
-      DefaultTimer.twitter)
+    val statsWatcher = SessionStats
+      .watcher(watcher.state, statsReceiver, 5.seconds, DefaultTimer.twitter)
     // Set a constant witness so the Var doesn't reset state
     statsWatcher.changes.respond(_ => ())
     for (ks <- KeeperState.values) {
       val satisfied =
-        statsWatcher.changes
+        statsWatcher
+          .changes
           .filter(_ == WatchState.SessionState(sessionEvents(ks)))
           .toFuture
       watcher.process(new WatchedEvent(EventType.None, ks, path))

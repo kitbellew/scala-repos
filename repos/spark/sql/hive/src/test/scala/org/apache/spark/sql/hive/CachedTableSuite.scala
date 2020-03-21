@@ -30,12 +30,14 @@ class CachedTableSuite extends QueryTest with TestHiveSingleton {
 
   def rddIdOf(tableName: String): Int = {
     val plan = table(tableName).queryExecution.sparkPlan
-    plan.collect {
-      case InMemoryColumnarTableScan(_, _, relation) =>
-        relation.cachedColumnBuffers.id
-      case _ =>
-        fail(s"Table $tableName is not cached\n" + plan)
-    }.head
+    plan
+      .collect {
+        case InMemoryColumnarTableScan(_, _, relation) =>
+          relation.cachedColumnBuffers.id
+        case _ =>
+          fail(s"Table $tableName is not cached\n" + plan)
+      }
+      .head
   }
 
   def isMaterialized(rddId: Int): Boolean = {
@@ -211,10 +213,12 @@ class CachedTableSuite extends QueryTest with TestHiveSingleton {
     cacheTable("cachedTable")
     val sparkPlan = sql("SELECT * FROM cachedTable").queryExecution.sparkPlan
     assert(
-      sparkPlan.collect {
-        case e: InMemoryColumnarTableScan =>
-          e
-      }.size === 1)
+      sparkPlan
+        .collect {
+          case e: InMemoryColumnarTableScan =>
+            e
+        }
+        .size === 1)
 
     sql("DROP TABLE cachedTable")
   }

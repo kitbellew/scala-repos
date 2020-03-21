@@ -59,10 +59,7 @@ object Sampling {
     var e = sortBySrc(g.edges.toArray)
     val targetVertexCount = (graph.vertices.count() * fraction).toInt
     var seedVertices =
-      graph.vertices
-        .sample(false, fraction, targetVertexCount)
-        .toArray
-        .iterator
+      graph.vertices.sample(false, fraction, targetVertexCount).toArray.iterator
     var sampledVertices: HashSet[VertexId] = HashSet()
     var burnQueue: Queue[VertexId] = Queue()
 
@@ -80,10 +77,8 @@ object Sampling {
             !sampledVertices.contains(e.dstId)
           })
         val burnFraction = numToSample.toDouble / burnCandidate.count.toDouble
-        val burnEdges = burnCandidate.sample(
-          false,
-          burnFraction,
-          Random.nextLong)
+        val burnEdges = burnCandidate
+          .sample(false, burnFraction, Random.nextLong)
         val neighborVertexIds = burnEdges.map((e: Edge[Int]) => e.dstId)
         sampledVertices = sampledVertices ++ neighborVertexIds.toArray
         burnQueue = burnQueue ++ neighborVertexIds.toArray
@@ -94,8 +89,10 @@ object Sampling {
       }
     }
     val vertex: Seq[(VertexId, Int)] = sampledVertices.map(v => (v, 1)).toSeq
-    val edges = graph.edges.filter(e =>
-      sampledVertices.contains(e.srcId) && sampledVertices.contains(e.dstId))
+    val edges = graph
+      .edges
+      .filter(e =>
+        sampledVertices.contains(e.srcId) && sampledVertices.contains(e.dstId))
     Graph(sc.parallelize(vertex), edges)
   }
 
@@ -106,8 +103,9 @@ object Sampling {
       fraction: Double) = {
     val vertices = graph.vertices.sample(false, fraction, Random.nextLong)
     val vertexMap = vertices.collectAsMap()
-    val edges = graph.edges.filter(e =>
-      vertexMap.contains(e.srcId) && vertexMap.contains(e.dstId))
+    val edges = graph
+      .edges
+      .filter(e => vertexMap.contains(e.srcId) && vertexMap.contains(e.dstId))
     val graph2 = Graph(vertices, edges)
     graph2
   }

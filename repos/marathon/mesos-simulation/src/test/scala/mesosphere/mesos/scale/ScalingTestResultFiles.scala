@@ -25,9 +25,12 @@ object ScalingTestResultFiles {
   def addTimestamp(startTime: Long)(value: JsValue): JsObject = {
     value
       .transform(
-        __.json.update(
-          (__ \ relativeTimestampMs).json.put(
-            JsNumber(System.currentTimeMillis() - startTime))))
+        __
+          .json
+          .update(
+            (__ \ relativeTimestampMs)
+              .json
+              .put(JsNumber(System.currentTimeMillis() - startTime))))
       .get
   }
 }

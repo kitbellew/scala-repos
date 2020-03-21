@@ -39,7 +39,8 @@ object EnsimeBuild extends Build {
   ) ++ sonatype("ensime", "ensime-server", GPL3)
 
   lazy val commonItSettings = inConfig(It)(
-    Defaults.testSettings ++ Sensible.testSettings) ++ scalariformSettingsWithIt ++ Seq(
+    Defaults.testSettings ++ Sensible
+      .testSettings) ++ scalariformSettingsWithIt ++ Seq(
     javaOptions in It ++= Seq("-Dlogback.configurationFile=../logback-it.xml"))
 
   lazy val JavaTools: File = JdkDir / "lib/tools.jar"
@@ -77,8 +78,8 @@ object EnsimeBuild extends Build {
     testutil % "test"
   ) settings (
     libraryDependencies ++= Seq(
-      "org.parboiled" %% "parboiled" % "2.1.2") ++ Sensible.shapeless(
-      scalaVersion.value)
+      "org.parboiled" %% "parboiled" % "2.1.2") ++ Sensible
+      .shapeless(scalaVersion.value)
   )
 
   lazy val api =
@@ -137,8 +138,8 @@ object EnsimeBuild extends Build {
     .settings(commonSettings, commonItSettings)
     .settings(
       unmanagedJars in Compile += JavaTools,
-      EnsimeKeys.unmanagedSourceArchives += file(
-        ".").getCanonicalFile / "openjdk-langtools/openjdk6-langtools-src.zip",
+      EnsimeKeys.unmanagedSourceArchives += file(".")
+        .getCanonicalFile / "openjdk-langtools/openjdk6-langtools-src.zip",
       libraryDependencies ++= Seq(
         "com.h2database" % "h2" % "1.4.190",
         "com.typesafe.slick" %% "slick" % "3.1.1",
@@ -158,8 +159,8 @@ object EnsimeBuild extends Build {
         "org.scala-refactoring" %% "org.scala-refactoring.library" % "0.9.1-SNAPSHOT",
         "commons-lang" % "commons-lang" % "2.6",
         "com.googlecode.java-diff-utils" % "diffutils" % "1.3.0"
-      ) ++ Sensible.testLibs("it,test") ++ Sensible.shapeless(
-        scalaVersion.value)
+      ) ++ Sensible.testLibs("it,test") ++ Sensible
+        .shapeless(scalaVersion.value)
     ) enablePlugins BuildInfoPlugin settings (
     buildInfoPackage := organization.value,
     buildInfoKeys += BuildInfoKey.action("gitSha")(
@@ -192,17 +193,17 @@ object EnsimeBuild extends Build {
         "com.typesafe.akka" %% "akka-http-spray-json-experimental" % streamsVersion,
         "com.typesafe.akka" %% "akka-http-xml-experimental" % streamsVersion,
         "com.typesafe.akka" %% "akka-http-testkit-experimental" % streamsVersion % "test,it"
-      ) ++ Sensible.testLibs("it,test") ++ Sensible.shapeless(
-        scalaVersion.value))
+      ) ++ Sensible.testLibs("it,test") ++ Sensible
+        .shapeless(scalaVersion.value))
 
   // testing modules
   lazy val testingEmpty = Project("testingEmpty", file("testing/empty"))
 
-  lazy val testingSimple = Project(
-    "testingSimple",
-    file("testing/simple")) settings (
-    scalacOptions in Compile := Seq(),
-    libraryDependencies += "org.scalatest" %% "scalatest" % Sensible.scalatestVersion % "test" intransitive ()
+  lazy val testingSimple =
+    Project("testingSimple", file("testing/simple")) settings (
+      scalacOptions in Compile := Seq(),
+      libraryDependencies += "org.scalatest" %% "scalatest" % Sensible
+        .scalatestVersion % "test" intransitive ()
   )
 
   lazy val testingSimpleJar = Project(
@@ -211,15 +212,15 @@ object EnsimeBuild extends Build {
     exportJars := true,
     EnsimeKeys.useTarget in Compile := Some(
       (artifactPath in (Compile, packageBin)).value),
-    EnsimeKeys.useTarget in Test := Some(
-      (artifactPath in (Test, packageBin)).value)
+    EnsimeKeys
+      .useTarget in Test := Some((artifactPath in (Test, packageBin)).value)
   )
 
-  lazy val testingImplicits = Project(
-    "testingImplicits",
-    file("testing/implicits")) settings (
-    libraryDependencies += "org.scalatest" %% "scalatest" % Sensible.scalatestVersion % "test" intransitive ()
-  )
+  lazy val testingImplicits =
+    Project("testingImplicits", file("testing/implicits")) settings (
+      libraryDependencies += "org.scalatest" %% "scalatest" % Sensible
+        .scalatestVersion % "test" intransitive ()
+    )
 
   lazy val testingTiming = Project("testingTiming", file("testing/timing"))
 

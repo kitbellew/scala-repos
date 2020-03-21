@@ -35,8 +35,8 @@ class DebuggingDirectivesExamplesSpec extends RoutingSpec {
 
     // This one doesn't use the implicit LoggingContext but uses `println` for logging
     def printRequestMethod(req: HttpRequest): Unit = println(req.method)
-    val logRequestPrintln = DebuggingDirectives.logRequest(
-      LoggingMagnet(_ => printRequestMethod))
+    val logRequestPrintln = DebuggingDirectives
+      .logRequest(LoggingMagnet(_ => printRequestMethod))
 
     // tests:
     Get("/") ~> logRequestPrintln(complete("logged")) ~> check {
@@ -69,8 +69,8 @@ class DebuggingDirectivesExamplesSpec extends RoutingSpec {
         requestMethodAndResponseStatusAsInfo(req)(res)
           .map(_.obj.toString)
           .getOrElse(""))
-    val logRequestResultPrintln = DebuggingDirectives.logRequestResult(
-      LoggingMagnet(_ => printRequestMethodAndResponseStatus))
+    val logRequestResultPrintln = DebuggingDirectives
+      .logRequestResult(LoggingMagnet(_ => printRequestMethodAndResponseStatus))
 
     // tests:
     Get("/") ~> logRequestResultPrintln(complete("logged")) ~> check {
@@ -104,8 +104,8 @@ class DebuggingDirectivesExamplesSpec extends RoutingSpec {
 
     // This one doesn't use the implicit LoggingContext but uses `println` for logging
     def printResponseStatus(res: Any): Unit = println(responseStatus(res))
-    val logResultPrintln = DebuggingDirectives.logResult(
-      LoggingMagnet(_ => printResponseStatus))
+    val logResultPrintln = DebuggingDirectives
+      .logResult(LoggingMagnet(_ => printResponseStatus))
 
     // tests:
     Get("/") ~> logResultPrintln(complete("logged")) ~> check {

@@ -365,9 +365,11 @@ final class Eval(
       vals
     }
     def isAcceptableType(tpe: Type): Boolean = {
-      tpe.baseClasses.exists { sym =>
-        tpes.contains(sym.fullName)
-      }
+      tpe
+        .baseClasses
+        .exists { sym =>
+          tpes.contains(sym.fullName)
+        }
     }
     override def traverse(tree: Tree): Unit =
       tree match {

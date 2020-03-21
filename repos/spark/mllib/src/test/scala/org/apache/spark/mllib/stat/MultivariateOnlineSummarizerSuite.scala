@@ -230,9 +230,8 @@ class MultivariateOnlineSummarizerSuite extends SparkFunSuite {
       .merge(new MultivariateOnlineSummarizer)
     assert(summarizer1.count === 1)
 
-    val summarizer2 = (new MultivariateOnlineSummarizer)
-      .merge(
-        (new MultivariateOnlineSummarizer).add(Vectors.dense(0.0, -1.0, -3.0)))
+    val summarizer2 = (new MultivariateOnlineSummarizer).merge(
+      (new MultivariateOnlineSummarizer).add(Vectors.dense(0.0, -1.0, -3.0)))
     assert(summarizer2.count === 1)
 
     val summarizer3 = (new MultivariateOnlineSummarizer)
@@ -311,8 +310,8 @@ class MultivariateOnlineSummarizerSuite extends SparkFunSuite {
         absTol 1e-10,
       "mean mismatch")
     assert(
-      summarizer.variance ~== Vectors.dense(
-        Array(0.17657142857, 1.645115714, 2.42057142857))
+      summarizer.variance ~== Vectors
+        .dense(Array(0.17657142857, 1.645115714, 2.42057142857))
         absTol 1e-8,
       "variance mismatch")
     assert(

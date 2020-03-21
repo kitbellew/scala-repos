@@ -89,8 +89,9 @@ class TaskBuilder(
       runningTasks: => Iterable[Task]): Option[(TaskInfo, Seq[Int])] = {
 
     val acceptedResourceRoles: Set[String] = {
-      val roles = app.acceptedResourceRoles.getOrElse(
-        config.defaultAcceptedResourceRolesSet)
+      val roles = app
+        .acceptedResourceRoles
+        .getOrElse(config.defaultAcceptedResourceRolesSet)
       if (log.isDebugEnabled)
         log.debug(s"acceptedResourceRoles $roles")
       roles
@@ -122,14 +123,17 @@ class TaskBuilder(
 
     val host: Option[String] = Some(offer.getHostname)
 
-    val labels = app.labels.map {
-      case (key, value) =>
-        Label.newBuilder.setKey(key).setValue(value).build()
-    }
+    val labels = app
+      .labels
+      .map {
+        case (key, value) =>
+          Label.newBuilder.setKey(key).setValue(value).build()
+      }
 
     val taskId = newTaskId(app.id)
-    val builder = TaskInfo.newBuilder
-    // Use a valid hostname to make service discovery easier
+    val builder = TaskInfo
+      .newBuilder
+      // Use a valid hostname to make service discovery easier
       .setName(app.id.toHostname)
       .setTaskId(taskId.mesosTaskId)
       .setSlaveId(offer.getSlaveId)
@@ -140,8 +144,8 @@ class TaskBuilder(
     if (labels.nonEmpty)
       builder.setLabels(Labels.newBuilder.addAllLabels(labels.asJava))
 
-    volumeMatchOpt.foreach(
-      _.persistentVolumeResources.foreach(builder.addResources(_)))
+    volumeMatchOpt
+      .foreach(_.persistentVolumeResources.foreach(builder.addResources(_)))
 
     val containerProto = computeContainerInfo(resourceMatch.hostPorts)
     val envPrefix: Option[String] = config.envVarsPrefix.get
@@ -187,8 +191,9 @@ class TaskBuilder(
 
     // Mesos supports at most one health check, and only COMMAND checks
     // are currently implemented in the Mesos health check helper program.
-    val mesosHealthChecks: Set[org.apache.mesos.Protos.HealthCheck] =
-      app.healthChecks.collect {
+    val mesosHealthChecks: Set[org.apache.mesos.Protos.HealthCheck] = app
+      .healthChecks
+      .collect {
         case healthCheck: HealthCheck
             if healthCheck.protocol == Protocol.COMMAND =>
           healthCheck.toMesos
@@ -212,8 +217,8 @@ class TaskBuilder(
       hostPorts: Seq[Int]): org.apache.mesos.Protos.DiscoveryInfo = {
     val discoveryInfoBuilder = org.apache.mesos.Protos.DiscoveryInfo.newBuilder
     discoveryInfoBuilder.setName(app.id.toHostname)
-    discoveryInfoBuilder.setVisibility(
-      org.apache.mesos.Protos.DiscoveryInfo.Visibility.FRAMEWORK)
+    discoveryInfoBuilder
+      .setVisibility(org.apache.mesos.Protos.DiscoveryInfo.Visibility.FRAMEWORK)
 
     val portProtos =
       app.ipAddress match {
@@ -222,7 +227,8 @@ class TaskBuilder(
         case _ =>
           // Serialize app.portDefinitions to protos. The port numbers are the service ports, we need to
           // overwrite them the port numbers assigned to this particular task.
-          app.portDefinitions
+          app
+            .portDefinitions
             .zip(hostPorts)
             .map {
               case (portDefinition, hostPort) =>
@@ -249,67 +255,77 @@ class TaskBuilder(
       val builder = ContainerInfo.newBuilder
 
       // Fill in Docker container details if necessary
-      app.container.foreach { c =>
-        val portMappings = c.docker.map { d =>
-          d.portMappings.map { pms =>
-            pms zip ports map {
-              case (mapping, port) =>
-                // Use case: containerPort = 0 and hostPort = 0
-                //
-                // For apps that have their own service registry and require p2p communication,
-                // they will need to advertise
-                // the externally visible ports that their components come up on.
-                // Since they generally know there container port and advertise that, this is
-                // fixed most easily if the container port is the same as the externally visible host
-                // port.
-                if (mapping.containerPort == 0) {
-                  mapping.copy(hostPort = port, containerPort = port)
-                } else {
-                  mapping.copy(hostPort = port)
+      app
+        .container
+        .foreach { c =>
+          val portMappings = c
+            .docker
+            .map { d =>
+              d
+                .portMappings
+                .map { pms =>
+                  pms zip ports map {
+                    case (mapping, port) =>
+                      // Use case: containerPort = 0 and hostPort = 0
+                      //
+                      // For apps that have their own service registry and require p2p communication,
+                      // they will need to advertise
+                      // the externally visible ports that their components come up on.
+                      // Since they generally know there container port and advertise that, this is
+                      // fixed most easily if the container port is the same as the externally visible host
+                      // port.
+                      if (mapping.containerPort == 0) {
+                        mapping.copy(hostPort = port, containerPort = port)
+                      } else {
+                        mapping.copy(hostPort = port)
+                      }
+                  }
                 }
             }
-          }
+
+          val containerWithPortMappings =
+            portMappings match {
+              case None =>
+                c
+              case Some(newMappings) =>
+                c.copy(docker = c
+                  .docker
+                  .map {
+                    _.copy(portMappings = newMappings)
+                  })
+            }
+          builder
+            .mergeFrom(ContainerSerializer.toMesos(containerWithPortMappings))
         }
 
-        val containerWithPortMappings =
-          portMappings match {
-            case None =>
-              c
-            case Some(newMappings) =>
-              c.copy(docker = c.docker.map {
-                _.copy(portMappings = newMappings)
-              })
-          }
-        builder.mergeFrom(
-          ContainerSerializer.toMesos(containerWithPortMappings))
-      }
-
       // Set NetworkInfo if necessary
-      app.ipAddress.foreach { ipAddress =>
-        val ipAddressLabels = Labels
-          .newBuilder()
-          .addAllLabels(
-            ipAddress.labels.map {
-              case (key, value) =>
-                Label.newBuilder.setKey(key).setValue(value).build()
-            }.asJava)
-        val networkInfo: NetworkInfo.Builder = NetworkInfo
-          .newBuilder()
-          .addAllGroups(ipAddress.groups.asJava)
-          .setLabels(ipAddressLabels)
-          .addIpAddresses(NetworkInfo.IPAddress.getDefaultInstance)
-        builder.addNetworkInfos(networkInfo)
-      }
+      app
+        .ipAddress
+        .foreach { ipAddress =>
+          val ipAddressLabels = Labels
+            .newBuilder()
+            .addAllLabels(
+              ipAddress
+                .labels
+                .map {
+                  case (key, value) =>
+                    Label.newBuilder.setKey(key).setValue(value).build()
+                }
+                .asJava)
+          val networkInfo: NetworkInfo.Builder = NetworkInfo
+            .newBuilder()
+            .addAllGroups(ipAddress.groups.asJava)
+            .setLabels(ipAddressLabels)
+            .addIpAddresses(NetworkInfo.IPAddress.getDefaultInstance)
+          builder.addNetworkInfos(networkInfo)
+        }
 
       // Set container type to MESOS by default (this is a required field)
       if (!builder.hasType)
         builder.setType(ContainerInfo.Type.MESOS)
 
       if (builder.getType.equals(ContainerInfo.Type.MESOS)) {
-        builder.setMesos(
-          ContainerInfo.MesosInfo
-            .newBuilder()
-            .build())
+        builder.setMesos(ContainerInfo.MesosInfo.newBuilder().build())
       }
       Some(builder.build)
     }
@@ -321,8 +337,8 @@ object TaskBuilder {
 
   val maxEnvironmentVarLength = 512
   val labelEnvironmentKeyPrefix = "MARATHON_APP_LABEL_"
-  val maxVariableLength =
-    maxEnvironmentVarLength - labelEnvironmentKeyPrefix.length
+  val maxVariableLength = maxEnvironmentVarLength - labelEnvironmentKeyPrefix
+    .length
 
   def commandInfo(
       app: AppDefinition,
@@ -341,9 +357,7 @@ object TaskBuilder {
           portsEnv(declaredPorts, ports) ++ host.map("HOST" -> _).toMap) ++
         app.env
 
-    val builder = CommandInfo
-      .newBuilder()
-      .setEnvironment(environment(envMap))
+    val builder = CommandInfo.newBuilder().setEnvironment(environment(envMap))
 
     app.cmd match {
       case Some(cmd) if cmd.nonEmpty =>
@@ -353,13 +367,15 @@ object TaskBuilder {
     }
 
     // args take precedence over command, if supplied
-    app.args.foreach { argv =>
-      builder.setShell(false)
-      builder.addAllArguments(argv.asJava)
-      //mesos command executor expects cmd and arguments
-      if (app.container.isEmpty)
-        builder.setValue(argv.head)
-    }
+    app
+      .args
+      .foreach { argv =>
+        builder.setShell(false)
+        builder.addAllArguments(argv.asJava)
+        //mesos command executor expects cmd and arguments
+        if (app.container.isEmpty)
+          builder.setValue(argv.head)
+      }
 
     if (app.fetch.nonEmpty) {
       builder.addAllUris(app.fetch.map(_.toProto()).asJava)
@@ -389,17 +405,21 @@ object TaskBuilder {
     } else {
       val env = Map.newBuilder[String, String]
 
-      assignedPorts.zipWithIndex.foreach {
-        case (p, n) =>
-          env += (s"PORT$n" -> p.toString)
-      }
+      assignedPorts
+        .zipWithIndex
+        .foreach {
+          case (p, n) =>
+            env += (s"PORT$n" -> p.toString)
+        }
 
-      definedPorts.zip(assignedPorts).foreach {
-        case (defined, assigned) =>
-          if (defined != AppDefinition.RandomPortValue) {
-            env += (s"PORT_$defined" -> assigned.toString)
-          }
-      }
+      definedPorts
+        .zip(assignedPorts)
+        .foreach {
+          case (defined, assigned) =>
+            if (defined != AppDefinition.RandomPortValue) {
+              env += (s"PORT_$defined" -> assigned.toString)
+            }
+        }
 
       env += ("PORT" -> assignedPorts.head.toString)
       env += ("PORTS" -> assignedPorts.mkString(","))
@@ -432,15 +452,18 @@ object TaskBuilder {
         "MESOS_TASK_ID" -> taskId.map(_.idString),
         "MARATHON_APP_ID" -> Some(app.id.toString),
         "MARATHON_APP_VERSION" -> Some(app.version.toString),
-        "MARATHON_APP_DOCKER_IMAGE" -> app.container.flatMap(
-          _.docker.map(_.image)),
+        "MARATHON_APP_DOCKER_IMAGE" -> app
+          .container
+          .flatMap(_.docker.map(_.image)),
         "MARATHON_APP_RESOURCE_CPUS" -> Some(app.cpus.toString),
         "MARATHON_APP_RESOURCE_MEM" -> Some(app.mem.toString),
         "MARATHON_APP_RESOURCE_DISK" -> Some(app.disk.toString)
-      ).collect {
-        case (key, Some(value)) =>
-          key -> value
-      }.toMap ++ labelsToEnvVars(app.labels)
+      )
+        .collect {
+          case (key, Some(value)) =>
+            key -> value
+        }
+        .toMap ++ labelsToEnvVars(app.labels)
     }
   }
 

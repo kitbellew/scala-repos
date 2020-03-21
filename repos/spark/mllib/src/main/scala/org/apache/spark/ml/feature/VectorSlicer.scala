@@ -104,18 +104,22 @@ final class VectorSlicer(override val uid: String)
     // Validity checks
     transformSchema(dataset.schema)
     val inputAttr = AttributeGroup.fromStructField(dataset.schema($(inputCol)))
-    inputAttr.numAttributes.foreach { numFeatures =>
-      val maxIndex = $(indices).max
-      require(
-        maxIndex < numFeatures,
-        s"Selected feature index $maxIndex invalid for only $numFeatures input features.")
-    }
+    inputAttr
+      .numAttributes
+      .foreach { numFeatures =>
+        val maxIndex = $(indices).max
+        require(
+          maxIndex < numFeatures,
+          s"Selected feature index $maxIndex invalid for only $numFeatures input features.")
+      }
 
     // Prepare output attributes
     val inds = getSelectedFeatureIndices(dataset.schema)
-    val selectedAttrs: Option[Array[Attribute]] = inputAttr.attributes.map {
-      attrs => inds.map(index => attrs(index))
-    }
+    val selectedAttrs: Option[Array[Attribute]] = inputAttr
+      .attributes
+      .map { attrs =>
+        inds.map(index => attrs(index))
+      }
     val outputAttr =
       selectedAttrs match {
         case Some(attrs) =>
@@ -141,9 +145,8 @@ final class VectorSlicer(override val uid: String)
 
   /** Get the feature indices in order: indices, names */
   private def getSelectedFeatureIndices(schema: StructType): Array[Int] = {
-    val nameFeatures = MetadataUtils.getFeatureIndicesFromNames(
-      schema($(inputCol)),
-      $(names))
+    val nameFeatures = MetadataUtils
+      .getFeatureIndicesFromNames(schema($(inputCol)), $(names))
     val indFeatures = $(indices)
     val numDistinctFeatures = (nameFeatures ++ indFeatures).distinct.length
     lazy val errMsg = "VectorSlicer requires indices and names to be disjoint" +

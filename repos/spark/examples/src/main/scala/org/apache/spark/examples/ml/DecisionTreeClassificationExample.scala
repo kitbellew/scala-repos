@@ -35,7 +35,8 @@ object DecisionTreeClassificationExample {
     val sqlContext = new SQLContext(sc)
     // $example on$
     // Load the data stored in LIBSVM format as a DataFrame.
-    val data = sqlContext.read
+    val data = sqlContext
+      .read
       .format("libsvm")
       .load("data/mllib/sample_libsvm_data.txt")
 

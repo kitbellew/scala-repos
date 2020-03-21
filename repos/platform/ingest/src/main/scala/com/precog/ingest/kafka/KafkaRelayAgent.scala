@@ -341,7 +341,8 @@ final class KafkaRelayAgent(
     } valueOr { error =>
       Promise successful {
         logger.error(
-          "Deserialization errors occurred reading events from Kafka: " + error.message)
+          "Deserialization errors occurred reading events from Kafka: " + error
+            .message)
       }
     }
   }

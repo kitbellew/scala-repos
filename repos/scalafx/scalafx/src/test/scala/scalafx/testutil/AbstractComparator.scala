@@ -198,7 +198,9 @@ private[testutil] trait AbstractComparator extends Assertions {
         case (1, true) =>
           classParameterToString(m.getParameterTypes.last, true)
         case (_, true) =>
-          m.getParameterTypes.init
+          m
+            .getParameterTypes
+            .init
             .map(classParameterToString(_))
             .mkString("", ", ", ", ") +
             classParameterToString(m.getParameterTypes.last, true)
@@ -206,8 +208,8 @@ private[testutil] trait AbstractComparator extends Assertions {
           m.getParameterTypes.map(classParameterToString(_)).mkString(", ")
       }
 
-    classParameterToString(
-      m.getReturnType) + " " + m.getName + "(" + strParameters + ")"
+    classParameterToString(m.getReturnType) + " " + m
+      .getName + "(" + strParameters + ")"
   }
 
   private val nameComparator: (Method, Method) => Boolean = (m1, m2) =>
@@ -231,10 +233,7 @@ private[testutil] trait AbstractComparator extends Assertions {
             Modifier.isStatic(m.getModifiers)) && !isSpecialMethodName(
             m.getName))
 
-    cls.getDeclaredMethods
-      .filter(isAcceptable)
-      .sortWith(nameComparator)
-      .toList
+    cls.getDeclaredMethods.filter(isAcceptable).sortWith(nameComparator).toList
   }
 
   /**

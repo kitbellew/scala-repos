@@ -43,8 +43,7 @@ object ScroogeBinaryConverter {
       Class
         .forName(thriftStructClass.getName + "$")
         .getField("MODULE$")
-        .get(null))
-      .map(_.asInstanceOf[ThriftStructCodec[T]])
+        .get(null)).map(_.asInstanceOf[ThriftStructCodec[T]])
 
   private[this] def codecForUnion[T <: ThriftStruct](
       maybeUnion: Class[T]): Try[ThriftStructCodec[T]] =
@@ -52,8 +51,7 @@ object ScroogeBinaryConverter {
       Class
         .forName(maybeUnion.getName.reverse.dropWhile(_ != '$').reverse)
         .getField("MODULE$")
-        .get(null))
-      .map(_.asInstanceOf[ThriftStructCodec[T]])
+        .get(null)).map(_.asInstanceOf[ThriftStructCodec[T]])
 
   def apply[T <: ThriftStruct: ClassTag]: BinaryConverter[T] = {
     val ct = implicitly[ClassTag[T]]

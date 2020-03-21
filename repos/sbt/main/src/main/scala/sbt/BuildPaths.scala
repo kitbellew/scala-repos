@@ -99,7 +99,11 @@ object BuildPaths {
   def defaultGlobalBase = Path.userHome / ConfigDirectoryName
 
   private[this] def binarySbtVersion(state: State): String =
-    sbt.internal.librarymanagement.cross.CrossVersionUtil
+    sbt
+      .internal
+      .librarymanagement
+      .cross
+      .CrossVersionUtil
       .binarySbtVersion(state.configuration.provider.id.version)
   private[this] def defaultStaging(globalBase: File) = globalBase / "staging"
   private[this] def defaultGlobalPlugins(globalBase: File) =

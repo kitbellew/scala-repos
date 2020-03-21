@@ -10,7 +10,8 @@ import cats.laws.discipline.arbitrary.{constArbitrary, oneAndArbitrary}
 
 class ConstTests extends CatsSuite {
 
-  implicit val iso = CartesianTests.Isomorphisms
+  implicit val iso = CartesianTests
+    .Isomorphisms
     .invariant[Const[String, ?]](Const.constTraverse)
 
   checkAll(
@@ -39,7 +40,8 @@ class ConstTests extends CatsSuite {
   {
     implicit def nonEmptyListSemigroup[A]: Semigroup[NonEmptyList[A]] =
       SemigroupK[NonEmptyList].algebra
-    implicit val iso = CartesianTests.Isomorphisms
+    implicit val iso = CartesianTests
+      .Isomorphisms
       .invariant[Const[NonEmptyList[String], ?]](Const.constContravariant)
     checkAll(
       "Apply[Const[NonEmptyList[String], Int]]",

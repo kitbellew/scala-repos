@@ -44,8 +44,8 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
         var downloaded: Option[String] = None
 
         try {
-          downloaded = ActivatorRepoProcessor.downloadStringFromRepo(
-            s"$urlString/$PROPERTIES")
+          downloaded = ActivatorRepoProcessor
+            .downloadStringFromRepo(s"$urlString/$PROPERTIES")
         } catch {
           case io: IOException =>
             error("Can't download index", io)
@@ -53,10 +53,12 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
 
         downloaded flatMap {
           case str =>
-            str.split('\n').find {
-              case s =>
-                s.trim startsWith CACHE_HASH
-            } map {
+            str
+              .split('\n')
+              .find {
+                case s =>
+                  s.trim startsWith CACHE_HASH
+              } map {
               case hashStr =>
                 hashStr.trim.stripPrefix(CACHE_HASH)
             }
@@ -121,7 +123,8 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
         import org.apache.lucene.search.IndexSearcher
 
         val loader =
-          getClass.getClassLoader match { //hack to avoid lucene 2.4.1 from bundled maven plugin
+          getClass
+            .getClassLoader match { //hack to avoid lucene 2.4.1 from bundled maven plugin
             case urlLoader: URLClassLoader =>
               new URLClassLoader(urlLoader.getURLs, null)
             case other =>
@@ -131,18 +134,21 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
 
         reader = DirectoryReader.open(FSDirectory.open(extracted))
         val searcher = new IndexSearcher(reader)
-        val docs = searcher.search(
-          new lucene.search.MatchAllDocsQuery,
-          reader.maxDoc())
-        val data = docs.scoreDocs.map {
-          case doc =>
-            reader document doc.doc
-        }
+        val docs = searcher
+          .search(new lucene.search.MatchAllDocsQuery, reader.maxDoc())
+        val data = docs
+          .scoreDocs
+          .map {
+            case doc =>
+              reader document doc.doc
+          }
 
-        data.map {
-          case docData =>
-            Keys.from(docData)
-        }.toMap
+        data
+          .map {
+            case docData =>
+              Keys.from(docData)
+          }
+          .toMap
       }
     } catch {
       case io: IOException =>
@@ -181,10 +187,8 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
         }
       }
 
-    ActivatorRepoProcessor.downloadTemplateFromRepo(
-      templateId,
-      pathTo,
-      myOnError)
+    ActivatorRepoProcessor
+      .downloadTemplateFromRepo(templateId, pathTo, myOnError)
     workOffline = hasError
     if (!workOffline)
       cacheFile(pathTo, cachedTemplate)
@@ -194,10 +198,8 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
       templateId: String,
       extractTo: File,
       onError: String => Unit) {
-    val contentDir = FileUtilRt.createTempDirectory(
-      s"$templateId-template-content",
-      "",
-      true)
+    val contentDir = FileUtilRt
+      .createTempDirectory(s"$templateId-template-content", "", true)
     val contentFile = new File(contentDir, "content.zip")
 
     contentFile.createNewFile()

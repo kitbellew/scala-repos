@@ -30,9 +30,11 @@ private[sbt] final class TaskTimings extends ExecuteProgress[Task] {
   def workStarting(task: Task[_]) = timings.put(task, System.nanoTime)
   def workFinished[T](task: Task[T], result: Either[Task[T], Result[T]]) = {
     timings.put(task, System.nanoTime - timings.get(task))
-    result.left.foreach { t =>
-      calledBy.put(t, task)
-    }
+    result
+      .left
+      .foreach { t =>
+        calledBy.put(t, task)
+      }
   }
   def completed[T](state: Unit, task: Task[T], result: Result[T]) = ()
   def allCompleted(state: Unit, results: RMap[Task, Result]) = {
@@ -40,10 +42,12 @@ private[sbt] final class TaskTimings extends ExecuteProgress[Task] {
     println("Total time: " + (total * 1e-6) + " ms")
     import collection.JavaConversions._
     def sumTimes(in: Seq[(Task[_], Long)]) = in.map(_._2).sum
-    val timingsByName = timings.toSeq.groupBy {
-      case (t, time) =>
-        mappedName(t)
-    } mapValues (sumTimes)
+    val timingsByName = timings
+      .toSeq
+      .groupBy {
+        case (t, time) =>
+          mappedName(t)
+      } mapValues (sumTimes)
     for ((taskName, time) <- timingsByName.toSeq.sortBy(_._2).reverse)
       println("  " + taskName + ": " + (time * 1e-6) + " ms")
   }

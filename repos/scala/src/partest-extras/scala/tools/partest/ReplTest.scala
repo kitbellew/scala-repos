@@ -115,17 +115,16 @@ abstract class SessionTest extends ReplTest {
     if (evaled.size != wanted.size)
       Console println s"Expected ${wanted.size} lines, got ${evaled.size}"
     if (evaled != wanted)
-      Console print nest.FileManager.compareContents(
-        wanted,
-        evaled,
-        "expected",
-        "actual")
+      Console print nest
+        .FileManager
+        .compareContents(wanted, evaled, "expected", "actual")
   }
 }
 object SessionTest {
   // \R for line break is Java 8, \v for vertical space might suffice
   def input(prompt: String) =
-    s"""(?m)^$prompt(:pa.*\u000A)// Entering paste mode.*\u000A\u000A((?:.*\u000A)*)\u000A// Exiting paste mode.*\u000A|^scala> (.*\u000A(?:\\s*\\| .*\u000A)*)""".r
+    s"""(?m)^$prompt(:pa.*\u000A)// Entering paste mode.*\u000A\u000A((?:.*\u000A)*)\u000A// Exiting paste mode.*\u000A|^scala> (.*\u000A(?:\\s*\\| .*\u000A)*)"""
+      .r
 
   val margin = """(?m)^\s*\| (.*)$""".r
 }

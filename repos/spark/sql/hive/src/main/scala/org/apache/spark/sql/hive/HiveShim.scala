@@ -57,9 +57,8 @@ private[hive] object HiveShim {
    * This function in hive-0.13 become private, but we have to do this to walkaround hive bug
    */
   private def appendReadColumnNames(conf: Configuration, cols: Seq[String]) {
-    val old: String = conf.get(
-      ColumnProjectionUtils.READ_COLUMN_NAMES_CONF_STR,
-      "")
+    val old: String = conf
+      .get(ColumnProjectionUtils.READ_COLUMN_NAMES_CONF_STR, "")
     val result: StringBuilder = new StringBuilder(old)
     var first: Boolean = old.isEmpty
 
@@ -104,7 +103,9 @@ private[hive] object HiveShim {
         if (w.getFileSchema() == null) {
           serDeProps
             .find(
-              _._1 == AvroSerdeUtils.AvroTableProperties.SCHEMA_LITERAL
+              _._1 == AvroSerdeUtils
+                .AvroTableProperties
+                .SCHEMA_LITERAL
                 .getPropName())
             .foreach { kv =>
               w.setFileSchema(new Schema.Parser().parse(kv._2))
@@ -197,8 +198,7 @@ private[hive] object HiveShim {
       deserializeObjectByKryo(
         Utilities.runtimeSerializationKryo.get(),
         is,
-        clazz)
-        .asInstanceOf[UDFType]
+        clazz).asInstanceOf[UDFType]
     }
 
     def serializePlan(function: AnyRef, out: java.io.OutputStream): Unit = {
@@ -249,7 +249,8 @@ private[hive] object HiveShim {
       if (instance != null) {
         instance.asInstanceOf[UDFType]
       } else {
-        val func = Utils.getContextOrSparkClassLoader
+        val func = Utils
+          .getContextOrSparkClassLoader
           .loadClass(functionClassName)
           .newInstance
           .asInstanceOf[UDFType]

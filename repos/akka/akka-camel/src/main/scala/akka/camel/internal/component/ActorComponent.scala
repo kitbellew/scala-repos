@@ -224,7 +224,9 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
             Future.failed(e)
         }
       implicit val ec =
-        camel.system.dispatcher // FIXME which ExecutionContext should be used here?
+        camel
+          .system
+          .dispatcher // FIXME which ExecutionContext should be used here?
       async.onComplete(
         action andThen { _ ⇒
           callback.done(false)
@@ -326,10 +328,8 @@ object CamelPath {
       actorRef: ActorRef,
       autoAck: Boolean,
       replyTimeout: Duration): String =
-    "%s?autoAck=%s&replyTimeout=%s".format(
-      actorRef.path.toString,
-      autoAck,
-      replyTimeout.toString)
+    "%s?autoAck=%s&replyTimeout=%s"
+      .format(actorRef.path.toString, autoAck, replyTimeout.toString)
 }
 
 /**

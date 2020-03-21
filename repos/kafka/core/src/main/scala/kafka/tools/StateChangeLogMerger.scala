@@ -109,14 +109,18 @@ object StateChangeLogMerger extends Logging {
     if ((
           !options.has(filesOpt) && !options.has(regexOpt)
         ) || (options.has(filesOpt) && options.has(regexOpt))) {
-      System.err.println(
-        "Provide arguments to exactly one of the two options \"" + filesOpt + "\" or \"" + regexOpt + "\"")
+      System
+        .err
+        .println(
+          "Provide arguments to exactly one of the two options \"" + filesOpt + "\" or \"" + regexOpt + "\"")
       parser.printHelpOn(System.err)
       System.exit(1)
     }
     if (options.has(partitionsOpt) && !options.has(topicOpt)) {
-      System.err.println(
-        "The option \"" + topicOpt + "\" needs to be provided an argument when specifying partition ids")
+      System
+        .err
+        .println(
+          "The option \"" + topicOpt + "\" needs to be provided an argument when specifying partition ids")
       parser.printHelpOn(System.err)
       System.exit(1)
     }
@@ -133,7 +137,8 @@ object StateChangeLogMerger extends Logging {
         else
           regex.substring(0, fileNameIndex - 1)
       val fileNameRegex = new Regex(regex.substring(fileNameIndex))
-      files :::= new java.io.File(dirName).listFiles
+      files :::= new java.io.File(dirName)
+        .listFiles
         .filter(f => fileNameRegex.findFirstIn(f.getName) != None)
         .map(dirName + "/" + _.getName)
         .toList
@@ -145,16 +150,18 @@ object StateChangeLogMerger extends Logging {
       partitions = options.valueOf(partitionsOpt).split(",").toList.map(_.toInt)
       val duplicatePartitions = CoreUtils.duplicates(partitions)
       if (duplicatePartitions.nonEmpty) {
-        System.err.println(
-          "The list of partitions contains repeated entries: %s".format(
-            duplicatePartitions.mkString(",")))
+        System
+          .err
+          .println(
+            "The list of partitions contains repeated entries: %s"
+              .format(duplicatePartitions.mkString(",")))
         System.exit(1)
       }
     }
-    startDate = dateFormat.parse(
-      options.valueOf(startTimeOpt).replace('\"', ' ').trim)
-    endDate = dateFormat.parse(
-      options.valueOf(endTimeOpt).replace('\"', ' ').trim)
+    startDate = dateFormat
+      .parse(options.valueOf(startTimeOpt).replace('\"', ' ').trim)
+    endDate = dateFormat
+      .parse(options.valueOf(endTimeOpt).replace('\"', ' ').trim)
 
     /**
       * n-way merge from m input files:
@@ -205,8 +212,8 @@ object StateChangeLogMerger extends Logging {
             topicPartitionRegex.findFirstMatchIn(nextLine) match {
               case Some(matcher) =>
                 if ((topic == null || topic == matcher.group(1)) && (
-                      partitions.isEmpty || partitions.contains(
-                        matcher.group(3).toInt)
+                      partitions
+                        .isEmpty || partitions.contains(matcher.group(3).toInt)
                     ))
                   return new LineIterator(nextLine, itr)
               case None =>

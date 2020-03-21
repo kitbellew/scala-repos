@@ -263,7 +263,8 @@ class ProxyTest extends WordSpec {
     protected val interface = implicitly[Manifest[I]].runtimeClass
 
     private val proxyConstructor = {
-      reflect.Proxy
+      reflect
+        .Proxy
         .getProxyClass(interface.getClassLoader, interface)
         .getConstructor(classOf[reflect.InvocationHandler])
     }

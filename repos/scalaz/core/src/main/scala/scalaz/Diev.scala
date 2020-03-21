@@ -113,14 +113,14 @@ trait DievImplementation {
               else {
                 if (value < start)
                   Between(
-                    liftedIntervals(adjustedPosition - 1).map(_ =>
-                      adjustedPosition - 1),
+                    liftedIntervals(adjustedPosition - 1)
+                      .map(_ => adjustedPosition - 1),
                     adjustedPosition.some)
                 else
                   Between(
                     adjustedPosition.some,
-                    liftedIntervals(adjustedPosition + 1).map(_ =>
-                      adjustedPosition + 1))
+                    liftedIntervals(adjustedPosition + 1)
+                      .map(_ => adjustedPosition + 1))
               }
             }
             case _ =>
@@ -182,8 +182,8 @@ trait DievImplementation {
         case (
               earlyBound @ Between(before, after),
               Coincidence(endPosition)) => {
-          val adjacentBeforeResult = earlyBound.adjacentBefore(
-            correctedInterval)
+          val adjacentBeforeResult = earlyBound
+            .adjacentBefore(correctedInterval)
           construct(
             adjacentBeforeResult.orElse(before.map(_ + 1)).getOrElse(0),
             Vector(
@@ -199,8 +199,8 @@ trait DievImplementation {
         case (
               earlyBound @ Between(before, after),
               lateBound @ Between(_, otherAfter)) => {
-          val adjacentBeforeResult = earlyBound.adjacentBefore(
-            correctedInterval)
+          val adjacentBeforeResult = earlyBound
+            .adjacentBefore(correctedInterval)
           val adjacentAfterResult = lateBound.adjacentAfter(correctedInterval)
           construct(
             adjacentBeforeResult.orElse(before.map(_ + 1)).getOrElse(0),

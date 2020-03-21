@@ -31,7 +31,10 @@ object CaseObjectOrderedBuf {
   def dispatch(
       c: Context)(): PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
     case tpe
-        if tpe.typeSymbol.isClass && tpe.typeSymbol.asClass.isCaseClass && tpe.typeSymbol.asClass.isModuleClass && !tpe.typeConstructor.takesTypeArgs =>
+        if tpe.typeSymbol.isClass && tpe.typeSymbol.asClass.isCaseClass && tpe
+          .typeSymbol
+          .asClass
+          .isModuleClass && !tpe.typeConstructor.takesTypeArgs =>
       CaseObjectOrderedBuf(c)(tpe)
   }
 

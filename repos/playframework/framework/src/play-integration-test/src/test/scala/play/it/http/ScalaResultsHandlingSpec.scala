@@ -68,11 +68,13 @@ trait ScalaResultsHandlingSpec
     }
 
     "not add a content length header when none is supplied" in makeRequest(
-      Results.Ok.sendEntity(
-        HttpEntity.Streamed(
-          Source(List("abc", "def", "ghi")).map(ByteString.apply),
-          None,
-          None))) { response =>
+      Results
+        .Ok
+        .sendEntity(
+          HttpEntity.Streamed(
+            Source(List("abc", "def", "ghi")).map(ByteString.apply),
+            None,
+            None))) { response =>
       response.header(CONTENT_LENGTH) must beNone
       response.header(TRANSFER_ENCODING) must beNone
       response.body must_== "abcdefghi"
@@ -86,13 +88,14 @@ trait ScalaResultsHandlingSpec
     }
 
     "chunk results for event source strategy" in makeRequest(
-      Results.Ok
+      Results
+        .Ok
         .chunked(Source(List("a", "b")) via EventSource.flow)
         .as("text/event-stream")) { response =>
       response.header(CONTENT_TYPE) must beSome.like {
         case value =>
-          value.toLowerCase(
-            java.util.Locale.ENGLISH) must_== "text/event-stream"
+          value
+            .toLowerCase(java.util.Locale.ENGLISH) must_== "text/event-stream"
       }
       response.header(TRANSFER_ENCODING) must beSome("chunked")
       response.header(CONTENT_LENGTH) must beNone
@@ -100,8 +103,10 @@ trait ScalaResultsHandlingSpec
     }
 
     "close the connection when no content length is sent" in withServer(
-      Results.Ok.sendEntity(
-        HttpEntity.Streamed(Source.single(ByteString("abc")), None, None))) {
+      Results
+        .Ok
+        .sendEntity(
+          HttpEntity.Streamed(Source.single(ByteString("abc")), None, None))) {
       port =>
         val response =
           BasicHttpClient.makeRequests(port, checkClosed = true)(

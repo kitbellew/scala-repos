@@ -91,8 +91,8 @@ class GraphMatValueSpec extends AkkaSpec {
             .mapAsync(4)(identity)
             .map(_ + 100)
             .mapMaterializedValue((_) ⇒ ())
-          Await.result(noMatSource.runWith(Sink.head), 3.seconds) should ===(
-            155)
+          Await
+            .result(noMatSource.runWith(Sink.head), 3.seconds) should ===(155)
         }
 
         "work properly with nesting and reusing" in {
@@ -180,7 +180,8 @@ class GraphMatValueSpec extends AkkaSpec {
         }
 
         "produce NotUsed when starting from Flow.via" in {
-          Source.empty
+          Source
+            .empty
             .viaMat(Flow[Int].map(_ * 2))(Keep.right)
             .to(Sink.ignore)
             .run() should ===(akka.NotUsed)
@@ -188,7 +189,8 @@ class GraphMatValueSpec extends AkkaSpec {
 
         "produce NotUsed when starting from Flow.via with transformation" in {
           var done = false
-          Source.empty
+          Source
+            .empty
             .viaMat(
               Flow[Int].via(Flow[Int].mapMaterializedValue(_ ⇒ done = true)))(
               Keep.right)

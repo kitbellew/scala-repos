@@ -60,18 +60,21 @@ private[spark] object TreePoint {
     val featureArity: Array[Int] = new Array[Int](metadata.numFeatures)
     var featureIndex = 0
     while (featureIndex < metadata.numFeatures) {
-      featureArity(featureIndex) = metadata.featureArity
+      featureArity(featureIndex) = metadata
+        .featureArity
         .getOrElse(featureIndex, 0)
       featureIndex += 1
     }
-    val thresholds: Array[Array[Double]] = featureArity.zipWithIndex.map {
-      case (arity, idx) =>
-        if (arity == 0) {
-          splits(idx).map(_.asInstanceOf[ContinuousSplit].threshold)
-        } else {
-          Array.empty[Double]
-        }
-    }
+    val thresholds: Array[Array[Double]] = featureArity
+      .zipWithIndex
+      .map {
+        case (arity, idx) =>
+          if (arity == 0) {
+            splits(idx).map(_.asInstanceOf[ContinuousSplit].threshold)
+          } else {
+            Array.empty[Double]
+          }
+      }
     input.map { x =>
       TreePoint.labeledPointToTreePoint(x, thresholds, featureArity)
     }

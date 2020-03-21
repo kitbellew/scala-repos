@@ -12,10 +12,12 @@ trait ScCommentOwner {
   self: ScalaPsiElement =>
 
   def simpleComment: Option[PsiComment] = {
-    self.children.collectFirst {
-      case c: PsiComment if !c.isInstanceOf[ScDocComment] =>
-        c
-    }
+    self
+      .children
+      .collectFirst {
+        case c: PsiComment if !c.isInstanceOf[ScDocComment] =>
+          c
+      }
   }
 
   private def scDocComment: Option[ScDocComment] =

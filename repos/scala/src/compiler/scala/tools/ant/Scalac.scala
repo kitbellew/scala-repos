@@ -415,19 +415,22 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
   /** Sets the `logphase` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value for `logPhase`. */
   def setLogPhase(input: String) {
-    logPhase = input.split(",").toList.flatMap { s: String =>
-      val st = s.trim()
-      if (CompilerPhase.isPermissible(st))
-        (
-          if (input != "")
-            List(st)
-          else
-            Nil
-        )
-      else {
-        buildError("Phase " + st + " in log does not exist.")
+    logPhase = input
+      .split(",")
+      .toList
+      .flatMap { s: String =>
+        val st = s.trim()
+        if (CompilerPhase.isPermissible(st))
+          (
+            if (input != "")
+              List(st)
+            else
+              Nil
+          )
+        else {
+          buildError("Phase " + st + " in log does not exist.")
+        }
       }
-    }
   }
 
   /** Set the `debug` info attribute.
@@ -650,9 +653,8 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
           if (javaFiles.isEmpty)
             "%d source file%s".format(list.length, plural(list))
           else
-            "%d scala and %d java source files".format(
-              scalaFiles.length,
-              javaFiles.length)
+            "%d scala and %d java source files"
+              .format(scalaFiles.length, javaFiles.length)
         log("Compiling %s to %s".format(str, getDestination.toString))
       } else
         log("No files selected for compilation", Project.MSG_VERBOSE)

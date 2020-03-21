@@ -184,8 +184,8 @@ trait ScalatraBase
           withRequestResponse(rq, rs) {
             this match {
               case f: Filter
-                  if !rq.contains(
-                    "org.scalatra.ScalatraFilter.afterFilters.Run") =>
+                  if !rq
+                    .contains("org.scalatra.ScalatraFilter.afterFilters.Run") =>
                 rq("org.scalatra.ScalatraFilter.afterFilters.Run") = new {}
                 runFilters(routes.afterFilters)
               case f: HttpServlet
@@ -409,14 +409,17 @@ trait ScalatraBase
       matchedRoute: Option[MatchedRoute],
       originalParams: MultiParams)(implicit
       request: HttpServletRequest): Unit = {
-    val routeParams = matchedRoute.map(_.multiParams).getOrElse(Map.empty).map {
-      case (key, values) =>
-        key -> values.map(s =>
-          if (s.nonBlank)
-            UriDecoder.secondStep(s)
-          else
-            s)
-    }
+    val routeParams = matchedRoute
+      .map(_.multiParams)
+      .getOrElse(Map.empty)
+      .map {
+        case (key, values) =>
+          key -> values.map(s =>
+            if (s.nonBlank)
+              UriDecoder.secondStep(s)
+            else
+              s)
+      }
     request(MultiParamsKey) = originalParams ++ routeParams
   }
 
@@ -452,7 +455,8 @@ trait ScalatraBase
     case file: File =>
       MimeTypes(file)
     case actionResult: ActionResult =>
-      actionResult.headers
+      actionResult
+        .headers
         .find {
           case (name, value) =>
             name equalsIgnoreCase "CONTENT-TYPE"
@@ -530,10 +534,12 @@ trait ScalatraBase
       doNotFound()
     case actionResult: ActionResult =>
       response.status = actionResult.status
-      actionResult.headers.foreach {
-        case (name, value) =>
-          response.addHeader(name, value)
-      }
+      actionResult
+        .headers
+        .foreach {
+          case (name, value) =>
+            response.addHeader(name, value)
+        }
       actionResult.body
     case x =>
       response.writer.print(x.toString)
@@ -916,14 +922,13 @@ trait ScalatraBase
   }
 
   def serverHost(implicit request: HttpServletRequest): String = {
-    initParameter(HostNameKey).flatMap(
-      _.blankOption) getOrElse request.getServerName
+    initParameter(HostNameKey).flatMap(_.blankOption) getOrElse request
+      .getServerName
   }
 
   def serverPort(implicit request: HttpServletRequest): Int = {
-    initParameter(PortKey)
-      .flatMap(_.blankOption)
-      .map(_.toInt) getOrElse request.getServerPort
+    initParameter(PortKey).flatMap(_.blankOption).map(_.toInt) getOrElse request
+      .getServerPort
   }
 
   protected def contextPath: String = servletContext.contextPath

@@ -44,7 +44,10 @@ abstract class AbstractFetcherManager(
       // current max lag across all fetchers/topics/partitions
       def value =
         fetcherThreadMap.foldLeft(0L)((curMaxAll, fetcherThreadMapEntry) => {
-          fetcherThreadMapEntry._2.fetcherLagStats.stats
+          fetcherThreadMapEntry
+            ._2
+            .fetcherLagStats
+            .stats
             .foldLeft(0L)((curMaxThread, fetcherLagStatsEntry) => {
               curMaxThread.max(fetcherLagStatsEntry._2.lag)
             })
@@ -59,13 +62,18 @@ abstract class AbstractFetcherManager(
       new Gauge[Double] {
         // current min fetch rate across all fetchers/topics/partitions
         def value = {
-          val headRate: Double = fetcherThreadMap.headOption
+          val headRate: Double = fetcherThreadMap
+            .headOption
             .map(_._2.fetcherStats.requestRate.oneMinuteRate)
             .getOrElse(0)
 
-          fetcherThreadMap.foldLeft(headRate)(
-            (curMinAll, fetcherThreadMapEntry) => {
-              fetcherThreadMapEntry._2.fetcherStats.requestRate.oneMinuteRate
+          fetcherThreadMap
+            .foldLeft(headRate)((curMinAll, fetcherThreadMapEntry) => {
+              fetcherThreadMapEntry
+                ._2
+                .fetcherStats
+                .requestRate
+                .oneMinuteRate
                 .min(curMinAll)
             })
         }
@@ -117,7 +125,8 @@ abstract class AbstractFetcherManager(
       "Added fetcher for partitions %s".format(
         partitionAndOffsets.map {
           case (topicAndPartition, brokerAndInitialOffset) =>
-            "[" + topicAndPartition + ", initOffset " + brokerAndInitialOffset.initOffset + " to broker " + brokerAndInitialOffset.broker + "] "
+            "[" + topicAndPartition + ", initOffset " + brokerAndInitialOffset
+              .initOffset + " to broker " + brokerAndInitialOffset.broker + "] "
         }))
   }
 

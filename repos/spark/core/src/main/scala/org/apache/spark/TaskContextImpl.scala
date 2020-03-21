@@ -83,15 +83,17 @@ private[spark] class TaskContextImpl(
     failed = true
     val errorMsgs = new ArrayBuffer[String](2)
     // Process failure callbacks in the reverse order of registration
-    onFailureCallbacks.reverse.foreach { listener =>
-      try {
-        listener.onTaskFailure(this, error)
-      } catch {
-        case e: Throwable =>
-          errorMsgs += e.getMessage
-          logError("Error in TaskFailureListener", e)
+    onFailureCallbacks
+      .reverse
+      .foreach { listener =>
+        try {
+          listener.onTaskFailure(this, error)
+        } catch {
+          case e: Throwable =>
+            errorMsgs += e.getMessage
+            logError("Error in TaskFailureListener", e)
+        }
       }
-    }
     if (errorMsgs.nonEmpty) {
       throw new TaskCompletionListenerException(errorMsgs, Option(error))
     }
@@ -102,15 +104,17 @@ private[spark] class TaskContextImpl(
     completed = true
     val errorMsgs = new ArrayBuffer[String](2)
     // Process complete callbacks in the reverse order of registration
-    onCompleteCallbacks.reverse.foreach { listener =>
-      try {
-        listener.onTaskCompletion(this)
-      } catch {
-        case e: Throwable =>
-          errorMsgs += e.getMessage
-          logError("Error in TaskCompletionListener", e)
+    onCompleteCallbacks
+      .reverse
+      .foreach { listener =>
+        try {
+          listener.onTaskCompletion(this)
+        } catch {
+          case e: Throwable =>
+            errorMsgs += e.getMessage
+            logError("Error in TaskCompletionListener", e)
+        }
       }
-    }
     if (errorMsgs.nonEmpty) {
       throw new TaskCompletionListenerException(errorMsgs)
     }

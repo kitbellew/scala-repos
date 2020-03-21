@@ -204,7 +204,9 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       combOp: (U, U) => U): RDD[(K, U)] =
     self.withScope {
       // Serialize the zero value to a byte array so that we can get a new clone of it on each key
-      val zeroBuffer = SparkEnv.get.serializer
+      val zeroBuffer = SparkEnv
+        .get
+        .serializer
         .newInstance()
         .serialize(zeroValue)
       val zeroArray = new Array[Byte](zeroBuffer.limit)
@@ -265,7 +267,9 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       func: (V, V) => V): RDD[(K, V)] =
     self.withScope {
       // Serialize the zero value to a byte array so that we can get a new clone of it on each key
-      val zeroBuffer = SparkEnv.get.serializer
+      val zeroBuffer = SparkEnv
+        .get
+        .serializer
         .newInstance()
         .serialize(zeroValue)
       val zeroArray = new Array[Byte](zeroBuffer.limit)
@@ -330,17 +334,11 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
 
       val samplingFunc =
         if (withReplacement) {
-          StratifiedSamplingUtils.getPoissonSamplingFunction(
-            self,
-            fractions,
-            false,
-            seed)
+          StratifiedSamplingUtils
+            .getPoissonSamplingFunction(self, fractions, false, seed)
         } else {
-          StratifiedSamplingUtils.getBernoulliSamplingFunction(
-            self,
-            fractions,
-            false,
-            seed)
+          StratifiedSamplingUtils
+            .getBernoulliSamplingFunction(self, fractions, false, seed)
         }
       self.mapPartitionsWithIndex(samplingFunc, preservesPartitioning = true)
     }
@@ -372,17 +370,11 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
 
       val samplingFunc =
         if (withReplacement) {
-          StratifiedSamplingUtils.getPoissonSamplingFunction(
-            self,
-            fractions,
-            true,
-            seed)
+          StratifiedSamplingUtils
+            .getPoissonSamplingFunction(self, fractions, true, seed)
         } else {
-          StratifiedSamplingUtils.getBernoulliSamplingFunction(
-            self,
-            fractions,
-            true,
-            seed)
+          StratifiedSamplingUtils
+            .getBernoulliSamplingFunction(self, fractions, true, seed)
         }
       self.mapPartitionsWithIndex(samplingFunc, preservesPartitioning = true)
     }
@@ -450,15 +442,17 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
 
       val mergeMaps = (m1: JHashMap[K, V], m2: JHashMap[K, V]) =>
         {
-          m2.asScala.foreach { pair =>
-            val old = m1.get(pair._1)
-            m1.put(
-              pair._1,
-              if (old == null)
-                pair._2
-              else
-                cleanedF(old, pair._2))
-          }
+          m2
+            .asScala
+            .foreach { pair =>
+              val old = m1.get(pair._1)
+              m1.put(
+                pair._1,
+                if (old == null)
+                  pair._2
+                else
+                  cleanedF(old, pair._2))
+            }
           m1
         }: JHashMap[K, V]
 
@@ -684,15 +678,17 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       other: RDD[(K, W)],
       partitioner: Partitioner): RDD[(K, (V, Option[W]))] =
     self.withScope {
-      this.cogroup(other, partitioner).flatMapValues { pair =>
-        if (pair._2.isEmpty) {
-          pair._1.iterator.map(v => (v, None))
-        } else {
-          for (v <- pair._1.iterator;
-               w <- pair._2.iterator)
-            yield (v, Some(w))
+      this
+        .cogroup(other, partitioner)
+        .flatMapValues { pair =>
+          if (pair._2.isEmpty) {
+            pair._1.iterator.map(v => (v, None))
+          } else {
+            for (v <- pair._1.iterator;
+                 w <- pair._2.iterator)
+              yield (v, Some(w))
+          }
         }
-      }
     }
 
   /**
@@ -705,15 +701,17 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       other: RDD[(K, W)],
       partitioner: Partitioner): RDD[(K, (Option[V], W))] =
     self.withScope {
-      this.cogroup(other, partitioner).flatMapValues { pair =>
-        if (pair._1.isEmpty) {
-          pair._2.iterator.map(w => (None, w))
-        } else {
-          for (v <- pair._1.iterator;
-               w <- pair._2.iterator)
-            yield (Some(v), w)
+      this
+        .cogroup(other, partitioner)
+        .flatMapValues { pair =>
+          if (pair._1.isEmpty) {
+            pair._2.iterator.map(w => (None, w))
+          } else {
+            for (v <- pair._1.iterator;
+                 w <- pair._2.iterator)
+              yield (Some(v), w)
+          }
         }
-      }
     }
 
   /**
@@ -728,16 +726,18 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       other: RDD[(K, W)],
       partitioner: Partitioner): RDD[(K, (Option[V], Option[W]))] =
     self.withScope {
-      this.cogroup(other, partitioner).flatMapValues {
-        case (vs, Seq()) =>
-          vs.iterator.map(v => (Some(v), None))
-        case (Seq(), ws) =>
-          ws.iterator.map(w => (None, Some(w)))
-        case (vs, ws) =>
-          for (v <- vs.iterator;
-               w <- ws.iterator)
-            yield (Some(v), Some(w))
-      }
+      this
+        .cogroup(other, partitioner)
+        .flatMapValues {
+          case (vs, Seq()) =>
+            vs.iterator.map(v => (Some(v), None))
+          case (Seq(), ws) =>
+            ws.iterator.map(w => (None, Some(w)))
+          case (vs, ws) =>
+            for (v <- vs.iterator;
+                 w <- ws.iterator)
+              yield (Some(v), Some(w))
+        }
     }
 
   /**
@@ -1281,9 +1281,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
         hadoopConf.set("mapred.output.compress", "true")
         hadoopConf.setMapOutputCompressorClass(c)
         hadoopConf.set("mapred.output.compression.codec", c.getCanonicalName)
-        hadoopConf.set(
-          "mapred.output.compression.type",
-          CompressionType.BLOCK.toString)
+        hadoopConf
+          .set("mapred.output.compression.type", CompressionType.BLOCK.toString)
       }
 
       // Use configured output committer if already set
@@ -1294,9 +1293,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       // When speculation is on and output committer class name contains "Direct", we should warn
       // users that they may loss data if they are using a direct output committer.
       val speculationEnabled = self.conf.getBoolean("spark.speculation", false)
-      val outputCommitterClass = hadoopConf.get(
-        "mapred.output.committer.class",
-        "")
+      val outputCommitterClass = hadoopConf
+        .get("mapred.output.committer.class", "")
       if (speculationEnabled && outputCommitterClass.contains("Direct")) {
         val warningMessage =
           s"$outputCommitterClass may be an output committer that writes data directly to " +
@@ -1503,7 +1501,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
   // return type: (output metrics, bytes written callback), defined only if the latter is defined
   private def initHadoopOutputMetrics(
       context: TaskContext): Option[(OutputMetrics, () => Long)] = {
-    val bytesWrittenCallback = SparkHadoopUtil.get
+    val bytesWrittenCallback = SparkHadoopUtil
+      .get
       .getFSBytesWrittenOnThreadCallback()
     bytesWrittenCallback.map { b =>
       (context.taskMetrics().registerOutputMetrics(DataWriteMethod.Hadoop), b)
@@ -1513,7 +1512,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
   private def maybeUpdateOutputMetrics(
       outputMetricsAndBytesWrittenCallback: Option[(OutputMetrics, () => Long)],
       recordsWritten: Long): Unit = {
-    if (recordsWritten % PairRDDFunctions.RECORDS_BETWEEN_BYTES_WRITTEN_METRIC_UPDATES == 0) {
+    if (recordsWritten % PairRDDFunctions
+          .RECORDS_BETWEEN_BYTES_WRITTEN_METRIC_UPDATES == 0) {
       outputMetricsAndBytesWrittenCallback.foreach {
         case (om, callback) =>
           om.setBytesWritten(callback())
@@ -1542,7 +1542,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
   // setting can take effect:
   private def isOutputSpecValidationEnabled: Boolean = {
     val validationDisabled = PairRDDFunctions.disableOutputSpecValidation.value
-    val enabledInConf = self.conf
+    val enabledInConf = self
+      .conf
       .getBoolean("spark.hadoop.validateOutputSpecs", true)
     enabledInConf && !validationDisabled
   }

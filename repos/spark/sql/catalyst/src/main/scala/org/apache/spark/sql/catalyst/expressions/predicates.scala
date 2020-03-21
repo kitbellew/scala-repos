@@ -420,9 +420,12 @@ case class EqualTo(left: Expression, right: Expression)
     } else if (left.dataType != BinaryType) {
       input1 == input2
     } else {
-      java.util.Arrays.equals(
-        input1.asInstanceOf[Array[Byte]],
-        input2.asInstanceOf[Array[Byte]])
+      java
+        .util
+        .Arrays
+        .equals(
+          input1.asInstanceOf[Array[Byte]],
+          input2.asInstanceOf[Array[Byte]])
     }
   }
 
@@ -459,9 +462,12 @@ case class EqualNullSafe(left: Expression, right: Expression)
       } else if (left.dataType != BinaryType) {
         input1 == input2
       } else {
-        java.util.Arrays.equals(
-          input1.asInstanceOf[Array[Byte]],
-          input2.asInstanceOf[Array[Byte]])
+        java
+          .util
+          .Arrays
+          .equals(
+            input1.asInstanceOf[Array[Byte]],
+            input2.asInstanceOf[Array[Byte]])
       }
     }
   }

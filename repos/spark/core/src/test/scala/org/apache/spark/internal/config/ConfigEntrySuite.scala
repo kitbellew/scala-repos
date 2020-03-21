@@ -65,8 +65,8 @@ class ConfigEntrySuite extends SparkFunSuite {
   test("conf entry: fallback") {
     val conf = new SparkConf()
     val parentConf = ConfigBuilder("spark.int").intConf.withDefault(1)
-    val confWithFallback = ConfigBuilder("spark.fallback").fallbackConf(
-      parentConf)
+    val confWithFallback = ConfigBuilder("spark.fallback")
+      .fallbackConf(parentConf)
     assert(conf.get(confWithFallback) === 1)
     conf.set(confWithFallback, 2)
     assert(conf.get(parentConf) === 1)
@@ -95,7 +95,9 @@ class ConfigEntrySuite extends SparkFunSuite {
 
   test("conf entry: string seq") {
     val conf = new SparkConf()
-    val seq = ConfigBuilder("spark.seq").stringConf.toSequence
+    val seq = ConfigBuilder("spark.seq")
+      .stringConf
+      .toSequence
       .withDefault(Seq())
     conf.set(seq.key, "1,,2, 3 , , 4")
     assert(conf.get(seq) === Seq("1", "2", "3", "4"))
@@ -114,7 +116,8 @@ class ConfigEntrySuite extends SparkFunSuite {
 
   test("conf entry: transformation") {
     val conf = new SparkConf()
-    val transformationConf = ConfigBuilder("spark.transformation").stringConf
+    val transformationConf = ConfigBuilder("spark.transformation")
+      .stringConf
       .transform(_.toLowerCase())
       .withDefault("FOO")
 
@@ -125,7 +128,8 @@ class ConfigEntrySuite extends SparkFunSuite {
 
   test("conf entry: valid values check") {
     val conf = new SparkConf()
-    val enum = ConfigBuilder("spark.enum").stringConf
+    val enum = ConfigBuilder("spark.enum")
+      .stringConf
       .checkValues(Set("a", "b", "c"))
       .withDefault("a")
     assert(conf.get(enum) === "a")
@@ -138,7 +142,8 @@ class ConfigEntrySuite extends SparkFunSuite {
       conf.get(enum)
     }
     assert(
-      enumError.getMessage === s"The value of ${enum.key} should be one of a, b, c, but was d")
+      enumError
+        .getMessage === s"The value of ${enum.key} should be one of a, b, c, but was d")
   }
 
   test("conf entry: conversion error") {
@@ -150,7 +155,8 @@ class ConfigEntrySuite extends SparkFunSuite {
       conf.get(conversionTest)
     }
     assert(
-      conversionError.getMessage === s"${conversionTest.key} should be double, but was abc")
+      conversionError
+        .getMessage === s"${conversionTest.key} should be double, but was abc")
   }
 
   test("default value handling is null-safe") {

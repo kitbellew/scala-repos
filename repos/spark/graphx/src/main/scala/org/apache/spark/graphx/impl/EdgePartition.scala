@@ -296,12 +296,8 @@ private[graphx] class EdgePartition[
         // This edge starts a new run of edges
         if (i > 0) {
           // First release the existing run to the builder
-          builder.add(
-            currSrcId,
-            currDstId,
-            currLocalSrcId,
-            currLocalDstId,
-            currAttr)
+          builder
+            .add(currSrcId, currDstId, currLocalSrcId, currLocalDstId, currAttr)
         }
         // Then start accumulating for a new run
         currSrcId = srcIds(i)
@@ -314,12 +310,8 @@ private[graphx] class EdgePartition[
     }
     // Finally, release the last accumulated run
     if (size > 0) {
-      builder.add(
-        currSrcId,
-        currDstId,
-        currLocalSrcId,
-        currLocalDstId,
-        currAttr)
+      builder
+        .add(currSrcId, currDstId, currLocalSrcId, currLocalDstId, currAttr)
     }
     builder.toEdgePartition
   }
@@ -353,12 +345,12 @@ private[graphx] class EdgePartition[
         j += 1
       }
       if (j < other.size && other.srcIds(j) == srcId) {
-        while (j < other.size && other.srcIds(j) == srcId && other.dstIds(
-                 j) < dstId) {
+        while (j < other.size && other.srcIds(j) == srcId && other
+                 .dstIds(j) < dstId) {
           j += 1
         }
-        if (j < other.size && other.srcIds(j) == srcId && other.dstIds(
-              j) == dstId) {
+        if (j < other.size && other.srcIds(j) == srcId && other
+              .dstIds(j) == dstId) {
           // ... run `f` on the matching edge
           builder.add(
             srcId,
@@ -495,9 +487,11 @@ private[graphx] class EdgePartition[
       i += 1
     }
 
-    bitset.iterator.map { localId =>
-      (local2global(localId), aggregates(localId))
-    }
+    bitset
+      .iterator
+      .map { localId =>
+        (local2global(localId), aggregates(localId))
+      }
   }
 
   /**
@@ -521,66 +515,70 @@ private[graphx] class EdgePartition[
 
     var ctx =
       new AggregatingEdgeContext[VD, ED, A](mergeMsg, aggregates, bitset)
-    index.iterator.foreach { cluster =>
-      val clusterSrcId = cluster._1
-      val clusterPos = cluster._2
-      val clusterLocalSrcId = localSrcIds(clusterPos)
+    index
+      .iterator
+      .foreach { cluster =>
+        val clusterSrcId = cluster._1
+        val clusterPos = cluster._2
+        val clusterLocalSrcId = localSrcIds(clusterPos)
 
-      val scanCluster =
-        if (activeness == EdgeActiveness.Neither)
-          true
-        else if (activeness == EdgeActiveness.SrcOnly)
-          isActive(clusterSrcId)
-        else if (activeness == EdgeActiveness.DstOnly)
-          true
-        else if (activeness == EdgeActiveness.Both)
-          isActive(clusterSrcId)
-        else if (activeness == EdgeActiveness.Either)
-          true
-        else
-          throw new Exception("unreachable")
-
-      if (scanCluster) {
-        var pos = clusterPos
-        val srcAttr =
-          if (tripletFields.useSrc)
-            vertexAttrs(clusterLocalSrcId)
+        val scanCluster =
+          if (activeness == EdgeActiveness.Neither)
+            true
+          else if (activeness == EdgeActiveness.SrcOnly)
+            isActive(clusterSrcId)
+          else if (activeness == EdgeActiveness.DstOnly)
+            true
+          else if (activeness == EdgeActiveness.Both)
+            isActive(clusterSrcId)
+          else if (activeness == EdgeActiveness.Either)
+            true
           else
-            null.asInstanceOf[VD]
-        ctx.setSrcOnly(clusterSrcId, clusterLocalSrcId, srcAttr)
-        while (pos < size && localSrcIds(pos) == clusterLocalSrcId) {
-          val localDstId = localDstIds(pos)
-          val dstId = local2global(localDstId)
-          val edgeIsActive =
-            if (activeness == EdgeActiveness.Neither)
-              true
-            else if (activeness == EdgeActiveness.SrcOnly)
-              true
-            else if (activeness == EdgeActiveness.DstOnly)
-              isActive(dstId)
-            else if (activeness == EdgeActiveness.Both)
-              isActive(dstId)
-            else if (activeness == EdgeActiveness.Either)
-              isActive(clusterSrcId) || isActive(dstId)
+            throw new Exception("unreachable")
+
+        if (scanCluster) {
+          var pos = clusterPos
+          val srcAttr =
+            if (tripletFields.useSrc)
+              vertexAttrs(clusterLocalSrcId)
             else
-              throw new Exception("unreachable")
-          if (edgeIsActive) {
-            val dstAttr =
-              if (tripletFields.useDst)
-                vertexAttrs(localDstId)
+              null.asInstanceOf[VD]
+          ctx.setSrcOnly(clusterSrcId, clusterLocalSrcId, srcAttr)
+          while (pos < size && localSrcIds(pos) == clusterLocalSrcId) {
+            val localDstId = localDstIds(pos)
+            val dstId = local2global(localDstId)
+            val edgeIsActive =
+              if (activeness == EdgeActiveness.Neither)
+                true
+              else if (activeness == EdgeActiveness.SrcOnly)
+                true
+              else if (activeness == EdgeActiveness.DstOnly)
+                isActive(dstId)
+              else if (activeness == EdgeActiveness.Both)
+                isActive(dstId)
+              else if (activeness == EdgeActiveness.Either)
+                isActive(clusterSrcId) || isActive(dstId)
               else
-                null.asInstanceOf[VD]
-            ctx.setRest(dstId, localDstId, dstAttr, data(pos))
-            sendMsg(ctx)
+                throw new Exception("unreachable")
+            if (edgeIsActive) {
+              val dstAttr =
+                if (tripletFields.useDst)
+                  vertexAttrs(localDstId)
+                else
+                  null.asInstanceOf[VD]
+              ctx.setRest(dstId, localDstId, dstAttr, data(pos))
+              sendMsg(ctx)
+            }
+            pos += 1
           }
-          pos += 1
         }
       }
-    }
 
-    bitset.iterator.map { localId =>
-      (local2global(localId), aggregates(localId))
-    }
+    bitset
+      .iterator
+      .map { localId =>
+        (local2global(localId), aggregates(localId))
+      }
   }
 }
 

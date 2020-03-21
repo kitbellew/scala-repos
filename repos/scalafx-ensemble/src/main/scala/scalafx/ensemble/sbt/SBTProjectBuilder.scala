@@ -87,8 +87,10 @@ object SBTProjectBuilder {
     Files.write(samplePath, sampleInfo.sourceCode.getBytes)
 
     // Copy resources, if used by the sample.
-    sampleInfo.resources.foreach(resource =>
-      copyResource(new File(projectDir, resourceSubDir), resource))
+    sampleInfo
+      .resources
+      .foreach(resource =>
+        copyResource(new File(projectDir, resourceSubDir), resource))
 
     // Copy project files
     copyText(

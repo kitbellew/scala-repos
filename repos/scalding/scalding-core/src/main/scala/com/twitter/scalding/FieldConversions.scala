@@ -42,7 +42,8 @@ trait LowPriorityFieldConversions {
           flds.get(0)
         } else {
           throw new Exception(
-            "Cannot convert Fields(" + flds.toString + ") to a single fields arg")
+            "Cannot convert Fields(" + flds
+              .toString + ") to a single fields arg")
         }
       }
       case w =>
@@ -61,16 +62,21 @@ trait LowPriorityFieldConversions {
   implicit def productToFields(f: Product) = {
     val fields =
       new Fields(
-        f.productIterator.map {
-          anyToFieldArg
-        }.toSeq: _*)
-    f.productIterator.foreach {
-      _ match {
-        case field: Field[_] =>
-          fields.setComparator(field.id, field.ord)
-        case _ =>
+        f
+          .productIterator
+          .map {
+            anyToFieldArg
+          }
+          .toSeq: _*)
+    f
+      .productIterator
+      .foreach {
+        _ match {
+          case field: Field[_] =>
+            fields.setComparator(field.id, field.ord)
+          case _ =>
+        }
       }
-    }
     fields
   }
 }
@@ -90,9 +96,12 @@ trait FieldConversions extends LowPriorityFieldConversions {
   }
 
   def hasInts(f: Fields): Boolean =
-    f.iterator.asScala.exists {
-      _.isInstanceOf[java.lang.Integer]
-    }
+    f
+      .iterator
+      .asScala
+      .exists {
+        _.isInstanceOf[java.lang.Integer]
+      }
 
   /**
     * Rather than give the full power of cascading's selectors, we have
@@ -210,9 +219,12 @@ trait FieldConversions extends LowPriorityFieldConversions {
     */
   implicit def fromEnum[T <: Enumeration](enumeration: T): Fields =
     new Fields(
-      enumeration.values.toList.map {
-        _.toString
-      }: _*)
+      enumeration
+        .values
+        .toList
+        .map {
+          _.toString
+        }: _*)
 
   implicit def fields[T <: TraversableOnce[Symbol]](f: T) =
     new Fields(f.toSeq.map(_.name): _*)
@@ -220,9 +232,11 @@ trait FieldConversions extends LowPriorityFieldConversions {
     new Fields(f.toSeq: _*)
   implicit def intFields[T <: TraversableOnce[Int]](f: T) = {
     new Fields(
-      f.toSeq.map {
-        new java.lang.Integer(_)
-      }: _*)
+      f
+        .toSeq
+        .map {
+          new java.lang.Integer(_)
+        }: _*)
   }
   implicit def fieldFields[T <: TraversableOnce[Field[_]]](f: T) =
     RichFields(f.toSeq)
@@ -235,9 +249,11 @@ trait FieldConversions extends LowPriorityFieldConversions {
   implicit def parseAnySeqToFields[T <: TraversableOnce[Any]](anyf: T) = {
     val fields =
       new Fields(
-        anyf.toSeq.map {
-          anyToFieldArg
-        }: _*)
+        anyf
+          .toSeq
+          .map {
+            anyToFieldArg
+          }: _*)
     anyf.foreach {
       _ match {
         case field: Field[_] =>
@@ -280,18 +296,21 @@ trait FieldConversions extends LowPriorityFieldConversions {
     // available "all at once" by calling getComparators.)
 
     new RichFields(
-      asList(fields).zip(fields.getComparators).map {
-        case (id: Comparable[_], comparator: Comparator[_]) =>
-          id match {
-            case x: java.lang.Integer =>
-              IntField(x)(Ordering.comparatorToOrdering(comparator), None)
-            case y: String =>
-              StringField(y)(Ordering.comparatorToOrdering(comparator), None)
-            case z =>
-              sys.error(
-                "not expecting object of type " + z.getClass + " as field name")
-          }
-      })
+      asList(fields)
+        .zip(fields.getComparators)
+        .map {
+          case (id: Comparable[_], comparator: Comparator[_]) =>
+            id match {
+              case x: java.lang.Integer =>
+                IntField(x)(Ordering.comparatorToOrdering(comparator), None)
+              case y: String =>
+                StringField(y)(Ordering.comparatorToOrdering(comparator), None)
+              case z =>
+                sys.error(
+                  "not expecting object of type " + z
+                    .getClass + " as field name")
+            }
+        })
   }
 
 }

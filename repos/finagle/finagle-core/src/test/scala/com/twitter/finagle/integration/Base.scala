@@ -121,9 +121,7 @@ trait IntegrationBase extends FunSuite with MockitoSugar {
       .codec(codecFactory)
       .channelFactory(channelFactory)
       .daemon(true) // don't create an exit guard
-      .hosts(Seq(clientAddress))
-      .reportTo(statsReceiver)
-      .hostConnectionLimit(1)
+      .hosts(Seq(clientAddress)).reportTo(statsReceiver).hostConnectionLimit(1)
 
     def build() = clientBuilder.build()
     def buildFactory() = clientBuilder.buildFactory()
@@ -153,10 +151,12 @@ trait IntegrationBase extends FunSuite with MockitoSugar {
       val client = Client()
       client.withStack(
         // needed for ClientBuilderTest.ClientBuilderHelper
-        client.stack.replace(
-          StackClient.Role.prepConn,
-          (next: ServiceFactory[String, String]) =>
-            codec.prepareConnFactory(next, Stack.Params.empty)))
+        client
+          .stack
+          .replace(
+            StackClient.Role.prepConn,
+            (next: ServiceFactory[String, String]) =>
+              codec.prepareConnFactory(next, Stack.Params.empty)))
     }
   }
 }

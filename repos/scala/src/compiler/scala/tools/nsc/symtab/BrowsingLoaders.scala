@@ -74,7 +74,8 @@ abstract class BrowsingLoaders extends GlobalSymbolLoaders {
             addPackagePrefix(pre)
             packagePrefix += ("." + name)
           case Ident(name) =>
-            if (name != nme.EMPTY_PACKAGE_NAME) { // mirrors logic in Namers, see createPackageSymbol
+            if (name != nme
+                  .EMPTY_PACKAGE_NAME) { // mirrors logic in Namers, see createPackageSymbol
               if (packagePrefix.length != 0)
                 packagePrefix += "."
               packagePrefix += name
@@ -140,9 +141,9 @@ abstract class BrowsingLoaders extends GlobalSymbolLoaders {
       name: String,
       src: AbstractFile) {
     try {
-      if (root.isEffectiveRoot || !src.name.endsWith(
-            ".scala"
-          )) // RootClass or EmptyPackageClass
+      if (root.isEffectiveRoot || !src
+            .name
+            .endsWith(".scala")) // RootClass or EmptyPackageClass
         super.enterToplevelsFromSource(root, name, src)
       else
         browseTopLevel(root, src)

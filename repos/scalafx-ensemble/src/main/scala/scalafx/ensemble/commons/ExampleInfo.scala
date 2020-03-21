@@ -39,16 +39,16 @@ object ExampleInfo {
   def formatNoSpaces(name: String): String = name.replaceAllLiterally(" ", "")
 
   def thumbnailPath(exampleName: String, groupName: String): String =
-    examplesDir + groupName.toLowerCase + "/" + formatNoSpaces(
-      exampleName) + "Sample.png"
+    examplesDir + groupName
+      .toLowerCase + "/" + formatNoSpaces(exampleName) + "Sample.png"
 
   def sourcecodePath(exampleName: String, groupName: String): String =
-    examplesDir + groupName.toLowerCase + "/" + "Ensemble" + formatNoSpaces(
-      exampleName) + ".scala"
+    examplesDir + groupName
+      .toLowerCase + "/" + "Ensemble" + formatNoSpaces(exampleName) + ".scala"
 
   def className(exampleName: String, groupName: String): String =
-    "scalafx.ensemble.example." + groupName.toLowerCase + ".Ensemble" + ExampleInfo
-      .formatNoSpaces(exampleName)
+    "scalafx.ensemble.example." + groupName
+      .toLowerCase + ".Ensemble" + ExampleInfo.formatNoSpaces(exampleName)
 }
 
 /** Creates stand alone example source code. */

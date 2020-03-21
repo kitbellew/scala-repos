@@ -43,7 +43,8 @@ class SparkPlanInfo(
   override def equals(other: Any): Boolean =
     other match {
       case o: SparkPlanInfo =>
-        nodeName == o.nodeName && simpleString == o.simpleString && children == o.children
+        nodeName == o.nodeName && simpleString == o
+          .simpleString && children == o.children
       case _ =>
         false
     }
@@ -59,13 +60,16 @@ private[sql] object SparkPlanInfo {
         case _ =>
           plan.children ++ plan.subqueries
       }
-    val metrics = plan.metrics.toSeq.map {
-      case (key, metric) =>
-        new SQLMetricInfo(
-          metric.name.getOrElse(key),
-          metric.id,
-          Utils.getFormattedClassName(metric.param))
-    }
+    val metrics = plan
+      .metrics
+      .toSeq
+      .map {
+        case (key, metric) =>
+          new SQLMetricInfo(
+            metric.name.getOrElse(key),
+            metric.id,
+            Utils.getFormattedClassName(metric.param))
+      }
 
     new SparkPlanInfo(
       plan.nodeName,

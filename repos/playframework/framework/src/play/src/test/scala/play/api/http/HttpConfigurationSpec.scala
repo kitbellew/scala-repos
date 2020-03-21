@@ -49,8 +49,8 @@ object HttpConfigurationSpec extends Specification {
     "throw an error when context does not starts with /" in {
       val config = properties + ("play.http.context" -> "something")
       val wrongConfiguration = Configuration(ConfigFactory.parseMap(config))
-      new HttpConfiguration.HttpConfigurationProvider(
-        wrongConfiguration).get must throwA[PlayException]
+      new HttpConfiguration.HttpConfigurationProvider(wrongConfiguration)
+        .get must throwA[PlayException]
     }
 
     "configure max memory buffer" in {
@@ -132,13 +132,17 @@ object HttpConfigurationSpec extends Specification {
       "controller annotations first" in {
         val httpConfiguration =
           new HttpConfiguration.HttpConfigurationProvider(configuration).get
-        httpConfiguration.actionComposition.controllerAnnotationsFirst must beTrue
+        httpConfiguration
+          .actionComposition
+          .controllerAnnotationsFirst must beTrue
       }
 
       "execute request handler action first" in {
         val httpConfiguration =
           new HttpConfiguration.HttpConfigurationProvider(configuration).get
-        httpConfiguration.actionComposition.executeActionCreatorActionFirst must beTrue
+        httpConfiguration
+          .actionComposition
+          .executeActionCreatorActionFirst must beTrue
       }
     }
   }
@@ -150,23 +154,23 @@ object HttpConfigurationSpec extends Specification {
       val cookieConfiguration = CookiesConfiguration(strict = true)
 
       "for server encoder" in {
-        cookieConfiguration.serverEncoder must beEqualTo(
-          ServerCookieEncoder.STRICT)
+        cookieConfiguration
+          .serverEncoder must beEqualTo(ServerCookieEncoder.STRICT)
       }
 
       "for server decoder" in {
-        cookieConfiguration.serverDecoder must beEqualTo(
-          ServerCookieDecoder.STRICT)
+        cookieConfiguration
+          .serverDecoder must beEqualTo(ServerCookieDecoder.STRICT)
       }
 
       "for client encoder" in {
-        cookieConfiguration.clientEncoder must beEqualTo(
-          ClientCookieEncoder.STRICT)
+        cookieConfiguration
+          .clientEncoder must beEqualTo(ClientCookieEncoder.STRICT)
       }
 
       "for client decoder" in {
-        cookieConfiguration.clientDecoder must beEqualTo(
-          ClientCookieDecoder.STRICT)
+        cookieConfiguration
+          .clientDecoder must beEqualTo(ClientCookieDecoder.STRICT)
       }
     }
 
@@ -175,23 +179,23 @@ object HttpConfigurationSpec extends Specification {
       val cookieConfiguration = CookiesConfiguration(strict = false)
 
       "for server encoder" in {
-        cookieConfiguration.serverEncoder must beEqualTo(
-          ServerCookieEncoder.LAX)
+        cookieConfiguration
+          .serverEncoder must beEqualTo(ServerCookieEncoder.LAX)
       }
 
       "for server decoder" in {
-        cookieConfiguration.serverDecoder must beEqualTo(
-          ServerCookieDecoder.LAX)
+        cookieConfiguration
+          .serverDecoder must beEqualTo(ServerCookieDecoder.LAX)
       }
 
       "for client encoder" in {
-        cookieConfiguration.clientEncoder must beEqualTo(
-          ClientCookieEncoder.LAX)
+        cookieConfiguration
+          .clientEncoder must beEqualTo(ClientCookieEncoder.LAX)
       }
 
       "for client decoder" in {
-        cookieConfiguration.clientDecoder must beEqualTo(
-          ClientCookieDecoder.LAX)
+        cookieConfiguration
+          .clientDecoder must beEqualTo(ClientCookieDecoder.LAX)
       }
     }
   }

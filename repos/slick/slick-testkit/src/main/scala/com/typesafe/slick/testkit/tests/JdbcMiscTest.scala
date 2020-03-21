@@ -105,7 +105,9 @@ class JdbcMiscTest extends AsyncTest[JdbcTestDB] {
       a1.result.map(_ shouldBe Seq(1)),
       a1.result.overrideStatements(a2.result.statements).map(_ shouldBe Seq(2)),
       a1.result.head.map(_ shouldBe 1),
-      a1.result.head
+      a1
+        .result
+        .head
         .overrideStatements(a2.result.head.statements)
         .map(_ shouldBe 2)
     )

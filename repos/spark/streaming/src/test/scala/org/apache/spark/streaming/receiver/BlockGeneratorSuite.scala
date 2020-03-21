@@ -114,21 +114,27 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
     val metadata2 = data2.map {
       _.toString
     }
-    data2.zip(metadata2).foreach {
-      case (d, m) =>
-        blockGenerator.addDataWithCallback(d, m)
-    }
+    data2
+      .zip(metadata2)
+      .foreach {
+        case (d, m) =>
+          blockGenerator.addDataWithCallback(d, m)
+      }
     assert(listener.onAddDataCalled === true)
     listener.addedData.asScala.toSeq should contain theSameElementsInOrderAs (
       data2
     )
-    listener.addedMetadata.asScala.toSeq should contain theSameElementsInOrderAs (
-      metadata2
-    )
+    listener
+      .addedMetadata
+      .asScala
+      .toSeq should contain theSameElementsInOrderAs (metadata2)
     clock.advance(blockIntervalMs) // advance clock to generate blocks
     eventually(timeout(1 second)) {
       val combined = data1 ++ data2
-      listener.pushedData.asScala.toSeq should contain theSameElementsInOrderAs combined
+      listener
+        .pushedData
+        .asScala
+        .toSeq should contain theSameElementsInOrderAs combined
     }
 
     // Verify addMultipleDataWithCallback() add data+metadata and and callbacks are called correctly
@@ -136,15 +142,17 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
     val metadata3 = "metadata"
     blockGenerator.addMultipleDataWithCallback(data3.iterator, metadata3)
     val combinedMetadata = metadata2 :+ metadata3
-    listener.addedMetadata.asScala.toSeq should contain theSameElementsInOrderAs (
-      combinedMetadata
-    )
+    listener
+      .addedMetadata
+      .asScala
+      .toSeq should contain theSameElementsInOrderAs (combinedMetadata)
     clock.advance(blockIntervalMs) // advance clock to generate blocks
     eventually(timeout(1 second)) {
       val combinedData = data1 ++ data2 ++ data3
-      listener.pushedData.asScala.toSeq should contain theSameElementsInOrderAs (
-        combinedData
-      )
+      listener
+        .pushedData
+        .asScala
+        .toSeq should contain theSameElementsInOrderAs (combinedData)
     }
 
     // Stop the block generator by starting the stop on a different thread and

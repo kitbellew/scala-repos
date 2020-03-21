@@ -87,10 +87,9 @@ class DataFrameNaFunctionsSuite extends QueryTest with SharedSQLContext {
 
     // Make sure the columns are properly named.
     assert(
-      input.na
-        .drop(2, Seq("age", "height"))
+      input.na.drop(2, Seq("age", "height")).columns.toSeq === input
         .columns
-        .toSeq === input.columns.toSeq)
+        .toSeq)
   }
 
   test("fill") {
@@ -157,7 +156,8 @@ class DataFrameNaFunctionsSuite extends QueryTest with SharedSQLContext {
     val input = createDF()
 
     // Replace two numeric columns: age and height
-    val out = input.na
+    val out = input
+      .na
       .replace(
         Seq("age", "height"),
         Map(
@@ -175,7 +175,8 @@ class DataFrameNaFunctionsSuite extends QueryTest with SharedSQLContext {
     assert(out(5) === Row(null, null, null))
 
     // Replace only the age column
-    val out1 = input.na
+    val out1 = input
+      .na
       .replace(
         "age",
         Map(

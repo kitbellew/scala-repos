@@ -235,9 +235,11 @@ case class CatalogTable(
 
   /** Return the database this table was specified to belong to, assuming it exists. */
   def database: String =
-    name.database.getOrElse {
-      throw new AnalysisException(s"table $name did not specify database")
-    }
+    name
+      .database
+      .getOrElse {
+        throw new AnalysisException(s"table $name did not specify database")
+      }
 
   /** Return the fully qualified name of this table, assuming the database was specified. */
   def qualifiedName: String = name.unquotedString

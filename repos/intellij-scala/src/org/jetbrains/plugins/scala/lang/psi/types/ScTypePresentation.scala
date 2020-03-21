@@ -90,7 +90,8 @@ trait ScTypePresentation {
 
   def canonicalText(t: ScType) = {
     def removeKeywords(s: String): String = {
-      s.split('.')
+      s
+        .split('.')
         .map(s =>
           if (ScalaNamesUtil.isKeyword(s))
             "`" + s + "`"
@@ -142,7 +143,8 @@ trait ScTypePresentation {
         sep: String,
         end: String,
         checkWildcard: Boolean = false): String = {
-      ts.map(
+      ts
+        .map(
           innerTypeText(_, needDotType = true, checkWildcard = checkWildcard))
         .mkString(start, sep, end)
     }
@@ -216,7 +218,8 @@ trait ScTypePresentation {
       def isInnerStaticJavaClassForParent(clazz: PsiClass): Boolean = {
         clazz.getLanguage != ScalaFileType.SCALA_LANGUAGE &&
         e.isInstanceOf[PsiModifierListOwner] &&
-        e.asInstanceOf[PsiModifierListOwner]
+        e
+          .asInstanceOf[PsiModifierListOwner]
           .getModifierList
           .hasModifierProperty("static")
       }
@@ -275,12 +278,14 @@ trait ScTypePresentation {
             s.typeParams.toList,
             rt,
             fun)
-          val paramClauses = funCopy.paramClauses.clauses
+          val paramClauses = funCopy
+            .paramClauses
+            .clauses
             .map(
               _.parameters
-                .map(param =>
-                  ScalaDocumentationProvider.parseParameter(param, typeText0))
-                .mkString("(", ", ", ")"))
+              .map(param =>
+                ScalaDocumentationProvider.parseParameter(param, typeText0))
+              .mkString("(", ", ", ")"))
             .mkString("")
           val retType =
             if (!compType.equiv(rt))
@@ -289,7 +294,8 @@ trait ScTypePresentation {
               "this.type"
           val typeParams =
             if (funCopy.typeParameters.length > 0)
-              funCopy.typeParameters
+              funCopy
+                .typeParameters
                 .map(typeParamText(_, ScSubstitutor.empty))
                 .mkString("[", ", ", "]")
             else
@@ -327,7 +333,8 @@ trait ScTypePresentation {
           val ta = ScTypeAlias.getCompoundCopy(sign, sign.ta)
           val paramsText =
             if (ta.typeParameters.length > 0)
-              ta.typeParameters
+              ta
+                .typeParameters
                 .map(typeParamText(_, ScSubstitutor.empty))
                 .mkString("[", ", ", "]")
             else
@@ -336,7 +343,8 @@ trait ScTypePresentation {
           val defnText =
             ta match {
               case tad: ScTypeAliasDefinition =>
-                tad.aliasedType
+                tad
+                  .aliasedType
                   .map {
                     case psi.types.Nothing =>
                       ""
@@ -424,12 +432,10 @@ trait ScTypePresentation {
           else
             s"($designatorText$typeArgsText) forSome $existentialArgsText"
         case ScExistentialType(q, wilds) =>
-          val wildsWithBounds = wilds.map(w =>
-            existentialArgWithBounds(w, "type " + w.name))
-          wildsWithBounds.mkString(
-            s"(${innerTypeText(q)}) forSome {",
-            "; ",
-            "}")
+          val wildsWithBounds = wilds
+            .map(w => existentialArgWithBounds(w, "type " + w.name))
+          wildsWithBounds
+            .mkString(s"(${innerTypeText(q)}) forSome {", "; ", "}")
       }
     }
 
@@ -545,9 +551,8 @@ object ScTypePresentation {
     }
 
   def withoutAliases(tpe: ScType): String = {
-    val withoutAliasesType = ScType.removeAliasDefinitions(
-      tpe,
-      expandableOnly = true)
+    val withoutAliasesType = ScType
+      .removeAliasDefinitions(tpe, expandableOnly = true)
     withoutAliasesType.presentableText
   }
 }

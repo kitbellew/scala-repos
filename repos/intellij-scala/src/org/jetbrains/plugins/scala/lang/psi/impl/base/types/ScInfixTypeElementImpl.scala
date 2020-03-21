@@ -37,10 +37,8 @@ class ScInfixTypeElementImpl(node: ASTNode)
   def desugarizedInfixType: Option[ScParameterizedTypeElement] = {
     val newTypeText =
       s"${ref.getText}[${lOp.getText}, ${rOp.map(_.getText).getOrElse("Nothing")}}]"
-    val newTypeElement = ScalaPsiElementFactory.createTypeElementFromText(
-      newTypeText,
-      getContext,
-      this)
+    val newTypeElement = ScalaPsiElementFactory
+      .createTypeElementFromText(newTypeText, getContext, this)
     newTypeElement match {
       case p: ScParameterizedTypeElement =>
         Some(p)

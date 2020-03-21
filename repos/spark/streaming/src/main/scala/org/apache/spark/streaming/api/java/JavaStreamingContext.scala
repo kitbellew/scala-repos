@@ -286,8 +286,8 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
       port: Int): JavaReceiverInputDStream[T] = {
     implicit val cmt: ClassTag[T] = implicitly[ClassTag[AnyRef]]
       .asInstanceOf[ClassTag[T]]
-    JavaReceiverInputDStream.fromReceiverInputDStream(
-      ssc.rawSocketStream(hostname, port))
+    JavaReceiverInputDStream
+      .fromReceiverInputDStream(ssc.rawSocketStream(hostname, port))
   }
 
   /**

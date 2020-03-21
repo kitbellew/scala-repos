@@ -60,8 +60,8 @@ class JavaJsonSpec extends Specification {
     }
     "stringify" in {
       "stringify" in new JsonScope {
-        Json.stringify(testJson) must_== Json.stringify(
-          Json.parse(testJsonString))
+        Json.stringify(testJson) must_== Json
+          .stringify(Json.parse(testJsonString))
       }
       "asciiStringify" in new JsonScope {
         val resultString = Json

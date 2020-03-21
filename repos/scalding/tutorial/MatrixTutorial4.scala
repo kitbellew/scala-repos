@@ -17,7 +17,8 @@ class ComputeCosineJob(args: Args) extends Job(args) {
 
   import Matrix._
 
-  val adjacencyMatrix = Tsv(args("input"), ('user1, 'user2, 'rel)).read
+  val adjacencyMatrix = Tsv(args("input"), ('user1, 'user2, 'rel))
+    .read
     .toMatrix[Long, Long, Double]('user1, 'user2, 'rel)
 
   // we compute the L2 normalized adjacency graph

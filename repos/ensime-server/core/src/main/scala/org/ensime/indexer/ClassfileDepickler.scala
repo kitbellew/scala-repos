@@ -29,12 +29,14 @@ class ClassfileDepickler(file: FileObject) {
   def getTypeAliases: Seq[RawType] = {
     scalasig match {
       case Some(sig: ScalaSig) =>
-        sig.symbols.flatMap {
-          case s: AliasSymbol =>
-            Some(RawType(symbolName(s), access(s)))
-          case _ =>
-            None
-        }
+        sig
+          .symbols
+          .flatMap {
+            case s: AliasSymbol =>
+              Some(RawType(symbolName(s), access(s)))
+            case _ =>
+              None
+          }
       case None =>
         Nil
     }

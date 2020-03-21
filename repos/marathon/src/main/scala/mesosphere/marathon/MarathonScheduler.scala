@@ -62,15 +62,17 @@ class MarathonScheduler @Inject() (
       driver: SchedulerDriver,
       offers: java.util.List[Offer]): Unit = {
     import scala.collection.JavaConverters._
-    offers.asScala.foreach { offer =>
-      val processFuture = offerProcessor.processOffer(offer)
-      processFuture.onComplete {
-        case scala.util.Success(_) =>
-          log.debug(s"Finished processing offer '${offer.getId.getValue}'")
-        case scala.util.Failure(NonFatal(e)) =>
-          log.error(s"while processing offer '${offer.getId.getValue}'", e)
+    offers
+      .asScala
+      .foreach { offer =>
+        val processFuture = offerProcessor.processOffer(offer)
+        processFuture.onComplete {
+          case scala.util.Success(_) =>
+            log.debug(s"Finished processing offer '${offer.getId.getValue}'")
+          case scala.util.Failure(NonFatal(e)) =>
+            log.error(s"while processing offer '${offer.getId.getValue}'", e)
+        }
       }
-    }
   }
 
   override def offerRescinded(driver: SchedulerDriver, offer: OfferID): Unit = {
@@ -84,10 +86,12 @@ class MarathonScheduler @Inject() (
       "Received status update for task %s: %s (%s)"
         .format(status.getTaskId.getValue, status.getState, status.getMessage))
 
-    taskStatusProcessor.publish(status).onFailure {
-      case NonFatal(e) =>
-        log.error(s"while processing task status update $status", e)
-    }
+    taskStatusProcessor
+      .publish(status)
+      .onFailure {
+        case NonFatal(e) =>
+          log.error(s"while processing task status update $status", e)
+      }
   }
 
   override def frameworkMessage(

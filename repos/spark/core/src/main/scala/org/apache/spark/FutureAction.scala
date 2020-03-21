@@ -145,9 +145,12 @@ class SimpleFutureAction[T] private[spark] (
   override def isCancelled: Boolean = _cancelled
 
   override def value: Option[Try[T]] =
-    jobWaiter.completionFuture.value.map { res =>
-      res.map(_ => resultFunc)
-    }
+    jobWaiter
+      .completionFuture
+      .value
+      .map { res =>
+        res.map(_ => resultFunc)
+      }
 
   def jobIds: Seq[Int] = Seq(jobWaiter.jobId)
 }
@@ -210,12 +213,14 @@ class ComplexFutureAction[T](run: JobSubmitter => Future[T])
           // If the action hasn't been cancelled yet, submit the job. The check and the submitJob
           // command need to be in an atomic block.
           if (!isCancelled) {
-            val job = rdd.context.submitJob(
-              rdd,
-              processPartition,
-              partitions,
-              resultHandler,
-              resultFunc)
+            val job = rdd
+              .context
+              .submitJob(
+                rdd,
+                processPartition,
+                partitions,
+                resultHandler,
+                resultFunc)
             subActions = job :: subActions
             job
           } else {
@@ -267,8 +272,8 @@ private[spark] class JavaFutureActionWrapper[S, T](
   }
 
   override def jobIds(): java.util.List[java.lang.Integer] = {
-    Collections.unmodifiableList(
-      futureAction.jobIds.map(Integer.valueOf).asJava)
+    Collections
+      .unmodifiableList(futureAction.jobIds.map(Integer.valueOf).asJava)
   }
 
   private def getImpl(timeout: Duration): T = {

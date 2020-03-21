@@ -72,7 +72,8 @@ trait Codec[Req, Rep] {
       params: Stack.Params): Service[Req, Rep] =
     new SerialClientDispatcher(
       Transport.cast[Req, Rep](transport),
-      params[param.Stats].statsReceiver
+      params[param.Stats]
+        .statsReceiver
         .scope(GenSerialClientDispatcher.StatsScope))
 
   def newServerDispatcher(

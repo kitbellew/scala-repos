@@ -211,11 +211,13 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
     val collectedData = data.collect().sorted
     val twoFoldedRdd = kFold(data, 2, 1)
     assert(
-      twoFoldedRdd(0)._1.collect().sorted === twoFoldedRdd(1)._2
+      twoFoldedRdd(0)._1.collect().sorted === twoFoldedRdd(1)
+        ._2
         .collect()
         .sorted)
     assert(
-      twoFoldedRdd(0)._2.collect().sorted === twoFoldedRdd(1)._1
+      twoFoldedRdd(0)._2.collect().sorted === twoFoldedRdd(1)
+        ._1
         .collect()
         .sorted)
     for (folds <- 2 to 10) {
@@ -290,7 +292,7 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     assert(log1pExp(-13.8) ~== math.log1p(math.exp(-13.8)) absTol 1e-10)
     assert(
-      log1pExp(-238423789.865) ~== math.log1p(
-        math.exp(-238423789.865)) absTol 1e-10)
+      log1pExp(-238423789.865) ~== math
+        .log1p(math.exp(-238423789.865)) absTol 1e-10)
   }
 }

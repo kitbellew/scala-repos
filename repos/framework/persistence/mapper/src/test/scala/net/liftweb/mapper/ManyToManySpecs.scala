@@ -49,7 +49,9 @@ object ManyToManySpec extends Specification {
     // Break some joins
     companies(3).delete_! // delete "4"
     companies(6).delete_! // delete "7"
-    person.companies.refresh // reload joins so joinEntity.company.obj isn't cached
+    person
+      .companies
+      .refresh // reload joins so joinEntity.company.obj isn't cached
     person
   }
 

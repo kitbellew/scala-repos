@@ -101,12 +101,12 @@ object MatrixProduct extends java.io.Serializable {
   var maxReducers = 200
 
   def numOfReducers(hint: SizeHint) = {
-    hint.total
+    hint
+      .total
       .map { tot =>
         // + 1L is to make sure there is at least once reducer
-        (
-          tot / MatrixProduct.maxTinyJoin + 1L
-        ).toInt min MatrixProduct.maxReducers
+        (tot / MatrixProduct.maxTinyJoin + 1L).toInt min MatrixProduct
+          .maxReducers
       }
       .getOrElse(-1)
   }
@@ -115,7 +115,8 @@ object MatrixProduct extends java.io.Serializable {
     val newHint = leftSize * rightSize
     if (SizeHintOrdering.lteq(leftSize, rightSize)) {
       // If leftsize is definite:
-      leftSize.total
+      leftSize
+        .total
         .map { t =>
           if (t < maxTinyJoin)
             TinyToAny
@@ -126,7 +127,8 @@ object MatrixProduct extends java.io.Serializable {
         .getOrElse(new BigToSmall(numOfReducers(newHint)))
     } else {
       // left > right
-      rightSize.total
+      rightSize
+        .total
         .map { rs =>
           if (rs < maxTinyJoin)
             AnyToTiny
@@ -138,7 +140,8 @@ object MatrixProduct extends java.io.Serializable {
   }
 
   def getCrosser(rightSize: SizeHint): MatrixCrosser =
-    rightSize.total
+    rightSize
+      .total
       .map { t =>
         if (t < maxTinyJoin)
           AnyCrossTiny
@@ -156,9 +159,11 @@ object MatrixProduct extends java.io.Serializable {
       Matrix[Row, Col, ValT]] {
       def apply(left: Matrix[Row, Col, ValT], right: LiteralScalar[ValT]) = {
         val newPipe =
-          left.pipe.map(left.valSym -> left.valSym) { (v: ValT) =>
-            ring.times(v, right.value)
-          }
+          left
+            .pipe
+            .map(left.valSym -> left.valSym) { (v: ValT) =>
+              ring.times(v, right.value)
+            }
         new Matrix[Row, Col, ValT](
           left.rowSym,
           left.colSym,
@@ -173,9 +178,11 @@ object MatrixProduct extends java.io.Serializable {
     new MatrixProduct[Matrix[Row, Col, ValT], ValT, Matrix[Row, Col, ValT]] {
       def apply(left: Matrix[Row, Col, ValT], right: ValT) = {
         val newPipe =
-          left.pipe.map(left.valSym -> left.valSym) { (v: ValT) =>
-            ring.times(v, right)
-          }
+          left
+            .pipe
+            .map(left.valSym -> left.valSym) { (v: ValT) =>
+              ring.times(v, right)
+            }
         new Matrix[Row, Col, ValT](
           left.rowSym,
           left.colSym,
@@ -196,9 +203,11 @@ object MatrixProduct extends java.io.Serializable {
       Matrix[Row, Col, ValT]] {
       def apply(left: LiteralScalar[ValT], right: Matrix[Row, Col, ValT]) = {
         val newPipe =
-          right.pipe.map(right.valSym -> right.valSym) { (v: ValT) =>
-            ring.times(left.value, v)
-          }
+          right
+            .pipe
+            .map(right.valSym -> right.valSym) { (v: ValT) =>
+              ring.times(left.value, v)
+            }
         new Matrix[Row, Col, ValT](
           right.rowSym,
           right.colSym,
@@ -592,9 +601,8 @@ object MatrixProduct extends java.io.Serializable {
                 newRightPipe)
               // Do the product:
               .map(
-                (
-                  left.valSym.append(getField(newRightFields, 2))
-                ) -> left.valSym) { pair: (ValT, ValT) =>
+                (left.valSym.append(getField(newRightFields, 2))) -> left
+                  .valSym) { pair: (ValT, ValT) =>
                 ring.times(pair._1, pair._2)
               }
               .groupBy(left.rowSym.append(getField(newRightFields, 1))) {
@@ -604,8 +612,7 @@ object MatrixProduct extends java.io.Serializable {
                 }
                 // There is a low chance that many (row,col) keys are co-located, and the keyspace
                 // is likely huge, just push to reducers
-                .forceToReducers
-                  .reducers(grpReds)
+                .forceToReducers.reducers(grpReds)
               }
           }
           // Keep the names from the left:
@@ -708,9 +715,8 @@ object MatrixProduct extends java.io.Serializable {
                 newRightPipe)
               // Do the product:
               .map(
-                (
-                  left.valSym.append(getField(newRightFields, 1))
-                ) -> left.valSym) { pair: (ValT, ValT) =>
+                (left.valSym.append(getField(newRightFields, 1))) -> left
+                  .valSym) { pair: (ValT, ValT) =>
                 ring.times(pair._1, pair._2)
               }
           }

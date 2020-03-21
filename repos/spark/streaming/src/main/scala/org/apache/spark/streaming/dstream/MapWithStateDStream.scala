@@ -69,11 +69,13 @@ private[streaming] class MapWithStateDStreamImpl[
   override def dependencies: List[DStream[_]] = List(internalStream)
 
   override def compute(validTime: Time): Option[RDD[MappedType]] = {
-    internalStream.getOrCompute(validTime).map {
-      _.flatMap[MappedType] {
-        _.mappedData
+    internalStream
+      .getOrCompute(validTime)
+      .map {
+        _.flatMap[MappedType] {
+          _.mappedData
+        }
       }
-    }
   }
 
   /**
@@ -89,12 +91,12 @@ private[streaming] class MapWithStateDStreamImpl[
   def stateSnapshots(): DStream[(KeyType, StateType)] = {
     internalStream.flatMap {
       _.stateMap
-        .getAll()
-        .map {
-          case (k, s, _) =>
-            (k, s)
-        }
-        .toTraversable
+      .getAll()
+      .map {
+        case (k, s, _) =>
+          (k, s)
+      }
+      .toTraversable
     }
   }
 
@@ -181,13 +183,17 @@ private[streaming] class InternalMapWithStateDStream[
 
     // Compute the new state RDD with previous state RDD and partitioned data RDD
     // Even if there is no data RDD, use an empty one to create a new state RDD
-    val dataRDD = parent.getOrCompute(validTime).getOrElse {
-      context.sparkContext.emptyRDD[(K, V)]
-    }
+    val dataRDD = parent
+      .getOrCompute(validTime)
+      .getOrElse {
+        context.sparkContext.emptyRDD[(K, V)]
+      }
     val partitionedDataRDD = dataRDD.partitionBy(partitioner)
-    val timeoutThresholdTime = spec.getTimeoutInterval().map { interval =>
-      (validTime - interval).milliseconds
-    }
+    val timeoutThresholdTime = spec
+      .getTimeoutInterval()
+      .map { interval =>
+        (validTime - interval).milliseconds
+      }
     Some(
       new MapWithStateRDD(
         prevStateRDD,

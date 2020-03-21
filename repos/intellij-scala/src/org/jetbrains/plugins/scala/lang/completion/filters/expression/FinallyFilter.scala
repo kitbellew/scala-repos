@@ -30,15 +30,16 @@ class FinallyFilter extends ElementFilter {
         leaf1 = leaf1.getParent
       if (leaf1 == null)
         return false
-      if (leaf1.getNode
+      if (leaf1
+            .getNode
             .getChildren(null)
             .exists(_.getElementType == ScalaElementTypes.FINALLY_BLOCK))
         return false
       i = getNextNotWhitespaceAndComment(
         context.getTextRange.getEndOffset,
         context)
-      if (Array("catch", "finally").contains(
-            getLeafByOffset(i, context).getText))
+      if (Array("catch", "finally")
+            .contains(getLeafByOffset(i, context).getText))
         return false
       return true
     }

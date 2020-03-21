@@ -76,18 +76,20 @@ case class AppDefinition(
   def portIndicesAreValid(): Boolean = {
     val validPortIndices = hostPorts.indices
     healthChecks.forall { hc =>
-      hc.protocol == Protocol.COMMAND || hc.portIndex.forall(
-        validPortIndices.contains(_))
+      hc.protocol == Protocol
+        .COMMAND || hc.portIndex.forall(validPortIndices.contains(_))
     }
   }
 
   def isResident: Boolean = residency.isDefined
 
   def persistentVolumes: Iterable[PersistentVolume] = {
-    container.fold(Seq.empty[Volume])(_.volumes).collect {
-      case vol: PersistentVolume =>
-        vol
-    }
+    container
+      .fold(Seq.empty[Volume])(_.volumes)
+      .collect {
+        case vol: PersistentVolume =>
+          vol
+      }
   }
 
   /**
@@ -109,13 +111,12 @@ case class AppDefinition(
     val diskResource = ScalarResource(Resource.DISK, disk)
     val appLabels = labels.map {
       case (key, value) =>
-        mesos.Parameter.newBuilder
-          .setKey(key)
-          .setValue(value)
-          .build
+        mesos.Parameter.newBuilder.setKey(key).setValue(value).build
     }
 
-    val builder = Protos.ServiceDefinition.newBuilder
+    val builder = Protos
+      .ServiceDefinition
+      .newBuilder
       .setId(id.toString)
       .setCmd(commandInfo)
       .setInstances(instances)
@@ -170,14 +171,24 @@ case class AppDefinition(
   //scalastyle:off cyclomatic.complexity method.length
   def mergeFromProto(proto: Protos.ServiceDefinition): AppDefinition = {
     val envMap: Map[String, String] =
-      proto.getCmd.getEnvironment.getVariablesList.asScala.map { v =>
-        v.getName -> v.getValue
-      }.toMap
+      proto
+        .getCmd
+        .getEnvironment
+        .getVariablesList
+        .asScala
+        .map { v =>
+          v.getName -> v.getValue
+        }
+        .toMap
 
     val resourcesMap: Map[String, Double] =
-      proto.getResourcesList.asScala.map { r =>
-        r.getName -> (r.getScalar.getValue: Double)
-      }.toMap
+      proto
+        .getResourcesList
+        .asScala
+        .map { r =>
+          r.getName -> (r.getScalar.getValue: Double)
+        }
+        .toMap
 
     val argsOption =
       if (proto.getCmd.getArgumentsCount > 0)
@@ -187,7 +198,8 @@ case class AppDefinition(
 
     //Precondition: either args or command is defined
     val commandOption =
-      if (argsOption.isEmpty && proto.getCmd.hasValue && proto.getCmd.getValue.nonEmpty)
+      if (argsOption
+            .isEmpty && proto.getCmd.hasValue && proto.getCmd.getValue.nonEmpty)
         Some(proto.getCmd.getValue)
       else
         None
@@ -231,7 +243,9 @@ case class AppDefinition(
       if (proto.getPortsCount > 0)
         PortDefinitions(proto.getPortsList.asScala.map(_.intValue): _*)
       else
-        proto.getPortDefinitionsList.asScala
+        proto
+          .getPortDefinitionsList
+          .asScala
           .map(PortDefinitionSerializer.fromProto)
           .to[Seq]
 
@@ -260,12 +274,18 @@ case class AppDefinition(
       fetch = proto.getCmd.getUrisList.asScala.map(FetchUri.fromProto).to[Seq],
       storeUrls = proto.getStoreUrlsList.asScala.to[Seq],
       container = containerOption,
-      healthChecks = proto.getHealthChecksList.asScala
+      healthChecks = proto
+        .getHealthChecksList
+        .asScala
         .map(new HealthCheck().mergeFromProto)
         .toSet,
-      labels = proto.getLabelsList.asScala.map { p =>
-        p.getKey -> p.getValue
-      }.toMap,
+      labels = proto
+        .getLabelsList
+        .asScala
+        .map { p =>
+          p.getKey -> p.getValue
+        }
+        .toMap,
       versionInfo = versionInfoFromProto,
       upgradeStrategy =
         if (proto.hasUpgradeStrategy)
@@ -597,11 +617,13 @@ object AppDefinition {
         val toVolumes = to.persistentVolumes
         def sameSize = fromVolumes.size == toVolumes.size
         def noChange =
-          from.persistentVolumes.forall { fromVolume =>
-            toVolumes
-              .find(_.containerPath == fromVolume.containerPath)
-              .contains(fromVolume)
-          }
+          from
+            .persistentVolumes
+            .forall { fromVolume =>
+              toVolumes
+                .find(_.containerPath == fromVolume.containerPath)
+                .contains(fromVolume)
+            }
         sameSize && noChange
       }
 

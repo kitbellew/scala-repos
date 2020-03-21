@@ -102,19 +102,23 @@ trait QuirrelCache extends AST {
         while (!matched && j < rules.length) {
           rules(j) match {
             case Ignore(re) =>
-              re.findPrefixOf(input.substring(i)).foreach { m =>
-                output.append(m)
-                matched = true
-                i += m.length
-              }
+              re
+                .findPrefixOf(input.substring(i))
+                .foreach { m =>
+                  output.append(m)
+                  matched = true
+                  i += m.length
+                }
             case Keep(tpe, re) =>
-              re.findPrefixOf(input.substring(i)).foreach { m =>
-                val name = nextName(tpe)
-                bindings.append(Binding(tpe, name, m, i))
-                output.append(name)
-                matched = true
-                i += m.length
-              }
+              re
+                .findPrefixOf(input.substring(i))
+                .foreach { m =>
+                  val name = nextName(tpe)
+                  bindings.append(Binding(tpe, name, m, i))
+                  output.append(name)
+                  matched = true
+                  i += m.length
+                }
           }
           j += 1
         }
@@ -164,7 +168,8 @@ trait QuirrelCache extends AST {
                 ))
             }
           case _: NumLit =>
-            parser.numLiteralRegex
+            parser
+              .numLiteralRegex
               .findPrefixOf(s)
               .map(x => ("n", x.length))
               .getOrElse {
@@ -174,15 +179,18 @@ trait QuirrelCache extends AST {
                   ))
               }
           case _: StrLit =>
-            parser.pathLiteralRegex
+            parser
+              .pathLiteralRegex
               .findPrefixOf(s)
               .map(x => ("p", x.length))
               .orElse {
-                parser.relPathLiteralRegex
+                parser
+                  .relPathLiteralRegex
                   .findPrefixOf(s)
                   .map(x => ("rp", x.length))
                   .orElse {
-                    parser.strLiteralRegex
+                    parser
+                      .strLiteralRegex
                       .findPrefixOf(s)
                       .map(x => ("s", x.length))
                   }
@@ -257,7 +265,8 @@ trait QuirrelCache extends AST {
       slots: Map[String, Slot]): Option[Expr] = {
     val index = buildBindingIndex(expr)
     val sortedBindings =
-      bindings.zipWithIndex
+      bindings
+        .zipWithIndex
         .map {
           case (b, i) =>
             (b, index(i))
@@ -277,11 +286,14 @@ trait QuirrelCache extends AST {
       bindings: IndexedSeq[Binding],
       slots: Map[String, Slot]): LineStream => LineStream = {
     val widths: Map[String, Int] =
-      bindings.map { b =>
-        (b.name, b.rawValue.length)
-      }.toMap
+      bindings
+        .map { b =>
+          (b.name, b.rawValue.length)
+        }
+        .toMap
 
-    val deltas: Map[Int, List[(Int, Int)]] = slots.toList
+    val deltas: Map[Int, List[(Int, Int)]] = slots
+      .toList
       .map {
         case (name, Slot(lineNum, colNum, oldWidth)) =>
           val width = widths(name)
@@ -538,20 +550,22 @@ trait QuirrelCache extends AST {
   }
 
   class ParseCache(maxSize: Long) {
-    private val cache: mutable.Map[CacheKey, CacheValue] = Cache.simple(
-      Cache.MaxSize(maxSize))
+    private val cache: mutable.Map[CacheKey, CacheValue] = Cache
+      .simple(Cache.MaxSize(maxSize))
 
     def getOrElseUpdate(query: LineStream)(
         f: LineStream => Set[Expr]): Set[Expr] = {
       val s = query.toString
       val (key, bindings) = CacheKey.fromString(s)
-      cache.get(key).flatMap {
-        case (expr, slots) =>
-          resolveBindings(expr, bindings, slots) map { root =>
-            bindRoot(root, root)
-            root
-          }
-      } map { expr =>
+      cache
+        .get(key)
+        .flatMap {
+          case (expr, slots) =>
+            resolveBindings(expr, bindings, slots) map { root =>
+              bindRoot(root, root)
+              root
+            }
+        } map { expr =>
         Set(expr)
       } getOrElse {
         val exprs = f(query)

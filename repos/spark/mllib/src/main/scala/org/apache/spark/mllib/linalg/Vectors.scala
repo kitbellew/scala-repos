@@ -351,10 +351,13 @@ object Vectors {
       elements: JavaIterable[(JavaInteger, JavaDouble)]): Vector = {
     sparse(
       size,
-      elements.asScala.map {
-        case (i, x) =>
-          (i.intValue(), x.doubleValue())
-      }.toSeq)
+      elements
+        .asScala
+        .map {
+          case (i, x) =>
+            (i.intValue(), x.doubleValue())
+        }
+        .toSeq)
   }
 
   /**
@@ -923,17 +926,19 @@ class SparseVector @Since("1.0.0") (
   private[spark] def slice(selectedIndices: Array[Int]): SparseVector = {
     var currentIdx = 0
     val (sliceInds, sliceVals) =
-      selectedIndices.flatMap { origIdx =>
-        val iIdx = java.util.Arrays.binarySearch(this.indices, origIdx)
-        val i_v =
-          if (iIdx >= 0) {
-            Iterator((currentIdx, this.values(iIdx)))
-          } else {
-            Iterator()
-          }
-        currentIdx += 1
-        i_v
-      }.unzip
+      selectedIndices
+        .flatMap { origIdx =>
+          val iIdx = java.util.Arrays.binarySearch(this.indices, origIdx)
+          val i_v =
+            if (iIdx >= 0) {
+              Iterator((currentIdx, this.values(iIdx)))
+            } else {
+              Iterator()
+            }
+          currentIdx += 1
+          i_v
+        }
+        .unzip
     new SparseVector(
       selectedIndices.length,
       sliceInds.toArray,

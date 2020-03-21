@@ -172,8 +172,9 @@ object PageRank extends Logging {
         }
         .cache()
 
-      rankGraph.edges.foreachPartition(
-        x => {}) // also materializes rankGraph.vertices
+      rankGraph
+        .edges
+        .foreachPartition(x => {}) // also materializes rankGraph.vertices
       logInfo(s"PageRank finished iteration $iteration.")
       prevRankGraph.vertices.unpersist(false)
       prevRankGraph.edges.unpersist(false)
@@ -249,8 +250,7 @@ object PageRank extends Logging {
           (resetProb, Double.NegativeInfinity)
         else
           (0.0, 0.0)
-      }
-      .cache()
+      }.cache()
 
     // Define the three functions needed to implement PageRank in the GraphX
     // version of Pregel
@@ -314,8 +314,7 @@ object PageRank extends Logging {
     Pregel(pagerankGraph, initialMessage, activeDirection = EdgeDirection.Out)(
       vp,
       sendMessage,
-      messageCombiner)
-      .mapVertices((vid, attr) => attr._1)
+      messageCombiner).mapVertices((vid, attr) => attr._1)
   } // end of deltaPageRank
 
 }

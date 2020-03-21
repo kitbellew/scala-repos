@@ -84,7 +84,10 @@ private final class Monitor(
     success(work, client)
     if (work.level == 8)
       work.acquiredAt foreach { acquiredAt =>
-        lila.mon.fishnet.move
+        lila
+          .mon
+          .fishnet
+          .move
           .time(client.userId.value)(nowMillis - acquiredAt.getMillis)
       }
   }
@@ -97,26 +100,39 @@ private final class Monitor(
 
   private def success(work: Work, client: Client) = {
 
-    lila.mon.fishnet.client
+    lila
+      .mon
+      .fishnet
+      .client
       .result(client.userId.value, work.skill.key)
       .success()
 
     work.acquiredAt foreach { acquiredAt =>
-      lila.mon.fishnet.queue.db(work.skill.key) {
-        acquiredAt.getMillis - work.createdAt.getMillis
-      }
+      lila
+        .mon
+        .fishnet
+        .queue
+        .db(work.skill.key) {
+          acquiredAt.getMillis - work.createdAt.getMillis
+        }
     }
   }
 
   private[fishnet] def failure(work: Work, client: Client) = {
     logger.warn(s"Received invalid ${work.skill} by ${client.fullId}")
-    lila.mon.fishnet.client
+    lila
+      .mon
+      .fishnet
+      .client
       .result(client.userId.value, work.skill.key)
       .failure()
   }
 
   private[fishnet] def timeout(work: Work, client: Client) =
-    lila.mon.fishnet.client
+    lila
+      .mon
+      .fishnet
+      .client
       .result(client.userId.value, work.skill.key)
       .timeout()
 
@@ -125,7 +141,10 @@ private final class Monitor(
 
   private[fishnet] def notFound(skill: Client.Skill, client: Client) = {
     logger.info(s"Received unknown $skill by ${client.fullId}")
-    lila.mon.fishnet.client
+    lila
+      .mon
+      .fishnet
+      .client
       .result(client.userId.value, client.skill.key)
       .notFound()
   }
@@ -133,7 +152,10 @@ private final class Monitor(
   private[fishnet] def notAcquired(work: Work, client: Client) = {
     logger.info(
       s"Received unacquired ${work.skill} by ${client.fullId}. Work current tries: ${work.tries} acquired: ${work.acquired}")
-    lila.mon.fishnet.client
+    lila
+      .mon
+      .fishnet
+      .client
       .result(client.userId.value, work.skill.key)
       .notAcquired()
   }
@@ -177,12 +199,16 @@ private final class Monitor(
     queued(Move.key)(moveDb.count(_.nonAcquired))
     acquired(Move.key)(moveDb.count(_.isAcquired))
 
-    repo.countAnalysis(acquired = false).map {
-      queued(Analysis.key)(_)
-    } >>
-      repo.countAnalysis(acquired = true).map {
-        acquired(Analysis.key)(_)
-      }
+    repo
+      .countAnalysis(acquired = false)
+      .map {
+        queued(Analysis.key)(_)
+      } >>
+      repo
+        .countAnalysis(acquired = true)
+        .map {
+          acquired(Analysis.key)(_)
+        }
 
   } andThenAnyway scheduleWork
 

@@ -95,7 +95,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
   private def addressToProto(address: Address): cm.Address.Builder =
     address match {
       case Address(protocol, actorSystem, Some(host), Some(port)) ⇒
-        cm.Address
+        cm
+          .Address
           .newBuilder()
           .setSystem(actorSystem)
           .setHostname(host)
@@ -205,7 +206,9 @@ class MessageSerializer(val system: ExtendedActorSystem)
     }
 
     def metricToProto(metric: Metric): cm.NodeMetrics.Metric.Builder = {
-      val builder = cm.NodeMetrics.Metric
+      val builder = cm
+        .NodeMetrics
+        .Metric
         .newBuilder()
         .setNameIndex(mapName(metric.name))
         .setNumber(numberToProto(metric.value))
@@ -213,20 +216,23 @@ class MessageSerializer(val system: ExtendedActorSystem)
     }
 
     def nodeMetricsToProto(nodeMetrics: NodeMetrics): cm.NodeMetrics.Builder =
-      cm.NodeMetrics
+      cm
+        .NodeMetrics
         .newBuilder()
         .setAddressIndex(mapAddress(nodeMetrics.address))
         .setTimestamp(nodeMetrics.timestamp)
         .addAllMetrics(nodeMetrics.metrics.map(metricToProto(_).build).asJava)
 
-    val nodeMetrics: Iterable[cm.NodeMetrics] = allNodeMetrics.map(
-      nodeMetricsToProto(_).build)
+    val nodeMetrics: Iterable[cm.NodeMetrics] = allNodeMetrics
+      .map(nodeMetricsToProto(_).build)
 
-    cm.MetricsGossipEnvelope
+    cm
+      .MetricsGossipEnvelope
       .newBuilder()
       .setFrom(addressToProto(envelope.from))
       .setGossip(
-        cm.MetricsGossip
+        cm
+          .MetricsGossip
           .newBuilder()
           .addAllAllAddresses(
             allAddresses.map(addressToProto(_).build()).asJava)

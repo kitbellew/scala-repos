@@ -45,13 +45,14 @@ object ExecutionTestJobs {
       .writeExecution(TypedTsv(out))
 
   def wordCount2(in: TypedPipe[String]) =
-    in.flatMap(_.split("\\s+"))
-      .map((_, 1L))
-      .sumByKey
-      .toIterableExecution
+    in.flatMap(_.split("\\s+")).map((_, 1L)).sumByKey.toIterableExecution
 
   def zipped(in1: TypedPipe[Int], in2: TypedPipe[Int]) =
-    in1.groupAll.sum.values.toIterableExecution
+    in1
+      .groupAll
+      .sum
+      .values
+      .toIterableExecution
       .zip(in2.groupAll.sum.values.toIterableExecution)
 
   def mergeFanout(in: List[Int]): Execution[Iterable[(Int, Int)]] = {
@@ -161,30 +162,33 @@ class ExecutionTest extends WordSpec with Matchers {
           })
         .shouldFail()
       // If both are good, we succeed:
-      Execution
-        .from(1)
-        .zip(Execution.from("1"))
-        .shouldSucceed() shouldBe (1, "1")
+      Execution.from(1).zip(Execution.from("1")).shouldSucceed() shouldBe (
+        1, "1"
+      )
     }
 
     "Config transformer will isolate Configs" in {
       def doesNotHaveVariable(message: String) =
-        Execution.getConfig.flatMap { cfg =>
-          if (cfg.get("test.cfg.variable").isDefined)
-            Execution.failed(
-              new Exception(
-                s"${message}\n: var: ${cfg.get("test.cfg.variable")}"))
+        Execution
+          .getConfig
+          .flatMap { cfg =>
+            if (cfg.get("test.cfg.variable").isDefined)
+              Execution.failed(
+                new Exception(
+                  s"${message}\n: var: ${cfg.get("test.cfg.variable")}"))
+            else
+              Execution.from(())
+          }
+
+      val hasVariable = Execution
+        .getConfig
+        .flatMap { cfg =>
+          if (cfg.get("test.cfg.variable").isEmpty)
+            Execution
+              .failed(new Exception("Should see variable inside of transform"))
           else
             Execution.from(())
         }
-
-      val hasVariable = Execution.getConfig.flatMap { cfg =>
-        if (cfg.get("test.cfg.variable").isEmpty)
-          Execution.failed(
-            new Exception("Should see variable inside of transform"))
-        else
-          Execution.from(())
-      }
 
       def addOption(cfg: Config) = cfg.+("test.cfg.variable", "dummyValue")
 
@@ -204,12 +208,14 @@ class ExecutionTest extends WordSpec with Matchers {
       var incrementIfDefined = 0
       var totalEvals = 0
 
-      val incrementor = Execution.getConfig.flatMap { cfg =>
-        totalEvals += 1
-        if (cfg.get("test.cfg.variable").isDefined)
-          incrementIfDefined += 1
-        Execution.from(())
-      }
+      val incrementor = Execution
+        .getConfig
+        .flatMap { cfg =>
+          totalEvals += 1
+          if (cfg.get("test.cfg.variable").isDefined)
+            incrementIfDefined += 1
+          Execution.from(())
+        }
 
       def addOption(cfg: Config) = cfg.+("test.cfg.variable", "dummyValue")
 
@@ -245,9 +251,10 @@ class ExecutionTest extends WordSpec with Matchers {
       val sink = TypedTsv[Int](sinkF)
       val src = TypedTsv[Int](srcF)
       val operationTP =
-        (
-          TypedPipe.from(src) ++ TypedPipe.from((1 until 100).toList)
-        ).writeExecution(sink).getCounters.map(_._2.toMap)
+        (TypedPipe.from(src) ++ TypedPipe.from((1 until 100).toList))
+          .writeExecution(sink)
+          .getCounters
+          .map(_._2.toMap)
 
       def addOption(cfg: Config) = cfg.+("test.cfg.variable", "dummyValue")
 
@@ -255,9 +262,11 @@ class ExecutionTest extends WordSpec with Matchers {
       val (oldCounters, newCounters) = operationTP
         .flatMap { oc =>
           writeNums(List(1, 2, 3, 4, 5, 6, 7))
-          Execution.withConfig(operationTP)(addOption).map { nc =>
-            (oc, nc)
-          }
+          Execution
+            .withConfig(operationTP)(addOption)
+            .map { nc =>
+              (oc, nc)
+            }
         }
         .shouldSucceed()
 
@@ -278,8 +287,8 @@ class ExecutionTest extends WordSpec with Matchers {
       conf.get("mapred.reduce.tasks") should contain("100")
       conf.getArgs.boolean("local") shouldBe true
 
-      val (conf1, Hdfs(_, hconf)) = parser.config(
-        Array("--test", "-Dmapred.reduce.tasks=110", "--hdfs"))
+      val (conf1, Hdfs(_, hconf)) = parser
+        .config(Array("--test", "-Dmapred.reduce.tasks=110", "--hdfs"))
       conf1.get("mapred.reduce.tasks") should contain("110")
       conf1.getArgs.boolean("test") shouldBe true
       hconf.get("mapred.reduce.tasks") shouldBe "110"
@@ -292,10 +301,8 @@ class ExecutionTest extends WordSpec with Matchers {
         .arg("output", "out")
         .source(TextLine("in"), List((0, "hello world"), (1, "goodbye world")))
         .typedSink(TypedTsv[(String, Long)]("out")) { outBuf =>
-          outBuf.toMap shouldBe Map(
-            "hello" -> 1L,
-            "world" -> 2L,
-            "goodbye" -> 1L)
+          outBuf
+            .toMap shouldBe Map("hello" -> 1L, "world" -> 2L, "goodbye" -> 1L)
         }
         .run
         .runHadoop
@@ -427,13 +434,17 @@ class ExecutionTest extends WordSpec with Matchers {
           .fork
 
       val fde1 =
-        baseTp.map {
-          _ * 3
-        }.forceToDiskExecution
+        baseTp
+          .map {
+            _ * 3
+          }
+          .forceToDiskExecution
       val fde2 =
-        baseTp.map {
-          _ * 5
-        }.forceToDiskExecution
+        baseTp
+          .map {
+            _ * 5
+          }
+          .forceToDiskExecution
 
       val res = fde1.zip(fde2)
 
@@ -456,13 +467,17 @@ class ExecutionTest extends WordSpec with Matchers {
           .fork
 
       val fde1 =
-        baseTp.map {
-          _ * 3
-        }.forceToDiskExecution
+        baseTp
+          .map {
+            _ * 3
+          }
+          .forceToDiskExecution
       val fde2 =
-        baseTp.map {
-          _ * 5
-        }.forceToDiskExecution
+        baseTp
+          .map {
+            _ * 5
+          }
+          .forceToDiskExecution
 
       val res = fde1
         .zip(fde2)
@@ -481,9 +496,11 @@ class ExecutionTest extends WordSpec with Matchers {
 
       def memoryWastingExecutionGenerator(id: Int): Execution[Array[Long]] =
         Execution.withNewCache(
-          Execution.from(id).flatMap { idx =>
-            Execution.from(Array.fill(4000000)(idx.toLong))
-          })
+          Execution
+            .from(id)
+            .flatMap { idx =>
+              Execution.from(Array.fill(4000000)(idx.toLong))
+            })
 
       def writeAll(numExecutions: Int): Execution[Unit] = {
         if (numExecutions > 0) {
@@ -498,9 +515,8 @@ class ExecutionTest extends WordSpec with Matchers {
       writeAll(400).shouldSucceed()
     }
     "handle failure" in {
-      val result = Execution.withParallelism(
-        Seq(Execution.failed(new Exception("failed"))),
-        1)
+      val result = Execution
+        .withParallelism(Seq(Execution.failed(new Exception("failed"))), 1)
 
       assert(result.waitFor(Config.default, Local(true)).isFailure)
     }
@@ -532,7 +548,8 @@ class ExecutionTest extends WordSpec with Matchers {
       }
 
       val executions =
-        0.to(10)
+        0
+          .to(10)
           .map { i =>
             Execution
               .from[Int](i)

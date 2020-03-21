@@ -35,7 +35,8 @@ object ModelSelectionViaTrainValidationSplitExample {
 
     // $example on$
     // Prepare training and test data.
-    val data = sqlContext.read
+    val data = sqlContext
+      .read
       .format("libsvm")
       .load("data/mllib/sample_linear_regression_data.txt")
     val Array(training, test) = data.randomSplit(Array(0.9, 0.1), seed = 12345)
@@ -65,10 +66,7 @@ object ModelSelectionViaTrainValidationSplitExample {
 
     // Make predictions on test data. model is the model with combination of parameters
     // that performed best.
-    model
-      .transform(test)
-      .select("features", "label", "prediction")
-      .show()
+    model.transform(test).select("features", "label", "prediction").show()
     // $example off$
 
     sc.stop()

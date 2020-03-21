@@ -154,9 +154,8 @@ abstract class Duplicators extends Analyzer {
 
     private def invalidate(tree: Tree, owner: Symbol = NoSymbol) {
       debuglog(s"attempting to invalidate symbol = ${tree.symbol}")
-      if ((
-            tree.isDef || tree.isInstanceOf[Function]
-          ) && tree.symbol != NoSymbol) {
+      if ((tree.isDef || tree.isInstanceOf[Function]) && tree
+            .symbol != NoSymbol) {
         debuglog("invalid " + tree.symbol)
         invalidSyms(tree.symbol) = tree
 
@@ -178,7 +177,9 @@ abstract class Duplicators extends Analyzer {
             newsym.setInfo(fixType(vdef.symbol.info))
             vdef.symbol = newsym
             debuglog(
-              "newsym: " + newsym + " info: " + newsym.info + ", owner: " + newsym.owner + ", " + newsym.owner.isClass)
+              "newsym: " + newsym + " info: " + newsym
+                .info + ", owner: " + newsym
+                .owner + ", " + newsym.owner.isClass)
             if (newsym.owner.isClass)
               newsym.owner.info.decls enter newsym
 
@@ -305,7 +306,8 @@ abstract class Duplicators extends Analyzer {
 
         case Ident(_) if (origtreesym ne null) && origtreesym.isLazy =>
           debuglog(
-            "Ident to a lazy val " + tree + ", " + tree.symbol + " updated to " + origtreesym)
+            "Ident to a lazy val " + tree + ", " + tree
+              .symbol + " updated to " + origtreesym)
           tree.symbol = updateSym(origtreesym)
           super.typed(tree.clearType(), mode, pt)
 

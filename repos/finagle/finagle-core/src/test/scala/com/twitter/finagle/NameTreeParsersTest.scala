@@ -49,8 +49,8 @@ class NameTreeParsersTest extends FunSuite with AssertionsForJUnit {
       NameTreeParsers.parseNameTree("! | ~ | $") == NameTree
         .Alt(NameTree.Fail, NameTree.Neg, NameTree.Empty))
     assert(
-      NameTreeParsers.parseNameTree("/foo/bar") == NameTree.Leaf(
-        Path.Utf8("foo", "bar")))
+      NameTreeParsers.parseNameTree("/foo/bar") == NameTree
+        .Leaf(Path.Utf8("foo", "bar")))
     assert(
       NameTreeParsers.parseNameTree("  /foo & /bar  ") ==
         NameTree.Union(
@@ -73,8 +73,8 @@ class NameTreeParsersTest extends FunSuite with AssertionsForJUnit {
         ))
 
     assert(
-      NameTreeParsers.parseNameTree(
-        "1 * /foo & 2 * /bar | .5 * /bar & .5 * /baz") ==
+      NameTreeParsers
+        .parseNameTree("1 * /foo & 2 * /bar | .5 * /bar & .5 * /baz") ==
         NameTree.Alt(
           NameTree.Union(
             NameTree.Weighted(1d, NameTree.Leaf(Path.Utf8("foo"))),

@@ -70,7 +70,8 @@ object ObservableIntegerArray
   * @define ARY `Array`
   */
 class ObservableIntegerArray(
-    delegate: jfxc.ObservableIntegerArray = jfxc.FXCollections
+    delegate: jfxc.ObservableIntegerArray = jfxc
+      .FXCollections
       .observableIntegerArray())
     extends ObservableArray[
       Int,

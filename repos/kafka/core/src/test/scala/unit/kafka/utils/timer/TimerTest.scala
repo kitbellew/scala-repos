@@ -79,12 +79,14 @@ class TimerTest {
       latch
     }
 
-    latches.take(5).foreach { latch =>
-      assertEquals(
-        "already expired tasks should run immediately",
-        true,
-        latch.await(3, TimeUnit.SECONDS))
-    }
+    latches
+      .take(5)
+      .foreach { latch =>
+        assertEquals(
+          "already expired tasks should run immediately",
+          true,
+          latch.await(3, TimeUnit.SECONDS))
+      }
 
     assertEquals(
       "output of already expired tasks",
@@ -127,9 +129,11 @@ class TimerTest {
       }
 
     // randomly submit requests
-    Random.shuffle(tasks.toSeq).foreach { task =>
-      timer.add(task)
-    }
+    Random
+      .shuffle(tasks.toSeq)
+      .foreach { task =>
+        timer.add(task)
+      }
 
     while (timer.advanceClock(1000)) {}
 

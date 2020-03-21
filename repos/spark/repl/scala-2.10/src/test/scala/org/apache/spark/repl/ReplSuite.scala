@@ -214,9 +214,11 @@ class ReplSuite extends SparkFunSuite {
         |file.count()
         |file.count()
         |file.count()
-      """.stripMargin.format(
-        StringEscapeUtils.escapeJava(
-          tempDir.getAbsolutePath + File.separator + "input"))
+      """
+        .stripMargin
+        .format(
+          StringEscapeUtils
+            .escapeJava(tempDir.getAbsolutePath + File.separator + "input"))
     )
     assertDoesNotContain("error:", output)
     assertDoesNotContain("Exception", output)

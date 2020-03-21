@@ -142,13 +142,16 @@ trait MultiNodeClusterSpec
 
   def muteMarkingAsUnreachable(sys: ActorSystem = system): Unit =
     if (!sys.log.isDebugEnabled)
-      sys.eventStream.publish(
-        Mute(EventFilter.error(pattern = ".*Marking.* as UNREACHABLE.*")))
+      sys
+        .eventStream
+        .publish(
+          Mute(EventFilter.error(pattern = ".*Marking.* as UNREACHABLE.*")))
 
   def muteMarkingAsReachable(sys: ActorSystem = system): Unit =
     if (!sys.log.isDebugEnabled)
-      sys.eventStream.publish(
-        Mute(EventFilter.info(pattern = ".*Marking.* as REACHABLE.*")))
+      sys
+        .eventStream
+        .publish(Mute(EventFilter.info(pattern = ".*Marking.* as REACHABLE.*")))
 
   override def afterAll(): Unit = {
     if (!log.isDebugEnabled) {
@@ -241,9 +244,11 @@ trait MultiNodeClusterSpec
       max: Duration = remainingOrDefault,
       interval: Duration = 1.second): Unit = {
     def memberInState(member: Address, status: Seq[MemberStatus]): Boolean =
-      clusterView.members.exists { m ⇒
-        (m.address == member) && status.contains(m.status)
-      }
+      clusterView
+        .members
+        .exists { m ⇒
+          (m.address == member) && status.contains(m.status)
+        }
 
     cluster join joinNode
     awaitCond(
@@ -272,10 +277,13 @@ trait MultiNodeClusterSpec
     import Member.addressOrdering
     val members = gotMembers.toIndexedSeq
     members.size should ===(expectedAddresses.length)
-    expectedAddresses.sorted.zipWithIndex.foreach {
-      case (a, i) ⇒
-        members(i).address should ===(a)
-    }
+    expectedAddresses
+      .sorted
+      .zipWithIndex
+      .foreach {
+        case (a, i) ⇒
+          members(i).address should ===(a)
+      }
   }
 
   /**
@@ -310,9 +318,8 @@ trait MultiNodeClusterSpec
         isLeader == isNode(expectedLeader),
         "expectedLeader [%s], got leader [%s], members [%s]"
           .format(expectedLeader, leader, clusterView.members))
-      clusterView.status should (
-        be(MemberStatus.Up) or be(MemberStatus.Leaving)
-      )
+      clusterView
+        .status should (be(MemberStatus.Up) or be(MemberStatus.Leaving))
     }
 
   /**

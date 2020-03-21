@@ -68,8 +68,10 @@ object LocalKMeans {
   }
 
   def showWarning() {
-    System.err.println(
-      """WARN: This is a naive implementation of KMeans Clustering and is given as an example!
+    System
+      .err
+      .println(
+        """WARN: This is a naive implementation of KMeans Clustering and is given as an example!
         |Please use the KMeans method found in org.apache.spark.mllib.clustering
         |for more conventional use.
       """.stripMargin)
@@ -101,10 +103,12 @@ object LocalKMeans {
       var mappings = closest.groupBy[Int](x => x._1)
 
       var pointStats = mappings.map { pair =>
-        pair._2.reduceLeft[(Int, (Vector[Double], Int))] {
-          case ((id1, (p1, c1)), (id2, (p2, c2))) =>
-            (id1, (p1 + p2, c1 + c2))
-        }
+        pair
+          ._2
+          .reduceLeft[(Int, (Vector[Double], Int))] {
+            case ((id1, (p1, c1)), (id2, (p2, c2))) =>
+              (id1, (p1 + p2, c1 + c2))
+          }
       }
 
       var newPoints = pointStats.map { mapping =>

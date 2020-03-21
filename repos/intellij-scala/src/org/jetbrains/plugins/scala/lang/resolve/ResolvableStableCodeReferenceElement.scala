@@ -84,9 +84,8 @@ trait ResolvableStableCodeReferenceElement
       Array.empty,
       ModCount.getBlockModificationCount)
     def doResolve(incomplete: Boolean): Array[ResolveResult] =
-      ImportResolverNoMethods.resolve(
-        ResolvableStableCodeReferenceElement.this,
-        incomplete)
+      ImportResolverNoMethods
+        .resolve(ResolvableStableCodeReferenceElement.this, incomplete)
 
     resolveWithCompiled(incomplete, ImportResolverNoMethods, doResolve)
   }
@@ -98,9 +97,8 @@ trait ResolvableStableCodeReferenceElement
       Array.empty,
       ModCount.getBlockModificationCount)
     def doResolve(incomplete: Boolean): Array[ResolveResult] =
-      ImportResolverNoTypes.resolve(
-        ResolvableStableCodeReferenceElement.this,
-        incomplete)
+      ImportResolverNoTypes
+        .resolve(ResolvableStableCodeReferenceElement.this, incomplete)
 
     resolveWithCompiled(incomplete, ImportResolverNoTypes, doResolve)
   }
@@ -220,11 +218,13 @@ trait ResolvableStableCodeReferenceElement
           null,
           ResolvableStableCodeReferenceElement.this)
       case other: ScalaResolveResult =>
-        other.element.processDeclarations(
-          processor,
-          ResolveState.initial.put(ScSubstitutor.key, other.substitutor),
-          null,
-          ResolvableStableCodeReferenceElement.this)
+        other
+          .element
+          .processDeclarations(
+            processor,
+            ResolveState.initial.put(ScSubstitutor.key, other.substitutor),
+            null,
+            ResolvableStableCodeReferenceElement.this)
       case _ =>
     }
   }
@@ -233,30 +233,31 @@ trait ResolvableStableCodeReferenceElement
       ref: ScStableCodeReferenceElement,
       processor: BaseProcessor,
       accessibilityCheck: Boolean = true): Array[ResolveResult] = {
-    val importStmt = PsiTreeUtil.getContextOfType(
-      ref,
-      true,
-      classOf[ScImportStmt])
+    val importStmt = PsiTreeUtil
+      .getContextOfType(ref, true, classOf[ScImportStmt])
 
     if (importStmt != null) {
-      val importHolder = PsiTreeUtil.getContextOfType(
-        importStmt,
-        true,
-        classOf[ScImportsHolder])
+      val importHolder = PsiTreeUtil
+        .getContextOfType(importStmt, true, classOf[ScImportsHolder])
       if (importHolder != null) {
-        importHolder.getImportStatements.takeWhile(_ != importStmt).foreach {
-          case stmt: ScImportStmt =>
-            stmt.importExprs.foreach {
-              case expr: ScImportExpr if expr.singleWildcard =>
-                expr.reference match {
-                  case Some(reference) =>
-                    reference.resolve()
-                  case None =>
-                    expr.qualifier.resolve()
+        importHolder
+          .getImportStatements
+          .takeWhile(_ != importStmt)
+          .foreach {
+            case stmt: ScImportStmt =>
+              stmt
+                .importExprs
+                .foreach {
+                  case expr: ScImportExpr if expr.singleWildcard =>
+                    expr.reference match {
+                      case Some(reference) =>
+                        reference.resolve()
+                      case None =>
+                        expr.qualifier.resolve()
+                    }
+                  case _ =>
                 }
-              case _ =>
-            }
-        }
+          }
       }
     }
     if (!accessibilityCheck)
@@ -269,7 +270,8 @@ trait ResolvableStableCodeReferenceElement
         //todo: improve checking for this and super
         val refText: String = ref.getText
         if (!refText.contains("this") && !refText.contains("super") && (
-              refText.contains(".") || ref.getContext
+              refText.contains(".") || ref
+                .getContext
                 .isInstanceOf[ScStableCodeReferenceElement]
             )) {
           //so this is full qualified reference => findClass, or findPackage
@@ -343,7 +345,8 @@ trait ResolvableStableCodeReferenceElement
           case _ =>
         }
       case Some(q: ScDocResolvableCodeReference) =>
-        q.multiResolve(incomplete = true)
+        q
+          .multiResolve(incomplete = true)
           .foreach(processQualifierResolveResult(_, processor, ref))
       case Some(q: ScStableCodeReferenceElement) =>
         q.bind() match {
@@ -366,9 +369,7 @@ trait ResolvableStableCodeReferenceElement
       case p: ScInterpolationPattern =>
         Some(p)
       case sel: ScImportSelector =>
-        sel.getContext /*ScImportSelectors*/ .getContext
-          .asInstanceOf[ScImportExpr]
-          .reference
+        sel.getContext /*ScImportSelectors*/ .getContext.asInstanceOf[ScImportExpr].reference
       case _ =>
         pathQualifier
     }
@@ -382,10 +383,8 @@ trait ResolvableStableCodeReferenceElement
             true // scala classes are available from default package
           // Other classes from default package are available only for top-level Scala statements
           case _ =>
-            PsiTreeUtil.getContextOfType(
-              this,
-              true,
-              classOf[ScPackaging]) == null
+            PsiTreeUtil
+              .getContextOfType(this, true, classOf[ScPackaging]) == null
         }
       case _ =>
         true

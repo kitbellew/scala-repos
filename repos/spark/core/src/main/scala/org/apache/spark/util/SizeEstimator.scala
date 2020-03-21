@@ -151,17 +151,14 @@ object SizeEstimator extends Logging {
 
       // NOTE: This should throw an exception in non-Sun JVMs
       // scalastyle:off classforname
-      val hotSpotMBeanClass = Class.forName(
-        "com.sun.management.HotSpotDiagnosticMXBean")
-      val getVMMethod = hotSpotMBeanClass.getDeclaredMethod(
-        "getVMOption",
-        Class.forName("java.lang.String"))
+      val hotSpotMBeanClass = Class
+        .forName("com.sun.management.HotSpotDiagnosticMXBean")
+      val getVMMethod = hotSpotMBeanClass
+        .getDeclaredMethod("getVMOption", Class.forName("java.lang.String"))
       // scalastyle:on classforname
 
-      val bean = ManagementFactory.newPlatformMXBeanProxy(
-        server,
-        hotSpotMBeanName,
-        hotSpotMBeanClass)
+      val bean = ManagementFactory
+        .newPlatformMXBeanProxy(server, hotSpotMBeanName, hotSpotMBeanClass)
       // TODO: We could use reflection on the VMOption returned ?
       getVMMethod.invoke(bean, "UseCompressedOops").toString.contains("true")
     } catch {
@@ -385,9 +382,8 @@ object SizeEstimator extends Logging {
     for (size <- fieldSizes if sizeCount(size) > 0) {
       val count = sizeCount(size).toLong
       // If there are internal gaps, smaller field can fit in.
-      alignedSize = math.max(
-        alignedSize,
-        alignSizeUp(shellSize, size) + size * count)
+      alignedSize = math
+        .max(alignedSize, alignSizeUp(shellSize, size) + size * count)
       shellSize += size * count
     }
 

@@ -130,8 +130,8 @@ private object PoolSlot {
       .via(connectionFlow)
       .toMat(
         Sink.actorSubscriber[HttpResponse](
-          Props(new FlowOutportActor(self)).withDeploy(Deploy.local)))(
-        Keep.both)
+          Props(new FlowOutportActor(self))
+            .withDeploy(Deploy.local)))(Keep.both)
       .named("SlotProcessorInternalConnectionFlow")
 
     override def requestStrategy = ZeroRequestStrategy
@@ -158,8 +158,8 @@ private object PoolSlot {
       case OnNext(rc: RequestContext) ⇒
         val (connInport, connOutport) = runnableGraph.run()
         connOutport ! Request(totalDemand)
-        context.become(
-          waitingForDemandFromConnection(connInport, connOutport, rc))
+        context
+          .become(waitingForDemandFromConnection(connInport, connOutport, rc))
 
       case Request(_) ⇒
         if (remainingRequested == 0)
@@ -226,8 +226,8 @@ private object PoolSlot {
       case FromConnection(OnNext(response: HttpResponse)) ⇒
         val requestContext = inflightRequests.head
         inflightRequests = inflightRequests.tail
-        val (entity, whenCompleted) = HttpEntity.captureTermination(
-          response.entity)
+        val (entity, whenCompleted) = HttpEntity
+          .captureTermination(response.entity)
         val delivery = ResponseDelivery(
           ResponseContext(requestContext, Success(response withEntity entity)))
         import fm.executionContext

@@ -87,7 +87,8 @@ case class SkewReplicationB(
         reducers
 
     val left = scala.math.max(1, rightCount / maxKeysInMemory)
-    val right = scala.math
+    val right = scala
+      .math
       .min(numReducers, (leftCount * rightCount) / (maxReducerOutput * left))
 
     (

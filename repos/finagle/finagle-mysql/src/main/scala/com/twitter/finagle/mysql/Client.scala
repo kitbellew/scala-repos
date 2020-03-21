@@ -34,7 +34,12 @@ object Client {
       dbname: String = null,
       logLevel: Level = Level.OFF,
       statsReceiver: StatsReceiver = NullStatsReceiver): Client = {
-    val factory = com.twitter.finagle.exp.Mysql.client
+    val factory = com
+      .twitter
+      .finagle
+      .exp
+      .Mysql
+      .client
       .withCredentials(username, password)
       .withDatabase(dbname)
       .newClient(host)
@@ -127,8 +132,7 @@ private[mysql] class StdClient(factory: ServiceFactory[Request, Result])
             case r =>
               Future.exception(
                 new Exception(
-                  "Unexpected result %s when preparing %s"
-                    .format(r, sql)))
+                  "Unexpected result %s when preparing %s".format(r, sql)))
           } ensure {
             svc.close()
           }

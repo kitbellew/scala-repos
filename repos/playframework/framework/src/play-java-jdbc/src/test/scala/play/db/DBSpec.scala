@@ -14,7 +14,8 @@ object DBSpec extends org.specs2.mutable.Specification {
     "execute block with default connection" in {
       val id = s"withConnection-${System.identityHashCode(this)}"
 
-      DB.withConnection(callable(id), fakeApp)
+      DB
+        .withConnection(callable(id), fakeApp)
         .aka("connection block result") must_== id
 
     }
@@ -22,7 +23,8 @@ object DBSpec extends org.specs2.mutable.Specification {
     "execute block with connection from specified datasource" in {
       val id = s"withConnection-${System.identityHashCode(this)}"
 
-      DB.withConnection("default", callable(id), fakeApp)
+      DB
+        .withConnection("default", callable(id), fakeApp)
         .aka("connection block result") must_== id
 
     }
@@ -30,7 +32,8 @@ object DBSpec extends org.specs2.mutable.Specification {
     "execute block with transaction for default connection" in {
       val id = s"withConnection-${System.identityHashCode(this)}"
 
-      DB.withTransaction(callable(id), fakeApp)
+      DB
+        .withTransaction(callable(id), fakeApp)
         .aka("transaction block result") must_== id
 
     }
@@ -38,7 +41,8 @@ object DBSpec extends org.specs2.mutable.Specification {
     "execute block with transaction from specified datasource" in {
       val id = s"withConnection-${System.identityHashCode(this)}"
 
-      DB.withTransaction("default", callable(id), fakeApp)
+      DB
+        .withTransaction("default", callable(id), fakeApp)
         .aka("connection block result") must_== id
 
     }

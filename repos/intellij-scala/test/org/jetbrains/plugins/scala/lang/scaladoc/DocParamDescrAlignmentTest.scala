@@ -14,9 +14,8 @@ class DocParamDescrAlignmentTest extends ScalaDocEnterActionTestBase {
   def testSimpleAlignment() {
     val header = "/**\n *" + docParamText + "blah-blah "
     val testText = "\n */"
-    val stub = "/**\n * @param i blah-blah\n *" + StringUtil.repeat(
-      " ",
-      docParamText.length) + testText
+    val stub = "/**\n * @param i blah-blah\n *" + StringUtil
+      .repeat(" ", docParamText.length) + testText
 
     checkGeneratedTextFromString(header, testText, stub)
   }
@@ -25,9 +24,8 @@ class DocParamDescrAlignmentTest extends ScalaDocEnterActionTestBase {
     val spaces = StringUtil.repeat(" ", 10)
     val header = "/**\n *" + docParamText + " " + spaces
     val testText = "\n */"
-    val stub = "/**\n *" + docParamText + spaces + "\n *" + StringUtil.repeat(
-      " ",
-      docParamText.length) + testText
+    val stub = "/**\n *" + docParamText + spaces + "\n *" + StringUtil
+      .repeat(" ", docParamText.length) + testText
 
     checkGeneratedTextFromString(header, testText, stub)
   }
@@ -46,9 +44,8 @@ class DocParamDescrAlignmentTest extends ScalaDocEnterActionTestBase {
   def testEnterWithCar() {
     val header = "/**\n *" + docParamText + "blah  "
     val testText = "\n */"
-    val stub = "/**\n *" + docParamText + "blah \n *" + StringUtil.repeat(
-      " ",
-      docParamText.length) + testText
+    val stub = "/**\n *" + docParamText + "blah \n *" + StringUtil
+      .repeat(" ", docParamText.length) + testText
 
     checkGeneratedTextFromString(header, testText, stub)
   }
@@ -56,9 +53,8 @@ class DocParamDescrAlignmentTest extends ScalaDocEnterActionTestBase {
   def testEnterWithInvalidParam() {
     val header = "/**\n * @param    "
     val testText = "\n */"
-    val stub = "/**\n * @param   \n *" + StringUtil.repeat(
-      " ",
-      " @param".length) + testText
+    val stub = "/**\n * @param   \n *" + StringUtil
+      .repeat(" ", " @param".length) + testText
 
     checkGeneratedTextFromString(header, testText, stub)
   }

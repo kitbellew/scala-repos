@@ -53,15 +53,17 @@ class RetryBudgetTest extends FunSuite with Matchers {
         // use a decent sized number so we see less effects from fractions
         val nReqs = 10000
         var retried = 0
-        0.until(nReqs).foreach { i =>
-          withClue(s"request $i:") {
-            rb.deposit()
-            if (rb.tryWithdraw())
-              retried += 1
-            else
-              assert(0 == rb.balance)
+        0
+          .until(nReqs)
+          .foreach { i =>
+            withClue(s"request $i:") {
+              rb.deposit()
+              if (rb.tryWithdraw())
+                retried += 1
+              else
+                assert(0 == rb.balance)
+            }
           }
-        }
 
         // because TokenRetryBudget.ScaleFactor doesn't give us
         // perfect precision, we give ourselves a small error margin.
@@ -129,9 +131,11 @@ class RetryBudgetTest extends FunSuite with Matchers {
     assert(!rb.tryWithdraw())
 
     val nReqs = 10000
-    0.until(nReqs).foreach { _ =>
-      rb.deposit()
-    }
+    0
+      .until(nReqs)
+      .foreach { _ =>
+        rb.deposit()
+      }
 
     val expectedRetries = (nReqs * percent).toInt
     assert(expectedRetries == rb.balance)

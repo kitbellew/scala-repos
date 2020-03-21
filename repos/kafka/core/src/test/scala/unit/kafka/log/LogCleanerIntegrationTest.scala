@@ -67,7 +67,9 @@ class LogCleanerIntegrationTest(compressionCodec: String) {
     cleaner.awaitCleaned("log", 0, firstDirty)
     val compactedSize = log.logSegments.map(_.size).sum
     val lastCleaned =
-      cleaner.cleanerManager.allCleanerCheckpoints
+      cleaner
+        .cleanerManager
+        .allCleanerCheckpoints
         .get(TopicAndPartition("log", 0))
         .get
     assertTrue(
@@ -94,7 +96,9 @@ class LogCleanerIntegrationTest(compressionCodec: String) {
     cleaner.awaitCleaned("log", 0, firstDirty2)
 
     val lastCleaned2 =
-      cleaner.cleanerManager.allCleanerCheckpoints
+      cleaner
+        .cleanerManager
+        .allCleanerCheckpoints
         .get(TopicAndPartition("log", 0))
         .get
     assertTrue(
@@ -181,12 +185,10 @@ class LogCleanerIntegrationTest(compressionCodec: String) {
       dir.mkdirs()
       val logProps = new Properties()
       logProps.put(LogConfig.SegmentBytesProp, segmentSize: java.lang.Integer)
-      logProps.put(
-        LogConfig.SegmentIndexBytesProp,
-        100 * 1024: java.lang.Integer)
-      logProps.put(
-        LogConfig.FileDeleteDelayMsProp,
-        deleteDelay: java.lang.Integer)
+      logProps
+        .put(LogConfig.SegmentIndexBytesProp, 100 * 1024: java.lang.Integer)
+      logProps
+        .put(LogConfig.FileDeleteDelayMsProp, deleteDelay: java.lang.Integer)
       logProps.put(LogConfig.CleanupPolicyProp, LogConfig.Compact)
       logProps.put(
         LogConfig.MinCleanableDirtyRatioProp,

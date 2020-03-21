@@ -51,8 +51,8 @@ object BlockStat {
             return true
           }
         }
-      case ScalaTokenTypes.kCLASS | ScalaTokenTypes.kTRAIT |
-          ScalaTokenTypes.kOBJECT =>
+      case ScalaTokenTypes.kCLASS | ScalaTokenTypes.kTRAIT | ScalaTokenTypes
+            .kOBJECT =>
         return TmplDef.parse(builder)
       case _ if patcher.parse(builder) =>
         parse(builder)

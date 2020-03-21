@@ -33,10 +33,8 @@ object BasicHttpClient {
       var requestNo = 0
       val responses = requests.flatMap { request =>
         requestNo += 1
-        client.sendRequest(
-          request,
-          requestNo.toString,
-          trickleFeed = trickleFeed)
+        client
+          .sendRequest(request, requestNo.toString, trickleFeed = trickleFeed)
       }
 
       if (checkClosed) {
@@ -68,10 +66,8 @@ object BasicHttpClient {
       var requestNo = 0
       requests.foreach { request =>
         requestNo += 1
-        client.sendRequest(
-          request,
-          requestNo.toString,
-          waitForResponses = false)
+        client
+          .sendRequest(request, requestNo.toString, waitForResponses = false)
       }
       for (i <- 0 until requests.length)
         yield {
@@ -106,20 +102,25 @@ class BasicHttpClient(port: Int) {
       trickleFeed: Option[Long] = None): Seq[BasicResponse] = {
     out.write(s"${request.method} ${request.uri} ${request.version}\r\n")
     out.write("Host: localhost\r\n")
-    request.headers.foreach { header =>
-      out.write(s"${header._1}: ${header._2}\r\n")
-    }
+    request
+      .headers
+      .foreach { header =>
+        out.write(s"${header._1}: ${header._2}\r\n")
+      }
     out.write("\r\n")
 
     def writeBody() = {
       if (request.body.length > 0) {
         trickleFeed match {
           case Some(timeout) =>
-            request.body.grouped(8192).foreach { chunk =>
-              out.write(chunk)
-              out.flush()
-              Thread.sleep(timeout)
-            }
+            request
+              .body
+              .grouped(8192)
+              .foreach { chunk =>
+                out.write(chunk)
+                out.flush()
+                Thread.sleep(timeout)
+              }
           case None =>
             out.write(request.body)
         }
@@ -128,16 +129,20 @@ class BasicHttpClient(port: Int) {
     }
 
     if (waitForResponses) {
-      request.headers.get("Expect").filter(_ == "100-continue").map { _ =>
-        out.flush()
-        val response = readResponse(requestDesc + " continue")
-        if (response.status == 100) {
-          writeBody()
-          Seq(response, readResponse(requestDesc))
-        } else {
-          Seq(response)
-        }
-      } getOrElse {
+      request
+        .headers
+        .get("Expect")
+        .filter(_ == "100-continue")
+        .map { _ =>
+          out.flush()
+          val response = readResponse(requestDesc + " continue")
+          if (response.status == 100) {
+            writeBody()
+            Seq(response, readResponse(requestDesc))
+          } else {
+            Seq(response)
+          }
+        } getOrElse {
         writeBody()
         Seq(readResponse(requestDesc))
       }
@@ -208,23 +213,28 @@ class BasicHttpClient(port: Int) {
       }
 
       // Read body
-      val body = headers.get(TRANSFER_ENCODING).filter(_ == CHUNKED).map { _ =>
-        def readChunks: List[String] = {
-          val chunkLength = Integer.parseInt(reader.readLine())
-          if (chunkLength == 0) {
-            Nil
-          } else {
-            val chunk = readCompletely(chunkLength)
-            // Ignore newline after chunk
-            reader.readLine()
-            chunk :: readChunks
+      val body = headers
+        .get(TRANSFER_ENCODING)
+        .filter(_ == CHUNKED)
+        .map { _ =>
+          def readChunks: List[String] = {
+            val chunkLength = Integer.parseInt(reader.readLine())
+            if (chunkLength == 0) {
+              Nil
+            } else {
+              val chunk = readCompletely(chunkLength)
+              // Ignore newline after chunk
+              reader.readLine()
+              chunk :: readChunks
+            }
           }
-        }
-        (readChunks.toSeq, readHeaders.toMap)
-      } toRight {
-        headers.get(CONTENT_LENGTH).map { length =>
-          readCompletely(length.toInt)
-        } getOrElse {
+          (readChunks.toSeq, readHeaders.toMap)
+        } toRight {
+        headers
+          .get(CONTENT_LENGTH)
+          .map { length =>
+            readCompletely(length.toInt)
+          } getOrElse {
           if (status != CONTINUE && status != NOT_MODIFIED && status != NO_CONTENT) {
             consumeRemaining(reader)
           } else {

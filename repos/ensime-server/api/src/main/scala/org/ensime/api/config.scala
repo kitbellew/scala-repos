@@ -39,17 +39,22 @@ case class EnsimeConfig(
 
   // some marshalling libs (e.g. spray-json) might not like extra vals
   val modules =
-    subprojects.map { module =>
-      (module.name, module)
-    }.toMap
+    subprojects
+      .map { module =>
+        (module.name, module)
+      }
+      .toMap
 
   def runtimeClasspath: Set[File] =
     compileClasspath ++ modules.values.flatMap(_.runtimeDeps) ++ targetClasspath
 
   def compileClasspath: Set[File] =
-    modules.values.toSet.flatMap { m: EnsimeModule =>
-      m.compileDeps ++ m.testDeps
-    } ++ (
+    modules
+      .values
+      .toSet
+      .flatMap { m: EnsimeModule =>
+        m.compileDeps ++ m.testDeps
+      } ++ (
       if (sourceMode)
         List.empty
       else
@@ -57,14 +62,20 @@ case class EnsimeConfig(
     )
 
   def targetClasspath: Set[File] =
-    modules.values.toSet.flatMap { m: EnsimeModule =>
-      m.targetDirs ++ m.testTargetDirs
-    }
+    modules
+      .values
+      .toSet
+      .flatMap { m: EnsimeModule =>
+        m.targetDirs ++ m.testTargetDirs
+      }
 
   def allJars: Set[File] = {
-    modules.values.flatMap { m =>
-      m.compileDeps ::: m.testDeps
-    }.toSet
+    modules
+      .values
+      .flatMap { m =>
+        m.compileDeps ::: m.testDeps
+      }
+      .toSet
   } ++ javaLibs
 
   def allDocJars: Set[File] = modules.values.flatMap(_.docJars).toSet

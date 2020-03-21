@@ -97,17 +97,16 @@ object ResolveUtils {
               def isStaticCorrect(clazz: PsiClass): Boolean = {
                 val cclazz = clazz.getContainingClass
                 cclazz == null || (
-                  clazz.hasModifierProperty(
-                    PsiModifier.STATIC) && isStaticCorrect(cclazz)
+                  clazz
+                    .hasModifierProperty(PsiModifier.STATIC) && isStaticCorrect(
+                    cclazz)
                 )
               }
               (kinds contains OBJECT) && isStaticCorrect(c)
             }
           case patt: ScBindingPattern =>
-            val parent = ScalaPsiUtil.getParentOfType(
-              patt,
-              classOf[ScVariable],
-              classOf[ScValue])
+            val parent = ScalaPsiUtil
+              .getParentOfType(patt, classOf[ScVariable], classOf[ScValue])
             parent match {
               case x: ScVariable =>
                 kinds contains VAR
@@ -115,8 +114,7 @@ object ResolveUtils {
                 kinds contains VAL
             }
           case patt: ScFieldId =>
-            if (patt.getParent /*list of ids*/ .getParent
-                  .isInstanceOf[ScVariable])
+            if (patt.getParent /*list of ids*/ .getParent.isInstanceOf[ScVariable])
               kinds contains VAR
             else
               kinds contains VAL
@@ -137,8 +135,8 @@ object ResolveUtils {
             kinds contains VAL
           case f: PsiField =>
             (kinds contains VAR) || (
-              f.hasModifierPropertyScala(PsiModifier.FINAL) && kinds.contains(
-                VAL)
+              f.hasModifierPropertyScala(PsiModifier.FINAL) && kinds
+                .contains(VAL)
             )
           case _: PsiParameter =>
             kinds contains VAL //to enable named Parameters resolve in Play 2.0 routing file for java methods
@@ -150,7 +148,9 @@ object ResolveUtils {
   def methodType(m: PsiMethod, s: ScSubstitutor, scope: GlobalSearchScope) =
     ScFunctionType(
       s.subst(ScType.create(m.getReturnType, m.getProject, scope)),
-      m.getParameterList.getParameters
+      m
+        .getParameterList
+        .getParameters
         .map({ p =>
           val pt = p.getType
           //scala hack: Objects in java are modelled as Any in scala
@@ -182,19 +182,22 @@ object ResolveUtils {
         case f: FakePsiMethod =>
           f.params.toSeq
         case _ =>
-          m.getParameterList.getParameters.map { param =>
-            val scType = s.subst(param.exactParamType())
-            new Parameter(
-              "",
-              None,
-              scType,
-              scType,
-              false,
-              param.isVarArgs,
-              false,
-              param.index,
-              Some(param))
-          }
+          m
+            .getParameterList
+            .getParameters
+            .map { param =>
+              val scType = s.subst(param.exactParamType())
+              new Parameter(
+                "",
+                None,
+                scType,
+                scType,
+                false,
+                param.isVarArgs,
+                false,
+                param.index,
+                Some(param))
+            }
       },
       false)(m.getProject, scope)
   }
@@ -261,8 +264,8 @@ object ResolveUtils {
     if (forCompletion && place != null) {
       val originalFile: PsiFile = place.getContainingFile.getOriginalFile
       if (originalFile == member.getContainingFile) {
-        val newPlace = originalFile.findElementAt(
-          place.getTextRange.getStartOffset)
+        val newPlace = originalFile
+          .findElementAt(place.getTextRange.getStartOffset)
         place = newPlace
       }
     }
@@ -283,8 +286,10 @@ object ResolveUtils {
         }
       var placeTd: ScTemplateDefinition = getPlaceTd(place, isConstr)
       if (isConstr) {
-        if (placeTd != null && !placeTd.isInstanceOf[
-              ScTypeDefinition] && placeTd.extendsBlock.templateBody == None) {
+        if (placeTd != null && !placeTd
+              .isInstanceOf[ScTypeDefinition] && placeTd
+              .extendsBlock
+              .templateBody == None) {
           placeTd = getPlaceTd(placeTd)
         } else if (placeTd != null) {
           if (td != null && isInheritorOrSelfOrSame(placeTd, td))
@@ -339,10 +344,8 @@ object ResolveUtils {
                           classOf[ScTemplateDefinition])
                         if (enclosing == null)
                           return true
-                        return PsiTreeUtil.isContextAncestor(
-                          enclosing,
-                          place,
-                          false)
+                        return PsiTreeUtil
+                          .isContextAncestor(enclosing, place, false)
                       case Some(t: ScThisReference) =>
                         val enclosing = PsiTreeUtil.getContextOfType(
                           scMember,
@@ -354,10 +357,8 @@ object ResolveUtils {
                           case Some(t) =>
                             return t == enclosing
                           case _ =>
-                            return PsiTreeUtil.isContextAncestor(
-                              enclosing,
-                              place,
-                              false)
+                            return PsiTreeUtil
+                              .isContextAncestor(enclosing, place, false)
                         }
                       case Some(ref: ScReferenceElement) =>
                         val enclosing = PsiTreeUtil.getContextOfType(
@@ -382,10 +383,8 @@ object ResolveUtils {
                       classOf[ScTemplateDefinition])
                     if (enclosing == null)
                       return true
-                    return PsiTreeUtil.isContextAncestor(
-                      enclosing,
-                      place,
-                      false)
+                    return PsiTreeUtil
+                      .isContextAncestor(enclosing, place, false)
                 }
               }
               val ref = am.getReference
@@ -429,7 +428,8 @@ object ResolveUtils {
                         place,
                         false) || (
                       td.isInstanceOf[ScObject] &&
-                        td.asInstanceOf[ScObject]
+                        td
+                          .asInstanceOf[ScObject]
                           .isPackageObject && processPackage(td.qualifiedName)
                     )
                   case pack: PsiPackage =>
@@ -452,15 +452,14 @@ object ResolveUtils {
                   classOf[ScTemplateDefinition])
                 enclosing match {
                   case td: ScTemplateDefinition =>
-                    PsiTreeUtil.isContextAncestor(
-                      td,
-                      place,
-                      false) || PsiTreeUtil.isContextAncestor(
-                      ScalaPsiUtil
-                        .getCompanionModule(td)
-                        .getOrElse(null: PsiElement),
-                      place,
-                      false)
+                    PsiTreeUtil
+                      .isContextAncestor(td, place, false) || PsiTreeUtil
+                      .isContextAncestor(
+                        ScalaPsiUtil
+                          .getCompanionModule(td)
+                          .getOrElse(null: PsiElement),
+                        place,
+                        false)
                   case file: ScalaFile if file.isScriptFile() =>
                     PsiTreeUtil.isContextAncestor(file, place, false)
                   case _ =>
@@ -492,8 +491,8 @@ object ResolveUtils {
                 }
               }
             } else if (am.isProtected) { //todo: it's wrong if reference after not appropriate class type
-              val withCompanion =
-                am.access != ScAccessModifier.Type.THIS_PROTECTED
+              val withCompanion = am
+                .access != ScAccessModifier.Type.THIS_PROTECTED
               val ref = am.getReference
               if (ref != null) {
                 val bind = ref.resolve
@@ -529,15 +528,14 @@ object ResolveUtils {
                 }
                 bind match {
                   case td: ScTemplateDefinition =>
-                    if (PsiTreeUtil.isContextAncestor(
-                          td,
-                          place,
-                          false) || PsiTreeUtil.isContextAncestor(
-                          ScalaPsiUtil
-                            .getCompanionModule(td)
-                            .getOrElse(null: PsiElement),
-                          place,
-                          false))
+                    if (PsiTreeUtil
+                          .isContextAncestor(td, place, false) || PsiTreeUtil
+                          .isContextAncestor(
+                            ScalaPsiUtil
+                              .getCompanionModule(td)
+                              .getOrElse(null: PsiElement),
+                            place,
+                            false))
                       return true
                     td match {
                       case o: ScObject if o.isPackageObject =>
@@ -694,7 +692,8 @@ object ResolveUtils {
               TypeDefinitionMembers.processSuperDeclarations(
                 c,
                 processor,
-                ResolveState.initial
+                ResolveState
+                  .initial
                   .put(ScSubstitutor.key, ScSubstitutor.empty),
                 null,
                 place)
@@ -756,8 +755,8 @@ object ResolveUtils {
   }
 
   def packageContains(packageName: String, potentialChild: String): Boolean = {
-    potentialChild == packageName || potentialChild.startsWith(
-      packageName + ".")
+    potentialChild == packageName || potentialChild
+      .startsWith(packageName + ".")
   }
 
   def packageProcessDeclarations(
@@ -808,9 +807,8 @@ object ResolveUtils {
                     case _ =>
                       place.getResolveScope
                   }
-                var classes: Array[PsiClass] = manager.getCachedClasses(
-                  scope,
-                  fqn)
+                var classes: Array[PsiClass] = manager
+                  .getCachedClasses(scope, fqn)
                 if (classes.isEmpty) {
                   //todo: fast fix for the problem with classes, should be fixed in indexes
                   val improvedFqn = fqn
@@ -895,9 +893,8 @@ object ResolveUtils {
               val iterator = manager.getClasses(pack, scope).iterator
               while (iterator.hasNext) {
                 val clazz = iterator.next()
-                if (clazz.containingClass == null && !processor.execute(
-                      clazz,
-                      state))
+                if (clazz.containingClass == null && !processor
+                      .execute(clazz, state))
                   return false
               }
             }
@@ -906,11 +903,9 @@ object ResolveUtils {
               //process subpackages
               pack match {
                 case s: ScPackageImpl =>
-                  s.pack.processDeclarations(
-                    processor,
-                    state,
-                    lastParent,
-                    place)
+                  s
+                    .pack
+                    .processDeclarations(processor, state, lastParent, place)
                 case _ =>
                   pack.processDeclarations(processor, state, lastParent, place)
               }

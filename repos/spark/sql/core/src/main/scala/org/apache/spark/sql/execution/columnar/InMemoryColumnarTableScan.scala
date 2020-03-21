@@ -83,7 +83,9 @@ private[sql] case class InMemoryRelation(
 
   private val batchStats: Accumulable[ArrayBuffer[InternalRow], InternalRow] =
     if (_batchStats == null) {
-      child.sqlContext.sparkContext
+      child
+        .sqlContext
+        .sparkContext
         .accumulableCollection(ArrayBuffer.empty[InternalRow])
     } else {
       _batchStats
@@ -155,13 +157,15 @@ private[sql] case class InMemoryRelation(
         new Iterator[CachedBatch] {
           def next(): CachedBatch = {
             val columnBuilders =
-              output.map { attribute =>
-                ColumnBuilder(
-                  attribute.dataType,
-                  batchSize,
-                  attribute.name,
-                  useCompression)
-              }.toArray
+              output
+                .map { attribute =>
+                  ColumnBuilder(
+                    attribute.dataType,
+                    batchSize,
+                    attribute.name,
+                    useCompression)
+                }
+                .toArray
 
             var rowCount = 0
             var totalSize = 0L
@@ -365,9 +369,11 @@ private[sql] case class InMemoryColumnarTableScan(
 
       // Find the ordinals and data types of the requested columns.
       val (requestedColumnIndices, requestedColumnDataTypes) =
-        attributes.map { a =>
-          relOutput.indexWhere(_.exprId == a.exprId) -> a.dataType
-        }.unzip
+        attributes
+          .map { a =>
+            relOutput.indexWhere(_.exprId == a.exprId) -> a.dataType
+          }
+          .unzip
 
       // Do partition batch pruning if enabled
       val cachedBatchesToScan =
@@ -402,17 +408,17 @@ private[sql] case class InMemoryColumnarTableScan(
       }
 
       val columnTypes =
-        requestedColumnDataTypes.map {
-          case udt: UserDefinedType[_] =>
-            udt.sqlType
-          case other =>
-            other
-        }.toArray
+        requestedColumnDataTypes
+          .map {
+            case udt: UserDefinedType[_] =>
+              udt.sqlType
+            case other =>
+              other
+          }
+          .toArray
       val columnarIterator = GenerateColumnAccessor.generate(columnTypes)
-      columnarIterator.initialize(
-        withMetrics,
-        columnTypes,
-        requestedColumnIndices.toArray)
+      columnarIterator
+        .initialize(withMetrics, columnTypes, requestedColumnIndices.toArray)
       if (enableAccumulators && columnarIterator.hasNext) {
         readPartitions += 1
       }

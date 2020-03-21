@@ -271,7 +271,8 @@ class ContinuousQueryManagerSuite
             var query: StreamExecution = null
             try {
               val df = ds.toDF
-              query = sqlContext.streams
+              query = sqlContext
+                .streams
                 .startQuery(
                   StreamExecution.nextName,
                   df,
@@ -303,8 +304,9 @@ class ContinuousQueryManagerSuite
 
     def awaitTermFunc(): Unit = {
       if (awaitTimeout != null && awaitTimeout.toMillis > 0) {
-        val returnedValue = sqlContext.streams.awaitAnyTermination(
-          awaitTimeout.toMillis)
+        val returnedValue = sqlContext
+          .streams
+          .awaitAnyTermination(awaitTimeout.toMillis)
         assert(
           returnedValue === expectedReturnedValue,
           "Returned value does not match expected")
@@ -313,10 +315,8 @@ class ContinuousQueryManagerSuite
       }
     }
 
-    AwaitTerminationTester.test(
-      expectedBehavior,
-      awaitTermFunc,
-      testBehaviorFor)
+    AwaitTerminationTester
+      .test(expectedBehavior, awaitTermFunc, testBehaviorFor)
   }
 
   /** Stop a random active query either with `stop()` or with an error */
@@ -332,10 +332,13 @@ class ContinuousQueryManagerSuite
       Thread.sleep(stopAfter.toMillis)
       if (withError) {
         logDebug(s"Terminating query ${queryToStop.name} with error")
-        queryToStop.asInstanceOf[StreamExecution].logicalPlan.collect {
-          case StreamingRelation(memoryStream, _) =>
-            memoryStream.asInstanceOf[MemoryStream[Int]].addData(0)
-        }
+        queryToStop
+          .asInstanceOf[StreamExecution]
+          .logicalPlan
+          .collect {
+            case StreamingRelation(memoryStream, _) =>
+              memoryStream.asInstanceOf[MemoryStream[Int]].addData(0)
+          }
       } else {
         logDebug(s"Stopping query ${queryToStop.name}")
         queryToStop.stop()

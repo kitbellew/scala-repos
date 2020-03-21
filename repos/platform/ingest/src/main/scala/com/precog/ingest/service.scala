@@ -28,11 +28,13 @@ package object service {
   implicit def jpath2rich(jpath: JPath): RichJPath = new RichJPath(jpath)
   class RichJPath(jpath: JPath) {
     def endsInInfiniteValueSpace =
-      jpath.nodes.exists {
-        case JPathField(name) =>
-          name startsWith "~"
-        case _ =>
-          false
-      }
+      jpath
+        .nodes
+        .exists {
+          case JPathField(name) =>
+            name startsWith "~"
+          case _ =>
+            false
+        }
   }
 }

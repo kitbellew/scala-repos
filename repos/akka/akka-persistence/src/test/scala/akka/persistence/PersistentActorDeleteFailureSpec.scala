@@ -67,8 +67,9 @@ class PersistentActorDeleteFailureSpec
     with ImplicitSender {
   import PersistentActorDeleteFailureSpec._
 
-  system.eventStream.publish(
-    TestEvent.Mute(EventFilter[akka.pattern.AskTimeoutException]()))
+  system
+    .eventStream
+    .publish(TestEvent.Mute(EventFilter[akka.pattern.AskTimeoutException]()))
 
   "A persistent actor" must {
     "have default warn logging be triggered, when deletion failed" in {
@@ -84,8 +85,8 @@ class PersistentActorDeleteFailureSpec
     }
 
     "be receive an DeleteMessagesFailure when deletion failed, and the default logging should not be triggered" in {
-      val persistentActor = system.actorOf(
-        Props(classOf[HandlesDeleteFailureActor], name, testActor))
+      val persistentActor = system
+        .actorOf(Props(classOf[HandlesDeleteFailureActor], name, testActor))
       system.eventStream.subscribe(testActor, classOf[Logging.Warning])
       persistentActor ! DeleteTo(100)
       expectMsgType[DeleteMessagesFailure]

@@ -41,9 +41,8 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
   def addEmptyParens() {
     clauses match {
       case Some(c) =>
-        val clause = ScalaPsiElementFactory.createClauseFromText(
-          "()",
-          getManager)
+        val clause = ScalaPsiElementFactory
+          .createClauseFromText("()", getManager)
         c.addClause(clause)
       case _ =>
     }
@@ -143,9 +142,12 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
                   "()"
                 else
                   ""
-              ) + x.parameterList.clauses
+              ) + x
+                .parameterList
+                .clauses
                 .map(c =>
-                  c.parameters
+                  c
+                    .parameters
                     .map(p =>
                       p.name + " : " +
                         p.typeElement.fold("Any")(_.getText) +

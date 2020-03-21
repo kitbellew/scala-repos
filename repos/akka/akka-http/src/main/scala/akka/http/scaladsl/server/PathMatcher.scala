@@ -554,13 +554,13 @@ trait PathMatchers {
     */
   val JavaUUID: PathMatcher1[UUID] =
     PathMatcher(
-      """[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}""".r) flatMap {
-      string ⇒
-        try Some(UUID.fromString(string))
-        catch {
-          case _: IllegalArgumentException ⇒
-            None
-        }
+      """[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}"""
+        .r) flatMap { string ⇒
+      try Some(UUID.fromString(string))
+      catch {
+        case _: IllegalArgumentException ⇒
+          None
+      }
     }
 
   /**

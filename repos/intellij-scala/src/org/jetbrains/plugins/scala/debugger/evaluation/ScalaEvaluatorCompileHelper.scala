@@ -47,7 +47,8 @@ class ScalaEvaluatorCompileHelper(project: Project)
 
         if (!ScalaCompileServerSettings
               .getInstance()
-              .COMPILE_SERVER_ENABLED && EvaluatorCompileHelper.needCompileServer) {
+              .COMPILE_SERVER_ENABLED && EvaluatorCompileHelper
+              .needCompileServer) {
           CompileServerLauncher.ensureNotRunning(project)
         }
       }

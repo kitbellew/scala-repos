@@ -34,12 +34,15 @@ object ReflectionsCache {
         reflectionsMapRef = Some(new SoftReference((classLoader, map), null))
         map
       }
-    reflectionsMap.get(pkg).getOrElse {
+    reflectionsMap
+      .get(pkg)
+      .getOrElse {
 
-      val reflections =
-        new Reflections(Classpath.getReflectionsConfiguration(pkg, classLoader))
+        val reflections =
+          new Reflections(
+            Classpath.getReflectionsConfiguration(pkg, classLoader))
 
-      reflectionsMap.putIfAbsent(pkg, reflections).getOrElse(reflections)
-    }
+        reflectionsMap.putIfAbsent(pkg, reflections).getOrElse(reflections)
+      }
   }
 }

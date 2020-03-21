@@ -92,7 +92,9 @@ class DocResolver(
     val java = docType == Javadoc || docType == Javadoc8
     if (java) {
       val path = javaFqnToPath(sig.java.fqn)
-      val anchor = sig.java.member
+      val anchor = sig
+        .java
+        .member
         .map { s =>
           "#" + {
             if (docType == Javadoc8)
@@ -158,8 +160,8 @@ class DocResolver(
   private def resolveWellKnownUri(sig: DocSigPair): Option[String] = {
     if (sig.java.fqn.javaStdLib) {
       val path = javaFqnToPath(sig.java.fqn)
-      val rawVersion = forceJavaVersion.getOrElse(
-        scala.util.Properties.javaVersion)
+      val rawVersion = forceJavaVersion
+        .getOrElse(scala.util.Properties.javaVersion)
       val version =
         if (rawVersion.startsWith("1.8"))
           "8"
@@ -167,7 +169,9 @@ class DocResolver(
           "7"
         else
           "6"
-      val anchor = sig.java.member
+      val anchor = sig
+        .java
+        .member
         .map { m =>
           "#" + {
             if (version == "8")
@@ -181,7 +185,9 @@ class DocResolver(
 
     } else if (sig.java.fqn.androidStdLib) {
       val path = javaFqnToPath(sig.java.fqn)
-      val anchor = sig.java.member
+      val anchor = sig
+        .java
+        .member
         .map { m =>
           "#" + toAndroidAnchor(m)
         }

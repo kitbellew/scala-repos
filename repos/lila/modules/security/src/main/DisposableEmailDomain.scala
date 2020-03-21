@@ -44,8 +44,12 @@ final class DisposableEmailDomain(
       failed = true
       busOption.foreach { bus =>
         bus.publish(
-          lila.hub.actorApi.slack.Error(
-            s"Disposable emails list: ${e.getMessage}\nPlease fix $providerUrl"),
+          lila
+            .hub
+            .actorApi
+            .slack
+            .Error(
+              s"Disposable emails list: ${e.getMessage}\nPlease fix $providerUrl"),
           'slack)
       }
     }

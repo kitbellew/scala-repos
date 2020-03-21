@@ -32,8 +32,8 @@ class AhcCurlRequestLogger(logger: org.slf4j.Logger)
 
 object AhcCurlRequestLogger {
 
-  private val logger = LoggerFactory.getLogger(
-    "play.api.libs.ws.ahc.AhcCurlRequestLogger")
+  private val logger = LoggerFactory
+    .getLogger("play.api.libs.ws.ahc.AhcCurlRequestLogger")
 
   private val instance = new AhcCurlRequestLogger(logger)
 
@@ -57,22 +57,26 @@ trait CurlFormat {
     b.append(" \\\n")
 
     // headers
-    request.headers.foreach {
-      case (k, values) =>
-        values.foreach { v =>
-          b.append(s"  --header '${quote(k)}: ${quote(v)}'")
-          b.append(" \\\n")
-        }
-    }
+    request
+      .headers
+      .foreach {
+        case (k, values) =>
+          values.foreach { v =>
+            b.append(s"  --header '${quote(k)}: ${quote(v)}'")
+            b.append(" \\\n")
+          }
+      }
 
     // body (note that this has only been checked for text, not binary)
-    request.getBody.map { body =>
-      val charset = findCharset(request)
-      val bodyString = body.decodeString(charset)
-      // XXX Need to escape any quotes within the body of the string.
-      b.append(s"  --data '${quote(bodyString)}'")
-      b.append(" \\\n")
-    }
+    request
+      .getBody
+      .map { body =>
+        val charset = findCharset(request)
+        val bodyString = body.decodeString(charset)
+        // XXX Need to escape any quotes within the body of the string.
+        b.append(s"  --data '${quote(bodyString)}'")
+        b.append(" \\\n")
+      }
 
     // pull out some underlying values from the request.  This creates a new Request
     // but should be harmless.
@@ -91,7 +95,8 @@ trait CurlFormat {
   }
 
   protected def findCharset(request: AhcWSRequest): String = {
-    request.contentType
+    request
+      .contentType
       .map { ct =>
         Option(HttpUtils.parseCharset(ct))
           .getOrElse {

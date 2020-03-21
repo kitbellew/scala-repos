@@ -46,15 +46,15 @@ class ExpandPatternIntention extends PsiElementBaseIntentionAction {
     findReferencePattern(element) match {
       case Some((origPattern, newPatternText)) =>
         PsiDocumentManager.getInstance(project).commitAllDocuments()
-        if (!FileModificationService.getInstance.prepareFileForWrite(
-              element.getContainingFile))
+        if (!FileModificationService
+              .getInstance
+              .prepareFileForWrite(element.getContainingFile))
           return
         IdeDocumentHistory
           .getInstance(project)
           .includeCurrentPlaceAsChangePlace()
-        val newPattern = ScalaPsiElementFactory.createPatternFromText(
-          newPatternText,
-          element.getManager)
+        val newPattern = ScalaPsiElementFactory
+          .createPatternFromText(newPatternText, element.getManager)
         val replaced = origPattern.replace(newPattern)
         ScalaPsiUtil.adjustTypes(replaced)
       case None =>
@@ -70,8 +70,8 @@ class ExpandPatternIntention extends PsiElementBaseIntentionAction {
           (refPattern, "%s @ %s".format(refPattern.getText, patText)))
       case wildcardPattern: ScWildcardPattern =>
         val expectedType = wildcardPattern.expectedType
-        nestedPatternText(expectedType).map(patText =>
-          (wildcardPattern, patText))
+        nestedPatternText(expectedType)
+          .map(patText => (wildcardPattern, patText))
       case _ =>
         None
     }

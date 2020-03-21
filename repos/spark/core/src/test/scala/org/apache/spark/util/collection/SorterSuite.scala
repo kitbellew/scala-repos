@@ -76,11 +76,13 @@ class SorterSuite extends SparkFunSuite with Logging {
     new Sorter(new KVArraySortDataFormat[Double, Number])
       .sort(keyValueArray, 0, keys.length, Ordering.Double)
 
-    keys.zipWithIndex.foreach {
-      case (k, i) =>
-        assert(k === keyValueArray(2 * i))
-        assert(kvMap(k) === keyValueArray(2 * i + 1))
-    }
+    keys
+      .zipWithIndex
+      .foreach {
+        case (k, i) =>
+          assert(k === keyValueArray(2 * i))
+          assert(kvMap(k) === keyValueArray(2 * i + 1))
+      }
   }
 
   // http://www.envisage-project.eu/timsort-specification-and-verification/
@@ -147,7 +149,8 @@ class SorterSuite extends SparkFunSuite with Logging {
           kvTupleArray,
           new Comparator[AnyRef] {
             override def compare(x: AnyRef, y: AnyRef): Int =
-              x.asInstanceOf[(JFloat, _)]
+              x
+                .asInstanceOf[(JFloat, _)]
                 ._1
                 .compareTo(y.asInstanceOf[(JFloat, _)]._1)
           })

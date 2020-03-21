@@ -71,7 +71,9 @@ class ScalaReferenceAdjuster extends ReferenceAdjuster {
     val visitor =
       new ScalaRecursiveElementVisitor {
         override def visitElement(element: ScalaPsiElement): Unit = {
-          if (element.getTextRange.getStartOffset >= startOffset && element.getTextRange.getEndOffset <= endOffset) {
+          if (element.getTextRange.getStartOffset >= startOffset && element
+                .getTextRange
+                .getEndOffset <= endOffset) {
             buffer += element
           } else
             super.visitElement(element)

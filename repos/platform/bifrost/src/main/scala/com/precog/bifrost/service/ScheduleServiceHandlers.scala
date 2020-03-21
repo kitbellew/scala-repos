@@ -82,9 +82,8 @@ case class AddScheduledQueryRequest(
 object AddScheduledQueryRequest {
   import CronExpressionSerialization._
 
-  implicit val iso = Iso.hlist(
-    AddScheduledQueryRequest.apply _,
-    AddScheduledQueryRequest.unapply _)
+  implicit val iso = Iso
+    .hlist(AddScheduledQueryRequest.apply _, AddScheduledQueryRequest.unapply _)
 
   val schemaV1 =
     "schedule" :: "owners" :: "context" :: "source" :: "sink" :: "timeout" :: HNil
@@ -144,10 +143,12 @@ class AddScheduledQueryServiceHandler(
 
                 okToReads <- EitherT.right {
                   authorities.accountIds.toStream traverse { acctId =>
-                    permissionsFinder.apiKeyFinder.hasCapability(
-                      apiKey,
-                      Set(ExecutePermission(sreq.source, WrittenBy(acctId))),
-                      None)
+                    permissionsFinder
+                      .apiKeyFinder
+                      .hasCapability(
+                        apiKey,
+                        Set(ExecutePermission(sreq.source, WrittenBy(acctId))),
+                        None)
                   }
                 }
                 okToRead = okToReads.exists(_ == true)
@@ -160,8 +161,8 @@ class AddScheduledQueryServiceHandler(
 
                 readError = (!okToRead).option(
                   nels(
-                    "The API Key does not have permission to execute %s".format(
-                      sreq.source.path)))
+                    "The API Key does not have permission to execute %s"
+                      .format(sreq.source.path)))
                 writeError = (!okToWrite).option(
                   nels(
                     "The API Key does not have permission to write to %s as %s"
@@ -177,8 +178,8 @@ class AddScheduledQueryServiceHandler(
                       sreq.source,
                       sreq.sink,
                       sreq.timeout) leftMap { error =>
-                      logger.error(
-                        "Failure adding scheduled execution: " + error)
+                      logger
+                        .error("Failure adding scheduled execution: " + error)
                       HttpResponse(
                         status = HttpStatus(InternalServerError),
                         content = Some(
@@ -212,7 +213,8 @@ class DeleteScheduledQueryServiceHandler[A](scheduler: Scheduler[Future])(
   val service =
     (request: HttpRequest[A]) => {
       for {
-        idStr <- request.parameters
+        idStr <- request
+          .parameters
           .get('scheduleId)
           .toSuccess(DispatchError(BadRequest, "scheduleId parameter required"))
         id <- Validation.fromTryCatch {
@@ -243,7 +245,8 @@ class ScheduledQueryStatusServiceHandler[A](scheduler: Scheduler[Future])(
   val service =
     (request: HttpRequest[A]) => {
       for {
-        idStr <- request.parameters
+        idStr <- request
+          .parameters
           .get('scheduleId)
           .toSuccess(
             DispatchError(BadRequest, "Missing schedule Id for status."))
@@ -264,10 +267,11 @@ class ScheduledQueryStatusServiceHandler[A](scheduler: Scheduler[Future])(
       } yield {
         scheduler.statusForTask(id, limit) map {
           case Some((task, reports)) =>
-            val nextTime: Option[DateTime] = task.repeat.flatMap {
-              sched: CronExpression =>
+            val nextTime: Option[DateTime] = task
+              .repeat
+              .flatMap { sched: CronExpression =>
                 Option(sched.getNextValidTimeAfter(new java.util.Date))
-            } map { d =>
+              } map { d =>
               new DateTime(d)
             }
 

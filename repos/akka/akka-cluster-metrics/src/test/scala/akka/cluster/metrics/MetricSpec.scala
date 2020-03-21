@@ -28,10 +28,8 @@ class MetricNumericConverterSpec
     }
 
     "define a new metric" in {
-      val Some(metric) = Metric.create(
-        HeapMemoryUsed,
-        256L,
-        decayFactor = Some(0.18))
+      val Some(metric) = Metric
+        .create(HeapMemoryUsed, 256L, decayFactor = Some(0.18))
       metric.name should ===(HeapMemoryUsed)
       metric.value should ===(256L)
       metric.isSmooth should ===(true)
@@ -339,11 +337,16 @@ class MetricValuesSpec
   val nodes: Seq[NodeMetrics] = {
     (1 to 100).foldLeft(List(node1, node2)) { (nodes, _) ⇒
       nodes map { n ⇒
-        n.copy(metrics = collector.sample.metrics.flatMap(latest ⇒
-          n.metrics.collect {
-            case streaming if latest sameAs streaming ⇒
-              streaming :+ latest
-          }))
+        n.copy(metrics = collector
+          .sample
+          .metrics
+          .flatMap(latest ⇒
+            n
+              .metrics
+              .collect {
+                case streaming if latest sameAs streaming ⇒
+                  streaming :+ latest
+              }))
       }
     }
   }

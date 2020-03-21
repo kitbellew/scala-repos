@@ -50,10 +50,8 @@ class ScThisReferenceImpl(node: ASTNode)
             None
         }
       case None => {
-        val encl = PsiTreeUtil.getContextOfType(
-          this,
-          false,
-          classOf[ScTemplateBody])
+        val encl = PsiTreeUtil
+          .getContextOfType(this, false, classOf[ScTemplateBody])
         if (encl != null)
           Some(
             PsiTreeUtil
@@ -103,8 +101,8 @@ object ScThisReferenceImpl {
             Success(ScThisType(td), Some(expr))
           case _ =>
             Success(
-              selfTypeOfClass.getOrElse(
-                return Failure("No clazz type found", Some(expr))),
+              selfTypeOfClass
+                .getOrElse(return Failure("No clazz type found", Some(expr))),
               Some(expr))
         }
     }

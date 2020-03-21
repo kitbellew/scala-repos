@@ -107,11 +107,8 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
     // Store a copy of the broadcast variable in the driver so that tasks run on the driver
     // do not create a duplicate copy of the broadcast variable's value.
     val blockManager = SparkEnv.get.blockManager
-    if (!blockManager.putSingle(
-          broadcastId,
-          value,
-          MEMORY_AND_DISK,
-          tellMaster = false)) {
+    if (!blockManager
+          .putSingle(broadcastId, value, MEMORY_AND_DISK, tellMaster = false)) {
       throw new SparkException(s"Failed to store $broadcastId in BlockManager")
     }
     val blocks = TorrentBroadcast.blockifyObject(
@@ -119,19 +116,21 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
       blockSize,
       SparkEnv.get.serializer,
       compressionCodec)
-    blocks.zipWithIndex.foreach {
-      case (block, i) =>
-        val pieceId = BroadcastBlockId(id, "piece" + i)
-        val bytes = new ChunkedByteBuffer(block.duplicate())
-        if (!blockManager.putBytes(
-              pieceId,
-              bytes,
-              MEMORY_AND_DISK_SER,
-              tellMaster = true)) {
-          throw new SparkException(
-            s"Failed to store $pieceId of $broadcastId in local BlockManager")
-        }
-    }
+    blocks
+      .zipWithIndex
+      .foreach {
+        case (block, i) =>
+          val pieceId = BroadcastBlockId(id, "piece" + i)
+          val bytes = new ChunkedByteBuffer(block.duplicate())
+          if (!blockManager.putBytes(
+                pieceId,
+                bytes,
+                MEMORY_AND_DISK_SER,
+                tellMaster = true)) {
+            throw new SparkException(
+              s"Failed to store $pieceId of $broadcastId in local BlockManager")
+          }
+      }
     blocks.length
   }
 
@@ -243,8 +242,8 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
     val blockManager = SparkEnv.get.blockManager
     Option(TaskContext.get()) match {
       case Some(taskContext) =>
-        taskContext.addTaskCompletionListener(_ =>
-          blockManager.releaseLock(blockId))
+        taskContext
+          .addTaskCompletionListener(_ => blockManager.releaseLock(blockId))
       case None =>
         // This should only happen on the driver, where broadcast variables may be accessed
         // outside of running tasks (e.g. when computing rdd.partitions()). In order to allow
@@ -301,7 +300,10 @@ private object TorrentBroadcast extends Logging {
       removeFromDriver: Boolean,
       blocking: Boolean): Unit = {
     logDebug(s"Unpersisting TorrentBroadcast $id")
-    SparkEnv.get.blockManager.master
+    SparkEnv
+      .get
+      .blockManager
+      .master
       .removeBroadcast(id, removeFromDriver, blocking)
   }
 }

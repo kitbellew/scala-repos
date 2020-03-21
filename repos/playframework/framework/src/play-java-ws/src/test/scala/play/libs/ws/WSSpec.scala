@@ -19,17 +19,22 @@ object WSSpec extends PlaySpecification {
     val uploadApp = FakeApplication(withRoutes = {
       case ("POST", "/") =>
         Action { request =>
-          request.body.asRaw.fold[Result](BadRequest) { raw =>
-            val size = raw.size
-            Ok(s"size=$size")
-          }
+          request
+            .body
+            .asRaw
+            .fold[Result](BadRequest) { raw =>
+              val size = raw.size
+              Ok(s"size=$size")
+            }
         }
     })
 
     "uploads the stream" in new WithServer(app = uploadApp, port = 3333) {
       val wsClient = app.injector.instanceOf(classOf[WSClient])
 
-      val input = this.getClass.getClassLoader
+      val input = this
+        .getClass
+        .getClassLoader
         .getResourceAsStream("play/libs/ws/play_full_color.png")
       val rep = wsClient
         .url("http://localhost:3333")

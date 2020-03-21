@@ -509,8 +509,9 @@ object Task {
                       if (togo.decrementAndGet() == 0)
                         cb(
                           \/-(
-                            results.toList.foldLeft(R.zero)((a, b) =>
-                              R.append(a, b))))
+                            results
+                              .toList
+                              .foldLeft(R.zero)((a, b) => R.append(a, b))))
                       else
                         Trampoline.done(())
                     case e @ (-\/(failure)) =>

@@ -113,8 +113,8 @@ class SeqIdFilterTest
     }
 
     test(
-      "SeqIdFilter(%s) must not modify the underlying request buffer".format(
-        how)) {
+      "SeqIdFilter(%s) must not modify the underlying request buffer"
+        .format(how)) {
       val reqBuf = mkmsg(new TMessage("proc", TMessageType.CALL, 0))
       val origBuf = reqBuf.clone()
       filtered(new ThriftClientRequest(reqBuf, false))

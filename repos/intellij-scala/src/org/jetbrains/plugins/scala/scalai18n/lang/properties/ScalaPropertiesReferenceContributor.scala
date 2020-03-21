@@ -33,8 +33,8 @@ class ScalaPropertiesReferenceContributor extends PsiReferenceContributor {
       ScalaPatterns
         .scalaLiteral()
         .withParent(
-          psiNameValuePair.withName(
-            AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER)),
+          psiNameValuePair
+            .withName(AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER)),
       new ResourceBundleReferenceProvider
     )
     registrar.registerReferenceProvider(

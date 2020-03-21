@@ -18,8 +18,8 @@ private[akka] class ResizableMultiReaderRingBuffer[T](
     maxSize: Int, // constructor param, not field
     val cursors: Cursors) {
   require(
-    Integer.lowestOneBit(
-      maxSize) == maxSize && 0 < maxSize && maxSize <= Int.MaxValue / 2,
+    Integer.lowestOneBit(maxSize) == maxSize && 0 < maxSize && maxSize <= Int
+      .MaxValue / 2,
     "maxSize must be a power of 2 that is > 0 and < Int.MaxValue/2")
   require(
     Integer.lowestOneBit(
@@ -78,7 +78,8 @@ private[akka] class ResizableMultiReaderRingBuffer[T](
     * Returns `true` if the write was successful and false if the buffer is full and cannot grow anymore.
     */
   def write(value: T): Boolean =
-    if (size < array.length) { // if we have space left we can simply write and be done
+    if (size < array
+          .length) { // if we have space left we can simply write and be done
       array(writeIx & mask) = value
       writeIx += 1
       true

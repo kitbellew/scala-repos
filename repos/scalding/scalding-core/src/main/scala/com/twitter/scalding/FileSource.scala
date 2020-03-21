@@ -97,9 +97,11 @@ trait LocalSourceOverride extends SchemedSource {
     */
   def createLocalTap(sinkMode: SinkMode): Tap[JobConf, _, _] = {
     val taps =
-      localPaths.map { p: String =>
-        CastFileTap(new FileTap(localScheme, p, sinkMode))
-      }.toList
+      localPaths
+        .map { p: String =>
+          CastFileTap(new FileTap(localScheme, p, sinkMode))
+        }
+        .toList
 
     taps match {
       case Nil =>
@@ -171,8 +173,8 @@ object FileSource {
       hiddenFilter: Boolean): Boolean = {
     // Produce tuples (dirName, hasSuccess, hasNonHidden) keyed by dir
     //
-    val usedDirs = glob(globPath, conf, AcceptAllPathFilter)
-      .map { fileStatus: FileStatus =>
+    val usedDirs = glob(globPath, conf, AcceptAllPathFilter).map {
+      fileStatus: FileStatus =>
         // stringify Path for Semigroup
         val dir =
           if (fileStatus.isDirectory)
@@ -189,7 +191,7 @@ object FileSource {
             SuccessFileFilter.accept(fileStatus.getPath) && fileStatus.isFile),
           OrVal(HiddenFileFilter.accept(fileStatus.getPath))
         )
-      }
+    }
 
     // OR by key
     val uniqueUsedDirs = MapAlgebra
@@ -259,14 +261,12 @@ abstract class FileSource
         val tryTtp = Try(TestTapFactory(this, hdfsScheme, sinkMode))
           .map {
             // these java types are invariant, so we cast here
-            _.createTap(readOrWrite)
-              .asInstanceOf[Tap[Any, Any, Any]]
+            _.createTap(readOrWrite).asInstanceOf[Tap[Any, Any, Any]]
           }
           .orElse {
             Try(TestTapFactory(this, localScheme.getSourceFields, sinkMode))
               .map {
-                _.createTap(readOrWrite)
-                  .asInstanceOf[Tap[Any, Any, Any]]
+                _.createTap(readOrWrite).asInstanceOf[Tap[Any, Any, Any]]
               }
           }
 
@@ -300,7 +300,8 @@ abstract class FileSource
       case Hdfs(strict, conf) => {
         if (strict && (!hdfsReadPathsAreGood(conf))) {
           throw new InvalidSourceException(
-            "[" + this.toString + "] Data is missing from one or more paths in: " +
+            "[" + this
+              .toString + "] Data is missing from one or more paths in: " +
               hdfsPaths.toString)
         } else if (!hdfsPaths.exists {
                      pathIsGood(_, conf)
@@ -317,7 +318,8 @@ abstract class FileSource
         }
         if (strict && !files.forall(_.exists)) {
           throw new InvalidSourceException(
-            "[" + this.toString + s"] Data is missing from: ${localPaths.filterNot {
+            "[" + this
+              .toString + s"] Data is missing from: ${localPaths.filterNot {
               p => new java.io.File(p).exists
             }}")
         } else if (!files.exists(_.exists)) {
@@ -348,9 +350,11 @@ abstract class FileSource
 
   protected def createHdfsReadTap(hdfsMode: Hdfs): Tap[JobConf, _, _] = {
     val taps: List[Tap[JobConf, RecordReader[_, _], OutputCollector[_, _]]] =
-      goodHdfsPaths(hdfsMode).toList.map { path =>
-        CastHfsTap(createHfsTap(hdfsScheme, path, sinkMode))
-      }
+      goodHdfsPaths(hdfsMode)
+        .toList
+        .map { path =>
+          CastHfsTap(createHfsTap(hdfsScheme, path, sinkMode))
+        }
     taps.size match {
       case 0 => {
         // This case is going to result in an error, but we don't want to throw until
@@ -491,10 +495,14 @@ trait SuccessFileSource extends FileSource {
 trait LocalTapSource extends LocalSourceOverride {
   override def createLocalTap(sinkMode: SinkMode): Tap[JobConf, _, _] = {
     val taps =
-      localPaths.map { p =>
-        new LocalTap(p, hdfsScheme, sinkMode)
-          .asInstanceOf[Tap[JobConf, RecordReader[_, _], OutputCollector[_, _]]]
-      }.toSeq
+      localPaths
+        .map { p =>
+          new LocalTap(p, hdfsScheme, sinkMode).asInstanceOf[Tap[
+            JobConf,
+            RecordReader[_, _],
+            OutputCollector[_, _]]]
+        }
+        .toSeq
 
     taps match {
       case Nil =>
@@ -625,8 +633,8 @@ class OffsetTextLine(
     with TextSourceScheme {
 
   override def converter[U >: (Long, String)] =
-    TupleConverter.asSuperConverter[(Long, String), U](
-      TupleConverter.of[(Long, String)])
+    TupleConverter
+      .asSuperConverter[(Long, String), U](TupleConverter.of[(Long, String)])
 }
 
 /**

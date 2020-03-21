@@ -24,7 +24,8 @@ object RuntimeDependencyInjection extends PlaySpecification {
       cleanup.MessageQueue.stopped must_== true
     }
     "support implemented by annotation" in new WithApplication() {
-      app.injector
+      app
+        .injector
         .instanceOf[implemented.Hello]
         .sayHello("world") must_== "Hello world"
     }
@@ -149,12 +150,11 @@ package dynamicguicemodule {
       // ClassLoader to load the classes.
       for (l <- languages) {
         val bindingClassName: String = helloConfiguration.getString(l).get
-        val bindingClass: Class[_ <: Hello] = environment.classLoader
+        val bindingClass: Class[_ <: Hello] = environment
+          .classLoader
           .loadClass(bindingClassName)
           .asSubclass(classOf[Hello])
-        bind(classOf[Hello])
-          .annotatedWith(Names.named(l))
-          .to(bindingClass)
+        bind(classOf[Hello]).annotatedWith(Names.named(l)).to(bindingClass)
       }
     }
   }

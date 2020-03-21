@@ -226,13 +226,15 @@ trait JSEncoding extends SubComponent {
   }
 
   def encodeClassFullName(sym: Symbol): String = {
-    ir.Definitions.encodeClassName(
-      sym.fullName + (
-        if (needsModuleClassSuffix(sym))
-          "$"
-        else
-          ""
-      ))
+    ir
+      .Definitions
+      .encodeClassName(
+        sym.fullName + (
+          if (needsModuleClassSuffix(sym))
+            "$"
+          else
+            ""
+        ))
   }
 
   def needsModuleClassSuffix(sym: Symbol): Boolean =

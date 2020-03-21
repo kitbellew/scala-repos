@@ -626,12 +626,14 @@ class SingleAbstractMethodTest
 
     parse.depthFirst.foreach(annotator.annotate(_, mock))
 
-    mock.errorAnnotations.filter {
-      case Error(_, null) =>
-        false
-      case _ =>
-        true
-    }
+    mock
+      .errorAnnotations
+      .filter {
+        case Error(_, null) =>
+          false
+        case _ =>
+          true
+      }
   }
 
   def assertMatches[T](actual: T)(pattern: PartialFunction[T, Unit]) {

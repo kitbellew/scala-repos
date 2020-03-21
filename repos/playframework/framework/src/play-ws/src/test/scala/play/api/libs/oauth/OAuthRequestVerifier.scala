@@ -32,7 +32,9 @@ object OAuthRequestVerifier {
     if (input == null) {
       ""
     } else {
-      java.net.URLEncoder
+      java
+        .net
+        .URLEncoder
         .encode(input, "UTF-8")
         .replace("+", "%20")
         .replace("*", "%2A")
@@ -55,15 +57,18 @@ object OAuthRequestVerifier {
     request.headers.get("Authorization") must beSome.like {
       case authorization =>
         authorization must startWith("OAuth ")
-        val oauthParams = authorization.drop(6).split(", ").map { param =>
-          val splitted = param.split("=")
-          val key = percentDecode(splitted(0))
-          val rawValue = splitted(1)
-          rawValue must startWith("\"")
-          rawValue must endWith("\"")
-          val value = percentDecode(rawValue.drop(1).dropRight(1))
-          key -> value
-        }
+        val oauthParams = authorization
+          .drop(6)
+          .split(", ")
+          .map { param =>
+            val splitted = param.split("=")
+            val key = percentDecode(splitted(0))
+            val rawValue = splitted(1)
+            rawValue must startWith("\"")
+            rawValue must endWith("\"")
+            val value = percentDecode(rawValue.drop(1).dropRight(1))
+            key -> value
+          }
 
         val oauthParamsMap = oauthParams.toMap
         val oauthSignature = oauthParamsMap.get("oauth_signature")
@@ -84,17 +89,20 @@ object OAuthRequestVerifier {
         }
 
         // Verify the signature
-        val collectedParams = oauthParams.filterNot(
-          _._1 == "oauth_signature") ++ request.queryString.toSeq.flatMap {
-          case (key, values) =>
-            values.map(value => key -> value)
-        }
+        val collectedParams = oauthParams
+          .filterNot(_._1 == "oauth_signature") ++ request
+          .queryString
+          .toSeq
+          .flatMap {
+            case (key, values) =>
+              values.map(value => key -> value)
+          }
         // If the body is form URL encoded, must include body parameters
         val collectedParamsWithBody =
           request.contentType match {
             case Some(formUrlEncoded)
-                if formUrlEncoded.startsWith(
-                  "application/x-www-form-urlencoded") =>
+                if formUrlEncoded
+                  .startsWith("application/x-www-form-urlencoded") =>
               val form = FormUrlEncodedParser
                 .parse(body.utf8String)
                 .toSeq

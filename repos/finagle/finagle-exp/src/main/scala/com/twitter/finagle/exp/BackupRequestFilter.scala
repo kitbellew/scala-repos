@@ -169,39 +169,43 @@ class BackupRequestFilter[Req, Rep] private[exp] (
       Future.sleep(Duration.fromMilliseconds(howLong))(timer)
     val backupTriggers = Array(orig, backupCountdown)
 
-    Future.selectIndex(backupTriggers).flatMap { firstIndex =>
-      val first = backupTriggers(firstIndex)
-      if (first eq orig) {
-        // If the orig request is successful before the backup timer has fired,
-        // return the response. At this point we can can cancel the backup countdown
-        // because it has either fired or we will dispatch a backup immediately.
-        backupCountdown.raise(BackupRequestFilter.cancelEx)
-        orig.transform {
-          case r @ Return(v) =>
-            Future.const(r)
-          case Throw(_) =>
-            record(service(req), lost)
-        }
-      } else {
-        // If we've waited long enough to fire the backup normally, do so and
-        // pass on the first successful result we get back.
-        timeouts.incr()
-        val backup = record(service(req), lost)
-        val reps = Array(orig, backup)
-        Future.selectIndex(reps).flatMap { firstIndex =>
-          val first = reps(firstIndex)
-          val other = reps((firstIndex + 1) % 2)
-          first.transform {
+    Future
+      .selectIndex(backupTriggers)
+      .flatMap { firstIndex =>
+        val first = backupTriggers(firstIndex)
+        if (first eq orig) {
+          // If the orig request is successful before the backup timer has fired,
+          // return the response. At this point we can can cancel the backup countdown
+          // because it has either fired or we will dispatch a backup immediately.
+          backupCountdown.raise(BackupRequestFilter.cancelEx)
+          orig.transform {
             case r @ Return(v) =>
-              if (first eq backup)
-                orig.raise(BackupRequestLost)
               Future.const(r)
             case Throw(_) =>
-              other
+              record(service(req), lost)
           }
+        } else {
+          // If we've waited long enough to fire the backup normally, do so and
+          // pass on the first successful result we get back.
+          timeouts.incr()
+          val backup = record(service(req), lost)
+          val reps = Array(orig, backup)
+          Future
+            .selectIndex(reps)
+            .flatMap { firstIndex =>
+              val first = reps(firstIndex)
+              val other = reps((firstIndex + 1) % 2)
+              first.transform {
+                case r @ Return(v) =>
+                  if (first eq backup)
+                    orig.raise(BackupRequestLost)
+                  Future.const(r)
+                case Throw(_) =>
+                  other
+              }
+            }
         }
       }
-    }
   }
 
 }

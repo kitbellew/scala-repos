@@ -14,11 +14,13 @@ class UnitMethodDefinedLikeFunctionInspection
 
   def actionFor(holder: ProblemsHolder) = {
     case f: ScFunctionDefinition if f.hasUnitResultType =>
-      f.returnTypeElement.foreach { e =>
-        holder.registerProblem(
-          e,
-          getDisplayName,
-          new RemoveTypeAnnotationAndEqualSign(f))
-      }
+      f
+        .returnTypeElement
+        .foreach { e =>
+          holder.registerProblem(
+            e,
+            getDisplayName,
+            new RemoveTypeAnnotationAndEqualSign(f))
+        }
   }
 }

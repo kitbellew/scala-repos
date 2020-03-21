@@ -72,8 +72,10 @@ class OffersWantedForReconciliationActorTest
     val plan = DeploymentPlan(
       original = Group.empty.copy(apps = Set(app)),
       target = Group.empty)
-    f.eventStream.publish(
-      DeploymentStepSuccess(plan = plan, currentStep = plan.steps.head))
+    f
+      .eventStream
+      .publish(
+        DeploymentStepSuccess(plan = plan, currentStep = plan.steps.head))
 
     Then("there is interest for offers")
     valAfterDeploymentStepSuccess.futureValue should be(true)

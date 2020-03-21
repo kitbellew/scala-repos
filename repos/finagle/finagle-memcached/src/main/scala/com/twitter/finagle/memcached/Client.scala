@@ -219,8 +219,8 @@ trait BaseClient[T] {
       expiry: Time,
       value: T,
       casUnique: Buf): Future[JBoolean] =
-    checkAndSet(key, flags, expiry, value, casUnique).flatMap(
-      CasFromCheckAndSet)
+    checkAndSet(key, flags, expiry, value, casUnique)
+      .flatMap(CasFromCheckAndSet)
 
   /**
     * Perform a CAS operation on the key, only if the value has not
@@ -295,9 +295,11 @@ trait BaseClient[T] {
         Future.exception(result.failures.values.head)
       } else {
         Future.value(
-          result.values.mapValues {
-            bufferToType(_)
-          })
+          result
+            .values
+            .mapValues {
+              bufferToType(_)
+            })
       }
     }
   }
@@ -316,10 +318,12 @@ trait BaseClient[T] {
         Future.exception(result.failures.values.head)
       } else {
         Future.value(
-          result.valuesWithTokens.mapValues {
-            case (v, u) =>
-              (bufferToType(v), u)
-          })
+          result
+            .valuesWithTokens
+            .mapValues {
+              case (v, u) =>
+                (bufferToType(v), u)
+            })
       }
     }
   }
@@ -516,10 +520,12 @@ protected class ConnectedClient(
 
   protected def rawGet(command: RetrievalCommand) = {
     val keys: immutable.Set[String] =
-      command.keys.map {
-        case Buf.Utf8(s) =>
-          s
-      }(breakOut)
+      command
+        .keys
+        .map {
+          case Buf.Utf8(s) =>
+            s
+        }(breakOut)
 
     service(command).map {
       case Values(values) =>
@@ -535,8 +541,8 @@ protected class ConnectedClient(
         throw e
       case other =>
         throw new IllegalStateException(
-          "Invalid response type from get: %s".format(
-            other.getClass.getSimpleName))
+          "Invalid response type from get: %s"
+            .format(other.getClass.getSimpleName))
     } handle {
       case t: RequestException =>
         GetResult(failures = (
@@ -1128,9 +1134,11 @@ private[finagle] class KetamaPartitionedClient(
   private[this] var ketamaNodeSnap = ketamaNodeGrp()
   @volatile
   private[this] var nodes = mutable.Map[KetamaClientKey, Node]() ++ {
-    ketamaNodeSnap.toMap.mapValues { kn: KetamaNode[Client] =>
-      Node(kn, NodeState.Live)
-    }
+    ketamaNodeSnap
+      .toMap
+      .mapValues { kn: KetamaNode[Client] =>
+        Node(kn, NodeState.Live)
+      }
   }
 
   nodeHealthBroker.recv foreach {
@@ -1168,8 +1176,8 @@ private[finagle] class KetamaPartitionedClient(
   private[this] val revivalCount = statsReceiver.counter("revivals")
   private[this] val nodeLeaveCount = statsReceiver.counter("leaves")
   private[this] val nodeJoinCount = statsReceiver.counter("joins")
-  private[this] val keyRingRedistributeCount = statsReceiver.counter(
-    "redistributes")
+  private[this] val keyRingRedistributeCount = statsReceiver
+    .counter("redistributes")
 
   private[this] def buildDistributor(nodes: Seq[KetamaNode[Client]]) =
     synchronized {
@@ -1268,12 +1276,8 @@ private[finagle] class KetamaPartitionedClient(
       expiry: Time,
       value: Buf,
       casUnique: Buf) =
-    ready.interruptible before super.checkAndSet(
-      key,
-      flags,
-      expiry,
-      value,
-      casUnique)
+    ready.interruptible before super
+      .checkAndSet(key, flags, expiry, value, casUnique)
 
   override def add(key: String, flags: Int, expiry: Time, value: Buf) =
     ready.interruptible before super.add(key, flags, expiry, value)
@@ -1317,8 +1321,8 @@ case class KetamaClientBuilder private[memcached] (
     numReps: Int = KetamaPartitionedClient.DefaultNumReps) {
   import Memcached.Client.mkDestination
 
-  private lazy val localMemcachedName = Resolver.eval(
-    "localhost:" + LocalMemcached.port)
+  private lazy val localMemcachedName = Resolver
+    .eval("localhost:" + LocalMemcached.port)
 
   private def withLocalMemcached = {
     val Name.Bound(va) = localMemcachedName
@@ -1356,9 +1360,11 @@ case class KetamaClientBuilder private[memcached] (
   def cluster(cluster: Cluster[InetSocketAddress]): KetamaClientBuilder = {
     group(
       CacheNodeGroup(
-        Group.fromCluster(cluster).map {
-          _.asInstanceOf[SocketAddress]
-        }))
+        Group
+          .fromCluster(cluster)
+          .map {
+            _.asInstanceOf[SocketAddress]
+          }))
   }
 
   @deprecated("Use `KetamaClientBuilder.dest(name: Name)` instead", "7.0.0")
@@ -1503,9 +1509,12 @@ case class RubyMemCacheClientBuilder(
     copy(_nodes = nodes)
 
   def nodes(hostPortWeights: String): RubyMemCacheClientBuilder =
-    copy(_nodes = CacheNodeGroup(hostPortWeights).members.map {
-      node: CacheNode => (node.host, node.port, node.weight)
-    }.toSeq)
+    copy(_nodes = CacheNodeGroup(hostPortWeights)
+      .members
+      .map { node: CacheNode =>
+        (node.host, node.port, node.weight)
+      }
+      .toSeq)
 
   def clientBuilder(clientBuilder: ClientBuilder[_, _, _, _, ClientConfig.Yes])
       : RubyMemCacheClientBuilder = copy(_clientBuilder = Some(clientBuilder))
@@ -1555,9 +1564,12 @@ case class PHPMemCacheClientBuilder(
     copy(_nodes = nodes)
 
   def nodes(hostPortWeights: String): PHPMemCacheClientBuilder =
-    copy(_nodes = CacheNodeGroup(hostPortWeights).members.map {
-      node: CacheNode => (node.host, node.port, node.weight)
-    }.toSeq)
+    copy(_nodes = CacheNodeGroup(hostPortWeights)
+      .members
+      .map { node: CacheNode =>
+        (node.host, node.port, node.weight)
+      }
+      .toSeq)
 
   def hashName(hashName: String): PHPMemCacheClientBuilder =
     copy(_hashName = Some(hashName))

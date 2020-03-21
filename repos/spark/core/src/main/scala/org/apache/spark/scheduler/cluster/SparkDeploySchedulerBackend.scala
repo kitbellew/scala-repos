@@ -78,15 +78,18 @@ private[spark] class SparkDeploySchedulerBackend(
       "--worker-url",
       "{{WORKER_URL}}"
     )
-    val extraJavaOpts = sc.conf
+    val extraJavaOpts = sc
+      .conf
       .getOption("spark.executor.extraJavaOptions")
       .map(Utils.splitCommandString)
       .getOrElse(Seq.empty)
-    val classPathEntries = sc.conf
+    val classPathEntries = sc
+      .conf
       .getOption("spark.executor.extraClassPath")
       .map(_.split(java.io.File.pathSeparator).toSeq)
       .getOrElse(Nil)
-    val libraryPathEntries = sc.conf
+    val libraryPathEntries = sc
+      .conf
       .getOption("spark.executor.extraLibraryPath")
       .map(_.split(java.io.File.pathSeparator).toSeq)
       .getOrElse(Nil)
@@ -102,9 +105,8 @@ private[spark] class SparkDeploySchedulerBackend(
       }
 
     // Start executors with a few necessary configs for registering with the scheduler
-    val sparkJavaOpts = Utils.sparkJavaOpts(
-      conf,
-      SparkConf.isExecutorStartupConf)
+    val sparkJavaOpts = Utils
+      .sparkJavaOpts(conf, SparkConf.isExecutorStartupConf)
     val javaOpts = sparkJavaOpts ++ extraJavaOpts
     val command = Command(
       "org.apache.spark.executor.CoarseGrainedExecutorBackend",

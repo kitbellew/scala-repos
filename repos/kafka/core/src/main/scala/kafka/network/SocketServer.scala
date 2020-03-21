@@ -99,43 +99,45 @@ class SocketServer(
       val brokerId = config.brokerId
 
       var processorBeginIndex = 0
-      endpoints.values.foreach { endpoint =>
-        val protocol = endpoint.protocolType
-        val processorEndIndex = processorBeginIndex + numProcessorThreads
+      endpoints
+        .values
+        .foreach { endpoint =>
+          val protocol = endpoint.protocolType
+          val processorEndIndex = processorBeginIndex + numProcessorThreads
 
-        for (i <- processorBeginIndex until processorEndIndex) {
-          processors(i) = new Processor(
-            i,
-            time,
-            maxRequestSize,
-            requestChannel,
-            connectionQuotas,
-            connectionsMaxIdleMs,
-            protocol,
-            config.values,
-            metrics)
+          for (i <- processorBeginIndex until processorEndIndex) {
+            processors(i) = new Processor(
+              i,
+              time,
+              maxRequestSize,
+              requestChannel,
+              connectionQuotas,
+              connectionsMaxIdleMs,
+              protocol,
+              config.values,
+              metrics)
+          }
+
+          val acceptor =
+            new Acceptor(
+              endpoint,
+              sendBufferSize,
+              recvBufferSize,
+              brokerId,
+              processors.slice(processorBeginIndex, processorEndIndex),
+              connectionQuotas)
+          acceptors.put(endpoint, acceptor)
+          Utils
+            .newThread(
+              "kafka-socket-acceptor-%s-%d"
+                .format(protocol.toString, endpoint.port),
+              acceptor,
+              false)
+            .start()
+          acceptor.awaitStartup()
+
+          processorBeginIndex = processorEndIndex
         }
-
-        val acceptor =
-          new Acceptor(
-            endpoint,
-            sendBufferSize,
-            recvBufferSize,
-            brokerId,
-            processors.slice(processorBeginIndex, processorEndIndex),
-            connectionQuotas)
-        acceptors.put(endpoint, acceptor)
-        Utils
-          .newThread(
-            "kafka-socket-acceptor-%s-%d"
-              .format(protocol.toString, endpoint.port),
-            acceptor,
-            false)
-          .start()
-        acceptor.awaitStartup()
-
-        processorBeginIndex = processorEndIndex
-      }
     }
 
     newGauge(
@@ -426,13 +428,17 @@ private[kafka] class Processor(
     def fromString(s: String): Option[ConnectionId] =
       s.split("-") match {
         case Array(local, remote) =>
-          BrokerEndPoint.parseHostPort(local).flatMap {
-            case (localHost, localPort) =>
-              BrokerEndPoint.parseHostPort(remote).map {
-                case (remoteHost, remotePort) =>
-                  ConnectionId(localHost, localPort, remoteHost, remotePort)
-              }
-          }
+          BrokerEndPoint
+            .parseHostPort(local)
+            .flatMap {
+              case (localHost, localPort) =>
+                BrokerEndPoint
+                  .parseHostPort(remote)
+                  .map {
+                    case (remoteHost, remotePort) =>
+                      ConnectionId(localHost, localPort, remoteHost, remotePort)
+                  }
+            }
         case _ =>
           None
       }
@@ -449,11 +455,8 @@ private[kafka] class Processor(
 
   private val newConnections = new ConcurrentLinkedQueue[SocketChannel]()
   private val inflightResponses = mutable.Map[String, RequestChannel.Response]()
-  private val channelBuilder = ChannelBuilders.create(
-    protocol,
-    Mode.SERVER,
-    LoginType.SERVER,
-    channelConfigs)
+  private val channelBuilder = ChannelBuilders
+    .create(protocol, Mode.SERVER, LoginType.SERVER, channelConfigs)
   private val metricTags = new util.HashMap[String, String]()
   metricTags.put("networkProcessor", id.toString)
 
@@ -503,54 +506,65 @@ private[kafka] class Processor(
             shutdownComplete()
             throw e
         }
-        selector.completedReceives.asScala.foreach { receive =>
-          try {
-            val channel = selector.channel(receive.source)
-            val session = RequestChannel.Session(
-              new KafkaPrincipal(
-                KafkaPrincipal.USER_TYPE,
-                channel.principal.getName),
-              channel.socketAddress)
-            val req = RequestChannel.Request(
-              processor = id,
-              connectionId = receive.source,
-              session = session,
-              buffer = receive.payload,
-              startTimeMs = time.milliseconds,
-              securityProtocol = protocol)
-            requestChannel.sendRequest(req)
-            selector.mute(receive.source)
-          } catch {
-            case e @ (_: InvalidRequestException | _: SchemaException) =>
-              // note that even though we got an exception, we can assume that receive.source is valid. Issues with constructing a valid receive object were handled earlier
-              error(
-                "Closing socket for " + receive.source + " because of error",
-                e)
-              close(selector, receive.source)
+        selector
+          .completedReceives
+          .asScala
+          .foreach { receive =>
+            try {
+              val channel = selector.channel(receive.source)
+              val session = RequestChannel.Session(
+                new KafkaPrincipal(
+                  KafkaPrincipal.USER_TYPE,
+                  channel.principal.getName),
+                channel.socketAddress)
+              val req = RequestChannel.Request(
+                processor = id,
+                connectionId = receive.source,
+                session = session,
+                buffer = receive.payload,
+                startTimeMs = time.milliseconds,
+                securityProtocol = protocol)
+              requestChannel.sendRequest(req)
+              selector.mute(receive.source)
+            } catch {
+              case e @ (_: InvalidRequestException | _: SchemaException) =>
+                // note that even though we got an exception, we can assume that receive.source is valid. Issues with constructing a valid receive object were handled earlier
+                error(
+                  "Closing socket for " + receive.source + " because of error",
+                  e)
+                close(selector, receive.source)
+            }
           }
-        }
 
-        selector.completedSends.asScala.foreach { send =>
-          val resp = inflightResponses.remove(send.destination).getOrElse {
-            throw new IllegalStateException(
-              s"Send for ${send.destination} completed, but not in `inflightResponses`")
-          }
-          resp.request.updateRequestMetrics()
-          selector.unmute(send.destination)
-        }
-
-        selector.disconnected.asScala.foreach { connectionId =>
-          val remoteHost =
-            ConnectionId
-              .fromString(connectionId)
+        selector
+          .completedSends
+          .asScala
+          .foreach { send =>
+            val resp = inflightResponses
+              .remove(send.destination)
               .getOrElse {
                 throw new IllegalStateException(
-                  s"connectionId has unexpected format: $connectionId")
+                  s"Send for ${send.destination} completed, but not in `inflightResponses`")
               }
-              .remoteHost
-          // the channel has been closed by the selector but the quotas still need to be updated
-          connectionQuotas.dec(InetAddress.getByName(remoteHost))
-        }
+            resp.request.updateRequestMetrics()
+            selector.unmute(send.destination)
+          }
+
+        selector
+          .disconnected
+          .asScala
+          .foreach { connectionId =>
+            val remoteHost =
+              ConnectionId
+                .fromString(connectionId)
+                .getOrElse {
+                  throw new IllegalStateException(
+                    s"connectionId has unexpected format: $connectionId")
+                }
+                .remoteHost
+            // the channel has been closed by the selector but the quotas still need to be updated
+            connectionQuotas.dec(InetAddress.getByName(remoteHost))
+          }
 
       } catch {
         // We catch all the throwables here to prevent the processor thread from exiting. We do this because
@@ -614,7 +628,9 @@ private[kafka] class Processor(
       val channel = newConnections.poll()
       try {
         debug(
-          "Processor " + id + " listening to new connection from " + channel.socket.getRemoteSocketAddress)
+          "Processor " + id + " listening to new connection from " + channel
+            .socket
+            .getRemoteSocketAddress)
         val localHost = channel.socket().getLocalAddress.getHostAddress
         val localPort = channel.socket().getLocalPort
         val remoteHost = channel.socket().getInetAddress.getHostAddress
@@ -629,7 +645,8 @@ private[kafka] class Processor(
           // need to close the channel here to avoid socket leak.
           close(channel)
           error(
-            "Processor " + id + " closed connection from " + channel.getRemoteAddress,
+            "Processor " + id + " closed connection from " + channel
+              .getRemoteAddress,
             e)
       }
     }
@@ -639,9 +656,12 @@ private[kafka] class Processor(
     * Close the selector and all open connections
     */
   private def closeAll() {
-    selector.channels.asScala.foreach { channel =>
-      close(selector, channel.id)
-    }
+    selector
+      .channels
+      .asScala
+      .foreach { channel =>
+        close(selector, channel.id)
+      }
     selector.close()
   }
 

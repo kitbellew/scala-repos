@@ -26,13 +26,15 @@ private[finagle] class WriteCompletionTimeoutHandler(
             else
               null))
       }
-    e.getFuture.addListener(
-      new ChannelFutureListener {
-        override def operationComplete(f: ChannelFuture): Unit =
-          if (!f.isCancelled) { // on success or failure
-            task.cancel()
-          }
-      })
+    e
+      .getFuture
+      .addListener(
+        new ChannelFutureListener {
+          override def operationComplete(f: ChannelFuture): Unit =
+            if (!f.isCancelled) { // on success or failure
+              task.cancel()
+            }
+        })
 
     super.writeRequested(ctx, e)
   }

@@ -9,7 +9,7 @@ object Test {
             x
         }))
       .sum
-  ))
+    ))
 
   // okay
   ((1: BigInt) * (
@@ -19,7 +19,7 @@ object Test {
           x
       })
       .sum
-  ))
+    ))
 
   // fail
   (1 * (
@@ -29,5 +29,5 @@ object Test {
           x
       })
       .sum
-  ))
+    ))
 }

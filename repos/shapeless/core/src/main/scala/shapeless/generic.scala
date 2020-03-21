@@ -384,11 +384,13 @@ trait CaseClassMacros extends ReprTypes {
 
   def accessiblePrimaryCtorOf(tpe: Type): Option[Symbol] = {
     for {
-      ctor <- tpe.decls.find { sym =>
-        sym.isMethod && sym.asMethod.isPrimaryConstructor && isAccessible(
-          tpe,
-          sym)
-      }
+      ctor <- tpe
+        .decls
+        .find { sym =>
+          sym.isMethod && sym.asMethod.isPrimaryConstructor && isAccessible(
+            tpe,
+            sym)
+        }
       if !ctor.isJava || productCtorsOf(tpe).size == 1
     } yield ctor
   }
@@ -413,7 +415,8 @@ trait CaseClassMacros extends ReprTypes {
     def collectCtors(classSym: ClassSymbol): List[ClassSymbol] = {
       classSym.knownDirectSubclasses.toList flatMap { child0 =>
         val child = child0.asClass
-        child.typeSignature // Workaround for <https://issues.scala-lang.org/browse/SI-7755>
+        child
+          .typeSignature // Workaround for <https://issues.scala-lang.org/browse/SI-7755>
         if (isCaseClassLike(child) || isCaseObjectLike(child))
           List(child)
         else if (child.isSealed)
@@ -444,10 +447,12 @@ trait CaseClassMacros extends ReprTypes {
         ctorSyms flatMap { sym =>
           def substituteArgs: List[Type] = {
             val subst = c.internal.thisType(sym).baseType(baseSym).typeArgs
-            sym.typeParams.map { param =>
-              val paramTpe = param.asType.toType
-              baseArgs(subst.indexWhere(_ =:= paramTpe))
-            }
+            sym
+              .typeParams
+              .map { param =>
+                val paramTpe = param.asType.toType
+                baseArgs(subst.indexWhere(_ =:= paramTpe))
+              }
           }
 
           val suffix = ownerChain(sym).dropWhile(_ != basePre.typeSymbol)
@@ -469,8 +474,10 @@ trait CaseClassMacros extends ReprTypes {
                 val (valPre, valSym) = mkDependentRef(basePre, path)
                 c.internal.singleType(valPre, valSym)
               } else {
-                val path = suffix.tail.init
-                  .map(_.name.toTermName) :+ suffix.last.name.toTypeName
+                val path = suffix.tail.init.map(_.name.toTermName) :+ suffix
+                  .last
+                  .name
+                  .toTypeName
                 val (subTpePre, subTpeSym) = mkDependentRef(basePre, path)
                 c.internal.typeRef(subTpePre, subTpeSym, substituteArgs)
               }
@@ -576,8 +583,9 @@ trait CaseClassMacros extends ReprTypes {
       case PolyType(params, body) if params.head.asType.toType =:= param =>
         appliedTypTree1(body, param, arg)
       case t @ TypeRef(pre, sym, List()) if t.takesTypeArgs =>
-        val argTrees = t.typeParams.map(sym =>
-          appliedTypTree1(sym.asType.toType, param, arg))
+        val argTrees = t
+          .typeParams
+          .map(sym => appliedTypTree1(sym.asType.toType, param, arg))
         AppliedTypeTree(mkAttributedRef(pre, sym), argTrees)
       case TypeRef(pre, sym, List()) =>
         mkAttributedRef(pre, sym)
@@ -585,8 +593,9 @@ trait CaseClassMacros extends ReprTypes {
         val argTrees = args.map(appliedTypTree1(_, param, arg))
         AppliedTypeTree(mkAttributedRef(pre, sym), argTrees)
       case t if t.takesTypeArgs =>
-        val argTrees = t.typeParams.map(sym =>
-          appliedTypTree1(sym.asType.toType, param, arg))
+        val argTrees = t
+          .typeParams
+          .map(sym => appliedTypTree1(sym.asType.toType, param, arg))
         AppliedTypeTree(mkAttributedRef(tpe.typeConstructor), argTrees)
       case t =>
         tq"$tpe"
@@ -715,7 +724,8 @@ trait CaseClassMacros extends ReprTypes {
     def helper(classSym: ClassSymbol): Boolean = {
       classSym.knownDirectSubclasses.toList forall { child0 =>
         val child = child0.asClass
-        child.typeSignature // Workaround for <https://issues.scala-lang.org/browse/SI-7755>
+        child
+          .typeSignature // Workaround for <https://issues.scala-lang.org/browse/SI-7755>
 
         isCaseClassLike(child) || (child.isSealed && helper(child))
       }
@@ -730,7 +740,8 @@ trait CaseClassMacros extends ReprTypes {
       abort(s"$sym is not a class or trait")
 
     val classSym = sym.asClass
-    classSym.typeSignature // Workaround for <https://issues.scala-lang.org/browse/SI-7755>
+    classSym
+      .typeSignature // Workaround for <https://issues.scala-lang.org/browse/SI-7755>
 
     classSym
   }
@@ -780,52 +791,54 @@ trait CaseClassMacros extends ReprTypes {
 
     import global.analyzer.Context
 
-    original.companion.orElse {
-      import global.{abort => aabort, _}
-      implicit class PatchedContext(ctx: Context) {
-        trait PatchedLookupResult {
-          def suchThat(criterion: Symbol => Boolean): Symbol
-        }
-        def patchedLookup(name: Name, expectedOwner: Symbol) =
-          new PatchedLookupResult {
-            override def suchThat(criterion: Symbol => Boolean): Symbol = {
-              var res: Symbol = NoSymbol
-              var ctx = PatchedContext.this.ctx
-              while (res == NoSymbol && ctx.outer != ctx) {
-                // NOTE: original implementation says `val s = ctx.scope lookup name`
-                // but we can't use it, because Scope.lookup returns wrong results when the lookup is ambiguous
-                // and that triggers https://github.com/scalamacros/paradise/issues/64
-                val s = {
-                  val lookupResult =
-                    ctx.scope.lookupAll(name).filter(criterion).toList
-                  lookupResult match {
-                    case Nil =>
-                      NoSymbol
-                    case List(unique) =>
-                      unique
-                    case _ =>
-                      aabort(
-                        s"unexpected multiple results for a companion symbol lookup for $original#{$original.id}")
-                  }
-                }
-                if (s != NoSymbol && s.owner == expectedOwner)
-                  res = s
-                else
-                  ctx = ctx.outer
-              }
-              res
-            }
+    original
+      .companion
+      .orElse {
+        import global.{abort => aabort, _}
+        implicit class PatchedContext(ctx: Context) {
+          trait PatchedLookupResult {
+            def suchThat(criterion: Symbol => Boolean): Symbol
           }
+          def patchedLookup(name: Name, expectedOwner: Symbol) =
+            new PatchedLookupResult {
+              override def suchThat(criterion: Symbol => Boolean): Symbol = {
+                var res: Symbol = NoSymbol
+                var ctx = PatchedContext.this.ctx
+                while (res == NoSymbol && ctx.outer != ctx) {
+                  // NOTE: original implementation says `val s = ctx.scope lookup name`
+                  // but we can't use it, because Scope.lookup returns wrong results when the lookup is ambiguous
+                  // and that triggers https://github.com/scalamacros/paradise/issues/64
+                  val s = {
+                    val lookupResult =
+                      ctx.scope.lookupAll(name).filter(criterion).toList
+                    lookupResult match {
+                      case Nil =>
+                        NoSymbol
+                      case List(unique) =>
+                        unique
+                      case _ =>
+                        aabort(
+                          s"unexpected multiple results for a companion symbol lookup for $original#{$original.id}")
+                    }
+                  }
+                  if (s != NoSymbol && s.owner == expectedOwner)
+                    res = s
+                  else
+                    ctx = ctx.outer
+                }
+                res
+              }
+            }
+        }
+        ctx
+          .patchedLookup(
+            original.asInstanceOf[global.Symbol].name.companionName,
+            owner.asInstanceOf[global.Symbol])
+          .suchThat(sym =>
+            (original.isTerm || sym.hasModuleFlag) &&
+              (sym isCoDefinedWith original.asInstanceOf[global.Symbol]))
+          .asInstanceOf[c.universe.Symbol]
       }
-      ctx
-        .patchedLookup(
-          original.asInstanceOf[global.Symbol].name.companionName,
-          owner.asInstanceOf[global.Symbol])
-        .suchThat(sym =>
-          (original.isTerm || sym.hasModuleFlag) &&
-            (sym isCoDefinedWith original.asInstanceOf[global.Symbol]))
-        .asInstanceOf[c.universe.Symbol]
-    }
   }
 
   def prefix(tpe: Type): Type = {
@@ -926,8 +939,10 @@ trait CaseClassMacros extends ReprTypes {
       val sym = tpe.typeSymbol
       val companionTpe = sym.companion.info
       val applySym = companionTpe.member(TermName("apply"))
-      if (applySym.isTerm && !applySym.asTerm.isOverloaded && applySym.isMethod && !isNonGeneric(
-            applySym) && isAccessible(companionTpe, applySym)) {
+      if (applySym.isTerm && !applySym.asTerm.isOverloaded && applySym
+            .isMethod && !isNonGeneric(applySym) && isAccessible(
+            companionTpe,
+            applySym)) {
         val applyParamss = applySym.asMethod.paramLists
         if (applyParamss.length == 1)
           alignFields(
@@ -945,9 +960,12 @@ trait CaseClassMacros extends ReprTypes {
       val sym = tpe.typeSymbol
       val companionTpe = sym.companion.info
       val unapplySym = companionTpe.member(TermName("unapply"))
-      if (unapplySym.isTerm && !unapplySym.asTerm.isOverloaded && unapplySym.isMethod && !isNonGeneric(
-            unapplySym) && isAccessible(companionTpe, unapplySym))
-        unapplySym.asMethod
+      if (unapplySym.isTerm && !unapplySym.asTerm.isOverloaded && unapplySym
+            .isMethod && !isNonGeneric(unapplySym) && isAccessible(
+            companionTpe,
+            unapplySym))
+        unapplySym
+          .asMethod
           .infoIn(companionTpe)
           .finalResultType
           .baseType(symbolOf[Option[_]]) match {
@@ -966,11 +984,13 @@ trait CaseClassMacros extends ReprTypes {
 
   object HasUniqueCtor {
     def unapply(tpe: Type): Option[List[(TermName, Type)]] =
-      tpe.decls.find { sym =>
-        sym.isMethod && sym.asMethod.isPrimaryConstructor && isAccessible(
-          tpe,
-          sym)
-      } match {
+      tpe
+        .decls
+        .find { sym =>
+          sym.isMethod && sym.asMethod.isPrimaryConstructor && isAccessible(
+            tpe,
+            sym)
+        } match {
         case Some(ctorSym) if !isNonGeneric(ctorSym) =>
           val ctorParamss = ctorSym.asMethod.infoIn(tpe).paramLists
           if (ctorParamss.length == 1)
@@ -1222,8 +1242,8 @@ class GenericMacros(val c: whitebox.Context) extends CaseClassMacros {
     }
 
     val to = {
-      val toCases =
-        ctorsOf(tpe) zip (Stream from 0) map (mkCoproductCases _).tupled
+      val toCases = ctorsOf(tpe) zip (Stream from 0) map (mkCoproductCases _)
+        .tupled
       q"""_root_.shapeless.Coproduct.unsafeMkCoproduct((p: @_root_.scala.unchecked) match { case ..$toCases }, p).asInstanceOf[Repr]"""
     }
 

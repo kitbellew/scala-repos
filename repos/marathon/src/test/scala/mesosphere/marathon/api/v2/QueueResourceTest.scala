@@ -40,16 +40,17 @@ class QueueResourceTest
     val json = Json.parse(response.getEntity.asInstanceOf[String])
     val queuedApps = (json \ "queue").as[Seq[JsObject]]
     val jsonApp1 =
-      queuedApps.find { apps =>
-        (apps \ "app" \ "id").as[String] == "/app"
-      }.get
+      queuedApps
+        .find { apps =>
+          (apps \ "app" \ "id").as[String] == "/app"
+        }
+        .get
 
     (jsonApp1 \ "app").as[AppDefinition] should be(app)
     (jsonApp1 \ "count").as[Int] should be(23)
     (jsonApp1 \ "delay" \ "overdue").as[Boolean] should be(false)
-    (jsonApp1 \ "delay" \ "timeLeftSeconds").as[Int] should be(
-      100
-    ) //the deadline holds the current time...
+    (jsonApp1 \ "delay" \ "timeLeftSeconds")
+      .as[Int] should be(100) //the deadline holds the current time...
   }
 
   test("the generated info from the queue contains 0 if there is no delay") {
@@ -70,9 +71,11 @@ class QueueResourceTest
     val json = Json.parse(response.getEntity.asInstanceOf[String])
     val queuedApps = (json \ "queue").as[Seq[JsObject]]
     val jsonApp1 =
-      queuedApps.find { apps =>
-        (apps \ "app" \ "id").get == JsString("/app")
-      }.get
+      queuedApps
+        .find { apps =>
+          (apps \ "app" \ "id").get == JsString("/app")
+        }
+        .get
 
     (jsonApp1 \ "app").as[AppDefinition] should be(app)
     (jsonApp1 \ "count").as[Int] should be(23)
@@ -134,12 +137,8 @@ class QueueResourceTest
 
     When(s"one delay is reset")
     val appId = "appId".toRootPath
-    val taskCount = LaunchQueue.QueuedTaskInfo(
-      AppDefinition(appId),
-      0,
-      0,
-      0,
-      Timestamp.now())
+    val taskCount = LaunchQueue
+      .QueuedTaskInfo(AppDefinition(appId), 0, 0, 0, Timestamp.now())
     queue.list returns Seq(taskCount)
 
     val resetDelay = queueResource.resetDelay("appId", req)

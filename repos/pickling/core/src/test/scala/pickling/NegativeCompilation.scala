@@ -23,10 +23,12 @@ object NegativeCompilation {
       assert(
         list.length == prefixes.size,
         ("expected = " + prefixes.length + ", actual = " + list.length, list))
-      list.zip(prefixes).foreach {
-        case (el, prefix) =>
-          el mustStartWith prefix
-      }
+      list
+        .zip(prefixes)
+        .foreach {
+          case (el, prefix) =>
+            el mustStartWith prefix
+        }
     }
   }
 

@@ -35,17 +35,19 @@ private[play] object Streamed {
         Publisher[HttpResponseBodyPart])]()
     client.executeRequest(request, new DefaultStreamedAsyncHandler(promise))
     import play.api.libs.iteratee.Execution.Implicits.trampoline
-    promise.future.map {
-      case (headers, publisher) =>
-        // this transformation is not part of `DefaultStreamedAsyncHandler.onCompleted` because
-        // a reactive-streams `Publisher` needs to be returned to implement `execute2`. Though,
-        // once `execute2` is removed, we should move the code here inside
-        // `DefaultStreamedAsyncHandler.onCompleted`.
-        val source = Source
-          .fromPublisher(publisher)
-          .map(bodyPart => ByteString(bodyPart.getBodyPartBytes))
-        StreamedResponse(headers, source)
-    }
+    promise
+      .future
+      .map {
+        case (headers, publisher) =>
+          // this transformation is not part of `DefaultStreamedAsyncHandler.onCompleted` because
+          // a reactive-streams `Publisher` needs to be returned to implement `execute2`. Though,
+          // once `execute2` is removed, we should move the code here inside
+          // `DefaultStreamedAsyncHandler.onCompleted`.
+          val source = Source
+            .fromPublisher(publisher)
+            .map(bodyPart => ByteString(bodyPart.getBodyPartBytes))
+          StreamedResponse(headers, source)
+      }
   }
 
   // This method was introduced because in Play we have utilities that makes it easy to convert a `Publisher` into an `Enumerator`,
@@ -62,13 +64,15 @@ private[play] object Streamed {
         Publisher[HttpResponseBodyPart])]()
     client.executeRequest(request, new DefaultStreamedAsyncHandler(promise))
     import play.api.libs.iteratee.Execution.Implicits.trampoline
-    promise.future.map {
-      case (headers, publisher) =>
-        val enumerator = Streams
-          .publisherToEnumerator(publisher)
-          .map(_.getBodyPartBytes)
-        (headers, enumerator)
-    }
+    promise
+      .future
+      .map {
+        case (headers, publisher) =>
+          val enumerator = Streams
+            .publisherToEnumerator(publisher)
+            .map(_.getBodyPartBytes)
+          (headers, enumerator)
+      }
   }
 
   private class DefaultStreamedAsyncHandler(

@@ -172,8 +172,8 @@ object WorkflowUtils extends Logging {
       case _ =>
         false
     } map { jv =>
-      implicit lazy val formats =
-        Utils.json4sDefaultFormats + new NameParamsSerializer
+      implicit lazy val formats = Utils
+        .json4sDefaultFormats + new NameParamsSerializer
       val np: NameParams =
         try {
           jv._2.extract[NameParams]
@@ -182,7 +182,8 @@ object WorkflowUtils extends Logging {
             error(s"Unable to extract $field name and params $jv")
             throw e
         }
-      val extractedParams = np.params
+      val extractedParams = np
+        .params
         .map { p =>
           try {
             if (!classMap.contains(np.name)) {
@@ -259,15 +260,19 @@ object WorkflowUtils extends Logging {
       "HADOOP_CONF_DIR" -> "core-site.xml",
       "HBASE_CONF_DIR" -> "hbase-site.xml")
 
-    thirdPartyFiles.keys.toSeq.map { k: String =>
-      sys.env.get(k) map { x =>
-        val p = Seq(x, thirdPartyFiles(k)).mkString(File.separator)
-        if (new File(p).exists)
-          Seq(p)
-        else
-          Seq[String]()
-      } getOrElse Seq[String]()
-    }.flatten
+    thirdPartyFiles
+      .keys
+      .toSeq
+      .map { k: String =>
+        sys.env.get(k) map { x =>
+          val p = Seq(x, thirdPartyFiles(k)).mkString(File.separator)
+          if (new File(p).exists)
+            Seq(p)
+          else
+            Seq[String]()
+        } getOrElse Seq[String]()
+      }
+      .flatten
   }
 
   def thirdPartyClasspaths: Seq[String] = {
@@ -350,8 +355,8 @@ object WorkflowUtils extends Logging {
       }
     }
 
-    flatten(root \ "sparkConf").map(x =>
-      (x._1.reduce((a, b) => s"$a.$b"), x._2))
+    flatten(root \ "sparkConf")
+      .map(x => (x._1.reduce((a, b) => s"$a.$b"), x._2))
   }
 }
 
@@ -385,7 +390,8 @@ object SparkWorkflowUtils extends Logging {
     val pmmModule = runtimeMirror.staticModule(pmm.className)
     val pmmObject = runtimeMirror.reflectModule(pmmModule)
     try {
-      pmmObject.instance
+      pmmObject
+        .instance
         .asInstanceOf[PersistentModelLoader[AP, M]](runId, params, sc)
     } catch {
       case e @ (_: NoSuchFieldException | _: ClassNotFoundException) =>

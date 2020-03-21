@@ -28,15 +28,17 @@ object CodeFormatter {
   def stripExtraNewLines(input: String): String = {
     val code = new StringBuilder
     var lastLine: String = "dummy"
-    input.split('\n').foreach { l =>
-      val line = l.trim()
-      val skip = line == "" && (lastLine == "" || lastLine.endsWith("{"))
-      if (!skip) {
-        code.append(line)
-        code.append("\n")
+    input
+      .split('\n')
+      .foreach { l =>
+        val line = l.trim()
+        val skip = line == "" && (lastLine == "" || lastLine.endsWith("{"))
+        if (!skip) {
+          code.append(line)
+          code.append("\n")
+        }
+        lastLine = line
       }
-      lastLine = line
-    }
     code.result()
   }
 }
@@ -50,8 +52,8 @@ private class CodeFormatter {
 
   private def addLine(line: String): Unit = {
     val indentChange =
-      line.count(c => "({".indexOf(c) >= 0) - line.count(c =>
-        ")}".indexOf(c) >= 0)
+      line.count(c => "({".indexOf(c) >= 0) - line
+        .count(c => ")}".indexOf(c) >= 0)
     val newIndentLevel = math.max(0, indentLevel + indentChange)
     // Lines starting with '}' should be de-indented even if they contain '{' after;
     // in addition, lines ending with ':' are typically labels

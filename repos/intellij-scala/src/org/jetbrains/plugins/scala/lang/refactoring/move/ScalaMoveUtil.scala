@@ -31,8 +31,8 @@ import scala.collection.JavaConverters._
   * 10/24/13
   */
 object ScalaMoveUtil {
-  val MOVE_DESTINATION: Key[PsiDirectory] = Key.create[PsiDirectory](
-    "MoveDestination")
+  val MOVE_DESTINATION: Key[PsiDirectory] = Key
+    .create[PsiDirectory]("MoveDestination")
   val MOVE_SOURCE: Key[PsiFile] = Key.create("MoveSource")
   private val PROCESSOR: ScalaCopyPastePostProcessor =
     new ScalaCopyPastePostProcessor
@@ -44,10 +44,12 @@ object ScalaMoveUtil {
           if td1.name == td2.name =>
         val classes = Seq(td1, td2)
         val noFakeCompanions =
-          classes.collect {
-            case td: ScTypeDefinition =>
-              td.fakeCompanionModule.isDefined
-          }.isEmpty
+          classes
+            .collect {
+              case td: ScTypeDefinition =>
+                td.fakeCompanionModule.isDefined
+            }
+            .isEmpty
         classes.count(_.isInstanceOf[ScObject]) == 1 && noFakeCompanions
       case _ =>
         false
@@ -55,14 +57,14 @@ object ScalaMoveUtil {
   }
 
   def classCanBeAdded(file: PsiFile, aClass: PsiClass): Boolean = {
-    val allClasses = PsiTreeUtil.findChildrenOfType(
-      file,
-      classOf[ScTypeDefinition])
-    val withSameName = allClasses.asScala.filter(
-      _.name == ScalaNamesUtil.scalaName(aClass))
-    withSameName.size == 1 && canBeCompanions(
-      withSameName.head,
-      aClass) || withSameName.isEmpty
+    val allClasses = PsiTreeUtil
+      .findChildrenOfType(file, classOf[ScTypeDefinition])
+    val withSameName = allClasses
+      .asScala
+      .filter(_.name == ScalaNamesUtil.scalaName(aClass))
+    withSameName
+      .size == 1 && canBeCompanions(withSameName.head, aClass) || withSameName
+      .isEmpty
   }
 
   def doMoveClass(
@@ -93,10 +95,11 @@ object ScalaMoveUtil {
         case (td: ScTypeDefinition, file: ScalaFile) =>
           val fileWithOldFileName = moveDestination.findFile(file.getName)
           val className = td.name
-          val fileWithClassName = moveDestination.findFile(
-            className + "." + ScalaFileType.DEFAULT_EXTENSION)
+          val fileWithClassName = moveDestination
+            .findFile(className + "." + ScalaFileType.DEFAULT_EXTENSION)
           // moving second of two classes which were in the same file to a different directory (IDEADEV-3089)
-          if (moveDestination != file.getContainingDirectory && fileWithOldFileName != null && classCanBeAdded(
+          if (moveDestination != file
+                .getContainingDirectory && fileWithOldFileName != null && classCanBeAdded(
                 file,
                 aClass)) {
             newClass = fileWithOldFileName.add(td).asInstanceOf[PsiClass]
@@ -169,8 +172,9 @@ object ScalaMoveUtil {
         else
           associations.get(0))
     }
-    val alreadyMoved = getMoveDestination(
-      aClass) == aClass.getContainingFile.getContainingDirectory
+    val alreadyMoved = getMoveDestination(aClass) == aClass
+      .getContainingFile
+      .getContainingDirectory
     aClass.getContainingFile match {
       case file: ScalaFile if !alreadyMoved =>
         collectData(aClass, file)
@@ -187,8 +191,8 @@ object ScalaMoveUtil {
       aClass: PsiClass,
       withCompanion: Boolean) {
     def restoreInner(clazz: PsiClass) {
-      val associations: Associations = clazz.getCopyableUserData(
-        ASSOCIATIONS_KEY)
+      val associations: Associations = clazz
+        .getCopyableUserData(ASSOCIATIONS_KEY)
       if (associations != null) {
         try {
           PROCESSOR.restoreAssociations(

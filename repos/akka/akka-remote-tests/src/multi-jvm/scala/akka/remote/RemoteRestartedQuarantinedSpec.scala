@@ -88,7 +88,9 @@ abstract class RemoteRestartedQuarantinedSpec
 
         val (uid, ref) = identifyWithUid(second, "subject")
 
-        RARP(system).provider.transport
+        RARP(system)
+          .provider
+          .transport
           .quarantine(node(second).address, Some(uid))
 
         enterBarrier("quarantined")
@@ -113,7 +115,8 @@ abstract class RemoteRestartedQuarantinedSpec
         val addr =
           system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
         val firstAddress = node(first).address
-        system.eventStream
+        system
+          .eventStream
           .subscribe(testActor, classOf[ThisActorSystemQuarantinedEvent])
 
         val (_, ref) = identifyWithUid(first, "subject")

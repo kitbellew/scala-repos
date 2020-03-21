@@ -32,10 +32,12 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
       context: ProcessingContext): Array[PsiReference] = {
     if (element.getContainingFile.getFileType.getName != Sbt.Name)
       return Array.empty
-    extractSubprojectPath(element).flatMap { path =>
-      findBuildFile(path, element.getProject).map(
-        new SbtSubprojectReference(element, _))
-    }.toArray
+    extractSubprojectPath(element)
+      .flatMap { path =>
+        findBuildFile(path, element.getProject)
+          .map(new SbtSubprojectReference(element, _))
+      }
+      .toArray
   }
 
   private def findBuildFile(
@@ -44,8 +46,8 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
     FilenameIndex
       .getFilesByName(project, "build.sbt", GlobalSearchScope.allScope(project))
       .find { file =>
-        val relativeToProjectPath =
-          project.getBasePath + File.separator + subprojectPath
+        val relativeToProjectPath = project.getBasePath + File
+          .separator + subprojectPath
         val absolutePath = FileUtil.toSystemIndependentName(
           FileUtil.toCanonicalPath(relativeToProjectPath))
         Option(file.getParent)
@@ -100,10 +102,16 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
   private def extractPathFromFileParam(element: PsiElement): Option[String] =
     element match {
       case newFileDef: ScNewTemplateDefinition =>
-        newFileDef.extendsBlock.getChildren.toSeq.headOption.collect {
-          case classParent: ScClassParents =>
-            classParent.constructor.flatMap(extractPathFromFileCtor)
-        }.flatten
+        newFileDef
+          .extendsBlock
+          .getChildren
+          .toSeq
+          .headOption
+          .collect {
+            case classParent: ScClassParents =>
+              classParent.constructor.flatMap(extractPathFromFileCtor)
+          }
+          .flatten
       case expr @ ScInfixExpr(_, op, _) if op.getText == "/" =>
         extractPathFromConcatenation(expr)
       case expr: ScReferenceExpression =>
@@ -116,16 +124,19 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
     }
 
   private def extractPathFromFileCtor(ctor: ScConstructor): Option[String] = {
-    ctor.args.map(_.exprs).flatMap {
-      case Seq(ScLiteralImpl.string(path)) =>
-        Some(path)
-      case Seq(ScLiteralImpl.string(parent), ScLiteralImpl.string(child)) =>
-        Some(parent + File.separator + child)
-      case Seq(parentElt, ScLiteralImpl.string(child)) =>
-        extractPathFromFileParam(parentElt).map(_ + File.separator + child)
-      case _ =>
-        None
-    }
+    ctor
+      .args
+      .map(_.exprs)
+      .flatMap {
+        case Seq(ScLiteralImpl.string(path)) =>
+          Some(path)
+        case Seq(ScLiteralImpl.string(parent), ScLiteralImpl.string(child)) =>
+          Some(parent + File.separator + child)
+        case Seq(parentElt, ScLiteralImpl.string(child)) =>
+          extractPathFromFileParam(parentElt).map(_ + File.separator + child)
+        case _ =>
+          None
+      }
   }
 
   private def extractPathFromConcatenation(

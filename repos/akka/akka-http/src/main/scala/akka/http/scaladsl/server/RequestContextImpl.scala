@@ -69,7 +69,8 @@ private[http] class RequestContextImpl(
       routingSettings = settings)
 
   override def complete(trm: ToResponseMarshallable): Future[RouteResult] =
-    trm(request)(executionContext).fast
+    trm(request)(executionContext)
+      .fast
       .map(res ⇒ RouteResult.Complete(res))(executionContext)
       .fast
       .recoverWith {
@@ -171,8 +172,8 @@ private[http] class RequestContextImpl(
         this.withAcceptAll.complete(trm) // retry giving up content negotiation
       case _ ⇒
         Future.successful(
-          RouteResult.Rejected(
-            UnacceptedResponseContentTypeRejection(supported) :: Nil))
+          RouteResult
+            .Rejected(UnacceptedResponseContentTypeRejection(supported) :: Nil))
     }
 
   private def copy(

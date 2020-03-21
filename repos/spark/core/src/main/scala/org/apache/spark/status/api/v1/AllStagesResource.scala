@@ -73,7 +73,9 @@ private[v1] object AllStagesResource {
       stageUiData: StageUIData,
       includeDetails: Boolean): StageData = {
 
-    val taskLaunchTimes = stageUiData.taskData.values
+    val taskLaunchTimes = stageUiData
+      .taskData
+      .values
       .map(_.taskInfo.launchTime)
       .filter(_ > 0)
 
@@ -87,37 +89,45 @@ private[v1] object AllStagesResource {
     val taskData =
       if (includeDetails) {
         Some(
-          stageUiData.taskData.map {
-            case (k, v) =>
-              k -> convertTaskData(v)
-          })
+          stageUiData
+            .taskData
+            .map {
+              case (k, v) =>
+                k -> convertTaskData(v)
+            })
       } else {
         None
       }
     val executorSummary =
       if (includeDetails) {
         Some(
-          stageUiData.executorSummary.map {
-            case (k, summary) =>
-              k -> new ExecutorStageSummary(
-                taskTime = summary.taskTime,
-                failedTasks = summary.failedTasks,
-                succeededTasks = summary.succeededTasks,
-                inputBytes = summary.inputBytes,
-                outputBytes = summary.outputBytes,
-                shuffleRead = summary.shuffleRead,
-                shuffleWrite = summary.shuffleWrite,
-                memoryBytesSpilled = summary.memoryBytesSpilled,
-                diskBytesSpilled = summary.diskBytesSpilled)
-          })
+          stageUiData
+            .executorSummary
+            .map {
+              case (k, summary) =>
+                k -> new ExecutorStageSummary(
+                  taskTime = summary.taskTime,
+                  failedTasks = summary.failedTasks,
+                  succeededTasks = summary.succeededTasks,
+                  inputBytes = summary.inputBytes,
+                  outputBytes = summary.outputBytes,
+                  shuffleRead = summary.shuffleRead,
+                  shuffleWrite = summary.shuffleWrite,
+                  memoryBytesSpilled = summary.memoryBytesSpilled,
+                  diskBytesSpilled = summary.diskBytesSpilled)
+            })
       } else {
         None
       }
 
     val accumulableInfo =
-      stageUiData.accumulables.values.map {
-        convertAccumulableInfo
-      }.toSeq
+      stageUiData
+        .accumulables
+        .values
+        .map {
+          convertAccumulableInfo
+        }
+        .toSeq
 
     new StageData(
       status = status,
@@ -170,13 +180,18 @@ private[v1] object AllStagesResource {
       host = uiData.taskInfo.host,
       taskLocality = uiData.taskInfo.taskLocality.toString(),
       speculative = uiData.taskInfo.speculative,
-      accumulatorUpdates = uiData.taskInfo.accumulables.map {
-        convertAccumulableInfo
-      },
+      accumulatorUpdates = uiData
+        .taskInfo
+        .accumulables
+        .map {
+          convertAccumulableInfo
+        },
       errorMessage = uiData.errorMessage,
-      taskMetrics = uiData.taskMetrics.map {
-        convertUiTaskMetrics
-      })
+      taskMetrics = uiData
+        .taskMetrics
+        .map {
+          convertUiTaskMetrics
+        })
   }
 
   def taskMetricDistributions(
@@ -184,9 +199,11 @@ private[v1] object AllStagesResource {
       quantiles: Array[Double]): TaskMetricDistributions = {
 
     val rawMetrics =
-      allTaskData.flatMap {
-        _.taskMetrics
-      }.toSeq
+      allTaskData
+        .flatMap {
+          _.taskMetrics
+        }
+        .toSeq
 
     def metricQuantiles(f: InternalTaskMetrics => Double): IndexedSeq[Double] =
       Distribution(
@@ -296,18 +313,26 @@ private[v1] object AllStagesResource {
       resultSerializationTime = internal.resultSerializationTime,
       memoryBytesSpilled = internal.memoryBytesSpilled,
       diskBytesSpilled = internal.diskBytesSpilled,
-      inputMetrics = internal.inputMetrics.map {
-        convertInputMetrics
-      },
-      outputMetrics = Option(internal.outputMetrics).flatten.map {
-        convertOutputMetrics
-      },
-      shuffleReadMetrics = internal.shuffleReadMetrics.map {
-        convertShuffleReadMetrics
-      },
-      shuffleWriteMetrics = internal.shuffleWriteMetrics.map {
-        convertShuffleWriteMetrics
-      })
+      inputMetrics = internal
+        .inputMetrics
+        .map {
+          convertInputMetrics
+        },
+      outputMetrics = Option(internal.outputMetrics)
+        .flatten
+        .map {
+          convertOutputMetrics
+        },
+      shuffleReadMetrics = internal
+        .shuffleReadMetrics
+        .map {
+          convertShuffleReadMetrics
+        },
+      shuffleWriteMetrics = internal
+        .shuffleWriteMetrics
+        .map {
+          convertShuffleWriteMetrics
+        })
   }
 
   def convertInputMetrics(internal: InternalInputMetrics): InputMetrics = {

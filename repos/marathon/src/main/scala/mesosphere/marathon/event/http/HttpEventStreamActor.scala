@@ -113,25 +113,29 @@ class HttpEventStreamActor(
   }
 
   private[this] def removeHandler(handle: HttpEventStreamHandle): Unit = {
-    streamHandleActors.get(handle).foreach { actor =>
-      context.unwatch(actor)
-      context.stop(actor)
-      streamHandleActors -= handle
-      metrics.numberOfStreams.setValue(streamHandleActors.size)
-      log.info(
-        s"Removed EventStream Handle as event listener: $handle. " +
-          s"Current nr of listeners: ${streamHandleActors.size}")
-    }
+    streamHandleActors
+      .get(handle)
+      .foreach { actor =>
+        context.unwatch(actor)
+        context.stop(actor)
+        streamHandleActors -= handle
+        metrics.numberOfStreams.setValue(streamHandleActors.size)
+        log.info(
+          s"Removed EventStream Handle as event listener: $handle. " +
+            s"Current nr of listeners: ${streamHandleActors.size}")
+      }
   }
 
   private[this] def unexpectedTerminationOfHandlerActor(
       actor: ActorRef): Unit = {
-    streamHandleActors.find(_._2 == actor).foreach {
-      case (handle, ref) =>
-        log.error(s"Actor terminated unexpectedly: $handle")
-        streamHandleActors -= handle
-        metrics.numberOfStreams.setValue(streamHandleActors.size)
-    }
+    streamHandleActors
+      .find(_._2 == actor)
+      .foreach {
+        case (handle, ref) =>
+          log.error(s"Actor terminated unexpectedly: $handle")
+          streamHandleActors -= handle
+          metrics.numberOfStreams.setValue(streamHandleActors.size)
+      }
   }
 
   private[this] def warnAboutUnknownMessages: Receive = {

@@ -92,7 +92,8 @@ trait ThriftTest {
   private val newAPIServer =
     (protocolFactory: TProtocolFactory) =>
       new {
-        val server = Thrift.server
+        val server = Thrift
+          .server
           .withLabel("thriftserver")
           .withProtocolFactory(protocolFactory)
           .serveIface("localhost:*", processor)
@@ -111,11 +112,11 @@ trait ThriftTest {
       implicit val cls = ifaceManifest
       val client = {
         val thrift =
-          clientIdOpt.foldLeft(
-            Thrift.client.withProtocolFactory(protocolFactory)) {
-            case (thrift, clientId) =>
-              thrift.withClientId(clientId)
-          }
+          clientIdOpt
+            .foldLeft(Thrift.client.withProtocolFactory(protocolFactory)) {
+              case (thrift, clientId) =>
+                thrift.withClientId(clientId)
+            }
 
         thrift.newIface[Iface](Group(addr).named("thriftclient"))
       }

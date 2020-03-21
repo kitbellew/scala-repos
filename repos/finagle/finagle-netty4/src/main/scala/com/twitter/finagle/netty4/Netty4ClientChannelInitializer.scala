@@ -42,8 +42,8 @@ private[netty4] class Netty4ClientChannelInitializer[In, Out](
   import Netty4ClientChannelInitializer._
 
   private[this] val encodeHandler = encoder.map(new EncodeHandler[In](_))
-  private[this] val decodeHandler = decoderFactory.map(
-    new DecodeHandler[Out](_))
+  private[this] val decodeHandler = decoderFactory
+    .map(new DecodeHandler[Out](_))
 
   override def initChannel(ch: SocketChannel): Unit = {
     super.initChannel(ch)

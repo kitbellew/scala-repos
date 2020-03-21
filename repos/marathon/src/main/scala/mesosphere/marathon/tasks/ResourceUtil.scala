@@ -46,17 +46,16 @@ object ResourceUtil {
     require(resource.getType == usedResource.getType)
 
     def consumeScalarResource: Option[MesosProtos.Resource] = {
-      val leftOver: Double =
-        resource.getScalar.getValue - usedResource.getScalar.getValue
+      val leftOver: Double = resource.getScalar.getValue - usedResource
+        .getScalar
+        .getValue
       if (leftOver <= 0) {
         None
       } else {
         Some(
-          resource.toBuilder
-            .setScalar(
-              MesosProtos.Value.Scalar
-                .newBuilder()
-                .setValue(leftOver))
+          resource
+            .toBuilder
+            .setScalar(MesosProtos.Value.Scalar.newBuilder().setValue(leftOver))
             .build())
       }
     }
@@ -64,9 +63,11 @@ object ResourceUtil {
     def deductRange(
         baseRange: MesosProtos.Value.Range,
         usedRange: MesosProtos.Value.Range): Seq[MesosProtos.Value.Range] = {
-      if (baseRange.getEnd < usedRange.getBegin) { // baseRange completely before usedRange
+      if (baseRange.getEnd < usedRange
+            .getBegin) { // baseRange completely before usedRange
         Seq(baseRange)
-      } else if (baseRange.getBegin > usedRange.getEnd) { // baseRange completely after usedRange
+      } else if (baseRange.getBegin > usedRange
+                   .getEnd) { // baseRange completely after usedRange
         Seq(baseRange)
       } else {
         val rangeBefore: Option[MesosProtos.Value.Range] =
@@ -100,9 +101,7 @@ object ResourceUtil {
       val rangesBuilder = MesosProtos.Value.Ranges.newBuilder()
       diminished.foreach(rangesBuilder.addRange)
 
-      val result = resource.toBuilder
-        .setRanges(rangesBuilder)
-        .build()
+      val result = resource.toBuilder.setRanges(rangesBuilder).build()
 
       if (result.getRanges.getRangeCount > 0)
         Some(result)
@@ -122,7 +121,8 @@ object ResourceUtil {
 
       if (resultSet.nonEmpty)
         Some(
-          resource.toBuilder
+          resource
+            .toBuilder
             .setSet(
               MesosProtos.Value.Set.newBuilder().addAllItem(resultSet.asJava))
             .build())
@@ -198,10 +198,10 @@ object ResourceUtil {
     import scala.collection.JavaConverters._
     val offerResources: Seq[MesosProtos.Resource] =
       offer.getResourcesList.asScala
-    val leftOverResources = ResourceUtil.consumeResources(
-      offerResources,
-      usedResources)
-    offer.toBuilder
+    val leftOverResources = ResourceUtil
+      .consumeResources(offerResources, usedResources)
+    offer
+      .toBuilder
       .clearResources()
       .addAllResources(leftOverResources.asJava)
       .build()

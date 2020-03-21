@@ -41,7 +41,8 @@ object Configuration {
   @inline
   def long(implicit context: Context): Boolean =
     (
-      conf.screenLayout & android.content.res.Configuration.SCREENLAYOUT_LONG_YES
+      conf
+        .screenLayout & android.content.res.Configuration.SCREENLAYOUT_LONG_YES
     ) != 0
 
   @inline

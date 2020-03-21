@@ -18,10 +18,8 @@ case class InnerClassSettings(
           tp.canonicalText
         else
           tp.presentableText
-      val typed = ScalaExtractMethodUtils.typedName(
-        output.paramName,
-        typeText,
-        output.fromElement.getProject)
+      val typed = ScalaExtractMethodUtils
+        .typedName(output.paramName, typeText, output.fromElement.getProject)
       if (isCase)
         typed
       else

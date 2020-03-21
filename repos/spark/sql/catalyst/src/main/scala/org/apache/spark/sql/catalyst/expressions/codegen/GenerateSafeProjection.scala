@@ -56,19 +56,22 @@ object GenerateSafeProjection
 
     val rowClass = classOf[GenericInternalRow].getName
 
-    val fieldWriters = schema.map(_.dataType).zipWithIndex.map {
-      case (dt, i) =>
-        val converter = convertToSafe(
-          ctx,
-          ctx.getValue(tmp, dt, i.toString),
-          dt)
-        s"""
+    val fieldWriters = schema
+      .map(_.dataType)
+      .zipWithIndex
+      .map {
+        case (dt, i) =>
+          val converter = convertToSafe(
+            ctx,
+            ctx.getValue(tmp, dt, i.toString),
+            dt)
+          s"""
         if (!$tmp.isNullAt($i)) {
           ${converter.code}
           $values[$i] = ${converter.value};
         }
       """
-    }
+      }
     val allFields = ctx.splitExpressions(tmp, fieldWriters)
     val code = s"""
       final InternalRow $tmp = $input;
@@ -158,14 +161,16 @@ object GenerateSafeProjection
 
   protected def create(expressions: Seq[Expression]): Projection = {
     val ctx = newCodeGenContext()
-    val expressionCodes = expressions.zipWithIndex.map {
-      case (NoOp, _) =>
-        ""
-      case (e, i) =>
-        val evaluationCode = e.gen(ctx)
-        val converter = convertToSafe(ctx, evaluationCode.value, e.dataType)
-        evaluationCode.code +
-          s"""
+    val expressionCodes = expressions
+      .zipWithIndex
+      .map {
+        case (NoOp, _) =>
+          ""
+        case (e, i) =>
+          val evaluationCode = e.gen(ctx)
+          val converter = convertToSafe(ctx, evaluationCode.value, e.dataType)
+          evaluationCode.code +
+            s"""
             if (${evaluationCode.isNull}) {
               mutableRow.setNullAt($i);
             } else {
@@ -173,7 +178,7 @@ object GenerateSafeProjection
               ${ctx.setColumn("mutableRow", e.dataType, i, converter.value)};
             }
           """
-    }
+      }
     val allExpressions = ctx.splitExpressions(ctx.INPUT_ROW, expressionCodes)
     val code = s"""
       public java.lang.Object generate(Object[] references) {

@@ -234,12 +234,14 @@ class TableColumn[S, T](
     ObjectProperty((column: TableColumn[S, T]) =>
       new TableCell(delegate.cellFactoryProperty.getValue.call(column)))
   def cellFactory_=(f: TableColumn[S, T] => TableCell[S, T]) {
-    delegate.cellFactoryProperty.setValue(
-      new jfxu.Callback[jfxsc.TableColumn[S, T], jfxsc.TableCell[S, T]] {
-        def call(v: jfxsc.TableColumn[S, T]): jfxsc.TableCell[S, T] = {
-          f(v)
-        }
-      })
+    delegate
+      .cellFactoryProperty
+      .setValue(
+        new jfxu.Callback[jfxsc.TableColumn[S, T], jfxsc.TableCell[S, T]] {
+          def call(v: jfxsc.TableColumn[S, T]): jfxsc.TableCell[S, T] = {
+            f(v)
+          }
+        })
   }
   def cellFactory_=(
       callback: jfxu.Callback[jfxsc.TableColumn[S, T], jfxsc.TableCell[S, T]]) {
@@ -277,15 +279,17 @@ class TableColumn[S, T](
       delegate.cellValueFactoryProperty.getValue.call(features))
   def cellValueFactory_=(
       f: TableColumn.CellDataFeatures[S, T] => ObservableValue[T, T]) {
-    delegate.cellValueFactoryProperty.setValue(
-      new jfxu.Callback[
-        jfxsc.TableColumn.CellDataFeatures[S, T],
-        jfxbv.ObservableValue[T]] {
-        def call(v: jfxsc.TableColumn.CellDataFeatures[S, T])
-            : jfxbv.ObservableValue[T] = {
-          f(v).delegate
-        }
-      })
+    delegate
+      .cellValueFactoryProperty
+      .setValue(
+        new jfxu.Callback[
+          jfxsc.TableColumn.CellDataFeatures[S, T],
+          jfxbv.ObservableValue[T]] {
+          def call(v: jfxsc.TableColumn.CellDataFeatures[S, T])
+              : jfxbv.ObservableValue[T] = {
+            f(v).delegate
+          }
+        })
   }
 
   /**

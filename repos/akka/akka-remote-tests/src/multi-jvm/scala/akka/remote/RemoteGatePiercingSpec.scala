@@ -35,12 +35,12 @@ object RemoteGatePiercingSpec extends MultiNodeConfig {
                               """)))
 
   nodeConfig(first)(
-    ConfigFactory.parseString(
-      "akka.remote.retry-gate-closed-for  = 1 d # Keep it long"))
+    ConfigFactory
+      .parseString("akka.remote.retry-gate-closed-for  = 1 d # Keep it long"))
 
   nodeConfig(second)(
-    ConfigFactory.parseString(
-      "akka.remote.retry-gate-closed-for  = 1 s # Keep it short"))
+    ConfigFactory
+      .parseString("akka.remote.retry-gate-closed-for  = 1 s # Keep it short"))
 
   testTransport(on = true)
 
@@ -85,10 +85,13 @@ abstract class RemoteGatePiercingSpec
           .warning(pattern = "address is now gated", occurrences = 1)
           .intercept {
             Await.result(
-              RARP(system).provider.transport.managementCommand(
-                ForceDisassociateExplicitly(
-                  node(second).address,
-                  AssociationHandle.Unknown)),
+              RARP(system)
+                .provider
+                .transport
+                .managementCommand(
+                  ForceDisassociateExplicitly(
+                    node(second).address,
+                    AssociationHandle.Unknown)),
               3.seconds)
           }
 

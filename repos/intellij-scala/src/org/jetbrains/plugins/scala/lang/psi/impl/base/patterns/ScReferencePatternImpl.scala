@@ -119,7 +119,8 @@ class ScReferencePatternImpl private (
       case pList: ScPatternList
           if pList.allPatternsSimple && pList.patterns.startsWith(Seq(this)) =>
         val end =
-          this.nextSiblings
+          this
+            .nextSiblings
             .find(_.getNode.getElementType == ScalaTokenTypes.tCOMMA)
             .get
             .getNextSiblingNotWhitespace
@@ -127,7 +128,8 @@ class ScReferencePatternImpl private (
         pList.deleteChildRange(this, end)
       case pList: ScPatternList if pList.allPatternsSimple =>
         val start =
-          this.prevSiblings
+          this
+            .prevSiblings
             .find(_.getNode.getElementType == ScalaTokenTypes.tCOMMA)
             .get
             .getPrevSiblingNotWhitespace
@@ -136,8 +138,8 @@ class ScReferencePatternImpl private (
       case x =>
         // val (a, b) = t
         // val (_, b) = t
-        val anonymousRefPattern = ScalaPsiElementFactory.createWildcardPattern(
-          getManager)
+        val anonymousRefPattern = ScalaPsiElementFactory
+          .createWildcardPattern(getManager)
         replace(anonymousRefPattern)
     }
   }

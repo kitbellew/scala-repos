@@ -106,8 +106,8 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
         buffer += s"${new Timestamp(new Date().getTime)} - $source> $line"
 
         // If we haven't found all expected answers and another expected answer comes up...
-        if (next < expectedAnswers.size && line.contains(
-              expectedAnswers(next))) {
+        if (next < expectedAnswers.size && line
+              .contains(expectedAnswers(next))) {
           next += 1
           // If all expected answers have been found...
           if (next == expectedAnswers.size) {

@@ -50,9 +50,8 @@ object Dispatchers {
     .getLong("akka.actor.dispatcher-shutdown-timeout")
     .map(time => Duration(time, TIME_UNIT))
     .getOrElse(Duration(1000, TimeUnit.MILLISECONDS))
-  val MAILBOX_CAPACITY = config.getInt(
-    "akka.actor.default-dispatcher.mailbox-capacity",
-    -1)
+  val MAILBOX_CAPACITY = config
+    .getInt("akka.actor.default-dispatcher.mailbox-capacity", -1)
   val MAILBOX_PUSH_TIME_OUT = Duration(
     config
       .getInt("akka.actor.default-dispatcher.mailbox-push-timeout-time", 10),

@@ -81,7 +81,8 @@ class CopyWorksheetAction extends AnAction with TopComponentAction {
 
     def getFromRight(lineNumber: Int) = getFromDoc(lineNumber, rightDocument)
 
-    val marker = viewer.getFoldingModel
+    val marker = viewer
+      .getFoldingModel
       .asInstanceOf[FoldingModelImpl]
       .getAllFoldRegions find {
       case r: WorksheetFoldRegionDelegate =>
@@ -107,8 +108,8 @@ class CopyWorksheetAction extends AnAction with TopComponentAction {
             val leftStart = {
               var j = lastEnd
 
-              while (getFromLeft(
-                       j).trim.length == 0 && j < leftDocument.getLineCount)
+              while (getFromLeft(j).trim.length == 0 && j < leftDocument
+                       .getLineCount)
                 j += 1
               if (j == leftDocument.getLineCount)
                 return result.toString()

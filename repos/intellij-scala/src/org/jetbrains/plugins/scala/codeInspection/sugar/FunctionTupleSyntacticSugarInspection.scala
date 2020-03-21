@@ -51,7 +51,8 @@ class FunctionTupleSyntacticSugarInspection extends LocalInspectionTool {
               case s: ScSimpleTypeElement =>
                 s.reference match {
                   case Some(ref) =>
-                    if (ref.refName.startsWith("Tuple") || ref.refName
+                    if (ref.refName.startsWith("Tuple") || ref
+                          .refName
                           .startsWith("Function") && ref.isValid) {
                       val referredElement = ref.bind().map(_.getElement)
                       referredElement match {
@@ -60,23 +61,26 @@ class FunctionTupleSyntacticSugarInspection extends LocalInspectionTool {
                               n.toInt + 1
                             ) =>
                           holder.registerProblem(
-                            holder.getManager.createProblemDescriptor(
-                              te,
-                              "syntactic sugar could be used",
-                              new FunctionTypeSyntacticSugarQuickFix(te),
-                              ProblemHighlightType.WEAK_WARNING,
-                              false))
+                            holder
+                              .getManager
+                              .createProblemDescriptor(
+                                te,
+                                "syntactic sugar could be used",
+                                new FunctionTypeSyntacticSugarQuickFix(te),
+                                ProblemHighlightType.WEAK_WARNING,
+                                false))
                         case Some(QualifiedName(TupleN(n)))
-                            if (
-                              te.typeArgList.typeArgs.length == n.toInt
-                            ) && n.toInt != 1 =>
+                            if (te.typeArgList.typeArgs.length == n.toInt) && n
+                              .toInt != 1 =>
                           holder.registerProblem(
-                            holder.getManager.createProblemDescriptor(
-                              te,
-                              "syntactic sugar could be used",
-                              new TupleTypeSyntacticSugarQuickFix(te),
-                              ProblemHighlightType.WEAK_WARNING,
-                              false))
+                            holder
+                              .getManager
+                              .createProblemDescriptor(
+                                te,
+                                "syntactic sugar could be used",
+                                new TupleTypeSyntacticSugarQuickFix(te),
+                                ProblemHighlightType.WEAK_WARNING,
+                                false))
                         case _ =>
                       }
                     }

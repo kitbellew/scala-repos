@@ -22,7 +22,8 @@ class CokleisliTests extends SlowCatsSuite {
       FA: Eq[A]): Eq[Cokleisli[F, A, A]] =
     Eq.by[Cokleisli[F, A, A], F[A] => A](_.run)
 
-  implicit val iso = CartesianTests.Isomorphisms
+  implicit val iso = CartesianTests
+    .Isomorphisms
     .invariant[Cokleisli[Option, Int, ?]]
 
   checkAll(

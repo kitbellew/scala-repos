@@ -49,8 +49,8 @@ class TopicConfigHandler(
     val configNameToExclude = Option(
       topicConfig.getProperty(LogConfig.MessageFormatVersionProp)).flatMap {
       versionString =>
-        if (kafkaConfig.interBrokerProtocolVersion < ApiVersion(
-              versionString)) {
+        if (kafkaConfig
+              .interBrokerProtocolVersion < ApiVersion(versionString)) {
           warn(
             s"Log configuration ${LogConfig.MessageFormatVersionProp} is ignored for `$topic` because `$versionString` " +
               s"is not compatible with Kafka inter-broker protocol version `${kafkaConfig.interBrokerProtocolVersionString}`")
@@ -60,7 +60,8 @@ class TopicConfigHandler(
     }
 
     val logs =
-      logManager.logsByTopicPartition
+      logManager
+        .logsByTopicPartition
         .filterKeys(_.topic == topic)
         .values
         .toBuffer
@@ -68,11 +69,13 @@ class TopicConfigHandler(
       /* combine the default properties with the overrides in zk to create the new LogConfig */
       val props = new Properties()
       props.putAll(logManager.defaultConfig.originals)
-      topicConfig.asScala.foreach {
-        case (key, value) =>
-          if (key != configNameToExclude)
-            props.put(key, value)
-      }
+      topicConfig
+        .asScala
+        .foreach {
+          case (key, value) =>
+            if (key != configNameToExclude)
+              props.put(key, value)
+        }
       val logConfig = LogConfig(props)
       logs.foreach(_.config = logConfig)
     }

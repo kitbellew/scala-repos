@@ -102,8 +102,9 @@ class DStreamScopeSuite
     val mappedScope1 = mappedStream.getOrCompute(Time(1000)).get.scope
     val mappedScope2 = mappedStream.getOrCompute(Time(2000)).get.scope
     val mappedScope3 = mappedStream.getOrCompute(Time(3000)).get.scope
-    val filteredScopeBase = filteredStream.baseScope.map(
-      RDDOperationScope.fromJson)
+    val filteredScopeBase = filteredStream
+      .baseScope
+      .map(RDDOperationScope.fromJson)
     val filteredScope1 = filteredStream.getOrCompute(Time(1000)).get.scope
     val filteredScope2 = filteredStream.getOrCompute(Time(2000)).get.scope
     val filteredScope3 = filteredStream.getOrCompute(Time(3000)).get.scope
@@ -174,8 +175,9 @@ class DStreamScopeSuite
     }
     transformedStream.initialize(Time(0))
 
-    val transformScopeBase = transformedStream.baseScope.map(
-      RDDOperationScope.fromJson)
+    val transformScopeBase = transformedStream
+      .baseScope
+      .map(RDDOperationScope.fromJson)
     val transformScope1 = transformedStream.getOrCompute(Time(1000)).get.scope
     val transformScope2 = transformedStream.getOrCompute(Time(2000)).get.scope
     val transformScope3 = transformedStream.getOrCompute(Time(3000)).get.scope
@@ -217,7 +219,8 @@ class DStreamScopeSuite
     batchCounter.waitUntilBatchesCompleted(3, 10000)
     assert(generatedRDDs.size === 3)
 
-    val foreachBaseScope = ssc.graph
+    val foreachBaseScope = ssc
+      .graph
       .getOutputStreams()
       .head
       .baseScope
@@ -229,15 +232,17 @@ class DStreamScopeSuite
       _.scope
     }
     assertDefined(rddScopes: _*)
-    rddScopes.zipWithIndex.foreach {
-      case (rddScope, idx) =>
-        assert(rddScope.get.name === "reduceByKey")
-        assert(rddScope.get.parent.isDefined)
-        assertScopeCorrect(
-          foreachBaseScope.get,
-          rddScope.get.parent.get,
-          (idx + 1) * 1000)
-    }
+    rddScopes
+      .zipWithIndex
+      .foreach {
+        case (rddScope, idx) =>
+          assert(rddScope.get.name === "reduceByKey")
+          assert(rddScope.get.parent.isDefined)
+          assertScopeCorrect(
+            foreachBaseScope.get,
+            rddScope.get.parent.get,
+            (idx + 1) * 1000)
+      }
   }
 
   /** Assert that the RDD operation scope properties are not set in our SparkContext. */
@@ -260,17 +265,20 @@ class DStreamScopeSuite
       showYYYYMMSS = false)
     assert(rddScope.id === s"${baseScopeId}_$batchTime")
     assert(
-      rddScope.name
+      rddScope
+        .name
         .replaceAll("\\n", " ") === s"$baseScopeName @ $formattedBatchTime")
     assert(rddScope.parent.isEmpty) // There should not be any higher scope
   }
 
   /** Assert that all the specified options are defined. */
   private def assertDefined[T](options: Option[T]*): Unit = {
-    options.zipWithIndex.foreach {
-      case (o, i) =>
-        assert(o.isDefined, s"Option $i was empty!")
-    }
+    options
+      .zipWithIndex
+      .foreach {
+        case (o, i) =>
+          assert(o.isDefined, s"Option $i was empty!")
+      }
   }
 
 }

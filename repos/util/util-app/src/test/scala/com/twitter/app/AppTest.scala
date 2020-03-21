@@ -59,9 +59,11 @@ class AppTest extends FunSuite {
     val test1 = new TestApp(() => ())
 
     test1.main(Array("-environment=staging", "-environment=staging"))
-    val theReason: String = test1.reason.getOrElse {
-      fail("There should have been a usage printed and was not")
-    }
+    val theReason: String = test1
+      .reason
+      .getOrElse {
+        fail("There should have been a usage printed and was not")
+      }
 
     assert(theReason.contains("""Error parsing flag "environment""""))
   }

@@ -22,9 +22,11 @@ private[akka] abstract class ExposedPublisherReceive(
         receiveExposedPublisher(ep)
         if (stash.nonEmpty) {
           // we don't use sender() so this is alright
-          stash.reverse.foreach { msg ⇒
-            activeReceive.applyOrElse(msg, unhandled)
-          }
+          stash
+            .reverse
+            .foreach { msg ⇒
+              activeReceive.applyOrElse(msg, unhandled)
+            }
         }
       case other ⇒
         stash ::= other

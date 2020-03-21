@@ -10,9 +10,8 @@ object Test extends DirectTest {
   def code = ???
 
   def compileCode(code: String) = {
-    val classpath =
-      List(sys.props("partest.lib"), testOutput.path) mkString sys.props(
-        "path.separator")
+    val classpath = List(sys.props("partest.lib"), testOutput.path) mkString sys
+      .props("path.separator")
     compileString(
       newCompiler(
         "-cp",
@@ -34,7 +33,10 @@ object Test extends DirectTest {
     modifyClassFile(new File(testOutput.toFile, "A_1.class"))(
       (cn: ClassNode) => {
         val testMethod = cn.methods.iterator.asScala.find(_.name == "test").head
-        val indy = testMethod.instructions.iterator.asScala
+        val indy = testMethod
+          .instructions
+          .iterator
+          .asScala
           .collect({
             case i: InvokeDynamicInsnNode =>
               i

@@ -71,8 +71,10 @@ class ScalaImportOptimizer extends ImportOptimizer {
         case scFile: ScalaFile =>
           scFile
         case multiRootFile: PsiFile
-            if multiRootFile.getViewProvider.getLanguages contains ScalaFileType.SCALA_LANGUAGE =>
-          multiRootFile.getViewProvider
+            if multiRootFile.getViewProvider.getLanguages contains ScalaFileType
+              .SCALA_LANGUAGE =>
+          multiRootFile
+            .getViewProvider
             .getPsi(ScalaFileType.SCALA_LANGUAGE)
             .asInstanceOf[ScalaFile]
         case _ =>
@@ -99,8 +101,8 @@ class ScalaImportOptimizer extends ImportOptimizer {
     if (indicator != null)
       indicator.setText2(file.getName + ": analyzing imports usage")
 
-    val size =
-      allElementsInFile.size * 2 //processAllElementsConcurrentlyUnderProgress will be called 2 times
+    val size = allElementsInFile
+      .size * 2 //processAllElementsConcurrentlyUnderProgress will be called 2 times
     val counter = new AtomicInteger(0)
 
     def processAllElementsConcurrentlyUnderProgress(
@@ -142,8 +144,8 @@ class ScalaImportOptimizer extends ImportOptimizer {
       val importsInfo = ContainerUtil.newConcurrentMap[TextRange, RangeInfo]()
       processAllElementsConcurrentlyUnderProgress {
         case holder: ScImportsHolder =>
-          importsInfo.putAll(
-            collectImportRanges(holder, namesAtRangeStart, createInfo))
+          importsInfo
+            .putAll(collectImportRanges(holder, namesAtRangeStart, createInfo))
         case _ =>
       }
       importsInfo.toSeq.sortBy(_._1.getStartOffset)
@@ -179,7 +181,8 @@ class ScalaImportOptimizer extends ImportOptimizer {
         documentManager.commitDocument(document)
 
         val ranges: Seq[(TextRange, Seq[ImportInfo])] =
-          if (document.getText != analyzingDocumentText) //something was changed...
+          if (document
+                .getText != analyzingDocumentText) //something was changed...
             sameInfosWithUpdatedRanges()
           else
             optimized
@@ -368,14 +371,16 @@ object ScalaImportOptimizer {
   }
 
   def findOptimizerFor(file: ScalaFile): Option[ImportOptimizer] = {
-    val topLevelFile = file.getViewProvider.getPsi(
-      file.getViewProvider.getBaseLanguage)
+    val topLevelFile = file
+      .getViewProvider
+      .getPsi(file.getViewProvider.getBaseLanguage)
     val optimizers = LanguageImportStatements.INSTANCE.forFile(topLevelFile)
     if (optimizers.isEmpty)
       return None
 
-    if (topLevelFile.getViewProvider.getPsi(
-          ScalaFileType.SCALA_LANGUAGE) == null)
+    if (topLevelFile
+          .getViewProvider
+          .getPsi(ScalaFileType.SCALA_LANGUAGE) == null)
       return None
 
     val i = optimizers.iterator()
@@ -404,7 +409,8 @@ object ScalaImportOptimizer {
       return false
     expr.qualifier.resolve() match {
       case o: ScObject =>
-        o.qualifiedName.startsWith("scala.language") || o.qualifiedName
+        o.qualifiedName.startsWith("scala.language") || o
+          .qualifiedName
           .startsWith("scala.languageFeature")
       case _ =>
         false
@@ -514,8 +520,8 @@ object ScalaImportOptimizer {
 
     for (i <- importInfos.indices) {
       val info = importInfos(i)
-      val canAddRoot =
-        info.relative.isEmpty && !info.rootUsed && info.isStableImport
+      val canAddRoot = info.relative.isEmpty && !info.rootUsed && info
+        .isStableImport
       if (canAddRoot && holderNames.contains(getFirstId(info.prefixQualifier)))
         importInfos.update(i, info.withRootPrefix)
       holderNames ++= info.allNames
@@ -549,24 +555,28 @@ object ScalaImportOptimizer {
       settings: OptimizeImportSettings): Unit = {
 
     def shouldUpdate(info: ImportInfo) = {
-      val needUpdate =
-        info.singleNames.size >= settings.classCountToUseImportOnDemand
-      val mayUpdate =
-        info.hiddenNames.isEmpty && info.renames.isEmpty && !info.wildcardHasUnusedImplicit
+      val needUpdate = info.singleNames.size >= settings
+        .classCountToUseImportOnDemand
+      val mayUpdate = info.hiddenNames.isEmpty && info.renames.isEmpty && !info
+        .wildcardHasUnusedImplicit
       if (needUpdate && mayUpdate) {
         val explicitNames =
-          infos.flatMap {
+          infos
+            .flatMap {
+              case `info` =>
+                Seq.empty
+              case other =>
+                other.singleNames
+            }
+            .toSet
+        val namesFromOtherWildcards = infos
+          .flatMap {
             case `info` =>
               Seq.empty
             case other =>
-              other.singleNames
-          }.toSet
-        val namesFromOtherWildcards = infos.flatMap {
-          case `info` =>
-            Seq.empty
-          case other =>
-            other.allNames
-        }.toSet -- explicitNames
+              other.allNames
+          }
+          .toSet -- explicitNames
         (
           info.allNamesForWildcard & usedImportedNames & (
             namesFromOtherWildcards ++ namesAtRangeStart
@@ -642,12 +652,12 @@ object ScalaImportOptimizer {
 
     val actuallyInserted = withAliasedQualifier(infoToInsert)
 
-    val (samePrefixInfos, otherInfos) = infos.partition(
-      _.prefixQualifier == actuallyInserted.prefixQualifier)
-    val samePrefixWithNewSplitted =
-      samePrefixInfos.flatMap(_.split) ++ actuallyInserted.split
-    val (simpleInfos, notSimpleInfos) = samePrefixWithNewSplitted.partition(
-      _.singleNames.nonEmpty)
+    val (samePrefixInfos, otherInfos) = infos
+      .partition(_.prefixQualifier == actuallyInserted.prefixQualifier)
+    val samePrefixWithNewSplitted = samePrefixInfos
+      .flatMap(_.split) ++ actuallyInserted.split
+    val (simpleInfos, notSimpleInfos) = samePrefixWithNewSplitted
+      .partition(_.singleNames.nonEmpty)
 
     def insertInfoWithWildcard(): Unit = {
       val (wildcard, withArrows) = notSimpleInfos.partition(_.hasWildcard)
@@ -656,8 +666,8 @@ object ScalaImportOptimizer {
       val simpleNamesToRemain = simpleInfos
         .flatMap(_.singleNames)
         .toSet & namesFromOtherWildcards & usedImportedNames
-      val simpleInfosToRemain = simpleInfos.filter(si =>
-        simpleNamesToRemain.contains(si.singleNames.head))
+      val simpleInfosToRemain = simpleInfos
+        .filter(si => simpleNamesToRemain.contains(si.singleNames.head))
       val renames = withArrows.flatMap(_.renames)
       val hiddenNames = withArrows.flatMap(_.hiddenNames)
       val newHiddenNames =
@@ -671,8 +681,8 @@ object ScalaImportOptimizer {
 
       val notSimpleMerged = ImportInfo.merge(withArrows ++ wildcard)
       if (collectImports) {
-        val simpleMerged = ImportInfo.merge(
-          simpleInfosToRemain ++ notSimpleMerged)
+        val simpleMerged = ImportInfo
+          .merge(simpleInfosToRemain ++ notSimpleMerged)
         replace(samePrefixInfos, simpleMerged.toSeq)
       } else {
         replace(samePrefixInfos, simpleInfosToRemain ++ notSimpleMerged)
@@ -681,7 +691,9 @@ object ScalaImportOptimizer {
 
     if (actuallyInserted.hasWildcard) {
       insertInfoWithWildcard()
-    } else if (simpleInfos.size >= settings.classCountToUseImportOnDemand && !actuallyInserted.wildcardHasUnusedImplicit) {
+    } else if (simpleInfos.size >= settings
+                 .classCountToUseImportOnDemand && !actuallyInserted
+                 .wildcardHasUnusedImplicit) {
       notSimpleInfos += actuallyInserted.toWildcardInfo
       insertInfoWithWildcard()
     } else if (collectImports) {
@@ -777,16 +789,18 @@ object ScalaImportOptimizer {
       )
     }
     val elem =
-      suitable.tail.foldLeft(suitable.head) { (l, r) =>
-        if (l == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS)
-          r
-        else if (r == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS)
-          l
-        else if (r.startsWith(l))
-          r
-        else
-          l
-      }
+      suitable
+        .tail
+        .foldLeft(suitable.head) { (l, r) =>
+          if (l == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS)
+            r
+          else if (r == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS)
+            l
+          else if (r.startsWith(l))
+            r
+          else
+            l
+        }
 
     groups.indexOf(elem)
   }
@@ -881,35 +895,35 @@ object ScalaImportOptimizer {
 
   def namesAtRangeStart(imp: ScImportStmt): Set[String] = {
     val refText = "someIdentifier"
-    val reference = ScalaPsiElementFactory.createReferenceFromText(
-      refText,
-      imp.getContext,
-      imp)
+    val reference = ScalaPsiElementFactory
+      .createReferenceFromText(refText, imp.getContext, imp)
     val rangeNamesSet = new mutable.HashSet[String]()
     def addName(name: String): Unit =
       rangeNamesSet += ScalaNamesUtil.changeKeyword(name)
-    reference.getResolveResultVariants.foreach {
-      case ScalaResolveResult(p: PsiPackage, _) =>
-        if (p.getParentPackage != null && p.getParentPackage.getName != null)
-          addName(p.getName)
-      case ScalaResolveResult(o: ScObject, _) if o.isPackageObject =>
-        if (o.qualifiedName.contains("."))
-          addName(o.name)
-      case ScalaResolveResult(o: ScObject, _) =>
-        o.getParent match {
-          case file: ScalaFile =>
-          case _ =>
+    reference
+      .getResolveResultVariants
+      .foreach {
+        case ScalaResolveResult(p: PsiPackage, _) =>
+          if (p.getParentPackage != null && p.getParentPackage.getName != null)
+            addName(p.getName)
+        case ScalaResolveResult(o: ScObject, _) if o.isPackageObject =>
+          if (o.qualifiedName.contains("."))
             addName(o.name)
-        }
-      case ScalaResolveResult(td: ScTypedDefinition, _) if td.isStable =>
-        addName(td.name)
-      case ScalaResolveResult(_: ScTypeDefinition, _) =>
-      case ScalaResolveResult(c: PsiClass, _) =>
-        addName(c.getName)
-      case ScalaResolveResult(f: PsiField, _) if f.hasFinalModifier =>
-        addName(f.getName)
-      case _ =>
-    }
+        case ScalaResolveResult(o: ScObject, _) =>
+          o.getParent match {
+            case file: ScalaFile =>
+            case _ =>
+              addName(o.name)
+          }
+        case ScalaResolveResult(td: ScTypedDefinition, _) if td.isStable =>
+          addName(td.name)
+        case ScalaResolveResult(_: ScTypeDefinition, _) =>
+        case ScalaResolveResult(c: PsiClass, _) =>
+          addName(c.getName)
+        case ScalaResolveResult(f: PsiField, _) if f.hasFinalModifier =>
+          addName(f.getName)
+        case _ =>
+      }
     rangeNamesSet.toSet
   }
 
@@ -922,25 +936,27 @@ object ScalaImportOptimizer {
           val name = c.name
           qName == s"scala.$name" || qName == s"java.lang.$name"
         case ContainingClass(o: ScObject) =>
-          o.isPackageObject && Set("scala", "scala.Predef").contains(
-            o.qualifiedName)
+          o.isPackageObject && Set("scala", "scala.Predef")
+            .contains(o.qualifiedName)
         case _ =>
           false
       }
     }
 
     val namesWithOffset = ArrayBuffer[(String, Int)]()
-    holder.depthFirst.foreach {
-      case ref: ScReferenceElement if ref.qualifier.isEmpty =>
-        ref.multiResolve(false) foreach {
-          case srr: ScalaResolveResult if srr.importsUsed.nonEmpty =>
-            namesWithOffset += (srr.name -> ref.getTextRange.getStartOffset)
-          case srr: ScalaResolveResult if implicitlyImported(srr) =>
-            namesWithOffset += (srr.name -> ref.getTextRange.getStartOffset)
-          case _ =>
-        }
-      case _ =>
-    }
+    holder
+      .depthFirst
+      .foreach {
+        case ref: ScReferenceElement if ref.qualifier.isEmpty =>
+          ref.multiResolve(false) foreach {
+            case srr: ScalaResolveResult if srr.importsUsed.nonEmpty =>
+              namesWithOffset += (srr.name -> ref.getTextRange.getStartOffset)
+            case srr: ScalaResolveResult if implicitlyImported(srr) =>
+              namesWithOffset += (srr.name -> ref.getTextRange.getStartOffset)
+            case _ =>
+          }
+        case _ =>
+      }
     namesWithOffset.sortBy(_._2)
   }
 

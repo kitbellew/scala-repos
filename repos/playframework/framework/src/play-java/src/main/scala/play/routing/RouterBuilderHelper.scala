@@ -25,7 +25,10 @@ private[routing] object RouterBuilderHelper {
     val routes = router.routes.toList
 
     // Create the router
-    play.api.routing.Router
+    play
+      .api
+      .routing
+      .Router
       .from(
         Function.unlift { requestHeader =>
           // Find the first route that matches
@@ -46,16 +49,18 @@ private[routing] object RouterBuilderHelper {
                       }
 
                   // Bind params if required
-                  val params = groups.zip(route.params).map {
-                    case (param, routeParam) =>
-                      val rawParam =
-                        if (routeParam.decode) {
-                          UriEncoding.decodePathSegment(param, "utf-8")
-                        } else {
-                          param
-                        }
-                      routeParam.pathBindable.bind(routeParam.name, rawParam)
-                  }
+                  val params = groups
+                    .zip(route.params)
+                    .map {
+                      case (param, routeParam) =>
+                        val rawParam =
+                          if (routeParam.decode) {
+                            UriEncoding.decodePathSegment(param, "utf-8")
+                          } else {
+                            param
+                          }
+                        routeParam.pathBindable.bind(routeParam.name, rawParam)
+                    }
 
                   val maybeParams =
                     params.foldLeft[Either[String, Seq[AnyRef]]](Right(Nil)) {
@@ -79,7 +84,10 @@ private[routing] object RouterBuilderHelper {
                           .javaBodyParserToScala {
                             // If testing an embedded application we may not have a Guice injector, therefore we can't rely on
                             // it to instantiate the default body parser, we have to instantiate it ourselves.
-                            val app = Play.privateMaybeApplication.get // throw exception if no current app
+                            val app =
+                              Play
+                                .privateMaybeApplication
+                                .get // throw exception if no current app
                             new play.mvc.BodyParser.Default(
                               new JavaHttpErrorHandlerDelegate(
                                 app.errorHandler),
@@ -90,7 +98,8 @@ private[routing] object RouterBuilderHelper {
                             val ctx = JavaHelpers.createJavaContext(request)
                             try {
                               Context.current.set(ctx)
-                              route.actionMethod
+                              route
+                                .actionMethod
                                 .invoke(route.action, params: _*) match {
                                 case result: Result =>
                                   Future.successful(result.asScala)

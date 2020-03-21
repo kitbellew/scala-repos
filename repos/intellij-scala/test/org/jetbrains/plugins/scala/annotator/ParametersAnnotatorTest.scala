@@ -98,7 +98,9 @@ class ParametersAnnotatorTest extends SimpleTestCase {
     val mock = new AnnotatorHolderMock
 
     val owner =
-      (Header + code).parse.depthFirst
+      (Header + code)
+        .parse
+        .depthFirst
         .filterByType(classOf[ScParameterOwner])
         .collectFirst {
           case named: ScNamedElement

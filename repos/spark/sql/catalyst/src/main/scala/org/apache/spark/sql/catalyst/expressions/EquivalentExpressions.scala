@@ -43,7 +43,8 @@ class EquivalentExpressions {
   }
 
   // For each expression, the set of equivalent expressions.
-  private val equivalenceMap = mutable.HashMap
+  private val equivalenceMap = mutable
+    .HashMap
     .empty[Expr, mutable.MutableList[Expression]]
 
   /**

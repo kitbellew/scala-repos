@@ -199,7 +199,8 @@ private[stream] object AbstractStage {
         inheritedAttributes: Attributes): (GraphStageLogic, Mat) = {
       val stageAndMat = factory(inheritedAttributes)
       val stage: AbstractStage[In, Out, Directive, Directive, Context[
-        Out], LifecycleContext] = stageAndMat._1
+        Out], LifecycleContext] = stageAndMat
+        ._1
         .asInstanceOf[AbstractStage[In, Out, Directive, Directive, Context[
           Out], LifecycleContext]]
       (

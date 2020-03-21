@@ -97,9 +97,8 @@ trait ScReferenceElement
   def isSoft: Boolean = false
 
   def handleElementRename(newElementName: String): PsiElement = {
-    val needBackticks =
-      patternNeedBackticks(newElementName) || ScalaNamesUtil.isKeyword(
-        newElementName)
+    val needBackticks = patternNeedBackticks(newElementName) || ScalaNamesUtil
+      .isKeyword(newElementName)
     val newName =
       if (needBackticks)
         "`" + newElementName + "`"
@@ -315,7 +314,9 @@ trait ScReferenceElement
             if (usedNames.contains(ref.refName)) {
               ref.bind() match {
                 case Some(r: ScalaResolveResult)
-                    if ref != ScReferenceElement.this && r.importsUsed.isEmpty =>
+                    if ref != ScReferenceElement.this && r
+                      .importsUsed
+                      .isEmpty =>
                   reject = true
                   return
                 case _ =>
@@ -358,9 +359,8 @@ trait ScReferenceElement
             else {
               val result: ResolveResult = resolve(0)
               def smartCheck: Boolean = {
-                val holder = ScalaImportTypeFix.getImportHolder(
-                  this,
-                  getProject)
+                val holder = ScalaImportTypeFix
+                  .getImportHolder(this, getProject)
                 var res = true
                 holder.accept(
                   new ScalaRecursiveElementVisitor {
@@ -420,27 +420,30 @@ trait ScReferenceElement
     extensions.inWriteAction {
       val refText =
         if (addImport) {
-          val importHolder = ScalaImportTypeFix.getImportHolder(
-            ref = this,
-            project = getProject)
-          val imported = importHolder.getAllImportUsed.exists {
-            case ImportExprUsed(expr) =>
-              expr.reference.exists { ref =>
-                ref
-                  .multiResolve(false)
-                  .exists(rr =>
-                    rr.getElement match {
-                      case p: ScPackage =>
-                        p.getQualifiedName == qualifiedName
-                      case p: PsiPackage =>
-                        p.getQualifiedName == qualifiedName
-                      case _ =>
-                        false
-                    })
-              }
-            case _ =>
-              false
-          }
+          val importHolder = ScalaImportTypeFix
+            .getImportHolder(ref = this, project = getProject)
+          val imported = importHolder
+            .getAllImportUsed
+            .exists {
+              case ImportExprUsed(expr) =>
+                expr
+                  .reference
+                  .exists { ref =>
+                    ref
+                      .multiResolve(false)
+                      .exists(rr =>
+                        rr.getElement match {
+                          case p: ScPackage =>
+                            p.getQualifiedName == qualifiedName
+                          case p: PsiPackage =>
+                            p.getQualifiedName == qualifiedName
+                          case _ =>
+                            false
+                        })
+                  }
+              case _ =>
+                false
+            }
           if (!imported)
             importHolder.addImportForPath(qualifiedName, ref = this)
           pckg.getName

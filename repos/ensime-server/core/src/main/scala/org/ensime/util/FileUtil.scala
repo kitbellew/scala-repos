@@ -77,9 +77,8 @@ object FileUtils {
           case (file, fileChanges) =>
             readFile(file, cs) match {
               case Right(contents) =>
-                val newContents = FileEditHelper.applyEdits(
-                  fileChanges.toList,
-                  contents)
+                val newContents = FileEditHelper
+                  .applyEdits(fileChanges.toList, contents)
                 (file, newContents)
               case Left(e) =>
                 throw e
@@ -123,11 +122,8 @@ object FileUtils {
           case (file, fileChanges) =>
             readFile(file, cs) match {
               case Right(contents) =>
-                FileEditHelper.diffFromTextEdits(
-                  fileChanges,
-                  contents,
-                  file,
-                  file)
+                FileEditHelper
+                  .diffFromTextEdits(fileChanges, contents, file, file)
               case Left(e) =>
                 throw e
             }

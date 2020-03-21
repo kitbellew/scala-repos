@@ -10,8 +10,8 @@ import org.scalatest.FunSuite
 
 class testnamer extends Namer {
   override def lookup(path: Path) =
-    Activity.value(
-      NameTree.Leaf(Name.Path(Path.read("/rewritten/by/test/namer"))))
+    Activity
+      .value(NameTree.Leaf(Name.Path(Path.read("/rewritten/by/test/namer"))))
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -28,8 +28,8 @@ class DefaultInterpreterTest extends FunSuite {
 
   def boundWithWeight(weight: Double, addrs: Address*): Name.Bound =
     Name.Bound(
-      Var.value(
-        Addr.Bound(addrs.toSet, Addr.Metadata(AddrWeightKey -> weight))),
+      Var
+        .value(Addr.Bound(addrs.toSet, Addr.Metadata(AddrWeightKey -> weight))),
       addrs.toSet)
 
   test("basic dtab evaluation") {

@@ -94,9 +94,8 @@ class LawTests extends FunSuite with Discipline {
 
   checkAll(
     "Seq[String]",
-    PartialGroupLaws[Seq[String]](
-      spire.optional.genericEq.generic,
-      implicitly).semigroupoid)
+    PartialGroupLaws[Seq[String]](spire.optional.genericEq.generic, implicitly)
+      .semigroupoid)
   checkAll("Seq[Int]", PartialGroupLaws[Seq[Int]].groupoid)
 
   checkAll("String", VectorSpaceLaws[String, Int].metricSpace)

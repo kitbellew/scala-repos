@@ -83,13 +83,10 @@ object CassandraCQLTest {
     val configuration = job.getConfiguration
     ConfigHelper.setInputInitialAddress(job.getConfiguration(), cHost)
     ConfigHelper.setInputRpcPort(job.getConfiguration(), cPort)
-    ConfigHelper.setInputColumnFamily(
-      job.getConfiguration(),
-      KeySpace,
-      InputColumnFamily)
-    ConfigHelper.setInputPartitioner(
-      job.getConfiguration(),
-      "Murmur3Partitioner")
+    ConfigHelper
+      .setInputColumnFamily(job.getConfiguration(), KeySpace, InputColumnFamily)
+    ConfigHelper
+      .setInputPartitioner(job.getConfiguration(), "Murmur3Partitioner")
     CqlConfigHelper.setInputCQLPageRowSize(job.getConfiguration(), "3")
 
     /** CqlConfigHelper.setInputWhereClauses(job.getConfiguration(), "user_id='bob'") */
@@ -105,9 +102,8 @@ object CassandraCQLTest {
       OutputColumnFamily)
     ConfigHelper.setOutputInitialAddress(job.getConfiguration(), cHost)
     ConfigHelper.setOutputRpcPort(job.getConfiguration(), cPort)
-    ConfigHelper.setOutputPartitioner(
-      job.getConfiguration(),
-      "Murmur3Partitioner")
+    ConfigHelper
+      .setOutputPartitioner(job.getConfiguration(), "Murmur3Partitioner")
 
     val casRdd = sc.newAPIHadoopRDD(
       job.getConfiguration(),
@@ -124,16 +120,17 @@ object CassandraCQLTest {
       }
     }
     val aggregatedRDD = productSaleRDD.reduceByKey(_ + _)
-    aggregatedRDD.collect().foreach {
-      case (productId, saleCount) =>
-        println(productId + ":" + saleCount)
-    }
+    aggregatedRDD
+      .collect()
+      .foreach {
+        case (productId, saleCount) =>
+          println(productId + ":" + saleCount)
+      }
 
     val casoutputCF = aggregatedRDD.map {
       case (productId, saleCount) => {
-        val outKey = Collections.singletonMap(
-          "prod_id",
-          ByteBufferUtil.bytes(productId))
+        val outKey = Collections
+          .singletonMap("prod_id", ByteBufferUtil.bytes(productId))
         val outVal = Collections.singletonList(ByteBufferUtil.bytes(saleCount))
         (outKey, outVal)
       }

@@ -50,8 +50,8 @@ class SbtDependencyAnnotator extends Annotator {
       return
 
     def findDependencyOrAnnotate(info: ArtifactInfo): Unit = {
-      val resolversToUse = SbtResolverUtils.getProjectResolvers(
-        Option(ScalaPsiUtil.fileContext(element)))
+      val resolversToUse = SbtResolverUtils
+        .getProjectResolvers(Option(ScalaPsiUtil.fileContext(element)))
       val indexManager = SbtResolverIndexesManager()
       val indexes = resolversToUse.flatMap(indexManager.find).toSet
       if (indexes.isEmpty)
@@ -109,6 +109,6 @@ class SbtDependencyAnnotator extends Annotator {
   }
 
   private def isDynamicVersion(version: String): Boolean =
-    version.startsWith("latest") || version.endsWith("+") || "[]()".exists(
-      version.contains(_))
+    version.startsWith("latest") || version.endsWith("+") || "[]()"
+      .exists(version.contains(_))
 }

@@ -219,8 +219,9 @@ private[http] object HeaderParser {
   }
   def Settings(
       uriParsingMode: Uri.ParsingMode = Uri.ParsingMode.Relaxed,
-      cookieParsingMode: ParserSettings.CookieParsingMode =
-        ParserSettings.CookieParsingMode.RFC6265): Settings = {
+      cookieParsingMode: ParserSettings.CookieParsingMode = ParserSettings
+        .CookieParsingMode
+        .RFC6265): Settings = {
     val _uriParsingMode = uriParsingMode
     val _cookieParsingMode = cookieParsingMode
 

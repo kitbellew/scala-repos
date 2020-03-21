@@ -350,7 +350,8 @@ object GenTypeClass {
         case Seq() =>
           ""
         case es =>
-          es.map(n => n + suffix + "[" + cti + "]")
+          es
+            .map(n => n + suffix + "[" + cti + "]")
             .mkString("extends ", " with ", "")
       }
     def extendsToSyntaxListText =

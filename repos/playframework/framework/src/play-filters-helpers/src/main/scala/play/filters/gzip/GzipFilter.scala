@@ -68,26 +68,29 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(implicit
       request: RequestHeader,
       result: Result): Future[Result] = {
     if (shouldCompress(result) && config.shouldGzip(request, result)) {
-      val header = result.header
+      val header = result
+        .header
         .copy(headers = setupHeader(result.header.headers))
 
       result.body match {
 
         case HttpEntity.Strict(data, contentType) =>
-          Future.successful(
-            Result(header, compressStrictEntity(data, contentType)))
+          Future
+            .successful(Result(header, compressStrictEntity(data, contentType)))
 
         case entity @ HttpEntity.Streamed(_, Some(contentLength), contentType)
             if contentLength <= config.chunkedThreshold =>
           // It's below the chunked threshold, so buffer then compress and send
-          entity.consumeData.map { data =>
-            Result(header, compressStrictEntity(data, contentType))
-          }
+          entity
+            .consumeData
+            .map { data =>
+              Result(header, compressStrictEntity(data, contentType))
+            }
 
         case HttpEntity.Streamed(data, _, contentType) =>
           // It's above the chunked threshold, compress through the gzip flow, and send as chunked
-          val gzipped = data via GzipFlow.gzip(config.bufferSize) map (d =>
-            HttpChunk.Chunk(d))
+          val gzipped = data via GzipFlow
+            .gzip(config.bufferSize) map (d => HttpChunk.Chunk(d))
           Future.successful(
             Result(header, HttpEntity.Chunked(gzipped, contentType)))
 
@@ -116,8 +119,8 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(implicit
                 // Broadcast the stream through two separate flows, one that collects chunks and turns them into
                 // ByteStrings, sends those ByteStrings through the Gzip flow, and then turns them back into chunks,
                 // the other that just allows the last chunk through. Then concat those two flows together.
-                broadcast.out(0) ~> extractChunks ~> GzipFlow.gzip(
-                  config.bufferSize) ~> createChunks ~> concat.in(0)
+                broadcast.out(0) ~> extractChunks ~> GzipFlow
+                  .gzip(config.bufferSize) ~> createChunks ~> concat.in(0)
                 broadcast.out(1) ~> filterLastChunk ~> concat.in(1)
 
                 new FlowShape(broadcast.in, concat.out)

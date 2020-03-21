@@ -140,13 +140,12 @@ class RowEncoderSuite extends SparkFunSuite {
       .add("structOfUDT", structOfUDT))
 
   test(s"encode/decode: Product") {
-    val schema = new StructType()
-      .add(
-        "structAsProduct",
-        new StructType()
-          .add("int", IntegerType)
-          .add("string", StringType)
-          .add("double", DoubleType))
+    val schema = new StructType().add(
+      "structAsProduct",
+      new StructType()
+        .add("int", IntegerType)
+        .add("string", StringType)
+        .add("double", DoubleType))
 
     val encoder = RowEncoder(schema)
 

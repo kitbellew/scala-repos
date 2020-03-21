@@ -37,13 +37,17 @@ class InnerProductJob(args: Args) extends Job(args) {
     }
 
   val in0 =
-    Tsv("input0").read.mapTo((0, 1, 2) -> ('x1, 'y1, 's1)) {
-      input: (Int, Int, Int) => input
-    }
+    Tsv("input0")
+      .read
+      .mapTo((0, 1, 2) -> ('x1, 'y1, 's1)) { input: (Int, Int, Int) =>
+        input
+      }
   val in1 =
-    Tsv("input1").read.mapTo((0, 1, 2) -> ('x2, 'y2, 's2)) {
-      input: (Int, Int, Int) => input
-    }
+    Tsv("input1")
+      .read
+      .mapTo((0, 1, 2) -> ('x2, 'y2, 's2)) { input: (Int, Int, Int) =>
+        input
+      }
   in0
     .blockJoinWithSmaller(
       'y1 -> 'y2,

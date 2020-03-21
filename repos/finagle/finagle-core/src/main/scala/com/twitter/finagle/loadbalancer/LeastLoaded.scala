@@ -35,20 +35,24 @@ private trait LeastLoaded[Req, Rep] {
 
     override def apply(conn: ClientConnection): Future[Service[Req, Rep]] = {
       counter.incrementAndGet()
-      super.apply(conn).transform {
-        case Return(svc) =>
-          Future.value(
-            new ServiceProxy(svc) {
-              override def close(deadline: Time) =
-                super.close(deadline).ensure {
-                  counter.decrementAndGet()
-                }
-            })
+      super
+        .apply(conn)
+        .transform {
+          case Return(svc) =>
+            Future.value(
+              new ServiceProxy(svc) {
+                override def close(deadline: Time) =
+                  super
+                    .close(deadline)
+                    .ensure {
+                      counter.decrementAndGet()
+                    }
+              })
 
-        case t @ Throw(_) =>
-          counter.decrementAndGet()
-          Future.const(t)
-      }
+          case t @ Throw(_) =>
+            counter.decrementAndGet()
+            Future.const(t)
+        }
     }
   }
 

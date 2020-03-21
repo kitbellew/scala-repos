@@ -35,7 +35,8 @@ class OneAndTests extends CatsSuite {
     "Reducible[OneAnd[List, ?]]",
     SerializableTests.serializable(Reducible[OneAnd[List, ?]]))
 
-  implicit val iso = CartesianTests.Isomorphisms
+  implicit val iso = CartesianTests
+    .Isomorphisms
     .invariant[OneAnd[ListWrapper, ?]](
       OneAnd.oneAndFunctor(ListWrapper.functor))
 

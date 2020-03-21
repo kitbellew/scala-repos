@@ -127,9 +127,8 @@ class WriteToTypedParquetTupleJob(args: Args) extends Job(args) {
   * To test typed parquet tuple can bse used as source and apply filter predicate and push down correctly
   */
 class ReadWithFilterPredicateJob(args: Args) extends Job(args) {
-  val fp: FilterPredicate = FilterApi.eq(
-    binaryColumn("string"),
-    Binary.fromString("B1"))
+  val fp: FilterPredicate = FilterApi
+    .eq(binaryColumn("string"), Binary.fromString("B1"))
 
   val inputPath = args.required("input")
   val outputPath = args.required("output")

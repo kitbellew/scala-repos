@@ -108,8 +108,8 @@ trait AnyVarTrait[T, MyType <: AnyVarTrait[T, MyType]]
     extends PSettableValueHolder[T]
     with HasCalcDefaultValue[T] {
   self: MyType =>
-  protected lazy val name =
-    VarConstants.varPrefix + getClass.getName + "_" + __nameSalt
+  protected lazy val name = VarConstants.varPrefix + getClass
+    .getName + "_" + __nameSalt
   private lazy val initedKey = name + VarConstants.initedSuffix
   protected def findFunc(name: String): Box[T]
   protected def setFunc(name: String, value: T): Unit

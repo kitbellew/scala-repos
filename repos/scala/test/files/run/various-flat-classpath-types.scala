@@ -250,11 +250,13 @@ object Test {
   }
 
   private def cleanDir(dir: JFile): Unit =
-    dir.listFiles().foreach { file =>
-      if (file.isDirectory)
-        cleanDir(file)
-      file.delete()
-    }
+    dir
+      .listFiles()
+      .foreach { file =>
+        if (file.isDirectory)
+          cleanDir(file)
+        file.delete()
+      }
 
   private def mkPath(pathEntries: String*) =
     pathEntries.mkString(File.pathSeparator)

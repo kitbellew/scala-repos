@@ -224,7 +224,8 @@ class EventServiceSpec
         """URL,Title,Status,HubScore,Comments,24 Hours,7 Days,30 Days,Total,24 Hours,Total,Published Date,Edited Date,Featured
                    |http://alexk2009.hubpages.com/hub/Big-Birds-that-carry-off-children,Eagles carrying off children and babies,Published,91,21,11,98,2352,10856,0,252,11/05/11,12/19/12,yes
                    |http://alexk2009.hubpages.com/hub/Creating-Spirits,Creating Spirits and magical astral and physical thought forms,Published,88,0,1,15,58,1076,0,0,05/15/09,01/12/13,yes
-                   |http://alexk2009.hubpages.com/hub/The-Illusion-of-Money-part-one,The illusion of money,Published,88,6,0,5,32,708,0,0,04/02/10,01/13/13,yes""".stripMargin
+                   |http://alexk2009.hubpages.com/hub/The-Illusion-of-Money-part-one,The illusion of money,Published,88,6,0,5,32,708,0,0,04/02/10,01/13/13,yes"""
+          .stripMargin
 
       val result =
         track(

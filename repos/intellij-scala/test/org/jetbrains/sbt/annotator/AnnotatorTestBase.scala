@@ -22,8 +22,9 @@ abstract class AnnotatorTestBase extends PlatformTestCase {
   def loadTestFile() = {
     val fileName = getTestName(false) + ".sbt"
     val filePath = testdataPath + fileName
-    val file = LocalFileSystem.getInstance.findFileByPath(
-      filePath.replace(File.separatorChar, '/'))
+    val file = LocalFileSystem
+      .getInstance
+      .findFileByPath(filePath.replace(File.separatorChar, '/'))
     assert(file != null, "file " + filePath + " not found")
     val fileText = StringUtil.convertLineSeparators(
       FileUtil.loadFile(new File(file.getCanonicalPath), CharsetToolkit.UTF8))

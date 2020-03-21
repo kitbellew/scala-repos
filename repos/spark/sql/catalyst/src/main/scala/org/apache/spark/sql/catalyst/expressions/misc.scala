@@ -261,8 +261,8 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
 
   override def checkInputDataTypes(): TypeCheckResult = {
     if (children.isEmpty) {
-      TypeCheckResult.TypeCheckFailure(
-        "function hash requires at least one argument")
+      TypeCheckResult
+        .TypeCheckFailure("function hash requires at least one argument")
     } else {
       TypeCheckResult.TypeCheckSuccess
     }
@@ -321,17 +321,11 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
       case c: CalendarInterval =>
         Murmur3_x86_32.hashInt(c.months, hashLong(c.microseconds))
       case a: Array[Byte] =>
-        Murmur3_x86_32.hashUnsafeBytes(
-          a,
-          Platform.BYTE_ARRAY_OFFSET,
-          a.length,
-          seed)
+        Murmur3_x86_32
+          .hashUnsafeBytes(a, Platform.BYTE_ARRAY_OFFSET, a.length, seed)
       case s: UTF8String =>
-        Murmur3_x86_32.hashUnsafeBytes(
-          s.getBaseObject,
-          s.getBaseOffset,
-          s.numBytes(),
-          seed)
+        Murmur3_x86_32
+          .hashUnsafeBytes(s.getBaseObject, s.getBaseOffset, s.numBytes(), seed)
 
       case array: ArrayData =>
         val elementType =
@@ -501,7 +495,8 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
         """
 
       case StructType(fields) =>
-        fields.zipWithIndex
+        fields
+          .zipWithIndex
           .map {
             case (field, index) =>
               nullSafeElementHash(

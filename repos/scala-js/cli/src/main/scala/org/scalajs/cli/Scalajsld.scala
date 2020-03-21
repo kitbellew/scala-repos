@@ -46,7 +46,8 @@ object Scalajsld {
   private implicit object OutputModeRead extends scopt.Read[OutputMode] {
     val arity = 1
     val reads = { (s: String) =>
-      OutputMode.All
+      OutputMode
+        .All
         .find(_.toString() == s)
         .getOrElse(
           throw new IllegalArgumentException(s"$s is not a valid output mode"))
@@ -160,12 +161,8 @@ object Scalajsld {
             c.copy(logLevel = Level.Error)
           }
           .text("Only show errors")
-        version("version")
-          .abbr("v")
-          .text("Show scalajsld version")
-        help("help")
-          .abbr("h")
-          .text("prints this usage text")
+        version("version").abbr("v").text("Show scalajsld version")
+        help("help").abbr("h").text("prints this usage text")
 
         override def showUsageOnError = true
       }
@@ -176,18 +173,22 @@ object Scalajsld {
 
       // Warn if writing JS dependencies was requested.
       if (options.jsoutput) {
-        Console.err.println(
-          "Support for the --jsoutput flag has been dropped. " +
-            "JS dependencies will not be written to disk. " +
-            "Comment on https://github.com/scala-js/scala-js/issues/2163 " +
-            "if you rely on this feature.")
+        Console
+          .err
+          .println(
+            "Support for the --jsoutput flag has been dropped. " +
+              "JS dependencies will not be written to disk. " +
+              "Comment on https://github.com/scala-js/scala-js/issues/2163 " +
+              "if you rely on this feature.")
       }
 
       // Warn if bypassing linking errors was requested.
       if (options.bypassLinkingErrors) {
-        Console.err.println(
-          "Support for bypassing linking errors with -b or " +
-            "--bypassLinkingErrors will be dropped in the next major version.")
+        Console
+          .err
+          .println(
+            "Support for bypassing linking errors with -b or " +
+              "--bypassLinkingErrors will be dropped in the next major version.")
       }
 
       val semantics =

@@ -30,9 +30,8 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
           }
         }
       } Then { buffer: mutable.Buffer[(String, Double)] =>
-        buffer.toList shouldBe List(
-          ("Joe", 1000.0 / 32),
-          ("Sarah", 1000.0 / 58))
+        buffer
+          .toList shouldBe List(("Joe", 1000.0 / 32), ("Sarah", 1000.0 / 58))
       }
     }
 
@@ -65,7 +64,8 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
         List(("Joe", 40), ("Sarah", 22))
       } When {
         (gender: TypedPipe[(String, String)], age: TypedPipe[(String, Int)]) =>
-          gender.group
+          gender
+            .group
             .join(age.group)
             .toTypedPipe
             .map { value: (String, (String, Int)) =>
@@ -169,7 +169,9 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
         val withIncome = pipes(3).asInstanceOf[TypedPipe[(String, Long)]]
         val withSmoker = pipes(4).asInstanceOf[TypedPipe[(String, Boolean)]]
 
-        withUserID.swap.group
+        withUserID
+          .swap
+          .group
           .join(withGender.group)
           .join(withAge.group)
           .join(withIncome.group)

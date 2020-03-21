@@ -54,19 +54,23 @@ class RegressionStrategy(params: RegressionStrategyParams)
   // Compute each indicator value for training the model
   private def calcIndicator(
       logPrice: Series[DateTime, Double]): Seq[Series[DateTime, Double]] = {
-    params.indicators.map {
-      case (name, indicator) =>
-        indicator.getTraining(logPrice)
-    }
+    params
+      .indicators
+      .map {
+        case (name, indicator) =>
+          indicator.getTraining(logPrice)
+      }
   }
 
   // Get max period from series of indicators
   private def getMaxPeriod(): Int = {
     // create an array of periods
-    val periods = params.indicators.map {
-      case (name, indicator) =>
-        indicator.getMinWindowSize()
-    }
+    val periods = params
+      .indicators
+      .map {
+        case (name, indicator) =>
+          indicator.getMinWindowSize()
+      }
     periods.max
   }
 
@@ -111,13 +115,16 @@ class RegressionStrategy(params: RegressionStrategyParams)
       dataView: DataView): Double = {
 
     val vecArray =
-      params.indicators.map {
-        case (name, indicator) => {
-          val price = dataView.priceFrame(indicator.getMinWindowSize())
-          val logPrice = price.mapValues(math.log)
-          indicator.getOne(logPrice.firstCol(ticker))
+      params
+        .indicators
+        .map {
+          case (name, indicator) => {
+            val price = dataView.priceFrame(indicator.getMinWindowSize())
+            val logPrice = price.mapValues(math.log)
+            indicator.getOne(logPrice.firstCol(ticker))
+          }
         }
-      }.toArray
+        .toArray
 
     val densVecArray = vecArray ++ Array[Double](1)
     val vec = DenseVector[Double](densVecArray)
@@ -132,7 +139,8 @@ class RegressionStrategy(params: RegressionStrategyParams)
       query: Query): Prediction = {
     val dataView = query.dataView
 
-    val prediction = query.tickers
+    val prediction = query
+      .tickers
       .filter(ticker => model.contains(ticker))
       .map { ticker =>
         {

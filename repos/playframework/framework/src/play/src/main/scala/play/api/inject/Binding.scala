@@ -336,10 +336,12 @@ final case class QualifierClass[T <: Annotation](clazz: Class[T])
     extends QualifierAnnotation
 
 private object SourceLocator {
-  val provider = SourceProvider.DEFAULT_INSTANCE.plusSkippedClasses(
-    this.getClass,
-    classOf[BindingKey[_]],
-    classOf[Binding[_]])
+  val provider = SourceProvider
+    .DEFAULT_INSTANCE
+    .plusSkippedClasses(
+      this.getClass,
+      classOf[BindingKey[_]],
+      classOf[Binding[_]])
 
   def source = provider.get()
 }

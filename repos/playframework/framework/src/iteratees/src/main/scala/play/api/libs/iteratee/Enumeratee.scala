@@ -186,7 +186,8 @@ object Enumeratee {
 
     def getInside[T](it: Iteratee[E, T]): Future[
       (Option[Either[(String, Input[E]), (T, Input[E])]], Iteratee[E, T])] = {
-      it.pureFold {
+      it
+        .pureFold {
           case Step.Done(a, e) =>
             Some(Right((a, e)))
           case Step.Cont(k) =>
@@ -342,8 +343,8 @@ object Enumeratee {
             case Input.El(e) =>
               new CheckDone[From, To] {
                 def continue[A](k: K[To, A]) = Cont(step(k))
-              } &> Iteratee.flatten(
-                Future(f(e))(pec).flatMap(_.apply(Cont(k)))(dec))
+              } &> Iteratee
+                .flatten(Future(f(e))(pec).flatMap(_.apply(Cont(k)))(dec))
 
             case Input.Empty =>
               new CheckDone[From, To] {
@@ -387,8 +388,8 @@ object Enumeratee {
             case in =>
               new CheckDone[From, To] {
                 def continue[A](k: K[To, A]) = Cont(step(k))
-              } &> Iteratee.flatten(
-                Future(f(in))(pec).flatMap(_.apply(Cont(k)))(dec))
+              } &> Iteratee
+                .flatten(Future(f(in))(pec).flatMap(_.apply(Cont(k)))(dec))
           }
 
           def continue[A](k: K[To, A]) = Cont(step(k))
@@ -621,8 +622,10 @@ object Enumeratee {
 
             case Input.EOF =>
               Iteratee.flatten(
-                f.run.map[Iteratee[From, Iteratee[To, A]]]((c: To) =>
-                  Done(k(Input.El(c)), Input.EOF))(dec))
+                f
+                  .run
+                  .map[Iteratee[From, Iteratee[To, A]]]((c: To) =>
+                    Done(k(Input.El(c)), Input.EOF))(dec))
 
           }
 
@@ -1004,7 +1007,8 @@ object Enumeratee {
           input match {
             case in @ (Input.El(_) | Input.Empty) =>
               val next: Future[Iteratee[E, Iteratee[E, A]]] =
-                it.pureFlatFold[E, Iteratee[E, A]] {
+                it
+                  .pureFlatFold[E, Iteratee[E, A]] {
                     case Step.Cont(k) =>
                       val n = k(in)
                       n.pureFlatFold[E, Iteratee[E, A]] {

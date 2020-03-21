@@ -5,10 +5,7 @@ import org.apache.mesos.{Protos => mesos}
 case class Parameter(key: String, value: String) {
 
   def toProto(): mesos.Parameter =
-    mesos.Parameter.newBuilder
-      .setKey(key)
-      .setValue(value)
-      .build
+    mesos.Parameter.newBuilder.setKey(key).setValue(value).build
 }
 
 object Parameter {

@@ -121,10 +121,13 @@ class BisectingKMeansModel private[ml] (
   @Since("2.0.0")
   def computeCost(dataset: DataFrame): Double = {
     SchemaUtils.checkColumnType(dataset.schema, $(featuresCol), new VectorUDT)
-    val data = dataset.select(col($(featuresCol))).rdd.map {
-      case Row(point: Vector) =>
-        point
-    }
+    val data = dataset
+      .select(col($(featuresCol)))
+      .rdd
+      .map {
+        case Row(point: Vector) =>
+          point
+      }
     parentModel.computeCost(data)
   }
 }
@@ -186,10 +189,13 @@ class BisectingKMeans @Since("2.0.0") (@Since("2.0.0") override val uid: String)
 
   @Since("2.0.0")
   override def fit(dataset: DataFrame): BisectingKMeansModel = {
-    val rdd = dataset.select(col($(featuresCol))).rdd.map {
-      case Row(point: Vector) =>
-        point
-    }
+    val rdd = dataset
+      .select(col($(featuresCol)))
+      .rdd
+      .map {
+        case Row(point: Vector) =>
+          point
+      }
 
     val bkm = new MLlibBisectingKMeans()
       .setK($(k))

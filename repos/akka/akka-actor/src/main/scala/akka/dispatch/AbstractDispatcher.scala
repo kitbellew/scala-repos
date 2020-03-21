@@ -52,8 +52,8 @@ final case class TaskInvocation(
     try runnable.run()
     catch {
       case NonFatal(e) ⇒
-        eventStream.publish(
-          Error(e, "TaskInvocation", this.getClass, e.getMessage))
+        eventStream
+          .publish(Error(e, "TaskInvocation", this.getClass, e.getMessage))
     } finally cleanup()
 }
 
@@ -152,11 +152,9 @@ abstract class MessageDispatcher(
   private final def shutdownSchedule: Int =
     Unsafe.instance.getIntVolatile(this, shutdownScheduleOffset)
   private final def updateShutdownSchedule(expect: Int, update: Int): Boolean =
-    Unsafe.instance.compareAndSwapInt(
-      this,
-      shutdownScheduleOffset,
-      expect,
-      update)
+    Unsafe
+      .instance
+      .compareAndSwapInt(this, shutdownScheduleOffset, expect, update)
 
   /**
     *  Creates and returns a mailbox for the given actor.
@@ -229,12 +227,14 @@ abstract class MessageDispatcher(
 
   private def scheduleShutdownAction(): Unit = {
     // IllegalStateException is thrown if scheduler has been shutdown
-    try prerequisites.scheduler.scheduleOnce(shutdownTimeout, shutdownAction)(
-      new ExecutionContext {
-        override def execute(runnable: Runnable): Unit = runnable.run()
-        override def reportFailure(t: Throwable): Unit =
-          MessageDispatcher.this.reportFailure(t)
-      })
+    try prerequisites
+      .scheduler
+      .scheduleOnce(shutdownTimeout, shutdownAction)(
+        new ExecutionContext {
+          override def execute(runnable: Runnable): Unit = runnable.run()
+          override def reportFailure(t: Throwable): Unit =
+            MessageDispatcher.this.reportFailure(t)
+        })
     catch {
       case _: IllegalStateException ⇒
         shutdown()
@@ -416,7 +416,8 @@ abstract class MessageDispatcherConfigurator(
           val args = List(
             classOf[Config] -> config,
             classOf[DispatcherPrerequisites] -> prerequisites)
-          prerequisites.dynamicAccess
+          prerequisites
+            .dynamicAccess
             .createInstanceFor[ExecutorServiceConfigurator](fqcn, args)
             .recover({
               case exception ⇒
@@ -642,12 +643,14 @@ class DefaultExecutorServiceConfigurator(
   val provider: ExecutorServiceFactoryProvider =
     prerequisites.defaultExecutionContext match {
       case Some(ec) ⇒
-        prerequisites.eventStream.publish(
-          Debug(
-            "DefaultExecutorServiceConfigurator",
-            this.getClass,
-            s"Using passed in ExecutionContext as default executor for this ActorSystem. If you want to use a different executor, please specify one in akka.actor.default-dispatcher.default-executor."
-          ))
+        prerequisites
+          .eventStream
+          .publish(
+            Debug(
+              "DefaultExecutorServiceConfigurator",
+              this.getClass,
+              s"Using passed in ExecutionContext as default executor for this ActorSystem. If you want to use a different executor, please specify one in akka.actor.default-dispatcher.default-executor."
+            ))
 
         new AbstractExecutorService
           with ExecutorServiceFactory

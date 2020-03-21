@@ -74,8 +74,8 @@ case class SortArray(base: Expression, ascendingOrder: Expression)
         TypeCheckResult.TypeCheckFailure(
           s"$prettyName does not support sorting array of type ${dt.simpleString}")
       case _ =>
-        TypeCheckResult.TypeCheckFailure(
-          s"$prettyName only supports array input.")
+        TypeCheckResult
+          .TypeCheckFailure(s"$prettyName only supports array input.")
     }
 
   @transient
@@ -136,12 +136,15 @@ case class SortArray(base: Expression, ascendingOrder: Expression)
     val elementType = base.dataType.asInstanceOf[ArrayType].elementType
     val data = array.asInstanceOf[ArrayData].toArray[AnyRef](elementType)
     if (elementType != NullType) {
-      java.util.Arrays.sort(
-        data,
-        if (ascending.asInstanceOf[Boolean])
-          lt
-        else
-          gt)
+      java
+        .util
+        .Arrays
+        .sort(
+          data,
+          if (ascending.asInstanceOf[Boolean])
+            lt
+          else
+            gt)
     }
     new GenericArrayData(data.asInstanceOf[Array[Any]])
   }
@@ -173,12 +176,11 @@ case class ArrayContains(left: Expression, right: Expression)
 
   override def checkInputDataTypes(): TypeCheckResult = {
     if (right.dataType == NullType) {
-      TypeCheckResult.TypeCheckFailure(
-        "Null typed values cannot be used as arguments")
+      TypeCheckResult
+        .TypeCheckFailure("Null typed values cannot be used as arguments")
     } else if (!left.dataType.isInstanceOf[ArrayType]
-               || left.dataType
-                 .asInstanceOf[ArrayType]
-                 .elementType != right.dataType) {
+               || left.dataType.asInstanceOf[ArrayType].elementType != right
+                 .dataType) {
       TypeCheckResult.TypeCheckFailure(
         "Arguments must be an array followed by a value of same type as the array members")
     } else {
@@ -187,9 +189,8 @@ case class ArrayContains(left: Expression, right: Expression)
   }
 
   override def nullable: Boolean = {
-    left.nullable || right.nullable || left.dataType
-      .asInstanceOf[ArrayType]
-      .containsNull
+    left.nullable || right
+      .nullable || left.dataType.asInstanceOf[ArrayType].containsNull
   }
 
   override def nullSafeEval(arr: Any, value: Any): Any = {

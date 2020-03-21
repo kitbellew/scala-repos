@@ -132,8 +132,8 @@ trait WithPlay {
   implicit def LilaFuZero[A: Zero]: Zero[Fu[A]] =
     Zero.instance(fuccess(zero[A]))
 
-  implicit val LilaJsObjectZero: Zero[JsObject] = Zero.instance(
-    JsObject(Seq.empty))
+  implicit val LilaJsObjectZero: Zero[JsObject] = Zero
+    .instance(JsObject(Seq.empty))
 
   implicit def LilaJsResultZero[A]: Zero[JsResult[A]] =
     Zero.instance(JsError(Seq.empty))

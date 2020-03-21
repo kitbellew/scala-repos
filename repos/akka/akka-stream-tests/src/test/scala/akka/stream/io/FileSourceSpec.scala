@@ -33,8 +33,8 @@ object FileSourceSpec {
 
 class FileSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
 
-  val settings = ActorMaterializerSettings(system).withDispatcher(
-    "akka.actor.default-dispatcher")
+  val settings = ActorMaterializerSettings(system)
+    .withDispatcher("akka.actor.default-dispatcher")
   implicit val materializer = ActorMaterializer(settings)
 
   val TestText = {
@@ -191,7 +191,8 @@ class FileSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
           .supervisor
           .tell(StreamSupervisor.GetChildren, testActor)
         val ref =
-          expectMsgType[Children].children
+          expectMsgType[Children]
+            .children
             .find(_.path.toString contains "fileSource")
             .get
         try assertDispatcher(ref, "akka.stream.default-blocking-io-dispatcher")
@@ -219,7 +220,8 @@ class FileSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
           .supervisor
           .tell(StreamSupervisor.GetChildren, testActor)
         val ref =
-          expectMsgType[Children].children
+          expectMsgType[Children]
+            .children
             .find(_.path.toString contains "File")
             .get
         try assertDispatcher(ref, "akka.actor.default-dispatcher")

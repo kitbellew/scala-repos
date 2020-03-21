@@ -97,7 +97,9 @@ private[akka] final case class Remove(node: RoleName) extends CommandOp
 private[akka] class MsgEncoder extends OneToOneEncoder {
 
   implicit def address2proto(addr: Address): TCP.Address =
-    TCP.Address.newBuilder
+    TCP
+      .Address
+      .newBuilder
       .setProtocol(addr.protocol)
       .setSystem(addr.system)
       .setHost(addr.host.get)
@@ -138,14 +140,18 @@ private[akka] class MsgEncoder extends OneToOneEncoder {
               TCP.EnterBarrier.newBuilder.setName(name).setOp(BarrierOp.Fail))
           case ThrottleMsg(target, dir, rate) ⇒
             w.setFailure(
-              TCP.InjectFailure.newBuilder
+              TCP
+                .InjectFailure
+                .newBuilder
                 .setAddress(target)
                 .setFailure(TCP.FailType.Throttle)
                 .setDirection(dir)
                 .setRateMBit(rate))
           case DisconnectMsg(target, abort) ⇒
             w.setFailure(
-              TCP.InjectFailure.newBuilder
+              TCP
+                .InjectFailure
+                .newBuilder
                 .setAddress(target)
                 .setFailure(
                   if (abort)
@@ -154,7 +160,9 @@ private[akka] class MsgEncoder extends OneToOneEncoder {
                     TCP.FailType.Disconnect))
           case TerminateMsg(Right(exitValue)) ⇒
             w.setFailure(
-              TCP.InjectFailure.newBuilder
+              TCP
+                .InjectFailure
+                .newBuilder
                 .setFailure(TCP.FailType.Exit)
                 .setExitValue(exitValue))
           case TerminateMsg(Left(false)) ⇒
@@ -162,7 +170,9 @@ private[akka] class MsgEncoder extends OneToOneEncoder {
               TCP.InjectFailure.newBuilder.setFailure(TCP.FailType.Shutdown))
           case TerminateMsg(Left(true)) ⇒
             w.setFailure(
-              TCP.InjectFailure.newBuilder
+              TCP
+                .InjectFailure
+                .newBuilder
                 .setFailure(TCP.FailType.ShutdownAbrupt))
           case GetAddress(node) ⇒
             w.setAddr(TCP.AddressRequest.newBuilder.setNode(node.name))

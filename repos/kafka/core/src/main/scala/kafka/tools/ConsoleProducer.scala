@@ -47,12 +47,14 @@ object ConsoleProducer {
           new NewShinyProducer(getNewProducerProps(config))
         }
 
-      Runtime.getRuntime.addShutdownHook(
-        new Thread() {
-          override def run() {
-            producer.close()
-          }
-        })
+      Runtime
+        .getRuntime
+        .addShutdownHook(
+          new Thread() {
+            override def run() {
+              producer.close()
+            }
+          })
 
       var message: ProducerRecord[Array[Byte], Array[Byte]] = null
       do {
@@ -135,13 +137,11 @@ object ConsoleProducer {
     props.put(
       ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG,
       config.requestTimeoutMs.toString)
-    props.put(
-      ProducerConfig.RETRIES_CONFIG,
-      config.messageSendMaxRetries.toString)
+    props
+      .put(ProducerConfig.RETRIES_CONFIG, config.messageSendMaxRetries.toString)
     props.put(ProducerConfig.LINGER_MS_CONFIG, config.sendTimeout.toString)
-    props.put(
-      ProducerConfig.BUFFER_MEMORY_CONFIG,
-      config.maxMemoryBytes.toString)
+    props
+      .put(ProducerConfig.BUFFER_MEMORY_CONFIG, config.maxMemoryBytes.toString)
     props.put(
       ProducerConfig.BATCH_SIZE_CONFIG,
       config.maxPartitionMemoryBytes.toString)
@@ -335,9 +335,8 @@ object ConsoleProducer {
       .withRequiredArg
       .describedAs("config file")
       .ofType(classOf[String])
-    val useOldProducerOpt = parser.accepts(
-      "old-producer",
-      "Use the old producer implementation.")
+    val useOldProducerOpt = parser
+      .accepts("old-producer", "Use the old producer implementation.")
 
     val options = parser.parse(args: _*)
     if (args.length == 0)
@@ -355,7 +354,8 @@ object ConsoleProducer {
     val compressionCodecOptionValue = options.valueOf(compressionCodecOpt)
     val compressionCodec =
       if (options.has(compressionCodecOpt))
-        if (compressionCodecOptionValue == null || compressionCodecOptionValue.isEmpty)
+        if (compressionCodecOptionValue == null || compressionCodecOptionValue
+              .isEmpty)
           DefaultCompressionCodec.name
         else
           compressionCodecOptionValue
@@ -373,10 +373,10 @@ object ConsoleProducer {
     val valueEncoderClass = options.valueOf(valueEncoderOpt)
     val readerClass = options.valueOf(messageReaderOpt)
     val socketBuffer = options.valueOf(socketBufferSizeOpt)
-    val cmdLineProps = CommandLineUtils.parseKeyValueArgs(
-      options.valuesOf(propertyOpt))
-    val extraProducerProps = CommandLineUtils.parseKeyValueArgs(
-      options.valuesOf(producerPropertyOpt))
+    val cmdLineProps = CommandLineUtils
+      .parseKeyValueArgs(options.valuesOf(propertyOpt))
+    val extraProducerProps = CommandLineUtils
+      .parseKeyValueArgs(options.valuesOf(producerPropertyOpt))
     /* new producer related configs */
     val maxMemoryBytes = options.valueOf(maxMemoryBytesOpt)
     val maxPartitionMemoryBytes = options.valueOf(maxPartitionMemoryBytesOpt)

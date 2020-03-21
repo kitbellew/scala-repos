@@ -989,12 +989,14 @@ sealed abstract class MapInstances0 {
           case (Tip(), b) =>
             b.map(That(_))
           case (a, b) =>
-            a.map(This(_): A \&/ B).unionWith(b.map(That(_): A \&/ B)) {
-              case (This(aa), That(bb)) =>
-                Both(aa, bb)
-              case _ =>
-                sys.error("==>> align")
-            }
+            a
+              .map(This(_): A \&/ B)
+              .unionWith(b.map(That(_): A \&/ B)) {
+                case (This(aa), That(bb)) =>
+                  Both(aa, bb)
+                case _ =>
+                  sys.error("==>> align")
+              }
         }
 
       override def alignWith[A, B, C](f: A \&/ B => C) = {
@@ -1005,7 +1007,8 @@ sealed abstract class MapInstances0 {
         case (Tip(), b) =>
           b.map(bb => f(That(bb)))
         case (a, b) =>
-          a.map(This(_): A \&/ B)
+          a
+            .map(This(_): A \&/ B)
             .unionWith(b.map(That(_): A \&/ B)) {
               case (This(aa), That(bb)) =>
                 Both(aa, bb)
@@ -1233,8 +1236,8 @@ object ==>> extends MapInstances {
 
   final def fromFoldableWithKey[F[_]: Foldable, A: Order, B](fa: F[(A, B)])(
       f: (A, B, B) => B): A ==>> B =
-    Foldable[F].foldLeft(fa, empty[A, B])((a, c) =>
-      a.insertWithKey(f, c._1, c._2))
+    Foldable[F]
+      .foldLeft(fa, empty[A, B])((a, c) => a.insertWithKey(f, c._1, c._2))
 
   final def unions[A: Order, B](xs: List[A ==>> B]): A ==>> B =
     xs.foldLeft(empty[A, B])((a, c) => a.union(c))

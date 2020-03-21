@@ -17,7 +17,8 @@ class KleisliTests extends CatsSuite {
       FB: Eq[F[B]]): Eq[Kleisli[F, A, B]] =
     Eq.by[Kleisli[F, A, B], A => F[B]](_.run)
 
-  implicit val iso = CartesianTests.Isomorphisms
+  implicit val iso = CartesianTests
+    .Isomorphisms
     .invariant[Kleisli[Option, Int, ?]]
 
   checkAll(

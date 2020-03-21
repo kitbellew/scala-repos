@@ -37,11 +37,11 @@ object LEventAggregator {
     */
   @DeveloperApi
   def aggregateProperties(events: Iterator[Event]): Map[String, PropertyMap] = {
-    events.toList
+    events
+      .toList
       .groupBy(_.entityId)
       .mapValues(
-        _.sortBy(_.eventTime.getMillis)
-          .foldLeft[Prop](Prop())(propAggregator))
+        _.sortBy(_.eventTime.getMillis).foldLeft[Prop](Prop())(propAggregator))
       .filter {
         case (k, v) =>
           v.dm.isDefined
@@ -72,23 +72,26 @@ object LEventAggregator {
   def aggregatePropertiesSingle(
       events: Iterator[Event]): Option[PropertyMap] = {
     val prop =
-      events.toList
+      events
+        .toList
         .sortBy(_.eventTime.getMillis)
         .foldLeft[Prop](Prop())(propAggregator)
 
-    prop.dm.map { d =>
-      require(
-        prop.firstUpdated.isDefined,
-        "Unexpected Error: firstUpdated cannot be None.")
-      require(
-        prop.lastUpdated.isDefined,
-        "Unexpected Error: lastUpdated cannot be None.")
+    prop
+      .dm
+      .map { d =>
+        require(
+          prop.firstUpdated.isDefined,
+          "Unexpected Error: firstUpdated cannot be None.")
+        require(
+          prop.lastUpdated.isDefined,
+          "Unexpected Error: lastUpdated cannot be None.")
 
-      PropertyMap(
-        fields = d.fields,
-        firstUpdated = prop.firstUpdated.get,
-        lastUpdated = prop.lastUpdated.get)
-    }
+        PropertyMap(
+          fields = d.fields,
+          firstUpdated = prop.firstUpdated.get,
+          lastUpdated = prop.lastUpdated.get)
+      }
   }
 
   /** Event names that control aggregation: \$set, \$unset, and \$delete */
@@ -126,12 +129,14 @@ object LEventAggregator {
         case "$set" | "$unset" | "$delete" => {
           Prop(
             dm = dataMapAggregator(p.dm, e),
-            firstUpdated = p.firstUpdated
+            firstUpdated = p
+              .firstUpdated
               .map { t =>
                 first(t, e.eventTime)
               }
               .orElse(Some(e.eventTime)),
-            lastUpdated = p.lastUpdated
+            lastUpdated = p
+              .lastUpdated
               .map { t =>
                 last(t, e.eventTime)
               }

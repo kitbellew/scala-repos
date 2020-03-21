@@ -143,7 +143,7 @@ trait TestShardService
             expiredAPIKey,
             Some(new DateTime().minusYears(1000)))
           .map(_ => expiredAPIKey)
-    } copoint
+      } copoint
 
   def configureShardState(config: Configuration) =
     Future {
@@ -234,7 +234,8 @@ trait TestShardService
       def unapply(fres: Future[HttpResponse[ByteChunk]])
           : Future[HttpResponse[QueryResult]] =
         fres map { response =>
-          val contentType = response.headers
+          val contentType = response
+            .headers
             .header[`Content-Type`]
             .flatMap(_.mimeTypes.headOption)
           response.status.code match {
@@ -681,10 +682,8 @@ trait TestPlatform extends ManagedPlatform {
       def execute(query: String, ctx: EvaluationContext, opts: QueryOptions) = {
         if (query == "bad query") {
           val mu = shardQueryMonad.jobId traverse { jobId =>
-            jobManager.addMessage(
-              jobId,
-              JobManager.channels.Error,
-              JString("ERROR!"))
+            jobManager
+              .addMessage(jobId, JobManager.channels.Error, JString("ERROR!"))
           }
 
           EitherT[JobQueryTF, EvaluationError, StreamT[JobQueryTF, Slice]] {
@@ -697,8 +696,8 @@ trait TestPlatform extends ManagedPlatform {
           }
         } else {
           EitherT[JobQueryTF, EvaluationError, StreamT[JobQueryTF, Slice]] {
-            shardQueryMonad.point(
-              \/.right(toSlice(JObject("value" -> JNum(2)))))
+            shardQueryMonad
+              .point(\/.right(toSlice(JObject("value" -> JNum(2)))))
           }
         }
       }

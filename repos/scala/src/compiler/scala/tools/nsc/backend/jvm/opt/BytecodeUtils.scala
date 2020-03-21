@@ -105,7 +105,8 @@ object BytecodeUtils {
     instruction.getOpcode >= 0
 
   def isConstructor(methodNode: MethodNode): Boolean = {
-    methodNode.name == INSTANCE_CONSTRUCTOR_NAME || methodNode.name == CLASS_CONSTRUCTOR_NAME
+    methodNode.name == INSTANCE_CONSTRUCTOR_NAME || methodNode
+      .name == CLASS_CONSTRUCTOR_NAME
   }
 
   def isStaticMethod(methodNode: MethodNode): Boolean =
@@ -121,7 +122,9 @@ object BytecodeUtils {
     (methodNode.access & ACC_NATIVE) != 0
 
   def hasCallerSensitiveAnnotation(methodNode: MethodNode) =
-    methodNode.visibleAnnotations != null && methodNode.visibleAnnotations.asScala
+    methodNode.visibleAnnotations != null && methodNode
+      .visibleAnnotations
+      .asScala
       .exists(_.desc == "Lsun/reflect/CallerSensitive;")
 
   def isFinalClass(classNode: ClassNode): Boolean =
@@ -311,7 +314,8 @@ object BytecodeUtils {
       case _ =>
     }
     if (method.localVariables != null) {
-      method.localVariables
+      method
+        .localVariables
         .iterator()
         .asScala
         .foreach(l => {
@@ -320,7 +324,8 @@ object BytecodeUtils {
         })
     }
     if (method.tryCatchBlocks != null) {
-      method.tryCatchBlocks
+      method
+        .tryCatchBlocks
         .iterator()
         .asScala
         .foreach(l => {
@@ -407,7 +412,8 @@ object BytecodeUtils {
   }
 
   def cloneLabels(methodNode: MethodNode): Map[LabelNode, LabelNode] = {
-    methodNode.instructions
+    methodNode
+      .instructions
       .iterator()
       .asScala
       .collect({
@@ -436,7 +442,8 @@ object BytecodeUtils {
       labelMap: Map[LabelNode, LabelNode],
       prefix: String,
       shift: Int): List[LocalVariableNode] = {
-    methodNode.localVariables
+    methodNode
+      .localVariables
       .iterator()
       .asScala
       .map(localVariable =>
@@ -457,7 +464,8 @@ object BytecodeUtils {
   def cloneTryCatchBlockNodes(
       methodNode: MethodNode,
       labelMap: Map[LabelNode, LabelNode]): List[TryCatchBlockNode] = {
-    methodNode.tryCatchBlocks
+    methodNode
+      .tryCatchBlocks
       .iterator()
       .asScala
       .map(tryCatch =>

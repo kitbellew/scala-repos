@@ -101,10 +101,8 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
     val ep2 = baseEngineParams
       .copy(algorithmParamsList = Seq(("", PAlgo2.Params(20))))
 
-    val engineEvalDataSet = engine.batchEval(
-      sc,
-      Seq(ep0, ep1, ep2),
-      WorkflowParams())
+    val engineEvalDataSet = engine
+      .batchEval(sc, Seq(ep0, ep1, ep2), WorkflowParams())
 
     val evalDataSet0 = engineEvalDataSet(0)._2
     val evalDataSet1 = engineEvalDataSet(1)._2
@@ -117,22 +115,26 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
     // evalDataSet0._1 should be theSameInstanceAs evalDataSet1._1
     // When things are cached correctly, evalDataSet0 and 1 should share the
     // same EI
-    evalDataSet0.zip(evalDataSet1).foreach {
-      case (e0, e1) => {
-        e0._1 should be theSameInstanceAs e1._1
-        e0._2 should be theSameInstanceAs e1._2
+    evalDataSet0
+      .zip(evalDataSet1)
+      .foreach {
+        case (e0, e1) => {
+          e0._1 should be theSameInstanceAs e1._1
+          e0._2 should be theSameInstanceAs e1._2
+        }
       }
-    }
 
     // So as set1 and set2, however, the QPA-RDD should be different.
-    evalDataSet1.zip(evalDataSet2).foreach {
-      case (e1, e2) => {
-        e1._1 should be theSameInstanceAs e2._1
-        val e1Qpa = e1._2
-        val e2Qpa = e2._2
-        e1Qpa should not be theSameInstanceAs(e2Qpa)
+    evalDataSet1
+      .zip(evalDataSet2)
+      .foreach {
+        case (e1, e2) => {
+          e1._1 should be theSameInstanceAs e2._1
+          val e1Qpa = e1._2
+          val e2Qpa = e2._2
+          e1Qpa should not be theSameInstanceAs(e2Qpa)
+        }
       }
-    }
   }
 
   test("Not cached when isEqual not implemented") {
@@ -164,10 +166,8 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
         ("", new PDataSource4.Params(id = 0, en = en, qn = qn)),
       algorithmParamsList = Seq(("", PAlgo2.Params(3))))
 
-    val engineEvalDataSet = engine.batchEval(
-      sc,
-      Seq(ep0, ep1, ep2),
-      WorkflowParams())
+    val engineEvalDataSet = engine
+      .batchEval(sc, Seq(ep0, ep1, ep2), WorkflowParams())
 
     val evalDataSet0 = engineEvalDataSet(0)._2
     val evalDataSet1 = engineEvalDataSet(1)._2
@@ -178,18 +178,22 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
     evalDataSet1 should not be evalDataSet2
 
     // Set0 should have same EI as Set1, since their dsp are the same instance.
-    evalDataSet0.zip(evalDataSet1).foreach {
-      case (e0, e1) => {
-        e0._1 should be theSameInstanceAs (e1._1)
+    evalDataSet0
+      .zip(evalDataSet1)
+      .foreach {
+        case (e0, e1) => {
+          e0._1 should be theSameInstanceAs (e1._1)
+        }
       }
-    }
 
     // Set1 should have different EI as Set2, since Set2's dsp is another
     // instance
-    evalDataSet1.zip(evalDataSet2).foreach {
-      case (e1, e2) => {
-        e1._1 should not be theSameInstanceAs(e2._1)
+    evalDataSet1
+      .zip(evalDataSet2)
+      .foreach {
+        case (e1, e2) => {
+          e1._1 should not be theSameInstanceAs(e2._1)
+        }
       }
-    }
   }
 }

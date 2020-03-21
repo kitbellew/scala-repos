@@ -90,17 +90,16 @@ class GraphBalanceSpec extends AkkaSpec {
 
       val (p2, p3) = RunnableGraph
         .fromGraph(
-          GraphDSL.create(
-            Sink.asPublisher[Int](false),
-            Sink.asPublisher[Int](false))(Keep.both) {
-            implicit b ⇒ (p2Sink, p3Sink) ⇒
+          GraphDSL
+            .create(Sink.asPublisher[Int](false), Sink.asPublisher[Int](false))(
+              Keep.both) { implicit b ⇒ (p2Sink, p3Sink) ⇒
               val balance = b.add(Balance[Int](3, waitForAllDownstreams = true))
               Source(List(1, 2, 3)) ~> balance.in
               balance.out(0) ~> Sink.fromSubscriber(s1)
               balance.out(1) ~> p2Sink
               balance.out(2) ~> p3Sink
               ClosedShape
-          })
+            })
         .run()
 
       val sub1 = s1.expectSubscription()
@@ -181,10 +180,12 @@ class GraphBalanceSpec extends AkkaSpec {
         .run()
 
       import system.dispatcher
-      val sum = Future.sequence(results).map { res ⇒
-        res should not contain 0
-        res.sum
-      }
+      val sum = Future
+        .sequence(results)
+        .map { res ⇒
+          res should not contain 0
+          res.sum
+        }
       Await.result(sum, 3.seconds) should be(numElementsForSink * 3)
     }
 

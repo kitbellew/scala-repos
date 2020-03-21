@@ -40,7 +40,8 @@ object CumulativeSum {
         sg: Semigroup[V],
         ordU: Ordering[U],
         ordK: Ordering[K]): SortedGrouped[K, (U, V)] = {
-      pipe.group
+      pipe
+        .group
         .sortBy {
           case (u, _) =>
             u
@@ -104,13 +105,13 @@ object CumulativeSum {
               }
         }
 
-      val summands = pipe
-        .map {
-          case (k, (u, v)) =>
-            (k, partition(u)) -> (Some(u), v)
-        } ++ sumPerS
+      val summands = pipe.map {
+        case (k, (u, v)) =>
+          (k, partition(u)) -> (Some(u), v)
+      } ++ sumPerS
 
-      summands.group
+      summands
+        .group
         .sortBy {
           case (u, _) =>
             u

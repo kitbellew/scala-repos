@@ -145,7 +145,8 @@ object ContentFactory {
       </html>
 
     // Inject SyntaxHighlighter scripts
-    val htmlSource = html.mkString
+    val htmlSource = html
+      .mkString
       .replace("@@shCoreJs@@", shCoreJs)
       .replace("@@shBrushScala@@", shBrushScala)
       .replace("@@shCoreDefaultCss@@", shCoreDefaultCss)

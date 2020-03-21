@@ -31,7 +31,8 @@ object Test {
     println(s.x)
 
     // under -Xcheckinit there's an additional $init$ field
-    (classOf[X].getDeclaredFields map ("" + _)).sorted
+    (classOf[X].getDeclaredFields map ("" + _))
+      .sorted
       .filter(_ != "private volatile byte Test$X.bitmap$init$0") foreach println
     (classOf[Y].getDeclaredFields map ("" + _)).sorted foreach println
   }

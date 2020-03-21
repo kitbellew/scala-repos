@@ -23,7 +23,8 @@ import org.apache.kafka.common.internals.TopicConstants
 
 sealed abstract class TopicFilter(rawRegex: String) extends Logging {
 
-  val regex = rawRegex.trim
+  val regex = rawRegex
+    .trim
     .replace(',', '|')
     .replace(" ", "")
     .replaceAll("""^["']+""", "")

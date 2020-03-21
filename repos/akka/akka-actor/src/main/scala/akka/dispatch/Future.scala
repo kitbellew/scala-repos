@@ -149,8 +149,8 @@ object Futures {
       predicate: JFunc[T, java.lang.Boolean],
       executor: ExecutionContext): Future[JOption[T]] = {
     implicit val ec = executor
-    Future.find[T](futures.asScala)(predicate.apply(_))(
-      executor) map JOption.fromScalaOption
+    Future.find[T](futures.asScala)(predicate.apply(_))(executor) map JOption
+      .fromScalaOption
   }
 
   /**
@@ -191,14 +191,16 @@ object Futures {
       in: JIterable[Future[A]],
       executor: ExecutionContext): Future[JIterable[A]] = {
     implicit val d = executor
-    in.asScala.foldLeft(Future(new JLinkedList[A]())) { (fr, fa) ⇒
-      for (r ← fr;
-           a ← fa)
-        yield {
-          r add a;
-          r
-        }
-    }
+    in
+      .asScala
+      .foldLeft(Future(new JLinkedList[A]())) { (fr, fa) ⇒
+        for (r ← fr;
+             a ← fa)
+          yield {
+            r add a;
+            r
+          }
+      }
   }
 
   /**
@@ -211,15 +213,17 @@ object Futures {
       fn: JFunc[A, Future[B]],
       executor: ExecutionContext): Future[JIterable[B]] = {
     implicit val d = executor
-    in.asScala.foldLeft(Future(new JLinkedList[B]())) { (fr, a) ⇒
-      val fb = fn(a)
-      for (r ← fr;
-           b ← fb)
-        yield {
-          r add b;
-          r
-        }
-    }
+    in
+      .asScala
+      .foldLeft(Future(new JLinkedList[B]())) { (fr, a) ⇒
+        val fb = fn(a)
+        for (r ← fr;
+             b ← fb)
+          yield {
+            r add b;
+            r
+          }
+      }
   }
 }
 

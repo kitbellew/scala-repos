@@ -246,14 +246,14 @@ object Multipart {
           .get("content-disposition")
           .map(
             _.split(";")
-              .map(_.trim)
-              .map {
-                case KeyValue(key, v) =>
-                  (key.trim, v.trim)
-                case key =>
-                  (key.trim, "")
-              }
-              .toMap)
+            .map(_.trim)
+            .map {
+              case KeyValue(key, v) =>
+                (key.trim, v.trim)
+              case key =>
+                (key.trim, "")
+            }
+            .toMap)
         _ <- values.get("form-data")
         partName <- values.get("name")
       } yield partName
@@ -264,9 +264,10 @@ object Multipart {
       msg: String,
       status: Int = BAD_REQUEST): RequestHeader => Future[Either[Result, A]] = {
     request =>
-      Play.privateMaybeApplication.fold(
-        Future.successful(Left(Results.Status(status): Result)))(
-        _.errorHandler.onClientError(request, status, msg).map(Left(_)))
+      Play
+        .privateMaybeApplication
+        .fold(Future.successful(Left(Results.Status(status): Result)))(
+          _.errorHandler.onClientError(request, status, msg).map(Left(_)))
   }
 
   private type RawPart = Either[Part[Unit], ByteString]
@@ -316,12 +317,8 @@ object Multipart {
       array(1) = '\n'.toByte
       array(2) = '-'.toByte
       array(3) = '-'.toByte
-      System.arraycopy(
-        boundary.getBytes("US-ASCII"),
-        0,
-        array,
-        4,
-        boundary.length)
+      System
+        .arraycopy(boundary.getBytes("US-ASCII"), 0, array, 4, boundary.length)
       array
     }
 
@@ -420,12 +417,15 @@ object Multipart {
         case headerEnd =>
           val headerString = input.slice(headerStart, headerEnd).utf8String
           val headers =
-            headerString.lines.map { header =>
-              val key :: value = header.trim.split(":").toList
-              (
-                key.trim.toLowerCase(java.util.Locale.ENGLISH),
-                value.mkString(":").trim)
-            }.toMap
+            headerString
+              .lines
+              .map { header =>
+                val key :: value = header.trim.split(":").toList
+                (
+                  key.trim.toLowerCase(java.util.Locale.ENGLISH),
+                  value.mkString(":").trim)
+              }
+              .toMap
 
           val partStart = headerEnd + 4
 

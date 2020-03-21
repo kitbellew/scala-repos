@@ -111,11 +111,10 @@ class FlowPrefixAndTailSpec extends AkkaSpec {
       val ms = 300
 
       val tightTimeoutMaterializer = ActorMaterializer(
-        ActorMaterializerSettings(system)
-          .withSubscriptionTimeoutSettings(
-            StreamSubscriptionTimeoutSettings(
-              StreamSubscriptionTimeoutTerminationMode.cancel,
-              ms.millisecond)))
+        ActorMaterializerSettings(system).withSubscriptionTimeoutSettings(
+          StreamSubscriptionTimeoutSettings(
+            StreamSubscriptionTimeoutTerminationMode.cancel,
+            ms.millisecond)))
 
       val futureSink = newHeadSink
       val fut =
@@ -134,11 +133,10 @@ class FlowPrefixAndTailSpec extends AkkaSpec {
     }
     "not fail the stream if substream has not been subscribed in time and configured subscription timeout is noop" in assertAllStagesStopped {
       val tightTimeoutMaterializer = ActorMaterializer(
-        ActorMaterializerSettings(system)
-          .withSubscriptionTimeoutSettings(
-            StreamSubscriptionTimeoutSettings(
-              StreamSubscriptionTimeoutTerminationMode.noop,
-              1.millisecond)))
+        ActorMaterializerSettings(system).withSubscriptionTimeoutSettings(
+          StreamSubscriptionTimeoutSettings(
+            StreamSubscriptionTimeoutTerminationMode.noop,
+            1.millisecond)))
 
       val futureSink = newHeadSink
       val fut =

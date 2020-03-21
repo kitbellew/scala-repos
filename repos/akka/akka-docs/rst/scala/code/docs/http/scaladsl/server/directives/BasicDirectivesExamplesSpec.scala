@@ -57,9 +57,7 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
         extractMaterializer { mat =>
           complete {
             // explicitly use the materializer:
-            Source
-              .single(s"Materialized by ${mat.##}!")
-              .runWith(Sink.head)(mat)
+            Source.single(s"Materialized by ${mat.##}!").runWith(Sink.head)(mat)
           }
         }
       }
@@ -188,8 +186,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
   }
   "withSettings-0" in compileOnlySpec {
     //#withSettings-0
-    val special = RoutingSettings(system).withFileIODispatcher(
-      "special-io-dispatcher")
+    val special = RoutingSettings(system)
+      .withFileIODispatcher("special-io-dispatcher")
 
     def sample() =
       path("sample") {
@@ -745,8 +743,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
   "extractRequestContext-example" in {
     //#extractRequestContext-example
     val route = extractRequestContext { ctx =>
-      ctx.log.debug(
-        "Using access to additional context availablethings, like the logger.")
+      ctx
+        .log
+        .debug(
+          "Using access to additional context availablethings, like the logger.")
       val request = ctx.request
       complete(
         s"Request method is ${request.method.name} and content-type is ${request.entity.contentType}")

@@ -93,9 +93,8 @@ class ProducerFeatureTest
         name = "02-prod-anonymous-supervisor"
       )
 
-      supervisor.tell(
-        Props(new TestProducer("direct:producer-test-2")),
-        testActor)
+      supervisor
+        .tell(Props(new TestProducer("direct:producer-test-2")), testActor)
       val producer = receiveOne(timeoutDuration).asInstanceOf[ActorRef]
       val message = CamelMessage(
         "fail",
@@ -437,8 +436,11 @@ object ProducerFeatureTest {
       case msg: CamelMessage ⇒
         msg.body match {
           case "fail" ⇒
-            context.sender() ! akka.actor.Status.Failure(
-              new AkkaCamelException(new Exception("failure"), msg.headers))
+            context.sender() ! akka
+              .actor
+              .Status
+              .Failure(
+                new AkkaCamelException(new Exception("failure"), msg.headers))
           case _ ⇒
             context.sender() ! (
               msg.mapBody { body: String ⇒

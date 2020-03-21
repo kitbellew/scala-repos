@@ -25,8 +25,8 @@ abstract class PersistentFSMSpec(config: Config)
   "PersistentFSM" must {
     "function as a regular FSM " in {
       val persistenceId = name
-      val fsmRef = system.actorOf(
-        WebStoreCustomerFSM.props(persistenceId, dummyReportActorRef))
+      val fsmRef = system
+        .actorOf(WebStoreCustomerFSM.props(persistenceId, dummyReportActorRef))
 
       watch(fsmRef)
       fsmRef ! SubscribeTransitionCallBack(testActor)
@@ -62,8 +62,8 @@ abstract class PersistentFSMSpec(config: Config)
 
     "function as a regular FSM on state timeout" taggedAs TimingTest in {
       val persistenceId = name
-      val fsmRef = system.actorOf(
-        WebStoreCustomerFSM.props(persistenceId, dummyReportActorRef))
+      val fsmRef = system
+        .actorOf(WebStoreCustomerFSM.props(persistenceId, dummyReportActorRef))
 
       watch(fsmRef)
       fsmRef ! SubscribeTransitionCallBack(testActor)
@@ -85,8 +85,8 @@ abstract class PersistentFSMSpec(config: Config)
     "recover successfully with correct state data" in {
       val persistenceId = name
 
-      val fsmRef = system.actorOf(
-        WebStoreCustomerFSM.props(persistenceId, dummyReportActorRef))
+      val fsmRef = system
+        .actorOf(WebStoreCustomerFSM.props(persistenceId, dummyReportActorRef))
       watch(fsmRef)
       fsmRef ! SubscribeTransitionCallBack(testActor)
 
@@ -110,8 +110,8 @@ abstract class PersistentFSMSpec(config: Config)
       fsmRef ! PoisonPill
       expectTerminated(fsmRef)
 
-      val recoveredFsmRef = system.actorOf(
-        WebStoreCustomerFSM.props(persistenceId, dummyReportActorRef))
+      val recoveredFsmRef = system
+        .actorOf(WebStoreCustomerFSM.props(persistenceId, dummyReportActorRef))
       watch(recoveredFsmRef)
       recoveredFsmRef ! SubscribeTransitionCallBack(testActor)
 
@@ -139,8 +139,8 @@ abstract class PersistentFSMSpec(config: Config)
       val persistenceId = name
 
       val reportActorProbe = TestProbe()
-      val fsmRef = system.actorOf(
-        WebStoreCustomerFSM.props(persistenceId, reportActorProbe.ref))
+      val fsmRef = system
+        .actorOf(WebStoreCustomerFSM.props(persistenceId, reportActorProbe.ref))
       watch(fsmRef)
       fsmRef ! SubscribeTransitionCallBack(testActor)
 
@@ -165,8 +165,8 @@ abstract class PersistentFSMSpec(config: Config)
       val persistenceId = name
 
       val reportActorProbe = TestProbe()
-      val fsmRef = system.actorOf(
-        WebStoreCustomerFSM.props(persistenceId, reportActorProbe.ref))
+      val fsmRef = system
+        .actorOf(WebStoreCustomerFSM.props(persistenceId, reportActorProbe.ref))
       watch(fsmRef)
       fsmRef ! SubscribeTransitionCallBack(testActor)
 
@@ -187,8 +187,8 @@ abstract class PersistentFSMSpec(config: Config)
 
     "recover successfully with correct state timeout" taggedAs TimingTest in {
       val persistenceId = name
-      val fsmRef = system.actorOf(
-        WebStoreCustomerFSM.props(persistenceId, dummyReportActorRef))
+      val fsmRef = system
+        .actorOf(WebStoreCustomerFSM.props(persistenceId, dummyReportActorRef))
 
       watch(fsmRef)
       fsmRef ! SubscribeTransitionCallBack(testActor)
@@ -206,8 +206,8 @@ abstract class PersistentFSMSpec(config: Config)
       fsmRef ! PoisonPill
       expectTerminated(fsmRef)
 
-      var recoveredFsmRef = system.actorOf(
-        WebStoreCustomerFSM.props(persistenceId, dummyReportActorRef))
+      var recoveredFsmRef = system
+        .actorOf(WebStoreCustomerFSM.props(persistenceId, dummyReportActorRef))
       watch(recoveredFsmRef)
       recoveredFsmRef ! SubscribeTransitionCallBack(testActor)
 
@@ -224,8 +224,8 @@ abstract class PersistentFSMSpec(config: Config)
       recoveredFsmRef ! PoisonPill
       expectTerminated(recoveredFsmRef)
 
-      recoveredFsmRef = system.actorOf(
-        WebStoreCustomerFSM.props(persistenceId, dummyReportActorRef))
+      recoveredFsmRef = system
+        .actorOf(WebStoreCustomerFSM.props(persistenceId, dummyReportActorRef))
       watch(recoveredFsmRef)
       recoveredFsmRef ! SubscribeTransitionCallBack(testActor)
 
@@ -236,8 +236,8 @@ abstract class PersistentFSMSpec(config: Config)
     "not trigger onTransition for stay()" taggedAs TimingTest in {
       val persistenceId = name
       val probe = TestProbe()
-      val fsmRef = system.actorOf(
-        SimpleTransitionFSM.props(persistenceId, probe.ref))
+      val fsmRef = system
+        .actorOf(SimpleTransitionFSM.props(persistenceId, probe.ref))
 
       probe.expectMsg(
         3.seconds,
@@ -254,8 +254,8 @@ abstract class PersistentFSMSpec(config: Config)
     "not persist state change event when staying in the same state" in {
       val persistenceId = name
 
-      val fsmRef = system.actorOf(
-        WebStoreCustomerFSM.props(persistenceId, dummyReportActorRef))
+      val fsmRef = system
+        .actorOf(WebStoreCustomerFSM.props(persistenceId, dummyReportActorRef))
       watch(fsmRef)
 
       val shirt = Item("1", "Shirt", 59.99f)
@@ -283,8 +283,8 @@ abstract class PersistentFSMSpec(config: Config)
 
       expectTerminated(fsmRef)
 
-      val persistentEventsStreamer = system.actorOf(
-        PersistentEventsStreamer.props(persistenceId, testActor))
+      val persistentEventsStreamer = system
+        .actorOf(PersistentEventsStreamer.props(persistenceId, testActor))
 
       expectMsg(ItemAdded(Item("1", "Shirt", 59.99f)))
       expectMsgType[

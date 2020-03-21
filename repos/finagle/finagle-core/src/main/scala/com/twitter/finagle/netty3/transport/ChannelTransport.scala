@@ -63,7 +63,8 @@ class ChannelTransport[In, Out](ch: Channel)
         need(-1)
 
       case e: ChannelStateEvent
-          if e.getState == ChannelState.OPEN && e.getValue != java.lang.Boolean.TRUE =>
+          if e.getState == ChannelState.OPEN && e
+            .getValue != java.lang.Boolean.TRUE =>
         fail(new ChannelClosedException(ch.getRemoteAddress))
 
       case e: ChannelStateEvent if e.getState == ChannelState.INTEREST_OPS =>
@@ -121,7 +122,8 @@ class ChannelTransport[In, Out](ch: Channel)
     // if the target future is complete. This allows us to present a
     // more consistent threading model where callbacks are invoked
     // on the event loop thread.
-    ch.getPipeline()
+    ch
+      .getPipeline()
       .sendDownstream(new DownstreamMessageEvent(ch, writeFuture, msg, null));
 
     // We avoid setting an interrupt handler on the future exposed

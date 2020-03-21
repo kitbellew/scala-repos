@@ -95,9 +95,11 @@ private[ml] class IterativelyReweightedLeastSquares(
       val oldCoefficients = oldModel.coefficients
       val coefficients = model.coefficients
       BLAS.axpy(-1.0, coefficients, oldCoefficients)
-      val maxTolOfCoefficients = oldCoefficients.toArray.reduce { (x, y) =>
-        math.max(math.abs(x), math.abs(y))
-      }
+      val maxTolOfCoefficients = oldCoefficients
+        .toArray
+        .reduce { (x, y) =>
+          math.max(math.abs(x), math.abs(y))
+        }
       val maxTol = math.max(
         maxTolOfCoefficients,
         math.abs(oldModel.intercept - model.intercept))

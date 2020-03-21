@@ -354,9 +354,11 @@ trait Row extends Serializable {
     * @throws ClassCastException when data type does not match.
     */
   def getValuesMap[T](fieldNames: Seq[String]): Map[String, T] = {
-    fieldNames.map { name =>
-      name -> getAs[T](name)
-    }.toMap
+    fieldNames
+      .map { name =>
+        name -> getAs[T](name)
+      }
+      .toMap
   }
 
   override def toString(): String = s"[${this.mkString(",")}]"
@@ -406,13 +408,17 @@ trait Row extends Serializable {
               return false
             }
           case f1: Float if java.lang.Float.isNaN(f1) =>
-            if (!o2.isInstanceOf[Float] || !java.lang.Float.isNaN(
-                  o2.asInstanceOf[Float])) {
+            if (!o2.isInstanceOf[Float] || !java
+                  .lang
+                  .Float
+                  .isNaN(o2.asInstanceOf[Float])) {
               return false
             }
           case d1: Double if java.lang.Double.isNaN(d1) =>
-            if (!o2.isInstanceOf[Double] || !java.lang.Double.isNaN(
-                  o2.asInstanceOf[Double])) {
+            if (!o2.isInstanceOf[Double] || !java
+                  .lang
+                  .Double
+                  .isNaN(o2.asInstanceOf[Double])) {
               return false
             }
           case d1: java.math.BigDecimal

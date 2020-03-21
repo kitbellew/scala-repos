@@ -20,7 +20,8 @@ final class RecaptchaGoogle(endpoint: String, privateKey: String)
     extends Recaptcha {
 
   def verify(response: String, req: RequestHeader) = {
-    WS.url(endpoint)
+    WS
+      .url(endpoint)
       .post(
         Map(
           "secret" -> Seq(privateKey),

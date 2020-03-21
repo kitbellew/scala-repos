@@ -39,9 +39,11 @@ object Args {
     */
   def apply(args: Iterable[String]): Args = {
     def startingDashes(word: String) =
-      word.takeWhile {
-        _ == '-'
-      }.length
+      word
+        .takeWhile {
+          _ == '-'
+        }
+        .length
     new Args(
       //Fold into a list of (arg -> List[values])
       args
@@ -61,8 +63,7 @@ object Args {
         .map {
           case (key, value) =>
             key -> value.reverse
-        }
-        .toMap)
+        }.toMap)
   }
 
   def isNumber(arg: String): Boolean = {

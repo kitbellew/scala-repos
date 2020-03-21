@@ -96,7 +96,8 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
   def genPickler: Pickler[_] = {
     // build "interpreted" runtime pickler
     new Pickler[Any] with PickleTools {
-      val fields: List[(irs.FieldIR, Boolean)] = cir.fields
+      val fields: List[(irs.FieldIR, Boolean)] = cir
+        .fields
         .filter(_.hasGetter)
         .map(fir => (fir, fir.tpe.typeSymbol.isEffectivelyFinal))
 
@@ -141,7 +142,11 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
                 // therefore we pass fir.tpe (as pretpe) in addition to the class and use it for the is primitive check
                 //val fldRuntime = new InterpretedPicklerRuntime(classLoader, fldClass)
                 val fldTag = FastTypeTag.mkRaw(fldClass, mirror)
-                val fldPickler = scala.pickling.internal.currentRuntime.picklers
+                val fldPickler = scala
+                  .pickling
+                  .internal
+                  .currentRuntime
+                  .picklers
                   .genPickler(classLoader, fldClass, fldTag)
                   .asInstanceOf[Pickler[Any]]
 
@@ -153,8 +158,8 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
                       pickleInto(fir.tpe, fldValue, b, fldPickler)
                     } else {
                       val subPicklee = fldValue
-                      if (subPicklee == null || subPicklee.getClass == mirror
-                            .runtimeClass(fir.tpe.erasure))
+                      if (subPicklee == null || subPicklee
+                            .getClass == mirror.runtimeClass(fir.tpe.erasure))
                         b.hintElidedType(fldTag)
                       else
                         ()
@@ -240,11 +245,13 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(implicit
               if (tagKey.contains("anonfun$"))
                 List[FieldIR]()
               else
-                cir.fields.filter(fir =>
-                  fir.hasGetter || {
-                    // exists as Java field
-                    scala.util.Try(clazz.getDeclaredField(fir.name)).isSuccess
-                  })
+                cir
+                  .fields
+                  .filter(fir =>
+                    fir.hasGetter || {
+                      // exists as Java field
+                      scala.util.Try(clazz.getDeclaredField(fir.name)).isSuccess
+                    })
 
             def fieldVals =
               pendingFields.map(fir => {
@@ -276,9 +283,12 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(implicit
                       registerUnpicklee(result, preregisterUnpicklee())
                     result
                   } else {
-                    val fieldUnpickler =
-                      scala.pickling.internal.currentRuntime.picklers
-                        .genUnpickler(mirror, fdynamicTag)
+                    val fieldUnpickler = scala
+                      .pickling
+                      .internal
+                      .currentRuntime
+                      .picklers
+                      .genUnpickler(mirror, fdynamicTag)
                     fieldUnpickler.unpickle(fdynamicTag, freader)
                   }
                 }
@@ -289,7 +299,11 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(implicit
 
             // TODO: need to support modules and other special guys here
             // TODO: in principle, we could invoke a constructor here
-            val inst = scala.concurrent.util.Unsafe.instance
+            val inst = scala
+              .concurrent
+              .util
+              .Unsafe
+              .instance
               .allocateInstance(clazz)
             if (shouldBotherAboutSharing(tpe))
               registerUnpicklee(inst, preregisterUnpicklee())
@@ -352,11 +366,13 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
               if (tagKey.contains("anonfun$")) {
                 List[FieldIR]()
               } else {
-                cir.fields.filter(fir =>
-                  fir.hasGetter || {
-                    // exists as Java field
-                    scala.util.Try(clazz.getDeclaredField(fir.name)).isSuccess
-                  })
+                cir
+                  .fields
+                  .filter(fir =>
+                    fir.hasGetter || {
+                      // exists as Java field
+                      scala.util.Try(clazz.getDeclaredField(fir.name)).isSuccess
+                    })
               }
 
             def fieldVals =
@@ -384,9 +400,12 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
                     val result = freader.readPrimitive()
                     result
                   } else {
-                    val fieldUnpickler =
-                      scala.pickling.internal.currentRuntime.picklers
-                        .genUnpickler(mirror, fdynamicTag)
+                    val fieldUnpickler = scala
+                      .pickling
+                      .internal
+                      .currentRuntime
+                      .picklers
+                      .genUnpickler(mirror, fdynamicTag)
                     fieldUnpickler.unpickle(fdynamicTag, freader)
                   }
                 }
@@ -397,7 +416,11 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
 
             // TODO: need to support modules and other special guys here
             // TODO: in principle, we could invoke a constructor here
-            val inst = scala.concurrent.util.Unsafe.instance
+            val inst = scala
+              .concurrent
+              .util
+              .Unsafe
+              .instance
               .allocateInstance(clazz)
             val im = mirror.reflect(inst)
 

@@ -177,9 +177,9 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     def fn: (Iterator[T]) => Iterator[U] = { (x: Iterator[T]) =>
       f.call(x.asJava).asScala
     }
-    JavaRDD.fromRDD(
-      rdd.mapPartitions(fn, preservesPartitioning)(fakeClassTag[U]))(
-      fakeClassTag[U])
+    JavaRDD
+      .fromRDD(rdd.mapPartitions(fn, preservesPartitioning)(fakeClassTag[U]))(
+        fakeClassTag[U])
   }
 
   /**
@@ -217,9 +217,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
       f.call(x.asJava).asScala
     }
     new JavaDoubleRDD(
-      rdd
-        .mapPartitions(fn, preservesPartitioning)
-        .map(x => x.doubleValue()))
+      rdd.mapPartitions(fn, preservesPartitioning).map(x => x.doubleValue()))
   }
 
   /**
@@ -615,7 +613,11 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * @return an array of top elements
     */
   def top(num: Int): JList[T] = {
-    val comp = com.google.common.collect.Ordering
+    val comp = com
+      .google
+      .common
+      .collect
+      .Ordering
       .natural()
       .asInstanceOf[Comparator[T]]
     top(num, comp)
@@ -665,7 +667,11 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * @return an array of top elements
     */
   def takeOrdered(num: Int): JList[T] = {
-    val comp = com.google.common.collect.Ordering
+    val comp = com
+      .google
+      .common
+      .collect
+      .Ordering
       .natural()
       .asInstanceOf[Comparator[T]]
     takeOrdered(num, comp)

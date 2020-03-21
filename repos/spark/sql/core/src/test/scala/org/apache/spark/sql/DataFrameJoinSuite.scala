@@ -56,7 +56,8 @@ class DataFrameJoinSuite extends QueryTest with SharedSQLContext {
     val df3 = Seq((1, 3, "1"), (5, 6, "5")).toDF("int", "int2", "str").as('df3)
 
     checkAnswer(
-      df.join(df2, $"df1.int" === $"df2.int", "outer")
+      df
+        .join(df2, $"df1.int" === $"df2.int", "outer")
         .select($"df1.int", $"df2.int2")
         .orderBy('str_sort.asc, 'str.asc),
       Row(null, 6) :: Row(1, 3) :: Row(3, null) :: Nil)
@@ -154,18 +155,22 @@ class DataFrameJoinSuite extends QueryTest with SharedSQLContext {
     // equijoin - should be converted into broadcast join
     val plan1 = df1.join(broadcast(df2), "key").queryExecution.sparkPlan
     assert(
-      plan1.collect {
-        case p: BroadcastHashJoin =>
-          p
-      }.size === 1)
+      plan1
+        .collect {
+          case p: BroadcastHashJoin =>
+            p
+        }
+        .size === 1)
 
     // no join key -- should not be a broadcast join
     val plan2 = df1.join(broadcast(df2)).queryExecution.sparkPlan
     assert(
-      plan2.collect {
-        case p: BroadcastHashJoin =>
-          p
-      }.size === 0)
+      plan2
+        .collect {
+          case p: BroadcastHashJoin =>
+            p
+        }
+        .size === 0)
 
     // planner should not crash without a join
     broadcast(df1).queryExecution.sparkPlan
@@ -187,10 +192,14 @@ class DataFrameJoinSuite extends QueryTest with SharedSQLContext {
       .join(df2, $"a.int" === $"b.int", "outer")
       .where($"a.int" === 3)
     assert(
-      outerJoin2Left.queryExecution.optimizedPlan.collect {
-        case j @ Join(_, _, LeftOuter, _) =>
-          j
-      }.size === 1)
+      outerJoin2Left
+        .queryExecution
+        .optimizedPlan
+        .collect {
+          case j @ Join(_, _, LeftOuter, _) =>
+            j
+        }
+        .size === 1)
     checkAnswer(outerJoin2Left, Row(3, 4, "3", null, null, null) :: Nil)
 
     // outer -> right
@@ -198,10 +207,14 @@ class DataFrameJoinSuite extends QueryTest with SharedSQLContext {
       .join(df2, $"a.int" === $"b.int", "outer")
       .where($"b.int" === 5)
     assert(
-      outerJoin2Right.queryExecution.optimizedPlan.collect {
-        case j @ Join(_, _, RightOuter, _) =>
-          j
-      }.size === 1)
+      outerJoin2Right
+        .queryExecution
+        .optimizedPlan
+        .collect {
+          case j @ Join(_, _, RightOuter, _) =>
+            j
+        }
+        .size === 1)
     checkAnswer(outerJoin2Right, Row(null, null, null, 5, 6, "5") :: Nil)
 
     // outer -> inner
@@ -209,10 +222,14 @@ class DataFrameJoinSuite extends QueryTest with SharedSQLContext {
       .join(df2, $"a.int" === $"b.int", "outer")
       .where($"a.int" === 1 && $"b.int2" === 3)
     assert(
-      outerJoin2Inner.queryExecution.optimizedPlan.collect {
-        case j @ Join(_, _, Inner, _) =>
-          j
-      }.size === 1)
+      outerJoin2Inner
+        .queryExecution
+        .optimizedPlan
+        .collect {
+          case j @ Join(_, _, Inner, _) =>
+            j
+        }
+        .size === 1)
     checkAnswer(outerJoin2Inner, Row(1, 2, "1", 1, 3, "1") :: Nil)
 
     // right -> inner
@@ -220,10 +237,14 @@ class DataFrameJoinSuite extends QueryTest with SharedSQLContext {
       .join(df2, $"a.int" === $"b.int", "right")
       .where($"a.int" === 1)
     assert(
-      rightJoin2Inner.queryExecution.optimizedPlan.collect {
-        case j @ Join(_, _, Inner, _) =>
-          j
-      }.size === 1)
+      rightJoin2Inner
+        .queryExecution
+        .optimizedPlan
+        .collect {
+          case j @ Join(_, _, Inner, _) =>
+            j
+        }
+        .size === 1)
     checkAnswer(rightJoin2Inner, Row(1, 2, "1", 1, 3, "1") :: Nil)
 
     // left -> inner
@@ -231,10 +252,14 @@ class DataFrameJoinSuite extends QueryTest with SharedSQLContext {
       .join(df2, $"a.int" === $"b.int", "left")
       .where($"b.int2" === 3)
     assert(
-      leftJoin2Inner.queryExecution.optimizedPlan.collect {
-        case j @ Join(_, _, Inner, _) =>
-          j
-      }.size === 1)
+      leftJoin2Inner
+        .queryExecution
+        .optimizedPlan
+        .collect {
+          case j @ Join(_, _, Inner, _) =>
+            j
+        }
+        .size === 1)
     checkAnswer(leftJoin2Inner, Row(1, 2, "1", 1, 3, "1") :: Nil)
   }
 }

@@ -97,17 +97,18 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
         val dataRows = listener.getExecutionList
 
         def generateDataRow(info: ExecutionInfo): Seq[Node] = {
-          val jobLink = info.jobId.map { id: String =>
-            <a href={
-              "%s/jobs/job?id=%s".format(
-                UIUtils.prependBaseUri(parent.basePath),
-                id)
-            }>
+          val jobLink = info
+            .jobId
+            .map { id: String =>
+              <a href={
+                "%s/jobs/job?id=%s"
+                  .format(UIUtils.prependBaseUri(parent.basePath), id)
+              }>
             [{
-              id
-            }]
+                id
+              }]
           </a>
-          }
+            }
           val detail =
             if (info.state == ExecutionState.FAILED)
               info.detail
@@ -220,11 +221,10 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
           "Duration",
           "Total Execute")
         def generateDataRow(session: SessionInfo): Seq[Node] = {
-          val sessionLink = "%s/%s/session?id=%s"
-            .format(
-              UIUtils.prependBaseUri(parent.basePath),
-              parent.prefix,
-              session.sessionId)
+          val sessionLink = "%s/%s/session?id=%s".format(
+            UIUtils.prependBaseUri(parent.basePath),
+            parent.prefix,
+            session.sessionId)
           <tr>
           <td> {
             session.userName

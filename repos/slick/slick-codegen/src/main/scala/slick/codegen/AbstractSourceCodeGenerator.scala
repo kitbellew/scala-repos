@@ -95,7 +95,8 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
       def code = {
         val args = columns
           .map(c =>
-            c.default
+            c
+              .default
               .map(v => s"${c.name}: ${c.exposedType} = $v")
               .getOrElse(s"${c.name}: ${c.exposedType}"))
           .mkString(", ")
@@ -197,27 +198,32 @@ implicit def ${name}(implicit $dependencies): GR[${TableClass.elementType}] = GR
         s"def ? = $rhs"
       }
       def optionFactory = {
-        val accessors = columns.zipWithIndex.map {
-          case (c, i) =>
-            val accessor =
-              if (columns.size > 1)
-                tuple(i)
+        val accessors = columns
+          .zipWithIndex
+          .map {
+            case (c, i) =>
+              val accessor =
+                if (columns.size > 1)
+                  tuple(i)
+                else
+                  "r"
+              if (c.fakeNullable || c.model.nullable)
+                accessor
               else
-                "r"
-            if (c.fakeNullable || c.model.nullable)
-              accessor
-            else
-              s"$accessor.get"
-        }
+                s"$accessor.get"
+          }
         val fac = s"$factory(${compoundValue(accessors)})"
         val discriminator =
-          columns.zipWithIndex.collect {
-            case (c, i) if !c.model.nullable =>
-              if (columns.size > 1)
-                tuple(i)
-              else
-                "r"
-          }.headOption
+          columns
+            .zipWithIndex
+            .collect {
+              case (c, i) if !c.model.nullable =>
+                if (columns.size > 1)
+                  tuple(i)
+                else
+                  "r"
+            }
+            .headOption
         val expr = discriminator
           .map(d => s"$d.map(_=> $fac)")
           .getOrElse(s"None")
@@ -231,8 +237,8 @@ implicit def ${name}(implicit $dependencies): GR[${TableClass.elementType}] = GR
         val args = model.name.schema.map(n => s"""Some("$n")""") ++ Seq(
           "\"" + model.name.table + "\"")
         s"""
-class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
-          .mkString(", ")})$prns {
+class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args.mkString(
+          ", ")})$prns {
   ${indent(body.map(_.mkString("\n")).mkString("\n\n"))}
 }
         """.trim()
@@ -297,9 +303,8 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
       // Explicit type to allow overloading existing Slick method names.
       // Explicit type argument for better error message when implicit type mapper not found.
       def code =
-        s"""val $name: Rep[$actualType] = column[$actualType]("${model.name}"${options
-          .map(", " + _)
-          .mkString("")})"""
+        s"""val $name: Rep[$actualType] = column[$actualType]("${model.name}"${options.map(
+          ", " + _).mkString("")})"""
     }
 
     class PrimaryKeyDef(model: m.PrimaryKey)
@@ -327,16 +332,19 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
       def code = {
         val pkTable = referencedTable.TableValue.name
         val (pkColumns, fkColumns) =
-          (referencedColumns, referencingColumns).zipped.map { (p, f) =>
-            val pk = s"r.${p.name}"
-            val fk = f.name
-            if (p.model.nullable && !f.model.nullable)
-              (pk, s"Rep.Some($fk)")
-            else if (!p.model.nullable && f.model.nullable)
-              (s"Rep.Some($pk)", fk)
-            else
-              (pk, fk)
-          }.unzip
+          (referencedColumns, referencingColumns)
+            .zipped
+            .map { (p, f) =>
+              val pk = s"r.${p.name}"
+              val fk = f.name
+              if (p.model.nullable && !f.model.nullable)
+                (pk, s"Rep.Some($fk)")
+              else if (!p.model.nullable && f.model.nullable)
+                (s"Rep.Some($pk)", fk)
+              else
+                (pk, fk)
+            }
+            .unzip
         s"""lazy val $name = foreignKey("$dbName", ${compoundValue(
           fkColumns)}, $pkTable)(r => ${compoundValue(
           pkColumns)}, onUpdate=${onUpdate}, onDelete=${onDelete})"""
@@ -373,8 +381,9 @@ trait StringGeneratorHelpers
       if (s.isEmpty)
         false
       else
-        Character.isJavaIdentifierStart(s.head) && s.tail.forall(
-          Character.isJavaIdentifierPart)
+        Character.isJavaIdentifierStart(s.head) && s
+          .tail
+          .forall(Character.isJavaIdentifierPart)
     scalaKeywords.contains(s) || !isIdent
   }
   def termName(name: String) =

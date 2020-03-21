@@ -108,10 +108,12 @@ class DslConsistencySpec extends WordSpec with Matchers {
   def assertHasMethod(c: Class[_], name: String): Unit = {
     // include class name to get better error message
     if (!allowMissing.getOrElse(c, Set.empty).contains(name))
-      c.getMethods.collect {
-        case m if !ignore(m.getName) ⇒
-          c.getName + "." + m.getName
-      } should contain(c.getName + "." + name)
+      c
+        .getMethods
+        .collect {
+          case m if !ignore(m.getName) ⇒
+            c.getName + "." + m.getName
+        } should contain(c.getName + "." + name)
   }
 
   "Java and Scala DSLs" must {

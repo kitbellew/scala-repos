@@ -91,7 +91,8 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
 
   /** Generate stats of batch statements of the thrift server program */
   private def generateSQLStatsTable(sessionID: String): Seq[Node] = {
-    val executionList = listener.getExecutionList
+    val executionList = listener
+      .getExecutionList
       .filter(_.sessionId == sessionID)
     val numStatement = executionList.size
     val table =
@@ -109,17 +110,18 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
         val dataRows = executionList.sortBy(_.startTimestamp).reverse
 
         def generateDataRow(info: ExecutionInfo): Seq[Node] = {
-          val jobLink = info.jobId.map { id: String =>
-            <a href={
-              "%s/jobs/job?id=%s".format(
-                UIUtils.prependBaseUri(parent.basePath),
-                id)
-            }>
+          val jobLink = info
+            .jobId
+            .map { id: String =>
+              <a href={
+                "%s/jobs/job?id=%s"
+                  .format(UIUtils.prependBaseUri(parent.basePath), id)
+              }>
             [{
-              id
-            }]
+                id
+              }]
           </a>
-          }
+            }
           val detail =
             if (info.state == ExecutionState.FAILED)
               info.detail

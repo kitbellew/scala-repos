@@ -218,10 +218,10 @@ class ClientSuite
         sparkConf)
 
     val appContext = Records.newRecord(classOf[ApplicationSubmissionContext])
-    val getNewApplicationResponse = Records.newRecord(
-      classOf[GetNewApplicationResponse])
-    val containerLaunchContext = Records.newRecord(
-      classOf[ContainerLaunchContext])
+    val getNewApplicationResponse = Records
+      .newRecord(classOf[GetNewApplicationResponse])
+    val containerLaunchContext = Records
+      .newRecord(classOf[ContainerLaunchContext])
 
     val client = new Client(args, conf, sparkConf)
     client.createApplicationSubmissionContext(
@@ -232,7 +232,9 @@ class ClientSuite
     appContext.getQueue should be("staging-queue")
     appContext.getAMContainerSpec should be(containerLaunchContext)
     appContext.getApplicationType should be("SPARK")
-    appContext.getClass.getMethods
+    appContext
+      .getClass
+      .getMethods
       .filter(_.getName.equals("getApplicationTags"))
       .foreach { method =>
         val tags = method.invoke(appContext).asInstanceOf[java.util.Set[String]]
@@ -350,9 +352,8 @@ class ClientSuite
         .get)
 
     val mapYARNAppConf = Map(
-      YarnConfiguration.YARN_APPLICATION_CLASSPATH -> knownYARNAppCP
-        .map(_.mkString(":"))
-        .get)
+      YarnConfiguration
+        .YARN_APPLICATION_CLASSPATH -> knownYARNAppCP.map(_.mkString(":")).get)
 
     val mapAppConf = mapYARNAppConf ++ mapMRAppConf
   }

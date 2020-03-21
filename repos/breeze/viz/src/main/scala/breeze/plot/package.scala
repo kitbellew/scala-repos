@@ -292,8 +292,8 @@ package object plot {
         renderer.setSeriesOutlinePaint(0, defaultColor(0))
         renderer.setSeriesOutlineStroke(0, defaultStroke(0))
         renderer.setShadowVisible(false)
-        renderer.setBarPainter(
-          new org.jfree.chart.renderer.xy.StandardXYBarPainter())
+        renderer
+          .setBarPainter(new org.jfree.chart.renderer.xy.StandardXYBarPainter())
 
         dataset -> renderer
       }

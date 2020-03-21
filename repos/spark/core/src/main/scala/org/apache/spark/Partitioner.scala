@@ -134,9 +134,8 @@ class RangePartitioner[K: Ordering: ClassTag, V](
       // Assume the input partitions are roughly balanced and over-sample a little bit.
       val sampleSizePerPartition =
         math.ceil(3.0 * sampleSize / rdd.partitions.length).toInt
-      val (numItems, sketched) = RangePartitioner.sketch(
-        rdd.map(_._1),
-        sampleSizePerPartition)
+      val (numItems, sketched) = RangePartitioner
+        .sketch(rdd.map(_._1), sampleSizePerPartition)
       if (numItems == 0L) {
         Array.empty
       } else {
@@ -185,9 +184,8 @@ class RangePartitioner[K: Ordering: ClassTag, V](
     var partition = 0
     if (rangeBounds.length <= 128) {
       // If we have less than 128 partitions naive search
-      while (partition < rangeBounds.length && ordering.gt(
-               k,
-               rangeBounds(partition))) {
+      while (partition < rangeBounds.length && ordering
+               .gt(k, rangeBounds(partition))) {
         partition += 1
       }
     } else {
@@ -286,10 +284,8 @@ private[spark] object RangePartitioner {
     val sketched = rdd
       .mapPartitionsWithIndex { (idx, iter) =>
         val seed = byteswap32(idx ^ (shift << 16))
-        val (sample, n) = SamplingUtils.reservoirSampleAndCount(
-          iter,
-          sampleSizePerPartition,
-          seed)
+        val (sample, n) = SamplingUtils
+          .reservoirSampleAndCount(iter, sampleSizePerPartition, seed)
         Iterator((idx, n, sample))
       }
       .collect()

@@ -58,10 +58,10 @@ trait RepositoryService {
         Repositories filter { t =>
           t.byRepository(oldUserName, oldRepositoryName)
         } firstOption
-      ).map { repository =>
-        Repositories insert repository.copy(
-          userName = newUserName,
-          repositoryName = newRepositoryName)
+      )
+      .map { repository =>
+        Repositories insert repository
+          .copy(userName = newUserName, repositoryName = newRepositoryName)
 
         val webHooks =
           WebHooks.filter(_.byRepository(oldUserName, oldRepositoryName)).list
@@ -171,13 +171,15 @@ trait RepositoryService {
             x.copy(
               userName = newUserName,
               repositoryName = newRepositoryName,
-              milestoneId = x.milestoneId.map { id =>
-                newMilestones
-                  .find(
-                    _.title == milestones.find(_.milestoneId == id).get.title)
-                  .get
-                  .milestoneId
-              }
+              milestoneId = x
+                .milestoneId
+                .map { id =>
+                  newMilestones
+                    .find(
+                      _.title == milestones.find(_.milestoneId == id).get.title)
+                    .get
+                    .milestoneId
+                }
             )
           }: _*)
 
@@ -416,12 +418,13 @@ trait RepositoryService {
         (t1.isPrivate === false.bind) ||
         (t1.userName === userName.bind) ||
         (
-          Collaborators.filter { t2 =>
-            t2.byRepository(t1.userName, t1.repositoryName) && (
-              t2.collaboratorName === userName.bind
-            )
-          } exists
-        )
+          Collaborators
+            .filter { t2 =>
+              t2.byRepository(t1.userName, t1.repositoryName) && (
+                t2.collaboratorName === userName.bind
+              )
+            } exists
+          )
       }
       .sortBy(_.lastActivityDate desc)
       .map { t =>
@@ -438,12 +441,13 @@ trait RepositoryService {
       .filter { t1 =>
         (t1.userName === userName.bind) ||
         (
-          Collaborators.filter { t2 =>
-            t2.byRepository(t1.userName, t1.repositoryName) && (
-              t2.collaboratorName === userName.bind
-            )
-          } exists
-        )
+          Collaborators
+            .filter { t2 =>
+              t2.byRepository(t1.userName, t1.repositoryName) && (
+                t2.collaboratorName === userName.bind
+              )
+            } exists
+          )
       }
       .sortBy(_.lastActivityDate desc)
       .list
@@ -460,8 +464,9 @@ trait RepositoryService {
           repository,
           getForkedCount(
             repository.originUserName.getOrElse(repository.userName),
-            repository.originRepositoryName.getOrElse(
-              repository.repositoryName)),
+            repository
+              .originRepositoryName
+              .getOrElse(repository.repositoryName)),
           getRepositoryManagers(repository.userName))
       }
   }
@@ -491,18 +496,20 @@ trait RepositoryService {
           Repositories filter { t =>
             (t.isPrivate === false.bind) || (t.userName === x.userName) ||
             (
-              Collaborators.filter { t2 =>
-                t2.byRepository(t.userName, t.repositoryName) && (
-                  t2.collaboratorName === x.userName.bind
-                )
-              } exists
-            )
+              Collaborators
+                .filter { t2 =>
+                  t2.byRepository(t.userName, t.repositoryName) && (
+                    t2.collaboratorName === x.userName.bind
+                  )
+                } exists
+              )
           }
         // for Guests
         case None =>
           Repositories filter (_.isPrivate === false.bind)
       }
-    ).filter { t =>
+    )
+      .filter { t =>
         repositoryUserName.map { userName =>
           t.userName === userName.bind
         } getOrElse LiteralColumn(true)
@@ -522,8 +529,9 @@ trait RepositoryService {
           repository,
           getForkedCount(
             repository.originUserName.getOrElse(repository.userName),
-            repository.originRepositoryName.getOrElse(
-              repository.repositoryName)),
+            repository
+              .originRepositoryName
+              .getOrElse(repository.repositoryName)),
           getRepositoryManagers(repository.userName))
       }
   }
@@ -651,11 +659,13 @@ trait RepositoryService {
   private def getForkedCount(userName: String, repositoryName: String)(implicit
       s: Session): Int =
     Query(
-      Repositories.filter { t =>
-        (
-          t.originUserName === userName.bind
-        ) && (t.originRepositoryName === repositoryName.bind)
-      }.length).first
+      Repositories
+        .filter { t =>
+          (
+            t.originUserName === userName.bind
+          ) && (t.originRepositoryName === repositoryName.bind)
+        }
+        .length).first
 
   def getForkedRepositories(userName: String, repositoryName: String)(implicit
       s: Session): List[(String, String)] =
@@ -738,11 +748,16 @@ object RepositoryService {
   def sshUrl(owner: String, name: String)(implicit
       context: Context): Option[String] =
     if (context.settings.ssh) {
-      context.loginAccount.flatMap { loginAccount =>
-        context.settings.sshAddress.map { x =>
-          s"ssh://${loginAccount.userName}@${x.host}:${x.port}/${owner}/${name}.git"
+      context
+        .loginAccount
+        .flatMap { loginAccount =>
+          context
+            .settings
+            .sshAddress
+            .map { x =>
+              s"ssh://${loginAccount.userName}@${x.host}:${x.port}/${owner}/${name}.git"
+            }
         }
-      }
     } else
       None
   def openRepoUrl(openUrl: String)(implicit context: Context): String =

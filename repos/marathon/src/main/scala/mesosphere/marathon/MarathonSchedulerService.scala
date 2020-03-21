@@ -133,10 +133,8 @@ class MarathonSchedulerService @Inject() (
 
   def deploy(plan: DeploymentPlan, force: Boolean = false): Future[Unit] = {
     log.info(s"Deploy plan with force=$force:\n$plan ")
-    val future: Future[Any] = PromiseActor.askWithoutTimeout(
-      system,
-      schedulerActor,
-      Deploy(plan, force))
+    val future: Future[Any] = PromiseActor
+      .askWithoutTimeout(system, schedulerActor, Deploy(plan, force))
     future.map {
       case DeploymentStarted(_) =>
         ()
@@ -189,9 +187,11 @@ class MarathonSchedulerService @Inject() (
     // Block on the latch which will be countdown only when shutdown has been
     // triggered. This is to prevent run()
     // from exiting.
-    scala.concurrent.blocking {
-      latch.await()
-    }
+    scala
+      .concurrent
+      .blocking {
+        latch.await()
+      }
 
     log.info("Completed run")
   }
@@ -232,9 +232,11 @@ class MarathonSchedulerService @Inject() (
       // The following block asynchronously runs the driver. Note that driver.run()
       // blocks until the driver has been stopped (or aborted).
       Future {
-        scala.concurrent.blocking {
-          driver.foreach(_.run())
-        }
+        scala
+          .concurrent
+          .blocking {
+            driver.foreach(_.run())
+          }
       } onComplete {
         case Success(_) =>
           log.info(
@@ -304,8 +306,8 @@ class MarathonSchedulerService @Inject() (
 
         //run all leadership callbacks
         log.info(
-          s"""Call onElected leadership callbacks on ${leadershipCallbacks
-            .mkString(", ")}""")
+          s"""Call onElected leadership callbacks on ${leadershipCallbacks.mkString(
+            ", ")}""")
         Await.result(
           Future.sequence(leadershipCallbacks.map(_.onElected)),
           config.onElectedPrepareTimeout().millis)

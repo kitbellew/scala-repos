@@ -100,8 +100,8 @@ object SourceCodeGenerator {
       ignoreInvalidDefaults: Boolean = true): Unit = {
     val dc = DatabaseConfig.forURI[JdbcProfile](uri)
     val pkg = dc.config.getString("codegen.package")
-    val out = outputDir.getOrElse(
-      dc.config.getStringOr("codegen.outputDir", "."))
+    val out = outputDir
+      .getOrElse(dc.config.getStringOr("codegen.outputDir", "."))
     val profile =
       if (dc.profileIsObject)
         dc.profileName
@@ -109,10 +109,13 @@ object SourceCodeGenerator {
         "new " + dc.profileName
     try {
       val m = Await.result(
-        dc.db.run(
-          dc.profile
-            .createModel(None, ignoreInvalidDefaults)(ExecutionContext.global)
-            .withPinnedSession),
+        dc
+          .db
+          .run(
+            dc
+              .profile
+              .createModel(None, ignoreInvalidDefaults)(ExecutionContext.global)
+              .withPinnedSession),
         Duration.Inf)
       new SourceCodeGenerator(m).writeToFile(profile, out, pkg)
     } finally dc.db.close

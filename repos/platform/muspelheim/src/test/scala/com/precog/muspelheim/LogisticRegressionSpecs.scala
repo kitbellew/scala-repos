@@ -107,10 +107,12 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
       val resultsCount = evalE(input2)
 
       val count =
-        resultsCount.collectFirst {
-          case (_, SDecimal(d)) =>
-            d.toInt
-        }.get
+        resultsCount
+          .collectFirst {
+            case (_, SDecimal(d)) =>
+              d.toInt
+          }
+          .get
       results must haveSize(count)
 
       results must haveAllElementsLike {
@@ -211,10 +213,12 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
       val resultsCount = evalE(input2)
 
       val count =
-        resultsCount.collectFirst {
-          case (_, SDecimal(d)) =>
-            d.toInt
-        }.get
+        resultsCount
+          .collectFirst {
+            case (_, SDecimal(d)) =>
+              d.toInt
+          }
+          .get
       results must haveSize(count)
 
       results must haveAllElementsLike {

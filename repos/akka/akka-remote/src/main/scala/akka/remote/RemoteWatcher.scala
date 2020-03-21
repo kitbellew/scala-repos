@@ -130,11 +130,8 @@ private[akka] class RemoteWatcher(
   var unreachable: Set[Address] = Set.empty
   var addressUids: Map[Address, Int] = Map.empty
 
-  val heartbeatTask = scheduler.schedule(
-    heartbeatInterval,
-    heartbeatInterval,
-    self,
-    HeartbeatTick)
+  val heartbeatTask = scheduler
+    .schedule(heartbeatInterval, heartbeatInterval, self, HeartbeatTick)
   val failureDetectorReaperTask = scheduler.schedule(
     unreachableReaperInterval,
     unreachableReaperInterval,
@@ -167,7 +164,8 @@ private[akka] class RemoteWatcher(
 
     // test purpose
     case Stats ⇒
-      val watchSet = watching.iterator
+      val watchSet = watching
+        .iterator
         .flatMap {
           case (wee, wers) ⇒
             wers.map { wer ⇒
@@ -310,14 +308,14 @@ private[akka] class RemoteWatcher(
             self,
             ExpectedFirstHeartbeat(a))
         }
-        context.actorSelection(
-          RootActorPath(a) / self.path.elements) ! Heartbeat
+        context
+          .actorSelection(RootActorPath(a) / self.path.elements) ! Heartbeat
       }
     }
 
   def triggerFirstHeartbeat(address: Address): Unit =
-    if (watcheeByNodes.contains(address) && !failureDetector.isMonitoring(
-          address)) {
+    if (watcheeByNodes.contains(address) && !failureDetector
+          .isMonitoring(address)) {
       log.debug("Trigger extra expected heartbeat from [{}]", address)
       failureDetector.heartbeat(address)
     }

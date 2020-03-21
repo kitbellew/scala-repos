@@ -59,12 +59,7 @@ object VectorTest extends SpecLite {
   "groupWhen" ! forAll { (xs: Vector[Int]) =>
     (
       xs.groupWhen(_ < _)
-        must_=== (
-          list
-            .groupWhen(xs.toList)(_ < _)
-            .map(_.toVector)
-            .toVector
-        )
+        must_=== (list.groupWhen(xs.toList)(_ < _).map(_.toVector).toVector)
     )
   }
 
@@ -106,7 +101,8 @@ object VectorTest extends SpecLite {
     List(1, 2, 4)
       .groupWhen((i1, i2) => scala.math.abs(i1 - i2) <= 1)
       .length must_=== (2)
-    List(1, 2, 4).toVector
+    List(1, 2, 4)
+      .toVector
       .groupWhen((i1, i2) => scala.math.abs(i1 - i2) <= 1)
       .length must_=== (2)
   }

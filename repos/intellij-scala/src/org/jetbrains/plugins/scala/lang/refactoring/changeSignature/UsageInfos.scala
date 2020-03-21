@@ -52,8 +52,8 @@ private[changeSignature] trait ScalaNamedElementUsageInfo {
     }
   val scParams: Seq[ScParameter] = paramClauses.toSeq.flatMap(_.params)
   val parameters: Seq[Parameter] = scParams.map(new Parameter(_))
-  val defaultValues: Seq[Option[String]] = scParams.map(
-    _.getActualDefaultExpression.map(_.getText))
+  val defaultValues: Seq[Option[String]] = scParams
+    .map(_.getActualDefaultExpression.map(_.getText))
 }
 
 private[changeSignature] object ScalaNamedElementUsageInfo {
@@ -191,8 +191,9 @@ private[changeSignature] object isAnonFunUsage {
   def unapply(ref: ScReferenceExpression): Option[AnonFunUsageInfo] = {
     ref match {
       case ChildOf(mc: MethodInvocation)
-          if mc.argumentExpressions.exists(
-            ScUnderScoreSectionUtil.isUnderscore) =>
+          if mc
+            .argumentExpressions
+            .exists(ScUnderScoreSectionUtil.isUnderscore) =>
         Some(AnonFunUsageInfo(mc, ref))
       case ChildOf(und: ScUnderscoreSection) =>
         Some(AnonFunUsageInfo(und, ref))
@@ -267,7 +268,8 @@ private[changeSignature] object UsageUtil {
           sc.newType
         case jc: JavaChangeInfo =>
           val method = jc.getMethod
-          val javaType = jc.getNewReturnType
+          val javaType = jc
+            .getNewReturnType
             .getType(method.getParameterList, method.getManager)
           ScType.create(javaType, method.getProject)
         case _ =>

@@ -38,7 +38,9 @@ class AncestorSelector(
       case element: ScExpression =>
         val result = ContainerUtil.newLinkedList[PsiElement](element)
         var current: PsiElement = element.getParent
-        while (current != null && current.getTextRange != null && current.getTextRange.getEndOffset <= offset && (
+        while (current != null && current.getTextRange != null && current
+                 .getTextRange
+                 .getEndOffset <= offset && (
                  selectorType match {
                    case All =>
                      true

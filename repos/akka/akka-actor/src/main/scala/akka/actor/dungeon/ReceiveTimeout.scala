@@ -37,8 +37,9 @@ private[akka] trait ReceiveTimeout {
         case f: FiniteDuration ⇒
           recvtimeout._2.cancel() //Cancel any ongoing future
           val task =
-            system.scheduler.scheduleOnce(f, self, akka.actor.ReceiveTimeout)(
-              this.dispatcher)
+            system
+              .scheduler
+              .scheduleOnce(f, self, akka.actor.ReceiveTimeout)(this.dispatcher)
           receiveTimeoutData = (f, task)
         case _ ⇒
           cancelReceiveTimeout()

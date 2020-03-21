@@ -43,10 +43,11 @@ object DateProperties extends Properties("Date Properties") {
       yield DateRange(RichDate(v1), RichDate(v2))
   }
   implicit val absdur: Arbitrary[AbsoluteDuration] = Arbitrary {
-    implicitly[Arbitrary[Long]].arbitrary
-    // Ignore Longs that are too big to fit, and make sure we can add any random 3 together
-    // Long.MaxValue / 1200 ms is the biggest that will fit, we divide by 3 to make sure
-    // we can add three together in tests
+    implicitly[Arbitrary[Long]]
+      .arbitrary
+      // Ignore Longs that are too big to fit, and make sure we can add any random 3 together
+      // Long.MaxValue / 1200 ms is the biggest that will fit, we divide by 3 to make sure
+      // we can add three together in tests
       .map { ms =>
         fromMillisecs(ms / (1200 * 3))
       }
@@ -88,9 +89,11 @@ object DateProperties extends Properties("Date Properties") {
 
   property("each output is contained") = forAll { (dr: DateRange) =>
     val r = divDur(dr.end - dr.start, 10)
-    dr.each(r).forall {
-      dr.contains(_)
-    }
+    dr
+      .each(r)
+      .forall {
+        dr.contains(_)
+      }
   }
 
   property("Embiggen/extend always contains") = forAll {
@@ -151,15 +154,16 @@ object DateProperties extends Properties("Date Properties") {
     ).r
 
   def matches(l: List[String], arg: String): Int =
-    l.map {
+    l
+      .map {
         toRegex _
       }
       .map {
         _.findFirstMatchIn(arg)
-          .map { _ =>
-            1
-          }
-          .getOrElse(0)
+        .map { _ =>
+          1
+        }
+        .getOrElse(0)
       }
       .sum
 
@@ -170,7 +174,8 @@ object DateProperties extends Properties("Date Properties") {
     (dr: DateRange) =>
       val globbed = glob.globify(dr)
       // Brute force
-      dr.each(Hours(1))
+      dr
+        .each(Hours(1))
         .map {
           _.start.format(pattern)(DateOps.UTC)
         }

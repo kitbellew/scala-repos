@@ -223,8 +223,8 @@ private[akka] class SubclassifiedIndex[K, V] private (
         s
       else
         n.innerFindSubKeys(key, except) ++ {
-          if (sc.isSubclass(n.key, key) && !except.exists(e ⇒
-                sc.isEqual(key, e.key)))
+          if (sc.isSubclass(n.key, key) && !except
+                .exists(e ⇒ sc.isEqual(key, e.key)))
             s + n.key
           else
             s
@@ -246,8 +246,8 @@ private[akka] class SubclassifiedIndex[K, V] private (
         subsub
       else
         n.subkeys
-    n.subkeys ++= findSubKeysExcept(n.key, n.subkeys).map(k ⇒
-      new Nonroot(root, k, values))
+    n.subkeys ++= findSubKeysExcept(n.key, n.subkeys)
+      .map(k ⇒ new Nonroot(root, k, values))
     n.subkeys.map(n ⇒ (n.key, n.values.toSet))
   }
 

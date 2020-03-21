@@ -70,16 +70,10 @@ class ScTraitImpl private (
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    super[ScTypeParametersOwner].processDeclarations(
-      processor,
-      state,
-      lastParent,
-      place) &&
-    super[ScTemplateDefinition].processDeclarationsForTemplateBody(
-      processor,
-      state,
-      lastParent,
-      place)
+    super[ScTypeParametersOwner]
+      .processDeclarations(processor, state, lastParent, place) &&
+    super[ScTemplateDefinition]
+      .processDeclarationsForTemplateBody(processor, state, lastParent, place)
   }
 
   override def processDeclarations(
@@ -87,11 +81,8 @@ class ScTraitImpl private (
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    super[ScTemplateDefinition].processDeclarations(
-      processor,
-      state,
-      lastParent,
-      place)
+    super[ScTemplateDefinition]
+      .processDeclarations(processor, state, lastParent, place)
   }
 
   override def isInterface: Boolean = true
@@ -114,10 +105,13 @@ class ScTraitImpl private (
   override def getAllMethods: Array[PsiMethod] = {
     val res = new ArrayBuffer[PsiMethod]()
     res ++= getConstructors
-    TypeDefinitionMembers.SignatureNodes.forAllSignatureNodes(this) { node =>
-      this.processPsiMethodsForNode(node, isStatic = false, isInterface = true)(
-        res += _)
-    }
+    TypeDefinitionMembers
+      .SignatureNodes
+      .forAllSignatureNodes(this) { node =>
+        this
+          .processPsiMethodsForNode(node, isStatic = false, isInterface = true)(
+            res += _)
+      }
 
     for (synthetic <- syntheticMethodsNoOverride) {
       this.processPsiMethodsForNode(

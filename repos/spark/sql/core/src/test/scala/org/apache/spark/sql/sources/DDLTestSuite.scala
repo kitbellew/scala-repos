@@ -77,7 +77,8 @@ case class SimpleDDLScan(from: Int, to: Int, table: String)(
 
   override def buildScan(): RDD[Row] = {
     // Rely on a type erasure hack to pass RDD[InternalRow] back as RDD[Row]
-    sqlContext.sparkContext
+    sqlContext
+      .sparkContext
       .parallelize(from to to)
       .map { e =>
         InternalRow(UTF8String.fromString(s"people$e"), e * 2)

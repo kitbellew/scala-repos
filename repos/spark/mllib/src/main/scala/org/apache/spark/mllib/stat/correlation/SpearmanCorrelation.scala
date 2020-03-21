@@ -45,52 +45,62 @@ private[stat] object SpearmanCorrelation extends Correlation with Logging {
     */
   override def computeCorrelationMatrix(X: RDD[Vector]): Matrix = {
     // ((columnIndex, value), rowUid)
-    val colBased = X.zipWithUniqueId().flatMap {
-      case (vec, uid) =>
-        vec.toArray.view.zipWithIndex.map {
-          case (v, j) =>
-            ((j, v), uid)
-        }
-    }
+    val colBased = X
+      .zipWithUniqueId()
+      .flatMap {
+        case (vec, uid) =>
+          vec
+            .toArray
+            .view
+            .zipWithIndex
+            .map {
+              case (v, j) =>
+                ((j, v), uid)
+            }
+      }
     // global sort by (columnIndex, value)
     val sorted = colBased.sortByKey()
     // assign global ranks (using average ranks for tied values)
-    val globalRanks = sorted.zipWithIndex().mapPartitions { iter =>
-      var preCol = -1
-      var preVal = Double.NaN
-      var startRank = -1.0
-      var cachedUids = ArrayBuffer.empty[Long]
-      val flush: () => Iterable[(Long, (Int, Double))] = () => {
-        val averageRank = startRank + (cachedUids.size - 1) / 2.0
-        val output = cachedUids.map { uid =>
-          (uid, (preCol, averageRank))
-        }
-        cachedUids.clear()
-        output
-      }
-      iter.flatMap {
-        case (((j, v), uid), rank) =>
-          // If we see a new value or cachedUids is too big, we flush ids with their average rank.
-          if (j != preCol || v != preVal || cachedUids.size >= 10000000) {
-            val output = flush()
-            preCol = j
-            preVal = v
-            startRank = rank
-            cachedUids += uid
-            output
-          } else {
-            cachedUids += uid
-            Iterator.empty
+    val globalRanks = sorted
+      .zipWithIndex()
+      .mapPartitions { iter =>
+        var preCol = -1
+        var preVal = Double.NaN
+        var startRank = -1.0
+        var cachedUids = ArrayBuffer.empty[Long]
+        val flush: () => Iterable[(Long, (Int, Double))] = () => {
+          val averageRank = startRank + (cachedUids.size - 1) / 2.0
+          val output = cachedUids.map { uid =>
+            (uid, (preCol, averageRank))
           }
-      } ++ flush()
-    }
+          cachedUids.clear()
+          output
+        }
+        iter.flatMap {
+          case (((j, v), uid), rank) =>
+            // If we see a new value or cachedUids is too big, we flush ids with their average rank.
+            if (j != preCol || v != preVal || cachedUids.size >= 10000000) {
+              val output = flush()
+              preCol = j
+              preVal = v
+              startRank = rank
+              cachedUids += uid
+              output
+            } else {
+              cachedUids += uid
+              Iterator.empty
+            }
+        } ++ flush()
+      }
     // Replace values in the input matrix by their ranks compared with values in the same column.
     // Note that shifting all ranks in a column by a constant value doesn't affect result.
-    val groupedRanks = globalRanks.groupByKey().map {
-      case (uid, iter) =>
-        // sort by column index and then convert values to a vector
-        Vectors.dense(iter.toSeq.sortBy(_._1).map(_._2).toArray)
-    }
+    val groupedRanks = globalRanks
+      .groupByKey()
+      .map {
+        case (uid, iter) =>
+          // sort by column index and then convert values to a vector
+          Vectors.dense(iter.toSeq.sortBy(_._1).map(_._2).toArray)
+      }
     PearsonCorrelation.computeCorrelationMatrix(groupedRanks)
   }
 }

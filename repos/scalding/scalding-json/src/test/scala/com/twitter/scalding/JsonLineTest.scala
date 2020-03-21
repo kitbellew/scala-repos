@@ -50,7 +50,8 @@ class JsonLineJob(args: Args) extends Job(args) {
 
 class JsonLineRestrictedFieldsJob(args: Args) extends Job(args) {
   try {
-    Tsv("input0", ('query, 'queryStats)).read
+    Tsv("input0", ('query, 'queryStats))
+      .read
       .write(JsonLine("output0", Tuple1('query)))
   } catch {
     case e: Exception =>
@@ -60,7 +61,8 @@ class JsonLineRestrictedFieldsJob(args: Args) extends Job(args) {
 
 class JsonLineInputJob(args: Args) extends Job(args) {
   try {
-    JsonLine("input0", ('foo, 'bar)).read
+    JsonLine("input0", ('foo, 'bar))
+      .read
       .project('foo, 'bar)
       .write(Tsv("output0"))
 
@@ -72,7 +74,8 @@ class JsonLineInputJob(args: Args) extends Job(args) {
 
 class JsonLineInputJobSkipEmptyLines(args: Args) extends Job(args) {
   try {
-    JsonLine("input0", ('foo, 'bar), failOnEmptyLines = false).read
+    JsonLine("input0", ('foo, 'bar), failOnEmptyLines = false)
+      .read
       .project('foo, 'bar)
       .write(Tsv("output0"))
 
@@ -84,7 +87,8 @@ class JsonLineInputJobSkipEmptyLines(args: Args) extends Job(args) {
 
 class JsonLineNestedInputJob(args: Args) extends Job(args) {
   try {
-    JsonLine("input0", (Symbol("foo.too"), 'bar)).read
+    JsonLine("input0", (Symbol("foo.too"), 'bar))
+      .read
       .rename((Symbol("foo.too") -> ('foo)))
       .project('foo, 'bar)
       .write(Tsv("output0"))

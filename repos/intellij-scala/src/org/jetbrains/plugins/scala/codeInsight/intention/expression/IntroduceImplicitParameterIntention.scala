@@ -69,9 +69,11 @@ object IntroduceImplicitParameterIntention {
       }
     }
 
-    val result = expr.result.getOrElse(
-      return Right(
-        InspectionBundle.message("introduce.implicit.not.allowed.here")))
+    val result = expr
+      .result
+      .getOrElse(
+        return Right(
+          InspectionBundle.message("introduce.implicit.not.allowed.here")))
 
     val buf = new StringBuilder
     buf.append(result.getText)
@@ -113,9 +115,8 @@ object IntroduceImplicitParameterIntention {
       buf.replace(offset, offset + p.name.length, newParam)
     }
 
-    val newExpr = ScalaPsiElementFactory.createExpressionFromText(
-      buf.toString(),
-      expr.getManager)
+    val newExpr = ScalaPsiElementFactory
+      .createExpressionFromText(buf.toString(), expr.getManager)
 
     if (!isValidExpr(newExpr, expr.parameters.length))
       return Right(
@@ -136,10 +137,8 @@ class IntroduceImplicitParameterIntention
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val expr: ScFunctionExpr = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScFunctionExpr],
-      false)
+    val expr: ScFunctionExpr = PsiTreeUtil
+      .getParentOfType(element, classOf[ScFunctionExpr], false)
     if (expr == null)
       return false
 
@@ -159,10 +158,8 @@ class IntroduceImplicitParameterIntention
         HintManager.getInstance().showErrorHint(editor, hint)
     }
 
-    val expr: ScFunctionExpr = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScFunctionExpr],
-      false)
+    val expr: ScFunctionExpr = PsiTreeUtil
+      .getParentOfType(element, classOf[ScFunctionExpr], false)
     if (expr == null || !expr.isValid)
       return
 

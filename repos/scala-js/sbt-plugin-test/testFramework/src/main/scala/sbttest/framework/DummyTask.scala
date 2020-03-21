@@ -14,9 +14,9 @@ final class DummyTask(val taskDef: TaskDef, runner: BaseRunner) extends Task {
     try {
       // Just create a new instance.
       val inst =
-        TestUtils.newInstance(
-          taskDef.fullyQualifiedName,
-          runner.testClassLoader)(Seq())
+        TestUtils
+          .newInstance(taskDef.fullyQualifiedName, runner.testClassLoader)(
+            Seq())
 
       eventHandler.handle(new DummyEvent(taskDef, None))
       loggers.foreach(_.info(s"Success: ${taskDef.fullyQualifiedName}"))

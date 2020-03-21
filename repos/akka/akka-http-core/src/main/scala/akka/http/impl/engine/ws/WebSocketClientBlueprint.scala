@@ -73,11 +73,13 @@ object WebSocketClientBlueprint {
 
     val valve = StreamUtils.OneTimeValve()
 
-    val (initialRequest, key) = Handshake.Client.buildRequest(
-      uri,
-      extraHeaders,
-      subprotocol.toList,
-      settings.websocketRandomFactory())
+    val (initialRequest, key) = Handshake
+      .Client
+      .buildRequest(
+        uri,
+        extraHeaders,
+        subprotocol.toList,
+        settings.websocketRandomFactory())
     val hostHeader = Host(uri.authority)
     val renderedInitialRequest = HttpRequestRendererFactory.renderStrict(
       RequestRenderingContext(initialRequest, hostHeader),
@@ -125,10 +127,9 @@ object WebSocketClientBlueprint {
                   status,
                   headers,
                   protocol = protocol)
-                Handshake.Client.validateResponse(
-                  response,
-                  subprotocol.toList,
-                  key) match {
+                Handshake
+                  .Client
+                  .validateResponse(response, subprotocol.toList, key) match {
                   case Right(NegotiatedWebSocketSettings(protocol)) ⇒
                     result.success(ValidUpgrade(response, protocol))
 
@@ -179,8 +180,8 @@ object WebSocketClientBlueprint {
         val networkIn = b.add(Flow[ByteString].transform(() ⇒ new UpgradeStage))
         val wsIn = b.add(Flow[ByteString])
 
-        val handshakeRequestSource = b.add(
-          Source.single(renderedInitialRequest) ++ valve.source)
+        val handshakeRequestSource = b
+          .add(Source.single(renderedInitialRequest) ++ valve.source)
         val httpRequestBytesAndThenWSBytes = b.add(Concat[ByteString]())
 
         handshakeRequestSource ~> httpRequestBytesAndThenWSBytes

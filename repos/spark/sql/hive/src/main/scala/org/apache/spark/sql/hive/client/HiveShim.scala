@@ -249,8 +249,8 @@ private[client] class Shim_v0_12 extends Shim with Logging {
 
   override def getMetastoreClientConnectRetryDelayMillis(
       conf: HiveConf): Long = {
-    conf.getIntVar(
-      HiveConf.ConfVars.METASTORE_CLIENT_CONNECT_RETRY_DELAY) * 1000
+    conf
+      .getIntVar(HiveConf.ConfVars.METASTORE_CLIENT_CONNECT_RETRY_DELAY) * 1000
   }
 
   override def loadPartition(
@@ -368,7 +368,9 @@ private[client] class Shim_v0_13 extends Shim_v0_12 {
   def convertFilters(table: Table, filters: Seq[Expression]): String = {
     // hive varchar is treated as catalyst string, but hive varchar can't be pushed down.
     val varcharKeys =
-      table.getPartitionKeys.asScala
+      table
+        .getPartitionKeys
+        .asScala
         .filter(col =>
           col.getType.startsWith(serdeConstants.VARCHAR_TYPE_NAME) ||
             col.getType.startsWith(serdeConstants.CHAR_TYPE_NAME))
@@ -422,14 +424,16 @@ private[client] class Shim_v0_13 extends Shim_v0_12 {
   override def getDriverResults(driver: Driver): Seq[String] = {
     val res = new JArrayList[Object]()
     getDriverResultsMethod.invoke(driver, res)
-    res.asScala.map { r =>
-      r match {
-        case s: String =>
-          s
-        case a: Array[Object] =>
-          a(0).asInstanceOf[String]
+    res
+      .asScala
+      .map { r =>
+        r match {
+          case s: String =>
+            s
+          case a: Array[Object] =>
+            a(0).asInstanceOf[String]
+        }
       }
-    }
   }
 
 }

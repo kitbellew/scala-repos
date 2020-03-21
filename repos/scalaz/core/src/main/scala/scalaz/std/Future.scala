@@ -54,15 +54,17 @@ private class FutureInstance(implicit ec: ExecutionContext)
         }
     }
 
-    result.future.map {
-      case (a, i) =>
-        (
-          a,
-          fs.collect {
-            case (fa, j) if j != i =>
-              fa
-          })
-    }
+    result
+      .future
+      .map {
+        case (a, i) =>
+          (
+            a,
+            fs.collect {
+              case (fa, j) if j != i =>
+                fa
+            })
+      }
   }
 
   override def mapBoth[A, B, C](a: Future[A], b: Future[B])(
@@ -81,10 +83,12 @@ private class FutureInstance(implicit ec: ExecutionContext)
     }
 
   def attempt[A](f: Future[A]): Future[Throwable \/ A] =
-    f.map(\/.right).recover {
-      case e =>
-        -\/(e)
-    }
+    f
+      .map(\/.right)
+      .recover {
+        case e =>
+          -\/(e)
+      }
 
   def fail[A](e: Throwable): Future[A] = Future.failed(e)
 

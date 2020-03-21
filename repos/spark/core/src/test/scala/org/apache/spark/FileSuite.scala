@@ -238,10 +238,12 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     Thread.currentThread().setContextClassLoader(loader)
     try {
       sc = new SparkContext("local", "test")
-      val objs = sc.makeRDD(1 to 3).map { x =>
-        val loader = Thread.currentThread().getContextClassLoader
-        Class.forName(className, true, loader).newInstance()
-      }
+      val objs = sc
+        .makeRDD(1 to 3)
+        .map { x =>
+          val loader = Thread.currentThread().getContextClassLoader
+          Class.forName(className, true, loader).newInstance()
+        }
       val outputDir = new File(tempDir, "output").getAbsolutePath
       objs.saveAsObjectFile(outputDir)
       // Try reading the output back as an object file
@@ -480,9 +482,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
 
   test("prevent user from overwriting the empty directory (old Hadoop API)") {
     sc = new SparkContext("local", "test")
-    val randomRDD = sc.parallelize(
-      Array((1, "a"), (1, "a"), (2, "b"), (3, "c")),
-      1)
+    val randomRDD = sc
+      .parallelize(Array((1, "a"), (1, "a"), (2, "b"), (3, "c")), 1)
     intercept[FileAlreadyExistsException] {
       randomRDD.saveAsTextFile(tempDir.getPath)
     }
@@ -491,9 +492,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
   test(
     "prevent user from overwriting the non-empty directory (old Hadoop API)") {
     sc = new SparkContext("local", "test")
-    val randomRDD = sc.parallelize(
-      Array((1, "a"), (1, "a"), (2, "b"), (3, "c")),
-      1)
+    val randomRDD = sc
+      .parallelize(Array((1, "a"), (1, "a"), (2, "b"), (3, "c")), 1)
     randomRDD.saveAsTextFile(tempDir.getPath + "/output")
     assert(new File(tempDir.getPath + "/output/part-00000").exists() === true)
     intercept[FileAlreadyExistsException] {
@@ -504,13 +504,13 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
   test(
     "allow user to disable the output directory existence checking (old Hadoop API") {
     val sf = new SparkConf()
-    sf.setAppName("test")
+    sf
+      .setAppName("test")
       .setMaster("local")
       .set("spark.hadoop.validateOutputSpecs", "false")
     sc = new SparkContext(sf)
-    val randomRDD = sc.parallelize(
-      Array((1, "a"), (1, "a"), (2, "b"), (3, "c")),
-      1)
+    val randomRDD = sc
+      .parallelize(Array((1, "a"), (1, "a"), (2, "b"), (3, "c")), 1)
     randomRDD.saveAsTextFile(tempDir.getPath + "/output")
     assert(new File(tempDir.getPath + "/output/part-00000").exists() === true)
     randomRDD.saveAsTextFile(tempDir.getPath + "/output")
@@ -546,7 +546,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
   test(
     "allow user to disable the output directory existence checking (new Hadoop API") {
     val sf = new SparkConf()
-    sf.setAppName("test")
+    sf
+      .setAppName("test")
       .setMaster("local")
       .set("spark.hadoop.validateOutputSpecs", "false")
     sc = new SparkContext(sf)

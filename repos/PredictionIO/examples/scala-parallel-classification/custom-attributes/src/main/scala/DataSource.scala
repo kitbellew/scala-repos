@@ -61,8 +61,7 @@ class DataSource(val dsp: DataSourceParams)
               throw e
             }
           }
-      }
-      .cache()
+      }.cache()
 
     new TrainingData(labeledPoints, gendersMap, educationMap)
   }

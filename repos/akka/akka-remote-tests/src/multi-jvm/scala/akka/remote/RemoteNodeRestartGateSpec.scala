@@ -80,10 +80,13 @@ abstract class RemoteNodeRestartGateSpec
           .warning(pattern = "address is now gated", occurrences = 1)
           .intercept {
             Await.result(
-              RARP(system).provider.transport.managementCommand(
-                ForceDisassociateExplicitly(
-                  node(second).address,
-                  AssociationHandle.Unknown)),
+              RARP(system)
+                .provider
+                .transport
+                .managementCommand(
+                  ForceDisassociateExplicitly(
+                    node(second).address,
+                    AssociationHandle.Unknown)),
               3.seconds)
           }
 

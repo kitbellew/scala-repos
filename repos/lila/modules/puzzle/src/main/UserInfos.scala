@@ -52,8 +52,8 @@ object UserInfos {
   private def makeChart(attempts: List[Attempt]) =
     JsArray {
       val ratings = attempts.take(chartSize).reverse map (_.userPostRating)
-      val filled = List.fill(chartSize - ratings.size)(
-        Glicko.default.intRating) ::: ratings
+      val filled = List
+        .fill(chartSize - ratings.size)(Glicko.default.intRating) ::: ratings
       filled map {
         JsNumber(_)
       }

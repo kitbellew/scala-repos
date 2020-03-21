@@ -103,8 +103,8 @@ class DeploymentFormatsTest extends MarathonSpec {
       Timestamp.now())
     val json = Json.toJson(plan)
     val fieldMap = json.as[JsObject].fields.toMap
-    fieldMap.keySet should be(
-      Set("version", "id", "target", "original", "steps"))
+    fieldMap
+      .keySet should be(Set("version", "id", "target", "original", "steps"))
   }
 
   // regression test for #1176

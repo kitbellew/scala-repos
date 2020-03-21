@@ -64,7 +64,8 @@ private[summingbird] object HDFSMetadata {
 
   /** Get from the most recent version */
   def get[T: JsonNodeInjection](conf: Configuration, path: String): Option[T] =
-    apply(conf, path).mostRecentVersion
+    apply(conf, path)
+      .mostRecentVersion
       .flatMap {
         _.get[T].toOption
       }
@@ -96,10 +97,9 @@ class HDFSMetadata(conf: Configuration, rootPath: String) {
     * The greatest version number that has been completed on disk
     */
   def mostRecentVersion: Option[HDFSVersionMetadata] =
-    Option(versionedStore.mostRecentVersion)
-      .map { jlong =>
-        new HDFSVersionMetadata(jlong.longValue, conf, pathOf(jlong.longValue))
-      }
+    Option(versionedStore.mostRecentVersion).map { jlong =>
+      new HDFSVersionMetadata(jlong.longValue, conf, pathOf(jlong.longValue))
+    }
 
   /** Create a new version number that is greater than all previous */
   def newVersion: Long = versionedStore.newVersion
@@ -124,7 +124,12 @@ class HDFSMetadata(conf: Configuration, rootPath: String) {
     * last we checked
     */
   def versions: Iterable[Long] =
-    versionedStore.getAllVersions.asScala.toList.sorted.reverse
+    versionedStore
+      .getAllVersions
+      .asScala
+      .toList
+      .sorted
+      .reverse
       .map {
         _.longValue
       }

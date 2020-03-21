@@ -481,8 +481,8 @@ object EvaluateTask {
         None)
   def suppressedMessage(key: ScopedKey[_])(implicit
       display: Show[ScopedKey[_]]): String =
-    "Stack trace suppressed.  Run 'last %s' for the full log.".format(
-      display(key))
+    "Stack trace suppressed.  Run 'last %s' for the full log."
+      .format(display(key))
 
   def getStreams(key: ScopedKey[_], streams: Streams): TaskStreams =
     streams(ScopedKey(Project.fillTaskAxis(key).scope, Keys.streams.key))
@@ -607,9 +607,8 @@ object EvaluateTask {
       results: RMap[Task, Result],
       state: State,
       streams: Streams): Unit =
-    for (referenced <- Previous.references in Global get Project
-           .structure(state)
-           .data)
+    for (referenced <- Previous
+           .references in Global get Project.structure(state).data)
       Previous.complete(referenced, results, streams)
 
   def applyResults[T](
@@ -628,10 +627,13 @@ object EvaluateTask {
 
   def transformInc[T](result: Result[T]): Result[T] =
     // taskToKey needs to be before liftAnonymous.  liftA only lifts non-keyed (anonymous) Incompletes.
-    result.toEither.left.map { i =>
-      Incomplete.transformBU(i)(
-        convertCyclicInc andThen taskToKey andThen liftAnonymous)
-    }
+    result
+      .toEither
+      .left
+      .map { i =>
+        Incomplete.transformBU(i)(
+          convertCyclicInc andThen taskToKey andThen liftAnonymous)
+      }
   def taskToKey: Incomplete => Incomplete = {
     case in @ Incomplete(Some(node: Task[_]), _, _, _, _) =>
       in.copy(node = transformNode(node))

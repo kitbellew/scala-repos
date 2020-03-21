@@ -36,9 +36,11 @@ class MultilabelMetrics @Since("1.2.0") (
     */
   private[mllib] def this(predictionAndLabels: DataFrame) =
     this(
-      predictionAndLabels.rdd.map { r =>
-        (r.getSeq[Double](0).toArray, r.getSeq[Double](1).toArray)
-      })
+      predictionAndLabels
+        .rdd
+        .map { r =>
+          (r.getSeq[Double](0).toArray, r.getSeq[Double](1).toArray)
+        })
 
   private lazy val numDocs: Long = predictionAndLabels.count()
 
@@ -67,59 +69,67 @@ class MultilabelMetrics @Since("1.2.0") (
     * Returns accuracy
     */
   @Since("1.2.0")
-  lazy val accuracy: Double = predictionAndLabels.map {
-    case (predictions, labels) =>
-      labels.intersect(predictions).length.toDouble /
-        (
-          labels.length + predictions.length - labels
-            .intersect(predictions)
-            .length
-        )
-  }.sum / numDocs
+  lazy val accuracy: Double = predictionAndLabels
+    .map {
+      case (predictions, labels) =>
+        labels.intersect(predictions).length.toDouble /
+          (
+            labels.length + predictions
+              .length - labels.intersect(predictions).length
+          )
+    }
+    .sum / numDocs
 
   /**
     * Returns Hamming-loss
     */
   @Since("1.2.0")
-  lazy val hammingLoss: Double = predictionAndLabels.map {
-    case (predictions, labels) =>
-      labels.length + predictions.length - 2 * labels
-        .intersect(predictions)
-        .length
-  }.sum / (numDocs * numLabels)
+  lazy val hammingLoss: Double = predictionAndLabels
+    .map {
+      case (predictions, labels) =>
+        labels.length + predictions
+          .length - 2 * labels.intersect(predictions).length
+    }
+    .sum / (numDocs * numLabels)
 
   /**
     * Returns document-based precision averaged by the number of documents
     */
   @Since("1.2.0")
-  lazy val precision: Double = predictionAndLabels.map {
-    case (predictions, labels) =>
-      if (predictions.length > 0) {
-        predictions.intersect(labels).length.toDouble / predictions.length
-      } else {
-        0
-      }
-  }.sum / numDocs
+  lazy val precision: Double = predictionAndLabels
+    .map {
+      case (predictions, labels) =>
+        if (predictions.length > 0) {
+          predictions.intersect(labels).length.toDouble / predictions.length
+        } else {
+          0
+        }
+    }
+    .sum / numDocs
 
   /**
     * Returns document-based recall averaged by the number of documents
     */
   @Since("1.2.0")
-  lazy val recall: Double = predictionAndLabels.map {
-    case (predictions, labels) =>
-      labels.intersect(predictions).length.toDouble / labels.length
-  }.sum / numDocs
+  lazy val recall: Double = predictionAndLabels
+    .map {
+      case (predictions, labels) =>
+        labels.intersect(predictions).length.toDouble / labels.length
+    }
+    .sum / numDocs
 
   /**
     * Returns document-based f1-measure averaged by the number of documents
     */
   @Since("1.2.0")
-  lazy val f1Measure: Double = predictionAndLabels.map {
-    case (predictions, labels) =>
-      2.0 * predictions.intersect(labels).length / (
-        predictions.length + labels.length
-      )
-  }.sum / numDocs
+  lazy val f1Measure: Double = predictionAndLabels
+    .map {
+      case (predictions, labels) =>
+        2.0 * predictions.intersect(labels).length / (
+          predictions.length + labels.length
+        )
+    }
+    .sum / numDocs
 
   private lazy val tpPerClass = predictionAndLabels
     .flatMap {

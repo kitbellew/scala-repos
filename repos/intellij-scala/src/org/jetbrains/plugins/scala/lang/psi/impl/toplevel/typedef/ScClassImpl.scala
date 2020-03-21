@@ -130,10 +130,8 @@ class ScClassImpl private (
 
     constructor match {
       case Some(constr)
-          if place != null && PsiTreeUtil.isContextAncestor(
-            constr,
-            place,
-            false) =>
+          if place != null && PsiTreeUtil
+            .isContextAncestor(constr, place, false) =>
       //ignore, should be processed in ScParameters
       case _ =>
         for (p <- parameters) {
@@ -146,11 +144,8 @@ class ScClassImpl private (
         }
     }
 
-    super[ScTypeParametersOwner].processDeclarations(
-      processor,
-      state,
-      lastParent,
-      place)
+    super[ScTypeParametersOwner]
+      .processDeclarations(processor, state, lastParent, place)
   }
 
   override def processDeclarations(
@@ -158,11 +153,8 @@ class ScClassImpl private (
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    super[ScTemplateDefinition].processDeclarations(
-      processor,
-      state,
-      lastParent,
-      place)
+    super[ScTemplateDefinition]
+      .processDeclarations(processor, state, lastParent, place)
   }
 
   override def isCase: Boolean = hasModifierProperty("case")
@@ -176,19 +168,21 @@ class ScClassImpl private (
     val names = new mutable.HashSet[String]
     res ++= getConstructors
 
-    TypeDefinitionMembers.SignatureNodes.forAllSignatureNodes(this) { node =>
-      val isInterface =
-        node.info.namedElement match {
-          case t: ScTypedDefinition if t.isAbstractMember =>
-            true
-          case _ =>
-            false
-        }
-      this.processPsiMethodsForNode(
-        node,
-        isStatic = false,
-        isInterface = isInterface)(res += _, names += _)
-    }
+    TypeDefinitionMembers
+      .SignatureNodes
+      .forAllSignatureNodes(this) { node =>
+        val isInterface =
+          node.info.namedElement match {
+            case t: ScTypedDefinition if t.isAbstractMember =>
+              true
+            case _ =>
+              false
+          }
+        this.processPsiMethodsForNode(
+          node,
+          isStatic = false,
+          isInterface = isInterface)(res += _, names += _)
+      }
 
     for (synthetic <- syntheticMethodsNoOverride) {
       this.processPsiMethodsForNode(
@@ -207,10 +201,8 @@ class ScClassImpl private (
         "def productElement(n: Int): Any = ???")
 
       caseClassGeneratedFunctions.foreach { funText =>
-        val fun: ScFunction = ScalaPsiElementFactory.createMethodWithContext(
-          funText,
-          this,
-          this)
+        val fun: ScFunction = ScalaPsiElementFactory
+          .createMethodWithContext(funText, this, this)
         fun.setSynthetic(this)
         res += fun
       }
@@ -223,12 +215,14 @@ class ScClassImpl private (
             res += method
           }
         }
-        TypeDefinitionMembers.SignatureNodes.forAllSignatureNodes(o) { node =>
-          this.processPsiMethodsForNode(
-            node,
-            isStatic = true,
-            isInterface = false)(add)
-        }
+        TypeDefinitionMembers
+          .SignatureNodes
+          .forAllSignatureNodes(o) { node =>
+            this.processPsiMethodsForNode(
+              node,
+              isStatic = true,
+              isInterface = false)(add)
+          }
 
         for (synthetic <- o.syntheticMethodsNoOverride) {
           this.processPsiMethodsForNode(
@@ -271,14 +265,14 @@ class ScClassImpl private (
               .forName("copy")
               ._1
               .isEmpty
-          val addCopy =
-            !hasCopy && !x.parameterList.clauses.exists(_.hasRepeatedParam)
+          val addCopy = !hasCopy && !x
+            .parameterList
+            .clauses
+            .exists(_.hasRepeatedParam)
           if (addCopy) {
             try {
-              val method = ScalaPsiElementFactory.createMethodWithContext(
-                copyMethodText,
-                this,
-                this)
+              val method = ScalaPsiElementFactory
+                .createMethodWithContext(copyMethodText, this, this)
               method.setSynthetic(this)
               buf += method
             } catch {
@@ -300,14 +294,17 @@ class ScClassImpl private (
         "()"
       else
         ""
-    ) + x.parameterList.clauses
+    ) + x
+      .parameterList
+      .clauses
       .map { c =>
         val start =
           if (c.isImplicit)
             "(implicit "
           else
             "("
-        c.parameters
+        c
+          .parameters
           .map { p =>
             val paramType =
               p.typeElement match {
@@ -333,7 +330,8 @@ class ScClassImpl private (
       .getOrElse("")
     val typeParametersText = typeParametersClause
       .map(tp => {
-        tp.typeParameters
+        tp
+          .typeParameters
           .map(tp => {
             val baseText = tp.typeParameterText
             if (tp.isContravariant) {
@@ -349,29 +347,35 @@ class ScClassImpl private (
       })
       .getOrElse("")
     val parametersText =
-      constr.parameterList.clauses.map {
-        case clause: ScParameterClause =>
-          clause.parameters
-            .map {
-              case parameter: ScParameter =>
-                val paramText =
-                  s"${parameter.name} : ${parameter.typeElement.map(_.getText).getOrElse("Nothing")}"
-                parameter.getDefaultExpression match {
-                  case Some(expr) =>
-                    s"$paramText = ${expr.getText}"
-                  case _ =>
-                    paramText
-                }
-            }
-            .mkString(
-              if (clause.isImplicit)
-                "(implicit "
-              else
-                "(",
-              ", ",
-              ")")
-      }.mkString
-    getModifierList.accessModifier
+      constr
+        .parameterList
+        .clauses
+        .map {
+          case clause: ScParameterClause =>
+            clause
+              .parameters
+              .map {
+                case parameter: ScParameter =>
+                  val paramText =
+                    s"${parameter.name} : ${parameter.typeElement.map(_.getText).getOrElse("Nothing")}"
+                  parameter.getDefaultExpression match {
+                    case Some(expr) =>
+                      s"$paramText = ${expr.getText}"
+                    case _ =>
+                      paramText
+                  }
+              }
+              .mkString(
+                if (clause.isImplicit)
+                  "(implicit "
+                else
+                  "(",
+                ", ",
+                ")")
+        }
+        .mkString
+    getModifierList
+      .accessModifier
       .map(am => am.getText + " ")
       .getOrElse("") + "implicit def " + name +
       typeParametersText + parametersText + " : " + returnType +
@@ -405,26 +409,31 @@ class ScClassImpl private (
     val fields =
       constructor match {
         case Some(constr) =>
-          constr.parameters.map { param =>
-            param.getType(TypingContext.empty) match {
-              case Success(tp: ScTypeParameterType, _)
-                  if tp.param.findAnnotation("scala.specialized") != null =>
-                val factory: PsiElementFactory = PsiElementFactory.SERVICE
-                  .getInstance(getProject)
-                val psiTypeText: String =
-                  ScType.toPsi(tp, getProject, getResolveScope).getCanonicalText
-                val text = s"public final $psiTypeText ${param.name};"
-                val elem =
-                  new LightField(
-                    getManager,
-                    factory.createFieldFromText(text, this),
-                    this)
-                elem.setNavigationElement(param)
-                Option(elem)
-              case _ =>
-                None
+          constr
+            .parameters
+            .map { param =>
+              param.getType(TypingContext.empty) match {
+                case Success(tp: ScTypeParameterType, _)
+                    if tp.param.findAnnotation("scala.specialized") != null =>
+                  val factory: PsiElementFactory = PsiElementFactory
+                    .SERVICE
+                    .getInstance(getProject)
+                  val psiTypeText: String =
+                    ScType
+                      .toPsi(tp, getProject, getResolveScope)
+                      .getCanonicalText
+                  val text = s"public final $psiTypeText ${param.name};"
+                  val elem =
+                    new LightField(
+                      getManager,
+                      factory.createFieldFromText(text, this),
+                      this)
+                  elem.setNavigationElement(param)
+                  Option(elem)
+                case _ =>
+                  None
+              }
             }
-          }
         case _ =>
           Seq.empty
       }

@@ -92,7 +92,9 @@ sealed trait HttpEntity extends jm.HttpEntity {
 
   /** Java API */
   override def getDataBytes: stream.javadsl.Source[ByteString, AnyRef] =
-    stream.javadsl.Source
+    stream
+      .javadsl
+      .Source
       .fromGraph(dataBytes.asInstanceOf[Source[ByteString, AnyRef]])
 
   /** Java API */
@@ -259,9 +261,8 @@ object HttpEntity {
       empty(contentType)
   }
 
-  val Empty: HttpEntity.Strict = HttpEntity.Strict(
-    ContentTypes.NoContentType,
-    data = ByteString.empty)
+  val Empty: HttpEntity.Strict = HttpEntity
+    .Strict(ContentTypes.NoContentType, data = ByteString.empty)
 
   def empty(contentType: ContentType): HttpEntity.Strict =
     if (contentType == Empty.contentType)
@@ -290,7 +291,8 @@ object HttpEntity {
 
     override def transformDataBytes(
         transformer: Flow[ByteString, ByteString, Any]): MessageEntity =
-      HttpEntity.Chunked
+      HttpEntity
+        .Chunked
         .fromData(contentType, Source.single(data).via(transformer))
 
     override def transformDataBytes(
@@ -526,8 +528,11 @@ object HttpEntity {
     /** Java API */
     def getChunks
         : stream.javadsl.Source[jm.HttpEntity.ChunkStreamPart, AnyRef] =
-      stream.javadsl.Source.fromGraph(
-        chunks.asInstanceOf[Source[jm.HttpEntity.ChunkStreamPart, AnyRef]])
+      stream
+        .javadsl
+        .Source
+        .fromGraph(
+          chunks.asInstanceOf[Source[jm.HttpEntity.ChunkStreamPart, AnyRef]])
   }
   object Chunked {
 
@@ -681,8 +686,8 @@ object HttpEntity {
         val (newData, whenCompleted) = StreamUtils.captureTermination(x.data)
         x.copy(data = newData).asInstanceOf[T] -> whenCompleted
       case x: HttpEntity.Chunked ⇒
-        val (newChunks, whenCompleted) = StreamUtils.captureTermination(
-          x.chunks)
+        val (newChunks, whenCompleted) = StreamUtils
+          .captureTermination(x.chunks)
         x.copy(chunks = newChunks).asInstanceOf[T] -> whenCompleted
       case x: HttpEntity.CloseDelimited ⇒
         val (newData, whenCompleted) = StreamUtils.captureTermination(x.data)

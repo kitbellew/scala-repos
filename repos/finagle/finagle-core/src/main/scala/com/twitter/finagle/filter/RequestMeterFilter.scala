@@ -22,16 +22,18 @@ import java.util.concurrent.RejectedExecutionException
 class RequestMeterFilter[Req, Rep](meter: AsyncMeter)
     extends SimpleFilter[Req, Rep] {
   def apply(request: Req, service: Service[Req, Rep]) = {
-    meter.await(1).transform {
-      case Throw(noPermit) =>
-        noPermit match {
-          case e: RejectedExecutionException =>
-            Future.exception(Failure.rejected(noPermit))
-          case e =>
-            Future.exception(e)
-        }
-      case _ =>
-        service(request)
-    }
+    meter
+      .await(1)
+      .transform {
+        case Throw(noPermit) =>
+          noPermit match {
+            case e: RejectedExecutionException =>
+              Future.exception(Failure.rejected(noPermit))
+            case e =>
+              Future.exception(e)
+          }
+        case _ =>
+          service(request)
+      }
   }
 }

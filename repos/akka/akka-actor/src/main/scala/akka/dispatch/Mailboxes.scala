@@ -71,7 +71,8 @@ private[akka] class Mailboxes(
 
   private val mailboxBindings: Map[Class[_ <: Any], String] = {
     import scala.collection.JavaConverters._
-    settings.config
+    settings
+      .config
       .getConfig("akka.actor.mailbox.requirements")
       .root
       .unwrapped
@@ -190,8 +191,8 @@ private[akka] class Mailboxes(
         throw new IllegalArgumentException(
           s"produced message queue type [$mqType] does not fulfill requirement for dispatcher [$id]. " +
             s"Must be a subclass of [$mailboxRequirement].")
-      if (hasRequiredType(actorClass) && !actorRequirement.isAssignableFrom(
-            mqType))
+      if (hasRequiredType(actorClass) && !actorRequirement
+            .isAssignableFrom(mqType))
         throw new IllegalArgumentException(
           s"produced message queue type [$mqType] does not fulfill requirement for actor class [$actorClass]. " +
             s"Must be a subclass of [$actorRequirement].")
@@ -200,7 +201,8 @@ private[akka] class Mailboxes(
 
     if (deploy.mailbox != Deploy.NoMailboxGiven) {
       verifyRequirements(lookup(deploy.mailbox))
-    } else if (deploy.dispatcher != Deploy.NoDispatcherGiven && hasMailboxType) {
+    } else if (deploy.dispatcher != Deploy
+                 .NoDispatcherGiven && hasMailboxType) {
       verifyRequirements(lookup(dispatcherConfig.getString("id")))
     } else if (hasRequiredType(actorClass)) {
       try verifyRequirements(lookupByQueueType(getRequiredType(actorClass)))
@@ -332,7 +334,8 @@ private[akka] class Mailboxes(
       updateCache(stashCapacityCache.get, key, value) // recursive, try again
     }
 
-    if (dispatcher == Dispatchers.DefaultDispatcherId && mailbox == Mailboxes.DefaultMailboxId)
+    if (dispatcher == Dispatchers.DefaultDispatcherId && mailbox == Mailboxes
+          .DefaultMailboxId)
       defaultStashCapacity
     else {
       val cache = stashCapacityCache.get
@@ -352,8 +355,8 @@ private[akka] class Mailboxes(
       dispatcher: String,
       mailbox: String): Int = {
     val disp = settings.config.getConfig(dispatcher)
-    val fallback = disp.withFallback(
-      settings.config.getConfig(Mailboxes.DefaultMailboxId))
+    val fallback = disp
+      .withFallback(settings.config.getConfig(Mailboxes.DefaultMailboxId))
     val config =
       if (mailbox == Mailboxes.DefaultMailboxId)
         fallback

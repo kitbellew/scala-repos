@@ -70,14 +70,16 @@ class StringTemplateSupport(
   }
 
   private def generateVersionRangeDictionary(ver: Int): Map[String, Object] =
-    (1 to 32).flatMap { v =>
-      def kv(prod: Boolean, keys: String*) =
-        keys.map(k => (k + "_" + v) -> prod.asInstanceOf[Object])
-      kv(ver == v, "eq", "gte", "lte") ++ kv(ver > v, "gt", "gte") ++ kv(
-        ver < v,
-        "lt",
-        "lte")
-    }.toMap
+    (1 to 32)
+      .flatMap { v =>
+        def kv(prod: Boolean, keys: String*) =
+          keys.map(k => (k + "_" + v) -> prod.asInstanceOf[Object])
+        kv(ver == v, "eq", "gte", "lte") ++ kv(ver > v, "gt", "gte") ++ kv(
+          ver < v,
+          "lt",
+          "lte")
+      }
+      .toMap
 
   private def expandToPackageMap(pkg: Map[String, Any]): Map[String, Any] = {
     def expand(
@@ -115,10 +117,14 @@ object StringTemplateSupport {
       extends AttributeRenderer {
     override def toString(o: scala.Any, s: String, locale: Locale): String = {
       val wrapped = o.asInstanceOf[AndroidPackage]
-      val classes = wrapped.pkg.values.toList.collect {
-        case c: AndroidClass =>
-          c
-      }
+      val classes = wrapped
+        .pkg
+        .values
+        .toList
+        .collect {
+          case c: AndroidClass =>
+            c
+        }
       s match {
         case null | "" | "wrap-all-classes" =>
           classes

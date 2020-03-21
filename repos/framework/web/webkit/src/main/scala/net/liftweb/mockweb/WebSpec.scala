@@ -53,9 +53,11 @@ abstract class WebSpec(boot: () => Any = () => {})
     */
   private val liftRules = new LiftRules()
 
-  LiftRulesMocker.devTestLiftRulesInstance.doWith(liftRules) {
-    boot()
-  }
+  LiftRulesMocker
+    .devTestLiftRulesInstance
+    .doWith(liftRules) {
+      boot()
+    }
 
   /**
     * A class that bridges between the description string
@@ -220,13 +222,17 @@ abstract class WebSpec(boot: () => Any = () => {})
       addFragments(
         fragmentFactory.example(
           description, {
-            LiftRulesMocker.devTestLiftRulesInstance.doWith(liftRules) {
-              MockWeb.useLiftRules.doWith(true) {
-                MockWeb.testS(req, session) {
-                  expectations
-                }
+            LiftRulesMocker
+              .devTestLiftRulesInstance
+              .doWith(liftRules) {
+                MockWeb
+                  .useLiftRules
+                  .doWith(true) {
+                    MockWeb.testS(req, session) {
+                      expectations
+                    }
+                  }
               }
-            }
           }) ^
           fragmentFactory.break)
     }
@@ -245,11 +251,15 @@ abstract class WebSpec(boot: () => Any = () => {})
       addFragments(
         fragmentFactory.example(
           description, {
-            LiftRulesMocker.devTestLiftRulesInstance.doWith(liftRules) {
-              MockWeb.useLiftRules.doWith(true) {
-                MockWeb.testReq(req)(expectations)
+            LiftRulesMocker
+              .devTestLiftRulesInstance
+              .doWith(liftRules) {
+                MockWeb
+                  .useLiftRules
+                  .doWith(true) {
+                    MockWeb.testReq(req)(expectations)
+                  }
               }
-            }
           }) ^
           fragmentFactory.break)
     }
@@ -275,20 +285,24 @@ abstract class WebSpec(boot: () => Any = () => {})
       addFragments(
         fragmentFactory.example(
           description, {
-            LiftRulesMocker.devTestLiftRulesInstance.doWith(liftRules) {
-              MockWeb.useLiftRules.doWith(true) {
-                MockWeb.testS(req, session) {
-                  S.request match {
-                    case Full(sReq) =>
-                      expectations(S.runTemplate(sReq.path.partPath))
-                    case other =>
-                      failure(
-                        "Error: withTemplateFor call did not result in " +
-                          "request initialization (S.request = " + other + ")")
+            LiftRulesMocker
+              .devTestLiftRulesInstance
+              .doWith(liftRules) {
+                MockWeb
+                  .useLiftRules
+                  .doWith(true) {
+                    MockWeb.testS(req, session) {
+                      S.request match {
+                        case Full(sReq) =>
+                          expectations(S.runTemplate(sReq.path.partPath))
+                        case other =>
+                          failure(
+                            "Error: withTemplateFor call did not result in " +
+                              "request initialization (S.request = " + other + ")")
+                      }
+                    }
                   }
-                }
               }
-            }
           }
         ) ^
           fragmentFactory.break)

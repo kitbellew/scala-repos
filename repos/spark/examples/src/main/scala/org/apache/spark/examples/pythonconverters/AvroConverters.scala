@@ -72,10 +72,15 @@ object AvroConversionUtil extends Serializable {
     val map = new java.util.HashMap[String, Any]
     obj match {
       case record: IndexedRecord =>
-        record.getSchema.getFields.asScala.zipWithIndex.foreach {
-          case (f, i) =>
-            map.put(f.name, fromAvro(record.get(i), f.schema))
-        }
+        record
+          .getSchema
+          .getFields
+          .asScala
+          .zipWithIndex
+          .foreach {
+            case (f, i) =>
+              map.put(f.name, fromAvro(record.get(i), f.schema))
+          }
       case other =>
         throw new SparkException(
           s"Unsupported RECORD type ${other.getClass.getName}")

@@ -13,7 +13,9 @@ import com.twitter.io.TempFile
 class KeyHasherTest extends WordSpec {
   def readResource(name: String) = {
     var lines = new ListBuffer[String]()
-    val src = scala.io.Source
+    val src = scala
+      .io
+      .Source
       .fromFile(TempFile.fromResourcePath(getClass, "/" + name))
     src.getLines
   }

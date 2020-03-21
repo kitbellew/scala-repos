@@ -75,7 +75,8 @@ class ClusterMessageSerializerSpec
       val g2 = (g1 :+ node3 :+ node4)
         .seen(a1.uniqueAddress)
         .seen(c1.uniqueAddress)
-      val reachability3 = Reachability.empty
+      val reachability3 = Reachability
+        .empty
         .unreachable(a1.uniqueAddress, e1.uniqueAddress)
         .unreachable(b1.uniqueAddress, e1.uniqueAddress)
       val g3 = g2.copy(

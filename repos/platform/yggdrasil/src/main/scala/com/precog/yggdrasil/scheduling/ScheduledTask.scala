@@ -57,8 +57,9 @@ object CronExpressionSerialization {
               .leftMap(Extractor.Error.thrown)
           case invalid =>
             Failure(
-              Extractor.Error.invalid(
-                "Could not parse CRON expression from " + invalid))
+              Extractor
+                .Error
+                .invalid("Could not parse CRON expression from " + invalid))
         }
     }
 }

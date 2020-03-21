@@ -66,8 +66,10 @@ object Status {
   def values(): Array[Status] = _values.clone()
 
   def valueOf(name: String): Status = {
-    _values.find(_.name == name).getOrElse {
-      throw new IllegalArgumentException("No enum const Status." + name)
-    }
+    _values
+      .find(_.name == name)
+      .getOrElse {
+        throw new IllegalArgumentException("No enum const Status." + name)
+      }
   }
 }

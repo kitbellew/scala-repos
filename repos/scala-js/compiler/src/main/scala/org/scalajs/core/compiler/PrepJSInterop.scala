@@ -355,9 +355,8 @@ abstract class PrepJSInterop
                   Literal(Constant(tpeArg.tpe.dealias.widen))
                 }
               } else {
-                reporter.error(
-                  tpeArg.pos,
-                  s"Type ${tpeArg} is not a class type")
+                reporter
+                  .error(tpeArg.pos, s"Type ${tpeArg} is not a class type")
                 EmptyTree
               }
             } else {
@@ -423,9 +422,8 @@ abstract class PrepJSInterop
             }
           }
         } else {
-          reporter.error(
-            tpeArg.pos,
-            s"non-trait class type required but $tpe found")
+          reporter
+            .error(tpeArg.pos, s"non-trait class type required but $tpe found")
           EmptyTree
         }
       } else {
@@ -500,7 +498,8 @@ abstract class PrepJSInterop
          * and similar constructs. This causes the unsoundness filed as #1385.
          */
         !(
-          t <:< JSAnyClass.tpe || t =:= AnyRefClass.tpe || t =:= DynamicClass.tpe
+          t <:< JSAnyClass.tpe || t =:= AnyRefClass.tpe || t =:= DynamicClass
+            .tpe
         )
       }
 
@@ -639,9 +638,8 @@ abstract class PrepJSInterop
       // Check that only native objects extend js.GlobalScope
       if (isJSGlobalScope(implDef) && implDef.symbol != JSGlobalScopeClass &&
           (!sym.isModuleClass || !isJSNative)) {
-        reporter.error(
-          implDef.pos,
-          "Only native objects may extend js.GlobalScope")
+        reporter
+          .error(implDef.pos, "Only native objects may extend js.GlobalScope")
       }
 
       if (shouldPrepareExports) {
@@ -659,9 +657,8 @@ abstract class PrepJSInterop
             exp <- exportsOf(sym)
             if !exp.ignoreInvalid
           } {
-            reporter.error(
-              exp.pos,
-              "You may not export a native JS class or object")
+            reporter
+              .error(exp.pos, "You may not export a native JS class or object")
           }
         } else {
           if (sym.isModuleClass)
@@ -1008,9 +1005,8 @@ abstract class PrepJSInterop
       annot <- sym.getAnnotation(JSNameAnnotation)
       if annot.stringArg(0).isEmpty
     } {
-      reporter.error(
-        annot.pos,
-        "The argument to JSName must be a literal string")
+      reporter
+        .error(annot.pos, "The argument to JSName must be a literal string")
     }
   }
 
@@ -1128,10 +1124,13 @@ abstract class PrepJSInterop
     *  if it exists
     */
   private def getPrimCtor(tpe: Type) =
-    tpe.declaration(nme.CONSTRUCTOR).alternatives.collectFirst {
-      case ctor: MethodSymbol if ctor.isPrimaryConstructor =>
-        ctor
-    }
+    tpe
+      .declaration(nme.CONSTRUCTOR)
+      .alternatives
+      .collectFirst {
+        case ctor: MethodSymbol if ctor.isPrimaryConstructor =>
+          ctor
+      }
 
   private def wasPublicBeforeTyper(sym: Symbol): Boolean =
     sym.hasAnnotation(WasPublicBeforeTyperClass)

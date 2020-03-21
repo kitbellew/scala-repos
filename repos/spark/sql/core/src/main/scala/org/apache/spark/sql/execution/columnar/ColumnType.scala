@@ -647,7 +647,8 @@ private[columnar] case class LARGE_DECIMAL(precision: Int, scale: Int)
   }
 
   override def actualSize(row: InternalRow, ordinal: Int): Int = {
-    4 + getField(row, ordinal).toJavaBigDecimal
+    4 + getField(row, ordinal)
+      .toJavaBigDecimal
       .unscaledValue()
       .bitLength() / 8 + 1
   }

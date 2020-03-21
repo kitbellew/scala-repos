@@ -32,8 +32,8 @@ trait PrecedenceHelper[T] {
   this: BaseProcessor =>
 
   protected def getPlace: PsiElement
-  protected lazy val placePackageName: String = ResolveUtils.getPlacePackage(
-    getPlace)
+  protected lazy val placePackageName: String = ResolveUtils
+    .getPlacePackage(getPlace)
   protected val levelSet: util.HashSet[ScalaResolveResult] = new util.HashSet
   protected val qualifiedNamesSet: util.HashSet[T] = new util.HashSet[T]
   protected val levelQualifiedNamesSet: util.HashSet[T] = new util.HashSet[T]
@@ -92,8 +92,8 @@ trait PrecedenceHelper[T] {
   def isUpdateHistory: Boolean = false
 
   protected def addChangedLevelToHistory(): Unit = {
-    if (isUpdateHistory && !fromHistory && history.lastOption != Some(
-          ChangedLevel))
+    if (isUpdateHistory && !fromHistory && history
+          .lastOption != Some(ChangedLevel))
       history += ChangedLevel
   }
 
@@ -191,8 +191,8 @@ trait PrecedenceHelper[T] {
             qualifiedNamesSet.contains(qualifiedName)
           )) {
         return false
-      } else if (qualifiedName != null && qualifiedNamesSet.contains(
-                   qualifiedName))
+      } else if (qualifiedName != null && qualifiedNamesSet
+                   .contains(qualifiedName))
         return false
       if (!fromHistory && isUpdateHistory && isSpecialResult(result)) {
         results.foreach(ignoredSet.add)

@@ -14,8 +14,8 @@ import com.typesafe.config.ConfigFactory
 import com.typesafe.config.Config
 
 object SnapshotStoreSpec {
-  val config = ConfigFactory.parseString(
-    "akka.persistence.publish-plugin-commands = on")
+  val config = ConfigFactory
+    .parseString("akka.persistence.publish-plugin-commands = on")
 }
 
 /**
@@ -125,7 +125,8 @@ abstract class SnapshotStoreSpec(config: Config)
       snapshotStore.tell(
         LoadSnapshot(
           pid,
-          SnapshotSelectionCriteria.Latest
+          SnapshotSelectionCriteria
+            .Latest
             .copy(maxTimestamp = metadata(2).timestamp),
           13),
         senderProbe.ref)

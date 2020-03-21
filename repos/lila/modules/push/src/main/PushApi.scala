@@ -22,7 +22,8 @@ private final class PushApi(
     if (!game.isCorrespondence || game.hasAi)
       funit
     else
-      game.userIds
+      game
+        .userIds
         .map { userId =>
           Pov.ofUserId(game, userId) ?? { pov =>
             IfAway(pov) {

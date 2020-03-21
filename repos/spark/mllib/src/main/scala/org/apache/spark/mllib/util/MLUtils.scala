@@ -80,12 +80,13 @@ object MLUtils {
         val items = line.split(' ')
         val label = items.head.toDouble
         val (indices, values) =
-          items.tail
+          items
+            .tail
             .filter(_.nonEmpty)
             .map { item =>
               val indexAndValue = item.split(':')
-              val index = indexAndValue(
-                0).toInt - 1 // Convert 1-based indices to 0-based.
+              val index = indexAndValue(0)
+                .toInt - 1 // Convert 1-based indices to 0-based.
               val value = indexAndValue(1).toDouble
               (index, value)
             }
@@ -263,12 +264,14 @@ object MLUtils {
   @Since("1.0.0")
   @deprecated("Should use MLUtils.loadLabeledPoints instead.", "1.0.1")
   def loadLabeledData(sc: SparkContext, dir: String): RDD[LabeledPoint] = {
-    sc.textFile(dir).map { line =>
-      val parts = line.split(',')
-      val label = parts(0).toDouble
-      val features = Vectors.dense(parts(1).trim().split(' ').map(_.toDouble))
-      LabeledPoint(label, features)
-    }
+    sc
+      .textFile(dir)
+      .map { line =>
+        val parts = line.split(',')
+        val label = parts(0).toDouble
+        val features = Vectors.dense(parts(1).trim().split(' ').map(_.toDouble))
+        LabeledPoint(label, features)
+      }
   }
 
   /**
@@ -285,8 +288,8 @@ object MLUtils {
   @Since("1.0.0")
   @deprecated("Should use RDD[LabeledPoint].saveAsTextFile instead.", "1.0.1")
   def saveLabeledData(data: RDD[LabeledPoint], dir: String) {
-    val dataStr = data.map(x =>
-      x.label + "," + x.features.toArray.mkString(" "))
+    val dataStr = data
+      .map(x => x.label + "," + x.features.toArray.mkString(" "))
     dataStr.saveAsTextFile(dir)
   }
 
@@ -312,17 +315,23 @@ object MLUtils {
       numFolds: Int,
       seed: Long): Array[(RDD[T], RDD[T])] = {
     val numFoldsF = numFolds.toFloat
-    (1 to numFolds).map { fold =>
-      val sampler =
-        new BernoulliCellSampler[T](
-          (fold - 1) / numFoldsF,
-          fold / numFoldsF,
-          complement = false)
-      val validation = new PartitionwiseSampledRDD(rdd, sampler, true, seed)
-      val training =
-        new PartitionwiseSampledRDD(rdd, sampler.cloneComplement(), true, seed)
-      (training, validation)
-    }.toArray
+    (1 to numFolds)
+      .map { fold =>
+        val sampler =
+          new BernoulliCellSampler[T](
+            (fold - 1) / numFoldsF,
+            fold / numFoldsF,
+            complement = false)
+        val validation = new PartitionwiseSampledRDD(rdd, sampler, true, seed)
+        val training =
+          new PartitionwiseSampledRDD(
+            rdd,
+            sampler.cloneComplement(),
+            true,
+            seed)
+        (training, validation)
+      }
+      .toArray
   }
 
   /**

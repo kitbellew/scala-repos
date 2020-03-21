@@ -621,11 +621,13 @@ private[akka] class EmptyLocalActorRef(
     msg match {
       case w: Watch ⇒
         if (w.watchee == this && w.watcher != this)
-          w.watcher.sendSystemMessage(
-            DeathWatchNotification(
-              w.watchee,
-              existenceConfirmed = false,
-              addressTerminated = false))
+          w
+            .watcher
+            .sendSystemMessage(
+              DeathWatchNotification(
+                w.watchee,
+                existenceConfirmed = false,
+                addressTerminated = false))
         true
       case _: Unwatch ⇒
         true // Just ignore
@@ -700,11 +702,13 @@ private[akka] class DeadLetterActorRef(
     msg match {
       case w: Watch ⇒
         if (w.watchee != this && w.watcher != this)
-          w.watcher.sendSystemMessage(
-            DeathWatchNotification(
-              w.watchee,
-              existenceConfirmed = false,
-              addressTerminated = false))
+          w
+            .watcher
+            .sendSystemMessage(
+              DeathWatchNotification(
+                w.watchee,
+                existenceConfirmed = false,
+                addressTerminated = false))
         true
       case _ ⇒
         super.specialHandle(msg, sender)

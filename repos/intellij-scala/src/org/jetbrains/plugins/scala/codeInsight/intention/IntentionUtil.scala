@@ -31,7 +31,8 @@ object IntentionUtil {
         ) && !hasLineBreaks(elem)
       }
 
-      it.takeWhile { a =>
+      it
+        .takeWhile { a =>
           acceptableElem(a)
         }
         .filter(a => a.isInstanceOf[PsiComment])
@@ -46,11 +47,11 @@ object IntentionUtil {
   def hasOtherComments(
       element: PsiElement,
       commentsAroundElement: CommentsAroundElement): Boolean = {
-    val allComments = PsiTreeUtil.getChildrenOfTypeAsList(
-      element,
-      classOf[PsiComment])
-    allComments
-      .size() > commentsAroundElement.before.size + commentsAroundElement.after.size
+    val allComments = PsiTreeUtil
+      .getChildrenOfTypeAsList(element, classOf[PsiComment])
+    allComments.size() > commentsAroundElement
+      .before
+      .size + commentsAroundElement.after.size
   }
 
   def addComments(

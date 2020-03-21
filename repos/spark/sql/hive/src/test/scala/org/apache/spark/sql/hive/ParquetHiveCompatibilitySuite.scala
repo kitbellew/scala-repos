@@ -61,10 +61,12 @@ class ParquetHiveCompatibilitySuite
         // Don't convert Hive metastore Parquet tables to let Hive write those Parquet files.
         withSQLConf(HiveContext.CONVERT_METASTORE_PARQUET.key -> "false") {
           withTempTable("data") {
-            val fields = hiveTypes.zipWithIndex.map {
-              case (typ, index) =>
-                s"  col_$index $typ"
-            }
+            val fields = hiveTypes
+              .zipWithIndex
+              .map {
+                case (typ, index) =>
+                  s"  col_$index $typ"
+              }
 
             val ddl = s"""CREATE TABLE parquet_compat(
                  |${fields.mkString(",\n")}
@@ -82,8 +84,8 @@ class ParquetHiveCompatibilitySuite
             val schema = sqlContext.table("parquet_compat").schema
             val rowRDD = sqlContext.sparkContext.parallelize(rows).coalesce(1)
             sqlContext.createDataFrame(rowRDD, schema).registerTempTable("data")
-            sqlContext.sql(
-              "INSERT INTO TABLE parquet_compat SELECT * FROM data")
+            sqlContext
+              .sql("INSERT INTO TABLE parquet_compat SELECT * FROM data")
           }
         }
 

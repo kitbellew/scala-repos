@@ -60,11 +60,13 @@ class DataServiceHandler[A](
         import ResourceError._
 
         (apiKey: APIKey, path: Path) => {
-          val mimeTypes = request.headers
+          val mimeTypes = request
+            .headers
             .header[Accept]
             .toSeq
             .flatMap(_.mimeTypes)
-          platform.vfs
+          platform
+            .vfs
             .readResource(apiKey, path, Version.Current, AccessMode.Read)
             .run flatMap {
             _.fold(
@@ -107,7 +109,9 @@ class DataServiceHandler[A](
                             "Multiple errors encountered serving readResource of path %s: %s"
                               .format(
                                 path.path,
-                                fatal.messages.list
+                                fatal
+                                  .messages
+                                  .list
                                   .mkString("[\n", ",\n", "]")))
                           HttpResponse(InternalServerError)
                         },
@@ -124,8 +128,11 @@ class DataServiceHandler[A](
                               Left(
                                 JObject(
                                   "errors" -> JArray(
-                                    userError.messages.list.map(
-                                      JString(_)): _*)).renderPretty
+                                    userError
+                                      .messages
+                                      .list
+                                      .map(JString(_)): _*))
+                                  .renderPretty
                                   .getBytes("UTF-8")))
                           )
                       )

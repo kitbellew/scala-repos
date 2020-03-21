@@ -27,7 +27,9 @@ private[akka] object RemoteMetricsExtension
   override def lookup = RemoteMetricsExtension
 
   override def createExtension(system: ExtendedActorSystem): RemoteMetrics =
-    if (system.settings.config
+    if (system
+          .settings
+          .config
           .getString("akka.remote.log-frame-size-exceeding")
           .toLowerCase == "off")
       new RemoteMetricsOff
@@ -62,7 +64,9 @@ private[akka] class RemoteMetricsOn(system: ExtendedActorSystem)
     extends RemoteMetrics {
 
   private val logFrameSizeExceeding: Int =
-    system.settings.config
+    system
+      .settings
+      .config
       .getBytes("akka.remote.log-frame-size-exceeding")
       .toInt
   private val log = Logging(system, this.getClass)

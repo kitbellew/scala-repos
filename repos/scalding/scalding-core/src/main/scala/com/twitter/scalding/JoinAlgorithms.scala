@@ -124,14 +124,13 @@ trait JoinAlgorithms {
     // otherwise use the original key:
     val newJoinKeys =
       new Fields(
-        asList(fields)
-          .map { fname =>
-            // If we renamed, get the rename, else just use the field
-            if (collisions(fname)) {
-              rename(fname)
-            } else
-              fname
-          }: _*)
+        asList(fields).map { fname =>
+          // If we renamed, get the rename, else just use the field
+          if (collisions(fname)) {
+            rename(fname)
+          } else
+            fname
+        }: _*)
     val renamedPipe = p.rename(orig -> temp)
     (renamedPipe, newJoinKeys, temp)
   }
@@ -199,8 +198,7 @@ trait JoinAlgorithms {
     if (intersection.isEmpty) {
       // Common case: no intersection in names: just CoGroup, which duplicates the grouping fields:
       pipe.coGroupBy(fs._1, joiners._1) {
-        _.coGroup(fs._2, that, joiners._2)
-          .reducers(reducers)
+        _.coGroup(fs._2, that, joiners._2).reducers(reducers)
       }
     } else if (joiners._1 == InnerJoinMode && joiners._2 == InnerJoinMode) {
       /*
@@ -214,8 +212,7 @@ trait JoinAlgorithms {
         intersection)
       pipe
         .coGroupBy(fs._1, joiners._1) {
-          _.coGroup(newJoinFields, renamedThat, joiners._2)
-            .reducers(reducers)
+          _.coGroup(newJoinFields, renamedThat, joiners._2).reducers(reducers)
         }
         .discard(temp)
     } else {
@@ -395,8 +392,9 @@ trait JoinAlgorithms {
       * each task create a seed, a restart will change the computation,
       * and this could result in subtle bugs.
       */
-    p.using(new Random(Seed) with Stateful).flatMap(() -> f) {
-      (rand: Random, _: Unit) =>
+    p
+      .using(new Random(Seed) with Stateful)
+      .flatMap(() -> f) { (rand: Random, _: Unit) =>
         val rfs = getReplicationFields(rand, replication, otherReplication)
         if (swap)
           rfs.map {
@@ -405,7 +403,7 @@ trait JoinAlgorithms {
           }
         else
           rfs
-    }
+      }
   }
 
   /**
@@ -584,9 +582,8 @@ trait JoinAlgorithms {
 
     // 3. Finally, join the replicated pipes together.
     val leftJoinFields = Fields.join(fs._1, leftReplicationFields)
-    val rightJoinFields = Fields.join(
-      rightResolvedJoinFields,
-      rightReplicationFields)
+    val rightJoinFields = Fields
+      .join(rightResolvedJoinFields, rightReplicationFields)
 
     val joinedPipe = replicatedLeft
       .joinWithSmaller(
@@ -638,9 +635,13 @@ trait JoinAlgorithms {
       isPipeOnRight: Boolean = false) = {
 
     // Rename the fields to prepare for the leftJoin below.
-    val renamedFields = joinFields.iterator.asScala.toList.map { field =>
-      "__RENAMED_" + field + "__"
-    }
+    val renamedFields = joinFields
+      .iterator
+      .asScala
+      .toList
+      .map { field =>
+        "__RENAMED_" + field + "__"
+      }
     val renamedSampledCounts = sampledCounts
       .rename(joinFields -> renamedFields)
       .project(Fields.join(renamedFields, countFields))
@@ -657,10 +658,8 @@ trait JoinAlgorithms {
       .using(new Random(Seed) with Stateful)
       .flatMap(countFields -> replicationFields) {
         (rand: Random, counts: (Int, Int)) =>
-          val (leftRep, rightRep) = replicator.getReplications(
-            counts._1,
-            counts._2,
-            numReducers)
+          val (leftRep, rightRep) = replicator
+            .getReplications(counts._1, counts._2, numReducers)
 
           val (rep, otherRep) =
             if (isPipeOnRight)

@@ -107,11 +107,13 @@ trait ManagedExecution
         with ShardQueryLogger[JobQueryTF, A]
         with TimingQueryLogger[JobQueryTF, A] {
         val M = shardQueryMonad
-        val jobManager = self.jobManager.withM[JobQueryTF](
-          lift,
-          implicitly,
-          shardQueryMonad.M,
-          shardQueryMonad)
+        val jobManager = self
+          .jobManager
+          .withM[JobQueryTF](
+            lift,
+            implicitly,
+            shardQueryMonad.M,
+            shardQueryMonad)
         val jobId = jobId0
         val clock = yggConfig.clock
         val decomposer = decomposer0

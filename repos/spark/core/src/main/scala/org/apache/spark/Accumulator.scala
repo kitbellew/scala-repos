@@ -139,13 +139,17 @@ private[spark] object Accumulators extends Logging {
     */
   def get(id: Long): Option[Accumulable[_, _]] =
     synchronized {
-      originals.get(id).map { weakRef =>
-        // Since we are storing weak references, we must check whether the underlying data is valid.
-        weakRef.get.getOrElse {
-          throw new IllegalAccessError(
-            s"Attempted to access garbage collected accumulator $id")
+      originals
+        .get(id)
+        .map { weakRef =>
+          // Since we are storing weak references, we must check whether the underlying data is valid.
+          weakRef
+            .get
+            .getOrElse {
+              throw new IllegalAccessError(
+                s"Attempted to access garbage collected accumulator $id")
+            }
         }
-      }
     }
 
   /**

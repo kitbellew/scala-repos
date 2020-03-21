@@ -90,17 +90,13 @@ class SimpleBuildFileModifier(
       elementType: BuildFileElementType): Option[PsiElement] = {
     elementType match {
       case BuildFileElementType.libraryDependencyElementId =>
-        SimpleBuildFileModifier.buildLibraryDependenciesPsi(
-          project,
-          inName,
-          libDependencies)
+        SimpleBuildFileModifier
+          .buildLibraryDependenciesPsi(project, inName, libDependencies)
       case BuildFileElementType.resolverElementId =>
         SimpleBuildFileModifier.buildResolversPsi(project, inName, resolvers)
       case BuildFileElementType.`scalacOptionsElementId` =>
-        SimpleBuildFileModifier.buildScalacOptionsPsi(
-          project,
-          Some("Test"),
-          scalacOptions)
+        SimpleBuildFileModifier
+          .buildScalacOptionsPsi(project, Some("Test"), scalacOptions)
       case _ =>
         throw new IllegalArgumentException(
           "Unsupported build file element type: " + elementType)
@@ -108,17 +104,19 @@ class SimpleBuildFileModifier(
   }
 
   protected def requiredElementTypes = {
-    SimpleBuildFileModifier.supportedElementTypes.filter {
-      case BuildFileElementType.libraryDependencyElementId =>
-        libDependencies.nonEmpty
-      case BuildFileElementType.resolverElementId =>
-        resolvers.nonEmpty
-      case BuildFileElementType.`scalacOptionsElementId` =>
-        scalacOptions.nonEmpty
-      case elementType =>
-        throw new IllegalArgumentException(
-          "Unsupported build file element type: " + elementType)
-    }
+    SimpleBuildFileModifier
+      .supportedElementTypes
+      .filter {
+        case BuildFileElementType.libraryDependencyElementId =>
+          libDependencies.nonEmpty
+        case BuildFileElementType.resolverElementId =>
+          resolvers.nonEmpty
+        case BuildFileElementType.`scalacOptionsElementId` =>
+          scalacOptions.nonEmpty
+        case elementType =>
+          throw new IllegalArgumentException(
+            "Unsupported build file element type: " + elementType)
+      }
   }
 }
 
@@ -128,8 +126,9 @@ object SimpleBuildFileModifier {
     ScalaPsiElementFactory.createNewLine(PsiManager.getInstance(project))
 
   def createSeqString(normalIndent: String, seq: Seq[String]): String =
-    "Seq(\n" + seq.tail.fold(normalIndent + seq.head)(
-      _ + ",\n" + normalIndent + _) + "\n)"
+    "Seq(\n" + seq
+      .tail
+      .fold(normalIndent + seq.head)(_ + ",\n" + normalIndent + _) + "\n)"
 
   def createSeqPsiExpr(
       project: IJProject,
@@ -174,10 +173,8 @@ object SimpleBuildFileModifier {
       elementType: BuildFileElementType,
       buildFile: PsiFile,
       psiElements: PsiElement*): Option[VirtualFile] = {
-    locationProvider.getAddElementLocation(
-      module,
-      elementType,
-      buildFile) match {
+    locationProvider
+      .getAddElementLocation(module, elementType, buildFile) match {
       case Some((parent, index))
           if (index == 0) || parent.getChildren.size >= index =>
         val children = parent.getChildren

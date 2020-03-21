@@ -60,17 +60,16 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
 
     updateSharedResources(context, chunk)
 
-    context.processMessage(
-      new ProgressMessage("Searching for compilable files..."))
+    context
+      .processMessage(new ProgressMessage("Searching for compilable files..."))
 
     val filesToCompile = collectCompilableFiles(context, chunk)
     if (filesToCompile.isEmpty)
       return ExitCode.NOTHING_DONE
 
     // Delete dirty class files (to handle force builds and form changes)
-    BuildOperations.cleanOutputsCorrespondingToChangedFiles(
-      context,
-      dirtyFilesHolder)
+    BuildOperations
+      .cleanOutputsCorrespondingToChangedFiles(context, dirtyFilesHolder)
 
     val sources = filesToCompile.keySet.toSeq
 
@@ -139,8 +138,8 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
         root.getRootFile,
         new Processor[File] {
           def process(file: File) = {
-            if (file.isFile && filter.accept(file) && !excludeIndex.isExcluded(
-                  file)) {
+            if (file.isFile && filter.accept(file) && !excludeIndex
+                  .isExcluded(file)) {
               ResourceUpdater.updateResource(context, root, file, outputRoot)
             }
             true
@@ -151,9 +150,8 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
   }
 
   private def isDisabled(context: CompileContext): Boolean = {
-    projectSettings(
-      context).getIncrementalityType != IncrementalityType.SBT || !isScalaProject(
-      context.getProjectDescriptor.getProject)
+    projectSettings(context).getIncrementalityType != IncrementalityType
+      .SBT || !isScalaProject(context.getProjectDescriptor.getProject)
   }
 
   private def hasDirtyFilesOrDependencies(
@@ -182,7 +180,8 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
       }
     }
 
-    if (!hasDirtyDependencies && !dirtyFilesHolder.hasDirtyFiles && !dirtyFilesHolder.hasRemovedFiles) {
+    if (!hasDirtyDependencies && !dirtyFilesHolder
+          .hasDirtyFiles && !dirtyFilesHolder.hasRemovedFiles) {
       if (targetTimestamp.isEmpty)
         timestamps.set(
           representativeTarget,

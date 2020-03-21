@@ -48,8 +48,8 @@ case class Wald(mean: Double, shape: Double)(implicit rand: RandBasis = Rand)
       x = (
         mean
           + mean * mean * y * 0.5 / shape
-          - 0.5 * mean / shape * math.sqrt(
-            4 * mean * shape * y + mean * mean * y * y)
+          - 0.5 * mean / shape * math
+            .sqrt(4 * mean * shape * y + mean * mean * y * y)
       )
       z <- rand.uniform
     } yield {

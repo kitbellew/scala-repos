@@ -56,9 +56,12 @@ private[round] final class Takebacker(
     if (game.hasAi)
       fuccess(true)
     else
-      game.userIds.map { userId =>
-        prefApi.getPref(userId, (p: Pref) => p.takeback)
-      }.sequenceFu map {
+      game
+        .userIds
+        .map { userId =>
+          prefApi.getPref(userId, (p: Pref) => p.takeback)
+        }
+        .sequenceFu map {
         _.forall { p =>
           p == Pref.Takeback.ALWAYS || (
             p == Pref.Takeback.CASUAL && game.casual

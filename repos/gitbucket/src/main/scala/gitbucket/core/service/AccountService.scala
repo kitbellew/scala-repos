@@ -234,10 +234,7 @@ trait AccountService {
 
   def getGroupMembers(groupName: String)(implicit
       s: Session): List[GroupMember] =
-    GroupMembers
-      .filter(_.groupName === groupName.bind)
-      .sortBy(_.userName)
-      .list
+    GroupMembers.filter(_.groupName === groupName.bind).sortBy(_.userName).list
 
   def getGroupsByUserName(userName: String)(implicit s: Session): List[String] =
     GroupMembers

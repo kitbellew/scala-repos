@@ -11,8 +11,8 @@ import scala.collection.JavaConverters._
 import scala.language.reflectiveCalls
 
 class Hotspot extends Jvm {
-  private[this] val epoch = Time.fromMilliseconds(
-    ManagementFactory.getRuntimeMXBean().getStartTime())
+  private[this] val epoch = Time
+    .fromMilliseconds(ManagementFactory.getRuntimeMXBean().getStartTime())
 
   private[this] type Counter = {
     def getName(): String
@@ -24,8 +24,8 @@ class Hotspot extends Jvm {
     def getInternalCounters(pat: String): java.util.List[Counter]
   }
 
-  private[this] val DiagnosticBean = ObjectName.getInstance(
-    "com.sun.management:type=HotSpotDiagnostic")
+  private[this] val DiagnosticBean = ObjectName
+    .getInstance("com.sun.management:type=HotSpotDiagnostic")
 
   private[this] val jvm: VMManagement = {
     val fld =
@@ -67,9 +67,11 @@ class Hotspot extends Jvm {
 
   private[this] def counters(pat: String) = {
     val cs = jvm.getInternalCounters(pat).asScala
-    cs.map { c =>
-      c.getName() -> c
-    }.toMap
+    cs
+      .map { c =>
+        c.getName() -> c
+      }
+      .toMap
   }
 
   private[this] def counter(name: String): Option[Counter] =
@@ -117,8 +119,8 @@ class Hotspot extends Jvm {
           for {
             thresh <- tenuringThreshold.toSeq
             i <- 1L to thresh
-            bucket <- cs.get(
-              "sun.gc.generation.0.agetable.bytes.%02d".format(i))
+            bucket <- cs
+              .get("sun.gc.generation.0.agetable.bytes.%02d".format(i))
           } yield long(bucket)
 
         Heap(allocated, tenuringThreshold getOrElse -1, ageHisto)

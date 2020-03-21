@@ -11,8 +11,8 @@ class SpecializeParameters extends Phase {
   val name = "specializeParameters"
 
   def apply(state: CompilerState): CompilerState =
-    state.map(
-      ClientSideOp.mapServerSide(_, keepType = true)(transformServerSide))
+    state
+      .map(ClientSideOp.mapServerSide(_, keepType = true)(transformServerSide))
 
   def transformServerSide(n: Node): Node = {
     val cs = n.collect {

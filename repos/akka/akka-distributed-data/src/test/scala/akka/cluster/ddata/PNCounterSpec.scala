@@ -156,7 +156,8 @@ class PNCounterSpec extends WordSpec with Matchers {
     }
 
     "have unapply extractor" in {
-      val c1 = PNCounter.empty
+      val c1 = PNCounter
+        .empty
         .increment(node1)
         .increment(node1)
         .decrement(node2)

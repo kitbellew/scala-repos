@@ -118,7 +118,8 @@ object Concurrent {
 
       val ready = interested.map {
         case (it, p) =>
-          it.fold {
+          it
+            .fold {
               case Step.Done(a, e) =>
                 Future.successful(Left(Done(a, e)))
               case Step.Cont(k) => {
@@ -216,8 +217,9 @@ object Concurrent {
 
             val itPromise = Promise[Iteratee[E, Unit]]()
 
-            val current: Iteratee[E, Unit] = mainIteratee.single.swap(
-              Iteratee.flatten(itPromise.future))
+            val current: Iteratee[E, Unit] = mainIteratee
+              .single
+              .swap(Iteratee.flatten(itPromise.future))
 
             val next =
               current.pureFold {
@@ -248,8 +250,9 @@ object Concurrent {
 
         def end(e: Throwable) =
           schedule {
-            val current: Iteratee[E, Unit] = mainIteratee.single.swap(
-              Done((), Input.Empty))
+            val current: Iteratee[E, Unit] = mainIteratee
+              .single
+              .swap(Done((), Input.Empty))
             def endEveryone() =
               Future {
                 val its = atomic { implicit txn =>
@@ -270,8 +273,9 @@ object Concurrent {
 
         def end() =
           schedule {
-            val current: Iteratee[E, Unit] = mainIteratee.single.swap(
-              Done((), Input.Empty))
+            val current: Iteratee[E, Unit] = mainIteratee
+              .single
+              .swap(Done((), Input.Empty))
             def endEveryone() =
               Future {
                 val its = atomic { implicit txn =>
@@ -381,17 +385,19 @@ object Concurrent {
 
         def step: K[E, Iteratee[E, A]] = {
           case Input.EOF =>
-            state.single.getAndTransform {
-              case Queueing(q, l) =>
-                Queueing(q.enqueue(Input.EOF), l)
+            state
+              .single
+              .getAndTransform {
+                case Queueing(q, l) =>
+                  Queueing(q.enqueue(Input.EOF), l)
 
-              case Waiting(p) =>
-                Queueing(Queue(), 0)
+                case Waiting(p) =>
+                  Queueing(Queue(), 0)
 
-              case d @ DoneIt(it) =>
-                d
+                case d @ DoneIt(it) =>
+                  d
 
-            } match {
+              } match {
               case Waiting(p) =>
                 p.success(Input.EOF)
               case _ =>
@@ -401,20 +407,22 @@ object Concurrent {
           case other =>
             Iteratee.flatten(
               Future(length(other))(pec).map { chunkLength =>
-                val s = state.single.getAndTransform {
-                  case Queueing(q, l) if maxBuffer > 0 && l <= maxBuffer =>
-                    Queueing(q.enqueue(other), l + chunkLength)
+                val s = state
+                  .single
+                  .getAndTransform {
+                    case Queueing(q, l) if maxBuffer > 0 && l <= maxBuffer =>
+                      Queueing(q.enqueue(other), l + chunkLength)
 
-                  case Queueing(q, l) =>
-                    Queueing(Queue(Input.EOF), l)
+                    case Queueing(q, l) =>
+                      Queueing(Queue(Input.EOF), l)
 
-                  case Waiting(p) =>
-                    Queueing(Queue(), 0)
+                    case Waiting(p) =>
+                      Queueing(Queue(), 0)
 
-                  case d @ DoneIt(it) =>
-                    d
+                    case d @ DoneIt(it) =>
+                      d
 
-                }
+                  }
                 s match {
                   case Waiting(p) =>
                     p.success(other)
@@ -461,16 +469,18 @@ object Concurrent {
           new CheckDone[E, E] {
             def continue[A](cont: K[E, A]) = moreInput(cont)
           } &> it
-        ).unflatten.onComplete {
-          case Success(it) =>
-            state.single() = DoneIt(it.it)
-            last.success(it.it)
-          case Failure(e) =>
-            state.single() = DoneIt(
-              Iteratee.flatten(Future.failed[Iteratee[E, Iteratee[E, A]]](e)))
-            last.failure(e)
+        )
+          .unflatten
+          .onComplete {
+            case Success(it) =>
+              state.single() = DoneIt(it.it)
+              last.success(it.it)
+            case Failure(e) =>
+              state.single() = DoneIt(
+                Iteratee.flatten(Future.failed[Iteratee[E, Iteratee[E, A]]](e)))
+              last.failure(e)
 
-        }(dec)
+          }(dec)
         Cont(step)
 
       }
@@ -485,8 +495,11 @@ object Concurrent {
     */
   def dropInputIfNotReady[E](
       duration: Long,
-      unit: java.util.concurrent.TimeUnit =
-        java.util.concurrent.TimeUnit.MILLISECONDS): Enumeratee[E, E] =
+      unit: java.util.concurrent.TimeUnit = java
+        .util
+        .concurrent
+        .TimeUnit
+        .MILLISECONDS): Enumeratee[E, E] =
     new Enumeratee[E, E] {
 
       val busy = scala.concurrent.stm.Ref(false)
@@ -586,7 +599,8 @@ object Concurrent {
 
             def close() =
               schedule {
-                iteratee.single
+                iteratee
+                  .single
                   .swap(Future.successful(None))
                   .onComplete {
                     case Success(maybeK) =>
@@ -600,7 +614,8 @@ object Concurrent {
 
             def end(e: Throwable) =
               schedule {
-                iteratee.single
+                iteratee
+                  .single
                   .swap(Future.successful(None))
                   .onComplete {
                     case Success(maybeK) =>
@@ -612,7 +627,8 @@ object Concurrent {
 
             def end() =
               schedule {
-                iteratee.single
+                iteratee
+                  .single
                   .swap(Future.successful(None))
                   .onComplete { maybeK =>
                     maybeK.get.foreach(k => promise.success(Cont(k)))
@@ -623,7 +639,8 @@ object Concurrent {
               schedule {
                 val eventuallyNext = Promise[Option[
                   Input[E] => Iteratee[E, A]]]()
-                iteratee.single
+                iteratee
+                  .single
                   .swap(eventuallyNext.future)
                   .onComplete {
                     case Success(None) =>
@@ -733,11 +750,13 @@ object Concurrent {
       val commitDone: Ref[List[Int]] = Ref(List())
 
       val ready =
-        interested.zipWithIndex
+        interested
+          .zipWithIndex
           .map {
             case (t, index) =>
               val p = t._2
-              t._1
+              t
+                ._1
                 .fold {
                   case Step.Done(a, e) =>
                     p.success(Done(a, e))
@@ -752,8 +771,9 @@ object Concurrent {
                         commitDone.single.transform(_ :+ index)
                       }
                       case Step.Cont(k) =>
-                        commitReady.single.transform(
-                          _ :+ (index -> (Cont(k) -> p)))
+                        commitReady
+                          .single
+                          .transform(_ :+ (index -> (Cont(k) -> p)))
                       case Step.Error(msg, e) => {
                         p.success(Error(msg, e))
                         commitDone.single.transform(_ :+ index)

@@ -82,8 +82,8 @@ abstract class SbtImportNotificationProvider(
 
           val sbtSystemSettings = SbtSystemSettings.getInstance(project)
 
-          val projects = ContainerUtilRt.newHashSet(
-            sbtSystemSettings.getLinkedProjectsSettings)
+          val projects = ContainerUtilRt
+            .newHashSet(sbtSystemSettings.getLinkedProjectsSettings)
           projects.add(projectSettings)
           sbtSystemSettings.setLinkedProjectsSettings(projects)
 
@@ -120,9 +120,8 @@ abstract class SbtImportNotificationProvider(
 
   protected def getExternalProject(filePath: String): Option[String] =
     (
-      !project.isDisposed && Sbt.isProjectDefinitionFile(
-        project,
-        filePath.toFile)
+      !project.isDisposed && Sbt
+        .isProjectDefinitionFile(project, filePath.toFile)
     ).option(project.getBasePath)
 
   protected def getProjectSettings(

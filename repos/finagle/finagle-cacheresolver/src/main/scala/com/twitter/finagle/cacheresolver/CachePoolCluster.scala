@@ -104,10 +104,12 @@ object CacheNodeGroup {
       }
 
     newStaticGroup(
-      hostSeq.map {
-        case (host, port, weight, key) =>
-          new CacheNode(host, port, weight, key)
-      }.toSet)
+      hostSeq
+        .map {
+          case (host, port, weight, key) =>
+            new CacheNode(host, port, weight, key)
+        }
+        .toSet)
   }
 
   def apply(
@@ -375,8 +377,9 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
 
   override def applyZKData(data: Array[Byte]): Unit = {
     if (data != null) {
-      val cachePoolConfig = CachePoolConfig.jsonCodec.deserialize(
-        new ByteArrayInputStream(data))
+      val cachePoolConfig = CachePoolConfig
+        .jsonCodec
+        .deserialize(new ByteArrayInputStream(data))
 
       // apply the cache pool config to the cluster
       val expectedClusterSize = cachePoolConfig.cachePoolSize
@@ -468,8 +471,9 @@ class ZookeeperCacheNodeGroup(
 
   def applyZKData(data: Array[Byte]) {
     if (data != null) {
-      val cachePoolConfig = CachePoolConfig.jsonCodec.deserialize(
-        new ByteArrayInputStream(data))
+      val cachePoolConfig = CachePoolConfig
+        .jsonCodec
+        .deserialize(new ByteArrayInputStream(data))
 
       detectKeyRemapping = cachePoolConfig.detectKeyRemapping
 
@@ -498,8 +502,8 @@ class ZookeeperCacheNodeGroup(
         // pick up the diff only if new members contains exactly the same set of cache node keys,
         // e.g. certain cache node key is re-assigned to another host
         if (removed.forall(_.key.isDefined) && added.forall(_.key.isDefined) &&
-            removed.size == added.size && removed.map(_.key.get) == added.map(
-              _.key.get)) {
+            removed.size == added.size && removed
+              .map(_.key.get) == added.map(_.key.get)) {
           set() = newMembers
         }
       }

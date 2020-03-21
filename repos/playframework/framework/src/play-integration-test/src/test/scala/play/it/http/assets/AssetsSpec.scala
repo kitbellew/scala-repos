@@ -92,14 +92,12 @@ trait AssetsSpec
 
     "serve a gzipped asset" in withServer { client =>
       val result = await(
-        client
-          .url("/foo.txt")
-          .withHeaders(ACCEPT_ENCODING -> "gzip")
-          .get())
+        client.url("/foo.txt").withHeaders(ACCEPT_ENCODING -> "gzip").get())
 
       result.header(VARY) must beSome(ACCEPT_ENCODING)
       //result.header(CONTENT_ENCODING) must beSome("gzip")
-      val ahcResult: org.asynchttpclient.Response = result.underlying
+      val ahcResult: org.asynchttpclient.Response = result
+        .underlying
         .asInstanceOf[org.asynchttpclient.Response]
       val is = new ByteArrayInputStream(ahcResult.getResponseBodyAsBytes)
       IOUtils.toString(is) must_== "This is a test gzipped asset.\n"
@@ -111,9 +109,7 @@ trait AssetsSpec
     "return not modified when etag matches" in withServer { client =>
       val Some(etag) = await(client.url("/foo.txt").get()).header(ETAG)
       val result = await(
-        client
-          .url("/foo.txt")
-          .withHeaders(IF_NONE_MATCH -> etag)
+        client.url("/foo.txt").withHeaders(IF_NONE_MATCH -> etag)
           get ())
 
       result.status must_== NOT_MODIFIED
@@ -138,10 +134,7 @@ trait AssetsSpec
 
     "return asset when etag doesn't match" in withServer { client =>
       val result = await(
-        client
-          .url("/foo.txt")
-          .withHeaders(IF_NONE_MATCH -> "\"foobar\"")
-          .get())
+        client.url("/foo.txt").withHeaders(IF_NONE_MATCH -> "\"foobar\"").get())
 
       result.status must_== OK
       result.body must_== "This is a test asset."

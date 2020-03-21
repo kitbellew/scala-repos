@@ -159,14 +159,17 @@ object SessionSettings {
 
   /** Checks to see if any session settings are being discarded and issues a warning. */
   def checkSession(newSession: SessionSettings, oldState: State): Unit = {
-    val oldSettings = (oldState get Keys.sessionSettings).toList
+    val oldSettings = (oldState get Keys.sessionSettings)
+      .toList
       .flatMap(_.append)
       .flatMap(_._2)
     if (newSession.append.isEmpty && oldSettings.nonEmpty)
-      oldState.log.warn(
-        "Discarding " + pluralize(
-          oldSettings.size,
-          " session setting") + ".  Use 'session save' to persist session settings.")
+      oldState
+        .log
+        .warn(
+          "Discarding " + pluralize(
+            oldSettings.size,
+            " session setting") + ".  Use 'session save' to persist session settings.")
   }
 
   @deprecated("This method will no longer be public", "0.13.7")
@@ -175,13 +178,15 @@ object SessionSettings {
       case (s, (hi, lo)) =>
         s ++ (hi to lo)
     }
-    in.zipWithIndex.flatMap {
-      case (t, index) =>
-        if (asSet(index + 1))
-          Nil
-        else
-          t :: Nil
-    }
+    in
+      .zipWithIndex
+      .flatMap {
+        case (t, index) =>
+          if (asSet(index + 1))
+            Nil
+          else
+            t :: Nil
+      }
   }
 
   /**
@@ -193,9 +198,11 @@ object SessionSettings {
   def removeSettings(s: State, ranges: Seq[(Int, Int)]): State =
     withSettings(s) { session =>
       val current = session.current
-      val newAppend = session.append.updated(
-        current,
-        removeRanges(session.append.getOrElse(current, Nil), ranges))
+      val newAppend = session
+        .append
+        .updated(
+          current,
+          removeRanges(session.append.getOrElse(current, Nil), ranges))
       reapply(session.copy(append = newAppend), s)
     }
 
@@ -228,9 +235,8 @@ object SessionSettings {
             (ref -> news, olds)
           }
       val (newAppend, newOriginal) = newSettings.unzip
-      val newSession = session.copy(
-        append = newAppend.toMap,
-        original = newOriginal.flatten.toSeq)
+      val newSession = session
+        .copy(append = newAppend.toMap, original = newOriginal.flatten.toSeq)
       reapply(
         newSession
           .copy(original = newSession.mergeSettings, append = Map.empty),
@@ -287,9 +293,8 @@ object SessionSettings {
       }
     val newSettings = settings diff replace
     val oldContent = IO.readLines(writeTo)
-    val (_, exist) = SbtRefactorings.applySessionSettings(
-      (writeTo, oldContent),
-      replace)
+    val (_, exist) = SbtRefactorings
+      .applySessionSettings((writeTo, oldContent), replace)
     val adjusted =
       if (newSettings.nonEmpty && needsTrailingBlank(exist))
         exist :+ ""
@@ -395,8 +400,8 @@ save, save-all
           remove
       )
 
-  lazy val remove = token("remove") ~> token(Space) ~> natSelect.map(ranges =>
-    new Remove(ranges))
+  lazy val remove = token("remove") ~> token(Space) ~> natSelect
+    .map(ranges => new Remove(ranges))
 
   def natSelect = rep1sep(token(range, "<range>"), ',')
 

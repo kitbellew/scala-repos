@@ -139,7 +139,9 @@ private[http] class HttpResponseParser(
       statusCode match {
         case _: StatusCodes.Informational if handleInformationalResponses ⇒
           if (statusCode == StatusCodes.Continue)
-            contextForCurrentResponse.get.oneHundredContinueTrigger
+            contextForCurrentResponse
+              .get
+              .oneHundredContinueTrigger
               .foreach(_.trySuccess(()))
 
           // http://tools.ietf.org/html/rfc7231#section-6.2 says:

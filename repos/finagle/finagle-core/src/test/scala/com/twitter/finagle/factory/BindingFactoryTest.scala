@@ -62,8 +62,8 @@ class BindingFactoryTest
   trait Ctx {
     def withExpectedTrace(f: => Unit, expected: Seq[Annotation]) {
       val tracer: Tracer = spy(new NullTracer)
-      val captor: ArgumentCaptor[Record] = ArgumentCaptor.forClass(
-        classOf[Record])
+      val captor: ArgumentCaptor[Record] = ArgumentCaptor
+        .forClass(classOf[Record])
       Trace.letTracer(tracer) {
         f
       }
@@ -315,8 +315,8 @@ class BindingFactoryTest
               newFactory = { addr =>
                 new ServiceFactory[Unit, Unit] {
                   def apply(conn: ClientConnection) =
-                    Future.exception(
-                      new NoBrokersAvailableException("/foo/bar"))
+                    Future
+                      .exception(new NoBrokersAvailableException("/foo/bar"))
 
                   def close(deadline: Time) = Future.Done
                 }

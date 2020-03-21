@@ -98,9 +98,11 @@ class JsonExporter(registry: Metrics, timer: Timer)
 
   def apply(request: Request): Future[Response] = {
     if (registryLoaded.compareAndSet(false, true)) {
-      GlobalRegistry.get.put(
-        Seq("stats", "commons_metrics", "counters_latched"),
-        useCounterDeltas().toString)
+      GlobalRegistry
+        .get
+        .put(
+          Seq("stats", "commons_metrics", "counters_latched"),
+          useCounterDeltas().toString)
     }
 
     val response = Response()
@@ -118,8 +120,7 @@ class JsonExporter(registry: Metrics, timer: Timer)
           true
         else {
           log.warning(
-            s"${getClass.getName} request ignored due to unsupported period: '${vals
-              .mkString(",")}'")
+            s"${getClass.getName} request ignored due to unsupported period: '${vals.mkString(",")}'")
           false
         }
       }

@@ -50,19 +50,19 @@ object HttpEventActor {
     private val pre = MetricPrefixes.SERVICE
     private val clazz = classOf[HttpEventActor]
     // the number of requests that are open without response
-    val outstandingCallbacks = metrics.counter(
-      metrics.name(pre, clazz, "outstanding-callbacks"))
+    val outstandingCallbacks = metrics
+      .counter(metrics.name(pre, clazz, "outstanding-callbacks"))
     // the number of events that are broadcast
     val eventMeter = metrics.meter(metrics.name(pre, clazz, "events"))
     // the number of events that are not send to callback listeners due to backoff
-    val skippedCallbacks = metrics.meter(
-      metrics.name(pre, clazz, "skipped-callbacks"))
+    val skippedCallbacks = metrics
+      .meter(metrics.name(pre, clazz, "skipped-callbacks"))
     // the number of callbacks that have failed during delivery
-    val failedCallbacks = metrics.meter(
-      metrics.name(pre, clazz, "failed-callbacks"))
+    val failedCallbacks = metrics
+      .meter(metrics.name(pre, clazz, "failed-callbacks"))
     // the response time of the callback listeners
-    val callbackResponseTime = metrics.timer(
-      metrics.name(pre, clazz, "callback-response-time"))
+    val callbackResponseTime = metrics
+      .timer(metrics.name(pre, clazz, "callback-response-time"))
   }
 }
 
@@ -117,8 +117,8 @@ class HttpEventActor(
     val (active, limited) = subscribers.urls.partition(limiter(_).notLimited)
     if (limited.nonEmpty) {
       log.info(
-        s"""Will not send event ${event.eventType} to unresponsive hosts: ${limited
-          .mkString(" ")}""")
+        s"""Will not send event ${event.eventType} to unresponsive hosts: ${limited.mkString(
+          " ")}""")
     }
     //remove all unsubscribed callback listener
     limiter = limiter

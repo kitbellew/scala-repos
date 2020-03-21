@@ -46,8 +46,8 @@ class RenameScalaClassProcessor
   }
 
   override def findReferences(element: PsiElement) =
-    ScalaRenameUtil.replaceImportClassReferences(
-      ScalaRenameUtil.findReferences(element))
+    ScalaRenameUtil
+      .replaceImportClassReferences(ScalaRenameUtil.findReferences(element))
 
   override def prepareRenaming(
       element: PsiElement,
@@ -75,8 +75,8 @@ class RenameScalaClassProcessor
           }
         }
         val file = td.getContainingFile
-        if (file != null && isTop(
-              element.getContext) && file.name == td.name + ".scala") {
+        if (file != null && isTop(element.getContext) && file
+              .name == td.name + ".scala") {
           allRenames.put(file, newName + ".scala")
         }
       case docTagParam: ScTypeParam =>
@@ -87,7 +87,9 @@ class RenameScalaClassProcessor
                 comment
                   .findTagsByName(MyScaladocParsing.TYPE_PARAM_TAG)
                   .foreach { b =>
-                    if (b.getValueElement != null && b.getValueElement.getText == docTagParam.name)
+                    if (b.getValueElement != null && b
+                          .getValueElement
+                          .getText == docTagParam.name)
                       allRenames.put(b.getValueElement, newName)
                   }
               case _ =>
@@ -148,11 +150,8 @@ class RenameScalaClassProcessor
       newName: String,
       usages: Array[UsageInfo],
       listener: RefactoringElementListener) {
-    ScalaRenameUtil.doRenameGenericNamedElement(
-      element,
-      newName,
-      usages,
-      listener)
+    ScalaRenameUtil
+      .doRenameGenericNamedElement(element, newName, usages, listener)
   }
 }
 

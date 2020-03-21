@@ -84,8 +84,8 @@ class JobProgressListenerSuite
       shouldFail: Boolean = false) {
     val stagesThatWontBeRun = jobId * 200 to jobId * 200 + 10
     val stageIds = jobId * 100 to jobId * 100 + 50
-    listener.onJobStart(
-      createJobStartEvent(jobId, stageIds ++ stagesThatWontBeRun))
+    listener
+      .onJobStart(createJobStartEvent(jobId, stageIds ++ stagesThatWontBeRun))
     for (stageId <- stageIds) {
       listener.onStageSubmitted(createStageStartEvent(stageId))
       listener.onStageCompleted(
@@ -95,10 +95,12 @@ class JobProgressListenerSuite
   }
 
   private def assertActiveJobsStateIsEmpty(listener: JobProgressListener) {
-    listener.getSizesOfActiveStateTrackingCollections.foreach {
-      case (fieldName, size) =>
-        assert(size === 0, s"$fieldName was not empty")
-    }
+    listener
+      .getSizesOfActiveStateTrackingCollections
+      .foreach {
+        case (fieldName, size) =>
+          assert(size === 0, s"$fieldName was not empty")
+      }
   }
 
   test("test LRU eviction of stages") {
@@ -233,7 +235,8 @@ class JobProgressListenerSuite
         taskInfo,
         taskMetrics))
     assert(
-      listener.stageIdToData
+      listener
+        .stageIdToData
         .getOrElse((0, 0), fail())
         .executorSummary
         .getOrElse("exe-1", fail())
@@ -282,7 +285,8 @@ class JobProgressListenerSuite
         taskInfo,
         taskMetrics))
     assert(
-      listener.stageIdToData
+      listener
+        .stageIdToData
         .getOrElse((0, 0), fail())
         .executorSummary
         .getOrElse("exe-1", fail())
@@ -309,7 +313,8 @@ class JobProgressListenerSuite
         taskInfo,
         taskMetrics))
     assert(
-      listener.stageIdToData
+      listener
+        .stageIdToData
         .getOrElse((0, 0), fail())
         .executorSummary
         .getOrElse("exe-2", fail())
@@ -388,8 +393,8 @@ class JobProgressListenerSuite
       val shuffleReadMetrics = taskMetrics.registerTempShuffleReadMetrics()
       val shuffleWriteMetrics = taskMetrics.registerShuffleWriteMetrics()
       val inputMetrics = taskMetrics.registerInputMetrics(DataReadMethod.Hadoop)
-      val outputMetrics = taskMetrics.registerOutputMetrics(
-        DataWriteMethod.Hadoop)
+      val outputMetrics = taskMetrics
+        .registerOutputMetrics(DataWriteMethod.Hadoop)
       shuffleReadMetrics.incRemoteBytesRead(base + 1)
       shuffleReadMetrics.incLocalBytesRead(base + 9)
       shuffleReadMetrics.incRemoteBlocksFetched(base + 2)
@@ -450,7 +455,8 @@ class JobProgressListenerSuite
     assert(stage0Data.outputBytes == 116)
     assert(stage1Data.outputBytes == 208)
     assert(
-      stage0Data.taskData
+      stage0Data
+        .taskData
         .get(1234L)
         .get
         .taskMetrics
@@ -459,7 +465,8 @@ class JobProgressListenerSuite
         .get
         .totalBlocksFetched == 2)
     assert(
-      stage0Data.taskData
+      stage0Data
+        .taskData
         .get(1235L)
         .get
         .taskMetrics
@@ -468,7 +475,8 @@ class JobProgressListenerSuite
         .get
         .totalBlocksFetched == 102)
     assert(
-      stage1Data.taskData
+      stage1Data
+        .taskData
         .get(1236L)
         .get
         .taskMetrics
@@ -516,7 +524,8 @@ class JobProgressListenerSuite
     assert(stage0Data.outputBytes == 416)
     assert(stage1Data.outputBytes == 616)
     assert(
-      stage0Data.taskData
+      stage0Data
+        .taskData
         .get(1234L)
         .get
         .taskMetrics
@@ -525,7 +534,8 @@ class JobProgressListenerSuite
         .get
         .totalBlocksFetched == 302)
     assert(
-      stage1Data.taskData
+      stage1Data
+        .taskData
         .get(1237L)
         .get
         .taskMetrics

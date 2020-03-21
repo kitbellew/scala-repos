@@ -28,8 +28,8 @@ abstract class ProjectDataServiceTestCase extends PlatformTestCase {
             .mergeRootsChangesDuring(
               new Runnable() {
                 override def run(): Unit = {
-                  val projectDataManager = ServiceManager.getService(
-                    classOf[ProjectDataManager])
+                  val projectDataManager = ServiceManager
+                    .getService(classOf[ProjectDataManager])
                   projectDataManager.importData(
                     projectData,
                     getProject,

@@ -108,7 +108,8 @@ final case class PersistentJValue(baseDir: File, fileName: String)
           rec.`type` match {
             case LogRecordType.END_OF_LOG =>
               logger.debug(
-                "Versions TX log replay complete in " + baseDir.getCanonicalPath)
+                "Versions TX log replay complete in " + baseDir
+                  .getCanonicalPath)
 
             case LogRecordType.USER =>
               val bytes = rec.getFields()(0)

@@ -38,14 +38,13 @@ class ScalaUselessExpressionInspection
       holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
     case expr: ScExpression
         if IntentionAvailabilityChecker.checkInspection(this, expr.getParent) =>
-      if (canResultInSideEffectsOnly(expr) && SideEffectsUtil.hasNoSideEffects(
-            expr)) {
+      if (canResultInSideEffectsOnly(expr) && SideEffectsUtil
+            .hasNoSideEffects(expr)) {
         val message = "Useless expression"
         val removeElemFix = new RemoveElementQuickFix("Remove expression", expr)
         val addReturnKeywordFix =
-          PsiTreeUtil.getParentOfType(
-            expr,
-            classOf[ScFunctionDefinition]) match {
+          PsiTreeUtil
+            .getParentOfType(expr, classOf[ScFunctionDefinition]) match {
             case null =>
               Seq.empty
             case fun if fun.returnType.getOrAny != types.Unit =>
@@ -83,21 +82,24 @@ class ScalaUselessExpressionInspection
 
   private def canResultInSideEffectsOnly(expr: ScExpression): Boolean = {
     def isNotLastInBlock: Boolean = {
-      val parents = expr.parentsInFile.takeWhile {
-        case ms: ScMatchStmt
-            if ms.expr.exists(PsiTreeUtil.isAncestor(_, expr, false)) =>
-          false
-        case ifStmt: ScIfStmt
-            if ifStmt.condition.exists(
-              PsiTreeUtil.isAncestor(_, expr, false)) =>
-          false
-        case _: ScBlock | _: ScParenthesisedExpr | _: ScIfStmt |
-            _: ScCaseClause | _: ScCaseClauses | _: ScMatchStmt | _: ScTryStmt |
-            _: ScCatchBlock =>
-          true
-        case _ =>
-          false
-      }
+      val parents = expr
+        .parentsInFile
+        .takeWhile {
+          case ms: ScMatchStmt
+              if ms.expr.exists(PsiTreeUtil.isAncestor(_, expr, false)) =>
+            false
+          case ifStmt: ScIfStmt
+              if ifStmt
+                .condition
+                .exists(PsiTreeUtil.isAncestor(_, expr, false)) =>
+            false
+          case _: ScBlock | _: ScParenthesisedExpr | _: ScIfStmt |
+              _: ScCaseClause | _: ScCaseClauses | _: ScMatchStmt |
+              _: ScTryStmt | _: ScCatchBlock =>
+            true
+          case _ =>
+            false
+        }
       (expr +: parents.toSeq).exists {
         case e: ScExpression =>
           isInBlock(e) && !isLastInBlock(e)

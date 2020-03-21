@@ -21,8 +21,8 @@ import scala.collection.immutable
 private[stream] object Stages {
 
   object DefaultAttributes {
-    val IODispatcher = ActorAttributes.Dispatcher(
-      "akka.stream.default-blocking-io-dispatcher")
+    val IODispatcher = ActorAttributes
+      .Dispatcher("akka.stream.default-blocking-io-dispatcher")
     val inputBufferOne = inputBuffer(initial = 1, max = 1)
 
     val fused = name("fused")

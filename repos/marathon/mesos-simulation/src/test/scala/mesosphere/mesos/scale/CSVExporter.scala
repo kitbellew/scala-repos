@@ -201,12 +201,15 @@ object CSVExporter {
 
   def writeCSV(directory: File, csv: File, sep: String = ";") = {
     IO.using(new FileWriter(csv)) { writer =>
-      toRows(directory).sortBy(_.name).foreach { row =>
-        val values = row.values
-          .map(_.map(_.toString.replace(".", ",")).getOrElse("n/a"))
-          .mkString(sep)
-        writer.write(s"${row.name}$sep$values\n")
-      }
+      toRows(directory)
+        .sortBy(_.name)
+        .foreach { row =>
+          val values = row
+            .values
+            .map(_.map(_.toString.replace(".", ",")).getOrElse("n/a"))
+            .mkString(sep)
+          writer.write(s"${row.name}$sep$values\n")
+        }
     }
   }
 
@@ -215,8 +218,11 @@ object CSVExporter {
     * @param args the directories with metric files
     */
   def main(args: Array[String]) {
-    args.map(new File(_)).filter(_.isDirectory).foreach { dir =>
-      writeCSV(dir, new File(dir, "out.csv"))
-    }
+    args
+      .map(new File(_))
+      .filter(_.isDirectory)
+      .foreach { dir =>
+        writeCSV(dir, new File(dir, "out.csv"))
+      }
   }
 }

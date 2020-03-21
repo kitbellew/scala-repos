@@ -28,8 +28,8 @@ class LoopVariableNotUpdatedInspection
               ElementText(operator),
               _)),
           Some(body))
-        if !ref.isQualified && ComparisonOperators.contains(
-          operator) && !isMutatedWithing(body, target) =>
+        if !ref.isQualified && ComparisonOperators
+          .contains(operator) && !isMutatedWithing(body, target) =>
       holder.registerProblem(
         ref.asInstanceOf[PsiReference],
         getDisplayName,
@@ -41,14 +41,16 @@ class LoopVariableNotUpdatedInspection
       target: PsiElement): Boolean = {
     val Target = target
 
-    scope.breadthFirst.exists {
-      case ScAssignStmt(left, _) =>
-        true
-      case e @ ScInfixExpr(ResolvesTo(Target), _, _)
-          if e.isAssignmentOperator =>
-        true
-      case _ =>
-        false
-    }
+    scope
+      .breadthFirst
+      .exists {
+        case ScAssignStmt(left, _) =>
+          true
+        case e @ ScInfixExpr(ResolvesTo(Target), _, _)
+            if e.isAssignmentOperator =>
+          true
+        case _ =>
+          false
+      }
   }
 }

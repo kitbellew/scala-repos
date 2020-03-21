@@ -93,23 +93,25 @@ private class DeploymentActor(
     } else {
       eventBus.publish(DeploymentStatus(plan, step))
 
-      val futures = step.actions.map { action =>
-        healthCheckManager.addAllFor(
-          action.app
-        ) // ensure health check actors are in place before tasks are launched
-        action match {
-          case StartApplication(app, scaleTo) =>
-            startApp(app, scaleTo)
-          case ScaleApplication(app, scaleTo, toKill) =>
-            scaleApp(app, scaleTo, toKill)
-          case RestartApplication(app) =>
-            restartApp(app)
-          case StopApplication(app) =>
-            stopApp(app.copy(instances = 0))
-          case ResolveArtifacts(app, urls) =>
-            resolveArtifacts(app, urls)
+      val futures = step
+        .actions
+        .map { action =>
+          healthCheckManager.addAllFor(
+            action.app
+          ) // ensure health check actors are in place before tasks are launched
+          action match {
+            case StartApplication(app, scaleTo) =>
+              startApp(app, scaleTo)
+            case ScaleApplication(app, scaleTo, toKill) =>
+              scaleApp(app, scaleTo, toKill)
+            case RestartApplication(app) =>
+              restartApp(app)
+            case StopApplication(app) =>
+              stopApp(app.copy(instances = 0))
+            case ResolveArtifacts(app, urls) =>
+              resolveArtifacts(app, urls)
+          }
         }
-      }
 
       Future.sequence(futures).map(_ => ()) andThen {
         case Success(_) =>
@@ -191,10 +193,12 @@ private class DeploymentActor(
     val promise = Promise[Unit]()
     context.actorOf(
       Props(classOf[AppStopActor], driver, taskTracker, eventBus, app, promise))
-    promise.future.andThen {
-      case Success(_) =>
-        scheduler.stopApp(driver, app)
-    }
+    promise
+      .future
+      .andThen {
+        case Success(_) =>
+          scheduler.stopApp(driver, app)
+      }
   }
 
   def restartApp(app: AppDefinition): Future[Unit] = {

@@ -206,9 +206,8 @@ private[streaming] class WriteAheadLogBasedBlockHandler(
           blockManager.dataSerialize(blockId, arrayBuffer.iterator)
         case IteratorBlock(iterator) =>
           val countIterator = new CountingIterator(iterator)
-          val serializedBlock = blockManager.dataSerialize(
-            blockId,
-            countIterator)
+          val serializedBlock = blockManager
+            .dataSerialize(blockId, countIterator)
           numRecords = countIterator.count
           serializedBlock
         case ByteBufferBlock(byteBuffer) =>
@@ -256,9 +255,8 @@ private[streaming] class WriteAheadLogBasedBlockHandler(
 
 private[streaming] object WriteAheadLogBasedBlockHandler {
   def checkpointDirToLogDir(checkpointDir: String, streamId: Int): String = {
-    new Path(
-      checkpointDir,
-      new Path("receivedData", streamId.toString)).toString
+    new Path(checkpointDir, new Path("receivedData", streamId.toString))
+      .toString
   }
 }
 

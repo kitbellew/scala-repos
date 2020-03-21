@@ -257,8 +257,8 @@ class HistoryServerSuite
     val badStageAttemptId = getContentAndCode(
       "applications/local-1422981780767/stages/1/1")
     badStageAttemptId._1 should be(HttpServletResponse.SC_NOT_FOUND)
-    badStageAttemptId._3 should be(
-      Some("unknown attempt for stage 1.  Found attempts: [0]"))
+    badStageAttemptId
+      ._3 should be(Some("unknown attempt for stage 1.  Found attempts: [0]"))
 
     val badStageId2 = getContentAndCode(
       "applications/local-1422981780767/stages/flimflam")
@@ -303,8 +303,8 @@ class HistoryServerSuite
 
     // this test dir is explicitly deleted on successful runs; retained for diagnostics when
     // not
-    val logDir = Utils.createDirectory(
-      System.getProperty("java.io.tmpdir", "logs"))
+    val logDir = Utils
+      .createDirectory(System.getProperty("java.io.tmpdir", "logs"))
 
     // a new conf is used with the background thread set and running at its fastest
     // allowed refresh rate (1Hz)
@@ -516,8 +516,8 @@ class HistoryServerSuite
   def getContentAndCode(
       path: String,
       port: Int = port): (Int, Option[String], Option[String]) = {
-    HistoryServerSuite.getContentAndCode(
-      new URL(s"http://localhost:$port/api/v1/$path"))
+    HistoryServerSuite
+      .getContentAndCode(new URL(s"http://localhost:$port/api/v1/$path"))
   }
 
   def getUrl(path: String): String = {
@@ -551,10 +551,12 @@ object HistoryServerSuite {
     suite.expRoot.mkdirs()
     try {
       suite.init()
-      suite.cases.foreach {
-        case (name, path) =>
-          suite.generateExpectation(name, path)
-      }
+      suite
+        .cases
+        .foreach {
+          case (name, path) =>
+            suite.generateExpectation(name, path)
+        }
     } finally {
       suite.stop()
     }

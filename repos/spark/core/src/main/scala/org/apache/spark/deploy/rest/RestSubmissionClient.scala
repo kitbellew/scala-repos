@@ -445,9 +445,11 @@ private[spark] object RestSubmissionClient {
       appArgs: Array[String],
       conf: SparkConf,
       env: Map[String, String] = Map()): SubmitRestProtocolResponse = {
-    val master = conf.getOption("spark.master").getOrElse {
-      throw new IllegalArgumentException("'spark.master' must be set.")
-    }
+    val master = conf
+      .getOption("spark.master")
+      .getOrElse {
+        throw new IllegalArgumentException("'spark.master' must be set.")
+      }
     val sparkProperties = conf.getAll.toMap
     val client = new RestSubmissionClient(master)
     val submitRequest = client.constructSubmitRequest(

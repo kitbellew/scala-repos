@@ -75,9 +75,8 @@ object ScPartialFunctionType {
   }
 
   def unapply(tp: ScType): Option[(ScType, ScType)] = {
-    ScSynteticSugarClassesUtil.extractForPrefix(
-      tp,
-      "scala.PartialFunction") match {
+    ScSynteticSugarClassesUtil
+      .extractForPrefix(tp, "scala.PartialFunction") match {
       case Some((clazz, typeArgs)) if typeArgs.length == 2 =>
         Some(typeArgs(1), typeArgs(0))
       case _ =>
@@ -130,8 +129,9 @@ object ScSynteticSugarClassesUtil {
         tp match {
           case p: ScParameterizedType =>
             def startsWith(clazz: PsiClass, qualNamePrefix: String) =
-              clazz.qualifiedName != null && clazz.qualifiedName.startsWith(
-                qualNamePrefix)
+              clazz.qualifiedName != null && clazz
+                .qualifiedName
+                .startsWith(qualNamePrefix)
 
             ScType.extractClassType(p.designator) match {
               case Some((clazz: ScTypeDefinition, sub))

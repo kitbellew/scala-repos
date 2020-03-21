@@ -191,10 +191,13 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
 
   def md5(file: File): Array[Byte] = {
     val md = MessageDigest.getInstance("MD5")
-    val isSource =
-      file.getName.endsWith(".java") || file.getName.endsWith(".scala")
+    val isSource = file.getName.endsWith(".java") || file
+      .getName
+      .endsWith(".scala")
     if (isSource) {
-      val text = scala.io.Source
+      val text = scala
+        .io
+        .Source
         .fromFile(file, "UTF-8")
         .mkString
         .replace("\r", "")
@@ -208,15 +211,17 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
     val result = new mutable.HashMap[String, Array[Byte]]
     def computeForDir(dir: File) {
       if (dir.exists)
-        dir.listFiles().foreach { f =>
-          if (f.isDirectory)
-            computeForDir(f)
-          else {
-            result += (
-              testDataBasePath.toURI.relativize(f.toURI).toString -> md5(f)
-            )
+        dir
+          .listFiles()
+          .foreach { f =>
+            if (f.isDirectory)
+              computeForDir(f)
+            else {
+              result += (
+                testDataBasePath.toURI.relativize(f.toURI).toString -> md5(f)
+              )
+            }
           }
-        }
     }
     computeForDir(srcDir)
     computeForDir(outDir)
@@ -260,8 +265,9 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
   }
 
   private def testDataProjectIsValid(): Boolean = {
-    sameSourceFiles() && loadChecksums() && checksums.keys.forall(
-      checkFile) && getImlFile != null
+    sameSourceFiles() && loadChecksums() && checksums
+      .keys
+      .forall(checkFile) && getImlFile != null
   }
 
   private def sameSourceFiles(): Boolean = {

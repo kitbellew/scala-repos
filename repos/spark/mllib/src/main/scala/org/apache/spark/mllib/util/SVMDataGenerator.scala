@@ -71,8 +71,9 @@ object SVMDataGenerator {
     val trueWeights =
       Array.fill[Double](nfeatures + 1)(globalRnd.nextGaussian())
 
-    val data: RDD[LabeledPoint] = sc.parallelize(0 until nexamples, parts).map {
-      idx =>
+    val data: RDD[LabeledPoint] = sc
+      .parallelize(0 until nexamples, parts)
+      .map { idx =>
         val rnd = new Random(42 + idx)
 
         val x =
@@ -87,7 +88,7 @@ object SVMDataGenerator {
           else
             1.0
         LabeledPoint(y, Vectors.dense(x))
-    }
+      }
 
     data.saveAsTextFile(outputPath)
 

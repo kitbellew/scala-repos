@@ -18,7 +18,8 @@ case class MUDT(
 object MUDT {
   def getUDTs(typeNamePattern: MQName, types: Option[Seq[Int]] = None) =
     ResultSetAction[MUDT](
-      _.metaData.getUDTs(
+      _.metaData
+      .getUDTs(
         typeNamePattern.catalog_?,
         typeNamePattern.schema_?,
         typeNamePattern.name,

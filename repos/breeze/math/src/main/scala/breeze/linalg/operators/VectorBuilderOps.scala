@@ -168,9 +168,8 @@ trait VectorBuilderOps {
       dev: Zero[V],
       classTag: ClassTag[V])
       : UImpl2[Op, VectorBuilder[V], Other, VectorBuilder[V]] = {
-    BinaryOp.fromCopyAndUpdate[VectorBuilder[V], Other, Op](
-      op,
-      canCopyBuilder[V])
+    BinaryOp
+      .fromCopyAndUpdate[VectorBuilder[V], Other, Op](op, canCopyBuilder[V])
   }
 
   @expand

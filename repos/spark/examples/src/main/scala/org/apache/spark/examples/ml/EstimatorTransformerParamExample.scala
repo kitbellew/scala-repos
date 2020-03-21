@@ -51,8 +51,7 @@ object EstimatorTransformerParamExample {
     println("LogisticRegression parameters:\n" + lr.explainParams() + "\n")
 
     // We may set parameters using setter methods.
-    lr.setMaxIter(10)
-      .setRegParam(0.01)
+    lr.setMaxIter(10).setRegParam(0.01)
 
     // Learn a LogisticRegression model.  This uses the parameters stored in lr.
     val model1 = lr.fit(training)

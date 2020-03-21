@@ -106,36 +106,30 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     for (n <- List(100, 1000, 1000000)) {
       val data = sc.parallelize(1 to n, 2)
       val fractionPositive = 0.3
-      val stratifiedData = data.keyBy(
-        StratifiedAuxiliary.stratifier(fractionPositive))
+      val stratifiedData = data
+        .keyBy(StratifiedAuxiliary.stratifier(fractionPositive))
       val samplingRate = 0.1
-      StratifiedAuxiliary.testSample(
-        stratifiedData,
-        samplingRate,
-        defaultSeed,
-        n)
+      StratifiedAuxiliary
+        .testSample(stratifiedData, samplingRate, defaultSeed, n)
     }
 
     // vary fractionPositive
     for (fractionPositive <- List(0.1, 0.3, 0.5, 0.7, 0.9)) {
       val n = 100
       val data = sc.parallelize(1 to n, 2)
-      val stratifiedData = data.keyBy(
-        StratifiedAuxiliary.stratifier(fractionPositive))
+      val stratifiedData = data
+        .keyBy(StratifiedAuxiliary.stratifier(fractionPositive))
       val samplingRate = 0.1
-      StratifiedAuxiliary.testSample(
-        stratifiedData,
-        samplingRate,
-        defaultSeed,
-        n)
+      StratifiedAuxiliary
+        .testSample(stratifiedData, samplingRate, defaultSeed, n)
     }
 
     // Use the same data for the rest of the tests
     val fractionPositive = 0.3
     val n = 100
     val data = sc.parallelize(1 to n, 2)
-    val stratifiedData = data.keyBy(
-      StratifiedAuxiliary.stratifier(fractionPositive))
+    val stratifiedData = data
+      .keyBy(StratifiedAuxiliary.stratifier(fractionPositive))
 
     // vary seed
     for (seed <- defaultSeed to defaultSeed + 5L) {
@@ -145,11 +139,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
 
     // vary sampling rate
     for (samplingRate <- List(0.01, 0.05, 0.1, 0.5)) {
-      StratifiedAuxiliary.testSample(
-        stratifiedData,
-        samplingRate,
-        defaultSeed,
-        n)
+      StratifiedAuxiliary
+        .testSample(stratifiedData, samplingRate, defaultSeed, n)
     }
   }
 
@@ -160,36 +151,30 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     for (n <- List(100, 1000, 1000000)) {
       val data = sc.parallelize(1 to n, 2)
       val fractionPositive = 0.3
-      val stratifiedData = data.keyBy(
-        StratifiedAuxiliary.stratifier(fractionPositive))
+      val stratifiedData = data
+        .keyBy(StratifiedAuxiliary.stratifier(fractionPositive))
       val samplingRate = 0.1
-      StratifiedAuxiliary.testSampleExact(
-        stratifiedData,
-        samplingRate,
-        defaultSeed,
-        n)
+      StratifiedAuxiliary
+        .testSampleExact(stratifiedData, samplingRate, defaultSeed, n)
     }
 
     // vary fractionPositive
     for (fractionPositive <- List(0.1, 0.3, 0.5, 0.7, 0.9)) {
       val n = 100
       val data = sc.parallelize(1 to n, 2)
-      val stratifiedData = data.keyBy(
-        StratifiedAuxiliary.stratifier(fractionPositive))
+      val stratifiedData = data
+        .keyBy(StratifiedAuxiliary.stratifier(fractionPositive))
       val samplingRate = 0.1
-      StratifiedAuxiliary.testSampleExact(
-        stratifiedData,
-        samplingRate,
-        defaultSeed,
-        n)
+      StratifiedAuxiliary
+        .testSampleExact(stratifiedData, samplingRate, defaultSeed, n)
     }
 
     // Use the same data for the rest of the tests
     val fractionPositive = 0.3
     val n = 100
     val data = sc.parallelize(1 to n, 2)
-    val stratifiedData = data.keyBy(
-      StratifiedAuxiliary.stratifier(fractionPositive))
+    val stratifiedData = data
+      .keyBy(StratifiedAuxiliary.stratifier(fractionPositive))
 
     // vary seed
     for (seed <- defaultSeed to defaultSeed + 5L) {
@@ -199,11 +184,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
 
     // vary sampling rate
     for (samplingRate <- List(0.01, 0.05, 0.1, 0.5)) {
-      StratifiedAuxiliary.testSampleExact(
-        stratifiedData,
-        samplingRate,
-        defaultSeed,
-        n)
+      StratifiedAuxiliary
+        .testSampleExact(stratifiedData, samplingRate, defaultSeed, n)
     }
   }
 
@@ -942,9 +924,11 @@ class FakeWriterWithCallback extends FakeWriter {
 
   override def write(p1: Integer, p2: Integer): Unit = {
     FakeWriterWithCallback.calledBy += "write,"
-    TaskContext.get().addTaskFailureListener { (t: TaskContext, e: Throwable) =>
-      FakeWriterWithCallback.onFailure(t, e)
-    }
+    TaskContext
+      .get()
+      .addTaskFailureListener { (t: TaskContext, e: Throwable) =>
+        FakeWriterWithCallback.onFailure(t, e)
+      }
     throw new IOException("failed to write")
   }
 }
@@ -966,9 +950,11 @@ class NewFakeWriterWithCallback extends NewFakeWriter {
 
   override def write(p1: Integer, p2: Integer): Unit = {
     FakeWriterWithCallback.calledBy += "write,"
-    TaskContext.get().addTaskFailureListener { (t: TaskContext, e: Throwable) =>
-      FakeWriterWithCallback.onFailure(t, e)
-    }
+    TaskContext
+      .get()
+      .addTaskFailureListener { (t: TaskContext, e: Throwable) =>
+        FakeWriterWithCallback.onFailure(t, e)
+      }
     throw new IOException("failed to write")
   }
 }

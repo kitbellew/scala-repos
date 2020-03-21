@@ -65,12 +65,14 @@ object RequestSemaphoreFilter {
 class RequestSemaphoreFilter[Req, Rep](sem: AsyncSemaphore)
     extends SimpleFilter[Req, Rep] {
   def apply(req: Req, service: Service[Req, Rep]): Future[Rep] =
-    sem.acquire().transform {
-      case Return(permit) =>
-        service(req).ensure {
-          permit.release()
-        }
-      case Throw(noPermit) =>
-        Future.exception(Failure.rejected(noPermit))
-    }
+    sem
+      .acquire()
+      .transform {
+        case Return(permit) =>
+          service(req).ensure {
+            permit.release()
+          }
+        case Throw(noPermit) =>
+          Future.exception(Failure.rejected(noPermit))
+      }
 }

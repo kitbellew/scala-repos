@@ -94,12 +94,16 @@ private[master] class MasterWebUI(
     val state = masterPage.getMasterState
     val activeApps = state.activeApps.sortBy(_.startTime).reverse
     val completedApps = state.completedApps.sortBy(_.endTime).reverse
-    activeApps.iterator.map {
-      ApplicationsListResource.convertApplicationInfo(_, false)
-    } ++
-      completedApps.iterator.map {
-        ApplicationsListResource.convertApplicationInfo(_, true)
-      }
+    activeApps
+      .iterator
+      .map {
+        ApplicationsListResource.convertApplicationInfo(_, false)
+      } ++
+      completedApps
+        .iterator
+        .map {
+          ApplicationsListResource.convertApplicationInfo(_, true)
+        }
   }
 
   def getSparkUI(appId: String): Option[SparkUI] = {

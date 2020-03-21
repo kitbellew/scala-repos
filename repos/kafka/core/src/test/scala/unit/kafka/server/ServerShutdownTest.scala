@@ -185,7 +185,8 @@ class ServerShutdownTest extends ZooKeeperTestHarness {
   def verifyNonDaemonThreadsStatus() {
     assertEquals(
       0,
-      Thread.getAllStackTraces
+      Thread
+        .getAllStackTraces
         .keySet()
         .toArray
         .map {

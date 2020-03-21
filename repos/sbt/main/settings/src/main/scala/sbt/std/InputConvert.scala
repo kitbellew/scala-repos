@@ -75,9 +75,11 @@ object InitParserConvert extends Convert {
       c: Context)(nme: String, in: c.Tree): Converted[c.type] =
     if (nme == ParserInput.WrapName) {
       val e = c.Expr[State => Parser[T]](in)
-      val t = c.universe.reify {
-        Def.valueStrict[State => Parser[T]](e.splice)
-      }
+      val t = c
+        .universe
+        .reify {
+          Def.valueStrict[State => Parser[T]](e.splice)
+        }
       Converted.Success(t.tree)
     } else if (nme == ParserInput.WrapInitName)
       Converted.Success(in)

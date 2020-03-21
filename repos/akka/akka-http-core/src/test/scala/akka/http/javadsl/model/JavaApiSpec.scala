@@ -21,13 +21,10 @@ class JavaApiSpec extends FreeSpec with MustMatchers {
           Uri.create("/abc?name=paul"))
       }
       "addSegment" in {
-        Uri
-          .create("/abc")
-          .addPathSegment("def") must be(Uri.create("/abc/def"))
+        Uri.create("/abc").addPathSegment("def") must be(Uri.create("/abc/def"))
 
-        Uri
-          .create("/abc/")
-          .addPathSegment("def") must be(Uri.create("/abc/def"))
+        Uri.create("/abc/").addPathSegment("def") must be(
+          Uri.create("/abc/def"))
       }
       "scheme/host/port" in {
         Uri

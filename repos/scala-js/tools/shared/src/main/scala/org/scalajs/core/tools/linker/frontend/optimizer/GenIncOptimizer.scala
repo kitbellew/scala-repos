@@ -249,8 +249,8 @@ abstract class GenIncOptimizer private[optimizer] (
        *
        * Non-batch mode only.
        */
-      val objectClassStillExists = objectClass.walkClassesForDeletions(
-        neededClasses.get(_))
+      val objectClassStillExists = objectClass
+        .walkClassesForDeletions(neededClasses.get(_))
       assert(objectClassStillExists, "Uh oh, java.lang.Object was deleted!")
 
       /* Class changes:
@@ -260,9 +260,8 @@ abstract class GenIncOptimizer private[optimizer] (
        *
        * Non-batch mode only.
        */
-      objectClass.walkForChanges(
-        CollOps.remove(neededClasses, _).get,
-        Set.empty)
+      objectClass
+        .walkForChanges(CollOps.remove(neededClasses, _).get, Set.empty)
     }
 
     /* Class additions:
@@ -274,14 +273,18 @@ abstract class GenIncOptimizer private[optimizer] (
     val newChildrenByParent = CollOps.emptyAccMap[String, LinkedClass]
 
     for (linkedClass <- neededClasses.values) {
-      linkedClass.superClass.fold {
-        assert(batchMode, "Trying to add java.lang.Object in incremental mode")
-        objectClass = new Class(None, linkedClass.encodedName)
-        classes += linkedClass.encodedName -> objectClass
-        objectClass.setupAfterCreation(linkedClass)
-      } { superClassName =>
-        CollOps.acc(newChildrenByParent, superClassName.name, linkedClass)
-      }
+      linkedClass
+        .superClass
+        .fold {
+          assert(
+            batchMode,
+            "Trying to add java.lang.Object in incremental mode")
+          objectClass = new Class(None, linkedClass.encodedName)
+          classes += linkedClass.encodedName -> objectClass
+          objectClass.setupAfterCreation(linkedClass)
+        } { superClassName =>
+          CollOps.acc(newChildrenByParent, superClassName.name, linkedClass)
+        }
     }
 
     val getNewChildren =
@@ -436,8 +439,8 @@ abstract class GenIncOptimizer private[optimizer] (
       getLinkedClassIfNeeded(encodedName) match {
         case Some(linkedClass) if sameSuperClass(linkedClass) =>
           // Class still exists. Recurse.
-          subclasses = subclasses.filter(
-            _.walkClassesForDeletions(getLinkedClassIfNeeded))
+          subclasses = subclasses
+            .filter(_.walkClassesForDeletions(getLinkedClassIfNeeded))
           if (isInstantiated && !linkedClass.hasInstances)
             notInstantiatedAnymore()
           true
@@ -574,8 +577,8 @@ abstract class GenIncOptimizer private[optimizer] (
       hasElidableModuleAccessor =
         isAdHocElidableModuleAccessor(encodedName) ||
           (
-            isModuleClass && lookupMethod("init___").exists(
-              isElidableModuleConstructor)
+            isModuleClass && lookupMethod("init___")
+              .exists(isElidableModuleConstructor)
           )
     }
 
@@ -671,12 +674,16 @@ abstract class GenIncOptimizer private[optimizer] (
           case ApplyStatically(This(), ClassType(cls), methodName, args) =>
             Definitions.isConstructorName(methodName.name) &&
               args.forall(isTriviallySideEffectFree) &&
-              impl.owner.asInstanceOf[Class].superClass.exists { superCls =>
-                superCls.encodedName == cls &&
-                superCls
-                  .lookupMethod(methodName.name)
-                  .exists(isElidableModuleConstructor)
-              }
+              impl
+                .owner
+                .asInstanceOf[Class]
+                .superClass
+                .exists { superCls =>
+                  superCls.encodedName == cls &&
+                  superCls
+                    .lookupMethod(methodName.name)
+                    .exists(isElidableModuleConstructor)
+                }
           case StoreModule(_, _) =>
             true
           case _ =>

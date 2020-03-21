@@ -57,8 +57,8 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
           (6, "Leonard", 2),
           (7, "Ben", 2),
           (8, "Greg", 3))
-        _ <- mark("q1", q1.result).map(r =>
-          r.toSet shouldBe Set((2, "Amy"), (3, "Steve")))
+        _ <- mark("q1", q1.result)
+          .map(r => r.toSet shouldBe Set((2, "Amy"), (3, "Steve")))
         _ <- mark("q2", q2.result).map(r =>
           r.toSet shouldBe Set((7, "Ben"), (8, "Greg"), (6, "Leonard")))
         _ <- mark("q3", q3.result).map(
@@ -97,8 +97,9 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
         (1, "Peter", "HR"),
         (2, "Amy", "IT"),
         (3, "Steve", "IT")),
-      q.result.map(r =>
-        r.toSet shouldBe Set((1, "Peter", "HR"), (2, "Amy", "IT")))
+      q
+        .result
+        .map(r => r.toSet shouldBe Set((1, "Peter", "HR"), (2, "Amy", "IT")))
     ) andFinally managers.schema.drop
   }
 
@@ -129,16 +130,19 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
       coffees ++= Seq((10L, 1L), (20L, 2L), (30L, 3L)),
       teas ++= Seq((100L, 1L), (200L, 2L), (300L, 3L)),
       q1.result.map(r => r.toSet shouldBe Set((10L, 1L), (20L, 2L), (30L, 3L))),
-      q2.result.map(r =>
-        r.toSet shouldBe Set((100L, 1L), (200L, 2L), (300L, 3L))),
-      q3.result.map(r =>
-        r.toSet shouldBe Set(
-          (10L, 1L),
-          (20L, 2L),
-          (30L, 3L),
-          (100L, 1L),
-          (200L, 2L),
-          (300L, 3L)))
+      q2
+        .result
+        .map(r => r.toSet shouldBe Set((100L, 1L), (200L, 2L), (300L, 3L))),
+      q3
+        .result
+        .map(r =>
+          r.toSet shouldBe Set(
+            (10L, 1L),
+            (20L, 2L),
+            (30L, 3L),
+            (100L, 1L),
+            (200L, 2L),
+            (300L, 3L)))
     )
   }
 

@@ -58,8 +58,8 @@ class SourceMapTest {
         val trace0 = e.getStackTrace.toList
         val trace1 = trace0.dropWhile(
           normFileName(_).endsWith("/scala/scalajs/runtime/StackTrace.scala"))
-        val trace2 = trace1.dropWhile(
-          normFileName(_).endsWith("/java/lang/Throwables.scala"))
+        val trace2 = trace1
+          .dropWhile(normFileName(_).endsWith("/java/lang/Throwables.scala"))
 
         val topSte = trace2.head
         assertTrue(normFileName(topSte).contains("/SourceMapTest.scala"))
@@ -390,47 +390,49 @@ class Json extends Writer2 {
     /**/
     // *** Character => CharKind Map ***
 
-    val charKind = (0 to 255).toArray.map {
-      case c if 'a'.toInt <= c && c <= 'z'.toInt =>
-        Letter
-      case c if 'A'.toInt <= c && c <= 'Z'.toInt =>
-        Letter
-      case c if '0'.toInt <= c && c <= '9'.toInt =>
-        Digit
-      case '-' =>
-        /**/
-        Minus
-      case ',' =>
-        /**/
-        Comma
-      case '"' =>
-        /**/
-        Quote
-      case ':' =>
-        /**/
-        Colon
-      case '{' =>
-        /**/
-        Lbra
-      case '}' =>
-        Rbra
-      case '[' =>
-        Larr
-      case ']' =>
-        Rarr
-      case ' ' =>
-        Blank
-      case '\t' =>
-        Blank
-      case '\n' =>
-        Blank
-      case '\r' =>
-        Blank
-      case '/' =>
-        Slash
-      case _ =>
-        Other
-    }
+    val charKind = (0 to 255)
+      .toArray
+      .map {
+        case c if 'a'.toInt <= c && c <= 'z'.toInt =>
+          Letter
+        case c if 'A'.toInt <= c && c <= 'Z'.toInt =>
+          Letter
+        case c if '0'.toInt <= c && c <= '9'.toInt =>
+          Digit
+        case '-' =>
+          /**/
+          Minus
+        case ',' =>
+          /**/
+          Comma
+        case '"' =>
+          /**/
+          Quote
+        case ':' =>
+          /**/
+          Colon
+        case '{' =>
+          /**/
+          Lbra
+        case '}' =>
+          Rbra
+        case '[' =>
+          Larr
+        case ']' =>
+          Rarr
+        case ' ' =>
+          Blank
+        case '\t' =>
+          Blank
+        case '\n' =>
+          Blank
+        case '\r' =>
+          Blank
+        case '/' =>
+          Slash
+        case _ =>
+          Other
+      }
 
     // *** Character Escapes
     /**/

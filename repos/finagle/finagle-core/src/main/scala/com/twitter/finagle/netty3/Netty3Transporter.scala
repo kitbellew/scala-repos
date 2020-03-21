@@ -43,12 +43,12 @@ private[netty3] class ChannelConnector[In, Out](
     newTransport: Channel => Transport[In, Out],
     statsReceiver: StatsReceiver)
     extends (SocketAddress => Future[Transport[In, Out]]) {
-  private[this] val connectLatencyStat = statsReceiver.stat(
-    "connect_latency_ms")
-  private[this] val failedConnectLatencyStat = statsReceiver.stat(
-    "failed_connect_latency_ms")
-  private[this] val cancelledConnects = statsReceiver.counter(
-    "cancelled_connects")
+  private[this] val connectLatencyStat = statsReceiver
+    .stat("connect_latency_ms")
+  private[this] val failedConnectLatencyStat = statsReceiver
+    .stat("failed_connect_latency_ms")
+  private[this] val cancelledConnects = statsReceiver
+    .counter("cancelled_connects")
 
   def apply(addr: SocketAddress): Future[Transport[In, Out]] = {
     require(addr != null)
@@ -82,8 +82,8 @@ private[netty3] class ChannelConnector[In, Out](
             promise.setValue(transport)
           } else if (f.isCancelled) {
             cancelledConnects.incr()
-            promise.setException(
-              WriteException(new CancelledConnectionException))
+            promise
+              .setException(WriteException(new CancelledConnectionException))
           } else {
             failedConnectLatencyStat.add(latency)
             promise.setException(
@@ -262,7 +262,8 @@ private[netty3] object FireChannelClosedLater extends ChannelFutureListener {
             new Runnable() {
               override def run(): Unit = Channels.fireChannelClosed(nioChannel)
             })
-        nioChannel.getWorker
+        nioChannel
+          .getWorker
           .executeInIoThread(channelClosed, /* alwaysAsync */ true)
 
       case channel =>
@@ -308,20 +309,21 @@ private[netty3] object FireChannelClosedLater extends ChannelFutureListener {
 case class Netty3Transporter[In, Out](
     name: String,
     pipelineFactory: ChannelPipelineFactory,
-    newChannel: ChannelPipeline => Channel =
-      Netty3Transporter.channelFactory.newChannel,
+    newChannel: ChannelPipeline => Channel = Netty3Transporter
+      .channelFactory
+      .newChannel,
     newTransport: Channel => Transport[In, Out] = (ch: Channel) =>
       Transport.cast[In, Out](new ChannelTransport[Any, Any](ch)),
     tlsConfig: Option[Netty3TransporterTLSConfig] = None,
     httpProxy: Option[SocketAddress] = None,
     socksProxy: Option[SocketAddress] = SocksProxyFlags.socksProxy,
-    socksUsernameAndPassword: Option[(String, String)] =
-      SocksProxyFlags.socksUsernameAndPassword,
+    socksUsernameAndPassword: Option[(String, String)] = SocksProxyFlags
+      .socksUsernameAndPassword,
     channelReaderTimeout: Duration = Duration.Top,
     channelWriterTimeout: Duration = Duration.Top,
     channelSnooper: Option[ChannelSnooper] = None,
-    channelOptions: Map[String, Object] =
-      Netty3Transporter.defaultChannelOptions,
+    channelOptions: Map[String, Object] = Netty3Transporter
+      .defaultChannelOptions,
     httpProxyCredentials: Option[Transporter.Credentials] = None)
     extends ((SocketAddress, StatsReceiver) => Future[Transport[In, Out]]) {
   private[this] val statsHandlers =
@@ -399,8 +401,9 @@ case class Netty3Transporter[In, Out](
       //
       // [1]: https://github.com/netty/netty/issues/137
       // [2]: https://github.com/netty/netty/blob/3.10/src/main/java/org/jboss/netty/handler/ssl/SslHandler.java#L119
-      sslHandler.getSSLEngineInboundCloseFuture.addListener(
-        FireChannelClosedLater)
+      sslHandler
+        .getSSLEngineInboundCloseFuture
+        .addListener(FireChannelClosedLater)
     }
 
     (socksProxy, addr) match {
@@ -415,11 +418,8 @@ case class Netty3Transporter[In, Out](
               case _ =>
                 Unauthenticated
             }
-          SocksConnectHandler.addHandler(
-            proxyAddr,
-            inetSockAddr,
-            Seq(authentication),
-            pipeline)
+          SocksConnectHandler
+            .addHandler(proxyAddr, inetSockAddr, Seq(authentication), pipeline)
         }
       case _ =>
     }
@@ -427,11 +427,8 @@ case class Netty3Transporter[In, Out](
     (httpProxy, addr) match {
       case (Some(proxyAddr), inetAddr: InetSocketAddress)
           if !inetAddr.isUnresolved =>
-        HttpConnectHandler.addHandler(
-          proxyAddr,
-          inetAddr,
-          pipeline,
-          httpProxyCredentials)
+        HttpConnectHandler
+          .addHandler(proxyAddr, inetAddr, pipeline, httpProxyCredentials)
       case _ =>
     }
 

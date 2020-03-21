@@ -129,7 +129,9 @@ object ResultsSpec extends Specification {
         val result = Ok("hello")
           .withCookies(cookies1: _*)
           .withCookies(cookies2: _*)
-        result.header.headers
+        result
+          .header
+          .headers
           .get("Set-Cookie")
           .map(Cookies.decodeSetCookieHeader(_).to[Set]) must_== expected
       }
@@ -172,7 +174,8 @@ object ResultsSpec extends Specification {
     "allow discarding a cookie by deprecated names method" in withApplication {
       Cookies
         .decodeSetCookieHeader(
-          Ok.discardingCookies(DiscardingCookie("blah"))
+          Ok
+            .discardingCookies(DiscardingCookie("blah"))
             .header
             .headers("Set-Cookie"))
         .head
@@ -182,7 +185,8 @@ object ResultsSpec extends Specification {
     "allow discarding multiple cookies by deprecated names method" in withApplication {
       val cookies = Cookies
         .decodeSetCookieHeader(
-          Ok.discardingCookies(DiscardingCookie("foo"), DiscardingCookie("bar"))
+          Ok
+            .discardingCookies(DiscardingCookie("foo"), DiscardingCookie("bar"))
             .header
             .headers("Set-Cookie"))
         .map(_.name)

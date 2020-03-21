@@ -24,7 +24,8 @@ class HoconBlock(
   private val wrapCache = {
     val pathValueSeparatorType =
       if (node.getElementType == HoconElementType.ValuedField)
-        node.childrenIterator
+        node
+          .childrenIterator
           .map(_.getElementType)
           .find(HoconTokenSets.KeyValueSeparator.contains)
       else

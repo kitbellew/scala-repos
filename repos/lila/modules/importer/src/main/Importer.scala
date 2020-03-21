@@ -71,8 +71,10 @@ final class Importer(
   }
 
   def inMemory(data: ImportData): Valid[Game] =
-    data.preprocess(user = none).map {
-      case Preprocessed(game, replay, _) =>
-        game withId "synthetic"
-    }
+    data
+      .preprocess(user = none)
+      .map {
+        case Preprocessed(game, replay, _) =>
+          game withId "synthetic"
+      }
 }

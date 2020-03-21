@@ -51,10 +51,13 @@ trait Solving extends Logic {
 
     class SymbolMapping(symbols: Set[Sym]) {
       val variableForSymbol: Map[Sym, Int] = {
-        symbols.zipWithIndex.map {
-          case (sym, i) =>
-            sym -> (i + 1)
-        }.toMap
+        symbols
+          .zipWithIndex
+          .map {
+            case (sym, i) =>
+              sym -> (i + 1)
+          }
+          .toMap
       }
 
       val symForVar: Map[Int, Sym] = variableForSymbol.map(_.swap)
@@ -258,11 +261,14 @@ trait Solving extends Logic {
                   }
                 /\(-convertSym(xn), -snMinus)
               } else {
-                ops.map(convertSym).combinations(2).foreach {
-                  case a :: b :: Nil =>
-                    addClauseProcessed(clause(-a, -b))
-                  case _ =>
-                }
+                ops
+                  .map(convertSym)
+                  .combinations(2)
+                  .foreach {
+                    case a :: b :: Nil =>
+                      addClauseProcessed(clause(-a, -b))
+                    case _ =>
+                  }
               }
           }
         }
@@ -471,8 +477,8 @@ trait Solving extends Logic {
         }
 
       val tseitinSolutions = findAllModels(solvable.cnf, Nil)
-      tseitinSolutions.map(
-        _.projectToSolution(solvable.symbolMapping.symForVar))
+      tseitinSolutions
+        .map(_.projectToSolution(solvable.symbolMapping.symForVar))
     }
 
     private def withLit(res: TseitinModel, l: Lit): TseitinModel = {

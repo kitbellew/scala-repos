@@ -114,7 +114,8 @@ class ScalaLookupItem(
       return false
     o match {
       case s: ScalaLookupItem =>
-        if (isNamedParameter != s.isNamedParameter || containingClass != s.containingClass)
+        if (isNamedParameter != s.isNamedParameter || containingClass != s
+              .containingClass)
           return false
       case _ =>
     }
@@ -126,7 +127,8 @@ class ScalaLookupItem(
       element match {
         case t: ScFun =>
           if (t.typeParameters.nonEmpty)
-            t.typeParameters
+            t
+              .typeParameters
               .map(param => presentationString(param, substitutor))
               .mkString("[", ", ", "]")
           else
@@ -139,7 +141,8 @@ class ScalaLookupItem(
               ""
           }
         case p: PsiTypeParameterListOwner if p.getTypeParameters.nonEmpty =>
-          p.getTypeParameters
+          p
+            .getTypeParameters
             .map(ptp => presentationString(ptp))
             .mkString("[", ", ", "]")
         case p: PsiPackage =>
@@ -169,7 +172,9 @@ class ScalaLookupItem(
               if (shouldImport && isClassName && containingClass != null)
                 " " + containingClass.getPresentation.getLocationString
               else if (isClassName && containingClass != null)
-                " in " + containingClass.name + " " + containingClass.getPresentation.getLocationString
+                " in " + containingClass.name + " " + containingClass
+                  .getPresentation
+                  .getLocationString
               else
                 ""
             )
@@ -181,10 +186,11 @@ class ScalaLookupItem(
       case fun: ScFun =>
         presentation.setTypeText(presentationString(fun.retType, substitutor))
         val paramClausesText =
-          fun.paramClauses
+          fun
+            .paramClauses
             .map(
               _.map(presentationString(_, substitutor))
-                .mkString("(", ", ", ")"))
+              .mkString("(", ", ", ")"))
             .mkString
         presentation.setTailText(tailText + paramClausesText)
       case bind: ScBindingPattern =>
@@ -240,7 +246,8 @@ class ScalaLookupItem(
             if (shouldImport && isClassName && containingClass != null)
               " " + containingClass.getPresentation.getLocationString
             else if (isClassName && containingClass != null)
-              " in " + containingClass.name + " " + containingClass.getPresentation.getLocationString
+              " in " + containingClass
+                .name + " " + containingClass.getPresentation.getLocationString
             else
               ""
           )
@@ -339,17 +346,19 @@ class ScalaLookupItem(
             context.getStartOffset + shift,
             classOf[ScReferenceElement],
             false)
-          val useFullyQualifiedName =
-            PsiTreeUtil.getParentOfType(ref, classOf[ScImportStmt]) != null &&
-              PsiTreeUtil.getParentOfType(
-                ref,
-                classOf[ScImportSelectors]) == null //do not complete in sel
+          val useFullyQualifiedName = PsiTreeUtil
+            .getParentOfType(ref, classOf[ScImportStmt]) != null &&
+            PsiTreeUtil.getParentOfType(
+              ref,
+              classOf[ScImportSelectors]) == null //do not complete in sel
           if (ref == null)
             return
-          while (ref.getParent != null && ref.getParent
+          while (ref.getParent != null && ref
+                   .getParent
                    .isInstanceOf[ScReferenceElement] &&
                  (
-                   ref.getParent
+                   ref
+                     .getParent
                      .asInstanceOf[ScReferenceElement]
                      .qualifier match {
                      case Some(r) =>
@@ -377,9 +386,8 @@ class ScalaLookupItem(
                 val parts = cl.qualifiedName.split('.')
                 if (parts.length > 1) {
                   val newRefText = parts.takeRight(2).mkString(".")
-                  ScalaPsiElementFactory.createReferenceFromText(
-                    newRefText,
-                    ref.getManager)
+                  ScalaPsiElementFactory
+                    .createReferenceFromText(newRefText, ref.getManager)
                 } else {
                   ref.createReplacingElementWithClassName(
                     useFullyQualifiedName,
@@ -428,17 +436,21 @@ class ScalaLookupItem(
               .commitDocument(document)
             context.getFile match {
               case scalaFile: ScalaFile =>
-                val elem = scalaFile.findElementAt(
-                  context.getStartOffset + shift)
+                val elem = scalaFile
+                  .findElementAt(context.getStartOffset + shift)
                 def qualifyReference(ref: ScReferenceExpression) {
                   val newRef = ScalaPsiElementFactory
                     .createExpressionFromText(
                       containingClass.name + "." + ref.getText,
                       containingClass.getManager)
                     .asInstanceOf[ScReferenceExpression]
-                  ref.getNode.getTreeParent
+                  ref
+                    .getNode
+                    .getTreeParent
                     .replaceChild(ref.getNode, newRef.getNode)
-                  newRef.qualifier.get
+                  newRef
+                    .qualifier
+                    .get
                     .asInstanceOf[ScReferenceExpression]
                     .bindToElement(containingClass)
                 }
@@ -458,7 +470,8 @@ class ScalaLookupItem(
                         ScalaPsiUtil.nameContext(elementToImport) match {
                           case member: PsiMember =>
                             val containingClass = member.containingClass
-                            if (containingClass != null && containingClass.qualifiedName != null) {
+                            if (containingClass != null && containingClass
+                                  .qualifiedName != null) {
                               ScalaImportTypeFix
                                 .getImportHolder(ref, ref.getProject)
                                 .addImportForPsiNamedElement(

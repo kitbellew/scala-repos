@@ -51,12 +51,10 @@ class QuotasTest extends KafkaServerTestHarness {
   val overridingProps = new Properties()
 
   // Low enough quota that a producer sending a small payload in a tight loop should get throttled
-  overridingProps.put(
-    KafkaConfig.ProducerQuotaBytesPerSecondDefaultProp,
-    "8000")
-  overridingProps.put(
-    KafkaConfig.ConsumerQuotaBytesPerSecondDefaultProp,
-    "2500")
+  overridingProps
+    .put(KafkaConfig.ProducerQuotaBytesPerSecondDefaultProp, "8000")
+  overridingProps
+    .put(KafkaConfig.ConsumerQuotaBytesPerSecondDefaultProp, "2500")
 
   override def generateConfigs() = {
     FixedPortTestUtils
@@ -81,9 +79,8 @@ class QuotasTest extends KafkaServerTestHarness {
     val producerProps = new Properties()
     producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, brokerList)
     producerProps.put(ProducerConfig.ACKS_CONFIG, "0")
-    producerProps.put(
-      ProducerConfig.BUFFER_MEMORY_CONFIG,
-      producerBufferSize.toString)
+    producerProps
+      .put(ProducerConfig.BUFFER_MEMORY_CONFIG, producerBufferSize.toString)
     producerProps.put(ProducerConfig.CLIENT_ID_CONFIG, producerId1)
     producerProps.put(
       ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
@@ -97,12 +94,8 @@ class QuotasTest extends KafkaServerTestHarness {
     producers += new KafkaProducer[Array[Byte], Array[Byte]](producerProps)
 
     val numPartitions = 1
-    val leaders = TestUtils.createTopic(
-      zkUtils,
-      topic1,
-      numPartitions,
-      numServers,
-      servers)
+    val leaders = TestUtils
+      .createTopic(zkUtils, topic1, numPartitions, numServers, servers)
     leaderNode =
       if (leaders(0).get == servers.head.config.brokerId)
         servers.head
@@ -123,9 +116,8 @@ class QuotasTest extends KafkaServerTestHarness {
     consumerProps.setProperty(
       ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG,
       4096.toString)
-    consumerProps.setProperty(
-      ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,
-      "earliest")
+    consumerProps
+      .setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
     consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, brokerList)
     consumerProps.put(
       ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
@@ -170,12 +162,14 @@ class QuotasTest extends KafkaServerTestHarness {
     val numRecords = 1000
     produce(producers.head, numRecords)
 
-    val producerMetricName = leaderNode.metrics.metricName(
-      "throttle-time",
-      ApiKeys.PRODUCE.name,
-      "Tracking throttle-time per client",
-      "client-id",
-      producerId1)
+    val producerMetricName = leaderNode
+      .metrics
+      .metricName(
+        "throttle-time",
+        ApiKeys.PRODUCE.name,
+        "Tracking throttle-time per client",
+        "client-id",
+        producerId1)
     assertTrue(
       "Should have been throttled",
       allMetrics(producerMetricName).value() > 0)
@@ -188,12 +182,14 @@ class QuotasTest extends KafkaServerTestHarness {
       .replicaId(followerNode.config.brokerId)
       .build()
     replicaConsumers.head.fetch(request)
-    val consumerMetricName = leaderNode.metrics.metricName(
-      "throttle-time",
-      ApiKeys.FETCH.name,
-      "Tracking throttle-time per client",
-      "client-id",
-      consumerId1)
+    val consumerMetricName = leaderNode
+      .metrics
+      .metricName(
+        "throttle-time",
+        ApiKeys.FETCH.name,
+        "Tracking throttle-time per client",
+        "client-id",
+        consumerId1)
     assertTrue(
       "Should have been throttled",
       allMetrics(consumerMetricName).value() > 0)
@@ -235,12 +231,14 @@ class QuotasTest extends KafkaServerTestHarness {
       leaderNode.metrics.metrics().asScala
     val numRecords = 1000
     produce(producers(1), numRecords)
-    val producerMetricName = leaderNode.metrics.metricName(
-      "throttle-time",
-      ApiKeys.PRODUCE.name,
-      "Tracking throttle-time per client",
-      "client-id",
-      producerId2)
+    val producerMetricName = leaderNode
+      .metrics
+      .metricName(
+        "throttle-time",
+        ApiKeys.PRODUCE.name,
+        "Tracking throttle-time per client",
+        "client-id",
+        producerId2)
     assertEquals(
       "Should not have been throttled",
       0.0,
@@ -255,12 +253,14 @@ class QuotasTest extends KafkaServerTestHarness {
       .replicaId(followerNode.config.brokerId)
       .build()
     replicaConsumers(1).fetch(request)
-    val consumerMetricName = leaderNode.metrics.metricName(
-      "throttle-time",
-      ApiKeys.FETCH.name,
-      "Tracking throttle-time per client",
-      "client-id",
-      consumerId2)
+    val consumerMetricName = leaderNode
+      .metrics
+      .metricName(
+        "throttle-time",
+        ApiKeys.FETCH.name,
+        "Tracking throttle-time per client",
+        "client-id",
+        consumerId2)
     assertEquals(
       "Should not have been throttled",
       0.0,
@@ -273,7 +273,8 @@ class QuotasTest extends KafkaServerTestHarness {
     for (i <- 0 to count) {
       val payload = i.toString.getBytes
       numBytesProduced += payload.length
-      p.send(
+      p
+        .send(
           new ProducerRecord[Array[Byte], Array[Byte]](
             topic1,
             null,

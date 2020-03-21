@@ -125,13 +125,14 @@ package scalaguide.http.scalabodyparsers {
 
           def forward(request: WSRequest): BodyParser[WSResponse] =
             BodyParser { req =>
-              Accumulator.source[ByteString].mapFuture { source =>
-                request
-                // TODO: stream body when support is implemented
-                // .withBody(source)
-                  .execute()
-                  .map(Right.apply)
-              }
+              Accumulator
+                .source[ByteString]
+                .mapFuture { source =>
+                  request
+                  // TODO: stream body when support is implemented
+                  // .withBody(source)
+                    .execute().map(Right.apply)
+                }
             }
 
           def myAction =
@@ -211,7 +212,8 @@ package scalaguide.http.scalabodyparsers {
       def file(to: File) = parse.file(to)
       //#body-parser-combining
       val storeInUserFile = parse.using { request =>
-        request.session
+        request
+          .session
           .get("username")
           .map { user =>
             file(to = new File("/tmp/" + user + ".upload"))

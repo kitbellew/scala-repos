@@ -93,7 +93,9 @@ trait Task[R, +Tp] {
   */
 trait Tasks {
 
-  private[parallel] val debugMessages = scala.collection.mutable
+  private[parallel] val debugMessages = scala
+    .collection
+    .mutable
     .ArrayBuffer[String]()
 
   private[parallel] def debuglog(s: String) =

@@ -111,8 +111,8 @@ trait SampleSpec[M[+_]]
         val expected2 =
           toJson(
             table.transform(
-              trans
-                .DerefObjectStatic(TransSpec1.Id, CPathField("value")))).copoint
+              trans.DerefObjectStatic(TransSpec1.Id, CPathField("value"))))
+            .copoint
         expected1 must containAllOf(result1)
         expected2 must containAllOf(result2)
     }

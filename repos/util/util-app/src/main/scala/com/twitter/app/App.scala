@@ -217,8 +217,10 @@ object App {
   def registered: Option[App] = ref.get
 
   private[app] def register(app: App): Unit =
-    ref.getAndSet(Some(app)).foreach { existing =>
-      log.warning(
-        s"Multiple com.twitter.app.App main methods called. ${existing.name}, then ${app.name}")
-    }
+    ref
+      .getAndSet(Some(app))
+      .foreach { existing =>
+        log.warning(
+          s"Multiple com.twitter.app.App main methods called. ${existing.name}, then ${app.name}")
+      }
 }

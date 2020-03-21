@@ -29,7 +29,12 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
   def csrfCheck =
     play.api.Play.privateMaybeApplication.get.injector.instanceOf[CSRFCheck]
   def crypto =
-    play.api.Play.privateMaybeApplication.get.injector
+    play
+      .api
+      .Play
+      .privateMaybeApplication
+      .get
+      .injector
       .instanceOf[CSRFTokenSigner]
 
   val Boundary = "83ff53821b7c"
@@ -86,14 +91,14 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
     "reject requests with nocheck header" in {
       csrfCheckRequest(
         _.withCookies("foo" -> "bar")
-          .withHeaders(HeaderName -> "nocheck")
-          .post(Map("foo" -> "bar")))(_.status must_== errorStatusCode)
+        .withHeaders(HeaderName -> "nocheck")
+        .post(Map("foo" -> "bar")))(_.status must_== errorStatusCode)
     }
     "reject requests with ajax header" in {
       csrfCheckRequest(
         _.withCookies("foo" -> "bar")
-          .withHeaders("X-Requested-With" -> "a spoon")
-          .post(Map("foo" -> "bar")))(_.status must_== errorStatusCode)
+        .withHeaders("X-Requested-With" -> "a spoon")
+        .post(Map("foo" -> "bar")))(_.status must_== errorStatusCode)
     }
     "reject requests with different token in body" in {
       csrfCheckRequest(req =>
@@ -109,7 +114,7 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
     "reject requests with token in body but not in session" in {
       csrfCheckRequest(
         _.withSession("foo" -> "bar")
-          .post(Map("foo" -> "bar", TokenName -> generate)))(
+        .post(Map("foo" -> "bar", TokenName -> generate)))(
         _.status must_== errorStatusCode)
     }
 
@@ -146,7 +151,8 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
       def addToken(req: WSRequest, token: String) =
         req.withSession(TokenName -> token)
       def getToken(response: WSResponse) = {
-        val session = response.cookies
+        val session = response
+          .cookies
           .find(_.name.exists(_ == Session.COOKIE_NAME))
           .flatMap(_.value)
           .map(Session.decode)
@@ -166,17 +172,18 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
 
       "reject requests with unsigned token in body" in {
         csrfCheckRequest(req =>
-          addToken(req, generate).post(
-            Map("foo" -> "bar", TokenName -> "foo")))(
+          addToken(req, generate)
+            .post(Map("foo" -> "bar", TokenName -> "foo")))(
           _.status must_== FORBIDDEN)
       }
       "reject requests with unsigned token in session" in {
         csrfCheckRequest(req =>
-          addToken(req, "foo").post(
-            Map("foo" -> "bar", TokenName -> generate))) { response =>
+          addToken(req, "foo")
+            .post(Map("foo" -> "bar", TokenName -> generate))) { response =>
           response.status must_== FORBIDDEN
-          response.cookies.find(
-            _.name.exists(_ == Session.COOKIE_NAME)) must beSome.like {
+          response
+            .cookies
+            .find(_.name.exists(_ == Session.COOKIE_NAME)) must beSome.like {
             case cookie =>
               cookie.value must beNone
           }
@@ -202,7 +209,8 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
       def addToken(req: WSRequest, token: String) =
         req.withSession(TokenName -> token)
       def getToken(response: WSResponse) = {
-        val session = response.cookies
+        val session = response
+          .cookies
           .find(_.name.exists(_ == Session.COOKIE_NAME))
           .flatMap(_.value)
           .map(Session.decode)
@@ -284,10 +292,13 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
       def addToken(req: WSRequest, token: String) =
         req.withCookies("csrf" -> token)
       def getToken(response: WSResponse) = {
-        response.cookies.find(_.name.exists(_ == "csrf")).flatMap { cookie =>
-          cookie.secure must beTrue
-          cookie.value
-        }
+        response
+          .cookies
+          .find(_.name.exists(_ == "csrf"))
+          .flatMap { cookie =>
+            cookie.secure must beTrue
+            cookie.value
+          }
       }
       def compareTokens(a: String, b: String) =
         crypto.compareSignedTokens(a, b) must beTrue
@@ -335,14 +346,14 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
       "accept requests with nocheck header" in {
         csrfCheckRequest(
           _.withCookies("foo" -> "bar")
-            .withHeaders(HeaderName -> "nocheck")
-            .post(Map("foo" -> "bar")))(_.status must_== OK)
+          .withHeaders(HeaderName -> "nocheck")
+          .post(Map("foo" -> "bar")))(_.status must_== OK)
       }
       "accept requests with ajax header" in {
         csrfCheckRequest(
           _.withCookies("foo" -> "bar")
-            .withHeaders("X-Requested-With" -> "a spoon")
-            .post(Map("foo" -> "bar")))(_.status must_== OK)
+          .withHeaders("X-Requested-With" -> "a spoon")
+          .post(Map("foo" -> "bar")))(_.status must_== OK)
       }
     }
   }
@@ -376,7 +387,8 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
   }
 
   implicit def simpleFormWriteable: Writeable[Map[String, String]] =
-    Writeable.writeableOf_urlEncodedForm
+    Writeable
+      .writeableOf_urlEncodedForm
       .map[Map[String, String]](_.mapValues(v => Seq(v)))
   implicit def simpleFormContentType: ContentTypeOf[Map[String, String]] =
     ContentTypeOf[Map[String, String]](Some(ContentTypes.FORM))

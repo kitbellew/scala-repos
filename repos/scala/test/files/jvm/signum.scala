@@ -17,7 +17,9 @@ object Test {
 
     assert(java.lang.Double.doubleToLongBits(math.signum(0d)) == 0x0L)
     assert(
-      java.lang.Double
+      java
+        .lang
+        .Double
         .doubleToLongBits(math.signum(-0d)) == 0x8000000000000000L)
   }
 }

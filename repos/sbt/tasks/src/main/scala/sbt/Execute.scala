@@ -30,7 +30,8 @@ private[sbt] object Execute {
       val checkCycles: Boolean,
       val overwriteNode: Incomplete => Boolean)
 
-  final val checkPreAndPostConditions = sys.props
+  final val checkPreAndPostConditions = sys
+    .props
     .get("sbt.execute.extrachecks")
     .exists(java.lang.Boolean.parseBoolean)
 }
@@ -82,7 +83,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
   import State.{Pending, Running, Calling, Done}
 
   def dump: String =
-    "State: " + state.toString + "\n\nResults: " + results + "\n\nCalls: " + callers + "\n\n"
+    "State: " + state
+      .toString + "\n\nResults: " + results + "\n\nCalls: " + callers + "\n\n"
 
   def run[T](root: A[T])(implicit strategy: Strategy): Result[T] =
     try {
@@ -170,9 +172,13 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     remove(reverse, node) foreach { dep =>
       notifyDone(node, dep)
     }
-    callers.remove(node).toList.flatten.foreach { c =>
-      retire(c, callerResult(c, result))
-    }
+    callers
+      .remove(node)
+      .toList
+      .flatten
+      .foreach { c =>
+        retire(c, callerResult(c, result))
+      }
     triggeredBy(node) foreach { t =>
       addChecked(t)
     }
@@ -297,15 +303,17 @@ private[sbt] final class Execute[A[_] <: AnyRef](
   def work[T](node: A[T], f: => Either[A[T], T])(implicit
       strategy: Strategy): Completed = {
     progress.workStarting(node)
-    val rawResult = wideConvert(f).left.map {
-      case i: Incomplete =>
-        if (config.overwriteNode(i))
-          i.copy(node = Some(node))
-        else
-          i
-      case e =>
-        Incomplete(Some(node), Incomplete.Error, directCause = Some(e))
-    }
+    val rawResult = wideConvert(f)
+      .left
+      .map {
+        case i: Incomplete =>
+          if (config.overwriteNode(i))
+            i.copy(node = Some(node))
+          else
+            i
+        case e =>
+          Incomplete(Some(node), Incomplete.Error, directCause = Some(e))
+      }
     val result = rewrap(rawResult)
     progress.workFinished(node, result)
     completed {

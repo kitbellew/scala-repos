@@ -142,13 +142,14 @@ private[akka] class Deployer(
 
   import scala.collection.JavaConverters._
 
-  private val resizerEnabled: Config = ConfigFactory.parseString(
-    "resizer.enabled=on")
+  private val resizerEnabled: Config = ConfigFactory
+    .parseString("resizer.enabled=on")
   private val deployments = new AtomicReference(WildcardTree[Deploy]())
   private val config = settings.config.getConfig("akka.actor.deployment")
   protected val default = config.getConfig("default")
   val routerTypeMapping: Map[String, String] =
-    settings.config
+    settings
+      .config
       .getConfig("akka.actor.router.type-mapping")
       .root
       .unwrapped
@@ -227,8 +228,8 @@ private[akka] class Deployer(
     else {
       // need this for backwards compatibility, resizer enabled when including (parts of) resizer section in the deployment
       val deployment2 =
-        if (config.hasPath("resizer") && !deployment.getBoolean(
-              "resizer.enabled"))
+        if (config
+              .hasPath("resizer") && !deployment.getBoolean("resizer.enabled"))
           resizerEnabled.withFallback(deployment)
         else
           deployment

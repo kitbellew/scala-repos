@@ -77,21 +77,25 @@ trait SliceColumnarTableModule[M[+_]]
               proj: Projection,
               constraints: Option[Set[ColumnRef]]): StreamT[M, Slice] = {
             StreamT.unfoldM[M, Slice, Option[proj.Key]](None) { key =>
-              proj.getBlockAfter(key, constraints).map { b =>
-                b.map {
-                  case BlockProjectionData(_, maxKey, slice) =>
-                    (slice, Some(maxKey))
+              proj
+                .getBlockAfter(key, constraints)
+                .map { b =>
+                  b.map {
+                    case BlockProjectionData(_, maxKey, slice) =>
+                      (slice, Some(maxKey))
+                  }
                 }
-              }
             }
           }
 
           val stream =
             projections.foldLeft(StreamT.empty[M, Slice]) { (acc, proj) =>
               // FIXME: Can Schema.flatten return Option[Set[ColumnRef]] instead?
-              val constraints: M[Option[Set[ColumnRef]]] = proj.structure.map {
-                struct => Some(Schema.flatten(tpe, struct.toList).toSet)
-              }
+              val constraints: M[Option[Set[ColumnRef]]] = proj
+                .structure
+                .map { struct =>
+                  Some(Schema.flatten(tpe, struct.toList).toSet)
+                }
 
               acc ++ StreamT.wrapEffect(
                 constraints map { c =>

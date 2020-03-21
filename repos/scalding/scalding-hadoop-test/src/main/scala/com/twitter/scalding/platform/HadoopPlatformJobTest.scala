@@ -85,10 +85,12 @@ case class HadoopPlatformJobTest(
         if (!lines.isEmpty) {
           val os = new BufferedWriter(new FileWriter(tmpFile))
           os.write(lines.head)
-          lines.tail.foreach { str =>
-            os.newLine()
-            os.write(str)
-          }
+          lines
+            .tail
+            .foreach { str =>
+              os.newLine()
+              os.write(str)
+            }
           os.close()
         }
         cluster.putFile(tmpFile, location)
@@ -116,10 +118,12 @@ case class HadoopPlatformJobTest(
     runJob(job)
     checkSinks()
     flowCheckers.foreach { checker =>
-      job.completedFlow.collect {
-        case f: Flow[JobConf] =>
-          checker(f)
-      }
+      job
+        .completedFlow
+        .collect {
+          case f: Flow[JobConf] =>
+            checker(f)
+        }
     }
   }
 

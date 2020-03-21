@@ -14,7 +14,8 @@ class MethodRequiredFilterTest extends FunSuite {
     new Service[Request, Response] {
       def apply(request: Request): Future[Response] = {
         val response = request.response
-        request.params
+        request
+          .params
           .get("exception")
           .foreach(e => {
             response.write("exception thrown")

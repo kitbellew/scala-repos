@@ -348,9 +348,8 @@ private[tree] class LearningNode(
     } else {
       val split = this.split.get
       val featureIndex = split.featureIndex
-      val splitLeft = split.shouldGoLeft(
-        binnedFeatures(featureIndex),
-        splits(featureIndex))
+      val splitLeft = split
+        .shouldGoLeft(binnedFeatures(featureIndex), splits(featureIndex))
       if (this.leftChild.isEmpty) {
         // Not yet split. Return next layer of nodes to train
         if (splitLeft) {
@@ -406,7 +405,9 @@ private[tree] object LearningNode {
     if (nodeIndex == 0) {
       throw new IllegalArgumentException(s"0 is not a valid node index.")
     } else {
-      java.lang.Integer
+      java
+        .lang
+        .Integer
         .numberOfTrailingZeros(java.lang.Integer.highestOneBit(nodeIndex))
     }
 

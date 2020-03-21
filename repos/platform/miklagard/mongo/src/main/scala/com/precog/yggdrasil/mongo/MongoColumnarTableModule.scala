@@ -179,8 +179,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                       db <- safeOp("Database " + dbName + " does not exist")(
                         mongo.getDB(dbName)).flatMap {
                         d =>
-                          if (!d.isAuthenticated && dbAuthParams.contains(
-                                dbName)) {
+                          if (!d.isAuthenticated && dbAuthParams
+                                .contains(dbName)) {
                             logger.trace("Running auth setup for " + dbName)
                             dbAuthParams.get(dbName).map(_.split(':')) flatMap {
                               case Array(user, password) =>
@@ -235,7 +235,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
                 case err =>
                   sys.error(
-                    "MongoDB path " + path.path + " does not have the form /dbName/collectionName; rollups not yet supported.")
+                    "MongoDB path " + path
+                      .path + " does not have the form /dbName/collectionName; rollups not yet supported.")
               }
 
             case InitialLoad(Nil) =>
@@ -308,8 +309,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
           case objId: ObjectId =>
             // TODO: We should ensure this matches up w/ BlueEyes exactly.
-            val value =
-              "ObjectId(\"" + Hex.encodeHexString(objId.toByteArray) + "\")"
+            val value = "ObjectId(\"" + Hex
+              .encodeHexString(objId.toByteArray) + "\")"
             val col = acc
               .getOrElseUpdate(
                 (rprefix, CString), {

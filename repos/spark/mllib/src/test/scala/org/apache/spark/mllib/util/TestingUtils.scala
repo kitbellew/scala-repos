@@ -40,7 +40,8 @@ object TestingUtils {
     val diff = math.abs(x - y)
     if (x == y) {
       true
-    } else if (absX < Double.MinPositiveValue || absY < Double.MinPositiveValue) {
+    } else if (absX < Double.MinPositiveValue || absY < Double
+                 .MinPositiveValue) {
       throw new TestFailedException(
         s"$x or $y is extremely close to zero, so the relative tolerance is meaningless.",
         0)

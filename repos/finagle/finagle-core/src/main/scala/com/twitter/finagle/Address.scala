@@ -16,8 +16,8 @@ import scala.util.control.NoStackTrace
 sealed trait Address
 
 object Address {
-  private[finagle] val failing: Address = Address.Failed(
-    new IllegalArgumentException("failing") with NoStackTrace)
+  private[finagle] val failing: Address = Address
+    .Failed(new IllegalArgumentException("failing") with NoStackTrace)
 
   /**
     * An address represented by an Internet socket address.

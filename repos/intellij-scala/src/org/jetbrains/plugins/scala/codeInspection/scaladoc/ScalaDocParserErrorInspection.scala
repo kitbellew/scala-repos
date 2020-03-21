@@ -42,12 +42,14 @@ class ScalaDocParserErrorInspection extends LocalInspectionTool {
                   a.getParent
                 }
               holder.registerProblem(
-                holder.getManager.createProblemDescriptor(
-                  startElement,
-                  endElement,
-                  a.getErrorDescription,
-                  ProblemHighlightType.GENERIC_ERROR,
-                  isOnTheFly));
+                holder
+                  .getManager
+                  .createProblemDescriptor(
+                    startElement,
+                    endElement,
+                    a.getErrorDescription,
+                    ProblemHighlightType.GENERIC_ERROR,
+                    isOnTheFly));
             case b: ScalaPsiElement if b.getChildren.nonEmpty =>
               visitScaladocElement(b)
             case _ => //do nothing

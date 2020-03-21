@@ -32,15 +32,18 @@ class ANNSuite extends SparkFunSuite with MLlibTestSparkContext {
       Array(1.0, 0.0),
       Array(1.0, 1.0))
     val outputs = Array(0.0, 1.0, 1.0, 0.0)
-    val data = inputs.zip(outputs).map {
-      case (features, label) =>
-        (Vectors.dense(features), Vectors.dense(label))
-    }
+    val data = inputs
+      .zip(outputs)
+      .map {
+        case (features, label) =>
+          (Vectors.dense(features), Vectors.dense(label))
+      }
     val rddData = sc.parallelize(data, 1)
     val hiddenLayersTopology = Array(5)
     val dataSample = rddData.first()
-    val layerSizes =
-      dataSample._1.size +: hiddenLayersTopology :+ dataSample._2.size
+    val layerSizes = dataSample._1.size +: hiddenLayersTopology :+ dataSample
+      ._2
+      .size
     val topology = FeedForwardTopology.multiLayerPerceptron(layerSizes, false)
     val initialWeights = FeedForwardModel(topology, 23124).weights()
     val trainer = new FeedForwardTrainer(topology, 2, 1)
@@ -71,15 +74,18 @@ class ANNSuite extends SparkFunSuite with MLlibTestSparkContext {
       Array(0.0, 1.0),
       Array(0.0, 1.0),
       Array(1.0, 0.0))
-    val data = inputs.zip(outputs).map {
-      case (features, label) =>
-        (Vectors.dense(features), Vectors.dense(label))
-    }
+    val data = inputs
+      .zip(outputs)
+      .map {
+        case (features, label) =>
+          (Vectors.dense(features), Vectors.dense(label))
+      }
     val rddData = sc.parallelize(data, 1)
     val hiddenLayersTopology = Array(5)
     val dataSample = rddData.first()
-    val layerSizes =
-      dataSample._1.size +: hiddenLayersTopology :+ dataSample._2.size
+    val layerSizes = dataSample._1.size +: hiddenLayersTopology :+ dataSample
+      ._2
+      .size
     val topology = FeedForwardTopology.multiLayerPerceptron(layerSizes, false)
     val initialWeights = FeedForwardModel(topology, 23124).weights()
     val trainer = new FeedForwardTrainer(topology, 2, 2)

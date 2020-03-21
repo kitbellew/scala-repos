@@ -110,7 +110,9 @@ object MarathonTestHelper {
       reservation match {
         case Some(reservationLabels) =>
           val labels = reservationLabels.mesosLabels
-          val reservation = Mesos.Resource.ReservationInfo
+          val reservation = Mesos
+            .Resource
+            .ReservationInfo
             .newBuilder()
             .setPrincipal("marathon")
             .setLabels(labels)
@@ -137,7 +139,8 @@ object MarathonTestHelper {
       } else {
         None
       }
-    val offerBuilder = Offer.newBuilder
+    val offerBuilder = Offer
+      .newBuilder
       .setId(OfferID("1"))
       .setFrameworkId(frameworkID)
       .setSlaveId(SlaveID("slave0"))
@@ -158,7 +161,8 @@ object MarathonTestHelper {
       reservation: Option[ReservationInfo] = None,
       disk: Option[DiskInfo] = None): Mesos.Resource = {
 
-    val builder = Mesos.Resource
+    val builder = Mesos
+      .Resource
       .newBuilder()
       .setName(name)
       .setType(Value.Type.SCALAR)
@@ -177,11 +181,14 @@ object MarathonTestHelper {
       role: String = "*",
       reservation: Option[ReservationInfo] = None): Mesos.Resource = {
 
-    val ranges = Mesos.Value.Ranges
+    val ranges = Mesos
+      .Value
+      .Ranges
       .newBuilder()
       .addRange(Mesos.Value.Range.newBuilder().setBegin(begin).setEnd(end))
 
-    val builder = Mesos.Resource
+    val builder = Mesos
+      .Resource
       .newBuilder()
       .setName(Resource.PORTS)
       .setType(Value.Type.RANGES)
@@ -201,7 +208,9 @@ object MarathonTestHelper {
         labelsBuilder.addLabels(Mesos.Label.newBuilder().setKey(k).setValue(v))
     }
 
-    Mesos.Resource.ReservationInfo
+    Mesos
+      .Resource
+      .ReservationInfo
       .newBuilder()
       .setPrincipal(principal)
       .setLabels(labelsBuilder)
@@ -215,7 +224,8 @@ object MarathonTestHelper {
       principal: String = "test",
       containerPath: String = "/container"): Mesos.Resource.Builder = {
     import Mesos.Resource.{DiskInfo, ReservationInfo}
-    Mesos.Resource
+    Mesos
+      .Resource
       .newBuilder()
       .setType(Mesos.Value.Type.SCALAR)
       .setName(Resource.DISK)
@@ -227,7 +237,8 @@ object MarathonTestHelper {
           .newBuilder()
           .setPersistence(DiskInfo.Persistence.newBuilder().setId(id))
           .setVolume(
-            Mesos.Volume
+            Mesos
+              .Volume
               .newBuilder()
               .setMode(Mesos.Volume.Mode.RW)
               .setContainerPath(containerPath)))
@@ -249,7 +260,8 @@ object MarathonTestHelper {
         .map(p => Range(p.toLong, (p + 1).toLong)),
       role)
 
-    val offerBuilder = Offer.newBuilder
+    val offerBuilder = Offer
+      .newBuilder
       .setId(OfferID("1"))
       .setFrameworkId(frameworkID)
       .setSlaveId(SlaveID("slave0"))
@@ -276,7 +288,8 @@ object MarathonTestHelper {
     val cpusResource = ScalarResource(Resource.CPUS, cpus, role)
     val memResource = ScalarResource(Resource.MEM, mem, role)
     val diskResource = ScalarResource(Resource.DISK, disk, role)
-    Offer.newBuilder
+    Offer
+      .newBuilder
       .setId(OfferID("1"))
       .setFrameworkId(frameworkID)
       .setSlaveId(SlaveID("slave0"))
@@ -335,8 +348,8 @@ object MarathonTestHelper {
     import mesosphere.marathon.api.v2.json.Formats._
     // TODO: Revalidate the decision to disallow null values in schema
     // Possible resolution: Do not render null values in our formats by default anymore.
-    val appStr = Json.prettyPrint(
-      JsonTestHelper.removeNullFieldValues(Json.toJson(app)))
+    val appStr = Json
+      .prettyPrint(JsonTestHelper.removeNullFieldValues(Json.toJson(app)))
     validateJsonSchemaForString(appStr, valid)
   }
 
@@ -387,11 +400,8 @@ object MarathonTestHelper {
       store: PersistentStore = new InMemoryStore,
       config: MarathonConf = defaultConfig(),
       metrics: Metrics = new Metrics(new MetricRegistry)): TaskTracker = {
-    createTaskTrackerModule(
-      leadershipModule,
-      store,
-      config,
-      metrics).taskTracker
+    createTaskTrackerModule(leadershipModule, store, config, metrics)
+      .taskTracker
   }
 
   def dummyTaskBuilder(appId: PathId) =
@@ -403,11 +413,7 @@ object MarathonTestHelper {
 
   def dummyTaskProto(appId: PathId) = dummyTaskBuilder(appId).build()
   def dummyTaskProto(taskId: String) =
-    MarathonTask
-      .newBuilder()
-      .setId(taskId)
-      .setHost("host.some")
-      .build()
+    MarathonTask.newBuilder().setId(taskId).setHost("host.some").build()
 
   def mininimalTask(appId: PathId): Task =
     mininimalTask(Task.Id.forApp(appId).idString)
@@ -446,10 +452,8 @@ object MarathonTestHelper {
 
   def taskLaunched: Task.Launched = {
     val now = Timestamp.now()
-    Task.Launched(
-      now,
-      status = Task.Status(now),
-      networking = Task.NoNetworking)
+    Task
+      .Launched(now, status = Task.Status(now), networking = Task.NoNetworking)
   }
 
   def taskLaunchedOp: TaskStateOp.Launch = {
@@ -478,7 +482,8 @@ object MarathonTestHelper {
       taskId: String,
       appVersion: Timestamp = Timestamp(1),
       stagedAt: Long = 2): Protos.MarathonTask = {
-    dummyTaskProto(taskId).toBuilder
+    dummyTaskProto(taskId)
+      .toBuilder
       .setVersion(appVersion.toString)
       .setStagedAt(stagedAt)
       .setStatus(statusForState(taskId, Mesos.TaskState.TASK_STARTING))
@@ -516,10 +521,8 @@ object MarathonTestHelper {
       taskId: String,
       appVersion: Timestamp = Timestamp(1),
       stagedAt: Long = 2): Protos.MarathonTask = {
-    startingTaskProto(
-      taskId,
-      appVersion = appVersion,
-      stagedAt = stagedAt).toBuilder
+    startingTaskProto(taskId, appVersion = appVersion, stagedAt = stagedAt)
+      .toBuilder
       .setStatus(statusForState(taskId, Mesos.TaskState.TASK_STAGING))
       .build()
   }
@@ -553,10 +556,8 @@ object MarathonTestHelper {
       appVersion: Timestamp = Timestamp(1),
       stagedAt: Long = 2,
       startedAt: Long = 3): Protos.MarathonTask = {
-    stagedTaskProto(
-      taskId,
-      appVersion = appVersion,
-      stagedAt = stagedAt).toBuilder
+    stagedTaskProto(taskId, appVersion = appVersion, stagedAt = stagedAt)
+      .toBuilder
       .setStartedAt(startedAt)
       .setStatus(statusForState(taskId, Mesos.TaskState.TASK_RUNNING))
       .build()
@@ -571,7 +572,8 @@ object MarathonTestHelper {
     healthyTaskProto(Task.Id.forApp(appId).idString)
   def healthyTaskProto(taskId: String): Protos.MarathonTask = {
     val task: MarathonTask = runningTaskProto(taskId)
-    task.toBuilder
+    task
+      .toBuilder
       .setStatus(task.getStatus.toBuilder.setHealthy(true))
       .buildPartial()
   }
@@ -585,7 +587,8 @@ object MarathonTestHelper {
     unhealthyTaskProto(Task.Id.forApp(appId).idString)
   def unhealthyTaskProto(taskId: String): Protos.MarathonTask = {
     val task: MarathonTask = runningTaskProto(taskId)
-    task.toBuilder
+    task
+      .toBuilder
       .setStatus(task.getStatus.toBuilder.setHealthy(false))
       .buildPartial()
   }
@@ -593,7 +596,8 @@ object MarathonTestHelper {
   def statusForState(
       taskId: String,
       state: Mesos.TaskState): Mesos.TaskStatus = {
-    Mesos.TaskStatus
+    Mesos
+      .TaskStatus
       .newBuilder()
       .setTaskId(TaskID.newBuilder().setValue(taskId))
       .setState(state)
@@ -604,27 +608,36 @@ object MarathonTestHelper {
       taskId: Task.Id,
       localVolumeIds: Task.LocalVolumeId*) =
     localVolumeIds.map { id =>
-      Mesos.Resource
+      Mesos
+        .Resource
         .newBuilder()
         .setName("disk")
         .setType(Mesos.Value.Type.SCALAR)
         .setScalar(Mesos.Value.Scalar.newBuilder().setValue(10))
         .setRole("test")
         .setReservation(
-          Mesos.Resource.ReservationInfo
+          Mesos
+            .Resource
+            .ReservationInfo
             .newBuilder()
             .setPrincipal("principal")
             .setLabels(
               TaskLabels.labelsForTask(frameworkId, taskId).mesosLabels))
         .setDisk(
-          Mesos.Resource.DiskInfo
+          Mesos
+            .Resource
+            .DiskInfo
             .newBuilder()
             .setPersistence(
-              Mesos.Resource.DiskInfo.Persistence
+              Mesos
+                .Resource
+                .DiskInfo
+                .Persistence
                 .newBuilder()
                 .setId(id.idString))
             .setVolume(
-              Mesos.Volume
+              Mesos
+                .Volume
                 .newBuilder()
                 .setContainerPath(id.containerPath)
                 .setMode(Mesos.Volume.Mode.RW)))

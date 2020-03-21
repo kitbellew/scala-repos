@@ -58,7 +58,10 @@ private[hive] case class CreateViewAsSelect(
 
       case true if orReplace =>
         // Handles `CREATE OR REPLACE VIEW v0 AS SELECT ...`
-        hiveContext.sessionState.catalog.client
+        hiveContext
+          .sessionState
+          .catalog
+          .client
           .alertView(prepareTable(sqlContext))
 
       case true =>
@@ -70,7 +73,10 @@ private[hive] case class CreateViewAsSelect(
             "CREATE OR REPLACE VIEW AS")
 
       case false =>
-        hiveContext.sessionState.catalog.client
+        hiveContext
+          .sessionState
+          .catalog
+          .client
           .createView(prepareTable(sqlContext))
     }
 
@@ -95,14 +101,16 @@ private[hive] case class CreateViewAsSelect(
           CatalogColumn(a.name, HiveMetastoreTypes.toMetastoreType(a.dataType))
         }
       } else {
-        childSchema.zip(tableDesc.schema).map {
-          case (a, col) =>
-            CatalogColumn(
-              col.name,
-              HiveMetastoreTypes.toMetastoreType(a.dataType),
-              nullable = true,
-              col.comment)
-        }
+        childSchema
+          .zip(tableDesc.schema)
+          .map {
+            case (a, col) =>
+              CatalogColumn(
+                col.name,
+                HiveMetastoreTypes.toMetastoreType(a.dataType),
+                nullable = true,
+                col.comment)
+          }
       }
     }
 
@@ -138,10 +146,12 @@ private[hive] case class CreateViewAsSelect(
       if (tableDesc.schema.isEmpty) {
         child
       } else {
-        val projectList = childSchema.zip(tableDesc.schema).map {
-          case (attr, col) =>
-            Alias(attr, col.name)()
-        }
+        val projectList = childSchema
+          .zip(tableDesc.schema)
+          .map {
+            case (attr, col) =>
+              Alias(attr, col.name)()
+          }
         sqlContext.executePlan(Project(projectList, child)).analyzed
       }
     new SQLBuilder(logicalPlan, sqlContext).toSQL

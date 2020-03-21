@@ -79,12 +79,14 @@ trait SecurityDirectives {
       authenticator: AsyncAuthenticator[T]): AuthenticationDirective[T] =
     extractExecutionContext.flatMap { implicit ec ⇒
       authenticateOrRejectWithChallenge[BasicHttpCredentials, T] { cred ⇒
-        authenticator(Credentials(cred)).fast.map {
-          case Some(t) ⇒
-            AuthenticationResult.success(t)
-          case None ⇒
-            AuthenticationResult.failWithChallenge(challengeFor(realm))
-        }
+        authenticator(Credentials(cred))
+          .fast
+          .map {
+            case Some(t) ⇒
+              AuthenticationResult.success(t)
+            case None ⇒
+              AuthenticationResult.failWithChallenge(challengeFor(realm))
+          }
       }
     }
 
@@ -138,12 +140,14 @@ trait SecurityDirectives {
       authenticator: AsyncAuthenticator[T]): AuthenticationDirective[T] =
     extractExecutionContext.flatMap { implicit ec ⇒
       authenticateOrRejectWithChallenge[OAuth2BearerToken, T] { cred ⇒
-        authenticator(Credentials(cred)).fast.map {
-          case Some(t) ⇒
-            AuthenticationResult.success(t)
-          case None ⇒
-            AuthenticationResult.failWithChallenge(challengeFor(realm))
-        }
+        authenticator(Credentials(cred))
+          .fast
+          .map {
+            case Some(t) ⇒
+              AuthenticationResult.success(t)
+            case None ⇒
+              AuthenticationResult.failWithChallenge(challengeFor(realm))
+          }
       }
     }
 

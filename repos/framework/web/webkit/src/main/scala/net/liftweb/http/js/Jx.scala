@@ -42,7 +42,8 @@ trait JxBase {
   def addAttrs(varName: String, attrs: List[MetaData]): JsCmd =
     attrs
       .map { m =>
-        m.value
+        m
+          .value
           .map {
             case exp: JsExp =>
               JsRaw(varName + "." + m.key + " = " + exp.toJsCmd).cmd
@@ -64,10 +65,14 @@ trait JxBase {
 
                 JsRaw(varName + ".className = " + x.text.encJs).cmd &
                   JsRaw(
-                    varName + ".setAttribute(" + m.key.encJs + "," + x.text.encJs + ");").cmd
+                    varName + ".setAttribute(" + m.key.encJs + "," + x
+                      .text
+                      .encJs + ");").cmd
               } else {
                 JsRaw(
-                  varName + ".setAttribute(" + m.key.encJs + "," + x.text.encJs + ");").cmd
+                  varName + ".setAttribute(" + m.key.encJs + "," + x
+                    .text
+                    .encJs + ");").cmd
               }
           }
           .foldLeft(Noop)(_ & _)
@@ -99,11 +104,13 @@ trait JxBase {
           addToDocFrag(parent, nodes.toList)
         case Text(txt) =>
           JsRaw(
-            parent + ".appendChild(document.createTextNode(" + fixText(
-              txt).encJs + "));").cmd
+            parent + ".appendChild(document.createTextNode(" + fixText(txt)
+              .encJs + "));").cmd
         case a: Atom[_] =>
           JsRaw(
-            parent + ".appendChild(document.createTextNode(" + a.text.encJs + "));").cmd
+            parent + ".appendChild(document.createTextNode(" + a
+              .text
+              .encJs + "));").cmd
         case e: scala.xml.Elem =>
           val varName = "v" + Helpers.nextFuncName
           JsCrVar(
@@ -117,7 +124,9 @@ trait JxBase {
             Noop
           else if (ns.length == 1) {
             logger.error(
-              "In addToDocFrag, got a " + ns + " of type " + ns.getClass.getName)
+              "In addToDocFrag, got a " + ns + " of type " + ns
+                .getClass
+                .getName)
             Noop
           } else
             addToDocFrag(parent, ns.toList)

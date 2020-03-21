@@ -641,8 +641,10 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
   @transient
   lazy val selectors: List[(CPath, List[CType])] = {
     val refs: Map[CPath, Seq[ColumnRef]] = columnRefs.groupBy(_.selector)
-    (columnRefs map (_.selector)).distinct.map(selector =>
-      (selector, refs(selector).map(_.ctype).toList))(collection.breakOut)
+    (columnRefs map (_.selector))
+      .distinct
+      .map(selector => (selector, refs(selector).map(_.ctype).toList))(
+        collection.breakOut)
   }
 
   private def zipWithSelectors[A](
@@ -776,16 +778,18 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
     import scalaz.std.list._
 
     val writes: ByteBufferPoolS[List[Unit]] =
-      cvals.map {
-        case v: CNullValue =>
-          writeFlagFor(v.cType)
+      cvals
+        .map {
+          case v: CNullValue =>
+            writeFlagFor(v.cType)
 
-        case v: CWrappedValue[_] =>
-          for {
-            _ <- writeFlagFor(v.cType)
-            _ <- codecForCValueType(v.cType).write(v.value)
-          } yield ()
-      }.sequence
+          case v: CWrappedValue[_] =>
+            for {
+              _ <- writeFlagFor(v.cType)
+              _ <- codecForCValueType(v.cType).write(v.value)
+            } yield ()
+        }
+        .sequence
 
     pool.run(
       for {
@@ -816,10 +820,12 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
       }
     }
 
-    selectors.map {
-      case (_, cTypes) =>
-        readForSelector(cTypes)
-    }.flatten
+    selectors
+      .map {
+        case (_, cTypes) =>
+          readForSelector(cTypes)
+      }
+      .flatten
   }
 
   override def compare(a: Array[Byte], b: Array[Byte]): Int = {
@@ -901,8 +907,9 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
                     val b = Codec[Double].read(bbuf)
                     NumericComparisons.approxCompare(a, b) match {
                       case 0 =>
-                        super.BigDecimalCodec
-                          .read(abuf) compare super.BigDecimalCodec.read(bbuf)
+                        super.BigDecimalCodec.read(abuf) compare super
+                          .BigDecimalCodec
+                          .read(bbuf)
                       case cmp =>
                         super.BigDecimalCodec.skip(abuf)
                         super.BigDecimalCodec.skip(bbuf)

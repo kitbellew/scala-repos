@@ -64,10 +64,8 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
           if doc.getLineCount > line
         } yield {
           val startOffset: Int = doc.getLineStartOffset(line)
-          val offset: Int = CharArrayUtil.shiftForward(
-            doc.getCharsSequence,
-            startOffset,
-            " \t{")
+          val offset: Int = CharArrayUtil
+            .shiftForward(doc.getCharsSequence, startOffset, " \t{")
           val element: PsiElement = sf.findElementAt(offset)
           (element, doc)
         }
@@ -91,7 +89,8 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
 
     val collector = new TargetCollector(lineToSkip, intersectsWithLineRange)
     maxElement.accept(collector)
-    maxElement.nextSiblings
+    maxElement
+      .nextSiblings
       .takeWhile(intersectsWithLineRange)
       .foreach(_.accept(collector))
     collector.result.sortBy(_.getHighlightElement.getTextOffset).asJava
@@ -108,9 +107,8 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
           methodTarget.getMethod match {
             case f @ (_: ScMethodLike | _: FakeAnonymousClassConstructor)
                 if stepTarget.needsBreakpointRequest() =>
-              ScalaBreakpointMethodFilter.from(
-                f,
-                stepTarget.getCallingExpressionLines)
+              ScalaBreakpointMethodFilter
+                .from(f, stepTarget.getCallingExpressionLines)
             case fun: ScMethodLike =>
               Some(
                 new ScalaMethodFilter(
@@ -267,8 +265,9 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
                 noStopAtLines)
             case Both(f: ScFunctionDefinition, ContainingClass(cl: ScClass))
                 if cl.getModifierList.hasModifierProperty("implicit") =>
-              val isActuallyImplicit = ref.qualifier.exists(
-                _.getImplicitConversions()._2.nonEmpty)
+              val isActuallyImplicit = ref
+                .qualifier
+                .exists(_.getImplicitConversions()._2.nonEmpty)
               val prefix =
                 if (isActuallyImplicit)
                   "implicit "

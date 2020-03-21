@@ -130,7 +130,8 @@ class FramingSpec extends AkkaSpec {
 
     "work with empty streams" in {
       Await.result(
-        Source.empty
+        Source
+          .empty
           .via(simpleLines("\n", 256))
           .runFold(Vector.empty[String])(_ :+ _),
         3.seconds) should ===(Vector.empty)
@@ -220,7 +221,8 @@ class FramingSpec extends AkkaSpec {
 
     "work with empty streams" in {
       Await.result(
-        Source.empty
+        Source
+          .empty
           .via(Framing.lengthField(4, 0, Int.MaxValue, ByteOrder.BIG_ENDIAN))
           .runFold(Vector.empty[ByteString])(_ :+ _),
         3.seconds) should ===(Vector.empty)

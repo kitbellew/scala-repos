@@ -31,7 +31,8 @@ class I18nSupportSpec extends ScalatraWordSpec {
       session {
         get(
           "/name",
-          I18nSupport.LocaleKey -> "id_ID") { // Bug in Java6: id_ID is changed to in_ID by java.util.Locale
+          I18nSupport
+            .LocaleKey -> "id_ID") { // Bug in Java6: id_ID is changed to in_ID by java.util.Locale
           body should equal("Nama")
         }
         get("/getcookie") {

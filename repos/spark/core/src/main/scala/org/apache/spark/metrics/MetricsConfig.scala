@@ -57,11 +57,13 @@ private[spark] class MetricsConfig(conf: SparkConf) extends Logging {
 
     // Also look for the properties in provided Spark configuration
     val prefix = "spark.metrics.conf."
-    conf.getAll.foreach {
-      case (k, v) if k.startsWith(prefix) =>
-        properties.setProperty(k.substring(prefix.length()), v)
-      case _ =>
-    }
+    conf
+      .getAll
+      .foreach {
+        case (k, v) if k.startsWith(prefix) =>
+          properties.setProperty(k.substring(prefix.length()), v)
+        case _ =>
+      }
 
     propertyCategories = subProperties(properties, INSTANCE_REGEX)
     if (propertyCategories.contains(DEFAULT_PREFIX)) {
@@ -77,14 +79,16 @@ private[spark] class MetricsConfig(conf: SparkConf) extends Logging {
       prop: Properties,
       regex: Regex): mutable.HashMap[String, Properties] = {
     val subProperties = new mutable.HashMap[String, Properties]
-    prop.asScala.foreach { kv =>
-      if (regex.findPrefixOf(kv._1.toString).isDefined) {
-        val regex(prefix, suffix) = kv._1.toString
-        subProperties
-          .getOrElseUpdate(prefix, new Properties)
-          .setProperty(suffix, kv._2.toString)
+    prop
+      .asScala
+      .foreach { kv =>
+        if (regex.findPrefixOf(kv._1.toString).isDefined) {
+          val regex(prefix, suffix) = kv._1.toString
+          subProperties
+            .getOrElseUpdate(prefix, new Properties)
+            .setProperty(suffix, kv._2.toString)
+        }
       }
-    }
     subProperties
   }
 
@@ -108,8 +112,9 @@ private[spark] class MetricsConfig(conf: SparkConf) extends Logging {
         case Some(f) =>
           new FileInputStream(f)
         case None =>
-          Utils.getSparkClassLoader.getResourceAsStream(
-            DEFAULT_METRICS_CONF_FILENAME)
+          Utils
+            .getSparkClassLoader
+            .getResourceAsStream(DEFAULT_METRICS_CONF_FILENAME)
       }
 
       if (is != null) {

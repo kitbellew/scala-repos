@@ -35,9 +35,11 @@ private[setup] final class Processor(
   private def blamePov(pov: Pov, user: Option[User]): Pov =
     pov withGame {
       user.fold(pov.game) { u =>
-        pov.game.updatePlayer(
-          pov.color,
-          _.withUser(u.id, PerfPicker.mainOrDefault(pov.game)(u.perfs)))
+        pov
+          .game
+          .updatePlayer(
+            pov.color,
+            _.withUser(u.id, PerfPicker.mainOrDefault(pov.game)(u.perfs)))
       }
     }
 
@@ -72,6 +74,8 @@ private[setup] final class Processor(
 
   private def saveConfig(map: UserConfig => UserConfig)(implicit
       ctx: UserContext): Funit =
-    ctx.me.fold(AnonConfigRepo.update(ctx.req) _)(user =>
-      UserConfigRepo.update(user) _)(map)
+    ctx
+      .me
+      .fold(AnonConfigRepo.update(ctx.req) _)(user =>
+        UserConfigRepo.update(user) _)(map)
 }

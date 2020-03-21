@@ -152,9 +152,8 @@ trait BasicBackend {
               true
             } catch {
               case NonFatal(ex) =>
-                streamLogger.warn(
-                  "Subscriber.onSubscribe failed unexpectedly",
-                  ex)
+                streamLogger
+                  .warn("Subscriber.onSubscribe failed unexpectedly", ex)
                 false
             }
           if (subscribed) {

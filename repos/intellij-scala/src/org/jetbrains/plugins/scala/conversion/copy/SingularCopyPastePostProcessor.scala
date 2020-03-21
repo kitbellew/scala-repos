@@ -71,9 +71,17 @@ abstract class SingularCopyPastePostProcessor[T <: TextBlockTransferableData]
       ref: Ref[lang.Boolean],
       values: util.List[T]) {
 
-    values.asScala.foreach { value =>
-      processTransferableData0(project, editor, bounds, caretOffset, ref, value)
-    }
+    values
+      .asScala
+      .foreach { value =>
+        processTransferableData0(
+          project,
+          editor,
+          bounds,
+          caretOffset,
+          ref,
+          value)
+      }
   }
 
   protected def processTransferableData0(

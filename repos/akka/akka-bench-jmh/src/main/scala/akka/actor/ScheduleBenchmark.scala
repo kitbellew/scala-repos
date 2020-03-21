@@ -82,10 +82,12 @@ class ScheduleBenchmark {
         if (idx <= to)
           op(idx)
       }
-    promise.future.onComplete {
-      case _ ⇒
-        tryWithNext.cancel()
-    }
+    promise
+      .future
+      .onComplete {
+        case _ ⇒
+          tryWithNext.cancel()
+      }
     Await.result(promise.future, within)
   }
 
@@ -102,10 +104,12 @@ class ScheduleBenchmark {
               } :: c)
         }
         ._2
-    promise.future.onComplete {
-      case _ ⇒
-        tryWithNext.foreach(_.cancel())
-    }
+    promise
+      .future
+      .onComplete {
+        case _ ⇒
+          tryWithNext.foreach(_.cancel())
+      }
     Await.result(promise.future, within)
   }
 }

@@ -29,7 +29,8 @@ class TimestampValueTest extends FunSuite {
   test("decode binary timestamp") {
     val bytes = Array.ofDim[Byte](11)
     val bw = BufferWriter(bytes)
-    bw.writeShort(2015)
+    bw
+      .writeShort(2015)
       .writeByte(1)
       .writeByte(2)
       .writeByte(3)

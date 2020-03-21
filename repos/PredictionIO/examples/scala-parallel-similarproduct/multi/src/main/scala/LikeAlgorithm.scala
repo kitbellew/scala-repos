@@ -43,7 +43,8 @@ class LikeAlgorithm(ap: ALSAlgorithmParams) extends ALSAlgorithm(ap) {
 
     // collect Item as Map and convert ID to Int index
     val items: Map[Int, Item] =
-      data.items
+      data
+        .items
         .map {
           case (id, item) =>
             (itemStringIntMap(id), item)
@@ -51,7 +52,8 @@ class LikeAlgorithm(ap: ALSAlgorithmParams) extends ALSAlgorithm(ap) {
         .collectAsMap
         .toMap
 
-    val mllibRatings = data.likeEvents
+    val mllibRatings = data
+      .likeEvents
       .map { r =>
         // Convert user and item String IDs to Int index for MLlib
         val uindex = userStringIntMap.getOrElse(r.user, -1)

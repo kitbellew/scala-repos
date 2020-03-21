@@ -53,12 +53,18 @@ import org.apache.spark.sql.types._
   *        affects Parquet write path.
   */
 private[parquet] class CatalystSchemaConverter(
-    assumeBinaryIsString: Boolean =
-      SQLConf.PARQUET_BINARY_AS_STRING.defaultValue.get,
-    assumeInt96IsTimestamp: Boolean =
-      SQLConf.PARQUET_INT96_AS_TIMESTAMP.defaultValue.get,
-    writeLegacyParquetFormat: Boolean =
-      SQLConf.PARQUET_WRITE_LEGACY_FORMAT.defaultValue.get) {
+    assumeBinaryIsString: Boolean = SQLConf
+      .PARQUET_BINARY_AS_STRING
+      .defaultValue
+      .get,
+    assumeInt96IsTimestamp: Boolean = SQLConf
+      .PARQUET_INT96_AS_TIMESTAMP
+      .defaultValue
+      .get,
+    writeLegacyParquetFormat: Boolean = SQLConf
+      .PARQUET_WRITE_LEGACY_FORMAT
+      .defaultValue
+      .get) {
 
   def this(conf: SQLConf) =
     this(
@@ -85,22 +91,25 @@ private[parquet] class CatalystSchemaConverter(
     convert(parquetSchema.asGroupType())
 
   private def convert(parquetSchema: GroupType): StructType = {
-    val fields = parquetSchema.getFields.asScala.map { field =>
-      field.getRepetition match {
-        case OPTIONAL =>
-          StructField(field.getName, convertField(field), nullable = true)
+    val fields = parquetSchema
+      .getFields
+      .asScala
+      .map { field =>
+        field.getRepetition match {
+          case OPTIONAL =>
+            StructField(field.getName, convertField(field), nullable = true)
 
-        case REQUIRED =>
-          StructField(field.getName, convertField(field), nullable = false)
+          case REQUIRED =>
+            StructField(field.getName, convertField(field), nullable = false)
 
-        case REPEATED =>
-          // A repeated field that is neither contained by a `LIST`- or `MAP`-annotated group nor
-          // annotated by `LIST` or `MAP` should be interpreted as a required list of required
-          // elements where the element type is the type of the field.
-          val arrayType = ArrayType(convertField(field), containsNull = false)
-          StructField(field.getName, arrayType, nullable = false)
+          case REPEATED =>
+            // A repeated field that is neither contained by a `LIST`- or `MAP`-annotated group nor
+            // annotated by `LIST` or `MAP` should be interpreted as a required list of required
+            // elements where the element type is the type of the field.
+            val arrayType = ArrayType(convertField(field), containsNull = false)
+            StructField(field.getName, arrayType, nullable = false)
+        }
       }
-    }
 
     StructType(fields)
   }
@@ -281,8 +290,8 @@ private[parquet] class CatalystSchemaConverter(
 
         val keyValueType = field.getType(0).asGroupType()
         CatalystSchemaConverter.checkConversionRequirement(
-          keyValueType.isRepetition(
-            REPEATED) && keyValueType.getFieldCount == 2,
+          keyValueType
+            .isRepetition(REPEATED) && keyValueType.getFieldCount == 2,
           s"Invalid map type: $field")
 
         val keyType = keyValueType.getType(0)
@@ -470,7 +479,8 @@ private[parquet] class CatalystSchemaConverter(
 
       // Uses INT64 for 1 <= precision <= 18
       case DecimalType.Fixed(precision, scale)
-          if precision <= Decimal.MAX_LONG_DIGITS && !writeLegacyParquetFormat =>
+          if precision <= Decimal
+            .MAX_LONG_DIGITS && !writeLegacyParquetFormat =>
         Types
           .primitive(INT64, repetition)
           .as(DECIMAL)

@@ -14,10 +14,12 @@ trait Failter {
 
   @volatile
   protected var prob: Double = _
-  probability.changes.register(
-    Witness({ newProb =>
-      prob = newProb
-    }))
+  probability
+    .changes
+    .register(
+      Witness({ newProb =>
+        prob = newProb
+      }))
 
   protected val probGauge =
     stats.provideGauge("probability") {

@@ -345,13 +345,8 @@ class ApplicationCacheSuite
 
     val updateTime = window * 3
     // update the cached value
-    val updatedApp = operations.putAppUI(
-      appId,
-      attemptId,
-      true,
-      started,
-      updateTime,
-      updateTime)
+    val updatedApp = operations
+      .putAppUI(appId, attemptId, true, started, updateTime, updateTime)
     val endTime = window * 10
     clock.setTime(endTime)
     logDebug(s"Before operation = $cache")
@@ -543,8 +538,8 @@ class ApplicationCacheSuite
         }
       })
     filter.doFilter(request, resp, null)
-    verify(resp).sendRedirect(
-      "http://localhost:18080/history/local-123/jobs/job/?id=2")
+    verify(resp)
+      .sendRedirect("http://localhost:18080/history/local-123/jobs/job/?id=2")
   }
 
 }

@@ -24,7 +24,8 @@ import org.openjdk.jmh.annotations.{Benchmark, Setup, Scope, State}
   */
 @State(Scope.Benchmark)
 class HelloClient extends StdBenchAnnotations {
-  val svc: Hello[Future] = ThriftMux.client
+  val svc: Hello[Future] = ThriftMux
+    .client
     .configured(param.Tracer(NullTracer))
     .configured(param.Stats(NullStatsReceiver))
     .newIface[Hello.FutureIface]("localhost:1234")

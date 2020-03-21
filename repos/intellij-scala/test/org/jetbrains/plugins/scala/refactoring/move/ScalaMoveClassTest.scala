@@ -117,7 +117,8 @@ class ScalaMoveClassTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
       getModuleAdapter,
       rootBefore,
       new util.HashSet[File]())
-    VirtualFilePointerManager.getInstance
+    VirtualFilePointerManager
+      .getInstance
       .asInstanceOf[VirtualFilePointerManagerImpl]
       .storePointers()
     val settings = ScalaApplicationSettings.getInstance()
@@ -130,9 +131,11 @@ class ScalaMoveClassTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
     }
     settings.MOVE_COMPANION = moveCompanionOld
     val rootAfter: String = root + "/after"
-    val rootDir2: VirtualFile = LocalFileSystem.getInstance.findFileByPath(
-      rootAfter.replace(File.separatorChar, '/'))
-    VirtualFilePointerManager.getInstance
+    val rootDir2: VirtualFile = LocalFileSystem
+      .getInstance
+      .findFileByPath(rootAfter.replace(File.separatorChar, '/'))
+    VirtualFilePointerManager
+      .getInstance
       .asInstanceOf[VirtualFilePointerManagerImpl]
       .storePointers()
     getProjectAdapter
@@ -164,16 +167,16 @@ class ScalaMoveClassTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
     val aPackage: PsiPackage = JavaPsiFacade
       .getInstance(getProjectAdapter)
       .findPackage(newPackageName)
-    val dirs: Array[PsiDirectory] = aPackage.getDirectories(
-      GlobalSearchScope.moduleScope(getModuleAdapter))
+    val dirs: Array[PsiDirectory] = aPackage
+      .getDirectories(GlobalSearchScope.moduleScope(getModuleAdapter))
     assert(dirs.length == 1)
     ScalaFileImpl.performMoveRefactoring {
       new ScalaMoveClassesOrPackagesProcessor(
         getProjectAdapter,
         classes.toArray,
         new SingleSourceRootMoveDestination(
-          PackageWrapper.create(
-            JavaDirectoryService.getInstance.getPackage(dirs(0))),
+          PackageWrapper
+            .create(JavaDirectoryService.getInstance.getPackage(dirs(0))),
           dirs(0)),
         true,
         true,

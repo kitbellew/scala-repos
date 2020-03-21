@@ -69,7 +69,8 @@ class TestService[K, V](
   /** The lasts are computed from the streams */
   lazy val lasts: Map[BatchID, Iterable[(Timestamp, (K, V))]] = {
     (
-      streams.toList
+      streams
+        .toList
         .sortBy(_._1)
         .foldLeft(Map.empty[BatchID, Map[K, (Timestamp, V)]]) {
           case (
@@ -91,12 +92,14 @@ class TestService[K, V](
             map + (batch -> thisBatch)
         }
         .mapValues { innerMap =>
-          innerMap.toSeq.map {
-            case (k, (time, v)) =>
-              (time, (k, v))
-          }
+          innerMap
+            .toSeq
+            .map {
+              case (k, (time, v)) =>
+                (time, (k, v))
+            }
         }
-    ) + (minBatch -> Iterable.empty)
+      ) + (minBatch -> Iterable.empty)
   }
 
   def lastMappable(b: BatchID): Mappable[(Timestamp, (K, V))] =
@@ -107,19 +110,23 @@ class TestService[K, V](
       service + "/stream/" + b.toString)
 
   def toBuffer[T](it: Iterable[T])(implicit ts: TupleSetter[T]): Buffer[Tuple] =
-    it.map {
-      ts(_)
-    }.toBuffer
+    it
+      .map {
+        ts(_)
+      }
+      .toBuffer
 
   override def readStream(
       batchID: BatchID,
       mode: Mode): Option[FlowToPipe[(K, Option[V])]] = {
-    streams.get(batchID).map { iter =>
-      val mappable = streamMappable(batchID)
-      Reader { (fd: (FlowDef, Mode)) =>
-        TypedPipe.from(mappable)
+    streams
+      .get(batchID)
+      .map { iter =>
+        val mappable = streamMappable(batchID)
+        Reader { (fd: (FlowDef, Mode)) =>
+          TypedPipe.from(mappable)
+        }
       }
-    }
   }
   override def readLast(exclusiveUB: BatchID, mode: Mode) = {
     val candidates = lasts.filter {

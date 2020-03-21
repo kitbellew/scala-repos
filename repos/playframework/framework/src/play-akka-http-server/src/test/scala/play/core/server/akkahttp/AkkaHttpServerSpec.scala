@@ -206,32 +206,34 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
     }
 
     "start and stop cleanly" in {
-      PlayRunners.mutex.synchronized {
-        def testStartAndStop(i: Int) = {
-          val resultString = s"result-$i"
-          val app = GuiceApplicationBuilder()
-            .routes {
-              case ("GET", "/") =>
-                Action(Ok(resultString))
+      PlayRunners
+        .mutex
+        .synchronized {
+          def testStartAndStop(i: Int) = {
+            val resultString = s"result-$i"
+            val app = GuiceApplicationBuilder()
+              .routes {
+                case ("GET", "/") =>
+                  Action(Ok(resultString))
+              }
+              .build()
+            val server = TestServer(
+              testServerPort,
+              app,
+              serverProvider = Some(AkkaHttpServer.provider))
+            server.start()
+            try {
+              val response = await(wsUrl("/")(testServerPort).get())
+              response.body must_== resultString
+            } finally {
+              server.stop()
             }
-            .build()
-          val server = TestServer(
-            testServerPort,
-            app,
-            serverProvider = Some(AkkaHttpServer.provider))
-          server.start()
-          try {
-            val response = await(wsUrl("/")(testServerPort).get())
-            response.body must_== resultString
-          } finally {
-            server.stop()
+          }
+          // Start and stop the server 20 times
+          (0 until 20) must contain { (i: Int) =>
+            testStartAndStop(i)
           }
         }
-        // Start and stop the server 20 times
-        (0 until 20) must contain { (i: Int) =>
-          testStartAndStop(i)
-        }
-      }
     }
 
   }

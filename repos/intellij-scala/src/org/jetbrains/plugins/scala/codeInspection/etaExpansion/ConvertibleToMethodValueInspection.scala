@@ -34,8 +34,8 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil
   * 5/30/13
   */
 object ConvertibleToMethodValueInspection {
-  val inspectionName = InspectionBundle.message(
-    "convertible.to.method.value.name")
+  val inspectionName = InspectionBundle
+    .message("convertible.to.method.value.name")
   val inspectionId = "ConvertibleToMethodValue"
 }
 
@@ -53,8 +53,8 @@ class ConvertibleToMethodValueInspection
         registerProblem(
           holder,
           expr,
-          InspectionBundle.message(
-            "convertible.to.method.value.anonymous.hint"))
+          InspectionBundle
+            .message("convertible.to.method.value.anonymous.hint"))
     case und: ScUnderscoreSection if und.bindingExpr.isDefined =>
       val isInParameterOfParameterizedClass =
         PsiTreeUtil.getParentOfType(und, classOf[ScClassParameter]) match {
@@ -98,30 +98,33 @@ class ConvertibleToMethodValueInspection
           true
       }
 
-    qual.depthFirst(e => !e.isInstanceOf[ScImportStmt]).forall {
-      case _: ScNewTemplateDefinition =>
-        false
-      case Both(
-            _: ScReferenceExpression | ScConstructor.byReference(_),
-            ResolvesTo(named: PsiNamedElement)) =>
-        isStable(named)
-      case _ =>
-        true
-    }
+    qual
+      .depthFirst(e => !e.isInstanceOf[ScImportStmt])
+      .forall {
+        case _: ScNewTemplateDefinition =>
+          false
+        case Both(
+              _: ScReferenceExpression | ScConstructor.byReference(_),
+              ResolvesTo(named: PsiNamedElement)) =>
+          isStable(named)
+        case _ =>
+          true
+      }
   }
 
   private def registerProblem(
       holder: ProblemsHolder,
       expr: ScExpression,
       hint: String) {
-    possibleReplacements(expr).find(isSuitableForReplace(expr, _)).foreach {
-      replacement =>
+    possibleReplacements(expr)
+      .find(isSuitableForReplace(expr, _))
+      .foreach { replacement =>
         holder.registerProblem(
           expr,
           inspectionName,
           ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
           new ConvertibleToMethodValueQuickFix(expr, replacement, hint))
-    }
+      }
   }
 
   private def methodWithoutArgumentsText(expr: ScExpression): Seq[String] =
@@ -188,9 +191,8 @@ class ConvertibleToMethodValueQuickFix(
     val scExpr = getElement
     if (!scExpr.isValid)
       return
-    val newExpr = ScalaPsiElementFactory.createExpressionFromText(
-      replacement,
-      scExpr.getManager)
+    val newExpr = ScalaPsiElementFactory
+      .createExpressionFromText(replacement, scExpr.getManager)
     scExpr.replaceExpression(newExpr, removeParenthesis = true)
   }
 }

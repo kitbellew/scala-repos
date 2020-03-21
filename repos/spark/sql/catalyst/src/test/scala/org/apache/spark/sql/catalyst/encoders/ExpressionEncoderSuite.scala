@@ -38,9 +38,12 @@ case class NestedArray(a: Array[Array[Int]]) {
   override def equals(other: Any): Boolean =
     other match {
       case NestedArray(otherArray) =>
-        java.util.Arrays.deepEquals(
-          a.asInstanceOf[Array[AnyRef]],
-          otherArray.asInstanceOf[Array[AnyRef]])
+        java
+          .util
+          .Arrays
+          .deepEquals(
+            a.asInstanceOf[Array[AnyRef]],
+            otherArray.asInstanceOf[Array[AnyRef]])
       case _ =>
         false
     }
@@ -261,8 +264,8 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
   test("nullable of encoder schema") {
     def checkNullable[T: ExpressionEncoder](nullable: Boolean*): Unit = {
       assert(
-        implicitly[ExpressionEncoder[T]].schema
-          .map(_.nullable) === nullable.toSeq)
+        implicitly[ExpressionEncoder[T]].schema.map(_.nullable) === nullable
+          .toSeq)
     }
 
     // test for flat encoders
@@ -354,7 +357,8 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
         val types =
           convertedBack match {
             case c: Product =>
-              c.productIterator
+              c
+                .productIterator
                 .filter(_ != null)
                 .map(_.getClass.getName)
                 .mkString(",")

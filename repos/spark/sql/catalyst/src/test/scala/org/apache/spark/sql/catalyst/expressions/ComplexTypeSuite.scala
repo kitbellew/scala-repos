@@ -50,9 +50,8 @@ class ComplexTypeSuite extends SparkFunSuite with ExpressionEvalHelper {
     checkEvaluation(GetArrayItem(array, nullInt), null)
     checkEvaluation(GetArrayItem(nullArray, nullInt), null)
 
-    val nestedArray = Literal.create(
-      Seq(Seq(1)),
-      ArrayType(ArrayType(IntegerType)))
+    val nestedArray = Literal
+      .create(Seq(Seq(1)), ArrayType(ArrayType(IntegerType)))
     checkEvaluation(GetArrayItem(nestedArray, Literal(0)), Seq(1))
   }
 
@@ -67,9 +66,8 @@ class ComplexTypeSuite extends SparkFunSuite with ExpressionEvalHelper {
     checkEvaluation(GetMapValue(nullMap, nullString), null)
     checkEvaluation(GetMapValue(map, nullString), null)
 
-    val nestedMap = Literal.create(
-      Map("a" -> Map("b" -> "c")),
-      MapType(StringType, typeM))
+    val nestedMap = Literal
+      .create(Map("a" -> Map("b" -> "c")), MapType(StringType, typeM))
     checkEvaluation(GetMapValue(nestedMap, Literal("a")), Map("b" -> "c"))
   }
 
@@ -96,12 +94,10 @@ class ComplexTypeSuite extends SparkFunSuite with ExpressionEvalHelper {
 
     val typeS_fieldNotNullable = StructType(
       StructField("a", IntegerType, false) :: Nil)
-    val struct_fieldNotNullable = Literal.create(
-      create_row(1),
-      typeS_fieldNotNullable)
-    val nullStruct_fieldNotNullable = Literal.create(
-      null,
-      typeS_fieldNotNullable)
+    val struct_fieldNotNullable = Literal
+      .create(create_row(1), typeS_fieldNotNullable)
+    val nullStruct_fieldNotNullable = Literal
+      .create(null, typeS_fieldNotNullable)
 
     assert(getStructField(struct_fieldNotNullable, "a").nullable === false)
     assert(getStructField(struct, "a").nullable === true)
@@ -141,8 +137,8 @@ class ComplexTypeSuite extends SparkFunSuite with ExpressionEvalHelper {
     checkEvaluation(CreateArray(longSeq.map(Literal(_))), longSeq, EmptyRow)
     checkEvaluation(CreateArray(strSeq.map(Literal(_))), strSeq, EmptyRow)
 
-    val intWithNull =
-      intSeq.map(Literal(_)) :+ Literal.create(null, IntegerType)
+    val intWithNull = intSeq.map(Literal(_)) :+ Literal
+      .create(null, IntegerType)
     val longWithNull = longSeq.map(Literal(_)) :+ Literal.create(null, LongType)
     val strWithNull = strSeq.map(Literal(_)) :+ Literal.create(null, StringType)
     checkEvaluation(CreateArray(intWithNull), intSeq :+ null, EmptyRow)

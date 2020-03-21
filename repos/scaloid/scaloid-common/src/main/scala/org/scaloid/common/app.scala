@@ -153,9 +153,11 @@ trait SActivity
 
   protected override def onCreate(b: Bundle) {
     super.onCreate(b)
-    AppHelpers.createBundle.withValue(Option(b)) {
-      onCreateBodies.foreach(_())
-    }
+    AppHelpers
+      .createBundle
+      .withValue(Option(b)) {
+        onCreateBodies.foreach(_())
+      }
   }
 
   def onCreate(body: Option[Bundle] => Any) = {

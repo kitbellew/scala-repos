@@ -147,8 +147,8 @@ class ByteBufferMessageSetTest extends BaseMessageSetTestCases {
         new ByteBufferMessageSet(NoCompressionCodec, emptyMessageList: _*)
       val regularMessgeSet =
         new ByteBufferMessageSet(NoCompressionCodec, messageList: _*)
-      val buffer = ByteBuffer.allocate(
-        emptyMessageSet.buffer.limit + regularMessgeSet.buffer.limit)
+      val buffer = ByteBuffer
+        .allocate(emptyMessageSet.buffer.limit + regularMessgeSet.buffer.limit)
       buffer.put(emptyMessageSet.buffer)
       buffer.put(regularMessgeSet.buffer)
       buffer.rewind
@@ -173,8 +173,8 @@ class ByteBufferMessageSetTest extends BaseMessageSetTestCases {
         new ByteBufferMessageSet(DefaultCompressionCodec, emptyMessageList: _*)
       val regularMessgeSet =
         new ByteBufferMessageSet(DefaultCompressionCodec, messageList: _*)
-      val buffer = ByteBuffer.allocate(
-        emptyMessageSet.buffer.limit + regularMessgeSet.buffer.limit)
+      val buffer = ByteBuffer
+        .allocate(emptyMessageSet.buffer.limit + regularMessgeSet.buffer.limit)
       buffer.put(emptyMessageSet.buffer)
       buffer.put(regularMessgeSet.buffer)
       buffer.rewind
@@ -278,7 +278,8 @@ class ByteBufferMessageSetTest extends BaseMessageSetTestCases {
       validateLogAppendTime(messageAndOffset.message))
     assertTrue(
       "MessageSet should still valid",
-      validatedCompressedMessagesWithoutRecompression.shallowIterator
+      validatedCompressedMessagesWithoutRecompression
+        .shallowIterator
         .next()
         .message
         .isValid)

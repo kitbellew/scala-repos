@@ -83,10 +83,10 @@ object AhcWSSpec extends PlaySpecification with Mockito {
 
       import scala.collection.JavaConverters._
       val paramsList: Seq[Param] = req.getQueryParams.asScala.toSeq
-      paramsList.exists(p =>
-        (p.getName == "foo") && (p.getValue == "foo1")) must beTrue
-      paramsList.exists(p =>
-        (p.getName == "foo") && (p.getValue == "foo2")) must beTrue
+      paramsList
+        .exists(p => (p.getName == "foo") && (p.getValue == "foo1")) must beTrue
+      paramsList
+        .exists(p => (p.getName == "foo") && (p.getValue == "foo2")) must beTrue
       paramsList.count(p => p.getName == "foo") must beEqualTo(2)
     }
 
@@ -134,8 +134,9 @@ object AhcWSSpec extends PlaySpecification with Mockito {
         .withBody(<aaa>value1</aaa>)
         .asInstanceOf[AhcWSRequest]
         .buildRequest()
-      req.getHeaders
-        .get("Content-Type") must_== ("fake/contenttype; charset=utf-8")
+      req.getHeaders.get("Content-Type") must_== (
+        "fake/contenttype; charset=utf-8"
+      )
     }
 
     "Have form params on POST of content type application/x-www-form-urlencoded" in new WithApplication {
@@ -169,8 +170,7 @@ object AhcWSSpec extends PlaySpecification with Mockito {
           "Content-Type" -> "application/x-www-form-urlencoded"
         ) // set content type by hand
         .withBody("HELLO WORLD") // and body is set to string (see #5221)
-        .asInstanceOf[AhcWSRequest]
-        .buildRequest()
+        .asInstanceOf[AhcWSRequest].buildRequest()
       (new String(req.getByteData, "UTF-8")) must be_==(
         "HELLO WORLD"
       ) // should result in byte data.
@@ -207,8 +207,7 @@ object AhcWSSpec extends PlaySpecification with Mockito {
         .withHeaders(
           "Content-Length" -> "9001"
         ) // add a meaningless content length here...
-        .asInstanceOf[AhcWSRequest]
-        .buildRequest()
+        .asInstanceOf[AhcWSRequest].buildRequest()
 
       (new String(req.getByteData, "UTF-8")) must be_==(
         "param1=value1"
@@ -232,8 +231,7 @@ object AhcWSSpec extends PlaySpecification with Mockito {
         .sign(
           calc
         ) // this is signed, so content length is no longer valid per #5221
-        .asInstanceOf[AhcWSRequest]
-        .buildRequest()
+        .asInstanceOf[AhcWSRequest].buildRequest()
 
       val headers = req.getHeaders
       req.getByteData must beNull // should NOT result in byte data.
@@ -250,8 +248,9 @@ object AhcWSSpec extends PlaySpecification with Mockito {
         .withBody("HELLO WORLD")
         .asInstanceOf[AhcWSRequest]
         .buildRequest()
-      req.getHeaders
-        .get("Content-Type") must_== ("text/plain; charset=US-ASCII")
+      req.getHeaders.get("Content-Type") must_== (
+        "text/plain; charset=US-ASCII"
+      )
     }
 
     "Only send first content type header if two are sent" in new WithApplication {
@@ -262,9 +261,7 @@ object AhcWSSpec extends PlaySpecification with Mockito {
         .withHeaders(
           "Content-Type" -> "application/xml"
         ) // second content type header is ignored
-        .withBody("HELLO WORLD")
-        .asInstanceOf[AhcWSRequest]
-        .buildRequest()
+        .withBody("HELLO WORLD").asInstanceOf[AhcWSRequest].buildRequest()
       req.getHeaders.get("Content-Type") must_== ("application/json")
     }
 
@@ -317,12 +314,14 @@ object AhcWSSpec extends PlaySpecification with Mockito {
     }
 
     "not support negative timeout" in new WithApplication {
-      WS.url("http://playframework.com/")
+      WS
+        .url("http://playframework.com/")
         .withRequestTimeout(-1.millis) should throwAn[IllegalArgumentException]
     }
 
     "not support a timeout greater than Int.MaxValue" in new WithApplication {
-      WS.url("http://playframework.com/")
+      WS
+        .url("http://playframework.com/")
         .withRequestTimeout((Int.MaxValue.toLong + 1).millis) should throwAn[
         IllegalArgumentException]
     }

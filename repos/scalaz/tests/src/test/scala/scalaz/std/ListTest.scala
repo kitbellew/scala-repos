@@ -27,7 +27,8 @@ object ListTest extends SpecLite {
   "intersperse then remove odd items is identity" ! forAll {
     (a: List[Int], b: Int) =>
       val isEven = (_: Int) % 2 == 0
-      a.intersperse(b)
+      a
+        .intersperse(b)
         .zipWithIndex
         .filter(p => isEven(p._2))
         .map(_._1) must_=== (a)
@@ -58,9 +59,11 @@ object ListTest extends SpecLite {
 
   "groupByWhenM[Id] ∀(i,j) | 0<i<resut.len & 0<j<result(i).len: p(result(i)(j), p(result(i)(j+1)) yields true" ! forAll {
     (a: List[Int], p: (Int, Int) => Boolean) =>
-      a.groupWhenM[Id](p).forall { group: NonEmptyList[Int] =>
-        list.adjacentPairs(group.list.toList).forall(p.tupled)
-      }
+      a
+        .groupWhenM[Id](p)
+        .forall { group: NonEmptyList[Int] =>
+          list.adjacentPairs(group.list.toList).forall(p.tupled)
+        }
   }
 
   "groupByWhenM[Id] ∀ i | 0<i<result.len: p(result(i).last, result(i+1).head) yields false" ! forAll {
@@ -98,9 +101,11 @@ object ListTest extends SpecLite {
 
   "groupByWhen ∀(i,j) | 0<i<resut.len & 0<j<result(i).len: p(result(i)(j), p(result(i)(j+1)) yields true" ! forAll {
     (a: List[Int], p: (Int, Int) => Boolean) =>
-      a.groupWhen(p).forall { group: NonEmptyList[Int] =>
-        list.adjacentPairs(group.list.toList).forall(p.tupled)
-      }
+      a
+        .groupWhen(p)
+        .forall { group: NonEmptyList[Int] =>
+          list.adjacentPairs(group.list.toList).forall(p.tupled)
+        }
   }
 
   "groupByWhen ∀ i | 0<i<result.len: p(result(i).last, result(i+1).head) yields false" ! forAll {
@@ -126,7 +131,8 @@ object ListTest extends SpecLite {
 
   "takeWhileM example" in {
     def takeWhileN[A](as: List[A], n: Int)(f: A => Boolean): List[A] =
-      as.takeWhileM[State[Int, ?]](a =>
+      as
+        .takeWhileM[State[Int, ?]](a =>
           State { i =>
             val j = i + (
               if (f(a))

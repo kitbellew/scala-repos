@@ -82,8 +82,8 @@ private[netty4] class Netty4ChannelInitializer(
 
     channelSnooper.foreach(pipeline.addFirst("channelLogger", _))
     channelStatsHandler.foreach(pipeline.addFirst("channelStatsHandler", _))
-    writeCompletionTimeoutHandler.foreach(
-      pipeline.addLast("writeCompletionTimeout", _))
+    writeCompletionTimeoutHandler
+      .foreach(pipeline.addLast("writeCompletionTimeout", _))
 
     if (readTimeout.isFinite) {
       val (timeoutValue, timeoutUnit) = readTimeout.inTimeUnit
@@ -94,8 +94,8 @@ private[netty4] class Netty4ChannelInitializer(
 
     tlsConfig.foreach(initChannelTls(_, ch))
 
-    channelRequestStatsHandler.foreach(
-      pipeline.addLast("channelRequestStatsHandler", _))
+    channelRequestStatsHandler
+      .foreach(pipeline.addLast("channelRequestStatsHandler", _))
 
     pipeline.addLast("exceptionHandler", exceptionHandler)
     // The bridge handler must be last in the pipeline to ensure

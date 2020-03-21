@@ -150,18 +150,19 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
   protected final def updateStatus(
       oldStatus: Status,
       newStatus: Status): Boolean =
-    Unsafe.instance.compareAndSwapInt(
-      this,
-      AbstractMailbox.mailboxStatusOffset,
-      oldStatus,
-      newStatus)
+    Unsafe
+      .instance
+      .compareAndSwapInt(
+        this,
+        AbstractMailbox.mailboxStatusOffset,
+        oldStatus,
+        newStatus)
 
   @inline
   protected final def setStatus(newStatus: Status): Unit =
-    Unsafe.instance.putIntVolatile(
-      this,
-      AbstractMailbox.mailboxStatusOffset,
-      newStatus)
+    Unsafe
+      .instance
+      .putIntVolatile(this, AbstractMailbox.mailboxStatusOffset, newStatus)
 
   /**
     * Reduce the suspend count by one. Caller does not need to worry about whether
@@ -251,7 +252,8 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
     // Note: contrary how it looks, there is no allocation here, as SystemMessageList is a value class and as such
     // it just exists as a typed view during compile-time. The actual return type is still SystemMessage.
     new LatestFirstSystemMessageList(
-      Unsafe.instance
+      Unsafe
+        .instance
         .getObjectVolatile(this, AbstractMailbox.systemMessageOffset)
         .asInstanceOf[SystemMessage])
 
@@ -261,11 +263,13 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
     // Note: calling .head is not actually existing on the bytecode level as the parameters _old and _new
     // are SystemMessage instances hidden during compile time behind the SystemMessageList value class.
     // Without calling .head the parameters would be boxed in SystemMessageList wrapper.
-    Unsafe.instance.compareAndSwapObject(
-      this,
-      AbstractMailbox.systemMessageOffset,
-      _old.head,
-      _new.head)
+    Unsafe
+      .instance
+      .compareAndSwapObject(
+        this,
+        AbstractMailbox.systemMessageOffset,
+        _old.head,
+        _new.head)
 
   final def canBeScheduledForExecution(
       hasMessageHint: Boolean,
@@ -357,7 +361,8 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
       msg.unlink()
       if (debug)
         println(
-          actor.self + " processing system message " + msg + " with " + actor.childrenRefs)
+          actor.self + " processing system message " + msg + " with " + actor
+            .childrenRefs)
       // we know here that systemInvoke ensures that only "fatal" exceptions get rethrown
       actor systemInvoke msg
       if (Thread.interrupted())
@@ -381,12 +386,16 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
         case e: InterruptedException ⇒
           interruption = e
         case NonFatal(e) ⇒
-          actor.system.eventStream.publish(
-            Error(
-              e,
-              actor.self.path.toString,
-              this.getClass,
-              "error while enqueuing " + msg + " to deadLetters: " + e.getMessage))
+          actor
+            .system
+            .eventStream
+            .publish(
+              Error(
+                e,
+                actor.self.path.toString,
+                this.getClass,
+                "error while enqueuing " + msg + " to deadLetters: " + e
+                  .getMessage))
       }
     }
     // if we got an interrupted exception while handling system messages, then rethrow it
@@ -555,7 +564,10 @@ private[akka] trait DefaultSystemMessageQueue {
     val currentList = systemQueueGet
     if (currentList.head == NoMessage) {
       if (actor ne null)
-        actor.dispatcher.mailboxes.deadLetterMailbox
+        actor
+          .dispatcher
+          .mailboxes
+          .deadLetterMailbox
           .systemEnqueue(receiver, message)
     } else {
       if (!systemQueuePut(currentList, message :: currentList)) {

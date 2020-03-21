@@ -54,9 +54,11 @@ object HB_0_8_0 {
     val scan = new Scan(start.toBytes, stop.toBytes)
     val scanner = table.getScanner(scan)
     table.close()
-    scanner.iterator().map {
-      resultToEvent(_)
-    }
+    scanner
+      .iterator()
+      .map {
+        resultToEvent(_)
+      }
   }
 
   val colNames: Map[String, Array[Byte]] = Map(

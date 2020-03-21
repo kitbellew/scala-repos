@@ -33,8 +33,9 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
         (
           processor match {
             case b: BaseProcessor =>
-              b.kinds.contains(ResolveTargets.OBJECT) || b.kinds.contains(
-                ResolveTargets.VAL)
+              b.kinds.contains(ResolveTargets.OBJECT) || b
+                .kinds
+                .contains(ResolveTargets.VAL)
             case _ =>
               true
           }
@@ -91,7 +92,8 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
           case id: ScStableCodeReferenceElement =>
             run match {
               case po: ScObject
-                  if po.isPackageObject && id.qualName == po.qualifiedName => // do nothing
+                  if po.isPackageObject && id.qualName == po
+                    .qualifiedName => // do nothing
               case _ =>
                 if (!processElement(run, state))
                   return false
@@ -105,9 +107,8 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
 
       //forward references are allowed (e.g. 2 local methods see each other)
       run = lastParent.getNextSibling
-      val forwardState = state.put(
-        BaseProcessor.FORWARD_REFERENCE_KEY,
-        lang.Boolean.TRUE)
+      val forwardState = state
+        .put(BaseProcessor.FORWARD_REFERENCE_KEY, lang.Boolean.TRUE)
       while (run != null) {
         ProgressManager.checkCanceled()
         if (!processElement(run, forwardState))

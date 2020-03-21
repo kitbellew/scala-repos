@@ -72,9 +72,8 @@ class ScalaParameterTableModel(
         .forceRootHighlighting(_, FileHighlightingSetting.SKIP_HIGHLIGHTING))
 
     paramTypeCodeFragment.setContext(typeContext.getParent, typeContext)
-    defaultValueCodeFragment.setContext(
-      defaultValueContext.getParent,
-      defaultValueContext)
+    defaultValueCodeFragment
+      .setContext(defaultValueContext.getParent, defaultValueContext)
 
     defaultValueCodeFragment.setVisibilityChecker(
       JavaCodeFragment.VisibilityChecker.EVERYTHING_VISIBLE)

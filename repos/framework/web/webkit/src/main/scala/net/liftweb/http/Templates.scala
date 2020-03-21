@@ -30,7 +30,8 @@ import java.io.InputStream
 object Templates {
   // Making this lazy to ensure it doesn't accidentally init before Boot completes in case someone touches this class.
   private lazy val parsers =
-    LiftRules.contentParsers
+    LiftRules
+      .contentParsers
       .flatMap(parser => parser.templateSuffixes.map(_ -> parser))
       .toMap
 
@@ -130,7 +131,8 @@ object Templates {
           df(n.next)
       }
 
-    in.flatMap {
+    in
+      .flatMap {
         case e: Elem if e.label == "html" =>
           df(e.attributes)
         case _ =>
@@ -140,31 +142,40 @@ object Templates {
         Helpers.findId(in, md.value.text)
       }
       .headOption orElse
-      in.flatMap {
+      in
+        .flatMap {
           case e: Elem if e.label == "html" =>
-            e.child.flatMap {
-              case e: Elem if e.label == "body" => {
-                e.attribute("data-lift-content-id")
-                  .headOption
-                  .map(_.text) orElse
-                  e.attribute("class").flatMap { ns =>
-                    {
-                      val clz = ns.text.charSplit(' ')
-                      clz.flatMap {
-                        case s if s.startsWith("lift:content_id=") =>
-                          Some(
-                            urlDecode(s.substring("lift:content_id=".length)))
-                        case _ =>
-                          None
-                      }.headOption
+            e
+              .child
+              .flatMap {
+                case e: Elem if e.label == "body" => {
+                  e
+                    .attribute("data-lift-content-id")
+                    .headOption
+                    .map(_.text) orElse
+                    e
+                      .attribute("class")
+                      .flatMap { ns =>
+                        {
+                          val clz = ns.text.charSplit(' ')
+                          clz
+                            .flatMap {
+                              case s if s.startsWith("lift:content_id=") =>
+                                Some(
+                                  urlDecode(
+                                    s.substring("lift:content_id=".length)))
+                              case _ =>
+                                None
+                            }
+                            .headOption
 
-                    }
-                  }
+                        }
+                      }
+                }
+
+                case _ =>
+                  None
               }
-
-              case _ =>
-                None
-            }
           case _ =>
             None
         }
@@ -407,7 +418,8 @@ abstract class SnippetFailureException(msg: String)
   def snippetFailure: LiftRules.SnippetFailures.Value
 
   def buildStackTrace: NodeSeq =
-    getStackTrace.toList
+    getStackTrace
+      .toList
       .dropWhile { e =>
         {
           val cn = e.getClassName

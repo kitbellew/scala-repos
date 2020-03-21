@@ -41,16 +41,20 @@ class TestActorRef[T <: Actor](
           case c: ActorCell ⇒
             c.reserveChild(name)
           case o ⇒
-            _system.log.error(
-              "trying to attach child {} to unknown type of supervisor cell {}, this is not going to end well",
-              name,
-              o.getClass)
+            _system
+              .log
+              .error(
+                "trying to attach child {} to unknown type of supervisor cell {}, this is not going to end well",
+                name,
+                o.getClass)
         }
       case s ⇒
-        _system.log.error(
-          "trying to attach child {} to unknown type of supervisor {}, this is not going to end well",
-          name,
-          s.getClass)
+        _system
+          .log
+          .error(
+            "trying to attach child {} to unknown type of supervisor {}, this is not going to end well",
+            name,
+            s.getClass)
     }
 } with LocalActorRef(
   _system.asInstanceOf[ActorSystemImpl],

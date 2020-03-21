@@ -396,7 +396,8 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
       start: String,
       sep: String,
       end: String): StringBuilder =
-    this.iterator
+    this
+      .iterator
       .map {
         case (k, v) =>
           k + " -> " + v

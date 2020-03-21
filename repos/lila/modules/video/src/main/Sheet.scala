@@ -21,7 +21,8 @@ private[video] final class Sheet(url: String, api: VideoApi) {
     fetch map (_ filter select) flatMap { entries =>
       entries
         .map { entry =>
-          api.video
+          api
+            .video
             .find(entry.youtubeId)
             .flatMap {
               case Some(video) =>
@@ -103,7 +104,8 @@ object Sheet {
     def targets =
       `gsx$target`.toString.split(';').map(_.trim).toList flatMap parseIntOption
     def tags =
-      `gsx$tags`.toString
+      `gsx$tags`
+        .toString
         .split(';')
         .map(_.trim.toLowerCase)
         .toList

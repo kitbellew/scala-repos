@@ -173,25 +173,28 @@ trait IssuesService {
          GROUP BY PR.USER_NAME, PR.REPOSITORY_NAME, PR.ISSUE_ID) as SUMM
         LEFT OUTER JOIN COMMIT_STATUS CSD
           ON SUMM.CS_ALL = 1 AND SUMM.COMMIT_ID = CSD.COMMIT_ID""");
-      query(issueList).list.map {
-        case (
-              userName,
-              repositoryName,
-              issueId,
+      query(issueList)
+        .list
+        .map {
+          case (
+                userName,
+                repositoryName,
+                issueId,
+                count,
+                successCount,
+                context,
+                state,
+                targetUrl,
+                description) =>
+            (userName, repositoryName, issueId) -> CommitStatusInfo(
               count,
               successCount,
               context,
               state,
               targetUrl,
-              description) =>
-          (userName, repositoryName, issueId) -> CommitStatusInfo(
-            count,
-            successCount,
-            context,
-            state,
-            targetUrl,
-            description)
-      }.toMap
+              description)
+        }
+        .toMap
     }
   }
 
@@ -254,26 +257,30 @@ trait IssuesService {
         .map(_.head._1)
         .map(is => (is.userName, is.repositoryName, is.issueId)))
 
-    result.map { issues =>
-      issues.head match {
-        case (issue, commentCount, _, _, _, milestone) =>
-          IssueInfo(
-            issue,
-            issues.flatMap { t =>
-              t._3.map(
-                Label(
-                  issue.userName,
-                  issue.repositoryName,
-                  _,
-                  t._4.get,
-                  t._5.get))
-            } toList,
-            milestone,
-            commentCount,
-            status.get(issue.userName, issue.repositoryName, issue.issueId)
-          )
-      }
-    } toList
+    result
+      .map { issues =>
+        issues.head match {
+          case (issue, commentCount, _, _, _, milestone) =>
+            IssueInfo(
+              issue,
+              issues
+                .flatMap { t =>
+                  t
+                    ._3
+                    .map(
+                      Label(
+                        issue.userName,
+                        issue.repositoryName,
+                        _,
+                        t._4.get,
+                        t._5.get))
+                } toList,
+              milestone,
+              commentCount,
+              status.get(issue.userName, issue.repositoryName, issue.issueId)
+            )
+        }
+      } toList
   }
 
   /** for api
@@ -367,10 +374,14 @@ trait IssuesService {
       //(t1.milestoneId      === condition.milestoneId.get.get.bind, condition.milestoneId.flatten.isDefined) &&
       (t1.milestoneId.? isEmpty, condition.milestone == Some(None)) &&
       (
-        t1.assignedUserName === condition.assigned.get.bind, condition.assigned.isDefined
+        t1.assignedUserName === condition.assigned.get.bind, condition
+          .assigned
+          .isDefined
       ) &&
       (
-        t1.openedUserName === condition.author.get.bind, condition.author.isDefined
+        t1.openedUserName === condition.author.get.bind, condition
+          .author
+          .isDefined
       ) &&
       (t1.pullRequest === pullRequest.bind) &&
       // Milestone filter
@@ -406,9 +417,8 @@ trait IssuesService {
       (t1.userName inSetBind condition.groups, condition.groups.nonEmpty) &&
       // Mentioned filter
       (
-        (
-          t1.openedUserName === condition.mentioned.get.bind
-        ) || t1.assignedUserName === condition.mentioned.get.bind ||
+        (t1.openedUserName === condition.mentioned.get.bind) || t1
+          .assignedUserName === condition.mentioned.get.bind ||
         (
           IssueComments filter { t2 =>
             (t2.byIssue(t1.userName, t1.repositoryName, t1.issueId)) && (
@@ -452,7 +462,7 @@ trait IssuesService {
           .filter(_.byPrimaryKey(owner, repository))
           .map(_.issueId)
           .update(id) > 0
-    } get
+      } get
 
   def registerIssueLabel(
       owner: String,
@@ -650,41 +660,45 @@ trait IssuesService {
       fromIssue: Issue,
       message: String,
       loginAccount: Account)(implicit s: Session) = {
-    StringUtil.extractIssueId(message).foreach { issueId =>
-      val content = fromIssue.issueId + ":" + fromIssue.title
-      if (getIssue(owner, repository, issueId).isDefined) {
-        // Not add if refer comment already exist.
-        if (!getComments(owner, repository, issueId.toInt).exists { x =>
-              x.action == "refer" && x.content == content
-            }) {
-          createComment(
-            owner,
-            repository,
-            loginAccount.userName,
-            issueId.toInt,
-            content,
-            "refer")
+    StringUtil
+      .extractIssueId(message)
+      .foreach { issueId =>
+        val content = fromIssue.issueId + ":" + fromIssue.title
+        if (getIssue(owner, repository, issueId).isDefined) {
+          // Not add if refer comment already exist.
+          if (!getComments(owner, repository, issueId.toInt).exists { x =>
+                x.action == "refer" && x.content == content
+              }) {
+            createComment(
+              owner,
+              repository,
+              loginAccount.userName,
+              issueId.toInt,
+              content,
+              "refer")
+          }
         }
       }
-    }
   }
 
   def createIssueComment(owner: String, repository: String, commit: CommitInfo)(
       implicit s: Session) = {
-    StringUtil.extractIssueId(commit.fullMessage).foreach { issueId =>
-      if (getIssue(owner, repository, issueId).isDefined) {
-        getAccountByMailAddress(commit.committerEmailAddress).foreach {
-          account =>
-            createComment(
-              owner,
-              repository,
-              account.userName,
-              issueId.toInt,
-              commit.fullMessage + " " + commit.id,
-              "commit")
+    StringUtil
+      .extractIssueId(commit.fullMessage)
+      .foreach { issueId =>
+        if (getIssue(owner, repository, issueId).isDefined) {
+          getAccountByMailAddress(commit.committerEmailAddress).foreach {
+            account =>
+              createComment(
+                owner,
+                repository,
+                account.userName,
+                issueId.toInt,
+                commit.fullMessage + " " + commit.id,
+                "commit")
+          }
         }
       }
-    }
   }
 
 }
@@ -707,8 +721,10 @@ object IssuesService {
       groups: Set[String] = Set.empty) {
 
     def isEmpty: Boolean = {
-      labels.isEmpty && milestone.isEmpty && author.isEmpty && assigned.isEmpty &&
-      state == "open" && sort == "created" && direction == "desc" && visibility.isEmpty
+      labels.isEmpty && milestone.isEmpty && author.isEmpty && assigned
+        .isEmpty &&
+      state == "open" && sort == "created" && direction == "desc" && visibility
+        .isEmpty
     }
 
     def nonEmpty: Boolean = !isEmpty
@@ -786,9 +802,8 @@ object IssuesService {
         name: String,
         allow: Seq[String] = Nil): Option[String] = {
       val value = request.getParameter(name)
-      if (value == null || value.isEmpty || (
-            allow.nonEmpty && !allow.contains(value)
-          ))
+      if (value == null || value
+            .isEmpty || (allow.nonEmpty && !allow.contains(value)))
         None
       else
         Some(value)

@@ -211,9 +211,8 @@ final case class ConsistentHashingRoutingLogic(
                 vnodes
               ) // re-hash
           // ignore, don't update, in case of CAS failure
-          consistentHashRef.compareAndSet(
-            oldConsistentHashTuple,
-            (routees, consistentHash))
+          consistentHashRef
+            .compareAndSet(oldConsistentHashTuple, (routees, consistentHash))
           consistentHash
         } else
           oldConsistentHash
@@ -306,8 +305,8 @@ final case class ConsistentHashingPool(
     val virtualNodesFactor: Int = 0,
     val hashMapping: ConsistentHashingRouter.ConsistentHashMapping =
       ConsistentHashingRouter.emptyConsistentHashMapping,
-    override val supervisorStrategy: SupervisorStrategy =
-      Pool.defaultSupervisorStrategy,
+    override val supervisorStrategy: SupervisorStrategy = Pool
+      .defaultSupervisorStrategy,
     override val routerDispatcher: String = Dispatchers.DefaultDispatcherId,
     override val usePoolDispatcher: Boolean = false)
     extends Pool

@@ -29,8 +29,8 @@ object Query {
 
   val mate = status(Status.Mate)
 
-  val draw: JsObject = Json.obj(
-    F.status -> $in(Seq(Status.Draw.id, Status.Stalemate.id)))
+  val draw: JsObject = Json
+    .obj(F.status -> $in(Seq(Status.Draw.id, Status.Stalemate.id)))
 
   def draw(u: String): JsObject = user(u) ++ draw
 
@@ -58,8 +58,8 @@ object Query {
   def nowPlaying(u: String) = Json.obj(F.playingUids -> u)
 
   def recentlyPlaying(u: String) =
-    nowPlaying(u) ++ Json.obj(
-      F.updatedAt -> $gt($date(DateTime.now minusMinutes 5)))
+    nowPlaying(u) ++ Json
+      .obj(F.updatedAt -> $gt($date(DateTime.now minusMinutes 5)))
 
   // use the us index
   def win(u: String) = user(u) ++ Json.obj(F.winnerId -> u)
@@ -72,9 +72,8 @@ object Query {
   def opponents(u1: User, u2: User) =
     Json.obj(F.playerUids -> $all(List(u1, u2).sortBy(_.count.game).map(_.id)))
 
-  val noProvisional = Json.obj(
-    "p0.p" -> $exists(false),
-    "p1.p" -> $exists(false))
+  val noProvisional = Json
+    .obj("p0.p" -> $exists(false), "p1.p" -> $exists(false))
 
   def bothRatingsGreaterThan(v: Int) =
     Json.obj("p0.e" -> $gt(v), "p1.e" -> $gt(v))
@@ -91,8 +90,8 @@ object Query {
       Json.obj(F.variant -> $ne(chess.variant.Horde.id)),
       sinceHordePawnsAreWhite))
 
-  lazy val sinceHordePawnsAreWhite = Json.obj(
-    F.createdAt -> $gt($date(hordeWhitePawnsSince)))
+  lazy val sinceHordePawnsAreWhite = Json
+    .obj(F.createdAt -> $gt($date(hordeWhitePawnsSince)))
 
   val hordeWhitePawnsSince = new DateTime(2015, 4, 11, 10, 0)
 

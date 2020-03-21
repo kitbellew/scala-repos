@@ -40,7 +40,8 @@ class ProcessWatcher(process: Process, commandLine: String) {
       outputType match {
         case ProcessOutputTypes.STDOUT =>
           lock.synchronized {
-            if (errorInStdOut || ProcessWatcher.ExceptionPattern
+            if (errorInStdOut || ProcessWatcher
+                  .ExceptionPattern
                   .matcher(text)
                   .find) {
               errorInStdOut = true

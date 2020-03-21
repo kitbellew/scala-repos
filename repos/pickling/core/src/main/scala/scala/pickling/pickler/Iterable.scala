@@ -30,15 +30,21 @@ trait IterablePicklers {
         identity[List[Any]]) { tpe =>
         TravPickler.oneArgumentTagExtractor(tpe)
       } _
-    currentRuntime.picklers.registerPicklerUnpicklerGenerator(
-      "scala.collection.immutable.List",
-      generator)
-    currentRuntime.picklers.registerPicklerUnpicklerGenerator(
-      "scala.collection.immutable.$colon$colon",
-      generator)
-    currentRuntime.picklers.registerPicklerUnpicklerGenerator(
-      "scala.collection.immutable.Nil.type",
-      generator)
+    currentRuntime
+      .picklers
+      .registerPicklerUnpicklerGenerator(
+        "scala.collection.immutable.List",
+        generator)
+    currentRuntime
+      .picklers
+      .registerPicklerUnpicklerGenerator(
+        "scala.collection.immutable.$colon$colon",
+        generator)
+    currentRuntime
+      .picklers
+      .registerPicklerUnpicklerGenerator(
+        "scala.collection.immutable.Nil.type",
+        generator)
   }
 
   // Register Iterable runtime pickler
@@ -49,7 +55,8 @@ trait IterablePicklers {
         identity[Iterable[Any]]) { tpe =>
         TravPickler.oneArgumentTagExtractor(tpe)
       } _
-    currentRuntime.picklers
+    currentRuntime
+      .picklers
       .registerPicklerUnpicklerGenerator("scala.collection.Iterable", generator)
   }
 }
@@ -85,7 +92,8 @@ object TravPickler {
       if (elementType.key == ANY_TAG.key)
         AnyPickler
       else
-        currentRuntime.picklers
+        currentRuntime
+          .picklers
           .lookupPickler(elementType.key)
           .getOrElse(
             throw new PicklingException(
@@ -94,7 +102,8 @@ object TravPickler {
       if (elementType.key == ANY_TAG.key)
         AnyUnpickler
       else
-        currentRuntime.picklers
+        currentRuntime
+          .picklers
           .lookupUnpickler(elementType.key)
           .getOrElse(
             throw new PicklingException(
@@ -132,12 +141,13 @@ object TravPickler {
           builder.pinHints()
         }
 
-        (coll: Traversable[_]).asInstanceOf[Traversable[T]].foreach {
-          (elem: T) =>
+        (coll: Traversable[_])
+          .asInstanceOf[Traversable[T]]
+          .foreach { (elem: T) =>
             builder putElement { b =>
               elemPickler.pickle(elem, b)
             }
-        }
+          }
 
         builder.popHints()
         builder.endCollection()

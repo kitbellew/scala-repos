@@ -62,7 +62,8 @@ object ScalaExtractMethodUtils {
         param.fromElement.getProject,
         param.isCallByNameParameter)
 
-    val parameters = settings.parameters
+    val parameters = settings
+      .parameters
       .filter(_.passAsParameter)
       .map(paramText)
     val paramsText =
@@ -74,12 +75,14 @@ object ScalaExtractMethodUtils {
     val project = settings.elements(0).getProject
     val codeStyleSettings = ScalaCodeStyleSettings.getInstance(project)
     val retType =
-      if (settings.calcReturnTypeIsUnit && !codeStyleSettings.ENFORCE_FUNCTIONAL_SYNTAX_FOR_UNIT)
+      if (settings.calcReturnTypeIsUnit && !codeStyleSettings
+            .ENFORCE_FUNCTIONAL_SYNTAX_FOR_UNIT)
         ""
       else
         s": ${settings.calcReturnTypeText} ="
 
-    val notPassedParams = settings.parameters
+    val notPassedParams = settings
+      .parameters
       .filter(p => !p.passAsParameter)
       .map { p =>
         val nameAndType = typedName(
@@ -174,9 +177,8 @@ object ScalaExtractMethodUtils {
                 case None =>
                   "" //should not occur
               }
-            val retElem = ScalaPsiElementFactory.createExpressionFromText(
-              s"return $newText",
-              ret.getManager)
+            val retElem = ScalaPsiElementFactory
+              .createExpressionFromText(s"return $newText", ret.getManager)
             ret.replace(retElem)
           }
         }
@@ -191,7 +193,8 @@ object ScalaExtractMethodUtils {
                   ScalaResolveResult(
                     named: PsiNamedElement,
                     subst: ScSubstitutor)) =>
-              if (named.getContainingFile == method.getContainingFile && named.getTextOffset < offset &&
+              if (named.getContainingFile == method
+                    .getContainingFile && named.getTextOffset < offset &&
                   !named.name.startsWith("_")) {
                 val oldName = named.name
                 var break = false
@@ -203,7 +206,9 @@ object ScalaExtractMethodUtils {
                           .createExpressionFromText(
                             param.newName,
                             method.getManager)
-                        ref.getParent.getNode
+                        ref
+                          .getParent
+                          .getNode
                           .replaceChild(ref.getNode, newRef.getNode)
                       }
                     }
@@ -213,7 +218,9 @@ object ScalaExtractMethodUtils {
                           .createExpressionFromText(
                             param.newName,
                             method.getManager)
-                        sect.getParent.getNode
+                        sect
+                          .getParent
+                          .getNode
                           .replaceChild(sect.getNode, newRef.getNode)
                       case _ if param.isEmptyParamFunction =>
                         ref.getParent match {
@@ -235,7 +242,9 @@ object ScalaExtractMethodUtils {
                                   .createExpressionFromText(
                                     param.newName + "()",
                                     method.getManager)
-                                ref.getParent.getNode
+                                ref
+                                  .getParent
+                                  .getNode
                                   .replaceChild(ref.getNode, newRef.getNode)
                             }
                         }
@@ -260,7 +269,8 @@ object ScalaExtractMethodUtils {
           element match {
             case named: PsiNamedElement
                 if named != method && named.getTextOffset < offset =>
-              settings.parameters
+              settings
+                .parameters
                 .find(p => p.oldName == named.name)
                 .filter(p => p.oldName != p.newName)
                 .foreach(p => bindTo += ((named, p.newName)))
@@ -272,9 +282,12 @@ object ScalaExtractMethodUtils {
     newVisitor.visitElement(method)
     for ((named, newName) <- bindTo) {
       val id = named.asInstanceOf[ScNamedElement].nameId
-      id.getParent.getNode.replaceChild(
-        id.getNode,
-        ScalaPsiElementFactory.createIdentifier(newName, id.getManager))
+      id
+        .getParent
+        .getNode
+        .replaceChild(
+          id.getNode,
+          ScalaPsiElementFactory.createIdentifier(newName, id.getManager))
     }
     method
   }
@@ -291,7 +304,8 @@ object ScalaExtractMethodUtils {
       if (elements.length > 0) {
         val startOffset = elements(0).getTextRange.getStartOffset
         val endOffset = elements(elements.length - 1).getTextRange.getEndOffset
-        definition.getTextOffset >= startOffset && definition.getTextOffset < endOffset
+        definition.getTextOffset >= startOffset && definition
+          .getTextOffset < endOffset
       } else
         false
     val retType = definition.getType(TypingContext.empty).getOrNothing
@@ -328,7 +342,8 @@ object ScalaExtractMethodUtils {
     if (settings.lastReturn) {
       return prepareResult(returnStmtType.get)
     }
-    if (outputs.length == 0 && returnStmtType.isEmpty && lastExprType.isDefined) {
+    if (outputs.length == 0 && returnStmtType.isEmpty && lastExprType
+          .isDefined) {
       return prepareResult(lastExprType.get)
     }
     def byOutputsSize[T](ifZero: => T, ifOne: => T, ifMany: => T): T = {
@@ -385,9 +400,8 @@ object ScalaExtractMethodUtils {
       elements: Array[PsiElement]) = {
     var buffer: ArrayBuffer[VariableData] = new ArrayBuffer[VariableData]
     for (input <- myInput) {
-      var d: VariableData = ScalaExtractMethodUtils.convertVariableData(
-        input,
-        elements)
+      var d: VariableData = ScalaExtractMethodUtils
+        .convertVariableData(input, elements)
       if (d != null)
         buffer += d
     }
@@ -412,9 +426,8 @@ object ScalaExtractMethodUtils {
     val list: util.ArrayList[ExtractMethodOutput] =
       new util.ArrayList[ExtractMethodOutput]
     for (info <- myOutput) {
-      val data: ScalaVariableData = ScalaExtractMethodUtils.convertVariableData(
-        info,
-        elements)
+      val data: ScalaVariableData = ScalaExtractMethodUtils
+        .convertVariableData(info, elements)
       list.add(ExtractMethodOutput.from(data))
     }
     list.toArray(new Array[ExtractMethodOutput](list.size))
@@ -458,7 +471,8 @@ object ScalaExtractMethodUtils {
     val visibility = settings.visibility
     val prefix = s"${visibility}def $methodName"
     val typeParamsText = typeParametersText(settings)
-    val paramsText = settings.parameters
+    val paramsText = settings
+      .parameters
       .filter(_.passAsParameter)
       .map(p => nameAndType(p))
       .mkString("(", s", ", ")")
@@ -502,7 +516,8 @@ object ScalaExtractMethodUtils {
     }
     val mFreshName = generateFreshName(settings.methodName + "Result")
 
-    val params = settings.parameters
+    val params = settings
+      .parameters
       .filter(_.passAsParameter)
       .map(param =>
         parameterText(param) + (
@@ -520,11 +535,13 @@ object ScalaExtractMethodUtils {
     val methodCallText = s"${settings.methodName}$paramsText"
     var needExtractorsFromMultipleReturn = false
 
-    val outputTypedNames = settings.outputs.map(o =>
-      ScalaExtractMethodUtils.typedName(
-        outputName(o),
-        o.returnType.canonicalText,
-        o.fromElement.getProject))
+    val outputTypedNames = settings
+      .outputs
+      .map(o =>
+        ScalaExtractMethodUtils.typedName(
+          outputName(o),
+          o.returnType.canonicalText,
+          o.fromElement.getProject))
     val ics = settings.innerClassSettings
 
     def patternForDeclaration: String = {
@@ -541,9 +558,8 @@ object ScalaExtractMethodUtils {
 
     def insertCallStmt(): PsiElement = {
       def insertExpression(text: String): PsiElement = {
-        val expr = ScalaPsiElementFactory.createExpressionFromText(
-          text,
-          manager)
+        val expr = ScalaPsiElementFactory
+          .createExpressionFromText(text, manager)
         elements.head.replace(expr)
       }
       if (settings.lastReturn)
@@ -594,15 +610,10 @@ object ScalaExtractMethodUtils {
                   |  case Right(result) $arrow result
                   |}""".stripMargin.replace("\r", "")
           }
-        val expr = ScalaPsiElementFactory.createExpressionFromText(
-          exprText,
-          manager)
-        val declaration = ScalaPsiElementFactory.createDeclaration(
-          pattern,
-          "",
-          isVariable = !isVal,
-          expr,
-          manager)
+        val expr = ScalaPsiElementFactory
+          .createExpressionFromText(exprText, manager)
+        val declaration = ScalaPsiElementFactory
+          .createDeclaration(pattern, "", isVariable = !isVal, expr, manager)
         val result = elements.head.replace(declaration)
         TypeAdjuster.markToAdjust(result)
         result
@@ -616,9 +627,11 @@ object ScalaExtractMethodUtils {
       var lastElem: PsiElement = element
       def addElement(elem: PsiElement) = {
         lastElem = lastElem.getParent.addAfter(elem, lastElem)
-        lastElem.getParent.addBefore(
-          ScalaPsiElementFactory.createNewLine(elem.getManager),
-          lastElem)
+        lastElem
+          .getParent
+          .addBefore(
+            ScalaPsiElementFactory.createNewLine(elem.getManager),
+            lastElem)
         lastElem
       }
 
@@ -647,9 +660,8 @@ object ScalaExtractMethodUtils {
         if (allVals || allVars) {
           val patternArgsText = outputTypedNames.mkString("(", ", ", ")")
           val patternText = ics.className + patternArgsText
-          val expr = ScalaPsiElementFactory.createExpressionFromText(
-            mFreshName,
-            manager)
+          val expr = ScalaPsiElementFactory
+            .createExpressionFromText(mFreshName, manager)
           val stmt = ScalaPsiElementFactory.createDeclaration(
             patternText,
             "",

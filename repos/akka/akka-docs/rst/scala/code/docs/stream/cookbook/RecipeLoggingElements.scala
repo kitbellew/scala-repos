@@ -43,9 +43,11 @@ class RecipeLoggingElements extends RecipeSpec {
       //#log-custom
 
       val loggedSource = mySource.log("custom")
-      EventFilter.debug(start = "[custom] Element: ").intercept {
-        loggedSource.runWith(Sink.ignore)
-      }
+      EventFilter
+        .debug(start = "[custom] Element: ")
+        .intercept {
+          loggedSource.runWith(Sink.ignore)
+        }
 
     }
 

@@ -22,10 +22,13 @@ class CompletionDependenciesTest extends CompletionTestBase {
     SbtResolverIndexesManager().update(Seq(testResolver))
     val moduleManager = Option(ModuleManager.getInstance(getProjectAdapter))
     moduleManager.foreach { manager =>
-      manager.getModules.toSeq.foreach { module =>
-        val resolvers = SbtModule.getResolversFrom(module)
-        SbtModule.setResolversTo(module, resolvers + testResolver)
-      }
+      manager
+        .getModules
+        .toSeq
+        .foreach { module =>
+          val resolvers = SbtModule.getResolversFrom(module)
+          SbtModule.setResolversTo(module, resolvers + testResolver)
+        }
     }
   }
 

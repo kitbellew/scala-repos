@@ -102,11 +102,8 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
     conf.set("spark.app.name", "dreamer")
     val appArgs = Array("one", "two", "six")
     // main method calls this
-    val response = RestSubmissionClient.run(
-      "app-resource",
-      "main-class",
-      appArgs,
-      conf)
+    val response = RestSubmissionClient
+      .run("app-resource", "main-class", appArgs, conf)
     val submitResponse = getSubmitResponse(response)
     assert(
       submitResponse.action === Utils.getFormattedClassName(submitResponse))
@@ -380,7 +377,8 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
     assert(errorResponse6.highestProtocolVersion === null)
     assert(errorResponse7.highestProtocolVersion === null)
     assert(
-      errorResponse8.highestProtocolVersion === RestSubmissionServer.PROTOCOL_VERSION)
+      errorResponse8.highestProtocolVersion === RestSubmissionServer
+        .PROTOCOL_VERSION)
   }
 
   test("server returns unknown fields") {
@@ -448,8 +446,8 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
     val environmentVariables = Map(
       "SPARK_VAR" -> "1",
       "SPARK_ENV_LOADED" -> "1")
-    val filteredVariables = RestSubmissionClient.filterSystemEnvironment(
-      environmentVariables)
+    val filteredVariables = RestSubmissionClient
+      .filterSystemEnvironment(environmentVariables)
     assert(filteredVariables == Map("SPARK_VAR" -> "1"))
   }
 
@@ -458,8 +456,8 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
       "SPARK_VAR" -> "1",
       "MESOS_VAR" -> "1",
       "OTHER_VAR" -> "1")
-    val filteredVariables = RestSubmissionClient.filterSystemEnvironment(
-      environmentVariables)
+    val filteredVariables = RestSubmissionClient
+      .filterSystemEnvironment(environmentVariables)
     assert(filteredVariables == Map("SPARK_VAR" -> "1", "MESOS_VAR" -> "1"))
   }
 
@@ -507,9 +505,8 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
     val localhost = Utils.localHostName()
     val securityManager = new SecurityManager(conf)
     val _rpcEnv = RpcEnv.create(name, localhost, 0, conf, securityManager)
-    val fakeMasterRef = _rpcEnv.setupEndpoint(
-      "fake-master",
-      makeFakeMaster(_rpcEnv))
+    val fakeMasterRef = _rpcEnv
+      .setupEndpoint("fake-master", makeFakeMaster(_rpcEnv))
     val _server =
       if (faulty) {
         new FaultyStandaloneRestServer(
@@ -666,8 +663,8 @@ private class DummyMaster(
           Some(submitId),
           submitMessage))
     case RequestKillDriver(driverId) =>
-      context.reply(
-        KillDriverResponse(self, driverId, success = true, killMessage))
+      context
+        .reply(KillDriverResponse(self, driverId, success = true, killMessage))
     case RequestDriverStatus(driverId) =>
       context.reply(
         DriverStatusResponse(found = true, Some(state), None, None, exception))

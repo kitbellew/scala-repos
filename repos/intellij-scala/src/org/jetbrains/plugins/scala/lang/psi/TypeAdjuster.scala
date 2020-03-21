@@ -83,22 +83,18 @@ object TypeAdjuster extends ApplicationAdapter {
   }
 
   private def newTypeElem(name: String, position: PsiElement) =
-    ScalaPsiElementFactory.createTypeElementFromText(
-      name,
-      position.getContext,
-      position)
+    ScalaPsiElementFactory
+      .createTypeElementFromText(name, position.getContext, position)
 
   private def toReplacementInfos(
       typeElements: Seq[ScTypeElement],
       useTypeAliases: Boolean): Seq[ReplacementInfo] = {
     val infos = typeElements.map(ReplacementInfo.initial)
-    infos
-      .flatMap(simplify)
-      .map(shortenReference(_, useTypeAliases))
+    infos.flatMap(simplify).map(shortenReference(_, useTypeAliases))
   }
 
-  private val toReplaceKey: Key[String] = Key.create[String](
-    "type.element.to.replace")
+  private val toReplaceKey: Key[String] = Key
+    .create[String]("type.element.to.replace")
 
   private def simplify(info: ReplacementInfo): Option[ReplacementInfo] = {
     def markToReplace(typeElem: ScTypeElement): Unit =
@@ -142,15 +138,14 @@ object TypeAdjuster extends ApplicationAdapter {
       def unapply(info: SimpleInfo): Option[ReplacementInfo] = {
         val dummyTypeElem = newTypeElem(info.replacement, info.origTypeElem)
         val replacementType = dummyTypeElem.calcType
-        val withoutAliases = ScType.removeAliasDefinitions(
-          replacementType,
-          expandableOnly = true)
+        val withoutAliases = ScType
+          .removeAliasDefinitions(replacementType, expandableOnly = true)
         if (replacementType.presentableText != withoutAliases.presentableText) {
           markToReplace(info.origTypeElem)
           val text = withoutAliases.canonicalText
           val newTypeEl = newTypeElem(text, info.origTypeElem)
-          val subTypeElems = collectAdjustableTypeElements(newTypeEl).filter(
-            _ != newTypeEl)
+          val subTypeElems = collectAdjustableTypeElements(newTypeEl)
+            .filter(_ != newTypeEl)
           if (subTypeElems.isEmpty) {
             Some(
               ReplacementInfo
@@ -167,7 +162,9 @@ object TypeAdjuster extends ApplicationAdapter {
       }
     }
 
-    if (info.origTypeElem.parentsInFile
+    if (info
+          .origTypeElem
+          .parentsInFile
           .filterByType(classOf[ScTypeElement])
           .exists(isMarkedToReplace))
       None
@@ -219,41 +216,48 @@ object TypeAdjuster extends ApplicationAdapter {
       useTypeAliases: Boolean = true): ReplacementInfo = {
     object hasStableReplacement {
       def unapply(rInfo: SimpleInfo): Option[ReplacementInfo] = {
-        rInfo.resolve.flatMap { resolved =>
-          val position = findRef(rInfo.origTypeElem)
-            .getOrElse(info.origTypeElem)
-          val importAlias = ScalaPsiUtil.importAliasFor(resolved, position)
-          resolved match {
-            case _ if importAlias.isDefined =>
-              Some(rInfo.withNewText(importAlias.get.refName))
-            case named: PsiNamedElement if ScalaPsiUtil.hasStablePath(named) =>
-              named match {
-                case clazz: PsiClass =>
-                  availableTypeAliasFor(clazz, position, useTypeAliases) match {
-                    case Some(ta) if !ta.isAncestorOf(position) =>
-                      if (ScalaPsiUtil.hasStablePath(ta))
-                        Some(rInfo.updateTarget(ta))
-                      else
-                        Some(rInfo.withNewText(ta.name))
-                    case _ =>
-                      Some(rInfo.updateTarget(named))
-                  }
-                case _: ScTypeAlias | _: ScBindingPattern =>
-                  Some(rInfo.updateTarget(named))
-                case _ =>
-                  None
-              }
-            case _ =>
-              None
+        rInfo
+          .resolve
+          .flatMap { resolved =>
+            val position = findRef(rInfo.origTypeElem)
+              .getOrElse(info.origTypeElem)
+            val importAlias = ScalaPsiUtil.importAliasFor(resolved, position)
+            resolved match {
+              case _ if importAlias.isDefined =>
+                Some(rInfo.withNewText(importAlias.get.refName))
+              case named: PsiNamedElement
+                  if ScalaPsiUtil.hasStablePath(named) =>
+                named match {
+                  case clazz: PsiClass =>
+                    availableTypeAliasFor(
+                      clazz,
+                      position,
+                      useTypeAliases) match {
+                      case Some(ta) if !ta.isAncestorOf(position) =>
+                        if (ScalaPsiUtil.hasStablePath(ta))
+                          Some(rInfo.updateTarget(ta))
+                        else
+                          Some(rInfo.withNewText(ta.name))
+                      case _ =>
+                        Some(rInfo.updateTarget(named))
+                    }
+                  case _: ScTypeAlias | _: ScBindingPattern =>
+                    Some(rInfo.updateTarget(named))
+                  case _ =>
+                    None
+                }
+              case _ =>
+                None
+            }
           }
-        }
       }
     }
 
     info match {
       case cmp: CompoundInfo =>
-        cmp.copy(childInfos = cmp.childInfos.map(
-          shortenReference(_, useTypeAliases)))
+        cmp.copy(childInfos = cmp
+          .childInfos
+          .map(shortenReference(_, useTypeAliases)))
       case hasStableReplacement(rInfo) =>
         rInfo
       case _ =>
@@ -306,9 +310,8 @@ object TypeAdjuster extends ApplicationAdapter {
         replaceTypeElem(info)
         val holder = importHolders.get(info)
         if (info.pathsToImport.nonEmpty && holder.isDefined) {
-          val pathsToAdd = holderToPaths.getOrElseUpdate(
-            holder.get,
-            Set.empty) ++ info.pathsToImport
+          val pathsToAdd = holderToPaths
+            .getOrElseUpdate(holder.get, Set.empty) ++ info.pathsToImport
           holderToPaths += holder.get -> pathsToAdd
         }
       }
@@ -334,8 +337,8 @@ object TypeAdjuster extends ApplicationAdapter {
             state: ResolveState): Boolean = {
           element match {
             case ta: ScTypeAliasDefinition
-                if ta.isAliasFor(clazz) && !ScTypePresentation.shouldExpand(
-                  ta) =>
+                if ta.isAliasFor(clazz) && !ScTypePresentation
+                  .shouldExpand(ta) =>
               collected = Some(ta)
               false
             case _ =>
@@ -351,14 +354,17 @@ object TypeAdjuster extends ApplicationAdapter {
 
   private def collectAdjustableTypeElements(
       element: PsiElement): Vector[ScTypeElement] = {
-    element.depthFirst.collect {
-      case s: ScSimpleTypeElement =>
-        s
-      case p: ScTypeProjection =>
-        p
-      case p: ScParameterizedTypeElement =>
-        p
-    }.toVector
+    element
+      .depthFirst
+      .collect {
+        case s: ScSimpleTypeElement =>
+          s
+        case p: ScTypeProjection =>
+          p
+        case p: ScParameterizedTypeElement =>
+          p
+      }
+      .toVector
   }
 
   private trait ReplacementInfo {
@@ -432,8 +438,8 @@ object TypeAdjuster extends ApplicationAdapter {
       childInfos: Seq[ReplacementInfo])
       extends ReplacementInfo {
 
-    if (childInfos.isEmpty || childInfos.exists(i =>
-          !tempTypeElem.isAncestorOf(i.origTypeElem))) {
+    if (childInfos.isEmpty || childInfos
+          .exists(i => !tempTypeElem.isAncestorOf(i.origTypeElem))) {
       throw new IllegalArgumentException("Wrong usage of CompoundInfo")
     }
 

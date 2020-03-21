@@ -62,21 +62,23 @@ private[spark] class BlockStatusListener extends SparkListener {
 
     synchronized {
       // Drop the update info if the block manager is not registered
-      blockManagers.get(blockManagerId).foreach { blocksInBlockManager =>
-        if (storageLevel.isValid) {
-          blocksInBlockManager.put(
-            blockId,
-            BlockUIData(
+      blockManagers
+        .get(blockManagerId)
+        .foreach { blocksInBlockManager =>
+          if (storageLevel.isValid) {
+            blocksInBlockManager.put(
               blockId,
-              blockManagerId.hostPort,
-              storageLevel,
-              memSize,
-              diskSize))
-        } else {
-          // If isValid is not true, it means we should drop the block.
-          blocksInBlockManager -= blockId
+              BlockUIData(
+                blockId,
+                blockManagerId.hostPort,
+                storageLevel,
+                memSize,
+                diskSize))
+          } else {
+            // If isValid is not true, it means we should drop the block.
+            blocksInBlockManager -= blockId
+          }
         }
-      }
     }
   }
 
@@ -95,12 +97,14 @@ private[spark] class BlockStatusListener extends SparkListener {
 
   def allExecutorStreamBlockStatus: Seq[ExecutorStreamBlockStatus] =
     synchronized {
-      blockManagers.map {
-        case (blockManagerId, blocks) =>
-          ExecutorStreamBlockStatus(
-            blockManagerId.executorId,
-            blockManagerId.hostPort,
-            blocks.values.toSeq)
-      }.toSeq
+      blockManagers
+        .map {
+          case (blockManagerId, blocks) =>
+            ExecutorStreamBlockStatus(
+              blockManagerId.executorId,
+              blockManagerId.hostPort,
+              blocks.values.toSeq)
+        }
+        .toSeq
     }
 }

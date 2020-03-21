@@ -227,8 +227,8 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
             List(x.decode)
           case Tuple2(k, v) =>
             List(
-              prettify(k).toIterator ++ Iterator("->") ++ prettify(
-                v) mkString " ")
+              prettify(k)
+                .toIterator ++ Iterator("->") ++ prettify(v) mkString " ")
           case xs: Array[_] =>
             xs.iterator flatMap prettify
           case xs: TraversableOnce[_] =>
@@ -266,9 +266,8 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
       pretty prettify f(value) foreach (StringPrettifier show _)
 
     def freq[U](p: T => U) =
-      (value.toSeq groupBy p mapValues (_.size)).toList sortBy (-_._2) map (
-        _.swap
-      )
+      (value.toSeq groupBy p mapValues (_.size))
+        .toList sortBy (-_._2) map (_.swap)
 
     def >>(implicit ord: Ordering[T]): Unit = pp(_.sorted)
     def >!(): Unit = pp(_.distinct)

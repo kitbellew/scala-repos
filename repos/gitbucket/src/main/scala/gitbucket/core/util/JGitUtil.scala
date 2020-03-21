@@ -240,11 +240,19 @@ object JGitUtil {
           // commit count
           commitCount,
           // branches
-          git.branchList.call.asScala.map { ref =>
-            ref.getName.stripPrefix("refs/heads/")
-          }.toList,
+          git
+            .branchList
+            .call
+            .asScala
+            .map { ref =>
+              ref.getName.stripPrefix("refs/heads/")
+            }
+            .toList,
           // tags
-          git.tagList.call.asScala
+          git
+            .tagList
+            .call
+            .asScala
             .map { ref =>
               val revCommit = getRevCommitFromId(git, ref.getObjectId)
               TagInfo(
@@ -344,7 +352,8 @@ object JGitUtil {
           : List[(ObjectId, FileMode, String, Option[String], RevCommit)] = {
         if (restList.isEmpty) {
           result
-        } else if (!revIterator.hasNext) { // maybe, revCommit has only 1 log. other case, restList be empty
+        } else if (!revIterator
+                     .hasNext) { // maybe, revCommit has only 1 log. other case, restList be empty
           result ++ restList.map {
             case (tuple, map) =>
               tupleAdd(tuple, map.values.headOption.getOrElse(revCommit))
@@ -361,33 +370,40 @@ object JGitUtil {
             var nextRest = skips
             var nextResult = result
             // Map[(name, oid), (tuple, parentsMap)]
-            val rest = scala.collection.mutable.Map(
-              thisTimeChecks.map { t =>
-                (t._1._3 -> t._1._1) -> t
-              }: _*)
+            val rest = scala
+              .collection
+              .mutable
+              .Map(
+                thisTimeChecks.map { t =>
+                  (t._1._3 -> t._1._1) -> t
+                }: _*)
             lazy val newParentsMap =
               newCommit.getParents.map(_ -> newCommit).toMap
             useTreeWalk(newCommit) { walk =>
               while (walk.next) {
-                rest.remove(walk.getNameString -> walk.getObjectId(0)).map {
-                  case (tuple, _) =>
-                    if (newParentsMap.isEmpty) {
-                      nextResult +:= tupleAdd(tuple, newCommit)
-                    } else {
-                      nextRest +:= tuple -> newParentsMap
-                    }
-                }
+                rest
+                  .remove(walk.getNameString -> walk.getObjectId(0))
+                  .map {
+                    case (tuple, _) =>
+                      if (newParentsMap.isEmpty) {
+                        nextResult +:= tupleAdd(tuple, newCommit)
+                      } else {
+                        nextRest +:= tuple -> newParentsMap
+                      }
+                  }
               }
             }
-            rest.values.map {
-              case (tuple, parentsMap) =>
-                val restParentsMap = parentsMap - newCommit
-                if (restParentsMap.isEmpty) {
-                  nextResult +:= tupleAdd(tuple, parentsMap(newCommit))
-                } else {
-                  nextRest +:= tuple -> restParentsMap
-                }
-            }
+            rest
+              .values
+              .map {
+                case (tuple, parentsMap) =>
+                  val restParentsMap = parentsMap - newCommit
+                  if (restParentsMap.isEmpty) {
+                    nextResult +:= tupleAdd(tuple, parentsMap(newCommit))
+                  } else {
+                    nextRest +:= tuple -> restParentsMap
+                  }
+              }
             findLastCommits(nextResult, nextRest, revIterator)
           }
         }
@@ -404,8 +420,8 @@ object JGitUtil {
             } else
               None
           fileList +:= (
-            treeWalk.getObjectId(0), treeWalk.getFileMode(
-              0), treeWalk.getNameString, linkUrl
+            treeWalk.getObjectId(0), treeWalk.getFileMode(0), treeWalk
+              .getNameString, linkUrl
           )
         }
       }
@@ -629,11 +645,13 @@ object JGitUtil {
       paths: List[String],
       revision: String): Map[String, RevCommit] = {
     val start = getRevCommitFromId(git, git.getRepository.resolve(revision))
-    paths.map { path =>
-      val commit =
-        git.log.add(start).addPath(path).setMaxCount(1).call.iterator.next
-      (path, commit)
-    }.toMap
+    paths
+      .map { path =>
+        val commit =
+          git.log.add(start).addPath(path).setMaxCount(1).call.iterator.next
+        (path, commit)
+      }
+      .toMap
   }
 
   /**
@@ -740,64 +758,66 @@ object JGitUtil {
 
     val diffs =
       git.diff.setNewTree(newTreeIter).setOldTree(oldTreeIter).call.asScala
-    diffs.map { diff =>
-      if (diffs.size > 100) {
-        DiffInfo(
-          changeType = diff.getChangeType,
-          oldPath = diff.getOldPath,
-          newPath = diff.getNewPath,
-          oldContent = None,
-          newContent = None,
-          oldIsImage = false,
-          newIsImage = false,
-          oldObjectId = Option(diff.getOldId).map(_.name),
-          newObjectId = Option(diff.getNewId).map(_.name),
-          oldMode = diff.getOldMode.toString,
-          newMode = diff.getNewMode.toString,
-          tooLarge = true
-        )
-      } else {
-        val oldIsImage = FileUtil.isImage(diff.getOldPath)
-        val newIsImage = FileUtil.isImage(diff.getNewPath)
-        if (!fetchContent || oldIsImage || newIsImage) {
+    diffs
+      .map { diff =>
+        if (diffs.size > 100) {
           DiffInfo(
             changeType = diff.getChangeType,
             oldPath = diff.getOldPath,
             newPath = diff.getNewPath,
             oldContent = None,
             newContent = None,
-            oldIsImage = oldIsImage,
-            newIsImage = newIsImage,
+            oldIsImage = false,
+            newIsImage = false,
             oldObjectId = Option(diff.getOldId).map(_.name),
             newObjectId = Option(diff.getNewId).map(_.name),
             oldMode = diff.getOldMode.toString,
             newMode = diff.getNewMode.toString,
-            tooLarge = false
+            tooLarge = true
           )
         } else {
-          DiffInfo(
-            changeType = diff.getChangeType,
-            oldPath = diff.getOldPath,
-            newPath = diff.getNewPath,
-            oldContent = JGitUtil
-              .getContentFromId(git, diff.getOldId.toObjectId, false)
-              .filter(FileUtil.isText)
-              .map(convertFromByteArray),
-            newContent = JGitUtil
-              .getContentFromId(git, diff.getNewId.toObjectId, false)
-              .filter(FileUtil.isText)
-              .map(convertFromByteArray),
-            oldIsImage = oldIsImage,
-            newIsImage = newIsImage,
-            oldObjectId = Option(diff.getOldId).map(_.name),
-            newObjectId = Option(diff.getNewId).map(_.name),
-            oldMode = diff.getOldMode.toString,
-            newMode = diff.getNewMode.toString,
-            tooLarge = false
-          )
+          val oldIsImage = FileUtil.isImage(diff.getOldPath)
+          val newIsImage = FileUtil.isImage(diff.getNewPath)
+          if (!fetchContent || oldIsImage || newIsImage) {
+            DiffInfo(
+              changeType = diff.getChangeType,
+              oldPath = diff.getOldPath,
+              newPath = diff.getNewPath,
+              oldContent = None,
+              newContent = None,
+              oldIsImage = oldIsImage,
+              newIsImage = newIsImage,
+              oldObjectId = Option(diff.getOldId).map(_.name),
+              newObjectId = Option(diff.getNewId).map(_.name),
+              oldMode = diff.getOldMode.toString,
+              newMode = diff.getNewMode.toString,
+              tooLarge = false
+            )
+          } else {
+            DiffInfo(
+              changeType = diff.getChangeType,
+              oldPath = diff.getOldPath,
+              newPath = diff.getNewPath,
+              oldContent = JGitUtil
+                .getContentFromId(git, diff.getOldId.toObjectId, false)
+                .filter(FileUtil.isText)
+                .map(convertFromByteArray),
+              newContent = JGitUtil
+                .getContentFromId(git, diff.getNewId.toObjectId, false)
+                .filter(FileUtil.isText)
+                .map(convertFromByteArray),
+              oldIsImage = oldIsImage,
+              newIsImage = newIsImage,
+              oldObjectId = Option(diff.getOldId).map(_.name),
+              newObjectId = Option(diff.getNewId).map(_.name),
+              oldMode = diff.getOldMode.toString,
+              newMode = diff.getNewMode.toString,
+              tooLarge = false
+            )
+          }
         }
       }
-    }.toList
+      .toList
   }
 
   /**
@@ -808,7 +828,11 @@ object JGitUtil {
       defining(
         revWalk.parseCommit(git.getRepository.resolve(commitId + "^0"))) {
         commit =>
-          git.getRepository.getAllRefs.entrySet.asScala
+          git
+            .getRepository
+            .getAllRefs
+            .entrySet
+            .asScala
             .filter { e =>
               (
                 e.getKey.startsWith(Constants.R_HEADS) && revWalk.isMergedInto(
@@ -817,8 +841,10 @@ object JGitUtil {
               )
             }
             .map { e =>
-              e.getValue.getName.substring(
-                org.eclipse.jgit.lib.Constants.R_HEADS.length)
+              e
+                .getValue
+                .getName
+                .substring(org.eclipse.jgit.lib.Constants.R_HEADS.length)
             }
             .toList
             .sorted
@@ -833,7 +859,11 @@ object JGitUtil {
       defining(
         revWalk.parseCommit(git.getRepository.resolve(commitId + "^0"))) {
         commit =>
-          git.getRepository.getAllRefs.entrySet.asScala
+          git
+            .getRepository
+            .getAllRefs
+            .entrySet
+            .asScala
             .filter { e =>
               (
                 e.getKey.startsWith(Constants.R_TAGS) && revWalk.isMergedInto(
@@ -842,8 +872,10 @@ object JGitUtil {
               )
             }
             .map { e =>
-              e.getValue.getName.substring(
-                org.eclipse.jgit.lib.Constants.R_TAGS.length)
+              e
+                .getValue
+                .getName
+                .substring(org.eclipse.jgit.lib.Constants.R_TAGS.length)
             }
             .toList
             .sorted
@@ -859,7 +891,8 @@ object JGitUtil {
 
   def cloneRepository(from: java.io.File, to: java.io.File): Unit =
     using(
-      Git.cloneRepository
+      Git
+        .cloneRepository
         .setURI(from.toURI.toString)
         .setDirectory(to)
         .setBare(true)
@@ -958,11 +991,14 @@ object JGitUtil {
       (
         try {
           val config = new BlobBasedConfig(repository.getConfig(), bytes)
-          config.getSubsections("submodule").asScala.map { module =>
-            val path = config.getString("submodule", module, "path")
-            val url = config.getString("submodule", module, "url")
-            SubmoduleInfo(module, path, url)
-          }
+          config
+            .getSubsections("submodule")
+            .asScala
+            .map { module =>
+              val path = config.getString("submodule", module, "path")
+              val url = config.getString("submodule", module, "url")
+              SubmoduleInfo(module, path, url)
+            }
         } catch {
           case e: ConfigInvalidException => {
             logger.error(
@@ -1140,9 +1176,9 @@ object JGitUtil {
       requestBranch: String): String =
     defining(getAllCommitIds(oldGit)) { existIds =>
       getCommitLogs(newGit, requestBranch, true) { commit =>
-        existIds.contains(commit.name) && getBranchesOfCommit(
-          oldGit,
-          commit.getName).contains(branch)
+        existIds
+          .contains(commit.name) && getBranchesOfCommit(oldGit, commit.getName)
+          .contains(branch)
       }.head.id
     }
 
@@ -1162,7 +1198,8 @@ object JGitUtil {
       Git.open(
         Directory.getRepositoryDir(requestUserName, requestRepositoryName))) {
       (oldGit, newGit) =>
-        oldGit.fetch
+        oldGit
+          .fetch
           .setRemote(
             Directory
               .getRepositoryDir(requestUserName, requestRepositoryName)
@@ -1199,7 +1236,8 @@ object JGitUtil {
       git: Git,
       startCommit: RevCommit,
       path: String): RevCommit = {
-    return git.log
+    return git
+      .log
       .add(startCommit)
       .addPath(path)
       .setMaxCount(1)
@@ -1222,49 +1260,53 @@ object JGitUtil {
           git.branchList().call().iterator().next().getObjectId
         }
 
-      git.branchList.call.asScala.map { ref =>
-        val walk = new RevWalk(repo)
-        try {
-          val defaultCommit = walk.parseCommit(defaultObject)
-          val branchName = ref.getName.stripPrefix("refs/heads/")
-          val branchCommit =
-            if (branchName == defaultBranch) {
-              defaultCommit
-            } else {
-              walk.parseCommit(ref.getObjectId)
-            }
-          val when = branchCommit.getCommitterIdent.getWhen
-          val committer = branchCommit.getCommitterIdent.getName
-          val committerEmail = branchCommit.getCommitterIdent.getEmailAddress
-          val mergeInfo =
-            if (origin && branchName == defaultBranch) {
-              None
-            } else {
-              walk.reset()
-              walk.setRevFilter(RevFilter.MERGE_BASE)
-              walk.markStart(branchCommit)
-              walk.markStart(defaultCommit)
-              val mergeBase = walk.next()
-              walk.reset()
-              walk.setRevFilter(RevFilter.ALL)
-              Some(
-                BranchMergeInfo(
-                  ahead = RevWalkUtils.count(walk, branchCommit, mergeBase),
-                  behind = RevWalkUtils.count(walk, defaultCommit, mergeBase),
-                  isMerged = walk.isMergedInto(branchCommit, defaultCommit)
-                ))
-            }
-          BranchInfo(
-            branchName,
-            committer,
-            when,
-            committerEmail,
-            mergeInfo,
-            ref.getObjectId.name)
-        } finally {
-          walk.dispose();
+      git
+        .branchList
+        .call
+        .asScala
+        .map { ref =>
+          val walk = new RevWalk(repo)
+          try {
+            val defaultCommit = walk.parseCommit(defaultObject)
+            val branchName = ref.getName.stripPrefix("refs/heads/")
+            val branchCommit =
+              if (branchName == defaultBranch) {
+                defaultCommit
+              } else {
+                walk.parseCommit(ref.getObjectId)
+              }
+            val when = branchCommit.getCommitterIdent.getWhen
+            val committer = branchCommit.getCommitterIdent.getName
+            val committerEmail = branchCommit.getCommitterIdent.getEmailAddress
+            val mergeInfo =
+              if (origin && branchName == defaultBranch) {
+                None
+              } else {
+                walk.reset()
+                walk.setRevFilter(RevFilter.MERGE_BASE)
+                walk.markStart(branchCommit)
+                walk.markStart(defaultCommit)
+                val mergeBase = walk.next()
+                walk.reset()
+                walk.setRevFilter(RevFilter.ALL)
+                Some(
+                  BranchMergeInfo(
+                    ahead = RevWalkUtils.count(walk, branchCommit, mergeBase),
+                    behind = RevWalkUtils.count(walk, defaultCommit, mergeBase),
+                    isMerged = walk.isMergedInto(branchCommit, defaultCommit)
+                  ))
+              }
+            BranchInfo(
+              branchName,
+              committer,
+              when,
+              committerEmail,
+              mergeInfo,
+              ref.getObjectId.name)
+          } finally {
+            walk.dispose();
+          }
         }
-      }
     }
   }
 
@@ -1277,40 +1319,44 @@ object JGitUtil {
         val blame = blamer.call()
         var blameMap = Map[String, JGitUtil.BlameInfo]()
         var idLine = List[(String, Int)]()
-        val commits = 0.to(blame.getResultContents().size() - 1).map { i =>
-          val c = blame.getSourceCommit(i)
-          if (!blameMap.contains(c.name)) {
-            blameMap += c.name -> JGitUtil.BlameInfo(
-              c.name,
-              c.getAuthorIdent.getName,
-              c.getAuthorIdent.getEmailAddress,
-              c.getAuthorIdent.getWhen,
-              Option(
-                git.log
-                  .add(c)
-                  .addPath(blame.getSourcePath(i))
-                  .setSkip(1)
-                  .setMaxCount(2)
-                  .call
-                  .iterator
-                  .next)
-                .map(_.name),
-              if (blame.getSourcePath(i) == path) {
-                None
-              } else {
-                Some(blame.getSourcePath(i))
-              },
-              c.getCommitterIdent.getWhen,
-              c.getShortMessage,
-              Set.empty
-            )
+        val commits = 0
+          .to(blame.getResultContents().size() - 1)
+          .map { i =>
+            val c = blame.getSourceCommit(i)
+            if (!blameMap.contains(c.name)) {
+              blameMap += c.name -> JGitUtil.BlameInfo(
+                c.name,
+                c.getAuthorIdent.getName,
+                c.getAuthorIdent.getEmailAddress,
+                c.getAuthorIdent.getWhen,
+                Option(
+                  git
+                    .log
+                    .add(c)
+                    .addPath(blame.getSourcePath(i))
+                    .setSkip(1)
+                    .setMaxCount(2)
+                    .call
+                    .iterator
+                    .next).map(_.name),
+                if (blame.getSourcePath(i) == path) {
+                  None
+                } else {
+                  Some(blame.getSourcePath(i))
+                },
+                c.getCommitterIdent.getWhen,
+                c.getShortMessage,
+                Set.empty
+              )
+            }
+            idLine :+= (c.name, i)
           }
-          idLine :+= (c.name, i)
-        }
         val limeMap = idLine.groupBy(_._1).mapValues(_.map(_._2).toSet)
-        blameMap.values.map { b =>
-          b.copy(lines = limeMap(b.id))
-        }
+        blameMap
+          .values
+          .map { b =>
+            b.copy(lines = limeMap(b.id))
+          }
       }
       .getOrElse(Seq.empty)
   }

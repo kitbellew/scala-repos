@@ -61,9 +61,8 @@ class EncoderResolutionSuite extends PlanTest {
 
   test(
     "real type doesn't match encoder schema but they are compatible: tupled encoder") {
-    val encoder = ExpressionEncoder.tuple(
-      ExpressionEncoder[StringLongClass],
-      ExpressionEncoder[Long])
+    val encoder = ExpressionEncoder
+      .tuple(ExpressionEncoder[StringLongClass], ExpressionEncoder[Long])
     val attrs = Seq('a.struct('a.string, 'b.byte), 'b.int)
     encoder
       .resolve(attrs, null)
@@ -158,9 +157,8 @@ class EncoderResolutionSuite extends PlanTest {
         val structType = new StructType()
           .add("a", StringType)
           .add("b", DecimalType.SYSTEM_DEFAULT)
-        ExpressionEncoder[ComplexClass].resolve(
-          Seq('a.long, 'b.struct(structType)),
-          null)
+        ExpressionEncoder[ComplexClass]
+          .resolve(Seq('a.long, 'b.struct(structType)), null)
       }.message
     assert(
       msg2 ==

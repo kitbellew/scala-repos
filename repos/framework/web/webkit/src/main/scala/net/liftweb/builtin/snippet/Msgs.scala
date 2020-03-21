@@ -140,12 +140,14 @@ object Msgs extends DispatchSnippet {
           val styles = ajaxStorage.get.flatMap(_.cssClasses)
 
           // Compute the resulting div
-          f(messages).toList.map(e =>
-            (
-              <li>{
-                e
-              }</li>
-            )) match {
+          f(messages)
+            .toList
+            .map(e =>
+              (
+                <li>{
+                  e
+                }</li>
+              )) match {
             case Nil =>
               Nil
             case msgList => {

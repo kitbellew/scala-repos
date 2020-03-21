@@ -30,8 +30,8 @@ private class BalancerTest
     def emptyException: Throwable = ???
 
     def stats: InMemoryStatsReceiver = statsReceiver
-    protected[this] val maxEffortExhausted = statsReceiver.counter(
-      "max_effort_exhausted")
+    protected[this] val maxEffortExhausted = statsReceiver
+      .counter("max_effort_exhausted")
 
     def nodes: Vector[Node] = dist.vector
     def factories: Set[ServiceFactory[Unit, Unit]] = nodes.map(_.factory).toSet
@@ -103,8 +103,8 @@ private class BalancerTest
   val genStatus = Gen.oneOf(Status.Open, Status.Busy, Status.Closed)
   val genSvcFac = genStatus.map(newFac)
   val genLoadedNode = for (fac <- genSvcFac) yield fac
-  val genNodes = Gen.containerOf[List, ServiceFactory[Unit, Unit]](
-    genLoadedNode)
+  val genNodes = Gen
+    .containerOf[List, ServiceFactory[Unit, Unit]](genLoadedNode)
 
   test("status: balancer with no nodes is Closed") {
     val bal = new TestBalancer

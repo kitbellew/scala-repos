@@ -10,7 +10,9 @@ final class Winners(
     mongoCache: lila.memo.MongoCache.Builder,
     ttl: FiniteDuration) {
 
-  private implicit val WinnerBSONHandler = reactivemongo.bson.Macros
+  private implicit val WinnerBSONHandler = reactivemongo
+    .bson
+    .Macros
     .handler[Winner]
 
   private val scheduledCache = mongoCache[Int, List[Winner]](

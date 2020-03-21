@@ -194,12 +194,9 @@ object GridPane {
       rowIndex: Int,
       columnspan: Int,
       rowspan: Int) {
-    jfxsl.GridPane.setConstraints(
-      child,
-      columnIndex,
-      rowIndex,
-      columnspan,
-      rowspan)
+    jfxsl
+      .GridPane
+      .setConstraints(child, columnIndex, rowIndex, columnspan, rowspan)
   }
 
   /**
@@ -213,14 +210,16 @@ object GridPane {
       rowspan: Int,
       halignment: HPos,
       valignment: VPos) {
-    jfxsl.GridPane.setConstraints(
-      child,
-      columnIndex,
-      rowIndex,
-      columnspan,
-      rowspan,
-      halignment,
-      valignment)
+    jfxsl
+      .GridPane
+      .setConstraints(
+        child,
+        columnIndex,
+        rowIndex,
+        columnspan,
+        rowspan,
+        halignment,
+        valignment)
   }
 
   /**
@@ -236,16 +235,18 @@ object GridPane {
       valignment: VPos,
       hgrow: Priority,
       vgrow: Priority) {
-    jfxsl.GridPane.setConstraints(
-      child,
-      columnIndex,
-      rowIndex,
-      columnspan,
-      rowspan,
-      halignment,
-      valignment,
-      hgrow,
-      vgrow)
+    jfxsl
+      .GridPane
+      .setConstraints(
+        child,
+        columnIndex,
+        rowIndex,
+        columnspan,
+        rowspan,
+        halignment,
+        valignment,
+        hgrow,
+        vgrow)
   }
 
   /**
@@ -263,17 +264,19 @@ object GridPane {
       hgrow: Priority,
       vgrow: Priority,
       margin: Insets) {
-    jfxsl.GridPane.setConstraints(
-      child,
-      columnIndex,
-      rowIndex,
-      columnspan,
-      rowspan,
-      halignment,
-      valignment,
-      hgrow,
-      vgrow,
-      margin)
+    jfxsl
+      .GridPane
+      .setConstraints(
+        child,
+        columnIndex,
+        rowIndex,
+        columnspan,
+        rowspan,
+        halignment,
+        valignment,
+        hgrow,
+        vgrow,
+        margin)
   }
 
 }

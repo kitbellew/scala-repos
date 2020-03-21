@@ -176,10 +176,8 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
                 jobId,
                 JobManager.channels.ServerError,
                 JString("Internal server error."))
-              jobManager.abort(
-                jobId,
-                "Internal server error.",
-                yggConfig.clock.now())
+              jobManager
+                .abort(jobId, "Internal server error.", yggConfig.clock.now())
             }
             throw ex
         } map {
@@ -287,11 +285,13 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
       lock.synchronized {
         if (poller.isEmpty) {
           poller = Some(
-            jobActorSystem.scheduler.schedule(
-              yggConfig.jobPollFrequency,
-              yggConfig.jobPollFrequency) {
-              poll()
-            })
+            jobActorSystem
+              .scheduler
+              .schedule(
+                yggConfig.jobPollFrequency,
+                yggConfig.jobPollFrequency) {
+                poll()
+              })
         }
       }
 

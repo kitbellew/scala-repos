@@ -77,7 +77,9 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
       case (found, _: ScClassParameter | _: ScPrimaryConstructor) =>
         found
       case (found, _)
-          if context == found.extendsBlock || found.extendsBlock.templateBody
+          if context == found.extendsBlock || found
+            .extendsBlock
+            .templateBody
             .contains(context) ||
             found.extendsBlock.earlyDefinitions.contains(context) =>
         found
@@ -145,11 +147,13 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
       case PsiModifier.STATIC =>
         containingClass.isInstanceOf[ScObject]
       case PsiModifier.PRIVATE =>
-        getModifierList.accessModifier.exists(
-          _.access == ScAccessModifier.Type.THIS_PRIVATE)
+        getModifierList
+          .accessModifier
+          .exists(_.access == ScAccessModifier.Type.THIS_PRIVATE)
       case PsiModifier.PROTECTED =>
-        getModifierList.accessModifier.exists(
-          _.access == ScAccessModifier.Type.THIS_PROTECTED)
+        getModifierList
+          .accessModifier
+          .exists(_.access == ScAccessModifier.Type.THIS_PROTECTED)
       case _ =>
         super.hasModifierProperty(name)
     }
@@ -226,11 +230,8 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
     val accessModifier = Option(getModifierList).flatMap(_.accessModifier)
 
     def fromContainingBlockOrMember(): Option[SearchScope] = {
-      val blockOrMember = PsiTreeUtil.getContextOfType(
-        this,
-        true,
-        classOf[ScBlock],
-        classOf[ScMember])
+      val blockOrMember = PsiTreeUtil
+        .getContextOfType(this, true, classOf[ScBlock], classOf[ScMember])
       blockOrMember match {
         case null =>
           None

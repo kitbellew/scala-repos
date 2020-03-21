@@ -113,18 +113,20 @@ class AdminClient(
   }
 
   def listAllGroups(): Map[Node, List[GroupOverview]] = {
-    findAllBrokers.map {
-      case broker =>
-        broker -> {
-          try {
-            listGroups(broker)
-          } catch {
-            case e: Exception =>
-              debug(s"Failed to find groups from broker ${broker}", e)
-              List[GroupOverview]()
+    findAllBrokers
+      .map {
+        case broker =>
+          broker -> {
+            try {
+              listGroups(broker)
+            } catch {
+              case e: Exception =>
+                debug(s"Failed to find groups from broker ${broker}", e)
+                List[GroupOverview]()
+            }
           }
-        }
-    }.toMap
+      }
+      .toMap
   }
 
   def listAllConsumerGroups(): Map[Node, List[GroupOverview]] = {
@@ -138,8 +140,8 @@ class AdminClient(
   }
 
   def listAllConsumerGroupsFlattened(): List[GroupOverview] = {
-    listAllGroupsFlattened.filter(
-      _.protocolType == ConsumerProtocol.PROTOCOL_TYPE)
+    listAllGroupsFlattened
+      .filter(_.protocolType == ConsumerProtocol.PROTOCOL_TYPE)
   }
 
   def describeGroup(groupId: String): GroupSummary = {
@@ -192,15 +194,17 @@ class AdminClient(
         s"Group ${groupId} with protocol type '${group.protocolType}' is not a valid consumer group")
 
     if (group.state == "Stable") {
-      group.members.map { member =>
-        val assignment = ConsumerProtocol.deserializeAssignment(
-          ByteBuffer.wrap(member.assignment))
-        new ConsumerSummary(
-          member.memberId,
-          member.clientId,
-          member.clientHost,
-          assignment.partitions().asScala.toList)
-      }
+      group
+        .members
+        .map { member =>
+          val assignment = ConsumerProtocol
+            .deserializeAssignment(ByteBuffer.wrap(member.assignment))
+          new ConsumerSummary(
+            member.memberId,
+            member.clientId,
+            member.clientHost,
+            assignment.partitions().asScala.toList)
+        }
     } else {
       List.empty
     }
@@ -259,8 +263,8 @@ object AdminClient {
     val metadata = new Metadata
     val channelBuilder = ClientUtils.createChannelBuilder(config.values())
 
-    val brokerUrls = config.getList(
-      CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG)
+    val brokerUrls = config
+      .getList(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG)
     val brokerAddresses = ClientUtils.parseAndValidateAddresses(brokerUrls)
     val bootstrapCluster = Cluster.bootstrap(brokerAddresses)
     metadata.update(bootstrapCluster, 0)

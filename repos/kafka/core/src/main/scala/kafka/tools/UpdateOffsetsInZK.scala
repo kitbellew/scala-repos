@@ -68,9 +68,8 @@ object UpdateOffsetsInZK {
 
     var numParts = 0
     for (partition <- partitions) {
-      val brokerHostingPartition = zkUtils.getLeaderForPartition(
-        topic,
-        partition)
+      val brokerHostingPartition = zkUtils
+        .getLeaderForPartition(topic, partition)
 
       val broker =
         brokerHostingPartition match {
@@ -111,8 +110,8 @@ object UpdateOffsetsInZK {
           numParts += 1
         case None =>
           throw new KafkaException(
-            "Broker information for broker id %d does not exist in ZK".format(
-              broker))
+            "Broker information for broker id %d does not exist in ZK"
+              .format(broker))
       }
     }
     println("updated the offset for " + numParts + " partitions")
@@ -120,7 +119,9 @@ object UpdateOffsetsInZK {
 
   private def usage() = {
     println(
-      "USAGE: " + UpdateOffsetsInZK.getClass.getName + " [earliest | latest] consumer.properties topic")
+      "USAGE: " + UpdateOffsetsInZK
+        .getClass
+        .getName + " [earliest | latest] consumer.properties topic")
     System.exit(1)
   }
 }

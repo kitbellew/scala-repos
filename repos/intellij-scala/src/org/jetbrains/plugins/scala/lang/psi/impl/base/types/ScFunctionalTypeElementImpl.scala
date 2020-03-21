@@ -43,10 +43,8 @@ class ScFunctionalTypeElementImpl(node: ASTNode)
       else
         ", "}" +
         s"${returnTypeElement.map(_.getText).getOrElse("Any")}]"
-    val newTypeElement = ScalaPsiElementFactory.createTypeElementFromText(
-      newTypeText,
-      getContext,
-      this)
+    val newTypeElement = ScalaPsiElementFactory
+      .createTypeElementFromText(newTypeText, getContext, this)
     newTypeElement match {
       case p: ScParameterizedTypeElement =>
         Some(p)

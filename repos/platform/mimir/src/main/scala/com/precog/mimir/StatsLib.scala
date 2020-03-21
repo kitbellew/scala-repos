@@ -66,13 +66,8 @@ trait StatsLibModule[M[+_]]
     val EmptyNamespace = Vector()
 
     override def _libMorphism1 =
-      super._libMorphism1 ++ Set(
-        Median,
-        Mode,
-        Rank,
-        DenseRank,
-        IndexedRank,
-        Dummy)
+      super
+        ._libMorphism1 ++ Set(Median, Mode, Rank, DenseRank, IndexedRank, Dummy)
     override def _libMorphism2 =
       super._libMorphism2 ++ Set(
         Covariance,
@@ -107,17 +102,18 @@ trait StatsLibModule[M[+_]]
             ) //todo make function for this
             Mean(transformedTable, ctx)
           } else {
-            val middleValue = M.point(
-              sortedTable.takeRange((count.toLong / 2), 1))
+            val middleValue = M
+              .point(sortedTable.takeRange((count.toLong / 2), 1))
             middleValue map {
               _.transform(trans.DerefObjectStatic(Leaf(Source), paths.Value))
             }
           }
         } yield {
-          val keyTable = Table.constEmptyArray.transform(
-            trans.WrapObject(Leaf(Source), paths.Key.name))
-          val valueTable = median.transform(
-            trans.WrapObject(Leaf(Source), paths.Value.name))
+          val keyTable = Table
+            .constEmptyArray
+            .transform(trans.WrapObject(Leaf(Source), paths.Key.name))
+          val valueTable = median
+            .transform(trans.WrapObject(Leaf(Source), paths.Value.name))
 
           valueTable.cross(keyTable)(
             InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
@@ -470,8 +466,8 @@ trait StatsLibModule[M[+_]]
                 var first = first0
 
                 while (row < smoothed.length) {
-                  if (values.isDefinedAt(row) && alphas.isDefinedAt(
-                        row) && betas.isDefinedAt(row)) {
+                  if (values.isDefinedAt(row) && alphas
+                        .isDefinedAt(row) && betas.isDefinedAt(row)) {
                     defined.set(row)
                     if (first) {
                       // I hope we can do better here eventually.
@@ -868,10 +864,11 @@ trait StatsLibModule[M[+_]]
               val resultTable = Table.constDecimal(
                 Set(correlation)
               ) //TODO the following lines are used throughout. refactor!
-              val valueTable = resultTable.transform(
-                trans.WrapObject(Leaf(Source), paths.Value.name))
-              val keyTable = Table.constEmptyArray.transform(
-                trans.WrapObject(Leaf(Source), paths.Key.name))
+              val valueTable = resultTable
+                .transform(trans.WrapObject(Leaf(Source), paths.Value.name))
+              val keyTable = Table
+                .constEmptyArray
+                .transform(trans.WrapObject(Leaf(Source), paths.Key.name))
 
               valueTable.cross(keyTable)(
                 InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
@@ -1166,10 +1163,11 @@ trait StatsLibModule[M[+_]]
             val cov = (productSum - ((sum1 * sum2) / count)) / count
 
             val resultTable = Table.constDecimal(Set(cov))
-            val valueTable = resultTable.transform(
-              trans.WrapObject(Leaf(Source), paths.Value.name))
-            val keyTable = Table.constEmptyArray.transform(
-              trans.WrapObject(Leaf(Source), paths.Key.name))
+            val valueTable = resultTable
+              .transform(trans.WrapObject(Leaf(Source), paths.Value.name))
+            val keyTable = Table
+              .constEmptyArray
+              .transform(trans.WrapObject(Leaf(Source), paths.Key.name))
 
             valueTable.cross(keyTable)(
               InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
@@ -1513,8 +1511,9 @@ trait StatsLibModule[M[+_]]
             val valueTable =
               constSlope.cross(constIntercept)(
                 trans.WrapObject(concatSpec, paths.Value.name))
-            val keyTable = Table.constEmptyArray.transform(
-              trans.WrapObject(Leaf(Source), paths.Key.name))
+            val keyTable = Table
+              .constEmptyArray
+              .transform(trans.WrapObject(Leaf(Source), paths.Key.name))
 
             valueTable.cross(keyTable)(
               InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
@@ -1912,8 +1911,9 @@ trait StatsLibModule[M[+_]]
             val valueTable =
               constSlope.cross(constIntercept)(
                 trans.WrapObject(concatSpec, paths.Value.name))
-            val keyTable = Table.constEmptyArray.transform(
-              trans.WrapObject(Leaf(Source), paths.Key.name))
+            val keyTable = Table
+              .constEmptyArray
+              .transform(trans.WrapObject(Leaf(Source), paths.Key.name))
 
             valueTable.cross(keyTable)(
               InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
@@ -2224,10 +2224,12 @@ trait StatsLibModule[M[+_]]
           cols: Array[Column],
           row: Int): Boolean = {
         val m = mutable.Map.empty[ColumnRef, CValue]
-        ctxt.items.foreach {
-          case (ref, cvalue) =>
-            m(ref) = cvalue
-        }
+        ctxt
+          .items
+          .foreach {
+            case (ref, cvalue) =>
+              m(ref) = cvalue
+          }
         var i = 0
         while (i < cols.length) {
           val col = cols(i)
@@ -2404,10 +2406,12 @@ trait StatsLibModule[M[+_]]
           cols: Map[ColumnRef, Column],
           range: Range): (A, Map[ColumnRef, Column]) = {
         val defined =
-          cols.values.foldLeft(BitSetUtil.create()) { (bitset, col) =>
-            bitset.or(col.definedAt(range.start, range.end))
-            bitset
-          }
+          cols
+            .values
+            .foldLeft(BitSetUtil.create()) { (bitset, col) =>
+              bitset.or(col.definedAt(range.start, range.end))
+              bitset
+            }
 
         val indices = new Array[Long](range.size)
         var i = 0

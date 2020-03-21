@@ -60,10 +60,14 @@ class CountVectorizerSuite
     val cv = new CountVectorizerModel(Array("a", "b", "c", "d"))
       .setInputCol("words")
       .setOutputCol("features")
-    cv.transform(df).select("features", "expected").collect().foreach {
-      case Row(features: Vector, expected: Vector) =>
-        assert(features ~== expected absTol 1e-14)
-    }
+    cv
+      .transform(df)
+      .select("features", "expected")
+      .collect()
+      .foreach {
+        case Row(features: Vector, expected: Vector) =>
+          assert(features ~== expected absTol 1e-14)
+      }
   }
 
   test("CountVectorizer common cases") {
@@ -87,10 +91,14 @@ class CountVectorizerSuite
       .fit(df)
     assert(cv.vocabulary === Array("a", "b", "c", "d", "e"))
 
-    cv.transform(df).select("features", "expected").collect().foreach {
-      case Row(features: Vector, expected: Vector) =>
-        assert(features ~== expected absTol 1e-14)
-    }
+    cv
+      .transform(df)
+      .select("features", "expected")
+      .collect()
+      .foreach {
+        case Row(features: Vector, expected: Vector) =>
+          assert(features ~== expected absTol 1e-14)
+      }
   }
 
   test("CountVectorizer vocabSize and minDF") {
@@ -118,10 +126,14 @@ class CountVectorizerSuite
       .fit(df)
     assert(cvModel2.vocabulary === Array("a", "b"))
 
-    cvModel2.transform(df).select("features", "expected").collect().foreach {
-      case Row(features: Vector, expected: Vector) =>
-        assert(features ~== expected absTol 1e-14)
-    }
+    cvModel2
+      .transform(df)
+      .select("features", "expected")
+      .collect()
+      .foreach {
+        case Row(features: Vector, expected: Vector) =>
+          assert(features ~== expected absTol 1e-14)
+      }
 
     // minDF: ignore terms with freq < 0.75
     val cvModel3 = new CountVectorizer()
@@ -131,10 +143,14 @@ class CountVectorizerSuite
       .fit(df)
     assert(cvModel3.vocabulary === Array("a", "b"))
 
-    cvModel3.transform(df).select("features", "expected").collect().foreach {
-      case Row(features: Vector, expected: Vector) =>
-        assert(features ~== expected absTol 1e-14)
-    }
+    cvModel3
+      .transform(df)
+      .select("features", "expected")
+      .collect()
+      .foreach {
+        case Row(features: Vector, expected: Vector) =>
+          assert(features ~== expected absTol 1e-14)
+      }
   }
 
   test("CountVectorizer throws exception when vocab is empty") {
@@ -146,8 +162,7 @@ class CountVectorizerSuite
         .setInputCol("words")
         .setOutputCol("features")
         .setVocabSize(3) // limit vocab size to 3
-        .setMinDF(3)
-        .fit(df)
+        .setMinDF(3).fit(df)
     }
   }
 
@@ -170,10 +185,14 @@ class CountVectorizerSuite
       .setInputCol("words")
       .setOutputCol("features")
       .setMinTF(3)
-    cv.transform(df).select("features", "expected").collect().foreach {
-      case Row(features: Vector, expected: Vector) =>
-        assert(features ~== expected absTol 1e-14)
-    }
+    cv
+      .transform(df)
+      .select("features", "expected")
+      .collect()
+      .foreach {
+        case Row(features: Vector, expected: Vector) =>
+          assert(features ~== expected absTol 1e-14)
+      }
   }
 
   test("CountVectorizerModel with minTF freq") {
@@ -195,10 +214,14 @@ class CountVectorizerSuite
       .setInputCol("words")
       .setOutputCol("features")
       .setMinTF(0.3)
-    cv.transform(df).select("features", "expected").collect().foreach {
-      case Row(features: Vector, expected: Vector) =>
-        assert(features ~== expected absTol 1e-14)
-    }
+    cv
+      .transform(df)
+      .select("features", "expected")
+      .collect()
+      .foreach {
+        case Row(features: Vector, expected: Vector) =>
+          assert(features ~== expected absTol 1e-14)
+      }
   }
 
   test("CountVectorizerModel with binary") {
@@ -218,10 +241,14 @@ class CountVectorizerSuite
       .setInputCol("words")
       .setOutputCol("features")
       .setBinary(true)
-    cv.transform(df).select("features", "expected").collect().foreach {
-      case Row(features: Vector, expected: Vector) =>
-        assert(features ~== expected absTol 1e-14)
-    }
+    cv
+      .transform(df)
+      .select("features", "expected")
+      .collect()
+      .foreach {
+        case Row(features: Vector, expected: Vector) =>
+          assert(features ~== expected absTol 1e-14)
+      }
   }
 
   test("CountVectorizer read/write") {

@@ -95,8 +95,9 @@ class ScalaMavenImporter
       // TODO configuration.vmOptions
 
       val compilerOptions = {
-        val plugins = configuration.plugins.map(id =>
-          mavenProject.localPathTo(id).getPath)
+        val plugins = configuration
+          .plugins
+          .map(id => mavenProject.localPathTo(id).getPath)
         configuration.compilerOptions ++ plugins.map(path => "-Xplugin:" + path)
       }
 
@@ -104,7 +105,9 @@ class ScalaMavenImporter
 
       val compilerVersion = configuration.compilerVersion.get
 
-      val scalaLibrary = modelsProvider.getAllLibraries.toSeq
+      val scalaLibrary = modelsProvider
+        .getAllLibraries
+        .toSeq
         .filter(_.getName.contains("scala-library"))
         .find(_.scalaVersion == Some(compilerVersion))
         .getOrElse(
@@ -113,10 +116,12 @@ class ScalaMavenImporter
               compilerVersion.number + " for module " + module.getName))
 
       if (!scalaLibrary.isScalaSdk) {
-        val languageLevel = compilerVersion.toLanguageLevel.getOrElse(
-          ScalaLanguageLevel.Default)
-        val compilerClasspath = configuration.compilerClasspath.map(
-          mavenProject.localPathTo)
+        val languageLevel = compilerVersion
+          .toLanguageLevel
+          .getOrElse(ScalaLanguageLevel.Default)
+        val compilerClasspath = configuration
+          .compilerClasspath
+          .map(mavenProject.localPathTo)
 
         val libraryModel = modelsProvider
           .getModifiableLibraryModel(scalaLibrary)
@@ -166,9 +171,8 @@ private object ScalaMavenImporter {
   implicit class RichMavenProject(val project: MavenProject) extends AnyVal {
     def localPathTo(id: MavenId) =
       project.getLocalRepository / id.getGroupId.replaceAll("\\.", "/") /
-        id.getArtifactId / id.getVersion / "%s-%s.jar".format(
-        id.getArtifactId,
-        id.getVersion)
+        id.getArtifactId / id.getVersion / "%s-%s.jar"
+        .format(id.getArtifactId, id.getVersion)
   }
 
   implicit class RichFile(val file: File) extends AnyVal {
@@ -200,10 +204,12 @@ private class ScalaConfiguration(project: MavenProject) {
           .filter(!_.isDefault))
 
   private def compilerConfigurations: Seq[Element] =
-    compilerPlugin.toSeq.flatMap { plugin =>
-      plugin.getConfigurationElement.toOption.toSeq ++
-        plugin.getGoalConfiguration("compile").toOption.toSeq
-    }
+    compilerPlugin
+      .toSeq
+      .flatMap { plugin =>
+        plugin.getConfigurationElement.toOption.toSeq ++
+          plugin.getGoalConfiguration("compile").toOption.toSeq
+      }
 
   private def standardLibrary: Option[MavenArtifact] =
     project.findDependencies("org.scala-lang", "scala-library").headOption

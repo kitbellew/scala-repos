@@ -284,7 +284,9 @@ object IteratorSpec extends Spec {
 
     "be duplicated" in {
       val sz = 50
-      val ct = collection.parallel.mutable
+      val ct = collection
+        .parallel
+        .mutable
         .ParTrieMap((0 until sz) zip (0 until sz): _*)
       val it = ct.splitter
       for (_ <- 0 until (sz / 2))

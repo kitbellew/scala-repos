@@ -36,7 +36,8 @@ class TaskContextSuite
 
   test("provide metrics sources") {
     val filePath =
-      getClass.getClassLoader
+      getClass
+        .getClassLoader
         .getResource("test_metrics_config.properties")
         .getFile
     val conf = new SparkConf(loadDefaults = false)
@@ -44,15 +45,18 @@ class TaskContextSuite
     sc = new SparkContext("local", "test", conf)
     val rdd = sc.makeRDD(1 to 1)
     val result =
-      sc.runJob(
+      sc
+        .runJob(
           rdd,
           (tc: TaskContext, it: Iterator[Int]) => {
-            tc.getMetricsSources("jvm").count {
-              case source: JvmSource =>
-                true
-              case _ =>
-                false
-            }
+            tc
+              .getMetricsSources("jvm")
+              .count {
+                case source: JvmSource =>
+                  true
+                case _ =>
+                  false
+              }
           })
         .sum
     assert(result > 0)
@@ -204,7 +208,8 @@ class TaskContextSuite
         internal = false,
         countFailedValues = false)
     // Fail first 3 attempts of every task. This means each task should be run 4 times.
-    sc.parallelize(1 to 10, 10)
+    sc
+      .parallelize(1 to 10, 10)
       .map { i =>
         acc1 += 1
         acc2 += 1

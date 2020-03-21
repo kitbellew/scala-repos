@@ -612,8 +612,8 @@ object TestHelpers {
     * @return the name of the JSON function associated with the Comet actor
     */
   def jsonFuncForCometName(cometName: String, body: String): Box[String] = {
-    val p = Pattern.compile(
-      """JSON Func """ + cometName + """ \$\$ ([Ff][^ ]*)""")
+    val p = Pattern
+      .compile("""JSON Func """ + cometName + """ \$\$ ([Ff][^ ]*)""")
     val m = p.matcher(body)
     if (m.find)
       Full(m.group(1))
@@ -711,7 +711,10 @@ object TestHelpers {
     }
 
     Map(
-      in.entrySet.iterator.toList
+      in
+        .entrySet
+        .iterator
+        .toList
         .filter(e => (e ne null) && (e.getKey != null))
         .map(e => morePulling(e)): _*)
   }

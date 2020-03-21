@@ -58,12 +58,8 @@ private[stream] class ConnectionSourceStage(
 
         override def preStart(): Unit = {
           getStageActor(receive)
-          tcpManager ! Tcp.Bind(
-            self,
-            endpoint,
-            backlog,
-            options,
-            pullMode = true)
+          tcpManager ! Tcp
+            .Bind(self, endpoint, backlog, options, pullMode = true)
         }
 
         private def receive(evt: (ActorRef, Any)): Unit = {
@@ -345,10 +341,12 @@ private[stream] object TcpConnectionStage {
         override def onUpstreamFailure(ex: Throwable): Unit = {
           if (connection != null) {
             if (interpreter.log.isDebugEnabled) {
-              interpreter.log.debug(
-                "Aborting tcp connection because of upstream failure: {}\n{}",
-                ex.getMessage,
-                ex.getStackTrace.mkString("\n"))
+              interpreter
+                .log
+                .debug(
+                  "Aborting tcp connection because of upstream failure: {}\n{}",
+                  ex.getMessage,
+                  ex.getStackTrace.mkString("\n"))
             }
             connection ! Abort
           } else
@@ -361,8 +359,8 @@ private[stream] object TcpConnectionStage {
       role match {
         case Outbound(_, _, localAddressPromise, _) ⇒
           // Fail if has not been completed with an address earlier
-          localAddressPromise.tryFailure(
-            new StreamTcpException("Connection failed."))
+          localAddressPromise
+            .tryFailure(new StreamTcpException("Connection failed."))
         case _ ⇒ // do nothing...
       }
   }
@@ -445,8 +443,10 @@ private[stream] class OutgoingConnectionStage(
 
     (
       logic,
-      localAddressPromise.future.map(OutgoingConnection(remoteAddress, _))(
-        ExecutionContexts.sameThreadExecutionContext))
+      localAddressPromise
+        .future
+        .map(OutgoingConnection(remoteAddress, _))(
+          ExecutionContexts.sameThreadExecutionContext))
   }
 
   override def toString = s"TCP-to($remoteAddress)"

@@ -32,7 +32,8 @@ class TransportAdapters(system: ExtendedActorSystem) extends Extension {
   private val adaptersTable: Map[String, TransportAdapterProvider] =
     for ((name, fqn) ← settings.Adapters)
       yield {
-        name -> system.dynamicAccess
+        name -> system
+          .dynamicAccess
           .createInstanceFor[TransportAdapterProvider](fqn, immutable.Seq.empty)
           .recover({
             case e ⇒
@@ -265,9 +266,11 @@ abstract class ActorTransportAdapterManager
   def receive: Receive = {
     case ListenUnderlying(listenAddress, upstreamListenerFuture) ⇒
       localAddress = listenAddress
-      upstreamListenerFuture.future.map {
-        ListenerRegistered(_)
-      } pipeTo self
+      upstreamListenerFuture
+        .future
+        .map {
+          ListenerRegistered(_)
+        } pipeTo self
 
     case ListenerRegistered(listener) ⇒
       associationListener = listener

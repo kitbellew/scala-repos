@@ -177,7 +177,9 @@ trait TimeHelpers {
         case Left(duration) =>
           duration.getMillis
         case Right(period) =>
-          period.toStandardDuration.getMillis // will throw exception because it holds month or year
+          period
+            .toStandardDuration
+            .getMillis // will throw exception because it holds month or year
       }
 
     // TODO If we choose to move away from TimeSpan, we'll need to take into

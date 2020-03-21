@@ -273,7 +273,8 @@ trait SHtml extends Loggable {
         name,
         makeAjaxCall(
           JsRaw(
-            "'" + name + "=' + encodeURIComponent(JSON.stringify(" + jsCalcValue.toJsCmd + "))"))))
+            "'" + name + "=' + encodeURIComponent(JSON.stringify(" + jsCalcValue
+              .toJsCmd + "))"))))
 
   /**
     * Build a JavaScript function that will perform an AJAX call based on a value calculated in JavaScript
@@ -292,7 +293,8 @@ trait SHtml extends Loggable {
         name,
         makeAjaxCall(
           JsRaw(
-            "'" + name + "=' + encodeURIComponent(JSON.stringify(" + jsCalcValue.toJsCmd + "))"),
+            "'" + name + "=' + encodeURIComponent(JSON.stringify(" + jsCalcValue
+              .toJsCmd + "))"),
           ajaxContext)))
 
   def fajaxCall[T](jsCalcValue: JsExp, func: String => JsCmd)(
@@ -316,7 +318,8 @@ trait SHtml extends Loggable {
         name,
         makeAjaxCall(
           JsRaw(
-            "'" + name + "=' + encodeURIComponent(" + jsCalcValue.toJsCmd + ")"))))
+            "'" + name + "=' + encodeURIComponent(" + jsCalcValue
+              .toJsCmd + ")"))))
 
   /**
     * Build a JavaScript function that will perform an AJAX call based on a value calculated in JavaScript
@@ -335,7 +338,8 @@ trait SHtml extends Loggable {
         name,
         makeAjaxCall(
           JsRaw(
-            "'" + name + "=' + encodeURIComponent(" + jsCalcValue.toJsCmd + ")"),
+            "'" + name + "=' + encodeURIComponent(" + jsCalcValue
+              .toJsCmd + ")"),
           ajaxContext)))
 
   private def deferCall(data: JsExp, jsFunc: Call): Call =
@@ -467,7 +471,8 @@ trait SHtml extends Loggable {
         <button onclick={
           makeAjaxCall(
             JsRaw(
-              name.encJs + "+'='+encodeURIComponent(" + jsExp.toJsCmd + ")")).toJsCmd +
+              name.encJs + "+'='+encodeURIComponent(" + jsExp.toJsCmd + ")"))
+            .toJsCmd +
             "; return false;"
         }>{
           text
@@ -497,7 +502,8 @@ trait SHtml extends Loggable {
         <button onclick={
           makeAjaxCall(
             JsRaw(
-              name.encJs + "+'='+ encodeURIComponent(JSON.stringify(" + jsExp.toJsCmd + "))"),
+              name.encJs + "+'='+ encodeURIComponent(JSON.stringify(" + jsExp
+                .toJsCmd + "))"),
             ajaxContext).toJsCmd +
             "; return false;"
         }>{
@@ -699,9 +705,8 @@ trait SHtml extends Loggable {
     attrs.foldLeft(
       fmapFunc((func))(name =>
         <a href="javascript://" onclick={
-          makeAjaxCall(
-            Str(name + "=true"),
-            jsonContext).toJsCmd + "; return false;"
+          makeAjaxCall(Str(name + "=true"), jsonContext)
+            .toJsCmd + "; return false;"
         }>{
           body
         }</a>))(_ % _)
@@ -1592,12 +1597,14 @@ trait SHtml extends Loggable {
     elem.copy(attributes = new UnprefixedAttribute(
       "name",
       name,
-      elem.attributes.filter {
-        case up: UnprefixedAttribute =>
-          up.key != "name"
-        case _ =>
-          true
-      }))
+      elem
+        .attributes
+        .filter {
+          case up: UnprefixedAttribute =>
+            up.key != "name"
+          case _ =>
+            true
+        }))
   }
 
   private def isRadio(in: MetaData): Boolean =
@@ -1628,12 +1635,14 @@ trait SHtml extends Loggable {
             val oldAttr: Map[String, String] = Map(
               allEvent.flatMap(a => e.attribute(a).map(v => a -> (v.text))): _*)
 
-            val newAttr = e.attributes.filter {
-              case up: UnprefixedAttribute =>
-                !oldAttr.contains(up.key)
-              case _ =>
-                true
-            }
+            val newAttr = e
+              .attributes
+              .filter {
+                case up: UnprefixedAttribute =>
+                  !oldAttr.contains(up.key)
+                case _ =>
+                  true
+              }
 
             fmapFunc(func) { funcName =>
               e.copy(attributes =
@@ -1706,12 +1715,14 @@ trait SHtml extends Loggable {
               allEvent.flatMap(a =>
                 e.attribute(a).map(v => a -> (v.text + "; "))): _*)
 
-            val newAttr = e.attributes.filter {
-              case up: UnprefixedAttribute =>
-                !oldAttr.contains(up.key)
-              case _ =>
-                true
-            }
+            val newAttr = e
+              .attributes
+              .filter {
+                case up: UnprefixedAttribute =>
+                  !oldAttr.contains(up.key)
+                case _ =>
+                  true
+              }
 
             val cmd = ajaxCall(JsRaw("this.value"), func)._2.toJsCmd
 
@@ -1781,112 +1792,114 @@ trait SHtml extends Loggable {
     val fgSnap = S._formGroup.get
 
     (in: NodeSeq) =>
-      S._formGroup.doWith(fgSnap) {
-        var radioName: Box[String] = Empty
-        var checkBoxName: Box[String] = Empty
-        var checkBoxCnt = 0
+      S
+        ._formGroup
+        .doWith(fgSnap) {
+          var radioName: Box[String] = Empty
+          var checkBoxName: Box[String] = Empty
+          var checkBoxCnt = 0
 
-        def runNodes(in: NodeSeq): NodeSeq =
-          in.flatMap {
-            case Group(g) =>
-              runNodes(g)
-            // button
-            case e: Elem if e.label == "button" =>
-              _formGroup.is match {
-                case Empty =>
-                  formGroup(1)(
+          def runNodes(in: NodeSeq): NodeSeq =
+            in.flatMap {
+              case Group(g) =>
+                runNodes(g)
+              // button
+              case e: Elem if e.label == "button" =>
+                _formGroup.is match {
+                  case Empty =>
+                    formGroup(1)(
+                      fmapFunc(func) {
+                        dupWithName(e, _)
+                      })
+                  case _ =>
                     fmapFunc(func) {
                       dupWithName(e, _)
-                    })
-                case _ =>
-                  fmapFunc(func) {
-                    dupWithName(e, _)
-                  }
-              }
-
-            // textarea
-            case e: Elem if e.label == "textarea" =>
-              fmapFunc(func) {
-                dupWithName(e, _)
-              }
-
-            // select
-            case e: Elem if e.label == "select" =>
-              fmapFunc(func) {
-                dupWithName(e, _)
-              }
-
-            // radio
-            case e: Elem if e.label == "input" && isRadio(e.attributes) =>
-              radioName match {
-                case Full(name) =>
-                  dupWithName(e, name)
-                case _ =>
-                  fmapFunc(func) { name =>
-                    {
-                      radioName = Full(name)
-                      dupWithName(e, name)
                     }
-                  }
-              }
+                }
 
-            // checkbox
-            case e: Elem if e.label == "input" && isCheckbox(e.attributes) =>
-              checkBoxName match {
-                case Full(name) =>
-                  checkBoxCnt += 1
-                  dupWithName(e, name)
-                case _ =>
-                  fmapFunc(func) { name =>
-                    {
-                      checkBoxName = Full(name)
-                      checkBoxCnt += 1
-                      dupWithName(e, name)
+              // textarea
+              case e: Elem if e.label == "textarea" =>
+                fmapFunc(func) {
+                  dupWithName(e, _)
+                }
+
+              // select
+              case e: Elem if e.label == "select" =>
+                fmapFunc(func) {
+                  dupWithName(e, _)
+                }
+
+              // radio
+              case e: Elem if e.label == "input" && isRadio(e.attributes) =>
+                radioName match {
+                  case Full(name) =>
+                    dupWithName(e, name)
+                  case _ =>
+                    fmapFunc(func) { name =>
+                      {
+                        radioName = Full(name)
+                        dupWithName(e, name)
+                      }
                     }
-                  }
-              }
+                }
 
-            // submit
-            case e: Elem
-                if e.label == "input" && e
-                  .attribute("type")
-                  .map(_.text) == Some("submit") =>
-              _formGroup.is match {
-                case Empty =>
-                  formGroup(1)(
+              // checkbox
+              case e: Elem if e.label == "input" && isCheckbox(e.attributes) =>
+                checkBoxName match {
+                  case Full(name) =>
+                    checkBoxCnt += 1
+                    dupWithName(e, name)
+                  case _ =>
+                    fmapFunc(func) { name =>
+                      {
+                        checkBoxName = Full(name)
+                        checkBoxCnt += 1
+                        dupWithName(e, name)
+                      }
+                    }
+                }
+
+              // submit
+              case e: Elem
+                  if e.label == "input" && e
+                    .attribute("type")
+                    .map(_.text) == Some("submit") =>
+                _formGroup.is match {
+                  case Empty =>
+                    formGroup(1)(
+                      fmapFunc(func) {
+                        dupWithName(e, _)
+                      })
+                  case _ =>
                     fmapFunc(func) {
                       dupWithName(e, _)
-                    })
-                case _ =>
-                  fmapFunc(func) {
-                    dupWithName(e, _)
-                  }
-              }
+                    }
+                }
 
-            // generic input
-            case e: Elem if e.label == "input" =>
-              fmapFunc(func) {
-                dupWithName(e, _)
-              }
+              // generic input
+              case e: Elem if e.label == "input" =>
+                fmapFunc(func) {
+                  dupWithName(e, _)
+                }
 
-            case x =>
-              x
+              case x =>
+                x
+            }
+
+          val ret = runNodes(in)
+
+          checkBoxName match {
+            // if we've got a single checkbox, add a hidden false checkbox
+            case Full(name) if checkBoxCnt == 1 => {
+              ret ++ <input type="hidden" name={
+                name
+              } value="false"/>
+            }
+
+            case _ =>
+              ret
           }
-
-        val ret = runNodes(in)
-
-        checkBoxName match {
-          // if we've got a single checkbox, add a hidden false checkbox
-          case Full(name) if checkBoxCnt == 1 => {
-            ret ++ <input type="hidden" name={
-              name
-            } value="false"/>
-          }
-
-          case _ =>
-            ret
         }
-      }
   }
 
   def text(value: String, func: String => Any, attrs: ElemAttr*): Elem =
@@ -2344,23 +2357,25 @@ trait SHtml extends Loggable {
             val id: String = e.attribute("id").map(_.text) getOrElse
               Helpers.nextFuncName
 
-            val newMeta = e.attributes.filter {
-              case up: UnprefixedAttribute =>
-                up.key match {
-                  case "id" =>
-                    false
-                  case "action" =>
-                    false
-                  case "onsubmit" =>
-                    false
-                  case "method" =>
-                    false
-                  case _ =>
-                    true
-                }
-              case _ =>
-                true
-            }
+            val newMeta = e
+              .attributes
+              .filter {
+                case up: UnprefixedAttribute =>
+                  up.key match {
+                    case "id" =>
+                      false
+                    case "action" =>
+                      false
+                    case "onsubmit" =>
+                      false
+                    case "method" =>
+                      false
+                    case _ =>
+                      true
+                  }
+                case _ =>
+                  true
+              }
 
             e.copy(attributes = newMeta) % ("id" -> id) %
               ("action" -> "javascript://") %
@@ -2451,12 +2466,14 @@ trait SHtml extends Loggable {
   }
 
   private def optionToElem(option: SelectableOption[String]): Elem =
-    option.attrs.foldLeft(
-      <option value={
-        option.value
-      }>{
-        option.label
-      }</option>)(_ % _)
+    option
+      .attrs
+      .foldLeft(
+        <option value={
+          option.value
+        }>{
+          option.label
+        }</option>)(_ % _)
 
   private final case class SelectableOptionWithNonce[+T](
       value: T,
@@ -2847,12 +2864,14 @@ trait SHtml extends Loggable {
     }
 
     val nonces: List[SelectableOption[String]] =
-      secure.map { selectableOptionWithNonce =>
-        SelectableOption(
-          selectableOptionWithNonce.nonce,
-          selectableOptionWithNonce.label,
-          selectableOptionWithNonce.attrs: _*)
-      }.toList
+      secure
+        .map { selectableOptionWithNonce =>
+          SelectableOption(
+            selectableOptionWithNonce.nonce,
+            selectableOptionWithNonce.label,
+            selectableOptionWithNonce.attrs: _*)
+        }
+        .toList
 
     def process(info: List[String]): Unit = onSubmit(info.flatMap(sm.get))
 
@@ -2922,32 +2941,34 @@ trait SHtml extends Loggable {
             onSubmit(possible.filter(_._1 == x).headOption.map(_._2))
         })) { name =>
       {
-        val items = possible.zipWithIndex.map {
-          case ((id, value), idx) => {
-            val radio =
-              attrs.foldLeft(
-                <input type="radio"
+        val items = possible
+          .zipWithIndex
+          .map {
+            case ((id, value), idx) => {
+              val radio =
+                attrs.foldLeft(
+                  <input type="radio"
                              name={
-                  name
-                } value={
-                  id
-                }/>)(_ % _) %
-                checked(deflt.filter(_ == value).isDefined)
+                    name
+                  } value={
+                    id
+                  }/>)(_ % _) %
+                  checked(deflt.filter(_ == value).isDefined)
 
-            val elem =
-              if (idx == 0) {
-                radio ++ <input type="hidden" value={
-                  hiddenId
-                } name={
-                  name
-                }/>
-              } else {
-                radio
-              }
+              val elem =
+                if (idx == 0) {
+                  radio ++ <input type="hidden" value={
+                    hiddenId
+                  } name={
+                    name
+                  }/>
+                } else {
+                  radio
+                }
 
-            ChoiceItem(value, elem)
+              ChoiceItem(value, elem)
+            }
           }
-        }
 
         ChoiceHolder(items)
       }
@@ -3144,25 +3165,28 @@ trait SHtml extends Loggable {
       })
     } { name =>
       ChoiceHolder(
-        possible.toList.zipWithIndex.map { possibleChoice =>
-          ChoiceItem(
-            possibleChoice._1,
-            attrs.foldLeft(
-              <input type="checkbox" name={
-                name
-              } value={
-                possibleChoice._2.toString
-              }/>)(_ % _) %
-              checked(actual.contains(possibleChoice._1)) ++ {
-              if (possibleChoice._2 == 0)
-                <input type="hidden" name={
+        possible
+          .toList
+          .zipWithIndex
+          .map { possibleChoice =>
+            ChoiceItem(
+              possibleChoice._1,
+              attrs.foldLeft(
+                <input type="checkbox" name={
                   name
-                } value="-1"/>
-              else
-                Nil
-            }
-          )
-        })
+                } value={
+                  possibleChoice._2.toString
+                }/>)(_ % _) %
+                checked(actual.contains(possibleChoice._1)) ++ {
+                if (possibleChoice._2 == 0)
+                  <input type="hidden" name={
+                    name
+                  } value="-1"/>
+                else
+                  Nil
+              }
+            )
+          })
     }
   }
 

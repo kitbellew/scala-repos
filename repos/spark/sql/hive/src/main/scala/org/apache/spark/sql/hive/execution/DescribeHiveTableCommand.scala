@@ -51,11 +51,11 @@ private[hive] case class DescribeHiveTableCommand(
         val columns: Seq[FieldSchema] = table.hiveQlTable.getCols.asScala
         val partitionColumns: Seq[FieldSchema] =
           table.hiveQlTable.getPartCols.asScala
-        results ++= columns.map(field =>
-          (field.getName, field.getType, field.getComment))
+        results ++= columns
+          .map(field => (field.getName, field.getType, field.getComment))
         if (partitionColumns.nonEmpty) {
-          val partColumnInfo = partitionColumns.map(field =>
-            (field.getName, field.getType, field.getComment))
+          val partColumnInfo = partitionColumns
+            .map(field => (field.getName, field.getType, field.getComment))
           results ++=
             partColumnInfo ++
               Seq(("# Partition Information", "", "")) ++

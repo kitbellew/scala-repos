@@ -214,7 +214,9 @@ abstract class BTypes {
       }
 
     val interfaces: List[ClassBType] =
-      classNode.interfaces.asScala
+      classNode
+        .interfaces
+        .asScala
         .map(classBTypeFromParsedClassfile)(collection.breakOut)
 
     val flags = classNode.access
@@ -232,7 +234,8 @@ abstract class BTypes {
       */
     def nestedInCurrentClass(innerClassNode: InnerClassNode): Boolean = {
       (
-        innerClassNode.outerName != null && innerClassNode.outerName == classNode.name
+        innerClassNode.outerName != null && innerClassNode
+          .outerName == classNode.name
       ) ||
       (
         innerClassNode.outerName == null && {
@@ -246,32 +249,37 @@ abstract class BTypes {
     }
 
     val nestedClasses: List[ClassBType] =
-      classNode.innerClasses.asScala.collect({
-        case i if nestedInCurrentClass(i) =>
-          classBTypeFromParsedClassfile(i.name)
-      })(collection.breakOut)
+      classNode
+        .innerClasses
+        .asScala
+        .collect({
+          case i if nestedInCurrentClass(i) =>
+            classBTypeFromParsedClassfile(i.name)
+        })(collection.breakOut)
 
     // if classNode is a nested class, it has an innerClass attribute for itself. in this
     // case we build the NestedInfo.
-    val nestedInfo =
-      classNode.innerClasses.asScala.find(_.name == classNode.name) map {
-        case innerEntry =>
-          val enclosingClass =
-            if (innerEntry.outerName != null) {
-              // if classNode is a member class, the outerName is non-null
-              classBTypeFromParsedClassfile(innerEntry.outerName)
-            } else {
-              // for anonymous or local classes, the outerName is null, but the enclosing class is
-              // stored in the EnclosingMethod attribute (which ASM encodes in classNode.outerClass).
-              classBTypeFromParsedClassfile(classNode.outerClass)
-            }
-          val staticFlag = (innerEntry.access & Opcodes.ACC_STATIC) != 0
-          NestedInfo(
-            enclosingClass,
-            Option(innerEntry.outerName),
-            Option(innerEntry.innerName),
-            staticFlag)
-      }
+    val nestedInfo = classNode
+      .innerClasses
+      .asScala
+      .find(_.name == classNode.name) map {
+      case innerEntry =>
+        val enclosingClass =
+          if (innerEntry.outerName != null) {
+            // if classNode is a member class, the outerName is non-null
+            classBTypeFromParsedClassfile(innerEntry.outerName)
+          } else {
+            // for anonymous or local classes, the outerName is null, but the enclosing class is
+            // stored in the EnclosingMethod attribute (which ASM encodes in classNode.outerClass).
+            classBTypeFromParsedClassfile(classNode.outerClass)
+          }
+        val staticFlag = (innerEntry.access & Opcodes.ACC_STATIC) != 0
+        NestedInfo(
+          enclosingClass,
+          Option(innerEntry.outerName),
+          Option(innerEntry.innerName),
+          staticFlag)
+    }
 
     val inlineInfo = inlineInfoFromClassfile(classNode)
 
@@ -296,7 +304,9 @@ abstract class BTypes {
       if (classNode.attrs == null)
         None
       else
-        classNode.attrs.asScala
+        classNode
+          .attrs
+          .asScala
           .collect({
             case a: InlineInfoAttribute =>
               a
@@ -307,9 +317,12 @@ abstract class BTypes {
 
     def fromClassfileWithoutAttribute = {
       val warning = {
-        val isScala =
-          classNode.attrs != null && classNode.attrs.asScala.exists(a =>
-            a.`type` == BTypes.ScalaAttributeName || a.`type` == BTypes.ScalaSigAttributeName)
+        val isScala = classNode.attrs != null && classNode
+          .attrs
+          .asScala
+          .exists(a =>
+            a.`type` == BTypes.ScalaAttributeName || a.`type` == BTypes
+              .ScalaSigAttributeName)
         if (isScala)
           Some(NoInlineInfoAttribute(classNode.name))
         else
@@ -321,7 +334,9 @@ abstract class BTypes {
       // Here we are parsing from a classfile and we don't need to do anything special. Many of these
       // primitives don't even exist, for example Any.isInstanceOf.
       val methodInfos =
-        classNode.methods.asScala
+        classNode
+          .methods
+          .asScala
           .map(methodNode => {
             val info = MethodInlineInfo(
               effectivelyFinal = BytecodeUtils.isFinalMethod(methodNode),
@@ -1118,7 +1133,12 @@ abstract class BTypes {
       isNestedClass.flatMap(isNested => {
         // if isNested is true, we know that info.get is defined, and nestedInfo.get is also defined.
         if (isNested)
-          info.get.nestedInfo.get.enclosingClass.enclosingNestedClassesChain
+          info
+            .get
+            .nestedInfo
+            .get
+            .enclosingClass
+            .enclosingNestedClassesChain
             .map(this :: _)
         else
           Right(Nil)

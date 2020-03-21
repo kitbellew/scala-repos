@@ -191,8 +191,8 @@ object LDAExample {
 
     if (ldaModel.isInstanceOf[DistributedLDAModel]) {
       val distLDAModel = ldaModel.asInstanceOf[DistributedLDAModel]
-      val avgLogLikelihood =
-        distLDAModel.logLikelihood / actualCorpusSize.toDouble
+      val avgLogLikelihood = distLDAModel.logLikelihood / actualCorpusSize
+        .toDouble
       println(s"\t Training data average log likelihood: $avgLogLikelihood")
       println()
     }
@@ -201,21 +201,25 @@ object LDAExample {
     val topicIndices = ldaModel.describeTopics(maxTermsPerTopic = 10)
     val topics = topicIndices.map {
       case (terms, termWeights) =>
-        terms.zip(termWeights).map {
-          case (term, weight) =>
-            (vocabArray(term.toInt), weight)
-        }
+        terms
+          .zip(termWeights)
+          .map {
+            case (term, weight) =>
+              (vocabArray(term.toInt), weight)
+          }
     }
     println(s"${params.k} topics:")
-    topics.zipWithIndex.foreach {
-      case (topic, i) =>
-        println(s"TOPIC $i")
-        topic.foreach {
-          case (term, weight) =>
-            println(s"$term\t$weight")
-        }
-        println()
-    }
+    topics
+      .zipWithIndex
+      .foreach {
+        case (topic, i) =>
+          println(s"TOPIC $i")
+          topic.foreach {
+            case (term, weight) =>
+              println(s"$term\t$weight")
+          }
+          println()
+      }
     sc.stop()
   }
 
@@ -250,8 +254,8 @@ object LDAExample {
     val stopWordsRemover = new StopWordsRemover()
       .setInputCol("rawTokens")
       .setOutputCol("tokens")
-    stopWordsRemover.setStopWords(
-      stopWordsRemover.getStopWords ++ customizedStopWords)
+    stopWordsRemover
+      .setStopWords(stopWordsRemover.getStopWords ++ customizedStopWords)
     val countVectorizer = new CountVectorizer()
       .setVocabSize(vocabSize)
       .setInputCol("tokens")

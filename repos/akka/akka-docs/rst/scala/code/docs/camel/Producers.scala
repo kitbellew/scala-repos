@@ -90,8 +90,8 @@ object Producers {
     }
 
     val system = ActorSystem("some-system")
-    val producer = system.actorOf(
-      Props(classOf[OnewaySender], this, "activemq:FOO.BAR"))
+    val producer = system
+      .actorOf(Props(classOf[OnewaySender], this, "activemq:FOO.BAR"))
     producer ! "Some message"
     //#Oneway
 

@@ -52,11 +52,15 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
         case (k, (v1, v2)) =>
           val tup =
             for {
-              prior <- machine.mergeable.readable
+              prior <- machine
+                .mergeable
+                .readable
                 .multiGetBatch(BatchID(1), Set(k))(k)
               mergePrior <- machine.mergeable.merge((k, BatchID(1)), v1)
               mergeAfter <- machine.mergeable.merge((k, BatchID(1)), v2)
-              last <- machine.mergeable.readable
+              last <- machine
+                .mergeable
+                .readable
                 .multiGetBatch(BatchID(1), Set(k))(k)
             } yield (prior, mergePrior, mergeAfter, last)
 
@@ -95,7 +99,8 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
       Await.result(
         Future
           .collect(
-            machine.mergeable
+            machine
+              .mergeable
               .multiMerge(keys)
               .collect {
                 case ((k, BatchID(2)), fopt) =>
@@ -113,10 +118,12 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
         case (k, v) =>
           machine.offline.put((k, Some((BatchID(0), v))))
       }
-      val keys: List[((Int, BatchID), Int)] = toMerge.toList.flatMap {
-        case (k, (v1, v2)) =>
-          Map((k, BatchID(1)) -> v1, (k, BatchID(2)) -> v2)
-      }
+      val keys: List[((Int, BatchID), Int)] = toMerge
+        .toList
+        .flatMap {
+          case (k, (v1, v2)) =>
+            Map((k, BatchID(1)) -> v1, (k, BatchID(2)) -> v2)
+        }
 
       val merged = keys.map { kbv =>
         (kbv._1, machine.mergeable.merge(kbv))

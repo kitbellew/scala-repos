@@ -49,11 +49,13 @@ object EchoTestClientApp extends App {
     Flow[Message]
       .mapAsync(1) {
         case tm: TextMessage ⇒
-          tm.textStream
+          tm
+            .textStream
             .runWith(Sink.fold("")(_ + _))
             .map(str ⇒ s"TextMessage: '$str'")
         case bm: BinaryMessage ⇒
-          bm.dataStream
+          bm
+            .dataStream
             .runWith(Sink.fold(ByteString.empty)(_ ++ _))
             .map(bs ⇒ s"BinaryMessage: '${bs.utf8String}'")
       }

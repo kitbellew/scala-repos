@@ -23,7 +23,8 @@ case class JavaFqn(
     DocSig(DocFqn(pack.getOrElse(""), typename.getOrElse("")), fieldOrMethod)
   def toFqnString = Array(pack, typename, fieldOrMethod).flatten.mkString(".")
   def toQueryString =
-    Array(pack, typename.map(_.replace(".", "$")), fieldOrMethod).flatten
+    Array(pack, typename.map(_.replace(".", "$")), fieldOrMethod)
+      .flatten
       .mkString(".")
 }
 
@@ -69,9 +70,11 @@ trait Helpers extends UnsafeHelpers with SLF4JLogging {
   }
 
   private def parseFqnAsClass(s: String): Option[JavaFqn] = {
-    val (front, back) = s.split("\\.").partition { s =>
-      s.forall(Character.isLowerCase)
-    }
+    val (front, back) = s
+      .split("\\.")
+      .partition { s =>
+        s.forall(Character.isLowerCase)
+      }
     Some(JavaFqn(front.mkString("."), back.mkString("."), None))
   }
 
@@ -79,7 +82,8 @@ trait Helpers extends UnsafeHelpers with SLF4JLogging {
     val kind = el.getKind
     if (kind == ElementKind.LOCAL_VARIABLE || kind == ElementKind.PARAMETER) {
       Some(JavaFqn(None, None, Some(el.getSimpleName.toString)))
-    } else if (kind == ElementKind.CONSTRUCTOR || kind == ElementKind.ENUM_CONSTANT ||
+    } else if (kind == ElementKind.CONSTRUCTOR || kind == ElementKind
+                 .ENUM_CONSTANT ||
                kind == ElementKind.METHOD || kind == ElementKind.FIELD) {
       Option(el.getEnclosingElement)
         .flatMap(fqn(info, _))

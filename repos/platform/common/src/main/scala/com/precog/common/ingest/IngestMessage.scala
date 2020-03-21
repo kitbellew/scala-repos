@@ -103,9 +103,8 @@ object EventId {
 case class IngestRecord(eventId: EventId, value: JValue)
 
 object IngestRecord {
-  implicit val ingestRecordIso = Iso.hlist(
-    IngestRecord.apply _,
-    IngestRecord.unapply _)
+  implicit val ingestRecordIso = Iso
+    .hlist(IngestRecord.apply _, IngestRecord.unapply _)
 
   val schemaV1 = "eventId" :: "jvalue" :: HNil
 
@@ -144,22 +143,15 @@ case class IngestMessage(
   }
 
   override def toString =
-    "IngestMessage(%s, %s, %s, (%d records), %s, %s, %s)".format(
-      apiKey,
-      path,
-      writeAs,
-      data.size,
-      jobId,
-      timestamp,
-      streamRef)
+    "IngestMessage(%s, %s, %s, (%d records), %s, %s, %s)"
+      .format(apiKey, path, writeAs, data.size, jobId, timestamp, streamRef)
 }
 
 object IngestMessage {
   import EventMessage._
 
-  implicit val ingestMessageIso = Iso.hlist(
-    IngestMessage.apply _,
-    IngestMessage.unapply _)
+  implicit val ingestMessageIso = Iso
+    .hlist(IngestMessage.apply _, IngestMessage.unapply _)
 
   val schemaV1 =
     "apiKey" :: "path" :: "writeAs" :: "data" :: "jobId" :: "timestamp" :: (
@@ -182,42 +174,44 @@ object IngestMessage {
     new Extractor[EventMessageExtraction] {
       override def validated(
           obj: JValue): Validation[Error, EventMessageExtraction] =
-        obj.validated[Ingest]("event").flatMap { ingest =>
-          (
-            obj.validated[Int]("producerId") |@|
-              obj.validated[Int]("eventId")
-          ) { (producerId, sequenceId) =>
-            val eventRecords = ingest.data map { jv =>
-              IngestRecord(EventId(producerId, sequenceId), jv)
-            }
-            ingest.writeAs map { authorities =>
-              assert(ingest.data.size == 1)
-              \/.right(
-                IngestMessage(
-                  ingest.apiKey,
-                  ingest.path,
-                  authorities,
-                  eventRecords,
-                  ingest.jobId,
-                  defaultTimestamp,
-                  StreamRef.Append))
-            } getOrElse {
-              \/.left(
-                (
-                  ingest.apiKey,
-                  ingest.path,
-                  (authorities: Authorities) =>
-                    IngestMessage(
-                      ingest.apiKey,
-                      ingest.path,
-                      authorities,
-                      eventRecords,
-                      ingest.jobId,
-                      defaultTimestamp,
-                      StreamRef.Append)))
+        obj
+          .validated[Ingest]("event")
+          .flatMap { ingest =>
+            (
+              obj.validated[Int]("producerId") |@|
+                obj.validated[Int]("eventId")
+            ) { (producerId, sequenceId) =>
+              val eventRecords = ingest.data map { jv =>
+                IngestRecord(EventId(producerId, sequenceId), jv)
+              }
+              ingest.writeAs map { authorities =>
+                assert(ingest.data.size == 1)
+                \/.right(
+                  IngestMessage(
+                    ingest.apiKey,
+                    ingest.path,
+                    authorities,
+                    eventRecords,
+                    ingest.jobId,
+                    defaultTimestamp,
+                    StreamRef.Append))
+              } getOrElse {
+                \/.left(
+                  (
+                    ingest.apiKey,
+                    ingest.path,
+                    (authorities: Authorities) =>
+                      IngestMessage(
+                        ingest.apiKey,
+                        ingest.path,
+                        authorities,
+                        eventRecords,
+                        ingest.jobId,
+                        defaultTimestamp,
+                        StreamRef.Append)))
+              }
             }
           }
-        }
     }
 
   implicit val Decomposer: Decomposer[IngestMessage] = decomposerV1
@@ -240,9 +234,8 @@ case class ArchiveMessage(
 
 object ArchiveMessage {
   import EventMessage._
-  implicit val archiveMessageIso = Iso.hlist(
-    ArchiveMessage.apply _,
-    ArchiveMessage.unapply _)
+  implicit val archiveMessageIso = Iso
+    .hlist(ArchiveMessage.apply _, ArchiveMessage.unapply _)
 
   val schemaV1 =
     "apiKey" :: "path" :: "jobId" :: "eventId" :: "timestamp" :: HNil
@@ -293,9 +286,8 @@ case class StoreFileMessage(
 }
 
 object StoreFileMessage {
-  implicit val storeFileMessageIso = Iso.hlist(
-    StoreFileMessage.apply _,
-    StoreFileMessage.unapply _)
+  implicit val storeFileMessageIso = Iso
+    .hlist(StoreFileMessage.apply _, StoreFileMessage.unapply _)
 
   val schemaV1 =
     "apiKey" :: "path" :: "writeAs" :: "jobId" :: "eventId" :: "content" :: "timestamp" :: "streamRef" :: HNil

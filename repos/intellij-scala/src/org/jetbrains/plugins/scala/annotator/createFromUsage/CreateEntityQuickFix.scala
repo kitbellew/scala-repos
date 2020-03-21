@@ -111,10 +111,8 @@ abstract class CreateEntityQuickFix(
       else
         ""
     val params = (genericParams ++: parameters).mkString
-    val text = placeholder.format(
-      keyword,
-      ref.nameId.getText,
-      params) + unimplementedBody
+    val text = placeholder
+      .format(keyword, ref.nameId.getText, params) + unimplementedBody
 
     val block =
       ref match {
@@ -126,8 +124,9 @@ abstract class CreateEntityQuickFix(
           None
       }
 
-    if (!FileModificationService.getInstance.prepareFileForWrite(
-          block.map(_.getContainingFile).getOrElse(file)))
+    if (!FileModificationService
+          .getInstance
+          .prepareFileForWrite(block.map(_.getContainingFile).getOrElse(file)))
       return
 
     inWriteAction {
@@ -147,8 +146,9 @@ abstract class CreateEntityQuickFix(
       val builder = new TemplateBuilderImpl(entity)
 
       for (aType <- entityType;
-           typeElement <- entity.children.findByType(
-             classOf[ScSimpleTypeElement])) {
+           typeElement <- entity
+             .children
+             .findByType(classOf[ScSimpleTypeElement])) {
         builder.replaceElement(typeElement, aType)
       }
 
@@ -160,12 +160,13 @@ abstract class CreateEntityQuickFix(
 
       val template = builder.buildTemplate()
 
-      val isScalaConsole =
-        file.getName == ScalaLanguageConsoleView.SCALA_CONSOLE
+      val isScalaConsole = file.getName == ScalaLanguageConsoleView
+        .SCALA_CONSOLE
       if (!isScalaConsole) {
         val newEditor = positionCursor(entity.getLastChild)
         val range = entity.getTextRange
-        newEditor.getDocument
+        newEditor
+          .getDocument
           .deleteString(range.getStartOffset, range.getEndOffset)
         TemplateManager.getInstance(project).startTemplate(newEditor, template)
       }
@@ -177,10 +178,8 @@ object CreateEntityQuickFix {
   private def materializeSytheticObject(obj: ScObject): ScObject = {
     val clazz = obj.fakeCompanionClassOrCompanionClass
     val objText = s"object ${clazz.name} {}"
-    val fromText = ScalaPsiElementFactory.createTemplateDefinitionFromText(
-      objText,
-      clazz.getParent,
-      clazz)
+    val fromText = ScalaPsiElementFactory
+      .createTemplateDefinitionFromText(objText, clazz.getParent, clazz)
     clazz.getParent.addAfter(fromText, clazz).asInstanceOf[ScObject]
   }
 
@@ -194,10 +193,8 @@ object CreateEntityQuickFix {
       case InstanceOfClass(td: ScTemplateDefinition) =>
         Success(td.extendsBlock)
       case th: ScThisReference
-          if PsiTreeUtil.getParentOfType(
-            th,
-            classOf[ScExtendsBlock],
-            true) != null =>
+          if PsiTreeUtil
+            .getParentOfType(th, classOf[ScExtendsBlock], true) != null =>
         th.refTemplate match {
           case Some(ScTemplateDefinition.ExtendsBlock(block)) =>
             Success(block)
@@ -276,39 +273,45 @@ object CreateEntityQuickFix {
     }
 
   private def parametersFor(ref: ScReferenceExpression): Option[String] = {
-    ref.parent.collect {
-      case MethodRepr(_, _, Some(`ref`), args) =>
-        paramsText(args)
-      case (_: ScGenericCall) childOf(MethodRepr(_, _, Some(`ref`), args)) =>
-        paramsText(args)
-    }
+    ref
+      .parent
+      .collect {
+        case MethodRepr(_, _, Some(`ref`), args) =>
+          paramsText(args)
+        case (_: ScGenericCall) childOf(MethodRepr(_, _, Some(`ref`), args)) =>
+          paramsText(args)
+      }
   }
 
   private def genericParametersFor(ref: ScReferenceExpression): Option[String] =
-    ref.parent.collect {
-      case genCall: ScGenericCall =>
-        genCall.arguments match {
-          case args if args.size == 1 =>
-            "[T]"
-          case args =>
-            args.indices.map(i => s"T$i").mkString("[", ", ", "]")
-        }
+    ref
+      .parent
+      .collect {
+        case genCall: ScGenericCall =>
+          genCall.arguments match {
+            case args if args.size == 1 =>
+              "[T]"
+            case args =>
+              args.indices.map(i => s"T$i").mkString("[", ", ", "]")
+          }
 
-    }
+      }
 
   private def anchorForUnqualified(
       ref: ScReferenceExpression): Option[PsiElement] = {
     val parents = ref.parents.toList
     val anchors = ref :: parents
 
-    val place = parents.zip(anchors).find {
-      case (_: ScTemplateBody, _) =>
-        true
-      case (_: ScalaFile, _) =>
-        true
-      case _ =>
-        false
-    }
+    val place = parents
+      .zip(anchors)
+      .find {
+        case (_: ScTemplateBody, _) =>
+          true
+        case (_: ScalaFile, _) =>
+          true
+        case _ =>
+          false
+      }
 
     place.map(_._2)
   }
@@ -319,10 +322,13 @@ object CreateEntityQuickFix {
       case Some(ScType.ExtractClass(clazz: ScTypeDefinition)) =>
         Some(clazz)
       case None =>
-        supRef.parents.toSeq.collect {
-          case td: ScTemplateDefinition =>
-            td
-        } match {
+        supRef
+          .parents
+          .toSeq
+          .collect {
+            case td: ScTemplateDefinition =>
+              td
+          } match {
           case Seq(td) =>
             td.supers match {
               case Seq(t: ScTypeDefinition) =>

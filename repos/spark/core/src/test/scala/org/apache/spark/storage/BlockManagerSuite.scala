@@ -470,7 +470,8 @@ class BlockManagerSuite
       "a1 was not removed from master")
 
     val reregister =
-      !master.driverEndpoint
+      !master
+        .driverEndpoint
         .askWithRetry[Boolean](BlockManagerHeartbeat(store.blockManagerId))
     assert(reregister == true)
   }
@@ -902,8 +903,8 @@ class BlockManagerSuite
   }
 
   test("negative byte values in ByteBufferInputStream") {
-    val buffer = ByteBuffer.wrap(
-      Array[Int](254, 255, 0, 1, 2).map(_.toByte).toArray)
+    val buffer = ByteBuffer
+      .wrap(Array[Int](254, 255, 0, 1, 2).map(_.toByte).toArray)
     val stream = new ByteBufferInputStream(buffer)
     val temp = new Array[Byte](10)
     assert(stream.read() === 254, "unexpected byte read")
@@ -1255,12 +1256,14 @@ class BlockManagerSuite
 
     // getLocations and getBlockStatus should yield the same locations
     assert(
-      store.master
+      store
+        .master
         .getMatchingBlockIds(_.toString.contains("list"), askSlaves = false)
         .size
         === 3)
     assert(
-      store.master
+      store
+        .master
         .getMatchingBlockIds(_.toString.contains("list1"), askSlaves = false)
         .size
         === 1)
@@ -1284,12 +1287,14 @@ class BlockManagerSuite
 
     // getLocations and getBlockStatus should yield the same locations
     assert(
-      store.master
+      store
+        .master
         .getMatchingBlockIds(_.toString.contains("newlist"), askSlaves = false)
         .size
         === 1)
     assert(
-      store.master
+      store
+        .master
         .getMatchingBlockIds(_.toString.contains("newlist"), askSlaves = true)
         .size
         === 3)
@@ -1302,14 +1307,16 @@ class BlockManagerSuite
         StorageLevel.MEMORY_ONLY,
         tellMaster = true)
     }
-    val matchedBlockIds = store.master.getMatchingBlockIds(
-      _ match {
-        case RDDBlockId(1, _) =>
-          true
-        case _ =>
-          false
-      },
-      askSlaves = true)
+    val matchedBlockIds = store
+      .master
+      .getMatchingBlockIds(
+        _ match {
+          case RDDBlockId(1, _) =>
+            true
+          case _ =>
+            false
+        },
+        askSlaves = true)
     assert(matchedBlockIds.toSet === Set(RDDBlockId(1, 0), RDDBlockId(1, 1)))
   }
 
@@ -1373,16 +1380,17 @@ class BlockManagerSuite
     assert(memoryStore.currentUnrollMemoryForThisTask === 0)
 
     // Unroll with all the space in the world. This should succeed.
-    var putResult = memoryStore.putIterator(
-      "unroll",
-      smallList.iterator,
-      StorageLevel.MEMORY_ONLY)
+    var putResult = memoryStore
+      .putIterator("unroll", smallList.iterator, StorageLevel.MEMORY_ONLY)
     assert(putResult.isRight)
     assert(memoryStore.currentUnrollMemoryForThisTask === 0)
-    smallList.iterator.zip(memoryStore.getValues("unroll").get).foreach {
-      case (e, a) =>
-        assert(e === a, "getValues() did not return original values!")
-    }
+    smallList
+      .iterator
+      .zip(memoryStore.getValues("unroll").get)
+      .foreach {
+        case (e, a) =>
+          assert(e === a, "getValues() did not return original values!")
+      }
     assert(memoryStore.remove("unroll"))
 
     // Unroll with not enough space. This should succeed after kicking out someBlock1.
@@ -1396,18 +1404,19 @@ class BlockManagerSuite
         "someBlock2",
         smallList.iterator,
         StorageLevel.MEMORY_ONLY))
-    putResult = memoryStore.putIterator(
-      "unroll",
-      smallList.iterator,
-      StorageLevel.MEMORY_ONLY)
+    putResult = memoryStore
+      .putIterator("unroll", smallList.iterator, StorageLevel.MEMORY_ONLY)
     assert(putResult.isRight)
     assert(memoryStore.currentUnrollMemoryForThisTask === 0)
     assert(memoryStore.contains("someBlock2"))
     assert(!memoryStore.contains("someBlock1"))
-    smallList.iterator.zip(memoryStore.getValues("unroll").get).foreach {
-      case (e, a) =>
-        assert(e === a, "getValues() did not return original values!")
-    }
+    smallList
+      .iterator
+      .zip(memoryStore.getValues("unroll").get)
+      .foreach {
+        case (e, a) =>
+          assert(e === a, "getValues() did not return original values!")
+      }
     assert(memoryStore.remove("unroll"))
 
     // Unroll huge block with not enough space. Even after ensuring free space of 12000 * 0.4 =
@@ -1418,19 +1427,20 @@ class BlockManagerSuite
         "someBlock3",
         smallList.iterator,
         StorageLevel.MEMORY_ONLY))
-    putResult = memoryStore.putIterator(
-      "unroll",
-      bigList.iterator,
-      StorageLevel.MEMORY_ONLY)
+    putResult = memoryStore
+      .putIterator("unroll", bigList.iterator, StorageLevel.MEMORY_ONLY)
     assert(
       memoryStore.currentUnrollMemoryForThisTask > 0
     ) // we returned an iterator
     assert(!memoryStore.contains("someBlock2"))
     assert(putResult.isLeft)
-    bigList.iterator.zip(putResult.left.get).foreach {
-      case (e, a) =>
-        assert(e === a, "putIterator() did not return original values!")
-    }
+    bigList
+      .iterator
+      .zip(putResult.left.get)
+      .foreach {
+        case (e, a) =>
+          assert(e === a, "putIterator() did not return original values!")
+      }
     // The unroll memory was freed once the iterator returned by putIterator() was fully traversed.
     assert(memoryStore.currentUnrollMemoryForThisTask === 0)
   }
@@ -1580,9 +1590,11 @@ class BlockManagerSuite
     store = makeBlockManager(12000)
     val memoryStore = store.memoryStore
     val blockId = BlockId("rdd_3_10")
-    store.blockInfoManager.lockNewBlockForWriting(
-      blockId,
-      new BlockInfo(StorageLevel.MEMORY_ONLY, tellMaster = false))
+    store
+      .blockInfoManager
+      .lockNewBlockForWriting(
+        blockId,
+        new BlockInfo(StorageLevel.MEMORY_ONLY, tellMaster = false))
     memoryStore.putBytes(
       blockId,
       13000,
@@ -1648,18 +1660,16 @@ class BlockManagerSuite
 
   test(
     "SPARK-13328: refresh block locations (fetch should succeed after location refresh)") {
-    val maxFailuresBeforeLocationRefresh = conf.getInt(
-      "spark.block.failures.beforeLocationRefresh",
-      5)
+    val maxFailuresBeforeLocationRefresh = conf
+      .getInt("spark.block.failures.beforeLocationRefresh", 5)
     val mockBlockManagerMaster = mock(classOf[BlockManagerMaster])
     val mockBlockTransferService =
       new MockBlockTransferService(maxFailuresBeforeLocationRefresh)
     // make sure we have more than maxFailuresBeforeLocationRefresh locations
     // so that we have a chance to do location refresh
-    val blockManagerIds = (0 to maxFailuresBeforeLocationRefresh)
-      .map { i =>
-        BlockManagerId(s"id-$i", s"host-$i", i + 1)
-      }
+    val blockManagerIds = (0 to maxFailuresBeforeLocationRefresh).map { i =>
+      BlockManagerId(s"id-$i", s"host-$i", i + 1)
+    }
     when(mockBlockManagerMaster.getLocations(mc.any[BlockId]))
       .thenReturn(blockManagerIds)
     store = makeBlockManager(
@@ -1667,9 +1677,7 @@ class BlockManagerSuite
       "executor1",
       mockBlockManagerMaster,
       transferService = Option(mockBlockTransferService))
-    val block = store
-      .getRemoteBytes("item")
-      .asInstanceOf[Option[ByteBuffer]]
+    val block = store.getRemoteBytes("item").asInstanceOf[Option[ByteBuffer]]
     assert(block.isDefined)
     verify(mockBlockManagerMaster, times(2)).getLocations("item")
   }
@@ -1734,18 +1742,21 @@ private object BlockManagerSuite {
     def dropFromMemoryIfExists(
         blockId: BlockId,
         data: () => Either[Array[Any], ChunkedByteBuffer]): Unit = {
-      store.blockInfoManager.lockForWriting(blockId).foreach { info =>
-        val newEffectiveStorageLevel = store.dropFromMemory(blockId, data)
-        if (newEffectiveStorageLevel.isValid) {
-          // The block is still present in at least one store, so release the lock
-          // but don't delete the block info
-          store.releaseLock(blockId)
-        } else {
-          // The block isn't present in any store, so delete the block info so that the
-          // block can be stored again
-          store.blockInfoManager.removeBlock(blockId)
+      store
+        .blockInfoManager
+        .lockForWriting(blockId)
+        .foreach { info =>
+          val newEffectiveStorageLevel = store.dropFromMemory(blockId, data)
+          if (newEffectiveStorageLevel.isValid) {
+            // The block is still present in at least one store, so release the lock
+            // but don't delete the block info
+            store.releaseLock(blockId)
+          } else {
+            // The block isn't present in any store, so delete the block info so that the
+            // block can be stored again
+            store.blockInfoManager.removeBlock(blockId)
+          }
         }
-      }
     }
 
     private def wrapGet[T](f: BlockId => Option[T]): BlockId => Option[T] =

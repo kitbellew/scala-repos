@@ -151,10 +151,12 @@ trait Loc[T] {
       case menu =>
         menu._parent match {
           case Full(parentMenu: Menu) =>
-            if (!params.collect {
-                  case i: Loc.UseParentParams =>
-                    true
-                }.isEmpty) {
+            if (!params
+                  .collect {
+                    case i: Loc.UseParentParams =>
+                      true
+                  }
+                  .isEmpty) {
               parentMenu.loc.allParams.asInstanceOf[List[Loc.LocParam[Any]]]
             } else {
               Nil
@@ -247,12 +249,14 @@ trait Loc[T] {
     * looks for the Loc.Stateless Param
     */
   protected def calcStateless(): Boolean =
-    allParams.find {
-      case Loc.Stateless =>
-        true
-      case _ =>
-        false
-    }.isDefined
+    allParams
+      .find {
+        case Loc.Stateless =>
+          true
+        case _ =>
+          false
+      }
+      .isDefined
 
   /**
     * Find the stateless calculation Loc params
@@ -260,14 +264,18 @@ trait Loc[T] {
   protected def findStatelessCalc
       : (Box[Loc.CalcStateless], Box[Loc.CalcParamStateless[T]]) =
     (
-      allParams.collect {
-        case v @ Loc.CalcStateless(_) =>
-          v
-      }.headOption,
-      allParams.collect {
-        case v @ Loc.CalcParamStateless(_) =>
-          v
-      }.headOption)
+      allParams
+        .collect {
+          case v @ Loc.CalcStateless(_) =>
+            v
+        }
+        .headOption,
+      allParams
+        .collect {
+          case v @ Loc.CalcParamStateless(_) =>
+            v
+        }
+        .headOption)
 
   /**
     * The cached Loc params
@@ -405,18 +413,20 @@ trait Loc[T] {
     * The first Loc.Template or Loc.ValueTemplate in the param list.
     */
   def paramTemplate: Box[NodeSeq] =
-    allParams.flatMap {
-      case Loc.Template(f) =>
-        Some(f());
-      case Loc.ValueTemplate(f) =>
-        Some(f(currentValue));
-      case Loc.TemplateBox(f) =>
-        f()
-      case Loc.ValueTemplateBox(f) =>
-        f(currentValue)
-      case _ =>
-        None
-    }.headOption
+    allParams
+      .flatMap {
+        case Loc.Template(f) =>
+          Some(f());
+        case Loc.ValueTemplate(f) =>
+          Some(f(currentValue));
+        case Loc.TemplateBox(f) =>
+          f()
+        case Loc.ValueTemplateBox(f) =>
+          f(currentValue)
+        case _ =>
+          None
+      }
+      .headOption
 
   /**
     * The template assocaited with this Loc, if any. Any Loc.Template
@@ -429,12 +439,14 @@ trait Loc[T] {
     * The first Loc.Title in the param list.
     */
   lazy val paramTitle: Box[T => NodeSeq] =
-    allParams.flatMap {
-      case Loc.Title(f) =>
-        Some(f);
-      case _ =>
-        None
-    }.headOption
+    allParams
+      .flatMap {
+        case Loc.Title(f) =>
+          Some(f);
+        case _ =>
+          None
+      }
+      .headOption
 
   /**
     * The title to be displayed for the value associated with this Loc.
@@ -492,8 +504,9 @@ trait Loc[T] {
   def breadCrumbs: List[Loc[_]] = _menu.breadCrumbs ::: List(this)
 
   def buildKidMenuItems(kids: Seq[Menu]): List[MenuItem] = {
-    kids.toList.flatMap(
-      _.loc.buildItem(Nil, false, false)) ::: supplementalKidMenuItems
+    kids
+      .toList
+      .flatMap(_.loc.buildItem(Nil, false, false)) ::: supplementalKidMenuItems
   }
 
   def supplementalKidMenuItems: List[MenuItem] =
@@ -652,11 +665,13 @@ object Loc {
   case class HttpAuthProtected(role: (Req) => Box[Role]) extends AnyLocParam {
 
     override def onCreate(loc: Loc[_]) {
-      LiftRules.httpAuthProtectedResource.append(
-        new LiftRules.HttpAuthProtectedResourcePF() {
-          def isDefinedAt(in: Req) = in.path.partPath == loc.link.uriList
-          def apply(in: Req): Box[Role] = role(in)
-        })
+      LiftRules
+        .httpAuthProtectedResource
+        .append(
+          new LiftRules.HttpAuthProtectedResourcePF() {
+            def isDefinedAt(in: Req) = in.path.partPath == loc.link.uriList
+            def apply(in: Req): Box[Role] = role(in)
+          })
     }
   }
 

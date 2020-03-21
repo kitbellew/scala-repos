@@ -33,8 +33,9 @@ package javaguide.testhelpers {
         val annotations = new JavaActionAnnotations(controller, method)
 
         def parser = {
-          play.HandlerInvokerFactoryAccessor.javaBodyParserToScala(
-            components.getBodyParser(annotations.parser))
+          play
+            .HandlerInvokerFactoryAccessor
+            .javaBodyParserToScala(components.getBodyParser(annotations.parser))
         }
 
         def invocation = self.invocation
@@ -90,7 +91,9 @@ package javaguide.testhelpers {
     }
 
     def setContext(request: play.mvc.Http.RequestBuilder): Unit = {
-      Http.Context.current
+      Http
+        .Context
+        .current
         .set(JavaHelpers.createJavaContext(request.build()._underlyingRequest))
     }
 

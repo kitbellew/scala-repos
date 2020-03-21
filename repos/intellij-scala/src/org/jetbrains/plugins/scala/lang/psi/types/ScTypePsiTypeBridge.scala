@@ -109,8 +109,8 @@ trait ScTypePsiTypeBridge {
                   des,
                   tps.map({ tp =>
                     {
-                      val arrayOfTypes: Array[PsiClassType] =
-                        tp.getExtendsListTypes ++ tp.getImplementsListTypes
+                      val arrayOfTypes: Array[PsiClassType] = tp
+                        .getExtendsListTypes ++ tp.getImplementsListTypes
                       ScSkolemizedType(
                         s"_$$${
                           index += 1;
@@ -283,14 +283,16 @@ trait ScTypePsiTypeBridge {
         }
       case p: PsiIntersectionType =>
         ScCompoundType(
-          p.getConjuncts.map(
-            create(
-              _,
-              project,
-              scope,
-              visitedRawTypes,
-              paramTopLevel,
-              treatJavaObjectAsAny)),
+          p
+            .getConjuncts
+            .map(
+              create(
+                _,
+                project,
+                scope,
+                visitedRawTypes,
+                paramTopLevel,
+                treatJavaObjectAsAny)),
           Map.empty,
           Map.empty)
       case _ =>
@@ -411,7 +413,9 @@ trait ScTypePsiTypeBridge {
           noPrimitives,
           skolemToWildcard)
       case ScDesignatorType(valType: ScClass) if isValueType(valType) =>
-        valType.parameters.head
+        valType
+          .parameters
+          .head
           .getRealParameterType(TypingContext.empty) match {
           case Success(tp, _)
               if !(
@@ -428,17 +432,19 @@ trait ScTypePsiTypeBridge {
           new PsiArrayType(toPsi(args.head, project, scope))
         else {
           val subst =
-            args.zip(c.getTypeParameters).foldLeft(PsiSubstitutor.EMPTY) {
-              case (s, (targ, tp)) =>
-                s.put(
-                  tp,
-                  toPsi(
-                    targ,
-                    project,
-                    scope,
-                    noPrimitives = true,
-                    skolemToWildcard = true))
-            }
+            args
+              .zip(c.getTypeParameters)
+              .foldLeft(PsiSubstitutor.EMPTY) {
+                case (s, (targ, tp)) =>
+                  s.put(
+                    tp,
+                    toPsi(
+                      targ,
+                      project,
+                      scope,
+                      noPrimitives = true,
+                      skolemToWildcard = true))
+              }
           JavaPsiFacade
             .getInstance(project)
             .getElementFactory
@@ -451,12 +457,14 @@ trait ScTypePsiTypeBridge {
               new PsiArrayType(toPsi(args.head, project, scope))
             else {
               val subst =
-                args.zip(c.getTypeParameters).foldLeft(PsiSubstitutor.EMPTY) {
-                  case (s, (targ, tp)) =>
-                    s.put(
-                      tp,
-                      toPsi(targ, project, scope, skolemToWildcard = true))
-                }
+                args
+                  .zip(c.getTypeParameters)
+                  .foldLeft(PsiSubstitutor.EMPTY) {
+                    case (s, (targ, tp)) =>
+                      s.put(
+                        tp,
+                        toPsi(targ, project, scope, skolemToWildcard = true))
+                  }
               createType(c, subst, raw = outerClassHasTypeParameters(proj))
             }
           case a: ScTypeAliasDefinition =>

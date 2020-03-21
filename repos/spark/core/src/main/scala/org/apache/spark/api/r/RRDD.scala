@@ -270,8 +270,8 @@ private class PairwiseRRDD[T: ClassTag](
     }
   }
 
-  lazy val asJavaPairRDD: JavaPairRDD[Int, Array[Byte]] = JavaPairRDD.fromRDD(
-    this)
+  lazy val asJavaPairRDD: JavaPairRDD[Int, Array[Byte]] = JavaPairRDD
+    .fromRDD(this)
 }
 
 /**
@@ -388,9 +388,7 @@ private[r] object RRDD {
       sparkEnvirMap: JMap[Object, Object],
       sparkExecutorEnvMap: JMap[Object, Object]): JavaSparkContext = {
 
-    val sparkConf = new SparkConf()
-      .setAppName(appName)
-      .setSparkHome(sparkHome)
+    val sparkConf = new SparkConf().setAppName(appName).setSparkHome(sparkHome)
 
     // Override `master` if we have a user-specified value
     if (master != "") {
@@ -460,7 +458,9 @@ private[r] object RRDD {
     * ProcessBuilder used to launch worker R processes.
     */
   def createRWorker(port: Int): BufferedStreamThread = {
-    val useDaemon = SparkEnv.get.conf
+    val useDaemon = SparkEnv
+      .get
+      .conf
       .getBoolean("spark.sparkr.use.daemon", true)
     if (!Utils.isWindows && useDaemon) {
       synchronized {

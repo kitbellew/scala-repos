@@ -24,9 +24,11 @@ class InRule[In, +Out, +A, +X](rule: Rule[In, Out, A, X]) {
 
   def mapRule[Out2, B, Y](
       f: Result[Out, A, X] => In => Result[Out2, B, Y]): Rule[In, Out2, B, Y] =
-    rule.factory.rule { in: In =>
-      f(rule(in))(in)
-    }
+    rule
+      .factory
+      .rule { in: In =>
+        f(rule(in))(in)
+      }
 
   /** Creates a rule that succeeds only if the original rule would fail on the given context. */
   def unary_! : Rule[In, In, Unit, Nothing] =

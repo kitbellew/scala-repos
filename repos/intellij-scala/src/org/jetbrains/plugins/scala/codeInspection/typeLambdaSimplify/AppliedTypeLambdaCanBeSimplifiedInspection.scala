@@ -60,12 +60,14 @@ class AppliedTypeLambdaCanBeSimplifiedInspection extends LocalInspectionTool {
         replacementText: => String) = {
       val fixes = Array[LocalQuickFix](
         new SimplifyAppliedTypeLambdaQuickFix(paramType, replacementText))
-      val problem = holder.getManager.createProblemDescriptor(
-        paramType,
-        getDisplayName,
-        isOnTheFly,
-        fixes,
-        ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+      val problem = holder
+        .getManager
+        .createProblemDescriptor(
+          paramType,
+          getDisplayName,
+          isOnTheFly,
+          fixes,
+          ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
       holder.registerProblem(problem)
     }
 
@@ -98,8 +100,8 @@ class AppliedTypeLambdaCanBeSimplifiedInspection extends LocalInspectionTool {
                                 .zip(typeArgs)
                                 .foldLeft(ScSubstitutor.empty) {
                                   case (res, (param, arg)) =>
-                                    val typeVar = ScalaPsiManager.typeVariable(
-                                      param)
+                                    val typeVar = ScalaPsiManager
+                                      .typeVariable(param)
                                     res.bindT(
                                       (typeVar.name, typeVar.getId),
                                       arg.calcType)

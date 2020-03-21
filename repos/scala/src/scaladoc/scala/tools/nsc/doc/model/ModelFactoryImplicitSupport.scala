@@ -102,15 +102,16 @@ trait ModelFactoryImplicitSupport {
         ) || sym == NothingClass || sym == NullClass)
       Nil
     else {
-      val context: global.analyzer.Context = global.analyzer.rootContext(
-        NoCompilationUnit)
+      val context: global.analyzer.Context = global
+        .analyzer
+        .rootContext(NoCompilationUnit)
 
-      val results =
-        global.analyzer.allViewsFrom(sym.tpe_*, context, sym.typeParams) ++
-          global.analyzer.allViewsFrom(
-            byNameType(sym.tpe_*),
-            context,
-            sym.typeParams)
+      val results = global
+        .analyzer
+        .allViewsFrom(sym.tpe_*, context, sym.typeParams) ++
+        global
+          .analyzer
+          .allViewsFrom(byNameType(sym.tpe_*), context, sym.typeParams)
       var conversions = results.flatMap(result =>
         makeImplicitConversion(sym, result._1, result._2, context, inTpl))
       //debug(results.mkString("All views\n  ", "\n  ", "\n"))
@@ -136,8 +137,8 @@ trait ModelFactoryImplicitSupport {
             .valueClassFilter(sym.nameString, ic.conversionQualifiedName))
 
       // Put the visible conversions in front
-      val (ownConversions, commonConversions) = conversions.partition(
-        !_.isHiddenConversion)
+      val (ownConversions, commonConversions) = conversions
+        .partition(!_.isHiddenConversion)
 
       ownConversions ::: commonConversions
     }
@@ -210,9 +211,8 @@ trait ModelFactoryImplicitSupport {
         val newContext = context.makeImplicit(context.ambiguousErrors)
         newContext.macrosEnabled = false
         val newTyper = global.analyzer.newTyper(newContext)
-        newTyper.silent(
-          _.typed(appliedTree),
-          reportAmbiguousErrors = false) match {
+        newTyper
+          .silent(_.typed(appliedTree), reportAmbiguousErrors = false) match {
 
           case global.analyzer.SilentResultValue(t: Tree) =>
             t
@@ -499,7 +499,8 @@ trait ModelFactoryImplicitSupport {
     def isHiddenConversion = settings.hiddenImplicits(conversionQualifiedName)
 
     override def toString =
-      "Implicit conversion from " + sym.tpe + " to " + toType + " done by " + convSym
+      "Implicit conversion from " + sym
+        .tpe + " to " + toType + " done by " + convSym
   }
 
   /* ========================= HELPER METHODS ========================== */
@@ -534,7 +535,9 @@ trait ModelFactoryImplicitSupport {
         // check if it's shadowed by a member in the original class.
         val shadowed = membersByName.get(sym1.name).toList.flatten filter {
           other =>
-            !settings.docImplicitsSoundShadowing.value || !isDistinguishableFrom(
+            !settings
+              .docImplicitsSoundShadowing
+              .value || !isDistinguishableFrom(
               tpe1,
               inTpl.sym.info.memberInfo(other.sym))
         }

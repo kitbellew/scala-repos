@@ -64,7 +64,8 @@ trait StdAttachments {
   /** Returns the original tree of the macro expansion if the argument is a macro expansion or EmptyTree otherwise.
     */
   def macroExpandee(tree: Tree): Tree =
-    tree.attachments
+    tree
+      .attachments
       .get[MacroExpansionAttachment]
       .map(_.expandee)
       .getOrElse(EmptyTree)

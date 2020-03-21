@@ -61,8 +61,8 @@ object KafkaEventStore {
     val centralConfig = config.detach("central")
     println("Central config %s".format(centralConfig.toString()))
     println(
-      "centralConfig.get[String](\"zk.connect\")=%s".format(
-        centralConfig.get[String]("zk.connect")))
+      "centralConfig.get[String](\"zk.connect\")=%s"
+        .format(centralConfig.get[String]("zk.connect")))
     centralConfig
       .get[String]("zk.connect")
       .toSuccess(
@@ -121,8 +121,8 @@ class LocalKafkaEventStore(
             val postSplit = x.split(2)
             if (postSplit.length == 1) {
               logger.error(
-                "Failed to reach reasonable message size for event: %s".format(
-                  event))
+                "Failed to reach reasonable message size for event: %s"
+                  .format(event))
               left(
                 StoreFailure(
                   "Failed insertion due to excessively large event(s)!"))

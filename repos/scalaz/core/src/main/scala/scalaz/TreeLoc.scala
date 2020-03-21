@@ -177,8 +177,8 @@ final case class TreeLoc[A](
             Some(loc(t, ts, rights, parents))
           case _ =>
             for (loc1 <- parent)
-              yield loc1.modifyTree((t: Tree[A]) =>
-                Node(t.rootLabel, Stream.Empty))
+              yield loc1
+                .modifyTree((t: Tree[A]) => Node(t.rootLabel, Stream.Empty))
         }
     }
 
@@ -206,26 +206,32 @@ final case class TreeLoc[A](
     val rgt = (_: TreeLoc[A]).right
     def dwn[A](tz: TreeLoc[A]): (TreeLoc[A], () => Stream[TreeLoc[A]]) = {
       val f = () =>
-        std.stream.unfold(tz.firstChild) { (o: Option[TreeLoc[A]]) =>
-          for (c <- o)
-            yield (c, c.right)
-        }
+        std
+          .stream
+          .unfold(tz.firstChild) { (o: Option[TreeLoc[A]]) =>
+            for (c <- o)
+              yield (c, c.right)
+          }
       (tz, f)
     }
     def uf[A](
         a: TreeLoc[A],
         f: TreeLoc[A] => Option[TreeLoc[A]]): Stream[Tree[TreeLoc[A]]] = {
-      std.stream.unfold(f(a)) { (o: Option[TreeLoc[A]]) =>
-        for (c <- o)
-          yield (Tree.unfoldTree(c)(dwn[A](_: TreeLoc[A])), f(c))
-      }
+      std
+        .stream
+        .unfold(f(a)) { (o: Option[TreeLoc[A]]) =>
+          for (c <- o)
+            yield (Tree.unfoldTree(c)(dwn[A](_: TreeLoc[A])), f(c))
+        }
     }
 
     val p =
-      std.stream.unfold(parent) { (o: Option[TreeLoc[A]]) =>
-        for (z <- o)
-          yield ((uf(z, lft), z, uf(z, rgt)), z.parent)
-      }
+      std
+        .stream
+        .unfold(parent) { (o: Option[TreeLoc[A]]) =>
+          for (z <- o)
+            yield ((uf(z, lft), z, uf(z, rgt)), z.parent)
+        }
     TreeLoc.loc(
       Tree.unfoldTree(this)(dwn[A](_: TreeLoc[A])),
       uf(this, lft),
@@ -343,13 +349,13 @@ sealed abstract class TreeLocInstances {
                     G.apply3(
                       fa.tree.traverse1(f),
                       lefts1,
-                      ParentsT1.traverse1(OneAnd(p, ps))(f))(
-                      (tree, lefts, parents) =>
-                        TreeLoc(
-                          tree = tree,
-                          lefts = lefts.head #:: lefts.tail,
-                          rights = Empty,
-                          parents = parents.head #:: parents.tail))
+                      ParentsT1
+                        .traverse1(OneAnd(p, ps))(f))((tree, lefts, parents) =>
+                      TreeLoc(
+                        tree = tree,
+                        lefts = lefts.head #:: lefts.tail,
+                        rights = Empty,
+                        parents = parents.head #:: parents.tail))
                   case Empty =>
                     G.apply2(fa.tree.traverse1(f), lefts1)((tree, lefts) =>
                       TreeLoc(
@@ -368,13 +374,13 @@ sealed abstract class TreeLocInstances {
                     G.apply3(
                       fa.tree.traverse1(f),
                       rights1,
-                      ParentsT1.traverse1(OneAnd(p, ps))(f))(
-                      (tree, rights, parents) =>
-                        TreeLoc(
-                          tree = tree,
-                          lefts = Empty,
-                          rights = rights.head #:: rights.tail,
-                          parents = parents.head #:: parents.tail))
+                      ParentsT1
+                        .traverse1(OneAnd(p, ps))(f))((tree, rights, parents) =>
+                      TreeLoc(
+                        tree = tree,
+                        lefts = Empty,
+                        rights = rights.head #:: rights.tail,
+                        parents = parents.head #:: parents.tail))
                   case Empty =>
                     G.apply2(fa.tree.traverse1(f), rights1)((tree, rights) =>
                       TreeLoc(
@@ -405,9 +411,11 @@ sealed abstract class TreeLocInstances {
           f: (A, => B) => B) =
         ParentsT.foldMapRight1Opt(fa.parents)(z)(f) match {
           case Some(p) =>
-            fa.tree.foldRight(
-              ForestT.foldRight(fa.lefts, ForestT.foldRight(fa.rights, p)(f))(
-                f))(f)
+            fa
+              .tree
+              .foldRight(
+                ForestT.foldRight(fa.lefts, ForestT.foldRight(fa.rights, p)(f))(
+                  f))(f)
           case None =>
             ForestT.foldMapRight1Opt(fa.rights)(z)(f) match {
               case Some(r) =>

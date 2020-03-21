@@ -117,9 +117,8 @@ class SparkContext(config: SparkConf)
   private val creationSite: CallSite = Utils.getCallSite()
 
   // If true, log warnings instead of throwing exceptions when multiple SparkContexts are active
-  private val allowMultipleContexts: Boolean = config.getBoolean(
-    "spark.driver.allowMultipleContexts",
-    false)
+  private val allowMultipleContexts: Boolean = config
+    .getBoolean("spark.driver.allowMultipleContexts", false)
 
   // In order to prevent multiple SparkContexts from being active at the same time, mark this
   // context as having started construction.
@@ -443,8 +442,8 @@ class SparkContext(config: SparkConf)
     }
 
     // System property spark.yarn.app.id must be set if user code ran by AM on a YARN cluster
-    if (master == "yarn" && deployMode == "cluster" && !_conf.contains(
-          "spark.yarn.app.id")) {
+    if (master == "yarn" && deployMode == "cluster" && !_conf
+          .contains("spark.yarn.app.id")) {
       throw new SparkException(
         "Detected yarn cluster mode, but isn't running on a cluster. " +
           "Deployment to YARN is not supported directly by SparkContext. Please use spark-submit.")
@@ -506,18 +505,21 @@ class SparkContext(config: SparkConf)
     SparkEnv.set(_env)
 
     // If running the REPL, register the repl's output dir with the file server.
-    _conf.getOption("spark.repl.class.outputDir").foreach { path =>
-      val replUri = _env.rpcEnv.fileServer
-        .addDirectory("/classes", new File(path))
-      _conf.set("spark.repl.class.uri", replUri)
-    }
+    _conf
+      .getOption("spark.repl.class.outputDir")
+      .foreach { path =>
+        val replUri = _env
+          .rpcEnv
+          .fileServer
+          .addDirectory("/classes", new File(path))
+        _conf.set("spark.repl.class.uri", replUri)
+      }
 
     _statusTracker = new SparkStatusTracker(this)
 
     _progressBar =
-      if (_conf.getBoolean(
-            "spark.ui.showConsoleProgress",
-            true) && !log.isInfoEnabled) {
+      if (_conf.getBoolean("spark.ui.showConsoleProgress", true) && !log
+            .isInfoEnabled) {
         Some(new ConsoleProgressBar(this))
       } else {
         None
@@ -556,9 +558,7 @@ class SparkContext(config: SparkConf)
     _executorMemory = _conf
       .getOption("spark.executor.memory")
       .orElse(Option(System.getenv("SPARK_EXECUTOR_MEMORY")))
-      .orElse(
-        Option(System.getenv("SPARK_MEM"))
-          .map(warnSparkMem))
+      .orElse(Option(System.getenv("SPARK_MEM")).map(warnSparkMem))
       .map(Utils.memoryStringToMb)
       .getOrElse(1024)
 
@@ -582,9 +582,11 @@ class SparkContext(config: SparkConf)
 
     // We need to register "HeartbeatReceiver" before "createTaskScheduler" because Executor will
     // retrieve "HeartbeatReceiver" in the constructor. (SPARK-6640)
-    _heartbeatReceiver = env.rpcEnv.setupEndpoint(
-      HeartbeatReceiver.ENDPOINT_NAME,
-      new HeartbeatReceiver(this))
+    _heartbeatReceiver = env
+      .rpcEnv
+      .setupEndpoint(
+        HeartbeatReceiver.ENDPOINT_NAME,
+        new HeartbeatReceiver(this))
 
     // Create and start the scheduler
     val (sched, ts) = SparkContext.createTaskScheduler(this, master, deployMode)
@@ -607,8 +609,10 @@ class SparkContext(config: SparkConf)
     // So it should start after we get app ID from the task scheduler and set spark.app.id.
     _env.metricsSystem.start()
     // Attach the driver metrics servlet handler to the web ui after the metrics system is started.
-    _env.metricsSystem.getServletHandlers.foreach(handler =>
-      ui.foreach(_.attachHandler(handler)))
+    _env
+      .metricsSystem
+      .getServletHandlers
+      .foreach(handler => ui.foreach(_.attachHandler(handler)))
 
     _eventLogger =
       if (isEventLogEnabled) {
@@ -660,11 +664,12 @@ class SparkContext(config: SparkConf)
     // unfinished event logs around after the JVM exits cleanly. It doesn't help if the JVM
     // is killed, though.
     _shutdownHookRef =
-      ShutdownHookManager.addShutdownHook(
-        ShutdownHookManager.SPARK_CONTEXT_SHUTDOWN_PRIORITY) { () =>
-        logInfo("Invoking stop() from shutdown hook")
-        stop()
-      }
+      ShutdownHookManager
+        .addShutdownHook(ShutdownHookManager.SPARK_CONTEXT_SHUTDOWN_PRIORITY) {
+          () =>
+            logInfo("Invoking stop() from shutdown hook")
+            stop()
+        }
   } catch {
     case NonFatal(e) =>
       logError("Error initializing SparkContext.", e)
@@ -842,8 +847,8 @@ class SparkContext(config: SparkConf)
           (safeEnd - safeStart) / step + 1
         }
       }
-      parallelize(0 until numSlices, numSlices).mapPartitionsWithIndex(
-        (i, _) => {
+      parallelize(0 until numSlices, numSlices)
+        .mapPartitionsWithIndex((i, _) => {
           val partitionStart = (i * numElements) / numSlices * step + start
           val partitionEnd =
             (((i + 1) * numElements) / numSlices) * step + start
@@ -1361,11 +1366,10 @@ class SparkContext(config: SparkConf)
         path,
         classOf[NullWritable],
         classOf[BytesWritable],
-        minPartitions)
-        .flatMap(x =>
-          Utils.deserialize[Array[T]](
-            x._2.getBytes,
-            Utils.getContextOrSparkClassLoader))
+        minPartitions).flatMap(x =>
+        Utils.deserialize[Array[T]](
+          x._2.getBytes,
+          Utils.getContextOrSparkClassLoader))
     }
 
   protected[spark] def checkpointFile[T: ClassTag](path: String): RDD[T] =
@@ -1679,10 +1683,14 @@ class SparkContext(config: SparkConf)
     */
   def getExecutorMemoryStatus: Map[String, (Long, Long)] = {
     assertNotStopped()
-    env.blockManager.master.getMemoryStatus.map {
-      case (blockManagerId, mem) =>
-        (blockManagerId.host + ":" + blockManagerId.port, mem)
-    }
+    env
+      .blockManager
+      .master
+      .getMemoryStatus
+      .map {
+        case (blockManagerId, mem) =>
+          (blockManagerId.host + ":" + blockManagerId.port, mem)
+      }
   }
 
   /**
@@ -2082,9 +2090,8 @@ class SparkContext(config: SparkConf)
       timeout,
       localProperties.get)
     logInfo(
-      "Job finished: " + callSite.shortForm + ", took " + (
-        System.nanoTime - start
-      ) / 1e9 + " s")
+      "Job finished: " + callSite
+        .shortForm + ", took " + (System.nanoTime - start) / 1e9 + " s")
     result
   }
 
@@ -2240,7 +2247,8 @@ class SparkContext(config: SparkConf)
         // Use reflection to find the right constructor
         val constructors = {
           val listenerClass = Utils.classForName(className)
-          listenerClass.getConstructors
+          listenerClass
+            .getConstructors
             .asInstanceOf[Array[Constructor[_ <: SparkListener]]]
         }
         val constructorTakingSparkConf = constructors.find { c =>
@@ -2307,11 +2315,8 @@ class SparkContext(config: SparkConf)
       val schedulingMode = getSchedulingMode.toString
       val addedJarPaths = addedJars.keys.toSeq
       val addedFilePaths = addedFiles.keys.toSeq
-      val environmentDetails = SparkEnv.environmentDetails(
-        conf,
-        schedulingMode,
-        addedJarPaths,
-        addedFilePaths)
+      val environmentDetails = SparkEnv
+        .environmentDetails(conf, schedulingMode, addedJarPaths, addedFilePaths)
       val environmentUpdate = SparkListenerEnvironmentUpdate(environmentDetails)
       listenerBus.post(environmentUpdate)
     }
@@ -2678,9 +2683,8 @@ object SparkContext extends Logging {
           try {
             val clazz = Utils.classForName(
               "org.apache.spark.scheduler.cluster.YarnClusterSchedulerBackend")
-            val cons = clazz.getConstructor(
-              classOf[TaskSchedulerImpl],
-              classOf[SparkContext])
+            val cons = clazz
+              .getConstructor(classOf[TaskSchedulerImpl], classOf[SparkContext])
             cons
               .newInstance(scheduler, sc)
               .asInstanceOf[CoarseGrainedSchedulerBackend]
@@ -2695,8 +2699,8 @@ object SparkContext extends Logging {
       case "yarn" if deployMode == "client" =>
         val scheduler =
           try {
-            val clazz = Utils.classForName(
-              "org.apache.spark.scheduler.cluster.YarnScheduler")
+            val clazz = Utils
+              .classForName("org.apache.spark.scheduler.cluster.YarnScheduler")
             val cons = clazz.getConstructor(classOf[SparkContext])
             cons.newInstance(sc).asInstanceOf[TaskSchedulerImpl]
 
@@ -2710,9 +2714,8 @@ object SparkContext extends Logging {
           try {
             val clazz = Utils.classForName(
               "org.apache.spark.scheduler.cluster.YarnClientSchedulerBackend")
-            val cons = clazz.getConstructor(
-              classOf[TaskSchedulerImpl],
-              classOf[SparkContext])
+            val cons = clazz
+              .getConstructor(classOf[TaskSchedulerImpl], classOf[SparkContext])
             cons
               .newInstance(scheduler, sc)
               .asInstanceOf[CoarseGrainedSchedulerBackend]
@@ -2728,7 +2731,8 @@ object SparkContext extends Logging {
       case MESOS_REGEX(mesosUrl) =>
         MesosNativeLibrary.load()
         val scheduler = new TaskSchedulerImpl(sc)
-        val coarseGrained = sc.conf
+        val coarseGrained = sc
+          .conf
           .getBoolean("spark.mesos.coarse", defaultValue = true)
         val backend =
           if (coarseGrained) {
@@ -2845,7 +2849,8 @@ object WritableFactory {
   private[spark] def simpleWritableFactory[
       T: ClassTag,
       W <: Writable: ClassTag](convert: T => W): WritableFactory[T] = {
-    val writableClass = implicitly[ClassTag[W]].runtimeClass
+    val writableClass = implicitly[ClassTag[W]]
+      .runtimeClass
       .asInstanceOf[Class[W]]
     new WritableFactory[T](_ => writableClass, convert)
   }

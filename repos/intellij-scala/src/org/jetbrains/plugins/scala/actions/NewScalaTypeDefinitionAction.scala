@@ -51,10 +51,8 @@ class NewScalaTypeDefinitionAction
 
     for (template <- FileTemplateManager.getInstance(project).getAllTemplates) {
       if (isScalaTemplate(template) && checkPackageExists(directory)) {
-        builder.addKind(
-          template.getName,
-          Icons.FILE_TYPE_LOGO,
-          template.getName)
+        builder
+          .addKind(template.getName, Icons.FILE_TYPE_LOGO, template.getName)
       }
     }
 
@@ -75,14 +73,15 @@ class NewScalaTypeDefinitionAction
         }
 
         def canClose(inputString: String): Boolean = {
-          !StringUtil.isEmptyOrSpaces(inputString) && getErrorText(
-            inputString) == null
+          !StringUtil
+            .isEmptyOrSpaces(inputString) && getErrorText(inputString) == null
         }
       })
   }
 
   private def isScalaTemplate(template: FileTemplate): Boolean = {
-    val fileType: FileType = FileTypeManagerEx.getInstanceEx
+    val fileType: FileType = FileTypeManagerEx
+      .getInstanceEx
       .getFileTypeByExtension(template.getExtension)
     fileType == ScalaFileType.SCALA_FILE_TYPE
   }
@@ -132,8 +131,8 @@ class NewScalaTypeDefinitionAction
       val dirs = view.getDirectories
       for (dir <- dirs) {
         val aPackage = JavaDirectoryService.getInstance.getPackage(dir)
-        if (projectFileIndex.isInSourceContent(
-              dir.getVirtualFile) && aPackage != null) {
+        if (projectFileIndex
+              .isInSourceContent(dir.getVirtualFile) && aPackage != null) {
           return true
         }
       }
@@ -199,15 +198,14 @@ object NewScalaTypeDefinitionAction {
     } catch {
       case e: Exception =>
         throw new RuntimeException(
-          "Unable to load template for " + FileTemplateManager.getInstance
+          "Unable to load template for " + FileTemplateManager
+            .getInstance
             .internalTemplateToSubject(templateName),
           e)
     }
     val factory: PsiFileFactory = PsiFileFactory.getInstance(project)
-    val file: PsiFile = factory.createFileFromText(
-      fileName,
-      ScalaFileType.SCALA_FILE_TYPE,
-      text)
+    val file: PsiFile = factory
+      .createFileFromText(fileName, ScalaFileType.SCALA_FILE_TYPE, text)
     CodeStyleManager.getInstance(project).reformat(file)
     directory.add(file).asInstanceOf[PsiFile]
   }

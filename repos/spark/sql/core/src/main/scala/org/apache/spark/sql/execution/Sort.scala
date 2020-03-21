@@ -68,15 +68,14 @@ case class Sort(
     val ordering = newOrdering(sortOrder, output)
 
     // The comparator for comparing prefix
-    val boundSortExpression = BindReferences.bindReference(
-      sortOrder.head,
-      output)
-    val prefixComparator = SortPrefixUtils.getPrefixComparator(
-      boundSortExpression)
+    val boundSortExpression = BindReferences
+      .bindReference(sortOrder.head, output)
+    val prefixComparator = SortPrefixUtils
+      .getPrefixComparator(boundSortExpression)
 
     // The generator for prefix
-    val prefixProjection = UnsafeProjection.create(
-      Seq(SortPrefix(boundSortExpression)))
+    val prefixProjection = UnsafeProjection
+      .create(Seq(SortPrefix(boundSortExpression)))
     val prefixComputer =
       new UnsafeExternalRowSorter.PrefixComputer {
         override def computePrefix(row: InternalRow): Long = {
@@ -102,22 +101,24 @@ case class Sort(
     val dataSize = longMetric("dataSize")
     val spillSize = longMetric("spillSize")
 
-    child.execute().mapPartitionsInternal { iter =>
-      val sorter = createSorter()
+    child
+      .execute()
+      .mapPartitionsInternal { iter =>
+        val sorter = createSorter()
 
-      val metrics = TaskContext.get().taskMetrics()
-      // Remember spill data size of this task before execute this operator so that we can
-      // figure out how many bytes we spilled for this operator.
-      val spillSizeBefore = metrics.memoryBytesSpilled
+        val metrics = TaskContext.get().taskMetrics()
+        // Remember spill data size of this task before execute this operator so that we can
+        // figure out how many bytes we spilled for this operator.
+        val spillSizeBefore = metrics.memoryBytesSpilled
 
-      val sortedIterator = sorter.sort(iter.asInstanceOf[Iterator[UnsafeRow]])
+        val sortedIterator = sorter.sort(iter.asInstanceOf[Iterator[UnsafeRow]])
 
-      dataSize += sorter.getPeakMemoryUsage
-      spillSize += metrics.memoryBytesSpilled - spillSizeBefore
-      metrics.incPeakExecutionMemory(sorter.getPeakMemoryUsage)
+        dataSize += sorter.getPeakMemoryUsage
+        spillSize += metrics.memoryBytesSpilled - spillSizeBefore
+        metrics.incPeakExecutionMemory(sorter.getPeakMemoryUsage)
 
-      sortedIterator
-    }
+        sortedIterator
+      }
   }
 
   override def upstreams(): Seq[RDD[InternalRow]] = {
@@ -196,10 +197,13 @@ case class Sort(
     if (row != null) {
       s"$sorterVariable.insertRow((UnsafeRow)$row);"
     } else {
-      val colExprs = child.output.zipWithIndex.map {
-        case (attr, i) =>
-          BoundReference(i, attr.dataType, attr.nullable)
-      }
+      val colExprs = child
+        .output
+        .zipWithIndex
+        .map {
+          case (attr, i) =>
+            BoundReference(i, attr.dataType, attr.nullable)
+        }
 
       ctx.currentVars = input
       val code = GenerateUnsafeProjection.createCode(ctx, colExprs)

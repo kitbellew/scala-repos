@@ -127,14 +127,16 @@ class SizedSink private[events] (capacity: Int, milliTime: () => Long)
   override def events: Iterator[Event] = {
     val out = new ArrayBuffer[Event](capacity)
 
-    0.until(capacity).foreach { i =>
-      val ev = evs(i)
-      ev.synchronized {
-        if (ev.isDefined) {
-          out += ev.toEvent
+    0
+      .until(capacity)
+      .foreach { i =>
+        val ev = evs(i)
+        ev.synchronized {
+          if (ev.isDefined) {
+            out += ev.toEvent
+          }
         }
       }
-    }
     out.iterator
   }
 

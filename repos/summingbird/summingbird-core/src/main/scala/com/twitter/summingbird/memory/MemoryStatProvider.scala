@@ -87,10 +87,12 @@ private[summingbird] object MemoryStatProvider extends PlatformStatProvider {
     */
   def registerCounters(jobID: JobId, counters: Seq[(Group, Name)]): Unit = {
     val memoryCounters =
-      counters.map {
-        case (group, name) =>
-          (group.getString + "/" + name.getString, new MemoryCounter())
-      }.toMap
+      counters
+        .map {
+          case (group, name) =>
+            (group.getString + "/" + name.getString, new MemoryCounter())
+        }
+        .toMap
 
     @annotation.tailrec
     def put(m: Map[String, MemoryCounter]): Unit =
@@ -98,9 +100,8 @@ private[summingbird] object MemoryStatProvider extends PlatformStatProvider {
         case null =>
           () // The jobID was not present
         case previous
-            if (
-              previous.keySet & m.keySet
-            ).nonEmpty => // Key intersection nonempty
+            if (previous.keySet & m.keySet)
+              .nonEmpty => // Key intersection nonempty
           // prefer the old values
           if (countersForJob.replace(jobID, previous, (m ++ previous)))
             ()

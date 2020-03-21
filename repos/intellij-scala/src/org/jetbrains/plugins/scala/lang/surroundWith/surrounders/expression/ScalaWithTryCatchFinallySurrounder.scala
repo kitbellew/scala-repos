@@ -46,7 +46,9 @@ class ScalaWithTryCatchFinallySurrounder extends ScalaExpressionSurrounder {
 
     val catchBlockPsiElement = tryCatchStmt.catchBlock.get
     val caseClause =
-      catchBlockPsiElement.expression.get
+      catchBlockPsiElement
+        .expression
+        .get
         .asInstanceOf[ScBlockExpr]
         .caseClauses
         .get

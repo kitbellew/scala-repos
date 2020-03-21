@@ -204,7 +204,8 @@ trait AkkaGuiceSupport {
       new FactoryModuleBuilder()
         .implement(
           classOf[Actor],
-          implicitly[ClassTag[ActorClass]].runtimeClass
+          implicitly[ClassTag[ActorClass]]
+            .runtimeClass
             .asInstanceOf[Class[_ <: Actor]])
         .build(implicitly[ClassTag[FactoryClass]].runtimeClass))
   }
@@ -264,10 +265,8 @@ trait AkkaComponents {
   def applicationLifecycle: ApplicationLifecycle
 
   lazy val actorSystem: ActorSystem =
-    new ActorSystemProvider(
-      environment,
-      configuration,
-      applicationLifecycle).get
+    new ActorSystemProvider(environment, configuration, applicationLifecycle)
+      .get
 }
 
 /**
@@ -283,9 +282,8 @@ class ActorSystemProvider @Inject() (
   private val logger = Logger(classOf[ActorSystemProvider])
 
   lazy val get: ActorSystem = {
-    val (system, stopHook) = ActorSystemProvider.start(
-      environment.classLoader,
-      configuration)
+    val (system, stopHook) = ActorSystemProvider
+      .start(environment.classLoader, configuration)
     applicationLifecycle.addStopHook(stopHook)
     system
   }

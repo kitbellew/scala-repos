@@ -32,16 +32,20 @@ class ScalaDocUnclosedTagWithoutParserInspection extends LocalInspectionTool {
         if (!ScaladocSyntaxElementType.canClose(
               firstElementType,
               s.getLastChild.getNode.getElementType) &&
-            firstElementType != ScalaDocTokenType.DOC_HEADER && firstElementType != ScalaDocTokenType.VALID_DOC_HEADER) {
+            firstElementType != ScalaDocTokenType
+              .DOC_HEADER && firstElementType != ScalaDocTokenType
+              .VALID_DOC_HEADER) {
 
           holder.registerProblem(
-            holder.getManager.createProblemDescriptor(
-              s.getFirstChild,
-              getDisplayName,
-              true,
-              ProblemHighlightType.GENERIC_ERROR,
-              isOnTheFly,
-              new ScalaDocEscapeTagQuickFix(s)))
+            holder
+              .getManager
+              .createProblemDescriptor(
+                s.getFirstChild,
+                getDisplayName,
+                true,
+                ProblemHighlightType.GENERIC_ERROR,
+                isOnTheFly,
+                new ScalaDocEscapeTagQuickFix(s)))
         }
       }
     }
@@ -65,7 +69,8 @@ class ScalaDocEscapeTagQuickFix(s: ScDocSyntaxElement)
           MyScaladocParsing.escapeSequencesForWiki.get("=").get,
           syntElem.getFirstChild.getText.length())
       } else {
-        MyScaladocParsing.escapeSequencesForWiki
+        MyScaladocParsing
+          .escapeSequencesForWiki
           .get(syntElem.getFirstChild.getText)
           .get
       }

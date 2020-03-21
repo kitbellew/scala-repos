@@ -110,16 +110,20 @@ trait HeadActionSpec
       val secondHeaders = getHeaders.remove(DATE)
 
       // HTTPHeaders doesn't seem to be anything as simple as an equals method, so let's compare A !< B && B >! A
-      val notInFirst = secondHeaders.asScala.collectFirst {
-        case entry
-            if !firstHeaders.contains(entry.getKey, entry.getValue, true) =>
-          entry
-      }
-      val notInSecond = firstHeaders.asScala.collectFirst {
-        case entry
-            if !secondHeaders.contains(entry.getKey, entry.getValue, true) =>
-          entry
-      }
+      val notInFirst = secondHeaders
+        .asScala
+        .collectFirst {
+          case entry
+              if !firstHeaders.contains(entry.getKey, entry.getValue, true) =>
+            entry
+        }
+      val notInSecond = firstHeaders
+        .asScala
+        .collectFirst {
+          case entry
+              if !secondHeaders.contains(entry.getKey, entry.getValue, true) =>
+            entry
+        }
       notInFirst must beEmpty
       notInSecond must beEmpty
     }
@@ -145,8 +149,10 @@ trait HeadActionSpec
           request.copy(tags = Map(RouteComments -> "some comment"))
         def apply(rh: RequestHeader) =
           Action {
-            Results.Ok.withHeaders(
-              rh.tags.get(RouteComments).map(RouteComments -> _).toSeq: _*)
+            Results
+              .Ok
+              .withHeaders(
+                rh.tags.get(RouteComments).map(RouteComments -> _).toSeq: _*)
           }(rh)
       }) { client =>
       val result = await(client.url("/get").head())

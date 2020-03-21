@@ -64,9 +64,8 @@ object ClientUtils extends Logging {
     // same broker
     val shuffledBrokers = Random.shuffle(brokers)
     while (i < shuffledBrokers.size && !fetchMetaDataSucceeded) {
-      val producer: SyncProducer = ProducerPool.createSyncProducer(
-        producerConfig,
-        shuffledBrokers(i))
+      val producer: SyncProducer = ProducerPool
+        .createSyncProducer(producerConfig, shuffledBrokers(i))
       info(
         "Fetching metadata from broker %s with correlation id %d for %d topic(s) %s"
           .format(shuffledBrokers(i), correlationId, topics.size, topics))
@@ -127,10 +126,12 @@ object ClientUtils extends Logging {
   def parseBrokerList(brokerListStr: String): Seq[BrokerEndPoint] = {
     val brokersStr = CoreUtils.parseCsvList(brokerListStr)
 
-    brokersStr.zipWithIndex.map {
-      case (address, brokerId) =>
-        BrokerEndPoint.createBrokerEndPoint(brokerId, address)
-    }
+    brokersStr
+      .zipWithIndex
+      .map {
+        case (address, brokerId) =>
+          BrokerEndPoint.createBrokerEndPoint(brokerId, address)
+      }
   }
 
   /**
@@ -142,33 +143,35 @@ object ClientUtils extends Logging {
     var channel: BlockingChannel = null
     var connected = false
     while (!connected) {
-      val allBrokers = zkUtils.getAllBrokerEndPointsForChannel(
-        SecurityProtocol.PLAINTEXT)
-      Random.shuffle(allBrokers).find { broker =>
-        trace("Connecting to broker %s:%d.".format(broker.host, broker.port))
-        try {
-          channel = new BlockingChannel(
-            broker.host,
-            broker.port,
-            BlockingChannel.UseDefaultBufferSize,
-            BlockingChannel.UseDefaultBufferSize,
-            socketTimeoutMs)
-          channel.connect()
-          debug(
-            "Created channel to broker %s:%d."
-              .format(channel.host, channel.port))
-          true
-        } catch {
-          case e: Exception =>
-            if (channel != null)
-              channel.disconnect()
-            channel = null
-            info(
-              "Error while creating channel to %s:%d."
-                .format(broker.host, broker.port))
-            false
+      val allBrokers = zkUtils
+        .getAllBrokerEndPointsForChannel(SecurityProtocol.PLAINTEXT)
+      Random
+        .shuffle(allBrokers)
+        .find { broker =>
+          trace("Connecting to broker %s:%d.".format(broker.host, broker.port))
+          try {
+            channel = new BlockingChannel(
+              broker.host,
+              broker.port,
+              BlockingChannel.UseDefaultBufferSize,
+              BlockingChannel.UseDefaultBufferSize,
+              socketTimeoutMs)
+            channel.connect()
+            debug(
+              "Created channel to broker %s:%d."
+                .format(channel.host, channel.port))
+            true
+          } catch {
+            case e: Exception =>
+              if (channel != null)
+                channel.disconnect()
+              channel = null
+              info(
+                "Error while creating channel to %s:%d."
+                  .format(broker.host, broker.port))
+              false
+          }
         }
-      }
       connected =
         if (channel == null)
           false
@@ -204,8 +207,8 @@ object ClientUtils extends Logging {
               .format(queryChannel.host, queryChannel.port, group))
           queryChannel.send(GroupCoordinatorRequest(group))
           val response = queryChannel.receive()
-          val consumerMetadataResponse = GroupCoordinatorResponse.readFrom(
-            response.payload())
+          val consumerMetadataResponse = GroupCoordinatorResponse
+            .readFrom(response.payload())
           debug(
             "Consumer metadata response: " + consumerMetadataResponse.toString)
           if (consumerMetadataResponse.errorCode == Errors.NONE.code)
@@ -230,7 +233,8 @@ object ClientUtils extends Logging {
       }
 
       val coordinator = coordinatorOpt.get
-      if (coordinator.host == queryChannel.host && coordinator.port == queryChannel.port) {
+      if (coordinator.host == queryChannel
+            .host && coordinator.port == queryChannel.port) {
         offsetManagerChannelOpt = Some(queryChannel)
       } else {
         val connectString = "%s:%d".format(coordinator.host, coordinator.port)

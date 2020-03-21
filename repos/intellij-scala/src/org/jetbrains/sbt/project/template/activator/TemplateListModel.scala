@@ -12,14 +12,8 @@ class TemplateListModel(
     extends JavaAbstractListModel {
   private val temp = 12
 
-  private val dumbData = ActivatorRepoProcessor.DocData(
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "")
+  private val dumbData = ActivatorRepoProcessor
+    .DocData("", "", "", "", "", "", "")
   private val dumbFullData = FullTemplateData("", dumbData)
 
   /**

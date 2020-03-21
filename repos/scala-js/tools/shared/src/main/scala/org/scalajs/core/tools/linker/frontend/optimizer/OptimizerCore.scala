@@ -149,8 +149,9 @@ private[optimizer] abstract class OptimizerCore(
           cause)
       case e: Throwable =>
         // This is a fatal exception. Don't wrap, just output debug info error
-        Console.err.println(
-          exceptionMsg(myself, attemptedInlining.distinct.toList, e))
+        Console
+          .err
+          .println(exceptionMsg(myself, attemptedInlining.distinct.toList, e))
         throw e
     }
   }
@@ -414,8 +415,8 @@ private[optimizer] abstract class OptimizerCore(
                       returnedTypes = newSimpleState(Nil))
                   While(
                     newCond, {
-                      val bodyScope = scope.withEnv(
-                        scope.env.withLabelInfo(label, info))
+                      val bodyScope = scope
+                        .withEnv(scope.env.withLabelInfo(label, info))
                       transformStat(body)(bodyScope)
                     },
                     Some(Ident(newLabel, None)(labelIdent.pos)))
@@ -455,8 +456,8 @@ private[optimizer] abstract class OptimizerCore(
               newSimpleState(true),
               None))
           val newHandler = {
-            val handlerScope = scope.withEnv(
-              scope.env.withLocalDef(name, localDef))
+            val handlerScope = scope
+              .withEnv(scope.env.withLocalDef(name, localDef))
             transform(handler, isStat)(handlerScope)
           }
 
@@ -600,8 +601,8 @@ private[optimizer] abstract class OptimizerCore(
             pretransformExpr(expr) { texpr =>
               texpr.tpe match {
                 case RefinedType(base: ReferenceType, true, false) =>
-                  TailCalls.done(
-                    Block(finishTransformStat(texpr), ClassOf(base)))
+                  TailCalls
+                    .done(Block(finishTransformStat(texpr), ClassOf(base)))
                 case _ =>
                   TailCalls.done(GetClass(finishTransformExpr(texpr)))
               }
@@ -813,21 +814,27 @@ private[optimizer] abstract class OptimizerCore(
           pretransformBlock(tree)(cont)
 
         case VarRef(Ident(name, _)) =>
-          val localDef = scope.env.localDefs.getOrElse(
-            name,
-            sys.error(
-              s"Cannot find local def '$name' at $pos\n" +
-                s"While optimizing $myself\n" +
-                s"Env is ${scope.env}\nInlining ${scope.implsBeingInlined}"))
+          val localDef = scope
+            .env
+            .localDefs
+            .getOrElse(
+              name,
+              sys.error(
+                s"Cannot find local def '$name' at $pos\n" +
+                  s"While optimizing $myself\n" +
+                  s"Env is ${scope.env}\nInlining ${scope.implsBeingInlined}"))
           cont(PreTransLocalDef(localDef))
 
         case This() =>
-          val localDef = scope.env.localDefs.getOrElse(
-            "this",
-            sys.error(
-              s"Found invalid 'this' at $pos\n" +
-                s"While optimizing $myself\n" +
-                s"Env is ${scope.env}\nInlining ${scope.implsBeingInlined}"))
+          val localDef = scope
+            .env
+            .localDefs
+            .getOrElse(
+              "this",
+              sys.error(
+                s"Found invalid 'this' at $pos\n" +
+                  s"While optimizing $myself\n" +
+                  s"Env is ${scope.env}\nInlining ${scope.implsBeingInlined}"))
           cont(PreTransLocalDef(localDef))
 
         case If(cond, thenp, elsep) =>
@@ -1210,8 +1217,9 @@ private[optimizer] abstract class OptimizerCore(
             PreTransRecordTree(
               RecordValue(
                 recordType,
-                recordType.fields.map(f =>
-                  fieldLocalDefs(f.name).newReplacement)),
+                recordType
+                  .fields
+                  .map(f => fieldLocalDefs(f.name).newReplacement)),
               tpe,
               cancelFun)
 
@@ -1399,35 +1407,42 @@ private[optimizer] abstract class OptimizerCore(
                           ClassType(staticCls),
                           Ident(methodName, _),
                           _) =>
-                      impls.tail.forall(
-                        getMethodBody(_).body match {
-                          case ApplyStatic(
-                                ClassType(`staticCls`),
-                                Ident(`methodName`, _),
-                                _) =>
-                            true
-                          case _ =>
-                            false
-                        })
+                      impls
+                        .tail
+                        .forall(
+                          getMethodBody(_).body match {
+                            case ApplyStatic(
+                                  ClassType(`staticCls`),
+                                  Ident(`methodName`, _),
+                                  _) =>
+                              true
+                            case _ =>
+                              false
+                          })
 
                     // Bridge method
                     case MaybeBox(
                           Apply(This(), Ident(methodName, _), referenceArgs),
                           boxID) =>
-                      impls.tail.forall(
-                        getMethodBody(_).body match {
-                          case MaybeBox(
-                                Apply(This(), Ident(`methodName`, _), implArgs),
-                                `boxID`) =>
-                            referenceArgs.zip(implArgs) forall {
-                              case (
-                                    MaybeUnbox(_, unboxID1),
-                                    MaybeUnbox(_, unboxID2)) =>
-                                unboxID1 == unboxID2
-                            }
-                          case _ =>
-                            false
-                        })
+                      impls
+                        .tail
+                        .forall(
+                          getMethodBody(_).body match {
+                            case MaybeBox(
+                                  Apply(
+                                    This(),
+                                    Ident(`methodName`, _),
+                                    implArgs),
+                                  `boxID`) =>
+                              referenceArgs.zip(implArgs) forall {
+                                case (
+                                      MaybeUnbox(_, unboxID1),
+                                      MaybeUnbox(_, unboxID2)) =>
+                                  unboxID1 == unboxID2
+                              }
+                            case _ =>
+                              false
+                          })
 
                     case body =>
                       throw new AssertionError(
@@ -1531,8 +1546,8 @@ private[optimizer] abstract class OptimizerCore(
                 shouldInlineBecauseOfArgs(target, treceiver :: targs)
             )
             val allocationSites = (treceiver :: targs).map(_.tpe.allocationSite)
-            val beingInlined = scope.implsBeingInlined(
-              (allocationSites, target))
+            val beingInlined = scope
+              .implsBeingInlined((allocationSites, target))
 
             if (shouldInline && !beingInlined) {
               inline(
@@ -1727,7 +1742,8 @@ private[optimizer] abstract class OptimizerCore(
       }
 
     receiverAndArgs.exists(isLikelyOptimizable) || {
-      target.toString == "s_reflect_ClassTag$.apply__jl_Class__s_reflect_ClassTag" &&
+      target
+        .toString == "s_reflect_ClassTag$.apply__jl_Class__s_reflect_ClassTag" &&
       (
         receiverAndArgs.tail.head match {
           case PreTransTree(ClassOf(_), _) =>
@@ -2281,17 +2297,16 @@ private[optimizer] abstract class OptimizerCore(
                  */
                 cancelFun()
               }
-              val newFieldsLocalDefs = inputFieldsLocalDefs.updated(
-                fieldName,
-                localDef)
+              val newFieldsLocalDefs = inputFieldsLocalDefs
+                .updated(fieldName, localDef)
               val newThisLocalDef = LocalDef(
                 RefinedType(cls, isExact = true, isNullable = false),
                 false,
                 InlineClassBeingConstructedReplacement(
                   newFieldsLocalDefs,
                   cancelFun))
-              val restScope = scope.withEnv(
-                scope.env.withLocalDef("this", newThisLocalDef))
+              val restScope = scope
+                .withEnv(scope.env.withLocalDef("this", newThisLocalDef))
               inlineClassConstructorBodyList(
                 allocationSite,
                 newThisLocalDef,
@@ -2345,8 +2360,8 @@ private[optimizer] abstract class OptimizerCore(
               InlineClassBeingConstructedReplacement(
                 outputFieldsLocalDefs,
                 cancelFun))
-            val restScope = scope.withEnv(
-              scope.env.withLocalDef("this", newThisLocalDef))
+            val restScope = scope
+              .withEnv(scope.env.withLocalDef("this", newThisLocalDef))
             inlineClassConstructorBodyList(
               allocationSite,
               newThisLocalDef,
@@ -3944,8 +3959,8 @@ private[optimizer] abstract class OptimizerCore(
                     (bodyTree, (bodyTree.tpe, tpe) :: returnedTypes0)
                 }
               val (actualTypes, origTypes) = returnedTypes.unzip
-              val refinedOrigType = origTypes.reduce(
-                constrainedLub(_, _, resultType))
+              val refinedOrigType = origTypes
+                .reduce(constrainedLub(_, _, resultType))
               actualTypes
                 .collectFirst {
                   case actualType: RecordType =>
@@ -3958,14 +3973,14 @@ private[optimizer] abstract class OptimizerCore(
                       doMakeTree(newBody, actualTypes),
                       refinedOrigType))
                 } { recordType =>
-                  if (actualTypes.exists(t =>
-                        t != recordType && t != NothingType))
+                  if (actualTypes
+                        .exists(t => t != recordType && t != NothingType))
                     cancelFun()
 
                   val resultTree = doMakeTree(newBody, actualTypes)
 
-                  if (origTypes.exists(t =>
-                        t != refinedOrigType && !t.isNothingType))
+                  if (origTypes
+                        .exists(t => t != refinedOrigType && !t.isNothingType))
                     cancelFun()
 
                   cont(
@@ -4838,28 +4853,33 @@ private[optimizer] object OptimizerCore {
             (args.size == params.size + 1) &&
               (args.head.isInstanceOf[This]) &&
               (
-                args.tail.zip(params).forall {
-                  case (
-                        VarRef(Ident(aname, _)),
-                        ParamDef(Ident(pname, _), _, _, _)) =>
-                    aname == pname
-                  case _ =>
-                    false
-                }
-              )
+                args
+                  .tail
+                  .zip(params)
+                  .forall {
+                    case (
+                          VarRef(Ident(aname, _)),
+                          ParamDef(Ident(pname, _), _, _, _)) =>
+                      aname == pname
+                    case _ =>
+                      false
+                  }
+                )
           )
 
         // Shape of bridges for generic methods
         case MaybeBox(Apply(This(), method, args), _) =>
           (args.size == params.size) &&
-            args.zip(params).forall {
-              case (
-                    MaybeUnbox(VarRef(Ident(aname, _)), _),
-                    ParamDef(Ident(pname, _), _, _, _)) =>
-                aname == pname
-              case _ =>
-                false
-            }
+            args
+              .zip(params)
+              .forall {
+                case (
+                      MaybeUnbox(VarRef(Ident(aname, _)), _),
+                      ParamDef(Ident(pname, _), _, _, _)) =>
+                  aname == pname
+                case _ =>
+                  false
+              }
 
         case _ =>
           false

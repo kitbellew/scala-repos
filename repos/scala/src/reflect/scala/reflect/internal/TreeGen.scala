@@ -194,9 +194,8 @@ abstract class TreeGen {
     mkUnattributedRef(sym.fullNameAsName('.'))
 
   def mkUnattributedRef(fullName: Name): RefTree = {
-    val hd :: tl = nme.segments(
-      fullName.toString,
-      assumeTerm = fullName.isTermName)
+    val hd :: tl = nme
+      .segments(fullName.toString, assumeTerm = fullName.isTermName)
     tl.foldLeft(Ident(hd): RefTree)(Select(_, _))
   }
 
@@ -266,7 +265,8 @@ abstract class TreeGen {
           val packageObject = qualsym.packageObject
           Select(
             qual,
-            nme.PACKAGE) setSymbol packageObject setType packageObject.typeOfThis
+            nme.PACKAGE) setSymbol packageObject setType packageObject
+            .typeOfThis
         } else
           qual
 
@@ -527,7 +527,11 @@ abstract class TreeGen {
                 Block(lvdefs, Literal(Constant(()))))))
       } else {
         // convert (implicit ... ) to ()(implicit ... ) if it's the only parameter section
-        if (vparamss1.isEmpty || !vparamss1.head.isEmpty && vparamss1.head.head.mods.isImplicit)
+        if (vparamss1.isEmpty || !vparamss1.head.isEmpty && vparamss1
+              .head
+              .head
+              .mods
+              .isImplicit)
           vparamss1 = List() :: vparamss1
         val superCall =
           pendingSuperCall // we can't know in advance which of the parents will end up as a superclass
@@ -538,9 +542,8 @@ abstract class TreeGen {
         // therefore here we emit a dummy which gets populated when the template is named and typechecked
         Some(
           atPos(
-            wrappingPos(
-              superPos,
-              lvdefs ::: vparamss1.flatten).makeTransparent)(
+            wrappingPos(superPos, lvdefs ::: vparamss1.flatten)
+              .makeTransparent)(
             DefDef(
               constrMods,
               nme.CONSTRUCTOR,
@@ -586,8 +589,8 @@ abstract class TreeGen {
       name: TypeName,
       tparams: List[TypeDef],
       templ: Template): ClassDef = {
-    val isInterface =
-      mods.isTrait && (templ.body forall treeInfo.isInterfaceMember)
+    val isInterface = mods
+      .isTrait && (templ.body forall treeInfo.isInterfaceMember)
     val mods1 =
       if (isInterface)
         (mods | Flags.INTERFACE)
@@ -928,9 +931,11 @@ abstract class TreeGen {
               test)).setPos(t.pos) :: rest,
           sugarBody)
       case (t @ ValFrom(pat, rhs)) :: rest =>
-        val valeqs = rest.take(definitions.MaxTupleArity - 1).takeWhile {
-          ValEq.unapply(_).nonEmpty
-        }
+        val valeqs = rest
+          .take(definitions.MaxTupleArity - 1)
+          .takeWhile {
+            ValEq.unapply(_).nonEmpty
+          }
         assert(!valeqs.isEmpty)
         val rest1 = rest.drop(valeqs.length)
         val pats = valeqs map {

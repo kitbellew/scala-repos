@@ -42,15 +42,20 @@ class LogUrlsStandaloneSuite extends SparkFunSuite with LocalSparkContext {
     sc.parallelize(1 to 100, 4).map(_.toString).count()
 
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
-    listener.addedExecutorInfos.values.foreach { info =>
-      assert(info.logUrlMap.nonEmpty)
-      // Browse to each URL to check that it's valid
-      info.logUrlMap.foreach {
-        case (logType, logUrl) =>
-          val html = Source.fromURL(logUrl).mkString
-          assert(html.contains(s"$logType log page"))
+    listener
+      .addedExecutorInfos
+      .values
+      .foreach { info =>
+        assert(info.logUrlMap.nonEmpty)
+        // Browse to each URL to check that it's valid
+        info
+          .logUrlMap
+          .foreach {
+            case (logType, logUrl) =>
+              val html = Source.fromURL(logUrl).mkString
+              assert(html.contains(s"$logType log page"))
+          }
       }
-    }
   }
 
   test("verify that log urls reflect SPARK_PUBLIC_DNS (SPARK-6175)") {
@@ -66,12 +71,18 @@ class LogUrlsStandaloneSuite extends SparkFunSuite with LocalSparkContext {
     val listeners = sc.listenerBus.findListenersByClass[SaveExecutorInfo]
     assert(listeners.size === 1)
     val listener = listeners(0)
-    listener.addedExecutorInfos.values.foreach { info =>
-      assert(info.logUrlMap.nonEmpty)
-      info.logUrlMap.values.foreach { logUrl =>
-        assert(new URL(logUrl).getHost === SPARK_PUBLIC_DNS)
+    listener
+      .addedExecutorInfos
+      .values
+      .foreach { info =>
+        assert(info.logUrlMap.nonEmpty)
+        info
+          .logUrlMap
+          .values
+          .foreach { logUrl =>
+            assert(new URL(logUrl).getHost === SPARK_PUBLIC_DNS)
+          }
       }
-    }
   }
 }
 

@@ -40,11 +40,13 @@ object HMapTests extends Properties("HMap") {
     } yield (a, b)
 
   implicit def hmapGen: Gen[HMap[Key, Value]] =
-    Gen.listOf(zip(keyGen, valGen)).map { list =>
-      list.foldLeft(HMap.empty[Key, Value]) { (hm, kv) =>
-        hm + kv
+    Gen
+      .listOf(zip(keyGen, valGen))
+      .map { list =>
+        list.foldLeft(HMap.empty[Key, Value]) { (hm, kv) =>
+          hm + kv
+        }
       }
-    }
 
   implicit def arb[T](implicit g: Gen[T]): Arbitrary[T] = Arbitrary(g)
 
@@ -111,7 +113,8 @@ object HMapTests extends Properties("HMap") {
         }
       }
     val collected =
-      hm.collect(partial)
+      hm
+        .collect(partial)
         .map {
           case Value(v) =>
             v
@@ -138,14 +141,16 @@ object HMapTests extends Properties("HMap") {
         }
       }
     val collected =
-      hm.collectValues(partial)
+      hm
+        .collectValues(partial)
         .map {
           case Value(v) =>
             v
         }
         .toSet
     val mapCollected =
-      map.values
+      map
+        .values
         .collect(partial.apply[Int])
         .map {
           case Value(v) =>

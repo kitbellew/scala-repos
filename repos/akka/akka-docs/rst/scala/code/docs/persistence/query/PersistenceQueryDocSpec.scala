@@ -237,8 +237,8 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
     //#events-by-tag
     // assuming journal is able to work with numeric offsets we can:
 
-    val blueThings: Source[EventEnvelope, NotUsed] = readJournal.eventsByTag(
-      "blue")
+    val blueThings: Source[EventEnvelope, NotUsed] = readJournal
+      .eventsByTag("blue")
 
     // find top 10 blue things:
     val top10BlueThings: Future[Vector[Any]] =
@@ -257,8 +257,8 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
     //#events-by-persistent-id
 
     //#advanced-journal-query-usage
-    val query: Source[RichEvent, QueryMetadata] = readJournal.byTagsWithMeta(
-      Set("red", "blue"))
+    val query: Source[RichEvent, QueryMetadata] = readJournal
+      .byTagsWithMeta(Set("red", "blue"))
 
     query
       .mapMaterializedValue { meta =>
@@ -296,17 +296,19 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
     val writerProps = Props(classOf[TheOneWhoWritesToQueryJournal], "bid")
     val writer = system.actorOf(writerProps, "bid-projection-writer")
 
-    bidProjection.latestOffset.foreach { startFromOffset =>
-      readJournal
-        .eventsByTag("bid", startFromOffset)
-        .mapAsync(8) { envelope =>
-          (writer ? envelope.event).map(_ => envelope.offset)
-        }
-        .mapAsync(1) { offset =>
-          bidProjection.saveProgress(offset)
-        }
-        .runWith(Sink.ignore)
-    }
+    bidProjection
+      .latestOffset
+      .foreach { startFromOffset =>
+        readJournal
+          .eventsByTag("bid", startFromOffset)
+          .mapAsync(8) { envelope =>
+            (writer ? envelope.event).map(_ => envelope.offset)
+          }
+          .mapAsync(1) { offset =>
+            bidProjection.saveProgress(offset)
+          }
+          .runWith(Sink.ignore)
+      }
     //#projection-into-different-store-actor-run
   }
 

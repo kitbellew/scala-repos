@@ -31,10 +31,10 @@ class ScalaBraceEnforcer(settings: CodeStyleSettings)
     extends ScalaRecursiveElementVisitor {
   private val myPostProcessor: PostFormatProcessorHelper =
     new PostFormatProcessorHelper(settings)
-  private val commonSetttings = settings.getCommonSettings(
-    ScalaFileType.SCALA_LANGUAGE)
-  private val scalaSettings = settings.getCustomSettings(
-    classOf[ScalaCodeStyleSettings])
+  private val commonSetttings = settings
+    .getCommonSettings(ScalaFileType.SCALA_LANGUAGE)
+  private val scalaSettings = settings
+    .getCustomSettings(classOf[ScalaCodeStyleSettings])
 
   override def visitIfStatement(stmt: ScIfStmt) {
     if (checkElementContainsRange(stmt)) {
@@ -172,9 +172,8 @@ class ScalaBraceEnforcer(settings: CodeStyleSettings)
     val oldTextLength: Int = parent.getTextLength
     try {
       val project = expr.getProject
-      val newExpr = ScalaPsiElementFactory.createExpressionFromText(
-        "{\n" + expr.getText + "\n}",
-        expr.getManager)
+      val newExpr = ScalaPsiElementFactory
+        .createExpressionFromText("{\n" + expr.getText + "\n}", expr.getManager)
       val prev = expr.getPrevSibling
       if (ScalaPsiUtil.isLineTerminator(prev) || prev
             .isInstanceOf[PsiWhiteSpace]) {

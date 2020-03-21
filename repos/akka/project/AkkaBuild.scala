@@ -451,8 +451,7 @@ object AkkaBuild extends Build {
           sampleDistributedDataScala,
           sampleDistributedDataJava
         )
-  ).settings(samplesSettings: _*)
-    .disablePlugins(MimaPlugin)
+  ).settings(samplesSettings: _*).disablePlugins(MimaPlugin)
 
   lazy val sampleCamelJava = Sample.project("akka-sample-camel-java")
   lazy val sampleCamelScala = Sample.project("akka-sample-camel-scala")
@@ -469,23 +468,23 @@ object AkkaBuild extends Build {
 
   lazy val sampleMultiNodeScala = Sample.project("akka-sample-multi-node-scala")
 
-  lazy val samplePersistenceJava = Sample.project(
-    "akka-sample-persistence-java")
-  lazy val samplePersistenceScala = Sample.project(
-    "akka-sample-persistence-scala")
-  lazy val samplePersistenceJavaLambda = Sample.project(
-    "akka-sample-persistence-java-lambda")
+  lazy val samplePersistenceJava = Sample
+    .project("akka-sample-persistence-java")
+  lazy val samplePersistenceScala = Sample
+    .project("akka-sample-persistence-scala")
+  lazy val samplePersistenceJavaLambda = Sample
+    .project("akka-sample-persistence-java-lambda")
 
   lazy val sampleRemoteJava = Sample.project("akka-sample-remote-java")
   lazy val sampleRemoteScala = Sample.project("akka-sample-remote-scala")
 
-  lazy val sampleSupervisionJavaLambda = Sample.project(
-    "akka-sample-supervision-java-lambda")
+  lazy val sampleSupervisionJavaLambda = Sample
+    .project("akka-sample-supervision-java-lambda")
 
-  lazy val sampleDistributedDataScala = Sample.project(
-    "akka-sample-distributed-data-scala")
-  lazy val sampleDistributedDataJava = Sample.project(
-    "akka-sample-distributed-data-java")
+  lazy val sampleDistributedDataScala = Sample
+    .project("akka-sample-distributed-data-scala")
+  lazy val sampleDistributedDataJava = Sample
+    .project("akka-sample-distributed-data-java")
 
   lazy val osgiDiningHakkersSampleMavenTest = Project(
     id = "akka-sample-osgi-dining-hakkers-maven-test",
@@ -620,8 +619,10 @@ object AkkaBuild extends Build {
       else
         Nil
     ),
-    scalacOptions in Test := (scalacOptions in Test).value.filterNot(opt =>
-      opt == "-Xlog-reflective-calls" || opt.contains("genjavadoc")),
+    scalacOptions in Test := (scalacOptions in Test)
+      .value
+      .filterNot(opt =>
+        opt == "-Xlog-reflective-calls" || opt.contains("genjavadoc")),
     // -XDignore.symbol.file suppresses sun.misc.Unsafe warnings
     javacOptions in compile ++= Seq(
       "-encoding",

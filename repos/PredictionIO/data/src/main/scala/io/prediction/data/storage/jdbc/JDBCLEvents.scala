@@ -108,8 +108,8 @@ class JDBCLEvents(
     Future {
       DB localTx { implicit session =>
         val id = event.eventId.getOrElse(JDBCUtils.generateId)
-        val tableName = sqls.createUnsafely(
-          JDBCUtils.eventTableName(namespace, appId, channelId))
+        val tableName = sqls
+          .createUnsafely(JDBCUtils.eventTableName(namespace, appId, channelId))
         sql"""
       insert into $tableName values(
         $id,
@@ -138,8 +138,8 @@ class JDBCLEvents(
       ec: ExecutionContext): Future[Option[Event]] =
     Future {
       DB readOnly { implicit session =>
-        val tableName = sqls.createUnsafely(
-          JDBCUtils.eventTableName(namespace, appId, channelId))
+        val tableName = sqls
+          .createUnsafely(JDBCUtils.eventTableName(namespace, appId, channelId))
         sql"""
       select
         id,
@@ -165,8 +165,8 @@ class JDBCLEvents(
       ec: ExecutionContext): Future[Boolean] =
     Future {
       DB localTx { implicit session =>
-        val tableName = sqls.createUnsafely(
-          JDBCUtils.eventTableName(namespace, appId, channelId))
+        val tableName = sqls
+          .createUnsafely(JDBCUtils.eventTableName(namespace, appId, channelId))
         sql"""
       delete from $tableName where id = $eventId
       """.update().apply()
@@ -189,8 +189,8 @@ class JDBCLEvents(
       ec: ExecutionContext): Future[Iterator[Event]] =
     Future {
       DB readOnly { implicit session =>
-        val tableName = sqls.createUnsafely(
-          JDBCUtils.eventTableName(namespace, appId, channelId))
+        val tableName = sqls
+          .createUnsafely(JDBCUtils.eventTableName(namespace, appId, channelId))
         val whereClause = sqls
           .toAndConditionOpt(
             startTime.map(x => sqls"eventTime >= $x"),
@@ -202,10 +202,12 @@ class JDBCLEvents(
                 sqls.toOrConditionOpt(x.map(y => Some(sqls"event = $y")): _*))
               .getOrElse(None),
             targetEntityType.map(x =>
-              x.map(y => sqls"targetEntityType = $y")
+              x
+                .map(y => sqls"targetEntityType = $y")
                 .getOrElse(sqls"targetEntityType IS NULL")),
             targetEntityId.map(x =>
-              x.map(y => sqls"targetEntityId = $y")
+              x
+                .map(y => sqls"targetEntityId = $y")
                 .getOrElse(sqls"targetEntityId IS NULL"))
           )
           .map(sqls.where(_))

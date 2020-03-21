@@ -32,12 +32,14 @@ class TestTransportSpec
       result._1 should ===(addressA)
       result._2 should not be null
 
-      registry.logSnapshot.exists {
-        case ListenAttempt(address) ⇒
-          address == addressA
-        case _ ⇒
-          false
-      } should ===(true)
+      registry
+        .logSnapshot
+        .exists {
+          case ListenAttempt(address) ⇒
+            address == addressA
+          case _ ⇒
+            false
+        } should ===(true)
     }
 
     "associate successfully with another TestTransport and log" in {
@@ -62,8 +64,9 @@ class TestTransportSpec
         case InboundAssociation(handle) if handle.remoteAddress == addressA ⇒
       }
 
-      registry.logSnapshot.contains(
-        AssociateAttempt(addressA, addressB)) should ===(true)
+      registry
+        .logSnapshot
+        .contains(AssociateAttempt(addressA, addressB)) should ===(true)
     }
 
     "fail to associate with nonexisting address" in {
@@ -120,12 +123,14 @@ class TestTransportSpec
         case InboundPayload(payload) if payload == akkaPDU ⇒
       }
 
-      registry.logSnapshot.exists {
-        case WriteAttempt(sender, recipient, payload) ⇒
-          sender == addressA && recipient == addressB && payload == akkaPDU
-        case _ ⇒
-          false
-      } should ===(true)
+      registry
+        .logSnapshot
+        .exists {
+          case WriteAttempt(sender, recipient, payload) ⇒
+            sender == addressA && recipient == addressB && payload == akkaPDU
+          case _ ⇒
+            false
+        } should ===(true)
     }
 
     "emulate disassociation and log it" in {

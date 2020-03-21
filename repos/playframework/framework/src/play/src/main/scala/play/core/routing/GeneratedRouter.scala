@@ -80,9 +80,13 @@ case class RouteParams(
       binder: QueryStringBindable[T]): Param[T] = {
     Param(
       key,
-      binder.bind(key, queryString).getOrElse {
-        default.map(d => Right(d)).getOrElse(Left("Missing parameter: " + key))
-      })
+      binder
+        .bind(key, queryString)
+        .getOrElse {
+          default
+            .map(d => Right(d))
+            .getOrElse(Left("Missing parameter: " + key))
+        })
   }
 
 }
@@ -110,10 +114,8 @@ abstract class GeneratedRouter extends Router {
 
   def badRequest(error: String) =
     Action.async { request =>
-      errorHandler.onClientError(
-        request,
-        play.api.http.Status.BAD_REQUEST,
-        error)
+      errorHandler
+        .onClientError(request, play.api.http.Status.BAD_REQUEST, error)
     }
 
   def call(generator: => Handler): Handler = {
@@ -1491,12 +1493,10 @@ abstract class GeneratedRouter extends Router {
 
   def call[T](params: List[Param[_]])(generator: (Seq[_]) => Handler): Handler =
     (
-      params
-        .foldLeft[Either[String, Seq[_]]](Right(Seq[T]())) { (seq, param) =>
-          seq.right.flatMap(s => param.value.right.map(s :+ _))
-        }
-      )
-      .fold(badRequest, generator)
+      params.foldLeft[Either[String, Seq[_]]](Right(Seq[T]())) { (seq, param) =>
+        seq.right.flatMap(s => param.value.right.map(s :+ _))
+      }
+    ).fold(badRequest, generator)
   def fakeValue[A]: A =
     throw new UnsupportedOperationException("Can't get a fake value")
 

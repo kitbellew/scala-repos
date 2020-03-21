@@ -70,14 +70,17 @@ class MacroExpandAction extends AnAction {
     val filtered = expansions.filter { exp =>
       psiFile.getVirtualFile.getPath == exp.place.sourceFile
     }
-    val ensugared = filtered.map(e =>
-      MacroExpansion(e.place, ensugarExpansion(e.body)))
+    val ensugared = filtered
+      .map(e => MacroExpansion(e.place, ensugarExpansion(e.body)))
     val resolved = tryResolveExpansionPlaces(ensugared)
 
     // if macro is under cursor, expand it, otherwise expand all macros in current file
     resolved
       .find(
-        _.expansion.place.line == sourceEditor.getCaretModel.getLogicalPosition.line + 1)
+        _.expansion.place.line == sourceEditor
+          .getCaretModel
+          .getLogicalPosition
+          .line + 1)
       .map(expandMacroUnderCursor)
       .getOrElse(expandAllMacroInCurrentFile(resolved))
   }
@@ -147,7 +150,8 @@ class MacroExpandAction extends AnAction {
           if (element.getNode.getElementType == ScalaTokenTypes.tSEMICOLON) {
             val file = element.getContainingFile
             val nextLeaf = file.findElementAt(element.getTextRange.getEndOffset)
-            if (nextLeaf.isInstanceOf[PsiWhiteSpace] && nextLeaf.getText
+            if (nextLeaf.isInstanceOf[PsiWhiteSpace] && nextLeaf
+                  .getText
                   .contains("\n")) {
               tobeDeleted += element
             }
@@ -198,16 +202,19 @@ class MacroExpandAction extends AnAction {
                 block: ScBlock
               ) => // insert content of block expression(annotation can generate >1 expression)
             val children = block.getChildren
-            block.children
+            block
+              .children
               .find(_.isInstanceOf[ScalaPsiElement])
               .foreach(p =>
                 p.putCopyableUserData(
                   MacroExpandAction.EXPANDED_KEY,
                   holder.getText))
-            holder.getParent.addRangeAfter(
-              children.tail.head,
-              children.dropRight(1).last,
-              holder)
+            holder
+              .getParent
+              .addRangeAfter(
+                children.tail.head,
+                children.dropRight(1).last,
+                holder)
             holder.delete()
           case Some(psi: PsiElement) => // defns/method bodies/etc...
             val result = holder.replace(psi)
@@ -273,7 +280,9 @@ class MacroExpandAction extends AnAction {
       // most likely it means given call is located inside another macro expansion
       case e: LeafPsiElement
           if expansion.place.macroApplication.matches("^[^\\)]+\\)$") =>
-        val pos = e.getContainingFile.getText
+        val pos = e
+          .getContainingFile
+          .getText
           .indexOf(expansion.place.macroApplication)
         if (pos != -1)
           Some(e.getContainingFile.findElementAt(pos))
@@ -376,7 +385,8 @@ class MacroExpandAction extends AnAction {
         .toolWindowGroup("macroexpand", ToolWindowId.PROJECT_VIEW)
         .createNotification(
           """Macro debugging options have been enabled for current module
-            |Please recompile the file to gather macro expansions""".stripMargin,
+            |Please recompile the file to gather macro expansions"""
+            .stripMargin,
           NotificationType.INFORMATION
         )
         .notify(e.getProject)

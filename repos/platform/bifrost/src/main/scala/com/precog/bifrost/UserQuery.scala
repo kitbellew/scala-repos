@@ -71,8 +71,8 @@ object UserQuery {
               Success(SortDescending)
             case _ =>
               Failure(
-                Extractor.Invalid(
-                  "Sort order can only be either 'asc' and 'desc'."))
+                Extractor
+                  .Invalid("Sort order can only be either 'asc' and 'desc'."))
           }
       }
 

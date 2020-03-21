@@ -111,7 +111,9 @@ object Integer {
             fail
           i += 1
         }
-        val res = js.Dynamic.global
+        val res = js
+          .Dynamic
+          .global
           .parseInt(s, radix)
           .asInstanceOf[scala.Double]
 
@@ -272,7 +274,8 @@ object Integer {
 
   @inline // because radix is almost certainly constant at call site
   def toString(i: Int, radix: Int): String = {
-    if (radix == 10 || radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
+    if (radix == 10 || radix < Character.MIN_RADIX || radix > Character
+          .MAX_RADIX) {
       Integer.toString(i)
     } else {
       import js.JSNumberOps.enableJSNumberOps

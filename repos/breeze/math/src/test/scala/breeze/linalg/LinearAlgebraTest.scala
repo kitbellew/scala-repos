@@ -58,12 +58,8 @@ class LinearAlgebraTest
     assert(ranks(DenseVector(3, -1, 2)).toList === List(3.0, 1.0, 2.0))
     assert(ranks(DenseVector(1, 2, 3, 3)).toList === List(1.0, 2.0, 3.5, 3.5))
     assert(
-      ranks(DenseVector(1, 2, 3, 3, 3)).toList === List(
-        1.0,
-        2.0,
-        4.0,
-        4.0,
-        4.0))
+      ranks(DenseVector(1, 2, 3, 3, 3))
+        .toList === List(1.0, 2.0, 4.0, 4.0, 4.0))
   }
 
   test("cholesky") {
@@ -89,10 +85,12 @@ class LinearAlgebraTest
 
     val idx = argsort(lambda)
 
-    idx.zipWithIndex.map { i =>
-      lambda(i._1) should be(eigVals(i._2) +- 1e-6)
-      vectorsNearlyEqual(evs(::, i._1), eigVect(::, i._2), 1e-6)
-    }
+    idx
+      .zipWithIndex
+      .map { i =>
+        lambda(i._1) should be(eigVals(i._2) +- 1e-6)
+        vectorsNearlyEqual(evs(::, i._1), eigVect(::, i._2), 1e-6)
+      }
   }
 
   test("LUfactorization") {

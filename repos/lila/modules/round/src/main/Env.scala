@@ -54,9 +54,8 @@ final class Env(
     }
   import settings._
 
-  private val moveTimeChannel = system.actorOf(
-    Props(classOf[lila.socket.Channel]),
-    name = ChannelMoveTime)
+  private val moveTimeChannel = system
+    .actorOf(Props(classOf[lila.socket.Channel]), name = ChannelMoveTime)
 
   private val moveMonitor = new MoveMonitor(system, moveTimeChannel)
 
@@ -83,7 +82,8 @@ final class Env(
           ({
             case actorApi.GetNbRounds =>
               nbRounds = size
-              system.lilaBus
+              system
+                .lilaBus
                 .publish(lila.hub.actorApi.round.NbRounds(nbRounds), 'nbRounds)
           }: Receive) orElse actorMapReceive
       }),
@@ -116,10 +116,12 @@ final class Env(
                 logger.warn("Enable history persistence")
                 historyPersistenceEnabled = true
                 // if the deploy didn't go through, cancel persistence
-                system.scheduler.scheduleOnce(10.minutes) {
-                  logger.warn("Disabling round history persistence!")
-                  historyPersistenceEnabled = false
-                }
+                system
+                  .scheduler
+                  .scheduleOnce(10.minutes) {
+                    logger.warn("Disabling round history persistence!")
+                    historyPersistenceEnabled = false
+                  }
               case msg: lila.game.actorApi.StartGame =>
                 self ! Tell(msg.game.id, msg)
             }: Receive) orElse socketHubReceive

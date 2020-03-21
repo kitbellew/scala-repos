@@ -87,8 +87,10 @@ final class AutoPairing(
       povRef: PovRef,
       secondsToMove: Int,
       thenAgain: Boolean) {
-    system.scheduler.scheduleOnce(secondsToMove seconds)(
-      idleCheck(povRef, secondsToMove, thenAgain))
+    system
+      .scheduler
+      .scheduleOnce(secondsToMove seconds)(
+        idleCheck(povRef, secondsToMove, thenAgain))
   }
 
   private def idleCheck(
@@ -101,9 +103,12 @@ final class AutoPairing(
           if (thenAgain && !pov.game.playerHasMoved(pov.opponent.color))
             scheduleIdleCheck(
               !pov.ref,
-              pov.game.lastMoveTimeInSeconds.fold(secondsToMove) { lmt =>
-                lmt - nowSeconds + secondsToMove
-              },
+              pov
+                .game
+                .lastMoveTimeInSeconds
+                .fold(secondsToMove) { lmt =>
+                  lmt - nowSeconds + secondsToMove
+                },
               false)
         } else
           roundMap ! Tell(pov.gameId, NoStartColor(pov.color))

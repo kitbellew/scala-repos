@@ -87,15 +87,17 @@ case class Like(left: Expression, right: Expression)
 
   override protected def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val patternClass = classOf[Pattern].getName
-    val escapeFunc =
-      StringUtils.getClass.getName.stripSuffix("$") + ".escapeLikeRegex"
+    val escapeFunc = StringUtils
+      .getClass
+      .getName
+      .stripSuffix("$") + ".escapeLikeRegex"
     val pattern = ctx.freshName("pattern")
 
     if (right.foldable) {
       val rVal = right.eval()
       if (rVal != null) {
-        val regexStr = StringEscapeUtils.escapeJava(
-          escape(rVal.asInstanceOf[UTF8String].toString()))
+        val regexStr = StringEscapeUtils
+          .escapeJava(escape(rVal.asInstanceOf[UTF8String].toString()))
         ctx.addMutableState(
           patternClass,
           pattern,
@@ -149,8 +151,8 @@ case class RLike(left: Expression, right: Expression)
     if (right.foldable) {
       val rVal = right.eval()
       if (rVal != null) {
-        val regexStr = StringEscapeUtils.escapeJava(
-          rVal.asInstanceOf[UTF8String].toString())
+        val regexStr = StringEscapeUtils
+          .escapeJava(rVal.asInstanceOf[UTF8String].toString())
         ctx.addMutableState(
           patternClass,
           pattern,
@@ -288,14 +290,10 @@ case class RegExpReplace(
     val classNamePattern = classOf[Pattern].getCanonicalName
     val classNameStringBuffer = classOf[java.lang.StringBuffer].getCanonicalName
 
-    ctx.addMutableState(
-      "UTF8String",
-      termLastRegex,
-      s"${termLastRegex} = null;")
-    ctx.addMutableState(
-      classNamePattern,
-      termPattern,
-      s"${termPattern} = null;")
+    ctx
+      .addMutableState("UTF8String", termLastRegex, s"${termLastRegex} = null;")
+    ctx
+      .addMutableState(classNamePattern, termPattern, s"${termPattern} = null;")
     ctx.addMutableState(
       "String",
       termLastReplacement,
@@ -385,14 +383,10 @@ case class RegExpExtract(
     val termPattern = ctx.freshName("pattern")
     val classNamePattern = classOf[Pattern].getCanonicalName
 
-    ctx.addMutableState(
-      "UTF8String",
-      termLastRegex,
-      s"${termLastRegex} = null;")
-    ctx.addMutableState(
-      classNamePattern,
-      termPattern,
-      s"${termPattern} = null;")
+    ctx
+      .addMutableState("UTF8String", termLastRegex, s"${termLastRegex} = null;")
+    ctx
+      .addMutableState(classNamePattern, termPattern, s"${termPattern} = null;")
 
     nullSafeCodeGen(
       ctx,

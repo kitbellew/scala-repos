@@ -57,7 +57,8 @@ private[sbt] class PluginsDebug(
       val explained = possible.map(explainPluginEnable)
       val possibleString =
         if (explained.size > 1)
-          explained.zipWithIndex
+          explained
+            .zipWithIndex
             .map {
               case (s, i) =>
                 s"$i. $s"
@@ -143,7 +144,10 @@ private[sbt] object PluginsDebug {
         val pluginStrings =
           for (plugin <- availableAutoPlugins(build))
             yield {
-              val activatedIn = build.defined.values.toList
+              val activatedIn = build
+                .defined
+                .values
+                .toList
                 .filter(_.autoPlugins.contains(plugin))
                 .map(_.id)
               val actString =
@@ -165,7 +169,10 @@ private[sbt] object PluginsDebug {
   def autoPluginMap(s: State): Map[String, AutoPlugin] = {
     val extracted = Project.extract(s)
     import extracted._
-    structure.units.values.toList
+    structure
+      .units
+      .values
+      .toList
       .flatMap(availableAutoPlugins)
       .map(plugin => (plugin.label, plugin))
       .toMap
@@ -183,8 +190,9 @@ private[sbt] object PluginsDebug {
       p.autoPlugins.contains(plugin)
     def projectForRef(ref: ProjectRef): ResolvedProject =
       get(Keys.thisProject in ref)
-    val perBuild: Map[URI, Set[AutoPlugin]] = structure.units.mapValues(unit =>
-      availableAutoPlugins(unit).toSet)
+    val perBuild: Map[URI, Set[AutoPlugin]] = structure
+      .units
+      .mapValues(unit => availableAutoPlugins(unit).toSet)
     val pluginsThisBuild =
       perBuild.getOrElse(currentRef.build, Set.empty).toList
     lazy val context = Context(
@@ -195,7 +203,8 @@ private[sbt] object PluginsDebug {
       s.log)
     lazy val debug = PluginsDebug(context.available)
     if (!pluginsThisBuild.contains(plugin)) {
-      val availableInBuilds: List[URI] = perBuild.toList
+      val availableInBuilds: List[URI] = perBuild
+        .toList
         .filter(_._2(plugin))
         .map(_._1)
       s"Plugin ${plugin.label} is only available in builds:\n\t${availableInBuilds.mkString("\n\t")}\nSwitch to a project in one of those builds using `project` and rerun this command for more information."
@@ -206,14 +215,13 @@ private[sbt] object PluginsDebug {
         .dependencies(structure.units)
         .aggregateTransitive
         .getOrElse(currentRef, Nil)
-      val definedInAggregated = thisAggregated.filter(ref =>
-        definesPlugin(projectForRef(ref)))
+      val definedInAggregated = thisAggregated
+        .filter(ref => definesPlugin(projectForRef(ref)))
       if (definedInAggregated.nonEmpty) {
         val projectNames = definedInAggregated.map(
           _.project
         ) // TODO: usually in this build, but could technically require the build to be qualified
-        s"Plugin ${plugin.label} is not activated on this project, but this project aggregates projects where it is activated:\n\t${projectNames
-          .mkString("\n\t")}"
+        s"Plugin ${plugin.label} is not activated on this project, but this project aggregates projects where it is activated:\n\t${projectNames.mkString("\n\t")}"
       } else {
         val base = debug.deactivatedHelp(plugin, context)
         val aggNote =
@@ -359,8 +367,8 @@ private[sbt] object PluginsDebug {
 
       // Plugins that are newly enabled as a result of selecting the plugins needed for `plugin`, but aren't strictly required for `plugin`.
       //   These could be excluded and `plugin` and the user's current plugins would still be activated.
-      val extraPlugins =
-        incrementalModel.toSet -- minRequiredPlugins -- initialModel
+      val extraPlugins = incrementalModel
+        .toSet -- minRequiredPlugins -- initialModel
 
       // Plugins that will no longer be enabled as a result of enabling `plugin`.
       val willRemove = initialModel -- incrementalModel
@@ -369,8 +377,8 @@ private[sbt] object PluginsDebug {
       // If both A and B must be deactivated, but A transitively depends on B, deactivating B will deactivate A.
       // If A must be deactivated, but one if its (transitively) required plugins isn't present, it won't be activated.
       //   So, in either of these cases, A doesn't need to be considered further and won't be included in this set.
-      val minDeactivate = minAbsentPlugins.filter(p =>
-        Plugins.satisfied(p.requires, incrementalModel))
+      val minDeactivate = minAbsentPlugins
+        .filter(p => Plugins.satisfied(p.requires, incrementalModel))
 
       val deactivate =
         for (d <- minDeactivate.toList)
@@ -402,15 +410,19 @@ private[sbt] object PluginsDebug {
     And(plugins map (p => Exclude(p)) toList)
 
   private[this] def excludes(bs: Seq[Basic]): Set[AutoPlugin] =
-    bs.collect {
-      case Exclude(b) =>
-        b
-    }.toSet
+    bs
+      .collect {
+        case Exclude(b) =>
+          b
+      }
+      .toSet
   private[this] def plugins(bs: Seq[Basic]): Set[AutoPlugin] =
-    bs.collect {
-      case n: AutoPlugin =>
-        n
-    }.toSet
+    bs
+      .collect {
+        case n: AutoPlugin =>
+          n
+      }
+      .toSet
 
   // If there is a model that includes `plugin`, it includes at least what is returned by this method.
   // This is the list of plugins that must be included as well as list of plugins that must not be present.

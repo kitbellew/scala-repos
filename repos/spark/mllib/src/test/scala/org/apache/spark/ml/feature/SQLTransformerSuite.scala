@@ -48,8 +48,7 @@ class SQLTransformerSuite
   }
 
   test("read/write") {
-    val t = new SQLTransformer()
-      .setStatement("select * from __THIS__")
+    val t = new SQLTransformer().setStatement("select * from __THIS__")
     testDefaultReadWrite(t)
   }
 }

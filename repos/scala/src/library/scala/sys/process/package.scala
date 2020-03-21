@@ -207,7 +207,10 @@ package scala.sys {
     def javaVmArguments: List[String] = {
       import scala.collection.JavaConversions._
 
-      java.lang.management.ManagementFactory
+      java
+        .lang
+        .management
+        .ManagementFactory
         .getRuntimeMXBean()
         .getInputArguments()
         .toList

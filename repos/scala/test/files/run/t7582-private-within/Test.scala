@@ -6,9 +6,8 @@ object Test extends DirectTest {
   def code = ???
 
   def show(): Unit = {
-    val classpath =
-      List(sys.props("partest.lib"), testOutput.path) mkString sys.props(
-        "path.separator")
+    val classpath = List(sys.props("partest.lib"), testOutput.path) mkString sys
+      .props("path.separator")
     val global = newCompiler(
       "-usejavacp",
       "-cp",

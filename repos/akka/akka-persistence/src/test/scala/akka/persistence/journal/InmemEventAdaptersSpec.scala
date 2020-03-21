@@ -71,8 +71,8 @@ class InmemEventAdaptersSpec extends AkkaSpec {
     }
 
     "fail with useful message when binding to not defined adapter" in {
-      val badConfig = ConfigFactory.parseString(
-        """
+      val badConfig = ConfigFactory
+        .parseString("""
           |akka.persistence.journal.inmem {
           |  event-adapter-bindings {
           |    "java.lang.Integer" = undefined-adapter
@@ -94,7 +94,8 @@ class InmemEventAdaptersSpec extends AkkaSpec {
 
       // read-side only adapter
       val r: EventAdapter = adapters.get(classOf[ReadMeEvent])
-      r.fromJournal(r.toJournal(ReadMeEvent()), "")
+      r
+        .fromJournal(r.toJournal(ReadMeEvent()), "")
         .events
         .head
         .toString should ===("from-ReadMeEvent()")
@@ -105,7 +106,8 @@ class InmemEventAdaptersSpec extends AkkaSpec {
 
       // write-side only adapter
       val w: EventAdapter = adapters.get(classOf[WriteMeEvent])
-      w.fromJournal(w.toJournal(WriteMeEvent()), "")
+      w
+        .fromJournal(w.toJournal(WriteMeEvent()), "")
         .events
         .head
         .toString should ===("to-WriteMeEvent()")

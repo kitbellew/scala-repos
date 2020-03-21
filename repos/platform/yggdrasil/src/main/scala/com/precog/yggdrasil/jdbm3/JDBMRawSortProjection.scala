@@ -95,8 +95,8 @@ class JDBMRawSortProjection[M[+_]] private[yggdrasil] (
         .disableLocking()
         .make()
       try {
-        val index: SortedMap[Array[Byte], Array[Byte]] = db.getTreeMap(
-          indexName)
+        val index: SortedMap[Array[Byte], Array[Byte]] = db
+          .getTreeMap(indexName)
 
         if (index == null) {
           throw new IllegalArgumentException(
@@ -142,21 +142,18 @@ class JDBMRawSortProjection[M[+_]] private[yggdrasil] (
         if (iterator.isEmpty) {
           None
         } else {
-          val keyColumns = sortKeyRefs.map(
-            JDBMSlice.columnFor(CPath("[0]"), sliceSize))
-          val valColumns = valRefs.map(
-            JDBMSlice.columnFor(CPath("[1]"), sliceSize))
+          val keyColumns = sortKeyRefs
+            .map(JDBMSlice.columnFor(CPath("[0]"), sliceSize))
+          val valColumns = valRefs
+            .map(JDBMSlice.columnFor(CPath("[1]"), sliceSize))
 
-          val keyColumnDecoder = keyFormat.ColumnDecoder(
-            keyColumns.map(_._2)(collection.breakOut))
-          val valColumnDecoder = rowFormat.ColumnDecoder(
-            valColumns.map(_._2)(collection.breakOut))
+          val keyColumnDecoder = keyFormat
+            .ColumnDecoder(keyColumns.map(_._2)(collection.breakOut))
+          val valColumnDecoder = rowFormat
+            .ColumnDecoder(valColumns.map(_._2)(collection.breakOut))
 
-          val (firstKey, lastKey, rows) = JDBMSlice.load(
-            sliceSize,
-            iteratorSetup,
-            keyColumnDecoder,
-            valColumnDecoder)
+          val (firstKey, lastKey, rows) = JDBMSlice
+            .load(sliceSize, iteratorSetup, keyColumnDecoder, valColumnDecoder)
 
           val slice =
             new Slice {

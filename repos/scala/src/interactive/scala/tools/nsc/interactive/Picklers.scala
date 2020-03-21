@@ -141,7 +141,8 @@ trait Picklers {
           else
             sym
         ).name
-        if (!sym.isType && !sym.isStable) { // TODO: what's the reasoning behind this condition!?
+        if (!sym.isType && !sym
+              .isStable) { // TODO: what's the reasoning behind this condition!?
           val sym1 = sym.owner.info.decl(sym.name)
           if (sym1.isOverloaded) {
             val index = sym1.alternatives.indexOf(sym)
@@ -173,13 +174,12 @@ trait Picklers {
   }
 
   implicit def workEvent: Pickler[WorkEvent] = {
-    (pkl[Int] ~ pkl[Long])
-      .wrapped {
-        case id ~ ms =>
-          WorkEvent(id, ms)
-      } { w =>
-        w.atNode ~ w.atMillis
-      }
+    (pkl[Int] ~ pkl[Long]).wrapped {
+      case id ~ ms =>
+        WorkEvent(id, ms)
+    } { w =>
+      w.atNode ~ w.atMillis
+    }
   }
 
   implicit def interruptReq: Pickler[InterruptReq] = {
@@ -265,7 +265,8 @@ trait Picklers {
       pkl[Symbol] ~ pkl[SourceFile] ~ pkl[Symbol] ~ pkl[List[(
           Symbol,
           SourceFile)]]
-    ).wrapped {
+    )
+      .wrapped {
         case sym ~ source ~ site ~ fragments =>
           new AskDocCommentItem(sym, source, site, fragments, new Response)
       } { item =>

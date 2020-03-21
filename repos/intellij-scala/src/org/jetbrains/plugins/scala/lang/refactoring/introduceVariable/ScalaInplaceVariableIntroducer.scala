@@ -111,9 +111,8 @@ class ScalaInplaceVariableIntroducer(
           if (named.isDefined) {
             setDeclaration(declaration)
             if (nameIsValid != (
-                  named.isDefined && isIdentifier(
-                    input.trim,
-                    myFile.getLanguage)
+                  named
+                    .isDefined && isIdentifier(input.trim, myFile.getLanguage)
                 )) {
               nameIsValid = !nameIsValid
             }
@@ -248,7 +247,8 @@ class ScalaInplaceVariableIntroducer(
               val named: Option[ScNamedElement] = namedElement(getDeclaration)
               if (named.isDefined) {
                 val nameRange = named.get.getNameIdentifier.getTextRange
-                nameRange.getStartOffset == start && nameRange.getEndOffset <= end
+                nameRange
+                  .getStartOffset == start && nameRange.getEndOffset <= end
               } else
                 false
             }
@@ -262,7 +262,8 @@ class ScalaInplaceVariableIntroducer(
                   val declaration = getDeclaration
                   declaration match {
                     case _: ScDeclaredElementsHolder | _: ScEnumerator =>
-                      val declarationCopy = declaration.copy
+                      val declarationCopy = declaration
+                        .copy
                         .asInstanceOf[ScalaPsiElement]
                       val manager = declarationCopy.getManager
                       val fakeDeclaration = ScalaPsiElementFactory
@@ -273,12 +274,12 @@ class ScalaInplaceVariableIntroducer(
                           "",
                           manager,
                           isPresentableText = false)
-                      val first = fakeDeclaration.findFirstChildByType(
-                        ScalaTokenTypes.tCOLON)
-                      val last = fakeDeclaration.findFirstChildByType(
-                        ScalaTokenTypes.tASSIGN)
-                      val assign = declarationCopy.findFirstChildByType(
-                        ScalaTokenTypes.tASSIGN)
+                      val first = fakeDeclaration
+                        .findFirstChildByType(ScalaTokenTypes.tCOLON)
+                      val last = fakeDeclaration
+                        .findFirstChildByType(ScalaTokenTypes.tASSIGN)
+                      val assign = declarationCopy
+                        .findFirstChildByType(ScalaTokenTypes.tASSIGN)
                       declarationCopy.addRangeAfter(first, last, assign)
                       assign.delete()
                       val replaced = getDeclaration.replace(declarationCopy)
@@ -291,22 +292,24 @@ class ScalaInplaceVariableIntroducer(
                 private def removeTypeAnnotation(): Unit = {
                   getDeclaration match {
                     case holder: ScDeclaredElementsHolder =>
-                      val colon = holder.findFirstChildByType(
-                        ScalaTokenTypes.tCOLON)
-                      val assign = holder.findFirstChildByType(
-                        ScalaTokenTypes.tASSIGN)
+                      val colon = holder
+                        .findFirstChildByType(ScalaTokenTypes.tCOLON)
+                      val assign = holder
+                        .findFirstChildByType(ScalaTokenTypes.tASSIGN)
                       val whiteSpace = ScalaPsiElementFactory
                         .createExpressionFromText("1 + 1", myFile.getManager)
                         .findElementAt(1)
                       val newWhiteSpace = holder.addBefore(whiteSpace, assign)
-                      holder.getNode
+                      holder
+                        .getNode
                         .removeRange(colon.getNode, newWhiteSpace.getNode)
                       setDeclaration(holder)
                       commitDocument()
                     case enum: ScEnumerator
                         if enum.pattern.isInstanceOf[ScTypedPattern] =>
-                      val colon = enum.pattern.findFirstChildByType(
-                        ScalaTokenTypes.tCOLON)
+                      val colon = enum
+                        .pattern
+                        .findFirstChildByType(ScalaTokenTypes.tCOLON)
                       enum.pattern.getNode.removeRange(colon.getNode, null)
                       setDeclaration(enum)
                       commitDocument()
@@ -324,13 +327,15 @@ class ScalaInplaceVariableIntroducer(
                 }
               }
             writeAction.execute()
-            ApplicationManager.getApplication.runReadAction(
-              new Runnable {
-                def run(): Unit = {
-                  if (needInferType)
-                    resetGreedyToRightBack()
-                }
-              })
+            ApplicationManager
+              .getApplication
+              .runReadAction(
+                new Runnable {
+                  def run(): Unit = {
+                    if (needInferType)
+                      resetGreedyToRightBack()
+                  }
+                })
           }
         })
     }
@@ -346,10 +351,12 @@ class ScalaInplaceVariableIntroducer(
 
     myChbPanel.setLayout(new BoxLayout(myChbPanel, BoxLayout.Y_AXIS))
     myChbPanel.setBorder(null)
-    Seq(myVarCheckbox, mySpecifyTypeChb).filter(_ != null).foreach { chb =>
-      myChbPanel.add(chb)
-      chb.setEnabled(nameIsValid)
-    }
+    Seq(myVarCheckbox, mySpecifyTypeChb)
+      .filter(_ != null)
+      .foreach { chb =>
+        myChbPanel.add(chb)
+        chb.setEnabled(nameIsValid)
+      }
 
     myLabel.setText(
       ScalaBundle.message("introduce.variable.identifier.is.not.valid"))
@@ -389,27 +396,28 @@ class ScalaInplaceVariableIntroducer(
           val startOffset: Int = myExprMarker.getStartOffset
           val elementAt: PsiElement = myFile.findElementAt(startOffset)
           if (elementAt != null) {
-            myEditor.getCaretModel.moveToOffset(
-              elementAt.getTextRange.getEndOffset)
+            myEditor
+              .getCaretModel
+              .moveToOffset(elementAt.getTextRange.getEndOffset)
           } else {
             myEditor.getCaretModel.moveToOffset(myExprMarker.getEndOffset)
           }
         } else if (getDeclaration != null) {
           val declaration = getDeclaration
-          myEditor.getCaretModel.moveToOffset(
-            declaration.getTextRange.getEndOffset)
+          myEditor
+            .getCaretModel
+            .moveToOffset(declaration.getTextRange.getEndOffset)
         }
       } else if (getDeclaration != null && !UndoManager
                    .getInstance(myProject)
                    .isUndoInProgress) {
-        val revertInfo = myEditor.getUserData(
-          ScalaIntroduceVariableHandler.REVERT_INFO)
+        val revertInfo = myEditor
+          .getUserData(ScalaIntroduceVariableHandler.REVERT_INFO)
         if (revertInfo != null) {
           extensions.inWriteAction {
-            myEditor.getDocument.replaceString(
-              0,
-              myFile.getTextLength,
-              revertInfo.fileText)
+            myEditor
+              .getDocument
+              .replaceString(0, myFile.getTextLength, revertInfo.fileText)
           }
           myEditor.getCaretModel.moveToOffset(revertInfo.caretOffset)
           myEditor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
@@ -452,8 +460,8 @@ class ScalaInplaceVariableIntroducer(
 
     try {
       val named = namedElement(getDeclaration).orNull
-      val templateState: TemplateState = TemplateManagerImpl.getTemplateState(
-        myEditor)
+      val templateState: TemplateState = TemplateManagerImpl
+        .getTemplateState(myEditor)
       if (named != null && templateState != null) {
         val occurrences =
           (

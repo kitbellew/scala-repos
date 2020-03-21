@@ -34,8 +34,8 @@ object FlowSpec {
 
 class FlowSpec
     extends AkkaSpec(
-      ConfigFactory.parseString(
-        "akka.actor.debug.receive=off\nakka.loglevel=INFO")) {
+      ConfigFactory
+        .parseString("akka.actor.debug.receive=off\nakka.loglevel=INFO")) {
   import FlowSpec._
 
   val settings = ActorMaterializerSettings(system)
@@ -146,18 +146,16 @@ class FlowSpec
           op,
           settings.withInputBuffer(initialSize = n, maxSize = n),
           toPublisher) {
-          upstream.expectRequest(
-            upstreamSubscription,
-            settings.maxInputBufferSize)
+          upstream
+            .expectRequest(upstreamSubscription, settings.maxInputBufferSize)
         }
       }
     }
 
     "request more elements from upstream when downstream requests more elements" in {
       new ChainSetup(identity, settings, toPublisher) {
-        upstream.expectRequest(
-          upstreamSubscription,
-          settings.maxInputBufferSize)
+        upstream
+          .expectRequest(upstreamSubscription, settings.maxInputBufferSize)
         downstreamSubscription.request(1)
         upstream.expectNoMsg(100.millis)
         downstreamSubscription.request(2)
@@ -511,10 +509,8 @@ class FlowSpec
         // d2 now has 0 outstanding
         // buffer should be empty so we should be requesting one new element
 
-        upstream.expectRequest(
-          upstreamSubscription,
-          1
-        ) // because of buffer size 1
+        upstream
+          .expectRequest(upstreamSubscription, 1) // because of buffer size 1
       }
     }
 
@@ -596,8 +592,8 @@ class FlowSpec
         val downstream3 = TestSubscriber.manualProbe[Any]()
         publisher.subscribe(downstream3)
         downstream3.expectSubscription()
-        downstream3.expectError() should ===(
-          ActorPublisher.NormalShutdownReason)
+        downstream3
+          .expectError() should ===(ActorPublisher.NormalShutdownReason)
       }
     }
 
@@ -704,7 +700,8 @@ class FlowSpec
 
     "suitably override attribute handling methods" in {
       import Attributes._
-      val f: Flow[Int, Int, NotUsed] = Flow[Int].async
+      val f: Flow[Int, Int, NotUsed] = Flow[Int]
+        .async
         .addAttributes(none)
         .named("")
     }

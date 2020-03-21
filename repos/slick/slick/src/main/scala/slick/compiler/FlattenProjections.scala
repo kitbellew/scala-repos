@@ -33,7 +33,8 @@ class FlattenProjections extends Phase {
             res
           case p: PathElement =>
             logger.debug(
-              "Analyzing " + p.pathString + " with symbols " + translations.keySet
+              "Analyzing " + p.pathString + " with symbols " + translations
+                .keySet
                 .mkString(", "),
               p)
             val p2 =
@@ -116,10 +117,13 @@ class FlattenProjections extends Phase {
               flatten(n, s :: path)
           }
         case p: ProductNode =>
-          p.children.zipWithIndex.foreach {
-            case (n, i) =>
-              flatten(n, new ElementSymbol(i + 1) :: path)
-          }
+          p
+            .children
+            .zipWithIndex
+            .foreach {
+              case (n, i) =>
+                flatten(n, new ElementSymbol(i + 1) :: path)
+            }
         case n =>
           if (collapse) {
             defsM.get(n) match {

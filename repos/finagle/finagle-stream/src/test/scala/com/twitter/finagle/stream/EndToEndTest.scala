@@ -54,10 +54,8 @@ class EndToEndTest extends FunSuite {
     val streamRequest = 1
     val httpRequest =
       from(StreamRequest(StreamRequest.Method.Get, "/")): HttpRequest
-    val info = StreamResponse.Info(
-      Version(1, 1),
-      StreamResponse.Status(200),
-      Nil)
+    val info = StreamResponse
+      .Info(Version(1, 1), StreamResponse.Status(200), Nil)
     val messages = new Broker[Buf]
     val error = new Broker[Throwable]
     val serverRes = MyStreamResponse(info, messages.recv, error.recv)
@@ -80,10 +78,12 @@ class EndToEndTest extends FunSuite {
         }
       }
 
-      clientRes.messages.foreach {
-        case Buf.Utf8(str) =>
-          result += str
-      }
+      clientRes
+        .messages
+        .foreach {
+          case Buf.Utf8(str) =>
+            result += str
+        }
 
       messages !! Buf.Utf8("1")
       messages !! Buf.Utf8("2")
@@ -108,11 +108,13 @@ class EndToEndTest extends FunSuite {
 
       val latch = new CountDownLatch(3)
       var result = ""
-      clientRes.messages.foreach {
-        case Buf.Utf8(str) =>
-          result += str
-          latch.countDown()
-      }
+      clientRes
+        .messages
+        .foreach {
+          case Buf.Utf8(str) =>
+            result += str
+            latch.countDown()
+        }
 
       latch.within(1.second)
       error !! EOF
@@ -121,8 +123,8 @@ class EndToEndTest extends FunSuite {
     }
 
     test(
-      "Streams %s: the client does not admit concurrent requests".format(
-        what)) {
+      "Streams %s: the client does not admit concurrent requests"
+        .format(what)) {
       val c = new WorkItContext()
       import c._
       val (client, _) = mkClient(serverRes)
@@ -139,8 +141,8 @@ class EndToEndTest extends FunSuite {
 
     if (!sys.props.contains("SKIP_FLAKY"))
       test(
-        "Streams %s: the server does not admit concurrent requests".format(
-          what)) {
+        "Streams %s: the server does not admit concurrent requests"
+          .format(what)) {
         val c = new WorkItContext()
         import c._
         val (client, address) = mkClient(serverRes)
@@ -183,27 +185,20 @@ class EndToEndTest extends FunSuite {
             }
           })
 
-        val connectFuture = bootstrap
-          .connect(address)
-          .awaitUninterruptibly()
+        val connectFuture = bootstrap.connect(address).awaitUninterruptibly()
         assert(connectFuture.isSuccess)
         val channel = connectFuture.getChannel
 
         // first request is accepted
-        assert(
-          channel
-            .write(httpRequest)
-            .awaitUninterruptibly()
-            .isSuccess)
+        assert(channel.write(httpRequest).awaitUninterruptibly().isSuccess)
 
         messages !! Buf.Utf8("chunk1")
 
         assert(
           Await.result(recvd ?, 1.second) match {
             case e: ChannelStateEvent =>
-              e.getState == ChannelState.OPEN && (
-                java.lang.Boolean.TRUE equals e.getValue
-              )
+              e.getState == ChannelState
+                .OPEN && (java.lang.Boolean.TRUE equals e.getValue)
             case _ =>
               false
           })
@@ -235,11 +230,7 @@ class EndToEndTest extends FunSuite {
           })
 
         // The following requests should be ignored
-        assert(
-          channel
-            .write(httpRequest)
-            .awaitUninterruptibly()
-            .isSuccess)
+        assert(channel.write(httpRequest).awaitUninterruptibly().isSuccess)
 
         // the streaming should continue
         messages !! Buf.Utf8("chunk2")
@@ -279,9 +270,8 @@ class EndToEndTest extends FunSuite {
         assert(
           Await.result(recvd ?, 1.second) match {
             case e: ChannelStateEvent =>
-              e.getState == ChannelState.OPEN && (
-                java.lang.Boolean.FALSE equals e.getValue
-              )
+              e.getState == ChannelState
+                .OPEN && (java.lang.Boolean.FALSE equals e.getValue)
             case _ =>
               false
           })
@@ -307,10 +297,12 @@ class EndToEndTest extends FunSuite {
         }
       }
 
-      clientRes.messages.foreach {
-        case Buf.Utf8(str) =>
-          result += str
-      }
+      clientRes
+        .messages
+        .foreach {
+          case Buf.Utf8(str) =>
+            result += str
+        }
 
       FuturePool.unboundedPool {
         messages !! Buf.Utf8("12")

@@ -52,12 +52,8 @@ object TokenSets {
 
   val TMPL_DEF_BIT_SET = TokenSet.create(OBJECT_DEF, CLASS_DEF, TRAIT_DEF)
 
-  val TMPL_OR_TYPE_BIT_SET = TokenSet.create(
-    OBJECT_DEF,
-    CLASS_DEF,
-    TRAIT_DEF,
-    TYPE_DEFINITION,
-    TYPE_DECLARATION)
+  val TMPL_OR_TYPE_BIT_SET = TokenSet
+    .create(OBJECT_DEF, CLASS_DEF, TRAIT_DEF, TYPE_DEFINITION, TYPE_DECLARATION)
 
   val EXPR1_BIT_SET: TokenSet = TokenSet.create(
     IF_STMT,
@@ -81,10 +77,8 @@ object TokenSets {
 
   val STABLE_ID_BIT_SET = TokenSet.create(STABLE_ID, tIDENTIFIER)
 
-  val TYPE_DEFINITIONS_SET: TokenSet = TokenSet.create(
-    CLASS_DEF,
-    TRAIT_DEF,
-    OBJECT_DEF)
+  val TYPE_DEFINITIONS_SET: TokenSet = TokenSet
+    .create(CLASS_DEF, TRAIT_DEF, OBJECT_DEF)
 
   val TYPE_BIT_SET: TokenSet = TokenSet.orSet(
     STABLE_ID_BIT_SET,
@@ -127,10 +121,8 @@ object TokenSets {
     )
   )
 
-  val SIMPLE_EXPR_BIT_SET = TokenSet.create(
-    PLACEHOLDER_EXPR,
-    LITERAL,
-    BLOCK_EXPR)
+  val SIMPLE_EXPR_BIT_SET = TokenSet
+    .create(PLACEHOLDER_EXPR, LITERAL, BLOCK_EXPR)
 
   val REFERENCE_SET = TokenSet.create(REFERENCE)
 
@@ -160,9 +152,8 @@ object TokenSets {
     ScalaElementTypes.VARIABLE_DECLARATION,
     ScalaElementTypes.VARIABLE_DEFINITION)
 
-  val TEMPLATE_PARENTS = TokenSet.create(
-    ScalaElementTypes.CLASS_PARENTS,
-    ScalaElementTypes.TRAIT_PARENTS)
+  val TEMPLATE_PARENTS = TokenSet
+    .create(ScalaElementTypes.CLASS_PARENTS, ScalaElementTypes.TRAIT_PARENTS)
 
   val MEMBERS = TokenSet.orSet(
     TokenSet.orSet(
@@ -180,9 +171,8 @@ object TokenSets {
     MemberElementTypesExtension.getAllElementTypes
   )
 
-  val DECLARED_ELEMENTS_HOLDER = TokenSet.orSet(
-    FUNCTIONS,
-    TokenSet.orSet(VALUES, VARIABLES))
+  val DECLARED_ELEMENTS_HOLDER = TokenSet
+    .orSet(FUNCTIONS, TokenSet.orSet(VALUES, VARIABLES))
 
   val PARAMETERS = TokenSet.create(PARAM, CLASS_PARAM)
 

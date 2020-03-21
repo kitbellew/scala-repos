@@ -23,17 +23,21 @@ import com.twitter.scalding.typed.FlattenGroup._
 class MultiJoinTest extends WordSpec {
 
   def addKeys[V](t: Seq[V]): Seq[(Int, V)] =
-    t.iterator.zipWithIndex.map {
-      case (v, k) =>
-        (k, v)
-    }.toSeq
+    t
+      .iterator
+      .zipWithIndex
+      .map {
+        case (v, k) =>
+          (k, v)
+      }
+      .toSeq
 
   val doubles = TypedPipe.from(addKeys(List(1.0d, 2.0d, 3.0d)))
   val longs = TypedPipe.from(addKeys(List(10L, 20L, 30L)))
   val strings = TypedPipe.from(addKeys(List("one", "two", "three")))
   val sets = TypedPipe.from(addKeys(List(Set(1), Set(2), Set(3))))
-  val maps = TypedPipe.from(
-    addKeys(List(Map(1 -> 1), Map(2 -> 2), Map(3 -> 3))))
+  val maps = TypedPipe
+    .from(addKeys(List(Map(1 -> 1), Map(2 -> 2), Map(3 -> 3))))
 
   val joined = doubles.join(longs).join(strings).join(sets).join(maps)
   val leftJoined = doubles

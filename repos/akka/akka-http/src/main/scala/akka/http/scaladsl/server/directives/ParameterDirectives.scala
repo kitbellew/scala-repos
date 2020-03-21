@@ -206,8 +206,8 @@ object ParameterDirectives extends ParameterDirectives {
         import ctx.materializer
         handleParamResult(
           paramName,
-          Future.sequence(
-            ctx.request.uri.query().getAll(paramName).map(fsu.apply)))
+          Future
+            .sequence(ctx.request.uri.query().getAll(paramName).map(fsu.apply)))
       }
     implicit def forRepVR[T](implicit fsu: FSU[T])
         : ParamDefAux[RepeatedValueReceptacle[T], Directive1[Iterable[T]]] =

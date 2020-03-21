@@ -73,7 +73,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
     // collect Item as Map and convert ID to Int index
     val items: Map[Int, Item] =
-      data.items
+      data
+        .items
         .map {
           case (id, item) =>
             (itemStringIntMap(id), item)
@@ -81,7 +82,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         .collectAsMap
         .toMap
 
-    val mllibRatings = data.rateEvents
+    val mllibRatings = data
+      .rateEvents
       .map { r =>
         // Convert user and item String IDs to Int index for MLlib
         val uindex = userStringIntMap.getOrElse(r.user, -1)
@@ -156,26 +158,30 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       query.items.map(model.itemStringIntMap.get(_)).flatten.toSet
 
     val queryFeatures: Vector[Array[Double]] =
-      queryList.toVector
-      // productFeatures may not contain the requested item
-      .map { item =>
-        productFeatures.get(item)
-      }.flatten
+      queryList
+        .toVector
+        // productFeatures may not contain the requested item
+        .map { item =>
+          productFeatures.get(item)
+        }.flatten
 
-    val whiteList: Option[Set[Int]] = query.whiteList.map(set =>
-      set.map(model.itemStringIntMap.get(_)).flatten)
-    val blackList: Option[Set[Int]] = query.blackList.map(set =>
-      set.map(model.itemStringIntMap.get(_)).flatten)
+    val whiteList: Option[Set[Int]] = query
+      .whiteList
+      .map(set => set.map(model.itemStringIntMap.get(_)).flatten)
+    val blackList: Option[Set[Int]] = query
+      .blackList
+      .map(set => set.map(model.itemStringIntMap.get(_)).flatten)
 
     val ord = Ordering.by[(Int, Double), Double](_._2).reverse
 
     val indexScores: Array[(Int, Double)] =
       if (queryFeatures.isEmpty) {
-        logger.info(
-          s"No productFeatures vector for query items ${query.items}.")
+        logger
+          .info(s"No productFeatures vector for query items ${query.items}.")
         Array[(Int, Double)]()
       } else {
-        productFeatures.par // convert to parallel collection
+        productFeatures
+          .par // convert to parallel collection
           .mapValues { f =>
             queryFeatures
               .map { qf =>
@@ -188,16 +194,18 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
           .toArray
       }
 
-    val filteredScore = indexScores.view.filter {
-      case (i, v) =>
-        isCandidateItem(
-          i = i,
-          items = model.items,
-          categories = query.categories,
-          queryList = queryList,
-          whiteList = whiteList,
-          blackList = blackList)
-    }
+    val filteredScore = indexScores
+      .view
+      .filter {
+        case (i, v) =>
+          isCandidateItem(
+            i = i,
+            items = model.items,
+            categories = query.categories,
+            queryList = queryList,
+            whiteList = whiteList,
+            blackList = blackList)
+      }
 
     val topScores = getTopN(filteredScore, query.num)(ord).toArray
 
@@ -262,7 +270,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     // filter categories
     categories
       .map { cat =>
-        items(i).categories
+        items(i)
+          .categories
           .map { itemCat =>
             // keep this item if has ovelap categories with the query
             !(itemCat.toSet.intersect(cat).isEmpty)

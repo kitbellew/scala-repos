@@ -18,8 +18,9 @@ class ScalaLibraryProperties
 
   def loadState(state: ScalaLibraryPropertiesState) {
     languageLevel = ScalaLanguageLevel.from(state.languageLevel)
-    compilerClasspath = state.compilerClasspath.map(path =>
-      new File(urlToPath(path)))
+    compilerClasspath = state
+      .compilerClasspath
+      .map(path => new File(urlToPath(path)))
   }
 
   def getState = {
@@ -34,7 +35,8 @@ class ScalaLibraryProperties
   override def equals(obj: scala.Any) =
     obj match {
       case that: ScalaLibraryProperties =>
-        languageLevel == that.languageLevel && compilerClasspath == that.compilerClasspath
+        languageLevel == that.languageLevel && compilerClasspath == that
+          .compilerClasspath
       case _ =>
         false
     }

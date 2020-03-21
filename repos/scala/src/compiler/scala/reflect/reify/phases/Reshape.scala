@@ -190,8 +190,8 @@ trait Reshape {
             println("TypeTree, essential: %s (%s)".format(tt.tpe, tt.tpe.kind))
           if (reifyDebug)
             println(
-              "verdict: rolled back to original %s".format(
-                tt.original.toString.replaceAll("\\s+", " ")))
+              "verdict: rolled back to original %s"
+                .format(tt.original.toString.replaceAll("\\s+", " ")))
           transform(tt.original)
         } else {
           // type is deemed to be non-essential
@@ -321,10 +321,9 @@ trait Reshape {
         val name1 = name0.dropLocal
         val Modifiers(flags0, privateWithin0, annotations0) = mods0
         val flags1 = (flags0 & GetterFlags) & ~(STABLE | ACCESSOR | METHOD)
-        val mods1 = Modifiers(
-          flags1,
-          privateWithin0,
-          annotations0) setPositions mods0.positions
+        val mods1 =
+          Modifiers(flags1, privateWithin0, annotations0) setPositions mods0
+            .positions
         val mods2 = toPreTyperModifiers(mods1, ddef.symbol)
         ValDef(mods2, name1, tpt0, extractRhs(rhs0))
       }

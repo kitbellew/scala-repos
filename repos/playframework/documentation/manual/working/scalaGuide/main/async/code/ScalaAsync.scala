@@ -27,8 +27,8 @@ object ScalaAsyncSpec extends PlaySpecification {
 
     "allow timing out a future" in new WithApplication() {
       status(
-        ScalaAsyncSamples.timeout(1200)(
-          FakeRequest())) must_== INTERNAL_SERVER_ERROR
+        ScalaAsyncSamples
+          .timeout(1200)(FakeRequest())) must_== INTERNAL_SERVER_ERROR
       status(ScalaAsyncSamples.timeout(10)(FakeRequest())) must_== OK
     }
   }
@@ -57,9 +57,11 @@ object ScalaAsyncSamples extends Controller {
     //#intensive-computation
     import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-    val futureInt: Future[Int] = scala.concurrent.Future {
-      intensiveComputation()
-    }
+    val futureInt: Future[Int] = scala
+      .concurrent
+      .Future {
+        intensiveComputation()
+      }
     //#intensive-computation
     futureInt
   }
@@ -71,9 +73,11 @@ object ScalaAsyncSamples extends Controller {
 
     def index =
       Action.async {
-        val futureInt = scala.concurrent.Future {
-          intensiveComputation()
-        }
+        val futureInt = scala
+          .concurrent
+          .Future {
+            intensiveComputation()
+          }
         futureInt.map(i => Ok("Got result: " + i))
       }
     //#async-result
@@ -92,17 +96,25 @@ object ScalaAsyncSamples extends Controller {
 
     def index =
       Action.async {
-        val futureInt = scala.concurrent.Future {
-          intensiveComputation()
-        }
-        val timeoutFuture = play.api.libs.concurrent.Promise
+        val futureInt = scala
+          .concurrent
+          .Future {
+            intensiveComputation()
+          }
+        val timeoutFuture = play
+          .api
+          .libs
+          .concurrent
+          .Promise
           .timeout("Oops", 1.second)
-        Future.firstCompletedOf(Seq(futureInt, timeoutFuture)).map {
-          case i: Int =>
-            Ok("Got result: " + i)
-          case t: String =>
-            InternalServerError(t)
-        }
+        Future
+          .firstCompletedOf(Seq(futureInt, timeoutFuture))
+          .map {
+            case i: Int =>
+              Ok("Got result: " + i)
+            case t: String =>
+              InternalServerError(t)
+          }
       }
     //#timeout
     index

@@ -191,9 +191,11 @@ object ColumnarTableModule extends Logging {
       def combine(that: Indices): Indices = {
         val buf = new mutable.ArrayBuffer[String](a.length)
         buf ++= a
-        that.getPaths.foreach(p =>
-          if (!m.contains(p))
-            buf.append(p))
+        that
+          .getPaths
+          .foreach(p =>
+            if (!m.contains(p))
+              buf.append(p))
         Indices.fromPaths(buf.toArray)
       }
       override def equals(that: Any): Boolean =
@@ -365,13 +367,15 @@ object ColumnarTableModule extends Logging {
 
     StreamT.unfoldM((slices, none[Indices])) {
       case (stream, pastIndices) =>
-        stream.uncons.map {
-          case Some((slice, tail)) =>
-            val (indices, cb) = renderSlice(pastIndices, slice)
-            Some((cb, (tail, Some(indices))))
-          case None =>
-            None
-        }
+        stream
+          .uncons
+          .map {
+            case Some((slice, tail)) =>
+              val (indices, cb) = renderSlice(pastIndices, slice)
+              Some((cb, (tail, Some(indices))))
+            case None =>
+              None
+          }
     }
   }
 
@@ -651,145 +655,148 @@ trait ColumnarTableModule[M[+_]]
                 groupKeyProjections.map(_._1))
             }
         }
-      ).sequence.flatMap { sourceKeys =>
-        val fullSchema = sourceKeys.flatMap(_.keySchema).distinct
+      )
+        .sequence
+        .flatMap { sourceKeys =>
+          val fullSchema = sourceKeys.flatMap(_.keySchema).distinct
 
-        val indicesGroupedBySource =
-          sourceKeys
-            .groupBy(_.groupId)
-            .mapValues(_.map(y => (y.index, y.keySchema)).toSeq)
-            .values
-            .toSeq
+          val indicesGroupedBySource =
+            sourceKeys
+              .groupBy(_.groupId)
+              .mapValues(_.map(y => (y.index, y.keySchema)).toSeq)
+              .values
+              .toSeq
 
-        def unionOfIntersections(
-            indicesGroupedBySource: Seq[Seq[(TableIndex, KeySchema)]])
-            : Set[Key] = {
-          def allSourceDNF[T](l: Seq[Seq[T]]): Seq[Seq[T]] = {
-            l match {
-              case Seq(hd) =>
-                hd.map(Seq(_))
-              case Seq(hd, tl @ _*) => {
-                for {
-                  disjunctHd <- hd
-                  disjunctTl <- allSourceDNF(tl)
-                } yield disjunctHd +: disjunctTl
+          def unionOfIntersections(
+              indicesGroupedBySource: Seq[Seq[(TableIndex, KeySchema)]])
+              : Set[Key] = {
+            def allSourceDNF[T](l: Seq[Seq[T]]): Seq[Seq[T]] = {
+              l match {
+                case Seq(hd) =>
+                  hd.map(Seq(_))
+                case Seq(hd, tl @ _*) => {
+                  for {
+                    disjunctHd <- hd
+                    disjunctTl <- allSourceDNF(tl)
+                  } yield disjunctHd +: disjunctTl
+                }
+                case empty =>
+                  empty
               }
-              case empty =>
-                empty
             }
-          }
 
-          def normalizedKeys(
-              index: TableIndex,
-              keySchema: KeySchema): collection.Set[Key] = {
-            val schemaMap = for (k <- fullSchema) yield keySchema.indexOf(k)
-            for (key <- index.getUniqueKeys)
-              yield for (k <- schemaMap)
-                yield
-                  if (k == -1)
-                    CUndefined
+            def normalizedKeys(
+                index: TableIndex,
+                keySchema: KeySchema): collection.Set[Key] = {
+              val schemaMap = for (k <- fullSchema) yield keySchema.indexOf(k)
+              for (key <- index.getUniqueKeys)
+                yield for (k <- schemaMap)
+                  yield
+                    if (k == -1)
+                      CUndefined
+                    else
+                      key(k)
+            }
+
+            def intersect(
+                keys0: collection.Set[Key],
+                keys1: collection.Set[Key]): collection.Set[Key] = {
+              def consistent(key0: Key, key1: Key): Boolean =
+                (key0 zip key1).forall {
+                  case (k0, k1) =>
+                    k0 == k1 || k0 == CUndefined || k1 == CUndefined
+                }
+
+              def merge(key0: Key, key1: Key): Key =
+                (key0 zip key1).map {
+                  case (k0, CUndefined) =>
+                    k0
+                  case (_, k1) =>
+                    k1
+                }
+
+              // TODO: This "mini-cross" is much better than the
+              // previous mega-cross. However in many situations we
+              // could do even less work. Consider further optimization
+              // (e.g. when one key schema is a subset of the other).
+
+              // Relatedly it might make sense to topologically sort the
+              // Indices by their keyschemas so that we end up intersecting
+              // key with their subset.
+              keys0.flatMap { key0 =>
+                keys1.flatMap(key1 =>
+                  if (consistent(key0, key1))
+                    Some(merge(key0, key1))
                   else
-                    key(k)
-          }
-
-          def intersect(
-              keys0: collection.Set[Key],
-              keys1: collection.Set[Key]): collection.Set[Key] = {
-            def consistent(key0: Key, key1: Key): Boolean =
-              (key0 zip key1).forall {
-                case (k0, k1) =>
-                  k0 == k1 || k0 == CUndefined || k1 == CUndefined
+                    None)
               }
+            }
 
-            def merge(key0: Key, key1: Key): Key =
-              (key0 zip key1).map {
-                case (k0, CUndefined) =>
-                  k0
-                case (_, k1) =>
-                  k1
-              }
-
-            // TODO: This "mini-cross" is much better than the
-            // previous mega-cross. However in many situations we
-            // could do even less work. Consider further optimization
-            // (e.g. when one key schema is a subset of the other).
-
-            // Relatedly it might make sense to topologically sort the
-            // Indices by their keyschemas so that we end up intersecting
-            // key with their subset.
-            keys0.flatMap { key0 =>
-              keys1.flatMap(key1 =>
-                if (consistent(key0, key1))
-                  Some(merge(key0, key1))
-                else
-                  None)
+            allSourceDNF(indicesGroupedBySource).foldLeft(Set.empty[Key]) {
+              case (acc, intersection) =>
+                val hd = normalizedKeys(
+                  intersection.head._1,
+                  intersection.head._2)
+                acc | intersection
+                  .tail
+                  .foldLeft(hd) {
+                    case (keys0, (index1, schema1)) =>
+                      val keys1 = normalizedKeys(index1, schema1)
+                      intersect(keys0, keys1)
+                  }
             }
           }
 
-          allSourceDNF(indicesGroupedBySource).foldLeft(Set.empty[Key]) {
-            case (acc, intersection) =>
-              val hd = normalizedKeys(
-                intersection.head._1,
-                intersection.head._2)
-              acc | intersection.tail.foldLeft(hd) {
-                case (keys0, (index1, schema1)) =>
-                  val keys1 = normalizedKeys(index1, schema1)
-                  intersect(keys0, keys1)
-              }
-          }
-        }
-
-        def jValueFromGroupKey(
-            key: Seq[RValue],
-            cpaths: Seq[CPathField]): RValue = {
-          val items = (cpaths zip key).map(t => (t._1.name, t._2))
-          RObject(items.toMap)
-        }
-
-        val groupKeys: Set[Key] = unionOfIntersections(indicesGroupedBySource)
-
-        // given a groupKey, return an M[Table] which represents running
-        // the evaluator on that subgroup.
-        def evaluateGroupKey(groupKey: Key): M[Table] = {
-          val groupKeyTable = jValueFromGroupKey(groupKey, fullSchema)
-
-          def map(gid: GroupId): M[Table] = {
-            val subTableProjections =
-              (
-                sourceKeys
-                  .filter(_.groupId == gid)
-                  .map { indexedSource =>
-                    val keySchema = indexedSource.keySchema
-                    val projectedKeyIndices =
-                      for (k <- fullSchema)
-                        yield keySchema.indexOf(k)
-                    (indexedSource.index, projectedKeyIndices, groupKey)
-                  }
-                )
-                .toList
-
-            M.point(
-              TableIndex.joinSubTables(subTableProjections).normalize
-            ) // TODO: normalize necessary?
+          def jValueFromGroupKey(
+              key: Seq[RValue],
+              cpaths: Seq[CPathField]): RValue = {
+            val items = (cpaths zip key).map(t => (t._1.name, t._2))
+            RObject(items.toMap)
           }
 
-          nt(body(groupKeyTable, map))
-        }
+          val groupKeys: Set[Key] = unionOfIntersections(indicesGroupedBySource)
 
-        // TODO: this can probably be done as one step, but for now
-        // it's probably fine.
-        val tables: StreamT[M, Table] =
-          StreamT.unfoldM(groupKeys.toList) {
-            case k :: ks =>
-              evaluateGroupKey(k).map(t => Some((t, ks)))
-            case Nil =>
-              M.point(None)
+          // given a groupKey, return an M[Table] which represents running
+          // the evaluator on that subgroup.
+          def evaluateGroupKey(groupKey: Key): M[Table] = {
+            val groupKeyTable = jValueFromGroupKey(groupKey, fullSchema)
+
+            def map(gid: GroupId): M[Table] = {
+              val subTableProjections =
+                (
+                  sourceKeys
+                    .filter(_.groupId == gid)
+                    .map { indexedSource =>
+                      val keySchema = indexedSource.keySchema
+                      val projectedKeyIndices =
+                        for (k <- fullSchema)
+                          yield keySchema.indexOf(k)
+                      (indexedSource.index, projectedKeyIndices, groupKey)
+                    }
+                  ).toList
+
+              M.point(
+                TableIndex.joinSubTables(subTableProjections).normalize
+              ) // TODO: normalize necessary?
+            }
+
+            nt(body(groupKeyTable, map))
           }
 
-        val slices: StreamT[M, Slice] = tables.flatMap(_.slices)
+          // TODO: this can probably be done as one step, but for now
+          // it's probably fine.
+          val tables: StreamT[M, Table] =
+            StreamT.unfoldM(groupKeys.toList) {
+              case k :: ks =>
+                evaluateGroupKey(k).map(t => Some((t, ks)))
+              case Nil =>
+                M.point(None)
+            }
 
-        M.point(Table(slices, UnknownSize))
-      }
+          val slices: StreamT[M, Slice] = tables.flatMap(_.slices)
+
+          M.point(Table(slices, UnknownSize))
+        }
     }
 
     /// Utility Methods ///
@@ -848,8 +855,8 @@ trait ColumnarTableModule[M[+_]]
           emptySpec,
           trans.WrapArray(joinSpec))
       } yield {
-        JoinOrder.KeyOrder -> cogrouped.transform(
-          trans.DerefArrayStatic(Leaf(Source), CPathIndex(0)))
+        JoinOrder.KeyOrder -> cogrouped
+          .transform(trans.DerefArrayStatic(Leaf(Source), CPathIndex(0)))
       }
     }
 
@@ -918,9 +925,11 @@ trait ColumnarTableModule[M[+_]]
         definedness: Definedness = AnyDefined): Table = {
       val specTransform = SliceTransform.composeSliceTransform(spec)
       val compactTransform = {
-        SliceTransform.composeSliceTransform(Leaf(Source)).zip(specTransform) {
-          (s1, s2) => s1.compact(s2, definedness)
-        }
+        SliceTransform
+          .composeSliceTransform(Leaf(Source))
+          .zip(specTransform) { (s1, s2) =>
+            s1.compact(s2, definedness)
+          }
       }
       Table(Table.transformStream(compactTransform, slices), size).normalize
     }
@@ -1045,7 +1054,8 @@ trait ColumnarTableModule[M[+_]]
           case slices =>
             val slice = Slice.concat(slices)
             if (slices.size > (slice.size / yggConfig.smallSliceSize)) {
-              slice.materialized // Deal w/ lots of small slices by materializing them.
+              slice
+                .materialized // Deal w/ lots of small slices by materializing them.
             } else {
               slice
             }
@@ -1790,17 +1800,18 @@ trait ColumnarTableModule[M[+_]]
                 case (accM, offset) =>
                   accM flatMap {
                     case (a, acc) =>
-                      val rows = math.min(
-                        sliceSize,
-                        (lhead.size - offset) * rhead.size)
+                      val rows = math
+                        .min(sliceSize, (lhead.size - offset) * rhead.size)
 
                       val lslice =
                         new Slice {
                           val size = rows
-                          val columns = lhead.columns.lazyMapValues(
-                            Remap({ i =>
-                              offset + (i / rhead.size)
-                            })(_).get)
+                          val columns = lhead
+                            .columns
+                            .lazyMapValues(
+                              Remap({ i =>
+                                offset + (i / rhead.size)
+                              })(_).get)
                         }
 
                       val rslice =
@@ -1810,8 +1821,9 @@ trait ColumnarTableModule[M[+_]]
                             if (rhead.size == 0)
                               rhead.columns.lazyMapValues(Empty(_).get)
                             else
-                              rhead.columns.lazyMapValues(
-                                Remap(_ % rhead.size)(_).get)
+                              rhead
+                                .columns
+                                .lazyMapValues(Remap(_ % rhead.size)(_).get)
                         }
 
                       transform.f(a, lslice, rslice) map {
@@ -1837,8 +1849,9 @@ trait ColumnarTableModule[M[+_]]
                   val lslice =
                     new Slice {
                       val size = rhead.size
-                      val columns = lhead.columns.lazyMapValues(
-                        Remap(i => state.position)(_).get)
+                      val columns = lhead
+                        .columns
+                        .lazyMapValues(Remap(i => state.position)(_).get)
                     }
 
                   transform.f(state.a, lslice, rhead) map {
@@ -1893,7 +1906,8 @@ trait ColumnarTableModule[M[+_]]
             right.slices.uncons flatMap {
               case Some((rhead, rtail)) =>
                 for {
-                  lempty <- ltail.isEmpty //TODO: Scalaz result here is negated from what it should be!
+                  lempty <- ltail
+                    .isEmpty //TODO: Scalaz result here is negated from what it should be!
                   rempty <- rtail.isEmpty
 
                   back <- {
@@ -2048,9 +2062,8 @@ trait ColumnarTableModule[M[+_]]
           sliceStartIndex: Int): M[StreamT[M, Slice]] =
         stream.uncons flatMap {
           case Some((head, tail)) if takenSoFar < numberToTake => {
-            val needed = head.takeRange(
-              sliceStartIndex,
-              (numberToTake - takenSoFar).toInt)
+            val needed = head
+              .takeRange(sliceStartIndex, (numberToTake - takenSoFar).toInt)
             inner(tail, takenSoFar + (head.size - (sliceStartIndex)), 0)
               .map(needed :: _)
           }
@@ -2184,8 +2197,8 @@ trait ColumnarTableModule[M[+_]]
         val groupedM = groupTable
           .map(_.transform(DerefObjectStatic(Leaf(Source), CPathField("1"))))
           .flatMap(f)
-        val groupedStream: StreamT[M, Slice] = StreamT.wrapEffect(
-          groupedM.map(_.slices))
+        val groupedStream: StreamT[M, Slice] = StreamT
+          .wrapEffect(groupedM.map(_.slices))
 
         groupedStream ++ dropAndSplit(comparatorGen, head :: tail, spanStart)
       }

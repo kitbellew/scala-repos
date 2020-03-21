@@ -306,12 +306,8 @@ class RowMatrix @Since("1.0.0") (
           require(
             k < n,
             s"k must be smaller than n in dist-eigs mode but got k=$k and n=$n.")
-          EigenValueDecomposition.symmetricEigs(
-            multiplyGramianMatrixBy,
-            n,
-            k,
-            tol,
-            maxIter)
+          EigenValueDecomposition
+            .symmetricEigs(multiplyGramianMatrixBy, n, k, tol, maxIter)
       }
 
     val sigmas: BDV[Double] = brzSqrt(sigmaSquares)
@@ -337,7 +333,8 @@ class RowMatrix @Since("1.0.0") (
     }
 
     // Warn at the end of the run as well, for increased visibility.
-    if (computeMode == SVDMode.DistARPACK && rows.getStorageLevel == StorageLevel.NONE) {
+    if (computeMode == SVDMode.DistARPACK && rows
+          .getStorageLevel == StorageLevel.NONE) {
       logWarning(
         "The input data was not directly cached, which may hurt performance if its"
           + " parent RDDs are also uncached.")
@@ -499,8 +496,9 @@ class RowMatrix @Since("1.0.0") (
       B.isInstanceOf[DenseMatrix],
       s"Only support dense matrix at this time but found ${B.getClass.getName}.")
 
-    val Bb = rows.context.broadcast(
-      B.toBreeze.asInstanceOf[BDM[Double]].toDenseVector.toArray)
+    val Bb = rows
+      .context
+      .broadcast(B.toBreeze.asInstanceOf[BDM[Double]].toDenseVector.toArray)
     val AB = rows.mapPartitions { iter =>
       val Bi = Bb.value
       iter.map { row =>
@@ -606,15 +604,17 @@ class RowMatrix @Since("1.0.0") (
       computeQ: Boolean = false): QRDecomposition[RowMatrix, Matrix] = {
     val col = numCols().toInt
     // split rows horizontally into smaller matrices, and compute QR for each of them
-    val blockQRs = rows.glom().map { partRows =>
-      val bdm = BDM.zeros[Double](partRows.length, col)
-      var i = 0
-      partRows.foreach { row =>
-        bdm(i, ::) := row.toBreeze.t
-        i += 1
+    val blockQRs = rows
+      .glom()
+      .map { partRows =>
+        val bdm = BDM.zeros[Double](partRows.length, col)
+        var i = 0
+        partRows.foreach { row =>
+          bdm(i, ::) := row.toBreeze.t
+          i += 1
+        }
+        breeze.linalg.qr.reduced(bdm).r
       }
-      breeze.linalg.qr.reduced(bdm).r
-    }
 
     // combine the R part from previous results vertically into a tall matrix
     val combinedR = blockQRs.treeReduce { (r1, r2) =>
@@ -747,13 +747,15 @@ class RowMatrix @Since("1.0.0") (
     val n = numCols().toInt
     val mat = BDM.zeros[Double](m, n)
     var i = 0
-    rows.collect().foreach { vector =>
-      vector.foreachActive {
-        case (j, v) =>
-          mat(i, j) = v
+    rows
+      .collect()
+      .foreach { vector =>
+        vector.foreachActive {
+          case (j, v) =>
+            mat(i, j) = v
+        }
+        i += 1
       }
-      i += 1
-    }
     mat
   }
 

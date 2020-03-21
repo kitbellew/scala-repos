@@ -49,16 +49,15 @@ object Literal {
         CommonUtils.parseInterpolatedString(builder, isPattern = false)
         marker.done(ScalaElementTypes.INTERPOLATED_STRING_LITERAL)
         true
-      case ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING |
-          ScalaTokenTypes.tINTERPOLATED_STRING =>
+      case ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING | ScalaTokenTypes
+            .tINTERPOLATED_STRING =>
         builder.advanceLexer()
         marker.done(ScalaElementTypes.INTERPOLATED_STRING_LITERAL)
         true
-      case ScalaTokenTypes.tINTEGER | ScalaTokenTypes.tFLOAT |
-          ScalaTokenTypes.kTRUE | ScalaTokenTypes.kFALSE |
-          ScalaTokenTypes.tCHAR | ScalaTokenTypes.tSYMBOL |
-          ScalaTokenTypes.kNULL | ScalaTokenTypes.tSTRING |
-          ScalaTokenTypes.tMULTILINE_STRING =>
+      case ScalaTokenTypes.tINTEGER | ScalaTokenTypes.tFLOAT | ScalaTokenTypes
+            .kTRUE | ScalaTokenTypes.kFALSE | ScalaTokenTypes.tCHAR |
+          ScalaTokenTypes.tSYMBOL | ScalaTokenTypes.kNULL | ScalaTokenTypes
+            .tSTRING | ScalaTokenTypes.tMULTILINE_STRING =>
         builder.advanceLexer() //Ate literal
         marker.done(ScalaElementTypes.LITERAL)
         true

@@ -40,22 +40,14 @@ private[mesos] class MesosClusterPage(parent: MesosClusterUI)
       Seq("Start Date", "Mesos Slave ID", "State")
     val retryHeaders = Seq("Driver ID", "Submit Date", "Description") ++
       Seq("Last Failed Status", "Next Retry Time", "Attempt Count")
-    val queuedTable = UIUtils.listingTable(
-      queuedHeaders,
-      queuedRow,
-      state.queuedDrivers)
-    val launchedTable = UIUtils.listingTable(
-      driverHeaders,
-      driverRow,
-      state.launchedDrivers)
-    val finishedTable = UIUtils.listingTable(
-      driverHeaders,
-      driverRow,
-      state.finishedDrivers)
-    val retryTable = UIUtils.listingTable(
-      retryHeaders,
-      retryRow,
-      state.pendingRetryDrivers)
+    val queuedTable = UIUtils
+      .listingTable(queuedHeaders, queuedRow, state.queuedDrivers)
+    val launchedTable = UIUtils
+      .listingTable(driverHeaders, driverRow, state.launchedDrivers)
+    val finishedTable = UIUtils
+      .listingTable(driverHeaders, driverRow, state.finishedDrivers)
+    val retryTable = UIUtils
+      .listingTable(retryHeaders, retryRow, state.pendingRetryDrivers)
     val content =
       <p>Mesos Framework ID: {
         state.frameworkId

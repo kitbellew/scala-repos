@@ -6,6 +6,7 @@ object Test extends App {
     def foo = ()
   }
   println(
-    cm.reflect(new C)
+    cm
+      .reflect(new C)
       .reflectMethod(typeOf[C].member(TermName("foo")).asMethod)())
 }

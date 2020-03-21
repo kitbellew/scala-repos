@@ -99,8 +99,8 @@ trait TBddDsl extends FieldConversions with TypedPipeOperationsConversions {
       assertion: Buffer[OutputType] => Unit) {
 
     class DummyJob(args: Args) extends Job(args) {
-      val inputPipes: List[TypedPipe[_]] = sources.map(testSource =>
-        testSource.readFromSourceAsTyped)
+      val inputPipes: List[TypedPipe[_]] = sources
+        .map(testSource => testSource.readFromSourceAsTyped)
 
       val outputPipe = operation(inputPipes)
 

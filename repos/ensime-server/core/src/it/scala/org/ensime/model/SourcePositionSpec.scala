@@ -63,7 +63,10 @@ class SourcePositionSpec
 
   def knownJarEntry(implicit config: EnsimeConfig): String = {
     val scalatest =
-      config.subprojects.head.referenceSourceJars
+      config
+        .subprojects
+        .head
+        .referenceSourceJars
         .find(_.getName.contains("scalatest_"))
         .get
         .getAbsoluteFile

@@ -50,13 +50,16 @@ object LogFormatter {
           case '"' =>
             builder.append("\\\"")
           case _ =>
-            c.toString().getBytes("UTF-8").foreach { byte =>
-              builder.append("\\x")
-              val s = java.lang.Integer.toHexString(byte & 0xff)
-              if (s.length == 1)
-                builder.append("0")
-              builder.append(s)
-            }
+            c
+              .toString()
+              .getBytes("UTF-8")
+              .foreach { byte =>
+                builder.append("\\x")
+                val s = java.lang.Integer.toHexString(byte & 0xff)
+                if (s.length == 1)
+                  builder.append("0")
+                builder.append(s)
+              }
         }
       }
     }
@@ -85,9 +88,8 @@ class CommonLogFormatter extends LogFormatter {
    *   %D: response time in milliseconds
    *   "%{User-Agent}i": user agent
    */
-  val DateFormat = FastDateFormat.getInstance(
-    "dd/MMM/yyyy:HH:mm:ss Z",
-    TimeZone.getTimeZone("GMT"))
+  val DateFormat = FastDateFormat
+    .getInstance("dd/MMM/yyyy:HH:mm:ss Z", TimeZone.getTimeZone("GMT"))
   def format(request: Request, response: Response, responseTime: Duration) = {
     val remoteAddr = request.remoteAddress.getHostAddress
 

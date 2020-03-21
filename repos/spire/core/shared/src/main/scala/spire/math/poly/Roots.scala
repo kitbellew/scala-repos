@@ -48,8 +48,8 @@ object Roots {
         val d = coeff.denominator.toBigInt
         acc * (d / acc.gcd(d))
       }
-    val zCoeffs = coeffs.map(n =>
-      (n.numerator * (factors / n.denominator)).toBigInt)
+    val zCoeffs = coeffs
+      .map(n => (n.numerator * (factors / n.denominator)).toBigInt)
     Polynomial.dense(zCoeffs)
   }
 
@@ -60,10 +60,12 @@ object Roots {
     if (poly == Polynomial.zero[BigDecimal]) {
       Polynomial.zero[BigInt]
     } else {
-      val terms = poly.terms.map {
-        case Term(c, e) =>
-          Term(c.bigDecimal.stripTrailingZeros, e)
-      }
+      val terms = poly
+        .terms
+        .map {
+          case Term(c, e) =>
+            Term(c.bigDecimal.stripTrailingZeros, e)
+        }
       val maxScale = terms.map(_.coeff.scale).max
       Polynomial(
         terms.map {
@@ -156,8 +158,8 @@ private[poly] class BigDecimalRelativeRoots(
 // http://arxiv.org/pdf/1104.1362v3.pdf
 private[poly] class FixedRealRoots(val poly: Polynomial[Real])
     extends Roots[Real] {
-  private val zpoly: Polynomial[BigInt] = Roots.removeFractions(
-    poly.map(_.toRational))
+  private val zpoly: Polynomial[BigInt] = Roots
+    .removeFractions(poly.map(_.toRational))
   private val isolated: Vector[Interval[Rational]] = Roots.isolateRoots(zpoly)
 
   def count: Int = isolated.size

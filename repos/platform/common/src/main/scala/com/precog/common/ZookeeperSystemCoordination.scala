@@ -94,8 +94,8 @@ class ZookeeperSystemCoordination(
   lazy val basePath = delimeter + "precog-" + uid.systemId
 
   lazy val producerIdBase = makeBase(producerIdBasePaths)
-  lazy val producerIdPath =
-    producerIdBase + delimeter + uid.hostId + uid.serviceId
+  lazy val producerIdPath = producerIdBase + delimeter + uid.hostId + uid
+    .serviceId
 
   lazy val relayAgentBase = makeBase(relayAgentBasePaths)
 

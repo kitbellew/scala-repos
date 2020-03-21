@@ -130,14 +130,16 @@ object CaseClassBasedSetterImpl {
       }
     }
     def expandMethod(outerTpe: Type): Vector[(Tree => Tree, Type)] =
-      outerTpe.declarations
+      outerTpe
+        .declarations
         .collect {
           case m: MethodSymbol if m.isCaseAccessor =>
             m
         }
         .map { accessorMethod =>
           val fieldType = normalized(
-            accessorMethod.returnType
+            accessorMethod
+              .returnType
               .asSeenFrom(outerTpe, outerTpe.typeSymbol.asClass))
 
           (

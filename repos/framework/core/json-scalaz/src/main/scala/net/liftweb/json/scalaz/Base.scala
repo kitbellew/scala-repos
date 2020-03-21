@@ -112,7 +112,8 @@ trait Base {
       def read(json: JValue) =
         json match {
           case JArray(xs) =>
-            xs.map(fromJSON[A])
+            xs
+              .map(fromJSON[A])
               .sequence[PartialApply1Of2[ValidationNEL, Error]#Apply, A]
           case x =>
             UnexpectedJSONError(x, classOf[JArray]).fail.liftFailNel

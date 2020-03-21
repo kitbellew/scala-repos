@@ -147,9 +147,11 @@ trait AtmosphereSupport
     if (cfg
           .getInitParameter(ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT)
           .isBlank)
-      cfg.getServletContext.setInitParameter(
-        ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT,
-        "true")
+      cfg
+        .getServletContext
+        .setInitParameter(
+          ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT,
+          "true")
     if (trackMessageSize || cfg
           .getInitParameter(TrackMessageSize)
           .blankOption
@@ -205,7 +207,8 @@ trait AtmosphereSupport
         "you should get rid of it.")
 
   private[this] def atmosphereRoutes =
-    routes.methodRoutes
+    routes
+      .methodRoutes
       .getOrElse(Get, noGetRoute)
       .filter(_.metadata.contains('Atmosphere))
 
@@ -229,8 +232,8 @@ trait AtmosphereSupport
 
   private[this] def configureBroadcasterCache() {
     if (atmosphereFramework.getBroadcasterCacheClassName.isBlank)
-      atmosphereFramework.setBroadcasterCacheClassName(
-        classOf[UUIDBroadcasterCache].getName)
+      atmosphereFramework
+        .setBroadcasterCacheClassName(classOf[UUIDBroadcasterCache].getName)
   }
 
   private[atmosphere] val Atmosphere: RouteTransformer = { (route: Route) =>
@@ -265,10 +268,11 @@ trait AtmosphereSupport
     atmosphereFramework.setupTomcat()
     handle(req, res)
 
-    val transport = cometEvent.getHttpServletRequest.getParameter(
-      HeaderConfig.X_ATMOSPHERE_TRANSPORT)
-    if (transport != null && transport.equalsIgnoreCase(
-          HeaderConfig.WEBSOCKET_TRANSPORT)) {
+    val transport = cometEvent
+      .getHttpServletRequest
+      .getParameter(HeaderConfig.X_ATMOSPHERE_TRANSPORT)
+    if (transport != null && transport
+          .equalsIgnoreCase(HeaderConfig.WEBSOCKET_TRANSPORT)) {
       cometEvent.close()
     }
   }
@@ -286,10 +290,11 @@ trait AtmosphereSupport
     atmosphereFramework.setupTomcat7()
     handle(req, res)
 
-    val transport = cometEvent.getHttpServletRequest.getParameter(
-      HeaderConfig.X_ATMOSPHERE_TRANSPORT)
-    if (transport != null && transport.equalsIgnoreCase(
-          HeaderConfig.WEBSOCKET_TRANSPORT)) {
+    val transport = cometEvent
+      .getHttpServletRequest
+      .getParameter(HeaderConfig.X_ATMOSPHERE_TRANSPORT)
+    if (transport != null && transport
+          .equalsIgnoreCase(HeaderConfig.WEBSOCKET_TRANSPORT)) {
       cometEvent.close()
     }
   }

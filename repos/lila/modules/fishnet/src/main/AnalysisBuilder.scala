@@ -54,7 +54,8 @@ private object AnalysisBuilder {
       evals: List[Evaluation],
       moves: List[String],
       startedAtPly: Int): List[Info] =
-    (evals filterNot (_.isCheckmate) sliding 2).toList
+    (evals filterNot (_.isCheckmate) sliding 2)
+      .toList
       .zip(moves)
       .zipWithIndex map {
       case ((List(before, after), move), index) => {

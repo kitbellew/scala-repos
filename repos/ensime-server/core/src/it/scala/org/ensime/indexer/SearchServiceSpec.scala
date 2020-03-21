@@ -53,8 +53,11 @@ class SearchServiceSpec
   it should "remove classfiles that have been deleted" in {
     withSearchService { (config, service) =>
       implicit val s = service
-      val classfile =
-        config.subprojects.head.targetDirs.head / "org/example/Foo.class"
+      val classfile = config
+        .subprojects
+        .head
+        .targetDirs
+        .head / "org/example/Foo.class"
 
       classfile shouldBe 'exists
 

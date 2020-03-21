@@ -173,8 +173,8 @@ object KafkaTools extends Command {
           "show message range, e.g.: 5:10 :100 10:",
           { s: String =>
             val range = MessageRange.parse(s)
-            config.range = range.getOrElse(
-              sys.error("Invalid range specification: " + s))
+            config.range = range
+              .getOrElse(sys.error("Invalid range specification: " + s))
           }
         )
         intOpt(
@@ -257,7 +257,8 @@ object KafkaTools extends Command {
   }
 
   def process(config: Config) {
-    config.operation
+    config
+      .operation
       .map {
         _.process(config, config.range)
       }
@@ -308,30 +309,38 @@ object KafkaTools extends Command {
 
   object ConvertCentral extends KafkaAction {
     def process(config: Config, range: MessageRange) =
-      config.files.foreach { f =>
-        convert(f, new File(f.getParentFile, f.getName + ".local"))
-      }
+      config
+        .files
+        .foreach { f =>
+          convert(f, new File(f.getParentFile, f.getName + ".local"))
+        }
   }
 
   object DumpLocal extends KafkaAction {
     def process(config: Config, range: MessageRange) =
-      config.files.foreach {
-        dump(_, range, LocalFormat)
-      }
+      config
+        .files
+        .foreach {
+          dump(_, range, LocalFormat)
+        }
   }
 
   object DumpCentral extends KafkaAction {
     def process(config: Config, range: MessageRange) =
-      config.files.foreach {
-        dump(_, range, CentralFormat)
-      }
+      config
+        .files
+        .foreach {
+          dump(_, range, CentralFormat)
+        }
   }
 
   object DumpRaw extends KafkaAction {
     def process(config: Config, range: MessageRange) =
-      config.files.foreach {
-        dump(_, range, RawFormat)
-      }
+      config
+        .files
+        .foreach {
+          dump(_, range, RawFormat)
+        }
   }
 
   object UsageReport extends KafkaAction {
@@ -355,7 +364,8 @@ object KafkaTools extends Command {
       ArrayBuffer.empty
 
     def trackState(state: ReportState): Unit = {
-      val byAccount: Map[AccountId, Long] = state.pathSize
+      val byAccount: Map[AccountId, Long] = state
+        .pathSize
         .groupBy(_._1.elements.head)
         .map {
           case (account, sizes) =>
@@ -392,9 +402,11 @@ object KafkaTools extends Command {
           // see if we can deduce from the data (assuming Nathan's twitter feed or SE postings)
           val timestamps =
             (
-              msg.data.map(_.value \ "timeStamp") ++ msg.data.map(
-                _.value \ "timestamp")
-            ).flatMap {
+              msg.data.map(_.value \ "timeStamp") ++ msg
+                .data
+                .map(_.value \ "timestamp")
+            )
+              .flatMap {
                 case JString(date) =>
                   // Dirty hack for trying variations of ISO8601 in use by customers
                   List(date, date.replaceFirst(":", "-").replaceFirst(":", "-"))
@@ -423,18 +435,19 @@ object KafkaTools extends Command {
 
           //println("Deducing timestamp from " + timestamps)
 
-          timestamps.headOption.map { ts =>
-            ExactTime(ts.getMillis, state.index)
-          }
+          timestamps
+            .headOption
+            .map { ts =>
+              ExactTime(ts.getMillis, state.index)
+            }
         }
       ).foreach { newTimestamp =>
         if (newTimestamp.time <= System.currentTimeMillis) {
           if (pendingTimes.nonEmpty) {
             //println("Updating pending times: " + pendingTimes)
             interpolationMap ++= pendingTimes.map { interp =>
-              val interpFraction = (
-                interp.index - lastTimestamp.index
-              ).toDouble / (newTimestamp.index - lastTimestamp.index)
+              val interpFraction = (interp.index - lastTimestamp.index)
+                .toDouble / (newTimestamp.index - lastTimestamp.index)
               val timeSpanSize = newTimestamp.time - lastTimestamp.time
               val interpTS =
                 (interpFraction * timeSpanSize + lastTimestamp.time).toLong
@@ -460,16 +473,16 @@ object KafkaTools extends Command {
 
         ReportState(
           state.index + 1,
-          state.pathSize + (
-            path -> (state.pathSize.getOrElse(path, 0L) + size)
-          ))
+          state
+            .pathSize + (path -> (state.pathSize.getOrElse(path, 0L) + size)))
       } else {
         state.inc
       }
     }
 
     def process(config: Config, range: MessageRange) = {
-      val accountLookup: Map[String, String] = config.lookupDatabase
+      val accountLookup: Map[String, String] = config
+        .lookupDatabase
         .map { dbName =>
           val mongo = RealMongo(Configuration.parse("servers = [localhost]"))
           val database = mongo.database(dbName)
@@ -479,9 +492,11 @@ object KafkaTools extends Command {
             .result(
               database(selectAll.from("accounts")).map { results =>
                 val built = results.toList
-                built.map(_.deserialize[Account]).map { account =>
-                  (account.accountId, account.email)
-                }
+                built
+                  .map(_.deserialize[Account])
+                  .map { account =>
+                    (account.accountId, account.email)
+                  }
               },
               queryTimeout.duration
             )
@@ -494,59 +509,65 @@ object KafkaTools extends Command {
       //println("Got lookup DB:" + accountLookup)
 
       val finalState =
-        config.files.foldLeft(ReportState(0L, Map.empty)) {
-          case (state, file) =>
-            val ms = new FileMessageSet(file, false)
+        config
+          .files
+          .foldLeft(ReportState(0L, Map.empty)) {
+            case (state, file) =>
+              val ms = new FileMessageSet(file, false)
 
-            ms.iterator
-              .grouped(1000)
-              .flatMap {
-                _.toSeq.par.map(parseEventMessage)
-              }
-              .foldLeft(state) {
-                case (state @ ReportState(index, currentPathSize), parsed) =>
-                  parsed match {
-                    case Success(imessage: IngestMessage) =>
-                      processIngest(config.trackInterval, state, imessage)
+              ms
+                .iterator
+                .grouped(1000)
+                .flatMap {
+                  _.toSeq.par.map(parseEventMessage)
+                }
+                .foldLeft(state) {
+                  case (state @ ReportState(index, currentPathSize), parsed) =>
+                    parsed match {
+                      case Success(imessage: IngestMessage) =>
+                        processIngest(config.trackInterval, state, imessage)
 
-                    case Success(ArchiveMessage(_, path, _, _, _)) =>
-                      if (config.cumulative) {
-                        state.inc
-                      } else {
-                        trackState(state)
-
-                        if (path.length > 0) {
-                          //println("Deleting from path " + path)
-                          ReportState(index + 1, currentPathSize + (path -> 0L))
-                            .unsafeTap { newState =>
-                              trackState(newState)
-                            }
-                        } else {
+                      case Success(ArchiveMessage(_, path, _, _, _)) =>
+                        if (config.cumulative) {
                           state.inc
-                        }
-                      }
+                        } else {
+                          trackState(state)
 
-                    case other =>
-                      println("## Skipping undesired data: " + other)
-                      //RawFormat.dump(0, msg)
-                      state.inc
-                  }
-              }
-        }
+                          if (path.length > 0) {
+                            //println("Deleting from path " + path)
+                            ReportState(
+                              index + 1,
+                              currentPathSize + (path -> 0L)).unsafeTap {
+                              newState => trackState(newState)
+                            }
+                          } else {
+                            state.inc
+                          }
+                        }
+
+                      case other =>
+                        println("## Skipping undesired data: " + other)
+                        //RawFormat.dump(0, msg)
+                        state.inc
+                    }
+                }
+          }
 
       trackState(finalState)
 
       if (config.reportFormat == "csv") {
         println(
-          "index,total," + trackedAccounts.sorted
+          "index,total," + trackedAccounts
+            .sorted
             .map { acct =>
               "\"%s\"".format(accountLookup.getOrElse(acct, acct))
             }
             .mkString(","))
         slices.foreach {
           case (index, byAccount) =>
-            val accountTotals = trackedAccounts.sorted.map(
-              byAccount.getOrElse(_, 0L))
+            val accountTotals = trackedAccounts
+              .sorted
+              .map(byAccount.getOrElse(_, 0L))
             (
               index match {
                 case ExactTime(time, _) =>
@@ -587,8 +608,8 @@ object KafkaTools extends Command {
                       "index" -> JNum(timestamp),
                       "account" -> JString(
                         accountLookup.getOrElse(account, account)),
-                      "size" -> JNum(
-                        byAccount.getOrElse(account, 0L))).renderCompact)
+                      "size" -> JNum(byAccount.getOrElse(account, 0L)))
+                      .renderCompact)
                 }
               }
             }
@@ -668,23 +689,27 @@ object KafkaTools extends Command {
   }
 
   def parseEventMessage(msg: MessageAndOffset) =
-    EventMessageEncoding.read(msg.message.payload).flatMap {
-      case \/-(parsed: IngestMessage) =>
-        Success(parsed)
+    EventMessageEncoding
+      .read(msg.message.payload)
+      .flatMap {
+        case \/-(parsed: IngestMessage) =>
+          Success(parsed)
 
-      case -\/((_, path, msgGen)) =>
-        path.elements.headOption
-          .map { account =>
-            msgGen(Authorities(account)).asInstanceOf[IngestMessage]
-          }
-          .toSuccess("Could not determine account from path")
+        case -\/((_, path, msgGen)) =>
+          path
+            .elements
+            .headOption
+            .map { account =>
+              msgGen(Authorities(account)).asInstanceOf[IngestMessage]
+            }
+            .toSuccess("Could not determine account from path")
 
-      case \/-(parsed: ArchiveMessage) =>
-        Success(parsed)
+        case \/-(parsed: ArchiveMessage) =>
+          Success(parsed)
 
-      case other =>
-        Failure("Could not determine message from " + other)
-    }
+        case other =>
+          Failure("Could not determine message from " + other)
+      }
 
   sealed trait Format {
     def dump(i: Int, msg: MessageAndOffset)
@@ -806,12 +831,16 @@ object ZookeeperTools extends Command {
   }
 
   def process(conn: ZkConnection, client: ZkClient, config: Config) {
-    config.showCheckpoints.foreach { path =>
-      showChildren("checkpoints", path, pathsAt(path, client))
-    }
-    config.showAgents.foreach { path =>
-      showChildren("agents", path, pathsAt(path, client))
-    }
+    config
+      .showCheckpoints
+      .foreach { path =>
+        showChildren("checkpoints", path, pathsAt(path, client))
+      }
+    config
+      .showAgents
+      .foreach { path =>
+        showChildren("agents", path, pathsAt(path, client))
+      }
 
     def parseCheckpoint(data: String) =
       ((Extractor.Thrown(_: Throwable)) <-: JParser.parseFromString(data))
@@ -848,26 +877,30 @@ object ZookeeperTools extends Command {
       println("Checkpoint updated: %s with %s".format(path, data))
     }
 
-    config.checkpointUpdate.foreach {
-      case (path, data) =>
-        data match {
-          case "initial" =>
-            println("Loading initial checkpoint")
-            setCheckpoint(path, YggCheckpoint.Empty)
-          case s =>
-            println("Loading initial checkpoint from : " + s)
-            setCheckpoint(
-              path,
-              parseCheckpoint(s).valueOr(err => sys.error(err.message)))
-        }
-    }
+    config
+      .checkpointUpdate
+      .foreach {
+        case (path, data) =>
+          data match {
+            case "initial" =>
+              println("Loading initial checkpoint")
+              setCheckpoint(path, YggCheckpoint.Empty)
+            case s =>
+              println("Loading initial checkpoint from : " + s)
+              setCheckpoint(
+                path,
+                parseCheckpoint(s).valueOr(err => sys.error(err.message)))
+          }
+      }
 
-    config.relayAgentUpdate.foreach {
-      case (path, data) =>
-        setRelayState(
-          path,
-          parseRelayState(data).valueOr(err => sys.error(err.message)))
-    }
+    config
+      .relayAgentUpdate
+      .foreach {
+        case (path, data) =>
+          setRelayState(
+            path,
+            parseRelayState(data).valueOr(err => sys.error(err.message)))
+      }
   }
 
   def showChildren(
@@ -1011,8 +1044,8 @@ object IngestTools extends Command {
       "PID: %d Shard SID: %s Ingest (relay) SID: %s"
         .format(pid, shardSID, relaySID))
 
-    val syncDelta =
-      relayState.nextSequenceId - 1 - shardValues.get(pid).getOrElse(0)
+    val syncDelta = relayState
+      .nextSequenceId - 1 - shardValues.get(pid).getOrElse(0)
 
     if (syncDelta > config.limit) {
       println(
@@ -1020,24 +1053,24 @@ object IngestTools extends Command {
       sys.exit(1)
     }
 
-    val relayStat = getStatAt(relayAgentPath, conn).getOrElse(
-      sys.error("Unable to stat relay agent state"))
-    val shardStat = getStatAt(shardCheckpointPath, conn).getOrElse(
-      sys.error("Unable to stat bifrost state"))
+    val relayStat = getStatAt(relayAgentPath, conn)
+      .getOrElse(sys.error("Unable to stat relay agent state"))
+    val shardStat = getStatAt(shardCheckpointPath, conn)
+      .getOrElse(sys.error("Unable to stat bifrost state"))
 
     val relayModified = new DateTime(relayStat.getMtime, DateTimeZone.UTC)
     val shardModified = new DateTime(shardStat.getMtime, DateTimeZone.UTC)
 
     if (isOlderThan(config.lag, relayModified)) {
       println(
-        "Relay state exceeds acceptable lag. (Last Updated: %s)".format(
-          relayModified))
+        "Relay state exceeds acceptable lag. (Last Updated: %s)"
+          .format(relayModified))
       sys.exit(2)
     }
     if (isOlderThan(config.lag, shardModified)) {
       println(
-        "Shard state exceeds acceptable lag. (Last updated: %s)".format(
-          shardModified))
+        "Shard state exceeds acceptable lag. (Last updated: %s)"
+          .format(shardModified))
       sys.exit(3)
     }
   }
@@ -1144,8 +1177,8 @@ object ImportTools extends Command with Logging {
     val authorities = Authorities(config.accountId)
 
     implicit val actorSystem = ActorSystem("yggutilImport")
-    implicit val defaultAsyncContext = ExecutionContext.defaultExecutionContext(
-      actorSystem)
+    implicit val defaultAsyncContext = ExecutionContext
+      .defaultExecutionContext(actorSystem)
     implicit val M =
       new FutureMonad(ExecutionContext.defaultExecutionContext(actorSystem))
 
@@ -1167,8 +1200,8 @@ object ImportTools extends Command with Logging {
             VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
             VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
     }
-    val masterChef = actorSystem.actorOf(
-      Props[Chef].withRouter(RoundRobinRouter(chefs)))
+    val masterChef = actorSystem
+      .actorOf(Props[Chef].withRouter(RoundRobinRouter(chefs)))
 
     val accountFinder =
       new StaticAccountFinder[Future](
@@ -1520,9 +1553,8 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
           config.mongoSettings.apiKeys,
           config.mongoSettings.grants)
       } else {
-        MongoAPIKeyManager.findRootAPIKey(
-          database,
-          config.mongoSettings.apiKeys)
+        MongoAPIKeyManager
+          .findRootAPIKey(database, config.mongoSettings.apiKeys)
       }
 
     rootKey map { k =>

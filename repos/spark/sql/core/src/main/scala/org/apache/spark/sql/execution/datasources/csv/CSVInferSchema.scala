@@ -48,17 +48,19 @@ private[csv] object CSVInferSchema {
     val rootTypes: Array[DataType] =
       tokenRdd.aggregate(startType)(inferRowType(nullValue), mergeRowTypes)
 
-    val structFields = header.zip(rootTypes).map {
-      case (thisHeader, rootType) =>
-        val dType =
-          rootType match {
-            case _: NullType =>
-              StringType
-            case other =>
-              other
-          }
-        StructField(thisHeader, dType, nullable = true)
-    }
+    val structFields = header
+      .zip(rootTypes)
+      .map {
+        case (thisHeader, rootType) =>
+          val dType =
+            rootType match {
+              case _: NullType =>
+                StringType
+              case other =>
+                other
+            }
+          StructField(thisHeader, dType, nullable = true)
+      }
 
     StructType(structFields)
   }
@@ -79,10 +81,12 @@ private[csv] object CSVInferSchema {
   def mergeRowTypes(
       first: Array[DataType],
       second: Array[DataType]): Array[DataType] = {
-    first.zipAll(second, NullType, NullType).map {
-      case (a, b) =>
-        findTightestCommonType(a, b).getOrElse(NullType)
-    }
+    first
+      .zipAll(second, NullType, NullType)
+      .map {
+        case (a, b) =>
+          findTightestCommonType(a, b).getOrElse(NullType)
+      }
   }
 
   /**
@@ -225,19 +229,17 @@ private[csv] object CSVTypeCast {
         case _: LongType =>
           datum.toLong
         case _: FloatType =>
-          Try(datum.toFloat)
-            .getOrElse(
-              NumberFormat
-                .getInstance(Locale.getDefault)
-                .parse(datum)
-                .floatValue())
+          Try(datum.toFloat).getOrElse(
+            NumberFormat
+              .getInstance(Locale.getDefault)
+              .parse(datum)
+              .floatValue())
         case _: DoubleType =>
-          Try(datum.toDouble)
-            .getOrElse(
-              NumberFormat
-                .getInstance(Locale.getDefault)
-                .parse(datum)
-                .doubleValue())
+          Try(datum.toDouble).getOrElse(
+            NumberFormat
+              .getInstance(Locale.getDefault)
+              .parse(datum)
+              .doubleValue())
         case _: BooleanType =>
           datum.toBoolean
         case dt: DecimalType =>

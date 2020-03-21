@@ -99,10 +99,13 @@ class StreamingKMeansModel @Since("1.2.0") (
           decayFactor
         case StreamingKMeans.POINTS =>
           val numNewPoints =
-            pointStats.view.map {
-              case (_, (_, n)) =>
-                n
-            }.sum
+            pointStats
+              .view
+              .map {
+                case (_, (_, n)) =>
+                  n
+              }
+              .sum
           math.pow(decayFactor, numNewPoints)
       }
 
@@ -216,7 +219,8 @@ class StreamingKMeans @Since("1.2.0") (
     */
   @Since("1.2.0")
   def setHalfLife(halfLife: Double, timeUnit: String): this.type = {
-    if (timeUnit != StreamingKMeans.BATCHES && timeUnit != StreamingKMeans.POINTS) {
+    if (timeUnit != StreamingKMeans.BATCHES && timeUnit != StreamingKMeans
+          .POINTS) {
       throw new IllegalArgumentException(
         "Invalid time unit for decay: " + timeUnit)
     }

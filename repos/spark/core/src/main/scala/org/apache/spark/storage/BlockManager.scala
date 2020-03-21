@@ -70,14 +70,14 @@ private[spark] class BlockManager(
     extends BlockDataManager
     with Logging {
 
-  private[spark] val externalShuffleServiceEnabled = conf.getBoolean(
-    "spark.shuffle.service.enabled",
-    false)
+  private[spark] val externalShuffleServiceEnabled = conf
+    .getBoolean("spark.shuffle.service.enabled", false)
 
   val diskBlockManager = {
     // Only perform cleanup if an external service is not serving our shuffle files.
     val deleteFilesOnStop =
-      !externalShuffleServiceEnabled || executorId == SparkContext.DRIVER_IDENTIFIER
+      !externalShuffleServiceEnabled || executorId == SparkContext
+        .DRIVER_IDENTIFIER
     new DiskBlockManager(conf, deleteFilesOnStop)
   }
 
@@ -124,10 +124,8 @@ private[spark] class BlockManager(
   // standard BlockTransferService to directly connect to other Executors.
   private[spark] val shuffleClient =
     if (externalShuffleServiceEnabled) {
-      val transConf = SparkTransportConf.fromSparkConf(
-        conf,
-        "shuffle",
-        numUsableCores)
+      val transConf = SparkTransportConf
+        .fromSparkConf(conf, "shuffle", numUsableCores)
       new ExternalShuffleClient(
         transConf,
         securityManager,
@@ -138,21 +136,18 @@ private[spark] class BlockManager(
     }
 
   // Whether to compress broadcast variables that are stored
-  private val compressBroadcast = conf.getBoolean(
-    "spark.broadcast.compress",
-    true)
+  private val compressBroadcast = conf
+    .getBoolean("spark.broadcast.compress", true)
   // Whether to compress shuffle output that are stored
   private val compressShuffle = conf.getBoolean("spark.shuffle.compress", true)
   // Whether to compress RDD partitions that are stored serialized
   private val compressRdds = conf.getBoolean("spark.rdd.compress", false)
   // Whether to compress shuffle output temporarily spilled to disk
-  private val compressShuffleSpill = conf.getBoolean(
-    "spark.shuffle.spill.compress",
-    true)
+  private val compressShuffleSpill = conf
+    .getBoolean("spark.shuffle.spill.compress", true)
   // Max number of failures before this block manager refreshes the block locations from the driver
-  private val maxFailuresBeforeLocationRefresh = conf.getInt(
-    "spark.block.failures.beforeLocationRefresh",
-    5)
+  private val maxFailuresBeforeLocationRefresh = conf
+    .getInt("spark.block.failures.beforeLocationRefresh", 5)
 
   private val slaveEndpoint = rpcEnv.setupEndpoint(
     "BlockManagerEndpoint" + BlockManager.ID_GENERATOR.next,
@@ -316,8 +311,9 @@ private[spark] class BlockManager(
     */
   override def getBlockData(blockId: BlockId): ManagedBuffer = {
     if (blockId.isShuffle) {
-      shuffleManager.shuffleBlockResolver.getBlockData(
-        blockId.asInstanceOf[ShuffleBlockId])
+      shuffleManager
+        .shuffleBlockResolver
+        .getBlockData(blockId.asInstanceOf[ShuffleBlockId])
     } else {
       getLocalBytes(blockId) match {
         case Some(buffer) =>
@@ -343,19 +339,21 @@ private[spark] class BlockManager(
     * NOTE: This is mainly for testing, and it doesn't fetch information from external block store.
     */
   def getStatus(blockId: BlockId): Option[BlockStatus] = {
-    blockInfoManager.get(blockId).map { info =>
-      val memSize =
-        if (memoryStore.contains(blockId))
-          memoryStore.getSize(blockId)
-        else
-          0L
-      val diskSize =
-        if (diskStore.contains(blockId))
-          diskStore.getSize(blockId)
-        else
-          0L
-      BlockStatus(info.level, memSize = memSize, diskSize = diskSize)
-    }
+    blockInfoManager
+      .get(blockId)
+      .map { info =>
+        val memSize =
+          if (memoryStore.contains(blockId))
+            memoryStore.getSize(blockId)
+          else
+            0L
+        val diskSize =
+          if (diskStore.contains(blockId))
+            diskStore.getSize(blockId)
+          else
+            0L
+        BlockStatus(info.level, memSize = memSize, diskSize = diskSize)
+      }
   }
 
   /**
@@ -474,8 +472,8 @@ private[spark] class BlockManager(
     val startTimeMs = System.currentTimeMillis
     val locations = master.getLocations(blockIds).toArray
     logDebug(
-      "Got multiple block location in %s".format(
-        Utils.getUsedTimeMs(startTimeMs)))
+      "Got multiple block location in %s"
+        .format(Utils.getUsedTimeMs(startTimeMs)))
     locations
   }
 
@@ -543,9 +541,11 @@ private[spark] class BlockManager(
             .getBlockData(blockId.asInstanceOf[ShuffleBlockId])
             .nioByteBuffer()))
     } else {
-      blockInfoManager.lockForReading(blockId).map { info =>
-        doGetLocalBytes(blockId, info)
-      }
+      blockInfoManager
+        .lockForReading(blockId)
+        .map { info =>
+          doGetLocalBytes(blockId, info)
+        }
     }
   }
 
@@ -909,7 +909,8 @@ private[spark] class BlockManager(
           reportBlockStatus(blockId, putBlockInfo, putBlockStatus)
         }
         Option(TaskContext.get()).foreach { c =>
-          c.taskMetrics()
+          c
+            .taskMetrics()
             .incUpdatedBlockStatuses(Seq((blockId, putBlockStatus)))
         }
       }
@@ -1052,7 +1053,8 @@ private[spark] class BlockManager(
           reportBlockStatus(blockId, putBlockInfo, putBlockStatus)
         }
         Option(TaskContext.get()).foreach { c =>
-          c.taskMetrics()
+          c
+            .taskMetrics()
             .incUpdatedBlockStatuses(Seq((blockId, putBlockStatus)))
         }
         logDebug(
@@ -1163,12 +1165,10 @@ private[spark] class BlockManager(
     */
   private def getPeers(forceFetch: Boolean): Seq[BlockManagerId] = {
     peerFetchLock.synchronized {
-      val cachedPeersTtl = conf.getInt(
-        "spark.storage.cachedPeersTtl",
-        60 * 1000
-      ) // milliseconds
-      val timeout =
-        System.currentTimeMillis - lastPeerFetchTime > cachedPeersTtl
+      val cachedPeersTtl = conf
+        .getInt("spark.storage.cachedPeersTtl", 60 * 1000) // milliseconds
+      val timeout = System
+        .currentTimeMillis - lastPeerFetchTime > cachedPeersTtl
       if (cachedPeers == null || forceFetch || timeout) {
         cachedPeers = master.getPeers(blockManagerId).sortBy(_.hashCode)
         lastPeerFetchTime = System.currentTimeMillis
@@ -1187,9 +1187,8 @@ private[spark] class BlockManager(
       blockId: BlockId,
       data: ChunkedByteBuffer,
       level: StorageLevel): Unit = {
-    val maxReplicationFailures = conf.getInt(
-      "spark.storage.maxReplicationFailures",
-      1)
+    val maxReplicationFailures = conf
+      .getInt("spark.storage.maxReplicationFailures", 1)
     val numPeersToReplicateTo = level.replication - 1
     val peersForReplication = new ArrayBuffer[BlockManagerId]
     val peersReplicatedTo = new ArrayBuffer[BlockManagerId]
@@ -1378,7 +1377,8 @@ private[spark] class BlockManager(
   def removeRdd(rddId: Int): Int = {
     // TODO: Avoid a linear scan by creating another mapping of RDD.id to blocks.
     logInfo(s"Removing RDD $rddId")
-    val blocksToRemove = blockInfoManager.entries
+    val blocksToRemove = blockInfoManager
+      .entries
       .flatMap(_._1.asRDDId)
       .filter(_.rddId == rddId)
     blocksToRemove.foreach { blockId =>
@@ -1392,10 +1392,13 @@ private[spark] class BlockManager(
     */
   def removeBroadcast(broadcastId: Long, tellMaster: Boolean): Int = {
     logDebug(s"Removing broadcast $broadcastId")
-    val blocksToRemove = blockInfoManager.entries.map(_._1).collect {
-      case bid @ BroadcastBlockId(`broadcastId`, _) =>
-        bid
-    }
+    val blocksToRemove = blockInfoManager
+      .entries
+      .map(_._1)
+      .collect {
+        case bid @ BroadcastBlockId(`broadcastId`, _) =>
+          bid
+      }
     blocksToRemove.foreach { blockId =>
       removeBlock(blockId, tellMaster)
     }

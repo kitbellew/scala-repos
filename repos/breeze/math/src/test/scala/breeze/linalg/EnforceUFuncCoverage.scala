@@ -75,9 +75,11 @@ object EnforceUFuncCoverage {
 
   // Ensure things work
   private object Q extends UFunc
-  shapeless.test.illTyped {
-    """
+  shapeless
+    .test
+    .illTyped {
+      """
       EnforceUFuncCoverage.vectors1(Q)
     """
-  }
+    }
 }

@@ -162,8 +162,8 @@ object ScalaCollectionRenderer {
             case objRef: ObjectReference =>
               val typeName =
                 if (objRef.referenceType() != null)
-                  ScalaCollectionRenderer.transformName(
-                    objRef.referenceType().name)
+                  ScalaCollectionRenderer
+                    .transformName(objRef.referenceType().name)
                 else
                   ""
               val sizeValue =
@@ -272,10 +272,8 @@ object ScalaCollectionRenderer {
           parentDescriptor)
         val defaultChildrenRenderer: ChildrenRenderer = DebugProcessImpl
           .getDefaultRenderer(value.`type`)
-        defaultChildrenRenderer.isExpandable(
-          children,
-          evaluationContext,
-          parentDescriptor)
+        defaultChildrenRenderer
+          .isExpandable(children, evaluationContext, parentDescriptor)
       } catch {
         case e: EvaluateException =>
           true
@@ -320,16 +318,15 @@ object ScalaCollectionRenderer {
         parentDescriptor: ValueDescriptor): NodeRenderer = {
       var renderer: NodeRenderer = ExpressionChildrenRenderer
         .getLastChildrenRenderer(parentDescriptor)
-      if (renderer == null || childrenValue == null || !renderer.isApplicable(
-            childrenValue.`type`)) {
+      if (renderer == null || childrenValue == null || !renderer
+            .isApplicable(childrenValue.`type`)) {
         renderer = DebugProcessImpl.getDefaultRenderer(
           if (childrenValue != null)
             childrenValue.`type`
           else
             null)
-        ExpressionChildrenRenderer.setPreferableChildrenRenderer(
-          parentDescriptor,
-          renderer)
+        ExpressionChildrenRenderer
+          .setPreferableChildrenRenderer(parentDescriptor, renderer)
       }
       renderer
     }

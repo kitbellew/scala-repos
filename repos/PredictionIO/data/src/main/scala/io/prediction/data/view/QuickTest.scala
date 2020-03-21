@@ -74,11 +74,13 @@ object TestEventTime {
   // implicit def back2list(es: EventSeq) = es.events
 
   def main(args: Array[String]) {
-    val e = batchView.events.filter(
-      eventOpt = Some("rate"),
-      startTimeOpt = Some(new DateTime(1998, 1, 1, 0, 0))
-      // untilTimeOpt = Some(new DateTime(1997, 1, 1, 0, 0))
-    )
+    val e = batchView
+      .events
+      .filter(
+        eventOpt = Some("rate"),
+        startTimeOpt = Some(new DateTime(1998, 1, 1, 0, 0))
+        // untilTimeOpt = Some(new DateTime(1997, 1, 1, 0, 0))
+      )
     // untilTimeOpt = Some(new DateTime(2000, 1, 1, 0, 0)))
 
     e.foreach {

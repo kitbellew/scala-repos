@@ -37,7 +37,9 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
     <properties>
       {
       // create a clone, defending against [[ConcurrentModificationException]]
-      val clonedProperties = System.getProperties.clone
+      val clonedProperties = System
+        .getProperties
+        .clone
         .asInstanceOf[Hashtable[AnyRef, AnyRef]]
       val iter = clonedProperties.entrySet.iterator
       val props: ListBuffer[XNode] = new ListBuffer()
@@ -233,9 +235,8 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
 
   private def writeSuite() = {
     val file =
-      new File(
-        targetDir,
-        s"${normalizeName(testSuite.value.name)}.xml").getAbsolutePath
+      new File(targetDir, s"${normalizeName(testSuite.value.name)}.xml")
+        .getAbsolutePath
     // TODO would be nice to have a logger and log this with level debug
     // System.err.println("Writing JUnit XML test report: " + file)
     XML.save(file, testSuite.value.stop(), "UTF-8", true, null)

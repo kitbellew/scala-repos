@@ -466,12 +466,15 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
               s"and does not support type $colType.")
       }
 
-    singleCol.queryExecution.toRdd.aggregate(zero)(
-      (sketch: CountMinSketch, row: InternalRow) => {
-        updater(sketch, row)
-        sketch
-      },
-      (sketch1, sketch2) => sketch1.mergeInPlace(sketch2))
+    singleCol
+      .queryExecution
+      .toRdd
+      .aggregate(zero)(
+        (sketch: CountMinSketch, row: InternalRow) => {
+          updater(sketch, row)
+          sketch
+        },
+        (sketch1, sketch2) => sketch1.mergeInPlace(sketch2))
   }
 
   /**
@@ -564,11 +567,14 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
               s"and does not support type $colType.")
       }
 
-    singleCol.queryExecution.toRdd.aggregate(zero)(
-      (filter: BloomFilter, row: InternalRow) => {
-        updater(filter, row)
-        filter
-      },
-      (filter1, filter2) => filter1.mergeInPlace(filter2))
+    singleCol
+      .queryExecution
+      .toRdd
+      .aggregate(zero)(
+        (filter: BloomFilter, row: InternalRow) => {
+          updater(filter, row)
+          filter
+        },
+        (filter1, filter2) => filter1.mergeInPlace(filter2))
   }
 }

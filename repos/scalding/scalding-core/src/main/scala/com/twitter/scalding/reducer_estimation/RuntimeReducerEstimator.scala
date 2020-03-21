@@ -46,9 +46,11 @@ object RuntimeReducerEstimator {
 
   def getReduceTimes(history: Seq[FlowStepHistory]): Seq[Seq[Double]] =
     history.map { h =>
-      h.tasks
+      h
+        .tasks
         .filter { t =>
-          t.taskType == "REDUCE" && t.status == "SUCCEEDED" && t.finishTime > t.startTime
+          t.taskType == "REDUCE" && t.status == "SUCCEEDED" && t.finishTime > t
+            .startTime
         }
         .map { t =>
           (t.finishTime - t.startTime).toDouble
@@ -189,8 +191,8 @@ trait RuntimeReducerEstimator extends HistoryReducerEstimator {
   def estimateReducers(
       info: FlowStrategyInfo,
       history: Seq[FlowStepHistory]): Option[Int] = {
-    val estimationScheme = RuntimeReducerEstimator.getRuntimeEstimationScheme(
-      info.step.getConfig)
+    val estimationScheme = RuntimeReducerEstimator
+      .getRuntimeEstimationScheme(info.step.getConfig)
 
     val history = historyService
 
@@ -210,7 +212,8 @@ trait RuntimeReducerEstimator extends HistoryReducerEstimator {
             def runtimeEstimationScheme = estimationScheme
             def historyService = history
           }
-        ReducerEstimatorStepStrategy.estimatorMonoid
+        ReducerEstimatorStepStrategy
+          .estimatorMonoid
           .plus(inputScaledEstimator, basicEstimator)
       }
 

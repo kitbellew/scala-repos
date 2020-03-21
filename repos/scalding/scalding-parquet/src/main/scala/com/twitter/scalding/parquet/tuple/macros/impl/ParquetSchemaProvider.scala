@@ -64,8 +64,8 @@ object ParquetSchemaProvider {
           val innerType = tpe.asInstanceOf[TypeRefApi].args.head
           matchField(innerType, fieldName, isOption = true)
         case tpe
-            if tpe.erasure =:= typeOf[List[Any]] || tpe.erasure =:= typeOf[Set[
-              _]] =>
+            if tpe.erasure =:= typeOf[List[Any]] || tpe
+              .erasure =:= typeOf[Set[_]] =>
           val innerType = tpe.asInstanceOf[TypeRefApi].args.head
           val innerFieldsType = matchField(
             innerType,
@@ -87,7 +87,8 @@ object ParquetSchemaProvider {
     }
 
     def expandMethod(outerTpe: Type): List[Tree] = {
-      outerTpe.declarations
+      outerTpe
+        .declarations
         .collect {
           case m: MethodSymbol if m.isCaseAccessor =>
             m

@@ -76,7 +76,8 @@ class DataFrameReaderWriterSuite
   }
 
   test("resolve default source") {
-    sqlContext.read
+    sqlContext
+      .read
       .format("org.apache.spark.sql.streaming.test")
       .stream()
       .write
@@ -86,7 +87,8 @@ class DataFrameReaderWriterSuite
   }
 
   test("resolve full class") {
-    sqlContext.read
+    sqlContext
+      .read
       .format("org.apache.spark.sql.streaming.test.DefaultSource")
       .stream()
       .write
@@ -99,7 +101,8 @@ class DataFrameReaderWriterSuite
     val map = new java.util.HashMap[String, String]
     map.put("opt3", "3")
 
-    val df = sqlContext.read
+    val df = sqlContext
+      .read
       .format("org.apache.spark.sql.streaming.test")
       .option("opt1", "1")
       .options(Map("opt2" -> "2"))
@@ -112,7 +115,8 @@ class DataFrameReaderWriterSuite
 
     LastOptions.parameters = null
 
-    df.write
+    df
+      .write
       .format("org.apache.spark.sql.streaming.test")
       .option("opt1", "1")
       .options(Map("opt2" -> "2"))
@@ -126,17 +130,16 @@ class DataFrameReaderWriterSuite
   }
 
   test("partitioning") {
-    val df = sqlContext.read
+    val df = sqlContext
+      .read
       .format("org.apache.spark.sql.streaming.test")
       .stream()
 
-    df.write
-      .format("org.apache.spark.sql.streaming.test")
-      .startStream()
-      .stop()
+    df.write.format("org.apache.spark.sql.streaming.test").startStream().stop()
     assert(LastOptions.partitionColumns == Nil)
 
-    df.write
+    df
+      .write
       .format("org.apache.spark.sql.streaming.test")
       .partitionBy("a")
       .startStream()
@@ -144,7 +147,8 @@ class DataFrameReaderWriterSuite
     assert(LastOptions.partitionColumns == Seq("a"))
 
     withSQLConf("spark.sql.caseSensitive" -> "false") {
-      df.write
+      df
+        .write
         .format("org.apache.spark.sql.streaming.test")
         .partitionBy("A")
         .startStream()
@@ -153,7 +157,8 @@ class DataFrameReaderWriterSuite
     }
 
     intercept[AnalysisException] {
-      df.write
+      df
+        .write
         .format("org.apache.spark.sql.streaming.test")
         .partitionBy("b")
         .startStream()
@@ -162,7 +167,8 @@ class DataFrameReaderWriterSuite
   }
 
   test("stream paths") {
-    val df = sqlContext.read
+    val df = sqlContext
+      .read
       .format("org.apache.spark.sql.streaming.test")
       .stream("/test")
 
@@ -170,7 +176,8 @@ class DataFrameReaderWriterSuite
 
     LastOptions.parameters = null
 
-    df.write
+    df
+      .write
       .format("org.apache.spark.sql.streaming.test")
       .startStream("/test")
       .stop()
@@ -179,7 +186,8 @@ class DataFrameReaderWriterSuite
   }
 
   test("test different data types for options") {
-    val df = sqlContext.read
+    val df = sqlContext
+      .read
       .format("org.apache.spark.sql.streaming.test")
       .option("intOpt", 56)
       .option("boolOpt", false)
@@ -191,7 +199,8 @@ class DataFrameReaderWriterSuite
     assert(LastOptions.parameters("doubleOpt") == "6.7")
 
     LastOptions.parameters = null
-    df.write
+    df
+      .write
       .format("org.apache.spark.sql.streaming.test")
       .option("intOpt", 56)
       .option("boolOpt", false)
@@ -208,7 +217,8 @@ class DataFrameReaderWriterSuite
 
     /** Start a query with a specific name */
     def startQueryWithName(name: String = ""): ContinuousQuery = {
-      sqlContext.read
+      sqlContext
+        .read
         .format("org.apache.spark.sql.streaming.test")
         .stream("/test")
         .write
@@ -219,7 +229,8 @@ class DataFrameReaderWriterSuite
 
     /** Start a query without specifying a name */
     def startQueryWithoutName(): ContinuousQuery = {
-      sqlContext.read
+      sqlContext
+        .read
         .format("org.apache.spark.sql.streaming.test")
         .stream("/test")
         .write

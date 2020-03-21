@@ -43,8 +43,8 @@ object JSSE {
       context.init(kms, null, null)
 
       log.finest(
-        "JSSE context instantiated for certificate '%s'".format(
-          certificatePath))
+        "JSSE context instantiated for certificate '%s'"
+          .format(certificatePath))
 
       context
     }

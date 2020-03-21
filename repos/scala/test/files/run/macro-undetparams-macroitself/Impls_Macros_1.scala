@@ -6,7 +6,8 @@ object Macros {
     import c.universe._
     reify {
       println(
-        c.Expr[String](
+        c
+          .Expr[String](
             Literal(Constant(implicitly[c.WeakTypeTag[T]].toString)))
           .splice)
     }

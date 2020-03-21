@@ -663,7 +663,9 @@ trait Actor {
       case Terminated(dead) ⇒
         throw new DeathPactException(dead)
       case _ ⇒
-        context.system.eventStream
+        context
+          .system
+          .eventStream
           .publish(UnhandledMessage(message, sender(), self))
     }
   }

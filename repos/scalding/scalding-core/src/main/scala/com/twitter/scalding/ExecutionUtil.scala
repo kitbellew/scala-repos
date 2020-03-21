@@ -72,11 +72,10 @@ object ExecutionUtil {
       semigroup: Semigroup[T]): Execution[T] = {
     require(dr.each(duration).nonEmpty, s"Date Range can not be empty")
 
-    runDateRangeWithParallelism(duration, parallelism)(fn)(dr)
-      .map(
-        _.reduceLeft[T] {
-          case (l, r) =>
-            Semigroup.plus(l, r)
-        })
+    runDateRangeWithParallelism(duration, parallelism)(fn)(dr).map(
+      _.reduceLeft[T] {
+        case (l, r) =>
+          Semigroup.plus(l, r)
+      })
   }
 }

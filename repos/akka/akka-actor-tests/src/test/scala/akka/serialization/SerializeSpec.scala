@@ -155,14 +155,18 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
   "Serialization" must {
 
     "have correct bindings" in {
-      ser.bindings.collectFirst {
-        case (c, s) if c == addr.getClass ⇒
-          s.getClass
-      } should ===(Some(classOf[JavaSerializer]))
-      ser.bindings.collectFirst {
-        case (c, s) if c == classOf[PlainMessage] ⇒
-          s.getClass
-      } should ===(Some(classOf[TestSerializer]))
+      ser
+        .bindings
+        .collectFirst {
+          case (c, s) if c == addr.getClass ⇒
+            s.getClass
+        } should ===(Some(classOf[JavaSerializer]))
+      ser
+        .bindings
+        .collectFirst {
+          case (c, s) if c == classOf[PlainMessage] ⇒
+            s.getClass
+        } should ===(Some(classOf[TestSerializer]))
     }
 
     "serialize Address" in {
@@ -207,11 +211,12 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
 
         val in =
           new ObjectInputStream(new ByteArrayInputStream(outbuf.toByteArray))
-        JavaSerializer.currentSystem.withValue(
-          a.asInstanceOf[ActorSystemImpl]) {
-          val deadLetters = in.readObject().asInstanceOf[DeadLetterActorRef]
-          (deadLetters eq a.deadLetters) should ===(true)
-        }
+        JavaSerializer
+          .currentSystem
+          .withValue(a.asInstanceOf[ActorSystemImpl]) {
+            val deadLetters = in.readObject().asInstanceOf[DeadLetterActorRef]
+            (deadLetters eq a.deadLetters) should ===(true)
+          }
       } finally {
         shutdown(a)
       }
@@ -283,12 +288,12 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
 
     "use ByteArraySerializer for byte arrays" in {
       val byteSerializer = ser.serializerFor(classOf[Array[Byte]])
-      byteSerializer.getClass should be theSameInstanceAs classOf[
-        ByteArraySerializer]
+      byteSerializer
+        .getClass should be theSameInstanceAs classOf[ByteArraySerializer]
 
       for (a ← Seq("foo".getBytes("UTF-8"), null: Array[Byte], Array[Byte]()))
-        byteSerializer.fromBinary(
-          byteSerializer.toBinary(a)) should be theSameInstanceAs a
+        byteSerializer
+          .fromBinary(byteSerializer.toBinary(a)) should be theSameInstanceAs a
 
       intercept[IllegalArgumentException] {
         byteSerializer.toBinary("pigdog")
@@ -373,8 +378,8 @@ class SerializationCompatibilitySpec
 
   "Cross-version serialization compatibility" must {
     def verify(obj: SystemMessage, asExpected: String): Unit =
-      String.valueOf(ser.serialize(obj).map(encodeHex).get) should ===(
-        asExpected)
+      String
+        .valueOf(ser.serialize(obj).map(encodeHex).get) should ===(asExpected)
 
     "be preserved for the Create SystemMessage" in {
       // Using null as the cause to avoid a large serialized message and JDK differences
@@ -489,8 +494,8 @@ class OverriddenSystemMessageSerializationSpec
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
 class DefaultSerializationWarningSpec
     extends AkkaSpec(
-      ConfigFactory.parseString(
-        "akka.actor.warn-about-java-serializer-usage = on")) {
+      ConfigFactory
+        .parseString("akka.actor.warn-about-java-serializer-usage = on")) {
 
   val ser = SerializationExtension(system)
   val messagePrefix = "Using the default Java serializer for class.*"

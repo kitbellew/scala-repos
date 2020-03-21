@@ -269,12 +269,14 @@ private[internal] trait TypeConstraints {
                 case TypeRef(_, `tparam`, _) =>
                   debuglog(
                     s"$tvar addHiBound $tparam2.tpeHK.instantiateTypeParams($tparams, $tvars)")
-                  tvar addHiBound tparam2.tpeHK
+                  tvar addHiBound tparam2
+                    .tpeHK
                     .instantiateTypeParams(tparams, tvars)
                 case _ =>
               }
           } else {
-            if (bound.typeSymbol != NothingClass && bound.typeSymbol != tparam) {
+            if (bound.typeSymbol != NothingClass && bound
+                  .typeSymbol != tparam) {
               debuglog(
                 s"$tvar addLoBound $bound.instantiateTypeParams($tparams, $tvars)")
               tvar addLoBound bound.instantiateTypeParams(tparams, tvars)
@@ -284,7 +286,8 @@ private[internal] trait TypeConstraints {
                 case TypeRef(_, `tparam`, _) =>
                   debuglog(
                     s"$tvar addLoBound $tparam2.tpeHK.instantiateTypeParams($tparams, $tvars)")
-                  tvar addLoBound tparam2.tpeHK
+                  tvar addLoBound tparam2
+                    .tpeHK
                     .instantiateTypeParams(tparams, tvars)
                 case _ =>
               }

@@ -63,13 +63,13 @@ case object OptimalSizeExploringResizer {
     DefaultOptimalSizeExploringResizer(
       lowerBound = resizerCfg.getInt("lower-bound"),
       upperBound = resizerCfg.getInt("upper-bound"),
-      chanceOfScalingDownWhenFull = resizerCfg.getDouble(
-        "chance-of-ramping-down-when-full"),
+      chanceOfScalingDownWhenFull = resizerCfg
+        .getDouble("chance-of-ramping-down-when-full"),
       actionInterval = resizerCfg.getDuration("action-interval").asScala,
       downsizeAfterUnderutilizedFor =
         resizerCfg.getDuration("downsize-after-underutilized-for").asScala,
-      numOfAdjacentSizesToConsiderDuringOptimization = resizerCfg.getInt(
-        "optimization-range"),
+      numOfAdjacentSizesToConsiderDuringOptimization = resizerCfg
+        .getInt("optimization-range"),
       exploreStepSize = resizerCfg.getDouble("explore-step-size"),
       explorationProbability = resizerCfg.getDouble("chance-of-exploration"),
       weightOfLatestMetric = resizerCfg.getDouble("weight-of-latest-metric"),
@@ -157,8 +157,8 @@ case class DefaultOptimalSizeExploringResizer(
   private def checkParamAsProbability(value: Double, paramName: String): Unit =
     if (value < 0 || value > 1)
       throw new IllegalArgumentException(
-        s"$paramName must be between 0 and 1 (inclusive), was: [%s]".format(
-          value))
+        s"$paramName must be between 0 and 1 (inclusive), was: [%s]"
+          .format(value))
 
   private def checkParamAsPositiveNum(value: Double, paramName: String): Unit =
     checkParamLowerBound(value, 0, paramName)
@@ -248,21 +248,24 @@ case class DefaultOptimalSizeExploringResizer(
               utilized)))
 
     val newPerformanceLog: PerformanceLog =
-      if (fullyUtilized && record.underutilizationStreak.isEmpty && record.checkTime > 0) {
+      if (fullyUtilized && record.underutilizationStreak.isEmpty && record
+            .checkTime > 0) {
         val totalMessageReceived = messageCounter - record.messageCount
         val queueSizeChange = record.totalQueueLength - totalQueueLength
         val totalProcessed = queueSizeChange + totalMessageReceived
         if (totalProcessed > 0) {
-          val duration = Duration.fromNanos(
-            System.nanoTime() - record.checkTime)
+          val duration = Duration
+            .fromNanos(System.nanoTime() - record.checkTime)
           val last: Duration = duration / totalProcessed
           //exponentially decrease the weight of old last metrics data
           val toUpdate =
-            performanceLog.get(currentSize).fold(last) { oldSpeed ⇒
-              (oldSpeed * (1.0 - weightOfLatestMetric)) + (
-                last * weightOfLatestMetric
-              )
-            }
+            performanceLog
+              .get(currentSize)
+              .fold(last) { oldSpeed ⇒
+                (oldSpeed * (1.0 - weightOfLatestMetric)) + (
+                  last * weightOfLatestMetric
+                )
+              }
           performanceLog + (currentSize → toUpdate)
         } else
           performanceLog
@@ -283,15 +286,17 @@ case class DefaultOptimalSizeExploringResizer(
     val currentSize = currentRoutees.length
     val now = LocalDateTime.now
     val proposedChange =
-      if (record.underutilizationStreak.fold(false)(
-            _.start.isBefore(
-              now.minus(downsizeAfterUnderutilizedFor.asJava)))) {
+      if (record
+            .underutilizationStreak
+            .fold(false)(
+              _.start
+              .isBefore(now.minus(downsizeAfterUnderutilizedFor.asJava)))) {
         val downsizeTo =
-          (
-            record.underutilizationStreak.get.highestUtilization * downsizeRatio
-          ).toInt
+          (record.underutilizationStreak.get.highestUtilization * downsizeRatio)
+            .toInt
         Math.min(downsizeTo - currentSize, 0)
-      } else if (performanceLog.isEmpty || record.underutilizationStreak.isDefined) {
+      } else if (performanceLog
+                   .isEmpty || record.underutilizationStreak.isDefined) {
         0
       } else {
         if (!stopExploring && random.nextDouble() < explorationProbability)
@@ -339,9 +344,8 @@ case class DefaultOptimalSizeExploringResizer(
   }
 
   private def explore(currentSize: PoolSize): Int = {
-    val change = Math.max(
-      1,
-      random.nextInt(Math.ceil(currentSize * exploreStepSize).toInt))
+    val change = Math
+      .max(1, random.nextInt(Math.ceil(currentSize * exploreStepSize).toInt))
     if (random.nextDouble() < chanceOfScalingDownWhenFull)
       -change
     else

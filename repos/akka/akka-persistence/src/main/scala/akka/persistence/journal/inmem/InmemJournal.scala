@@ -103,7 +103,8 @@ private[persistence] trait InmemMessages {
       max: Long): immutable.Seq[PersistentRepr] =
     messages.get(pid) match {
       case Some(ms) ⇒
-        ms.filter(m ⇒ m.sequenceNr >= fromSnr && m.sequenceNr <= toSnr)
+        ms
+          .filter(m ⇒ m.sequenceNr >= fromSnr && m.sequenceNr <= toSnr)
           .take(safeLongToInt(max))
       case None ⇒
         Nil

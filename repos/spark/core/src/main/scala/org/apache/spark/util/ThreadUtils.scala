@@ -30,8 +30,8 @@ import com.google.common.util.concurrent.{MoreExecutors, ThreadFactoryBuilder}
 
 private[spark] object ThreadUtils {
 
-  private val sameThreadExecutionContext = ExecutionContext.fromExecutorService(
-    MoreExecutors.sameThreadExecutor())
+  private val sameThreadExecutionContext = ExecutionContext
+    .fromExecutorService(MoreExecutors.sameThreadExecutor())
 
   /**
     * An `ExecutionContextExecutor` that runs each task in the thread that invokes `execute/submit`.
@@ -167,8 +167,9 @@ private[spark] object ThreadUtils {
           .drop(1)
 
         // Remove the part of the new thread stack that shows methods call from this helper method
-        val extraStackTrace = realException.getStackTrace.takeWhile(
-          !_.getClassName.contains(this.getClass.getSimpleName))
+        val extraStackTrace = realException
+          .getStackTrace
+          .takeWhile(!_.getClassName.contains(this.getClass.getSimpleName))
 
         // Combine the two stack traces, with a place holder just specifying that there
         // was a helper method used, without any further details of the helper

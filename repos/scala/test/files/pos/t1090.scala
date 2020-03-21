@@ -10,8 +10,10 @@ object Test {
       type Node = Core.this.Node
     }
     def f(manager: Manager) =
-      manager.iterator.foreach {
-        case node: NodeImpl =>
-      }
+      manager
+        .iterator
+        .foreach {
+          case node: NodeImpl =>
+        }
   }
 }

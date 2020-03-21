@@ -40,9 +40,12 @@ case class Endpoint(
   override def equals(that: Any) =
     that match {
       case that: Endpoint =>
-        java.util.Arrays.equals(
-          this.names.asInstanceOf[Array[Object]],
-          that.names.asInstanceOf[Array[Object]]) &&
+        java
+          .util
+          .Arrays
+          .equals(
+            this.names.asInstanceOf[Array[Object]],
+            that.names.asInstanceOf[Array[Object]]) &&
           this.host == that.host &&
           this.port == that.port &&
           this.shard == that.shard &&
@@ -127,7 +130,8 @@ object Endpoint {
         status <- Status.ofString(s)
       } yield status
     } getOrElse Endpoint.Status.Unknown
-    val tmpl = Endpoint.Empty
+    val tmpl = Endpoint
+      .Empty
       .copy(shard = shard.getOrElse(Int.MinValue), status = status)
 
     val namesByHostPort = Memoize

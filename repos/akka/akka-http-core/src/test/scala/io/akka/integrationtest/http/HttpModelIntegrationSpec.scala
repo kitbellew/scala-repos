@@ -36,8 +36,8 @@ class HttpModelIntegrationSpec
     with Matchers
     with BeforeAndAfterAll {
 
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
     akka.event-handlers = ["akka.testkit.TestEventListener"]
     akka.loglevel = WARNING""")
   implicit val system = ActorSystem(getClass.getSimpleName, testConf)
@@ -72,8 +72,9 @@ class HttpModelIntegrationSpec
       // HttpHeaders by getting their name and value. We convert Content-Type
       // and Content-Length by using the toString of their values.
 
-      val partialTextHeaders: Seq[(String, String)] = request.headers.map(h ⇒
-        (h.name, h.value))
+      val partialTextHeaders: Seq[(String, String)] = request
+        .headers
+        .map(h ⇒ (h.name, h.value))
       val entityTextHeaders: Seq[(String, String)] =
         request.entity match {
           case HttpEntity.Default(contentType, contentLength, _) ⇒

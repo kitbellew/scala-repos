@@ -72,10 +72,12 @@ private[sql] object DataSourceAnalysis extends Rule[LogicalPlan] {
 
         val outputPath = t.location.paths.head
         val inputPaths =
-          query.collect {
-            case LogicalRelation(r: HadoopFsRelation, _, _) =>
-              r.location.paths
-          }.flatten
+          query
+            .collect {
+              case LogicalRelation(r: HadoopFsRelation, _, _) =>
+                r.location.paths
+            }
+            .flatten
 
         val mode =
           if (overwrite)
@@ -156,12 +158,12 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
           t.partitionSchema.map(c => l.output.find(_.name == c.name).get))
 
         // Only pruning the partition keys
-        val partitionFilters = filters.filter(
-          _.references.subsetOf(partitionColumns))
+        val partitionFilters = filters
+          .filter(_.references.subsetOf(partitionColumns))
 
         // Only pushes down predicates that do not reference partition keys.
-        val pushedFilters = filters.filter(
-          _.references.intersect(partitionColumns).isEmpty)
+        val pushedFilters = filters
+          .filter(_.references.intersect(partitionColumns).isEmpty)
 
         // Predicates with both partition keys and attributes
         val partitionAndNormalColumnFilters =
@@ -224,7 +226,9 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
         // See buildPartitionedTableScan for the reason that we need to create a shard
         // broadcast HadoopConf.
         val sharedHadoopConf = SparkHadoopUtil.get.conf
-        val confBroadcast = t.sqlContext.sparkContext
+        val confBroadcast = t
+          .sqlContext
+          .sparkContext
           .broadcast(new SerializableConfiguration(sharedHadoopConf))
 
         t.bucketSpec match {
@@ -233,7 +237,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
                 : (Seq[Attribute], Array[Filter]) => RDD[InternalRow] = {
               (requiredColumns: Seq[Attribute], filters: Array[Filter]) =>
                 {
-                  val bucketed = t.location
+                  val bucketed = t
+                    .location
                     .allFiles()
                     .filterNot(_.getPath.getName startsWith "_")
                     .groupBy { f =>
@@ -244,7 +249,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
                     }
 
                   val bucketedDataMap = bucketed.mapValues { bucketFiles =>
-                    t.fileFormat
+                    t
+                      .fileFormat
                       .buildInternalScan(
                         t.sqlContext,
                         t.dataSchema,
@@ -261,9 +267,11 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
                     new UnionRDD(
                       t.sqlContext.sparkContext,
                       (0 until spec.numBuckets).map { bucketId =>
-                        bucketedDataMap.get(bucketId).getOrElse {
-                          t.sqlContext.emptyResult: RDD[InternalRow]
-                        }
+                        bucketedDataMap
+                          .get(bucketId)
+                          .getOrElse {
+                            t.sqlContext.emptyResult: RDD[InternalRow]
+                          }
                       })
                   bucketedRDD
                 }
@@ -277,15 +285,17 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
               projects,
               filters,
               (a, f) =>
-                t.fileFormat.buildInternalScan(
-                  t.sqlContext,
-                  t.dataSchema,
-                  a.map(_.name).toArray,
-                  f,
-                  None,
-                  t.location.allFiles(),
-                  confBroadcast,
-                  t.options)
+                t
+                  .fileFormat
+                  .buildInternalScan(
+                    t.sqlContext,
+                    t.dataSchema,
+                    a.map(_.name).toArray,
+                    f,
+                    None,
+                    t.location.allFiles(),
+                    confBroadcast,
+                    t.options)
             ) :: Nil
         }
 
@@ -320,7 +330,9 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     // Because we are creating one RDD per partition, we need to have a shared HadoopConf.
     // Otherwise, the cost of broadcasting HadoopConf in every RDD will be high.
     val sharedHadoopConf = SparkHadoopUtil.get.conf
-    val confBroadcast = relation.sqlContext.sparkContext
+    val confBroadcast = relation
+      .sqlContext
+      .sparkContext
       .broadcast(new SerializableConfiguration(sharedHadoopConf))
     val partitionColumnNames = partitionColumns.fieldNames.toSet
 
@@ -332,8 +344,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
 
           relation.bucketSpec match {
             case Some(spec) if relation.sqlContext.conf.bucketingEnabled =>
-              val requiredDataColumns = requiredColumns.filterNot(c =>
-                partitionColumnNames.contains(c.name))
+              val requiredDataColumns = requiredColumns
+                .filterNot(c => partitionColumnNames.contains(c.name))
 
               // Builds RDD[Row]s for each selected partition.
               val perPartitionRows: Seq[(Int, RDD[InternalRow])] = partitions
@@ -350,15 +362,17 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
                       // Don't scan any partition columns to save I/O.  Here we are being optimistic and
                       // assuming partition columns data stored in data files are always consistent with
                       // those partition values encoded in partition directory paths.
-                      val dataRows = relation.fileFormat.buildInternalScan(
-                        relation.sqlContext,
-                        relation.dataSchema,
-                        requiredDataColumns.map(_.name).toArray,
-                        filters,
-                        buckets,
-                        bucketFiles._2,
-                        confBroadcast,
-                        options)
+                      val dataRows = relation
+                        .fileFormat
+                        .buildInternalScan(
+                          relation.sqlContext,
+                          relation.dataSchema,
+                          requiredDataColumns.map(_.name).toArray,
+                          filters,
+                          buckets,
+                          bucketFiles._2,
+                          confBroadcast,
+                          options)
 
                       // Merges data values with partition values.
                       bucketFiles._1 -> mergeWithPartitionValues(
@@ -387,21 +401,23 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
               bucketed
 
             case _ =>
-              val requiredDataColumns = requiredColumns.filterNot(c =>
-                partitionColumnNames.contains(c.name))
+              val requiredDataColumns = requiredColumns
+                .filterNot(c => partitionColumnNames.contains(c.name))
 
               // Builds RDD[Row]s for each selected partition.
               val perPartitionRows = partitions.map {
                 case Partition(partitionValues, files) =>
-                  val dataRows = relation.fileFormat.buildInternalScan(
-                    relation.sqlContext,
-                    relation.dataSchema,
-                    requiredDataColumns.map(_.name).toArray,
-                    filters,
-                    buckets,
-                    files,
-                    confBroadcast,
-                    options)
+                  val dataRows = relation
+                    .fileFormat
+                    .buildInternalScan(
+                      relation.sqlContext,
+                      relation.dataSchema,
+                      requiredDataColumns.map(_.name).toArray,
+                      filters,
+                      buckets,
+                      files,
+                      confBroadcast,
+                      options)
 
                   // Merges data values with partition values.
                   mergeWithPartitionValues(
@@ -442,34 +458,37 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       dataColumns: Seq[Attribute],
       partitionColumnSchema: StructType,
       partitionValues: InternalRow): ColumnarBatch = {
-    val result = ColumnarBatch.allocate(
-      StructType.fromAttributes(requiredColumns))
+    val result = ColumnarBatch
+      .allocate(StructType.fromAttributes(requiredColumns))
     var resultIdx = 0
     var inputIdx = 0
 
     while (resultIdx < requiredColumns.length) {
       val attr = requiredColumns(resultIdx)
-      if (inputIdx < dataColumns.length && requiredColumns(
-            resultIdx) == dataColumns(inputIdx)) {
+      if (inputIdx < dataColumns
+            .length && requiredColumns(resultIdx) == dataColumns(inputIdx)) {
         result.setColumn(resultIdx, input.column(inputIdx))
         inputIdx += 1
       } else {
         require(
-          partitionColumnSchema.fields
+          partitionColumnSchema
+            .fields
             .filter(_.name.equals(attr.name))
             .length == 1)
         var partitionIdx = 0
-        partitionColumnSchema.fields.foreach { f =>
-          {
-            if (f.name.equals(attr.name)) {
-              ColumnVectorUtils.populate(
-                result.column(resultIdx),
-                partitionValues,
-                partitionIdx)
+        partitionColumnSchema
+          .fields
+          .foreach { f =>
+            {
+              if (f.name.equals(attr.name)) {
+                ColumnVectorUtils.populate(
+                  result.column(resultIdx),
+                  partitionValues,
+                  partitionIdx)
+              }
+              partitionIdx += 1
             }
-            partitionIdx += 1
           }
-        }
       }
       resultIdx += 1
     }
@@ -490,9 +509,11 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       // we should use the `AttributeReference` in `requiredColumns`.
       val partitionColumns = {
         val requiredColumnMap = requiredColumns.map(a => a.name -> a).toMap
-        partitionColumnSchema.toAttributes.map { a =>
-          requiredColumnMap.getOrElse(a.name, a)
-        }
+        partitionColumnSchema
+          .toAttributes
+          .map { a =>
+            requiredColumnMap.getOrElse(a.name, a)
+          }
       }
 
       val mapPartitionsFunc =
@@ -502,9 +523,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
           val mutableJoinedRow = new JoinedRow()
           val unsafePartitionValues =
             UnsafeProjection.create(partitionColumnSchema)(partitionValues)
-          val unsafeProjection = UnsafeProjection.create(
-            requiredColumns,
-            dataColumns ++ partitionColumns)
+          val unsafeProjection = UnsafeProjection
+            .create(requiredColumns, dataColumns ++ partitionColumns)
 
           // If we are returning batches directly, we need to augment them with the partitioning
           // columns. We want to do this without a row by row operation.
@@ -559,9 +579,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     val mutableRow = new SpecificMutableRow(Seq(bucketColumn.dataType))
     mutableRow(0) = Cast(Literal(value), bucketColumn.dataType).eval(null)
     val bucketIdGeneration = UnsafeProjection.create(
-      HashPartitioning(
-        bucketColumn :: Nil,
-        numBuckets).partitionIdExpression :: Nil,
+      HashPartitioning(bucketColumn :: Nil, numBuckets)
+        .partitionIdExpression :: Nil,
       bucketColumn :: Nil)
 
     bucketIdGeneration(mutableRow).getInt(0)
@@ -604,8 +623,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       // items. So it is possible we still get an In expression here that needs to be pushed
       // down.
       case expressions.In(a: Attribute, list)
-          if list.forall(
-            _.isInstanceOf[Literal]) && a.name == bucketColumnName =>
+          if list.forall(_.isInstanceOf[Literal]) && a
+            .name == bucketColumnName =>
         val hSet = list.map(e => e.eval(EmptyRow))
         hSet.foreach(e => matchedBuckets.set(getBucketId(a, numBuckets, e)))
       case expressions.IsNull(a: Attribute) if a.name == bucketColumnName =>
@@ -681,8 +700,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     // A set of column attributes that are only referenced by pushed down filters.  We can eliminate
     // them from requested columns.
     val handledSet = {
-      val handledPredicates = filterPredicates.filterNot(
-        unhandledPredicates.contains)
+      val handledPredicates = filterPredicates
+        .filterNot(unhandledPredicates.contains)
       val unhandledSet = AttributeSet(unhandledPredicates.flatMap(_.references))
       AttributeSet(handledPredicates.flatMap(_.references)) --
         (projectSet ++ unhandledSet).map(relation.attributeMap)

@@ -16,8 +16,8 @@ object Test extends DirectTest {
       def isFeature(s: Symbol) =
         s hasAnnotation definitions.LanguageFeatureAnnot
       val langf = definitions.languageFeatureModule.typeSignature
-      val feats =
-        langf.declarations filter (s => isFeature(s)) map (_.name.decoded)
+      val feats = langf
+        .declarations filter (s => isFeature(s)) map (_.name.decoded)
       val xmen = langf
         .member(TermName("experimental"))
         .typeSignature

@@ -32,21 +32,19 @@ object TlsSpec {
     val password = "changeme"
 
     val keyStore = KeyStore.getInstance(KeyStore.getDefaultType)
-    keyStore.load(
-      getClass.getResourceAsStream("/keystore"),
-      password.toCharArray)
+    keyStore
+      .load(getClass.getResourceAsStream("/keystore"), password.toCharArray)
 
     val trustStore = KeyStore.getInstance(KeyStore.getDefaultType)
-    trustStore.load(
-      getClass.getResourceAsStream(trustPath),
-      password.toCharArray)
+    trustStore
+      .load(getClass.getResourceAsStream(trustPath), password.toCharArray)
 
-    val keyManagerFactory = KeyManagerFactory.getInstance(
-      KeyManagerFactory.getDefaultAlgorithm)
+    val keyManagerFactory = KeyManagerFactory
+      .getInstance(KeyManagerFactory.getDefaultAlgorithm)
     keyManagerFactory.init(keyStore, password.toCharArray)
 
-    val trustManagerFactory = TrustManagerFactory.getInstance(
-      TrustManagerFactory.getDefaultAlgorithm)
+    val trustManagerFactory = TrustManagerFactory
+      .getInstance(TrustManagerFactory.getDefaultAlgorithm)
     trustManagerFactory.init(trustStore)
 
     val context = SSLContext.getInstance("TLS")
@@ -133,7 +131,9 @@ class TlsSpec
 
     trait Named {
       def name: String =
-        getClass.getName.reverse
+        getClass
+          .getName
+          .reverse
           .dropWhile(c ⇒ "$0123456789".indexOf(c) != -1)
           .takeWhile(_ != '$')
           .reverse
@@ -179,8 +179,8 @@ class TlsSpec
           rightClosing: TLSClosing,
           rhs: Flow[SslTlsInbound, SslTlsOutbound, Any]) = {
         binding = server(serverTls(rightClosing).reversed join rhs)
-        clientTls(leftClosing) join Tcp().outgoingConnection(
-          binding.localAddress)
+        clientTls(leftClosing) join Tcp()
+          .outgoingConnection(binding.localAddress)
       }
       override def cleanup(): Unit = binding.unbind()
     }
@@ -192,8 +192,8 @@ class TlsSpec
           rightClosing: TLSClosing,
           rhs: Flow[SslTlsInbound, SslTlsOutbound, Any]) = {
         binding = server(clientTls(rightClosing).reversed join rhs)
-        serverTls(leftClosing) join Tcp().outgoingConnection(
-          binding.localAddress)
+        serverTls(leftClosing) join Tcp()
+          .outgoingConnection(binding.localAddress)
       }
       override def cleanup(): Unit = binding.unbind()
     }
@@ -206,28 +206,28 @@ class TlsSpec
 
     trait PayloadScenario extends Named {
       def flow: Flow[SslTlsInbound, SslTlsOutbound, Any] =
-        Flow[SslTlsInbound]
-          .map {
-            var session: SSLSession = null
-            def setSession(s: SSLSession) = {
-              session = s
-              system.log.debug(
-                s"new session: $session (${session.getId mkString ","})")
-            }
-
-            {
-              case SessionTruncated ⇒
-                SendBytes(ByteString("TRUNCATED"))
-              case SessionBytes(s, b) if session == null ⇒
-                setSession(s)
-                SendBytes(b)
-              case SessionBytes(s, b) if s != session ⇒
-                setSession(s)
-                SendBytes(ByteString("NEWSESSION") ++ b)
-              case SessionBytes(s, b) ⇒
-                SendBytes(b)
-            }
+        Flow[SslTlsInbound].map {
+          var session: SSLSession = null
+          def setSession(s: SSLSession) = {
+            session = s
+            system
+              .log
+              .debug(s"new session: $session (${session.getId mkString ","})")
           }
+
+          {
+            case SessionTruncated ⇒
+              SendBytes(ByteString("TRUNCATED"))
+            case SessionBytes(s, b) if session == null ⇒
+              setSession(s)
+              SendBytes(b)
+            case SessionBytes(s, b) if s != session ⇒
+              setSession(s)
+              SendBytes(ByteString("NEWSESSION") ++ b)
+            case SessionBytes(s, b) ⇒
+              SendBytes(b)
+          }
+        }
       def leftClosing: TLSClosing = IgnoreComplete
       def rightClosing: TLSClosing = IgnoreComplete
 
@@ -343,25 +343,25 @@ class TlsSpec
       def output = ByteString(str + "NEWSESSIONhello world")
     }
 
-    val logCipherSuite = Flow[SslTlsInbound]
-      .map {
-        var session: SSLSession = null
-        def setSession(s: SSLSession) = {
-          session = s
-          system.log.debug(
-            s"new session: $session (${session.getId mkString ","})")
-        }
-
-        {
-          case SessionTruncated ⇒
-            SendBytes(ByteString("TRUNCATED"))
-          case SessionBytes(s, b) if s != session ⇒
-            setSession(s)
-            SendBytes(ByteString(s.getCipherSuite) ++ b)
-          case SessionBytes(s, b) ⇒
-            SendBytes(b)
-        }
+    val logCipherSuite = Flow[SslTlsInbound].map {
+      var session: SSLSession = null
+      def setSession(s: SSLSession) = {
+        session = s
+        system
+          .log
+          .debug(s"new session: $session (${session.getId mkString ","})")
       }
+
+      {
+        case SessionTruncated ⇒
+          SendBytes(ByteString("TRUNCATED"))
+        case SessionBytes(s, b) if s != session ⇒
+          setSession(s)
+          SendBytes(ByteString(s.getCipherSuite) ++ b)
+        case SessionBytes(s, b) ⇒
+          SendBytes(b)
+      }
+    }
 
     object SessionRenegotiationFirstOne extends PayloadScenario {
       override def flow = logCipherSuite
@@ -459,7 +459,8 @@ class TlsSpec
       val (server, serverErr) = Tcp()
         .bind("localhost", 0)
         .map(c ⇒ {
-          c.flow
+          c
+            .flow
             .joinMat(
               serverTls(IgnoreBoth).reversed.joinMat(simple)(Keep.right))(
               Keep.right)

@@ -113,11 +113,13 @@ class TaskCountsTest
         Task.Id("task4") -> notAliveHealth))
     Then("all counts are 0 except staged")
     counts should be(
-      TaskCounts.zero.copy(
-        tasksStaged = 1,
-        tasksRunning = 3,
-        tasksHealthy = 1,
-        tasksUnhealthy = 1))
+      TaskCounts
+        .zero
+        .copy(
+          tasksStaged = 1,
+          tasksRunning = 3,
+          tasksHealthy = 1,
+          tasksUnhealthy = 1))
   }
 
   test("task count difference") {

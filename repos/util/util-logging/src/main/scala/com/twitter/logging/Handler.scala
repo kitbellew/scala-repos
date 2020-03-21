@@ -31,10 +31,8 @@ abstract class Handler(val formatter: Formatter, val level: Option[Level])
   }
 
   override def toString = {
-    "<%s level=%s formatter=%s>".format(
-      getClass.getName,
-      getLevel,
-      formatter.toString)
+    "<%s level=%s formatter=%s>"
+      .format(getClass.getName, getLevel, formatter.toString)
   }
 }
 

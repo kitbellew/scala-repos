@@ -70,21 +70,23 @@ private[sbt] object SbtRefactorings {
       split: SbtParser,
       name: String,
       command: Seq[String]) =
-    split.settingsTrees.foldLeft(Seq.empty[(Int, String, String)]) {
-      case (acc, (st, tree)) =>
-        val treeName = extractSettingName(tree)
-        if (name == treeName) {
-          val replacement =
-            if (acc.isEmpty) {
-              command.mkString(END_OF_LINE)
-            } else {
-              EMPTY_STRING
-            }
-          (tree.pos.start, st, replacement) +: acc
-        } else {
-          acc
-        }
-    }
+    split
+      .settingsTrees
+      .foldLeft(Seq.empty[(Int, String, String)]) {
+        case (acc, (st, tree)) =>
+          val treeName = extractSettingName(tree)
+          if (name == treeName) {
+            val replacement =
+              if (acc.isEmpty) {
+                command.mkString(END_OF_LINE)
+              } else {
+                EMPTY_STRING
+              }
+            (tree.pos.start, st, replacement) +: acc
+          } else {
+            acc
+          }
+      }
 
   private def toTreeStringMap(command: Seq[String]) = {
     val split = SbtParser(FAKE_FILE, command)

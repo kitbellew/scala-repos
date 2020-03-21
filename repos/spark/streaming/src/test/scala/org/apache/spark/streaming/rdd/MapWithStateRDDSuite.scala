@@ -68,9 +68,11 @@ class MapWithStateRDDSuite
       Time(123))
     assertRDD[Int, Int, String, Int](
       rdd,
-      data.map { x =>
-        (x._1, x._2, 123)
-      }.toSet,
+      data
+        .map { x =>
+          (x._1, x._2, 123)
+        }
+        .toSet,
       Set.empty)
     assert(rdd.partitions.size === partitioner.numPartitions)
 
@@ -107,9 +109,11 @@ class MapWithStateRDDSuite
         initialStateMap,
         Seq.empty)
       val dataIterator =
-        data.map { v =>
-          ("key", v)
-        }.iterator
+        data
+          .map { v =>
+            ("key", v)
+          }
+          .iterator
       val removedStates = new ArrayBuffer[Int]
       val timingOutStates = new ArrayBuffer[Int]
 
@@ -163,9 +167,12 @@ class MapWithStateRDDSuite
           timeoutThreshold,
           removeTimedoutData)
 
-      val updatedStateData = updatedRecord.stateMap.getAll().map { x =>
-        (x._2, x._3)
-      }
+      val updatedStateData = updatedRecord
+        .stateMap
+        .getAll()
+        .map { x =>
+          (x._2, x._3)
+        }
       assert(
         updatedStateData.toSet === expectedStates.toSet,
         "states do not match after updating the MapWithStateRDDRecord")
@@ -290,9 +297,11 @@ class MapWithStateRDDSuite
     val initStates = Seq(("k1", 0), ("k2", 0))
     val initTime = 123
     val initStateWthTime =
-      initStates.map { x =>
-        (x._1, x._2, initTime)
-      }.toSet
+      initStates
+        .map { x =>
+          (x._1, x._2, initTime)
+        }
+        .toSet
     val partitioner = new HashPartitioner(2)
     val initStateRDD = MapWithStateRDD
       .createFromPairRDD[String, Int, Int, Int](
@@ -488,7 +497,8 @@ class MapWithStateRDDSuite
       // Create a new MapWithStateRDD, with the lineage lineage MapWithStateRDD as the parent
       new MapWithStateRDD[Int, Int, Int, Int](
         stateRDDWithLongLineage,
-        stateRDDWithLongLineage.sparkContext
+        stateRDDWithLongLineage
+          .sparkContext
           .emptyRDD[(Int, Int)]
           .partitionBy(partitioner),
         (time: Time, key: Int, value: Option[Int], state: State[Int]) => None,

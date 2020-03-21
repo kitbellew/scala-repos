@@ -134,7 +134,10 @@ private[persistence] object LeveldbJournal {
   * Journal backed by a [[SharedLeveldbStore]]. For testing only.
   */
 private[persistence] class SharedLeveldbJournal extends AsyncWriteProxy {
-  val timeout: Timeout = context.system.settings.config
+  val timeout: Timeout = context
+    .system
+    .settings
+    .config
     .getMillisDuration("akka.persistence.journal.leveldb-shared.timeout")
 
   override def receivePluginInternal: Receive = {

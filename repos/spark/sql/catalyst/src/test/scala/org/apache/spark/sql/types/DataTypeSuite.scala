@@ -230,9 +230,7 @@ class DataTypeSuite extends SparkFunSuite {
   checkDataTypeJsonRepr(MapType(IntegerType, StringType, true))
   checkDataTypeJsonRepr(MapType(IntegerType, ArrayType(DoubleType), false))
 
-  val metadata = new MetadataBuilder()
-    .putString("name", "age")
-    .build()
+  val metadata = new MetadataBuilder().putString("name", "age").build()
   val structType = StructType(
     Seq(
       StructField("a", IntegerType, nullable = true),

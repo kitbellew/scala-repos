@@ -74,7 +74,8 @@ object Config {
         } else if (HOME.isDefined) {
           val configFile = HOME.get + "/config/" + confName
           println(
-            "AKKA_HOME is defined as [" + HOME.get + "], loading config from [" + configFile + "].")
+            "AKKA_HOME is defined as [" + HOME
+              .get + "], loading config from [" + configFile + "].")
           Configuration.fromFile(configFile)
         } else {
           println(

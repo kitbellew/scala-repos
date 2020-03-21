@@ -19,11 +19,8 @@ package object openid {
   implicit def urlToRichUrl(url: URL) =
     new RichUrl[URL] {
       def hostAndPath =
-        new URL(
-          url.getProtocol,
-          url.getHost,
-          url.getPort,
-          url.getPath).toExternalForm
+        new URL(url.getProtocol, url.getHost, url.getPort, url.getPath)
+          .toExternalForm
     }
 
   def readFixture(filePath: String): String =
@@ -35,7 +32,9 @@ package object openid {
 
   def parseQueryString(url: String): Params = {
     catching(classOf[MalformedURLException]) opt new URL(url) map { url =>
-      new QueryStringDecoder(url.toURI.getRawQuery, false).getParameters.asScala
+      new QueryStringDecoder(url.toURI.getRawQuery, false)
+        .getParameters
+        .asScala
         .mapValues(_.asScala.toSeq)
         .toMap
     } getOrElse Map()

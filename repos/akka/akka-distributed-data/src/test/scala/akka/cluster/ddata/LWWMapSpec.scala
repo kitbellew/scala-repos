@@ -26,7 +26,8 @@ class LWWMapSpec extends WordSpec with Matchers {
     }
 
     "be able to have its entries correctly merged with another LWWMap with other entries" in {
-      val m1 = LWWMap.empty
+      val m1 = LWWMap
+        .empty
         .put(node1, "a", 1, defaultClock[Int])
         .put(node1, "b", 2, defaultClock[Int])
       val m2 = LWWMap.empty.put(node2, "c", 3, defaultClock[Int])
@@ -38,7 +39,8 @@ class LWWMapSpec extends WordSpec with Matchers {
     }
 
     "be able to remove entry" in {
-      val m1 = LWWMap.empty
+      val m1 = LWWMap
+        .empty
         .put(node1, "a", 1, defaultClock[Int])
         .put(node1, "b", 2, defaultClock[Int])
       val m2 = LWWMap.empty.put(node2, "c", 3, defaultClock[Int])

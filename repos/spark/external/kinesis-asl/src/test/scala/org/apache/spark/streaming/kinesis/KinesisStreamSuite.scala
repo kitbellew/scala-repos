@@ -179,13 +179,18 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
       kinesisRDD.awsCredentialsOption ===
         Some(SerializableAWSCredentials(dummyAWSAccessKey, dummyAWSSecretKey)))
     assert(nonEmptyRDD.partitions.size === blockInfos.size)
-    nonEmptyRDD.partitions.foreach {
-      _ shouldBe a[KinesisBackedBlockRDDPartition]
-    }
+    nonEmptyRDD
+      .partitions
+      .foreach {
+        _ shouldBe a[KinesisBackedBlockRDDPartition]
+      }
     val partitions =
-      nonEmptyRDD.partitions.map {
-        _.asInstanceOf[KinesisBackedBlockRDDPartition]
-      }.toSeq
+      nonEmptyRDD
+        .partitions
+        .map {
+          _.asInstanceOf[KinesisBackedBlockRDDPartition]
+        }
+        .toSeq
     assert(
       partitions.map {
         _.seqNumberRanges
@@ -210,13 +215,15 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
     blockInfos.foreach {
       _.setBlockIdInvalid()
     }
-    kinesisStream.createBlockRDD(time, blockInfos).partitions.foreach {
-      partition =>
+    kinesisStream
+      .createBlockRDD(time, blockInfos)
+      .partitions
+      .foreach { partition =>
         assert(
           partition
             .asInstanceOf[KinesisBackedBlockRDDPartition]
             .isBlockIdValid === false)
-    }
+      }
   }
 
   /**
@@ -394,10 +401,12 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
         // Verify the recovered sequence ranges
         val kRdd = rdd.asInstanceOf[KinesisBackedBlockRDD[Array[Byte]]]
         assert(kRdd.arrayOfseqNumberRanges.size === arrayOfSeqNumRanges.size)
-        arrayOfSeqNumRanges.zip(kRdd.arrayOfseqNumberRanges).foreach {
-          case (expected, found) =>
-            assert(expected.ranges.toSeq === found.ranges.toSeq)
-        }
+        arrayOfSeqNumRanges
+          .zip(kRdd.arrayOfseqNumberRanges)
+          .foreach {
+            case (expected, found) =>
+              assert(expected.ranges.toSeq === found.ranges.toSeq)
+          }
 
         // Verify the recovered data
         assert(

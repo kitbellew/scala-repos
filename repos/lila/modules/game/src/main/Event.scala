@@ -124,16 +124,20 @@ object Event {
         fen = chess.format.Forsyth.exportBoard(situation.board),
         check = situation.check,
         threefold = situation.threefoldRepetition,
-        promotion = move.promotion.map {
-          Promotion(_, move.dest)
-        },
+        promotion = move
+          .promotion
+          .map {
+            Promotion(_, move.dest)
+          },
         enpassant = (move.capture ifTrue move.enpassant).map {
           Event.Enpassant(_, !move.color)
         },
-        castle = move.castle.map {
-          case (king, rook) =>
-            Castling(king, rook, move.color)
-        },
+        castle = move
+          .castle
+          .map {
+            case (king, rook) =>
+              Castling(king, rook, move.color)
+          },
         state = state,
         clock = clock,
         possibleMoves = situation.destinations,

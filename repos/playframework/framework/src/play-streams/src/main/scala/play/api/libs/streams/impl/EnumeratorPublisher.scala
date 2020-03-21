@@ -249,8 +249,8 @@ private[streams] class EnumeratorSubscription[T, U >: T](
     }
     its match {
       case Unattached =>
-        enum(iteratee).onComplete(enumeratorApplicationComplete)(
-          Execution.trampoline)
+        enum(iteratee)
+          .onComplete(enumeratorApplicationComplete)(Execution.trampoline)
       case Attached(link0) =>
         link0.success(iteratee)
     }

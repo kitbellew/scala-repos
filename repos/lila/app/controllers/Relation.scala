@@ -37,16 +37,20 @@ object Relation extends LilaController {
           html = fuccess(
             Ok(
               mini.fold(
-                html.relation.mini(
-                  userId,
-                  blocked = blocked,
-                  followable = followable,
-                  relation = relation),
-                html.relation.actions(
-                  userId,
-                  relation = relation,
-                  blocked = blocked,
-                  followable = followable)
+                html
+                  .relation
+                  .mini(
+                    userId,
+                    blocked = blocked,
+                    followable = followable,
+                    relation = relation),
+                html
+                  .relation
+                  .actions(
+                    userId,
+                    relation = relation,
+                    blocked = blocked,
+                    followable = followable)
               ))),
           api = _ =>
             fuccess(
@@ -130,9 +134,13 @@ object Relation extends LilaController {
           relatedWrites.writes(r) ++ Json
             .obj(
               "online" -> Env.user.isOnline(r.user.id).option(true),
-              "perfs" -> r.user.perfs.bestPerfType.map { best =>
-                Env.user.jsonView.perfs(r.user, best.some)
-              })
+              "perfs" -> r
+                .user
+                .perfs
+                .bestPerfType
+                .map { best =>
+                  Env.user.jsonView.perfs(r.user, best.some)
+                })
             .noNull
         }))
   }
@@ -161,13 +169,15 @@ object Relation extends LilaController {
           Env.pref.api.followableIds(users map (_.id))
         }
       ) flatMap { followables =>
-        users.map { u =>
-          ctx.userId ?? {
-            env.api.fetchRelation(_, u.id)
-          } map { rel =>
-            lila.relation.Related(u, none, followables(u.id), rel)
+        users
+          .map { u =>
+            ctx.userId ?? {
+              env.api.fetchRelation(_, u.id)
+            } map { rel =>
+              lila.relation.Related(u, none, followables(u.id), rel)
+            }
           }
-        }.sequenceFu
+          .sequenceFu
       }
     }
 }

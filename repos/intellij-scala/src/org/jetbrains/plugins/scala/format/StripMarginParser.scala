@@ -62,7 +62,8 @@ object WithStrippedMargin {
               List(argLit: ScLiteral))
           )
           if lit.isMultiLineString && ref.refName == STRIP_MARGIN &&
-            argLit.getFirstChild.getNode.getElementType == ScalaTokenTypes.tCHAR =>
+            argLit.getFirstChild.getNode.getElementType == ScalaTokenTypes
+              .tCHAR =>
         Some(mc, argLit.getValue.asInstanceOf[Char])
       case _ =>
         None
@@ -83,7 +84,10 @@ object IsStripMargin {
             case Nil =>
               '|'
             case Seq(argLit: ScLiteral)
-                if argLit.getFirstChild.getNode.getElementType == ScalaTokenTypes.tCHAR =>
+                if argLit
+                  .getFirstChild
+                  .getNode
+                  .getElementType == ScalaTokenTypes.tCHAR =>
               argLit.getValue.asInstanceOf[Char]
             case _ =>
               '|'

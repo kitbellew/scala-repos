@@ -54,8 +54,9 @@ class SbtAnnotatorTest extends AnnotatorTestBase with MockSbt {
   override def loadTestFile(): SbtFileImpl = {
     val fileName = "SbtAnnotator.sbt"
     val filePath = testdataPath + fileName
-    val vfile = LocalFileSystem.getInstance.findFileByPath(
-      filePath.replace(File.separatorChar, '/'))
+    val vfile = LocalFileSystem
+      .getInstance
+      .findFileByPath(filePath.replace(File.separatorChar, '/'))
     val psifile = PsiManager.getInstance(getProject).findFile(vfile)
     psifile.putUserData(ModuleUtilCore.KEY_MODULE, getModule)
     psifile.asInstanceOf[SbtFileImpl]
@@ -100,8 +101,8 @@ class SbtAnnotatorTest extends AnnotatorTestBase with MockSbt {
   private def setUpProjectSettings(): Unit = {
     val projectSettings = SbtProjectSettings.default
     projectSettings.setExternalProjectPath(getProject.getBasePath)
-    projectSettings.setModules(
-      java.util.Collections.singleton(getModule.getModuleFilePath))
+    projectSettings
+      .setModules(java.util.Collections.singleton(getModule.getModuleFilePath))
     SbtSystemSettings.getInstance(getProject).linkProject(projectSettings)
     getModule.setOption(
       ExternalSystemConstants.ROOT_PROJECT_PATH_KEY,

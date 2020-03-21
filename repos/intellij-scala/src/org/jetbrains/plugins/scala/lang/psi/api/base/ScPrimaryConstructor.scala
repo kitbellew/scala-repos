@@ -33,9 +33,11 @@ trait ScPrimaryConstructor
     with ScMethodLike
     with ScAnnotationsHolder {
   def hasMalformedSignature =
-    parameterList.clauses.exists {
-      _.parameters.dropRight(1).exists(_.isRepeatedParameter)
-    }
+    parameterList
+      .clauses
+      .exists {
+        _.parameters.dropRight(1).exists(_.isRepeatedParameter)
+      }
 
   /**
     *  @return has access modifier
@@ -64,9 +66,8 @@ trait ScPrimaryConstructor
   @CachedInsidePsiElement(this, ModCount.getBlockModificationCount)
   def effectiveParameterClauses: Seq[ScParameterClause] = {
     def emptyParameterList: ScParameterClause =
-      ScalaPsiElementFactory.createEmptyClassParamClauseWithContext(
-        getManager,
-        parameterList)
+      ScalaPsiElementFactory
+        .createEmptyClassParamClauseWithContext(getManager, parameterList)
     val clausesWithInitialEmpty =
       parameterList.clauses match {
         case Seq() =>

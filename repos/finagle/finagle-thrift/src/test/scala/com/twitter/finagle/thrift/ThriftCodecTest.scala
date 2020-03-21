@@ -125,9 +125,8 @@ class ThriftCodecTest extends FunSuite {
       assert(channel.upstreamEvents.size == 0)
       assert(channel.downstreamEvents.size == 0)
 
-      val remainder = buffer.copy(
-        buffer.readerIndex + numBytes,
-        buffer.readableBytes - numBytes)
+      val remainder = buffer
+        .copy(buffer.readerIndex + numBytes, buffer.readableBytes - numBytes)
       // receive remainder of call
       Channels.fireMessageReceived(channel, remainder)
 
@@ -218,9 +217,8 @@ class ThriftCodecTest extends FunSuite {
       assert(channel.upstreamEvents.size == 0)
       assert(channel.downstreamEvents.size == 0)
 
-      val remainder = buffer.copy(
-        buffer.readerIndex + numBytes,
-        buffer.readableBytes - numBytes)
+      val remainder = buffer
+        .copy(buffer.readerIndex + numBytes, buffer.readableBytes - numBytes)
       // receive remainder of call
       Channels.fireMessageReceived(channel, remainder)
 

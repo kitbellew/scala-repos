@@ -179,9 +179,11 @@ object Trace {
     if (isTerminal)
       f
     else if (terminal) {
-      Contexts.local.let(traceCtx, ctx.withTerminal(terminal)) {
-        Contexts.broadcast.let(idCtx, traceId)(f)
-      }
+      Contexts
+        .local
+        .let(traceCtx, ctx.withTerminal(terminal)) {
+          Contexts.broadcast.let(idCtx, traceId)(f)
+        }
     } else
       Contexts.broadcast.let(idCtx, traceId)(f)
   }
@@ -237,9 +239,11 @@ object Trace {
           case Some(_) =>
             id
         }
-      Contexts.local.let(traceCtx, newCtx) {
-        Contexts.broadcast.let(idCtx, newId)(f)
-      }
+      Contexts
+        .local
+        .let(traceCtx, newCtx) {
+          Contexts.broadcast.let(idCtx, newId)(f)
+        }
     }
   }
 
@@ -248,11 +252,15 @@ object Trace {
     * cleared.
     */
   def letClear[R](f: => R): R =
-    Contexts.local.letClear(traceCtx) {
-      Contexts.broadcast.letClear(idCtx) {
-        f
+    Contexts
+      .local
+      .letClear(traceCtx) {
+        Contexts
+          .broadcast
+          .letClear(idCtx) {
+            f
+          }
       }
-    }
 
   /**
     * Convenience method for event loops in services.  Put your
@@ -298,9 +306,11 @@ object Trace {
     * Record a raw record without checking if it's sampled/enabled/etc.
     */
   private[this] def uncheckedRecord(rec: Record): Unit = {
-    tracers.distinct.foreach { t: Tracer =>
-      t.record(rec)
-    }
+    tracers
+      .distinct
+      .foreach { t: Tracer =>
+        t.record(rec)
+      }
   }
 
   /**

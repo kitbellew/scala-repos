@@ -67,7 +67,9 @@ class ObservableMapSpec[K, V]
       generatedMap should be theSameInstanceAs (originalMap)
     } else {
       generatedMap should not be theSameInstanceAs(originalMap)
-      generatedMap.getClass.getInterfaces
+      generatedMap
+        .getClass
+        .getInterfaces
         .contains(classOf[ObservableMap[Int, String]]) should be(true)
     }
   }
@@ -226,8 +228,8 @@ class ObservableMapSpec[K, V]
 
     // First Verification
     map should equal(ObservableMap((10 to 20).map(i => (i, i.toString))))
-    removedEntries.toList should equal(
-      (0 to 9).map(i => (i, i.toString)).toList)
+    removedEntries
+      .toList should equal((0 to 9).map(i => (i, i.toString)).toList)
 
     removedEntries.clear()
     // Retain even keys

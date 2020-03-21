@@ -13,15 +13,18 @@ object CodeGenerator extends App {
   val user = ""
   val password = ""
   if (false) {
-    val db = Database.forURL(
-      "jdbc:h2:mem:test1;DB_CLOSE_DELAY=-1",
-      driver = "org.h2.Driver")
+    val db = Database
+      .forURL("jdbc:h2:mem:test1;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver")
     //#default-runner
-    slick.codegen.SourceCodeGenerator
+    slick
+      .codegen
+      .SourceCodeGenerator
       .main(Array(profile, jdbcDriver, url, outputFolder, pkg))
     //#default-runner
     //#default-runner-with-auth
-    slick.codegen.SourceCodeGenerator
+    slick
+      .codegen
+      .SourceCodeGenerator
       .main(Array(profile, jdbcDriver, url, outputFolder, pkg, user, password))
     //#default-runner-with-auth
     //#customization

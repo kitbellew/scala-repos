@@ -132,17 +132,21 @@ object Phase {
       (p.id, p)
     } toMap
   def of(div: chess.Division, ply: Int): Phase =
-    div.middle.fold[Phase](Opening) {
-      case m if m > ply =>
-        Opening
-      case m =>
-        div.end.fold[Phase](Middle) {
-          case e if e > ply =>
-            Middle
-          case _ =>
-            End
-        }
-    }
+    div
+      .middle
+      .fold[Phase](Opening) {
+        case m if m > ply =>
+          Opening
+        case m =>
+          div
+            .end
+            .fold[Phase](Middle) {
+              case e if e > ply =>
+                Middle
+              case _ =>
+                End
+            }
+      }
 }
 
 sealed abstract class Castling(val id: Int, val name: String)

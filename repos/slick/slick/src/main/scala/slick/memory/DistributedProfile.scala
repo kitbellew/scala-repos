@@ -29,9 +29,10 @@ class DistributedProfile(val profiles: RelationalProfile*)
   val api: API = new API {}
 
   lazy val queryCompiler =
-    QueryCompiler.standard.addAfter(
-      new Distribute,
-      Phase.assignUniqueSymbols) ++ QueryCompiler.interpreterPhases + new MemoryCodeGen
+    QueryCompiler
+      .standard
+      .addAfter(new Distribute, Phase.assignUniqueSymbols) ++ QueryCompiler
+      .interpreterPhases + new MemoryCodeGen
   lazy val updateCompiler = ??
   lazy val deleteCompiler = ??
   lazy val insertCompiler = ??
@@ -173,7 +174,8 @@ class DistributedProfile(val profiles: RelationalProfile*)
               case t: TableNode =>
                 (
                   Set(
-                    t.profileTable
+                    t
+                      .profileTable
                       .asInstanceOf[RelationalProfile#Table[_]]
                       .tableProvider),
                   Set.empty)
@@ -209,10 +211,12 @@ class DistributedProfile(val profiles: RelationalProfile*)
           val tt = taints(RefId(n))
           if (dr.size == 1 && (tt -- dr).isEmpty) {
             val compiled = dr.head.queryCompiler.run(n).tree
-            val substituteType = compiled.nodeType.replace {
-              case CollectionType(cons, el) =>
-                CollectionType(cons.iterableSubstitute, el)
-            }
+            val substituteType = compiled
+              .nodeType
+              .replace {
+                case CollectionType(cons, el) =>
+                  CollectionType(cons.iterableSubstitute, el)
+              }
             ProfileComputation(
               compiled :@ substituteType,
               dr.head,

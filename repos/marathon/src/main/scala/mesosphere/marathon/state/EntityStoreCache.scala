@@ -92,12 +92,14 @@ class EntityStoreCache[T <: MarathonState[_, T]](store: EntityStore[T])
     val cache = new TrieMap[String, Option[T]]()
 
     def preloadEntry(nextName: String): Future[Unit] = {
-      store.fetch(nextName).map {
-        case Some(t) =>
-          cache.update(nextName, Some(t))
-        case None =>
-          log.warn(s"Expected to find entry $nextName in store $store")
-      }
+      store
+        .fetch(nextName)
+        .map {
+          case Some(t) =>
+            cache.update(nextName, Some(t))
+          case None =>
+            log.warn(s"Expected to find entry $nextName in store $store")
+        }
     }
 
     def preloadEntries(unversionedNames: Seq[String]): Future[Unit] = {

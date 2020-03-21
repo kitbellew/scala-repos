@@ -68,7 +68,10 @@ final class SteppingInmemJournal extends InmemJournal {
   import SteppingInmemJournal._
   import context.dispatcher
 
-  val instanceId = context.system.settings.config
+  val instanceId = context
+    .system
+    .settings
+    .config
     .getString("akka.persistence.journal.stepping-inmem.instance-id")
 
   var queuedOps: Seq[() ⇒ Future[Unit]] = Seq.empty
@@ -102,12 +105,14 @@ final class SteppingInmemJournal extends InmemJournal {
       val future = promise.future
       doOrEnqueue { () ⇒
         promise.completeWith(
-          super.asyncWriteMessages(Seq(message)).map {
-            case Nil ⇒
-              AsyncWriteJournal.successUnit
-            case head :: _ ⇒
-              head
-          })
+          super
+            .asyncWriteMessages(Seq(message))
+            .map {
+              case Nil ⇒
+                AsyncWriteJournal.successUnit
+              case head :: _ ⇒
+                head
+            })
         future.map(_ ⇒ ())
       }
       future
@@ -122,8 +127,8 @@ final class SteppingInmemJournal extends InmemJournal {
     val promise = Promise[Unit]()
     val future = promise.future
     doOrEnqueue { () ⇒
-      promise.completeWith(
-        super.asyncDeleteMessagesTo(persistenceId, toSequenceNr))
+      promise
+        .completeWith(super.asyncDeleteMessagesTo(persistenceId, toSequenceNr))
       future
     }
     future

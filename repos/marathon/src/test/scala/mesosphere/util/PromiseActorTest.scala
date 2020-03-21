@@ -25,10 +25,8 @@ class PromiseActorTest
 
   test("Success with askWithoutTimeout") {
     val probe = TestProbe()
-    val future: Future[Symbol] = PromiseActor.askWithoutTimeout(
-      system,
-      probe.ref,
-      'Question)
+    val future: Future[Symbol] = PromiseActor
+      .askWithoutTimeout(system, probe.ref, 'Question)
     probe.expectMsg('Question)
     probe.reply('Answer)
 
@@ -46,10 +44,8 @@ class PromiseActorTest
 
   test("State.Success with askWithoutTimeout") {
     val probe = TestProbe()
-    val future: Future[Symbol] = PromiseActor.askWithoutTimeout(
-      system,
-      probe.ref,
-      'Question)
+    val future: Future[Symbol] = PromiseActor
+      .askWithoutTimeout(system, probe.ref, 'Question)
     probe.expectMsg('Question)
     probe.reply(Status.Success('Answer))
 
@@ -70,10 +66,8 @@ class PromiseActorTest
 
   test("State.Failure with askWithoutTimeout") {
     val probe = TestProbe()
-    val future: Future[Symbol] = PromiseActor.askWithoutTimeout(
-      system,
-      probe.ref,
-      'Question)
+    val future: Future[Symbol] = PromiseActor
+      .askWithoutTimeout(system, probe.ref, 'Question)
     probe.expectMsg('Question)
     probe.reply(Status.Failure(new IllegalStateException("error")))
 

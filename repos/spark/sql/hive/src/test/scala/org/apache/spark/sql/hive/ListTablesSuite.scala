@@ -37,7 +37,8 @@ class ListTablesSuite
 
   override def beforeAll(): Unit = {
     // The catalog in HiveContext is a case insensitive one.
-    sessionState.catalog
+    sessionState
+      .catalog
       .registerTable(TableIdentifier("ListTablesSuiteTable"), df.logicalPlan)
     sql("CREATE TABLE HiveListTablesSuiteTable (key int, value string)")
     sql("CREATE DATABASE IF NOT EXISTS ListTablesSuiteDB")
@@ -46,8 +47,9 @@ class ListTablesSuite
   }
 
   override def afterAll(): Unit = {
-    sessionState.catalog.unregisterTable(
-      TableIdentifier("ListTablesSuiteTable"))
+    sessionState
+      .catalog
+      .unregisterTable(TableIdentifier("ListTablesSuiteTable"))
     sql("DROP TABLE IF EXISTS HiveListTablesSuiteTable")
     sql("DROP TABLE IF EXISTS ListTablesSuiteDB.HiveInDBListTablesSuiteTable")
     sql("DROP DATABASE IF EXISTS ListTablesSuiteDB")

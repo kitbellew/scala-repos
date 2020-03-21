@@ -101,12 +101,14 @@ class SparkHadoopUtil extends Logging {
         hadoopConf.set("fs.s3a.secret.key", accessKey)
       }
       // Copy any "spark.hadoop.foo=bar" system properties into conf as "foo=bar"
-      conf.getAll.foreach {
-        case (key, value) =>
-          if (key.startsWith("spark.hadoop.")) {
-            hadoopConf.set(key.substring("spark.hadoop.".length), value)
-          }
-      }
+      conf
+        .getAll
+        .foreach {
+          case (key, value) =>
+            if (key.startsWith("spark.hadoop.")) {
+              hadoopConf.set(key.substring("spark.hadoop.".length), value)
+            }
+        }
       val bufferSize = conf.get("spark.buffer.size", "65536")
       hadoopConf.set("io.file.buffer.size", bufferSize)
     }
@@ -193,14 +195,16 @@ class SparkHadoopUtil extends Logging {
   }
 
   private def getFileSystemThreadStatistics(): Seq[AnyRef] = {
-    FileSystem.getAllStatistics.asScala
+    FileSystem
+      .getAllStatistics
+      .asScala
       .map(Utils.invoke(classOf[Statistics], _, "getThreadStatistics"))
   }
 
   private def getFileSystemThreadStatisticsMethod(
       methodName: String): Method = {
-    val statisticsDataClass = Utils.classForName(
-      "org.apache.hadoop.fs.FileSystem$Statistics$StatisticsData")
+    val statisticsDataClass = Utils
+      .classForName("org.apache.hadoop.fs.FileSystem$Statistics$StatisticsData")
     statisticsDataClass.getDeclaredMethod(methodName)
   }
 
@@ -324,11 +328,12 @@ class SparkHadoopUtil extends Logging {
       credentials: Credentials): Long = {
     val now = System.currentTimeMillis()
 
-    val renewalInterval = sparkConf.getLong(
-      "spark.yarn.token.renewal.interval",
-      (24 hours).toMillis)
+    val renewalInterval = sparkConf
+      .getLong("spark.yarn.token.renewal.interval", (24 hours).toMillis)
 
-    credentials.getAllTokens.asScala
+    credentials
+      .getAllTokens
+      .asScala
       .filter(_.getKind == DelegationTokenIdentifier.HDFS_DELEGATION_KIND)
       .map { t =>
         val identifier = new DelegationTokenIdentifier()
@@ -343,8 +348,8 @@ class SparkHadoopUtil extends Logging {
     val fileName = credentialsPath.getName
     fileName
       .substring(
-        fileName.lastIndexOf(
-          SparkHadoopUtil.SPARK_YARN_CREDS_COUNTER_DELIM) + 1)
+        fileName
+          .lastIndexOf(SparkHadoopUtil.SPARK_YARN_CREDS_COUNTER_DELIM) + 1)
       .toInt
   }
 
@@ -361,15 +366,12 @@ class SparkHadoopUtil extends Logging {
     text match {
       case HADOOP_CONF_PATTERN(matched) => {
         logDebug(text + " matched " + HADOOP_CONF_PATTERN)
-        val key = matched.substring(
-          13,
-          matched.length() - 1
-        ) // remove ${hadoopconf- .. }
-        val eval = Option[String](hadoopConf.get(key))
-          .map { value =>
-            logDebug("Substituted " + matched + " with " + value)
-            text.replace(matched, value)
-          }
+        val key = matched
+          .substring(13, matched.length() - 1) // remove ${hadoopconf- .. }
+        val eval = Option[String](hadoopConf.get(key)).map { value =>
+          logDebug("Substituted " + matched + " with " + value)
+          text.replace(matched, value)
+        }
         if (eval.isEmpty) {
           // The variable was not found in Hadoop configs, so return text as is.
           text
@@ -438,8 +440,11 @@ object SparkHadoopUtil {
 
   def get: SparkHadoopUtil = {
     // Check each time to support changing to/from YARN
-    val yarnMode = java.lang.Boolean.valueOf(
-      System.getProperty("SPARK_YARN_MODE", System.getenv("SPARK_YARN_MODE")))
+    val yarnMode = java
+      .lang
+      .Boolean
+      .valueOf(
+        System.getProperty("SPARK_YARN_MODE", System.getenv("SPARK_YARN_MODE")))
     if (yarnMode) {
       yarn
     } else {

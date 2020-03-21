@@ -19,8 +19,8 @@ import scala.concurrent.duration._
 
 class InputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
 
-  val settings = ActorMaterializerSettings(system).withDispatcher(
-    "akka.actor.default-dispatcher")
+  val settings = ActorMaterializerSettings(system)
+    .withDispatcher("akka.actor.default-dispatcher")
   implicit val materializer = ActorMaterializer(settings)
 
   "InputStreamSource" must {
@@ -31,10 +31,7 @@ class InputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
           override def read(): Int = 42
         })
 
-      Await.result(
-        f.takeWithin(5.seconds)
-          .runForeach(it ⇒ ()),
-        10.seconds)
+      Await.result(f.takeWithin(5.seconds).runForeach(it ⇒ ()), 10.seconds)
     }
 
     "read bytes from InputStream" in assertAllStagesStopped {

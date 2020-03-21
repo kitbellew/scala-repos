@@ -75,10 +75,8 @@ abstract class SmartStepIntoTestBase extends ScalaDebuggerTestCase {
 
   private def doSmartStepInto(target: SmartStepTarget): Unit = {
     val filter = handler.createMethodFilter(target)
-    val stepIntoCommand = getDebugProcess.createStepIntoCommand(
-      suspendContext,
-      false,
-      filter)
+    val stepIntoCommand = getDebugProcess
+      .createStepIntoCommand(suspendContext, false, filter)
     getDebugProcess.getManagerThread.invokeAndWait(stepIntoCommand)
     waitForBreakpoint()
   }

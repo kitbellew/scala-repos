@@ -86,7 +86,8 @@ class JavaCopyPastePostProcessor
           }
           var elem: PsiElement = findElem(startOffset)
           if (elem != null) {
-            while (elem.getParent != null && !elem.getParent
+            while (elem.getParent != null && !elem
+                     .getParent
                      .isInstanceOf[PsiFile] &&
                    elem.getParent.getTextRange.getEndOffset <= endOffset &&
                    elem.getParent.getTextRange.getStartOffset >= startOffset) {
@@ -98,7 +99,10 @@ class JavaCopyPastePostProcessor
                   .substring(file.getText))
             }
             buffer += ElementPart(elem)
-            while (elem.getNextSibling != null && elem.getNextSibling.getTextRange.getEndOffset <= endOffset) {
+            while (elem.getNextSibling != null && elem
+                     .getNextSibling
+                     .getTextRange
+                     .getEndOffset <= endOffset) {
               elem = elem.getNextSibling
               buffer += ElementPart(elem)
             }
@@ -114,11 +118,8 @@ class JavaCopyPastePostProcessor
 
       def getRefs: Seq[ReferenceData] = {
         val refs = {
-          val data = referenceProcessor.collectTransferableData(
-            file,
-            editor,
-            startOffsets,
-            endOffsets)
+          val data = referenceProcessor
+            .collectTransferableData(file, editor, startOffsets, endOffsets)
           if (data.isEmpty)
             null
           else
@@ -126,13 +127,15 @@ class JavaCopyPastePostProcessor
         }
         val shift = startOffsets.headOption.getOrElse(0)
         if (refs != null)
-          refs.getData.map { it =>
-            new ReferenceData(
-              it.startOffset + shift,
-              it.endOffset + shift,
-              it.qClassName,
-              it.staticMemberName)
-          }
+          refs
+            .getData
+            .map { it =>
+              new ReferenceData(
+                it.startOffset + shift,
+                it.endOffset + shift,
+                it.qClassName,
+                it.staticMemberName)
+            }
         else
           Seq.empty
       }
@@ -178,10 +181,12 @@ class JavaCopyPastePostProcessor
       new ConvertedCode(text, updatedAssociations.toArray)
     } catch {
       case e: Exception =>
-        val selections = (startOffsets, endOffsets).zipped.map((a, b) =>
-          file.getText.substring(a, b))
-        val attachments = selections.zipWithIndex.map(p =>
-          new Attachment("Selection-%d.java".format(p._2 + 1), p._1))
+        val selections = (startOffsets, endOffsets)
+          .zipped
+          .map((a, b) => file.getText.substring(a, b))
+        val attachments = selections
+          .zipWithIndex
+          .map(p => new Attachment("Selection-%d.java".format(p._2 + 1), p._1))
         Log.error(
           LogMessageEx.createEvent(
             e.getMessage,
@@ -241,10 +246,14 @@ class JavaCopyPastePostProcessor
           .getInstance(file.getProject)
           .commitDocument(editor.getDocument)
 
-        val markedAssociations = associations.toList.zipMapped { dependency =>
-          editor.getDocument.createRangeMarker(
-            dependency.range.shiftRight(bounds.getStartOffset))
-        }
+        val markedAssociations = associations
+          .toList
+          .zipMapped { dependency =>
+            editor
+              .getDocument
+              .createRangeMarker(
+                dependency.range.shiftRight(bounds.getStartOffset))
+          }
 
         withSpecialStyleIn(project) {
           val manager = CodeStyleManager.getInstance(project)

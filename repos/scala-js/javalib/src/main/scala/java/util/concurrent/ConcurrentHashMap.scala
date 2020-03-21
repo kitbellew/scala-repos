@@ -182,7 +182,8 @@ object ConcurrentHashMap {
         if (a.size >= size)
           a
         else
-          jlr.Array
+          jlr
+            .Array
             .newInstance(a.getClass.getComponentType, size)
             .asInstanceOf[Array[T]]
 

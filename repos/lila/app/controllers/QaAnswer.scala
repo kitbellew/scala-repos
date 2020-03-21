@@ -14,13 +14,16 @@ object QaAnswer extends QaController {
     AuthBody { implicit ctx => me =>
       WithQuestion(id) { q =>
         implicit val req = ctx.body
-        forms.answer.bindFromRequest.fold(
-          err => renderQuestion(q, Some(err)),
-          data =>
-            api.answer.create(data, q, me) map { answer =>
-              Redirect(
-                routes.QaQuestion.show(q.id, q.slug) + "#answer-" + answer.id)
-            })
+        forms
+          .answer
+          .bindFromRequest
+          .fold(
+            err => renderQuestion(q, Some(err)),
+            data =>
+              api.answer.create(data, q, me) map { answer =>
+                Redirect(
+                  routes.QaQuestion.show(q.id, q.slug) + "#answer-" + answer.id)
+              })
       }
     }
 
@@ -40,37 +43,45 @@ object QaAnswer extends QaController {
   def vote(questionId: QuestionId, answerId: AnswerId) =
     AuthBody { implicit ctx => me =>
       implicit val req = ctx.body
-      forms.vote.bindFromRequest.fold(
-        err => fuccess(BadRequest),
-        v =>
-          api.answer.vote(answerId, me, v == 1) map {
-            case Some(vote) =>
-              Ok(
-                html.qa.vote(
-                  routes.QaAnswer.vote(questionId, answerId).url,
-                  vote,
-                  true))
-            case None =>
-              NotFound
-          }
-      )
+      forms
+        .vote
+        .bindFromRequest
+        .fold(
+          err => fuccess(BadRequest),
+          v =>
+            api.answer.vote(answerId, me, v == 1) map {
+              case Some(vote) =>
+                Ok(
+                  html
+                    .qa
+                    .vote(
+                      routes.QaAnswer.vote(questionId, answerId).url,
+                      vote,
+                      true))
+              case None =>
+                NotFound
+            }
+        )
     }
 
   def doEdit(questionId: QuestionId, answerId: AnswerId) =
     AuthBody { implicit ctx => me =>
       WithOwnAnswer(questionId, answerId) { q => a =>
         implicit val req = ctx.body
-        forms.editAnswer.bindFromRequest.fold(
-          err => renderQuestion(q),
-          body =>
-            api.answer.edit(body, a.id) map {
-              case None =>
-                NotFound
-              case Some(a2) =>
-                Redirect(
-                  routes.QaQuestion.show(q.id, q.slug) + "#answer-" + a2.id)
-            }
-        )
+        forms
+          .editAnswer
+          .bindFromRequest
+          .fold(
+            err => renderQuestion(q),
+            body =>
+              api.answer.edit(body, a.id) map {
+                case None =>
+                  NotFound
+                case Some(a2) =>
+                  Redirect(
+                    routes.QaQuestion.show(q.id, q.slug) + "#answer-" + a2.id)
+              }
+          )
       }
     }
 
@@ -87,19 +98,22 @@ object QaAnswer extends QaController {
     AuthBody { implicit ctx => me =>
       WithOwnAnswer(questionId, answerId) { q => a =>
         implicit val req = ctx.body
-        forms.moveAnswer.bindFromRequest.fold(
-          err => renderQuestion(q),
-          {
-            case "question" =>
-              api.answer.moveToQuestionComment(a, q) inject
-                Redirect(routes.QaQuestion.show(q.id, q.slug))
-            case str =>
-              parseIntOption(str).fold(renderQuestion(q)) { answerId =>
-                api.answer.moveToAnswerComment(a, answerId) inject
+        forms
+          .moveAnswer
+          .bindFromRequest
+          .fold(
+            err => renderQuestion(q),
+            {
+              case "question" =>
+                api.answer.moveToQuestionComment(a, q) inject
                   Redirect(routes.QaQuestion.show(q.id, q.slug))
-              }
-          }
-        )
+              case str =>
+                parseIntOption(str).fold(renderQuestion(q)) { answerId =>
+                  api.answer.moveToAnswerComment(a, answerId) inject
+                    Redirect(routes.QaQuestion.show(q.id, q.slug))
+                }
+            }
+          )
       }
     }
 }

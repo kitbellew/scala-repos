@@ -19,8 +19,9 @@ private[akka] trait WriteJournalBase {
     rb.collect { // collect instead of flatMap to avoid Some allocations
       case a: AtomicWrite ⇒
         // don't store sender
-        a.copy(payload = a.payload.map(p ⇒
-          adaptToJournal(p.update(sender = Actor.noSender))))
+        a.copy(payload = a
+          .payload
+          .map(p ⇒ adaptToJournal(p.update(sender = Actor.noSender))))
     }
 
   /** INTERNAL API */

@@ -58,8 +58,8 @@ trait MapSubInstances0 extends MapSub {
           }
         }
     }
-    override val equalIsNatural: Boolean =
-      Equal[K].equalIsNatural && Equal[V].equalIsNatural
+    override val equalIsNatural: Boolean = Equal[K].equalIsNatural && Equal[V]
+      .equalIsNatural
   }
 
   private[std] trait MapFoldable[K] extends Foldable.FromFoldr[XMap[K, ?]] {
@@ -116,10 +116,12 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
       def traverseImpl[G[_], A, B](m: XMap[K, A])(f: A => G[B])(implicit
           G: Applicative[G]): G[XMap[K, B]] =
         G.map(
-          list.listInstance.traverseImpl(m.toList)({
-            case (k, v) =>
-              G.map(f(v))(k -> _)
-          }))(xs => fromSeq(xs: _*))
+          list
+            .listInstance
+            .traverseImpl(m.toList)({
+              case (k, v) =>
+                G.map(f(v))(k -> _)
+            }))(xs => fromSeq(xs: _*))
       import \&/._
       override def alignWith[A, B, C](f: A \&/ B => C) = {
         case (a, b) if b.isEmpty =>
@@ -181,10 +183,13 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
       "Map[" +:
         Cord.mkCord(
           ", ",
-          m.toSeq.view.map {
-            case (k, v) =>
-              Cord(K show k, "->", V show v)
-          }: _*) :+ "]")
+          m
+            .toSeq
+            .view
+            .map {
+              case (k, v) =>
+                Cord(K show k, "->", V show v)
+            }: _*) :+ "]")
 
   implicit def mapOrder[K: Order, V: Order]: Order[XMap[K, V]] =
     new Order[XMap[K, V]] with MapEqual[K, V] {
@@ -195,13 +200,11 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
         import anyVal._
         import tuple._
         implicit val ok = Order[K].toScalaOrdering
-        Semigroup[Ordering]
-          .append(
-            Order[Int].order(x.size, y.size),
-            Order[Vector[(K, V)]]
-              .order(
-                x.toVector.sortBy((_: (K, V))._1),
-                y.toVector.sortBy((_: (K, V))._1)))
+        Semigroup[Ordering].append(
+          Order[Int].order(x.size, y.size),
+          Order[Vector[(K, V)]].order(
+            x.toVector.sortBy((_: (K, V))._1),
+            y.toVector.sortBy((_: (K, V))._1)))
       }
     }
 }

@@ -102,10 +102,12 @@ abstract class ClusterConsistentHashingRouterSpec
           currentRoutees(router1).size should ===(4)
         }
         val routees = currentRoutees(router1)
-        routees.map {
-          case ActorRefRoutee(ref) ⇒
-            fullAddress(ref)
-        }.toSet should ===(Set(address(first), address(second)))
+        routees
+          .map {
+            case ActorRefRoutee(ref) ⇒
+              fullAddress(ref)
+          }
+          .toSet should ===(Set(address(first), address(second)))
       }
       enterBarrier("after-2")
     }
@@ -130,10 +132,12 @@ abstract class ClusterConsistentHashingRouterSpec
           currentRoutees(router1).size should ===(6)
         }
         val routees = currentRoutees(router1)
-        routees.map {
-          case ActorRefRoutee(ref) ⇒
-            fullAddress(ref)
-        }.toSet should ===(roles.map(address).toSet)
+        routees
+          .map {
+            case ActorRefRoutee(ref) ⇒
+              fullAddress(ref)
+          }
+          .toSet should ===(roles.map(address).toSet)
       }
 
       enterBarrier("after-3")
@@ -157,10 +161,12 @@ abstract class ClusterConsistentHashingRouterSpec
           currentRoutees(router2).size should ===(6)
         }
         val routees = currentRoutees(router2)
-        routees.map {
-          case ActorRefRoutee(ref) ⇒
-            fullAddress(ref)
-        }.toSet should ===(roles.map(address).toSet)
+        routees
+          .map {
+            case ActorRefRoutee(ref) ⇒
+              fullAddress(ref)
+          }
+          .toSet should ===(roles.map(address).toSet)
       }
 
       enterBarrier("after-4")
@@ -217,10 +223,12 @@ abstract class ClusterConsistentHashingRouterSpec
         currentRoutees(router).size should ===(6)
       }
       val routees = currentRoutees(router)
-      routees.map {
-        case ActorRefRoutee(ref) ⇒
-          fullAddress(ref)
-      }.toSet should ===(roles.map(address).toSet)
+      routees
+        .map {
+          case ActorRefRoutee(ref) ⇒
+            fullAddress(ref)
+        }
+        .toSet should ===(roles.map(address).toSet)
 
       router ! "a"
       val destinationA = expectMsgType[ActorRef]

@@ -58,10 +58,12 @@ class InteractiveStatusDisplay extends TopComponentDisplayable {
 
   private def setBorder(border: LineBorder) {
     if (isBorderEnabled)
-      ApplicationManager.getApplication.invokeLater(
-        new Runnable {
-          override def run(): Unit = myPanel.setBorder(border)
-        })
+      ApplicationManager
+        .getApplication
+        .invokeLater(
+          new Runnable {
+            override def run(): Unit = myPanel.setBorder(border)
+          })
   }
 
   private def isBorderEnabled = false //right now we don't need it (?)

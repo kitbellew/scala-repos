@@ -107,8 +107,8 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
               case AlreadyRegistered ⇒
                 import spray.json.DefaultJsonProtocol._
                 import SprayJsonSupport._
-                StatusCodes.BadRequest -> Map(
-                  "error" -> "User already Registered")
+                StatusCodes
+                  .BadRequest -> Map("error" -> "User already Registered")
             }
           }
         }
@@ -126,8 +126,8 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
       val route = get & complete(Data("Ida", 83))
 
       import akka.http.scaladsl.model.headers.Accept
-      Get().withHeaders(
-        Accept(MediaTypes.`application/json`)) ~> route ~> check {
+      Get()
+        .withHeaders(Accept(MediaTypes.`application/json`)) ~> route ~> check {
         responseAs[String] shouldEqual
           """{
             |  "name": "Ida",
@@ -138,8 +138,8 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
         responseAs[
           xml.NodeSeq] shouldEqual <data><name>Ida</name><age>83</age></data>
       }
-      Get().withHeaders(Accept(MediaTypes.`text/plain`)) ~> Route.seal(
-        route) ~> check {
+      Get().withHeaders(Accept(MediaTypes.`text/plain`)) ~> Route
+        .seal(route) ~> check {
         status shouldEqual StatusCodes.NotAcceptable
       }
     }
@@ -188,8 +188,7 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
         }</age></data>
     }
 
-    implicit val dataMarshaller: ToResponseMarshaller[Data] = Marshaller.oneOf(
-      jsonMarshaller,
-      xmlMarshaller)
+    implicit val dataMarshaller: ToResponseMarshaller[Data] = Marshaller
+      .oneOf(jsonMarshaller, xmlMarshaller)
   }
 }

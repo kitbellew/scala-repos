@@ -226,8 +226,8 @@ object ActorSystem {
     final val LoggingFilter: String = getString("akka.logging-filter")
     final val LoggerStartTimeout: Timeout = Timeout(
       config.getMillisDuration("akka.logger-startup-timeout"))
-    final val LogConfigOnStart: Boolean = config.getBoolean(
-      "akka.log-config-on-start")
+    final val LogConfigOnStart: Boolean = config
+      .getBoolean("akka.log-config-on-start")
     final val LogDeadLetters: Int =
       config.getString("akka.log-dead-letters").toLowerCase(Locale.ROOT) match {
         case "off" | "false" ⇒
@@ -237,8 +237,8 @@ object ActorSystem {
         case _ ⇒
           config.getInt("akka.log-dead-letters")
       }
-    final val LogDeadLettersDuringShutdown: Boolean = config.getBoolean(
-      "akka.log-dead-letters-during-shutdown")
+    final val LogDeadLettersDuringShutdown: Boolean = config
+      .getBoolean("akka.log-dead-letters-during-shutdown")
 
     final val AddLoggingReceive: Boolean = getBoolean(
       "akka.actor.debug.receive")
@@ -863,8 +863,8 @@ private[akka] class ActorSystemImpl(
         immutable.Seq(
           classOf[Config] -> settings.config,
           classOf[LoggingAdapter] -> log,
-          classOf[ThreadFactory] -> threadFactory.withName(
-            threadFactory.name + "-scheduler"))
+          classOf[ThreadFactory] -> threadFactory
+            .withName(threadFactory.name + "-scheduler"))
       )
       .get
   //#create-scheduler
@@ -932,7 +932,8 @@ private[akka] class ActorSystemImpl(
                 ) //In case shit hits the fan, remove the inProcess signal
                 throw t //Escalate to caller
             } finally {
-              inProcessOfRegistration.countDown //Always notify listeners of the inProcess signal
+              inProcessOfRegistration
+                .countDown //Always notify listeners of the inProcess signal
             }
           case other ⇒
             registerExtension(
@@ -1015,10 +1016,8 @@ private[akka] class ActorSystemImpl(
             ) +
             " " + (
             cell.childrenRefs match {
-              case ChildrenContainer.TerminatingChildrenContainer(
-                    _,
-                    toDie,
-                    reason) ⇒
+              case ChildrenContainer
+                    .TerminatingChildrenContainer(_, toDie, reason) ⇒
                 "Terminating(" + reason + ")" +
                   (
                     toDie.toSeq.sorted mkString (
@@ -1044,8 +1043,8 @@ private[akka] class ActorSystemImpl(
             ) +
             ({
               val children = cell.childrenRefs.children.toSeq.sorted
-              val bulk =
-                children.dropRight(1) map (printNode(_, indent + "   |"))
+              val bulk = children
+                .dropRight(1) map (printNode(_, indent + "   |"))
               bulk ++ (children.lastOption map (printNode(_, indent + "    ")))
             } mkString ("\n"))
         case _ ⇒
@@ -1080,10 +1079,12 @@ private[akka] class ActorSystemImpl(
               "ActorSystem already terminated.")
           case some if ref.compareAndSet(some, p) ⇒
             some.completeWith(
-              p.future.andThen {
-                case _ ⇒
-                  r.run()
-              })
+              p
+                .future
+                .andThen {
+                  case _ ⇒
+                    r.run()
+                })
           case _ ⇒
             addRec(r, p)
         }

@@ -40,9 +40,8 @@ private[serverset2] object ServiceDiscoverer {
 
     def apply(sessionState: SessionState): ClientHealth = {
       sessionState match {
-        case SessionState.Expired | SessionState.NoSyncConnected |
-            SessionState.Unknown | SessionState.AuthFailed |
-            SessionState.Disconnected =>
+        case SessionState.Expired | SessionState.NoSyncConnected | SessionState
+              .Unknown | SessionState.AuthFailed | SessionState.Disconnected =>
           Unhealthy
         case SessionState.ConnectedReadOnly | SessionState.SaslAuthenticated |
             SessionState.SyncConnected =>
@@ -84,8 +83,8 @@ private[serverset2] class ServiceDiscoverer(
 
   private[this] val actZkSession = Activity(varZkSession.map(Activity.Ok(_)))
   private[this] val log = Logger(getClass)
-  private[this] val retryJitter = Duration.fromSeconds(
-    20 + Rng.threadLocal.nextInt(120))
+  private[this] val retryJitter = Duration
+    .fromSeconds(20 + Rng.threadLocal.nextInt(120))
 
   /**
     * Monitor the session status of the ZkSession and expose to listeners whether
@@ -96,20 +95,27 @@ private[serverset2] class ServiceDiscoverer(
       @volatile
       var stateListener = Closable.nop
 
-      val sessionChanges = varZkSession.changes.dedup.respond { zk =>
-        // When the zk session changes, we need to stop observing changes
-        // to the previous session.
-        synchronized {
-          stateListener.close()
-          stateListener = zk.state.changes.dedup.respond {
-            case WatchState.SessionState(state) =>
-              log.info(
-                s"SessionState. Session ${zk.sessionIdAsHex}. State $state")
-              u() = ClientHealth(state)
-            case _ => // don't need to update on non-sessionstate events
+      val sessionChanges = varZkSession
+        .changes
+        .dedup
+        .respond { zk =>
+          // When the zk session changes, we need to stop observing changes
+          // to the previous session.
+          synchronized {
+            stateListener.close()
+            stateListener = zk
+              .state
+              .changes
+              .dedup
+              .respond {
+                case WatchState.SessionState(state) =>
+                  log.info(
+                    s"SessionState. Session ${zk.sessionIdAsHex}. State $state")
+                  u() = ClientHealth(state)
+                case _ => // don't need to update on non-sessionstate events
+              }
           }
         }
-      }
 
       Closable.all(sessionChanges, Closable.make(t => stateListener.close(t)))
     }
@@ -136,11 +142,13 @@ private[serverset2] class ServiceDiscoverer(
     actZkSession.flatMap {
       case zkSession =>
         cache.setSession(zkSession)
-        zkSession.globOf(path + glob).flatMap { paths =>
-          // Remove any cached entries not surfaced by globOf from our cache
-          (cache.keys &~ paths).foreach(cache.remove)
-          bulkResolveMemberData(path, paths.toSeq, cache, readStat)
-        }
+        zkSession
+          .globOf(path + glob)
+          .flatMap { paths =>
+            // Remove any cached entries not surfaced by globOf from our cache
+            (cache.keys &~ paths).foreach(cache.remove)
+            bulkResolveMemberData(path, paths.toSeq, cache, readStat)
+          }
     }
   }
 
@@ -167,17 +175,21 @@ private[serverset2] class ServiceDiscoverer(
                 .collectToTry(
                   paths.map { path =>
                     // note if any failed
-                    cache.get(path).onFailure { _ =>
-                      seenFailures = true
-                    }
+                    cache
+                      .get(path)
+                      .onFailure { _ =>
+                        seenFailures = true
+                      }
                   })
                 // We end up with a Seq[Seq[Entity]] here, b/c cache.get() returns a Seq[Entity]
                 // flatten() to fix this (see the comment on ZkNodeDataCache for why we get a Seq[])
                 .map(tries =>
-                  tries.collect {
-                    case Return(e) =>
-                      e
-                  }.flatten)
+                  tries
+                    .collect {
+                      case Return(e) =>
+                        e
+                    }
+                    .flatten)
                 .map { seq =>
                   // if we have *any* results or no-failure, we consider it a success
                   if (seenFailures && seq.isEmpty)
@@ -234,10 +246,12 @@ private[serverset2] class ServiceDiscoverer(
     val es = entriesOf(path)
     val vs = vectorsOf(path)
 
-    val raw = es.join(vs).map {
-      case (ents, vecs) =>
-        zipWithWeights(ents, vecs.toSet)
-    }
+    val raw = es
+      .join(vs)
+      .map {
+        case (ents, vecs) =>
+          zipWithWeights(ents, vecs.toSet)
+      }
 
     // Squash duplicate updates
     Activity(Var(Activity.Pending, raw.states.dedup))

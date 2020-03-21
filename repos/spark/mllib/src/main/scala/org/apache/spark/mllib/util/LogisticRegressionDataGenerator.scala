@@ -52,20 +52,22 @@ object LogisticRegressionDataGenerator {
       eps: Double,
       nparts: Int = 2,
       probOne: Double = 0.5): RDD[LabeledPoint] = {
-    val data = sc.parallelize(0 until nexamples, nparts).map { idx =>
-      val rnd = new Random(42 + idx)
+    val data = sc
+      .parallelize(0 until nexamples, nparts)
+      .map { idx =>
+        val rnd = new Random(42 + idx)
 
-      val y =
-        if (idx % 2 == 0)
-          0.0
-        else
-          1.0
-      val x =
-        Array.fill[Double](nfeatures) {
-          rnd.nextGaussian() + (y * eps)
-        }
-      LabeledPoint(y, Vectors.dense(x))
-    }
+        val y =
+          if (idx % 2 == 0)
+            0.0
+          else
+            1.0
+        val x =
+          Array.fill[Double](nfeatures) {
+            rnd.nextGaussian() + (y * eps)
+          }
+        LabeledPoint(y, Vectors.dense(x))
+      }
     data
   }
 

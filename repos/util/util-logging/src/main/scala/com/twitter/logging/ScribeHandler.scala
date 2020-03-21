@@ -357,8 +357,8 @@ class ScribeHandler(
         OLD_SCRIBE_PREFIX
       else
         SCRIBE_PREFIX
-    val messageSize =
-      (count * (recordHeader.capacity + 5)) + texts.foldLeft(0) {
+    val messageSize = (count * (recordHeader.capacity + 5)) + texts
+      .foldLeft(0) {
         _ + _.length
       } + prefix.length + 5
     val buffer = ByteBuffer.wrap(new Array[Byte](messageSize + 4))
@@ -581,14 +581,16 @@ class ScribeHandler(
           val dropped = droppedRecords.getAndSet(0)
           val failed = connectionFailure.getAndSet(0)
           val skipped = connectionSkipped.getAndSet(0)
-          ScribeHandler.log.info(
-            "sent records: %d, per second: %d, dropped records: %d, reconnection failures: %d, reconnection skipped: %d",
-            sent,
-            sent / period.inSeconds,
-            dropped,
-            failed,
-            skipped
-          )
+          ScribeHandler
+            .log
+            .info(
+              "sent records: %d, per second: %d, dropped records: %d, reconnection failures: %d, reconnection skipped: %d",
+              sent,
+              sent / period.inSeconds,
+              dropped,
+              failed,
+              skipped
+            )
 
           _lastLogStats = Time.now
         }

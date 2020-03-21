@@ -124,9 +124,11 @@ private object PeriodicRDDCheckpointerSuite {
       rdds: Seq[RDDToCheck],
       iteration: Int,
       checkpointInterval: Int): Unit = {
-    rdds.reverse.foreach { g =>
-      checkCheckpoint(g.rdd, g.gIndex, iteration, checkpointInterval)
-    }
+    rdds
+      .reverse
+      .foreach { g =>
+        checkCheckpoint(g.rdd, g.gIndex, iteration, checkpointInterval)
+      }
   }
 
   def confirmCheckpointRemoved(rdd: RDD[_]): Unit = {
@@ -135,11 +137,13 @@ private object PeriodicRDDCheckpointerSuite {
     //       This test should continue to work even after this rdd.isCheckpointed issue
     //       is fixed (though it can then be simplified and not look for the files).
     val fs = FileSystem.get(rdd.sparkContext.hadoopConfiguration)
-    rdd.getCheckpointFile.foreach { checkpointFile =>
-      assert(
-        !fs.exists(new Path(checkpointFile)),
-        "RDD checkpoint file should have been removed")
-    }
+    rdd
+      .getCheckpointFile
+      .foreach { checkpointFile =>
+        assert(
+          !fs.exists(new Path(checkpointFile)),
+          "RDD checkpoint file should have been removed")
+      }
   }
 
   /**

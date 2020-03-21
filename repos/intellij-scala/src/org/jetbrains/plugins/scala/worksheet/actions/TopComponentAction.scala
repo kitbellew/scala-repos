@@ -47,7 +47,9 @@ trait TopComponentAction extends TopComponentDisplayable {
 
     val text = shortcutId flatMap {
       case id =>
-        KeymapManager.getInstance.getActiveKeymap
+        KeymapManager
+          .getInstance
+          .getActiveKeymap
           .getShortcuts(id)
           .headOption map {
           case shortcut =>
@@ -60,14 +62,16 @@ trait TopComponentAction extends TopComponentDisplayable {
     val actionButton = getActionButton
     WorksheetUiConstructor.fixUnboundMaxSize(actionButton)
 
-    ApplicationManager.getApplication.invokeAndWait(
-      new Runnable {
-        override def run() {
-          panel.add(actionButton, 0)
-          actionButton.setEnabled(true)
-        }
-      },
-      ModalityState.any())
+    ApplicationManager
+      .getApplication
+      .invokeAndWait(
+        new Runnable {
+          override def run() {
+            panel.add(actionButton, 0)
+            actionButton.setEnabled(true)
+          }
+        },
+        ModalityState.any())
   }
 
   protected def updateInner(presentation: Presentation, project: Project) {

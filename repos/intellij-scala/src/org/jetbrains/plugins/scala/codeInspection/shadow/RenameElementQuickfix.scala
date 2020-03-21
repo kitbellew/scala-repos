@@ -40,9 +40,8 @@ class RenameElementQuickfix(myRef: PsiElement, name: String)
     val ref = getElement
     val map = mutable.Map[String, AnyRef]()
     val containingFile = ref.getContainingFile
-    val editor: Editor = InjectedLanguageUtil.openEditorFor(
-      containingFile,
-      project)
+    val editor: Editor = InjectedLanguageUtil
+      .openEditorFor(containingFile, project)
     if (editor.isInstanceOf[EditorWindow]) {
       map.put(CommonDataKeys.EDITOR.getName, editor)
       map.put(CommonDataKeys.PSI_ELEMENT.getName, ref)

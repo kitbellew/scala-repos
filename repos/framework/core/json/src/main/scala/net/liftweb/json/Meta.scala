@@ -92,8 +92,9 @@ private[json] object Meta {
         None
       else {
         val best =
-          choices.tail.foldLeft((choices.head, score(choices.head.args))) {
-            (best, c) =>
+          choices
+            .tail
+            .foldLeft((choices.head, score(choices.head.args))) { (best, c) =>
               val newScore = score(c.args)
               if (newScore == best._2) {
                 if (countOptionals(c.args) < countOptionals(best._1.args))
@@ -104,7 +105,7 @@ private[json] object Meta {
                 (c, newScore)
               else
                 best
-          }
+            }
         Some(best._1)
       }
     }
@@ -136,19 +137,21 @@ private[json] object Meta {
         t: Type,
         visited: Set[Type],
         context: Option[Context]): List[DeclaredConstructor] = {
-      Reflection.constructors(t, formats.parameterNameReader, context).map {
-        case (c, args) =>
-          DeclaredConstructor(
-            c,
-            args.map {
-              case (name, t) =>
-                toArg(
-                  unmangleName(name),
-                  t,
-                  visited,
-                  Context(name, c.getDeclaringClass, args))
-            })
-      }
+      Reflection
+        .constructors(t, formats.parameterNameReader, context)
+        .map {
+          case (c, args) =>
+            DeclaredConstructor(
+              c,
+              args.map {
+                case (name, t) =>
+                  toArg(
+                    unmangleName(name),
+                    t,
+                    visited,
+                    Context(name, c.getDeclaringClass, args))
+              })
+        }
     }
 
     def toArg(
@@ -171,7 +174,10 @@ private[json] object Meta {
       def parameterizedTypeOpt(t: Type) =
         t match {
           case x: ParameterizedType =>
-            val typeArgs = x.getActualTypeArguments.toList.zipWithIndex
+            val typeArgs = x
+              .getActualTypeArguments
+              .toList
+              .zipWithIndex
               .map {
                 case (t, idx) =>
                   if (t == classOf[java.lang.Object])
@@ -218,7 +224,10 @@ private[json] object Meta {
           case aType: GenericArrayType =>
             // Couldn't find better way to reconstruct proper array type:
             val raw =
-              java.lang.reflect.Array
+              java
+                .lang
+                .reflect
+                .Array
                 .newInstance(rawClassOf(aType.getGenericComponentType), 0: Int)
                 .getClass
             (
@@ -351,7 +360,8 @@ private[json] object Meta {
         names: ParameterNameReader,
         context: Option[Context])
         : List[(JConstructor[_], List[(String, Type)])] =
-      rawClassOf(t).getDeclaredConstructors
+      rawClassOf(t)
+        .getDeclaredConstructors
         .map(c => (c, constructorArgs(t, c, names, context)))
         .toList
 
@@ -398,7 +408,9 @@ private[json] object Meta {
           argsInfo(constructor, Map())
         case p: ParameterizedType =>
           val vars =
-            Map() ++ rawClassOf(p).getTypeParameters.toList
+            Map() ++ rawClassOf(p)
+              .getTypeParameters
+              .toList
               .map(_.asInstanceOf[TypeVariable[_]])
               .zip(
                 p.getActualTypeArguments.toList
@@ -505,10 +517,12 @@ private[json] object Meta {
         .isAssignableFrom(x.asInstanceOf[AnyRef].getClass)
 
     def fields(clazz: Class[_]): List[(String, TypeInfo)] = {
-      val fs = clazz.getDeclaredFields.toList
+      val fs = clazz
+        .getDeclaredFields
+        .toList
         .filterNot(f =>
-          Modifier.isStatic(f.getModifiers) || Modifier.isTransient(
-            f.getModifiers))
+          Modifier.isStatic(f.getModifiers) || Modifier
+            .isTransient(f.getModifiers))
         .map(f =>
           (
             f.getName,

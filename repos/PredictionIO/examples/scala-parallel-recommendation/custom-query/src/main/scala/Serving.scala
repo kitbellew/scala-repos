@@ -7,10 +7,12 @@ class Serving extends LServing[Query, PredictedResult] {
   override def serve(
       query: Query,
       predictedResults: Seq[PredictedResult]): PredictedResult =
-    predictedResults.headOption
+    predictedResults
+      .headOption
       .map { result ⇒
         val preparedItems =
-          result.itemScores
+          result
+            .itemScores
             .sortBy {
               case ItemScore(item, score, year) ⇒
                 year

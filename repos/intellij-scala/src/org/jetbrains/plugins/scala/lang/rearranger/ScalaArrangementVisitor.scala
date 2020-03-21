@@ -52,8 +52,8 @@ class ScalaArrangementVisitor(
 
   private val arrangementEntries = mutable.Stack[ScalaArrangementEntry]()
 
-  private val splitBodyByExpressions = groupingRules.contains(
-    SPLIT_INTO_UNARRANGEABLE_BLOCKS_BY_EXPRESSIONS)
+  private val splitBodyByExpressions = groupingRules
+    .contains(SPLIT_INTO_UNARRANGEABLE_BLOCKS_BY_EXPRESSIONS)
 
   private val unseparableRanges = mutable
     .HashMap[ScalaArrangementEntry /*parent*/, mutable.Queue[
@@ -320,55 +320,56 @@ class ScalaArrangementVisitor(
       entry: ScalaArrangementEntry) {
     genUnseparableRanges(psiRoot, entry)
     val top = arrangementEntries.top
-    val queue = unseparableRanges.getOrElse(
-      entry,
-      mutable.Queue[ScalaArrangementEntry]())
+    val queue = unseparableRanges
+      .getOrElse(entry, mutable.Queue[ScalaArrangementEntry]())
     //    var unseparable =
     def next() =
       if (queue.isEmpty)
         null
       else
         queue.dequeue()
-    psiRoot.getChildren.foldLeft(
-      false,
-      if (queue.isEmpty)
-        null
-      else
-        queue.dequeue())((acc, child) => {
-      val (insideBlock, unseparable) = acc
-      val childStart = child.getTextRange.getStartOffset
-      //check if there are any more unseparable blocks at all
-      val res =
-        if (unseparable != null) {
-          //process current child with regard to current block
-          (
-            insideBlock,
-            childStart >= unseparable.getStartOffset,
-            childStart >= unseparable.getEndOffset) match {
-            case (false, true, false) => //entering arrange block
-              arrangementEntries.push(unseparable)
-              (true, unseparable)
-            case (true, true, false) =>
-              (true, unseparable) //inside arrange block
-            case (true, true, true) => //leaving arrange block
-              arrangementEntries.pop()
-              val nextUnseparable = next()
-              //check whether new current block is immediately adjucent to the previous
-              //in such case leaving the previous means entering the current
-              if (childStart >= nextUnseparable.getStartOffset) {
-                arrangementEntries.push(nextUnseparable)
-                (true, nextUnseparable)
-              } else {
-                (false, nextUnseparable)
-              }
-            case _ =>
-              (false, unseparable) //outside arrange block
-          }
-        } else
-          (false, unseparable)
-      child.accept(this)
-      res
-    })
+    psiRoot
+      .getChildren
+      .foldLeft(
+        false,
+        if (queue.isEmpty)
+          null
+        else
+          queue.dequeue())((acc, child) => {
+        val (insideBlock, unseparable) = acc
+        val childStart = child.getTextRange.getStartOffset
+        //check if there are any more unseparable blocks at all
+        val res =
+          if (unseparable != null) {
+            //process current child with regard to current block
+            (
+              insideBlock,
+              childStart >= unseparable.getStartOffset,
+              childStart >= unseparable.getEndOffset) match {
+              case (false, true, false) => //entering arrange block
+                arrangementEntries.push(unseparable)
+                (true, unseparable)
+              case (true, true, false) =>
+                (true, unseparable) //inside arrange block
+              case (true, true, true) => //leaving arrange block
+                arrangementEntries.pop()
+                val nextUnseparable = next()
+                //check whether new current block is immediately adjucent to the previous
+                //in such case leaving the previous means entering the current
+                if (childStart >= nextUnseparable.getStartOffset) {
+                  arrangementEntries.push(nextUnseparable)
+                  (true, nextUnseparable)
+                } else {
+                  (false, nextUnseparable)
+                }
+              case _ =>
+                (false, unseparable) //outside arrange block
+            }
+          } else
+            (false, unseparable)
+        child.accept(this)
+        res
+      })
     if (arrangementEntries.top != top) {
       //the last block was entered, but has never been left; i.e. the last block spans body until the end
       arrangementEntries.pop()
@@ -382,8 +383,9 @@ class ScalaArrangementVisitor(
     var range =
       if (first != null && first.isInstanceOf[PsiComment] && prev != null && (
             !prev.isInstanceOf[PsiWhiteSpace] ||
-            prev.isInstanceOf[PsiWhiteSpace] && !prev.getText.contains(
-              "\n") && prev.getPrevSibling != null
+            prev.isInstanceOf[PsiWhiteSpace] && !prev
+              .getText
+              .contains("\n") && prev.getPrevSibling != null
           )) {
         new TextRange(
           node.getTextRange.getStartOffset + first.getTextRange.getLength + 1,
@@ -491,30 +493,34 @@ class ScalaArrangementVisitor(
   private def genUnseparableRanges(
       body: ScTemplateBody,
       entry: ScalaArrangementEntry) = {
-    body.getChildren.foldLeft(None)((startOffset, child) => {
-      val newOffset =
-        if (startOffset.isDefined)
-          startOffset.get
-        else
-          child.getTextRange.getStartOffset
-      if (child.isInstanceOf[ScExpression]) {
-        if (!unseparableRanges.contains(entry)) {
-          unseparableRanges += (entry -> mutable.Queue[ScalaArrangementEntry]())
-        }
-        unseparableRanges
-          .get(entry)
-          .foreach(queue =>
-            queue.enqueue(
-              createNewEntry(
-                body,
-                new TextRange(newOffset, child.getTextRange.getEndOffset),
-                UNSEPARABLE_RANGE,
-                null,
-                canArrange = true)))
-        None
-      } else
-        startOffset
-    })
+    body
+      .getChildren
+      .foldLeft(None)((startOffset, child) => {
+        val newOffset =
+          if (startOffset.isDefined)
+            startOffset.get
+          else
+            child.getTextRange.getStartOffset
+        if (child.isInstanceOf[ScExpression]) {
+          if (!unseparableRanges.contains(entry)) {
+            unseparableRanges += (
+              entry -> mutable.Queue[ScalaArrangementEntry]()
+            )
+          }
+          unseparableRanges
+            .get(entry)
+            .foreach(queue =>
+              queue.enqueue(
+                createNewEntry(
+                  body,
+                  new TextRange(newOffset, child.getTextRange.getEndOffset),
+                  UNSEPARABLE_RANGE,
+                  null,
+                  canArrange = true)))
+          None
+        } else
+          startOffset
+      })
   }
 }
 
@@ -524,8 +530,8 @@ object ScalaArrangementVisitor {
     name.startsWith(start) && length > start.length && !(
       Character.isLowerCase(name.charAt(start.length())) &&
         (
-          length == start.length() + 1 || Character.isLowerCase(
-            name.charAt(start.length() + 1))
+          length == start.length() + 1 || Character
+            .isLowerCase(name.charAt(start.length() + 1))
         )
     )
   }

@@ -27,7 +27,8 @@ class MysqlBuilderTest extends FunSuite with IntegrationClient {
       val username = p.getProperty("username", "<user>")
       val password = p.getProperty("password", null)
       val db = p.getProperty("db", "test")
-      val client = Mysql.client
+      val client = Mysql
+        .client
         .configured(param.Label("myclient"))
         .configured(param.Tracer(mockTracer))
         .withDatabase("test")

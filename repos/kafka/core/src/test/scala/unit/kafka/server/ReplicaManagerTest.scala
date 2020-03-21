@@ -49,8 +49,8 @@ class ReplicaManagerTest {
     val config = KafkaConfig.fromProps(props)
     val zkClient = EasyMock.createMock(classOf[ZkClient])
     val zkUtils = ZkUtils(zkClient, isZkSecurityEnabled = false)
-    val mockLogMgr = TestUtils.createLogManager(
-      config.logDirs.map(new File(_)).toArray)
+    val mockLogMgr = TestUtils
+      .createLogManager(config.logDirs.map(new File(_)).toArray)
     val time = new MockTime()
     val jTime = new JMockTime
     val metrics = new Metrics
@@ -82,8 +82,8 @@ class ReplicaManagerTest {
     val config = KafkaConfig.fromProps(props)
     val zkClient = EasyMock.createMock(classOf[ZkClient])
     val zkUtils = ZkUtils(zkClient, false)
-    val mockLogMgr = TestUtils.createLogManager(
-      config.logDirs.map(new File(_)).toArray)
+    val mockLogMgr = TestUtils
+      .createLogManager(config.logDirs.map(new File(_)).toArray)
     val time = new MockTime()
     val jTime = new JMockTime
     val metrics = new Metrics
@@ -114,8 +114,8 @@ class ReplicaManagerTest {
     val config = KafkaConfig.fromProps(props)
     val zkClient = EasyMock.createMock(classOf[ZkClient])
     val zkUtils = ZkUtils(zkClient, isZkSecurityEnabled = false)
-    val mockLogMgr = TestUtils.createLogManager(
-      config.logDirs.map(new File(_)).toArray)
+    val mockLogMgr = TestUtils
+      .createLogManager(config.logDirs.map(new File(_)).toArray)
     val time = new MockTime()
     val jTime = new JMockTime
     val metrics = new Metrics
@@ -133,7 +133,9 @@ class ReplicaManagerTest {
     try {
       def callback(responseStatus: Map[TopicPartition, PartitionResponse]) = {
         assert(
-          responseStatus.values.head.errorCode == Errors.INVALID_REQUIRED_ACKS.code)
+          responseStatus.values.head.errorCode == Errors
+            .INVALID_REQUIRED_ACKS
+            .code)
       }
       rm.appendMessages(
         timeout = 0,
@@ -159,8 +161,8 @@ class ReplicaManagerTest {
     val config = KafkaConfig.fromProps(props)
     val zkClient = EasyMock.createMock(classOf[ZkClient])
     val zkUtils = ZkUtils(zkClient, isZkSecurityEnabled = false)
-    val mockLogMgr = TestUtils.createLogManager(
-      config.logDirs.map(new File(_)).toArray)
+    val mockLogMgr = TestUtils
+      .createLogManager(config.logDirs.map(new File(_)).toArray)
     val time = new MockTime()
     val jTime = new JMockTime
     val metrics = new Metrics
@@ -218,7 +220,8 @@ class ReplicaManagerTest {
         new LeaderAndIsrRequest(
           0,
           0,
-          collection.immutable
+          collection
+            .immutable
             .Map(
               new TopicPartition(topic, 0) -> new PartitionState(
                 0,
@@ -254,8 +257,12 @@ class ReplicaManagerTest {
         timeout = 1000,
         replicaId = -1,
         fetchMinBytes = 100000,
-        fetchInfo = collection.immutable.Map(
-          new TopicAndPartition(topic, 0) -> new PartitionFetchInfo(0, 100000)),
+        fetchInfo = collection
+          .immutable
+          .Map(
+            new TopicAndPartition(topic, 0) -> new PartitionFetchInfo(
+              0,
+              100000)),
         responseCallback = fetchCallback
       )
 
@@ -264,7 +271,8 @@ class ReplicaManagerTest {
         new LeaderAndIsrRequest(
           0,
           0,
-          collection.immutable
+          collection
+            .immutable
             .Map(
               new TopicPartition(topic, 0) -> new PartitionState(
                 0,

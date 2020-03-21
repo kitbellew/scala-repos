@@ -56,7 +56,8 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
       expectedNodeText: String): Seq[(String, String)] = {
     props.map {
       case Token(x, keysAndValue) if x == expectedNodeText =>
-        val key = keysAndValue.init
+        val key = keysAndValue
+          .init
           .map { x =>
             unquoteString(x.text)
           }
@@ -128,24 +129,27 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
             parseFailed("Invalid CREATE DATABASE command", node)
         }
         val props =
-          dbprops.toSeq.flatMap {
-            case Token(
-                  "TOK_DATABASEPROPERTIES",
-                  Token("TOK_DBPROPLIST", propList) :: Nil) =>
-              // Example format:
-              //
-              //   TOK_DATABASEPROPERTIES
-              //   +- TOK_DBPROPLIST
-              //      :- TOK_TABLEPROPERTY
-              //      :  :- 'k1'
-              //      :  +- 'v1'
-              //      :- TOK_TABLEPROPERTY
-              //         :- 'k2'
-              //         +- 'v2'
-              extractProps(propList, "TOK_TABLEPROPERTY")
-            case _ =>
-              parseFailed("Invalid CREATE DATABASE command", node)
-          }.toMap
+          dbprops
+            .toSeq
+            .flatMap {
+              case Token(
+                    "TOK_DATABASEPROPERTIES",
+                    Token("TOK_DBPROPLIST", propList) :: Nil) =>
+                // Example format:
+                //
+                //   TOK_DATABASEPROPERTIES
+                //   +- TOK_DBPROPLIST
+                //      :- TOK_TABLEPROPERTY
+                //      :  :- 'k1'
+                //      :  +- 'v1'
+                //      :- TOK_TABLEPROPERTY
+                //         :- 'k2'
+                //         +- 'v2'
+                extractProps(propList, "TOK_TABLEPROPERTY")
+              case _ =>
+                parseFailed("Invalid CREATE DATABASE command", node)
+            }
+            .toMap
         CreateDatabase(
           databaseName,
           ifNotExists.isDefined,
@@ -197,30 +201,32 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
         val Seq(rList, temp) = getClauses(
           Seq("TOK_RESOURCE_LIST", "TOK_TEMPORARY"),
           otherArgs)
-        val resources: Seq[(String, String)] = rList.toSeq.flatMap {
-          case Token("TOK_RESOURCE_LIST", resList) =>
-            resList.map {
-              case Token(
-                    "TOK_RESOURCE_URI",
-                    rType :: Token(rPath, Nil) :: Nil) =>
-                val resourceType =
-                  rType match {
-                    case Token("TOK_JAR", Nil) =>
-                      "jar"
-                    case Token("TOK_FILE", Nil) =>
-                      "file"
-                    case Token("TOK_ARCHIVE", Nil) =>
-                      "archive"
-                    case Token(f, _) =>
-                      parseFailed(s"Unexpected resource format '$f'", node)
-                  }
-                (resourceType, unquoteString(rPath))
-              case _ =>
-                parseFailed("Invalid CREATE FUNCTION command", node)
-            }
-          case _ =>
-            parseFailed("Invalid CREATE FUNCTION command", node)
-        }
+        val resources: Seq[(String, String)] = rList
+          .toSeq
+          .flatMap {
+            case Token("TOK_RESOURCE_LIST", resList) =>
+              resList.map {
+                case Token(
+                      "TOK_RESOURCE_URI",
+                      rType :: Token(rPath, Nil) :: Nil) =>
+                  val resourceType =
+                    rType match {
+                      case Token("TOK_JAR", Nil) =>
+                        "jar"
+                      case Token("TOK_FILE", Nil) =>
+                        "file"
+                      case Token("TOK_ARCHIVE", Nil) =>
+                        "archive"
+                      case Token(f, _) =>
+                        parseFailed(s"Unexpected resource format '$f'", node)
+                    }
+                  (resourceType, unquoteString(rPath))
+                case _ =>
+                  parseFailed("Invalid CREATE FUNCTION command", node)
+              }
+            case _ =>
+              parseFailed("Invalid CREATE FUNCTION command", node)
+          }
         CreateFunction(funcName, alias, resources, temp.isDefined)(node.source)
 
       case Token("TOK_ALTERTABLE", alterTableArgs) =>
@@ -260,12 +266,15 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
           }
           .mkString(".")
         val options =
-          tableOpts.toSeq.flatMap {
-            case Token("TOK_TABLEOPTIONS", opts) =>
-              extractProps(opts, "TOK_TABLEOPTION")
-            case _ =>
-              parseFailed("Invalid CREATE TABLE command", node)
-          }.toMap
+          tableOpts
+            .toSeq
+            .flatMap {
+              case Token("TOK_TABLEOPTIONS", opts) =>
+                extractProps(opts, "TOK_TABLEOPTION")
+              case _ =>
+                parseFailed("Invalid CREATE TABLE command", node)
+            }
+            .toMap
         val asClause = tableAs.map(nodeToPlan)
 
         if (temp.isDefined && ifNotExists.isDefined) {

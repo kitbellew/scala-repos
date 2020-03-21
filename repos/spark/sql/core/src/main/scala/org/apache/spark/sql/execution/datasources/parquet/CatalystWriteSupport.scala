@@ -168,8 +168,8 @@ private[parquet] class CatalystWriteSupport
 
           // NOTE: Starting from Spark 1.5, Spark SQL `TimestampType` only has microsecond
           // precision.  Nanosecond parts of timestamp values read from INT96 are simply stripped.
-          val (julianDay, timeOfDayNanos) = DateTimeUtils.toJulianDay(
-            row.getLong(ordinal))
+          val (julianDay, timeOfDayNanos) = DateTimeUtils
+            .toJulianDay(row.getLong(ordinal))
           val buf = ByteBuffer.wrap(timestampBuffer)
           buf
             .order(ByteOrder.LITTLE_ENDIAN)
@@ -241,8 +241,8 @@ private[parquet] class CatalystWriteSupport
           shift -= 8
         }
 
-        recordConsumer.addBinary(
-          Binary.fromByteArray(decimalBuffer, 0, numBytes))
+        recordConsumer
+          .addBinary(Binary.fromByteArray(decimalBuffer, 0, numBytes))
       }
 
     val binaryWriterUsingUnscaledBytes =
@@ -263,11 +263,9 @@ private[parquet] class CatalystWriteSupport
                 -1: Byte
               else
                 0: Byte
-            util.Arrays.fill(
-              decimalBuffer,
-              0,
-              numBytes - bytes.length,
-              signByte)
+            util
+              .Arrays
+              .fill(decimalBuffer, 0, numBytes - bytes.length, signByte)
             System.arraycopy(
               bytes,
               0,
@@ -277,8 +275,8 @@ private[parquet] class CatalystWriteSupport
             decimalBuffer
           }
 
-        recordConsumer.addBinary(
-          Binary.fromByteArray(fixedLengthBytes, 0, numBytes))
+        recordConsumer
+          .addBinary(Binary.fromByteArray(fixedLengthBytes, 0, numBytes))
       }
 
     writeLegacyParquetFormat match {

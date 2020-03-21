@@ -87,10 +87,12 @@ class VectorSlicerSuite
     val resultAttrGroup =
       new AttributeGroup("expected", resultAttrs.asInstanceOf[Array[Attribute]])
 
-    val rdd = sc.parallelize(data.zip(expected)).map {
-      case (a, b) =>
-        Row(a, b)
-    }
+    val rdd = sc
+      .parallelize(data.zip(expected))
+      .map {
+        case (a, b) =>
+          Row(a, b)
+      }
     val df = sqlContext.createDataFrame(
       rdd,
       StructType(
@@ -101,15 +103,20 @@ class VectorSlicerSuite
       .setOutputCol("result")
 
     def validateResults(df: DataFrame): Unit = {
-      df.select("result", "expected").collect().foreach {
-        case Row(vec1: Vector, vec2: Vector) =>
-          assert(vec1 === vec2)
-      }
+      df
+        .select("result", "expected")
+        .collect()
+        .foreach {
+          case Row(vec1: Vector, vec2: Vector) =>
+            assert(vec1 === vec2)
+        }
       val resultMetadata = AttributeGroup.fromStructField(df.schema("result"))
-      val expectedMetadata = AttributeGroup.fromStructField(
-        df.schema("expected"))
+      val expectedMetadata = AttributeGroup
+        .fromStructField(df.schema("expected"))
       assert(resultMetadata.numAttributes === expectedMetadata.numAttributes)
-      resultMetadata.attributes.get
+      resultMetadata
+        .attributes
+        .get
         .zip(expectedMetadata.attributes.get)
         .foreach {
           case (a, b) =>

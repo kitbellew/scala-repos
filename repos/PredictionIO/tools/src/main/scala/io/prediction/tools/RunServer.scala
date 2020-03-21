@@ -30,17 +30,22 @@ object RunServer extends Logging {
       core: File,
       em: EngineManifest,
       engineInstanceId: String): Int = {
-    val pioEnvVars = sys.env
+    val pioEnvVars = sys
+      .env
       .filter(kv => kv._1.startsWith("PIO_"))
       .map(kv => s"${kv._1}=${kv._2}")
       .mkString(",")
 
-    val sparkHome = ca.common.sparkHome
+    val sparkHome = ca
+      .common
+      .sparkHome
       .getOrElse(sys.env.getOrElse("SPARK_HOME", "."))
 
     val extraFiles = WorkflowUtils.thirdPartyConfFiles
 
-    val driverClassPathIndex = ca.common.sparkPassThrough
+    val driverClassPathIndex = ca
+      .common
+      .sparkPassThrough
       .indexOf("--driver-class-path")
     val driverClassPathPrefix =
       if (driverClassPathIndex != -1) {
@@ -77,8 +82,9 @@ object RunServer extends Logging {
     val jarFiles =
       (
         em.files ++ Option(
-          new File(ca.common.pioHome.get, "plugins")
-            .listFiles()).getOrElse(Array.empty[File]).map(_.getAbsolutePath)
+          new File(ca.common.pioHome.get, "plugins").listFiles())
+          .getOrElse(Array.empty[File])
+          .map(_.getAbsolutePath)
       ).mkString(",")
 
     val sparkSubmit =
@@ -167,13 +173,15 @@ object RunServer extends Logging {
       None,
       "CLASSPATH" -> "",
       "SPARK_YARN_USER_ENV" -> pioEnvVars).run()
-    Runtime.getRuntime.addShutdownHook(
-      new Thread(
-        new Runnable {
-          def run(): Unit = {
-            proc.destroy()
-          }
-        }))
+    Runtime
+      .getRuntime
+      .addShutdownHook(
+        new Thread(
+          new Runnable {
+            def run(): Unit = {
+              proc.destroy()
+            }
+          }))
     proc.exitValue()
   }
 

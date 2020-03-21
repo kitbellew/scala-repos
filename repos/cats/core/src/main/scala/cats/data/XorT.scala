@@ -129,9 +129,9 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
       traverseF: Traverse[F],
       traverseXorA: Traverse[A Xor ?],
       applicativeG: Applicative[G]): G[XorT[F, A, D]] =
-    applicativeG.map(
-      traverseF.traverse(value)(axb => traverseXorA.traverse(axb)(f)))(
-      XorT.apply)
+    applicativeG
+      .map(traverseF.traverse(value)(axb => traverseXorA.traverse(axb)(f)))(
+        XorT.apply)
 
   def foldLeft[C](c: C)(f: (C, B) => C)(implicit F: Foldable[F]): C =
     F.foldLeft(value, c)((c, axb) => axb.foldLeft(c)(f))

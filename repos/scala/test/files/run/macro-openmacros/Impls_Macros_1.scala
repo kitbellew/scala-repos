@@ -22,13 +22,16 @@ object Macros {
           Select(Ident(c.mirror.staticModule("Macros")), TermName("foo")))
       else
         c.Expr[Unit](Literal(Constant(())))
-    c.universe.reify {
-      println(
-        c.Expr[String](
-            Literal(Constant(normalizePaths(c.enclosingMacros.toString))))
-          .splice)
-      next.splice
-    }
+    c
+      .universe
+      .reify {
+        println(
+          c
+            .Expr[String](
+              Literal(Constant(normalizePaths(c.enclosingMacros.toString))))
+            .splice)
+        next.splice
+      }
   }
 
   def foo = macro impl

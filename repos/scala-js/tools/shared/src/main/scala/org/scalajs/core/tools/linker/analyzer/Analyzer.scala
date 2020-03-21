@@ -159,12 +159,14 @@ private final class Analyzer(
      * superclasses of classes whose data we can already reach.
      */
     for {
-      getSuperclassMethodInfo <- classClassInfo.flatMap(
-        _.methodInfos.get("getSuperclass__jl_Class"))
+      getSuperclassMethodInfo <- classClassInfo
+        .flatMap(_.methodInfos.get("getSuperclass__jl_Class"))
       if getSuperclassMethodInfo.isReachable
     } {
       // calledFrom should always be nonEmpty if isReachable, but let's be robust
-      implicit val from = getSuperclassMethodInfo.calledFrom.headOption
+      implicit val from = getSuperclassMethodInfo
+        .calledFrom
+        .headOption
         .getOrElse(fromAnalyzer)
       for (classInfo <- _classInfos.values.filter(_.isDataAccessed).toList) {
         @tailrec
@@ -226,11 +228,13 @@ private final class Analyzer(
 
       val parents = data.superClass ++: data.interfaces
 
-      ancestors = this +: parents.flatMap { parent =>
-        val cls = lookupClass(parent)
-        cls.linkClasses()
-        cls.ancestors
-      }.distinct
+      ancestors = this +: parents
+        .flatMap { parent =>
+          val cls = lookupClass(parent)
+          cls.linkClasses()
+          cls.ancestors
+        }
+        .distinct
 
       for (ancestor <- ancestors)
         ancestor.descendants += this
@@ -282,27 +286,29 @@ private final class Analyzer(
        * we materialize a new constructor in this class. We only allow this
        * during the initial link. In a refiner, this must not happen anymore.
        */
-      methodInfos.get(ctorName).getOrElse {
-        if (!allowAddingSyntheticMethods) {
-          createNonExistentMethod(ctorName)
-        } else {
-          val inherited = lookupMethod(ctorName)
-          if (inherited.owner eq this) {
-            // Can happen only for non-existent constructors, at this point
-            assert(inherited.nonExistent)
-            inherited
+      methodInfos
+        .get(ctorName)
+        .getOrElse {
+          if (!allowAddingSyntheticMethods) {
+            createNonExistentMethod(ctorName)
           } else {
-            val syntheticInfo = Infos.MethodInfo(
-              encodedName = ctorName,
-              methodsCalledStatically = Map(
-                superClass.encodedName -> List(ctorName)))
-            val m = new MethodInfo(this, syntheticInfo)
-            m.syntheticKind = MethodSyntheticKind.InheritedConstructor
-            methodInfos += ctorName -> m
-            m
+            val inherited = lookupMethod(ctorName)
+            if (inherited.owner eq this) {
+              // Can happen only for non-existent constructors, at this point
+              assert(inherited.nonExistent)
+              inherited
+            } else {
+              val syntheticInfo = Infos.MethodInfo(
+                encodedName = ctorName,
+                methodsCalledStatically = Map(
+                  superClass.encodedName -> List(ctorName)))
+              val m = new MethodInfo(this, syntheticInfo)
+              m.syntheticKind = MethodSyntheticKind.InheritedConstructor
+              methodInfos += ctorName -> m
+              m
+            }
           }
         }
-      }
     }
 
     def lookupMethod(methodName: String): MethodInfo = {
@@ -420,8 +426,8 @@ private final class Analyzer(
         methodsCalledStatically = Map(
           targetOwner.encodedName -> List(methodName)))
       val m = new MethodInfo(this, syntheticInfo)
-      m.syntheticKind = MethodSyntheticKind.DefaultBridge(
-        targetOwner.encodedName)
+      m.syntheticKind = MethodSyntheticKind
+        .DefaultBridge(targetOwner.encodedName)
       methodInfos += methodName -> m
       m
     }
@@ -469,11 +475,14 @@ private final class Analyzer(
 
     private def findProxyMatch(proxyName: String): Option[MethodInfo] = {
       val candidates =
-        methodInfos.valuesIterator.filter { m =>
-          // TODO In theory we should filter out protected methods
-          !m.isReflProxy && !m.isExported && !m.isAbstract &&
-          reflProxyMatches(m.encodedName, proxyName)
-        }.toSeq
+        methodInfos
+          .valuesIterator
+          .filter { m =>
+            // TODO In theory we should filter out protected methods
+            !m.isReflProxy && !m.isExported && !m.isAbstract &&
+            reflProxyMatches(m.encodedName, proxyName)
+          }
+          .toSeq
 
       /* From the JavaDoc of java.lang.Class.getMethod:
        *
@@ -518,10 +527,12 @@ private final class Analyzer(
         leftCls != rightCls && {
           val leftInfo = _classInfos.get(leftCls)
           val rightInfo = _classInfos.get(rightCls)
-          leftInfo.zip(rightInfo).exists {
-            case (l, r) =>
-              l.ancestors.contains(r)
-          }
+          leftInfo
+            .zip(rightInfo)
+            .exists {
+              case (l, r) =>
+                l.ancestors.contains(r)
+            }
         }
       }
 

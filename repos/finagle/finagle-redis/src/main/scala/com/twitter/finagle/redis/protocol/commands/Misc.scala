@@ -54,7 +54,8 @@ case class Info(section: ChannelBuffer) extends Command {
 object Info {
   def apply(section: Seq[Array[Byte]]) = {
     new Info(
-      section.headOption
+      section
+        .headOption
         .map {
           ChannelBuffers.wrappedBuffer
         }

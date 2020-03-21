@@ -61,8 +61,9 @@ class ReplTest extends WordSpec {
         // actually running a new flow to check the contents (just check that
         // it's a TypedPipe from a MemorySink or SequenceFile)
         assert(
-          s.toString.contains("IterablePipe") || s.toString.contains(
-            "TypedPipeFactory"))
+          s.toString.contains("IterablePipe") || s
+            .toString
+            .contains("TypedPipeFactory"))
 
         val pipeName =
           mode match {
@@ -77,10 +78,7 @@ class ReplTest extends WordSpec {
 
       "can be mapped and saved -- TypedPipe[String]" in {
         val s =
-          TypedPipe
-            .from(TextLine(helloPath))
-            .flatMap(_.split("\\s+"))
-            .snapshot
+          TypedPipe.from(TextLine(helloPath)).flatMap(_.split("\\s+")).snapshot
 
         val out = TypedTsv[String](testPath + "output1.txt")
 
@@ -107,9 +105,7 @@ class ReplTest extends WordSpec {
       }
 
       "grouped -- Grouped[String,String]" which {
-        val grp = TypedPipe
-          .from(TextLine(helloPath))
-          .groupBy(_.toLowerCase)
+        val grp = TypedPipe.from(TextLine(helloPath)).groupBy(_.toLowerCase)
 
         val correct = helloRef.map(l => (l.toLowerCase, l))
 
@@ -187,9 +183,12 @@ class ReplTest extends WordSpec {
     "TypedPipe of a TextLine" should {
       val hello = TypedPipe.from(TextLine(helloPath))
       "support toIterator" in {
-        hello.toIterator.foreach { line: String =>
-          assert(line.contains("Hello world") || line.contains("Goodbye world"))
-        }
+        hello
+          .toIterator
+          .foreach { line: String =>
+            assert(
+              line.contains("Hello world") || line.contains("Goodbye world"))
+          }
       }
       "support toList" in {
         assert(hello.toList === helloRef)
@@ -204,8 +203,8 @@ class ReplTest extends WordSpec {
       }
       "tuple" in {
         assert(
-          hello.map(l => (l, l.length)).toList === helloRef.map(l =>
-            (l, l.length)))
+          hello.map(l => (l, l.length)).toList === helloRef
+            .map(l => (l, l.length)))
       }
     }
   }

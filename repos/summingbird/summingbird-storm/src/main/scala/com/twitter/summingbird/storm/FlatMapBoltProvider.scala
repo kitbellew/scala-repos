@@ -56,20 +56,24 @@ object FlatMapBoltProvider {
       : FlatMapOperation[(Timestamp, T), ((K, BatchID), (Timestamp, V))] =
     FlatMapOperation.generic[(Timestamp, T), ((K, BatchID), (Timestamp, V))]({
       case (ts, data) =>
-        existingOp.apply(data).map { vals =>
-          vals.map {
-            case (k, v) =>
-              ((k, batcher.batchOf(ts)), (ts, v))
+        existingOp
+          .apply(data)
+          .map { vals =>
+            vals.map {
+              case (k, v) =>
+                ((k, batcher.batchOf(ts)), (ts, v))
+            }
           }
-        }
     })
 
   def wrapTime[T, U](existingOp: FlatMapOperation[T, U])
       : FlatMapOperation[(Timestamp, T), (Timestamp, U)] = {
     FlatMapOperation.generic({ x: (Timestamp, T) =>
-      existingOp.apply(x._2).map { vals =>
-        vals.map((x._1, _))
-      }
+      existingOp
+        .apply(x._2)
+        .map { vals =>
+          vals.map((x._1, _))
+        }
     })
   }
 }
@@ -111,7 +115,8 @@ case class FlatMapBoltProvider(
     type ExecutorKey = Int
     type InnerValue = (Timestamp, V)
     type ExecutorValue = CMap[(K, BatchID), InnerValue]
-    val summerProducer = summer.members
+    val summerProducer = summer
+      .members
       .collect {
         case s: Summer[_, _, _] =>
           s
@@ -131,8 +136,8 @@ case class FlatMapBoltProvider(
       summer)
 
     // This option we report its value here, but its not user settable.
-    val keyValueShards = executor.KeyValueShards(
-      summerParalellism.parHint * summerBatchMultiplier.get)
+    val keyValueShards = executor
+      .KeyValueShards(summerParalellism.parHint * summerBatchMultiplier.get)
     logger.info(s"[$nodeName] keyValueShards : ${keyValueShards.get}")
 
     val operation = foldOperations[T, (K, V)](node.members.reverse)

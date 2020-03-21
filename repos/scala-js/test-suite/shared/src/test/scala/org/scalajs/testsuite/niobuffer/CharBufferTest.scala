@@ -118,8 +118,8 @@ class SlicedCharBufferWrappingACharSequenceTest extends CharBufferTest {
       if (!(0 <= pos && pos <= limit && limit <= capacity))
         throw new IllegalArgumentException
       val after = (25 + capacity) - (9 + pos + content.size)
-      val buf = CharBuffer.wrap(
-        zeros(9 + pos) + content.mkString + zeros(after))
+      val buf = CharBuffer
+        .wrap(zeros(9 + pos) + content.mkString + zeros(after))
       buf.position(9)
       buf.limit(9 + capacity)
       val buf2 = buf.slice()

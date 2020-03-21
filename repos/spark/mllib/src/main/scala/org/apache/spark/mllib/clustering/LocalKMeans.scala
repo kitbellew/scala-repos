@@ -49,7 +49,8 @@ private[mllib] object LocalKMeans extends Logging {
       // Pick the next center with a probability proportional to cost under current centers
       val curCenters = centers.view.take(i)
       val sum =
-        points.view
+        points
+          .view
           .zip(weights)
           .map {
             case (p, w) =>

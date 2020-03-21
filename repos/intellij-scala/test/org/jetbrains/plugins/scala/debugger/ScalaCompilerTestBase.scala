@@ -39,7 +39,8 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
 
   override def setUp(): Unit = {
     super.setUp()
-    myProject.getMessageBus
+    myProject
+      .getMessageBus
       .connect(myTestRootDisposable)
       .subscribe(
         ProjectTopics.PROJECT_ROOTS,
@@ -60,8 +61,9 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
       val file = new File(getBaseDir.getCanonicalPath, name)
       if (!file.exists())
         file.mkdir()
-      LocalFileSystem.getInstance.refreshAndFindFileByPath(
-        file.getCanonicalPath)
+      LocalFileSystem
+        .getInstance
+        .refreshAndFindFileByPath(file.getCanonicalPath)
     }
 
     inWriteAction {
@@ -118,8 +120,8 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
         def run() {
           try {
             CompilerTestUtil.saveApplicationSettings()
-            val ioFile: File = VfsUtilCore.virtualToIoFile(
-              myModule.getModuleFile)
+            val ioFile: File = VfsUtilCore
+              .virtualToIoFile(myModule.getModuleFile)
             saveProject()
             assert(ioFile.exists, "File does not exist: " + ioFile.getPath)
             CompilerManager.getInstance(getProject).rebuild(callback)

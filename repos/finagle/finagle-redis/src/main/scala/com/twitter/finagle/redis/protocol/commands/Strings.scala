@@ -131,8 +131,8 @@ class DecrBy(val key: ChannelBuffer, val amount: Long)
   override def equals(other: Any) =
     other match {
       case that: DecrBy =>
-        that.canEqual(
-          this) && this.key == that.key && this.amount == that.amount
+        that.canEqual(this) && this.key == that.key && this.amount == that
+          .amount
       case _ =>
         false
     }
@@ -237,8 +237,8 @@ class IncrBy(val key: ChannelBuffer, val amount: Long)
   override def equals(other: Any) =
     other match {
       case that: IncrBy =>
-        that.canEqual(
-          this) && this.key == that.key && this.amount == that.amount
+        that.canEqual(this) && this.key == that.key && this.amount == that
+          .amount
       case _ =>
         false
     }

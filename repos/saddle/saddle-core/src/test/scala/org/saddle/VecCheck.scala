@@ -217,11 +217,13 @@ class VecCheck extends Specification with ScalaCheck {
       forAll { (v: Vec[Double]) =>
         val res = v.fillNA(_ => 5.0)
         val exp = Vec(
-          v.contents.map(x =>
-            if (x.isNaN)
-              5.0
-            else
-              x))
+          v
+            .contents
+            .map(x =>
+              if (x.isNaN)
+                5.0
+              else
+                x))
         res.hasNA must beFalse
         res must_== exp
       }
@@ -267,12 +269,14 @@ class VecCheck extends Specification with ScalaCheck {
           v.foldLeftWhile(0)((c: Int, x: Double) => c + 1)(
             (c: Int, x: Double) => c < 3)
         var c = 0
-        val exp = v.contents.takeWhile { (v: Double) =>
-          v.isNaN || {
-            c += 1;
-            c <= 3
+        val exp = v
+          .contents
+          .takeWhile { (v: Double) =>
+            v.isNaN || {
+              c += 1;
+              c <= 3
+            }
           }
-        }
         res must_== Vec(exp).count
       }
     }

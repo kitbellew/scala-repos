@@ -66,13 +66,13 @@ object PCDataXmlParserSpec extends Specification with XmlMatchers {
 
   "PCDataMarkupParser" should {
     "Parse a document with whitespace" in {
-      PCDataXmlParser(data1).openOrThrowException("Test") must ==/(
-        <html>dude</html>)
+      PCDataXmlParser(data1)
+        .openOrThrowException("Test") must ==/(<html>dude</html>)
     }
 
     "Parse a document with doctype" in {
-      PCDataXmlParser(data2).openOrThrowException("Test") must ==/(
-        <html>dude</html>)
+      PCDataXmlParser(data2)
+        .openOrThrowException("Test") must ==/(<html>dude</html>)
     }
 
     "Parse a document with xml and doctype" in {

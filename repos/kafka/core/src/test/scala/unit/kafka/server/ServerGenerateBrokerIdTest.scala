@@ -114,8 +114,8 @@ class ServerGenerateBrokerIdTest extends ZooKeeperTestHarness {
     server1.shutdown()
     assertTrue(verifyBrokerMetadata(config1.logDirs, 1001))
     // addition to log.dirs after generation of a broker.id from zk should be copied over
-    val newLogDirs =
-      props1.getProperty("log.dir") + "," + TestUtils.tempDir().getAbsolutePath
+    val newLogDirs = props1
+      .getProperty("log.dir") + "," + TestUtils.tempDir().getAbsolutePath
     props1.setProperty("log.dir", newLogDirs)
     config1 = KafkaConfig.fromProps(props1)
     server1 =
@@ -168,11 +168,14 @@ class ServerGenerateBrokerIdTest extends ZooKeeperTestHarness {
     }
 
     // verify no broker metadata was written
-    serverB.config.logDirs.foreach { logDir =>
-      val brokerMetaFile =
-        new File(logDir + File.separator + brokerMetaPropsFile)
-      assertFalse(brokerMetaFile.exists())
-    }
+    serverB
+      .config
+      .logDirs
+      .foreach { logDir =>
+        val brokerMetaFile =
+          new File(logDir + File.separator + brokerMetaPropsFile)
+        assertFalse(brokerMetaFile.exists())
+      }
 
     // adjust the broker config and start again
     propsB.setProperty(KafkaConfig.BrokerIdProp, "2")

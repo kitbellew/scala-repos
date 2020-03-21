@@ -215,11 +215,9 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
       accountId: AccountId,
       keyName: Option[String] = None,
       keyDesc: Option[String] = None): Response[v1.APIKeyDetails] = {
-    val keyRequest = v1.NewAPIKeyRequest.newAccount(
-      accountId,
-      keyName,
-      keyDesc,
-      Set())
+    val keyRequest = v1
+      .NewAPIKeyRequest
+      .newAccount(accountId, keyName, keyDesc, Set())
 
     withJsonClient { client =>
       eitherT(
@@ -246,8 +244,8 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
 
     withJsonClient { client =>
       eitherT(
-        client.post[JValue]("apikeys/" + accountKey + "/grants/")(
-          requestBody) map {
+        client
+          .post[JValue]("apikeys/" + accountKey + "/grants/")(requestBody) map {
           case HttpResponse(HttpStatus(Created, _), _, None, _) =>
             right(true)
           case _ =>

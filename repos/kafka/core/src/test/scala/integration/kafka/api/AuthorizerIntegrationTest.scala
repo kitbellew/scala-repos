@@ -260,7 +260,8 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
         new requests.UpdateMetadataRequest.Broker(
           brokerId,
           Map(
-            SecurityProtocol.PLAINTEXT -> new requests.UpdateMetadataRequest.EndPoint(
+            SecurityProtocol
+              .PLAINTEXT -> new requests.UpdateMetadataRequest.EndPoint(
               "localhost",
               0)).asJava,
           null)).asJava
@@ -293,10 +294,8 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
       1,
       "",
       1000,
-      Map(
-        tp -> new requests.OffsetCommitRequest.PartitionData(
-          0,
-          "metadata")).asJava)
+      Map(tp -> new requests.OffsetCommitRequest.PartitionData(0, "metadata"))
+        .asJava)
   }
 
   private def createHeartbeatRequest = {
@@ -714,13 +713,20 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
   }
 
   def removeAllAcls() = {
-    servers.head.apis.authorizer.get.getAcls().keys.foreach { resource =>
-      servers.head.apis.authorizer.get.removeAcls(resource)
-      TestUtils.waitAndVerifyAcls(
-        Set.empty[Acl],
-        servers.head.apis.authorizer.get,
-        resource)
-    }
+    servers
+      .head
+      .apis
+      .authorizer
+      .get
+      .getAcls()
+      .keys
+      .foreach { resource =>
+        servers.head.apis.authorizer.get.removeAcls(resource)
+        TestUtils.waitAndVerifyAcls(
+          Set.empty[Acl],
+          servers.head.apis.authorizer.get,
+          resource)
+      }
   }
 
   def sendRequestAndVerifyResponseErrorCode(
@@ -779,12 +785,15 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
 
   private def sendRecords(numRecords: Int, tp: TopicPartition) {
     val futures = (0 until numRecords).map { i =>
-      this.producers.head.send(
-        new ProducerRecord(
-          tp.topic(),
-          tp.partition(),
-          i.toString.getBytes,
-          i.toString.getBytes))
+      this
+        .producers
+        .head
+        .send(
+          new ProducerRecord(
+            tp.topic(),
+            tp.partition(),
+            i.toString.getBytes,
+            i.toString.getBytes))
     }
     try {
       futures.foreach(_.get)

@@ -29,7 +29,9 @@ object LightUtil {
         .allMatchingAnnotations("scala.throws")
         .foldLeft[ArrayBuffer[String]](ArrayBuffer()) {
           case (accumulator, annotation) =>
-            val classes = annotation.constructor.args
+            val classes = annotation
+              .constructor
+              .args
               .map(_.exprs)
               .getOrElse(Seq.empty)
               .flatMap { expr =>
@@ -62,7 +64,8 @@ object LightUtil {
             if (classes.isEmpty) {
               annotation.constructor.typeArgList match {
                 case Some(args) =>
-                  val classes = args.typeArgs
+                  val classes = args
+                    .typeArgs
                     .map(_.getType(TypingContext.empty))
                     .filter(_.isDefined)
                     .map(_.get)

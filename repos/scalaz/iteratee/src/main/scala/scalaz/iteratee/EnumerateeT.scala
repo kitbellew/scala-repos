@@ -111,8 +111,8 @@ trait EnumerateeTFunctions {
         def step(s: StepT[E, F, A], last: Input[E]): IterateeT[E, F, A] =
           s mapCont { k =>
             cont { in =>
-              val inr = in.filter(e =>
-                last.forall(l => Order[E].order(e, l) != EQ))
+              val inr = in
+                .filter(e => last.forall(l => Order[E].order(e, l) != EQ))
               k(inr) >>== (step(_, in))
             }
           }
@@ -134,7 +134,8 @@ trait EnumerateeTFunctions {
             k: StepEl,
             i: Long): (Input[E] => IterateeT[E, F, StepT[(E, Long), F, A]]) = {
           (in: Input[E]) =>
-            in.map(e => (e, i))
+            in
+              .map(e => (e, i))
               .fold(
                 el = e => k(elInput(e)) >>== doneOr(loop(i + 1)),
                 empty = cont(step(k, i)),
@@ -159,9 +160,9 @@ trait EnumerateeTFunctions {
       G: Monad[G]): EnumerateeT[E, F[E], G] =
     new EnumerateeT[E, F[E], G] {
       def apply[A] = {
-        (
-          takeWhile[E, F](p).up[G] flatMap (xs => drop[E, G](1).map(_ => xs))
-        ).sequenceI.apply[A]
+        (takeWhile[E, F](p).up[G] flatMap (xs => drop[E, G](1).map(_ => xs)))
+          .sequenceI
+          .apply[A]
       }
     }
 

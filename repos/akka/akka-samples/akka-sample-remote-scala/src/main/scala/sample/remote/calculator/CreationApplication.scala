@@ -27,12 +27,14 @@ object CreationApplication {
 
     println("Started CreationSystem")
     import system.dispatcher
-    system.scheduler.schedule(1.second, 1.second) {
-      if (Random.nextInt(100) % 2 == 0)
-        actor ! Multiply(Random.nextInt(20), Random.nextInt(20))
-      else
-        actor ! Divide(Random.nextInt(10000), (Random.nextInt(99) + 1))
-    }
+    system
+      .scheduler
+      .schedule(1.second, 1.second) {
+        if (Random.nextInt(100) % 2 == 0)
+          actor ! Multiply(Random.nextInt(20), Random.nextInt(20))
+        else
+          actor ! Divide(Random.nextInt(10000), (Random.nextInt(99) + 1))
+      }
 
   }
 }

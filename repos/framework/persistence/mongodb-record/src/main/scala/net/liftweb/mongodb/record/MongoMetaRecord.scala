@@ -275,9 +275,11 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
     foreachCallback(inst, _.beforeSave)
     f
     foreachCallback(inst, _.afterSave)
-    inst.allFields.foreach {
-      _.resetDirty
-    }
+    inst
+      .allFields
+      .foreach {
+        _.resetDirty
+      }
     true
   }
 
@@ -285,9 +287,11 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
     foreachCallback(inst, _.beforeUpdate)
     f
     foreachCallback(inst, _.afterUpdate)
-    inst.allFields.foreach {
-      _.resetDirty
-    }
+    inst
+      .allFields
+      .foreach {
+        _.resetDirty
+      }
   }
 
   /**
@@ -370,9 +374,7 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
     * Update a record with a DBObject query
     */
   def update(obj: BaseRecord, update: DBObject): Unit = {
-    val query = (BasicDBObjectBuilder.start
-      .add("_id", idValue(obj))
-      .get)
+    val query = (BasicDBObjectBuilder.start.add("_id", idValue(obj)).get)
     this.update(query, update)
   }
 

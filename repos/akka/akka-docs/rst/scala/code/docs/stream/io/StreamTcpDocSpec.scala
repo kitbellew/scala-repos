@@ -98,9 +98,7 @@ class StreamTcpDocSpec extends AkkaSpec {
         //#welcome-banner-chat-server
         .via(commandParser)
         // merge in the initial banner after parser
-        .merge(welcome)
-        .map(_ + "\n")
-        .map(ByteString(_))
+        .merge(welcome).map(_ + "\n").map(ByteString(_))
 
       connection.handleWith(serverLogic)
     }

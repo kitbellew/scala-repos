@@ -65,7 +65,8 @@ private[akka] class ClusterShardingMessageSerializer(
   private val GetShardStatsManifest = "DA"
   private val ShardStatsManifest = "DB"
 
-  private val fromBinaryMap = collection.immutable
+  private val fromBinaryMap = collection
+    .immutable
     .HashMap[String, Array[Byte] ⇒ AnyRef](
       EntityStateManifest -> entityStateFromBinary,
       EntityStartedManifest -> entityStartedFromBinary,
@@ -257,7 +258,8 @@ private[akka] class ClusterShardingMessageSerializer(
 
   private def coordinatorStateToProto(state: State): sm.CoordinatorState = {
     val regions =
-      state.regions
+      state
+        .regions
         .map {
           case (regionRef, _) ⇒
             Serialization.serializedActorPath(regionRef)
@@ -267,24 +269,34 @@ private[akka] class ClusterShardingMessageSerializer(
 
     val builder = sm.CoordinatorState.newBuilder()
 
-    state.shards.foreach {
-      case (shardId, regionRef) ⇒
-        val b = sm.CoordinatorState.ShardEntry
-          .newBuilder()
-          .setShardId(shardId)
-          .setRegionRef(Serialization.serializedActorPath(regionRef))
-        builder.addShards(b)
-    }
-    state.regions.foreach {
-      case (regionRef, _) ⇒
-        builder.addRegions(Serialization.serializedActorPath(regionRef))
-    }
-    state.regionProxies.foreach { ref ⇒
-      builder.addRegionProxies(Serialization.serializedActorPath(ref))
-    }
-    state.unallocatedShards.foreach {
-      builder.addUnallocatedShards
-    }
+    state
+      .shards
+      .foreach {
+        case (shardId, regionRef) ⇒
+          val b = sm
+            .CoordinatorState
+            .ShardEntry
+            .newBuilder()
+            .setShardId(shardId)
+            .setRegionRef(Serialization.serializedActorPath(regionRef))
+          builder.addShards(b)
+      }
+    state
+      .regions
+      .foreach {
+        case (regionRef, _) ⇒
+          builder.addRegions(Serialization.serializedActorPath(regionRef))
+      }
+    state
+      .regionProxies
+      .foreach { ref ⇒
+        builder.addRegionProxies(Serialization.serializedActorPath(ref))
+      }
+    state
+      .unallocatedShards
+      .foreach {
+        builder.addUnallocatedShards
+      }
 
     builder.build()
   }
@@ -294,12 +306,19 @@ private[akka] class ClusterShardingMessageSerializer(
 
   private def coordinatorStateFromProto(state: sm.CoordinatorState): State = {
     val shards: Map[String, ActorRef] =
-      state.getShardsList.asScala.toVector.map { entry ⇒
-        entry.getShardId -> resolveActorRef(entry.getRegionRef)
-      }(breakOut)
+      state
+        .getShardsList
+        .asScala
+        .toVector
+        .map { entry ⇒
+          entry.getShardId -> resolveActorRef(entry.getRegionRef)
+        }(breakOut)
 
     val regionsZero: Map[ActorRef, Vector[String]] =
-      state.getRegionsList.asScala.toVector
+      state
+        .getRegionsList
+        .asScala
+        .toVector
         .map(resolveActorRef(_) -> Vector.empty[String])(breakOut)
     val regions: Map[ActorRef, Vector[String]] =
       shards.foldLeft(regionsZero) {
@@ -308,9 +327,12 @@ private[akka] class ClusterShardingMessageSerializer(
       }
 
     val proxies: Set[ActorRef] =
-      state.getRegionProxiesList.asScala.map {
-        resolveActorRef
-      }(breakOut)
+      state
+        .getRegionProxiesList
+        .asScala
+        .map {
+          resolveActorRef
+        }(breakOut)
     val unallocatedShards: Set[String] =
       state.getUnallocatedShardsList.asScala.toSet
 
@@ -318,7 +340,8 @@ private[akka] class ClusterShardingMessageSerializer(
   }
 
   private def actorRefMessageToProto(ref: ActorRef): sm.ActorRefMessage =
-    sm.ActorRefMessage
+    sm
+      .ActorRefMessage
       .newBuilder()
       .setRef(Serialization.serializedActorPath(ref))
       .build()
@@ -334,7 +357,8 @@ private[akka] class ClusterShardingMessageSerializer(
 
   private def shardHomeAllocatedToProto(
       evt: ShardHomeAllocated): sm.ShardHomeAllocated =
-    sm.ShardHomeAllocated
+    sm
+      .ShardHomeAllocated
       .newBuilder()
       .setShard(evt.shard)
       .setRegion(Serialization.serializedActorPath(evt.region))
@@ -347,7 +371,8 @@ private[akka] class ClusterShardingMessageSerializer(
   }
 
   private def shardHomeToProto(m: ShardHome): sm.ShardHome =
-    sm.ShardHome
+    sm
+      .ShardHome
       .newBuilder()
       .setShard(m.shard)
       .setRegion(Serialization.serializedActorPath(m.ref))
@@ -380,7 +405,8 @@ private[akka] class ClusterShardingMessageSerializer(
     EntityStopped(sm.EntityStopped.parseFrom(bytes).getEntityId)
 
   private def shardStatsToProto(evt: ShardStats): sm.ShardStats =
-    sm.ShardStats
+    sm
+      .ShardStats
       .newBuilder()
       .setShard(evt.shardId)
       .setEntityCount(evt.entityCount)

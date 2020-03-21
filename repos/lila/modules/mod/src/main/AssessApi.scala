@@ -44,9 +44,7 @@ final class AssessApi(
       .void
 
   def getPlayerAssessmentById(id: String) =
-    collAssessments
-      .find(BSONDocument("_id" -> id))
-      .one[PlayerAssessment]
+    collAssessments.find(BSONDocument("_id" -> id)).one[PlayerAssessment]
 
   def getPlayerAssessmentsByUserId(userId: String, nb: Int = 100) =
     collAssessments
@@ -147,7 +145,9 @@ final class AssessApi(
         createPlayerAssessment(assessible playerAssessment chess.Black)
     } >> (
       (shouldAssess && thenAssessUser) ?? {
-        game.whitePlayer.userId.??(assessUser) >> game.blackPlayer.userId
+        game.whitePlayer.userId.??(assessUser) >> game
+          .blackPlayer
+          .userId
           .??(assessUser)
       }
     )
@@ -160,7 +160,10 @@ final class AssessApi(
           case AccountAction.Engine | AccountAction.EngineAndBan =>
             modApi.autoAdjust(userId)
           case AccountAction.Report =>
-            reporter ! lila.hub.actorApi.report
+            reporter ! lila
+              .hub
+              .actorApi
+              .report
               .Cheater(userId, playerAggregateAssessment.reportText(3))
             funit
           case AccountAction.Nothing =>

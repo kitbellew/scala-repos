@@ -53,8 +53,9 @@ private[spark] class FileShuffleBlockResolver(conf: SparkConf)
   private lazy val blockManager = SparkEnv.get.blockManager
 
   // Use getSizeAsKb (not bytes) to maintain backwards compatibility if no units are provided
-  private val bufferSize =
-    conf.getSizeAsKb("spark.shuffle.file.buffer", "32k").toInt * 1024
+  private val bufferSize = conf
+    .getSizeAsKb("spark.shuffle.file.buffer", "32k")
+    .toInt * 1024
 
   /**
     * Contains all the state related to a particular shuffle.

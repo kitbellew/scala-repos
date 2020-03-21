@@ -71,16 +71,18 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
       accumulatorUpdates: Map[Long, Long]): TaskMetrics = {
     val metrics = mock(classOf[TaskMetrics])
     when(metrics.accumulatorUpdates()).thenReturn(
-      accumulatorUpdates.map {
-        case (id, update) =>
-          new AccumulableInfo(
-            id,
-            Some(""),
-            Some(new LongSQLMetricValue(update)),
-            value = None,
-            internal = true,
-            countFailedValues = true)
-      }.toSeq)
+      accumulatorUpdates
+        .map {
+          case (id, update) =>
+            new AccumulableInfo(
+              id,
+              Some(""),
+              Some(new LongSQLMetricValue(update)),
+              value = None,
+              internal = true,
+              countFailedValues = true)
+        }
+        .toSeq)
     metrics
   }
 
@@ -95,15 +97,18 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
     val executionId = 0
     val df = createTestDataFrame
     val accumulatorIds = SparkPlanGraph(
-      SparkPlanInfo.fromSparkPlan(df.queryExecution.executedPlan)).allNodes
+      SparkPlanInfo.fromSparkPlan(df.queryExecution.executedPlan))
+      .allNodes
       .flatMap(_.metrics.map(_.accumulatorId))
     // Assume all accumulators are long
     var accumulatorValue = 0L
     val accumulatorUpdates =
-      accumulatorIds.map { id =>
-        accumulatorValue += 1L
-        (id, accumulatorValue)
-      }.toMap
+      accumulatorIds
+        .map { id =>
+          accumulatorValue += 1L
+          (id, accumulatorValue)
+        }
+        .toMap
 
     listener.onOtherEvent(
       SparkListenerSQLExecutionStart(
@@ -122,8 +127,8 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
         time = System.currentTimeMillis(),
         stageInfos = Seq(createStageInfo(0, 0), createStageInfo(1, 0)),
         createProperties(executionId)))
-    listener.onStageSubmitted(
-      SparkListenerStageSubmitted(createStageInfo(0, 0)))
+    listener
+      .onStageSubmitted(SparkListenerStageSubmitted(createStageInfo(0, 0)))
 
     assert(listener.getExecutionMetrics(0).isEmpty)
 
@@ -169,8 +174,8 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
       accumulatorUpdates.mapValues(_ * 3))
 
     // Retrying a stage should reset the metrics
-    listener.onStageSubmitted(
-      SparkListenerStageSubmitted(createStageInfo(0, 1)))
+    listener
+      .onStageSubmitted(SparkListenerStageSubmitted(createStageInfo(0, 1)))
 
     listener.onExecutorMetricsUpdate(
       SparkListenerExecutorMetricsUpdate(
@@ -227,8 +232,8 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
       accumulatorUpdates.mapValues(_ * 5))
 
     // Summit a new stage
-    listener.onStageSubmitted(
-      SparkListenerStageSubmitted(createStageInfo(1, 0)))
+    listener
+      .onStageSubmitted(SparkListenerStageSubmitted(createStageInfo(1, 0)))
 
     listener.onExecutorMetricsUpdate(
       SparkListenerExecutorMetricsUpdate(
@@ -439,9 +444,8 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
     val sqlMetric = SQLMetrics.createLongMetric(sparkContext, "beach umbrella")
     val nonSqlMetric = sparkContext.accumulator[Int](0, "baseball")
     val sqlMetricInfo = sqlMetric.toInfo(Some(sqlMetric.localValue), None)
-    val nonSqlMetricInfo = nonSqlMetric.toInfo(
-      Some(nonSqlMetric.localValue),
-      None)
+    val nonSqlMetricInfo = nonSqlMetric
+      .toInfo(Some(nonSqlMetric.localValue), None)
     val taskInfo = createTaskInfo(0, 0)
     taskInfo.accumulables ++= Seq(sqlMetricInfo, nonSqlMetricInfo)
     val taskEnd = SparkListenerTaskEnd(
@@ -458,10 +462,12 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
     // assume that the accumulator value is of type Long, but this may not be true for
     // accumulators that are not SQL metrics.
     listener.onTaskEnd(taskEnd)
-    val trackedAccums = listener.stageIdToStageMetrics.values.flatMap {
-      stageMetrics =>
+    val trackedAccums = listener
+      .stageIdToStageMetrics
+      .values
+      .flatMap { stageMetrics =>
         stageMetrics.taskIdToMetricUpdates.values.flatMap(_.accumulatorUpdates)
-    }
+      }
     // Listener tracks only SQL metrics, not other accumulators
     assert(trackedAccums.size === 1)
     assert(trackedAccums.head === sqlMetricInfo)

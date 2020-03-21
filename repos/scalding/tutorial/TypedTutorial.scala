@@ -137,21 +137,22 @@ class TypedTutorial(args: Args) extends Job(args) {
       // get the lines, this time from an 'OffsetTextLine' which is a
       // typed wrapper on 'TextLine' that contains the 'byte offset' and
       // text of each line in the file.
-      val lines: TypedPipe[(Long, String)] = TypedPipe.from(
-        OffsetTextLine(args("input")))
+      val lines: TypedPipe[(Long, String)] = TypedPipe
+        .from(OffsetTextLine(args("input")))
 
       // Split lines into words, but keep their original line offset with them.
       val wordsWithLine: Grouped[String, Long] =
-        lines.flatMap {
-          case (offset, line) =>
-            // split into words
-            line
-              .split("\\s")
-              // keep the line offset with them
-              .map(word => (word.toLowerCase, offset))
-        }
-        // make the 'word' field the key
-        .group
+        lines
+          .flatMap {
+            case (offset, line) =>
+              // split into words
+              line
+                .split("\\s")
+                // keep the line offset with them
+                .map(word => (word.toLowerCase, offset))
+          }
+          // make the 'word' field the key
+          .group
 
       // Associate scores with each word; merges the two value types into
       // a tuple: [String,Long] join [String,Double] -> [String,(Long,Double)]
@@ -177,8 +178,8 @@ class TypedTutorial(args: Args) extends Job(args) {
       val scoredLines: TypedPipe[(String, Double)] =
         lines
         // index lines by 'offset'
-        .group
-        // associate scores with lines (by offset)
+          .group
+          // associate scores with lines (by offset)
           .join(scoredLinesByNumber)
           // take just the value fields (discard the 'line offset')
           .values
@@ -240,7 +241,8 @@ class TypedTutorial(args: Args) extends Job(args) {
       // Get the .typed enrichment
       import TDsl._
 
-      TextLine(args("input")).read
+      TextLine(args("input"))
+        .read
         .typed('line -> 'size) { tp: TypedPipe[String] =>
           // now operate on the typed pipe
           tp.map(_.length)

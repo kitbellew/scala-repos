@@ -47,7 +47,8 @@ class InputFormatInfo(
   validate()
 
   override def toString: String = {
-    "InputFormatInfo " + super.toString + " .. inputFormatClazz " + inputFormatClazz + ", " +
+    "InputFormatInfo " + super
+      .toString + " .. inputFormatClazz " + inputFormatClazz + ", " +
       "path : " + path
   }
 

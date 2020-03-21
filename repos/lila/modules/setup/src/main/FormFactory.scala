@@ -47,8 +47,7 @@ private[setup] final class FormFactory(casualOnly: Boolean) {
         "days" -> days,
         "level" -> level,
         "color" -> color,
-        "fen" -> fen)(AiConfig.<<)(_.>>)
-        .verifying("Invalid FEN", _.validFen))
+        "fen" -> fen)(AiConfig.<<)(_.>>).verifying("Invalid FEN", _.validFen))
 
   def aiConfig(implicit ctx: UserContext): Fu[AiConfig] = savedConfig map (_.ai)
 

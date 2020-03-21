@@ -237,7 +237,11 @@ abstract class SymbolLoaders {
 
     override def complete(root: Symbol) {
       try {
-        val start = java.util.concurrent.TimeUnit.NANOSECONDS
+        val start = java
+          .util
+          .concurrent
+          .TimeUnit
+          .NANOSECONDS
           .toMillis(System.nanoTime())
         val currentphase = phase
         doComplete(root)
@@ -459,7 +463,6 @@ abstract class SymbolLoaders {
 
 object SymbolLoadersStats {
   import scala.reflect.internal.TypesStats.typerNanos
-  val classReadNanos = Statistics.newSubTimer(
-    "time classfilereading",
-    typerNanos)
+  val classReadNanos = Statistics
+    .newSubTimer("time classfilereading", typerNanos)
 }

@@ -52,11 +52,14 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
   @transient
   override lazy val triplets: RDD[EdgeTriplet[VD, ED]] = {
     replicatedVertexView.upgrade(vertices, true, true)
-    replicatedVertexView.edges.partitionsRDD.mapPartitions(
-      _.flatMap {
-        case (pid, part) =>
-          part.tripletIterator()
-      })
+    replicatedVertexView
+      .edges
+      .partitionsRDD
+      .mapPartitions(
+        _.flatMap {
+          case (pid, part) =>
+            part.tripletIterator()
+        })
   }
 
   override def persist(newLevel: StorageLevel): Graph[VD, ED] = {
@@ -167,7 +170,8 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
 
   override def mapEdges[ED2: ClassTag](
       f: (PartitionID, Iterator[Edge[ED]]) => Iterator[ED2]): Graph[VD, ED2] = {
-    val newEdges = replicatedVertexView.edges
+    val newEdges = replicatedVertexView
+      .edges
       .mapEdgePartitions((pid, part) => part.map(f(pid, part.iterator)))
     new GraphImpl(vertices, replicatedVertexView.withEdges(newEdges))
   }
@@ -176,16 +180,16 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
       f: (PartitionID, Iterator[EdgeTriplet[VD, ED]]) => Iterator[ED2],
       tripletFields: TripletFields): Graph[VD, ED2] = {
     vertices.cache()
-    replicatedVertexView.upgrade(
-      vertices,
-      tripletFields.useSrc,
-      tripletFields.useDst)
-    val newEdges = replicatedVertexView.edges.mapEdgePartitions { (pid, part) =>
-      part.map(
-        f(
-          pid,
-          part.tripletIterator(tripletFields.useSrc, tripletFields.useDst)))
-    }
+    replicatedVertexView
+      .upgrade(vertices, tripletFields.useSrc, tripletFields.useDst)
+    val newEdges = replicatedVertexView
+      .edges
+      .mapEdgePartitions { (pid, part) =>
+        part.map(
+          f(
+            pid,
+            part.tripletIterator(tripletFields.useSrc, tripletFields.useDst)))
+      }
     new GraphImpl(vertices, replicatedVertexView.withEdges(newEdges))
   }
 
@@ -209,15 +213,18 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
         v
       }
     val newEdges =
-      replicatedVertexView.edges.innerJoin(other.edges) { (src, dst, v, w) =>
-        v
-      }
+      replicatedVertexView
+        .edges
+        .innerJoin(other.edges) { (src, dst, v, w) =>
+          v
+        }
     new GraphImpl(newVerts, replicatedVertexView.withEdges(newEdges))
   }
 
   override def groupEdges(merge: (ED, ED) => ED): Graph[VD, ED] = {
-    val newEdges = replicatedVertexView.edges.mapEdgePartitions((pid, part) =>
-      part.groupEdges(merge))
+    val newEdges = replicatedVertexView
+      .edges
+      .mapEdgePartitions((pid, part) => part.groupEdges(merge))
     new GraphImpl(vertices, replicatedVertexView.withEdges(newEdges))
   }
 
@@ -234,10 +241,8 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
     vertices.cache()
     // For each vertex, replicate its attribute only to partitions where it is
     // in the relevant position in an edge.
-    replicatedVertexView.upgrade(
-      vertices,
-      tripletFields.useSrc,
-      tripletFields.useDst)
+    replicatedVertexView
+      .upgrade(vertices, tripletFields.useSrc, tripletFields.useDst)
     val view =
       activeSetOpt match {
         case Some((activeSet, _)) =>
@@ -248,13 +253,16 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
     val activeDirectionOpt = activeSetOpt.map(_._2)
 
     // Map and combine.
-    val preAgg = view.edges.partitionsRDD
+    val preAgg = view
+      .edges
+      .partitionsRDD
       .mapPartitions(
         _.flatMap {
           case (pid, edgePartition) =>
             // Choose scan method
-            val activeFraction = edgePartition.numActives.getOrElse(
-              0) / edgePartition.indexSize.toFloat
+            val activeFraction = edgePartition
+              .numActives
+              .getOrElse(0) / edgePartition.indexSize.toFloat
             activeDirectionOpt match {
               case Some(EdgeDirection.Both) =>
                 if (activeFraction < 0.8) {
@@ -336,10 +344,8 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
   /** Test whether the closure accesses the attribute with name `attrName`. */
   private def accessesVertexAttr(closure: AnyRef, attrName: String): Boolean = {
     try {
-      BytecodeUtils.invokedMethod(
-        closure,
-        classOf[EdgeTriplet[VD, ED]],
-        attrName)
+      BytecodeUtils
+        .invokedMethod(closure, classOf[EdgeTriplet[VD, ED]], attrName)
     } catch {
       case _: ClassNotFoundException =>
         true // if we don't know, be conservative

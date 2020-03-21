@@ -67,7 +67,8 @@ class ByteCodeRepository[BT <: BTypes](
   private def limitCacheSize(): Unit = {
     if (parsedClasses.size > maxCacheSize) {
       // OK if multiple threads get here
-      val minimalLRU = parsedClasses.valuesIterator
+      val minimalLRU = parsedClasses
+        .valuesIterator
         .collect({
           case Right((_, lru)) =>
             lru
@@ -127,8 +128,8 @@ class ByteCodeRepository[BT <: BTypes](
             r
           case None =>
             limitCacheSize()
-            val res = parseClass(internalName).map(
-              (_, lruCounter.incrementAndGet()))
+            val res = parseClass(internalName)
+              .map((_, lruCounter.incrementAndGet()))
             parsedClasses(internalName) = res
             res
         }
@@ -153,8 +154,10 @@ class ByteCodeRepository[BT <: BTypes](
         case Left(e) =>
           Left(FieldNotFound(name, descriptor, classInternalName, Some(e)))
         case Right(c) =>
-          c.fields.asScala.find(f =>
-            f.name == name && f.desc == descriptor) match {
+          c
+            .fields
+            .asScala
+            .find(f => f.name == name && f.desc == descriptor) match {
             case Some(f) =>
               Right((f, parent))
             case None =>
@@ -192,8 +195,10 @@ class ByteCodeRepository[BT <: BTypes](
         case Left(e) =>
           Left(List(e))
         case Right(c) =>
-          c.methods.asScala.find(m =>
-            m.name == name && m.desc == descriptor) match {
+          c
+            .methods
+            .asScala
+            .find(m => m.name == name && m.desc == descriptor) match {
             case Some(m) =>
               Right((m, ownerInternalName))
             case None =>
@@ -211,8 +216,9 @@ class ByteCodeRepository[BT <: BTypes](
         : Either[List[ClassNotFound], (MethodNode, InternalName)] =
       parents match {
         case x :: xs =>
-          methodNodeImpl(x).left.flatMap(failed =>
-            findInParents(xs, failed ::: failedClasses))
+          methodNodeImpl(x)
+            .left
+            .flatMap(failed => findInParents(xs, failed ::: failedClasses))
         case Nil =>
           Left(failedClasses)
       }
@@ -226,8 +232,14 @@ class ByteCodeRepository[BT <: BTypes](
           ownerInternalNameOrArrayDescriptor,
           Nil))
     else
-      methodNodeImpl(ownerInternalNameOrArrayDescriptor).left.map(
-        MethodNotFound(name, descriptor, ownerInternalNameOrArrayDescriptor, _))
+      methodNodeImpl(ownerInternalNameOrArrayDescriptor)
+        .left
+        .map(
+          MethodNotFound(
+            name,
+            descriptor,
+            ownerInternalNameOrArrayDescriptor,
+            _))
   }
 
   private def parseClass(

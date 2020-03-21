@@ -42,7 +42,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     assert(1.0 == proto1.getUpgradeStrategy.getMaximumOverCapacity)
     assert(proto1.hasAcceptedResourceRoles)
     assert(
-      proto1.getAcceptedResourceRoles == Protos.ResourceRoles
+      proto1.getAcceptedResourceRoles == Protos
+        .ResourceRoles
         .newBuilder()
         .addRole("a")
         .addRole("b")
@@ -155,11 +156,14 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
   }
 
   test("MergeFromProto") {
-    val cmd = mesos.CommandInfo.newBuilder
+    val cmd = mesos
+      .CommandInfo
+      .newBuilder
       .setValue("bash foo-*/start -Dhttp.port=$PORT")
 
     val proto1 =
-      ServiceDefinition.newBuilder
+      ServiceDefinition
+        .newBuilder
         .setId("play")
         .setCmd(cmd)
         .setInstances(3)
@@ -176,11 +180,14 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
   }
 
   test("Read obsolete ports from proto") {
-    val cmd = mesos.CommandInfo.newBuilder
+    val cmd = mesos
+      .CommandInfo
+      .newBuilder
       .setValue("bash foo-*/start -Dhttp.port=$PORT")
 
     val proto1 =
-      ServiceDefinition.newBuilder
+      ServiceDefinition
+        .newBuilder
         .setId("/app")
         .setCmd(cmd)
         .setInstances(1)
@@ -219,7 +226,9 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
   }
 
   def getScalarResourceValue(proto: ServiceDefinition, name: String) = {
-    proto.getResourcesList.asScala
+    proto
+      .getResourcesList
+      .asScala
       .find(_.getName == name)
       .get
       .getScalar

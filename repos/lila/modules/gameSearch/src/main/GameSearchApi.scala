@@ -57,9 +57,8 @@ final class GameSearchApi(client: ESClient) extends SearchReadApi[Game, Query] {
         Fields.winnerColor -> game.winner.fold(3)(_.color.fold(1, 2)),
         Fields.averageRating -> game.averageUsersRating,
         Fields.ai -> game.aiLevel,
-        Fields.date -> (
-          lila.search.Date.formatter print game.updatedAtOrCreatedAt
-        ),
+        Fields
+          .date -> (lila.search.Date.formatter print game.updatedAtOrCreatedAt),
         Fields.duration -> game.durationSeconds,
         Fields.clockInit -> game.clock.map(_.limit),
         Fields.clockInc -> game.clock.map(_.increment),
@@ -119,23 +118,29 @@ final class GameSearchApi(client: ESClient) extends SearchReadApi[Game, Query] {
     val maxGames = Int.MaxValue
     // val maxGames = 10 * 1000 * 1000
 
-    lila.game.tube.gameTube.coll
+    lila
+      .game
+      .tube
+      .gameTube
+      .coll
       .find(BSONDocument("ca" -> BSONDocument("$gt" -> since)))
       .sort(BSONDocument("ca" -> 1))
       .cursor[Game](ReadPreference.secondaryPreferred)
       .enumerate(maxGames, stopOnError = true) &>
       Enumeratee.grouped(Iteratee takeUpTo batchSize) |>>>
-      Enumeratee.mapM[Seq[Game]].apply[(Seq[Game], Set[String])] { games =>
-        GameRepo filterAnalysed games.map(_.id) map games.->
-      } &>
+      Enumeratee
+        .mapM[Seq[Game]]
+        .apply[(Seq[Game], Set[String])] { games =>
+          GameRepo filterAnalysed games.map(_.id) map games.->
+        } &>
         Iteratee.foldM[(Seq[Game], Set[String]), Long](nowMillis) {
           case (millis, (games, analysedIds)) =>
             client.storeBulk(
               games map { g =>
                 Id(g.id) -> toDoc(g, analysedIds(g.id))
               }) inject {
-              val date =
-                games.headOption.map(_.createdAt) ?? dateTimeFormatter.print
+              val date = games.headOption.map(_.createdAt) ?? dateTimeFormatter
+                .print
               val gameMs = (nowMillis - millis) / batchSize.toDouble
               logger.info(s"$date ${(1000 / gameMs).toInt} games/s")
               nowMillis

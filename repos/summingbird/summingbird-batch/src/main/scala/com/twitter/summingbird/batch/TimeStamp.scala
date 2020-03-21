@@ -49,8 +49,8 @@ object Timestamp {
   def now: Timestamp = Timestamp(System.currentTimeMillis)
 
   implicit def fromDate(d: Date) = Timestamp(d.getTime)
-  implicit val orderingOnTimestamp: Ordering[Timestamp] = Ordering.by(
-    _.milliSinceEpoch)
+  implicit val orderingOnTimestamp: Ordering[Timestamp] = Ordering
+    .by(_.milliSinceEpoch)
   implicit val maxTSMonoid: Monoid[Timestamp] =
     Monoid.from(Timestamp.Min)(orderingOnTimestamp.max(_, _))
 

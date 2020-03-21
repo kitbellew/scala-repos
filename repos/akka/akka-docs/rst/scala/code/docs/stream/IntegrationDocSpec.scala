@@ -152,8 +152,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     //#send-emails
     val sendEmails: RunnableGraph[NotUsed] = emailAddresses
       .mapAsync(4)(address => {
-        emailServer.send(
-          Email(to = address, title = "Akka", body = "I like your tweet"))
+        emailServer
+          .send(Email(to = address, title = "Akka", body = "I like your tweet"))
       })
       .to(Sink.ignore)
 
@@ -205,8 +205,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
     val sendEmails: RunnableGraph[NotUsed] = emailAddresses
       .mapAsyncUnordered(4)(address => {
-        emailServer.send(
-          Email(to = address, title = "Akka", body = "I like your tweet"))
+        emailServer
+          .send(Email(to = address, title = "Akka", body = "I like your tweet"))
       })
       .to(Sink.ignore)
 
@@ -240,8 +240,9 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
       }
 
     //#blocking-mapAsync
-    val blockingExecutionContext = system.dispatchers.lookup(
-      "blocking-dispatcher")
+    val blockingExecutionContext = system
+      .dispatchers
+      .lookup("blocking-dispatcher")
 
     val sendTextMessages: RunnableGraph[NotUsed] = phoneNumbers
       .mapAsync(4)(phoneNo => {
@@ -304,13 +305,12 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
   "calling actor service with mapAsync" in {
     val probe = TestProbe()
-    val database = system.actorOf(
-      Props(classOf[DatabaseService], probe.ref),
-      "db")
+    val database = system
+      .actorOf(Props(classOf[DatabaseService], probe.ref), "db")
 
     //#save-tweets
-    val akkaTweets: Source[Tweet, NotUsed] = tweets.filter(
-      _.hashtags.contains(akka))
+    val akkaTweets: Source[Tweet, NotUsed] = tweets
+      .filter(_.hashtags.contains(akka))
 
     implicit val timeout = Timeout(3.seconds)
     val saveTweets: RunnableGraph[NotUsed] = akkaTweets
@@ -337,8 +337,9 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     }
 
     //#sometimes-slow-mapAsync
-    implicit val blockingExecutionContext = system.dispatchers.lookup(
-      "blocking-dispatcher")
+    implicit val blockingExecutionContext = system
+      .dispatchers
+      .lookup("blocking-dispatcher")
     val service = new SometimesSlowService
 
     implicit val materializer = ActorMaterializer(
@@ -374,8 +375,9 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     }
 
     //#sometimes-slow-mapAsyncUnordered
-    implicit val blockingExecutionContext = system.dispatchers.lookup(
-      "blocking-dispatcher")
+    implicit val blockingExecutionContext = system
+      .dispatchers
+      .lookup("blocking-dispatcher")
     val service = new SometimesSlowService
 
     implicit val materializer = ActorMaterializer(

@@ -27,8 +27,8 @@ object EnumeratorsSpec
         val e1 = Enumerator(List(1), List(3), List(5), List(7))
         val e2 = Enumerator(List(2), List(4), List(6), List(8))
         val e = e1 interleave e2
-        val kk = e |>>> Iteratee.fold(List.empty[Int])((r, e: List[Int]) =>
-          r ++ e)(foldEC)
+        val kk = e |>>> Iteratee
+          .fold(List.empty[Int])((r, e: List[Int]) => r ++ e)(foldEC)
         val result = Await.result(kk, Duration.Inf)
         result.diff(Seq(1, 2, 3, 4, 5, 6, 7, 8)) must equalTo(Seq())
       }
@@ -41,8 +41,8 @@ object EnumeratorsSpec
         val e2 = Enumerator(List(2), List(4), List(6), List(8)) >>> Enumerator
           .enumInput(Input.EOF)
         val e = e1 interleave e2
-        val kk = e |>>> Iteratee.fold(List.empty[Int])((r, e: List[Int]) =>
-          r ++ e)(foldEC)
+        val kk = e |>>> Iteratee
+          .fold(List.empty[Int])((r, e: List[Int]) => r ++ e)(foldEC)
         val result = Await.result(kk, Duration.Inf)
         result.diff(Seq(1, 2, 3, 4, 5, 6, 7, 8)) must equalTo(Seq())
       }
@@ -53,8 +53,8 @@ object EnumeratorsSpec
         val e1 = Enumerator(List(1), List(3), List(5), List(7))
         val e2 = Enumerator(List(2), List(4), List(6), List(8))
         val e = e1 interleave e2
-        val kk = e |>>> Enumeratee.take(7) &>> Iteratee.fold(List.empty[Int])(
-          (r, e: List[Int]) => r ++ e)(foldEC)
+        val kk = e |>>> Enumeratee.take(7) &>> Iteratee
+          .fold(List.empty[Int])((r, e: List[Int]) => r ++ e)(foldEC)
         val result = Await.result(kk, Duration.Inf)
         result.length must equalTo(7)
       }
@@ -64,8 +64,8 @@ object EnumeratorsSpec
       mustExecute(1, 2) { (onDoneEC, unfoldEC) =>
         val firstDone = Promise[Unit]
         val e1 =
-          Enumerator(1, 2, 3, 4).onDoneEnumerating(firstDone.success(Unit))(
-            onDoneEC)
+          Enumerator(1, 2, 3, 4)
+            .onDoneEnumerating(firstDone.success(Unit))(onDoneEC)
         val e2 =
           Enumerator.unfoldM[Boolean, Int](true) { first =>
             if (first)
@@ -73,9 +73,8 @@ object EnumeratorsSpec
             else
               Future.successful(None)
           }(unfoldEC)
-        val result = Await.result(
-          (e1 interleave e2) |>>> Iteratee.getChunks[Int],
-          Duration.Inf)
+        val result = Await
+          .result((e1 interleave e2) |>>> Iteratee.getChunks[Int], Duration.Inf)
         result must_== Seq(1, 2, 3, 4, 5)
       }
     }
@@ -156,8 +155,8 @@ object EnumeratorsSpec
       mustExecute(1) { onDoneEC =>
         val count = new java.util.concurrent.atomic.AtomicInteger()
         mustEnumerateTo(1, 2, 3)(
-          Enumerator(1, 2, 3).onDoneEnumerating(count.incrementAndGet())(
-            onDoneEC))
+          Enumerator(1, 2, 3)
+            .onDoneEnumerating(count.incrementAndGet())(onDoneEC))
         count.get() must equalTo(1)
       }
     }
@@ -166,8 +165,8 @@ object EnumeratorsSpec
       mustExecute(1) { onDoneEC =>
         val count = new java.util.concurrent.atomic.AtomicInteger()
         mustPropagateFailure(
-          Enumerator(1, 2, 3).onDoneEnumerating(count.incrementAndGet())(
-            onDoneEC))
+          Enumerator(1, 2, 3)
+            .onDoneEnumerating(count.incrementAndGet())(onDoneEC))
         count.get() must_== 1
       }
     }
@@ -426,9 +425,10 @@ object EnumeratorsSpec
     "supply input from a by-name arg" in {
       mustExecute(3) { repeatEC =>
         val count = new AtomicInteger(0)
-        val fut =
-          Enumerator.repeatM(Future.successful(count.incrementAndGet()))(
-            repeatEC) |>>> (Enumeratee.take(3) &>> Iteratee.getChunks[Int])
+        val fut = Enumerator
+          .repeatM(Future.successful(count.incrementAndGet()))(repeatEC) |>>> (
+          Enumeratee.take(3) &>> Iteratee.getChunks[Int]
+        )
         Await.result(fut, Duration.Inf) must equalTo(List(1, 2, 3))
       }
     }
@@ -445,8 +445,8 @@ object EnumeratorsSpec
             outputStream.write(b.toArray.map(_.toByte))
             outputStream.close()
           }(outputEC)
-        val promise = (enumerator |>>> Iteratee.fold[Array[Byte], Array[Byte]](
-          Array[Byte]())(_ ++ _)(foldEC))
+        val promise = (enumerator |>>> Iteratee
+          .fold[Array[Byte], Array[Byte]](Array[Byte]())(_ ++ _)(foldEC))
         Await
           .result(promise, Duration.Inf)
           .map(_.toChar)

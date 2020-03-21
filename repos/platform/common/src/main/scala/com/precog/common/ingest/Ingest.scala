@@ -309,8 +309,8 @@ object StreamRef {
             ) map {
               case (jv, f) =>
                 (
-                  jv.validated[UUID]("uuid") |@| jv.validated[Boolean](
-                    "terminal")
+                  jv.validated[UUID]("uuid") |@| jv
+                    .validated[Boolean]("terminal")
                 ) {
                   f
                 }
@@ -336,7 +336,8 @@ case class StoreFile(
       storeFile: StoreFile => A): A = storeFile(this)
   def split(n: Int) = {
     val splitSize = content.data.length / n
-    content.data
+    content
+      .data
       .grouped(splitSize)
       .map(d =>
         this.copy(content = FileContent(d, content.mimeType, content.encoding)))

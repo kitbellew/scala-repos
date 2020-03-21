@@ -44,11 +44,19 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
         case Full(f: BaseField) =>
           f
         case Full(_) =>
-          org.squeryl.internals.Utils.throwError(
-            "field " + name + " in Record metadata for " + clasz + " is not a TypedField")
+          org
+            .squeryl
+            .internals
+            .Utils
+            .throwError(
+              "field " + name + " in Record metadata for " + clasz + " is not a TypedField")
         case _ =>
-          org.squeryl.internals.Utils.throwError(
-            "failed to find field " + name + " in Record metadata for " + clasz)
+          org
+            .squeryl
+            .internals
+            .Utils
+            .throwError(
+              "failed to find field " + name + " in Record metadata for " + clasz)
       }
 
     metaRecordsByClass get clasz match {
@@ -62,8 +70,13 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
           fieldFrom(mr)
         } catch {
           case ex: Exception =>
-            org.squeryl.internals.Utils.throwError(
-              "failed to find MetaRecord for " + clasz + " due to exception " + ex.toString)
+            org
+              .squeryl
+              .internals
+              .Utils
+              .throwError(
+                "failed to find MetaRecord for " + clasz + " due to exception " + ex
+                  .toString)
         }
     }
   }
@@ -83,12 +96,14 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
       // Either this is not a Record class, in which case we'll
       //treat it as a normal class in primitive type mode, or the field
       //was mixed in by the Optimisitic trait and is not a Record field.
-      return SquerylRecord.posoMetaDataFactory.build(
-        parentMetaData,
-        name,
-        property,
-        sampleInstance4OptionTypeDeduction,
-        isOptimisticCounter)
+      return SquerylRecord
+        .posoMetaDataFactory
+        .build(
+          parentMetaData,
+          name,
+          property,
+          sampleInstance4OptionTypeDeduction,
+          isOptimisticCounter)
     }
 
     val metaField = findMetaField(
@@ -132,10 +147,14 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
         case (_: EnumNameTypedField[_]) =>
           classOf[String]
         case _ =>
-          org.squeryl.internals.Utils.throwError(
-            "Unsupported field type. Consider implementing " +
-              "SquerylRecordField for defining the persistent class." +
-              "Field: " + metaField)
+          org
+            .squeryl
+            .internals
+            .Utils
+            .throwError(
+              "Unsupported field type. Consider implementing " +
+                "SquerylRecordField for defining the persistent class." +
+                "Field: " + metaField)
       }
 
     new FieldMetaData(
@@ -196,8 +215,12 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
           case tf: TypedField[_] =>
             tf
           case other =>
-            org.squeryl.internals.Utils.throwError(
-              "Field's used with Squeryl must inherit from net.liftweb.record.TypedField : " + other)
+            org
+              .squeryl
+              .internals
+              .Utils
+              .throwError(
+                "Field's used with Squeryl must inherit from net.liftweb.record.TypedField : " + other)
         }
 
       /**
@@ -212,8 +235,12 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
               typedField.resetDirty
             }
           case other =>
-            org.squeryl.internals.Utils.throwError(
-              "RecordMetaDataFactory can not set fields on non Record objects : " + other)
+            org
+              .squeryl
+              .internals
+              .Utils
+              .throwError(
+                "RecordMetaDataFactory can not set fields on non Record objects : " + other)
         }
 
       override def setFromResultSet(target: AnyRef, rs: ResultSet, index: Int) =

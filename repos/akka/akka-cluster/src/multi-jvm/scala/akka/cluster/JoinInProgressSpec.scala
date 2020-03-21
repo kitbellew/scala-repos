@@ -14,11 +14,7 @@ object JoinInProgressMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")
   val second = role("second")
 
-  commonConfig(
-    debugConfig(on = false)
-      .withFallback(
-        ConfigFactory
-          .parseString("""
+  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString("""
           akka.cluster {
             # simulate delay in gossip by turning it off
             gossip-interval = 300 s
@@ -26,8 +22,7 @@ object JoinInProgressMultiJvmSpec extends MultiNodeConfig {
               threshold = 4
               acceptable-heartbeat-pause = 1 second
             }
-          }""")
-          .withFallback(MultiNodeClusterSpec.clusterConfig)))
+          }""").withFallback(MultiNodeClusterSpec.clusterConfig)))
 }
 
 class JoinInProgressMultiJvmNode1 extends JoinInProgressSpec

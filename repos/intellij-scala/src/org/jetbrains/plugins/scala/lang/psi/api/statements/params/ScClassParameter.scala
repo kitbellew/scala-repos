@@ -37,8 +37,8 @@ trait ScClassParameter
             case None =>
               false
           }
-        val hasExplicitModifier = Option(getModifierList).exists(
-          _.hasExplicitModifiers)
+        val hasExplicitModifier = Option(getModifierList)
+          .exists(_.hasExplicitModifiers)
         isInPrimaryConstructorFirstParamSection && !hasExplicitModifier
       case _ =>
         false

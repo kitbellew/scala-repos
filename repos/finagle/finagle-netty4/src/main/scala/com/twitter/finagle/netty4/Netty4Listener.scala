@@ -30,8 +30,8 @@ import java.util.concurrent.TimeUnit
 private[finagle] case class Netty4ListenerTLSConfig(newEngine: () => Engine)
 
 private[finagle] object Netty4Listener {
-  val TrafficClass: ChannelOption[JInt] = ChannelOption.newInstance(
-    "trafficClass")
+  val TrafficClass: ChannelOption[JInt] = ChannelOption
+    .newInstance("trafficClass")
 }
 
 private[netty4] case class PipelineInit(cf: ChannelPipeline => Unit) {
@@ -95,25 +95,25 @@ private[finagle] case class Netty4Listener[In, Out](
       bootstrap.childOption[JBool](ChannelOption.TCP_NODELAY, noDelay)
 
       //todo: investigate pooled allocator CSL-2089
-      bootstrap.option(
-        ChannelOption.ALLOCATOR,
-        UnpooledByteBufAllocator.DEFAULT)
-      bootstrap.childOption(
-        ChannelOption.ALLOCATOR,
-        UnpooledByteBufAllocator.DEFAULT)
+      bootstrap
+        .option(ChannelOption.ALLOCATOR, UnpooledByteBufAllocator.DEFAULT)
+      bootstrap
+        .childOption(ChannelOption.ALLOCATOR, UnpooledByteBufAllocator.DEFAULT)
       bootstrap.option[JBool](ChannelOption.SO_REUSEADDR, reuseAddr)
       bootstrap.option[JInt](ChannelOption.SO_LINGER, 0)
       backlog.foreach(bootstrap.option[JInt](ChannelOption.SO_BACKLOG, _))
-      sendBufSize.foreach(
-        bootstrap.childOption[JInt](ChannelOption.SO_SNDBUF, _))
-      recvBufSize.foreach(
-        bootstrap.childOption[JInt](ChannelOption.SO_RCVBUF, _))
-      keepAlive.foreach(
-        bootstrap.childOption[JBool](ChannelOption.SO_KEEPALIVE, _))
-      params[Listener.TrafficClass].value.foreach { tc =>
-        bootstrap.option[JInt](Netty4Listener.TrafficClass, tc)
-        bootstrap.childOption[JInt](Netty4Listener.TrafficClass, tc)
-      }
+      sendBufSize
+        .foreach(bootstrap.childOption[JInt](ChannelOption.SO_SNDBUF, _))
+      recvBufSize
+        .foreach(bootstrap.childOption[JInt](ChannelOption.SO_RCVBUF, _))
+      keepAlive
+        .foreach(bootstrap.childOption[JBool](ChannelOption.SO_KEEPALIVE, _))
+      params[Listener.TrafficClass]
+        .value
+        .foreach { tc =>
+          bootstrap.option[JInt](Netty4Listener.TrafficClass, tc)
+          bootstrap.childOption[JInt](Netty4Listener.TrafficClass, tc)
+        }
 
       val initializer =
         new Netty4ChannelInitializer(pipelineInit, params, newBridge)

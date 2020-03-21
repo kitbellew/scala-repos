@@ -96,11 +96,8 @@ private[spark] class SparkHadoopWriter(jobConf: JobConf)
     }
 
     getOutputCommitter().setupTask(getTaskContext())
-    writer = getOutputFormat().getRecordWriter(
-      fs,
-      conf.value,
-      outputName,
-      Reporter.NULL)
+    writer = getOutputFormat()
+      .getRecordWriter(fs, conf.value, outputName, Reporter.NULL)
   }
 
   def write(key: AnyRef, value: AnyRef) {
@@ -116,11 +113,8 @@ private[spark] class SparkHadoopWriter(jobConf: JobConf)
   }
 
   def commit() {
-    SparkHadoopMapRedUtil.commitTask(
-      getOutputCommitter(),
-      getTaskContext(),
-      jobID,
-      splitID)
+    SparkHadoopMapRedUtil
+      .commitTask(getOutputCommitter(), getTaskContext(), jobID, splitID)
   }
 
   def commitJob() {
@@ -132,7 +126,8 @@ private[spark] class SparkHadoopWriter(jobConf: JobConf)
 
   private def getOutputFormat(): OutputFormat[AnyRef, AnyRef] = {
     if (format == null) {
-      format = conf.value
+      format = conf
+        .value
         .getOutputFormat()
         .asInstanceOf[OutputFormat[AnyRef, AnyRef]]
     }

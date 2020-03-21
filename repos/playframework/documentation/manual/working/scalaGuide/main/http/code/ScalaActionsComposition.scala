@@ -138,11 +138,14 @@ package scalaguide.http.scalaactionscomposition {
 
         def xForwardedFor[A](action: Action[A]) =
           Action.async(action.parser) { request =>
-            val newRequest = request.headers.get("X-Forwarded-For").map { xff =>
-              new WrappedRequest[A](request) {
-                override def remoteAddress = xff
-              }
-            } getOrElse request
+            val newRequest = request
+              .headers
+              .get("X-Forwarded-For")
+              .map { xff =>
+                new WrappedRequest[A](request) {
+                  override def remoteAddress = xff
+                }
+              } getOrElse request
             action(newRequest)
           }
         //#modify-request
@@ -156,10 +159,13 @@ package scalaguide.http.scalaactionscomposition {
 
         def onlyHttps[A](action: Action[A]) =
           Action.async(action.parser) { request =>
-            request.headers.get("X-Forwarded-Proto").collect {
-              case "https" =>
-                action(request)
-            } getOrElse {
+            request
+              .headers
+              .get("X-Forwarded-Proto")
+              .collect {
+                case "https" =>
+                  action(request)
+              } getOrElse {
               Future.successful(Forbidden("Only HTTPS requests allowed"))
             }
           }

@@ -47,9 +47,9 @@ trait Logic extends Debugging {
       lineSep: String = "\n"): String = {
     val maxLen = max(xss map (_.length))
     val padded = xss map (xs => xs ++ List.fill(maxLen - xs.length)(null))
-    padded.transpose
-      .map(alignedColumns)
-      .transpose map (_.mkString(sep)) mkString (lineSep)
+    padded.transpose.map(alignedColumns).transpose map (
+      _.mkString(sep)
+    ) mkString (lineSep)
   }
 
   // ftp://ftp.cis.upenn.edu/pub/cis511/public_html/Spring04/chap3.pdf
@@ -209,14 +209,16 @@ trait Logic extends Debugging {
       // limit size to avoid blow up
       def hasImpureAtom(ops: Seq[Prop]): Boolean =
         ops.size < 10 &&
-          ops.combinations(2).exists {
-            case Seq(a, Not(b)) if a == b =>
-              true
-            case Seq(Not(a), b) if a == b =>
-              true
-            case _ =>
-              false
-          }
+          ops
+            .combinations(2)
+            .exists {
+              case Seq(a, Not(b)) if a == b =>
+                true
+              case Seq(Not(a), b) if a == b =>
+                true
+              case _ =>
+                false
+            }
 
       // push negation inside formula
       def negationNormalFormNot(p: Prop): Prop =
@@ -255,12 +257,14 @@ trait Logic extends Debugging {
 
             // build up Set in order to remove duplicates
             val opsFlattened =
-              ops.flatMap {
-                case And(fv) =>
-                  fv
-                case f =>
-                  Set(f)
-              }.toSeq
+              ops
+                .flatMap {
+                  case And(fv) =>
+                    fv
+                  case f =>
+                    Set(f)
+                }
+                .toSeq
 
             if (hasImpureAtom(opsFlattened) || opsFlattened.contains(False)) {
               False
@@ -279,12 +283,14 @@ trait Logic extends Debugging {
             val ops = fv.map(simplifyProp) - False // ignore `False`
 
             val opsFlattened =
-              ops.flatMap {
-                case Or(fv) =>
-                  fv
-                case f =>
-                  Set(f)
-              }.toSeq
+              ops
+                .flatMap {
+                  case Or(fv) =>
+                    fv
+                  case f =>
+                    Set(f)
+                }
+                .toSeq
 
             if (hasImpureAtom(opsFlattened) || opsFlattened.contains(True)) {
               True
@@ -479,9 +485,11 @@ trait Logic extends Debugging {
             implied foreach (impliedSym => addAxiom(Or(Not(sym), impliedSym)))
             // ... and what must not?
             excluded foreach { excludedSym =>
-              val exclusive = v.groupedDomains.exists { domain =>
-                domain.contains(sym) && domain.contains(excludedSym)
-              }
+              val exclusive = v
+                .groupedDomains
+                .exists { domain =>
+                  domain.contains(sym) && domain.contains(excludedSym)
+                }
 
               // TODO: populate `v.exclusiveDomains` with `Set`s from the start, and optimize to:
               // val exclusive = v.exclusiveDomains.exists { inDomain => inDomain(sym) && inDomain(excludedSym) }
@@ -491,10 +499,12 @@ trait Logic extends Debugging {
         }
 
         // all symbols in a domain are mutually exclusive
-        v.groupedDomains.foreach { syms =>
-          if (syms.size > 1)
-            addAxiom(AtMostOne(syms.toList))
-        }
+        v
+          .groupedDomains
+          .foreach { syms =>
+            if (syms.size > 1)
+              addAxiom(AtMostOne(syms.toList))
+          }
       }
 
       debug.patmat(s"eqAxioms:\n${eqAxioms.mkString("\n")}")
@@ -586,13 +596,16 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
       // once we go to run-time checks (on Const's), convert them to checkable types
       // TODO: there seems to be bug for singleton domains (variable does not show up in model)
       lazy val domain: Option[Set[Const]] = {
-        val subConsts = enumerateSubtypes(staticTp, grouped = false).headOption
+        val subConsts = enumerateSubtypes(staticTp, grouped = false)
+          .headOption
           .map { tps =>
-            tps.toSet[Type].map { tp =>
-              val domainC = TypeConst(tp)
-              registerEquality(domainC)
-              domainC
-            }
+            tps
+              .toSet[Type]
+              .map { tp =>
+                val domainC = TypeConst(tp)
+                registerEquality(domainC)
+                domainC
+              }
           }
 
         val allConsts =
@@ -770,8 +783,8 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
         _ map symForEqualsTo
       }
 
-      lazy val symForStaticTp: Option[Sym] = symForEqualsTo.get(
-        TypeConst(staticTpCheckable))
+      lazy val symForStaticTp: Option[Sym] = symForEqualsTo
+        .get(TypeConst(staticTpCheckable))
 
       // don't access until all potential equalities have been registered using registerEquality
       private lazy val equalitySyms = {
@@ -869,8 +882,8 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
               orig.tpe
             case _ =>
               // duplicate, don't mutate old tree (TODO: use a map tree -> type instead?)
-              val treeWithNarrowedType =
-                t.duplicate setType freshExistentialSubtype(t.tpe)
+              val treeWithNarrowedType = t
+                .duplicate setType freshExistentialSubtype(t.tpe)
               debug.patmat("uniqued: " + ((t, t.tpe, treeWithNarrowedType.tpe)))
               trees += treeWithNarrowedType
               treeWithNarrowedType.tpe

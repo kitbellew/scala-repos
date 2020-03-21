@@ -111,8 +111,9 @@ private[akka] class RoutedActorCell(
             // The reason for the delay is to give concurrent
             // messages a chance to be placed in mailbox before sending PoisonPill,
             // best effort.
-            system.scheduler.scheduleOnce(100.milliseconds, ref, PoisonPill)(
-              dispatcher)
+            system
+              .scheduler
+              .scheduleOnce(100.milliseconds, ref, PoisonPill)(dispatcher)
           case _ ⇒
         }
       case _ ⇒
@@ -184,10 +185,12 @@ private[akka] class RouterActor extends Actor {
         x
       case _ ⇒
         throw ActorInitializationException(
-          "Router actor can only be used in RoutedActorRef, not in " + context.getClass)
+          "Router actor can only be used in RoutedActorRef, not in " + context
+            .getClass)
     }
 
-  val routingLogicController: Option[ActorRef] = cell.routerConfig
+  val routingLogicController: Option[ActorRef] = cell
+    .routerConfig
     .routingLogicController(cell.router.logic)
     .map(props ⇒
       context.actorOf(
@@ -210,7 +213,9 @@ private[akka] class RouterActor extends Actor {
   }
 
   def stopIfAllRouteesRemoved(): Unit =
-    if (cell.router.routees.isEmpty && cell.routerConfig.stopRouterWhenAllRouteesRemoved)
+    if (cell.router.routees.isEmpty && cell
+          .routerConfig
+          .stopRouterWhenAllRouteesRemoved)
       context.stop(self)
 
   override def preRestart(cause: Throwable, msg: Option[Any]): Unit = {

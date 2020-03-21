@@ -65,8 +65,8 @@ trait SQLServerProfile extends JdbcProfile {
     super.loadProfileConfig
   }
 
-  protected lazy val defaultStringType = profileConfig.getStringOpt(
-    "defaultStringType")
+  protected lazy val defaultStringType = profileConfig
+    .getStringOpt("defaultStringType")
 
   override protected def computeCapabilities: Set[Capability] =
     (super.computeCapabilities
@@ -77,7 +77,8 @@ trait SQLServerProfile extends JdbcProfile {
       - JdbcCapabilities.supportsByte)
 
   override protected def computeQueryCompiler =
-    (super.computeQueryCompiler
+    (super
+      .computeQueryCompiler
       .addAfter(new RemoveTakeDrop(translateTake = false), Phase.expandSums)
       .addBefore(new ProtectGroupBy, Phase.mergeToComprehensions)
       .replace(new RemoveFieldNames(alwaysKeepSubqueryNames = true))
@@ -114,11 +115,11 @@ trait SQLServerProfile extends JdbcProfile {
               super.tpe
           }
         override def rawDefault =
-          super.rawDefault.map(
-            _.stripPrefix("(") // jtds
-              .stripPrefix("(")
-              .stripSuffix(")")
-              .stripSuffix(")"))
+          super
+            .rawDefault
+            .map(
+              _.stripPrefix("(") // jtds
+              .stripPrefix("(").stripSuffix(")").stripSuffix(")"))
         override def default =
           rawDefault
             .map((_, tpe))
@@ -219,8 +220,8 @@ trait SQLServerProfile extends JdbcProfile {
       n match {
         // Cast bind variables of type TIME to TIME (otherwise they're treated as TIMESTAMP)
         case c @ LiteralNode(v)
-            if c.volatileHint && jdbcTypeFor(
-              c.nodeType) == columnTypes.timeJdbcType =>
+            if c.volatileHint && jdbcTypeFor(c.nodeType) == columnTypes
+              .timeJdbcType =>
           b"cast("
           super.expr(n, skipParens)
           b" as ${columnTypes.timeJdbcType.sqlTypeName(None)})"
@@ -230,8 +231,9 @@ trait SQLServerProfile extends JdbcProfile {
           super.expr(n, skipParens)
           b" as ${columnTypes.timeJdbcType.sqlTypeName(None)})"
         case Library.Substring(n, start) =>
-          b"\({fn substring($n, ${QueryParameter
-            .constOp[Int]("+")(_ + _)(start, LiteralNode(1).infer())}, ${Int.MaxValue})}\)"
+          b"\({fn substring($n, ${QueryParameter.constOp[Int]("+")(_ + _)(
+            start,
+            LiteralNode(1).infer())}, ${Int.MaxValue})}\)"
         case Library.Repeat(str, count) =>
           b"replicate($str, $count)"
         case n =>
@@ -389,18 +391,22 @@ class ProtectGroupBy extends Phase {
             logger.debug("Examining GroupBy", g1)
             val (b2, b2s) = source(s2, b1, f1)
             logger.debug(s"Narrowed 'by' clause down to: (over $b2s)", b2)
-            val refsOK = ProductNode(ConstArray(b2)).flatten.children.forall(
-              _.findNode {
-                case Ref(s) if s == b2s =>
-                  true
-                case _ =>
-                  false
-              }.isDefined)
+            val refsOK = ProductNode(ConstArray(b2))
+              .flatten
+              .children
+              .forall(
+                _.findNode {
+                  case Ref(s) if s == b2s =>
+                    true
+                  case _ =>
+                    false
+                }.isDefined)
             logger.debug("All columns reference the source: " + refsOK)
             if (refsOK)
               n
             else
-              n.copy(from = g1.copy(from = Subquery(f1, Subquery.Default)))
+              n
+                .copy(from = g1.copy(from = Subquery(f1, Subquery.Default)))
                 .infer()
 
         },

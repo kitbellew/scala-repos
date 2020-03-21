@@ -345,9 +345,8 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
       gridBasedMat.numRowBlocks,
       B.numColBlocks,
       math.max(numPartitions, 2))
-    val (destinationsA, destinationsB) = gridBasedMat.simulateMultiply(
-      B,
-      resultPartitioner)
+    val (destinationsA, destinationsB) = gridBasedMat
+      .simulateMultiply(B, resultPartitioner)
     assert(destinationsA((0, 0)) === Set(0))
     assert(destinationsA((0, 1)) === Set(2))
     assert(destinationsA((1, 0)) === Set(0))

@@ -77,10 +77,9 @@ class LeaderProxyFilterTest extends MarathonSpec {
     // we pass that request down the chain
     verify(leaderInfo, times(12)).elected
     verify(leaderInfo, times(12)).currentLeaderHostPort()
-    verify(response, times(1))
-      .sendError(
-        HttpStatus.SC_SERVICE_UNAVAILABLE,
-        LeaderProxyFilter.ERROR_STATUS_NO_CURRENT_LEADER)
+    verify(response, times(1)).sendError(
+      HttpStatus.SC_SERVICE_UNAVAILABLE,
+      LeaderProxyFilter.ERROR_STATUS_NO_CURRENT_LEADER)
   }
 
   test("forward to leader without query string") {
@@ -202,9 +201,8 @@ class LeaderProxyFilterTest extends MarathonSpec {
     // we pass that request down the chain
     verify(leaderInfo, times(12)).elected
     verify(leaderInfo, times(12)).currentLeaderHostPort()
-    verify(response, times(1))
-      .sendError(
-        HttpStatus.SC_SERVICE_UNAVAILABLE,
-        LeaderProxyFilter.ERROR_STATUS_NO_CURRENT_LEADER)
+    verify(response, times(1)).sendError(
+      HttpStatus.SC_SERVICE_UNAVAILABLE,
+      LeaderProxyFilter.ERROR_STATUS_NO_CURRENT_LEADER)
   }
 }

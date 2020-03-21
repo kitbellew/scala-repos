@@ -46,8 +46,7 @@ private[pickling] class IrScalaSymbols[
       } else {
         List(
           s"'${sym.fullName}' allows unknown subclasses (it is not sealed or final isCaseClass=${isCaseClass(
-            sym.asInstanceOf[u.TypeSymbol])} isEffectivelyFinal=${sym.isEffectivelyFinal} isSealed=${classSym.isSealed} directSubclasses=${tools
-            .directSubclasses(classSym)})")
+            sym.asInstanceOf[u.TypeSymbol])} isEffectivelyFinal=${sym.isEffectivelyFinal} isSealed=${classSym.isSealed} directSubclasses=${tools.directSubclasses(classSym)})")
       }
     } else {
       List(s"'${sym.fullName}' is not a class or trait")
@@ -105,7 +104,8 @@ private[pickling] class IrScalaSymbols[
     // TODO - Should we iterate down ALL of the hierarchy here for members, or make the algorithms do it later...
     private val allMethods = {
       val constructorArgs =
-        tpe.members
+        tpe
+          .members
           .collect {
             case meth: MethodSymbol =>
               meth
@@ -119,10 +119,15 @@ private[pickling] class IrScalaSymbols[
       //System.err.println(s"$tpe has constructor args:\n - ${constructorArgs.mkString("\n - ")}")
       // NOTE - This will only collect memeber vals/vals.  It's possible some things come from the constructor.
       val declaredVars =
-        (tpe.declarations).collect {
-          case meth: MethodSymbol =>
-            meth
-        }.toList
+        (
+          tpe
+            .declarations
+          )
+          .collect {
+            case meth: MethodSymbol =>
+              meth
+          }
+          .toList
       // NOTE - There can be duplication between 'constructor args' and 'declared vars' we'd like to avoid.
       declaredVars
     }
@@ -147,7 +152,8 @@ private[pickling] class IrScalaSymbols[
         // x.owner.isConstructor
         x.owner.name == nme.CONSTRUCTOR
       }
-      tpe.members
+      tpe
+        .members
         .filter(_.isTerm)
         .map(_.asTerm)
         .filter(x => x.isVal || x.isVar)
@@ -188,15 +194,17 @@ private[pickling] class IrScalaSymbols[
         tpe.typeSymbol.asType.asInstanceOf[tools.u.TypeSymbol])
       closedError match {
         case Nil =>
-          scala.util.Success({
-            val dispatchees = tools.compileTimeDispatchees(
-              tpe.asInstanceOf[tools.c.universe.Type],
-              tools.u.rootMirror,
-              false)
-            dispatchees.map(t =>
-              new ScalaIrClass(t.asInstanceOf[u.Type], quantified, rawType))(
-              collection.breakOut)
-          })
+          scala
+            .util
+            .Success({
+              val dispatchees = tools.compileTimeDispatchees(
+                tpe.asInstanceOf[tools.c.universe.Type],
+                tools.u.rootMirror,
+                false)
+              dispatchees.map(t =>
+                new ScalaIrClass(t.asInstanceOf[u.Type], quantified, rawType))(
+                collection.breakOut)
+            })
         case errors =>
           scala.util.Failure(new UnclosedSubclassesException(errors))
       }
@@ -218,7 +226,8 @@ private[pickling] class IrScalaSymbols[
     /** Fill is the concrete types for a given symbol using the concrete types this class knows about. */
     final def fillParameters(baseSym: Symbol): Type = {
       //System.err.println(s"baseSym= ${baseSym.toString}")
-      val baseSymTpe = baseSym.typeSignature
+      val baseSymTpe = baseSym
+        .typeSignature
         .asSeenFrom(rawType, rawType.typeSymbol.asClass)
       //System.err.println(s"baseSymTpe: ${baseSymTpe.toString}")
 
@@ -253,17 +262,23 @@ private[pickling] class IrScalaSymbols[
       extends IrField {
 
     override def isMarkedTransient: Boolean = {
-      val tr = scala.util.Try {
-        (
-          (field.accessed != NoSymbol) && field.accessed.annotations
-            .exists(_.tpe =:= typeOf[scala.transient])
-        ) ||
-        (
-          (field.getter != NoSymbol) && field.getter.annotations
-            .exists(_.tpe =:= typeOf[scala.transient])
-        ) ||
-        (field.annotations.exists(_.tpe =:= typeOf[scala.transient]))
-      }
+      val tr = scala
+        .util
+        .Try {
+          (
+            (field.accessed != NoSymbol) && field
+              .accessed
+              .annotations
+              .exists(_.tpe =:= typeOf[scala.transient])
+          ) ||
+          (
+            (field.getter != NoSymbol) && field
+              .getter
+              .annotations
+              .exists(_.tpe =:= typeOf[scala.transient])
+          ) ||
+          (field.annotations.exists(_.tpe =:= typeOf[scala.transient]))
+        }
       // TODO - Here we wrokaround a scala symbol issue where the field is never annotated with transient.
       val isSameNameAsTransientVar = owner.transientArgNames(fieldName)
       isSameNameAsTransientVar || tr.getOrElse(false)
@@ -280,7 +295,8 @@ private[pickling] class IrScalaSymbols[
       }
     override def fieldName: String = removeTrailingSpace(field.name.toString)
     override def tpe[U <: Universe with Singleton](u: U): u.Type =
-      field.typeSignature
+      field
+        .typeSignature
         .asSeenFrom(owner.tpe, owner.tpe.typeSymbol)
         .asInstanceOf[u.Type]
     override def isPublic: Boolean = field.isPublic
@@ -311,25 +327,33 @@ private[pickling] class IrScalaSymbols[
 
     override def parameterTypes[U <: Universe with Singleton](
         u: U): List[List[u.Type]] = {
-      mthd.paramss.map(
-        _.map(x =>
-          fillParameters(x).asSeenFrom(owner.tpe, owner.tpe.typeSymbol))
+      mthd
+        .paramss
+        .map(
+          _.map(x =>
+            fillParameters(x).asSeenFrom(owner.tpe, owner.tpe.typeSymbol))
           .map(_.asInstanceOf[u.Type]))
     }
 
     override def isMarkedTransient: Boolean = {
       // TODO - is this correct?
-      val tr = scala.util.Try {
-        (
-          (mthd.accessed != NoSymbol) && mthd.accessed.annotations
-            .exists(_.tpe =:= typeOf[scala.transient])
-        ) ||
-        (
-          (mthd.getter != NoSymbol) && mthd.getter.annotations
-            .exists(_.tpe =:= typeOf[scala.transient])
-        ) ||
-        (mthd.annotations.exists(_.tpe =:= typeOf[scala.transient]))
-      }
+      val tr = scala
+        .util
+        .Try {
+          (
+            (mthd.accessed != NoSymbol) && mthd
+              .accessed
+              .annotations
+              .exists(_.tpe =:= typeOf[scala.transient])
+          ) ||
+          (
+            (mthd.getter != NoSymbol) && mthd
+              .getter
+              .annotations
+              .exists(_.tpe =:= typeOf[scala.transient])
+          ) ||
+          (mthd.annotations.exists(_.tpe =:= typeOf[scala.transient]))
+        }
       tr.getOrElse(false)
     }
 
@@ -401,7 +425,8 @@ private[pickling] class IrScalaSymbols[
       //        We wind up delegating to runtime picklers when we DO know the static types.
       //fillParameters(mthd.returnType.typeSymbol).asInstanceOf[u.Type]
       //fillParameters(mthd).resultType.asInstanceOf[u.Type]
-      mthd.returnType
+      mthd
+        .returnType
         .asSeenFrom(owner.tpe, owner.tpe.typeSymbol)
         .asInstanceOf[u.Type]
     override def setter: Option[IrMethod] = {

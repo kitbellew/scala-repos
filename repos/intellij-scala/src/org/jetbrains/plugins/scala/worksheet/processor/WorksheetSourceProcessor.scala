@@ -101,12 +101,15 @@ object WorksheetSourceProcessor {
     def withCompilerVersion[T](if210: => T, if211: => T, dflt: => T) =
       Option(RunWorksheetAction getModuleFor srcFile) flatMap {
         case module =>
-          module.scalaSdk.flatMap(_.compilerVersion).collect {
-            case v if v.startsWith("2.10") =>
-              if210
-            case v if v.startsWith("2.11") =>
-              if211
-          }
+          module
+            .scalaSdk
+            .flatMap(_.compilerVersion)
+            .collect {
+              case v if v.startsWith("2.10") =>
+                if210
+              case v if v.startsWith("2.11") =>
+                if211
+            }
       } getOrElse dflt
 
     val macroPrinterName = withCompilerVersion(
@@ -184,7 +187,9 @@ object WorksheetSourceProcessor {
           }
 
           val start =
-            actualPsi.getTextRange.getStartOffset //actualPsi for start and psi for end - it is intentional
+            actualPsi
+              .getTextRange
+              .getStartOffset //actualPsi for start and psi for end - it is intentional
           val end = psi.getTextRange.getEndOffset
           s"${document getLineNumber start}|${document getLineNumber end}"
       }
@@ -222,8 +227,8 @@ object WorksheetSourceProcessor {
         }
 
       ifDocument map { document =>
-        document.getLineNumber(range.getEndOffset) - document.getLineNumber(
-          range.getStartOffset) + (1 - backOffset)
+        document.getLineNumber(range.getEndOffset) - document
+          .getLineNumber(range.getStartOffset) + (1 - backOffset)
       } map {
         case differ =>
           for (_ <- 0 until differ)
@@ -243,8 +248,8 @@ object WorksheetSourceProcessor {
 
       val count = ifDocument map {
         case d =>
-          d.getLineNumber(range.getEndOffset) - d.getLineNumber(
-            range.getStartOffset) + 1
+          d.getLineNumber(range.getEndOffset) - d
+            .getLineNumber(range.getStartOffset) + 1
       } getOrElse countNls(comment.getText)
 
       for (_ <- 0 until count)
@@ -404,8 +409,10 @@ object WorksheetSourceProcessor {
         withPrecomputeLines(
           fun, {
             objectRes append (
-              printMethodName + "(\"" + fun.getName + ": \" + " + macroPrinterName +
-                s".printGeneric({import $instanceName._ ;" + fun.getText
+              printMethodName + "(\"" + fun
+                .getName + ": \" + " + macroPrinterName +
+                s".printGeneric({import $instanceName._ ;" + fun
+                .getText
                 .stripPrefix(hadMods) + " })" + eraseClassName + ")\n"
             )
           }
@@ -470,7 +477,8 @@ object WorksheetSourceProcessor {
                 }
               ).mkString("(", ",", ")") + " = { " + expr.getText + ";}"
             case (_, Some(expr)) =>
-              "var " + varDef.declaredElements
+              "var " + varDef
+                .declaredElements
                 .map {
                   case tpePattern: ScTypedPattern =>
                     writeTypedPatter(tpePattern)

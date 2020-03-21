@@ -85,11 +85,8 @@ object SparseNaiveBayes {
       else
         sc.defaultMinPartitions
 
-    val examples = MLUtils.loadLibSVMFile(
-      sc,
-      params.input,
-      params.numFeatures,
-      minPartitions)
+    val examples = MLUtils
+      .loadLibSVMFile(sc, params.input, params.numFeatures, minPartitions)
     // Cache examples because it will be used in both training and evaluation.
     examples.cache()
 
@@ -106,8 +103,10 @@ object SparseNaiveBayes {
 
     val prediction = model.predict(test.map(_.features))
     val predictionAndLabel = prediction.zip(test.map(_.label))
-    val accuracy =
-      predictionAndLabel.filter(x => x._1 == x._2).count().toDouble / numTest
+    val accuracy = predictionAndLabel
+      .filter(x => x._1 == x._2)
+      .count()
+      .toDouble / numTest
 
     println(s"Test accuracy = $accuracy.")
 

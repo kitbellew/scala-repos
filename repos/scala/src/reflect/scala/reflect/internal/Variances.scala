@@ -39,7 +39,8 @@ trait Variances {
       */
     @tailrec
     final def checkForEscape(sym: Symbol, site: Symbol) {
-      if (site == sym.owner || site == sym.owner.moduleClass || site.hasPackageFlag)
+      if (site == sym.owner || site == sym.owner.moduleClass || site
+            .hasPackageFlag)
         () // done
       else if (site.isTerm || site.isPrivateLocal)
         checkForEscape(sym, site.owner) // ok - recurse to owner
@@ -58,13 +59,15 @@ trait Variances {
     def shouldFlip(sym: Symbol, tvar: Symbol) =
       (sym.isParameter
         && !(
-          tvar.isTypeParameterOrSkolem && sym.isTypeParameterOrSkolem && tvar.owner == sym.owner
+          tvar.isTypeParameterOrSkolem && sym
+            .isTypeParameterOrSkolem && tvar.owner == sym.owner
         ))
     // return Bivariant if `sym` is local to a term
     // or is private[this] or protected[this]
     def isLocalOnly(sym: Symbol) =
       !sym.owner.isClass || (
-        sym.isTerm // ?? shouldn't this be sym.owner.isTerm according to the comments above?
+        sym
+          .isTerm // ?? shouldn't this be sym.owner.isTerm according to the comments above?
           && (
             sym.isLocalToThis || sym.isSuperAccessor
           ) // super accessors are implicitly local #4345
@@ -96,9 +99,11 @@ trait Variances {
                if (settings.isScala211 || sym.isOverridingSymbol)
                  Invariant
                else {
-                 currentRun.reporting.deprecationWarning(
-                   sym.pos,
-                   s"Construct depends on unsound variance analysis and will not compile in scala 2.11 and beyond")
+                 currentRun
+                   .reporting
+                   .deprecationWarning(
+                     sym.pos,
+                     s"Construct depends on unsound variance analysis and will not compile in scala 2.11 and beyond")
                  Bivariant
                })
            else

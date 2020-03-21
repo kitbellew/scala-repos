@@ -76,10 +76,13 @@ class GeneratedProjectionSuite extends SparkFunSuite {
     }
 
     // test generated MutableProjection
-    val exprs = nestedSchema.fields.zipWithIndex.map {
-      case (f, i) =>
-        BoundReference(i, f.dataType, true)
-    }
+    val exprs = nestedSchema
+      .fields
+      .zipWithIndex
+      .map {
+        case (f, i) =>
+          BoundReference(i, f.dataType, true)
+      }
     val mutableProj = GenerateMutableProjection.generate(exprs)()
     val row1 = mutableProj(result)
     assert(result === row1)
@@ -97,12 +100,16 @@ class GeneratedProjectionSuite extends SparkFunSuite {
     val unsafeRow: UnsafeRow = unsafeProj(row)
     assert(java.util.Arrays.equals(unsafeRow.getBinary(0), Array[Byte](1, 2)))
     assert(
-      java.util.Arrays
+      java
+        .util
+        .Arrays
         .equals(unsafeRow.getArray(1).getBinary(0), Array[Byte](1, 2)))
     assert(unsafeRow.getArray(1).isNullAt(1))
     assert(unsafeRow.getArray(1).getBinary(1) === null)
     assert(
-      java.util.Arrays
+      java
+        .util
+        .Arrays
         .equals(unsafeRow.getArray(1).getBinary(2), Array[Byte](3, 4)))
 
     val safeProj = FromUnsafeProjection(fields)

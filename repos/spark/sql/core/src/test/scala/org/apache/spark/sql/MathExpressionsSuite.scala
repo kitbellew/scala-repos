@@ -311,8 +311,7 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
 
   test("shift left") {
     val df = Seq[(Long, Integer, Short, Byte, Integer, Integer)](
-      (21, 21, 21, 21, 21, null))
-      .toDF("a", "b", "c", "d", "e", "f")
+      (21, 21, 21, 21, 21, null)).toDF("a", "b", "c", "d", "e", "f")
 
     checkAnswer(
       df.select(
@@ -335,8 +334,7 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
 
   test("shift right") {
     val df = Seq[(Long, Integer, Short, Byte, Integer, Integer)](
-      (42, 42, 42, 42, 42, null))
-      .toDF("a", "b", "c", "d", "e", "f")
+      (42, 42, 42, 42, 42, null)).toDF("a", "b", "c", "d", "e", "f")
 
     checkAnswer(
       df.select(
@@ -360,8 +358,7 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
 
   test("shift right unsigned") {
     val df = Seq[(Long, Integer, Short, Byte, Integer, Integer)](
-      (-42, 42, 42, 42, 42, null))
-      .toDF("a", "b", "c", "d", "e", "f")
+      (-42, 42, 42, 42, 42, null)).toDF("a", "b", "c", "d", "e", "f")
 
     checkAnswer(
       df.select(

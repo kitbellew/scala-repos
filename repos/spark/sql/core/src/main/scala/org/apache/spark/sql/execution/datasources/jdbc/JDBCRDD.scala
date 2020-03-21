@@ -195,8 +195,8 @@ private[sql] object JDBCRDD extends Logging {
             val fieldSize = rsmd.getPrecision(i + 1)
             val fieldScale = rsmd.getScale(i + 1)
             val isSigned = rsmd.isSigned(i + 1)
-            val nullable =
-              rsmd.isNullable(i + 1) != ResultSetMetaData.columnNoNulls
+            val nullable = rsmd.isNullable(i + 1) != ResultSetMetaData
+              .columnNoNulls
             val metadata = new MetadataBuilder()
               .putString("name", columnName)
               .putLong("scale", fieldScale)
@@ -344,8 +344,8 @@ private[sql] object JDBCRDD extends Logging {
       filters: Array[Filter],
       parts: Array[Partition]): RDD[InternalRow] = {
     val dialect = JdbcDialects.get(url)
-    val quotedColumns = requiredColumns.map(colName =>
-      dialect.quoteIdentifier(colName))
+    val quotedColumns = requiredColumns
+      .map(colName => dialect.quoteIdentifier(colName))
     new JDBCRDD(
       sc,
       JdbcUtils.createConnectionFactory(url, properties),
@@ -581,27 +581,31 @@ private[sql] class JDBCRDD(
                   val data =
                     elementConversion match {
                       case TimestampConversion =>
-                        array.asInstanceOf[Array[java.sql.Timestamp]].map {
-                          timestamp =>
+                        array
+                          .asInstanceOf[Array[java.sql.Timestamp]]
+                          .map { timestamp =>
                             nullSafeConvert(
                               timestamp,
                               DateTimeUtils.fromJavaTimestamp)
-                        }
+                          }
                       case StringConversion =>
                         array
                           .asInstanceOf[Array[java.lang.String]]
                           .map(UTF8String.fromString)
                       case DateConversion =>
-                        array.asInstanceOf[Array[java.sql.Date]].map { date =>
-                          nullSafeConvert(date, DateTimeUtils.fromJavaDate)
-                        }
+                        array
+                          .asInstanceOf[Array[java.sql.Date]]
+                          .map { date =>
+                            nullSafeConvert(date, DateTimeUtils.fromJavaDate)
+                          }
                       case DecimalConversion(p, s) =>
-                        array.asInstanceOf[Array[java.math.BigDecimal]].map {
-                          decimal =>
+                        array
+                          .asInstanceOf[Array[java.math.BigDecimal]]
+                          .map { decimal =>
                             nullSafeConvert[java.math.BigDecimal](
                               decimal,
                               d => Decimal(d, p, s))
-                        }
+                          }
                       case BinaryLongConversion =>
                         throw new IllegalArgumentException(
                           s"Unsupported array element conversion $i")

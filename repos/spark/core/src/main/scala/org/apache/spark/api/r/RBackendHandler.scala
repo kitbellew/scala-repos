@@ -192,9 +192,11 @@ private[r] class RBackendHandler(server: RBackend)
 
   // Read a number of arguments from the data input stream
   def readArgs(numArgs: Int, dis: DataInputStream): Array[java.lang.Object] = {
-    (0 until numArgs).map { _ =>
-      readObject(dis)
-    }.toArray
+    (0 until numArgs)
+      .map { _ =>
+        readObject(dis)
+      }
+      .toArray
   }
 
   // Find a matching method signature in an array of signatures of constructors
@@ -260,8 +262,9 @@ private[r] class RBackendHandler(server: RBackend)
           val parameterTypes = parameterTypesOfMethods(index)
 
           (0 until numArgs).map { i =>
-            if (parameterTypes(i) == classOf[Seq[Any]] && args(
-                  i).getClass.isArray) {
+            if (parameterTypes(i) == classOf[Seq[Any]] && args(i)
+                  .getClass
+                  .isArray) {
               // Convert a Java array to scala Seq
               args(i) = args(i).asInstanceOf[Array[_]].toSeq
             }

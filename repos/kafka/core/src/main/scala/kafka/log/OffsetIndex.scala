@@ -231,7 +231,8 @@ class OffsetIndex(
         this.lastOffset = offset
         require(
           entries * 8 == mmap.position,
-          entries + " entries but file position in index is " + mmap.position + ".")
+          entries + " entries but file position in index is " + mmap
+            .position + ".")
       } else {
         throw new InvalidOffsetException(
           "Attempt to append an offset (%d) to position %d no larger than the last offset appended (%d) to %s."

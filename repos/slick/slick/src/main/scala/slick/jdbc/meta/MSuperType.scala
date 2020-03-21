@@ -10,7 +10,8 @@ case class MSuperType(typeName: MQName, superType: MQName) {
 object MSuperType {
   def getSuperTypes(typePattern: MQName) =
     ResultSetAction[MSuperType](
-      _.metaData.getSuperTypes(
+      _.metaData
+      .getSuperTypes(
         typePattern.catalog_?,
         typePattern.schema_?,
         typePattern.name)) { r =>

@@ -41,10 +41,8 @@ object TcpHelper {
       .withDispatcher("akka.test.stream-dispatcher")
 
   class TestClient(connection: ActorRef) extends Actor {
-    connection ! Tcp.Register(
-      self,
-      keepOpenOnPeerClosed = true,
-      useResumeWriting = false)
+    connection ! Tcp
+      .Register(self, keepOpenOnPeerClosed = true, useResumeWriting = false)
 
     var queuedWrites = Queue.empty[ByteString]
     var writePending = false

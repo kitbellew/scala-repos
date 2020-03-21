@@ -167,10 +167,12 @@ class MetricsReporterService @Inject() (
       .withHost(InetAddress.getLocalHost.getHostName)
       .withPrefix(prefix)
       .withExpansions(
-        util.EnumSet.copyOf(
-          expansions
-            .flatMap(e => Expansion.values().find(_.toString == e))
-            .asJava))
+        util
+          .EnumSet
+          .copyOf(
+            expansions
+              .flatMap(e => Expansion.values().find(_.toString == e))
+              .asJava))
       .withTags(tags.asJava)
       .build()
 

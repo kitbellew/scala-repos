@@ -290,9 +290,11 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
 
   def relativize(uri: URI): URI = {
     def authoritiesEqual =
-      this._authority.fold(uri._authority.isEmpty) { a1 =>
-        uri._authority.fold(false)(a2 => URI.escapeAwareCompare(a1, a2) == 0)
-      }
+      this
+        ._authority
+        .fold(uri._authority.isEmpty) { a1 =>
+          uri._authority.fold(false)(a2 => URI.escapeAwareCompare(a1, a2) == 0)
+        }
 
     if (this.isOpaque || uri.isOpaque ||
         this._scheme != uri._scheme || !authoritiesEqual)
@@ -706,7 +708,9 @@ object URI {
       val outBuf = CharBuffer.allocate(inBuf.capacity)
       val byteBuf = ByteBuffer.allocate(64)
       var decoding = false
-      val decoder = StandardCharsets.UTF_8.newDecoder
+      val decoder = StandardCharsets
+        .UTF_8
+        .newDecoder
         .onMalformedInput(CodingErrorAction.REPLACE)
         .onUnmappableCharacter(CodingErrorAction.REPLACE)
 

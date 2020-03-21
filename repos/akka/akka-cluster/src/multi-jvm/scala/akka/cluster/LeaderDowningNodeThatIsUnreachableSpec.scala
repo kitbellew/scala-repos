@@ -24,8 +24,8 @@ final case class LeaderDowningNodeThatIsUnreachableMultiNodeConfig(
   commonConfig(
     debugConfig(on = false)
       .withFallback(
-        ConfigFactory.parseString(
-          "akka.cluster.auto-down-unreachable-after = 2s"))
+        ConfigFactory
+          .parseString("akka.cluster.auto-down-unreachable-after = 2s"))
       .withFallback(MultiNodeClusterSpec.clusterConfig(failureDetectorPuppet)))
 }
 

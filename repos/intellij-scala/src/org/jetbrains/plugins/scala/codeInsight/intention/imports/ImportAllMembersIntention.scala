@@ -24,9 +24,8 @@ class ImportAllMembersIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val qualAtCaret = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScReferenceElement])
+    val qualAtCaret = PsiTreeUtil
+      .getParentOfType(element, classOf[ScReferenceElement])
     if (qualAtCaret == null)
       return false
     setText(s"Import all members of ${qualAtCaret.refName}")
@@ -37,9 +36,8 @@ class ImportAllMembersIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Unit = {
-    val qualAtCaret = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScReferenceElement])
+    val qualAtCaret = PsiTreeUtil
+      .getParentOfType(element, classOf[ScReferenceElement])
     if (qualAtCaret == null || !checkQualifier(qualAtCaret))
       return
     qualAtCaret.resolve() match {

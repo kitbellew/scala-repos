@@ -36,9 +36,11 @@ private object TrafficDistributorTest {
   }
 
   val weightClass: (Double, Int) => Set[Address] = (w, size) =>
-    (0 until size).toSet.map { i: Int =>
-      WeightedAddress(WeightedTestAddr(i, w), w)
-    }
+    (0 until size)
+      .toSet
+      .map { i: Int =>
+        WeightedAddress(WeightedTestAddr(i, w), w)
+      }
 
   val busyWeight = 2.0
   case class AddressFactory(addr: Address) extends ServiceFactory[Int, Int] {
@@ -189,10 +191,12 @@ class TrafficDistributorTest extends FunSuite {
         val result = distribution(balancers)
 
         val baseline =
-          result.collect {
-            case ((w, s, l)) if s / w == 1.0 =>
-              l / w
-          }.head
+          result
+            .collect {
+              case ((w, s, l)) if s / w == 1.0 =>
+                l / w
+            }
+            .head
 
         result.foreach {
           case ((w, _, l)) =>
@@ -224,9 +228,11 @@ class TrafficDistributorTest extends FunSuite {
   test("partition endpoints into weight classes")(
     new Ctx {
       val init: Set[Address] =
-        (1 to 5).map { i =>
-          WeightedAddress(Address(i), i)
-        }.toSet
+        (1 to 5)
+          .map { i =>
+            WeightedAddress(Address(i), i)
+          }
+          .toSet
       val dest = Var(Activity.Ok(init))
 
       newDist(dest)

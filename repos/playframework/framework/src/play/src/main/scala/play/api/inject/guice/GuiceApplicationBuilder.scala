@@ -105,8 +105,8 @@ final case class GuiceApplicationBuilder(
   override def applicationModule(): GuiceModule = {
     val initialConfiguration = loadConfiguration(environment)
     val appConfiguration = initialConfiguration ++ configuration
-    val globalSettings = global.getOrElse(
-      GlobalSettings(appConfiguration, environment))
+    val globalSettings = global
+      .getOrElse(GlobalSettings(appConfiguration, environment))
 
     LoggerConfigurator(environment.classLoader).foreach {
       _.configure(environment)
@@ -244,9 +244,8 @@ private class FakeRoutes(
     override def applyOrElse[A <: RequestHeader, B >: Handler](
         rh: A,
         default: A => B) =
-      injected.applyOrElse(
-        (rh.method, rh.path),
-        (_: (String, String)) => default(rh))
+      injected
+        .applyOrElse((rh.method, rh.path), (_: (String, String)) => default(rh))
     def isDefinedAt(rh: RequestHeader) =
       injected.isDefinedAt((rh.method, rh.path))
   } orElse new AbstractPartialFunction[RequestHeader, Handler] {

@@ -97,28 +97,30 @@ private[streaming] class ReceiverSchedulingPolicy {
     // we need to make sure the "preferredLocation" is in the candidate scheduled executor list.
     for (i <- 0 until receivers.length) {
       // Note: preferredLocation is host but executors are host_executorId
-      receivers(i).preferredLocation.foreach { host =>
-        hostToExecutors.get(host) match {
-          case Some(executorsOnHost) =>
-            // preferredLocation is a known host. Select an executor that has the least receivers in
-            // this host
-            val leastScheduledExecutor = executorsOnHost.minBy(executor =>
-              numReceiversOnExecutor(executor))
-            scheduledLocations(i) += leastScheduledExecutor
-            numReceiversOnExecutor(leastScheduledExecutor) =
-              numReceiversOnExecutor(leastScheduledExecutor) + 1
-          case None =>
-            // preferredLocation is an unknown host.
-            // Note: There are two cases:
-            // 1. This executor is not up. But it may be up later.
-            // 2. This executor is dead, or it's not a host in the cluster.
-            // Currently, simply add host to the scheduled executors.
+      receivers(i)
+        .preferredLocation
+        .foreach { host =>
+          hostToExecutors.get(host) match {
+            case Some(executorsOnHost) =>
+              // preferredLocation is a known host. Select an executor that has the least receivers in
+              // this host
+              val leastScheduledExecutor = executorsOnHost
+                .minBy(executor => numReceiversOnExecutor(executor))
+              scheduledLocations(i) += leastScheduledExecutor
+              numReceiversOnExecutor(leastScheduledExecutor) =
+                numReceiversOnExecutor(leastScheduledExecutor) + 1
+            case None =>
+              // preferredLocation is an unknown host.
+              // Note: There are two cases:
+              // 1. This executor is not up. But it may be up later.
+              // 2. This executor is dead, or it's not a host in the cluster.
+              // Currently, simply add host to the scheduled executors.
 
-            // Note: host could be `HDFSCacheTaskLocation`, so use `TaskLocation.apply` to handle
-            // this case
-            scheduledLocations(i) += TaskLocation(host)
+              // Note: host could be `HDFSCacheTaskLocation`, so use `TaskLocation.apply` to handle
+              // this case
+              scheduledLocations(i) += TaskLocation(host)
+          }
         }
-      }
     }
 
     // For those receivers that don't have preferredLocation, make sure we assign at least one
@@ -126,8 +128,8 @@ private[streaming] class ReceiverSchedulingPolicy {
     for (scheduledLocationsForOneReceiver <- scheduledLocations.filter(
            _.isEmpty)) {
       // Select the executor that has the least receivers
-      val (leastScheduledExecutor, numReceivers) = numReceiversOnExecutor.minBy(
-        _._2)
+      val (leastScheduledExecutor, numReceivers) = numReceiversOnExecutor
+        .minBy(_._2)
       scheduledLocationsForOneReceiver += leastScheduledExecutor
       numReceiversOnExecutor(leastScheduledExecutor) = numReceivers + 1
     }
@@ -187,7 +189,8 @@ private[streaming] class ReceiverSchedulingPolicy {
     scheduledLocations ++= preferredLocation.map(TaskLocation(_))
 
     val executorWeights: Map[ExecutorCacheTaskLocation, Double] = {
-      receiverTrackingInfoMap.values
+      receiverTrackingInfoMap
+        .values
         .flatMap(convertReceiverTrackingInfoToExecutorWeights)
         .groupBy(_._1)
         .mapValues(_.map(_._2).sum) // Sum weights for each executor

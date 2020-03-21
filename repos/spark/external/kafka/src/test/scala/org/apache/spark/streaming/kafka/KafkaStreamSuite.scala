@@ -76,14 +76,19 @@ class KafkaStreamSuite
         Map(topic -> 1),
         StorageLevel.MEMORY_ONLY)
     val result = new mutable.HashMap[String, Long]()
-    stream.map(_._2).countByValue().foreachRDD { r =>
-      r.collect().foreach { kv =>
-        result.synchronized {
-          val count = result.getOrElseUpdate(kv._1, 0) + kv._2
-          result.put(kv._1, count)
-        }
+    stream
+      .map(_._2)
+      .countByValue()
+      .foreachRDD { r =>
+        r
+          .collect()
+          .foreach { kv =>
+            result.synchronized {
+              val count = result.getOrElseUpdate(kv._1, 0) + kv._2
+              result.put(kv._1, count)
+            }
+          }
       }
-    }
 
     ssc.start()
 

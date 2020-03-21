@@ -40,8 +40,9 @@ object Serialization {
     * and Scalding will process into Strings.
     */
   implicit val statusCodec: Injection[Status, String] =
-    Injection.buildCatchInvert[Status, String](DataObjectFactory.getRawJSON(_))(
-      json => DataObjectFactory.createStatus(json))
+    Injection
+      .buildCatchInvert[Status, String](DataObjectFactory.getRawJSON(_))(json =>
+        DataObjectFactory.createStatus(json))
 
   /**
     * We can chain the Status <-> String injection above with the

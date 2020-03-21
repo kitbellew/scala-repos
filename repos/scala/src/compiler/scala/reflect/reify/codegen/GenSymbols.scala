@@ -98,7 +98,9 @@ trait GenSymbols {
         val rname = reify(sym.name.toString)
         if (sym.isType)
           mirrorBuildCall(nme.selectType, rowner, rname)
-        else if (sym.isMethod && sym.owner.isClass && sym.owner.info
+        else if (sym.isMethod && sym.owner.isClass && sym
+                   .owner
+                   .info
                    .decl(sym.name)
                    .isOverloaded) {
           val index = sym.owner.info.decl(sym.name).alternatives indexOf sym
@@ -251,8 +253,8 @@ trait GenSymbols {
       //    produces valid Scala code (with vals in a block depending only on lexically preceding vals)
       val reification = reificode(sym)
       import reification.{name, binding}
-      val tree =
-        reification.tree updateAttachment ReifyBindingAttachment(binding)
+      val tree = reification
+        .tree updateAttachment ReifyBindingAttachment(binding)
       state.symtab += (sym, name.toTermName, tree)
     }
     fromSymtab

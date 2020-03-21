@@ -100,33 +100,51 @@ case class RRule private (
     until.foreach { dt =>
       rrule.setUntil(dt2dtv(dt))
     }
-    bysetpos.headOption.foreach { _ =>
-      rrule.setBySetPos(bysetpos.toArray)
-    }
-    bymonth.headOption.foreach { _ =>
-      rrule.setByMonth(bymonth.toArray)
-    }
-    bymonthday.headOption.foreach { _ =>
-      rrule.setByMonthDay(bymonthday.toArray)
-    }
-    byyearday.headOption.foreach { _ =>
-      rrule.setByYearDay(byyearday.toArray)
-    }
-    byweekno.headOption.foreach { _ =>
-      rrule.setByWeekNo(byweekno.toArray)
-    }
-    byday.headOption.foreach { _ =>
-      rrule.setByDay(seqAsJavaList(byday.map(v => v.toICal)))
-    }
-    byhour.headOption.foreach { _ =>
-      rrule.setByHour(byhour.toArray)
-    }
-    byminute.headOption.foreach { _ =>
-      rrule.setByMinute(byminute.toArray)
-    }
-    bysecond.headOption.foreach { _ =>
-      rrule.setBySecond(bysecond.toArray)
-    }
+    bysetpos
+      .headOption
+      .foreach { _ =>
+        rrule.setBySetPos(bysetpos.toArray)
+      }
+    bymonth
+      .headOption
+      .foreach { _ =>
+        rrule.setByMonth(bymonth.toArray)
+      }
+    bymonthday
+      .headOption
+      .foreach { _ =>
+        rrule.setByMonthDay(bymonthday.toArray)
+      }
+    byyearday
+      .headOption
+      .foreach { _ =>
+        rrule.setByYearDay(byyearday.toArray)
+      }
+    byweekno
+      .headOption
+      .foreach { _ =>
+        rrule.setByWeekNo(byweekno.toArray)
+      }
+    byday
+      .headOption
+      .foreach { _ =>
+        rrule.setByDay(seqAsJavaList(byday.map(v => v.toICal)))
+      }
+    byhour
+      .headOption
+      .foreach { _ =>
+        rrule.setByHour(byhour.toArray)
+      }
+    byminute
+      .headOption
+      .foreach { _ =>
+        rrule.setByMinute(byminute.toArray)
+      }
+    bysecond
+      .headOption
+      .foreach { _ =>
+        rrule.setBySecond(bysecond.toArray)
+      }
 
     rrule
   }
@@ -288,10 +306,8 @@ case class RRule private (
     * provided DateTime instance.
     */
   def from(dt: DateTime): Iterator[DateTime] = {
-    val riter = RecurrenceIteratorFactory.createRecurrenceIterator(
-      toICal,
-      dt2dtv(dt),
-      inzone.toTimeZone)
+    val riter = RecurrenceIteratorFactory
+      .createRecurrenceIterator(toICal, dt2dtv(dt), inzone.toTimeZone)
 
     val iterWithJoins =
       joins.foldLeft(riter) {
@@ -299,10 +315,8 @@ case class RRule private (
           val tmpfrom = t.map {
             dt2dtv
           } getOrElse dt2dtv(dt)
-          val tmpiter = RecurrenceIteratorFactory.createRecurrenceIterator(
-            rrule.toICal,
-            tmpfrom,
-            inzone.toTimeZone)
+          val tmpiter = RecurrenceIteratorFactory
+            .createRecurrenceIterator(rrule.toICal, tmpfrom, inzone.toTimeZone)
           RecurrenceIteratorFactory.join(i1, tmpiter)
       }
 
@@ -312,15 +326,13 @@ case class RRule private (
           val tmpfrom = t.map {
             dt2dtv
           } getOrElse dt2dtv(dt)
-          val tmpiter = RecurrenceIteratorFactory.createRecurrenceIterator(
-            rrule.toICal,
-            tmpfrom,
-            inzone.toTimeZone)
+          val tmpiter = RecurrenceIteratorFactory
+            .createRecurrenceIterator(rrule.toICal, tmpfrom, inzone.toTimeZone)
           RecurrenceIteratorFactory.except(i1, tmpiter)
       }
 
-    DateTimeIteratorFactory.createDateTimeIterator(
-      iterWithJoinsWithExcepts) map { dt =>
+    DateTimeIteratorFactory
+      .createDateTimeIterator(iterWithJoinsWithExcepts) map { dt =>
       dt.withZone(inzone)
     }
   }

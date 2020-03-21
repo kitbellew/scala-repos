@@ -711,8 +711,9 @@ object KleeneDemo {
       case ShortestPath(Finite(n), _) =>
         Expr(n)
     }
-    val leastCostExprs: Matrix[Tropical[Int]] = costExprs.kstar.map(a =>
-      evalExpr(a)(Tropical.apply))
+    val leastCostExprs: Matrix[Tropical[Int]] = costExprs
+      .kstar
+      .map(a => evalExpr(a)(Tropical.apply))
 
     println("least-cost via evalExpr:\n" + leastCostExprs.show)
   }
@@ -721,8 +722,8 @@ object KleeneDemo {
     // our example matrix is 2x2
     implicit val dim = Dim(2)
 
-    val m: Matrix[Compact[Double]] = ArrayMatrix(Array(2.0, 1.0, 0.0, 2.0)).map(
-      n => Compact(n))
+    val m: Matrix[Compact[Double]] = ArrayMatrix(Array(2.0, 1.0, 0.0, 2.0))
+      .map(n => Compact(n))
     println("2x2 matrix:\n" + m.show)
     println("2x2 asteration:\n" + m.kstar.show)
 

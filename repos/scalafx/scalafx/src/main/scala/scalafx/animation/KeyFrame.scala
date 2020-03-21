@@ -67,8 +67,8 @@ object KeyFrame {
       name: String = null,
       onFinished: jfxe.EventHandler[jfxe.ActionEvent] = null,
       values: Set[_ <: KeyValue[_, _]] = Set.empty) = {
-    val mappedValues: Set[jfxa.KeyValue] = values.map((x: KeyValue[_, _]) =>
-      x.delegate)
+    val mappedValues: Set[jfxa.KeyValue] = values
+      .map((x: KeyValue[_, _]) => x.delegate)
     new KeyFrame(new jfxa.KeyFrame(time, name, onFinished, mappedValues))
   }
 

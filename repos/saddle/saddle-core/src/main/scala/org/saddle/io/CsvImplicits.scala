@@ -56,11 +56,8 @@ object CsvImplicits {
           withColIx: Boolean = false,
           withRowIx: Boolean = true,
           settings: CsvSettings = new CsvSettings()) {
-        frame2CsvWriter(Frame(series)).writeCsvFile(
-          path,
-          withColIx,
-          withRowIx,
-          settings)
+        frame2CsvWriter(Frame(series))
+          .writeCsvFile(path, withColIx, withRowIx, settings)
       }
 
       def writeCsvStream(
@@ -68,11 +65,8 @@ object CsvImplicits {
           withColIx: Boolean = false,
           withRowIx: Boolean = true,
           settings: CsvSettings = new CsvSettings()) {
-        frame2CsvWriter(Frame(series)).writeCsvStream(
-          stream,
-          withColIx,
-          withRowIx,
-          settings)
+        frame2CsvWriter(Frame(series))
+          .writeCsvStream(stream, withColIx, withRowIx, settings)
       }
     } // end new
 
@@ -170,20 +164,22 @@ object CsvImplicits {
 
         def writeRows(rsm: ScalarTag[RX]) {
           // now write each row of the frame
-          frame.toRowSeq.foreach {
-            case (ridx, row) =>
-              stream write {
-                val seq =
-                  if (!withRowIx)
-                    row.values.toSeq.map(_.toString)
-                  else
-                    rsm.strList(ridx) ++: row.values.toSeq.map(_.toString)
+          frame
+            .toRowSeq
+            .foreach {
+              case (ridx, row) =>
+                stream write {
+                  val seq =
+                    if (!withRowIx)
+                      row.values.toSeq.map(_.toString)
+                    else
+                      rsm.strList(ridx) ++: row.values.toSeq.map(_.toString)
 
-                quotify(seq).mkString(separ).getBytes(settings.encoding)
-              }
+                  quotify(seq).mkString(separ).getBytes(settings.encoding)
+                }
 
-              stream.write(newLine)
-          }
+                stream.write(newLine)
+            }
         }
 
         if (!frame.isEmpty) {

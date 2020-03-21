@@ -75,11 +75,13 @@ private[io] class TcpListener(
         else
           SelectionKey.OP_ACCEPT)
       log.debug("Successfully bound to {}", ret)
-      bind.options.foreach {
-        case o: Inet.SocketOptionV2 ⇒
-          o.afterBind(channel.socket)
-        case _ ⇒
-      }
+      bind
+        .options
+        .foreach {
+          case o: Inet.SocketOptionV2 ⇒
+            o.afterBind(channel.socket)
+          case _ ⇒
+        }
       ret
     } catch {
       case NonFatal(e) ⇒

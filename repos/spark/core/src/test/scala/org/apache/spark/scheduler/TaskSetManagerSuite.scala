@@ -130,9 +130,8 @@ class FakeTaskScheduler(
 
   def addExecutor(execId: String, host: String) {
     executors.put(execId, host)
-    val executorsOnHost = executorsByHost.getOrElseUpdate(
-      host,
-      new mutable.HashSet[String])
+    val executorsOnHost = executorsByHost
+      .getOrElseUpdate(host, new mutable.HashSet[String])
     executorsOnHost += execId
     executorIdToHost += execId -> host
     for (rack <- getRackForHost(host)) {
@@ -179,9 +178,13 @@ class TaskSetManagerSuite
     val taskSet = FakeTask.createTaskSet(1)
     val clock = new ManualClock
     val manager = new TaskSetManager(sched, taskSet, MAX_TASK_FAILURES, clock)
-    val accumUpdates = taskSet.tasks.head.initialAccumulators.map { a =>
-      a.toInfo(Some(0L), None)
-    }
+    val accumUpdates = taskSet
+      .tasks
+      .head
+      .initialAccumulators
+      .map { a =>
+        a.toInfo(Some(0L), None)
+      }
 
     // Offer a host with NO_PREF as the constraint,
     // we should get a nopref task immediately since that's what we only have
@@ -199,12 +202,15 @@ class TaskSetManagerSuite
     val sched = new FakeTaskScheduler(sc, ("exec1", "host1"))
     val taskSet = FakeTask.createTaskSet(3)
     val manager = new TaskSetManager(sched, taskSet, MAX_TASK_FAILURES)
-    val accumUpdatesByTask: Array[Seq[AccumulableInfo]] = taskSet.tasks.map {
-      task =>
-        task.initialAccumulators.map { a =>
-          a.toInfo(Some(0L), None)
-        }
-    }
+    val accumUpdatesByTask: Array[Seq[AccumulableInfo]] = taskSet
+      .tasks
+      .map { task =>
+        task
+          .initialAccumulators
+          .map { a =>
+            a.toInfo(Some(0L), None)
+          }
+      }
 
     // First three offers should all find tasks
     for (i <- 0 until 3) {
@@ -565,8 +571,10 @@ class TaskSetManagerSuite
     manager.executorAdded()
     // Valid locality should contain PROCESS_LOCAL, NODE_LOCAL, RACK_LOCAL and ANY
     assert(
-      manager.myLocalityLevels.sameElements(
-        Array(PROCESS_LOCAL, NODE_LOCAL, NO_PREF, RACK_LOCAL, ANY)))
+      manager
+        .myLocalityLevels
+        .sameElements(
+          Array(PROCESS_LOCAL, NODE_LOCAL, NO_PREF, RACK_LOCAL, ANY)))
     // test if the valid locality is recomputed when the executor is lost
     sched.removeExecutor("execC")
     manager.executorLost("execC", "host2", SlaveLost())
@@ -632,8 +640,9 @@ class TaskSetManagerSuite
     val manager = new TaskSetManager(sched, taskSet, MAX_TASK_FAILURES, clock)
 
     assert(
-      manager.myLocalityLevels.sameElements(
-        Array(PROCESS_LOCAL, NODE_LOCAL, RACK_LOCAL, ANY)))
+      manager
+        .myLocalityLevels
+        .sameElements(Array(PROCESS_LOCAL, NODE_LOCAL, RACK_LOCAL, ANY)))
     // Set allowed locality to ANY
     clock.advance(LOCALITY_WAIT_MS * 3)
     // Offer host3
@@ -854,8 +863,9 @@ class TaskSetManagerSuite
     assert(manager.pendingTasksWithNoPrefs.size === 0)
     // Valid locality should contain PROCESS_LOCAL, NODE_LOCAL and ANY
     assert(
-      manager.myLocalityLevels.sameElements(
-        Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
+      manager
+        .myLocalityLevels
+        .sameElements(Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
     assert(manager.resourceOffer("execA", "host1", ANY) !== None)
     clock.advance(LOCALITY_WAIT_MS * 4)
     assert(manager.resourceOffer("execB.2", "host2", ANY) !== None)
@@ -888,18 +898,21 @@ class TaskSetManagerSuite
     val clock = new ManualClock
     val manager = new TaskSetManager(sched, taskSet, MAX_TASK_FAILURES, clock)
     assert(
-      manager.myLocalityLevels.sameElements(
-        Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
+      manager
+        .myLocalityLevels
+        .sameElements(Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
     sched.removeExecutor("execA")
     manager.executorAdded()
     assert(
-      manager.myLocalityLevels.sameElements(
-        Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
+      manager
+        .myLocalityLevels
+        .sameElements(Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
     sched.removeExecutor("execB")
     manager.executorAdded()
     assert(
-      manager.myLocalityLevels.sameElements(
-        Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
+      manager
+        .myLocalityLevels
+        .sameElements(Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
     sched.removeExecutor("execC")
     manager.executorAdded()
     assert(manager.myLocalityLevels.sameElements(Array(ANY)))

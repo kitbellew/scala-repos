@@ -28,7 +28,8 @@ class YieldFilter extends ElementFilter {
     val leaf = getLeafByOffset(context.getTextRange.getStartOffset, context)
     if (leaf != null) {
       val parent = leaf.getParent
-      if (parent.isInstanceOf[ScExpression] && parent.getParent
+      if (parent.isInstanceOf[ScExpression] && parent
+            .getParent
             .isInstanceOf[ScForStatement]) {
         var i = context.getTextRange.getStartOffset - 1
         while (i > 0 && (
@@ -49,14 +50,10 @@ class YieldFilter extends ElementFilter {
         for (child <- parent.getParent.getNode.getChildren(null)
              if child.getElementType == ScalaTokenTypes.kYIELD)
           return false
-        return ScalaCompletionUtil.checkAnyWith(
-          parent.getParent,
-          "yield true",
-          context.getManager) ||
-          ScalaCompletionUtil.checkReplace(
-            parent.getParent,
-            "yield",
-            context.getManager)
+        return ScalaCompletionUtil
+          .checkAnyWith(parent.getParent, "yield true", context.getManager) ||
+          ScalaCompletionUtil
+            .checkReplace(parent.getParent, "yield", context.getManager)
       }
     }
     false

@@ -47,27 +47,18 @@ private[pickling] object WillRobinsonPickling extends PicklingAlgorithm {
           fields.map(f => f.setter).toSeq)
       val pickleBasic = PickleEntry((fields.map(f => f.getter)))
 
-      val pickle = SubclassDispatch.apply(
-        Nil,
-        tpe,
-        Some(pickleBasic),
-        lookupRuntime = true)
-      val unpickle = SubclassUnpicklerDelegation.apply(
-        Nil,
-        tpe,
-        Some(unpickleBasic),
-        lookupRuntime = true)
+      val pickle = SubclassDispatch
+        .apply(Nil, tpe, Some(pickleBasic), lookupRuntime = true)
+      val unpickle = SubclassUnpicklerDelegation
+        .apply(Nil, tpe, Some(unpickleBasic), lookupRuntime = true)
       AlgorithmSucccess(PickleUnpickleImplementation(pickle, unpickle))
       // We special case AnyRef to be PURE reflection-based pickling.
     } else if ((
                  tpe.className == "java.lang.Object"
                ) || (tpe.className == "AnyRef")) {
       val pickle = SubclassDispatch.apply(Nil, tpe, None, lookupRuntime = true)
-      val unpickle = SubclassUnpicklerDelegation.apply(
-        Nil,
-        tpe,
-        None,
-        lookupRuntime = true)
+      val unpickle = SubclassUnpicklerDelegation
+        .apply(Nil, tpe, None, lookupRuntime = true)
       AlgorithmSucccess(PickleUnpickleImplementation(pickle, unpickle))
     } else
       // TODO - Grab a list of all vars and vals and serialized them ALL.

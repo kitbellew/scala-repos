@@ -26,10 +26,15 @@ trait EnsimeConfigFixture {
 
   // convenience method
   def main(lang: String)(implicit config: EnsimeConfig): File =
-    config.subprojects.head.sourceRoots.filter { dir =>
-      val sep = JFile.separator
-      dir.getPath.endsWith(s"${sep}main$sep$lang")
-    }.head
+    config
+      .subprojects
+      .head
+      .sourceRoots
+      .filter { dir =>
+        val sep = JFile.separator
+        dir.getPath.endsWith(s"${sep}main$sep$lang")
+      }
+      .head
   def scalaMain(implicit config: EnsimeConfig): File = main("scala")
   def javaMain(implicit config: EnsimeConfig): File = main("java")
 
@@ -41,37 +46,44 @@ object EnsimeConfigFixture {
 
   lazy val dotEnsime = File("../.ensime")
   if (!dotEnsime.exists) {
-    System.err.println(
-      "The .ensime file must exist to run the integration tests." +
-        " Type 'sbt gen-ensime' to create it")
+    System
+      .err
+      .println(
+        "The .ensime file must exist to run the integration tests." +
+          " Type 'sbt gen-ensime' to create it")
     System.err.flush()
     sys.exit(1)
   }
   lazy val dotEnsimeCache = File("../.ensime_cache")
   dotEnsimeCache.mkdirs()
 
-  lazy val EnsimeTestProject = EnsimeConfigProtocol.parse(
-    dotEnsime.readString())
+  lazy val EnsimeTestProject = EnsimeConfigProtocol
+    .parse(dotEnsime.readString())
 
   // not completely empty, has a reference to the scala-library jar
   lazy val EmptyTestProject: EnsimeConfig = EnsimeTestProject.copy(
-    subprojects = EnsimeTestProject.subprojects.filter(
-      _.name == "testingEmpty"),
+    subprojects = EnsimeTestProject
+      .subprojects
+      .filter(_.name == "testingEmpty"),
     javaLibs = Nil)
   lazy val SimpleTestProject: EnsimeConfig = EnsimeTestProject
-    .copy(subprojects = EnsimeTestProject.subprojects.filter(
-      _.name == "testingSimple"))
+    .copy(subprojects = EnsimeTestProject
+      .subprojects
+      .filter(_.name == "testingSimple"))
   lazy val SimpleJarTestProject: EnsimeConfig = EnsimeTestProject.copy(
-    subprojects = EnsimeTestProject.subprojects.filter(
-      _.name == "testingSimpleJar"),
+    subprojects = EnsimeTestProject
+      .subprojects
+      .filter(_.name == "testingSimpleJar"),
     javaLibs = Nil)
   lazy val ImplicitsTestProject: EnsimeConfig = EnsimeTestProject.copy(
-    subprojects = EnsimeTestProject.subprojects.filter(
-      _.name == "testingImplicits"),
+    subprojects = EnsimeTestProject
+      .subprojects
+      .filter(_.name == "testingImplicits"),
     javaLibs = Nil)
   lazy val TimingTestProject: EnsimeConfig = EnsimeTestProject.copy(
-    subprojects = EnsimeTestProject.subprojects.filter(
-      _.name == "testingTiming"),
+    subprojects = EnsimeTestProject
+      .subprojects
+      .filter(_.name == "testingTiming"),
     javaLibs = Nil)
   lazy val DebugTestProject: EnsimeConfig = EnsimeTestProject.copy(subprojects =
     EnsimeTestProject.subprojects.filter(_.name == "testingDebug"))
@@ -90,7 +102,8 @@ object EnsimeConfigFixture {
       copyTargets: Boolean): EnsimeConfig = {
 
     def rename(from: File): File = {
-      val toPath = from.getAbsolutePath
+      val toPath = from
+        .getAbsolutePath
         .replace(source.root.getAbsolutePath, target.getAbsolutePath)
       require(
         toPath != from.getAbsolutePath,
@@ -134,9 +147,11 @@ object EnsimeConfigFixture {
 
     // HACK: we must force OS line endings on sources or the tests
     // (which have fixed points within the file) will fail on Windows
-    config.scalaSourceFiles.foreach { file =>
-      file.writeLines(file.readLines())
-    }
+    config
+      .scalaSourceFiles
+      .foreach { file =>
+        file.writeLines(file.readLines())
+      }
 
     config
   }

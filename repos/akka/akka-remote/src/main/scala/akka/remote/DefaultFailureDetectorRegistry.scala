@@ -56,8 +56,8 @@ class DefaultFailureDetectorRegistry[A](detectorFactory: () ⇒ FailureDetector)
             case None ⇒
               val newDetector: FailureDetector = detectorFactory()
               newDetector.heartbeat()
-              resourceToFailureDetector.set(
-                oldTable + (resource -> newDetector))
+              resourceToFailureDetector
+                .set(oldTable + (resource -> newDetector))
           }
         } finally failureDetectorCreationLock.unlock()
     }
@@ -82,9 +82,8 @@ class DefaultFailureDetectorRegistry[A](detectorFactory: () ⇒ FailureDetector)
 
     val oldTable = resourceToFailureDetector.get
     // if we won the race then update else try again
-    if (!resourceToFailureDetector.compareAndSet(
-          oldTable,
-          Map.empty[A, FailureDetector]))
+    if (!resourceToFailureDetector
+          .compareAndSet(oldTable, Map.empty[A, FailureDetector]))
       reset() // recur
 
   }

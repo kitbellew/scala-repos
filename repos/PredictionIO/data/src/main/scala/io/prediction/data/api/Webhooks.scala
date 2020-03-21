@@ -51,9 +51,12 @@ private[prediction] object Webhooks {
       ec: ExecutionContext): Future[(StatusCode, Map[String, String])] = {
 
     val eventFuture = Future {
-      WebhooksConnectors.json.get(web).map { connector =>
-        ConnectorUtil.toEvent(connector, data)
-      }
+      WebhooksConnectors
+        .json
+        .get(web)
+        .map { connector =>
+          ConnectorUtil.toEvent(connector, data)
+        }
     }
 
     eventFuture.flatMap { eventOpt =>
@@ -64,14 +67,16 @@ private[prediction] object Webhooks {
         }
       } else {
         val event = eventOpt.get
-        val data = eventClient.futureInsert(event, appId, channelId).map { id =>
-          val result = (StatusCodes.Created, Map("eventId" -> s"${id}"))
+        val data = eventClient
+          .futureInsert(event, appId, channelId)
+          .map { id =>
+            val result = (StatusCodes.Created, Map("eventId" -> s"${id}"))
 
-          if (stats) {
-            statsActorRef ! Bookkeeping(appId, result._1, event)
+            if (stats) {
+              statsActorRef ! Bookkeeping(appId, result._1, event)
+            }
+            result
           }
-          result
-        }
         data
       }
     }
@@ -84,7 +89,8 @@ private[prediction] object Webhooks {
       log: LoggingAdapter)(implicit
       ec: ExecutionContext): Future[(StatusCode, Map[String, String])] = {
     Future {
-      WebhooksConnectors.json
+      WebhooksConnectors
+        .json
         .get(web)
         .map { connector =>
           (StatusCodes.OK, Map("message" -> "Ok"))
@@ -107,9 +113,12 @@ private[prediction] object Webhooks {
       statsActorRef: ActorSelection)(implicit
       ec: ExecutionContext): Future[(StatusCode, Map[String, String])] = {
     val eventFuture = Future {
-      WebhooksConnectors.form.get(web).map { connector =>
-        ConnectorUtil.toEvent(connector, data.fields.toMap)
-      }
+      WebhooksConnectors
+        .form
+        .get(web)
+        .map { connector =>
+          ConnectorUtil.toEvent(connector, data.fields.toMap)
+        }
     }
 
     eventFuture.flatMap { eventOpt =>
@@ -120,14 +129,16 @@ private[prediction] object Webhooks {
         }
       } else {
         val event = eventOpt.get
-        val data = eventClient.futureInsert(event, appId, channelId).map { id =>
-          val result = (StatusCodes.Created, Map("eventId" -> s"${id}"))
+        val data = eventClient
+          .futureInsert(event, appId, channelId)
+          .map { id =>
+            val result = (StatusCodes.Created, Map("eventId" -> s"${id}"))
 
-          if (stats) {
-            statsActorRef ! Bookkeeping(appId, result._1, event)
+            if (stats) {
+              statsActorRef ! Bookkeeping(appId, result._1, event)
+            }
+            result
           }
-          result
-        }
         data
       }
     }
@@ -140,7 +151,8 @@ private[prediction] object Webhooks {
       log: LoggingAdapter)(implicit
       ec: ExecutionContext): Future[(StatusCode, Map[String, String])] = {
     Future {
-      WebhooksConnectors.form
+      WebhooksConnectors
+        .form
         .get(web)
         .map { connector =>
           (StatusCodes.OK, Map("message" -> "Ok"))

@@ -414,9 +414,8 @@ class SwaggerTestServlet(protected val swagger: Swagger)
   protected val applicationDescription = "Operations about pets"
   override protected val applicationName = Some("pet")
   protected implicit val jsonFormats: Formats = DefaultFormats
-  implicit val StringFormat = DefaultJsonFormats.GenericFormat(
-    DefaultReaders.StringReader,
-    DefaultWriters.StringWriter)
+  implicit val StringFormat = DefaultJsonFormats
+    .GenericFormat(DefaultReaders.StringReader, DefaultWriters.StringWriter)
 
   protected override val swaggerProduces: List[String] =
     "application/json" :: "application/xml" :: "text/plain" :: "text/html" :: Nil
@@ -460,8 +459,8 @@ class SwaggerTestServlet(protected val swagger: Swagger)
     (apiOperation[Unit]("addPet")
       summary "Add a new pet to the store"
       responseMessage StringResponseMessage(405, "Invalid input")
-      parameter bodyParam[Pet].description(
-        "Pet object that needs to be added to the store"))
+      parameter bodyParam[Pet]
+        .description("Pet object that needs to be added to the store"))
 
   post("/", operation(createPet)) {
     ApiResponse(ApiResponseType.OK, "pet added to store")
@@ -473,8 +472,8 @@ class SwaggerTestServlet(protected val swagger: Swagger)
       responseMessage StringResponseMessage(400, "Invalid ID supplied")
       responseMessage StringResponseMessage(404, "Pet not found")
       responseMessage StringResponseMessage(405, "Validation exception")
-      parameter bodyParam[Pet].description(
-        "Pet object that needs to be updated in the store"))
+      parameter bodyParam[Pet]
+        .description("Pet object that needs to be updated in the store"))
 
   put("/", operation(updatePet)) {
     ApiResponse(ApiResponseType.OK, "pet updated")
@@ -529,9 +528,8 @@ class StoreApi(val swagger: Swagger)
   protected val applicationDescription = "Operations about store"
   override protected val applicationName = Some("store")
   protected implicit val jsonFormats: Formats = DefaultFormats
-  implicit val StringFormat = DefaultJsonFormats.GenericFormat(
-    DefaultReaders.StringReader,
-    DefaultWriters.StringWriter)
+  implicit val StringFormat = DefaultJsonFormats
+    .GenericFormat(DefaultReaders.StringReader, DefaultWriters.StringWriter)
   protected override val swaggerProduces: List[String] =
     "application/json" :: "application/xml" :: Nil
 
@@ -571,8 +569,8 @@ class StoreApi(val swagger: Swagger)
     (apiOperation[Unit]("placeOrder")
       summary "Place an order for a pet"
       responseMessage StringResponseMessage(400, "Invalid order")
-      parameter bodyParam[Order].description(
-        "order placed for purchasing the pet"))
+      parameter bodyParam[Order]
+        .description("order placed for purchasing the pet"))
   post("/order", operation(placeOrderOperation)) {
     ""
   }
@@ -585,9 +583,8 @@ class UserApi(val swagger: Swagger)
   protected val applicationDescription = "Operations about user"
   override protected val applicationName = Some("user")
   protected implicit val jsonFormats: Formats = DefaultFormats
-  implicit val StringFormat = DefaultJsonFormats.GenericFormat(
-    DefaultReaders.StringReader,
-    DefaultWriters.StringWriter)
+  implicit val StringFormat = DefaultJsonFormats
+    .GenericFormat(DefaultReaders.StringReader, DefaultWriters.StringWriter)
 
   val createUserOperation = apiOperation[User]("createUser")
   post("/", operation(createUserOperation)) {

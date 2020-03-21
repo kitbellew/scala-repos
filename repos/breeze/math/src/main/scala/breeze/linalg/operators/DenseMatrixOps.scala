@@ -314,8 +314,8 @@ trait DenseMatrixMultiplyStuff
           if (queryInfo.`val` != 0)
             math.max(
               1,
-              math.min(A.rows, A.cols) + math
-                .max(math.min(A.rows, A.cols), nrhs))
+              math
+                .min(A.rows, A.cols) + math.max(math.min(A.rows, A.cols), nrhs))
           else
             math.max(queryWork(0).toInt, 1)
         }
@@ -632,8 +632,8 @@ trait DenseMatrixFloatMultiplyStuff
           if (queryInfo.`val` != 0)
             math.max(
               1,
-              math.min(A.rows, A.cols) + math
-                .max(math.min(A.rows, A.cols), nrhs))
+              math
+                .min(A.rows, A.cols) + math.max(math.min(A.rows, A.cols), nrhs))
           else
             math.max(queryWork(0).toInt, 1)
         }
@@ -755,7 +755,8 @@ trait DenseMatrixOps {
           a := ac
           // gives a roughly 5-10x speedup
           // if a and b are both nicely and identically shaped, add them as though they were vectors
-        } else if (a.isTranspose == b.isTranspose && a.isContiguous && b.isContiguous) {
+        } else if (a.isTranspose == b.isTranspose && a.isContiguous && b
+                     .isContiguous) {
           vecOp(
             new DenseVector(a.data, a.offset, 1, a.size),
             new DenseVector(b.data, b.offset, 1, b.size))

@@ -390,10 +390,12 @@ class MacrosUnitTests extends WordSpec with Matchers {
           classOf[String],
           classOf[String]))
       val names = List("a1.x", "a1.y", "a2.x", "a2.y", "y")
-      names.zipWithIndex.foreach {
-        case (name, indx) =>
-          assert(fields.get(indx) === name)
-      }
+      names
+        .zipWithIndex
+        .foreach {
+          case (name, indx) =>
+            assert(fields.get(indx) === name)
+        }
     }
 
     "Case Class should form expected Fields with Options" in {
@@ -408,8 +410,8 @@ class MacrosUnitTests extends WordSpec with Matchers {
       val fields = Macros.toFieldsWithUnknown[SampleClassG]
       assert(fields.size === 1)
       assert(
-        fields.getTypes === Array[java.lang.reflect.Type](
-          classOf[java.util.Date]))
+        fields
+          .getTypes === Array[java.lang.reflect.Type](classOf[java.util.Date]))
     }
 
     "Case Class should form expected Indexed Fields" in {
@@ -423,10 +425,12 @@ class MacrosUnitTests extends WordSpec with Matchers {
           classOf[String],
           classOf[String]))
       val names = (0 until fields.size)
-      names.zipWithIndex.foreach {
-        case (name, indx) =>
-          assert(fields.get(indx) === name)
-      }
+      names
+        .zipWithIndex
+        .foreach {
+          case (name, indx) =>
+            assert(fields.get(indx) === name)
+        }
     }
   }
 }

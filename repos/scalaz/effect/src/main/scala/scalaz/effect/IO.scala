@@ -312,8 +312,8 @@ object IO extends IOInstances {
             } yield ()
         }
       } yield ()
-    newIORef(List[RefCountedFinalizer]()).bracketIO(after)(s =>
-      r.apply.value.run(s))
+    newIORef(List[RefCountedFinalizer]())
+      .bracketIO(after)(s => r.apply.value.run(s))
   }
 
   def tailrecM[A, B](f: A => IO[A \/ B])(a: A): IO[B] =

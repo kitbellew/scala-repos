@@ -54,10 +54,12 @@ private[finagle] class TTwitterServerFilter(
           val iter = header.contexts.iterator()
           while (iter.hasNext) {
             val c = iter.next()
-            env = Contexts.broadcast.Translucent(
-              env,
-              Buf.ByteArray.Owned(c.getKey()),
-              Buf.ByteArray.Owned(c.getValue()))
+            env = Contexts
+              .broadcast
+              .Translucent(
+                env,
+                Buf.ByteArray.Owned(c.getKey()),
+                Buf.ByteArray.Owned(c.getValue()))
           }
         }
 
@@ -74,17 +76,20 @@ private[finagle] class TTwitterServerFilter(
             "srv/thrift/clientId",
             ClientId.current.getOrElse("None"))
 
-          Contexts.broadcast.let(env) {
-            service(request_) map {
-              case response if response.isEmpty =>
-                response
-              case response =>
-                val responseHeader = new thrift.ResponseHeader
-                ByteArrays.concat(
-                  OutputBuffer.messageToArray(responseHeader, protocolFactory),
-                  response)
+          Contexts
+            .broadcast
+            .let(env) {
+              service(request_) map {
+                case response if response.isEmpty =>
+                  response
+                case response =>
+                  val responseHeader = new thrift.ResponseHeader
+                  ByteArrays.concat(
+                    OutputBuffer
+                      .messageToArray(responseHeader, protocolFactory),
+                    response)
+              }
             }
-          }
         }
       }
     } else {

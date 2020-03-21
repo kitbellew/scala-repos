@@ -65,8 +65,7 @@ class RateTransformationDocSpec extends AkkaSpec {
 
   "expand should repeat last" in {
     //#expand-last
-    val lastFlow = Flow[Double]
-      .expand(Iterator.continually(_))
+    val lastFlow = Flow[Double].expand(Iterator.continually(_))
     //#expand-last
 
     val (probe, fut) = TestSource
@@ -84,15 +83,13 @@ class RateTransformationDocSpec extends AkkaSpec {
 
   "expand should track drift" in {
     //#expand-drift
-    val driftFlow = Flow[Double]
-      .expand(i => Iterator.from(0).map(i -> _))
+    val driftFlow = Flow[Double].expand(i => Iterator.from(0).map(i -> _))
     //#expand-drift
     val latch = TestLatch(2)
-    val realDriftFlow = Flow[Double]
-      .expand(d => {
-        latch.countDown();
-        Iterator.from(0).map(d -> _)
-      })
+    val realDriftFlow = Flow[Double].expand(d => {
+      latch.countDown();
+      Iterator.from(0).map(d -> _)
+    })
 
     val (pub, sub) = TestSource
       .probe[Double]

@@ -22,9 +22,11 @@ class NotifyHealthCheckManagerStepImpl @Inject() (
       task: Task,
       status: TaskStatus): Future[_] = {
     // forward health changes to the health check manager
-    task.launched.foreach { launched =>
-      healthCheckManager.update(status, launched.appVersion)
-    }
+    task
+      .launched
+      .foreach { launched =>
+        healthCheckManager.update(status, launched.appVersion)
+      }
 
     Future.successful(())
   }

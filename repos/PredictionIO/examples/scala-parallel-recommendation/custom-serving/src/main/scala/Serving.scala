@@ -16,10 +16,7 @@ class Serving(val params: ServingParams)
       query: Query,
       predictedResults: Seq[PredictedResult]): PredictedResult = {
     val disabledProducts: Set[String] =
-      Source
-        .fromFile(params.filepath)
-        .getLines
-        .toSet
+      Source.fromFile(params.filepath).getLines.toSet
 
     val itemScores = predictedResults.head.itemScores
     PredictedResult(itemScores.filter(ps => !disabledProducts(ps.item)))

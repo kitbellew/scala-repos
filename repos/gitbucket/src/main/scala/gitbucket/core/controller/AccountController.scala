@@ -184,41 +184,57 @@ trait AccountControllerBase extends AccountManagementControllerBase {
       params.getOrElse("tab", "repositories") match {
         // Public Activity
         case "activity" =>
-          gitbucket.core.account.html.activity(
-            account,
-            if (account.isGroupAccount)
-              Nil
-            else
-              getGroupsByUserName(userName),
-            getActivitiesByUser(userName, true))
+          gitbucket
+            .core
+            .account
+            .html
+            .activity(
+              account,
+              if (account.isGroupAccount)
+                Nil
+              else
+                getGroupsByUserName(userName),
+              getActivitiesByUser(userName, true))
 
         // Members
         case "members" if (account.isGroupAccount) => {
           val members = getGroupMembers(account.userName)
-          gitbucket.core.account.html.members(
-            account,
-            members.map(_.userName),
-            context.loginAccount.exists(x =>
-              members.exists { member =>
-                member.userName == x.userName && member.isManager
-              }))
+          gitbucket
+            .core
+            .account
+            .html
+            .members(
+              account,
+              members.map(_.userName),
+              context
+                .loginAccount
+                .exists(x =>
+                  members.exists { member =>
+                    member.userName == x.userName && member.isManager
+                  }))
         }
 
         // Repositories
         case _ => {
           val members = getGroupMembers(account.userName)
-          gitbucket.core.account.html.repositories(
-            account,
-            if (account.isGroupAccount)
-              Nil
-            else
-              getGroupsByUserName(userName),
-            getVisibleRepositories(context.loginAccount, Some(userName)),
-            context.loginAccount.exists(x =>
-              members.exists { member =>
-                member.userName == x.userName && member.isManager
-              })
-          )
+          gitbucket
+            .core
+            .account
+            .html
+            .repositories(
+              account,
+              if (account.isGroupAccount)
+                Nil
+              else
+                getGroupsByUserName(userName),
+              getVisibleRepositories(context.loginAccount, Some(userName)),
+              context
+                .loginAccount
+                .exists(x =>
+                  members.exists { member =>
+                    member.userName == x.userName && member.isManager
+                  })
+            )
         }
       }
     } getOrElse NotFound
@@ -232,13 +248,17 @@ trait AccountControllerBase extends AccountManagementControllerBase {
 
   get("/:userName/_avatar") {
     val userName = params("userName")
-    getAccountByUserName(userName).flatMap(_.image).map { image =>
-      RawData(
-        FileUtil.getMimeType(image),
-        new java.io.File(getUserUploadDir(userName), image))
-    } getOrElse {
+    getAccountByUserName(userName)
+      .flatMap(_.image)
+      .map { image =>
+        RawData(
+          FileUtil.getMimeType(image),
+          new java.io.File(getUserUploadDir(userName), image))
+      } getOrElse {
       contentType = "image/png"
-      Thread.currentThread.getContextClassLoader
+      Thread
+        .currentThread
+        .getContextClassLoader
         .getResourceAsStream("noimage.png")
     }
   }
@@ -395,7 +415,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
       createGroup(form.groupName, form.url)
       updateGroupMembers(
         form.groupName,
-        form.members
+        form
+          .members
           .split(",")
           .map {
             _.split(":") match {
@@ -427,12 +448,12 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           getRepositoryNamesOfUser(groupName).foreach {
             repositoryName =>
               deleteRepository(groupName, repositoryName)
-              FileUtils.deleteDirectory(
-                getRepositoryDir(groupName, repositoryName))
+              FileUtils
+                .deleteDirectory(getRepositoryDir(groupName, repositoryName))
               FileUtils.deleteDirectory(
                 getWikiRepositoryDir(groupName, repositoryName))
-              FileUtils.deleteDirectory(
-                getTemporaryDir(groupName, repositoryName))
+              FileUtils
+                .deleteDirectory(getTemporaryDir(groupName, repositoryName))
           }
       }
       redirect("/")
@@ -442,7 +463,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
     managersOnly { form =>
       defining(
         params("groupName"),
-        form.members
+        form
+          .members
           .split(",")
           .map {
             _.split(":") match {
@@ -515,12 +537,15 @@ trait AccountControllerBase extends AccountManagementControllerBase {
         case _: List[String] =>
           val managerPermissions = groups.map { group =>
             val members = getGroupMembers(group)
-            context.loginAccount.exists(x =>
-              members.exists { member =>
-                member.userName == x.userName && member.isManager
-              })
+            context
+              .loginAccount
+              .exists(x =>
+                members.exists { member =>
+                  member.userName == x.userName && member.isManager
+                })
           }
-          helper.html
+          helper
+            .html
             .forkrepository(repository, (groups zip managerPermissions).toMap)
         case _ =>
           redirect(s"/${loginUserName}")
@@ -543,9 +568,13 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           redirect(s"/${accountName}/${repository.name}")
         } else {
           // Insert to the database at first
-          val originUserName = repository.repository.originUserName
+          val originUserName = repository
+            .repository
+            .originUserName
             .getOrElse(repository.owner)
-          val originRepositoryName = repository.repository.originRepositoryName
+          val originRepositoryName = repository
+            .repository
+            .originRepositoryName
             .getOrElse(repository.name)
 
           insertRepository(
@@ -611,11 +640,13 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           value: String,
           params: Map[String, String],
           messages: Messages): Option[String] =
-        params.get("owner").flatMap { userName =>
-          getRepositoryNamesOfUser(userName)
-            .find(_ == value)
-            .map(_ => "Repository already exists.")
-        }
+        params
+          .get("owner")
+          .flatMap { userName =>
+            getRepositoryNamesOfUser(userName)
+              .find(_ == value)
+              .map(_ => "Repository already exists.")
+          }
     }
 
   private def members: Constraint =
@@ -624,12 +655,14 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           name: String,
           value: String,
           messages: Messages): Option[String] = {
-        if (value.split(",").exists {
-              _.split(":") match {
-                case Array(userName, isManager) =>
-                  isManager.toBoolean
-              }
-            })
+        if (value
+              .split(",")
+              .exists {
+                _.split(":") match {
+                  case Array(userName, isManager) =>
+                    isManager.toBoolean
+                }
+              })
           None
         else
           Some("Must select one manager at least.")

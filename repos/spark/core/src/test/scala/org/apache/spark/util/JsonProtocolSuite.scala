@@ -97,8 +97,8 @@ class JsonProtocolSuite extends SparkFunSuite {
         hasOutput = true))
     val jobStart = {
       val stageIds = Seq[Int](1, 2, 3, 4)
-      val stageInfos = stageIds.map(x =>
-        makeStageInfo(x, x * 200, x * 300, x * 400L, x * 500L))
+      val stageInfos = stageIds
+        .map(x => makeStageInfo(x, x * 200, x * 300, x * 400L, x * 500L))
       SparkListenerJobStart(10, jobSubmissionTime, stageInfos, properties)
     }
     val jobEnd = SparkListenerJobEnd(20, jobCompletionTime, JobSucceeded)
@@ -429,8 +429,8 @@ class JsonProtocolSuite extends SparkFunSuite {
         _._1 == "Timestamp"
       })
 
-    val deserializedBmRemoved = JsonProtocol.blockManagerRemovedFromJson(
-      oldBmRemoved)
+    val deserializedBmRemoved = JsonProtocol
+      .blockManagerRemovedFromJson(oldBmRemoved)
     assert(
       SparkListenerBlockManagerRemoved(
         -1L,
@@ -523,15 +523,15 @@ class JsonProtocolSuite extends SparkFunSuite {
       true,
       Some("Induced failure"))
     assert(
-      expectedExecutorLostFailure === JsonProtocol.taskEndReasonFromJson(
-        oldEvent))
+      expectedExecutorLostFailure === JsonProtocol
+        .taskEndReasonFromJson(oldEvent))
   }
 
   test("SparkListenerJobStart backward compatibility") {
     // Prior to Spark 1.2.0, SparkListenerJobStart did not have a "Stage Infos" property.
     val stageIds = Seq[Int](1, 2, 3, 4)
-    val stageInfos = stageIds.map(x =>
-      makeStageInfo(x, x * 200, x * 300, x * 400, x * 500))
+    val stageInfos = stageIds
+      .map(x => makeStageInfo(x, x * 200, x * 300, x * 400, x * 500))
     val dummyStageInfos = stageIds.map(id =>
       new StageInfo(id, 0, "unknown", 0, Seq.empty, Seq.empty, "unknown"))
     val jobStart = SparkListenerJobStart(
@@ -556,8 +556,8 @@ class JsonProtocolSuite extends SparkFunSuite {
     // Prior to Spark 1.3.0, SparkListenerJobStart did not have a "Submission Time" property.
     // Also, SparkListenerJobEnd did not have a "Completion Time" property.
     val stageIds = Seq[Int](1, 2, 3, 4)
-    val stageInfos = stageIds.map(x =>
-      makeStageInfo(x * 10, x * 20, x * 30, x * 40, x * 50))
+    val stageInfos = stageIds
+      .map(x => makeStageInfo(x * 10, x * 20, x * 30, x * 40, x * 50))
     val jobStart = SparkListenerJobStart(
       11,
       jobSubmissionTime,
@@ -649,8 +649,8 @@ class JsonProtocolSuite extends SparkFunSuite {
       1,
       internal = true,
       countFailedValues = true)
-    val accumulableInfoJson = JsonProtocol.accumulableInfoToJson(
-      accumulableInfo)
+    val accumulableInfoJson = JsonProtocol
+      .accumulableInfoToJson(accumulableInfo)
     val oldJson = accumulableInfoJson.removeField({
       _._1 == "Internal"
     })
@@ -687,8 +687,8 @@ class JsonProtocolSuite extends SparkFunSuite {
     val accumUpdates = tm.accumulatorUpdates()
     val exception = new SparkException("sentimental")
     val exceptionFailure = new ExceptionFailure(exception, accumUpdates)
-    val exceptionFailureJson = JsonProtocol.taskEndReasonToJson(
-      exceptionFailure)
+    val exceptionFailureJson = JsonProtocol
+      .taskEndReasonToJson(exceptionFailure)
     val tmFieldJson: JValue = "Task Metrics" -> tmJson
     val oldExceptionFailureJson: JValue = exceptionFailureJson
       .removeField {
@@ -718,11 +718,13 @@ class JsonProtocolSuite extends SparkFunSuite {
       (TestBlockId("meebo"), BlockStatus(StorageLevel.MEMORY_ONLY, 1L, 2L)),
       (TestBlockId("feebo"), BlockStatus(StorageLevel.DISK_ONLY, 3L, 4L)))
     val blocksJson = JArray(
-      blocks.toList.map {
-        case (id, status) =>
-          ("Block ID" -> id.toString) ~
-            ("Status" -> JsonProtocol.blockStatusToJson(status))
-      })
+      blocks
+        .toList
+        .map {
+          case (id, status) =>
+            ("Block ID" -> id.toString) ~
+              ("Status" -> JsonProtocol.blockStatusToJson(status))
+        })
     testAccumValue(Some(RESULT_SIZE), 3L, JInt(3))
     testAccumValue(Some(shuffleRead.REMOTE_BLOCKS_FETCHED), 2, JInt(2))
     testAccumValue(Some(input.READ_METHOD), "aka", JString("aka"))
@@ -758,44 +760,44 @@ private[spark] object JsonProtocolSuite extends Assertions {
   }
 
   private def testStageInfo(info: StageInfo) {
-    val newInfo = JsonProtocol.stageInfoFromJson(
-      JsonProtocol.stageInfoToJson(info))
+    val newInfo = JsonProtocol
+      .stageInfoFromJson(JsonProtocol.stageInfoToJson(info))
     assertEquals(info, newInfo)
   }
 
   private def testStorageLevel(level: StorageLevel) {
-    val newLevel = JsonProtocol.storageLevelFromJson(
-      JsonProtocol.storageLevelToJson(level))
+    val newLevel = JsonProtocol
+      .storageLevelFromJson(JsonProtocol.storageLevelToJson(level))
     assertEquals(level, newLevel)
   }
 
   private def testTaskMetrics(metrics: TaskMetrics) {
-    val newMetrics = JsonProtocol.taskMetricsFromJson(
-      JsonProtocol.taskMetricsToJson(metrics))
+    val newMetrics = JsonProtocol
+      .taskMetricsFromJson(JsonProtocol.taskMetricsToJson(metrics))
     assertEquals(metrics, newMetrics)
   }
 
   private def testBlockManagerId(id: BlockManagerId) {
-    val newId = JsonProtocol.blockManagerIdFromJson(
-      JsonProtocol.blockManagerIdToJson(id))
+    val newId = JsonProtocol
+      .blockManagerIdFromJson(JsonProtocol.blockManagerIdToJson(id))
     assert(id === newId)
   }
 
   private def testTaskInfo(info: TaskInfo) {
-    val newInfo = JsonProtocol.taskInfoFromJson(
-      JsonProtocol.taskInfoToJson(info))
+    val newInfo = JsonProtocol
+      .taskInfoFromJson(JsonProtocol.taskInfoToJson(info))
     assertEquals(info, newInfo)
   }
 
   private def testJobResult(result: JobResult) {
-    val newResult = JsonProtocol.jobResultFromJson(
-      JsonProtocol.jobResultToJson(result))
+    val newResult = JsonProtocol
+      .jobResultFromJson(JsonProtocol.jobResultToJson(result))
     assertEquals(result, newResult)
   }
 
   private def testTaskEndReason(reason: TaskEndReason) {
-    val newReason = JsonProtocol.taskEndReasonFromJson(
-      JsonProtocol.taskEndReasonToJson(reason))
+    val newReason = JsonProtocol
+      .taskEndReasonFromJson(JsonProtocol.taskEndReasonToJson(reason))
     assertEquals(reason, newReason)
   }
 
@@ -805,8 +807,8 @@ private[spark] object JsonProtocolSuite extends Assertions {
   }
 
   private def testExecutorInfo(info: ExecutorInfo) {
-    val newInfo = JsonProtocol.executorInfoFromJson(
-      JsonProtocol.executorInfoToJson(info))
+    val newInfo = JsonProtocol
+      .executorInfoFromJson(JsonProtocol.executorInfoToJson(info))
     assertEquals(info, newInfo)
   }
 
@@ -1047,16 +1049,20 @@ private[spark] object JsonProtocolSuite extends Assertions {
   private def assertEquals(
       details1: Map[String, Seq[(String, String)]],
       details2: Map[String, Seq[(String, String)]]) {
-    details1.zip(details2).foreach {
-      case (
-            (key1, values1: Seq[(String, String)]),
-            (key2, values2: Seq[(String, String)])) =>
-        assert(key1 === key2)
-        values1.zip(values2).foreach {
-          case (v1, v2) =>
-            assert(v1 === v2)
-        }
-    }
+    details1
+      .zip(details2)
+      .foreach {
+        case (
+              (key1, values1: Seq[(String, String)]),
+              (key2, values2: Seq[(String, String)])) =>
+          assert(key1 === key2)
+          values1
+            .zip(values2)
+            .foreach {
+              case (v1, v2) =>
+                assert(v1 === v2)
+            }
+      }
   }
 
   private def assertEquals(exception1: Exception, exception2: Exception) {
@@ -1087,10 +1093,12 @@ private[spark] object JsonProtocolSuite extends Assertions {
       seq2: Seq[T],
       assertEquals: (T, T) => Unit) {
     assert(seq1.length === seq2.length)
-    seq1.zip(seq2).foreach {
-      case (t1, t2) =>
-        assertEquals(t1, t2)
-    }
+    seq1
+      .zip(seq2)
+      .foreach {
+        case (t1, t2) =>
+          assertEquals(t1, t2)
+      }
   }
 
   private def assertOptionEquals[T](
@@ -1305,11 +1313,13 @@ private[spark] object JsonProtocolSuite extends Assertions {
     }
     // Make at most 6 blocks
     t.setUpdatedBlockStatuses(
-      (1 to (e % 5 + 1)).map { i =>
-        (
-          RDDBlockId(e % i, f % i),
-          BlockStatus(StorageLevel.MEMORY_AND_DISK_SER_2, a % i, b % i))
-      }.toSeq)
+      (1 to (e % 5 + 1))
+        .map { i =>
+          (
+            RDDBlockId(e % i, f % i),
+            BlockStatus(StorageLevel.MEMORY_AND_DISK_SER_2, a % i, b % i))
+        }
+        .toSeq)
     t
   }
 

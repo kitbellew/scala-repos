@@ -56,8 +56,9 @@ class ConvertExpressionToSAMInspection
                 val fix =
                   new ReplaceExpressionWithSAMQuickFix(definition, replacement)
                 val extendsBlock = definition.extendsBlock
-                val lBraceInParent = extendsBlock.templateBody.map(
-                  _.startOffsetInParent + extendsBlock.startOffsetInParent)
+                val lBraceInParent = extendsBlock
+                  .templateBody
+                  .map(_.startOffsetInParent + extendsBlock.startOffsetInParent)
                 val rangeInElement: TextRange =
                   lBraceInParent.map(new TextRange(0, _)).orNull
                 holder.registerProblem(

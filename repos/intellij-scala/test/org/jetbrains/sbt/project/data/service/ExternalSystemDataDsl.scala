@@ -106,12 +106,16 @@ object ExternalSystemDataDsl {
         moduleToNode: Map[module, ModuleNode]): Unit =
       moduleToNode.foreach {
         case (module, moduleNode) =>
-          module.getModuleDependencies.foreach { dependency =>
-            moduleToNode.get(dependency).foreach { dependencyModuleNode =>
-              moduleNode.add(
-                new ModuleDependencyNode(moduleNode, dependencyModuleNode))
+          module
+            .getModuleDependencies
+            .foreach { dependency =>
+              moduleToNode
+                .get(dependency)
+                .foreach { dependencyModuleNode =>
+                  moduleNode.add(
+                    new ModuleDependencyNode(moduleNode, dependencyModuleNode))
+                }
             }
-          }
       }
 
     private def createLibraryDependencies(
@@ -119,15 +123,19 @@ object ExternalSystemDataDsl {
         libraryToNode: Map[library, LibraryNode]): Unit =
       moduleToNode.foreach {
         case (module, moduleNode) =>
-          module.getLibraryDependencies.foreach { dependency =>
-            libraryToNode.get(dependency).foreach { libraryNode =>
-              moduleNode.add(
-                new LibraryDependencyNode(
-                  moduleNode,
-                  libraryNode,
-                  LibraryLevel.PROJECT))
+          module
+            .getLibraryDependencies
+            .foreach { dependency =>
+              libraryToNode
+                .get(dependency)
+                .foreach { libraryNode =>
+                  moduleNode.add(
+                    new LibraryDependencyNode(
+                      moduleNode,
+                      libraryNode,
+                      LibraryLevel.PROJECT))
+                }
             }
-          }
       }
 
     private val attributes = new AttributeMap
@@ -152,13 +160,17 @@ object ExternalSystemDataDsl {
           attributes.getOrFail(name),
           attributes.getOrFail(moduleFileDirectoryPath),
           attributes.getOrFail(externalConfigPath))
-      attributes.get(libraries).foreach { libs =>
-        libs.map(_.build).foreach { libNode =>
-          node.add(libNode)
-          node.add(
-            new LibraryDependencyNode(node, libNode, LibraryLevel.MODULE))
+      attributes
+        .get(libraries)
+        .foreach { libs =>
+          libs
+            .map(_.build)
+            .foreach { libNode =>
+              node.add(libNode)
+              node.add(
+                new LibraryDependencyNode(node, libNode, LibraryLevel.MODULE))
+            }
         }
-      }
       attributes.get(arbitraryNodes).foreach(node.addAll)
       node
     }

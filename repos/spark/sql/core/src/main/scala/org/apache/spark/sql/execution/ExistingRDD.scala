@@ -44,8 +44,8 @@ object RDDConversions {
     data.mapPartitions { iterator =>
       val numColumns = outputTypes.length
       val mutableRow = new GenericMutableRow(numColumns)
-      val converters = outputTypes.map(
-        CatalystTypeConverters.createToCatalystConverter)
+      val converters = outputTypes
+        .map(CatalystTypeConverters.createToCatalystConverter)
       iterator.map { r =>
         var i = 0
         while (i < numColumns) {
@@ -67,8 +67,8 @@ object RDDConversions {
     data.mapPartitions { iterator =>
       val numColumns = outputTypes.length
       val mutableRow = new GenericMutableRow(numColumns)
-      val converters = outputTypes.map(
-        CatalystTypeConverters.createToCatalystConverter)
+      val converters = outputTypes
+        .map(CatalystTypeConverters.createToCatalystConverter)
       iterator.map { r =>
         var i = 0
         while (i < numColumns) {
@@ -191,11 +191,13 @@ private[sql] case class DataSourceScan(
       }
 
     def toAttribute(colName: String): Attribute =
-      output.find(_.name == colName).getOrElse {
-        throw new AnalysisException(
-          s"bucket column $colName not found in existing columns " +
-            s"(${output.map(_.name).mkString(", ")})")
-      }
+      output
+        .find(_.name == colName)
+        .getOrElse {
+          throw new AnalysisException(
+            s"bucket column $colName not found in existing columns " +
+              s"(${output.map(_.name).mkString(", ")})")
+        }
 
     bucketSpec
       .map { spec =>
@@ -230,8 +232,7 @@ private[sql] case class DataSourceScan(
     val metadataEntries =
       for ((key, value) <- metadata.toSeq.sorted)
         yield s"$key: $value"
-    s"Scan $nodeName${output
-      .mkString("[", ",", "]")}${metadataEntries.mkString(" ", ", ", "")}"
+    s"Scan $nodeName${output.mkString("[", ",", "]")}${metadataEntries.mkString(" ", ", ", "")}"
   }
 
   override def upstreams(): Seq[RDD[InternalRow]] = {
@@ -254,8 +255,9 @@ private[sql] case class DataSourceScan(
     ctx.addMutableState(columnarBatchClz, batch, s"$batch = null;")
     ctx.addMutableState("int", idx, s"$idx = 0;")
 
-    val exprs = output.zipWithIndex.map(x =>
-      new BoundReference(x._2, x._1.dataType, true))
+    val exprs = output
+      .zipWithIndex
+      .map(x => new BoundReference(x._2, x._1.dataType, true))
     val row = ctx.freshName("row")
     val numOutputRows = metricTerm(ctx, "numOutputRows")
 

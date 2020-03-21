@@ -11,7 +11,8 @@ class FileUploadSupportSpecServlet
     extends ScalatraServlet
     with FileUploadSupport {
   def headersToHeaders() {
-    request.getHeaderNames
+    request
+      .getHeaderNames
       .filter(_.startsWith("X"))
       .foreach(header => response.setHeader(header, request.getHeader(header)))
   }

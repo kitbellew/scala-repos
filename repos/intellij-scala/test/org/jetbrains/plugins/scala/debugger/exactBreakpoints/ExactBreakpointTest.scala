@@ -41,10 +41,8 @@ abstract class ExactBreakpointTestBase extends ScalaDebuggerTestCase {
       .computeVariants(getProject, xSourcePosition)
       .asScala
       .map(_.getText)
-    Assert.assertEquals(
-      "Wrong set of variants found: ",
-      variants,
-      foundVariants)
+    Assert
+      .assertEquals("Wrong set of variants found: ", variants, foundVariants)
   }
 
   protected def checkStoppedAtBreakpointAt(breakpoints: Breakpoint*)(
@@ -81,14 +79,13 @@ abstract class ExactBreakpointTestBase extends ScalaDebuggerTestCase {
   }
 
   private def highlightedText(sourcePosition: SourcePosition): String = {
-    val elemRange = SourcePositionHighlighter.getHighlightRangeFor(
-      sourcePosition)
+    val elemRange = SourcePositionHighlighter
+      .getHighlightRangeFor(sourcePosition)
     val document = PsiDocumentManager
       .getInstance(getProject)
       .getDocument(sourcePosition.getFile)
-    val lineRange = DocumentUtil.getLineTextRange(
-      document,
-      sourcePosition.getLine)
+    val lineRange = DocumentUtil
+      .getLineTextRange(document, sourcePosition.getLine)
     val textRange =
       if (elemRange != null)
         elemRange.intersection(lineRange)

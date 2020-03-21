@@ -58,8 +58,8 @@ class ConfigParser(
   def includeFile =
     "include" ~> string ^^ {
       case filename: String =>
-        new ConfigParser(prefix, map, importer) parse importer.importFile(
-          filename)
+        new ConfigParser(prefix, map, importer) parse importer
+          .importFile(filename)
     }
 
   def assignment =

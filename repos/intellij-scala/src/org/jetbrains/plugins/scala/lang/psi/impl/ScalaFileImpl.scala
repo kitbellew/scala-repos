@@ -316,9 +316,8 @@ class ScalaFileImpl(
         if (vector.nonEmpty) {
           val packagingsText = {
             val path = {
-              val splits =
-                ScalaFileImpl.toVector(base) :: ScalaFileImpl.splitsIn(
-                  ScalaFileImpl.pathIn(this))
+              val splits = ScalaFileImpl.toVector(base) :: ScalaFileImpl
+                .splitsIn(ScalaFileImpl.pathIn(this))
               splits.foldLeft(List(vector))(ScalaFileImpl.splitAt)
             }
             path.map(_.mkString("package ", ".", "")).mkString("", "\n", "\n\n")
@@ -348,7 +347,9 @@ class ScalaFileImpl(
             def run() {
               try {
                 DebugUtil.startPsiModification(null)
-                aClass.getNode.getTreeParent
+                aClass
+                  .getNode
+                  .getTreeParent
                   .replaceChild(aClass.getNode, oldClass.getNode)
               } finally {
                 DebugUtil.finishPsiModification()
@@ -360,13 +361,15 @@ class ScalaFileImpl(
   }
 
   private def stripPackagings(document: Document) {
-    depthFirst.findByType(classOf[ScPackaging]).foreach { p =>
-      val startOffset = p.getTextOffset
-      val endOffset = startOffset + p.getTextLength
-      document.replaceString(startOffset, endOffset, p.getBodyText.trim)
-      PsiDocumentManager.getInstance(getProject).commitDocument(document)
-      stripPackagings(document)
-    }
+    depthFirst
+      .findByType(classOf[ScPackaging])
+      .foreach { p =>
+        val startOffset = p.getTextOffset
+        val endOffset = startOffset + p.getTextLength
+        document.replaceString(startOffset, endOffset, p.getBodyText.trim)
+        PsiDocumentManager.getInstance(getProject).commitDocument(document)
+        stripPackagings(document)
+      }
   }
 
   override def getStub: ScFileStub =
@@ -377,8 +380,9 @@ class ScalaFileImpl(
         s
       case _ =>
         val faultyContainer: VirtualFile = PsiUtilCore.getVirtualFile(this)
-        ScalaFileImpl.LOG.error(
-          "Scala File has wrong stub file: " + faultyContainer)
+        ScalaFileImpl
+          .LOG
+          .error("Scala File has wrong stub file: " + faultyContainer)
         if (faultyContainer != null && faultyContainer.isValid) {
           FileBasedIndex.getInstance.requestReindex(faultyContainer)
         }
@@ -484,8 +488,8 @@ class ScalaFileImpl(
     this,
     ScalaPsiManager.instance(getProject).modificationTracker)
   protected def isScalaPredefinedClass: Boolean = {
-    typeDefinitions.length == 1 && Set("scala", "scala.Predef").contains(
-      typeDefinitions.head.qualifiedName)
+    typeDefinitions.length == 1 && Set("scala", "scala.Predef")
+      .contains(typeDefinitions.head.qualifiedName)
   }
 
   def isScalaPredefinedClassInner =
@@ -592,8 +596,8 @@ class ScalaFileImpl(
 }
 
 object ScalaFileImpl {
-  private val LOG: Logger = Logger.getInstance(
-    "#org.jetbrains.plugins.scala.lang.psi.impl.ScalaFileImpl")
+  private val LOG: Logger = Logger
+    .getInstance("#org.jetbrains.plugins.scala.lang.psi.impl.ScalaFileImpl")
   private val QualifiedPackagePattern = "(.+)\\.(.+?)".r
   val SCRIPT_KEY = new Key[java.lang.Boolean]("Is Script Key")
   val CONTEXT_KEY = new Key[PsiElement]("context.key")
@@ -632,8 +636,8 @@ object ScalaFileImpl {
         val index =
           ProjectRootManager.getInstance(place.getProject).getFileIndex
         !(
-          index.isInSourceContent(file) || index.isInLibraryClasses(
-            file) || index.isInLibrarySource(file)
+          index.isInSourceContent(file) || index
+            .isInLibraryClasses(file) || index.isInLibrarySource(file)
         )
       case _ =>
         false

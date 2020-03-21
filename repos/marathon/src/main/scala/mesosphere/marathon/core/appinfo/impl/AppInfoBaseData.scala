@@ -47,11 +47,12 @@ class AppInfoBaseData(
         .withDefaultValue(Vector.empty)
       val deploymentsByAppId =
         allDeployments.foldLeft(byApp) { (result, deploymentPlan) =>
-          deploymentPlan.affectedApplicationIds.foldLeft(result) {
-            (result, appId) =>
+          deploymentPlan
+            .affectedApplicationIds
+            .foldLeft(result) { (result, appId) =>
               val newEl = appId -> (result(appId) :+ deploymentPlan)
               result + newEl
-          }
+            }
         }
       deploymentsByAppId
         .mapValues(_.map(deploymentPlan => Identifiable(deploymentPlan.id)))
@@ -72,21 +73,26 @@ class AppInfoBaseData(
       infoFuture.flatMap { info =>
         embed match {
           case AppInfo.Embed.Counts =>
-            appData.taskCountsFuture.map(counts =>
-              info.copy(maybeCounts = Some(counts)))
+            appData
+              .taskCountsFuture
+              .map(counts => info.copy(maybeCounts = Some(counts)))
           case AppInfo.Embed.Deployments =>
             runningDeploymentsByAppFuture.map(deployments =>
               info.copy(maybeDeployments = Some(deployments(app.id))))
           case AppInfo.Embed.LastTaskFailure =>
-            appData.maybeLastTaskFailureFuture.map { maybeLastTaskFailure =>
-              info.copy(maybeLastTaskFailure = maybeLastTaskFailure)
-            }
+            appData
+              .maybeLastTaskFailureFuture
+              .map { maybeLastTaskFailure =>
+                info.copy(maybeLastTaskFailure = maybeLastTaskFailure)
+              }
           case AppInfo.Embed.Tasks =>
-            appData.enrichedTasksFuture.map(tasks =>
-              info.copy(maybeTasks = Some(tasks)))
+            appData
+              .enrichedTasksFuture
+              .map(tasks => info.copy(maybeTasks = Some(tasks)))
           case AppInfo.Embed.TaskStats =>
-            appData.taskStatsFuture.map(taskStats =>
-              info.copy(maybeTaskStats = Some(taskStats)))
+            appData
+              .taskStatsFuture
+              .map(taskStats => info.copy(maybeTaskStats = Some(taskStats)))
         }
       }
     }
@@ -101,8 +107,8 @@ class AppInfoBaseData(
   private[this] class AppData(app: AppDefinition) {
     lazy val now: Timestamp = clock.now()
 
-    lazy val tasksFuture: Future[Iterable[Task]] = tasksByAppFuture.map(
-      _.appTasks(app.id))
+    lazy val tasksFuture: Future[Iterable[Task]] = tasksByAppFuture
+      .map(_.appTasks(app.id))
 
     lazy val healthCountsFuture: Future[Map[Task.Id, Seq[Health]]] = {
       log.debug(s"retrieving health counts for app [${app.id}]")
@@ -157,8 +163,8 @@ class AppInfoBaseData(
 
       log.debug(s"assembling rich tasks for app [${app.id}]")
 
-      val tasksByIdFuture = tasksByAppFuture.map(
-        _.appTasksMap.get(app.id).map(_.taskStateMap).getOrElse(Map.empty))
+      val tasksByIdFuture = tasksByAppFuture
+        .map(_.appTasksMap.get(app.id).map(_.taskStateMap).getOrElse(Map.empty))
       val healthStatusesFutures = healthCheckManager.statuses(app.id)
       for {
         tasksById <- tasksByIdFuture

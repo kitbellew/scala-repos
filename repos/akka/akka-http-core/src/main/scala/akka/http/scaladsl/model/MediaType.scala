@@ -412,13 +412,15 @@ object MediaTypes extends ObjectRegistry[(String, String), MediaType] {
     extensionMap.getOrElse(ext.toLowerCase, `application/octet-stream`)
 
   private def registerFileExtensions[T <: MediaType](mediaType: T): T = {
-    mediaType.fileExtensions.foreach { ext ⇒
-      val lcExt = ext.toLowerCase
-      require(
-        !extensionMap.contains(lcExt),
-        s"Extension '$ext' clash: media-types '${extensionMap(lcExt)}' and '$mediaType'")
-      extensionMap = extensionMap.updated(lcExt, mediaType)
-    }
+    mediaType
+      .fileExtensions
+      .foreach { ext ⇒
+        val lcExt = ext.toLowerCase
+        require(
+          !extensionMap.contains(lcExt),
+          s"Extension '$ext' clash: media-types '${extensionMap(lcExt)}' and '$mediaType'")
+        extensionMap = extensionMap.updated(lcExt, mediaType)
+      }
     mediaType
   }
 

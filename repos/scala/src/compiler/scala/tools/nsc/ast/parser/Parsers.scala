@@ -611,10 +611,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
 
     /* ------------- ERROR HANDLING ------------------------------------------- */
 
-    val assumedClosingParens = mutable.Map(
-      RPAREN -> 0,
-      RBRACKET -> 0,
-      RBRACE -> 0)
+    val assumedClosingParens = mutable
+      .Map(RPAREN -> 0, RBRACKET -> 0, RBRACE -> 0)
 
     private var inFunReturnType = false
     @inline
@@ -978,7 +976,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       if (elems.lengthCompare(definitions.MaxTupleArity) > 0) {
         syntaxError(
           offset,
-          "too many elements for tuple: " + elems.length + ", allowed: " + definitions.MaxTupleArity,
+          "too many elements for tuple: " + elems
+            .length + ", allowed: " + definitions.MaxTupleArity,
           skipIt = false)
         false
       } else
@@ -1099,11 +1098,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
 
     def finishBinaryOp(isExpr: Boolean, opinfo: OpInfo, rhs: Tree): Tree = {
       import opinfo._
-      val operatorPos: Position = Position.range(
-        rhs.pos.source,
-        offset,
-        offset,
-        offset + operator.length)
+      val operatorPos: Position = Position
+        .range(rhs.pos.source, offset, offset, offset + operator.length)
       val pos = lhs.pos union rhs.pos union operatorPos withPoint offset
 
       atPos(pos)(
@@ -3275,9 +3271,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         if (tp.isEmpty || in.token == EQUALS) {
           accept(EQUALS)
           if (!tp.isEmpty && newmods.isMutable &&
-              (
-                lhs.toList forall (_.isInstanceOf[Ident])
-              ) && in.token == USCORE) {
+              (lhs.toList forall (_.isInstanceOf[Ident])) && in
+                .token == USCORE) {
             in.nextToken()
             newmods = newmods | Flags.DEFAULTINIT
             EmptyTree
@@ -3805,8 +3800,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
            template()
          } else {
            newLineOptWhenFollowedBy(LBRACE)
-           val (self, body) = templateBodyOpt(parenMeansSyntaxError =
-             mods.isTrait || name.isTermName)
+           val (self, body) = templateBodyOpt(parenMeansSyntaxError = mods
+             .isTrait || name.isTermName)
            (List(), self, body)
          })
       def anyvalConstructor() =

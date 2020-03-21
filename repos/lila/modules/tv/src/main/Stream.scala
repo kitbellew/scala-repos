@@ -91,8 +91,8 @@ object Youtube {
     def streamsOnAir(streamers: List[Streamer]) =
       items.flatMap { item =>
         for {
-          streamer <- StreamerList.findYoutube(streamers)(
-            item.snippet.channelId)
+          streamer <- StreamerList
+            .findYoutube(streamers)(item.snippet.channelId)
           if item.snippet.liveBroadcastContent == "live"
         } yield StreamOnAir(
           streamer = streamer,

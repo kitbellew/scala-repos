@@ -499,10 +499,12 @@ object ScalaRunTime {
       val xs = coll1.toIndexedSeq
       val ys = coll2.toIndexedSeq
       if (xs.length != ys.length) {
-        Console.err.println(
-          "Mismatched zip in " + what + ":\n" +
-            "  this: " + xs.mkString(", ") + "\n" +
-            "  that: " + ys.mkString(", "))
+        Console
+          .err
+          .println(
+            "Mismatched zip in " + what + ":\n" +
+              "  this: " + xs.mkString(", ") + "\n" +
+              "  that: " + ys.mkString(", "))
         (new Exception).getStackTrace.drop(2).take(10).foreach(println)
       }
     }

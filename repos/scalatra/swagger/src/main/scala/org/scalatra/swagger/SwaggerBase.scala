@@ -114,10 +114,11 @@ trait SwaggerBaseBase extends Initializable with ScalatraBase {
           )
       ) ~
       (
-        "authorizations" -> swagger.authorizations.foldLeft(JObject(Nil)) {
-          (acc, auth) =>
+        "authorizations" -> swagger
+          .authorizations
+          .foldLeft(JObject(Nil)) { (acc, auth) =>
             acc merge JObject(List(auth.`type` -> Extraction.decompose(auth)))
-        }
+          }
       ) ~
       ("info" -> Option(swagger.apiInfo).map(Extraction.decompose(_)))
   }

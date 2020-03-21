@@ -154,8 +154,10 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
   def redeliveryBurstLimit: Int = defaultRedeliveryBurstLimit
 
   private val defaultRedeliveryBurstLimit: Int =
-    Persistence(
-      context.system).settings.atLeastOnceDelivery.redeliveryBurstLimit
+    Persistence(context.system)
+      .settings
+      .atLeastOnceDelivery
+      .redeliveryBurstLimit
 
   /**
     * After this number of delivery attempts an [[AtLeastOnceDelivery.UnconfirmedWarning]] message
@@ -170,8 +172,10 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     defaultWarnAfterNumberOfUnconfirmedAttempts
 
   private val defaultWarnAfterNumberOfUnconfirmedAttempts: Int =
-    Persistence(
-      context.system).settings.atLeastOnceDelivery.warnAfterNumberOfUnconfirmedAttempts
+    Persistence(context.system)
+      .settings
+      .atLeastOnceDelivery
+      .warnAfterNumberOfUnconfirmedAttempts
 
   /**
     * Maximum number of unconfirmed messages that this actor is allowed to hold in memory.
@@ -186,8 +190,10 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
   def maxUnconfirmedMessages: Int = defaultMaxUnconfirmedMessages
 
   private val defaultMaxUnconfirmedMessages: Int =
-    Persistence(
-      context.system).settings.atLeastOnceDelivery.maxUnconfirmedMessages
+    Persistence(context.system)
+      .settings
+      .atLeastOnceDelivery
+      .maxUnconfirmedMessages
 
   // will be started after recovery completed
   private var redeliverTask: Option[Cancellable] = None
@@ -198,7 +204,9 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
   private def startRedeliverTask(): Unit = {
     val interval = redeliverInterval / 2
     redeliverTask = Some(
-      context.system.scheduler
+      context
+        .system
+        .scheduler
         .schedule(interval, interval, self, RedeliveryTick)(context.dispatcher))
   }
 
@@ -307,7 +315,8 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     val deadline = now - redeliverInterval.toNanos
     var warnings = Vector.empty[UnconfirmedDelivery]
 
-    unconfirmed.iterator
+    unconfirmed
+      .iterator
       .filter {
         case (_, delivery) ⇒
           delivery.timestamp <= deadline
@@ -362,8 +371,10 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     deliverySequenceNr = snapshot.currentDeliveryId
     val now = System.nanoTime()
     unconfirmed =
-      snapshot.unconfirmedDeliveries.map(d ⇒
-        d.deliveryId -> Delivery(d.destination, d.message, now, 0))(breakOut)
+      snapshot
+        .unconfirmedDeliveries
+        .map(d ⇒ d.deliveryId -> Delivery(d.destination, d.message, now, 0))(
+          breakOut)
   }
 
   /**

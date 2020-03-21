@@ -17,9 +17,11 @@ final class PgnDump(
   import PgnDump._
 
   def apply(game: Game, initialFen: Option[String]): Pgn = {
-    val imported = game.pgnImport.flatMap { pgni =>
-      Parser.full(pgni.pgn).toOption
-    }
+    val imported = game
+      .pgnImport
+      .flatMap { pgni =>
+        Parser.full(pgni.pgn).toOption
+      }
     val ts = tags(game, initialFen, imported)
     val fenSituation = ts find (_.name == Tag.FEN) flatMap {
       case Tag(_, fen) =>
@@ -58,8 +60,10 @@ final class PgnDump(
   private def rating(p: Player) = p.rating.fold("?")(_.toString)
 
   private def player(p: Player, u: Option[LightUser]) =
-    p.aiLevel.fold(u.fold(p.name | lila.user.User.anonymous)(_.name))(
-      "lichess AI level " + _)
+    p
+      .aiLevel
+      .fold(u.fold(p.name | lila.user.User.anonymous)(_.name))(
+        "lichess AI level " + _)
 
   private val customStartPosition: Set[chess.variant.Variant] = Set(
     chess.variant.Chess960,
@@ -95,9 +99,11 @@ final class PgnDump(
           Tag(_.Variant, game.variant.name.capitalize),
           Tag(
             _.TimeControl,
-            game.clock.fold("-") { c =>
-              s"${c.limit}+${c.increment}"
-            }),
+            game
+              .clock
+              .fold("-") { c =>
+                s"${c.limit}+${c.increment}"
+              }),
           Tag(_.ECO, game.opening.fold("?")(_.opening.eco)),
           Tag(_.Opening, game.opening.fold("?")(_.opening.name)),
           Tag(
@@ -140,7 +146,11 @@ final class PgnDump(
 object PgnDump {
 
   def result(game: Game) =
-    game.finished.fold(
-      game.winnerColor.fold("1/2-1/2")(color => color.white.fold("1-0", "0-1")),
-      "*")
+    game
+      .finished
+      .fold(
+        game
+          .winnerColor
+          .fold("1/2-1/2")(color => color.white.fold("1-0", "0-1")),
+        "*")
 }

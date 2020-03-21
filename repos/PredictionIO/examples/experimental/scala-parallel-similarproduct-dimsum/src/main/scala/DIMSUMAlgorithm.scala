@@ -37,10 +37,10 @@ class DIMSUMModel(
       sc: SparkContext): Boolean = {
 
     similarities.saveAsObjectFile(s"/tmp/${id}/similarities")
-    sc.parallelize(Seq(itemStringIntMap))
+    sc
+      .parallelize(Seq(itemStringIntMap))
       .saveAsObjectFile(s"/tmp/${id}/itemStringIntMap")
-    sc.parallelize(Seq(items))
-      .saveAsObjectFile(s"/tmp/${id}/items")
+    sc.parallelize(Seq(items)).saveAsObjectFile(s"/tmp/${id}/items")
     true
   }
 
@@ -62,12 +62,11 @@ object DIMSUMModel
       sc: Option[SparkContext]) = {
     new DIMSUMModel(
       similarities = sc.get.objectFile(s"/tmp/${id}/similarities"),
-      itemStringIntMap = sc.get
+      itemStringIntMap = sc
+        .get
         .objectFile[BiMap[String, Int]](s"/tmp/${id}/itemStringIntMap")
         .first,
-      items = sc.get
-        .objectFile[Map[Int, Item]](s"/tmp/${id}/items")
-        .first)
+      items = sc.get.objectFile[Map[Int, Item]](s"/tmp/${id}/items").first)
   }
 }
 
@@ -85,7 +84,8 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
 
     // collect Item as Map and convert ID to Int index
     val items: Map[Int, Item] =
-      data.items
+      data
+        .items
         .map {
           case (id, item) =>
             (itemStringIntMap(id), item)
@@ -95,7 +95,8 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
     val itemCount = items.size
 
     // each row is a sparse vector of rated items by this user
-    val rows: RDD[Vector] = data.viewEvents
+    val rows: RDD[Vector] = data
+      .viewEvents
       .map { r =>
         // Convert user and item String IDs to Int index for MLlib
         val uindex = userStringIntMap.getOrElse(r.user, -1)
@@ -146,10 +147,13 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
 
     val mat = new RowMatrix(rows)
     val scores = mat.columnSimilarities(ap.threshold)
-    val reversedEntries: RDD[MatrixEntry] = scores.entries
+    val reversedEntries: RDD[MatrixEntry] = scores
+      .entries
       .map(e => new MatrixEntry(e.j, e.i, e.value))
     val combined = new CoordinateMatrix(scores.entries.union(reversedEntries))
-    val similarities = combined.toIndexedRowMatrix.rows
+    val similarities = combined
+      .toIndexedRowMatrix
+      .rows
       .map(row => (row.index.toInt, row.vector.asInstanceOf[SparseVector]))
 
     new DIMSUMModel(
@@ -160,53 +164,62 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
 
   def predict(model: DIMSUMModel, query: Query): PredictedResult = {
     // convert the white and black list items to Int index
-    val whiteList: Option[Set[Int]] = query.whiteList.map(set =>
-      set.map(model.itemStringIntMap.get(_)).flatten)
-    val blackList: Option[Set[Int]] = query.blackList.map(set =>
-      set.map(model.itemStringIntMap.get(_)).flatten)
+    val whiteList: Option[Set[Int]] = query
+      .whiteList
+      .map(set => set.map(model.itemStringIntMap.get(_)).flatten)
+    val blackList: Option[Set[Int]] = query
+      .blackList
+      .map(set => set.map(model.itemStringIntMap.get(_)).flatten)
 
     val queryList: Set[Int] =
       query.items.map(model.itemStringIntMap.get(_)).flatten.toSet
 
-    val indexScores = query.items.flatMap { iid =>
-      model.itemStringIntMap
-        .get(iid)
-        .map { itemInt =>
-          val simsSeq = model.similarities.lookup(itemInt)
-          if (simsSeq.isEmpty) {
-            logger.info(s"No similar items found for ${iid}.")
-            Array.empty[(Int, Double)]
-          } else {
-            val sims = simsSeq.head
-            sims.indices.zip(sims.values).filter {
-              case (i, v) =>
-                whiteList.map(_.contains(i)).getOrElse(true) &&
-                  blackList.map(!_.contains(i)).getOrElse(true) &&
-                  // discard items in query as well
-                  (!queryList.contains(i)) &&
-                  // filter categories
-                  query.categories
-                    .map { cat =>
-                      model
-                        .items(i)
+    val indexScores = query
+      .items
+      .flatMap { iid =>
+        model
+          .itemStringIntMap
+          .get(iid)
+          .map { itemInt =>
+            val simsSeq = model.similarities.lookup(itemInt)
+            if (simsSeq.isEmpty) {
+              logger.info(s"No similar items found for ${iid}.")
+              Array.empty[(Int, Double)]
+            } else {
+              val sims = simsSeq.head
+              sims
+                .indices
+                .zip(sims.values)
+                .filter {
+                  case (i, v) =>
+                    whiteList.map(_.contains(i)).getOrElse(true) &&
+                      blackList.map(!_.contains(i)).getOrElse(true) &&
+                      // discard items in query as well
+                      (!queryList.contains(i)) &&
+                      // filter categories
+                      query
                         .categories
-                        .map { itemCat =>
-                          // keep this item if has ovelap categories with the query
-                          !(itemCat.toSet.intersect(cat).isEmpty)
+                        .map { cat =>
+                          model
+                            .items(i)
+                            .categories
+                            .map { itemCat =>
+                              // keep this item if has ovelap categories with the query
+                              !(itemCat.toSet.intersect(cat).isEmpty)
+                            }
+                            .getOrElse(
+                              false
+                            ) // discard this item if it has no categories
                         }
-                        .getOrElse(
-                          false
-                        ) // discard this item if it has no categories
-                    }
-                    .getOrElse(true)
+                        .getOrElse(true)
+                }
             }
           }
-        }
-        .getOrElse {
-          logger.info(s"No similar items for unknown item ${iid}.")
-          Array.empty[(Int, Double)]
-        }
-    }
+          .getOrElse {
+            logger.info(s"No similar items for unknown item ${iid}.")
+            Array.empty[(Int, Double)]
+          }
+      }
 
     val aggregatedScores =
       indexScores
@@ -216,10 +229,12 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
 
     val ord = Ordering.by[(Int, Double), Double](_._2).reverse
     val itemScores =
-      getTopN(aggregatedScores, query.num)(ord).map {
-        case (i, s) =>
-          new ItemScore(item = model.itemIntStringMap(i), score = s)
-      }.toArray
+      getTopN(aggregatedScores, query.num)(ord)
+        .map {
+          case (i, s) =>
+            new ItemScore(item = model.itemIntStringMap(i), score = s)
+        }
+        .toArray
 
     new PredictedResult(itemScores)
   }

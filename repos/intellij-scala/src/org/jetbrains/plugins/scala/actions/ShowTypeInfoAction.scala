@@ -36,9 +36,8 @@ class ShowTypeInfoAction extends AnAction(ScalaBundle.message("type.info")) {
 
     if (editor == null)
       return
-    val file = PsiUtilBase.getPsiFileInEditor(
-      editor,
-      CommonDataKeys.PROJECT.getData(context))
+    val file = PsiUtilBase
+      .getPsiFileInEditor(editor, CommonDataKeys.PROJECT.getData(context))
     if (file.getLanguage != ScalaFileType.SCALA_LANGUAGE)
       return
 
@@ -69,8 +68,8 @@ class ShowTypeInfoAction extends AnAction(ScalaBundle.message("type.info")) {
             val tpeText = tpe.presentableText
             val withoutAliases = Some(ScTypePresentation.withoutAliases(tpe))
             val tpeWithoutImplicits = expr.getTypeWithoutImplicits().toOption
-            val tpeWithoutImplicitsText = tpeWithoutImplicits.map(
-              _.presentableText)
+            val tpeWithoutImplicitsText = tpeWithoutImplicits
+              .map(_.presentableText)
             val expectedTypeText = expr.expectedType().map(_.presentableText)
             val nonSingletonTypeText = ScType
               .extractDesignatorSingletonType(tpe)
@@ -86,8 +85,8 @@ class ShowTypeInfoAction extends AnAction(ScalaBundle.message("type.info")) {
             val simplified = additionalTypeText(withoutAliases, "Simplified")
             val orig = additionalTypeText(tpeWithoutImplicitsText, "Original")
             val expected = additionalTypeText(expectedTypeText, "Expected")
-            val types =
-              mainText ++ simplified.orElse(nonSingleton) ++ orig ++ expected
+            val types = mainText ++ simplified
+              .orElse(nonSingleton) ++ orig ++ expected
 
             if (types.size == 1)
               tpeText

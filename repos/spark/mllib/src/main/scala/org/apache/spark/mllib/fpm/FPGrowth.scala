@@ -125,9 +125,11 @@ object FPGrowthModel extends Loader[FPGrowthModel[_]] {
         StructField("items", ArrayType(itemType)),
         StructField("freq", LongType))
       val schema = StructType(fields)
-      val rowDataRDD = model.freqItemsets.map { x =>
-        Row(x.items, x.freq)
-      }
+      val rowDataRDD = model
+        .freqItemsets
+        .map { x =>
+          Row(x.items, x.freq)
+        }
       sqlContext
         .createDataFrame(rowDataRDD, schema)
         .write
@@ -150,11 +152,14 @@ object FPGrowthModel extends Loader[FPGrowthModel[_]] {
     def loadImpl[Item: ClassTag](
         freqItemsets: DataFrame,
         sample: Item): FPGrowthModel[Item] = {
-      val freqItemsetsRDD = freqItemsets.select("items", "freq").rdd.map { x =>
-        val items = x.getAs[Seq[Item]](0).toArray
-        val freq = x.getLong(1)
-        new FreqItemset(items, freq)
-      }
+      val freqItemsetsRDD = freqItemsets
+        .select("items", "freq")
+        .rdd
+        .map { x =>
+          val items = x.getAs[Seq[Item]](0).toArray
+          val freq = x.getLong(1)
+          new FreqItemset(items, freq)
+        }
       new FPGrowthModel(freqItemsetsRDD)
     }
   }

@@ -48,8 +48,8 @@ object ScalaMarkerType {
         PsiTreeUtil.getParentOfType(element, classOf[ScTypeDefinition])
       case ScalaTokenTypes.kTYPE =>
         PsiTreeUtil.getParentOfType(element, classOf[ScTypeAlias])
-      case ScalaTokenTypes.tIDENTIFIER | ScalaTokenTypes.kVAL |
-          ScalaTokenTypes.kVAR =>
+      case ScalaTokenTypes.tIDENTIFIER | ScalaTokenTypes.kVAL | ScalaTokenTypes
+            .kVAR =>
         PsiTreeUtil.getParentOfType(element, classOf[PsiMember])
       case _ =>
         element
@@ -263,9 +263,11 @@ object ScalaMarkerType {
               members(0).name,
               "" + overrides.length)
         val renderer = new ScCellRenderer
-        util.Arrays.sort(
-          overrides.map(_.asInstanceOf[PsiElement]).toArray,
-          renderer.getComparator)
+        util
+          .Arrays
+          .sort(
+            overrides.map(_.asInstanceOf[PsiElement]).toArray,
+            renderer.getComparator)
         PsiElementListNavigator.openTargets(
           mouseEvent,
           overrides.map(_.asInstanceOf[NavigatablePsiElement]).toArray,
@@ -348,7 +350,8 @@ object ScalaMarkerType {
         case method: PsiMethod if method.containingClass != null =>
           val presentation = method.containingClass.getPresentation
           if (presentation != null)
-            presentation.getPresentableText + " " + presentation.getLocationString
+            presentation.getPresentableText + " " + presentation
+              .getLocationString
           else {
             ClassPresentationUtil.getNameForClass(method.containingClass, false)
           }
@@ -363,7 +366,8 @@ object ScalaMarkerType {
             defaultPresentation
           else {
             val presentation = containing.getPresentation
-            presentation.getPresentableText + " " + presentation.getLocationString
+            presentation.getPresentableText + " " + presentation
+              .getLocationString
           }
         case x: ScClassParameter =>
           val presentation = x.getPresentation

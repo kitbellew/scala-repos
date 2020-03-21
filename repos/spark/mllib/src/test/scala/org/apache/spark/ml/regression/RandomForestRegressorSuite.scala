@@ -73,8 +73,7 @@ class RandomForestRegressorSuite
   test(
     "Regression with continuous features and node Id cache :" +
       " comparing DecisionTree vs. RandomForest(numTrees = 1)") {
-    val rf = new RandomForestRegressor()
-      .setCacheNodeIds(true)
+    val rf = new RandomForestRegressor().setCacheNodeIds(true)
     regressionTestWithContinuousFeatures(rf)
   }
 
@@ -149,10 +148,8 @@ private object RandomForestRegressorSuite extends SparkFunSuite {
       rf.getNumTrees,
       rf.getFeatureSubsetStrategy,
       rf.getSeed.toInt)
-    val newData: DataFrame = TreeTests.setMetadata(
-      data,
-      categoricalFeatures,
-      numClasses = 0)
+    val newData: DataFrame = TreeTests
+      .setMetadata(data, categoricalFeatures, numClasses = 0)
     val newModel = rf.fit(newData)
     // Use parent from newTree since this is not checked anyways.
     val oldModelAsNew = RandomForestRegressionModel.fromOld(

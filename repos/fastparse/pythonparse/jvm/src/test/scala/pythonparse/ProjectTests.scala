@@ -23,7 +23,8 @@ object ProjectTests extends TestSuite {
       Seq("git", "clone", repo, path.toString, "--depth", "1").!
     }
     def listFiles(s: java.io.File): Iterator[String] = {
-      val (dirs, files) = Option(s.listFiles()).toIterator
+      val (dirs, files) = Option(s.listFiles())
+        .toIterator
         .flatMap(_.toIterator)
         .partition(_.isDirectory)
 
@@ -56,7 +57,9 @@ object ProjectTests extends TestSuite {
       .mapValues(_.map(_._2))
     val selfParsed = grouped(0) groupBy { x =>
       print(".")
-      pythonparse.Statements.file_input
+      pythonparse
+        .Statements
+        .file_input
         .parse(new String(Files.readAllBytes(Paths.get(x))))
         .getClass
     }

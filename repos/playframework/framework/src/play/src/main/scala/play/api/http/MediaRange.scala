@@ -23,7 +23,8 @@ case class MediaType(
   override def toString = {
     mediaType + "/" + mediaSubType + parameters
       .map { param =>
-        "; " + param._1 + param._2
+        "; " + param._1 + param
+          ._2
           .map { value =>
             if (MediaRangeParser
                   .token(new CharSequenceReader(value))
@@ -65,8 +66,8 @@ class MediaRange(
   def accepts(mimeType: String): Boolean =
     (mediaType + "/" + mediaSubType).equalsIgnoreCase(mimeType) ||
       (
-        mediaSubType == "*" && mediaType.equalsIgnoreCase(
-          mimeType.takeWhile(_ != '/'))
+        mediaSubType == "*" && mediaType
+          .equalsIgnoreCase(mimeType.takeWhile(_ != '/'))
       ) ||
       (mediaType == "*" && mediaSubType == "*")
 
@@ -96,8 +97,8 @@ object MediaType {
       MediaRangeParser.mediaType(new CharSequenceReader(mediaType)) match {
         case MediaRangeParser.Success(mt: MediaType, next) => {
           if (!next.atEnd) {
-            logger.debug(
-              "Unable to parse part of media type '" + next.source + "'")
+            logger
+              .debug("Unable to parse part of media type '" + next.source + "'")
           }
           Some(mt)
         }
@@ -124,7 +125,8 @@ object MediaRange {
         case MediaRangeParser.Success(mrs: List[MediaRange], next) =>
           if (next.atEnd) {
             logger.debug(
-              "Unable to parse part of media range header '" + next.source + "'")
+              "Unable to parse part of media range header '" + next
+                .source + "'")
           }
           mrs.sorted
         case MediaRangeParser.NoSuccess(err, _) =>

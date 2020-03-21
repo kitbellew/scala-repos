@@ -432,8 +432,8 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
     object parseNum extends Op1F1(StringNamespace, "parseNum") {
       val intPattern = Pattern.compile("^-?(?:0|[1-9][0-9]*)$")
-      val decPattern = Pattern.compile(
-        "^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][-+]?[0-9]+)?$")
+      val decPattern = Pattern
+        .compile("^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][-+]?[0-9]+)?$")
 
       //@deprecated, see the DEPRECATED comment in StringLib
       val tpe = UnaryOperationType(StrAndDateT, JNumberT)

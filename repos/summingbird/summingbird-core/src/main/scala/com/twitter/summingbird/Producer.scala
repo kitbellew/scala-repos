@@ -201,10 +201,12 @@ sealed trait Producer[P <: Platform[P], +T] {
     */
   def lookup[U >: T, V](
       service: P#Service[U, V]): KeyedProducer[P, U, Option[V]] =
-    map[(U, Unit)]((_, ())).leftJoin(service).mapValues {
-      case (_, v) =>
-        v
-    }
+    map[(U, Unit)]((_, ()))
+      .leftJoin(service)
+      .mapValues {
+        case (_, v) =>
+          v
+      }
 
   /** Map each item to a new value */
   def map[U](fn: T => U): Producer[P, U] =
@@ -233,8 +235,7 @@ sealed trait Producer[P <: Platform[P], +T] {
 
   /** Merge a different type of Producer into a single stream */
   def either[U](other: Producer[P, U]): Producer[P, Either[T, U]] =
-    map(Left(_): Either[T, U])
-      .merge(other.map(Right(_): Either[T, U]))
+    map(Left(_): Either[T, U]).merge(other.map(Right(_): Either[T, U]))
 }
 
 /** Wraps the sources of the given Platform */
@@ -398,9 +399,7 @@ sealed trait KeyedProducer[P <: Platform[P], K, V] extends Producer[P, (K, V)] {
   def leftJoin[RightV](
       stream: KeyedProducer[P, K, RightV],
       buffer: P#Buffer[K, RightV]): KeyedProducer[P, K, (V, Option[RightV])] =
-    stream
-      .write(buffer)
-      .also(leftJoin(buffer))
+    stream.write(buffer).also(leftJoin(buffer))
 
   /**
     * Prefer to call this method to flatMap/map if you are mapping only keys.

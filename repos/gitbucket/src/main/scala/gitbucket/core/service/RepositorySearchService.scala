@@ -51,10 +51,8 @@ trait RepositorySearchService {
         Nil
       } else {
         val files = searchRepositoryFiles(git, query)
-        val commits = JGitUtil.getLatestCommitFromPaths(
-          git,
-          files.map(_._1),
-          "HEAD")
+        val commits = JGitUtil
+          .getLatestCommitFromPaths(git, files.map(_._1), "HEAD")
         files.map {
           case (path, text) =>
             val (highlightText, lineNumber) = getHighlightText(text, query)
@@ -83,8 +81,9 @@ trait RepositorySearchService {
     while (treeWalk.next()) {
       val mode = treeWalk.getFileMode(0)
       if (mode == FileMode.REGULAR_FILE || mode == FileMode.EXECUTABLE_FILE) {
-        JGitUtil.getContentFromId(git, treeWalk.getObjectId(0), false).foreach {
-          bytes =>
+        JGitUtil
+          .getContentFromId(git, treeWalk.getObjectId(0), false)
+          .foreach { bytes =>
             if (FileUtil.isText(bytes)) {
               val text = StringUtil.convertFromByteArray(bytes)
               val lowerText = text.toLowerCase
@@ -93,7 +92,7 @@ trait RepositorySearchService {
                 list.append((treeWalk.getPathString, text))
               }
             }
-        }
+          }
       }
     }
     treeWalk.close()

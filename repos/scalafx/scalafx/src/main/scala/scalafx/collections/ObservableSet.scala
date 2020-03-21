@@ -113,8 +113,9 @@ object ObservableSet extends MutableSetFactory[ObservableSet] {
     */
   def apply[T](set: Set[T]): ObservableSet[T] =
     new ObservableSet[T] {
-      override val delegate = jfxc.FXCollections.observableSet(
-        mutableSetAsJavaSet(set))
+      override val delegate = jfxc
+        .FXCollections
+        .observableSet(mutableSetAsJavaSet(set))
     }
 
   // CREATION METHODS - END
@@ -226,7 +227,8 @@ trait ObservableSet[T]
               case _ =>
                 throw new IllegalStateException(
                   "Irregular Change. Added: " +
-                    change.getElementAdded + ", Removed: " + change.getElementRemoved)
+                    change.getElementAdded + ", Removed: " + change
+                    .getElementRemoved)
             }
 
           op(ObservableSet.this, changeEvent)
@@ -263,6 +265,7 @@ trait ObservableSet[T]
   *                 [[http://docs.oracle.com/javase/8/javafx/api/javafx/collections/FXCollections.html FXCollections]].
   */
 class ObservableHashSet[T](
-    override val delegate: jfxc.ObservableSet[T] = jfxc.FXCollections
+    override val delegate: jfxc.ObservableSet[T] = jfxc
+      .FXCollections
       .observableSet(new ju.HashSet[T]))
     extends ObservableSet[T]

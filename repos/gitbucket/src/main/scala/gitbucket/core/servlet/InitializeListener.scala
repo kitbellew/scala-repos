@@ -40,18 +40,14 @@ class InitializeListener
         getCurrentVersion(),
         versions,
         Thread.currentThread.getContextClassLoader) { conn =>
-        FileUtils.writeStringToFile(
-          versionFile,
-          headVersion.versionString,
-          "UTF-8")
+        FileUtils
+          .writeStringToFile(versionFile, headVersion.versionString, "UTF-8")
       }
 
       // Load plugins
       logger.debug("Initialize plugins")
-      PluginRegistry.initialize(
-        event.getServletContext,
-        loadSystemSettings(),
-        conn)
+      PluginRegistry
+        .initialize(event.getServletContext, loadSystemSettings(), conn)
     }
 
     // Start Quartz scheduler
@@ -96,14 +92,16 @@ class DeleteOldActivityActor
 
   def receive = {
     case s: String => {
-      loadSystemSettings().activityLogLimit.foreach { limit =>
-        if (limit > 0) {
-          Database() withTransaction { implicit session =>
-            val rows = deleteOldActivities(limit)
-            logger.info(s"Deleted ${rows} activity logs")
+      loadSystemSettings()
+        .activityLogLimit
+        .foreach { limit =>
+          if (limit > 0) {
+            Database() withTransaction { implicit session =>
+              val rows = deleteOldActivities(limit)
+              logger.info(s"Deleted ${rows} activity logs")
+            }
           }
         }
-      }
     }
   }
 }

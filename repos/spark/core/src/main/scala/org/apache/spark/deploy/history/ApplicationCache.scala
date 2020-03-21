@@ -310,17 +310,16 @@ private[history] class ApplicationCache(
     time(metrics.loadTimer) {
       operations.getAppUI(appId, attemptId) match {
         case Some(LoadedAppUI(ui, updateState)) =>
-          val completed = ui.getApplicationInfoList.exists(
-            _.attempts.last.completed)
+          val completed = ui
+            .getApplicationInfoList
+            .exists(_.attempts.last.completed)
           if (completed) {
             // completed spark UIs are attached directly
             operations.attachSparkUI(appId, attemptId, ui, completed)
           } else {
             // incomplete UIs have the cache-check filter put in front of them.
-            ApplicationCacheCheckFilterRelay.registerFilter(
-              ui,
-              appId,
-              attemptId)
+            ApplicationCacheCheckFilterRelay
+              .registerFilter(ui, appId, attemptId)
             operations.attachSparkUI(appId, attemptId, ui, completed)
           }
           // build the cache entry
@@ -393,10 +392,13 @@ private[history] class ApplicationCache(
     sb.append(s"; time= ${clock.getTimeMillis()}")
     sb.append(s"; entry count= ${appCache.size()}\n")
     sb.append("----\n")
-    appCache.asMap().asScala.foreach {
-      case (key, entry) =>
-        sb.append(s"  $key -> $entry\n")
-    }
+    appCache
+      .asMap()
+      .asScala
+      .foreach {
+        case (key, entry) =>
+          sb.append(s"  $key -> $entry\n")
+      }
     sb.append("----\n")
     sb.append(metrics)
     sb.append("----\n")
@@ -671,8 +673,8 @@ private[history] object ApplicationCacheCheckFilterRelay extends Logging {
     * @param cache new cache
     */
   def setApplicationCache(cache: ApplicationCache): Unit = {
-    applicationCache.foreach(c =>
-      logWarning(s"Overwriting application cache $c"))
+    applicationCache
+      .foreach(c => logWarning(s"Overwriting application cache $c"))
     applicationCache = Some(cache)
   }
 
@@ -726,15 +728,19 @@ private[history] object ApplicationCacheCheckFilterRelay extends Logging {
       appId: String,
       attemptId: Option[String]): Unit = {
     require(ui != null)
-    val enumDispatcher = java.util.EnumSet
+    val enumDispatcher = java
+      .util
+      .EnumSet
       .of(DispatcherType.ASYNC, DispatcherType.REQUEST)
     val holder = new FilterHolder()
     holder.setClassName(FILTER_NAME)
     holder.setInitParameter(APP_ID, appId)
     attemptId.foreach(id => holder.setInitParameter(ATTEMPT_ID, id))
     require(ui.getHandlers != null, "null handlers")
-    ui.getHandlers.foreach { handler =>
-      handler.addFilter(holder, "/*", enumDispatcher)
-    }
+    ui
+      .getHandlers
+      .foreach { handler =>
+        handler.addFilter(holder, "/*", enumDispatcher)
+      }
   }
 }

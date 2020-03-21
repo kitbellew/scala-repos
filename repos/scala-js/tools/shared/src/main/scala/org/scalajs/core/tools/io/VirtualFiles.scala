@@ -173,7 +173,8 @@ trait VirtualSerializedScalaJSIRFile
     val stream = inputStream
     try {
       val (version, info) = ir.InfoSerializers.deserializeWithVersion(stream)
-      val tree = ir.Serializers
+      val tree = ir
+        .Serializers
         .deserialize(stream, version)
         .asInstanceOf[ir.Trees.ClassDef]
       (info, tree)

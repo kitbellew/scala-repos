@@ -88,9 +88,11 @@ object LinearRegression {
         """.stripMargin)
       }
 
-    parser.parse(args, defaultParams).map { params =>
-      run(params)
-    } getOrElse {
+    parser
+      .parse(args, defaultParams)
+      .map { params =>
+        run(params)
+      } getOrElse {
       sys.exit(1)
     }
   }
@@ -124,7 +126,8 @@ object LinearRegression {
       }
 
     val algorithm = new LinearRegressionWithSGD()
-    algorithm.optimizer
+    algorithm
+      .optimizer
       .setNumIterations(params.numIterations)
       .setStepSize(params.stepSize)
       .setUpdater(updater)

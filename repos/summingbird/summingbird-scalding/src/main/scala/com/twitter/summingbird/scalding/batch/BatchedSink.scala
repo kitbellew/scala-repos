@@ -78,9 +78,11 @@ trait BatchedSink[T] extends Sink[T] {
       // This object combines some common scalding batching operations:
       val batchOps = new BatchedOperations(batcher)
 
-      val batchStreams = batchOps.coverIt(timeSpan).map { b =>
-        (b, readStream(b, mode))
-      }
+      val batchStreams = batchOps
+        .coverIt(timeSpan)
+        .map { b =>
+          (b, readStream(b, mode))
+        }
 
       // Maybe an inclusive interval of batches to pull from incoming
       val batchesToWrite: Option[(BatchID, BatchID)] =
@@ -140,7 +142,8 @@ trait BatchedSink[T] extends Sink[T] {
         if (flows.isEmpty)
           Left(
             List(
-              "Zero batches requested, should never occur: " + timeSpan.toString))
+              "Zero batches requested, should never occur: " + timeSpan
+                .toString))
         else {
           // it is a static (i.e. independent from input) bug if this get ever throws
           val available = batchOps.intersect(batches, timeSpan).get

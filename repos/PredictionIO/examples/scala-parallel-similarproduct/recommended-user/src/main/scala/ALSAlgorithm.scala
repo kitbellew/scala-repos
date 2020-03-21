@@ -63,7 +63,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
     // collect SimilarUser as Map and convert ID to Int index
     val similarUsers: Map[Int, User] =
-      data.users
+      data
+        .users
         .map {
           case (id, similarUser) =>
             (similarUserStringIntMap(id), similarUser)
@@ -71,7 +72,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         .collectAsMap()
         .toMap
 
-    val mllibRatings = data.followEvents
+    val mllibRatings = data
+      .followEvents
       .map { r =>
         // Convert user and user String IDs to Int index for MLlib
         val uindex = userStringIntMap.getOrElse(r.user, -1)
@@ -134,16 +136,19 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       query.users.map(model.similarUserStringIntMap.get).flatten.toSet
 
     val queryFeatures: Vector[Array[Double]] =
-      queryList.toVector
-      // similarUserFeatures may not contain the requested user
-      .map { similarUser =>
-        similarUserFeatures.get(similarUser)
-      }.flatten
+      queryList
+        .toVector
+        // similarUserFeatures may not contain the requested user
+        .map { similarUser =>
+          similarUserFeatures.get(similarUser)
+        }.flatten
 
-    val whiteList: Option[Set[Int]] = query.whiteList.map(set =>
-      set.map(model.similarUserStringIntMap.get).flatten)
-    val blackList: Option[Set[Int]] = query.blackList.map(set =>
-      set.map(model.similarUserStringIntMap.get).flatten)
+    val whiteList: Option[Set[Int]] = query
+      .whiteList
+      .map(set => set.map(model.similarUserStringIntMap.get).flatten)
+    val blackList: Option[Set[Int]] = query
+      .blackList
+      .map(set => set.map(model.similarUserStringIntMap.get).flatten)
 
     val ord = Ordering.by[(Int, Double), Double](_._2).reverse
 
@@ -153,26 +158,31 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
           s"No similarUserFeatures vector for query users ${query.users}.")
         Array[(Int, Double)]()
       } else {
-        similarUserFeatures.par // convert to parallel collection
+        similarUserFeatures
+          .par // convert to parallel collection
           .mapValues { f =>
-            queryFeatures.map { qf =>
-              cosine(qf, f)
-            }.sum
+            queryFeatures
+              .map { qf =>
+                cosine(qf, f)
+              }
+              .sum
           }
           .filter(_._2 > 0) // keep similarUsers with score > 0
           .seq // convert back to sequential collection
           .toArray
       }
 
-    val filteredScore = indexScores.view.filter {
-      case (i, v) =>
-        isCandidateSimilarUser(
-          i = i,
-          similarUsers = model.similarUsers,
-          queryList = queryList,
-          whiteList = whiteList,
-          blackList = blackList)
-    }
+    val filteredScore = indexScores
+      .view
+      .filter {
+        case (i, v) =>
+          isCandidateSimilarUser(
+            i = i,
+            similarUsers = model.similarUsers,
+            queryList = queryList,
+            whiteList = whiteList,
+            blackList = blackList)
+      }
 
     val topScores = getTopN(filteredScore, query.num)(ord).toArray
 

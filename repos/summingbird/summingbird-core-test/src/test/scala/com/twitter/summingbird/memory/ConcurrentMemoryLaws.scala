@@ -144,11 +144,13 @@ class ConcurrentMemoryLaws extends WordSpec {
     val lookupFn = { k: K2 =>
       Option(currentStore.get(k))
     };
-    TestGraphs.singleStepMapKeysInScala(original)(fnA, fnB).forall {
-      case (k, v) =>
-        val lv = lookupFn(k).getOrElse(Monoid.zero)
-        Equiv[V].equiv(v, lv)
-    }
+    TestGraphs
+      .singleStepMapKeysInScala(original)(fnA, fnB)
+      .forall {
+        case (k, v) =>
+          val lv = lookupFn(k).getOrElse(Monoid.zero)
+          Equiv[V].equiv(v, lv)
+      }
   }
 
   def lookupCollectChecker[T: Arbitrary: Equiv: Manifest, U: Arbitrary: Equiv]
@@ -184,8 +186,9 @@ class ConcurrentMemoryLaws extends WordSpec {
     val store: ConcurrentMemory#Store[K, V] = new ConcurrentHashMap[K, V]()
 
     val prod =
-      TestGraphs.jobWithStats[ConcurrentMemory, T, K, V](jobID, source, store)(
-        t => fn(t))
+      TestGraphs
+        .jobWithStats[ConcurrentMemory, T, K, V](jobID, source, store)(t =>
+          fn(t))
     Await.result(mem.plan(prod).run, Duration.Inf)
     //mem.run(mem.plan(prod))
 

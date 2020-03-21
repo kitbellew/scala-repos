@@ -28,15 +28,18 @@ import common.{Box, Empty, Full}
   */
 object HtmlPropertiesSpecBoot {
   def boot() {
-    LiftRules.htmlProperties.default.set(
-      (_: Req) match {
-        case r @ Req("html5" :: _, _, _) =>
-          println("Html5 request: " + r)
-          Html5Properties(r.userAgent)
-        case r =>
-          println("other request: " + r)
-          OldHtmlProperties(r.userAgent)
-      })
+    LiftRules
+      .htmlProperties
+      .default
+      .set(
+        (_: Req) match {
+          case r @ Req("html5" :: _, _, _) =>
+            println("Html5 request: " + r)
+            Html5Properties(r.userAgent)
+          case r =>
+            println("other request: " + r)
+            OldHtmlProperties(r.userAgent)
+        })
   }
 }
 

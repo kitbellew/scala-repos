@@ -16,9 +16,8 @@ object DescriptorParser {
       case Success(d) =>
         d
       case Failure(error: ParseError) =>
-        val msg = parser.formatError(
-          error,
-          new ErrorFormatter(showTraces = true))
+        val msg = parser
+          .formatError(error, new ErrorFormatter(showTraces = true))
         throw new Exception(s"Failed to parse descriptor: $msg")
       case Failure(other) =>
         throw new Exception("Failed to parse descriptor: ", other)
@@ -31,9 +30,8 @@ object DescriptorParser {
       case Success(d) =>
         d
       case Failure(error: ParseError) =>
-        val msg = parser.formatError(
-          error,
-          new ErrorFormatter(showTraces = true))
+        val msg = parser
+          .formatError(error, new ErrorFormatter(showTraces = true))
         throw new Exception(s"Failed to parse descriptor type: $msg")
       case Failure(other) =>
         throw new Exception("Failed to parse descriptor type: ", other)

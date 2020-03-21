@@ -20,10 +20,12 @@ object Dependencies {
   val Versions = Seq(
     crossScalaVersions := Seq("2.11.7"), // "2.12.0-M3"
     scalaVersion := crossScalaVersions.value.head,
-    scalaStmVersion := sys.props
+    scalaStmVersion := sys
+      .props
       .get("akka.build.scalaStmVersion")
       .getOrElse("0.7"),
-    scalaCheckVersion := sys.props
+    scalaCheckVersion := sys
+      .props
       .get("akka.build.scalaCheckVersion")
       .getOrElse("1.11.6"),
     scalaTestVersion := (
@@ -52,9 +54,8 @@ object Dependencies {
 
     val scalaXml =
       "org.scala-lang.modules" %% "scala-xml" % "1.0.5" // Scala License
-    val scalaReflect = ScalaVersionDependentModuleID.versioned(
-      "org.scala-lang" % "scala-reflect" % _
-    ) // Scala License
+    val scalaReflect = ScalaVersionDependentModuleID
+      .versioned("org.scala-lang" % "scala-reflect" % _) // Scala License
 
     val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.16" // MIT
 
@@ -268,11 +269,11 @@ object Dependencies {
 
   // special, since it also includes a compiler plugin
   lazy val parsing = Seq(
-    DependencyHelpers.versionDependentDeps(
-      Dependencies.Compile.scalaReflect % "provided"),
+    DependencyHelpers
+      .versionDependentDeps(Dependencies.Compile.scalaReflect % "provided"),
     addCompilerPlugin(
-      "org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.fullMapped(
-        nominalScalaVersion))
+      "org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion
+        .fullMapped(nominalScalaVersion))
   )
 
   lazy val httpTestkit = l ++= Seq(

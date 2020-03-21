@@ -14,7 +14,8 @@ import org.scalacheck._
   */
 case class TestStore[K, +V](m: Map[K, Option[V]]) extends ReadableStore[K, V] {
   override def get(k: K) =
-    m.get(k)
+    m
+      .get(k)
       .map {
         Future.value(_)
       }
@@ -96,8 +97,8 @@ class ClientStoreProps extends Properties("ClientStore") {
       val offline = Future.value(Some((b, 0)))
       val nextB = BatchID(b.id + offset)
       if (offset >= 0) {
-        Await.result(
-          ClientStore.offlineLTEQBatch(0, nextB, offline)) == offline.get
+        Await.result(ClientStore.offlineLTEQBatch(0, nextB, offline)) == offline
+          .get
       } else {
         Await.ready(ClientStore.offlineLTEQBatch(0, nextB, offline)).isThrow
       }

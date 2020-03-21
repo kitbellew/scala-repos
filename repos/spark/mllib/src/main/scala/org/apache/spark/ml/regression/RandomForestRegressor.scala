@@ -221,9 +221,8 @@ final class RandomForestRegressionModel private[ml] (
     *  - Normalize feature importance vector to sum to 1.
     */
   @Since("1.5.0")
-  lazy val featureImportances: Vector = RandomForest.featureImportances(
-    trees,
-    numFeatures)
+  lazy val featureImportances: Vector = RandomForest
+    .featureImportances(trees, numFeatures)
 
   /** (private[ml]) Convert to a model in the old API */
   private[ml] def toOld: OldRandomForestModel = {
@@ -244,10 +243,12 @@ private[ml] object RandomForestRegressionModel {
       "Cannot convert RandomForestModel" +
         s" with algo=${oldModel.algo} (old API) to RandomForestRegressionModel (new API)."
     )
-    val newTrees = oldModel.trees.map { tree =>
-      // parent for each tree is null since there is no good way to set this.
-      DecisionTreeRegressionModel.fromOld(tree, null, categoricalFeatures)
-    }
+    val newTrees = oldModel
+      .trees
+      .map { tree =>
+        // parent for each tree is null since there is no good way to set this.
+        DecisionTreeRegressionModel.fromOld(tree, null, categoricalFeatures)
+      }
     new RandomForestRegressionModel(parent.uid, newTrees, numFeatures)
   }
 }

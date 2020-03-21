@@ -96,11 +96,13 @@ abstract class GenJSCode
           val srcURI = file.toURI
           def matches(pat: java.net.URI) = pat.relativize(srcURI) != srcURI
 
-          scalaJSOpts.sourceURIMaps.collectFirst {
-            case ScalaJSOptions.URIMap(from, to) if matches(from) =>
-              val relURI = from.relativize(srcURI)
-              to.fold(relURI)(_.resolve(relURI))
-          } getOrElse srcURI
+          scalaJSOpts
+            .sourceURIMaps
+            .collectFirst {
+              case ScalaJSOptions.URIMap(from, to) if matches(from) =>
+                val relURI = from.relativize(srcURI)
+                to.fold(relURI)(_.resolve(relURI))
+            } getOrElse srcURI
       }
     }
 
@@ -153,7 +155,8 @@ abstract class GenJSCode
     // Rewriting of anonymous function classes ---------------------------------
 
     // scalastyle:off disallow.space.after.token
-    private val translatedAnonFunctions = mutable.Map
+    private val translatedAnonFunctions = mutable
+      .Map
       .empty[Symbol, /*ctor args:*/ List[js.Tree] => /*instance:*/ js.Tree]
     private val instantiatedAnonFunctions = mutable.Set.empty[Symbol]
     private val undefinedDefaultParams = mutable.Set.empty[Symbol]
@@ -245,7 +248,9 @@ abstract class GenJSCode
           /* Similarly, do not emit code for impl classes of raw JS traits. */
           val isRawJSImplClass =
             sym.isImplClass && isRawJSType(
-              sym.owner.info
+              sym
+                .owner
+                .info
                 .decl(sym.name.dropRight(nme.IMPL_CLASS_SUFFIX.length))
                 .tpe)
 
@@ -327,7 +332,8 @@ abstract class GenJSCode
         (sym.isAnonymousFunction && !sym.isSubClass(PartialFunctionClass)) ||
         isStdLibClassWithAdHocInlineAnnot(sym))
 
-      val optimizerHints = OptimizerHints.empty
+      val optimizerHints = OptimizerHints
+        .empty
         .withInline(shouldMarkInline)
         .withNoinline(sym.hasAnnotation(NoinlineAnnotationClass))
 
@@ -350,8 +356,9 @@ abstract class GenJSCode
             val sym = dd.symbol
 
             val isExport = jsInterop.isExport(sym)
-            val isNamedExport = isExport && sym.annotations.exists(
-              _.symbol == JSExportNamedAnnotation)
+            val isNamedExport = isExport && sym
+              .annotations
+              .exists(_.symbol == JSExportNamedAnnotation)
 
             if (isNamedExport)
               generatedMethods += genNamedExporterDef(dd)
@@ -745,16 +752,16 @@ abstract class GenJSCode
           /* Section containing all the code executed before the call to `this`
            * for every secondary constructor.
            */
-          val prePrimaryCtorBody = jsConstructorBuilder.mkPrePrimaryCtorBody(
-            overloadIdent)
+          val prePrimaryCtorBody = jsConstructorBuilder
+            .mkPrePrimaryCtorBody(overloadIdent)
 
           val primaryCtorBody = jsConstructorBuilder.primaryCtorBody
 
           /* Section containing all the code executed after the call to this for
            * every secondary constructor.
            */
-          val postPrimaryCtorBody = jsConstructorBuilder.mkPostPrimaryCtorBody(
-            overloadIdent)
+          val postPrimaryCtorBody = jsConstructorBuilder
+            .mkPostPrimaryCtorBody(overloadIdent)
 
           val newBody = js.Block(
             overloadSelection ::: prePrimaryCtorBody ::
@@ -785,10 +792,13 @@ abstract class GenJSCode
         if (methodName == this.method.name.name) {
           Some(this)
         } else {
-          subConstructors.iterator.map(_.get(methodName)).collectFirst {
-            case Some(node) =>
-              node
-          }
+          subConstructors
+            .iterator
+            .map(_.get(methodName))
+            .collectFirst {
+              case Some(node) =>
+                node
+            }
         }
       }
 
@@ -796,13 +806,15 @@ abstract class GenJSCode
         method.args.map(_.ref)
 
       def getAllParamDefsAsVars(implicit pos: Position): List[js.VarDef] = {
-        val localDefs = method.args.map { pDef =>
-          js.VarDef(
-            pDef.name,
-            pDef.ptpe,
-            mutable = true,
-            jstpe.zeroOf(pDef.ptpe))
-        }
+        val localDefs = method
+          .args
+          .map { pDef =>
+            js.VarDef(
+              pDef.name,
+              pDef.ptpe,
+              mutable = true,
+              jstpe.zeroOf(pDef.ptpe))
+          }
         localDefs ++ subConstructors.flatMap(_.getAllParamDefsAsVars)
       }
     }
@@ -838,20 +850,25 @@ abstract class GenJSCode
       private def mkSubPreCalls(
           constructorTree: ConstructorTree,
           overrideNumRef: js.VarRef)(implicit pos: Position): js.Tree = {
-        val overrideNumss = constructorTree.subConstructors.map(
-          _.overrideNumBounds)
+        val overrideNumss = constructorTree
+          .subConstructors
+          .map(_.overrideNumBounds)
         val paramRefs = constructorTree.getParamRefs
-        val bodies = constructorTree.subConstructors.map { constructorTree =>
-          mkPrePrimaryCtorBodyOnSndCtr(
-            constructorTree,
-            overrideNumRef,
-            paramRefs)
-        }
-        overrideNumss.zip(bodies).foldRight[js.Tree](js.Skip()) {
-          case ((numBounds, body), acc) =>
-            val cond = mkOverrideNumsCond(overrideNumRef, numBounds)
-            js.If(cond, body, acc)(jstpe.BooleanType)
-        }
+        val bodies = constructorTree
+          .subConstructors
+          .map { constructorTree =>
+            mkPrePrimaryCtorBodyOnSndCtr(
+              constructorTree,
+              overrideNumRef,
+              paramRefs)
+          }
+        overrideNumss
+          .zip(bodies)
+          .foldRight[js.Tree](js.Skip()) {
+            case ((numBounds, body), acc) =>
+              val cond = mkOverrideNumsCond(overrideNumRef, numBounds)
+              js.If(cond, body, acc)(jstpe.BooleanType)
+          }
       }
 
       private def mkPrePrimaryCtorBodyOnSndCtr(
@@ -894,19 +911,24 @@ abstract class GenJSCode
       private def mkSubPostCalls(
           constructorTree: ConstructorTree,
           overrideNumRef: js.VarRef)(implicit pos: Position): js.Tree = {
-        val overrideNumss = constructorTree.subConstructors.map(
-          _.overrideNumBounds)
-        val bodies = constructorTree.subConstructors.map { ct =>
-          mkPostPrimaryCtorBodyOnSndCtr(ct, overrideNumRef)
-        }
-        overrideNumss.zip(bodies).foldRight[js.Tree](js.Skip()) {
-          case ((numBounds, js.Skip()), acc) =>
-            acc
+        val overrideNumss = constructorTree
+          .subConstructors
+          .map(_.overrideNumBounds)
+        val bodies = constructorTree
+          .subConstructors
+          .map { ct =>
+            mkPostPrimaryCtorBodyOnSndCtr(ct, overrideNumRef)
+          }
+        overrideNumss
+          .zip(bodies)
+          .foldRight[js.Tree](js.Skip()) {
+            case ((numBounds, js.Skip()), acc) =>
+              acc
 
-          case ((numBounds, body), acc) =>
-            val cond = mkOverrideNumsCond(overrideNumRef, numBounds)
-            js.If(cond, body, acc)(jstpe.BooleanType)
-        }
+            case ((numBounds, body), acc) =>
+              val cond = mkOverrideNumsCond(overrideNumRef, numBounds)
+              js.If(cond, body, acc)(jstpe.BooleanType)
+          }
       }
 
       private def mkPostPrimaryCtorBodyOnSndCtr(
@@ -915,12 +937,14 @@ abstract class GenJSCode
         val postSuperCall = {
           constructorTree.method.body match {
             case js.Block(stats) =>
-              stats.dropWhile {
-                case js.ApplyStatic(_, mtd, _) =>
-                  !ir.Definitions.isConstructorName(mtd.name)
-                case _ =>
-                  true
-              }.tail
+              stats
+                .dropWhile {
+                  case js.ApplyStatic(_, mtd, _) =>
+                    !ir.Definitions.isConstructorName(mtd.name)
+                  case _ =>
+                    true
+                }
+                .tail
 
             case _ =>
               Nil
@@ -1062,11 +1086,13 @@ abstract class GenJSCode
             method.name
 
           case js.Block(stats) =>
-            stats.collectFirst {
-              case js.ApplyStatic(_, method, js.This() :: _)
-                  if ir.Definitions.isConstructorName(method.name) =>
-                method.name
-            }.get
+            stats
+              .collectFirst {
+                case js.ApplyStatic(_, method, js.This() :: _)
+                    if ir.Definitions.isConstructorName(method.name) =>
+                  method.name
+              }
+              .get
         }
 
       val (primaryCtor :: Nil, secondaryCtors) = ctors.partition {
@@ -1186,16 +1212,23 @@ abstract class GenJSCode
                * default method calling the impl class method.
                */
               val implClassSym = sym.owner.implClass
-              val implMethodSym = implClassSym.info.member(sym.name).suchThat {
-                s =>
+              val implMethodSym = implClassSym
+                .info
+                .member(sym.name)
+                .suchThat { s =>
                   s.isMethod &&
                   s.tpe.params.size == sym.tpe.params.size + 1 &&
                   s.tpe.params.head.tpe =:= sym.owner.toTypeConstructor &&
-                  s.tpe.params.tail.zip(sym.tpe.params).forall {
-                    case (sParam, symParam) =>
-                      sParam.tpe =:= symParam.tpe
-                  }
-              }
+                  s
+                    .tpe
+                    .params
+                    .tail
+                    .zip(sym.tpe.params)
+                    .forall {
+                      case (sParam, symParam) =>
+                        sParam.tpe =:= symParam.tpe
+                    }
+                }
               genTraitImplApply(
                 implMethodSym,
                 js.This()(currentClassType) :: jsParams.map(_.ref))
@@ -1241,7 +1274,8 @@ abstract class GenJSCode
               !ignoreNoinlineAnnotation(sym)
             }
 
-            val optimizerHints = OptimizerHints.empty
+            val optimizerHints = OptimizerHints
+              .empty
               .withInline(shouldMarkInline)
               .withNoinline(shouldMarkNoinline)
 
@@ -1290,10 +1324,10 @@ abstract class GenJSCode
               } else {
                 val patches =
                   (
-                    unmutatedMutableLocalVars.map(
-                      encodeLocalSym(_).name -> false) :::
-                      mutatedImmutableLocalVals.map(
-                        encodeLocalSym(_).name -> true)
+                    unmutatedMutableLocalVars
+                      .map(encodeLocalSym(_).name -> false) :::
+                      mutatedImmutableLocalVals
+                        .map(encodeLocalSym(_).name -> true)
                   ).toMap
                 patchMutableFlagOfLocals(methodDef, patches)
               }
@@ -1349,9 +1383,8 @@ abstract class GenJSCode
                 super.transform(tree, isStat)
             }
         }
-      val newBody = transformer.transform(
-        body,
-        isStat = resultType == jstpe.NoType)
+      val newBody = transformer
+        .transform(body, isStat = resultType == jstpe.NoType)
       js.MethodDef(static, methodName, newParams, resultType, newBody)(
         methodDef.optimizerHints,
         None)(methodDef.pos)
@@ -1378,8 +1411,8 @@ abstract class GenJSCode
             body :: Nil
         }
 
-      val (beforeSuper, superCall :: afterSuper) = bodyStats.span(
-        !_.isInstanceOf[js.JSSuperConstructorCall])
+      val (beforeSuper, superCall :: afterSuper) = bodyStats
+        .span(!_.isInstanceOf[js.JSSuperConstructorCall])
 
       assert(
         !beforeSuper.exists(_.isInstanceOf[js.VarDef]),
@@ -2104,7 +2137,8 @@ abstract class GenJSCode
       } else if (l.isValueType) {
         val result =
           if (cast) {
-            val ctor = ClassCastExceptionClass.info
+            val ctor = ClassCastExceptionClass
+              .info
               .member(nme.CONSTRUCTOR)
               .suchThat(_.tpe.params.isEmpty)
             js.Throw(genNew(ClassCastExceptionClass, ctor, Nil))
@@ -3221,8 +3255,8 @@ abstract class GenJSCode
        */
       val mustUseAnyComparator: Boolean =
         isRawJSType(ltpe) || isRawJSType(rtpe) || {
-          val areSameFinals =
-            ltpe.isFinalType && rtpe.isFinalType && (ltpe =:= rtpe)
+          val areSameFinals = ltpe.isFinalType && rtpe
+            .isFinalType && (ltpe =:= rtpe)
           !areSameFinals && isMaybeBoxed(ltpe.typeSymbol) && isMaybeBoxed(
             rtpe.typeSymbol)
         }
@@ -3236,7 +3270,8 @@ abstract class GenJSCode
             if (rtpe <:< BoxedNumberClass.tpe)
               ptfm.externalEqualsNumNum
             else if (rtpe <:< BoxedCharacterClass.tpe)
-              ptfm.externalEqualsNumObject // will be externalEqualsNumChar in 2.12, SI-9030
+              ptfm
+                .externalEqualsNumObject // will be externalEqualsNumChar in 2.12, SI-9030
             else
               ptfm.externalEqualsNumObject
           } else
@@ -3255,16 +3290,10 @@ abstract class GenJSCode
           /* This requires to evaluate both operands in local values first.
            * The optimizer will eliminate them if possible.
            */
-          val ltemp = js.VarDef(
-            freshLocalIdent(),
-            lsrc.tpe,
-            mutable = false,
-            lsrc)
-          val rtemp = js.VarDef(
-            freshLocalIdent(),
-            rsrc.tpe,
-            mutable = false,
-            rsrc)
+          val ltemp = js
+            .VarDef(freshLocalIdent(), lsrc.tpe, mutable = false, lsrc)
+          val rtemp = js
+            .VarDef(freshLocalIdent(), rsrc.tpe, mutable = false, rsrc)
           js.Block(
             ltemp,
             rtemp,
@@ -3506,15 +3535,18 @@ abstract class GenJSCode
         * dealing with the appropriate primitive type.
         */
       def matchingSymIn(clazz: Symbol) =
-        clazz.tpe.member(sym.name).suchThat { s =>
-          val sParams = s.tpe.params
-          !s.isBridge &&
-          params.size == sParams.size &&
-          (params zip sParams).forall {
-            case (s1, s2) =>
-              s1.tpe =:= s2.tpe
+        clazz
+          .tpe
+          .member(sym.name)
+          .suchThat { s =>
+            val sParams = s.tpe.params
+            !s.isBridge &&
+            params.size == sParams.size &&
+            (params zip sParams).forall {
+              case (s1, s2) =>
+                s1.tpe =:= s2.tpe
+            }
           }
-        }
 
       val ApplyDynamic(receiver, args) = tree
 
@@ -3659,7 +3691,12 @@ abstract class GenJSCode
                     }
                     val castCallTrg = fromAny(
                       callTrg,
-                      reflBoxClassPatched.primaryConstructor.tpe.params.head.tpe)
+                      reflBoxClassPatched
+                        .primaryConstructor
+                        .tpe
+                        .params
+                        .head
+                        .tpe)
                     val reflBox = genNew(
                       reflBoxClassPatched,
                       reflBoxClassPatched.primaryConstructor,
@@ -3827,8 +3864,9 @@ abstract class GenJSCode
             case (js.StringLiteral(keyName), _) =>
               keyName
           }
-          val keyCounts = allKeys.distinct.map(key =>
-            key -> allKeys.count(_ == key))
+          val keyCounts = allKeys
+            .distinct
+            .map(key => key -> allKeys.count(_ == key))
           val duplicateKeyCounts = keyCounts.filter(1 < _._2)
           if (duplicateKeyCounts.nonEmpty) {
             reporter.warning(
@@ -4390,9 +4428,11 @@ abstract class GenJSCode
       assert(
         sym.isModuleClass,
         s"genPrimitiveJSModule called with non-module $sym")
-      fullJSNameOf(sym).split('.').foldLeft(genLoadGlobal()) { (memo, chunk) =>
-        js.JSBracketSelect(memo, js.StringLiteral(chunk))
-      }
+      fullJSNameOf(sym)
+        .split('.')
+        .foldLeft(genLoadGlobal()) { (memo, chunk) =>
+          js.JSBracketSelect(memo, js.StringLiteral(chunk))
+        }
     }
 
     /** Gen actual actual arguments to Scala method call.
@@ -4861,8 +4901,8 @@ abstract class GenJSCode
             paramAccessorLocals := (paramAccessors zip ctorParamDefs).toMap,
             tryingToGenMethodAsJSFunction := true) {
             try {
-              genMethodWithCurrentLocalNameScope(applyDef).getOrElse(
-                abort(s"Oops, $applyDef did not produce a method"))
+              genMethodWithCurrentLocalNameScope(applyDef)
+                .getOrElse(abort(s"Oops, $applyDef did not produce a method"))
             } catch {
               case e: CancelGenMethodAsJSFunction =>
                 fail(e.getMessage)
@@ -4948,7 +4988,9 @@ abstract class GenJSCode
         paramTrees,
         Apply(targetTree @ Select(receiver, _), allArgs0)) = originalFunction
 
-      val captureSyms = global.delambdafy.FreeVarTraverser
+      val captureSyms = global
+        .delambdafy
+        .FreeVarTraverser
         .freeVarsOf(originalFunction)
       val target = targetTree.symbol
       val params = paramTrees.map(_.symbol)
@@ -5085,8 +5127,8 @@ abstract class GenJSCode
         !methodSym.isClassConstructor,
         s"Trying to patchFunBodyWithBoxes for constructor ${methodSym.fullName}")
 
-      val patchedBody = js.Block(
-        paramsLocal :+ ensureBoxed(body, methodType.resultType))
+      val patchedBody = js
+        .Block(paramsLocal :+ ensureBoxed(body, methodType.resultType))
 
       (patchedParams, patchedBody)
     }

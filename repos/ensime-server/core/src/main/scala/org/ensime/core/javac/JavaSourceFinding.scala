@@ -33,7 +33,9 @@ trait JavaSourceFinding extends Helpers with SLF4JLogging {
     Option(info.getTrees.getPath(el)).map { path =>
       OffsetSourcePosition(
         new File(path.getCompilationUnit.getSourceFile.getName),
-        info.getTrees.getSourcePositions
+        info
+          .getTrees
+          .getSourcePositions
           .getStartPosition(path.getCompilationUnit, path.getLeaf)
           .toInt)
     }

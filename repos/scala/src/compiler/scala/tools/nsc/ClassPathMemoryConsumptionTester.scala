@@ -82,7 +82,7 @@ object ClassPathMemoryConsumptionTester {
     if (instancesIndex == -1)
       args
     else
-      args.dropRight(args.length - instancesIndex) ++ args.drop(
-        instancesIndex + 2)
+      args.dropRight(args.length - instancesIndex) ++ args
+        .drop(instancesIndex + 2)
   }
 }

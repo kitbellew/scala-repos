@@ -63,7 +63,8 @@ class QueryPartitionSuite
           ++ testData.toDF.collect ++ testData.toDF.collect)
 
       // delete the path of one partition
-      tmpDir.listFiles
+      tmpDir
+        .listFiles
         .find { f =>
           f.isDirectory && f.getName().startsWith("ds=")
         }

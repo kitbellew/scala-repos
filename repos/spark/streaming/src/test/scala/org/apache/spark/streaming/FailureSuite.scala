@@ -43,9 +43,11 @@ class FailureSuite extends SparkFunSuite with BeforeAndAfter with Logging {
     if (directory != null) {
       Utils.deleteRecursively(directory)
     }
-    StreamingContext.getActive().foreach {
-      _.stop()
-    }
+    StreamingContext
+      .getActive()
+      .foreach {
+        _.stop()
+      }
 
     // Stop SparkContext if active
     SparkContext
@@ -54,10 +56,8 @@ class FailureSuite extends SparkFunSuite with BeforeAndAfter with Logging {
   }
 
   test("multiple failures with map") {
-    MasterFailureTest.testMap(
-      directory.getAbsolutePath,
-      numBatches,
-      batchDuration)
+    MasterFailureTest
+      .testMap(directory.getAbsolutePath, numBatches, batchDuration)
   }
 
   test("multiple failures with updateStateByKey") {

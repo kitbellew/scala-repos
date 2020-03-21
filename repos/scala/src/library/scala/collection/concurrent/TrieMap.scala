@@ -929,10 +929,8 @@ final class TrieMap[K, V] private (
 
   private def readObject(in: java.io.ObjectInputStream) {
     root = INode.newRootNode
-    rootupdater = AtomicReferenceFieldUpdater.newUpdater(
-      classOf[TrieMap[K, V]],
-      classOf[AnyRef],
-      "root")
+    rootupdater = AtomicReferenceFieldUpdater
+      .newUpdater(classOf[TrieMap[K, V]], classOf[AnyRef], "root")
 
     hashingobj = in.readObject().asInstanceOf[Hashing[K]]
     equalityobj = in.readObject().asInstanceOf[Equiv[K]]
@@ -1255,10 +1253,8 @@ final class TrieMap[K, V] private (
 }
 
 object TrieMap extends MutableMapFactory[TrieMap] {
-  val inodeupdater = AtomicReferenceFieldUpdater.newUpdater(
-    classOf[INodeBase[_, _]],
-    classOf[MainNode[_, _]],
-    "mainnode")
+  val inodeupdater = AtomicReferenceFieldUpdater
+    .newUpdater(classOf[INodeBase[_, _]], classOf[MainNode[_, _]], "mainnode")
 
   implicit def canBuildFrom[K, V]: CanBuildFrom[Coll, (K, V), TrieMap[K, V]] =
     new MapCanBuildFrom[K, V]

@@ -363,8 +363,8 @@ class TaskReplaceActorTest
     when(driver.killTask(any[TaskID])).thenAnswer(
       new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
-          val taskId = Task.Id(
-            invocation.getArguments()(0).asInstanceOf[TaskID])
+          val taskId = Task
+            .Id(invocation.getArguments()(0).asInstanceOf[TaskID])
           val update = MesosStatusUpdateEvent(
             "",
             taskId,
@@ -471,8 +471,8 @@ class TaskReplaceActorTest
     when(driver.killTask(any[TaskID])).thenAnswer(
       new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
-          val taskId = Task.Id(
-            invocation.getArguments()(0).asInstanceOf[TaskID])
+          val taskId = Task
+            .Id(invocation.getArguments()(0).asInstanceOf[TaskID])
           val update = MesosStatusUpdateEvent(
             "",
             taskId,
@@ -578,8 +578,8 @@ class TaskReplaceActorTest
     when(driver.killTask(any[TaskID])).thenAnswer(
       new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
-          val taskId = Task.Id(
-            invocation.getArguments()(0).asInstanceOf[TaskID])
+          val taskId = Task
+            .Id(invocation.getArguments()(0).asInstanceOf[TaskID])
           val update = MesosStatusUpdateEvent(
             "",
             taskId,
@@ -713,8 +713,8 @@ class TaskReplaceActorTest
         var firstKillForTaskB = true
 
         def answer(invocation: InvocationOnMock): Status = {
-          val taskId = Task.Id(
-            invocation.getArguments()(0).asInstanceOf[TaskID])
+          val taskId = Task
+            .Id(invocation.getArguments()(0).asInstanceOf[TaskID])
 
           if (taskId == taskB.taskId && firstKillForTaskB) {
             firstKillForTaskB = false

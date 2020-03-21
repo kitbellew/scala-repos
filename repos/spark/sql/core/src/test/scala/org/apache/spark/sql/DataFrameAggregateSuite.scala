@@ -86,7 +86,8 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
         Row(null, null, 113000.0) :: Nil
     )
 
-    val df0 = sqlContext.sparkContext
+    val df0 = sqlContext
+      .sparkContext
       .parallelize(
         Seq(
           Fact(20151123, 18, 35, "room1", 18.6),
@@ -306,8 +307,7 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
       ("a", "b", "c"),
       ("a", "b", "d"),
       ("x", "y", "z"),
-      ("x", "q", null.asInstanceOf[String]))
-      .toDF("key1", "key2", "key3")
+      ("x", "q", null.asInstanceOf[String])).toDF("key1", "key2", "key3")
 
     checkAnswer(df1.agg(countDistinct('key1, 'key2)), Row(3))
 

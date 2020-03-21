@@ -367,8 +367,8 @@ class LogTest extends JUnitSuite {
         time.scheduler,
         time = time)
     val numMessages = 100
-    val messageSets = (0 until numMessages).map(i =>
-      TestUtils.singleMessageSet(i.toString.getBytes))
+    val messageSets = (0 until numMessages)
+      .map(i => TestUtils.singleMessageSet(i.toString.getBytes))
     messageSets.foreach(log.append(_))
     log.flush
 
@@ -380,7 +380,9 @@ class LogTest extends JUnitSuite {
       assertEquals(
         "Messages not equal at offset " + offset,
         messageSets(i).head.message,
-        messages.head.message
+        messages
+          .head
+          .message
           .toFormatVersion(messageSets(i).head.message.magic))
       offset = messages.head.offset + 1
     }
@@ -506,9 +508,8 @@ class LogTest extends JUnitSuite {
     // append messages to log
     val configSegmentSize = messageSet.sizeInBytes - 1
     val logProps = new Properties()
-    logProps.put(
-      LogConfig.SegmentBytesProp,
-      configSegmentSize: java.lang.Integer)
+    logProps
+      .put(LogConfig.SegmentBytesProp, configSegmentSize: java.lang.Integer)
     // We use need to use magic value 1 here because the test is message size sensitive.
     logProps.put(
       LogConfig.MessageFormatVersionProp,
@@ -621,9 +622,8 @@ class LogTest extends JUnitSuite {
     // append messages to log
     val maxMessageSize = second.sizeInBytes - 1
     val logProps = new Properties()
-    logProps.put(
-      LogConfig.MaxMessageBytesProp,
-      maxMessageSize: java.lang.Integer)
+    logProps
+      .put(LogConfig.MaxMessageBytesProp, maxMessageSize: java.lang.Integer)
     val log =
       new Log(
         logDir,
@@ -654,9 +654,8 @@ class LogTest extends JUnitSuite {
     val indexInterval = 3 * messageSize
     val logProps = new Properties()
     logProps.put(LogConfig.SegmentBytesProp, segmentSize: java.lang.Integer)
-    logProps.put(
-      LogConfig.IndexIntervalBytesProp,
-      indexInterval: java.lang.Integer)
+    logProps
+      .put(LogConfig.IndexIntervalBytesProp, indexInterval: java.lang.Integer)
     logProps.put(LogConfig.SegmentIndexBytesProp, 4096: java.lang.Integer)
     val config = LogConfig(logProps)
     var log = new Log(logDir, config, recoveryPoint = 0L, time.scheduler, time)
@@ -675,8 +674,8 @@ class LogTest extends JUnitSuite {
     log =
       new Log(logDir, config, recoveryPoint = lastOffset, time.scheduler, time)
     assertEquals(
-      "Should have %d messages when log is reopened w/o recovery".format(
-        numMessages),
+      "Should have %d messages when log is reopened w/o recovery"
+        .format(numMessages),
       numMessages,
       log.logEndOffset)
     assertEquals(
@@ -692,8 +691,8 @@ class LogTest extends JUnitSuite {
     // test recovery case
     log = new Log(logDir, config, recoveryPoint = 0L, time.scheduler, time)
     assertEquals(
-      "Should have %d messages when log is reopened with recovery".format(
-        numMessages),
+      "Should have %d messages when log is reopened with recovery"
+        .format(numMessages),
       numMessages,
       log.logEndOffset)
     assertEquals(
@@ -903,9 +902,8 @@ class LogTest extends JUnitSuite {
 
     val set = TestUtils.singleMessageSet("test".getBytes)
     val logProps = new Properties()
-    logProps.put(
-      LogConfig.SegmentBytesProp,
-      set.sizeInBytes * 5: java.lang.Integer)
+    logProps
+      .put(LogConfig.SegmentBytesProp, set.sizeInBytes * 5: java.lang.Integer)
     logProps.put(LogConfig.SegmentIndexBytesProp, 1000: java.lang.Integer)
     logProps.put(LogConfig.IndexIntervalBytesProp, 1: java.lang.Integer)
     val log =
@@ -937,9 +935,8 @@ class LogTest extends JUnitSuite {
   def testReopenThenTruncate() {
     val set = TestUtils.singleMessageSet("test".getBytes)
     val logProps = new Properties()
-    logProps.put(
-      LogConfig.SegmentBytesProp,
-      set.sizeInBytes * 5: java.lang.Integer)
+    logProps
+      .put(LogConfig.SegmentBytesProp, set.sizeInBytes * 5: java.lang.Integer)
     logProps.put(LogConfig.SegmentIndexBytesProp, 1000: java.lang.Integer)
     logProps.put(LogConfig.IndexIntervalBytesProp, 10000: java.lang.Integer)
     val config = LogConfig(logProps)
@@ -968,14 +965,12 @@ class LogTest extends JUnitSuite {
     val set = TestUtils.singleMessageSet("test".getBytes)
     val asyncDeleteMs = 1000
     val logProps = new Properties()
-    logProps.put(
-      LogConfig.SegmentBytesProp,
-      set.sizeInBytes * 5: java.lang.Integer)
+    logProps
+      .put(LogConfig.SegmentBytesProp, set.sizeInBytes * 5: java.lang.Integer)
     logProps.put(LogConfig.SegmentIndexBytesProp, 1000: java.lang.Integer)
     logProps.put(LogConfig.IndexIntervalBytesProp, 10000: java.lang.Integer)
-    logProps.put(
-      LogConfig.FileDeleteDelayMsProp,
-      asyncDeleteMs: java.lang.Integer)
+    logProps
+      .put(LogConfig.FileDeleteDelayMsProp, asyncDeleteMs: java.lang.Integer)
     val config = LogConfig(logProps)
 
     val log = new Log(logDir, config, recoveryPoint = 0L, time.scheduler, time)
@@ -1014,9 +1009,8 @@ class LogTest extends JUnitSuite {
   def testOpenDeletesObsoleteFiles() {
     val set = TestUtils.singleMessageSet("test".getBytes)
     val logProps = new Properties()
-    logProps.put(
-      LogConfig.SegmentBytesProp,
-      set.sizeInBytes * 5: java.lang.Integer)
+    logProps
+      .put(LogConfig.SegmentBytesProp, set.sizeInBytes * 5: java.lang.Integer)
     logProps.put(LogConfig.SegmentIndexBytesProp, 1000: java.lang.Integer)
     val config = LogConfig(logProps)
     var log = new Log(logDir, config, recoveryPoint = 0L, time.scheduler, time)
@@ -1144,7 +1138,8 @@ class LogTest extends JUnitSuite {
       val dir = new File("")
       Log.parseTopicPartitionName(dir)
       fail(
-        "KafkaException should have been thrown for dir: " + dir.getCanonicalPath)
+        "KafkaException should have been thrown for dir: " + dir
+          .getCanonicalPath)
     } catch {
       case e: Exception => // its GOOD!
     }
@@ -1169,7 +1164,8 @@ class LogTest extends JUnitSuite {
     try {
       Log.parseTopicPartitionName(dir)
       fail(
-        "KafkaException should have been thrown for dir: " + dir.getCanonicalPath)
+        "KafkaException should have been thrown for dir: " + dir
+          .getCanonicalPath)
     } catch {
       case e: Exception => // its GOOD!
     }
@@ -1183,7 +1179,8 @@ class LogTest extends JUnitSuite {
     try {
       Log.parseTopicPartitionName(dir)
       fail(
-        "KafkaException should have been thrown for dir: " + dir.getCanonicalPath)
+        "KafkaException should have been thrown for dir: " + dir
+          .getCanonicalPath)
     } catch {
       case e: Exception => // its GOOD!
     }
@@ -1197,7 +1194,8 @@ class LogTest extends JUnitSuite {
     try {
       Log.parseTopicPartitionName(dir)
       fail(
-        "KafkaException should have been thrown for dir: " + dir.getCanonicalPath)
+        "KafkaException should have been thrown for dir: " + dir
+          .getCanonicalPath)
     } catch {
       case e: Exception => // its GOOD!
     }

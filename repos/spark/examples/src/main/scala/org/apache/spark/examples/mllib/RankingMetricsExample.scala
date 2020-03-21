@@ -73,20 +73,24 @@ object RankingMetricsExample {
     }
 
     // Get sorted top ten predictions for each user and then scale from [0, 1]
-    val userRecommended = model.recommendProductsForUsers(10).map {
-      case (user, recs) =>
-        (user, recs.map(scaledRating))
-    }
+    val userRecommended = model
+      .recommendProductsForUsers(10)
+      .map {
+        case (user, recs) =>
+          (user, recs.map(scaledRating))
+      }
 
     // Assume that any movie a user rated 3 or higher (which maps to a 1) is a relevant document
     // Compare with top ten most relevant documents
     val userMovies = binarizedRatings.groupBy(_.user)
-    val relevantDocuments = userMovies.join(userRecommended).map {
-      case (user, (actual, predictions)) =>
-        (
-          predictions.map(_.product),
-          actual.filter(_.rating > 0.0).map(_.product).toArray)
-    }
+    val relevantDocuments = userMovies
+      .join(userRecommended)
+      .map {
+        case (user, (actual, predictions)) =>
+          (
+            predictions.map(_.product),
+            actual.filter(_.rating > 0.0).map(_.product).toArray)
+      }
 
     // Instantiate metrics object
     val metrics = new RankingMetrics(relevantDocuments)
@@ -109,10 +113,12 @@ object RankingMetricsExample {
       .predict(ratings.map(r => (r.user, r.product)))
       .map(r => ((r.user, r.product), r.rating))
     val allRatings = ratings.map(r => ((r.user, r.product), r.rating))
-    val predictionsAndLabels = allPredictions.join(allRatings).map {
-      case ((user, product), (predicted, actual)) =>
-        (predicted, actual)
-    }
+    val predictionsAndLabels = allPredictions
+      .join(allRatings)
+      .map {
+        case ((user, product), (predicted, actual)) =>
+          (predicted, actual)
+      }
 
     // Get the RMSE using regression metrics
     val regressionMetrics = new RegressionMetrics(predictionsAndLabels)

@@ -38,19 +38,16 @@ class TasksResourceTest
     val task2 = MarathonTestHelper.runningTask(taskId2)
 
     config.zkTimeoutDuration returns 5.seconds
-    taskTracker.tasksByAppSync returns TaskTracker.TasksByApp
-      .forTasks(task1, task2)
-    taskKiller.kill(any, any)(any) returns Future.successful(
-      Iterable.empty[Task])
+    taskTracker
+      .tasksByAppSync returns TaskTracker.TasksByApp.forTasks(task1, task2)
+    taskKiller.kill(any, any)(any) returns Future
+      .successful(Iterable.empty[Task])
     groupManager.app(app1) returns Future.successful(Some(AppDefinition(app1)))
     groupManager.app(app2) returns Future.successful(Some(AppDefinition(app2)))
 
     When("we ask to kill both tasks")
-    val response = taskResource.killTasks(
-      scale = false,
-      force = false,
-      body = bodyBytes,
-      auth.request)
+    val response = taskResource
+      .killTasks(scale = false, force = false, body = bodyBytes, auth.request)
 
     Then("The response should be OK")
     response.getStatus shouldEqual 200
@@ -86,25 +83,23 @@ class TasksResourceTest
     val task2 = MarathonTestHelper.stagedTask(taskId2)
 
     config.zkTimeoutDuration returns 5.seconds
-    taskTracker.tasksByAppSync returns TaskTracker.TasksByApp
-      .forTasks(task1, task2)
-    taskKiller.killAndScale(any, any)(any) returns Future.successful(
-      deploymentPlan)
+    taskTracker
+      .tasksByAppSync returns TaskTracker.TasksByApp.forTasks(task1, task2)
+    taskKiller.killAndScale(any, any)(any) returns Future
+      .successful(deploymentPlan)
     groupManager.app(app1) returns Future.successful(Some(AppDefinition(app1)))
     groupManager.app(app2) returns Future.successful(Some(AppDefinition(app2)))
 
     When("we ask to kill both tasks")
-    val response = taskResource.killTasks(
-      scale = true,
-      force = true,
-      body = bodyBytes,
-      auth.request)
+    val response = taskResource
+      .killTasks(scale = true, force = true, body = bodyBytes, auth.request)
 
     Then("The response should be OK")
     response.getStatus shouldEqual 200
 
     And("Should create a deployment")
-    response.getEntity shouldEqual """{"version":"1970-01-01T00:00:00.000Z","deploymentId":"plan"}"""
+    response
+      .getEntity shouldEqual """{"version":"1970-01-01T00:00:00.000Z","deploymentId":"plan"}"""
 
     And("app1 and app2 is killed with force")
     verify(taskKiller).killAndScale(
@@ -127,15 +122,12 @@ class TasksResourceTest
     val body = s"""{"ids": ["$taskId1", "$taskId2", "$taskId3"]}""".getBytes
 
     Given("the app exists")
-    groupManager.app(appId) returns Future.successful(
-      Some(AppDefinition(appId)))
+    groupManager.app(appId) returns Future
+      .successful(Some(AppDefinition(appId)))
 
     When(s"kill task is called")
-    val killTasks = taskResource.killTasks(
-      scale = true,
-      force = false,
-      body,
-      req)
+    val killTasks = taskResource
+      .killTasks(scale = true, force = false, body, req)
     Then("we receive a NotAuthenticated response")
     killTasks.getStatus should be(auth.NotAuthenticatedStatus)
   }
@@ -155,11 +147,8 @@ class TasksResourceTest
     groupManager.app(appId) returns Future.successful(None)
 
     When(s"kill task is called")
-    val killTasks = taskResource.killTasks(
-      scale = true,
-      force = false,
-      body,
-      req)
+    val killTasks = taskResource
+      .killTasks(scale = true, force = false, body, req)
     Then("we receive a NotAuthenticated response")
     killTasks.getStatus should be(auth.NotAuthenticatedStatus)
   }
@@ -209,16 +198,13 @@ class TasksResourceTest
       auth.auth)
 
     Given("the app exists")
-    groupManager.app(appId) returns Future.successful(
-      Some(AppDefinition(appId)))
+    groupManager.app(appId) returns Future
+      .successful(Some(AppDefinition(appId)))
     taskTracker.tasksByAppSync returns TaskTracker.TasksByApp.empty
 
     When(s"kill task is called")
-    val killTasks = taskResource.killTasks(
-      scale = false,
-      force = false,
-      body,
-      req)
+    val killTasks = taskResource
+      .killTasks(scale = false, force = false, body, req)
     Then("we receive a not authorized response")
     killTasks.getStatus should be(auth.UnauthorizedStatus)
   }
@@ -232,11 +218,8 @@ class TasksResourceTest
 
     When("we ask to kill those two tasks")
     val ex = intercept[BadRequestException] {
-      taskResource.killTasks(
-        scale = false,
-        force = false,
-        body = bodyBytes,
-        auth.request)
+      taskResource
+        .killTasks(scale = false, force = false, body = bodyBytes, auth.request)
     }
 
     Then("An exception should be thrown that points to the invalid taskId")

@@ -275,13 +275,14 @@ class MongoDirectSpec extends Specification with MongoTestKit {
       // regex query example
       val key = "name"
       val regex = "^Mongo"
-      val cur = coll.find(
-        BasicDBObjectBuilder.start.add(key, Pattern.compile(regex)).get)
+      val cur = coll
+        .find(BasicDBObjectBuilder.start.add(key, Pattern.compile(regex)).get)
       cur.count must_== 2
 
       // use regex and another dbobject
       val cur2 = coll.find(
-        BasicDBObjectBuilder.start
+        BasicDBObjectBuilder
+          .start
           .add(key, Pattern.compile(regex))
           .add("count", 1)
           .get)

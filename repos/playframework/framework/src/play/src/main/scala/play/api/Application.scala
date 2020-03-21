@@ -296,10 +296,8 @@ trait BuiltInComponents {
       materializer)
 
   lazy val actorSystem: ActorSystem =
-    new ActorSystemProvider(
-      environment,
-      configuration,
-      applicationLifecycle).get
+    new ActorSystemProvider(environment, configuration, applicationLifecycle)
+      .get
   implicit lazy val materializer: Materializer =
     ActorMaterializer()(actorSystem)
 
@@ -315,7 +313,8 @@ trait BuiltInComponents {
     new Crypto(cookieSigner, csrfTokenSigner, aesCrypter)
 
   @deprecated("Use dependency injection", "2.5.x")
-  lazy val global: GlobalSettings.Deprecated = play.api
+  lazy val global: GlobalSettings.Deprecated = play
+    .api
     .GlobalSettings(configuration, environment)
 
   lazy val tempFileCreator: TemporaryFileCreator =

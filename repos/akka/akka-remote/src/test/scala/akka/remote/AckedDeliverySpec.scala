@@ -231,16 +231,9 @@ class AckedDeliverySpec extends AkkaSpec {
       val msg2 = msg(2)
 
       val (buf2, _, _) =
-        buf
-          .receive(msg0)
-          .receive(msg1)
-          .receive(msg2)
-          .extractDeliverable
+        buf.receive(msg0).receive(msg1).receive(msg2).extractDeliverable
 
-      val buf3 = buf2
-        .receive(msg0)
-        .receive(msg1)
-        .receive(msg2)
+      val buf3 = buf2.receive(msg0).receive(msg1).receive(msg2)
 
       val (_, deliver, ack) = buf3.extractDeliverable
 

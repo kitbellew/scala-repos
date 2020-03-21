@@ -28,8 +28,7 @@ class CoordinatorTest extends FunSuite with LocalConductors with MockitoSugar {
     import ctx._
 
     when(nfo.committed()).thenReturn(100.bytes)
-    when(nfo.remaining())
-      .thenReturn(60.bytes)
+    when(nfo.remaining()).thenReturn(60.bytes)
 
     val conductor = new Conductor
     import conductor._
@@ -41,8 +40,7 @@ class CoordinatorTest extends FunSuite with LocalConductors with MockitoSugar {
 
       localThread(conductor) {
         waitForBeat(1)
-        when(nfo.remaining())
-          .thenReturn(80.bytes)
+        when(nfo.remaining()).thenReturn(80.bytes)
         ctl.advance(48.milliseconds) // 4/5 of 60 bytes * 1000 bps == 48.ms
       }
 
@@ -55,8 +53,7 @@ class CoordinatorTest extends FunSuite with LocalConductors with MockitoSugar {
     import ctx._
 
     when(nfo.committed()).thenReturn(10.megabytes)
-    when(nfo.remaining())
-      .thenReturn(10.megabytes)
+    when(nfo.remaining()).thenReturn(10.megabytes)
 
     val conductor = new Conductor
     import conductor._
@@ -68,8 +65,7 @@ class CoordinatorTest extends FunSuite with LocalConductors with MockitoSugar {
 
       localThread(conductor) {
         waitForBeat(1)
-        when(nfo.remaining())
-          .thenReturn(10.megabytes - 2.byte)
+        when(nfo.remaining()).thenReturn(10.megabytes - 2.byte)
         ctl.advance(10.millisecond)
       }
 
@@ -82,8 +78,7 @@ class CoordinatorTest extends FunSuite with LocalConductors with MockitoSugar {
     import ctx._
 
     when(nfo.committed()).thenReturn(10.megabytes)
-    when(nfo.remaining())
-      .thenReturn(10.megabytes)
+    when(nfo.remaining()).thenReturn(10.megabytes)
     when(nfo.generation()).thenReturn(0)
 
     @volatile
@@ -142,8 +137,7 @@ class CoordinatorTest extends FunSuite with LocalConductors with MockitoSugar {
 
       val space = mock[MemorySpace]
       when(space.discount()).thenReturn(5.megabytes)
-      when(nfo.remaining())
-        .thenReturn(10.megabytes)
+      when(nfo.remaining()).thenReturn(10.megabytes)
 
       @volatile
       var incr = 0
@@ -158,8 +152,7 @@ class CoordinatorTest extends FunSuite with LocalConductors with MockitoSugar {
 
         localThread(conductor) {
           waitForBeat(1)
-          when(nfo.remaining())
-            .thenReturn(5.megabytes)
+          when(nfo.remaining()).thenReturn(5.megabytes)
           ctl.advance(100.milliseconds)
         }
       }
@@ -177,8 +170,7 @@ class CoordinatorTest extends FunSuite with LocalConductors with MockitoSugar {
     when(space.left).thenReturn(5.megabytes)
 
     when(nfo.committed()).thenReturn(5.megabytes)
-    when(nfo.remaining())
-      .thenReturn(10.megabytes)
+    when(nfo.remaining()).thenReturn(10.megabytes)
     when(nfo.generation()).thenReturn(0)
 
     val maxWait = Duration.Top

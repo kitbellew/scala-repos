@@ -154,9 +154,11 @@ private[kafka] class KafkaTestUtils extends Logging {
       server = null
     }
 
-    brokerConf.logDirs.foreach { f =>
-      Utils.deleteRecursively(new File(f))
-    }
+    brokerConf
+      .logDirs
+      .foreach { f =>
+        Utils.deleteRecursively(new File(f))
+      }
 
     if (zkClient != null) {
       zkClient.close()
@@ -191,10 +193,12 @@ private[kafka] class KafkaTestUtils extends Logging {
   /** Send the messages to the Kafka broker */
   def sendMessages(topic: String, messageToFreq: Map[String, Int]): Unit = {
     val messages =
-      messageToFreq.flatMap {
-        case (s, freq) =>
-          Seq.fill(freq)(s)
-      }.toArray
+      messageToFreq
+        .flatMap {
+          case (s, freq) =>
+            Seq.fill(freq)(s)
+        }
+        .toArray
     sendMessages(topic, messages)
   }
 

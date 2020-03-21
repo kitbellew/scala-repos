@@ -67,12 +67,17 @@ object Mod extends LilaController {
     AuthBody { implicit ctx => me =>
       implicit def req = ctx.body
       if (isGranted(_.SetTitle))
-        lila.user.DataForm.title.bindFromRequest.fold(
-          err => fuccess(redirect(username, mod = true)),
-          title =>
-            modApi.setTitle(me.id, username, title) inject redirect(
-              username,
-              mod = false))
+        lila
+          .user
+          .DataForm
+          .title
+          .bindFromRequest
+          .fold(
+            err => fuccess(redirect(username, mod = true)),
+            title =>
+              modApi.setTitle(me.id, username, title) inject redirect(
+                username,
+                mod = false))
       else
         fuccess(authorizationFailed(ctx.req))
     }
@@ -82,7 +87,9 @@ object Mod extends LilaController {
       implicit def req = ctx.body
       OptionFuResult(UserRepo named username) { user =>
         if (isGranted(_.SetEmail) && !isGranted(_.SetEmail, user))
-          Env.security.forms
+          Env
+            .security
+            .forms
             .modEmail(user)
             .bindFromRequest
             .fold(
@@ -130,41 +137,40 @@ object Mod extends LilaController {
           }
           publicLines <- Env.shutup.api getPublicLines user.id
           spy <- Env.security userSpy user.id
-        } yield html.mod.communication(
-          user,
-          povWithChats,
-          threads,
-          publicLines,
-          spy)
+        } yield html
+          .mod
+          .communication(user, povWithChats, threads, publicLines, spy)
       }
     }
 
-  private val ipIntelCache = lila.memo.AsyncCache[String, Int](
-    ip => {
-      import play.api.libs.ws.WS
-      import play.api.Play.current
-      val email = "lichess.contact@gmail.com"
-      val url = s"http://check.getipintel.net/check.php?ip=$ip&contact=$email"
-      WS.url(url)
-        .get()
-        .map(_.body)
-        .mon(_.security.proxy.request.time)
-        .flatMap { str =>
-          parseFloatOption(str).fold[Fu[Int]](fufail(s"Invalid ratio $str")) {
-            ratio =>
-              fuccess((ratio * 100).toInt)
+  private val ipIntelCache = lila
+    .memo
+    .AsyncCache[String, Int](
+      ip => {
+        import play.api.libs.ws.WS
+        import play.api.Play.current
+        val email = "lichess.contact@gmail.com"
+        val url = s"http://check.getipintel.net/check.php?ip=$ip&contact=$email"
+        WS
+          .url(url)
+          .get()
+          .map(_.body)
+          .mon(_.security.proxy.request.time)
+          .flatMap { str =>
+            parseFloatOption(str).fold[Fu[Int]](fufail(s"Invalid ratio $str")) {
+              ratio => fuccess((ratio * 100).toInt)
+            }
           }
-        }
-        .addEffects(
-          fail = _ => lila.mon.security.proxy.request.failure(),
-          succ = percent => {
-            lila.mon.security.proxy.percent(percent max 0)
-            lila.mon.security.proxy.request.success()
-          }
-        )
-    },
-    maxCapacity = 1024
-  )
+          .addEffects(
+            fail = _ => lila.mon.security.proxy.request.failure(),
+            succ = percent => {
+              lila.mon.security.proxy.percent(percent max 0)
+              lila.mon.security.proxy.request.success()
+            }
+          )
+      },
+      maxCapacity = 1024
+    )
 
   def ipIntel(ip: String) =
     Secure(_.IpBan) { ctx => me =>
@@ -191,11 +197,15 @@ object Mod extends LilaController {
     }
   def gamifyPeriod(periodStr: String) =
     Secure(_.SeeReport) { implicit ctx => me =>
-      lila.mod.Gamify.Period(periodStr).fold(notFound) { period =>
-        Env.mod.gamify.leaderboards map { leaderboards =>
-          Ok(html.mod.gamify.period(leaderboards, period))
+      lila
+        .mod
+        .Gamify
+        .Period(periodStr)
+        .fold(notFound) { period =>
+          Env.mod.gamify.leaderboards map { leaderboards =>
+            Ok(html.mod.gamify.period(leaderboards, period))
+          }
         }
-      }
     }
 
   def search =

@@ -19,16 +19,11 @@ private[testadapter] object SelectorSerializers {
       val bld = new JSONObjBuilder()
       sel match {
         case sel: SuiteSelector =>
-          bld
-            .fld("selType", "SuiteSelector")
+          bld.fld("selType", "SuiteSelector")
         case sel: TestSelector =>
-          bld
-            .fld("selType", "TestSelector")
-            .fld("testName", sel.testName)
+          bld.fld("selType", "TestSelector").fld("testName", sel.testName)
         case sel: NestedSuiteSelector =>
-          bld
-            .fld("selType", "NestedSuiteSelector")
-            .fld("suiteId", sel.suiteId)
+          bld.fld("selType", "NestedSuiteSelector").fld("suiteId", sel.suiteId)
         case sel: NestedTestSelector =>
           bld
             .fld("selType", "NestedTestSelector")

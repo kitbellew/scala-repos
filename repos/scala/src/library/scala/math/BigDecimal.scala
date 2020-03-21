@@ -448,9 +448,13 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
         doubleValue.##
       else {
         val temp = bigDecimal.stripTrailingZeros
-        scala.util.hashing.MurmurHash3.mixLast(
-          temp.scaleByPowerOfTen(temp.scale).toBigInteger.hashCode,
-          temp.scale)
+        scala
+          .util
+          .hashing
+          .MurmurHash3
+          .mixLast(
+            temp.scaleByPowerOfTen(temp.scale).toBigInteger.hashCode,
+            temp.scale)
       }
   }
 

@@ -414,8 +414,8 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
       var s = 0
       i = 0
       while (i < N) {
-        val key =
-          ((i & 100000).toLong << 32) + Integer.rotateRight(i & 100000, 15)
+        val key = ((i & 100000).toLong << 32) + Integer
+          .rotateRight(i & 100000, 15)
         if (map.get(key) != null) {
           s += 1
         }
@@ -478,10 +478,8 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
             key.getSizeInBytes,
             Murmur3_x86_32.hashLong(i % 65536, 42))
           if (loc.isDefined) {
-            value.pointTo(
-              loc.getValueBase,
-              loc.getValueOffset,
-              loc.getValueLength)
+            value
+              .pointTo(loc.getValueBase, loc.getValueOffset, loc.getValueLength)
             value.setInt(0, value.getInt(0) + 1)
             i += 1
           } else {

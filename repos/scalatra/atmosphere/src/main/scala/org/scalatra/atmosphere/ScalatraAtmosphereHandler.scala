@@ -55,7 +55,9 @@ object ScalatraAtmosphereHandler {
       //      if (!event.getResource.isResumed) {
       //        event.getResource.session.invalidate()
       //      } else {
-      event.getResource.session
+      event
+        .getResource
+        .session
         .removeAttribute(org.scalatra.atmosphere.AtmosphereClientKey)
       //      }
     }
@@ -99,8 +101,10 @@ class ScalatraAtmosphereHandler(scalatraApp: ScalatraBase)(implicit
           case (Post, _) =>
             var client: AtmosphereClient = null
             if (isNew) {
-              session =
-                AtmosphereResourceFactory.getDefault.find(resource.uuid).session
+              session = AtmosphereResourceFactory
+                .getDefault
+                .find(resource.uuid)
+                .session
             }
 
             client = session(org.scalatra.atmosphere.AtmosphereClientKey)

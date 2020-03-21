@@ -764,10 +764,12 @@ class LocalActorRef private[akka] (
           initializeActorInstance
 
         if (isClientManaged_?)
-          Actor.remote.registerClientManagedActor(
-            homeAddress.get.getAddress.getHostAddress,
-            homeAddress.get.getPort,
-            uuid)
+          Actor
+            .remote
+            .registerClientManagedActor(
+              homeAddress.get.getAddress.getHostAddress,
+              homeAddress.get.getPort,
+              uuid)
 
         checkReceiveTimeout //Schedule the initial Receive timeout
       }
@@ -791,10 +793,12 @@ class LocalActorRef private[akka] (
           Actor.registry.unregister(this)
           if (isRemotingEnabled) {
             if (isClientManaged_?)
-              Actor.remote.unregisterClientManagedActor(
-                homeAddress.get.getAddress.getHostAddress,
-                homeAddress.get.getPort,
-                uuid)
+              Actor
+                .remote
+                .unregisterClientManagedActor(
+                  homeAddress.get.getAddress.getHostAddress,
+                  homeAddress.get.getPort,
+                  uuid)
             Actor.remote.unregister(this)
           }
           setActorSelfFields(actorInstance.get, null)
@@ -929,17 +933,19 @@ class LocalActorRef private[akka] (
       message: Any,
       senderOption: Option[ActorRef]): Unit =
     if (isClientManaged_?) {
-      Actor.remote.send[Any](
-        message,
-        senderOption,
-        None,
-        homeAddress.get,
-        timeout,
-        true,
-        this,
-        None,
-        ActorType.ScalaActor,
-        None)
+      Actor
+        .remote
+        .send[Any](
+          message,
+          senderOption,
+          None,
+          homeAddress.get,
+          timeout,
+          true,
+          this,
+          None,
+          ActorType.ScalaActor,
+          None)
     } else
       dispatcher dispatchMessage new MessageInvocation(
         this,
@@ -953,17 +959,19 @@ class LocalActorRef private[akka] (
       senderOption: Option[ActorRef],
       senderFuture: Option[CompletableFuture[T]]): CompletableFuture[T] = {
     if (isClientManaged_?) {
-      val future = Actor.remote.send[T](
-        message,
-        senderOption,
-        senderFuture,
-        homeAddress.get,
-        timeout,
-        false,
-        this,
-        None,
-        ActorType.ScalaActor,
-        None)
+      val future = Actor
+        .remote
+        .send[T](
+          message,
+          senderOption,
+          senderFuture,
+          homeAddress.get,
+          timeout,
+          false,
+          this,
+          None,
+          ActorType.ScalaActor,
+          None)
       if (future.isDefined)
         future.get
       else
@@ -1058,8 +1066,8 @@ class LocalActorRef private[akka] (
             (now - windowStart) <= withinTimeRange.get
 
         //The actor is dead if it dies X times within the window of restart
-        val unrestartable =
-          insideWindow && retries > maxNrOfRetries.getOrElse(1)
+        val unrestartable = insideWindow && retries > maxNrOfRetries
+          .getOrElse(1)
 
         if (windowStart == 0 || !insideWindow) //(Re-)set the start of the window
           restartsWithinTimeRangeTimestamp = now
@@ -1361,34 +1369,38 @@ private[akka] case class RemoteActorRef private[akka] (
   start
 
   def postMessageToMailbox(message: Any, senderOption: Option[ActorRef]): Unit =
-    Actor.remote.send[Any](
-      message,
-      senderOption,
-      None,
-      homeAddress.get,
-      timeout,
-      true,
-      this,
-      None,
-      actorType,
-      loader)
+    Actor
+      .remote
+      .send[Any](
+        message,
+        senderOption,
+        None,
+        homeAddress.get,
+        timeout,
+        true,
+        this,
+        None,
+        actorType,
+        loader)
 
   def postMessageToMailboxAndCreateFutureResultWithTimeout[T](
       message: Any,
       timeout: Long,
       senderOption: Option[ActorRef],
       senderFuture: Option[CompletableFuture[T]]): CompletableFuture[T] = {
-    val future = Actor.remote.send[T](
-      message,
-      senderOption,
-      senderFuture,
-      homeAddress.get,
-      timeout,
-      false,
-      this,
-      None,
-      actorType,
-      loader)
+    val future = Actor
+      .remote
+      .send[T](
+        message,
+        senderOption,
+        senderFuture,
+        homeAddress.get,
+        timeout,
+        false,
+        this,
+        None,
+        actorType,
+        loader)
     if (future.isDefined)
       future.get
     else

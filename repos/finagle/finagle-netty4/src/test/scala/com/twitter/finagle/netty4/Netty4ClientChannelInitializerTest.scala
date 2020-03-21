@@ -126,10 +126,8 @@ class Netty4ClientChannelInitializerTest
       }
     new Ctx {
       override def params =
-        Params.empty + Transport.Liveness(
-          readTimeout = 1.millisecond,
-          Duration.Top,
-          None)
+        Params.empty + Transport
+          .Liveness(readTimeout = 1.millisecond, Duration.Top, None)
 
       initChannel()
       client.pipeline.addLast(exnSnooper)
@@ -164,10 +162,8 @@ class Netty4ClientChannelInitializerTest
 
     new Ctx {
       override def params =
-        Params.empty + Transport.Liveness(
-          Duration.Top,
-          writeTimeout = 1.millisecond,
-          None)
+        Params.empty + Transport
+          .Liveness(Duration.Top, writeTimeout = 1.millisecond, None)
 
       initChannel()
       client.pipeline.addLast(exnSnooper)
@@ -199,7 +195,8 @@ class Netty4ClientChannelInitializerTest
 
     channelInit.initChannel(ctx.client)
     val server = new ServerSocket(0, 50, InetAddress.getLoopbackAddress)
-    ctx.client
+    ctx
+      .client
       .connect(
         new InetSocketAddress(
           InetAddress.getLoopbackAddress,
@@ -248,19 +245,21 @@ class Netty4ClientChannelInitializerTest
     init.initChannel(channel)
 
     val msgSeen = new Promise[ByteBuf]
-    channel.pipeline.addFirst(
-      new ChannelOutboundHandlerAdapter {
-        override def write(
-            ctx: ChannelHandlerContext,
-            msg: scala.Any,
-            promise: ChannelPromise): Unit =
-          msg match {
-            case b: ByteBuf =>
-              msgSeen.setValue(b)
-            case _ =>
-              fail("expected ByteBuf message")
-          }
-      })
+    channel
+      .pipeline
+      .addFirst(
+        new ChannelOutboundHandlerAdapter {
+          override def write(
+              ctx: ChannelHandlerContext,
+              msg: scala.Any,
+              promise: ChannelPromise): Unit =
+            msg match {
+              case b: ByteBuf =>
+                msgSeen.setValue(b)
+              case _ =>
+                fail("expected ByteBuf message")
+            }
+        })
     val bytes = Array(1.toByte, 2.toByte, 3.toByte)
     channel.write(Unpooled.wrappedBuffer(bytes))
 

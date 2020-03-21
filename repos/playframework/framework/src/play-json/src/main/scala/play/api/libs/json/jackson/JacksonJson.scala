@@ -303,8 +303,8 @@ private[json] object JacksonJson {
 
   def prettyPrint(jsValue: JsValue): String = {
     val sw = new java.io.StringWriter
-    val gen = stringJsonGenerator(sw).setPrettyPrinter(
-      new DefaultPrettyPrinter())
+    val gen = stringJsonGenerator(sw)
+      .setPrettyPrinter(new DefaultPrettyPrinter())
     val writer: ObjectWriter = mapper.writerWithDefaultPrettyPrinter()
     writer.writeValue(gen, jsValue)
     sw.flush()

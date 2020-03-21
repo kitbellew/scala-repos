@@ -97,10 +97,13 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
       Map()
     else
       Map(
-        s.split("""\s*,\s*""").map(_.trim).map { it: String =>
-          val parts = it.split("""\s*:\s*""")
-          (parts(0), parts(1))
-        }: _*)
+        s
+          .split("""\s*,\s*""")
+          .map(_.trim)
+          .map { it: String =>
+            val parts = it.split("""\s*:\s*""")
+            (parts(0), parts(1))
+          }: _*)
   }
 
   def doTest() {
@@ -151,13 +154,11 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
     }
 
     if (options.contains(Resolved) && options(Resolved) == "false") {
-      Assert.assertNull(
-        message(referenceName + " must NOT be resolved!"),
-        target)
+      Assert
+        .assertNull(message(referenceName + " must NOT be resolved!"), target)
     } else {
-      Assert.assertNotNull(
-        message(referenceName + " must BE resolved!"),
-        target)
+      Assert
+        .assertNotNull(message(referenceName + " must BE resolved!"), target)
 
       if (options.contains(Accessible) && options(Accessible) == "false") {
         Assert.assertFalse(
@@ -194,7 +195,11 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
           target.getContainingFile.getVirtualFile.getNameWithoutExtension
         val expected =
           if (!options.contains(File) || options(File) == "this") {
-            reference.getElement.getContainingFile.getVirtualFile.getNameWithoutExtension
+            reference
+              .getElement
+              .getContainingFile
+              .getVirtualFile
+              .getNameWithoutExtension
           } else
             options(File)
         assertEquals(File, expected, actual)
@@ -222,8 +227,8 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
       if (options.contains(Type)) {
         val expectedClass = Class.forName(options(Type))
         val targetClass = target.getClass
-        val text =
-          Type + " - expected: " + expectedClass.getSimpleName + ", actual: " + targetClass.getSimpleName
+        val text = Type + " - expected: " + expectedClass
+          .getSimpleName + ", actual: " + targetClass.getSimpleName
         Assert.assertTrue(
           message(text),
           expectedClass.isAssignableFrom(targetClass))
@@ -232,17 +237,22 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
   }
 
   def lineOf(element: PsiElement) = {
-    element.getContainingFile.getText
+    element
+      .getContainingFile
+      .getText
       .substring(0, element.getTextOffset)
       .count(_ == '\n') + 1
   }
 
   def format(text: String, message: String, line: Int) = {
-    val lines = text.lines.zipWithIndex.map(p =>
-      if (p._2 + 1 == line)
-        p._1 + " // " + message
-      else
-        p._1)
+    val lines = text
+      .lines
+      .zipWithIndex
+      .map(p =>
+        if (p._2 + 1 == line)
+          p._1 + " // " + message
+        else
+          p._1)
     "\n\n" + lines.mkString("\n") + "\n"
   }
 }

@@ -23,8 +23,8 @@ class JavaSerializerSuite extends SparkFunSuite {
   test("JavaSerializer instances are serializable") {
     val serializer = new JavaSerializer(new SparkConf())
     val instance = serializer.newInstance()
-    val obj = instance.deserialize[JavaSerializer](
-      instance.serialize(serializer))
+    val obj = instance
+      .deserialize[JavaSerializer](instance.serialize(serializer))
     // enforce class cast
     obj.getClass
   }

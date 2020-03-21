@@ -162,12 +162,14 @@ object GraphStageLogic {
     private val functionRef: FunctionRef = {
       cell.addFunctionRef {
         case (_, m @ (PoisonPill | Kill)) ⇒
-          materializer.logger.warning(
-            "{} message sent to StageActor({}) will be ignored, since it is not a real Actor." +
-              "Use a custom message type to communicate with it instead.",
-            m,
-            functionRef.path
-          )
+          materializer
+            .logger
+            .warning(
+              "{} message sent to StageActor({}) will be ignored, since it is not a real Actor." +
+                "Use a custom message type to communicate with it instead.",
+              m,
+              functionRef.path
+            )
         case pair ⇒
           callback.invoke(pair)
       }
@@ -1073,8 +1075,8 @@ abstract class GraphStageLogic private[stream] (
       receive: ((ActorRef, Any)) ⇒ Unit): StageActor = {
     _stageActor match {
       case null ⇒
-        val actorMaterializer = ActorMaterializer.downcast(
-          interpreter.materializer)
+        val actorMaterializer = ActorMaterializer
+          .downcast(interpreter.materializer)
         _stageActor =
           new StageActor(actorMaterializer, getAsyncCallback, receive)
         _stageActor
@@ -1343,14 +1345,16 @@ abstract class TimerGraphStageLogic(_shape: Shape)
       interval: FiniteDuration): Unit = {
     cancelTimer(timerKey)
     val id = timerIdGen.next()
-    val task = interpreter.materializer.schedulePeriodically(
-      initialDelay,
-      interval,
-      new Runnable {
-        def run() =
-          getTimerAsyncCallback.invoke(
-            Scheduled(timerKey, id, repeating = true))
-      })
+    val task = interpreter
+      .materializer
+      .schedulePeriodically(
+        initialDelay,
+        interval,
+        new Runnable {
+          def run() =
+            getTimerAsyncCallback
+              .invoke(Scheduled(timerKey, id, repeating = true))
+        })
     keyToTimers(timerKey) = Timer(id, task)
   }
 
@@ -1364,13 +1368,15 @@ abstract class TimerGraphStageLogic(_shape: Shape)
       delay: FiniteDuration): Unit = {
     cancelTimer(timerKey)
     val id = timerIdGen.next()
-    val task = interpreter.materializer.scheduleOnce(
-      delay,
-      new Runnable {
-        def run() =
-          getTimerAsyncCallback.invoke(
-            Scheduled(timerKey, id, repeating = false))
-      })
+    val task = interpreter
+      .materializer
+      .scheduleOnce(
+        delay,
+        new Runnable {
+          def run() =
+            getTimerAsyncCallback
+              .invoke(Scheduled(timerKey, id, repeating = false))
+        })
     keyToTimers(timerKey) = Timer(id, task)
   }
 
@@ -1380,10 +1386,12 @@ abstract class TimerGraphStageLogic(_shape: Shape)
     * @param timerKey key of the timer to cancel
     */
   final protected def cancelTimer(timerKey: Any): Unit =
-    keyToTimers.get(timerKey).foreach { t ⇒
-      t.task.cancel()
-      keyToTimers -= timerKey
-    }
+    keyToTimers
+      .get(timerKey)
+      .foreach { t ⇒
+        t.task.cancel()
+        keyToTimers -= timerKey
+      }
 
   /**
     * Inquire whether the timer is still active. Returns true unless the
@@ -1450,8 +1458,7 @@ trait OutHandler {
     */
   @throws(classOf[Exception])
   def onDownstreamFinish(): Unit = {
-    GraphInterpreter.currentInterpreter.activeStage
-      .completeStage()
+    GraphInterpreter.currentInterpreter.activeStage.completeStage()
   }
 }
 

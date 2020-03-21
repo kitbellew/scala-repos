@@ -34,7 +34,8 @@ object build extends Build {
             """k3 := {
                                                                     |//
                                                                     |//
-                                                                    |}""".stripMargin
+                                                                    |}"""
+              .stripMargin
           )
           .session
       val st1 = BuiltinCommands.reapply(session2, structure, st)

@@ -186,7 +186,9 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
           * TODO: plumb this through a different way?
           */
         if (enableVectorizedParquetReader &&
-            format.getClass.getName == "org.apache.parquet.hadoop.ParquetInputFormat") {
+            format
+              .getClass
+              .getName == "org.apache.parquet.hadoop.ParquetInputFormat") {
           val parquetReader: VectorizedParquetRecordReader =
             new VectorizedParquetRecordReader()
           if (!parquetReader.tryInitialize(
@@ -242,7 +244,8 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
           if (!finished) {
             inputMetrics.incRecordsReadInternal(1)
           }
-          if (inputMetrics.recordsRead % SparkHadoopUtil.UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
+          if (inputMetrics.recordsRead % SparkHadoopUtil
+                .UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
             updateBytesRead()
           }
           reader.getCurrentValue
@@ -267,9 +270,13 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
             }
             if (getBytesReadCallback.isDefined) {
               updateBytesRead()
-            } else if (split.serializableHadoopSplit.value
+            } else if (split
+                         .serializableHadoopSplit
+                         .value
                          .isInstanceOf[FileSplit] ||
-                       split.serializableHadoopSplit.value
+                       split
+                         .serializableHadoopSplit
+                         .value
                          .isInstanceOf[CombineFileSplit]) {
               // If we can't get the bytes read from the FS stats, fall back to the split size,
               // which may be inaccurate.
@@ -296,7 +303,8 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
       HadoopRDD.SPLIT_INFO_REFLECTIONS match {
         case Some(c) =>
           try {
-            val infos = c.newGetLocationInfo
+            val infos = c
+              .newGetLocationInfo
               .invoke(split)
               .asInstanceOf[Array[AnyRef]]
             Some(HadoopRDD.convertSplitLocationInfo(infos))

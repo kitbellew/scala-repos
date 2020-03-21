@@ -24,8 +24,8 @@ final class PersistenceSettings(config: Config) {
   object view {
     val autoUpdate: Boolean = config.getBoolean("view.auto-update")
 
-    val autoUpdateInterval: FiniteDuration = config.getMillisDuration(
-      "view.auto-update-interval")
+    val autoUpdateInterval: FiniteDuration = config
+      .getMillisDuration("view.auto-update-interval")
 
     val autoUpdateReplayMax: Long = posMax(
       config.getLong("view.auto-update-replay-max"))
@@ -39,17 +39,17 @@ final class PersistenceSettings(config: Config) {
 
   object atLeastOnceDelivery {
 
-    val redeliverInterval: FiniteDuration = config.getMillisDuration(
-      "at-least-once-delivery.redeliver-interval")
+    val redeliverInterval: FiniteDuration = config
+      .getMillisDuration("at-least-once-delivery.redeliver-interval")
 
-    val redeliveryBurstLimit: Int = config.getInt(
-      "at-least-once-delivery.redelivery-burst-limit")
+    val redeliveryBurstLimit: Int = config
+      .getInt("at-least-once-delivery.redelivery-burst-limit")
 
     val warnAfterNumberOfUnconfirmedAttempts: Int = config.getInt(
       "at-least-once-delivery.warn-after-number-of-unconfirmed-attempts")
 
-    val maxUnconfirmedMessages: Int = config.getInt(
-      "at-least-once-delivery.max-unconfirmed-messages")
+    val maxUnconfirmedMessages: Int = config
+      .getInt("at-least-once-delivery.max-unconfirmed-messages")
   }
 
   /**
@@ -176,7 +176,8 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
 
   // Lazy, so user is not forced to configure defaults when she is not using them.
   lazy val defaultInternalStashOverflowStrategy: StashOverflowStrategy =
-    system.dynamicAccess
+    system
+      .dynamicAccess
       .createInstanceFor[StashOverflowStrategyConfigurator](
         config.getString("internal-stash-overflow-strategy"),
         EmptyImmutableSeq)
@@ -267,10 +268,13 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
     * Looks up the plugin config by plugin's ActorRef.
     */
   private[akka] final def configFor(journalPluginActor: ActorRef): Config =
-    pluginExtensionId.get().values.collectFirst {
-      case ext if ext(system).actor == journalPluginActor ⇒
-        ext(system).config
-    } match {
+    pluginExtensionId
+      .get()
+      .values
+      .collectFirst {
+        case ext if ext(system).actor == journalPluginActor ⇒
+          ext(system).config
+      } match {
       case Some(conf) ⇒
         conf
       case None ⇒
@@ -381,7 +385,9 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
       require(
         !isEmpty(configPath) && system.settings.config.hasPath(configPath),
         s"'reference.conf' is missing persistence plugin config path: '$configPath'")
-      val config: Config = system.settings.config
+      val config: Config = system
+        .settings
+        .config
         .getConfig(configPath)
         .withFallback(system.settings.config.getConfig(fallbackPath))
       val plugin: ActorRef = createPlugin(configPath, config)

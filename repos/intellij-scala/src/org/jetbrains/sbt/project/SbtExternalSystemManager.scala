@@ -55,11 +55,14 @@ class SbtExternalSystemManager
     classpath.add(jarWith[scala.App])
     classpath.add(jarWith[scala.xml.Node])
 
-    parameters.getVMParametersList.addProperty(
-      ExternalSystemConstants.EXTERNAL_SYSTEM_ID_KEY,
-      SbtProjectSystem.Id.getId)
+    parameters
+      .getVMParametersList
+      .addProperty(
+        ExternalSystemConstants.EXTERNAL_SYSTEM_ID_KEY,
+        SbtProjectSystem.Id.getId)
 
-    parameters.getVMParametersList
+    parameters
+      .getVMParametersList
       .addProperty(PathManager.PROPERTY_LOG_PATH, PathManager.getLogPath)
   }
 
@@ -88,10 +91,13 @@ object SbtExternalSystemManager {
     val projectSettings = Option(settings.getLinkedProjectSettings(path))
       .getOrElse(SbtProjectSettings.default)
 
-    val customLauncher = settings.customLauncherEnabled
+    val customLauncher = settings
+      .customLauncherEnabled
       .option(settings.getCustomLauncherPath)
       .map(_.toFile)
-    val customSbtStructureFile = settings.customSbtStructurePath.nonEmpty
+    val customSbtStructureFile = settings
+      .customSbtStructurePath
+      .nonEmpty
       .option(settings.customSbtStructurePath.toFile)
 
     val realProjectPath = Option(projectSettings.getExternalProjectPath)
@@ -99,8 +105,8 @@ object SbtExternalSystemManager {
     val projectJdkName = getProjectJdkName(project, projectSettings)
     val vmExecutable = getVmExecutable(projectJdkName, settings)
     val vmOptions = getVmOptions(settings)
-    val environment =
-      Map.empty ++ getAndroidEnvironmentVariables(projectJdkName)
+    val environment = Map
+      .empty ++ getAndroidEnvironmentVariables(projectJdkName)
 
     new SbtExecutionSettings(
       realProjectPath,
@@ -150,8 +156,8 @@ object SbtExternalSystemManager {
     val customVmExecutable = settings.customVMEnabled.option(customVmFile)
 
     customVmExecutable.orElse {
-      val projectSdk = projectJdkName.flatMap(name =>
-        Option(ProjectJdkTable.getInstance().findJdk(name)))
+      val projectSdk = projectJdkName
+        .flatMap(name => Option(ProjectJdkTable.getInstance().findJdk(name)))
       projectSdk.map { sdk =>
         sdk.getSdkType match {
           case sdkType: JavaSdkType =>
@@ -173,7 +179,8 @@ object SbtExternalSystemManager {
       .flatMap(name => Option(ProjectJdkTable.getInstance().findJdk(name)))
       .flatMap { sdk =>
         try {
-          sdk.getSdkType
+          sdk
+            .getSdkType
             .isInstanceOf[AndroidSdkType]
             .option(Map("ANDROID_HOME" -> sdk.getSdkModificator.getHomePath))
         } catch {

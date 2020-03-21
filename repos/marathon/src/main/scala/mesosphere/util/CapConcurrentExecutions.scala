@@ -67,10 +67,8 @@ class CapConcurrentExecutions private (
   import CapConcurrentExecutions.log
 
   private[util] val serializeExecutionActorRef = {
-    val serializeExecutionActorProps = RestrictParallelExecutionsActor.props(
-      metrics,
-      maxParallel = maxParallel,
-      maxQueued = maxQueued)
+    val serializeExecutionActorProps = RestrictParallelExecutionsActor
+      .props(metrics, maxParallel = maxParallel, maxQueued = maxQueued)
     actorRefFactory.actorOf(serializeExecutionActorProps, actorName)
   }
 
@@ -79,9 +77,8 @@ class CapConcurrentExecutions private (
     */
   def apply[T](block: => Future[T]): Future[T] = {
     val promise = Promise[T]()
-    serializeExecutionActorRef ! RestrictParallelExecutionsActor.Execute(
-      promise,
-      () => block)
+    serializeExecutionActorRef ! RestrictParallelExecutionsActor
+      .Execute(promise, () => block)
     promise.future
   }
 
@@ -119,8 +116,8 @@ private[util] class RestrictParallelExecutionsActor(
     metrics.reset()
 
     for (execute <- queue) {
-      execute.complete(
-        Failure(new IllegalStateException(s"$self actor stopped")))
+      execute
+        .complete(Failure(new IllegalStateException(s"$self actor stopped")))
     }
 
     queue = Queue.empty
@@ -154,24 +151,26 @@ private[util] class RestrictParallelExecutionsActor(
   }
 
   private[this] def startNext(): Unit = {
-    queue.dequeueOption.foreach {
-      case (next, newQueue) =>
-        queue = newQueue
-        active += 1
+    queue
+      .dequeueOption
+      .foreach {
+        case (next, newQueue) =>
+          queue = newQueue
+          active += 1
 
-        val future: Future[_] =
-          try metrics.processingTimer.timeFuture(next.func())
-          catch {
-            case NonFatal(e) =>
-              Future.failed(e)
-          }
+          val future: Future[_] =
+            try metrics.processingTimer.timeFuture(next.func())
+            catch {
+              case NonFatal(e) =>
+                Future.failed(e)
+            }
 
-        val myself = self
-        future.onComplete { (result: Try[_]) =>
-          next.complete(result)
-          myself ! Finished
-        }(CallerThreadExecutionContext.callerThreadExecutionContext)
-    }
+          val myself = self
+          future.onComplete { (result: Try[_]) =>
+            next.complete(result)
+            myself ! Finished
+          }(CallerThreadExecutionContext.callerThreadExecutionContext)
+      }
   }
 }
 

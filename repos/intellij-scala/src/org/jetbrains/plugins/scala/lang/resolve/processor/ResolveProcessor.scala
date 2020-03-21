@@ -40,8 +40,8 @@ object ResolveProcessor {
       result: ScalaResolveResult,
       place: PsiElement): String = {
     def defaultForTypeAlias(t: ScTypeAlias): String = {
-      if (t.getParent
-            .isInstanceOf[ScTemplateBody] && t.containingClass != null) {
+      if (t.getParent.isInstanceOf[ScTemplateBody] && t
+            .containingClass != null) {
         "TypeAlias:" + t.containingClass.qualifiedName + "#" + t.name
       } else
         null
@@ -200,10 +200,8 @@ class ResolveProcessor(
               isAccessible = accessible)
           addResult(resolveResult)
         case clazz: PsiClass
-            if !isThisOrSuperResolve || PsiTreeUtil.isContextAncestor(
-              clazz,
-              ref,
-              true) =>
+            if !isThisOrSuperResolve || PsiTreeUtil
+              .isContextAncestor(clazz, ref, true) =>
           addResult(
             new ScalaResolveResult(
               named,
@@ -318,8 +316,8 @@ class ResolveProcessor(
           name
         else
           stateName
-      if (result != null && result.startsWith("`") && result.endsWith(
-            "`") && result.length > 1)
+      if (result != null && result.startsWith("`") && result
+            .endsWith("`") && result.length > 1)
         result.substring(1, result.length - 1)
       else
         result

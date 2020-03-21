@@ -40,7 +40,8 @@ object GenerateMainSources extends TestCodeGenerator {
       Seq("/dbs/sqlite.sql")),
     new Config("CG7", StandardTestDBs.H2Mem, "H2Mem", Seq("/dbs/h2.sql")) {
       override def generator =
-        tdb.profile
+        tdb
+          .profile
           .createModel(ignoreInvalidDefaults = false)
           .map(
             new MyGen(_) {
@@ -78,7 +79,8 @@ object GenerateMainSources extends TestCodeGenerator {
       "H2Mem",
       Seq("/dbs/h2-simple.sql")) {
       override def generator =
-        tdb.profile
+        tdb
+          .profile
           .createModel(ignoreInvalidDefaults = false)
           .map(
             new MyGen(_) {
@@ -115,7 +117,8 @@ val  SimpleA = CustomTyping.SimpleA
     },
     new Config("CG9", StandardTestDBs.H2Mem, "H2Mem", Seq("/dbs/h2.sql")) {
       override def generator =
-        tdb.profile
+        tdb
+          .profile
           .createModel(ignoreInvalidDefaults = false)
           .map(
             new MyGen(_) {
@@ -140,7 +143,8 @@ val  SimpleA = CustomTyping.SimpleA
       }
       override def generator =
         TableQuery[A].schema.create >>
-          tdb.profile
+          tdb
+            .profile
             .createModel(ignoreInvalidDefaults = false)
             .map(new MyGen(_))
       override def testCode =
@@ -179,7 +183,8 @@ val  SimpleA = CustomTyping.SimpleA
       initScripts: Seq[String])
       extends Config(objectName, tdb, tdbName, initScripts) {
     override def generator =
-      tdb.profile
+      tdb
+        .profile
         .createModel(ignoreInvalidDefaults = false)
         .map(
           new MyGen(_) {

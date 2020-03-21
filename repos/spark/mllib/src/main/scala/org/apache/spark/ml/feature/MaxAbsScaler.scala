@@ -47,8 +47,8 @@ private[feature] trait MaxAbsScalerParams
     require(
       !schema.fieldNames.contains($(outputCol)),
       s"Output column ${$(outputCol)} already exists.")
-    val outputFields =
-      schema.fields :+ StructField($(outputCol), new VectorUDT, false)
+    val outputFields = schema
+      .fields :+ StructField($(outputCol), new VectorUDT, false)
     StructType(outputFields)
   }
 }
@@ -76,10 +76,13 @@ class MaxAbsScaler @Since("2.0.0") (override val uid: String)
 
   override def fit(dataset: DataFrame): MaxAbsScalerModel = {
     transformSchema(dataset.schema, logging = true)
-    val input = dataset.select($(inputCol)).rdd.map {
-      case Row(v: Vector) =>
-        v
-    }
+    val input = dataset
+      .select($(inputCol))
+      .rdd
+      .map {
+        case Row(v: Vector) =>
+          v
+      }
     val summary = Statistics.colStats(input)
     val minVals = summary.min.toArray
     val maxVals = summary.max.toArray
@@ -132,11 +135,13 @@ class MaxAbsScalerModel private[ml] (
     transformSchema(dataset.schema, logging = true)
     // TODO: this looks hack, we may have to handle sparse and dense vectors separately.
     val maxAbsUnzero = Vectors.dense(
-      maxAbs.toArray.map(x =>
-        if (x == 0)
-          1
-        else
-          x))
+      maxAbs
+        .toArray
+        .map(x =>
+          if (x == 0)
+            1
+          else
+            x))
     val reScale = udf { (vector: Vector) =>
       val brz = vector.toBreeze / maxAbsUnzero.toBreeze
       Vectors.fromBreeze(brz)
@@ -185,7 +190,8 @@ object MaxAbsScalerModel extends MLReadable[MaxAbsScalerModel] {
     override def load(path: String): MaxAbsScalerModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val Row(maxAbs: Vector) = sqlContext.read
+      val Row(maxAbs: Vector) = sqlContext
+        .read
         .parquet(dataPath)
         .select("maxAbs")
         .head()

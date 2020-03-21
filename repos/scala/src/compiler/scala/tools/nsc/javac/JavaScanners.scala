@@ -374,7 +374,8 @@ trait JavaScanners extends ast.parser.ScannersCommon {
               case '\"' =>
                 in.next()
                 while (in.ch != '\"' && (
-                         in.isUnicode || in.ch != CR && in.ch != LF && in.ch != SU
+                         in.isUnicode || in.ch != CR && in.ch != LF && in
+                           .ch != SU
                        )) {
                   getlitch()
                 }
@@ -861,7 +862,9 @@ trait JavaScanners extends ast.parser.ScannersCommon {
         else
           Float.MaxValue
       try {
-        val value: Double = java.lang.Double
+        val value: Double = java
+          .lang
+          .Double
           .valueOf(name.toString)
           .doubleValue()
         if (value > limit)

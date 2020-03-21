@@ -84,23 +84,27 @@ object SerializationTestUtils {
 
   val topicDataProducerRequest = {
     val groupedData = Array(topic1, topic2).flatMap(topic =>
-      partitionDataProducerRequestArray.zipWithIndex.map {
-        case (partitionDataMessage, partition) =>
-          (TopicAndPartition(topic, partition), partitionDataMessage)
-      })
+      partitionDataProducerRequestArray
+        .zipWithIndex
+        .map {
+          case (partitionDataMessage, partition) =>
+            (TopicAndPartition(topic, partition), partitionDataMessage)
+        })
     collection.mutable.Map(groupedData: _*)
   }
 
-  private val requestInfos = collection.immutable.Map(
-    TopicAndPartition(topic1, 0) -> PartitionFetchInfo(1000, 100),
-    TopicAndPartition(topic1, 1) -> PartitionFetchInfo(2000, 100),
-    TopicAndPartition(topic1, 2) -> PartitionFetchInfo(3000, 100),
-    TopicAndPartition(topic1, 3) -> PartitionFetchInfo(4000, 100),
-    TopicAndPartition(topic2, 0) -> PartitionFetchInfo(1000, 100),
-    TopicAndPartition(topic2, 1) -> PartitionFetchInfo(2000, 100),
-    TopicAndPartition(topic2, 2) -> PartitionFetchInfo(3000, 100),
-    TopicAndPartition(topic2, 3) -> PartitionFetchInfo(4000, 100)
-  )
+  private val requestInfos = collection
+    .immutable
+    .Map(
+      TopicAndPartition(topic1, 0) -> PartitionFetchInfo(1000, 100),
+      TopicAndPartition(topic1, 1) -> PartitionFetchInfo(2000, 100),
+      TopicAndPartition(topic1, 2) -> PartitionFetchInfo(3000, 100),
+      TopicAndPartition(topic1, 3) -> PartitionFetchInfo(4000, 100),
+      TopicAndPartition(topic2, 0) -> PartitionFetchInfo(1000, 100),
+      TopicAndPartition(topic2, 1) -> PartitionFetchInfo(2000, 100),
+      TopicAndPartition(topic2, 2) -> PartitionFetchInfo(3000, 100),
+      TopicAndPartition(topic2, 3) -> PartitionFetchInfo(4000, 100)
+    )
 
   private val brokers = List(
     new Broker(
@@ -125,8 +129,8 @@ object SerializationTestUtils {
           1013,
           SecurityProtocol.PLAINTEXT)))
   )
-  private val brokerEndpoints = brokers.map(
-    _.getBrokerEndPoint(SecurityProtocol.PLAINTEXT))
+  private val brokerEndpoints = brokers
+    .map(_.getBrokerEndPoint(SecurityProtocol.PLAINTEXT))
 
   private val partitionMetaData0 =
     new PartitionMetadata(
@@ -199,7 +203,8 @@ object SerializationTestUtils {
       leaderIsrAndControllerEpoch3,
       brokers.map(_.id).toSet)
 
-  private val updateMetadataRequestPartitionStateInfo = collection.immutable
+  private val updateMetadataRequestPartitionStateInfo = collection
+    .immutable
     .Map(
       TopicAndPartition(topic1, 0) -> partitionStateInfo0,
       TopicAndPartition(topic1, 1) -> partitionStateInfo1,
@@ -235,62 +240,80 @@ object SerializationTestUtils {
 
   def createTestOffsetRequest =
     new OffsetRequest(
-      collection.immutable.Map(
-        TopicAndPartition(topic1, 1) -> PartitionOffsetRequestInfo(1000, 200)),
+      collection
+        .immutable
+        .Map(
+          TopicAndPartition(topic1, 1) -> PartitionOffsetRequestInfo(
+            1000,
+            200)),
       replicaId = 0)
 
   def createTestOffsetResponse: OffsetResponse = {
     new OffsetResponse(
       0,
-      collection.immutable.Map(
-        TopicAndPartition(topic1, 1) -> PartitionOffsetsResponse(
-          Errors.NONE.code,
-          Seq(1000L, 2000L, 3000L, 4000L))))
+      collection
+        .immutable
+        .Map(
+          TopicAndPartition(topic1, 1) -> PartitionOffsetsResponse(
+            Errors.NONE.code,
+            Seq(1000L, 2000L, 3000L, 4000L))))
   }
 
   def createTestOffsetCommitRequestV2: OffsetCommitRequest = {
     new OffsetCommitRequest(
       groupId = "group 1",
       retentionMs = SystemTime.milliseconds,
-      requestInfo = collection.immutable.Map(
-        TopicAndPartition(topic1, 0) -> OffsetAndMetadata(42L, "some metadata"),
-        TopicAndPartition(topic1, 1) -> OffsetAndMetadata(
-          100L,
-          OffsetMetadata.NoMetadata)))
+      requestInfo = collection
+        .immutable
+        .Map(
+          TopicAndPartition(topic1, 0) -> OffsetAndMetadata(
+            42L,
+            "some metadata"),
+          TopicAndPartition(topic1, 1) -> OffsetAndMetadata(
+            100L,
+            OffsetMetadata.NoMetadata)))
   }
 
   def createTestOffsetCommitRequestV1: OffsetCommitRequest = {
     new OffsetCommitRequest(
       versionId = 1,
       groupId = "group 1",
-      requestInfo = collection.immutable.Map(
-        TopicAndPartition(topic1, 0) -> OffsetAndMetadata(
-          42L,
-          "some metadata",
-          SystemTime.milliseconds),
-        TopicAndPartition(topic1, 1) -> OffsetAndMetadata(
-          100L,
-          OffsetMetadata.NoMetadata,
-          SystemTime.milliseconds)
-      ))
+      requestInfo = collection
+        .immutable
+        .Map(
+          TopicAndPartition(topic1, 0) -> OffsetAndMetadata(
+            42L,
+            "some metadata",
+            SystemTime.milliseconds),
+          TopicAndPartition(topic1, 1) -> OffsetAndMetadata(
+            100L,
+            OffsetMetadata.NoMetadata,
+            SystemTime.milliseconds)
+        ))
   }
 
   def createTestOffsetCommitRequestV0: OffsetCommitRequest = {
     new OffsetCommitRequest(
       versionId = 0,
       groupId = "group 1",
-      requestInfo = collection.immutable.Map(
-        TopicAndPartition(topic1, 0) -> OffsetAndMetadata(42L, "some metadata"),
-        TopicAndPartition(topic1, 1) -> OffsetAndMetadata(
-          100L,
-          OffsetMetadata.NoMetadata)))
+      requestInfo = collection
+        .immutable
+        .Map(
+          TopicAndPartition(topic1, 0) -> OffsetAndMetadata(
+            42L,
+            "some metadata"),
+          TopicAndPartition(topic1, 1) -> OffsetAndMetadata(
+            100L,
+            OffsetMetadata.NoMetadata)))
   }
 
   def createTestOffsetCommitResponse: OffsetCommitResponse = {
     new OffsetCommitResponse(
-      collection.immutable.Map(
-        TopicAndPartition(topic1, 0) -> Errors.NONE.code,
-        TopicAndPartition(topic1, 1) -> Errors.NONE.code))
+      collection
+        .immutable
+        .Map(
+          TopicAndPartition(topic1, 0) -> Errors.NONE.code,
+          TopicAndPartition(topic1, 1) -> Errors.NONE.code))
   }
 
   def createTestOffsetFetchRequest: OffsetFetchRequest = {
@@ -301,16 +324,18 @@ object SerializationTestUtils {
 
   def createTestOffsetFetchResponse: OffsetFetchResponse = {
     new OffsetFetchResponse(
-      collection.immutable.Map(
-        TopicAndPartition(topic1, 0) -> OffsetMetadataAndError(
-          42L,
-          "some metadata",
-          Errors.NONE.code),
-        TopicAndPartition(topic1, 1) -> OffsetMetadataAndError(
-          100L,
-          OffsetMetadata.NoMetadata,
-          Errors.UNKNOWN_TOPIC_OR_PARTITION.code)
-      ))
+      collection
+        .immutable
+        .Map(
+          TopicAndPartition(topic1, 0) -> OffsetMetadataAndError(
+            42L,
+            "some metadata",
+            Errors.NONE.code),
+          TopicAndPartition(topic1, 1) -> OffsetMetadataAndError(
+            100L,
+            OffsetMetadata.NoMetadata,
+            Errors.UNKNOWN_TOPIC_OR_PARTITION.code)
+        ))
   }
 
   def createConsumerMetadataRequest: GroupCoordinatorRequest = {
@@ -356,35 +381,42 @@ class RequestResponseSerializationTest extends JUnitSuite {
   @Test
   def testSerializationAndDeserialization() {
 
-    val requestsAndResponses = collection.immutable.Seq(
-      producerRequest,
-      producerResponse,
-      fetchRequest,
-      offsetRequest,
-      offsetResponse,
-      offsetCommitRequestV0,
-      offsetCommitRequestV1,
-      offsetCommitRequestV2,
-      offsetCommitResponse,
-      offsetFetchRequest,
-      offsetFetchResponse,
-      consumerMetadataRequest,
-      consumerMetadataResponse,
-      consumerMetadataResponseNoCoordinator
-    )
+    val requestsAndResponses = collection
+      .immutable
+      .Seq(
+        producerRequest,
+        producerResponse,
+        fetchRequest,
+        offsetRequest,
+        offsetResponse,
+        offsetCommitRequestV0,
+        offsetCommitRequestV1,
+        offsetCommitRequestV2,
+        offsetCommitResponse,
+        offsetFetchRequest,
+        offsetFetchResponse,
+        consumerMetadataRequest,
+        consumerMetadataResponse,
+        consumerMetadataResponseNoCoordinator
+      )
 
     requestsAndResponses.foreach { original =>
       val buffer = ByteBuffer.allocate(original.sizeInBytes)
       original.writeTo(buffer)
       buffer.rewind()
-      val deserializer = original.getClass
+      val deserializer = original
+        .getClass
         .getDeclaredMethod("readFrom", classOf[ByteBuffer])
       val deserialized = deserializer.invoke(null, buffer)
       assertFalse(
-        "All serialized bytes in " + original.getClass.getSimpleName + " should have been consumed",
+        "All serialized bytes in " + original
+          .getClass
+          .getSimpleName + " should have been consumed",
         buffer.hasRemaining)
       assertEquals(
-        "The original and deserialized for " + original.getClass.getSimpleName + " should be the same.",
+        "The original and deserialized for " + original
+          .getClass
+          .getSimpleName + " should be the same.",
         original,
         deserialized)
     }

@@ -36,7 +36,8 @@ Check the output:
 class Tutorial4(args: Args) extends Job(args) {
 
   //we probably don't need to bother with vals for input/output anymore
-  TextLine(args("input")).read
+  TextLine(args("input"))
+    .read
     .flatMap('line -> 'word) { line: String =>
       line.split("\\s")
     }

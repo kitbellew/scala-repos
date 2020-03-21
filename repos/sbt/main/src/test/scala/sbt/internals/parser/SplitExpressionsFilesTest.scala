@@ -90,8 +90,8 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
               .nonEmpty) {
           Some((statements, lineRange))
         } else {
-          val closeSlashAsteriskLine = statements.indexWhere(s =>
-            s.contains(END_COMMENT))
+          val closeSlashAsteriskLine = statements
+            .indexWhere(s => s.contains(END_COMMENT))
           if (closeSlashAsteriskLine == -1) {
             Some((statements, lineRange))
           } else {
@@ -99,8 +99,8 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
               if (reverted) {
                 lineRange.copy(end = lineRange.end - closeSlashAsteriskLine - 1)
               } else {
-                lineRange.copy(start =
-                  lineRange.start + closeSlashAsteriskLine + 1)
+                lineRange
+                  .copy(start = lineRange.start + closeSlashAsteriskLine + 1)
               }
             removeSlashAsterisk(
               statements.drop(closeSlashAsteriskLine + 1),
@@ -150,8 +150,8 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
         case _ =>
           None
       }
-    removeDoubleSlashReversed(statements.reverse, lineRange).map(t =>
-      (t._1.reverse, t._2))
+    removeDoubleSlashReversed(statements.reverse, lineRange)
+      .map(t => (t._1.reverse, t._2))
   }
 
   def splitLines(
@@ -164,12 +164,14 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
 
       //TODO: Return actual contents (after making both splitter...
       //TODO: ...implementations return CharRanges instead of LineRanges)
-      val settingsAndDefWithoutComments = settingsAndDefs.flatMap(t =>
-        removeCommentFromStatement(t._1, t._2))
-      scala.util.Success(
-        (
-          imports.map(imp => (imp._1.trim, imp._2)),
-          settingsAndDefWithoutComments))
+      val settingsAndDefWithoutComments = settingsAndDefs
+        .flatMap(t => removeCommentFromStatement(t._1, t._2))
+      scala
+        .util
+        .Success(
+          (
+            imports.map(imp => (imp._1.trim, imp._2)),
+            settingsAndDefWithoutComments))
     } catch {
       case e: ToolBoxError =>
         scala.util.Failure(e)

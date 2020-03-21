@@ -85,7 +85,8 @@ object ExtCoreArtifacts extends JSArtifacts {
         val ret =
           """
 	  try {
-	  var parent1 = document.getElementById(""" + id.encJs + """);
+	  var parent1 = document.getElementById(""" + id
+            .encJs + """);
 	  parent1.innerHTML = """ + html + """;
 	  for (var i = 0; i < parent1.childNodes.length; i++) {
 	    var node = parent1.childNodes[i];
@@ -111,7 +112,8 @@ object ExtCoreArtifacts extends JSArtifacts {
     new JsCmd {
       def toJsCmd =
         fixHtmlCmdFunc(id, xml) { s =>
-          "try { Ext.fly(" + id.encJs + ").dom.innerHTML = " + s + "; } catch (e) {}"
+          "try { Ext.fly(" + id
+            .encJs + ").dom.innerHTML = " + s + "; } catch (e) {}"
         }
     }
 
@@ -158,11 +160,13 @@ object ExtCoreArtifacts extends JSArtifacts {
         ("dataType : " + info.dataType.encJs) ::
         "timeout : " + info.timeout ::
         "disableCaching : " + !info.cache ::
-        "success: function(response, options) { res = Ext.lift.eval(response.responseText);" + info.successFunc
+        "success: function(response, options) { res = Ext.lift.eval(response.responseText);" + info
+          .successFunc
           .map(_ + "(res);")
           .openOr("") + "}" ::
-        "failure: " + info.failFunc.openOr(
-          "function(arg) {alert('Ajax request failed');}") ::
+        "failure: " + info
+          .failFunc
+          .openOr("function(arg) {alert('Ajax request failed');}") ::
         Nil
     ) mkString ("{ ", ", ", " }")
 }

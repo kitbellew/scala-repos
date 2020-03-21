@@ -368,27 +368,29 @@ class View(position: FrogShape => Int, val frogShapes: List[FrogShape]) {
 //
 class Control {
   def update(model: Model, view: View) {
-    view.frogShapes.foreach {
-      case `theDummyFrogShape` =>
-      case frogShape =>
-        frogShape.onMouseClicked = { (_: MouseEvent) =>
-          val frog = frogShape.getFrog
-          if (model.canJumpOneRight(frog)) {
-            view.jumpOneRight(frogShape)
-            model.jumpOneRight(frog)
-          } else if (model.canJumpTwoRight(frog)) {
-            view.jumpTwoRight(frogShape)
-            model.jumpTwoRight(frog)
-          } else if (model.canJumpOneLeft(frog)) {
-            view.jumpOneLeft(frogShape)
-            model.jumpOneLeft(frog)
-          } else if (model.canJumpTwoLeft(frog)) {
-            view.jumpTwoLeft(frogShape)
-            model.jumpTwoLeft(frog)
+    view
+      .frogShapes
+      .foreach {
+        case `theDummyFrogShape` =>
+        case frogShape =>
+          frogShape.onMouseClicked = { (_: MouseEvent) =>
+            val frog = frogShape.getFrog
+            if (model.canJumpOneRight(frog)) {
+              view.jumpOneRight(frogShape)
+              model.jumpOneRight(frog)
+            } else if (model.canJumpTwoRight(frog)) {
+              view.jumpTwoRight(frogShape)
+              model.jumpTwoRight(frog)
+            } else if (model.canJumpOneLeft(frog)) {
+              view.jumpOneLeft(frogShape)
+              model.jumpOneLeft(frog)
+            } else if (model.canJumpTwoLeft(frog)) {
+              view.jumpTwoLeft(frogShape)
+              model.jumpTwoLeft(frog)
+            }
+            update(model, view)
           }
-          update(model, view)
-        }
-    }
+      }
   }
 }
 
@@ -417,7 +419,8 @@ object JumpingFrogsPuzzle extends JFXApp {
     title = TITLE
     scene = new Scene {
       content =
-        theViewValues.canvasShape :: theViewValues.stoneShapes ::: theView.frogShapes
+        theViewValues.canvasShape :: theViewValues.stoneShapes ::: theView
+          .frogShapes
     }
   }
 }

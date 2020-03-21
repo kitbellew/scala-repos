@@ -91,33 +91,38 @@ class BalancingDispatcherSpec extends AkkaSpec(BalancingDispatcherSpec.config) {
       }
 
       finishedCounter.await(5, TimeUnit.SECONDS)
-      fast.underlying
+      fast
+        .underlying
         .asInstanceOf[ActorCell]
         .mailbox
         .asInstanceOf[Mailbox]
         .hasMessages should ===(false)
-      slow.underlying
+      slow
+        .underlying
         .asInstanceOf[ActorCell]
         .mailbox
         .asInstanceOf[Mailbox]
         .hasMessages should ===(false)
-      fast.underlying
+      fast
+        .underlying
         .asInstanceOf[ActorCell]
         .actor
         .asInstanceOf[DelayableActor]
         .invocationCount should be > sentToFast
-      fast.underlying
+      fast
+        .underlying
         .asInstanceOf[ActorCell]
         .actor
         .asInstanceOf[DelayableActor]
         .invocationCount should be >
         (
-          slow.underlying
+          slow
+            .underlying
             .asInstanceOf[ActorCell]
             .actor
             .asInstanceOf[DelayableActor]
             .invocationCount
-        )
+          )
       system.stop(slow)
       system.stop(fast)
     }

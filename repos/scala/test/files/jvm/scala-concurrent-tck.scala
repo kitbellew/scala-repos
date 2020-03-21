@@ -1147,8 +1147,9 @@ trait CustomExecutionContext extends TestBase {
     }
 
     override def reportFailure(t: Throwable): Unit = {
-      System.err.println(
-        "Failure: " + t.getClass.getSimpleName + ": " + t.getMessage)
+      System
+        .err
+        .println("Failure: " + t.getClass.getSimpleName + ": " + t.getMessage)
       delegate.reportFailure(t)
     }
   }
@@ -1206,10 +1207,12 @@ trait CustomExecutionContext extends TestBase {
             x + 1
           }
           val f = Promise.successful(10).future
-          f.map(addOne).filter { x =>
-            assertEC()
-            x == 11
-          } flatMap { x =>
+          f
+            .map(addOne)
+            .filter { x =>
+              assertEC()
+              x == 11
+            } flatMap { x =>
             Promise.successful(x + 1).future.map(addOne).map(addOne)
           } onComplete {
             case Failure(t) =>

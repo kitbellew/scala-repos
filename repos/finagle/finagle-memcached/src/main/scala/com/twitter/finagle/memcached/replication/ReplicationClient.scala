@@ -92,10 +92,10 @@ object ReplicationClient {
 class BaseReplicationClient(
     clients: Seq[Client],
     statsReceiver: StatsReceiver = NullStatsReceiver) {
-  private[this] val inconsistentContentCounter = statsReceiver.counter(
-    "inconsistent_content_count")
-  private[this] val failedCounter = statsReceiver.counter(
-    "failed_replication_count")
+  private[this] val inconsistentContentCounter = statsReceiver
+    .counter("inconsistent_content_count")
+  private[this] val failedCounter = statsReceiver
+    .counter("failed_replication_count")
 
   assert(!clients.isEmpty)
 
@@ -129,8 +129,8 @@ class BaseReplicationClient(
           val missing = currentRes.misses ++ currentRes.failures.keySet
           c.getResult(missing) flatMap {
             case res =>
-              val newRes = GetResult.merged(
-                Seq(GetResult(currentRes.hits), res))
+              val newRes = GetResult
+                .merged(Seq(GetResult(currentRes.hits), res))
               loopGet(tail, newRes)
           }
       }
@@ -177,17 +177,19 @@ class BaseReplicationClient(
       clients map {
         _.getResult(keySet)
       }) map { results: Seq[GetResult] =>
-      keySet.map { k =>
-        val replicasResult = results map {
-          case r if (r.hits.contains(k)) =>
-            Return(Some(r.hits.get(k).get.value))
-          case r if (r.misses.contains(k)) =>
-            Return(None)
-          case r if (r.failures.contains(k)) =>
-            Throw(r.failures.get(k).get)
+      keySet
+        .map { k =>
+          val replicasResult = results map {
+            case r if (r.hits.contains(k)) =>
+              Return(Some(r.hits.get(k).get.value))
+            case r if (r.misses.contains(k)) =>
+              Return(None)
+            case r if (r.failures.contains(k)) =>
+              Throw(r.failures.get(k).get)
+          }
+          k -> toReplicationStatus(replicasResult)
         }
-        k -> toReplicationStatus(replicasResult)
-      }.toMap
+        .toMap
     }
   }
 
@@ -215,18 +217,20 @@ class BaseReplicationClient(
       clients map {
         _.getsResult(keySet)
       }) map { results: Seq[GetsResult] =>
-      keySet.map { k =>
-        val replicasResult = results map {
-          case r if (r.hits.contains(k)) =>
-            Return(Some(r.hits.get(k).get.value))
-          case r if (r.misses.contains(k)) =>
-            Return(None)
-          case r if (r.failures.contains(k)) =>
-            Throw(r.failures.get(k).get)
-        }
+      keySet
+        .map { k =>
+          val replicasResult = results map {
+            case r if (r.hits.contains(k)) =>
+              Return(Some(r.hits.get(k).get.value))
+            case r if (r.misses.contains(k)) =>
+              Return(None)
+            case r if (r.failures.contains(k)) =>
+              Throw(r.failures.get(k).get)
+          }
 
-        k -> attachCas(toReplicationStatus(replicasResult), results, k)
-      }.toMap
+          k -> attachCas(toReplicationStatus(replicasResult), results, k)
+        }
+        .toMap
     }
   }
 

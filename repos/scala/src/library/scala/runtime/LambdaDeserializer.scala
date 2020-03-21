@@ -48,8 +48,8 @@ object LambdaDeserializer {
       val funcInterfaceSignature = parseDescriptor(
         getFunctionalInterfaceMethodSignature)
       val instantiated = parseDescriptor(getInstantiatedMethodType)
-      val functionalInterfaceClass = loader.loadClass(
-        slashDot(getFunctionalInterfaceClass))
+      val functionalInterfaceClass = loader
+        .loadClass(slashDot(getFunctionalInterfaceClass))
 
       val implMethodSig = parseDescriptor(getImplMethodSignature)
       // Construct the invoked type from the impl method type. This is the type of a factory
@@ -59,8 +59,8 @@ object LambdaDeserializer {
         // 1. Add receiver for non-static impl methods
         val withReceiver =
           getImplMethodKind match {
-            case MethodHandleInfo.REF_invokeStatic |
-                MethodHandleInfo.REF_newInvokeSpecial =>
+            case MethodHandleInfo.REF_invokeStatic | MethodHandleInfo
+                  .REF_newInvokeSpecial =>
               implMethodSig
             case _ =>
               implMethodSig.insertParameterTypes(0, implClass)
@@ -93,10 +93,11 @@ object LambdaDeserializer {
               e)
         }
 
-      val flags: Int =
-        LambdaMetafactory.FLAG_SERIALIZABLE | LambdaMetafactory.FLAG_MARKERS
-      val isScalaFunction = functionalInterfaceClass.getName.startsWith(
-        "scala.Function")
+      val flags: Int = LambdaMetafactory.FLAG_SERIALIZABLE | LambdaMetafactory
+        .FLAG_MARKERS
+      val isScalaFunction = functionalInterfaceClass
+        .getName
+        .startsWith("scala.Function")
       val markerInterface: Class[_] = loader.loadClass(
         if (isScalaFunction)
           ScalaSerializable
@@ -117,8 +118,8 @@ object LambdaDeserializer {
       )
     }
 
-    val key =
-      serialized.getImplMethodName + " : " + serialized.getImplMethodSignature
+    val key = serialized.getImplMethodName + " : " + serialized
+      .getImplMethodSignature
     val factory: MethodHandle =
       if (cache == null) {
         makeCallSite.getTarget
@@ -159,8 +160,8 @@ object LambdaDeserializer {
         lookup.findStatic(owner, name, signature)
       case MethodHandleInfo.REF_newInvokeSpecial =>
         lookup.findConstructor(owner, signature)
-      case MethodHandleInfo.REF_invokeVirtual |
-          MethodHandleInfo.REF_invokeInterface =>
+      case MethodHandleInfo.REF_invokeVirtual | MethodHandleInfo
+            .REF_invokeInterface =>
         lookup.findVirtual(owner, name, signature)
       case MethodHandleInfo.REF_invokeSpecial =>
         lookup.findSpecial(owner, name, signature, owner)

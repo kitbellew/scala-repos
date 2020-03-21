@@ -36,8 +36,9 @@ abstract class KindProjectorTestBase
     import _root_.junit.framework.Assert._
 
     val filePath = folderPath + getTestName(false) + ".scala"
-    val file = LocalFileSystem.getInstance.findFileByPath(
-      filePath.replace(File.separatorChar, '/'))
+    val file = LocalFileSystem
+      .getInstance
+      .findFileByPath(filePath.replace(File.separatorChar, '/'))
     assert(file != null, "file " + filePath + " not found")
     val fileText = StringUtil.convertLineSeparators(
       FileUtil.loadFile(new File(file.getCanonicalPath), CharsetToolkit.UTF8))
@@ -72,8 +73,8 @@ abstract class KindProjectorTestBase
           lastPsi.getNode.getElementType match {
             case ScalaTokenTypes.tLINE_COMMENT =>
               text.substring(2).trim
-            case ScalaTokenTypes.tBLOCK_COMMENT |
-                ScalaTokenTypes.tDOC_COMMENT =>
+            case ScalaTokenTypes.tBLOCK_COMMENT | ScalaTokenTypes
+                  .tDOC_COMMENT =>
               text.substring(2, text.length - 2).trim
             case _ =>
               assertTrue(

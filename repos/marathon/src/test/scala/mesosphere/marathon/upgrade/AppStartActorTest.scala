@@ -40,8 +40,8 @@ class AppStartActorTest
     driver = mock[SchedulerDriver]
     scheduler = mock[SchedulerActions]
     taskQueue = mock[LaunchQueue]
-    taskTracker = MarathonTestHelper.createTaskTracker(
-      AlwaysElectedLeadershipModule.forActorSystem(system))
+    taskTracker = MarathonTestHelper
+      .createTaskTracker(AlwaysElectedLeadershipModule.forActorSystem(system))
   }
 
   test("Without Health Checks") {
@@ -60,28 +60,32 @@ class AppStartActorTest
         promise))
     watch(ref)
 
-    system.eventStream.publish(
-      MesosStatusUpdateEvent(
-        slaveId = "",
-        taskId = Task.Id("task_a"),
-        taskStatus = "TASK_RUNNING",
-        message = "",
-        appId = app.id,
-        host = "",
-        ipAddresses = Nil,
-        ports = Nil,
-        version = app.version.toString))
-    system.eventStream.publish(
-      MesosStatusUpdateEvent(
-        slaveId = "",
-        taskId = Task.Id("task_b"),
-        taskStatus = "TASK_RUNNING",
-        message = "",
-        appId = app.id,
-        host = "",
-        ipAddresses = Nil,
-        ports = Nil,
-        version = app.version.toString))
+    system
+      .eventStream
+      .publish(
+        MesosStatusUpdateEvent(
+          slaveId = "",
+          taskId = Task.Id("task_a"),
+          taskStatus = "TASK_RUNNING",
+          message = "",
+          appId = app.id,
+          host = "",
+          ipAddresses = Nil,
+          ports = Nil,
+          version = app.version.toString))
+    system
+      .eventStream
+      .publish(
+        MesosStatusUpdateEvent(
+          slaveId = "",
+          taskId = Task.Id("task_b"),
+          taskStatus = "TASK_RUNNING",
+          message = "",
+          appId = app.id,
+          host = "",
+          ipAddresses = Nil,
+          ports = Nil,
+          version = app.version.toString))
 
     Await.result(promise.future, 5.seconds)
 
@@ -108,10 +112,22 @@ class AppStartActorTest
         promise))
     watch(ref)
 
-    system.eventStream.publish(
-      HealthStatusChanged(app.id, Task.Id("task_a"), app.version, alive = true))
-    system.eventStream.publish(
-      HealthStatusChanged(app.id, Task.Id("task_b"), app.version, alive = true))
+    system
+      .eventStream
+      .publish(
+        HealthStatusChanged(
+          app.id,
+          Task.Id("task_a"),
+          app.version,
+          alive = true))
+    system
+      .eventStream
+      .publish(
+        HealthStatusChanged(
+          app.id,
+          Task.Id("task_b"),
+          app.version,
+          alive = true))
 
     Await.result(promise.future, 5.seconds)
 

@@ -77,14 +77,18 @@ class DriverDataSource(
         driver =
           if (driverObject eq null) {
             if (driverClassName ne null) {
-              DriverManager.getDrivers.asScala
+              DriverManager
+                .getDrivers
+                .asScala
                 .find(_.getClass.getName == driverClassName)
                 .getOrElse {
                   logger.debug(
                     s"Driver $driverClassName not already registered; trying to load it")
                   val cl = classLoader.loadClass(driverClassName)
                   registered = true
-                  DriverManager.getDrivers.asScala
+                  DriverManager
+                    .getDrivers
+                    .asScala
                     .find(_.getClass.getName == driverClassName)
                     .getOrElse {
                       logger.debug(

@@ -126,8 +126,9 @@ object HandlerInvokerFactory {
         // they could reference controllers relative to their own package.
         if (handlerDef.routerPackage.length > 0) {
           try {
-            handlerDef.classLoader.loadClass(
-              handlerDef.routerPackage + "." + handlerDef.controller)
+            handlerDef
+              .classLoader
+              .loadClass(handlerDef.routerPackage + "." + handlerDef.controller)
           } catch {
             case NonFatal(_) =>
               throw e
@@ -163,8 +164,8 @@ object HandlerInvokerFactory {
                 with RequestTaggingHandler {
                 val annotations = cachedAnnotations
                 val parser = {
-                  val javaParser = components.getBodyParser(
-                    cachedAnnotations.parser)
+                  val javaParser = components
+                    .getBodyParser(cachedAnnotations.parser)
                   javaBodyParserToScala(javaParser)
                 }
                 def invocation: CompletionStage[JResult] = resultCall(call)

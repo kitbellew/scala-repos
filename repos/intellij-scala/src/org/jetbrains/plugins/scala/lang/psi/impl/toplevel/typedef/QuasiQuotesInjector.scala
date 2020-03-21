@@ -22,6 +22,8 @@ class QuasiQuotesInjector extends SyntheticMembersInjector {
   }
 
   private def needQQEmulation(e: PsiElement) =
-    e.module.exists(
-      _.scalaCompilerSettings.plugins.exists(_.contains("paradise_2.10")))
+    e
+      .module
+      .exists(
+        _.scalaCompilerSettings.plugins.exists(_.contains("paradise_2.10")))
 }

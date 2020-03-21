@@ -205,7 +205,9 @@ private[ui] class StageTableBase(
 
     // The submission time for a stage is misleading because it counts the time
     // the stage waits to be launched. (SPARK-10930)
-    val taskLaunchTimes = stageData.taskData.values
+    val taskLaunchTimes = stageData
+      .taskData
+      .values
       .map(_.taskInfo.launchTime)
       .filter(_ > 0)
     val duration: Option[Long] =

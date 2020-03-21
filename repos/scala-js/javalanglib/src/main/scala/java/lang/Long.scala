@@ -105,7 +105,8 @@ object Long {
 
   @inline // because radix is almost certainly constant at call site
   def toString(i: scala.Long, radix: Int): String = {
-    if (radix == 10 || radix < Character.MIN_RADIX || radix > Character.MAX_RADIX)
+    if (radix == 10 || radix < Character.MIN_RADIX || radix > Character
+          .MAX_RADIX)
       toString(i)
     else
       toStringImpl(i, radix)
@@ -277,7 +278,9 @@ object Long {
       @inline
       def parseChunk(chunkStart: Int, chunkEnd: Int): scala.Long = {
         val chunk = s.jsSubstring(chunkStart, chunkEnd)
-        val chunkValueDouble = js.Dynamic.global
+        val chunkValueDouble = js
+          .Dynamic
+          .global
           .parseInt(chunk, radix)
           .asInstanceOf[scala.Double]
         Integer.toUnsignedLong(chunkValueDouble.toInt)

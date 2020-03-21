@@ -236,7 +236,8 @@ class GeneralizedLinearRegressionSuite
     * so we can validate the training accuracy compared with R's glm and glmnet package.
     */
   ignore("export test data into CSV format") {
-    datasetGaussianIdentity.rdd
+    datasetGaussianIdentity
+      .rdd
       .map {
         case Row(label: Double, features: Vector) =>
           label + "," + features.toArray.mkString(",")
@@ -244,7 +245,8 @@ class GeneralizedLinearRegressionSuite
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/GeneralizedLinearRegressionSuite/datasetGaussianIdentity")
-    datasetGaussianLog.rdd
+    datasetGaussianLog
+      .rdd
       .map {
         case Row(label: Double, features: Vector) =>
           label + "," + features.toArray.mkString(",")
@@ -252,7 +254,8 @@ class GeneralizedLinearRegressionSuite
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/GeneralizedLinearRegressionSuite/datasetGaussianLog")
-    datasetGaussianInverse.rdd
+    datasetGaussianInverse
+      .rdd
       .map {
         case Row(label: Double, features: Vector) =>
           label + "," + features.toArray.mkString(",")
@@ -260,7 +263,8 @@ class GeneralizedLinearRegressionSuite
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/GeneralizedLinearRegressionSuite/datasetGaussianInverse")
-    datasetBinomial.rdd
+    datasetBinomial
+      .rdd
       .map {
         case Row(label: Double, features: Vector) =>
           label + "," + features.toArray.mkString(",")
@@ -268,7 +272,8 @@ class GeneralizedLinearRegressionSuite
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/GeneralizedLinearRegressionSuite/datasetBinomial")
-    datasetPoissonLog.rdd
+    datasetPoissonLog
+      .rdd
       .map {
         case Row(label: Double, features: Vector) =>
           label + "," + features.toArray.mkString(",")
@@ -276,7 +281,8 @@ class GeneralizedLinearRegressionSuite
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/GeneralizedLinearRegressionSuite/datasetPoissonLog")
-    datasetPoissonIdentity.rdd
+    datasetPoissonIdentity
+      .rdd
       .map {
         case Row(label: Double, features: Vector) =>
           label + "," + features.toArray.mkString(",")
@@ -284,7 +290,8 @@ class GeneralizedLinearRegressionSuite
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/GeneralizedLinearRegressionSuite/datasetPoissonIdentity")
-    datasetPoissonSqrt.rdd
+    datasetPoissonSqrt
+      .rdd
       .map {
         case Row(label: Double, features: Vector) =>
           label + "," + features.toArray.mkString(",")
@@ -292,7 +299,8 @@ class GeneralizedLinearRegressionSuite
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/GeneralizedLinearRegressionSuite/datasetPoissonSqrt")
-    datasetGammaInverse.rdd
+    datasetGammaInverse
+      .rdd
       .map {
         case Row(label: Double, features: Vector) =>
           label + "," + features.toArray.mkString(",")
@@ -300,7 +308,8 @@ class GeneralizedLinearRegressionSuite
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/GeneralizedLinearRegressionSuite/datasetGammaInverse")
-    datasetGammaIdentity.rdd
+    datasetGammaIdentity
+      .rdd
       .map {
         case Row(label: Double, features: Vector) =>
           label + "," + features.toArray.mkString(",")
@@ -308,7 +317,8 @@ class GeneralizedLinearRegressionSuite
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/GeneralizedLinearRegressionSuite/datasetGammaIdentity")
-    datasetGammaLog.rdd
+    datasetGammaLog
+      .rdd
       .map {
         case Row(label: Double, features: Vector) =>
           label + "," + features.toArray.mkString(",")
@@ -408,10 +418,8 @@ class GeneralizedLinearRegressionSuite
           .setLink(link)
           .setFitIntercept(fitIntercept)
         val model = trainer.fit(dataset)
-        val actual = Vectors.dense(
-          model.intercept,
-          model.coefficients(0),
-          model.coefficients(1))
+        val actual = Vectors
+          .dense(model.intercept, model.coefficients(0), model.coefficients(1))
         assert(
           actual ~= expected(idx) absTol 1e-4,
           "Model mismatch: GLM with gaussian family, " +
@@ -477,10 +485,8 @@ class GeneralizedLinearRegressionSuite
         .setFitIntercept(fitIntercept)
         .setRegParam(regParam)
       val model = trainer.fit(datasetGaussianIdentity)
-      val actual = Vectors.dense(
-        model.intercept,
-        model.coefficients(0),
-        model.coefficients(1))
+      val actual = Vectors
+        .dense(model.intercept, model.coefficients(0), model.coefficients(1))
       assert(
         actual ~= expected(idx) absTol 1e-4,
         "Model mismatch: GLM with gaussian family, " +
@@ -629,10 +635,8 @@ class GeneralizedLinearRegressionSuite
           .setLink(link)
           .setFitIntercept(fitIntercept)
         val model = trainer.fit(dataset)
-        val actual = Vectors.dense(
-          model.intercept,
-          model.coefficients(0),
-          model.coefficients(1))
+        val actual = Vectors
+          .dense(model.intercept, model.coefficients(0), model.coefficients(1))
         assert(
           actual ~= expected(idx) absTol 1e-4,
           "Model mismatch: GLM with poisson family, " +
@@ -713,10 +717,8 @@ class GeneralizedLinearRegressionSuite
           .setLink(link)
           .setFitIntercept(fitIntercept)
         val model = trainer.fit(dataset)
-        val actual = Vectors.dense(
-          model.intercept,
-          model.coefficients(0),
-          model.coefficients(1))
+        val actual = Vectors
+          .dense(model.intercept, model.coefficients(0), model.coefficients(1))
         assert(
           actual ~= expected(idx) absTol 1e-4,
           "Model mismatch: GLM with gamma family, " +
@@ -797,8 +799,7 @@ class GeneralizedLinearRegressionSuite
           1     2     3     4
        1.92 -0.96 -0.64  0.48
      */
-    val trainer = new GeneralizedLinearRegression()
-      .setWeightCol("weight")
+    val trainer = new GeneralizedLinearRegression().setWeightCol("weight")
 
     val model = trainer.fit(datasetWithWeight)
 
@@ -843,27 +844,44 @@ class GeneralizedLinearRegressionSuite
 
     assert(model.coefficients ~== coefficientsR absTol 1e-3)
     assert(model.intercept ~== interceptR absTol 1e-3)
-    devianceResiduals.zip(devianceResidualsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    pearsonResiduals.zip(pearsonResidualsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    workingResiduals.zip(workingResidualsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    responseResiduals.zip(responseResidualsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    summary.coefficientStandardErrors.zip(seCoefR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    summary.tValues.zip(tValsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    summary.pValues.zip(pValsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
+    devianceResiduals
+      .zip(devianceResidualsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    pearsonResiduals
+      .zip(pearsonResidualsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    workingResiduals
+      .zip(workingResidualsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    responseResiduals
+      .zip(responseResidualsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    summary
+      .coefficientStandardErrors
+      .zip(seCoefR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    summary
+      .tValues
+      .zip(tValsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    summary
+      .pValues
+      .zip(pValsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
     assert(summary.dispersion ~== dispersionR absTol 1e-3)
     assert(summary.nullDeviance ~== nullDevianceR absTol 1e-3)
     assert(summary.deviance ~== residualDevianceR absTol 1e-3)
@@ -973,27 +991,44 @@ class GeneralizedLinearRegressionSuite
 
     assert(model.coefficients ~== coefficientsR absTol 1e-3)
     assert(model.intercept ~== interceptR absTol 1e-3)
-    devianceResiduals.zip(devianceResidualsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    pearsonResiduals.zip(pearsonResidualsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    workingResiduals.zip(workingResidualsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    responseResiduals.zip(responseResidualsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    summary.coefficientStandardErrors.zip(seCoefR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    summary.tValues.zip(tValsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    summary.pValues.zip(pValsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
+    devianceResiduals
+      .zip(devianceResidualsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    pearsonResiduals
+      .zip(pearsonResidualsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    workingResiduals
+      .zip(workingResidualsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    responseResiduals
+      .zip(responseResidualsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    summary
+      .coefficientStandardErrors
+      .zip(seCoefR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    summary
+      .tValues
+      .zip(tValsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    summary
+      .pValues
+      .zip(pValsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
     assert(summary.dispersion ~== dispersionR absTol 1e-3)
     assert(summary.nullDeviance ~== nullDevianceR absTol 1e-3)
     assert(summary.deviance ~== residualDevianceR absTol 1e-3)
@@ -1114,27 +1149,44 @@ class GeneralizedLinearRegressionSuite
 
     assert(model.coefficients ~== coefficientsR absTol 1e-3)
     assert(model.intercept ~== interceptR absTol 1e-3)
-    devianceResiduals.zip(devianceResidualsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    pearsonResiduals.zip(pearsonResidualsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    workingResiduals.zip(workingResidualsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    responseResiduals.zip(responseResidualsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    summary.coefficientStandardErrors.zip(seCoefR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    summary.tValues.zip(tValsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    summary.pValues.zip(pValsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
+    devianceResiduals
+      .zip(devianceResidualsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    pearsonResiduals
+      .zip(pearsonResidualsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    workingResiduals
+      .zip(workingResidualsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    responseResiduals
+      .zip(responseResidualsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    summary
+      .coefficientStandardErrors
+      .zip(seCoefR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    summary
+      .tValues
+      .zip(tValsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    summary
+      .pValues
+      .zip(pValsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
     assert(summary.dispersion ~== dispersionR absTol 1e-3)
     assert(summary.nullDeviance ~== nullDevianceR absTol 1e-3)
     assert(summary.deviance ~== residualDevianceR absTol 1e-3)
@@ -1252,27 +1304,44 @@ class GeneralizedLinearRegressionSuite
 
     assert(model.coefficients ~== coefficientsR absTol 1e-3)
     assert(model.intercept ~== interceptR absTol 1e-3)
-    devianceResiduals.zip(devianceResidualsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    pearsonResiduals.zip(pearsonResidualsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    workingResiduals.zip(workingResidualsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    responseResiduals.zip(responseResidualsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    summary.coefficientStandardErrors.zip(seCoefR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    summary.tValues.zip(tValsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    summary.pValues.zip(pValsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
+    devianceResiduals
+      .zip(devianceResidualsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    pearsonResiduals
+      .zip(pearsonResidualsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    workingResiduals
+      .zip(workingResidualsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    responseResiduals
+      .zip(responseResidualsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    summary
+      .coefficientStandardErrors
+      .zip(seCoefR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    summary
+      .tValues
+      .zip(tValsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    summary
+      .pValues
+      .zip(pValsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
     assert(summary.dispersion ~== dispersionR absTol 1e-3)
     assert(summary.nullDeviance ~== nullDevianceR absTol 1e-3)
     assert(summary.deviance ~== residualDevianceR absTol 1e-3)
@@ -1342,9 +1411,12 @@ object GeneralizedLinearRegressionSuite {
 
     (0 until nPoints).map { _ =>
       val features = Vectors.dense(
-        coefficients.indices.map {
-          rndElement(_)
-        }.toArray)
+        coefficients
+          .indices
+          .map {
+            rndElement(_)
+          }
+          .toArray)
       val eta = BLAS.dot(Vectors.dense(coefficients), features) + intercept
       val mu =
         link match {

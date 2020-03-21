@@ -570,9 +570,11 @@ trait HttpHelpers {
     */
   def toHashMap[A, B](in: Map[A, B]): HashMap[A, B] = {
     val ret = new HashMap[A, B];
-    in.keysIterator.foreach { k =>
-      ret += (k -> in(k))
-    }
+    in
+      .keysIterator
+      .foreach { k =>
+        ret += (k -> in(k))
+      }
     ret
   }
 
@@ -714,7 +716,8 @@ trait HttpHelpers {
               else
                 "?"
             ) +
-            ps.map {
+            ps
+              .map {
                 case (n, v) =>
                   urlEncode(n) + "=" + urlEncode(v)
               }

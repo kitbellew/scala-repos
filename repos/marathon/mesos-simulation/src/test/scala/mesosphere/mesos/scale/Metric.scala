@@ -100,12 +100,15 @@ object MetricsFormat {
     new Reads[Seq[T]] {
       override def reads(js: JsValue): JsResult[Seq[T]] = {
         JsSuccess(
-          js.as[JsObject].fields.map {
-            case (name, value) =>
-              val obj = JsObject(
-                value.as[JsObject].fields :+ ("name" -> JsString(name)))
-              t.reads(obj).get
-          })
+          js
+            .as[JsObject]
+            .fields
+            .map {
+              case (name, value) =>
+                val obj = JsObject(
+                  value.as[JsObject].fields :+ ("name" -> JsString(name)))
+                t.reads(obj).get
+            })
       }
     }
 

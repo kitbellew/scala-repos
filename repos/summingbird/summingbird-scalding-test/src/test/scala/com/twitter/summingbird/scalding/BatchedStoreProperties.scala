@@ -80,10 +80,12 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
     Arbitrary {
       for {
         arbInt <- Arbitrary.arbitrary[List[Int]]
-        in = arbInt.zipWithIndex.map {
-          case (item: Int, time: Int) =>
-            (time.toLong, item)
-        }
+        in = arbInt
+          .zipWithIndex
+          .map {
+            case (item: Int, time: Int) =>
+              (time.toLong, item)
+          }
         arbMap <- Arbitrary.arbitrary[Map[Int, Int]]
         batcher = TestUtil.randomBatcher(in)
         lastTimeStamp = in.size
@@ -126,8 +128,8 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
                     _),
                   _)) => {
             //readInterval should start from the last written interval in the store
-            val start: Timestamp = batcher.earliestTimeOf(
-              testStore.initBatch.next)
+            val start: Timestamp = batcher
+              .earliestTimeOf(testStore.initBatch.next)
             implicitly[Ordering[Timestamp]].equiv(readIntervalLower, start)
           }
           case Right(_) =>
@@ -283,7 +285,8 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
 
           mergeResult match {
             case Left(l) => {
-              l.mkString
+              l
+                .mkString
                 .contains("readTimespan is not convering at least one batch")
                 .label("fail with right reason")
             }

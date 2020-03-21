@@ -14,8 +14,8 @@ import akka.http.scaladsl.Http
 import scala.concurrent.duration._
 
 object TestServer extends App {
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
     akka.loglevel = INFO
     akka.log-dead-letters = off
     akka.stream.materializer.debug.fuzzing-mode = off

@@ -53,10 +53,7 @@ object Test {
   val v2 = new Var[Int]("Int")
   val v3 = new Var[List[String]]("list")
 
-  val anEnv = (empty
-    .extend(v1, new util.Random)
-    .extend(v2, 58)
-    .extend(v3, Nil))
+  val anEnv = (empty.extend(v1, new util.Random).extend(v2, 58).extend(v3, Nil))
 
   def eval[a](t: Term[a], env: Env): a =
     t match {

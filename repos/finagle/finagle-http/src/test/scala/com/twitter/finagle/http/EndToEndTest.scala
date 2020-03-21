@@ -81,9 +81,8 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
   private val statusCodeSvc =
     new HttpService {
       def apply(request: Request) = {
-        val statusCode = request.getIntParam(
-          "statusCode",
-          Status.BadRequest.code)
+        val statusCode = request
+          .getIntParam("statusCode", Status.BadRequest.code)
         Future.value(Response(Status.fromCode(statusCode)))
       }
     }
@@ -140,12 +139,16 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
     }
 
     test(name + ": with default server-side ResponseClassifier") {
-      val server = finagle.Http.server
+      val server = finagle
+        .Http
+        .server
         .withLabel("server")
         .withStatsReceiver(statsRecv)
         .serve("localhost:*", statusCodeSvc)
       val addr = server.boundAddress.asInstanceOf[InetSocketAddress]
-      val client = finagle.Http.client
+      val client = finagle
+        .Http
+        .client
         .newService("%s:%d".format(addr.getHostName, addr.getPort), "client")
 
       Await.ready(client(requestWith(Status.Ok)), 1.second)
@@ -310,13 +313,15 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
           }
         }
 
-      Contexts.broadcast.let(Deadline, writtenDeadline) {
-        val req = Request()
-        val client = connect(service)
-        val res = Await.result(client(Request("/")))
-        assert(res.status == Status.Ok)
-        client.close()
-      }
+      Contexts
+        .broadcast
+        .let(Deadline, writtenDeadline) {
+          val req = Request()
+          val client = connect(service)
+          val res = Await.result(client(Request("/")))
+          assert(res.status == Status.Ok)
+          client.close()
+        }
     }
 
     test(name + ": stream") {
@@ -612,13 +617,17 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
   }
 
   run("Client/Server")(standardErrors, standardBehaviour, tracing) { service =>
-    val server = finagle.Http.server
+    val server = finagle
+      .Http
+      .server
       .withLabel("server")
       .configured(Stats(statsRecv))
       .withMaxRequestSize(100.bytes)
       .serve("localhost:*", service)
     val addr = server.boundAddress.asInstanceOf[InetSocketAddress]
-    val client = finagle.Http.client
+    val client = finagle
+      .Http
+      .client
       .configured(Stats(statsRecv))
       .newService("%s:%d".format(addr.getHostName, addr.getPort), "client")
 
@@ -721,13 +730,15 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
 
   status("Client/Server") { (service, st, name) =>
     val server = finagle.Http.serve(new InetSocketAddress(0), service)
-    val client = finagle.Http.client
+    val client = finagle
+      .Http
+      .client
       .configured(Stats(st))
       .configured(
         FailureAccrualFactory.Param(failureAccrualFailures, () => 1.minute))
       .newService(
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         name)
 
     new ServiceProxy(client) {
@@ -742,11 +753,15 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
         ResponseClass.NonRetryableFailure
     }
 
-    val server = finagle.Http.server
+    val server = finagle
+      .Http
+      .server
       .configured(param.Stats(NullStatsReceiver))
       .serve("localhost:*", statusCodeSvc)
     val addr = server.boundAddress.asInstanceOf[InetSocketAddress]
-    val client = finagle.Http.client
+    val client = finagle
+      .Http
+      .client
       .configured(param.Stats(statsRecv))
       .withResponseClassifier(classifier)
       .newService("%s:%d".format(addr.getHostName, addr.getPort), "client")
@@ -769,13 +784,17 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
         ResponseClass.NonRetryableFailure
     }
 
-    val server = finagle.Http.server
+    val server = finagle
+      .Http
+      .server
       .withResponseClassifier(classifier)
       .withStatsReceiver(statsRecv)
       .withLabel("server")
       .serve("localhost:*", statusCodeSvc)
     val addr = server.boundAddress.asInstanceOf[InetSocketAddress]
-    val client = finagle.Http.client
+    val client = finagle
+      .Http
+      .client
       .newService("%s:%d".format(addr.getHostName, addr.getPort), "client")
 
     Await.ready(client(requestWith(Status.Ok)), 1.second)

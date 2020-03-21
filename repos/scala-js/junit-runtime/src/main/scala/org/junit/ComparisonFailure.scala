@@ -63,8 +63,8 @@ object ComparisonFailure {
         if (_sharedPrefix.length() <= MAX_CONTEXT_LENGTH)
           _sharedPrefix
         else
-          ELLIPSIS + _sharedPrefix.substring(
-            _sharedPrefix.length() - MAX_CONTEXT_LENGTH)
+          ELLIPSIS + _sharedPrefix
+            .substring(_sharedPrefix.length() - MAX_CONTEXT_LENGTH)
       }
 
       def compactSuffix(): String = {

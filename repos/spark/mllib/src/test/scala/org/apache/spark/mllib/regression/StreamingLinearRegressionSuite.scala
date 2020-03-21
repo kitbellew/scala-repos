@@ -47,11 +47,13 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
 
   // Assert that model predictions are correct
   def validatePrediction(predictions: Seq[Double], input: Seq[LabeledPoint]) {
-    val numOffPredictions = predictions.zip(input).count {
-      case (prediction, expected) =>
-        // A prediction is off if the prediction is more than 0.5 away from expected value.
-        math.abs(prediction - expected.label) > 0.5
-    }
+    val numOffPredictions = predictions
+      .zip(input)
+      .count {
+        case (prediction, expected) =>
+          // A prediction is off if the prediction is more than 0.5 away from expected value.
+          math.abs(prediction - expected.label) > 0.5
+      }
     // At least 80% of the predictions should be on.
     assert(numOffPredictions < input.length / 5)
   }
@@ -68,11 +70,8 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
     // generate sequence of simulated data
     val numBatches = 10
     val input = (0 until numBatches).map { i =>
-      LinearDataGenerator.generateLinearInput(
-        0.0,
-        Array(10.0, 10.0),
-        100,
-        42 * (i + 1))
+      LinearDataGenerator
+        .generateLinearInput(0.0, Array(10.0, 10.0), 100, 42 * (i + 1))
     }
 
     // apply model training to input stream
@@ -90,11 +89,8 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
     assertEqual(model.latestModel().weights(1), 10.0, 0.1)
 
     // check accuracy of predictions
-    val validationData = LinearDataGenerator.generateLinearInput(
-      0.0,
-      Array(10.0, 10.0),
-      100,
-      17)
+    val validationData = LinearDataGenerator
+      .generateLinearInput(0.0, Array(10.0, 10.0), 100, 17)
     validatePrediction(
       validationData.map(row => model.latestModel().predict(row.features)),
       validationData)
@@ -111,11 +107,8 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
     // generate sequence of simulated data
     val numBatches = 10
     val input = (0 until numBatches).map { i =>
-      LinearDataGenerator.generateLinearInput(
-        0.0,
-        Array(10.0),
-        100,
-        42 * (i + 1))
+      LinearDataGenerator
+        .generateLinearInput(0.0, Array(10.0), 100, 42 * (i + 1))
     }
 
     // create buffer to store intermediate fits
@@ -161,11 +154,8 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
     val numBatches = 10
     val nPoints = 100
     val testInput = (0 until numBatches).map { i =>
-      LinearDataGenerator.generateLinearInput(
-        0.0,
-        Array(10.0, 10.0),
-        nPoints,
-        42 * (i + 1))
+      LinearDataGenerator
+        .generateLinearInput(0.0, Array(10.0, 10.0), nPoints, 42 * (i + 1))
     }
 
     // apply model predictions to test stream
@@ -181,8 +171,8 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
       numBatches)
 
     // compute the mean absolute error and check that it's always less than 0.1
-    val errors = output.map(batch =>
-      batch.map(p => math.abs(p._1 - p._2)).sum / nPoints)
+    val errors = output
+      .map(batch => batch.map(p => math.abs(p._1 - p._2)).sum / nPoints)
     assert(errors.forall(x => x <= 0.1))
   }
 
@@ -198,11 +188,8 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
     val numBatches = 10
     val nPoints = 100
     val testInput = (0 until numBatches).map { i =>
-      LinearDataGenerator.generateLinearInput(
-        0.0,
-        Array(10.0, 10.0),
-        nPoints,
-        42 * (i + 1))
+      LinearDataGenerator
+        .generateLinearInput(0.0, Array(10.0, 10.0), nPoints, 42 * (i + 1))
     }
 
     // train and predict

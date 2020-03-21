@@ -98,31 +98,32 @@ private[streaming] class KafkaReceiver[K: ClassTag, V: ClassTag, U <: Decoder[
     consumerConnector = Consumer.create(consumerConfig)
     logInfo("Connected to " + zkConnect)
 
-    val keyDecoder = classTag[U].runtimeClass
+    val keyDecoder = classTag[U]
+      .runtimeClass
       .getConstructor(classOf[VerifiableProperties])
       .newInstance(consumerConfig.props)
       .asInstanceOf[Decoder[K]]
-    val valueDecoder = classTag[T].runtimeClass
+    val valueDecoder = classTag[T]
+      .runtimeClass
       .getConstructor(classOf[VerifiableProperties])
       .newInstance(consumerConfig.props)
       .asInstanceOf[Decoder[V]]
 
     // Create threads for each topic/message Stream we are listening
-    val topicMessageStreams = consumerConnector.createMessageStreams(
-      topics,
-      keyDecoder,
-      valueDecoder)
+    val topicMessageStreams = consumerConnector
+      .createMessageStreams(topics, keyDecoder, valueDecoder)
 
-    val executorPool = ThreadUtils.newDaemonFixedThreadPool(
-      topics.values.sum,
-      "KafkaMessageHandler")
+    val executorPool = ThreadUtils
+      .newDaemonFixedThreadPool(topics.values.sum, "KafkaMessageHandler")
     try {
       // Start the messages handler for each partition
-      topicMessageStreams.values.foreach { streams =>
-        streams.foreach { stream =>
-          executorPool.submit(new MessageHandler(stream))
+      topicMessageStreams
+        .values
+        .foreach { streams =>
+          streams.foreach { stream =>
+            executorPool.submit(new MessageHandler(stream))
+          }
         }
-      }
     } finally {
       executorPool
         .shutdown() // Just causes threads to terminate after work is done

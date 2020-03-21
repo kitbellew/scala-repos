@@ -115,8 +115,9 @@ private[spark] class ExternalSorter[K, V, C](
   private val serInstance = serializer.newInstance()
 
   // Use getSizeAsKb (not bytes) to maintain backwards compatibility if no units are provided
-  private val fileBufferSize =
-    conf.getSizeAsKb("spark.shuffle.file.buffer", "32k").toInt * 1024
+  private val fileBufferSize = conf
+    .getSizeAsKb("spark.shuffle.file.buffer", "32k")
+    .toInt * 1024
 
   // Size of object batches when reading/writing from serializers.
   //
@@ -125,9 +126,8 @@ private[spark] class ExternalSorter[K, V, C](
   //
   // NOTE: Setting this too low can cause excessive copying when serializing, since some serializers
   // grow internal data structures by growing + copying every time the number of objects doubles.
-  private val serializerBatchSize = conf.getLong(
-    "spark.shuffle.spill.batchSize",
-    10000)
+  private val serializerBatchSize = conf
+    .getLong("spark.shuffle.spill.batchSize", 10000)
 
   // Data structures to store in-memory objects before we spill. Depending on whether we have an
   // Aggregator set, we either put objects into an AppendOnlyMap where we combine them, or we
@@ -271,12 +271,8 @@ private[spark] class ExternalSorter[K, V, C](
     def openWriter(): Unit = {
       assert(writer == null && spillMetrics == null)
       spillMetrics = new ShuffleWriteMetrics
-      writer = blockManager.getDiskWriter(
-        blockId,
-        file,
-        serInstance,
-        fileBufferSize,
-        spillMetrics)
+      writer = blockManager
+        .getDiskWriter(blockId, file, serInstance, fileBufferSize, spillMetrics)
     }
     openWriter()
 
@@ -300,8 +296,8 @@ private[spark] class ExternalSorter[K, V, C](
 
     var success = false
     try {
-      val it = collection.destructiveSortedWritablePartitionedIterator(
-        comparator)
+      val it = collection
+        .destructiveSortedWritablePartitionedIterator(comparator)
       while (it.hasNext) {
         val partitionId = it.nextPartition()
         require(
@@ -357,26 +353,28 @@ private[spark] class ExternalSorter[K, V, C](
       : Iterator[(Int, Iterator[Product2[K, C]])] = {
     val readers = spills.map(new SpillReader(_))
     val inMemBuffered = inMemory.buffered
-    (0 until numPartitions).iterator.map { p =>
-      val inMemIterator = new IteratorForPartition(p, inMemBuffered)
-      val iterators = readers.map(_.readNextPartition()) ++ Seq(inMemIterator)
-      if (aggregator.isDefined) {
-        // Perform partial aggregation across partitions
-        (
-          p,
-          mergeWithAggregation(
-            iterators,
-            aggregator.get.mergeCombiners,
-            keyComparator,
-            ordering.isDefined))
-      } else if (ordering.isDefined) {
-        // No aggregator given, but we have an ordering (e.g. used by reduce tasks in sortByKey);
-        // sort the elements without trying to merge them
-        (p, mergeSort(iterators, ordering.get))
-      } else {
-        (p, iterators.iterator.flatten)
+    (0 until numPartitions)
+      .iterator
+      .map { p =>
+        val inMemIterator = new IteratorForPartition(p, inMemBuffered)
+        val iterators = readers.map(_.readNextPartition()) ++ Seq(inMemIterator)
+        if (aggregator.isDefined) {
+          // Perform partial aggregation across partitions
+          (
+            p,
+            mergeWithAggregation(
+              iterators,
+              aggregator.get.mergeCombiners,
+              keyComparator,
+              ordering.isDefined))
+        } else if (ordering.isDefined) {
+          // No aggregator given, but we have an ordering (e.g. used by reduce tasks in sortByKey);
+          // sort the elements without trying to merge them
+          (p, mergeSort(iterators, ordering.get))
+        } else {
+          (p, iterators.iterator.flatten)
+        }
       }
-    }
   }
 
   /**
@@ -448,9 +446,8 @@ private[spark] class ExternalSorter[K, V, C](
           keys += firstPair._1
           combiners += firstPair._2
           val key = firstPair._1
-          while (sorted.hasNext && comparator.compare(
-                   sorted.head._1,
-                   key) == 0) {
+          while (sorted
+                   .hasNext && comparator.compare(sorted.head._1, key) == 0) {
             val pair = sorted.next()
             var i = 0
             var foundKey = false
@@ -549,9 +546,8 @@ private[spark] class ExternalSorter[K, V, C](
 
         val bufferedStream =
           new BufferedInputStream(ByteStreams.limit(fileStream, end - start))
-        val compressedStream = blockManager.wrapForCompression(
-          spill.blockId,
-          bufferedStream)
+        val compressedStream = blockManager
+          .wrapForCompression(spill.blockId, bufferedStream)
         serInstance.deserializeStream(compressedStream)
       } else {
         // No more batches left
@@ -709,8 +705,8 @@ private[spark] class ExternalSorter[K, V, C](
           map
         else
           buffer
-      val it = collection.destructiveSortedWritablePartitionedIterator(
-        comparator)
+      val it = collection
+        .destructiveSortedWritablePartitionedIterator(comparator)
       while (it.hasNext) {
         val writer = blockManager.getDiskWriter(
           blockId,
@@ -770,8 +766,9 @@ private[spark] class ExternalSorter[K, V, C](
   private def groupByPartition(data: Iterator[((Int, K), C)])
       : Iterator[(Int, Iterator[Product2[K, C]])] = {
     val buffered = data.buffered
-    (0 until numPartitions).iterator.map(p =>
-      (p, new IteratorForPartition(p, buffered)))
+    (0 until numPartitions)
+      .iterator
+      .map(p => (p, new IteratorForPartition(p, buffered)))
   }
 
   /**

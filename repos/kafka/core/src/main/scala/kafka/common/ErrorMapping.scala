@@ -113,8 +113,9 @@ object ErrorMapping {
   /* invert the mapping */
   private val codeToException =
     (
-      Map[Short, Class[Throwable]]() ++ exceptionToCode.iterator.map(p =>
-        (p._2, p._1))
+      Map[Short, Class[Throwable]]() ++ exceptionToCode
+        .iterator
+        .map(p => (p._2, p._1))
     ).withDefaultValue(classOf[UnknownException])
 
   def codeFor(exception: Class[Throwable]): Short = exceptionToCode(exception)

@@ -37,9 +37,8 @@ trait PartialActionLaws[G, A] extends Laws {
       parents = Seq.empty,
       "left compatibility" → forAll { (g: G, h: G, a: A) =>
         ((h ??|+|> a) && (g |+|?? h)) ==>
-          ((g |+|? h).get ??|+|> a) && ((g |+|? h).get ?|+|> a).get === (
-          g ?|+|> (h ?|+|> a).get
-        ).get
+          ((g |+|? h).get ??|+|> a) && ((g |+|? h).get ?|+|> a)
+          .get === (g ?|+|> (h ?|+|> a).get).get
       })
 
   def rightSemigroupoidPartialAction(implicit

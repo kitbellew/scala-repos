@@ -17,17 +17,19 @@ class RemoveRedundantReturnInspection
     case function: ScFunctionDefinition =>
       for (body <- function.body) {
         val returns = body.calculateReturns()
-        body.depthFirst(!_.isInstanceOf[ScFunction]).foreach {
-          case r: ScReturnStmt =>
-            if (returns.contains(r)) {
-              holder.registerProblem(
-                r.returnKeyword,
-                "Return keyword is redundant",
-                ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
-                new RemoveReturnKeywordQuickFix(r))
-            }
-          case _ =>
-        }
+        body
+          .depthFirst(!_.isInstanceOf[ScFunction])
+          .foreach {
+            case r: ScReturnStmt =>
+              if (returns.contains(r)) {
+                holder.registerProblem(
+                  r.returnKeyword,
+                  "Return keyword is redundant",
+                  ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
+                  new RemoveReturnKeywordQuickFix(r))
+              }
+            case _ =>
+          }
       }
   }
 }

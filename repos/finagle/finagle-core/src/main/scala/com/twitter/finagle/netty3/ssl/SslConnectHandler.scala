@@ -104,13 +104,15 @@ class SslConnectHandler(
 
         // proxy cancellation
         val wrappedConnectFuture = Channels.future(de.getChannel, true)
-        de.getFuture.addListener(
-          new ChannelFutureListener {
-            override def operationComplete(f: ChannelFuture): Unit =
-              if (f.isCancelled) {
-                wrappedConnectFuture.cancel()
-              }
-          })
+        de
+          .getFuture
+          .addListener(
+            new ChannelFutureListener {
+              override def operationComplete(f: ChannelFuture): Unit =
+                if (f.isCancelled) {
+                  wrappedConnectFuture.cancel()
+                }
+            })
 
         // Proxy failures here so that if the connect fails, it is
         // propagated to the listener, not just on the channel.
@@ -148,13 +150,15 @@ class SslConnectHandler(
     }
 
     // proxy cancellations again.
-    connectFuture.get.addListener(
-      new ChannelFutureListener {
-        override def operationComplete(f: ChannelFuture): Unit =
-          if (f.isCancelled) {
-            fail(ctx.getChannel, new ChannelClosedException(_))
-          }
-      })
+    connectFuture
+      .get
+      .addListener(
+        new ChannelFutureListener {
+          override def operationComplete(f: ChannelFuture): Unit =
+            if (f.isCancelled) {
+              fail(ctx.getChannel, new ChannelClosedException(_))
+            }
+        })
 
     sslHandler
       .handshake()
@@ -190,14 +194,17 @@ object SslConnectHandler {
   def sessionHostnameVerifier(hostname: String)(
       session: SSLSession): Option[Throwable] = {
     val checker = HostnameChecker.getInstance(HostnameChecker.TYPE_TLS)
-    val isValid = session.getPeerCertificates.headOption.exists {
-      case x509: X509Certificate =>
-        Try {
-          checker.`match`(hostname, x509)
-        }.isReturn
-      case _ =>
-        false
-    }
+    val isValid = session
+      .getPeerCertificates
+      .headOption
+      .exists {
+        case x509: X509Certificate =>
+          Try {
+            checker.`match`(hostname, x509)
+          }.isReturn
+        case _ =>
+          false
+      }
 
     if (isValid)
       None

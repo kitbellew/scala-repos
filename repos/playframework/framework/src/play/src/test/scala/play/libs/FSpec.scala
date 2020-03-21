@@ -39,7 +39,8 @@ object FSpec extends Specification with ExecutionSpecification {
     }
 
     "be able to be created from a function (with default ExecutionContext)" in {
-      F.Promise
+      F
+        .Promise
         .promise(
           new Supplier[Int] {
             def get() = 1
@@ -49,7 +50,8 @@ object FSpec extends Specification with ExecutionSpecification {
 
     "be able to be created from a function (with explicit ExecutionContext)" in {
       mustExecute(1) { ec =>
-        F.Promise
+        F
+          .Promise
           .promise(
             new Supplier[Int] {
               def get() = 1
@@ -60,7 +62,8 @@ object FSpec extends Specification with ExecutionSpecification {
     }
 
     "be able to be created after a delay (with default ExecutionContext)" in {
-      F.Promise
+      F
+        .Promise
         .delayed(
           new Supplier[Int] {
             def get() = 1
@@ -72,7 +75,8 @@ object FSpec extends Specification with ExecutionSpecification {
 
     "be able to be created after a delay (with explicit ExecutionContext)" in {
       mustExecute(1) { ec =>
-        F.Promise
+        F
+          .Promise
           .delayed(
             new Supplier[Int] {
               def get() = 1
@@ -344,18 +348,17 @@ object FSpec extends Specification with ExecutionSpecification {
 
     "throw a promise timeout exception" in {
       //F.Promise.timeout().get(15, SECONDS) must throwA[TimeoutException] // Too slow to run for normal testing
-      F.Promise
-        .timeout(2)
-        .get(1, SECONDS) must throwA[F.PromiseTimeoutException]
-      F.Promise
-        .timeout(2, MILLISECONDS)
-        .get(1, SECONDS) must throwA[F.PromiseTimeoutException]
+      F.Promise.timeout(2).get(1, SECONDS) must throwA[
+        F.PromiseTimeoutException]
+      F.Promise.timeout(2, MILLISECONDS).get(1, SECONDS) must throwA[
+        F.PromiseTimeoutException]
     }
 
     "combine a sequence of promises from a vararg" in {
       mustExecute(3) { ec =>
         import F.Promise.pure
-        F.Promise
+        F
+          .Promise
           .sequence[Int](ec, pure(1), pure(2), pure(3))
           .get(5, SECONDS) must equalTo(Arrays.asList(1, 2, 3))
       }
@@ -364,7 +367,8 @@ object FSpec extends Specification with ExecutionSpecification {
     "combine a sequence of promises from an iterable" in {
       mustExecute(3) { ec =>
         import F.Promise.pure
-        F.Promise
+        F
+          .Promise
           .sequence[Int](Arrays.asList(pure(1), pure(2), pure(3)), ec)
           .get(5, SECONDS) must equalTo(Arrays.asList(1, 2, 3))
       }

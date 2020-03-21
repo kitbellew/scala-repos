@@ -71,8 +71,8 @@ private[hive] trait HiveClient {
 
   /** Returns the specified table, or throws [[NoSuchTableException]]. */
   final def getTable(dbName: String, tableName: String): CatalogTable = {
-    getTableOption(dbName, tableName).getOrElse(
-      throw new NoSuchTableException(dbName, tableName))
+    getTableOption(dbName, tableName)
+      .getOrElse(throw new NoSuchTableException(dbName, tableName))
   }
 
   /** Returns the metadata for the specified table or None if it doesn't exist. */
@@ -245,8 +245,8 @@ private[hive] trait HiveClient {
 
   /** Return an existing function in the database, assuming it exists. */
   final def getFunction(db: String, name: String): CatalogFunction = {
-    getFunctionOption(db, name).getOrElse(
-      throw new NoSuchFunctionException(db, name))
+    getFunctionOption(db, name)
+      .getOrElse(throw new NoSuchFunctionException(db, name))
   }
 
   /** Return an existing function in the database, or None if it doesn't exist. */

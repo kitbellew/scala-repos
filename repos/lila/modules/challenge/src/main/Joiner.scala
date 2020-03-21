@@ -22,8 +22,9 @@ private[challenge] final class Joiner(onStart: String => Unit) {
               board = chess.Board init variant,
               clock = c.clock.map(_.chessClock))
 
-          val baseState = c.initialFen.ifTrue(
-            c.variant == chess.variant.FromPosition) flatMap Forsyth.<<<
+          val baseState = c
+            .initialFen
+            .ifTrue(c.variant == chess.variant.FromPosition) flatMap Forsyth.<<<
           val (chessGame, state) =
             baseState.fold(makeChess(c.variant) -> none[SituationPlus]) {
               case sit @ SituationPlus(Situation(board, color), _) =>
@@ -69,9 +70,11 @@ private[challenge] final class Joiner(onStart: String => Unit) {
                   case sit @ SituationPlus(Situation(board, _), _) =>
                     g.copy(
                       variant = chess.variant.FromPosition,
-                      castleLastMoveTime = g.castleLastMoveTime.copy(
-                        lastMove = board.history.lastMove.map(_.origDest),
-                        castles = board.history.castles),
+                      castleLastMoveTime = g
+                        .castleLastMoveTime
+                        .copy(
+                          lastMove = board.history.lastMove.map(_.origDest),
+                          castles = board.history.castles),
                       turns = sit.turns
                     )
                 }

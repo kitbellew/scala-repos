@@ -298,10 +298,13 @@ private[hive] class HiveQl(conf: ParserConf)
           }
           .getOrElse(NativePlaceholder)
 
-      case view @ Token("TOK_CREATEVIEW", children) if children.collect {
-            case t @ Token("TOK_QUERY", _) =>
-              t
-          }.nonEmpty =>
+      case view @ Token("TOK_CREATEVIEW", children)
+          if children
+            .collect {
+              case t @ Token("TOK_QUERY", _) =>
+                t
+            }
+            .nonEmpty =>
         val Seq(
           Some(viewNameParts),
           Some(query),
@@ -360,10 +363,13 @@ private[hive] class HiveQl(conf: ParserConf)
             replace.isDefined)
         }
 
-      case Token("TOK_CREATETABLE", children) if children.collect {
-            case t @ Token("TOK_QUERY", _) =>
-              t
-          }.nonEmpty =>
+      case Token("TOK_CREATETABLE", children)
+          if children
+            .collect {
+              case t @ Token("TOK_QUERY", _) =>
+                t
+            }
+            .nonEmpty =>
         // Reference: https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL
         val (Some(tableNameParts) ::
           _ /* likeTable */ ::
@@ -413,8 +419,8 @@ private[hive] class HiveQl(conf: ParserConf)
         )
 
         // default storage type abbreviation (e.g. RCFile, ORC, PARQUET etc.)
-        val defaultStorageType = hiveConf.getVar(
-          HiveConf.ConfVars.HIVEDEFAULTFILEFORMAT)
+        val defaultStorageType = hiveConf
+          .getVar(HiveConf.ConfVars.HIVEDEFAULTFILEFORMAT)
         // handle the default format for the storage type abbreviation
         val hiveSerDe = HiveSerDe
           .sourceToSerDe(defaultStorageType, hiveConf)
@@ -426,10 +432,12 @@ private[hive] class HiveQl(conf: ParserConf)
           }
 
         tableDesc = tableDesc.withNewStorage(
-          inputFormat = hiveSerDe.inputFormat.orElse(
-            tableDesc.storage.inputFormat),
-          outputFormat = hiveSerDe.outputFormat.orElse(
-            tableDesc.storage.outputFormat),
+          inputFormat = hiveSerDe
+            .inputFormat
+            .orElse(tableDesc.storage.inputFormat),
+          outputFormat = hiveSerDe
+            .outputFormat
+            .orElse(tableDesc.storage.outputFormat),
           serde = hiveSerDe.serde.orElse(tableDesc.storage.serde)
         )
 
@@ -485,9 +493,8 @@ private[hive] class HiveQl(conf: ParserConf)
             tableDesc = tableDesc.withNewStorage(serdeProperties =
               tableDesc.storage.serdeProperties ++ serdeParams.asScala)
           case Token("TOK_TABLELOCATION", child :: Nil) =>
-            val location = EximUtil.relativeToAbsolutePath(
-              hiveConf,
-              unescapeSQLString(child.text))
+            val location = EximUtil
+              .relativeToAbsolutePath(hiveConf, unescapeSQLString(child.text))
             tableDesc = tableDesc.withNewStorage(locationUri = Option(location))
           case Token("TOK_TABLESERIALIZER", child :: Nil) =>
             tableDesc = tableDesc.withNewStorage(serde = Option(
@@ -504,7 +511,8 @@ private[hive] class HiveQl(conf: ParserConf)
                   .map {
                     case Token(_, Token(prop, Nil) :: valueNode) =>
                       val value =
-                        valueNode.headOption
+                        valueNode
+                          .headOption
                           .map(_.text)
                           .map(unescapeSQLString)
                           .orNull
@@ -597,8 +605,8 @@ private[hive] class HiveQl(conf: ParserConf)
             }
 
           case Token("TOK_TABLEPROPERTIES", list :: Nil) =>
-            tableDesc = tableDesc.copy(properties =
-              tableDesc.properties ++ getProperties(list))
+            tableDesc = tableDesc
+              .copy(properties = tableDesc.properties ++ getProperties(list))
           case list @ Token("TOK_TABLEFILEFORMAT", _) =>
             tableDesc = tableDesc.withNewStorage(
               inputFormat = Option(unescapeSQLString(list.children.head.text)),
@@ -802,19 +810,22 @@ private[hive] class HiveQl(conf: ParserConf)
   protected def nodeToColumns(
       node: ASTNode,
       lowerCase: Boolean): Seq[CatalogColumn] = {
-    node.children.map(_.children).collect {
-      case Token(rawColName, Nil) :: colTypeNode :: comment =>
-        val colName =
-          if (!lowerCase)
-            rawColName
-          else
-            rawColName.toLowerCase
-        CatalogColumn(
-          name = cleanIdentifier(colName),
-          dataType = nodeToTypeString(colTypeNode),
-          nullable = true,
-          comment.headOption.map(n => unescapeSQLString(n.text)))
-    }
+    node
+      .children
+      .map(_.children)
+      .collect {
+        case Token(rawColName, Nil) :: colTypeNode :: comment =>
+          val colName =
+            if (!lowerCase)
+              rawColName
+            else
+              rawColName.toLowerCase
+          CatalogColumn(
+            name = cleanIdentifier(colName),
+            dataType = nodeToTypeString(colTypeNode),
+            nullable = true,
+            comment.headOption.map(n => unescapeSQLString(n.text)))
+      }
   }
 
   // This is based on the following methods in
@@ -840,15 +851,18 @@ private[hive] class HiveQl(conf: ParserConf)
         require(
           typeNode.children.nonEmpty,
           "Struct must have one or more columns.")
-        val structColStrings = typeNode.children.map { columnNode =>
-          val Token(colName, Nil) :: colTypeNode :: Nil = columnNode.children
-          cleanIdentifier(colName) + ":" + nodeToTypeString(colTypeNode)
-        }
+        val structColStrings = typeNode
+          .children
+          .map { columnNode =>
+            val Token(colName, Nil) :: colTypeNode :: Nil = columnNode.children
+            cleanIdentifier(colName) + ":" + nodeToTypeString(colTypeNode)
+          }
         s"${serdeConstants.STRUCT_TYPE_NAME}<${structColStrings.mkString(",")}>"
 
       case SparkSqlParser.TOK_UNIONTYPE =>
         val typeNode = node.children.head
-        val unionTypesString = typeNode.children
+        val unionTypesString = typeNode
+          .children
           .map(nodeToTypeString)
           .mkString(",")
         s"${serdeConstants.UNION_TYPE_NAME}<$unionTypesString>"
@@ -869,7 +883,8 @@ private[hive] class HiveQl(conf: ParserConf)
             case Token(precision, Nil) :: Nil =>
               precision + "," + HiveDecimal.USER_DEFAULT_SCALE
             case Nil =>
-              HiveDecimal.USER_DEFAULT_PRECISION + "," + HiveDecimal.USER_DEFAULT_SCALE
+              HiveDecimal.USER_DEFAULT_PRECISION + "," + HiveDecimal
+                .USER_DEFAULT_SCALE
             case _ =>
               noParseRule("Decimal", node)
           }

@@ -83,7 +83,8 @@ object Def extends Init[Scope] with TaskMacroExtra {
         else
           None
       ) orElse
-      s.dependencies
+      s
+        .dependencies
         .find(k => k.scope != ThisScope)
         .map(k =>
           s"Scope cannot be defined for dependency ${k.key.label} of ${definedSettingString(s)}")

@@ -27,9 +27,12 @@ class SemanticHighlightingSpec
     cc.askLoadedTyped(file)
     val pos = new RangePosition(file, 0, 0, file.length)
     val sds = cc.askSymbolDesignationsInRegion(pos, tpes)
-    sds.syms.sortWith((a, b) => a.start < b.start).map { sym =>
-      (sym.symType, content.substring(sym.start, sym.end))
-    }
+    sds
+      .syms
+      .sortWith((a, b) => a.start < b.start)
+      .map { sym =>
+        (sym.symType, content.substring(sym.start, sym.end))
+      }
   }
 
   "SemanticHighlighting" should "highlight classes" in withPresCompiler {

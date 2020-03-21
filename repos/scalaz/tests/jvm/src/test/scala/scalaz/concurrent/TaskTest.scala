@@ -155,10 +155,12 @@ object TaskTest extends SpecLite {
       Thread.sleep(10);
       throw FailWhale;
       42
-    }.handle {
-      case FailWhale =>
-        84
-    }.unsafePerformSyncAttempt ==
+    }
+      .handle {
+        case FailWhale =>
+          84
+      }
+      .unsafePerformSyncAttempt ==
       \/-(84)
   }
 
@@ -167,10 +169,12 @@ object TaskTest extends SpecLite {
       Thread.sleep(10);
       throw FailWhale;
       42
-    }.handle {
-      case SadTrombone =>
-        84
-    }.unsafePerformSyncAttempt ==
+    }
+      .handle {
+        case SadTrombone =>
+          84
+      }
+      .unsafePerformSyncAttempt ==
       -\/(FailWhale)
   }
 
@@ -179,10 +183,12 @@ object TaskTest extends SpecLite {
       Thread.sleep(10);
       throw FailWhale;
       42
-    }.handle {
-      case FailWhale =>
-        throw SadTrombone
-    }.unsafePerformSyncAttempt ==
+    }
+      .handle {
+        case FailWhale =>
+          throw SadTrombone
+      }
+      .unsafePerformSyncAttempt ==
       -\/(SadTrombone)
   }
 
@@ -192,10 +198,12 @@ object TaskTest extends SpecLite {
         Thread.sleep(10);
         throw FailWhale;
         42
-      }.handleWith {
-        case FailWhale =>
-          Task.delay(84)
-      }.unsafePerformSyncAttempt ==
+      }
+        .handleWith {
+          case FailWhale =>
+            Task.delay(84)
+        }
+        .unsafePerformSyncAttempt ==
         \/-(84)
   }
 
@@ -204,10 +212,12 @@ object TaskTest extends SpecLite {
       Thread.sleep(10);
       throw FailWhale;
       42
-    }.handleWith {
-      case SadTrombone =>
-        Task.delay(84)
-    }.unsafePerformSyncAttempt ==
+    }
+      .handleWith {
+        case SadTrombone =>
+          Task.delay(84)
+      }
+      .unsafePerformSyncAttempt ==
       -\/(FailWhale)
   }
 
@@ -216,10 +226,12 @@ object TaskTest extends SpecLite {
       Thread.sleep(10);
       throw FailWhale;
       42
-    }.handleWith {
-      case FailWhale =>
-        Task.delay(throw SadTrombone)
-    }.unsafePerformSyncAttempt ==
+    }
+      .handleWith {
+        case FailWhale =>
+          Task.delay(throw SadTrombone)
+      }
+      .unsafePerformSyncAttempt ==
       -\/(SadTrombone)
   }
 
@@ -227,7 +239,8 @@ object TaskTest extends SpecLite {
     Task {
       Thread.sleep(10);
       42
-    }.onFinish { _ =>
+    }
+      .onFinish { _ =>
         throw SadTrombone;
         Task.now(())
       }
@@ -364,7 +377,9 @@ object TaskTest extends SpecLite {
       implicit val es6 = Executors.newFixedThreadPool(6)
       val barrier = new CyclicBarrier(6);
 
-      val seenThreadNames = scala.collection.JavaConversions
+      val seenThreadNames = scala
+        .collection
+        .JavaConversions
         .asScalaSet(ju.Collections.synchronizedSet(new ju.HashSet[String]()))
       val t =
         for (i <- 0 to 5)
@@ -377,8 +392,8 @@ object TaskTest extends SpecLite {
           }
 
       val r =
-        Nondeterminism[Task].nmap6(t(0), t(1), t(2), t(3), t(4), t(5))(
-          List(_, _, _, _, _, _))
+        Nondeterminism[Task]
+          .nmap6(t(0), t(1), t(2), t(3), t(4), t(5))(List(_, _, _, _, _, _))
       val chars = List('a', 'b', 'c', 'd', 'e', 'f')
       r.unsafePerformSync must_== chars
       //Ensure we saw 6 distinct threads.

@@ -93,8 +93,8 @@ object Configuration {
 
       val engine =
         NettySSLSupport.initializeClientSSL(settings, NoLogging).getEngine
-      val gotAllSupported =
-        enabled.toSet diff engine.getSupportedCipherSuites.toSet
+      val gotAllSupported = enabled
+        .toSet diff engine.getSupportedCipherSuites.toSet
       val gotAllEnabled = enabled.toSet diff engine.getEnabledCipherSuites.toSet
       gotAllSupported.isEmpty || (
         throw new IllegalArgumentException(
@@ -234,8 +234,9 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
 
       "support tell" in within(timeout.duration) {
         val here = {
-          system.actorSelection(
-            otherAddress.toString + "/user/echo") ! Identify(None)
+          system
+            .actorSelection(otherAddress.toString + "/user/echo") ! Identify(
+            None)
           expectMsgType[ActorIdentity].ref.get
         }
 
@@ -251,8 +252,9 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
       "support ask" in within(timeout.duration) {
         import system.dispatcher
         val here = {
-          system.actorSelection(
-            otherAddress.toString + "/user/echo") ! Identify(None)
+          system
+            .actorSelection(otherAddress.toString + "/user/echo") ! Identify(
+            None)
           expectMsgType[ActorIdentity].ref.get
         }
 

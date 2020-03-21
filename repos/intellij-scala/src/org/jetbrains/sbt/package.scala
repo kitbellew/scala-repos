@@ -160,10 +160,12 @@ package object sbt {
   def jarWith[T: ClassTag]: File = {
     val tClass = implicitly[ClassTag[T]].runtimeClass
 
-    Option(PathUtil.getJarPathForClass(tClass)).map(new File(_)).getOrElse {
-      throw new RuntimeException(
-        "Jar file not found for class " + tClass.getName)
-    }
+    Option(PathUtil.getJarPathForClass(tClass))
+      .map(new File(_))
+      .getOrElse {
+        throw new RuntimeException(
+          "Jar file not found for class " + tClass.getName)
+      }
   }
 
   def using[A <: Closeable, B](resource: A)(block: A => B): B = {
@@ -219,9 +221,11 @@ package object sbt {
     }
 
   def inWriteAction[T](body: => T): T = {
-    ApplicationManager.getApplication.runWriteAction(
-      new Computable[T] {
-        def compute: T = body
-      })
+    ApplicationManager
+      .getApplication
+      .runWriteAction(
+        new Computable[T] {
+          def compute: T = body
+        })
   }
 }

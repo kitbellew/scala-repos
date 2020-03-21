@@ -53,7 +53,8 @@ class MyAlgorithm
 
   override def train(pd: MyTrainingData): MyModel = {
     // calculate average value of each day
-    val average = pd.temperatures
+    val average = pd
+      .temperatures
       .groupBy(_._1) // group by day
       .mapValues { list =>
         val tempList = list.map(_._2) // get the temperature

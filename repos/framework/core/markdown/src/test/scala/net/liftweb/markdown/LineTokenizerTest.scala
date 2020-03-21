@@ -36,10 +36,10 @@ class LineTokenizerTest extends FlatSpec with ShouldMatchers {
     tokenizer.splitLines("line1\nline2\n") should equal(List("line1", "line2"))
     tokenizer.splitLines("line1\nline2 no nl") should equal(
       List("line1", "line2 no nl"))
-    tokenizer.splitLines("test1\n\ntest2\n") should equal(
-      List("test1", "", "test2"))
-    tokenizer.splitLines("test1\n\ntest2\n\n") should equal(
-      List("test1", "", "test2"))
+    tokenizer
+      .splitLines("test1\n\ntest2\n") should equal(List("test1", "", "test2"))
+    tokenizer
+      .splitLines("test1\n\ntest2\n\n") should equal(List("test1", "", "test2"))
     tokenizer.splitLines("\n\n") should equal(Nil)
     tokenizer.splitLines("\n") should equal(Nil)
     tokenizer.splitLines("") should equal(List(""))

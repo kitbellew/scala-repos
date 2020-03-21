@@ -132,23 +132,24 @@ trait BaseBlockStoreTestModule[M[+_]]
               val size = s.size
               val columns = colSelection
                 .map { reqCols =>
-                  s.columns.filter {
-                    case (ref @ ColumnRef(jpath, ctype), _) =>
-                      jpath.nodes.head == CPathField("key") || reqCols.exists {
-                        ref =>
-                          (
-                            CPathField("value") \ ref.selector
-                          ) == jpath && ref.ctype == ctype
-                      }
-                  }
+                  s
+                    .columns
+                    .filter {
+                      case (ref @ ColumnRef(jpath, ctype), _) =>
+                        jpath.nodes.head == CPathField("key") || reqCols
+                          .exists { ref =>
+                            (CPathField("value") \ ref.selector) == jpath && ref
+                              .ctype == ctype
+                          }
+                    }
                 }
                 .getOrElse(s.columns)
             }
 
           BlockProjectionData[JArray, Slice](
             s0.toJson(0).getOrElse(JUndefined) \ "key" --> classOf[JArray],
-            s0.toJson(s0.size - 1)
-              .getOrElse(JUndefined) \ "key" --> classOf[JArray],
+            s0.toJson(s0.size - 1).getOrElse(JUndefined) \ "key" --> classOf[
+              JArray],
             s0)
         }
       }
@@ -180,19 +181,23 @@ trait BaseBlockStoreTestModule[M[+_]]
 
   def sortTransspec(sortKeys: CPath*): TransSpec1 =
     InnerObjectConcat(
-      sortKeys.zipWithIndex.map {
-        case (sortKey, idx) =>
-          WrapObject(
-            sortKey.nodes.foldLeft[TransSpec1](
-              DerefObjectStatic(Leaf(Source), CPathField("value"))) {
-              case (innerSpec, field: CPathField) =>
-                DerefObjectStatic(innerSpec, field)
-              case (innerSpec, index: CPathIndex) =>
-                DerefArrayStatic(innerSpec, index)
-            },
-            "%09d".format(idx)
-          )
-      }: _*)
+      sortKeys
+        .zipWithIndex
+        .map {
+          case (sortKey, idx) =>
+            WrapObject(
+              sortKey
+                .nodes
+                .foldLeft[TransSpec1](
+                  DerefObjectStatic(Leaf(Source), CPathField("value"))) {
+                  case (innerSpec, field: CPathField) =>
+                    DerefObjectStatic(innerSpec, field)
+                  case (innerSpec, index: CPathIndex) =>
+                    DerefArrayStatic(innerSpec, index)
+                },
+              "%09d".format(idx)
+            )
+        }: _*)
 }
 
 object BlockStoreTestModule {

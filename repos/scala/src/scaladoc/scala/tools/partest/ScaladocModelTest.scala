@@ -110,7 +110,8 @@ abstract class ScaladocModelTest extends DirectTest {
       def _class(name: String): DocTemplateEntity =
         getTheFirst(_classes(name), tpl.qualifiedName + ".class(" + name + ")")
       def _classes(name: String): List[DocTemplateEntity] =
-        tpl.templates
+        tpl
+          .templates
           .filter(_.name == name)
           .collect({
             case c: DocTemplateEntity with Class =>
@@ -122,7 +123,8 @@ abstract class ScaladocModelTest extends DirectTest {
           _classesMbr(name),
           tpl.qualifiedName + ".classMember(" + name + ")")
       def _classesMbr(name: String): List[MemberTemplateEntity] =
-        tpl.templates
+        tpl
+          .templates
           .filter(_.name == name)
           .collect({
             case c: MemberTemplateEntity if c.isClass =>
@@ -132,7 +134,8 @@ abstract class ScaladocModelTest extends DirectTest {
       def _trait(name: String): DocTemplateEntity =
         getTheFirst(_traits(name), tpl.qualifiedName + ".trait(" + name + ")")
       def _traits(name: String): List[DocTemplateEntity] =
-        tpl.templates
+        tpl
+          .templates
           .filter(_.name == name)
           .collect({
             case t: DocTemplateEntity with Trait =>
@@ -144,7 +147,8 @@ abstract class ScaladocModelTest extends DirectTest {
           _traitsMbr(name),
           tpl.qualifiedName + ".traitMember(" + name + ")")
       def _traitsMbr(name: String): List[MemberTemplateEntity] =
-        tpl.templates
+        tpl
+          .templates
           .filter(_.name == name)
           .collect({
             case t: MemberTemplateEntity if t.isTrait =>
@@ -154,7 +158,8 @@ abstract class ScaladocModelTest extends DirectTest {
       def _object(name: String): DocTemplateEntity =
         getTheFirst(_objects(name), tpl.qualifiedName + ".object(" + name + ")")
       def _objects(name: String): List[DocTemplateEntity] =
-        tpl.templates
+        tpl
+          .templates
           .filter(_.name == name)
           .collect({
             case o: DocTemplateEntity with Object =>
@@ -166,7 +171,8 @@ abstract class ScaladocModelTest extends DirectTest {
           _objectsMbr(name),
           tpl.qualifiedName + ".objectMember(" + name + ")")
       def _objectsMbr(name: String): List[MemberTemplateEntity] =
-        tpl.templates
+        tpl
+          .templates
           .filter(_.name == name)
           .collect({
             case o: MemberTemplateEntity if o.isObject =>
@@ -200,10 +206,13 @@ abstract class ScaladocModelTest extends DirectTest {
           _absTypeTpls(name),
           tpl.qualifiedName + ".abstractType(" + name + ")")
       def _absTypeTpls(name: String): List[DocTemplateEntity] =
-        tpl.members.collect({
-          case dtpl: DocTemplateEntity with AbstractType if dtpl.name == name =>
-            dtpl
-        })
+        tpl
+          .members
+          .collect({
+            case dtpl: DocTemplateEntity with AbstractType
+                if dtpl.name == name =>
+              dtpl
+          })
 
       def _aliasType(name: String): MemberEntity =
         getTheFirst(
@@ -217,10 +226,12 @@ abstract class ScaladocModelTest extends DirectTest {
           _aliasTypeTpls(name),
           tpl.qualifiedName + ".aliasType(" + name + ")")
       def _aliasTypeTpls(name: String): List[DocTemplateEntity] =
-        tpl.members.collect({
-          case dtpl: DocTemplateEntity with AliasType if dtpl.name == name =>
-            dtpl
-        })
+        tpl
+          .members
+          .collect({
+            case dtpl: DocTemplateEntity with AliasType if dtpl.name == name =>
+              dtpl
+          })
     }
 
     trait WithMembers {
@@ -255,7 +266,8 @@ abstract class ScaladocModelTest extends DirectTest {
           sys.error("Error getting " + expl + ": No such element.")
         case _ =>
           sys.error(
-            "Error getting " + expl + ": " + list.length + " elements with this name. " +
+            "Error getting " + expl + ": " + list
+              .length + " elements with this name. " +
               "All elements in list: [" + list
               .map({
                 case ent: Entity =>
@@ -312,10 +324,16 @@ abstract class ScaladocModelTest extends DirectTest {
       assert(diag.isDefined, doc.qualifiedName + " diagram missing")
       assert(
         diag.get.nodes.length == nodes,
-        doc.qualifiedName + "'s diagram: node count " + diag.get.nodes.length + " == " + nodes)
+        doc.qualifiedName + "'s diagram: node count " + diag
+          .get
+          .nodes
+          .length + " == " + nodes)
       assert(
         diag.get.edges.map(_._2.length).sum == edges,
-        doc.qualifiedName + "'s diagram: edge count " + diag.get.edges.length + " == " + edges)
+        doc.qualifiedName + "'s diagram: edge count " + diag
+          .get
+          .edges
+          .length + " == " + edges)
     }
   }
 }

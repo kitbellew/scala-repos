@@ -61,19 +61,11 @@ class StandaloneDynamicAllocationSuite
     */
   override def beforeAll(): Unit = {
     super.beforeAll()
-    masterRpcEnv = RpcEnv.create(
-      Master.SYSTEM_NAME,
-      "localhost",
-      0,
-      conf,
-      securityManager)
+    masterRpcEnv = RpcEnv
+      .create(Master.SYSTEM_NAME, "localhost", 0, conf, securityManager)
     workerRpcEnvs = (0 until numWorkers).map { i =>
-      RpcEnv.create(
-        Worker.SYSTEM_NAME + i,
-        "localhost",
-        0,
-        conf,
-        securityManager)
+      RpcEnv
+        .create(Worker.SYSTEM_NAME + i, "localhost", 0, conf, securityManager)
     }
     master = makeMaster()
     workers = makeWorkers(10, 2048)
@@ -307,9 +299,7 @@ class StandaloneDynamicAllocationSuite
 
   test("dynamic allocation with cores per executor AND max cores") {
     sc = new SparkContext(
-      appConf
-        .set("spark.executor.cores", "2")
-        .set("spark.cores.max", "8"))
+      appConf.set("spark.executor.cores", "2").set("spark.cores.max", "8"))
     val appId = sc.applicationId
     eventually(timeout(10.seconds), interval(10.millis)) {
       val apps = getApplications()
@@ -580,7 +570,8 @@ class StandaloneDynamicAllocationSuite
     * we submit a request to kill them. This must be called before each kill request.
     */
   private def syncExecutors(sc: SparkContext): Unit = {
-    val driverExecutors = sc.getExecutorStorageStatus
+    val driverExecutors = sc
+      .getExecutorStorageStatus
       .map(_.blockManagerId.executorId)
       .filter {
         _ != SparkContext.DRIVER_IDENTIFIER
@@ -594,7 +585,8 @@ class StandaloneDynamicAllocationSuite
       val mockAddress = mock(classOf[RpcAddress])
       when(endpointRef.address).thenReturn(mockAddress)
       val message = RegisterExecutor(id, endpointRef, 10, Map.empty)
-      val backend = sc.schedulerBackend
+      val backend = sc
+        .schedulerBackend
         .asInstanceOf[CoarseGrainedSchedulerBackend]
       backend.driverEndpoint.askWithRetry[CoarseGrainedClusterMessage](message)
     }

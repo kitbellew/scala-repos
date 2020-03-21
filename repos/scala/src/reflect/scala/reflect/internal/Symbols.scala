@@ -1043,7 +1043,8 @@ trait Symbols extends api.Symbols {
         info.firstParent.typeSymbol == AnyValClass && !isPrimitiveValueClass
 
     final def isMethodWithExtension =
-      isMethod && owner.isDerivedValueClass && !isParamAccessor && !isConstructor && !hasFlag(
+      isMethod && owner
+        .isDerivedValueClass && !isParamAccessor && !isConstructor && !hasFlag(
         SUPERACCESSOR) && !isMacro && !isSpecialized
 
     final def isAnonymousFunction =
@@ -1133,8 +1134,9 @@ trait Symbols extends api.Symbols {
         enclClass hasAnnotation ScalaStrictFPAttr
       )
     def isSerializable =
-      info.baseClasses.exists(p =>
-        p == SerializableClass || p == JavaSerializableClass)
+      info
+        .baseClasses
+        .exists(p => p == SerializableClass || p == JavaSerializableClass)
     def hasBridgeAnnotation = hasAnnotation(BridgeClass)
     def isDeprecated = hasAnnotation(DeprecatedAttr)
     def deprecationMessage =
@@ -1265,8 +1267,10 @@ trait Symbols extends api.Symbols {
       (owner.isClass && (
         owner.isEffectivelyFinal
           || (
-            owner.isSealed && owner.sealedChildren.forall(c =>
-              c.isEffectivelyFinal && (overridingSymbol(c) == NoSymbol))
+            owner.isSealed && owner
+              .sealedChildren
+              .forall(c =>
+                c.isEffectivelyFinal && (overridingSymbol(c) == NoSymbol))
           )
       ))
 
@@ -1278,7 +1282,8 @@ trait Symbols extends api.Symbols {
           isPrivate
             || isLocalToBlock
         )
-        || isClass && originalOwner.isTerm && children.isEmpty // we track known subclasses of term-owned classes, use that infer finality
+        || isClass && originalOwner.isTerm && children
+          .isEmpty // we track known subclasses of term-owned classes, use that infer finality
       )
 
     /** Is this symbol effectively final or a concrete term member of sealed class whose children do not override it */
@@ -1611,7 +1616,8 @@ trait Symbols extends api.Symbols {
           else
             0
         )
-        if (sym.isRoot || sym.isRootPackage || sym == NoSymbol || sym.owner.isEffectiveRoot) {
+        if (sym.isRoot || sym
+              .isRootPackage || sym == NoSymbol || sym.owner.isEffectiveRoot) {
           val capacity = size + nSize
           b = new java.lang.StringBuffer(capacity)
           b.append(chrs, symName.start, nSize)
@@ -2198,7 +2204,8 @@ trait Symbols extends api.Symbols {
             oldsymbuf += sym
             newsymbuf += (
               if (sym.isClass)
-                tp.typeSymbol
+                tp
+                  .typeSymbol
                   .newAbstractType(sym.name.toTypeName, sym.pos)
                   .setInfo(sym.existentialBound)
               else
@@ -2716,7 +2723,9 @@ trait Symbols extends api.Symbols {
               this.associatedFile.path == that.associatedFile.path
             ) // Cheap possibly wrong check, then expensive normalization
             || (
-              this.associatedFile.canonicalPath == that.associatedFile.canonicalPath
+              this.associatedFile.canonicalPath == that
+                .associatedFile
+                .canonicalPath
             )
         ))
 
@@ -3339,7 +3348,8 @@ trait Symbols extends api.Symbols {
       def isStructuralThisType =
         (
           // prevents disasters like SI-8158
-          owner.isInitialized && owner.isStructuralRefinement && tp == owner.tpe)
+          owner.isInitialized && owner.isStructuralRefinement && tp == owner
+            .tpe)
       if (isType)
         typeParamsString(tp) + (
           if (isClass)
@@ -3412,8 +3422,8 @@ trait Symbols extends api.Symbols {
     /** String representation of existentially bound variable */
     def existentialToString =
       if (isSingletonExistential && !settings.debug.value)
-        "val " + tpnme.dropSingletonName(name) + ": " + dropSingletonType(
-          info.bounds.hi)
+        "val " + tpnme
+          .dropSingletonName(name) + ": " + dropSingletonType(info.bounds.hi)
       else
         defString
   }
@@ -3868,8 +3878,8 @@ trait Symbols extends api.Symbols {
         tpePeriod = currentPeriod
 
       tpeCache = NoType // cycle marker
-      val noTypeParams =
-        phase.erasedTypes && this != ArrayClass || unsafeTypeParams.isEmpty
+      val noTypeParams = phase
+        .erasedTypes && this != ArrayClass || unsafeTypeParams.isEmpty
       tpeCache = newTypeRef(
         if (noTypeParams)
           Nil
@@ -4222,9 +4232,8 @@ trait Symbols extends api.Symbols {
       if ((
             implicitMembersCacheKey1 ne tp
           ) || (implicitMembersCacheKey2 ne tp.decls.elems)) {
-        implicitMembersCacheValue = tp.membersBasedOnFlags(
-          BridgeFlags,
-          IMPLICIT)
+        implicitMembersCacheValue = tp
+          .membersBasedOnFlags(BridgeFlags, IMPLICIT)
         implicitMembersCacheKey1 = tp
         implicitMembersCacheKey2 = tp.decls.elems
       }

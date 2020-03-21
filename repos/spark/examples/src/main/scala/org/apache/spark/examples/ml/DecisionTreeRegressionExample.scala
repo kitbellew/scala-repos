@@ -36,7 +36,8 @@ object DecisionTreeRegressionExample {
 
     // $example on$
     // Load the data stored in LIBSVM format as a DataFrame.
-    val data = sqlContext.read
+    val data = sqlContext
+      .read
       .format("libsvm")
       .load("data/mllib/sample_libsvm_data.txt")
 
@@ -57,8 +58,7 @@ object DecisionTreeRegressionExample {
       .setFeaturesCol("indexedFeatures")
 
     // Chain indexer and tree in a Pipeline
-    val pipeline = new Pipeline()
-      .setStages(Array(featureIndexer, dt))
+    val pipeline = new Pipeline().setStages(Array(featureIndexer, dt))
 
     // Train model.  This also runs the indexer.
     val model = pipeline.fit(trainingData)

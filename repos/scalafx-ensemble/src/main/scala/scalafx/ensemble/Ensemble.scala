@@ -61,22 +61,25 @@ object Ensemble extends JFXApp {
       id = "page-tree"
     }
   controlsView.selectionModel().selectionMode = SelectionMode.SINGLE
-  controlsView.selectionModel().selectedItem.onChange { (_, _, newItem) =>
-    {
-      val pageCode =
-        (newItem.isLeaf, Option(newItem.getParent)) match {
-          case (true, Some(parent)) =>
-            parent.getValue.toLowerCase + " > " + newItem.getValue
-          case (false, Some(_)) =>
-            "dashBoard - " + newItem.getValue
-          case (_, _) =>
-            "dashBoard"
-        }
-      centerPane = PageDisplayer.choosePage(pageCode)
-      splitPane.items.remove(1)
-      splitPane.items.add(1, centerPane)
+  controlsView
+    .selectionModel()
+    .selectedItem
+    .onChange { (_, _, newItem) =>
+      {
+        val pageCode =
+          (newItem.isLeaf, Option(newItem.getParent)) match {
+            case (true, Some(parent)) =>
+              parent.getValue.toLowerCase + " > " + newItem.getValue
+            case (false, Some(_)) =>
+              "dashBoard - " + newItem.getValue
+            case (_, _) =>
+              "dashBoard"
+          }
+        centerPane = PageDisplayer.choosePage(pageCode)
+        splitPane.items.remove(1)
+        splitPane.items.add(1, centerPane)
+      }
     }
-  }
 
   val scrollPane =
     new ScrollPane {
@@ -101,7 +104,8 @@ object Ensemble extends JFXApp {
     title = "ScalaFX Ensemble"
     icons += new Image("/scalafx/ensemble/images/ScalaFX-icon-64x64.png")
     scene = new Scene(1020, 700) {
-      stylesheets += this.getClass
+      stylesheets += this
+        .getClass
         .getResource("/scalafx/ensemble/css/ensemble.css")
         .toExternalForm
       root = new BorderPane {
@@ -115,7 +119,8 @@ object Ensemble extends JFXApp {
             content = List(
               new ImageView {
                 image = new Image(
-                  this.getClass
+                  this
+                    .getClass
                     .getResourceAsStream("/scalafx/ensemble/images/logo.png"))
                 margin = Insets(0, 0, 0, 10)
               },

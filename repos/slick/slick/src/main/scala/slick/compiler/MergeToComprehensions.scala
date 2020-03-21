@@ -31,10 +31,12 @@ class MergeToComprehensions extends Phase {
         .mapResultSetMapping(n, keepType = false) { rsm =>
           rsm.copy(
             from = convert(rsm.from),
-            map = rsm.map.replace {
-              case r: Ref =>
-                r.untyped
-            })
+            map = rsm
+              .map
+              .replace {
+                case r: Ref =>
+                  r.untyped
+              })
         }
         .infer())
 
@@ -118,9 +120,8 @@ class MergeToComprehensions extends Phase {
       n match {
         case SortBy(s1, f1, b1) =>
           val (c1, replacements1) = mergeSortBy(f1, true)
-          logger.debug(
-            "Merging SortBy into Comprehension:",
-            Ellipsis(n, List(0)))
+          logger
+            .debug("Merging SortBy into Comprehension:", Ellipsis(n, List(0)))
           val b2 = b1.map {
             case (n, o) =>
               (applyReplacements(n, replacements1, c1), o)
@@ -136,9 +137,8 @@ class MergeToComprehensions extends Phase {
               toSubquery(c1, replacements1)
             else
               (c1, replacements1)
-          logger.debug(
-            "Merging Distinct into Comprehension:",
-            Ellipsis(n, List(0)))
+          logger
+            .debug("Merging Distinct into Comprehension:", Ellipsis(n, List(0)))
           val o2 = applyReplacements(o1, replacements1a, c1a)
           val c2 = c1a.copy(distinct = Some(
             ProductNode(ConstArray(o2)).flatten.infer())) :@ c1a.nodeType
@@ -225,10 +225,13 @@ class MergeToComprehensions extends Phase {
           logger.debug("Merged GroupBy into Comprehension:", c2)
           val StructNode(defs2) = str2
           val replacements =
-            defs2.iterator.map {
-              case (f, _) =>
-                (ts2, f) -> f
-            }.toMap
+            defs2
+              .iterator
+              .map {
+                case (f, _) =>
+                  (ts2, f) -> f
+              }
+              .toMap
           logger.debug("Replacements are: " + replacements)
           (c2, replacements)
 
@@ -242,10 +245,13 @@ class MergeToComprehensions extends Phase {
           logger.debug("Merged Aggregate source into Comprehension:", c2)
           val StructNode(defs) = str2
           val repl =
-            defs.iterator.map {
-              case (f, _) =>
-                ((ts, f), f)
-            }.toMap
+            defs
+              .iterator
+              .map {
+                case (f, _) =>
+                  ((ts, f), f)
+              }
+              .toMap
           logger.debug("Replacements are: " + repl)
           (c2, repl)
 
@@ -335,8 +341,8 @@ class MergeToComprehensions extends Phase {
                     (key, ElementSymbol(2) :: ss)
                 }
             val mappingsM = mappings.iterator.toMap
-            logger.debug(
-              s"Mappings for `on` clause in Join $ls/$rs: " + mappingsM)
+            logger
+              .debug(s"Mappings for `on` clause in Join $ls/$rs: " + mappingsM)
             val on2 = on1
               .replace(
                 {
@@ -358,8 +364,8 @@ class MergeToComprehensions extends Phase {
                 },
                 bottomUp = true
               )
-              .infer(scope = Type.Scope(
-                j.leftGen -> l2.nodeType.asCollectionType.elementType) +
+              .infer(scope = Type
+                .Scope(j.leftGen -> l2.nodeType.asCollectionType.elementType) +
                 (j.rightGen -> r2.nodeType.asCollectionType.elementType))
             logger.debug(s"Transformed `on` clause in Join $ls/$rs:", on2)
             val j2 = j.copy(left = l2, right = r2, on = on2).infer()
@@ -400,7 +406,8 @@ class MergeToComprehensions extends Phase {
             c.select match {
               // Ensure that the select clause is non-empty
               case Pure(StructNode(ConstArray.empty), _) =>
-                c.copy(select = Pure(
+                c
+                  .copy(select = Pure(
                     StructNode(ConstArray((new AnonSymbol, LiteralNode(1))))))
                   .infer()
               case _ =>
@@ -462,10 +469,13 @@ class MergeToComprehensions extends Phase {
     val res = Comprehension(s, n, select = Pure(struct, pid)).infer()
     logger.debug("Built new Comprehension:", res)
     val replacements =
-      newSyms.iterator.map {
-        case (((ts, f), _), as) =>
-          ((ts, f), as)
-      }.toMap
+      newSyms
+        .iterator
+        .map {
+          case (((ts, f), _), as) =>
+            ((ts, f), as)
+        }
+        .toMap
     logger.debug("Replacements are: " + replacements)
     (res, replacements)
   }
@@ -498,10 +508,13 @@ class MergeToComprehensions extends Phase {
         val c2 = c1.copy(select = Pure(StructNode(defs2), ts1)).infer()
         logger.debug("Merged Bind into Comprehension as 'select':", c2)
         val replacements =
-          defs2.iterator.map {
-            case (f, _) =>
-              (ts1, f) -> f
-          }.toMap
+          defs2
+            .iterator
+            .map {
+              case (f, _) =>
+                (ts1, f) -> f
+            }
+            .toMap
         logger.debug("Replacements are: " + replacements)
         (c2, replacements)
 
@@ -516,8 +529,9 @@ class MergeToComprehensions extends Phase {
         val p2 = applyReplacements(p1, replacements1a, c1a)
         val c2 =
           if (c1a.groupBy.isEmpty)
-            c1a.copy(where = Some(
-              c1a.where.fold(p2)(and(_, p2)).infer())) :@ c1a.nodeType
+            c1a
+              .copy(where = Some(c1a.where.fold(p2)(and(_, p2)).infer())) :@ c1a
+              .nodeType
           else
             c1a.copy(having = Some(
               c1a.having.fold(p2)(and(p2, _)).infer())) :@ c1a.nodeType
@@ -533,13 +547,15 @@ class MergeToComprehensions extends Phase {
 
   def and(p1: Node, p2: Node): Node = {
     val t1 = p1.nodeType.structural
-    Library.And.typed(
-      if (t1.isInstanceOf[OptionType])
-        t1
-      else
-        p2.nodeType.structural,
-      p1,
-      p2)
+    Library
+      .And
+      .typed(
+        if (t1.isInstanceOf[OptionType])
+          t1
+        else
+          p2.nodeType.structural,
+        p1,
+        p2)
   }
 
   /** Remove purely aliasing `Bind` mappings, apply the conversion to the source, then inject the

@@ -68,14 +68,16 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
       val state = session1 flatMap { session1 =>
         session1.state
       }
-      state.changes.register(
-        Witness({ ws =>
-          ws match {
-            case WatchState.SessionState(s) =>
-              states = s +: states
-            case _ =>
-          }
-        }))
+      state
+        .changes
+        .register(
+          Witness({ ws =>
+            ws match {
+              case WatchState.SessionState(s) =>
+                states = s +: states
+              case _ =>
+            }
+          }))
 
       Await.result(state.changes.filter(connected).toFuture())
       val cond = state.changes.filter(notConnected).toFuture()
@@ -124,21 +126,25 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
 
       @volatile
       var zkStates = Seq[(SessionState, Duration)]()
-      varZkState.changes.register(
-        Witness({ ws =>
-          ws match {
-            case WatchState.SessionState(state) =>
-              zkStates = (state, watch()) +: zkStates
-            case _ =>
-          }
-        }))
+      varZkState
+        .changes
+        .register(
+          Witness({ ws =>
+            ws match {
+              case WatchState.SessionState(state) =>
+                zkStates = (state, watch()) +: zkStates
+              case _ =>
+            }
+          }))
 
       @volatile
       var sessions = Seq[ZkSession]()
-      varZkSession.changes.register(
-        Witness({ s =>
-          sessions = s +: sessions
-        }))
+      varZkSession
+        .changes
+        .register(
+          Witness({ s =>
+            sessions = s +: sessions
+          }))
 
       // Wait for the initial connect.
       eventually {
@@ -165,25 +171,31 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
 
       val connected = new Promise[Unit]
       val closed = new Promise[Unit]
-      session2.state.changes.register(
-        Witness({ ws =>
-          ws match {
-            case WatchState.SessionState(SessionState.SyncConnected) =>
-              connected.setDone()
-            case WatchState.SessionState(SessionState.Disconnected) =>
-              closed.setDone()
-            case _ =>
-          }
-        }))
+      session2
+        .state
+        .changes
+        .register(
+          Witness({ ws =>
+            ws match {
+              case WatchState.SessionState(SessionState.SyncConnected) =>
+                connected.setDone()
+              case WatchState.SessionState(SessionState.Disconnected) =>
+                closed.setDone()
+              case _ =>
+            }
+          }))
 
       Await.ready(connected)
       Await.ready(session2.value.close())
 
       // This will expire the session.
-      val session1Expired = session1.state.changes
+      val session1Expired = session1
+        .state
+        .changes
         .filter(_ == WatchState.SessionState(SessionState.Expired))
         .toFuture()
-      val zkConnected = varZkState.changes
+      val zkConnected = varZkState
+        .changes
         .filter(_ == WatchState.SessionState(SessionState.SyncConnected))
         .toFuture()
 

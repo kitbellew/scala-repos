@@ -5,10 +5,12 @@ object Macros {
 
   object Impls {
     def foo(c: Context) =
-      c.universe.reify {
-        {
-          c.universe.reify(c.universe.reify("hello world"))
-        }.splice.splice
-      }
+      c
+        .universe
+        .reify {
+          {
+            c.universe.reify(c.universe.reify("hello world"))
+          }.splice.splice
+        }
   }
 }

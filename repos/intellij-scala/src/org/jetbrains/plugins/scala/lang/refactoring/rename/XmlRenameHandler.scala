@@ -70,12 +70,16 @@ class XmlRenameHandler extends RenameHandler {
       return
 
     val element =
-      if (elements(0) == null || !elements(0).getParent
+      if (elements(0) == null || !elements(0)
+            .getParent
             .isInstanceOf[ScXmlPairedTag])
         return
       else
         elements(0).getParent.asInstanceOf[ScXmlPairedTag]
-    if (element.getMatchedTag == null || element.getTagNameElement == null || element.getMatchedTag.getTagNameElement == null)
+    if (element.getMatchedTag == null || element
+          .getTagNameElement == null || element
+          .getMatchedTag
+          .getTagNameElement == null)
       return
 
     val editor = CommonDataKeys.EDITOR.getData(dataContext)
@@ -85,8 +89,9 @@ class XmlRenameHandler extends RenameHandler {
 
     def highlightMatched() {
       val colorsManager = EditorColorsManager.getInstance()
-      val attributes = colorsManager.getGlobalScheme.getAttributes(
-        EditorColors.WRITE_SEARCH_RESULT_ATTRIBUTES)
+      val attributes = colorsManager
+        .getGlobalScheme
+        .getAttributes(EditorColors.WRITE_SEARCH_RESULT_ATTRIBUTES)
 
       HighlightManager
         .getInstance(editor.getProject)
@@ -115,8 +120,9 @@ class XmlRenameHandler extends RenameHandler {
               extensions.inWriteAction {
                 val offset = editor.getCaretModel.getOffset
                 val template = buildTemplate()
-                editor.getCaretModel.moveToOffset(
-                  element.getParent.getTextOffset)
+                editor
+                  .getCaretModel
+                  .moveToOffset(element.getParent.getTextOffset)
 
                 TemplateManager
                   .getInstance(project)
@@ -131,8 +137,8 @@ class XmlRenameHandler extends RenameHandler {
                       }
 
                       override def templateCancelled(template: Template) {
-                        val highlightManager = HighlightManager.getInstance(
-                          project)
+                        val highlightManager = HighlightManager
+                          .getInstance(project)
                         rangeHighlighters.foreach { a =>
                           highlightManager.removeSegmentHighlighter(editor, a)
                         }

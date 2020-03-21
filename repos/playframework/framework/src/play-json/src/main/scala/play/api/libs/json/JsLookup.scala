@@ -63,7 +63,8 @@ case class JsLookup(result: JsLookupResult) extends AnyVal {
   def apply(index: Int): JsLookupResult =
     result match {
       case JsDefined(arr: JsArray) =>
-        arr.value
+        arr
+          .value
           .lift(index)
           .map(JsDefined.apply)
           .getOrElse(JsUndefined("Array index out of bounds in " + arr))
@@ -90,7 +91,8 @@ case class JsLookup(result: JsLookupResult) extends AnyVal {
   def \(fieldName: String): JsLookupResult =
     result match {
       case JsDefined(obj: JsObject) =>
-        obj.value
+        obj
+          .value
           .get(fieldName)
           .map(JsDefined.apply)
           .getOrElse(
@@ -109,13 +111,15 @@ case class JsLookup(result: JsLookupResult) extends AnyVal {
   def \\(fieldName: String): Seq[JsValue] =
     result match {
       case JsDefined(obj: JsObject) =>
-        obj.value.foldLeft(Seq[JsValue]())((o, pair) =>
-          pair match {
-            case (key, value) if key == fieldName =>
-              o ++ (value +: (value \\ fieldName))
-            case (_, value) =>
-              o ++ (value \\ fieldName)
-          })
+        obj
+          .value
+          .foldLeft(Seq[JsValue]())((o, pair) =>
+            pair match {
+              case (key, value) if key == fieldName =>
+                o ++ (value +: (value \\ fieldName))
+              case (_, value) =>
+                o ++ (value \\ fieldName)
+            })
       case JsDefined(arr: JsArray) =>
         arr.value.flatMap(_ \\ fieldName)
       case _ =>

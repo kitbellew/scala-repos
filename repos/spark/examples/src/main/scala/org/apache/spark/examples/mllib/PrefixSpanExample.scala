@@ -39,17 +39,19 @@ object PrefixSpanExample {
           Array(Array(6))),
         2)
       .cache()
-    val prefixSpan = new PrefixSpan()
-      .setMinSupport(0.5)
-      .setMaxPatternLength(5)
+    val prefixSpan = new PrefixSpan().setMinSupport(0.5).setMaxPatternLength(5)
     val model = prefixSpan.run(sequences)
-    model.freqSequences.collect().foreach { freqSequence =>
-      println(
-        freqSequence.sequence
-          .map(_.mkString("[", ", ", "]"))
-          .mkString("[", ", ", "]") +
-          ", " + freqSequence.freq)
-    }
+    model
+      .freqSequences
+      .collect()
+      .foreach { freqSequence =>
+        println(
+          freqSequence
+            .sequence
+            .map(_.mkString("[", ", ", "]"))
+            .mkString("[", ", ", "]") +
+            ", " + freqSequence.freq)
+      }
     // $example off$
   }
 }

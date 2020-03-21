@@ -22,11 +22,12 @@ abstract class HoconLightMultiFileTestCase
   override def setUp() = {
     super.setUp()
 
-    val rootManager: ModuleRootManager = ModuleRootManager.getInstance(
-      getModule)
+    val rootManager: ModuleRootManager = ModuleRootManager
+      .getInstance(getModule)
     val rootModel = rootManager.getModifiableModel
-    val testDataRoot = LocalFileSystem.getInstance.refreshAndFindFileByPath(
-      rootPath)
+    val testDataRoot = LocalFileSystem
+      .getInstance
+      .refreshAndFindFileByPath(rootPath)
     assert(testDataRoot != null)
     val contentEntry = rootModel.addContentEntry(testDataRoot)
     contentEntry.addSourceFolder(testDataRoot, false)
@@ -37,8 +38,9 @@ abstract class HoconLightMultiFileTestCase
   }
 
   override def tearDown() = {
-    val testDataRoot = LocalFileSystem.getInstance.refreshAndFindFileByPath(
-      rootPath)
+    val testDataRoot = LocalFileSystem
+      .getInstance
+      .refreshAndFindFileByPath(rootPath)
     assert(testDataRoot != null)
 
     PsiTestUtil.removeContentEntry(getModule, testDataRoot)

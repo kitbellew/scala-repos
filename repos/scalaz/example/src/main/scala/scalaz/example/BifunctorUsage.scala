@@ -47,8 +47,8 @@ object BifunctorUsage extends App {
     Bifunctor[Validation]
       .bimap("asdf".failure[Int])(_.toUpperCase, _ + 1) === "ASDF".failure)
   assert(
-    Bifunctor[Validation]
-      .bimap(1.success[String])(_.toUpperCase, _ + 1) === 2.success)
+    Bifunctor[Validation].bimap(1.success[String])(_.toUpperCase, _ + 1) === 2
+      .success)
 
   assert(
     Bifunctor[\/].bimap("asdf".left[Int])(_.toUpperCase, _ + 1) === "ASDF".left)

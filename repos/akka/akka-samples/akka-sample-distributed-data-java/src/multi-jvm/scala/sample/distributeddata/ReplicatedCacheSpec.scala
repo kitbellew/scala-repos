@@ -18,8 +18,8 @@ object ReplicatedCacheSpec extends MultiNodeConfig {
   val node3 = role("node-3")
 
   commonConfig(
-    ConfigFactory.parseString(
-      """
+    ConfigFactory
+      .parseString("""
     akka.loglevel = INFO
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
     akka.log-dead-letters-during-shutdown = off
@@ -87,8 +87,8 @@ class ReplicatedCacheSpec
         val probe = TestProbe()
         for (i ← 100 to 200) {
           replicatedCache.tell(new GetFromCache("key" + i), probe.ref)
-          probe.expectMsg(
-            new Cached("key" + i, Optional.of(Integer.valueOf(i))))
+          probe
+            .expectMsg(new Cached("key" + i, Optional.of(Integer.valueOf(i))))
         }
       }
 

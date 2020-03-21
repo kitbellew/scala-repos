@@ -15,7 +15,9 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
     "match with app.disk == 0, even if no disk resource is contained in the offer") {
     import scala.collection.JavaConverters._
     val offerBuilder = MarathonTestHelper.makeBasicOffer()
-    val diskResourceIndex = offerBuilder.getResourcesList.asScala
+    val diskResourceIndex = offerBuilder
+      .getResourcesList
+      .asScala
       .indexWhere(_.getName == "disk")
     offerBuilder.removeResources(diskResourceIndex)
     val offer = offerBuilder.build()
@@ -72,12 +74,10 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
 
   test("match resources success with preserved reservations") {
     // have unique reservation to make sure that the reservations are really preserved
-    val cpuReservation = MarathonTestHelper.reservation(
-      principal = "cpuPrincipal",
-      labels = Map("some" -> "label"))
-    val cpuReservation2 = MarathonTestHelper.reservation(
-      principal = "cpuPrincipal",
-      labels = Map("some" -> "label2"))
+    val cpuReservation = MarathonTestHelper
+      .reservation(principal = "cpuPrincipal", labels = Map("some" -> "label"))
+    val cpuReservation2 = MarathonTestHelper
+      .reservation(principal = "cpuPrincipal", labels = Map("some" -> "label2"))
     val memReservation = MarathonTestHelper.reservation(
       principal = "memPrincipal",
       labels = Map("resource" -> "mem"))
@@ -162,9 +162,8 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
   }
 
   test("match resources should not consider resources with disk infos") {
-    val cpuReservation = MarathonTestHelper.reservation(
-      principal = "cpuPrincipal",
-      labels = Map("some" -> "label"))
+    val cpuReservation = MarathonTestHelper
+      .reservation(principal = "cpuPrincipal", labels = Map("some" -> "label"))
     val memReservation = MarathonTestHelper.reservation(
       principal = "memPrincipal",
       labels = Map("resource" -> "mem"))
@@ -255,7 +254,8 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
       mem = 128.0,
       disk = 0.0,
       constraints = Set(
-        Constraint.newBuilder
+        Constraint
+          .newBuilder
           .setField("hostname")
           .setOperator(Operator.LIKE)
           .setValue("host1")
@@ -282,7 +282,8 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
       mem = 128.0,
       disk = 0.0,
       constraints = Set(
-        Constraint.newBuilder
+        Constraint
+          .newBuilder
           .setField("hostname")
           .setOperator(Operator.LIKE)
           .setValue("host2")

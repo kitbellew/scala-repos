@@ -262,7 +262,8 @@ case class ScMethodType(
         new ScMethodType(
           returnType.recursiveUpdate(update, newVisited),
           params.map(p =>
-            p.copy(paramType = p.paramType
+            p.copy(paramType = p
+              .paramType
               .recursiveUpdate(update, newVisited))),
           isImplicit)(project, scope)
     }
@@ -280,7 +281,8 @@ case class ScMethodType(
           returnType
             .recursiveVarianceUpdateModifiable(newData, update, variance),
           params.map(p =>
-            p.copy(paramType = p.paramType
+            p.copy(paramType = p
+              .paramType
               .recursiveVarianceUpdateModifiable(newData, update, -variance))),
           isImplicit)(project, scope)
     }
@@ -295,11 +297,8 @@ case class ScMethodType(
       case m: ScMethodType =>
         if (m.params.length != params.length)
           return (false, undefinedSubst)
-        var t = Equivalence.equivInner(
-          m.returnType,
-          returnType,
-          undefinedSubst,
-          falseUndef)
+        var t = Equivalence
+          .equivInner(m.returnType, returnType, undefinedSubst, falseUndef)
         if (!t._1)
           return (false, undefinedSubst)
         undefinedSubst = t._2
@@ -357,8 +356,8 @@ case class ScTypePolymorphicType(
               }
             if (pair != null) {
               val (tpName, id) = pair
-              if (tp.name == tpName && id == ScalaPsiUtil.getPsiElementId(
-                    tp.ptp)) {
+              if (tp.name == tpName && id == ScalaPsiUtil
+                    .getPsiElementId(tp.ptp)) {
                 if (i == -1)
                   contraVariant += 1
                 else
@@ -548,13 +547,15 @@ case class ScTypePolymorphicType(
               tp.name,
               tp.typeParams /* todo: ? */,
               () =>
-                tp.lowerType()
+                tp
+                  .lowerType()
                   .recursiveVarianceUpdateModifiable(
                     newData,
                     update,
                     -variance),
               () =>
-                tp.upperType()
+                tp
+                  .upperType()
                   .recursiveVarianceUpdateModifiable(newData, update, variance),
               tp.ptp
             )
@@ -604,9 +605,12 @@ case class ScTypePolymorphicType(
                       tuple._2.name,
                       tuple._2.ptp match {
                         case p: ScTypeParam =>
-                          p.typeParameters.toList.map {
-                            new ScTypeParameterType(_, ScSubstitutor.empty)
-                          }
+                          p
+                            .typeParameters
+                            .toList
+                            .map {
+                              new ScTypeParameterType(_, ScSubstitutor.empty)
+                            }
                         case _ =>
                           Nil
                       },
@@ -632,8 +636,9 @@ case class ScTypePolymorphicType(
 
   override def typeDepth: Int = {
     if (typeParameters.nonEmpty)
-      internalType.typeDepth.max(
-        ScType.typeParamsDepth(typeParameters.toArray) + 1)
+      internalType
+        .typeDepth
+        .max(ScType.typeParamsDepth(typeParameters.toArray) + 1)
     else
       internalType.typeDepth
   }

@@ -44,7 +44,10 @@ class ScBlockExprImpl(text: CharSequence)
       cur = cur.getNextSibling
     }
     result.toArray[T](
-      java.lang.reflect.Array
+      java
+        .lang
+        .reflect
+        .Array
         .newInstance(aClass, result.size)
         .asInstanceOf[Array[T]])
   }

@@ -124,8 +124,8 @@ abstract class ClusterShardingFailureSpec(
   val storageLocations = List(
     "akka.persistence.journal.leveldb.dir",
     "akka.persistence.journal.leveldb-shared.store.dir",
-    "akka.persistence.snapshot-store.local.dir").map(s ⇒
-    new File(system.settings.config.getString(s)))
+    "akka.persistence.snapshot-store.local.dir")
+    .map(s ⇒ new File(system.settings.config.getString(s)))
 
   override protected def atStartup() {
     runOn(controller) {
@@ -174,8 +174,8 @@ abstract class ClusterShardingFailureSpec(
       enterBarrier("peristence-started")
 
       runOn(first, second) {
-        system.actorSelection(node(controller) / "user" / "store") ! Identify(
-          None)
+        system
+          .actorSelection(node(controller) / "user" / "store") ! Identify(None)
         val sharedStore = expectMsgType[ActorIdentity].ref.get
         SharedLeveldbJournal.setStore(sharedStore, system)
       }

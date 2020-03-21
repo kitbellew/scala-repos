@@ -79,8 +79,8 @@ class WriterTTests extends CatsSuite {
         .semigroupK[Int])
     checkAll(
       "SemigroupK[WriterT[ListWrapper, ListWrapper[Int], ?]]",
-      SerializableTests.serializable(
-        SemigroupK[WriterT[ListWrapper, ListWrapper[Int], ?]]))
+      SerializableTests
+        .serializable(SemigroupK[WriterT[ListWrapper, ListWrapper[Int], ?]]))
   }
 
   {
@@ -94,8 +94,8 @@ class WriterTTests extends CatsSuite {
       MonoidKTests[WriterT[ListWrapper, ListWrapper[Int], ?]].monoidK[Int])
     checkAll(
       "MonoidK[WriterT[ListWrapper, ListWrapper[Int], ?]]",
-      SerializableTests.serializable(
-        MonoidK[WriterT[ListWrapper, ListWrapper[Int], ?]]))
+      SerializableTests
+        .serializable(MonoidK[WriterT[ListWrapper, ListWrapper[Int], ?]]))
   }
 
   {
@@ -108,8 +108,8 @@ class WriterTTests extends CatsSuite {
         .functor[Int, Int, Int])
     checkAll(
       "Functor[WriterT[ListWrapper, ListWrapper[Int], ?]]",
-      SerializableTests.serializable(
-        Functor[WriterT[ListWrapper, ListWrapper[Int], ?]]))
+      SerializableTests
+        .serializable(Functor[WriterT[ListWrapper, ListWrapper[Int], ?]]))
 
     // just making sure this resolves; it's tested above
     Functor[WriterT[Id, ListWrapper[Int], ?]]
@@ -127,7 +127,8 @@ class WriterTTests extends CatsSuite {
       SerializableTests.serializable(Bifunctor[WriterT[ListWrapper, ?, ?]]))
   }
 
-  implicit val iso = CartesianTests.Isomorphisms
+  implicit val iso = CartesianTests
+    .Isomorphisms
     .invariant[WriterT[ListWrapper, ListWrapper[Int], ?]](
       WriterT.writerTFunctor(ListWrapper.functor))
 
@@ -147,8 +148,8 @@ class WriterTTests extends CatsSuite {
         .apply[Int, Int, Int])
     checkAll(
       "Apply[WriterT[ListWrapper, ListWrapper[Int], ?]]",
-      SerializableTests.serializable(
-        Apply[WriterT[ListWrapper, ListWrapper[Int], ?]]))
+      SerializableTests
+        .serializable(Apply[WriterT[ListWrapper, ListWrapper[Int], ?]]))
 
     Functor[WriterT[Id, ListWrapper[Int], ?]]
     Apply[WriterT[Id, ListWrapper[Int], ?]]
@@ -173,8 +174,8 @@ class WriterTTests extends CatsSuite {
         .flatMap[Int, Int, Int])
     checkAll(
       "FlatMap[WriterT[ListWrapper, ListWrapper[Int], ?]]",
-      SerializableTests.serializable(
-        FlatMap[WriterT[ListWrapper, ListWrapper[Int], ?]]))
+      SerializableTests
+        .serializable(FlatMap[WriterT[ListWrapper, ListWrapper[Int], ?]]))
 
     Functor[WriterT[Id, ListWrapper[Int], ?]]
     Apply[WriterT[Id, ListWrapper[Int], ?]]
@@ -202,8 +203,8 @@ class WriterTTests extends CatsSuite {
         .applicative[Int, Int, Int])
     checkAll(
       "Applicative[WriterT[ListWrapper, ListWrapper[Int], ?]]",
-      SerializableTests.serializable(
-        Applicative[WriterT[ListWrapper, ListWrapper[Int], ?]]))
+      SerializableTests
+        .serializable(Applicative[WriterT[ListWrapper, ListWrapper[Int], ?]]))
 
     Functor[WriterT[Id, ListWrapper[Int], ?]]
     Apply[WriterT[Id, ListWrapper[Int], ?]]
@@ -233,8 +234,8 @@ class WriterTTests extends CatsSuite {
         .monad[Int, Int, Int])
     checkAll(
       "Monad[WriterT[ListWrapper, ListWrapper[Int], ?]]",
-      SerializableTests.serializable(
-        Monad[WriterT[ListWrapper, ListWrapper[Int], ?]]))
+      SerializableTests
+        .serializable(Monad[WriterT[ListWrapper, ListWrapper[Int], ?]]))
 
     Functor[WriterT[Id, ListWrapper[Int], ?]]
     Apply[WriterT[Id, ListWrapper[Int], ?]]
@@ -269,8 +270,8 @@ class WriterTTests extends CatsSuite {
         .alternative[Int, Int, Int])
     checkAll(
       "Alternative[WriterT[ListWrapper, ListWrapper[Int], ?]]",
-      SerializableTests.serializable(
-        Alternative[WriterT[ListWrapper, ListWrapper[Int], ?]]))
+      SerializableTests
+        .serializable(Alternative[WriterT[ListWrapper, ListWrapper[Int], ?]]))
   }
 
   {
@@ -289,8 +290,8 @@ class WriterTTests extends CatsSuite {
         .monadFilter[Int, Int, Int])
     checkAll(
       "MonadFilter[WriterT[ListWrapper, ListWrapper[Int], ?]]",
-      SerializableTests.serializable(
-        MonadFilter[WriterT[ListWrapper, ListWrapper[Int], ?]]))
+      SerializableTests
+        .serializable(MonadFilter[WriterT[ListWrapper, ListWrapper[Int], ?]]))
   }
 
   {
@@ -313,7 +314,7 @@ class WriterTTests extends CatsSuite {
         .monadCombine[Int, Int, Int])
     checkAll(
       "MonadCombine[WriterT[ListWrapper, ListWrapper[Int], ?]]",
-      SerializableTests.serializable(
-        MonadCombine[WriterT[ListWrapper, ListWrapper[Int], ?]]))
+      SerializableTests
+        .serializable(MonadCombine[WriterT[ListWrapper, ListWrapper[Int], ?]]))
   }
 }

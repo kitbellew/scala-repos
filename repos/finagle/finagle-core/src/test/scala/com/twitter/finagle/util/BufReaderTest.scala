@@ -23,8 +23,9 @@ class BufReaderTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
   test("readShortBE")(
     forAll { short: Short =>
-      val buf = Buf.ByteArray.Owned(
-        Array(((short >> 8) & 0xff).toByte, (short & 0xff).toByte))
+      val buf = Buf
+        .ByteArray
+        .Owned(Array(((short >> 8) & 0xff).toByte, (short & 0xff).toByte))
       val br = BufReader(buf)
       // note, we need to cast here toShort so that the
       // MSB is intepreted as the sign bit.
@@ -36,12 +37,14 @@ class BufReaderTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
   test("readIntBE")(
     forAll { int: Int =>
-      val buf = Buf.ByteArray.Owned(
-        Array(
-          ((int >> 24) & 0xff).toByte,
-          ((int >> 16) & 0xff).toByte,
-          ((int >> 8) & 0xff).toByte,
-          (int & 0xff).toByte))
+      val buf = Buf
+        .ByteArray
+        .Owned(
+          Array(
+            ((int >> 24) & 0xff).toByte,
+            ((int >> 16) & 0xff).toByte,
+            ((int >> 8) & 0xff).toByte,
+            (int & 0xff).toByte))
       val br = BufReader(buf)
       assert(br.readIntBE() == int)
       val exc = intercept[UnderflowException] {
@@ -51,17 +54,19 @@ class BufReaderTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
   test("readLongBE")(
     forAll { long: Long =>
-      val buf = Buf.ByteArray.Owned(
-        Array(
-          ((long >> 56) & 0xff).toByte,
-          ((long >> 48) & 0xff).toByte,
-          ((long >> 40) & 0xff).toByte,
-          ((long >> 32) & 0xff).toByte,
-          ((long >> 24) & 0xff).toByte,
-          ((long >> 16) & 0xff).toByte,
-          ((long >> 8) & 0xff).toByte,
-          (long & 0xff).toByte
-        ))
+      val buf = Buf
+        .ByteArray
+        .Owned(
+          Array(
+            ((long >> 56) & 0xff).toByte,
+            ((long >> 48) & 0xff).toByte,
+            ((long >> 40) & 0xff).toByte,
+            ((long >> 32) & 0xff).toByte,
+            ((long >> 24) & 0xff).toByte,
+            ((long >> 16) & 0xff).toByte,
+            ((long >> 8) & 0xff).toByte,
+            (long & 0xff).toByte
+          ))
       val br = BufReader(buf)
       assert(br.readLongBE() == long)
       val exc = intercept[UnderflowException] {

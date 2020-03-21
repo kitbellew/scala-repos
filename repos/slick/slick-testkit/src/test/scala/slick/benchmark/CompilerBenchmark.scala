@@ -172,18 +172,22 @@ object CompilerBenchmark {
     val q3 = coffees.flatMap { c =>
       val cf = Query(c).filter(_.price === 849)
       cf.flatMap { cf =>
-        suppliers.filter(_.id === c.supID).map { s =>
-          (c.name, s.name, cf.name, cf.total, cf.totalComputed)
-        }
+        suppliers
+          .filter(_.id === c.supID)
+          .map { s =>
+            (c.name, s.name, cf.name, cf.total, cf.totalComputed)
+          }
       }
     }
     val q3b = coffees.flatMap { c =>
       val cf = Query((c, 42)).filter(_._1.price < 900)
       cf.flatMap {
         case (cf, num) =>
-          suppliers.filter(_.id === c.supID).map { s =>
-            (c.name, s.name, cf.name, cf.total, cf.totalComputed, num)
-          }
+          suppliers
+            .filter(_.id === c.supID)
+            .map { s =>
+              (c.name, s.name, cf.name, cf.total, cf.totalComputed, num)
+            }
       }
     }
     def q4 =
@@ -228,8 +232,8 @@ object CompilerBenchmark {
     val q7b = q7 filter (_._1 =!= "Colombian")
     val q8 =
       for {
-        (c1, c2) <- coffees.filter(_.price < 900) joinLeft coffees.filter(
-          _.price < 800) on (_.name === _.name)
+        (c1, c2) <- coffees.filter(_.price < 900) joinLeft coffees
+          .filter(_.price < 800) on (_.name === _.name)
       } yield (c1.name, c2.map(_.name))
     val q8b =
       for {
@@ -335,32 +339,39 @@ object CompilerBenchmark {
       case ((a1, a2), a3) =>
         (a1.id, a2.a, a3.b)
     }
-    val q4 = as.map(a => (a.id, a.a, a.b, a)).filter(_._3 === "b").map {
-      case (id, a1, b, a2) =>
-        (id, a2)
-    }
+    val q4 = as
+      .map(a => (a.id, a.a, a.b, a))
+      .filter(_._3 === "b")
+      .map {
+        case (id, a1, b, a2) =>
+          (id, a2)
+      }
     val q5a = as.to[Set].filter(_.b === "b").map(_.id)
     val q5b = as.filter(_.b === "b").to[Set].map(_.id)
     val q5c = as.filter(_.b === "b").map(_.id).to[Set]
-    val q6 = (as join as).groupBy(j => (j._1.a, j._1.b)).map {
-      case (ab, rs) =>
-        (
-          ab,
-          rs.length,
-          rs.map(_._1).length,
-          rs.map(_._2).length,
-          rs.map(_._1.id).max,
-          rs.map(_._1.id).length)
-    }
+    val q6 = (as join as)
+      .groupBy(j => (j._1.a, j._1.b))
+      .map {
+        case (ab, rs) =>
+          (
+            ab,
+            rs.length,
+            rs.map(_._1).length,
+            rs.map(_._2).length,
+            rs.map(_._1.id).max,
+            rs.map(_._1.id).length)
+      }
     val q7 = q6.filter(_._1._1 === "a").map(_._5.getOrElse(0))
     val q8 = as.sortBy(_.id.desc).map(_.a)
     val q9a = as.sortBy(_.b).sortBy(_.a.desc).map(_.id)
     val q9b = as.sortBy(a => (a.a.desc, a.b)).map(_.id)
     val q10 =
-      (as join as).map {
-        case (a1, a2) =>
-          a1.id * 3 + a2.id - 3
-      }.sorted
+      (as join as)
+        .map {
+          case (a1, a2) =>
+            a1.id * 3 + a2.id - 3
+        }
+        .sorted
     val q11a = q10.take(5)
     val q11b = q10.take(5).take(3)
     val q11c = q10.take(5).take(3).drop(1)
@@ -382,10 +393,14 @@ object CompilerBenchmark {
           .map(a => a.id.?)
           .filter(_ > 2)
       ).map(_.getOrElse(-1)).to[Set].filter(_ =!= 42)
-    val q17 = as.sortBy(_.id).zipWithIndex.filter(_._2 < 2L).map {
-      case (a, i) =>
-        (a.id, i)
-    }
+    val q17 = as
+      .sortBy(_.id)
+      .zipWithIndex
+      .filter(_._2 < 2L)
+      .map {
+        case (a, i) =>
+          (a.id, i)
+      }
 
     Vector[Rep[_]](
       q1,

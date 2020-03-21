@@ -42,8 +42,8 @@ trait PartitionMergeSpec[M[+_]]
   import trans._
 
   def testPartitionMerge = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser
+      .parseUnsafe("""[
       { "key": [0], "value": { "a": "0a" } },
       { "key": [1], "value": { "a": "1a" } },
       { "key": [1], "value": { "a": "1b" } },

@@ -23,9 +23,11 @@ abstract class GenSerialClientDispatcher[Req, Rep, In, Out](
   private[this] val semaphore = new AsyncSemaphore(1)
 
   private[this] val queueSize =
-    statsReceiver.scope("serial").addGauge("queue_size") {
-      semaphore.numWaiters
-    }
+    statsReceiver
+      .scope("serial")
+      .addGauge("queue_size") {
+        semaphore.numWaiters
+      }
 
   private[this] val localAddress: InetSocketAddress =
     trans.localAddress match {
@@ -36,17 +38,19 @@ abstract class GenSerialClientDispatcher[Req, Rep, In, Out](
     }
 
   // satisfy pending requests on transport close
-  trans.onClose.respond { res =>
-    val exc =
-      res match {
-        case Return(exc) =>
-          exc
-        case Throw(exc) =>
-          exc
-      }
+  trans
+    .onClose
+    .respond { res =>
+      val exc =
+        res match {
+          case Return(exc) =>
+            exc
+          case Throw(exc) =>
+            exc
+        }
 
-    semaphore.fail(exc)
-  }
+      semaphore.fail(exc)
+    }
 
   /**
     * Dispatch a request, satisfying Promise `p` with the response;
@@ -82,18 +86,20 @@ abstract class GenSerialClientDispatcher[Req, Rep, In, Out](
   def apply(req: Req): Future[Rep] = {
     val p = new Promise[Rep]
 
-    semaphore.acquire().respond {
-      case Return(permit) =>
-        tryDispatch(req, p).respond {
-          case t @ Throw(_) =>
-            p.updateIfEmpty(t.cast[Rep])
-            permit.release()
-          case Return(_) =>
-            permit.release()
-        }
-      case t @ Throw(_) =>
-        p.update(t.cast[Rep])
-    }
+    semaphore
+      .acquire()
+      .respond {
+        case Return(permit) =>
+          tryDispatch(req, p).respond {
+            case t @ Throw(_) =>
+              p.updateIfEmpty(t.cast[Rep])
+              permit.release()
+            case Return(_) =>
+              permit.release()
+          }
+        case t @ Throw(_) =>
+          p.update(t.cast[Rep])
+      }
 
     p
   }
@@ -139,7 +145,9 @@ class SerialClientDispatcher[Req, Rep](
 
   protected def write(req: Req): Future[Unit] = trans.write(req)
   protected def read(permit: Permit): Future[Rep] =
-    trans.read().ensure {
-      permit.release()
-    }
+    trans
+      .read()
+      .ensure {
+        permit.release()
+      }
 }

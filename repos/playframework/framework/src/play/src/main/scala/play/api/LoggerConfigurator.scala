@@ -44,8 +44,8 @@ object LoggerConfigurator {
       loggerConfiguratorClassName: String,
       classLoader: ClassLoader): Option[LoggerConfigurator] = {
     try {
-      val loggerConfiguratorClass: Class[_] = classLoader.loadClass(
-        loggerConfiguratorClassName)
+      val loggerConfiguratorClass: Class[_] = classLoader
+        .loadClass(loggerConfiguratorClassName)
       Some(
         loggerConfiguratorClass.newInstance().asInstanceOf[LoggerConfigurator])
     } catch {

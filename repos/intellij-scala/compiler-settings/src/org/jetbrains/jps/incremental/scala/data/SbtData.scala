@@ -55,8 +55,8 @@ object SbtData {
                     readSbtVersionFrom(classLoader)
                       .toRight("Unable to read SBT version from JVM classpath")
                       .map { sbtVersion =>
-                        val checksum = DatatypeConverter.printHexBinary(
-                          md5(sourceJar))
+                        val checksum = DatatypeConverter
+                          .printHexBinary(md5(sourceJar))
                         val interfacesHome =
                           new File(
                             compilerInterfacesDir,
@@ -92,10 +92,13 @@ object SbtData {
 
   private def md5(file: File): Array[Byte] = {
     val md = MessageDigest.getInstance("MD5")
-    val isSource =
-      file.getName.endsWith(".java") || file.getName.endsWith(".scala")
+    val isSource = file.getName.endsWith(".java") || file
+      .getName
+      .endsWith(".scala")
     if (isSource) {
-      val text = scala.io.Source
+      val text = scala
+        .io
+        .Source
         .fromFile(file, "UTF-8")
         .mkString
         .replace("\r", "")

@@ -126,10 +126,12 @@ trait KMediansCoreSetClustering {
       if (coreSetTree.k < k) {
         coreSetTree ++ this
       } else {
-        coreSetTree.tree.foldLeft(this) {
-          case (acc, (level, coreset)) =>
-            acc.insertCoreSet(coreset, level)
-        }
+        coreSetTree
+          .tree
+          .foldLeft(this) {
+            case (acc, (level, coreset)) =>
+              acc.insertCoreSet(coreset, level)
+          }
       }
     }
   }
@@ -264,9 +266,8 @@ trait KMediansCoreSetClustering {
       } else {
         var radius = cost / weight
 
-        val sampleSize = math.min(
-          k * math.log(points.length),
-          points.length / 10d)
+        val sampleSize = math
+          .min(k * math.log(points.length), points.length / 10d)
         //System.err.println("k=%s sampleSize=%s" format (k, sampleSize))
 
         val samples = points.take(sampleSize.toInt)
@@ -473,9 +474,8 @@ trait KMediansCoreSetClustering {
 
       { (point: Array[Double]) =>
         val minx = distMin(point, center)
-        val j = math.max(
-          0,
-          math.ceil((math.log(minx) - logRadiusGLB) / log2).toInt)
+        val j = math
+          .max(0, math.ceil((math.log(minx) - logRadiusGLB) / log2).toInt)
 
         require(
           j < sideLengths.length,
@@ -493,8 +493,8 @@ trait KMediansCoreSetClustering {
 
         var i = 0
         while (i < scaledPoint.length) {
-          scaledPoint(i) = center(i) + math.floor(
-            scaledPoint(i)) * sideLength + (sideLength / 2)
+          scaledPoint(i) = center(i) + math
+            .floor(scaledPoint(i)) * sideLength + (sideLength / 2)
           i += 1
         }
         new GridPoint(scaledPoint)
@@ -608,9 +608,8 @@ trait ClusteringLibModule[M[+_]]
         with KMediansCoreSetClustering {
       val tpe = BinaryOperationType(JType.JUniverseT, JNumberT, JObjectUnfixedT)
 
-      lazy val alignment = MorphismAlignment.Custom(
-        IdentityPolicy.Retain.Cross,
-        alignCustom _)
+      lazy val alignment = MorphismAlignment
+        .Custom(IdentityPolicy.Retain.Cross, alignCustom _)
 
       type KS = List[Int]
       val epsilon = 0.1
@@ -624,8 +623,8 @@ trait ClusteringLibModule[M[+_]]
       def reducerKS: CReducer[KS] =
         new CReducer[KS] {
           def reduce(schema: CSchema, range: Range): KS = {
-            val columns = schema.columns(
-              JObjectFixedT(Map("value" -> JNumberT)))
+            val columns = schema
+              .columns(JObjectFixedT(Map("value" -> JNumberT)))
             val cols: List[Int] =
               (
                 columns flatMap {
@@ -721,8 +720,8 @@ trait ClusteringLibModule[M[+_]]
 
         val wrappedTables = transformedTables.zipWithIndex map {
           case (tbl, idx) =>
-            tbl.transform(
-              trans.WrapObject(TransSpec1.Id, "cluster" + (idx + 1)))
+            tbl
+              .transform(trans.WrapObject(TransSpec1.Id, "cluster" + (idx + 1)))
         }
 
         val table = wrappedTables reduce { (t1, t2) =>
@@ -730,13 +729,14 @@ trait ClusteringLibModule[M[+_]]
             trans.InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
         }
 
-        val result = table.transform(
-          trans.WrapObject(TransSpec1.Id, "model" + modelId))
+        val result = table
+          .transform(trans.WrapObject(TransSpec1.Id, "model" + modelId))
 
-        val valueTable = result.transform(
-          trans.WrapObject(Leaf(Source), paths.Value.name))
-        val keyTable = Table.constEmptyArray.transform(
-          trans.WrapObject(Leaf(Source), paths.Key.name))
+        val valueTable = result
+          .transform(trans.WrapObject(Leaf(Source), paths.Value.name))
+        val keyTable = Table
+          .constEmptyArray
+          .transform(trans.WrapObject(Leaf(Source), paths.Key.name))
 
         valueTable.cross(keyTable)(
           InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
@@ -841,9 +841,8 @@ trait ClusteringLibModule[M[+_]]
 
       override val idPolicy = IdentityPolicy.Retain.Merge
 
-      lazy val alignment = MorphismAlignment.Custom(
-        IdentityPolicy.Retain.Cross,
-        alignCustom _)
+      lazy val alignment = MorphismAlignment
+        .Custom(IdentityPolicy.Retain.Cross, alignCustom _)
 
       def alignCustom(t1: Table, t2: Table): M[(Table, Morph1Apply)] = {
         val spec = liftToValues(

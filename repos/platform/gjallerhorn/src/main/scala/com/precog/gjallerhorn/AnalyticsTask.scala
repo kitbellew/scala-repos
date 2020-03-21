@@ -46,10 +46,8 @@ class AnalyticsTask(settings: Settings)
   """
 
   def asyncQuery(auth: String, prefixPath: String, query: String): String = {
-    val req = (analytics / "queries").POST <<? List(
-      "apiKey" -> auth,
-      "q" -> query,
-      "prefixPath" -> prefixPath)
+    val req = (analytics / "queries")
+      .POST <<? List("apiKey" -> auth, "q" -> query, "prefixPath" -> prefixPath)
     val json = JParser
       .parseFromString(Http(req OK as.String)())
       .valueOr(throw _)

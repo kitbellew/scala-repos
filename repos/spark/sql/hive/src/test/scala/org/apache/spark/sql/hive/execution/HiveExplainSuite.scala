@@ -95,8 +95,8 @@ class HiveExplainSuite
 
   test("SPARK-6212: The EXPLAIN output of CTAS only shows the analyzed plan") {
     withTempTable("jt") {
-      val rdd = sparkContext.parallelize(
-        (1 to 10).map(i => s"""{"a":$i, "b":"str$i"}"""))
+      val rdd = sparkContext
+        .parallelize((1 to 10).map(i => s"""{"a":$i, "b":"str$i"}"""))
       hiveContext.read.json(rdd).registerTempTable("jt")
       val outputs = sql(s"""
            |EXPLAIN EXTENDED

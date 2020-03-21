@@ -29,7 +29,8 @@ class MomentumStrategy(val p: MomentumStrategyParams)
     val sLgRet = (todayLgPrice - sLgPrice) / p.s
     val lLgRet = (todayLgPrice - lLgPrice) / p.l
 
-    val output = query.tickers
+    val output = query
+      .tickers
       .map { ticker =>
         {
           val s = sLgRet.first(ticker)

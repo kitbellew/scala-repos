@@ -68,8 +68,8 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
       def ins1 = as.map(a => (a.s1, a.s2)) returning as.map(_.id)
       def ins2 = as.map(a => (a.s1, a.s2)) returning as.map(a => (a.id, a.s1))
       def ins3 =
-        as.map(a => (a.s1, a.s2)) returning as.map(_.id) into ((v, i) =>
-          (i, v._1, v._2))
+        as.map(a => (a.s1, a.s2)) returning as
+          .map(_.id) into ((v, i) => (i, v._1, v._2))
       def ins4 = as.map(a => (a.s1, a.s2)) returning as.map(a => a)
 
       (
@@ -128,18 +128,21 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
       ifCap(jcap.forceInsert)(
         seq(
           ts.forceInsert(104, "A", 1, false, "S1", "S2", 0),
-          ts.map(_.ins)
+          ts
+            .map(_.ins)
             .forceInsertAll(
               Seq(
                 (105, "B", 1, false, "S1", "S2", 0),
                 (106, "C", 1, false, "S1", "S2", 0))),
           ts.filter(_.id > 100).length.result.map(_ shouldBe 3),
-          ts.map(_.ins)
+          ts
+            .map(_.ins)
             .forceInsertAll(Seq((111, "D", 1, false, "S1", "S2", 0))),
           ts.filter(_.id > 100).length.result.map(_ shouldBe 4),
           src.forceInsert(90, "X", 1, false, "S1", "S2", 0),
           mark("forceInsertQuery", ts.forceInsertQuery(src)).map(_ shouldBe 1),
-          ts.filter(_.id.between(90, 99))
+          ts
+            .filter(_.id.between(90, 99))
             .result
             .headOption
             .map(_ shouldBe Some((90, "X", 1, false, "S1", "S2", 0)))

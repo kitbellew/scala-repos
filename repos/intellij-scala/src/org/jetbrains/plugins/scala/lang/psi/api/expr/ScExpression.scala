@@ -92,8 +92,8 @@ trait ScExpression
           default
       }
     } else {
-      val expected: ScType = expectedOption.getOrElse(
-        expectedType(fromUnderscore).orNull)
+      val expected: ScType = expectedOption
+        .getOrElse(expectedType(fromUnderscore).orNull)
       if (expected == null) {
         ExpressionTypeResult(
           getTypeWithoutImplicits(ignoreBaseTypes, fromUnderscore),
@@ -146,10 +146,14 @@ trait ScExpression
                       case function1: ScTrait =>
                         ScParameterizedType(
                           ScType.designator(function1),
-                          function1.typeParameters.map(tp =>
-                            new ScUndefinedType(
-                              new ScTypeParameterType(tp, ScSubstitutor.empty),
-                              1))) match {
+                          function1
+                            .typeParameters
+                            .map(tp =>
+                              new ScUndefinedType(
+                                new ScTypeParameterType(
+                                  tp,
+                                  ScSubstitutor.empty),
+                                1))) match {
                           case funTp: ScParameterizedType =>
                             val secondArg = funTp.typeArgs(1)
                             Conformance
@@ -234,10 +238,8 @@ trait ScExpression
   private def getTypeWithoutImplicitsImpl(
       ignoreBaseTypes: Boolean,
       fromUnderscore: Boolean): TypeResult[ScType] = {
-    val inner = ScExpression.this.getNonValueType(
-      TypingContext.empty,
-      ignoreBaseTypes,
-      fromUnderscore)
+    val inner = ScExpression.this
+      .getNonValueType(TypingContext.empty, ignoreBaseTypes, fromUnderscore)
     inner match {
       case Success(rtp, _) =>
         var res = rtp
@@ -258,8 +260,8 @@ trait ScExpression
             }
           }
 
-          val checkImplicitParameters = ScalaPsiUtil.withEtaExpansion(
-            ScExpression.this)
+          val checkImplicitParameters = ScalaPsiUtil
+            .withEtaExpansion(ScExpression.this)
           if (checkImplicitParameters) {
             val tuple = InferUtil.updateTypeWithImplicitParameters(
               res,
@@ -359,11 +361,15 @@ trait ScExpression
               val needsNarrowing =
                 ScExpression.this match {
                   case _: ScLiteral =>
-                    getNode.getFirstChildNode.getElementType == ScalaTokenTypes.tINTEGER
+                    getNode.getFirstChildNode.getElementType == ScalaTokenTypes
+                      .tINTEGER
                   case p: ScPrefixExpr =>
                     p.operand match {
                       case l: ScLiteral =>
-                        l.getNode.getFirstChildNode.getElementType == ScalaTokenTypes.tINTEGER &&
+                        l
+                          .getNode
+                          .getFirstChildNode
+                          .getElementType == ScalaTokenTypes.tINTEGER &&
                           Set("+", "-").contains(p.operation.getText)
                       case _ =>
                         false
@@ -401,15 +407,24 @@ trait ScExpression
                     }
                   expected.removeAbstracts match {
                     case types.Char =>
-                      if (i >= scala.Char.MinValue.toInt && i <= scala.Char.MaxValue.toInt) {
+                      if (i >= scala.Char.MinValue.toInt && i <= scala
+                            .Char
+                            .MaxValue
+                            .toInt) {
                         return Some(Success(Char, Some(ScExpression.this)))
                       }
                     case types.Byte =>
-                      if (i >= scala.Byte.MinValue.toInt && i <= scala.Byte.MaxValue.toInt) {
+                      if (i >= scala.Byte.MinValue.toInt && i <= scala
+                            .Byte
+                            .MaxValue
+                            .toInt) {
                         return Some(Success(Byte, Some(ScExpression.this)))
                       }
                     case types.Short =>
-                      if (i >= scala.Short.MinValue.toInt && i <= scala.Short.MaxValue.toInt) {
+                      if (i >= scala.Short.MinValue.toInt && i <= scala
+                            .Short
+                            .MaxValue
+                            .toInt) {
                         return Some(Success(Short, Some(ScExpression.this)))
                       }
                     case _ =>
@@ -501,7 +516,8 @@ trait ScExpression
       case assign: ScAssignStmt
           if !ignoreAssign && assign.assignName.isDefined =>
         (
-          assign.getRExpression
+          assign
+            .getRExpression
             .map(_.getShape(ignoreAssign = true)._1)
             .getOrElse(Nothing),
           assign.assignName.get)
@@ -512,7 +528,8 @@ trait ScExpression
           case (i, expr: ScFunctionExpr) =>
             (
               ScFunctionType(
-                expr.result
+                expr
+                  .result
                   .map(_.getShape(ignoreAssign = true)._1)
                   .getOrElse(Nothing),
                 Seq.fill(i)(Any))(getProject, getResolveScope),
@@ -571,15 +588,18 @@ trait ScExpression
       if (unders.isEmpty)
         innerType(TypingContext.empty)
       else {
-        val params = unders.zipWithIndex.map {
-          case (u, index) =>
-            val tpe =
-              u.getNonValueType(TypingContext.empty, ignoreBaseType)
-                .getOrAny
-                .inferValueType
-                .unpackedType
-            new Parameter("", None, tpe, false, false, false, index)
-        }
+        val params = unders
+          .zipWithIndex
+          .map {
+            case (u, index) =>
+              val tpe =
+                u
+                  .getNonValueType(TypingContext.empty, ignoreBaseType)
+                  .getOrAny
+                  .inferValueType
+                  .unpackedType
+              new Parameter("", None, tpe, false, false, false, index)
+          }
         val methType =
           new ScMethodType(
             getTypeAfterImplicitConversion(
@@ -611,9 +631,8 @@ trait ScExpression
     }
     val newExpr: ScExpression =
       if (ScalaPsiUtil.needParentheses(this, expr)) {
-        ScalaPsiElementFactory.createExpressionFromText(
-          "(" + expr.getText + ")",
-          getManager)
+        ScalaPsiElementFactory
+          .createExpressionFromText("(" + expr.getText + ")", getManager)
       } else
         expr
     val parentNode = oldParent.getNode
@@ -647,9 +666,8 @@ trait ScExpression
     ModCount.getBlockModificationCount)
   def expectedTypesEx(fromUnderscore: Boolean = true)
       : Array[(ScType, Option[ScTypeElement])] = {
-    ExpectedTypes.expectedExprTypes(
-      ScExpression.this,
-      fromUnderscore = fromUnderscore)
+    ExpectedTypes
+      .expectedExprTypes(ScExpression.this, fromUnderscore = fromUnderscore)
   }
 
   @CachedMappedWithRecursionGuard(
@@ -810,27 +828,23 @@ trait ScExpression
         applyProc,
         noImplicitsForArgs = false) match {
         case Some(res) =>
-          var state = ResolveState.initial
+          var state = ResolveState
+            .initial
             .put(CachesUtil.IMPLICIT_FUNCTION, res.element)
           res.getClazz match {
             case Some(cl: PsiClass) =>
-              state = state.put(
-                ScImplicitlyConvertible.IMPLICIT_RESOLUTION_KEY,
-                cl)
+              state = state
+                .put(ScImplicitlyConvertible.IMPLICIT_RESOLUTION_KEY, cl)
             case _ =>
           }
-          applyProc.processType(
-            res.getTypeWithDependentSubstitutor,
-            expr,
-            state)
+          applyProc
+            .processType(res.getTypeWithDependentSubstitutor, expr, state)
           cand = applyProc.candidates
         case _ =>
       }
     }
-    if (cand.length == 0 && ScalaPsiUtil.approveDynamic(
-          tp,
-          getProject,
-          getResolveScope) && call.isDefined) {
+    if (cand.length == 0 && ScalaPsiUtil
+          .approveDynamic(tp, getProject, getResolveScope) && call.isDefined) {
       cand = ScalaPsiUtil.processTypeForUpdateOrApplyCandidates(
         call.get,
         tp,

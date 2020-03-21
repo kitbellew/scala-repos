@@ -89,26 +89,36 @@ private final class Indexer(storage: Storage, sequencer: ActorRef) {
           } map (_.toOption)
         }
       val query = $query(
-        gameQuery(user) ++ Json.obj(
-          Game.BSONFields.createdAt -> $gte($date(from))))
+        gameQuery(user) ++ Json
+          .obj(Game.BSONFields.createdAt -> $gte($date(from))))
       pimpQB(query)
         .sort(Query.sortChronological)
         .cursor[Game]()
         .enumerate(maxGames, stopOnError = true) &>
         Enumeratee.grouped(Iteratee takeUpTo 4) &>
-        Enumeratee.mapM[Seq[Game]].apply[Seq[Entry]] { games =>
-          games.map(toEntry).sequenceFu.map(_.flatten).addFailureEffect { e =>
-            println(e)
-            e.printStackTrace
-          }
-        } &>
+        Enumeratee
+          .mapM[Seq[Game]]
+          .apply[Seq[Entry]] { games =>
+            games
+              .map(toEntry)
+              .sequenceFu
+              .map(_.flatten)
+              .addFailureEffect { e =>
+                println(e)
+                e.printStackTrace
+              }
+          } &>
         Enumeratee.grouped(Iteratee takeUpTo 50) |>>>
         Iteratee.foldM[Seq[Seq[Entry]], Int](fromNumber) {
           case (number, xs) =>
-            val entries = xs.flatten.sortBy(_.date).zipWithIndex.map {
-              case (e, i) =>
-                e.copy(number = number + i)
-            }
+            val entries = xs
+              .flatten
+              .sortBy(_.date)
+              .zipWithIndex
+              .map {
+                case (e, i) =>
+                  e.copy(number = number + i)
+              }
             val nextNumber = number + entries.size
             storage bulkInsert entries inject nextNumber
         }

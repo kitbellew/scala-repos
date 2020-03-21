@@ -70,9 +70,11 @@ object CosineSimilarity {
         """.stripMargin)
       }
 
-    parser.parse(args, defaultParams).map { params =>
-      run(params)
-    } getOrElse {
+    parser
+      .parse(args, defaultParams)
+      .map { params =>
+        run(params)
+      } getOrElse {
       System.exit(1)
     }
   }
@@ -97,14 +99,18 @@ object CosineSimilarity {
     // Compute similar columns with estimation using DIMSUM
     val approx = mat.columnSimilarities(params.threshold)
 
-    val exactEntries = exact.entries.map {
-      case MatrixEntry(i, j, u) =>
-        ((i, j), u)
-    }
-    val approxEntries = approx.entries.map {
-      case MatrixEntry(i, j, v) =>
-        ((i, j), v)
-    }
+    val exactEntries = exact
+      .entries
+      .map {
+        case MatrixEntry(i, j, u) =>
+          ((i, j), u)
+      }
+    val approxEntries = approx
+      .entries
+      .map {
+        case MatrixEntry(i, j, v) =>
+          ((i, j), v)
+      }
     val MAE = exactEntries
       .leftOuterJoin(approxEntries)
       .values

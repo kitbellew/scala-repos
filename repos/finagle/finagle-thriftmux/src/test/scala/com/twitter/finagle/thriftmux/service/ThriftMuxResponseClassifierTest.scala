@@ -38,10 +38,12 @@ class ThriftMuxResponseClassifierTest extends FunSuite {
   test("usingDeserializeCtx basics") {
     def testApply(in: String, expectedClass: ResponseClass): Unit = {
       val ctx = new DeserializeCtx(TestService.Query.Args(in), deserializer)
-      Contexts.local.let(DeserializeCtx.Key, ctx) {
-        val rep = mux.Response(Buf.Utf8(in))
-        assert(expectedClass == classifier(ReqRep(in, Return(rep))))
-      }
+      Contexts
+        .local
+        .let(DeserializeCtx.Key, ctx) {
+          val rep = mux.Response(Buf.Utf8(in))
+          assert(expectedClass == classifier(ReqRep(in, Return(rep))))
+        }
     }
     testApply("nope", RetryableFailure)
     testApply("lol", NonRetryableFailure)
@@ -49,14 +51,17 @@ class ThriftMuxResponseClassifierTest extends FunSuite {
 
     def testApplyOrElse(in: String, expectedClass: ResponseClass): Unit = {
       val ctx = new DeserializeCtx(TestService.Query.Args(in), deserializer)
-      Contexts.local.let(DeserializeCtx.Key, ctx) {
-        val rep = mux.Response(Buf.Utf8(in))
-        assert(!classifier.isDefinedAt(ReqRep(in, Return(rep))))
-        assert(
-          expectedClass ==
-            classifier
-              .applyOrElse(ReqRep(in, Return(rep)), ResponseClassifier.Default))
-      }
+      Contexts
+        .local
+        .let(DeserializeCtx.Key, ctx) {
+          val rep = mux.Response(Buf.Utf8(in))
+          assert(!classifier.isDefinedAt(ReqRep(in, Return(rep))))
+          assert(
+            expectedClass ==
+              classifier.applyOrElse(
+                ReqRep(in, Return(rep)),
+                ResponseClassifier.Default))
+        }
     }
     testApplyOrElse("yep", Success)
     testApplyOrElse(
@@ -73,16 +78,18 @@ class ThriftMuxResponseClassifierTest extends FunSuite {
 
     val input = "throw"
     val ctx = new DeserializeCtx(TestService.Query.Args(input), throwingDeser)
-    Contexts.local.let(DeserializeCtx.Key, ctx) {
-      val rep = mux.Response(Buf.Utf8(input))
+    Contexts
+      .local
+      .let(DeserializeCtx.Key, ctx) {
+        val rep = mux.Response(Buf.Utf8(input))
 
-      assert(!classifier.isDefinedAt(ReqRep(input, Return(rep))))
-      assert(
-        Success ==
-          classifier.applyOrElse(
-            ReqRep(input, Return(rep)),
-            ResponseClassifier.Default))
-    }
+        assert(!classifier.isDefinedAt(ReqRep(input, Return(rep))))
+        assert(
+          Success ==
+            classifier.applyOrElse(
+              ReqRep(input, Return(rep)),
+              ResponseClassifier.Default))
+      }
   }
 
   test("usingDeserializeCtx handles no DeserializationCtx") {
@@ -111,22 +118,27 @@ class ThriftMuxResponseClassifierTest extends FunSuite {
 
     def testApply(in: String, expectedClass: ResponseClass): Unit = {
       val ctx = new DeserializeCtx(TestService.Query.Args(in), deserializer)
-      Contexts.local.let(DeserializeCtx.Key, ctx) {
-        val rep = mux.Response(Buf.Utf8(in))
-        assert(expectedClass == classifier(ReqRep(in, Return(rep))))
-      }
+      Contexts
+        .local
+        .let(DeserializeCtx.Key, ctx) {
+          val rep = mux.Response(Buf.Utf8(in))
+          assert(expectedClass == classifier(ReqRep(in, Return(rep))))
+        }
     }
 
     def testApplyOrElse(in: String, expectedClass: ResponseClass): Unit = {
       val ctx = new DeserializeCtx(TestService.Query.Args(in), deserializer)
-      Contexts.local.let(DeserializeCtx.Key, ctx) {
-        val rep = mux.Response(Buf.Utf8(in))
-        assert(!classifier.isDefinedAt(ReqRep(in, Return(rep))))
-        assert(
-          expectedClass ==
-            classifier
-              .applyOrElse(ReqRep(in, Return(rep)), ResponseClassifier.Default))
-      }
+      Contexts
+        .local
+        .let(DeserializeCtx.Key, ctx) {
+          val rep = mux.Response(Buf.Utf8(in))
+          assert(!classifier.isDefinedAt(ReqRep(in, Return(rep))))
+          assert(
+            expectedClass ==
+              classifier.applyOrElse(
+                ReqRep(in, Return(rep)),
+                ResponseClassifier.Default))
+        }
     }
 
     testApply("fail", NonRetryableFailure)
@@ -137,13 +149,17 @@ class ThriftMuxResponseClassifierTest extends FunSuite {
     "DeserializeCtxOnly only deserializes and sees Thrift exceptions as success") {
     val in = "fail"
     val ctx = new DeserializeCtx(TestService.Query.Args(in), deserializer)
-    Contexts.local.let(DeserializeCtx.Key, ctx) {
-      assert(deserializer(in.getBytes(Charsets.Utf8)).isThrow)
-      val rep = mux.Response(Buf.Utf8(in))
-      val reqRep = ReqRep(in, Return(rep))
-      assert(ThriftMuxResponseClassifier.DeserializeCtxOnly.isDefinedAt(reqRep))
-      assert(Success == ThriftMuxResponseClassifier.DeserializeCtxOnly(reqRep))
-    }
+    Contexts
+      .local
+      .let(DeserializeCtx.Key, ctx) {
+        assert(deserializer(in.getBytes(Charsets.Utf8)).isThrow)
+        val rep = mux.Response(Buf.Utf8(in))
+        val reqRep = ReqRep(in, Return(rep))
+        assert(
+          ThriftMuxResponseClassifier.DeserializeCtxOnly.isDefinedAt(reqRep))
+        assert(
+          Success == ThriftMuxResponseClassifier.DeserializeCtxOnly(reqRep))
+      }
   }
 
 }

@@ -36,9 +36,12 @@ class ScalaApplicationUsagesCollector
       var scala_version: Option[String] = None
       var java_version: Option[String] = None
       for (module <- ModuleManager.getInstance(project).getModules) {
-        module.scalaSdk.flatMap(_.compilerVersion).foreach { version =>
-          scala_version = Some(version)
-        }
+        module
+          .scalaSdk
+          .flatMap(_.compilerVersion)
+          .foreach { version =>
+            scala_version = Some(version)
+          }
 
         ModuleRootManager.getInstance(module).getSdk match {
           case jsdk: JavaSdk =>

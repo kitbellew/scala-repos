@@ -60,10 +60,12 @@ final class ORMultiMap[A] private[akka] (
     * Scala API: All entries of a multimap where keys are strings and values are sets.
     */
   def entries: Map[String, Set[A]] =
-    underlying.entries.map {
-      case (k, v) ⇒
-        k -> v.elements
-    }
+    underlying
+      .entries
+      .map {
+        case (k, v) ⇒
+          k -> v.elements
+      }
 
   /**
     * Java API: All entries of a multimap where keys are strings and values are sets.
@@ -71,10 +73,12 @@ final class ORMultiMap[A] private[akka] (
   def getEntries(): java.util.Map[String, java.util.Set[A]] = {
     import scala.collection.JavaConverters._
     val result = new java.util.HashMap[String, java.util.Set[A]]
-    underlying.entries.foreach {
-      case (k, v) ⇒
-        result.put(k, v.elements.asJava)
-    }
+    underlying
+      .entries
+      .foreach {
+        case (k, v) ⇒
+          result.put(k, v.elements.asJava)
+      }
     result
   }
 

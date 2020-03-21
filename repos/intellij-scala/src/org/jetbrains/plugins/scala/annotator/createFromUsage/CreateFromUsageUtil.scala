@@ -67,7 +67,8 @@ object CreateFromUsageUtil {
 
   def paramsText(args: Seq[PsiElement]) = {
     val (names, types) = args.map(nameAndTypeForArg).unzip
-    (uniqueNames(names), types).zipped
+    (uniqueNames(names), types)
+      .zipped
       .map((name, tpe) => s"$name: ${tpe.canonicalText}")
       .mkString("(", ", ", ")")
   }
@@ -108,27 +109,36 @@ object CreateFromUsageUtil {
   def addParametersToTemplate(
       elem: PsiElement,
       builder: TemplateBuilder): Unit = {
-    elem.depthFirst.filterByType(classOf[ScParameter]).foreach { parameter =>
-      val id = parameter.getNameIdentifier
-      builder.replaceElement(id, id.getText)
+    elem
+      .depthFirst
+      .filterByType(classOf[ScParameter])
+      .foreach { parameter =>
+        val id = parameter.getNameIdentifier
+        builder.replaceElement(id, id.getText)
 
-      parameter.paramType.foreach { it =>
-        builder.replaceElement(it, it.getText)
+        parameter
+          .paramType
+          .foreach { it =>
+            builder.replaceElement(it, it.getText)
+          }
       }
-    }
   }
 
   def addTypeParametersToTemplate(
       elem: PsiElement,
       builder: TemplateBuilder): Unit = {
-    elem.depthFirst.filterByType(classOf[ScTypeParam]).foreach { tp =>
-      builder.replaceElement(tp.nameId, tp.name)
-    }
+    elem
+      .depthFirst
+      .filterByType(classOf[ScTypeParam])
+      .foreach { tp =>
+        builder.replaceElement(tp.nameId, tp.name)
+      }
   }
 
   def addQmarksToTemplate(elem: PsiElement, builder: TemplateBuilder): Unit = {
     val Q_MARKS = "???"
-    elem.depthFirst
+    elem
+      .depthFirst
       .filterByType(classOf[ScReferenceExpression])
       .filter(_.getText == Q_MARKS)
       .foreach { qmarks =>

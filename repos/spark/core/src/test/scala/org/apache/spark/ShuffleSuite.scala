@@ -91,7 +91,9 @@ abstract class ShuffleSuite
 
     // All blocks must have non-zero size
     (0 until NUM_BLOCKS).foreach { id =>
-      val statuses = SparkEnv.get.mapOutputTracker
+      val statuses = SparkEnv
+        .get
+        .mapOutputTracker
         .getMapSizesByExecutorId(shuffleId, id)
       assert(
         statuses.forall(_._2.forall(blockIdSizePair => blockIdSizePair._2 > 0)))
@@ -134,7 +136,9 @@ abstract class ShuffleSuite
     assert(c.count === 4)
 
     val blockSizes = (0 until NUM_BLOCKS).flatMap { id =>
-      val statuses = SparkEnv.get.mapOutputTracker
+      val statuses = SparkEnv
+        .get
+        .mapOutputTracker
         .getMapSizesByExecutorId(shuffleId, id)
       statuses.flatMap(_._2.map(_._2))
     }
@@ -161,7 +165,9 @@ abstract class ShuffleSuite
     assert(c.count === 4)
 
     val blockSizes = (0 until NUM_BLOCKS).flatMap { id =>
-      val statuses = SparkEnv.get.mapOutputTracker
+      val statuses = SparkEnv
+        .get
+        .mapOutputTracker
         .getMapSizesByExecutorId(shuffleId, id)
       statuses.flatMap(_._2.map(_._2))
     }
@@ -311,9 +317,15 @@ abstract class ShuffleSuite
     rdd.count()
 
     // Delete one of the local shuffle blocks.
-    val hashFile = sc.env.blockManager.diskBlockManager
+    val hashFile = sc
+      .env
+      .blockManager
+      .diskBlockManager
       .getFile(new ShuffleBlockId(0, 0, 0))
-    val sortFile = sc.env.blockManager.diskBlockManager
+    val sortFile = sc
+      .env
+      .blockManager
+      .diskBlockManager
       .getFile(new ShuffleDataBlockId(0, 0, 0))
     assert(hashFile.exists() || sortFile.exists())
 
@@ -334,7 +346,8 @@ abstract class ShuffleSuite
 
     val metrics =
       ShuffleSuite.runAndReturnMetrics(sc) {
-        sc.parallelize(1 to numRecords, 4)
+        sc
+          .parallelize(1 to numRecords, 4)
           .map(key => (key, 1))
           .groupByKey()
           .collect()
@@ -352,7 +365,8 @@ abstract class ShuffleSuite
 
     val metrics =
       ShuffleSuite.runAndReturnMetrics(sc) {
-        sc.parallelize(1 to numRecords, 4)
+        sc
+          .parallelize(1 to numRecords, 4)
           .flatMap(key => Array.fill(100)((key, 1)))
           .countByKey()
       }
@@ -365,7 +379,9 @@ abstract class ShuffleSuite
 
   test("multiple simultaneous attempts for one task (SPARK-8029)") {
     sc = new SparkContext("local", "test", conf)
-    val mapTrackerMaster = sc.env.mapOutputTracker
+    val mapTrackerMaster = sc
+      .env
+      .mapOutputTracker
       .asInstanceOf[MapOutputTrackerMaster]
     val manager = sc.env.shuffleManager
 
@@ -535,14 +551,20 @@ object ShuffleSuite {
     val listener =
       new SparkListener {
         override def onTaskEnd(taskEnd: SparkListenerTaskEnd) {
-          taskEnd.taskMetrics.shuffleWriteMetrics.foreach { m =>
-            recordsWritten += m.recordsWritten
-            bytesWritten += m.bytesWritten
-          }
-          taskEnd.taskMetrics.shuffleReadMetrics.foreach { m =>
-            recordsRead += m.recordsRead
-            bytesRead += m.totalBytesRead
-          }
+          taskEnd
+            .taskMetrics
+            .shuffleWriteMetrics
+            .foreach { m =>
+              recordsWritten += m.recordsWritten
+              bytesWritten += m.bytesWritten
+            }
+          taskEnd
+            .taskMetrics
+            .shuffleReadMetrics
+            .foreach { m =>
+              recordsRead += m.recordsRead
+              bytesRead += m.totalBytesRead
+            }
         }
       }
     sc.addSparkListener(listener)

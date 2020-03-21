@@ -266,7 +266,8 @@ object WebSocket {
     acceptOrResult[A, A](
       f.andThen(
         _.map(
-          _.right.map {
+          _.right
+          .map {
             case (iteratee, enumerator) =>
               // Play 2.4 and earlier only closed the WebSocket if the enumerator specifically fed EOF. So, you could
               // return an empty enumerator, and it would never close the socket. Converting an empty enumerator to a
@@ -278,8 +279,8 @@ object WebSocket {
                 () => {
                   enumeratorCompletion.success(Enumerator.empty)
                 }) >>> Enumerator.flatten(enumeratorCompletion.future)
-              val publisher = Streams.enumeratorToPublisher(
-                nonCompletingEnumerator)
+              val publisher = Streams
+                .enumeratorToPublisher(nonCompletingEnumerator)
               val (subscriber, _) = Streams.iterateeToSubscriber(iteratee)
               Flow.fromSinkAndSource(
                 Sink.fromSubscriber(subscriber),
@@ -374,7 +375,8 @@ object WebSocket {
     acceptOrResult(
       f.andThen(
         _.map(
-          _.right.map { props =>
+          _.right
+          .map { props =>
             ActorFlow.actorRef(props)
           })))
   }

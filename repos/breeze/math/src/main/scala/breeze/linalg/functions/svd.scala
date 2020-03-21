@@ -101,10 +101,12 @@ object svd extends UFunc {
     val workSize = (3
       * scala.math.min(m, n)
       * scala.math.min(m, n)
-      + scala.math.max(
-        scala.math.max(m, n),
-        4 * scala.math.min(m, n)
-          * scala.math.min(m, n) + 4 * scala.math.min(m, n)))
+      + scala
+        .math
+        .max(
+          scala.math.max(m, n),
+          4 * scala.math.min(m, n)
+            * scala.math.min(m, n) + 4 * scala.math.min(m, n)))
     val work = new Array[Double](workSize)
     val info = new intW(0)
     val cm = copy(mat)
@@ -172,10 +174,12 @@ object svd extends UFunc {
     val workSize = (3
       * scala.math.min(m, n)
       * scala.math.min(m, n)
-      + scala.math.max(
-        scala.math.max(m, n),
-        4 * scala.math.min(m, n)
-          * scala.math.min(m, n) + 4 * scala.math.min(m, n)))
+      + scala
+        .math
+        .max(
+          scala.math.max(m, n),
+          4 * scala.math.min(m, n)
+            * scala.math.min(m, n) + 4 * scala.math.min(m, n)))
     val work = new Array[Float](workSize)
     val info = new intW(0)
     val cm = copy(mat)

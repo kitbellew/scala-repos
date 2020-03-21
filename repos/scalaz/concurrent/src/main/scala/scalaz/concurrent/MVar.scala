@@ -97,7 +97,8 @@ private[this] class MVarImpl[A](
                     read
                   ) // If the value has changed, the write will fail so we'll need to try it again.
                 else
-                  readLatch.release // If the write succeeded, release a thread waiting for a value.
+                  readLatch
+                    .release // If the write succeeded, release a thread waiting for a value.
             }
         })
     }

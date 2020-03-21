@@ -79,10 +79,8 @@ class DeleteConsumerGroupTest extends KafkaServerTestHarness {
     fillInConsumerGroupInfo(topic, groupToDelete, "consumer", 0, 10, false)
     fillInConsumerGroupInfo(topic, otherGroup, "consumer", 0, 10, false)
 
-    AdminUtils.deleteConsumerGroupInfoForTopicInZK(
-      zkUtils,
-      groupToDelete,
-      topic)
+    AdminUtils
+      .deleteConsumerGroupInfoForTopicInZK(zkUtils, groupToDelete, topic)
 
     TestUtils.waitUntilTrue(
       () => !groupDirExists(new ZKGroupDirs(groupToDelete)),
@@ -151,10 +149,8 @@ class DeleteConsumerGroupTest extends KafkaServerTestHarness {
     fillInConsumerGroupInfo(topicToDelete, group, "consumer", 0, 10, true)
     fillInConsumerGroupInfo(otherTopic, group, "consumer", 0, 10, true)
 
-    AdminUtils.deleteConsumerGroupInfoForTopicInZK(
-      zkUtils,
-      group,
-      topicToDelete)
+    AdminUtils
+      .deleteConsumerGroupInfoForTopicInZK(zkUtils, group, topicToDelete)
 
     TestUtils.waitUntilTrue(
       () =>
@@ -178,10 +174,10 @@ class DeleteConsumerGroupTest extends KafkaServerTestHarness {
 
     TestUtils.createTopic(zkUtils, topicToDelete, 1, 3, servers)
     TestUtils.createTopic(zkUtils, otherTopic, 1, 3, servers)
-    val groupTopicDirsForTopicToDelete = groups.map(group =>
-      new ZKGroupTopicDirs(group, topicToDelete))
-    val groupTopicDirsForOtherTopic = groups.map(group =>
-      new ZKGroupTopicDirs(group, otherTopic))
+    val groupTopicDirsForTopicToDelete = groups
+      .map(group => new ZKGroupTopicDirs(group, topicToDelete))
+    val groupTopicDirsForOtherTopic = groups
+      .map(group => new ZKGroupTopicDirs(group, otherTopic))
     groupTopicDirsForTopicToDelete.foreach(dir =>
       fillInConsumerGroupInfo(
         topicToDelete,
@@ -197,8 +193,8 @@ class DeleteConsumerGroupTest extends KafkaServerTestHarness {
 
     TestUtils.waitUntilTrue(
       () =>
-        !groupTopicDirsForTopicToDelete.exists(
-          groupTopicOffsetAndOwnerDirsExist),
+        !groupTopicDirsForTopicToDelete
+          .exists(groupTopicOffsetAndOwnerDirsExist),
       "Consumer group info on deleted topic topic should be deleted by DeleteAllConsumerGroupInfoForTopicInZK"
     )
     TestUtils.waitUntilTrue(
@@ -229,10 +225,8 @@ class DeleteConsumerGroupTest extends KafkaServerTestHarness {
     produceEvents(producer, topic, List.fill(10)("test"))
 
     //consume events
-    val consumerProps = TestUtils.createConsumerProperties(
-      zkConnect,
-      group,
-      "consumer")
+    val consumerProps = TestUtils
+      .createConsumerProperties(zkConnect, group, "consumer")
     consumerProps.put("auto.commit.enable", "false")
     consumerProps.put("auto.offset.reset", "smallest")
     consumerProps.put("consumer.timeout.ms", "2000")
@@ -258,10 +252,8 @@ class DeleteConsumerGroupTest extends KafkaServerTestHarness {
       partition: Int,
       offset: Int,
       registerConsumer: Boolean) {
-    val consumerProps = TestUtils.createConsumerProperties(
-      zkConnect,
-      group,
-      consumerId)
+    val consumerProps = TestUtils
+      .createConsumerProperties(zkConnect, group, consumerId)
     val consumerConfig = new ConsumerConfig(consumerProps)
     val dir = new ZKGroupTopicDirs(group, topic)
     TestUtils.updateConsumerOffset(
@@ -284,8 +276,8 @@ class DeleteConsumerGroupTest extends KafkaServerTestHarness {
   }
 
   private def groupTopicOffsetAndOwnerDirsExist(dir: ZKGroupTopicDirs) = {
-    zkUtils.pathExists(dir.consumerOffsetDir) && zkUtils.pathExists(
-      dir.consumerOwnerDir)
+    zkUtils.pathExists(dir.consumerOffsetDir) && zkUtils
+      .pathExists(dir.consumerOwnerDir)
   }
 
   private def produceEvents(

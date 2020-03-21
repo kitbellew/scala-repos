@@ -436,19 +436,28 @@ class LogisticRegression @Since("1.2.0") (
           else
             numFeatures)
 
-        if (optInitialModel.isDefined && optInitialModel.get.coefficients.size != numFeatures) {
+        if (optInitialModel.isDefined && optInitialModel
+              .get
+              .coefficients
+              .size != numFeatures) {
           val vec = optInitialModel.get.coefficients
           logWarning(
             s"Initial coefficients provided ${vec} did not match the expected size ${numFeatures}")
         }
 
-        if (optInitialModel.isDefined && optInitialModel.get.coefficients.size == numFeatures) {
+        if (optInitialModel.isDefined && optInitialModel
+              .get
+              .coefficients
+              .size == numFeatures) {
           val initialCoefficientsWithInterceptArray =
             initialCoefficientsWithIntercept.toArray
-          optInitialModel.get.coefficients.foreachActive {
-            case (index, value) =>
-              initialCoefficientsWithInterceptArray(index) = value
-          }
+          optInitialModel
+            .get
+            .coefficients
+            .foreachActive {
+              case (index, value) =>
+                initialCoefficientsWithInterceptArray(index) = value
+            }
           if ($(fitIntercept)) {
             initialCoefficientsWithInterceptArray(
               numFeatures) == optInitialModel.get.intercept
@@ -467,8 +476,8 @@ class LogisticRegression @Since("1.2.0") (
                b = \log{P(1) / P(0)} = \log{count_1 / count_0}
              }}}
            */
-          initialCoefficientsWithIntercept.toArray(numFeatures) = math.log(
-            histogram(1) / histogram(0))
+          initialCoefficientsWithIntercept.toArray(numFeatures) = math
+            .log(histogram(1) / histogram(0))
         }
 
         val states = optimizer.iterations(
@@ -625,8 +634,11 @@ class LogisticRegressionModel private[spark] (
       : (LogisticRegressionModel, String) = {
     $(probabilityCol) match {
       case "" =>
-        val probabilityColName =
-          "probability_" + java.util.UUID.randomUUID.toString()
+        val probabilityColName = "probability_" + java
+          .util
+          .UUID
+          .randomUUID
+          .toString()
         (
           copy(ParamMap.empty).setProbabilityCol(probabilityColName),
           probabilityColName)
@@ -792,7 +804,8 @@ object LogisticRegressionModel extends MLReadable[LogisticRegressionModel] {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
+      val data = sqlContext
+        .read
         .format("parquet")
         .load(dataPath)
         .select("numClasses", "numFeatures", "intercept", "coefficients")
@@ -841,9 +854,8 @@ private[classification] class MultiClassSummarizer extends Serializable {
       totalInvalidCnt += 1
       this
     } else {
-      val (counts: Long, weightSum: Double) = distinctMap.getOrElse(
-        label.toInt,
-        (0L, 0.0))
+      val (counts: Long, weightSum: Double) = distinctMap
+        .getOrElse(label.toInt, (0L, 0.0))
       distinctMap.put(label.toInt, (counts + 1L, weightSum + weight))
       this
     }
@@ -864,12 +876,17 @@ private[classification] class MultiClassSummarizer extends Serializable {
       } else {
         (other, this)
       }
-    smallMap.distinctMap.foreach {
-      case (key, value) =>
-        val (counts: Long, weightSum: Double) = largeMap.distinctMap
-          .getOrElse(key, (0L, 0.0))
-        largeMap.distinctMap.put(key, (counts + value._1, weightSum + value._2))
-    }
+    smallMap
+      .distinctMap
+      .foreach {
+        case (key, value) =>
+          val (counts: Long, weightSum: Double) = largeMap
+            .distinctMap
+            .getOrElse(key, (0L, 0.0))
+          largeMap
+            .distinctMap
+            .put(key, (counts + value._1, weightSum + value._2))
+      }
     largeMap.totalInvalidCnt += smallMap.totalInvalidCnt
     largeMap
   }
@@ -986,10 +1003,13 @@ class BinaryLogisticRegressionSummary private[classification] (
   @transient
   private val binaryMetrics =
     new BinaryClassificationMetrics(
-      predictions.select(probabilityCol, labelCol).rdd.map {
-        case Row(score: Vector, label: Double) =>
-          (score(1), label)
-      },
+      predictions
+        .select(probabilityCol, labelCol)
+        .rdd
+        .map {
+          case Row(score: Vector, label: Double) =>
+            (score(1), label)
+        },
       100)
 
   /**

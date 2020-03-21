@@ -35,12 +35,10 @@ object ForkRun {
 
     val log = Logger(logLevel)
     val system = ActorSystem("play-fork-run", akkaNoLogging)
-    val sbt = system.actorOf(
-      SbtClient.props(new File(baseDirectory), log, logEvents),
-      "sbt")
-    val forkRun = system.actorOf(
-      props(sbt, configKey, runArgs, log),
-      "fork-run")
+    val sbt = system
+      .actorOf(SbtClient.props(new File(baseDirectory), log, logEvents), "sbt")
+    val forkRun = system
+      .actorOf(props(sbt, configKey, runArgs, log), "fork-run")
 
     log.info("Setting up Play fork run ... (use Ctrl+D to cancel)")
     registerShutdownHook(log, system, forkRun)
@@ -118,8 +116,8 @@ object ForkRun {
       reloadCompile = reloadCompile,
       reloaderClassLoader = Reloader.createDelegatedResourcesClassLoader,
       assetsClassLoader = Reloader.assetsClassLoader(config.allAssets),
-      commonClassLoader = Reloader.commonClassLoader(
-        config.dependencyClasspath),
+      commonClassLoader = Reloader
+        .commonClassLoader(config.dependencyClasspath),
       monitoredFiles = config.monitoredFiles,
       fileWatchService = watchService,
       docsClasspath = config.docsClasspath,
@@ -161,11 +159,8 @@ object ForkRun {
       defaultHttpAddress: String,
       address: InetSocketAddress): String = {
     val devSettings: Seq[(String, String)] = Seq.empty
-    val (properties, httpPort, httpsPort, httpAddress) = Reloader.filterArgs(
-      args,
-      defaultHttpPort,
-      defaultHttpAddress,
-      devSettings)
+    val (properties, httpPort, httpsPort, httpAddress) = Reloader
+      .filterArgs(args, defaultHttpPort, defaultHttpAddress, devSettings)
     val host =
       if (httpAddress == "0.0.0.0")
         "localhost"
@@ -244,12 +239,8 @@ class ForkRun(sbt: ActorRef, configKey: String, args: Seq[String], log: Logger)
       val notifyStart = ForkRun.sendStart(sbt, config, args)
       val reloadCompile =
         ForkRun.askForReload(self)(Timeout(config.compileTimeout.millis))
-      val server = ForkRun.startServer(
-        config,
-        args,
-        notifyStart,
-        reloadCompile,
-        log)
+      val server = ForkRun
+        .startServer(config, args, notifyStart, reloadCompile, log)
       context become running(server, config.reloadKey)
     } catch {
       case e: Exception =>

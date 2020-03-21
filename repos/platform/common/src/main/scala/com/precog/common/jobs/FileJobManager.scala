@@ -169,10 +169,13 @@ class FileJobManager[M[+_]] private[FileJobManager] (
           loadJob(name.substring(0, name.length - JOB_SUFFIX.length))
         }
       }
-      cache.values.collect {
-        case FileJobState(job, _, _) if job.apiKey == apiKey =>
-          job
-      }.toSeq
+      cache
+        .values
+        .collect {
+          case FileJobState(job, _, _) if job.apiKey == apiKey =>
+            job
+        }
+        .toSeq
     }
 
   def listChannels(jobId: JobId): M[Seq[ChannelId]] =
@@ -188,8 +191,8 @@ class FileJobManager[M[+_]] private[FileJobManager] (
           val message = Message(jobId, prior.size, channel, value)
 
           cache += (
-            jobId -> js.copy(messages =
-              (messages + (channel -> (message :: prior))))
+            jobId -> js
+              .copy(messages = (messages + (channel -> (message :: prior))))
           )
           message
 
@@ -271,11 +274,13 @@ class FileJobManager[M[+_]] private[FileJobManager] (
       loadJob(jobId)
         .toSuccess("Failed to locate job " + jobId)
         .flatMap { fjs =>
-          Validation.fromEither(t(fjs.job.state)).map { newState =>
-            val updated = fjs.copy(job = fjs.job.copy(state = newState))
-            saveJob(jobId, updated)
-            updated.job
-          }
+          Validation
+            .fromEither(t(fjs.job.state))
+            .map { newState =>
+              val updated = fjs.copy(job = fjs.job.copy(state = newState))
+              saveJob(jobId, updated)
+              updated.job
+            }
         }
         .toEither
     }
@@ -288,20 +293,24 @@ class FileJobManager[M[+_]] private[FileJobManager] (
 
   def save(file: String, data: FileData[M]): M[Unit] = {
     // TODO: Make this more efficient
-    data.data.toStream.map { chunks =>
-      val output = new DataOutputStream(new FileOutputStream(resultFile(file)))
+    data
+      .data
+      .toStream
+      .map { chunks =>
+        val output =
+          new DataOutputStream(new FileOutputStream(resultFile(file)))
 
-      try {
-        output.writeUTF(data.mimeType.map(_.toString).getOrElse(""))
-        val length = chunks.foldLeft(0)(_ + _.length)
-        output.writeInt(length)
-        chunks.foreach { bytes =>
-          output.write(bytes)
+        try {
+          output.writeUTF(data.mimeType.map(_.toString).getOrElse(""))
+          val length = chunks.foldLeft(0)(_ + _.length)
+          output.writeInt(length)
+          chunks.foreach { bytes =>
+            output.write(bytes)
+          }
+        } finally {
+          output.close()
         }
-      } finally {
-        output.close()
       }
-    }
   }
 
   def load(file: String): M[Option[FileData[M]]] =
@@ -351,9 +360,8 @@ case class FileJobState(
 object FileJobState {
   val test = implicitly[Decomposer[Option[Status]]]
 
-  implicit val fileJobStateIso = Iso.hlist(
-    FileJobState.apply _,
-    FileJobState.unapply _)
+  implicit val fileJobStateIso = Iso
+    .hlist(FileJobState.apply _, FileJobState.unapply _)
 
   val schemaV1 = "job" :: "status" :: "messages" :: HNil
 

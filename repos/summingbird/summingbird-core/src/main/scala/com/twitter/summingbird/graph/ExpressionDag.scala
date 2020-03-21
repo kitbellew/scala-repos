@@ -163,9 +163,7 @@ sealed trait ExpressionDag[N[_]] {
           }
         }
       // Note this Stream must always be non-empty as long as roots are
-      idToExp
-        .collect[IdSet](partial)
-        .reduce(_ ++ _)
+      idToExp.collect[IdSet](partial).reduce(_ ++ _)
     }
     // call expand while we are still growing
     def go(s: Set[Id[_]]): Set[Id[_]] = {
@@ -281,9 +279,8 @@ sealed trait ExpressionDag[N[_]] {
     * possibly get this to not compile if it could throw.
     */
   def idOf[T](node: N[T]): Id[T] =
-    find(node)
-      .getOrElse(
-        sys.error("could not get node: %s\n from %s".format(node, this)))
+    find(node).getOrElse(
+      sys.error("could not get node: %s\n from %s".format(node, this)))
 
   /**
     * ensure the given literal node is present in the Dag
@@ -326,8 +323,8 @@ sealed trait ExpressionDag[N[_]] {
     * this dag or a parent.
     */
   def evaluate[T](id: Id[T]): N[T] =
-    evaluateOption(id).getOrElse(
-      sys.error("Could not evaluate: %s\nin %s".format(id, this)))
+    evaluateOption(id)
+      .getOrElse(sys.error("Could not evaluate: %s\nin %s".format(id, this)))
 
   def evaluateOption[T](id: Id[T]): Option[N[T]] =
     idToN.getOrElseUpdate(

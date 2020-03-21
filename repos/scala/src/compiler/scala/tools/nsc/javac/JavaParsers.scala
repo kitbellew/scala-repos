@@ -682,7 +682,8 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
         in.nextToken()
         if (in.token == IDENTIFIER) { // if there's an ident after the comma ...
           val name = ident()
-          if (in.token == EQUALS || in.token == SEMI) { // ... followed by a `=` or `;`, we know it's a real variable definition
+          if (in.token == EQUALS || in
+                .token == SEMI) { // ... followed by a `=` or `;`, we know it's a real variable definition
             buf ++= maybe
             buf += varDecl(in.currentPos, mods, tpt.duplicate, name.toTermName)
             maybe.clear()

@@ -46,7 +46,8 @@ class EliminateSerializationSuite extends PlanTest {
 
   def assertObjectCreations(count: Int, plan: LogicalPlan): Unit = {
     val newInstances = plan.flatMap(
-      _.expressions.collect {
+      _.expressions
+      .collect {
         case n: NewInstance =>
           n
       })

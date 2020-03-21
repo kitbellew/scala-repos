@@ -156,10 +156,12 @@ class BisectingKMeans private (
     val norms = input
       .map(v => Vectors.norm(v, 2.0))
       .persist(StorageLevel.MEMORY_AND_DISK)
-    val vectors = input.zip(norms).map {
-      case (x, norm) =>
-        new VectorWithNorm(x, norm)
-    }
+    val vectors = input
+      .zip(norms)
+      .map {
+        case (x, norm) =>
+          new VectorWithNorm(x, norm)
+      }
     var assignments = vectors.map(v => (ROOT_INDEX, v))
     var activeClusters = summarize(d, assignments)
     val rootSummary = activeClusters(ROOT_INDEX)
@@ -177,7 +179,8 @@ class BisectingKMeans private (
     val random = new Random(seed)
     var numLeafClustersNeeded = k - 1
     var level = 1
-    while (activeClusters.nonEmpty && numLeafClustersNeeded > 0 && level < LEVEL_LIMIT) {
+    while (activeClusters
+             .nonEmpty && numLeafClustersNeeded > 0 && level < LEVEL_LIMIT) {
       // Divisible clusters are sufficiently large and have non-trivial cost.
       var divisibleClusters = activeClusters.filter {
         case (_, summary) =>
@@ -187,7 +190,8 @@ class BisectingKMeans private (
       }
       // If we don't need all divisible clusters, take the larger ones.
       if (divisibleClusters.size > numLeafClustersNeeded) {
-        divisibleClusters = divisibleClusters.toSeq
+        divisibleClusters = divisibleClusters
+          .toSeq
           .sortBy {
             case (_, summary) =>
               -summary.size
@@ -215,11 +219,10 @@ class BisectingKMeans private (
           newAssignments = updateAssignments(
             assignments,
             divisibleIndices,
-            newClusterCenters)
-            .filter {
-              case (index, _) =>
-                divisibleIndices.contains(parentIndex(index))
-            }
+            newClusterCenters).filter {
+            case (index, _) =>
+              divisibleIndices.contains(parentIndex(index))
+          }
           newClusters = summarize(d, newAssignments)
           newClusterCenters = newClusters.mapValues(_.center).map(identity)
         }
@@ -227,8 +230,7 @@ class BisectingKMeans private (
         val indices = updateAssignments(
           assignments,
           divisibleIndices,
-          newClusterCenters).keys
-          .persist(StorageLevel.MEMORY_AND_DISK)
+          newClusterCenters).keys.persist(StorageLevel.MEMORY_AND_DISK)
         assignments = indices.zip(vectors)
         inactiveClusters ++= activeClusters
         activeClusters = newClusters
@@ -410,9 +412,11 @@ private object BisectingKMeans extends Serializable {
         val leftIndex = leftChildIndex(rawIndex)
         val rightIndex = rightChildIndex(rawIndex)
         val height = math.sqrt(
-          Seq(leftIndex, rightIndex).map { childIndex =>
-            KMeans.fastSquaredDistance(center, clusters(childIndex).center)
-          }.max)
+          Seq(leftIndex, rightIndex)
+            .map { childIndex =>
+              KMeans.fastSquaredDistance(center, clusters(childIndex).center)
+            }
+            .max)
         val left = buildSubTree(leftIndex)
         val right = buildSubTree(rightIndex)
         new ClusteringTreeNode(

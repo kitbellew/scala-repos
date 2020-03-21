@@ -408,11 +408,8 @@ class BigInteger extends Number with Comparable[BigInteger] {
             else
               -1
           if (divisorLen == 1) {
-            Division.divideArrayByInt(
-              resDigits,
-              digits,
-              thisLen,
-              divisor.digits(0))
+            Division
+              .divideArrayByInt(resDigits, digits, thisLen, divisor.digits(0))
           } else {
             Division.divide(
               resDigits,
@@ -702,19 +699,12 @@ class BigInteger extends Number with Comparable[BigInteger] {
       val resLength = divisorLen
       var resDigits = new Array[Int](resLength)
       if (resLength == 1) {
-        resDigits(0) = Division.remainderArrayByInt(
-          digits,
-          thisLen,
-          divisor.digits(0))
+        resDigits(0) = Division
+          .remainderArrayByInt(digits, thisLen, divisor.digits(0))
       } else {
         val qLen = thisLen - divisorLen + 1
-        resDigits = Division.divide(
-          null,
-          qLen,
-          digits,
-          thisLen,
-          divisor.digits,
-          divisorLen)
+        resDigits = Division
+          .divide(null, qLen, digits, thisLen, divisor.digits, divisorLen)
       }
       val result = new BigInteger(sign, resLength, resDigits)
       result.cutOffLeadingZeroes()
@@ -1048,7 +1038,9 @@ class BigInteger extends Number with Comparable[BigInteger] {
     var newDigit: Int = 0
     var substrStart = startChar
     while (substrStart < endChar) {
-      val bigRadixDigit = java.lang.Integer
+      val bigRadixDigit = java
+        .lang
+        .Integer
         .parseInt(s.substring(substrStart, substrEnd), radix)
       newDigit = Multiplication.multiplyByInt(_digits, digitIndex, bigRadix)
       newDigit += Elementary.inplaceAdd(_digits, digitIndex, bigRadixDigit)

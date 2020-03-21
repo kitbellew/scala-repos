@@ -78,9 +78,8 @@ object JmxTool extends Logging {
       .defaultsTo("service:jmx:rmi:///jndi/rmi://:9999/jmxrmi")
 
     if (args.length == 0)
-      CommandLineUtils.printUsageAndDie(
-        parser,
-        "Dump JMX values to standard output.")
+      CommandLineUtils
+        .printUsageAndDie(parser, "Dump JMX values to standard output.")
 
     val options = parser.parse(args: _*)
 
@@ -123,19 +122,23 @@ object JmxTool extends Logging {
         case true =>
           queries.map((_, attributesWhitelist.get.size)).toMap
         case false =>
-          names.map { (name: ObjectName) =>
-            val mbean = mbsc.getMBeanInfo(name)
-            (
-              name,
-              mbsc.getAttributes(name, mbean.getAttributes.map(_.getName)).size)
-          }.toMap
+          names
+            .map { (name: ObjectName) =>
+              val mbean = mbsc.getMBeanInfo(name)
+              (
+                name,
+                mbsc
+                  .getAttributes(name, mbean.getAttributes.map(_.getName))
+                  .size)
+            }
+            .toMap
       }
 
     // print csv header
-    val keys = List("time") ++ queryAttributes(
-      mbsc,
-      names,
-      attributesWhitelist).keys.toArray.sorted
+    val keys = List("time") ++ queryAttributes(mbsc, names, attributesWhitelist)
+      .keys
+      .toArray
+      .sorted
     if (keys.size == numExpectedAttributes.map(_._2).sum + 1)
       println(keys.map("\"" + _ + "\"").mkString(","))
 
@@ -162,9 +165,8 @@ object JmxTool extends Logging {
     var attributes = new mutable.HashMap[String, Any]()
     for (name <- names) {
       val mbean = mbsc.getMBeanInfo(name)
-      for (attrObj <- mbsc.getAttributes(
-             name,
-             mbean.getAttributes.map(_.getName))) {
+      for (attrObj <- mbsc
+             .getAttributes(name, mbean.getAttributes.map(_.getName))) {
         val attr = attrObj.asInstanceOf[Attribute]
         attributesWhitelist match {
           case Some(allowedAttributes) =>

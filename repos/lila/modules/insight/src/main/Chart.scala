@@ -111,14 +111,17 @@ object Chart {
         .toList
 
     def sortedSeries =
-      answer.clusters.headOption.fold(series) {
-        _.insight match {
-          case Insight.Single(_) =>
-            series
-          case Insight.Stacked(points) =>
-            series.sortLike(points.map(_._1.name), _.name)
+      answer
+        .clusters
+        .headOption
+        .fold(series) {
+          _.insight match {
+            case Insight.Single(_) =>
+              series
+            case Insight.Stacked(points) =>
+              series.sortLike(points.map(_._1.name), _.name)
+          }
         }
-      }
 
     Chart(
       question = JsonQuestion fromQuestion question,

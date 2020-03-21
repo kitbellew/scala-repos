@@ -80,9 +80,12 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
         toolbox.parse(content)
       } catch {
         case e: ToolBoxError =>
-          val seq = toolbox.frontEnd.infos.map { i =>
-            s"""[$fileName]:${i.pos.line}: ${i.msg}"""
-          }
+          val seq = toolbox
+            .frontEnd
+            .infos
+            .map { i =>
+              s"""[$fileName]:${i.pos.line}: ${i.msg}"""
+            }
           val errorMessage = seq.mkString(EOL)
 
           val error =
@@ -120,12 +123,15 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
         case _ =>
           false
       }
-    parsedTrees.filter(isBadValDef).foreach { badTree =>
-      // Issue errors
-      val positionLine = badTree.pos.line
-      throw new MessageOnlyException(
-        s"""[$fileName]:$positionLine: Pattern matching in val statements is not supported""".stripMargin)
-    }
+    parsedTrees
+      .filter(isBadValDef)
+      .foreach { badTree =>
+        // Issue errors
+        val positionLine = badTree.pos.line
+        throw new MessageOnlyException(
+          s"""[$fileName]:$positionLine: Pattern matching in val statements is not supported"""
+            .stripMargin)
+      }
 
     val (imports, statements) = parsedTrees partition {
       case _: Import =>
@@ -162,9 +168,8 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
         case NoPosition =>
           None
         case position =>
-          val originalStatement = content.substring(
-            position.start,
-            position.end)
+          val originalStatement = content
+            .substring(position.start, position.end)
           val statement = parseStatementAgain(t, originalStatement)
           val numberLines = countLines(statement)
           Some(
@@ -205,10 +210,13 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
       case (l, seq) =>
         (l, extractLine(modifiedContent, seq))
     }
-    mergedImports.toSeq.sortBy(_._1).map {
-      case (k, v) =>
-        (v, k)
-    }
+    mergedImports
+      .toSeq
+      .sortBy(_._1)
+      .map {
+        case (k, v) =>
+          (v, k)
+      }
   }
 
   /**
@@ -269,8 +277,9 @@ private[sbt] object MissingBracketHandler {
       case Some(index) =>
         val text = content.substring(positionEnd, index + 1)
         val textWithoutBracket = text.substring(0, text.length - 1)
-        scala.util.Try(
-          SbtParser(FAKE_FILE, textWithoutBracket.lines.toSeq)) match {
+        scala
+          .util
+          .Try(SbtParser(FAKE_FILE, textWithoutBracket.lines.toSeq)) match {
           case scala.util.Success(_) =>
             text
           case scala.util.Failure(th) =>
@@ -283,7 +292,8 @@ private[sbt] object MissingBracketHandler {
         }
       case _ =>
         throw new MessageOnlyException(
-          s"""[$fileName]:$positionLine: ${originalException.getMessage}""".stripMargin)
+          s"""[$fileName]:$positionLine: ${originalException.getMessage}"""
+            .stripMargin)
     }
   }
 

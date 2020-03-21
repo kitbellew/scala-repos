@@ -34,18 +34,19 @@ private object ScalaFacetData {
     Option(module.getFacetElement("scala"))
 
   def findIn(module: ModuleSettings): Option[ScalaFacetData] =
-    scalaFacetElementIn(module).map(element =>
-      ScalaFacetData(new FacetProperties(element)))
+    scalaFacetElementIn(module)
+      .map(element => ScalaFacetData(new FacetProperties(element)))
 
   def apply(properties: FacetProperties): ScalaFacetData = {
     val compilerSettings = ScalaCompilerSettings.from(properties)
 
-    val compilerLibraryId = properties.option("compilerLibraryLevel").flatMap {
-      level =>
+    val compilerLibraryId = properties
+      .option("compilerLibraryLevel")
+      .flatMap { level =>
         properties
           .option("compilerLibraryName")
           .map(LibraryReference(Level.fromFacetTitle(level), _))
-    }
+      }
 
     new ScalaFacetData(
       languageLevel = properties.string("languageLevel", "SCALA_2_11"),

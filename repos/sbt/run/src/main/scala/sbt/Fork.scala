@@ -226,13 +226,8 @@ object Fork {
         workingDirectory: Option[File],
         env: Map[String, String],
         outputStrategy: OutputStrategy): Int =
-      fork(
-        javaHome,
-        options,
-        workingDirectory,
-        env,
-        false,
-        outputStrategy).exitValue
+      fork(javaHome, options, workingDirectory, env, false, outputStrategy)
+        .exitValue
 
     @deprecated("Use apply(ForkOptions, Seq[String])", "0.13.0")
     def fork(
@@ -355,13 +350,15 @@ object Fork {
           mainClassName :: Nil
       val options =
         jvmOptions ++ (scalaClasspathString :: mainClass ::: arguments.toList)
-      Fork.java.fork(
-        javaHome,
-        options,
-        workingDirectory,
-        env,
-        connectInput,
-        outputStrategy)
+      Fork
+        .java
+        .fork(
+          javaHome,
+          options,
+          workingDirectory,
+          env,
+          connectInput,
+          outputStrategy)
     }
   }
 }

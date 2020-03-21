@@ -23,7 +23,8 @@ final class NoteApi(
       .find(
         BSONDocument(
           "to" -> user.id,
-          "from" -> BSONDocument("$in" -> (myFriendIds + me.id))) ++ me.troll
+          "from" -> BSONDocument("$in" -> (myFriendIds + me.id))) ++ me
+          .troll
           .fold(BSONDocument(), BSONDocument("troll" -> false)))
       .sort(BSONDocument("date" -> -1))
       .cursor[Note]()
@@ -41,8 +42,8 @@ final class NoteApi(
 
     import lila.hub.actorApi.timeline.{Propagate, NoteCreate}
     timeline ! (
-      Propagate(
-        NoteCreate(note.from, note.to)) toFriendsOf from.id exceptUser note.to
+      Propagate(NoteCreate(note.from, note.to)) toFriendsOf from
+        .id exceptUser note.to
     )
 
     coll insert note

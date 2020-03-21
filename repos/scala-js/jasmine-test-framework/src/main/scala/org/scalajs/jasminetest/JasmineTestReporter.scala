@@ -132,12 +132,14 @@ class JasmineTestReporter(
 
         if (!r.passed()) {
           val message = sanitizeMessage(r.message)
-          val stack = StackTrace.extract(r.trace).takeWhile { stackElem =>
-            (
-              stackElem.getFileName == null ||
-              !stackElem.getFileName.endsWith("jasmine.js")
-            )
-          }
+          val stack = StackTrace
+            .extract(r.trace)
+            .takeWhile { stackElem =>
+              (
+                stackElem.getFileName == null ||
+                !stackElem.getFileName.endsWith("jasmine.js")
+              )
+            }
 
           if (stack.isEmpty)
             log.error(s"    $message")

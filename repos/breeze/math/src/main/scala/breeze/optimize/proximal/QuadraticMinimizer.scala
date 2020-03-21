@@ -748,9 +748,8 @@ object QuadraticMinimizer {
     val owlqn = new OWLQN[Int, DenseVector[Double]](-1, 7, lambdaL1, 1e-6)
     val init = DenseVector.rand[Double](problemSize)
     val startOWLQN = System.nanoTime()
-    val owlqnResult = owlqn.minimizeAndReturnState(
-      Cost(regularizedGram, q),
-      init)
+    val owlqnResult = owlqn
+      .minimizeAndReturnState(Cost(regularizedGram, q), init)
     val owlqnTime = System.nanoTime() - startOWLQN
 
     println(

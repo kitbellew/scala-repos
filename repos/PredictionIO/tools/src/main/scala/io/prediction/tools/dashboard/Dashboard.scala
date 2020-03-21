@@ -56,9 +56,8 @@ object Dashboard extends Logging with SSLConfiguration {
 
   def createDashboard(dc: DashboardConfig): Unit = {
     implicit val system = ActorSystem("pio-dashboard")
-    val service = system.actorOf(
-      Props(classOf[DashboardActor], dc),
-      "dashboard")
+    val service = system
+      .actorOf(Props(classOf[DashboardActor], dc), "dashboard")
     implicit val timeout = Timeout(5.seconds)
     val settings = ServerSettings(system)
     IO(Http) ? Http.Bind(
@@ -106,9 +105,11 @@ trait DashboardService
         path("evaluator_results.txt") {
           get {
             respondWithMediaType(`text/plain`) {
-              evaluationInstances.get(instanceId).map { i =>
-                complete(i.evaluatorResults)
-              } getOrElse {
+              evaluationInstances
+                .get(instanceId)
+                .map { i =>
+                  complete(i.evaluatorResults)
+                } getOrElse {
                 complete(StatusCodes.NotFound)
               }
             }
@@ -117,9 +118,11 @@ trait DashboardService
           path("evaluator_results.html") {
             get {
               respondWithMediaType(`text/html`) {
-                evaluationInstances.get(instanceId).map { i =>
-                  complete(i.evaluatorResultsHTML)
-                } getOrElse {
+                evaluationInstances
+                  .get(instanceId)
+                  .map { i =>
+                    complete(i.evaluatorResultsHTML)
+                  } getOrElse {
                   complete(StatusCodes.NotFound)
                 }
               }
@@ -128,9 +131,11 @@ trait DashboardService
           path("evaluator_results.json") {
             get {
               respondWithMediaType(`application/json`) {
-                evaluationInstances.get(instanceId).map { i =>
-                  complete(i.evaluatorResultsJSON)
-                } getOrElse {
+                evaluationInstances
+                  .get(instanceId)
+                  .map { i =>
+                    complete(i.evaluatorResultsJSON)
+                  } getOrElse {
                   complete(StatusCodes.NotFound)
                 }
               }
@@ -140,9 +145,11 @@ trait DashboardService
             path("local_evaluator_results.json") {
               get {
                 respondWithMediaType(`application/json`) {
-                  evaluationInstances.get(instanceId).map { i =>
-                    complete(i.evaluatorResultsJSON)
-                  } getOrElse {
+                  evaluationInstances
+                    .get(instanceId)
+                    .map { i =>
+                      complete(i.evaluatorResultsJSON)
+                    } getOrElse {
                     complete(StatusCodes.NotFound)
                   }
                 }

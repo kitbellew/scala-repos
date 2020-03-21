@@ -30,8 +30,8 @@ trait ResizableParArrayCombiner[T]
       val arrayseq = new ArraySeq[T](size)
       val array = arrayseq.array.asInstanceOf[Array[Any]]
 
-      combinerTaskSupport.executeAndWaitResult(
-        new CopyChainToArray(array, 0, size))
+      combinerTaskSupport
+        .executeAndWaitResult(new CopyChainToArray(array, 0, size))
 
       new ParArray(arrayseq)
     } else { // optimisation if there is only 1 array
@@ -94,7 +94,9 @@ trait ResizableParArrayCombiner[T]
         new CopyChainToArray(array, offset + fp, howmany - fp))
     }
     def shouldSplitFurther =
-      howmany > scala.collection.parallel
+      howmany > scala
+        .collection
+        .parallel
         .thresholdFromSize(size, combinerTaskSupport.parallelismLevel)
   }
 }

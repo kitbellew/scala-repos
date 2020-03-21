@@ -299,8 +299,8 @@ trait Parser extends RegexParsers with Filters with AST {
     (n, e)
   }
 
-  private lazy val id =
-    """[a-zA-Z]['a-zA-Z_0-9]*|_['a-zA-Z_0-9]+""".r \ keywords
+  private lazy val id = """[a-zA-Z]['a-zA-Z_0-9]*|_['a-zA-Z_0-9]+"""
+    .r \ keywords
 
   private lazy val ticId = """'[a-zA-Z_0-9]['a-zA-Z_0-9]*""".r
 
@@ -335,7 +335,8 @@ trait Parser extends RegexParsers with Filters with AST {
   private lazy val nullLiteral = """null\b""".r
 
   private lazy val keywords =
-    "new|true|false|where|with|union|intersect|difference|neg|undefined|null|import|solve|if|then|else|assert|observe".r
+    "new|true|false|where|with|union|intersect|difference|neg|undefined|null|import|solve|if|then|else|assert|observe"
+      .r
 
   override val whitespace = """([;\s]+|--.*|\(-([^\-]|-+[^)\-])*-+\))+""".r
   override val skipWhitespace = true
@@ -440,12 +441,14 @@ trait Parser extends RegexParsers with Filters with AST {
 
   private def canonicalizePropertyName(str: String): String = {
     val (back, _) =
-      str.substring(1, str.length - 1).foldLeft(("", false)) {
-        case ((acc, false), '\\') =>
-          (acc, true)
-        case ((acc, _), c) =>
-          (acc + c, false)
-      }
+      str
+        .substring(1, str.length - 1)
+        .foldLeft(("", false)) {
+          case ((acc, false), '\\') =>
+            (acc, true)
+          case ((acc, _), c) =>
+            (acc + c, false)
+        }
 
     back
   }
@@ -524,10 +527,12 @@ trait Parser extends RegexParsers with Filters with AST {
           }
         }
 
-      val pairs = expectedCounts.toList.sortWith {
-        case ((_, a), (_, b)) =>
-          a > b
-      }
+      val pairs = expectedCounts
+        .toList
+        .sortWith {
+          case ((_, a), (_, b)) =>
+            a > b
+        }
 
       val expectation = pairs.headOption flatMap {
         case (_, headCount) => {

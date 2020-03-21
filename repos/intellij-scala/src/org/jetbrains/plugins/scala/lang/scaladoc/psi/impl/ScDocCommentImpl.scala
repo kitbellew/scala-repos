@@ -62,12 +62,14 @@ class ScDocCommentImpl(text: CharSequence)
     super.processDeclarations(processor, state, lastParent, place) && !Option(
       getOwner).exists {
       case owner: ScClass =>
-        owner.members.exists {
-          case named: PsiNamedElement =>
-            !processor.execute(named, state)
-          case _ =>
-            false
-        }
+        owner
+          .members
+          .exists {
+            case named: PsiNamedElement =>
+              !processor.execute(named, state)
+            case _ =>
+              false
+          }
       case _ =>
         false
     }
@@ -95,7 +97,9 @@ class ScDocCommentImpl(text: CharSequence)
     var currentChild = getFirstChild
     val answer = mutable.ArrayBuilder.make[PsiDocTag]()
 
-    while (currentChild != null && currentChild.getNode.getElementType != ScalaDocTokenType.DOC_COMMENT_END) {
+    while (currentChild != null && currentChild
+             .getNode
+             .getElementType != ScalaDocTokenType.DOC_COMMENT_END) {
       currentChild match {
         case docTag: ScDocTag
             if docTag.getNode.getElementType == ScalaDocElementTypes.DOC_TAG &&
@@ -119,7 +123,10 @@ class ScDocCommentImpl(text: CharSequence)
       cur = cur.getNextSibling
     }
     result.toArray[T](
-      java.lang.reflect.Array
+      java
+        .lang
+        .reflect
+        .Array
         .newInstance(aClass, result.size)
         .asInstanceOf[Array[T]])
   }

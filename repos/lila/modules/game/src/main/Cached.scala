@@ -53,7 +53,8 @@ final class Cached(mongoCache: MongoCache.Builder, defaultTtl: FiniteDuration) {
       else
         Option(cache getIfPresent game.id) | {
           val div =
-            chess.Replay
+            chess
+              .Replay
               .boards(
                 moveStrs = game.pgnMoves,
                 initialFen = initialFen,

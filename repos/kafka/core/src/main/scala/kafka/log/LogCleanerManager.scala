@@ -94,13 +94,14 @@ private[log] class LogCleanerManager(
       val dirtyLogs = logs
         .filter {
           case (topicAndPartition, log) =>
-            log.config.compact // skip any logs marked for delete rather than dedupe
+            log
+              .config
+              .compact // skip any logs marked for delete rather than dedupe
         }
         .filterNot {
           case (topicAndPartition, log) =>
-            inProgress.contains(
-              topicAndPartition
-            ) // skip any logs already in-progress
+            inProgress
+              .contains(topicAndPartition) // skip any logs already in-progress
         }
         .map {
           case (
@@ -111,9 +112,8 @@ private[log] class LogCleanerManager(
             // is no longer valid, reset to the log starting offset and log the error event
             val logStartOffset = log.logSegments.head.baseOffset
             val firstDirtyOffset = {
-              val offset = lastClean.getOrElse(
-                topicAndPartition,
-                logStartOffset)
+              val offset = lastClean
+                .getOrElse(topicAndPartition, logStartOffset)
               if (offset < logStartOffset) {
                 error(
                   "Resetting first dirty offset to log start offset %d since the checkpointed offset %d is invalid."
@@ -133,8 +133,8 @@ private[log] class LogCleanerManager(
         else
           0
       // and must meet the minimum threshold for dirty byte ratio
-      val cleanableLogs = dirtyLogs.filter(ltc =>
-        ltc.cleanableRatio > ltc.log.config.minCleanableRatio)
+      val cleanableLogs = dirtyLogs
+        .filter(ltc => ltc.cleanableRatio > ltc.log.config.minCleanableRatio)
       if (cleanableLogs.isEmpty) {
         None
       } else {
@@ -187,8 +187,8 @@ private[log] class LogCleanerManager(
         pausedCleaningCond.await(100, TimeUnit.MILLISECONDS)
     }
     info(
-      "The cleaning for partition %s is aborted and paused".format(
-        topicAndPartition))
+      "The cleaning for partition %s is aborted and paused"
+        .format(topicAndPartition))
   }
 
   /**

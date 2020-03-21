@@ -61,12 +61,12 @@ object RouterSpec extends Specification {
       pathPattern(pathString).get("foo") must beEqualTo(Right("some file"))
     }
     "Bind Path with incorrectly encoded string as string" in {
-      pathPattern(pathNonEncodedString1).get("foo") must beEqualTo(
-        Right("bar:baz"))
+      pathPattern(pathNonEncodedString1)
+        .get("foo") must beEqualTo(Right("bar:baz"))
     }
     "Bind Path with incorrectly encoded string as string" in {
-      pathPattern(pathNonEncodedString2).get("foo") must beEqualTo(
-        Right("bar: baz"))
+      pathPattern(pathNonEncodedString2)
+        .get("foo") must beEqualTo(Right("bar: baz"))
     }
     "Fail on unparseable Path string" in {
       val Left(e) = pathPattern(pathStringInvalid).get("foo")
@@ -81,8 +81,8 @@ object RouterSpec extends Specification {
           StaticPart("to/"),
           DynamicPart("foo", ".+", false)))
       val pathString = "/path/to/this/is/some%20file/with/id"
-      pathPattern(pathString).get("foo") must beEqualTo(
-        Right("this/is/some%20file/with/id"))
+      pathPattern(pathString)
+        .get("foo") must beEqualTo(Right("this/is/some%20file/with/id"))
 
     }
   }

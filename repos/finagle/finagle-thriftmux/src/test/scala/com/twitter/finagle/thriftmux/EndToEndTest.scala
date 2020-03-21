@@ -52,9 +52,11 @@ class EndToEndTest
   // turn off failure detector since we don't need it for these tests.
   override def test(testName: String, testTags: Tag*)(f: => Unit) {
     super.test(testName, testTags: _*) {
-      mux.sessionFailureDetector.let("none") {
-        f
-      }
+      mux
+        .sessionFailureDetector
+        .let("none") {
+          f
+        }
     }
   }
 
@@ -93,8 +95,8 @@ class EndToEndTest
   test("end-to-end thriftmux") {
     new ThriftMuxTestServer {
       val client = ThriftMux.newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
       assert(Await.result(client.query("ok")) == "okok", 5.seconds)
     }
@@ -103,13 +105,14 @@ class EndToEndTest
   test("end-to-end thriftmux: propagate Contexts") {
     new ThriftMuxTestServer {
       val client = ThriftMux.newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
       assert(Await.result(client.query("ok"), 5.seconds) == "okok")
 
-      Contexts.broadcast
+      Contexts
+        .broadcast
         .let(testContext, TestContext(Buf.Utf8("hello context world"))) {
           assert(Await.result(client.query("ok")) == "hello context world")
         }
@@ -119,8 +122,8 @@ class EndToEndTest
   test("end-to-end thriftmux: propagate Dtab.local") {
     new ThriftMuxTestServer {
       val client = ThriftMux.newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
       assert(Await.result(client.query("ok"), 5.seconds) == "okok")
@@ -135,8 +138,8 @@ class EndToEndTest
   test("thriftmux server + Finagle thrift client") {
     new ThriftMuxTestServer {
       val client = Thrift.newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
       1 to 5 foreach { _ =>
         assert(Await.result(client.query("ok"), 5.seconds) == "okok")
@@ -148,13 +151,14 @@ class EndToEndTest
     "end-to-end thriftmux server + Finagle thrift client: propagate Contexts") {
     new ThriftMuxTestServer {
       val client = Thrift.newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
       assert(Await.result(client.query("ok"), 5.seconds) == "okok")
 
-      Contexts.broadcast
+      Contexts
+        .broadcast
         .let(testContext, TestContext(Buf.Utf8("hello context world"))) {
           assert(
             Await
@@ -167,8 +171,8 @@ class EndToEndTest
     "end-to-end thriftmux server + Finagle thrift client: propagate Dtab.local") {
     new ThriftMuxTestServer {
       val client = Thrift.newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
       assert(Await.result(client.query("ok"), 5.seconds) == "okok")
@@ -205,7 +209,8 @@ class EndToEndTest
         .name("ThriftMuxServer")
         .bindTo(new InetSocketAddress(0))
         .build(pfSvc)
-      val protoNew = ThriftMux.server
+      val protoNew = ThriftMux
+        .server
         .withProtocolFactory(pf)
         .serveIface(
           new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
@@ -244,11 +249,13 @@ class EndToEndTest
         .hostConnectionLimit(1)
         .dest(dest)
         .build()
-      val thriftProto = Thrift.client
+      val thriftProto = Thrift
+        .client
         .withClientId(clientId)
         .withProtocolFactory(pf)
         .newService(dest)
-      val newProto = ThriftMux.client
+      val newProto = ThriftMux
+        .client
         .withClientId(clientId)
         .withProtocolFactory(pf)
         .newService(dest)
@@ -281,9 +288,11 @@ class EndToEndTest
         (clientWhich, clientIface, clientClosable) <- clients(pf, port)
       } withClue(
         s"Server ($serverWhich), Client ($clientWhich) client with protocolFactory $pf") {
-        1.to(5).foreach { _ =>
-          assert(Await.result(clientIface.query("ok")) == "okok")
-        }
+        1
+          .to(5)
+          .foreach { _ =>
+            assert(Await.result(clientIface.query("ok")) == "okok")
+          }
         assert(Await.result(clientIface.query(""), 5.seconds) == clientId.name)
         clientClosable.close()
       }
@@ -294,13 +303,14 @@ class EndToEndTest
   test("thriftmux server + Finagle thrift client: propagate Contexts") {
     new ThriftMuxTestServer {
       val client = Thrift.newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
       assert(Await.result(client.query("ok"), 5.seconds) == "okok")
 
-      Contexts.broadcast
+      Contexts
+        .broadcast
         .let(testContext, TestContext(Buf.Utf8("hello context world"))) {
           assert(
             Await
@@ -322,7 +332,8 @@ class EndToEndTest
       Await.result(client.query("ok"))
     }
     assert(
-      thrown.getMessage == "Internal error processing query: 'java.lang.Exception: sad panda'")
+      thrown
+        .getMessage == "Internal error processing query: 'java.lang.Exception: sad panda'")
   }
 
   test(
@@ -345,7 +356,8 @@ class EndToEndTest
         def sampleTrace(traceId: TraceId): Option[Boolean] = None
       }
 
-    val server = ThriftMux.server
+    val server = ThriftMux
+      .server
       .configured(PTracer(tracer))
       .serveIface(
         new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
@@ -353,11 +365,12 @@ class EndToEndTest
           def query(x: String) = Future.value(x + x)
         })
 
-    val client = Thrift.client
+    val client = Thrift
+      .client
       .configured(PTracer(tracer))
       .newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
     Await.result(client.query("ok"), 5.seconds)
@@ -386,11 +399,12 @@ class EndToEndTest
     )
 
     val clientId = "test.service"
-    val client = Thrift.client
+    val client = Thrift
+      .client
       .withClientId(ClientId(clientId))
       .newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
     1 to 5 foreach { _ =>
@@ -413,11 +427,12 @@ class EndToEndTest
 
     val clientId = ClientId("test.service")
     val otherClientId = ClientId("other.bar")
-    val client = Thrift.client
+    val client = Thrift
+      .client
       .withClientId(clientId)
       .newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
     1 to 5 foreach { _ =>
@@ -430,8 +445,8 @@ class EndToEndTest
   test("thriftmux server + Finagle thrift client: server.close()") {
     new ThriftMuxTestServer {
       val client = Thrift.newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
       assert(Await.result(client.query("ok"), 5.seconds) == "okok")
@@ -467,11 +482,12 @@ class EndToEndTest
 
     val clientId = ClientId("test.service")
     val otherClientId = ClientId("other.bar")
-    val client = ThriftMux.client
+    val client = ThriftMux
+      .client
       .withClientId(clientId)
       .newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
     1 to 5 foreach { _ =>
@@ -488,8 +504,8 @@ class EndToEndTest
   test("thriftmux server + Finagle thrift client w/o protocol upgrade") {
     new ThriftMuxTestServer {
       val client = OldPlainThriftClient.newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
       1 to 5 foreach { _ =>
         assert(Await.result(client.query("ok"), 5.seconds) == "okok")
@@ -501,8 +517,8 @@ class EndToEndTest
     "thriftmux server + Finagle thrift client w/o protocol upgrade: server.close()") {
     new ThriftMuxTestServer {
       val client = OldPlainThriftClient.newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
       assert(Await.result(client.query("ok")) == "okok")
@@ -530,7 +546,8 @@ class EndToEndTest
       Await.result(client.query("ok"))
     }
     assert(
-      thrown.getMessage == "Internal error processing query: 'java.lang.Exception: sad panda'")
+      thrown
+        .getMessage == "Internal error processing query: 'java.lang.Exception: sad panda'")
   }
 
   test("thriftmux server should count exceptions as failures") {
@@ -541,12 +558,16 @@ class EndToEndTest
     val svc = new TestService.FinagledService(iface, Protocols.binaryFactory())
 
     val sr = new InMemoryStatsReceiver()
-    val server = ThriftMux.server
+    val server = ThriftMux
+      .server
       .configured(Stats(sr))
       .serve(new InetSocketAddress(InetAddress.getLoopbackAddress, 0), svc)
-    val client = ThriftMux.client.newIface[TestService.FutureIface](
-      Name.bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
-      "client")
+    val client = ThriftMux
+      .client
+      .newIface[TestService.FutureIface](
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        "client")
 
     val ex = intercept[TApplicationException] {
       Await.result(client.query("hi"), 5.seconds)
@@ -566,16 +587,18 @@ class EndToEndTest
       }
     val svc = new TestService.FinagledService(iface, Protocols.binaryFactory())
 
-    val server = ThriftMux.server
+    val server = ThriftMux
+      .server
       .configured(Stats(NullStatsReceiver))
       .serve(new InetSocketAddress(InetAddress.getLoopbackAddress, 0), svc)
 
     val sr = new InMemoryStatsReceiver()
-    val client = ThriftMux.client
+    val client = ThriftMux
+      .client
       .configured(Stats(sr))
       .newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
     val ex = intercept[InvalidQueryException] {
@@ -611,7 +634,8 @@ class EndToEndTest
             Future.exception(new InvalidQueryException(x.length))
       }
     val svc = new TestService.FinagledService(iface, Protocols.binaryFactory())
-    ThriftMux.server
+    ThriftMux
+      .server
       .configured(Stats(NullStatsReceiver))
       .serve(new InetSocketAddress(InetAddress.getLoopbackAddress, 0), svc)
   }
@@ -657,12 +681,13 @@ class EndToEndTest
   test("thriftmux stack client deserialized response classification") {
     val server = serverForClassifier()
     val sr = new InMemoryStatsReceiver()
-    val client = ThriftMux.client
+    val client = ThriftMux
+      .client
       .configured(Stats(sr))
       .withResponseClassifier(classifier)
       .newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
     testFailureClassification(sr, client)
@@ -678,8 +703,8 @@ class EndToEndTest
       .reportTo(sr)
       .responseClassifier(classifier)
       .dest(
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])))
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])))
       .build()
     val client =
       new TestService.FinagledClient(
@@ -695,13 +720,14 @@ class EndToEndTest
   test("thriftmux response classification using ThriftExceptionsAsFailures") {
     val server = serverForClassifier()
     val sr = new InMemoryStatsReceiver()
-    val client = ThriftMux.client
+    val client = ThriftMux
+      .client
       .configured(Stats(sr))
       .withResponseClassifier(
         ThriftMuxResponseClassifier.ThriftExceptionsAsFailures)
       .newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
     val ex = intercept[InvalidQueryException] {
@@ -745,8 +771,8 @@ class EndToEndTest
         new PipeliningDispatcher(transport)
     }
 
-    val service = Await.result(
-      OldPlainPipeliningThriftClient.newClient(server)())
+    val service = Await
+      .result(OldPlainPipeliningThriftClient.newClient(server)())
     val client =
       new TestService.FinagledClient(service, Protocols.binaryFactory())
     val reqs = 1 to nreqs map { i =>
@@ -776,11 +802,12 @@ class EndToEndTest
       }
     )
 
-    val client = ThriftMux.client
+    val client = ThriftMux
+      .client
       .withClientId(ClientId("foo.bar"))
       .newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
     assert(Await.result(client.query("ok")) == "foo.bar")
@@ -807,19 +834,21 @@ class EndToEndTest
       }
     val mem = new InMemoryStatsReceiver
     val sr = Stats(mem)
-    val server = ThriftMux.server
+    val server = ThriftMux
+      .server
       .configured(sr)
       .configured(Label("server"))
       .serveIface(
         new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
         iface)
 
-    val client = ThriftMux.client
+    val client = ThriftMux
+      .client
       .configured(sr)
       .configured(Label("client"))
       .newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
     assert(Await.result(client.query("ok"), 5.seconds) == "okok")
@@ -863,7 +892,8 @@ class EndToEndTest
   test("downgraded pipelines are properly scoped") {
     val sr = new InMemoryStatsReceiver
 
-    val server = ThriftMux.server
+    val server = ThriftMux
+      .server
       .configured(Stats(sr))
       .configured(Label("myserver"))
       .serveIface(
@@ -872,9 +902,12 @@ class EndToEndTest
           def query(x: String) = Future.value(x + x)
         })
 
-    val thriftClient = Thrift.client.newIface[TestService.FutureIface](
-      Name.bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
-      "client")
+    val thriftClient = Thrift
+      .client
+      .newIface[TestService.FutureIface](
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        "client")
 
     assert(Await.result(thriftClient.query("ok")) == "okok")
     assert(
@@ -885,7 +918,8 @@ class EndToEndTest
     // ThriftMux.server API
     {
       val pf = new TCompactProtocol.Factory
-      val server = ThriftMux.server
+      val server = ThriftMux
+        .server
         .withProtocolFactory(pf)
         .serveIface(
           new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
@@ -893,7 +927,8 @@ class EndToEndTest
             def query(x: String) = Future.value(x + x)
           })
 
-      val tcompactClient = ThriftMux.client
+      val tcompactClient = ThriftMux
+        .client
         .withProtocolFactory(pf)
         .newIface[TestService.FutureIface](
           Name.bound(
@@ -902,8 +937,8 @@ class EndToEndTest
       assert(Await.result(tcompactClient.query("ok")) == "okok")
 
       val tbinaryClient = ThriftMux.newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
       intercept[com.twitter.finagle.mux.ServerApplicationError] {
         Await.result(tbinaryClient.query("ok"))
@@ -921,7 +956,8 @@ class EndToEndTest
             def query(x: String) = Future.value(x + x)
           })
 
-      val tcompactClient = ThriftMux.client
+      val tcompactClient = ThriftMux
+        .client
         .withProtocolFactory(pf)
         .newIface[TestService.FutureIface](
           Name.bound(
@@ -930,8 +966,8 @@ class EndToEndTest
       assert(Await.result(tcompactClient.query("ok"), 5.seconds) == "okok")
 
       val tbinaryClient = ThriftMux.newIface[TestService.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
       intercept[com.twitter.finagle.mux.ServerApplicationError] {
         Await.result(tbinaryClient.query("ok"), 5.seconds)
@@ -946,14 +982,16 @@ class EndToEndTest
       }
     val mem = new InMemoryStatsReceiver
     val sr = Stats(mem)
-    val server = Thrift.server
+    val server = Thrift
+      .server
       .configured(sr)
       .serveIface(
         new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
         iface)
 
     val port = server.boundAddress.asInstanceOf[InetSocketAddress].getPort
-    val clientSvc = ThriftMux.client
+    val clientSvc = ThriftMux
+      .client
       .configured(sr)
       .configured(Label("client"))
       .newService(s"localhost:$port")
@@ -978,9 +1016,12 @@ class EndToEndTest
 
     val inet = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
     val server = ThriftMux.server.serveIface(inet, iface)
-    val client = Thrift.client.newIface[TestService.FutureIface](
-      Name.bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
-      "client")
+    val client = Thrift
+      .client
+      .newIface[TestService.FutureIface](
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        "client")
 
     val f = client.query("ok")
     intercept[Exception] {
@@ -1030,7 +1071,8 @@ class EndToEndTest
 
   trait ThriftMuxFailServer {
     val serverSr = new InMemoryStatsReceiver
-    val server = ThriftMux.server
+    val server = ThriftMux
+      .server
       .configured(Stats(serverSr))
       .serveIface(
         new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
@@ -1047,7 +1089,8 @@ class EndToEndTest
     "thriftmux server + thriftmux client: auto requeues retryable failures") {
     new ThriftMuxFailServer {
       val sr = new InMemoryStatsReceiver
-      val client = ThriftMux.client
+      val client = ThriftMux
+        .client
         .configured(Stats(sr))
         .configured(Retries.Budget(budget))
         .newIface[TestService.FutureIface](
@@ -1075,7 +1118,8 @@ class EndToEndTest
   test("thriftmux server + thrift client: does not support Nack") {
     new ThriftMuxFailServer {
       val sr = new InMemoryStatsReceiver
-      val client = Thrift.client
+      val client = Thrift
+        .client
         .configured(Stats(sr))
         .newIface[TestService.FutureIface](
           Name.bound(
@@ -1090,8 +1134,8 @@ class EndToEndTest
       assert(serverSr.counters(Seq("thrift", "requests")) == 1)
       assert(serverSr.counters(Seq("thrift", "connects")) == 1)
       assert(
-        serverSr.counters(
-          Seq("thrift", "thriftmux", "downgraded_connects")) == 1)
+        serverSr
+          .counters(Seq("thrift", "thriftmux", "downgraded_connects")) == 1)
 
       assert(sr.counters(Seq("client", "requests")) == 1)
       assert(sr.counters(Seq("client", "failures")) == 1)
@@ -1107,7 +1151,8 @@ class EndToEndTest
 
   trait ThriftMuxFailSessionServer {
     val serverSr = new InMemoryStatsReceiver
-    val server = ThriftMux.server
+    val server = ThriftMux
+      .server
       .configured(Stats(serverSr))
       .serve(
         new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
@@ -1122,7 +1167,8 @@ class EndToEndTest
   test("thriftmux server + thriftmux client: session rejection") {
     new ThriftMuxFailSessionServer {
       val sr = new InMemoryStatsReceiver
-      val client = ThriftMux.client
+      val client = ThriftMux
+        .client
         .configured(Stats(sr))
         .configured(Retries.Budget(budget))
         .newIface[TestService.FutureIface](
@@ -1145,7 +1191,8 @@ class EndToEndTest
   test("thriftmux server + thrift client: session rejection") {
     new ThriftMuxFailSessionServer {
       val sr = new InMemoryStatsReceiver
-      val client = Thrift.client
+      val client = Thrift
+        .client
         .configured(Stats(sr))
         .newIface[TestService.FutureIface](
           Name.bound(

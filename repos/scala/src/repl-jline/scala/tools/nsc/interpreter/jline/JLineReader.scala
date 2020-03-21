@@ -145,9 +145,8 @@ private class JLineConsoleReader
               ""
             else
               _buf
-          val Candidates(newCursor, newCandidates) = completion.complete(
-            buf,
-            cursor)
+          val Candidates(newCursor, newCandidates) = completion
+            .complete(buf, cursor)
           newCandidates foreach (candidates add _)
           newCursor
         }

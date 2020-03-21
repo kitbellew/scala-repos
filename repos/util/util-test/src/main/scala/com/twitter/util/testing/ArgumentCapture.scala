@@ -28,8 +28,8 @@ trait ArgumentCapture {
     *   requests.length must equal (4)
     */
   def capturingAll[T: ClassTag](f: T => _): Seq[T] = {
-    val argCaptor = ArgumentCaptor.forClass(
-      classTag[T].runtimeClass.asInstanceOf[Class[T]])
+    val argCaptor = ArgumentCaptor
+      .forClass(classTag[T].runtimeClass.asInstanceOf[Class[T]])
     f(argCaptor.capture())
     argCaptor.getAllValues.asScala.toSeq
   }
@@ -54,10 +54,10 @@ trait ArgumentCapture {
 
   /** Capture all invocations of a mocked 2-ary method */
   def capturingAll[A: ClassTag, B: ClassTag](func: (A, B) => _): Seq[(A, B)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
     func(argCaptorA.capture(), argCaptorB.capture())
     val argsA = argCaptorA.getAllValues.asScala
     val argsB = argCaptorB.getAllValues.asScala
@@ -86,12 +86,12 @@ trait ArgumentCapture {
   /** Capture all invocations of a mocked 3-ary method */
   def capturingAll[A: ClassTag, B: ClassTag, C: ClassTag](
       func: (A, B, C) => _): Seq[(A, B, C)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
     func(argCaptorA.capture(), argCaptorB.capture(), argCaptorC.capture())
     val argsA = argCaptorA.getAllValues.asScala
     val argsB = argCaptorB.getAllValues.asScala
@@ -124,14 +124,14 @@ trait ArgumentCapture {
   /** Capture all invocations of a mocked 4-ary method */
   def capturingAll[A: ClassTag, B: ClassTag, C: ClassTag, D: ClassTag](
       func: (A, B, C, D) => _): Seq[(A, B, C, D)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),
@@ -175,16 +175,16 @@ trait ArgumentCapture {
       C: ClassTag,
       D: ClassTag,
       E: ClassTag](func: (A, B, C, D, E) => _): Seq[(A, B, C, D, E)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
-    val argCaptorE = ArgumentCaptor.forClass(
-      classTag[E].runtimeClass.asInstanceOf[Class[E]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorE = ArgumentCaptor
+      .forClass(classTag[E].runtimeClass.asInstanceOf[Class[E]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),
@@ -237,18 +237,18 @@ trait ArgumentCapture {
       D: ClassTag,
       E: ClassTag,
       F: ClassTag](func: (A, B, C, D, E, F) => _): Seq[(A, B, C, D, E, F)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
-    val argCaptorE = ArgumentCaptor.forClass(
-      classTag[E].runtimeClass.asInstanceOf[Class[E]])
-    val argCaptorF = ArgumentCaptor.forClass(
-      classTag[F].runtimeClass.asInstanceOf[Class[F]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorE = ArgumentCaptor
+      .forClass(classTag[E].runtimeClass.asInstanceOf[Class[E]])
+    val argCaptorF = ArgumentCaptor
+      .forClass(classTag[F].runtimeClass.asInstanceOf[Class[F]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),
@@ -273,7 +273,8 @@ trait ArgumentCapture {
       D: ClassTag,
       E: ClassTag,
       F: ClassTag](func: (A, B, C, D, E, F) => _): (A, B, C, D, E, F) =
-    capturingAll[A, B, C, D, E, F](func).lastOption
+    capturingAll[A, B, C, D, E, F](func)
+      .lastOption
       .getOrElse(noArgWasCaptured())
 
   /** Zip 7 iterables together into a Seq of 7-tuples. */
@@ -309,20 +310,20 @@ trait ArgumentCapture {
       F: ClassTag,
       G: ClassTag](
       func: (A, B, C, D, E, F, G) => _): Seq[(A, B, C, D, E, F, G)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
-    val argCaptorE = ArgumentCaptor.forClass(
-      classTag[E].runtimeClass.asInstanceOf[Class[E]])
-    val argCaptorF = ArgumentCaptor.forClass(
-      classTag[F].runtimeClass.asInstanceOf[Class[F]])
-    val argCaptorG = ArgumentCaptor.forClass(
-      classTag[G].runtimeClass.asInstanceOf[Class[G]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorE = ArgumentCaptor
+      .forClass(classTag[E].runtimeClass.asInstanceOf[Class[E]])
+    val argCaptorF = ArgumentCaptor
+      .forClass(classTag[F].runtimeClass.asInstanceOf[Class[F]])
+    val argCaptorG = ArgumentCaptor
+      .forClass(classTag[G].runtimeClass.asInstanceOf[Class[G]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),
@@ -350,7 +351,8 @@ trait ArgumentCapture {
       E: ClassTag,
       F: ClassTag,
       G: ClassTag](func: (A, B, C, D, E, F, G) => _): (A, B, C, D, E, F, G) =
-    capturingAll[A, B, C, D, E, F, G](func).lastOption
+    capturingAll[A, B, C, D, E, F, G](func)
+      .lastOption
       .getOrElse(noArgWasCaptured())
 
   /** Zip 8 iterables together into a Seq of 8-tuples. */
@@ -389,22 +391,22 @@ trait ArgumentCapture {
       G: ClassTag,
       H: ClassTag](
       func: (A, B, C, D, E, F, G, H) => _): Seq[(A, B, C, D, E, F, G, H)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
-    val argCaptorE = ArgumentCaptor.forClass(
-      classTag[E].runtimeClass.asInstanceOf[Class[E]])
-    val argCaptorF = ArgumentCaptor.forClass(
-      classTag[F].runtimeClass.asInstanceOf[Class[F]])
-    val argCaptorG = ArgumentCaptor.forClass(
-      classTag[G].runtimeClass.asInstanceOf[Class[G]])
-    val argCaptorH = ArgumentCaptor.forClass(
-      classTag[H].runtimeClass.asInstanceOf[Class[H]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorE = ArgumentCaptor
+      .forClass(classTag[E].runtimeClass.asInstanceOf[Class[E]])
+    val argCaptorF = ArgumentCaptor
+      .forClass(classTag[F].runtimeClass.asInstanceOf[Class[F]])
+    val argCaptorG = ArgumentCaptor
+      .forClass(classTag[G].runtimeClass.asInstanceOf[Class[G]])
+    val argCaptorH = ArgumentCaptor
+      .forClass(classTag[H].runtimeClass.asInstanceOf[Class[H]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),
@@ -437,7 +439,8 @@ trait ArgumentCapture {
       G: ClassTag,
       H: ClassTag](
       func: (A, B, C, D, E, F, G, H) => _): (A, B, C, D, E, F, G, H) =
-    capturingAll[A, B, C, D, E, F, G, H](func).lastOption
+    capturingAll[A, B, C, D, E, F, G, H](func)
+      .lastOption
       .getOrElse(noArgWasCaptured())
 
   /** Zip 9 iterables together into a Seq of 9-tuples. */
@@ -479,24 +482,24 @@ trait ArgumentCapture {
       H: ClassTag,
       I: ClassTag](func: (A, B, C, D, E, F, G, H, I) => _)
       : Seq[(A, B, C, D, E, F, G, H, I)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
-    val argCaptorE = ArgumentCaptor.forClass(
-      classTag[E].runtimeClass.asInstanceOf[Class[E]])
-    val argCaptorF = ArgumentCaptor.forClass(
-      classTag[F].runtimeClass.asInstanceOf[Class[F]])
-    val argCaptorG = ArgumentCaptor.forClass(
-      classTag[G].runtimeClass.asInstanceOf[Class[G]])
-    val argCaptorH = ArgumentCaptor.forClass(
-      classTag[H].runtimeClass.asInstanceOf[Class[H]])
-    val argCaptorI = ArgumentCaptor.forClass(
-      classTag[I].runtimeClass.asInstanceOf[Class[I]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorE = ArgumentCaptor
+      .forClass(classTag[E].runtimeClass.asInstanceOf[Class[E]])
+    val argCaptorF = ArgumentCaptor
+      .forClass(classTag[F].runtimeClass.asInstanceOf[Class[F]])
+    val argCaptorG = ArgumentCaptor
+      .forClass(classTag[G].runtimeClass.asInstanceOf[Class[G]])
+    val argCaptorH = ArgumentCaptor
+      .forClass(classTag[H].runtimeClass.asInstanceOf[Class[H]])
+    val argCaptorI = ArgumentCaptor
+      .forClass(classTag[I].runtimeClass.asInstanceOf[Class[I]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),
@@ -532,7 +535,8 @@ trait ArgumentCapture {
       H: ClassTag,
       I: ClassTag](
       func: (A, B, C, D, E, F, G, H, I) => _): (A, B, C, D, E, F, G, H, I) =
-    capturingAll[A, B, C, D, E, F, G, H, I](func).lastOption
+    capturingAll[A, B, C, D, E, F, G, H, I](func)
+      .lastOption
       .getOrElse(noArgWasCaptured())
 
   /** Zip 10 iterables together into a Seq of 10-tuples. */
@@ -577,26 +581,26 @@ trait ArgumentCapture {
       I: ClassTag,
       J: ClassTag](func: (A, B, C, D, E, F, G, H, I, J) => _)
       : Seq[(A, B, C, D, E, F, G, H, I, J)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
-    val argCaptorE = ArgumentCaptor.forClass(
-      classTag[E].runtimeClass.asInstanceOf[Class[E]])
-    val argCaptorF = ArgumentCaptor.forClass(
-      classTag[F].runtimeClass.asInstanceOf[Class[F]])
-    val argCaptorG = ArgumentCaptor.forClass(
-      classTag[G].runtimeClass.asInstanceOf[Class[G]])
-    val argCaptorH = ArgumentCaptor.forClass(
-      classTag[H].runtimeClass.asInstanceOf[Class[H]])
-    val argCaptorI = ArgumentCaptor.forClass(
-      classTag[I].runtimeClass.asInstanceOf[Class[I]])
-    val argCaptorJ = ArgumentCaptor.forClass(
-      classTag[J].runtimeClass.asInstanceOf[Class[J]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorE = ArgumentCaptor
+      .forClass(classTag[E].runtimeClass.asInstanceOf[Class[E]])
+    val argCaptorF = ArgumentCaptor
+      .forClass(classTag[F].runtimeClass.asInstanceOf[Class[F]])
+    val argCaptorG = ArgumentCaptor
+      .forClass(classTag[G].runtimeClass.asInstanceOf[Class[G]])
+    val argCaptorH = ArgumentCaptor
+      .forClass(classTag[H].runtimeClass.asInstanceOf[Class[H]])
+    val argCaptorI = ArgumentCaptor
+      .forClass(classTag[I].runtimeClass.asInstanceOf[Class[I]])
+    val argCaptorJ = ArgumentCaptor
+      .forClass(classTag[J].runtimeClass.asInstanceOf[Class[J]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),
@@ -635,7 +639,8 @@ trait ArgumentCapture {
       I: ClassTag,
       J: ClassTag](func: (A, B, C, D, E, F, G, H, I, J) => _)
       : (A, B, C, D, E, F, G, H, I, J) =
-    capturingAll[A, B, C, D, E, F, G, H, I, J](func).lastOption
+    capturingAll[A, B, C, D, E, F, G, H, I, J](func)
+      .lastOption
       .getOrElse(noArgWasCaptured())
 
   /** Zip 11 iterables together into a Seq of 11-tuples. */
@@ -683,28 +688,28 @@ trait ArgumentCapture {
       J: ClassTag,
       K: ClassTag](func: (A, B, C, D, E, F, G, H, I, J, K) => _)
       : Seq[(A, B, C, D, E, F, G, H, I, J, K)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
-    val argCaptorE = ArgumentCaptor.forClass(
-      classTag[E].runtimeClass.asInstanceOf[Class[E]])
-    val argCaptorF = ArgumentCaptor.forClass(
-      classTag[F].runtimeClass.asInstanceOf[Class[F]])
-    val argCaptorG = ArgumentCaptor.forClass(
-      classTag[G].runtimeClass.asInstanceOf[Class[G]])
-    val argCaptorH = ArgumentCaptor.forClass(
-      classTag[H].runtimeClass.asInstanceOf[Class[H]])
-    val argCaptorI = ArgumentCaptor.forClass(
-      classTag[I].runtimeClass.asInstanceOf[Class[I]])
-    val argCaptorJ = ArgumentCaptor.forClass(
-      classTag[J].runtimeClass.asInstanceOf[Class[J]])
-    val argCaptorK = ArgumentCaptor.forClass(
-      classTag[K].runtimeClass.asInstanceOf[Class[K]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorE = ArgumentCaptor
+      .forClass(classTag[E].runtimeClass.asInstanceOf[Class[E]])
+    val argCaptorF = ArgumentCaptor
+      .forClass(classTag[F].runtimeClass.asInstanceOf[Class[F]])
+    val argCaptorG = ArgumentCaptor
+      .forClass(classTag[G].runtimeClass.asInstanceOf[Class[G]])
+    val argCaptorH = ArgumentCaptor
+      .forClass(classTag[H].runtimeClass.asInstanceOf[Class[H]])
+    val argCaptorI = ArgumentCaptor
+      .forClass(classTag[I].runtimeClass.asInstanceOf[Class[I]])
+    val argCaptorJ = ArgumentCaptor
+      .forClass(classTag[J].runtimeClass.asInstanceOf[Class[J]])
+    val argCaptorK = ArgumentCaptor
+      .forClass(classTag[K].runtimeClass.asInstanceOf[Class[K]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),
@@ -757,7 +762,8 @@ trait ArgumentCapture {
       J: ClassTag,
       K: ClassTag](func: (A, B, C, D, E, F, G, H, I, J, K) => _)
       : (A, B, C, D, E, F, G, H, I, J, K) =
-    capturingAll[A, B, C, D, E, F, G, H, I, J, K](func).lastOption
+    capturingAll[A, B, C, D, E, F, G, H, I, J, K](func)
+      .lastOption
       .getOrElse(noArgWasCaptured())
 
   /** Zip 12 iterables together into a Seq of 12-tuples. */
@@ -808,30 +814,30 @@ trait ArgumentCapture {
       K: ClassTag,
       L: ClassTag](func: (A, B, C, D, E, F, G, H, I, J, K, L) => _)
       : Seq[(A, B, C, D, E, F, G, H, I, J, K, L)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
-    val argCaptorE = ArgumentCaptor.forClass(
-      classTag[E].runtimeClass.asInstanceOf[Class[E]])
-    val argCaptorF = ArgumentCaptor.forClass(
-      classTag[F].runtimeClass.asInstanceOf[Class[F]])
-    val argCaptorG = ArgumentCaptor.forClass(
-      classTag[G].runtimeClass.asInstanceOf[Class[G]])
-    val argCaptorH = ArgumentCaptor.forClass(
-      classTag[H].runtimeClass.asInstanceOf[Class[H]])
-    val argCaptorI = ArgumentCaptor.forClass(
-      classTag[I].runtimeClass.asInstanceOf[Class[I]])
-    val argCaptorJ = ArgumentCaptor.forClass(
-      classTag[J].runtimeClass.asInstanceOf[Class[J]])
-    val argCaptorK = ArgumentCaptor.forClass(
-      classTag[K].runtimeClass.asInstanceOf[Class[K]])
-    val argCaptorL = ArgumentCaptor.forClass(
-      classTag[L].runtimeClass.asInstanceOf[Class[L]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorE = ArgumentCaptor
+      .forClass(classTag[E].runtimeClass.asInstanceOf[Class[E]])
+    val argCaptorF = ArgumentCaptor
+      .forClass(classTag[F].runtimeClass.asInstanceOf[Class[F]])
+    val argCaptorG = ArgumentCaptor
+      .forClass(classTag[G].runtimeClass.asInstanceOf[Class[G]])
+    val argCaptorH = ArgumentCaptor
+      .forClass(classTag[H].runtimeClass.asInstanceOf[Class[H]])
+    val argCaptorI = ArgumentCaptor
+      .forClass(classTag[I].runtimeClass.asInstanceOf[Class[I]])
+    val argCaptorJ = ArgumentCaptor
+      .forClass(classTag[J].runtimeClass.asInstanceOf[Class[J]])
+    val argCaptorK = ArgumentCaptor
+      .forClass(classTag[K].runtimeClass.asInstanceOf[Class[K]])
+    val argCaptorL = ArgumentCaptor
+      .forClass(classTag[L].runtimeClass.asInstanceOf[Class[L]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),
@@ -888,7 +894,8 @@ trait ArgumentCapture {
       K: ClassTag,
       L: ClassTag](func: (A, B, C, D, E, F, G, H, I, J, K, L) => _)
       : (A, B, C, D, E, F, G, H, I, J, K, L) =
-    capturingAll[A, B, C, D, E, F, G, H, I, J, K, L](func).lastOption
+    capturingAll[A, B, C, D, E, F, G, H, I, J, K, L](func)
+      .lastOption
       .getOrElse(noArgWasCaptured())
 
   /** Zip 13 iterables together into a Seq of 13-tuples. */
@@ -942,32 +949,32 @@ trait ArgumentCapture {
       L: ClassTag,
       M: ClassTag](func: (A, B, C, D, E, F, G, H, I, J, K, L, M) => _)
       : Seq[(A, B, C, D, E, F, G, H, I, J, K, L, M)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
-    val argCaptorE = ArgumentCaptor.forClass(
-      classTag[E].runtimeClass.asInstanceOf[Class[E]])
-    val argCaptorF = ArgumentCaptor.forClass(
-      classTag[F].runtimeClass.asInstanceOf[Class[F]])
-    val argCaptorG = ArgumentCaptor.forClass(
-      classTag[G].runtimeClass.asInstanceOf[Class[G]])
-    val argCaptorH = ArgumentCaptor.forClass(
-      classTag[H].runtimeClass.asInstanceOf[Class[H]])
-    val argCaptorI = ArgumentCaptor.forClass(
-      classTag[I].runtimeClass.asInstanceOf[Class[I]])
-    val argCaptorJ = ArgumentCaptor.forClass(
-      classTag[J].runtimeClass.asInstanceOf[Class[J]])
-    val argCaptorK = ArgumentCaptor.forClass(
-      classTag[K].runtimeClass.asInstanceOf[Class[K]])
-    val argCaptorL = ArgumentCaptor.forClass(
-      classTag[L].runtimeClass.asInstanceOf[Class[L]])
-    val argCaptorM = ArgumentCaptor.forClass(
-      classTag[M].runtimeClass.asInstanceOf[Class[M]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorE = ArgumentCaptor
+      .forClass(classTag[E].runtimeClass.asInstanceOf[Class[E]])
+    val argCaptorF = ArgumentCaptor
+      .forClass(classTag[F].runtimeClass.asInstanceOf[Class[F]])
+    val argCaptorG = ArgumentCaptor
+      .forClass(classTag[G].runtimeClass.asInstanceOf[Class[G]])
+    val argCaptorH = ArgumentCaptor
+      .forClass(classTag[H].runtimeClass.asInstanceOf[Class[H]])
+    val argCaptorI = ArgumentCaptor
+      .forClass(classTag[I].runtimeClass.asInstanceOf[Class[I]])
+    val argCaptorJ = ArgumentCaptor
+      .forClass(classTag[J].runtimeClass.asInstanceOf[Class[J]])
+    val argCaptorK = ArgumentCaptor
+      .forClass(classTag[K].runtimeClass.asInstanceOf[Class[K]])
+    val argCaptorL = ArgumentCaptor
+      .forClass(classTag[L].runtimeClass.asInstanceOf[Class[L]])
+    val argCaptorM = ArgumentCaptor
+      .forClass(classTag[M].runtimeClass.asInstanceOf[Class[M]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),
@@ -1028,7 +1035,8 @@ trait ArgumentCapture {
       L: ClassTag,
       M: ClassTag](func: (A, B, C, D, E, F, G, H, I, J, K, L, M) => _)
       : (A, B, C, D, E, F, G, H, I, J, K, L, M) =
-    capturingAll[A, B, C, D, E, F, G, H, I, J, K, L, M](func).lastOption
+    capturingAll[A, B, C, D, E, F, G, H, I, J, K, L, M](func)
+      .lastOption
       .getOrElse(noArgWasCaptured())
 
   /** Zip 14 iterables together into a Seq of 14-tuples. */
@@ -1087,34 +1095,34 @@ trait ArgumentCapture {
       M: ClassTag,
       N: ClassTag](func: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) => _)
       : Seq[(A, B, C, D, E, F, G, H, I, J, K, L, M, N)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
-    val argCaptorE = ArgumentCaptor.forClass(
-      classTag[E].runtimeClass.asInstanceOf[Class[E]])
-    val argCaptorF = ArgumentCaptor.forClass(
-      classTag[F].runtimeClass.asInstanceOf[Class[F]])
-    val argCaptorG = ArgumentCaptor.forClass(
-      classTag[G].runtimeClass.asInstanceOf[Class[G]])
-    val argCaptorH = ArgumentCaptor.forClass(
-      classTag[H].runtimeClass.asInstanceOf[Class[H]])
-    val argCaptorI = ArgumentCaptor.forClass(
-      classTag[I].runtimeClass.asInstanceOf[Class[I]])
-    val argCaptorJ = ArgumentCaptor.forClass(
-      classTag[J].runtimeClass.asInstanceOf[Class[J]])
-    val argCaptorK = ArgumentCaptor.forClass(
-      classTag[K].runtimeClass.asInstanceOf[Class[K]])
-    val argCaptorL = ArgumentCaptor.forClass(
-      classTag[L].runtimeClass.asInstanceOf[Class[L]])
-    val argCaptorM = ArgumentCaptor.forClass(
-      classTag[M].runtimeClass.asInstanceOf[Class[M]])
-    val argCaptorN = ArgumentCaptor.forClass(
-      classTag[N].runtimeClass.asInstanceOf[Class[N]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorE = ArgumentCaptor
+      .forClass(classTag[E].runtimeClass.asInstanceOf[Class[E]])
+    val argCaptorF = ArgumentCaptor
+      .forClass(classTag[F].runtimeClass.asInstanceOf[Class[F]])
+    val argCaptorG = ArgumentCaptor
+      .forClass(classTag[G].runtimeClass.asInstanceOf[Class[G]])
+    val argCaptorH = ArgumentCaptor
+      .forClass(classTag[H].runtimeClass.asInstanceOf[Class[H]])
+    val argCaptorI = ArgumentCaptor
+      .forClass(classTag[I].runtimeClass.asInstanceOf[Class[I]])
+    val argCaptorJ = ArgumentCaptor
+      .forClass(classTag[J].runtimeClass.asInstanceOf[Class[J]])
+    val argCaptorK = ArgumentCaptor
+      .forClass(classTag[K].runtimeClass.asInstanceOf[Class[K]])
+    val argCaptorL = ArgumentCaptor
+      .forClass(classTag[L].runtimeClass.asInstanceOf[Class[L]])
+    val argCaptorM = ArgumentCaptor
+      .forClass(classTag[M].runtimeClass.asInstanceOf[Class[M]])
+    val argCaptorN = ArgumentCaptor
+      .forClass(classTag[N].runtimeClass.asInstanceOf[Class[N]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),
@@ -1179,7 +1187,8 @@ trait ArgumentCapture {
       M: ClassTag,
       N: ClassTag](func: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) => _)
       : (A, B, C, D, E, F, G, H, I, J, K, L, M, N) =
-    capturingAll[A, B, C, D, E, F, G, H, I, J, K, L, M, N](func).lastOption
+    capturingAll[A, B, C, D, E, F, G, H, I, J, K, L, M, N](func)
+      .lastOption
       .getOrElse(noArgWasCaptured())
 
   /** Zip 15 iterables together into a Seq of 15-tuples. */
@@ -1244,36 +1253,36 @@ trait ArgumentCapture {
       N: ClassTag,
       O: ClassTag](func: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => _)
       : Seq[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
-    val argCaptorE = ArgumentCaptor.forClass(
-      classTag[E].runtimeClass.asInstanceOf[Class[E]])
-    val argCaptorF = ArgumentCaptor.forClass(
-      classTag[F].runtimeClass.asInstanceOf[Class[F]])
-    val argCaptorG = ArgumentCaptor.forClass(
-      classTag[G].runtimeClass.asInstanceOf[Class[G]])
-    val argCaptorH = ArgumentCaptor.forClass(
-      classTag[H].runtimeClass.asInstanceOf[Class[H]])
-    val argCaptorI = ArgumentCaptor.forClass(
-      classTag[I].runtimeClass.asInstanceOf[Class[I]])
-    val argCaptorJ = ArgumentCaptor.forClass(
-      classTag[J].runtimeClass.asInstanceOf[Class[J]])
-    val argCaptorK = ArgumentCaptor.forClass(
-      classTag[K].runtimeClass.asInstanceOf[Class[K]])
-    val argCaptorL = ArgumentCaptor.forClass(
-      classTag[L].runtimeClass.asInstanceOf[Class[L]])
-    val argCaptorM = ArgumentCaptor.forClass(
-      classTag[M].runtimeClass.asInstanceOf[Class[M]])
-    val argCaptorN = ArgumentCaptor.forClass(
-      classTag[N].runtimeClass.asInstanceOf[Class[N]])
-    val argCaptorO = ArgumentCaptor.forClass(
-      classTag[O].runtimeClass.asInstanceOf[Class[O]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorE = ArgumentCaptor
+      .forClass(classTag[E].runtimeClass.asInstanceOf[Class[E]])
+    val argCaptorF = ArgumentCaptor
+      .forClass(classTag[F].runtimeClass.asInstanceOf[Class[F]])
+    val argCaptorG = ArgumentCaptor
+      .forClass(classTag[G].runtimeClass.asInstanceOf[Class[G]])
+    val argCaptorH = ArgumentCaptor
+      .forClass(classTag[H].runtimeClass.asInstanceOf[Class[H]])
+    val argCaptorI = ArgumentCaptor
+      .forClass(classTag[I].runtimeClass.asInstanceOf[Class[I]])
+    val argCaptorJ = ArgumentCaptor
+      .forClass(classTag[J].runtimeClass.asInstanceOf[Class[J]])
+    val argCaptorK = ArgumentCaptor
+      .forClass(classTag[K].runtimeClass.asInstanceOf[Class[K]])
+    val argCaptorL = ArgumentCaptor
+      .forClass(classTag[L].runtimeClass.asInstanceOf[Class[L]])
+    val argCaptorM = ArgumentCaptor
+      .forClass(classTag[M].runtimeClass.asInstanceOf[Class[M]])
+    val argCaptorN = ArgumentCaptor
+      .forClass(classTag[N].runtimeClass.asInstanceOf[Class[N]])
+    val argCaptorO = ArgumentCaptor
+      .forClass(classTag[O].runtimeClass.asInstanceOf[Class[O]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),
@@ -1342,7 +1351,8 @@ trait ArgumentCapture {
       N: ClassTag,
       O: ClassTag](func: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => _)
       : (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) =
-    capturingAll[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](func).lastOption
+    capturingAll[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](func)
+      .lastOption
       .getOrElse(noArgWasCaptured())
 
   /** Zip 16 iterables together into a Seq of 16-tuples. */
@@ -1412,38 +1422,38 @@ trait ArgumentCapture {
       O: ClassTag,
       P: ClassTag](func: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => _)
       : Seq[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
-    val argCaptorE = ArgumentCaptor.forClass(
-      classTag[E].runtimeClass.asInstanceOf[Class[E]])
-    val argCaptorF = ArgumentCaptor.forClass(
-      classTag[F].runtimeClass.asInstanceOf[Class[F]])
-    val argCaptorG = ArgumentCaptor.forClass(
-      classTag[G].runtimeClass.asInstanceOf[Class[G]])
-    val argCaptorH = ArgumentCaptor.forClass(
-      classTag[H].runtimeClass.asInstanceOf[Class[H]])
-    val argCaptorI = ArgumentCaptor.forClass(
-      classTag[I].runtimeClass.asInstanceOf[Class[I]])
-    val argCaptorJ = ArgumentCaptor.forClass(
-      classTag[J].runtimeClass.asInstanceOf[Class[J]])
-    val argCaptorK = ArgumentCaptor.forClass(
-      classTag[K].runtimeClass.asInstanceOf[Class[K]])
-    val argCaptorL = ArgumentCaptor.forClass(
-      classTag[L].runtimeClass.asInstanceOf[Class[L]])
-    val argCaptorM = ArgumentCaptor.forClass(
-      classTag[M].runtimeClass.asInstanceOf[Class[M]])
-    val argCaptorN = ArgumentCaptor.forClass(
-      classTag[N].runtimeClass.asInstanceOf[Class[N]])
-    val argCaptorO = ArgumentCaptor.forClass(
-      classTag[O].runtimeClass.asInstanceOf[Class[O]])
-    val argCaptorP = ArgumentCaptor.forClass(
-      classTag[P].runtimeClass.asInstanceOf[Class[P]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorE = ArgumentCaptor
+      .forClass(classTag[E].runtimeClass.asInstanceOf[Class[E]])
+    val argCaptorF = ArgumentCaptor
+      .forClass(classTag[F].runtimeClass.asInstanceOf[Class[F]])
+    val argCaptorG = ArgumentCaptor
+      .forClass(classTag[G].runtimeClass.asInstanceOf[Class[G]])
+    val argCaptorH = ArgumentCaptor
+      .forClass(classTag[H].runtimeClass.asInstanceOf[Class[H]])
+    val argCaptorI = ArgumentCaptor
+      .forClass(classTag[I].runtimeClass.asInstanceOf[Class[I]])
+    val argCaptorJ = ArgumentCaptor
+      .forClass(classTag[J].runtimeClass.asInstanceOf[Class[J]])
+    val argCaptorK = ArgumentCaptor
+      .forClass(classTag[K].runtimeClass.asInstanceOf[Class[K]])
+    val argCaptorL = ArgumentCaptor
+      .forClass(classTag[L].runtimeClass.asInstanceOf[Class[L]])
+    val argCaptorM = ArgumentCaptor
+      .forClass(classTag[M].runtimeClass.asInstanceOf[Class[M]])
+    val argCaptorN = ArgumentCaptor
+      .forClass(classTag[N].runtimeClass.asInstanceOf[Class[N]])
+    val argCaptorO = ArgumentCaptor
+      .forClass(classTag[O].runtimeClass.asInstanceOf[Class[O]])
+    val argCaptorP = ArgumentCaptor
+      .forClass(classTag[P].runtimeClass.asInstanceOf[Class[P]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),
@@ -1516,8 +1526,9 @@ trait ArgumentCapture {
       O: ClassTag,
       P: ClassTag](func: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) => _)
       : (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) =
-    capturingAll[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](
-      func).lastOption.getOrElse(noArgWasCaptured())
+    capturingAll[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](func)
+      .lastOption
+      .getOrElse(noArgWasCaptured())
 
   /** Zip 17 iterables together into a Seq of 17-tuples. */
   private[this] def zipN[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](
@@ -1594,40 +1605,40 @@ trait ArgumentCapture {
       Q: ClassTag](
       func: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => _)
       : Seq[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
-    val argCaptorE = ArgumentCaptor.forClass(
-      classTag[E].runtimeClass.asInstanceOf[Class[E]])
-    val argCaptorF = ArgumentCaptor.forClass(
-      classTag[F].runtimeClass.asInstanceOf[Class[F]])
-    val argCaptorG = ArgumentCaptor.forClass(
-      classTag[G].runtimeClass.asInstanceOf[Class[G]])
-    val argCaptorH = ArgumentCaptor.forClass(
-      classTag[H].runtimeClass.asInstanceOf[Class[H]])
-    val argCaptorI = ArgumentCaptor.forClass(
-      classTag[I].runtimeClass.asInstanceOf[Class[I]])
-    val argCaptorJ = ArgumentCaptor.forClass(
-      classTag[J].runtimeClass.asInstanceOf[Class[J]])
-    val argCaptorK = ArgumentCaptor.forClass(
-      classTag[K].runtimeClass.asInstanceOf[Class[K]])
-    val argCaptorL = ArgumentCaptor.forClass(
-      classTag[L].runtimeClass.asInstanceOf[Class[L]])
-    val argCaptorM = ArgumentCaptor.forClass(
-      classTag[M].runtimeClass.asInstanceOf[Class[M]])
-    val argCaptorN = ArgumentCaptor.forClass(
-      classTag[N].runtimeClass.asInstanceOf[Class[N]])
-    val argCaptorO = ArgumentCaptor.forClass(
-      classTag[O].runtimeClass.asInstanceOf[Class[O]])
-    val argCaptorP = ArgumentCaptor.forClass(
-      classTag[P].runtimeClass.asInstanceOf[Class[P]])
-    val argCaptorQ = ArgumentCaptor.forClass(
-      classTag[Q].runtimeClass.asInstanceOf[Class[Q]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorE = ArgumentCaptor
+      .forClass(classTag[E].runtimeClass.asInstanceOf[Class[E]])
+    val argCaptorF = ArgumentCaptor
+      .forClass(classTag[F].runtimeClass.asInstanceOf[Class[F]])
+    val argCaptorG = ArgumentCaptor
+      .forClass(classTag[G].runtimeClass.asInstanceOf[Class[G]])
+    val argCaptorH = ArgumentCaptor
+      .forClass(classTag[H].runtimeClass.asInstanceOf[Class[H]])
+    val argCaptorI = ArgumentCaptor
+      .forClass(classTag[I].runtimeClass.asInstanceOf[Class[I]])
+    val argCaptorJ = ArgumentCaptor
+      .forClass(classTag[J].runtimeClass.asInstanceOf[Class[J]])
+    val argCaptorK = ArgumentCaptor
+      .forClass(classTag[K].runtimeClass.asInstanceOf[Class[K]])
+    val argCaptorL = ArgumentCaptor
+      .forClass(classTag[L].runtimeClass.asInstanceOf[Class[L]])
+    val argCaptorM = ArgumentCaptor
+      .forClass(classTag[M].runtimeClass.asInstanceOf[Class[M]])
+    val argCaptorN = ArgumentCaptor
+      .forClass(classTag[N].runtimeClass.asInstanceOf[Class[N]])
+    val argCaptorO = ArgumentCaptor
+      .forClass(classTag[O].runtimeClass.asInstanceOf[Class[O]])
+    val argCaptorP = ArgumentCaptor
+      .forClass(classTag[P].runtimeClass.asInstanceOf[Class[P]])
+    val argCaptorQ = ArgumentCaptor
+      .forClass(classTag[Q].runtimeClass.asInstanceOf[Class[Q]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),
@@ -1705,8 +1716,9 @@ trait ArgumentCapture {
       Q: ClassTag](
       func: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) => _)
       : (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) =
-    capturingAll[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](
-      func).lastOption.getOrElse(noArgWasCaptured())
+    capturingAll[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](func)
+      .lastOption
+      .getOrElse(noArgWasCaptured())
 
   /** Zip 18 iterables together into a Seq of 18-tuples. */
   private[this] def zipN[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](
@@ -1790,42 +1802,42 @@ trait ArgumentCapture {
       R: ClassTag](
       func: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => _)
       : Seq[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
-    val argCaptorE = ArgumentCaptor.forClass(
-      classTag[E].runtimeClass.asInstanceOf[Class[E]])
-    val argCaptorF = ArgumentCaptor.forClass(
-      classTag[F].runtimeClass.asInstanceOf[Class[F]])
-    val argCaptorG = ArgumentCaptor.forClass(
-      classTag[G].runtimeClass.asInstanceOf[Class[G]])
-    val argCaptorH = ArgumentCaptor.forClass(
-      classTag[H].runtimeClass.asInstanceOf[Class[H]])
-    val argCaptorI = ArgumentCaptor.forClass(
-      classTag[I].runtimeClass.asInstanceOf[Class[I]])
-    val argCaptorJ = ArgumentCaptor.forClass(
-      classTag[J].runtimeClass.asInstanceOf[Class[J]])
-    val argCaptorK = ArgumentCaptor.forClass(
-      classTag[K].runtimeClass.asInstanceOf[Class[K]])
-    val argCaptorL = ArgumentCaptor.forClass(
-      classTag[L].runtimeClass.asInstanceOf[Class[L]])
-    val argCaptorM = ArgumentCaptor.forClass(
-      classTag[M].runtimeClass.asInstanceOf[Class[M]])
-    val argCaptorN = ArgumentCaptor.forClass(
-      classTag[N].runtimeClass.asInstanceOf[Class[N]])
-    val argCaptorO = ArgumentCaptor.forClass(
-      classTag[O].runtimeClass.asInstanceOf[Class[O]])
-    val argCaptorP = ArgumentCaptor.forClass(
-      classTag[P].runtimeClass.asInstanceOf[Class[P]])
-    val argCaptorQ = ArgumentCaptor.forClass(
-      classTag[Q].runtimeClass.asInstanceOf[Class[Q]])
-    val argCaptorR = ArgumentCaptor.forClass(
-      classTag[R].runtimeClass.asInstanceOf[Class[R]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorE = ArgumentCaptor
+      .forClass(classTag[E].runtimeClass.asInstanceOf[Class[E]])
+    val argCaptorF = ArgumentCaptor
+      .forClass(classTag[F].runtimeClass.asInstanceOf[Class[F]])
+    val argCaptorG = ArgumentCaptor
+      .forClass(classTag[G].runtimeClass.asInstanceOf[Class[G]])
+    val argCaptorH = ArgumentCaptor
+      .forClass(classTag[H].runtimeClass.asInstanceOf[Class[H]])
+    val argCaptorI = ArgumentCaptor
+      .forClass(classTag[I].runtimeClass.asInstanceOf[Class[I]])
+    val argCaptorJ = ArgumentCaptor
+      .forClass(classTag[J].runtimeClass.asInstanceOf[Class[J]])
+    val argCaptorK = ArgumentCaptor
+      .forClass(classTag[K].runtimeClass.asInstanceOf[Class[K]])
+    val argCaptorL = ArgumentCaptor
+      .forClass(classTag[L].runtimeClass.asInstanceOf[Class[L]])
+    val argCaptorM = ArgumentCaptor
+      .forClass(classTag[M].runtimeClass.asInstanceOf[Class[M]])
+    val argCaptorN = ArgumentCaptor
+      .forClass(classTag[N].runtimeClass.asInstanceOf[Class[N]])
+    val argCaptorO = ArgumentCaptor
+      .forClass(classTag[O].runtimeClass.asInstanceOf[Class[O]])
+    val argCaptorP = ArgumentCaptor
+      .forClass(classTag[P].runtimeClass.asInstanceOf[Class[P]])
+    val argCaptorQ = ArgumentCaptor
+      .forClass(classTag[Q].runtimeClass.asInstanceOf[Class[Q]])
+    val argCaptorR = ArgumentCaptor
+      .forClass(classTag[R].runtimeClass.asInstanceOf[Class[R]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),
@@ -1907,8 +1919,9 @@ trait ArgumentCapture {
       R: ClassTag](
       func: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => _)
       : (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) =
-    capturingAll[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](
-      func).lastOption.getOrElse(noArgWasCaptured())
+    capturingAll[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](func)
+      .lastOption
+      .getOrElse(noArgWasCaptured())
 
   /** Zip 19 iterables together into a Seq of 19-tuples. */
   private[this] def zipN[
@@ -2016,44 +2029,44 @@ trait ArgumentCapture {
       S: ClassTag](
       func: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => _)
       : Seq[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
-    val argCaptorE = ArgumentCaptor.forClass(
-      classTag[E].runtimeClass.asInstanceOf[Class[E]])
-    val argCaptorF = ArgumentCaptor.forClass(
-      classTag[F].runtimeClass.asInstanceOf[Class[F]])
-    val argCaptorG = ArgumentCaptor.forClass(
-      classTag[G].runtimeClass.asInstanceOf[Class[G]])
-    val argCaptorH = ArgumentCaptor.forClass(
-      classTag[H].runtimeClass.asInstanceOf[Class[H]])
-    val argCaptorI = ArgumentCaptor.forClass(
-      classTag[I].runtimeClass.asInstanceOf[Class[I]])
-    val argCaptorJ = ArgumentCaptor.forClass(
-      classTag[J].runtimeClass.asInstanceOf[Class[J]])
-    val argCaptorK = ArgumentCaptor.forClass(
-      classTag[K].runtimeClass.asInstanceOf[Class[K]])
-    val argCaptorL = ArgumentCaptor.forClass(
-      classTag[L].runtimeClass.asInstanceOf[Class[L]])
-    val argCaptorM = ArgumentCaptor.forClass(
-      classTag[M].runtimeClass.asInstanceOf[Class[M]])
-    val argCaptorN = ArgumentCaptor.forClass(
-      classTag[N].runtimeClass.asInstanceOf[Class[N]])
-    val argCaptorO = ArgumentCaptor.forClass(
-      classTag[O].runtimeClass.asInstanceOf[Class[O]])
-    val argCaptorP = ArgumentCaptor.forClass(
-      classTag[P].runtimeClass.asInstanceOf[Class[P]])
-    val argCaptorQ = ArgumentCaptor.forClass(
-      classTag[Q].runtimeClass.asInstanceOf[Class[Q]])
-    val argCaptorR = ArgumentCaptor.forClass(
-      classTag[R].runtimeClass.asInstanceOf[Class[R]])
-    val argCaptorS = ArgumentCaptor.forClass(
-      classTag[S].runtimeClass.asInstanceOf[Class[S]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorE = ArgumentCaptor
+      .forClass(classTag[E].runtimeClass.asInstanceOf[Class[E]])
+    val argCaptorF = ArgumentCaptor
+      .forClass(classTag[F].runtimeClass.asInstanceOf[Class[F]])
+    val argCaptorG = ArgumentCaptor
+      .forClass(classTag[G].runtimeClass.asInstanceOf[Class[G]])
+    val argCaptorH = ArgumentCaptor
+      .forClass(classTag[H].runtimeClass.asInstanceOf[Class[H]])
+    val argCaptorI = ArgumentCaptor
+      .forClass(classTag[I].runtimeClass.asInstanceOf[Class[I]])
+    val argCaptorJ = ArgumentCaptor
+      .forClass(classTag[J].runtimeClass.asInstanceOf[Class[J]])
+    val argCaptorK = ArgumentCaptor
+      .forClass(classTag[K].runtimeClass.asInstanceOf[Class[K]])
+    val argCaptorL = ArgumentCaptor
+      .forClass(classTag[L].runtimeClass.asInstanceOf[Class[L]])
+    val argCaptorM = ArgumentCaptor
+      .forClass(classTag[M].runtimeClass.asInstanceOf[Class[M]])
+    val argCaptorN = ArgumentCaptor
+      .forClass(classTag[N].runtimeClass.asInstanceOf[Class[N]])
+    val argCaptorO = ArgumentCaptor
+      .forClass(classTag[O].runtimeClass.asInstanceOf[Class[O]])
+    val argCaptorP = ArgumentCaptor
+      .forClass(classTag[P].runtimeClass.asInstanceOf[Class[P]])
+    val argCaptorQ = ArgumentCaptor
+      .forClass(classTag[Q].runtimeClass.asInstanceOf[Class[Q]])
+    val argCaptorR = ArgumentCaptor
+      .forClass(classTag[R].runtimeClass.asInstanceOf[Class[R]])
+    val argCaptorS = ArgumentCaptor
+      .forClass(classTag[S].runtimeClass.asInstanceOf[Class[S]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),
@@ -2139,8 +2152,9 @@ trait ArgumentCapture {
       S: ClassTag](
       func: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => _)
       : (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) =
-    capturingAll[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](
-      func).lastOption.getOrElse(noArgWasCaptured())
+    capturingAll[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](func)
+      .lastOption
+      .getOrElse(noArgWasCaptured())
 
   /** Zip 20 iterables together into a Seq of 20-tuples. */
   private[this] def zipN[
@@ -2256,46 +2270,46 @@ trait ArgumentCapture {
       T: ClassTag](
       func: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => _)
       : Seq[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
-    val argCaptorE = ArgumentCaptor.forClass(
-      classTag[E].runtimeClass.asInstanceOf[Class[E]])
-    val argCaptorF = ArgumentCaptor.forClass(
-      classTag[F].runtimeClass.asInstanceOf[Class[F]])
-    val argCaptorG = ArgumentCaptor.forClass(
-      classTag[G].runtimeClass.asInstanceOf[Class[G]])
-    val argCaptorH = ArgumentCaptor.forClass(
-      classTag[H].runtimeClass.asInstanceOf[Class[H]])
-    val argCaptorI = ArgumentCaptor.forClass(
-      classTag[I].runtimeClass.asInstanceOf[Class[I]])
-    val argCaptorJ = ArgumentCaptor.forClass(
-      classTag[J].runtimeClass.asInstanceOf[Class[J]])
-    val argCaptorK = ArgumentCaptor.forClass(
-      classTag[K].runtimeClass.asInstanceOf[Class[K]])
-    val argCaptorL = ArgumentCaptor.forClass(
-      classTag[L].runtimeClass.asInstanceOf[Class[L]])
-    val argCaptorM = ArgumentCaptor.forClass(
-      classTag[M].runtimeClass.asInstanceOf[Class[M]])
-    val argCaptorN = ArgumentCaptor.forClass(
-      classTag[N].runtimeClass.asInstanceOf[Class[N]])
-    val argCaptorO = ArgumentCaptor.forClass(
-      classTag[O].runtimeClass.asInstanceOf[Class[O]])
-    val argCaptorP = ArgumentCaptor.forClass(
-      classTag[P].runtimeClass.asInstanceOf[Class[P]])
-    val argCaptorQ = ArgumentCaptor.forClass(
-      classTag[Q].runtimeClass.asInstanceOf[Class[Q]])
-    val argCaptorR = ArgumentCaptor.forClass(
-      classTag[R].runtimeClass.asInstanceOf[Class[R]])
-    val argCaptorS = ArgumentCaptor.forClass(
-      classTag[S].runtimeClass.asInstanceOf[Class[S]])
-    val argCaptorT = ArgumentCaptor.forClass(
-      classTag[T].runtimeClass.asInstanceOf[Class[T]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorE = ArgumentCaptor
+      .forClass(classTag[E].runtimeClass.asInstanceOf[Class[E]])
+    val argCaptorF = ArgumentCaptor
+      .forClass(classTag[F].runtimeClass.asInstanceOf[Class[F]])
+    val argCaptorG = ArgumentCaptor
+      .forClass(classTag[G].runtimeClass.asInstanceOf[Class[G]])
+    val argCaptorH = ArgumentCaptor
+      .forClass(classTag[H].runtimeClass.asInstanceOf[Class[H]])
+    val argCaptorI = ArgumentCaptor
+      .forClass(classTag[I].runtimeClass.asInstanceOf[Class[I]])
+    val argCaptorJ = ArgumentCaptor
+      .forClass(classTag[J].runtimeClass.asInstanceOf[Class[J]])
+    val argCaptorK = ArgumentCaptor
+      .forClass(classTag[K].runtimeClass.asInstanceOf[Class[K]])
+    val argCaptorL = ArgumentCaptor
+      .forClass(classTag[L].runtimeClass.asInstanceOf[Class[L]])
+    val argCaptorM = ArgumentCaptor
+      .forClass(classTag[M].runtimeClass.asInstanceOf[Class[M]])
+    val argCaptorN = ArgumentCaptor
+      .forClass(classTag[N].runtimeClass.asInstanceOf[Class[N]])
+    val argCaptorO = ArgumentCaptor
+      .forClass(classTag[O].runtimeClass.asInstanceOf[Class[O]])
+    val argCaptorP = ArgumentCaptor
+      .forClass(classTag[P].runtimeClass.asInstanceOf[Class[P]])
+    val argCaptorQ = ArgumentCaptor
+      .forClass(classTag[Q].runtimeClass.asInstanceOf[Class[Q]])
+    val argCaptorR = ArgumentCaptor
+      .forClass(classTag[R].runtimeClass.asInstanceOf[Class[R]])
+    val argCaptorS = ArgumentCaptor
+      .forClass(classTag[S].runtimeClass.asInstanceOf[Class[S]])
+    val argCaptorT = ArgumentCaptor
+      .forClass(classTag[T].runtimeClass.asInstanceOf[Class[T]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),
@@ -2531,48 +2545,48 @@ trait ArgumentCapture {
           T,
           U) => _)
       : Seq[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
-    val argCaptorE = ArgumentCaptor.forClass(
-      classTag[E].runtimeClass.asInstanceOf[Class[E]])
-    val argCaptorF = ArgumentCaptor.forClass(
-      classTag[F].runtimeClass.asInstanceOf[Class[F]])
-    val argCaptorG = ArgumentCaptor.forClass(
-      classTag[G].runtimeClass.asInstanceOf[Class[G]])
-    val argCaptorH = ArgumentCaptor.forClass(
-      classTag[H].runtimeClass.asInstanceOf[Class[H]])
-    val argCaptorI = ArgumentCaptor.forClass(
-      classTag[I].runtimeClass.asInstanceOf[Class[I]])
-    val argCaptorJ = ArgumentCaptor.forClass(
-      classTag[J].runtimeClass.asInstanceOf[Class[J]])
-    val argCaptorK = ArgumentCaptor.forClass(
-      classTag[K].runtimeClass.asInstanceOf[Class[K]])
-    val argCaptorL = ArgumentCaptor.forClass(
-      classTag[L].runtimeClass.asInstanceOf[Class[L]])
-    val argCaptorM = ArgumentCaptor.forClass(
-      classTag[M].runtimeClass.asInstanceOf[Class[M]])
-    val argCaptorN = ArgumentCaptor.forClass(
-      classTag[N].runtimeClass.asInstanceOf[Class[N]])
-    val argCaptorO = ArgumentCaptor.forClass(
-      classTag[O].runtimeClass.asInstanceOf[Class[O]])
-    val argCaptorP = ArgumentCaptor.forClass(
-      classTag[P].runtimeClass.asInstanceOf[Class[P]])
-    val argCaptorQ = ArgumentCaptor.forClass(
-      classTag[Q].runtimeClass.asInstanceOf[Class[Q]])
-    val argCaptorR = ArgumentCaptor.forClass(
-      classTag[R].runtimeClass.asInstanceOf[Class[R]])
-    val argCaptorS = ArgumentCaptor.forClass(
-      classTag[S].runtimeClass.asInstanceOf[Class[S]])
-    val argCaptorT = ArgumentCaptor.forClass(
-      classTag[T].runtimeClass.asInstanceOf[Class[T]])
-    val argCaptorU = ArgumentCaptor.forClass(
-      classTag[U].runtimeClass.asInstanceOf[Class[U]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorE = ArgumentCaptor
+      .forClass(classTag[E].runtimeClass.asInstanceOf[Class[E]])
+    val argCaptorF = ArgumentCaptor
+      .forClass(classTag[F].runtimeClass.asInstanceOf[Class[F]])
+    val argCaptorG = ArgumentCaptor
+      .forClass(classTag[G].runtimeClass.asInstanceOf[Class[G]])
+    val argCaptorH = ArgumentCaptor
+      .forClass(classTag[H].runtimeClass.asInstanceOf[Class[H]])
+    val argCaptorI = ArgumentCaptor
+      .forClass(classTag[I].runtimeClass.asInstanceOf[Class[I]])
+    val argCaptorJ = ArgumentCaptor
+      .forClass(classTag[J].runtimeClass.asInstanceOf[Class[J]])
+    val argCaptorK = ArgumentCaptor
+      .forClass(classTag[K].runtimeClass.asInstanceOf[Class[K]])
+    val argCaptorL = ArgumentCaptor
+      .forClass(classTag[L].runtimeClass.asInstanceOf[Class[L]])
+    val argCaptorM = ArgumentCaptor
+      .forClass(classTag[M].runtimeClass.asInstanceOf[Class[M]])
+    val argCaptorN = ArgumentCaptor
+      .forClass(classTag[N].runtimeClass.asInstanceOf[Class[N]])
+    val argCaptorO = ArgumentCaptor
+      .forClass(classTag[O].runtimeClass.asInstanceOf[Class[O]])
+    val argCaptorP = ArgumentCaptor
+      .forClass(classTag[P].runtimeClass.asInstanceOf[Class[P]])
+    val argCaptorQ = ArgumentCaptor
+      .forClass(classTag[Q].runtimeClass.asInstanceOf[Class[Q]])
+    val argCaptorR = ArgumentCaptor
+      .forClass(classTag[R].runtimeClass.asInstanceOf[Class[R]])
+    val argCaptorS = ArgumentCaptor
+      .forClass(classTag[S].runtimeClass.asInstanceOf[Class[S]])
+    val argCaptorT = ArgumentCaptor
+      .forClass(classTag[T].runtimeClass.asInstanceOf[Class[T]])
+    val argCaptorU = ArgumentCaptor
+      .forClass(classTag[U].runtimeClass.asInstanceOf[Class[U]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),
@@ -2840,50 +2854,50 @@ trait ArgumentCapture {
           U,
           V) => _): Seq[
     (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] = {
-    val argCaptorA = ArgumentCaptor.forClass(
-      classTag[A].runtimeClass.asInstanceOf[Class[A]])
-    val argCaptorB = ArgumentCaptor.forClass(
-      classTag[B].runtimeClass.asInstanceOf[Class[B]])
-    val argCaptorC = ArgumentCaptor.forClass(
-      classTag[C].runtimeClass.asInstanceOf[Class[C]])
-    val argCaptorD = ArgumentCaptor.forClass(
-      classTag[D].runtimeClass.asInstanceOf[Class[D]])
-    val argCaptorE = ArgumentCaptor.forClass(
-      classTag[E].runtimeClass.asInstanceOf[Class[E]])
-    val argCaptorF = ArgumentCaptor.forClass(
-      classTag[F].runtimeClass.asInstanceOf[Class[F]])
-    val argCaptorG = ArgumentCaptor.forClass(
-      classTag[G].runtimeClass.asInstanceOf[Class[G]])
-    val argCaptorH = ArgumentCaptor.forClass(
-      classTag[H].runtimeClass.asInstanceOf[Class[H]])
-    val argCaptorI = ArgumentCaptor.forClass(
-      classTag[I].runtimeClass.asInstanceOf[Class[I]])
-    val argCaptorJ = ArgumentCaptor.forClass(
-      classTag[J].runtimeClass.asInstanceOf[Class[J]])
-    val argCaptorK = ArgumentCaptor.forClass(
-      classTag[K].runtimeClass.asInstanceOf[Class[K]])
-    val argCaptorL = ArgumentCaptor.forClass(
-      classTag[L].runtimeClass.asInstanceOf[Class[L]])
-    val argCaptorM = ArgumentCaptor.forClass(
-      classTag[M].runtimeClass.asInstanceOf[Class[M]])
-    val argCaptorN = ArgumentCaptor.forClass(
-      classTag[N].runtimeClass.asInstanceOf[Class[N]])
-    val argCaptorO = ArgumentCaptor.forClass(
-      classTag[O].runtimeClass.asInstanceOf[Class[O]])
-    val argCaptorP = ArgumentCaptor.forClass(
-      classTag[P].runtimeClass.asInstanceOf[Class[P]])
-    val argCaptorQ = ArgumentCaptor.forClass(
-      classTag[Q].runtimeClass.asInstanceOf[Class[Q]])
-    val argCaptorR = ArgumentCaptor.forClass(
-      classTag[R].runtimeClass.asInstanceOf[Class[R]])
-    val argCaptorS = ArgumentCaptor.forClass(
-      classTag[S].runtimeClass.asInstanceOf[Class[S]])
-    val argCaptorT = ArgumentCaptor.forClass(
-      classTag[T].runtimeClass.asInstanceOf[Class[T]])
-    val argCaptorU = ArgumentCaptor.forClass(
-      classTag[U].runtimeClass.asInstanceOf[Class[U]])
-    val argCaptorV = ArgumentCaptor.forClass(
-      classTag[V].runtimeClass.asInstanceOf[Class[V]])
+    val argCaptorA = ArgumentCaptor
+      .forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
+    val argCaptorB = ArgumentCaptor
+      .forClass(classTag[B].runtimeClass.asInstanceOf[Class[B]])
+    val argCaptorC = ArgumentCaptor
+      .forClass(classTag[C].runtimeClass.asInstanceOf[Class[C]])
+    val argCaptorD = ArgumentCaptor
+      .forClass(classTag[D].runtimeClass.asInstanceOf[Class[D]])
+    val argCaptorE = ArgumentCaptor
+      .forClass(classTag[E].runtimeClass.asInstanceOf[Class[E]])
+    val argCaptorF = ArgumentCaptor
+      .forClass(classTag[F].runtimeClass.asInstanceOf[Class[F]])
+    val argCaptorG = ArgumentCaptor
+      .forClass(classTag[G].runtimeClass.asInstanceOf[Class[G]])
+    val argCaptorH = ArgumentCaptor
+      .forClass(classTag[H].runtimeClass.asInstanceOf[Class[H]])
+    val argCaptorI = ArgumentCaptor
+      .forClass(classTag[I].runtimeClass.asInstanceOf[Class[I]])
+    val argCaptorJ = ArgumentCaptor
+      .forClass(classTag[J].runtimeClass.asInstanceOf[Class[J]])
+    val argCaptorK = ArgumentCaptor
+      .forClass(classTag[K].runtimeClass.asInstanceOf[Class[K]])
+    val argCaptorL = ArgumentCaptor
+      .forClass(classTag[L].runtimeClass.asInstanceOf[Class[L]])
+    val argCaptorM = ArgumentCaptor
+      .forClass(classTag[M].runtimeClass.asInstanceOf[Class[M]])
+    val argCaptorN = ArgumentCaptor
+      .forClass(classTag[N].runtimeClass.asInstanceOf[Class[N]])
+    val argCaptorO = ArgumentCaptor
+      .forClass(classTag[O].runtimeClass.asInstanceOf[Class[O]])
+    val argCaptorP = ArgumentCaptor
+      .forClass(classTag[P].runtimeClass.asInstanceOf[Class[P]])
+    val argCaptorQ = ArgumentCaptor
+      .forClass(classTag[Q].runtimeClass.asInstanceOf[Class[Q]])
+    val argCaptorR = ArgumentCaptor
+      .forClass(classTag[R].runtimeClass.asInstanceOf[Class[R]])
+    val argCaptorS = ArgumentCaptor
+      .forClass(classTag[S].runtimeClass.asInstanceOf[Class[S]])
+    val argCaptorT = ArgumentCaptor
+      .forClass(classTag[T].runtimeClass.asInstanceOf[Class[T]])
+    val argCaptorU = ArgumentCaptor
+      .forClass(classTag[U].runtimeClass.asInstanceOf[Class[U]])
+    val argCaptorV = ArgumentCaptor
+      .forClass(classTag[V].runtimeClass.asInstanceOf[Class[V]])
     func(
       argCaptorA.capture(),
       argCaptorB.capture(),

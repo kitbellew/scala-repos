@@ -215,8 +215,8 @@ class InMemoryCatalog extends ExternalCatalog {
     synchronized {
       requireTableExists(db, oldName)
       val oldDesc = catalog(db).tables(oldName)
-      oldDesc.table = oldDesc.table
-        .copy(name = TableIdentifier(newName, Some(db)))
+      oldDesc
+        .table = oldDesc.table.copy(name = TableIdentifier(newName, Some(db)))
       catalog(db).tables.put(newName, oldDesc)
       catalog(db).tables.remove(oldName)
     }
@@ -306,13 +306,15 @@ class InMemoryCatalog extends ExternalCatalog {
       require(
         specs.size == newSpecs.size,
         "number of old and new partition specs differ")
-      specs.zip(newSpecs).foreach {
-        case (oldSpec, newSpec) =>
-          val newPart = getPartition(db, table, oldSpec).copy(spec = newSpec)
-          val existingParts = catalog(db).tables(table).partitions
-          existingParts.remove(oldSpec)
-          existingParts.put(newSpec, newPart)
-      }
+      specs
+        .zip(newSpecs)
+        .foreach {
+          case (oldSpec, newSpec) =>
+            val newPart = getPartition(db, table, oldSpec).copy(spec = newSpec)
+            val existingParts = catalog(db).tables(table).partitions
+            existingParts.remove(oldSpec)
+            existingParts.put(newSpec, newPart)
+        }
     }
 
   override def alterPartitions(

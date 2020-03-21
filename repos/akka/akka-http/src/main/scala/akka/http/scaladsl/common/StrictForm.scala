@@ -71,7 +71,9 @@ object StrictForm {
             fsu(value)
           case FromPart(value) ⇒
             val charsetName =
-              value.entity.contentType
+              value
+                .entity
+                .contentType
                 .asInstanceOf[ContentType.NonBinary]
                 .charset
                 .nioCharset
@@ -114,7 +116,9 @@ object StrictForm {
               ec: ExecutionContext,
               mat: Materializer) = {
             val charsetName =
-              value.entity.contentType
+              value
+                .entity
+                .contentType
                 .asInstanceOf[ContentType.NonBinary]
                 .charset
                 .nioCharset
@@ -145,10 +149,12 @@ object StrictForm {
           yield {
             new StrictForm {
               val fields =
-                formData.fields.map {
-                  case (name, value) ⇒
-                    name -> Field.FromString(value)
-                }(collection.breakOut)
+                formData
+                  .fields
+                  .map {
+                    case (name, value) ⇒
+                      name -> Field.FromString(value)
+                  }(collection.breakOut)
             }
           }
 
@@ -161,22 +167,28 @@ object StrictForm {
         } yield {
           new StrictForm {
             val fields =
-              strictMultiPartFD.strictParts.map {
-                case x: Multipart.FormData.BodyPart.Strict ⇒
-                  x.name -> Field.FromPart(x)
-              }(collection.breakOut)
+              strictMultiPartFD
+                .strictParts
+                .map {
+                  case x: Multipart.FormData.BodyPart.Strict ⇒
+                    x.name -> Field.FromPart(x)
+                }(collection.breakOut)
           }
         }
 
-      tryUnmarshalToQueryForm.fast.recoverWith {
-        case Unmarshaller.UnsupportedContentTypeException(supported1) ⇒
-          tryUnmarshalToMultipartForm.fast.recoverWith {
-            case Unmarshaller.UnsupportedContentTypeException(supported2) ⇒
-              FastFuture.failed(
-                Unmarshaller.UnsupportedContentTypeException(
-                  supported1 ++ supported2))
-          }
-      }
+      tryUnmarshalToQueryForm
+        .fast
+        .recoverWith {
+          case Unmarshaller.UnsupportedContentTypeException(supported1) ⇒
+            tryUnmarshalToMultipartForm
+              .fast
+              .recoverWith {
+                case Unmarshaller.UnsupportedContentTypeException(supported2) ⇒
+                  FastFuture.failed(
+                    Unmarshaller.UnsupportedContentTypeException(
+                      supported1 ++ supported2))
+              }
+        }
     }
 
   /**

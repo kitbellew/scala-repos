@@ -118,7 +118,8 @@ class JDBCQueryExecutor(
         Future {
           path.elements.toList match {
             case dbName :: tableName :: Nil =>
-              yggConfig.dbMap
+              yggConfig
+                .dbMap
                 .get(dbName)
                 .toSuccess("DB %s is not configured".format(dbName)) flatMap {
                 url =>
@@ -168,7 +169,10 @@ class JDBCQueryExecutor(
           path.elements.toList match {
             case Nil =>
               Success(
-                yggConfig.dbMap.keys.toList
+                yggConfig
+                  .dbMap
+                  .keys
+                  .toList
                   .map { d =>
                     d + "/"
                   }
@@ -177,7 +181,8 @@ class JDBCQueryExecutor(
 
             case dbName :: Nil =>
               // A little more complicated. Need to use metadata interface to enumerate table names
-              yggConfig.dbMap
+              yggConfig
+                .dbMap
                 .get(dbName)
                 .toSuccess("DB %s is not configured".format(dbName)) flatMap {
                 url =>
@@ -187,11 +192,9 @@ class JDBCQueryExecutor(
 
                       try {
                         // May need refinement to get meaningful results
-                        val results = conn.getMetaData.getTables(
-                          null,
-                          null,
-                          "%",
-                          Array("TABLE"))
+                        val results = conn
+                          .getMetaData
+                          .getTables(null, null, "%", Array("TABLE"))
 
                         var tables = List.empty[String]
 

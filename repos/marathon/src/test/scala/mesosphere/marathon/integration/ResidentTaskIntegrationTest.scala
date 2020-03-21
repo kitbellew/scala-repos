@@ -311,9 +311,8 @@ class ResidentTaskIntegrationTest
     def scaleToSuccessfully(
         appId: PathId,
         instances: Int): Iterable[ITEnrichedTask] = {
-      val result = marathon.updateApp(
-        appId,
-        AppUpdate(instances = Some(instances)))
+      val result = marathon
+        .updateApp(appId, AppUpdate(instances = Some(instances)))
       result.code should be(200) // OK
       waitForEvent(Event.DEPLOYMENT_SUCCESS)
       waitForTasks(appId, instances)

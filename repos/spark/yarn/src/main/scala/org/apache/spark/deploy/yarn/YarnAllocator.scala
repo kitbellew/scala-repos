@@ -126,18 +126,16 @@ private[yarn] class YarnAllocator(
   // Number of cores per executor.
   protected val executorCores = args.executorCores
   // Resource capability requested for each executors
-  private[yarn] val resource = Resource.newInstance(
-    executorMemory + memoryOverhead,
-    executorCores)
+  private[yarn] val resource = Resource
+    .newInstance(executorMemory + memoryOverhead, executorCores)
 
   private val launcherPool = ThreadUtils.newDaemonCachedThreadPool(
     "ContainerLauncher",
     sparkConf.get(CONTAINER_LAUNCH_MAX_THREADS))
 
   // For testing
-  private val launchContainers = sparkConf.getBoolean(
-    "spark.yarn.launchContainers",
-    true)
+  private val launchContainers = sparkConf
+    .getBoolean("spark.yarn.launchContainers", true)
 
   private val labelExpression = sparkConf.get(EXECUTOR_NODE_LABEL_EXPRESSION)
 
@@ -329,23 +327,25 @@ private[yarn] class YarnAllocator(
       val newLocalityRequests = new mutable.ArrayBuffer[ContainerRequest]
       containerLocalityPreferences.foreach {
         case ContainerLocalityPreferences(nodes, racks) if nodes != null =>
-          newLocalityRequests.append(
-            createContainerRequest(resource, nodes, racks))
+          newLocalityRequests
+            .append(createContainerRequest(resource, nodes, racks))
         case _ =>
       }
 
       if (availableContainers >= newLocalityRequests.size) {
         // more containers are available than needed for locality, fill in requests for any host
         for (i <- 0 until (availableContainers - newLocalityRequests.size)) {
-          newLocalityRequests.append(
-            createContainerRequest(resource, null, null))
+          newLocalityRequests
+            .append(createContainerRequest(resource, null, null))
         }
       } else {
         val numToCancel = newLocalityRequests.size - availableContainers
         // cancel some requests without locality preferences to schedule more local containers
-        anyHostRequests.slice(0, numToCancel).foreach { nonLocal =>
-          amClient.removeContainerRequest(nonLocal)
-        }
+        anyHostRequests
+          .slice(0, numToCancel)
+          .foreach { nonLocal =>
+            amClient.removeContainerRequest(nonLocal)
+          }
         logInfo(
           s"Canceled $numToCancel container requests for any host to resubmit with locality")
       }
@@ -360,10 +360,8 @@ private[yarn] class YarnAllocator(
       val numToCancel = math.min(numPendingAllocate, -missing)
       logInfo(s"Canceling requests for $numToCancel executor containers")
 
-      val matchingRequests = amClient.getMatchingRequests(
-        RM_REQUEST_PRIORITY,
-        ANY_HOST,
-        resource)
+      val matchingRequests = amClient
+        .getMatchingRequests(RM_REQUEST_PRIORITY, ANY_HOST, resource)
       if (!matchingRequests.isEmpty) {
         matchingRequests
           .iterator()
@@ -527,9 +525,8 @@ private[yarn] class YarnAllocator(
       executorIdToContainer(executorId) = container
       containerIdToExecutorId(container.getId) = executorId
 
-      val containerSet = allocatedHostToContainersMap.getOrElseUpdate(
-        executorHostname,
-        new HashSet[ContainerId])
+      val containerSet = allocatedHostToContainersMap
+        .getOrElseUpdate(executorHostname, new HashSet[ContainerId])
 
       containerSet += containerId
       allocatedContainerToHostMap.put(containerId, executorHostname)
@@ -641,28 +638,30 @@ private[yarn] class YarnAllocator(
         allocatedContainerToHostMap.remove(containerId)
       }
 
-      containerIdToExecutorId.remove(containerId).foreach { eid =>
-        executorIdToContainer.remove(eid)
-        pendingLossReasonRequests.remove(eid) match {
-          case Some(pendingRequests) =>
-            // Notify application of executor loss reasons so it can decide whether it should abort
-            pendingRequests.foreach(_.reply(exitReason))
+      containerIdToExecutorId
+        .remove(containerId)
+        .foreach { eid =>
+          executorIdToContainer.remove(eid)
+          pendingLossReasonRequests.remove(eid) match {
+            case Some(pendingRequests) =>
+              // Notify application of executor loss reasons so it can decide whether it should abort
+              pendingRequests.foreach(_.reply(exitReason))
 
-          case None =>
-            // We cannot find executor for pending reasons. This is because completed container
-            // is processed before querying pending result. We should store it for later query.
-            // This is usually happened when explicitly killing a container, the result will be
-            // returned in one AM-RM communication. So query RPC will be later than this completed
-            // container process.
-            releasedExecutorLossReasons.put(eid, exitReason)
+            case None =>
+              // We cannot find executor for pending reasons. This is because completed container
+              // is processed before querying pending result. We should store it for later query.
+              // This is usually happened when explicitly killing a container, the result will be
+              // returned in one AM-RM communication. So query RPC will be later than this completed
+              // container process.
+              releasedExecutorLossReasons.put(eid, exitReason)
+          }
+          if (!alreadyReleased) {
+            // The executor could have gone away (like no route to host, node failure, etc)
+            // Notify backend about the failure of the executor
+            numUnexpectedContainerRelease += 1
+            driverRef.send(RemoveExecutor(eid, exitReason))
+          }
         }
-        if (!alreadyReleased) {
-          // The executor could have gone away (like no route to host, node failure, etc)
-          // Notify backend about the failure of the executor
-          numUnexpectedContainerRelease += 1
-          driverRef.send(RemoveExecutor(eid, exitReason))
-        }
-      }
     }
   }
 
@@ -742,10 +741,10 @@ private[yarn] class YarnAllocator(
 
 private object YarnAllocator {
   val MEM_REGEX = "[0-9.]+ [KMG]B"
-  val PMEM_EXCEEDED_PATTERN = Pattern.compile(
-    s"$MEM_REGEX of $MEM_REGEX physical memory used")
-  val VMEM_EXCEEDED_PATTERN = Pattern.compile(
-    s"$MEM_REGEX of $MEM_REGEX virtual memory used")
+  val PMEM_EXCEEDED_PATTERN = Pattern
+    .compile(s"$MEM_REGEX of $MEM_REGEX physical memory used")
+  val VMEM_EXCEEDED_PATTERN = Pattern
+    .compile(s"$MEM_REGEX of $MEM_REGEX virtual memory used")
   val VMEM_EXCEEDED_EXIT_CODE = -103
   val PMEM_EXCEEDED_EXIT_CODE = -104
 

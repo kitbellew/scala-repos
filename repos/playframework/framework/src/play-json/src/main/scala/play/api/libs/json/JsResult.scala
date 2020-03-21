@@ -55,10 +55,12 @@ object JsError {
     toJson(errors, false)
   //def toJsonErrorsOnly: JsValue = original // TODO
   def toFlatForm(e: JsError): Seq[(String, Seq[ValidationError])] =
-    e.errors.map {
-      case (path, seq) =>
-        path.toJsonString -> seq
-    }
+    e
+      .errors
+      .map {
+        case (path, seq) =>
+          path.toJsonString -> seq
+      }
 
   @deprecated("Use toJson which include alternative message keys", "2.3")
   def toFlatJson(e: JsError): JsObject = toJson(e.errors, true)
@@ -72,16 +74,18 @@ object JsError {
     val argsWrite = Writes.traversableWrites[Any](Writes.anyWrites)
     errors.foldLeft(Json.obj()) { (obj, error) =>
       obj ++ Json.obj(
-        error._1.toJsonString -> error._2.foldLeft(Json.arr()) { (arr, err) =>
-          arr :+ Json.obj(
-            "msg" -> (
-              if (flat)
-                err.message
-              else
-                Json.toJson(err.messages)
-            ),
-            "args" -> Json.toJson(err.args)(argsWrite))
-        })
+        error._1.toJsonString -> error
+          ._2
+          .foldLeft(Json.arr()) { (arr, err) =>
+            arr :+ Json.obj(
+              "msg" -> (
+                if (flat)
+                  err.message
+                else
+                  Json.toJson(err.messages)
+              ),
+              "args" -> Json.toJson(err.args)(argsWrite))
+          })
     }
   }
 }

@@ -477,7 +477,9 @@ trait Scopes extends api.Scopes {
     nested.elems = outer.elems
     nested.nestinglevel = outer.nestinglevel + 1
     if (outer.hashtable ne null)
-      nested.hashtable = java.util.Arrays
+      nested.hashtable = java
+        .util
+        .Arrays
         .copyOf(outer.hashtable, outer.hashtable.length)
     nested
   }

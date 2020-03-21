@@ -64,7 +64,9 @@ private[streaming] class DirectKafkaInputDStream[
     messageHandler: MessageAndMetadata[K, V] => R)
     extends InputDStream[R](_ssc)
     with Logging {
-  val maxRetries = context.sparkContext.getConf
+  val maxRetries = context
+    .sparkContext
+    .getConf
     .getInt("spark.streaming.kafka.maxRetries", 1)
 
   // Keep this consistent with how other streams are named (e.g. "Flume polling stream [2]")
@@ -89,7 +91,9 @@ private[streaming] class DirectKafkaInputDStream[
 
   protected val kc = new KafkaCluster(kafkaParams)
 
-  private val maxRateLimitPerPartition: Int = context.sparkContext.getConf
+  private val maxRateLimitPerPartition: Int = context
+    .sparkContext
+    .getConf
     .getInt("spark.streaming.kafka.maxRatePerPartition", 0)
 
   protected[streaming] def maxMessagesPerPartition(
@@ -125,8 +129,11 @@ private[streaming] class DirectKafkaInputDStream[
       }
 
     if (effectiveRateLimitPerPartition.values.sum > 0) {
-      val secsPerBatch =
-        context.graph.batchDuration.milliseconds.toDouble / 1000
+      val secsPerBatch = context
+        .graph
+        .batchDuration
+        .milliseconds
+        .toDouble / 1000
       Some(
         effectiveRateLimitPerPartition.map {
           case (tp, limit) =>
@@ -227,7 +234,8 @@ private[streaming] class DirectKafkaInputDStream[
       batchForTime.clear()
       generatedRDDs.foreach { kv =>
         val a =
-          kv._2
+          kv
+            ._2
             .asInstanceOf[KafkaRDD[K, V, U, T, R]]
             .offsetRanges
             .map(_.toTuple)
@@ -243,17 +251,20 @@ private[streaming] class DirectKafkaInputDStream[
       val topics = fromOffsets.keySet
       val leaders = KafkaCluster.checkErrors(kc.findLeaders(topics))
 
-      batchForTime.toSeq.sortBy(_._1)(Time.ordering).foreach {
-        case (t, b) =>
-          logInfo(
-            s"Restoring KafkaRDD for time $t ${b.mkString("[", ", ", "]")}")
-          generatedRDDs += t -> new KafkaRDD[K, V, U, T, R](
-            context.sparkContext,
-            kafkaParams,
-            b.map(OffsetRange(_)),
-            leaders,
-            messageHandler)
-      }
+      batchForTime
+        .toSeq
+        .sortBy(_._1)(Time.ordering)
+        .foreach {
+          case (t, b) =>
+            logInfo(
+              s"Restoring KafkaRDD for time $t ${b.mkString("[", ", ", "]")}")
+            generatedRDDs += t -> new KafkaRDD[K, V, U, T, R](
+              context.sparkContext,
+              kafkaParams,
+              b.map(OffsetRange(_)),
+              leaders,
+              messageHandler)
+        }
     }
   }
 

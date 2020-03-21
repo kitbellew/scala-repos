@@ -92,9 +92,8 @@ class DebugManager(broadcaster: ActorRef, config: EnsimeConfig)
 
   def addPendingBreakpoint(bp: Breakpoint): Unit = {
     val file = bp.file
-    val breaks = pendingBreaksBySourceName.getOrElse(
-      file.getName,
-      mutable.HashSet())
+    val breaks = pendingBreaksBySourceName
+      .getOrElse(file.getName, mutable.HashSet())
     breaks.add(bp)
     pendingBreaksBySourceName(file.getName) = breaks
   }
@@ -115,7 +114,8 @@ class DebugManager(broadcaster: ActorRef, config: EnsimeConfig)
   def vmOptions(): List[String] =
     List(
       "-classpath",
-      config.runtimeClasspath
+      config
+        .runtimeClasspath
         .mkString("\"", File.pathSeparator, "\"")) ++ config.debugVMArgs
 
   def withVM[T](action: (VM => T)): Option[T] = {

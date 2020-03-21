@@ -59,7 +59,9 @@ final class InternetSeedGenerator extends SeedGenerator {
     * @return A random seed of the requested length.
     */
   def generateSeed(length: Int): Array[Byte] =
-    InternetSeedGenerator.Generators.view
+    InternetSeedGenerator
+      .Generators
+      .view
       .flatMap(g ⇒
         try Option(g.generateSeed(length))
         catch {

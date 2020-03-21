@@ -197,7 +197,8 @@ private sealed trait OneAndTraverse[F[_]]
 
   def traverse1Impl[G[_], A, B](fa: OneAnd[F, A])(f: A => G[B])(implicit
       G: Apply[G]) =
-    G.applyApplicative
+    G
+      .applyApplicative
       .traverse(fa.tail)(f andThen \/.left)(F)
       .fold(
         ftl => G.apply2(f(fa.head), ftl)(OneAnd.apply),

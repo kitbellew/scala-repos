@@ -38,17 +38,15 @@ final case class Comprehension(
     val whereOffset = 2
     val newWhere = ch.slice(whereOffset, whereOffset + where.productArity)
     val groupByOffset = whereOffset + newWhere.length
-    val newGroupBy = ch.slice(
-      groupByOffset,
-      groupByOffset + groupBy.productArity)
+    val newGroupBy = ch
+      .slice(groupByOffset, groupByOffset + groupBy.productArity)
     val orderByOffset = groupByOffset + newGroupBy.length
     val newOrderBy = ch.slice(orderByOffset, orderByOffset + orderBy.length)
     val havingOffset = orderByOffset + newOrderBy.length
     val newHaving = ch.slice(havingOffset, havingOffset + having.productArity)
     val distinctOffset = havingOffset + newHaving.length
-    val newDistinct = ch.slice(
-      distinctOffset,
-      distinctOffset + distinct.productArity)
+    val newDistinct = ch
+      .slice(distinctOffset, distinctOffset + distinct.productArity)
     val fetchOffset = distinctOffset + newDistinct.length
     val newFetch = ch.slice(fetchOffset, fetchOffset + fetch.productArity)
     val offsetOffset = fetchOffset + newFetch.length
@@ -58,10 +56,12 @@ final case class Comprehension(
       select = newSelect,
       where = newWhere.headOption,
       groupBy = newGroupBy.headOption,
-      orderBy = orderBy.zip(newOrderBy).map {
-        case ((_, o), n) =>
-          (n, o)
-      },
+      orderBy = orderBy
+        .zip(newOrderBy)
+        .map {
+          case ((_, o), n) =>
+            (n, o)
+        },
       having = newHaving.headOption,
       distinct = newDistinct.headOption,
       fetch = newFetch.headOption,
@@ -86,9 +86,8 @@ final case class Comprehension(
     val fetch2 = mapOrNone(fetch)(_.infer(genScope, typeChildren))
     val offset2 = mapOrNone(offset)(_.infer(genScope, typeChildren))
     // Check if the nodes changed
-    val same = (f2 eq from) && (s2 eq select) && w2.isEmpty && g2.isEmpty && (
-      o2 eq o
-    ) && h2.isEmpty &&
+    val same = (f2 eq from) && (s2 eq select) && w2.isEmpty && g2
+      .isEmpty && (o2 eq o) && h2.isEmpty &&
       distinct2.isEmpty && fetch2.isEmpty && offset2.isEmpty
     val newType =
       if (!hasType)
@@ -109,10 +108,12 @@ final case class Comprehension(
           if (o2 eq o)
             orderBy
           else
-            orderBy.zip(o2).map {
-              case ((_, o), n) =>
-                (n, o)
-            },
+            orderBy
+              .zip(o2)
+              .map {
+                case ((_, o), n) =>
+                  (n, o)
+              },
         having = h2.orElse(having),
         distinct = distinct2.orElse(distinct),
         fetch = fetch2.orElse(fetch),
@@ -129,10 +130,12 @@ final case class RowNumber(by: ConstArray[(Node, Ordering)] = ConstArray.empty)
   def buildType = ScalaBaseType.longType
   lazy val children = by.map(_._1)
   protected[this] def rebuild(ch: ConstArray[Node]) =
-    copy(by = by.zip(ch).map {
-      case ((_, o), n) =>
-        (n, o)
-    })
+    copy(by = by
+      .zip(ch)
+      .map {
+        case ((_, o), n) =>
+          (n, o)
+      })
   override def childNames = by.zipWithIndex.map("by" + _._2).toSeq
   override def getDumpInfo = super.getDumpInfo.copy(mainInfo = "")
 }

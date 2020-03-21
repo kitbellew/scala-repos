@@ -99,30 +99,35 @@ class MongoMapField[OwnerType <: BsonRecord[OwnerType], MapValueType](
 
   def asJValue: JValue =
     JObject(
-      value.keys.map { k =>
-        JField(
-          k,
-          value(k).asInstanceOf[AnyRef] match {
-            case x if primitive_?(x.getClass) =>
-              primitive2jvalue(x)
-            case x if mongotype_?(x.getClass) =>
-              mongotype2jvalue(x)(owner.meta.formats)
-            case x if datetype_?(x.getClass) =>
-              datetype2jvalue(x)(owner.meta.formats)
-            case _ =>
-              JNothing
-          }
-        )
-      }.toList)
+      value
+        .keys
+        .map { k =>
+          JField(
+            k,
+            value(k).asInstanceOf[AnyRef] match {
+              case x if primitive_?(x.getClass) =>
+                primitive2jvalue(x)
+              case x if mongotype_?(x.getClass) =>
+                mongotype2jvalue(x)(owner.meta.formats)
+              case x if datetype_?(x.getClass) =>
+                datetype2jvalue(x)(owner.meta.formats)
+              case _ =>
+                JNothing
+            }
+          )
+        }
+        .toList)
 
   /*
    * Convert this field's value into a DBObject so it can be stored in Mongo.
    */
   def asDBObject: DBObject = {
     val dbo = new BasicDBObject
-    value.keys.foreach { k =>
-      dbo.put(k.toString, value.getOrElse(k, ""))
-    }
+    value
+      .keys
+      .foreach { k =>
+        dbo.put(k.toString, value.getOrElse(k, ""))
+      }
     dbo
   }
 
@@ -132,8 +137,10 @@ class MongoMapField[OwnerType <: BsonRecord[OwnerType], MapValueType](
 
     setBox(
       Full(
-        Map() ++ dbo.keySet.map { k =>
-          (k.toString, dbo.get(k).asInstanceOf[MapValueType])
-        }))
+        Map() ++ dbo
+          .keySet
+          .map { k =>
+            (k.toString, dbo.get(k).asInstanceOf[MapValueType])
+          }))
   }
 }

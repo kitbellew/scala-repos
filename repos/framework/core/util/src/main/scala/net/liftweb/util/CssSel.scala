@@ -138,16 +138,20 @@ private class SelectorMap(binds: List[CssBind])
     var starFunc: Box[List[CssBind]] = Empty
 
     val selThis: Box[CssBind] =
-      binds.flatMap { b =>
-        b.css
-          .openOrThrowException("Guarded with test before calling this method")
-          .subNodes match {
-          case Full(SelectThisNode(_)) =>
-            List(b)
-          case _ =>
-            Nil
+      binds
+        .flatMap { b =>
+          b
+            .css
+            .openOrThrowException(
+              "Guarded with test before calling this method")
+            .subNodes match {
+            case Full(SelectThisNode(_)) =>
+              List(b)
+            case _ =>
+              Nil
+          }
         }
-      }.headOption
+        .headOption
 
     binds.foreach {
       case i @ CssBind(IdSelector(id, _)) =>
@@ -204,7 +208,8 @@ private class SelectorMap(binds: List[CssBind])
       }
 
     private final def isSelThis(bind: CssBind): Boolean =
-      bind.css
+      bind
+        .css
         .openOrThrowException("Guarded with test before calling this method")
         .subNodes match {
         case Full(SelectThisNode(_)) =>
@@ -242,7 +247,8 @@ private class SelectorMap(binds: List[CssBind])
         .map(b =>
           (
             b,
-            b.css
+            b
+              .css
               .openOrThrowException(
                 "Guarded with test before calling this method")
               .subNodes
@@ -251,12 +257,14 @@ private class SelectorMap(binds: List[CssBind])
         .foldLeft(elem) {
           case (elem, (bind, AttrSubNode(attr))) => {
             val calced = bind.calculate(elem).map(findElemIfThereIsOne _)
-            val filtered = elem.attributes.filter {
-              case up: UnprefixedAttribute =>
-                up.key != attr
-              case _ =>
-                true
-            }
+            val filtered = elem
+              .attributes
+              .filter {
+                case up: UnprefixedAttribute =>
+                  up.key != attr
+                case _ =>
+                  true
+              }
 
             val newAttr =
               if (calced.isEmpty) {
@@ -276,12 +284,14 @@ private class SelectorMap(binds: List[CssBind])
             if (calced.isEmpty) {
               elem
             } else {
-              val filtered = elem.attributes.filter {
-                case up: UnprefixedAttribute =>
-                  up.key != attr
-                case _ =>
-                  true
-              }
+              val filtered = elem
+                .attributes
+                .filter {
+                  case up: UnprefixedAttribute =>
+                    up.key != attr
+                  case _ =>
+                    true
+                }
 
               val flat: NodeSeq =
                 if (attr == "class") {
@@ -318,12 +328,14 @@ private class SelectorMap(binds: List[CssBind])
               // if either is empty, then return the Elem unmodified
               elem
             } else {
-              val filtered = elem.attributes.filter {
-                case up: UnprefixedAttribute =>
-                  up.key != attr
-                case _ =>
-                  true
-              }
+              val filtered = elem
+                .attributes
+                .filter {
+                  case up: UnprefixedAttribute =>
+                    up.key != attr
+                  case _ =>
+                    true
+                }
 
               val flat: Box[NodeSeq] =
                 if (attr == "class") {
@@ -452,7 +464,8 @@ private class SelectorMap(binds: List[CssBind])
 
       // we can do an open_! here because all the CssBind elems
       // have been vetted
-      bind.css
+      bind
+        .css
         .openOrThrowException("Guarded with test before calling this method")
         .subNodes match {
         case Full(SelectThisNode(kids)) => {
@@ -493,24 +506,27 @@ private class SelectorMap(binds: List[CssBind])
 
             case _ => {
               val noId = removeId(realE.attributes)
-              calced.toList.zipWithIndex.map {
-                case (kids, 0) =>
-                  new Elem(
-                    realE.prefix,
-                    realE.label,
-                    realE.attributes,
-                    realE.scope,
-                    realE.minimizeEmpty,
-                    todo.transform(realE.child, kids): _*)
-                case (kids, _) =>
-                  new Elem(
-                    realE.prefix,
-                    realE.label,
-                    noId,
-                    realE.scope,
-                    realE.minimizeEmpty,
-                    todo.transform(realE.child, kids): _*)
-              }
+              calced
+                .toList
+                .zipWithIndex
+                .map {
+                  case (kids, 0) =>
+                    new Elem(
+                      realE.prefix,
+                      realE.label,
+                      realE.attributes,
+                      realE.scope,
+                      realE.minimizeEmpty,
+                      todo.transform(realE.child, kids): _*)
+                  case (kids, _) =>
+                    new Elem(
+                      realE.prefix,
+                      realE.label,
+                      noId,
+                      realE.scope,
+                      realE.minimizeEmpty,
+                      todo.transform(realE.child, kids): _*)
+                }
             }
           }
         }
@@ -1121,22 +1137,26 @@ object CanBind extends CssBindImplicits {
       f: T[N] => Iterable[N]): CanBind[T[N]] =
     new CanBind[T[N]] {
       def apply(info: => T[N])(ns: NodeSeq): Seq[NodeSeq] =
-        f(info).toSeq.flatMap(a =>
-          if (a eq null)
-            Nil
-          else
-            List(Text(a.toString)))
+        f(info)
+          .toSeq
+          .flatMap(a =>
+            if (a eq null)
+              Nil
+            else
+              List(Text(a.toString)))
     }
 
   implicit def iterableDouble[T[Double]](implicit
       f: T[Double] => Iterable[Double]): CanBind[T[Double]] =
     new CanBind[T[Double]] {
       def apply(info: => T[Double])(ns: NodeSeq): Seq[NodeSeq] =
-        f(info).toSeq.flatMap(a =>
-          if (a equals null)
-            Nil
-          else
-            List(Text(a.toString)))
+        f(info)
+          .toSeq
+          .flatMap(a =>
+            if (a equals null)
+              Nil
+            else
+              List(Text(a.toString)))
     }
 
   implicit def iterableBindableTransform[T[_]](implicit

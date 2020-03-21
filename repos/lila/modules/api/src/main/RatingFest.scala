@@ -26,16 +26,21 @@ object RatingFest {
     val bulkSize = 4
 
     def rerate(g: Game) =
-      UserRepo.pair(g.whitePlayer.userId, g.blackPlayer.userId).flatMap {
-        case (Some(white), Some(black)) =>
-          perfsUpdater.save(g, white, black, resetGameRatings = true) void
-        case _ =>
-          funit
-      }
+      UserRepo
+        .pair(g.whitePlayer.userId, g.blackPlayer.userId)
+        .flatMap {
+          case (Some(white), Some(black)) =>
+            perfsUpdater.save(g, white, black, resetGameRatings = true) void
+          case _ =>
+            funit
+        }
 
     def unrate(game: Game) =
       (
-        game.whitePlayer.ratingDiff.isDefined || game.blackPlayer.ratingDiff.isDefined
+        game.whitePlayer.ratingDiff.isDefined || game
+          .blackPlayer
+          .ratingDiff
+          .isDefined
       ) ?? GameRepo.unrate(game.id).void
 
     def log(x: Any) = lila.log("ratingFest") info x.toString
@@ -45,26 +50,31 @@ object RatingFest {
       _ <- fuccess(log("Removing history"))
       _ <- db("history3").remove(BSONDocument())
       _ = log("Reseting perfs")
-      _ <- lila.user.tube.userTube.coll.update(
-        BSONDocument(),
-        BSONDocument(
-          "$unset" -> BSONDocument(
-            List(
-              "global",
-              "white",
-              "black",
-              "standard",
-              "chess960",
-              "kingOfTheHill",
-              "threeCheck",
-              "bullet",
-              "blitz",
-              "classical",
-              "correspondence").map { name =>
-              s"perfs.$name" -> BSONBoolean(true)
-            })),
-        multi = true
-      )
+      _ <- lila
+        .user
+        .tube
+        .userTube
+        .coll
+        .update(
+          BSONDocument(),
+          BSONDocument(
+            "$unset" -> BSONDocument(
+              List(
+                "global",
+                "white",
+                "black",
+                "standard",
+                "chess960",
+                "kingOfTheHill",
+                "threeCheck",
+                "bullet",
+                "blitz",
+                "classical",
+                "correspondence").map { name =>
+                s"perfs.$name" -> BSONBoolean(true)
+              })),
+          multi = true
+        )
       _ = log("Gathering cheater IDs")
       engineIds <- UserRepo.engineIds
       _ = log(s"Found ${engineIds.size} cheaters")

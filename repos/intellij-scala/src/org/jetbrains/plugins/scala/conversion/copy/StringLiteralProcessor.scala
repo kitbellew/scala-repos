@@ -17,14 +17,16 @@ class StringLiteralProcessor extends CopyPastePreProcessor {
       startOffsets: Array[Int],
       endOffsets: Array[Int],
       text: String) = {
-    val literal = startOffsets.zip(endOffsets).forall {
-      case (a, b) =>
-        val e = file.findElementAt(a);
-        e.isInstanceOf[
-          PsiElement] && e.getLanguage == ScalaFileType.SCALA_LANGUAGE && e.getNode != null &&
-        e.getNode.getElementType == ScalaTokenTypes.tSTRING &&
-        a > e.getTextRange.getStartOffset && b < e.getTextRange.getEndOffset
-    }
+    val literal = startOffsets
+      .zip(endOffsets)
+      .forall {
+        case (a, b) =>
+          val e = file.findElementAt(a);
+          e.isInstanceOf[PsiElement] && e.getLanguage == ScalaFileType
+            .SCALA_LANGUAGE && e.getNode != null &&
+          e.getNode.getElementType == ScalaTokenTypes.tSTRING &&
+          a > e.getTextRange.getStartOffset && b < e.getTextRange.getEndOffset
+      }
     if (literal)
       StringUtil.unescapeStringCharacters(text)
     else
@@ -42,15 +44,16 @@ class StringLiteralProcessor extends CopyPastePreProcessor {
     val offset = editor.getSelectionModel.getSelectionStart
     val e = file.findElementAt(offset)
 
-    if (e.isInstanceOf[
-          PsiElement] && e.getLanguage == ScalaFileType.SCALA_LANGUAGE && offset > e.getTextOffset) {
+    if (e.isInstanceOf[PsiElement] && e.getLanguage == ScalaFileType
+          .SCALA_LANGUAGE && offset > e.getTextOffset) {
       val elementType =
         if (e.getNode == null)
           null
         else
           e.getNode.getElementType
       if ((
-            elementType == ScalaTokenTypes.tSTRING || elementType == ScalaTokenTypes.tCHAR
+            elementType == ScalaTokenTypes
+              .tSTRING || elementType == ScalaTokenTypes.tCHAR
           )
           && rawText != null && rawText.rawText != null) {
         rawText.rawText

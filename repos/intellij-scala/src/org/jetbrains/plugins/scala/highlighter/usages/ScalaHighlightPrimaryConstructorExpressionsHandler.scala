@@ -41,17 +41,20 @@ class ScalaHighlightPrimaryConstructorExpressionsHandler(
 
   def getTargets: util.List[PsiElement] = {
     val eb = templateDef.extendsBlock
-    val varAndValDefsExprs = eb.members.flatMap {
-      case p: ScPatternDefinition =>
-        p.expr // we include lazy vals, perhaps they could be excluded.
-      case v: ScVariableDefinition =>
-        v.expr
-      case _ =>
-        None
-    }
-    val constructorExprs =
-      varAndValDefsExprs ++ eb.templateBody.toList.flatMap(_.exprs) ++ Seq(
-        keyword)
+    val varAndValDefsExprs = eb
+      .members
+      .flatMap {
+        case p: ScPatternDefinition =>
+          p.expr // we include lazy vals, perhaps they could be excluded.
+        case v: ScVariableDefinition =>
+          v.expr
+        case _ =>
+          None
+      }
+    val constructorExprs = varAndValDefsExprs ++ eb
+      .templateBody
+      .toList
+      .flatMap(_.exprs) ++ Seq(keyword)
     constructorExprs.toBuffer[PsiElement]
   }
 }

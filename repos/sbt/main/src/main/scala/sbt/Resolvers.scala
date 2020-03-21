@@ -148,8 +148,9 @@ object Resolvers {
 
   private lazy val onWindows = {
     val os = System.getenv("OSTYPE")
-    val isCygwin =
-      (os != null) && os.toLowerCase(Locale.ENGLISH).contains("cygwin")
+    val isCygwin = (os != null) && os
+      .toLowerCase(Locale.ENGLISH)
+      .contains("cygwin")
     val isWindows = System
       .getProperty("os.name", "")
       .toLowerCase(Locale.ENGLISH)

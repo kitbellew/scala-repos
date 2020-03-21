@@ -77,9 +77,11 @@ case class OffsetFetchRequest(
     requestInfoGroupedByTopic.foreach(t1 => { // (topic, Seq[TopicAndPartition])
       writeShortString(buffer, t1._1) // topic
       buffer.putInt(t1._2.size) // number of partitions for this topic
-      t1._2.foreach(t2 => {
-        buffer.putInt(t2.partition)
-      })
+      t1
+        ._2
+        .foreach(t2 => {
+          buffer.putInt(t2.partition)
+        })
     })
   }
 
@@ -100,12 +102,14 @@ case class OffsetFetchRequest(
       requestChannel: RequestChannel,
       request: RequestChannel.Request): Unit = {
     val responseMap =
-      requestInfo.map {
-        case (topicAndPartition) =>
-          (
-            topicAndPartition,
-            OffsetMetadataAndError(Errors.forException(e).code))
-      }.toMap
+      requestInfo
+        .map {
+          case (topicAndPartition) =>
+            (
+              topicAndPartition,
+              OffsetMetadataAndError(Errors.forException(e).code))
+        }
+        .toMap
     val errorResponse = OffsetFetchResponse(
       requestInfo = responseMap,
       correlationId = correlationId)

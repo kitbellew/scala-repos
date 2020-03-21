@@ -143,9 +143,8 @@ private[controllers] object AssetInfo {
         if (standardDate != null) {
           Some(standardDateParserWithoutTZ.parseDateTime(standardDate).toDate)
         } else {
-          val alternativeDate = matcher.group(
-            6
-          ) // Cannot be null otherwise match would have failed
+          val alternativeDate = matcher
+            .group(6) // Cannot be null otherwise match would have failed
           Some(
             alternativeDateFormatWithTZOffset
               .parseDateTime(alternativeDate)
@@ -153,9 +152,8 @@ private[controllers] object AssetInfo {
         }
       } catch {
         case e: IllegalArgumentException =>
-          Logger.debug(
-            s"An invalid date was received: couldn't parse: $date",
-            e)
+          Logger
+            .debug(s"An invalid date was received: couldn't parse: $date", e)
           None
       }
     } else {
@@ -299,8 +297,8 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
     digestCache.getOrElse(
       path, {
         val maybeDigestUrl: Option[URL] = resource(path + "." + digestAlgorithm)
-        val maybeDigest: Option[String] = maybeDigestUrl.map(
-          Source.fromURL(_).mkString)
+        val maybeDigest: Option[String] = maybeDigestUrl
+          .map(Source.fromURL(_).mkString)
         if (!isDev && maybeDigest.isDefined)
           digestCache.put(path, maybeDigest)
         maybeDigest
@@ -354,15 +352,16 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
     if (isDev) {
       Future.successful(assetInfoFromResource(name))
     } else {
-      assetInfoCache.putIfAbsent(name)(assetInfoFromResource)(
-        Implicits.trampoline)
+      assetInfoCache
+        .putIfAbsent(name)(assetInfoFromResource)(Implicits.trampoline)
     }
   }
 
   private[controllers] def assetInfoForRequest(
       request: RequestHeader,
       name: String): Future[Option[(AssetInfo, Boolean)]] = {
-    val gzipRequested = request.headers
+    val gzipRequested = request
+      .headers
       .get(ACCEPT_ENCODING)
       .exists(_.split(',').exists(_.trim == "gzip"))
     assetInfo(name).map(_.map(_ -> gzipRequested))(Implicits.trampoline)
@@ -381,7 +380,8 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
     implicit def string2Asset(name: String) = new Asset(name)
 
     private def pathFromParams(rrc: ReverseRouteContext): String = {
-      rrc.fixedParams
+      rrc
+        .fixedParams
         .getOrElse(
           "path",
           throw new RuntimeException(
@@ -401,8 +401,8 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
             digest(minPath)
               .fold(minPath) { dgst =>
                 val lastSep = minPath.lastIndexOf("/")
-                minPath.take(lastSep + 1) + dgst + "-" + minPath.drop(
-                  lastSep + 1)
+                minPath.take(lastSep + 1) + dgst + "-" + minPath
+                  .drop(lastSep + 1)
               }
               .drop(base.size + 1)
           }
@@ -430,7 +430,8 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
     // accordance with section 14.26 of RFC2616.
     request.headers.get(IF_NONE_MATCH) match {
       case Some(etags) =>
-        assetInfo.etag
+        assetInfo
+          .etag
           .filter(someEtag => etags.split(',').exists(_.trim == someEtag))
           .flatMap(_ =>
             Some(cacheableResult(assetInfo, aggressiveCaching, NotModified)))
@@ -476,7 +477,10 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
       if (length > 0) {
         Ok.sendEntity(
           HttpEntity.Streamed(
-            akka.stream.scaladsl.Source
+            akka
+              .stream
+              .scaladsl
+              .Source
               .fromPublisher(Streams.enumeratorToPublisher(resourceData))
               .map(ByteString.apply),
             Some(length),
@@ -504,9 +508,9 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
       val requestedDigest = f.getName.takeWhile(_ != '-')
       if (!requestedDigest.isEmpty) {
         val bareFile =
-          new File(
-            f.getParent,
-            f.getName.drop(requestedDigest.size + 1)).getPath.replace('\\', '/')
+          new File(f.getParent, f.getName.drop(requestedDigest.size + 1))
+            .getPath
+            .replace('\\', '/')
         val bareFullPath = path + "/" + bareFile
         blocking(digest(bareFullPath)) match {
           case Some(`requestedDigest`) =>

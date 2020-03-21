@@ -81,8 +81,8 @@ final class NIHDBPerfTestRunner[T](
     val ingestConfig = None
     val apiKey = self.apiKey
     val optimize = self.optimize
-    val commandLineConfig = Configuration.parse(
-      _rootDir map ("precog.storage.root = " + _) getOrElse "")
+    val commandLineConfig = Configuration
+      .parse(_rootDir map ("precog.storage.root = " + _) getOrElse "")
     override val config = (
       Configuration parse {
         Option(System.getProperty("precog.storage.root")) map (
@@ -120,8 +120,8 @@ final class NIHDBPerfTestRunner[T](
   val chefs = (1 to 4).map { _ =>
     actorSystem.actorOf(Props(makeChef))
   }
-  val masterChef = actorSystem.actorOf(
-    Props[Chef].withRouter(RoundRobinRouter(chefs)))
+  val masterChef = actorSystem
+    .actorOf(Props[Chef].withRouter(RoundRobinRouter(chefs)))
 
   val jobManager = new InMemoryJobManager[Future]
   val resourceBuilder =

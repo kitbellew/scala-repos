@@ -130,10 +130,12 @@ class DistributedSuite
     failAfter(Span(100000, Millis)) {
       val thrown = intercept[SparkException] {
         // One of the tasks always fails.
-        sc.parallelize(1 to 10, 2).foreach { x =>
-          if (x == 1)
-            System.exit(42)
-        }
+        sc
+          .parallelize(1 to 10, 2)
+          .foreach { x =>
+            if (x == 1)
+              System.exit(42)
+          }
       }
       assert(thrown.getClass === classOf[SparkException])
       assert(thrown.getMessage.contains("failed 4 times"))
@@ -209,16 +211,22 @@ class DistributedSuite
     val blockId = blockIds(0)
     val blockManager = SparkEnv.get.blockManager
     val blockTransfer = SparkEnv.get.blockTransferService
-    blockManager.master.getLocations(blockId).foreach { cmId =>
-      val bytes = blockTransfer
-        .fetchBlockSync(cmId.host, cmId.port, cmId.executorId, blockId.toString)
-      val deserialized =
-        blockManager
-          .dataDeserialize(blockId, bytes.nioByteBuffer())
-          .asInstanceOf[Iterator[Int]]
-          .toList
-      assert(deserialized === (1 to 100).toList)
-    }
+    blockManager
+      .master
+      .getLocations(blockId)
+      .foreach { cmId =>
+        val bytes = blockTransfer.fetchBlockSync(
+          cmId.host,
+          cmId.port,
+          cmId.executorId,
+          blockId.toString)
+        val deserialized =
+          blockManager
+            .dataDeserialize(blockId, bytes.nioByteBuffer())
+            .asInstanceOf[Iterator[Int]]
+            .toList
+        assert(deserialized === (1 to 100).toList)
+      }
   }
 
   test("compute without caching when no partitions fit in memory") {
@@ -232,7 +240,10 @@ class DistributedSuite
     assert(data.count() === size)
     assert(data.count() === size)
     // ensure only a subset of partitions were cached
-    val rddBlocks = sc.env.blockManager.master
+    val rddBlocks = sc
+      .env
+      .blockManager
+      .master
       .getMatchingBlockIds(_.isRDD, askSlaves = true)
     assert(
       rddBlocks.size === 0,
@@ -253,7 +264,10 @@ class DistributedSuite
     assert(data.count() === size)
     assert(data.count() === size)
     // ensure only a subset of partitions were cached
-    val rddBlocks = sc.env.blockManager.master
+    val rddBlocks = sc
+      .env
+      .blockManager
+      .master
       .getMatchingBlockIds(_.isRDD, askSlaves = true)
     assert(rddBlocks.size > 0, "no RDD blocks found")
     assert(

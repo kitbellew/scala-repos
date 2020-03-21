@@ -67,8 +67,9 @@ class IncludedFileReferenceSet(
     new Condition[PsiFileSystemItem] {
       def value(item: PsiFileSystemItem): Boolean =
         item.isDirectory ||
-          item.getName.endsWith(ConfExt) || item.getName.endsWith(
-          JsonExt) || item.getName.endsWith(PropsExt)
+          item.getName.endsWith(ConfExt) || item
+          .getName
+          .endsWith(JsonExt) || item.getName.endsWith(PropsExt)
     }
 
   // code mostly based on similar bits in `FileReferenceSet` and `PsiFileReferenceHelper`
@@ -114,11 +115,13 @@ class IncludedFileReferenceSet(
         .asScala
         .collect {
           case msoe: ModuleSourceOrderEntry =>
-            msoe.getOwnerModule.getModuleRuntimeScope(
-              pfi.isInTestSourceContent(parent))
+            msoe
+              .getOwnerModule
+              .getModuleRuntimeScope(pfi.isInTestSourceContent(parent))
           case loe: LibraryOrderEntry =>
-            loe.getOwnerModule.getModuleRuntimeScope(
-              loe.getScope == DependencyScope.TEST)
+            loe
+              .getOwnerModule
+              .getModuleRuntimeScope(loe.getScope == DependencyScope.TEST)
         }
 
       def orderEntryScope = allScopes.reduceOption(_ union _)
@@ -185,8 +188,8 @@ class IncludedFileReference(
 
   private def lacksExtension(text: String) =
     isLast && text.nonEmpty && text != "." && text != ".." && text != "/" &&
-      !text.endsWith(ConfExt) && !text.endsWith(JsonExt) && !text.endsWith(
-      PropsExt)
+      !text.endsWith(ConfExt) && !text.endsWith(JsonExt) && !text
+      .endsWith(PropsExt)
 
   override def innerResolve(
       caseSensitive: Boolean,

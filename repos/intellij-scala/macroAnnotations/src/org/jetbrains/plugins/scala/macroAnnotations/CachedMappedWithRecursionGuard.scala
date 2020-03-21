@@ -74,14 +74,16 @@ object CachedMappedWithRecursionGuard {
             case param :: Nil =>
               List(ValDef(NoMods, param.name, param.tpt, q"$dataName"))
             case _ =>
-              flatParams.zipWithIndex.map {
-                case (param, i) =>
-                  ValDef(
-                    NoMods,
-                    param.name,
-                    param.tpt,
-                    q"$dataName.${TermName("_" + (i + 1))}")
-              }
+              flatParams
+                .zipWithIndex
+                .map {
+                  case (param, i) =>
+                    ValDef(
+                      NoMods,
+                      param.name,
+                      param.tpt,
+                      q"$dataName.${TermName("_" + (i + 1))}")
+                }
           }
 
         val actualCalculation =

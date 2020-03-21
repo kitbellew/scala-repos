@@ -43,7 +43,8 @@ class RangeDirectivesExamplesSpec extends RoutingSpec {
           true
       } shouldBe None
       val responseF =
-        responseAs[Multipart.ByteRanges].parts
+        responseAs[Multipart.ByteRanges]
+          .parts
           .runFold[List[Multipart.ByteRanges.BodyPart]](Nil)((acc, curr) =>
             curr :: acc)
 

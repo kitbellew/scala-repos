@@ -40,13 +40,14 @@ private[akka] object FilePublisher {
       completionPromise,
       chunkSize,
       initialBuffer,
-      maxBuffer)
-      .withDeploy(Deploy.local)
+      maxBuffer).withDeploy(Deploy.local)
   }
 
   private case object Continue extends DeadLetterSuppression
 
-  val Read = java.util.Collections
+  val Read = java
+    .util
+    .Collections
     .singleton(java.nio.file.StandardOpenOption.READ)
 }
 
@@ -66,7 +67,8 @@ private[akka] final class FilePublisher(
   val buf = ByteBuffer.allocate(chunkSize)
   var readBytesTotal = 0L
   var availableChunks: Vector[ByteString] =
-    Vector.empty // TODO possibly resign read-ahead-ing and make fusable as Stage
+    Vector
+      .empty // TODO possibly resign read-ahead-ing and make fusable as Stage
 
   private var chan: FileChannel = _
 

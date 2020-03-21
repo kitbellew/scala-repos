@@ -30,7 +30,8 @@ object MForeignKey {
 
   def getCrossReference(parentTable: MQName, foreignTable: MQName) =
     createAction(
-      _.metaData.getCrossReference(
+      _.metaData
+      .getCrossReference(
         parentTable.catalog_?,
         parentTable.schema_?,
         parentTable.name,

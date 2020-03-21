@@ -29,10 +29,13 @@ class SocketAddressResolveHandlerTest extends FunSuite with MockitoSugar {
     doAnswer(
       new Answer[ChannelFuture] {
         override def answer(invocation: InvocationOnMock) = {
-          invocation.getArguments.headOption.foreach {
-            case r: Runnable =>
-              r.run()
-          }
+          invocation
+            .getArguments
+            .headOption
+            .foreach {
+              case r: Runnable =>
+                r.run()
+            }
           mock[ChannelFuture]
         }
       }).when(pipeline).execute(any[Runnable])
@@ -73,9 +76,8 @@ class SocketAddressResolveHandlerTest extends FunSuite with MockitoSugar {
     import helper._
 
     val resolvedInetAddress = InetAddress.getLoopbackAddress
-    val unresolvedAddress = InetSocketAddress.createUnresolved(
-      "meow.meow",
-      2222)
+    val unresolvedAddress = InetSocketAddress
+      .createUnresolved("meow.meow", 2222)
     when(resolver.apply(eqTo(unresolvedAddress.getHostName)))
       .thenReturn(Right(resolvedInetAddress))
 
@@ -100,9 +102,8 @@ class SocketAddressResolveHandlerTest extends FunSuite with MockitoSugar {
     val helper = new SocketAddressResolveHandlerHelper
     import helper._
 
-    val unresolvedAddress = InetSocketAddress.createUnresolved(
-      "meow.meow",
-      2222)
+    val unresolvedAddress = InetSocketAddress
+      .createUnresolved("meow.meow", 2222)
     when(resolver.apply(eqTo(unresolvedAddress.getHostName)))
       .thenReturn(Left(new UnknownHostException(unresolvedAddress.getHostName)))
 

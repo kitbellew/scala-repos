@@ -737,11 +737,13 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring {
           var rr = a.colPtrs(c)
           val rrlast = a.colPtrs(c + 1)
           if (rr < rrlast) {
-            val newBOffset = util.Arrays.binarySearch(
-              b.index,
-              lastOffset,
-              math.min(b.activeSize, c + 1),
-              c)
+            val newBOffset = util
+              .Arrays
+              .binarySearch(
+                b.index,
+                lastOffset,
+                math.min(b.activeSize, c + 1),
+                c)
             if (newBOffset < 0) {
               lastOffset = ~newBOffset
             } else {
@@ -1069,11 +1071,13 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
           var rr = a.colPtrs(c)
           val rrlast = a.colPtrs(c + 1)
           if (rr < rrlast) {
-            val newBOffset = util.Arrays.binarySearch(
-              b.index,
-              lastOffset,
-              math.min(b.activeSize, c + 1),
-              c)
+            val newBOffset = util
+              .Arrays
+              .binarySearch(
+                b.index,
+                lastOffset,
+                math.min(b.activeSize, c + 1),
+                c)
             if (newBOffset < 0) {
               lastOffset = ~newBOffset
             } else {
@@ -1107,9 +1111,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
             val v = b(j, i)
             var k = a.colPtrs(j)
             while (k < a.colPtrs(j + 1)) {
-              res(a.rowIndices(k), i) = ring.+(
-                res(a.rowIndices(k), i),
-                ring.*(v, a.data(k)))
+              res(a.rowIndices(k), i) = ring
+                .+(res(a.rowIndices(k), i), ring.*(v, a.data(k)))
               k += 1
             }
             j += 1

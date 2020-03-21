@@ -40,8 +40,8 @@ object SbtException {
       lines.foldLeft("") { (acc, line) =>
         if (line.startsWith("[warn]")) {
           val trimmed = line.substring(6).trim
-          if (trimmed.startsWith(":: ") && !trimmed.contains(
-                "UNRESOLVED DEPENDENCIES"))
+          if (trimmed.startsWith(":: ") && !trimmed
+                .contains("UNRESOLVED DEPENDENCIES"))
             acc + s"<li>${trimmed.substring(2)}</li>"
           else
             acc

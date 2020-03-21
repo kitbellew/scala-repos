@@ -85,7 +85,8 @@ object Route {
             request,
             routingLog.requestLog(request),
             routingSettings,
-            effectiveParserSettings)).fast
+            effectiveParserSettings))
+          .fast
           .map {
             case RouteResult.Complete(response) ⇒
               response

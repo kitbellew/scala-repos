@@ -60,35 +60,39 @@ case class WindowSpecDefinition(
           "Found a UnspecifiedFrame. It should be converted to a SpecifiedWindowFrame " +
             "during analysis. Please file a bug report.")
       case frame: SpecifiedWindowFrame =>
-        frame.validate.orElse {
-          def checkValueBasedBoundaryForRangeFrame(): Option[String] = {
-            if (orderSpec.length > 1) {
-              // It is not allowed to have a value-based PRECEDING and FOLLOWING
-              // as the boundary of a Range Window Frame.
-              Some(
-                "This Range Window Frame only accepts at most one ORDER BY expression.")
-            } else if (orderSpec.nonEmpty && !orderSpec.head.dataType
-                         .isInstanceOf[NumericType]) {
-              Some(
-                "The data type of the expression in the ORDER BY clause should be a numeric type.")
-            } else {
-              None
+        frame
+          .validate
+          .orElse {
+            def checkValueBasedBoundaryForRangeFrame(): Option[String] = {
+              if (orderSpec.length > 1) {
+                // It is not allowed to have a value-based PRECEDING and FOLLOWING
+                // as the boundary of a Range Window Frame.
+                Some(
+                  "This Range Window Frame only accepts at most one ORDER BY expression.")
+              } else if (orderSpec.nonEmpty && !orderSpec
+                           .head
+                           .dataType
+                           .isInstanceOf[NumericType]) {
+                Some(
+                  "The data type of the expression in the ORDER BY clause should be a numeric type.")
+              } else {
+                None
+              }
+            }
+
+            (frame.frameType, frame.frameStart, frame.frameEnd) match {
+              case (RangeFrame, vp: ValuePreceding, _) =>
+                checkValueBasedBoundaryForRangeFrame()
+              case (RangeFrame, vf: ValueFollowing, _) =>
+                checkValueBasedBoundaryForRangeFrame()
+              case (RangeFrame, _, vp: ValuePreceding) =>
+                checkValueBasedBoundaryForRangeFrame()
+              case (RangeFrame, _, vf: ValueFollowing) =>
+                checkValueBasedBoundaryForRangeFrame()
+              case (_, _, _) =>
+                None
             }
           }
-
-          (frame.frameType, frame.frameStart, frame.frameEnd) match {
-            case (RangeFrame, vp: ValuePreceding, _) =>
-              checkValueBasedBoundaryForRangeFrame()
-            case (RangeFrame, vf: ValueFollowing, _) =>
-              checkValueBasedBoundaryForRangeFrame()
-            case (RangeFrame, _, vp: ValuePreceding) =>
-              checkValueBasedBoundaryForRangeFrame()
-            case (RangeFrame, _, vf: ValueFollowing) =>
-              checkValueBasedBoundaryForRangeFrame()
-            case (_, _, _) =>
-              None
-          }
-        }
     }
 
   override def children: Seq[Expression] = partitionSpec ++ orderSpec

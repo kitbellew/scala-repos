@@ -478,7 +478,9 @@ class SparkIMain(
 
     // NOTE: Must use reflection until this is exposed/fixed upstream in Scala
     val fieldSetter =
-      platform.getClass.getMethods
+      platform
+        .getClass
+        .getMethods
         .find(_.getName.endsWith("currentClassPath_$eq"))
         .get
     fieldSetter.invoke(platform, Some(newClassPath))
@@ -493,20 +495,24 @@ class SparkIMain(
     // Collect our new jars/directories and add them to the existing set of classpaths
     val allClassPaths =
       (
-        platform.classPath
+        platform
+          .classPath
           .asInstanceOf[MergedClassPath[AbstractFile]]
           .entries ++
           urls.map(url => {
-            platform.classPath.context.newClassPath(
-              if (url.getProtocol == "file") {
-                val f = new File(url.getPath)
-                if (f.isDirectory)
-                  io.AbstractFile.getDirectory(f)
-                else
-                  io.AbstractFile.getFile(f)
-              } else {
-                io.AbstractFile.getURL(url)
-              })
+            platform
+              .classPath
+              .context
+              .newClassPath(
+                if (url.getProtocol == "file") {
+                  val f = new File(url.getPath)
+                  if (f.isDirectory)
+                    io.AbstractFile.getDirectory(f)
+                  else
+                    io.AbstractFile.getFile(f)
+                } else {
+                  io.AbstractFile.getURL(url)
+                })
           })
       ).distinct
 
@@ -694,8 +700,8 @@ class SparkIMain(
     // enough to just redefine them together but that may not always
     // be what people want so I'm waiting until I can do it better.
     for {
-      name <- req.definedNames filterNot (x =>
-        req.definedNames contains x.companionName)
+      name <- req
+        .definedNames filterNot (x => req.definedNames contains x.companionName)
       oldReq <- definedNameMap get name.companionName
       newSym <- req.definedSymbols get name
       oldSym <- oldReq.definedSymbols get name.companionName
@@ -1016,7 +1022,8 @@ class SparkIMain(
                                 |  var value: %s = _
                               |  def set(x: Any) = value = x.asInstanceOf[%s]
                               |}
-                              """.stripMargin
+                              """
+        .stripMargin
         .format(bindRep.evalName, boundType, boundType))
     bindRep.callEither("set", value) match {
       case Left(ex) =>
@@ -1026,10 +1033,8 @@ class SparkIMain(
         IR.Error
 
       case Right(_) =>
-        val line = "%sval %s = %s.value".format(
-          modifiers map (_ + " ") mkString,
-          name,
-          bindRep.evalPath)
+        val line = "%sval %s = %s.value"
+          .format(modifiers map (_ + " ") mkString, name, bindRep.evalPath)
         logDebug("Interpreting: " + line)
         interpret(line)
     }
@@ -1260,9 +1265,8 @@ class SparkIMain(
       // val readRoot  = getRequiredModule(readPath)   // the outermost wrapper
       // MATEI: Changed this to getClass because the root object is no longer a module (Scala singleton object)
 
-      val readRoot = rootMirror.getClassByName(
-        newTypeName(readPath)
-      ) // the outermost wrapper
+      val readRoot = rootMirror
+        .getClassByName(newTypeName(readPath)) // the outermost wrapper
       (accessPath split '.').foldLeft(readRoot: Symbol) {
         case (sym, "") =>
           sym
@@ -1384,9 +1388,8 @@ class SparkIMain(
       */
     def fullFlatName(name: String) =
       // lineRep.readPath + accessPath.replace('.', '$') + nme.NAME_JOIN_STRING + name
-      lineRep.readPath + ".INSTANCE" + accessPath.replace(
-        '.',
-        '$') + nme.NAME_JOIN_STRING + name
+      lineRep.readPath + ".INSTANCE" + accessPath.replace('.', '$') + nme
+        .NAME_JOIN_STRING + name
 
     /** The unmangled symbol name, but supplemented with line info. */
     def disambiguated(name: Name): String = name + " (in " + lineRep + ")"
@@ -1466,12 +1469,14 @@ class SparkIMain(
       |  val %s: String = %s {
       |    %s
       |    (""
-      """.stripMargin.format(
-        lineRep.evalName,
-        evalResult,
-        lineRep.printName,
-        executionWrapper,
-        lineRep.readName + ".INSTANCE" + accessPath)
+      """
+        .stripMargin
+        .format(
+          lineRep.evalName,
+          evalResult,
+          lineRep.printName,
+          executionWrapper,
+          lineRep.readName + ".INSTANCE" + accessPath)
       val postamble = """
       |    )
       |  }
@@ -1695,9 +1700,9 @@ class SparkIMain(
   @DeveloperApi
   def runtimeClassAndTypeOfTerm(id: String): Option[(JClass, Type)] = {
     classOfTerm(id) flatMap { clazz =>
-      new RichClass(clazz).supers find (c =>
-        !(new RichClass(c).isScalaAnonymous)) map { nonAnon =>
-        (nonAnon, runtimeTypeOfTerm(id))
+      new RichClass(clazz)
+        .supers find (c => !(new RichClass(c).isScalaAnonymous)) map {
+        nonAnon => (nonAnon, runtimeTypeOfTerm(id))
       }
     }
   }

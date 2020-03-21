@@ -27,10 +27,8 @@ class MetricNumericConverterSpec
     }
 
     "define a new metric" in {
-      val Some(metric) = Metric.create(
-        HeapMemoryUsed,
-        256L,
-        decayFactor = Some(0.18))
+      val Some(metric) = Metric
+        .create(HeapMemoryUsed, 256L, decayFactor = Some(0.18))
       metric.name should ===(HeapMemoryUsed)
       metric.value should ===(256L)
       metric.isSmooth should ===(true)

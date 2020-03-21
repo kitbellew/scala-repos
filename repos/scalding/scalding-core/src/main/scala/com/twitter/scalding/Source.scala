@@ -270,9 +270,12 @@ trait Mappable[+T] extends Source with TypedSource[T] {
     validateTaps(mode)
     val tap = createTap(Read)(mode)
     val conv = converter
-    mode.openForRead(config, tap).asScala.map { te =>
-      conv(te.selectEntry(sourceFields))
-    }
+    mode
+      .openForRead(config, tap)
+      .asScala
+      .map { te =>
+        conv(te.selectEntry(sourceFields))
+      }
   }
 }
 

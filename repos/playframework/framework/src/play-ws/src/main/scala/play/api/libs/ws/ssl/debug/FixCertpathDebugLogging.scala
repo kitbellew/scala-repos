@@ -20,15 +20,20 @@ import sun.security.util.Debug
   */
 object FixCertpathDebugLogging {
 
-  val logger = org.slf4j.LoggerFactory
+  val logger = org
+    .slf4j
+    .LoggerFactory
     .getLogger("play.api.libs.ws.ssl.debug.FixCertpathDebugLogging")
 
   class MonkeyPatchSunSecurityUtilDebugAction(
       val newDebug: Debug,
       val newOptions: String)
       extends FixLoggingAction {
-    val logger = org.slf4j.LoggerFactory.getLogger(
-      "play.api.libs.ws.ssl.debug.FixCertpathDebugLogging.MonkeyPatchSunSecurityUtilDebugAction")
+    val logger = org
+      .slf4j
+      .LoggerFactory
+      .getLogger(
+        "play.api.libs.ws.ssl.debug.FixCertpathDebugLogging.MonkeyPatchSunSecurityUtilDebugAction")
 
     val initialResource = "/sun/security/provider/certpath/Builder.class"
 

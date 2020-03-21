@@ -48,19 +48,21 @@ class ScalaDeprecationInspection extends LocalInspectionTool {
           val description: String =
             s"Parameter name ${param.deprecatedName.get} is deprecated"
           holder.registerProblem(
-            holder.getManager.createProblemDescriptor(
-              elementToHighlight,
-              description,
-              true,
-              ProblemHighlightType.LIKE_DEPRECATED,
-              isOnTheFly))
+            holder
+              .getManager
+              .createProblemDescriptor(
+                elementToHighlight,
+                description,
+                true,
+                ProblemHighlightType.LIKE_DEPRECATED,
+                isOnTheFly))
           return
         case _: PsiNamedElement =>
         case _ =>
           return
       }
-      val context = ScalaPsiUtil.nameContext(
-        refElement.asInstanceOf[PsiNamedElement])
+      val context = ScalaPsiUtil
+        .nameContext(refElement.asInstanceOf[PsiNamedElement])
       context match {
         case doc: PsiDocCommentOwner =>
           doc match {
@@ -70,8 +72,8 @@ class ScalaDeprecationInspection extends LocalInspectionTool {
               if (!doc.isDeprecated)
                 return
           }
-          if (!doc.isDeprecated && !Option(doc.containingClass).exists(
-                _.isDeprecated))
+          if (!doc.isDeprecated && !Option(doc.containingClass)
+                .exists(_.isDeprecated))
             return
         case _ =>
           return
@@ -87,12 +89,14 @@ class ScalaDeprecationInspection extends LocalInspectionTool {
         Some("Symbol " + name + " is deprecated"),
         message).flatten.mkString(". ")
       holder.registerProblem(
-        holder.getManager.createProblemDescriptor(
-          elementToHighlight,
-          description,
-          true,
-          ProblemHighlightType.LIKE_DEPRECATED,
-          isOnTheFly))
+        holder
+          .getManager
+          .createProblemDescriptor(
+            elementToHighlight,
+            description,
+            true,
+            ProblemHighlightType.LIKE_DEPRECATED,
+            isOnTheFly))
     }
 
     new ScalaElementVisitor {

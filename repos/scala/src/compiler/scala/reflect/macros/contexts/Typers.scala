@@ -71,15 +71,17 @@ trait Typers {
     macroLogVerbose(
       "inferring implicit value of type %s, macros = %s"
         .format(pt, !withMacrosDisabled))
-    universe.analyzer.inferImplicit(
-      universe.EmptyTree,
-      pt,
-      false,
-      callsiteTyper.context,
-      silent,
-      withMacrosDisabled,
-      pos,
-      (pos, msg) => throw TypecheckException(pos, msg))
+    universe
+      .analyzer
+      .inferImplicit(
+        universe.EmptyTree,
+        pt,
+        false,
+        callsiteTyper.context,
+        silent,
+        withMacrosDisabled,
+        pos,
+        (pos, msg) => throw TypecheckException(pos, msg))
   }
 
   def inferImplicitView(
@@ -95,15 +97,17 @@ trait Typers {
     val viewTpe = universe.appliedType(
       universe.definitions.FunctionClass(1).toTypeConstructor,
       List(from, to))
-    universe.analyzer.inferImplicit(
-      tree,
-      viewTpe,
-      true,
-      callsiteTyper.context,
-      silent,
-      withMacrosDisabled,
-      pos,
-      (pos, msg) => throw TypecheckException(pos, msg))
+    universe
+      .analyzer
+      .inferImplicit(
+        tree,
+        viewTpe,
+        true,
+        callsiteTyper.context,
+        silent,
+        withMacrosDisabled,
+        pos,
+        (pos, msg) => throw TypecheckException(pos, msg))
   }
 
   def resetLocalAttrs(tree: Tree): Tree =

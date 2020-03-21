@@ -62,13 +62,16 @@ trait ProvenanceChecker extends parser.AST with Binder {
 
       val (provenance, contribErrors, contribConstr) = {
         if ((
-              left.provenance == InfiniteProvenance || right.provenance == InfiniteProvenance
+              left.provenance == InfiniteProvenance || right
+                .provenance == InfiniteProvenance
             ) && expr.disallowsInfinite) {
           val provenance = NullProvenance
           val errors = Set(Error(expr, CannotUseDistributionWithoutSampling))
 
           (provenance, errors, Set())
-        } else if (left.provenance.isParametric || right.provenance.isParametric) {
+        } else if (left.provenance.isParametric || right
+                     .provenance
+                     .isParametric) {
           if (unified.isDefined) {
             (unified.get, Set(), Set())
           } else {
@@ -214,9 +217,13 @@ trait ProvenanceChecker extends parser.AST with Binder {
       val (rightErrors, rightConstr) = loop(right, relations, constraints)
 
       val (provenance, errors, constr) = {
-        if (pred.provenance == NullProvenance || left.provenance == NullProvenance || right.provenance == NullProvenance) {
+        if (pred.provenance == NullProvenance || left
+              .provenance == NullProvenance || right
+              .provenance == NullProvenance) {
           (NullProvenance, Set(), Set())
-        } else if (pred.provenance == InfiniteProvenance || left.provenance == InfiniteProvenance || right.provenance == InfiniteProvenance) {
+        } else if (pred.provenance == InfiniteProvenance || left
+                     .provenance == InfiniteProvenance || right
+                     .provenance == InfiniteProvenance) {
           (
             NullProvenance,
             Set(Error(expr, CannotUseDistributionWithoutSampling)),
@@ -252,7 +259,8 @@ trait ProvenanceChecker extends parser.AST with Binder {
       val (rightErrors, rightConstr) = loop(right, relations, constraints)
 
       val (provenance, errors, constr) =
-        if (left.provenance == InfiniteProvenance || right.provenance == InfiniteProvenance) {
+        if (left.provenance == InfiniteProvenance || right
+              .provenance == InfiniteProvenance) {
           val errors = Set(Error(expr, CannotUseDistributionWithoutSampling))
           (NullProvenance, errors, Set())
         } else {
@@ -325,21 +333,27 @@ trait ProvenanceChecker extends parser.AST with Binder {
       val (prov, errors, constr) = {
         if (left.provenance == right.provenance)
           (left.provenance, Set(), Set())
-        else if (left.provenance == NullProvenance || right.provenance == NullProvenance)
+        else if (left.provenance == NullProvenance || right
+                   .provenance == NullProvenance)
           (NullProvenance, Set(), Set())
-        else if (left.provenance == UndefinedProvenance && right.provenance == UndefinedProvenance)
+        else if (left.provenance == UndefinedProvenance && right
+                   .provenance == UndefinedProvenance)
           (UndefinedProvenance, Set(), Set())
-        else if (left.provenance == UndefinedProvenance || right.provenance == UndefinedProvenance)
+        else if (left.provenance == UndefinedProvenance || right
+                   .provenance == UndefinedProvenance)
           (
             NullProvenance,
             Set(Error(expr, IntersectWithNoCommonalities)),
             Set())
-        else if (left.provenance == InfiniteProvenance || right.provenance == InfiniteProvenance)
+        else if (left.provenance == InfiniteProvenance || right
+                   .provenance == InfiniteProvenance)
           (
             NullProvenance,
             Set(Error(expr, CannotUseDistributionWithoutSampling)),
             Set())
-        else if (left.provenance.isParametric || right.provenance.isParametric) {
+        else if (left.provenance.isParametric || right
+                   .provenance
+                   .isParametric) {
           val provenance = DerivedIntersectProvenance(
             left.provenance,
             right.provenance)
@@ -403,21 +417,27 @@ trait ProvenanceChecker extends parser.AST with Binder {
       val (prov, errors, constr) = {
         if (left.provenance == right.provenance)
           (left.provenance, Set(), Set())
-        else if (left.provenance == NullProvenance || right.provenance == NullProvenance)
+        else if (left.provenance == NullProvenance || right
+                   .provenance == NullProvenance)
           (NullProvenance, Set(), Set())
-        else if (left.provenance == UndefinedProvenance && right.provenance == UndefinedProvenance)
+        else if (left.provenance == UndefinedProvenance && right
+                   .provenance == UndefinedProvenance)
           (UndefinedProvenance, Set(), Set())
-        else if (left.provenance == UndefinedProvenance || right.provenance == UndefinedProvenance)
+        else if (left.provenance == UndefinedProvenance || right
+                   .provenance == UndefinedProvenance)
           (
             NullProvenance,
             Set(Error(expr, DifferenceWithNoCommonalities)),
             Set())
-        else if (left.provenance == InfiniteProvenance || right.provenance == InfiniteProvenance)
+        else if (left.provenance == InfiniteProvenance || right
+                   .provenance == InfiniteProvenance)
           (
             NullProvenance,
             Set(Error(expr, CannotUseDistributionWithoutSampling)),
             Set())
-        else if (left.provenance.isParametric || right.provenance.isParametric) {
+        else if (left.provenance.isParametric || right
+                   .provenance
+                   .isParametric) {
           val provenance = DerivedDifferenceProvenance(
             left.provenance,
             right.provenance)
@@ -510,7 +530,8 @@ trait ProvenanceChecker extends parser.AST with Binder {
                 Set()
             }
 
-            if (pred.provenance != NullProvenance && pred.provenance != InfiniteProvenance)
+            if (pred.provenance != NullProvenance && pred
+                  .provenance != InfiniteProvenance)
               expr.provenance = child.provenance
             else
               expr.provenance = NullProvenance
@@ -539,7 +560,8 @@ trait ProvenanceChecker extends parser.AST with Binder {
                 Set()
               }
 
-            if (data.provenance != InfiniteProvenance && samples.provenance == InfiniteProvenance)
+            if (data.provenance != InfiniteProvenance && samples
+                  .provenance == InfiniteProvenance)
               expr.provenance = data.provenance
             else
               expr.provenance = NullProvenance
@@ -582,9 +604,12 @@ trait ProvenanceChecker extends parser.AST with Binder {
               unifyProvenance(relations)(from.provenance, to.provenance)
 
             val (contribErrors, contribConstr) =
-              if (from.provenance == InfiniteProvenance || to.provenance == InfiniteProvenance) {
+              if (from.provenance == InfiniteProvenance || to
+                    .provenance == InfiniteProvenance) {
                 (Set(Error(expr, CannotUseDistributionWithoutSampling)), Set())
-              } else if (from.provenance.isParametric || to.provenance.isParametric) {
+              } else if (from.provenance.isParametric || to
+                           .provenance
+                           .isParametric) {
                 (Set(), Set(NotRelated(from.provenance, to.provenance)))
               } else {
                 if (unified.isDefined && unified != Some(NullProvenance))
@@ -609,7 +634,10 @@ trait ProvenanceChecker extends parser.AST with Binder {
 
             val (inErrors, inConstr) = loop(in, relations3, constraints2)
 
-            if (from.provenance == NullProvenance || to.provenance == NullProvenance || from.provenance == InfiniteProvenance || to.provenance == InfiniteProvenance) {
+            if (from.provenance == NullProvenance || to
+                  .provenance == NullProvenance || from
+                  .provenance == InfiniteProvenance || to
+                  .provenance == InfiniteProvenance) {
               expr.provenance = NullProvenance
             } else if (unified.isDefined || unified == Some(NullProvenance)) {
               expr.provenance = NullProvenance
@@ -913,7 +941,9 @@ trait ProvenanceChecker extends parser.AST with Binder {
 
                 def compute(paramProv: Provenance, prov: Provenance)
                     : (Set[Error], Set[ProvConstraint], Provenance) = {
-                  if (left.provenance.isParametric || right.provenance.isParametric) {
+                  if (left.provenance.isParametric || right
+                        .provenance
+                        .isParametric) {
                     if (unified.isDefined)
                       (Set(), Set(), paramProv)
                     else
@@ -1427,34 +1457,34 @@ trait ProvenanceChecker extends parser.AST with Binder {
     private def associateLeft: Provenance =
       this match {
         case UnifiedProvenance(_, _) =>
-          findChildren(
-            this,
-            true).toList sorted Provenance.order.toScalaOrdering reduceLeft UnifiedProvenance
+          findChildren(this, true).toList sorted Provenance
+            .order
+            .toScalaOrdering reduceLeft UnifiedProvenance
 
         case ProductProvenance(_, _) =>
-          findChildren(
-            this,
-            false).toList sorted Provenance.order.toScalaOrdering reduceLeft ProductProvenance
+          findChildren(this, false).toList sorted Provenance
+            .order
+            .toScalaOrdering reduceLeft ProductProvenance
 
         case CoproductProvenance(_, _) =>
-          findChildren(
-            this,
-            false).toList sorted Provenance.order.toScalaOrdering reduceLeft CoproductProvenance
+          findChildren(this, false).toList sorted Provenance
+            .order
+            .toScalaOrdering reduceLeft CoproductProvenance
 
         case DerivedUnionProvenance(_, _) =>
-          findChildren(
-            this,
-            false).toList sorted Provenance.order.toScalaOrdering reduceLeft DerivedUnionProvenance
+          findChildren(this, false).toList sorted Provenance
+            .order
+            .toScalaOrdering reduceLeft DerivedUnionProvenance
 
         case DerivedIntersectProvenance(_, _) =>
-          findChildren(
-            this,
-            false).toList sorted Provenance.order.toScalaOrdering reduceLeft DerivedIntersectProvenance
+          findChildren(this, false).toList sorted Provenance
+            .order
+            .toScalaOrdering reduceLeft DerivedIntersectProvenance
 
         case DerivedDifferenceProvenance(_, _) =>
-          findChildren(
-            this,
-            false).toList sorted Provenance.order.toScalaOrdering reduceLeft DerivedDifferenceProvenance
+          findChildren(this, false).toList sorted Provenance
+            .order
+            .toScalaOrdering reduceLeft DerivedDifferenceProvenance
 
         case prov =>
           prov
@@ -1484,17 +1514,14 @@ trait ProvenanceChecker extends parser.AST with Binder {
     def makeCanonical: Provenance = {
       this match {
         case UnifiedProvenance(left, right) =>
-          UnifiedProvenance(
-            left.makeCanonical,
-            right.makeCanonical).associateLeft
+          UnifiedProvenance(left.makeCanonical, right.makeCanonical)
+            .associateLeft
         case ProductProvenance(left, right) =>
-          ProductProvenance(
-            left.makeCanonical,
-            right.makeCanonical).associateLeft
+          ProductProvenance(left.makeCanonical, right.makeCanonical)
+            .associateLeft
         case CoproductProvenance(left, right) =>
-          CoproductProvenance(
-            left.makeCanonical,
-            right.makeCanonical).associateLeft
+          CoproductProvenance(left.makeCanonical, right.makeCanonical)
+            .associateLeft
         case DerivedUnionProvenance(left, right) =>
           DerivedUnionProvenance(left.makeCanonical, right.makeCanonical)
         case DerivedIntersectProvenance(left, right) =>

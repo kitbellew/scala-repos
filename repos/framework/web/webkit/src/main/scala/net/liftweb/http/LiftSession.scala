@@ -131,7 +131,8 @@ object LiftSession {
               {
                 cp.getParameterTypes.length == 2 &&
                 cp.getParameterTypes().apply(0).isAssignableFrom(clz) &&
-                cp.getParameterTypes()
+                cp
+                  .getParameterTypes()
                   .apply(1)
                   .isAssignableFrom(classOf[LiftSession])
               }
@@ -245,10 +246,12 @@ private[http] object RenderVersion {
     val ret: Box[T] =
       for {
         sess <- S.session
-        func <- sess.findFunc(v).collect {
-          case f: S.PageStateHolder =>
-            f
-        }
+        func <- sess
+          .findFunc(v)
+          .collect {
+            case f: S.PageStateHolder =>
+              f
+          }
       } yield {
         val tret =
           ver.doWith(v) {
@@ -375,7 +378,11 @@ class LiftSession(
     with Loggable
     with HowStateful {
   def sessionHtmlProperties =
-    LiftRules.htmlProperties.session.is.make openOr LiftRules.htmlProperties.default.is.vend
+    LiftRules.htmlProperties.session.is.make openOr LiftRules
+      .htmlProperties
+      .default
+      .is
+      .vend
 
   val requestHtmlProperties: TransientRequestVar[HtmlProperties] =
     new TransientRequestVar[HtmlProperties](
@@ -447,7 +454,9 @@ class LiftSession(
     * See LiftServlet.handleAjax for how we determine we no longer need
     * to hold a reference to an AJAX request.
     */
-  private var ajaxRequests = scala.collection.mutable
+  private var ajaxRequests = scala
+    .collection
+    .mutable
     .Map[String, List[AjaxRequestInfo]]()
 
   private[http] def withAjaxRequests[T](
@@ -592,7 +601,8 @@ class LiftSession(
 
     val toRun = {
       // get all the commands, sorted by owner,
-      (state.uploadedFiles.map(_.name) ::: state.paramNames).distinct
+      (state.uploadedFiles.map(_.name) ::: state.paramNames)
+        .distinct
         .flatMap { parameterName =>
           val callback = Box.legacyNullTest(nmessageCallback.get(parameterName))
 
@@ -632,27 +642,34 @@ class LiftSession(
         case normal =>
           () =>
             normal(
-              state.params.getOrElse(
-                i.name,
-                state.uploadedFiles.filter(_.name == i.name).map(_.fileName)))
+              state
+                .params
+                .getOrElse(
+                  i.name,
+                  state.uploadedFiles.filter(_.name == i.name).map(_.fileName)))
       }
 
-    val ret = toRun.map(_.owner).distinct.flatMap { w =>
-      val f = toRun.filter(_.owner == w)
-      w match {
-        // if it's going to a CometActor, batch up the commands
-        case Full(id) if nasyncById.containsKey(id) =>
-          Option(nasyncById.get(id)).toList.flatMap(a =>
-            a.!?(ActionMessageSet(f.map(i => buildFunc(i)), state)) match {
-              case li: List[_] =>
-                li
-              case other =>
-                Nil
-            })
-        case _ =>
-          f.map(i => buildFunc(i).apply())
+    val ret = toRun
+      .map(_.owner)
+      .distinct
+      .flatMap { w =>
+        val f = toRun.filter(_.owner == w)
+        w match {
+          // if it's going to a CometActor, batch up the commands
+          case Full(id) if nasyncById.containsKey(id) =>
+            Option(nasyncById.get(id))
+              .toList
+              .flatMap(a =>
+                a.!?(ActionMessageSet(f.map(i => buildFunc(i)), state)) match {
+                  case li: List[_] =>
+                    li
+                  case other =>
+                    Nil
+                })
+          case _ =>
+            f.map(i => buildFunc(i).apply())
+        }
       }
-    }
 
     ret
   }
@@ -949,11 +966,13 @@ class LiftSession(
     }
 
     withAjaxRequests { currentAjaxRequests =>
-      currentAjaxRequests.get(ownerName).foreach { requestInfos =>
-        val updated = requestInfos.map(_.copy(lastSeen = time))
+      currentAjaxRequests
+        .get(ownerName)
+        .foreach { requestInfos =>
+          val updated = requestInfos.map(_.copy(lastSeen = time))
 
-        currentAjaxRequests += (ownerName -> updated)
-      }
+          currentAjaxRequests += (ownerName -> updated)
+        }
     }
 
     import scala.collection.JavaConversions._
@@ -1157,23 +1176,25 @@ class LiftSession(
                     cleanUpBeforeRender
 
                     PageName(request.uri + " -> " + request.path)
-                    LiftRules.allowParallelSnippets.doWith(() => !Props.inGAE) {
-                      (
-                        request.location.flatMap(
-                          _.earlyResponse) or LiftRules.earlyResponse.firstFull(
-                          request)
-                      ) or
+                    LiftRules
+                      .allowParallelSnippets
+                      .doWith(() => !Props.inGAE) {
                         (
-                          processTemplate(
-                            locTemplate,
-                            request,
-                            request.path,
-                            200) or
-                            request.createNotFound {
-                              processTemplate(Empty, request, _, 404)
-                            }
-                        )
-                    }
+                          request.location.flatMap(_.earlyResponse) or LiftRules
+                            .earlyResponse
+                            .firstFull(request)
+                        ) or
+                          (
+                            processTemplate(
+                              locTemplate,
+                              request,
+                              request.path,
+                              200) or
+                              request.createNotFound {
+                                processTemplate(Empty, request, _, 404)
+                              }
+                          )
+                      }
                   }
 
                 case Right(Full(resp)) =>
@@ -1341,8 +1362,8 @@ class LiftSession(
       case fut: LAFuture[_] =>
         runSourceContext(fut.get(5.seconds).openOr(Empty), xform, ns)
       case node: scala.xml.Node =>
-        currentSourceContext.doWith(node)(
-          processSurroundAndInclude("Source", xform(ns)))
+        currentSourceContext
+          .doWith(node)(processSurroundAndInclude("Source", xform(ns)))
       case na: org.mozilla.javascript.NativeArray =>
         val len = na.getLength.toInt
         val ar = new Array[Object](len)
@@ -1357,28 +1378,28 @@ class LiftSession(
       case n: java.util.Iterator[_] =>
         for {
           i <- n.toSeq;
-          nodes <- currentSourceContext.doWith(i)(
-            processSurroundAndInclude("Source", xform(ns)))
+          nodes <- currentSourceContext
+            .doWith(i)(processSurroundAndInclude("Source", xform(ns)))
         } yield nodes
       case en: java.util.Enumeration[_] =>
         for {
           i <- en.toSeq;
-          nodes <- currentSourceContext.doWith(i)(
-            processSurroundAndInclude("Source", xform(ns)))
+          nodes <- currentSourceContext
+            .doWith(i)(processSurroundAndInclude("Source", xform(ns)))
         } yield nodes
       case se: scala.collection.Iterable[_] =>
         runSourceContext(se.iterator, xform, ns)
       case se: scala.collection.Iterator[_] =>
         for {
           i <- se.toSeq;
-          nodes <- currentSourceContext.doWith(i)(
-            processSurroundAndInclude("Source", xform(ns)))
+          nodes <- currentSourceContext
+            .doWith(i)(processSurroundAndInclude("Source", xform(ns)))
         } yield nodes
       case a: Array[_] =>
         runSourceContext(a.toList, xform, ns)
       case x =>
-        currentSourceContext.doWith(x)(
-          processSurroundAndInclude("Source", xform(ns)))
+        currentSourceContext
+          .doWith(x)(processSurroundAndInclude("Source", xform(ns)))
     }
   }
 
@@ -1491,10 +1512,12 @@ class LiftSession(
       session: Req): Box[NodeSeq] = {
     val tpath = path.partPath
     val splits =
-      tpath.toList.filter { a =>
-        !a.startsWith("_") && !a.startsWith(".") && a.toLowerCase.indexOf(
-          "-hidden") == -1
-      } match {
+      tpath
+        .toList
+        .filter { a =>
+          !a.startsWith("_") && !a
+            .startsWith(".") && a.toLowerCase.indexOf("-hidden") == -1
+        } match {
         case s @ _ if !s.isEmpty =>
           s
         case _ =>
@@ -1534,9 +1557,11 @@ class LiftSession(
     try {
       LiftSession.constructFrom(
         this,
-        S.location.flatMap(
-          _.currentValue.map(v =>
-            ParamPair(v, v.asInstanceOf[Object].getClass))),
+        S
+          .location
+          .flatMap(
+            _.currentValue
+            .map(v => ParamPair(v, v.asInstanceOf[Object].getClass))),
         c)
 
     } catch {
@@ -1629,12 +1654,15 @@ class LiftSession(
     */
   def findAndProcessTemplate(name: List[String]): Box[Elem] = {
     def findElem(in: NodeSeq): Box[Elem] =
-      in.toList.flatMap {
-        case e: Elem =>
-          Some(e)
-        case _ =>
-          None
-      }.headOption
+      in
+        .toList
+        .flatMap {
+          case e: Elem =>
+            Some(e)
+          case _ =>
+            None
+        }
+        .headOption
 
     for {
       template <- Templates(name, S.locale) ?~ (
@@ -1674,12 +1702,14 @@ class LiftSession(
     * See if there's a object singleton with the right name
     */
   private def findSnippetObject(cls: String): Box[AnyRef] =
-    LiftSession.findSnippetClass(cls + "$").flatMap { c =>
-      tryo {
-        val field = c.getField("MODULE$")
-        field.get(null)
+    LiftSession
+      .findSnippetClass(cls + "$")
+      .flatMap { c =>
+        tryo {
+          val field = c.getField("MODULE$")
+          field.get(null)
+        }
       }
-    }
 
   /*
    * We need to locate a snippet instance for the given tag name. We look in
@@ -1795,19 +1825,23 @@ class LiftSession(
     new S.ProxyFuncHolder(f) {
       override def apply(in: List[String]): Any =
         requestVarFunc(() =>
-          S.CurrentLocation.doWith(curLoc) {
-            snippetMap.doWith(snippetMap.is ++ currentMap) {
-              super.apply(in)
-            }
-          })
+          S
+            .CurrentLocation
+            .doWith(curLoc) {
+              snippetMap.doWith(snippetMap.is ++ currentMap) {
+                super.apply(in)
+              }
+            })
 
       override def apply(in: FileParamHolder): Any =
         requestVarFunc(() =>
-          S.CurrentLocation.doWith(curLoc) {
-            snippetMap.doWith(snippetMap.is ++ currentMap) {
-              super.apply(in)
-            }
-          })
+          S
+            .CurrentLocation
+            .doWith(curLoc) {
+              snippetMap.doWith(snippetMap.is ++ currentMap) {
+                super.apply(in)
+              }
+            })
     }
   }
 
@@ -1978,7 +2012,9 @@ class LiftSession(
                           reportSnippetError(
                             page,
                             snippetName,
-                            LiftRules.SnippetFailures.StatefulDispatchNotMatched,
+                            LiftRules
+                              .SnippetFailures
+                              .StatefulDispatchNotMatched,
                             NodeSeq.Empty,
                             wholeTag)
 
@@ -1989,7 +2025,9 @@ class LiftSession(
                           reportSnippetError(
                             page,
                             snippetName,
-                            LiftRules.SnippetFailures.StatefulDispatchNotMatched,
+                            LiftRules
+                              .SnippetFailures
+                              .StatefulDispatchNotMatched,
                             NodeSeq.Empty,
                             wholeTag)
 
@@ -1997,8 +2035,8 @@ class LiftSession(
                         def gotIt: Box[NodeSeq] =
                           for {
                             meth <- tryo(inst.getClass.getMethod(method))
-                            if classOf[CssBindFunc].isAssignableFrom(
-                              meth.getReturnType)
+                            if classOf[CssBindFunc]
+                              .isAssignableFrom(meth.getReturnType)
                           } yield meth
                             .invoke(inst)
                             .asInstanceOf[CssBindFunc]
@@ -2043,8 +2081,9 @@ class LiftSession(
                               if (clz == classOf[Object])
                                 false
                               else
-                                clz.getGenericInterfaces.find(
-                                  testGeneric) match {
+                                clz
+                                  .getGenericInterfaces
+                                  .find(testGeneric) match {
                                   case Some(_) =>
                                     true
                                   case _ =>
@@ -2057,10 +2096,8 @@ class LiftSession(
 
                         def isFuncNodeSeq(meth: Method): Boolean = {
                           (
-                            classOf[
-                              Function1[
-                                _,
-                                _]] isAssignableFrom meth.getReturnType
+                            classOf[Function1[_, _]] isAssignableFrom meth
+                              .getReturnType
                           ) &&
                           testGeneric(meth.getGenericReturnType)
                         }
@@ -2094,7 +2131,8 @@ class LiftSession(
                               val intersection =
                                 if (Props.devMode) {
                                   val methodNames =
-                                    inst.getClass
+                                    inst
+                                      .getClass
                                       .getMethods()
                                       .map(_.getName)
                                       .toList
@@ -2203,8 +2241,11 @@ class LiftSession(
             net.liftweb.builtin.snippet.Form.post(ret)
           } match {
             case e: Elem =>
-              e % LiftRules.formAttrs.vend.foldLeft[MetaData](Null)(
-                (base, name) => checkAttr(name, attrs, base))
+              e % LiftRules
+                .formAttrs
+                .vend
+                .foldLeft[MetaData](Null)((base, name) =>
+                  checkAttr(name, attrs, base))
             case x =>
               x
           }
@@ -2212,8 +2253,11 @@ class LiftSession(
         case Some("ajax") =>
           net.liftweb.builtin.snippet.Form.render(ret) match {
             case e: Elem =>
-              e % LiftRules.formAttrs.vend.foldLeft[MetaData](Null)(
-                (base, name) => checkAttr(name, attrs, base))
+              e % LiftRules
+                .formAttrs
+                .vend
+                .foldLeft[MetaData](Null)((base, name) =>
+                  checkAttr(name, attrs, base))
             case x =>
               x
           }
@@ -2228,8 +2272,11 @@ class LiftSession(
             ret
           }
           </form> %
-            checkMultiPart(attrs) % LiftRules.formAttrs.vend.foldLeft[MetaData](
-            Null)((base, name) => checkAttr(name, attrs, base))
+            checkMultiPart(attrs) % LiftRules
+            .formAttrs
+            .vend
+            .foldLeft[MetaData](Null)((base, name) =>
+              checkAttr(name, attrs, base))
 
         case _ =>
           ret
@@ -2410,23 +2457,27 @@ class LiftSession(
     def unapply(in: Node): Option[DataAttributeProcessorAnswer] = {
       in match {
         case element: Elem if dataAttributeProcessors.nonEmpty =>
-          element.attributes.toStream.flatMap {
-            case UnprefixedAttribute(key, value, _)
-                if key.toLowerCase().startsWith("data-") =>
-              val dataProcessorName = key.substring(5).toLowerCase()
-              val dataProcessorInputValue = value.text
-              val filteredElement = removeAttribute(key, element)
+          element
+            .attributes
+            .toStream
+            .flatMap {
+              case UnprefixedAttribute(key, value, _)
+                  if key.toLowerCase().startsWith("data-") =>
+                val dataProcessorName = key.substring(5).toLowerCase()
+                val dataProcessorInputValue = value.text
+                val filteredElement = removeAttribute(key, element)
 
-              NamedPF.applyBox(
-                (
-                  dataProcessorName,
-                  dataProcessorInputValue,
-                  filteredElement,
-                  LiftSession.this),
-                dataAttributeProcessors)
-            case _ =>
-              Empty
-          }.headOption
+                NamedPF.applyBox(
+                  (
+                    dataProcessorName,
+                    dataProcessorInputValue,
+                    filteredElement,
+                    LiftSession.this),
+                  dataAttributeProcessors)
+              case _ =>
+                Empty
+            }
+            .headOption
 
         case _ =>
           None
@@ -2770,12 +2821,14 @@ class LiftSession(
 
     testStatefulFeature {
       import scala.collection.JavaConversions._
-      nasyncComponents.flatMap {
-        case (CometId(name, _), value) if name == theType =>
-          Full(value)
-        case _ =>
-          Empty
-      }.toList
+      nasyncComponents
+        .flatMap {
+          case (CometId(name, _), value) if name == theType =>
+            Full(value)
+          case _ =>
+            Empty
+        }
+        .toList
     }
   }
 
@@ -2955,16 +3008,16 @@ class LiftSession(
       newCometFn: (CometCreationInfo) => Box[T])(
       creationInfo: CometCreationInfo): Box[T] = {
     newCometFn(creationInfo).map { comet =>
-      val initialRequest = S.request
+      val initialRequest = S
+        .request
         .filter(_ => comet.sendInitialReq_?)
         .map(_.snapshot)
       comet ! PerformSetupComet2(initialRequest)
       comet.setCometActorLocale(S.locale)
 
       asyncSync.synchronized {
-        nasyncComponents.put(
-          CometId(creationInfo.cometType, creationInfo.cometName),
-          comet)
+        nasyncComponents
+          .put(CometId(creationInfo.cometType, creationInfo.cometName), comet)
         nasyncById.put(comet.uniqueId, comet)
       }
 
@@ -3055,7 +3108,8 @@ class LiftSession(
           in.msg
         }
           </b> <br/>{
-          in.exception
+          in
+            .exception
             .map(e =>
               <pre>
           {
@@ -3090,7 +3144,8 @@ class LiftSession(
           case Nil =>
             s
           case xs =>
-            xs.map {
+            xs
+              .map {
                 case (id, replacement) =>
                   (("#" + id) #> replacement)
               }
@@ -3155,8 +3210,8 @@ class LiftSession(
               partialUpdate(
                 JsCmds.JsSchedule(
                   JsRaw(
-                    s"lift.sendEvent(${guid.encJs}, {'success': ${compactRender(
-                      value)}} )").cmd))
+                    s"lift.sendEvent(${guid.encJs}, {'success': ${compactRender(value)}} )")
+                    .cmd))
             case DoneMsg(guid) =>
               partialUpdate(
                 JsCmds.JsSchedule(
@@ -3166,14 +3221,14 @@ class LiftSession(
               partialUpdate(
                 JsCmds.JsSchedule(
                   JsRaw(
-                    s"lift.sendEvent(${guid.encJs}, {'failure': ${msg.encJs} })").cmd))
+                    s"lift.sendEvent(${guid.encJs}, {'failure': ${msg.encJs} })")
+                    .cmd))
             case _ =>
           }
         }
 
-      nasyncComponents.put(
-        CometId(ca.theType openOr "Roundtrip Comet Actor", ca.name),
-        ca)
+      nasyncComponents
+        .put(CometId(ca.theType openOr "Roundtrip Comet Actor", ca.name), ca)
       nasyncById.put(ca.uniqueId, ca)
 
       ca.callInitCometActor(
@@ -3227,7 +3282,8 @@ class LiftSession(
                       e)
                     ca ! FailMsg(
                       guid,
-                      "Failed to extract payload as " + func.manifest + " exception " + e.getMessage)
+                      "Failed to extract payload as " + func
+                        .manifest + " exception " + e.getMessage)
                     None
 
                 }
@@ -3333,9 +3389,9 @@ class LiftSession(
       }
 
       lazy val theFunc = JsRaw(
-        s"""function(v) {${SHtml
-          .jsonCall(JsRaw("v"), localFunc(_))
-          .toJsCmd}}""")
+        s"""function(v) {${SHtml.jsonCall(
+          JsRaw("v"),
+          localFunc(_)).toJsCmd}}""")
 
       lazy val build: (String, JsExp) = "_call_server" -> theFunc
 
@@ -3462,12 +3518,15 @@ private object SnippetNode {
           (
             elm,
             elm.child,
-            elm.attributes.find {
-              case p: PrefixedAttribute =>
-                p.pre == "lift" && (p.key == "parallel")
-              case _ =>
-                false
-            }.isDefined,
+            elm
+              .attributes
+              .find {
+                case p: PrefixedAttribute =>
+                  p.pre == "lift" && (p.key == "parallel")
+                case _ =>
+                  false
+              }
+              .isDefined,
             elm.attributes,
             elm.label))
       }

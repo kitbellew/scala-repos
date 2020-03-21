@@ -39,10 +39,13 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
 
     lazy val arguments = CommandLineParser.tokenize(options)
     lazy val virtualDirectory =
-      arguments.iterator.sliding(2).collectFirst {
-        case Seq("-d", dir) =>
-          dir
-      } match {
+      arguments
+        .iterator
+        .sliding(2)
+        .collectFirst {
+          case Seq("-d", dir) =>
+            dir
+        } match {
         case Some(outDir) =>
           AbstractFile.getDirectory(outDir)
         case None =>
@@ -64,7 +67,11 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
         // we need to use UUIDs here, because our toolbox might be spawned by another toolbox
         // that already has, say, __wrapper$1 in its virtual directory, which will shadow our codegen
         newTermName(
-          "__wrapper$" + wrapCount + "$" + java.util.UUID.randomUUID.toString
+          "__wrapper$" + wrapCount + "$" + java
+            .util
+            .UUID
+            .randomUUID
+            .toString
             .replace("-", ""))
       }
 
@@ -94,8 +101,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
             "reflective toolbox has failed: cannot operate on trees that are already typed")
 
         if (expr.freeTypes.nonEmpty) {
-          val ft_s = expr.freeTypes map (ft =>
-            s"  ${ft.name} ${ft.origin}") mkString "\n  "
+          val ft_s = expr
+            .freeTypes map (ft => s"  ${ft.name} ${ft.origin}") mkString "\n  "
           throw ToolBoxError(s"""
             |reflective toolbox failed due to unresolved free type variables:
             |$ft_s
@@ -111,7 +118,9 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
           Tree,
           scala.collection.mutable.LinkedHashMap[FreeTermSymbol, TermName]) = {
         val freeTerms = expr0.freeTerms
-        val freeTermNames = scala.collection.mutable
+        val freeTermNames = scala
+          .collection
+          .mutable
           .LinkedHashMap[FreeTermSymbol, TermName]()
         freeTerms foreach (ft => {
           var name = ft.name.toString
@@ -166,24 +175,27 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
           var expr2 = exprAndFreeTerms._1
           val freeTerms = exprAndFreeTerms._2
           val dummies =
-            freeTerms.map {
-              case (freeTerm, name) =>
-                ValDef(
-                  NoMods,
-                  name,
-                  TypeTree(freeTerm.info),
-                  Select(
-                    Ident(PredefModule),
-                    newTermName("$qmark$qmark$qmark")))
-            }.toList
+            freeTerms
+              .map {
+                case (freeTerm, name) =>
+                  ValDef(
+                    NoMods,
+                    name,
+                    TypeTree(freeTerm.info),
+                    Select(
+                      Ident(PredefModule),
+                      newTermName("$qmark$qmark$qmark")))
+              }
+              .toList
           expr2 = Block(dummies, expr2)
 
           // !!! Why is this is in the empty package? If it's only to make
           // it inaccessible then please put it somewhere designed for that
           // rather than polluting the empty package with synthetics.
           // [Eugene] how can we implement that?
-          val ownerClass = rootMirror.EmptyPackageClass.newClassSymbol(
-            newTypeName("<expression-owner>"))
+          val ownerClass = rootMirror
+            .EmptyPackageClass
+            .newClassSymbol(newTypeName("<expression-owner>"))
           build.setInfo(
             ownerClass,
             ClassInfoType(List(ObjectTpe), newScope, ownerClass))
@@ -211,7 +223,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
             run.typerPhase // need to set a phase to something <= typerPhase, otherwise implicits in typedSelect will be disabled
           globalPhase =
             run.typerPhase // amazing... looks like phase and globalPhase are different things, so we need to set them separately
-          currentTyper.context
+          currentTyper
+            .context
             .initRootContext() // need to manually set context mode, otherwise typer.silent will throw exceptions
           reporter.reset()
 
@@ -280,8 +293,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
               trace("failed: ")(error.err.errMsg)
               if (!silent)
                 throw ToolBoxError(
-                  "reflective typecheck has failed: %s".format(
-                    error.err.errMsg))
+                  "reflective typecheck has failed: %s"
+                    .format(error.err.errMsg))
               EmptyTree
           }
         })
@@ -341,7 +354,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
         val expr = build.SyntacticBlock(expr0 :: Nil)
 
         val freeTerms =
-          expr.freeTerms // need to calculate them here, because later on they will be erased
+          expr
+            .freeTerms // need to calculate them here, because later on they will be erased
         val thunks = freeTerms map (fte =>
           () =>
             fte.value) // need to be lazy in order not to distort evaluation order
@@ -352,10 +366,12 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
             expr0,
             wrapFreeTermRefs = true)
 
-          val (obj, _) = rootMirror.EmptyPackageClass.newModuleAndClassSymbol(
-            nextWrapperModuleName(),
-            NoPosition,
-            NoFlags)
+          val (obj, _) = rootMirror
+            .EmptyPackageClass
+            .newModuleAndClassSymbol(
+              nextWrapperModuleName(),
+              NoPosition,
+              NoFlags)
 
           val minfo = ClassInfoType(List(ObjectTpe), newScope, obj.moduleClass)
           obj.moduleClass setInfo minfo
@@ -422,14 +438,13 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
         if (settings.debug)
           println("generated: " + className)
         def moduleFileName(className: String) = className + "$"
-        val jclazz = jClass.forName(
-          moduleFileName(className),
-          true,
-          classLoader)
+        val jclazz = jClass
+          .forName(moduleFileName(className), true, classLoader)
         val jmeth =
           jclazz.getDeclaredMethods.find(_.getName == wrapperMethodName).get
         val jfield =
-          jclazz.getDeclaredFields
+          jclazz
+            .getDeclaredFields
             .find(_.getName == NameTransformer.MODULE_INSTANCE_NAME)
             .get
         val singleton = jfield.get(null)
@@ -447,9 +462,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
         //   applyMeth.invoke(result)
         // }
         () => {
-          val result = jmeth.invoke(
-            singleton,
-            thunks map (_.asInstanceOf[AnyRef]): _*)
+          val result = jmeth
+            .invoke(singleton, thunks map (_.asInstanceOf[AnyRef]): _*)
           if (jmeth.getReturnType == java.lang.Void.TYPE)
             ()
           else

@@ -33,8 +33,9 @@ class CleanWorksheetAction() extends AnAction with TopComponentAction {
 
     val editor: Editor =
       FileEditorManager.getInstance(project).getSelectedTextEditor
-    val file: VirtualFile = CommonDataKeys.VIRTUAL_FILE.getData(
-      e.getDataContext)
+    val file: VirtualFile = CommonDataKeys
+      .VIRTUAL_FILE
+      .getData(e.getDataContext)
 
     if (editor == null || file == null)
       return
@@ -56,11 +57,8 @@ class CleanWorksheetAction() extends AnAction with TopComponentAction {
       inWriteAction {
         CleanWorksheetAction.resetScrollModel(viewer)
 
-        CleanWorksheetAction.cleanWorksheet(
-          psiFile.getNode,
-          editor,
-          viewer,
-          project)
+        CleanWorksheetAction
+          .cleanWorksheet(psiFile.getNode, editor, viewer, project)
 
         parent.remove(splitPane)
         parent.add(editor.getComponent, BorderLayout.CENTER)
@@ -86,12 +84,15 @@ object CleanWorksheetAction {
     viewer match {
       case viewerEx: EditorImpl =>
         val commonModel = viewerEx.getScrollPane.getVerticalScrollBar.getModel
-        viewerEx.getScrollPane.getVerticalScrollBar.setModel(
-          new DefaultBoundedRangeModel(
-            commonModel.getValue,
-            commonModel.getExtent,
-            commonModel.getMinimum,
-            commonModel.getMaximum))
+        viewerEx
+          .getScrollPane
+          .getVerticalScrollBar
+          .setModel(
+            new DefaultBoundedRangeModel(
+              commonModel.getValue,
+              commonModel.getExtent,
+              commonModel.getMinimum,
+              commonModel.getMaximum))
       case _ =>
     }
   }
@@ -103,8 +104,8 @@ object CleanWorksheetAction {
       project: Project) {
     val rightDocument = rightEditor.getDocument
 
-    WorksheetEditorPrinter.deleteWorksheetEvaluation(
-      node.getPsi.asInstanceOf[ScalaFile])
+    WorksheetEditorPrinter
+      .deleteWorksheetEvaluation(node.getPsi.asInstanceOf[ScalaFile])
 
     if (rightDocument != null && !project.isDisposed) {
       ApplicationManager.getApplication runWriteAction new Runnable {

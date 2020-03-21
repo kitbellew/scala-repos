@@ -88,20 +88,16 @@ private[yarn] class AMDelegationTokenRenewer(
       */
     def scheduleRenewal(runnable: Runnable): Unit = {
       val credentials = UserGroupInformation.getCurrentUser.getCredentials
-      val renewalInterval = hadoopUtil.getTimeFromNowToRenewal(
-        sparkConf,
-        0.75,
-        credentials)
+      val renewalInterval = hadoopUtil
+        .getTimeFromNowToRenewal(sparkConf, 0.75, credentials)
       // Run now!
       if (renewalInterval <= 0) {
         logInfo("HDFS tokens have expired, creating new tokens now.")
         runnable.run()
       } else {
         logInfo(s"Scheduling login from keytab in $renewalInterval millis.")
-        delegationTokenRenewer.schedule(
-          runnable,
-          renewalInterval,
-          TimeUnit.MILLISECONDS)
+        delegationTokenRenewer
+          .schedule(runnable, renewalInterval, TimeUnit.MILLISECONDS)
       }
     }
 
@@ -138,8 +134,8 @@ private[yarn] class AMDelegationTokenRenewer(
     try {
       val remoteFs = FileSystem.get(freshHadoopConf)
       val credentialsPath = new Path(credentialsFile)
-      val thresholdTime =
-        System.currentTimeMillis() - (daysToKeepFiles days).toMillis
+      val thresholdTime = System.currentTimeMillis() - (daysToKeepFiles days)
+      .toMillis
       hadoopUtil
         .listFilesSorted(
           remoteFs,
@@ -213,13 +209,14 @@ private[yarn] class AMDelegationTokenRenewer(
           SparkHadoopUtil.SPARK_YARN_CREDS_TEMP_EXTENSION)
         .lastOption
         .foreach { status =>
-          lastCredentialsFileSuffix = hadoopUtil.getSuffixForCredentialsPath(
-            status.getPath)
+          lastCredentialsFileSuffix = hadoopUtil
+            .getSuffixForCredentialsPath(status.getPath)
         }
     }
     val nextSuffix = lastCredentialsFileSuffix + 1
     val tokenPathStr =
-      credentialsFile + SparkHadoopUtil.SPARK_YARN_CREDS_COUNTER_DELIM + nextSuffix
+      credentialsFile + SparkHadoopUtil
+        .SPARK_YARN_CREDS_COUNTER_DELIM + nextSuffix
     val tokenPath = new Path(tokenPathStr)
     val tempTokenPath =
       new Path(tokenPathStr + SparkHadoopUtil.SPARK_YARN_CREDS_TEMP_EXTENSION)

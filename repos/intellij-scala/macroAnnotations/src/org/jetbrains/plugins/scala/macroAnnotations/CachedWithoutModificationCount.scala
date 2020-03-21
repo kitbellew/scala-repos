@@ -111,8 +111,8 @@ object CachedWithoutModificationCount {
         val fields =
           if (hasParameters) {
             q"""
-            private val $mapName = new java.util.concurrent.ConcurrentHashMap[(..${flatParams
-              .map(_.tpt)}), $wrappedRetTp]()
+            private val $mapName = new java.util.concurrent.ConcurrentHashMap[(..${flatParams.map(
+              _.tpt)}), $wrappedRetTp]()
             ..$analyzeCachesField
             ..$addToBuffers
           """

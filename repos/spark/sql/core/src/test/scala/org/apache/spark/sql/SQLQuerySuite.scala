@@ -63,7 +63,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("show functions") {
     def getFunctions(pattern: String): Seq[Row] = {
       val regex = java.util.regex.Pattern.compile(pattern)
-      sqlContext.sessionState.functionRegistry
+      sqlContext
+        .sessionState
+        .functionRegistry
         .listFunction()
         .filter(regex.matcher(_).matches())
         .map(Row(_))
@@ -185,8 +187,12 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
     val df = Seq(Tuple1(1), Tuple1(2), Tuple1(3)).toDF("index")
     // we except the id is materialized once
-    val idUDF = org.apache.spark.sql.functions.udf(() =>
-      UUID.randomUUID().toString)
+    val idUDF = org
+      .apache
+      .spark
+      .sql
+      .functions
+      .udf(() => UUID.randomUUID().toString)
 
     val dfWithId = df.withColumn("id", idUDF())
     // Make a new DataFrame (actually the same reference to the old one)
@@ -207,10 +213,11 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   }
 
   test("grouping on nested fields") {
-    sqlContext.read
+    sqlContext
+      .read
       .json(
-        sparkContext.parallelize(
-          """{"nested": {"attribute": 1}, "value": 2}""" :: Nil))
+        sparkContext
+          .parallelize("""{"nested": {"attribute": 1}, "value": 2}""" :: Nil))
       .registerTempTable("rows")
 
     checkAnswer(
@@ -227,7 +234,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   }
 
   test("SPARK-6201 IN type conversion") {
-    sqlContext.read
+    sqlContext
+      .read
       .json(
         sparkContext.parallelize(
           Seq("{\"a\": \"1\"}}", "{\"a\": \"2\"}}", "{\"a\": \"3\"}}")))
@@ -239,7 +247,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   }
 
   test("SPARK-11226 Skip empty line in json file") {
-    sqlContext.read
+    sqlContext
+      .read
       .json(
         sparkContext.parallelize(
           Seq("{\"a\": \"1\"}}", "{\"a\": \"2\"}}", "{\"a\": \"3\"}}", "")))
@@ -258,10 +267,14 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     val df = sql(sqlText)
     // First, check if we have GeneratedAggregate.
     val hasGeneratedAgg =
-      df.queryExecution.sparkPlan.collect {
-        case _: aggregate.TungstenAggregate =>
-          true
-      }.nonEmpty
+      df
+        .queryExecution
+        .sparkPlan
+        .collect {
+          case _: aggregate.TungstenAggregate =>
+            true
+        }
+        .nonEmpty
     if (!hasGeneratedAgg) {
       fail(s"""
            |Codegen is enabled, but query $sqlText does not have TungstenAggregate in the plan.
@@ -717,7 +730,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
           |   SELECT * FROM testData UNION ALL
           |   SELECT * FROM testData) y
           |WHERE x.key = y.key""".stripMargin),
-      testData.rdd
+      testData
+        .rdd
         .flatMap(row => Seq.fill(16)(Row.merge(row, row)))
         .collect()
         .toSeq
@@ -779,17 +793,23 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("SPARK-11111 null-safe join should not use cartesian product") {
     val df = sql(
       "select count(*) from testData a join testData b on (a.key <=> b.key)")
-    val cp = df.queryExecution.sparkPlan.collect {
-      case cp: CartesianProduct =>
-        cp
-    }
+    val cp = df
+      .queryExecution
+      .sparkPlan
+      .collect {
+        case cp: CartesianProduct =>
+          cp
+      }
     assert(cp.isEmpty, "should not use CartesianProduct for null-safe join")
-    val smj = df.queryExecution.sparkPlan.collect {
-      case smj: SortMergeJoin =>
-        smj
-      case j: BroadcastHashJoin =>
-        j
-    }
+    val smj = df
+      .queryExecution
+      .sparkPlan
+      .collect {
+        case smj: SortMergeJoin =>
+          smj
+        case j: BroadcastHashJoin =>
+          j
+      }
     assert(smj.size > 0, "should use SortMergeJoin or BroadcastHashJoin")
     checkAnswer(df, Row(100) :: Nil)
   }
@@ -961,16 +981,18 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
     // "set" itself returns all config variables currently specified in SQLConf.
     assert(sql("SET").collect().size === TestSQLContext.overrideConfs.size)
-    sql("SET").collect().foreach { row =>
-      val key = row.getString(0)
-      val value = row.getString(1)
-      assert(
-        TestSQLContext.overrideConfs.contains(key),
-        s"$key should exist in SQLConf.")
-      assert(
-        TestSQLContext.overrideConfs(key) === value,
-        s"The value of $key should be ${TestSQLContext.overrideConfs(key)} instead of $value.")
-    }
+    sql("SET")
+      .collect()
+      .foreach { row =>
+        val key = row.getString(0)
+        val value = row.getString(1)
+        assert(
+          TestSQLContext.overrideConfs.contains(key),
+          s"$key should exist in SQLConf.")
+        assert(
+          TestSQLContext.overrideConfs(key) === value,
+          s"The value of $key should be ${TestSQLContext.overrideConfs(key)} instead of $value.")
+      }
     val overrideConfs = sql("SET").collect()
 
     // "set key=val"
@@ -1123,9 +1145,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     val schema = person.schema
     val docKey = "doc"
     val docValue = "first name"
-    val metadata = new MetadataBuilder()
-      .putString(docKey, docValue)
-      .build()
+    val metadata = new MetadataBuilder().putString(docKey, docValue).build()
     val schemaWithMeta =
       new StructType(
         Array(
@@ -1335,13 +1355,15 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   }
 
   test("SPARK-4322 Grouping field with struct field as sub expression") {
-    sqlContext.read
+    sqlContext
+      .read
       .json(sparkContext.makeRDD("""{"a": {"b": [{"c": 1}]}}""" :: Nil))
       .registerTempTable("data")
     checkAnswer(sql("SELECT a.b[0].c FROM data GROUP BY a.b[0].c"), Row(1))
     sqlContext.dropTempTable("data")
 
-    sqlContext.read
+    sqlContext
+      .read
       .json(sparkContext.makeRDD("""{"a": {"b": 1}}""" :: Nil))
       .registerTempTable("data")
     checkAnswer(sql("SELECT a.b + 1 FROM data GROUP BY a.b + 1"), Row(2))
@@ -1394,7 +1416,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   }
 
   test("SPARK-6145: ORDER BY test for nested fields") {
-    sqlContext.read
+    sqlContext
+      .read
       .json(
         sparkContext.makeRDD(
           """{"a": {"b": 1, "a": {"a": 1}}, "c": [{"d": 1}]}""" :: Nil))
@@ -1409,7 +1432,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   }
 
   test("SPARK-6145: special cases") {
-    sqlContext.read
+    sqlContext
+      .read
       .json(
         sparkContext.makeRDD(
           """{"a": {"b": [1]}, "b": [{"a": 1}], "_c0": {"a": 1}}""" :: Nil))
@@ -1419,7 +1443,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   }
 
   test("SPARK-6898: complete support for special chars in column names") {
-    sqlContext.read
+    sqlContext
+      .read
       .json(
         sparkContext.makeRDD(
           """{"a": {"c.b": 1}, "b.$q": [{"a@!.q": 1}], "q.w": {"w.i&": [1]}}""" :: Nil))
@@ -1439,9 +1464,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       "3" -> 5,
       "3" -> 6,
       "4" -> 1,
-      "4" -> 2)
-      .toDF("a", "b")
-      .registerTempTable("orderByData")
+      "4" -> 2).toDF("a", "b").registerTempTable("orderByData")
 
     checkAnswer(
       sql("""
@@ -1536,10 +1559,11 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("SPARK-7067: order by queries for complex ExtractValue chain") {
     withTempTable("t") {
-      sqlContext.read
+      sqlContext
+        .read
         .json(
-          sparkContext.makeRDD(
-            """{"a": {"b": [{"c": 1}]}, "b": [{"d": 1}]}""" :: Nil))
+          sparkContext
+            .makeRDD("""{"a": {"b": [{"c": 1}]}, "b": [{"d": 1}]}""" :: Nil))
         .registerTempTable("t")
       checkAnswer(sql("SELECT a.b FROM t ORDER BY b[0].d"), Row(Seq(Row(1))))
     }
@@ -1585,8 +1609,10 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       sql("select interval")
     }
     assert(
-      e1.message.contains(
-        "at least one time unit should be given for interval literal"))
+      e1
+        .message
+        .contains(
+          "at least one time unit should be given for interval literal"))
     // Currently we don't yet support nanosecond
     val e2 = intercept[AnalysisException] {
       sql("select interval 23 nanosecond")
@@ -1621,13 +1647,12 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   }
 
   test("aggregation with codegen updates peak execution memory") {
-    AccumulatorSuite.verifyPeakExecutionMemorySet(
-      sparkContext,
-      "aggregation with codegen") {
-      testCodeGen(
-        "SELECT key, count(value) FROM testData GROUP BY key",
-        (1 to 100).map(i => Row(i, 1)))
-    }
+    AccumulatorSuite
+      .verifyPeakExecutionMemorySet(sparkContext, "aggregation with codegen") {
+        testCodeGen(
+          "SELECT key, count(value) FROM testData GROUP BY key",
+          (1 to 100).map(i => Row(i, 1)))
+      }
   }
 
   test("decimal precision with multiply/division") {
@@ -1677,11 +1702,10 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   }
 
   test("external sorting updates peak execution memory") {
-    AccumulatorSuite.verifyPeakExecutionMemorySet(
-      sparkContext,
-      "external sort") {
-      sql("SELECT * FROM testData2 ORDER BY a ASC, b ASC").collect()
-    }
+    AccumulatorSuite
+      .verifyPeakExecutionMemorySet(sparkContext, "external sort") {
+        sql("SELECT * FROM testData2 ORDER BY a ASC, b ASC").collect()
+      }
   }
 
   test("SPARK-9511: error with table starting with number") {
@@ -1702,9 +1726,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
         .parallelize(1 to 10)
         .map(i => (i, i.toString))
         .toDF("num", "str")
-      df.write
-        .format("parquet")
-        .save(path)
+      df.write.format("parquet").save(path)
 
       val message =
         intercept[AnalysisException] {
@@ -1791,9 +1813,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     val confs = SQLConf.AUTO_BROADCASTJOIN_THRESHOLD.key -> "1" :: Nil
     withSQLConf(confs: _*) {
       val df1 = (1 to 50).map(i => (s"str_$i", i)).toDF("i", "j")
-      val df2 = df1
-        .join(df1.select(df1("i")), "i")
-        .select(df1("i"), df1("j"))
+      val df2 = df1.join(df1.select(df1("i")), "i").select(df1("i"), df1("j"))
 
       val df3 = df2.withColumnRenamed("i", "i1").withColumnRenamed("j", "j1")
       val df4 = df2
@@ -1861,8 +1881,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     )
 
     // Try with a registered table.
-    sql("select struct(a, b) as record from testData2").registerTempTable(
-      "structTable")
+    sql("select struct(a, b) as record from testData2")
+      .registerTempTable("structTable")
     checkAnswer(
       sql("SELECT record.* FROM structTable"),
       Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) :: Row(
@@ -1957,8 +1977,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
       // Try resolving something not there.
       assert(
-        intercept[AnalysisException](
-          sql("SELECT abc.* FROM nestedStructTable")).getMessage
+        intercept[AnalysisException](sql("SELECT abc.* FROM nestedStructTable"))
+          .getMessage
           .contains("cannot resolve"))
     }
 
@@ -1986,7 +2006,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
     // Try star expanding a scalar. This should fail.
     assert(
-      intercept[AnalysisException](sql("select a.* from testData2")).getMessage
+      intercept[AnalysisException](sql("select a.* from testData2"))
+        .getMessage
         .contains("Can only star expand struct data types."))
   }
 
@@ -2029,12 +2050,14 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
       // Identity udf that tracks the number of times it is called.
       val countAcc = sparkContext.accumulator(0, "CallCount")
-      sqlContext.udf.register(
-        "testUdf",
-        (x: Int) => {
-          countAcc.++=(1)
-          x
-        })
+      sqlContext
+        .udf
+        .register(
+          "testUdf",
+          (x: Int) => {
+            countAcc.++=(1)
+            x
+          })
 
       // Evaluates df, verifying it is equal to the expectedResult and the accumulator's value
       // is correct.
@@ -2234,19 +2257,22 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
         "select course, year, grouping(course) from courseSales group by course, year")
     }
     assert(
-      error.getMessage contains "grouping() can only be used with GroupingSets/Cube/Rollup")
+      error
+        .getMessage contains "grouping() can only be used with GroupingSets/Cube/Rollup")
     error = intercept[AnalysisException] {
       sql(
         "select course, year, grouping_id(course, year) from courseSales group by course, year")
     }
     assert(
-      error.getMessage contains "grouping_id() can only be used with GroupingSets/Cube/Rollup")
+      error
+        .getMessage contains "grouping_id() can only be used with GroupingSets/Cube/Rollup")
     error = intercept[AnalysisException] {
       sql(
         "select course, year, grouping__id from courseSales group by cube(course, year)")
     }
     assert(
-      error.getMessage contains "grouping__id is deprecated; use grouping_id() instead")
+      error
+        .getMessage contains "grouping__id is deprecated; use grouping_id() instead")
   }
 
   test("SPARK-13056: Null in map value causes NPE") {

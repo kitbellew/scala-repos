@@ -142,9 +142,7 @@ class MemoryLaws extends WordSpec {
     val lookupFn = finalStore.get(_)
 
     val storeAndServiceMatches = MapAlgebra
-      .sumByKey(
-        items1
-          .flatMap(fnA))
+      .sumByKey(items1.flatMap(fnA))
       .forall {
         case (k, v) =>
           val lv: JoinedU = serviceFn(k).getOrElse(Monoid.zero[JoinedU])
@@ -190,11 +188,13 @@ class MemoryLaws extends WordSpec {
     }
     platform.run(plan)
     val lookupFn = currentStore.get(_)
-    TestGraphs.singleStepMapKeysInScala(original)(fnA, fnB).forall {
-      case (k, v) =>
-        val lv = lookupFn(k).getOrElse(Monoid.zero)
-        Equiv[V].equiv(v, lv)
-    }
+    TestGraphs
+      .singleStepMapKeysInScala(original)(fnA, fnB)
+      .forall {
+        case (k, v) =>
+          val lv = lookupFn(k).getOrElse(Monoid.zero)
+          Equiv[V].equiv(v, lv)
+      }
   }
 
   def lookupCollectChecker[T: Arbitrary: Equiv: Manifest, U: Arbitrary: Equiv]
@@ -298,8 +298,8 @@ class MemoryLaws extends WordSpec {
       val store1 = MutableMap.empty[Int, Int]
       val store2 = MutableMap.empty[Int, Int]
       val comp = source.map(v => (v % 3, v)).sumByKey(store1)
-      val prod = comp.also(
-        comp.mapValues(_._2).write(new BufferFunc).sumByKey(store2))
+      val prod = comp
+        .also(comp.mapValues(_._2).write(new BufferFunc).sumByKey(store2))
       val mem = new Memory
       mem.run(mem.plan(prod))
       assert(store1.toMap == ((0 to 100).groupBy(_ % 3).mapValues(_.sum)))

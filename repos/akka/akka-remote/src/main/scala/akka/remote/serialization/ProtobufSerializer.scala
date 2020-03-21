@@ -20,7 +20,8 @@ object ProtobufSerializer {
     * protobuf representation.
     */
   def serializeActorRef(ref: ActorRef): ActorRefData = {
-    ActorRefData.newBuilder
+    ActorRefData
+      .newBuilder
       .setPath(Serialization.serializedActorPath(ref))
       .build
   }

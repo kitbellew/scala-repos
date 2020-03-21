@@ -79,9 +79,11 @@ case class Grant(
   }
 
   def implies(other: Grant): Boolean = {
-    !isExpired(other.expirationDate) && other.permissions.forall { perm =>
-      permissions.exists(_.implies(perm))
-    }
+    !isExpired(other.expirationDate) && other
+      .permissions
+      .forall { perm =>
+        permissions.exists(_.implies(perm))
+      }
   }
 }
 
@@ -159,8 +161,8 @@ object Grant extends Logging {
       Set.empty[Grant]
     else {
       def tsort(grants: List[Grant]): List[Grant] =
-        grants.find(g1 =>
-          !grants.exists(g2 => g2 != g1 && g2.implies(g1))) match {
+        grants
+          .find(g1 => !grants.exists(g2 => g2 != g1 && g2.implies(g1))) match {
           case Some(undominated) =>
             undominated +: tsort(grants.filterNot(_ == undominated))
           case _ =>

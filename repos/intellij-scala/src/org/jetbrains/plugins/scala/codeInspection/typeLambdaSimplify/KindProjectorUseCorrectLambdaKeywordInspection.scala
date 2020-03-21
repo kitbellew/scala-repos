@@ -35,41 +35,43 @@ class KindProjectorUseCorrectLambdaKeywordInspection
         ScalaCodeStyleSettings
           .getInstance(param.getProject)
           .REPLACE_LAMBDA_WITH_GREEK_LETTER
-      param.children.foreach {
-        case simple: ScSimpleTypeElement =>
-          simple.getText match {
-            case "Lambda" if useGreekLambda =>
-              val changeKeywordFix =
-                new KindProjectorUseCorrectLambdaKeywordQuickFix(simple, "λ")
-              holder.registerProblem(
-                simple,
-                "Kind Projector: Replace Lambda with λ",
-                changeKeywordFix)
-              val changeSettingsFix =
-                new ChangeLambdaCodeStyleSetting(!useGreekLambda)
-              holder.registerProblem(
-                simple,
-                codeStyleSettingUseWordLambda,
-                changeSettingsFix)
-            case "λ" if !useGreekLambda =>
-              val changeKeywordFix =
-                new KindProjectorUseCorrectLambdaKeywordQuickFix(
+      param
+        .children
+        .foreach {
+          case simple: ScSimpleTypeElement =>
+            simple.getText match {
+              case "Lambda" if useGreekLambda =>
+                val changeKeywordFix =
+                  new KindProjectorUseCorrectLambdaKeywordQuickFix(simple, "λ")
+                holder.registerProblem(
                   simple,
-                  "Lambda")
-              holder.registerProblem(
-                simple,
-                "Kind Projector: Replace λ with Lambda",
-                changeKeywordFix)
-              val changeSettingsFix =
-                new ChangeLambdaCodeStyleSetting(!useGreekLambda)
-              holder.registerProblem(
-                simple,
-                codeStyleSettingUseGreekLambda,
-                changeSettingsFix)
-            case _ =>
-          }
-        case _ =>
-      }
+                  "Kind Projector: Replace Lambda with λ",
+                  changeKeywordFix)
+                val changeSettingsFix =
+                  new ChangeLambdaCodeStyleSetting(!useGreekLambda)
+                holder.registerProblem(
+                  simple,
+                  codeStyleSettingUseWordLambda,
+                  changeSettingsFix)
+              case "λ" if !useGreekLambda =>
+                val changeKeywordFix =
+                  new KindProjectorUseCorrectLambdaKeywordQuickFix(
+                    simple,
+                    "Lambda")
+                holder.registerProblem(
+                  simple,
+                  "Kind Projector: Replace λ with Lambda",
+                  changeKeywordFix)
+                val changeSettingsFix =
+                  new ChangeLambdaCodeStyleSetting(!useGreekLambda)
+                holder.registerProblem(
+                  simple,
+                  codeStyleSettingUseGreekLambda,
+                  changeSettingsFix)
+              case _ =>
+            }
+          case _ =>
+        }
   }
 }
 
@@ -82,9 +84,8 @@ class KindProjectorUseCorrectLambdaKeywordQuickFix(
     if (!elem.isValid)
       return
 
-    val repl = ScalaPsiElementFactory.createTypeElementFromText(
-      replacement,
-      elem.getManager)
+    val repl = ScalaPsiElementFactory
+      .createTypeElementFromText(replacement, elem.getManager)
     elem.replace(repl)
   }
 }

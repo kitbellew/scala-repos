@@ -81,16 +81,16 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
   def rewriteClosureApplyInvocations(): Unit = {
 
     // sort all closure invocations to rewrite to ensure bytecode stability
-    val toRewrite = mutable.TreeMap
+    val toRewrite = mutable
+      .TreeMap
       .empty[ClosureInstantiation, mutable.ArrayBuffer[(MethodInsnNode, Int)]](
         closureInitOrdering)
     def addRewrite(
         init: ClosureInstantiation,
         invocation: MethodInsnNode,
         stackHeight: Int): Unit = {
-      val callsites = toRewrite.getOrElseUpdate(
-        init,
-        mutable.ArrayBuffer.empty[(MethodInsnNode, Int)])
+      val callsites = toRewrite
+        .getOrElseUpdate(init, mutable.ArrayBuffer.empty[(MethodInsnNode, Int)])
       callsites += ((invocation, stackHeight))
     }
 
@@ -118,9 +118,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
                 for (init <- closureInits.valuesIterator)
                   closureCallsites(init, prodCons) foreach {
                     case Left(warning) =>
-                      backendReporting.inlinerWarning(
-                        warning.pos,
-                        warning.toString)
+                      backendReporting
+                        .inlinerWarning(warning.pos, warning.toString)
 
                     case Right((invocation, stackHeight)) =>
                       addRewrite(init, invocation, stackHeight)
@@ -181,7 +180,10 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     val ownerClass = closureInit.ownerClass
     val lambdaBodyHandle = closureInit.lambdaMetaFactoryCall.implMethod
 
-    ownerMethod.instructions.iterator.asScala
+    ownerMethod
+      .instructions
+      .iterator
+      .asScala
       .collect({
         case invocation: MethodInsnNode
             if isSamInvocation(invocation, closureInit, prodCons) =>
@@ -263,14 +265,14 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
           val numArgs = Type.getArgumentTypes(invocation.desc).length
           invocationFrame.stackTop - numArgs
         }
-        val receiverProducers = prodCons.initialProducersForValueAt(
-          invocation,
-          receiverSlot)
+        val receiverProducers = prodCons
+          .initialProducersForValueAt(invocation, receiverSlot)
         receiverProducers.size == 1 && receiverProducers.head == indy
       }
 
       def isSpecializedVersion(specName: String, nonSpecName: String) =
-        specName.startsWith(nonSpecName) && specializationSuffix.pattern
+        specName.startsWith(nonSpecName) && specializationSuffix
+          .pattern
           .matcher(specName.substring(nonSpecName.length))
           .matches
 
@@ -278,8 +280,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
         specTp == nonSpecTp || {
           val specDesc = specTp.getDescriptor
           val nonSpecDesc = nonSpecTp.getDescriptor
-          specDesc.length == 1 && primitives.contains(
-            specDesc) && nonSpecDesc == ObjectRef.descriptor
+          specDesc.length == 1 && primitives
+            .contains(specDesc) && nonSpecDesc == ObjectRef.descriptor
         }
       }
 
@@ -341,17 +343,17 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
       None
     } else {
       val invokeArgTypes = Type.getArgumentTypes(invokeDesc)
-      val implMethodArgTypes = Type.getArgumentTypes(
-        lambdaBodyMethodDescWithoutCaptures)
+      val implMethodArgTypes = Type
+        .getArgumentTypes(lambdaBodyMethodDescWithoutCaptures)
       val res = new Array[Option[AbstractInsnNode]](invokeArgTypes.length)
       for (i <- invokeArgTypes.indices) {
         if (invokeArgTypes(i) == implMethodArgTypes(i)) {
           res(i) = None
-        } else if (isPrimitiveType(implMethodArgTypes(i)) && invokeArgTypes(
-                     i).getDescriptor == ObjectRef.descriptor) {
+        } else if (isPrimitiveType(implMethodArgTypes(i)) && invokeArgTypes(i)
+                     .getDescriptor == ObjectRef.descriptor) {
           res(i) = Some(getScalaUnbox(implMethodArgTypes(i)))
-        } else if (isPrimitiveType(invokeArgTypes(i)) && implMethodArgTypes(
-                     i).getDescriptor == ObjectRef.descriptor) {
+        } else if (isPrimitiveType(invokeArgTypes(i)) && implMethodArgTypes(i)
+                     .getDescriptor == ObjectRef.descriptor) {
           res(i) = Some(getScalaBox(invokeArgTypes(i)))
         } else {
           assert(!isPrimitiveType(invokeArgTypes(i)), invokeArgTypes(i))
@@ -434,16 +436,16 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
 
     val bodyReturnType = Type.getReturnType(lambdaBodyHandle.getDesc)
     val invocationReturnType = Type.getReturnType(invocation.desc)
-    if (isPrimitiveType(
-          invocationReturnType) && bodyReturnType.getDescriptor == ObjectRef.descriptor) {
+    if (isPrimitiveType(invocationReturnType) && bodyReturnType
+          .getDescriptor == ObjectRef.descriptor) {
       val op =
         if (invocationReturnType.getSort == Type.VOID)
           getPop(1)
         else
           getScalaUnbox(invocationReturnType)
       ownerMethod.instructions.insertBefore(invocation, op)
-    } else if (isPrimitiveType(
-                 bodyReturnType) && invocationReturnType.getDescriptor == ObjectRef.descriptor) {
+    } else if (isPrimitiveType(bodyReturnType) && invocationReturnType
+                 .getDescriptor == ObjectRef.descriptor) {
       val op =
         if (bodyReturnType.getSort == Type.VOID)
           getBoxedUnit
@@ -478,8 +480,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
       case (bodyMethodNode, bodyMethodDeclClass) =>
         val bodyDeclClassType = classBTypeFromParsedClassfile(
           bodyMethodDeclClass)
-        val canInlineFromSource =
-          compilerSettings.YoptInlineGlobal || bodyMethodIsBeingCompiled
+        val canInlineFromSource = compilerSettings
+          .YoptInlineGlobal || bodyMethodIsBeingCompiled
         Callee(
           callee = bodyMethodNode,
           calleeDeclarationClass = bodyDeclClassType,
@@ -546,11 +548,10 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     // local. On the other hand, further optimizations (copy propagation, remove unused locals) will
     // clean it up.
 
-    val localsForCaptures = LocalsList.fromTypes(
-      firstCaptureLocal,
-      capturedTypes)
-    closureInit.ownerMethod.maxLocals =
-      firstCaptureLocal + localsForCaptures.size
+    val localsForCaptures = LocalsList
+      .fromTypes(firstCaptureLocal, capturedTypes)
+    closureInit.ownerMethod.maxLocals = firstCaptureLocal + localsForCaptures
+      .size
 
     insertStoreOps(indy, closureInit.ownerMethod, localsForCaptures, _ => None)
     insertLoadOps(indy, closureInit.ownerMethod, localsForCaptures)
@@ -617,14 +618,16 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     def fromTypes(firstLocal: Int, types: Array[Type]): LocalsList = {
       var sizeTwoOffset = 0
       val locals: List[Local] =
-        types.indices.map(i => {
-          // The ASM method `type.getOpcode` returns the opcode for operating on a value of `type`.
-          val offset = types(i).getOpcode(ILOAD) - ILOAD
-          val local = Local(firstLocal + i + sizeTwoOffset, offset)
-          if (local.size == 2)
-            sizeTwoOffset += 1
-          local
-        })(collection.breakOut)
+        types
+          .indices
+          .map(i => {
+            // The ASM method `type.getOpcode` returns the opcode for operating on a value of `type`.
+            val offset = types(i).getOpcode(ILOAD) - ILOAD
+            val local = Local(firstLocal + i + sizeTwoOffset, offset)
+            if (local.size == 2)
+              sizeTwoOffset += 1
+            local
+          })(collection.breakOut)
       LocalsList(locals)
     }
   }

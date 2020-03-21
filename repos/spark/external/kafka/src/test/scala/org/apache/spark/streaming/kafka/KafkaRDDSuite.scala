@@ -135,7 +135,8 @@ class KafkaRDDSuite extends SparkFunSuite with BeforeAndAfterAll {
         .toMap
 
     // make sure consumer offsets are committed before the next getRdd call
-    kc.setConsumerOffsets(kafkaParams("group.id"), rangesMap)
+    kc
+      .setConsumerOffsets(kafkaParams("group.id"), rangesMap)
       .fold(err => throw new Exception(err.mkString("\n")), _ => ())
 
     // this is the "0 messages" case
@@ -164,43 +165,66 @@ class KafkaRDDSuite extends SparkFunSuite with BeforeAndAfterAll {
   private def getRdd(kc: KafkaCluster, topics: Set[String]) = {
     val groupId = kc.kafkaParams("group.id")
     def consumerOffsets(topicPartitions: Set[TopicAndPartition]) = {
-      kc.getConsumerOffsets(groupId, topicPartitions)
+      kc
+        .getConsumerOffsets(groupId, topicPartitions)
         .right
         .toOption
         .orElse(
-          kc.getEarliestLeaderOffsets(topicPartitions).right.toOption.map {
-            offs => offs.map(kv => kv._1 -> kv._2.offset)
-          })
+          kc
+            .getEarliestLeaderOffsets(topicPartitions)
+            .right
+            .toOption
+            .map { offs =>
+              offs.map(kv => kv._1 -> kv._2.offset)
+            })
     }
-    kc.getPartitions(topics).right.toOption.flatMap { topicPartitions =>
-      consumerOffsets(topicPartitions).flatMap { from =>
-        kc.getLatestLeaderOffsets(topicPartitions).right.toOption.map { until =>
-          val offsetRanges =
-            from.map {
-              case (tp: TopicAndPartition, fromOffset: Long) =>
-                OffsetRange(
-                  tp.topic,
-                  tp.partition,
-                  fromOffset,
-                  until(tp).offset)
-            }.toArray
+    kc
+      .getPartitions(topics)
+      .right
+      .toOption
+      .flatMap { topicPartitions =>
+        consumerOffsets(topicPartitions).flatMap { from =>
+          kc
+            .getLatestLeaderOffsets(topicPartitions)
+            .right
+            .toOption
+            .map { until =>
+              val offsetRanges =
+                from
+                  .map {
+                    case (tp: TopicAndPartition, fromOffset: Long) =>
+                      OffsetRange(
+                        tp.topic,
+                        tp.partition,
+                        fromOffset,
+                        until(tp).offset)
+                  }
+                  .toArray
 
-          val leaders =
-            until.map {
-              case (tp: TopicAndPartition, lo: KafkaCluster.LeaderOffset) =>
-                tp -> Broker(lo.host, lo.port)
-            }.toMap
+              val leaders =
+                until
+                  .map {
+                    case (
+                          tp: TopicAndPartition,
+                          lo: KafkaCluster.LeaderOffset) =>
+                      tp -> Broker(lo.host, lo.port)
+                  }
+                  .toMap
 
-          KafkaUtils
-            .createRDD[String, String, StringDecoder, StringDecoder, String](
-              sc,
-              kc.kafkaParams,
-              offsetRanges,
-              leaders,
-              (mmd: MessageAndMetadata[String, String]) =>
-                s"${mmd.offset} ${mmd.message}")
+              KafkaUtils.createRDD[
+                String,
+                String,
+                StringDecoder,
+                StringDecoder,
+                String](
+                sc,
+                kc.kafkaParams,
+                offsetRanges,
+                leaders,
+                (mmd: MessageAndMetadata[String, String]) =>
+                  s"${mmd.offset} ${mmd.message}")
+            }
         }
       }
-    }
   }
 }

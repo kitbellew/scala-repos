@@ -24,17 +24,21 @@ object RouteConcatenation extends RouteConcatenation {
       */
     def ~(other: Route): Route = { ctx ⇒
       import ctx.executionContext
-      route(ctx).fast.flatMap {
-        case x: RouteResult.Complete ⇒
-          FastFuture.successful(x)
-        case RouteResult.Rejected(outerRejections) ⇒
-          other(ctx).fast.map {
-            case x: RouteResult.Complete ⇒
-              x
-            case RouteResult.Rejected(innerRejections) ⇒
-              RouteResult.Rejected(outerRejections ++ innerRejections)
-          }
-      }
+      route(ctx)
+        .fast
+        .flatMap {
+          case x: RouteResult.Complete ⇒
+            FastFuture.successful(x)
+          case RouteResult.Rejected(outerRejections) ⇒
+            other(ctx)
+              .fast
+              .map {
+                case x: RouteResult.Complete ⇒
+                  x
+                case RouteResult.Rejected(innerRejections) ⇒
+                  RouteResult.Rejected(outerRejections ++ innerRejections)
+              }
+        }
     }
   }
 }

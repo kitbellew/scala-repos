@@ -51,8 +51,8 @@ object LogRoleReplace extends ClipboardOwner {
     } else if (args(0) == "clipboard") {
       val clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
       val contents = clipboard.getContents(null)
-      if (contents != null && contents.isDataFlavorSupported(
-            DataFlavor.stringFlavor)) {
+      if (contents != null && contents
+            .isDataFlavorSupported(DataFlavor.stringFlavor)) {
         val text = contents
           .getTransferData(DataFlavor.stringFlavor)
           .asInstanceOf[String]
@@ -95,7 +95,8 @@ object LogRoleReplace extends ClipboardOwner {
 class LogRoleReplace {
 
   private val RoleStarted =
-    """\[([\w\-]+)\].*Role \[([\w]+)\] started with address \[[\w\-\+\.]+://.*@([\w\-\.]+):([0-9]+)\]""".r
+    """\[([\w\-]+)\].*Role \[([\w]+)\] started with address \[[\w\-\+\.]+://.*@([\w\-\.]+):([0-9]+)\]"""
+      .r
   private val ColorCode = """\u001B?\[[0-9]+m"""
 
   private var replacements: Map[String, String] = Map.empty

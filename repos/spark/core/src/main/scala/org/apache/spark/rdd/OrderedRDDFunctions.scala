@@ -61,12 +61,11 @@ class OrderedRDDFunctions[
       numPartitions: Int = self.partitions.length): RDD[(K, V)] =
     self.withScope {
       val part = new RangePartitioner(numPartitions, self, ascending)
-      new ShuffledRDD[K, V, V](self, part)
-        .setKeyOrdering(
-          if (ascending)
-            ordering
-          else
-            ordering.reverse)
+      new ShuffledRDD[K, V, V](self, part).setKeyOrdering(
+        if (ascending)
+          ordering
+        else
+          ordering.reverse)
     }
 
   /**

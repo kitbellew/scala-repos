@@ -12,10 +12,13 @@ class DeploymentPlanRevertTest
     with Matchers
     with GivenWhenThen {
   private def normalizeVersions(group: Group): Group = {
-    group.withNormalizedVersion.copy(
-      apps = group.apps.map(
-        _.copy(versionInfo = AppDefinition.VersionInfo.NoVersion)),
-      groups = group.groups.map(normalizeVersions))
+    group
+      .withNormalizedVersion
+      .copy(
+        apps = group
+          .apps
+          .map(_.copy(versionInfo = AppDefinition.VersionInfo.NoVersion)),
+        groups = group.groups.map(normalizeVersions))
   }
 
   /**
@@ -105,10 +108,8 @@ class DeploymentPlanRevertTest
 
     When("we remove an app and try to revert that without concurrent changes")
     val appId = "/changeme/app1".toRootPath
-    val target = original.update(
-      appId.parent,
-      _.removeApplication(appId),
-      Timestamp.now())
+    val target = original
+      .update(appId.parent, _.removeApplication(appId), Timestamp.now())
     target.app(appId) should be('empty)
     val plan = DeploymentPlan(original, target)
     val revertToOriginal = plan.revert(target)
@@ -275,7 +276,8 @@ class DeploymentPlanRevertTest
         Group("othergroup2".toRootPath),
         Group("othergroup3".toRootPath), {
           val id =
-            "withdeps".toRootPath // withdeps still exists because of the subgroup
+            "withdeps"
+              .toRootPath // withdeps still exists because of the subgroup
           Group(
             id,
             groups = Set(Group(id / "some")),
@@ -437,7 +439,8 @@ class DeploymentPlanRevertTest
     }
 
     test(
-      s"Reverting ${firstDeployment.name} after deploying ${deployments.tail.map(_.name).mkString(", ")}") {
+      s"Reverting ${firstDeployment.name} after deploying ${deployments.tail.map(
+        _.name).mkString(", ")}") {
       Given("an existing group with apps")
       val original = performDeployments(
         originalBeforeChanges,

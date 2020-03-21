@@ -142,7 +142,8 @@ private[server] class NettyModelConversion(
       override lazy val queryString: Map[String, Seq[String]] = {
         // Very rough parse of query string that doesn't decode
         if (request.getUri.contains("?")) {
-          request.getUri
+          request
+            .getUri
             .split("\\?", 2)(1)
             .split('&')
             .map { keyPair =>
@@ -213,9 +214,8 @@ private[server] class NettyModelConversion(
           HttpResponseStatus.valueOf(result.header.status)
       }
 
-    val connectionHeader = ServerResultUtils.determineConnectionHeader(
-      requestHeader,
-      result)
+    val connectionHeader = ServerResultUtils
+      .determineConnectionHeader(requestHeader, result)
     val skipEntity = requestHeader.method == HttpMethod.HEAD.name()
 
     val response: HttpResponse =
@@ -252,32 +252,40 @@ private[server] class NettyModelConversion(
 
       // Content type and length
       if (mayHaveContentLength(result.header.status)) {
-        result.body.contentLength.foreach { contentLength =>
-          if (HttpHeaders.isContentLengthSet(response)) {
-            val manualContentLength = response.headers.get(CONTENT_LENGTH)
-            if (manualContentLength == contentLength.toString) {
-              logger.info(
-                s"Manual Content-Length header, ignoring manual header.")
-            } else {
-              logger.warn(
-                s"Content-Length header was set manually in the header ($manualContentLength) but is not the same as actual content length ($contentLength).")
+        result
+          .body
+          .contentLength
+          .foreach { contentLength =>
+            if (HttpHeaders.isContentLengthSet(response)) {
+              val manualContentLength = response.headers.get(CONTENT_LENGTH)
+              if (manualContentLength == contentLength.toString) {
+                logger.info(
+                  s"Manual Content-Length header, ignoring manual header.")
+              } else {
+                logger.warn(
+                  s"Content-Length header was set manually in the header ($manualContentLength) but is not the same as actual content length ($contentLength).")
+              }
             }
+            HttpHeaders.setContentLength(response, contentLength)
           }
-          HttpHeaders.setContentLength(response, contentLength)
-        }
       }
-      result.body.contentType.foreach { contentType =>
-        if (response.headers().contains(CONTENT_TYPE)) {
-          logger.warn(
-            s"Content-Type set both in header (${response.headers().get(CONTENT_TYPE)}) and attached to entity ($contentType), ignoring content type from entity. To remove this warning, use Result.as(...) to set the content type, rather than setting the header manually.")
-        } else {
-          response.headers().add(CONTENT_TYPE, contentType)
+      result
+        .body
+        .contentType
+        .foreach { contentType =>
+          if (response.headers().contains(CONTENT_TYPE)) {
+            logger.warn(
+              s"Content-Type set both in header (${response.headers().get(CONTENT_TYPE)}) and attached to entity ($contentType), ignoring content type from entity. To remove this warning, use Result.as(...) to set the content type, rather than setting the header manually.")
+          } else {
+            response.headers().add(CONTENT_TYPE, contentType)
+          }
         }
-      }
 
-      connectionHeader.header.foreach { headerValue =>
-        response.headers().set(CONNECTION, headerValue)
-      }
+      connectionHeader
+        .header
+        .foreach { headerValue =>
+          response.headers().set(CONNECTION, headerValue)
+        }
 
       // Netty doesn't add the required Date header for us, so make sure there is one here
       if (!response.headers().contains(DATE)) {
@@ -315,9 +323,8 @@ private[server] class NettyModelConversion(
       stream: Source[ByteString, _],
       httpVersion: HttpVersion,
       responseStatus: HttpResponseStatus)(implicit mat: Materializer) = {
-    val publisher = SynchronousMappedStreams.map(
-      stream.runWith(Sink.asPublisher(false)),
-      byteStringToHttpContent)
+    val publisher = SynchronousMappedStreams
+      .map(stream.runWith(Sink.asPublisher(false)), byteStringToHttpContent)
     new DefaultStreamedHttpResponse(httpVersion, responseStatus, publisher)
   }
 
@@ -337,10 +344,12 @@ private[server] class NettyModelConversion(
             new DefaultHttpContent(byteStringToByteBuf(bytes))
           case HttpChunk.LastChunk(trailers) =>
             val lastChunk = new DefaultLastHttpContent()
-            trailers.headers.foreach {
-              case (name, value) =>
-                lastChunk.trailingHeaders().add(name, value)
-            }
+            trailers
+              .headers
+              .foreach {
+                case (name, value) =>
+                  lastChunk.trailingHeaders().add(name, value)
+              }
             lastChunk
         }
       )
@@ -375,10 +384,14 @@ private[server] class NettyModelConversion(
       sslEngine: Option[SSLEngine]): Option[Seq[X509Certificate]] = {
     try {
       sslEngine.map { engine =>
-        engine.getSession.getPeerCertificates.toSeq.collect {
-          case x509: X509Certificate =>
-            x509
-        }
+        engine
+          .getSession
+          .getPeerCertificates
+          .toSeq
+          .collect {
+            case x509: X509Certificate =>
+              x509
+          }
       }
     } catch {
       case e: SSLPeerUnverifiedException =>
@@ -396,8 +409,9 @@ private[server] class NettyModelConversion(
           if cachedSeconds == currentTimeSeconds =>
         dateHeaderString
       case _ =>
-        val dateHeaderString = ResponseHeader.httpDateFormat.print(
-          currentTimeMillis)
+        val dateHeaderString = ResponseHeader
+          .httpDateFormat
+          .print(currentTimeMillis)
         cachedDateHeader = currentTimeSeconds -> dateHeaderString
         dateHeaderString
     }

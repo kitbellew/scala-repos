@@ -192,7 +192,8 @@ class MongoRecordSpec extends Specification with MongoTestKit {
 
     val dt = DateTime.now.plusHours(1)
 
-    val fttr = FieldTypeTestRecord.createRecord
+    val fttr = FieldTypeTestRecord
+      .createRecord
       .mandatoryBooleanField(false)
       .mandatoryCountryField(Countries.USA)
       .mandatoryDecimalField(BigDecimal("3.14"))
@@ -208,10 +209,10 @@ class MongoRecordSpec extends Specification with MongoTestKit {
       .mandatoryTimeZoneField("America/Chicago")
       .mandatoryJodaTimeField(dt)
 
-    val bftr = BinaryFieldTestRecord.createRecord
-      .mandatoryBinaryField(binData)
+    val bftr = BinaryFieldTestRecord.createRecord.mandatoryBinaryField(binData)
 
-    val mfttr = MongoFieldTypeTestRecord.createRecord
+    val mfttr = MongoFieldTypeTestRecord
+      .createRecord
       .mandatoryDateField(new Date)
       .mandatoryJsonObjectField(
         TypeTestJsonObject(1, "jsonobj1", Map("x" -> "1")))
@@ -224,7 +225,10 @@ class MongoRecordSpec extends Specification with MongoTestKit {
       ("_id" -> ("$oid" -> mfttr.id.toString)) ~
         (
           "mandatoryDateField" -> (
-            "$dt" -> mfttr.meta.formats.dateFormat
+            "$dt" -> mfttr
+              .meta
+              .formats
+              .dateFormat
               .format(mfttr.mandatoryDateField.value)
           )
         ) ~
@@ -255,7 +259,8 @@ class MongoRecordSpec extends Specification with MongoTestKit {
           ) ~ ("enum" -> 1)
         )
 
-    val pftr = PatternFieldTestRecord.createRecord
+    val pftr = PatternFieldTestRecord
+      .createRecord
       .mandatoryPatternField(Pattern.compile("^Mo", Pattern.CASE_INSENSITIVE))
 
     val pftrJson =
@@ -269,7 +274,8 @@ class MongoRecordSpec extends Specification with MongoTestKit {
         ) ~
         ("legacyOptionalPatternField" -> (None: Option[JObject]))
 
-    val ltr = ListTestRecord.createRecord
+    val ltr = ListTestRecord
+      .createRecord
       .mandatoryStringListField(List("abc", "def", "ghi"))
       .mandatoryIntListField(List(4, 5, 6))
       .mandatoryMongoJsonObjectListField(
@@ -303,7 +309,8 @@ class MongoRecordSpec extends Specification with MongoTestKit {
         ) ~
         ("mandatoryMongoRefListField" -> JArray(Nil))
 
-    val mtr = MapTestRecord.createRecord
+    val mtr = MapTestRecord
+      .createRecord
       .mandatoryStringMapField(Map("a" -> "abc", "b" -> "def", "c" -> "ghi"))
       .mandatoryIntMapField(Map("a" -> 4, "b" -> 5, "c" -> 6))
 
@@ -328,7 +335,8 @@ class MongoRecordSpec extends Specification with MongoTestKit {
     val ssr1 = SubSubRecord.createRecord.name("SubSubRecord1")
     val ssr2 = SubSubRecord.createRecord.name("SubSubRecord2")
 
-    val sr1 = SubRecord.createRecord
+    val sr1 = SubRecord
+      .createRecord
       .name("SubRecord1")
       .subsub(ssr1)
       .subsublist(ssr1 :: ssr2 :: Nil)
@@ -338,7 +346,8 @@ class MongoRecordSpec extends Specification with MongoTestKit {
 
     val sr2 = SubRecord.createRecord.name("SubRecord2")
 
-    val srtr = SubRecordTestRecord.createRecord
+    val srtr = SubRecordTestRecord
+      .createRecord
       .mandatoryBsonRecordField(sr1)
       .mandatoryBsonRecordListField(List(sr1, sr2))
 
@@ -397,8 +406,9 @@ class MongoRecordSpec extends Specification with MongoTestKit {
 
     // JObjectField
     val joftrFieldJObject: JObject = ("minutes" -> 59)
-    val joftr = JObjectFieldTestRecord.createRecord.mandatoryJObjectField(
-      joftrFieldJObject)
+    val joftr = JObjectFieldTestRecord
+      .createRecord
+      .mandatoryJObjectField(joftrFieldJObject)
     val joftrJson: JValue = ("_id" -> ("$oid" -> joftr.id.toString)) ~ (
       "mandatoryJObjectField" -> ("minutes" -> 59)
     )
@@ -574,15 +584,15 @@ class MongoRecordSpec extends Specification with MongoTestKit {
     }
 
     "get set from json string using lift-json parser" in {
-      val mfftrFromJson = MongoFieldTypeTestRecord.fromJsonString(
-        compactRender(mfttrJson))
+      val mfftrFromJson = MongoFieldTypeTestRecord
+        .fromJsonString(compactRender(mfttrJson))
       mfftrFromJson.isDefined must_== true
       mfftrFromJson foreach { tr =>
         tr mustEqual mfttr
       }
 
-      val pftrFromJson = PatternFieldTestRecord.fromJsonString(
-        compactRender(pftrJson))
+      val pftrFromJson = PatternFieldTestRecord
+        .fromJsonString(compactRender(pftrJson))
       pftrFromJson.isDefined must_== true
       pftrFromJson foreach { tr =>
         tr mustEqual pftr
@@ -600,8 +610,8 @@ class MongoRecordSpec extends Specification with MongoTestKit {
         tr mustEqual mtr
       }
 
-      val joftrFromJson = JObjectFieldTestRecord.fromJsonString(
-        compactRender(joftrJson))
+      val joftrFromJson = JObjectFieldTestRecord
+        .fromJsonString(compactRender(joftrJson))
       joftrFromJson must_== Full(joftr)
     }
 
@@ -635,14 +645,20 @@ class MongoRecordSpec extends Specification with MongoTestKit {
 
     "handle Box using JsonBoxSerializer" in {
       val btr = BoxTestRecord.createRecord
-      btr.jsonobjlist.set(
-        BoxTestJsonObj("1", Empty, Full("Full String1"), Failure("Failure1")) ::
+      btr
+        .jsonobjlist
+        .set(
           BoxTestJsonObj(
-            "2",
+            "1",
             Empty,
-            Full("Full String2"),
-            Failure("Failure2")) ::
-          Nil)
+            Full("Full String1"),
+            Failure("Failure1")) ::
+            BoxTestJsonObj(
+              "2",
+              Empty,
+              Full("Full String2"),
+              Failure("Failure2")) ::
+            Nil)
 
       btr.save()
 
@@ -670,7 +686,8 @@ class MongoRecordSpec extends Specification with MongoTestKit {
         ntr.save()
         btr.save()
 
-        val rftr = RefFieldTestRecord.createRecord
+        val rftr = RefFieldTestRecord
+          .createRecord
           .mandatoryObjectIdRefField(fttr.id.get)
           .mandatoryUUIDRefField(ltr.id.get)
           .mandatoryStringRefField(mtr.id.get)
@@ -722,8 +739,7 @@ class MongoRecordSpec extends Specification with MongoTestKit {
         val missingFieldDocId = ObjectId.get
 
         // create a dbobject with no fields manually
-        val builder = BasicDBObjectBuilder.start
-          .add("_id", missingFieldDocId)
+        val builder = BasicDBObjectBuilder.start.add("_id", missingFieldDocId)
 
         FieldTypeTestRecord.useColl { coll =>
           coll.save(builder.get)
@@ -786,7 +802,8 @@ class MongoRecordSpec extends Specification with MongoTestKit {
 
     "update dirty fields for a FieldTypeTestRecord" in {
       S.initIfUninitted(session) {
-        val fttr = FieldTypeTestRecord.createRecord
+        val fttr = FieldTypeTestRecord
+          .createRecord
           .legacyOptionalStringField("legacy optional string")
           .optionalStringField("optional string")
           .save()
@@ -851,7 +868,8 @@ class MongoRecordSpec extends Specification with MongoTestKit {
     }
 
     "update dirty fields for a MongoFieldTypeTestRecord" in {
-      val mfttr = MongoFieldTypeTestRecord.createRecord
+      val mfttr = MongoFieldTypeTestRecord
+        .createRecord
         .legacyOptionalDateField(new Date)
         .legacyOptionalObjectIdField(ObjectId.get)
         .save()
@@ -983,7 +1001,8 @@ class MongoRecordSpec extends Specification with MongoTestKit {
       val ssr1 = SubSubRecord.createRecord.name("SubSubRecord1")
       val ssr2 = SubSubRecord.createRecord.name("SubSubRecord2")
 
-      val sr1 = SubRecord.createRecord
+      val sr1 = SubRecord
+        .createRecord
         .name("SubRecord1")
         .subsub(ssr1)
         .subsublist(ssr1 :: ssr2 :: Nil)
@@ -991,7 +1010,8 @@ class MongoRecordSpec extends Specification with MongoTestKit {
         .smap(Map("a" -> "s1", "b" -> "s2"))
         .pattern(Pattern.compile("^Mon", Pattern.CASE_INSENSITIVE))
 
-      val srtr = SubRecordTestRecord.createRecord
+      val srtr = SubRecordTestRecord
+        .createRecord
         .mandatoryBsonRecordField(sr1)
         .save()
 
@@ -1016,13 +1036,15 @@ class MongoRecordSpec extends Specification with MongoTestKit {
     }
 
     "support custom field name" in {
-      RecordRules.fieldName.doWith((_, name) => snakify(name)) {
-        val rec = CustomFieldName.createRecord
-        rec.customField.name must_== "custom_field"
-        rec.save()
+      RecordRules
+        .fieldName
+        .doWith((_, name) => snakify(name)) {
+          val rec = CustomFieldName.createRecord
+          rec.customField.name must_== "custom_field"
+          rec.save()
 
-        CustomFieldName.find(rec.id.get) must_== Full(rec)
-      }
+          CustomFieldName.find(rec.id.get) must_== Full(rec)
+        }
     }
   }
 }

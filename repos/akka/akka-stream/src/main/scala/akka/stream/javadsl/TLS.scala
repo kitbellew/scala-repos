@@ -98,12 +98,14 @@ object TLS {
     SslTlsInbound,
     NotUsed] =
     new javadsl.BidiFlow(
-      scaladsl.TLS.apply(
-        sslContext,
-        firstSession,
-        role,
-        closing,
-        OptionConverters.toScala(hostInfo).map(e ⇒ (e.first, e.second))))
+      scaladsl
+        .TLS
+        .apply(
+          sslContext,
+          firstSession,
+          role,
+          closing,
+          OptionConverters.toScala(hostInfo).map(e ⇒ (e.first, e.second))))
 
 }
 

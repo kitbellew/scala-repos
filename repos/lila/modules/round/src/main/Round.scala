@@ -83,10 +83,8 @@ private[round] final class Round(
 
     case Resign(playerId) =>
       handle(playerId) { pov =>
-        pov.game.resignable ?? finisher.other(
-          pov.game,
-          _.Resign,
-          Some(!pov.color))
+        pov.game.resignable ?? finisher
+          .other(pov.game, _.Resign, Some(!pov.color))
       }
 
     case GoBerserk(color) =>
@@ -95,8 +93,8 @@ private[round] final class Round(
           messenger.system(
             pov.game,
             (_.untranslated(s"${pov.color.name.capitalize} is going berserk!")))
-          GameRepo.save(progress) >> GameRepo.goBerserk(
-            pov) inject progress.events
+          GameRepo.save(progress) >> GameRepo.goBerserk(pov) inject progress
+            .events
         }
       }
 
@@ -180,7 +178,9 @@ private[round] final class Round(
           lila
             .log("cheat")
             .info(
-              s"hold alert $ip http://lichess.org/${pov.gameId}/${pov.color.name}#${pov.game.turns} ${pov.player.userId | "anon"} mean: $mean SD: $sd")
+              s"hold alert $ip http://lichess.org/${pov.gameId}/${pov.color.name}#${pov.game.turns} ${pov
+                .player
+                .userId | "anon"} mean: $mean SD: $sd")
           lila.mon.cheat.holdAlert()
           GameRepo.setHoldAlert(pov, mean, sd) inject List[Event]()
         }
@@ -231,23 +231,22 @@ private[round] final class Round(
             .giveTime(Color.Black, freeSeconds)
           val progress = (game withClock newClock) + Event.Clock(newClock)
           messenger.system(game, (_.untranslated("Lichess has been updated")))
-          messenger.system(
-            game,
-            (_.untranslated("Sorry for the inconvenience!")))
-          Color.all.foreach { c =>
-            messenger.system(
-              game,
-              (_.untranslated(s"$c + $freeSeconds seconds")))
-          }
+          messenger
+            .system(game, (_.untranslated("Sorry for the inconvenience!")))
+          Color
+            .all
+            .foreach { c =>
+              messenger
+                .system(game, (_.untranslated(s"$c + $freeSeconds seconds")))
+            }
           GameRepo save progress inject progress.events
         }
       }
 
     case AbortForMaintenance =>
       handle { game =>
-        messenger.system(
-          game,
-          (_.untranslated("Game aborted for server maintenance")))
+        messenger
+          .system(game, (_.untranslated("Game aborted for server maintenance")))
         messenger.system(game, (_.untranslated("Sorry for the inconvenience!")))
         game.playable ?? finisher.other(game, _.Aborted)
       }
@@ -265,7 +264,10 @@ private[round] final class Round(
       game,
       _.Outoftime,
       Some(!game.player.color) filterNot { color =>
-        game.toChess.board.variant
+        game
+          .toChess
+          .board
+          .variant
           .insufficientWinningMaterial(game.toChess.situation.board, color)
       })
 
@@ -297,17 +299,19 @@ private[round] final class Round(
     } recover errorHandler("handleGame")
 
   private def publish[A](op: Fu[Events]): Funit =
-    op.addEffect { events =>
-      if (events.nonEmpty)
-        socketHub ! Tell(gameId, EventList(events))
-      if (events exists {
-            case e: Event.Move =>
-              e.threefold
-            case _ =>
-              false
-          })
-        self ! Threefold
-    }.void recover errorHandler("publish")
+    op
+      .addEffect { events =>
+        if (events.nonEmpty)
+          socketHub ! Tell(gameId, EventList(events))
+        if (events exists {
+              case e: Event.Move =>
+                e.threefold
+              case _ =>
+                false
+            })
+          self ! Threefold
+      }
+      .void recover errorHandler("publish")
 
   private def errorHandler(name: String): PartialFunction[Throwable, Unit] = {
     case e: ClientError =>

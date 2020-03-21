@@ -146,7 +146,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       fm: Materializer): Future[ServerBinding] = {
     def handleOneConnection(
         incomingConnection: IncomingConnection): Future[Unit] =
-      try incomingConnection.flow
+      try incomingConnection
+        .flow
         .viaMat(StreamUtils.identityFinishReporter)(Keep.right)
         .joinMat(handler)(Keep.left)
         .run()
@@ -617,15 +618,14 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
     val host = uri.authority.host.address
     val port = uri.effectivePort
 
-    webSocketClientLayer(request, settings, log)
-      .joinMat(
-        _outgoingTlsConnectionLayer(
-          host,
-          port,
-          localAddress,
-          settings,
-          ctx,
-          log))(Keep.left)
+    webSocketClientLayer(request, settings, log).joinMat(
+      _outgoingTlsConnectionLayer(
+        host,
+        port,
+        localAddress,
+        settings,
+        ctx,
+        log))(Keep.left)
   }
 
   /**
@@ -657,8 +657,10 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
 
     import scala.collection.JavaConverters._
     val gateways = hostPoolCache.values().asScala
-    system.log.debug(
-      "Initiating orderly shutdown of all active host connections pools...")
+    system
+      .log
+      .debug(
+        "Initiating orderly shutdown of all active host connections pools...")
     Future.sequence(gateways.map(_.flatMap(_.shutdown()))).map(_ ⇒ ())
   }
 
@@ -746,15 +748,15 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
               throw e
           }
         val fastFuture = FastFuture.successful(gateway)
-        hostPoolCache.put(
-          setup,
-          fastFuture
-        ) // optimize subsequent gateway accesses
+        hostPoolCache
+          .put(setup, fastFuture) // optimize subsequent gateway accesses
         gatewayPromise.success(
           gateway
         ) // satisfy everyone who got a hold of our promise while we were starting up
-        whenShuttingDown.future.onComplete(_ ⇒
-          hostPoolCache.remove(setup, fastFuture))(fm.executionContext)
+        whenShuttingDown
+          .future
+          .onComplete(_ ⇒ hostPoolCache.remove(setup, fastFuture))(
+            fm.executionContext)
         fastFuture
 
       case future ⇒

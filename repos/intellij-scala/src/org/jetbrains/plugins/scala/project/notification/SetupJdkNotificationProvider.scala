@@ -27,7 +27,8 @@ class SetupJdkNotificationProvider(
     notifications: EditorNotifications)
     extends EditorNotifications.Provider[EditorNotificationPanel] {
 
-  project.getMessageBus
+  project
+    .getMessageBus
     .connect(project)
     .subscribe(
       ProjectTopics.PROJECT_ROOTS,

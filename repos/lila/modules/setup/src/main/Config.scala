@@ -85,9 +85,11 @@ trait Positional {
       case sit @ SituationPlus(Situation(board, _), _) =>
         game.copy(
           variant = chess.variant.FromPosition,
-          castleLastMoveTime = game.castleLastMoveTime.copy(
-            lastMove = board.history.lastMove.map(_.origDest),
-            castles = board.history.castles),
+          castleLastMoveTime = game
+            .castleLastMoveTime
+            .copy(
+              lastMove = board.history.lastMove.map(_.origDest),
+              castles = board.history.castles),
           turns = sit.turns
         )
     }
@@ -106,7 +108,13 @@ trait BaseConfig {
     chess.variant.ThreeCheck.id :+
     chess.variant.FromPosition.id
   val variantsWithVariants =
-    variants :+ chess.variant.Crazyhouse.id :+ chess.variant.KingOfTheHill.id :+ chess.variant.ThreeCheck.id :+ chess.variant.Antichess.id :+ chess.variant.Atomic.id :+ chess.variant.Horde.id :+ chess.variant.RacingKings.id
+    variants :+ chess.variant.Crazyhouse.id :+ chess
+      .variant
+      .KingOfTheHill
+      .id :+ chess.variant.ThreeCheck.id :+ chess.variant.Antichess.id :+ chess
+      .variant
+      .Atomic
+      .id :+ chess.variant.Horde.id :+ chess.variant.RacingKings.id
   val variantsWithFenAndVariants =
     variantsWithVariants :+ chess.variant.FromPosition.id
 

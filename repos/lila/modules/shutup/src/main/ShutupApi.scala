@@ -87,7 +87,10 @@ final class ShutupApi(
 
   private def legiferate(userRecord: UserRecord): Funit =
     userRecord.reports.exists(_.unacceptable) ?? {
-      reporter ! lila.hub.actorApi.report
+      reporter ! lila
+        .hub
+        .actorApi
+        .report
         .Shutup(userRecord.userId, reportText(userRecord))
       coll
         .update(
@@ -105,7 +108,8 @@ final class ShutupApi(
     }
 
   private def reportText(userRecord: UserRecord) =
-    "[AUTOREPORT]\n" + userRecord.reports
+    "[AUTOREPORT]\n" + userRecord
+      .reports
       .collect {
         case r if r.unacceptable =>
           s"${r.textType.name}: ${r.nbBad} dubious (out of ${r.ratios.size})"

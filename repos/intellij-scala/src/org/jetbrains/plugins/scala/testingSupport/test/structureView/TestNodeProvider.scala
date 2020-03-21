@@ -64,20 +64,14 @@ class TestNodeProvider extends FileStructureNodeProvider[TreeElement] {
                 (
                   expr match {
                     case expr: ScMethodCall =>
-                      TestNodeProvider.extractTestViewElement(
-                        expr,
-                        clazz,
-                        project)
+                      TestNodeProvider
+                        .extractTestViewElement(expr, clazz, project)
                     case expr: ScInfixExpr =>
-                      TestNodeProvider.extractTestViewElementInfix(
-                        expr,
-                        clazz,
-                        project)
+                      TestNodeProvider
+                        .extractTestViewElementInfix(expr, clazz, project)
                     case expr: ScPatternDefinition =>
-                      TestNodeProvider.extractTestViewElementPatternDef(
-                        expr,
-                        clazz,
-                        project)
+                      TestNodeProvider
+                        .extractTestViewElementPatternDef(expr, clazz, project)
                     case _ =>
                       None
                   }
@@ -126,7 +120,9 @@ object TestNodeProvider {
   val pendingSuffix = " (pending)"
 
   private def getInnerInfixExprs(expr: ScInfixExpr) = {
-    expr.getLastChild.getChildren
+    expr
+      .getLastChild
+      .getChildren
       .filter(_.isInstanceOf[ScInfixExpr])
       .map(_.asInstanceOf[ScInfixExpr])
   }
@@ -155,7 +151,8 @@ object TestNodeProvider {
       clazz: ScTypeDefinition,
       project: Project): Option[TestStructureViewElement] = {
     import org.jetbrains.plugins.scala.testingSupport.test.TestConfigurationUtil.isInheritor
-    if (isInheritor(clazz, "utest.framework.TestSuite") && pDef.getLastChild
+    if (isInheritor(clazz, "utest.framework.TestSuite") && pDef
+          .getLastChild
           .isInstanceOf[ScMethodCall]) {
       val methodCall = pDef.getLastChild.asInstanceOf[ScMethodCall]
       checkScMethodCall(methodCall, "apply")
@@ -175,9 +172,9 @@ object TestNodeProvider {
       //this should be a funSuite-like test
     } else if (getFeatureSpecBases.exists(isInheritor(clazz, _))) {
       extractFeatureSpec(expr, project)
-    } else if (getFunSpecBasesPost2_0.exists(
-                 isInheritor(clazz, _)) || getFunSpecBasesPre2_0.exists(
-                 isInheritor(clazz, _))) {
+    } else if (getFunSpecBasesPost2_0
+                 .exists(isInheritor(clazz, _)) || getFunSpecBasesPre2_0
+                 .exists(isInheritor(clazz, _))) {
       extractFunSpec(expr, project)
     } else if (getPropSpecBases.exists(isInheritor(clazz, _))) {
       extractPropSpec(expr, project)
@@ -204,7 +201,10 @@ object TestNodeProvider {
   }
 
   private def getInnerMethodCalls(expr: ScMethodCall) = {
-    expr.args.getLastChild.getChildren
+    expr
+      .args
+      .getLastChild
+      .getChildren
       .filter(_.isInstanceOf[ScMethodCall])
       .map(_.asInstanceOf[ScMethodCall])
   }
@@ -261,8 +261,9 @@ object TestNodeProvider {
       expr: ScMethodCall,
       funName: String,
       paramNames: List[String]*): Boolean = {
-    val methodExpr = expr.getEffectiveInvokedExpr.findFirstChildByType(
-      ScalaElementTypes.REFERENCE_EXPRESSION)
+    val methodExpr = expr
+      .getEffectiveInvokedExpr
+      .findFirstChildByType(ScalaElementTypes.REFERENCE_EXPRESSION)
     methodExpr != null && checkRefExpr(
       methodExpr.asInstanceOf[ScReferenceExpression],
       funName,
@@ -311,9 +312,8 @@ object TestNodeProvider {
       paramNames: List[String]*): Boolean = {
     clauses.length == paramNames.length && (clauses zip paramNames).forall {
       case (clause, names) =>
-        clause.parameters.length == names.length && (
-          clause.parameters zip names
-        ).forall {
+        clause.parameters.length == names
+          .length && (clause.parameters zip names).forall {
           case (param, name) =>
             param.getType.getCanonicalText == name
         }
@@ -376,8 +376,8 @@ object TestNodeProvider {
               Some(ref)
             case otherExpr =>
               Option(
-                otherExpr.findFirstChildByType(
-                  ScalaElementTypes.REFERENCE_EXPRESSION))
+                otherExpr
+                  .findFirstChildByType(ScalaElementTypes.REFERENCE_EXPRESSION))
                 .map(_.asInstanceOf[ScReferenceExpression])
           }
         case _ =>
@@ -446,7 +446,8 @@ object TestNodeProvider {
     expr.getFirstChild match {
       case infixExpr: ScInfixExpr
           if infixExpr.getFirstChild.isInstanceOf[ScReferenceExpression] =>
-        infixExpr.getFirstChild
+        infixExpr
+          .getFirstChild
           .asInstanceOf[ScReferenceExpression]
           .resolve() match {
           case pattern: ScReferencePattern if pattern.getName == "ignore" =>
@@ -818,7 +819,8 @@ object TestNodeProvider {
           val (_, actualType, _, _) = literal.getImplicitConversions()
           actualType match {
             case Some(funDef: ScFunctionDefinition) =>
-              funDef.getName == "TestableSymbol" && funDef.isSynthetic && checkClauses(
+              funDef.getName == "TestableSymbol" && funDef
+                .isSynthetic && checkClauses(
                 funDef.getParameterList.clauses,
                 List("scala.Symbol"))
             case _ =>
@@ -858,7 +860,9 @@ object TestNodeProvider {
         val refPattern = elem.getParent
         val patternsImpl = refPattern.getParent.asInstanceOf[ScPatternsImpl]
         val index =
-          patternsImpl.patterns.zipWithIndex
+          patternsImpl
+            .patterns
+            .zipWithIndex
             .find {
               case (pat, _) =>
                 pat == refPattern
@@ -884,7 +888,8 @@ object TestNodeProvider {
   def getUTestLeftHandTestDefinition(element: PsiElement) =
     findListOfPatternsWithIndex(element) match {
       case Some((pattern, indexOpt))
-          if pattern.getParent != null && pattern.getParent
+          if pattern.getParent != null && pattern
+            .getParent
             .isInstanceOf[ScPatternDefinition] =>
         (
           (pattern.getParent.getLastChild, indexOpt) match {

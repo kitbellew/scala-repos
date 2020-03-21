@@ -75,8 +75,10 @@ trait TestLogging extends BeforeAndAfter {
     */
   def mustLog(substring: String) = {
     assert(
-      logLines().filter {
-        _ contains substring
-      }.size > 0)
+      logLines()
+        .filter {
+          _ contains substring
+        }
+        .size > 0)
   }
 }

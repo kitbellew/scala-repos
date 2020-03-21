@@ -30,12 +30,8 @@ object SbtWatcherMain {
           out.write(
             Base64Converter
               .encode(
-                MessageEvent(
-                  BuildMessage.Kind.INFO,
-                  message,
-                  None,
-                  None,
-                  None).toBytes)
+                MessageEvent(BuildMessage.Kind.INFO, message, None, None, None)
+                  .toBytes)
               .getBytes)
         }
       }

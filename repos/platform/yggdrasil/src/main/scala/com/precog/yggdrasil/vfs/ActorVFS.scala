@@ -200,8 +200,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
             ) //(actorSystem.dispatcher)
           } leftMap {
           ResourceError.fromExtractorError(
-            "Error reading metadata from versionDir %s".format(
-              versionDir.toString))
+            "Error reading metadata from versionDir %s"
+              .format(versionDir.toString))
         }
       }
 
@@ -219,21 +219,23 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           out: FileOutputStream,
           size: Long,
           stream: StreamT[M, Array[Byte]]): M[ResourceError \/ Long] = {
-        stream.uncons.flatMap {
-          case Some((bytes, tail)) =>
-            try {
-              out.write(bytes)
-              write(out, size + bytes.length, tail)
-            } catch {
-              case (ioe: IOException) =>
-                out.close()
-                \/.left(IOError(ioe)).point[M]
-            }
+        stream
+          .uncons
+          .flatMap {
+            case Some((bytes, tail)) =>
+              try {
+                out.write(bytes)
+                write(out, size + bytes.length, tail)
+              } catch {
+                case (ioe: IOException) =>
+                  out.close()
+                  \/.left(IOError(ioe)).point[M]
+              }
 
-          case None =>
-            out.close()
-            \/.right(size).point[M]
-        }
+            case None =>
+              out.close()
+              \/.right(size).point[M]
+          }
       }
 
       for {
@@ -510,8 +512,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
         for {
           _ <- IOUtils.makeDirectory(pathDir)
-          _ = logger.debug(
-            "Created new path dir for %s : %s".format(path, pathDir))
+          _ = logger
+            .debug("Created new path dir for %s : %s".format(path, pathDir))
           vlog <- VersionLog.open(pathDir)
           actorV <- vlog traverse { versionLog =>
             logger.debug("Creating new PathManagerActor for " + path)
@@ -544,8 +546,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
     def receive = {
       case FindChildren(path) =>
-        logger.debug(
-          "Received request to find children of %s".format(path.path))
+        logger
+          .debug("Received request to find children of %s".format(path.path))
         VFSPathUtils.findChildren(baseDir, path) map { children =>
           sender ! PathChildren(path, children)
         } except {
@@ -595,10 +597,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
             targetActor(path) map { pathActor =>
               pathMessages.map(_._2.apiKey).distinct.toStream traverse {
                 apiKey =>
-                  permissionsFinder.writePermissions(
-                    apiKey,
-                    path,
-                    clock.instant()) map {
+                  permissionsFinder
+                    .writePermissions(apiKey, path, clock.instant()) map {
                     apiKey -> _
                   }
               } map { perms =>
@@ -742,8 +742,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         complete: Boolean): IO[PathActionResponse] = {
       implicit val ioId = NaturalTransformation.refl[IO]
       for {
-        _ <- versionLog.addVersion(
-          VersionEntry(version, data.typeName, clock.instant()))
+        _ <- versionLog
+          .addVersion(VersionEntry(version, data.typeName, clock.instant()))
         created <- data match {
           case BlobData(bytes, mimeType) =>
             resourceBuilder.createBlob[IO](
@@ -767,8 +767,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
               versions += (version -> resource)
             }
             _ <- complete.whenM(
-              versionLog.completeVersion(version) >> versionLog.setHead(
-                version) >> maybeExpireCache(apiKey, resource))
+              versionLog.completeVersion(version) >> versionLog
+                .setHead(version) >> maybeExpireCache(apiKey, resource))
           } yield PrecogUnit
         }
       } yield {
@@ -831,7 +831,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
               left(
                 IO(
                   NotFound(
-                    "Located resource on %s is a BLOB, not a projection" format path.path))),
+                    "Located resource on %s is a BLOB, not a projection" format path
+                      .path))),
             db => right(IO(db)))
         }
       }
@@ -854,8 +855,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                   _ <- resource.append(batch(msg))
                   // FIXME: completeVersion and setHead should be one op
                   _ <- terminal.whenM(
-                    versionLog.completeVersion(streamId) >> versionLog.setHead(
-                      streamId))
+                    versionLog.completeVersion(streamId) >> versionLog
+                      .setHead(streamId))
                 } yield {
                   logger.trace("Sent insert message for " + msg + " to nihdb")
                   // FIXME: We aren't actually guaranteed success here because NIHDB might do something screwy.
@@ -885,8 +886,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
             requestor ! PathOpFailure(
               path,
               IllegalWriteRequestError(
-                "Cannot create new resource. %s not applied.".format(
-                  msg.toString))))
+                "Cannot create new resource. %s not applied."
+                  .format(msg.toString))))
         }
       }
 
@@ -916,8 +917,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
             requestor ! PathOpFailure(
               path,
               IllegalWriteRequestError(
-                "Cannot overwrite existing resource. %s not applied.".format(
-                  msg.toString))))
+                "Cannot overwrite existing resource. %s not applied."
+                  .format(msg.toString))))
         }
       }
 
@@ -956,7 +957,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
             case StreamRef.Append =>
               logger.trace("Received append for %s".format(path.path))
-              val streamId = versionLog.current
+              val streamId = versionLog
+                .current
                 .map(_.id)
                 .getOrElse(UUID.randomUUID())
               for {
@@ -966,8 +968,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                   msg,
                   streamId,
                   false)
-                _ <- versionLog.completeVersion(streamId) >> versionLog.setHead(
-                  streamId)
+                _ <- versionLog.completeVersion(streamId) >> versionLog
+                  .setHead(streamId)
               } yield PrecogUnit
           }
 
@@ -1026,8 +1028,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
     def receive = {
       case ReceiveTimeout =>
-        logger.info(
-          "Resource entering state of quiescence after receive timeout.")
+        logger
+          .info("Resource entering state of quiescence after receive timeout.")
         val quiesce = versions.values.toStream collect {
           case NIHDBResource(db) =>
             db
@@ -1037,10 +1039,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       case IngestBundle(messages, permissions) =>
         logger.debug(
           "Received ingest request for %d messages.".format(messages.size))
-        processEventMessages(
-          messages.toStream,
-          permissions,
-          sender).unsafePerformIO
+        processEventMessages(messages.toStream, permissions, sender)
+          .unsafePerformIO
 
       case msg @ Read(_, version) =>
         logger.debug("Received Read request " + msg)
@@ -1057,8 +1057,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                   PathOpFailure(
                     path,
                     NotFound(
-                      "No current version found for path %s".format(
-                        path.path))))
+                      "No current version found for path %s"
+                        .format(path.path))))
               }
 
             case Version.Archived(id) =>

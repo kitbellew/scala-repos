@@ -125,9 +125,8 @@ private[memory] class ExecutionMemoryPool(lock: Object, poolName: String)
         val minMemoryPerTask = poolSize / (2 * numActiveTasks)
 
         // How much we can grant this task; keep its share within 0 <= X <= 1 / numActiveTasks
-        val maxToGrant = math.min(
-          numBytes,
-          math.max(0, maxMemoryPerTask - curMem))
+        val maxToGrant = math
+          .min(numBytes, math.max(0, maxMemoryPerTask - curMem))
         // Only give it as much memory as is free, which might be none if it reached 1 / numTasks
         val toGrant = math.min(maxToGrant, memoryFree)
 
@@ -167,7 +166,8 @@ private[memory] class ExecutionMemoryPool(lock: Object, poolName: String)
           memoryForTask.remove(taskAttemptId)
         }
       }
-      lock.notifyAll() // Notify waiters in acquireMemory() that memory has been freed
+      lock
+        .notifyAll() // Notify waiters in acquireMemory() that memory has been freed
     }
 
   /**

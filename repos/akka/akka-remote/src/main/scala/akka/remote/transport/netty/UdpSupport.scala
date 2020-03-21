@@ -32,7 +32,8 @@ private[remote] trait UdpHandlers extends CommonHandlers {
       listener: HandleEventListener,
       msg: ChannelBuffer,
       remoteSocketAddress: InetSocketAddress): Unit = {
-    transport.udpConnectionTable
+    transport
+      .udpConnectionTable
       .putIfAbsent(remoteSocketAddress, listener) match {
       case null ⇒
         listener notify InboundPayload(ByteString(msg.array()))
@@ -53,7 +54,8 @@ private[remote] trait UdpHandlers extends CommonHandlers {
             e.getMessage.asInstanceOf[ChannelBuffer])
         } else {
           val listener = transport.udpConnectionTable.get(inetSocketAddress)
-          val bytes: Array[Byte] = e.getMessage
+          val bytes: Array[Byte] = e
+            .getMessage
             .asInstanceOf[ChannelBuffer]
             .array()
           if (bytes.length > 0)
@@ -127,7 +129,8 @@ private[remote] class UdpAssociationHandle(
 
   override def disassociate(): Unit =
     try channel.close()
-    finally transport.udpConnectionTable.remove(
-      transport.addressToSocketAddress(remoteAddress))
+    finally transport
+      .udpConnectionTable
+      .remove(transport.addressToSocketAddress(remoteAddress))
 
 }

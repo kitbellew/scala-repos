@@ -73,7 +73,8 @@ object DataFrameExample {
 
     // Load input data
     println(s"Loading LIBSVM file with UDT from ${params.input}.")
-    val df: DataFrame = sqlContext.read
+    val df: DataFrame = sqlContext
+      .read
       .format("libsvm")
       .load(params.input)
       .cache()
@@ -86,10 +87,13 @@ object DataFrameExample {
     labelSummary.show()
 
     // Convert features column to an RDD of vectors.
-    val features = df.select("features").rdd.map {
-      case Row(v: Vector) =>
-        v
-    }
+    val features = df
+      .select("features")
+      .rdd
+      .map {
+        case Row(v: Vector) =>
+          v
+      }
     val featureSummary =
       features.aggregate(new MultivariateOnlineSummarizer())(
         (summary, feat) => summary.add(feat),

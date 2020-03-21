@@ -364,11 +364,8 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
     */
   def mult[B](m: Mat[B])(implicit evA: NUM[A], evB: NUM[B]): Mat[Double] = {
     if (numCols != m.numRows) {
-      val errMsg = "Cannot multiply (%d %d) x (%d %d)".format(
-        numRows,
-        numCols,
-        m.numRows,
-        m.numCols)
+      val errMsg = "Cannot multiply (%d %d) x (%d %d)"
+        .format(numRows, numCols, m.numRows, m.numCols)
       throw new IllegalArgumentException(errMsg)
     }
 
@@ -491,15 +488,15 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
   override def equals(o: Any): Boolean =
     o match {
       case rv: Mat[_] =>
-        (
-          this eq rv
-        ) || this.numRows == rv.numRows && this.numCols == rv.numCols && {
+        (this eq rv) || this.numRows == rv.numRows && this.numCols == rv
+          .numCols && {
           var i = 0
           var eq = true
           while (eq && i < length) {
             eq &&= (
-              apply(i) == rv(i) || this.scalarTag
-                .isMissing(apply(i)) && rv.scalarTag.isMissing(rv(i))
+              apply(i) == rv(i) || this.scalarTag.isMissing(apply(i)) && rv
+                .scalarTag
+                .isMissing(rv(i))
             )
             i += 1
           }

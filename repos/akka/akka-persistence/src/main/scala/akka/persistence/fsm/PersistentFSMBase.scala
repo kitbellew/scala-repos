@@ -551,7 +551,9 @@ trait PersistentFSMBase[S, D, E]
         if (t.isFinite && t.length >= 0) {
           import context.dispatcher
           timeoutFuture = Some(
-            context.system.scheduler
+            context
+              .system
+              .scheduler
               .scheduleOnce(t, self, TimeoutMarker(generation)))
         }
       }

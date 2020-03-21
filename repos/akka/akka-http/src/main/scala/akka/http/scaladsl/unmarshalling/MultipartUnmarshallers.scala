@@ -62,7 +62,9 @@ trait MultipartUnmarshallers {
         Multipart.General.BodyPart(entity, headers).toFormDataBodyPart.get,
       createStreamed = (_, parts) ⇒ Multipart.FormData(parts),
       createStrictBodyPart = (entity, headers) ⇒
-        Multipart.General.BodyPart
+        Multipart
+          .General
+          .BodyPart
           .Strict(entity, headers)
           .toFormDataBodyPart
           .get,
@@ -89,7 +91,9 @@ trait MultipartUnmarshallers {
         Multipart.General.BodyPart(entity, headers).toByteRangesBodyPart.get,
       createStreamed = (_, parts) ⇒ Multipart.ByteRanges(parts),
       createStrictBodyPart = (entity, headers) ⇒
-        Multipart.General.BodyPart
+        Multipart
+          .General
+          .BodyPart
           .Strict(entity, headers)
           .toByteRangesBodyPart
           .get,
@@ -109,8 +113,8 @@ trait MultipartUnmarshallers {
       log: LoggingAdapter = NoLogging,
       parserSettings: ParserSettings = null): FromEntityUnmarshaller[T] =
     Unmarshaller.withMaterializer { implicit ec ⇒ mat => entity ⇒
-      if (entity.contentType.mediaType.isMultipart && mediaRange.matches(
-            entity.contentType.mediaType)) {
+      if (entity.contentType.mediaType.isMultipart && mediaRange
+            .matches(entity.contentType.mediaType)) {
         entity.contentType.mediaType.params.get("boundary") match {
           case None ⇒
             FastFuture.failed(
@@ -118,8 +122,8 @@ trait MultipartUnmarshallers {
                 "Content-Type with a multipart media type must have a 'boundary' parameter"))
           case Some(boundary) ⇒
             import BodyPartParser._
-            val effectiveParserSettings = Option(parserSettings).getOrElse(
-              ParserSettings(ActorMaterializer.downcast(mat).system))
+            val effectiveParserSettings = Option(parserSettings)
+              .getOrElse(ParserSettings(ActorMaterializer.downcast(mat).system))
             val parser =
               new BodyPartParser(
                 defaultContentType,
@@ -157,7 +161,8 @@ trait MultipartUnmarshallers {
                   createStrict(mediaType, builder.result())
                 case _ ⇒
                   val bodyParts =
-                    entity.dataBytes
+                    entity
+                      .dataBytes
                       .transform(() ⇒ parser)
                       .splitWhen(_.isInstanceOf[PartStart])
                       .buffer(
@@ -176,15 +181,17 @@ trait MultipartUnmarshallers {
                       }
                       .concatSubstreams
                   createStreamed(
-                    entity.contentType.mediaType
+                    entity
+                      .contentType
+                      .mediaType
                       .asInstanceOf[MediaType.Multipart],
                     bodyParts)
               }
             }
         }
       } else
-        FastFuture.failed(
-          Unmarshaller.UnsupportedContentTypeException(mediaRange))
+        FastFuture
+          .failed(Unmarshaller.UnsupportedContentTypeException(mediaRange))
     }
 }
 

@@ -55,8 +55,8 @@ final class StringClientServerIntegrationSuite
       assert(Await.result(client(GetBit("bitop3", 3))) == IntegerReply(1L))
 
       assert(
-        Await.result(
-          client(BitOp(BitOp.Or, "bitop3", Seq("bitop1", "bitop2")))) ==
+        Await
+          .result(client(BitOp(BitOp.Or, "bitop3", Seq("bitop1", "bitop2")))) ==
           IntegerReply(1L))
       assert(Await.result(client(GetBit("bitop3", 0))) == IntegerReply(1L))
       assert(Await.result(client(GetBit("bitop3", 1))) == IntegerReply(0L))

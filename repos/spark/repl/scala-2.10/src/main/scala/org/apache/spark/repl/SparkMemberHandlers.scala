@@ -156,7 +156,8 @@ private[repl] trait SparkMemberHandlers {
 
         val vidString =
           if (replProps.vids)
-            """" + " @ " + "%%8x".format(System.identityHashCode(%s)) + " """.trim
+            """" + " @ " + "%%8x".format(System.identityHashCode(%s)) + " """
+              .trim
               .format(req fullPath name)
           else
             ""
@@ -195,10 +196,8 @@ private[repl] trait SparkMemberHandlers {
     override def resultExtractionCode(req: Request) = {
       val lhsType = string2code(req lookupTypeOf name)
       val res = string2code(req fullPath name)
-      """ + "%s: %s = " + %s + "\n" """.format(
-        string2code(lhs.toString),
-        lhsType,
-        res) + "\n"
+      """ + "%s: %s = " + %s + "\n" """
+        .format(string2code(lhs.toString), lhsType, res) + "\n"
     }
   }
 

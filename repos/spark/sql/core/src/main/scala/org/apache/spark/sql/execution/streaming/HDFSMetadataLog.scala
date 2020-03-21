@@ -83,20 +83,22 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
   }
 
   override def add(batchId: Long, metadata: T): Boolean = {
-    get(batchId).map(_ => false).getOrElse {
-      // Only write metadata when the batch has not yet been written.
-      val buffer = serializer.serialize(metadata)
-      try {
-        writeBatch(batchId, JavaUtils.bufferToArray(buffer))
-        true
-      } catch {
-        case e: IOException
-            if "java.lang.InterruptedException" == e.getMessage =>
-          // create may convert InterruptedException to IOException. Let's convert it back to
-          // InterruptedException so that this failure won't crash StreamExecution
-          throw new InterruptedException("Creating file is interrupted")
+    get(batchId)
+      .map(_ => false)
+      .getOrElse {
+        // Only write metadata when the batch has not yet been written.
+        val buffer = serializer.serialize(metadata)
+        try {
+          writeBatch(batchId, JavaUtils.bufferToArray(buffer))
+          true
+        } catch {
+          case e: IOException
+              if "java.lang.InterruptedException" == e.getMessage =>
+            // create may convert InterruptedException to IOException. Let's convert it back to
+            // InterruptedException so that this failure won't crash StreamExecution
+            throw new InterruptedException("Creating file is interrupted")
+        }
       }
-    }
   }
 
   /**
@@ -183,7 +185,8 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
       .filter { batchId =>
         batchId <= endId && (startId.isEmpty || batchId >= startId.get)
       }
-    batchIds.sorted
+    batchIds
+      .sorted
       .map(batchId => (batchId, get(batchId)))
       .filter(_._2.isDefined)
       .map {
@@ -194,7 +197,8 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
 
   override def getLatest(): Option[(Long, T)] = {
     val batchIds =
-      fc.util()
+      fc
+        .util()
         .listStatus(metadataPath, batchFilesFilter)
         .map(_.getPath.getName.toLong)
         .sorted

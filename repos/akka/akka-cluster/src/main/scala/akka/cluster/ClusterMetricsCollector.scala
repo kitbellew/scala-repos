@@ -245,9 +245,11 @@ private[cluster] final case class MetricsGossip(nodes: Set[NodeMetrics]) {
     * Adds new remote [[akka.cluster.NodeMetrics]] and merges existing from a remote gossip.
     */
   def merge(otherGossip: MetricsGossip): MetricsGossip =
-    otherGossip.nodes.foldLeft(this) { (gossip, nodeMetrics) ⇒
-      gossip :+ nodeMetrics
-    }
+    otherGossip
+      .nodes
+      .foldLeft(this) { (gossip, nodeMetrics) ⇒
+        gossip :+ nodeMetrics
+      }
 
   /**
     * Adds new local [[akka.cluster.NodeMetrics]], or merges an existing.
@@ -877,7 +879,9 @@ class SigarMetricsCollector(
       EWMA.alpha(
         cluster.settings.MetricsMovingAverageHalfLife,
         cluster.settings.MetricsInterval),
-      cluster.system.dynamicAccess
+      cluster
+        .system
+        .dynamicAccess
         .createInstanceFor[AnyRef]("org.hyperic.sigar.Sigar", Nil)
         .get)
 
@@ -933,7 +937,8 @@ class SigarMetricsCollector(
     Metric.create(
       name = SystemLoadAverage,
       value = Try(
-        LoadAverage.get
+        LoadAverage
+          .get
           .invoke(sigar)
           .asInstanceOf[Array[AnyRef]](0)
           .asInstanceOf[Number]),
@@ -987,23 +992,27 @@ private[cluster] object MetricsCollector {
         case Success(sigarCollector) ⇒
           sigarCollector
         case Failure(e) ⇒
-          Cluster(system).InfoLogger.logInfo(
-            "Metrics will be retreived from MBeans, and may be incorrect on some platforms. " +
-              "To increase metric accuracy add the 'sigar.jar' to the classpath and the appropriate " +
-              "platform-specific native libary to 'java.library.path'. Reason: " +
-              e.toString)
+          Cluster(system)
+            .InfoLogger
+            .logInfo(
+              "Metrics will be retreived from MBeans, and may be incorrect on some platforms. " +
+                "To increase metric accuracy add the 'sigar.jar' to the classpath and the appropriate " +
+                "platform-specific native libary to 'java.library.path'. Reason: " +
+                e.toString)
           new JmxMetricsCollector(system)
       }
 
     } else {
-      system.dynamicAccess
+      system
+        .dynamicAccess
         .createInstanceFor[MetricsCollector](
           fqcn,
           List(classOf[ActorSystem] -> system))
         .recover {
           case e ⇒
             throw new ConfigurationException(
-              "Could not create custom metrics collector [" + fqcn + "] due to:" + e.toString)
+              "Could not create custom metrics collector [" + fqcn + "] due to:" + e
+                .toString)
         }
         .get
     }

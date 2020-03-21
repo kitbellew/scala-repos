@@ -41,6 +41,8 @@ trait JavaUUIDPicklers extends PrimitivePicklers {
         new java.util.UUID(msb, lsb)
       }
     }
-  internal.currentRuntime.picklers
+  internal
+    .currentRuntime
+    .picklers
     .registerPicklerUnpickler(javaUUIDPickler.tag.key, javaUUIDPickler)
 }

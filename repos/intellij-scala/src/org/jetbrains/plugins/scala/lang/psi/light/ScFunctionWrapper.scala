@@ -79,10 +79,8 @@ with LightScalaMethod {
       case Some(i) if returnType == null =>
         val param = constr.parameters(i - 1)
         val scalaType = param.getType(TypingContext.empty).getOrAny
-        returnType = ScType.toPsi(
-          scalaType,
-          constr.getProject,
-          constr.getResolveScope)
+        returnType = ScType
+          .toPsi(scalaType, constr.getProject, constr.getResolveScope)
       case _ =>
     }
     returnType
@@ -128,7 +126,8 @@ class ScFunctionWrapper(
       }
       assert(
         res != null,
-        "Method: " + function.getText + "\nhas null containing class. isStatic: " + isStatic +
+        "Method: " + function
+          .getText + "\nhas null containing class. isStatic: " + isStatic +
           "\nContaining file text: " + function.getContainingFile.getText
       )
       res
@@ -195,12 +194,14 @@ with LightScalaMethod {
         if (typeParameters.nonEmpty) {
           val methodTypeParameters = getTypeParameters
           if (typeParameters.length == methodTypeParameters.length) {
-            val tvs = typeParameters.zip(methodTypeParameters).map {
-              case (param: ScTypeParam, parameter: PsiTypeParameter) =>
-                (
-                  (param.name, ScalaPsiUtil.getPsiElementId(param)),
-                  ScDesignatorType(parameter))
-            }
+            val tvs = typeParameters
+              .zip(methodTypeParameters)
+              .map {
+                case (param: ScTypeParam, parameter: PsiTypeParameter) =>
+                  (
+                    (param.name, ScalaPsiUtil.getPsiElementId(param)),
+                    ScDesignatorType(parameter))
+              }
             new ScSubstitutor(tvs.toMap, Map.empty, None)
           } else
             ScSubstitutor.empty
@@ -212,18 +213,14 @@ with LightScalaMethod {
           val scalaType = generifySubst subst ScFunctionWrapper
             .getSubstitutor(cClass, function)
             .subst(param.getType(TypingContext.empty).getOrAny)
-          returnType = ScType.toPsi(
-            scalaType,
-            function.getProject,
-            function.getResolveScope)
+          returnType = ScType
+            .toPsi(scalaType, function.getProject, function.getResolveScope)
         case None =>
           val scalaType = generifySubst subst ScFunctionWrapper
             .getSubstitutor(cClass, function)
             .subst(function.returnType.getOrAny)
-          returnType = ScType.toPsi(
-            scalaType,
-            function.getProject,
-            function.getResolveScope)
+          returnType = ScType
+            .toPsi(scalaType, function.getProject, function.getResolveScope)
       }
     }
     returnType
@@ -255,15 +252,16 @@ object ScFunctionWrapper {
       forDefault: Option[Int] = None): String = {
     val builder = new StringBuilder
 
-    builder.append(
-      JavaConversionUtil.annotationsAndModifiers(function, isStatic))
+    builder
+      .append(JavaConversionUtil.annotationsAndModifiers(function, isStatic))
 
     val subst = getSubstitutor(cClass, function)
 
     function match {
       case function: ScFunction if function.typeParameters.nonEmpty =>
         builder.append(
-          function.typeParameters
+          function
+            .typeParameters
             .map(tp => {
               var res = tp.name
               tp.upperTypeElement match {
@@ -271,15 +269,18 @@ object ScFunctionWrapper {
                   val classes = new ArrayBuffer[String]()
                   tp.upperBound.map(subst.subst) match {
                     case Success(tp: ScCompoundType, _) =>
-                      tp.components.foreach {
-                        case tp: ScType =>
-                          ScType
-                            .extractClass(tp, Some(function.getProject)) match {
-                            case Some(clazz) =>
-                              classes += clazz.getQualifiedName
-                            case _ =>
-                          }
-                      }
+                      tp
+                        .components
+                        .foreach {
+                          case tp: ScType =>
+                            ScType.extractClass(
+                              tp,
+                              Some(function.getProject)) match {
+                              case Some(clazz) =>
+                                classes += clazz.getQualifiedName
+                              case _ =>
+                            }
+                        }
                     case Success(_: StdType, _) =>
                       JavaPsiFacade
                         .getInstance(function.getProject)
@@ -309,8 +310,9 @@ object ScFunctionWrapper {
       case _ =>
     }
 
-    val params = function.effectiveParameterClauses.flatMap(
-      _.effectiveParameters)
+    val params = function
+      .effectiveParameterClauses
+      .flatMap(_.effectiveParameters)
 
     val defaultParam =
       forDefault match {
@@ -361,7 +363,8 @@ object ScFunctionWrapper {
     builder.append(name)
 
     builder.append(
-      function.effectiveParameterClauses
+      function
+        .effectiveParameterClauses
         .takeWhile { clause =>
           defaultParam match {
             case Some(param) =>
@@ -435,7 +438,8 @@ object ScFunctionWrapper {
       case (Some(clazz), function: ScFunction) =>
         clazz match {
           case td: ScTypeDefinition =>
-            td.signaturesByName(function.name)
+            td
+              .signaturesByName(function.name)
               .find(_.method == function) match {
               case Some(sign) =>
                 sign.substitutor

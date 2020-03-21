@@ -51,7 +51,8 @@ class PersistenceQuerySpec
   private val systemCounter = new AtomicInteger()
   private def withActorSystem(conf: String = "")(
       block: ActorSystem ⇒ Unit): Unit = {
-    val config = DummyReadJournalProvider.config
+    val config = DummyReadJournalProvider
+      .config
       .withFallback(DummyJavaReadJournalProvider.config)
       .withFallback(ConfigFactory.parseString(conf))
       .withFallback(ConfigFactory.parseString(eventAdaptersConfig))

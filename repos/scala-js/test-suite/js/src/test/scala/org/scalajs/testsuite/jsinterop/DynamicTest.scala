@@ -38,8 +38,8 @@ class DynamicTest {
       new Point(json.x.toString.toInt, json.y.toString.toInt)
     }
 
-    val json = js.eval(
-      "var dynamicTestPoint = { x: 1, y: 2 }; dynamicTestPoint;")
+    val json = js
+      .eval("var dynamicTestPoint = { x: 1, y: 2 }; dynamicTestPoint;")
     val point = jsonToPoint(json.asInstanceOf[js.Dynamic])
 
     assertEquals(1, point.x)
@@ -118,7 +118,9 @@ class DynamicTest {
     assertTrue(obj3_elem2)
 
     // Check backward binary compatibility with the 0.6.{0,1,2} codegen output
-    val obj4 = scala.scalajs.runtime
+    val obj4 = scala
+      .scalajs
+      .runtime
       .newJSObjectWithVarargs(DynamicTestClassVarArgs, obj3Args.toJSArray)
       .asInstanceOf[js.Dynamic]
     val obj4_count = obj4.count

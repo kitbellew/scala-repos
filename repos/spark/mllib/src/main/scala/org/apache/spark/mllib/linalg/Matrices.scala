@@ -327,7 +327,11 @@ class DenseMatrix @Since("1.3.0") (
     }
 
   override def hashCode: Int = {
-    com.google.common.base.Objects
+    com
+      .google
+      .common
+      .base
+      .Objects
       .hashCode(numRows: Integer, numCols: Integer, toArray)
   }
 
@@ -935,10 +939,8 @@ object SparseMatrix {
       while (entries.size < nnz) {
         entries += ((rng.nextInt(numRows), rng.nextInt(numCols)))
       }
-      SparseMatrix.fromCOO(
-        numRows,
-        numCols,
-        entries.map(v => (v._1, v._2, 1.0)))
+      SparseMatrix
+        .fromCOO(numRows, numCols, entries.map(v => (v._1, v._2, 1.0)))
     } else {
       // selection-rejection method
       var idx = 0L

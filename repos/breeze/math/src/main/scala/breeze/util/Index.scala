@@ -321,18 +321,24 @@ class EitherIndex[L, R](left: Index[L], right: Index[R])
   }
 
   def pairs =
-    left.pairs.map {
-      case (l, i) =>
-        Left(l) -> i
-    } ++ right.pairs.map {
-      case (r, i) =>
-        Right(r) -> (i + left.size)
-    }
+    left
+      .pairs
+      .map {
+        case (l, i) =>
+          Left(l) -> i
+      } ++ right
+      .pairs
+      .map {
+        case (r, i) =>
+          Right(r) -> (i + left.size)
+      }
 
   def iterator =
-    left.iterator.map {
-      Left(_)
-    } ++ right.map {
+    left
+      .iterator
+      .map {
+        Left(_)
+      } ++ right.map {
       Right(_)
     }
 
@@ -372,15 +378,19 @@ class OptionIndex[T](inner: Index[T]) extends Index[Option[T]] {
   }
 
   def pairs =
-    inner.pairs.map {
-      case (l, i) =>
-        Some(l) -> i
-    } ++ Iterator(None -> inner.size)
+    inner
+      .pairs
+      .map {
+        case (l, i) =>
+          Some(l) -> i
+      } ++ Iterator(None -> inner.size)
 
   def iterator =
-    inner.iterator.map {
-      Some(_)
-    } ++ Iterator(None)
+    inner
+      .iterator
+      .map {
+        Some(_)
+      } ++ Iterator(None)
 
   override def size: Int = inner.size + 1
 }
@@ -434,20 +444,31 @@ final class CompositeIndex[U](indices: Index[_ <: U]*) extends Index[(Int, U)] {
   }
 
   def pairs =
-    indices.iterator.zipWithIndex.flatMap {
-      case (index, i) =>
-        index.iterator.map { t =>
-          (i, t: U)
-        }
-    }.zipWithIndex
+    indices
+      .iterator
+      .zipWithIndex
+      .flatMap {
+        case (index, i) =>
+          index
+            .iterator
+            .map { t =>
+              (i, t: U)
+            }
+      }
+      .zipWithIndex
 
   def iterator =
-    indices.iterator.zipWithIndex.flatMap {
-      case (index, i) =>
-        index.iterator.map { t =>
-          (i -> t)
-        }
-    }
+    indices
+      .iterator
+      .zipWithIndex
+      .flatMap {
+        case (index, i) =>
+          index
+            .iterator
+            .map { t =>
+              (i -> t)
+            }
+      }
 
   override def size: Int = offsets(offsets.length - 1)
 }

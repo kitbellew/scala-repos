@@ -64,10 +64,12 @@ class DefaultSource extends FileFormat with DataSourceRegister {
       if (csvOptions.headerFlag) {
         firstRow
       } else {
-        firstRow.zipWithIndex.map {
-          case (value, index) =>
-            s"C$index"
-        }
+        firstRow
+          .zipWithIndex
+          .map {
+            case (value, index) =>
+              s"C$index"
+          }
       }
 
     val parsedRdd = tokenRdd(sqlContext, csvOptions, header, paths)
@@ -91,9 +93,11 @@ class DefaultSource extends FileFormat with DataSourceRegister {
       dataSchema: StructType): OutputWriterFactory = {
     val conf = job.getConfiguration
     val csvOptions = new CSVOptions(options)
-    csvOptions.compressionCodec.foreach { codec =>
-      CompressionCodecs.setCodecConfiguration(conf, codec)
-    }
+    csvOptions
+      .compressionCodec
+      .foreach { codec =>
+        CompressionCodecs.setCodecConfiguration(conf, codec)
+      }
 
     new CSVOutputWriterFactory(csvOptions)
   }
@@ -186,7 +190,8 @@ class DefaultSource extends FileFormat with DataSourceRegister {
       sqlContext.sparkContext.textFile(location)
     } else {
       val charset = options.charset
-      sqlContext.sparkContext
+      sqlContext
+        .sparkContext
         .hadoopFile[LongWritable, Text, TextInputFormat](location)
         .mapPartitions(
           _.map(pair =>

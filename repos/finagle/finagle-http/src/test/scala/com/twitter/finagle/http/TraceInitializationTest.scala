@@ -61,12 +61,16 @@ class TraceInitializationTest extends FunSuite {
   test("TraceId is propagated through the protocol") {
     testTraces { (serverTracer, clientTracer) =>
       import com.twitter.finagle
-      val server = finagle.Http.server
+      val server = finagle
+        .Http
+        .server
         .configured(param.Tracer(serverTracer))
         .configured(param.Label("theServer"))
         .serve(":*", Svc)
       val port = server.boundAddress.asInstanceOf[InetSocketAddress].getPort
-      val client = finagle.Http.client
+      val client = finagle
+        .Http
+        .client
         .configured(param.Tracer(clientTracer))
         .newService(":" + port, "theClient")
       (client, server)
@@ -98,7 +102,9 @@ class TraceInitializationTest extends FunSuite {
     import com.twitter.finagle
     val tracer = new BufferingTracer
 
-    val server = finagle.Http.server
+    val server = finagle
+      .Http
+      .server
       .configured(param.Tracer(tracer))
       .configured(param.Label("theServer"))
       .serve(":*", Svc)
@@ -111,9 +117,11 @@ class TraceInitializationTest extends FunSuite {
         .hostConnectionLimit(1)
         .build()
       try {
-        0.until(2).foreach { _ =>
-          Await.result(client(req))
-        }
+        0
+          .until(2)
+          .foreach { _ =>
+            Await.result(client(req))
+          }
 
         assert(tracer.map(_.traceId).toSet.size == 2)
       } finally client.close()

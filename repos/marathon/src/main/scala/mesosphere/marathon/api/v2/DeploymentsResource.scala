@@ -54,8 +54,9 @@ class DeploymentsResource @Inject() (
         .find(_.plan.id == id)
         .map(_.plan)
       plan.fold(notFound(s"DeploymentPlan $id does not exist")) { deployment =>
-        deployment.affectedApplications.foreach(
-          checkAuthorization(UpdateApp, _))
+        deployment
+          .affectedApplications
+          .foreach(checkAuthorization(UpdateApp, _))
 
         deployment match {
           case plan: DeploymentPlan if force =>
@@ -77,7 +78,8 @@ class DeploymentsResource @Inject() (
       deployment: DeploymentPlan,
       currentStepInfo: DeploymentStepInfo): JsObject = {
 
-    val steps = deployment.steps
+    val steps = deployment
+      .steps
       .map(step => step.actions.map(actionToMap))
       .map(Json.toJson(_))
     Json.obj(

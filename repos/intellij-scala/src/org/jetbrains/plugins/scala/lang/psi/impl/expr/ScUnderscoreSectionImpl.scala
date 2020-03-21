@@ -44,18 +44,20 @@ class ScUnderscoreSectionImpl(node: ASTNode)
     bindingExpr match {
       case Some(ref: ScReferenceExpression) =>
         def fun(): TypeResult[ScType] = {
-          ref.getNonValueType(TypingContext.empty).map {
-            case ScTypePolymorphicType(internalType, typeParameters) =>
-              ScTypePolymorphicType(
-                ScMethodType(internalType, Nil, isImplicit = false)(
+          ref
+            .getNonValueType(TypingContext.empty)
+            .map {
+              case ScTypePolymorphicType(internalType, typeParameters) =>
+                ScTypePolymorphicType(
+                  ScMethodType(internalType, Nil, isImplicit = false)(
+                    getProject,
+                    getResolveScope),
+                  typeParameters)
+              case tp: ScType =>
+                ScMethodType(tp, Nil, isImplicit = false)(
                   getProject,
-                  getResolveScope),
-                typeParameters)
-            case tp: ScType =>
-              ScMethodType(tp, Nil, isImplicit = false)(
-                getProject,
-                getResolveScope)
-          }
+                  getResolveScope)
+            }
         }
         ref.bind() match {
           case Some(ScalaResolveResult(f: ScFunction, _))
@@ -114,8 +116,8 @@ class ScUnderscoreSectionImpl(node: ASTNode)
               startOffset += e.startOffsetInParent
               e = e.getContext
             }
-            val i = unders.indexWhere(
-              _.getTextRange.getStartOffset == startOffset)
+            val i = unders
+              .indexWhere(_.getTextRange.getStartOffset == startOffset)
             if (i < 0)
               return Failure("Not found under", None)
             var result: Option[ScType] =

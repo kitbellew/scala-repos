@@ -90,7 +90,8 @@ class UpgradedImageIExtractor(
     */
   private def checkForMsnVideoHeadlineImage: Option[String] = {
     // This DOM path may be too restrictive but it's performing quite well at time of writing.
-    val dataConfig: String = article.rawDoc
+    val dataConfig: String = article
+      .rawDoc
       .select(
         "div#maincontent div#main div.primary-playback-region div.wcvideoplayer[data-metadata]")
       .attr("data-metadata")
@@ -152,7 +153,8 @@ class UpgradedImageIExtractor(
     getImageCandidates(node) match {
       case Some(goodImages) => {
         trace(
-          "checkForLargeImages: After findImagesThatPassByteSizeTest we have: " + goodImages.size + " at parent depth: " + parentDepthLevel)
+          "checkForLargeImages: After findImagesThatPassByteSizeTest we have: " + goodImages
+            .size + " at parent depth: " + parentDepthLevel)
         val scoredImages = downloadImagesAndGetResults(
           goodImages,
           parentDepthLevel)
@@ -170,7 +172,8 @@ class UpgradedImageIExtractor(
               else
                 0
             trace(
-              "IMAGE COMPLETE: High Score Image is: " + mainImage.imageSrc + " Score is: " + highScoreImage._2)
+              "IMAGE COMPLETE: High Score Image is: " + mainImage
+                .imageSrc + " Score is: " + highScoreImage._2)
             return Some(mainImage)
           }
           case None => {
@@ -589,8 +592,8 @@ class UpgradedImageIExtractor(
         mainImage.imageExtractionType = "known"
         mainImage.confidenceScore = 90
 
-        getLocallyStoredImage(buildImagePath(mainImage.imageSrc)).foreach(
-          locallyStoredImage => {
+        getLocallyStoredImage(buildImagePath(mainImage.imageSrc))
+          .foreach(locallyStoredImage => {
             mainImage.bytes = locallyStoredImage.bytes
             mainImage.height = locallyStoredImage.height
             mainImage.width = locallyStoredImage.width
@@ -636,8 +639,8 @@ object UpgradedImageIExtractor {
   lazy val customSiteMapping = {
     val lines = Source
       .fromInputStream(
-        getClass.getResourceAsStream(
-          "/com/gravity/goose/images/known-image-css.txt"))
+        getClass
+          .getResourceAsStream("/com/gravity/goose/images/known-image-css.txt"))
       .getLines()
     (
       for (line <- lines)

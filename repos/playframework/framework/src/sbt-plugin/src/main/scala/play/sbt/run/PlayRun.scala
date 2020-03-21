@@ -179,16 +179,15 @@ object PlayRun {
     val sourcesFinder = PathFinder {
       watched watchPaths state
     }
-    val watchState = ws.getOrElse(
-      state get ContinuousState getOrElse WatchState.empty)
+    val watchState = ws
+      .getOrElse(state get ContinuousState getOrElse WatchState.empty)
 
     val (triggered, newWatchState, newState) =
       try {
         val (triggered, newWatchState) =
-          SourceModificationWatch.watch(
-            sourcesFinder,
-            watched.pollInterval,
-            watchState)(shouldTerminate)
+          SourceModificationWatch
+            .watch(sourcesFinder, watched.pollInterval, watchState)(
+              shouldTerminate)
         (triggered, newWatchState, state)
       } catch {
         case e: Exception =>
@@ -246,21 +245,31 @@ object PlayRun {
 
   val playTestProdCommand =
     Command.args("testProd", "<port>") { (state: State, args: Seq[String]) =>
-      state.log.warn(
-        "The testProd command is deprecated, and will be removed in a future version of Play.")
-      state.log.warn(
-        "To test your application using production mode, run 'runProd' instead.")
+      state
+        .log
+        .warn(
+          "The testProd command is deprecated, and will be removed in a future version of Play.")
+      state
+        .log
+        .warn(
+          "To test your application using production mode, run 'runProd' instead.")
       testProd(state, args)
     }
 
   val playStartCommand =
     Command.args("start", "<port>") { (state: State, args: Seq[String]) =>
-      state.log.warn(
-        "The start command is deprecated, and will be removed in a future version of Play.")
-      state.log.warn(
-        "To run Play in production mode, run 'stage' instead, and then execute the generated start script in target/universal/stage/bin.")
-      state.log.warn(
-        "To test your application using production mode, run 'testProd' instead.")
+      state
+        .log
+        .warn(
+          "The start command is deprecated, and will be removed in a future version of Play.")
+      state
+        .log
+        .warn(
+          "To run Play in production mode, run 'stage' instead, and then execute the generated start script in target/universal/stage/bin.")
+      state
+        .log
+        .warn(
+          "To test your application using production mode, run 'testProd' instead.")
 
       testProd(state, args)
     }
@@ -297,15 +306,17 @@ object PlayRun {
         val stagingBin =
           Some(
             extracted.get(stagingDirectory in Universal) / "bin" / extracted
-              .get(executableScriptName)).map { f =>
-            if (System
-                  .getProperty("os.name")
-                  .toLowerCase(java.util.Locale.ENGLISH)
-                  .contains("win"))
-              f.getAbsolutePath + ".bat"
-            else
-              f.getAbsolutePath
-          }.get
+              .get(executableScriptName))
+            .map { f =>
+              if (System
+                    .getProperty("os.name")
+                    .toLowerCase(java.util.Locale.ENGLISH)
+                    .contains("win"))
+                f.getAbsolutePath + ".bat"
+              else
+                f.getAbsolutePath
+            }
+            .get
         val javaProductionOptions = Project
           .runTask(javaOptions in Production, state)
           .get

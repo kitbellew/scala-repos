@@ -100,8 +100,8 @@ private[annotator] object ModifierChecker {
                   checkDublicates(modifierPsi, "lazy")
                 case _: ScParameter =>
                   proccessError(
-                    ScalaBundle.message(
-                      "lazy.modifier.is.not.allowed.with.param"),
+                    ScalaBundle
+                      .message("lazy.modifier.is.not.allowed.with.param"),
                     modifierPsi,
                     holder,
                     new RemoveModifierQuickFix(owner, "lazy"))
@@ -137,14 +137,15 @@ private[annotator] object ModifierChecker {
                 case _: ScObject =>
                   if (checkDublicates(modifierPsi, "final")) {
                     proccessWarning(
-                      ScalaBundle.message(
-                        "final.modifier.is.redundant.with.object"),
+                      ScalaBundle
+                        .message("final.modifier.is.redundant.with.object"),
                       modifierPsi,
                       holder,
                       new RemoveModifierQuickFix(owner, "final"))
                   }
                 case e: ScMember
-                    if e.getParent.isInstanceOf[ScTemplateBody] || e.getParent
+                    if e.getParent.isInstanceOf[ScTemplateBody] || e
+                      .getParent
                       .isInstanceOf[ScEarlyDefinitions] =>
                   val redundant =
                     (e.containingClass, e) match {
@@ -211,8 +212,8 @@ private[annotator] object ModifierChecker {
                 case _: ScTrait =>
                   if (checkDublicates(modifierPsi, "abstract")) {
                     proccessWarning(
-                      ScalaBundle.message(
-                        "abstract.modifier.redundant.fot.traits"),
+                      ScalaBundle
+                        .message("abstract.modifier.redundant.fot.traits"),
                       modifierPsi,
                       holder,
                       new RemoveModifierQuickFix(owner, "abstract"))
@@ -224,8 +225,8 @@ private[annotator] object ModifierChecker {
                   if (!member.containingClass.isInstanceOf[ScTrait] && owner
                         .hasModifierProperty("override")) {
                     proccessError(
-                      ScalaBundle.message(
-                        "abstract.override.modifier.is.not.allowed"),
+                      ScalaBundle
+                        .message("abstract.override.modifier.is.not.allowed"),
                       modifierPsi,
                       holder,
                       new RemoveModifierQuickFix(owner, "abstract"))
@@ -243,8 +244,8 @@ private[annotator] object ModifierChecker {
               owner match {
                 case _: ScTypeDefinition =>
                   proccessError(
-                    ScalaBundle.message(
-                      "override.modifier.is.not.allowed.for.classes"),
+                    ScalaBundle
+                      .message("override.modifier.is.not.allowed.for.classes"),
                     modifierPsi,
                     holder,
                     new RemoveModifierQuickFix(owner, "override"))
@@ -305,8 +306,8 @@ private[annotator] object ModifierChecker {
                               else if (parameters.head.isRepeatedParameter)
                                 errorResult()
                               else if (clauses.length > 2 || (
-                                         clauses.length == 2 && !clauses(
-                                           1).isImplicit
+                                         clauses.length == 2 && !clauses(1)
+                                           .isImplicit
                                        ))
                                 errorResult()
                             }

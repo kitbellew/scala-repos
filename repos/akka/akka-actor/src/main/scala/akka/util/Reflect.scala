@@ -31,7 +31,8 @@ private[akka] object Reflect {
       val c = Class.forName("sun.reflect.Reflection")
       val m = c.getMethod("getCallerClass", Array(classOf[Int]): _*)
       Some((i: Int) ⇒
-        m.invoke(null, Array[AnyRef](i.asInstanceOf[java.lang.Integer]): _*)
+        m
+          .invoke(null, Array[AnyRef](i.asInstanceOf[java.lang.Integer]): _*)
           .asInstanceOf[Class[_]])
     } catch {
       case NonFatal(e) ⇒
@@ -103,7 +104,8 @@ private[akka] object Reflect {
       else {
         val length = args.length
         val candidates =
-          clazz.getDeclaredConstructors
+          clazz
+            .getDeclaredConstructors
             .asInstanceOf[Array[Constructor[T]]]
             .iterator filter { c ⇒
             val parameterTypes = c.getParameterTypes
@@ -111,8 +113,8 @@ private[akka] object Reflect {
             (
               parameterTypes.iterator zip args.iterator forall {
                 case (found, required) ⇒
-                  found.isInstance(required) || BoxedType(found).isInstance(
-                    required) ||
+                  found.isInstance(required) || BoxedType(found)
+                    .isInstance(required) ||
                     (required == null && !found.isPrimitive)
               }
             )
@@ -150,8 +152,8 @@ private[akka] object Reflect {
   def findMarker(root: Class[_], marker: Class[_]): Type = {
     @tailrec
     def rec(curr: Class[_]): Type = {
-      if (curr.getSuperclass != null && marker.isAssignableFrom(
-            curr.getSuperclass))
+      if (curr.getSuperclass != null && marker
+            .isAssignableFrom(curr.getSuperclass))
         rec(curr.getSuperclass)
       else
         curr.getGenericInterfaces collectFirst {

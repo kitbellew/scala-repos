@@ -102,10 +102,8 @@ trait TypedActorFactory {
     val i = props.interfaces //Cache this to avoid closing over the Props
     val ap = Props(new akka.actor.TypedActor.TypedActor[R, T](proxyVar, c(), i))
       .withDeploy(props.actorProps.deploy)
-    typedActor.createActorRefProxy(
-      props,
-      proxyVar,
-      actorFactory.actorOf(ap, name))
+    typedActor
+      .createActorRefProxy(props, proxyVar, actorFactory.actorOf(ap, name))
   }
 
   /**
@@ -253,9 +251,8 @@ object TypedActor
           case a if a.length == 0 ⇒
             Array[AnyRef]()
           case a ⇒
-            val deserializedParameters: Array[AnyRef] = Array.ofDim[AnyRef](
-              a.length
-            ) //Mutable for the sake of sanity
+            val deserializedParameters: Array[AnyRef] = Array
+              .ofDim[AnyRef](a.length) //Mutable for the sake of sanity
             for (i ← 0 until a.length) {
               val (sId, manifest, bytes) = a(i)
               deserializedParameters(i) = serialization
@@ -384,7 +381,8 @@ object TypedActor
           case l: PreRestart ⇒
             l.preRestart(reason, message)
           case _ ⇒
-            context.children foreach context.stop //Can't be super.preRestart(reason, message) since that would invoke postStop which would set the actorVar to DL and proxyVar to null
+            context.children foreach context
+              .stop //Can't be super.preRestart(reason, message) since that would invoke postStop which would set the actorVar to DL and proxyVar to null
         }
       }
 
@@ -795,8 +793,8 @@ final case class TypedProps[T <: AnyRef] protected[TypedProps] (
     * or if the interface class is not an interface, all the interfaces it implements.
     */
   def withoutInterface(interface: Class[_ >: T]): TypedProps[T] =
-    this.copy(interfaces =
-      interfaces diff TypedProps.extractInterfaces(interface))
+    this.copy(interfaces = interfaces diff TypedProps
+      .extractInterfaces(interface))
 
   /**
     * Returns the akka.actor.Props representation of this TypedProps
@@ -868,10 +866,12 @@ class TypedActorExtension(val system: ExtendedActorSystem)
     val proxy = Proxy
       .newProxyInstance(
         (
-          props.loader orElse props.interfaces.collectFirst {
-            case any ⇒
-              any.getClassLoader
-          }
+          props.loader orElse props
+            .interfaces
+            .collectFirst {
+              case any ⇒
+                any.getClassLoader
+            }
         ).orNull, //If we have no loader, we arbitrarily take the loader of the first interface
         props.interfaces.toArray,
         new TypedActorInvocationHandler(

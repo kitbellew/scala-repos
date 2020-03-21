@@ -42,34 +42,40 @@ class TimerTaskListTest {
     val list3 = new TimerTaskList(sharedCounter)
 
     val tasks =
-      (1 to 10).map { i =>
-        val task = new TestTask(10L)
-        list1.add(new TimerTaskEntry(task))
-        assertEquals(i, sharedCounter.get)
-        task
-      }.toSeq
+      (1 to 10)
+        .map { i =>
+          val task = new TestTask(10L)
+          list1.add(new TimerTaskEntry(task))
+          assertEquals(i, sharedCounter.get)
+          task
+        }
+        .toSeq
 
     assertEquals(tasks.size, sharedCounter.get)
 
     // reinserting the existing tasks shouldn't change the task count
-    tasks.take(4).foreach { task =>
-      val prevCount = sharedCounter.get
-      // new TimerTaskEntry(task) will remove the existing entry from the list
-      list2.add(new TimerTaskEntry(task))
-      assertEquals(prevCount, sharedCounter.get)
-    }
+    tasks
+      .take(4)
+      .foreach { task =>
+        val prevCount = sharedCounter.get
+        // new TimerTaskEntry(task) will remove the existing entry from the list
+        list2.add(new TimerTaskEntry(task))
+        assertEquals(prevCount, sharedCounter.get)
+      }
     assertEquals(10 - 4, size(list1))
     assertEquals(4, size(list2))
 
     assertEquals(tasks.size, sharedCounter.get)
 
     // reinserting the existing tasks shouldn't change the task count
-    tasks.drop(4).foreach { task =>
-      val prevCount = sharedCounter.get
-      // new TimerTaskEntry(task) will remove the existing entry from the list
-      list3.add(new TimerTaskEntry(task))
-      assertEquals(prevCount, sharedCounter.get)
-    }
+    tasks
+      .drop(4)
+      .foreach { task =>
+        val prevCount = sharedCounter.get
+        // new TimerTaskEntry(task) will remove the existing entry from the list
+        list3.add(new TimerTaskEntry(task))
+        assertEquals(prevCount, sharedCounter.get)
+      }
     assertEquals(0, size(list1))
     assertEquals(4, size(list2))
     assertEquals(6, size(list3))

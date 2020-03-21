@@ -62,7 +62,8 @@ class ErrorFormatter(
     if (showExpected)
       formatExpected(sb, error)
     if (showPosition)
-      sb.append(" (line ")
+      sb
+        .append(" (line ")
         .append(position.line)
         .append(", column ")
         .append(position.column)
@@ -92,11 +93,13 @@ class ErrorFormatter(
     if (ix < input.length) {
       val chars = mismatchLength(error)
       if (chars == 1)
-        sb.append("Invalid input '")
+        sb
+          .append("Invalid input '")
           .append(CharUtils.escape(input charAt ix))
           .append(''')
       else
-        sb.append("Invalid input \"")
+        sb
+          .append("Invalid input \"")
           .append(CharUtils.escape(input.sliceString(ix, ix + chars)))
           .append('"')
     } else
@@ -111,21 +114,25 @@ class ErrorFormatter(
     // to advancing the principal error location (PEL). Therefore it might be that their succeeding inner match
     // reaches further than the PEL. In these cases we want to show the complete inner match as "mismatched",
     // not just the piece up to the PEL. This is what this method corrects for.
-    error.effectiveTraces.foldLeft(
-      error.principalPosition.index - error.position.index + 1) { (len, trace) ⇒
-      import RuleTrace._
-      trace.terminal match {
-        case NotPredicate(_, x) ⇒
-          math.max(
-            trace.prefix.collectFirst {
-              case NonTerminal(Atomic, off) ⇒
-                off + x
-            } getOrElse x,
-            len)
-        case _ ⇒
-          len
+    error
+      .effectiveTraces
+      .foldLeft(error.principalPosition.index - error.position.index + 1) {
+        (len, trace) ⇒
+          import RuleTrace._
+          trace.terminal match {
+            case NotPredicate(_, x) ⇒
+              math.max(
+                trace
+                  .prefix
+                  .collectFirst {
+                    case NonTerminal(Atomic, off) ⇒
+                      off + x
+                  } getOrElse x,
+                len)
+            case _ ⇒
+              len
+          }
       }
-    }
 
   /**
     * Formats what is expected at the error location into a single line String including text padding.

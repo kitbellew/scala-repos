@@ -251,7 +251,10 @@ class FutureSpec
                     case _ ⇒
                       false
                   }
-                ) :| result.value.get.toString + " is expected to be " + expected.toString
+                ) :| result
+                  .value
+                  .get
+                  .toString + " is expected to be " + expected.toString
               },
               minSuccessful(10000),
               workers(4)
@@ -315,8 +318,8 @@ class FutureSpec
                 new Actor {
                   def receive = {
                     case s: String ⇒
-                      sender() ! Status.Failure(
-                        new ArithmeticException("/ by zero"))
+                      sender() ! Status
+                        .Failure(new ArithmeticException("/ by zero"))
                   }
                 }))
             val future = actor1 ? "Hello" flatMap {
@@ -553,8 +556,10 @@ class FutureSpec
       }
 
       "firstCompletedOf" in {
-        val futures = Vector.fill[Future[Int]](10)(
-          Promise[Int]().future) :+ Promise.successful[Int](5).future
+        val futures = Vector
+          .fill[Future[Int]](10)(Promise[Int]().future) :+ Promise
+          .successful[Int](5)
+          .future
         Await.result(
           Future.firstCompletedOf(futures),
           timeout.duration) should ===(5)
@@ -587,25 +592,25 @@ class FutureSpec
         val f = new IllegalStateException("test")
         intercept[IllegalStateException] {
           Await.result(
-            Promise
-              .failed[String](f)
-              .future zip Promise.successful("foo").future,
-            timeout)
-        } should ===(f)
-
-        intercept[IllegalStateException] {
-          Await.result(
-            Promise
+            Promise.failed[String](f).future zip Promise
               .successful("foo")
-              .future zip Promise.failed[String](f).future,
+              .future,
             timeout)
         } should ===(f)
 
         intercept[IllegalStateException] {
           Await.result(
-            Promise
+            Promise.successful("foo").future zip Promise
               .failed[String](f)
-              .future zip Promise.failed[String](f).future,
+              .future,
+            timeout)
+        } should ===(f)
+
+        intercept[IllegalStateException] {
+          Await.result(
+            Promise.failed[String](f).future zip Promise
+              .failed[String](f)
+              .future,
             timeout)
         } should ===(f)
 

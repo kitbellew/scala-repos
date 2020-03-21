@@ -191,11 +191,15 @@ case class AbsoluteDurationList(parts: List[AbsoluteDuration])
     extends AbstractDurationList[AbsoluteDuration](parts)
     with AbsoluteDuration {
   override def toSeconds =
-    parts.map {
-      _.toSeconds
-    }.sum
+    parts
+      .map {
+        _.toSeconds
+      }
+      .sum
   override def toMillisecs: Long =
-    parts.map {
-      _.toMillisecs
-    }.sum
+    parts
+      .map {
+        _.toMillisecs
+      }
+      .sum
 }

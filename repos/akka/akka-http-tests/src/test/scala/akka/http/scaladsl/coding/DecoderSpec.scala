@@ -30,7 +30,8 @@ class DecoderSpec extends WordSpec with CodecSpecSupport {
         headers = List(`Content-Encoding`(DummyDecoder.encoding)))
       val decoded = DummyDecoder.decode(request)
       decoded.headers shouldEqual Nil
-      decoded.entity
+      decoded
+        .entity
         .toStrict(1.second)
         .awaitResult(1.second) shouldEqual HttpEntity(
         dummyDecompress(smallText))

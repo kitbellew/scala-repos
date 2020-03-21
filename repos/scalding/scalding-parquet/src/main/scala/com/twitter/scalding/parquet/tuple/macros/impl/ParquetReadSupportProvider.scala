@@ -222,7 +222,8 @@ object ParquetReadSupportProvider {
     }
 
     def expandMethod(outerTpe: Type): List[(Tree, Tree, Tree, Tree)] =
-      outerTpe.declarations
+      outerTpe
+        .declarations
         .collect {
           case m: MethodSymbol if m.isCaseAccessor =>
             m
@@ -238,14 +239,11 @@ object ParquetReadSupportProvider {
     def unzip(treeTuples: List[(Tree, Tree, Tree, Tree)])
         : (List[Tree], List[Tree], List[Tree], List[Tree]) = {
       val emptyTreeList = List[Tree]()
-      treeTuples.foldRight(
-        emptyTreeList,
-        emptyTreeList,
-        emptyTreeList,
-        emptyTreeList) {
-        case ((t1, t2, t3, t4), (l1, l2, l3, l4)) =>
-          (t1 :: l1, t2 :: l2, t3 :: l3, t4 :: l4)
-      }
+      treeTuples
+        .foldRight(emptyTreeList, emptyTreeList, emptyTreeList, emptyTreeList) {
+          case ((t1, t2, t3, t4), (l1, l2, l3, l4)) =>
+            (t1 :: l1, t2 :: l2, t3 :: l3, t4 :: l4)
+        }
     }
 
     def buildTupleValue(tpe: Type, fieldValueBuilders: List[Tree]): Tree = {

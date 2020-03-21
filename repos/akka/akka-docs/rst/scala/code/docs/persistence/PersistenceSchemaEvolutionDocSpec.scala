@@ -106,7 +106,9 @@ class ProtobufReadOptional {
     override def toBinary(o: AnyRef): Array[Byte] =
       o match {
         case s: SeatReserved =>
-          FlightAppModels.SeatReserved.newBuilder
+          FlightAppModels
+            .SeatReserved
+            .newBuilder
             .setRow(s.row)
             .setLetter(s.letter)
             .setSeatType(s.seatType.code)

@@ -137,15 +137,13 @@ class ScalaPsiElementFactoryImpl(manager: PsiManager)
       context: PsiElement): PsiMethod = throw new IncorrectOperationException
 
   def createConstructor(): PsiMethod = {
-    ScalaPsiElementFactory.createMethodFromText(
-      "def this() {\nthis()\n}",
-      manager)
+    ScalaPsiElementFactory
+      .createMethodFromText("def this() {\nthis()\n}", manager)
   }
 
   def createConstructor(name: String): PsiMethod = {
-    ScalaPsiElementFactory.createMethodFromText(
-      "def this() {\nthis()\n}",
-      manager)
+    ScalaPsiElementFactory
+      .createMethodFromText("def this() {\nthis()\n}", manager)
   }
 
   def createClassInitializer(): PsiClassInitializer =
@@ -219,10 +217,8 @@ class ScalaPsiElementFactoryImpl(manager: PsiManager)
       text: String,
       context: PsiElement): PsiElement = {
     try {
-      ScalaPsiElementFactory.createExpressionWithContextFromText(
-        text,
-        context,
-        context)
+      ScalaPsiElementFactory
+        .createExpressionWithContextFromText(text, context, context)
     } catch {
       case e: Throwable =>
         throw new IncorrectOperationException
@@ -549,8 +545,10 @@ object ScalaPsiElementFactory {
       .asInstanceOf[ScalaFile]
     val classDef = dummyFile.typeDefinitions(0)
     val p = classDef.members(0).asInstanceOf[ScPatternDefinition]
-    p.expr.getOrElse(
-      throw new IllegalArgumentException("Expression not found")) match {
+    p
+      .expr
+      .getOrElse(
+        throw new IllegalArgumentException("Expression not found")) match {
       case x: ScParenthesisedExpr =>
         x.expr match {
           case Some(y) =>
@@ -590,8 +588,8 @@ object ScalaPsiElementFactory {
     val child = dummyFile.getFirstChild
     child match {
       case expr: ScExpression =>
-        if (expr.getNextSibling == null && !PsiTreeUtil.hasErrorElements(
-              dummyFile))
+        if (expr.getNextSibling == null && !PsiTreeUtil
+              .hasErrorElements(dummyFile))
           Some(expr)
         else
           None
@@ -848,7 +846,8 @@ object ScalaPsiElementFactory {
           val paramText =
             if (parSeq.size == 1) {
               val par = parSeq.head
-              if (par.typeElement.isDefined && par.getPrevSiblingNotWhitespace == null)
+              if (par.typeElement.isDefined && par
+                    .getPrevSiblingNotWhitespace == null)
                 s"(${par.getText})"
               else
                 fun.params.getText
@@ -951,12 +950,16 @@ object ScalaPsiElementFactory {
     val enumText = s"$name$typeText = ${expr.getText}"
     val text = s"for {\n  i <- 1 to 239\n  $enumText\n}"
     val dummyFile = createScalaFile(text, manager)
-    val forStmt: ScForStatement = dummyFile.getFirstChild
+    val forStmt: ScForStatement = dummyFile
+      .getFirstChild
       .asInstanceOf[ScForStatement]
-    forStmt.enumerators.flatMap(_.enumerators.headOption).getOrElse {
-      throw new IllegalArgumentException(
-        s"Could not create enumerator from text:\n $enumText")
-    }
+    forStmt
+      .enumerators
+      .flatMap(_.enumerators.headOption)
+      .getOrElse {
+        throw new IllegalArgumentException(
+          s"Could not create enumerator from text:\n $enumText")
+      }
   }
 
   def createNewLine(manager: PsiManager): PsiElement =
@@ -1040,8 +1043,8 @@ object ScalaPsiElementFactory {
         text)
       .asInstanceOf[ScalaFile]
     val extendsBlock = dummyFile.typeDefinitions.head.extendsBlock
-    val extendToken = extendsBlock.findFirstChildByType(
-      ScalaTokenTypes.kEXTENDS)
+    val extendToken = extendsBlock
+      .findFirstChildByType(ScalaTokenTypes.kEXTENDS)
     val templateParents = extendsBlock.templateParents.get
     (extendToken, templateParents)
   }
@@ -1257,7 +1260,8 @@ object ScalaPsiElementFactory {
             }
             val boundsText =
               (
-                lowerBoundText.toSeq ++ upperBoundText.toSeq ++ viewBoundText ++ contextBoundText
+                lowerBoundText.toSeq ++ upperBoundText
+                  .toSeq ++ viewBoundText ++ contextBoundText
               ).mkString
             s"$variance${typeParam.name}$clauseText$boundsText"
           }
@@ -1314,9 +1318,9 @@ object ScalaPsiElementFactory {
               var text = ScType.canonicalText(scType)
               if (text == "_root_.java.lang.Object")
                 text = "AnyRef"
-              val needWhitespace =
-                method.paramClauses.clauses.isEmpty && method.typeParameters.isEmpty && ScalaNamesUtil
-                  .isIdentifier(method.name + ":")
+              val needWhitespace = method.paramClauses.clauses.isEmpty && method
+                .typeParameters
+                .isEmpty && ScalaNamesUtil.isIdentifier(method.name + ":")
               val colon =
                 if (needWhitespace)
                   " : "
@@ -1392,8 +1396,8 @@ object ScalaPsiElementFactory {
           builder ++= params.mkString("(", ", ", ")")
         }
 
-        val retType = substitutor.subst(
-          ScType.create(method.getReturnType, method.getProject))
+        val retType = substitutor
+          .subst(ScType.create(method.getReturnType, method.getProject))
         val retAndBody =
           if (needsInferType) {
             val typeText =
@@ -1652,12 +1656,14 @@ object ScalaPsiElementFactory {
       DummyHolderFactory.createHolder(manager, context).getTreeElement
     val builder: ScalaPsiBuilderImpl =
       new ScalaPsiBuilderImpl(
-        PsiBuilderFactory.getInstance.createBuilder(
-          manager.getProject,
-          holder,
-          new ScalaLexer,
-          ScalaFileType.SCALA_LANGUAGE,
-          text.trim))
+        PsiBuilderFactory
+          .getInstance
+          .createBuilder(
+            manager.getProject,
+            holder,
+            new ScalaLexer,
+            ScalaFileType.SCALA_LANGUAGE,
+            text.trim))
     val marker = builder.mark()
     parse(builder)
     while (!builder.eof()) {
@@ -1682,12 +1688,14 @@ object ScalaPsiElementFactory {
         .getTreeElement
     val builder: ScalaPsiBuilderImpl =
       new ScalaPsiBuilderImpl(
-        PsiBuilderFactory.getInstance.createBuilder(
-          context.getProject,
-          holder,
-          new ScalaLexer,
-          ScalaFileType.SCALA_LANGUAGE,
-          text.trim))
+        PsiBuilderFactory
+          .getInstance
+          .createBuilder(
+            context.getProject,
+            holder,
+            new ScalaLexer,
+            ScalaFileType.SCALA_LANGUAGE,
+            text.trim))
     val marker = builder.mark()
     parse(builder)
     while (!builder.eof()) {
@@ -1750,7 +1758,8 @@ object ScalaPsiElementFactory {
         ScalaFileType.SCALA_FILE_TYPE,
         "var f: Int")
       .asInstanceOf[ScalaFile]
-    dummyFile.getFirstChild
+    dummyFile
+      .getFirstChild
       .asInstanceOf[ScalaPsiElement]
       .findChildrenByType(ScalaTokenTypes.tCOLON)
       .head
@@ -1832,7 +1841,9 @@ object ScalaPsiElementFactory {
         ScalaFileType.SCALA_FILE_TYPE,
         "val x: T forSome {type " + name + "}")
       .asInstanceOf[ScalaFile]
-    dummyFile.getChildren.head
+    dummyFile
+      .getChildren
+      .head
       .asInstanceOf[ScValueDeclaration]
       .typeElement
       .get
@@ -1848,7 +1859,10 @@ object ScalaPsiElementFactory {
         ScalaFileType.SCALA_FILE_TYPE,
         "val _ = x")
       .asInstanceOf[ScalaFile]
-    dummyFile.getChildren.head.getChildren
+    dummyFile
+      .getChildren
+      .head
+      .getChildren
       .apply(2)
       .getChildren
       .head
@@ -2050,9 +2064,11 @@ object ScalaPsiElementFactory {
   }
 
   def createXmlEndTag(tagName: String, manager: PsiManager): ScXmlEndTag = {
-    createScalaFile(
-      "val a = <" + tagName + "></" + tagName + ">",
-      manager).getFirstChild.getLastChild.getFirstChild.getLastChild
+    createScalaFile("val a = <" + tagName + "></" + tagName + ">", manager)
+      .getFirstChild
+      .getLastChild
+      .getFirstChild
+      .getLastChild
       .asInstanceOf[ScXmlEndTag]
   }
 
@@ -2062,7 +2078,11 @@ object ScalaPsiElementFactory {
       attributes: String = ""): ScXmlStartTag = {
     createScalaFile(
       "val a = <" + tagName + attributes + "></" + tagName + ">",
-      manager).getFirstChild.getLastChild.getFirstChild.getFirstChild
+      manager)
+      .getFirstChild
+      .getLastChild
+      .getFirstChild
+      .getFirstChild
       .asInstanceOf[ScXmlStartTag]
   }
 
@@ -2108,7 +2128,9 @@ object ScalaPsiElementFactory {
         case call: ScGenericCall =>
           call.referencedExpr.asInstanceOf[ScReferenceExpression]
       }
-    referenceExpr.qualifier.get
+    referenceExpr
+      .qualifier
+      .get
       .replaceExpression(exprA, removeParenthesis = true)
     methodCallExpr
   }
@@ -2126,8 +2148,9 @@ object ScalaPsiElementFactory {
       operandText,
       postfix,
       operand)
-    expr.qualifier.foreach(
-      _.replaceExpression(qualWithoutPars, removeParenthesis = true))
+    expr
+      .qualifier
+      .foreach(_.replaceExpression(qualWithoutPars, removeParenthesis = true))
     expr
   }
 }

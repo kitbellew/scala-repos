@@ -67,9 +67,11 @@ trait ApiControllerBase extends ControllerBase {
     * https://developer.github.com/v3/users/#get-the-authenticated-user
     */
   get("/api/v3/user") {
-    context.loginAccount.map { account =>
-      JsonFormat(ApiUser(account))
-    } getOrElse Unauthorized
+    context
+      .loginAccount
+      .map { account =>
+        JsonFormat(ApiUser(account))
+      } getOrElse Unauthorized
   }
 
   /**
@@ -158,7 +160,8 @@ trait ApiControllerBase extends ControllerBase {
               repository.owner,
               repository.name,
               branch,
-              protection.status.enforcement_level == ApiBranchProtection.Everyone,
+              protection.status.enforcement_level == ApiBranchProtection
+                .Everyone,
               protection.status.contexts)
           } else {
             disableBranchProtection(repository.owner, repository.name, branch)
@@ -274,10 +277,8 @@ trait ApiControllerBase extends ControllerBase {
           data <- extractFromJsonBody[CreateALabel] if data.isValid
         } yield {
           LockUtil.lock(RepositoryName(repository).fullName) {
-            if (getLabel(
-                  repository.owner,
-                  repository.name,
-                  data.name).isEmpty) {
+            if (getLabel(repository.owner, repository.name, data.name)
+                  .isEmpty) {
               val labelId = createLabel(
                 repository.owner,
                 repository.name,
@@ -314,10 +315,8 @@ trait ApiControllerBase extends ControllerBase {
             getLabel(repository.owner, repository.name, params("labelName"))
               .map {
                 label =>
-                  if (getLabel(
-                        repository.owner,
-                        repository.name,
-                        data.name).isEmpty) {
+                  if (getLabel(repository.owner, repository.name, data.name)
+                        .isEmpty) {
                     updateLabel(
                       repository.owner,
                       repository.name,
@@ -436,28 +435,31 @@ trait ApiControllerBase extends ControllerBase {
     referrersOnly { repository =>
       val owner = repository.owner
       val name = repository.name
-      params("id").toIntOpt.flatMap {
-        issueId =>
-          getPullRequest(owner, name, issueId) map {
-            case (issue, pullreq) =>
-              using(Git.open(getRepositoryDir(owner, name))) {
-                git =>
-                  val oldId = git.getRepository.resolve(pullreq.commitIdFrom)
-                  val newId = git.getRepository.resolve(pullreq.commitIdTo)
-                  val repoFullName = RepositoryName(repository)
-                  val commits =
-                    git.log
-                      .addRange(oldId, newId)
-                      .call
-                      .iterator
-                      .asScala
-                      .map(c =>
-                        ApiCommitListItem(new CommitInfo(c), repoFullName))
-                      .toList
-                  JsonFormat(commits)
-              }
-          }
-      } getOrElse NotFound
+      params("id")
+        .toIntOpt
+        .flatMap {
+          issueId =>
+            getPullRequest(owner, name, issueId) map {
+              case (issue, pullreq) =>
+                using(Git.open(getRepositoryDir(owner, name))) {
+                  git =>
+                    val oldId = git.getRepository.resolve(pullreq.commitIdFrom)
+                    val newId = git.getRepository.resolve(pullreq.commitIdTo)
+                    val repoFullName = RepositoryName(repository)
+                    val commits =
+                      git
+                        .log
+                        .addRange(oldId, newId)
+                        .call
+                        .iterator
+                        .asScala
+                        .map(c =>
+                          ApiCommitListItem(new CommitInfo(c), repoFullName))
+                        .toList
+                    JsonFormat(commits)
+                }
+            }
+        } getOrElse NotFound
     })
 
   /**

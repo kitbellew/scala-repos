@@ -39,8 +39,8 @@ class ScClassParentsImpl private (
     if (stub != null) {
       return stub
         .asInstanceOf[ScTemplateParentsStub]
-        .getTemplateParentsTypes ++ syntheticTypeElements.map(
-        _.getType(TypingContext.empty).getOrAny)
+        .getTemplateParentsTypes ++ syntheticTypeElements
+        .map(_.getType(TypingContext.empty).getOrAny)
     }
     allTypeElements.map(_.getType(TypingContext.empty).getOrAny)
   }

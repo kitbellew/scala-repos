@@ -80,7 +80,8 @@ object CommandUtil {
         } catch {
           case pse: PatternSyntaxException =>
             sys.error(
-              "Invalid regular expression (java.util.regex syntax).\n" + pse.getMessage)
+              "Invalid regular expression (java.util.regex syntax).\n" + pse
+                .getMessage)
         }
     }
   def searchHelp(

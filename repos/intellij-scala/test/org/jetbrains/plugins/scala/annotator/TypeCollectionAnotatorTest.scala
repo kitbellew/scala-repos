@@ -17,10 +17,10 @@ import org.jetbrains.plugins.scala.settings.ScalaProjectSettings
 class TypeCollectionAnotatorTest
     extends ScalaLightPlatformCodeInsightTestCaseAdapter
     with TestScalaProjectSettings {
-  private val immutableCollectionMessage = ScalaBundle.message(
-    "scala.immutable.collection")
-  private val mutableCollectionMessage = ScalaBundle.message(
-    "scala.mutable.collection")
+  private val immutableCollectionMessage = ScalaBundle
+    .message("scala.immutable.collection")
+  private val mutableCollectionMessage = ScalaBundle
+    .message("scala.mutable.collection")
   private val javaCollectionMessage = ScalaBundle.message("java.collection")
 
   protected override def setUp() {
@@ -33,11 +33,14 @@ class TypeCollectionAnotatorTest
   private def annotate(text: String, holder: AnnotatorHolderMock) {
     configureFromFileTextAdapter("dummy.scala", text.replace("\r", ""))
 
-    getFileAdapter.asInstanceOf[ScalaFile].breadthFirst.foreach {
-      case refElement: ScReferenceElement =>
-        AnnotatorHighlighter.highlightReferenceElement(refElement, holder)
-      case _ =>
-    }
+    getFileAdapter
+      .asInstanceOf[ScalaFile]
+      .breadthFirst
+      .foreach {
+        case refElement: ScReferenceElement =>
+          AnnotatorHighlighter.highlightReferenceElement(refElement, holder)
+        case _ =>
+      }
   }
 
   private def testCanAnnotate(
@@ -48,12 +51,14 @@ class TypeCollectionAnotatorTest
     annotate(text, holder)
 
     assert(
-      holder.annotations.exists {
-        case Info(`highlightedText`, `highlightingMessage`) =>
-          true
-        case _ =>
-          false
-      })
+      holder
+        .annotations
+        .exists {
+          case Info(`highlightedText`, `highlightingMessage`) =>
+            true
+          case _ =>
+            false
+        })
   }
 
   private def testCannotAnnotate(
@@ -63,12 +68,14 @@ class TypeCollectionAnotatorTest
     annotate(text, holder)
 
     assert(
-      !holder.annotations.exists {
-        case Info(`textCantHighlight`._1, `textCantHighlight`._2) =>
-          true
-        case _ =>
-          false
-      })
+      !holder
+        .annotations
+        .exists {
+          case Info(`textCantHighlight`._1, `textCantHighlight`._2) =>
+            true
+          case _ =>
+            false
+        })
   }
 
   def testAnnotateImmutableSimpple() {

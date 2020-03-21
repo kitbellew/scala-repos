@@ -18,8 +18,8 @@ object JavaRouting extends Specification {
 
   "the java router" should {
     "support simple routing with a long parameter" in {
-      contentOf(
-        FakeRequest("GET", "/clients/10")).trim must_== "showing client 10"
+      contentOf(FakeRequest("GET", "/clients/10"))
+        .trim must_== "showing client 10"
     }
     "support a static path" in {
       contentOf(FakeRequest("GET", "/clients/all")) must_== "all clients"
@@ -70,8 +70,11 @@ object JavaRouting extends Specification {
           call(
             new MockJavaAction {
               override def invocation =
-                F.Promise.pure(
-                  new javaguide.http.routing.controllers.Application().index())
+                F
+                  .Promise
+                  .pure(
+                    new javaguide.http.routing.controllers.Application()
+                      .index())
             },
             FakeRequest())) must beSome("/hello/Bob")
       }

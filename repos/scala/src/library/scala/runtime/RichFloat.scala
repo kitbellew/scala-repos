@@ -25,7 +25,8 @@ final class RichFloat(val self: Float)
 
   override def isWhole = {
     val l = self.toLong
-    l.toFloat == self || l == Long.MaxValue && self < Float.PositiveInfinity || l == Long.MinValue && self > Float.NegativeInfinity
+    l.toFloat == self || l == Long.MaxValue && self < Float
+      .PositiveInfinity || l == Long.MinValue && self > Float.NegativeInfinity
   }
   override def isValidByte = self.toByte.toFloat == self
   override def isValidShort = self.toShort.toFloat == self

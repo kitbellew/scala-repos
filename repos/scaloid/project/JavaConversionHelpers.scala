@@ -84,7 +84,8 @@ trait JavaConversionHelpers {
               bounds = t.getBounds.map(step(_, nextLevel)).toList,
               isVar = true)
           case w: WildcardType =>
-            val bs = w.getUpperBounds
+            val bs = w
+              .getUpperBounds
               .map(step(_, nextLevel))
               .toList
               .filter(_.name != "Any")

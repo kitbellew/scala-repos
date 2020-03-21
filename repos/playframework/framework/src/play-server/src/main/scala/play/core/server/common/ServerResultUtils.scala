@@ -19,16 +19,21 @@ object ServerResultUtils {
       request: RequestHeader,
       result: Result): ConnectionHeader = {
     if (request.version == HttpProtocol.HTTP_1_1) {
-      if (result.header.headers
+      if (result
+            .header
+            .headers
             .get(CONNECTION)
             .exists(_.equalsIgnoreCase(CLOSE))) {
         // Close connection, header already exists
         DefaultClose
       } else if ((
-                   result.body.isInstanceOf[
-                     HttpEntity.Streamed] && result.body.contentLength.isEmpty
+                   result.body.isInstanceOf[HttpEntity.Streamed] && result
+                     .body
+                     .contentLength
+                     .isEmpty
                  )
-                 || request.headers
+                 || request
+                   .headers
                    .get(CONNECTION)
                    .exists(_.equalsIgnoreCase(CLOSE))) {
         // We need to close the connection and set the header
@@ -37,15 +42,20 @@ object ServerResultUtils {
         DefaultKeepAlive
       }
     } else {
-      if (result.header.headers
+      if (result
+            .header
+            .headers
             .get(CONNECTION)
             .exists(_.equalsIgnoreCase(CLOSE))) {
         DefaultClose
       } else if ((
-                   result.body.isInstanceOf[
-                     HttpEntity.Streamed] && result.body.contentLength.isEmpty
+                   result.body.isInstanceOf[HttpEntity.Streamed] && result
+                     .body
+                     .contentLength
+                     .isEmpty
                  ) ||
-                 request.headers
+                 request
+                   .headers
                    .get(CONNECTION)
                    .forall(!_.equalsIgnoreCase(KEEP_ALIVE))) {
         DefaultClose
@@ -62,16 +72,17 @@ object ServerResultUtils {
     */
   def validateResult(request: RequestHeader, result: Result)(implicit
       mat: Materializer): Result = {
-    if (request.version == HttpProtocol.HTTP_1_0 && result.body
-          .isInstanceOf[HttpEntity.Chunked]) {
+    if (request.version == HttpProtocol
+          .HTTP_1_0 && result.body.isInstanceOf[HttpEntity.Chunked]) {
       cancelEntity(result.body)
       Results
         .Status(Status.HTTP_VERSION_NOT_SUPPORTED)
         .apply(
           "The response to this request is chunked and hence requires HTTP 1.1 to be sent, but this is a HTTP 1.0 request.")
         .withHeaders(CONNECTION -> CLOSE)
-    } else if (!mayHaveEntity(
-                 result.header.status) && !result.body.isKnownEmpty) {
+    } else if (!mayHaveEntity(result.header.status) && !result
+                 .body
+                 .isKnownEmpty) {
       cancelEntity(result.body)
       result.copy(body = HttpEntity
         .Strict(ByteString.empty, result.body.contentType))
@@ -155,7 +166,9 @@ object ServerResultUtils {
     * in the incoming request.
     */
   def cleanFlashCookie(requestHeader: RequestHeader, result: Result): Result = {
-    val optResultFlashCookies: Option[_] = result.header.headers
+    val optResultFlashCookies: Option[_] = result
+      .header
+      .headers
       .get(SET_COOKIE)
       .flatMap { setCookieValue: String =>
         Cookies
@@ -192,15 +205,17 @@ object ServerResultUtils {
       headers: Map[String, String]): Iterable[(String, String)] = {
     if (headers.contains(SET_COOKIE)) {
       // Rewrite the headers with Set-Cookie split into separate headers
-      headers.to[Seq].flatMap {
-        case (SET_COOKIE, value) =>
-          val cookieParts = Cookies.SetCookieHeaderSeparatorRegex.split(value)
-          cookieParts.map { cookiePart =>
-            SET_COOKIE -> cookiePart
-          }
-        case (name, value) =>
-          Seq((name, value))
-      }
+      headers
+        .to[Seq]
+        .flatMap {
+          case (SET_COOKIE, value) =>
+            val cookieParts = Cookies.SetCookieHeaderSeparatorRegex.split(value)
+            cookieParts.map { cookiePart =>
+              SET_COOKIE -> cookiePart
+            }
+          case (name, value) =>
+            Seq((name, value))
+        }
     } else {
       // No Set-Cookie header so we can just use the headers as they are
       headers

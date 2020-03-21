@@ -228,10 +228,8 @@ object WorksheetFoldGroup {
     val virtualFile = file.getVirtualFile
     if (!virtualFile.isValid)
       return
-    FileAttributeUtilCache.writeAttribute(
-      WORKSHEET_PERSISTENT_FOLD_KEY,
-      file,
-      group.serialize())
+    FileAttributeUtilCache
+      .writeAttribute(WORKSHEET_PERSISTENT_FOLD_KEY, file, group.serialize())
   }
 
   def load(
@@ -240,9 +238,8 @@ object WorksheetFoldGroup {
       project: Project,
       splitter: WorksheetDiffSplitters.SimpleWorksheetSplitter,
       file: PsiFile) {
-    val bytes = FileAttributeUtilCache.readAttribute(
-      WORKSHEET_PERSISTENT_FOLD_KEY,
-      file)
+    val bytes = FileAttributeUtilCache
+      .readAttribute(WORKSHEET_PERSISTENT_FOLD_KEY, file)
     if (bytes == null)
       return
 

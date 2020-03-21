@@ -141,14 +141,15 @@ private[cors] trait AbstractCORSPolicy {
        * with as values the header field names given in the list of exposed headers.
        */
       if (corsConfig.exposedHeaders.nonEmpty) {
-        headerBuilder += HeaderNames.ACCESS_CONTROL_EXPOSE_HEADERS -> corsConfig.exposedHeaders
+        headerBuilder += HeaderNames.ACCESS_CONTROL_EXPOSE_HEADERS -> corsConfig
+          .exposedHeaders
           .mkString(",")
       }
 
       import play.api.libs.iteratee.Execution.Implicits.trampoline
 
-      val taggedRequest = request.copy(tags =
-        request.tags + (CORSFilter.RequestTag -> origin))
+      val taggedRequest = request
+        .copy(tags = request.tags + (CORSFilter.RequestTag -> origin))
       // We must recover any errors so that we can add the headers to them to allow clients to see the result
       val result =
         try {
@@ -214,12 +215,14 @@ private[cors] trait AbstractCORSPolicy {
              * let header field-names be the empty list.
              */
             val accessControlRequestHeaders: List[String] = {
-              request.headers.get(
-                HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS) match {
+              request
+                .headers
+                .get(HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS) match {
                 case None =>
                   List.empty[String]
                 case Some(headerVal) =>
-                  headerVal.trim
+                  headerVal
+                    .trim
                     .split(',')
                     .map(_.trim.toLowerCase(java.util.Locale.ENGLISH))(
                       collection.breakOut)
@@ -247,8 +250,10 @@ private[cors] trait AbstractCORSPolicy {
                  * with the value of the Origin header as value, and add a single
                  * Access-Control-Allow-Credentials header with the case-sensitive string "true" as value.
                  */
-                headerBuilder += HeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS -> "true"
-                headerBuilder += HeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN -> origin
+                headerBuilder += HeaderNames
+                  .ACCESS_CONTROL_ALLOW_CREDENTIALS -> "true"
+                headerBuilder += HeaderNames
+                  .ACCESS_CONTROL_ALLOW_ORIGIN -> origin
 
                 /* http://www.w3.org/TR/cors/#resource-implementation
                  * § 6.4
@@ -265,9 +270,11 @@ private[cors] trait AbstractCORSPolicy {
                  * with either the value of the Origin header or the string "*" as value.
                  */
                 if (corsConfig.anyOriginAllowed) {
-                  headerBuilder += HeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN -> "*"
+                  headerBuilder += HeaderNames
+                    .ACCESS_CONTROL_ALLOW_ORIGIN -> "*"
                 } else {
-                  headerBuilder += HeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN -> origin
+                  headerBuilder += HeaderNames
+                    .ACCESS_CONTROL_ALLOW_ORIGIN -> origin
                   /* http://www.w3.org/TR/cors/#resource-implementation
                    * § 6.4
                    */
@@ -281,7 +288,11 @@ private[cors] trait AbstractCORSPolicy {
                * of seconds the user agent is allowed to cache the result of the request.
                */
               if (corsConfig.preflightMaxAge.toSeconds > 0) {
-                headerBuilder += HeaderNames.ACCESS_CONTROL_MAX_AGE -> corsConfig.preflightMaxAge.toSeconds.toString
+                headerBuilder += HeaderNames
+                  .ACCESS_CONTROL_MAX_AGE -> corsConfig
+                  .preflightMaxAge
+                  .toSeconds
+                  .toString
               }
 
               /* http://www.w3.org/TR/cors/#resource-preflight-requests
@@ -293,7 +304,8 @@ private[cors] trait AbstractCORSPolicy {
                * Note: Since the list of methods can be unbounded, simply returning the method
                * indicated by Access-Control-Request-Method (if supported) can be enough.
                */
-              headerBuilder += HeaderNames.ACCESS_CONTROL_ALLOW_METHODS -> accessControlRequestMethod
+              headerBuilder += HeaderNames
+                .ACCESS_CONTROL_ALLOW_METHODS -> accessControlRequestMethod
 
               /* http://www.w3.org/TR/cors/#resource-preflight-requests
                * § 6.2.9
@@ -308,7 +320,8 @@ private[cors] trait AbstractCORSPolicy {
                * headers from Access-Control-Allow-Headers can be enough.
                */
               if (!accessControlRequestHeaders.isEmpty) {
-                headerBuilder += HeaderNames.ACCESS_CONTROL_ALLOW_HEADERS -> accessControlRequestHeaders
+                headerBuilder += HeaderNames
+                  .ACCESS_CONTROL_ALLOW_HEADERS -> accessControlRequestHeaders
                   .mkString(",")
               }
 
@@ -325,8 +338,8 @@ private[cors] trait AbstractCORSPolicy {
       request: RequestHeader): Future[Result] = {
     logger.trace(
       s"""Invalid CORS request;Origin=${request.headers.get(
-        HeaderNames.ORIGIN)};Method=${request.method};${HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS}=${request.headers
-        .get(HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS)}""")
+        HeaderNames.ORIGIN)};Method=${request.method};${HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS}=${request.headers.get(
+        HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS)}""")
     Future.successful(Results.Forbidden)
   }
 

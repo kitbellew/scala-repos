@@ -102,8 +102,8 @@ object SideEffectsUtil {
             case _ =>
               false
           }
-        checkOperation && hasNoSideEffects(baseExpr) && args.forall(
-          hasNoSideEffects)
+        checkOperation && hasNoSideEffects(baseExpr) && args
+          .forall(hasNoSideEffects)
       case ScMethodCall(baseExpr, args) =>
         val (checkQual, typeOfQual) =
           baseExpr match {
@@ -144,8 +144,8 @@ object SideEffectsUtil {
     }
 
   private def listImmutableClasses = {
-    val excludeNonString = Seq("StringBuffer._", "StringBuilder._").map(
-      "exclude:java.lang." + _)
+    val excludeNonString = Seq("StringBuffer._", "StringBuilder._")
+      .map("exclude:java.lang." + _)
 
     val javaWrappers = Seq(
       "Integer",
@@ -155,8 +155,7 @@ object SideEffectsUtil {
       "Boolean",
       "Long",
       "Double",
-      "Float")
-      .map(name => s"java.lang.$name._")
+      "Float").map(name => s"java.lang.$name._")
 
     val otherJavaClasses = Seq(
       "java.lang.String._",
@@ -172,8 +171,7 @@ object SideEffectsUtil {
       "Float",
       "Int",
       "Lont",
-      "Unit")
-      .map(name => s"scala.$name._")
+      "Unit").map(name => s"scala.$name._")
 
     val otherFromScalaPackage = Seq("Option._", "Some._", "Tuple._", "Symbol._")
       .map("scala." + _)
@@ -184,8 +182,7 @@ object SideEffectsUtil {
       "Left",
       "Right",
       "Success",
-      "Try")
-      .map(name => s"scala.util.$name._")
+      "Try").map(name => s"scala.util.$name._")
 
     val fromScalaMath = Seq("scala.math.BigInt._", "scala.math.BigDecimal._")
 
@@ -203,7 +200,9 @@ object SideEffectsUtil {
         ref
           .bind()
           .exists(rr =>
-            rr.implicitConversionClass.isDefined || rr.implicitFunction.isDefined)
+            rr.implicitConversionClass.isDefined || rr
+              .implicitFunction
+              .isDefined)
       case _ =>
         false
     }
@@ -217,9 +216,8 @@ object SideEffectsUtil {
     methodClazzName match {
       case Some(fqn) =>
         val name = fqn + "." + m.name
-        if (ScalaCodeStyleSettings.nameFitToPatterns(
-              name,
-              methodsFromObjectWithSideEffects))
+        if (ScalaCodeStyleSettings
+              .nameFitToPatterns(name, methodsFromObjectWithSideEffects))
           return false
       case _ =>
     }

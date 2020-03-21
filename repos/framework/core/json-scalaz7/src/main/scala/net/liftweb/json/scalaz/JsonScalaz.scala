@@ -77,7 +77,8 @@ trait Types {
   def field[A: JSONR](name: String)(json: JValue): Result[A] =
     json match {
       case JObject(fs) =>
-        fs.find(_.name == name)
+        fs
+          .find(_.name == name)
           .map(f => implicitly[JSONR[A]].read(f.value))
           .orElse(
             implicitly[JSONR[A]]
@@ -93,10 +94,12 @@ trait Types {
 
   def makeObj(fields: Traversable[(String, JValue)]): JObject =
     JObject(
-      fields.toList.map {
-        case (n, v) =>
-          JField(n, v)
-      })
+      fields
+        .toList
+        .map {
+          case (n, v) =>
+            JField(n, v)
+        })
 }
 
 object JsonScalaz extends Types with Lifting with Base with Tuples

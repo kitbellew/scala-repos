@@ -95,10 +95,13 @@ class StandardScaler(override val uid: String)
 
   override def fit(dataset: DataFrame): StandardScalerModel = {
     transformSchema(dataset.schema, logging = true)
-    val input = dataset.select($(inputCol)).rdd.map {
-      case Row(v: Vector) =>
-        v
-    }
+    val input = dataset
+      .select($(inputCol))
+      .rdd
+      .map {
+        case Row(v: Vector) =>
+          v
+      }
     val scaler =
       new feature.StandardScaler(withMean = $(withMean), withStd = $(withStd))
     val scalerModel = scaler.fit(input)
@@ -115,8 +118,8 @@ class StandardScaler(override val uid: String)
     require(
       !schema.fieldNames.contains($(outputCol)),
       s"Output column ${$(outputCol)} already exists.")
-    val outputFields =
-      schema.fields :+ StructField($(outputCol), new VectorUDT, false)
+    val outputFields = schema
+      .fields :+ StructField($(outputCol), new VectorUDT, false)
     StructType(outputFields)
   }
 
@@ -172,8 +175,8 @@ class StandardScalerModel private[ml] (
     require(
       !schema.fieldNames.contains($(outputCol)),
       s"Output column ${$(outputCol)} already exists.")
-    val outputFields =
-      schema.fields :+ StructField($(outputCol), new VectorUDT, false)
+    val outputFields = schema
+      .fields :+ StructField($(outputCol), new VectorUDT, false)
     StructType(outputFields)
   }
 
@@ -215,7 +218,8 @@ object StandardScalerModel extends MLReadable[StandardScalerModel] {
     override def load(path: String): StandardScalerModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val Row(std: Vector, mean: Vector) = sqlContext.read
+      val Row(std: Vector, mean: Vector) = sqlContext
+        .read
         .parquet(dataPath)
         .select("std", "mean")
         .head()

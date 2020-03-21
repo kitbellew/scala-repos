@@ -14,7 +14,8 @@ object ElementCreatorTest extends JasmineTest {
       // jquery would make this easier, but I wanted to
       // only use pure html in the test itself
       val body =
-        global.document
+        global
+          .document
           .getElementsByTagName("body")
           .asInstanceOf[js.Array[js.Dynamic]]
           .head

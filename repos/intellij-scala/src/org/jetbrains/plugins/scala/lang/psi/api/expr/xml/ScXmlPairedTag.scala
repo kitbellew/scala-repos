@@ -11,7 +11,8 @@ import org.jetbrains.plugins.scala.lang.psi.ScalaPsiElement
   */
 trait ScXmlPairedTag extends ScalaPsiElement {
   def getTagName =
-    findChildrenByType(ScalaXmlTokenTypes.XML_NAME).headOption
+    findChildrenByType(ScalaXmlTokenTypes.XML_NAME)
+      .headOption
       .map(_.getText)
       .orNull
   def getTagNameElement: PsiElement =

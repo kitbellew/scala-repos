@@ -104,7 +104,8 @@ object DemoMain {
 
           case Parsed.Failure(lastParser, index, extra) =>
             val pretty =
-              fastparse.Utils
+              fastparse
+                .Utils
                 .literalize(extra.input.slice(index, index + 15))
                 .toString
             table(

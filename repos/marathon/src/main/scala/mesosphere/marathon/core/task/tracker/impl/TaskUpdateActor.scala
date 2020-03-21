@@ -40,9 +40,8 @@ object TaskUpdateActor {
       metrics.name(MetricPrefixes.SERVICE, classOf[TaskUpdateActor], name)
 
     /** the number of ops that are for tasks that already have an op ready */
-    val numberOfQueuedOps = metrics.gauge(
-      name("delayed-ops"),
-      new AtomicIntGauge)
+    val numberOfQueuedOps = metrics
+      .gauge(name("delayed-ops"), new AtomicIntGauge)
 
     /** the number of currently processed ops */
     val numberOfActiveOps = metrics.gauge(name("ready-ops"), new AtomicIntGauge)
@@ -88,8 +87,8 @@ private[impl] class TaskUpdateActor(
 
     // Answer all outstanding requests.
     operationsByTaskId.values.iterator.flatten.map(_.sender) foreach { sender =>
-      sender ! Status.Failure(
-        new IllegalStateException("TaskUpdateActor stopped"))
+      sender ! Status
+        .Failure(new IllegalStateException("TaskUpdateActor stopped"))
     }
 
     metrics.numberOfActiveOps.setValue(0)

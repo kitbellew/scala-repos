@@ -48,12 +48,14 @@ private[hive] class SparkSQLDriver(
         Arrays.asList(new FieldSchema("Response code", "string", "")),
         null)
     } else {
-      val fieldSchemas = analyzed.output.map { attr =>
-        new FieldSchema(
-          attr.name,
-          HiveMetastoreTypes.toMetastoreType(attr.dataType),
-          "")
-      }
+      val fieldSchemas = analyzed
+        .output
+        .map { attr =>
+          new FieldSchema(
+            attr.name,
+            HiveMetastoreTypes.toMetastoreType(attr.dataType),
+            "")
+        }
 
       new Schema(fieldSchemas.asJava, null)
     }

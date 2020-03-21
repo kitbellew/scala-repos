@@ -63,10 +63,12 @@ class ArchiveSpecs
 {"path":"/test/foo/","tokenId":"test4"}
 ]""")
 
-      val results = input.map(_.validated[Archive]).collect {
-        case Success(result) =>
-          result
-      }
+      val results = input
+        .map(_.validated[Archive])
+        .collect {
+          case Success(result) =>
+            result
+        }
 
       results.size mustEqual 9
       results.map(_.apiKey).toSet mustEqual Set(
@@ -77,8 +79,8 @@ class ArchiveSpecs
     }
 
     "read new archives" in {
-      val Success(JArray(input)) = JParser.parseFromString(
-        """[
+      val Success(JArray(input)) = JParser
+        .parseFromString("""[
 {"apiKey":"test1","path":"/foo1/test/js/delete/"},
 {"apiKey":"test2","path":"/foo2/blargh/"},
 {"apiKey":"test2","path":"/foo2/blargh/"},
@@ -86,18 +88,20 @@ class ArchiveSpecs
 {"apiKey":"test2","path":"/foo2/testing/"}
 ]""")
 
-      val results = input.map(_.validated[Archive]).collect {
-        case Success(result) =>
-          result
-      }
+      val results = input
+        .map(_.validated[Archive])
+        .collect {
+          case Success(result) =>
+            result
+        }
 
       results.size mustEqual 5
       results.map(_.apiKey).toSet mustEqual Set("test1", "test2")
     }
 
     "read archives with reversed fields" in {
-      val Success(JArray(input)) = JParser.parseFromString(
-        """[
+      val Success(JArray(input)) = JParser
+        .parseFromString("""[
 {"path":"test1","apiKey":"/foo1/test/js/delete/"},
 {"path":"test2","apiKey":"/foo2/blargh/"},
 {"path":"test2","apiKey":"/foo2/blargh/"},
@@ -105,10 +109,12 @@ class ArchiveSpecs
 {"path":"test2","apiKey":"/foo2/testing/"}
 ]""")
 
-      val results = input.map(_.validated[Archive]).collect {
-        case Success(result) =>
-          result
-      }
+      val results = input
+        .map(_.validated[Archive])
+        .collect {
+          case Success(result) =>
+            result
+        }
 
       results.size mustEqual 5
       results.map(_.apiKey).toSet mustEqual Set("test1", "test2")

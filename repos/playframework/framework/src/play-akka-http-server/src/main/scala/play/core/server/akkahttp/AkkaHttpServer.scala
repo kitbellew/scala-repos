@@ -85,28 +85,30 @@ class AkkaHttpServer(
     Await.result(bindingFuture, bindTimeout)
   }
 
-  private val httpServerBinding = config.port.map(port =>
-    createServerBinding(port, ConnectionContext.noEncryption()))
+  private val httpServerBinding = config
+    .port
+    .map(port => createServerBinding(port, ConnectionContext.noEncryption()))
 
-  private val httpsServerBinding = config.sslPort.map { port =>
-    val connectionContext =
-      try {
-        val engineProvider = ServerSSLEngine.createSSLEngineProvider(
-          config,
-          applicationProvider)
-        // There is a mismatch between the Play SSL API and the Akka IO SSL API, Akka IO takes an SSL context, and
-        // couples it with all the configuration that it will eventually pass to the created SSLEngine. Play has a
-        // factory for creating an SSLEngine, so the user can configure it themselves.  However, that means that in
-        // order to pass an SSLContext, we need to pass our own one that returns the SSLEngine provided by the factory.
-        val sslContext = mockSslContext(engineProvider)
-        ConnectionContext.https(sslContext = sslContext)
-      } catch {
-        case NonFatal(e) =>
-          logger.error(s"Cannot load SSL context", e)
-          ConnectionContext.noEncryption()
-      }
-    createServerBinding(port, connectionContext)
-  }
+  private val httpsServerBinding = config
+    .sslPort
+    .map { port =>
+      val connectionContext =
+        try {
+          val engineProvider = ServerSSLEngine
+            .createSSLEngineProvider(config, applicationProvider)
+          // There is a mismatch between the Play SSL API and the Akka IO SSL API, Akka IO takes an SSL context, and
+          // couples it with all the configuration that it will eventually pass to the created SSLEngine. Play has a
+          // factory for creating an SSLEngine, so the user can configure it themselves.  However, that means that in
+          // order to pass an SSLContext, we need to pass our own one that returns the SSLEngine provided by the factory.
+          val sslContext = mockSslContext(engineProvider)
+          ConnectionContext.https(sslContext = sslContext)
+        } catch {
+          case NonFatal(e) =>
+            logger.error(s"Cannot load SSL context", e)
+            ConnectionContext.noEncryption()
+        }
+      createServerBinding(port, connectionContext)
+    }
 
   // Each request needs an id
   private val requestIDs = new java.util.concurrent.atomic.AtomicLong(0)
@@ -195,10 +197,8 @@ class AkkaHttpServer(
 
         websocket(taggedRequestHeader).map {
           case Left(result) =>
-            modelConversion.convertResult(
-              taggedRequestHeader,
-              result,
-              request.protocol)
+            modelConversion
+              .convertResult(taggedRequestHeader, result, request.protocol)
           case Right(flow) =>
             WebSocketHandler.handleWebSocket(upgrade, flow, 16384)
         }
@@ -259,13 +259,10 @@ class AkkaHttpServer(
           actionAccumulator.run(s)
       }
     val responseFuture: Future[HttpResponse] = resultFuture.map { result =>
-      val cleanedResult: Result = ServerResultUtils.cleanFlashCookie(
-        taggedRequestHeader,
-        result)
-      modelConversion.convertResult(
-        taggedRequestHeader,
-        cleanedResult,
-        request.protocol)
+      val cleanedResult: Result = ServerResultUtils
+        .cleanFlashCookie(taggedRequestHeader, result)
+      modelConversion
+        .convertResult(taggedRequestHeader, cleanedResult, request.protocol)
     }
     responseFuture
   }

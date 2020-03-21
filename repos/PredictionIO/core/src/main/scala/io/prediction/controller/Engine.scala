@@ -225,15 +225,17 @@ class Engine[TD, EI, PD, Q, P, A](
         val td = dataSource.readTrainingBase(sc)
         val pd = preparator.prepareBase(sc, td)
 
-        val models = algorithms.zip(persistedModels).map {
-          case (algo, m) =>
-            m match {
-              case Unit =>
-                algo.trainBase(sc, pd)
-              case _ =>
-                m
-            }
-        }
+        val models = algorithms
+          .zip(persistedModels)
+          .map {
+            case (algo, m) =>
+              m match {
+                case Unit =>
+                  algo.trainBase(sc, pd)
+                case _ =>
+                  m
+              }
+          }
         models
       } else {
         logger.info("Using persisted model")
@@ -301,7 +303,8 @@ class Engine[TD, EI, PD, Q, P, A](
 
     logger.info(s"engineInstanceId=$engineInstanceId")
 
-    algoTuples.zipWithIndex
+    algoTuples
+      .zipWithIndex
       .map {
         case ((name, params, algo, model), ax) =>
           algo.makePersistentModel(
@@ -767,17 +770,11 @@ object Engine {
     logger.info(s"Serving: $serving")
 
     val algoMap: Map[AX, BaseAlgorithm[PD, _, Q, P]] =
-      algorithmList.zipWithIndex
-        .map(_.swap)
-        .toMap
+      algorithmList.zipWithIndex.map(_.swap).toMap
     val algoCount = algoMap.size
 
     val evalTupleMap: Map[EX, (TD, EI, RDD[(Q, A)])] =
-      dataSource
-        .readEvalBase(sc)
-        .zipWithIndex
-        .map(_.swap)
-        .toMap
+      dataSource.readEvalBase(sc).zipWithIndex.map(_.swap).toMap
 
     val evalCount = evalTupleMap.size
 
@@ -809,73 +806,74 @@ object Engine {
     }
 
     val algoPredictsMap: Map[EX, RDD[(QX, Seq[P])]] =
-      (0 until evalCount).map { ex =>
-        {
-          val modelMap: Map[AX, Any] = algoModelsMap(ex)
+      (0 until evalCount)
+        .map { ex =>
+          {
+            val modelMap: Map[AX, Any] = algoModelsMap(ex)
 
-          val qs: RDD[(QX, Q)] = suppQAsMap(ex).mapValues(_._1)
+            val qs: RDD[(QX, Q)] = suppQAsMap(ex).mapValues(_._1)
 
-          val algoPredicts: Seq[RDD[(QX, (AX, P))]] = (0 until algoCount)
-            .map { ax =>
-              {
-                val algo = algoMap(ax)
-                val model = modelMap(ax)
-                val rawPredicts: RDD[(QX, P)] = algo.batchPredictBase(
-                  sc,
-                  model,
-                  qs)
-                val predicts: RDD[(QX, (AX, P))] = rawPredicts.map {
-                  case (qx, p) => {
-                    (qx, (ax, p))
+            val algoPredicts: Seq[RDD[(QX, (AX, P))]] = (0 until algoCount)
+              .map { ax =>
+                {
+                  val algo = algoMap(ax)
+                  val model = modelMap(ax)
+                  val rawPredicts: RDD[(QX, P)] = algo
+                    .batchPredictBase(sc, model, qs)
+                  val predicts: RDD[(QX, (AX, P))] = rawPredicts.map {
+                    case (qx, p) => {
+                      (qx, (ax, p))
+                    }
                   }
+                  predicts
                 }
-                predicts
               }
-            }
 
-          val unionAlgoPredicts: RDD[(QX, Seq[P])] = sc
-            .union(algoPredicts)
-            .groupByKey()
-            .mapValues { ps =>
-              {
-                assert(
-                  ps.size == algoCount,
-                  "Must have same length as algoCount")
-                // TODO. Check size == algoCount
-                ps.toSeq.sortBy(_._1).map(_._2)
+            val unionAlgoPredicts: RDD[(QX, Seq[P])] = sc
+              .union(algoPredicts)
+              .groupByKey()
+              .mapValues { ps =>
+                {
+                  assert(
+                    ps.size == algoCount,
+                    "Must have same length as algoCount")
+                  // TODO. Check size == algoCount
+                  ps.toSeq.sortBy(_._1).map(_._2)
+                }
               }
-            }
 
-          (ex, unionAlgoPredicts)
-        }
-      }.toMap
-
-    val servingQPAMap: Map[EX, RDD[(Q, P, A)]] = algoPredictsMap
-      .map {
-        case (ex, psMap) => {
-          // The query passed to serving.serve is the original one, not
-          // supplemented.
-          val qasMap: RDD[(QX, (Q, A))] = evalQAsMap(ex)
-          val qpsaMap: RDD[(QX, Q, Seq[P], A)] = psMap
-            .join(qasMap)
-            .map {
-              case (qx, t) =>
-                (qx, t._2._1, t._1, t._2._2)
-            }
-
-          val qpaMap: RDD[(Q, P, A)] = qpsaMap.map {
-            case (qx, q, ps, a) =>
-              (q, serving.serveBase(q, ps), a)
+            (ex, unionAlgoPredicts)
           }
-          (ex, qpaMap)
+        }
+        .toMap
+
+    val servingQPAMap: Map[EX, RDD[(Q, P, A)]] = algoPredictsMap.map {
+      case (ex, psMap) => {
+        // The query passed to serving.serve is the original one, not
+        // supplemented.
+        val qasMap: RDD[(QX, (Q, A))] = evalQAsMap(ex)
+        val qpsaMap: RDD[(QX, Q, Seq[P], A)] = psMap
+          .join(qasMap)
+          .map {
+            case (qx, t) =>
+              (qx, t._2._1, t._1, t._2._2)
+          }
+
+        val qpaMap: RDD[(Q, P, A)] = qpsaMap.map {
+          case (qx, q, ps, a) =>
+            (q, serving.serveBase(q, ps), a)
+        }
+        (ex, qpaMap)
+      }
+    }
+
+    (0 until evalCount)
+      .map { ex =>
+        {
+          (evalInfoMap(ex), servingQPAMap(ex))
         }
       }
-
-    (0 until evalCount).map { ex =>
-      {
-        (evalInfoMap(ex), servingQPAMap(ex))
-      }
-    }.toSeq
+      .toSeq
   }
 }
 

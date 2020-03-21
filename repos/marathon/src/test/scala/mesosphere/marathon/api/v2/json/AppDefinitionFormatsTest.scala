@@ -59,20 +59,20 @@ class AppDefinitionFormatsTest
     (r1 \ "uris").as[Seq[String]] should equal(DefaultUris)
     (r1 \ "fetch").as[Seq[FetchUri]] should equal(DefaultFetch)
     (r1 \ "storeUrls").as[Seq[String]] should equal(DefaultStoreUrls)
-    (r1 \ "ports").as[Seq[Long]] should equal(
-      DefaultPortDefinitions.map(_.port))
-    (r1 \ "portDefinitions").as[Seq[PortDefinition]] should equal(
-      DefaultPortDefinitions)
+    (r1 \ "ports")
+      .as[Seq[Long]] should equal(DefaultPortDefinitions.map(_.port))
+    (r1 \ "portDefinitions")
+      .as[Seq[PortDefinition]] should equal(DefaultPortDefinitions)
     (r1 \ "requirePorts").as[Boolean] should equal(DefaultRequirePorts)
     (r1 \ "backoffSeconds").as[Long] should equal(DefaultBackoff.toSeconds)
     (r1 \ "backoffFactor").as[Double] should equal(DefaultBackoffFactor)
-    (r1 \ "maxLaunchDelaySeconds").as[Long] should equal(
-      DefaultMaxLaunchDelay.toSeconds)
+    (r1 \ "maxLaunchDelaySeconds")
+      .as[Long] should equal(DefaultMaxLaunchDelay.toSeconds)
     (r1 \ "container").asOpt[String] should equal(None)
     (r1 \ "healthChecks").as[Set[HealthCheck]] should equal(DefaultHealthChecks)
     (r1 \ "dependencies").as[Set[PathId]] should equal(DefaultDependencies)
-    (r1 \ "upgradeStrategy").as[UpgradeStrategy] should equal(
-      DefaultUpgradeStrategy)
+    (r1 \ "upgradeStrategy")
+      .as[UpgradeStrategy] should equal(DefaultUpgradeStrategy)
     (r1 \ "residency").asOpt[String] should equal(None)
   }
 
@@ -80,15 +80,17 @@ class AppDefinitionFormatsTest
     import Fixture._
 
     val r1 = Json.toJson(
-      a1.copy(versionInfo = AppDefinition.VersionInfo.FullVersionInfo(
-        version = Timestamp(3),
-        lastScalingAt = Timestamp(2),
-        lastConfigChangeAt = Timestamp(1))))
+      a1.copy(versionInfo = AppDefinition
+        .VersionInfo
+        .FullVersionInfo(
+          version = Timestamp(3),
+          lastScalingAt = Timestamp(2),
+          lastConfigChangeAt = Timestamp(1))))
     (r1 \ "version").as[String] should equal("1970-01-01T00:00:00.003Z")
-    (r1 \ "versionInfo" \ "lastScalingAt").as[String] should equal(
-      "1970-01-01T00:00:00.002Z")
-    (r1 \ "versionInfo" \ "lastConfigChangeAt").as[String] should equal(
-      "1970-01-01T00:00:00.001Z")
+    (r1 \ "versionInfo" \ "lastScalingAt")
+      .as[String] should equal("1970-01-01T00:00:00.002Z")
+    (r1 \ "versionInfo" \ "lastConfigChangeAt")
+      .as[String] should equal("1970-01-01T00:00:00.001Z")
   }
 
   test("FromJson") {
@@ -172,8 +174,8 @@ class AppDefinitionFormatsTest
       id = PathId("test"),
       acceptedResourceRoles = Some(Set("a")))
     val json = Json.toJson(appDefinition)
-    (json \ "acceptedResourceRoles").asOpt[Set[String]] should be(
-      Some(Set("a")))
+    (json \ "acceptedResourceRoles")
+      .asOpt[Set[String]] should be(Some(Set("a")))
   }
 
   test(
@@ -185,8 +187,8 @@ class AppDefinitionFormatsTest
   }
 
   test("""FromJSON should parse "acceptedResourceRoles": ["*"] """) {
-    val json = Json.parse(
-      """ { "id": "test", "acceptedResourceRoles": ["*"] }""")
+    val json = Json
+      .parse(""" { "id": "test", "acceptedResourceRoles": ["*"] }""")
     val appDef = json.as[AppDefinition]
     appDef.acceptedResourceRoles should equal(Some(Set("*")))
   }

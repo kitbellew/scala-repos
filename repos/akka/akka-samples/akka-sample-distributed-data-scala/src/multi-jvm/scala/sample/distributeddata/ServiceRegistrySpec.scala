@@ -20,8 +20,8 @@ object ServiceRegistrySpec extends MultiNodeConfig {
   val node3 = role("node-3")
 
   commonConfig(
-    ConfigFactory.parseString(
-      """
+    ConfigFactory
+      .parseString("""
     akka.loglevel = INFO
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
     akka.log-dead-letters-during-shutdown = off
@@ -132,9 +132,8 @@ class ServiceRegistrySpec
 
     "replicate many service entries" in within(10.seconds) {
       for (i ← 100 until 200) {
-        val service = system.actorOf(
-          Props[Service],
-          name = myself.name + "_" + i)
+        val service = system
+          .actorOf(Props[Service], name = myself.name + "_" + i)
         registry ! Register("a" + i, service)
       }
 

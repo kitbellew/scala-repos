@@ -36,11 +36,13 @@ class HttpNackFilterTest extends FunSuite {
 
   test("automatically retries with HttpNack") {
     new ClientCtx {
-      val server = Http.server
+      val server = Http
+        .server
         .configured(Stats(serverSr))
         .configured(Label("myservice"))
         .serve(new InetSocketAddress(0), flakyService)
-      val client = Http.client
+      val client = Http
+        .client
         .configured(Stats(clientSr))
         .newService(
           Name.bound(
@@ -62,7 +64,8 @@ class HttpNackFilterTest extends FunSuite {
 
   test("HttpNack works with ClientBuilder") {
     new ClientCtx {
-      val server = Http.server
+      val server = Http
+        .server
         .configured(Stats(serverSr))
         .configured(Label("myservice"))
         .serve(new InetSocketAddress(0), flakyService)
@@ -92,7 +95,8 @@ class HttpNackFilterTest extends FunSuite {
         .name(serverLabel)
         .reportTo(serverSr)
         .build(flakyService)
-      val client = Http.client
+      val client = Http
+        .client
         .configured(Stats(clientSr))
         .newService(
           Name.bound(
@@ -110,13 +114,15 @@ class HttpNackFilterTest extends FunSuite {
 
   test("a server that doesn't support HttpNack fails the request") {
     new ClientCtx {
-      val server = Http.server
+      val server = Http
+        .server
         .withStack(StackServer.newStack)
         .configured(Stats(serverSr))
         .configured(Label("myservice"))
         .serve(new InetSocketAddress(0), flakyService)
 
-      val client = Http.client
+      val client = Http
+        .client
         .configured(Stats(clientSr))
         .newService(
           Name.bound(
@@ -127,8 +133,9 @@ class HttpNackFilterTest extends FunSuite {
       assert(rep.status == Status.InternalServerError)
       assert(rep.headerMap.get(HttpNackFilter.Header) == None)
       assert(
-        clientSr.counters.get(
-          Seq("http-client", "requeue", "requeues")) == None)
+        clientSr
+          .counters
+          .get(Seq("http-client", "requeue", "requeues")) == None)
 
       assert(serverSr.counters.get(Seq("myservice", "success")) == None)
       assert(serverSr.counters(Seq("myservice", "failures")) == 1)
@@ -140,11 +147,13 @@ class HttpNackFilterTest extends FunSuite {
   test("HttpNack does not convert non-retryable failures") {
     new ClientCtx {
       n.set(-1)
-      val server = Http.server
+      val server = Http
+        .server
         .configured(Stats(serverSr))
         .configured(Label("myservice"))
         .serve(new InetSocketAddress(0), flakyService)
-      val client = Http.client
+      val client = Http
+        .client
         .configured(Stats(clientSr))
         .newService(
           Name.bound(
@@ -155,8 +164,9 @@ class HttpNackFilterTest extends FunSuite {
       assert(rep.status == Status.InternalServerError)
       assert(rep.headerMap.get(HttpNackFilter.Header) == None)
       assert(
-        clientSr.counters.get(
-          Seq("http-client", "requeue", "requeues")) == None)
+        clientSr
+          .counters
+          .get(Seq("http-client", "requeue", "requeues")) == None)
 
       assert(serverSr.counters.get(Seq("myservice", "success")) == None)
       assert(serverSr.counters(Seq("myservice", "failures")) == 1)

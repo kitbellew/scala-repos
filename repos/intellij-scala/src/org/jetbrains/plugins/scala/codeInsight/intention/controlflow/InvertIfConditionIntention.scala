@@ -32,10 +32,8 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScIfStmt],
-      false)
+    val ifStmt: ScIfStmt = PsiTreeUtil
+      .getParentOfType(element, classOf[ScIfStmt], false)
     if (ifStmt == null)
       return false
 
@@ -49,7 +47,9 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
 
     val offset = editor.getCaretModel.getOffset
     if (!(
-          ifStmt.getTextRange.getStartOffset <= offset && offset <= condition.getTextRange.getStartOffset - 1
+          ifStmt.getTextRange.getStartOffset <= offset && offset <= condition
+            .getTextRange
+            .getStartOffset - 1
         ))
       return false
 
@@ -61,10 +61,8 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScIfStmt],
-      false)
+    val ifStmt: ScIfStmt = PsiTreeUtil
+      .getParentOfType(element, classOf[ScIfStmt], false)
     if (ifStmt == null || !ifStmt.isValid)
       return
 
@@ -126,9 +124,8 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
           "{\n" + ifStmt.thenBranch.get.getText + "\n}"
       }
     expr.append(res)
-    val newStmt: ScExpression = ScalaPsiElementFactory.createExpressionFromText(
-      expr.toString(),
-      element.getManager)
+    val newStmt: ScExpression = ScalaPsiElementFactory
+      .createExpressionFromText(expr.toString(), element.getManager)
 
     inWriteAction {
       ifStmt.replaceExpression(newStmt, true)

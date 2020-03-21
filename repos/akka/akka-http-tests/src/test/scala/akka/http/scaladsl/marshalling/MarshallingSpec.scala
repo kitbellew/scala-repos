@@ -81,14 +81,17 @@ class MarshallingSpec
         marshal(
           Multipart.General(
             `multipart/alternative`,
-            Multipart.General.BodyPart.Strict(
-              entity = HttpEntity(
-                ContentTypes.`text/plain(UTF-8)`,
-                "test@there.com"),
-              headers = `Content-Disposition`(
-                ContentDispositionTypes.`form-data`,
-                Map("name" -> "email")) :: Nil
-            )
+            Multipart
+              .General
+              .BodyPart
+              .Strict(
+                entity = HttpEntity(
+                  ContentTypes.`text/plain(UTF-8)`,
+                  "test@there.com"),
+                headers = `Content-Disposition`(
+                  ContentDispositionTypes.`form-data`,
+                  Map("name" -> "email")) :: Nil
+              )
           )) shouldEqual
           HttpEntity(
             contentType =
@@ -105,13 +108,21 @@ class MarshallingSpec
         marshal(
           Multipart.General(
             `multipart/related`,
-            Multipart.General.BodyPart.Strict(
-              HttpEntity(
-                `text/plain` withCharset `US-ASCII`,
-                "first part, with a trailing linebreak\r\n")),
-            Multipart.General.BodyPart.Strict(
-              HttpEntity(`application/octet-stream`, ByteString("filecontent")),
-              RawHeader("Content-Transfer-Encoding", "binary") :: Nil)
+            Multipart
+              .General
+              .BodyPart
+              .Strict(
+                HttpEntity(
+                  `text/plain` withCharset `US-ASCII`,
+                  "first part, with a trailing linebreak\r\n")),
+            Multipart
+              .General
+              .BodyPart
+              .Strict(
+                HttpEntity(
+                  `application/octet-stream`,
+                  ByteString("filecontent")),
+                RawHeader("Content-Transfer-Encoding", "binary") :: Nil)
           )) shouldEqual
           HttpEntity(
             contentType =
@@ -160,17 +171,21 @@ class MarshallingSpec
           Multipart.FormData(
             Source(
               List(
-                Multipart.FormData.BodyPart(
-                  "attachment[0]",
-                  HttpEntity(
-                    `text/csv` withCharset `UTF-8`,
-                    "name,age\r\n\"John Doe\",20\r\n"),
-                  Map("filename" -> "attachment.csv")),
-                Multipart.FormData.BodyPart(
-                  "attachment[1]",
-                  HttpEntity("naice!".getBytes),
-                  Map("filename" -> "attachment2.csv"),
-                  List(RawHeader("Content-Transfer-Encoding", "binary")))
+                Multipart
+                  .FormData
+                  .BodyPart(
+                    "attachment[0]",
+                    HttpEntity(
+                      `text/csv` withCharset `UTF-8`,
+                      "name,age\r\n\"John Doe\",20\r\n"),
+                    Map("filename" -> "attachment.csv")),
+                Multipart
+                  .FormData
+                  .BodyPart(
+                    "attachment[1]",
+                    HttpEntity("naice!".getBytes),
+                    Map("filename" -> "attachment2.csv"),
+                    List(RawHeader("Content-Transfer-Encoding", "binary")))
               )))) shouldEqual
           HttpEntity(
             contentType =

@@ -67,8 +67,8 @@ class UnsafeRowSerializerSuite extends SparkFunSuite with LocalSparkContext {
 
   test("basic row serialization") {
     val rows = Seq(Row("Hello", 1), Row("World", 2))
-    val unsafeRows = rows.map(row =>
-      toUnsafeRow(row, Array(StringType, IntegerType)))
+    val unsafeRows = rows
+      .map(row => toUnsafeRow(row, Array(StringType, IntegerType)))
     val serializer = new UnsafeRowSerializer(numFields = 2).newInstance()
     val baos = new ByteArrayOutputStream()
     val serializerStream = serializer.serializeStream(baos)
@@ -115,9 +115,11 @@ class UnsafeRowSerializerSuite extends SparkFunSuite with LocalSparkContext {
       outputFile = File.createTempFile("test-unsafe-row-serializer-spill", "")
       // prepare data
       val converter = unsafeRowConverter(Array(IntegerType))
-      val data = (1 to 10000).iterator.map { i =>
-        (i, converter(Row(i)))
-      }
+      val data = (1 to 10000)
+        .iterator
+        .map { i =>
+          (i, converter(Row(i)))
+        }
       val taskMemoryManager = new TaskMemoryManager(sc.env.memoryManager, 0)
       val taskContext =
         new TaskContextImpl(

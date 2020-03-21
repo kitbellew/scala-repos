@@ -90,7 +90,9 @@ private[akka] object EventStreamUnsubscriber {
     Props(classOf[EventStreamUnsubscriber], eventStream, debug)
 
   def start(system: ActorSystem, stream: EventStream) = {
-    val debug = system.settings.config
+    val debug = system
+      .settings
+      .config
       .getBoolean("akka.actor.debug.event-stream")
     system
       .asInstanceOf[ExtendedActorSystem]
@@ -120,18 +122,24 @@ private[akka] class ActorClassificationUnsubscriber(
   override def preStart() {
     super.preStart()
     if (debug)
-      context.system.eventStream.publish(
-        Logging.Debug(simpleName(getClass), getClass, s"will monitor $bus"))
+      context
+        .system
+        .eventStream
+        .publish(
+          Logging.Debug(simpleName(getClass), getClass, s"will monitor $bus"))
   }
 
   def receive = {
     case Register(actor, seq) if seq == nextSeq ⇒
       if (debug)
-        context.system.eventStream.publish(
-          Logging.Debug(
-            simpleName(getClass),
-            getClass,
-            s"registered watch for $actor in $bus"))
+        context
+          .system
+          .eventStream
+          .publish(
+            Logging.Debug(
+              simpleName(getClass),
+              getClass,
+              s"registered watch for $actor in $bus"))
       context watch actor
       atSeq = nextSeq
       unstashAll()
@@ -141,11 +149,14 @@ private[akka] class ActorClassificationUnsubscriber(
 
     case Unregister(actor, seq) if seq == nextSeq ⇒
       if (debug)
-        context.system.eventStream.publish(
-          Logging.Debug(
-            simpleName(getClass),
-            getClass,
-            s"unregistered watch of $actor in $bus"))
+        context
+          .system
+          .eventStream
+          .publish(
+            Logging.Debug(
+              simpleName(getClass),
+              getClass,
+              s"unregistered watch of $actor in $bus"))
       context unwatch actor
       atSeq = nextSeq
       unstashAll()
@@ -155,11 +166,14 @@ private[akka] class ActorClassificationUnsubscriber(
 
     case Terminated(actor) ⇒
       if (debug)
-        context.system.eventStream.publish(
-          Logging.Debug(
-            simpleName(getClass),
-            getClass,
-            s"actor $actor has terminated, unsubscribing it from $bus"))
+        context
+          .system
+          .eventStream
+          .publish(
+            Logging.Debug(
+              simpleName(getClass),
+              getClass,
+              s"actor $actor has terminated, unsubscribing it from $bus"))
       // the `unsubscribe` will trigger another `Unregister(actor, _)` message to this unsubscriber;
       // but since that actor is terminated, there cannot be any harm in processing an Unregister for it.
       bus unsubscribe actor
@@ -183,7 +197,9 @@ private[akka] object ActorClassificationUnsubscriber {
       system: ActorSystem,
       bus: ManagedActorClassification,
       debug: Boolean = false) = {
-    val debug = system.settings.config
+    val debug = system
+      .settings
+      .config
       .getBoolean("akka.actor.debug.event-stream")
     system
       .asInstanceOf[ExtendedActorSystem]

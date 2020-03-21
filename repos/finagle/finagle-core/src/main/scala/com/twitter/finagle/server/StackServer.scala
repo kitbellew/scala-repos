@@ -227,8 +227,8 @@ trait StdStackServer[Req, Rep, This <: StdStackServer[Req, Rep, This]]
       // connection resources per ListeningServer. Note, draining
       // in-flight requests is expected to be managed by `newDispatcher`,
       // so we can simply `close` all connections here.
-      val connections = Collections.newSetFromMap(
-        new ConcurrentHashMap[Closable, java.lang.Boolean])
+      val connections = Collections
+        .newSetFromMap(new ConcurrentHashMap[Closable, java.lang.Boolean])
 
       // Hydrates a new ClientConnection with connection information from the
       // given `transport`. ClientConnection instances are used to
@@ -287,10 +287,8 @@ trait StdStackServer[Req, Rep, This <: StdStackServer[Req, Rep, This]]
           }
         }
 
-      ServerRegistry.register(
-        underlying.boundAddress.toString,
-        server.stack,
-        server.params)
+      ServerRegistry
+        .register(underlying.boundAddress.toString, server.stack, server.params)
 
       protected def closeServer(deadline: Time) =
         closeAwaitably {
@@ -307,8 +305,9 @@ trait StdStackServer[Req, Rep, This <: StdStackServer[Req, Rep, This]]
           // However we don't want to wait on the above because it will only complete
           // when #4 is finished.  So we ignore it and close everything else.  Note that
           // closing the connections here will do #2 and drain them via the Dispatcher.
-          val everythingElse =
-            Seq[Closable](factory) ++ connections.asScala.toSeq
+          val everythingElse = Seq[Closable](factory) ++ connections
+            .asScala
+            .toSeq
 
           // and once they're drained we can then wait on the listener physically closing them
           Closable.all(everythingElse: _*).close(deadline) before ulClosed

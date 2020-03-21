@@ -225,15 +225,21 @@ class FileSourceStrategySuite
   /** Returns a set with all the filters present in the physical plan. */
   def getPhysicalFilters(df: DataFrame): ExpressionSet = {
     ExpressionSet(
-      df.queryExecution.executedPlan.collect {
-        case execution.Filter(f, _) =>
-          splitConjunctivePredicates(f)
-      }.flatten)
+      df
+        .queryExecution
+        .executedPlan
+        .collect {
+          case execution.Filter(f, _) =>
+            splitConjunctivePredicates(f)
+        }
+        .flatten)
   }
 
   /** Plans the query and calls the provided validation function with the planned partitioning. */
   def checkScan(df: DataFrame)(func: Seq[FilePartition] => Unit): Unit = {
-    val fileScan = df.queryExecution.executedPlan
+    val fileScan = df
+      .queryExecution
+      .executedPlan
       .collect {
         case DataSourceScan(_, scan: FileScanRDD, _, _) =>
           scan
@@ -264,7 +270,8 @@ class FileSourceStrategySuite
         util.stringToFile(file, "*" * size)
     }
 
-    val df = sqlContext.read
+    val df = sqlContext
+      .read
       .format(classOf[TestFileFormat].getName)
       .load(tempDir.getCanonicalPath)
 
@@ -303,10 +310,7 @@ class TestFileFormat extends FileFormat {
       sqlContext: SQLContext,
       options: Map[String, String],
       files: Seq[FileStatus]): Option[StructType] =
-    Some(
-      StructType(Nil)
-        .add("c1", IntegerType)
-        .add("c2", IntegerType))
+    Some(StructType(Nil).add("c1", IntegerType).add("c2", IntegerType))
 
   /**
     * Prepares a write job and returns an [[OutputWriterFactory]].  Client side job preparation can

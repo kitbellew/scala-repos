@@ -25,8 +25,9 @@ abstract class LightScalaTestCase extends LightCodeInsightFixtureTestCase {
 
   override def setUp() {
     super.setUp()
-    val syntheticClasses = myFixture.getProject.getComponent(
-      classOf[SyntheticClasses])
+    val syntheticClasses = myFixture
+      .getProject
+      .getComponent(classOf[SyntheticClasses])
     if (!syntheticClasses.isClassesRegistered) {
       syntheticClasses.registerClasses()
     }
@@ -47,13 +48,13 @@ object LightScalaTestCase {
         val modifiableModel =
           model.getModuleLibraryTable.createLibrary("SCALA").getModifiableModel
         val scalaLib = TestUtils.getScalaLibraryPath + "!/"
-        val scalaJar = JarFileSystem.getInstance.refreshAndFindFileByPath(
-          scalaLib)
+        val scalaJar = JarFileSystem
+          .getInstance
+          .refreshAndFindFileByPath(scalaLib)
         modifiableModel.addRoot(scalaJar, OrderRootType.CLASSES)
         val srcRoot = new File(TestUtils.getScalaLibrarySrc)
-        modifiableModel.addRoot(
-          VfsUtil.getUrlForLibraryRoot(srcRoot),
-          OrderRootType.SOURCES)
+        modifiableModel
+          .addRoot(VfsUtil.getUrlForLibraryRoot(srcRoot), OrderRootType.SOURCES)
         // do not forget to commit a model!
         modifiableModel.commit()
       }

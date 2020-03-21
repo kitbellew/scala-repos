@@ -152,33 +152,35 @@ object MultipleShapeDrawingDemo extends JFXApp {
           var mouseHandlerSubscription: Option[Subscription] = None
 
           // Handle pressing to toggle buttons.
-          alignToggleGroup.selectedToggle.onChange {
-            // Cancel current mouse event handler
-            mouseHandlerSubscription.foreach(_.cancel())
-            // Determine which shape is selected
-            val handlerId = alignToggleGroup
-              .selectedToggle()
-              .asInstanceOf[javafx.scene.control.ToggleButton]
-              .id()
-            val selectedHandler =
-              handlerId match {
-                case "rectangle" =>
-                  Some(RectangleInteractor.handler)
-                case "ellipse" =>
-                  Some(EllipseInteractor.handler)
-                case "line" =>
-                  Some(LineInteractor.handler)
-                case _ =>
+          alignToggleGroup
+            .selectedToggle
+            .onChange {
+              // Cancel current mouse event handler
+              mouseHandlerSubscription.foreach(_.cancel())
+              // Determine which shape is selected
+              val handlerId = alignToggleGroup
+                .selectedToggle()
+                .asInstanceOf[javafx.scene.control.ToggleButton]
+                .id()
+              val selectedHandler =
+                handlerId match {
+                  case "rectangle" =>
+                    Some(RectangleInteractor.handler)
+                  case "ellipse" =>
+                    Some(EllipseInteractor.handler)
+                  case "line" =>
+                    Some(LineInteractor.handler)
+                  case _ =>
+                    None
+                }
+              // Selected corresponding handler
+              mouseHandlerSubscription = selectedHandler match {
+                case Some(h) =>
+                  Some(drawingPane.handleEvent(MouseEvent.Any)(h))
+                case None =>
                   None
               }
-            // Selected corresponding handler
-            mouseHandlerSubscription = selectedHandler match {
-              case Some(h) =>
-                Some(drawingPane.handleEvent(MouseEvent.Any)(h))
-              case None =>
-                None
             }
-          }
 
           // Select first button. We do selection here, after the handling of button selection was defined,
           // so this initial selection can be handled the same way as any other selection.

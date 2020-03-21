@@ -68,8 +68,8 @@ class ScalaDocUnknownParameterInspection extends LocalInspectionTool {
         }
 
         def collectDocParams() {
-          for (tagParam <- s.findTagsByName(
-                 Set("@param", "@tparam").contains(_))) {
+          for (tagParam <- s
+                 .findTagsByName(Set("@param", "@tparam").contains(_))) {
             if (tagParam.getValueElement != null) {
               tagParam.name match {
                 case "@param" =>
@@ -92,34 +92,40 @@ class ScalaDocUnknownParameterInspection extends LocalInspectionTool {
         def registerBadParams() {
           for ((_, badParameter) <- tagParams) {
             holder.registerProblem(
-              holder.getManager.createProblemDescriptor(
-                badParameter.getValueElement,
-                "Unknown Tag Parameter",
-                true,
-                ProblemHighlightType.ERROR,
-                isOnTheFly))
+              holder
+                .getManager
+                .createProblemDescriptor(
+                  badParameter.getValueElement,
+                  "Unknown Tag Parameter",
+                  true,
+                  ProblemHighlightType.ERROR,
+                  isOnTheFly))
           }
           for ((_, badTypeParameter) <- tagTypeParams) {
             holder.registerProblem(
-              holder.getManager.createProblemDescriptor(
-                badTypeParameter.getValueElement,
-                "Unknown Tag Type Parameter",
-                true,
-                ProblemHighlightType.ERROR,
-                isOnTheFly))
+              holder
+                .getManager
+                .createProblemDescriptor(
+                  badTypeParameter.getValueElement,
+                  "Unknown Tag Type Parameter",
+                  true,
+                  ProblemHighlightType.ERROR,
+                  isOnTheFly))
           }
           for (duplicatingParam <- duplicatingParams) {
             holder.registerProblem(
-              holder.getManager.createProblemDescriptor(
-                duplicatingParam.getValueElement,
-                "One param/tparam Tag for one param/type param allowed",
-                true,
-                ProblemHighlightType.GENERIC_ERROR,
-                isOnTheFly,
-                new ScalaDocDeleteDuplicatingParamQuickFix(
-                  duplicatingParam,
-                  true)
-              ))
+              holder
+                .getManager
+                .createProblemDescriptor(
+                  duplicatingParam.getValueElement,
+                  "One param/tparam Tag for one param/type param allowed",
+                  true,
+                  ProblemHighlightType.GENERIC_ERROR,
+                  isOnTheFly,
+                  new ScalaDocDeleteDuplicatingParamQuickFix(
+                    duplicatingParam,
+                    true)
+                ))
           }
         }
 
@@ -152,12 +158,14 @@ class ScalaDocUnknownParameterInspection extends LocalInspectionTool {
           case typeAlias: ScTypeAlias => //scaladoc can't process tparams for type alias now
             for (tag <- s.findTagsByName(MyScaladocParsing.TYPE_PARAM_TAG)) {
               holder.registerProblem(
-                holder.getManager.createProblemDescriptor(
-                  tag.getFirstChild,
-                  "Scaladoc can't process tparams for type alias now",
-                  true,
-                  ProblemHighlightType.WEAK_WARNING,
-                  isOnTheFly))
+                holder
+                  .getManager
+                  .createProblemDescriptor(
+                    tag.getFirstChild,
+                    "Scaladoc can't process tparams for type alias now",
+                    true,
+                    ProblemHighlightType.WEAK_WARNING,
+                    isOnTheFly))
             }
           case _ => //we can't have params/tparams here
             for (tag <- s.findTagsByName(
@@ -166,16 +174,18 @@ class ScalaDocUnknownParameterInspection extends LocalInspectionTool {
                      MyScaladocParsing.TYPE_PARAM_TAG).contains _)
                  if tag.isInstanceOf[ScDocTag]) {
               holder.registerProblem(
-                holder.getManager.createProblemDescriptor(
-                  tag.getFirstChild,
-                  "@param and @tparams tags arn't allowed there",
-                  true,
-                  ProblemHighlightType.GENERIC_ERROR,
-                  isOnTheFly,
-                  new ScalaDocDeleteDuplicatingParamQuickFix(
-                    tag.asInstanceOf[ScDocTag],
-                    false)
-                ))
+                holder
+                  .getManager
+                  .createProblemDescriptor(
+                    tag.getFirstChild,
+                    "@param and @tparams tags arn't allowed there",
+                    true,
+                    ProblemHighlightType.GENERIC_ERROR,
+                    isOnTheFly,
+                    new ScalaDocDeleteDuplicatingParamQuickFix(
+                      tag.asInstanceOf[ScDocTag],
+                      false)
+                  ))
             }
         }
       }

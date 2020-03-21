@@ -31,15 +31,16 @@ object Accuracy {
       .grouped(2)
       .foldLeft(List[Int]()) {
         case (list, List(i1, i2)) =>
-          makeDiff.lift(i1.score, i1.mate, i2.score, i2.mate).fold(list) {
-            diff =>
+          makeDiff
+            .lift(i1.score, i1.mate, i2.score, i2.mate)
+            .fold(list) { diff =>
               (
                 if (pov.color.white)
                   -diff
                 else
                   diff
               ).max(0) :: list
-          }
+            }
         case (list, _) =>
           list
       }

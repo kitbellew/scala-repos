@@ -121,18 +121,20 @@ trait ColumnarTableModuleSpec[M[+_]]
 
   override val defaultPrettyParams = Pretty.Params(2)
 
-  lazy val xlogger = LoggerFactory.getLogger(
-    "com.precog.yggdrasil.table.ColumnarTableModuleSpec")
+  lazy val xlogger = LoggerFactory
+    .getLogger("com.precog.yggdrasil.table.ColumnarTableModuleSpec")
 
   def streamToString(stream: StreamT[M, CharBuffer]): String = {
     def loop(stream: StreamT[M, CharBuffer], sb: StringBuilder): M[String] =
-      stream.uncons.flatMap {
-        case None =>
-          M.point(sb.toString)
-        case Some((cb, tail)) =>
-          sb.append(cb)
-          loop(tail, sb)
-      }
+      stream
+        .uncons
+        .flatMap {
+          case None =>
+            M.point(sb.toString)
+          case Some((cb, tail)) =>
+            sb.append(cb)
+            loop(tail, sb)
+        }
     loop(stream, new StringBuilder).copoint
   }
 
@@ -301,7 +303,8 @@ trait ColumnarTableModuleSpec[M[+_]]
 
       "check utf-8 encoding" in check { str: String =>
         val s =
-          str.toList
+          str
+            .toList
             .map((c: Char) =>
               if (c < ' ')
                 ' '
@@ -475,8 +478,8 @@ trait ColumnarTableModuleSpec[M[+_]]
 
       "delete elements according to a JType" in checkObjectDelete
       "delete only field in object without removing from array" in {
-        val JArray(elements) = JParser.parseUnsafe(
-          """[
+        val JArray(elements) = JParser
+          .parseUnsafe("""[
           {"foo": 4, "bar": 12},
           {"foo": 5},
           {"bar": 45},

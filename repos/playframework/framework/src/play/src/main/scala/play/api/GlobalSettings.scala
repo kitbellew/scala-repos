@@ -33,7 +33,8 @@ trait GlobalSettings {
     * Note, this should only be used for the default implementations of onError, onHandlerNotFound and onBadRequest.
     */
   private def defaultErrorHandler: HttpErrorHandler = {
-    Play.privateMaybeApplication
+    Play
+      .privateMaybeApplication
       .fold[HttpErrorHandler](DefaultHttpErrorHandler)(dhehCache)
   }
 
@@ -41,7 +42,8 @@ trait GlobalSettings {
     * This should be used for all invocations of error handling in Global.
     */
   private def configuredErrorHandler: HttpErrorHandler = {
-    Play.privateMaybeApplication
+    Play
+      .privateMaybeApplication
       .fold[HttpErrorHandler](DefaultHttpErrorHandler)(_.errorHandler)
   }
 
@@ -53,7 +55,8 @@ trait GlobalSettings {
 
   private val httpFiltersCache = Application.instanceCache[HttpFilters]
   private def filters: HttpFilters = {
-    Play.privateMaybeApplication
+    Play
+      .privateMaybeApplication
       .fold[HttpFilters](NoHttpFilters)(httpFiltersCache)
   }
 
@@ -127,11 +130,13 @@ trait GlobalSettings {
   def doFilter(next: RequestHeader => Handler): (RequestHeader => Handler) = {
     (request: RequestHeader) =>
       val context =
-        Play.privateMaybeApplication.fold("") { app =>
-          httpConfigurationCache(app).context.stripSuffix("/")
-        }
-      val inContext = context.isEmpty || request.path == context || request.path
-        .startsWith(context + "/")
+        Play
+          .privateMaybeApplication
+          .fold("") { app =>
+            httpConfigurationCache(app).context.stripSuffix("/")
+          }
+      val inContext = context.isEmpty || request
+        .path == context || request.path.startsWith(context + "/")
       next(request) match {
         case action: EssentialAction if inContext =>
           doFilter(action)
@@ -193,10 +198,8 @@ trait GlobalSettings {
     * @return the result to send to the client
     */
   def onBadRequest(request: RequestHeader, error: String): Future[Result] =
-    defaultErrorHandler.onClientError(
-      request,
-      play.api.http.Status.BAD_REQUEST,
-      error)
+    defaultErrorHandler
+      .onClientError(request, play.api.http.Status.BAD_REQUEST, error)
 }
 
 /**
@@ -226,7 +229,8 @@ object GlobalSettings {
     def javaGlobal: Option[play.GlobalSettings] =
       try {
         Option(
-          environment.classLoader
+          environment
+            .classLoader
             .loadClass(globalClass)
             .newInstance()
             .asInstanceOf[play.GlobalSettings])
@@ -239,7 +243,8 @@ object GlobalSettings {
 
     def scalaGlobal: GlobalSettings =
       try {
-        environment.classLoader
+        environment
+          .classLoader
           .loadClass(globalClass + "$")
           .getDeclaredField("MODULE$")
           .get(null)

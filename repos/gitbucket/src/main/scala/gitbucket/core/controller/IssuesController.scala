@@ -157,14 +157,20 @@ trait IssuesControllerBase extends ControllerBase {
 
           // insert labels
           if (writable) {
-            form.labelNames.map { value =>
-              val labels = getLabels(owner, name)
-              value.split(",").foreach { labelName =>
-                labels.find(_.labelName == labelName).map { label =>
-                  registerIssueLabel(owner, name, issueId, label.labelId)
-                }
+            form
+              .labelNames
+              .map { value =>
+                val labels = getLabels(owner, name)
+                value
+                  .split(",")
+                  .foreach { labelName =>
+                    labels
+                      .find(_.labelName == labelName)
+                      .map { label =>
+                        registerIssueLabel(owner, name, issueId, label.labelId)
+                      }
+                  }
               }
-            }
           }
 
           // record activity
@@ -337,23 +343,27 @@ trait IssuesControllerBase extends ControllerBase {
                   .editissue(x.content, x.issueId, x.userName, x.repositoryName)
             } getOrElse {
               contentType = formats("json")
-              org.json4s.jackson.Serialization.write(
-                Map(
-                  "title" -> x.title,
-                  "content" -> Markdown.toHtml(
-                    markdown = x.content getOrElse "No description given.",
-                    repository = repository,
-                    enableWikiLink = false,
-                    enableRefsLink = true,
-                    enableAnchor = true,
-                    enableLineBreaks = true,
-                    enableTaskList = true,
-                    hasWritePermission = isEditable(
-                      x.userName,
-                      x.repositoryName,
-                      x.openedUserName)
-                  )
-                ))
+              org
+                .json4s
+                .jackson
+                .Serialization
+                .write(
+                  Map(
+                    "title" -> x.title,
+                    "content" -> Markdown.toHtml(
+                      markdown = x.content getOrElse "No description given.",
+                      repository = repository,
+                      enableWikiLink = false,
+                      enableRefsLink = true,
+                      enableAnchor = true,
+                      enableLineBreaks = true,
+                      enableTaskList = true,
+                      hasWritePermission = isEditable(
+                        x.userName,
+                        x.repositoryName,
+                        x.openedUserName)
+                    )
+                  ))
             }
           } else
             Unauthorized
@@ -374,21 +384,27 @@ trait IssuesControllerBase extends ControllerBase {
                   x.repositoryName)
             } getOrElse {
               contentType = formats("json")
-              org.json4s.jackson.Serialization.write(
-                Map(
-                  "content" -> view.Markdown.toHtml(
-                    markdown = x.content,
-                    repository = repository,
-                    enableWikiLink = false,
-                    enableRefsLink = true,
-                    enableAnchor = true,
-                    enableLineBreaks = true,
-                    enableTaskList = true,
-                    hasWritePermission = isEditable(
-                      x.userName,
-                      x.repositoryName,
-                      x.commentedUserName)
-                  )))
+              org
+                .json4s
+                .jackson
+                .Serialization
+                .write(
+                  Map(
+                    "content" -> view
+                      .Markdown
+                      .toHtml(
+                        markdown = x.content,
+                        repository = repository,
+                        enableWikiLink = false,
+                        enableRefsLink = true,
+                        enableAnchor = true,
+                        enableLineBreaks = true,
+                        enableTaskList = true,
+                        hasWritePermission = isEditable(
+                          x.userName,
+                          x.repositoryName,
+                          x.commentedUserName)
+                      )))
             }
           } else
             Unauthorized
@@ -411,8 +427,8 @@ trait IssuesControllerBase extends ControllerBase {
           repository.name,
           issueId,
           params("labelId").toInt)
-        html.labellist(
-          getIssueLabels(repository.owner, repository.name, issueId))
+        html
+          .labellist(getIssueLabels(repository.owner, repository.name, issueId))
       }
     })
 
@@ -424,8 +440,8 @@ trait IssuesControllerBase extends ControllerBase {
           repository.name,
           issueId,
           params("labelId").toInt)
-        html.labellist(
-          getIssueLabels(repository.owner, repository.name, issueId))
+        html
+          .labellist(getIssueLabels(repository.owner, repository.name, issueId))
       }
     })
 
@@ -452,7 +468,11 @@ trait IssuesControllerBase extends ControllerBase {
             .find(_._1.milestoneId == milestoneId)
             .map {
               case (_, openCount, closeCount) =>
-                gitbucket.core.issues.milestones.html
+                gitbucket
+                  .core
+                  .issues
+                  .milestones
+                  .html
                   .progress(openCount + closeCount, closeCount)
             } getOrElse NotFound
       } getOrElse Ok()
@@ -484,21 +504,23 @@ trait IssuesControllerBase extends ControllerBase {
 
   post("/:owner/:repository/issues/batchedit/label")(
     collaboratorsOnly { repository =>
-      params("value").toIntOpt.map { labelId =>
-        executeBatch(repository) { issueId =>
-          getIssueLabel(
-            repository.owner,
-            repository.name,
-            issueId,
-            labelId) getOrElse {
-            registerIssueLabel(
+      params("value")
+        .toIntOpt
+        .map { labelId =>
+          executeBatch(repository) { issueId =>
+            getIssueLabel(
               repository.owner,
               repository.name,
               issueId,
-              labelId)
+              labelId) getOrElse {
+              registerIssueLabel(
+                repository.owner,
+                repository.name,
+                issueId,
+                labelId)
+            }
           }
-        }
-      } getOrElse NotFound
+        } getOrElse NotFound
     })
 
   post("/:owner/:repository/issues/batchedit/assign")(
@@ -524,13 +546,15 @@ trait IssuesControllerBase extends ControllerBase {
       (
         Directory.getAttachedDir(repository.owner, repository.name) match {
           case dir if (dir.exists && dir.isDirectory) =>
-            dir.listFiles.find(_.getName.startsWith(params("file") + ".")).map {
-              file =>
+            dir
+              .listFiles
+              .find(_.getName.startsWith(params("file") + "."))
+              .map { file =>
                 response.setHeader(
                   "Content-Disposition",
                   f"""inline; filename=${file.getName}""")
                 RawData(FileUtil.getMimeType(file.getName), file)
-            }
+              }
           case _ =>
             None
         }

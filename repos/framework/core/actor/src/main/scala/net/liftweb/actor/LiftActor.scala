@@ -599,8 +599,8 @@ object LiftActorJ {
   }
 
   private def buildPF(clz: Class[_]): DispatchVendor = {
-    val methods = getBaseClasses(clz).flatMap(
-      _.getDeclaredMethods.toList.filter(receiver))
+    val methods = getBaseClasses(clz)
+      .flatMap(_.getDeclaredMethods.toList.filter(receiver))
 
     val clzMap: Map[Class[_], Method] = Map(
       methods.map { m =>
@@ -614,10 +614,12 @@ object LiftActorJ {
 
 private final class DispatchVendor(map: Map[Class[_], Method]) {
   private val baseMap: Map[Class[_], Option[Method]] = Map(
-    map.map {
-      case (k, v) =>
-        (k, Some(v))
-    }.toList: _*)
+    map
+      .map {
+        case (k, v) =>
+          (k, Some(v))
+      }
+      .toList: _*)
 
   def vend(actor: LiftActorJ): PartialFunction[Any, Unit] =
     new PartialFunction[Any, Unit] {

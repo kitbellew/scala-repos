@@ -56,8 +56,8 @@ class LightArrayRevolverScheduler(
     .requiring(
       _ >= 1.millis,
       "minimum supported akka.scheduler.tick-duration is 1ms")
-  val ShutdownTimeout = config.getMillisDuration(
-    "akka.scheduler.shutdown-timeout")
+  val ShutdownTimeout = config
+    .getMillisDuration("akka.scheduler.shutdown-timeout")
 
   import LightArrayRevolverScheduler._
 
@@ -120,8 +120,8 @@ class LightArrayRevolverScheduler(
                     schedule(
                       preparedEC,
                       this,
-                      Duration.fromNanos(
-                        Math.max(delay.toNanos - driftNanos, 1))))
+                      Duration
+                        .fromNanos(Math.max(delay.toNanos - driftNanos, 1))))
               } catch {
                 case _: SchedulerException ⇒ // ignore failure to enqueue or terminated target actor
               }
@@ -366,8 +366,8 @@ class LightArrayRevolverScheduler(
 }
 
 object LightArrayRevolverScheduler {
-  private[this] val taskOffset = unsafe.objectFieldOffset(
-    classOf[TaskHolder].getDeclaredField("task"))
+  private[this] val taskOffset = unsafe
+    .objectFieldOffset(classOf[TaskHolder].getDeclaredField("task"))
 
   private class TaskQueue extends AbstractNodeQueue[TaskHolder]
 

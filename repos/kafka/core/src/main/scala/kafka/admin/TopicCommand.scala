@@ -93,8 +93,8 @@ object TopicCommand extends Logging {
     if (opts.options.has(opts.topicOpt)) {
       val topicsSpec = opts.options.valueOf(opts.topicOpt)
       val topicsFilter = new Whitelist(topicsSpec)
-      allTopics.filter(
-        topicsFilter.isTopicAllowed(_, excludeInternalTopics = false))
+      allTopics
+        .filter(topicsFilter.isTopicAllowed(_, excludeInternalTopics = false))
     } else
       allTopics
   }
@@ -167,12 +167,11 @@ object TopicCommand extends Logging {
           opts.options.valueOf(opts.zkConnectOpt)))
     }
     topics.foreach { topic =>
-      val configs = AdminUtils.fetchEntityConfig(
-        zkUtils,
-        ConfigType.Topic,
-        topic)
-      if (opts.options.has(opts.configOpt) || opts.options.has(
-            opts.deleteConfigOpt)) {
+      val configs = AdminUtils
+        .fetchEntityConfig(zkUtils, ConfigType.Topic, topic)
+      if (opts.options.has(opts.configOpt) || opts
+            .options
+            .has(opts.deleteConfigOpt)) {
         println(
           "WARNING: Altering topic configuration from this script has been deprecated and may be removed in future releases.")
         println(
@@ -196,13 +195,11 @@ object TopicCommand extends Logging {
           "WARNING: If partitions are increased for a topic that has a key, the partition " +
             "logic or ordering of the messages will be affected")
         val nPartitions = opts.options.valueOf(opts.partitionsOpt).intValue
-        val replicaAssignmentStr = opts.options.valueOf(
-          opts.replicaAssignmentOpt)
-        AdminUtils.addPartitions(
-          zkUtils,
-          topic,
-          nPartitions,
-          replicaAssignmentStr)
+        val replicaAssignmentStr = opts
+          .options
+          .valueOf(opts.replicaAssignmentOpt)
+        AdminUtils
+          .addPartitions(zkUtils, topic, nPartitions, replicaAssignmentStr)
         println("Adding partitions succeeded!")
       }
     }
@@ -280,13 +277,12 @@ object TopicCommand extends Logging {
           val describeConfigs: Boolean =
             !reportUnavailablePartitions && !reportUnderReplicatedPartitions
           val describePartitions: Boolean = !reportOverriddenConfigs
-          val sortedPartitions = topicPartitionAssignment.toList.sortWith(
-            (m1, m2) => m1._1 < m2._1)
+          val sortedPartitions = topicPartitionAssignment
+            .toList
+            .sortWith((m1, m2) => m1._1 < m2._1)
           if (describeConfigs) {
-            val configs = AdminUtils.fetchEntityConfig(
-              zkUtils,
-              ConfigType.Topic,
-              topic)
+            val configs = AdminUtils
+              .fetchEntityConfig(zkUtils, ConfigType.Topic, topic)
             if (!reportOverriddenConfigs || configs.size() != 0) {
               val numPartitions = topicPartitionAssignment.size
               val replicationFactor = topicPartitionAssignment.head._2.size
@@ -301,15 +297,15 @@ object TopicCommand extends Logging {
           }
           if (describePartitions) {
             for ((partitionId, assignedReplicas) <- sortedPartitions) {
-              val inSyncReplicas = zkUtils.getInSyncReplicasForPartition(
-                topic,
-                partitionId)
+              val inSyncReplicas = zkUtils
+                .getInSyncReplicasForPartition(topic, partitionId)
               val leader = zkUtils.getLeaderForPartition(topic, partitionId)
               if ((
                     !reportUnderReplicatedPartitions && !reportUnavailablePartitions
                   ) ||
                   (
-                    reportUnderReplicatedPartitions && inSyncReplicas.size < assignedReplicas.size
+                    reportUnderReplicatedPartitions && inSyncReplicas
+                      .size < assignedReplicas.size
                   ) ||
                   (
                     reportUnavailablePartitions && (
@@ -337,20 +333,21 @@ object TopicCommand extends Logging {
   }
 
   def parseTopicConfigsToBeAdded(opts: TopicCommandOptions): Properties = {
-    val configsToBeAdded = opts.options
+    val configsToBeAdded = opts
+      .options
       .valuesOf(opts.configOpt)
       .map(_.split("""\s*=\s*"""))
     require(
       configsToBeAdded.forall(config => config.length == 2),
       "Invalid topic config: all configs to be added must be in the format \"key=val\".")
     val props = new Properties
-    configsToBeAdded.foreach(pair =>
-      props.setProperty(pair(0).trim, pair(1).trim))
+    configsToBeAdded
+      .foreach(pair => props.setProperty(pair(0).trim, pair(1).trim))
     LogConfig.validate(props)
     if (props.containsKey(LogConfig.MessageFormatVersionProp)) {
       println(
-        s"WARNING: The configuration ${LogConfig.MessageFormatVersionProp}=${props
-          .getProperty(LogConfig.MessageFormatVersionProp)} is specified. " +
+        s"WARNING: The configuration ${LogConfig.MessageFormatVersionProp}=${props.getProperty(
+          LogConfig.MessageFormatVersionProp)} is specified. " +
           s"This configuration will be ignored if the version is newer than the inter.broker.protocol.version specified in the broker.")
     }
     props
@@ -358,7 +355,8 @@ object TopicCommand extends Logging {
 
   def parseTopicConfigsToBeDeleted(opts: TopicCommandOptions): Seq[String] = {
     if (opts.options.has(opts.deleteConfigOpt)) {
-      val configsToBeDeleted = opts.options
+      val configsToBeDeleted = opts
+        .options
         .valuesOf(opts.deleteConfigOpt)
         .map(_.trim())
       val propsToBeDeleted = new Properties
@@ -404,9 +402,8 @@ object TopicCommand extends Logging {
     val alterOpt = parser.accepts(
       "alter",
       "Alter the number of partitions, replica assignment, and/or configuration for the topic.")
-    val describeOpt = parser.accepts(
-      "describe",
-      "List details for the given topics.")
+    val describeOpt = parser
+      .accepts("describe", "List details for the given topics.")
     val helpOpt = parser.accepts("help", "Print usage information.")
     val topicOpt = parser
       .accepts(
@@ -421,7 +418,8 @@ object TopicCommand extends Logging {
       .accepts(
         "config",
         "A topic configuration override for the topic being created or altered." +
-          "The following is a list of valid configurations: " + nl + LogConfig.configNames
+          "The following is a list of valid configurations: " + nl + LogConfig
+          .configNames
           .map("\t" + _)
           .mkString(nl) + nl +
           "See the Kafka documentation for full details on the topic configs."
@@ -477,9 +475,8 @@ object TopicCommand extends Logging {
       "if-not-exists",
       "if set when creating topics, the action will only execute if the topic does not already exist")
 
-    val disableRackAware = parser.accepts(
-      "disable-rack-aware",
-      "Disable rack aware replica assignment")
+    val disableRackAware = parser
+      .accepts("disable-rack-aware", "Disable rack aware replica assignment")
     val options = parser.parse(args: _*)
 
     val allTopicLevelOpts: Set[OptionSpec[_]] = Set(

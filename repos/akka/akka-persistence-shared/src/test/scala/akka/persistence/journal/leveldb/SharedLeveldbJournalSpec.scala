@@ -97,10 +97,10 @@ class SharedLeveldbJournalSpec
           .provider
           .getDefaultAddress) / "user" / "store"
 
-      val appA = systemA.actorOf(
-        Props(classOf[ExampleApp], probeA.ref, storePath))
-      val appB = systemB.actorOf(
-        Props(classOf[ExampleApp], probeB.ref, storePath))
+      val appA = systemA
+        .actorOf(Props(classOf[ExampleApp], probeA.ref, storePath))
+      val appB = systemB
+        .actorOf(Props(classOf[ExampleApp], probeB.ref, storePath))
 
       appA ! "a1"
       appB ! "b1"
@@ -108,10 +108,10 @@ class SharedLeveldbJournalSpec
       probeA.expectMsg("a1")
       probeB.expectMsg("b1")
 
-      val recoveredAppA = systemA.actorOf(
-        Props(classOf[ExampleApp], probeA.ref, storePath))
-      val recoveredAppB = systemB.actorOf(
-        Props(classOf[ExampleApp], probeB.ref, storePath))
+      val recoveredAppA = systemA
+        .actorOf(Props(classOf[ExampleApp], probeA.ref, storePath))
+      val recoveredAppB = systemB
+        .actorOf(Props(classOf[ExampleApp], probeB.ref, storePath))
 
       recoveredAppA ! "a2"
       recoveredAppB ! "b2"

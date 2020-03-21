@@ -21,8 +21,8 @@ import akka.testkit.AkkaSpec
 
 class FlowStageSpec
     extends AkkaSpec(
-      ConfigFactory.parseString(
-        "akka.actor.debug.receive=off\nakka.loglevel=INFO")) {
+      ConfigFactory
+        .parseString("akka.actor.debug.receive=off\nakka.loglevel=INFO")) {
 
   val settings = ActorMaterializerSettings(system)
     .withInputBuffer(initialSize = 2, maxSize = 2)
@@ -262,10 +262,8 @@ class FlowStageSpec
           .toMat(TestSink.probe[Int])(Keep.both)
           .run
       p2.request(10)
-      p1.sendNext(1)
-        .sendNext(2)
-      p2.expectNext(1)
-        .expectComplete()
+      p1.sendNext(1).sendNext(2)
+      p2.expectNext(1).expectComplete()
       p1.expectCancellation()
     }
 
@@ -288,7 +286,8 @@ class FlowStageSpec
           })
         .runWith(TestSink.probe[Int])
       EventFilter[IllegalArgumentException]("two not allowed") intercept {
-        p2.request(100)
+        p2
+          .request(100)
           .expectNext(1)
           .expectNext(1)
           .expectError()
@@ -324,7 +323,8 @@ class FlowStageSpec
         . // it's undefined if element 1 got through before the error or not
         runWith(TestSink.probe[Int])
       EventFilter[IllegalArgumentException]("two not allowed") intercept {
-        p2.request(100)
+        p2
+          .request(100)
           .expectNext(100)
           .expectNext(101)
           .expectComplete()

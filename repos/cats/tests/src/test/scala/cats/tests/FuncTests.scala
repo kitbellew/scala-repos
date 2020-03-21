@@ -58,7 +58,8 @@ class FuncTests extends CatsSuite {
 
   {
     implicit val appFuncApp = AppFunc.appFuncApplicative[Option, Int]
-    implicit val iso = CartesianTests.Isomorphisms
+    implicit val iso = CartesianTests
+      .Isomorphisms
       .invariant[AppFunc[Option, Int, ?]]
     checkAll(
       "AppFunc[Option, Int, Int]",

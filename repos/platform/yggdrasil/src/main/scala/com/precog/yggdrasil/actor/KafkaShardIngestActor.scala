@@ -165,7 +165,9 @@ object FilesystemIngestFailureLog {
       }
     }
 
-    val logFiles = persistDir.listFiles.toSeq
+    val logFiles = persistDir
+      .listFiles
+      .toSeq
       .filter(_.getName.startsWith(FilePrefix))
     if (logFiles.isEmpty)
       new FilesystemIngestFailureLog(Map(), initialCheckpoint, persistDir)
@@ -200,7 +202,8 @@ object FilesystemIngestFailureLog {
         def decompose(rec: LogRecord) =
           JObject(
             "offset" -> rec.offset.serialize,
-            "messageType" -> rec.message
+            "messageType" -> rec
+              .message
               .fold(_ => "ingest", _ => "archive", _ => "storeFile")
               .serialize,
             "message" -> rec.message.serialize,
@@ -216,11 +219,12 @@ object FilesystemIngestFailureLog {
             msgType <- jv.validated[String]("messageType")
             message <- msgType match {
               case "ingest" =>
-                jv.validated[EventMessage.EventMessageExtraction]("message")(
+                jv
+                  .validated[EventMessage.EventMessageExtraction]("message")(
                     IngestMessage.Extractor)
                   .flatMap {
                     _.map(Success(_))
-                      .getOrElse(Failure(Invalid("Incomplete ingest message")))
+                    .getOrElse(Failure(Invalid("Incomplete ingest message")))
                   }
 
               case "archive" =>
@@ -255,8 +259,8 @@ abstract class KafkaShardIngestActor(
     maxConsecutiveFailures: Int = 3)
     extends Actor {
 
-  protected lazy val logger = LoggerFactory.getLogger(
-    "com.precog.yggdrasil.actor.KafkaShardIngestActor")
+  protected lazy val logger = LoggerFactory
+    .getLogger("com.precog.yggdrasil.actor.KafkaShardIngestActor")
 
   private var lastCheckpoint: YggCheckpoint = initialCheckpoint
 
@@ -272,10 +276,13 @@ abstract class KafkaShardIngestActor(
 
   override def preStart() = {
     logger.info("Starting KafkaShardIngestActor")
-    context.system.scheduler.schedule(idleDelay, idleDelay) {
-      initiated += 1
-      self ! GetMessages(routingActor)
-    }
+    context
+      .system
+      .scheduler
+      .schedule(idleDelay, idleDelay) {
+        initiated += 1
+        self ! GetMessages(routingActor)
+      }
     logger.info("Recurring ingest request scheduled")
   }
 
@@ -314,8 +321,8 @@ abstract class KafkaShardIngestActor(
       runningBatches.getAndDecrement
 
       // Send off a new batch now that we've completed this one
-      logger.trace(
-        "Pre-firing new GetMessages on batch completion to " + requestor)
+      logger
+        .trace("Pre-firing new GetMessages on batch completion to " + requestor)
       self.tell(GetMessages(requestor), requestor)
 
     case BatchFailed(requestor, checkpoint) =>
@@ -331,7 +338,8 @@ abstract class KafkaShardIngestActor(
       } else {
         //logger.error("Halting ingest due to excessive consecutive failures at Kafka offsets: " + ingestCache.keys.map(_.offset).mkString("[", ", ", "]"))
         logger.error(
-          "Skipping ingest batch due to excessive consecutive failures at Kafka offsets: " + ingestCache.keys
+          "Skipping ingest batch due to excessive consecutive failures at Kafka offsets: " + ingestCache
+            .keys
             .map(_.offset)
             .mkString("[", ", ", "]"))
         logger.error(
@@ -340,10 +348,8 @@ abstract class KafkaShardIngestActor(
           "Ingest will continue, but query results may be inconsistent until the problem is resolved.")
         for (messages <- ingestCache.get(checkpoint).toSeq;
              (offset, ingestMessage) <- messages) {
-          failureLog = failureLog.logFailed(
-            offset,
-            ingestMessage,
-            lastCheckpoint)
+          failureLog = failureLog
+            .logFailed(offset, ingestMessage, lastCheckpoint)
         }
 
         runningBatches.getAndDecrement
@@ -369,7 +375,8 @@ abstract class KafkaShardIngestActor(
               case Success((messages, checkpoint)) =>
                 if (messages.size > 0) {
                   logger.debug(
-                    "Sending " + messages.size + " events to batch ingest handler.")
+                    "Sending " + messages
+                      .size + " events to batch ingest handler.")
 
                   // update the cache
                   lastCheckpoint = checkpoint
@@ -387,15 +394,16 @@ abstract class KafkaShardIngestActor(
                   batchHandler.tell(ProjectionUpdatesExpected(messages.size))
                   requestor.tell(IngestData(messages), batchHandler)
                 } else {
-                  logger.trace(
-                    "No new data found after checkpoint: " + checkpoint)
+                  logger
+                    .trace("No new data found after checkpoint: " + checkpoint)
                   runningBatches.getAndDecrement
                   requestor ! IngestData(Nil)
                 }
 
               case Failure(error) =>
                 logger.error(
-                  "Error(s) occurred retrieving data from Kafka: " + error.message)
+                  "Error(s) occurred retrieving data from Kafka: " + error
+                    .message)
                 runningBatches.getAndDecrement
                 requestor ! IngestErrors(
                   List("Error(s) retrieving data from Kafka: " + error.message))
@@ -521,11 +529,14 @@ abstract class KafkaShardIngestActor(
             "Raw kafka deserialization of %d events in %d ms"
               .format(rawMessages.size, t))
         }) {
-          rawMessages.par.map { msgAndOffset =>
-            EventMessageEncoding.read(msgAndOffset.message.payload) map {
-              (msgAndOffset.offset, _)
+          rawMessages
+            .par
+            .map { msgAndOffset =>
+              EventMessageEncoding.read(msgAndOffset.message.payload) map {
+                (msgAndOffset.offset, _)
+              }
             }
-          }.toList
+            .toList
         }
 
       val batched: Validation[Error, Future[(

@@ -20,6 +20,7 @@ object TestUtils {
   def temporaryServerHostnameAndPort(
       interface: String = "127.0.0.1"): (String, Int) = {
     val socketAddress = temporaryServerAddress(interface)
-    socketAddress.getHostName -> socketAddress.getPort // TODO getHostString in Java7
+    socketAddress.getHostName -> socketAddress
+      .getPort // TODO getHostString in Java7
   }
 }

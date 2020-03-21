@@ -78,11 +78,14 @@ final class IncOptimizer(
   private class SeqInterfaceType(encName: String)
       extends InterfaceType(encName) {
     private val ancestorsAskers = mutable.Set.empty[MethodImpl]
-    private val dynamicCallers = mutable.Map
+    private val dynamicCallers = mutable
+      .Map
       .empty[String, mutable.Set[MethodImpl]]
-    private val staticCallers = mutable.Map
+    private val staticCallers = mutable
+      .Map
       .empty[String, mutable.Set[MethodImpl]]
-    private val callersOfStatic = mutable.Map
+    private val callersOfStatic = mutable
+      .Map
       .empty[String, mutable.Set[MethodImpl]]
 
     private var _ancestors: List[String] = encodedName :: Nil

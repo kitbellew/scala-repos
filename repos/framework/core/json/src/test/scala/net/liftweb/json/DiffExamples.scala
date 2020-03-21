@@ -73,7 +73,9 @@ object DiffExamples extends Specification {
 
   private def read(resource: String) =
     parse(
-      scala.io.Source
+      scala
+        .io
+        .Source
         .fromInputStream(getClass.getResourceAsStream(resource))
         .getLines()
         .mkString)

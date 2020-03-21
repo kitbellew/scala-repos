@@ -658,12 +658,12 @@ class ObservableBufferSpec[T]
 
     // Verification
     buffer.toList should equal(List('e', 'h', 'j', 'r', 't', 'z'))
-    addedValues.toList should equal(
-      List('e', 'a', 't', 'r', 'j', 'd', 'z', 'h'))
+    addedValues
+      .toList should equal(List('e', 'a', 't', 'r', 'j', 'd', 'z', 'h'))
     removedValues.toList should equal(List('d', 'a'))
     permutations should have size 1
-    permutations(0).toList should equal(
-      List((0, 3), (1, 2), (2, 5), (3, 0), (4, 1), (5, 4)))
+    permutations(0)
+      .toList should equal(List((0, 3), (1, 2), (2, 5), (3, 0), (4, 1), (5, 4)))
   }
 
   it should "not ignore updates (Issue #169)" in {
@@ -672,8 +672,10 @@ class ObservableBufferSpec[T]
 
     val items =
       new ObservableBuffer(
-        jfxc.FXCollections.observableArrayList[ElementType](
-          (elem: ElementType) => Array[jfxb.Observable](elem)))
+        jfxc
+          .FXCollections
+          .observableArrayList[ElementType]((elem: ElementType) =>
+            Array[jfxb.Observable](elem)))
 
     items.append(jfxc.FXCollections.observableArrayList("test"))
 

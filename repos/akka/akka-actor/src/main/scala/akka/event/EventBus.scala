@@ -335,9 +335,8 @@ trait ManagedActorClassification {
   private val empty = immutable.TreeSet.empty[ActorRef]
 
   /** The unsubscriber takes care of unsubscribing actors, which have terminated. */
-  protected lazy val unsubscriber = ActorClassificationUnsubscriber.start(
-    system,
-    this)
+  protected lazy val unsubscriber = ActorClassificationUnsubscriber
+    .start(system, this)
 
   @tailrec
   protected final def associate(

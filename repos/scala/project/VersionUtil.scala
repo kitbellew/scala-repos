@@ -31,7 +31,8 @@ object VersionUtil {
   )
 
   lazy val generateBuildCharacterFileSettings = Seq[Setting[_]](
-    generateBuildCharacterPropertiesFile := generateBuildCharacterPropertiesFileImpl.value)
+    generateBuildCharacterPropertiesFile := generateBuildCharacterPropertiesFileImpl
+      .value)
 
   case class Versions(
       canonicalVersion: String,
@@ -131,9 +132,8 @@ object VersionUtil {
       versionProperties.value.toMap + (
         "copyright.string" -> copyrightString.value
       ),
-      (
-        resourceManaged in Compile
-      ).value / s"${thisProject.value.id}.properties")
+      (resourceManaged in Compile)
+        .value / s"${thisProject.value.id}.properties")
   }
 
   private lazy val generateBuildCharacterPropertiesFileImpl
@@ -163,13 +163,16 @@ object VersionUtil {
     val in = new FileInputStream(file("versions.properties"))
     try props.load(in)
     finally in.close()
-    props.asScala.toMap.map {
-      case (k, v) =>
-        (
-          k,
-          sys.props.getOrElse(k, v)
-        ) // allow system properties to override versions.properties
-    }
+    props
+      .asScala
+      .toMap
+      .map {
+        case (k, v) =>
+          (
+            k,
+            sys.props.getOrElse(k, v)
+          ) // allow system properties to override versions.properties
+      }
   }
 
   /** Get a subproject version number from `versionProps` */

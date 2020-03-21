@@ -52,9 +52,8 @@ object ActorCreationPerfSpec {
         sender() ! Created
       case WaitForChildren ⇒
         context.children.foreach(_ ! IsAlive)
-        context.become(
-          waiting(context.children.size, sender()),
-          discardOld = false)
+        context
+          .become(waiting(context.children.size, sender()), discardOld = false)
     }
 
     def waiting(number: Int, replyTo: ActorRef): Receive = {
@@ -83,9 +82,8 @@ object ActorCreationPerfSpec {
         sender() ! Created
       case WaitForChildren ⇒
         context.children.foreach(_ ! IsAlive)
-        context.become(
-          waiting(context.children.size, sender()),
-          discardOld = false)
+        context
+          .become(waiting(context.children.size, sender()), discardOld = false)
     }
 
     def waiting(number: Int, replyTo: ActorRef): Receive = {
@@ -117,15 +115,12 @@ class ActorCreationPerfSpec
   val BlockingTimeKey = ActorCreationKey / "synchronous-part"
   val TotalTimeKey = ActorCreationKey / "total"
 
-  val warmUp: Int = Integer.getInteger(
-    "akka.test.actor.ActorPerfSpec.warmUp",
-    50000)
-  val nrOfActors: Int = Integer.getInteger(
-    "akka.test.actor.ActorPerfSpec.numberOfActors",
-    100000)
-  val nrOfRepeats: Int = Integer.getInteger(
-    "akka.test.actor.ActorPerfSpec.numberOfRepeats",
-    3)
+  val warmUp: Int = Integer
+    .getInteger("akka.test.actor.ActorPerfSpec.warmUp", 50000)
+  val nrOfActors: Int = Integer
+    .getInteger("akka.test.actor.ActorPerfSpec.numberOfActors", 100000)
+  val nrOfRepeats: Int = Integer
+    .getInteger("akka.test.actor.ActorPerfSpec.numberOfRepeats", 3)
 
   def runWithCounterInside(
       metricName: String,
@@ -134,9 +129,8 @@ class ActorCreationPerfSpec
       propsCreator: () ⇒ Props) {
     val hist = histogram(BlockingTimeKey / metricName)
 
-    val driver = system.actorOf(
-      Props(classOf[TimingDriver], hist),
-      scenarioName)
+    val driver = system
+      .actorOf(Props(classOf[TimingDriver], hist), scenarioName)
     driver ! IsAlive
     expectMsg(Alive)
 

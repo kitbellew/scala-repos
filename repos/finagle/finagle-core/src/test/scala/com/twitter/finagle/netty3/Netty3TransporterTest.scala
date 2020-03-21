@@ -41,9 +41,8 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
           Transporter.HttpProxy(
             Some(new InetSocketAddress(0)),
             Some(Credentials("user", "pw"))) +
-          Transporter.SocksProxy(
-            Some(new InetSocketAddress(0)),
-            Some(("user", "pw"))) +
+          Transporter
+            .SocksProxy(Some(new InetSocketAddress(0)), Some(("user", "pw"))) +
           Transport.BufferSizes(Some(100), Some(200)) +
           Transport.TLSClientEngine.param.default +
           Transport.Liveness(1.seconds, 2.seconds, Some(true)) +
@@ -55,41 +54,45 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
       assert(transporter.pipelineFactory == pipelineFactory)
       assert(
         transporter.tlsConfig ==
-          inputParams[Transport.TLSClientEngine].e.map(
-            Netty3TransporterTLSConfig(
-              _,
-              inputParams[Transporter.TLSHostname].hostname)))
+          inputParams[Transport.TLSClientEngine]
+            .e
+            .map(
+              Netty3TransporterTLSConfig(
+                _,
+                inputParams[Transporter.TLSHostname].hostname)))
       assert(transporter.httpProxy == inputParams[Transporter.HttpProxy].sa)
       assert(
-        transporter.httpProxyCredentials == inputParams[
-          Transporter.HttpProxy].credentials)
+        transporter.httpProxyCredentials == inputParams[Transporter.HttpProxy]
+          .credentials)
       assert(transporter.socksProxy == inputParams[Transporter.SocksProxy].sa)
       assert(
-        transporter.socksUsernameAndPassword == inputParams[
-          Transporter.SocksProxy].credentials)
+        transporter
+          .socksUsernameAndPassword == inputParams[Transporter.SocksProxy]
+          .credentials)
       assert(
-        transporter.channelReaderTimeout == inputParams[
-          Transport.Liveness].readTimeout)
+        transporter.channelReaderTimeout == inputParams[Transport.Liveness]
+          .readTimeout)
       assert(
-        transporter.channelWriterTimeout == inputParams[
-          Transport.Liveness].writeTimeout)
+        transporter.channelWriterTimeout == inputParams[Transport.Liveness]
+          .writeTimeout)
       assert(
-        transporter.channelOptions
-          .get("sendBufferSize") == inputParams[Transport.BufferSizes].send)
+        transporter.channelOptions.get("sendBufferSize") == inputParams[
+          Transport.BufferSizes].send)
       assert(
-        transporter.channelOptions
-          .get("receiveBufferSize") == inputParams[Transport.BufferSizes].recv)
+        transporter.channelOptions.get("receiveBufferSize") == inputParams[
+          Transport.BufferSizes].recv)
       assert(
-        transporter.channelOptions
-          .get("keepAlive") == inputParams[Transport.Liveness].keepAlive)
+        transporter.channelOptions.get("keepAlive") == inputParams[
+          Transport.Liveness].keepAlive)
       assert(
         transporter.channelOptions.get("connectTimeoutMillis").get ==
           inputParams[Transporter.ConnectTimeout].howlong.inMilliseconds +
-            inputParams[
-              LatencyCompensation.Compensation].howlong.inMilliseconds)
+            inputParams[LatencyCompensation.Compensation]
+              .howlong
+              .inMilliseconds)
       assert(
-        transporter.channelSnooper.nonEmpty == inputParams[
-          Transport.Verbose].enabled)
+        transporter.channelSnooper.nonEmpty == inputParams[Transport.Verbose]
+          .enabled)
     }
 
     it("newPipeline handles unresolved InetSocketAddresses") {
@@ -132,15 +135,18 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
             Channels.pipelineFactory(Channels.pipeline()),
             channelReaderTimeout = readerTimeout,
             channelWriterTimeout = writerTimeout)
-        val pl = transporter.newPipeline(
-          new InetSocketAddress(0),
-          NullStatsReceiver)
-        val idleHandlerFound = pl.toMap.asScala.values.find {
-          case _: IdleStateHandler =>
-            true
-          case _ =>
-            false
-        }
+        val pl = transporter
+          .newPipeline(new InetSocketAddress(0), NullStatsReceiver)
+        val idleHandlerFound = pl
+          .toMap
+          .asScala
+          .values
+          .find {
+            case _: IdleStateHandler =>
+              true
+            case _ =>
+              false
+          }
         assert(idleHandlerFound.nonEmpty == isHanlderExist)
         idleHandlerFound.foreach { h =>
           val ih = h.asInstanceOf[IdleStateHandler]
@@ -180,14 +186,16 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
       firstPipeline.addFirst("channelStatsHandler", firstHandler)
       secondPipeline.addFirst("channelStatsHandler", secondHandler)
 
-      val firstChannel = Netty3Transporter.channelFactory.newChannel(
-        firstPipeline)
+      val firstChannel = Netty3Transporter
+        .channelFactory
+        .newChannel(firstPipeline)
 
       hasConnections("first", 1)
       hasConnections("second", 0)
 
-      val secondChannel = Netty3Transporter.channelFactory.newChannel(
-        secondPipeline)
+      val secondChannel = Netty3Transporter
+        .channelFactory
+        .newChannel(secondPipeline)
       Channels.close(firstChannel)
 
       eventually {
@@ -207,20 +215,23 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
       val routableSockAddr = new InetSocketAddress("8.8.8.8", 9999)
 
       def hasSocksConnectHandler(pipeline: ChannelPipeline) =
-        pipeline.toMap.asScala.values.exists {
-          case _: SocksConnectHandler =>
-            true
-          case _ =>
-            false
-        }
+        pipeline
+          .toMap
+          .asScala
+          .values
+          .exists {
+            case _: SocksConnectHandler =>
+              true
+            case _ =>
+              false
+          }
 
       it("is not added if no proxy address is given") {
         val pipelineFactory = Channels.pipelineFactory(Channels.pipeline())
         val transporter =
           new Netty3Transporter[Int, Int]("name", pipelineFactory)
-        val pipeline = transporter.newPipeline(
-          loopbackSockAddr,
-          NullStatsReceiver)
+        val pipeline = transporter
+          .newPipeline(loopbackSockAddr, NullStatsReceiver)
         assert(!hasSocksConnectHandler(pipeline))
       }
 
@@ -231,9 +242,8 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
             "name",
             pipelineFactory,
             socksProxy = Some(loopbackSockAddr))
-        val pipeline = transporter.newPipeline(
-          loopbackSockAddr,
-          NullStatsReceiver)
+        val pipeline = transporter
+          .newPipeline(loopbackSockAddr, NullStatsReceiver)
         assert(!hasSocksConnectHandler(pipeline))
       }
 
@@ -244,9 +254,8 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
             "name",
             pipelineFactory,
             socksProxy = Some(loopbackSockAddr))
-        val pipeline = transporter.newPipeline(
-          linkLocalSockAddr,
-          NullStatsReceiver)
+        val pipeline = transporter
+          .newPipeline(linkLocalSockAddr, NullStatsReceiver)
         assert(!hasSocksConnectHandler(pipeline))
       }
 
@@ -257,9 +266,8 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
             "name",
             pipelineFactory,
             socksProxy = Some(loopbackSockAddr))
-        val pipeline = transporter.newPipeline(
-          routableSockAddr,
-          NullStatsReceiver)
+        val pipeline = transporter
+          .newPipeline(routableSockAddr, NullStatsReceiver)
         assert(hasSocksConnectHandler(pipeline))
       }
     }

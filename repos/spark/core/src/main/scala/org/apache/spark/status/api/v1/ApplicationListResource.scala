@@ -52,10 +52,12 @@ private[v1] class ApplicationListResource(uiRoot: UIRoot) {
       val statusOk = (!anyRunning && includeCompleted) ||
         (anyRunning && includeRunning)
       // keep the app if *any* attempts fall in the right time window
-      val dateOk = app.attempts.exists { attempt =>
-        attempt.startTime.getTime >= minDate.timestamp &&
-        attempt.startTime.getTime <= maxDate.timestamp
-      }
+      val dateOk = app
+        .attempts
+        .exists { attempt =>
+          attempt.startTime.getTime >= minDate.timestamp &&
+          attempt.startTime.getTime <= maxDate.timestamp
+        }
       statusOk && dateOk
     }
   }
@@ -71,21 +73,23 @@ private[spark] object ApplicationsListResource {
       maxCores = None,
       coresPerExecutor = None,
       memoryPerExecutorMB = None,
-      attempts = app.attempts.map { internalAttemptInfo =>
-        new ApplicationAttemptInfo(
-          attemptId = internalAttemptInfo.attemptId,
-          startTime = new Date(internalAttemptInfo.startTime),
-          endTime = new Date(internalAttemptInfo.endTime),
-          duration =
-            if (internalAttemptInfo.endTime > 0) {
-              internalAttemptInfo.endTime - internalAttemptInfo.startTime
-            } else {
-              0
-            },
-          lastUpdated = new Date(internalAttemptInfo.lastUpdated),
-          sparkUser = internalAttemptInfo.sparkUser,
-          completed = internalAttemptInfo.completed)
-      })
+      attempts = app
+        .attempts
+        .map { internalAttemptInfo =>
+          new ApplicationAttemptInfo(
+            attemptId = internalAttemptInfo.attemptId,
+            startTime = new Date(internalAttemptInfo.startTime),
+            endTime = new Date(internalAttemptInfo.endTime),
+            duration =
+              if (internalAttemptInfo.endTime > 0) {
+                internalAttemptInfo.endTime - internalAttemptInfo.startTime
+              } else {
+                0
+              },
+            lastUpdated = new Date(internalAttemptInfo.lastUpdated),
+            sparkUser = internalAttemptInfo.sparkUser,
+            completed = internalAttemptInfo.completed)
+        })
   }
 
   def convertApplicationInfo(

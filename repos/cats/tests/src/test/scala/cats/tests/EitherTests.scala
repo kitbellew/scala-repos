@@ -55,8 +55,8 @@ class EitherTests extends CatsSuite {
       OrderLaws[Either[ListWrapper[String], ListWrapper[Int]]].eqv)
     checkAll(
       "Eq[Either[ListWrapper[String], ListWrapper[Int]]]",
-      SerializableTests.serializable(
-        Eq[Either[ListWrapper[String], ListWrapper[Int]]]))
+      SerializableTests
+        .serializable(Eq[Either[ListWrapper[String], ListWrapper[Int]]]))
   }
 
   val orderLaws = OrderLaws[Either[Int, String]]

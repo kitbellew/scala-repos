@@ -480,20 +480,20 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
 
     // Test Windows paths
     assert(
+      Utils.nonLocalPaths("C:/some/path.jar", testWindows = true) === Array
+        .empty)
+    assert(
       Utils
-        .nonLocalPaths("C:/some/path.jar", testWindows = true) === Array.empty)
+        .nonLocalPaths("file:/C:/some/path.jar", testWindows = true) === Array
+        .empty)
     assert(
-      Utils.nonLocalPaths(
-        "file:/C:/some/path.jar",
-        testWindows = true) === Array.empty)
+      Utils
+        .nonLocalPaths("file:///C:/some/path.jar", testWindows = true) === Array
+        .empty)
     assert(
-      Utils.nonLocalPaths(
-        "file:///C:/some/path.jar",
-        testWindows = true) === Array.empty)
-    assert(
-      Utils.nonLocalPaths(
-        "local:/C:/some/path.jar",
-        testWindows = true) === Array.empty)
+      Utils
+        .nonLocalPaths("local:/C:/some/path.jar", testWindows = true) === Array
+        .empty)
     assert(
       Utils.nonLocalPaths(
         "local:///C:/some/path.jar",
@@ -587,10 +587,8 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
 
   test("loading properties from file") {
     val tmpDir = Utils.createTempDir()
-    val outFile = File.createTempFile(
-      "test-load-spark-properties",
-      "test",
-      tmpDir)
+    val outFile = File
+      .createTempFile("test-load-spark-properties", "test", tmpDir)
     try {
       System.setProperty("spark.test.fileNameLoadB", "2")
       Files.write(
@@ -631,10 +629,8 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
     val tempDir = Utils.createTempDir()
     val sourceDir = new File(tempDir, "source-dir")
     val innerSourceDir = Utils.createTempDir(root = sourceDir.getPath)
-    val sourceFile = File.createTempFile(
-      "someprefix",
-      "somesuffix",
-      innerSourceDir)
+    val sourceFile = File
+      .createTempFile("someprefix", "somesuffix", innerSourceDir)
     val targetDir = new File(tempDir, "target-dir")
     Files.write("some text", sourceFile, StandardCharsets.UTF_8)
 

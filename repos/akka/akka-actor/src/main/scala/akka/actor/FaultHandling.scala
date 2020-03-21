@@ -72,8 +72,9 @@ final case class ChildRestartStats(
         now
       } else
         restartTimeWindowStartNanos
-    val insideWindow =
-      (now - windowStart) <= TimeUnit.MILLISECONDS.toNanos(window)
+    val insideWindow = (now - windowStart) <= TimeUnit
+      .MILLISECONDS
+      .toNanos(window)
     if (insideWindow) {
       maxNrOfRetriesCount = retriesDone
       retriesDone <= retries

@@ -573,8 +573,8 @@ private[akka] class Controller(
         op match {
           case Throttle(node, target, direction, rateMBit) ⇒
             val t = nodes(target)
-            nodes(node).fsm forward ToClient(
-              ThrottleMsg(t.addr, direction, rateMBit))
+            nodes(node)
+              .fsm forward ToClient(ThrottleMsg(t.addr, direction, rateMBit))
           case Disconnect(node, target, abort) ⇒
             val t = nodes(target)
             nodes(node).fsm forward ToClient(DisconnectMsg(t.addr, abort))
@@ -633,11 +633,13 @@ private[akka] object BarrierCoordinator {
       with Printer
   final case class WrongBarrier(barrier: String, client: ActorRef, data: Data)
       extends RuntimeException(
-        data.clients
+        data
+          .clients
           .find(_.fsm == client)
           .map(_.name.toString)
           .getOrElse(client.toString) +
-          " tried to enter '" + barrier + "' while we were waiting for '" + data.barrier + "'")
+          " tried to enter '" + barrier + "' while we were waiting for '" + data
+          .barrier + "'")
       with NoStackTrace
       with Printer
   final case class BarrierEmpty(data: Data, msg: String)
@@ -780,8 +782,8 @@ private[akka] class BarrierCoordinator
   }
 
   def getDeadline(timeout: Option[FiniteDuration]): Deadline = {
-    Deadline.now + timeout.getOrElse(
-      TestConductor().Settings.BarrierTimeout.duration)
+    Deadline.now + timeout
+      .getOrElse(TestConductor().Settings.BarrierTimeout.duration)
   }
 
 }

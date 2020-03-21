@@ -59,7 +59,9 @@ object Osgi {
         "Bundle-SymbolicName" -> (bundleSymbolicName.value + ".source"),
         "Bundle-Version" -> versionProperties.value.osgiVersion,
         "Eclipse-SourceBundle" -> (
-          bundleSymbolicName.value + ";version=\"" + versionProperties.value.osgiVersion + "\";roots:=\".\""
+          bundleSymbolicName.value + ";version=\"" + versionProperties
+            .value
+            .osgiVersion + "\";roots:=\".\""
         )
       )
     )
@@ -83,10 +85,12 @@ object Osgi {
       .mkString(",")
     if (!includeRes.isEmpty)
       builder.setProperty(INCLUDERESOURCE, includeRes)
-    builder.getProperties.foreach {
-      case (k, v) =>
-        log.debug(s"bnd: $k: $v")
-    }
+    builder
+      .getProperties
+      .foreach {
+        case (k, v) =>
+          log.debug(s"bnd: $k: $v")
+      }
     // builder.build is not thread-safe because it uses a static SimpleDateFormat.  This ensures
     // that all calls to builder.build are serialized.
     val jar = synchronized {

@@ -273,8 +273,9 @@ object DebuggerUtil {
         case _ =>
           None
       }
-    val simpleParameters = function.effectiveParameterClauses.flatMap(
-      _.effectiveParameters)
+    val simpleParameters = function
+      .effectiveParameterClauses
+      .flatMap(_.effectiveParameters)
     val parameters =
       valueClassParameter ++: simpleParameters ++: localParameters
     val paramTypes = parameters
@@ -483,13 +484,15 @@ object DebuggerUtil {
     }
 
     def getDisplayName(debugProcess: DebugProcessImpl): String = {
-      ApplicationManager.getApplication.runReadAction(
-        new Computable[String] {
-          def compute: String = {
-            JVMNameUtil
-              .getSourcePositionClassDisplayName(debugProcess, sourcePosition)
-          }
-        })
+      ApplicationManager
+        .getApplication
+        .runReadAction(
+          new Computable[String] {
+            def compute: String = {
+              JVMNameUtil
+                .getSourcePositionClassDisplayName(debugProcess, sourcePosition)
+            }
+          })
     }
   }
 
@@ -558,8 +561,8 @@ object DebuggerUtil {
         if (isLocalClass(t))
           new JVMClassAt(SourcePosition.createFromElement(t))
         else {
-          val qual =
-            t.getQualifiedNameForDebugger + classnamePostfix(t, withPostfix)
+          val qual = t
+            .getQualifiedNameForDebugger + classnamePostfix(t, withPostfix)
           JVMNameUtil.getJVMRawText(qual)
         }
       case _ =>
@@ -735,8 +738,8 @@ object DebuggerUtil {
               fun.containingClass match {
                 case c: ScClass if isLocalClass(c) =>
                   visited += c
-                  buf ++= localParamsForConstructor(c, visited).filter(
-                    atRightPlace)
+                  buf ++= localParamsForConstructor(c, visited)
+                    .filter(atRightPlace)
                 case _ =>
               }
             case td: ScTypedDefinition if isLocalV(td) && atRightPlace(td) =>
@@ -746,8 +749,9 @@ object DebuggerUtil {
           }
         }
       })
-    buf.toSeq.sortBy(e =>
-      (e.isInstanceOf[ScObject], e.getTextRange.getStartOffset))
+    buf
+      .toSeq
+      .sortBy(e => (e.isInstanceOf[ScObject], e.getTextRange.getStartOffset))
   }
 
   def isLocalV(resolve: PsiElement): Boolean = {
@@ -761,7 +765,8 @@ object DebuggerUtil {
       case b: ScBindingPattern =>
         ScalaPsiUtil.nameContext(b) match {
           case v @ (_: ScValue | _: ScVariable) =>
-            !v.getContext.isInstanceOf[ScTemplateBody] && !v.getContext
+            !v.getContext.isInstanceOf[ScTemplateBody] && !v
+              .getContext
               .isInstanceOf[ScEarlyDefinitions]
           case clause: ScCaseClause =>
             true
@@ -778,8 +783,9 @@ object DebuggerUtil {
 
   def generatesAnonClass(newTd: ScNewTemplateDefinition) = {
     val extBl = newTd.extendsBlock
-    extBl.templateBody.nonEmpty || extBl.templateParents.exists(
-      _.typeElementsWithoutConstructor.nonEmpty)
+    extBl.templateBody.nonEmpty || extBl
+      .templateParents
+      .exists(_.typeElementsWithoutConstructor.nonEmpty)
   }
 
   @tailrec
@@ -824,18 +830,21 @@ object DebuggerUtil {
   def getSignificantElement(elem: PsiElement): PsiElement = {
     elem match {
       case _: ScAnnotationsHolder | _: ScCommentOwner =>
-        val firstSignificant = elem.children.find {
-          case ElementType(t)
-              if ScalaTokenTypes.WHITES_SPACES_AND_COMMENTS_TOKEN_SET.contains(
-                t) =>
-            false
-          case _: ScAnnotations =>
-            false
-          case e if e.getTextLength == 0 =>
-            false
-          case _ =>
-            true
-        }
+        val firstSignificant = elem
+          .children
+          .find {
+            case ElementType(t)
+                if ScalaTokenTypes
+                  .WHITES_SPACES_AND_COMMENTS_TOKEN_SET
+                  .contains(t) =>
+              false
+            case _: ScAnnotations =>
+              false
+            case e if e.getTextLength == 0 =>
+              false
+            case _ =>
+              true
+          }
         firstSignificant.getOrElse(elem)
       case _ =>
         elem

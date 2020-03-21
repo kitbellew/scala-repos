@@ -48,9 +48,8 @@ object FailureAccrualFactory {
     .equalJittered(5.seconds, 300.seconds)
 
   private[finagle] val defaultPolicy = () =>
-    FailureAccrualPolicy.consecutiveFailures(
-      defaultConsecutiveFailures,
-      jitteredBackoff)
+    FailureAccrualPolicy
+      .consecutiveFailures(defaultConsecutiveFailures, jitteredBackoff)
 
   /**
     * Add jitter in `markDeadFor` to reduce correlation.
@@ -84,8 +83,8 @@ object FailureAccrualFactory {
     case class Replaced(factory: Timer => ServiceFactoryWrapper) extends Param
     case object Disabled extends Param
 
-    implicit val param: Stack.Param[Param] = Stack.Param(
-      Param.Configured(defaultPolicy))
+    implicit val param: Stack.Param[Param] = Stack
+      .Param(Param.Configured(defaultPolicy))
   }
 
   // -Implementation notes-
@@ -187,8 +186,7 @@ object FailureAccrualFactory {
             val classifier = params[param.ResponseClassifier].responseClassifier
             val endpoint = params[Transporter.EndpointAddr].addr
             wrapper(statsReceiver, p(), label, logger, endpoint, classifier)(
-              timer)
-              .andThen(next)
+              timer).andThen(next)
 
           case Param.Replaced(f) =>
             f(params[param.Timer].timer).andThen(next)
@@ -449,9 +447,11 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
     }
 
   def close(deadline: Time): Future[Unit] =
-    underlying.close(deadline).ensure {
-      cancelReviveTimerTask()
-    }
+    underlying
+      .close(deadline)
+      .ensure {
+        cancelReviveTimerTask()
+      }
 
   override def toString = s"failure_accrual_${underlying.toString}"
 

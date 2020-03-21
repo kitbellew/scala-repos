@@ -20,7 +20,9 @@ object HashArrayEqualsWrapperLaws {
 
       val cmp = ordToTest.compare(leftWrapped, rightWrapped)
 
-      val lenCmp = java.lang.Integer
+      val lenCmp = java
+        .lang
+        .Integer
         .compare(leftWrapped.wrapped.length, rightWrapped.wrapped.length)
       if (lenCmp != 0) {
         cmp.signum == lenCmp.signum
@@ -72,29 +74,29 @@ class HashArrayEqualsWrapperProps
 
   property("Specialized orderings obey all laws for wrapped Arrays") {
     check(
-      HashArrayEqualsWrapperLaws.check2(
-        HashEqualsArrayWrapper.hashEqualsLongOrdering))
+      HashArrayEqualsWrapperLaws
+        .check2(HashEqualsArrayWrapper.hashEqualsLongOrdering))
     check(
-      HashArrayEqualsWrapperLaws.check2(
-        HashEqualsArrayWrapper.hashEqualsIntOrdering))
+      HashArrayEqualsWrapperLaws
+        .check2(HashEqualsArrayWrapper.hashEqualsIntOrdering))
     check(
-      HashArrayEqualsWrapperLaws.check2(
-        HashEqualsArrayWrapper.hashEqualsShortOrdering))
+      HashArrayEqualsWrapperLaws
+        .check2(HashEqualsArrayWrapper.hashEqualsShortOrdering))
     check(
-      HashArrayEqualsWrapperLaws.check2(
-        HashEqualsArrayWrapper.hashEqualsCharOrdering))
+      HashArrayEqualsWrapperLaws
+        .check2(HashEqualsArrayWrapper.hashEqualsCharOrdering))
     check(
-      HashArrayEqualsWrapperLaws.check2(
-        HashEqualsArrayWrapper.hashEqualsByteOrdering))
+      HashArrayEqualsWrapperLaws
+        .check2(HashEqualsArrayWrapper.hashEqualsByteOrdering))
     check(
-      HashArrayEqualsWrapperLaws.check2(
-        HashEqualsArrayWrapper.hashEqualsBooleanOrdering))
+      HashArrayEqualsWrapperLaws
+        .check2(HashEqualsArrayWrapper.hashEqualsBooleanOrdering))
     check(
-      HashArrayEqualsWrapperLaws.check2(
-        HashEqualsArrayWrapper.hashEqualsFloatOrdering))
+      HashArrayEqualsWrapperLaws
+        .check2(HashEqualsArrayWrapper.hashEqualsFloatOrdering))
     check(
-      HashArrayEqualsWrapperLaws.check2(
-        HashEqualsArrayWrapper.hashEqualsDoubleOrdering))
+      HashArrayEqualsWrapperLaws
+        .check2(HashEqualsArrayWrapper.hashEqualsDoubleOrdering))
   }
 
 }
@@ -126,8 +128,8 @@ class HashArrayEqualsWrapperTest extends FunSuite {
 
   test("classForTag works correctly") {
     assert(
-      HashEqualsArrayWrapper.classForTag(
-        implicitly[ClassTag[String]]) === classOf[String])
+      HashEqualsArrayWrapper
+        .classForTag(implicitly[ClassTag[String]]) === classOf[String])
     assert(
       HashEqualsArrayWrapper.classForTag(
         implicitly[ClassTag[Array[Byte]]]) === classOf[Array[Byte]])

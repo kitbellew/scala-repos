@@ -30,9 +30,9 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
       editor: Editor,
       psiFile: PsiFile): Unit = {
     if (CodeInsightUtilBase.prepareEditorForWrite(editor) &&
-        FileDocumentManager.getInstance.requestWriting(
-          editor.getDocument,
-          project)) {
+        FileDocumentManager
+          .getInstance
+          .requestWriting(editor.getDocument, project)) {
       GenerationUtil
         .elementOfTypeAtCaret(
           editor,
@@ -44,10 +44,8 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
           val toStringMethod = createToString(aType, project)
 
           extensions.inWriteAction {
-            GenerationUtil.addMembers(
-              aType,
-              toStringMethod.toList,
-              editor.getDocument)
+            GenerationUtil
+              .addMembers(aType, toStringMethod.toList, editor.getDocument)
           }
         }
     }
@@ -73,7 +71,8 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
         case _ =>
           false
       }
-    file != null && ScalaFileType.SCALA_FILE_TYPE == file.getFileType && isSuitableClass
+    file != null && ScalaFileType.SCALA_FILE_TYPE == file
+      .getFileType && isSuitableClass
   }
 
   override def startInWriteAction(): Boolean = true
@@ -104,10 +103,8 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
 
       val fieldsText = fieldsWtihNames.mkString(s"$typeName(", ", ", ")")
       val methodText = s"""override def toString = s"$fieldsText""""
-      ScalaPsiElementFactory.createMethodWithContext(
-        methodText,
-        aType,
-        aType.extendsBlock)
+      ScalaPsiElementFactory
+        .createMethodWithContext(methodText, aType, aType.extendsBlock)
     }
   }
 

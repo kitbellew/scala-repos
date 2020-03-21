@@ -31,10 +31,12 @@ class AdaptiveSchedulingSuite extends SparkFunSuite with LocalSparkContext {
   test("simple use of submitMapStage") {
     try {
       sc = new SparkContext("local", "test")
-      val rdd = sc.parallelize(1 to 3, 3).map { x =>
-        AdaptiveSchedulingSuiteState.tasksRun += 1
-        (x, x)
-      }
+      val rdd = sc
+        .parallelize(1 to 3, 3)
+        .map { x =>
+          AdaptiveSchedulingSuiteState.tasksRun += 1
+          (x, x)
+        }
       val dep =
         new ShuffleDependency[Int, Int, Int](rdd, new HashPartitioner(2))
       val shuffled = new CustomShuffledRDD[Int, Int, Int](dep)

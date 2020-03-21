@@ -449,9 +449,11 @@ class VM(
       None
     } else {
       log.info(
-        "DebugManager.callMethod(obj = " + obj + " of type " + obj.referenceType + ", name = " +
+        "DebugManager.callMethod(obj = " + obj + " of type " + obj
+          .referenceType + ", name = " +
           name + ", signature = " + signature + ", args = " + args)
-      obj.referenceType
+      obj
+        .referenceType
         .methodsByName("toString", "()Ljava/lang/String;")
         .headOption match {
         case Some(m) =>
@@ -578,14 +580,18 @@ class VM(
   private def makeStackFrame(index: Int, frame: StackFrame): DebugStackFrame = {
     val locals = ignoreErr(
       {
-        frame.visibleVariables.zipWithIndex.map {
-          case (v, i) =>
-            DebugStackLocal(
-              i,
-              v.name,
-              valueSummary(frame.getValue(v)),
-              v.typeName())
-        }.toList
+        frame
+          .visibleVariables
+          .zipWithIndex
+          .map {
+            case (v, i) =>
+              DebugStackLocal(
+                i,
+                v.name,
+                valueSummary(frame.getValue(v)),
+                v.typeName())
+          }
+          .toList
       },
       List.empty)
 

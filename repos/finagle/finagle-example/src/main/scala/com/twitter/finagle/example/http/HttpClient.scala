@@ -78,7 +78,9 @@ object HttpClient {
     // responses to Exceptions.
     client(unauthorizedRequest) onFailure { error =>
       println(
-        "))) Unauthorized request errored (as desired): " + error.getClass.getName)
+        "))) Unauthorized request errored (as desired): " + error
+          .getClass
+          .getName)
     }
   }
 }

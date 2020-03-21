@@ -413,9 +413,9 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
       array
         .take(size)
         .mkString(
-          "Unrolled@%08x".format(
-            System.identityHashCode(
-              this)) + "[" + size + "/" + array.length + "](",
+          "Unrolled@%08x"
+            .format(System.identityHashCode(this)) + "[" + size + "/" + array
+            .length + "](",
           ", ",
           ")") + " -> " + (
         if (next ne null)

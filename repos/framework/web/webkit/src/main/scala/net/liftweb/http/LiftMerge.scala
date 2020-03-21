@@ -53,7 +53,8 @@ private[http] trait LiftMerge {
   // Gather all page-specific JS into one JsCmd.
   private[this] def assemblePageSpecificJavaScript(eventJs: JsCmd): JsCmd = {
     val allJs =
-      LiftRules.javaScriptSettings
+      LiftRules
+        .javaScriptSettings
         .vend()
         .map { settingsFn =>
           LiftJavaScript.initCmd(settingsFn(this))
@@ -84,8 +85,8 @@ private[http] trait LiftMerge {
     def waitUntilSnippetsDone() {
       val myMillis = millis
       snippetHashs.synchronized {
-        if (myMillis >= waitUntil || snippetHashs.isEmpty || !snippetHashs.values.toIterator
-              .contains(Empty))
+        if (myMillis >= waitUntil || snippetHashs
+              .isEmpty || !snippetHashs.values.toIterator.contains(Empty))
           ()
         else {
           snippetHashs.wait(waitUntil - myMillis)
@@ -97,35 +98,45 @@ private[http] trait LiftMerge {
     waitUntilSnippetsDone()
 
     val processedSnippets: Map[String, NodeSeq] = Map(
-      snippetHashs.toList.flatMap {
-        case (name, Full(value)) =>
-          List((name, value))
-        case (name, f: Failure) =>
-          List((name, LiftRules.deferredSnippetFailure.vend(f)))
-        case (name, Empty) =>
-          List((name, LiftRules.deferredSnippetTimeout.vend))
-        case _ =>
-          Nil
-      }: _*)
+      snippetHashs
+        .toList
+        .flatMap {
+          case (name, Full(value)) =>
+            List((name, value))
+          case (name, f: Failure) =>
+            List((name, LiftRules.deferredSnippetFailure.vend(f)))
+          case (name, Empty) =>
+            List((name, LiftRules.deferredSnippetTimeout.vend))
+          case _ =>
+            Nil
+        }: _*)
 
     val hasHtmlHeadAndBody: Boolean =
-      xhtml.find {
-        case e: Elem if e.label == "html" =>
-          e.child.find {
-            case e: Elem if e.label == "head" =>
-              true
-            case _ =>
-              false
-          }.isDefined &&
-            e.child.find {
-              case e: Elem if e.label == "body" =>
-                true
-              case _ =>
-                false
-            }.isDefined
-        case _ =>
-          false
-      }.isDefined
+      xhtml
+        .find {
+          case e: Elem if e.label == "html" =>
+            e
+              .child
+              .find {
+                case e: Elem if e.label == "head" =>
+                  true
+                case _ =>
+                  false
+              }
+              .isDefined &&
+              e
+                .child
+                .find {
+                  case e: Elem if e.label == "body" =>
+                    true
+                  case _ =>
+                    false
+                }
+                .isDefined
+          case _ =>
+            false
+        }
+        .isDefined
 
     var htmlElement =
       <html xmlns="http://www.w3.org/1999/xhtml" xmlns:lift='http://liftweb.net'/>
@@ -164,7 +175,8 @@ private[http] trait LiftMerge {
                 startingState.copy(htmlDescendant = true && mergeHeadAndTail)
 
               case element: Elem
-                  if element.label == "head" && htmlDescendant && !bodyDescendant =>
+                  if element
+                    .label == "head" && htmlDescendant && !bodyDescendant =>
                 headElement = element
 
                 startingState.copy(headChild = true && mergeHeadAndTail)
@@ -233,8 +245,8 @@ private[http] trait LiftMerge {
                       normalizeMergeAndExtractEvents(nodes, startingState)
                     }
 
-                  deferredNodes.foldLeft(soFar.append(normalizedResults))(
-                    _ append _)
+                  deferredNodes
+                    .foldLeft(soFar.append(normalizedResults))(_ append _)
 
                 case _ =>
                   if (headChild) {
@@ -321,10 +333,14 @@ private[http] trait LiftMerge {
                     S.session.map(_.uniqueId) openOr "xx"
                   )
                 ) ::
-                  S.requestCometVersions.is.toList.map {
-                    case CometVersionPair(guid, version) =>
-                      (s"data-lift-comet-$guid" -> version.toString)
-                  }
+                  S
+                    .requestCometVersions
+                    .is
+                    .toList
+                    .map {
+                      case CometVersionPair(guid, version) =>
+                        (s"data-lift-comet-$guid" -> version.toString)
+                    }
               } else {
                 Nil
               }
@@ -336,8 +352,8 @@ private[http] trait LiftMerge {
       htmlKids += nl
       htmlKids += headElement.copy(child = headChildren.toList)
       htmlKids += nl
-      htmlKids += bodyAttributes.foldLeft(
-        bodyElement.copy(child = bodyChildren.toList))(_ % _)
+      htmlKids += bodyAttributes
+        .foldLeft(bodyElement.copy(child = bodyChildren.toList))(_ % _)
       htmlKids += nl
 
       val tmpRet = Elem(

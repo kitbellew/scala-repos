@@ -60,10 +60,12 @@ private[sql] object FrequentItems extends Logging {
       * @param other The map containing the counts for that partition
       */
     def merge(other: FreqItemCounter): this.type = {
-      other.baseMap.foreach {
-        case (k, v) =>
-          add(k, v)
-      }
+      other
+        .baseMap
+        .foreach {
+          case (k, v) =>
+            add(k, v)
+        }
       this
     }
   }
@@ -92,13 +94,16 @@ private[sql] object FrequentItems extends Logging {
     val countMaps = Seq.tabulate(numCols)(i => new FreqItemCounter(sizeOfMap))
     val originalSchema = df.schema
     val colInfo: Array[(String, DataType)] =
-      cols.map { name =>
-        val index = originalSchema.fieldIndex(name)
-        (name, originalSchema.fields(index).dataType)
-      }.toArray
+      cols
+        .map { name =>
+          val index = originalSchema.fieldIndex(name)
+          (name, originalSchema.fields(index).dataType)
+        }
+        .toArray
 
     val freqItems =
-      df.select(cols.map(Column(_)): _*)
+      df
+        .select(cols.map(Column(_)): _*)
         .rdd
         .aggregate(countMaps)(
           seqOp = (counts, row) => {

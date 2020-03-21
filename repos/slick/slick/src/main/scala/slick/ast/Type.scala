@@ -39,10 +39,13 @@ trait Type extends Dumpable {
       DumpInfo.simpleNameFor(getClass),
       toString,
       "",
-      children.zipWithIndex.map {
-        case (ch, i) =>
-          (i.toString, ch)
-      }.toSeq)
+      children
+        .zipWithIndex
+        .map {
+          case (ch, i) =>
+            (i.toString, ch)
+        }
+        .toSeq)
 }
 
 object Type {
@@ -66,17 +69,21 @@ trait AtomicType extends Type {
 final case class StructType(elements: ConstArray[(TermSymbol, Type)])
     extends Type {
   override def toString =
-    "{" + elements.iterator
+    "{" + elements
+      .iterator
       .map {
         case (s, t) =>
           s + ": " + t
       }
       .mkString(", ") + "}"
   lazy val symbolToIndex: Map[TermSymbol, Int] =
-    elements.zipWithIndex.map {
-      case ((sym, _), idx) =>
-        (sym, idx)
-    }.toMap
+    elements
+      .zipWithIndex
+      .map {
+        case ((sym, _), idx) =>
+          (sym, idx)
+      }
+      .toMap
   def children: ConstArray[Type] = elements.map(_._2)
   def mapChildren(f: Type => Type): StructType = {
     val ch = elements.map(_._2)
@@ -85,10 +92,12 @@ final case class StructType(elements: ConstArray[(TermSymbol, Type)])
       this
     else
       StructType(
-        elements.zip(ch2).map {
-          case (e, t) =>
-            (e._1, t)
-        })
+        elements
+          .zip(ch2)
+          .map {
+            case (e, t) =>
+              (e._1, t)
+          })
   }
   override def select(sym: TermSymbol) =
     sym match {
@@ -238,7 +247,9 @@ abstract class TypedCollectionTypeConstructor[C[_]](
     val classTag: ClassTag[C[_]])
     extends CollectionTypeConstructor {
   override def toString =
-    classTag.runtimeClass.getName
+    classTag
+      .runtimeClass
+      .getName
       .replaceFirst("^scala.collection.immutable.", "")
       .replaceFirst("^scala.collection.mutable.", "m.")
       .replaceFirst("^scala.collection.generic.", "g.")

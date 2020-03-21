@@ -124,8 +124,9 @@ private class RandomForest(
     numTrees > 0,
     s"RandomForest requires numTrees > 0, but was given numTrees = $numTrees.")
   require(
-    RandomForest.supportedFeatureSubsetStrategies.contains(
-      featureSubsetStrategy),
+    RandomForest
+      .supportedFeatureSubsetStrategies
+      .contains(featureSubsetStrategy),
     s"RandomForest given invalid featureSubsetStrategy: $featureSubsetStrategy." +
       s" Supported values: ${RandomForest.supportedFeatureSubsetStrategies.mkString(", ")}."
   )
@@ -145,11 +146,8 @@ private class RandomForest(
     timer.start("init")
 
     val retaggedInput = input.retag(classOf[LabeledPoint])
-    val metadata = DecisionTreeMetadata.buildMetadata(
-      retaggedInput,
-      strategy,
-      numTrees,
-      featureSubsetStrategy)
+    val metadata = DecisionTreeMetadata
+      .buildMetadata(retaggedInput, strategy, numTrees, featureSubsetStrategy)
     logDebug("algo = " + strategy.algo)
     logDebug("numTrees = " + numTrees)
     logDebug("seed = " + seed)
@@ -205,7 +203,9 @@ private class RandomForest(
         if (metadata.subsamplingFeatures) {
           // Find numFeaturesPerNode largest bins to get an upper bound on memory usage.
           Some(
-            metadata.numBins.zipWithIndex
+            metadata
+              .numBins
+              .zipWithIndex
               .sortBy(-_._1)
               .take(metadata.numFeaturesPerNode)
               .map(_._2))
@@ -253,8 +253,8 @@ private class RandomForest(
     // Allocate and queue root nodes.
     val topNodes: Array[Node] =
       Array.fill[Node](numTrees)(Node.emptyNode(nodeIndex = 1))
-    Range(0, numTrees).foreach(treeIndex =>
-      nodeQueue.enqueue((treeIndex, topNodes(treeIndex))))
+    Range(0, numTrees)
+      .foreach(treeIndex => nodeQueue.enqueue((treeIndex, topNodes(treeIndex))))
 
     while (nodeQueue.nonEmpty) {
       // Collect some nodes to split, and choose features for each node (if subsampling).
@@ -300,8 +300,8 @@ private class RandomForest(
       }
     }
 
-    val trees = topNodes.map(topNode =>
-      new DecisionTreeModel(topNode, strategy.algo))
+    val trees = topNodes
+      .map(topNode => new DecisionTreeModel(topNode, strategy.algo))
     new RandomForestModel(strategy.algo, trees)
   }
 
@@ -588,17 +588,15 @@ object RandomForest extends Serializable with Logging {
           None
         }
       // Check if enough memory remains to add this node to the group.
-      val nodeMemUsage =
-        RandomForest.aggregateSizeForNode(metadata, featureSubset) * 8L
+      val nodeMemUsage = RandomForest
+        .aggregateSizeForNode(metadata, featureSubset) * 8L
       if (memUsage + nodeMemUsage <= maxMemoryUsage) {
         nodeQueue.dequeue()
-        mutableNodesForGroup.getOrElseUpdate(
+        mutableNodesForGroup
+          .getOrElseUpdate(treeIndex, new mutable.ArrayBuffer[Node]()) += node
+        mutableTreeToNodeToIndexInfo.getOrElseUpdate(
           treeIndex,
-          new mutable.ArrayBuffer[Node]()) += node
-        mutableTreeToNodeToIndexInfo
-          .getOrElseUpdate(
-            treeIndex,
-            new mutable.HashMap[Int, NodeIndexInfo]())(node.id) =
+          new mutable.HashMap[Int, NodeIndexInfo]())(node.id) =
           new NodeIndexInfo(numNodesInGroup, featureSubset)
       }
       numNodesInGroup += 1
@@ -622,7 +620,8 @@ object RandomForest extends Serializable with Logging {
       featureSubset: Option[Array[Int]]): Long = {
     val totalBins =
       if (featureSubset.nonEmpty) {
-        featureSubset.get
+        featureSubset
+          .get
           .map(featureIndex => metadata.numBins(featureIndex).toLong)
           .sum
       } else {

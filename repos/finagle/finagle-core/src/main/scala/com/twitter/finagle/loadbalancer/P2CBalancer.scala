@@ -39,8 +39,8 @@ private class P2CBalancer[Req, Rep](
     with P2C[Req, Rep]
     with Updating[Req, Rep] {
 
-  protected[this] val maxEffortExhausted = statsReceiver.counter(
-    "max_effort_exhausted")
+  protected[this] val maxEffortExhausted = statsReceiver
+    .counter("max_effort_exhausted")
 
 }
 
@@ -83,8 +83,8 @@ private class P2CBalancerPeakEwma[Req, Rep](
     with P2C[Req, Rep]
     with Updating[Req, Rep] {
 
-  protected[this] val maxEffortExhausted = statsReceiver.counter(
-    "max_effort_exhausted")
+  protected[this] val maxEffortExhausted = statsReceiver
+    .counter("max_effort_exhausted")
 
 }
 
@@ -174,20 +174,24 @@ private trait PeakEwma[Req, Rep] {
 
     override def apply(conn: ClientConnection) = {
       val ts = metric.start()
-      super.apply(conn).transform {
-        case Return(svc) =>
-          Future.value(
-            new ServiceProxy(svc) {
-              override def close(deadline: Time) =
-                super.close(deadline).ensure {
-                  metric.end(ts)
-                }
-            })
+      super
+        .apply(conn)
+        .transform {
+          case Return(svc) =>
+            Future.value(
+              new ServiceProxy(svc) {
+                override def close(deadline: Time) =
+                  super
+                    .close(deadline)
+                    .ensure {
+                      metric.end(ts)
+                    }
+              })
 
-        case t @ Throw(_) =>
-          metric.end(ts)
-          Future.const(t)
-      }
+          case t @ Throw(_) =>
+            metric.end(ts)
+            Future.const(t)
+        }
     }
   }
 

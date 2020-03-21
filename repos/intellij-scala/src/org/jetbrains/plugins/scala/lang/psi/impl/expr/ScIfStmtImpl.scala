@@ -57,9 +57,8 @@ class ScIfStmtImpl(node: ASTNode)
           case expression: ScExpression =>
             expression
           case _ =>
-            PsiTreeUtil.getPrevSiblingOfType(
-              getLastChild,
-              classOf[ScExpression])
+            PsiTreeUtil
+              .getPrevSiblingOfType(getLastChild, classOf[ScExpression])
         }
     if (t == null)
       None

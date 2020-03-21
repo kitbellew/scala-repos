@@ -237,11 +237,10 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
 
   private def toMBeanName(
       tags: collection.Map[String, String]): Option[String] = {
-    val filteredTags = tags
-      .filter {
-        case (tagKey, tagValue) =>
-          tagValue != ""
-      }
+    val filteredTags = tags.filter {
+      case (tagKey, tagValue) =>
+        tagValue != ""
+    }
     if (filteredTags.nonEmpty) {
       val tagsString = filteredTags
         .map {
@@ -257,14 +256,14 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
   }
 
   private def toScope(tags: collection.Map[String, String]): Option[String] = {
-    val filteredTags = tags
-      .filter {
-        case (tagKey, tagValue) =>
-          tagValue != ""
-      }
+    val filteredTags = tags.filter {
+      case (tagKey, tagValue) =>
+        tagValue != ""
+    }
     if (filteredTags.nonEmpty) {
       // convert dot to _ since reporters like Graphite typically use dot to represent hierarchy
-      val tagsString = filteredTags.toList
+      val tagsString = filteredTags
+        .toList
         .sortWith((t1, t2) => t1._1 < t2._1)
         .map {
           case (key, value) =>
@@ -301,7 +300,9 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
       clientId: String) {
     metricNameList.foreach(metric => {
       val pattern = (".*clientId=" + clientId + ".*").r
-      val registeredMetrics = scala.collection.JavaConversions
+      val registeredMetrics = scala
+        .collection
+        .JavaConversions
         .asScalaSet(Metrics.defaultRegistry().allMetrics().keySet())
       for (registeredMetric <- registeredMetrics) {
         if (registeredMetric.getGroup == metric.getGroup &&

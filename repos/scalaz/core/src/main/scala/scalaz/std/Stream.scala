@@ -144,8 +144,8 @@ trait StreamInstances {
           else
             Stream.cons(
               (Tag.unwrap(f).head)(Tag.unwrap(fa).head),
-              Tag.unwrap(
-                ap(Zip(Tag.unwrap(fa).tail))(Zip(Tag.unwrap(f).tail)))))
+              Tag
+                .unwrap(ap(Zip(Tag.unwrap(fa).tail))(Zip(Tag.unwrap(f).tail)))))
       }
     }
 

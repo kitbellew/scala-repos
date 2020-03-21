@@ -45,10 +45,13 @@ object CategoricalNaiveBayes {
             (c: (Long, Array[Map[String, Long]]), features: Array[String]) => {
               (
                 c._1 + 1L,
-                c._2.zip(features).map {
-                  case (m, feature) =>
-                    m.updated(feature, m(feature) + 1L)
-                })
+                c
+                  ._2
+                  .zip(features)
+                  .map {
+                    case (m, feature) =>
+                      m.updated(feature, m(feature) + 1L)
+                  })
             },
           mergeCombiners = (
               c1: (Long, Array[Map[String, Long]]),
@@ -60,13 +63,15 @@ object CategoricalNaiveBayes {
 
             (
               labelCount1 + labelCount2,
-              featureCounts1.zip(featureCounts2).map {
-                case (m1, m2) =>
-                  m2 ++ m2.map {
-                    case (k, v) =>
-                      k -> (v + m2(k))
-                  }
-              })
+              featureCounts1
+                .zip(featureCounts2)
+                .map {
+                  case (m1, m2) =>
+                    m2 ++ m2.map {
+                      case (k, v) =>
+                        k -> (v + m2(k))
+                    }
+                })
           }
         )
         .mapValues {
@@ -139,12 +144,14 @@ case class CategoricalNaiveBayesModel(
     val prior = priors(label)
     val likelihood = likelihoods(label)
 
-    val likelihoodScores = features.zip(likelihood).map {
-      case (feature, featureLikelihoods) =>
-        featureLikelihoods.getOrElse(
-          feature,
-          defaultLikelihood(featureLikelihoods.values.toSeq))
-    }
+    val likelihoodScores = features
+      .zip(likelihood)
+      .map {
+        case (feature, featureLikelihoods) =>
+          featureLikelihoods.getOrElse(
+            feature,
+            defaultLikelihood(featureLikelihoods.values.toSeq))
+      }
 
     prior + likelihoodScores.sum
   }
@@ -156,7 +163,8 @@ case class CategoricalNaiveBayesModel(
     *
     */
   def predict(features: Array[String]): String = {
-    priors.keySet
+    priors
+      .keySet
       .map { label =>
         (label, logScoreInternal(label, features))
       }

@@ -54,12 +54,14 @@ private final class Storage(coll: Coll) {
         Match(BSONDocument(F.userId -> userId)),
         List(GroupField(F.perf)("nb" -> SumValue(1))))
       .map {
-        _.documents.flatMap { doc =>
+        _.documents
+        .flatMap { doc =>
           for {
             perfType <- doc.getAs[PerfType]("_id")
             nb <- doc.getAs[Int]("nb")
           } yield perfType -> nb
-        }.toMap
+        }
+        .toMap
       }
 }
 

@@ -43,7 +43,8 @@ object StreamTest extends SpecLite {
   "intersperse then remove odd items is identity" ! forAll {
     (a: Stream[Int], b: Int) =>
       val isEven = (_: Int) % 2 == 0
-      a.intersperse(b)
+      a
+        .intersperse(b)
         .zipWithIndex
         .filter(p => isEven(p._2))
         .map(_._1) must_=== (a)
@@ -95,8 +96,8 @@ object StreamTest extends SpecLite {
   }
 
   "foldRight evaluates lazily" in {
-    Foldable[Stream].foldRight(Stream.continually(true), true)(
-      _ || _) must_=== (true)
+    Foldable[Stream]
+      .foldRight(Stream.continually(true), true)(_ || _) must_=== (true)
   }
 
   "zipL" in {

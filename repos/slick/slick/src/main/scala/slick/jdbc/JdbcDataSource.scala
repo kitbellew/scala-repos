@@ -255,21 +255,23 @@ object DriverJdbcDataSource extends JdbcDataSourceFactory {
 
 /** Set parameters on a new Connection. This is used by [[DataSourceJdbcDataSource]]. */
 class ConnectionPreparer(c: Config) extends (Connection => Unit) {
-  val isolation = c.getStringOpt("isolation").map {
-    case "NONE" =>
-      Connection.TRANSACTION_NONE
-    case "READ_COMMITTED" =>
-      Connection.TRANSACTION_READ_COMMITTED
-    case "READ_UNCOMMITTED" =>
-      Connection.TRANSACTION_READ_UNCOMMITTED
-    case "REPEATABLE_READ" =>
-      Connection.TRANSACTION_REPEATABLE_READ
-    case "SERIALIZABLE" =>
-      Connection.TRANSACTION_SERIALIZABLE
-    case unknown =>
-      throw new SlickException(
-        s"Unknown transaction isolation level [$unknown]")
-  }
+  val isolation = c
+    .getStringOpt("isolation")
+    .map {
+      case "NONE" =>
+        Connection.TRANSACTION_NONE
+      case "READ_COMMITTED" =>
+        Connection.TRANSACTION_READ_COMMITTED
+      case "READ_UNCOMMITTED" =>
+        Connection.TRANSACTION_READ_UNCOMMITTED
+      case "REPEATABLE_READ" =>
+        Connection.TRANSACTION_REPEATABLE_READ
+      case "SERIALIZABLE" =>
+        Connection.TRANSACTION_SERIALIZABLE
+      case unknown =>
+        throw new SlickException(
+          s"Unknown transaction isolation level [$unknown]")
+    }
   val catalog = c
     .getStringOpt("catalog")
     .orElse(c.getStringOpt("defaultCatalog"))

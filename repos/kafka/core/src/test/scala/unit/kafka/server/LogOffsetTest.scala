@@ -103,11 +103,13 @@ class LogOffsetTest extends ZooKeeperTestHarness {
       log.append(new ByteBufferMessageSet(NoCompressionCodec, message))
     log.flush()
 
-    val offsets = server.apis.fetchOffsets(
-      logManager,
-      new TopicPartition(topic, part),
-      OffsetRequest.LatestTime,
-      15)
+    val offsets = server
+      .apis
+      .fetchOffsets(
+        logManager,
+        new TopicPartition(topic, part),
+        OffsetRequest.LatestTime,
+        15)
     assertEquals(Seq(20L, 18L, 16L, 14L, 12L, 10L, 8L, 6L, 4L, 2L, 0L), offsets)
 
     waitUntilTrue(
@@ -185,22 +187,19 @@ class LogOffsetTest extends ZooKeeperTestHarness {
     AdminUtils.createTopic(zkUtils, topic, 3, 1)
 
     val logManager = server.getLogManager
-    val log = logManager.createLog(
-      TopicAndPartition(topic, part),
-      logManager.defaultConfig)
+    val log = logManager
+      .createLog(TopicAndPartition(topic, part), logManager.defaultConfig)
     val message = new Message(Integer.toString(42).getBytes())
     for (i <- 0 until 20)
       log.append(new ByteBufferMessageSet(NoCompressionCodec, message))
     log.flush()
 
-    val now =
-      time.milliseconds + 30000 // pretend it is the future to avoid race conditions with the fs
+    val now = time
+      .milliseconds + 30000 // pretend it is the future to avoid race conditions with the fs
 
-    val offsets = server.apis.fetchOffsets(
-      logManager,
-      new TopicPartition(topic, part),
-      now,
-      15)
+    val offsets = server
+      .apis
+      .fetchOffsets(logManager, new TopicPartition(topic, part), now, 15)
     assertEquals(Seq(20L, 18L, 16L, 14L, 12L, 10L, 8L, 6L, 4L, 2L, 0L), offsets)
 
     waitUntilTrue(
@@ -230,19 +229,20 @@ class LogOffsetTest extends ZooKeeperTestHarness {
     AdminUtils.createTopic(zkUtils, topic, 3, 1)
 
     val logManager = server.getLogManager
-    val log = logManager.createLog(
-      TopicAndPartition(topic, part),
-      logManager.defaultConfig)
+    val log = logManager
+      .createLog(TopicAndPartition(topic, part), logManager.defaultConfig)
     val message = new Message(Integer.toString(42).getBytes())
     for (i <- 0 until 20)
       log.append(new ByteBufferMessageSet(NoCompressionCodec, message))
     log.flush()
 
-    val offsets = server.apis.fetchOffsets(
-      logManager,
-      new TopicPartition(topic, part),
-      OffsetRequest.EarliestTime,
-      10)
+    val offsets = server
+      .apis
+      .fetchOffsets(
+        logManager,
+        new TopicPartition(topic, part),
+        OffsetRequest.EarliestTime,
+        10)
 
     assertEquals(Seq(0L), offsets)
 

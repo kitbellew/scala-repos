@@ -640,44 +640,46 @@ final class Partition[T](outputPorts: Int, partitioner: T ⇒ Int)
         }
       )
 
-      out.zipWithIndex.foreach {
-        case (o, idx) ⇒
-          setHandler(
-            o,
-            new OutHandler {
-              override def onPull() = {
+      out
+        .zipWithIndex
+        .foreach {
+          case (o, idx) ⇒
+            setHandler(
+              o,
+              new OutHandler {
+                override def onPull() = {
 
-                if (outPendingElem != null) {
-                  val elem = outPendingElem.asInstanceOf[T]
-                  if (idx == outPendingIdx) {
-                    push(o, elem)
-                    outPendingElem = null
-                    if (!isClosed(in)) {
-                      if (!hasBeenPulled(in)) {
+                  if (outPendingElem != null) {
+                    val elem = outPendingElem.asInstanceOf[T]
+                    if (idx == outPendingIdx) {
+                      push(o, elem)
+                      outPendingElem = null
+                      if (!isClosed(in)) {
+                        if (!hasBeenPulled(in)) {
+                          pull(in)
+                        }
+                      } else
+                        completeStage()
+                    }
+                  } else if (!hasBeenPulled(in))
+                    pull(in)
+                }
+
+                override def onDownstreamFinish(): Unit = {
+                  downstreamRunning -= 1
+                  if (downstreamRunning == 0)
+                    completeStage()
+                  else if (outPendingElem != null) {
+                    if (idx == outPendingIdx) {
+                      outPendingElem = null
+                      if (!hasBeenPulled(in))
                         pull(in)
-                      }
-                    } else
-                      completeStage()
-                  }
-                } else if (!hasBeenPulled(in))
-                  pull(in)
-              }
-
-              override def onDownstreamFinish(): Unit = {
-                downstreamRunning -= 1
-                if (downstreamRunning == 0)
-                  completeStage()
-                else if (outPendingElem != null) {
-                  if (idx == outPendingIdx) {
-                    outPendingElem = null
-                    if (!hasBeenPulled(in))
-                      pull(in)
+                    }
                   }
                 }
               }
-            }
-          )
-      }
+            )
+        }
     }
 
   override def toString = s"Partition($outputPorts)"
@@ -978,7 +980,8 @@ object GraphDSL extends GraphApply {
         StreamLayout.validate(graph.module)
       val copy = graph.module.carbonCopy
       moduleInProgress = moduleInProgress.compose(copy)
-      graph.shape
+      graph
+        .shape
         .copyFromPorts(copy.shape.inlets, copy.shape.outlets)
         .asInstanceOf[S]
     }
@@ -997,7 +1000,8 @@ object GraphDSL extends GraphApply {
       val copy = graph.module.carbonCopy
       moduleInProgress = moduleInProgress.compose(
         copy.transformMaterializedValue(transform.asInstanceOf[Any ⇒ Any]))
-      graph.shape
+      graph
+        .shape
         .copyFromPorts(copy.shape.inlets, copy.shape.outlets)
         .asInstanceOf[S]
     }
@@ -1015,7 +1019,8 @@ object GraphDSL extends GraphApply {
         StreamLayout.validate(graph.module)
       val copy = graph.module.carbonCopy
       moduleInProgress = moduleInProgress.compose(copy, combine)
-      graph.shape
+      graph
+        .shape
         .copyFromPorts(copy.shape.inlets, copy.shape.outlets)
         .asInstanceOf[S]
     }
@@ -1061,9 +1066,7 @@ object GraphDSL extends GraphApply {
     private[stream] def deprecatedAndThen(
         port: OutPort,
         op: StageModule): Unit = {
-      moduleInProgress = moduleInProgress
-        .compose(op)
-        .wire(port, op.inPort)
+      moduleInProgress = moduleInProgress.compose(op).wire(port, op.inPort)
     }
 
     private[stream] def module: Module = moduleInProgress

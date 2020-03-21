@@ -715,12 +715,16 @@ trait Crudify {
     * page are displayed
     */
   protected def doCrudAllRows(list: List[TheCrudType]): (NodeSeq) => NodeSeq = {
-    "^" #> list.take(rowsPerPage).map { rowItem =>
-      ".row-item" #> doCrudAllRowItem(rowItem) &
-        ".view [href]" #> (s"$viewPathString/${obscurePrimaryKey(rowItem)}") &
-        ".edit [href]" #> (s"$editPathString/${obscurePrimaryKey(rowItem)}") &
-        ".delete [href]" #> (s"$deletePathString/${obscurePrimaryKey(rowItem)}")
-    }
+    "^" #> list
+      .take(rowsPerPage)
+      .map { rowItem =>
+        ".row-item" #> doCrudAllRowItem(rowItem) &
+          ".view [href]" #> (s"$viewPathString/${obscurePrimaryKey(rowItem)}") &
+          ".edit [href]" #> (s"$editPathString/${obscurePrimaryKey(rowItem)}") &
+          ".delete [href]" #> (
+            s"$deletePathString/${obscurePrimaryKey(rowItem)}"
+          )
+      }
   }
 
   /**
@@ -838,7 +842,8 @@ trait Crudify {
       def error(field: BaseField): NodeSeq = {
         field.uniqueFieldId match {
           case fid @ Full(id) =>
-            S.getNotices
+            S
+              .getNotices
               .filter(_._3 == fid)
               .flatMap(err =>
                 List(

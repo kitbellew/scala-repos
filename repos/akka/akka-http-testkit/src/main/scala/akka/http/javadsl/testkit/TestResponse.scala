@@ -32,7 +32,8 @@ abstract class TestResponse(
   /**
     * Returns the strictified entity of the response. It will be strictified on first access.
     */
-  lazy val entity: HttpEntity.Strict = _response.entity
+  lazy val entity: HttpEntity.Strict = _response
+    .entity
     .toStrict(awaitAtMost)
     .awaitResult(awaitAtMost)
 
@@ -169,8 +170,7 @@ abstract class TestResponse(
     else
       assertTrue(
         headers.exists(_.value == value),
-        s"`$name` header was found but had the wrong value. Found headers: ${headers
-          .mkString(", ")}")
+        s"`$name` header was found but had the wrong value. Found headers: ${headers.mkString(", ")}")
 
     this
   }

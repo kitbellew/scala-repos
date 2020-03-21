@@ -31,12 +31,15 @@ trait EntityRepository[T <: MarathonState[_, T]]
     */
   def allIds(): Future[Iterable[String]] =
     timedRead {
-      this.store.names().map { names =>
-        names.collect {
-          case name: String if noVersionKey(name) =>
-            name
+      this
+        .store
+        .names()
+        .map { names =>
+          names.collect {
+            case name: String if noVersionKey(name) =>
+              name
+          }
         }
-      }
     }
 
   /**
@@ -62,15 +65,18 @@ trait EntityRepository[T <: MarathonState[_, T]]
   def listVersions(id: String): Future[Iterable[Timestamp]] =
     timedRead {
       val prefix = versionKeyPrefix(id)
-      this.store.names().map { names =>
-        names
-          .collect {
-            case name: String if name.startsWith(prefix) =>
-              Timestamp(name.substring(prefix.length))
-          }
-          .sorted
-          .reverse
-      }
+      this
+        .store
+        .names()
+        .map { names =>
+          names
+            .collect {
+              case name: String if name.startsWith(prefix) =>
+                Timestamp(name.substring(prefix.length))
+            }
+            .sorted
+            .reverse
+        }
     }
 
   /**

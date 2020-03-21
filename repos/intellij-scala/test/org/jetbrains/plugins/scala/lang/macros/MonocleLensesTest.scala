@@ -47,7 +47,8 @@ class MonocleLensesTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
       "monocle-generic",
       "com.github.julien-truffaut/monocle-generic_2.11/jars",
       "monocle-generic_2.11-1.2.0.jar")
-    VirtualFilePointerManager.getInstance
+    VirtualFilePointerManager
+      .getInstance
       .asInstanceOf[VirtualFilePointerManagerImpl]
       .storePointers()
   }
@@ -82,10 +83,13 @@ class MonocleLensesTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
       case Some(x) =>
         x.method.asInstanceOf[ScFunctionDefinition].returnType match {
           case Success(t, _) =>
-            org.junit.Assert.assertEquals(
-              s"${t.toString} != $expectedType",
-              expectedType,
-              t.toString)
+            org
+              .junit
+              .Assert
+              .assertEquals(
+                s"${t.toString} != $expectedType",
+                expectedType,
+                t.toString)
           case Failure(cause, _) =>
             org.junit.Assert.fail(cause)
         }

@@ -58,11 +58,10 @@ object TypedPipeDiff {
     // cache this instead of reflecting on every single array
     val wrapFn = HashEqualsArrayWrapper.wrapByClassTagFn[T]
 
-    diffByHashCode(left.map(wrapFn), right.map(wrapFn), reducers)
-      .map {
-        case (k, counts) =>
-          (k.wrapped, counts)
-      }
+    diffByHashCode(left.map(wrapFn), right.map(wrapFn), reducers).map {
+      case (k, counts) =>
+        (k.wrapped, counts)
+    }
   }
 
   /**
@@ -101,7 +100,9 @@ object TypedPipeDiff {
       (groupByFn(t), Map(t -> (0L, 1L)))
     }
 
-    val diff = (lefts ++ rights).sumByKey.flattenValues
+    val diff = (lefts ++ rights)
+      .sumByKey
+      .flattenValues
       .filter {
         case (k, (t, (lCount, rCount))) =>
           lCount != rCount

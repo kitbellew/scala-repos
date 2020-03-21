@@ -26,7 +26,8 @@ case class UserChat(id: ChatId, lines: List[UserLine]) extends Chat[UserLine] {
 case class MixedChat(id: ChatId, lines: List[Line]) extends Chat[Line] {
 
   def forUser(u: Option[User]) =
-    u.??(_.troll)
+    u
+      .??(_.troll)
       .fold(
         this,
         copy(lines = lines filter {

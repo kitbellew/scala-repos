@@ -42,8 +42,10 @@ class ModelValidationTest
     ValidationHelper
       .getAllRuleConstrains(failedResult)
       .find(v =>
-        v.message.contains(
-          "This Marathon instance may only handle up to 2 Apps!")) should be(
+        v
+          .message
+          .contains(
+            "This Marathon instance may only handle up to 2 Apps!")) should be(
       'defined)
 
     val successfulResult = Group.validGroupWithConfig(Some(10)).apply(group)

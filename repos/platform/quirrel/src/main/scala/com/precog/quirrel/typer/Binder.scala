@@ -309,9 +309,11 @@ trait Binder extends parser.AST {
     val builtIns = lib1.map(Op1Binding) ++
       lib2.map(Op2Binding) ++
       libReduction.map(ReductionBinding) ++
-      libMorphism1.map(Morphism1Binding).filterNot {
-        _.name == ExpandGlobBinding.name
-      } ++
+      libMorphism1
+        .map(Morphism1Binding)
+        .filterNot {
+          _.name == ExpandGlobBinding.name
+        } ++
       libMorphism2.map(Morphism2Binding) ++
       Set(LoadBinding, RelLoadBinding, DistinctBinding, ExpandGlobBinding)
 
@@ -367,10 +369,8 @@ trait Binder extends parser.AST {
   // TODO arity and types
   case class ReductionBinding(red: Reduction) extends BuiltInBinding {
     val name = Identifier(red.namespace, red.name)
-    override val toString = "<native: %s(%d)>".format(
-      red.name,
-      1
-    ) //assumes all reductions are arity 1
+    override val toString = "<native: %s(%d)>"
+      .format(red.name, 1) //assumes all reductions are arity 1
   }
 
   case object DistinctBinding extends BuiltInBinding {

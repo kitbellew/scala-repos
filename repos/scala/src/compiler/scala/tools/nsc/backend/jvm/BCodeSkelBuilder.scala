@@ -126,8 +126,9 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
 
       cnode.visitAttribute(classBType.inlineInfoAttribute.get)
 
-      if (AsmUtils.traceClassEnabled && cnode.name.contains(
-            AsmUtils.traceClassPattern))
+      if (AsmUtils.traceClassEnabled && cnode
+            .name
+            .contains(AsmUtils.traceClassPattern))
         AsmUtils.traceClass(cnode)
 
       assert(
@@ -157,9 +158,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
         interfaceNames.toArray)
 
       if (emitSource) {
-        cnode.visitSource(
-          cunit.source.toString,
-          null /* SourceDebugExtension */ )
+        cnode
+          .visitSource(cunit.source.toString, null /* SourceDebugExtension */ )
       }
 
       enclosingMethodAttribute(
@@ -198,9 +198,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
             // it must be a top level class (name contains no $s)
             val isCandidateForForwarders = {
               exitingPickler {
-                !(
-                  lmoc.name.toString contains '$'
-                ) && lmoc.hasModuleFlag && !lmoc.isNestedClass
+                !(lmoc.name.toString contains '$') && lmoc
+                  .hasModuleFlag && !lmoc.isNestedClass
               }
             }
             if (isCandidateForForwarders) {
@@ -226,7 +225,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
      */
     private def addModuleInstanceField() {
       val fv = cnode.visitField(
-        GenBCode.PublicStaticFinal, // TODO confirm whether we really don't want ACC_SYNTHETIC nor ACC_DEPRECATED
+        GenBCode
+          .PublicStaticFinal, // TODO confirm whether we really don't want ACC_SYNTHETIC nor ACC_DEPRECATED
         strMODULE_INSTANCE_FIELD,
         "L" + thisName + ";",
         null, // no java-generic-signature
@@ -242,7 +242,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
     private def fabricateStaticInit() {
 
       val clinit: asm.MethodVisitor = cnode.visitMethod(
-        GenBCode.PublicStatic, // TODO confirm whether we really don't want ACC_SYNTHETIC nor ACC_DEPRECATED
+        GenBCode
+          .PublicStatic, // TODO confirm whether we really don't want ACC_SYNTHETIC nor ACC_DEPRECATED
         CLASS_CONSTRUCTOR_NAME,
         "()V",
         null, // no java-generic-signature
@@ -398,10 +399,12 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
      */
     object locals {
 
-      private val slots = mutable.Map.empty[
-        Symbol,
-        Local
-      ] // (local-or-param-sym -> Local(BType, name, idx, isSynth))
+      private val slots = mutable
+        .Map
+        .empty[
+          Symbol,
+          Local
+        ] // (local-or-param-sym -> Local(BType, name, idx, isSynth))
 
       private var nxtIdx = -1 // next available index for local-var
 
@@ -601,8 +604,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
 
       val jgensig = getGenericSignature(methSymbol, claszSymbol)
       addRemoteExceptionAnnot(isCZRemote, hasPublicBitSet(flags), methSymbol)
-      val (excs, others) =
-        methSymbol.annotations partition (_.symbol == definitions.ThrowsClass)
+      val (excs, others) = methSymbol
+        .annotations partition (_.symbol == definitions.ThrowsClass)
       val thrownExceptions: List[String] = getExceptions(excs)
 
       val bytecodeName =
@@ -715,7 +718,11 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
               globalError(
                 "Concrete method has no definition: " + dd + (
                   if (settings.debug)
-                    "(found: " + methSymbol.owner.info.decls.toList
+                    "(found: " + methSymbol
+                      .owner
+                      .info
+                      .decls
+                      .toList
                       .mkString(", ") + ")"
                   else
                     ""
@@ -757,8 +764,9 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
         // The only non-instruction nodes to be found are LabelNode and LineNumberNode.
       }
 
-      if (AsmUtils.traceMethodEnabled && mnode.name.contains(
-            AsmUtils.traceMethodPattern))
+      if (AsmUtils.traceMethodEnabled && mnode
+            .name
+            .contains(AsmUtils.traceMethodPattern))
         AsmUtils.traceMethod(mnode)
 
       mnode = null
@@ -826,9 +834,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
           null,
           null)
         // INVOKESTATIC CREATOR(): android.os.Parcelable$Creator; -- TODO where does this Android method come from?
-        val callee = definitions.getMember(
-          claszSymbol.companionModule,
-          androidFieldName)
+        val callee = definitions
+          .getMember(claszSymbol.companionModule, androidFieldName)
         val jowner = internalName(callee.owner)
         val jname = callee.javaSimpleName.toString
         val jtype = methodBTypeFromSymbol(callee).descriptor

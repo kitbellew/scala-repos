@@ -140,7 +140,8 @@ class DefaultIngestProcessingSelectors(
     def select(
         partialData: Array[Byte],
         request: HttpRequest[_]): Option[IngestProcessing] = {
-      request.headers
+      request
+        .headers
         .header[`Content-Type`]
         .toSeq
         .flatMap(_.mimeTypes) collectFirst {
@@ -184,7 +185,8 @@ class DefaultIngestProcessingSelectors(
         .stream()
         .apply(More(ByteBuffer.wrap(partialData)))
       if (errors.isEmpty && !values.isEmpty) {
-        request.headers
+        request
+          .headers
           .header[`Content-Type`]
           .toSeq
           .flatMap(_.mimeTypes) collectFirst {

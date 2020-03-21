@@ -107,7 +107,9 @@ private[play] class GlobalSettingsHttpErrorHandler @Inject() (
       case clientError if statusCode >= 400 && statusCode < 500 =>
         Future.successful(
           Results.Status(clientError)(
-            views.html.defaultpages
+            views
+              .html
+              .defaultpages
               .badRequest(request.method, request.uri, message)))
       case nonClientError =>
         throw new IllegalArgumentException(
@@ -194,7 +196,9 @@ class DefaultHttpErrorHandler(
       message: String): Future[Result] =
     Future.successful(
       BadRequest(
-        views.html.defaultpages
+        views
+          .html
+          .defaultpages
           .badRequest(request.method, request.uri, message)))
 
   /**
@@ -223,7 +227,9 @@ class DefaultHttpErrorHandler(
           case Mode.Prod =>
             views.html.defaultpages.notFound(request.method, request.uri)
           case _ =>
-            views.html.defaultpages
+            views
+              .html
+              .defaultpages
               .devNotFound(request.method, request.uri, router)
         }))
   }
@@ -242,7 +248,9 @@ class DefaultHttpErrorHandler(
       message: String): Future[Result] = {
     Future.successful(
       Results.Status(statusCode)(
-        views.html.defaultpages
+        views
+          .html
+          .defaultpages
           .badRequest(request.method, request.uri, message)))
   }
 
@@ -296,7 +304,8 @@ class DefaultHttpErrorHandler(
       """
                     |
                     |! @%s - Internal server error, for (%s) [%s] ->
-                    | """.stripMargin
+                    | """
+        .stripMargin
         .format(usefulException.id, request.method, request.uri),
       usefulException
     )
@@ -327,8 +336,8 @@ class DefaultHttpErrorHandler(
   protected def onProdServerError(
       request: RequestHeader,
       exception: UsefulException): Future[Result] =
-    Future.successful(
-      InternalServerError(views.html.defaultpages.error(exception)))
+    Future
+      .successful(InternalServerError(views.html.defaultpages.error(exception)))
 
 }
 
@@ -386,7 +395,8 @@ object DefaultHttpErrorHandler
 object LazyHttpErrorHandler extends HttpErrorHandler {
 
   private def errorHandler =
-    Play.privateMaybeApplication
+    Play
+      .privateMaybeApplication
       .fold[HttpErrorHandler](DefaultHttpErrorHandler)(_.errorHandler)
 
   def onClientError(request: RequestHeader, statusCode: Int, message: String) =

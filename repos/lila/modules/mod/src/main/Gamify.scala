@@ -45,31 +45,32 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
         (
           (year == afterYear).fold(afterMonth + 1, 1) to
             (year == until.getYear).fold(until.getMonthOfYear, 12)
-        ).map { month =>
-          mixedLeaderboard(
-            after = new DateTime(year, month, 1, 0, 0).pp(
-              "compute mod history"),
-            before = new DateTime(year, month, 1, 0, 0).plusMonths(1).some)
-            .map {
-              _.headOption.map { champ =>
-                HistoryMonth(
-                  HistoryMonth.makeId(year, month),
-                  year,
-                  month,
-                  champ)
+        )
+          .map { month =>
+            mixedLeaderboard(
+              after = new DateTime(year, month, 1, 0, 0)
+                .pp("compute mod history"),
+              before = new DateTime(year, month, 1, 0, 0).plusMonths(1).some)
+              .map {
+                _.headOption
+                .map { champ =>
+                  HistoryMonth(
+                    HistoryMonth.makeId(year, month),
+                    year,
+                    month,
+                    champ)
+                }
               }
-            }
-        }.toList
+          }
+          .toList
       }
       .toList
       .sequenceFu
       .map(_.flatten)
       .flatMap {
         _.map { month =>
-          historyColl.update(
-            BSONDocument("_id" -> month._id),
-            month,
-            upsert = true)
+          historyColl
+            .update(BSONDocument("_id" -> month._id), month, upsert = true)
         }.sequenceFu
       }
       .void
@@ -117,7 +118,8 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
             "mod" -> notLichess)),
         List(GroupField("mod")("nb" -> SumValue(1)), Sort(Descending("nb"))))
       .map {
-        _.documents.flatMap { obj =>
+        _.documents
+        .flatMap { obj =>
           obj.getAs[String]("_id") |@| obj.getAs[Int]("nb") apply ModCount.apply
         }
       }
@@ -136,7 +138,8 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
           Sort(Descending("nb")))
       )
       .map {
-        _.documents.flatMap { obj =>
+        _.documents
+        .flatMap { obj =>
           obj.getAs[String]("_id") |@| obj.getAs[Int]("nb") apply ModCount.apply
         }
       }

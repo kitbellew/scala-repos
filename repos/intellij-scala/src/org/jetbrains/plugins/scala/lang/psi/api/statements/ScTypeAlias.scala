@@ -66,7 +66,8 @@ trait ScTypeAlias
     val ccontainingClass = containingClass
     if (ccontainingClass == null)
       return this
-    val originalClass: PsiClass = ccontainingClass.getOriginalElement
+    val originalClass: PsiClass = ccontainingClass
+      .getOriginalElement
       .asInstanceOf[PsiClass]
     if (ccontainingClass eq originalClass)
       return this

@@ -23,7 +23,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
   val ddlEnabled = true
 
   /** Table code generators. */
-  final lazy val tables: Seq[Table] = model.tables
+  final lazy val tables: Seq[Table] = model
+    .tables
     .map(Table)
     .sortBy(_.TableClass.rawName.toLowerCase)
 
@@ -71,20 +72,22 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     }
 
     /** Column code generators in the desired user-facing order. */
-    final lazy val columns: Seq[Column] = desiredColumnOrder.map(
-      columnsPositional)
+    final lazy val columns: Seq[Column] = desiredColumnOrder
+      .map(columnsPositional)
 
     /** Column code generators indexed by db column name */
     final lazy val columnsByName: Map[String, Column] =
       columns.map(c => c.model.name -> c).toMap
 
     /** Primary key code generator, if this table has one */
-    final lazy val primaryKey: Option[PrimaryKey] = model.primaryKey.map(
-      PrimaryKey)
+    final lazy val primaryKey: Option[PrimaryKey] = model
+      .primaryKey
+      .map(PrimaryKey)
 
     /** Foreign key code generators */
-    final lazy val foreignKeys: Seq[ForeignKey] = model.foreignKeys.map(
-      ForeignKey)
+    final lazy val foreignKeys: Seq[ForeignKey] = model
+      .foreignKeys
+      .map(ForeignKey)
 
     /** Index code generators */
     final lazy val indices: Seq[Index] = model.indices.map(Index)
@@ -208,8 +211,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
           else
             ""
         } + {
-          val collidingTerms =
-            columns.map(_.rawName) intersect slickTableTermMembersNoArgs
+          val collidingTerms = columns
+            .map(_.rawName) intersect slickTableTermMembersNoArgs
           if (collidingTerms.nonEmpty)
             "\nNOTE: The following names collided with Scala method names and were disambiguated: " + collidingTerms
               .mkString(", ")
@@ -317,7 +320,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 
       /** Generates code for the ColumnOptions (DBType, AutoInc, etc.) */
       def options: Iterable[Code] =
-        model.options
+        model
+          .options
           .filter {
             case t: SqlProfile.ColumnOption.SqlType =>
               dbType
@@ -334,7 +338,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 
       /** Generates a literal represenation of the default value or None in case of an Option-typed autoinc column */
       def default: Option[Code] =
-        model.options
+        model
+          .options
           .collect {
             case RelationalProfile.ColumnOption.Default(value) =>
               value
@@ -346,9 +351,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 
       def rawName: String = model.name.toCamelCase.uncapitalize
       def doc: String =
-        "Database column " + model.name + " " + model.options
-          .map(_.toString)
-          .mkString(", ")
+        "Database column " + model
+          .name + " " + model.options.map(_.toString).mkString(", ")
     }
 
     /** Primary key generator virtual class */
@@ -367,7 +371,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     abstract case class PrimaryKeyDef(val model: m.PrimaryKey) extends TermDef {
 
       /** Columns code generators in correct order */
-      final lazy val columns: Seq[Column] = model.columns
+      final lazy val columns: Seq[Column] = model
+        .columns
         .map(_.name)
         .map(columnsByName)
 
@@ -403,7 +408,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       final lazy val referencingTable = table
 
       /** Referencing columns code generators */
-      final lazy val referencingColumns: Seq[Column] = model.referencingColumns
+      final lazy val referencingColumns: Seq[Column] = model
+        .referencingColumns
         .map(_.name)
         .map(columnsByName)
 
@@ -412,8 +418,10 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
         model.referencedTable)
 
       /** Referenced Columns code generators */
-      final lazy val referencedColumns: Seq[TableDef#Column] =
-        model.referencedColumns.map(_.name).map(referencedTable.columnsByName)
+      final lazy val referencedColumns: Seq[TableDef#Column] = model
+        .referencedColumns
+        .map(_.name)
+        .map(referencedTable.columnsByName)
 
       /** Name used in the db or a default name */
       def dbName =
@@ -423,8 +431,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       final def onDelete: Code = actionCode(model.onDelete)
       def rawName: String =
         disambiguateTerm({
-          val fksToSameTable = foreignKeys.filter(
-            _.referencedTable == referencedTable)
+          val fksToSameTable = foreignKeys
+            .filter(_.referencedTable == referencedTable)
           require(
             fksToSameTable.filter(_.model.name.isEmpty).size <= 1,
             s"Found multiple unnamed foreign keys to same table, please manually provide names using overrides. ${referencingTable.model.name.table} -> ${referencedTable.model.name.table}"
@@ -462,7 +470,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       private val id = freshIdxId
 
       /** Columns code generators */
-      final lazy val columns: Seq[Column] = model.columns
+      final lazy val columns: Seq[Column] = model
+        .columns
         .map(_.name)
         .map(columnsByName)
 
@@ -565,15 +574,17 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 trait GeneratorHelpers[Code, TermName, TypeName] {
   def indent(code: String): String = {
     val lines = code.split("\n")
-    lines.tail.foldLeft(lines.head) { (out, line) =>
-      out + '\n' +
-        (
-          if (line.isEmpty)
-            line
-          else
-            "  " + line
-        )
-    }
+    lines
+      .tail
+      .foldLeft(lines.head) { (out, line) =>
+        out + '\n' +
+          (
+            if (line.isEmpty)
+              line
+            else
+              "  " + line
+          )
+      }
   }
 
   /** Assemble doc comment with scala code */
@@ -693,7 +704,8 @@ trait GeneratorHelpers[Code, TermName, TypeName] {
       * (Warning: Not unicode-safe, uses String#apply)
       */
     final def toCamelCase: String =
-      str.toLowerCase
+      str
+        .toLowerCase
         .split("_")
         .map {
           case "" =>
@@ -701,7 +713,6 @@ trait GeneratorHelpers[Code, TermName, TypeName] {
           case s =>
             s
         } // avoid possible collisions caused by multiple '_'
-        .map(_.capitalize)
-        .mkString("")
+        .map(_.capitalize).mkString("")
   }
 }

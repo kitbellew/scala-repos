@@ -57,9 +57,11 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
       def echo =
         BodyParser { req =>
           import play.api.libs.concurrent.Execution.Implicits.defaultContext
-          Accumulator.source[ByteString].mapFuture { source =>
-            Future.successful(source).map(Right.apply)
-          }
+          Accumulator
+            .source[ByteString]
+            .mapFuture { source =>
+              Future.successful(source).map(Right.apply)
+            }
         }
 
       Server.withRouter() {
@@ -95,7 +97,8 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
 
     "make GET Requests" in withServer { ws =>
       val req = ws.url("/get").get
-      val rep = req.toCompletableFuture
+      val rep = req
+        .toCompletableFuture
         .get(10, TimeUnit.SECONDS) // AWait result
 
       rep.getStatus aka "status" must_== 200 and (
@@ -142,8 +145,8 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
     "reject invalid user password string" in withServer { ws =>
       import java.net.MalformedURLException
 
-      ws.url("http://@localhost/get")
-        .aka("invalid request") must throwA[RuntimeException].like {
+      ws.url("http://@localhost/get").aka("invalid request") must throwA[
+        RuntimeException].like {
         case e: RuntimeException =>
           e.getCause must beAnInstanceOf[MalformedURLException]
       }
@@ -257,9 +260,11 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
       def echo =
         BodyParser { req =>
           import play.api.libs.concurrent.Execution.Implicits.defaultContext
-          Accumulator.source[ByteString].mapFuture { source =>
-            Future.successful(source).map(Right.apply)
-          }
+          Accumulator
+            .source[ByteString]
+            .mapFuture { source =>
+              Future.successful(source).map(Right.apply)
+            }
         }
 
       Server.withRouter() {
@@ -319,11 +324,8 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
       val file =
         new File(this.getClass.getResource("/testassets/foo.txt").toURI)
       val dp = MultipartFormData.DataPart("hello", "world")
-      val fp = MultipartFormData.FilePart(
-        "upload",
-        "foo.txt",
-        None,
-        FileIO.fromFile(file))
+      val fp = MultipartFormData
+        .FilePart("upload", "foo.txt", None, FileIO.fromFile(file))
       val source = Source(List(dp, fp))
       val res = ws.url("/post").post(source)
       val body = await(res).json
@@ -349,7 +351,8 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
       }
 
       "with query string" in withServer { ws =>
-        ws.url("/")
+        ws
+          .url("/")
           .withQueryString("lorem" -> "ipsum")
           .sign(calc) aka "signed request" must not(throwA[Exception])
       }

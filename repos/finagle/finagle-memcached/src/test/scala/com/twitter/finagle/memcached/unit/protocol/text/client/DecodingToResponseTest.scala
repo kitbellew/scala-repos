@@ -72,17 +72,22 @@ class DecodingToResponseTest extends FunSuite {
     assert(info.getClass == classOf[InfoLines])
     val ilines = info.asInstanceOf[InfoLines].lines
     assert(ilines.size == lines.size)
-    ilines.zipWithIndex.foreach {
-      case (line, idx) =>
-        val key = lines(idx)(0)
-        val values = lines(idx).drop(1)
-        assert(line.key == Buf.Utf8(key))
-        assert(line.values.size == values.size)
-        line.values.zipWithIndex.foreach {
-          case (token, tokIdx) =>
-            assert(token == Buf.Utf8(values(tokIdx)))
-        }
-    }
+    ilines
+      .zipWithIndex
+      .foreach {
+        case (line, idx) =>
+          val key = lines(idx)(0)
+          val values = lines(idx).drop(1)
+          assert(line.key == Buf.Utf8(key))
+          assert(line.values.size == values.size)
+          line
+            .values
+            .zipWithIndex
+            .foreach {
+              case (token, tokIdx) =>
+                assert(token == Buf.Utf8(values(tokIdx)))
+            }
+      }
   }
 
   test("parseResponse CLIENT_ERROR") {

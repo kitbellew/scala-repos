@@ -65,8 +65,9 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
     val needToReserve = request.numberOfWaitingReservations < additionalLaunches
 
     val acceptedResourceRoles: Set[String] = {
-      val roles = app.acceptedResourceRoles.getOrElse(
-        config.defaultAcceptedResourceRolesSet)
+      val roles = app
+        .acceptedResourceRoles
+        .getOrElse(config.defaultAcceptedResourceRolesSet)
       if (log.isDebugEnabled)
         log.debug(s"inferForResidents, acceptedResourceRoles $roles")
       roles
@@ -89,10 +90,8 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
 
     def maybeLaunchOnReservation =
       if (needToLaunch) {
-        val maybeVolumeMatch = PersistentVolumeMatcher.matchVolumes(
-          offer,
-          app,
-          request.reserved)
+        val maybeVolumeMatch = PersistentVolumeMatcher
+          .matchVolumes(offer, app, request.reserved)
 
         maybeVolumeMatch.flatMap { volumeMatch =>
           val matchingReservedResourcesWithoutVolumes = ResourceMatcher
@@ -175,9 +174,11 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
       offer: Mesos.Offer,
       resourceMatch: ResourceMatcher.ResourceMatch): TaskOp = {
 
-    val localVolumes: Iterable[Task.LocalVolume] = app.persistentVolumes.map {
-      volume => Task.LocalVolume(Task.LocalVolumeId(app.id, volume), volume)
-    }
+    val localVolumes: Iterable[Task.LocalVolume] = app
+      .persistentVolumes
+      .map { volume =>
+        Task.LocalVolume(Task.LocalVolumeId(app.id, volume), volume)
+      }
     val persistentVolumeIds = localVolumes.map(_.id)
     val task = Task.Reserved(
       taskId = Task.Id.forApp(app.id),

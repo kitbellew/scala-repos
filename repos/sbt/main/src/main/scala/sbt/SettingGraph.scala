@@ -100,8 +100,8 @@ object Graph {
       display: A => String): String = {
     val defaultWidth = 40
     // TODO: Fix JLine
-    val maxColumn =
-      math.max( /*JLine.usingTerminal(_.getWidth)*/ 0, defaultWidth) - 8
+    val maxColumn = math
+      .max( /*JLine.usingTerminal(_.getWidth)*/ 0, defaultWidth) - 8
     val twoSpaces = " " + " " // prevent accidentally being converted into a tab
     def limitLine(s: String): String =
       if (s.length > maxColumn)

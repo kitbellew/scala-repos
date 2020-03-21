@@ -48,14 +48,14 @@ object DriverWrapper {
           0,
           conf,
           new SecurityManager(conf))
-        rpcEnv.setupEndpoint(
-          "workerWatcher",
-          new WorkerWatcher(rpcEnv, workerUrl))
+        rpcEnv
+          .setupEndpoint("workerWatcher", new WorkerWatcher(rpcEnv, workerUrl))
 
         val currentLoader = Thread.currentThread.getContextClassLoader
         val userJarUrl = new File(userJar).toURI().toURL()
         val loader =
-          if (sys.props
+          if (sys
+                .props
                 .getOrElse("spark.driver.userClassPathFirst", "false")
                 .toBoolean) {
             new ChildFirstURLClassLoader(Array(userJarUrl), currentLoader)
@@ -73,8 +73,10 @@ object DriverWrapper {
 
       case _ =>
         // scalastyle:off println
-        System.err.println(
-          "Usage: DriverWrapper <workerUrl> <userJar> <driverMainClass> [options]")
+        System
+          .err
+          .println(
+            "Usage: DriverWrapper <workerUrl> <userJar> <driverMainClass> [options]")
         // scalastyle:on println
         System.exit(-1)
     }

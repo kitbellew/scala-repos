@@ -65,9 +65,7 @@ case class ScaldingEnv(override val jobName: String, inargs: Array[String])
   // (incremental updates) will use the batch of the previous run as
   // the starting batch, rendering this unnecessary.
   def startDate: Option[Timestamp] =
-    args
-      .optional("start-time")
-      .map(RichDate(_)(tz, DateParser.default).value)
+    args.optional("start-time").map(RichDate(_)(tz, DateParser.default).value)
 
   def initialBatch(b: Batcher): Option[BatchID] = startDate.map(b.batchOf(_))
 
@@ -117,8 +115,7 @@ case class ScaldingEnv(override val jobName: String, inargs: Array[String])
           opt <- opts.get(scaldingBuilder.id)
           stid <- opt.get[StoreIntermediateData[Any, Any]]
         } yield addDeltaWrite(scaldingBuilder.node, stid.sink)
-      ).getOrElse(scaldingBuilder.node)
-        .name(scaldingBuilder.id)
+      ).getOrElse(scaldingBuilder.node).name(scaldingBuilder.id)
 
     val scald = Scalding(name, opts)
       .withRegistrars(

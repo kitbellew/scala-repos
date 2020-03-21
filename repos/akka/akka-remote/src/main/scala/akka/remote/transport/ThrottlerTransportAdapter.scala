@@ -165,8 +165,10 @@ object ThrottlerTransportAdapter {
 
     private def tokensGenerated(nanoTimeOfSend: Long): Int =
       (
-        TimeUnit.NANOSECONDS.toMillis(
-          nanoTimeOfSend - nanoTimeOfLastSend) * tokensPerSecond / 1000.0
+        TimeUnit
+          .NANOSECONDS
+          .toMillis(
+            nanoTimeOfSend - nanoTimeOfLastSend) * tokensPerSecond / 1000.0
       ).toInt
   }
 
@@ -423,20 +425,23 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
         mode.getClass.getName)
       internalTarget.sendSystemMessage(Watch(internalTarget, ref))
       target.tell(mode, ref)
-      ref.result.future.transform(
-        {
-          case Terminated(t) if t.path == target.path ⇒
-            SetThrottleAck
-          case SetThrottleAck ⇒ {
+      ref
+        .result
+        .future
+        .transform(
+          {
+            case Terminated(t) if t.path == target.path ⇒
+              SetThrottleAck
+            case SetThrottleAck ⇒ {
+              internalTarget.sendSystemMessage(Unwatch(target, ref));
+              SetThrottleAck
+            }
+          },
+          t ⇒ {
             internalTarget.sendSystemMessage(Unwatch(target, ref));
-            SetThrottleAck
+            t
           }
-        },
-        t ⇒ {
-          internalTarget.sendSystemMessage(Unwatch(target, ref));
-          t
-        }
-      )(ref.internalCallingThreadExecutionContext)
+        )(ref.internalCallingThreadExecutionContext)
     }
   }
 
@@ -659,9 +664,8 @@ private[transport] class ThrottledAssociation(
     } else {
       if (throttledMessages.isEmpty) {
         val tokens = payload.length
-        val (newbucket, success) = inboundThrottleMode.tryConsumeTokens(
-          System.nanoTime(),
-          tokens)
+        val (newbucket, success) = inboundThrottleMode
+          .tryConsumeTokens(System.nanoTime(), tokens)
         if (success) {
           inboundThrottleMode = newbucket
           upstreamListener notify InboundPayload(payload)
@@ -706,9 +710,8 @@ private[transport] final case class ThrottlerHandle(
     @tailrec
     def tryConsume(currentBucket: ThrottleMode): Boolean = {
       val timeOfSend = System.nanoTime()
-      val (newBucket, allow) = currentBucket.tryConsumeTokens(
-        timeOfSend,
-        tokens)
+      val (newBucket, allow) = currentBucket
+        .tryConsumeTokens(timeOfSend, tokens)
       if (allow) {
         if (outboundThrottleMode.compareAndSet(currentBucket, newBucket))
           true

@@ -123,8 +123,8 @@ final class TaskDef(
       else
         0
     )
-    retVal =
-      31 * retVal + Arrays.hashCode(_selectors.asInstanceOf[Array[AnyRef]])
+    retVal = 31 * retVal + Arrays
+      .hashCode(_selectors.asInstanceOf[Array[AnyRef]])
     retVal
   }
 

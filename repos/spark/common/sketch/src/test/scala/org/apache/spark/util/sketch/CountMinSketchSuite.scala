@@ -68,15 +68,17 @@ class CountMinSketchSuite extends FunSuite { // scalastyle:ignore funsuite
 
       val probCorrect = {
         val numErrors =
-          allItems.map { item =>
-            val count = exactFreq.getOrElse(item, 0L)
-            val ratio =
-              (sketch.estimateCount(item) - count).toDouble / numAllItems
-            if (ratio > epsOfTotalCount)
-              1
-            else
-              0
-          }.sum
+          allItems
+            .map { item =>
+              val count = exactFreq.getOrElse(item, 0L)
+              val ratio = (sketch.estimateCount(item) - count)
+                .toDouble / numAllItems
+              if (ratio > epsOfTotalCount)
+                1
+              else
+                0
+            }
+            .sum
 
         1d - numErrors.toDouble / numAllItems
       }
@@ -122,8 +124,8 @@ class CountMinSketchSuite extends FunSuite { // scalastyle:ignore funsuite
       perSketchItems.foreach {
         _.foreach { item =>
           assert(
-            mergedSketch.estimateCount(item) === expectedSketch.estimateCount(
-              item))
+            mergedSketch.estimateCount(item) === expectedSketch
+              .estimateCount(item))
         }
       }
     }

@@ -63,8 +63,8 @@ class OpenHashMap[Key, Value](initialSize: Int)
 
   override def empty: OpenHashMap[Key, Value] = OpenHashMap.empty[Key, Value]
 
-  private[this] val actualInitialSize = OpenHashMap.nextPositivePowerOfTwo(
-    initialSize)
+  private[this] val actualInitialSize = OpenHashMap
+    .nextPositivePowerOfTwo(initialSize)
 
   private var mask = actualInitialSize - 1
   private var table: Array[Entry] = new Array[Entry](actualInitialSize)

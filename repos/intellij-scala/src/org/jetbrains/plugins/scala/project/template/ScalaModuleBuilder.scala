@@ -47,15 +47,16 @@ class ScalaModuleBuilder(
 
   override def modifySettingsStep(
       settingsStep: SettingsStep): ModuleWizardStep = {
-    librariesContainer = LibrariesContainerFactory.createContainer(
-      settingsStep.getContext.getProject)
+    librariesContainer = LibrariesContainerFactory
+      .createContainer(settingsStep.getContext.getProject)
 
     new ScalaStep(settingsStep)
   }
 
   private class ScalaStep(settingsStep: SettingsStep)
       extends ModuleWizardStep() {
-    private val javaStep = JavaModuleType.getModuleType
+    private val javaStep = JavaModuleType
+      .getModuleType
       .modifyProjectTypeStep(settingsStep, ScalaModuleBuilder.this)
 
     private val libraryPanel =

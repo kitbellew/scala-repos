@@ -30,7 +30,10 @@ trait JavaBigDecimalPicklers extends PrimitivePicklers {
     }
 
   // TODO - Figure out if we should somehow have these all registered somewhere else rather than take the hit at construction time.
-  internal.currentRuntime.picklers.registerPicklerUnpickler(
-    javaBigDecimalPickler.tag.key,
-    javaBigDecimalPickler)
+  internal
+    .currentRuntime
+    .picklers
+    .registerPicklerUnpickler(
+      javaBigDecimalPickler.tag.key,
+      javaBigDecimalPickler)
 }

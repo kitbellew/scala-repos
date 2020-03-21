@@ -291,10 +291,14 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     * Returns true if the status code is not 3xx and the application is in Dev mode.
     */
   private def shouldWarnIfNotRedirect(flash: Flash): Boolean = {
-    play.api.Play.privateMaybeApplication.exists(app =>
-      (app.mode == play.api.Mode.Dev) && (!flash.isEmpty) && (
-        header.status < 300 || header.status > 399
-      ))
+    play
+      .api
+      .Play
+      .privateMaybeApplication
+      .exists(app =>
+        (app.mode == play.api.Mode.Dev) && (!flash.isEmpty) && (
+          header.status < 300 || header.status > 399
+        ))
   }
 
   /**
@@ -302,7 +306,8 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     */
   private def logRedirectWarning(methodName: String) {
     val status = header.status
-    play.api
+    play
+      .api
       .Logger("play")
       .warn(
         s"You are using status code '$status' with $methodName, which should only be used with a redirect status!")
@@ -441,7 +446,10 @@ trait Results {
         HttpEntity.Streamed(
           file,
           Some(length),
-          play.api.libs.MimeTypes
+          play
+            .api
+            .libs
+            .MimeTypes
             .forFileName(name)
             .orElse(Some(play.api.http.ContentTypes.BINARY)))
       )
@@ -460,8 +468,8 @@ trait Results {
         fileName: java.io.File => String = _.getName,
         onClose: () => Unit = () => ()): Result = {
       streamFile(
-        StreamConverters.fromInputStream(() =>
-          Files.newInputStream(content.toPath)),
+        StreamConverters
+          .fromInputStream(() => Files.newInputStream(content.toPath)),
         fileName(content),
         content.length,
         inline)
@@ -756,10 +764,12 @@ trait Results {
             "&"
           else
             "?"
-        ) + params.toSeq
+        ) + params
+          .toSeq
           .flatMap { pair =>
-            pair._2.map(value =>
-              (pair._1 + "=" + URLEncoder.encode(value, "utf-8")))
+            pair
+              ._2
+              .map(value => (pair._1 + "=" + URLEncoder.encode(value, "utf-8")))
           }
           .mkString("&")
       }

@@ -65,7 +65,8 @@ abstract class Reifier extends States with Phases with Errors with Utils {
         reifee match {
           case tree: Tree =>
             reifyTrace("reifying = ")(
-              if (settings.Xshowtrees || settings.XshowtreesCompact || settings.XshowtreesStringified)
+              if (settings.Xshowtrees || settings.XshowtreesCompact || settings
+                    .XshowtreesStringified)
                 "\n" + nodePrinters.nodeToString(tree).trim
               else
                 tree.toString)

@@ -89,7 +89,8 @@ class JavaUniverse
                     }
                   tpe.asInstanceOf[U#Type]
                 case u =>
-                  u.internal
+                  u
+                    .internal
                     .manifestToTypeTag(mirror.asInstanceOf[u.Mirror], manifest)
                     .in(mirror)
                     .tpe

@@ -123,9 +123,8 @@ sealed trait CPathTraversal {
                 indices: Array[Int]): MaybeOrdering = {
               var i = 0
               var result: MaybeOrdering = NoComp
-              while ((
-                       result == Eq || result == NoComp
-                     ) && i < comparators.length) {
+              while ((result == Eq || result == NoComp) && i < comparators
+                       .length) {
                 val iResult = comparators(i).compare(r1, r2, indices)
                 if (iResult != NoComp) {
                   result = iResult
@@ -559,11 +558,12 @@ object CPathTraversal {
       import scalaz.std.list._
 
       val pq =
-        mutable.PriorityQueue[List[CPathPosition]](
-          paths map (position(_)): _*) {
-          implicitly[
-            scalaz.Order[List[CPathPosition]]].reverseOrder.toScalaOrdering
-        }
+        mutable
+          .PriorityQueue[List[CPathPosition]](paths map (position(_)): _*) {
+            implicitly[scalaz.Order[List[CPathPosition]]]
+              .reverseOrder
+              .toScalaOrdering
+          }
 
       @tailrec
       def rec(

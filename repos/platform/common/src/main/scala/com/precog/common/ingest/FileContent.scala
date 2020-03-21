@@ -53,14 +53,16 @@ object ContentEncoding {
     new Extractor[ContentEncoding] {
       override def validated(
           obj: JValue): Validation[Error, ContentEncoding] = {
-        obj.validated[String]("encoding").flatMap {
-          case "uncompressed" =>
-            Success(RawUTF8Encoding)
-          case "base64" =>
-            Success(Base64Encoding)
-          case invalid =>
-            Failure(Invalid("Unknown encoding " + invalid))
-        }
+        obj
+          .validated[String]("encoding")
+          .flatMap {
+            case "uncompressed" =>
+              Success(RawUTF8Encoding)
+            case "base64" =>
+              Success(Base64Encoding)
+            case invalid =>
+              Failure(Invalid("Unknown encoding " + invalid))
+          }
       }
     }
 
@@ -139,7 +141,8 @@ object FileContent {
           case _ =>
             Failure(
               Invalid(
-                "File contents " + jv.renderCompact + " was not properly encoded as a JSON object."))
+                "File contents " + jv
+                  .renderCompact + " was not properly encoded as a JSON object."))
         }
       }
     }

@@ -42,12 +42,13 @@ object ScalaSmartEnterProcessor {
 }
 
 class ScalaSmartEnterProcessor extends SmartEnterProcessor {
-  private final val SMART_ENTER_TIMESTAMP: Key[Long] = Key.create(
-    "smartEnterOriginalTimestamp")
+  private final val SMART_ENTER_TIMESTAMP: Key[Long] = Key
+    .create("smartEnterOriginalTimestamp")
 
   def process(project: Project, editor: Editor, psiFile: PsiFile) = {
-    FeatureUsageTracker.getInstance.triggerFeatureUsed(
-      "codeassists.complete.statement")
+    FeatureUsageTracker
+      .getInstance
+      .triggerFeatureUsed("codeassists.complete.statement")
 
     try {
       editor.putUserData(
@@ -134,10 +135,8 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
       atCaret.getClass)
 
     for (processor <- ScalaSmartEnterProcessor.myEnterProcessors) {
-      if (atCaret != null && processor.doEnter(
-            editor,
-            atCaret,
-            isModified(editor)))
+      if (atCaret != null && processor
+            .doEnter(editor, atCaret, isModified(editor)))
         return
     }
 
@@ -156,7 +155,9 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
           false
       }
 
-    val buffer = scala.collection.mutable
+    val buffer = scala
+      .collection
+      .mutable
       .ArrayBuffer((caret, doNotVisit(caret)))
     var idx = 0
 
@@ -179,7 +180,8 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
     val atCaret: PsiElement = super.getStatementAtCaret(editor, psiFile)
     if (atCaret.isInstanceOf[PsiWhiteSpace] || atCaret == null)
       return null
-    if (("}" == atCaret.getText) && !atCaret.getParent
+    if (("}" == atCaret.getText) && !atCaret
+          .getParent
           .isInstanceOf[PsiArrayInitializerExpression])
       return null
 
@@ -195,7 +197,8 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
     if (statementAtCaret.isInstanceOf[PsiBlockStatement])
       return null
 
-    if (statementAtCaret != null && statementAtCaret.getParent
+    if (statementAtCaret != null && statementAtCaret
+          .getParent
           .isInstanceOf[ScForStatement]) {
       if (!PsiTreeUtil.hasErrorElements(statementAtCaret)) {
         statementAtCaret = statementAtCaret.getParent
@@ -226,8 +229,9 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
   }
 
   protected def getEnterHandler =
-    EditorActionManager.getInstance.getActionHandler(
-      IdeActions.ACTION_EDITOR_ENTER)
+    EditorActionManager
+      .getInstance
+      .getActionHandler(IdeActions.ACTION_EDITOR_ENTER)
 
   protected def isModified(editor: Editor): Boolean = {
     val timestamp: Long = editor.getUserData(SMART_ENTER_TIMESTAMP)

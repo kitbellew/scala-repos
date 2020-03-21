@@ -40,8 +40,8 @@ class HttpExtensionApiSpec
   type Port = Int
 
   implicit val system = {
-    val testConf = ConfigFactory.parseString(
-      """
+    val testConf = ConfigFactory
+      .parseString("""
     akka.loggers = ["akka.testkit.TestEventListener"]
     akka.loglevel = ERROR
     akka.stdout-loglevel = ERROR
@@ -129,7 +129,9 @@ class HttpExtensionApiSpec
     "properly bind and handle a server with a flow (with four parameters)" in {
       val (_, host, port) = TestUtils.temporaryServerHostnameAndPort()
       val flow: Flow[HttpRequest, HttpResponse, NotUsed] =
-        akka.stream.scaladsl
+        akka
+          .stream
+          .scaladsl
           .Flow[HttpRequest]
           .map(req ⇒ HttpResponse.create())
           .asJava
@@ -151,7 +153,9 @@ class HttpExtensionApiSpec
     "properly bind and handle a server with a flow (with five parameters)" in {
       val (_, host, port) = TestUtils.temporaryServerHostnameAndPort()
       val flow: Flow[HttpRequest, HttpResponse, NotUsed] =
-        akka.stream.scaladsl
+        akka
+          .stream
+          .scaladsl
           .Flow[HttpRequest]
           .map(req ⇒ HttpResponse.create())
           .asJava
@@ -173,7 +177,9 @@ class HttpExtensionApiSpec
     "properly bind and handle a server with a flow (with seven parameters)" in {
       val (_, host, port) = TestUtils.temporaryServerHostnameAndPort()
       val flow: Flow[HttpRequest, HttpResponse, NotUsed] =
-        akka.stream.scaladsl
+        akka
+          .stream
+          .scaladsl
           .Flow[HttpRequest]
           .map(req ⇒ HttpResponse.create())
           .asJava
@@ -522,9 +528,8 @@ class HttpExtensionApiSpec
 
     "allow a single request (with two parameters)" in {
       val (host, port, binding) = runServer()
-      val response = http.singleRequest(
-        HttpRequest.GET(s"http://$host:$port/"),
-        materializer)
+      val response = http
+        .singleRequest(HttpRequest.GET(s"http://$host:$port/"), materializer)
 
       waitFor(response).status() should be(StatusCodes.OK)
       binding.unbind()
@@ -556,8 +561,8 @@ class HttpExtensionApiSpec
 
     "interact with a websocket through a flow (with with one parameter)" in {
       val (host, port, binding) = runWebsocketServer()
-      val flow = http.webSocketClientFlow(
-        WebSocketRequest.create(s"ws://$host:$port"))
+      val flow = http
+        .webSocketClientFlow(WebSocketRequest.create(s"ws://$host:$port"))
       val pair = Source
         .single(TextMessage.create("hello"))
         .viaMat(
@@ -607,10 +612,8 @@ class HttpExtensionApiSpec
 
   def runServer(): (Host, Port, ServerBinding) = {
     val (_, host, port) = TestUtils.temporaryServerHostnameAndPort()
-    val server = http.bindAndHandleSync(
-      httpSuccessFunction,
-      toHost(host, port),
-      materializer)
+    val server = http
+      .bindAndHandleSync(httpSuccessFunction, toHost(host, port), materializer)
 
     (host, port, waitFor(server))
   }

@@ -77,11 +77,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
           }
         case logical
               .Limit(IntegerLiteral(limit), logical.Sort(order, true, child)) =>
-          execution.TakeOrderedAndProject(
-            limit,
-            order,
-            None,
-            planLater(child)) :: Nil
+          execution
+            .TakeOrderedAndProject(limit, order, None, planLater(child)) :: Nil
         case logical.Limit(
               IntegerLiteral(limit),
               logical.Project(projectList, logical.Sort(order, true, child))) =>
@@ -170,7 +167,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
       * Matches a plan whose single partition should be small enough to build a hash table.
       */
     def canBuildHashMap(plan: LogicalPlan): Boolean = {
-      plan.statistics.sizeInBytes < conf.autoBroadcastJoinThreshold * conf.numShufflePartitions
+      plan.statistics.sizeInBytes < conf.autoBroadcastJoinThreshold * conf
+        .numShufflePartitions
     }
 
     /**
@@ -244,9 +242,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
               condition,
               left,
               right)
-            if !conf.preferSortMergeJoin && shouldShuffleHashJoin(
-              left,
-              right) ||
+            if !conf
+              .preferSortMergeJoin && shouldShuffleHashJoin(left, right) ||
               !RowOrdering.isOrderable(leftKeys) =>
           val buildSide =
             if (right.statistics.sizeInBytes <= left.statistics.sizeInBytes) {
@@ -390,22 +387,26 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
           // be used to re-write expressions so that they reference the single copy of the
           // aggregate function which actually gets computed.
           val aggregateExpressions =
-            resultExpressions.flatMap { expr =>
-              expr.collect {
-                case agg: AggregateExpression =>
-                  agg
+            resultExpressions
+              .flatMap { expr =>
+                expr.collect {
+                  case agg: AggregateExpression =>
+                    agg
+                }
               }
-            }.distinct
+              .distinct
           // For those distinct aggregate expressions, we create a map from the
           // aggregate function to the corresponding attribute of the function.
           val aggregateFunctionToAttribute =
-            aggregateExpressions.map { agg =>
-              val aggregateFunction = agg.aggregateFunction
-              val attribute =
-                Alias(aggregateFunction, aggregateFunction.toString)()
-                  .toAttribute
-              (aggregateFunction, agg.isDistinct) -> attribute
-            }.toMap
+            aggregateExpressions
+              .map { agg =>
+                val aggregateFunction = agg.aggregateFunction
+                val attribute =
+                  Alias(aggregateFunction, aggregateFunction.toString)()
+                    .toAttribute
+                (aggregateFunction, agg.isDistinct) -> attribute
+              }
+              .toMap
 
           val (functionsWithDistinct, functionsWithoutDistinct) =
             aggregateExpressions.partition(_.isDistinct)
@@ -469,29 +470,35 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
                   "Distinct columns cannot exist in Aggregate operator containing " +
                     "aggregate functions which don't support partial aggregation.")
               } else {
-                aggregate.Utils.planAggregateWithoutPartial(
+                aggregate
+                  .Utils
+                  .planAggregateWithoutPartial(
+                    namedGroupingExpressions.map(_._2),
+                    aggregateExpressions,
+                    aggregateFunctionToAttribute,
+                    rewrittenResultExpressions,
+                    planLater(child))
+              }
+            } else if (functionsWithDistinct.isEmpty) {
+              aggregate
+                .Utils
+                .planAggregateWithoutDistinct(
                   namedGroupingExpressions.map(_._2),
                   aggregateExpressions,
                   aggregateFunctionToAttribute,
                   rewrittenResultExpressions,
                   planLater(child))
-              }
-            } else if (functionsWithDistinct.isEmpty) {
-              aggregate.Utils.planAggregateWithoutDistinct(
-                namedGroupingExpressions.map(_._2),
-                aggregateExpressions,
-                aggregateFunctionToAttribute,
-                rewrittenResultExpressions,
-                planLater(child))
             } else {
-              aggregate.Utils.planAggregateWithOneDistinct(
-                namedGroupingExpressions.map(_._2),
-                functionsWithDistinct,
-                functionsWithoutDistinct,
-                aggregateFunctionToAttribute,
-                rewrittenResultExpressions,
-                planLater(child)
-              )
+              aggregate
+                .Utils
+                .planAggregateWithOneDistinct(
+                  namedGroupingExpressions.map(_._2),
+                  functionsWithDistinct,
+                  functionsWithoutDistinct,
+                  aggregateFunctionToAttribute,
+                  rewrittenResultExpressions,
+                  planLater(child)
+                )
             }
 
           aggregateOperator
@@ -504,28 +511,29 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
   object BroadcastNestedLoop extends Strategy {
     def apply(plan: LogicalPlan): Seq[SparkPlan] =
       plan match {
-        case j @ logical.Join(
-              CanBroadcast(left),
-              right,
-              Inner | RightOuter,
-              condition) =>
-          execution.joins.BroadcastNestedLoopJoin(
-            planLater(left),
-            planLater(right),
-            joins.BuildLeft,
-            j.joinType,
-            condition) :: Nil
+        case j @ logical
+              .Join(CanBroadcast(left), right, Inner | RightOuter, condition) =>
+          execution
+            .joins
+            .BroadcastNestedLoopJoin(
+              planLater(left),
+              planLater(right),
+              joins.BuildLeft,
+              j.joinType,
+              condition) :: Nil
         case j @ logical.Join(
               left,
               CanBroadcast(right),
               Inner | LeftOuter | LeftSemi,
               condition) =>
-          execution.joins.BroadcastNestedLoopJoin(
-            planLater(left),
-            planLater(right),
-            joins.BuildRight,
-            j.joinType,
-            condition) :: Nil
+          execution
+            .joins
+            .BroadcastNestedLoopJoin(
+              planLater(left),
+              planLater(right),
+              joins.BuildRight,
+              j.joinType,
+              condition) :: Nil
         case _ =>
           Nil
       }
@@ -535,12 +543,14 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
     def apply(plan: LogicalPlan): Seq[SparkPlan] =
       plan match {
         case logical.Join(left, right, Inner, None) =>
-          execution.joins
+          execution
+            .joins
             .CartesianProduct(planLater(left), planLater(right)) :: Nil
         case logical.Join(left, right, Inner, Some(condition)) =>
           execution.Filter(
             condition,
-            execution.joins
+            execution
+              .joins
               .CartesianProduct(planLater(left), planLater(right))) :: Nil
         case _ =>
           Nil
@@ -569,9 +579,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
       }
   }
 
-  protected lazy val singleRowRdd = sparkContext.parallelize(
-    Seq(InternalRow()),
-    1)
+  protected lazy val singleRowRdd = sparkContext
+    .parallelize(Seq(InternalRow()), 1)
 
   object InMemoryScans extends Strategy {
     def apply(plan: LogicalPlan): Seq[SparkPlan] =
@@ -610,14 +619,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
         case logical.AppendColumns(f, in, out, child) =>
           execution.AppendColumns(f, in, out, planLater(child)) :: Nil
         case logical.MapGroups(f, key, in, out, grouping, data, child) =>
-          execution.MapGroups(
-            f,
-            key,
-            in,
-            out,
-            grouping,
-            data,
-            planLater(child)) :: Nil
+          execution
+            .MapGroups(f, key, in, out, grouping, data, planLater(child)) :: Nil
         case logical.CoGroup(
               f,
               keyObj,
@@ -654,10 +657,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
         case logical.SortPartitions(sortExprs, child) =>
           // This sort only sorts tuples within a partition. Its requiredDistribution will be
           // an UnspecifiedDistribution.
-          execution.Sort(
-            sortExprs,
-            global = false,
-            child = planLater(child)) :: Nil
+          execution
+            .Sort(sortExprs, global = false, child = planLater(child)) :: Nil
         case logical.Sort(sortExprs, global, child) =>
           execution.Sort(sortExprs, global, planLater(child)) :: Nil
         case logical.Project(projectList, child) =>
@@ -673,12 +674,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             orderSpec,
             planLater(child)) :: Nil
         case logical.Sample(lb, ub, withReplacement, seed, child) =>
-          execution.Sample(
-            lb,
-            ub,
-            withReplacement,
-            seed,
-            planLater(child)) :: Nil
+          execution
+            .Sample(lb, ub, withReplacement, seed, planLater(child)) :: Nil
         case logical.LocalRelation(output, data) =>
           LocalTableScan(output, data) :: Nil
         case logical.LocalLimit(IntegerLiteral(limit), child) =>

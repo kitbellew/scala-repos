@@ -20,7 +20,9 @@ object AbstractInstantiation extends AnnotatorPart[ScTemplateDefinition] {
       typeAware: Boolean) {
     val newObject = definition.isInstanceOf[ScNewTemplateDefinition]
     val hasBody = definition.extendsBlock.templateBody.isDefined
-    val hasEarlyBody = definition.extendsBlock.earlyDefinitions
+    val hasEarlyBody = definition
+      .extendsBlock
+      .earlyDefinitions
       .exists(_.members.nonEmpty)
 
     if (!newObject || hasEarlyBody || hasBody)
@@ -33,13 +35,15 @@ object AbstractInstantiation extends AnnotatorPart[ScTemplateDefinition] {
     if (refs.tail.nonEmpty)
       return
 
-    refs.headOption.foreach {
-      case (refElement, Some((psiClass, _))) if isAbstract(psiClass) =>
-        holder.createErrorAnnotation(
-          refElement,
-          "%s %s is abstract; cannot be instantiated"
-            .format(kindOf(psiClass), psiClass.name))
-      case _ =>
-    }
+    refs
+      .headOption
+      .foreach {
+        case (refElement, Some((psiClass, _))) if isAbstract(psiClass) =>
+          holder.createErrorAnnotation(
+            refElement,
+            "%s %s is abstract; cannot be instantiated"
+              .format(kindOf(psiClass), psiClass.name))
+        case _ =>
+      }
   }
 }

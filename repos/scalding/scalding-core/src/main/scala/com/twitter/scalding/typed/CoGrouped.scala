@@ -256,7 +256,8 @@ trait CoGrouped[K, +R]
               val NUM_OF_SELF_JOINS = firstCount - 1
               new CoGroup(
                 assignName(
-                  inputs.head
+                  inputs
+                    .head
                     .toPipe[(K, Any)](("key", "value"))(flowDef, mode, tupset)),
                 ordKeyField,
                 NUM_OF_SELF_JOINS,
@@ -295,24 +296,28 @@ trait CoGrouped[K, +R]
               }
 
               val groupFields: Array[Fields] =
-                (0 until dsize)
-                  .map(makeFields)
-                  .toArray
+                (0 until dsize).map(makeFields).toArray
 
               val pipes: Array[Pipe] =
-                distincts.zipWithIndex.map {
-                  case (item, idx) =>
-                    assignName(renamePipe(idx, item))
-                }.toArray
+                distincts
+                  .zipWithIndex
+                  .map {
+                    case (item, idx) =>
+                      assignName(renamePipe(idx, item))
+                  }
+                  .toArray
 
               val cjoiner =
                 if (isize != dsize) {
                   // avoid capturing anything other than the mapping ints:
                   val mapping: Map[Int, Int] =
-                    inputs.zipWithIndex.map {
-                      case (item, idx) =>
-                        idx -> distincts.indexWhere(_ == item)
-                    }.toMap
+                    inputs
+                      .zipWithIndex
+                      .map {
+                        case (item, idx) =>
+                          idx -> distincts.indexWhere(_ == item)
+                      }
+                      .toMap
 
                   new CoGroupedJoiner(
                     isize,
@@ -342,10 +347,12 @@ trait CoGrouped[K, +R]
               sys.error(
                 "Except for self joins, where you are joining something with only itself,\n" +
                   "left-most pipe can only appear once. Firsts: " +
-                  inputs.collect {
-                    case x if x == inputs.head =>
-                      x
-                  }.toString)
+                  inputs
+                    .collect {
+                      case x if x == inputs.head =>
+                        x
+                    }
+                    .toString)
             }
         }
       /*
@@ -398,10 +405,12 @@ abstract class CoGroupedJoiner[K](
     // This use of `_.get` is safe, but difficult to prove in the types.
     @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
     val keyTuple =
-      iters.collectFirst {
-        case iter if iter.nonEmpty =>
-          iter.head
-      }.get // One of these must have a key
+      iters
+        .collectFirst {
+          case iter if iter.nonEmpty =>
+            iter.head
+        }
+        .get // One of these must have a key
     val key = getter.get(keyTuple, 0)
 
     val leftMost = iters.head

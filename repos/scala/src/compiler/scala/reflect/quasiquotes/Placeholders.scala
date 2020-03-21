@@ -21,8 +21,10 @@ trait Placeholders {
   lazy val posMap = mutable.LinkedHashMap[Position, (Int, Int)]()
   lazy val code = {
     val sb = new StringBuilder()
-    val sessionSuffix =
-      randomUUID().toString.replace("-", "").substring(0, 8) + "$"
+    val sessionSuffix = randomUUID()
+      .toString
+      .replace("-", "")
+      .substring(0, 8) + "$"
 
     def appendPart(value: String, pos: Position) = {
       val start = sb.length
@@ -32,8 +34,8 @@ trait Placeholders {
     }
 
     def appendHole(tree: Tree, rank: Rank) = {
-      val placeholderName = c.freshName(
-        TermName(nme.QUASIQUOTE_PREFIX + sessionSuffix))
+      val placeholderName = c
+        .freshName(TermName(nme.QUASIQUOTE_PREFIX + sessionSuffix))
       sb.append(placeholderName)
       val holeTree =
         if (method != nme.unapply)
@@ -79,10 +81,12 @@ trait Placeholders {
     def update(key: Name, hole: Hole) = underlying += key.toString -> hole
     def get(key: Name): Option[Hole] = {
       val skey = key.toString
-      underlying.get(skey).map { v =>
-        accessed += skey
-        v
-      }
+      underlying
+        .get(skey)
+        .map { v =>
+          accessed += skey
+          v
+        }
     }
     def keysIterator: Iterator[TermName] =
       underlying.keysIterator.map(TermName(_))

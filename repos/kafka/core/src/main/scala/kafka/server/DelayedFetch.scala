@@ -80,58 +80,61 @@ class DelayedFetch(
     */
   override def tryComplete(): Boolean = {
     var accumulatedSize = 0
-    fetchMetadata.fetchPartitionStatus.foreach {
-      case (topicAndPartition, fetchStatus) =>
-        val fetchOffset = fetchStatus.startOffsetMetadata
-        try {
-          if (fetchOffset != LogOffsetMetadata.UnknownOffsetMetadata) {
-            val replica = replicaManager.getLeaderReplicaIfLocal(
-              topicAndPartition.topic,
-              topicAndPartition.partition)
-            val endOffset =
-              if (fetchMetadata.fetchOnlyCommitted)
-                replica.highWatermark
-              else
-                replica.logEndOffset
+    fetchMetadata
+      .fetchPartitionStatus
+      .foreach {
+        case (topicAndPartition, fetchStatus) =>
+          val fetchOffset = fetchStatus.startOffsetMetadata
+          try {
+            if (fetchOffset != LogOffsetMetadata.UnknownOffsetMetadata) {
+              val replica = replicaManager.getLeaderReplicaIfLocal(
+                topicAndPartition.topic,
+                topicAndPartition.partition)
+              val endOffset =
+                if (fetchMetadata.fetchOnlyCommitted)
+                  replica.highWatermark
+                else
+                  replica.logEndOffset
 
-            // Go directly to the check for Case D if the message offsets are the same. If the log segment
-            // has just rolled, then the high watermark offset will remain the same but be on the old segment,
-            // which would incorrectly be seen as an instance of Case C.
-            if (endOffset.messageOffset != fetchOffset.messageOffset) {
-              if (endOffset.onOlderSegment(fetchOffset)) {
-                // Case C, this can happen when the new fetch operation is on a truncated leader
-                debug(
-                  "Satisfying fetch %s since it is fetching later segments of partition %s."
-                    .format(fetchMetadata, topicAndPartition))
-                return forceComplete()
-              } else if (fetchOffset.onOlderSegment(endOffset)) {
-                // Case C, this can happen when the fetch operation is falling behind the current segment
-                // or the partition has just rolled a new segment
-                debug(
-                  "Satisfying fetch %s immediately since it is fetching older segments."
-                    .format(fetchMetadata))
-                return forceComplete()
-              } else if (fetchOffset.messageOffset < endOffset.messageOffset) {
-                // we need take the partition fetch size as upper bound when accumulating the bytes
-                accumulatedSize += math.min(
-                  endOffset.positionDiff(fetchOffset),
-                  fetchStatus.fetchInfo.fetchSize)
+              // Go directly to the check for Case D if the message offsets are the same. If the log segment
+              // has just rolled, then the high watermark offset will remain the same but be on the old segment,
+              // which would incorrectly be seen as an instance of Case C.
+              if (endOffset.messageOffset != fetchOffset.messageOffset) {
+                if (endOffset.onOlderSegment(fetchOffset)) {
+                  // Case C, this can happen when the new fetch operation is on a truncated leader
+                  debug(
+                    "Satisfying fetch %s since it is fetching later segments of partition %s."
+                      .format(fetchMetadata, topicAndPartition))
+                  return forceComplete()
+                } else if (fetchOffset.onOlderSegment(endOffset)) {
+                  // Case C, this can happen when the fetch operation is falling behind the current segment
+                  // or the partition has just rolled a new segment
+                  debug(
+                    "Satisfying fetch %s immediately since it is fetching older segments."
+                      .format(fetchMetadata))
+                  return forceComplete()
+                } else if (fetchOffset.messageOffset < endOffset
+                             .messageOffset) {
+                  // we need take the partition fetch size as upper bound when accumulating the bytes
+                  accumulatedSize += math.min(
+                    endOffset.positionDiff(fetchOffset),
+                    fetchStatus.fetchInfo.fetchSize)
+                }
               }
             }
+          } catch {
+            case utpe: UnknownTopicOrPartitionException => // Case B
+              debug(
+                "Broker no longer know of %s, satisfy %s immediately"
+                  .format(topicAndPartition, fetchMetadata))
+              return forceComplete()
+            case nle: NotLeaderForPartitionException => // Case A
+              debug(
+                "Broker is no longer the leader of %s, satisfy %s immediately"
+                  .format(topicAndPartition, fetchMetadata))
+              return forceComplete()
           }
-        } catch {
-          case utpe: UnknownTopicOrPartitionException => // Case B
-            debug(
-              "Broker no longer know of %s, satisfy %s immediately"
-                .format(topicAndPartition, fetchMetadata))
-            return forceComplete()
-          case nle: NotLeaderForPartitionException => // Case A
-            debug(
-              "Broker is no longer the leader of %s, satisfy %s immediately"
-                .format(topicAndPartition, fetchMetadata))
-            return forceComplete()
-        }
-    }
+      }
 
     // Case D
     if (accumulatedSize >= fetchMetadata.fetchMinBytes)

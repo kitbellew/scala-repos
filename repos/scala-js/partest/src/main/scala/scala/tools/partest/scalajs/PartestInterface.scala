@@ -155,8 +155,8 @@ case class PartestTask(taskDef: TaskDef, args: Array[String]) extends Task {
       scalacArgs: Array[String],
       options: ScalaJSPartestOptions,
       scalaVersion: String): SBTRunner = {
-    val runnerClass = Class.forName(
-      "scala.tools.partest.scalajs.ScalaJSSBTRunner")
+    val runnerClass = Class
+      .forName("scala.tools.partest.scalajs.ScalaJSSBTRunner")
     runnerClass
       .getConstructors()(0)
       .newInstance(

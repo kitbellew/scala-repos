@@ -7,7 +7,7 @@ class AA {
 class BB extends AA {
   override def foo = {
     /*start*/
-    z /*end*/.b()
+    z /*end*/ .b()
   }
 
   def z = foo

@@ -34,10 +34,8 @@ object Test {
           attributes(node.attributes))
         for (m <- node.child)
           serialize(m, serializer)
-        serializer.endElement(
-          "",
-          node.label.toLowerCase,
-          node.label.toLowerCase)
+        serializer
+          .endElement("", node.label.toLowerCase, node.label.toLowerCase)
     }
   }
   def parse(str: ByteArrayInputStream) = {

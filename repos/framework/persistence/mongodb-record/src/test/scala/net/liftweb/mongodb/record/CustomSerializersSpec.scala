@@ -394,8 +394,8 @@ object CustomSerializersSpec extends Specification with MongoTestKit {
       }
 
       // check the conversion functions
-      nfl.id.asJs.toJsCmd mustEqual """{"$oid":"%s"}""".format(
-        nfl.id.value.toString)
+      nfl.id.asJs.toJsCmd mustEqual """{"$oid":"%s"}"""
+        .format(nfl.id.value.toString)
       nfl.id.asJValue mustEqual JObject(
         List(JField("$oid", JString(nfl.id.value.toString))))
       val session = new LiftSession("", randomString(20), Empty)
@@ -432,8 +432,9 @@ object CustomSerializersSpec extends Specification with MongoTestKit {
       nfl.id.setFromString("garbage")
       nfl.id.valueBox mustEqual Failure("Invalid ObjectId string: garbage")
 
-      nfl.id.setFromJValue(
-        JObject(List(JField("$oid", JString(nflid.toString)))))
+      nfl
+        .id
+        .setFromJValue(JObject(List(JField("$oid", JString(nflid.toString)))))
       nfl.id.value mustEqual nflid
 
       nfl.id.setFromAny(nflid)

@@ -87,7 +87,8 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
     * on the driver, this may happen very occasionally or not at all. Not cleaning at all may
     * lead to executors running out of disk space after a while.
     */
-  private val periodicGCInterval = sc.conf
+  private val periodicGCInterval = sc
+    .conf
     .getTimeAsSeconds("spark.cleaner.periodicGC.interval", "30min")
 
   /**
@@ -100,7 +101,8 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
     * for instance, when the driver performs a GC and cleans up all broadcast blocks that are no
     * longer in scope.
     */
-  private val blockOnCleanupTasks = sc.conf
+  private val blockOnCleanupTasks = sc
+    .conf
     .getBoolean("spark.cleaner.referenceTracking.blocking", true)
 
   /**
@@ -113,7 +115,8 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
     * until the real RPC issue (referred to in the comment above `blockOnCleanupTasks`) is
     * resolved.
     */
-  private val blockOnShuffleCleanupTasks = sc.conf
+  private val blockOnShuffleCleanupTasks = sc
+    .conf
     .getBoolean("spark.cleaner.referenceTracking.blocking.shuffle", false)
 
   @volatile
@@ -187,8 +190,8 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
   private def registerForCleanup(
       objectForCleanup: AnyRef,
       task: CleanupTask): Unit = {
-    referenceBuffer.add(
-      new CleanupTaskWeakReference(task, objectForCleanup, referenceQueue))
+    referenceBuffer
+      .add(new CleanupTaskWeakReference(task, objectForCleanup, referenceQueue))
   }
 
   /** Keep cleaning RDD, shuffle, and broadcast state. */
@@ -201,26 +204,28 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
             .map(_.asInstanceOf[CleanupTaskWeakReference])
           // Synchronize here to avoid being interrupted on stop()
           synchronized {
-            reference.map(_.task).foreach { task =>
-              logDebug("Got cleaning task " + task)
-              referenceBuffer.remove(reference.get)
-              task match {
-                case CleanRDD(rddId) =>
-                  doCleanupRDD(rddId, blocking = blockOnCleanupTasks)
-                case CleanShuffle(shuffleId) =>
-                  doCleanupShuffle(
-                    shuffleId,
-                    blocking = blockOnShuffleCleanupTasks)
-                case CleanBroadcast(broadcastId) =>
-                  doCleanupBroadcast(
-                    broadcastId,
-                    blocking = blockOnCleanupTasks)
-                case CleanAccum(accId) =>
-                  doCleanupAccum(accId, blocking = blockOnCleanupTasks)
-                case CleanCheckpoint(rddId) =>
-                  doCleanCheckpoint(rddId)
+            reference
+              .map(_.task)
+              .foreach { task =>
+                logDebug("Got cleaning task " + task)
+                referenceBuffer.remove(reference.get)
+                task match {
+                  case CleanRDD(rddId) =>
+                    doCleanupRDD(rddId, blocking = blockOnCleanupTasks)
+                  case CleanShuffle(shuffleId) =>
+                    doCleanupShuffle(
+                      shuffleId,
+                      blocking = blockOnShuffleCleanupTasks)
+                  case CleanBroadcast(broadcastId) =>
+                    doCleanupBroadcast(
+                      broadcastId,
+                      blocking = blockOnCleanupTasks)
+                  case CleanAccum(accId) =>
+                    doCleanupAccum(accId, blocking = blockOnCleanupTasks)
+                  case CleanCheckpoint(rddId) =>
+                    doCleanCheckpoint(rddId)
+                }
               }
-            }
           }
         } catch {
           case ie: InterruptedException if stopped => // ignore

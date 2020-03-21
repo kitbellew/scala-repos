@@ -74,9 +74,8 @@ private[spark] class CoarseMesosSchedulerBackend(
 
   // If shuffle service is enabled, the Spark driver will register with the shuffle service.
   // This is for cleaning up shuffle files reliably.
-  private val shuffleServiceEnabled = conf.getBoolean(
-    "spark.shuffle.service.enabled",
-    false)
+  private val shuffleServiceEnabled = conf
+    .getBoolean("spark.shuffle.service.enabled", false)
 
   // Cores we have acquired with each Mesos task ID
   val coresByTaskId = new HashMap[String, Int]
@@ -158,7 +157,8 @@ private[spark] class CoarseMesosSchedulerBackend(
       sc.sparkUser,
       sc.appName,
       sc.conf,
-      sc.conf
+      sc
+        .conf
         .getOption("spark.mesos.driver.webui.url")
         .orElse(sc.ui.map(_.appUIAddress))
     )
@@ -180,7 +180,8 @@ private[spark] class CoarseMesosSchedulerBackend(
     val extraClassPath = conf.getOption("spark.executor.extraClassPath")
     extraClassPath.foreach { cp =>
       environment.addVariables(
-        Environment.Variable
+        Environment
+          .Variable
           .newBuilder()
           .setName("SPARK_CLASSPATH")
           .setValue(cp)
@@ -198,24 +199,26 @@ private[spark] class CoarseMesosSchedulerBackend(
       .getOrElse("")
 
     environment.addVariables(
-      Environment.Variable
+      Environment
+        .Variable
         .newBuilder()
         .setName("SPARK_EXECUTOR_OPTS")
         .setValue(extraJavaOpts)
         .build())
 
-    sc.executorEnvs.foreach {
-      case (key, value) =>
-        environment.addVariables(
-          Environment.Variable
-            .newBuilder()
-            .setName(key)
-            .setValue(value)
-            .build())
-    }
-    val command = CommandInfo
-      .newBuilder()
-      .setEnvironment(environment)
+    sc
+      .executorEnvs
+      .foreach {
+        case (key, value) =>
+          environment.addVariables(
+            Environment
+              .Variable
+              .newBuilder()
+              .setName(key)
+              .setValue(value)
+              .build())
+      }
+    val command = CommandInfo.newBuilder().setEnvironment(environment)
 
     val uri = conf
       .getOption("spark.executor.uri")
@@ -246,9 +249,11 @@ private[spark] class CoarseMesosSchedulerBackend(
       command.addUris(CommandInfo.URI.newBuilder().setValue(uri.get))
     }
 
-    conf.getOption("spark.mesos.uris").map { uris =>
-      setupUris(uris, command)
-    }
+    conf
+      .getOption("spark.mesos.uris")
+      .map { uris =>
+        setupUris(uris, command)
+      }
 
     command.build()
   }
@@ -300,10 +305,12 @@ private[spark] class CoarseMesosSchedulerBackend(
 
       logDebug(s"Received ${offers.size} resource offers.")
 
-      val (matchedOffers, unmatchedOffers) = offers.asScala.partition { offer =>
-        val offerAttributes = toAttributeMap(offer.getAttributesList)
-        matchesAttributeRequirements(slaveOfferConstraints, offerAttributes)
-      }
+      val (matchedOffers, unmatchedOffers) = offers
+        .asScala
+        .partition { offer =>
+          val offerAttributes = toAttributeMap(offer.getAttributesList)
+          matchesAttributeRequirements(slaveOfferConstraints, offerAttributes)
+        }
 
       declineUnmatchedOffers(d, unmatchedOffers)
       handleMatchedOffers(d, matchedOffers)
@@ -437,14 +444,15 @@ private[spark] class CoarseMesosSchedulerBackend(
             .addAllResources(cpuResourcesToUse.asJava)
             .addAllResources(memResourcesToUse.asJava)
 
-          sc.conf.getOption("spark.mesos.executor.docker.image").foreach {
-            image =>
-              MesosSchedulerBackendUtil
-                .setupContainerBuilderDockerInfo(
-                  image,
-                  sc.conf,
-                  taskBuilder.getContainerBuilder)
-          }
+          sc
+            .conf
+            .getOption("spark.mesos.executor.docker.image")
+            .foreach { image =>
+              MesosSchedulerBackendUtil.setupContainerBuilderDockerInfo(
+                image,
+                sc.conf,
+                taskBuilder.getContainerBuilder)
+            }
 
           tasks(offer.getId) ::= taskBuilder.build()
           remainingResources(offerId) = resourcesLeft.asJava
@@ -473,9 +481,11 @@ private[spark] class CoarseMesosSchedulerBackend(
   }
 
   private def executorCores(offerCPUs: Int): Int = {
-    sc.conf.getInt(
-      "spark.executor.cores",
-      math.min(offerCPUs, maxCores - totalCoresAcquired))
+    sc
+      .conf
+      .getInt(
+        "spark.executor.cores",
+        math.min(offerCPUs, maxCores - totalCoresAcquired))
   }
 
   override def statusUpdate(d: SchedulerDriver, status: TaskStatus) {
@@ -500,21 +510,23 @@ private[spark] class CoarseMesosSchedulerBackend(
           "External shuffle client was not instantiated even though shuffle service is enabled.")
         // TODO: Remove this and allow the MesosExternalShuffleService to detect
         // framework termination when new Mesos Framework HTTP API is available.
-        val externalShufflePort = conf.getInt(
-          "spark.shuffle.service.port",
-          7337)
+        val externalShufflePort = conf
+          .getInt("spark.shuffle.service.port", 7337)
 
         logDebug(
           s"Connecting to shuffle service on slave $slaveId, " +
             s"host ${slave.hostname}, port $externalShufflePort for app ${conf.getAppId}")
 
-        mesosExternalShuffleClient.get
+        mesosExternalShuffleClient
+          .get
           .registerDriverWithShuffleService(
             slave.hostname,
             externalShufflePort,
-            sc.conf.getTimeAsMs(
-              "spark.storage.blockManagerSlaveTimeoutMs",
-              s"${sc.conf.getTimeAsMs("spark.network.timeout", "120s")}ms"),
+            sc
+              .conf
+              .getTimeAsMs(
+                "spark.storage.blockManagerSlaveTimeoutMs",
+                s"${sc.conf.getTimeAsMs("spark.network.timeout", "120s")}ms"),
             sc.conf.getTimeAsMs("spark.executor.heartbeatInterval", "10s")
           )
         slave.shuffleRegistered = true

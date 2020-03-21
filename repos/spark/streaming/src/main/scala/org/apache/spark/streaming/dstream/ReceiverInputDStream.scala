@@ -108,9 +108,11 @@ abstract class ReceiverInputDStream[T: ClassTag](_ssc: StreamingContext)
 
     if (blockInfos.nonEmpty) {
       val blockIds =
-        blockInfos.map {
-          _.blockId.asInstanceOf[BlockId]
-        }.toArray
+        blockInfos
+          .map {
+            _.blockId.asInstanceOf[BlockId]
+          }
+          .toArray
 
       // Are WAL record handles present with all the blocks
       val areWALRecordHandlesPresent = blockInfos.forall {
@@ -120,13 +122,17 @@ abstract class ReceiverInputDStream[T: ClassTag](_ssc: StreamingContext)
       if (areWALRecordHandlesPresent) {
         // If all the blocks have WAL record handle, then create a WALBackedBlockRDD
         val isBlockIdValid =
-          blockInfos.map {
-            _.isBlockIdValid()
-          }.toArray
+          blockInfos
+            .map {
+              _.isBlockIdValid()
+            }
+            .toArray
         val walRecordHandles =
-          blockInfos.map {
-            _.walRecordHandleOption.get
-          }.toArray
+          blockInfos
+            .map {
+              _.walRecordHandleOption.get
+            }
+            .toArray
         new WriteAheadLogBackedBlockRDD[T](
           ssc.sparkContext,
           blockIds,

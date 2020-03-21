@@ -103,7 +103,8 @@ private[ml] trait TreeEnsembleModel {
       .zipWithIndex
       .map {
         case ((tree, weight), treeIndex) =>
-          s"  Tree $treeIndex (weight $weight):\n" + tree.rootNode
+          s"  Tree $treeIndex (weight $weight):\n" + tree
+            .rootNode
             .subtreeToString(4)
       }
       .fold("")(_ + _)
@@ -252,28 +253,29 @@ private[ml] object DecisionTreeModelReadWrite {
     // We fill `finalNodes` in reverse order.  Since node IDs are assigned via a pre-order
     // traversal, this guarantees that child nodes will be built before parent nodes.
     val finalNodes = new Array[Node](nodes.length)
-    nodes.reverseIterator.foreach {
-      case n: NodeData =>
-        val impurityStats = ImpurityCalculator.getCalculator(
-          impurityType,
-          n.impurityStats)
-        val node =
-          if (n.leftChild != -1) {
-            val leftChild = finalNodes(n.leftChild)
-            val rightChild = finalNodes(n.rightChild)
-            new InternalNode(
-              n.prediction,
-              n.impurity,
-              n.gain,
-              leftChild,
-              rightChild,
-              n.split.getSplit,
-              impurityStats)
-          } else {
-            new LeafNode(n.prediction, n.impurity, impurityStats)
-          }
-        finalNodes(n.id) = node
-    }
+    nodes
+      .reverseIterator
+      .foreach {
+        case n: NodeData =>
+          val impurityStats = ImpurityCalculator
+            .getCalculator(impurityType, n.impurityStats)
+          val node =
+            if (n.leftChild != -1) {
+              val leftChild = finalNodes(n.leftChild)
+              val rightChild = finalNodes(n.rightChild)
+              new InternalNode(
+                n.prediction,
+                n.impurity,
+                n.gain,
+                leftChild,
+                rightChild,
+                n.split.getSplit,
+                impurityStats)
+            } else {
+              new LeafNode(n.prediction, n.impurity, impurityStats)
+            }
+          finalNodes(n.id) = node
+      }
     // Return the root node
     finalNodes.head
   }

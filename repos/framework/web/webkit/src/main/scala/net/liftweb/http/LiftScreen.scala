@@ -317,14 +317,18 @@ trait AbstractScreen extends Factory with Loggable {
           }
         ).headOption
 
-      val confirmInfo = stuff.collect {
-        case NotOnConfirmScreen =>
-          false
-      }.headOption orElse
-        stuff.collect {
-          case OnConfirmScreen =>
-            true
-        }.headOption
+      val confirmInfo = stuff
+        .collect {
+          case NotOnConfirmScreen =>
+            false
+        }
+        .headOption orElse
+        stuff
+          .collect {
+            case OnConfirmScreen =>
+              true
+          }
+          .headOption
 
       val newBinding: Box[FieldBinding] =
         (
@@ -406,12 +410,16 @@ trait AbstractScreen extends Factory with Loggable {
     List(FieldError(currentField.box openOr new FieldIdentifier {}, msg))
 
   implicit def boxStrToListFieldError(msg: Box[String]): List[FieldError] =
-    msg.toList.map(msg =>
-      FieldError(currentField.box openOr new FieldIdentifier {}, Text(msg)))
+    msg
+      .toList
+      .map(msg =>
+        FieldError(currentField.box openOr new FieldIdentifier {}, Text(msg)))
 
   implicit def boxXmlToListFieldError(msg: Box[NodeSeq]): List[FieldError] =
-    msg.toList.map(msg =>
-      FieldError(currentField.box openOr new FieldIdentifier {}, msg))
+    msg
+      .toList
+      .map(msg =>
+        FieldError(currentField.box openOr new FieldIdentifier {}, msg))
 
   /**
     * Create a FieldBuilder so you can add help screens, validations and filters.  Remember to invoke "make" on
@@ -432,14 +440,18 @@ trait AbstractScreen extends Factory with Loggable {
       default,
       man,
       Empty,
-      stuff.toList.collect {
-        case AVal(v: Function1[_, _]) =>
-          v.asInstanceOf[T => List[FieldError]]
-      },
-      stuff.toList.collect {
-        case AFilter(v) =>
-          v.asInstanceOf[T => T]
-      },
+      stuff
+        .toList
+        .collect {
+          case AVal(v: Function1[_, _]) =>
+            v.asInstanceOf[T => List[FieldError]]
+        },
+      stuff
+        .toList
+        .collect {
+          case AFilter(v) =>
+            v.asInstanceOf[T => T]
+        },
       stuff)
   }
 
@@ -512,14 +524,18 @@ trait AbstractScreen extends Factory with Loggable {
         }
       ).headOption
 
-    val confirmInfo = stuff.collect {
-      case NotOnConfirmScreen =>
-        false
-    }.headOption orElse
-      stuff.collect {
-        case OnConfirmScreen =>
-          true
-      }.headOption
+    val confirmInfo = stuff
+      .collect {
+        case NotOnConfirmScreen =>
+          false
+      }
+      .headOption orElse
+      stuff
+        .collect {
+          case OnConfirmScreen =>
+            true
+        }
+        .headOption
 
     val newBinding: Box[FieldBinding] =
       (
@@ -563,8 +579,9 @@ trait AbstractScreen extends Factory with Loggable {
         confirmInfo getOrElse super.onConfirm_?
 
       override def toForm: Box[NodeSeq] =
-        underlying.toForm.map(ns =>
-          SHtml.ElemAttr.applyToAllElems(ns, formElemAttrs))
+        underlying
+          .toForm
+          .map(ns => SHtml.ElemAttr.applyToAllElems(ns, formElemAttrs))
 
       /**
         * Given the current state of things, should this field be shown
@@ -598,16 +615,20 @@ trait AbstractScreen extends Factory with Loggable {
       override def validate = underlying.validate ::: super.validate
 
       override def validations =
-        stuff.collect {
-          case AVal(f) =>
-            f.asInstanceOf[ValueType => List[FieldError]]
-        }.toList
+        stuff
+          .collect {
+            case AVal(f) =>
+              f.asInstanceOf[ValueType => List[FieldError]]
+          }
+          .toList
 
       override def setFilter =
-        stuff.collect {
-          case AFilter(f) =>
-            f.asInstanceOf[ValueType => ValueType]
-        }.toList
+        stuff
+          .collect {
+            case AFilter(f) =>
+              f.asInstanceOf[ValueType => ValueType]
+          }
+          .toList
 
       override def is = underlying.get
 
@@ -683,14 +704,18 @@ trait AbstractScreen extends Factory with Loggable {
         }
       ).headOption
 
-    val confirmInfo = stuff.collect {
-      case NotOnConfirmScreen =>
-        false
-    }.headOption orElse
-      stuff.collect {
-        case OnConfirmScreen =>
-          true
-      }.headOption
+    val confirmInfo = stuff
+      .collect {
+        case NotOnConfirmScreen =>
+          false
+      }
+      .headOption orElse
+      stuff
+        .collect {
+          case OnConfirmScreen =>
+            true
+        }
+        .headOption
 
     new Field {
       type ValueType = T
@@ -742,16 +767,20 @@ trait AbstractScreen extends Factory with Loggable {
         underlying.toList.flatMap(_.validate) ::: super.validate
 
       override def validations =
-        stuff.collect {
-          case AVal(f) =>
-            f.asInstanceOf[ValueType => List[FieldError]]
-        }.toList
+        stuff
+          .collect {
+            case AVal(f) =>
+              f.asInstanceOf[ValueType => List[FieldError]]
+          }
+          .toList
 
       override def setFilter =
-        stuff.collect {
-          case AFilter(f) =>
-            f.asInstanceOf[ValueType => ValueType]
-        }.toList
+        stuff
+          .collect {
+            case AFilter(f) =>
+              f.asInstanceOf[ValueType => ValueType]
+          }
+          .toList
 
       override def is = underlying.openOrThrowException("Legacy code").get
 
@@ -763,8 +792,8 @@ trait AbstractScreen extends Factory with Loggable {
           .set(setFilter.foldLeft(v)((v, f) => f(v)))
 
       override def uniqueFieldId: Box[String] =
-        paramFieldId or underlying.flatMap(
-          _.uniqueFieldId) or super.uniqueFieldId
+        paramFieldId or underlying.flatMap(_.uniqueFieldId) or super
+          .uniqueFieldId
 
       override def binding = newBinding or super.binding
 
@@ -791,18 +820,22 @@ trait AbstractScreen extends Factory with Loggable {
       default,
       man,
       Empty,
-      stuff.toList.flatMap {
-        case AVal(v: Function1[_, _]) =>
-          List(v.asInstanceOf[T => List[FieldError]])
-        case _ =>
-          Nil
-      },
-      stuff.toList.flatMap {
-        case AFilter(v) =>
-          List(v.asInstanceOf[T => T])
-        case _ =>
-          Nil
-      },
+      stuff
+        .toList
+        .flatMap {
+          case AVal(v: Function1[_, _]) =>
+            List(v.asInstanceOf[T => List[FieldError]])
+          case _ =>
+            Nil
+        },
+      stuff
+        .toList
+        .flatMap {
+          case AFilter(v) =>
+            List(v.asInstanceOf[T => T])
+          case _ =>
+            Nil
+        },
       stuff).make
 
   protected def removeRegExChars(regEx: String): String => String =
@@ -1012,19 +1045,23 @@ trait AbstractScreen extends Factory with Loggable {
             stuff)
 
           override val setFilter =
-            stuff.flatMap {
-              case AFilter(f) =>
-                List(f.asInstanceOf[ValueType => ValueType])
-              case _ =>
-                Nil
-            }.toList
+            stuff
+              .flatMap {
+                case AFilter(f) =>
+                  List(f.asInstanceOf[ValueType => ValueType])
+                case _ =>
+                  Nil
+              }
+              .toList
           override val validations =
-            stuff.flatMap {
-              case AVal(v: Function1[_, _]) =>
-                List(v.asInstanceOf[T => List[FieldError]])
-              case _ =>
-                Nil
-            }.toList
+            stuff
+              .flatMap {
+                case AVal(v: Function1[_, _]) =>
+                  List(v.asInstanceOf[T => List[FieldError]])
+                case _ =>
+                  Nil
+              }
+              .toList
 
           override def binding = newBinding
 
@@ -1056,19 +1093,23 @@ trait AbstractScreen extends Factory with Loggable {
             stuff)
 
           override val setFilter =
-            stuff.flatMap {
-              case AFilter(f) =>
-                List(f.asInstanceOf[ValueType => ValueType])
-              case _ =>
-                Nil
-            }.toList
+            stuff
+              .flatMap {
+                case AFilter(f) =>
+                  List(f.asInstanceOf[ValueType => ValueType])
+                case _ =>
+                  Nil
+              }
+              .toList
           override val validations =
-            stuff.flatMap {
-              case AVal(v: Function1[_, _]) =>
-                List(v.asInstanceOf[T => List[FieldError]])
-              case _ =>
-                Nil
-            }.toList
+            stuff
+              .flatMap {
+                case AVal(v: Function1[_, _]) =>
+                  List(v.asInstanceOf[T => List[FieldError]])
+                case _ =>
+                  Nil
+              }
+              .toList
 
           override def binding = newBinding
 
@@ -1244,8 +1285,8 @@ trait AbstractScreen extends Factory with Loggable {
       name,
       default,
       field =>
-        SHtml.multiSelectElem(field.otherValue, field.is, eAttr: _*)(
-          field.set(_)),
+        SHtml
+          .multiSelectElem(field.otherValue, field.is, eAttr: _*)(field.set(_)),
       OtherValueInitializerImpl[Seq[T]](() => choices),
       stuff: _*)
   }
@@ -1256,7 +1297,8 @@ trait AbstractScreen extends Factory with Loggable {
   protected def grabParams(
       in: Seq[FilterOrValidate[_]]): List[SHtml.ElemAttr] = {
     val sl = in.toList
-    in.collect {
+    in
+      .collect {
         case FormFieldId(id) =>
           ("id" -> id): SHtml.ElemAttr
       }
@@ -1442,8 +1484,8 @@ trait ScreenWizardRendered extends Loggable {
         yield traceInline(
           "Binding default field %s to %s"
             .format(bindingInfo.selector(formName), defaultFieldNodeSeq),
-          bindingInfo.selector(formName) #> bindField(field)(
-            defaultFieldNodeSeq)
+          bindingInfo
+            .selector(formName) #> bindField(field)(defaultFieldNodeSeq)
         )
 
     def customFields: List[CssBindFunc] =
@@ -1521,8 +1563,8 @@ trait ScreenWizardRendered extends Loggable {
                   _.id > _.id
                 }
                 .head // get the maximum type of notice (Error > Warning > Notice)
-            val metaData: MetaData =
-              noticeTypeToAttr(theScreen).map(_(maxN)) openOr Null
+            val metaData: MetaData = noticeTypeToAttr(theScreen)
+              .map(_(maxN)) openOr Null
             basicLabel & update(_.label, metaData)
         }
       }
@@ -1547,8 +1589,8 @@ trait ScreenWizardRendered extends Loggable {
           case xs =>
             replaceChildren(_.errors) #> xs.map {
               case (noticeType, msg, _) =>
-                val metaData: MetaData =
-                  noticeTypeToAttr(theScreen).map(_(noticeType)) openOr Null
+                val metaData: MetaData = noticeTypeToAttr(theScreen)
+                  .map(_(noticeType)) openOr Null
                 nsSetChildren(_.error, msg) & update(_.error, metaData)
             }
         }
@@ -1573,8 +1615,8 @@ trait ScreenWizardRendered extends Loggable {
         case xs =>
           replaceChildren(_.globalErrors) #> xs.map {
             case (noticeType, msg, _) =>
-              val metaData: MetaData =
-                noticeTypeToAttr(theScreen).map(_(noticeType)) openOr Null
+              val metaData: MetaData = noticeTypeToAttr(theScreen)
+                .map(_(noticeType)) openOr Null
               nsSetChildren(_.error, msg) & update(_.error, metaData)
           }
       }
@@ -1621,24 +1663,26 @@ trait ScreenWizardRendered extends Loggable {
           }</form> %
             theScreen.additionalAttributes
         ) ++
-          prevId.toList.map {
-            case (id, func) =>
-              <form id={
-                id
-              } action={
-                url
-              } method="post">{
-                SHtml.hidden(() => {
-                  snapshot.restore();
-                  val res = func();
-                  if (!ajax_?) {
-                    val localSnapshot = createSnapshot;
-                    S.seeOther(url, () => localSnapshot.restore)
-                  }
-                  res
-                }) % liftScreenAttr("restoreAction")
-              }</form>
-          } ++
+          prevId
+            .toList
+            .map {
+              case (id, func) =>
+                <form id={
+                  id
+                } action={
+                  url
+                } method="post">{
+                  SHtml.hidden(() => {
+                    snapshot.restore();
+                    val res = func();
+                    if (!ajax_?) {
+                      val localSnapshot = createSnapshot;
+                      S.seeOther(url, () => localSnapshot.restore)
+                    }
+                    res
+                  }) % liftScreenAttr("restoreAction")
+                }</form>
+            } ++
           <form id={
             cancelId._1
           } action={
@@ -1990,9 +2034,9 @@ trait LiftScreen
     }
 
     override protected def testWasSet(name: String, bn: String): Boolean = {
-      ScreenVarHandler
-        .get(name)
-        .isDefined || (ScreenVarHandler.get(bn) openOr false)
+      ScreenVarHandler.get(name).isDefined || (
+        ScreenVarHandler.get(bn) openOr false
+      )
     }
 
     /**
@@ -2019,8 +2063,9 @@ trait LiftScreen
       selector #> (
         SHtml
           .makeAjaxCall(
-            LiftRules.jsArtifacts
-              .serialize(NextId.get) + ("&" + LocalActionRef.get + "=" + name))
+            LiftRules.jsArtifacts.serialize(NextId.get) + (
+              "&" + LocalActionRef.get + "=" + name
+            ))
           .cmd
         )
         .toJsCmd)
@@ -2135,7 +2180,8 @@ trait LiftScreen
       Empty, //screenCount: Box[NodeSeq],
       Empty, // wizardTop: Box[Elem],
       theScreen.screenTop, //screenTop: Box[Elem],
-      theScreen.screenFields
+      theScreen
+        .screenFields
         .filter(_.shouldDisplay_?)
         .flatMap(f =>
           if (f.show_?)

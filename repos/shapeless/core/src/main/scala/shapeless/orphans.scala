@@ -81,7 +81,8 @@ class OrphanMacros(val c: whitebox.Context) extends CaseClassMacros {
     val checkIdx = (materializerIdx * 2) + 1
     if (open.size > checkIdx) {
       val check = open(checkIdx)
-      if (materializer.sym == check.sym && materializer.pre =:= check.pre && materializer.pt =:= check.pt)
+      if (materializer.sym == check.sym && materializer
+            .pre =:= check.pre && materializer.pt =:= check.pt)
         c.abort(c.enclosingPosition, "Backtrack")
     }
 
@@ -136,11 +137,14 @@ class OrphanMacros(val c: whitebox.Context) extends CaseClassMacros {
         val resTpeD = derived.symbol.asMethod.info.finalResultType
         val resTpeI = inst.symbol.asMethod.info.finalResultType
 
-        val useDerived = resTpeD.typeArgs.zip(resTpeI.typeArgs).forall {
-          case (ad, ai) =>
-            ai.typeSymbol.isParameter ||
-              (!ad.typeSymbol.isParameter && !(ad <:< ai))
-        }
+        val useDerived = resTpeD
+          .typeArgs
+          .zip(resTpeI.typeArgs)
+          .forall {
+            case (ad, ai) =>
+              ai.typeSymbol.isParameter ||
+                (!ad.typeSymbol.isParameter && !(ad <:< ai))
+          }
 
         if (useDerived)
           derived

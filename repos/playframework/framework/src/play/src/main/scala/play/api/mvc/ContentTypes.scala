@@ -323,7 +323,8 @@ trait BodyParsers {
     private[play] val ApplicationXmlMatcher = """application/.*\+xml.*""".r
 
     private def config =
-      Play.privateMaybeApplication
+      Play
+        .privateMaybeApplication
         .map(app => hcCache(app).parser)
         .getOrElse(ParserConfiguration())
 
@@ -450,9 +451,10 @@ trait BodyParsers {
       */
     def json(maxLength: Int): BodyParser[JsValue] =
       when(
-        _.contentType.exists(m =>
-          m.equalsIgnoreCase("text/json") || m.equalsIgnoreCase(
-            "application/json")),
+        _.contentType
+        .exists(m =>
+          m.equalsIgnoreCase("text/json") || m
+            .equalsIgnoreCase("application/json")),
         tolerantJson(maxLength),
         createBadResult(
           "Expecting text/json or application/json body",
@@ -514,11 +516,13 @@ trait BodyParsers {
       BodyParser { requestHeader =>
         import play.api.libs.iteratee.Execution.Implicits.trampoline
         anyContent(maxLength)(requestHeader).map { resultOrBody =>
-          resultOrBody.right.flatMap { body =>
-            form
-              .bindFromRequest()(Request[AnyContent](requestHeader, body))
-              .fold(formErrors => Left(onErrors(formErrors)), a => Right(a))
-          }
+          resultOrBody
+            .right
+            .flatMap { body =>
+              form
+                .bindFromRequest()(Request[AnyContent](requestHeader, body))
+                .fold(formErrors => Left(onErrors(formErrors)), a => Right(a))
+            }
         }
       }
 
@@ -549,20 +553,23 @@ trait BodyParsers {
           // Encoding notes: RFC 3023 is the RFC for XML content types.  Comments below reflect what it says.
 
           // An externally declared charset takes precedence
-          request.charset
+          request
+            .charset
             .orElse(
               // If omitted, maybe select a default charset, based on the media type.
-              request.mediaType.collect {
-                // According to RFC 3023, the default encoding for text/xml is us-ascii. This contradicts RFC 2616, which
-                // states that the default for text/* is ISO-8859-1.  An RFC 3023 conforming client will send US-ASCII,
-                // in that case it is safe for us to use US-ASCII or ISO-8859-1.  But a client that knows nothing about
-                // XML, and therefore nothing about RFC 3023, but rather conforms to RFC 2616, will send ISO-8859-1.
-                // Since decoding as ISO-8859-1 works for both clients that conform to RFC 3023, and clients that conform
-                // to RFC 2616, we use that.
-                case mt if mt.mediaType == "text" =>
-                  "iso-8859-1"
-                // Otherwise, there should be no default, it will be detected by the XML parser.
-              })
+              request
+                .mediaType
+                .collect {
+                  // According to RFC 3023, the default encoding for text/xml is us-ascii. This contradicts RFC 2616, which
+                  // states that the default for text/* is ISO-8859-1.  An RFC 3023 conforming client will send US-ASCII,
+                  // in that case it is safe for us to use US-ASCII or ISO-8859-1.  But a client that knows nothing about
+                  // XML, and therefore nothing about RFC 3023, but rather conforms to RFC 2616, will send ISO-8859-1.
+                  // Since decoding as ISO-8859-1 works for both clients that conform to RFC 3023, and clients that conform
+                  // to RFC 2616, we use that.
+                  case mt if mt.mediaType == "text" =>
+                    "iso-8859-1"
+                  // Otherwise, there should be no default, it will be detected by the XML parser.
+                })
             .foreach { charset =>
               inputSource.setEncoding(charset)
             }
@@ -581,10 +588,12 @@ trait BodyParsers {
       */
     def xml(maxLength: Int): BodyParser[NodeSeq] =
       when(
-        _.contentType.exists { t =>
+        _.contentType
+        .exists { t =>
           val tl = t.toLowerCase(Locale.ENGLISH)
-          tl.startsWith("text/xml") || tl.startsWith(
-            "application/xml") || ApplicationXmlMatcher.pattern
+          tl.startsWith("text/xml") || tl
+            .startsWith("application/xml") || ApplicationXmlMatcher
+            .pattern
             .matcher(tl)
             .matches()
         },
@@ -654,8 +663,8 @@ trait BodyParsers {
       */
     def urlFormEncoded(maxLength: Int): BodyParser[Map[String, Seq[String]]] =
       when(
-        _.contentType.exists(
-          _.equalsIgnoreCase("application/x-www-form-urlencoded")),
+        _.contentType
+        .exists(_.equalsIgnoreCase("application/x-www-form-urlencoded")),
         tolerantFormUrlEncoded(maxLength),
         createBadResult(
           "Expecting application/x-www-form-urlencoded body",
@@ -680,7 +689,8 @@ trait BodyParsers {
       */
     def default(maxLength: Option[Long]): BodyParser[AnyContent] =
       using { request =>
-        if (request.method == HttpVerbs.PATCH || request.method == HttpVerbs.POST || request.method == HttpVerbs.PUT) {
+        if (request.method == HttpVerbs.PATCH || request
+              .method == HttpVerbs.POST || request.method == HttpVerbs.PUT) {
           anyContent(maxLength)
         } else {
           ignore(AnyContentAsEmpty)
@@ -701,8 +711,9 @@ trait BodyParsers {
 
         def maxLengthOrDefault = maxLength.fold(DefaultMaxTextLength)(_.toInt)
         def maxLengthOrDefaultLarge = maxLength.getOrElse(DefaultMaxDiskLength)
-        val contentType: Option[String] = request.contentType.map(
-          _.toLowerCase(Locale.ENGLISH))
+        val contentType: Option[String] = request
+          .contentType
+          .map(_.toLowerCase(Locale.ENGLISH))
         contentType match {
           case Some("text/plain") =>
             logger.trace("Parsing AnyContent as text")

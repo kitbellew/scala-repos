@@ -19,13 +19,22 @@ import org.scalatest.{BeforeAndAfterAll, Suite}
 
 trait HadoopSharedPlatformTest extends BeforeAndAfterAll {
   this: Suite =>
-  org.apache.log4j.Logger
+  org
+    .apache
+    .log4j
+    .Logger
     .getLogger("org.apache.hadoop")
     .setLevel(org.apache.log4j.Level.ERROR)
-  org.apache.log4j.Logger
+  org
+    .apache
+    .log4j
+    .Logger
     .getLogger("org.mortbay")
     .setLevel(org.apache.log4j.Level.ERROR)
-  org.apache.log4j.Logger
+  org
+    .apache
+    .log4j
+    .Logger
     .getLogger("org.apache.hadoop.metrics2.util")
     .setLevel(org.apache.log4j.Level.ERROR)
 

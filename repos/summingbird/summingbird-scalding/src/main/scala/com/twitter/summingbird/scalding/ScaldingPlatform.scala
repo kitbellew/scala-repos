@@ -179,9 +179,8 @@ object Scalding {
   private def bisectingMinify(mode: Mode, desired: DateRange)(
       factory: (DateRange) => SSource): Option[DateRange] = {
     def isGood(end: Long): Boolean =
-      STry(
-        factory(DateRange(desired.start, RichDate(end)))
-          .validateTaps(mode)).isSuccess
+      STry(factory(DateRange(desired.start, RichDate(end))).validateTaps(mode))
+        .isSuccess
     val DateRange(start, end) = desired
     if (isGood(start.timestamp)) {
       // The invariant is that low isGood, low < upper, and upper isGood == false
@@ -243,27 +242,31 @@ object Scalding {
       {
         val (timeSpan, mode) = timeMode
 
-        toDateRange(timeSpan).right.flatMap { dr =>
-          minify(mode, dr)(factory).right.map { newDr =>
-            val newIntr = newDr.as[Interval[Timestamp]]
-            val mappable = factory(newDr)
-            (
-              (newIntr, mode),
-              Reader { (fdM: (FlowDef, Mode)) =>
-                TypedPipe
-                  .from(mappable)
-                  .flatMap { t =>
-                    fn(t).flatMap { mapped =>
-                      val time = Timestamp(timeOf(mapped))
-                      if (newIntr(time))
-                        Some((time, mapped))
-                      else
-                        None
-                    }
-                  }
-              })
+        toDateRange(timeSpan)
+          .right
+          .flatMap { dr =>
+            minify(mode, dr)(factory)
+              .right
+              .map { newDr =>
+                val newIntr = newDr.as[Interval[Timestamp]]
+                val mappable = factory(newDr)
+                (
+                  (newIntr, mode),
+                  Reader { (fdM: (FlowDef, Mode)) =>
+                    TypedPipe
+                      .from(mappable)
+                      .flatMap { t =>
+                        fn(t).flatMap { mapped =>
+                          val time = Timestamp(timeOf(mapped))
+                          if (newIntr(time))
+                            Some((time, mapped))
+                          else
+                            None
+                        }
+                      }
+                  })
+              }
           }
-        }
       }
     }
 
@@ -274,25 +277,27 @@ object Scalding {
       {
         val (timeSpan, mode) = timeMode
 
-        toDateRange(timeSpan).right.map { dr =>
-          val mappable = factory(dr)
-          (
-            (timeSpan, mode),
-            Reader { (fdM: (FlowDef, Mode)) =>
-              mappable.validateTaps(
-                fdM._2
-              ) //This can throw, but that is what this caller wants
-              TypedPipe
-                .from(mappable)
-                .flatMap { t =>
-                  val time = Timestamp(timeOf(t))
-                  if (timeSpan(time))
-                    Some((time, t))
-                  else
-                    None
-                }
-            })
-        }
+        toDateRange(timeSpan)
+          .right
+          .map { dr =>
+            val mappable = factory(dr)
+            (
+              (timeSpan, mode),
+              Reader { (fdM: (FlowDef, Mode)) =>
+                mappable.validateTaps(
+                  fdM._2
+                ) //This can throw, but that is what this caller wants
+                TypedPipe
+                  .from(mappable)
+                  .flatMap { t =>
+                    val time = Timestamp(timeOf(t))
+                    if (timeSpan(time))
+                      Some((time, t))
+                    else
+                      None
+                  }
+              })
+          }
       }
     }
 
@@ -308,7 +313,9 @@ object Scalding {
       }
       .getOrElse(
         Left(
-          List("only finite time ranges are supported by scalding: " + timeSpan.toString)))
+          List(
+            "only finite time ranges are supported by scalding: " + timeSpan
+              .toString)))
 
   /**
     * This makes sure that the output FlowToPipe[T] produces a TypedPipe[T] with only
@@ -463,9 +470,8 @@ object Scalding {
                * So, we pass the full PipeFactory to to the store so it can request only
                * the time ranges that it needs.
                */
-              val shouldForkProducer = InternalService.storeIsJoined(
-                dependants,
-                store)
+              val shouldForkProducer = InternalService
+                .storeIsJoined(dependants, store)
               val (in, m) = recurse(producer, forceFanOut = shouldForkProducer)
               val commutativity = getCommutativity(names, options, summer)
               val storeReducers =
@@ -484,10 +490,8 @@ object Scalding {
               val (pf, m) = recurse(left)
               (service.lookup(pf), m)
             case ljp @ LeftJoinedProducer(left, StoreService(store))
-                if InternalService.storeDoesNotDependOnJoin(
-                  dependants,
-                  ljp,
-                  store) =>
+                if InternalService
+                  .storeDoesNotDependOnJoin(dependants, ljp, store) =>
               /*
                * This is the simplest case of joining against a store. Here we just need the input to
                * the store and call LookupJoin
@@ -534,10 +538,8 @@ object Scalding {
               def go[K, V, U](
                   incoming: Producer[Scalding, (K, V)],
                   bs: BatchedStore[K, U]) = {
-                val (flatMapFn, othersOpt) = InternalService.getLoopInputs(
-                  dependants,
-                  incoming,
-                  bs)
+                val (flatMapFn, othersOpt) = InternalService
+                  .getLoopInputs(dependants, incoming, bs)
                 val (leftPf, m1) = recurse(incoming)
 
                 val (deltaLogOpt, m2) =
@@ -569,13 +571,15 @@ object Scalding {
                     // If there was no producer returned, pass an empty TypedPipe to the join for that part.
                     flowToPipe <- deltaLogOpt
                       .map { del =>
-                        leftPf.join(del).map {
-                          case (ftpA, ftpB) =>
-                            Scalding.joinFP(
-                              ftpA,
-                              ftpB
-                            ) // extra producer for store, join the two FlowToPipes
-                        }
+                        leftPf
+                          .join(del)
+                          .map {
+                            case (ftpA, ftpB) =>
+                              Scalding.joinFP(
+                                ftpA,
+                                ftpB
+                              ) // extra producer for store, join the two FlowToPipes
+                          }
                       }
                       .getOrElse(
                         leftPf.map { p =>
@@ -705,7 +709,8 @@ object Scalding {
                 for {
                   leftAndRight <- pfl.join(pfr)
                   merged = Scalding.merge(leftAndRight._1, leftAndRight._2)
-                  maxAvailable <- StateWithError.getState // read the latest state, which is the time
+                  maxAvailable <- StateWithError
+                    .getState // read the latest state, which is the time
                 } yield Scalding.limitTimes(maxAvailable._1, merged)
               (merged, mr)
             }
@@ -722,7 +727,8 @@ object Scalding {
                 for {
                   leftAndRight <- pfl.join(pfr)
                   justRight = Scalding.also(leftAndRight._1, leftAndRight._2)
-                  maxAvailable <- StateWithError.getState // read the latest state, which is the time
+                  maxAvailable <- StateWithError
+                    .getState // read the latest state, which is the time
                 } yield Scalding.limitTimes(maxAvailable._1, justRight)
               (onlyRight, mr)
             }
@@ -737,10 +743,7 @@ object Scalding {
       options: Map[String, Options],
       prod: Producer[Scalding, T]): PipeFactory[T] = {
     val dep = Dependants(prod)
-    val fanOutSet =
-      dep.nodes
-        .filter(dep.fanOut(_).exists(_ > 1))
-        .toSet
+    val fanOutSet = dep.nodes.filter(dep.fanOut(_).exists(_ > 1)).toSet
     buildFlow(options, prod, fanOutSet, dep, Map.empty)._1
   }
 
@@ -763,10 +766,12 @@ object Scalding {
       mode: Mode): Try[(DateRange, TypedPipe[(Timestamp, T)])] = {
     val ts = dr.as[Interval[Timestamp]]
     val pf = planProducer(opts, prod)
-    toPipe(ts, fd, mode, pf).right.map {
-      case (ts, pipe) =>
-        (ts.as[Option[DateRange]].get, pipe)
-    }
+    toPipe(ts, fd, mode, pf)
+      .right
+      .map {
+        case (ts, pipe) =>
+          (ts.as[Option[DateRange]].get, pipe)
+      }
   }
 
   /**
@@ -790,7 +795,8 @@ object Scalding {
       mode: Mode,
       pf: PipeFactory[T]): Try[(Interval[Timestamp], TimedPipe[T])] = {
     logger.info("topipe Planning on interval: {}", timeSpan)
-    pf((timeSpan, mode)).right
+    pf((timeSpan, mode))
+      .right
       .map {
         case (((ts, m), flowDefMutator)) =>
           (ts, flowDefMutator((flowDef, m)))
@@ -803,7 +809,8 @@ object Scalding {
       mode: Mode,
       pf: PipeFactory[T]): Try[TimedPipe[T]] = {
     logger.info("Planning on interval: {}", timeSpan.as[Option[DateRange]])
-    pf((timeSpan, mode)).right
+    pf((timeSpan, mode))
+      .right
       .flatMap {
         case (((ts, m), flowDefMutator)) =>
           if (ts != timeSpan)
@@ -817,7 +824,9 @@ object Scalding {
 // Jank to get around serialization issues
 class Memo[T] extends java.io.Serializable {
   @transient
-  private val mmap = scala.collection.mutable
+  private val mmap = scala
+    .collection
+    .mutable
     .Map[(FlowDef, Mode), TimedPipe[T]]()
   def getOrElseUpdate(
       in: (FlowDef, Mode),
@@ -886,13 +895,10 @@ class Scalding(
             kryo
         }
 
-      conf
-        .setSerialization(
-          Left(
-            (
-              classOf[serialization.KryoHadoop],
-              initKryo.withRegistrar(kryoReg))),
-          Nil)
+      conf.setSerialization(
+        Left(
+          (classOf[serialization.KryoHadoop], initKryo.withRegistrar(kryoReg))),
+        Nil)
     }
   }
 
@@ -905,10 +911,12 @@ class Scalding(
       .+("summingbird.jobname" -> jobName)
       .+("summingbird.submitted.timestamp" -> System.currentTimeMillis.toString)
 
-    postConfig.toMap.foreach {
-      case (k, v) =>
-        hConf.set(k, v)
-    }
+    postConfig
+      .toMap
+      .foreach {
+        case (k, v) =>
+          hConf.set(k, v)
+      }
     postConfig
   }
 
@@ -979,18 +987,26 @@ class Scalding(
             try {
               flowOpt match {
                 case None =>
-                  Scalding.logger.warn(
-                    "No Sinks were planned into flows. Waiting state is probably out of sync with stores. Proceeding with NO-OP.")
+                  Scalding
+                    .logger
+                    .warn(
+                      "No Sinks were planned into flows. Waiting state is probably out of sync with stores. Proceeding with NO-OP.")
                   runningState.succeed
                 case Some(flow) =>
-                  options.get(jobName).foreach { jopt =>
-                    jopt.get[WriteDot].foreach { o =>
-                      flow.writeDOT(o.filename)
+                  options
+                    .get(jobName)
+                    .foreach { jopt =>
+                      jopt
+                        .get[WriteDot]
+                        .foreach { o =>
+                          flow.writeDOT(o.filename)
+                        }
+                      jopt
+                        .get[WriteStepsDot]
+                        .foreach { o =>
+                          flow.writeStepsDOT(o.filename)
+                        }
                     }
-                    jopt.get[WriteStepsDot].foreach { o =>
-                      flow.writeStepsDOT(o.filename)
-                    }
-                  }
                   flow.complete
                   if (flow.getFlowStats.isSuccessful)
                     runningState.succeed

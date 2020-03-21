@@ -68,31 +68,35 @@ case class Generate(
     // boundGenerator.terminate() should be triggered after all of the rows in the partition
     val rows =
       if (join) {
-        child.execute().mapPartitionsInternal { iter =>
-          val generatorNullRow =
-            new GenericInternalRow(generator.elementTypes.size)
-          val joinedRow = new JoinedRow
+        child
+          .execute()
+          .mapPartitionsInternal { iter =>
+            val generatorNullRow =
+              new GenericInternalRow(generator.elementTypes.size)
+            val joinedRow = new JoinedRow
 
-          iter.flatMap { row =>
-            // we should always set the left (child output)
-            joinedRow.withLeft(row)
-            val outputRows = boundGenerator.eval(row)
-            if (outer && outputRows.isEmpty) {
-              joinedRow.withRight(generatorNullRow) :: Nil
-            } else {
-              outputRows.map(joinedRow.withRight)
+            iter.flatMap { row =>
+              // we should always set the left (child output)
+              joinedRow.withLeft(row)
+              val outputRows = boundGenerator.eval(row)
+              if (outer && outputRows.isEmpty) {
+                joinedRow.withRight(generatorNullRow) :: Nil
+              } else {
+                outputRows.map(joinedRow.withRight)
+              }
+            } ++ LazyIterator(boundGenerator.terminate).map { row =>
+              // we leave the left side as the last element of its child output
+              // keep it the same as Hive does
+              joinedRow.withRight(row)
             }
-          } ++ LazyIterator(boundGenerator.terminate).map { row =>
-            // we leave the left side as the last element of its child output
-            // keep it the same as Hive does
-            joinedRow.withRight(row)
           }
-        }
       } else {
-        child.execute().mapPartitionsInternal { iter =>
-          iter.flatMap(boundGenerator.eval) ++ LazyIterator(
-            boundGenerator.terminate)
-        }
+        child
+          .execute()
+          .mapPartitionsInternal { iter =>
+            iter.flatMap(boundGenerator.eval) ++ LazyIterator(
+              boundGenerator.terminate)
+          }
       }
 
     val numOutputRows = longMetric("numOutputRows")

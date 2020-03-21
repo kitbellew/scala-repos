@@ -71,8 +71,10 @@ class ScTryStmtImpl(node: ASTNode)
                     else {
                       candidates(0) match {
                         case ScalaResolveResult(fun: ScFunction, subst) =>
-                          fun.returnType.map(tp =>
-                            Bounds.weakLub(lifted.get, subst.subst(tp)))
+                          fun
+                            .returnType
+                            .map(tp =>
+                              Bounds.weakLub(lifted.get, subst.subst(tp)))
                         case _ =>
                           lifted
                       }

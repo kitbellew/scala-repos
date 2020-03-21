@@ -80,52 +80,54 @@ case class BroadcastHashJoin(
     val numOutputRows = longMetric("numOutputRows")
 
     val broadcastRelation = buildPlan.executeBroadcast[HashedRelation]()
-    streamedPlan.execute().mapPartitions { streamedIter =>
-      val joinedRow = new JoinedRow()
-      val hashTable = broadcastRelation.value
-      TaskContext
-        .get()
-        .taskMetrics()
-        .incPeakExecutionMemory(hashTable.getMemorySize)
-      val keyGenerator = streamSideKeyGenerator
-      val resultProj = createResultProjection
+    streamedPlan
+      .execute()
+      .mapPartitions { streamedIter =>
+        val joinedRow = new JoinedRow()
+        val hashTable = broadcastRelation.value
+        TaskContext
+          .get()
+          .taskMetrics()
+          .incPeakExecutionMemory(hashTable.getMemorySize)
+        val keyGenerator = streamSideKeyGenerator
+        val resultProj = createResultProjection
 
-      joinType match {
-        case Inner =>
-          hashJoin(streamedIter, hashTable, numOutputRows)
+        joinType match {
+          case Inner =>
+            hashJoin(streamedIter, hashTable, numOutputRows)
 
-        case LeftOuter =>
-          streamedIter.flatMap { currentRow =>
-            val rowKey = keyGenerator(currentRow)
-            joinedRow.withLeft(currentRow)
-            leftOuterIterator(
-              rowKey,
-              joinedRow,
-              hashTable.get(rowKey),
-              resultProj,
-              numOutputRows)
-          }
+          case LeftOuter =>
+            streamedIter.flatMap { currentRow =>
+              val rowKey = keyGenerator(currentRow)
+              joinedRow.withLeft(currentRow)
+              leftOuterIterator(
+                rowKey,
+                joinedRow,
+                hashTable.get(rowKey),
+                resultProj,
+                numOutputRows)
+            }
 
-        case RightOuter =>
-          streamedIter.flatMap { currentRow =>
-            val rowKey = keyGenerator(currentRow)
-            joinedRow.withRight(currentRow)
-            rightOuterIterator(
-              rowKey,
-              hashTable.get(rowKey),
-              joinedRow,
-              resultProj,
-              numOutputRows)
-          }
+          case RightOuter =>
+            streamedIter.flatMap { currentRow =>
+              val rowKey = keyGenerator(currentRow)
+              joinedRow.withRight(currentRow)
+              rightOuterIterator(
+                rowKey,
+                hashTable.get(rowKey),
+                joinedRow,
+                resultProj,
+                numOutputRows)
+            }
 
-        case LeftSemi =>
-          hashSemiJoin(streamedIter, hashTable, numOutputRows)
+          case LeftSemi =>
+            hashSemiJoin(streamedIter, hashTable, numOutputRows)
 
-        case x =>
-          throw new IllegalArgumentException(
-            s"BroadcastHashJoin should not take $x as the JoinType")
+          case x =>
+            throw new IllegalArgumentException(
+              s"BroadcastHashJoin should not take $x as the JoinType")
+        }
       }
-    }
   }
 
   override def upstreams(): Seq[RDD[InternalRow]] = {
@@ -189,8 +191,8 @@ case class BroadcastHashJoin(
       (ev, ev.isNull)
     } else {
       // generate the join key as UnsafeRow
-      val keyExpr = streamedKeys.map(
-        BindReferences.bindReference(_, streamedPlan.output))
+      val keyExpr = streamedKeys
+        .map(BindReferences.bindReference(_, streamedPlan.output))
       val ev = GenerateUnsafeProjection.createCode(ctx, keyExpr)
       (ev, s"${ev.value}.anyNull()")
     }
@@ -204,16 +206,19 @@ case class BroadcastHashJoin(
       matched: String): Seq[ExprCode] = {
     ctx.currentVars = null
     ctx.INPUT_ROW = matched
-    buildPlan.output.zipWithIndex.map {
-      case (a, i) =>
-        val ev = BoundReference(i, a.dataType, a.nullable).gen(ctx)
-        if (joinType == Inner) {
-          ev
-        } else {
-          // the variables are needed even there is no matched rows
-          val isNull = ctx.freshName("isNull")
-          val value = ctx.freshName("value")
-          val code = s"""
+    buildPlan
+      .output
+      .zipWithIndex
+      .map {
+        case (a, i) =>
+          val ev = BoundReference(i, a.dataType, a.nullable).gen(ctx)
+          if (joinType == Inner) {
+            ev
+          } else {
+            // the variables are needed even there is no matched rows
+            val isNull = ctx.freshName("isNull")
+            val value = ctx.freshName("value")
+            val code = s"""
           |boolean $isNull = true;
           |${ctx.javaType(a.dataType)} $value = ${ctx.defaultValue(a.dataType)};
           |if ($matched != null) {
@@ -222,9 +227,9 @@ case class BroadcastHashJoin(
           |  $value = ${ev.value};
           |}
          """.stripMargin
-          ExprCode(code, isNull, value)
-        }
-    }
+            ExprCode(code, isNull, value)
+          }
+      }
   }
 
   /**
@@ -358,10 +363,8 @@ case class BroadcastHashJoin(
          |if (!$conditionPassed) {
          |  $matched = null;
          |  // reset the variables those are already evaluated.
-         |  ${buildVars
-           .filter(_.code == "")
-           .map(v => s"${v.isNull} = true;")
-           .mkString("\n")}
+         |  ${buildVars.filter(_.code == "").map(v =>
+           s"${v.isNull} = true;").mkString("\n")}
          |}
          |$numOutput.add(1);
          |${consume(ctx, resultVars)}

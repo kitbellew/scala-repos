@@ -47,9 +47,11 @@ final class DataForm {
   val waitMinuteDefault = 2
 
   val positions = StartingPosition.allWithInitial.map(_.eco)
-  val positionChoices = StartingPosition.allWithInitial.map { p =>
-    p.eco -> p.fullName
-  }
+  val positionChoices = StartingPosition
+    .allWithInitial
+    .map { p =>
+      p.eco -> p.fullName
+    }
   val positionDefault = StartingPosition.initial.eco
 
   lazy val create = Form(

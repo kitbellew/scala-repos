@@ -89,8 +89,8 @@ private[spark] class BlockRDD[T: ClassTag](
   private[spark] def assertValid() {
     if (!isValid) {
       throw new SparkException(
-        "Attempted to use %s after its blocks have been removed!".format(
-          toString))
+        "Attempted to use %s after its blocks have been removed!"
+          .format(toString))
     }
   }
 

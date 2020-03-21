@@ -209,7 +209,8 @@ case class Http(
           params: Stack.Params) =
         new HttpClientDispatcher(
           transport,
-          params[param.Stats].statsReceiver
+          params[param.Stats]
+            .statsReceiver
             .scope(GenSerialClientDispatcher.StatsScope))
 
       override def newTraceInitializer =
@@ -258,9 +259,8 @@ case class Http(
               new PayloadSizeHandler(maxRequestSizeInBytes))
 
             // Response to ``Expect: Continue'' requests.
-            pipeline.addLast(
-              "respondToExpectContinue",
-              new RespondToExpectContinue)
+            pipeline
+              .addLast("respondToExpectContinue", new RespondToExpectContinue)
             if (!_streaming)
               pipeline.addLast(
                 "httpDechunker",
@@ -348,15 +348,17 @@ private object TraceInfo {
 
   def letTraceIdFromRequestHeaders[R](request: Request)(f: => R): R = {
     val id =
-      if (Header.Required.forall {
-            request.headers.contains(_)
-          }) {
+      if (Header
+            .Required
+            .forall {
+              request.headers.contains(_)
+            }) {
         val spanId = SpanId.fromString(request.headers.get(Header.SpanId))
 
         spanId map { sid =>
           val traceId = SpanId.fromString(request.headers.get(Header.TraceId))
-          val parentSpanId = SpanId.fromString(
-            request.headers.get(Header.ParentSpanId))
+          val parentSpanId = SpanId
+            .fromString(request.headers.get(Header.ParentSpanId))
 
           val sampled = Option(request.headers.get(Header.Sampled)) flatMap {
             sampled => Try(sampled.toBoolean).toOption
@@ -392,21 +394,27 @@ private object TraceInfo {
   }
 
   def setClientRequestHeaders(request: Request): Unit = {
-    Header.All.foreach {
-      request.headers.remove(_)
-    }
+    Header
+      .All
+      .foreach {
+        request.headers.remove(_)
+      }
 
     val traceId = Trace.id
     request.headers.add(Header.TraceId, traceId.traceId.toString)
     request.headers.add(Header.SpanId, traceId.spanId.toString)
     // no parent id set means this is the root span
-    traceId._parentId.foreach { id =>
-      request.headers.add(Header.ParentSpanId, id.toString)
-    }
+    traceId
+      ._parentId
+      .foreach { id =>
+        request.headers.add(Header.ParentSpanId, id.toString)
+      }
     // three states of sampled, yes, no or none (let the server decide)
-    traceId.sampled.foreach { sampled =>
-      request.headers.add(Header.Sampled, sampled.toString)
-    }
+    traceId
+      .sampled
+      .foreach { sampled =>
+        request.headers.add(Header.Sampled, sampled.toString)
+      }
     request.headers.add(Header.Flags, traceId.flags.toLong)
     traceRpc(request)
   }

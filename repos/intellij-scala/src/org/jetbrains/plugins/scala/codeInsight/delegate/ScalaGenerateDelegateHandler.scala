@@ -56,9 +56,9 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       file: PsiFile) {
     if (!CodeInsightUtilBase.prepareEditorForWrite(editor))
       return
-    if (!FileDocumentManager.getInstance.requestWriting(
-          editor.getDocument,
-          project))
+    if (!FileDocumentManager
+          .getInstance
+          .requestWriting(editor.getDocument, project))
       return
     PsiDocumentManager.getInstance(project).commitAllDocuments()
 
@@ -87,9 +87,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
                   specifyType,
                   body = "???")
                 .asInstanceOf[ScFunctionDefinition]
-              prototype.setModifierProperty(
-                "override",
-                value = member.isOverride)
+              prototype
+                .setModifierProperty("override", value = member.isOverride)
               val body = methodBody(target, prototype)
               prototype.body.foreach(_.replace(body))
               val genInfo = new ScalaGenerationInfo(member)
@@ -133,8 +132,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
     }
     val typeParamsForCall: String = {
       val typeParams = prototype.typeParameters
-      val parametersAndRetType =
-        prototype.parameters ++ prototype.returnTypeElement
+      val parametersAndRetType = prototype.parameters ++ prototype
+        .returnTypeElement
       if (typeParams.exists(!typeParameterUsedIn(_, parametersAndRetType))) {
         typeParams.map(_.nameId.getText).mkString("[", ", ", "]")
       } else
@@ -146,7 +145,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       paramClause.parameters.map(_.name).mkString("(", ", ", ")")
     }
     val params =
-      prototype.effectiveParameterClauses
+      prototype
+        .effectiveParameterClauses
         .map(paramClauseApplicationText)
         .mkString
     ScalaPsiElementFactory.createExpressionFromText(
@@ -220,20 +220,21 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       place: PsiElement): Seq[ScMethodMember] = {
     object isSuitable {
       def unapply(srr: ScalaResolveResult): Option[PhysicalSignature] = {
-        if (srr.implicitConversionClass.nonEmpty || srr.implicitFunction.nonEmpty)
+        if (srr.implicitConversionClass.nonEmpty || srr
+              .implicitFunction
+              .nonEmpty)
           return None
         srr.getElement match {
           case meth: PsiMethod
               if meth.isConstructor || meth.getContainingClass == null =>
             None
           case meth: PsiMethod
-              if meth.getContainingClass.getQualifiedName == CommonClassNames.JAVA_LANG_OBJECT =>
+              if meth.getContainingClass.getQualifiedName == CommonClassNames
+                .JAVA_LANG_OBJECT =>
             None
           case meth: PsiMethod
-              if !ResolveUtils.isAccessible(
-                meth,
-                place,
-                forCompletion = true) =>
+              if !ResolveUtils
+                .isAccessible(meth, place, forCompletion = true) =>
             None
           case meth: PsiMethod =>
             Some(new PhysicalSignature(meth, srr.substitutor))
@@ -243,10 +244,12 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       }
     }
 
-    candidates.toSeq.collect {
-      case isSuitable(sign) =>
-        new ScMethodMember(sign, isOverride = false)
-    }
+    candidates
+      .toSeq
+      .collect {
+        case isSuitable(sign) =>
+          new ScMethodMember(sign, isOverride = false)
+      }
   }
 
   @Nullable
@@ -321,27 +324,22 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
         method.getElement match {
           case m: PsiMethod if {
                 val cl = m.getContainingClass;
-                cl != null && cl.getQualifiedName == CommonClassNames.JAVA_LANG_OBJECT
+                cl != null && cl.getQualifiedName == CommonClassNames
+                  .JAVA_LANG_OBJECT
               } =>
             false
           case f: ScFunction =>
-            (f.isParameterless || f.isEmptyParen) && ResolveUtils.isAccessible(
-              f,
-              clazz,
-              forCompletion = false)
+            (f.isParameterless || f.isEmptyParen) && ResolveUtils
+              .isAccessible(f, clazz, forCompletion = false)
           case m: PsiMethod =>
-            m.isAccessor && ResolveUtils.isAccessible(
-              m,
-              clazz,
-              forCompletion = false)
+            m.isAccessor && ResolveUtils
+              .isAccessible(m, clazz, forCompletion = false)
           case _ =>
             false
         }
       case v @ (_: ScValueMember | _: ScVariableMember | _: JavaFieldMember)
-          if ResolveUtils.isAccessible(
-            v.getElement,
-            clazz,
-            forCompletion = false) =>
+          if ResolveUtils
+            .isAccessible(v.getElement, clazz, forCompletion = false) =>
         true
       case _ =>
         false
@@ -364,10 +362,13 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
     if (closestClass == null)
       return Seq.empty
 
-    closestClass +: closestClass.parentsInFile.toSeq.collect {
-      case td: ScTemplateDefinition =>
-        td
-    }
+    closestClass +: closestClass
+      .parentsInFile
+      .toSeq
+      .collect {
+        case td: ScTemplateDefinition =>
+          td
+      }
   }
 
 }

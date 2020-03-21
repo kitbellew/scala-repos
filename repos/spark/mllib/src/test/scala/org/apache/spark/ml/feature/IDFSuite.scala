@@ -39,16 +39,22 @@ class IDFSuite
   def scaleDataWithIDF(dataSet: Array[Vector], model: Vector): Array[Vector] = {
     dataSet.map {
       case data: DenseVector =>
-        val res = data.toArray.zip(model.toArray).map {
-          case (x, y) =>
-            x * y
-        }
+        val res = data
+          .toArray
+          .zip(model.toArray)
+          .map {
+            case (x, y) =>
+              x * y
+          }
         Vectors.dense(res)
       case data: SparseVector =>
-        val res = data.indices.zip(data.values).map {
-          case (id, value) =>
-            (id, value * model(id))
-        }
+        val res = data
+          .indices
+          .zip(data.values)
+          .map {
+            case (id, value) =>
+              (id, value * model(id))
+          }
         Vectors.sparse(data.size, res)
     }
   }
@@ -81,12 +87,16 @@ class IDFSuite
       .setOutputCol("idfValue")
       .fit(df)
 
-    idfModel.transform(df).select("idfValue", "expected").collect().foreach {
-      case Row(x: Vector, y: Vector) =>
-        assert(
-          x ~== y absTol 1e-5,
-          "Transformed vector is different with expected vector.")
-    }
+    idfModel
+      .transform(df)
+      .select("idfValue", "expected")
+      .collect()
+      .foreach {
+        case Row(x: Vector, y: Vector) =>
+          assert(
+            x ~== y absTol 1e-5,
+            "Transformed vector is different with expected vector.")
+      }
   }
 
   test("compute IDF with setter") {
@@ -115,12 +125,16 @@ class IDFSuite
       .setMinDocFreq(1)
       .fit(df)
 
-    idfModel.transform(df).select("idfValue", "expected").collect().foreach {
-      case Row(x: Vector, y: Vector) =>
-        assert(
-          x ~== y absTol 1e-5,
-          "Transformed vector is different with expected vector.")
-    }
+    idfModel
+      .transform(df)
+      .select("idfValue", "expected")
+      .collect()
+      .foreach {
+        case Row(x: Vector, y: Vector) =>
+          assert(
+            x ~== y absTol 1e-5,
+            "Transformed vector is different with expected vector.")
+      }
   }
 
   test("IDF read/write") {

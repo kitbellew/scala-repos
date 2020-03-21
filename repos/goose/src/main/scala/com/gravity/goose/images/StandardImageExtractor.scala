@@ -271,7 +271,8 @@ class StandardImageExtractor(
     getImageCandidates(node) match {
       case Some(goodImages) => {
         trace(
-          logPrefix + "checkForLargeImages: After findImagesThatPassByteSizeTest we have: " + goodImages.size + " at parent depth: " + parentDepthLevel)
+          logPrefix + "checkForLargeImages: After findImagesThatPassByteSizeTest we have: " + goodImages
+            .size + " at parent depth: " + parentDepthLevel)
         val scoredImages = downloadImagesAndGetResults(
           goodImages,
           parentDepthLevel)
@@ -353,7 +354,9 @@ class StandardImageExtractor(
       try {
         if (cnt > 30) {
           trace(
-            logPrefix + "Abort! they have over 30 images near the top node: " + this.doc.baseUri)
+            logPrefix + "Abort! they have over 30 images near the top node: " + this
+              .doc
+              .baseUri)
           return Some(goodImages)
         }
         val bytes: Int = getBytesForImage(image.attr("src"))
@@ -509,9 +512,8 @@ class StandardImageExtractor(
       var link: String = this.buildImagePath(src)
       link = link.replace(" ", "%20")
       val localContext: HttpContext = new BasicHttpContext
-      localContext.setAttribute(
-        ClientContext.COOKIE_STORE,
-        HtmlFetcher.emptyCookieStore)
+      localContext
+        .setAttribute(ClientContext.COOKIE_STORE, HtmlFetcher.emptyCookieStore)
       httpget = new HttpGet(link)
       var response: HttpResponse = null
       response = httpClient.execute(httpget, localContext)
@@ -575,16 +577,13 @@ class StandardImageExtractor(
       }
       try {
         val imageSource: String = this.buildImagePath(image.attr("src"))
-        val localSrcPath: String = ImageSaver.storeTempImage(
-          this.httpClient,
-          this.linkhash,
-          imageSource,
-          config)
+        val localSrcPath: String = ImageSaver
+          .storeTempImage(this.httpClient, this.linkhash, imageSource, config)
         if (localSrcPath == null) {
           if (logger.isDebugEnabled) {
             logger.debug(
-              "unable to store this image locally: IMGSRC: " + image.attr(
-                "src") + " BUILD SRC: " + imageSource)
+              "unable to store this image locally: IMGSRC: " + image
+                .attr("src") + " BUILD SRC: " + imageSource)
           }
           continueVar = false
         }
@@ -596,9 +595,8 @@ class StandardImageExtractor(
         if (continueVar) {
           image.attr("tempImagePath", localSrcPath)
           try {
-            var imageDims: ImageDetails = ImageUtils.getImageDimensions(
-              config.imagemagickIdentifyPath,
-              localSrcPath)
+            var imageDims: ImageDetails = ImageUtils
+              .getImageDimensions(config.imagemagickIdentifyPath, localSrcPath)
             width = imageDims.getWidth
             height = imageDims.getHeight
             if (depthLevel > 1) {

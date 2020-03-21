@@ -47,9 +47,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
     val offset: Int = editor.getCaretModel.getOffset
     editor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
     val element: PsiElement = file.findElementAt(offset)
-    val clazz = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScTemplateDefinition])
+    val clazz = PsiTreeUtil
+      .getParentOfType(element, classOf[ScTemplateDefinition])
     invokeOnClass(clazz, project, editor)
   }
 
@@ -63,10 +62,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
           clazz
         case _ =>
           val parent = PsiTreeUtil.findCommonParent(elements: _*)
-          PsiTreeUtil.getParentOfType(
-            parent,
-            classOf[ScTemplateDefinition],
-            false)
+          PsiTreeUtil
+            .getParentOfType(parent, classOf[ScTemplateDefinition], false)
       }
 
     if (dataContext != null) {
@@ -87,9 +84,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
     val offset: Int = editor.getCaretModel.getOffset
     editor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
     val element: PsiElement = file.findElementAt(offset)
-    val clazz = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScTemplateDefinition])
+    val clazz = PsiTreeUtil
+      .getParentOfType(element, classOf[ScTemplateDefinition])
     val allMembers = ExtractSuperUtil.possibleMembersToExtract(clazz).asScala
     val memberInfos =
       if (onlyFirstMember)
@@ -105,17 +101,13 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
       throw new RuntimeException(messages.mkString("\n"))
     inWriteCommandAction(project, "Extract trait") {
       val traitText = "trait ExtractedTrait {\n\n}"
-      val newTrt = ScalaPsiElementFactory.createTemplateDefinitionFromText(
-        traitText,
-        clazz.getContext,
-        clazz)
+      val newTrt = ScalaPsiElementFactory
+        .createTemplateDefinitionFromText(traitText, clazz.getContext, clazz)
       val newTrtAdded =
         clazz match {
           case anon: ScNewTemplateDefinition =>
-            val tBody = PsiTreeUtil.getParentOfType(
-              anon,
-              classOf[ScTemplateBody],
-              true)
+            val tBody = PsiTreeUtil
+              .getParentOfType(anon, classOf[ScTemplateBody], true)
             val added = tBody
               .addBefore(newTrt, tBody.getLastChild)
               .asInstanceOf[ScTrait]
@@ -145,10 +137,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
     val extractInfo = new ExtractInfo(clazz, memberInfos)
     extractInfo.collect()
 
-    val isOk = ExtractSuperClassUtil.showConflicts(
-      dialog,
-      extractInfo.conflicts,
-      clazz.getProject)
+    val isOk = ExtractSuperClassUtil
+      .showConflicts(dialog, extractInfo.conflicts, clazz.getProject)
     if (!isOk)
       return
 
@@ -187,8 +177,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
             case Some(tb) =>
               tb
             case None =>
-              extendsBlock.add(
-                ScalaPsiElementFactory.createTemplateBody(trt.getManager))
+              extendsBlock
+                .add(ScalaPsiElementFactory.createTemplateBody(trt.getManager))
           }
 
         val lBrace = templateBody.getFirstChild
@@ -297,10 +287,10 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
     }
 
     private def addToClassesForSelfType(cl: PsiClass) {
-      if (!classesForSelfType.contains(cl) && !classesForSelfType.exists(
-            _.isInheritor(cl, true))) {
-        classesForSelfType --= classesForSelfType.filter(
-          cl.isInheritor(_, true))
+      if (!classesForSelfType.contains(cl) && !classesForSelfType
+            .exists(_.isInheritor(cl, true))) {
+        classesForSelfType --= classesForSelfType
+          .filter(cl.isInheritor(_, true))
         classesForSelfType += cl
       }
     }
@@ -326,19 +316,18 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
                 currentMemberName)
               conflicts.putValue(m, message)
             case m: ScMember
-                if clazz.isInstanceOf[
-                  ScNewTemplateDefinition] && m.containingClass == clazz && !selected
-                  .contains(m) =>
+                if clazz.isInstanceOf[ScNewTemplateDefinition] && m
+                  .containingClass == clazz && !selected.contains(m) =>
               val message = ScalaBundle.message(
                 "member.of.anonymous.class.cannot.be.used.in.extracted.member",
                 named.name,
                 currentMemberName)
               conflicts.putValue(m, message)
             case m: PsiMember
-                if m.containingClass != null && ref.qualifier.exists(
-                  _.isInstanceOf[ScSuperReference]) && clazz.isInheritor(
-                  m.containingClass,
-                  deep = true) =>
+                if m.containingClass != null && ref
+                  .qualifier
+                  .exists(_.isInstanceOf[ScSuperReference]) && clazz
+                  .isInheritor(m.containingClass, deep = true) =>
               val message = ScalaBundle.message(
                 "super.reference.used.in.extracted.member",
                 currentMemberName)
@@ -386,20 +375,21 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
       } {
         currentMemberName = info.getDisplayName
         if (info.isToAbstract)
-          member.children.foreach {
-            case _: ScExpression =>
-            case other =>
-              other.accept(visitor)
-          }
+          member
+            .children
+            .foreach {
+              case _: ScExpression =>
+              case other =>
+                other.accept(visitor)
+            }
         else
           member.accept(visitor)
       }
 
       classesForSelfType.foreach {
         case cl: PsiClass if cl.getTypeParameters.nonEmpty =>
-          val message = ScalaBundle.message(
-            "type.parameters.for.self.type.not.supported",
-            cl.name)
+          val message = ScalaBundle
+            .message("type.parameters.for.self.type.not.supported", cl.name)
           conflicts.putValue(cl, message)
         case _ =>
       }

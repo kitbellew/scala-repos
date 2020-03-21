@@ -11,7 +11,8 @@ case class MSuperTable(table: MQName, superTable: String) {
 object MSuperTable {
   def getSuperTables(tablePattern: MQName) =
     ResultSetAction[MSuperTable](
-      _.metaData.getSuperTables(
+      _.metaData
+      .getSuperTables(
         tablePattern.catalog_?,
         tablePattern.schema_?,
         tablePattern.name)) { r =>

@@ -42,9 +42,11 @@ object QueryableMacros {
                 List(projection.tree)))
             .asInstanceOf[Tree])
       ))
-    c.universe.reify {
-      Queryable.factory[S](foo.splice)
-    }
+    c
+      .universe
+      .reify {
+        Queryable.factory[S](foo.splice)
+      }
   }
   def map[T: c.WeakTypeTag, S: c.WeakTypeTag](c: Context)(
       projection: c.Expr[T => S]): c.Expr[Queryable[S]] =

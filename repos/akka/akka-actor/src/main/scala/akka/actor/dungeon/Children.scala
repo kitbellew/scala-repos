@@ -25,7 +25,8 @@ private[akka] trait Children {
     EmptyChildrenContainer
 
   def childrenRefs: ChildrenContainer =
-    Unsafe.instance
+    Unsafe
+      .instance
       .getObjectVolatile(this, AbstractActorCell.childrenOffset)
       .asInstanceOf[ChildrenContainer]
 
@@ -74,7 +75,8 @@ private[akka] trait Children {
   @volatile
   private var _functionRefsDoNotCallMeDirectly = Map.empty[String, FunctionRef]
   private def functionRefs: Map[String, FunctionRef] =
-    Unsafe.instance
+    Unsafe
+      .instance
       .getObjectVolatile(this, AbstractActorCell.functionRefsOffset)
       .asInstanceOf[Map[String, FunctionRef]]
 
@@ -103,11 +105,13 @@ private[akka] trait Children {
     def rec(): Unit = {
       val old = functionRefs
       val added = old.updated(childPath.name, ref)
-      if (!Unsafe.instance.compareAndSwapObject(
-            this,
-            AbstractActorCell.functionRefsOffset,
-            old,
-            added))
+      if (!Unsafe
+            .instance
+            .compareAndSwapObject(
+              this,
+              AbstractActorCell.functionRefsOffset,
+              old,
+              added))
         rec()
     }
     rec()
@@ -127,11 +131,13 @@ private[akka] trait Children {
         false
       else {
         val removed = old - name
-        if (!Unsafe.instance.compareAndSwapObject(
-              this,
-              AbstractActorCell.functionRefsOffset,
-              old,
-              removed))
+        if (!Unsafe
+              .instance
+              .compareAndSwapObject(
+                this,
+                AbstractActorCell.functionRefsOffset,
+                old,
+                removed))
           rec()
         else {
           ref.stop()
@@ -143,7 +149,8 @@ private[akka] trait Children {
   }
 
   protected def stopFunctionRefs(): Unit = {
-    val refs = Unsafe.instance
+    val refs = Unsafe
+      .instance
       .getAndSetObject(this, AbstractActorCell.functionRefsOffset, Map.empty)
       .asInstanceOf[Map[String, FunctionRef]]
     refs.valuesIterator.foreach(_.stop())
@@ -152,17 +159,15 @@ private[akka] trait Children {
   @volatile
   private var _nextNameDoNotCallMeDirectly = 0L
   final protected def randomName(sb: java.lang.StringBuilder): String = {
-    val num = Unsafe.instance.getAndAddLong(
-      this,
-      AbstractActorCell.nextNameOffset,
-      1)
+    val num = Unsafe
+      .instance
+      .getAndAddLong(this, AbstractActorCell.nextNameOffset, 1)
     Helpers.base64(num, sb)
   }
   final protected def randomName(): String = {
-    val num = Unsafe.instance.getAndAddLong(
-      this,
-      AbstractActorCell.nextNameOffset,
-      1)
+    val num = Unsafe
+      .instance
+      .getAndAddLong(this, AbstractActorCell.nextNameOffset, 1)
     Helpers.base64(num)
   }
 
@@ -192,11 +197,13 @@ private[akka] trait Children {
   private final def swapChildrenRefs(
       oldChildren: ChildrenContainer,
       newChildren: ChildrenContainer): Boolean =
-    Unsafe.instance.compareAndSwapObject(
-      this,
-      AbstractActorCell.childrenOffset,
-      oldChildren,
-      newChildren)
+    Unsafe
+      .instance
+      .compareAndSwapObject(
+        this,
+        AbstractActorCell.childrenOffset,
+        oldChildren,
+        newChildren)
 
   @tailrec
   final def reserveChild(name: String): Boolean = {
@@ -242,10 +249,12 @@ private[akka] trait Children {
   }
 
   final protected def setTerminated(): Unit =
-    Unsafe.instance.putObjectVolatile(
-      this,
-      AbstractActorCell.childrenOffset,
-      TerminatedChildrenContainer)
+    Unsafe
+      .instance
+      .putObjectVolatile(
+        this,
+        AbstractActorCell.childrenOffset,
+        TerminatedChildrenContainer)
 
   /*
    * ActorCell-internal API
@@ -359,7 +368,9 @@ private[akka] trait Children {
       name: String,
       async: Boolean,
       systemService: Boolean): ActorRef = {
-    if (cell.system.settings.SerializeAllCreators && !systemService && props.deploy.scope != LocalScope)
+    if (cell.system.settings.SerializeAllCreators && !systemService && props
+          .deploy
+          .scope != LocalScope)
       try {
         val ser = SerializationExtension(cell.system)
         props.args forall (arg ⇒
@@ -398,15 +409,17 @@ private[akka] trait Children {
         try {
           val childPath =
             new ChildActorPath(cell.self.path, name, ActorCell.newUid())
-          cell.provider.actorOf(
-            cell.systemImpl,
-            props,
-            cell.self,
-            childPath,
-            systemService = systemService,
-            deploy = None,
-            lookupDeploy = true,
-            async = async)
+          cell
+            .provider
+            .actorOf(
+              cell.systemImpl,
+              props,
+              cell.self,
+              childPath,
+              systemService = systemService,
+              deploy = None,
+              lookupDeploy = true,
+              async = async)
         } catch {
           case e: InterruptedException ⇒
             unreserveChild(name)

@@ -71,23 +71,25 @@ private[persistence] trait LeveldbStore
           messages.map {
             a ⇒
               Try {
-                a.payload.foreach {
-                  p ⇒
-                    val (p2, tags) =
-                      p.payload match {
-                        case Tagged(payload, tags) ⇒
-                          (p.withPayload(payload), tags)
-                        case _ ⇒
-                          (p, Set.empty[String])
-                      }
-                    if (tags.nonEmpty && hasTagSubscribers)
-                      allTags = allTags union tags
+                a
+                  .payload
+                  .foreach {
+                    p ⇒
+                      val (p2, tags) =
+                        p.payload match {
+                          case Tagged(payload, tags) ⇒
+                            (p.withPayload(payload), tags)
+                          case _ ⇒
+                            (p, Set.empty[String])
+                        }
+                      if (tags.nonEmpty && hasTagSubscribers)
+                        allTags = allTags union tags
 
-                    require(
-                      !p2.persistenceId.startsWith(tagPersistenceIdPrefix),
-                      s"persistenceId [${p.persistenceId}] must not start with $tagPersistenceIdPrefix")
-                    addToMessageBatch(p2, tags, batch)
-                }
+                      require(
+                        !p2.persistenceId.startsWith(tagPersistenceIdPrefix),
+                        s"persistenceId [${p.persistenceId}] must not start with $tagPersistenceIdPrefix")
+                      addToMessageBatch(p2, tags, batch)
+                  }
                 if (hasPersistenceIdSubscribers)
                   persistenceIds += a.persistenceId
               }
@@ -171,9 +173,8 @@ private[persistence] trait LeveldbStore
       batch: WriteBatch): Unit = {
     val persistentBytes = persistentToBytes(persistent)
     val nid = numericId(persistent.persistenceId)
-    batch.put(
-      keyToBytes(counterKey(nid)),
-      counterToBytes(persistent.sequenceNr))
+    batch
+      .put(keyToBytes(counterKey(nid)), counterToBytes(persistent.sequenceNr))
     batch.put(keyToBytes(Key(nid, persistent.sequenceNr, 0)), persistentBytes)
 
     tags.foreach { tag ⇒
@@ -269,8 +270,8 @@ private[persistence] trait LeveldbStore
     }
 
   override protected def newPersistenceIdAdded(id: String): Unit = {
-    if (hasAllPersistenceIdsSubscribers && !id.startsWith(
-          tagPersistenceIdPrefix)) {
+    if (hasAllPersistenceIdsSubscribers && !id
+          .startsWith(tagPersistenceIdPrefix)) {
       val added = LeveldbJournal.PersistenceIdAdded(id)
       allPersistenceIdsSubscribers.foreach(_ ! added)
     }

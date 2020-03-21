@@ -42,16 +42,20 @@ class OrcFilterSuite extends QueryTest with OrcTest {
       predicate: Predicate,
       checker: (SearchArgument) => Unit): Unit = {
     val output =
-      predicate.collect {
-        case a: Attribute =>
-          a
-      }.distinct
+      predicate
+        .collect {
+          case a: Attribute =>
+            a
+        }
+        .distinct
     val query = df
       .select(output.map(e => Column(e)): _*)
       .where(Column(predicate))
 
     var maybeRelation: Option[HadoopFsRelation] = None
-    val maybeAnalyzedPredicate = query.queryExecution.optimizedPlan
+    val maybeAnalyzedPredicate = query
+      .queryExecution
+      .optimizedPlan
       .collect {
         case PhysicalOperation(
               _,
@@ -66,9 +70,8 @@ class OrcFilterSuite extends QueryTest with OrcTest {
       maybeAnalyzedPredicate.isDefined,
       "No filter is analyzed from the given query")
 
-    val (_, selectedFilters) = DataSourceStrategy.selectFilters(
-      maybeRelation.get,
-      maybeAnalyzedPredicate.toSeq)
+    val (_, selectedFilters) = DataSourceStrategy
+      .selectFilters(maybeRelation.get, maybeAnalyzedPredicate.toSeq)
     assert(selectedFilters.nonEmpty, "No filter is pushed down")
 
     val maybeFilter = OrcFilters.createFilter(selectedFilters.toArray)

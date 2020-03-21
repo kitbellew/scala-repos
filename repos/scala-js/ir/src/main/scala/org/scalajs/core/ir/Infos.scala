@@ -147,9 +147,11 @@ object Infos {
     private var isExported: Boolean = false
 
     private val methodsCalled = mutable.Map.empty[String, mutable.Set[String]]
-    private val methodsCalledStatically = mutable.Map
+    private val methodsCalledStatically = mutable
+      .Map
       .empty[String, mutable.Set[String]]
-    private val staticMethodsCalled = mutable.Map
+    private val staticMethodsCalled = mutable
+      .Map
       .empty[String, mutable.Set[String]]
     private val instantiatedClasses = mutable.Set.empty[String]
     private val accessedModules = mutable.Set.empty[String]
@@ -269,8 +271,9 @@ object Infos {
         isAbstract = isAbstract,
         isExported = isExported,
         methodsCalled = methodsCalled.toMap.mapValues(_.toList),
-        methodsCalledStatically = methodsCalledStatically.toMap.mapValues(
-          _.toList),
+        methodsCalledStatically = methodsCalledStatically
+          .toMap
+          .mapValues(_.toList),
         staticMethodsCalled = staticMethodsCalled.toMap.mapValues(_.toList),
         instantiatedClasses = instantiatedClasses.toList,
         accessedModules = accessedModules.toList,
@@ -340,9 +343,7 @@ object Infos {
     }
 
     def generatePropertyInfo(propertyDef: PropertyDef): MethodInfo = {
-      builder
-        .setEncodedName(propertyDef.name.name)
-        .setIsExported(true)
+      builder.setEncodedName(propertyDef.name.name).setIsExported(true)
 
       // Any of getterBody and setterBody can be EmptyTree, but that's fine
       traverse(propertyDef.getterBody)
@@ -353,9 +354,7 @@ object Infos {
 
     def generateExportedConstructorsInfo(
         constructorDefs: List[ConstructorExportDef]): MethodInfo = {
-      builder
-        .setEncodedName(ExportedConstructorsName)
-        .setIsExported(true)
+      builder.setEncodedName(ExportedConstructorsName).setIsExported(true)
 
       for (constructorDef <- constructorDefs)
         traverse(constructorDef.body)

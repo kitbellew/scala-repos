@@ -73,8 +73,9 @@ class BufTest
     val a2 = Array[Byte](4, 5, 6)
     val a3 = Array[Byte](7, 8, 9)
 
-    val buf = Buf.ByteArray.Owned(a1) concat Buf.ByteArray.Owned(
-      a2) concat Buf.ByteArray.Owned(a3)
+    val buf = Buf.ByteArray.Owned(a1) concat Buf.ByteArray.Owned(a2) concat Buf
+      .ByteArray
+      .Owned(a3)
     assert(buf.length == 9)
     val x =
       Array.fill(9) {
@@ -89,8 +90,9 @@ class BufTest
     val a2 = Array.range(8, 16).map(_.toByte)
     val a3 = Array.range(16, 24).map(_.toByte)
     val arr = a1 ++ a2 ++ a3
-    val buf = Buf.ByteArray.Owned(a1) concat Buf.ByteArray.Owned(
-      a2) concat Buf.ByteArray.Owned(a3)
+    val buf = Buf.ByteArray.Owned(a1) concat Buf.ByteArray.Owned(a2) concat Buf
+      .ByteArray
+      .Owned(a3)
 
     for (i <- 0 until arr.length;
          j <- i until arr.length) {
@@ -249,16 +251,18 @@ class BufTest
 
   test("Buf.ByteBuffer.Shared.apply is safe") {
     val bytes = Array.fill(10)(0.toByte)
-    val Buf.ByteBuffer
-      .Owned(bb) = Buf.ByteBuffer.Shared(java.nio.ByteBuffer.wrap(bytes))
+    val Buf.ByteBuffer.Owned(bb) = Buf
+      .ByteBuffer
+      .Shared(java.nio.ByteBuffer.wrap(bytes))
     bytes(0) = 10.toByte
     assert(bb.get(0) !== 10)
   }
 
   test("Buf.ByteBuffer.Direct.apply is unsafe") {
     val bytes = Array.fill(10)(0.toByte)
-    val Buf.ByteBuffer
-      .Owned(bb) = Buf.ByteBuffer.Owned(java.nio.ByteBuffer.wrap(bytes))
+    val Buf.ByteBuffer.Owned(bb) = Buf
+      .ByteBuffer
+      .Owned(java.nio.ByteBuffer.wrap(bytes))
     bytes(0) = 10.toByte
     assert(bb.get(0) == 10)
   }
@@ -295,8 +299,9 @@ class BufTest
   }
 
   test("ByteArray.coerce(ByteBuffer)") {
-    val orig = Buf.ByteBuffer.Owned(
-      java.nio.ByteBuffer.wrap(Array.fill(10)(0.toByte)))
+    val orig = Buf
+      .ByteBuffer
+      .Owned(java.nio.ByteBuffer.wrap(Array.fill(10)(0.toByte)))
     val coerced = Buf.ByteArray.coerce(orig)
     assert(coerced == orig)
   }
@@ -308,8 +313,9 @@ class BufTest
   }
 
   test("ByteBuffer.coerce(ByteBuffer)") {
-    val orig = Buf.ByteBuffer.Owned(
-      java.nio.ByteBuffer.wrap(Array.fill(10)(0.toByte)))
+    val orig = Buf
+      .ByteBuffer
+      .Owned(java.nio.ByteBuffer.wrap(Array.fill(10)(0.toByte)))
     val coerced = Buf.ByteBuffer.coerce(orig)
     assert(coerced eq orig)
   }
@@ -340,7 +346,9 @@ class BufTest
       val buf = Buf.U32BE(in)
       val Buf.U32BE(out, _) = buf
 
-      val outByteBuf = java.nio.ByteBuffer
+      val outByteBuf = java
+        .nio
+        .ByteBuffer
         .wrap(Buf.ByteArray.Owned.extract(buf))
       outByteBuf.order(java.nio.ByteOrder.BIG_ENDIAN)
 
@@ -352,7 +360,9 @@ class BufTest
       val buf = Buf.U32LE(in)
       val Buf.U32LE(out, _) = buf
 
-      val outByteBuf = java.nio.ByteBuffer
+      val outByteBuf = java
+        .nio
+        .ByteBuffer
         .wrap(Buf.ByteArray.Owned.extract(buf))
       outByteBuf.order(java.nio.ByteOrder.LITTLE_ENDIAN)
 
@@ -364,7 +374,9 @@ class BufTest
       val buf = Buf.U64BE(in)
       val Buf.U64BE(out, _) = buf
 
-      val outByteBuf = java.nio.ByteBuffer
+      val outByteBuf = java
+        .nio
+        .ByteBuffer
         .wrap(Buf.ByteArray.Owned.extract(buf))
       outByteBuf.order(java.nio.ByteOrder.BIG_ENDIAN)
 
@@ -376,7 +388,9 @@ class BufTest
       val buf = Buf.U64LE(in)
       val Buf.U64LE(out, _) = buf
 
-      val outByteBuf = java.nio.ByteBuffer
+      val outByteBuf = java
+        .nio
+        .ByteBuffer
         .wrap(Buf.ByteArray.Owned.extract(buf))
       outByteBuf.order(java.nio.ByteOrder.LITTLE_ENDIAN)
 
@@ -399,7 +413,8 @@ class BufTest
       }
     assert(!hasMatch)
 
-    val buf = Buf.Empty
+    val buf = Buf
+      .Empty
       .concat(Buf.U32BE(Int.MaxValue))
       .concat(Buf.U64BE(Long.MaxValue))
       .concat(Buf.U32LE(Int.MinValue))

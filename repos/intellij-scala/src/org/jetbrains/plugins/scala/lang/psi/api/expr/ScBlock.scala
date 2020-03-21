@@ -67,9 +67,8 @@ trait ScBlock
       getContext match {
         case c: ScCatchBlock =>
           val manager = ScalaPsiManager.instance(getProject)
-          val funs = manager.getCachedClasses(
-            getResolveScope,
-            "scala.PartialFunction")
+          val funs = manager
+            .getCachedClasses(getResolveScope, "scala.PartialFunction")
           val fun = funs
             .find(_.isInstanceOf[ScTrait])
             .getOrElse(
@@ -130,7 +129,8 @@ trait ScBlock
             val visitedWithT = visited + t
             t match {
               case ScDesignatorType(p: ScParameter)
-                  if p.owner.isInstanceOf[ScFunctionExpr] && p.owner
+                  if p.owner.isInstanceOf[ScFunctionExpr] && p
+                    .owner
                     .asInstanceOf[ScFunctionExpr]
                     .result == Some(this) =>
                 val t = existize(
@@ -161,9 +161,12 @@ trait ScBlock
                   case clazz: ScTypeDefinition =>
                     val t = existize(leastClassType(clazz), visitedWithT)
                     val vars =
-                      clazz.typeParameters.map { tp =>
-                        ScalaPsiManager.typeVariable(tp)
-                      }.toList
+                      clazz
+                        .typeParameters
+                        .map { tp =>
+                          ScalaPsiManager.typeVariable(tp)
+                        }
+                        .toList
                     m.put(
                       clazz.name,
                       new ScExistentialArgument(clazz.name, vars, t, t))
@@ -195,7 +198,8 @@ trait ScBlock
                           tp.ptp)
                       }
 
-                      val pTypes: List[Seq[() => ScType]] = s.substitutedTypes
+                      val pTypes: List[Seq[() => ScType]] = s
+                        .substitutedTypes
                         .map(_.map(f => () => existize(f(), visitedWithT)))
                       val tParams: Array[TypeParameter] =
                         if (s.typeParams.length == 0)
@@ -321,16 +325,10 @@ trait ScBlock
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean =
-    super[ScDeclarationSequenceHolder].processDeclarations(
-      processor,
-      state,
-      lastParent,
-      place) &&
-      super[ScImportsHolder].processDeclarations(
-        processor,
-        state,
-        lastParent,
-        place)
+    super[ScDeclarationSequenceHolder]
+      .processDeclarations(processor, state, lastParent, place) &&
+      super[ScImportsHolder]
+        .processDeclarations(processor, state, lastParent, place)
 
   def needCheckExpectedType = true
 }

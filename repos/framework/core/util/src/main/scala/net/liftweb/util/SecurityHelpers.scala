@@ -100,8 +100,8 @@ trait SecurityHelpers {
 
   /** create a SHA hash from a String */
   def hashHex(in: String): String = {
-    Helpers.hexEncode(
-      MessageDigest.getInstance("SHA").digest(in.getBytes("UTF-8")))
+    Helpers
+      .hexEncode(MessageDigest.getInstance("SHA").digest(in.getBytes("UTF-8")))
   }
 
   /** Compare two strings in a way that does not vary if the strings
@@ -266,10 +266,12 @@ trait SecurityHelpers {
 
     parserFactory.setNamespaceAware(false)
     parserFactory.setFeature(
-      Constants.SAX_FEATURE_PREFIX + Constants.EXTERNAL_GENERAL_ENTITIES_FEATURE,
+      Constants
+        .SAX_FEATURE_PREFIX + Constants.EXTERNAL_GENERAL_ENTITIES_FEATURE,
       false)
     parserFactory.setFeature(
-      Constants.SAX_FEATURE_PREFIX + Constants.EXTERNAL_PARAMETER_ENTITIES_FEATURE,
+      Constants
+        .SAX_FEATURE_PREFIX + Constants.EXTERNAL_PARAMETER_ENTITIES_FEATURE,
       false)
     parserFactory.setFeature(
       Constants.XERCES_FEATURE_PREFIX + Constants.DISALLOW_DOCTYPE_DECL_FEATURE,

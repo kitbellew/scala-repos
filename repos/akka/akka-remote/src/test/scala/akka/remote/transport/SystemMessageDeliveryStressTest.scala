@@ -139,22 +139,30 @@ abstract class SystemMessageDeliveryStressTest(msg: String, cfg: String)
     systemB.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
 
   // We test internals here (system message delivery) so we are allowed to cheat
-  val targetForA = RARP(systemA).provider.resolveActorRef(
-    RootActorPath(addressB) / "temp" / sysMsgVerifierB.path.name)
-  val targetForB = RARP(systemB).provider.resolveActorRef(
-    RootActorPath(addressA) / "temp" / sysMsgVerifierA.path.name)
+  val targetForA = RARP(systemA)
+    .provider
+    .resolveActorRef(
+      RootActorPath(addressB) / "temp" / sysMsgVerifierB.path.name)
+  val targetForB = RARP(systemB)
+    .provider
+    .resolveActorRef(
+      RootActorPath(addressA) / "temp" / sysMsgVerifierA.path.name)
 
   override def atStartup() = {
-    systemA.eventStream.publish(
-      TestEvent.Mute(
-        EventFilter[EndpointException](),
-        EventFilter.error(start = "AssociationError"),
-        EventFilter.warning(pattern = "received dead .*")))
-    systemB.eventStream.publish(
-      TestEvent.Mute(
-        EventFilter[EndpointException](),
-        EventFilter.error(start = "AssociationError"),
-        EventFilter.warning(pattern = "received dead .*")))
+    systemA
+      .eventStream
+      .publish(
+        TestEvent.Mute(
+          EventFilter[EndpointException](),
+          EventFilter.error(start = "AssociationError"),
+          EventFilter.warning(pattern = "received dead .*")))
+    systemB
+      .eventStream
+      .publish(
+        TestEvent.Mute(
+          EventFilter[EndpointException](),
+          EventFilter.error(start = "AssociationError"),
+          EventFilter.warning(pattern = "received dead .*")))
 
     systemA.eventStream.subscribe(probeA.ref, classOf[QuarantinedEvent])
     systemB.eventStream.subscribe(probeB.ref, classOf[QuarantinedEvent])
@@ -175,19 +183,23 @@ abstract class SystemMessageDeliveryStressTest(msg: String, cfg: String)
         3.seconds.dilated)
 
       // Schedule peridodic disassociates
-      systemA.scheduler.schedule(3.second, 8.seconds) {
-        transportA.managementCommand(
-          ForceDisassociateExplicitly(
-            addressB,
-            reason = AssociationHandle.Unknown))
-      }
+      systemA
+        .scheduler
+        .schedule(3.second, 8.seconds) {
+          transportA.managementCommand(
+            ForceDisassociateExplicitly(
+              addressB,
+              reason = AssociationHandle.Unknown))
+        }
 
-      systemB.scheduler.schedule(7.seconds, 8.seconds) {
-        transportB.managementCommand(
-          ForceDisassociateExplicitly(
-            addressA,
-            reason = AssociationHandle.Unknown))
-      }
+      systemB
+        .scheduler
+        .schedule(7.seconds, 8.seconds) {
+          transportB.managementCommand(
+            ForceDisassociateExplicitly(
+              addressA,
+              reason = AssociationHandle.Unknown))
+        }
 
       systemB.actorOf(
         Props(
@@ -211,29 +223,32 @@ abstract class SystemMessageDeliveryStressTest(msg: String, cfg: String)
         val start = System.currentTimeMillis()
         probeB.expectMsg(10.minutes, m)
         probeA.expectMsg(10.minutes, m)
-        maxDelay = math.max(
-          maxDelay,
-          (System.currentTimeMillis() - start) / 1000)
+        maxDelay = math
+          .max(maxDelay, (System.currentTimeMillis() - start) / 1000)
       }
     }
   }
 
   override def beforeTermination() {
-    system.eventStream.publish(
-      TestEvent.Mute(
-        EventFilter.warning(
-          source = "akka://AkkaProtocolStressTest/user/$a",
-          start = "received dead letter"),
-        EventFilter.warning(pattern =
-          "received dead letter.*(InboundPayload|Disassociate)")
-      ))
-    systemB.eventStream.publish(
-      TestEvent.Mute(
-        EventFilter[EndpointException](),
-        EventFilter.error(start = "AssociationError"),
-        EventFilter.warning(pattern =
-          "received dead letter.*(InboundPayload|Disassociate)")
-      ))
+    system
+      .eventStream
+      .publish(
+        TestEvent.Mute(
+          EventFilter.warning(
+            source = "akka://AkkaProtocolStressTest/user/$a",
+            start = "received dead letter"),
+          EventFilter.warning(pattern =
+            "received dead letter.*(InboundPayload|Disassociate)")
+        ))
+    systemB
+      .eventStream
+      .publish(
+        TestEvent.Mute(
+          EventFilter[EndpointException](),
+          EventFilter.error(start = "AssociationError"),
+          EventFilter.warning(pattern =
+            "received dead letter.*(InboundPayload|Disassociate)")
+        ))
   }
 
   override def afterTermination(): Unit = shutdown(systemB)

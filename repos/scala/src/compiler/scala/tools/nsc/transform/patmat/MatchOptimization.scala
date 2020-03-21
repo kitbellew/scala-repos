@@ -148,7 +148,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             // if the shared prefix contains interesting conditions (!= True)
             // and the last of such interesting shared conditions reuses another treemaker's test
             // replace the whole sharedPrefix by a ReusingCondTreeMaker
-            for (lastShared <- sharedPrefix.reverse
+            for (lastShared <- sharedPrefix
+                   .reverse
                    .dropWhile(_.prop == True)
                    .headOption;
                  lastReused <- lastShared.reuses)
@@ -230,22 +231,27 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           else
             List((droppedBinder, REF(mostRecentReusedMaker.nextBinder)))
         val (from, to) =
-          sharedPrefix.flatMap { dropped =>
-            dropped.reuses.map(test => toReused(test.treeMaker)).foreach {
-              case reusedMaker: ReusedCondTreeMaker =>
-                mostRecentReusedMaker = reusedMaker
-              case _ =>
-            }
+          sharedPrefix
+            .flatMap { dropped =>
+              dropped
+                .reuses
+                .map(test => toReused(test.treeMaker))
+                .foreach {
+                  case reusedMaker: ReusedCondTreeMaker =>
+                    mostRecentReusedMaker = reusedMaker
+                  case _ =>
+                }
 
-            // TODO: have super-trait for retrieving the variable that's operated on by a tree maker
-            // and thus assumed in scope, either because it binds it or because it refers to it
-            dropped.treeMaker match {
-              case dropped: FunTreeMaker =>
-                mapToStored(dropped.nextBinder)
-              case _ =>
-                Nil
+              // TODO: have super-trait for retrieving the variable that's operated on by a tree maker
+              // and thus assumed in scope, either because it binds it or because it refers to it
+              dropped.treeMaker match {
+                case dropped: FunTreeMaker =>
+                  mapToStored(dropped.nextBinder)
+                case _ =>
+                  Nil
+              }
             }
-          }.unzip
+            .unzip
         val rerouteToReusedBinders = Substitution(from, to)
 
         val collapsedDroppedSubst =
@@ -255,7 +261,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
       }
 
       lazy val lastReusedTreeMaker =
-        sharedPrefix.reverse
+        sharedPrefix
+          .reverse
           .flatMap(tm => tm.reuses map (test => toReused(test.treeMaker)))
           .collectFirst {
             case x: ReusedCondTreeMaker =>
@@ -463,9 +470,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
               }
             }
 
-          if (unguardedComesLastOrAbsent /*(1)*/ && impliesCurr.forall(
-                caseEquals(currCase)
-              ) /*(2)*/ ) {
+          if (unguardedComesLastOrAbsent /*(1)*/ && impliesCurr
+                .forall(caseEquals(currCase)) /*(2)*/ ) {
             collapsed += (
               if (impliesCurr.isEmpty && !isGuardedCase(currCase))
                 currCase

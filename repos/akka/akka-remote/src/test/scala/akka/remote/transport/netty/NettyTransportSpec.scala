@@ -12,8 +12,8 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 object NettyTransportSpec {
-  val commonConfig = ConfigFactory.parseString(
-    """
+  val commonConfig = ConfigFactory
+    .parseString("""
     akka.actor.provider = "akka.remote.RemoteActorRefProvider"
   """)
 
@@ -169,13 +169,11 @@ trait BindBehaviour {
     }
 
     s"bind to specified $proto address" in {
-      val address = SocketUtil.temporaryServerAddress(
-        address = "127.0.0.1",
-        udp = proto == "udp")
+      val address = SocketUtil
+        .temporaryServerAddress(address = "127.0.0.1", udp = proto == "udp")
       val bindAddress =
-        try SocketUtil.temporaryServerAddress(
-          address = "127.0.1.1",
-          udp = proto == "udp")
+        try SocketUtil
+          .temporaryServerAddress(address = "127.0.1.1", udp = proto == "udp")
         catch {
           case e: java.net.BindException ⇒
             info(

@@ -197,7 +197,8 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
         host
       else
         "%s:%d".format(host, u.getPort)
-    val withHost = config.headers
+    val withHost = config
+      .headers
       .updated(HttpHeaders.Names.HOST, Seq(hostValue))
     val userInfo = uri.getUserInfo
     val updated =
@@ -240,9 +241,11 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
    */
   def add(elems: Seq[FormElement]): RequestBuilder[HasUrl, Yes] = {
     val first = this.add(elems.head)
-    elems.tail.foldLeft(first) { (b, elem) =>
-      b.add(elem)
-    }
+    elems
+      .tail
+      .foldLeft(first) { (b, elem) =>
+        b.add(elem)
+      }
   }
 
   /**
@@ -314,9 +317,11 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
     */
   def proxied(credentials: Option[ProxyCredentials]): This = {
     val headers: Map[String, Seq[String]] = credentials map { creds =>
-      config.headers.updated(
-        HttpHeaders.Names.PROXY_AUTHORIZATION,
-        Seq(creds.basicAuthorization))
+      config
+        .headers
+        .updated(
+          HttpHeaders.Names.PROXY_AUTHORIZATION,
+          Seq(creds.basicAuthorization))
     } getOrElse config.headers
 
     new RequestBuilder(config.copy(headers = headers, proxied = true))
@@ -389,26 +394,27 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
     val encoder =
       new HttpPostRequestEncoder(dataFactory, req.httpRequest, multipart)
 
-    config.formElements.foreach {
-      case FileElement(name, content, contentType, filename) =>
-        HttpPostRequestEncoderEx.addBodyFileUpload(
-          encoder,
-          dataFactory,
-          req.httpRequest)(
-          name,
-          filename.getOrElse(""),
-          BufChannelBuffer(content),
-          contentType.getOrElse(null),
-          false)
+    config
+      .formElements
+      .foreach {
+        case FileElement(name, content, contentType, filename) =>
+          HttpPostRequestEncoderEx
+            .addBodyFileUpload(encoder, dataFactory, req.httpRequest)(
+              name,
+              filename.getOrElse(""),
+              BufChannelBuffer(content),
+              contentType.getOrElse(null),
+              false)
 
-      case SimpleElement(name, value) =>
-        encoder.addBodyAttribute(name, value)
-    }
+        case SimpleElement(name, value) =>
+          encoder.addBodyAttribute(name, value)
+      }
     val encodedReq = encoder.finalizeRequest()
 
     if (encodedReq.isChunked) {
-      val encodings = encodedReq.headers.getAll(
-        HttpHeaders.Names.TRANSFER_ENCODING)
+      val encodings = encodedReq
+        .headers
+        .getAll(HttpHeaders.Names.TRANSFER_ENCODING)
       encodings.remove(HttpHeaders.Values.CHUNKED)
       if (encodings.isEmpty)
         encodedReq.headers.remove(HttpHeaders.Names.TRANSFER_ENCODING)

@@ -57,13 +57,9 @@ class InMemoryAccountManager[M[+_]](resetExpiration: Int = 1)(implicit
       plan: AccountPlan,
       parentId: Option[AccountId],
       profile: Option[JValue])(f: AccountId => M[APIKey]): M[Account] = {
-    TestAccounts.createAccount(
-      email,
-      password,
-      creationDate,
-      plan,
-      parentId,
-      profile)(f) map { account =>
+    TestAccounts
+      .createAccount(email, password, creationDate, plan, parentId, profile)(
+        f) map { account =>
       accounts.put(account.accountId, account)
       account
     }
@@ -120,9 +116,11 @@ class InMemoryAccountManager[M[+_]](resetExpiration: Int = 1)(implicit
 
   def markResetTokenUsed(tokenId: ResetTokenId): M[PrecogUnit] =
     M.point {
-      resetTokens.get(tokenId).foreach { token =>
-        resetTokens += (tokenId -> token.copy(usedAt = Some(new DateTime)))
-      }
+      resetTokens
+        .get(tokenId)
+        .foreach { token =>
+          resetTokens += (tokenId -> token.copy(usedAt = Some(new DateTime)))
+        }
       PrecogUnit
     }
 

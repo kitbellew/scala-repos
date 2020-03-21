@@ -52,18 +52,16 @@ class PsiTypedDefinitionWrapper(
             null
         }
     if (result == null) {
-      val message =
-        "Containing class is null: " + typedDefinition.getContainingFile.getText + "\n" +
-          "typed Definition: " + typedDefinition.getTextRange.getStartOffset
+      val message = "Containing class is null: " + typedDefinition
+        .getContainingFile
+        .getText + "\n" +
+        "typed Definition: " + typedDefinition.getTextRange.getStartOffset
       throw new RuntimeException(message)
     }
     result
   }
-  val methodText = PsiTypedDefinitionWrapper.methodText(
-    typedDefinition,
-    isStatic,
-    isInterface,
-    role)
+  val methodText = PsiTypedDefinitionWrapper
+    .methodText(typedDefinition, isStatic, isInterface, role)
   val method: PsiMethod = {
     try {
       elementFactory.createMethodFromText(methodText, containingClass)

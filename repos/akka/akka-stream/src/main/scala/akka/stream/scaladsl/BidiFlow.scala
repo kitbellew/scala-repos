@@ -129,8 +129,8 @@ final class BidiFlow[-I1, +O1, -I2, +O2, +Mat](
     */
   def reversed: BidiFlow[I2, O2, I1, O1, Mat] =
     new BidiFlow(
-      module.replaceShape(
-        BidiShape(shape.in2, shape.out2, shape.in1, shape.out1)))
+      module
+        .replaceShape(BidiShape(shape.in2, shape.out2, shape.in1, shape.out1)))
 
   /**
     * Transform only the materialized value of this BidiFlow, leaving all other properties as they were.

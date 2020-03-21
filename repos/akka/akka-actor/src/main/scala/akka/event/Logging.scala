@@ -128,7 +128,8 @@ trait LoggingBus extends ActorEventBus {
           loggerName ← defaultLoggers
           if loggerName != StandardOutLogger.getClass.getName
         } yield {
-          system.dynamicAccess
+          system
+            .dynamicAccess
             .getClassFor[Actor](loggerName)
             .map({
               case actorClass ⇒
@@ -341,8 +342,13 @@ object LogSource {
       def genString(a: ActorRef) = a.path.toString
       override def genString(a: ActorRef, system: ActorSystem) =
         try {
-          a.path.toStringWithAddress(
-            system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress)
+          a
+            .path
+            .toStringWithAddress(
+              system
+                .asInstanceOf[ExtendedActorSystem]
+                .provider
+                .getDefaultAddress)
         } catch {
           // it can fail if the ActorSystem (remoting) is not completely started yet
           case NonFatal(_) ⇒
@@ -1448,7 +1454,8 @@ trait LoggingAdapter {
     while (p < arg.length) {
       val index = rest.indexOf("{}")
       if (index == -1) {
-        sb.append(rest)
+        sb
+          .append(rest)
           .append(" WARNING arguments left: ")
           .append(arg.length - p)
         rest = ""

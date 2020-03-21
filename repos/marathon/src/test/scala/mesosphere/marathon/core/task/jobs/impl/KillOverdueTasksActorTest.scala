@@ -123,13 +123,11 @@ class KillOverdueTasksActorTest
       "unconfirmedOverdue",
       stagedAt = now - config.taskLaunchConfirmTimeout().millis - 1.millis)
 
-    val overdueStagedTask = MarathonTestHelper.stagedTaskProto(
-      "overdueStagedTask",
-      stagedAt = now - 10.days)
+    val overdueStagedTask = MarathonTestHelper
+      .stagedTaskProto("overdueStagedTask", stagedAt = now - 10.days)
 
-    val stagedTask = MarathonTestHelper.stagedTaskProto(
-      "staged",
-      stagedAt = now - 10.seconds)
+    val stagedTask = MarathonTestHelper
+      .stagedTaskProto("staged", stagedAt = now - 10.seconds)
 
     val runningTask = MarathonTestHelper.runningTaskProto(
       "running",
@@ -162,12 +160,14 @@ class KillOverdueTasksActorTest
 
     And("All somehow overdue tasks are killed")
     verify(driver).killTask(
-      MesosProtos.TaskID
+      MesosProtos
+        .TaskID
         .newBuilder()
         .setValue(unconfirmedOverdueTask.getId)
         .build())
     verify(driver).killTask(
-      MesosProtos.TaskID
+      MesosProtos
+        .TaskID
         .newBuilder()
         .setValue(overdueUnstagedTask.getId)
         .build())

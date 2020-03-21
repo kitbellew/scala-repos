@@ -108,21 +108,23 @@ class OperatorAndBacktickedSearcher
             (integer.intValue & searchContext) != 0
         }
       inReadAction {
-        FileBasedIndex.getInstance.processFilesContainingAllKeys(
-          IdIndex.NAME,
-          entries,
-          scope,
-          checker,
-          collectProcessor)
+        FileBasedIndex
+          .getInstance
+          .processFilesContainingAllKeys(
+            IdIndex.NAME,
+            entries,
+            scope,
+            checker,
+            collectProcessor)
       }
-      val index: FileIndexFacade = FileIndexFacade.getInstance(
-        manager.getProject)
+      val index: FileIndexFacade = FileIndexFacade
+        .getInstance(manager.getProject)
       ContainerUtil.process(
         collectProcessor.getResults,
         new ReadActionProcessor[VirtualFile] {
           def processInReadAction(virtualFile: VirtualFile): Boolean = {
-            !index.shouldBeFound(scope, virtualFile) || processor.process(
-              virtualFile)
+            !index.shouldBeFound(scope, virtualFile) || processor
+              .process(virtualFile)
           }
         }
       )

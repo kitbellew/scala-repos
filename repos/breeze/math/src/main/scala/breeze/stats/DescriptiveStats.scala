@@ -237,24 +237,27 @@ trait DescriptiveStats {
          * However, we also use Bessel's correction, in order to agree with the rest of breeze.
          */
         def apply(data: Seq[DenseVector[Double]]): DenseMatrix[Double] = {
-          data.headOption
+          data
+            .headOption
             .map(firstRow => {
               val result = new DenseMatrix[Double](firstRow.size, firstRow.size)
               val dataSize = firstRow.size
               //First compute the mean
               var mean = firstRow.copy
               var numRows: Long = 1
-              data.tail.foreach(x => {
-                numRows += 1
-                if (mean.size != x.size) {
-                  throw new IllegalArgumentException(
-                    "Attempting to compute covariance of dataset where elements have different sizes")
-                }
-                cfor(0)(i => i < firstRow.size, i => i + 1)(i => {
-                  mean(i) = mean(i) + x(i)
-                })
+              data
+                .tail
+                .foreach(x => {
+                  numRows += 1
+                  if (mean.size != x.size) {
+                    throw new IllegalArgumentException(
+                      "Attempting to compute covariance of dataset where elements have different sizes")
+                  }
+                  cfor(0)(i => i < firstRow.size, i => i + 1)(i => {
+                    mean(i) = mean(i) + x(i)
+                  })
 
-              })
+                })
               val numRowsD = numRows.toDouble
               mean = mean / numRowsD
 
@@ -547,8 +550,9 @@ object DescriptiveStats {
     import frac.mkNumericOps
     //mu1(n-1), mu2(n-1), Cov(n-1), n-1
     val (mu1, mu2, c, n) =
-      (it1, it2).zipped.foldLeft((frac.zero, frac.zero, frac.zero, frac.zero)) {
-        (acc, y) =>
+      (it1, it2)
+        .zipped
+        .foldLeft((frac.zero, frac.zero, frac.zero, frac.zero)) { (acc, y) =>
           val (oldMu1, oldMu2, oldC, oldN) = acc
           val newN = oldN + frac.fromInt(1)
           val newMu1 = oldMu1 + ((y._1 - oldMu1) / newN)
@@ -557,7 +561,7 @@ object DescriptiveStats {
             (y._1 - oldMu1) * (y._2 - newMu2)
           ) //compute covariance in single pass
           (newMu1, newMu2, newC, newN)
-      }
+        }
     if (n == 1)
       (mu1, mu2, 0)
     else

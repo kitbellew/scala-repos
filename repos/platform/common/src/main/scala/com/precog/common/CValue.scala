@@ -68,11 +68,13 @@ sealed trait RValue {
           }
 
         case RArray(elems) =>
-          Vector(elems: _*).zipWithIndex.flatMap { tuple =>
-            val (elem, idx) = tuple
+          Vector(elems: _*)
+            .zipWithIndex
+            .flatMap { tuple =>
+              val (elem, idx) = tuple
 
-            flatten0(path \ idx)(elem)
-          }
+              flatten0(path \ idx)(elem)
+            }
 
         case (v: CValue) =>
           Vector((path, v))

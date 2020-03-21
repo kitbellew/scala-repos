@@ -37,36 +37,37 @@ object ObjectCreationImpossible extends AnnotatorPart[ScTemplateDefinition] {
     val hasAbstract = refs.flatMap(_._2.toSeq).exists(t => isAbstract(t._1))
 
     if (hasAbstract) {
-      refs.headOption.foreach {
-        case (refElement, Some(psiClass)) =>
-          import org.jetbrains.plugins.scala.overrideImplement.ScalaOIUtil._
+      refs
+        .headOption
+        .foreach {
+          case (refElement, Some(psiClass)) =>
+            import org.jetbrains.plugins.scala.overrideImplement.ScalaOIUtil._
 
-          val undefined =
-            for {
-              member <- getMembersToImplement(definition)
-              if !member.isInstanceOf[ScAliasMember] // See SCL-2887
-            } yield {
-              try {
-                (member.getText, member.getParentNodeDelegate.getText)
-              } catch {
-                case iae: IllegalArgumentException =>
-                  throw new RuntimeException("memer: " + member.getText, iae)
+            val undefined =
+              for {
+                member <- getMembersToImplement(definition)
+                if !member.isInstanceOf[ScAliasMember] // See SCL-2887
+              } yield {
+                try {
+                  (member.getText, member.getParentNodeDelegate.getText)
+                } catch {
+                  case iae: IllegalArgumentException =>
+                    throw new RuntimeException("memer: " + member.getText, iae)
+                }
               }
-            }
 
-          if (undefined.nonEmpty) {
-            val element =
-              if (isNew)
-                refElement
-              else
-                definition.asInstanceOf[ScObject].nameId
-            val annotation = holder.createErrorAnnotation(
-              element,
-              message(undefined.toSeq: _*))
-            annotation.registerFix(new ImplementMethodsQuickFix(definition))
-          }
-        case _ =>
-      }
+            if (undefined.nonEmpty) {
+              val element =
+                if (isNew)
+                  refElement
+                else
+                  definition.asInstanceOf[ScObject].nameId
+              val annotation = holder
+                .createErrorAnnotation(element, message(undefined.toSeq: _*))
+              annotation.registerFix(new ImplementMethodsQuickFix(definition))
+            }
+          case _ =>
+        }
     }
   }
 

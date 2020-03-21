@@ -145,9 +145,12 @@ class ClientRegistryTest
           "foo",
           "/$/com.twitter.finagle.client.crtnamer/foo",
           "Pool")
-        val filtered = GlobalRegistry.get.toSet.filter { e =>
-          e.key.startsWith(prefix)
-        }
+        val filtered = GlobalRegistry
+          .get
+          .toSet
+          .filter { e =>
+            e.key.startsWith(prefix)
+          }
         val expected = Seq(
           "high" -> "2147483647",
           "low" -> "0",
@@ -206,9 +209,8 @@ class ClientRegistryTest
   test(
     "RegistryEntryLifecycle module registers a Stack and then deregisters it") {
     val stk = newStack()
-    val params =
-      Stack.Params.empty + param1 + param.Label("foo") + param.ProtocolLibrary(
-        "fancy")
+    val params = Stack.Params.empty + param1 + param.Label("foo") + param
+      .ProtocolLibrary("fancy")
     val simple = new SimpleRegistry()
     GlobalRegistry.withRegistry(simple) {
       val factory = (RegistryEntryLifecycle.module[Int, Int] +: stk)

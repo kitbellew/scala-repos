@@ -24,9 +24,15 @@ class OAuthSpec extends PlaySpecification {
     new RequestToken("someRequestToken", "someVerySecretRequestSecret")
   val oauthCalculator = new OAuthCalculator(javaConsumerKey, javaRequestToken)
 
-  val consumerKey = play.api.libs.oauth
+  val consumerKey = play
+    .api
+    .libs
+    .oauth
     .ConsumerKey(javaConsumerKey.key, javaConsumerKey.secret)
-  val requestToken = play.api.libs.oauth
+  val requestToken = play
+    .api
+    .libs
+    .oauth
     .RequestToken(javaRequestToken.token, javaRequestToken.secret)
 
   "OAuth" should {
@@ -34,12 +40,8 @@ class OAuthSpec extends PlaySpecification {
       val (request, body, hostUrl) = receiveRequest { (client, hostUrl) =>
         client.url(hostUrl + "/foo").sign(oauthCalculator).get()
       }
-      OAuthRequestVerifier.verifyRequest(
-        request,
-        body,
-        hostUrl,
-        consumerKey,
-        requestToken)
+      OAuthRequestVerifier
+        .verifyRequest(request, body, hostUrl, consumerKey, requestToken)
     }
 
     "sign a get request with query parameters" in {
@@ -50,12 +52,8 @@ class OAuthSpec extends PlaySpecification {
           .sign(oauthCalculator)
           .get()
       }
-      OAuthRequestVerifier.verifyRequest(
-        request,
-        body,
-        hostUrl,
-        consumerKey,
-        requestToken)
+      OAuthRequestVerifier
+        .verifyRequest(request, body, hostUrl, consumerKey, requestToken)
     }
 
     "sign a post request with a body" in {
@@ -66,12 +64,8 @@ class OAuthSpec extends PlaySpecification {
           .setContentType("application/x-www-form-urlencoded")
           .post("param=paramValue")
       }
-      OAuthRequestVerifier.verifyRequest(
-        request,
-        body,
-        hostUrl,
-        consumerKey,
-        requestToken)
+      OAuthRequestVerifier
+        .verifyRequest(request, body, hostUrl, consumerKey, requestToken)
     }
   }
 

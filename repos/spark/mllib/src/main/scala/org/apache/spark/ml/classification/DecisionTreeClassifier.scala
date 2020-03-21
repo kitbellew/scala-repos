@@ -232,8 +232,7 @@ final class DecisionTreeClassificationModel private[ml] (
         rootNode,
         numFeatures,
         numClasses),
-      extra)
-      .setParent(parent)
+      extra).setParent(parent)
   }
 
   @Since("1.4.0")
@@ -258,9 +257,8 @@ final class DecisionTreeClassificationModel private[ml] (
     *       to determine feature importance instead.
     */
   @Since("2.0.0")
-  lazy val featureImportances: Vector = RandomForest.featureImportances(
-    this,
-    numFeatures)
+  lazy val featureImportances: Vector = RandomForest
+    .featureImportances(this, numFeatures)
 
   /** (private[ml]) Convert to a model in the old API */
   private[ml] def toOld: OldDecisionTreeModel = {

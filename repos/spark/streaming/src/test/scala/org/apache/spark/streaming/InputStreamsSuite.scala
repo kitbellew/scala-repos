@@ -136,10 +136,12 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
           fail("Timeout: cannot finish all batches in 30 seconds")
         }
 
-        networkStream.generatedRDDs.foreach {
-          case (_, rdd) =>
-            assert(!rdd.isInstanceOf[WriteAheadLogBackedBlockRDD[_]])
-        }
+        networkStream
+          .generatedRDDs
+          .foreach {
+            case (_, rdd) =>
+              assert(!rdd.isInstanceOf[WriteAheadLogBackedBlockRDD[_]])
+          }
       }
     }
   }
@@ -153,8 +155,8 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
       val existingFile = new File(testDir, "0")
       Files.write("0\n", existingFile, StandardCharsets.UTF_8)
       assert(
-        existingFile.setLastModified(
-          10000) && existingFile.lastModified === 10000)
+        existingFile.setLastModified(10000) && existingFile
+          .lastModified === 10000)
 
       // Set up the streaming context and input streams
       withStreamingContext(new StreamingContext(conf, batchDuration)) { ssc =>
@@ -189,8 +191,11 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
         }
 
         val expectedOutput = input.map(i => i.toByte)
-        val obtainedOutput = outputQueue.asScala.flatten.toList.map(i =>
-          i(0).toByte)
+        val obtainedOutput = outputQueue
+          .asScala
+          .flatten
+          .toList
+          .map(i => i(0).toByte)
         assert(obtainedOutput.toSeq === expectedOutput)
       }
     } finally {
@@ -231,7 +236,8 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
       val clock = ssc.scheduler.clock.asInstanceOf[ManualClock]
       val startTime = System.currentTimeMillis()
       while ((
-               !MultiThreadTestReceiver.haveAllThreadsFinished || output.sum < numTotalRecords
+               !MultiThreadTestReceiver
+                 .haveAllThreadsFinished || output.sum < numTotalRecords
              ) &&
              System.currentTimeMillis() - startTime < 5000) {
         Thread.sleep(100)
@@ -269,11 +275,13 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
       val inputIterator = input.toIterator
       for (i <- input.indices) {
         // Enqueue more than 1 item per tick but they should dequeue one at a time
-        inputIterator.take(2).foreach { i =>
-          queue.synchronized {
-            queue += ssc.sparkContext.makeRDD(Seq(i))
+        inputIterator
+          .take(2)
+          .foreach { i =>
+            queue.synchronized {
+              queue += ssc.sparkContext.makeRDD(Seq(i))
+            }
           }
-        }
         clock.advance(batchDuration.milliseconds)
       }
       Thread.sleep(1000)
@@ -291,10 +299,12 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
 
     // Verify whether all the elements received are as expected
     assert(output.size === expectedOutput.size)
-    output.zipWithIndex.foreach {
-      case (e, i) =>
-        assert(e == expectedOutput(i))
-    }
+    output
+      .zipWithIndex
+      .foreach {
+        case (e, i) =>
+          assert(e == expectedOutput(i))
+      }
   }
 
   test("queue input stream - oneAtATime = false") {
@@ -316,11 +326,13 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
 
       // Enqueue the first 3 items (one by one), they should be merged in the next batch
       val inputIterator = input.toIterator
-      inputIterator.take(3).foreach { i =>
-        queue.synchronized {
-          queue += ssc.sparkContext.makeRDD(Seq(i))
+      inputIterator
+        .take(3)
+        .foreach { i =>
+          queue.synchronized {
+            queue += ssc.sparkContext.makeRDD(Seq(i))
+          }
         }
-      }
       clock.advance(batchDuration.milliseconds)
       Thread.sleep(1000)
 
@@ -346,10 +358,12 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
 
     // Verify whether all the elements received are as expected
     assert(output.size === expectedOutput.size)
-    output.zipWithIndex.foreach {
-      case (e, i) =>
-        assert(e == expectedOutput(i))
-    }
+    output
+      .zipWithIndex
+      .foreach {
+        case (e, i) =>
+          assert(e == expectedOutput(i))
+      }
   }
 
   test("test track the number of input stream") {
@@ -379,9 +393,8 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
         ssc.graph.getInputStreams().length ==
           receiverInputStreams.length + inputStreams.length)
       assert(
-        ssc.graph
-          .getReceiverInputStreams()
-          .length == receiverInputStreams.length)
+        ssc.graph.getReceiverInputStreams().length == receiverInputStreams
+          .length)
       assert(ssc.graph.getReceiverInputStreams() === receiverInputStreams)
       assert(
         ssc.graph.getInputStreams().map(_.id) === Array.tabulate(5)(i => i))
@@ -398,8 +411,8 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
       val existingFile = new File(testDir, "0")
       Files.write("0\n", existingFile, StandardCharsets.UTF_8)
       assert(
-        existingFile.setLastModified(
-          10000) && existingFile.lastModified === 10000)
+        existingFile.setLastModified(10000) && existingFile
+          .lastModified === 10000)
 
       // Set up the streaming context and input streams
       withStreamingContext(new StreamingContext(conf, batchDuration)) { ssc =>
@@ -562,8 +575,8 @@ class MultiThreadTestReceiver(numThreads: Int, numRecordsPerThread: Int)
       val runnable =
         new Runnable {
           def run() {
-            (1 to numRecordsPerThread).foreach(i =>
-              store(threadId * numRecordsPerThread + i))
+            (1 to numRecordsPerThread)
+              .foreach(i => store(threadId * numRecordsPerThread + i))
             if (finishCount.incrementAndGet == numThreads) {
               MultiThreadTestReceiver.haveAllThreadsFinished = true
             }

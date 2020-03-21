@@ -69,8 +69,8 @@ object Protocols {
       // Factories are created rarely while the creation of their TProtocol's
       // is a common event. Minimize counter creation to just once per Factory.
       val fastEncodeFailed = statsReceiver.counter("fast_encode_failed")
-      val largerThanTlOutBuffer = statsReceiver.counter(
-        "larger_than_threadlocal_out_buffer")
+      val largerThanTlOutBuffer = statsReceiver
+        .counter("larger_than_threadlocal_out_buffer")
       new TProtocolFactory {
         override def getProtocol(trans: TTransport): TProtocol = {
           val proto =

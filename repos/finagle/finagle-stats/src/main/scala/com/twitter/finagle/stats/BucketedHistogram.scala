@@ -33,8 +33,7 @@ private[twitter] object BucketedHistogram {
         .map(
           _.toInt + 1
         ) // this ensures that the smallest value is 2 (below we prepend `1`)
-        .distinct
-        .force
+        .distinct.force
     (Seq(1) ++ values).toArray
   }
 

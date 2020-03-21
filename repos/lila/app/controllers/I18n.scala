@@ -18,8 +18,8 @@ object I18n extends LilaController {
       import play.api.data.Forms._
       import play.api.data._
       implicit val req = ctx.body
-      Form(
-        single("lang" -> text.verifying(env.pool contains _))).bindFromRequest
+      Form(single("lang" -> text.verifying(env.pool contains _)))
+        .bindFromRequest
         .fold(
           _ => notFound,
           lang =>
@@ -30,8 +30,9 @@ object I18n extends LilaController {
             } >> negotiate(
               html = Redirect {
                 s"${Env.api.Net.Protocol}${lang}.${Env.api.Net.Domain}" + {
-                  HTTPRequest.referer(ctx.req).fold(routes.Lobby.home.url) {
-                    str =>
+                  HTTPRequest
+                    .referer(ctx.req)
+                    .fold(routes.Lobby.home.url) { str =>
                       try {
                         val pageUrl = new java.net.URL(str);
                         val path = pageUrl.getPath
@@ -44,7 +45,7 @@ object I18n extends LilaController {
                         case e: java.net.MalformedURLException =>
                           routes.Lobby.home.url
                       }
-                  }
+                    }
                 }
               }.fuccess,
               api = _ => Ok(Json.obj("lang" -> lang)).fuccess
@@ -89,10 +90,8 @@ object I18n extends LilaController {
             env.forms.process(lang, metadata, data, me.username) inject {
               Redirect(routes.I18n.contribute)
                 .flashing("success" -> "1") withCookies
-                LilaCookie.cookie(
-                  env.hideCallsCookieName,
-                  "1",
-                  maxAge = Some(60 * 24))
+                LilaCookie
+                  .cookie(env.hideCallsCookieName, "1", maxAge = Some(60 * 24))
             }
           }
       }
@@ -109,15 +108,17 @@ object I18n extends LilaController {
       captcha: Captcha,
       context: Map[String, String],
       data: Map[String, String] = Map.empty)(implicit ctx: Context) =
-    html.i18n.translationForm(
-      info,
-      form,
-      env.keys,
-      env.pool.default,
-      env.translator.rawTranslation(info.lang) _,
-      captcha,
-      data = data,
-      context = context)
+    html
+      .i18n
+      .translationForm(
+        info,
+        form,
+        env.keys,
+        env.pool.default,
+        env.translator.rawTranslation(info.lang) _,
+        captcha,
+        data = data,
+        context = context)
 
   def fetch(from: Int) =
     Open { implicit ctx =>

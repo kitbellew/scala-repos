@@ -65,9 +65,8 @@ trait ZKAccountIdSource extends AccountManager[Future] {
         zkc.createPersistent(settings.zkAccountIdPath, true)
       }
 
-      val createdPath = zkc.createPersistentSequential(
-        settings.zkAccountIdPath,
-        Array.empty[Byte])
+      val createdPath = zkc
+        .createPersistentSequential(settings.zkAccountIdPath, Array.empty[Byte])
       createdPath.substring(
         createdPath.length - 10
       ) //last 10 characters are a sequential int
@@ -90,8 +89,8 @@ abstract class MongoAccountManager(
     extends AccountManager[Future] {
   import Account._
 
-  private lazy val mamLogger = LoggerFactory.getLogger(
-    "com.precog.accounts.MongoAccountManager")
+  private lazy val mamLogger = LoggerFactory
+    .getLogger("com.precog.accounts.MongoAccountManager")
 
   private implicit val impTimeout = settings.timeout
 
@@ -253,7 +252,10 @@ abstract class MongoAccountManager(
   }
 
   def close() =
-    database.disconnect.fallbackTo(M.point(())).flatMap { _ =>
-      mongo.close
-    }
+    database
+      .disconnect
+      .fallbackTo(M.point(()))
+      .flatMap { _ =>
+        mongo.close
+      }
 }

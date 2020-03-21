@@ -35,8 +35,9 @@ class CleanMacrosheetAction() extends AnAction with TopComponentAction {
   def actionPerformed(e: AnActionEvent) {
     val editor: Editor =
       FileEditorManager.getInstance(e.getProject).getSelectedTextEditor
-    val file: VirtualFile = CommonDataKeys.VIRTUAL_FILE.getData(
-      e.getDataContext)
+    val file: VirtualFile = CommonDataKeys
+      .VIRTUAL_FILE
+      .getData(e.getDataContext)
 
     if (editor == null || file == null)
       return
@@ -58,11 +59,8 @@ class CleanMacrosheetAction() extends AnAction with TopComponentAction {
       inWriteAction {
         CleanWorksheetAction.resetScrollModel(viewer)
 
-        CleanWorksheetAction.cleanWorksheet(
-          psiFile.getNode,
-          editor,
-          viewer,
-          e.getProject)
+        CleanWorksheetAction
+          .cleanWorksheet(psiFile.getNode, editor, viewer, e.getProject)
 
         parent.remove(splitPane)
         parent.add(editor.getComponent, BorderLayout.CENTER)

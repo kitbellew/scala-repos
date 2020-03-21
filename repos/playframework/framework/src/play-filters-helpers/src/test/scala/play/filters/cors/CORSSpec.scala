@@ -25,7 +25,8 @@ object CORSFilterSpec extends CORSCommonSpec {
   def withApplication[T](conf: Map[String, _ <: Any] = Map.empty)(
       block: => T): T = {
     running(
-      _.configure(conf).overrides(
+      _.configure(conf)
+      .overrides(
         bind[Router].to(
           Router.from {
             case p"/error" =>
@@ -47,8 +48,8 @@ object CORSFilterSpec extends CORSCommonSpec {
       conf = restrictPaths) {
       val result =
         route(
-          fakeRequest("GET", "/baz").withHeaders(
-            ORIGIN -> "http://localhost")).get
+          fakeRequest("GET", "/baz").withHeaders(ORIGIN -> "http://localhost"))
+          .get
 
       status(result) must_== OK
       mustBeNoAccessControlResponseHeaders(result)
@@ -73,7 +74,8 @@ object CORSWithCSRFSpec extends CORSCommonSpec {
       filters: Class[_ <: HttpFilters] = classOf[Filters],
       conf: Map[String, _ <: Any] = Map())(block: Application => T): T = {
     running(
-      _.configure(conf).overrides(
+      _.configure(conf)
+      .overrides(
         bind[Router].to(
           Router.from {
             case p"/error" =>
@@ -140,7 +142,8 @@ object CORSActionBuilderSpec extends CORSCommonSpec {
       configPath: String,
       conf: Map[String, _ <: Any] = Map.empty)(block: => T): T = {
     running(
-      _.configure(conf).routes {
+      _.configure(conf)
+      .routes {
         case (_, "/error") =>
           CORSActionBuilder(
             Configuration.reference ++ Configuration.from(conf),
@@ -302,8 +305,8 @@ trait CORSCommonSpec extends PlaySpecification {
 
     "handle a simple cross-origin request with default config" in withApplication() {
       val result =
-        route(
-          fakeRequest("GET", "/").withHeaders(ORIGIN -> "http://localhost")).get
+        route(fakeRequest("GET", "/").withHeaders(ORIGIN -> "http://localhost"))
+          .get
 
       status(result) must_== OK
       header(ACCESS_CONTROL_ALLOW_CREDENTIALS, result) must beSome("true")
@@ -319,8 +322,8 @@ trait CORSCommonSpec extends PlaySpecification {
     "handle simple cross-origin request when the action throws an error" in withApplication() {
       val result =
         route(
-          fakeRequest("GET", "/error").withHeaders(
-            ORIGIN -> "http://localhost")).get
+          fakeRequest("GET", "/error")
+            .withHeaders(ORIGIN -> "http://localhost")).get
 
       status(result) must_== INTERNAL_SERVER_ERROR
       header(ACCESS_CONTROL_ALLOW_CREDENTIALS, result) must beSome("true")
@@ -373,8 +376,8 @@ trait CORSCommonSpec extends PlaySpecification {
 
     "handle an actual cross-origin request with default config" in withApplication() {
       val result =
-        route(
-          fakeRequest("PUT", "/").withHeaders(ORIGIN -> "http://localhost")).get
+        route(fakeRequest("PUT", "/").withHeaders(ORIGIN -> "http://localhost"))
+          .get
 
       status(result) must_== OK
       header(ACCESS_CONTROL_ALLOW_CREDENTIALS, result) must beSome("true")
@@ -410,8 +413,8 @@ trait CORSCommonSpec extends PlaySpecification {
     "handle a simple cross-origin request with credentials support off" in withApplication(
       conf = noCredentialsConf) {
       val result =
-        route(
-          fakeRequest("GET", "/").withHeaders(ORIGIN -> "http://localhost")).get
+        route(fakeRequest("GET", "/").withHeaders(ORIGIN -> "http://localhost"))
+          .get
 
       status(result) must_== OK
       header(ACCESS_CONTROL_ALLOW_CREDENTIALS, result) must beNone

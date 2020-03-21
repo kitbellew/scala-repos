@@ -100,10 +100,12 @@ case class PathId(path: List[String], absolute: Boolean = true)
     //scalastyle:off return
     if (path.size < definition.path.size)
       return false
-    path.zip(definition.path).forall {
-      case (left, right) =>
-        left == right
-    }
+    path
+      .zip(definition.path)
+      .forall {
+        case (left, right) =>
+          left == right
+      }
   }
 
   override def toString: String = toString("/")
@@ -144,14 +146,15 @@ object PathId {
     * notify the maintainers of the DCOS CLI.
     */
   private[this] val ID_PATH_SEGMENT_PATTERN =
-    "^(([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])\\.)*([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])|(\\.|\\.\\.)$".r
+    "^(([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])\\.)*([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])|(\\.|\\.\\.)$"
+      .r
 
   private val validPathChars =
     new Validator[PathId] {
       override def apply(pathId: PathId): Result = {
-        validate(pathId.path)(validator =
-          pathId.path.each should matchRegexFully(
-            ID_PATH_SEGMENT_PATTERN.pattern))
+        validate(pathId.path)(validator = pathId
+          .path
+          .each should matchRegexFully(ID_PATH_SEGMENT_PATTERN.pattern))
       }
     }
 

@@ -177,18 +177,26 @@ trait DB2Profile extends JdbcProfile {
         new StringBuilder append "create sequence " append quoteIdentifier(
           seq.name)
       b append " as " append jdbcTypeFor(seq.tpe).sqlTypeName(None)
-      seq._start.foreach {
-        b append " start with " append _
-      }
-      seq._increment.foreach {
-        b append " increment by " append _
-      }
-      seq._minValue.foreach {
-        b append " minvalue " append _
-      }
-      seq._maxValue.foreach {
-        b append " maxvalue " append _
-      }
+      seq
+        ._start
+        .foreach {
+          b append " start with " append _
+        }
+      seq
+        ._increment
+        .foreach {
+          b append " increment by " append _
+        }
+      seq
+        ._minValue
+        .foreach {
+          b append " minvalue " append _
+        }
+      seq
+        ._maxValue
+        .foreach {
+          b append " maxvalue " append _
+        }
       if (seq._cycle)
         b append " cycle"
       DDL(b.toString, "drop sequence " + quoteIdentifier(seq.name))

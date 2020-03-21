@@ -32,15 +32,12 @@ trait MatchCodeGen extends Interface {
 
     // assert(owner ne null); assert(owner ne NoSymbol)
     def freshSym(pos: Position, tp: Type = NoType, prefix: String = "x") =
-      NoSymbol.newTermSymbol(
-        freshName(prefix),
-        pos,
-        newFlags = SYNTHETIC) setInfo tp
+      NoSymbol
+        .newTermSymbol(freshName(prefix), pos, newFlags = SYNTHETIC) setInfo tp
 
     def newSynthCaseLabel(name: String) =
-      NoSymbol.newLabel(
-        freshName(name),
-        NoPosition) setFlag treeInfo.SYNTH_CASE_FLAGS
+      NoSymbol.newLabel(freshName(name), NoPosition) setFlag treeInfo
+        .SYNTH_CASE_FLAGS
 
     // codegen relevant to the structure of the translation (how extractors are combined)
     trait AbsCodegen {
@@ -258,9 +255,8 @@ trait MatchCodeGen extends Interface {
 
         // scrutSym == NoSymbol when generating an alternatives matcher
         val scrutDef =
-          scrutSym.fold(List[Tree]())(
-            ValDef(_, scrut) :: Nil
-          ) // for alternatives
+          scrutSym
+            .fold(List[Tree]())(ValDef(_, scrut) :: Nil) // for alternatives
 
         // the generated block is taken apart in TailCalls under the following assumptions
         // the assumption is once we encounter a case, the remainder of the block will consist of cases

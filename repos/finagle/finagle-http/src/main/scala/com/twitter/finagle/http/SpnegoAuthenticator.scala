@@ -33,8 +33,8 @@ object SpnegoAuthenticator {
     /** If the header represents a valid spnego negotiation, return it. */
     def unapply(header: String): Option[Token] =
       // must be a valid Negotiate header, and have a token
-      if (header.length <= SchemePrefixLength || !header.startsWith(
-            AuthScheme)) {
+      if (header.length <= SchemePrefixLength || !header
+            .startsWith(AuthScheme)) {
         None
       } else {
         val tokenStr = header.substring(SchemePrefixLength)
@@ -145,9 +145,8 @@ object SpnegoAuthenticator {
         _serverPrincipalType: Oid = JAAS.Krb5PrincipalType)
         extends ClientSource
         with JAAS {
-      val serverPrincipal = manager.createName(
-        _serverPrincipal,
-        _serverPrincipalType)
+      val serverPrincipal = manager
+        .createName(_serverPrincipal, _serverPrincipalType)
 
       def init(
           context: GSSContext,
@@ -178,10 +177,8 @@ object SpnegoAuthenticator {
         with JAAS {
       def accept(context: GSSContext, negotiation: Token): Future[Negotiated] =
         pool {
-          val token = context.acceptSecContext(
-            negotiation,
-            0,
-            negotiation.length)
+          val token = context
+            .acceptSecContext(negotiation, 0, negotiation.length)
           val established =
             if (context.isEstablished)
               Some(context)
@@ -294,15 +291,19 @@ object SpnegoAuthenticator {
           val credentialFuture = credentialOption.getOrElse(credSrc.load())
           credentialFuture.flatMap { context =>
             // look for any Token data in the challenge, and attempt to initialize
-            val challengeToken = rsps.wwwAuthenticateHeader(rsp).collect {
-              case AuthHeader(token) =>
-                token
-            }
-            credSrc.init(context, challengeToken).flatMap { nextToken =>
-              // loop to reattempt the request, mutated with the next token data
-              reqs.authorizationHeader(req, nextToken)
-              challengeResponseLoop(req, backend, Some(credentialFuture))
-            }
+            val challengeToken = rsps
+              .wwwAuthenticateHeader(rsp)
+              .collect {
+                case AuthHeader(token) =>
+                  token
+              }
+            credSrc
+              .init(context, challengeToken)
+              .flatMap { nextToken =>
+                // loop to reattempt the request, mutated with the next token data
+                reqs.authorizationHeader(req, nextToken)
+                challengeResponseLoop(req, backend, Some(credentialFuture))
+              }
           }
         case rsp =>
           // no challenge (or an exception): we're finished
@@ -325,28 +326,30 @@ object SpnegoAuthenticator {
     final def apply(
         req: Req,
         authed: Service[Authenticated[Req], Rsp]): Future[Rsp] =
-      reqs.authorizationHeader(req).collect {
-        case AuthHeader(negotiation) =>
-          credSrc.load() flatMap {
-            credSrc.accept(_, negotiation)
-          } flatMap { negotiated =>
-            negotiated.established map { ctx =>
-              authed(reqs.authenticated(req, ctx))
-            } getOrElse {
-              Future value unauthorized(req)
-            } map { rsp =>
-              negotiated.wwwAuthenticate foreach {
-                rsps.wwwAuthenticateHeader(rsp, _)
+      reqs
+        .authorizationHeader(req)
+        .collect {
+          case AuthHeader(negotiation) =>
+            credSrc.load() flatMap {
+              credSrc.accept(_, negotiation)
+            } flatMap { negotiated =>
+              negotiated.established map { ctx =>
+                authed(reqs.authenticated(req, ctx))
+              } getOrElse {
+                Future value unauthorized(req)
+              } map { rsp =>
+                negotiated.wwwAuthenticate foreach {
+                  rsps.wwwAuthenticateHeader(rsp, _)
+                }
+                rsp
               }
-              rsp
+            } handle {
+              case e: GSSException => {
+                log.error(e, "authenticating")
+                unauthorized(req)
+              }
             }
-          } handle {
-            case e: GSSException => {
-              log.error(e, "authenticating")
-              unauthorized(req)
-            }
-          }
-      } getOrElse {
+        } getOrElse {
         log.debug(
           "Request had no AuthHeader information.  Returning Unauthorized.")
         Future value unauthorized(req)

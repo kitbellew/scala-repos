@@ -576,9 +576,8 @@ trait TransSpecModule extends FNModule {
 
   def buildConstantWrapSpec[A <: SourceType](
       source: TransSpec[A]): TransSpec[A] = {
-    val bottomWrapped = trans.WrapObject(
-      trans.ConstLiteral(CEmptyArray, source),
-      paths.Key.name)
+    val bottomWrapped = trans
+      .WrapObject(trans.ConstLiteral(CEmptyArray, source), paths.Key.name)
     trans.InnerObjectConcat(
       bottomWrapped,
       trans.WrapObject(source, paths.Value.name))

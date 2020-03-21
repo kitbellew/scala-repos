@@ -234,8 +234,9 @@ object Math {
 
   def hypot(a: scala.Double, b: scala.Double): scala.Double = {
     // http://en.wikipedia.org/wiki/Hypot#Implementation
-    if (abs(a) == scala.Double.PositiveInfinity || abs(
-          b) == scala.Double.PositiveInfinity)
+    if (abs(a) == scala.Double.PositiveInfinity || abs(b) == scala
+          .Double
+          .PositiveInfinity)
       scala.Double.PositiveInfinity
     else if (a.isNaN || b.isNaN)
       scala.Double.NaN

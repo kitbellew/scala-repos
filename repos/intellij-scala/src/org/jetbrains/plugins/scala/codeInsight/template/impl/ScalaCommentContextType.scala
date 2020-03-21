@@ -29,10 +29,8 @@ object ScalaCommentContextType {
         case elem =>
           elem
       }
-    val comment = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[PsiComment],
-      false)
+    val comment = PsiTreeUtil
+      .getParentOfType(element, classOf[PsiComment], false)
     comment != null
   }
 }

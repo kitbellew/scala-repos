@@ -154,15 +154,17 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
                 lookup.addLookupStrings(obj.name + "." + element.name)
                 applyVariant(lookup)
               }
-              obj.members.foreach {
-                case v: ScValue =>
-                  v.declaredElements foreach fetchAndApply
-                case v: ScVariable =>
-                  v.declaredElements foreach fetchAndApply
-                case obj: ScObject =>
-                  fetchAndApply(obj)
-                case _ => // do nothing
-              }
+              obj
+                .members
+                .foreach {
+                  case v: ScValue =>
+                    v.declaredElements foreach fetchAndApply
+                  case v: ScVariable =>
+                    v.declaredElements foreach fetchAndApply
+                  case obj: ScObject =>
+                    fetchAndApply(obj)
+                  case _ => // do nothing
+                }
             case _ => // do nothing
           }
 
@@ -211,24 +213,27 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
                 ScType.extractClass(proj) foreach collectAndApplyVariants
               case _ => // do nothing
             }
-            ScalaPsiUtil.getCompanionModule(
-              clazz) foreach collectAndApplyVariants
+            ScalaPsiUtil
+              .getCompanionModule(clazz) foreach collectAndApplyVariants
           case Some(p: PsiClass) if isAccessible(p) =>
-            p.getFields.foreach(field => {
-              if (field.hasModifierProperty("static") && isAccessible(field)) {
-                val lookup =
-                  LookupElementManager
-                    .getLookupElement(
-                      new ScalaResolveResult(field),
-                      isClassName = true,
-                      isOverloadedForClassName = false,
-                      shouldImport = true,
-                      isInStableCodeReference = false)
-                    .head
-                lookup.addLookupStrings(p.getName + "." + field.getName)
-                applyVariant(lookup)
-              }
-            })
+            p
+              .getFields
+              .foreach(field => {
+                if (field
+                      .hasModifierProperty("static") && isAccessible(field)) {
+                  val lookup =
+                    LookupElementManager
+                      .getLookupElement(
+                        new ScalaResolveResult(field),
+                        isClassName = true,
+                        isOverloadedForClassName = false,
+                        shouldImport = true,
+                        isInStableCodeReference = false)
+                      .head
+                  lookup.addLookupStrings(p.getName + "." + field.getName)
+                  applyVariant(lookup)
+                }
+              })
           case _ => // do nothing
         }
 

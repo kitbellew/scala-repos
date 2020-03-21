@@ -99,8 +99,8 @@ class ScClsStubBuilder extends ClsStubBuilder {
     val text = result.sourceText
     val file = ScalaPsiElementFactory.createScalaFile(
       text.replace("\r", ""),
-      PsiManager.getInstance(
-        DefaultProjectFactory.getInstance().getDefaultProject))
+      PsiManager
+        .getInstance(DefaultProjectFactory.getInstance().getDefaultProject))
 
     val adj = file.asInstanceOf[CompiledFileAdjuster]
     adj.setCompiled(c = true)
@@ -108,7 +108,8 @@ class ScClsStubBuilder extends ClsStubBuilder {
     adj.setVirtualFile(vFile)
 
     val fType =
-      LanguageParserDefinitions.INSTANCE
+      LanguageParserDefinitions
+        .INSTANCE
         .forLanguage(ScalaFileType.SCALA_LANGUAGE)
         .getFileNodeType
     val stub = fType
@@ -165,9 +166,11 @@ class ScClsStubBuilder extends ClsStubBuilder {
     def contains(name: String): Boolean = {
       if (dir == null)
         return false
-      !dir.getChildren.forall(child =>
-        child.getExtension != "class" || NameTransformer.decode(
-          child.getNameWithoutExtension) == name)
+      !dir
+        .getChildren
+        .forall(child =>
+          child.getExtension != "class" || NameTransformer
+            .decode(child.getNameWithoutExtension) == name)
     }
   }
 }

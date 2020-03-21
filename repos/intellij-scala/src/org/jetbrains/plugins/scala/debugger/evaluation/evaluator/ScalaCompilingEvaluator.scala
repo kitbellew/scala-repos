@@ -129,7 +129,8 @@ class ScalaCompilingEvaluator(
       classLoader: ClassLoaderReference): Unit = {
     if (classes.isEmpty)
       throw EvaluationException("Could not compile generated class")
-    val proxy: VirtualMachineProxyImpl = process.getVirtualMachineProxy
+    val proxy: VirtualMachineProxyImpl = process
+      .getVirtualMachineProxy
       .asInstanceOf[VirtualMachineProxyImpl]
     def alreadyDefined(clsName: String) = {
       proxy.classesByName(clsName).asScala.exists(refType => refType.isPrepared)
@@ -164,7 +165,8 @@ class ScalaCompilingEvaluator(
       "([Ljava/net/URL;Ljava/lang/ClassLoader;)V")
     val threadReference: ThreadReference =
       context.getSuspendContext.getThread.getThreadReference
-    val args = util.Arrays
+    val args = util
+      .Arrays
       .asList(createURLArray(context), context.getClassLoader)
     val reference = loaderClass
       .newInstance(
@@ -198,15 +200,15 @@ object ScalaCompilingEvaluator {
     val classType = process
       .findClass(context, "java.net.URL", context.getClassLoader)
       .asInstanceOf[ClassType]
-    val proxy: VirtualMachineProxyImpl = process.getVirtualMachineProxy
+    val proxy: VirtualMachineProxyImpl = process
+      .getVirtualMachineProxy
       .asInstanceOf[VirtualMachineProxyImpl]
     val threadReference: ThreadReference =
       context.getSuspendContext.getThread.getThreadReference
     val url = proxy.mirrorOf("file:a")
     keep(url, context)
-    val ctorMethod = classType.concreteMethodByName(
-      "<init>",
-      "(Ljava/lang/String;)V")
+    val ctorMethod = classType
+      .concreteMethodByName("<init>", "(Ljava/lang/String;)V")
     val reference = classType.newInstance(
       threadReference,
       ctorMethod,
@@ -224,19 +226,21 @@ object ScalaCompilingEvaluator {
     val arrayClass: ArrayType = process
       .findClass(context, "byte[]", context.getClassLoader)
       .asInstanceOf[ArrayType]
-    val reference: ArrayReference = process.newInstance(
-      arrayClass,
-      bytes.length)
+    val reference: ArrayReference = process
+      .newInstance(arrayClass, bytes.length)
     keep(reference, context)
-    bytes.zipWithIndex.foreach {
-      case (b, i) =>
-        reference.setValue(
-          i,
-          process.getVirtualMachineProxy
-            .asInstanceOf[VirtualMachineProxyImpl]
-            .mirrorOf(bytes(i)))
-      case _ =>
-    }
+    bytes
+      .zipWithIndex
+      .foreach {
+        case (b, i) =>
+          reference.setValue(
+            i,
+            process
+              .getVirtualMachineProxy
+              .asInstanceOf[VirtualMachineProxyImpl]
+              .mirrorOf(bytes(i)))
+        case _ =>
+      }
     reference
   }
 }
@@ -301,7 +305,10 @@ private class GeneratedClass(
       throw EvaluationException(
         "Could not evaluate due to a change in a source file")
 
-    val helper = EvaluatorCompileHelper.EP_NAME.getExtensions.headOption
+    val helper = EvaluatorCompileHelper
+      .EP_NAME
+      .getExtensions
+      .headOption
       .getOrElse {
         ScalaEvaluatorCompileHelper.instance(project)
       }
@@ -351,10 +358,8 @@ private class GeneratedClass(
         case (stmt: ScBlockStatement) childOf (nonExpr: PsiElement) =>
           (stmt, nonExpr)
         case _ =>
-          val blockStmt = PsiTreeUtil.getParentOfType(
-            elem,
-            classOf[ScBlockStatement],
-            true)
+          val blockStmt = PsiTreeUtil
+            .getParentOfType(elem, classOf[ScBlockStatement], true)
           if (blockStmt == null)
             throw EvaluationException(
               "Could not compile local class in this context")

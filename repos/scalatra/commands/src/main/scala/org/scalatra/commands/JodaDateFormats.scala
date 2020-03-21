@@ -28,12 +28,14 @@ object JodaDateFormats extends DateParser {
   def apply(f: DateFormat*): DateParser =
     new DateParser {
       def parse(s: String) =
-        f.toList.foldLeft(None: Option[DateTime]) { (r, f) ⇒
-          if (!r.isDefined)
-            f.parse(s)
-          else
-            r
-        }
+        f
+          .toList
+          .foldLeft(None: Option[DateTime]) { (r, f) ⇒
+            if (!r.isDefined)
+              f.parse(s)
+            else
+              r
+          }
     }
 
   trait DateFormat extends DateParser {
@@ -53,8 +55,9 @@ object JodaDateFormats extends DateParser {
   }
 
   object Iso8601NoMillis extends DateFormat {
-    val dateTimeFormat = ISODateTimeFormat.dateTimeNoMillis.withZone(
-      DateTimeZone.UTC)
+    val dateTimeFormat = ISODateTimeFormat
+      .dateTimeNoMillis
+      .withZone(DateTimeZone.UTC)
   }
 
   object HttpDate extends DateFormat {

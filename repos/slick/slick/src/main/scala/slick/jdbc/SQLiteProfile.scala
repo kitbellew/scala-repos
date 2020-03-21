@@ -112,7 +112,8 @@ trait SQLiteProfile extends JdbcProfile {
         override def length = _size
         override def varying = dbType == Some("VARCHAR")
         override def default =
-          meta.columnDef
+          meta
+            .columnDef
             .map((_, tpe))
             .collect {
               case ("null", _) =>
@@ -212,12 +213,11 @@ trait SQLiteProfile extends JdbcProfile {
         case Library.LCase(ch) =>
           b"lower(!$ch)"
         case Library.Substring(n, start, end) =>
-          b"substr($n, ${QueryParameter
-            .constOp[Int]("+")(_ + _)(start, LiteralNode(1).infer())}, ${QueryParameter
-            .constOp[Int]("-")(_ - _)(end, start)})"
+          b"substr($n, ${QueryParameter.constOp[Int]("+")(_ + _)(
+            start,
+            LiteralNode(1).infer())}, ${QueryParameter.constOp[Int]("-")(_ - _)(end, start)})"
         case Library.Substring(n, start) =>
-          b"substr($n, ${QueryParameter
-            .constOp[Int]("+")(_ + _)(start, LiteralNode(1).infer())})\)"
+          b"substr($n, ${QueryParameter.constOp[Int]("+")(_ + _)(start, LiteralNode(1).infer())})\)"
         case Library.IndexOf(n, str) =>
           b"\(charindex($str, $n) - 1\)"
         case Library.%(l, r) =>
@@ -287,8 +287,10 @@ trait SQLiteProfile extends JdbcProfile {
       extends super.CountingInsertActionComposerImpl[U](compiled) {
     // SQLite cannot perform server-side insert-or-update with soft insert semantics. We don't have to do
     // the same in ReturningInsertInvoker because SQLite does not allow returning non-AutoInc keys anyway.
-    override protected val useServerSideUpsert = compiled.upsert.fields.forall(
-      fs => !fs.options.contains(ColumnOption.AutoInc))
+    override protected val useServerSideUpsert = compiled
+      .upsert
+      .fields
+      .forall(fs => !fs.options.contains(ColumnOption.AutoInc))
     override protected def useTransactionForUpsert = !useServerSideUpsert
   }
 

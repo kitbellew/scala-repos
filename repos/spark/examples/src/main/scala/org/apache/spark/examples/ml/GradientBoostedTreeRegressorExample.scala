@@ -35,7 +35,8 @@ object GradientBoostedTreeRegressorExample {
 
     // $example on$
     // Load and parse the data file, converting it to a DataFrame.
-    val data = sqlContext.read
+    val data = sqlContext
+      .read
       .format("libsvm")
       .load("data/mllib/sample_libsvm_data.txt")
 
@@ -57,8 +58,7 @@ object GradientBoostedTreeRegressorExample {
       .setMaxIter(10)
 
     // Chain indexer and GBT in a Pipeline
-    val pipeline = new Pipeline()
-      .setStages(Array(featureIndexer, gbt))
+    val pipeline = new Pipeline().setStages(Array(featureIndexer, gbt))
 
     // Train model.  This also runs the indexer.
     val model = pipeline.fit(trainingData)

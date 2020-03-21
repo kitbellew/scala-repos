@@ -73,7 +73,8 @@ trait PostgresProfile extends JdbcProfile {
         val VarCharPattern = "^'(.*)'::character varying$".r
         val IntPattern = "^\\((-?[0-9]*)\\)$".r
         override def default =
-          meta.columnDef
+          meta
+            .columnDef
             .map((_, tpe))
             .collect {
               case ("true", "Boolean") =>
@@ -161,8 +162,8 @@ trait PostgresProfile extends JdbcProfile {
       sym: Option[FieldSymbol]): String =
     tmd.sqlType match {
       case java.sql.Types.VARCHAR =>
-        val size = sym.flatMap(
-          _.findColumnOption[RelationalProfile.ColumnOption.Length])
+        val size = sym
+          .flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length])
         size.fold("VARCHAR")(l =>
           if (l.varying)
             s"VARCHAR(${l.length})"
@@ -201,13 +202,15 @@ trait PostgresProfile extends JdbcProfile {
                 false
             }
           if (eligible(onNodes) && eligible(selNodes) &&
-              onNodes.iterator
+              onNodes
+                .iterator
                 .collect[List[TermSymbol]] {
                   case FwdPath(ss) =>
                     ss
                 }
                 .toSet ==
-                selNodes.iterator
+                selNodes
+                  .iterator
                   .collect[List[TermSymbol]] {
                     case FwdPath(ss) =>
                       ss

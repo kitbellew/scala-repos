@@ -93,26 +93,32 @@ private case class ScalaSdkData(
       </properties>
       <CLASSES>
         {
-      standardLibrary.classes.map(url =>
-        <root url={
-          url
-        }/>)
+      standardLibrary
+        .classes
+        .map(url =>
+          <root url={
+            url
+          }/>)
     }
       </CLASSES>
       <JAVADOC>
         {
-      standardLibrary.docs.map(url =>
-        <root url={
-          url
-        }/>)
+      standardLibrary
+        .docs
+        .map(url =>
+          <root url={
+            url
+          }/>)
     }
       </JAVADOC>
       <SOURCES>
         {
-      standardLibrary.sources.map(url =>
-        <root url={
-          url
-        }/>)
+      standardLibrary
+        .sources
+        .map(url =>
+          <root url={
+            url
+          }/>)
     }
       </SOURCES>
     </library>
@@ -154,17 +160,19 @@ private object ScalaSdkData {
   }
 
   def languageLevelFrom(compilerClasspath: Seq[String]): String = {
-    val compilerJarVersions = compilerClasspath.flatMap(path =>
-      versionOf(new File(path)).toSeq)
+    val compilerJarVersions = compilerClasspath
+      .flatMap(path => versionOf(new File(path)).toSeq)
 
-    compilerJarVersions.headOption
+    compilerJarVersions
+      .headOption
       .flatMap(languageLevelFrom)
       .getOrElse("Scala_2_11")
   }
 
   private def versionOf(file: File): Option[String] = {
     val FileName =
-      "(?:scala-compiler|scala-library|scala-reflect)-(.*?)(?:-src|-sources|-javadoc).jar".r
+      "(?:scala-compiler|scala-library|scala-reflect)-(.*?)(?:-src|-sources|-javadoc).jar"
+        .r
 
     file.getName match {
       case FileName(number) =>
@@ -191,14 +199,13 @@ private object ScalaSdkData {
   private def suggestLibraryFile(
       name: String,
       context: ConversionContext): File = {
-    val base = Option(context.getSettingsBaseDir)
-      .getOrElse(
-        throw new CannotConvertException(
-          "Only directory-based IDEA projects are supported"))
+    val base = Option(context.getSettingsBaseDir).getOrElse(
+      throw new CannotConvertException(
+        "Only directory-based IDEA projects are supported"))
 
     val candidates = {
-      val suffixes =
-        Iterator.single("") ++ Iterator.from(2).map("_" + _.toString)
+      val suffixes = Iterator
+        .single("") ++ Iterator.from(2).map("_" + _.toString)
       suffixes.map(suffix =>
         new File(new File(base, "libraries"), s"$name$suffix.xml"))
     }

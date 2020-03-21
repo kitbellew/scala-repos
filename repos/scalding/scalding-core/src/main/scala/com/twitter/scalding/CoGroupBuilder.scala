@@ -54,17 +54,21 @@ class CoGroupBuilder(groupFields: Fields, joinMode: JoinMode)
         pipe :: coGroups.map {
           _._2
         }
-      ).map {
-        RichPipe.assignName(_)
-      }.toArray
+      )
+        .map {
+          RichPipe.assignName(_)
+        }
+        .toArray
     val joinModes =
       (
         joinMode :: coGroups.map {
           _._3
         }
-      ).map {
-        _.booleanValue
-      }.toArray
+      )
+        .map {
+          _.booleanValue
+        }
+        .toArray
     val mixedJoiner = new MixedJoin(joinModes)
     val cg: Pipe = new CoGroup(pipes, fields, null, WrappedJoiner(mixedJoiner))
     overrideReducers(cg)

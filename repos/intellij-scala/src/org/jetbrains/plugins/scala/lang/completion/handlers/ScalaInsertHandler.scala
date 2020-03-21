@@ -110,9 +110,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
         val (startOffset, _) = res.get
         val tailOffset = context.getTailOffset
         document.insertString(tailOffset, "}")
-        document.insertString(
-          startOffset + literal.getTextRange.getStartOffset,
-          "{")
+        document
+          .insertString(startOffset + literal.getTextRange.getStartOffset, "{")
         context.commitDocument()
         (startOffset + 1, tailOffset - startOffset)
       } else
@@ -140,16 +139,20 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
       if (completionChar == '\t') {
         file.findElementAt(startOffset) match {
           case elem
-              if elem.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER && elem.getParent
+              if elem.getNode.getElementType == ScalaTokenTypes
+                .tIDENTIFIER && elem
+                .getParent
                 .isInstanceOf[ScReferenceExpression]
-                && elem.getParent.getParent.isInstanceOf[
-                  ScReferenceExpression] && item.getAllLookupStrings
+                && elem
+                  .getParent
+                  .getParent
+                  .isInstanceOf[ScReferenceExpression] && item
+                .getAllLookupStrings
                 .size() > 1 =>
             val ref = elem.getParent.asInstanceOf[ScReferenceExpression]
             val newRefText = ref.getText
-            val newRef = ScalaPsiElementFactory.createExpressionFromText(
-              newRefText,
-              ref.getManager)
+            val newRef = ScalaPsiElementFactory
+              .createExpressionFromText(newRefText, ref.getManager)
             ref.getParent.replace(newRef).getFirstChild
           case elem =>
             elem
@@ -217,13 +220,15 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
         withSomeNum: Boolean) {
       def shiftEndOffset(shift: Int, withSomeNum: Boolean = withSomeNum) {
         endOffset += shift
-        editor.getCaretModel.moveToOffset(
-          endOffset + (
-            if (withSomeNum)
-              someNum
-            else
-              0
-          ))
+        editor
+          .getCaretModel
+          .moveToOffset(
+            endOffset + (
+              if (withSomeNum)
+                someNum
+              else
+                0
+            ))
       }
       val documentText: String = document.getText
       val nextChar: Char =
@@ -255,8 +260,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
           }
         }
       } else if (withSpace && (
-                   nextChar != ' ' || documentText.charAt(
-                     endOffset + 1) != openChar
+                   nextChar != ' ' || documentText
+                     .charAt(endOffset + 1) != openChar
                  )) {
         document.insertString(endOffset, " ")
         shiftEndOffset(1, withSomeNum = false)
@@ -394,7 +399,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
                   document.insertString(endOffset, " ")
                   endOffset += 1
                   editor.getCaretModel.moveToOffset(endOffset + someNum)
-                } else if (endOffset == document.getTextLength || document.getCharsSequence
+                } else if (endOffset == document.getTextLength || document
+                             .getCharsSequence
                              .charAt(endOffset) != '(') {
                   disableParenthesesCompletionChar()
                   if (!item.etaExpanded) {

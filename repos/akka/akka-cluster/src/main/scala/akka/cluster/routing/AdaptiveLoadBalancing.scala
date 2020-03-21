@@ -96,9 +96,8 @@ final case class AdaptiveLoadBalancingRoutingLogic(
               cluster.selfAddress,
               metricsSelector.weights(oldMetrics)))
           // ignore, don't update, in case of CAS failure
-          weightedRouteesRef.compareAndSet(
-            oldValue,
-            (routees, oldMetrics, weightedRoutees))
+          weightedRouteesRef
+            .compareAndSet(oldValue, (routees, oldMetrics, weightedRoutees))
           weightedRoutees
         } else
           oldWeightedRoutees
@@ -159,16 +158,16 @@ final case class AdaptiveLoadBalancingRoutingLogic(
 final case class AdaptiveLoadBalancingPool(
     metricsSelector: MetricsSelector = MixMetricsSelector,
     override val nrOfInstances: Int = 0,
-    override val supervisorStrategy: SupervisorStrategy =
-      Pool.defaultSupervisorStrategy,
+    override val supervisorStrategy: SupervisorStrategy = Pool
+      .defaultSupervisorStrategy,
     override val routerDispatcher: String = Dispatchers.DefaultDispatcherId,
     override val usePoolDispatcher: Boolean = false)
     extends Pool {
 
   def this(config: Config, dynamicAccess: DynamicAccess) =
     this(
-      nrOfInstances = ClusterRouterSettingsBase.getMaxTotalNrOfInstances(
-        config),
+      nrOfInstances = ClusterRouterSettingsBase
+        .getMaxTotalNrOfInstances(config),
       metricsSelector = MetricsSelector.fromConfig(config, dynamicAccess),
       usePoolDispatcher = config.hasPath("pool-dispatcher"))
 
@@ -316,17 +315,19 @@ case object HeapMetricsSelector extends CapacityMetricsSelector {
   def getInstance = this
 
   override def capacity(nodeMetrics: Set[NodeMetrics]): Map[Address, Double] = {
-    nodeMetrics.collect {
-      case HeapMemory(address, _, used, committed, max) ⇒
-        val capacity =
-          max match {
-            case None ⇒
-              (committed - used).toDouble / committed
-            case Some(m) ⇒
-              (m - used).toDouble / m
-          }
-        (address, capacity)
-    }.toMap
+    nodeMetrics
+      .collect {
+        case HeapMemory(address, _, used, committed, max) ⇒
+          val capacity =
+            max match {
+              case None ⇒
+                (committed - used).toDouble / committed
+              case Some(m) ⇒
+                (m - used).toDouble / m
+            }
+          (address, capacity)
+      }
+      .toMap
   }
 }
 
@@ -347,11 +348,13 @@ case object CpuMetricsSelector extends CapacityMetricsSelector {
   def getInstance = this
 
   override def capacity(nodeMetrics: Set[NodeMetrics]): Map[Address, Double] = {
-    nodeMetrics.collect {
-      case Cpu(address, _, _, Some(cpuCombined), _) ⇒
-        val capacity = 1.0 - cpuCombined
-        (address, capacity)
-    }.toMap
+    nodeMetrics
+      .collect {
+        case Cpu(address, _, _, Some(cpuCombined), _) ⇒
+          val capacity = 1.0 - cpuCombined
+          (address, capacity)
+      }
+      .toMap
   }
 }
 
@@ -374,11 +377,13 @@ case object SystemLoadAverageMetricsSelector extends CapacityMetricsSelector {
   def getInstance = this
 
   override def capacity(nodeMetrics: Set[NodeMetrics]): Map[Address, Double] = {
-    nodeMetrics.collect {
-      case Cpu(address, _, Some(systemLoadAverage), _, processors) ⇒
-        val capacity = 1.0 - math.min(1.0, systemLoadAverage / processors)
-        (address, capacity)
-    }.toMap
+    nodeMetrics
+      .collect {
+        case Cpu(address, _, Some(systemLoadAverage), _, processors) ⇒
+          val capacity = 1.0 - math.min(1.0, systemLoadAverage / processors)
+          (address, capacity)
+      }
+      .toMap
   }
 }
 
@@ -434,8 +439,8 @@ abstract class MixMetricsSelectorBase(
     this(immutableSeq(selectors).toVector)
 
   override def capacity(nodeMetrics: Set[NodeMetrics]): Map[Address, Double] = {
-    val combined: immutable.IndexedSeq[(Address, Double)] = selectors.flatMap(
-      _.capacity(nodeMetrics).toSeq)
+    val combined: immutable.IndexedSeq[(Address, Double)] = selectors
+      .flatMap(_.capacity(nodeMetrics).toSeq)
     // aggregated average of the capacities by address
     combined
       .foldLeft(Map.empty[Address, (Double, Int)].withDefaultValue((0.0, 0))) {

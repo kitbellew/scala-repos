@@ -6,10 +6,12 @@ package akka
 object GitHub {
 
   def envTokenOrThrow: String =
-    sys.env.getOrElse(
-      "PR_VALIDATOR_GH_TOKEN",
-      throw new Exception(
-        "No PR_VALIDATOR_GH_TOKEN env var provided, unable to reach github!"))
+    sys
+      .env
+      .getOrElse(
+        "PR_VALIDATOR_GH_TOKEN",
+        throw new Exception(
+          "No PR_VALIDATOR_GH_TOKEN env var provided, unable to reach github!"))
 
   def url(v: String): String = {
     val branch =

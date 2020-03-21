@@ -79,7 +79,15 @@ class ScalaWithMatchSurrounder extends ScalaExpressionSurrounder {
     val whileStmt = element.asInstanceOf[ScMatchStmt]
 
     val patternNode: ASTNode =
-      whileStmt.getNode.getLastChildNode.getTreePrev.getTreePrev.getFirstChildNode.getFirstChildNode.getTreeNext.getTreeNext
+      whileStmt
+        .getNode
+        .getLastChildNode
+        .getTreePrev
+        .getTreePrev
+        .getFirstChildNode
+        .getFirstChildNode
+        .getTreeNext
+        .getTreeNext
     val offset = patternNode.getTextRange.getStartOffset
     patternNode.getTreeParent.removeChild(patternNode)
 

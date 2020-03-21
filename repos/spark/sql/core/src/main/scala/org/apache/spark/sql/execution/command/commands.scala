@@ -202,10 +202,13 @@ case class SetCommand(kv: Option[(String, Option[String])])
       case None =>
         val runFunc =
           (sqlContext: SQLContext) => {
-            sqlContext.getAllConfs.map {
-              case (k, v) =>
-                Row(k, v)
-            }.toSeq
+            sqlContext
+              .getAllConfs
+              .map {
+                case (k, v) =>
+                  Row(k, v)
+              }
+              .toSeq
           }
         (keyValueOutput, runFunc)
 
@@ -214,10 +217,13 @@ case class SetCommand(kv: Option[(String, Option[String])])
       case Some(("-v", None)) =>
         val runFunc =
           (sqlContext: SQLContext) => {
-            sqlContext.conf.getAllDefinedConfs.map {
-              case (key, defaultValue, doc) =>
-                Row(key, defaultValue, doc)
-            }
+            sqlContext
+              .conf
+              .getAllDefinedConfs
+              .map {
+                case (key, defaultValue, doc) =>
+                  Row(key, defaultValue, doc)
+              }
           }
         val schema = StructType(
           StructField("key", StringType, false) ::
@@ -349,15 +355,18 @@ case class DescribeCommand(
 
   override def run(sqlContext: SQLContext): Seq[Row] = {
     val relation = sqlContext.sessionState.catalog.lookupRelation(table)
-    relation.schema.fields.map { field =>
-      val cmtKey = "comment"
-      val comment =
-        if (field.metadata.contains(cmtKey))
-          field.metadata.getString(cmtKey)
-        else
-          ""
-      Row(field.name, field.dataType.simpleString, comment)
-    }
+    relation
+      .schema
+      .fields
+      .map { field =>
+        val cmtKey = "comment"
+        val comment =
+          if (field.metadata.contains(cmtKey))
+            field.metadata.getString(cmtKey)
+          else
+            ""
+        Row(field.name, field.dataType.simpleString, comment)
+      }
   }
 }
 
@@ -384,10 +393,14 @@ case class ShowTablesCommand(databaseName: Option[String])
   override def run(sqlContext: SQLContext): Seq[Row] = {
     // Since we need to return a Seq of rows, we will call getTables directly
     // instead of calling tables in sqlContext.
-    val rows = sqlContext.sessionState.catalog.getTables(databaseName).map {
-      case (tableName, isTemporary) =>
-        Row(tableName, isTemporary)
-    }
+    val rows = sqlContext
+      .sessionState
+      .catalog
+      .getTables(databaseName)
+      .map {
+        case (tableName, isTemporary) =>
+          Row(tableName, isTemporary)
+      }
 
     rows
   }
@@ -415,7 +428,9 @@ case class ShowFunctions(db: Option[String], pattern: Option[String])
       case Some(p) =>
         try {
           val regex = java.util.regex.Pattern.compile(p)
-          sqlContext.sessionState.functionRegistry
+          sqlContext
+            .sessionState
+            .functionRegistry
             .listFunction()
             .filter(regex.matcher(_).matches())
             .map(Row(_))
@@ -457,7 +472,9 @@ case class DescribeFunction(functionName: String, isExtended: Boolean)
   }
 
   override def run(sqlContext: SQLContext): Seq[Row] = {
-    sqlContext.sessionState.functionRegistry
+    sqlContext
+      .sessionState
+      .functionRegistry
       .lookupFunction(functionName) match {
       case Some(info) =>
         val result =

@@ -32,7 +32,8 @@ trait ProjectStructureMatcher {
       assertEquals(
         "Project language level",
         it,
-        roots.LanguageLevelProjectExtension
+        roots
+          .LanguageLevelProjectExtension
           .getInstance(actual)
           .getLanguageLevel))
     expected.foreach(modules)(assertProjectModulesEqual(actual))
@@ -65,8 +66,8 @@ trait ProjectStructureMatcher {
       expectedModules: Seq[module]): Unit = {
     val actualModules = ModuleManager.getInstance(project).getModules.toSeq
     assertNamesEqual("Project module", expectedModules, actualModules)
-    pairByName(expectedModules, actualModules).foreach(
-      (assertModulesEqual _).tupled)
+    pairByName(expectedModules, actualModules)
+      .foreach((assertModulesEqual _).tupled)
   }
 
   private def assertModulesEqual(expected: module, actual: Module): Unit = {
@@ -83,15 +84,16 @@ trait ProjectStructureMatcher {
         JavaResourceRootType.TEST_RESOURCE))
     expected.foreach(excluded)(assertModuleExcludedFoldersEqual(actual))
     expected.foreach(moduleDependencies)(assertModuleDependenciesEqual(actual))
-    expected.foreach(libraryDependencies)(
-      assertLibraryDependenciesEqual(actual))
+    expected
+      .foreach(libraryDependencies)(assertLibraryDependenciesEqual(actual))
     expected.foreach(libraries)(assertModuleLibrariesEqual(actual))
   }
 
   private def assertModuleContentRootsEqual(module: Module)(
       expected: Seq[String]): Unit = {
     val expectedRoots = expected.map(VfsUtilCore.pathToUrl)
-    val actualRoots = roots.ModuleRootManager
+    val actualRoots = roots
+      .ModuleRootManager
       .getInstance(module)
       .getContentEntries
       .map(_.getUrl)
@@ -124,8 +126,8 @@ trait ProjectStructureMatcher {
     val actualFolders = actual.map { folder =>
       val folderUrl = folder.getUrl
       if (folderUrl.startsWith(contentRoot.getUrl))
-        folderUrl.substring(
-          Math.min(folderUrl.length, contentRoot.getUrl.length + 1))
+        folderUrl
+          .substring(Math.min(folderUrl.length, contentRoot.getUrl.length + 1))
       else
         folderUrl
     }
@@ -150,8 +152,8 @@ trait ProjectStructureMatcher {
       "Module dependency",
       expected.map(_.reference),
       actualModuleEntries.map(_.getModule))
-    pairByName(expected, actualModuleEntries).foreach(
-      (assertDependencyScopeAndExportedFlagEqual _).tupled)
+    pairByName(expected, actualModuleEntries)
+      .foreach((assertDependencyScopeAndExportedFlagEqual _).tupled)
   }
 
   private def assertLibraryDependenciesEqual(module: Module)(
@@ -162,8 +164,8 @@ trait ProjectStructureMatcher {
       "Library dependency",
       expected.map(_.reference),
       actualLibraryEntries.map(_.getLibrary))
-    pairByName(expected, actualLibraryEntries).foreach(
-      (assertDependencyScopeAndExportedFlagEqual _).tupled)
+    pairByName(expected, actualLibraryEntries)
+      .foreach((assertDependencyScopeAndExportedFlagEqual _).tupled)
   }
 
   private def assertDependencyScopeAndExportedFlagEqual(
@@ -180,8 +182,8 @@ trait ProjectStructureMatcher {
     val actualLibraries =
       ProjectLibraryTable.getInstance(project).getLibraries.toSeq
     assertNamesEqual("Project library", expectedLibraries, actualLibraries)
-    pairByName(expectedLibraries, actualLibraries).foreach(
-      (assertLibraryContentsEqual _).tupled)
+    pairByName(expectedLibraries, actualLibraries)
+      .foreach((assertLibraryContentsEqual _).tupled)
   }
 
   private def assertLibraryContentsEqual(
@@ -208,14 +210,15 @@ trait ProjectStructureMatcher {
 
   private def assertModuleLibrariesEqual(module: Module)(
       expectedLibraries: Seq[library]): Unit = {
-    val actualLibraries = roots.OrderEnumerator
+    val actualLibraries = roots
+      .OrderEnumerator
       .orderEntries(module)
       .libraryEntries
       .filter(_.isModuleLevel)
       .map(_.getLibrary)
     assertNamesEqual("Module library", expectedLibraries, actualLibraries)
-    pairByName(expectedLibraries, actualLibraries).foreach(
-      (assertLibraryContentsEqual _).tupled)
+    pairByName(expectedLibraries, actualLibraries)
+      .foreach((assertLibraryContentsEqual _).tupled)
   }
 
   private def assertNamesEqual[T](

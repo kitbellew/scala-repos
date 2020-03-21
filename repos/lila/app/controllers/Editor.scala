@@ -21,8 +21,8 @@ object Editor extends LilaController {
 
   def load(urlFen: String) =
     Open { implicit ctx =>
-      val fenStr =
-        Some(urlFen.trim.replace("_", " ")).filter(_.nonEmpty) orElse get("fen")
+      val fenStr = Some(urlFen.trim.replace("_", " "))
+        .filter(_.nonEmpty) orElse get("fen")
       fuccess {
         val decodedFen = fenStr
           .map {
@@ -34,11 +34,13 @@ object Editor extends LilaController {
             chess.variant.Standard)
         val fen = Forsyth >> situation
         Ok(
-          html.board.editor(
-            situation,
-            fen,
-            positionsJson,
-            animationDuration = Env.api.EditorAnimationDuration))
+          html
+            .board
+            .editor(
+              situation,
+              fen,
+              positionsJson,
+              animationDuration = Env.api.EditorAnimationDuration))
       }
     }
 
@@ -49,8 +51,9 @@ object Editor extends LilaController {
           if (game.playable)
             routes.Round.watcher(game.id, "white")
           else
-            routes.Editor.load(
-              get("fen") | (chess.format.Forsyth >> game.toChess))
+            routes
+              .Editor
+              .load(get("fen") | (chess.format.Forsyth >> game.toChess))
         }
       }
     }

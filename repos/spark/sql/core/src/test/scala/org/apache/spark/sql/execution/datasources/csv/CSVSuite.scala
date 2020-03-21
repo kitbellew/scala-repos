@@ -97,19 +97,22 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
         else
           df.select("C0").collect()
 
-      years.zipWithIndex.foreach {
-        case (year, index) =>
-          if (checkTypes) {
-            assert(year === Row(actualYears(index).toInt))
-          } else {
-            assert(year === Row(actualYears(index)))
-          }
-      }
+      years
+        .zipWithIndex
+        .foreach {
+          case (year, index) =>
+            if (checkTypes) {
+              assert(year === Row(actualYears(index).toInt))
+            } else {
+              assert(year === Row(actualYears(index)))
+            }
+        }
     }
   }
 
   test("simple csv test") {
-    val cars = sqlContext.read
+    val cars = sqlContext
+      .read
       .format("csv")
       .option("header", "false")
       .load(testFile(carsFile))
@@ -118,15 +121,14 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   }
 
   test("simple csv test with calling another function to load") {
-    val cars = sqlContext.read
-      .option("header", "false")
-      .csv(testFile(carsFile))
+    val cars = sqlContext.read.option("header", "false").csv(testFile(carsFile))
 
     verifyCars(cars, withHeader = false, checkTypes = false)
   }
 
   test("simple csv test with type inference") {
-    val cars = sqlContext.read
+    val cars = sqlContext
+      .read
       .format("csv")
       .option("header", "true")
       .option("inferSchema", "true")
@@ -136,7 +138,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   }
 
   test("test inferring booleans") {
-    val result = sqlContext.read
+    val result = sqlContext
+      .read
       .format("csv")
       .option("header", "true")
       .option("inferSchema", "true")
@@ -148,7 +151,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   }
 
   test("test with alternative delimiter and quote") {
-    val cars = sqlContext.read
+    val cars = sqlContext
+      .read
       .format("csv")
       .options(Map("quote" -> "\'", "delimiter" -> "|", "header" -> "true"))
       .load(testFile(carsAltFile))
@@ -158,7 +162,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
 
   test("bad encoding name") {
     val exception = intercept[UnsupportedCharsetException] {
-      sqlContext.read
+      sqlContext
+        .read
         .format("csv")
         .option("charset", "1-9588-osi")
         .load(testFile(carsFile8859))
@@ -181,7 +186,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
 
   test("test aliases sep and encoding for delimiter and charset") {
     // scalastyle:off
-    val cars = sqlContext.read
+    val cars = sqlContext
+      .read
       .format("csv")
       .option("header", "true")
       .option("encoding", "iso-8859-1")
@@ -222,7 +228,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   }
 
   test("test for DROPMALFORMED parsing mode") {
-    val cars = sqlContext.read
+    val cars = sqlContext
+      .read
       .format("csv")
       .options(Map("header" -> "true", "mode" -> "dropmalformed"))
       .load(testFile(carsFile))
@@ -232,7 +239,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
 
   test("test for FAILFAST parsing mode") {
     val exception = intercept[SparkException] {
-      sqlContext.read
+      sqlContext
+        .read
         .format("csv")
         .options(Map("header" -> "true", "mode" -> "failfast"))
         .load(testFile(carsFile))
@@ -240,12 +248,14 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
     }
 
     assert(
-      exception.getMessage.contains(
-        "Malformed line in FAILFAST mode: 2015,Chevy,Volt"))
+      exception
+        .getMessage
+        .contains("Malformed line in FAILFAST mode: 2015,Chevy,Volt"))
   }
 
   test("test for tokens more than the fields in the schema") {
-    val cars = sqlContext.read
+    val cars = sqlContext
+      .read
       .format("csv")
       .option("header", "false")
       .option("comment", "~")
@@ -255,7 +265,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   }
 
   test("test with null quote character") {
-    val cars = sqlContext.read
+    val cars = sqlContext
+      .read
       .format("csv")
       .option("header", "true")
       .option("quote", "")
@@ -266,7 +277,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   }
 
   test("test with empty file and known schema") {
-    val result = sqlContext.read
+    val result = sqlContext
+      .read
       .format("csv")
       .schema(StructType(List(StructField("column", StringType, false))))
       .load(testFile(emptyFile))
@@ -313,18 +325,16 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   test("save csv") {
     withTempDir { dir =>
       val csvDir = new File(dir, "csv").getCanonicalPath
-      val cars = sqlContext.read
+      val cars = sqlContext
+        .read
         .format("csv")
         .option("header", "true")
         .load(testFile(carsFile))
 
-      cars
-        .coalesce(1)
-        .write
-        .option("header", "true")
-        .csv(csvDir)
+      cars.coalesce(1).write.option("header", "true").csv(csvDir)
 
-      val carsCopy = sqlContext.read
+      val carsCopy = sqlContext
+        .read
         .format("csv")
         .option("header", "true")
         .load(csvDir)
@@ -336,7 +346,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   test("save csv with quote") {
     withTempDir { dir =>
       val csvDir = new File(dir, "csv").getCanonicalPath
-      val cars = sqlContext.read
+      val cars = sqlContext
+        .read
         .format("csv")
         .option("header", "true")
         .load(testFile(carsFile))
@@ -349,7 +360,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
         .option("quote", "\"")
         .save(csvDir)
 
-      val carsCopy = sqlContext.read
+      val carsCopy = sqlContext
+        .read
         .format("csv")
         .option("header", "true")
         .option("quote", "\"")
@@ -360,7 +372,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   }
 
   test("commented lines in CSV data") {
-    val results = sqlContext.read
+    val results = sqlContext
+      .read
       .format("csv")
       .options(Map("comment" -> "~", "header" -> "false"))
       .load(testFile(commentsFile))
@@ -375,7 +388,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   }
 
   test("inferring schema with commented lines in CSV data") {
-    val results = sqlContext.read
+    val results = sqlContext
+      .read
       .format("csv")
       .options(
         Map("comment" -> "~", "header" -> "false", "inferSchema" -> "true"))
@@ -392,7 +406,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   }
 
   test("setting comment to null disables comment support") {
-    val results = sqlContext.read
+    val results = sqlContext
+      .read
       .format("csv")
       .options(Map("comment" -> "", "header" -> "false"))
       .load(testFile(disableCommentsFile))
@@ -414,7 +429,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
         StructField("comment", StringType, nullable = true),
         StructField("blank", StringType, nullable = true)
       ))
-    val cars = sqlContext.read
+    val cars = sqlContext
+      .read
       .format("csv")
       .schema(dataSchema)
       .options(Map("header" -> "true", "nullValue" -> "null"))
@@ -429,7 +445,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   test("save csv with compression codec option") {
     withTempDir { dir =>
       val csvDir = new File(dir, "csv").getCanonicalPath
-      val cars = sqlContext.read
+      val cars = sqlContext
+        .read
         .format("csv")
         .option("header", "true")
         .load(testFile(carsFile))
@@ -445,7 +462,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
       val compressedFiles = new File(csvDir).listFiles()
       assert(compressedFiles.exists(_.getName.endsWith(".csv.gz")))
 
-      val carsCopy = sqlContext.read
+      val carsCopy = sqlContext
+        .read
         .format("csv")
         .option("header", "true")
         .load(csvDir)
@@ -456,25 +474,22 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
 
   test("SPARK-13543 Write the output as uncompressed via option()") {
     val clonedConf = new Configuration(hadoopConfiguration)
-    hadoopConfiguration.set(
-      "mapreduce.output.fileoutputformat.compress",
-      "true")
     hadoopConfiguration
-      .set(
-        "mapreduce.output.fileoutputformat.compress.type",
-        CompressionType.BLOCK.toString)
-    hadoopConfiguration
-      .set(
-        "mapreduce.output.fileoutputformat.compress.codec",
-        classOf[GzipCodec].getName)
-    hadoopConfiguration.set("mapreduce.map.output.compress", "true")
+      .set("mapreduce.output.fileoutputformat.compress", "true")
     hadoopConfiguration.set(
-      "mapreduce.map.output.compress.codec",
+      "mapreduce.output.fileoutputformat.compress.type",
+      CompressionType.BLOCK.toString)
+    hadoopConfiguration.set(
+      "mapreduce.output.fileoutputformat.compress.codec",
       classOf[GzipCodec].getName)
+    hadoopConfiguration.set("mapreduce.map.output.compress", "true")
+    hadoopConfiguration
+      .set("mapreduce.map.output.compress.codec", classOf[GzipCodec].getName)
     withTempDir { dir =>
       try {
         val csvDir = new File(dir, "csv").getCanonicalPath
-        val cars = sqlContext.read
+        val cars = sqlContext
+          .read
           .format("csv")
           .option("header", "true")
           .load(testFile(carsFile))
@@ -490,7 +505,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
         val compressedFiles = new File(csvDir).listFiles()
         assert(compressedFiles.exists(!_.getName.endsWith(".csv.gz")))
 
-        val carsCopy = sqlContext.read
+        val carsCopy = sqlContext
+          .read
           .format("csv")
           .option("header", "true")
           .load(csvDir)
@@ -499,15 +515,18 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
       } finally {
         // Hadoop 1 doesn't have `Configuration.unset`
         hadoopConfiguration.clear()
-        clonedConf.asScala.foreach(entry =>
-          hadoopConfiguration.set(entry.getKey, entry.getValue))
+        clonedConf
+          .asScala
+          .foreach(entry =>
+            hadoopConfiguration.set(entry.getKey, entry.getValue))
       }
     }
   }
 
   test(
     "Schema inference correctly identifies the datatype when data is sparse.") {
-    val df = sqlContext.read
+    val df = sqlContext
+      .read
       .format("csv")
       .option("header", "true")
       .option("inferSchema", "true")
@@ -519,7 +538,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   }
 
   test("old csv data source name works") {
-    val cars = sqlContext.read
+    val cars = sqlContext
+      .read
       .format("com.databricks.spark.csv")
       .option("header", "false")
       .load(testFile(carsFile))

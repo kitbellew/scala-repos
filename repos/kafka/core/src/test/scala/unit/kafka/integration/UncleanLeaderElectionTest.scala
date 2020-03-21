@@ -54,10 +54,10 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
   val partitionId = 0
 
   val kafkaApisLogger = Logger.getLogger(classOf[kafka.server.KafkaApis])
-  val networkProcessorLogger = Logger.getLogger(
-    classOf[kafka.network.Processor])
-  val syncProducerLogger = Logger.getLogger(
-    classOf[kafka.producer.SyncProducer])
+  val networkProcessorLogger = Logger
+    .getLogger(classOf[kafka.network.Processor])
+  val syncProducerLogger = Logger
+    .getLogger(classOf[kafka.producer.SyncProducer])
   val eventHandlerLogger = Logger.getLogger(
     classOf[kafka.producer.async.DefaultEventHandler[Object, Object]])
 
@@ -73,9 +73,8 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
         "controlled.shutdown.enable",
         String.valueOf(enableControlledShutdown))
       configProps.put("controlled.shutdown.max.retries", String.valueOf(1))
-      configProps.put(
-        "controlled.shutdown.retry.backoff.ms",
-        String.valueOf(1000))
+      configProps
+        .put("controlled.shutdown.retry.backoff.ms", String.valueOf(1000))
     }
 
     // temporarily set loggers to a higher level so that tests run quietly

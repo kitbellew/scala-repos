@@ -111,7 +111,8 @@ trait DerbyProfile extends JdbcProfile {
     MTable.getTables(None, None, None, Some(Seq("TABLE")))
 
   override protected def computeQueryCompiler =
-    super.computeQueryCompiler + Phase.rewriteBooleans + Phase.specializeParameters
+    super.computeQueryCompiler + Phase.rewriteBooleans + Phase
+      .specializeParameters
   override val columnTypes = new JdbcTypes
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder =
     new QueryBuilder(n, state)
@@ -252,20 +253,28 @@ trait DerbyProfile extends JdbcProfile {
           seq.name)
       /* Set the START value explicitly because it defaults to the data type's
        * min/max value instead of the more conventional 1/-1. */
-      b append " START WITH " append seq._start.getOrElse(
-        if (desc)
-          -1
-        else
-          1)
-      seq._increment.foreach {
-        b append " INCREMENT BY " append _
-      }
-      seq._maxValue.foreach {
-        b append " MAXVALUE " append _
-      }
-      seq._minValue.foreach {
-        b append " MINVALUE " append _
-      }
+      b append " START WITH " append seq
+        ._start
+        .getOrElse(
+          if (desc)
+            -1
+          else
+            1)
+      seq
+        ._increment
+        .foreach {
+          b append " INCREMENT BY " append _
+        }
+      seq
+        ._maxValue
+        .foreach {
+          b append " MAXVALUE " append _
+        }
+      seq
+        ._minValue
+        .foreach {
+          b append " MINVALUE " append _
+        }
       /* Cycling is supported but does not conform to SQL:2008 semantics. Derby
        * cycles back to the START value instead of MINVALUE or MAXVALUE. No good
        * workaround available AFAICT. */

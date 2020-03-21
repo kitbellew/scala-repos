@@ -163,10 +163,12 @@ final class PrefixAndTail[T](n: Int)
         case StreamSubscriptionTimeoutTerminationMode.NoopTermination ⇒
         // do nothing
         case StreamSubscriptionTimeoutTerminationMode.WarnTermination ⇒
-          materializer.logger.warning(
-            "Substream subscription timeout triggered after {} in prefixAndTail({}).",
-            timeout,
-            n)
+          materializer
+            .logger
+            .warning(
+              "Substream subscription timeout triggered after {} in prefixAndTail({}).",
+              timeout,
+              n)
       }
     }
 
@@ -615,7 +617,8 @@ final class SubSource[T](
         f.invoke(ActorSubscriberMessage.OnComplete)
       case null ⇒
         if (!status.compareAndSet(null, ActorSubscriberMessage.OnComplete))
-          status.get
+          status
+            .get
             .asInstanceOf[AsyncCallback[Any]]
             .invoke(ActorSubscriberMessage.OnComplete)
     }

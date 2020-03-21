@@ -77,8 +77,8 @@ sealed abstract class HoconPsiElement(ast: ASTNode)
     Iterator.iterate(getNextSibling)(_.getNextSibling).takeWhile(_ != null)
 
   def nonWhitespaceChildren =
-    allChildren.filterNot(ch =>
-      ch.getNode.getElementType == TokenType.WHITE_SPACE)
+    allChildren
+      .filterNot(ch => ch.getNode.getElementType == TokenType.WHITE_SPACE)
 
   def nonWhitespaceOrCommentChildren =
     allChildren.filterNot(ch =>
@@ -183,12 +183,14 @@ sealed trait HKeyedField
     this #:: forParent(
       keyedField => keyedField.fieldsInAllPathsBackward,
       objectField =>
-        objectField.parent
+        objectField
+          .parent
           .map(
             _.forParent(
               file => Stream.empty,
               obj =>
-                obj.prefixingField
+                obj
+                  .prefixingField
                   .map(_.fieldsInAllPathsBackward)
                   .getOrElse(Stream.empty)))
           .get
@@ -320,8 +322,8 @@ final class HIncluded(ast: ASTNode)
               (true, true, true)
             case None if !isValidUrl(strVal) =>
               val pfi = ProjectRootManager.getInstance(getProject).getFileIndex
-              val fromClasspath =
-                pfi.isInSource(vf) || pfi.isInLibraryClasses(vf)
+              val fromClasspath = pfi.isInSource(vf) || pfi
+                .isInLibraryClasses(vf)
               (strVal.trim.startsWith("/"), false, fromClasspath)
             case _ =>
               (true, true, false)
@@ -362,12 +364,14 @@ final class HKey(ast: ASTNode) extends HoconPsiElement(ast) with HInnerElement {
       keyedField => keyedField.enclosingEntries)
 
   def stringValue =
-    allChildren.collect {
-      case keyPart: HKeyPart =>
-        keyPart.stringValue
-      case other =>
-        other.getText
-    }.mkString
+    allChildren
+      .collect {
+        case keyPart: HKeyPart =>
+          keyPart.stringValue
+        case other =>
+          other.getText
+      }
+      .mkString
 
   def keyParts = findChildren[HKeyPart]
 
@@ -391,7 +395,8 @@ final class HPath(ast: ASTNode)
 
   def allPaths: List[HPath] = {
     def allPathsIn(path: HPath, acc: List[HPath]): List[HPath] =
-      path.prefix
+      path
+        .prefix
         .map(prePath => allPathsIn(prePath, path :: acc))
         .getOrElse(path :: acc)
     allPathsIn(this, Nil)
@@ -402,10 +407,13 @@ final class HPath(ast: ASTNode)
     */
   def allKeys: Option[List[HKey]] = {
     def allKeysIn(path: HPath, acc: List[HKey]): Option[List[HKey]] =
-      path.validKey.flatMap(key =>
-        path.prefix
-          .map(prePath => allKeysIn(prePath, key :: acc))
-          .getOrElse(Some(key :: acc)))
+      path
+        .validKey
+        .flatMap(key =>
+          path
+            .prefix
+            .map(prePath => allKeysIn(prePath, key :: acc))
+            .getOrElse(Some(key :: acc)))
     allKeysIn(this, Nil)
   }
 
@@ -549,7 +557,9 @@ sealed trait HString
   def isClosed =
     stringType match {
       case HoconTokenType.QuotedString =>
-        HoconConstants.ProperlyClosedQuotedString.pattern
+        HoconConstants
+          .ProperlyClosedQuotedString
+          .pattern
           .matcher(getText)
           .matches
       case HoconTokenType.MultilineString =>

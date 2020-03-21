@@ -31,8 +31,8 @@ object ScalastyleCodeInspection {
       if (root == null)
         return None
 
-      val dirs =
-        possibleLocations.flatMap(name => Option(root.findChild(name))) :+ root
+      val dirs = possibleLocations
+        .flatMap(name => Option(root.findChild(name))) :+ root
       dirs.flatMap(findConfigFile).headOption
     }
   }
@@ -42,8 +42,8 @@ object ScalastyleCodeInspection {
 
     def latest(scalastyleXml: VirtualFile): Option[ScalastyleConfiguration] = {
       def read(): TimestampedScalastyleConfiguration = {
-        val configuration = ScalastyleConfiguration.readFromString(
-          new String(scalastyleXml.contentsToByteArray()))
+        val configuration = ScalastyleConfiguration
+          .readFromString(new String(scalastyleXml.contentsToByteArray()))
         (scalastyleXml.getModificationStamp, configuration)
       }
 

@@ -121,9 +121,11 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
           "It doesn't make sense to collect neighbor ids without a " +
             "direction. (EdgeDirection.Both is not supported; use EdgeDirection.Either instead.)")
       }
-    graph.vertices.leftZipJoin(nbrs) { (vid, vdata, nbrsOpt) =>
-      nbrsOpt.getOrElse(Array.empty[VertexId])
-    }
+    graph
+      .vertices
+      .leftZipJoin(nbrs) { (vid, vdata, nbrsOpt) =>
+        nbrsOpt.getOrElse(Array.empty[VertexId])
+      }
   } // end of collectNeighborIds
 
   /**
@@ -165,9 +167,11 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
             "collectEdges does not support EdgeDirection.Both. Use" +
               "EdgeDirection.Either instead.")
       }
-    graph.vertices.leftJoin(nbrs) { (vid, vdata, nbrsOpt) =>
-      nbrsOpt.getOrElse(Array.empty[(VertexId, VD)])
-    }
+    graph
+      .vertices
+      .leftJoin(nbrs) { (vid, vdata, nbrsOpt) =>
+        nbrsOpt.getOrElse(Array.empty[(VertexId, VD)])
+      }
   } // end of collectNeighbor
 
   /**
@@ -306,13 +310,15 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     var found = false
     var retVal: VertexId = null.asInstanceOf[VertexId]
     while (!found) {
-      val selectedVertices = graph.vertices.flatMap { vidVvals =>
-        if (Random.nextDouble() < probability) {
-          Some(vidVvals._1)
-        } else {
-          None
+      val selectedVertices = graph
+        .vertices
+        .flatMap { vidVvals =>
+          if (Random.nextDouble() < probability) {
+            Some(vidVvals._1)
+          } else {
+            None
+          }
         }
-      }
       if (selectedVertices.count > 1) {
         found = true
         val collectedVertices = selectedVertices.collect()
@@ -337,7 +343,8 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     */
   def convertToCanonicalEdges(
       mergeFunc: (ED, ED) => ED = (e1, e2) => e1): Graph[VD, ED] = {
-    val newEdges = graph.edges
+    val newEdges = graph
+      .edges
       .map {
         case e if e.srcId < e.dstId =>
           ((e.srcId, e.dstId), e.attr)

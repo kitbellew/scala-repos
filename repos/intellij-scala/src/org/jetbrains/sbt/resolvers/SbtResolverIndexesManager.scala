@@ -30,8 +30,8 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
 
   def this() = this(None)
 
-  private val indexesDir =
-    testIndexesDir getOrElse SbtResolverIndexesManager.DEFAULT_INDEXES_DIR
+  private val indexesDir = testIndexesDir getOrElse SbtResolverIndexesManager
+    .DEFAULT_INDEXES_DIR
   private val indexes: mutable.Set[SbtResolverIndex] = mutable.Set.empty
   private val updatingIndexes: mutable.Set[SbtResolverIndex] = mutable.Set.empty
 

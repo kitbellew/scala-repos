@@ -1054,7 +1054,9 @@ object Algebraic extends AlgebraicInstances {
           val lDigits = digits + 2 - rhs.lowerBound.decimalDigits
           val rDigits = max(
             1 - rhs.lowerBound.decimalDigits,
-            digits + 4 - 2 * rhs.lowerBound.decimalDigits + lhs.upperBound.decimalDigits)
+            digits + 4 - 2 * rhs.lowerBound.decimalDigits + lhs
+              .upperBound
+              .decimalDigits)
           if (lDigits >= Int.MaxValue || rDigits >= Int.MaxValue) {
             throw new IllegalArgumentException("required precision is too high")
           } else {
@@ -1125,8 +1127,10 @@ object Algebraic extends AlgebraicInstances {
       }
       def toBigDecimal(digits: Int): JBigDecimal = {
         // We could possibly do better here. Investigate.
-        val height =
-          32 - java.lang.Integer.numberOfLeadingZeros(k - 1) // ceil(lg2(k))
+        val height = 32 - java
+          .lang
+          .Integer
+          .numberOfLeadingZeros(k - 1) // ceil(lg2(k))
         val maxDigits = checked(
           digits + height * (1 + sub.upperBound.decimalDigits))
         if (maxDigits >= Int.MaxValue) {
@@ -1277,8 +1281,8 @@ object Algebraic extends AlgebraicInstances {
   final def nroot(value: JBigDecimal, n: Int, mc: MathContext): JBigDecimal = {
     val result =
       nroot(value, n) { x =>
-        x.scale - ceil(
-          x.unscaledValue.bitLength * bits2dec).toInt + mc.getPrecision + 1
+        x.scale - ceil(x.unscaledValue.bitLength * bits2dec).toInt + mc
+          .getPrecision + 1
       }
     result.round(mc)
   }
@@ -1379,7 +1383,8 @@ object Algebraic extends AlgebraicInstances {
         mode)
     } else {
       val unscale = spire.math.pow(10L, cutoff.toLong)
-      val Array(truncatedUnscaledValue, bigRemainder) = approx.unscaledValue
+      val Array(truncatedUnscaledValue, bigRemainder) = approx
+        .unscaledValue
         .divideAndRemainder(BigInteger.valueOf(unscale))
       val truncated = new JBigDecimal(truncatedUnscaledValue, scale)
       def epsilon: JBigDecimal = new JBigDecimal(BigInteger.ONE, scale)
@@ -1516,10 +1521,13 @@ object Algebraic extends AlgebraicInstances {
 
           case root @ ConstantRoot(poly, _, _, _) =>
             // Bound on the euclidean distance of the coefficients.
-            val distBound = poly.terms.map {
-              case Term(c, _) =>
-                2L * c.bitLength
-            }.qsum / 2L + 1L
+            val distBound = poly
+              .terms
+              .map {
+                case Term(c, _) =>
+                  2L * c.bitLength
+              }
+              .qsum / 2L + 1L
             Bound(
               root.lead.bitLength + 1L,
               root.tail.bitLength + 1L,
@@ -1536,8 +1544,8 @@ object Algebraic extends AlgebraicInstances {
             val lhs = lhsExpr.getBound(this)
             val rhs = rhsExpr.getBound(this)
             val lc = lhs.lc * rhsExpr.degreeBound + rhs.lc * lhsExpr.degreeBound
-            val tc =
-              lhs.measure * rhsExpr.degreeBound + rhs.measure * lhsExpr.degreeBound + 2 * degreeBound
+            val tc = lhs.measure * rhsExpr.degreeBound + rhs.measure * lhsExpr
+              .degreeBound + 2 * degreeBound
             val measure = tc
             val ub = max(lhs.ub, rhs.ub) + 1
             val lb = max(-measure, -(ub * (degreeBound - 1) + lc))
@@ -1548,8 +1556,8 @@ object Algebraic extends AlgebraicInstances {
             val rhs = rhsExpr.getBound(this)
             val lc = lhs.lc * rhsExpr.degreeBound + rhs.lc * lhsExpr.degreeBound
             val tc = lhs.tc * rhsExpr.degreeBound + rhs.tc * lhsExpr.degreeBound
-            val measure =
-              lhs.measure * rhsExpr.degreeBound + rhs.measure * lhsExpr.degreeBound
+            val measure = lhs.measure * rhsExpr.degreeBound + rhs
+              .measure * lhsExpr.degreeBound
             val lb = lhs.lb + rhs.lb
             val ub = lhs.ub + rhs.ub
             Bound(lc, tc, measure, lb, ub)
@@ -1559,8 +1567,8 @@ object Algebraic extends AlgebraicInstances {
             val rhs = rhsExpr.getBound(this)
             val lc = lhs.lc * rhsExpr.degreeBound + rhs.tc * lhsExpr.degreeBound
             val tc = lhs.tc * rhsExpr.degreeBound + rhs.lc * lhsExpr.degreeBound
-            val measure =
-              lhs.measure * rhsExpr.degreeBound + rhs.measure * lhsExpr.degreeBound
+            val measure = lhs.measure * rhsExpr.degreeBound + rhs
+              .measure * lhsExpr.degreeBound
             val lb = lhs.lb - rhs.ub
             val ub = lhs.ub - rhs.lb
             Bound(lc, tc, measure, lb, ub)

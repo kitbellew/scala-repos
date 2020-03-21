@@ -447,8 +447,8 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
         ", ",
         "(",
         ")",
-        arrayDimension != null && arrayDimension.nonEmpty && !arrayDimension.head
-          .isInstanceOf[ExpressionList])
+        arrayDimension != null && arrayDimension
+          .nonEmpty && !arrayDimension.head.isInstanceOf[ExpressionList])
     }
   }
 
@@ -623,8 +623,9 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
       }
 
     for (m <- sortModifiers) {
-      if (!modifiersConstruction.withoutList.contains(
-            m.asInstanceOf[Modifier].modificator)) {
+      if (!modifiersConstruction
+            .withoutList
+            .contains(m.asInstanceOf[Modifier].modificator)) {
         visit(m)
         printer.space()
       }

@@ -69,21 +69,23 @@ private[scalding] object InternalService {
 
     // in all of the graph, find a summer node Summer(_, thatStore, _) where thatStore == store
     // and see if this summer depends on the given leftJoin
-    !dag.nodes.exists { n =>
-      n match {
-        case summer @ Summer(_, StoreService(thatStore), _)
-            if thatStore == store =>
-          Producer
-            .transitiveDependenciesOf(summer)
-            .collectFirst {
-              case ljp @ LeftJoinedProducer(l, s) if ljp == joinProducer =>
-                ()
-            }
-            .isDefined
-        case _ =>
-          false
+    !dag
+      .nodes
+      .exists { n =>
+        n match {
+          case summer @ Summer(_, StoreService(thatStore), _)
+              if thatStore == store =>
+            Producer
+              .transitiveDependenciesOf(summer)
+              .collectFirst {
+                case ljp @ LeftJoinedProducer(l, s) if ljp == joinProducer =>
+                  ()
+              }
+              .isDefined
+          case _ =>
+            false
+        }
       }
-    }
   }
 
   def isValidLoopJoin[K, V](
@@ -121,23 +123,27 @@ private[scalding] object InternalService {
   def storeIsJoined[K, V](
       dag: Dependants[Scalding],
       store: Store[K, V]): Boolean =
-    dag.nodes.exists {
-      case LeftJoinedProducer(l, StoreService(s)) =>
-        s == store
-      case _ =>
-        false
-    }
+    dag
+      .nodes
+      .exists {
+        case LeftJoinedProducer(l, StoreService(s)) =>
+          s == store
+        case _ =>
+          false
+      }
 
   // Get the summer that sums into the given store
   def getSummer[K, V](
       dag: Dependants[Scalding],
       store: BatchedStore[K, V]): Option[Summer[Scalding, K, V]] = {
     // what to do if there is more than one summer here?
-    dag.nodes.collectFirst {
-      case summer @ Summer(p, StoreService(thatStore), _)
-          if (thatStore == store) =>
-        summer.asInstanceOf[Summer[Scalding, K, V]]
-    }
+    dag
+      .nodes
+      .collectFirst {
+        case summer @ Summer(p, StoreService(thatStore), _)
+            if (thatStore == store) =>
+          summer.asInstanceOf[Summer[Scalding, K, V]]
+      }
   }
 
   /**
@@ -154,10 +160,8 @@ private[scalding] object InternalService {
       (flowMode: (FlowDef, Mode)) =>
         val left = input(flowMode)
         val right = toJoin(flowMode)
-        LookupJoin.rightSumming(left, right, reducers)(
-          implicitly,
-          implicitly,
-          sg)
+        LookupJoin
+          .rightSumming(left, right, reducers)(implicitly, implicitly, sg)
     }
 
   /**
@@ -271,7 +275,8 @@ private[scalding] object InternalService {
             case (t, (k, u)) =>
               (k, (t, Right(u)))
           }
-      ).group
+      )
+        .group
         .withReducers(
           reducers.getOrElse(-1)
         ) // jank, but scalding needs a way to maybe set reducers

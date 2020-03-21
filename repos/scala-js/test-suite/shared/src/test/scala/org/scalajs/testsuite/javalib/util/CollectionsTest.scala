@@ -251,10 +251,12 @@ class CollectionsTest extends CollectionsTestBase {
       new ju.Comparator[Int] {
         override def compare(o1: Int, o2: Int): Int = o2 - o1
       }
-    val rCmp2 = ju.Collections.reverseOrder(
-      new ju.Comparator[Int] {
-        override def compare(o1: Int, o2: Int): Int = o1 - o2
-      })
+    val rCmp2 = ju
+      .Collections
+      .reverseOrder(
+        new ju.Comparator[Int] {
+          override def compare(o1: Int, o2: Int): Int = o1 - o2
+        })
 
     scala.util.Random.setSeed(42)
     for (_ <- 0 to 50) {

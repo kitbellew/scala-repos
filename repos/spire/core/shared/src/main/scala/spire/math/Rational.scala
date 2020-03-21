@@ -268,7 +268,9 @@ object Rational extends RationalInstances {
 
         val addBit =
           if (nShared < dShared || (
-                nShared == dShared && d.toBigInteger.getLowestSetBit < dLowerLength
+                nShared == dShared && d
+                  .toBigInteger
+                  .getLowestSetBit < dLowerLength
               )) {
             1
           } else {
@@ -532,7 +534,8 @@ object Rational extends RationalInstances {
                 case SafeLongLong(x) =>
                   spire.math.gcd(x, dgcd)
                 case SafeLongBigInteger(x) =>
-                  spire.math
+                  spire
+                    .math
                     .gcd(dgcd, (x mod BigInteger.valueOf(dgcd)).longValue)
               }
 
@@ -597,7 +600,8 @@ object Rational extends RationalInstances {
                 case SafeLongLong(x) =>
                   spire.math.gcd(x, dgcd)
                 case SafeLongBigInteger(x) =>
-                  spire.math
+                  spire
+                    .math
                     .gcd(dgcd, (x mod BigInteger.valueOf(dgcd)).longValue)
               }
 
@@ -701,7 +705,8 @@ object Rational extends RationalInstances {
             val dgcd: Long = spire.math.gcd(d, (r.d % d).toLong)
             if (dgcd == 1L) {
               Rational(
-                spire.math
+                spire
+                  .math
                   .gcd(spire.math.abs(n), spire.math.abs((r.n % n).toLong)),
                 SafeLong(d) * r.d)
             } else {

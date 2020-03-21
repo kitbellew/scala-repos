@@ -46,8 +46,8 @@ object LottoExample extends Specification {
       (jValue: JValue) =>
         (
           for {
-            winningNumbers <- field[List[Int]]("winning-numbers")(
-              jValue).disjunction
+            winningNumbers <- field[List[Int]]("winning-numbers")(jValue)
+              .disjunction
             _ <- len(6)(winningNumbers).disjunction
           } yield winningNumbers
         ).validation

@@ -35,8 +35,8 @@ class SbtDependencyCompletionContributor extends ScalaCompletionContributor {
         val place = positionFromParameters(parameters)
         val infixExpr = place.getContext.getContext.asInstanceOf[ScInfixExpr]
 
-        val resolversToUse = SbtResolverUtils.getProjectResolvers(
-          Option(ScalaPsiUtil.fileContext(place)))
+        val resolversToUse = SbtResolverUtils
+          .getProjectResolvers(Option(ScalaPsiUtil.fileContext(place)))
         val indexManager = SbtResolverIndexesManager()
         val indexes = resolversToUse.flatMap(indexManager.find).toSet
         if (indexes.isEmpty)
@@ -83,8 +83,8 @@ class SbtDependencyCompletionContributor extends ScalaCompletionContributor {
               if rop == place.getContext && isValidOperation(oper.getText) =>
             completeArtifact(group)
           case (ScInfixExpr(llop, loper, lrop), oper, rop)
-              if rop == place.getContext && oper.getText == "%" && isValidOperation(
-                loper.getText) =>
+              if rop == place.getContext && oper
+                .getText == "%" && isValidOperation(loper.getText) =>
             for {
               ScLiteralImpl.string(group) <- Option(llop)
               ScLiteralImpl.string(artifact) <- Option(lrop)

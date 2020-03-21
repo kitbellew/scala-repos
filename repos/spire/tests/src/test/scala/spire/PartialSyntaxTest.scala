@@ -24,7 +24,9 @@ class PartialSyntaxTest
     with NonImplicitAssertions {
 
   implicit val IntGroup: Group[Int] = implicitly[AdditiveGroup[Int]].additive
-  implicit val SeqIntEq: Eq[Seq[Int]] = spire.optional.genericEq
+  implicit val SeqIntEq: Eq[Seq[Int]] = spire
+    .optional
+    .genericEq
     .generic[Seq[Int]]
 
   test("Semigroupoid syntax")(

@@ -221,18 +221,20 @@ final class RandomForestClassificationModel private[ml] (
     // Classifies using majority votes.
     // Ignore the tree weights since all are 1.0 for now.
     val votes = Array.fill[Double](numClasses)(0.0)
-    _trees.view.foreach { tree =>
-      val classCounts: Array[Double] =
-        tree.rootNode.predictImpl(features).impurityStats.stats
-      val total = classCounts.sum
-      if (total != 0) {
-        var i = 0
-        while (i < numClasses) {
-          votes(i) += classCounts(i) / total
-          i += 1
+    _trees
+      .view
+      .foreach { tree =>
+        val classCounts: Array[Double] =
+          tree.rootNode.predictImpl(features).impurityStats.stats
+        val total = classCounts.sum
+        if (total != 0) {
+          var i = 0
+          while (i < numClasses) {
+            votes(i) += classCounts(i) / total
+            i += 1
+          }
         }
       }
-    }
     Vectors.dense(votes)
   }
 
@@ -253,8 +255,7 @@ final class RandomForestClassificationModel private[ml] (
   override def copy(extra: ParamMap): RandomForestClassificationModel = {
     copyValues(
       new RandomForestClassificationModel(uid, _trees, numFeatures, numClasses),
-      extra)
-      .setParent(parent)
+      extra).setParent(parent)
   }
 
   @Since("1.4.0")
@@ -277,9 +278,8 @@ final class RandomForestClassificationModel private[ml] (
     *  - Normalize feature importance vector to sum to 1.
     */
   @Since("1.5.0")
-  lazy val featureImportances: Vector = RandomForest.featureImportances(
-    trees,
-    numFeatures)
+  lazy val featureImportances: Vector = RandomForest
+    .featureImportances(trees, numFeatures)
 
   /** (private[ml]) Convert to a model in the old API */
   private[ml] def toOld: OldRandomForestModel = {
@@ -301,10 +301,12 @@ private[ml] object RandomForestClassificationModel {
       "Cannot convert RandomForestModel" +
         s" with algo=${oldModel.algo} (old API) to RandomForestClassificationModel (new API)."
     )
-    val newTrees = oldModel.trees.map { tree =>
-      // parent for each tree is null since there is no good way to set this.
-      DecisionTreeClassificationModel.fromOld(tree, null, categoricalFeatures)
-    }
+    val newTrees = oldModel
+      .trees
+      .map { tree =>
+        // parent for each tree is null since there is no good way to set this.
+        DecisionTreeClassificationModel.fromOld(tree, null, categoricalFeatures)
+      }
     val uid =
       if (parent != null)
         parent.uid

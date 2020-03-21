@@ -108,8 +108,8 @@ object SparkSubmit {
     printStream.println("Warning: " + str)
   private[spark] def printErrorAndExit(str: String): Unit = {
     printStream.println("Error: " + str)
-    printStream.println(
-      "Run with --help for usage help or --verbose for debug output")
+    printStream
+      .println("Run with --help for usage help or --verbose for debug output")
     exitFn(1)
   }
   private[spark] def printVersionAndExit(): Unit = {
@@ -146,8 +146,7 @@ object SparkSubmit {
     * Kill an existing submission using the REST protocol. Standalone and Mesos cluster mode only.
     */
   private def kill(args: SparkSubmitArguments): Unit = {
-    new RestSubmissionClient(args.master)
-      .killSubmission(args.submissionToKill)
+    new RestSubmissionClient(args.master).killSubmission(args.submissionToKill)
   }
 
   /**
@@ -197,8 +196,8 @@ object SparkSubmit {
             // detect exceptions with empty stack traces here, and treat them differently.
             if (e.getStackTrace().length == 0) {
               // scalastyle:off println
-              printStream.println(
-                s"ERROR: ${e.getClass().getName()}: ${e.getMessage()}")
+              printStream
+                .println(s"ERROR: ${e.getClass().getName()}: ${e.getMessage()}")
               // scalastyle:on println
               exitFn(1)
             } else {
@@ -416,8 +415,8 @@ object SparkSubmit {
         // If a python file is provided, add it to the child arguments and list of files to deploy.
         // Usage: PythonAppRunner <main python file> <extra python files> [app arguments]
         args.mainClass = "org.apache.spark.deploy.PythonRunner"
-        args.childArgs =
-          ArrayBuffer(args.primaryResource, args.pyFiles) ++ args.childArgs
+        args.childArgs = ArrayBuffer(args.primaryResource, args.pyFiles) ++ args
+          .childArgs
         if (clusterManager != YARN) {
           // The YARN backend distributes the primary file differently, so don't merge it.
           args.files = mergeFileLists(args.files, args.primaryResource)
@@ -452,15 +451,13 @@ object SparkSubmit {
 
       // Distribute the SparkR package.
       // Assigns a symbol link name "sparkr" to the shipped package.
-      args.archives = mergeFileLists(
-        args.archives,
-        sparkRPackageURI + "#sparkr")
+      args
+        .archives = mergeFileLists(args.archives, sparkRPackageURI + "#sparkr")
 
       // Distribute the R package archive containing all the built R packages.
       if (!RUtils.rPackages.isEmpty) {
-        val rPackageFile = RPackageUtils.zipRLibraries(
-          new File(RUtils.rPackages.get),
-          R_PACKAGE_ARCHIVE)
+        val rPackageFile = RPackageUtils
+          .zipRLibraries(new File(RUtils.rPackages.get), R_PACKAGE_ARCHIVE)
         if (!rPackageFile.exists()) {
           printErrorAndExit("Failed to zip all the built R packages.")
         }
@@ -771,9 +768,11 @@ object SparkSubmit {
         childArgs += ("--class", args.mainClass)
       }
       if (args.childArgs != null) {
-        args.childArgs.foreach { arg =>
-          childArgs += ("--arg", arg)
-        }
+        args
+          .childArgs
+          .foreach { arg =>
+            childArgs += ("--arg", arg)
+          }
       }
     }
 
@@ -814,21 +813,25 @@ object SparkSubmit {
       "spark.yarn.dist.archives")
     pathConfigs.foreach { config =>
       // Replace old URIs with resolved URIs, if they exist
-      sysProps.get(config).foreach { oldValue =>
-        sysProps(config) = Utils.resolveURIs(oldValue)
-      }
+      sysProps
+        .get(config)
+        .foreach { oldValue =>
+          sysProps(config) = Utils.resolveURIs(oldValue)
+        }
     }
 
     // Resolve and format python file paths properly before adding them to the PYTHONPATH.
     // The resolving part is redundant in the case of --py-files, but necessary if the user
     // explicitly sets `spark.submit.pyFiles` in his/her default properties file.
-    sysProps.get("spark.submit.pyFiles").foreach { pyFiles =>
-      val resolvedPyFiles = Utils.resolveURIs(pyFiles)
-      val formattedPyFiles = PythonRunner
-        .formatPaths(resolvedPyFiles)
-        .mkString(",")
-      sysProps("spark.submit.pyFiles") = formattedPyFiles
-    }
+    sysProps
+      .get("spark.submit.pyFiles")
+      .foreach { pyFiles =>
+        val resolvedPyFiles = Utils.resolveURIs(pyFiles)
+        val formattedPyFiles = PythonRunner
+          .formatPaths(resolvedPyFiles)
+          .mkString(",")
+        sysProps("spark.submit.pyFiles") = formattedPyFiles
+      }
 
     (childArgs, childClasspath, sysProps, childMainClass)
   }
@@ -850,8 +853,8 @@ object SparkSubmit {
       printStream.println(s"Main class:\n$childMainClass")
       printStream.println(s"Arguments:\n${childArgs.mkString("\n")}")
       printStream.println(s"System properties:\n${sysProps.mkString("\n")}")
-      printStream.println(
-        s"Classpath elements:\n${childClasspath.mkString("\n")}")
+      printStream
+        .println(s"Classpath elements:\n${childClasspath.mkString("\n")}")
       printStream.println("\n")
     }
     // scalastyle:on println
@@ -1053,26 +1056,28 @@ private[spark] object SparkSubmitUtils {
     * @return Sequence of Maven coordinates
     */
   def extractMavenCoordinates(coordinates: String): Seq[MavenCoordinate] = {
-    coordinates.split(",").map { p =>
-      val splits = p.replace("/", ":").split(":")
-      require(
-        splits.length == 3,
-        s"Provided Maven Coordinates must be in the form " +
-          s"'groupId:artifactId:version'. The coordinate provided is: $p")
-      require(
-        splits(0) != null && splits(0).trim.nonEmpty,
-        s"The groupId cannot be null or " +
-          s"be whitespace. The groupId provided is: ${splits(0)}")
-      require(
-        splits(1) != null && splits(1).trim.nonEmpty,
-        s"The artifactId cannot be null or " +
-          s"be whitespace. The artifactId provided is: ${splits(1)}")
-      require(
-        splits(2) != null && splits(2).trim.nonEmpty,
-        s"The version cannot be null or " +
-          s"be whitespace. The version provided is: ${splits(2)}")
-      new MavenCoordinate(splits(0), splits(1), splits(2))
-    }
+    coordinates
+      .split(",")
+      .map { p =>
+        val splits = p.replace("/", ":").split(":")
+        require(
+          splits.length == 3,
+          s"Provided Maven Coordinates must be in the form " +
+            s"'groupId:artifactId:version'. The coordinate provided is: $p")
+        require(
+          splits(0) != null && splits(0).trim.nonEmpty,
+          s"The groupId cannot be null or " +
+            s"be whitespace. The groupId provided is: ${splits(0)}")
+        require(
+          splits(1) != null && splits(1).trim.nonEmpty,
+          s"The artifactId cannot be null or " +
+            s"be whitespace. The artifactId provided is: ${splits(1)}")
+        require(
+          splits(2) != null && splits(2).trim.nonEmpty,
+          s"The version cannot be null or " +
+            s"be whitespace. The version provided is: ${splits(2)}")
+        new MavenCoordinate(splits(0), splits(1), splits(2))
+      }
   }
 
   /** Path of the local Maven cache. */
@@ -1103,19 +1108,22 @@ private[spark] object SparkSubmitUtils {
     val repositoryList = remoteRepos.getOrElse("")
     // add any other remote repositories other than maven central
     if (repositoryList.trim.nonEmpty) {
-      repositoryList.split(",").zipWithIndex.foreach {
-        case (repo, i) =>
-          val brr: IBiblioResolver = new IBiblioResolver
-          brr.setM2compatible(true)
-          brr.setUsepoms(true)
-          brr.setRoot(repo)
-          brr.setName(s"repo-${i + 1}")
-          cr.add(brr)
-          // scalastyle:off println
-          printStream.println(
-            s"$repo added as a remote repository with the name: ${brr.getName}")
-        // scalastyle:on println
-      }
+      repositoryList
+        .split(",")
+        .zipWithIndex
+        .foreach {
+          case (repo, i) =>
+            val brr: IBiblioResolver = new IBiblioResolver
+            brr.setM2compatible(true)
+            brr.setUsepoms(true)
+            brr.setRoot(repo)
+            brr.setName(s"repo-${i + 1}")
+            cr.add(brr)
+            // scalastyle:off println
+            printStream.println(
+              s"$repo added as a remote repository with the name: ${brr.getName}")
+          // scalastyle:on println
+        }
     }
 
     val localM2 = new IBiblioResolver
@@ -1135,8 +1143,8 @@ private[spark] object SparkSubmitUtils {
       "[revision]",
       "[type]s",
       "[artifact](-[classifier]).[ext]").mkString(File.separator)
-    localIvy.addIvyPattern(
-      localIvyRoot.getAbsolutePath + File.separator + ivyPattern)
+    localIvy
+      .addIvyPattern(localIvyRoot.getAbsolutePath + File.separator + ivyPattern)
     localIvy.setName("local-ivy-cache")
     cr.add(localIvy)
 
@@ -1181,10 +1189,8 @@ private[spark] object SparkSubmitUtils {
       artifacts: Seq[MavenCoordinate],
       ivyConfName: String): Unit = {
     artifacts.foreach { mvn =>
-      val ri = ModuleRevisionId.newInstance(
-        mvn.groupId,
-        mvn.artifactId,
-        mvn.version)
+      val ri = ModuleRevisionId
+        .newInstance(mvn.groupId, mvn.artifactId, mvn.version)
       val dd = new DefaultDependencyDescriptor(ri, false, false)
       dd.addDependencyConfiguration(ivyConfName, ivyConfName)
       // scalastyle:off println
@@ -1276,8 +1282,8 @@ private[spark] object SparkSubmitUtils {
         // scalastyle:off println
         printStream.println(
           s"Ivy Default Cache set to: ${ivySettings.getDefaultCache.getAbsolutePath}")
-        printStream.println(
-          s"The jars for the packages stored in: $packagesDirectory")
+        printStream
+          .println(s"The jars for the packages stored in: $packagesDirectory")
         // scalastyle:on println
         // create a pattern matcher
         ivySettings.addMatcher(new GlobPatternMatcher)

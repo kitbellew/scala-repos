@@ -58,9 +58,8 @@ private[execution] sealed trait HashedRelation {
   // This is a helper method to implement Externalizable, and is used by
   // GeneralHashedRelation and UniqueKeyHashedRelation
   protected def writeBytes(out: ObjectOutput, serialized: Array[Byte]): Unit = {
-    out.writeInt(
-      serialized.length
-    ) // Write the length of serialized bytes first
+    out
+      .writeInt(serialized.length) // Write the length of serialized bytes first
     out.write(serialized)
   }
 
@@ -431,10 +430,8 @@ private[joins] final class UnsafeHashedRelation(
         in.readFully(valuesBuffer, 0, valuesSize)
 
         // put it into binary map
-        val loc = binaryMap.lookup(
-          keyBuffer,
-          Platform.BYTE_ARRAY_OFFSET,
-          keySize)
+        val loc = binaryMap
+          .lookup(keyBuffer, Platform.BYTE_ARRAY_OFFSET, keySize)
         assert(!loc.isDefined, "Duplicated key found!")
         val putSuceeded = loc.putNewKey(
           keyBuffer,
@@ -586,10 +583,8 @@ private[joins] final class LongArrayRelation(
     val idx = (key - start).toInt
     if (idx >= 0 && idx < sizes.length && sizes(idx) > 0) {
       val result = new UnsafeRow(numFields)
-      result.pointTo(
-        bytes,
-        Platform.BYTE_ARRAY_OFFSET + offsets(idx),
-        sizes(idx))
+      result
+        .pointTo(bytes, Platform.BYTE_ARRAY_OFFSET + offsets(idx), sizes(idx))
       result
     } else {
       null

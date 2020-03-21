@@ -10,7 +10,9 @@ object Formatting {
   lazy val prefs: Seq[Setting[_]] = {
     import scalariform.formatter.preferences._
     Seq(
-      sr.preferences := sr.preferences.value
+      sr.preferences := sr
+        .preferences
+        .value
         .setPreference(AlignSingleLineCaseStatements, true))
   }
   lazy val sbtFilesSettings: Seq[Setting[_]] =

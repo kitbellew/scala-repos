@@ -85,7 +85,9 @@ object DataView {
       }
     // detect changes to the case class
     val uid =
-      java.io.ObjectStreamClass
+      java
+        .io
+        .ObjectStreamClass
         .lookup(implicitly[reflect.ClassTag[E]].runtimeClass)
         .getSerialVersionUID
     val hash = MurmurHash3.stringHash(s"$beginTime-$endTime-$version-$uid")

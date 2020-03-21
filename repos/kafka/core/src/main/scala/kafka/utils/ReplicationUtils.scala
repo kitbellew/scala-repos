@@ -42,9 +42,8 @@ object ReplicationUtils extends Logging {
       "Updated ISR for partition [%s,%d] to %s"
         .format(topic, partitionId, newLeaderAndIsr.isr.mkString(",")))
     val path = getTopicPartitionLeaderAndIsrPath(topic, partitionId)
-    val newLeaderData = zkUtils.leaderAndIsrZkData(
-      newLeaderAndIsr,
-      controllerEpoch)
+    val newLeaderData = zkUtils
+      .leaderAndIsrZkData(newLeaderAndIsr, controllerEpoch)
     // use the epoch of the controller that made the leadership decision, instead of the current controller epoch
     val updatePersistentPath: (Boolean, Int) = zkUtils
       .conditionalUpdatePersistentPath(
@@ -108,27 +107,29 @@ object ReplicationUtils extends Logging {
       leaderAndIsrStr: String,
       path: String,
       stat: Stat): Option[LeaderIsrAndControllerEpoch] = {
-    Json.parseFull(leaderAndIsrStr).flatMap { m =>
-      val leaderIsrAndEpochInfo = m.asInstanceOf[Map[String, Any]]
-      val leader = leaderIsrAndEpochInfo.get("leader").get.asInstanceOf[Int]
-      val epoch = leaderIsrAndEpochInfo
-        .get("leader_epoch")
-        .get
-        .asInstanceOf[Int]
-      val isr = leaderIsrAndEpochInfo.get("isr").get.asInstanceOf[List[Int]]
-      val controllerEpoch = leaderIsrAndEpochInfo
-        .get("controller_epoch")
-        .get
-        .asInstanceOf[Int]
-      val zkPathVersion = stat.getVersion
-      debug(
-        "Leader %d, Epoch %d, Isr %s, Zk path version %d for leaderAndIsrPath %s"
-          .format(leader, epoch, isr.toString(), zkPathVersion, path))
-      Some(
-        LeaderIsrAndControllerEpoch(
-          LeaderAndIsr(leader, epoch, isr, zkPathVersion),
-          controllerEpoch))
-    }
+    Json
+      .parseFull(leaderAndIsrStr)
+      .flatMap { m =>
+        val leaderIsrAndEpochInfo = m.asInstanceOf[Map[String, Any]]
+        val leader = leaderIsrAndEpochInfo.get("leader").get.asInstanceOf[Int]
+        val epoch = leaderIsrAndEpochInfo
+          .get("leader_epoch")
+          .get
+          .asInstanceOf[Int]
+        val isr = leaderIsrAndEpochInfo.get("isr").get.asInstanceOf[List[Int]]
+        val controllerEpoch = leaderIsrAndEpochInfo
+          .get("controller_epoch")
+          .get
+          .asInstanceOf[Int]
+        val zkPathVersion = stat.getVersion
+        debug(
+          "Leader %d, Epoch %d, Isr %s, Zk path version %d for leaderAndIsrPath %s"
+            .format(leader, epoch, isr.toString(), zkPathVersion, path))
+        Some(
+          LeaderIsrAndControllerEpoch(
+            LeaderAndIsr(leader, epoch, isr, zkPathVersion),
+            controllerEpoch))
+      }
   }
 
   private def generateIsrChangeJson(

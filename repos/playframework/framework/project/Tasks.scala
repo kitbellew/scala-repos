@@ -46,15 +46,17 @@ object Commands {
 
       val toggle = !state.get(quickPublishToggle).getOrElse(true)
 
-      val filtered = session.mergeSettings.filter { setting =>
-        setting.key match {
-          case Def.ScopedKey(Scope(_, Global, Global, Global), key)
-              if key == publishArtifact.key =>
-            false
-          case other =>
-            true
+      val filtered = session
+        .mergeSettings
+        .filter { setting =>
+          setting.key match {
+            case Def.ScopedKey(Scope(_, Global, Global, Global), key)
+                if key == publishArtifact.key =>
+              false
+            case other =>
+              true
+          }
         }
-      }
 
       if (toggle) {
         state.log.info("Turning off quick publish")

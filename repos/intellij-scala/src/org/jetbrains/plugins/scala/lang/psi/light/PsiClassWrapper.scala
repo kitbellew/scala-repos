@@ -48,8 +48,8 @@ class PsiClassWrapper(
   override def equals(obj: Any): Boolean = {
     obj match {
       case wrapper: PsiClassWrapper =>
-        definition.equals(
-          wrapper.definition) && qualName == wrapper.qualName && name == wrapper.name
+        definition.equals(wrapper.definition) && qualName == wrapper
+          .qualName && name == wrapper.name
       case _ =>
         false
     }
@@ -92,12 +92,14 @@ class PsiClassWrapper(
     definition match {
       case obj: ScObject =>
         val res = new ArrayBuffer[PsiMethod]()
-        TypeDefinitionMembers.SignatureNodes.forAllSignatureNodes(obj) { node =>
-          this.processPsiMethodsForNode(
-            node,
-            isStatic = true,
-            isInterface = false)(res += _)
-        }
+        TypeDefinitionMembers
+          .SignatureNodes
+          .forAllSignatureNodes(obj) { node =>
+            this.processPsiMethodsForNode(
+              node,
+              isStatic = true,
+              isInterface = false)(res += _)
+          }
         res.toArray
 
       case t: ScTrait =>
@@ -148,21 +150,24 @@ class PsiClassWrapper(
   def getInnerClasses: Array[PsiClass] = {
     definition match {
       case o: ScObject =>
-        o.members.flatMap {
-          case o: ScObject =>
-            o.fakeCompanionClass match {
-              case Some(clazz) =>
-                Seq(o, clazz)
-              case None =>
-                Seq(o)
-            }
-          case t: ScTrait =>
-            Seq(t, t.fakeCompanionClass)
-          case c: ScClass =>
-            Seq(c)
-          case _ =>
-            Seq.empty
-        }.toArray
+        o
+          .members
+          .flatMap {
+            case o: ScObject =>
+              o.fakeCompanionClass match {
+                case Some(clazz) =>
+                  Seq(o, clazz)
+                case None =>
+                  Seq(o)
+              }
+            case t: ScTrait =>
+              Seq(t, t.fakeCompanionClass)
+            case c: ScClass =>
+              Seq(c)
+            case _ =>
+              Seq.empty
+          }
+          .toArray
       case _ =>
         definition.getInnerClasses //todo:
     }
@@ -205,10 +210,8 @@ class PsiClassWrapper(
   def findMethodsAndTheirSubstitutorsByName(
       name: String,
       checkBases: Boolean): util.List[Pair[PsiMethod, PsiSubstitutor]] = {
-    PsiClassImplUtil.findMethodsAndTheirSubstitutorsByName(
-      this,
-      name,
-      checkBases)
+    PsiClassImplUtil
+      .findMethodsAndTheirSubstitutorsByName(this, name, checkBases)
   }
 
   def getAllMethodsAndTheirSubstitutors
@@ -241,7 +244,8 @@ class PsiClassWrapper(
       case o: ScObject =>
         baseClass.getQualifiedName == "java.lang.Object" ||
           (
-            baseClass.getQualifiedName == "scala.ScalaObject" && !baseClass.isDeprecated
+            baseClass.getQualifiedName == "scala.ScalaObject" && !baseClass
+              .isDeprecated
           )
       case _ =>
         false
@@ -253,7 +257,8 @@ class PsiClassWrapper(
       case o: ScObject =>
         baseClass.getQualifiedName == "java.lang.Object" ||
           (
-            baseClass.getQualifiedName == "scala.ScalaObject" && !baseClass.isDeprecated
+            baseClass.getQualifiedName == "scala.ScalaObject" && !baseClass
+              .isDeprecated
           )
       case _ =>
         false

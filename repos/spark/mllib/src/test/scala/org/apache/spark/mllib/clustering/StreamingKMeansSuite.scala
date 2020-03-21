@@ -81,8 +81,8 @@ class StreamingKMeansSuite extends SparkFunSuite with TestSuiteBase {
         numBatches * numPoints
       ).toDouble
     assert(
-      model.latestModel().clusterCenters(0) ~== Vectors.dense(
-        grandMean.toArray) absTol 1e-5)
+      model.latestModel().clusterCenters(0) ~== Vectors
+        .dense(grandMean.toArray) absTol 1e-5)
   }
 
   test("accuracy for two centers") {
@@ -209,8 +209,8 @@ class StreamingKMeansSuite extends SparkFunSuite with TestSuiteBase {
     val data = (0 until numBatches).map { i =>
       (0 until numPoints).map { idx =>
         val center = centers(idx % k)
-        Vectors.dense(
-          Array.tabulate(d)(x => center(x) + rand.nextGaussian() * r))
+        Vectors
+          .dense(Array.tabulate(d)(x => center(x) + rand.nextGaussian() * r))
       }
     }
     (data, centers)

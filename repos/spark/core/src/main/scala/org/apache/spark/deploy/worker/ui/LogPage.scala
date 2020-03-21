@@ -110,12 +110,11 @@ private[ui] class LogPage(parent: WorkerWebUI)
     val backButton =
       if (startByte > 0) {
         <a href={
-          "?%s&logType=%s&offset=%s&byteLength=%s"
-            .format(
-              params,
-              logType,
-              math.max(startByte - byteLength, 0),
-              byteLength)
+          "?%s&logType=%s&offset=%s&byteLength=%s".format(
+            params,
+            logType,
+            math.max(startByte - byteLength, 0),
+            byteLength)
         }>
           <button type="button" class="btn btn-default">
             Previous {
@@ -132,11 +131,8 @@ private[ui] class LogPage(parent: WorkerWebUI)
     val nextButton =
       if (endByte < logLength) {
         <a href={
-          "?%s&logType=%s&offset=%s&byteLength=%s".format(
-            params,
-            logType,
-            endByte,
-            byteLength)
+          "?%s&logType=%s&offset=%s&byteLength=%s"
+            .format(params, logType, endByte, byteLength)
         }>
           <button type="button" class="btn btn-default">
             Next {
@@ -201,16 +197,17 @@ private[ui] class LogPage(parent: WorkerWebUI)
     }
 
     try {
-      val files = RollingFileAppender.getSortedRolledOverFiles(
-        logDirectory,
-        logType)
+      val files = RollingFileAppender
+        .getSortedRolledOverFiles(logDirectory, logType)
       logDebug(
         s"Sorted log files of type $logType in $logDirectory:\n${files.mkString("\n")}")
 
       val totalLength =
-        files.map {
-          _.length
-        }.sum
+        files
+          .map {
+            _.length
+          }
+          .sum
       val offset = offsetOption.getOrElse(totalLength - byteLength)
       val startIndex = {
         if (offset < 0) {

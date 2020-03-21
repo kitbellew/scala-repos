@@ -204,8 +204,8 @@ class JobServiceSpec extends TestJobService {
     "start job in unstarted state" in {
       postJob(simpleJob, validAPIKey).copoint must beLike {
         case HttpResponse(HttpStatus(Created, _), _, Some(obj), _) =>
-          (obj \ "state").validated[JobState] must_== Success(
-            JobState.NotStarted)
+          (obj \ "state")
+            .validated[JobState] must_== Success(JobState.NotStarted)
       }
     }
 

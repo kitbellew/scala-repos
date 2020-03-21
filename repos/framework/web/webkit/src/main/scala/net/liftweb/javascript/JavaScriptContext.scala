@@ -26,54 +26,58 @@ object JavaScriptContext {
     */
   def install() {
     LiftRules.allAround.append(JSWrapper)
-    LiftRules.tagProcessor.prepend {
-      case ("script", e, session)
-          if e.attribute("data-lift-server").isDefined =>
-        exec(e.text)
-        NodeSeq.Empty
-    }
+    LiftRules
+      .tagProcessor
+      .prepend {
+        case ("script", e, session)
+            if e.attribute("data-lift-server").isDefined =>
+          exec(e.text)
+          NodeSeq.Empty
+      }
 
-    LiftRules.dataAttributeProcessor.append {
-      case ("jssource", value, elem, session) =>
-        val (rule, v2): (NodeSeq => NodeSeq, Box[String]) =
-          value.roboSplit("\\#\\>") match {
-            case x :: Nil =>
-              (PassThru, Full(x))
-            case x :: "it" :: Nil =>
-              session.buildXformer(x, Nil) -> Empty
-            case x :: str :: Nil if str.startsWith("it.") =>
-              session.buildXformer(
-                x,
-                str.roboSplit("\\.").filter(_ != "it")) -> Empty
-            case x :: xs =>
-              session.buildXformer(x, Nil) -> Full(xs.mkString)
-            case _ =>
-              (PassThru, Full(value))
-          }
-
-        v2 match {
-          case Full(v22) =>
-            exec(v22) match {
-              case fut: LAFuture[_] =>
-                val ret = new LAFuture[NodeSeq]
-                fut.foreach(v =>
-                  ret.satisfy(session.runSourceContext(v, rule, elem)))
-                ret
-
-              case func: Function0[_] =>
-                () => {
-                  session.runSourceContext(func(), rule, elem)
-                }
-
-              case x =>
-                session.runSourceContext(x, rule, elem)
+    LiftRules
+      .dataAttributeProcessor
+      .append {
+        case ("jssource", value, elem, session) =>
+          val (rule, v2): (NodeSeq => NodeSeq, Box[String]) =
+            value.roboSplit("\\#\\>") match {
+              case x :: Nil =>
+                (PassThru, Full(x))
+              case x :: "it" :: Nil =>
+                session.buildXformer(x, Nil) -> Empty
+              case x :: str :: Nil if str.startsWith("it.") =>
+                session.buildXformer(
+                  x,
+                  str.roboSplit("\\.").filter(_ != "it")) -> Empty
+              case x :: xs =>
+                session.buildXformer(x, Nil) -> Full(xs.mkString)
+              case _ =>
+                (PassThru, Full(value))
             }
 
-          case _ =>
-            rule(elem)
-        }
+          v2 match {
+            case Full(v22) =>
+              exec(v22) match {
+                case fut: LAFuture[_] =>
+                  val ret = new LAFuture[NodeSeq]
+                  fut.foreach(v =>
+                    ret.satisfy(session.runSourceContext(v, rule, elem)))
+                  ret
 
-    }
+                case func: Function0[_] =>
+                  () => {
+                    session.runSourceContext(func(), rule, elem)
+                  }
+
+                case x =>
+                  session.runSourceContext(x, rule, elem)
+              }
+
+            case _ =>
+              rule(elem)
+          }
+
+      }
   }
 
   private object currentScript

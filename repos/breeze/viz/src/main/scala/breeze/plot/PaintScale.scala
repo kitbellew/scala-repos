@@ -75,7 +75,8 @@ object PaintScale {
     */
   def convertToColor(colorcode: String): java.awt.Color = {
     val rgbcsv = "(.*),(.*),(.*)".r
-    colorcode.toLowerCase
+    colorcode
+      .toLowerCase
       .replace(" ", "")
       .replace("[", "")
       .replace("]", "") match {

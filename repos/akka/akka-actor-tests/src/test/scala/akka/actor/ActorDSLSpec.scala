@@ -115,9 +115,8 @@ class ActorDSLSpec extends AkkaSpec {
         for (_ ← 1 to 1000)
           i.receiver ! 0
         expectNoMsg(1 second)
-        EventFilter.warning(
-          start = "dropping message",
-          occurrences = 1) intercept {
+        EventFilter
+          .warning(start = "dropping message", occurrences = 1) intercept {
           i.receiver ! 42
         }
         expectMsgType[Warning]

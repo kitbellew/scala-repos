@@ -25,8 +25,8 @@ object HttpStreamingServer {
       new Service[Request, Response] {
         // Only one stream exists.
         @volatile
-        private[this] var messages: AsyncStream[Buf] = ints().map(n =>
-          Buf.Utf8(n.toString))
+        private[this] var messages: AsyncStream[Buf] = ints()
+          .map(n => Buf.Utf8(n.toString))
 
         // Allow the head of the stream to be collected.
         messages.foreach(_ => messages = messages.drop(1))
@@ -40,8 +40,9 @@ object HttpStreamingServer {
       }
 
     Await.result(
-      Http.server
-      // Translate buffered writes into HTTP chunks.
+      Http
+        .server
+        // Translate buffered writes into HTTP chunks.
         .withStreaming(enabled = true)
         // Listen on port 8080.
         .serve("0.0.0.0:8080", service))

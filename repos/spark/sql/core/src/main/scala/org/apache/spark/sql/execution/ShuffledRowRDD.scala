@@ -87,9 +87,8 @@ class CoalescedPartitioner(
   override def equals(other: Any): Boolean =
     other match {
       case c: CoalescedPartitioner =>
-        c.parent == parent && Arrays.equals(
-          c.partitionStartIndices,
-          partitionStartIndices)
+        c.parent == parent && Arrays
+          .equals(c.partitionStartIndices, partitionStartIndices)
       case _ =>
         false
     }
@@ -164,7 +163,9 @@ class ShuffledRowRDD(
   }
 
   override def getPreferredLocations(partition: Partition): Seq[String] = {
-    val tracker = SparkEnv.get.mapOutputTracker
+    val tracker = SparkEnv
+      .get
+      .mapOutputTracker
       .asInstanceOf[MapOutputTrackerMaster]
     val dep = dependencies.head.asInstanceOf[ShuffleDependency[_, _, _]]
     tracker.getPreferredLocationsForShuffle(dep, partition.index)
@@ -176,11 +177,14 @@ class ShuffledRowRDD(
     val shuffledRowPartition = split.asInstanceOf[ShuffledRowRDDPartition]
     // The range of pre-shuffle partitions that we are fetching at here is
     // [startPreShufflePartitionIndex, endPreShufflePartitionIndex - 1].
-    val reader = SparkEnv.get.shuffleManager.getReader(
-      dependency.shuffleHandle,
-      shuffledRowPartition.startPreShufflePartitionIndex,
-      shuffledRowPartition.endPreShufflePartitionIndex,
-      context)
+    val reader = SparkEnv
+      .get
+      .shuffleManager
+      .getReader(
+        dependency.shuffleHandle,
+        shuffledRowPartition.startPreShufflePartitionIndex,
+        shuffledRowPartition.endPreShufflePartitionIndex,
+        context)
     reader.read().asInstanceOf[Iterator[Product2[Int, InternalRow]]].map(_._2)
   }
 

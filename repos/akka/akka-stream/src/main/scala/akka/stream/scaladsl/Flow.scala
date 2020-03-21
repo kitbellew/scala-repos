@@ -32,7 +32,8 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
     extends FlowOpsMat[Out, Mat]
     with Graph[FlowShape[In, Out], Mat] {
 
-  override val shape: FlowShape[In, Out] = module.shape
+  override val shape: FlowShape[In, Out] = module
+    .shape
     .asInstanceOf[FlowShape[In, Out]]
 
   override def toString: String = s"Flow($shape, $module)"
@@ -1159,8 +1160,8 @@ trait FlowOps[+Out, +Mat] {
   def batchWeighted[S](max: Long, costFn: Out ⇒ Long, seed: Out ⇒ S)(
       aggregate: (S, Out) ⇒ S): Repr[S] =
     via(
-      Batch(max, costFn, seed, aggregate).withAttributes(
-        DefaultAttributes.batchWeighted))
+      Batch(max, costFn, seed, aggregate)
+        .withAttributes(DefaultAttributes.batchWeighted))
 
   /**
     * Allows a faster downstream to progress independently of a slower publisher by extrapolating elements from an older
@@ -1374,10 +1375,9 @@ trait FlowOps[+Out, +Mat] {
 
     val finish: (Sink[Out, NotUsed]) ⇒ Closed =
       s ⇒
-        via(Split.when(p, substreamCancelStrategy))
-          .to(
-            Sink.foreach(
-              _.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
+        via(Split.when(p, substreamCancelStrategy)).to(
+          Sink.foreach(
+            _.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
 
     new SubFlowImpl(Flow[Out], merge, finish)
   }
@@ -1450,10 +1450,9 @@ trait FlowOps[+Out, +Mat] {
       }
     val finish: (Sink[Out, NotUsed]) ⇒ Closed =
       s ⇒
-        via(Split.after(p, substreamCancelStrategy))
-          .to(
-            Sink.foreach(
-              _.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
+        via(Split.after(p, substreamCancelStrategy)).to(
+          Sink.foreach(
+            _.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
     new SubFlowImpl(Flow[Out], merge, finish)
   }
 

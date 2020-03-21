@@ -115,8 +115,8 @@ class BasicFieldDescriptor[T](
       else
         None
 
-    copy(validator =
-      validator.flatMap(v => nwValidators.map(v andThen)) orElse nwValidators)
+    copy(validator = validator
+      .flatMap(v => nwValidators.map(v andThen)) orElse nwValidators)
   }
 
   def copy(
@@ -198,10 +198,8 @@ trait DataboundFieldDescriptor[S, T] extends FieldDescriptor[T] {
     this.asInstanceOf[DataboundFieldDescriptor[V, T]]
 
   override def toString() =
-    "FieldDescriptor(name: %s, original: %s, value: %s)".format(
-      name,
-      original,
-      value)
+    "FieldDescriptor(name: %s, original: %s, value: %s)"
+      .format(name, original, value)
   def validate: ValidatedFieldDescriptor[S, T]
   def validateWith(
       bindingValidators: BindingValidator[T]*): DataboundFieldDescriptor[S, T]
@@ -260,10 +258,8 @@ class BoundFieldDescriptor[S, T](
         false
     }
   override def toString() =
-    "BoundFieldDescriptor(name: %s, original: %s, converted: %s)".format(
-      name,
-      original,
-      value)
+    "BoundFieldDescriptor(name: %s, original: %s, converted: %s)"
+      .format(name, original, value)
 
   def validateWith(bindingValidators: BindingValidator[T]*)
       : DataboundFieldDescriptor[S, T] = {
@@ -355,10 +351,8 @@ class ValidatedBoundFieldDescriptor[S, T](
         false
     }
   override def toString() =
-    "BoundFieldDescriptor(name: %s, original: %s, converted: %s)".format(
-      name,
-      original,
-      value)
+    "BoundFieldDescriptor(name: %s, original: %s, converted: %s)"
+      .format(name, original, value)
 
   def validateWith(bindingValidators: BindingValidator[T]*)
       : DataboundFieldDescriptor[S, T] = {
@@ -430,8 +424,9 @@ object BindingValidators {
   class ValidatableSeq[T <: Seq[_]](b: FieldDescriptor[T]) {
     def notEmpty: FieldDescriptor[T] = notEmpty()
     def notEmpty(messageFormat: String = b.requiredError): FieldDescriptor[T] =
-      b.required.validateWith(
-        BindingValidators.nonEmptyCollection(messageFormat))
+      b
+        .required
+        .validateWith(BindingValidators.nonEmptyCollection(messageFormat))
   }
 
   class ValidatableOrdered[T <% Ordered[T]](b: FieldDescriptor[T]) {

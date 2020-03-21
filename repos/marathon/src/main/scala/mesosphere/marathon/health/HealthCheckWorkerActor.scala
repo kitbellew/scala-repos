@@ -143,10 +143,12 @@ class HealthCheckWorkerActor extends Actor with ActorLogging {
     Future {
       val address = new InetSocketAddress(host, port)
       val socket = new Socket
-      scala.concurrent.blocking {
-        socket.connect(address, timeoutMillis)
-        socket.close()
-      }
+      scala
+        .concurrent
+        .blocking {
+          socket.connect(address, timeoutMillis)
+          socket.close()
+        }
       Some(Healthy(task.taskId, launched.appVersion, Timestamp.now()))
     }(ThreadPoolContext.ioContext)
   }
@@ -184,10 +186,8 @@ class HealthCheckWorkerActor extends Actor with ActorLogging {
 
         val context = SSLContext.getInstance("Default")
         //scalastyle:off null
-        context.init(
-          Array[KeyManager](),
-          Array(BlindFaithX509TrustManager),
-          null)
+        context
+          .init(Array[KeyManager](), Array(BlindFaithX509TrustManager), null)
         //scalastyle:on
         context
       }

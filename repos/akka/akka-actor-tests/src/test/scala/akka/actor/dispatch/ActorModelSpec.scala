@@ -232,19 +232,21 @@ object ActorModelSpec {
 
   def assertDispatcher(dispatcher: MessageDispatcherInterceptor)(
       stops: Long = dispatcher.stops.get())(implicit system: ActorSystem) {
-    val deadline =
-      System.currentTimeMillis + dispatcher.shutdownTimeout.toMillis * 5
+    val deadline = System
+      .currentTimeMillis + dispatcher.shutdownTimeout.toMillis * 5
     try {
       await(deadline)(stops == dispatcher.stops.get)
     } catch {
       case e: Throwable ⇒
-        system.eventStream.publish(
-          Error(
-            e,
-            dispatcher.toString,
-            dispatcher.getClass,
-            "actual: stops=" + dispatcher.stops.get +
-              " required: stops=" + stops))
+        system
+          .eventStream
+          .publish(
+            Error(
+              e,
+              dispatcher.toString,
+              dispatcher.getClass,
+              "actual: stops=" + dispatcher.stops.get +
+                " required: stops=" + stops))
         throw e
     }
   }
@@ -252,7 +254,8 @@ object ActorModelSpec {
   def assertCountDown(latch: CountDownLatch, wait: Long, hint: String) {
     if (!latch.await(wait, TimeUnit.MILLISECONDS))
       fail(
-        "Failed to count down within " + wait + " millis (count at " + latch.getCount + "). " + hint)
+        "Failed to count down within " + wait + " millis (count at " + latch
+          .getCount + "). " + hint)
   }
 
   def assertNoCountDown(latch: CountDownLatch, wait: Long, hint: String) {
@@ -311,15 +314,17 @@ object ActorModelSpec {
       await(deadline)(stats.restarts.get() == restarts)
     } catch {
       case e: Throwable ⇒
-        system.eventStream.publish(
-          Error(
-            e,
-            Option(dispatcher).toString,
-            (Option(dispatcher) getOrElse this).getClass,
-            "actual: " + stats + ", required: InterceptorStats(susp=" + suspensions +
-              ",res=" + resumes + ",reg=" + registers + ",unreg=" + unregisters +
-              ",recv=" + msgsReceived + ",proc=" + msgsProcessed + ",restart=" + restarts
-          ))
+        system
+          .eventStream
+          .publish(
+            Error(
+              e,
+              Option(dispatcher).toString,
+              (Option(dispatcher) getOrElse this).getClass,
+              "actual: " + stats + ", required: InterceptorStats(susp=" + suspensions +
+                ",res=" + resumes + ",reg=" + registers + ",unreg=" + unregisters +
+                ",recv=" + msgsReceived + ",proc=" + msgsProcessed + ",restart=" + restarts
+            ))
         throw e
     }
   }
@@ -470,8 +475,10 @@ abstract class ActorModelSpec(config: String)
             try f
             catch {
               case e: Throwable ⇒
-                system.eventStream.publish(
-                  Error(e, "spawn", this.getClass, "error in spawned thread"))
+                system
+                  .eventStream
+                  .publish(
+                    Error(e, "spawn", this.getClass, "error in spawned thread"))
             }
         }
       ).start()
@@ -557,8 +564,12 @@ abstract class ActorModelSpec(config: String)
                   val team = dispatcher.team
                   val mq = dispatcher.messageQueue
 
-                  System.err.println(
-                    "Teammates left: " + team.size + " stopLatch: " + stopLatch.getCount + " inhab:" + dispatcher.inhabitants)
+                  System
+                    .err
+                    .println(
+                      "Teammates left: " + team
+                        .size + " stopLatch: " + stopLatch
+                        .getCount + " inhab:" + dispatcher.inhabitants)
                   team.toArray sorted new Ordering[AnyRef] {
                     def compare(l: AnyRef, r: AnyRef) =
                       (l, r) match {
@@ -567,15 +578,23 @@ abstract class ActorModelSpec(config: String)
                       }
                   } foreach {
                     case cell: ActorCell ⇒
-                      System.err.println(
-                        " - " + cell.self.path + " " + cell.isTerminated + " " + cell.mailbox.currentStatus + " "
-                          + cell.mailbox.numberOfMessages + " " + cell.mailbox
-                          .systemDrain(SystemMessageList.LNil)
-                          .size)
+                      System
+                        .err
+                        .println(
+                          " - " + cell.self.path + " " + cell
+                            .isTerminated + " " + cell
+                            .mailbox
+                            .currentStatus + " "
+                            + cell.mailbox.numberOfMessages + " " + cell
+                            .mailbox
+                            .systemDrain(SystemMessageList.LNil)
+                            .size)
                   }
 
-                  System.err.println(
-                    "Mailbox: " + mq.numberOfMessages + " " + mq.hasMessages)
+                  System
+                    .err
+                    .println(
+                      "Mailbox: " + mq.numberOfMessages + " " + mq.hasMessages)
                   Iterator.continually(mq.dequeue) takeWhile (
                     _ ne null
                   ) foreach System.err.println
@@ -613,14 +632,16 @@ abstract class ActorModelSpec(config: String)
         val f6 = a ? Reply("bar2")
 
         val c =
-          system.scheduler.scheduleOnce(2.seconds) {
-            import collection.JavaConverters._
-            Thread.getAllStackTraces().asScala foreach {
-              case (thread, stack) ⇒
-                println(s"$thread:")
-                stack foreach (s ⇒ println(s"\t$s"))
+          system
+            .scheduler
+            .scheduleOnce(2.seconds) {
+              import collection.JavaConverters._
+              Thread.getAllStackTraces().asScala foreach {
+                case (thread, stack) ⇒
+                  println(s"$thread:")
+                  stack foreach (s ⇒ println(s"\t$s"))
+              }
             }
-          }
         assert(Await.result(f1, timeout.duration) === "foo")
         assert(Await.result(f2, timeout.duration) === "bar")
         assert(Await.result(f4, timeout.duration) === "foo2")
@@ -632,9 +653,8 @@ abstract class ActorModelSpec(config: String)
           intercept[ActorInterruptedException](
             Await.result(f5, timeout.duration)).getCause.getMessage === "Ping!")
         c.cancel()
-        Thread.sleep(
-          300
-        ) // give the EventFilters a chance of catching all messages
+        Thread
+          .sleep(300) // give the EventFilters a chance of catching all messages
       }
     }
 
@@ -744,7 +764,8 @@ class DispatcherModelSpec extends ActorModelSpec(DispatcherModelSpec.config) {
 
   override def interceptedDispatcher(): MessageDispatcherInterceptor = {
     // use new id for each test, since the MessageDispatcherInterceptor holds state
-    system.dispatchers
+    system
+      .dispatchers
       .lookup("test-dispatcher-" + dispatcherCount.incrementAndGet())
       .asInstanceOf[MessageDispatcherInterceptor]
   }
@@ -842,7 +863,8 @@ class BalancingDispatcherModelSpec
 
   override def interceptedDispatcher(): MessageDispatcherInterceptor = {
     // use new id for each test, since the MessageDispatcherInterceptor holds state
-    system.dispatchers
+    system
+      .dispatchers
       .lookup("test-balancing-dispatcher-" + dispatcherCount.incrementAndGet())
       .asInstanceOf[MessageDispatcherInterceptor]
   }

@@ -193,8 +193,8 @@ object Transport {
   }
 
   object Options {
-    implicit val param: Stack.Param[Options] = Stack.Param(
-      Options(noDelay = true, reuseAddr = true))
+    implicit val param: Stack.Param[Options] = Stack
+      .Param(Options(noDelay = true, reuseAddr = true))
   }
 
   /**
@@ -223,12 +223,15 @@ object Transport {
     */
   private[finagle] def copyToWriter[A](trans: Transport[_, A], w: Writer)(
       f: A => Future[Option[Buf]]): Future[Unit] = {
-    trans.read().flatMap(f).flatMap {
-      case None =>
-        Future.Done
-      case Some(buf) =>
-        w.write(buf) before copyToWriter(trans, w)(f)
-    }
+    trans
+      .read()
+      .flatMap(f)
+      .flatMap {
+        case None =>
+          Future.Done
+        case Some(buf) =>
+          w.write(buf) before copyToWriter(trans, w)(f)
+      }
   }
 
   /**

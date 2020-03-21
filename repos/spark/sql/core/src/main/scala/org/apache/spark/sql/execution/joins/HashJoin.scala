@@ -158,7 +158,8 @@ trait HashJoin {
       override final def hasNext: Boolean = {
         while (true) {
           // check if it's end of current matches
-          if (currentHashMatches != null && currentMatchPosition == currentHashMatches.length) {
+          if (currentHashMatches != null && currentMatchPosition == currentHashMatches
+                .length) {
             currentHashMatches = null
             currentMatchPosition = -1
           }

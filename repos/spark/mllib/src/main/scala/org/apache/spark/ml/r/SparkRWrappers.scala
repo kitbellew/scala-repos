@@ -80,16 +80,23 @@ private[r] object SparkRWrappers {
         val coefficientStandardErrorsR =
           Array(m.summary.coefficientStandardErrors.last) ++
             m.summary.coefficientStandardErrors.dropRight(1)
-        val tValuesR =
-          Array(m.summary.tValues.last) ++ m.summary.tValues.dropRight(1)
-        val pValuesR =
-          Array(m.summary.pValues.last) ++ m.summary.pValues.dropRight(1)
+        val tValuesR = Array(m.summary.tValues.last) ++ m
+          .summary
+          .tValues
+          .dropRight(1)
+        val pValuesR = Array(m.summary.pValues.last) ++ m
+          .summary
+          .pValues
+          .dropRight(1)
         if (m.getFitIntercept) {
-          Array(
-            m.intercept) ++ m.coefficients.toArray ++ coefficientStandardErrorsR ++
+          Array(m.intercept) ++ m
+            .coefficients
+            .toArray ++ coefficientStandardErrorsR ++
             tValuesR ++ pValuesR
         } else {
-          m.coefficients.toArray ++ coefficientStandardErrorsR ++ tValuesR ++ pValuesR
+          m
+            .coefficients
+            .toArray ++ coefficientStandardErrorsR ++ tValuesR ++ pValuesR
         }
       }
       case m: LogisticRegressionModel => {
@@ -145,24 +152,24 @@ private[r] object SparkRWrappers {
   def getModelFeatures(model: PipelineModel): Array[String] = {
     model.stages.last match {
       case m: LinearRegressionModel =>
-        val attrs = AttributeGroup.fromStructField(
-          m.summary.predictions.schema(m.summary.featuresCol))
+        val attrs = AttributeGroup
+          .fromStructField(m.summary.predictions.schema(m.summary.featuresCol))
         if (m.getFitIntercept) {
           Array("(Intercept)") ++ attrs.attributes.get.map(_.name.get)
         } else {
           attrs.attributes.get.map(_.name.get)
         }
       case m: LogisticRegressionModel =>
-        val attrs = AttributeGroup.fromStructField(
-          m.summary.predictions.schema(m.summary.featuresCol))
+        val attrs = AttributeGroup
+          .fromStructField(m.summary.predictions.schema(m.summary.featuresCol))
         if (m.getFitIntercept) {
           Array("(Intercept)") ++ attrs.attributes.get.map(_.name.get)
         } else {
           attrs.attributes.get.map(_.name.get)
         }
       case m: KMeansModel =>
-        val attrs = AttributeGroup.fromStructField(
-          m.summary.predictions.schema(m.summary.featuresCol))
+        val attrs = AttributeGroup
+          .fromStructField(m.summary.predictions.schema(m.summary.featuresCol))
         attrs.attributes.get.map(_.name.get)
     }
   }

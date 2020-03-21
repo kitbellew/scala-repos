@@ -59,8 +59,8 @@ object InferUtil {
     "scala.reflect.api.TypeTags.TypeTag",
     "scala.reflect.api.TypeTags.WeakTypeTag"
   )
-  private val LOG = Logger.getInstance(
-    "#org.jetbrains.plugins.scala.lang.psi.api.InferUtil$")
+  private val LOG = Logger
+    .getInstance("#org.jetbrains.plugins.scala.lang.psi.api.InferUtil$")
 
   private def isDebugImplicitParameters = LOG.isDebugEnabled
 
@@ -115,15 +115,17 @@ object InferUtil {
             mt @ ScMethodType(retType, params, impl),
             typeParams) if impl =>
         val fullAbstractSubstitutor = t.abstractOrLowerTypeSubstitutor
-        val coreTypes = params.map(p =>
-          fullAbstractSubstitutor.subst(p.paramType))
+        val coreTypes = params
+          .map(p => fullAbstractSubstitutor.subst(p.paramType))
         val splitMethodType =
-          params.reverse.foldLeft(retType) {
-            case (tp: ScType, param: Parameter) =>
-              ScMethodType(tp, Seq(param), isImplicit = true)(
-                mt.project,
-                mt.scope)
-          }
+          params
+            .reverse
+            .foldLeft(retType) {
+              case (tp: ScType, param: Parameter) =>
+                ScMethodType(tp, Seq(param), isImplicit = true)(
+                  mt.project,
+                  mt.scope)
+            }
         resInner = ScTypePolymorphicType(splitMethodType, typeParams)
         val paramsForInferBuffer = new ArrayBuffer[Parameter]()
         val exprsBuffer = new ArrayBuffer[Compatibility.Expression]()
@@ -272,9 +274,8 @@ object InferUtil {
         val evaluator = ScalaMacroEvaluator.getInstance(place.getProject)
         evaluator.isMacro(results.head.getElement) match {
           case Some(m) =>
-            evaluator.checkMacro(
-              m,
-              MacroContext(place, Some(paramType))) match {
+            evaluator
+              .checkMacro(m, MacroContext(place, Some(paramType))) match {
               case Some(tp) =>
                 exprs += new Expression(polymorphicSubst subst tp)
               case None =>
@@ -374,8 +375,8 @@ object InferUtil {
                 isByName = false)),
             Seq(
               new Expression(
-                undefineSubstitutor(typeParams).subst(
-                  innerInternal.inferValueType))),
+                undefineSubstitutor(typeParams)
+                  .subst(innerInternal.inferValueType))),
             typeParams,
             shouldUndefineParameters = false,
             safeCheck = check,
@@ -405,8 +406,8 @@ object InferUtil {
                   isByName = false)),
               Seq(
                 new Expression(
-                  undefineSubstitutor(typeParams).subst(
-                    internal.inferValueType))),
+                  undefineSubstitutor(typeParams)
+                    .subst(internal.inferValueType))),
               typeParams,
               shouldUndefineParameters = false,
               safeCheck = check,
@@ -622,8 +623,10 @@ object InferUtil {
                     }
                     hasRecursiveTypeParameters
                   }
-                  subst.lMap.get(
-                    (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp))) match {
+                  subst
+                    .lMap
+                    .get(
+                      (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp))) match {
                     case Some(_addLower) =>
                       val substedLowerType = unSubst.subst(lower)
                       val addLower =
@@ -632,8 +635,9 @@ object InferUtil {
                             !tp.typeParams.exists(_.name == "_"))
                           ScParameterizedType(
                             _addLower,
-                            tp.typeParams.map(
-                              ScTypeParameterType.toTypeParameterType))
+                            tp
+                              .typeParams
+                              .map(ScTypeParameterType.toTypeParameterType))
                         else
                           _addLower
                       if (hasRecursiveTypeParameters(substedLowerType))
@@ -643,8 +647,10 @@ object InferUtil {
                     case None =>
                       lower = unSubst.subst(lower)
                   }
-                  subst.rMap.get(
-                    (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp))) match {
+                  subst
+                    .rMap
+                    .get(
+                      (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp))) match {
                     case Some(_addUpper) =>
                       val substedUpperType = unSubst.subst(upper)
                       val addUpper =
@@ -653,8 +659,9 @@ object InferUtil {
                             !tp.typeParams.exists(_.name == "_"))
                           ScParameterizedType(
                             _addUpper,
-                            tp.typeParams.map(
-                              ScTypeParameterType.toTypeParameterType))
+                            tp
+                              .typeParams
+                              .map(ScTypeParameterType.toTypeParameterType))
                         else
                           _addUpper
                       if (hasRecursiveTypeParameters(substedUpperType))
@@ -707,19 +714,15 @@ object InferUtil {
                     if (tp.lowerType() != Nothing) {
                       val substedLowerType = unSubst.subst(tp.lowerType())
                       if (!hasRecursiveTypeParameters(substedLowerType)) {
-                        un = un.addLower(
-                          name,
-                          substedLowerType,
-                          additional = true)
+                        un = un
+                          .addLower(name, substedLowerType, additional = true)
                       }
                     }
                     if (tp.upperType() != Any) {
                       val substedUpperType = unSubst.subst(tp.upperType())
                       if (!hasRecursiveTypeParameters(substedUpperType)) {
-                        un = un.addUpper(
-                          name,
-                          substedUpperType,
-                          additional = true)
+                        un = un
+                          .addUpper(name, substedUpperType, additional = true)
                       }
                     }
                   }
@@ -747,32 +750,39 @@ object InferUtil {
                               case ScParameterizedType(_, typeArgs) =>
                                 if (typeArgs.length != typeParams.length)
                                   return false
-                                typeArgs.zip(typeParams).forall {
-                                  case (tp: ScType, typeParam: ScTypeParam) =>
-                                    checkTypeParam(typeParam, tp)
-                                }
+                                typeArgs
+                                  .zip(typeParams)
+                                  .forall {
+                                    case (tp: ScType, typeParam: ScTypeParam) =>
+                                      checkTypeParam(typeParam, tp)
+                                  }
                               case _ =>
                                 def checkNamed(
                                     named: PsiNamedElement,
                                     typeParams: Seq[ScTypeParam]): Boolean = {
                                   named match {
                                     case t: ScTypeParametersOwner =>
-                                      if (typeParams.length != t.typeParameters.length)
+                                      if (typeParams
+                                            .length != t.typeParameters.length)
                                         return false
-                                      typeParams.zip(t.typeParameters).forall {
-                                        case (
-                                              p1: ScTypeParam,
-                                              p2: ScTypeParam) =>
-                                          if (p1.typeParameters.nonEmpty)
-                                            checkNamed(p2, p1.typeParameters)
-                                          else
-                                            true
-                                      }
+                                      typeParams
+                                        .zip(t.typeParameters)
+                                        .forall {
+                                          case (
+                                                p1: ScTypeParam,
+                                                p2: ScTypeParam) =>
+                                            if (p1.typeParameters.nonEmpty)
+                                              checkNamed(p2, p1.typeParameters)
+                                            else
+                                              true
+                                        }
                                     case p: PsiTypeParameterListOwner =>
-                                      if (typeParams.length != p.getTypeParameters.length)
+                                      if (typeParams.length != p
+                                            .getTypeParameters
+                                            .length)
                                         return false
-                                      typeParams.forall(
-                                        _.typeParameters.isEmpty)
+                                      typeParams
+                                        .forall(_.typeParameters.isEmpty)
                                     case _ =>
                                       false
                                   }

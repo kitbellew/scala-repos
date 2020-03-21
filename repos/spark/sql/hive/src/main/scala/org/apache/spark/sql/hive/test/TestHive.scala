@@ -133,17 +133,26 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
             getConf(SQLConf.CASE_SENSITIVE, false)
           override def clear(): Unit = {
             super.clear()
-            TestHiveContext.overrideConfs.map {
-              case (key, value) =>
-                setConfString(key, value)
-            }
+            TestHiveContext
+              .overrideConfs
+              .map {
+                case (key, value) =>
+                  setConfString(key, value)
+              }
           }
         }
       }
 
       override lazy val functionRegistry = {
         new TestHiveFunctionRegistry(
-          org.apache.spark.sql.catalyst.analysis.FunctionRegistry.builtin
+          org
+            .apache
+            .spark
+            .sql
+            .catalyst
+            .analysis
+            .FunctionRegistry
+            .builtin
             .copy(),
           self.executionHive)
       }
@@ -181,10 +190,12 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
           .getProperty("user.dir")
           .endsWith("sql" + File.separator + "hive")) {
       new File(
-        "src" + File.separator + "test" + File.separator + "resources" + File.separator)
+        "src" + File.separator + "test" + File.separator + "resources" + File
+          .separator)
     } else {
       new File(
-        "sql" + File.separator + "hive" + File.separator + "src" + File.separator + "test" +
+        "sql" + File.separator + "hive" + File.separator + "src" + File
+          .separator + "test" +
           File.separator + "resources")
     }
 
@@ -260,11 +271,13 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
     TestTable(
       "src",
       "CREATE TABLE src (key INT, value STRING)".cmd,
-      s"LOAD DATA LOCAL INPATH '${getHiveFile("data/files/kv1.txt")}' INTO TABLE src".cmd),
+      s"LOAD DATA LOCAL INPATH '${getHiveFile("data/files/kv1.txt")}' INTO TABLE src"
+        .cmd),
     TestTable(
       "src1",
       "CREATE TABLE src1 (key INT, value STRING)".cmd,
-      s"LOAD DATA LOCAL INPATH '${getHiveFile("data/files/kv3.txt")}' INTO TABLE src1".cmd),
+      s"LOAD DATA LOCAL INPATH '${getHiveFile("data/files/kv3.txt")}' INTO TABLE src1"
+        .cmd),
     TestTable(
       "srcpart",
       () => {
@@ -356,7 +369,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
          |  }'
          |)
        """.stripMargin.cmd,
-      s"LOAD DATA LOCAL INPATH '${getHiveFile("data/files/episodes.avro")}' INTO TABLE episodes".cmd
+      s"LOAD DATA LOCAL INPATH '${getHiveFile("data/files/episodes.avro")}' INTO TABLE episodes"
+        .cmd
     ),
     // THIS TABLE IS NOT THE SAME AS THE HIVE TEST TABLE episodes_partitioned AS DYNAMIC PARITIONING
     // IS NOT YET SUPPORTED
@@ -427,7 +441,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
       "src_json",
       s"""CREATE TABLE src_json (json STRING) STORED AS TEXTFILE
        """.stripMargin.cmd,
-      s"LOAD DATA LOCAL INPATH '${getHiveFile("data/files/json.txt")}' INTO TABLE src_json".cmd
+      s"LOAD DATA LOCAL INPATH '${getHiveFile("data/files/json.txt")}' INTO TABLE src_json"
+        .cmd
     )
   )
 
@@ -467,12 +482,18 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
   def reset() {
     try {
       // HACK: Hive is too noisy by default.
-      org.apache.log4j.LogManager.getCurrentLoggers.asScala.foreach { log =>
-        val logger = log.asInstanceOf[org.apache.log4j.Logger]
-        if (!logger.getName.contains("org.apache.spark")) {
-          logger.setLevel(org.apache.log4j.Level.WARN)
+      org
+        .apache
+        .log4j
+        .LogManager
+        .getCurrentLoggers
+        .asScala
+        .foreach { log =>
+          val logger = log.asInstanceOf[org.apache.log4j.Logger]
+          if (!logger.getName.contains("org.apache.spark")) {
+            logger.setLevel(org.apache.log4j.Level.WARN)
+          }
         }
-      }
 
       cacheManager.clearCache()
       loadedTables.clear()
@@ -480,7 +501,9 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
       sessionState.catalog.client.reset()
       sessionState.catalog.unregisterAllTables()
 
-      FunctionRegistry.getFunctionNames.asScala
+      FunctionRegistry
+        .getFunctionNames
+        .asScala
         .filterNot(originalUDFs.contains(_))
         .foreach { udfName =>
           FunctionRegistry.unregisterTemporaryUDF(udfName)
@@ -520,7 +543,9 @@ private[hive] class TestHiveFunctionRegistry(
     client: HiveClientImpl)
     extends HiveFunctionRegistry(fr, client) {
 
-  private val removedFunctions = collection.mutable.ArrayBuffer
+  private val removedFunctions = collection
+    .mutable
+    .ArrayBuffer
     .empty[(String, (ExpressionInfo, FunctionBuilder))]
 
   def unregisterFunction(name: String): Unit = {

@@ -522,10 +522,8 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("mapConcurrent preserves items") {
     forAll(Arbitrary.arbitrary[List[Int]], Gen.choose(1, 10)) { (xs, conc) =>
       assert(
-        toSeq(
-          AsyncStream
-            .fromSeq(xs)
-            .mapConcurrent(conc)(Future.value)).sorted == xs.sorted)
+        toSeq(AsyncStream.fromSeq(xs).mapConcurrent(conc)(Future.value))
+          .sorted == xs.sorted)
     }
   }
 
@@ -573,11 +571,13 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
       val q = new scala.collection.mutable.Queue[Promise[Unit]]
 
       val mapped =
-        AsyncStream.fromSeq(xs).mapConcurrent(conc) { _ =>
-          val p = new Promise[Unit]
-          q.enqueue(p)
-          p
-        }
+        AsyncStream
+          .fromSeq(xs)
+          .mapConcurrent(conc) { _ =>
+            val p = new Promise[Unit]
+            q.enqueue(p)
+            p
+          }
 
       // If there are at least `conc` items in the queue, then we should
       // have started exactly `conc` of them. Otherwise, we should have

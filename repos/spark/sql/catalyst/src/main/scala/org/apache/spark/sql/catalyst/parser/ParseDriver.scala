@@ -90,9 +90,11 @@ object ParseDriver extends Logging {
       // Construct the immutable AST.
       def createASTNode(tree: CommonTree): ASTNode = {
         val children =
-          (0 until tree.getChildCount).map { i =>
-            createASTNode(tree.getChild(i).asInstanceOf[CommonTree])
-          }.toList
+          (0 until tree.getChildCount)
+            .map { i =>
+              createASTNode(tree.getChild(i).asInstanceOf[CommonTree])
+            }
+            .toList
         ASTNode(
           tree.token,
           tree.getTokenStartIndex,
@@ -190,7 +192,8 @@ private[parser] case class ParseError(
     re: RecognitionException,
     tokenNames: Array[String]) {
   def buildMessage(s: StringBuilder = new StringBuilder): StringBuilder = {
-    s.append(br.getErrorHeader(re))
+    s
+      .append(br.getErrorHeader(re))
       .append(" ")
       .append(br.getErrorMessage(re, tokenNames))
   }

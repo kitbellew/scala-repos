@@ -66,8 +66,10 @@ object DirectKafkaConsumer extends App {
       offset = msg.offset
       msgs += 1
       if (msgs % 1000 == 0) {
-        System.out.println(
-          "consumed: " + EventMessageEncoding.read(msg.message.buffer));
+        System
+          .out
+          .println(
+            "consumed: " + EventMessageEncoding.read(msg.message.buffer));
         val now = System.nanoTime
         val secs = (now - start) / 1000000000.0
         val throughput = msgs / secs
@@ -85,9 +87,8 @@ object DirectKafkaProducer extends App {
   val config = new Properties()
   config.put("broker.list", "0:localhost:9092")
   config.put("enable.zookeeper", "false")
-  config.put(
-    "serializer.class",
-    "com.precog.ingest.kafka.KafkaIngestMessageCodec")
+  config
+    .put("serializer.class", "com.precog.ingest.kafka.KafkaIngestMessageCodec")
 
   val producer = new Producer[String, IngestMessage](new ProducerConfig(config))
 

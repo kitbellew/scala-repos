@@ -59,8 +59,8 @@ class SyncProducer(val config: SyncProducerConfig) extends Logging {
     .getProducerRequestStats(config.clientId)
 
   trace(
-    "Instantiating Scala Sync Producer with properties: %s".format(
-      config.props))
+    "Instantiating Scala Sync Producer with properties: %s"
+      .format(config.props))
 
   private def verifyRequest(request: RequestOrResponse) = {
 
@@ -119,7 +119,9 @@ class SyncProducer(val config: SyncProducerConfig) extends Logging {
       .getProducerRequestStats(config.host, config.port)
       .requestSizeHist
       .update(requestSize)
-    producerRequestStats.getProducerRequestAllBrokersStats.requestSizeHist
+    producerRequestStats
+      .getProducerRequestAllBrokersStats
+      .requestSizeHist
       .update(requestSize)
 
     var response: NetworkReceive = null
@@ -145,7 +147,9 @@ class SyncProducer(val config: SyncProducerConfig) extends Logging {
         .getProducerRequestStats(config.host, config.port)
         .throttleTimeStats
         .update(producerResponse.throttleTime, TimeUnit.MILLISECONDS)
-      producerRequestStats.getProducerRequestAllBrokersStats.throttleTimeStats
+      producerRequestStats
+        .getProducerRequestAllBrokersStats
+        .throttleTimeStats
         .update(producerResponse.throttleTime, TimeUnit.MILLISECONDS)
       producerResponse
     } else

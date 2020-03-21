@@ -39,8 +39,8 @@ class BuildFileChangeBrowser(
     updatedChanges.addAll(
       getSelectedChanges map { myChange =>
         {
-          val changeSwapped = BuildFileChange.swap(
-            myChange.asInstanceOf[BuildFileChange])
+          val changeSwapped = BuildFileChange
+            .swap(myChange.asInstanceOf[BuildFileChange])
           fileChangesMap
             .get(changeSwapped.getVirtualFile)
             .map {

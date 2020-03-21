@@ -53,8 +53,8 @@ class AddrMetadataExtractionTest extends FunSuite with AssertionsForJUnit {
     new Ctx {
       val vaddr = Var(addrBound)
       val name = Name.Bound(vaddr, "baz")
-      Await.result(
-        verify(vaddr, name, metadata ++ Addr.Metadata("id" -> "baz")))
+      Await
+        .result(verify(vaddr, name, metadata ++ Addr.Metadata("id" -> "baz")))
     })
 
   test("add bound name path id")(

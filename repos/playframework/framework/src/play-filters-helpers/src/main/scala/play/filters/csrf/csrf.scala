@@ -42,8 +42,8 @@ case class CSRFConfig(
     cookieName: Option[String] = None,
     secureCookie: Boolean = false,
     httpOnlyCookie: Boolean = false,
-    createIfNotFound: RequestHeader => Boolean =
-      CSRFConfig.defaultCreateIfNotFound,
+    createIfNotFound: RequestHeader => Boolean = CSRFConfig
+      .defaultCreateIfNotFound,
     postBodyBuffer: Long = 102400,
     signTokens: Boolean = true,
     checkMethod: String => Boolean = !CSRFConfig.SafeMethods.contains(_),
@@ -78,8 +78,9 @@ case class CSRFConfig(
       checkContentType: ju.function.Predicate[Optional[String]]) =
     copy(checkContentType = checkContentType.asScala.compose(_.asJava))
   def withShouldProtect(shouldProtect: ju.function.Predicate[JRequestHeader]) =
-    copy(shouldProtect = shouldProtect.asScala.compose(
-      new JRequestHeaderImpl(_)))
+    copy(shouldProtect = shouldProtect
+      .asScala
+      .compose(new JRequestHeaderImpl(_)))
   def withBypassCorsTrustedOrigins(bypass: Boolean) =
     copy(bypassCorsTrustedOrigins = bypass)
 }
@@ -99,7 +100,8 @@ object CSRFConfig {
 
   @deprecated("Use dependency injection", "2.5.0")
   def global =
-    Play.privateMaybeApplication
+    Play
+      .privateMaybeApplication
       .map(_.injector.instanceOf[CSRFConfig])
       .getOrElse(CSRFConfig())
 
@@ -203,7 +205,8 @@ object CSRF {
     // Try to get the re-signed token first, then get the "new" token.
     for {
       name <- request.tags.get(Token.NameRequestTag)
-      value <- request.tags.get(Token.ReSignedRequestTag) orElse request.tags
+      value <- request.tags.get(Token.ReSignedRequestTag) orElse request
+        .tags
         .get(Token.RequestTag)
     } yield Token(name, value)
   }
@@ -299,8 +302,8 @@ object CSRF {
     import play.api.libs.iteratee.Execution.Implicits.trampoline
 
     def handle(req: Http.RequestHeader, msg: String) =
-      FutureConverters.toJava(
-        delegate.handle(req._underlyingHeader(), msg).map(_.asJava))
+      FutureConverters
+        .toJava(delegate.handle(req._underlyingHeader(), msg).map(_.asJava))
   }
 
   object ErrorHandler {
@@ -330,9 +333,8 @@ class CSRFModule extends Module {
     Seq(
       bind[CSRFConfig].toProvider[CSRFConfigProvider],
       bind[CSRF.TokenProvider].toProvider[CSRF.TokenProviderProvider],
-      bind[CSRFFilter].toSelf) ++ ErrorHandler.bindingsFromConfiguration(
-      environment,
-      configuration)
+      bind[CSRFFilter].toSelf) ++ ErrorHandler
+      .bindingsFromConfiguration(environment, configuration)
   }
 }
 

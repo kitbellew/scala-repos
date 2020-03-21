@@ -52,9 +52,8 @@ object ProdServerStart {
       Play.start(application)
 
       // Start the server
-      val serverProvider: ServerProvider = ServerProvider.fromConfiguration(
-        process.classLoader,
-        config.configuration)
+      val serverProvider: ServerProvider = ServerProvider
+        .fromConfiguration(process.classLoader, config.configuration)
       val server = serverProvider.createServer(config, application)
       process.addShutdownHook {
         server.stop()
@@ -80,11 +79,8 @@ object ProdServerStart {
       val rootDirConfig =
         rootDirArg.fold(Map.empty[String, String])(dir =>
           ServerConfig.rootDirConfig(dir))
-      Configuration.load(
-        process.classLoader,
-        process.properties,
-        rootDirConfig,
-        true)
+      Configuration
+        .load(process.classLoader, process.properties, rootDirConfig, true)
     }
 
     val rootDir: File = {
@@ -99,19 +95,21 @@ object ProdServerStart {
     }
 
     def parsePort(portType: String): Option[Int] = {
-      configuration.getString(s"play.server.${portType}.port").flatMap {
-        case "disabled" =>
-          None
-        case str =>
-          val i =
-            try Integer.parseInt(str)
-            catch {
-              case _: NumberFormatException =>
-                throw ServerStartException(
-                  s"Invalid ${portType.toUpperCase} port: $str")
-            }
-          Some(i)
-      }
+      configuration
+        .getString(s"play.server.${portType}.port")
+        .flatMap {
+          case "disabled" =>
+            None
+          case str =>
+            val i =
+              try Integer.parseInt(str)
+              catch {
+                case _: NumberFormatException =>
+                  throw ServerStartException(
+                    s"Invalid ${portType.toUpperCase} port: $str")
+              }
+            Some(i)
+        }
     }
 
     val httpPort = parsePort("http")

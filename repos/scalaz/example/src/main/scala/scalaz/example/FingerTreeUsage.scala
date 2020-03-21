@@ -38,9 +38,8 @@ object FingerTreeUsage extends App {
 
   //appending two trees
   assert(
-    (
-      streamToTree(intStream.take(5)) <++> streamToTree(Stream.from(6).take(5))
-    ).toStream == intStream.take(10))
+    (streamToTree(intStream.take(5)) <++> streamToTree(Stream.from(6).take(5)))
+      .toStream == intStream.take(10))
 
   import std.option._
 

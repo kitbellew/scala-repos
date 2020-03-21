@@ -205,8 +205,8 @@ private[repl] trait SparkImports {
         // If the user entered an import, then just use it; add an import wrapping
         // level if the import might conflict with some other import
         case x: ImportHandler =>
-          if (x.importsWildcard || currentImps.exists(
-                x.importedNames contains _))
+          if (x.importsWildcard || currentImps
+                .exists(x.importedNames contains _))
             addWrapper()
 
           code append (x.member + "\n")
@@ -231,7 +231,8 @@ private[repl] trait SparkImports {
           for (imv <- x.definedNames) {
             val objName = req.lineRep.readPath
             code.append(
-              "import " + objName + ".INSTANCE" + req.accessPath + ".`" + imv + "`\n")
+              "import " + objName + ".INSTANCE" + req
+                .accessPath + ".`" + imv + "`\n")
           }
 
         case x =>
@@ -241,8 +242,10 @@ private[repl] trait SparkImports {
             val objName = req.lineRep.readPath
             val valName = "$VAL" + newValId()
 
-            if (!code.toString.endsWith(
-                  ".`" + imv + "`;\n")) { // Which means already imported
+            if (!code
+                  .toString
+                  .endsWith(
+                    ".`" + imv + "`;\n")) { // Which means already imported
               code.append("val " + valName + " = " + objName + ".INSTANCE;\n")
               code.append(
                 "import " + valName + req.accessPath + ".`" + imv + "`;\n")

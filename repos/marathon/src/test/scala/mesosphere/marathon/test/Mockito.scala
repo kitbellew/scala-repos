@@ -54,9 +54,11 @@ trait Mockito extends MockitoSugar {
       if (e.isEmpty)
         throw new java.lang.IllegalArgumentException(
           "The parameter passed to throws must not be empty")
-      e.drop(1).foldLeft(M.when(c).thenThrow(e.head)) { (res, cur) =>
-        res.thenThrow(cur)
-      }
+      e
+        .drop(1)
+        .foldLeft(M.when(c).thenThrow(e.head)) { (res, cur) =>
+          res.thenThrow(cur)
+        }
     }
   }
 }

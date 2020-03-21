@@ -59,8 +59,8 @@ object Runner extends Logging {
     val localFilePath = localFile.getCanonicalPath
     (fileSystem, uri) match {
       case (Some(fs), Some(u)) =>
-        val dest = fs.makeQualified(
-          Path.mergePaths(new Path(u), new Path(localFilePath)))
+        val dest = fs
+          .makeQualified(Path.mergePaths(new Path(u), new Path(localFilePath)))
         info(s"Copying $localFile to ${dest.toString}")
         fs.copyFromLocalFile(new Path(localFilePath), dest)
         dest.toUri.toString
@@ -127,13 +127,16 @@ object Runner extends Logging {
     }
 
     // Collect and serialize PIO_* environmental variables
-    val pioEnvVars = sys.env
+    val pioEnvVars = sys
+      .env
       .filter(kv => kv._1.startsWith("PIO_"))
       .map(kv => s"${kv._1}=${kv._2}")
       .mkString(",")
 
     // Location of Spark
-    val sparkHome = ca.common.sparkHome
+    val sparkHome = ca
+      .common
+      .sparkHome
       .getOrElse(sys.env.getOrElse("SPARK_HOME", "."))
 
     // Local path to PredictionIO assembly JAR
@@ -220,14 +223,16 @@ object Runner extends Logging {
       None,
       "CLASSPATH" -> "",
       "SPARK_YARN_USER_ENV" -> pioEnvVars).run()
-    Runtime.getRuntime.addShutdownHook(
-      new Thread(
-        new Runnable {
-          def run(): Unit = {
-            cleanup(fs, ca.common.scratchUri)
-            proc.destroy()
-          }
-        }))
+    Runtime
+      .getRuntime
+      .addShutdownHook(
+        new Thread(
+          new Runnable {
+            def run(): Unit = {
+              cleanup(fs, ca.common.scratchUri)
+              proc.destroy()
+            }
+          }))
     cleanup(fs, ca.common.scratchUri)
     proc.exitValue()
   }

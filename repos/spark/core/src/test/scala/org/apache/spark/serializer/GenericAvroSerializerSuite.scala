@@ -40,8 +40,8 @@ class GenericAvroSerializerSuite extends SparkFunSuite with SharedSparkContext {
   test("schema compression and decompression") {
     val genericSer = new GenericAvroSerializer(conf.getAvroSchema)
     assert(
-      schema === genericSer.decompress(
-        ByteBuffer.wrap(genericSer.compress(schema))))
+      schema === genericSer
+        .decompress(ByteBuffer.wrap(genericSer.compress(schema))))
   }
 
   test("record serialization and deserialization") {
@@ -79,12 +79,12 @@ class GenericAvroSerializerSuite extends SparkFunSuite with SharedSparkContext {
   test("caches previously seen schemas") {
     val genericSer = new GenericAvroSerializer(conf.getAvroSchema)
     val compressedSchema = genericSer.compress(schema)
-    val decompressedSchema = genericSer.decompress(
-      ByteBuffer.wrap(compressedSchema))
+    val decompressedSchema = genericSer
+      .decompress(ByteBuffer.wrap(compressedSchema))
 
     assert(compressedSchema.eq(genericSer.compress(schema)))
     assert(
-      decompressedSchema.eq(
-        genericSer.decompress(ByteBuffer.wrap(compressedSchema))))
+      decompressedSchema
+        .eq(genericSer.decompress(ByteBuffer.wrap(compressedSchema))))
   }
 }

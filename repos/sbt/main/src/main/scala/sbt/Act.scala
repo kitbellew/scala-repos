@@ -211,8 +211,8 @@ object Act {
       index: KeyIndex): Seq[Option[String]] =
     explicit match {
       case Omitted =>
-        None +: defaultConfigurations(proj, index, defaultConfigs).flatMap(
-          nonEmptyConfig(index, proj))
+        None +: defaultConfigurations(proj, index, defaultConfigs)
+          .flatMap(nonEmptyConfig(index, proj))
       case ParsedGlobal =>
         None :: Nil
       case pv: ParsedValue[x] =>
@@ -315,9 +315,8 @@ object Act {
     if (validKeys.isEmpty)
       failure("No valid extra keys.")
     else
-      rep1sep(
-        extraParser(validKeys, knownValues),
-        spacedComma) map AttributeMap.apply
+      rep1sep(extraParser(validKeys, knownValues), spacedComma) map AttributeMap
+        .apply
   }
 
   def extraParser(
@@ -367,8 +366,8 @@ object Act {
       }
 
     val uris = index.buildURIs
-    val resolvedURI = Uri(uris).map(uri =>
-      Scope.resolveBuild(currentBuild, uri))
+    val resolvedURI = Uri(uris)
+      .map(uri => Scope.resolveBuild(currentBuild, uri))
     val buildRef = token('{' ~> resolvedURI <~ '}').?
 
     buildRef flatMap {
@@ -405,9 +404,8 @@ object Act {
       val akp = aggregatedKeyParser(extracted)
       def evaluate(kvs: Seq[ScopedKey[_]]): Parser[() => State] = {
         val preparedPairs = anyKeyValues(structure, kvs)
-        val showConfig = Aggregation.defaultShow(
-          state,
-          showTasks = action == ShowAction)
+        val showConfig = Aggregation
+          .defaultShow(state, showTasks = action == ShowAction)
         evaluatingParser(state, structure, showConfig)(preparedPairs) map {
           evaluate => () =>
             {

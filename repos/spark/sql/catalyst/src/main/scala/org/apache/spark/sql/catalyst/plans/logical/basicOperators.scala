@@ -52,8 +52,8 @@ case class Project(projectList: Seq[NamedExpression], child: LogicalPlan)
           window
       }.nonEmpty)
 
-    !expressions.exists(
-      !_.resolved) && childrenResolved && !hasSpecialExpressions
+    !expressions
+      .exists(!_.resolved) && childrenResolved && !hasSpecialExpressions
   }
 
   override def validConstraints: Set[Expression] =
@@ -129,11 +129,13 @@ abstract class SetOperation(left: LogicalPlan, right: LogicalPlan)
   protected def rightConstraints: Set[Expression] = {
     require(left.output.size == right.output.size)
     val attributeRewrites = AttributeMap(right.output.zip(left.output))
-    right.constraints.map(
-      _ transform {
-        case a: Attribute =>
-          attributeRewrites(a)
-      })
+    right
+      .constraints
+      .map(
+        _ transform {
+          case a: Attribute =>
+            attributeRewrites(a)
+        })
   }
 }
 
@@ -149,10 +151,13 @@ case class Intersect(left: LogicalPlan, right: LogicalPlan)
     left.outputSet.intersect(right.outputSet).isEmpty
 
   override def output: Seq[Attribute] =
-    left.output.zip(right.output).map {
-      case (leftAttr, rightAttr) =>
-        leftAttr.withNullability(leftAttr.nullable && rightAttr.nullable)
-    }
+    left
+      .output
+      .zip(right.output)
+      .map {
+        case (leftAttr, rightAttr) =>
+          leftAttr.withNullability(leftAttr.nullable && rightAttr.nullable)
+      }
 
   override protected def validConstraints: Set[Expression] =
     leftConstraints.union(rightConstraints)
@@ -162,10 +167,13 @@ case class Intersect(left: LogicalPlan, right: LogicalPlan)
   override lazy val resolved: Boolean =
     childrenResolved &&
       left.output.length == right.output.length &&
-      left.output.zip(right.output).forall {
-        case (l, r) =>
-          l.dataType == r.dataType
-      } &&
+      left
+        .output
+        .zip(right.output)
+        .forall {
+          case (l, r) =>
+            l.dataType == r.dataType
+        } &&
       duplicateResolved
 
   override def maxRows: Option[Long] = {
@@ -199,10 +207,13 @@ case class Except(left: LogicalPlan, right: LogicalPlan)
   override lazy val resolved: Boolean =
     childrenResolved &&
       left.output.length == right.output.length &&
-      left.output.zip(right.output).forall {
-        case (l, r) =>
-          l.dataType == r.dataType
-      }
+      left
+        .output
+        .zip(right.output)
+        .forall {
+          case (l, r) =>
+            l.dataType == r.dataType
+        }
 
   override def statistics: Statistics = {
     Statistics(sizeInBytes = left.statistics.sizeInBytes)
@@ -235,14 +246,19 @@ case class Union(children: Seq[LogicalPlan]) extends LogicalPlan {
   override lazy val resolved: Boolean = {
     // allChildrenCompatible needs to be evaluated after childrenResolved
     def allChildrenCompatible: Boolean =
-      children.tail.forall(child =>
-        // compare the attribute number with the first child
-        child.output.length == children.head.output.length &&
-          // compare the data types with the first child
-          child.output.zip(children.head.output).forall {
-            case (l, r) =>
-              l.dataType == r.dataType
-          })
+      children
+        .tail
+        .forall(child =>
+          // compare the attribute number with the first child
+          child.output.length == children.head.output.length &&
+            // compare the data types with the first child
+            child
+              .output
+              .zip(children.head.output)
+              .forall {
+                case (l, r) =>
+                  l.dataType == r.dataType
+              })
 
     children.length > 1 && childrenResolved && allChildrenCompatible
   }
@@ -298,8 +314,9 @@ case class Join(
       case RightOuter =>
         left.output.map(_.withNullability(true)) ++ right.output
       case FullOuter =>
-        left.output.map(_.withNullability(true)) ++ right.output.map(
-          _.withNullability(true))
+        left.output.map(_.withNullability(true)) ++ right
+          .output
+          .map(_.withNullability(true))
       case _ =>
         left.output ++ right.output
     }
@@ -308,12 +325,12 @@ case class Join(
   override protected def validConstraints: Set[Expression] = {
     joinType match {
       case Inner if condition.isDefined =>
-        left.constraints
+        left
+          .constraints
           .union(right.constraints)
           .union(splitConjunctivePredicates(condition.get).toSet)
       case LeftSemi if condition.isDefined =>
-        left.constraints
-          .union(splitConjunctivePredicates(condition.get).toSet)
+        left.constraints.union(splitConjunctivePredicates(condition.get).toSet)
       case Inner =>
         left.constraints.union(right.constraints)
       case LeftSemi =>
@@ -375,8 +392,10 @@ case class InsertIntoTable(
   override def output: Seq[Attribute] = Seq.empty
 
   assert(overwrite || !ifNotExists)
-  override lazy val resolved: Boolean =
-    childrenResolved && child.output.zip(table.output).forall {
+  override lazy val resolved: Boolean = childrenResolved && child
+    .output
+    .zip(table.output)
+    .forall {
       case (childAttr, tableAttr) =>
         DataType.equalsIgnoreCompatibleNullability(
           childAttr.dataType,
@@ -421,8 +440,8 @@ case class Sort(order: Seq[SortOrder], global: Boolean, child: LogicalPlan)
 object Range {
   def apply(start: Long, end: Long, step: Long, numSlices: Int): Range = {
     val output =
-      StructType(
-        StructField("id", LongType, nullable = false) :: Nil).toAttributes
+      StructType(StructField("id", LongType, nullable = false) :: Nil)
+        .toAttributes
     new Range(start, end, step, numSlices, output)
   }
 }
@@ -471,8 +490,8 @@ case class Aggregate(
           window
       }.nonEmpty)
 
-    !expressions.exists(
-      !_.resolved) && childrenResolved && !hasWindowExpressions
+    !expressions
+      .exists(!_.resolved) && childrenResolved && !hasWindowExpressions
   }
 
   override def output: Seq[Attribute] = aggregateExpressions.map(_.toAttribute)
@@ -628,8 +647,8 @@ case class Pivot(
   override def output: Seq[Attribute] =
     groupByExprs.map(_.toAttribute) ++ aggregates match {
       case agg :: Nil =>
-        pivotValues.map(value =>
-          AttributeReference(value.toString, agg.dataType)())
+        pivotValues
+          .map(value => AttributeReference(value.toString, agg.dataType)())
       case _ =>
         pivotValues.flatMap { value =>
           aggregates.map(agg =>
@@ -666,8 +685,9 @@ case class GlobalLimit(limitExpr: Expression, child: LogicalPlan)
   }
   override lazy val statistics: Statistics = {
     val limit = limitExpr.eval().asInstanceOf[Int]
-    val sizeInBytes =
-      (limit: Long) * output.map(a => a.dataType.defaultSize).sum
+    val sizeInBytes = (limit: Long) * output
+      .map(a => a.dataType.defaultSize)
+      .sum
     Statistics(sizeInBytes = sizeInBytes)
   }
 }
@@ -685,8 +705,9 @@ case class LocalLimit(limitExpr: Expression, child: LogicalPlan)
   }
   override lazy val statistics: Statistics = {
     val limit = limitExpr.eval().asInstanceOf[Int]
-    val sizeInBytes =
-      (limit: Long) * output.map(a => a.dataType.defaultSize).sum
+    val sizeInBytes = (limit: Long) * output
+      .map(a => a.dataType.defaultSize)
+      .sum
     Statistics(sizeInBytes = sizeInBytes)
   }
 }

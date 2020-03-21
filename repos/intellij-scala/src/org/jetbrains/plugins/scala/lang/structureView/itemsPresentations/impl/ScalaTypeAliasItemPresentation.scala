@@ -16,8 +16,8 @@ class ScalaTypeAliasItemPresentation(
     isInherited: Boolean)
     extends ScalaItemPresentation(element) {
   def getPresentableText =
-    ScalaElementPresentation.getTypeAliasPresentableText(
-      myElement.asInstanceOf[ScTypeAlias])
+    ScalaElementPresentation
+      .getTypeAliasPresentableText(myElement.asInstanceOf[ScTypeAlias])
 
   override def getTextAttributesKey: TextAttributesKey = {
     if (isInherited)

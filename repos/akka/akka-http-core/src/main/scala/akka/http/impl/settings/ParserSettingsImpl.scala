@@ -78,8 +78,11 @@ object ParserSettingsImpl
       CookieParsingMode(c getString "cookie-parsing-mode"),
       c getBoolean "illegal-header-warnings",
       ErrorLoggingVerbosity(c getString "error-logging-verbosity"),
-      cacheConfig.entrySet.asScala.map(kvp ⇒
-        kvp.getKey -> cacheConfig.getInt(kvp.getKey))(collection.breakOut),
+      cacheConfig
+        .entrySet
+        .asScala
+        .map(kvp ⇒ kvp.getKey -> cacheConfig.getInt(kvp.getKey))(
+          collection.breakOut),
       c getBoolean "tls-session-info-header",
       noCustomMethods,
       noCustomStatusCodes)

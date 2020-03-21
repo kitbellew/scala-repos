@@ -38,7 +38,8 @@ object Test {
       assertFunction(deserializedCollection, expectedSize)
       assert(
         deserializedCollection.getClass == collection.getClass,
-        "collection class should remain the same after deserialization (" + deserializedCollection.getClass + " != " + collection.getClass + ")"
+        "collection class should remain the same after deserialization (" + deserializedCollection
+          .getClass + " != " + collection.getClass + ")"
       )
       Foo.hashCodeModifier = 0
     }

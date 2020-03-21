@@ -82,7 +82,8 @@ class ScalaUnreachableCodeInspection
     }
 
     val elements =
-      instructions.toSeq
+      instructions
+        .toSeq
         .sortBy(_.num)
         .flatMap(_.element)
         .map(e => getParentStmt(e).getOrElse(e))

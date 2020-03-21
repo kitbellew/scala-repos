@@ -98,8 +98,9 @@ object FreeTTest extends SpecLite {
     "not stack overflow with 50k left-associated binds" in {
       val expected = Applicative[FreeTListOption].point(())
       val result =
-        (0 until 50000).foldLeft(Applicative[FreeTListOption].point(()))(
-          (fu, i) => fu.flatMap(u => Applicative[FreeTListOption].point(u)))
+        (0 until 50000)
+          .foldLeft(Applicative[FreeTListOption].point(()))((fu, i) =>
+            fu.flatMap(u => Applicative[FreeTListOption].point(u)))
 
       Equal[FreeTListOption[Unit]].equal(expected, result)
     }

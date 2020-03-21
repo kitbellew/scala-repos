@@ -85,8 +85,9 @@ class UnsafeRowSuite extends SparkFunSuite {
     val (bytesFromOffheapRow, field0StringFromOffheapRow): (
         Array[Byte],
         String) = {
-      val offheapRowPage = MemoryAllocator.UNSAFE.allocate(
-        arrayBackedUnsafeRow.getSizeInBytes)
+      val offheapRowPage = MemoryAllocator
+        .UNSAFE
+        .allocate(arrayBackedUnsafeRow.getSizeInBytes)
       try {
         Platform.copyMemory(
           arrayBackedUnsafeRow.getBaseObject,
@@ -135,8 +136,8 @@ class UnsafeRowSuite extends SparkFunSuite {
 
   test("createFromByteArray and copyFrom") {
     val row = InternalRow(1, UTF8String.fromString("abc"))
-    val converter = UnsafeProjection.create(
-      Array[DataType](IntegerType, StringType))
+    val converter = UnsafeProjection
+      .create(Array[DataType](IntegerType, StringType))
     val unsafeRow = converter.apply(row)
 
     val emptyRow = UnsafeRow.createFromByteArray(64, 2)
@@ -153,8 +154,8 @@ class UnsafeRowSuite extends SparkFunSuite {
     unsafeRow.setInt(0, 2)
     assert(emptyRow.getInt(0) === 1)
 
-    val longString = UTF8String.fromString(
-      (1 to 100).map(_ => "abc").reduce(_ + _))
+    val longString = UTF8String
+      .fromString((1 to 100).map(_ => "abc").reduce(_ + _))
     val row2 = InternalRow(3, longString)
     val unsafeRow2 = converter.apply(row2)
 

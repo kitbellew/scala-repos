@@ -37,12 +37,17 @@ case class ProjectProbabilitySimplex(s: Double) extends Proximal {
     val sorted = x.data.sorted(Ordering[Double].reverse)
     val cum = sorted.scanLeft(0.0)(_ + _).slice(1, x.length + 1)
     val cs = DenseVector(
-      cum.zipWithIndex.map { elem =>
-        (elem._1 - s) / (elem._2 + 1)
-      })
-    val ndx = (DenseVector(sorted) - cs).data.filter { elem =>
-      elem >= 0.0
-    }.length - 1
+      cum
+        .zipWithIndex
+        .map { elem =>
+          (elem._1 - s) / (elem._2 + 1)
+        })
+    val ndx = (DenseVector(sorted) - cs)
+      .data
+      .filter { elem =>
+        elem >= 0.0
+      }
+      .length - 1
     cforRange(0 until x.length) { i =>
       x.update(i, max(x(i) - cs(ndx), 0.0))
     }

@@ -66,9 +66,12 @@ class GroupDeployIntegrationTest
     Then("The group is deleted")
     result.code should be(200)
     // only expect the test base group itself
-    marathon.listGroupsInBaseGroup.value.filter { group =>
-      group.id != testBasePath
-    } should be('empty)
+    marathon
+      .listGroupsInBaseGroup
+      .value
+      .filter { group =>
+        group.id != testBasePath
+      } should be('empty)
   }
 
   test("delete a non existing group should give a 404 http response") {
@@ -151,9 +154,8 @@ class GroupDeployIntegrationTest
     When("The group is updated")
     check.afterDelay(1.second, state = false)
     check.afterDelay(3.seconds, state = true)
-    val update = marathon.updateGroup(
-      id,
-      group.copy(apps = Some(Set(appProxy(appId, "v2", 1)))))
+    val update = marathon
+      .updateGroup(id, group.copy(apps = Some(Set(appProxy(appId, "v2", 1)))))
 
     Then("A success event is send and the application has been started")
     waitForChange(update)
@@ -209,9 +211,8 @@ class GroupDeployIntegrationTest
 
     When("The new application is not healthy")
     val v2Check = appProxyCheck(appId, "v2", state = false) //will always fail
-    val update = marathon.updateGroup(
-      id,
-      group.copy(apps = Some(Set(appProxy(appId, "v2", 2)))))
+    val update = marathon
+      .updateGroup(id, group.copy(apps = Some(Set(appProxy(appId, "v2", 2)))))
 
     Then("All v1 applications are kept alive")
     v1Check.healthy
@@ -233,14 +234,12 @@ class GroupDeployIntegrationTest
     val create = marathon.createGroup(group)
     waitForChange(create)
     appProxyCheck(appId, "v2", state = false) //will always fail
-    marathon.updateGroup(
-      id,
-      group.copy(apps = Some(Set(appProxy(appId, "v2", 2)))))
+    marathon
+      .updateGroup(id, group.copy(apps = Some(Set(appProxy(appId, "v2", 2)))))
 
     When("Another upgrade is triggered, while the old one is not completed")
-    val result = marathon.updateGroup(
-      id,
-      group.copy(apps = Some(Set(appProxy(appId, "v3", 2)))))
+    val result = marathon
+      .updateGroup(id, group.copy(apps = Some(Set(appProxy(appId, "v3", 2)))))
 
     Then("An error is indicated")
     result.code should be(HttpStatus.SC_CONFLICT)
@@ -428,14 +427,13 @@ class GroupDeployIntegrationTest
     ping should have size 4
     ping(key(dbV1)) should be < ping(key(serviceV1))
     ping(key(serviceV1)) should be < ping(key(frontendV1))
-    WaitTestSupport.validFor(
-      "all v1 apps are available as well as db v2",
-      15.seconds) {
-      dbV1.pingSince(2.seconds) &&
-      serviceV1.pingSince(2.seconds) &&
-      frontendV1.pingSince(2.seconds) &&
-      dbV2.pingSince(2.seconds)
-    }
+    WaitTestSupport
+      .validFor("all v1 apps are available as well as db v2", 15.seconds) {
+        dbV1.pingSince(2.seconds) &&
+        serviceV1.pingSince(2.seconds) &&
+        frontendV1.pingSince(2.seconds) &&
+        dbV2.pingSince(2.seconds)
+      }
 
     When("The v2 db becomes healthy")
     dbV2.state = true
@@ -462,14 +460,13 @@ class GroupDeployIntegrationTest
     ping should have size 6
     ping(key(dbV2)) should be < ping(key(serviceV2))
     ping(key(serviceV2)) should be < ping(key(frontendV2))
-    WaitTestSupport.validFor(
-      "frontend v1 is available as well as all v2",
-      15.seconds) {
-      frontendV1.pingSince(2.seconds) &&
-      dbV2.pingSince(2.seconds) &&
-      serviceV2.pingSince(2.seconds) &&
-      frontendV2.pingSince(2.seconds)
-    }
+    WaitTestSupport
+      .validFor("frontend v1 is available as well as all v2", 15.seconds) {
+        frontendV1.pingSince(2.seconds) &&
+        dbV2.pingSince(2.seconds) &&
+        serviceV2.pingSince(2.seconds) &&
+        frontendV2.pingSince(2.seconds)
+      }
 
     When("The v2 frontend becomes healthy")
     frontendV2.state = true

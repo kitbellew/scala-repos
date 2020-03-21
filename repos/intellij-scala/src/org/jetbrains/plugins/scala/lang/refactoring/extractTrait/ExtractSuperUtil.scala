@@ -124,24 +124,23 @@ object ExtractSuperUtil {
       oldExtBlock.templateParents match {
         case Some(tp: ScTemplateParents) =>
           val tpText = s"${tp.getText} with $text"
-          val (_, newTp) = ScalaPsiElementFactory.createClassTemplateParents(
-            tpText,
-            clazz.getManager)
+          val (_, newTp) = ScalaPsiElementFactory
+            .createClassTemplateParents(tpText, clazz.getManager)
           tp.replace(newTp).asInstanceOf[ScTemplateParents]
         case None =>
           val (extKeyword, newTp) = ScalaPsiElementFactory
             .createClassTemplateParents(text, clazz.getManager)
-          oldExtBlock.addRangeBefore(
-            extKeyword,
-            newTp,
-            oldExtBlock.getFirstChild)
+          oldExtBlock
+            .addRangeBefore(extKeyword, newTp, oldExtBlock.getFirstChild)
           oldExtBlock.templateParents.get
       }
-    templParents.typeElementsWithoutConstructor.foreach {
-      case s: ScSimpleTypeElement if s.reference.exists(_.refName == name) =>
-        s.reference.foreach(_.bindToElement(typeToExtend))
-      case _ =>
-    }
+    templParents
+      .typeElementsWithoutConstructor
+      .foreach {
+        case s: ScSimpleTypeElement if s.reference.exists(_.refName == name) =>
+          s.reference.foreach(_.bindToElement(typeToExtend))
+        case _ =>
+      }
   }
 
   def getDirUnderSameSourceRoot(
@@ -182,12 +181,10 @@ object ExtractSuperUtil {
     if (pckg.containsClassNamed(targetClassName))
       return s"Class with name $targetClassName already exists in the package $targetPackageName"
 
-    val dir: PsiDirectory = ExtractSuperUtil.getDirUnderSameSourceRoot(
-      sourceClass,
-      dirs)
-    val cantCreateFile: String = RefactoringMessageUtil.checkCanCreateFile(
-      dir,
-      targetClassName + ".scala")
+    val dir: PsiDirectory = ExtractSuperUtil
+      .getDirUnderSameSourceRoot(sourceClass, dirs)
+    val cantCreateFile: String = RefactoringMessageUtil
+      .checkCanCreateFile(dir, targetClassName + ".scala")
     if (cantCreateFile != null)
       return cantCreateFile
 
@@ -196,7 +193,8 @@ object ExtractSuperUtil {
 
   def possibleMembersToExtract(
       clazz: ScTemplateDefinition): util.List[ScalaExtractMemberInfo] = {
-    clazz.members
+    clazz
+      .members
       .filter {
         case m if m.isPrivate =>
           false

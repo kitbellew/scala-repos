@@ -29,10 +29,8 @@ class ConvertFromInfixExpressionIntention
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val infixExpr: ScInfixExpr = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScInfixExpr],
-      false)
+    val infixExpr: ScInfixExpr = PsiTreeUtil
+      .getParentOfType(element, classOf[ScInfixExpr], false)
     if (infixExpr == null)
       return false
     val range: TextRange = infixExpr.operation.nameId.getTextRange
@@ -41,16 +39,17 @@ class ConvertFromInfixExpressionIntention
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val infixExpr: ScInfixExpr = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScInfixExpr],
-      false)
+    val infixExpr: ScInfixExpr = PsiTreeUtil
+      .getParentOfType(element, classOf[ScInfixExpr], false)
     if (infixExpr == null || !infixExpr.isValid)
       return
 
     val start = infixExpr.getTextRange.getStartOffset
-    val diff =
-      editor.getCaretModel.getOffset - infixExpr.operation.nameId.getTextRange.getStartOffset
+    val diff = editor.getCaretModel.getOffset - infixExpr
+      .operation
+      .nameId
+      .getTextRange
+      .getStartOffset
 
     val methodCallExpr = ScalaPsiElementFactory.createEquivMethodCall(infixExpr)
     val referenceExpr =

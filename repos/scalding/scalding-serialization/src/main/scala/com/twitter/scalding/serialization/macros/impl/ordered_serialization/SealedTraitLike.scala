@@ -178,9 +178,8 @@ object SealedTraitLike {
                   m.asInstanceOf[MaybeLengthCalculation[c.type]].t
 
                 case f: FastLengthCalculation[_] =>
-                  q"""_root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.DynamicLen(${f
-                    .asInstanceOf[FastLengthCalculation[c.type]]
-                    .t})"""
+                  q"""_root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.DynamicLen(${f.asInstanceOf[
+                    FastLengthCalculation[c.type]].t})"""
 
                 case _: NoLengthCalculationAvailable[_] =>
                   return NoLengthCalculationAvailable(c)

@@ -19,16 +19,19 @@ object QueueExecutionContext {
   private final class TimeoutsExecutionContext
       extends ExecutionContextExecutor {
     def execute(runnable: Runnable): Unit = {
-      js.Dynamic.global.setTimeout(
-        { () =>
-          try {
-            runnable.run()
-          } catch {
-            case t: Throwable =>
-              reportFailure(t)
-          }
-        },
-        0)
+      js
+        .Dynamic
+        .global
+        .setTimeout(
+          { () =>
+            try {
+              runnable.run()
+            } catch {
+              case t: Throwable =>
+                reportFailure(t)
+            }
+          },
+          0)
     }
 
     def reportFailure(t: Throwable): Unit = t.printStackTrace()

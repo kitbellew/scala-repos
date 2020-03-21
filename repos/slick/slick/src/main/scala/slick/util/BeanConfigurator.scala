@@ -22,36 +22,39 @@ object BeanConfigurator extends Logging {
         .iterator
         .map(pd => (pd.getName, pd))
         .toMap
-    p.propertyNames().asScala.foreach { key =>
-      val name = key.toString
-      if (allowed.isEmpty || allowed.contains(name)) {
-        val v = Option(p.getProperty(name)).getOrElse(p.get(key))
-        pds.get(name) match {
-          case Some(pd) =>
-            try {
-              val tp = pd.getPropertyType
-              if (tp == classOf[Int])
-                pd.getWriteMethod.invoke(o, toInt(v))
-              else if (tp == classOf[Long])
-                pd.getWriteMethod.invoke(o, toLong(v))
-              else if (tp == classOf[Boolean])
-                pd.getWriteMethod.invoke(o, toBoolean(v))
-              else if (tp == classOf[String])
-                pd.getWriteMethod.invoke(o, v.toString)
-              else
-                pd.getWriteMethod.invoke(o, v)
-            } catch {
-              case ex: Exception =>
-                throw new SlickException(
-                  s"Error setting bean property $name on target ${o.getClass}",
-                  ex)
-            }
-          case None =>
-            logger.warn(
-              s"Ignoring unsupported bean property $name on target ${o.getClass}")
+    p
+      .propertyNames()
+      .asScala
+      .foreach { key =>
+        val name = key.toString
+        if (allowed.isEmpty || allowed.contains(name)) {
+          val v = Option(p.getProperty(name)).getOrElse(p.get(key))
+          pds.get(name) match {
+            case Some(pd) =>
+              try {
+                val tp = pd.getPropertyType
+                if (tp == classOf[Int])
+                  pd.getWriteMethod.invoke(o, toInt(v))
+                else if (tp == classOf[Long])
+                  pd.getWriteMethod.invoke(o, toLong(v))
+                else if (tp == classOf[Boolean])
+                  pd.getWriteMethod.invoke(o, toBoolean(v))
+                else if (tp == classOf[String])
+                  pd.getWriteMethod.invoke(o, v.toString)
+                else
+                  pd.getWriteMethod.invoke(o, v)
+              } catch {
+                case ex: Exception =>
+                  throw new SlickException(
+                    s"Error setting bean property $name on target ${o.getClass}",
+                    ex)
+              }
+            case None =>
+              logger.warn(
+                s"Ignoring unsupported bean property $name on target ${o.getClass}")
+          }
         }
       }
-    }
   }
 
   private def toInt(o: Any): java.lang.Integer =

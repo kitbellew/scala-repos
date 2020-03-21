@@ -33,8 +33,9 @@ abstract class AbstractScopeSuggesterTest
 
   protected def doTest(suggestedScopesNames: Seq[String]) {
     val filePath = folderPath + getTestName(false) + ".scala"
-    val file = LocalFileSystem.getInstance.findFileByPath(
-      filePath.replace(File.separatorChar, '/'))
+    val file = LocalFileSystem
+      .getInstance
+      .findFileByPath(filePath.replace(File.separatorChar, '/'))
     assert(file != null, "file " + filePath + " not found")
 
     val fileText = StringUtil.convertLineSeparators(
@@ -48,14 +49,16 @@ abstract class AbstractScopeSuggesterTest
       startOffset != -1,
       "Not specified caret marker in test case. Use /*caret*/ in scala file for this.")
 
-    val editor = CommonDataKeys.EDITOR.getData(
-      DataManager.getInstance().getDataContextFromFocus.getResult)
+    val editor = CommonDataKeys
+      .EDITOR
+      .getData(DataManager.getInstance().getDataContextFromFocus.getResult)
 
     editor.getSelectionModel.setSelection(startOffset, endOffset)
 
     val scalaFile = getFileAdapter.asInstanceOf[ScalaFile]
-    var element = CommonDataKeys.PSI_ELEMENT.getData(
-      DataManager.getInstance().getDataContextFromFocus.getResult)
+    var element = CommonDataKeys
+      .PSI_ELEMENT
+      .getData(DataManager.getInstance().getDataContextFromFocus.getResult)
     if (element == null) {
       element = PsiTreeUtil.findElementOfClassAtRange(
         scalaFile,

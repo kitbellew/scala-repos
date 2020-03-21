@@ -85,10 +85,12 @@ final class ModApi(
       userSpy(user.id) flatMap { spy =>
         UserRepo.toggleIpBan(user.id) zip
           logApi.ban(mod, user.id, !user.ipBan) zip
-          user.ipBan.fold(
-            firewall unblockIps spy.ipStrings,
-            (spy.ipStrings map firewall.blockIp).sequenceFu >>
-              (SecurityStore disconnect user.id)) void
+          user
+            .ipBan
+            .fold(
+              firewall unblockIps spy.ipStrings,
+              (spy.ipStrings map firewall.blockIp).sequenceFu >>
+                (SecurityStore disconnect user.id)) void
       }
     }
 

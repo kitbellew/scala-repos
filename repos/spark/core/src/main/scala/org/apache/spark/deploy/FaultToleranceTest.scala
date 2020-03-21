@@ -78,10 +78,8 @@ private object FaultToleranceTest extends App with Logging {
   private val containerSparkHome = "/opt/spark"
   private val dockerMountDir = "%s:%s".format(sparkHome, containerSparkHome)
 
-  System.setProperty(
-    "spark.driver.host",
-    "172.17.42.1"
-  ) // default docker host ip
+  System
+    .setProperty("spark.driver.host", "172.17.42.1") // default docker host ip
 
   private def afterEach() {
     if (sc != null) {
@@ -376,22 +374,26 @@ private class TestMasterInfo(
       val json = JsonMethods.parse(masterStream)
 
       val workers = json \ "workers"
-      val liveWorkers = workers.children.filter(w =>
-        (w \ "state").extract[String] == "ALIVE")
+      val liveWorkers = workers
+        .children
+        .filter(w => (w \ "state").extract[String] == "ALIVE")
       // Extract the worker IP from "webuiaddress" (rather than "host") because the host name
       // on containers is a weird hash instead of the actual IP address.
       liveWorkerIPs = liveWorkers.map { w =>
-        (
-          w \ "webuiaddress"
-        ).extract[String].stripPrefix("http://").stripSuffix(":8081")
+        (w \ "webuiaddress")
+          .extract[String]
+          .stripPrefix("http://")
+          .stripSuffix(":8081")
       }
 
       numLiveApps = (json \ "activeapps").children.size
 
       val status = json \\ "status"
       val stateString = status.extract[String]
-      state =
-        RecoveryState.values.filter(state => state.toString == stateString).head
+      state = RecoveryState
+        .values
+        .filter(state => state.toString == stateString)
+        .head
     } catch {
       case e: Exception =>
         // ignore, no state update
@@ -404,11 +406,8 @@ private class TestMasterInfo(
   }
 
   override def toString: String =
-    "[ip=%s, id=%s, logFile=%s, state=%s]".format(
-      ip,
-      dockerId.id,
-      logFile.getAbsolutePath,
-      state)
+    "[ip=%s, id=%s, logFile=%s, state=%s]"
+      .format(ip, dockerId.id, logFile.getAbsolutePath, state)
 }
 
 private class TestWorkerInfo(
@@ -437,20 +436,16 @@ private object SparkDocker {
   }
 
   def startWorker(mountDir: String, masters: String): TestWorkerInfo = {
-    val cmd = Docker.makeRunCmd(
-      "spark-test-worker",
-      args = masters,
-      mountDir = mountDir)
+    val cmd = Docker
+      .makeRunCmd("spark-test-worker", args = masters, mountDir = mountDir)
     val (ip, id, outFile) = startNode(cmd)
     new TestWorkerInfo(ip, id, outFile)
   }
 
   private def startNode(dockerCmd: ProcessBuilder): (String, DockerId, File) = {
     val ipPromise = Promise[String]()
-    val outFile = File.createTempFile(
-      "fault-tolerance-test",
-      "",
-      Utils.createTempDir())
+    val outFile = File
+      .createTempFile("fault-tolerance-test", "", Utils.createTempDir())
     val outStream: FileWriter = new FileWriter(outFile)
     def findIpAndLog(line: String): Unit = {
       if (line.startsWith("CONTAINER_IP=")) {

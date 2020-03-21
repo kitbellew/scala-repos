@@ -129,100 +129,116 @@ abstract class AutoAlgebra extends AutoOps {
   def compare: c.Expr[Int]
 
   def Semiring[A: c.WeakTypeTag](): c.Expr[Semiring[A]] = {
-    c.universe.reify {
-      new Semiring[A] {
-        def plus(x: A, y: A): A = ops.plus[A].splice
-        def times(x: A, y: A): A = ops.times[A].splice
+    c
+      .universe
+      .reify {
+        new Semiring[A] {
+          def plus(x: A, y: A): A = ops.plus[A].splice
+          def times(x: A, y: A): A = ops.times[A].splice
+        }
       }
-    }
   }
 
   def Rig[A: c.WeakTypeTag](z: c.Expr[A], o: c.Expr[A]): c.Expr[Rig[A]] = {
-    c.universe.reify {
-      new Rig[A] {
-        def zero: A = z.splice
-        def one: A = o.splice
-        def plus(x: A, y: A): A = ops.plus[A].splice
-        def times(x: A, y: A): A = ops.times[A].splice
+    c
+      .universe
+      .reify {
+        new Rig[A] {
+          def zero: A = z.splice
+          def one: A = o.splice
+          def plus(x: A, y: A): A = ops.plus[A].splice
+          def times(x: A, y: A): A = ops.times[A].splice
+        }
       }
-    }
   }
 
   def Rng[A: c.WeakTypeTag](z: c.Expr[A]): c.Expr[Rng[A]] = {
-    c.universe.reify {
-      new Rng[A] {
-        def zero: A = z.splice
-        def plus(x: A, y: A): A = ops.plus[A].splice
-        def times(x: A, y: A): A = ops.times[A].splice
-        override def minus(x: A, y: A): A = ops.minus[A].splice
-        def negate(x: A): A = ops.negate[A].splice
+    c
+      .universe
+      .reify {
+        new Rng[A] {
+          def zero: A = z.splice
+          def plus(x: A, y: A): A = ops.plus[A].splice
+          def times(x: A, y: A): A = ops.times[A].splice
+          override def minus(x: A, y: A): A = ops.minus[A].splice
+          def negate(x: A): A = ops.negate[A].splice
+        }
       }
-    }
   }
 
   def Ring[A: c.WeakTypeTag](z: c.Expr[A], o: c.Expr[A]): c.Expr[Ring[A]] = {
-    c.universe.reify {
-      new Ring[A] {
-        def zero: A = z.splice
-        def one: A = o.splice
-        def plus(x: A, y: A): A = ops.plus[A].splice
-        def times(x: A, y: A): A = ops.times[A].splice
-        override def minus(x: A, y: A): A = ops.minus[A].splice
-        def negate(x: A): A = ops.negate[A].splice
+    c
+      .universe
+      .reify {
+        new Ring[A] {
+          def zero: A = z.splice
+          def one: A = o.splice
+          def plus(x: A, y: A): A = ops.plus[A].splice
+          def times(x: A, y: A): A = ops.times[A].splice
+          override def minus(x: A, y: A): A = ops.minus[A].splice
+          def negate(x: A): A = ops.negate[A].splice
+        }
       }
-    }
   }
 
   def EuclideanRing[A: c.WeakTypeTag](z: c.Expr[A], o: c.Expr[A])(
       ev: c.Expr[Eq[A]]): c.Expr[EuclideanRing[A]] = {
-    c.universe.reify {
-      new EuclideanRing[A] {
-        def zero: A = z.splice
-        def one: A = o.splice
-        def plus(x: A, y: A): A = ops.plus[A].splice
-        def times(x: A, y: A): A = ops.times[A].splice
-        override def minus(x: A, y: A): A = ops.minus[A].splice
-        def negate(x: A): A = ops.negate[A].splice
-        def quot(x: A, y: A): A = ops.quot[A].splice
-        def mod(x: A, y: A): A = ops.mod[A]().splice
-        def gcd(x: A, y: A): A = euclid(x, y)(ev.splice)
+    c
+      .universe
+      .reify {
+        new EuclideanRing[A] {
+          def zero: A = z.splice
+          def one: A = o.splice
+          def plus(x: A, y: A): A = ops.plus[A].splice
+          def times(x: A, y: A): A = ops.times[A].splice
+          override def minus(x: A, y: A): A = ops.minus[A].splice
+          def negate(x: A): A = ops.negate[A].splice
+          def quot(x: A, y: A): A = ops.quot[A].splice
+          def mod(x: A, y: A): A = ops.mod[A]().splice
+          def gcd(x: A, y: A): A = euclid(x, y)(ev.splice)
+        }
       }
-    }
   }
 
   def Field[A: c.WeakTypeTag](z: c.Expr[A], o: c.Expr[A])(
       ev: c.Expr[Eq[A]]): c.Expr[Field[A]] = {
-    c.universe.reify {
-      new Field[A] {
-        def zero: A = z.splice
-        def one: A = o.splice
-        def plus(x: A, y: A): A = ops.plus[A].splice
-        def times(x: A, y: A): A = ops.times[A].splice
-        override def minus(x: A, y: A): A = ops.minus[A].splice
-        def negate(x: A): A = ops.negate[A].splice
-        def quot(x: A, y: A): A = ops.div[A].splice
-        def mod(x: A, y: A): A = ops.mod[A](z).splice
-        def gcd(x: A, y: A): A = euclid(x, y)(ev.splice)
-        def div(x: A, y: A): A = ops.div[A].splice
+    c
+      .universe
+      .reify {
+        new Field[A] {
+          def zero: A = z.splice
+          def one: A = o.splice
+          def plus(x: A, y: A): A = ops.plus[A].splice
+          def times(x: A, y: A): A = ops.times[A].splice
+          override def minus(x: A, y: A): A = ops.minus[A].splice
+          def negate(x: A): A = ops.negate[A].splice
+          def quot(x: A, y: A): A = ops.div[A].splice
+          def mod(x: A, y: A): A = ops.mod[A](z).splice
+          def gcd(x: A, y: A): A = euclid(x, y)(ev.splice)
+          def div(x: A, y: A): A = ops.div[A].splice
+        }
       }
-    }
   }
 
   def Eq[A: c.WeakTypeTag](): c.Expr[Eq[A]] = {
-    c.universe.reify {
-      new Eq[A] {
-        def eqv(x: A, y: A): Boolean = ops.equals.splice
+    c
+      .universe
+      .reify {
+        new Eq[A] {
+          def eqv(x: A, y: A): Boolean = ops.equals.splice
+        }
       }
-    }
   }
 
   def Order[A: c.WeakTypeTag](): c.Expr[Order[A]] = {
-    c.universe.reify {
-      new Order[A] {
-        override def eqv(x: A, y: A): Boolean = ops.equals.splice
-        def compare(x: A, y: A): Int = ops.compare.splice
+    c
+      .universe
+      .reify {
+        new Order[A] {
+          override def eqv(x: A, y: A): Boolean = ops.equals.splice
+          def compare(x: A, y: A): Int = ops.compare.splice
+        }
       }
-    }
   }
 }
 
@@ -308,22 +324,26 @@ object ScalaAutoMacros {
   def collectionSemigroupImpl[A: c.WeakTypeTag](
       c: Context): c.Expr[Semigroup[A]] = {
     val ops = ScalaAlgebra[c.type](c)
-    c.universe.reify {
-      new Semigroup[A] {
-        def op(x: A, y: A): A = ops.plusplus[A].splice
+    c
+      .universe
+      .reify {
+        new Semigroup[A] {
+          def op(x: A, y: A): A = ops.plusplus[A].splice
+        }
       }
-    }
   }
 
   def collectionMonoidImpl[A: c.WeakTypeTag](c: Context)(
       z: c.Expr[A]): c.Expr[Monoid[A]] = {
     val ops = ScalaAlgebra[c.type](c)
-    c.universe.reify {
-      new Monoid[A] {
-        def id: A = z.splice
-        def op(x: A, y: A): A = ops.plusplus[A].splice
+    c
+      .universe
+      .reify {
+        new Monoid[A] {
+          def id: A = z.splice
+          def op(x: A, y: A): A = ops.plusplus[A].splice
+        }
       }
-    }
   }
 }
 
@@ -362,16 +382,18 @@ object JavaAutoMacros {
     val ops = JavaAlgebra[c.type](c)
     val addx = ops.binop[Unit]("addAll", "z", "x")
     val addy = ops.binop[Unit]("addAll", "z", "y")
-    c.universe.reify {
-      new Monoid[A] {
-        def id: A = empty.splice
-        def op(x: A, y: A): A = {
-          val z = id
-          addx.splice
-          addy.splice
-          z
+    c
+      .universe
+      .reify {
+        new Monoid[A] {
+          def id: A = empty.splice
+          def op(x: A, y: A): A = {
+            val z = id
+            addx.splice
+            addy.splice
+            z
+          }
         }
       }
-    }
   }
 }

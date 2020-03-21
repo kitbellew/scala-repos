@@ -40,10 +40,8 @@ object ActorsLeakSpec {
             val cell = wc.underlying
 
             cell.childrenRefs match {
-              case ChildrenContainer.TerminatingChildrenContainer(
-                    _,
-                    toDie,
-                    reason) ⇒
+              case ChildrenContainer
+                    .TerminatingChildrenContainer(_, toDie, reason) ⇒
                 Nil
               case x @ (
                     ChildrenContainer.TerminatedChildrenContainer |
@@ -134,7 +132,9 @@ class ActorsLeakSpec
 
           // This will make sure that no SHUTDOWN message gets through
           Await.ready(
-            RARP(system).provider.transport
+            RARP(system)
+              .provider
+              .transport
               .managementCommand(ForceDisassociate(remoteAddress)),
             3.seconds)
 
@@ -176,7 +176,9 @@ class ActorsLeakSpec
 
         // This will make sure that no SHUTDOWN message gets through
         Await.ready(
-          RARP(system).provider.transport
+          RARP(system)
+            .provider
+            .transport
             .managementCommand(ForceDisassociate(remoteAddress)),
           3.seconds)
 

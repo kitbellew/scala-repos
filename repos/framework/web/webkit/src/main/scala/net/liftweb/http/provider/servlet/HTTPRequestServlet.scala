@@ -41,7 +41,8 @@ class HTTPRequestServlet(
       false
     ) // do this to make sure we capture the JSESSIONID cookie
     (Box !! req.getCookies).map(
-      _.toList.map(c =>
+      _.toList
+      .map(c =>
         HTTPCookie(
           c.getName,
           Box !! (c.getValue),
@@ -96,8 +97,8 @@ class HTTPRequestServlet(
     }
 
   lazy val params: List[HTTPParam] = enumToList[String](
-    req.getParameterNames.asInstanceOf[java.util.Enumeration[String]]).map(n =>
-    HTTPParam(n, param(n)))
+    req.getParameterNames.asInstanceOf[java.util.Enumeration[String]])
+    .map(n => HTTPParam(n, param(n)))
 
   lazy val paramNames: List[String] = params map (_.name)
 
@@ -153,8 +154,9 @@ class HTTPRequestServlet(
         val mimeUpload = (new ServletFileUpload)
         mimeUpload.setProgressListener(
           new ProgressListener {
-            lazy val progList: (Long, Long, Int) => Unit = S.session.flatMap(
-              _.progressListener) openOr LiftRules.progressListener
+            lazy val progList: (Long, Long, Int) => Unit = S
+              .session
+              .flatMap(_.progressListener) openOr LiftRules.progressListener
 
             def update(a: Long, b: Long, c: Int) {
               progList(a, b, c)
@@ -208,8 +210,9 @@ class HTTPRequestServlet(
 
   def snapshot: HTTPRequest = new OfflineRequestSnapshot(this, provider)
 
-  private lazy val asyncProvider: Box[ServletAsyncProvider] =
-    LiftRules.theServletAsyncProvider.map(_(this))
+  private lazy val asyncProvider: Box[ServletAsyncProvider] = LiftRules
+    .theServletAsyncProvider
+    .map(_(this))
 
   def resumeInfo: Option[(Req, LiftResponse)] =
     asyncProvider.flatMap(_.resumeInfo)
@@ -227,12 +230,14 @@ class HTTPRequestServlet(
       .resume(what)
 
   lazy val suspendResumeSupport_? = {
-    LiftRules.asyncProviderMeta.map(
-      _.suspendResumeSupport_? &&
-        (
-          asyncProvider.map(_.suspendResumeSupport_?) openOr
-            false
-        )) openOr false
+    LiftRules
+      .asyncProviderMeta
+      .map(
+        _.suspendResumeSupport_? &&
+          (
+            asyncProvider.map(_.suspendResumeSupport_?) openOr
+              false
+          )) openOr false
   }
 }
 

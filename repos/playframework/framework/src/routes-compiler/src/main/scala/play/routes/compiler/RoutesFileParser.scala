@@ -91,40 +91,45 @@ object RoutesFileParser {
           Some(route.call.pos.column))
       }
 
-      route.path.parts.collect {
-        case part @ DynamicPart(name, regex, _) => {
-          route.call.parameters
-            .getOrElse(Nil)
-            .find(_.name == name)
-            .map { p =>
-              if (p.fixed.isDefined || p.default.isDefined) {
-                errors += RoutesCompilationError(
-                  file,
-                  "It is not allowed to specify a fixed or default value for parameter: '" + name + "' extracted from the path",
-                  Some(p.pos.line),
-                  Some(p.pos.column))
-              }
-              try {
-                java.util.regex.Pattern.compile(regex)
-              } catch {
-                case e: Exception => {
+      route
+        .path
+        .parts
+        .collect {
+          case part @ DynamicPart(name, regex, _) => {
+            route
+              .call
+              .parameters
+              .getOrElse(Nil)
+              .find(_.name == name)
+              .map { p =>
+                if (p.fixed.isDefined || p.default.isDefined) {
                   errors += RoutesCompilationError(
                     file,
-                    e.getMessage,
-                    Some(part.pos.line),
-                    Some(part.pos.column))
+                    "It is not allowed to specify a fixed or default value for parameter: '" + name + "' extracted from the path",
+                    Some(p.pos.line),
+                    Some(p.pos.column))
+                }
+                try {
+                  java.util.regex.Pattern.compile(regex)
+                } catch {
+                  case e: Exception => {
+                    errors += RoutesCompilationError(
+                      file,
+                      e.getMessage,
+                      Some(part.pos.line),
+                      Some(part.pos.column))
+                  }
                 }
               }
-            }
-            .getOrElse {
-              errors += RoutesCompilationError(
-                file,
-                "Missing parameter in call definition: " + name,
-                Some(part.pos.line),
-                Some(part.pos.column))
-            }
+              .getOrElse {
+                errors += RoutesCompilationError(
+                  file,
+                  "Missing parameter in call definition: " + name,
+                  Some(part.pos.line),
+                  Some(part.pos.column))
+              }
+          }
         }
-      }
 
     }
 
@@ -137,12 +142,15 @@ object RoutesFileParser {
       g =>
         (
           g._1,
-          g._2.groupBy(route =>
-            route.call.parameters.map(p => p.length).getOrElse(0)))
+          g
+            ._2
+            .groupBy(route =>
+              route.call.parameters.map(p => p.length).getOrElse(0)))
     }
 
-    sameHandlerMethodParameterCountGroup.find(g => g._1._2.size > 1).foreach {
-      overloadedRouteGroup =>
+    sameHandlerMethodParameterCountGroup
+      .find(g => g._1._2.size > 1)
+      .foreach { overloadedRouteGroup =>
         val firstOverloadedRoute = overloadedRouteGroup._2.values.head.head
         errors += RoutesCompilationError(
           file,
@@ -151,7 +159,7 @@ object RoutesFileParser {
           Some(firstOverloadedRoute.call.pos.column)
         )
 
-    }
+      }
 
     errors.toList
   }
@@ -393,8 +401,8 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
   def call: Parser[HandlerCall] =
     opt("@") ~ absoluteMethod ~ opt(parameters) ^^ {
       case instantiate ~ absMethod ~ parameters => {
-        val (packageParts, classAndMethod) = absMethod.splitAt(
-          absMethod.size - 2)
+        val (packageParts, classAndMethod) = absMethod
+          .splitAt(absMethod.size - 2)
         val packageName = packageParts.mkString(".")
         val className = classAndMethod(0)
         val methodName = classAndMethod(1)
@@ -432,7 +440,8 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
   def parser: Parser[List[Rule]] =
     phrase((blankLine | sentence *) <~ end) ^^ {
       case routes =>
-        routes.reverse
+        routes
+          .reverse
           .foldLeft(List[(Option[Rule], List[Comment])]()) {
             case (s, r @ Route(_, _, _, _)) =>
               (Some(r), List()) :: s

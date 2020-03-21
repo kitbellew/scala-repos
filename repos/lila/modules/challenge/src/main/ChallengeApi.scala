@@ -102,12 +102,16 @@ final class ChallengeApi(
   def removeByUserId = repo removeByUserId _
 
   private[challenge] def sweep: Funit =
-    repo.realTimeUnseenSince(DateTime.now minusSeconds 10, max = 50).flatMap {
-      cs => lila.common.Future.applySequentially(cs)(offline).void
-    } >>
-      repo.expiredIds(max = 50).flatMap { ids =>
-        lila.common.Future.applySequentially(ids)(remove).void
-      }
+    repo
+      .realTimeUnseenSince(DateTime.now minusSeconds 10, max = 50)
+      .flatMap { cs =>
+        lila.common.Future.applySequentially(cs)(offline).void
+      } >>
+      repo
+        .expiredIds(max = 50)
+        .flatMap { ids =>
+          lila.common.Future.applySequentially(ids)(remove).void
+        }
 
   private def remove(id: Challenge.ID) =
     repo.remove(id) >> countInFor.remove(id)

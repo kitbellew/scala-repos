@@ -59,9 +59,10 @@ class IntegerLiteralCheckTest extends SimpleTestCase {
 
   def testFine() {
     val intStrings =
-      (
-        intValues ++ randomIntValues(numOfGenInteger)
-      ).flatMap(expandIntegerLiteral).flatMap(prependSign).distinct
+      (intValues ++ randomIntValues(numOfGenInteger))
+        .flatMap(expandIntegerLiteral)
+        .flatMap(prependSign)
+        .distinct
     for (s <- intStrings) {
       assertNothing(messages(s"val a = $s"))
     }
@@ -77,8 +78,10 @@ class IntegerLiteralCheckTest extends SimpleTestCase {
   }
 
   def testLiteralOverflowInt() {
-    val longStrings = longValues.map(_.toString) ++ randomLongValues(
-      numOfGenInteger).flatMap(expandIntegerLiteral).distinct
+    val longStrings = longValues
+      .map(_.toString) ++ randomLongValues(numOfGenInteger)
+      .flatMap(expandIntegerLiteral)
+      .distinct
     for (s <- longStrings ++ Seq("2147483648", "-2147483649")) {
       assertMatches(messages(s"val a = $s")) {
         case Error(s, OverflowIntPattern()) :: Nil =>
@@ -110,11 +113,13 @@ class IntegerLiteralCheckTest extends SimpleTestCase {
 
     val parse: ScalaFile = (Header + code).parse
 
-    parse.depthFirst.foreach {
-      case literal: ScLiteral =>
-        annotator.annotate(literal, mock)
-      case _ =>
-    }
+    parse
+      .depthFirst
+      .foreach {
+        case literal: ScLiteral =>
+          annotator.annotate(literal, mock)
+        case _ =>
+      }
 
     mock.annotations.filter((p: Message) => !p.isInstanceOf[Info])
   }

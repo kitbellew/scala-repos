@@ -36,9 +36,8 @@ class StorageStatusListener(conf: SparkConf) extends SparkListener {
     .Map[String, StorageStatus]()
   private[storage] val deadExecutorStorageStatus =
     new mutable.ListBuffer[StorageStatus]()
-  private[this] val retainedDeadExecutors = conf.getInt(
-    "spark.ui.retainedDeadExecutors",
-    100)
+  private[this] val retainedDeadExecutors = conf
+    .getInt("spark.ui.retainedDeadExecutors", 100)
 
   def storageStatusList: Seq[StorageStatus] =
     synchronized {
@@ -54,25 +53,29 @@ class StorageStatusListener(conf: SparkConf) extends SparkListener {
   private def updateStorageStatus(
       execId: String,
       updatedBlocks: Seq[(BlockId, BlockStatus)]) {
-    executorIdToStorageStatus.get(execId).foreach { storageStatus =>
-      updatedBlocks.foreach {
-        case (blockId, updatedStatus) =>
-          if (updatedStatus.storageLevel == StorageLevel.NONE) {
-            storageStatus.removeBlock(blockId)
-          } else {
-            storageStatus.updateBlock(blockId, updatedStatus)
-          }
+    executorIdToStorageStatus
+      .get(execId)
+      .foreach { storageStatus =>
+        updatedBlocks.foreach {
+          case (blockId, updatedStatus) =>
+            if (updatedStatus.storageLevel == StorageLevel.NONE) {
+              storageStatus.removeBlock(blockId)
+            } else {
+              storageStatus.updateBlock(blockId, updatedStatus)
+            }
+        }
       }
-    }
   }
 
   /** Update storage status list to reflect the removal of an RDD from the cache */
   private def updateStorageStatus(unpersistedRDDId: Int) {
     storageStatusList.foreach { storageStatus =>
-      storageStatus.rddBlocksById(unpersistedRDDId).foreach {
-        case (blockId, _) =>
-          storageStatus.removeBlock(blockId)
-      }
+      storageStatus
+        .rddBlocksById(unpersistedRDDId)
+        .foreach {
+          case (blockId, _) =>
+            storageStatus.removeBlock(blockId)
+        }
     }
   }
 
@@ -108,9 +111,11 @@ class StorageStatusListener(conf: SparkConf) extends SparkListener {
       blockManagerRemoved: SparkListenerBlockManagerRemoved) {
     synchronized {
       val executorId = blockManagerRemoved.blockManagerId.executorId
-      executorIdToStorageStatus.remove(executorId).foreach { status =>
-        deadExecutorStorageStatus += status
-      }
+      executorIdToStorageStatus
+        .remove(executorId)
+        .foreach { status =>
+          deadExecutorStorageStatus += status
+        }
       if (deadExecutorStorageStatus.size > retainedDeadExecutors) {
         deadExecutorStorageStatus.trimStart(1)
       }

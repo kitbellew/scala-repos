@@ -101,11 +101,13 @@ private[api] final class RoundApi(
       initialFen: Option[String],
       orientation: chess.Color,
       owner: Boolean) =
-    owner.??(forecastApi loadForDisplay pov).flatMap { fco =>
-      jsonView.userAnalysisJson(pov, pref, orientation, owner = owner) map
-        withSteps(pov, none, initialFen, withOpening = true) _ map
-        withForecast(pov, owner, fco) _
-    }
+    owner
+      .??(forecastApi loadForDisplay pov)
+      .flatMap { fco =>
+        jsonView.userAnalysisJson(pov, pref, orientation, owner = owner) map
+          withSteps(pov, none, initialFen, withOpening = true) _ map
+          withForecast(pov, owner, fco) _
+      }
 
   private def withSteps(
       pov: Pov,
@@ -113,13 +115,15 @@ private[api] final class RoundApi(
       initialFen: Option[String],
       withOpening: Boolean)(obj: JsObject) =
     obj + (
-      "steps" -> lila.round.StepBuilder(
-        id = pov.game.id,
-        pgnMoves = pov.game.pgnMoves,
-        variant = pov.game.variant,
-        a = a,
-        initialFen = initialFen | pov.game.variant.initialFen,
-        withOpening = withOpening)
+      "steps" -> lila
+        .round
+        .StepBuilder(
+          id = pov.game.id,
+          pgnMoves = pov.game.pgnMoves,
+          variant = pov.game.variant,
+          a = a,
+          initialFen = initialFen | pov.game.variant.initialFen,
+          withOpening = withOpening)
     )
 
   private def withNote(note: String)(json: JsObject) =
@@ -135,9 +139,11 @@ private[api] final class RoundApi(
       json
 
   private def withForecastCount(count: Option[Int])(json: JsObject) =
-    count.filter(0 !=).fold(json) { c =>
-      json + ("forecastCount" -> JsNumber(c))
-    }
+    count
+      .filter(0 !=)
+      .fold(json) { c =>
+        json + ("forecastCount" -> JsNumber(c))
+      }
 
   private def withForecast(pov: Pov, owner: Boolean, fco: Option[Forecast])(
       json: JsObject) =
@@ -176,11 +182,17 @@ private[api] final class RoundApi(
             "name" -> data.tour.name,
             "running" -> data.tour.isStarted,
             "berserkable" -> data.tour.isStarted.option(data.tour.berserkable),
-            "nbSecondsForFirstMove" -> data.tour.isStarted.option {
-              SecondsToDoFirstMove.secondsToMoveFor(data.tour)
-            },
-            "ranks" -> data.tour.isStarted.option(
-              Json.obj("white" -> data.whiteRank, "black" -> data.blackRank))
+            "nbSecondsForFirstMove" -> data
+              .tour
+              .isStarted
+              .option {
+                SecondsToDoFirstMove.secondsToMoveFor(data.tour)
+              },
+            "ranks" -> data
+              .tour
+              .isStarted
+              .option(
+                Json.obj("white" -> data.whiteRank, "black" -> data.blackRank))
           )
           .noNull
       )

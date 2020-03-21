@@ -35,15 +35,19 @@ class NotifyRateLimiterStepImpl @Inject() (
       status: TaskStatus,
       task: Task): Future[_] = {
     import scala.concurrent.ExecutionContext.Implicits.global
-    task.launched.fold(Future.successful(())) { launched =>
-      appRepository.app(task.appId, launched.appVersion).map { maybeApp =>
-        // It would be nice if we could make sure that the delay gets send
-        // to the AppTaskLauncherActor before we continue but that would require quite some work.
-        //
-        // In production, the worst case would be that we restart one or few tasks without delay –
-        // this is unlikely but possible. It is unlikely that this causes noticeable harm.
-        maybeApp.foreach(launchQueue.addDelay)
+    task
+      .launched
+      .fold(Future.successful(())) { launched =>
+        appRepository
+          .app(task.appId, launched.appVersion)
+          .map { maybeApp =>
+            // It would be nice if we could make sure that the delay gets send
+            // to the AppTaskLauncherActor before we continue but that would require quite some work.
+            //
+            // In production, the worst case would be that we restart one or few tasks without delay –
+            // this is unlikely but possible. It is unlikely that this causes noticeable harm.
+            maybeApp.foreach(launchQueue.addDelay)
+          }
       }
-    }
   }
 }

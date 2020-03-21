@@ -48,7 +48,8 @@ object CheckDistribution {
   def runMain(appId: Int) {
     val eventClient = Storage.getLEvents().asInstanceOf[HBLEvents]
 
-    entityType(eventClient, appId).toSeq
+    entityType(eventClient, appId)
+      .toSeq
       .sortBy(-_._2)
       .foreach {
         println
@@ -96,7 +97,8 @@ object Upgrade_0_8_3 {
       .filter(e =>
         (
           obsEntityTypes.contains(e.entityType) ||
-            e.targetEntityType
+            e
+              .targetEntityType
               .map(obsEntityTypes.contains(_))
               .getOrElse(false) ||
             (!e.properties.keySet.forall(!obsProperties.contains(_)))
@@ -111,9 +113,12 @@ object Upgrade_0_8_3 {
     val fromDist = CheckDistribution.entityType(eventClient, fromAppId)
 
     logger.info("FromAppId Distribution")
-    fromDist.toSeq.sortBy(-_._2).foreach { e =>
-      logger.info(e)
-    }
+    fromDist
+      .toSeq
+      .sortBy(-_._2)
+      .foreach { e =>
+        logger.info(e)
+      }
 
     val events = eventClient
       .find(appId = fromAppId)
@@ -129,23 +134,25 @@ object Upgrade_0_8_3 {
           val toEntityType = NameMap.getOrElse(fromEntityType, fromEntityType)
 
           val fromTargetEntityType = fromEvent.targetEntityType
-          val toTargetEntityType = fromTargetEntityType
-            .map { et =>
-              NameMap.getOrElse(et, et)
-            }
+          val toTargetEntityType = fromTargetEntityType.map { et =>
+            NameMap.getOrElse(et, et)
+          }
 
           val toProperties = DataMap(
-            fromEvent.properties.fields.map {
-              case (k, v) =>
-                val newK =
-                  if (obsProperties.contains(k)) {
-                    val nK = k.stripPrefix("pio_")
-                    logger.info(s"property ${k} will be renamed to ${nK}")
-                    nK
-                  } else
-                    k
-                (newK, v)
-            })
+            fromEvent
+              .properties
+              .fields
+              .map {
+                case (k, v) =>
+                  val newK =
+                    if (obsProperties.contains(k)) {
+                      val nK = k.stripPrefix("pio_")
+                      logger.info(s"property ${k} will be renamed to ${nK}")
+                      nK
+                    } else
+                      k
+                  (newK, v)
+              })
 
           val toEvent = fromEvent.copy(
             entityType = toEntityType,
@@ -159,16 +166,23 @@ object Upgrade_0_8_3 {
     val toDist = CheckDistribution.entityType(eventClient, toAppId)
 
     logger.info("Recap fromAppId Distribution")
-    fromDist.toSeq.sortBy(-_._2).foreach { e =>
-      logger.info(e)
-    }
+    fromDist
+      .toSeq
+      .sortBy(-_._2)
+      .foreach { e =>
+        logger.info(e)
+      }
 
     logger.info("ToAppId Distribution")
-    toDist.toSeq.sortBy(-_._2).foreach { e =>
-      logger.info(e)
-    }
+    toDist
+      .toSeq
+      .sortBy(-_._2)
+      .foreach { e =>
+        logger.info(e)
+      }
 
-    val fromGood = fromDist.toSeq
+    val fromGood = fromDist
+      .toSeq
       .forall {
         case (k, c) => {
           val (et, tet) = k
@@ -184,7 +198,8 @@ object Upgrade_0_8_3 {
         }
       }
 
-    val toGood = toDist.toSeq
+    val toGood = toDist
+      .toSeq
       .forall {
         case (k, c) => {
           val (et, tet) = k

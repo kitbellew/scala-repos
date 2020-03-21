@@ -45,15 +45,16 @@ trait PathServiceCombinators
     // is trying to do, because it's unclear that this is 100%
     // correct.
     path(
-      """%s/(?:(?<prefixPath>(?:[^\n.](?:[^\n/]|/[^\n])*)/?)?)""".format(
-        prefix)) {
+      """%s/(?:(?<prefixPath>(?:[^\n.](?:[^\n/]|/[^\n])*)/?)?)"""
+        .format(prefix)) {
       new DelegatingService[A, B => Future[C], A, (B, Path) => Future[C]] {
         val delegate = next
         val service =
           (request: HttpRequest[A]) => {
             logger.debug("Handling dataPath request " + request.shows)
 
-            val path: Option[String] = request.parameters
+            val path: Option[String] = request
+              .parameters
               .get('prefixPath)
               .filter(_ != null)
             next.service(request) map { f => (b: B) =>

@@ -182,10 +182,11 @@ trait TypeDiagnostics {
         else
           DEFERRED
 
-      getter.owner.newValue(
-        getter.name.toTermName,
-        getter.pos,
-        flags) setInfo getter.tpe.resultType
+      getter
+        .owner
+        .newValue(getter.name.toTermName, getter.pos, flags) setInfo getter
+        .tpe
+        .resultType
     }
 
   def treeSymTypeMsg(tree: Tree): String = {
@@ -314,11 +315,8 @@ trait TypeDiagnostics {
                       "Java-defined "
                     else
                       ""
-                  "%s%s is %s in %s.".format(
-                    prepend,
-                    reqsym,
-                    param.variance,
-                    param)
+                  "%s%s is %s in %s."
+                    .format(prepend, reqsym, param.variance, param)
                 }
                 // Don't suggest they change the class declaration if it's somewhere
                 // under scala.* or defined in a java class, because attempting either
@@ -328,10 +326,8 @@ trait TypeDiagnostics {
                     "investigate a wildcard type such as `_ %s %s`. (SLS 3.2.10)"
                       .format(op, reqArg)
                   else
-                    "define %s as %s%s instead. (SLS 4.5)".format(
-                      param.name,
-                      suggest,
-                      param.name)
+                    "define %s as %s%s instead. (SLS 4.5)"
+                      .format(param.name, suggest, param.name)
                 )
 
                 Some("Note: " + explainFound + explainDef + suggestChange)
@@ -376,8 +372,8 @@ trait TypeDiagnostics {
   // that condition, I see it.
   def foundReqMsg(found: Type, req: Type): String = {
     def baseMessage =
-      (";\n found   : " + found.toLongString + existentialContext(
-        found) + explainAlias(found) +
+      (";\n found   : " + found
+        .toLongString + existentialContext(found) + explainAlias(found) +
         "\n required: " + req + existentialContext(req) + explainAlias(req))
     (
       withDisambiguation(Nil, found, req)(baseMessage)
@@ -472,12 +468,14 @@ trait TypeDiagnostics {
       |tp.typeSymbol.owner = %s
       |tp.typeSymbolDirect = %s
       |tp.typeSymbolDirect.owner = %s
-      """.stripMargin.format(
-        tp,
-        tp.typeSymbol,
-        tp.typeSymbol.owner,
-        tp.typeSymbolDirect,
-        tp.typeSymbolDirect.owner)
+      """
+        .stripMargin
+        .format(
+          tp,
+          tp.typeSymbol,
+          tp.typeSymbol.owner,
+          tp.typeSymbolDirect,
+          tp.typeSymbolDirect.owner)
     }
   }
 
@@ -597,19 +595,21 @@ trait TypeDiagnostics {
 
         def qualifiesTerm(sym: Symbol) =
           ((
-            sym.isModule || sym.isMethod || sym.isPrivateLocal || sym.isLocalToBlock
+            sym.isModule || sym
+              .isMethod || sym.isPrivateLocal || sym.isLocalToBlock
           )
             && !nme.isLocalName(sym.name)
             && !sym.isParameter
             && !sym.isParamAccessor // could improve this, but it's a pain
-            && !sym.isEarlyInitialized // lots of false positives in the way these are encoded
+            && !sym
+              .isEarlyInitialized // lots of false positives in the way these are encoded
             && !(sym.isGetter && sym.accessed.isEarlyInitialized))
         def qualifiesType(sym: Symbol) = !sym.isDefinedInPackage
         def qualifies(sym: Symbol) =
           ((sym ne null)
             && (
-              sym.isTerm && qualifiesTerm(sym) || sym.isType && qualifiesType(
-                sym)
+              sym.isTerm && qualifiesTerm(sym) || sym
+                .isType && qualifiesType(sym)
             ))
 
         override def traverse(t: Tree): Unit = {
@@ -625,7 +625,8 @@ trait TypeDiagnostics {
           // Only record type references which don't originate within the
           // definition of the class being referenced.
           if (t.tpe ne null) {
-            for (tp <- t.tpe; if !treeTypes(tp) && !currentOwner.ownerChain
+            for (tp <- t.tpe; if !treeTypes(tp) && !currentOwner
+                   .ownerChain
                    .contains(tp.typeSymbol)) {
               tp match {
                 case NoType | NoPrefix    =>
@@ -660,9 +661,8 @@ trait TypeDiagnostics {
             && !isConstantType(
               m.info.resultType
             ) // subject to constant inlining
-            && !treeTypes.exists(
-              _ contains m
-            ) // e.g. val a = new Foo ; new a.Bar
+            && !treeTypes
+              .exists(_ contains m) // e.g. val a = new Foo ; new a.Bar
           )
         def unusedTypes = defnTrees.toList filter (t => isUnusedType(t.symbol))
         def unusedTerms = defnTrees.toList filter (v => isUnusedTerm(v.symbol))
@@ -698,7 +698,8 @@ trait TypeDiagnostics {
                         "constructor"
                       else if (sym.isVar || sym.isGetter && sym.accessed.isVar)
                         "var"
-                      else if (sym.isVal || sym.isGetter && sym.accessed.isVal || sym.isLazy)
+                      else if (sym.isVal || sym
+                                 .isGetter && sym.accessed.isVal || sym.isLazy)
                         "val"
                       else if (sym.isSetter)
                         "setter"
@@ -722,9 +723,8 @@ trait TypeDiagnostics {
               "private"
             else
               "local"
-          reporter.warning(
-            t.pos,
-            s"$why ${sym.fullLocationString} is never used")
+          reporter
+            .warning(t.pos, s"$why ${sym.fullLocationString} is never used")
         }
       }
     }
@@ -753,7 +753,9 @@ trait TypeDiagnostics {
 
       @inline
       def updateExpr[A](fn: Tree)(f: => A) = {
-        if (fn.symbol != null && fn.symbol.isMethod && !fn.symbol.isConstructor) {
+        if (fn.symbol != null && fn.symbol.isMethod && !fn
+              .symbol
+              .isConstructor) {
           exprStack push fn.symbol
           try f
           finally exprStack.pop()
@@ -764,8 +766,8 @@ trait TypeDiagnostics {
         // Error suppression (in context.warning) would squash some of these warnings.
         // It is presumed if you are using a -Y option you would really like to hear
         // the warnings you've requested; thus, use reporter.warning.
-        if (settings.warnDeadCode && context.unit.exists && treeOK(
-              tree) && exprOK)
+        if (settings
+              .warnDeadCode && context.unit.exists && treeOK(tree) && exprOK)
           reporter.warning(tree.pos, "dead code following this construct")
         tree
       }
@@ -805,7 +807,8 @@ trait TypeDiagnostics {
 
     // warn about class/method/type-members' type parameters that shadow types already in scope
     def warnTypeParameterShadow(tparams: List[TypeDef], sym: Symbol): Unit =
-      if (settings.warnTypeParameterShadow && !isPastTyper && !sym.isSynthetic) {
+      if (settings.warnTypeParameterShadow && !isPastTyper && !sym
+            .isSynthetic) {
         def enclClassOrMethodOrTypeMember(c: Context): Context =
           if (!c.owner.exists || c.owner.isClass || c.owner.isMethod || (
                 c.owner.isType && !c.owner.isParameter
@@ -814,19 +817,23 @@ trait TypeDiagnostics {
           else
             enclClassOrMethodOrTypeMember(c.outer)
 
-        tparams.filter(_.name != typeNames.WILDCARD).foreach { tp =>
-          // we don't care about type params shadowing other type params in the same declaration
-          enclClassOrMethodOrTypeMember(context).outer.lookupSymbol(
-            tp.name,
-            s => s != tp.symbol && s.hasRawInfo && reallyExists(s)) match {
-            case LookupSucceeded(_, sym2) =>
-              context.warning(
-                tp.pos,
-                s"type parameter ${tp.name} defined in $sym shadows $sym2 defined in ${sym2.owner}. You may want to rename your type parameter, or possibly remove it."
-              )
-            case _ =>
+        tparams
+          .filter(_.name != typeNames.WILDCARD)
+          .foreach { tp =>
+            // we don't care about type params shadowing other type params in the same declaration
+            enclClassOrMethodOrTypeMember(context)
+              .outer
+              .lookupSymbol(
+                tp.name,
+                s => s != tp.symbol && s.hasRawInfo && reallyExists(s)) match {
+              case LookupSucceeded(_, sym2) =>
+                context.warning(
+                  tp.pos,
+                  s"type parameter ${tp.name} defined in $sym shadows $sym2 defined in ${sym2.owner}. You may want to rename your type parameter, or possibly remove it."
+                )
+              case _ =>
+            }
           }
-        }
       }
 
     /** Report a type error.

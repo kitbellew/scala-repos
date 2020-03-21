@@ -7,10 +7,12 @@ object Test {
 
   def run(): Unit = {
     (
-      Stream.from(1).collect {
-        case x if x > 5000000 =>
-          x
-      }: Stream[Int]
+      Stream
+        .from(1)
+        .collect {
+          case x if x > 5000000 =>
+            x
+        }: Stream[Int]
     )
     assert(
       (

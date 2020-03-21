@@ -279,7 +279,9 @@ class ActorSelectionSpec
           askNode(
             c1,
             SelectString(
-              "../.." + target.path.elements
+              "../.." + target
+                .path
+                .elements
                 .mkString("/", "/", "/"))) should ===(Some(target))
       }
       for (target ← Seq(root, syst, user))
@@ -357,8 +359,8 @@ class ActorSelectionSpec
     "resolve one actor with explicit timeout" in {
       val s = system.actorSelection(system / "c2")
       // Java and Scala API
-      Await.result(s.resolveOne(1.second.dilated), timeout.duration) should ===(
-        c2)
+      Await
+        .result(s.resolveOne(1.second.dilated), timeout.duration) should ===(c2)
     }
 
     "resolve one actor with implicit timeout" in {
@@ -378,20 +380,18 @@ class ActorSelectionSpec
     "compare equally" in {
       ActorSelection(c21, "../*/hello") should ===(
         ActorSelection(c21, "../*/hello"))
-      ActorSelection(c21, "../*/hello").## should ===(
-        ActorSelection(c21, "../*/hello").##)
+      ActorSelection(c21, "../*/hello")
+        .## should ===(ActorSelection(c21, "../*/hello").##)
       ActorSelection(c2, "../*/hello") should not be ActorSelection(
         c21,
         "../*/hello")
-      ActorSelection(c2, "../*/hello").## should not be ActorSelection(
-        c21,
-        "../*/hello").##
+      ActorSelection(c2, "../*/hello")
+        .## should not be ActorSelection(c21, "../*/hello").##
       ActorSelection(c21, "../*/hell") should not be ActorSelection(
         c21,
         "../*/hello")
-      ActorSelection(c21, "../*/hell").## should not be ActorSelection(
-        c21,
-        "../*/hello").##
+      ActorSelection(c21, "../*/hell")
+        .## should not be ActorSelection(c21, "../*/hello").##
     }
 
     "print nicely" in {
@@ -406,8 +406,8 @@ class ActorSelectionSpec
         .actorSelection(system / "c2" / "c21")
         .toSerializationFormat should ===(
         "akka://ActorSelectionSpec/user/c2/c21")
-      ActorSelection(c2, "/").toSerializationFormat should ===(
-        "akka://ActorSelectionSpec/user/c2")
+      ActorSelection(c2, "/")
+        .toSerializationFormat should ===("akka://ActorSelectionSpec/user/c2")
       ActorSelection(c2, "../*/hello").toSerializationFormat should ===(
         "akka://ActorSelectionSpec/user/c2/../*/hello")
       ActorSelection(c2, "/../*/hello").toSerializationFormat should ===(
@@ -428,12 +428,10 @@ class ActorSelectionSpec
       val creator = TestProbe()
       implicit def self = creator.ref
       val top = system.actorOf(p, "a")
-      val b1 = Await.result(
-        (top ? Create("b1")).mapTo[ActorRef],
-        timeout.duration)
-      val b2 = Await.result(
-        (top ? Create("b2")).mapTo[ActorRef],
-        timeout.duration)
+      val b1 = Await
+        .result((top ? Create("b1")).mapTo[ActorRef], timeout.duration)
+      val b2 = Await
+        .result((top ? Create("b2")).mapTo[ActorRef], timeout.duration)
       val c = Await.result((b2 ? Create("c")).mapTo[ActorRef], timeout.duration)
       val d = Await.result((c ? Create("d")).mapTo[ActorRef], timeout.duration)
 

@@ -139,8 +139,8 @@ object PlayConfigSpec extends Specification {
         config("foo.bar" -> null).get[Option[String]]("foo.bar") must beNone
       }
       "when set" in {
-        config("foo.bar" -> "bar").get[Option[String]]("foo.bar") must beSome(
-          "bar")
+        config("foo.bar" -> "bar")
+          .get[Option[String]]("foo.bar") must beSome("bar")
       }
       "when undefined" in {
         config()

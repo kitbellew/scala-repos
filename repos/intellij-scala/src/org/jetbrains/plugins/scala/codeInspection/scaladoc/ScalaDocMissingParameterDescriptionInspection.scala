@@ -27,8 +27,9 @@ class ScalaDocMissingParameterDescriptionInspection
       isOnTheFly: Boolean): PsiElementVisitor = {
     new ScalaElementVisitor {
       override def visitTag(s: ScDocTag) {
-        if (!ScalaDocMissingParameterDescriptionInspection.OurTags.contains(
-              s.name) || s.getValueElement == null) {
+        if (!ScalaDocMissingParameterDescriptionInspection
+              .OurTags
+              .contains(s.name) || s.getValueElement == null) {
           return
         }
 
@@ -40,15 +41,17 @@ class ScalaDocMissingParameterDescriptionInspection
         }
 
         holder.registerProblem(
-          holder.getManager.createProblemDescriptor(
-            if (s.getValueElement != null)
-              s.getValueElement
-            else
-              s,
-            getDisplayName,
-            true,
-            ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
-            isOnTheFly))
+          holder
+            .getManager
+            .createProblemDescriptor(
+              if (s.getValueElement != null)
+                s.getValueElement
+              else
+                s,
+              getDisplayName,
+              true,
+              ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
+              isOnTheFly))
       }
     }
   }

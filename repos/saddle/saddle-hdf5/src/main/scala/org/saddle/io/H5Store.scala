@@ -135,7 +135,8 @@ object H5Store {
       colInclusive: Boolean): Frame[RX, CX, T] =
     withMonitor {
       val fr = readPandasFrame[RX, CX, T](path, group)
-      fr.colSliceBy(colFrom, colTo, colInclusive)
+      fr
+        .colSliceBy(colFrom, colTo, colInclusive)
         .rowSliceBy(rowFrom, rowTo, rowInclusive)
     }
 
@@ -216,7 +217,8 @@ object H5Store {
       colInclusive: Boolean): Frame[RX, CX, T] =
     withMonitor {
       val fr = readPandasFrame[RX, CX, T](fileid, group)
-      fr.colSliceBy(colFrom, colTo, colInclusive)
+      fr
+        .colSliceBy(colFrom, colTo, colInclusive)
         .rowSliceBy(rowFrom, rowTo, rowInclusive)
     }
 
@@ -393,14 +395,16 @@ object H5Store {
   // *** private helper functions
 
   // release resources / cleanup on JVM shutdown
-  Runtime.getRuntime.addShutdownHook(
-    new Thread() {
-      override def run() {
-        withMonitor {
-          H5Reg.closeAll()
+  Runtime
+    .getRuntime
+    .addShutdownHook(
+      new Thread() {
+        override def run() {
+          withMonitor {
+            H5Reg.closeAll()
+          }
         }
-      }
-    })
+      })
 
   private val ic = classOf[Int]
   private val lc = classOf[Long]
@@ -415,7 +419,8 @@ object H5Store {
       """Exception: %s
         |------------- HDF5 Stack --------------
         |%s
-        |---------------------------------------""".stripMargin
+        |---------------------------------------"""
+        .stripMargin
         .format(e.getMessage, e.getStackTraceString))
   }
 
@@ -1503,30 +1508,18 @@ object H5Store {
     }
 
     val colidx = H5.H5Dopen(nodeid, "axis0", HDF5Constants.H5P_DEFAULT)
-    val dblColIdx = H5.H5Dopen(
-      nodeid,
-      "block0_items",
-      HDF5Constants.H5P_DEFAULT)
-    val intColIdx = H5.H5Dopen(
-      nodeid,
-      "block1_items",
-      HDF5Constants.H5P_DEFAULT)
-    val lngColIdx = H5.H5Dopen(
-      nodeid,
-      "block2_items",
-      HDF5Constants.H5P_DEFAULT)
-    val strColIdx = H5.H5Dopen(
-      nodeid,
-      "block3_items",
-      HDF5Constants.H5P_DEFAULT)
-    val fltColIdx = H5.H5Dopen(
-      nodeid,
-      "block4_items",
-      HDF5Constants.H5P_DEFAULT)
-    val datColIdx = H5.H5Dopen(
-      nodeid,
-      "block5_items",
-      HDF5Constants.H5P_DEFAULT)
+    val dblColIdx = H5
+      .H5Dopen(nodeid, "block0_items", HDF5Constants.H5P_DEFAULT)
+    val intColIdx = H5
+      .H5Dopen(nodeid, "block1_items", HDF5Constants.H5P_DEFAULT)
+    val lngColIdx = H5
+      .H5Dopen(nodeid, "block2_items", HDF5Constants.H5P_DEFAULT)
+    val strColIdx = H5
+      .H5Dopen(nodeid, "block3_items", HDF5Constants.H5P_DEFAULT)
+    val fltColIdx = H5
+      .H5Dopen(nodeid, "block4_items", HDF5Constants.H5P_DEFAULT)
+    val datColIdx = H5
+      .H5Dopen(nodeid, "block5_items", HDF5Constants.H5P_DEFAULT)
     assertException(colidx >= 0, "column index group is not valid")
 
     H5Reg.save(colidx, H5D)

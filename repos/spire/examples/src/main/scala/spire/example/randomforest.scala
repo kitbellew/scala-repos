@@ -257,7 +257,9 @@ trait RandomForest[V, @sp(Double) F, @sp(Double) K] {
 
     if (opts.parallel) {
       Forest(
-        (1 to opts.numTrees).toList.par
+        (1 to opts.numTrees)
+          .toList
+          .par
           .map({ _ =>
             growTree(sample())
           })
@@ -369,15 +371,15 @@ class RandomForestClassification[V, @sp(Double) F, K](implicit
   }
 
   protected def defaultOptions(size: Int): FixedOptions = {
-    val axes = math.max(
-      math.sqrt(V.dimensions.toDouble).toInt,
-      math.min(V.dimensions, 2))
+    val axes = math
+      .max(math.sqrt(V.dimensions.toDouble).toInt, math.min(V.dimensions, 2))
     val sampleSize = math.max(size * 2 / 3, 1)
     FixedOptions(axes, sampleSize, size, 5, true)
   }
 
   protected def fromForest(forest: Forest): V => K = { v =>
-    forest.trees
+    forest
+      .trees
       .foldLeft(Map.empty[K, Int]) { (acc, classify) =>
         val k = classify(v)
         acc + (k -> (acc.getOrElse(k, 0) + 1))

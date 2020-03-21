@@ -18,9 +18,8 @@ private[pubsub] trait PerGroupingBuffer {
       case None ⇒
         action
       case Some(messages) ⇒
-        buffers = buffers.updated(
-          grouping,
-          messages :+ ((message, originalSender)))
+        buffers = buffers
+          .updated(grouping, messages :+ ((message, originalSender)))
         totalBufferSize += 1
     }
   }
@@ -28,18 +27,23 @@ private[pubsub] trait PerGroupingBuffer {
   def recreateAndForwardMessagesIfNeeded(
       grouping: String,
       recipient: ⇒ ActorRef): Unit = {
-    buffers.get(grouping).filter(_.nonEmpty).foreach { messages ⇒
-      forwardMessages(messages, recipient)
-      totalBufferSize -= messages.length
-    }
+    buffers
+      .get(grouping)
+      .filter(_.nonEmpty)
+      .foreach { messages ⇒
+        forwardMessages(messages, recipient)
+        totalBufferSize -= messages.length
+      }
     buffers -= grouping
   }
 
   def forwardMessages(grouping: String, recipient: ActorRef): Unit = {
-    buffers.get(grouping).foreach { messages ⇒
-      forwardMessages(messages, recipient)
-      totalBufferSize -= messages.length
-    }
+    buffers
+      .get(grouping)
+      .foreach { messages ⇒
+        forwardMessages(messages, recipient)
+        totalBufferSize -= messages.length
+      }
     buffers -= grouping
   }
 

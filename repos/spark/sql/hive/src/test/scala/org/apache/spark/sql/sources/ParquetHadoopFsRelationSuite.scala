@@ -66,7 +66,8 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
         dataSchema.fields :+ StructField("p1", IntegerType, nullable = true))
 
       checkQueries(
-        hiveContext.read
+        hiveContext
+          .read
           .format(dataSourceName)
           .option("dataSchema", dataSchemaWithPartition.json)
           .load(file.getCanonicalPath))
@@ -77,13 +78,9 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
     withTempPath { dir =>
       val df = Seq("a", "b", "c").zipWithIndex.toDF()
 
-      df.write
-        .format("parquet")
-        .save(dir.getCanonicalPath)
+      df.write.format("parquet").save(dir.getCanonicalPath)
 
-      df.write
-        .format("parquet")
-        .save(s"${dir.getCanonicalPath}/_temporary")
+      df.write.format("parquet").save(s"${dir.getCanonicalPath}/_temporary")
 
       checkAnswer(
         hiveContext.read.format("parquet").load(dir.getCanonicalPath),
@@ -172,15 +169,19 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
       val physicalPlan = df.queryExecution.sparkPlan
 
       assert(
-        physicalPlan.collect {
-          case p: execution.Project =>
-            p
-        }.length === 1)
+        physicalPlan
+          .collect {
+            case p: execution.Project =>
+              p
+          }
+          .length === 1)
       assert(
-        physicalPlan.collect {
-          case p: execution.Filter =>
-            p
-        }.length === 1)
+        physicalPlan
+          .collect {
+            case p: execution.Filter =>
+              p
+          }
+          .length === 1)
     }
   }
 
@@ -232,13 +233,15 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
         .orderBy("index")
         .coalesce(1)
 
-      df.write
+      df
+        .write
         .mode("overwrite")
         .format(dataSourceName)
         .option("dataSchema", df.schema.json)
         .save(path)
 
-      val loadedDF = sqlContext.read
+      val loadedDF = sqlContext
+        .read
         .format(dataSourceName)
         .option("dataSchema", df.schema.json)
         .schema(df.schema)
@@ -255,15 +258,12 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
       withTempPath { dir =>
         val path = s"${dir.getCanonicalPath}/table1"
         val df = (1 to 5).map(i => (i, (i % 2).toString)).toDF("a", "b")
-        df.write
-          .option("compression", "GzIP")
-          .parquet(path)
+        df.write.option("compression", "GzIP").parquet(path)
 
         val compressedFiles = new File(path).listFiles()
         assert(compressedFiles.exists(_.getName.endsWith(".gz.parquet")))
 
-        val copyDf = sqlContext.read
-          .parquet(path)
+        val copyDf = sqlContext.read.parquet(path)
         checkAnswer(df, copyDf)
       }
     }

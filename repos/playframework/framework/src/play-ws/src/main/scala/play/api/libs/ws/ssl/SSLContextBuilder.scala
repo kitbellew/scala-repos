@@ -161,9 +161,11 @@ class ConfigSSLContextBuilder(
   def buildCompositeKeyManager(
       keyManagerConfig: KeyManagerConfig,
       algorithmChecker: AlgorithmChecker) = {
-    val keyManagers = keyManagerConfig.keyStoreConfigs.map { ksc =>
-      buildKeyManager(ksc, algorithmChecker)
-    }
+    val keyManagers = keyManagerConfig
+      .keyStoreConfigs
+      .map { ksc =>
+        buildKeyManager(ksc, algorithmChecker)
+      }
     new CompositeX509KeyManager(keyManagers)
   }
 
@@ -173,38 +175,46 @@ class ConfigSSLContextBuilder(
       revocationLists: Option[Seq[CRL]],
       algorithmChecker: AlgorithmChecker) = {
 
-    val trustManagers = trustManagerInfo.trustStoreConfigs.map { tsc =>
-      buildTrustManager(
-        tsc,
-        revocationEnabled,
-        revocationLists,
-        algorithmChecker)
-    }
+    val trustManagers = trustManagerInfo
+      .trustStoreConfigs
+      .map { tsc =>
+        buildTrustManager(
+          tsc,
+          revocationEnabled,
+          revocationLists,
+          algorithmChecker)
+      }
     new CompositeX509TrustManager(trustManagers, algorithmChecker)
   }
 
   // Get either a string or file based keystore builder from config.
   def keyStoreBuilder(ksc: KeyStoreConfig): KeyStoreBuilder = {
     val password = ksc.password.map(_.toCharArray)
-    ksc.filePath
+    ksc
+      .filePath
       .map { f =>
         fileBuilder(ksc.storeType, f, password)
       }
       .getOrElse {
-        val data = ksc.data.getOrElse(
-          throw new IllegalStateException("No keystore builder found!"))
+        val data = ksc
+          .data
+          .getOrElse(
+            throw new IllegalStateException("No keystore builder found!"))
         stringBuilder(data)
       }
   }
 
   def trustStoreBuilder(tsc: TrustStoreConfig): KeyStoreBuilder = {
-    tsc.filePath
+    tsc
+      .filePath
       .map { f =>
         fileBuilder(tsc.storeType, f, None)
       }
       .getOrElse {
-        val data = tsc.data.getOrElse(
-          throw new IllegalStateException("No truststore builder found!"))
+        val data = tsc
+          .data
+          .getOrElse(
+            throw new IllegalStateException("No truststore builder found!"))
         stringBuilder(data)
       }
   }
@@ -293,9 +303,11 @@ class ConfigSSLContextBuilder(
   // Should anyone have any interest in implementing this feature at all, they can implement this method and
   // submit a patch.
   def certificateRevocationList(sslConfig: SSLConfig): Option[Seq[CRL]] = {
-    sslConfig.revocationLists.map { urls =>
-      urls.map(generateCRLFromURL)
-    }
+    sslConfig
+      .revocationLists
+      .map { urls =>
+        urls.map(generateCRLFromURL)
+      }
   }
 
   def generateCRL(inputStream: InputStream): CRL = {
@@ -419,25 +431,30 @@ class ConfigSSLContextBuilder(
     */
   def validateStore(store: KeyStore, algorithmChecker: AlgorithmChecker) {
     import scala.collection.JavaConverters._
-    logger.debug(
-      s"validateStore: type = ${store.getType}, size = ${store.size}")
+    logger
+      .debug(s"validateStore: type = ${store.getType}, size = ${store.size}")
 
-    store.aliases().asScala.foreach { alias =>
-      Option(store.getCertificate(alias)).map { c =>
-        try {
-          algorithmChecker.checkKeyAlgorithms(c)
-        } catch {
-          case e: CertPathValidatorException =>
-            logger.warn(
-              s"validateStore: Skipping certificate with weak key size in $alias: " + e.getMessage)
-            store.deleteEntry(alias)
-          case e: Exception =>
-            logger.warn(
-              s"validateStore: Skipping unknown exception $alias: " + e.getMessage)
-            store.deleteEntry(alias)
+    store
+      .aliases()
+      .asScala
+      .foreach { alias =>
+        Option(store.getCertificate(alias)).map { c =>
+          try {
+            algorithmChecker.checkKeyAlgorithms(c)
+          } catch {
+            case e: CertPathValidatorException =>
+              logger.warn(
+                s"validateStore: Skipping certificate with weak key size in $alias: " + e
+                  .getMessage)
+              store.deleteEntry(alias)
+            case e: Exception =>
+              logger.warn(
+                s"validateStore: Skipping unknown exception $alias: " + e
+                  .getMessage)
+              store.deleteEntry(alias)
+          }
         }
       }
-    }
   }
 
 }

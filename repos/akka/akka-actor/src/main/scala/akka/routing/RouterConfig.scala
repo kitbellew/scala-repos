@@ -236,9 +236,13 @@ trait Pool extends RouterConfig {
   private[akka] def enrichWithPoolDispatcher(
       routeeProps: Props,
       context: ActorContext): Props =
-    if (usePoolDispatcher && routeeProps.dispatcher == Dispatchers.DefaultDispatcherId)
+    if (usePoolDispatcher && routeeProps.dispatcher == Dispatchers
+          .DefaultDispatcherId)
       routeeProps.withDispatcher(
-        "akka.actor.deployment." + context.self.path.elements
+        "akka.actor.deployment." + context
+          .self
+          .path
+          .elements
           .drop(1)
           .mkString("/", "/", "")
           + ".pool-dispatcher")

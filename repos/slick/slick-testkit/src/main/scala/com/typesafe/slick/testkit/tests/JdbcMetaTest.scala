@@ -35,14 +35,17 @@ class JdbcMetaTest extends AsyncTest[JdbcTestDB] {
   def testMeta =
     ifCap(tcap.jdbcMeta)(
       DBIO.seq(
-        (users.schema ++ orders.schema).create
+        (users.schema ++ orders.schema)
+          .create
           .named("DDL used to create tables"),
         MTypeInfo.getTypeInfo.named("Type info from DatabaseMetaData"),
         ifCap(tcap.jdbcMetaGetFunctions) {
           /* Not supported by PostgreSQL and H2. */
-          MFunction.getFunctions(MQName.local("%")).flatMap { fs =>
-            DBIO.sequence(fs.map(_.getFunctionColumns()))
-          }
+          MFunction
+            .getFunctions(MQName.local("%"))
+            .flatMap { fs =>
+              DBIO.sequence(fs.map(_.getFunctionColumns()))
+            }
         }.named("Functions from DatabaseMetaData"),
         MUDT.getUDTs(MQName.local("%")).named("UDTs from DatabaseMetaData"),
         MProcedure
@@ -55,23 +58,27 @@ class JdbcMetaTest extends AsyncTest[JdbcTestDB] {
           .getTables(None, None, None, None)
           .flatMap { ts =>
             DBIO.sequence(
-              ts.filter(t => Set("users", "orders") contains t.name.name).map {
-                t =>
-                  DBIO.seq(
-                    t.getColumns.flatMap { cs =>
-                      val as = cs.map(_.getColumnPrivileges)
-                      DBIO.sequence(as)
-                    },
-                    t.getVersionColumns,
-                    t.getPrimaryKeys,
-                    t.getImportedKeys,
-                    t.getExportedKeys,
-                    ifCap(tcap.jdbcMetaGetIndexInfo)(t.getIndexInfo()),
-                    t.getTablePrivileges,
-                    t.getBestRowIdentifier(
-                      MBestRowIdentifierColumn.Scope.Session)
-                  )
-              })
+              ts
+                .filter(t => Set("users", "orders") contains t.name.name)
+                .map {
+                  t =>
+                    DBIO.seq(
+                      t
+                        .getColumns
+                        .flatMap { cs =>
+                          val as = cs.map(_.getColumnPrivileges)
+                          DBIO.sequence(as)
+                        },
+                      t.getVersionColumns,
+                      t.getPrimaryKeys,
+                      t.getImportedKeys,
+                      t.getExportedKeys,
+                      ifCap(tcap.jdbcMetaGetIndexInfo)(t.getIndexInfo()),
+                      t.getTablePrivileges,
+                      t.getBestRowIdentifier(
+                        MBestRowIdentifierColumn.Scope.Session)
+                    )
+                })
           }
           .named("Tables from DatabaseMetaData"),
         MSchema.getSchemas.named("Schemas from DatabaseMetaData"),

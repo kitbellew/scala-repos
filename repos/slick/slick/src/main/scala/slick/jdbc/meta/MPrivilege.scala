@@ -20,7 +20,8 @@ case class MTablePrivilege(table: MQName, privilege: MPrivilege)
 object MTablePrivilege {
   def getTablePrivileges(tablePattern: MQName) =
     ResultSetAction[MTablePrivilege](
-      _.metaData.getTablePrivileges(
+      _.metaData
+      .getTablePrivileges(
         tablePattern.catalog_?,
         tablePattern.schema_?,
         tablePattern.name)) { r =>
@@ -37,7 +38,8 @@ case class MColumnPrivilege(
 object MColumnPrivilege {
   def getColumnPrivileges(tablePattern: MQName, columnPattern: String) =
     ResultSetAction[MColumnPrivilege](
-      _.metaData.getColumnPrivileges(
+      _.metaData
+      .getColumnPrivileges(
         tablePattern.catalog_?,
         tablePattern.schema_?,
         tablePattern.name,

@@ -105,7 +105,8 @@ private class MyTaskResultGetter(env: SparkEnv, scheduler: TaskSchedulerImpl)
       data: ByteBuffer): Unit = {
     // work on a copy since the super class still needs to use the buffer
     val newBuffer = data.duplicate()
-    _taskResults += env.closureSerializer
+    _taskResults += env
+      .closureSerializer
       .newInstance()
       .deserialize[DirectTaskResult[_]](newBuffer)
     super.enqueueSuccessfulTask(tsm, tid, data)
@@ -197,11 +198,8 @@ class TaskResultGetterSuite
         |public class MyException extends Exception {
         |}
       """.stripMargin)
-    val excFile = TestUtils.createCompiledClass(
-      "MyException",
-      srcDir,
-      excSource,
-      Seq.empty)
+    val excFile = TestUtils
+      .createCompiledClass("MyException", srcDir, excSource, Seq.empty)
     val jarFile =
       new File(tempDir, "testJar-%s.jar".format(System.currentTimeMillis()))
     TestUtils.createJar(Seq(excFile), jarFile, directoryPrefix = Some("repro"))
@@ -219,10 +217,12 @@ class TaskResultGetterSuite
       // NOTE: we must run the cluster with "local" so that the executor can load the compiled
       // jar.
       sc = new SparkContext("local", "test", conf)
-      val rdd = sc.parallelize(Seq(1), 1).map { _ =>
-        val exc = excClass.newInstance().asInstanceOf[Exception]
-        throw exc
-      }
+      val rdd = sc
+        .parallelize(Seq(1), 1)
+        .map { _ =>
+          val exc = excClass.newInstance().asInstanceOf[Exception]
+          throw exc
+        }
 
       // the driver should not have any problems resolving the exception class and determining
       // why the task failed.
@@ -269,10 +269,12 @@ class TaskResultGetterSuite
     assert(resultGetter.taskResults.size === 1)
     val resBefore = resultGetter.taskResults.head
     val resAfter = captor.getValue
-    val resSizeBefore = resBefore.accumUpdates
+    val resSizeBefore = resBefore
+      .accumUpdates
       .find(_.name == Some(RESULT_SIZE))
       .flatMap(_.update)
-    val resSizeAfter = resAfter.accumUpdates
+    val resSizeAfter = resAfter
+      .accumUpdates
       .find(_.name == Some(RESULT_SIZE))
       .flatMap(_.update)
     assert(resSizeBefore.exists(_ == 0L))

@@ -175,11 +175,11 @@ object Evolutions {
     val txt = scripts
       .map {
         case UpScript(ev) =>
-          "# --- Rev:" + ev.revision + ",Ups - " + ev.hash.take(
-            7) + "\n" + ev.sql_up + "\n"
+          "# --- Rev:" + ev.revision + ",Ups - " + ev.hash.take(7) + "\n" + ev
+            .sql_up + "\n"
         case DownScript(ev) =>
-          "# --- Rev:" + ev.revision + ",Downs - " + ev.hash.take(
-            7) + "\n" + ev.sql_down + "\n"
+          "# --- Rev:" + ev.revision + ",Downs - " + ev.hash.take(7) + "\n" + ev
+            .sql_down + "\n"
       }
       .mkString("\n")
 
@@ -319,10 +319,9 @@ object OfflineEvolutions {
       autocommit: Boolean = true,
       schema: String = ""): Unit = {
     val evolutions = getEvolutions(appPath, classloader, dbApi)
-    val scripts = evolutions.evolutionsApi.scripts(
-      dbName,
-      evolutions.evolutionsReader,
-      schema)
+    val scripts = evolutions
+      .evolutionsApi
+      .scripts(dbName, evolutions.evolutionsReader, schema)
     if (!isTest) {
       logger.warn(
         "Applying evolution scripts for database '" + dbName + "':\n\n" + Evolutions

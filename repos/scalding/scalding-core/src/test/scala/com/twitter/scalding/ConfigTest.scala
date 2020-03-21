@@ -36,16 +36,23 @@ class ConfigTest extends WordSpec with Matchers {
       )
     }
     "default has chill configured" in {
-      Config.default.get(
-        com.twitter.chill.config.ConfiguredInstantiator.KEY) should not be empty
+      Config
+        .default
+        .get(
+          com
+            .twitter
+            .chill
+            .config
+            .ConfiguredInstantiator
+            .KEY) should not be empty
     }
     "setting timestamp twice does not change it" in {
       val date = RichDate.now
       val (oldDate, newConf) = Config.empty.maybeSetSubmittedTimestamp(date)
       oldDate shouldBe empty
       newConf.getSubmittedTimestamp should contain(date)
-      val (stillOld, new2) = newConf.maybeSetSubmittedTimestamp(
-        date + Seconds(1))
+      val (stillOld, new2) = newConf
+        .maybeSetSubmittedTimestamp(date + Seconds(1))
       stillOld should contain(date)
       new2 shouldBe newConf
     }
@@ -56,7 +63,10 @@ class ConfigTest extends WordSpec with Matchers {
     }
     "Default serialization should have tokens" in {
       Config.default.getCascadingSerializationTokens should not be empty
-      Config.default.getCascadingSerializationTokens.values
+      Config
+        .default
+        .getCascadingSerializationTokens
+        .values
         .map(Class.forName)
         .filter(c => c.isPrimitive || c.isArray) shouldBe empty
 
@@ -79,8 +89,7 @@ class ConfigTest extends WordSpec with Matchers {
           classOf[Long],
           classOf[Float],
           classOf[Double],
-          classOf[Char])
-          .map(_.getName)
+          classOf[Char]).map(_.getName)
 
         prim(c) || Class.forName(c).isArray
       } shouldBe true

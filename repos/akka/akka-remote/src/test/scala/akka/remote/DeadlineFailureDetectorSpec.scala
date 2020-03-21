@@ -16,8 +16,10 @@ class DeadlineFailureDetectorSpec extends AkkaSpec {
       new Clock {
         @volatile
         var times =
-          timeIntervals.tail.foldLeft(List[Long](timeIntervals.head))((acc, c) ⇒
-            acc ::: List[Long](acc.last + c))
+          timeIntervals
+            .tail
+            .foldLeft(List[Long](timeIntervals.head))((acc, c) ⇒
+              acc ::: List[Long](acc.last + c))
         override def apply(): Long = {
           val currentTime = times.head
           times = times.tail

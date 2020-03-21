@@ -41,16 +41,17 @@ class IdeClientIdea(
 
     if (source != null && content != null) {
       val sourcePath: String = FileUtil.toSystemIndependentName(source.getPath)
-      val rootDescriptor = context.getProjectDescriptor.getBuildRootIndex
+      val rootDescriptor = context
+        .getProjectDescriptor
+        .getBuildRootIndex
         .findJavaRootDescriptor(context, source)
       if (rootDescriptor != null) {
         isTemp = rootDescriptor.isTemp
         if (!isTemp) {
           try {
             if (isClassFile)
-              consumer.registerCompiledClass(
-                rootDescriptor.target,
-                compiledClass)
+              consumer
+                .registerCompiledClass(rootDescriptor.target, compiledClass)
             else
               consumer.registerOutputFile(
                 rootDescriptor.target,
@@ -77,7 +78,8 @@ class IdeClientIdea(
         } catch {
           case e: Throwable =>
             val message: String =
-              "Class dependency information may be incomplete! Error parsing generated class " + outputFile.getPath
+              "Class dependency information may be incomplete! Error parsing generated class " + outputFile
+                .getPath
             context.processMessage(
               new CompilerMessage(
                 compilerName,

@@ -60,10 +60,12 @@ class StopOnFirstMatchingOfferMatcherTest
       new Fixture {
         override lazy val matchers: Seq[OfferMatcher] = Seq(
           offerMatcher(
-            OfferMatcher.MatchedTaskOps
+            OfferMatcher
+              .MatchedTaskOps
               .noMatch(offer.getId, resendThisOffer = true)),
           offerMatcher(
-            OfferMatcher.MatchedTaskOps
+            OfferMatcher
+              .MatchedTaskOps
               .noMatch(offer.getId, resendThisOffer = false))
         )
       }
@@ -82,10 +84,12 @@ class StopOnFirstMatchingOfferMatcherTest
       new Fixture {
         override lazy val matchers: Seq[OfferMatcher] = Seq(
           offerMatcher(
-            OfferMatcher.MatchedTaskOps
+            OfferMatcher
+              .MatchedTaskOps
               .noMatch(offer.getId, resendThisOffer = false)),
           offerMatcher(
-            OfferMatcher.MatchedTaskOps
+            OfferMatcher
+              .MatchedTaskOps
               .noMatch(offer.getId, resendThisOffer = true))
         )
       }

@@ -235,8 +235,7 @@ trait WikiControllerBase extends ControllerBase {
           }
           if (notReservedPageName(form.pageName)) {
             redirect(
-              s"/${repository.owner}/${repository.name}/wiki/${StringUtil
-                .urlEncode(form.pageName)}")
+              s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(form.pageName)}")
           } else {
             redirect(s"/${repository.owner}/${repository.name}/wiki")
           }
@@ -271,8 +270,7 @@ trait WikiControllerBase extends ControllerBase {
 
           if (notReservedPageName(form.pageName)) {
             redirect(
-              s"/${repository.owner}/${repository.name}/wiki/${StringUtil
-                .urlEncode(form.pageName)}")
+              s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(form.pageName)}")
           } else {
             redirect(s"/${repository.owner}/${repository.name}/wiki")
           }
@@ -381,9 +379,11 @@ trait WikiControllerBase extends ControllerBase {
           name: String,
           value: String,
           messages: Messages): Option[String] = {
-        targetWikiPage.filter(_.id != params("id")).map { _ =>
-          "Someone has edited the wiki since you started. Please reload this page and re-apply your changes."
-        }
+        targetWikiPage
+          .filter(_.id != params("id"))
+          .map { _ =>
+            "Someone has edited the wiki since you started. Please reload this page and re-apply your changes."
+          }
       }
     }
 

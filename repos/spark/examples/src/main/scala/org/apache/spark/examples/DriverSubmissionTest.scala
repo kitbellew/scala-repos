@@ -36,7 +36,8 @@ object DriverSubmissionTest {
     val properties = Utils.getSystemProperties
 
     println("Environment variables containing SPARK_TEST:")
-    env.asScala
+    env
+      .asScala
       .filter {
         case (k, _) =>
           k.contains("SPARK_TEST")

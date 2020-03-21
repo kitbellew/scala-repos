@@ -60,12 +60,14 @@ object CometActorSpec extends Specification {
 
       comet ! TestMessage
 
-      comet.receivedMessages.exists {
-        case PartialUpdateMsg(update) if update() == RedirectTo("place") =>
-          true
-        case _ =>
-          false
-      } must beTrue
+      comet
+        .receivedMessages
+        .exists {
+          case PartialUpdateMsg(update) if update() == RedirectTo("place") =>
+            true
+          case _ =>
+            false
+        } must beTrue
     }
 
     class FunctionRedirectingComet extends SpecCometActor {
@@ -80,10 +82,12 @@ object CometActorSpec extends Specification {
 
       comet ! TestMessage
 
-      val matchingMessage = comet.receivedMessages.collect {
-        case PartialUpdateMsg(update) =>
-          update()
-      }
+      val matchingMessage = comet
+        .receivedMessages
+        .collect {
+          case PartialUpdateMsg(update) =>
+            update()
+        }
 
       matchingMessage must beLike {
         case List(RedirectTo(redirectUri)) =>

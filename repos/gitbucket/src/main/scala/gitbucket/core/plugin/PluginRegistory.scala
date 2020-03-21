@@ -96,11 +96,13 @@ class PluginRegistry {
 
   def getRepositoryRouting(
       repositoryPath: String): Option[GitRepositoryRouting] = {
-    PluginRegistry().getRepositoryRoutings().find {
-      case GitRepositoryRouting(urlPath, _, _) => {
-        repositoryPath.matches("/" + urlPath + "(/.*)?")
+    PluginRegistry()
+      .getRepositoryRoutings()
+      .find {
+        case GitRepositoryRouting(urlPath, _, _) => {
+          repositoryPath.matches("/" + urlPath + "(/.*)?")
+        }
       }
-    }
   }
 
   def addReceiveHook(commitHook: ReceiveHook): Unit = {
@@ -219,15 +221,17 @@ object PluginRegistry {
   }
 
   def shutdown(context: ServletContext, settings: SystemSettings): Unit = {
-    instance.getPlugins().foreach { pluginInfo =>
-      try {
-        pluginInfo.pluginClass.shutdown(instance, context, settings)
-      } catch {
-        case e: Exception => {
-          logger.error(s"Error during plugin shutdown", e)
+    instance
+      .getPlugins()
+      .foreach { pluginInfo =>
+        try {
+          pluginInfo.pluginClass.shutdown(instance, context, settings)
+        } catch {
+          case e: Exception => {
+            logger.error(s"Error during plugin shutdown", e)
+          }
         }
       }
-    }
   }
 
 }

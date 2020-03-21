@@ -85,9 +85,7 @@ object BodyParserSpec
       val dbl = (i: Int) => i * 2
       mustExecute(3) { implicit ec => // three executions from `map`
         run {
-          constant(x)
-            .map(inc)
-            .map(dbl)
+          constant(x).map(inc).map(dbl)
         } must_== run {
           constant(x).map(inc andThen dbl)
         }
@@ -122,9 +120,7 @@ object BodyParserSpec
          * and one from `Future.flatMapM`
          */
         run {
-          constant(x)
-            .mapM(inc)(mapMEC)
-            .mapM(dbl)(mapMEC)
+          constant(x).mapM(inc)(mapMEC).mapM(dbl)(mapMEC)
         } must_== run {
           constant(x).mapM { y =>
             inc(y).flatMap(dbl)(flatMapPEC)
@@ -158,9 +154,7 @@ object BodyParserSpec
       val dbl = (i: Int) => Right(i * 2)
       mustExecute(3) { implicit ec => // three executions from `validate`
         run {
-          constant(x)
-            .validate(inc)
-            .validate(dbl)
+          constant(x).validate(inc).validate(dbl)
         } must_== run {
           constant(x).validate { y =>
             inc(y).right.flatMap(dbl)

@@ -17,7 +17,8 @@ private[http] class AnnotateCipher(headerName: String)
   override def messageReceived(ctx: ChannelHandlerContext, e: MessageEvent) {
     (e.getMessage, ctx.getPipeline.get(classOf[SslHandler])) match {
       case (req: HttpRequest, ssl: SslHandler) =>
-        req.headers
+        req
+          .headers
           .set(headerName, ssl.getEngine().getSession().getCipherSuite())
       case _ =>
         ()

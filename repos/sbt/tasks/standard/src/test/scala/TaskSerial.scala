@@ -62,15 +62,19 @@ object TaskSerial extends Properties("task serial") {
         l.countDown()
         l.await(Timeout, TimeUnit.MILLISECONDS)
       }
-    val tasks = (0 until size).map(_ => mktask).toList.join.map { results =>
-      val success = results.forall(idFun[Boolean])
-      assert(
-        success == shouldSucceed,
-        if (shouldSucceed)
-          unschedulableMsg
-        else
-          scheduledMsg)
-    }
+    val tasks = (0 until size)
+      .map(_ => mktask)
+      .toList
+      .join
+      .map { results =>
+        val success = results.forall(idFun[Boolean])
+        assert(
+          success == shouldSucceed,
+          if (shouldSucceed)
+            unschedulableMsg
+          else
+            scheduledMsg)
+      }
     checkResult(evalRestricted(tasks)(restrictions), ())
   }
   def unschedulableMsg =

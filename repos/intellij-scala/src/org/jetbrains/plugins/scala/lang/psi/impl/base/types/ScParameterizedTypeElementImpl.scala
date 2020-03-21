@@ -82,14 +82,16 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
               val paramText =
                 fun.paramTypeElement match {
                   case tuple: ScTupleTypeElement =>
-                    val paramList = tuple.components.map {
-                      case parameterized: ScParameterizedTypeElement =>
-                        convertParameterized(parameterized)
-                      case simple: ScSimpleTypeElement =>
-                        convertSimpleType(simple)
-                      case _ =>
-                        return None //something went terribly wrong
-                    }
+                    val paramList = tuple
+                      .components
+                      .map {
+                        case parameterized: ScParameterizedTypeElement =>
+                          convertParameterized(parameterized)
+                        case simple: ScSimpleTypeElement =>
+                          convertSimpleType(simple)
+                        case _ =>
+                          return None //something went terribly wrong
+                      }
                     paramList.mkString(sep = ", ")
                   case simple: ScSimpleTypeElement =>
                     simple.getText.replaceAll("`", "")
@@ -100,10 +102,8 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
                 }
               val lambdaText =
                 s"({type $typeName[$paramText] = ${ret.getText}})#$typeName"
-              val newTE = ScalaPsiElementFactory.createTypeElementFromText(
-                lambdaText,
-                getContext,
-                this)
+              val newTE = ScalaPsiElementFactory
+                .createTypeElementFromText(lambdaText, getContext, this)
               Option(newTE)
             case _ =>
               None
@@ -124,31 +124,32 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
       }
 
       val (paramOpt: Seq[Option[String]], body: Seq[String]) =
-        typeArgList.typeArgs.zipWithIndex.map {
-          case (simple: ScSimpleTypeElement, i)
-              if inlineSyntaxIds.contains(simple.getText) =>
-            val name = generateName(i)
-            (Some(simple.getText.replace("?", name)), name)
-          case (param: ScParameterizedTypeElement, i)
-              if inlineSyntaxIds.contains(param.typeElement.getText) =>
-            val name = generateName(i)
-            (Some(param.getText.replace("?", name)), name)
-          case (a, _) =>
-            (None, a.getText)
-        }.unzip
-      val paramText = paramOpt.flatten.mkString(
-        start = "[",
-        sep = ", ",
-        end = "]")
+        typeArgList
+          .typeArgs
+          .zipWithIndex
+          .map {
+            case (simple: ScSimpleTypeElement, i)
+                if inlineSyntaxIds.contains(simple.getText) =>
+              val name = generateName(i)
+              (Some(simple.getText.replace("?", name)), name)
+            case (param: ScParameterizedTypeElement, i)
+                if inlineSyntaxIds.contains(param.typeElement.getText) =>
+              val name = generateName(i)
+              (Some(param.getText.replace("?", name)), name)
+            case (a, _) =>
+              (None, a.getText)
+          }
+          .unzip
+      val paramText = paramOpt
+        .flatten
+        .mkString(start = "[", sep = ", ", end = "]")
       val bodyText = body.mkString(start = "[", sep = ", ", end = "]")
 
       val typeName = "Λ$"
       val inlineText =
         s"({type $typeName$paramText = ${typeElement.getText}$bodyText})#$typeName"
-      val newTE = ScalaPsiElementFactory.createTypeElementFromText(
-        inlineText,
-        getContext,
-        this)
+      val newTE = ScalaPsiElementFactory
+        .createTypeElementFromText(inlineText, getContext, this)
       Option(newTE)
     }
 
@@ -156,27 +157,27 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
       val forSomeBuilder = new StringBuilder
       var count = 1
       forSomeBuilder.append(" forSome {")
-      val typeElements = typeArgList.typeArgs.map {
-        case w: ScWildcardTypeElement =>
-          forSomeBuilder.append(
-            "type _" + "$" + count +
-              w.lowerTypeElement.fold("")(te => s" >: ${te.getText}") +
-              w.upperTypeElement.fold("")(te => s" <: ${te.getText}"))
-          forSomeBuilder.append("; ")
-          val res = s"_$$$count"
-          count += 1
-          res
-        case t =>
-          t.getText
-      }
+      val typeElements = typeArgList
+        .typeArgs
+        .map {
+          case w: ScWildcardTypeElement =>
+            forSomeBuilder.append(
+              "type _" + "$" + count +
+                w.lowerTypeElement.fold("")(te => s" >: ${te.getText}") +
+                w.upperTypeElement.fold("")(te => s" <: ${te.getText}"))
+            forSomeBuilder.append("; ")
+            val res = s"_$$$count"
+            count += 1
+            res
+          case t =>
+            t.getText
+        }
       forSomeBuilder.delete(forSomeBuilder.length - 2, forSomeBuilder.length)
       forSomeBuilder.append("}")
       val newTypeText =
         s"(${typeElement.getText}${typeElements.mkString("[", ", ", "]")} ${forSomeBuilder.toString()})"
-      val newTypeElement = ScalaPsiElementFactory.createTypeElementFromText(
-        newTypeText,
-        getContext,
-        this)
+      val newTypeElement = ScalaPsiElementFactory
+        .createTypeElementFromText(newTypeText, getContext, this)
       Option(newTypeElement)
     }
 
@@ -194,8 +195,8 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
     def isKindProjectorInlineSyntax(element: PsiElement): Boolean = {
       element match {
         case simple: ScSimpleTypeElement
-            if kindProjectorEnabled && inlineSyntaxIds.contains(
-              simple.getText) =>
+            if kindProjectorEnabled && inlineSyntaxIds
+              .contains(simple.getText) =>
           true
         case parametrized: ScParameterizedTypeElement if kindProjectorEnabled =>
           isKindProjectorInlineSyntax(parametrized.typeElement)
@@ -204,16 +205,18 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
       }
     }
 
-    typeArgList.typeArgs.find {
-      case e: ScFunctionalTypeElement if isKindProjectorFunctionSyntax(e) =>
-        true
-      case e if isKindProjectorInlineSyntax(e) =>
-        true
-      case e: ScWildcardTypeElementImpl =>
-        true
-      case _ =>
-        false
-    } match {
+    typeArgList
+      .typeArgs
+      .find {
+        case e: ScFunctionalTypeElement if isKindProjectorFunctionSyntax(e) =>
+          true
+        case e if isKindProjectorInlineSyntax(e) =>
+          true
+        case e: ScWildcardTypeElementImpl =>
+          true
+        case _ =>
+          false
+      } match {
       case Some(fun) if isKindProjectorFunctionSyntax(fun) =>
         kindProjectorFunctionSyntax(fun)
       case Some(e) if isKindProjectorInlineSyntax(e) =>
@@ -348,9 +351,8 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
                                   Any),
                                 state)
                             } else if (upperBound > 0 && lowerBound > 0) {
-                              val actualText = text.substring(
-                                0,
-                                math.min(lowerBound, upperBound))
+                              val actualText = text
+                                .substring(0, math.min(lowerBound, upperBound))
                               processor.execute(
                                 new ScSyntheticClass(
                                   getManager,

@@ -101,8 +101,7 @@ class RandomForestClassifierSuite
   test(
     "Binary classification with continuous features and node Id cache:" +
       " comparing DecisionTree vs. RandomForest(numTrees = 1)") {
-    val rf = new RandomForestClassifier()
-      .setCacheNodeIds(true)
+    val rf = new RandomForestClassifier().setCacheNodeIds(true)
     binaryClassificationTestWithContinuousFeatures(rf)
   }
 
@@ -155,10 +154,8 @@ class RandomForestClassifierSuite
     val categoricalFeatures = Map.empty[Int, Int]
     val numClasses = 2
 
-    val df: DataFrame = TreeTests.setMetadata(
-      rdd,
-      categoricalFeatures,
-      numClasses)
+    val df: DataFrame = TreeTests
+      .setMetadata(rdd, categoricalFeatures, numClasses)
     val model = rf.fit(df)
 
     // copied model must have the same parent.
@@ -198,10 +195,8 @@ class RandomForestClassifierSuite
     // In this data, feature 1 is very important.
     val data: RDD[LabeledPoint] = TreeTests.featureImportanceData(sc)
     val categoricalFeatures = Map.empty[Int, Int]
-    val df: DataFrame = TreeTests.setMetadata(
-      data,
-      categoricalFeatures,
-      numClasses)
+    val df: DataFrame = TreeTests
+      .setMetadata(data, categoricalFeatures, numClasses)
 
     val importances = rf.fit(df).featureImportances
     val mostImportantFeature = importances.argmax
@@ -260,10 +255,8 @@ private object RandomForestClassifierSuite extends SparkFunSuite {
       rf.getNumTrees,
       rf.getFeatureSubsetStrategy,
       rf.getSeed.toInt)
-    val newData: DataFrame = TreeTests.setMetadata(
-      data,
-      categoricalFeatures,
-      numClasses)
+    val newData: DataFrame = TreeTests
+      .setMetadata(data, categoricalFeatures, numClasses)
     val newModel = rf.fit(newData)
     // Use parent from newTree since this is not checked anyways.
     val oldModelAsNew = RandomForestClassificationModel.fromOld(
@@ -274,7 +267,9 @@ private object RandomForestClassifierSuite extends SparkFunSuite {
     TreeTests.checkEqual(oldModelAsNew, newModel)
     assert(newModel.hasParent)
     assert(
-      !newModel.trees.head
+      !newModel
+        .trees
+        .head
         .asInstanceOf[DecisionTreeClassificationModel]
         .hasParent)
     assert(newModel.numClasses === numClasses)

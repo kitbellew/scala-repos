@@ -235,22 +235,25 @@ abstract class BaseYarnClusterSuite
     props.put("spark.executor.extraClassPath", testClasspath)
 
     // SPARK-4267: make sure java options are propagated correctly.
-    props.setProperty(
-      "spark.driver.extraJavaOptions",
-      "-Dfoo=\"one two three\"")
-    props.setProperty(
-      "spark.executor.extraJavaOptions",
-      "-Dfoo=\"one two three\"")
+    props
+      .setProperty("spark.driver.extraJavaOptions", "-Dfoo=\"one two three\"")
+    props
+      .setProperty("spark.executor.extraJavaOptions", "-Dfoo=\"one two three\"")
 
-    yarnCluster.getConfig().asScala.foreach { e =>
-      props.setProperty("spark.hadoop." + e.getKey(), e.getValue())
-    }
-    sys.props.foreach {
-      case (k, v) =>
-        if (k.startsWith("spark.")) {
-          props.setProperty(k, v)
-        }
-    }
+    yarnCluster
+      .getConfig()
+      .asScala
+      .foreach { e =>
+        props.setProperty("spark.hadoop." + e.getKey(), e.getValue())
+      }
+    sys
+      .props
+      .foreach {
+        case (k, v) =>
+          if (k.startsWith("spark.")) {
+            props.setProperty(k, v)
+          }
+      }
     extraConf.foreach {
       case (k, v) =>
         props.setProperty(k, v)

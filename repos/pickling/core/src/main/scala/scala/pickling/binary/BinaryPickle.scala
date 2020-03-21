@@ -197,8 +197,8 @@ class BinaryPickleReader(in: BinaryInput, format: BinaryPickleFormat)
 
   def beginEntry: String = {
     val res: Any = withHints { hints =>
-      if (hints.isElidedType && nullablePrimitives.contains(
-            hints.elidedType.get.key)) {
+      if (hints.isElidedType && nullablePrimitives
+            .contains(hints.elidedType.get.key)) {
         val lookahead = in.getByte()
         lookahead match {
           case UNIT_TAG =>
@@ -211,8 +211,8 @@ class BinaryPickleReader(in: BinaryInput, format: BinaryPickleFormat)
             in.setLookahead(lookahead);
             hints.elidedType.get
         }
-      } else if (hints.isElidedType && primitives.contains(
-                   hints.elidedType.get.key)) {
+      } else if (hints.isElidedType && primitives
+                   .contains(hints.elidedType.get.key)) {
         hints.elidedType.get
       } else {
         val lookahead = in.getByte()
@@ -220,9 +220,11 @@ class BinaryPickleReader(in: BinaryInput, format: BinaryPickleFormat)
           case NULL_TAG =>
             FastTypeTag.Null
           case ELIDED_TAG =>
-            hints.elidedType.getOrElse(
-              throw new PicklingException(
-                s"Type is elided in pickle, but no elide hint was provided by unpickler!"))
+            hints
+              .elidedType
+              .getOrElse(
+                throw new PicklingException(
+                  s"Type is elided in pickle, but no elide hint was provided by unpickler!"))
           case REF_TAG =>
             FastTypeTag.Ref
           case _ =>

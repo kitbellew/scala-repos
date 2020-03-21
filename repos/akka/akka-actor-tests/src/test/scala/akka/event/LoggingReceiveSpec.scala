@@ -295,11 +295,8 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
             actor ! Kill
             val set =
               receiveWhile(messages = 3) {
-                case Logging.Error(
-                      _: ActorKilledException,
-                      `aname`,
-                      _,
-                      "Kill") ⇒
+                case Logging
+                      .Error(_: ActorKilledException, `aname`, _, "Kill") ⇒
                   1
                 case Logging.Debug(`aname`, `aclass`, "restarting") ⇒
                   2

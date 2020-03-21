@@ -40,12 +40,14 @@ class CachedTableSuite
 
   def rddIdOf(tableName: String): Int = {
     val plan = sqlContext.table(tableName).queryExecution.sparkPlan
-    plan.collect {
-      case InMemoryColumnarTableScan(_, _, relation) =>
-        relation.cachedColumnBuffers.id
-      case _ =>
-        fail(s"Table $tableName is not cached\n" + plan)
-    }.head
+    plan
+      .collect {
+        case InMemoryColumnarTableScan(_, _, relation) =>
+          relation.cachedColumnBuffers.id
+        case _ =>
+          fail(s"Table $tableName is not cached\n" + plan)
+      }
+      .head
   }
 
   def isMaterialized(rddId: Int): Boolean = {
@@ -325,12 +327,16 @@ class CachedTableSuite
 
   test("InMemoryRelation statistics") {
     sql("CACHE TABLE testData")
-    sqlContext.table("testData").queryExecution.withCachedData.collect {
-      case cached: InMemoryRelation =>
-        val actualSizeInBytes =
-          (1 to 100).map(i => 4 + i.toString.length + 4).sum
-        assert(cached.statistics.sizeInBytes === actualSizeInBytes)
-    }
+    sqlContext
+      .table("testData")
+      .queryExecution
+      .withCachedData
+      .collect {
+        case cached: InMemoryRelation =>
+          val actualSizeInBytes =
+            (1 to 100).map(i => 4 + i.toString.length + 4).sum
+          assert(cached.statistics.sizeInBytes === actualSizeInBytes)
+      }
   }
 
   test("Drops temporary table") {
@@ -403,15 +409,19 @@ class CachedTableSuite
         |join abc c on a.key=c.key""".stripMargin).queryExecution.sparkPlan
 
     assert(
-      sparkPlan.collect {
-        case e: InMemoryColumnarTableScan =>
-          e
-      }.size === 3)
+      sparkPlan
+        .collect {
+          case e: InMemoryColumnarTableScan =>
+            e
+        }
+        .size === 3)
     assert(
-      sparkPlan.collect {
-        case e: PhysicalRDD =>
-          e
-      }.size === 0)
+      sparkPlan
+        .collect {
+          case e: PhysicalRDD =>
+            e
+        }
+        .size === 0)
   }
 
   /**
@@ -419,10 +429,14 @@ class CachedTableSuite
     */
   private def verifyNumExchanges(df: DataFrame, expected: Int): Unit = {
     assert(
-      df.queryExecution.executedPlan.collect {
-        case e: ShuffleExchange =>
-          e
-      }.size == expected)
+      df
+        .queryExecution
+        .executedPlan
+        .collect {
+          case e: ShuffleExchange =>
+            e
+        }
+        .size == expected)
   }
 
   test(
@@ -430,8 +444,8 @@ class CachedTableSuite
     val table3x = testData.unionAll(testData).unionAll(testData)
     table3x.registerTempTable("testData3x")
 
-    sql("SELECT key, value FROM testData3x ORDER BY key").registerTempTable(
-      "orderedTable")
+    sql("SELECT key, value FROM testData3x ORDER BY key")
+      .registerTempTable("orderedTable")
     sqlContext.cacheTable("orderedTable")
     assertCached(sqlContext.table("orderedTable"))
     // Should not have an exchange as the query is already sorted on the group by key.
@@ -485,7 +499,11 @@ class CachedTableSuite
         "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a")
       verifyNumExchanges(query, 1)
       assert(
-        query.queryExecution.executedPlan.outputPartitioning.numPartitions === 6)
+        query
+          .queryExecution
+          .executedPlan
+          .outputPartitioning
+          .numPartitions === 6)
       checkAnswer(
         query,
         testData
@@ -506,7 +524,11 @@ class CachedTableSuite
         "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a")
       verifyNumExchanges(query, 1)
       assert(
-        query.queryExecution.executedPlan.outputPartitioning.numPartitions === 6)
+        query
+          .queryExecution
+          .executedPlan
+          .outputPartitioning
+          .numPartitions === 6)
       checkAnswer(
         query,
         testData
@@ -526,7 +548,11 @@ class CachedTableSuite
         "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a")
       verifyNumExchanges(query, 1)
       assert(
-        query.queryExecution.executedPlan.outputPartitioning.numPartitions === 12)
+        query
+          .queryExecution
+          .executedPlan
+          .outputPartitioning
+          .numPartitions === 12)
       checkAnswer(
         query,
         testData
@@ -585,7 +611,11 @@ class CachedTableSuite
         "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a and t1.value = t2.b")
       verifyNumExchanges(query, 1)
       assert(
-        query.queryExecution.executedPlan.outputPartitioning.numPartitions === 6)
+        query
+          .queryExecution
+          .executedPlan
+          .outputPartitioning
+          .numPartitions === 6)
       checkAnswer(
         query,
         df1

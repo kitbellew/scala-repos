@@ -17,8 +17,8 @@ private final class SlackClient(url: String, defaultChannel: String) {
             "username" -> msg.username,
             "text" -> msg.text,
             "icon_emoji" -> s":${msg.icon}:",
-            "channel" -> (msg.channel != defaultChannel).option(
-              s"#${msg.channel}"))
+            "channel" -> (msg.channel != defaultChannel)
+              .option(s"#${msg.channel}"))
           .noNull)
       .flatMap {
         case res if res.status == 200 =>

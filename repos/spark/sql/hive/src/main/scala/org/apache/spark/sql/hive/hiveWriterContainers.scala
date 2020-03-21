@@ -67,10 +67,8 @@ private[hive] class SparkHiveWriterContainer(
   // Add table properties from storage handler to jobConf, so any custom storage
   // handler settings can be set to jobConf
   if (tableDesc != null) {
-    HiveTableUtil.configureJobPropertiesForStorageHandler(
-      tableDesc,
-      jobConf,
-      false)
+    HiveTableUtil
+      .configureJobPropertiesForStorageHandler(tableDesc, jobConf, false)
     Utilities.copyTableJobPropertiesToConf(tableDesc, jobConf)
   }
   protected val conf = new SerializableJobConf(jobConf)
@@ -91,7 +89,9 @@ private[hive] class SparkHiveWriterContainer(
   private lazy val taskContext =
     new TaskAttemptContextImpl(conf.value, taID.value)
   @transient
-  private lazy val outputFormat = conf.value.getOutputFormat
+  private lazy val outputFormat = conf
+    .value
+    .getOutputFormat
     .asInstanceOf[HiveOutputFormat[AnyRef, Writable]]
 
   def driverSideSetup() {
@@ -111,10 +111,8 @@ private[hive] class SparkHiveWriterContainer(
     val numberFormat = NumberFormat.getInstance()
     numberFormat.setMinimumIntegerDigits(5)
     numberFormat.setGroupingUsed(false)
-    val extension = Utilities.getFileExtension(
-      conf.value,
-      fileSinkConf.getCompressed,
-      outputFormat)
+    val extension = Utilities
+      .getFileExtension(conf.value, fileSinkConf.getCompressed, outputFormat)
     "part-" + numberFormat.format(splitID) + extension
   }
 
@@ -176,7 +174,8 @@ private[hive] class SparkHiveWriterContainer(
   }
 
   def newSerializer(tableDesc: TableDesc): Serializer = {
-    val serializer = tableDesc.getDeserializerClass
+    val serializer = tableDesc
+      .getDeserializerClass
       .newInstance()
       .asInstanceOf[Serializer]
     serializer.initialize(null, tableDesc.getProperties)
@@ -192,14 +191,18 @@ private[hive] class SparkHiveWriterContainer(
       .asInstanceOf[StructObjectInspector]
 
     val fieldOIs =
-      standardOI.getAllStructFieldRefs.asScala
+      standardOI
+        .getAllStructFieldRefs
+        .asScala
         .map(_.getFieldObjectInspector)
         .toArray
     val dataTypes = inputSchema.map(_.dataType)
-    val wrappers = fieldOIs.zip(dataTypes).map {
-      case (f, dt) =>
-        wrapperFor(f, dt)
-    }
+    val wrappers = fieldOIs
+      .zip(dataTypes)
+      .map {
+        case (f, dt) =>
+          wrapperFor(f, dt)
+      }
     val outputData = new Array[Any](fieldOIs.length)
     (serializer, standardOI, fieldOIs, dataTypes, wrappers, outputData)
   }
@@ -285,7 +288,8 @@ private[spark] class SparkHiveDynamicPartitionWriterContainer(
     // Better solution is to add a step similar to what Hive FileSinkOperator.jobCloseOp does:
     // calling something like Utilities.mvFileToFinalPath to cleanup the output directory and then
     // load it with loadDynamicPartitions/loadPartition/loadTable.
-    val oldMarker = conf.value
+    val oldMarker = conf
+      .value
       .getBoolean(SUCCESSFUL_JOB_OUTPUT_DIR_MARKER, true)
     conf.value.setBoolean(SUCCESSFUL_JOB_OUTPUT_DIR_MARKER, false)
     super.commitJob()
@@ -314,25 +318,27 @@ private[spark] class SparkHiveDynamicPartitionWriterContainer(
       (pathString: String) =>
         FileUtils.escapePathName(pathString, defaultPartName)
     // Expressions that given a partition key build a string like: col1=val/col2=val/...
-    val partitionStringExpression = partitionOutput.zipWithIndex.flatMap {
-      case (c, i) =>
-        val escaped = ScalaUDF(
-          fun,
-          StringType,
-          Seq(Cast(c, StringType)),
-          Seq(StringType))
-        val str = If(IsNull(c), Literal(defaultPartName), escaped)
-        val partitionName = Literal(dynamicPartColNames(i) + "=") :: str :: Nil
-        if (i == 0)
-          partitionName
-        else
-          Literal(Path.SEPARATOR_CHAR.toString) :: partitionName
-    }
+    val partitionStringExpression = partitionOutput
+      .zipWithIndex
+      .flatMap {
+        case (c, i) =>
+          val escaped = ScalaUDF(
+            fun,
+            StringType,
+            Seq(Cast(c, StringType)),
+            Seq(StringType))
+          val str = If(IsNull(c), Literal(defaultPartName), escaped)
+          val partitionName =
+            Literal(dynamicPartColNames(i) + "=") :: str :: Nil
+          if (i == 0)
+            partitionName
+          else
+            Literal(Path.SEPARATOR_CHAR.toString) :: partitionName
+      }
 
     // Returns the partition path given a partition key.
-    val getPartitionString = UnsafeProjection.create(
-      Concat(partitionStringExpression) :: Nil,
-      partitionOutput)
+    val getPartitionString = UnsafeProjection
+      .create(Concat(partitionStringExpression) :: Nil, partitionOutput)
 
     // If anything below fails, we should abort the task.
     try {

@@ -73,16 +73,18 @@ object expand {
     import c.mirror.universe._
     annottees.head.tree match {
       case tree @ DefDef(mods, name, targs, vargs, tpt, rhs) =>
-        val (typesToExpand, typesLeftAbstract) = targs.partition(
-          shouldExpand(c)(_))
+        val (typesToExpand, typesLeftAbstract) = targs
+          .partition(shouldExpand(c)(_))
 
         val exclusions = getExclusions(c)(mods, targs.map(_.name))
         val shouldValify = checkValify(c)(mods)
 
         val typesToUnrollAs: Map[c.Name, List[c.Type]] =
-          typesToExpand.map { td =>
-            (td.name: Name) -> typeMappings(c)(td)
-          }.toMap
+          typesToExpand
+            .map { td =>
+              (td.name: Name) -> typeMappings(c)(td)
+            }
+            .toMap
 
         val (valsToExpand, valsToLeave) =
           vargs.map(_.partition(shouldExpandVarg(c)(_))).unzip
@@ -201,18 +203,22 @@ object expand {
       typeMappings: Map[context.Name, List[context.Type]])
       : (context.Name, Map[context.Type, context.Tree]) = {
     import context.mirror.universe._
-    val x = v.mods.annotations.collectFirst {
-      case x @ q"new expand.sequence[${Ident(nme2)}](...$args)" =>
-        if (args.flatten.length != typeMappings(nme2).length) {
-          context.error(
-            x.pos,
-            s"@sequence arguments list does not match the expand.args for $nme2")
-        }
-        val predef = context.mirror.staticModule("scala.Predef").asModule
-        val missing = Select(Ident(predef), newTermName("???"))
-        nme2 -> (typeMappings(nme2) zip args.flatten).toMap
-          .withDefaultValue(missing)
-    }
+    val x = v
+      .mods
+      .annotations
+      .collectFirst {
+        case x @ q"new expand.sequence[${Ident(nme2)}](...$args)" =>
+          if (args.flatten.length != typeMappings(nme2).length) {
+            context.error(
+              x.pos,
+              s"@sequence arguments list does not match the expand.args for $nme2")
+          }
+          val predef = context.mirror.staticModule("scala.Predef").asModule
+          val missing = Select(Ident(predef), newTermName("???"))
+          nme2 -> (typeMappings(nme2) zip args.flatten)
+            .toMap
+            .withDefaultValue(missing)
+      }
     x.get
   }
 
@@ -227,20 +233,26 @@ object expand {
     import c.mirror.universe._
 
     val mods =
-      td.mods.annotations.collect {
-        case tree @ q"new expand.args(...$args)" =>
-          val flatArgs: Seq[Tree] = args.flatten
-          flatArgs.map(c.typeCheck(_)).map { tree =>
-            try {
-              tree.symbol.asModule.companionSymbol.asType.toType
-            } catch {
-              case ex: Exception =>
-                c.abort(
-                  tree.pos,
-                  s"${tree.symbol} does not have a companion. Is it maybe an alias?")
-            }
-          }
-      }.flatten
+      td
+        .mods
+        .annotations
+        .collect {
+          case tree @ q"new expand.args(...$args)" =>
+            val flatArgs: Seq[Tree] = args.flatten
+            flatArgs
+              .map(c.typeCheck(_))
+              .map { tree =>
+                try {
+                  tree.symbol.asModule.companionSymbol.asType.toType
+                } catch {
+                  case ex: Exception =>
+                    c.abort(
+                      tree.pos,
+                      s"${tree.symbol} does not have a companion. Is it maybe an alias?")
+                }
+              }
+        }
+        .flatten
     mods
   }
 
@@ -258,7 +270,8 @@ object expand {
       mods: c.Modifiers,
       targs: Seq[c.Name]): Seq[Map[c.Name, c.Type]] = {
     import c.mirror.universe._
-    mods.annotations
+    mods
+      .annotations
       .collect {
         case t @ q"new expand.exclude(...$args)" =>
           for (aa <- args)
@@ -279,7 +292,8 @@ object expand {
 
   private def checkValify(c: Context)(mods: c.Modifiers) = {
     import c.mirror.universe._
-    mods.annotations
+    mods
+      .annotations
       .collectFirst {
         case q"new expand.valify" =>
           true
@@ -290,22 +304,28 @@ object expand {
   private def shouldExpand(c: Context)(
       td: c.mirror.universe.TypeDef): Boolean = {
     import c.mirror.universe._
-    td.mods.annotations.exists {
-      case q"new expand.args(...$args)" =>
-        true
-      case _ =>
-        false
-    }
+    td
+      .mods
+      .annotations
+      .exists {
+        case q"new expand.args(...$args)" =>
+          true
+        case _ =>
+          false
+      }
   }
 
   private def shouldExpandVarg(c: Context)(
       td: c.mirror.universe.ValDef): Boolean = {
     import c.mirror.universe._
-    td.mods.annotations.exists {
-      case x @ q"new expand.sequence[..$targs](...$args)" =>
-        true
-      case _ =>
-        false
-    }
+    td
+      .mods
+      .annotations
+      .exists {
+        case x @ q"new expand.sequence[..$targs](...$args)" =>
+          true
+        case _ =>
+          false
+      }
   }
 }

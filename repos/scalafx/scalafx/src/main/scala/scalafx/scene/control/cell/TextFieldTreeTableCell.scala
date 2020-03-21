@@ -81,7 +81,8 @@ object TextFieldTreeTableCell {
   def forTreeTableColumn[S, T](converter: StringConverter[T])
       : (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) =
     (view: jfxsc.TreeTableColumn[S, T]) =>
-      jfxscc.TextFieldTreeTableCell
+      jfxscc
+        .TextFieldTreeTableCell
         .forTreeTableColumn[S, T](converter)
         .call(view)
 

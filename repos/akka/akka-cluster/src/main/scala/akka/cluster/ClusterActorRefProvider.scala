@@ -109,12 +109,12 @@ private[akka] class ClusterDeployer(
         if (deploy.config.getBoolean("cluster.enabled")) {
           if (deploy.scope != NoScopeGiven)
             throw new ConfigurationException(
-              "Cluster deployment can't be combined with scope [%s]".format(
-                deploy.scope))
+              "Cluster deployment can't be combined with scope [%s]"
+                .format(deploy.scope))
           if (deploy.routerConfig.isInstanceOf[RemoteRouterConfig])
             throw new ConfigurationException(
-              "Cluster deployment can't be combined with [%s]".format(
-                deploy.routerConfig))
+              "Cluster deployment can't be combined with [%s]"
+                .format(deploy.routerConfig))
 
           deploy.routerConfig match {
             case r: Pool ⇒

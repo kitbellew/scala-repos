@@ -110,9 +110,11 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
         field.clear
         field match {
           case owned: OwnedField[_] =>
-            owned.owner.runSafe {
-              field.resetDirty
-            }
+            owned
+              .owner
+              .runSafe {
+                field.resetDirty
+              }
           case _ =>
             field.resetDirty
         }
@@ -738,8 +740,7 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
     val json: JObject = ("mandatoryJObjectField" -> jo)
 
     "convert to JValue" in {
-      val rec = JObjectFieldTestRecord.createRecord
-        .mandatoryJObjectField(json)
+      val rec = JObjectFieldTestRecord.createRecord.mandatoryJObjectField(json)
 
       rec.mandatoryJObjectField.asJValue must_== json
 

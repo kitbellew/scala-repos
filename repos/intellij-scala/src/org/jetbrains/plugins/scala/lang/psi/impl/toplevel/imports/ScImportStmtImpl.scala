@@ -101,9 +101,11 @@ class ScImportStmtImpl private (
           val decodedName = ScalaPsiUtil.convertMemberName(name)
           importExpr.selectorSet match {
             case Some(set) =>
-              set.selectors.exists(selector =>
-                ScalaPsiUtil.convertMemberName(
-                  selector.reference.refName) == decodedName)
+              set
+                .selectors
+                .exists(selector =>
+                  ScalaPsiUtil.convertMemberName(
+                    selector.reference.refName) == decodedName)
             case None =>
               if (ScalaPsiUtil.convertMemberName(ref.refName) != decodedName)
                 return true
@@ -165,17 +167,14 @@ class ScImportStmtImpl private (
           }
 
         val exprQualRefType = () =>
-          ScSimpleTypeElementImpl.calculateReferenceType(
-            exprQual,
-            shapesOnly = false)
+          ScSimpleTypeElementImpl
+            .calculateReferenceType(exprQual, shapesOnly = false)
 
         def checkResolve(resolve: ResolveResult): Boolean = {
           resolve match {
             case ScalaResolveResult(elem, _) =>
-              PsiTreeUtil.getContextOfType(
-                elem,
-                true,
-                classOf[ScTypeDefinition]) match {
+              PsiTreeUtil
+                .getContextOfType(elem, true, classOf[ScTypeDefinition]) match {
                 case obj: ScObject if obj.isPackageObject =>
                   true
                 case _ =>
@@ -232,23 +231,27 @@ class ScImportStmtImpl private (
                 if complProc.includePrefixImports =>
               val settings: ScalaCodeStyleSettings = ScalaCodeStyleSettings
                 .getInstance(getProject)
-              val prefixImports = settings.getImportsWithPrefix.filter(s =>
-                !s.startsWith(ScalaCodeStyleSettings.EXCLUDE_PREFIX) &&
-                  s.substring(0, s.lastIndexOf(".")) == pack.getQualifiedName)
-              val excludeImports = settings.getImportsWithPrefix.filter(s =>
-                s.startsWith(ScalaCodeStyleSettings.EXCLUDE_PREFIX) &&
-                  s.substring(
-                    ScalaCodeStyleSettings.EXCLUDE_PREFIX.length,
-                    s.lastIndexOf(".")) == pack.getQualifiedName)
+              val prefixImports = settings
+                .getImportsWithPrefix
+                .filter(s =>
+                  !s.startsWith(ScalaCodeStyleSettings.EXCLUDE_PREFIX) &&
+                    s.substring(0, s.lastIndexOf(".")) == pack.getQualifiedName)
+              val excludeImports = settings
+                .getImportsWithPrefix
+                .filter(s =>
+                  s.startsWith(ScalaCodeStyleSettings.EXCLUDE_PREFIX) &&
+                    s.substring(
+                      ScalaCodeStyleSettings.EXCLUDE_PREFIX.length,
+                      s.lastIndexOf(".")) == pack.getQualifiedName)
               val names = new mutable.HashSet[String]()
               for (prefixImport <- prefixImports) {
-                names += prefixImport.substring(
-                  prefixImport.lastIndexOf('.') + 1)
+                names += prefixImport
+                  .substring(prefixImport.lastIndexOf('.') + 1)
               }
               val excludeNames = new mutable.HashSet[String]()
               for (prefixImport <- excludeImports) {
-                excludeNames += prefixImport.substring(
-                  prefixImport.lastIndexOf('.') + 1)
+                excludeNames += prefixImport
+                  .substring(prefixImport.lastIndexOf('.') + 1)
               }
               val wildcard = names.contains("_")
               def isOK(name: String): Boolean = {
@@ -329,17 +332,18 @@ class ScImportStmtImpl private (
                 mutable.HashSet.empty
               set.selectors foreach { selector =>
                 ProgressManager.checkCanceled()
-                val selectorResolve: Array[ResolveResult] = selector.reference
+                val selectorResolve: Array[ResolveResult] = selector
+                  .reference
                   .multiResolve(false)
                 selectorResolve foreach { result =>
-                  if (selector.isAliasedImport && selector.importedName != selector.reference.refName) {
+                  if (selector.isAliasedImport && selector
+                        .importedName != selector.reference.refName) {
                     //Resolve the name imported by selector
                     //Collect shadowed elements
                     shadowed += ((selector, result.getElement))
                     var newState: ResolveState = state
-                    newState = state.put(
-                      ResolverEnv.nameKey,
-                      selector.importedName)
+                    newState = state
+                      .put(ResolverEnv.nameKey, selector.importedName)
                     newState = newState
                       .put(
                         ImportUsed.key,
@@ -406,9 +410,8 @@ class ScImportStmtImpl private (
                             }
                           }
                           calculateRefType(isElementInPo).foreach { tp =>
-                            newState = newState.put(
-                              BaseProcessor.FROM_TYPE_KEY,
-                              tp)
+                            newState = newState
+                              .put(BaseProcessor.FROM_TYPE_KEY, tp)
                           }
 
                           processor.execute(element, newState)
@@ -426,9 +429,8 @@ class ScImportStmtImpl private (
                       case (cl: PsiClass, processor: BaseProcessor)
                           if !cl.isInstanceOf[ScTemplateDefinition] =>
                         calculateRefType(checkResolve(next)).foreach { tp =>
-                          newState = newState.put(
-                            BaseProcessor.FROM_TYPE_KEY,
-                            tp)
+                          newState = newState
+                            .put(BaseProcessor.FROM_TYPE_KEY, tp)
                         }
                         if (!processor.processType(
                               new ScDesignatorType(cl, true),
@@ -452,11 +454,13 @@ class ScImportStmtImpl private (
               //wildcard import first, to show that this imports are unused if they really are
               set.selectors foreach { selector =>
                 ProgressManager.checkCanceled()
-                val selectorResolve: Array[ResolveResult] = selector.reference
+                val selectorResolve: Array[ResolveResult] = selector
+                  .reference
                   .multiResolve(false)
                 selectorResolve foreach { result =>
                   var newState: ResolveState = state
-                  if (!selector.isAliasedImport || selector.importedName == selector.reference.refName) {
+                  if (!selector.isAliasedImport || selector
+                        .importedName == selector.reference.refName) {
                     val rSubst =
                       result match {
                         case result: ScalaResolveResult =>

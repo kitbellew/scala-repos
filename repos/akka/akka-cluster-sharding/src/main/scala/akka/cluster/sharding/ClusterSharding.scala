@@ -161,10 +161,14 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
   private val regions: ConcurrentHashMap[String, ActorRef] =
     new ConcurrentHashMap
   private lazy val guardian = {
-    val guardianName: String = system.settings.config
+    val guardianName: String = system
+      .settings
+      .config
       .getString("akka.cluster.sharding.guardian-name")
     val dispatcher =
-      system.settings.config
+      system
+        .settings
+        .config
         .getString("akka.cluster.sharding.use-dispatcher") match {
         case "" ⇒
           Dispatchers.DefaultDispatcherId
@@ -222,9 +226,8 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       extractShardId,
       allocationStrategy,
       handOffStopMessage)
-    val Started(shardRegion) = Await.result(
-      guardian ? startMsg,
-      timeout.duration)
+    val Started(shardRegion) = Await
+      .result(guardian ? startMsg, timeout.duration)
     regions.put(typeName, shardRegion)
     shardRegion
   }
@@ -383,9 +386,8 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       settings,
       extractEntityId,
       extractShardId)
-    val Started(shardRegion) = Await.result(
-      guardian ? startMsg,
-      timeout.duration)
+    val Started(shardRegion) = Await
+      .result(guardian ? startMsg, timeout.duration)
     regions.put(typeName, shardRegion)
     shardRegion
   }
@@ -498,69 +500,74 @@ private[akka] class ClusterShardingGuardian extends Actor {
       val encName = URLEncoder.encode(typeName, ByteString.UTF_8)
       val cName = coordinatorSingletonManagerName(encName)
       val cPath = coordinatorPath(encName)
-      val shardRegion = context.child(encName).getOrElse {
-        if (context.child(cName).isEmpty) {
-          val coordinatorProps =
-            if (settings.stateStoreMode == "persistence")
-              ShardCoordinator.props(typeName, settings, allocationStrategy)
-            else
-              ShardCoordinator
-                .props(typeName, settings, allocationStrategy, replicator)
-          val singletonProps = BackoffSupervisor
-            .props(
-              childProps = coordinatorProps,
-              childName = "coordinator",
-              minBackoff = coordinatorFailureBackoff,
-              maxBackoff = coordinatorFailureBackoff * 5,
-              randomFactor = 0.2)
-            .withDeploy(Deploy.local)
-          val singletonSettings = settings.coordinatorSingletonSettings
-            .withSingletonName("singleton")
-            .withRole(role)
-          context.actorOf(
-            ClusterSingletonManager
+      val shardRegion = context
+        .child(encName)
+        .getOrElse {
+          if (context.child(cName).isEmpty) {
+            val coordinatorProps =
+              if (settings.stateStoreMode == "persistence")
+                ShardCoordinator.props(typeName, settings, allocationStrategy)
+              else
+                ShardCoordinator
+                  .props(typeName, settings, allocationStrategy, replicator)
+            val singletonProps = BackoffSupervisor
               .props(
-                singletonProps,
-                terminationMessage = PoisonPill,
-                singletonSettings)
-              .withDispatcher(context.props.dispatcher),
-            name = cName)
-        }
+                childProps = coordinatorProps,
+                childName = "coordinator",
+                minBackoff = coordinatorFailureBackoff,
+                maxBackoff = coordinatorFailureBackoff * 5,
+                randomFactor = 0.2)
+              .withDeploy(Deploy.local)
+            val singletonSettings = settings
+              .coordinatorSingletonSettings
+              .withSingletonName("singleton")
+              .withRole(role)
+            context.actorOf(
+              ClusterSingletonManager
+                .props(
+                  singletonProps,
+                  terminationMessage = PoisonPill,
+                  singletonSettings)
+                .withDispatcher(context.props.dispatcher),
+              name = cName)
+          }
 
-        context.actorOf(
-          ShardRegion
-            .props(
-              typeName = typeName,
-              entityProps = entityProps,
-              settings = settings,
-              coordinatorPath = cPath,
-              extractEntityId = extractEntityId,
-              extractShardId = extractShardId,
-              handOffStopMessage = handOffStopMessage
-            )
-            .withDispatcher(context.props.dispatcher),
-          name = encName
-        )
-      }
+          context.actorOf(
+            ShardRegion
+              .props(
+                typeName = typeName,
+                entityProps = entityProps,
+                settings = settings,
+                coordinatorPath = cPath,
+                extractEntityId = extractEntityId,
+                extractShardId = extractShardId,
+                handOffStopMessage = handOffStopMessage
+              )
+              .withDispatcher(context.props.dispatcher),
+            name = encName
+          )
+        }
       sender() ! Started(shardRegion)
 
     case StartProxy(typeName, settings, extractEntityId, extractShardId) ⇒
       val encName = URLEncoder.encode(typeName, ByteString.UTF_8)
       val cName = coordinatorSingletonManagerName(encName)
       val cPath = coordinatorPath(encName)
-      val shardRegion = context.child(encName).getOrElse {
-        context.actorOf(
-          ShardRegion
-            .proxyProps(
-              typeName = typeName,
-              settings = settings,
-              coordinatorPath = cPath,
-              extractEntityId = extractEntityId,
-              extractShardId = extractShardId)
-            .withDispatcher(context.props.dispatcher),
-          name = encName
-        )
-      }
+      val shardRegion = context
+        .child(encName)
+        .getOrElse {
+          context.actorOf(
+            ShardRegion
+              .proxyProps(
+                typeName = typeName,
+                settings = settings,
+                coordinatorPath = cPath,
+                extractEntityId = extractEntityId,
+                extractShardId = extractShardId)
+              .withDispatcher(context.props.dispatcher),
+            name = encName
+          )
+        }
       sender() ! Started(shardRegion)
 
   }

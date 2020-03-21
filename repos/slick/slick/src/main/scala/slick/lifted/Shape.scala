@@ -180,10 +180,13 @@ abstract class ProductNodeShape[Level <: ShapeLevel, C, M <: C, U <: C, P <: C]
     shapes.iterator.zipWithIndex.map(t => getElement(value, t._2))
 
   def pack(value: Mixed) = {
-    val elems = shapes.iterator.zip(getIterator(value)).map {
-      case (p, f) =>
-        p.pack(f.asInstanceOf[p.Mixed])
-    }
+    val elems = shapes
+      .iterator
+      .zip(getIterator(value))
+      .map {
+        case (p, f) =>
+          p.pack(f.asInstanceOf[p.Mixed])
+      }
     buildValue(elems.toIndexedSeq).asInstanceOf[Packed]
   }
   def packedShape: Shape[Level, Packed, Unpacked, Packed] =
@@ -191,27 +194,35 @@ abstract class ProductNodeShape[Level <: ShapeLevel, C, M <: C, U <: C, P <: C]
       shapes.map(_.packedShape.asInstanceOf[Shape[_ <: ShapeLevel, _, _, _]]))
       .asInstanceOf[Shape[Level, Packed, Unpacked, Packed]]
   def buildParams(extract: Any => Unpacked): Packed = {
-    val elems = shapes.iterator.zipWithIndex.map {
-      case (p, idx) =>
-        def chExtract(u: C): p.Unpacked =
-          getElement(u, idx).asInstanceOf[p.Unpacked]
-        p.buildParams(extract.andThen(chExtract))
-    }
+    val elems = shapes
+      .iterator
+      .zipWithIndex
+      .map {
+        case (p, idx) =>
+          def chExtract(u: C): p.Unpacked =
+            getElement(u, idx).asInstanceOf[p.Unpacked]
+          p.buildParams(extract.andThen(chExtract))
+      }
     buildValue(elems.toIndexedSeq).asInstanceOf[Packed]
   }
   def encodeRef(value: Mixed, path: Node) = {
-    val elems = shapes.iterator.zip(getIterator(value)).zipWithIndex.map {
-      case ((p, x), pos) =>
-        p.encodeRef(
-          x.asInstanceOf[p.Mixed],
-          Select(path, ElementSymbol(pos + 1)))
-    }
+    val elems = shapes
+      .iterator
+      .zip(getIterator(value))
+      .zipWithIndex
+      .map {
+        case ((p, x), pos) =>
+          p.encodeRef(
+            x.asInstanceOf[p.Mixed],
+            Select(path, ElementSymbol(pos + 1)))
+      }
     buildValue(elems.toIndexedSeq)
   }
   def toNode(value: Mixed): Node =
     ProductNode(
       ConstArray.from(
-        shapes.iterator
+        shapes
+          .iterator
           .zip(getIterator(value))
           .map {
             case (p, f) =>
@@ -414,13 +425,17 @@ object ShapedValue {
           q"$s"
       }
     val fields =
-      rTag.tpe.decls.collect {
-        case s: TermSymbol if s.isVal && s.isCaseAccessor =>
-          (
-            TermName(s.name.toString.trim),
-            s.typeSignature,
-            TermName(c.freshName()))
-      }.toIndexedSeq
+      rTag
+        .tpe
+        .decls
+        .collect {
+          case s: TermSymbol if s.isVal && s.isCaseAccessor =>
+            (
+              TermName(s.name.toString.trim),
+              s.typeSignature,
+              TermName(c.freshName()))
+        }
+        .toIndexedSeq
     val (f, g) =
       if (uTag.tpe <:< c
             .typeOf[slick.collection.heterogeneous.HList]) { // Map from HList
@@ -431,17 +446,17 @@ object ShapedValue {
               tq"_root_.slick.collection.heterogeneous.HCons[$t, $z]"
           }
         val pat =
-          fields.foldRight[Tree](
-            pq"_root_.slick.collection.heterogeneous.HNil") {
-            case ((_, _, n), z) =>
-              pq"_root_.slick.collection.heterogeneous.HCons($n, $z)"
-          }
+          fields
+            .foldRight[Tree](pq"_root_.slick.collection.heterogeneous.HNil") {
+              case ((_, _, n), z) =>
+                pq"_root_.slick.collection.heterogeneous.HCons($n, $z)"
+            }
         val cons =
-          fields.foldRight[Tree](
-            q"_root_.slick.collection.heterogeneous.HNil") {
-            case ((n, _, _), z) =>
-              q"v.$n :: $z"
-          }
+          fields
+            .foldRight[Tree](q"_root_.slick.collection.heterogeneous.HNil") {
+              case ((n, _, _), z) =>
+                q"v.$n :: $z"
+            }
         (
           q"({ case $pat => new $rTag(..${fields.map(
             _._3)}) } : ($rTypeAsHList => $rTag)): ($uTag => $rTag)",
@@ -457,9 +472,8 @@ object ShapedValue {
       }
 
     val fpName = Constant(
-      "Fast Path of (" + fields
-        .map(_._2)
-        .mkString(", ") + ").mapTo[" + rTag.tpe + "]")
+      "Fast Path of (" + fields.map(_._2).mkString(", ") + ").mapTo[" + rTag
+        .tpe + "]")
     val fpChildren = fields.map {
       case (_, t, n) =>
         q"val $n = next[$t]"
@@ -531,11 +545,13 @@ object ProvenShape {
       : Shape[FlatShapeLevel, ProvenShape[T], T, P] =
     new Shape[FlatShapeLevel, ProvenShape[T], T, P] {
       def pack(value: Mixed): Packed =
-        value.shape
+        value
+          .shape
           .pack(value.value.asInstanceOf[value.shape.Mixed])
           .asInstanceOf[Packed]
       def packedShape: Shape[FlatShapeLevel, Packed, Unpacked, Packed] =
-        shape.packedShape
+        shape
+          .packedShape
           .asInstanceOf[Shape[FlatShapeLevel, Packed, Unpacked, Packed]]
       def buildParams(extract: Any => Unpacked): Packed =
         shape.buildParams(extract.asInstanceOf[Any => shape.Unpacked])

@@ -165,7 +165,8 @@ trait ScalacPatternExpanders {
         arityError("not enough")
       else if (elementArity > 0 && !isSeq)
         arityError("too many")
-      else if (settings.warnStarsAlign && isSeq && productArity > 0 && elementArity > 0)
+      else if (settings
+                 .warnStarsAlign && isSeq && productArity > 0 && elementArity > 0)
         warn {
           if (isStar)
             "Sequence wildcard (_*) does not align with repeated case parameter or extracted sequence; the result may be unexpected."
@@ -215,8 +216,8 @@ trait ScalacPatternExpanders {
           ""
         else
           s" to hold ${extractor.offeringString}"
-      val requiresTupling =
-        isUnapply && patterns.totalArity == 1 && productArity > 1
+      val requiresTupling = isUnapply && patterns
+        .totalArity == 1 && productArity > 1
 
       val normalizedExtractor =
         if (requiresTupling) {
@@ -224,10 +225,12 @@ trait ScalacPatternExpanders {
           if (effectivePatternArity(args) == 1 && isTupleType(
                 extractor.typeOfSinglePattern)) {
             val sym = sel.symbol.owner
-            currentRun.reporting.deprecationWarning(
-              sel.pos,
-              sym,
-              s"${sym} expects $productArity patterns$acceptMessage but crushing into $productArity-tuple to fit single pattern (SI-6675)")
+            currentRun
+              .reporting
+              .deprecationWarning(
+                sel.pos,
+                sym,
+                s"${sym} expects $productArity patterns$acceptMessage but crushing into $productArity-tuple to fit single pattern (SI-6675)")
           }
           tupled
         } else

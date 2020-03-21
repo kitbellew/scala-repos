@@ -36,8 +36,8 @@ private[master] class ZooKeeperPersistenceEngine(
     extends PersistenceEngine
     with Logging {
 
-  private val WORKING_DIR =
-    conf.get("spark.deploy.zookeeper.dir", "/spark") + "/master_status"
+  private val WORKING_DIR = conf
+    .get("spark.deploy.zookeeper.dir", "/spark") + "/master_status"
   private val zk: CuratorFramework = SparkCuratorUtil.newClient(conf)
 
   SparkCuratorUtil.mkdir(zk, WORKING_DIR)
@@ -51,7 +51,8 @@ private[master] class ZooKeeperPersistenceEngine(
   }
 
   override def read[T: ClassTag](prefix: String): Seq[T] = {
-    zk.getChildren
+    zk
+      .getChildren
       .forPath(WORKING_DIR)
       .asScala
       .filter(_.startsWith(prefix))

@@ -39,36 +39,41 @@ object MarathonSchedulerDriver {
       frameworkInfoBuilder.setWebuiUrl(config.webuiUrl())
     } else if (httpConfig.sslKeystorePath.isDefined) {
       // ssl enabled, use https
-      frameworkInfoBuilder.setWebuiUrl(
-        s"https://${config.hostname()}:${httpConfig.httpsPort()}")
+      frameworkInfoBuilder
+        .setWebuiUrl(s"https://${config.hostname()}:${httpConfig.httpsPort()}")
     } else {
       // ssl disabled, use http
-      frameworkInfoBuilder.setWebuiUrl(
-        s"http://${config.hostname()}:${httpConfig.httpPort()}")
+      frameworkInfoBuilder
+        .setWebuiUrl(s"http://${config.hostname()}:${httpConfig.httpPort()}")
     }
 
     // set the authentication principal, if provided
-    config.mesosAuthenticationPrincipal.get
+    config
+      .mesosAuthenticationPrincipal
+      .get
       .foreach(frameworkInfoBuilder.setPrincipal)
 
-    val credential: Option[Credential] = config.mesosAuthenticationPrincipal.get
+    val credential: Option[Credential] = config
+      .mesosAuthenticationPrincipal
+      .get
       .map { principal =>
-        val credentialBuilder = Credential
-          .newBuilder()
-          .setPrincipal(principal)
+        val credentialBuilder = Credential.newBuilder().setPrincipal(principal)
 
-        config.mesosAuthenticationSecretFile.get.foreach { secretFile =>
-          try {
-            val secretBytes = ByteString.readFrom(
-              new FileInputStream(secretFile))
-            credentialBuilder.setSecret(secretBytes.toStringUtf8)
-          } catch {
-            case cause: Throwable =>
-              throw new IOException(
-                s"Error reading authentication secret from file [$secretFile]",
-                cause)
+        config
+          .mesosAuthenticationSecretFile
+          .get
+          .foreach { secretFile =>
+            try {
+              val secretBytes = ByteString
+                .readFrom(new FileInputStream(secretFile))
+              credentialBuilder.setSecret(secretBytes.toStringUtf8)
+            } catch {
+              case cause: Throwable =>
+                throw new IOException(
+                  s"Error reading authentication secret from file [$secretFile]",
+                  cause)
+            }
           }
-        }
 
         credentialBuilder.build()
       }

@@ -113,11 +113,15 @@ private[spark] object DecisionTreeMetadata extends Logging {
       numTrees: Int,
       featureSubsetStrategy: String): DecisionTreeMetadata = {
 
-    val numFeatures = input.map(_.features.size).take(1).headOption.getOrElse {
-      throw new IllegalArgumentException(
-        s"DecisionTree requires size of input RDD > 0, " +
-          s"but was given by empty one.")
-    }
+    val numFeatures = input
+      .map(_.features.size)
+      .take(1)
+      .headOption
+      .getOrElse {
+        throw new IllegalArgumentException(
+          s"DecisionTree requires size of input RDD > 0, " +
+            s"but was given by empty one.")
+      }
     val numExamples = input.count()
     val numClasses =
       strategy.algo match {
@@ -140,7 +144,8 @@ private[spark] object DecisionTreeMetadata extends Logging {
     if (strategy.categoricalFeaturesInfo.nonEmpty) {
       val maxCategoriesPerFeature = strategy.categoricalFeaturesInfo.values.max
       val maxCategory =
-        strategy.categoricalFeaturesInfo
+        strategy
+          .categoricalFeaturesInfo
           .find(_._2 == maxCategoriesPerFeature)
           .get
           ._1
@@ -159,32 +164,36 @@ private[spark] object DecisionTreeMetadata extends Logging {
       // Multiclass classification
       val maxCategoriesForUnorderedFeature =
         ((math.log(maxPossibleBins / 2 + 1) / math.log(2.0)) + 1).floor.toInt
-      strategy.categoricalFeaturesInfo.foreach {
-        case (featureIndex, numCategories) =>
-          // Hack: If a categorical feature has only 1 category, we treat it as continuous.
-          // TODO(SPARK-9957): Handle this properly by filtering out those features.
-          if (numCategories > 1) {
-            // Decide if some categorical features should be treated as unordered features,
-            //  which require 2 * ((1 << numCategories - 1) - 1) bins.
-            // We do this check with log values to prevent overflows in case numCategories is large.
-            // The next check is equivalent to: 2 * ((1 << numCategories - 1) - 1) <= maxBins
-            if (numCategories <= maxCategoriesForUnorderedFeature) {
-              unorderedFeatures.add(featureIndex)
-              numBins(featureIndex) = numUnorderedBins(numCategories)
-            } else {
-              numBins(featureIndex) = numCategories
+      strategy
+        .categoricalFeaturesInfo
+        .foreach {
+          case (featureIndex, numCategories) =>
+            // Hack: If a categorical feature has only 1 category, we treat it as continuous.
+            // TODO(SPARK-9957): Handle this properly by filtering out those features.
+            if (numCategories > 1) {
+              // Decide if some categorical features should be treated as unordered features,
+              //  which require 2 * ((1 << numCategories - 1) - 1) bins.
+              // We do this check with log values to prevent overflows in case numCategories is large.
+              // The next check is equivalent to: 2 * ((1 << numCategories - 1) - 1) <= maxBins
+              if (numCategories <= maxCategoriesForUnorderedFeature) {
+                unorderedFeatures.add(featureIndex)
+                numBins(featureIndex) = numUnorderedBins(numCategories)
+              } else {
+                numBins(featureIndex) = numCategories
+              }
             }
-          }
-      }
+        }
     } else {
       // Binary classification or regression
-      strategy.categoricalFeaturesInfo.foreach {
-        case (featureIndex, numCategories) =>
-          // If a categorical feature has only 1 category, we treat it as continuous: SPARK-9957
-          if (numCategories > 1) {
-            numBins(featureIndex) = numCategories
-          }
-      }
+      strategy
+        .categoricalFeaturesInfo
+        .foreach {
+          case (featureIndex, numCategories) =>
+            // If a categorical feature has only 1 category, we treat it as continuous: SPARK-9957
+            if (numCategories > 1) {
+              numBins(featureIndex) = numCategories
+            }
+        }
     }
 
     // Set number of features to use per node (for random forests).

@@ -77,7 +77,8 @@ object RoutesCompiler extends AutoPlugin {
       routesCompilerTasks <<= Def.taskDyn {
 
         // Aggregate all the routes file tasks that we want to compile the reverse routers for.
-        aggregateReverseRoutes.value
+        aggregateReverseRoutes
+          .value
           .map { agg =>
             routesCompilerTasks in (agg.project, configuration.value)
           }
@@ -85,26 +86,30 @@ object RoutesCompiler extends AutoPlugin {
           .map {
             aggTasks: Seq[Seq[RoutesCompilerTask]] =>
               // Aggregated tasks need to have forwards router compilation disabled and reverse router compilation enabled.
-              val reverseRouterTasks = aggTasks.flatten.map { task =>
-                task.copy(forwardsRouter = false, reverseRouter = true)
-              }
+              val reverseRouterTasks = aggTasks
+                .flatten
+                .map { task =>
+                  task.copy(forwardsRouter = false, reverseRouter = true)
+                }
 
               // Find the routes compile tasks for this project
-              val thisProjectTasks = (sources in routes).value.map { file =>
-                RoutesCompilerTask(
-                  file,
-                  routesImport.value,
-                  forwardsRouter = true,
-                  reverseRouter = generateReverseRouter.value,
-                  namespaceReverseRouter = namespaceReverseRouter.value)
-              }
+              val thisProjectTasks = (sources in routes)
+                .value
+                .map { file =>
+                  RoutesCompilerTask(
+                    file,
+                    routesImport.value,
+                    forwardsRouter = true,
+                    reverseRouter = generateReverseRouter.value,
+                    namespaceReverseRouter = namespaceReverseRouter.value)
+                }
 
               thisProjectTasks ++ reverseRouterTasks
           }
       },
       watchSources in Defaults.ConfigGlobal <++= sources in routes,
-      target in routes := crossTarget.value / "routes" / Defaults.nameForSrc(
-        configuration.value.name),
+      target in routes := crossTarget.value / "routes" / Defaults
+        .nameForSrc(configuration.value.name),
       routes <<= compileRoutesFiles,
       sourceGenerators <+= routes,
       managedSourceDirectories <+= target in routes
@@ -119,8 +124,9 @@ object RoutesCompiler extends AutoPlugin {
       // reverse router for it.
       generateReverseRouter <<= Def.settingDyn {
         val projectRef = thisProjectRef.value
-        val dependencies = buildDependencies.value.classpathTransitiveRefs(
-          projectRef)
+        val dependencies = buildDependencies
+          .value
+          .classpathTransitiveRefs(projectRef)
 
         // Go through each dependency of this project
         dependencies
@@ -157,26 +163,33 @@ object RoutesCompiler extends AutoPlugin {
       generatedDir: File,
       cacheDirectory: File,
       log: Logger): Seq[File] = {
-    val ops = tasks.map(task =>
-      RoutesCompilerOp(task, generator.id, PlayVersion.current))
+    val ops = tasks
+      .map(task => RoutesCompilerOp(task, generator.id, PlayVersion.current))
     val (products, errors) =
       syncIncremental(cacheDirectory, ops) { opsToRun: Seq[RoutesCompilerOp] =>
         val results = opsToRun.map { op =>
-          op -> play.routes.compiler.RoutesCompiler
+          op -> play
+            .routes
+            .compiler
+            .RoutesCompiler
             .compile(op.task, generator, generatedDir)
         }
         val opResults =
-          results.map {
-            case (op, Right(inputs)) =>
-              op -> OpSuccess(Set(op.task.file), inputs.toSet)
-            case (op, Left(_)) =>
-              op -> OpFailure
-          }.toMap
+          results
+            .map {
+              case (op, Right(inputs)) =>
+                op -> OpSuccess(Set(op.task.file), inputs.toSet)
+              case (op, Left(_)) =>
+                op -> OpFailure
+            }
+            .toMap
         val errors =
-          results.collect {
-            case (_, Left(e)) =>
-              e
-          }.flatten
+          results
+            .collect {
+              case (_, Left(e)) =>
+                e
+            }
+            .flatten
         (opResults, errors)
       }
 
@@ -211,12 +224,14 @@ object RoutesCompiler extends AutoPlugin {
         log.error(line)
         Option(error.position).map { pos =>
           // print a carat under the offending character
-          val spaces = (line: Seq[Char]).take(pos).map {
-            case '\t' =>
-              '\t'
-            case x =>
-              ' '
-          }
+          val spaces = (line: Seq[Char])
+            .take(pos)
+            .map {
+              case '\t' =>
+                '\t'
+              case x =>
+                ' '
+            }
           log.error(spaces.mkString + "^")
         }
     }
@@ -229,7 +244,8 @@ object RoutesCompiler extends AutoPlugin {
         case GeneratedSource(generatedSource) => {
           new xsbti.Position {
             lazy val line = {
-              position.line
+              position
+                .line
                 .flatMap(l => generatedSource.mapLine(l.asInstanceOf[Int]))
                 .map(l => xsbti.Maybe.just(l.asInstanceOf[java.lang.Integer]))
                 .getOrElse(xsbti.Maybe.nothing[java.lang.Integer])

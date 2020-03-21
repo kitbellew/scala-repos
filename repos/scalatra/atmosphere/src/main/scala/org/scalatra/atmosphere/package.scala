@@ -39,7 +39,8 @@ package object atmosphere {
   implicit def atmoResourceWithClient(res: AtmosphereResource) =
     new {
       def clientOption =
-        res.session
+        res
+          .session
           .get(AtmosphereClientKey)
           .asInstanceOf[Option[AtmosphereClient]]
       def client =
@@ -72,9 +73,11 @@ package object atmosphere {
           })
         .future
     } else {
-      system.scheduler.scheduleOnce(10 milliseconds) {
-        pollJavaFutureUntilDoneOrCancelled(javaFuture, promise, maybeTimeout)
-      }
+      system
+        .scheduler
+        .scheduleOnce(10 milliseconds) {
+          pollJavaFutureUntilDoneOrCancelled(javaFuture, promise, maybeTimeout)
+        }
     }
   }
 

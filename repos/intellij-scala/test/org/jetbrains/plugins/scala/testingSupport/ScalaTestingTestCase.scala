@@ -137,10 +137,13 @@ abstract class ScalaTestingTestCase(
               wrapper: StructureViewComponent.StructureViewTreeElementWrapper) {
             import scala.collection.JavaConversions._
             wrapper.initChildren()
-            wrapper.getChildren.toList.foreach(node =>
-              initTree(
-                node.asInstanceOf[
-                  StructureViewComponent.StructureViewTreeElementWrapper]))
+            wrapper
+              .getChildren
+              .toList
+              .foreach(node =>
+                initTree(
+                  node.asInstanceOf[
+                    StructureViewComponent.StructureViewTreeElementWrapper]))
           }
           initTree(wrapper)
         }
@@ -257,7 +260,8 @@ abstract class ScalaTestingTestCase(
     assert(configurationCheck(runConfig))
     assert(
       runConfig.getConfiguration.isInstanceOf[AbstractTestRunConfiguration])
-    runConfig.getConfiguration
+    runConfig
+      .getConfiguration
       .asInstanceOf[AbstractTestRunConfiguration]
       .setupIntegrationTestClassPath()
     val testResultListener = new TestResultListener(runConfig.getName)
@@ -270,9 +274,13 @@ abstract class ScalaTestingTestCase(
             saveChecksums()
           }
           val runner =
-            ProgramRunner.PROGRAM_RUNNER_EP.getExtensions.find {
-              _.getClass == classOf[DefaultJavaProgramRunner]
-            }.get
+            ProgramRunner
+              .PROGRAM_RUNNER_EP
+              .getExtensions
+              .find {
+                _.getClass == classOf[DefaultJavaProgramRunner]
+              }
+              .get
           val (handler, runContentDescriptor) = runProcess(
             runConfig,
             classOf[DefaultRunExecutor],
@@ -307,8 +315,9 @@ abstract class ScalaTestingTestCase(
       runner: ProgramRunner[_ <: RunnerSettings])
       : (ProcessHandler, RunContentDescriptor) = {
     val configuration = runConfiguration.getConfiguration
-    val executor: Executor = Executor.EXECUTOR_EXTENSION_NAME.findExtension(
-      executorClass)
+    val executor: Executor = Executor
+      .EXECUTOR_EXTENSION_NAME
+      .findExtension(executorClass)
     val executionEnvironmentBuilder: ExecutionEnvironmentBuilder =
       new ExecutionEnvironmentBuilder(configuration.getProject, executor)
     executionEnvironmentBuilder.runProfile(configuration)

@@ -54,7 +54,8 @@ private[stream] object Fusing {
     /*
      * Then create a copy of the original Shape with the new copied ports.
      */
-    val shape = g.shape
+    val shape = g
+      .shape
       .copyFromPorts(
         struct.newInlets(g.shape.inlets),
         struct.newOutlets(g.shape.outlets))
@@ -97,14 +98,17 @@ private[stream] object Fusing {
     * in their set.
     */
   private def fuse(struct: BuildStructuralInfo): Set[Module] =
-    struct.groups.asScala.flatMap { group ⇒
-      if (group.size == 0)
-        Nil
-      else if (group.size == 1)
-        group.iterator.next() :: Nil
-      else
-        fuseGroup(struct, group) :: Nil
-    }(collection.breakOut)
+    struct
+      .groups
+      .asScala
+      .flatMap { group ⇒
+        if (group.size == 0)
+          Nil
+        else if (group.size == 1)
+          group.iterator.next() :: Nil
+        else
+          fuseGroup(struct, group) :: Nil
+      }(collection.breakOut)
 
   /**
     * Transform a set of GraphStageModules into a single GraphModule. This is done
@@ -157,22 +161,26 @@ private[stream] object Fusing {
           matValIDs(pos) = copy
           attributes(pos) = attr and gsm.attributes
 
-          shape.inlets.iterator.zip(gsm.shape.inlets.iterator).foreach {
-            case (in, orig) ⇒
-              val out = ups.get(in)
-              val internal = (out != null) && (outGroup.get(out) eq group)
-              if (internal) {
-                ups.remove(in)
-                downs.remove(out)
-                outConns.put(out, insB2.size)
-                insB2.add(orig)
-                inOwnersB2.add(pos)
-              } else {
-                insB1.add(orig)
-                inOwnersB1.add(pos)
-                inlets.add(in)
-              }
-          }
+          shape
+            .inlets
+            .iterator
+            .zip(gsm.shape.inlets.iterator)
+            .foreach {
+              case (in, orig) ⇒
+                val out = ups.get(in)
+                val internal = (out != null) && (outGroup.get(out) eq group)
+                if (internal) {
+                  ups.remove(in)
+                  downs.remove(out)
+                  outConns.put(out, insB2.size)
+                  insB2.add(orig)
+                  inOwnersB2.add(pos)
+                } else {
+                  insB1.add(orig)
+                  inOwnersB1.add(pos)
+                  inlets.add(in)
+                }
+            }
 
           pos += 1
         case _ =>
@@ -190,18 +198,22 @@ private[stream] object Fusing {
     while (it.hasNext)
       it.next() match {
         case CopiedModule(shape, _, gsm: GraphStageModule) ⇒
-          shape.outlets.iterator.zip(gsm.shape.outlets.iterator).foreach {
-            case (out, orig) ⇒
-              if (outConns.containsKey(out)) {
-                val idx = outConns.remove(out)
-                outsB2(idx) = orig
-                outOwnersB2(idx) = pos
-              } else {
-                outsB3.add(orig)
-                outOwnersB3.add(pos)
-                outlets.add(out)
-              }
-          }
+          shape
+            .outlets
+            .iterator
+            .zip(gsm.shape.outlets.iterator)
+            .foreach {
+              case (out, orig) ⇒
+                if (outConns.containsKey(out)) {
+                  val idx = outConns.remove(out)
+                  outsB2(idx) = orig
+                  outOwnersB2(idx) = pos
+                } else {
+                  outsB3.add(orig)
+                  outOwnersB3.add(pos)
+                  outlets.add(out)
+                }
+            }
           pos += 1
         case _ =>
           throw new IllegalArgumentException("unexpected module structure")
@@ -341,9 +353,11 @@ private[stream] object Fusing {
             log(
               s"dissolving graph module ${m.toString.replace("\n", "\n" + "  " * indent)}")
           val attributes = inheritedAttributes and m.attributes
-          gm.matValIDs.flatMap(sub ⇒
-            descend(sub, attributes, struct, localGroup, indent + 1))(
-            collection.breakOut)
+          gm
+            .matValIDs
+            .flatMap(sub ⇒
+              descend(sub, attributes, struct, localGroup, indent + 1))(
+              collection.breakOut)
         case gm @ GraphModule(_, oldShape, _, mvids) ⇒
           /*
            * Importing a GraphModule that has an AsyncBoundary attribute is a little more work:
@@ -449,7 +463,8 @@ private[stream] object Fusing {
           // computation context (i.e. that need the same value).
           struct.enterMatCtx()
           // now descend into submodules and collect their computations (plus updates to `struct`)
-          val subMatBuilder = Predef.Map
+          val subMatBuilder = Predef
+            .Map
             .newBuilder[Module, MaterializedValueNode]
           val subIterator = m.subModules.iterator
           while (subIterator.hasNext) {
@@ -477,8 +492,9 @@ private[stream] object Fusing {
                 m.downstreams.toSet
             }
           val down =
-            m.subModules.foldLeft(oldDownstreams)((set, m) ⇒
-              set -- m.downstreams)
+            m
+              .subModules
+              .foldLeft(oldDownstreams)((set, m) ⇒ set -- m.downstreams)
           down.foreach {
             case (start, end) ⇒
               struct.wire(start, end, indent)
@@ -493,7 +509,8 @@ private[stream] object Fusing {
             matNodeMapping)
           if (Debug)
             log(
-              matNodeMapping.asScala
+              matNodeMapping
+                .asScala
                 .map(p ⇒ s"${p._1} -> ${p._2}")
                 .mkString(
                   "matNodeMapping\n  " + "  " * indent,
@@ -502,7 +519,8 @@ private[stream] object Fusing {
           // and finally rewire all MaterializedValueSources to their new computation nodes
           val matSrcs = struct.exitMatCtx()
           matSrcs.foreach { c ⇒
-            val ms = c.copyOf
+            val ms = c
+              .copyOf
               .asInstanceOf[GraphStageModule]
               .stage
               .asInstanceOf[MaterializedValueSource[Any]]
@@ -750,22 +768,25 @@ private[stream] object Fusing {
     def dump(): Unit = {
       println("StructuralInfo:")
       println("  newIns:")
-      newIns.asScala.foreach {
-        case (k, v) ⇒
-          println(s"    $k (${hash(k)}) -> ${v.map(hash).mkString(",")}")
-      }
+      newIns
+        .asScala
+        .foreach {
+          case (k, v) ⇒
+            println(s"    $k (${hash(k)}) -> ${v.map(hash).mkString(",")}")
+        }
       println("  newOuts:")
-      newOuts.asScala.foreach {
-        case (k, v) ⇒
-          println(s"    $k (${hash(k)}) -> ${v.map(hash).mkString(",")}")
-      }
+      newOuts
+        .asScala
+        .foreach {
+          case (k, v) ⇒
+            println(s"    $k (${hash(k)}) -> ${v.map(hash).mkString(",")}")
+        }
     }
 
     def hash(obj: AnyRef) = f"${System.identityHashCode(obj)}%08x"
     def printShape(s: Shape) =
-      s"${s.getClass.getSimpleName}(ins=${s.inlets
-        .map(hash)
-        .mkString(",")} outs=${s.outlets.map(hash).mkString(",")})"
+      s"${s.getClass.getSimpleName}(ins=${s.inlets.map(hash).mkString(
+        ",")} outs=${s.outlets.map(hash).mkString(",")})"
 
     /**
       * Create and return a new grouping (i.e. an AsyncBoundary-delimited context)
@@ -873,20 +894,28 @@ private[stream] object Fusing {
       if (Debug)
         println(
           "  " * indent + s"rewiring ${printShape(oldShape)} -> ${printShape(newShape)}")
-      oldShape.inlets.iterator.zip(newShape.inlets.iterator).foreach {
-        case (oldIn, newIn) ⇒
-          addMapping(
-            newIn,
-            removeMapping(oldIn, newIns) nonNull s"$oldIn (${hash(oldIn)})",
-            newIns)
-      }
-      oldShape.outlets.iterator.zip(newShape.outlets.iterator).foreach {
-        case (oldOut, newOut) ⇒
-          addMapping(
-            newOut,
-            removeMapping(oldOut, newOuts) nonNull s"$oldOut (${hash(oldOut)})",
-            newOuts)
-      }
+      oldShape
+        .inlets
+        .iterator
+        .zip(newShape.inlets.iterator)
+        .foreach {
+          case (oldIn, newIn) ⇒
+            addMapping(
+              newIn,
+              removeMapping(oldIn, newIns) nonNull s"$oldIn (${hash(oldIn)})",
+              newIns)
+        }
+      oldShape
+        .outlets
+        .iterator
+        .zip(newShape.outlets.iterator)
+        .foreach {
+          case (oldOut, newOut) ⇒
+            addMapping(
+              newOut,
+              removeMapping(oldOut, newOuts) nonNull s"$oldOut (${hash(oldOut)})",
+              newOuts)
+        }
     }
 
     /**

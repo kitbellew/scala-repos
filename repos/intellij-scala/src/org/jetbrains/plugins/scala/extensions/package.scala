@@ -102,7 +102,8 @@ package object extensions {
       """(?-i)(?:get|is|can|could|has|have|to)\p{Lu}.*""".r
 
     val MutatorNamePattern =
-      """(?-i)(?:do|set|add|remove|insert|delete|aquire|release|update)(?:\p{Lu}.*)""".r
+      """(?-i)(?:do|set|add|remove|insert|delete|aquire|release|update)(?:\p{Lu}.*)"""
+        .r
   }
 
   implicit class TraversableExt[CC[X] <: Traversable[X], A](val value: CC[A])
@@ -336,7 +337,9 @@ package object extensions {
           wrappers.foreach(w => processName(w.name))
         case method: PsiMethod if !method.isConstructor =>
           if (isStatic) {
-            if (method.containingClass != null && method.containingClass.qualifiedName != "java.lang.Object") {
+            if (method.containingClass != null && method
+                  .containingClass
+                  .qualifiedName != "java.lang.Object") {
               processMethod(StaticPsiMethodWrapper.getWrapper(method, clazz))
               processName(method.getName)
             }
@@ -366,14 +369,16 @@ package object extensions {
     def namedElements: Seq[PsiNamedElement] = {
       clazz match {
         case td: ScTemplateDefinition =>
-          td.members.flatMap {
-            case holder: ScDeclaredElementsHolder =>
-              holder.declaredElements
-            case named: ScNamedElement =>
-              Seq(named)
-            case _ =>
-              Seq.empty
-          }
+          td
+            .members
+            .flatMap {
+              case holder: ScDeclaredElementsHolder =>
+                holder.declaredElements
+              case named: ScNamedElement =>
+                Seq(named)
+              case _ =>
+                Seq.empty
+            }
         case _ =>
           clazz.getFields ++ clazz.getMethods
       }
@@ -481,24 +486,28 @@ package object extensions {
 
   def startCommand(project: Project, commandName: String)(
       body: => Unit): Unit = {
-    CommandProcessor.getInstance.executeCommand(
-      project,
-      new Runnable {
-        def run() {
-          inWriteAction {
-            body
+    CommandProcessor
+      .getInstance
+      .executeCommand(
+        project,
+        new Runnable {
+          def run() {
+            inWriteAction {
+              body
+            }
           }
-        }
-      },
-      commandName,
-      null)
+        },
+        commandName,
+        null)
   }
 
   def inWriteAction[T](body: => T): T = {
-    ApplicationManager.getApplication.runWriteAction(
-      new Computable[T] {
-        def compute: T = body
-      })
+    ApplicationManager
+      .getApplication
+      .runWriteAction(
+        new Computable[T] {
+          def compute: T = body
+        })
   }
 
   def inWriteCommandAction[T](
@@ -518,10 +527,12 @@ package object extensions {
   }
 
   def inReadAction[T](body: => T): T = {
-    ApplicationManager.getApplication.runReadAction(
-      new Computable[T] {
-        def compute: T = body
-      })
+    ApplicationManager
+      .getApplication
+      .runReadAction(
+        new Computable[T] {
+          def compute: T = body
+        })
   }
 
   def executeOnPooledThread[T](body: => T): Future[T] = {
@@ -552,11 +563,8 @@ package object extensions {
       }
 
     catching(classOf[Exception]).withTry {
-      progressManager.runProcessWithProgressSynchronously(
-        computable,
-        title,
-        false,
-        null)
+      progressManager
+        .runProcessWithProgressSynchronously(computable, title, false, null)
     }
   }
 
@@ -580,12 +588,14 @@ package object extensions {
   }
 
   def invokeLater[T](body: => T) {
-    ApplicationManager.getApplication.invokeLater(
-      new Runnable {
-        def run() {
-          body
-        }
-      })
+    ApplicationManager
+      .getApplication
+      .invokeLater(
+        new Runnable {
+          def run() {
+            body
+          }
+        })
   }
 
   def invokeAndWait[T](body: => Unit) {

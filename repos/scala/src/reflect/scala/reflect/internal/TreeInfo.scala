@@ -171,8 +171,9 @@ abstract class TreeInfo {
   /** Is `tree`'s type volatile? (Ignored if its symbol has the @uncheckedStable annotation.)
     */
   def hasVolatileType(tree: Tree): Boolean =
-    symOk(tree.symbol) && tree.tpe.isVolatile && !tree.symbol.hasAnnotation(
-      uncheckedStableClass)
+    symOk(tree.symbol) && tree.tpe.isVolatile && !tree
+      .symbol
+      .hasAnnotation(uncheckedStableClass)
 
   /** Is `tree` either a non-volatile type,
     *  or a path that does not include any of:
@@ -228,8 +229,9 @@ abstract class TreeInfo {
         // Apply(function, Nil) trees. To prevent them from being treated as pure,
         // we check that the callee is a method.
         // The callee might also be a Block, which has a null symbol, so we guard against that (SI-7185)
-        fn.symbol != null && fn.symbol.isMethod && !fn.symbol.isLazy && isExprSafeToInline(
-          fn)
+        fn.symbol != null && fn.symbol.isMethod && !fn
+          .symbol
+          .isLazy && isExprSafeToInline(fn)
       case Typed(expr, _) =>
         isExprSafeToInline(expr)
       case Block(stats, expr) =>
@@ -254,16 +256,16 @@ abstract class TreeInfo {
         def isWarnableRefTree =
           tree match {
             case t: RefTree =>
-              isExprSafeToInline(
-                t.qualifier) && t.symbol != null && t.symbol.isAccessor
+              isExprSafeToInline(t.qualifier) && t
+                .symbol != null && t.symbol.isAccessor
             case _ =>
               false
           }
         def isWarnableSymbol = {
           val sym = tree.symbol
           (sym == null) || !(
-            sym.isModule || sym.isLazy || definitions.isByNameParamType(
-              sym.tpe_*)
+            sym.isModule || sym
+              .isLazy || definitions.isByNameParamType(sym.tpe_*)
           ) || {
             debuglog(
               "'Pure' but side-effecting expression in statement position: " + tree)
@@ -500,7 +502,9 @@ abstract class TreeInfo {
   private[internal] def detectTypecheckedTree(tree: Tree) =
     tree.hasExistingSymbol || tree.exists {
       case dd: DefDef =>
-        dd.mods.hasAccessorFlag || dd.mods.isSynthetic // for untypechecked trees
+        dd.mods.hasAccessorFlag || dd
+          .mods
+          .isSynthetic // for untypechecked trees
       case md: MemberDef =>
         md.hasExistingSymbol
       case _ =>
@@ -783,12 +787,14 @@ abstract class TreeInfo {
 
   /** Is this CaseDef synthetically generated, e.g. by `MatchTranslation.translateTry`? */
   def isSyntheticCase(cdef: CaseDef) =
-    cdef.pat.exists {
-      case dt: DefTree =>
-        dt.symbol.isSynthetic
-      case _ =>
-        false
-    }
+    cdef
+      .pat
+      .exists {
+        case dt: DefTree =>
+          dt.symbol.isSynthetic
+        case _ =>
+          false
+      }
 
   /** Is this pattern node a catch-all or type-test pattern? */
   def isCatchCase(cdef: CaseDef) =

@@ -90,7 +90,8 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     val origCol = $"a".as("b", metadata.build())
     val newCol = origCol.as("c")
     assert(
-      newCol.expr
+      newCol
+        .expr
         .asInstanceOf[NamedExpression]
         .metadata
         .getString("key") === "value")
@@ -139,7 +140,8 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     val df = Seq((1, Map("a" -> "b"))).toDF("a", "map")
 
     checkAnswer(
-      df.select(explode('map).as("key1" :: "value1" :: Nil))
+      df
+        .select(explode('map).as("key1" :: "value1" :: Nil))
         .select("key1", "value1"),
       Row("a", "b"))
   }
@@ -443,17 +445,20 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
       df.collect().toSeq.filter(r => r.getInt(0) == 3 || r.getInt(0) == 1))
     checkAnswer(
       df.filter($"b".isin("y", "x")),
-      df.collect()
+      df
+        .collect()
         .toSeq
         .filter(r => r.getString(1) == "y" || r.getString(1) == "x"))
     checkAnswer(
       df.filter($"b".isin("z", "x")),
-      df.collect()
+      df
+        .collect()
         .toSeq
         .filter(r => r.getString(1) == "z" || r.getString(1) == "x"))
     checkAnswer(
       df.filter($"b".isin("z", "y")),
-      df.collect()
+      df
+        .collect()
         .toSeq
         .filter(r => r.getString(1) == "z" || r.getString(1) == "y"))
 
@@ -490,15 +495,15 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     val testData = (1 to 3).map(i => (i, i.toString)).toDF("key", "value")
 
     checkAnswer(
-      testData.select(
-        when($"key" === 1, -1).when($"key" === 2, -2).otherwise(0)),
+      testData
+        .select(when($"key" === 1, -1).when($"key" === 2, -2).otherwise(0)),
       Seq(Row(-1), Row(-2), Row(0)))
 
     // Without the ending otherwise, return null for unmatched conditions.
     // Also test putting a non-literal value in the expression.
     checkAnswer(
-      testData.select(
-        when($"key" === 1, lit(0) - $"key").when($"key" === 2, -2)),
+      testData
+        .select(when($"key" === 1, lit(0) - $"key").when($"key" === 2, -2)),
       Seq(Row(-1), Row(-2), Row(null)))
 
     // Test error handling for invalid expressions.
@@ -592,7 +597,8 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     withTempPath { dir =>
       val data = sparkContext.parallelize(0 to 10).toDF("id")
       data.write.parquet(dir.getCanonicalPath)
-      val answer = sqlContext.read
+      val answer = sqlContext
+        .read
         .parquet(dir.getCanonicalPath)
         .select(input_file_name())
         .head
@@ -612,10 +618,7 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     val metadata = new MetadataBuilder()
       .putString("originName", "value")
       .build()
-    val schema =
-      testData
-        .select($"*", col("value").as("abc", metadata))
-        .schema
+    val schema = testData.select($"*", col("value").as("abc", metadata)).schema
     assert(schema("value").metadata === Metadata.empty)
     assert(schema("abc").metadata === metadata)
   }
@@ -630,10 +633,13 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     }
 
     def checkNumProjects(df: DataFrame, expectedNumProjects: Int): Unit = {
-      val projects = df.queryExecution.sparkPlan.collect {
-        case tungstenProject: Project =>
-          tungstenProject
-      }
+      val projects = df
+        .queryExecution
+        .sparkPlan
+        .collect {
+          case tungstenProject: Project =>
+            tungstenProject
+        }
       assert(projects.size === expectedNumProjects)
     }
 
@@ -663,9 +669,11 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     //     LogicalRDD [key, value]
     val dfWithThreeProjects = dfWithTwoProjects.select($"rand1" - $"rand2")
     checkNumProjects(dfWithThreeProjects, 2)
-    dfWithThreeProjects.collect().foreach { row =>
-      assert(row.getDouble(0) === 2.0 +- 0.0001)
-    }
+    dfWithThreeProjects
+      .collect()
+      .foreach { row =>
+        assert(row.getDouble(0) === 2.0 +- 0.0001)
+      }
   }
 
   test("randn") {

@@ -25,10 +25,13 @@ class ExpandRecords extends Phase {
           })
       case p: ProductType =>
         ProductNode(
-          p.elements.zipWithIndex.map {
-            case (t, i) =>
-              expandPath(n.select(new ElementSymbol(i + 1)) :@ t)
-          })
+          p
+            .elements
+            .zipWithIndex
+            .map {
+              case (t, i) =>
+                expandPath(n.select(new ElementSymbol(i + 1)) :@ t)
+            })
       case t =>
         n.asInstanceOf[PathElement].untypedPath
     }

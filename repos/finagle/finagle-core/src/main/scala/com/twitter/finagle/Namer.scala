@@ -141,16 +141,20 @@ object Namer {
     * Resolve a path to an address set (taking `dtab` into account).
     */
   def resolve(dtab: Dtab, path: Path): Var[Addr] =
-    NameInterpreter.bind(dtab, path).map(_.eval).run.flatMap {
-      case Activity.Ok(None) =>
-        Var.value(Addr.Neg)
-      case Activity.Ok(Some(names)) =>
-        Name.all(names).addr
-      case Activity.Pending =>
-        Var.value(Addr.Pending)
-      case Activity.Failed(exc) =>
-        Var.value(Addr.Failed(exc))
-    }
+    NameInterpreter
+      .bind(dtab, path)
+      .map(_.eval)
+      .run
+      .flatMap {
+        case Activity.Ok(None) =>
+          Var.value(Addr.Neg)
+        case Activity.Ok(Some(names)) =>
+          Name.all(names).addr
+        case Activity.Pending =>
+          Var.value(Addr.Pending)
+        case Activity.Failed(exc) =>
+          Var.value(Addr.Failed(exc))
+      }
 
   /**
     * Resolve a path to an address set (taking [[Dtab.local]] into account).
@@ -238,8 +242,8 @@ object Namer {
       weight: Option[Double])(
       tree: NameTree[Name]): Activity[NameTree[Name.Bound]] =
     if (depth > MaxDepth)
-      Activity.exception(
-        new IllegalArgumentException("Max recursion level reached."))
+      Activity
+        .exception(new IllegalArgumentException("Max recursion level reached."))
     else
       tree match {
         case Leaf(Name.Path(path)) =>

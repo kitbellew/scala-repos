@@ -101,7 +101,7 @@ trait TestEventService
         None,
         None) { accountId =>
         apiKeyManager.newStandardAPIKeyRecord(accountId).map(_.apiKey)
-    } copoint
+      } copoint
 
   private val accountFinder =
     new TestAccountFinder[Future](
@@ -129,8 +129,10 @@ trait TestEventService
         AccountPlan.Free,
         None,
         None) { accountId =>
-        apiKeyManager.newStandardAPIKeyRecord(accountId).map(_.apiKey).flatMap {
-          expiredAPIKey =>
+        apiKeyManager
+          .newStandardAPIKeyRecord(accountId)
+          .map(_.apiKey)
+          .flatMap { expiredAPIKey =>
             apiKeyManager
               .deriveAndAddGrant(
                 None,
@@ -140,8 +142,8 @@ trait TestEventService
                 expiredAPIKey,
                 Some(new DateTime().minusYears(1000)))
               .map(_ => expiredAPIKey)
-      }
-    } copoint
+          }
+      } copoint
 
   private val stored = scala.collection.mutable.ArrayBuffer.empty[Event]
 
@@ -168,7 +170,9 @@ trait TestEventService
     val shardClient =
       new HttpClient.EchoClient((_: HttpRequest[ByteChunk]).content)
     val localhost = ServiceLocation("http", "localhost", 80, None)
-    val tmpdir = java.io.File
+    val tmpdir = java
+      .io
+      .File
       .createTempFile("test.ingest.tmpdir", null)
       .getParentFile()
     val serviceConfig = ServiceConfig(
@@ -213,17 +217,16 @@ trait TestEventService
       .path("/ingest/v2/fs/")
 
     val queries =
-      List(
-        apiKey.map(("apiKey", _)),
-        ownerAccountId.map(("ownerAccountId", _))).sequence
+      List(apiKey.map(("apiKey", _)), ownerAccountId.map(("ownerAccountId", _)))
+        .sequence
 
     val svcWithQueries = queries.map(svc.queries(_: _*)).getOrElse(svc)
 
     stored.clear()
     for {
       response <- svcWithQueries.post[A](path.toString)(data)
-      content <- response.content map (a =>
-        bi(a) map (Some(_))) getOrElse Future(None)
+      content <- response
+        .content map (a => bi(a) map (Some(_))) getOrElse Future(None)
     } yield {
       (
         response.copy(content = content),

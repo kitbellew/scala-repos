@@ -21,8 +21,8 @@ object FutureDocSpec {
       case x: String =>
         sender() ! x.toUpperCase
       case x: Int if x < 0 =>
-        sender() ! Status.Failure(
-          new ArithmeticException("Negative values not supported"))
+        sender() ! Status
+          .Failure(new ArithmeticException("Negative values not supported"))
       case x: Int =>
         sender() ! x
     }
@@ -49,13 +49,16 @@ class FutureDocSpec extends AkkaSpec {
   }
 
   "demonstrate usage custom ExecutionContext" in {
-    val yourExecutorServiceGoesHere = java.util.concurrent.Executors
+    val yourExecutorServiceGoesHere = java
+      .util
+      .concurrent
+      .Executors
       .newSingleThreadExecutor()
     //#diy-execution-context
     import scala.concurrent.{ExecutionContext, Promise}
 
-    implicit val ec = ExecutionContext.fromExecutorService(
-      yourExecutorServiceGoesHere)
+    implicit val ec = ExecutionContext
+      .fromExecutorService(yourExecutorServiceGoesHere)
 
     // Do stuff with your brand new shiny ExecutionContext
     val f = Promise.successful("foo")
@@ -170,11 +173,13 @@ class FutureDocSpec extends AkkaSpec {
 
     future2 foreach println
 
-    val failedFilter = future1.filter(_ % 2 == 1).recover {
-      // When filter fails, it will have a java.util.NoSuchElementException
-      case m: NoSuchElementException =>
-        0
-    }
+    val failedFilter = future1
+      .filter(_ % 2 == 1)
+      .recover {
+        // When filter fails, it will have a java.util.NoSuchElementException
+        case m: NoSuchElementException =>
+          0
+      }
 
     failedFilter foreach println
     //#filter
@@ -274,8 +279,8 @@ class FutureDocSpec extends AkkaSpec {
 
   "demonstrate usage of sequence" in {
     //#sequence
-    val futureList = Future.sequence(
-      (1 to 100).toList.map(x => Future(x * 2 - 1)))
+    val futureList = Future
+      .sequence((1 to 100).toList.map(x => Future(x * 2 - 1)))
     val oddSum = futureList.map(_.sum)
     oddSum foreach println
     //#sequence
@@ -444,8 +449,8 @@ class FutureDocSpec extends AkkaSpec {
     val future = Future.successful("Yay!")
     //#successful
     //#failed
-    val otherFuture = Future.failed[String](
-      new IllegalArgumentException("Bang!"))
+    val otherFuture = Future
+      .failed[String](new IllegalArgumentException("Bang!"))
     //#failed
     //#promise
     val promise = Promise[String]()
@@ -465,8 +470,10 @@ class FutureDocSpec extends AkkaSpec {
     // import akka.pattern.after
 
     val delayed =
-      akka.pattern.after(200 millis, using = system.scheduler)(
-        Future.failed(new IllegalStateException("OHNOES")))
+      akka
+        .pattern
+        .after(200 millis, using = system.scheduler)(
+          Future.failed(new IllegalStateException("OHNOES")))
     val future = Future {
       Thread.sleep(1000);
       "foo"

@@ -136,7 +136,8 @@ private[http] class HttpRequestParser(
 
     val uriEnd = findUriEnd()
     try {
-      uriBytes = input.iterator
+      uriBytes = input
+        .iterator
         .slice(uriStart, uriEnd)
         .toArray[Byte] // TODO: can we reduce allocations here?
       uri = Uri.parseHttpRequestTarget(uriBytes, mode = uriParsingMode)
@@ -176,7 +177,8 @@ private[http] class HttpRequestParser(
 
         val allHeaders =
           if (method == HttpMethods.GET) {
-            Handshake.Server
+            Handshake
+              .Server
               .websocketUpgrade(headers, hostHeaderPresent) match {
               case Some(upgrade) ⇒
                 upgrade :: allHeaders0

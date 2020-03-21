@@ -372,8 +372,8 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
     }
 
     "substitute a String by id" in {
-      ("#foo" replaceWith "hello").apply(<b><span id="foo"/></b>) must ==/(
-        <b>hello</b>)
+      ("#foo" replaceWith "hello")
+        .apply(<b><span id="foo"/></b>) must ==/(<b>hello</b>)
     }
 
     "substitute a String by nested class" in {
@@ -401,8 +401,8 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
     }
 
     "Select a node" in {
-      ("#foo ^^" #> "hello").apply(<div><span id="foo"/></div>) must ==/(
-        <span id="foo"/>)
+      ("#foo ^^" #> "hello")
+        .apply(<div><span id="foo"/></div>) must ==/(<span id="foo"/>)
     }
 
     "Another nested select" in {
@@ -825,8 +825,8 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
     }
 
     "Map of funcs" in {
-      val func: NodeSeq => NodeSeq =
-        "#horse" #> List(1, 2, 3).map(".item *" #> _)
+      val func: NodeSeq => NodeSeq = "#horse" #> List(1, 2, 3)
+        .map(".item *" #> _)
       val answer: NodeSeq = func(
         <span><div id="horse">frog<span class="item">i</span></div></span>)
 
@@ -851,10 +851,9 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
 
     "merge classes" in {
       val answer =
-        (
-          "cute=moose" #> <input class="a" name="goof" value="8" id="88"/>
-        ).apply(
-          <div><input name="meow" class="b" cute="moose" value="start" id="79"/></div>)
+        ("cute=moose" #> <input class="a" name="goof" value="8" id="88"/>)
+          .apply(
+            <div><input name="meow" class="b" cute="moose" value="start" id="79"/></div>)
 
       (answer \ "input")(0) must ==/(
         <input class="a b" cute="moose" name="goof" value="8" id="88"/>)

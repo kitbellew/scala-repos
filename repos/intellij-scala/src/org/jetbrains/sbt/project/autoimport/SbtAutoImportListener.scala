@@ -34,18 +34,20 @@ class SbtAutoImportListener(project: Project) extends VirtualFileAdapter {
         .getLinkedProjectSettings(project.getBasePath))
 
     if (settings.fold(false)(_.useOurOwnAutoImport) && isBuildFile(file)) {
-      ApplicationManager.getApplication.invokeLater(
-        new Runnable() {
-          override def run(): Unit =
-            ExternalSystemUtil.refreshProjects(
-              new ImportSpecBuilder(project, SbtProjectSystem.Id)
-                .forceWhenUptodate()
-                .use(ProgressExecutionMode.IN_BACKGROUND_ASYNC))
-        })
+      ApplicationManager
+        .getApplication
+        .invokeLater(
+          new Runnable() {
+            override def run(): Unit =
+              ExternalSystemUtil.refreshProjects(
+                new ImportSpecBuilder(project, SbtProjectSystem.Id)
+                  .forceWhenUptodate()
+                  .use(ProgressExecutionMode.IN_BACKGROUND_ASYNC))
+          })
     }
   }
 
   private def isBuildFile(file: VirtualFile): Boolean =
-    Option(file.getCanonicalPath).fold(false)(path =>
-      Sbt.isProjectDefinitionFile(project, path.toFile))
+    Option(file.getCanonicalPath)
+      .fold(false)(path => Sbt.isProjectDefinitionFile(project, path.toFile))
 }

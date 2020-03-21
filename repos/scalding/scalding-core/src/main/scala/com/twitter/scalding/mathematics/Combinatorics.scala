@@ -53,11 +53,13 @@ object Combinatorics {
     val n = input.size
     val allc = (1 to k).toList.map(x => Symbol("n" + x)) // all column names
 
-    val pipes = allc.zipWithIndex.map(x => {
-      val num = x._2 + 1
-      val pipe = IterableSource((num to n), x._1).read
-      (pipe, num)
-    })
+    val pipes = allc
+      .zipWithIndex
+      .map(x => {
+        val num = x._2 + 1
+        val pipe = IterableSource((num to n), x._1).read
+        (pipe, num)
+      })
 
     val res =
       pipes
@@ -66,7 +68,8 @@ object Combinatorics {
           val prevname = Symbol("n" + (num - 1))
           val myname = Symbol("n" + num)
           val mypipe =
-            a._1
+            a
+              ._1
               .crossWithSmaller(b._1)
               .filter(prevname, myname) { foo: (Int, Int) =>
                 val (nn1, nn2) = foo
@@ -79,7 +82,8 @@ object Combinatorics {
     (1 to k).foldLeft(res)((a, b) => {
       val myname = Symbol("n" + b)
       val newname = Symbol("k" + b)
-      a.map(myname -> newname) { inpc: Int =>
+      a
+        .map(myname -> newname) { inpc: Int =>
           input(inpc - 1)
         }
         .discard(myname)
@@ -114,8 +118,8 @@ object Combinatorics {
         })
         .filter(allc) { x: TupleEntry =>
           Boolean
-          val values = (0 until allc.size).map(i =>
-            x.getInteger(i.asInstanceOf[java.lang.Integer]))
+          val values = (0 until allc.size)
+            .map(i => x.getInteger(i.asInstanceOf[java.lang.Integer]))
           values.size == values.distinct.size
         }
 
@@ -123,7 +127,8 @@ object Combinatorics {
     (1 to k).foldLeft(res)((a, b) => {
       val myname = Symbol("n" + b)
       val newname = Symbol("k" + b)
-      a.map(myname -> newname) { inpc: Int =>
+      a
+        .map(myname -> newname) { inpc: Int =>
           input(inpc - 1)
         }
         .discard(myname)
@@ -215,8 +220,8 @@ object Combinatorics {
           apipe
             .crossWithSmaller(bpipe)
             .map(allc -> 'temp) { x: TupleEntry =>
-              val values = (0 until allc.size).map(i =>
-                x.getDouble(i.asInstanceOf[java.lang.Integer]))
+              val values = (0 until allc.size)
+                .map(i => x.getDouble(i.asInstanceOf[java.lang.Integer]))
               values.sum
             }
             .filter('temp) { x: Double =>

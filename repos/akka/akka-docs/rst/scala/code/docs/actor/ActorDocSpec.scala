@@ -297,9 +297,8 @@ class ActorDocSpec extends AkkaSpec("""
       }
       //#import-context
 
-      val first = system.actorOf(
-        Props(classOf[FirstActor], this),
-        name = "first")
+      val first = system
+        .actorOf(Props(classOf[FirstActor], this), name = "first")
       system.stop(first)
     }
   }
@@ -523,9 +522,8 @@ class ActorDocSpec extends AkkaSpec("""
 
       class WatchActor extends Actor {
         val child = context.actorOf(Props.empty, "child")
-        context.watch(
-          child
-        ) // <-- this is the only call needed for registration
+        context
+          .watch(child) // <-- this is the only call needed for registration
         var lastSender = system.deadLetters
 
         def receive = {

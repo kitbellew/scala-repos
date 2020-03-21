@@ -48,8 +48,9 @@ class SimplificationBuilder private[collections] (
     highlightElem(refNameId(exprToReplace).getOrElse(exprToReplace))
 
   def highlightElem(elem: PsiElement) = {
-    this.rangeInParent = elem.getTextRange.shiftRight(
-      -exprToReplace.getTextOffset)
+    this.rangeInParent = elem
+      .getTextRange
+      .shiftRight(-exprToReplace.getTextOffset)
     this
   }
 

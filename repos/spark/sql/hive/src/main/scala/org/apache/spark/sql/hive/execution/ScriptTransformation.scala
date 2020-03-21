@@ -236,15 +236,17 @@ private[hive] case class ScriptTransformation(
       outputIterator
     }
 
-    child.execute().mapPartitions { iter =>
-      if (iter.hasNext) {
-        val proj = UnsafeProjection.create(schema)
-        processIterator(iter).map(proj)
-      } else {
-        // If the input iterator has no rows then do not launch the external script.
-        Iterator.empty
+    child
+      .execute()
+      .mapPartitions { iter =>
+        if (iter.hasNext) {
+          val proj = UnsafeProjection.create(schema)
+          processIterator(iter).map(proj)
+        } else {
+          // If the input iterator has no rows then do not launch the external script.
+          Iterator.empty
+        }
       }
-    }
   }
 }
 
@@ -287,37 +289,41 @@ private class ScriptTransformationWriterThread(
       var threwException: Boolean = true
       val len = inputSchema.length
       try {
-        iter.map(outputProjection).foreach { row =>
-          if (inputSerde == null) {
-            val data =
-              if (len == 0) {
-                ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES")
-              } else {
-                val sb = new StringBuilder
-                sb.append(row.get(0, inputSchema(0)))
-                var i = 1
-                while (i < len) {
+        iter
+          .map(outputProjection)
+          .foreach { row =>
+            if (inputSerde == null) {
+              val data =
+                if (len == 0) {
+                  ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES")
+                } else {
+                  val sb = new StringBuilder
+                  sb.append(row.get(0, inputSchema(0)))
+                  var i = 1
+                  while (i < len) {
+                    sb.append(
+                      ioschema.inputRowFormatMap("TOK_TABLEROWFORMATFIELD"))
+                    sb.append(row.get(i, inputSchema(i)))
+                    i += 1
+                  }
                   sb.append(
-                    ioschema.inputRowFormatMap("TOK_TABLEROWFORMATFIELD"))
-                  sb.append(row.get(i, inputSchema(i)))
-                  i += 1
+                    ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES"))
+                  sb.toString()
                 }
-                sb.append(ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES"))
-                sb.toString()
-              }
-            outputStream.write(data.getBytes(StandardCharsets.UTF_8))
-          } else {
-            val writable = inputSerde
-              .serialize(row.asInstanceOf[GenericInternalRow].values, inputSoi)
-
-            if (scriptInputWriter != null) {
-              scriptInputWriter.write(writable)
+              outputStream.write(data.getBytes(StandardCharsets.UTF_8))
             } else {
-              prepareWritable(writable, ioschema.outputSerdeProps)
-                .write(dataOutputStream)
+              val writable = inputSerde.serialize(
+                row.asInstanceOf[GenericInternalRow].values,
+                inputSoi)
+
+              if (scriptInputWriter != null) {
+                scriptInputWriter.write(writable)
+              } else {
+                prepareWritable(writable, ioschema.outputSerdeProps)
+                  .write(dataOutputStream)
+              }
             }
           }
-        }
         outputStream.close()
         threwException = false
       } catch {
@@ -364,10 +370,12 @@ private[hive] case class HiveScriptIOSchema(
     ("TOK_TABLEROWFORMATFIELD", "\t"),
     ("TOK_TABLEROWFORMATLINES", "\n"))
 
-  val inputRowFormatMap = inputRowFormat.toMap.withDefault((k) =>
-    defaultFormat(k))
-  val outputRowFormatMap = outputRowFormat.toMap.withDefault((k) =>
-    defaultFormat(k))
+  val inputRowFormatMap = inputRowFormat
+    .toMap
+    .withDefault((k) => defaultFormat(k))
+  val outputRowFormatMap = outputRowFormat
+    .toMap
+    .withDefault((k) => defaultFormat(k))
 
   def initInputSerDe(
       input: Seq[Expression]): Option[(AbstractSerDe, ObjectInspector)] = {
@@ -418,8 +426,8 @@ private[hive] case class HiveScriptIOSchema(
       .map(_.toTypeInfo.getTypeName())
       .mkString(",")
 
-    var propsMap =
-      serdeProps.toMap + (serdeConstants.LIST_COLUMNS -> columns.mkString(","))
+    var propsMap = serdeProps
+      .toMap + (serdeConstants.LIST_COLUMNS -> columns.mkString(","))
     propsMap = propsMap + (serdeConstants.LIST_COLUMN_TYPES -> columnTypesNames)
 
     val properties = new Properties()

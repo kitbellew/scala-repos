@@ -94,7 +94,8 @@ class EnumFieldSpec extends Specification with MongoTestKit {
     "work with set values" in {
       checkMongoIsRunning
 
-      val er = EnumRec.createRecord
+      val er = EnumRec
+        .createRecord
         .dow(WeekDay.Tue)
         .jsonobj(JsonObj(WeekDay.Sun))
         .save()

@@ -88,7 +88,8 @@ class ScalateSupportSpec extends ScalatraSpec {
       }
 
       get("/layout-strategy") {
-        templateEngine.layoutStrategy
+        templateEngine
+          .layoutStrategy
           .asInstanceOf[DefaultLayoutStrategy]
           .defaultLayouts mkString ";"
       }

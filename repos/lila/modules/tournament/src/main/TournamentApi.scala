@@ -68,23 +68,29 @@ private[tournament] final class TournamentApi(
   def makePairings(oldTour: Tournament, users: WaitingUsers, startAt: Long) {
     Sequencing(oldTour.id)(TournamentRepo.startedById) { tour =>
       cached ranking tour flatMap { ranking =>
-        tour.system.pairingSystem.createPairings(tour, users, ranking).flatMap {
-          case Nil =>
-            funit
-          case pairings if nowMillis - startAt > 1000 =>
-            pairingLogger.warn(
-              s"Give up making http://lichess.org/tournament/${tour.id} ${pairings.size} pairings in ${nowMillis - startAt}ms")
-            funit
-          case pairings =>
-            pairings.map { pairing =>
-              PairingRepo.insert(pairing) >>
-                autoPairing(tour, pairing) addEffect { game =>
-                sendTo(tour.id, StartGame(game))
+        tour
+          .system
+          .pairingSystem
+          .createPairings(tour, users, ranking)
+          .flatMap {
+            case Nil =>
+              funit
+            case pairings if nowMillis - startAt > 1000 =>
+              pairingLogger.warn(
+                s"Give up making http://lichess.org/tournament/${tour.id} ${pairings.size} pairings in ${nowMillis - startAt}ms")
+              funit
+            case pairings =>
+              pairings
+                .map { pairing =>
+                  PairingRepo.insert(pairing) >>
+                    autoPairing(tour, pairing) addEffect { game =>
+                    sendTo(tour.id, StartGame(game))
+                  }
+                }
+                .sequenceFu >> featureOneOf(tour, pairings, ranking) >>- {
+                lila.mon.tournament.pairing.create(pairings.size)
               }
-            }.sequenceFu >> featureOneOf(tour, pairings, ranking) >>- {
-              lila.mon.tournament.pairing.create(pairings.size)
-            }
-        } >>- {
+          } >>- {
           val time = nowMillis - startAt
           lila.mon.tournament.pairing.createTime(time.toInt)
           if (time > 100)
@@ -106,9 +112,8 @@ private[tournament] final class TournamentApi(
         .sortBy(_.bestRank)
         .headOption ?? { bestCandidate =>
         def switch =
-          TournamentRepo.setFeaturedGameId(
-            tour.id,
-            bestCandidate.pairing.gameId)
+          TournamentRepo
+            .setFeaturedGameId(tour.id, bestCandidate.pairing.gameId)
         curOption.filter(_.pairing.playing) match {
           case Some(current) if bestCandidate.bestRank < current.bestRank =>
             switch
@@ -181,31 +186,33 @@ private[tournament] final class TournamentApi(
 
   private def awardTrophies(tour: Tournament): Funit =
     tour.schedule.??(_.freq == Schedule.Freq.Marathon) ?? {
-      PlayerRepo.bestByTourWithRank(tour.id, 100).flatMap {
-        _.map {
-          case rp if rp.rank == 1 =>
-            trophyApi.award(rp.player.userId, _.MarathonWinner)
-          case rp if rp.rank <= 10 =>
-            trophyApi.award(rp.player.userId, _.MarathonTopTen)
-          case rp if rp.rank <= 50 =>
-            trophyApi.award(rp.player.userId, _.MarathonTopFifty)
-          case rp =>
-            trophyApi.award(rp.player.userId, _.MarathonTopHundred)
-        }.sequenceFu.void
-      }
+      PlayerRepo
+        .bestByTourWithRank(tour.id, 100)
+        .flatMap {
+          _.map {
+            case rp if rp.rank == 1 =>
+              trophyApi.award(rp.player.userId, _.MarathonWinner)
+            case rp if rp.rank <= 10 =>
+              trophyApi.award(rp.player.userId, _.MarathonTopTen)
+            case rp if rp.rank <= 50 =>
+              trophyApi.award(rp.player.userId, _.MarathonTopFifty)
+            case rp =>
+              trophyApi.award(rp.player.userId, _.MarathonTopHundred)
+          }.sequenceFu.void
+        }
     }
 
   def join(tourId: String, me: User) {
     Sequencing(tourId)(TournamentRepo.enterableById) { tour =>
-      PlayerRepo.join(tour.id, me, tour.perfLens) >> updateNbPlayers(
-        tour.id) >>- {
+      PlayerRepo
+        .join(tour.id, me, tour.perfLens) >> updateNbPlayers(tour.id) >>- {
         withdrawAllNonMarathonOrUniqueBut(tour.id, me.id)
         socketReload(tour.id)
         publish()
         if (!tour.`private`)
           timeline ! (
-            Propagate(
-              TourJoin(me.id, tour.id, tour.fullName)) toFollowersOf me.id
+            Propagate(TourJoin(me.id, tour.id, tour.fullName)) toFollowersOf me
+              .id
           )
       }
     }
@@ -231,11 +238,12 @@ private[tournament] final class TournamentApi(
   def withdraw(tourId: String, userId: String) {
     Sequencing(tourId)(TournamentRepo.enterableById) {
       case tour if tour.isCreated =>
-        PlayerRepo.remove(tour.id, userId) >> updateNbPlayers(
-          tour.id) >>- socketReload(tour.id) >>- publish()
-      case tour if tour.isStarted =>
-        PlayerRepo.withdraw(tour.id, userId) >>- socketReload(
+        PlayerRepo
+          .remove(tour.id, userId) >> updateNbPlayers(tour.id) >>- socketReload(
           tour.id) >>- publish()
+      case tour if tour.isStarted =>
+        PlayerRepo
+          .withdraw(tour.id, userId) >>- socketReload(tour.id) >>- publish()
       case _ =>
         funit
     }
@@ -320,19 +328,26 @@ private[tournament] final class TournamentApi(
   def ejectLame(tourId: String, userId: String) {
     Sequencing(tourId)(TournamentRepo.byId) { tour =>
       PlayerRepo.remove(tour.id, userId) >>
-        tour.isStarted.?? {
-          PairingRepo.opponentsOf(tour.id, userId).flatMap { uids =>
-            PairingRepo.removeByTourAndUserId(tour.id, userId) >>
-              lila.common.Future
-                .applySequentially(uids.toList)(updatePlayer(tour))
-          }
-        } >>
+        tour
+          .isStarted
+          .?? {
+            PairingRepo
+              .opponentsOf(tour.id, userId)
+              .flatMap { uids =>
+                PairingRepo.removeByTourAndUserId(tour.id, userId) >>
+                  lila
+                    .common
+                    .Future
+                    .applySequentially(uids.toList)(updatePlayer(tour))
+              }
+          } >>
         updateNbPlayers(tour.id) >>-
         socketReload(tour.id) >>- publish()
     }
   }
 
-  private val miniStandingCache = lila.memo
+  private val miniStandingCache = lila
+    .memo
     .AsyncCache[String, List[RankedPlayer]](
       (id: String) => PlayerRepo.bestByTourWithRank(id, 30),
       timeToLive = 3 second)

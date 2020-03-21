@@ -90,8 +90,8 @@ trait Player {
               waiting ! Done;
               context stop self
             case t: Transition[_] ⇒
-              waiting ! Status.Failure(
-                new RuntimeException("unexpected transition: " + t));
+              waiting ! Status
+                .Failure(new RuntimeException("unexpected transition: " + t));
               context stop self
             case CurrentState(_, s: ClientFSM.State)
                 if (s == Connected) ⇒ // SI-5900 workaround
@@ -209,8 +209,8 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
 
   when(Connecting, stateTimeout = settings.ConnectTimeout) {
     case Event(msg: ClientOp, _) ⇒
-      stay replying Status.Failure(
-        new IllegalStateException("not connected yet"))
+      stay replying Status
+        .Failure(new IllegalStateException("not connected yet"))
     case Event(Connected(channel), _) ⇒
       channel.write(Hello(name.name, TestConductor().address))
       goto(AwaitDone) using Data(Some(channel), None)
@@ -232,8 +232,8 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
       log.error("received {} instead of Done", msg)
       goto(Failed)
     case Event(msg: ServerOp, _) ⇒
-      stay replying Status.Failure(
-        new IllegalStateException("not connected yet"))
+      stay replying Status
+        .Failure(new IllegalStateException("not connected yet"))
     case Event(StateTimeout, _) ⇒
       log.error("connect timeout to TestConductor")
       goto(Failed)
@@ -304,7 +304,8 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
                 nanoTimeOfLastSend = 0,
                 availableTokens = 0)
 
-          val cmdFuture = TestConductor().transport
+          val cmdFuture = TestConductor()
+            .transport
             .managementCommand(SetThrottle(t.target, t.direction, mode))
 
           cmdFuture onSuccess {
@@ -335,8 +336,8 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
 
   when(Failed) {
     case Event(msg: ClientOp, _) ⇒
-      stay replying Status.Failure(
-        new RuntimeException("cannot do " + msg + " while Failed"))
+      stay replying Status
+        .Failure(new RuntimeException("cannot do " + msg + " while Failed"))
     case Event(msg: NetworkOp, _) ⇒
       log.warning("ignoring network message {} while Failed", msg)
       stay

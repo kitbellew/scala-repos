@@ -83,9 +83,8 @@ class GroupedIterator private (
   val keyOrdering = GenerateOrdering.generate(sortOrder, inputSchema)
 
   /** Creates a row containing only the key for a given input row. */
-  val keyProjection = GenerateUnsafeProjection.generate(
-    groupingExpressions,
-    inputSchema)
+  val keyProjection = GenerateUnsafeProjection
+    .generate(groupingExpressions, inputSchema)
 
   /**
     * Holds null or the row that will be returned on next call to `next()` in the inner iterator.
@@ -127,9 +126,8 @@ class GroupedIterator private (
     } else {
       // Skip to next group.
       // currentRow may be overwritten by `hasNext`, so we should compare them first.
-      while (keyOrdering.compare(
-               currentGroup,
-               currentRow) == 0 && input.hasNext) {
+      while (keyOrdering.compare(currentGroup, currentRow) == 0 && input
+               .hasNext) {
         currentRow = input.next()
       }
 

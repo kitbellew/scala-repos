@@ -18,10 +18,8 @@ class ScalaWhileConditionFixer extends ScalaFixer {
       editor: Editor,
       processor: ScalaSmartEnterProcessor,
       psiElement: PsiElement): OperationPerformed = {
-    val whileStatement = PsiTreeUtil.getParentOfType(
-      psiElement,
-      classOf[ScWhileStmt],
-      false)
+    val whileStatement = PsiTreeUtil
+      .getParentOfType(psiElement, classOf[ScWhileStmt], false)
     if (whileStatement == null)
       return NoOperation
 
@@ -31,7 +29,8 @@ class ScalaWhileConditionFixer extends ScalaFixer {
 
     whileStatement.condition match {
       case None
-          if leftParenthesis != null && !leftParenthesis.getNextSibling
+          if leftParenthesis != null && !leftParenthesis
+            .getNextSibling
             .isInstanceOf[PsiErrorElement] &&
             whileStatement.lastChild.exists(_.isInstanceOf[PsiErrorElement]) =>
         doc.insertString(
@@ -40,12 +39,14 @@ class ScalaWhileConditionFixer extends ScalaFixer {
         WithEnter(3)
       case None if leftParenthesis == null || rightParenthesis == null =>
         val whileStartOffset = whileStatement.getTextRange.getStartOffset
-        var stopOffset = doc.getLineEndOffset(
-          doc getLineNumber whileStartOffset)
+        var stopOffset = doc
+          .getLineEndOffset(doc getLineNumber whileStartOffset)
         val whLength = "while (".length
 
-        whileStatement.body.foreach(bl =>
-          stopOffset = Math.min(stopOffset, bl.getTextRange.getStartOffset))
+        whileStatement
+          .body
+          .foreach(bl =>
+            stopOffset = Math.min(stopOffset, bl.getTextRange.getStartOffset))
 
         doc.replaceString(whileStartOffset, stopOffset, "while () {\n\n}")
         moveToStart(editor, whileStatement)

@@ -41,8 +41,9 @@ class ScalaCompilerConfiguration(project: Project)
       options: Seq[String]) {
     customProfiles.foreach { profile =>
       profile.removeModuleName(module.getName)
-      if (profile.getName.startsWith(
-            source) && profile.getModuleNames.isEmpty) {
+      if (profile.getName.startsWith(source) && profile
+            .getModuleNames
+            .isEmpty) {
         customProfiles = customProfiles.filterNot(_ == profile)
       }
     }
@@ -55,7 +56,8 @@ class ScalaCompilerConfiguration(project: Project)
         profile.addModuleName(module.getName)
       case None =>
         val profileNames =
-          customProfiles.iterator
+          customProfiles
+            .iterator
             .map(_.getName)
             .filter(_.startsWith(source))
             .toSet
@@ -82,9 +84,8 @@ class ScalaCompilerConfiguration(project: Project)
     if (incrementalityType != IncrementalityType.IDEA) {
       val incrementalityTypeElement = new Element("option")
       incrementalityTypeElement.setAttribute("name", "incrementalityType")
-      incrementalityTypeElement.setAttribute(
-        "value",
-        incrementalityType.toString)
+      incrementalityTypeElement
+        .setAttribute("value", incrementalityType.toString)
       configurationElement.addContent(incrementalityTypeElement)
     }
 
@@ -94,9 +95,8 @@ class ScalaCompilerConfiguration(project: Project)
         new SkipDefaultValuesSerializationFilters())
       profileElement.setName("profile")
       profileElement.setAttribute("name", profile.getName)
-      profileElement.setAttribute(
-        "modules",
-        profile.getModuleNames.asScala.mkString(","))
+      profileElement
+        .setAttribute("modules", profile.getModuleNames.asScala.mkString(","))
 
       configurationElement.addContent(profileElement)
     }
@@ -118,8 +118,10 @@ class ScalaCompilerConfiguration(project: Project)
           configurationElement,
           classOf[ScalaCompilerSettingsState])))
 
-    customProfiles = configurationElement.getChildren("profile").asScala.map {
-      profileElement =>
+    customProfiles = configurationElement
+      .getChildren("profile")
+      .asScala
+      .map { profileElement =>
         val profile =
           new ScalaCompilerSettingsProfile(
             profileElement.getAttributeValue("name"))
@@ -137,7 +139,7 @@ class ScalaCompilerConfiguration(project: Project)
         moduleNames.foreach(profile.addModuleName)
 
         profile
-    }
+      }
   }
 }
 

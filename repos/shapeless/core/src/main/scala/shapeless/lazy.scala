@@ -281,7 +281,8 @@ class LazyMacros(val c: whitebox.Context)
     object Instance {
       def apply(instTpe: Type) = {
         val nme = TermName(c.freshName("inst"))
-        val sym = c.internal
+        val sym = c
+          .internal
           .setInfo(c.internal.newTermSymbol(NoSymbol, nme), instTpe)
 
         new Instance(instTpe, nme, sym, None, instTpe, Nil)
@@ -318,7 +319,9 @@ class LazyMacros(val c: whitebox.Context)
           try {
             val tree = c.inferImplicitValue(tpe, silent = true)
             if (tree.isEmpty) {
-              tpe.typeSymbol.annotations
+              tpe
+                .typeSymbol
+                .annotations
                 .find(
                   _.tree.tpe =:= typeOf[
                     _root_.scala.annotation.implicitNotFound])
@@ -429,10 +432,8 @@ class LazyMacros(val c: whitebox.Context)
         assert(open.head.instTpe =:= tpe)
         val instance = open.head
         val sym = c.internal.setInfo(instance.symbol, actualTpe)
-        val instance0 = instance.copy(
-          inst = Some(tree),
-          actualTpe = actualTpe,
-          symbol = sym)
+        val instance0 = instance
+          .copy(inst = Some(tree), actualTpe = actualTpe, symbol = sym)
         (copy(open = open.tail).update(instance0), instance0)
       }
 
@@ -507,10 +508,12 @@ class LazyMacros(val c: whitebox.Context)
           innerTpe: Type,
           ignoring: String): (State, Instance) = {
 
-        val tmpState = state.copy(prevent =
-          state.prevent :+ TypeWrapper(wrappedTpe))
+        val tmpState = state
+          .copy(prevent = state.prevent :+ TypeWrapper(wrappedTpe))
 
-        val existingInstOpt = derive(tmpState)(innerTpe).right.toOption
+        val existingInstOpt = derive(tmpState)(innerTpe)
+          .right
+          .toOption
           .flatMap {
             case (state2, inst) =>
               if (inst.inst.isEmpty)
@@ -572,11 +575,13 @@ class LazyMacros(val c: whitebox.Context)
 
     def derive(state: State)(tpe: Type): Either[String, (State, Instance)] = {
       deriveLowPriority(state, tpe).getOrElse {
-        state.lookup(tpe).left.flatMap { state0 =>
-          val inst = state0.dict(TypeWrapper(tpe))
-          resolve(state0)(inst)
-            .toRight(s"Unable to derive $tpe")
-        }
+        state
+          .lookup(tpe)
+          .left
+          .flatMap { state0 =>
+            val inst = state0.dict(TypeWrapper(tpe))
+            resolve(state0)(inst).toRight(s"Unable to derive $tpe")
+          }
       }
     }
 
@@ -610,13 +615,15 @@ class LazyMacros(val c: whitebox.Context)
     def mkInstances(state: State)(primaryTpe: Type): (Tree, Type) = {
       val instances = state.dict.values.toList
       val (from, to) =
-        instances.map { d =>
-          (d.symbol, NoSymbol)
-        }.unzip
+        instances
+          .map { d =>
+            (d.symbol, NoSymbol)
+          }
+          .unzip
 
       def clean(inst: Tree) = {
-        val cleanInst = c.untypecheck(
-          c.internal.substituteSymbols(inst, from, to))
+        val cleanInst = c
+          .untypecheck(c.internal.substituteSymbols(inst, from, to))
         new StripUnApplyNodes().transform(cleanInst)
       }
 
@@ -679,7 +686,9 @@ object LazyMacros {
 
     if (root)
       // Sometimes corrupted, and slows things too
-      lm.c.universe
+      lm
+        .c
+        .universe
         .asInstanceOf[scala.tools.nsc.Global]
         .analyzer
         .resetImplicits()

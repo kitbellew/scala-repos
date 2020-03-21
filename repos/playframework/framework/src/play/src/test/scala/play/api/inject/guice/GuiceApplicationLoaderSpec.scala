@@ -44,15 +44,15 @@ class GuiceApplicationLoaderSpec extends Specification {
 
     "load dynamic Scala Guice modules from configuration" in {
       val loader = new GuiceApplicationLoader()
-      val app = loader.load(
-        fakeContextWithModule(classOf[ScalaConfiguredModule]))
+      val app = loader
+        .load(fakeContextWithModule(classOf[ScalaConfiguredModule]))
       app.injector.instanceOf[Foo] must beAnInstanceOf[ScalaConfiguredFoo]
     }
 
     "load dynamic Java Guice modules from configuration" in {
       val loader = new GuiceApplicationLoader()
-      val app = loader.load(
-        fakeContextWithModule(classOf[JavaConfiguredModule]))
+      val app = loader
+        .load(fakeContextWithModule(classOf[JavaConfiguredModule]))
       app.injector.instanceOf[Foo] must beAnInstanceOf[JavaConfiguredFoo]
     }
 
@@ -63,9 +63,11 @@ class GuiceApplicationLoaderSpec extends Specification {
     val f = fakeContext
     val c = f.initialConfiguration
     val newModules: Seq[String] =
-      c.getStringSeq("play.modules.enabled").fold(Seq.empty[String]) {
-        oldModules => oldModules :+ module.getName
-      }
+      c
+        .getStringSeq("play.modules.enabled")
+        .fold(Seq.empty[String]) { oldModules =>
+          oldModules :+ module.getName
+        }
     val modulesConf = Configuration("play.modules.enabled" -> newModules)
     val combinedConf = f.initialConfiguration ++ modulesConf
     f.copy(initialConfiguration = combinedConf)

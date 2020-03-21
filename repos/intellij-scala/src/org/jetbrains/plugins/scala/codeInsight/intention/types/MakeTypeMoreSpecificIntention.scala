@@ -36,18 +36,16 @@ class MakeTypeMoreSpecificIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Unit = {
-    ToggleTypeAnnotation.complete(
-      new MakeTypeMoreSpecificStrategy(Option(editor)),
-      element)
+    ToggleTypeAnnotation
+      .complete(new MakeTypeMoreSpecificStrategy(Option(editor)), element)
   }
 
   override def isAvailable(
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    if (element == null || !IntentionAvailabilityChecker.checkIntention(
-          this,
-          element))
+    if (element == null || !IntentionAvailabilityChecker
+          .checkIntention(this, element))
       false
     else {
       var isAvailable = false
@@ -111,8 +109,8 @@ class MakeTypeMoreSpecificStrategy(editor: Option[Editor]) extends Strategy {
       dynamicType: ScType,
       context: PsiElement,
       editor: Editor): Unit = {
-    val types = computeBaseTypes(declaredType, dynamicType).sortWith((t1, t2) =>
-      t1.conforms(t2))
+    val types = computeBaseTypes(declaredType, dynamicType)
+      .sortWith((t1, t2) => t1.conforms(t2))
     if (types.size == 1) {
       val replaced = te.replace(
         ScalaPsiElementFactory.createTypeElementFromText(

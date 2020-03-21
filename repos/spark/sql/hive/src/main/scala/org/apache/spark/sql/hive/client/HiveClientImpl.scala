@@ -116,8 +116,8 @@ private[hive] class HiveClientImpl(
     // instance of SparkConf is needed for the original value of spark.yarn.keytab
     // and spark.yarn.principal set in SparkSubmit, as yarn.Client resets the
     // keytab configuration for the link name in distributed cache
-    if (sparkConf.contains("spark.yarn.principal") && sparkConf.contains(
-          "spark.yarn.keytab")) {
+    if (sparkConf.contains("spark.yarn.principal") && sparkConf
+          .contains("spark.yarn.keytab")) {
       val principalName = sparkConf.get("spark.yarn.principal")
       val keytabFileName = sparkConf.get("spark.yarn.keytab")
       if (!new File(keytabFileName).exists()) {
@@ -182,10 +182,10 @@ private[hive] class HiveClientImpl(
   }
 
   // We use hive's conf for compatibility.
-  private val retryLimit = conf.getIntVar(
-    HiveConf.ConfVars.METASTORETHRIFTFAILURERETRIES)
-  private val retryDelayMillis = shim.getMetastoreClientConnectRetryDelayMillis(
-    conf)
+  private val retryLimit = conf
+    .getIntVar(HiveConf.ConfVars.METASTORETHRIFTFAILURERETRIES)
+  private val retryDelayMillis = shim
+    .getMetastoreClientConnectRetryDelayMillis(conf)
 
   /**
     * Runs `f` with multiple retries in case the hive metastore is temporarily unreachable.
@@ -193,8 +193,8 @@ private[hive] class HiveClientImpl(
   private def retryLocked[A](f: => A): A =
     clientLoader.synchronized {
       // Hive sometimes retries internally, so set a deadline to avoid compounding delays.
-      val deadline =
-        System.nanoTime + (retryLimit * retryDelayMillis * 1e6).toLong
+      val deadline = System.nanoTime + (retryLimit * retryDelayMillis * 1e6)
+        .toLong
       var numTries = 0
       var caughtException: Exception = null
       do {
@@ -222,8 +222,8 @@ private[hive] class HiveClientImpl(
     var target = e
     while (target != null) {
       val msg = target.getMessage()
-      if (msg != null && msg.matches(
-            "(?s).*(TApplication|TProtocol|TTransport)Exception.*")) {
+      if (msg != null && msg
+            .matches("(?s).*(TApplication|TProtocol|TTransport)Exception.*")) {
         return true
       }
       target = target.getCause()
@@ -419,9 +419,8 @@ private[hive] class HiveClientImpl(
     withHiveState {
       val addPartitionDesc = new AddPartitionDesc(db, table, ignoreIfExists)
       parts.foreach { s =>
-        addPartitionDesc.addPartition(
-          s.spec.asJava,
-          s.storage.locationUri.orNull)
+        addPartitionDesc
+          .addPartition(s.spec.asJava, s.storage.locationUri.orNull)
       }
       client.createPartitions(addPartitionDesc)
     }
@@ -448,17 +447,19 @@ private[hive] class HiveClientImpl(
         "number of old and new partition specs differ")
       val catalogTable = getTable(db, table)
       val hiveTable = toHiveTable(catalogTable)
-      specs.zip(newSpecs).foreach {
-        case (oldSpec, newSpec) =>
-          val hivePart = getPartitionOption(catalogTable, oldSpec)
-            .map { p =>
-              toHivePartition(p.copy(spec = newSpec), hiveTable)
-            }
-            .getOrElse {
-              throw new NoSuchPartitionException(db, table, oldSpec)
-            }
-          client.renamePartition(hiveTable, oldSpec.asJava, hivePart)
-      }
+      specs
+        .zip(newSpecs)
+        .foreach {
+          case (oldSpec, newSpec) =>
+            val hivePart = getPartitionOption(catalogTable, oldSpec)
+              .map { p =>
+                toHivePartition(p.copy(spec = newSpec), hiveTable)
+              }
+              .getOrElse {
+                throw new NoSuchPartitionException(db, table, oldSpec)
+              }
+            client.renamePartition(hiveTable, oldSpec.asJava, hivePart)
+        }
     }
 
   override def alterPartitions(
@@ -469,9 +470,11 @@ private[hive] class HiveClientImpl(
       val hiveTable = toHiveTable(getTable(db, table))
       client.alterPartitions(
         table,
-        newParts.map { p =>
-          toHivePartition(p, hiveTable)
-        }.asJava)
+        newParts
+          .map { p =>
+            toHivePartition(p, hiveTable)
+          }
+          .asJava)
     }
 
   override def getPartitionOption(
@@ -601,12 +604,8 @@ private[hive] class HiveClientImpl(
       replace: Boolean,
       holdDDLTime: Boolean): Unit =
     withHiveState {
-      shim.loadTable(
-        client,
-        new Path(loadPath),
-        tableName,
-        replace,
-        holdDDLTime)
+      shim
+        .loadTable(client, new Path(loadPath), tableName, replace, holdDDLTime)
     }
 
   def loadDynamicPartitions(
@@ -687,20 +686,30 @@ private[hive] class HiveClientImpl(
 
   def reset(): Unit =
     withHiveState {
-      client.getAllTables("default").asScala.foreach { t =>
-        logDebug(s"Deleting table $t")
-        val table = client.getTable("default", t)
-        client.getIndexes("default", t, 255).asScala.foreach { index =>
-          shim.dropIndex(client, "default", t, index.getIndexName)
+      client
+        .getAllTables("default")
+        .asScala
+        .foreach { t =>
+          logDebug(s"Deleting table $t")
+          val table = client.getTable("default", t)
+          client
+            .getIndexes("default", t, 255)
+            .asScala
+            .foreach { index =>
+              shim.dropIndex(client, "default", t, index.getIndexName)
+            }
+          if (!table.isIndexTable) {
+            client.dropTable("default", t)
+          }
         }
-        if (!table.isIndexTable) {
-          client.dropTable("default", t)
+      client
+        .getAllDatabases
+        .asScala
+        .filterNot(_ == "default")
+        .foreach { db =>
+          logDebug(s"Dropping Database: $db")
+          client.dropDatabase(db, true, false, true)
         }
-      }
-      client.getAllDatabases.asScala.filterNot(_ == "default").foreach { db =>
-        logDebug(s"Dropping Database: $db")
-        client.dropDatabase(db, true, false, true)
-      }
     }
 
   /* -------------------------------------------------------- *
@@ -767,30 +776,46 @@ private[hive] class HiveClientImpl(
     hiveTable.setNumBuckets(table.numBuckets)
     hiveTable.setCreateTime((table.createTime / 1000).toInt)
     hiveTable.setLastAccessTime((table.lastAccessTime / 1000).toInt)
-    table.storage.locationUri.foreach { loc =>
-      shim.setDataLocation(hiveTable, loc)
-    }
-    table.storage.inputFormat
+    table
+      .storage
+      .locationUri
+      .foreach { loc =>
+        shim.setDataLocation(hiveTable, loc)
+      }
+    table
+      .storage
+      .inputFormat
       .map(toInputFormat)
       .foreach(hiveTable.setInputFormatClass)
-    table.storage.outputFormat
+    table
+      .storage
+      .outputFormat
       .map(toOutputFormat)
       .foreach(hiveTable.setOutputFormatClass)
     table.storage.serde.foreach(hiveTable.setSerializationLib)
-    table.storage.serdeProperties.foreach {
-      case (k, v) =>
-        hiveTable.setSerdeParam(k, v)
-    }
-    table.properties.foreach {
-      case (k, v) =>
-        hiveTable.setProperty(k, v)
-    }
-    table.viewOriginalText.foreach { t =>
-      hiveTable.setViewOriginalText(t)
-    }
-    table.viewText.foreach { t =>
-      hiveTable.setViewExpandedText(t)
-    }
+    table
+      .storage
+      .serdeProperties
+      .foreach {
+        case (k, v) =>
+          hiveTable.setSerdeParam(k, v)
+      }
+    table
+      .properties
+      .foreach {
+        case (k, v) =>
+          hiveTable.setProperty(k, v)
+      }
+    table
+      .viewOriginalText
+      .foreach { t =>
+        hiveTable.setViewOriginalText(t)
+      }
+    table
+      .viewText
+      .foreach { t =>
+        hiveTable.setViewExpandedText(t)
+      }
     hiveTable
   }
 
@@ -808,9 +833,13 @@ private[hive] class HiveClientImpl(
     new HivePartition(
       ht,
       p.spec.asJava,
-      p.storage.locationUri.map { l =>
-        new Path(l)
-      }.orNull)
+      p
+        .storage
+        .locationUri
+        .map { l =>
+          new Path(l)
+        }
+        .orNull)
   }
 
   private def fromHivePartition(hp: HivePartition): CatalogTablePartition = {

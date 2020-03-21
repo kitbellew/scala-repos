@@ -93,11 +93,13 @@ class ScalaPackageNameInspection extends LocalInspectionTool {
     if (packageName == null)
       return null
     import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil._
-    packageName.split('.').map {
-      case isBacktickedName(name) if isKeyword(name) =>
-        name
-      case name =>
-        name
-    } mkString "."
+    packageName
+      .split('.')
+      .map {
+        case isBacktickedName(name) if isKeyword(name) =>
+          name
+        case name =>
+          name
+      } mkString "."
   }
 }

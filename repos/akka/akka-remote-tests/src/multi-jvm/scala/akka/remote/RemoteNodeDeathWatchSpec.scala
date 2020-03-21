@@ -114,9 +114,8 @@ abstract class RemoteNodeDeathWatchSpec
 
     "receive Terminated when remote actor is stopped" in {
       runOn(first) {
-        val watcher = system.actorOf(
-          Props(classOf[ProbeActor], testActor),
-          "watcher1")
+        val watcher = system
+          .actorOf(Props(classOf[ProbeActor], testActor), "watcher1")
         enterBarrier("actors-started-1")
 
         val subject = identify(second, "subject1")
@@ -131,9 +130,8 @@ abstract class RemoteNodeDeathWatchSpec
       }
 
       runOn(second) {
-        val subject = system.actorOf(
-          Props(classOf[ProbeActor], testActor),
-          "subject1")
+        val subject = system
+          .actorOf(Props(classOf[ProbeActor], testActor), "subject1")
         enterBarrier("actors-started-1")
 
         enterBarrier("hello1-message-sent")
@@ -162,9 +160,8 @@ abstract class RemoteNodeDeathWatchSpec
 
     "cleanup after watch/unwatch" in {
       runOn(first) {
-        val watcher = system.actorOf(
-          Props(classOf[ProbeActor], testActor),
-          "watcher2")
+        val watcher = system
+          .actorOf(Props(classOf[ProbeActor], testActor), "watcher2")
         enterBarrier("actors-started-2")
 
         val subject = identify(second, "subject2")
@@ -197,9 +194,8 @@ abstract class RemoteNodeDeathWatchSpec
 
     "cleanup after bi-directional watch/unwatch" in {
       runOn(first, second) {
-        val watcher = system.actorOf(
-          Props(classOf[ProbeActor], testActor),
-          "watcher3")
+        val watcher = system
+          .actorOf(Props(classOf[ProbeActor], testActor), "watcher3")
         system.actorOf(Props(classOf[ProbeActor], testActor), "subject3")
         enterBarrier("actors-started-3")
 
@@ -235,12 +231,10 @@ abstract class RemoteNodeDeathWatchSpec
 
     "cleanup after bi-directional watch/stop/unwatch" in {
       runOn(first, second) {
-        val watcher1 = system.actorOf(
-          Props(classOf[ProbeActor], testActor),
-          "w1")
-        val watcher2 = system.actorOf(
-          Props(classOf[ProbeActor], testActor),
-          "w2")
+        val watcher1 = system
+          .actorOf(Props(classOf[ProbeActor], testActor), "w1")
+        val watcher2 = system
+          .actorOf(Props(classOf[ProbeActor], testActor), "w2")
         val s1 = system.actorOf(Props(classOf[ProbeActor], testActor), "s1")
         val s2 = system.actorOf(Props(classOf[ProbeActor], testActor), "s2")
         enterBarrier("actors-started-4")
@@ -356,7 +350,8 @@ abstract class RemoteNodeDeathWatchSpec
         enterBarrier("watch-established-5")
         enterBarrier("stopped-5")
 
-        p1.receiveN(2, 5 seconds)
+        p1
+          .receiveN(2, 5 seconds)
           .collect {
             case WrappedTerminated(t) ⇒
               t.actor
@@ -387,11 +382,10 @@ abstract class RemoteNodeDeathWatchSpec
 
     "receive Terminated when watched node crash" in {
       runOn(first) {
-        val watcher = system.actorOf(
-          Props(classOf[ProbeActor], testActor),
-          "watcher6")
-        val watcher2 = system.actorOf(
-          Props(classOf[ProbeActor], system.deadLetters))
+        val watcher = system
+          .actorOf(Props(classOf[ProbeActor], testActor), "watcher6")
+        val watcher2 = system
+          .actorOf(Props(classOf[ProbeActor], system.deadLetters))
         enterBarrier("actors-started-6")
 
         val subject = identify(second, "subject6")
@@ -438,9 +432,8 @@ abstract class RemoteNodeDeathWatchSpec
 
     "cleanup when watching node crash" in {
       runOn(third) {
-        val watcher = system.actorOf(
-          Props(classOf[ProbeActor], testActor),
-          "watcher7")
+        val watcher = system
+          .actorOf(Props(classOf[ProbeActor], testActor), "watcher7")
         enterBarrier("actors-started-7")
 
         val subject = identify(first, "subject7")

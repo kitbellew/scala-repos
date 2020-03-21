@@ -47,9 +47,8 @@ with AbstractTestConfigurationProducer {
           .isInstanceOf[PsiDirectory]) {
       if (!configuration.isInstanceOf[UTestRunConfiguration])
         return false
-      return TestConfigurationUtil.isPackageConfiguration(
-        element,
-        configuration)
+      return TestConfigurationUtil
+        .isPackageConfiguration(element, configuration)
     }
     val (testClass, testClassName) = getLocationClassAndTest(location)
     if (testClass == null)
@@ -62,7 +61,8 @@ with AbstractTestConfigurationProducer {
         testClassPath == configuration.getTestClassPath
       case configuration: UTestRunConfiguration
           if configuration.getTestKind == TestKind.TEST_NAME =>
-        testClassPath == configuration.getTestClassPath && testClassName != null &&
+        testClassPath == configuration
+          .getTestClassPath && testClassName != null &&
           testClassName == configuration.getTestName
       case _ =>
         false
@@ -110,7 +110,8 @@ with AbstractTestConfigurationProducer {
               ""
           ),
         confFactory)
-    val runConfiguration = settings.getConfiguration
+    val runConfiguration = settings
+      .getConfiguration
       .asInstanceOf[UTestRunConfiguration]
     runConfiguration.setTestClassPath(testClassPath)
     runConfiguration.initWorkingDir()
@@ -130,7 +131,8 @@ with AbstractTestConfigurationProducer {
     } catch {
       case e: Exception =>
     }
-    JavaRunConfigurationExtensionManager.getInstance
+    JavaRunConfigurationExtensionManager
+      .getInstance
       .extendCreatedConfiguration(runConfiguration, location)
     Some((testClass, settings))
   }
@@ -151,10 +153,12 @@ with AbstractTestConfigurationProducer {
         tuple.getParent match {
           case patternDef: ScPatternDefinition =>
             val patterns = patternDef.pList.patterns
-            if (patterns.size == 1 && patterns.head
-                  .isInstanceOf[ScTuplePattern]) {
+            if (patterns
+                  .size == 1 && patterns.head.isInstanceOf[ScTuplePattern]) {
               val index =
-                tuple.exprs.zipWithIndex
+                tuple
+                  .exprs
+                  .zipWithIndex
                   .find {
                     case (expr, _) =>
                       expr == testSuite
@@ -217,7 +221,8 @@ with AbstractTestConfigurationProducer {
     }
 
   private def buildPathFromTestExpr(expr: ScExpression): Option[String] =
-    expr.firstChild
+    expr
+      .firstChild
       .flatMap(
         TestConfigurationUtil.getStaticTestName(_, allowSymbolLiterals = true))
       .flatMap(buildTestPath(expr, _))
@@ -227,10 +232,8 @@ with AbstractTestConfigurationProducer {
     val element = location.getPsiElement
     val fail = (null, null)
     //first, check that containing type definition is a uTest suite
-    var containingObject: ScTypeDefinition = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScTypeDefinition],
-      false)
+    var containingObject: ScTypeDefinition = PsiTreeUtil
+      .getParentOfType(element, classOf[ScTypeDefinition], false)
     if (containingObject == null)
       return fail
     while (!containingObject
@@ -238,10 +241,8 @@ with AbstractTestConfigurationProducer {
              containingObject,
              classOf[ScTypeDefinition],
              true) != null) {
-      containingObject = PsiTreeUtil.getParentOfType(
-        containingObject,
-        classOf[ScTypeDefinition],
-        true)
+      containingObject = PsiTreeUtil
+        .getParentOfType(containingObject, classOf[ScTypeDefinition], true)
     }
     if (!containingObject.isInstanceOf[ScObject])
       return fail

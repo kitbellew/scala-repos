@@ -110,10 +110,8 @@ private[feature] trait Word2VecBase
     * Validate and transform the input schema.
     */
   protected def validateAndTransformSchema(schema: StructType): StructType = {
-    SchemaUtils.checkColumnType(
-      schema,
-      $(inputCol),
-      new ArrayType(StringType, true))
+    SchemaUtils
+      .checkColumnType(schema, $(inputCol), new ArrayType(StringType, true))
     SchemaUtils.appendColumn(schema, $(outputCol), new VectorUDT)
   }
 }
@@ -211,8 +209,9 @@ class Word2VecModel private[ml] (
     val sc = SparkContext.getOrCreate()
     val sqlContext = SQLContext.getOrCreate(sc)
     import sqlContext.implicits._
-    val wordVec = wordVectors.getVectors.mapValues(vec =>
-      Vectors.dense(vec.map(_.toDouble)))
+    val wordVec = wordVectors
+      .getVectors
+      .mapValues(vec => Vectors.dense(vec.map(_.toDouble)))
     sc.parallelize(wordVec.toSeq).toDF("word", "vector")
   }
 
@@ -234,7 +233,8 @@ class Word2VecModel private[ml] (
     val sc = SparkContext.getOrCreate()
     val sqlContext = SQLContext.getOrCreate(sc)
     import sqlContext.implicits._
-    sc.parallelize(wordVectors.findSynonyms(word, num))
+    sc
+      .parallelize(wordVectors.findSynonyms(word, num))
       .toDF("word", "similarity")
   }
 
@@ -250,7 +250,8 @@ class Word2VecModel private[ml] (
     */
   override def transform(dataset: DataFrame): DataFrame = {
     transformSchema(dataset.schema, logging = true)
-    val vectors = wordVectors.getVectors
+    val vectors = wordVectors
+      .getVectors
       .mapValues(vv => Vectors.dense(vv.map(_.toDouble)))
       .map(identity) // mapValues doesn't return a serializable map (SI-7005)
     val bVectors = dataset.sqlContext.sparkContext.broadcast(vectors)
@@ -261,9 +262,12 @@ class Word2VecModel private[ml] (
       } else {
         val sum = Vectors.zeros(d)
         sentence.foreach { word =>
-          bVectors.value.get(word).foreach { v =>
-            BLAS.axpy(1.0, v, sum)
-          }
+          bVectors
+            .value
+            .get(word)
+            .foreach { v =>
+              BLAS.axpy(1.0, v, sum)
+            }
         }
         BLAS.scal(1.0 / sentence.size, sum)
         sum
@@ -316,7 +320,8 @@ object Word2VecModel extends MLReadable[Word2VecModel] {
     override def load(path: String): Word2VecModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
+      val data = sqlContext
+        .read
         .parquet(dataPath)
         .select("wordIndex", "wordVectors")
         .head()

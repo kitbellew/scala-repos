@@ -52,12 +52,9 @@ class LassoModel @Since("1.1.0") (
 
   @Since("1.3.0")
   override def save(sc: SparkContext, path: String): Unit = {
-    GLMRegressionModel.SaveLoadV1_0.save(
-      sc,
-      path,
-      this.getClass.getName,
-      weights,
-      intercept)
+    GLMRegressionModel
+      .SaveLoadV1_0
+      .save(sc, path, this.getClass.getName, weights, intercept)
   }
 
   override protected def formatVersion: String = "1.0"
@@ -74,11 +71,9 @@ object LassoModel extends Loader[LassoModel] {
     (loadedClassName, version) match {
       case (className, "1.0") if className == classNameV1_0 =>
         val numFeatures = RegressionModel.getNumFeatures(metadata)
-        val data = GLMRegressionModel.SaveLoadV1_0.loadData(
-          sc,
-          path,
-          classNameV1_0,
-          numFeatures)
+        val data = GLMRegressionModel
+          .SaveLoadV1_0
+          .loadData(sc, path, classNameV1_0, numFeatures)
         new LassoModel(data.weights, data.intercept)
       case _ =>
         throw new Exception(

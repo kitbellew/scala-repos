@@ -74,9 +74,8 @@ class WorksheetCompiler {
             false,
             false)
 
-        val worksheetPrinter = WorksheetEditorPrinter.newWorksheetUiFor(
-          editor,
-          worksheetVirtual)
+        val worksheetPrinter = WorksheetEditorPrinter
+          .newWorksheetUiFor(editor, worksheetVirtual)
         worksheetPrinter.scheduleWorksheetUpdate()
 
         val onError =
@@ -133,30 +132,37 @@ class WorksheetCompiler {
 
         val treeError = new CompilerErrorTreeView(project, null)
 
-        ApplicationManager.getApplication.invokeLater(
-          new Runnable {
-            override def run() {
-              val file = errorMessage.getContainingFile.getVirtualFile
-              if (file == null || !file.isValid)
-                return
+        ApplicationManager
+          .getApplication
+          .invokeLater(
+            new Runnable {
+              override def run() {
+                val file = errorMessage.getContainingFile.getVirtualFile
+                if (file == null || !file.isValid)
+                  return
 
-              treeError.addMessage(
-                MessageCategory.ERROR,
-                Array(errorMessage.getErrorDescription),
-                file,
-                pos.line,
-                pos.column,
-                null)
+                treeError.addMessage(
+                  MessageCategory.ERROR,
+                  Array(errorMessage.getErrorDescription),
+                  file,
+                  pos.line,
+                  pos.column,
+                  null)
 
-              val errorContent = ContentFactory.SERVICE.getInstance
-                .createContent(treeError.getComponent, ERROR_CONTENT_NAME, true)
-              contentManager addContent errorContent
-              contentManager setSelectedContent errorContent
+                val errorContent = ContentFactory
+                  .SERVICE
+                  .getInstance
+                  .createContent(
+                    treeError.getComponent,
+                    ERROR_CONTENT_NAME,
+                    true)
+                contentManager addContent errorContent
+                contentManager setSelectedContent errorContent
 
-              openMessageView(project, errorContent, treeError)
-              editor.getCaretModel moveToLogicalPosition pos
-            }
-          })
+                openMessageView(project, errorContent, treeError)
+                editor.getCaretModel moveToLogicalPosition pos
+              }
+            })
 
       case _ =>
     }
@@ -177,7 +183,8 @@ class WorksheetCompiler {
           messageView.getContentManager setSelectedContent content
 
           val toolWindow =
-            ToolWindowManager getInstance project getToolWindow ToolWindowId.MESSAGES_WINDOW
+            ToolWindowManager getInstance project getToolWindow ToolWindowId
+              .MESSAGES_WINDOW
           if (toolWindow != null)
             toolWindow.show(null)
         }

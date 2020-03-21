@@ -203,11 +203,8 @@ trait Names extends api.Names {
     var typeName = typeHashtable(hash)
 
     while ((typeName ne null) && (
-             typeName.length != cs.length || !equals(
-               typeName.start,
-               cs,
-               0,
-               cs.length)
+             typeName.length != cs
+               .length || !equals(typeName.start, cs, 0, cs.length)
            )) {
       typeName = typeName.next
     }

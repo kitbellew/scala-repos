@@ -240,7 +240,8 @@ class SolvingTest {
   }
 
   implicit val ModelOrd: Ordering[TestSolver.TestSolver.Model] = Ordering.by {
-    _.toSeq.sortWith {
+    _.toSeq
+    .sortWith {
       case ((sym1, v1), (sym2, v2)) =>
         val SymName(name1) = sym1
         val SymName(name2) = sym2
@@ -250,7 +251,8 @@ class SolvingTest {
           false
         else
           v1 < v2
-    }.toIterable
+    }
+    .toIterable
   }
 
   implicit val SolutionOrd: Ordering[TestSolver.TestSolver.Solution] = Ordering
@@ -944,10 +946,12 @@ class SolvingTest {
     val syms = "pqrstu".map(c => sym(c.toString)).toList
     // expand unassigned variables
     // (otherwise solutions can not be compared)
-    val expected = TestSolver.TestSolver
+    val expected = TestSolver
+      .TestSolver
       .findAllModelsFor(propToSolvable(And(dummySym, pairWiseEncoding(syms))))
       .flatMap(expandUnassigned)
-    val actual = TestSolver.TestSolver
+    val actual = TestSolver
+      .TestSolver
       .findAllModelsFor(propToSolvable(And(dummySym, AtMostOne(syms))))
       .flatMap(expandUnassigned)
     assertEquals(expected.toSet, actual.toSet)

@@ -38,9 +38,11 @@ class DeploymentManager(
   import context.dispatcher
   import mesosphere.marathon.upgrade.DeploymentManager._
 
-  val runningDeployments: mutable.Map[String, DeploymentInfo] = mutable.Map
+  val runningDeployments: mutable.Map[String, DeploymentInfo] = mutable
+    .Map
     .empty[String, DeploymentInfo]
-  val deploymentStatus: mutable.Map[String, DeploymentStepInfo] = mutable.Map
+  val deploymentStatus: mutable.Map[String, DeploymentStepInfo] = mutable
+    .Map
     .empty[String, DeploymentStepInfo]
 
   override def supervisorStrategy: SupervisorStrategy =

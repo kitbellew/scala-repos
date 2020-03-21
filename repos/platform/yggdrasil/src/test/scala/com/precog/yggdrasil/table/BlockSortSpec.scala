@@ -74,7 +74,8 @@ trait BlockSortSpec[M[+_]]
 
     val original =
       if (unique) {
-        sample.data
+        sample
+          .data
           .map { jv =>
             JArray(sortKeys.map(_.extract(jv \ "value")).toList) -> jv
           }
@@ -91,7 +92,8 @@ trait BlockSortSpec[M[+_]]
     // order) to match real sort semantics for disambiguation of equal
     // values
     val sorted =
-      original.zipWithIndex
+      original
+        .zipWithIndex
         .map {
           case (jv, i) =>
             JValue.unsafeInsert(jv, globalIdPath, JNum(i))

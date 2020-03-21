@@ -193,9 +193,8 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   private[spark] def setIfMissing[T](
       entry: OptionalConfigEntry[T],
       value: T): SparkConf = {
-    if (settings.putIfAbsent(
-          entry.key,
-          entry.rawStringConverter(value)) == null) {
+    if (settings
+          .putIfAbsent(entry.key, entry.rawStringConverter(value)) == null) {
       logDeprecationWarning(entry.key)
     }
     this
@@ -435,17 +434,24 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   /** Does the configuration contain a given parameter? */
   def contains(key: String): Boolean = {
     settings.containsKey(key) ||
-    configsWithAlternatives.get(key).toSeq.flatten.exists { alt =>
-      contains(alt.key)
-    }
+    configsWithAlternatives
+      .get(key)
+      .toSeq
+      .flatten
+      .exists { alt =>
+        contains(alt.key)
+      }
   }
 
   /** Copy this object */
   override def clone: SparkConf = {
     val cloned = new SparkConf(false)
-    settings.entrySet().asScala.foreach { e =>
-      cloned.set(e.getKey(), e.getValue(), true)
-    }
+    settings
+      .entrySet()
+      .asScala
+      .foreach { e =>
+        cloned.set(e.getKey(), e.getValue(), true)
+      }
     cloned
   }
 
@@ -473,15 +479,18 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     val sparkExecutorInstances = "spark.executor.instances"
 
     // Used by Yarn in 1.1 and before
-    sys.props.get("spark.driver.libraryPath").foreach { value =>
-      val warning = s"""
+    sys
+      .props
+      .get("spark.driver.libraryPath")
+      .foreach { value =>
+        val warning = s"""
           |spark.driver.libraryPath was detected (set to '$value').
           |This is deprecated in Spark 1.2+.
           |
           |Please instead use: $driverLibraryPathKey
         """.stripMargin
-      logWarning(warning)
-    }
+        logWarning(warning)
+      }
 
     // Validate spark.executor.extraJavaOptions
     getOption(executorOptsKey).map { javaOpts =>
@@ -538,8 +547,11 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     }
 
     // Check for legacy configs
-    sys.env.get("SPARK_JAVA_OPTS").foreach { value =>
-      val warning = s"""
+    sys
+      .env
+      .get("SPARK_JAVA_OPTS")
+      .foreach { value =>
+        val warning = s"""
           |SPARK_JAVA_OPTS was detected (set to '$value').
           |This is deprecated in Spark 1.0+.
           |
@@ -549,21 +561,24 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
           | - spark.executor.extraJavaOptions to set -X options for executors
           | - SPARK_DAEMON_JAVA_OPTS to set java options for standalone daemons (master or worker)
         """.stripMargin
-      logWarning(warning)
+        logWarning(warning)
 
-      for (key <- Seq(executorOptsKey, driverOptsKey)) {
-        if (getOption(key).isDefined) {
-          throw new SparkException(
-            s"Found both $key and SPARK_JAVA_OPTS. Use only the former.")
-        } else {
-          logWarning(s"Setting '$key' to '$value' as a work-around.")
-          set(key, value)
+        for (key <- Seq(executorOptsKey, driverOptsKey)) {
+          if (getOption(key).isDefined) {
+            throw new SparkException(
+              s"Found both $key and SPARK_JAVA_OPTS. Use only the former.")
+          } else {
+            logWarning(s"Setting '$key' to '$value' as a work-around.")
+            set(key, value)
+          }
         }
       }
-    }
 
-    sys.env.get("SPARK_CLASSPATH").foreach { value =>
-      val warning = s"""
+    sys
+      .env
+      .get("SPARK_CLASSPATH")
+      .foreach { value =>
+        val warning = s"""
           |SPARK_CLASSPATH was detected (set to '$value').
           |This is deprecated in Spark 1.0+.
           |
@@ -571,22 +586,25 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
           | - ./spark-submit with --driver-class-path to augment the driver classpath
           | - spark.executor.extraClassPath to augment the executor classpath
         """.stripMargin
-      logWarning(warning)
+        logWarning(warning)
 
-      for (key <- Seq(executorClasspathKey, driverClassPathKey)) {
-        if (getOption(key).isDefined) {
-          throw new SparkException(
-            s"Found both $key and SPARK_CLASSPATH. Use only the former.")
-        } else {
-          logWarning(s"Setting '$key' to '$value' as a work-around.")
-          set(key, value)
+        for (key <- Seq(executorClasspathKey, driverClassPathKey)) {
+          if (getOption(key).isDefined) {
+            throw new SparkException(
+              s"Found both $key and SPARK_CLASSPATH. Use only the former.")
+          } else {
+            logWarning(s"Setting '$key' to '$value' as a work-around.")
+            set(key, value)
+          }
         }
       }
-    }
 
     if (!contains(sparkExecutorInstances)) {
-      sys.env.get("SPARK_WORKER_INSTANCES").foreach { value =>
-        val warning = s"""
+      sys
+        .env
+        .get("SPARK_WORKER_INSTANCES")
+        .foreach { value =>
+          val warning = s"""
              |SPARK_WORKER_INSTANCES was detected (set to '$value').
              |This is deprecated in Spark 1.0+.
              |
@@ -595,10 +613,10 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
              | - Or set SPARK_EXECUTOR_INSTANCES
              | - spark.executor.instances to configure the number of instances in the spark config.
         """.stripMargin
-        logWarning(warning)
+          logWarning(warning)
 
-        set("spark.executor.instances", value)
-      }
+          set("spark.executor.instances", value)
+        }
     }
 
     if (contains("spark.master") && get("spark.master").startsWith("yarn-")) {
@@ -635,7 +653,8 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     * configuration out for debugging.
     */
   def toDebugString: String = {
-    getAll.sorted
+    getAll
+      .sorted
       .map {
         case (k, v) =>
           k + "=" + v
@@ -748,11 +767,14 @@ private[spark] object SparkConf extends Logging {
     * Maps the deprecated config name to a 2-tuple (new config name, alternate config info).
     */
   private val allAlternatives: Map[String, (String, AlternateConfig)] = {
-    configsWithAlternatives.keys.flatMap { key =>
-      configsWithAlternatives(key).map { cfg =>
-        (cfg.key -> (key -> cfg))
+    configsWithAlternatives
+      .keys
+      .flatMap { key =>
+        configsWithAlternatives(key).map { cfg =>
+          (cfg.key -> (key -> cfg))
+        }
       }
-    }.toMap
+      .toMap
   }
 
   /**
@@ -763,8 +785,8 @@ private[spark] object SparkConf extends Logging {
     */
   def isExecutorStartupConf(name: String): Boolean = {
     (
-      name.startsWith(
-        "spark.auth") && name != SecurityManager.SPARK_AUTH_SECRET_CONF
+      name.startsWith("spark.auth") && name != SecurityManager
+        .SPARK_AUTH_SECRET_CONF
     ) ||
     name.startsWith("spark.ssl") ||
     name.startsWith("spark.rpc") ||
@@ -775,8 +797,8 @@ private[spark] object SparkConf extends Logging {
     * Return true if the given config matches either `spark.*.port` or `spark.port.*`.
     */
   def isSparkPortConf(name: String): Boolean = {
-    (name.startsWith("spark.") && name.endsWith(".port")) || name.startsWith(
-      "spark.port.")
+    (name.startsWith("spark.") && name.endsWith(".port")) || name
+      .startsWith("spark.port.")
   }
 
   /**
@@ -784,36 +806,42 @@ private[spark] object SparkConf extends Logging {
     * value available.
     */
   def getDeprecatedConfig(key: String, conf: SparkConf): Option[String] = {
-    configsWithAlternatives.get(key).flatMap { alts =>
-      alts.collectFirst {
-        case alt if conf.contains(alt.key) =>
-          val value = conf.get(alt.key)
-          if (alt.translation != null)
-            alt.translation(value)
-          else
-            value
+    configsWithAlternatives
+      .get(key)
+      .flatMap { alts =>
+        alts.collectFirst {
+          case alt if conf.contains(alt.key) =>
+            val value = conf.get(alt.key)
+            if (alt.translation != null)
+              alt.translation(value)
+            else
+              value
+        }
       }
-    }
   }
 
   /**
     * Logs a warning message if the given config key is deprecated.
     */
   def logDeprecationWarning(key: String): Unit = {
-    deprecatedConfigs.get(key).foreach { cfg =>
-      logWarning(
-        s"The configuration key '$key' has been deprecated as of Spark ${cfg.version} and " +
-          s"may be removed in the future. ${cfg.deprecationMessage}")
-      return
-    }
-
-    allAlternatives.get(key).foreach {
-      case (newKey, cfg) =>
+    deprecatedConfigs
+      .get(key)
+      .foreach { cfg =>
         logWarning(
           s"The configuration key '$key' has been deprecated as of Spark ${cfg.version} and " +
-            s"may be removed in the future. Please use the new key '$newKey' instead.")
+            s"may be removed in the future. ${cfg.deprecationMessage}")
         return
-    }
+      }
+
+    allAlternatives
+      .get(key)
+      .foreach {
+        case (newKey, cfg) =>
+          logWarning(
+            s"The configuration key '$key' has been deprecated as of Spark ${cfg.version} and " +
+              s"may be removed in the future. Please use the new key '$newKey' instead.")
+          return
+      }
     if (key.startsWith("spark.akka") || key.startsWith("spark.ssl.akka")) {
       logWarning(
         s"The configuration key $key is not supported any more " +

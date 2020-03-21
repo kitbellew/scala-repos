@@ -27,10 +27,8 @@ class RemoveRedundantElseIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScIfStmt],
-      false)
+    val ifStmt: ScIfStmt = PsiTreeUtil
+      .getParentOfType(element, classOf[ScIfStmt], false)
     if (ifStmt == null)
       return false
 
@@ -42,7 +40,9 @@ class RemoveRedundantElseIntention extends PsiElementBaseIntentionAction {
 
     val offset = editor.getCaretModel.getOffset
     if (!(
-          thenBranch.getTextRange.getEndOffset <= offset && offset <= elseBranch.getTextRange.getStartOffset
+          thenBranch.getTextRange.getEndOffset <= offset && offset <= elseBranch
+            .getTextRange
+            .getStartOffset
         ))
       return false
 
@@ -69,21 +69,23 @@ class RemoveRedundantElseIntention extends PsiElementBaseIntentionAction {
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val manager: PsiManager = PsiManager.getInstance(project)
-    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScIfStmt],
-      false)
+    val ifStmt: ScIfStmt = PsiTreeUtil
+      .getParentOfType(element, classOf[ScIfStmt], false)
     if (ifStmt == null || !ifStmt.isValid)
       return
 
-    val thenBranch = ifStmt.thenBranch.getOrElse(
-      return
-    )
+    val thenBranch = ifStmt
+      .thenBranch
+      .getOrElse(
+        return
+      )
     val elseKeyWord = thenBranch.getNextSiblingNotWhitespaceComment
 
-    val elseBranch = ifStmt.elseBranch.getOrElse(
-      return
-    )
+    val elseBranch = ifStmt
+      .elseBranch
+      .getOrElse(
+        return
+      )
 
     val children = elseBranch.copy().children.toList
     var from = children
@@ -91,10 +93,12 @@ class RemoveRedundantElseIntention extends PsiElementBaseIntentionAction {
       .getOrElse(
         return
       )
-    if (ScalaTokenTypes.WHITES_SPACES_TOKEN_SET.contains(
-          from.getNode.getElementType))
+    if (ScalaTokenTypes
+          .WHITES_SPACES_TOKEN_SET
+          .contains(from.getNode.getElementType))
       from = from.getNextSibling
-    val to = children.reverse
+    val to = children
+      .reverse
       .find(_.getNode.getElementType != ScalaTokenTypes.tRBRACE)
       .getOrElse(
         return
@@ -104,7 +108,8 @@ class RemoveRedundantElseIntention extends PsiElementBaseIntentionAction {
       elseKeyWord.delete()
       elseBranch.delete()
       ifStmt.getParent.addRangeAfter(from, to, ifStmt)
-      ifStmt.getParent
+      ifStmt
+        .getParent
         .addAfter(ScalaPsiElementFactory.createNewLine(manager), ifStmt)
       PsiDocumentManager.getInstance(project).commitDocument(editor.getDocument)
     }

@@ -136,7 +136,8 @@ object EmitManPage {
 
     out println ".\\\""
     out.println(
-      ".\\\" ############################## " + section.title + " ###############################")
+      ".\\\" ############################## " + section
+        .title + " ###############################")
     out println ".\\\""
     val tag =
       if (depth > 1)

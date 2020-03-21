@@ -26,9 +26,11 @@ case class UserSpy(
   lazy val otherUsers: List[OtherUser] = {
     usersSharingIp.map { u =>
       OtherUser(u, true, usersSharingFingerprint contains u)
-    } ::: usersSharingFingerprint.filterNot(usersSharingIp.contains).map {
-      OtherUser(_, false, true)
-    }
+    } ::: usersSharingFingerprint
+      .filterNot(usersSharingIp.contains)
+      .map {
+        OtherUser(_, false, true)
+      }
   }.sortBy(-_.user.createdAt.getMillis)
 }
 
@@ -49,9 +51,11 @@ object UserSpy {
       infos ← Store.findInfoByUser(user.id)
       ips = infos.map(_.ip).distinct
       blockedIps ← (ips map firewall.blocksIp).sequenceFu
-      locations <- scala.concurrent.Future {
-        ips map geoIP.orUnknown
-      }
+      locations <- scala
+        .concurrent
+        .Future {
+          ips map geoIP.orUnknown
+        }
       sharingIp ← exploreSimilar("ip")(user)
       sharingFingerprint ← exploreSimilar("fp")(user)
     } yield UserSpy(
@@ -61,7 +65,8 @@ object UserSpy {
       },
       uas = infos.map(_.ua).distinct,
       usersSharingIp = (sharingIp + user).toList.sortBy(-_.createdAt.getMillis),
-      usersSharingFingerprint = (sharingFingerprint + user).toList
+      usersSharingFingerprint = (sharingFingerprint + user)
+        .toList
         .sortBy(-_.createdAt.getMillis)
     )
 
@@ -87,9 +92,9 @@ object UserSpy {
         "user",
         BSONDocument(
           field -> BSONDocument("$in" -> values),
-          "user" -> BSONDocument(
-            "$ne" -> user.id)).some) map lila.db.BSON.asStrings flatMap {
-        userIds => userIds.nonEmpty ?? (UserRepo byIds userIds) map (_.toSet)
+          "user" -> BSONDocument("$ne" -> user.id))
+          .some) map lila.db.BSON.asStrings flatMap { userIds =>
+        userIds.nonEmpty ?? (UserRepo byIds userIds) map (_.toSet)
       }
     }
 }

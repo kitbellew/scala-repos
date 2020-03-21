@@ -46,7 +46,9 @@ object DottyDownloader extends Downloader {
           connection.disconnect()
         }
     }
-    element.toOption.toSeq
+    element
+      .toOption
+      .toSeq
       .flatMap(_.getDescendants.asScala)
       .flatMap(toDependency _)
       .toVector

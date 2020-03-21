@@ -126,8 +126,8 @@ private[hive] case class CreateMetastoreDataSource(
         s"Table name ${tableIdent.table} is not a valid name for " +
           s"metastore. Metastore only accepts table name containing characters, numbers and _.")
     }
-    if (tableIdent.database.isDefined && !MetaStoreUtils.validateName(
-          tableIdent.database.get)) {
+    if (tableIdent.database.isDefined && !MetaStoreUtils
+          .validateName(tableIdent.database.get)) {
       throw new AnalysisException(
         s"Database name ${tableIdent.database.get} is not a valid name " +
           s"for metastore. Metastore only accepts database name containing " +
@@ -150,7 +150,9 @@ private[hive] case class CreateMetastoreDataSource(
       if (!options.contains("path") && managedIfNoPath) {
         isExternal = false
         options + (
-          "path" -> hiveContext.sessionState.catalog
+          "path" -> hiveContext
+            .sessionState
+            .catalog
             .hiveDefaultTableFilePath(tableIdent)
         )
       } else {
@@ -165,14 +167,17 @@ private[hive] case class CreateMetastoreDataSource(
       bucketSpec = None,
       options = optionsWithPath).resolveRelation()
 
-    hiveContext.sessionState.catalog.createDataSourceTable(
-      tableIdent,
-      userSpecifiedSchema,
-      Array.empty[String],
-      bucketSpec = None,
-      provider,
-      optionsWithPath,
-      isExternal)
+    hiveContext
+      .sessionState
+      .catalog
+      .createDataSourceTable(
+        tableIdent,
+        userSpecifiedSchema,
+        Array.empty[String],
+        bucketSpec = None,
+        provider,
+        optionsWithPath,
+        isExternal)
 
     Seq.empty[Row]
   }
@@ -198,8 +203,8 @@ private[hive] case class CreateMetastoreDataSourceAsSelect(
         s"Table name ${tableIdent.table} is not a valid name for " +
           s"metastore. Metastore only accepts table name containing characters, numbers and _.")
     }
-    if (tableIdent.database.isDefined && !MetaStoreUtils.validateName(
-          tableIdent.database.get)) {
+    if (tableIdent.database.isDefined && !MetaStoreUtils
+          .validateName(tableIdent.database.get)) {
       throw new AnalysisException(
         s"Database name ${tableIdent.database.get} is not a valid name " +
           s"for metastore. Metastore only accepts database name containing " +
@@ -214,7 +219,9 @@ private[hive] case class CreateMetastoreDataSourceAsSelect(
       if (!options.contains("path")) {
         isExternal = false
         options + (
-          "path" -> hiveContext.sessionState.catalog
+          "path" -> hiveContext
+            .sessionState
+            .catalog
             .hiveDefaultTableFilePath(tableIdent)
         )
       } else {
@@ -293,14 +300,17 @@ private[hive] case class CreateMetastoreDataSourceAsSelect(
       // We will use the schema of resolved.relation as the schema of the table (instead of
       // the schema of df). It is important since the nullability may be changed by the relation
       // provider (for example, see org.apache.spark.sql.parquet.DefaultSource).
-      hiveContext.sessionState.catalog.createDataSourceTable(
-        tableIdent,
-        Some(result.schema),
-        partitionColumns,
-        bucketSpec,
-        provider,
-        optionsWithPath,
-        isExternal)
+      hiveContext
+        .sessionState
+        .catalog
+        .createDataSourceTable(
+          tableIdent,
+          Some(result.schema),
+          partitionColumns,
+          bucketSpec,
+          provider,
+          optionsWithPath,
+          isExternal)
     }
 
     // Refresh the cache of the table in the catalog.

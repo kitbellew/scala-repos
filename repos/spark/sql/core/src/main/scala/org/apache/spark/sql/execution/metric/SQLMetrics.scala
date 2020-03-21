@@ -208,8 +208,8 @@ private[sql] object SQLMetrics {
   def getMetricParam(
       metricParamName: String): SQLMetricParam[SQLMetricValue[Any], Any] = {
     val longSQLMetricParam = Utils.getFormattedClassName(LongSQLMetricParam)
-    val staticsSQLMetricParam = Utils.getFormattedClassName(
-      StaticsLongSQLMetricParam)
+    val staticsSQLMetricParam = Utils
+      .getFormattedClassName(StaticsLongSQLMetricParam)
     val metricParam =
       metricParamName match {
         case `longSQLMetricParam` =>

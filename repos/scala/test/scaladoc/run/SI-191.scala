@@ -34,7 +34,8 @@ object Test extends ScaladocModelTest {
 
   override def scaladocSettings = {
     val scalaLibUri =
-      getClass.getClassLoader
+      getClass
+        .getClassLoader
         .getResource("scala/Function1.class")
         .getPath
         .split("!")(0)
@@ -61,7 +62,8 @@ object Test extends ScaladocModelTest {
     check(test._method("barr"), 2)
     check(test._method("baz"), 0)
 
-    val expectedUrls = collection.mutable
+    val expectedUrls = collection
+      .mutable
       .Set[String](
         "scala.collection.Map",
         "scala.collection.immutable.::",

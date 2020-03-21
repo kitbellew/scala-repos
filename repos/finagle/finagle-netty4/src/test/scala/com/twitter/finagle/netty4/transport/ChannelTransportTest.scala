@@ -44,11 +44,13 @@ class ChannelTransportTest
   test("channel.write before transport.read") {
     forAll { ss: Seq[String] =>
       val written = ss.map(s => channel.writeInbound(s))
-      written.zip(ss).foreach {
-        case (w, s) =>
-          assertSeenWhatsWritten(w, s, transport.read())
-          assert(transport.status == Status.Open)
-      }
+      written
+        .zip(ss)
+        .foreach {
+          case (w, s) =>
+            assertSeenWhatsWritten(w, s, transport.read())
+            assert(transport.status == Status.Open)
+        }
     }
 
     val e = new Exception
@@ -61,11 +63,14 @@ class ChannelTransportTest
       val seen = ss.map(_ => transport.read())
       val written = ss.map(s => channel.writeInbound(s))
 
-      written.zip(ss).zip(seen).foreach {
-        case ((w, s), f) =>
-          assertSeenWhatsWritten(w, s, f)
-          assert(transport.status == Status.Open)
-      }
+      written
+        .zip(ss)
+        .zip(seen)
+        .foreach {
+          case ((w, s), f) =>
+            assertSeenWhatsWritten(w, s, f)
+            assert(transport.status == Status.Open)
+        }
     }
 
     val e = new Exception
@@ -77,16 +82,18 @@ class ChannelTransportTest
 
   test("write (failure)") {
     val e = new Exception()
-    channel.pipeline.addLast(
-      new ChannelOutboundHandlerAdapter {
-        override def write(
-            ctx: ChannelHandlerContext,
-            msg: scala.Any,
-            promise: ChannelPromise): Unit = {
-          // we fail every single write to the pipeline
-          promise.setFailure(e)
-        }
-      })
+    channel
+      .pipeline
+      .addLast(
+        new ChannelOutboundHandlerAdapter {
+          override def write(
+              ctx: ChannelHandlerContext,
+              msg: scala.Any,
+              promise: ChannelPromise): Unit = {
+            // we fail every single write to the pipeline
+            promise.setFailure(e)
+          }
+        })
 
     forAll { s: String =>
       assert(
@@ -96,16 +103,18 @@ class ChannelTransportTest
   }
 
   test("write (ok)") {
-    channel.pipeline.addLast(
-      new ChannelOutboundHandlerAdapter {
-        override def write(
-            ctx: ChannelHandlerContext,
-            msg: scala.Any,
-            promise: ChannelPromise): Unit = {
-          // we succeed every single write to the pipeline
-          promise.setSuccess()
-        }
-      })
+    channel
+      .pipeline
+      .addLast(
+        new ChannelOutboundHandlerAdapter {
+          override def write(
+              ctx: ChannelHandlerContext,
+              msg: scala.Any,
+              promise: ChannelPromise): Unit = {
+            // we succeed every single write to the pipeline
+            promise.setSuccess()
+          }
+        })
 
     forAll { s: String =>
       assert(transport.write(s).poll == Some(Return.Unit))
@@ -114,16 +123,18 @@ class ChannelTransportTest
 
   test("write (interrupted by caller)") {
     var p: Option[ChannelPromise] = None
-    channel.pipeline.addLast(
-      new ChannelOutboundHandlerAdapter {
-        override def write(
-            ctx: ChannelHandlerContext,
-            msg: scala.Any,
-            promise: ChannelPromise): Unit = {
-          // we store pending promise to make sure it's canceled
-          p = Some(promise)
-        }
-      })
+    channel
+      .pipeline
+      .addLast(
+        new ChannelOutboundHandlerAdapter {
+          override def write(
+              ctx: ChannelHandlerContext,
+              msg: scala.Any,
+              promise: ChannelPromise): Unit = {
+            // we store pending promise to make sure it's canceled
+            p = Some(promise)
+          }
+        })
 
     forAll { s: String =>
       val written = transport.write(s)
@@ -135,16 +146,18 @@ class ChannelTransportTest
   }
 
   test("write (canceled by callee)") {
-    channel.pipeline.addLast(
-      new ChannelOutboundHandlerAdapter {
-        override def write(
-            ctx: ChannelHandlerContext,
-            msg: scala.Any,
-            promise: ChannelPromise): Unit = {
-          // we cancel every single write
-          promise.cancel(false /*mayInterruptIfRunning*/ )
-        }
-      })
+    channel
+      .pipeline
+      .addLast(
+        new ChannelOutboundHandlerAdapter {
+          override def write(
+              ctx: ChannelHandlerContext,
+              msg: scala.Any,
+              promise: ChannelPromise): Unit = {
+            // we cancel every single write
+            promise.cancel(false /*mayInterruptIfRunning*/ )
+          }
+        })
 
     forAll { s: String =>
       val thrown = intercept[Exception](

@@ -111,10 +111,7 @@ class MarshalledContextTest extends FunSuite with AssertionsForJUnit {
   }
 
   test("Unmarshal") {
-    var env = ctx.Empty
-      .bound(a, "ok")
-      .bound(b, 123)
-      .bound(a, "notok")
+    var env = ctx.Empty.bound(a, "ok").bound(b, 123).bound(a, "notok")
 
     val env2 = ctx.unmarshal(ctx.marshal(env))
 

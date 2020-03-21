@@ -42,8 +42,8 @@ object PromiseActor {
       actorRef: ActorRef,
       message: Any): Future[T] = {
     val promise = Promise[T]()
-    val promiseActor = actorRefFactory.actorOf(
-      Props(classOf[PromiseActor], promise))
+    val promiseActor = actorRefFactory
+      .actorOf(Props(classOf[PromiseActor], promise))
     actorRef.tell(message, promiseActor)
     promise.future
   }

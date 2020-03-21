@@ -129,7 +129,8 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
                   params.fileParams + (
                     (
                       item.getFieldName,
-                      item +: params.fileParams
+                      item +: params
+                        .fileParams
                         .getOrElse(item.getFieldName, List[FileItem]()))),
                   params.formParams)
               } else {

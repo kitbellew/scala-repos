@@ -44,11 +44,10 @@ private class RateLimiterActor private (
 
   override def preStart(): Unit = {
     import context.dispatcher
-    cleanup = context.system.scheduler.schedule(
-      10.seconds,
-      10.seconds,
-      self,
-      CleanupOverdueDelays)
+    cleanup = context
+      .system
+      .scheduler
+      .schedule(10.seconds, 10.seconds, self, CleanupOverdueDelays)
     log.info("started RateLimiterActor")
   }
 

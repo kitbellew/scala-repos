@@ -54,7 +54,8 @@ object ObservableFloatArray
   * @define ARY `Array`
   */
 class ObservableFloatArray(
-    delegate: jfxc.ObservableFloatArray = jfxc.FXCollections
+    delegate: jfxc.ObservableFloatArray = jfxc
+      .FXCollections
       .observableFloatArray())
     extends ObservableArray[
       Float,

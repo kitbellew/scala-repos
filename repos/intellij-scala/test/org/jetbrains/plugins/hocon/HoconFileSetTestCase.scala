@@ -69,8 +69,8 @@ abstract class HoconFileSetTestCase(subpath: String)
     val caretOffset = fileText.indexOf(CaretMarker)
     if (caretOffset >= 0)
       (
-        fileText.substring(0, caretOffset) + fileText.substring(
-          caretOffset + CaretMarker.length),
+        fileText.substring(0, caretOffset) + fileText
+          .substring(caretOffset + CaretMarker.length),
         caretOffset)
     else
       (fileText, -1)
@@ -78,8 +78,8 @@ abstract class HoconFileSetTestCase(subpath: String)
 
   protected def insertCaret(fileText: String, caretOffset: Int) =
     if (caretOffset >= 0 && caretOffset <= fileText.length)
-      fileText.substring(0, caretOffset) + CaretMarker + fileText.substring(
-        caretOffset)
+      fileText.substring(0, caretOffset) + CaretMarker + fileText
+        .substring(caretOffset)
     else
       fileText
 

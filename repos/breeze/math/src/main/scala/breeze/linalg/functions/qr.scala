@@ -347,16 +347,8 @@ object qrp extends UFunc {
           n
         else
           work(0).toInt
-      lapack.dorgqr(
-        m,
-        m,
-        scala.math.min(m, n),
-        scratch,
-        m,
-        scratch,
-        work,
-        -1,
-        info)
+      lapack
+        .dorgqr(m, m, scala.math.min(m, n), scratch, m, scratch, work, -1, info)
       val lwork2 =
         if (info.`val` != 0)
           n

@@ -102,8 +102,8 @@ object JavaResultExtractor {
 
   def getCookies(responseHeader: ResponseHeader): JCookies =
     new JCookies {
-      private val cookies = Cookies.fromSetCookieHeader(
-        responseHeader.headers.get(HeaderNames.SET_COOKIE))
+      private val cookies = Cookies
+        .fromSetCookieHeader(responseHeader.headers.get(HeaderNames.SET_COOKIE))
 
       def get(name: String): JCookie = {
         cookies.get(name).map(makeJavaCookie).orNull

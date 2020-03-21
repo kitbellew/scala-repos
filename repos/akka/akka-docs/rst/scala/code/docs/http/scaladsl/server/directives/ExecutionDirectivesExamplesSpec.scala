@@ -57,9 +57,8 @@ class ExecutionDirectivesExamplesSpec extends RoutingSpec {
     Get("/handled/existing") ~> route ~> check {
       responseAs[String] shouldEqual "This path exists"
     }
-    Get("/missing") ~> Route.seal(
-      route
-    ) /* applies default handler */ ~> check {
+    Get("/missing") ~> Route
+      .seal(route) /* applies default handler */ ~> check {
       status shouldEqual StatusCodes.NotFound
       responseAs[
         String] shouldEqual "The requested resource could not be found."

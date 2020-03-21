@@ -97,7 +97,8 @@ trait SerializationSupport {
 
   def uniqueAddressToProto(
       uniqueAddress: UniqueAddress): dm.UniqueAddress.Builder =
-    dm.UniqueAddress
+    dm
+      .UniqueAddress
       .newBuilder()
       .setAddress(addressToProto(uniqueAddress.address))
       .setUid(uniqueAddress.uid)
@@ -114,7 +115,8 @@ trait SerializationSupport {
     def buildOther(): dm.OtherMessage = {
       val m = msg.asInstanceOf[AnyRef]
       val msgSerializer = serialization.findSerializerFor(m)
-      val builder = dm.OtherMessage
+      val builder = dm
+        .OtherMessage
         .newBuilder()
         .setEnclosedMessage(ByteString.copyFrom(msgSerializer.toBinary(m)))
         .setSerializerId(msgSerializer.identifier)
@@ -126,8 +128,8 @@ trait SerializationSupport {
             builder.setMessageManifest(ByteString.copyFromUtf8(manifest))
         case _ ⇒
           if (msgSerializer.includeManifest)
-            builder.setMessageManifest(
-              ByteString.copyFromUtf8(m.getClass.getName))
+            builder
+              .setMessageManifest(ByteString.copyFromUtf8(m.getClass.getName))
       }
 
       builder.build()
@@ -137,10 +139,11 @@ trait SerializationSupport {
     // When sending remote messages currentTransportInformation is already set,
     // but when serializing for digests it must be set here.
     if (Serialization.currentTransportInformation.value == null)
-      Serialization.currentTransportInformation.withValue(
-        transportInformation) {
-        buildOther()
-      }
+      Serialization
+        .currentTransportInformation
+        .withValue(transportInformation) {
+          buildOther()
+        }
     else
       buildOther()
   }

@@ -19,7 +19,8 @@ abstract class ScalaCodeInsightTestBase
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   protected override def setUp() {
     super.setUp()
-    StatisticsManager.getInstance
+    StatisticsManager
+      .getInstance
       .asInstanceOf[StatisticsManagerImpl]
       .enableStatistics(getTestRootDisposable)
   }

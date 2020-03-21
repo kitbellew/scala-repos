@@ -79,13 +79,15 @@ class ControlControls(target: Control)
     }
 
   val txfTooltip = new TextField
-  txfTooltip.text.onChange {
-    target.tooltip =
-      if (txfTooltip.text.get.isEmpty)
-        null
-      else
-        Tooltip(txfTooltip.text())
-  }
+  txfTooltip
+    .text
+    .onChange {
+      target.tooltip =
+        if (txfTooltip.text.get.isEmpty)
+          null
+        else
+          Tooltip(txfTooltip.text())
+    }
 
   super.addNode("Max Height", sldMaxHeight)
   super.addNode("Pref Height", sldPrefHeight)

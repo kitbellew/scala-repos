@@ -218,19 +218,23 @@ class SparkILoop(
       if (Utils.isWindows) {
         // Strip any URI scheme prefix so we can add the correct path to the classpath
         // e.g. file:/C:/my/path.jar -> C:/my/path.jar
-        SparkILoop.getAddedJars.map { jar =>
-          new URI(jar).getPath.stripPrefix("/")
-        }
+        SparkILoop
+          .getAddedJars
+          .map { jar =>
+            new URI(jar).getPath.stripPrefix("/")
+          }
       } else {
         // We need new URI(jar).getPath here for the case that `jar` includes encoded white space (%20).
-        SparkILoop.getAddedJars.map { jar =>
-          new URI(jar).getPath
-        }
+        SparkILoop
+          .getAddedJars
+          .map { jar =>
+            new URI(jar).getPath
+          }
       }
     // work around for Scala bug
     val totalClassPath =
-      addedJars.foldLeft(settings.classpath.value)((l, r) =>
-        ClassPath.join(l, r))
+      addedJars
+        .foldLeft(settings.classpath.value)((l, r) => ClassPath.join(l, r))
     this.settings.classpath.value = totalClassPath
 
     intp = new SparkILoopInterpreter
@@ -429,7 +433,8 @@ class SparkILoop(
       "fallback",
       """
                            |disable/enable advanced repl changes, these fix some issues but may introduce others.
-                           |This mode will be removed once these fixes stablize""".stripMargin,
+                           |This mode will be removed once these fixes stablize"""
+        .stripMargin,
       toggleFallbackMode
     ),
     cmd(
@@ -470,8 +475,8 @@ class SparkILoop(
 
     handlers.filterNot(_.importedSymbols.isEmpty).zipWithIndex foreach {
       case (handler, idx) =>
-        val (types, terms) =
-          handler.importedSymbols partition (_.name.isTypeName)
+        val (types, terms) = handler
+          .importedSymbols partition (_.name.isTypeName)
         val imps = handler.implicitSymbols
         val found = tokens filter (handler importsSymbolNamed _)
         val typeMsg =
@@ -498,9 +503,11 @@ class SparkILoop(
           _ == ""
         ) mkString ("(", ", ", ")")
 
-        intp.reporter.printMessage(
-          "%2d) %-30s %s%s"
-            .format(idx + 1, handler.importString, statsMsg, foundMsg))
+        intp
+          .reporter
+          .printMessage(
+            "%2d) %-30s %s%s"
+              .format(idx + 1, handler.importString, statsMsg, foundMsg))
     }
   }
 
@@ -529,7 +536,9 @@ class SparkILoop(
 
       filtered foreach {
         case (source, syms) =>
-          p("/* " + syms.size + " implicit members imported from " + source.fullName + " */")
+          p(
+            "/* " + syms.size + " implicit members imported from " + source
+              .fullName + " */")
 
           // This groups the members by where the symbol is defined
           val byOwner = syms groupBy (_.owner)
@@ -869,7 +878,8 @@ class SparkILoop(
     }
     if (intp.namedDefinedTerms.nonEmpty)
       echo(
-        "Forgetting all expression results and named terms: " + intp.namedDefinedTerms
+        "Forgetting all expression results and named terms: " + intp
+          .namedDefinedTerms
           .mkString(", "))
     if (intp.definedTypes.nonEmpty)
       echo("Forgetting defined types: " + intp.definedTypes.mkString(", "))
@@ -893,9 +903,8 @@ class SparkILoop(
           case "" =>
             showUsage()
           case _ =>
-            val toRun =
-              classOf[ProcessResult].getName + "(" + string2codeQuoted(
-                line) + ")"
+            val toRun = classOf[ProcessResult]
+              .getName + "(" + string2codeQuoted(line) + ")"
             intp interpret toRun
             ()
         }
@@ -927,9 +936,8 @@ class SparkILoop(
       if (f.exists) {
         added = true
         addedClasspath = ClassPath.join(addedClasspath, f.path)
-        totalClasspath = ClassPath.join(
-          settings.classpath.value,
-          addedClasspath)
+        totalClasspath = ClassPath
+          .join(settings.classpath.value, addedClasspath)
         intp.addUrlsToClassPath(f.toURI.toURL)
         sparkContext.addJar(f.toURI.toURL.getPath)
       }
@@ -1082,8 +1090,8 @@ class SparkILoop(
     else if (!paste.running && code.trim.startsWith(PromptString)) {
       paste.transcript(code)
       None
-    } else if (Completion.looksLikeInvocation(
-                 code) && intp.mostRecentVar != "") {
+    } else if (Completion.looksLikeInvocation(code) && intp
+                 .mostRecentVar != "") {
       interpretStartingWith(intp.mostRecentVar + code)
     } else if (code.trim startsWith "//") {
       // line comment, do nothing
@@ -1134,7 +1142,8 @@ class SparkILoop(
       m,
       new TypeCreator {
         def apply[U <: ApiUniverse with Singleton](m: Mirror[U]): U#Type =
-          m.staticClass(classTag[T].runtimeClass.getName)
+          m
+            .staticClass(classTag[T].runtimeClass.getName)
             .toTypeConstructor
             .asInstanceOf[U#Type]
       }
@@ -1308,12 +1317,15 @@ object SparkILoop extends Logging {
       logWarning(
         "ADD_JARS environment variable is deprecated, use --jar spark submit argument instead")
     }
-    val propJars = sys.props.get("spark.jars").flatMap { p =>
-      if (p == "")
-        None
-      else
-        Some(p)
-    }
+    val propJars = sys
+      .props
+      .get("spark.jars")
+      .flatMap { p =>
+        if (p == "")
+          None
+        else
+          Some(p)
+      }
     val jars = propJars.orElse(envJars).getOrElse("")
     Utils.resolveURIs(jars).split(",").filter(_.nonEmpty)
   }

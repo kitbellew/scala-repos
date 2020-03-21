@@ -33,13 +33,15 @@ class FetchRequest(
       import scala.collection.JavaConversions._
       (requestInfo: mutable.Map[TopicAndPartition, PartitionFetchInfo]).toMap
     }
-    kafka.api.FetchRequest(
-      correlationId = correlationId,
-      clientId = clientId,
-      replicaId = Request.OrdinaryConsumerId,
-      maxWait = maxWait,
-      minBytes = minBytes,
-      requestInfo = scalaMap)
+    kafka
+      .api
+      .FetchRequest(
+        correlationId = correlationId,
+        clientId = clientId,
+        replicaId = Request.OrdinaryConsumerId,
+        maxWait = maxWait,
+        minBytes = minBytes,
+        requestInfo = scalaMap)
   }
 
   override def toString = underlying.toString

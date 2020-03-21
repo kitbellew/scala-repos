@@ -248,9 +248,8 @@ trait ActorSubscriber extends Actor {
       reason: Throwable,
       message: Option[Any]): Unit = {
     // some state must survive restart
-    state.set(
-      self,
-      ActorSubscriberState.State(subscription, requested, _canceled))
+    state
+      .set(self, ActorSubscriberState.State(subscription, requested, _canceled))
     super.aroundPreRestart(reason, message)
   }
 

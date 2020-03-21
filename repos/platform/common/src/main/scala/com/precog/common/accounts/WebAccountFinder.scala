@@ -158,7 +158,8 @@ class WebAccountFinder(
             logger.error("findAccountByAPIKey for " + apiKey + "failed.", ex)
             Promise.successful(
               left(
-                "Client error accessing accounts service; unable to proceed: " + ex.getMessage))
+                "Client error accessing accounts service; unable to proceed: " + ex
+                  .getMessage))
         })
     }
   }
@@ -186,7 +187,8 @@ class WebAccountFinder(
             logger.error("findAccountById for " + accountId + "failed.", ex)
             Promise.successful(
               left(
-                "Client error accessing accounts service; unable to proceed: " + ex.getMessage))
+                "Client error accessing accounts service; unable to proceed: " + ex
+                  .getMessage))
         })
     }
   }

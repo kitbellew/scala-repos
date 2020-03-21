@@ -40,17 +40,19 @@ object SelectorConditions {
               .getTypeIgnoreBaseType()
               .toOption
               .flatMap { exprType =>
-                ScType.extractClass(exprType, Option(project)).map { psiClass =>
-                  val base = manager.getCachedClass(
-                    ancestorFqn,
-                    GlobalSearchScope.allScope(project),
-                    ClassCategory.ALL)
-                  (
-                    psiClass != null && base != null && ScEquivalenceUtil
-                      .areClassesEquivalent(psiClass, base)
-                  ) ||
-                  manager.cachedDeepIsInheritor(psiClass, base)
-                }
+                ScType
+                  .extractClass(exprType, Option(project))
+                  .map { psiClass =>
+                    val base = manager.getCachedClass(
+                      ancestorFqn,
+                      GlobalSearchScope.allScope(project),
+                      ClassCategory.ALL)
+                    (
+                      psiClass != null && base != null && ScEquivalenceUtil
+                        .areClassesEquivalent(psiClass, base)
+                    ) ||
+                    manager.cachedDeepIsInheritor(psiClass, base)
+                  }
               }
               .getOrElse(false)
           case _ =>

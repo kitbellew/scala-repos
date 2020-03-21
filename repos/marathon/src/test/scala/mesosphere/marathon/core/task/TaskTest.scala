@@ -23,25 +23,35 @@ class TaskTest extends FunSuite with Mockito with GivenWhenThen with Matchers {
     val networkWithoutIp = MesosProtos.NetworkInfo.newBuilder.build()
 
     val ipString1 = "123.123.123.123"
-    val ipAddress1 = MesosProtos.NetworkInfo.IPAddress
+    val ipAddress1 = MesosProtos
+      .NetworkInfo
+      .IPAddress
       .newBuilder()
       .setIpAddress(ipString1)
       .build()
 
     val ipString2 = "123.123.123.124"
-    val ipAddress2 = MesosProtos.NetworkInfo.IPAddress
+    val ipAddress2 = MesosProtos
+      .NetworkInfo
+      .IPAddress
       .newBuilder()
       .setIpAddress(ipString2)
       .build()
 
-    val networkWithOneIp1 = MesosProtos.NetworkInfo.newBuilder
+    val networkWithOneIp1 = MesosProtos
+      .NetworkInfo
+      .newBuilder
       .addIpAddresses(ipAddress1)
       .build()
-    val networkWithOneIp2 = MesosProtos.NetworkInfo.newBuilder
+    val networkWithOneIp2 = MesosProtos
+      .NetworkInfo
+      .newBuilder
       .addIpAddresses(ipAddress2)
       .build()
 
-    val networkWithMultipleIps = MesosProtos.NetworkInfo.newBuilder
+    val networkWithMultipleIps = MesosProtos
+      .NetworkInfo
+      .newBuilder
       .addAllIpAddresses(Seq(ipAddress1, ipAddress2).asJava)
       .build()
 
@@ -98,14 +108,16 @@ class TaskTest extends FunSuite with Mockito with GivenWhenThen with Matchers {
   test(
     "effectiveIpAddress returns the first container ip for for MarathonTask instances with multiple NetworkInfos (if the app requests an IP)") {
     val f = new Fixture
-    f.taskWithMultipleNetworksAndOneIp.effectiveIpAddress(
-      f.appWithIpAddress) should equal(f.ipString1)
+    f
+      .taskWithMultipleNetworksAndOneIp
+      .effectiveIpAddress(f.appWithIpAddress) should equal(f.ipString1)
   }
 
   test("effectiveIpAddress falls back to the agent IP") {
     val f = new Fixture
-    f.taskWithMultipleNetworkAndNoIp.effectiveIpAddress(
-      f.appWithIpAddress) should equal(f.host)
+    f
+      .taskWithMultipleNetworkAndNoIp
+      .effectiveIpAddress(f.appWithIpAddress) should equal(f.host)
   }
 
   test(

@@ -73,8 +73,8 @@ object SqlNetworkWordCount {
       wordsDataFrame.registerTempTable("words")
 
       // Do word count on table using SQL and print it
-      val wordCountsDataFrame = sqlContext.sql(
-        "select word, count(*) as total from words group by word")
+      val wordCountsDataFrame = sqlContext
+        .sql("select word, count(*) as total from words group by word")
       println(s"========= $time =========")
       wordCountsDataFrame.show()
     })

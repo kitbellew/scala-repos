@@ -4,8 +4,8 @@ object PhoneCode {
 
   def main(args: Array[String]) {
     //load all 3 files - and according to the spec, not into the memory. just open the file and have an iterator sucking lines from it - (1 line only :))
-    val Array(dictEntries, phoneEntries, testResult) = args.map(fileName =>
-      File("resource/" + fileName).lines())
+    val Array(dictEntries, phoneEntries, testResult) = args
+      .map(fileName => File("resource/" + fileName).lines())
     //function to create strings without noise chars, 1 line
     val cleanString = (s: String) => s.filterNot(Set('-', '"', '/'))
     //prepare lookup table number -> all words, 8 lines
@@ -52,28 +52,32 @@ object PhoneCode {
         .flatMap(phoneNumber => {
           // 16 lines
           def collectPossibleTranslations(current: Step): Seq[Step] = {
-            current.ifFinished.getOrElse({
-              def allMatches(matchAgainst: String) = {
-                //collect all possible next translation steps of the remaining numbers
-                val matchingWords =
-                  (
-                    for (len <- 1 to matchAgainst.length;
-                         opt <- dictEntriesDigified2Words.get(
-                           matchAgainst.take(len)))
-                      yield opt
-                  ).flatten
-                if (matchingWords.nonEmpty) //spead the tree
-                  for ((translated, remaining) <- matchingWords.map(e =>
-                         e -> matchAgainst.drop(e.count(_.isLetter))))
-                    yield (
-                      current
-                        .copy(current.translated + " " + translated, remaining)
+            current
+              .ifFinished
+              .getOrElse({
+                def allMatches(matchAgainst: String) = {
+                  //collect all possible next translation steps of the remaining numbers
+                  val matchingWords =
+                    (
+                      for (len <- 1 to matchAgainst.length;
+                           opt <- dictEntriesDigified2Words
+                             .get(matchAgainst.take(len)))
+                        yield opt
+                    ).flatten
+                  if (matchingWords.nonEmpty) //spead the tree
+                    for ((translated, remaining) <- matchingWords.map(e =>
+                           e -> matchAgainst.drop(e.count(_.isLetter))))
+                      yield (
+                        current.copy(
+                          current.translated + " " + translated,
+                          remaining)
                       )
-                else
-                  current.asFallback(matchAgainst)
-              }
-              allMatches(current.remaining).flatMap(collectPossibleTranslations)
-            })
+                  else
+                    current.asFallback(matchAgainst)
+                }
+                allMatches(current.remaining)
+                  .flatMap(collectPossibleTranslations)
+              })
           }
           /*start*/
           collectPossibleTranslations(

@@ -72,14 +72,13 @@ trait IngestSupport extends Logging {
         _.option(authorities)
       }
     } getOrElse {
-      permissionsFinder.inferWriteAuthorities(
-        apiKey,
-        path,
-        Some(timestamp.toInstant))
+      permissionsFinder
+        .inferWriteAuthorities(apiKey, path, Some(timestamp.toInstant))
     } onFailure {
       case ex: Exception =>
         logger.error(
-          "Request " + request.shows + " failed due to unavailability of security subsystem.",
+          "Request " + request
+            .shows + " failed due to unavailability of security subsystem.",
           ex)
       // FIXME: Provisionally accept data for ingest if one of the permissions-checking services is unavailable
     } flatMap {

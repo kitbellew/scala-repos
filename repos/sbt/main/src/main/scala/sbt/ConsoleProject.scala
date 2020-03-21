@@ -48,8 +48,8 @@ object ConsoleProject {
         case IncrementalCompilerImpl.Compilers(scalac, _) =>
           scalac
       }
-    val imports =
-      BuildUtil.getImports(unit.unit) ++ BuildUtil.importAll(bindings.map(_._1))
+    val imports = BuildUtil.getImports(unit.unit) ++ BuildUtil
+      .importAll(bindings.map(_._1))
     val importString = imports.mkString("", ";\n", ";\n\n")
     val initCommands = importString + extra
     // TODO - Hook up dsl classpath correctly...

@@ -1002,44 +1002,52 @@ class FutureTest
         val e = new Exception("rdrr")
 
         "values" in {
-          const.value(1).transform {
-            case Return(v) =>
-              const.value(v + 1)
-            case Throw(t) =>
-              const.value(0)
-          } mustProduce (Return(2))
+          const
+            .value(1)
+            .transform {
+              case Return(v) =>
+                const.value(v + 1)
+              case Throw(t) =>
+                const.value(0)
+            } mustProduce (Return(2))
         }
 
         "exceptions" in {
-          const.exception(e).transform {
-            case Return(_) =>
-              const.value(1)
-            case Throw(t) =>
-              const.value(0)
-          } mustProduce (Return(0))
+          const
+            .exception(e)
+            .transform {
+              case Return(_) =>
+                const.value(1)
+              case Throw(t) =>
+                const.value(0)
+            } mustProduce (Return(0))
         }
 
         "exceptions thrown during transformation" in {
-          const.value(1).transform {
-            case Return(v) =>
-              const.value(throw e)
-            case Throw(t) =>
-              const.value(0)
-          } mustProduce (Throw(e))
+          const
+            .value(1)
+            .transform {
+              case Return(v) =>
+                const.value(throw e)
+              case Throw(t) =>
+                const.value(0)
+            } mustProduce (Throw(e))
         }
 
         "non local returns executed during transformation" in {
           def ret(): String = {
-            val f = const.value(1).transform {
-              case Return(v) =>
-                val fn = { () =>
-                  return "OK"
-                }
-                fn()
-                Future.value(ret())
-              case Throw(t) =>
-                const.value(0)
-            }
+            val f = const
+              .value(1)
+              .transform {
+                case Return(v) =>
+                  val fn = { () =>
+                    return "OK"
+                  }
+                  fn()
+                  Future.value(ret())
+                case Throw(t) =>
+                  const.value(0)
+              }
             assert(f.poll.isDefined)
             val e = intercept[FutureNonLocalReturnControl] {
               f.poll.get.get
@@ -1062,12 +1070,14 @@ class FutureTest
           val e = new FatalException()
 
           val actual = intercept[FatalException] {
-            const.value(1).transform {
-              case Return(v) =>
-                const.value(throw e)
-              case Throw(t) =>
-                const.value(0)
-            }
+            const
+              .value(1)
+              .transform {
+                case Return(v) =>
+                  const.value(throw e)
+                case Throw(t) =>
+                  const.value(0)
+              }
           }
           assert(actual == e)
         }

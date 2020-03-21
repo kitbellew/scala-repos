@@ -28,10 +28,8 @@ class FlipComparisonInInfixExprIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val infixExpr: ScInfixExpr = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScInfixExpr],
-      false)
+    val infixExpr: ScInfixExpr = PsiTreeUtil
+      .getParentOfType(element, classOf[ScInfixExpr], false)
     if (infixExpr == null)
       return false
 
@@ -60,16 +58,17 @@ class FlipComparisonInInfixExprIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val infixExpr: ScInfixExpr = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScInfixExpr],
-      false)
+    val infixExpr: ScInfixExpr = PsiTreeUtil
+      .getParentOfType(element, classOf[ScInfixExpr], false)
     if (infixExpr == null || !infixExpr.isValid)
       return
 
     val start = infixExpr.getTextRange.getStartOffset
-    val diff =
-      editor.getCaretModel.getOffset - infixExpr.operation.nameId.getTextRange.getStartOffset
+    val diff = editor.getCaretModel.getOffset - infixExpr
+      .operation
+      .nameId
+      .getTextRange
+      .getStartOffset
     val expr = new StringBuilder
     val replaceOper = Map(
       "equals" -> "equals",
@@ -91,9 +90,8 @@ class FlipComparisonInInfixExprIntention extends PsiElementBaseIntentionAction {
       .append(" ")
       .append(infixExpr.getBaseExpr.getText)
 
-    val newInfixExpr = ScalaPsiElementFactory.createExpressionFromText(
-      expr.toString(),
-      element.getManager)
+    val newInfixExpr = ScalaPsiElementFactory
+      .createExpressionFromText(expr.toString(), element.getManager)
 
     val size = newInfixExpr
       .asInstanceOf[ScInfixExpr]

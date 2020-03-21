@@ -294,8 +294,9 @@ class FileAndResourceDirectivesSpec
       s.replaceAll(
         """\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d""",
         "xxxx-xx-xx xx:xx:xx")
-    implicit val settings = RoutingSettings.default.withRenderVanityFooter(
-      false)
+    implicit val settings = RoutingSettings
+      .default
+      .withRenderVanityFooter(false)
 
     "properly render a simple directory" in {
       Get() ~> listDirectoryContents(base + "/someDir") ~> check {

@@ -100,10 +100,8 @@ class GBTClassifierSuite extends SparkFunSuite with MLlibTestSparkContext {
     sc.setCheckpointDir(path)
 
     val categoricalFeatures = Map.empty[Int, Int]
-    val df: DataFrame = TreeTests.setMetadata(
-      data,
-      categoricalFeatures,
-      numClasses = 2)
+    val df: DataFrame = TreeTests
+      .setMetadata(data, categoricalFeatures, numClasses = 2)
     val gbt = new GBTClassifier()
       .setMaxDepth(2)
       .setLossType("logistic")
@@ -176,15 +174,12 @@ private object GBTClassifierSuite extends SparkFunSuite {
       gbt: GBTClassifier,
       categoricalFeatures: Map[Int, Int]): Unit = {
     val numFeatures = data.first().features.size
-    val oldBoostingStrategy = gbt.getOldBoostingStrategy(
-      categoricalFeatures,
-      OldAlgo.Classification)
+    val oldBoostingStrategy = gbt
+      .getOldBoostingStrategy(categoricalFeatures, OldAlgo.Classification)
     val oldGBT = new OldGBT(oldBoostingStrategy)
     val oldModel = oldGBT.run(data)
-    val newData: DataFrame = TreeTests.setMetadata(
-      data,
-      categoricalFeatures,
-      numClasses = 2)
+    val newData: DataFrame = TreeTests
+      .setMetadata(data, categoricalFeatures, numClasses = 2)
     val newModel = gbt.fit(newData)
     // Use parent from newTree since this is not checked anyways.
     val oldModelAsNew = GBTClassificationModel.fromOld(

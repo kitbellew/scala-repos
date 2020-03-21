@@ -133,8 +133,8 @@ private[akka] class IteratorInterpreter[I, O](
     val inOwners = Array.ofDim[Int](length + 1)
     val outs = Array.ofDim[Outlet[_]](length + 1)
     val outOwners = Array.ofDim[Int](length + 1)
-    val stages = Array.ofDim[GraphStageWithMaterializedValue[Shape, Any]](
-      length)
+    val stages = Array
+      .ofDim[GraphStageWithMaterializedValue[Shape, Any]](length)
 
     ins(ops.length) = null
     inOwners(ops.length) = Boundary

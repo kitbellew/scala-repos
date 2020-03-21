@@ -33,7 +33,8 @@ class WebServerSpec extends HttpFlatSpec with WebServer {
     Future.successful(SendBackgroundMessageEvent("hello"))
 
   val expected =
-    """{"typehint":"SendBackgroundMessageEvent","detail":"hello","code":105}""".parseJson
+    """{"typehint":"SendBackgroundMessageEvent","detail":"hello","code":105}"""
+      .parseJson
 
   val probe = TestProbe()
   def websocketHandler(target: ActorRef): ActorRef = probe.ref

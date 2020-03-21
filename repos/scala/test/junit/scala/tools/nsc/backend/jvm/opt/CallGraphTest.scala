@@ -53,12 +53,15 @@ class CallGraphTest extends ClearAfterClass {
       allowMessage: StoreReporter#Info => Boolean = _ => false)
       : List[ClassNode] = {
     CallGraphTest.notPerRun.foreach(_.clear())
-    compileClasses(compiler)(code, allowMessage = allowMessage).map(c =>
-      byteCodeRepository.classNode(c.name).get)
+    compileClasses(compiler)(code, allowMessage = allowMessage)
+      .map(c => byteCodeRepository.classNode(c.name).get)
   }
 
   def callsInMethod(methodNode: MethodNode): List[MethodInsnNode] =
-    methodNode.instructions.iterator.asScala
+    methodNode
+      .instructions
+      .iterator
+      .asScala
       .collect({
         case call: MethodInsnNode =>
           call

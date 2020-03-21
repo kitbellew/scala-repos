@@ -113,10 +113,13 @@ private[metrics] trait MetricsPrefix extends MetricSet {
     // does not have to be fast, is only called once during registering registry
     import collection.JavaConverters._
     (
-      super.getMetrics.asScala.map {
-        case (k, v) ⇒
-          (prefix / k).toString -> v
-      }
-    ).asJava
+      super
+        .getMetrics
+        .asScala
+        .map {
+          case (k, v) ⇒
+            (prefix / k).toString -> v
+        }
+      ).asJava
   }
 }

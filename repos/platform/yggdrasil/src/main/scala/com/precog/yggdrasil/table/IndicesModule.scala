@@ -294,9 +294,8 @@ trait IndicesModule[M[+_]]
     private[table] def getRowsForKeys(
         keyIds: Seq[Int],
         keyValues: Seq[RValue]): ArrayIntList = {
-      var rows: ArrayIntList = dict.getOrElse(
-        (keyIds(0), keyValues(0)),
-        emptyBuffer)
+      var rows: ArrayIntList = dict
+        .getOrElse((keyIds(0), keyValues(0)), emptyBuffer)
       var i: Int = 1
       while (i < keyIds.length && !rows.isEmpty) {
         rows = intersectBuffers(
@@ -414,17 +413,19 @@ trait IndicesModule[M[+_]]
             k = 0
             while (k < numKeys) {
               val jv = row(k)
-              vals.get(k).map { jvs =>
-                jvs.add(jv)
-                val key = (k, jv)
-                if (dict.contains(key)) {
-                  dict(key).add(i)
-                } else {
-                  val as = new ArrayIntList(0)
-                  as.add(i)
-                  dict(key) = as
+              vals
+                .get(k)
+                .map { jvs =>
+                  jvs.add(jv)
+                  val key = (k, jv)
+                  if (dict.contains(key)) {
+                    dict(key).add(i)
+                  } else {
+                    val as = new ArrayIntList(0)
+                    as.add(i)
+                    dict(key) = as
+                  }
                 }
-              }
               k += 1
             }
           }

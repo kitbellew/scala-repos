@@ -59,8 +59,8 @@ class ScSuperReferenceImpl(node: ASTNode)
                   drvTemplate.exists(td =>
                     !ScalaPsiUtil.cachedDeepIsInheritor(td, classes(0)))
                 } else {
-                  val clazz: Option[PsiClass] = classes.find(
-                    !_.isInstanceOf[ScObject])
+                  val clazz: Option[PsiClass] = classes
+                    .find(!_.isInstanceOf[ScObject])
                   clazz match {
                     case Some(psiClass) =>
                       drvTemplate.exists(td =>
@@ -228,17 +228,17 @@ class ScSuperReferenceImpl(node: ASTNode)
         q.resolve() match {
           case clazz: PsiClass =>
             Some(
-              clazz.getSuperTypes.map { t =>
-                ScType.create(t, getProject, getResolveScope)
-              })
+              clazz
+                .getSuperTypes
+                .map { t =>
+                  ScType.create(t, getProject, getResolveScope)
+                })
           case _ =>
             None
         }
       case None => {
-        PsiTreeUtil.getContextOfType(
-          this,
-          false,
-          classOf[ScExtendsBlock]) match {
+        PsiTreeUtil
+          .getContextOfType(this, false, classOf[ScExtendsBlock]) match {
           case null =>
             None
           case eb: ScExtendsBlock =>

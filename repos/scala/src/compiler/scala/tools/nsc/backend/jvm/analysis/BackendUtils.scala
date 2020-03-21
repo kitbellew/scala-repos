@@ -174,7 +174,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
       Type
         .getReturnType(closureInit.lambdaMetaFactoryCall.indy.desc)
         .getInternalName) &&
-    anonfunAdaptedName.pattern
+    anonfunAdaptedName
+      .pattern
       .matcher(closureInit.lambdaMetaFactoryCall.implMethod.getName)
       .matches
   }
@@ -227,8 +228,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
 
   def isScalaUnbox(insn: MethodInsnNode): Boolean = {
     insn.owner == srBoxesRunTimeRef.internalName && (
-      srBoxesRuntimeUnboxToMethods.get(
-        primitiveAsmTypeToBType(Type.getReturnType(insn.desc))) match {
+      srBoxesRuntimeUnboxToMethods
+        .get(primitiveAsmTypeToBType(Type.getReturnType(insn.desc))) match {
         case Some(MethodNameAndType(name, tp)) =>
           name == insn.name && tp.descriptor == insn.desc
         case _ =>
@@ -307,9 +308,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
   def isModuleLoad(insn: AbstractInsnNode, moduleName: InternalName): Boolean =
     insn match {
       case fi: FieldInsnNode =>
-        fi.getOpcode == GETSTATIC && fi.owner == moduleName && fi.name == "MODULE$" && fi.desc == (
-          "L" + moduleName + ";"
-        )
+        fi.getOpcode == GETSTATIC && fi.owner == moduleName && fi
+          .name == "MODULE$" && fi.desc == ("L" + moduleName + ";")
       case _ =>
         false
     }
@@ -359,7 +359,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
   def isBoxedUnit(insn: AbstractInsnNode) = {
     insn.getOpcode == GETSTATIC && {
       val fi = insn.asInstanceOf[FieldInsnNode]
-      fi.owner == srBoxedUnitRef.internalName && fi.name == "UNIT" && fi.desc == srBoxedUnitRef.descriptor
+      fi.owner == srBoxedUnitRef.internalName && fi.name == "UNIT" && fi
+        .desc == srBoxedUnitRef.descriptor
     }
   }
 
@@ -449,8 +450,10 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
     }
 
     visitInternalName(classNode.name)
-    innerClasses ++= classBTypeFromParsedClassfile(
-      classNode.name).info.get.nestedClasses
+    innerClasses ++= classBTypeFromParsedClassfile(classNode.name)
+      .info
+      .get
+      .nestedClasses
 
     visitInternalName(classNode.superName)
     classNode.interfaces.asScala foreach visitInternalName

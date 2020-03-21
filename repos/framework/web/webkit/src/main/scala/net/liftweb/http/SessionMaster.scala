@@ -74,7 +74,8 @@ object SessionMaster extends LiftActor with Loggable {
           val now = millis
 
           for ((id, info @ SessionInfo(session, _, _, _, _)) <- ses.iterator) {
-            if (now - session.lastServiceTime > session.inactivityLength || session.markedForTermination) {
+            if (now - session.lastServiceTime > session
+                  .inactivityLength || session.markedForTermination) {
               logger.info(" Session " + id + " expired")
               destroyer(info)
             } else {
@@ -116,9 +117,11 @@ object SessionMaster extends LiftActor with Loggable {
     import scala.collection.JavaConversions._
 
     val ses = lockRead(nsessions)
-    ses.valuesIterator.foreach {
-      _.session.breakOutComet()
-    }
+    ses
+      .valuesIterator
+      .foreach {
+        _.session.breakOutComet()
+      }
   }
 
   def getSession(id: String, otherId: Box[String]): Box[LiftSession] =
@@ -159,8 +162,9 @@ object SessionMaster extends LiftActor with Loggable {
     */
   def getSession(req: HTTPRequest, otherId: Box[String]): Box[LiftSession] =
     lockAndBump {
-      otherId.flatMap(a => Box !! nsessions.get(a)) or req.sessionId.flatMap(
-        id => Box !! nsessions.get(id))
+      otherId.flatMap(a => Box !! nsessions.get(a)) or req
+        .sessionId
+        .flatMap(id => Box !! nsessions.get(id))
     }
 
   /**

@@ -39,7 +39,9 @@ object PomTest extends Build {
             .getOrElse(
               sys.error(
                 "Dependency '" + id + "' not written to pom:\n" + loaded))
-          val actualOpt = java.lang.Boolean
+          val actualOpt = java
+            .lang
+            .Boolean
             .parseBoolean((dep \\ "optional").text)
           assert(
             opt == actualOpt,

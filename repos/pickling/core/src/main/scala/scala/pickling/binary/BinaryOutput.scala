@@ -51,12 +51,14 @@ abstract class BinaryOutput {
     var toCopy = nbrElt * eltSize
     while (toCopy > 0) {
       val byteLen = math.min(chunkSize, toCopy)
-      UnsafeMemory.unsafe.copyMemory(
-        arr,
-        srcOffset,
-        chunk,
-        UnsafeMemory.byteArrayOffset,
-        byteLen)
+      UnsafeMemory
+        .unsafe
+        .copyMemory(
+          arr,
+          srcOffset,
+          chunk,
+          UnsafeMemory.byteArrayOffset,
+          byteLen)
       toCopy -= byteLen
       srcOffset += byteLen
       putBytes(chunk, byteLen)
@@ -202,12 +204,14 @@ class FixedByteArrayOutput(capacity: Int) extends BinaryOutput {
     val nbrElt = arr.length
     var byteLen = nbrElt * eltSize
     putInt(nbrElt)
-    UnsafeMemory.unsafe.copyMemory(
-      arr,
-      offset,
-      head,
-      UnsafeMemory.byteArrayOffset + pos,
-      byteLen)
+    UnsafeMemory
+      .unsafe
+      .copyMemory(
+        arr,
+        offset,
+        head,
+        UnsafeMemory.byteArrayOffset + pos,
+        byteLen)
     pos += byteLen
   }
 
@@ -376,12 +380,14 @@ class FastByteArrayOutput(initialCapacity: Int = 10 * 1024 * 1024)
     var byteLen = nbrElt * eltSize
     ensureCapacity(byteLen + 4)
     putInt(nbrElt)
-    UnsafeMemory.unsafe.copyMemory(
-      arr,
-      offset,
-      head,
-      UnsafeMemory.byteArrayOffset + pos,
-      byteLen)
+    UnsafeMemory
+      .unsafe
+      .copyMemory(
+        arr,
+        offset,
+        head,
+        UnsafeMemory.byteArrayOffset + pos,
+        byteLen)
     pos += byteLen
   }
 

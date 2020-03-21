@@ -62,8 +62,8 @@ object ColorSelector extends JFXApp {
   val synchronizedValue = new DoubleProperty()
 
   val synchronizedControls = new ObservableBuffer[SliderControl]
-  synchronizedControls.onChange((buffer, changes) =>
-    synchronizeValues(buffer, changes))
+  synchronizedControls
+    .onChange((buffer, changes) => synchronizeValues(buffer, changes))
 
   // METHODS - BEGIN
 
@@ -110,7 +110,8 @@ object ColorSelector extends JFXApp {
       this.synchronizedValue() = math.random * colorselector.Max
     }
     if (synchronizedControls.size < 4) {
-      this.allControls
+      this
+        .allControls
         .filterNot(_.selectedControl.value)
         .filterNot(_.disabled.value)
         .foreach(_.value() = math.random * colorselector.Max)
@@ -123,7 +124,10 @@ object ColorSelector extends JFXApp {
   }
 
   private def formatColor() {
-    this.txfColorValue.text() = this.cmbColorFormat.value.value
+    this.txfColorValue.text() = this
+      .cmbColorFormat
+      .value
+      .value
       .format(this.currentColor(), !this.chbDisableAlpha.selected.value)
   }
 
@@ -134,8 +138,8 @@ object ColorSelector extends JFXApp {
       Color.White
 
   private def verifyWebColor() {
-    cmbWebColor.value() =
-      WebColor.colors.find(_.sameColor(currentColor())).orNull
+    cmbWebColor
+      .value() = WebColor.colors.find(_.sameColor(currentColor())).orNull
   }
 
   private def webColorSelected() {
@@ -172,12 +176,14 @@ object ColorSelector extends JFXApp {
     new SliderControl("R") {
       value = 255
     }
-  controlRed.value.onChange({
-    changeColor()
-    controlRed.changeColor(
-      Color.rgb(controlRed.value.value.toInt, 0, 0),
-      getForegroundColor(controlRed.value.value))
-  })
+  controlRed
+    .value
+    .onChange({
+      changeColor()
+      controlRed.changeColor(
+        Color.rgb(controlRed.value.value.toInt, 0, 0),
+        getForegroundColor(controlRed.value.value))
+    })
   controlRed.selectedControl.onChange(controlSelected(controlRed))
   controlRed.changeColor(
     Color.rgb(controlRed.value.value.toInt, 0, 0),
@@ -187,12 +193,14 @@ object ColorSelector extends JFXApp {
     new SliderControl("G") {
       value = 255
     }
-  controlGreen.value.onChange({
-    changeColor()
-    controlGreen.changeColor(
-      Color.rgb(0, controlGreen.value.value.toInt, 0),
-      getForegroundColor(controlGreen.value.value))
-  })
+  controlGreen
+    .value
+    .onChange({
+      changeColor()
+      controlGreen.changeColor(
+        Color.rgb(0, controlGreen.value.value.toInt, 0),
+        getForegroundColor(controlGreen.value.value))
+    })
   controlGreen.selectedControl.onChange(controlSelected(controlGreen))
   controlGreen.changeColor(
     Color.rgb(0, controlGreen.value.value.toInt, 0),
@@ -202,15 +210,17 @@ object ColorSelector extends JFXApp {
     new SliderControl("B") {
       value = 255
     }
-  controlBlue.value.onChange({
-    changeColor()
-    controlBlue
-      .changeColor(Color.rgb(0, 0, controlBlue.value.value.toInt), Color.White)
-  })
+  controlBlue
+    .value
+    .onChange({
+      changeColor()
+      controlBlue.changeColor(
+        Color.rgb(0, 0, controlBlue.value.value.toInt),
+        Color.White)
+    })
   controlBlue.selectedControl.onChange(controlSelected(controlBlue))
-  controlBlue.changeColor(
-    Color.rgb(0, 0, controlBlue.value.value.toInt),
-    Color.White)
+  controlBlue
+    .changeColor(Color.rgb(0, 0, controlBlue.value.value.toInt), Color.White)
 
   val controlAlpha =
     new SliderControl("A") {
@@ -218,16 +228,18 @@ object ColorSelector extends JFXApp {
     }
   controlAlpha.value.onChange(changeColor())
   controlAlpha.selectedControl.onChange(controlSelected(controlAlpha))
-  controlAlpha.disable.onChange({
-    if (controlAlpha.selectedControl.value) {
-      if (controlAlpha.disable.value)
-        synchronizedControls.remove(controlAlpha)
-      else
-        synchronizedControls.add(controlAlpha)
-    }
-    changeColor()
-    formatColor()
-  })
+  controlAlpha
+    .disable
+    .onChange({
+      if (controlAlpha.selectedControl.value) {
+        if (controlAlpha.disable.value)
+          synchronizedControls.remove(controlAlpha)
+        else
+          synchronizedControls.add(controlAlpha)
+      }
+      changeColor()
+      formatColor()
+    })
 
   val cmbWebColor =
     new ComboBox[WebColor](WebColor.colors) {
@@ -248,8 +260,8 @@ object ColorSelector extends JFXApp {
   val cmbColorFormat =
     new ComboBox[Formatter](Formatter.formatters) {
       promptText = "Color Format"
-      converter = StringConverter.toStringConverter((f: Formatter) =>
-        f.description)
+      converter = StringConverter
+        .toStringConverter((f: Formatter) => f.description)
       value = RgbFormatter
       onAction = (event: ActionEvent) => formatColor()
     }

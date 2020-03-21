@@ -75,10 +75,8 @@ class FsHistoryProviderSuite
         EventLoggingListener.IN_PROGRESS
       else
         ""
-    val logUri = EventLoggingListener.getLogPath(
-      testDir.toURI,
-      appId,
-      appAttemptId)
+    val logUri = EventLoggingListener
+      .getLogPath(testDir.toURI, appId, appAttemptId)
     val logPath = new URI(logUri).getPath + ip
     new File(logPath)
   }
@@ -227,7 +225,10 @@ class FsHistoryProviderSuite
       SparkListenerApplicationEnd(2L))
     updateAndCheck(provider) { list =>
       list.size should be(1)
-      list.head.attempts.head
+      list
+        .head
+        .attempts
+        .head
         .asInstanceOf[FsApplicationAttemptInfo]
         .logPath should
         endWith(EventLoggingListener.IN_PROGRESS)
@@ -236,7 +237,10 @@ class FsHistoryProviderSuite
     logFile1.renameTo(newLogFile("app1", None, inProgress = false))
     updateAndCheck(provider) { list =>
       list.size should be(1)
-      list.head.attempts.head
+      list
+        .head
+        .attempts
+        .head
         .asInstanceOf[FsApplicationAttemptInfo]
         .logPath should not
       endWith(EventLoggingListener.IN_PROGRESS)
@@ -351,10 +355,12 @@ class FsHistoryProviderSuite
 
       list.foreach {
         case app =>
-          app.attempts.foreach { attempt =>
-            val appUi = provider.getAppUI(app.id, attempt.attemptId)
-            appUi should not be null
-          }
+          app
+            .attempts
+            .foreach { attempt =>
+              val appUi = provider.getAppUI(app.id, attempt.attemptId)
+              appUi should not be null
+            }
       }
 
     }

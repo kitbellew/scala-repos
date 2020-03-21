@@ -225,9 +225,11 @@ trait ZNode {
           val result = new ExistsCallbackPromise(ZNode.this)
           val update = new EventPromise
           zk.exists(path, update, result, null)
-          result.liftNoNode.map {
-            ZNode.Watch(_, update)
-          }
+          result
+            .liftNoNode
+            .map {
+              ZNode.Watch(_, update)
+            }
         }
     }
 
@@ -248,19 +250,20 @@ trait ZNode {
 
     /** Pipe events from a subtree's monitor to this broker. */
     def pipeSubTreeUpdates(next: Offer[ZNode.TreeUpdate]) {
-      next.sync().flatMap(broker ! _).onSuccess { _ =>
-        pipeSubTreeUpdates(next)
-      }
+      next
+        .sync()
+        .flatMap(broker ! _)
+        .onSuccess { _ =>
+          pipeSubTreeUpdates(next)
+        }
     }
 
     /** Monitor a watch on this node. */
     def monitorWatch(
         watch: Future[ZNode.Watch[ZNode.Children]],
         knownChildren: Set[ZNode]) {
-      log.debug(
-        "monitoring %s with %d known children",
-        path,
-        knownChildren.size)
+      log
+        .debug("monitoring %s with %d known children", path, knownChildren.size)
       watch onFailure { e =>
         // An error occurred and there's not really anything we can do about it.
         log.error(e, "%s: watch could not be established".format(path))
@@ -275,10 +278,8 @@ trait ZNode {
             removed = knownChildren -- children)
           log.debug("updating %s with %d children", path, treeUpdate.added.size)
           broker send (treeUpdate) sync () onSuccess { _ =>
-            log.debug(
-              "updated %s with %d children",
-              path,
-              treeUpdate.added.size)
+            log
+              .debug("updated %s with %d children", path, treeUpdate.added.size)
             treeUpdate.added foreach { z =>
               pipeSubTreeUpdates(z.monitorTree())
             }

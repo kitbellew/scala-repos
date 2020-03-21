@@ -54,10 +54,12 @@ object FormUrlEncodedParser {
       data: String,
       encoding: String): java.util.Map[String, java.util.List[String]] = {
     import scala.collection.JavaConverters._
-    parse(data, encoding).map {
-      case (key, values) =>
-        key -> values.asJava
-    }.asJava
+    parse(data, encoding)
+      .map {
+        case (key, values) =>
+          key -> values.asJava
+      }
+      .asJava
   }
 
   /**
@@ -70,10 +72,12 @@ object FormUrlEncodedParser {
       data: String,
       encoding: String): java.util.Map[String, Array[String]] = {
     import scala.collection.JavaConverters._
-    parse(data, encoding).map {
-      case (key, values) =>
-        key -> values.toArray
-    }.asJava
+    parse(data, encoding)
+      .map {
+        case (key, values) =>
+          key -> values.toArray
+      }
+      .asJava
   }
 
   private[this] val parameterDelimiter = "[&;]".r
@@ -87,11 +91,13 @@ object FormUrlEncodedParser {
   private def parseToPairs(
       data: String,
       encoding: String): Seq[(String, String)] = {
-    parameterDelimiter.split(data).map { param =>
-      val parts = param.split("=", -1)
-      val key = URLDecoder.decode(parts(0), encoding)
-      val value = URLDecoder.decode(parts.lift(1).getOrElse(""), encoding)
-      key -> value
-    }
+    parameterDelimiter
+      .split(data)
+      .map { param =>
+        val parts = param.split("=", -1)
+        val key = URLDecoder.decode(parts(0), encoding)
+        val value = URLDecoder.decode(parts.lift(1).getOrElse(""), encoding)
+        key -> value
+      }
   }
 }

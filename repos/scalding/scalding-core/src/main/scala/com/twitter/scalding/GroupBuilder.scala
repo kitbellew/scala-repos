@@ -378,9 +378,8 @@ class GroupBuilder(val groupFields: Fields)
             name,
             maybeProjectedPipe,
             groupFields,
-            spillThreshold.getOrElse(
-              0
-            ), // cascading considers 0 to be the default
+            spillThreshold
+              .getOrElse(0), // cascading considers 0 to be the default
             redlist.reverse.toArray: _*)
 
         overrideReducers(ag.getGroupBy())

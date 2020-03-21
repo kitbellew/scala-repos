@@ -39,12 +39,10 @@ class IsrExpirationTest {
   val replicaFetchWaitMaxMs = 100
 
   val overridingProps = new Properties()
-  overridingProps.put(
-    KafkaConfig.ReplicaLagTimeMaxMsProp,
-    replicaLagTimeMaxMs.toString)
-  overridingProps.put(
-    KafkaConfig.ReplicaFetchWaitMaxMsProp,
-    replicaFetchWaitMaxMs.toString)
+  overridingProps
+    .put(KafkaConfig.ReplicaLagTimeMaxMsProp, replicaLagTimeMaxMs.toString)
+  overridingProps
+    .put(KafkaConfig.ReplicaFetchWaitMaxMsProp, replicaFetchWaitMaxMs.toString)
   val configs = TestUtils
     .createBrokerConfigs(2, TestUtils.MockZkConnect)
     .map(KafkaConfig.fromProps(_, overridingProps))
@@ -106,9 +104,8 @@ class IsrExpirationTest {
           -1L,
           -1,
           true)))
-    var partition0OSR = partition0.getOutOfSyncReplicas(
-      leaderReplica,
-      configs.head.replicaLagTimeMaxMs)
+    var partition0OSR = partition0
+      .getOutOfSyncReplicas(leaderReplica, configs.head.replicaLagTimeMaxMs)
     assertEquals(
       "No replica should be out of sync",
       Set.empty[Int],
@@ -118,9 +115,8 @@ class IsrExpirationTest {
     time.sleep(150)
 
     // now follower hasn't pulled any data for > replicaMaxLagTimeMs ms. So it is stuck
-    partition0OSR = partition0.getOutOfSyncReplicas(
-      leaderReplica,
-      configs.head.replicaLagTimeMaxMs)
+    partition0OSR = partition0
+      .getOutOfSyncReplicas(leaderReplica, configs.head.replicaLagTimeMaxMs)
     assertEquals(
       "Replica 1 should be out of sync",
       Set(configs.last.brokerId),
@@ -154,9 +150,8 @@ class IsrExpirationTest {
     // Let enough time pass for the replica to be considered stuck
     time.sleep(150)
 
-    val partition0OSR = partition0.getOutOfSyncReplicas(
-      leaderReplica,
-      configs.head.replicaLagTimeMaxMs)
+    val partition0OSR = partition0
+      .getOutOfSyncReplicas(leaderReplica, configs.head.replicaLagTimeMaxMs)
     assertEquals(
       "Replica 1 should be out of sync",
       Set(configs.last.brokerId),
@@ -196,9 +191,8 @@ class IsrExpirationTest {
 
     // Simulate 2 fetch requests spanning more than 100 ms which do not read to the end of the log.
     // The replicas will no longer be in ISR. We do 2 fetches because we want to simulate the case where the replica is lagging but is not stuck
-    var partition0OSR = partition0.getOutOfSyncReplicas(
-      leaderReplica,
-      configs.head.replicaLagTimeMaxMs)
+    var partition0OSR = partition0
+      .getOutOfSyncReplicas(leaderReplica, configs.head.replicaLagTimeMaxMs)
     assertEquals(
       "No replica should be out of sync",
       Set.empty[Int],
@@ -213,9 +207,8 @@ class IsrExpirationTest {
           -1L,
           -1,
           false)))
-    partition0OSR = partition0.getOutOfSyncReplicas(
-      leaderReplica,
-      configs.head.replicaLagTimeMaxMs)
+    partition0OSR = partition0
+      .getOutOfSyncReplicas(leaderReplica, configs.head.replicaLagTimeMaxMs)
     assertEquals(
       "No replica should be out of sync",
       Set.empty[Int],
@@ -224,9 +217,8 @@ class IsrExpirationTest {
     time.sleep(75)
 
     // The replicas will no longer be in ISR
-    partition0OSR = partition0.getOutOfSyncReplicas(
-      leaderReplica,
-      configs.head.replicaLagTimeMaxMs)
+    partition0OSR = partition0
+      .getOutOfSyncReplicas(leaderReplica, configs.head.replicaLagTimeMaxMs)
     assertEquals(
       "Replica 1 should be out of sync",
       Set(configs.last.brokerId),
@@ -240,9 +232,8 @@ class IsrExpirationTest {
           -1L,
           -1,
           true)))
-    partition0OSR = partition0.getOutOfSyncReplicas(
-      leaderReplica,
-      configs.head.replicaLagTimeMaxMs)
+    partition0OSR = partition0
+      .getOutOfSyncReplicas(leaderReplica, configs.head.replicaLagTimeMaxMs)
     assertEquals(
       "No replica should be out of sync",
       Set.empty[Int],
@@ -289,8 +280,10 @@ class IsrExpirationTest {
       partition: Partition,
       leaderId: Int,
       time: Time): Seq[Replica] = {
-    configs.filter(_.brokerId != leaderId).map { config =>
-      new Replica(config.brokerId, partition, time)
-    }
+    configs
+      .filter(_.brokerId != leaderId)
+      .map { config =>
+        new Replica(config.brokerId, partition, time)
+      }
   }
 }

@@ -79,7 +79,8 @@ case object InstantSerializer
 
 object DateParser {
   def parse(s: String, format: Formats) =
-    format.dateFormat
+    format
+      .dateFormat
       .parse(s)
       .map(_.getTime)
       .getOrElse(throw new MappingException("Invalid date format " + s))

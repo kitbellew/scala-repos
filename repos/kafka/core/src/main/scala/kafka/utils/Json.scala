@@ -65,7 +65,8 @@ object Json extends Logging {
         n.toString
       case m: Map[_, _] =>
         "{" +
-          m.map(elem =>
+          m
+            .map(elem =>
               elem match {
                 case t: Tuple2[_, _] =>
                   encode(t._1) + ":" + encode(t._2)

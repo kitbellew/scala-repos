@@ -35,10 +35,8 @@ class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
     // expectations
     val Ew = 1.0
     val Emu = Vectors.dense(5.0, 10.0)
-    val Esigma = Matrices.dense(
-      2,
-      2,
-      Array(2.0 / 3.0, -2.0 / 3.0, -2.0 / 3.0, 2.0 / 3.0))
+    val Esigma = Matrices
+      .dense(2, 2, Array(2.0 / 3.0, -2.0 / 3.0, -2.0 / 3.0, 2.0 / 3.0))
 
     val seeds = Array(314589, 29032897, 50181, 494821, 4660)
     seeds.foreach { seed =>
@@ -92,9 +90,7 @@ class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
     val d = data.first().size
     assert(GaussianMixture.shouldDistributeGaussians(k, d))
 
-    val gmm = new GaussianMixture()
-      .setK(k)
-      .run(data)
+    val gmm = new GaussianMixture().setK(k).run(data)
 
     assert(gmm.k === k)
   }
@@ -133,8 +129,8 @@ class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("two clusters with sparse data") {
     val data = sc.parallelize(GaussianTestData.data)
-    val sparseData = data.map(point =>
-      Vectors.sparse(1, Array(0), point.toArray))
+    val sparseData = data
+      .map(point => Vectors.sparse(1, Array(0), point.toArray))
     // we set an initial gaussian to induce expected results
     val initialGmm =
       new GaussianMixtureModel(
@@ -193,10 +189,13 @@ class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
     val gmm = new GaussianMixture().setK(2).setSeed(0).run(data)
 
     val batchPredictions = gmm.predict(data)
-    batchPredictions.zip(data).collect().foreach {
-      case (batchPred, datum) =>
-        assert(batchPred === gmm.predict(datum))
-    }
+    batchPredictions
+      .zip(data)
+      .collect()
+      .foreach {
+        case (batchPred, datum) =>
+          assert(batchPred === gmm.predict(datum))
+      }
   }
 
   object GaussianTestData {

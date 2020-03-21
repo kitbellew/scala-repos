@@ -33,8 +33,9 @@ abstract class AutoImportTestBase
   protected def doTest() {
     import org.junit.Assert._
     val filePath = folderPath + getTestName(false) + ".scala"
-    val file = LocalFileSystem.getInstance.refreshAndFindFileByPath(
-      filePath.replace(File.separatorChar, '/'))
+    val file = LocalFileSystem
+      .getInstance
+      .refreshAndFindFileByPath(filePath.replace(File.separatorChar, '/'))
     assert(file != null, "file " + filePath + " not found")
     var fileText = StringUtil.convertLineSeparators(
       FileUtil.loadFile(new File(file.getCanonicalPath), CharsetToolkit.UTF8))
@@ -70,11 +71,23 @@ abstract class AutoImportTestBase
           def run() {
             classes(0) match {
               case ClassTypeToImport(clazz) =>
-                org.jetbrains.plugins.scala.annotator.intention.ScalaImportTypeFix
+                org
+                  .jetbrains
+                  .plugins
+                  .scala
+                  .annotator
+                  .intention
+                  .ScalaImportTypeFix
                   .getImportHolder(ref, getProjectAdapter)
                   .addImportForClass(clazz)
               case ta =>
-                org.jetbrains.plugins.scala.annotator.intention.ScalaImportTypeFix
+                org
+                  .jetbrains
+                  .plugins
+                  .scala
+                  .annotator
+                  .intention
+                  .ScalaImportTypeFix
                   .getImportHolder(ref, getProjectAdapter)
                   .addImportForPath(ta.qualifiedName, ref)
             }
@@ -84,9 +97,11 @@ abstract class AutoImportTestBase
         getProjectAdapter,
         "Test"
       )
-      res = scalaFile.getText
-        .substring(0, lastPsi.getTextOffset)
-        .trim //getImportStatements.map(_.getText()).mkString("\n")
+      res =
+        scalaFile
+          .getText
+          .substring(0, lastPsi.getTextOffset)
+          .trim //getImportStatements.map(_.getText()).mkString("\n")
       assert(
         refPointer.getElement.resolve != null,
         "reference is unresolved after import action")

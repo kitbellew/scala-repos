@@ -119,7 +119,10 @@ object ArrayBuilder {
       }
       result.asInstanceOf[Array[T]]
     } else {
-      val result: Array[T] = java.lang.reflect.Array
+      val result: Array[T] = java
+        .lang
+        .reflect
+        .Array
         .newInstance(runtimeClass, len)
         .asInstanceOf[Array[T]]
       var i = 0

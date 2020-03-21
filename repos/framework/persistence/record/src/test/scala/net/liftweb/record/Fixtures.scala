@@ -281,9 +281,11 @@ class FieldTypeTestRecord private () extends Record[FieldTypeTestRecord] {
   override def equals(other: Any): Boolean =
     other match {
       case that: FieldTypeTestRecord =>
-        that.fieldsToCompare.corresponds(this.fieldsToCompare) { (a, b) =>
-          a.name == b.name && a.valueBox == b.valueBox
-        }
+        that
+          .fieldsToCompare
+          .corresponds(this.fieldsToCompare) { (a, b) =>
+            a.name == b.name && a.valueBox == b.valueBox
+          }
       case _ =>
         false
     }

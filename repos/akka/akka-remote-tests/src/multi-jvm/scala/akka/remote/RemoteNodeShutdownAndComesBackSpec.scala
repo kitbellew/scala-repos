@@ -91,7 +91,9 @@ abstract class RemoteNodeShutdownAndComesBackSpec
         testConductor.blackhole(second, first, Direction.Send).await
         // Shut down all existing connections so that the system can enter recovery mode (association attempts)
         Await.result(
-          RARP(system).provider.transport
+          RARP(system)
+            .provider
+            .transport
             .managementCommand(ForceDisassociate(node(second).address)),
           3.seconds)
 

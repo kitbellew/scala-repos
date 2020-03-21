@@ -38,9 +38,8 @@ case class PlayerAggregateAssessment(
         && (
           cheatingSum.toDouble / assessmentsCount >= 0.1 - relationModifier
           // or more than 20 percent of games are likely cheating
-            || (
-              cheatingSum + likelyCheatingSum
-            ).toDouble / assessmentsCount >= 0.20 - relationModifier
+            || (cheatingSum + likelyCheatingSum)
+              .toDouble / assessmentsCount >= 0.20 - relationModifier
         )
     )
 
@@ -54,9 +53,8 @@ case class PlayerAggregateAssessment(
         && (
           cheatingSum.toDouble / assessmentsCount >= 0.05 - relationModifier
           // or more than 10 percent of games are likely cheating
-            || (
-              cheatingSum + likelyCheatingSum
-            ).toDouble / assessmentsCount >= 0.10 - relationModifier
+            || (cheatingSum + likelyCheatingSum)
+              .toDouble / assessmentsCount >= 0.10 - relationModifier
         )
     )
 
@@ -163,10 +161,10 @@ case class PlayerAggregateAssessment(
           .sortBy(-_.assessment.id)
           .take(maxGames)
           .map { a =>
-            a.assessment.emoticon + " http://lichess.org/" + a.gameId + "/" + a.color.name
+            a.assessment.emoticon + " http://lichess.org/" + a
+              .gameId + "/" + a.color.name
           }
-        )
-        .mkString("\n")
+        ).mkString("\n")
 
     s"""[AUTOREPORT]
     Cheating Games: $cheatingSum

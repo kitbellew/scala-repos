@@ -47,13 +47,16 @@ final class Sequencer(
       case ReceiveTimeout =>
         self ! PoisonPill
       case Sequencer.Work(run, promiseOption, timeoutOption) =>
-        val future = timeoutOption.orElse(executionTimeout).fold(run()) {
-          timeout =>
+        val future = timeoutOption
+          .orElse(executionTimeout)
+          .fold(run()) { timeout =>
             run().withTimeout(
               duration = timeout,
-              error = lila.common.LilaException(
-                s"Sequencer timed out after $timeout"))(context.system)
-        } andThenAnyway {
+              error = lila
+                .common
+                .LilaException(s"Sequencer timed out after $timeout"))(
+              context.system)
+          } andThenAnyway {
           self ! Done
         }
         promiseOption foreach (_ completeWith future)

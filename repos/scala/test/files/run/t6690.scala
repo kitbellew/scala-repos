@@ -4,13 +4,15 @@ import scala.language.{reflectiveCalls}
 
 object Test extends App {
   def last0(ml: mutable.MutableList[Int]) =
-    ml.asInstanceOf[{
+    ml
+      .asInstanceOf[{
         def last0: mutable.LinkedList[Int]
       }]
       .last0
 
   def first0(ml: mutable.MutableList[Int]) =
-    ml.asInstanceOf[{
+    ml
+      .asInstanceOf[{
         def first0: mutable.LinkedList[Int]
       }]
       .first0

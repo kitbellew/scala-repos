@@ -34,9 +34,11 @@ private[python] class GaussianMixtureModelWrapper(model: GaussianMixtureModel) {
     * Returns gaussians as a List of Vectors and Matrices corresponding each MultivariateGaussian
     */
   val gaussians: Array[Byte] = {
-    val modelGaussians = model.gaussians.map { gaussian =>
-      Array[Any](gaussian.mu, gaussian.sigma)
-    }
+    val modelGaussians = model
+      .gaussians
+      .map { gaussian =>
+        Array[Any](gaussian.mu, gaussian.sigma)
+      }
     SerDe.dumps(JavaConverters.seqAsJavaListConverter(modelGaussians).asJava)
   }
 

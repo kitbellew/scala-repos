@@ -52,18 +52,18 @@ object CachingAPIKeyManagerSettings {
 
 class CachingAPIKeyManager[M[+_]](
     manager: APIKeyManager[M],
-    settings: CachingAPIKeyManagerSettings =
-      CachingAPIKeyManagerSettings.Default)
+    settings: CachingAPIKeyManagerSettings = CachingAPIKeyManagerSettings
+      .Default)
     extends APIKeyManager[M]
     with Logging {
   implicit val M = manager.M
 
-  private val apiKeyCache = Cache.simple[APIKey, APIKeyRecord](
-    settings.apiKeyCacheSettings: _*)
-  private val childCache = Cache.simple[APIKey, Set[APIKeyRecord]](
-    settings.childCacheSettings: _*)
-  private val grantCache = Cache.simple[GrantId, Grant](
-    settings.grantCacheSettings: _*)
+  private val apiKeyCache = Cache
+    .simple[APIKey, APIKeyRecord](settings.apiKeyCacheSettings: _*)
+  private val childCache = Cache
+    .simple[APIKey, Set[APIKeyRecord]](settings.childCacheSettings: _*)
+  private val grantCache = Cache
+    .simple[GrantId, Grant](settings.grantCacheSettings: _*)
 
   protected def add(r: APIKeyRecord) =
     IO {

@@ -22,8 +22,8 @@ class ScalaMemberNameCompletionContributor extends ScalaCompletionContributor {
   //suggest class name
   extend(
     CompletionType.BASIC,
-    ScalaSmartCompletionContributor.superParentsPattern(
-      classOf[ScTypeDefinition]),
+    ScalaSmartCompletionContributor
+      .superParentsPattern(classOf[ScTypeDefinition]),
     new CompletionProvider[CompletionParameters]() {
       def addCompletions(
           parameters: CompletionParameters,
@@ -37,15 +37,17 @@ class ScalaMemberNameCompletionContributor extends ScalaCompletionContributor {
         val parent = position.getContext.getContext
         if (parent == null)
           return
-        parent.getChildren.foreach {
-          case c: ScClass =>
-            classesNames += c.name
-          case t: ScTrait =>
-            classesNames += t.name
-          case o: ScObject =>
-            objectNames += o.name
-          case _ =>
-        }
+        parent
+          .getChildren
+          .foreach {
+            case c: ScClass =>
+              classesNames += c.name
+            case t: ScTrait =>
+              classesNames += t.name
+            case o: ScObject =>
+              objectNames += o.name
+            case _ =>
+          }
         val shouldCompleteFileName =
           parent match {
             case f: ScalaFile =>
@@ -55,8 +57,8 @@ class ScalaMemberNameCompletionContributor extends ScalaCompletionContributor {
             case _ =>
               false
           }
-        if (shouldCompleteFileName && !classesNames.contains(
-              fileName) && !objectNames.contains(fileName)) {
+        if (shouldCompleteFileName && !classesNames
+              .contains(fileName) && !objectNames.contains(fileName)) {
           result.addElement(LookupElementBuilder.create(fileName))
         }
         position.getContext match {

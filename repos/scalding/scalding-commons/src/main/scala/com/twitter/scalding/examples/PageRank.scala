@@ -44,10 +44,7 @@ class PageRank(args: Args) extends Job(args) {
      */
     .map(() -> ('rowtype, 'd_src)) { (u: Unit) =>
       (NODESET, -1)
-    }
-    .thenDo(doPageRank(STEPS) _)
-    .thenDo(computeError _)
-    .thenDo(output _)
+    }.thenDo(doPageRank(STEPS) _).thenDo(computeError _).thenDo(output _)
 
   /**
     * Here is where we check for convergence and then run the next job if we're not converged
@@ -93,8 +90,9 @@ class PageRank(args: Args) extends Job(args) {
     * EXACT format as the output method writes.  This is your job!
     */
   def initialize(nodeCol: Symbol, neighCol: Symbol, pageRank: Symbol) = {
-    Tsv(args("input")).read
-    //Just to name the columns:
+    Tsv(args("input"))
+      .read
+      //Just to name the columns:
       .mapTo((0, 1, 2) -> (nodeCol, neighCol, pageRank)) {
         input: (Long, String, Double) => input
       }
@@ -166,9 +164,9 @@ class PageRank(args: Args) extends Job(args) {
            * filter the result to keep only NODESET rows.
            */
           _.min('rowtype, 'dst, 'd_src)
-            .sum[Double](
-              'rank
-            ) //Sum the page-rank from both the nodeset and edge rows
+          .sum[Double](
+            'rank
+          ) //Sum the page-rank from both the nodeset and edge rows
         }
       //Must call ourselves in the tail position:
       doPageRank(steps - 1)(nextPr)
@@ -183,21 +181,23 @@ class PageRank(args: Args) extends Job(args) {
 
   //Optionally compute the average error:
   def computeError(pr: RichPipe): RichPipe = {
-    args.optional("errorOut").map { errOut =>
-      Tsv(args("input")).read
-        .mapTo((0, 1, 2) -> ('src0, 'dst0, 'rank0)) {
-          tup: (Long, String, Double) =>
-            tup
-        }
-        .joinWithSmaller('src0 -> 'src, pr)
-        .mapTo(('rank0, 'rank) -> 'err) { ranks: (Double, Double) =>
-          scala.math.abs(ranks._1 - ranks._2)
-        }
-        .groupAll {
-          _.average('err)
-        }
-        .write(TypedTsv[Double](errOut))
-    }
+    args
+      .optional("errorOut")
+      .map { errOut =>
+        Tsv(args("input"))
+          .read
+          .mapTo((0, 1, 2) -> ('src0, 'dst0, 'rank0)) {
+            tup: (Long, String, Double) => tup
+          }
+          .joinWithSmaller('src0 -> 'src, pr)
+          .mapTo(('rank0, 'rank) -> 'err) { ranks: (Double, Double) =>
+            scala.math.abs(ranks._1 - ranks._2)
+          }
+          .groupAll {
+            _.average('err)
+          }
+          .write(TypedTsv[Double](errOut))
+      }
     pr
   }
 }

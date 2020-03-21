@@ -44,9 +44,8 @@ case class APIKeyRecord(
     isRoot: Boolean)
 
 object APIKeyRecord {
-  implicit val apiKeyRecordIso = Iso.hlist(
-    APIKeyRecord.apply _,
-    APIKeyRecord.unapply _)
+  implicit val apiKeyRecordIso = Iso
+    .hlist(APIKeyRecord.apply _, APIKeyRecord.unapply _)
 
   val schemaV1 = "apiKey" :: "name" :: "description" :: (
     "issuerKey" ||| "(undefined)"

@@ -35,9 +35,8 @@ import org.apache.spark.util.Utils
   */
 class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
   def binaryClassificationTestWithContinuousFeatures(strategy: Strategy) {
-    val arr = EnsembleTestHelper.generateOrderedLabeledPoints(
-      numFeatures = 50,
-      1000)
+    val arr = EnsembleTestHelper
+      .generateOrderedLabeledPoints(numFeatures = 50, 1000)
     val rdd = sc.parallelize(arr)
     val numTrees = 1
 
@@ -89,9 +88,8 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   def regressionTestWithContinuousFeatures(strategy: Strategy) {
-    val arr = EnsembleTestHelper.generateOrderedLabeledPoints(
-      numFeatures = 50,
-      1000)
+    val arr = EnsembleTestHelper
+      .generateOrderedLabeledPoints(numFeatures = 50, 1000)
     val rdd = sc.parallelize(arr)
     val numTrees = 1
 
@@ -157,11 +155,8 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
         numFeaturesPerNode: Int): Unit = {
       val seeds = Array(123, 5354, 230, 349867, 23987)
       val maxMemoryUsage: Long = 128 * 1024L * 1024L
-      val metadata = DecisionTreeMetadata.buildMetadata(
-        rdd,
-        strategy,
-        numTrees,
-        featureSubsetStrategy)
+      val metadata = DecisionTreeMetadata
+        .buildMetadata(rdd, strategy, numTrees, featureSubsetStrategy)
       seeds.foreach { seed =>
         val failString = s"Failed on test with:" +
           s"numTrees=$numTrees, featureSubsetStrategy=$featureSubsetStrategy," +
@@ -189,14 +184,18 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
         if (numFeaturesPerNode == numFeatures) {
           // featureSubset values should all be None
           assert(
-            treeToNodeToIndexInfo.values.forall(
-              _.values.forall(_.featureSubset.isEmpty)),
+            treeToNodeToIndexInfo
+              .values
+              .forall(_.values.forall(_.featureSubset.isEmpty)),
             failString)
         } else {
           // Check number of features.
           assert(
-            treeToNodeToIndexInfo.values.forall(
-              _.values.forall(_.featureSubset.get.size === numFeaturesPerNode)),
+            treeToNodeToIndexInfo
+              .values
+              .forall(
+                _.values
+                .forall(_.featureSubset.get.size === numFeaturesPerNode)),
             failString)
         }
       }
@@ -331,10 +330,13 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
         model.save(sc, path)
         val sameModel = RandomForestModel.load(sc, path)
         assert(model.algo == sameModel.algo)
-        model.trees.zip(sameModel.trees).foreach {
-          case (treeA, treeB) =>
-            DecisionTreeSuite.checkEqual(treeA, treeB)
-        }
+        model
+          .trees
+          .zip(sameModel.trees)
+          .foreach {
+            case (treeA, treeB) =>
+              DecisionTreeSuite.checkEqual(treeA, treeB)
+          }
       } finally {
         Utils.deleteRecursively(tempDir)
       }

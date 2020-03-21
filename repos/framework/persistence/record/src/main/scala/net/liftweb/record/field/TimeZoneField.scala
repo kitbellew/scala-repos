@@ -28,13 +28,14 @@ import http.{S, SHtml}
 import S._
 
 object TimeZoneField {
-  lazy val timeZoneList: List[(String, String)] =
-    TimeZone.getAvailableIDs.toList
-      .filter(!_.startsWith("SystemV/"))
-      .filter(!_.startsWith("Etc/"))
-      .filter(_.length > 3)
-      .sortWith(_ < _)
-      .map(tz => (tz, tz))
+  lazy val timeZoneList: List[(String, String)] = TimeZone
+    .getAvailableIDs
+    .toList
+    .filter(!_.startsWith("SystemV/"))
+    .filter(!_.startsWith("Etc/"))
+    .filter(_.length > 3)
+    .sortWith(_ < _)
+    .map(tz => (tz, tz))
 }
 
 trait TimeZoneTypedField extends StringTypedField {

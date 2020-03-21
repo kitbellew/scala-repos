@@ -18,7 +18,8 @@ object ProjectTests extends TestSuite {
       def checkDir(path: String, filter: String => Boolean = _ => true) = {
         println("Checking Dir " + path)
         def listFiles(s: java.io.File): Iterator[String] = {
-          val (dirs, files) = Option(s.listFiles()).toIterator
+          val (dirs, files) = Option(s.listFiles())
+            .toIterator
             .flatMap(_.toIterator)
             .partition(_.isDirectory)
 
@@ -33,7 +34,10 @@ object ProjectTests extends TestSuite {
             if (filename.endsWith(".scala") && filter(filename)) {
               val code =
                 new String(
-                  java.nio.file.Files
+                  java
+                    .nio
+                    .file
+                    .Files
                     .readAllBytes(java.nio.file.Paths.get(filename)))
               if (!ScalacParser.checkParseFails(code)) {
                 print(".")
@@ -48,7 +52,9 @@ object ProjectTests extends TestSuite {
 
       'test - {
         val testSource =
-          scala.io.Source
+          scala
+            .io
+            .Source
             .fromInputStream(
               getClass.getResourceAsStream("/scalaparse/Test.scala"))
             .mkString

@@ -65,8 +65,8 @@ object BuildCommons {
     "launcher",
     "unsafe",
     "test-tags",
-    "sketch").map(
-    ProjectRef(buildLocation, _)) ++ sqlProjects ++ streamingProjects
+    "sketch")
+    .map(ProjectRef(buildLocation, _)) ++ sqlProjects ++ streamingProjects
 
   val optionallyEnabledProjects @ Seq(
     yarn,
@@ -88,11 +88,10 @@ object BuildCommons {
     "assembly",
     "network-yarn",
     "streaming-kafka-assembly",
-    "streaming-kinesis-asl-assembly")
-    .map(ProjectRef(buildLocation, _))
+    "streaming-kinesis-asl-assembly").map(ProjectRef(buildLocation, _))
 
-  val copyJarsProjects @ Seq(examples) = Seq("examples").map(
-    ProjectRef(buildLocation, _))
+  val copyJarsProjects @ Seq(examples) = Seq("examples")
+    .map(ProjectRef(buildLocation, _))
 
   val tools = ProjectRef(buildLocation, "tools")
   // Root project.
@@ -156,7 +155,8 @@ object SparkBuild extends PomBuild {
               "Note: We ignore environment variables, when use of profile is detected in " +
                 "conjunction with environment variable.")
           // scalastyle:on println
-          v.split("(\\s+|,)")
+          v
+            .split("(\\s+|,)")
             .filterNot(_.isEmpty)
             .map(_.trim.replaceAll("-P", ""))
             .toSeq
@@ -173,7 +173,8 @@ object SparkBuild extends PomBuild {
 
   Properties.envOrNone("SBT_MAVEN_PROPERTIES") match {
     case Some(v) =>
-      v.split("(\\s+|,)")
+      v
+        .split("(\\s+|,)")
         .filterNot(_.isEmpty)
         .map(_.split("="))
         .foreach(x => System.setProperty(x(0), x(1)))
@@ -189,19 +190,24 @@ object SparkBuild extends PomBuild {
 
   lazy val sparkGenjavadocSettings: Seq[sbt.Def.Setting[_]] = Seq(
     libraryDependencies += compilerPlugin(
-      "org.spark-project" %% "genjavadoc-plugin" % unidocGenjavadocVersion.value cross CrossVersion.full),
+      "org.spark-project" %% "genjavadoc-plugin" % unidocGenjavadocVersion
+        .value cross CrossVersion.full),
     scalacOptions <+= target.map(t => "-P:genjavadoc:out=" + (t / "java"))
   )
 
   lazy val sharedSettings = sparkGenjavadocSettings ++ Seq(
     exportJars in Compile := true,
     exportJars in Test := false,
-    javaHome := sys.env
+    javaHome := sys
+      .env
       .get("JAVA_HOME")
       .orElse(
-        sys.props.get("java.home").map { p =>
-          new File(p).getParentFile().getAbsolutePath()
-        })
+        sys
+          .props
+          .get("java.home")
+          .map { p =>
+            new File(p).getParentFile().getAbsolutePath()
+          })
       .map(file),
     incOptions := incOptions.value.withNameHashing(true),
     publishMavenStyle := true,
@@ -213,8 +219,8 @@ object SparkBuild extends PomBuild {
       Resolver.file("local", file(Path.userHome.absolutePath + "/.ivy2/local"))(
         Resolver.ivyStylePatterns)),
     externalResolvers := resolvers.value,
-    otherResolvers <<= SbtPomKeys.mvnLocalRepository(dotM2 =>
-      Seq(Resolver.file("dotM2", dotM2))),
+    otherResolvers <<= SbtPomKeys
+      .mvnLocalRepository(dotM2 => Seq(Resolver.file("dotM2", dotM2))),
     publishLocalConfiguration in MavenCompile <<= (
       packagedArtifacts,
       deliverLocal,
@@ -225,9 +231,8 @@ object SparkBuild extends PomBuild {
     publishLocal in MavenCompile <<= publishTask(
       publishLocalConfiguration in MavenCompile,
       deliverLocal),
-    publishLocalBoth <<= Seq(
-      publishLocal in MavenCompile,
-      publishLocal).dependOn,
+    publishLocalBoth <<= Seq(publishLocal in MavenCompile, publishLocal)
+      .dependOn,
     javacOptions in (Compile, doc) ++= {
       val versionParts = System.getProperty("java.version").split("[+.\\-]+", 3)
       var major = versionParts(0).toInt
@@ -254,9 +259,9 @@ object SparkBuild extends PomBuild {
     scalacOptions in Compile ++= Seq(
       s"-target:jvm-${scalacJVMVersion.value}",
       "-sourcepath",
-      (
-        baseDirectory in ThisBuild
-      ).value.getAbsolutePath // Required for relative source links in scaladoc
+      (baseDirectory in ThisBuild)
+        .value
+        .getAbsolutePath // Required for relative source links in scaladoc
     ),
     // Implements -Xfatal-warnings, ignoring deprecation warnings.
     // Code snippet taken from https://issues.scala-lang.org/browse/SI-8410.
@@ -266,34 +271,37 @@ object SparkBuild extends PomBuild {
 
       def logProblem(l: (=> String) => Unit, f: File, p: xsbti.Problem) = {
         l(
-          f.toString + ":" + p.position.line
-            .fold("")(_ + ":") + " " + p.message)
+          f.toString + ":" + p.position.line.fold("")(_ + ":") + " " + p
+            .message)
         l(p.position.lineContent)
         l("")
       }
 
       var failed = 0
-      analysis.infos.allInfos.foreach {
-        case (k, i) =>
-          i.reportedProblems foreach { p =>
-            val deprecation = p.message.contains("is deprecated")
+      analysis
+        .infos
+        .allInfos
+        .foreach {
+          case (k, i) =>
+            i.reportedProblems foreach { p =>
+              val deprecation = p.message.contains("is deprecated")
 
-            if (!deprecation) {
-              failed = failed + 1
+              if (!deprecation) {
+                failed = failed + 1
+              }
+
+              val printer: (=> String) => Unit =
+                s =>
+                  if (deprecation) {
+                    out.log.warn(s)
+                  } else {
+                    out.log.error("[warn] " + s)
+                  }
+
+              logProblem(printer, k, p)
+
             }
-
-            val printer: (=> String) => Unit =
-              s =>
-                if (deprecation) {
-                  out.log.warn(s)
-                } else {
-                  out.log.error("[warn] " + s)
-                }
-
-            logProblem(printer, k, p)
-
-          }
-      }
+        }
 
       if (failed > 0) {
         sys.error(s"$failed fatal warnings")
@@ -303,9 +311,8 @@ object SparkBuild extends PomBuild {
   )
 
   def enable(settings: Seq[Setting[_]])(projectRef: ProjectRef) = {
-    val existingSettings = projectsMap.getOrElse(
-      projectRef.project,
-      Seq[Setting[_]]())
+    val existingSettings = projectsMap
+      .getOrElse(projectRef.project, Seq[Setting[_]]())
     projectsMap += (projectRef.project -> (existingSettings ++ settings))
   }
 
@@ -321,8 +328,8 @@ object SparkBuild extends PomBuild {
         ExcludedDependencies.settings))
 
   /* Enable tests settings for all projects except examples, assembly and tools */
-  (allProjects ++ optionallyEnabledProjects).foreach(
-    enable(TestSettings.settings))
+  (allProjects ++ optionallyEnabledProjects)
+    .foreach(enable(TestSettings.settings))
 
   val mimaProjects = allProjects.filterNot { x =>
     Seq(
@@ -391,15 +398,16 @@ object SparkBuild extends PomBuild {
       outputStrategy in run := Some(StdoutOutput),
       javaOptions ++= Seq("-Xmx2G", "-XX:MaxPermSize=256m"),
       sparkShell := {
-        (
-          runMain in Compile
-        ).toTask(" org.apache.spark.repl.Main -usejavacp").value
+        (runMain in Compile)
+          .toTask(" org.apache.spark.repl.Main -usejavacp")
+          .value
       },
       sparkPackage := {
         import complete.DefaultParsers._
         val packages :: className :: otherArgs =
-          spaceDelimited(
-            "<group:artifact:version> <MainClass> [args]").parsed.toList
+          spaceDelimited("<group:artifact:version> <MainClass> [args]")
+            .parsed
+            .toList
         val scalaRun = (runner in run).value
         val classpath = (fullClasspath in Runtime).value
         val args = Seq(
@@ -407,9 +415,9 @@ object SparkBuild extends PomBuild {
           packages,
           "--class",
           className,
-          (
-            Keys.`package` in Compile in "core"
-          ).value.getCanonicalPath) ++ otherArgs
+          (Keys.`package` in Compile in "core")
+            .value
+            .getCanonicalPath) ++ otherArgs
         println(args)
         scalaRun.run(
           "org.apache.spark.deploy.SparkSubmit",
@@ -429,12 +437,14 @@ object SparkBuild extends PomBuild {
 
   // TODO: move this to its upstream project.
   override def projectDefinitions(baseDirectory: File): Seq[Project] = {
-    super.projectDefinitions(baseDirectory).map { x =>
-      if (projectsMap.exists(_._1 == x.id))
-        x.settings(projectsMap(x.id): _*)
-      else
-        x.settings(Seq[Setting[_]](): _*)
-    } ++ Seq[Project](OldDeps.project)
+    super
+      .projectDefinitions(baseDirectory)
+      .map { x =>
+        if (projectsMap.exists(_._1 == x.id))
+          x.settings(projectsMap(x.id): _*)
+        else
+          x.settings(Seq[Setting[_]](): _*)
+      } ++ Seq[Project](OldDeps.project)
   }
 
 }
@@ -478,7 +488,8 @@ object OldDeps {
   lazy val project = Project("oldDeps", file("dev"), settings = oldDepsSettings)
 
   lazy val allPreviousArtifactKeys = Def.settingDyn[Seq[Option[ModuleID]]] {
-    SparkBuild.mimaProjects
+    SparkBuild
+      .mimaProjects
       .map { project =>
         MimaKeys.previousArtifact in project
       }
@@ -500,27 +511,27 @@ object Catalyst {
     // This has been heavily inspired by com.github.stefri.sbt-antlr (0.5.3). It fixes a number of
     // build errors in the current plugin.
     // Create Parser from ANTLR grammar files.
-    sourceGenerators in Compile += Def.task {
-      val log = streams.value.log
+    sourceGenerators in Compile += Def
+      .task {
+        val log = streams.value.log
 
-      val grammarFileNames = Seq("SparkSqlLexer.g", "SparkSqlParser.g")
-      val sourceDir = (sourceDirectory in Compile).value / "antlr3"
-      val targetDir = (sourceManaged in Compile).value
+        val grammarFileNames = Seq("SparkSqlLexer.g", "SparkSqlParser.g")
+        val sourceDir = (sourceDirectory in Compile).value / "antlr3"
+        val targetDir = (sourceManaged in Compile).value
 
-      // Create default ANTLR Tool.
-      val antlr = new org.antlr.Tool
+        // Create default ANTLR Tool.
+        val antlr = new org.antlr.Tool
 
-      // Setup input and output directories.
-      antlr.setInputDirectory(sourceDir.getPath)
-      antlr.setOutputDirectory(targetDir.getPath)
-      antlr.setForceRelativeOutput(true)
-      antlr.setMake(true)
+        // Setup input and output directories.
+        antlr.setInputDirectory(sourceDir.getPath)
+        antlr.setOutputDirectory(targetDir.getPath)
+        antlr.setForceRelativeOutput(true)
+        antlr.setMake(true)
 
-      // Add grammar files.
-      grammarFileNames
-        .flatMap(gFileName => (sourceDir ** gFileName).get)
-        .foreach {
-          gFilePath =>
+        // Add grammar files.
+        grammarFileNames
+          .flatMap(gFileName => (sourceDir ** gFileName).get)
+          .foreach { gFilePath =>
             val relGFilePath = (gFilePath relativeTo sourceDir).get.getPath
             log.info("ANTLR: Grammar file '%s' detected.".format(relGFilePath))
             antlr.addGrammarFile(relGFilePath)
@@ -528,25 +539,28 @@ object Catalyst {
             // last one has effect. Because the grammar files are located under the same directory,
             // We assume there is only one library directory.
             antlr.setLibDirectory(gFilePath.getParent)
+          }
+
+        // Generate the parser.
+        antlr.process()
+        val errorState = org.antlr.tool.ErrorManager.getErrorState
+        if (errorState.errors > 0) {
+          sys.error("ANTLR: Caught %d build errors.".format(errorState.errors))
+        } else if (errorState.warnings > 0) {
+          sys.error(
+            "ANTLR: Caught %d build warnings.".format(errorState.warnings))
         }
 
-      // Generate the parser.
-      antlr.process()
-      val errorState = org.antlr.tool.ErrorManager.getErrorState
-      if (errorState.errors > 0) {
-        sys.error("ANTLR: Caught %d build errors.".format(errorState.errors))
-      } else if (errorState.warnings > 0) {
-        sys.error(
-          "ANTLR: Caught %d build warnings.".format(errorState.warnings))
+        // Return all generated java files.
+        (targetDir ** "*.java").get.toSeq
       }
-
-      // Return all generated java files.
-      (targetDir ** "*.java").get.toSeq
-    }.taskValue,
+      .taskValue,
     // Include ANTLR tokens files.
-    resourceGenerators in Compile += Def.task {
-      ((sourceManaged in Compile).value ** "*.tokens").get.toSeq
-    }.taskValue
+    resourceGenerators in Compile += Def
+      .task {
+        ((sourceManaged in Compile).value ** "*.tokens").get.toSeq
+      }
+      .taskValue
   )
 }
 
@@ -607,9 +621,11 @@ object Hive {
     // Some of our log4j jars make it impossible to submit jobs from this JVM to Hive Map/Reduce
     // in order to generate golden files.  This is only required for developers who are adding new
     // new query tests.
-    fullClasspath in Test := (fullClasspath in Test).value.filterNot { f =>
-      f.toString.contains("jcl-over")
-    }
+    fullClasspath in Test := (fullClasspath in Test)
+      .value
+      .filterNot { f =>
+        f.toString.contains("jcl-over")
+      }
   )
 }
 
@@ -627,17 +643,21 @@ object Assembly {
   lazy val settings = assemblySettings ++ Seq(
     test in assembly := {},
     hadoopVersion := {
-      sys.props
+      sys
+        .props
         .get("hadoop.version")
         .getOrElse(
-          SbtPomKeys.effectivePom.value.getProperties
+          SbtPomKeys
+            .effectivePom
+            .value
+            .getProperties
             .get("hadoop.version")
             .asInstanceOf[String])
     },
     jarName in assembly <<= (version, moduleName, hadoopVersion) map {
       (v, mName, hv) =>
-        if (mName.contains("streaming-kafka-assembly") || mName.contains(
-              "streaming-kinesis-asl-assembly")) {
+        if (mName.contains("streaming-kafka-assembly") || mName
+              .contains("streaming-kinesis-asl-assembly")) {
           // This must match the same name used in maven (see external/kafka-assembly/pom.xml)
           s"${mName}-${v}.jar"
         } else {
@@ -664,7 +684,8 @@ object Assembly {
         MergeStrategy.first
     },
     deployDatanucleusJars := {
-      val jars: Seq[File] = (fullClasspath in assembly).value
+      val jars: Seq[File] = (fullClasspath in assembly)
+        .value
         .map(_.data)
         .filter(_.getPath.contains("org.datanucleus"))
       var libManagedJars = new File(BuildCommons.sparkHome, "lib_managed/jars")
@@ -887,7 +908,8 @@ object CopyDependencies {
         throw new IOException("Failed to create jars directory.")
       }
 
-      (dependencyClasspath in Compile).value
+      (dependencyClasspath in Compile)
+        .value
         .map(_.data)
         .filter { jar =>
           jar.isFile()
@@ -931,9 +953,12 @@ object TestSettings {
     // launched by the tests have access to the correct test-time classpath.
     envVars in Test ++= Map(
       "SPARK_DIST_CLASSPATH" ->
-        (
-          fullClasspath in Test
-        ).value.files.map(_.getAbsolutePath).mkString(":").stripSuffix(":"),
+        (fullClasspath in Test)
+          .value
+          .files
+          .map(_.getAbsolutePath)
+          .mkString(":")
+          .stripSuffix(":"),
       "SPARK_PREPEND_CLASSES" -> "1",
       "SPARK_TESTING" -> "1",
       "JAVA_HOME" -> sys.env.get("JAVA_HOME").getOrElse(sys.props("java.home"))
@@ -948,7 +973,9 @@ object TestSettings {
     javaOptions in Test += "-Dspark.unsafe.exceptionOnMemoryLeak=true",
     javaOptions in Test += "-Dsun.io.serialization.extendedDebugInfo=true",
     javaOptions in Test += "-Dderby.system.durability=test",
-    javaOptions in Test ++= System.getProperties.asScala
+    javaOptions in Test ++= System
+      .getProperties
+      .asScala
       .filter(_._1.startsWith("spark"))
       .map {
         case (k, v) =>
@@ -963,7 +990,8 @@ object TestSettings {
     // Exclude tags defined in a system property
     testOptions in Test += Tests.Argument(
       TestFrameworks.ScalaTest,
-      sys.props
+      sys
+        .props
         .get("test.exclude.tags")
         .map { tags =>
           tags
@@ -976,7 +1004,8 @@ object TestSettings {
         .getOrElse(Nil): _*),
     testOptions in Test += Tests.Argument(
       TestFrameworks.JUnit,
-      sys.props
+      sys
+        .props
         .get("test.exclude.tags")
         .map { tags =>
           Seq("--exclude-categories=" + tags)

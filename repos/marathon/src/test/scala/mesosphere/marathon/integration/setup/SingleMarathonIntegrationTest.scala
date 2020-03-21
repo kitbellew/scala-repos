@@ -134,8 +134,8 @@ trait SingleMarathonIntegrationTest
     log.info("Cleaning up local mesos/marathon structure...")
     ExternalMarathonIntegrationTest.healthChecks.clear()
     ProcessKeeper.shutdown()
-    ProcessKeeper.stopJavaProcesses(
-      "mesosphere.marathon.integration.setup.AppMock")
+    ProcessKeeper
+      .stopJavaProcesses("mesosphere.marathon.integration.setup.AppMock")
     system.shutdown()
     system.awaitTermination()
     log.info("Cleaning up local mesos/marathon structure: done.")
@@ -186,7 +186,8 @@ trait SingleMarathonIntegrationTest
   private def appProxyMainInvocationImpl: String = {
     val javaExecutable =
       sys.props.get("java.home").fold("java")(_ + "/bin/java")
-    val classPath = sys.props
+    val classPath = sys
+      .props
       .getOrElse("java.class.path", "target/classes")
       .replaceAll(" ", "")
     val main = classOf[AppMock].getName
@@ -231,31 +232,34 @@ trait SingleMarathonIntegrationTest
         new Container(
           docker = Some(
             new mesosphere.marathon.state.Container.Docker(
-              image = s"""marathon-buildbase:${sys.env
-                .getOrElse("BUILD_ID", "test")}""",
+              image = s"""marathon-buildbase:${sys.env.getOrElse(
+                "BUILD_ID",
+                "test")}""",
               network = Some(Protos.ContainerInfo.DockerInfo.Network.HOST))),
-          volumes = collection.immutable.Seq(
-            new DockerVolume(
-              hostPath = env.getOrElse("IVY2_DIR", "/root/.ivy2"),
-              containerPath = "/root/.ivy2",
-              mode = Protos.Volume.Mode.RO),
-            new DockerVolume(
-              hostPath = env.getOrElse("SBT_DIR", "/root/.sbt"),
-              containerPath = "/root/.sbt",
-              mode = Protos.Volume.Mode.RO),
-            new DockerVolume(
-              hostPath = env.getOrElse("SBT_DIR", "/root/.sbt"),
-              containerPath = "/root/.sbt",
-              mode = Protos.Volume.Mode.RO),
-            new DockerVolume(
-              hostPath = s"""$targetDirs/main""",
-              containerPath = "/marathon/target",
-              mode = Protos.Volume.Mode.RO),
-            new DockerVolume(
-              hostPath = s"""$targetDirs/project""",
-              containerPath = "/marathon/project/target",
-              mode = Protos.Volume.Mode.RO)
-          ))),
+          volumes = collection
+            .immutable
+            .Seq(
+              new DockerVolume(
+                hostPath = env.getOrElse("IVY2_DIR", "/root/.ivy2"),
+                containerPath = "/root/.ivy2",
+                mode = Protos.Volume.Mode.RO),
+              new DockerVolume(
+                hostPath = env.getOrElse("SBT_DIR", "/root/.sbt"),
+                containerPath = "/root/.sbt",
+                mode = Protos.Volume.Mode.RO),
+              new DockerVolume(
+                hostPath = env.getOrElse("SBT_DIR", "/root/.sbt"),
+                containerPath = "/root/.sbt",
+                mode = Protos.Volume.Mode.RO),
+              new DockerVolume(
+                hostPath = s"""$targetDirs/main""",
+                containerPath = "/marathon/target",
+                mode = Protos.Volume.Mode.RO),
+              new DockerVolume(
+                hostPath = s"""$targetDirs/project""",
+                containerPath = "/marathon/project/target",
+                mode = Protos.Volume.Mode.RO)
+            ))),
       instances = instances,
       cpus = 0.5,
       mem = 128.0,
@@ -299,7 +303,8 @@ trait SingleMarathonIntegrationTest
     //this is used for all instances, as long as there is no specific instance check
     //the specific instance check has also a specific port, which is assigned by mesos
     val check = new IntegrationHealthCheck(appId, versionId, 0, state)
-    ExternalMarathonIntegrationTest.healthChecks
+    ExternalMarathonIntegrationTest
+      .healthChecks
       .filter(c => c.appId == appId && c.versionId == versionId)
       .foreach(ExternalMarathonIntegrationTest.healthChecks -= _)
     ExternalMarathonIntegrationTest.healthChecks += check
@@ -317,7 +322,8 @@ trait SingleMarathonIntegrationTest
       .flatMap(
         _.map { port =>
           val check = new IntegrationHealthCheck(appId, versionId, port, state)
-          ExternalMarathonIntegrationTest.healthChecks
+          ExternalMarathonIntegrationTest
+            .healthChecks
             .filter(c => c.appId == appId && c.versionId == versionId)
             .foreach(ExternalMarathonIntegrationTest.healthChecks -= _)
           ExternalMarathonIntegrationTest.healthChecks += check
@@ -332,9 +338,8 @@ trait SingleMarathonIntegrationTest
     events.clear()
     ExternalMarathonIntegrationTest.healthChecks.clear()
 
-    val deleteResult: RestResult[ITDeploymentResult] = marathon.deleteGroup(
-      testBasePath,
-      force = true)
+    val deleteResult: RestResult[ITDeploymentResult] = marathon
+      .deleteGroup(testBasePath, force = true)
     if (deleteResult.code != 404) {
       waitForChange(deleteResult)
     }
@@ -349,8 +354,8 @@ trait SingleMarathonIntegrationTest
     require(
       groups.value.isEmpty,
       s"groups weren't empty: ${groups.entityPrettyJsonString}")
-    ProcessKeeper.stopJavaProcesses(
-      "mesosphere.marathon.integration.setup.AppMock")
+    ProcessKeeper
+      .stopJavaProcesses("mesosphere.marathon.integration.setup.AppMock")
 
     if (withSubscribers)
       marathon.listSubscribers.value.urls.foreach(marathon.unsubscribe)
@@ -363,8 +368,9 @@ trait SingleMarathonIntegrationTest
     require(mesos.state.value.agents.size == 1, "one agent expected")
     WaitTestSupport.waitUntil("clean slate in Mesos", 30.seconds) {
       val agent = mesos.state.value.agents.head
-      val empty =
-        agent.usedResources.isEmpty && agent.reservedResourcesByRole.isEmpty
+      val empty = agent.usedResources.isEmpty && agent
+        .reservedResourcesByRole
+        .isEmpty
       if (!empty) {
         import mesosphere.marathon.integration.facades.MesosFormats._
         log.info(

@@ -78,8 +78,8 @@ object InterpolatedStringFormatter extends StringFormatter {
     if (ind + 1 < parts.size) {
       parts(ind + 1) match {
         case Text(s) =>
-          return s.isEmpty || !ScalaNamesUtil.isIdentifier(
-            it.text + s.charAt(0)) ||
+          return s.isEmpty || !ScalaNamesUtil
+            .isIdentifier(it.text + s.charAt(0)) ||
             s.startsWith("`") || s.exists(_ == '$')
         case _ =>
       }

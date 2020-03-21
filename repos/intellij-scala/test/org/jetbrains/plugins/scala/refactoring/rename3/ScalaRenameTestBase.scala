@@ -54,7 +54,8 @@ abstract class ScalaRenameTestBase
       moduleAdapter,
       rootBefore,
       new util.HashSet[File]())
-    VirtualFilePointerManager.getInstance
+    VirtualFilePointerManager
+      .getInstance
       .asInstanceOf[VirtualFilePointerManagerImpl]
       .storePointers()
     val filesBefore = myDirectory.findChild("tests").getChildren
@@ -72,8 +73,9 @@ abstract class ScalaRenameTestBase
 
       val oldName = doRename(editor, file, newName)
 
-      val dirAfter = LocalFileSystem.getInstance.refreshAndFindFileByPath(
-        rootAfter)
+      val dirAfter = LocalFileSystem
+        .getInstance
+        .refreshAndFindFileByPath(rootAfter)
       PlatformTestUtil.assertDirectoriesEqual(dirAfter, myDirectory)
 
       //rename back for next caret position
@@ -141,11 +143,12 @@ abstract class ScalaRenameTestBase
       newName: String): String = {
     val element = TargetElementUtil.findTargetElement(
       InjectedLanguageUtil.getEditorForInjectedLanguageNoCommit(editor, file),
-      TargetElementUtil.REFERENCED_ELEMENT_ACCEPTED | TargetElementUtil.ELEMENT_NAME_ACCEPTED
+      TargetElementUtil.REFERENCED_ELEMENT_ACCEPTED | TargetElementUtil
+        .ELEMENT_NAME_ACCEPTED
     )
     assert(element != null, "Reference is not specified.")
-    val searchInComments =
-      element.getText != null && element.getText.contains("Comments")
+    val searchInComments = element
+      .getText != null && element.getText.contains("Comments")
     var oldName: String = ""
     inWriteAction {
       val subst = RenamePsiElementProcessor

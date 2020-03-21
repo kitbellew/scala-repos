@@ -199,50 +199,41 @@ class LocalActorRefProviderSpec
     }
 
     "throw suitable exceptions for malformed actor names" in {
+      intercept[InvalidActorNameException](system.actorOf(Props.empty, null))
+        .getMessage should include("null")
+      intercept[InvalidActorNameException](system.actorOf(Props.empty, ""))
+        .getMessage should include("empty")
       intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, null)).getMessage should include("null")
-      intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, "")).getMessage should include("empty")
-      intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, "$hallo")).getMessage should include(
-        "not start with `$`")
-      intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, "a%")).getMessage should include(
-        "Invalid actor path element")
-      intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, "%3")).getMessage should include(
-        "Invalid actor path element")
-      intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, "%xx")).getMessage should include(
-        "Invalid actor path element")
-      intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, "%0G")).getMessage should include(
-        "Invalid actor path element")
-      intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, "%gg")).getMessage should include(
-        "Invalid actor path element")
-      intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, "%")).getMessage should include(
-        "Invalid actor path element")
-      intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, "%1t")).getMessage should include(
-        "Invalid actor path element")
-      intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, "a?")).getMessage should include(
-        "Invalid actor path element")
-      intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, "üß")).getMessage should include(
-        "include only ASCII")
+        system.actorOf(Props.empty, "$hallo"))
+        .getMessage should include("not start with `$`")
+      intercept[InvalidActorNameException](system.actorOf(Props.empty, "a%"))
+        .getMessage should include("Invalid actor path element")
+      intercept[InvalidActorNameException](system.actorOf(Props.empty, "%3"))
+        .getMessage should include("Invalid actor path element")
+      intercept[InvalidActorNameException](system.actorOf(Props.empty, "%xx"))
+        .getMessage should include("Invalid actor path element")
+      intercept[InvalidActorNameException](system.actorOf(Props.empty, "%0G"))
+        .getMessage should include("Invalid actor path element")
+      intercept[InvalidActorNameException](system.actorOf(Props.empty, "%gg"))
+        .getMessage should include("Invalid actor path element")
+      intercept[InvalidActorNameException](system.actorOf(Props.empty, "%"))
+        .getMessage should include("Invalid actor path element")
+      intercept[InvalidActorNameException](system.actorOf(Props.empty, "%1t"))
+        .getMessage should include("Invalid actor path element")
+      intercept[InvalidActorNameException](system.actorOf(Props.empty, "a?"))
+        .getMessage should include("Invalid actor path element")
+      intercept[InvalidActorNameException](system.actorOf(Props.empty, "üß"))
+        .getMessage should include("include only ASCII")
 
       intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, """he"llo""")).getMessage should include(
-        """["] at position: 2""")
+        system.actorOf(Props.empty, """he"llo"""))
+        .getMessage should include("""["] at position: 2""")
       intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, """$hello""")).getMessage should include(
-        """[$] at position: 0""")
+        system.actorOf(Props.empty, """$hello"""))
+        .getMessage should include("""[$] at position: 0""")
       intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, """hell>o""")).getMessage should include(
-        """[>] at position: 4""")
+        system.actorOf(Props.empty, """hell>o"""))
+        .getMessage should include("""[>] at position: 4""")
     }
 
   }

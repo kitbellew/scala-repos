@@ -25,10 +25,12 @@ object ValuePipe extends java.io.Serializable {
 
   def fold[T, U, V](l: ValuePipe[T], r: ValuePipe[U])(
       f: (T, U) => V): ValuePipe[V] =
-    l.leftCross(r).collect {
-      case (t, Some(u)) =>
-        f(t, u)
-    }
+    l
+      .leftCross(r)
+      .collect {
+        case (t, Some(u)) =>
+          f(t, u)
+      }
 
   def apply[T](t: T): ValuePipe[T] = LiteralValue(t)
   def empty: ValuePipe[Nothing] = EmptyValue
@@ -89,16 +91,18 @@ sealed trait ValuePipe[+T] extends java.io.Serializable {
     * Execution to the name so in the repl in is removed
     */
   def toOptionExecution: Execution[Option[T]] =
-    toTypedPipe.toIterableExecution.map { it =>
-      it.iterator.take(2).toList match {
-        case Nil =>
-          None
-        case h :: Nil =>
-          Some(h)
-        case items =>
-          sys.error("More than 1 item in an ValuePipe: " + items.toString)
+    toTypedPipe
+      .toIterableExecution
+      .map { it =>
+        it.iterator.take(2).toList match {
+          case Nil =>
+            None
+          case h :: Nil =>
+            Some(h)
+          case items =>
+            sys.error("More than 1 item in an ValuePipe: " + items.toString)
+        }
       }
-    }
 
   def debug: ValuePipe[T]
 }

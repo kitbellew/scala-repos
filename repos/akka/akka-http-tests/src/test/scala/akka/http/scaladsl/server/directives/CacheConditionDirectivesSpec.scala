@@ -72,7 +72,8 @@ class CacheConditionDirectivesSpec extends RoutingSpec {
     }
 
     "return NotModified for matching resources" in {
-      Get() ~> `If-None-Match`.`*` ~> ifModifiedSince ~> taggedAndTimestamped ~> check {
+      Get() ~> `If-None-Match`
+        .`*` ~> ifModifiedSince ~> taggedAndTimestamped ~> check {
         status shouldEqual NotModified
         headers should contain theSameElementsAs (responseHeaders)
       }

@@ -39,7 +39,8 @@ trait CORSSupport {
                                       |Accept-Language,
                                       |Host,
                                       |Referer,
-                                      |User-Agent""".stripMargin
+                                      |User-Agent"""
+        .stripMargin
         .replace("\n", " ")),
     `Access-Control-Max-Age`(1728000)
   )

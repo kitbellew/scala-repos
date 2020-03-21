@@ -54,8 +54,8 @@ class FlowSplitAfterSpec extends AkkaSpec {
   class SubstreamsSupport(
       splitAfter: Int = 3,
       elementCount: Int = 6,
-      substreamCancelStrategy: SubstreamCancelStrategy =
-        SubstreamCancelStrategy.drain) {
+      substreamCancelStrategy: SubstreamCancelStrategy = SubstreamCancelStrategy
+        .drain) {
 
     val source = Source(1 to elementCount)
     val groupStream = source
@@ -135,8 +135,7 @@ class FlowSplitAfterSpec extends AkkaSpec {
           .mapAsync(1)(
             _.runWith(Sink.head)
           ) // Please note that this line *also* implicitly asserts nonempty substreams
-          .grouped(10)
-          .runWith(Sink.head),
+          .grouped(10).runWith(Sink.head),
         3.second
       ) should ===(1 to 10)
     }

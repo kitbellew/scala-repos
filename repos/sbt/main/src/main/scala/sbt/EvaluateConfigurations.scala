@@ -101,8 +101,8 @@ object EvaluateConfigurations {
     val (importStatements, settingsAndDefinitions) = splitExpressions(
       file,
       lines)
-    val allImports =
-      builtinImports.map(s => (s, -1)) ++ addOffset(offset, importStatements)
+    val allImports = builtinImports
+      .map(s => (s, -1)) ++ addOffset(offset, importStatements)
     val (definitions, settings) = splitSettingsDefinitions(
       addOffsetToRange(offset, settingsAndDefinitions))
     new ParsedFile(allImports, definitions, settings)
@@ -177,10 +177,12 @@ object EvaluateConfigurations {
     val allGeneratedFiles =
       (definitions.generated ++ dslEntries.flatMap(_.generated))
     loader => {
-      val projects = definitions.values(loader).collect {
-        case p: Project =>
-          resolveBase(file.getParentFile, p)
-      }
+      val projects = definitions
+        .values(loader)
+        .collect {
+          case p: Project =>
+            resolveBase(file.getParentFile, p)
+        }
       val (settingsRaw, manipulationsRaw) =
         dslEntries map (_.result apply loader) partition {
           case internals.ProjectSettings(_) =>
@@ -458,10 +460,11 @@ object Index {
         (k, xs)
     }
     if (duplicates.isEmpty)
-      multiMap.collect {
-        case (k, v) if validID(k) =>
-          (k, v.head)
-      } toMap
+      multiMap
+        .collect {
+          case (k, v) if validID(k) =>
+            (k, v.head)
+        } toMap
     else
       sys.error(
         duplicates map {

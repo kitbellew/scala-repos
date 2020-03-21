@@ -24,8 +24,8 @@ class SbtRunner(
     customLauncher: Option[File],
     customStructureFile: Option[File]) {
   private val LauncherDir = getSbtLauncherDir
-  private val SbtLauncher = customLauncher.getOrElse(
-    LauncherDir / "sbt-launch.jar")
+  private val SbtLauncher = customLauncher
+    .getOrElse(LauncherDir / "sbt-launch.jar")
 
   private val cancellationFlag: AtomicBoolean = new AtomicBoolean(false)
 
@@ -44,8 +44,9 @@ class SbtRunner(
       resolveJavadocs.seq("resolveJavadocs") ++
       resolveSbtClassifiers.seq("resolveSbtClassifiers")
 
-    checkFilePresence.fold(read0(directory, options.mkString(", "))(listener))(
-      it => Left(new FileNotFoundException(it)))
+    checkFilePresence
+      .fold(read0(directory, options.mkString(", "))(listener))(it =>
+        Left(new FileNotFoundException(it)))
   }
 
   private def read0(directory: File, options: String)(
@@ -75,8 +76,8 @@ class SbtRunner(
       sbtVersion: String,
       options: String,
       listener: (String) => Unit) = {
-    val pluginFile = customStructureFile.getOrElse(
-      LauncherDir / s"sbt-structure-$sbtVersion.jar")
+    val pluginFile = customStructureFile
+      .getOrElse(LauncherDir / s"sbt-structure-$sbtVersion.jar")
 
     usingTempFile("sbt-structure", Some(".xml")) { structureFile =>
       val sbtCommands = Seq(
@@ -117,9 +118,9 @@ class SbtRunner(
             val result = handle(process, listener)
             result
               .map { output =>
-                (structureFile.length > 0).either(
-                  XML.load(structureFile.toURI.toURL))(
-                  SbtException.fromSbtLog(output))
+                (structureFile.length > 0)
+                  .either(XML.load(structureFile.toURI.toURL))(
+                    SbtException.fromSbtLog(output))
               }
               .getOrElse(Left(new ImportCancelledException))
         }
@@ -194,12 +195,14 @@ object SbtRunner {
     version.split("\\.").toSeq
 
   private def compare(v1: String, v2: String): Int =
-    numbersOf(v1).zip(numbersOf(v2)).foldLeft(0) {
-      case (acc, (i1, i2)) if acc == 0 =>
-        i1.compareTo(i2)
-      case (acc, _) =>
-        acc
-    }
+    numbersOf(v1)
+      .zip(numbersOf(v2))
+      .foldLeft(0) {
+        case (acc, (i1, i2)) if acc == 0 =>
+          i1.compareTo(i2)
+        case (acc, _) =>
+          acc
+      }
 
   private[structure] def detectSbtVersion(
       directory: File,
@@ -258,7 +261,9 @@ object SbtRunner {
     try {
       Option(jar.getEntry("sbt/sbt.boot.properties"))
         .fold(Map.empty[String, String]) { entry =>
-          val lines = scala.io.Source
+          val lines = scala
+            .io
+            .Source
             .fromInputStream(jar.getInputStream(entry))
             .getLines()
           val sectionLines = lines

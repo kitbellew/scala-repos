@@ -125,8 +125,8 @@ abstract class ParallelSeqCheck[T](collName: String)
         (
           for ((pred, ind) <- segmentLengthPredicates.zipWithIndex)
             yield {
-              ("operator " + ind) |: s.prefixLength(pred) == coll.prefixLength(
-                pred)
+              ("operator " + ind) |: s.prefixLength(pred) == coll
+                .prefixLength(pred)
             }
         ).reduceLeft(_ && _)
     }
@@ -220,8 +220,8 @@ abstract class ParallelSeqCheck[T](collName: String)
           "toList" |: s.sameElements(s.toList) == coll.sameElements(coll.toList)
         ) &&
         (
-          "identity" |: s.sameElements(s.map(e => e)) == coll.sameElements(
-            coll.map(e => e))
+          "identity" |: s.sameElements(s.map(e => e)) == coll
+            .sameElements(coll.map(e => e))
         ) &&
         ("vice-versa" |: s.sameElements(coll) == coll.sameElements(s)) &&
         ("equal" |: s.sameElements(coll)) &&
@@ -254,15 +254,15 @@ abstract class ParallelSeqCheck[T](collName: String)
         ("start with self" |: s.startsWith(s) == coll.startsWith(coll)) &&
         (
           "tails correspond" |: (
-            s.length == 0 || s
-              .startsWith(s.tail, 1) == coll.startsWith(coll.tail, 1)
+            s.length == 0 || s.startsWith(s.tail, 1) == coll
+              .startsWith(coll.tail, 1)
           )
         ) &&
         ("with each other" |: coll.startsWith(s)) &&
         ("modified" |: s.startsWith(collmodif) == coll.startsWith(collmodif)) &&
         (
-          "modified2" |: s
-            .startsWith(collmodif, pos) == coll.startsWith(collmodif, pos)
+          "modified2" |: s.startsWith(collmodif, pos) == coll
+            .startsWith(collmodif, pos)
         ) &&
         (
           for (sq <- startEndSeqs)
@@ -336,15 +336,13 @@ abstract class ParallelSeqCheck[T](collName: String)
                 .patch(from, pat, repl) == coll.patch(from, fromSeq(pat), repl)
             ) &&
             (
-              "with empty" |: s
-                .patch(from, Nil, repl) == coll.patch(from, fromSeq(Nil), repl)
+              "with empty" |: s.patch(from, Nil, repl) == coll
+                .patch(from, fromSeq(Nil), repl)
             ) &&
             (
               "with one" |: (
-                s.length == 0 || s.patch(from, List(s(0)), 1) == coll.patch(
-                  from,
-                  fromSeq(List(coll(0))),
-                  1)
+                s.length == 0 || s.patch(from, List(s(0)), 1) == coll
+                  .patch(from, fromSeq(List(coll(0))), 1)
               )
             )
       }
@@ -397,8 +395,8 @@ abstract class ParallelSeqCheck[T](collName: String)
           println(cdoub)
         }
         (
-          "smaller" |: s
-            .padTo(len / 2, someValue) == coll.padTo(len / 2, someValue)
+          "smaller" |: s.padTo(len / 2, someValue) == coll
+            .padTo(len / 2, someValue)
         ) &&
         ("bigger" |: sdoub == cdoub)
     }
@@ -411,12 +409,12 @@ abstract class ParallelSeqCheck[T](collName: String)
           "self" |: s.corresponds(s)(_ == _) == coll.corresponds(coll)(_ == _)
         ) &&
         (
-          "modified" |: s.corresponds(modified.seq)(_ == _) == coll.corresponds(
-            modified)(_ == _)
+          "modified" |: s.corresponds(modified.seq)(_ == _) == coll
+            .corresponds(modified)(_ == _)
         ) &&
         (
-          "modified2" |: s.corresponds(modifcut)(_ == _) == coll.corresponds(
-            modifcut)(_ == _)
+          "modified2" |: s.corresponds(modifcut)(_ == _) == coll
+            .corresponds(modifcut)(_ == _)
         )
     }
 

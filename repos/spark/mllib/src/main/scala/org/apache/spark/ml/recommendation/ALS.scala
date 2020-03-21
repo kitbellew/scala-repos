@@ -1030,12 +1030,16 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
             Iterator.empty
           }
         } ++ {
-          builders.view.zipWithIndex.filter(_._1.size > 0).map {
-            case (block, idx) =>
-              val srcBlockId = idx % srcPart.numPartitions
-              val dstBlockId = idx / srcPart.numPartitions
-              ((srcBlockId, dstBlockId), block.build())
-          }
+          builders
+            .view
+            .zipWithIndex
+            .filter(_._1.size > 0)
+            .map {
+              case (block, idx) =>
+                val srcBlockId = idx % srcPart.numPartitions
+                val dstBlockId = idx / srcPart.numPartitions
+                ((srcBlockId, dstBlockId), block.build())
+            }
         }
       }
       .groupByKey()
@@ -1383,62 +1387,71 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
         Some(computeYtY(srcFactorBlocks, rank))
       else
         None
-    val srcOut = srcOutBlocks.join(srcFactorBlocks).flatMap {
-      case (srcBlockId, (srcOutBlock, srcFactors)) =>
-        srcOutBlock.view.zipWithIndex.map {
-          case (activeIndices, dstBlockId) =>
-            (
-              dstBlockId,
-              (srcBlockId, activeIndices.map(idx => srcFactors(idx))))
-        }
-    }
-    val merged = srcOut.groupByKey(
-      new ALSPartitioner(dstInBlocks.partitions.length))
-    dstInBlocks.join(merged).mapValues {
-      case (InBlock(dstIds, srcPtrs, srcEncodedIndices, ratings), srcFactors) =>
-        val sortedSrcFactors = new Array[FactorBlock](numSrcBlocks)
-        srcFactors.foreach {
-          case (srcBlockId, factors) =>
-            sortedSrcFactors(srcBlockId) = factors
-        }
-        val dstFactors = new Array[Array[Float]](dstIds.length)
-        var j = 0
-        val ls = new NormalEquation(rank)
-        while (j < dstIds.length) {
-          ls.reset()
-          if (implicitPrefs) {
-            ls.merge(YtY.get)
-          }
-          var i = srcPtrs(j)
-          var numExplicits = 0
-          while (i < srcPtrs(j + 1)) {
-            val encoded = srcEncodedIndices(i)
-            val blockId = srcEncoder.blockId(encoded)
-            val localIndex = srcEncoder.localIndex(encoded)
-            val srcFactor = sortedSrcFactors(blockId)(localIndex)
-            val rating = ratings(i)
-            if (implicitPrefs) {
-              // Extension to the original paper to handle b < 0. confidence is a function of |b|
-              // instead so that it is never negative. c1 is confidence - 1.0.
-              val c1 = alpha * math.abs(rating)
-              // For rating <= 0, the corresponding preference is 0. So the term below is only added
-              // for rating > 0. Because YtY is already added, we need to adjust the scaling here.
-              if (rating > 0) {
-                numExplicits += 1
-                ls.add(srcFactor, (c1 + 1.0) / c1, c1)
-              }
-            } else {
-              ls.add(srcFactor, rating)
-              numExplicits += 1
+    val srcOut = srcOutBlocks
+      .join(srcFactorBlocks)
+      .flatMap {
+        case (srcBlockId, (srcOutBlock, srcFactors)) =>
+          srcOutBlock
+            .view
+            .zipWithIndex
+            .map {
+              case (activeIndices, dstBlockId) =>
+                (
+                  dstBlockId,
+                  (srcBlockId, activeIndices.map(idx => srcFactors(idx))))
             }
-            i += 1
+      }
+    val merged = srcOut
+      .groupByKey(new ALSPartitioner(dstInBlocks.partitions.length))
+    dstInBlocks
+      .join(merged)
+      .mapValues {
+        case (
+              InBlock(dstIds, srcPtrs, srcEncodedIndices, ratings),
+              srcFactors) =>
+          val sortedSrcFactors = new Array[FactorBlock](numSrcBlocks)
+          srcFactors.foreach {
+            case (srcBlockId, factors) =>
+              sortedSrcFactors(srcBlockId) = factors
           }
-          // Weight lambda by the number of explicit ratings based on the ALS-WR paper.
-          dstFactors(j) = solver.solve(ls, numExplicits * regParam)
-          j += 1
-        }
-        dstFactors
-    }
+          val dstFactors = new Array[Array[Float]](dstIds.length)
+          var j = 0
+          val ls = new NormalEquation(rank)
+          while (j < dstIds.length) {
+            ls.reset()
+            if (implicitPrefs) {
+              ls.merge(YtY.get)
+            }
+            var i = srcPtrs(j)
+            var numExplicits = 0
+            while (i < srcPtrs(j + 1)) {
+              val encoded = srcEncodedIndices(i)
+              val blockId = srcEncoder.blockId(encoded)
+              val localIndex = srcEncoder.localIndex(encoded)
+              val srcFactor = sortedSrcFactors(blockId)(localIndex)
+              val rating = ratings(i)
+              if (implicitPrefs) {
+                // Extension to the original paper to handle b < 0. confidence is a function of |b|
+                // instead so that it is never negative. c1 is confidence - 1.0.
+                val c1 = alpha * math.abs(rating)
+                // For rating <= 0, the corresponding preference is 0. So the term below is only added
+                // for rating > 0. Because YtY is already added, we need to adjust the scaling here.
+                if (rating > 0) {
+                  numExplicits += 1
+                  ls.add(srcFactor, (c1 + 1.0) / c1, c1)
+                }
+              } else {
+                ls.add(srcFactor, rating)
+                numExplicits += 1
+              }
+              i += 1
+            }
+            // Weight lambda by the number of explicit ratings based on the ALS-WR paper.
+            dstFactors(j) = solver.solve(ls, numExplicits * regParam)
+            j += 1
+          }
+          dstFactors
+      }
   }
 
   /**
@@ -1448,12 +1461,14 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
   private def computeYtY(
       factorBlocks: RDD[(Int, FactorBlock)],
       rank: Int): NormalEquation = {
-    factorBlocks.values.aggregate(new NormalEquation(rank))(
-      seqOp = (ne, factors) => {
-        factors.foreach(ne.add(_, 0.0))
-        ne
-      },
-      combOp = (ne1, ne2) => ne1.merge(ne2))
+    factorBlocks
+      .values
+      .aggregate(new NormalEquation(rank))(
+        seqOp = (ne, factors) => {
+          factors.foreach(ne.add(_, 0.0))
+          ne
+        },
+        combOp = (ne1, ne2) => ne1.merge(ne2))
   }
 
   /**
@@ -1470,9 +1485,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
 
     require(numBlocks > 0, s"numBlocks must be positive but found $numBlocks.")
 
-    private[this] final val numLocalIndexBits = math.min(
-      java.lang.Integer.numberOfLeadingZeros(numBlocks - 1),
-      31)
+    private[this] final val numLocalIndexBits = math
+      .min(java.lang.Integer.numberOfLeadingZeros(numBlocks - 1), 31)
     private[this] final val localIndexMask = (1 << numLocalIndexBits) - 1
 
     /** Encodes a (blockId, localIndex) into a single integer. */

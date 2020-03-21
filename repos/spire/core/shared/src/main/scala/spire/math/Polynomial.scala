@@ -621,7 +621,8 @@ trait PolynomialEq[@sp(Double) C] extends Eq[Polynomial[C]] {
   implicit def ct: ClassTag[C]
 
   def eqv(x: Polynomial[C], y: Polynomial[C]): Boolean =
-    x.coeffsArray === y.coeffsArray // TODO: This is bad for sparse arrays. Do better.
+    x.coeffsArray === y
+      .coeffsArray // TODO: This is bad for sparse arrays. Do better.
 }
 
 trait PolynomialInstances0 {

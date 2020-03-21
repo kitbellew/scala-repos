@@ -260,13 +260,18 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
     def create =
       dbAction { session =>
         tables.foreach(t =>
-          session.database.createTable(
-            t.tableName,
-            t.create_*.map { fs =>
-              new HeapBackend.Column(fs, typeInfoFor(fs.tpe))
-            }.toIndexedSeq,
-            t.indexes.toIndexedSeq,
-            t.tableConstraints.toIndexedSeq))
+          session
+            .database
+            .createTable(
+              t.tableName,
+              t
+                .create_*
+                .map { fs =>
+                  new HeapBackend.Column(fs, typeInfoFor(fs.tpe))
+                }
+                .toIndexedSeq,
+              t.indexes.toIndexedSeq,
+              t.tableConstraints.toIndexedSeq))
       }
     def drop =
       dbAction { session =>
@@ -318,8 +323,8 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
       (
         serverSide,
         mapping.map(
-          new InsertMappingCompiler(
-            serverSide.asInstanceOf[Insert]).compileMapping))
+          new InsertMappingCompiler(serverSide.asInstanceOf[Insert])
+            .compileMapping))
   }
 }
 

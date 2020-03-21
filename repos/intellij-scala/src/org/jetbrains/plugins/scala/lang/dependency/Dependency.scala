@@ -47,7 +47,8 @@ case class Dependency(
 
 object Dependency {
   def dependenciesIn(scope: PsiElement): Seq[Dependency] = {
-    scope.depthFirst
+    scope
+      .depthFirst
       .filterByType(classOf[ScReferenceElement])
       .toList
       .flatMap(reference => dependencyFor(reference).toList)
@@ -57,9 +58,11 @@ object Dependency {
   // and it's impossible to rebind such targets later (if needed)
   def dependencyFor(reference: ScReferenceElement): Option[Dependency] = {
     if (isPrimary(reference)) {
-      reference.bind().flatMap { result =>
-        dependencyFor(reference, result.element, result.fromType)
-      }
+      reference
+        .bind()
+        .flatMap { result =>
+          dependencyFor(reference, result.element, result.fromType)
+        }
     } else {
       None
     }
@@ -117,7 +120,8 @@ object Dependency {
             withEntity(e.qualifiedName)
           case (function: ScFunctionDefinition) && ContainingClass(
                 obj: ScObject)
-              if function.isSynthetic || function.name == "apply" || function.name == "unapply" =>
+              if function.isSynthetic || function.name == "apply" || function
+                .name == "unapply" =>
             withEntity(obj.qualifiedName)
           case (member: ScMember) && ContainingClass(obj: ScObject) =>
             val memberName =

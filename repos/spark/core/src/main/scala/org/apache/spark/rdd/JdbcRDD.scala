@@ -94,7 +94,8 @@ class JdbcRDD[T: ClassTag](
       if (conn.getMetaData.getURL.matches("jdbc:mysql:.*")) {
         stmt.setFetchSize(Integer.MIN_VALUE)
         logInfo(
-          "statement fetch size set to: " + stmt.getFetchSize + " to force MySQL streaming ")
+          "statement fetch size set to: " + stmt
+            .getFetchSize + " to force MySQL streaming ")
       }
 
       stmt.setLong(1, part.lower)
@@ -142,8 +143,8 @@ class JdbcRDD[T: ClassTag](
 
 object JdbcRDD {
   def resultSetToObjectArray(rs: ResultSet): Array[Object] = {
-    Array.tabulate[Object](rs.getMetaData.getColumnCount)(i =>
-      rs.getObject(i + 1))
+    Array
+      .tabulate[Object](rs.getMetaData.getColumnCount)(i => rs.getObject(i + 1))
   }
 
   trait ConnectionFactory extends Serializable {

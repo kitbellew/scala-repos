@@ -304,9 +304,8 @@ class IMain(
   def addUrlsToClassPath(urls: URL*): Unit = {
     new Run //  force some initialization
     urls.foreach(_runtimeClassLoader.addURL) // Add jars to runtime classloader
-    global.extendCompilerClassPath(
-      urls: _*
-    ) // Add jars to compile-time classpath
+    global
+      .extendCompilerClassPath(urls: _*) // Add jars to compile-time classpath
   }
 
   /** Parent classloader.  Overridable. */
@@ -827,10 +826,8 @@ class IMain(
         IR.Error
 
       case Right(_) =>
-        val line = "%sval %s = %s.value".format(
-          modifiers map (_ + " ") mkString,
-          name,
-          bindRep.evalPath)
+        val line = "%sval %s = %s.value"
+          .format(modifiers map (_ + " ") mkString, name, bindRep.evalPath)
         repldbg("Interpreting: " + line)
         interpret(line)
     }
@@ -1203,12 +1200,14 @@ class IMain(
       |  lazy val %s: String = %s {
       |    %s
       |    (""
-      """.stripMargin.format(
-        lineRep.evalName,
-        evalResult,
-        lineRep.printName,
-        executionWrapper,
-        fullAccessPath)
+      """
+        .stripMargin
+        .format(
+          lineRep.evalName,
+          evalResult,
+          lineRep.printName,
+          executionWrapper,
+          fullAccessPath)
 
       val postamble = """
       |    )
@@ -1471,10 +1470,11 @@ class IMain(
           else
             Success(trees)
         }
-        currentRun.parsing.withIncompleteHandler((_, _) =>
-          isIncomplete = true) {
-          parse
-        }
+        currentRun
+          .parsing
+          .withIncompleteHandler((_, _) => isIncomplete = true) {
+            parse
+          }
 
       }
   }

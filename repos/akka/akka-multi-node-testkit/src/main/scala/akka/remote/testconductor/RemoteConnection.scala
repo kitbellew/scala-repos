@@ -39,7 +39,10 @@ private[akka] class ProtobufEncoder extends OneToOneEncoder {
     msg match {
       case m: Message ⇒
         val bytes = m.toByteArray()
-        ctx.getChannel.getConfig.getBufferFactory
+        ctx
+          .getChannel
+          .getConfig
+          .getBufferFactory
           .getBuffer(bytes, 0, bytes.length)
       case other ⇒
         other

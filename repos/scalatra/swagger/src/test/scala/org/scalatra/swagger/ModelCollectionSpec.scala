@@ -49,8 +49,8 @@ object ModelCollectionSpec {
   val thingModels = taggedThingModels + Swagger.modelToSwagger[Thing]
 
   case class OptionListThing(id: Long, things: Option[List[TaggedThing]])
-  val optionThingModels =
-    taggedThingModels + Swagger.modelToSwagger[OptionListThing]
+  val optionThingModels = taggedThingModels + Swagger
+    .modelToSwagger[OptionListThing]
 }
 
 class ModelCollectionSpec extends Specification {
@@ -89,8 +89,8 @@ class ModelCollectionSpec extends Specification {
     }
 
     "collect all the models in a nested structure" in {
-      Swagger.collectModels[TaggedThing](
-        Set.empty) must containTheSameElementsAs(
+      Swagger
+        .collectModels[TaggedThing](Set.empty) must containTheSameElementsAs(
         taggedThingModels.flatten.toSeq)
     }
 

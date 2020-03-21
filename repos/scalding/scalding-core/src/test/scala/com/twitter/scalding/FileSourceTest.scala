@@ -23,7 +23,8 @@ import org.apache.hadoop.mapred.JobConf
 
 class MultiTsvInputJob(args: Args) extends Job(args) {
   try {
-    MultipleTsvFiles(List("input0", "input1"), ('query, 'queryStats)).read
+    MultipleTsvFiles(List("input0", "input1"), ('query, 'queryStats))
+      .read
       .write(Tsv("output0"))
   } catch {
     case e: Exception =>
@@ -35,7 +36,8 @@ class MultiTsvInputJob(args: Args) extends Job(args) {
 class SequenceFileInputJob(args: Args) extends Job(args) {
   try {
     SequenceFile("input0").read.write(SequenceFile("output0"))
-    WritableSequenceFile("input1", ('query, 'queryStats)).read
+    WritableSequenceFile("input1", ('query, 'queryStats))
+      .read
       .write(WritableSequenceFile("output1", ('query, 'queryStats)))
   } catch {
     case e: Exception =>
@@ -270,23 +272,23 @@ class FileSourceTest extends WordSpec with Matchers {
     }
 
     "remove /* from a path ending in /*" in {
-      TestFixedPathSource(
-        "test_data/2013/06/*").hdfsWritePath shouldBe "test_data/2013/06"
+      TestFixedPathSource("test_data/2013/06/*")
+        .hdfsWritePath shouldBe "test_data/2013/06"
     }
 
     "leave path as-is when it ends in a directory name" in {
-      TestFixedPathSource(
-        "test_data/2013/06").hdfsWritePath shouldBe "test_data/2013/06"
+      TestFixedPathSource("test_data/2013/06")
+        .hdfsWritePath shouldBe "test_data/2013/06"
     }
 
     "leave path as-is when it ends in a directory name/" in {
-      TestFixedPathSource(
-        "test_data/2013/06/").hdfsWritePath shouldBe "test_data/2013/06/"
+      TestFixedPathSource("test_data/2013/06/")
+        .hdfsWritePath shouldBe "test_data/2013/06/"
     }
 
     "leave path as-is when it ends in * without a preceeding /" in {
-      TestFixedPathSource(
-        "test_data/2013/06*").hdfsWritePath shouldBe "test_data/2013/06*"
+      TestFixedPathSource("test_data/2013/06*")
+        .hdfsWritePath shouldBe "test_data/2013/06*"
     }
   }
 
@@ -345,8 +347,8 @@ object TestInvalidFileSource extends FileSource with Mappable[String] {
   override def localPaths: Iterable[String] = Iterable("invalid_local_path")
   override def hdfsScheme = new NullScheme(Fields.ALL, Fields.NONE)
   override def converter[U >: String] =
-    TupleConverter.asSuperConverter[String, U](
-      implicitly[TupleConverter[String]])
+    TupleConverter
+      .asSuperConverter[String, U](implicitly[TupleConverter[String]])
 
   val conf = new Configuration()
 

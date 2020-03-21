@@ -28,9 +28,11 @@ final class LobbyApi(
       getFilter(ctx) map {
       case (((hooks, seeks), povs), filter) =>
         Json.obj(
-          "me" -> ctx.me.map { u =>
-            Json.obj("username" -> u.username)
-          },
+          "me" -> ctx
+            .me
+            .map { u =>
+              Json.obj("username" -> u.username)
+            },
           "version" -> lobbyVersion(),
           "hooks" -> JsArray(hooks map (_.render)),
           "seeks" -> JsArray(seeks map (_.render)),
@@ -55,7 +57,9 @@ final class LobbyApi(
       "opponent" -> Json
         .obj(
           "id" -> pov.opponent.userId,
-          "username" -> lila.game.Namer
+          "username" -> lila
+            .game
+            .Namer
             .playerString(pov.opponent, withRating = false)(lightUser),
           "rating" -> pov.opponent.rating,
           "ai" -> pov.opponent.aiLevel

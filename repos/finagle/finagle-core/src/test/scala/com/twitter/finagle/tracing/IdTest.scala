@@ -54,8 +54,8 @@ class IdTest extends FunSuite {
 
   test("return sampled true if debug mode") {
     assert(
-      TraceId(None, None, SpanId(0L), None, Flags().setDebug).sampled == Some(
-        true))
+      TraceId(None, None, SpanId(0L), None, Flags().setDebug)
+        .sampled == Some(true))
   }
 
   def hex(l: Long) = new RichU64Long(l).toU64HexString
@@ -75,15 +75,9 @@ class IdTest extends FunSuite {
 
   test("hashCode only accounts for id fields") {
     assert(
-      TraceId(
-        Some(SpanId(1L)),
-        Some(SpanId(2L)),
-        SpanId(3L),
-        Some(true)).hashCode ==
-        TraceId(
-          Some(SpanId(1L)),
-          Some(SpanId(2L)),
-          SpanId(3L),
-          Some(false)).hashCode)
+      TraceId(Some(SpanId(1L)), Some(SpanId(2L)), SpanId(3L), Some(true))
+        .hashCode ==
+        TraceId(Some(SpanId(1L)), Some(SpanId(2L)), SpanId(3L), Some(false))
+          .hashCode)
   }
 }

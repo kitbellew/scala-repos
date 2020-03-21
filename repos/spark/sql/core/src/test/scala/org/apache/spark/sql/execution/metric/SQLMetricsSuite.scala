@@ -81,7 +81,10 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
       df.collect()
     }
     sparkContext.listenerBus.waitUntilEmpty(10000)
-    val executionIds = sqlContext.listener.executionIdToData.keySet
+    val executionIds = sqlContext
+      .listener
+      .executionIdToData
+      .keySet
       .diff(previousExecutionIds)
     assert(executionIds.size === 1)
     val executionId = executionIds.head
@@ -94,16 +97,20 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
       val metricValues = sqlContext.listener.getExecutionMetrics(executionId)
       val actualMetrics =
         SparkPlanGraph(
-          SparkPlanInfo.fromSparkPlan(df.queryExecution.executedPlan)).allNodes
+          SparkPlanInfo.fromSparkPlan(df.queryExecution.executedPlan))
+          .allNodes
           .filter { node =>
             expectedMetrics.contains(node.id)
           }
           .map { node =>
             val nodeMetrics =
-              node.metrics.map { metric =>
-                val metricValue = metricValues(metric.accumulatorId)
-                (metric.name, metricValue)
-              }.toMap
+              node
+                .metrics
+                .map { metric =>
+                  val metricValue = metricValues(metric.accumulatorId)
+                  (metric.name, metricValue)
+                }
+                .toMap
             (node.id, node.name -> nodeMetrics)
           }
           .toMap
@@ -115,8 +122,8 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
         assert(expectedNodeName === actualNodeName)
         for (metricName <- expectedMetricsMap.keySet) {
           assert(
-            expectedMetricsMap(metricName).toString === actualMetricsMap(
-              metricName))
+            expectedMetricsMap(metricName)
+              .toString === actualMetricsMap(metricName))
         }
       }
     } else {
@@ -178,9 +185,8 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
   test("SortMergeJoin metrics") {
     // Because SortMergeJoin may skip different rows if the number of partitions is different, this
     // test should use the deterministic number of partitions.
-    val testDataForJoin = testData2.filter(
-      'a < 2
-    ) // TestData2(1, 1) :: TestData2(1, 2)
+    val testDataForJoin = testData2
+      .filter('a < 2) // TestData2(1, 1) :: TestData2(1, 2)
     testDataForJoin.registerTempTable("testDataForJoin")
     withTempTable("testDataForJoin") {
       // Assume the execution plan is
@@ -203,9 +209,8 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
   test("SortMergeJoin(outer) metrics") {
     // Because SortMergeJoin may skip different rows if the number of partitions is different,
     // this test should use the deterministic number of partitions.
-    val testDataForJoin = testData2.filter(
-      'a < 2
-    ) // TestData2(1, 1) :: TestData2(1, 2)
+    val testDataForJoin = testData2
+      .filter('a < 2) // TestData2(1, 1) :: TestData2(1, 2)
     testDataForJoin.registerTempTable("testDataForJoin")
     withTempTable("testDataForJoin") {
       // Assume the execution plan is
@@ -269,9 +274,8 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
   }
 
   test("BroadcastNestedLoopJoin metrics") {
-    val testDataForJoin = testData2.filter(
-      'a < 2
-    ) // TestData2(1, 1) :: TestData2(1, 2)
+    val testDataForJoin = testData2
+      .filter('a < 2) // TestData2(1, 1) :: TestData2(1, 2)
     testDataForJoin.registerTempTable("testDataForJoin")
     withTempTable("testDataForJoin") {
       // Assume the execution plan is
@@ -320,9 +324,8 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
   }
 
   test("CartesianProduct metrics") {
-    val testDataForJoin = testData2.filter(
-      'a < 2
-    ) // TestData2(1, 1) :: TestData2(1, 2)
+    val testDataForJoin = testData2
+      .filter('a < 2) // TestData2(1, 1) :: TestData2(1, 2)
     testDataForJoin.registerTempTable("testDataForJoin")
     withTempTable("testDataForJoin") {
       // Assume the execution plan is
@@ -342,7 +345,10 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
       // PhysicalRDD(nodeId = 0)
       person.select('name).write.format("json").save(file.getAbsolutePath)
       sparkContext.listenerBus.waitUntilEmpty(10000)
-      val executionIds = sqlContext.listener.executionIdToData.keySet
+      val executionIds = sqlContext
+        .listener
+        .executionIdToData
+        .keySet
         .diff(previousExecutionIds)
       assert(executionIds.size === 1)
       val executionId = executionIds.head

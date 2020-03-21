@@ -23,9 +23,14 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
   def train(data: PreparedData): ALSModel = {
     // Convert user and item String IDs to Int index for MLlib
-    val mllibRatings = data.ratings.map(r =>
-      // MLlibRating requires integer index for user and item
-      MLlibRating(data.users(r.user).toInt, data.items(r.item).toInt, r.rating))
+    val mllibRatings = data
+      .ratings
+      .map(r =>
+        // MLlibRating requires integer index for user and item
+        MLlibRating(
+          data.users(r.user).toInt,
+          data.items(r.item).toInt,
+          r.rating))
     val m = ALS.train(mllibRatings, ap.rank, ap.numIterations, ap.lambda)
     new ALSModel(
       rank = m.rank,
@@ -37,7 +42,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
   def predict(model: ALSModel, query: Query): PredictedResult = {
     // Convert String ID to Int index for Mllib
-    model.users
+    model
+      .users
       .get(query.user)
       .map { userInt =>
         // recommendProducts() returns Array[MLlibRating], which uses item Int

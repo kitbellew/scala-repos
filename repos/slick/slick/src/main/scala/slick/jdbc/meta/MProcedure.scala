@@ -16,7 +16,8 @@ case class MProcedure(
 object MProcedure {
   def getProcedures(namePattern: MQName) =
     ResultSetAction[MProcedure](
-      _.metaData.getProcedures(
+      _.metaData
+      .getProcedures(
         namePattern.catalog_?,
         namePattern.schema_?,
         namePattern.name)) { r =>

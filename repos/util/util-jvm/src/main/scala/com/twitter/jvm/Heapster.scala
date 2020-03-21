@@ -26,13 +26,11 @@ import com.twitter.util.Duration
 class Heapster(klass: Class[_]) {
   private val startM = klass.getDeclaredMethod("start")
   private val stopM = klass.getDeclaredMethod("stop")
-  private val dumpProfileM = klass.getDeclaredMethod(
-    "dumpProfile",
-    classOf[java.lang.Boolean])
+  private val dumpProfileM = klass
+    .getDeclaredMethod("dumpProfile", classOf[java.lang.Boolean])
   private val clearProfileM = klass.getDeclaredMethod("clearProfile")
-  private val setSamplingPeriodM = klass.getDeclaredMethod(
-    "setSamplingPeriod",
-    classOf[java.lang.Integer])
+  private val setSamplingPeriodM = klass
+    .getDeclaredMethod("setSamplingPeriod", classOf[java.lang.Integer])
 
   def start() {
     startM.invoke(null)

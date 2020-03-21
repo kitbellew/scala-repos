@@ -31,11 +31,17 @@ final class Cached(
 
   def countEnabled: Fu[Int] = countCache(true)
 
-  private implicit val LightUserBSONHandler = reactivemongo.bson.Macros
+  private implicit val LightUserBSONHandler = reactivemongo
+    .bson
+    .Macros
     .handler[LightUser]
-  private implicit val LightPerfBSONHandler = reactivemongo.bson.Macros
+  private implicit val LightPerfBSONHandler = reactivemongo
+    .bson
+    .Macros
     .handler[LightPerf]
-  private implicit val LightCountBSONHandler = reactivemongo.bson.Macros
+  private implicit val LightCountBSONHandler = reactivemongo
+    .bson
+    .Macros
     .handler[LightCount]
 
   def leaderboards: Fu[Perfs.Leaderboards] =
@@ -77,7 +83,8 @@ final class Cached(
 
   private val topWeekCache = mongoCache.single[List[User.LightPerf]](
     prefix = "user:top:week",
-    f = PerfType.leaderboardable
+    f = PerfType
+      .leaderboardable
       .map { perf =>
         rankingApi.topPerf(perf.id, 1)
       }
@@ -95,9 +102,12 @@ final class Cached(
       },
     timeToLive = 34 minutes)
 
-  val top50Online = lila.memo.AsyncCache.single[List[User]](
-    f = UserRepo.byIdsSortRating(onlineUserIdMemo.keys, 50),
-    timeToLive = 10 seconds)
+  val top50Online = lila
+    .memo
+    .AsyncCache
+    .single[List[User]](
+      f = UserRepo.byIdsSortRating(onlineUserIdMemo.keys, 50),
+      timeToLive = 10 seconds)
 
   object ranking {
 

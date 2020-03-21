@@ -22,8 +22,8 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
   }
 
   test("exponential with upper limit") {
-    val backoffs =
-      (Backoff.exponential(1.seconds, 2) take 5) ++ Backoff.const(32.seconds)
+    val backoffs = (Backoff.exponential(1.seconds, 2) take 5) ++ Backoff
+      .const(32.seconds)
     assert(
       (backoffs take 10).force.toSeq == (
         0 until 10 map { i =>
@@ -50,7 +50,8 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
       // 5, then randos up to: 10, 20, 40, 80, 120, 120, 120...
       assert(5 == backoffs.head)
       val maxBackoffs = Seq(10, 20, 40, 80, 120, 120, 120, 120, 120)
-      backoffs.tail
+      backoffs
+        .tail
         .zip(maxBackoffs)
         .foreach {
           case (b, m) =>
@@ -88,12 +89,14 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
         // 5ms and then randos between 5ms and 3x the previous value (capped at `maximum`)
         assert(startMs.millis == backoffs.head)
         var prev = startMs.millis
-        backoffs.tail.foreach { b =>
-          assert(b >= startMs.millis)
-          assert(b <= prev * 3)
-          assert(b <= maxMs.millis)
-          prev = b
-        }
+        backoffs
+          .tail
+          .foreach { b =>
+            assert(b >= startMs.millis)
+            assert(b <= prev * 3)
+            assert(b <= maxMs.millis)
+            prev = b
+          }
     }
   }
 
@@ -120,11 +123,14 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
         (80, 120),
         (80, 120),
         (80, 120))
-      backoffs.tail.zip(ranges).foreach {
-        case (b, (min, max)) =>
-          assert(b >= min)
-          assert(b <= max)
-      }
+      backoffs
+        .tail
+        .zip(ranges)
+        .foreach {
+          case (b, (min, max)) =>
+            assert(b >= min)
+            assert(b <= max)
+        }
 
       val manyBackoffs =
         Backoff.equalJittered(5.millis, maximum, rng).take(100).force.toSeq

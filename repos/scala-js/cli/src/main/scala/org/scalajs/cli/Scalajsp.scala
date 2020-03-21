@@ -53,12 +53,8 @@ object Scalajsp {
             sys.exit()
           }
           .text("Show supported Scala.js IR versions")
-        version("version")
-          .abbr("v")
-          .text("Show scalajsp version")
-        help("help")
-          .abbr("h")
-          .text("prints this usage text")
+        version("version").abbr("v").text("Show scalajsp version")
+        help("help").abbr("h").text("prints this usage text")
 
         override def showUsageOnError = true
       }
@@ -125,8 +121,8 @@ object Scalajsp {
         fail(s"No such file in jar: $name")
       else {
         val name = jarFile.getName + "#" + entry.getName
-        val content = IO.readInputStreamToByteArray(
-          jarFile.getInputStream(entry))
+        val content = IO
+          .readInputStreamToByteArray(jarFile.getInputStream(entry))
         new MemVirtualSerializedScalaJSIRFile(name).withContent(content)
       }
     } finally {

@@ -29,9 +29,8 @@ object ExtractCssSelectorExamples extends App {
     for {
       docsDir <- (
         (
-          Full(docsFile)
-            .filter(
-              _.exists) ?~ s"'$docsFile' should be a directory, but does not exist."
+          Full(docsFile).filter(
+            _.exists) ?~ s"'$docsFile' should be a directory, but does not exist."
         ).filter(
           _.isDirectory) ?~ s"'$docsFile' should be a directory, not a file."
       )
@@ -77,82 +76,88 @@ object ExtractCssSelectorExamples extends App {
 
   private def extractExamplesFromContents(
       fileContents: FileContents): List[ExampleContents] = {
-    Html5.parse(fileContents.contents).toList.flatMap { html =>
-      var setupCode: String = ""
+    Html5
+      .parse(fileContents.contents)
+      .toList
+      .flatMap { html =>
+        var setupCode: String = ""
 
-      val setupExtractor =
-        ".setup" #> {
-          "code *" #> { codeContents: NodeSeq =>
-            setupCode = codeContents.text
+        val setupExtractor =
+          ".setup" #> {
+            "code *" #> { codeContents: NodeSeq =>
+              setupCode = codeContents.text
 
-            codeContents
-          }
-        }
-
-      var exampleContents = List[ExampleContents]()
-
-      val contentExtractor =
-        ".selectors" #> { exampleNodes: NodeSeq =>
-          var parts = List[ExamplePart]()
-          var exampleLabel = "No label"
-
-          var labelExtractor =
-            ".title" #> { title: NodeSeq =>
-              title match {
-                case titleElement: Elem if titleElement.label == "div" =>
-                  exampleLabel = titleElement.text
-
-                  titleElement
-                case other =>
-                  other
-              }
+              codeContents
             }
-          val partExtractor =
-            ".listingblock" #> { part: NodeSeq =>
-              var specializedPartExtractor =
-                part match {
-                  case inputBlock: Elem if hasClass_?(inputBlock, "input") =>
-                    Some(extractPart(ExampleInput(_)) _)
-                  case selectorBlock: Elem
-                      if hasClass_?(selectorBlock, "selector") =>
-                    Some(extractPart(ExampleFunction(_)) _)
-                  case outputBlock: Elem if hasClass_?(outputBlock, "output") =>
-                    Some(extractPart(ExampleOutput(_)) _)
-                  case _ =>
-                    None
+          }
+
+        var exampleContents = List[ExampleContents]()
+
+        val contentExtractor =
+          ".selectors" #> { exampleNodes: NodeSeq =>
+            var parts = List[ExamplePart]()
+            var exampleLabel = "No label"
+
+            var labelExtractor =
+              ".title" #> { title: NodeSeq =>
+                title match {
+                  case titleElement: Elem if titleElement.label == "div" =>
+                    exampleLabel = titleElement.text
+
+                    titleElement
+                  case other =>
+                    other
+                }
+              }
+            val partExtractor =
+              ".listingblock" #> { part: NodeSeq =>
+                var specializedPartExtractor =
+                  part match {
+                    case inputBlock: Elem if hasClass_?(inputBlock, "input") =>
+                      Some(extractPart(ExampleInput(_)) _)
+                    case selectorBlock: Elem
+                        if hasClass_?(selectorBlock, "selector") =>
+                      Some(extractPart(ExampleFunction(_)) _)
+                    case outputBlock: Elem
+                        if hasClass_?(outputBlock, "output") =>
+                      Some(extractPart(ExampleOutput(_)) _)
+                    case _ =>
+                      None
+                  }
+
+                for {
+                  extractor <- specializedPartExtractor
+                  extractedPart <- extractor(part)
+                } {
+                  parts ::= extractedPart
                 }
 
-              for {
-                extractor <- specializedPartExtractor
-                extractedPart <- extractor(part)
-              } {
-                parts ::= extractedPart
+                part
               }
 
-              part
-            }
+            (labelExtractor & partExtractor)(exampleNodes)
 
-          (labelExtractor & partExtractor)(exampleNodes)
+            exampleContents ::= ExampleContents(
+              fileContents.filename,
+              exampleLabel,
+              setupCode,
+              parts.reverse)
 
-          exampleContents ::= ExampleContents(
-            fileContents.filename,
-            exampleLabel,
-            setupCode,
-            parts.reverse)
+            exampleNodes
+          }
 
-          exampleNodes
-        }
+        setupExtractor(html)
+        contentExtractor(html)
 
-      setupExtractor(html)
-      contentExtractor(html)
-
-      exampleContents.reverse
-    }
+        exampleContents.reverse
+      }
   }
 
   if (args.length < 2) {
-    Console.err.println(
-      "Expected two arguments: the base directory of generated HTML and the base directory of the Lift project.")
+    Console
+      .err
+      .println(
+        "Expected two arguments: the base directory of generated HTML and the base directory of the Lift project.")
   } else {
     val examples =
       for {

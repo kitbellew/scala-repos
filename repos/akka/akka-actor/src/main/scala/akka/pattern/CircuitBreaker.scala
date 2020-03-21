@@ -112,11 +112,13 @@ class CircuitBreaker(
     */
   @inline
   private[this] def swapState(oldState: State, newState: State): Boolean =
-    Unsafe.instance.compareAndSwapObject(
-      this,
-      AbstractCircuitBreaker.stateOffset,
-      oldState,
-      newState)
+    Unsafe
+      .instance
+      .compareAndSwapObject(
+        this,
+        AbstractCircuitBreaker.stateOffset,
+        oldState,
+        newState)
 
   /**
     * Helper method for accessing underlying state via Unsafe
@@ -125,7 +127,8 @@ class CircuitBreaker(
     */
   @inline
   private[this] def currentState: State =
-    Unsafe.instance
+    Unsafe
+      .instance
       .getObjectVolatile(this, AbstractCircuitBreaker.stateOffset)
       .asInstanceOf[State]
 
@@ -354,12 +357,14 @@ class CircuitBreaker(
         val p = Promise[T]()
 
         implicit val ec = sameThreadExecutionContext
-        p.future.onComplete {
-          case s: Success[_] ⇒
-            callSucceeds()
-          case _ ⇒
-            callFails()
-        }
+        p
+          .future
+          .onComplete {
+            case s: Success[_] ⇒
+              callSucceeds()
+            case _ ⇒
+              callFails()
+          }
 
         val timeout =
           scheduler.scheduleOnce(callTimeout) {

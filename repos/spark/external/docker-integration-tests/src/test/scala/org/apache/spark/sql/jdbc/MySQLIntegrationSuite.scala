@@ -165,13 +165,19 @@ class MySQLIntegrationSuite extends DockerJDBCIntegrationSuite {
     assert(rows(0).getString(4).equals("jumps"))
     assert(rows(0).getString(5).equals("over"))
     assert(
-      java.util.Arrays
+      java
+        .util
+        .Arrays
         .equals(rows(0).getAs[Array[Byte]](6), Array[Byte](116, 104, 101, 0)))
     assert(
-      java.util.Arrays
+      java
+        .util
+        .Arrays
         .equals(rows(0).getAs[Array[Byte]](7), Array[Byte](108, 97, 122, 121)))
     assert(
-      java.util.Arrays
+      java
+        .util
+        .Arrays
         .equals(rows(0).getAs[Array[Byte]](8), Array[Byte](100, 111, 103)))
   }
 

@@ -116,8 +116,10 @@ trait ApiFormats extends ScalatraBase {
   private[this] def getFromAcceptHeader(implicit
       request: HttpServletRequest): Option[String] = {
     val hdrs =
-      request.contentType.fold(acceptHeader)(contentType =>
-        (acceptHeader ::: List(contentType)).distinct)
+      request
+        .contentType
+        .fold(acceptHeader)(contentType =>
+          (acceptHeader ::: List(contentType)).distinct)
     formatForMimeTypes(hdrs: _*)
   }
 
@@ -152,7 +154,8 @@ trait ApiFormats extends ScalatraBase {
               10
           acc + (i -> (parts(0) :: acc.get(i).getOrElse(List.empty)))
         }
-      accepted.toList
+      accepted
+        .toList
         .sortWith((kv1, kv2) => kv1._1 > kv2._1)
         .flatMap(_._2.reverse)
     } getOrElse Nil
@@ -161,8 +164,9 @@ trait ApiFormats extends ScalatraBase {
   protected def formatForMimeTypes(mimeTypes: String*): Option[String] = {
     val defaultMimeType = formats(defaultFormat.name)
     def matchMimeType(tm: String, f: String) = {
-      tm.toLowerCase(ENGLISH)
-        .startsWith(f) || (defaultMimeType == f && tm.contains(defaultMimeType))
+      tm.toLowerCase(ENGLISH).startsWith(f) || (
+        defaultMimeType == f && tm.contains(defaultMimeType)
+      )
     }
     mimeTypes find { hdr =>
       formats exists {
@@ -211,7 +215,8 @@ trait ApiFormats extends ScalatraBase {
   private def getFormat(implicit
       request: HttpServletRequest,
       response: HttpServletResponse): String = {
-    getFromResponseHeader orElse getFromParams orElse getFromAcceptHeader getOrElse defaultFormat.name
+    getFromResponseHeader orElse getFromParams orElse getFromAcceptHeader getOrElse defaultFormat
+      .name
   }
 
   protected[scalatra] override def withRouteMultiParams[S](
@@ -219,14 +224,17 @@ trait ApiFormats extends ScalatraBase {
       request: HttpServletRequest): S = {
     val originalParams: MultiParams = multiParams
     val routeParams: Map[String, Seq[String]] = {
-      matchedRoute.map(_.multiParams).getOrElse(Map.empty).map {
-        case (key, values) =>
-          key -> values.map(s =>
-            if (s.nonBlank)
-              UriDecoder.secondStep(s)
-            else
-              s)
-      }
+      matchedRoute
+        .map(_.multiParams)
+        .getOrElse(Map.empty)
+        .map {
+          case (key, values) =>
+            key -> values.map(s =>
+              if (s.nonBlank)
+                UriDecoder.secondStep(s)
+              else
+                s)
+        }
     }
     if (routeParams.contains("format")) {
       request(FormatKey) = routeParams.apply("format").head
@@ -241,7 +249,8 @@ trait ApiFormats extends ScalatraBase {
   }
 
   def requestFormat(implicit request: HttpServletRequest): String = {
-    request.contentType
+    request
+      .contentType
       .flatMap(t => t.split(";").headOption flatMap mimeTypes.get)
       .getOrElse(format)
   }

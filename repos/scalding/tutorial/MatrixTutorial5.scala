@@ -17,7 +17,8 @@ class ComputeJaccardJob(args: Args) extends Job(args) {
 
   import Matrix._
 
-  val adjacencyMatrix = Tsv(args("input"), ('user1, 'user2, 'rel)).read
+  val adjacencyMatrix = Tsv(args("input"), ('user1, 'user2, 'rel))
+    .read
     .toMatrix[Long, Long, Double]('user1, 'user2, 'rel)
 
   val aBinary = adjacencyMatrix.binarizeAs[Double]

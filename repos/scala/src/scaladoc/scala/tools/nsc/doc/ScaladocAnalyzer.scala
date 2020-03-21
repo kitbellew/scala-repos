@@ -53,7 +53,11 @@ trait ScaladocAnalyzer extends Analyzer {
             if (sym.name != useCaseSym.name)
               reporter.warning(
                 useCase.pos,
-                "@usecase " + useCaseSym.name.decode + " does not match commented symbol: " + sym.name.decode)
+                "@usecase " + useCaseSym
+                  .name
+                  .decode + " does not match commented symbol: " + sym
+                  .name
+                  .decode)
           }
         }
       }
@@ -81,9 +85,8 @@ trait ScaladocAnalyzer extends Analyzer {
              repl =>
                silent(_.typedTypeConstructor(stringParser(repl).typ())) map {
                  tpt =>
-                   val alias = enclClass.newAliasType(
-                     name.toTypeName,
-                     useCase.pos)
+                   val alias = enclClass
+                     .newAliasType(name.toTypeName, useCase.pos)
                    val tparams = cloneSymbolsAtOwner(
                      tpt.tpe.typeSymbol.typeParams,
                      alias)
@@ -222,7 +225,8 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
       // tags that make a local double-star comment look unclean, as though it were API
       def unclean(comment: Comment): Boolean = {
         import comment._
-        authors.nonEmpty || result.nonEmpty || throws.nonEmpty || valueParams.nonEmpty ||
+        authors.nonEmpty || result.nonEmpty || throws.nonEmpty || valueParams
+          .nonEmpty ||
         typeParams.nonEmpty || version.nonEmpty || since.nonEmpty
       }
       def isDirty = unclean(unmooredParser parseComment doc)

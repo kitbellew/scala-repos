@@ -54,13 +54,15 @@ private[mux] object TagMap {
 
       def map(el: T): Option[Int] =
         synchronized {
-          set.acquire().map { tag =>
-            if (inFast(tag))
-              setFast(tag, el)
-            else
-              fallback.put(tag, el)
-            tag
-          }
+          set
+            .acquire()
+            .map { tag =>
+              if (inFast(tag))
+                setFast(tag, el)
+              else
+                fallback.put(tag, el)
+              tag
+            }
         }
 
       def maybeRemap(tag: Int, newEl: T): Option[T] =

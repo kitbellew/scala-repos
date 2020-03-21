@@ -160,12 +160,14 @@ trait SymbolTables {
 
     override def toString = {
       val symtabString = symtab.keys.map(symName(_)).mkString(", ")
-      val trueAliases = aliases.distinct.filter(entry =>
-        symName(entry._1) != entry._2)
+      val trueAliases = aliases
+        .distinct
+        .filter(entry => symName(entry._1) != entry._2)
       val aliasesString = trueAliases
         .map(entry => s"${symName(entry._1)} -> ${entry._2}")
         .mkString(", ")
-      s"""symtab = [$symtabString], aliases = [$aliasesString]${if (original.isDefined)
+      s"""symtab = [$symtabString], aliases = [$aliasesString]${if (original
+                                                                      .isDefined)
         ", has original"
       else
         ""}"""
@@ -219,10 +221,10 @@ trait SymbolTables {
       reifier.state.symtab = symtab0.asInstanceOf[reifier.SymbolTable]
       def currtab = reifier.symtab.asInstanceOf[SymbolTable]
       try {
-        val cumulativeSymtab = mutable.ArrayBuffer[Tree](
-          symtab0.symtab.values.toList: _*)
-        val cumulativeAliases = mutable.ArrayBuffer[(Symbol, TermName)](
-          symtab0.aliases: _*)
+        val cumulativeSymtab = mutable
+          .ArrayBuffer[Tree](symtab0.symtab.values.toList: _*)
+        val cumulativeAliases = mutable
+          .ArrayBuffer[(Symbol, TermName)](symtab0.aliases: _*)
 
         def fillInSymbol(sym: Symbol): Tree = {
           if (reifyDebug)
@@ -276,18 +278,18 @@ trait SymbolTables {
           val sym = reifyBinding(entry).symbol
           if (sym != NoSymbol)
             result ++= cumulativeAliases.distinct filter (alias =>
-              alias._1 == sym && alias._2 != currtab.symName(sym)) map (
-              alias => {
-                val canonicalName = currtab.symName(sym)
-                val aliasName = alias._2
-                ValDef(
-                  NoMods,
-                  aliasName,
-                  TypeTree(),
-                  Ident(canonicalName)) updateAttachment ReifyAliasAttachment(
-                  sym,
-                  aliasName)
-              })
+              alias
+                ._1 == sym && alias._2 != currtab.symName(sym)) map (alias => {
+              val canonicalName = currtab.symName(sym)
+              val aliasName = alias._2
+              ValDef(
+                NoMods,
+                aliasName,
+                TypeTree(),
+                Ident(canonicalName)) updateAttachment ReifyAliasAttachment(
+                sym,
+                aliasName)
+            })
           result.toList
         })
 

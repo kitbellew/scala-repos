@@ -100,21 +100,27 @@ class MessageSerializer(val system: ExtendedActorSystem)
       : mf.AtLeastOnceDeliverySnapshot.Builder = {
     val builder = mf.AtLeastOnceDeliverySnapshot.newBuilder
     builder.setCurrentDeliveryId(snap.currentDeliveryId)
-    snap.unconfirmedDeliveries.foreach { unconfirmed ⇒
-      val unconfirmedBuilder =
-        mf.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.newBuilder
+    snap
+      .unconfirmedDeliveries
+      .foreach { unconfirmed ⇒
+        val unconfirmedBuilder = mf
+          .AtLeastOnceDeliverySnapshot
+          .UnconfirmedDelivery
+          .newBuilder
           .setDeliveryId(unconfirmed.deliveryId)
           .setDestination(unconfirmed.destination.toString)
           .setPayload(
             persistentPayloadBuilder(unconfirmed.message.asInstanceOf[AnyRef]))
-      builder.addUnconfirmedDeliveries(unconfirmedBuilder)
-    }
+        builder.addUnconfirmedDeliveries(unconfirmedBuilder)
+      }
     builder
   }
 
   private[persistence] def stateChangeBuilder(
       stateChange: StateChangeEvent): mf.PersistentStateChangeEvent.Builder = {
-    val builder = mf.PersistentStateChangeEvent.newBuilder
+    val builder = mf
+      .PersistentStateChangeEvent
+      .newBuilder
       .setStateIdentifier(stateChange.stateIdentifier)
     stateChange.timeout match {
       case None ⇒
@@ -159,9 +165,11 @@ class MessageSerializer(val system: ExtendedActorSystem)
 
   private def atomicWriteBuilder(a: AtomicWrite) = {
     val builder = mf.AtomicWrite.newBuilder
-    a.payload.foreach { p ⇒
-      builder.addPayload(persistentMessageBuilder(p))
-    }
+    a
+      .payload
+      .foreach { p ⇒
+        builder.addPayload(persistentMessageBuilder(p))
+      }
     builder
   }
 
@@ -208,9 +216,11 @@ class MessageSerializer(val system: ExtendedActorSystem)
     // serialize actor references with full address information (defaultAddress)
     transportInformation match {
       case Some(ti) ⇒
-        Serialization.currentTransportInformation.withValue(ti) {
-          payloadBuilder()
-        }
+        Serialization
+          .currentTransportInformation
+          .withValue(ti) {
+            payloadBuilder()
+          }
       case None ⇒
         payloadBuilder()
     }

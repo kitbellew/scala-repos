@@ -36,14 +36,17 @@ object ColumnDefinitionProviderImpl {
     // pick the last apply method which (anecdotally) gives us the defaults
     // set in the case class declaration, not the companion object
     val applyList =
-      moduleSym.typeSignature
+      moduleSym
+        .typeSignature
         .declaration(newTermName("apply"))
         .asTerm
         .alternatives
     val apply = applyList.last.asMethod
     // can handle only default parameters from the first parameter list
     // because subsequent parameter lists might depend on previous parameters
-    apply.paramss.head
+    apply
+      .paramss
+      .head
       .map(_.asTerm)
       .zipWithIndex
       .flatMap {
@@ -174,23 +177,24 @@ object ColumnDefinitionProviderImpl {
 
       // We have to build this up front as if the case class definition moves to another file
       // the annotation moves from the value onto the getter method?
-      val annotationData: Map[String, List[(Type, List[Tree])]] =
-        outerTpe.declarations
-          .map { m =>
-            val mappedAnnotations = m.annotations.map(t => (t.tpe, t.scalaArgs))
-            m.name.toString.trim -> mappedAnnotations
-          }
-          .groupBy(_._1)
-          .map {
-            case (k, l) =>
-              (k, l.map(_._2).reduce(_ ++ _))
-          }
-          .filter {
-            case (k, v) =>
-              !v.isEmpty
-          }
+      val annotationData: Map[String, List[(Type, List[Tree])]] = outerTpe
+        .declarations
+        .map { m =>
+          val mappedAnnotations = m.annotations.map(t => (t.tpe, t.scalaArgs))
+          m.name.toString.trim -> mappedAnnotations
+        }
+        .groupBy(_._1)
+        .map {
+          case (k, l) =>
+            (k, l.map(_._2).reduce(_ ++ _))
+        }
+        .filter {
+          case (k, v) =>
+            !v.isEmpty
+        }
 
-      outerTpe.declarations
+      outerTpe
+        .declarations
         .collect {
           case m: MethodSymbol if m.isCaseAccessor =>
             m
@@ -251,11 +255,7 @@ object ColumnDefinitionProviderImpl {
       }
 
     val duplicateFields =
-      formats
-        .map(_.fieldName)
-        .groupBy(identity)
-        .filter(_._2.size > 1)
-        .keys
+      formats.map(_.fieldName).groupBy(identity).filter(_._2.size > 1).keys
 
     if (duplicateFields.nonEmpty) {
       c.abort(
@@ -307,48 +307,50 @@ object ColumnDefinitionProviderImpl {
     // we validate two things from ResultSetMetadata
     // 1. the column types match with actual DB schema
     // 2. all non-nullable fields are indeed non-nullable in DB schema
-    val checks = columnFormats.zipWithIndex.map {
-      case (cf: ColumnFormat[_], pos: Int) =>
-        val fieldName = cf.fieldName.toStr
-        val typeNameTerm = newTermName(c.fresh(s"colTypeName_$pos"))
-        val typeName = q"""
+    val checks = columnFormats
+      .zipWithIndex
+      .map {
+        case (cf: ColumnFormat[_], pos: Int) =>
+          val fieldName = cf.fieldName.toStr
+          val typeNameTerm = newTermName(c.fresh(s"colTypeName_$pos"))
+          val typeName = q"""
         val $typeNameTerm = $rsmdTerm.getColumnTypeName(${pos + 1})
         """
-        // certain types have synonyms, so we group them together here
-        // note: this is mysql specific
-        // http://dev.mysql.com/doc/refman/5.0/en/numeric-type-overview.html
-        val typeValidation =
-          cf.fieldType match {
-            case "VARCHAR" =>
-              q"""List("VARCHAR", "CHAR").contains($typeNameTerm)"""
-            case "BOOLEAN" | "TINYINT" =>
-              q"""List("BOOLEAN", "BOOL", "TINYINT").contains($typeNameTerm)"""
-            case "INT" =>
-              q"""List("INTEGER", "INT").contains($typeNameTerm)"""
-            case f =>
-              q"""$f == $typeNameTerm"""
-          }
-        val typeAssert = q"""
+          // certain types have synonyms, so we group them together here
+          // note: this is mysql specific
+          // http://dev.mysql.com/doc/refman/5.0/en/numeric-type-overview.html
+          val typeValidation =
+            cf.fieldType match {
+              case "VARCHAR" =>
+                q"""List("VARCHAR", "CHAR").contains($typeNameTerm)"""
+              case "BOOLEAN" | "TINYINT" =>
+                q"""List("BOOLEAN", "BOOL", "TINYINT").contains($typeNameTerm)"""
+              case "INT" =>
+                q"""List("INTEGER", "INT").contains($typeNameTerm)"""
+              case f =>
+                q"""$f == $typeNameTerm"""
+            }
+          val typeAssert = q"""
         if (!$typeValidation) {
           throw new _root_.com.twitter.scalding.db.JdbcValidationException(
             "Mismatched type for column '" + $fieldName + "'. Expected " + ${cf.fieldType} +
               " but set to " + $typeNameTerm + " in DB.")
         }
         """
-        val nullableTerm = newTermName(c.fresh(s"isNullable_$pos"))
-        val nullableValidation = q"""
+          val nullableTerm = newTermName(c.fresh(s"isNullable_$pos"))
+          val nullableValidation = q"""
         val $nullableTerm = $rsmdTerm.isNullable(${pos + 1})
         if ($nullableTerm == _root_.java.sql.ResultSetMetaData.columnNoNulls && ${cf.nullable}) {
           throw new _root_.com.twitter.scalding.db.JdbcValidationException(
             "Column '" + $fieldName + "' is not nullable in DB.")
         }
         """
-        q"""
+          q"""
         $typeName
         $typeAssert
         $nullableValidation
         """
-    }
+      }
 
     val rsTerm = newTermName(c.fresh("rs"))
     val formats = columnFormats.map {

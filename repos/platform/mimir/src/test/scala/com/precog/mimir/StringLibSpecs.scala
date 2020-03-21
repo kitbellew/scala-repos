@@ -1084,10 +1084,12 @@ trait StringLibSpecs[M[+_]]
 
       result must haveSize(8)
 
-      val ns = result.toList.collect {
-        case (_, SDecimal(n)) =>
-          n
-      }
+      val ns = result
+        .toList
+        .collect {
+          case (_, SDecimal(n)) =>
+            n
+        }
 
       ns must contain(
         BigDecimal("42"),
@@ -1113,10 +1115,12 @@ trait StringLibSpecs[M[+_]]
 
       result must haveSize(6)
 
-      val ss = result.toList.collect {
-        case (_, SString(s)) =>
-          s
-      }
+      val ss = result
+        .toList
+        .collect {
+          case (_, SString(s)) =>
+            s
+        }
 
       ss must contain("4", "3", "4", "4", "3", "4").only
     }
@@ -1145,14 +1149,16 @@ trait StringLibSpecs[M[+_]]
     val o = scala.math.Ordering.by[(SValue, _), SValue](_._1)
 
     def mogrify(result: Set[(Vector[SValue], SValue)]): List[Vector[String]] =
-      result.toList
+      result
+        .toList
         .map {
           case (Vector(n), SArray(elems)) =>
             (n, elems)
         }
         .sorted(o)
         .map(
-          _._2.map {
+          _._2
+          .map {
             case SString(s) =>
               s
           })

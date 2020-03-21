@@ -226,7 +226,8 @@ class TaskTrackerImplTest
       .foreach(task => shouldHaveTaskStatus(task, runningTaskStatus))
 
     // TASK STILL RUNNING
-    val updatedRunningTaskStatus = runningTaskStatus.toBuilder
+    val updatedRunningTaskStatus = runningTaskStatus
+      .toBuilder
       .setTimestamp(123)
       .build()
     taskUpdater
@@ -305,7 +306,9 @@ class TaskTrackerImplTest
     val res = taskUpdater.statusUpdate(TEST_APP_NAME, runningTaskStatus)
     ScalaFutures.whenReady(res.failed) { e =>
       assert(
-        e.getCause.getMessage == s"${sampleTask.taskId} of app [/foo] does not exist",
+        e
+          .getCause
+          .getMessage == s"${sampleTask.taskId} of app [/foo] does not exist",
         s"Got message: ${e.getCause.getMessage}")
     }
     shouldNotContainTask(taskTracker.appTasksSync(TEST_APP_NAME), sampleTask)
@@ -379,7 +382,13 @@ class TaskTrackerImplTest
 
   test("Should not store if state did not change (no health present)") {
     val sampleTask = makeSampleTask(TEST_APP_NAME)
-    val status = sampleTask.launched.get.status.mesosStatus.get.toBuilder
+    val status = sampleTask
+      .launched
+      .get
+      .status
+      .mesosStatus
+      .get
+      .toBuilder
       .setTimestamp(123)
       .build()
 
@@ -397,7 +406,13 @@ class TaskTrackerImplTest
 
   test("Should not store if state and health did not change") {
     val sampleTask = MarathonTestHelper.healthyTask(TEST_APP_NAME)
-    val status = sampleTask.launched.get.status.mesosStatus.get.toBuilder
+    val status = sampleTask
+      .launched
+      .get
+      .status
+      .mesosStatus
+      .get
+      .toBuilder
       .setTimestamp(123)
       .build()
 
@@ -415,7 +430,13 @@ class TaskTrackerImplTest
 
   test("Should store if state changed") {
     val sampleTask = MarathonTestHelper.stagedTaskForApp(TEST_APP_NAME)
-    val status = sampleTask.launched.get.status.mesosStatus.get.toBuilder
+    val status = sampleTask
+      .launched
+      .get
+      .status
+      .mesosStatus
+      .get
+      .toBuilder
       .setState(Protos.TaskState.TASK_RUNNING)
       .build()
 
@@ -426,7 +447,8 @@ class TaskTrackerImplTest
 
     reset(state)
 
-    val newStatus = status.toBuilder
+    val newStatus = status
+      .toBuilder
       .setState(Protos.TaskState.TASK_FAILED)
       .build()
 
@@ -437,7 +459,13 @@ class TaskTrackerImplTest
 
   test("Should store if health changed") {
     val sampleTask = MarathonTestHelper.runningTaskForApp(TEST_APP_NAME)
-    val status = sampleTask.launched.get.status.mesosStatus.get.toBuilder
+    val status = sampleTask
+      .launched
+      .get
+      .status
+      .mesosStatus
+      .get
+      .toBuilder
       .setHealthy(true)
       .build()
 
@@ -448,9 +476,7 @@ class TaskTrackerImplTest
 
     reset(state)
 
-    val newStatus = status.toBuilder
-      .setHealthy(false)
-      .build()
+    val newStatus = status.toBuilder.setHealthy(false).build()
 
     taskUpdater.statusUpdate(TEST_APP_NAME, newStatus).futureValue
 
@@ -459,7 +485,9 @@ class TaskTrackerImplTest
 
   test("Should store if state and health changed") {
     val sampleTask = makeSampleTask(TEST_APP_NAME)
-    val status = Protos.TaskStatus.newBuilder
+    val status = Protos
+      .TaskStatus
+      .newBuilder
       .setState(Protos.TaskState.TASK_RUNNING)
       .setTaskId(sampleTask.taskId.mesosTaskId)
       .setHealthy(true)
@@ -472,7 +500,8 @@ class TaskTrackerImplTest
 
     reset(state)
 
-    val newStatus = status.toBuilder
+    val newStatus = status
+      .toBuilder
       .setState(Protos.TaskState.TASK_RUNNING)
       .setHealthy(false)
       .build()
@@ -484,7 +513,9 @@ class TaskTrackerImplTest
 
   test("Should store if health changed (no health present at first)") {
     val sampleTask = makeSampleTask(TEST_APP_NAME)
-    val status = Protos.TaskStatus.newBuilder
+    val status = Protos
+      .TaskStatus
+      .newBuilder
       .setState(Protos.TaskState.TASK_RUNNING)
       .setTaskId(sampleTask.taskId.mesosTaskId)
       .build()
@@ -496,9 +527,7 @@ class TaskTrackerImplTest
 
     reset(state)
 
-    val newStatus = status.toBuilder
-      .setHealthy(true)
-      .build()
+    val newStatus = status.toBuilder.setHealthy(true).build()
 
     taskUpdater.statusUpdate(TEST_APP_NAME, newStatus).futureValue
 
@@ -508,7 +537,9 @@ class TaskTrackerImplTest
   test(
     "Should store if state and health changed (no health present at first)") {
     val sampleTask = makeSampleTask(TEST_APP_NAME)
-    val status = Protos.TaskStatus.newBuilder
+    val status = Protos
+      .TaskStatus
+      .newBuilder
       .setState(Protos.TaskState.TASK_RUNNING)
       .setTaskId(sampleTask.taskId.mesosTaskId)
       .build()
@@ -520,7 +551,8 @@ class TaskTrackerImplTest
 
     reset(state)
 
-    val newStatus = status.toBuilder
+    val newStatus = status
+      .toBuilder
       .setState(Protos.TaskState.TASK_RUNNING)
       .setHealthy(false)
       .build()
@@ -542,10 +574,7 @@ class TaskTrackerImplTest
   }
 
   def makeTaskStatus(id: Task.Id, state: TaskState = TaskState.TASK_RUNNING) = {
-    TaskStatus.newBuilder
-      .setTaskId(id.mesosTaskId)
-      .setState(state)
-      .build
+    TaskStatus.newBuilder.setTaskId(id.mesosTaskId).setState(state).build
   }
 
   def containsTask(tasks: Iterable[Task], task: Task) =

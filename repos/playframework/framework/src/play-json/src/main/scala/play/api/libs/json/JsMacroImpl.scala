@@ -130,8 +130,9 @@ object JsMacroImpl {
               Some(List(t))
             case t @ TypeRef(_, _, args) =>
               import c.universe.definitions.TupleClass
-              if (!TupleClass.seq.exists(tupleSym =>
-                    t.baseType(tupleSym) ne NoType))
+              if (!TupleClass
+                    .seq
+                    .exists(tupleSym => t.baseType(tupleSym) ne NoType))
                 Some(List(t))
               else if (t <:< typeOf[Product])
                 Some(args)
@@ -156,7 +157,9 @@ object JsMacroImpl {
     // Find an apply method that matches the unapply
     val maybeApply = applies.collectFirst {
       case (apply: MethodSymbol) if hasVarArgs && {
-            val someApplyTypes = apply.paramLists.headOption
+            val someApplyTypes = apply
+              .paramLists
+              .headOption
               .map(_.map(_.asTerm.typeSignature))
             val someInitApply = someApplyTypes.map(_.init)
             val someApplyLast = someApplyTypes.map(_.last)
@@ -174,8 +177,10 @@ object JsMacroImpl {
           } =>
         apply
       case (apply: MethodSymbol)
-          if apply.paramLists.headOption.map(
-            _.map(_.asTerm.typeSignature)) == unapplyReturnTypes =>
+          if apply
+            .paramLists
+            .headOption
+            .map(_.map(_.asTerm.typeSignature)) == unapplyReturnTypes =>
         apply
     }
 
@@ -204,8 +209,8 @@ object JsMacroImpl {
             val isRec = args.exists(_.typeSymbol == companioned)
             // Option[_] needs special treatment because we need to use XXXOpt
             val tp =
-              if (implType.typeConstructor <:< typeOf[
-                    Option[_]].typeConstructor)
+              if (implType.typeConstructor <:< typeOf[Option[_]]
+                    .typeConstructor)
                 args.head
               else
                 implType
@@ -270,8 +275,8 @@ object JsMacroImpl {
             } else {
               // If this is a list/set/seq/map, then we need to wrap the reads into that.
               def readsWritesHelper(methodName: String): List[Tree] =
-                conditionalList(Reads, Writes).map(s =>
-                  q"$s.${TermName(methodName)}(this.lazyStuff)")
+                conditionalList(Reads, Writes)
+                  .map(s => q"$s.${TermName(methodName)}(this.lazyStuff)")
 
               val arg =
                 if (tpe.typeConstructor <:< typeOf[List[_]].typeConstructor)
@@ -280,8 +285,8 @@ object JsMacroImpl {
                   readsWritesHelper("set")
                 else if (tpe.typeConstructor <:< typeOf[Seq[_]].typeConstructor)
                   readsWritesHelper("seq")
-                else if (tpe.typeConstructor <:< typeOf[
-                           Map[_, _]].typeConstructor)
+                else if (tpe.typeConstructor <:< typeOf[Map[_, _]]
+                           .typeConstructor)
                   readsWritesHelper("map")
                 else
                   List(q"this.lazyStuff")

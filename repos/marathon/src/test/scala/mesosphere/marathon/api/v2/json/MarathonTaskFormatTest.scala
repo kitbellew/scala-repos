@@ -11,14 +11,19 @@ class MarathonTaskFormatTest extends MarathonSpec {
 
   class Fixture {
     val time = Timestamp(1024)
-    val network = MesosProtos.NetworkInfo
+    val network = MesosProtos
+      .NetworkInfo
       .newBuilder()
       .addIpAddresses(
-        MesosProtos.NetworkInfo.IPAddress
+        MesosProtos
+          .NetworkInfo
+          .IPAddress
           .newBuilder()
           .setIpAddress("123.123.123.123"))
       .addIpAddresses(
-        MesosProtos.NetworkInfo.IPAddress
+        MesosProtos
+          .NetworkInfo
+          .IPAddress
           .newBuilder()
           .setIpAddress("123.123.123.124"))
       .build()

@@ -366,10 +366,8 @@ class SecurityServiceSpec
     }
 
     "create root-like API key with defaults" in {
-      val request = v1.NewAPIKeyRequest(
-        Some("root-like"),
-        None,
-        rootGrantRequests)
+      val request = v1
+        .NewAPIKeyRequest(Some("root-like"), None, rootGrantRequests)
       createAPIKey(rootAPIKey, request) must awaited(to) {
         beLike {
           case HttpResponse(HttpStatus(OK, _), _, Some(jid), _) =>
@@ -647,8 +645,8 @@ class SecurityServiceSpec
       getPermissions(user1.apiKey, Path("/user1")) must awaited(to) {
         beLike {
           case HttpResponse(HttpStatus(OK, _), _, Some(jperms), _) =>
-            val perms =
-              jperms.deserialize[Set[Permission]] map Permission.accessType
+            val perms = jperms.deserialize[Set[Permission]] map Permission
+              .accessType
             val types = Set("read", "write", "delete")
             perms must_== types
         }

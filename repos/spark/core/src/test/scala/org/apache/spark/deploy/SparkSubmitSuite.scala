@@ -145,8 +145,8 @@ class SparkSubmitSuite
       "--weird",
       "args")
     val appArgs = new SparkSubmitArguments(clArgs)
-    appArgs.childArgs should be(
-      Seq("--master", "local", "some", "--weird", "args"))
+    appArgs
+      .childArgs should be(Seq("--master", "local", "some", "--weird", "args"))
   }
 
   test("specify deploy mode through configuration") {
@@ -537,7 +537,8 @@ class SparkSubmitSuite
   ignore("correctly builds R packages included in a jar with --packages") {
     assume(RUtils.isRInstalled, "R isn't installed on this machine.")
     val main = MavenCoordinate("my.great.lib", "mylib", "0.1")
-    val sparkHome = sys.props
+    val sparkHome = sys
+      .props
       .getOrElse("spark.test.home", fail("spark.test.home is not set!"))
     val rScriptDir = Seq(
       sparkHome,
@@ -681,8 +682,8 @@ class SparkSubmitSuite
   }
 
   test("user classpath first in driver") {
-    val systemJar = TestUtils.createJarWithFiles(
-      Map("test.resource" -> "SYSTEM"))
+    val systemJar = TestUtils
+      .createJarWithFiles(Map("test.resource" -> "SYSTEM"))
     val userJar = TestUtils.createJarWithFiles(Map("test.resource" -> "USER"))
     val args = Seq(
       "--class",
@@ -726,7 +727,8 @@ class SparkSubmitSuite
 
   // NOTE: This is an expensive operation in terms of time (10 seconds+). Use sparingly.
   private def runSparkSubmit(args: Seq[String]): Unit = {
-    val sparkHome = sys.props
+    val sparkHome = sys
+      .props
       .getOrElse("spark.test.home", fail("spark.test.home is not set!"))
     val process = Utils.executeCommand(
       Seq("./bin/spark-submit") ++ args,
@@ -805,7 +807,8 @@ object SimpleApplicationTest {
     for (config <- configs) {
       val masterValue = conf.get(config)
       val executorValues =
-        sc.makeRDD(1 to 100, 10)
+        sc
+          .makeRDD(1 to 100, 10)
           .map(x => SparkEnv.get.conf.get(config))
           .collect()
           .distinct

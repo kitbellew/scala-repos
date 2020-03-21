@@ -154,13 +154,15 @@ private[http] object JavaMapping {
           .viaMat(javaObject)(scaladsl.Keep.right)
           .map(outMapping.toScala)
       def toJava(scalaObject: scaladsl.Flow[SIn, SOut, M]): J =
-        javadsl.Flow.fromGraph {
-          scaladsl
-            .Flow[JIn]
-            .map(inMapping.toScala)
-            .viaMat(scalaObject)(scaladsl.Keep.right)
-            .map(outMapping.toJava)
-        }
+        javadsl
+          .Flow
+          .fromGraph {
+            scaladsl
+              .Flow[JIn]
+              .map(inMapping.toScala)
+              .viaMat(scalaObject)(scaladsl.Keep.right)
+              .map(outMapping.toJava)
+          }
     }
 
   implicit def graphFlowMapping[JIn, SIn, JOut, SOut, M](implicit
@@ -178,13 +180,15 @@ private[http] object JavaMapping {
           .viaMat(javaObject)(scaladsl.Keep.right)
           .map(outMapping.toScala)
       def toJava(scalaObject: Graph[FlowShape[SIn, SOut], M]): J =
-        javadsl.Flow.fromGraph {
-          scaladsl
-            .Flow[JIn]
-            .map(inMapping.toScala)
-            .viaMat(scalaObject)(scaladsl.Keep.right)
-            .map(outMapping.toJava)
-        }
+        javadsl
+          .Flow
+          .fromGraph {
+            scaladsl
+              .Flow[JIn]
+              .map(inMapping.toScala)
+              .viaMat(scalaObject)(scaladsl.Keep.right)
+              .map(outMapping.toJava)
+          }
     }
 
   def scalaToJavaAdapterFlow[J, S](implicit
@@ -197,9 +201,11 @@ private[http] object JavaMapping {
       inMapping: JavaMapping[JIn, SIn],
       outMapping: JavaMapping[JOut, SOut])
       : scaladsl.BidiFlow[JIn, SIn, SOut, JOut, NotUsed] =
-    scaladsl.BidiFlow.fromFlowsMat(
-      javaToScalaAdapterFlow(inMapping),
-      scalaToJavaAdapterFlow(outMapping))(scaladsl.Keep.none)
+    scaladsl
+      .BidiFlow
+      .fromFlowsMat(
+        javaToScalaAdapterFlow(inMapping),
+        scalaToJavaAdapterFlow(outMapping))(scaladsl.Keep.none)
 
   implicit def pairMapping[J1, J2, S1, S2](implicit
       _1Mapping: JavaMapping[J1, S1],

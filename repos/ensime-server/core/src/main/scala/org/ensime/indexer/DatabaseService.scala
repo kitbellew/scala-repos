@@ -21,7 +21,8 @@ import slick.driver.H2Driver.api._
 class DatabaseService(dir: File) extends SLF4JLogging {
   lazy val (datasource, db) = {
     // MVCC plus connection pooling speeds up the tests ~10%
-    val backend = sys.env
+    val backend = sys
+      .env
       .get("ENSIME_EXPERIMENTAL_H2")
       .getOrElse("jdbc:h2:file:")
     val url = backend + dir.getAbsolutePath + "/db;MVCC=TRUE"
@@ -100,10 +101,12 @@ class DatabaseService(dir: File) extends SLF4JLogging {
   def find(fqns: List[FqnIndex])(implicit
       ec: ExecutionContext): Future[List[FqnSymbol]] = {
     val restrict = fqns.map(_.fqn)
-    db.run(fqnSymbols.filter(_.fqn inSet restrict).result).map { results =>
-      val grouped = results.groupBy(_.fqn)
-      restrict.flatMap(grouped.get(_).map(_.head))
-    }
+    db
+      .run(fqnSymbols.filter(_.fqn inSet restrict).result)
+      .map { results =>
+        val grouped = results.groupBy(_.fqn)
+        restrict.flatMap(grouped.get(_).map(_.head))
+      }
   }
 }
 

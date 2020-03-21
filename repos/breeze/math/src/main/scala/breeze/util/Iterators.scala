@@ -44,24 +44,26 @@ object Iterators {
       /** Return the smallest element that is currently a list head. */
       override def next: T = {
         val top =
-          heads.zipWithIndex.foldLeft((None.asInstanceOf[Option[T]], -1)) {
-            (headA: (Option[T], Int), headB: (Option[T], Int)) =>
-              (headA, headB) match {
-                case ((Some(a), i), (Some(b), j)) =>
-                  if (compare(a, b) <= 0)
+          heads
+            .zipWithIndex
+            .foldLeft((None.asInstanceOf[Option[T]], -1)) {
+              (headA: (Option[T], Int), headB: (Option[T], Int)) =>
+                (headA, headB) match {
+                  case ((Some(a), i), (Some(b), j)) =>
+                    if (compare(a, b) <= 0)
+                      headA
+                    else
+                      headB
+                  case ((Some(a), i), (None, j)) =>
                     headA
-                  else
+                  case ((None, i), (Some(b), j)) =>
                     headB
-                case ((Some(a), i), (None, j)) =>
-                  headA
-                case ((None, i), (Some(b), j)) =>
-                  headB
-                case ((None, i), (None, j)) =>
-                  headA
-                case x: Any =>
-                  throw new IllegalStateException(x.toString)
-              }
-          }
+                  case ((None, i), (None, j)) =>
+                    headA
+                  case x: Any =>
+                    throw new IllegalStateException(x.toString)
+                }
+            }
 
         // update the top list and return its value
         heads(top._2) = get(iters(top._2))

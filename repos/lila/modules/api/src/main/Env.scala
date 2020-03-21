@@ -50,15 +50,21 @@ final class Env(
   object assetVersion {
     import reactivemongo.bson._
     private val coll = db("flag")
-    private val cache = lila.memo.MixedCache.single[Int](
-      f = coll.find(BSONDocument("_id" -> "asset")).one[BSONDocument].map {
-        _.flatMap(_.getAs[BSONNumberLike]("version"))
-          .fold(Net.AssetVersion)(_.toInt max Net.AssetVersion)
-      },
-      timeToLive = 30.seconds,
-      default = Net.AssetVersion,
-      logger = lila.log("assetVersion")
-    )
+    private val cache = lila
+      .memo
+      .MixedCache
+      .single[Int](
+        f = coll
+          .find(BSONDocument("_id" -> "asset"))
+          .one[BSONDocument]
+          .map {
+            _.flatMap(_.getAs[BSONNumberLike]("version"))
+            .fold(Net.AssetVersion)(_.toInt max Net.AssetVersion)
+          },
+        timeToLive = 30.seconds,
+        default = Net.AssetVersion,
+        logger = lila.log("assetVersion")
+      )
     def get = cache get true
   }
 

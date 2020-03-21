@@ -132,11 +132,8 @@ class SimplifyJumpsTest {
   @Test
   def ensureGotoRemoved(): Unit = {
     def code(jumps: Instruction*) =
-      List(VarOp(ILOAD, 1)) ::: jumps.toList ::: List(
-        Label(2),
-        Op(RETURN),
-        Label(3),
-        Op(RETURN))
+      List(VarOp(ILOAD, 1)) ::: jumps
+        .toList ::: List(Label(2), Op(RETURN), Label(3), Op(RETURN))
 
     // ensures that the goto is safely removed. ASM supports removing while iterating, but not the
     // next element of the current. Here, the current is the IFGE, the next is the GOTO.

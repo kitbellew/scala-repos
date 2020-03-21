@@ -28,12 +28,16 @@ class MigrationTest
 
   test("migrations can be filtered by version") {
     val f = new Fixture
-    val all = f.migration.migrations
+    val all = f
+      .migration
+      .migrations
       .filter(_._1 > StorageVersions(0, 0, 0))
       .sortBy(_._1)
     all should have size f.migration.migrations.size.toLong
 
-    val none = f.migration.migrations
+    val none = f
+      .migration
+      .migrations
       .filter(_._1 > StorageVersions(Int.MaxValue, 0, 0))
     none should have size 0
 

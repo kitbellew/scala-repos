@@ -78,17 +78,17 @@ class SortSuite extends SparkPlanTest with SharedSQLContext {
   }
 
   test("sorting updates peak execution memory") {
-    AccumulatorSuite.verifyPeakExecutionMemorySet(
-      sparkContext,
-      "unsafe external sort") {
-      checkThatPlansAgree(
-        (1 to 100).map(v => Tuple1(v)).toDF("a"),
-        (child: SparkPlan) => Sort('a.asc :: Nil, global = true, child = child),
-        (child: SparkPlan) =>
-          ReferenceSort('a.asc :: Nil, global = true, child),
-        sortAnswers = false
-      )
-    }
+    AccumulatorSuite
+      .verifyPeakExecutionMemorySet(sparkContext, "unsafe external sort") {
+        checkThatPlansAgree(
+          (1 to 100).map(v => Tuple1(v)).toDF("a"),
+          (child: SparkPlan) =>
+            Sort('a.asc :: Nil, global = true, child = child),
+          (child: SparkPlan) =>
+            ReferenceSort('a.asc :: Nil, global = true, child),
+          sortAnswers = false
+        )
+      }
   }
 
   // Test sorting on different data types

@@ -121,13 +121,13 @@ class AppsResource @Inject() (
       @Context
       req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
-      val resolvedEmbed =
-        InfoEmbedResolver.resolveApp(embed.asScala.toSet) ++ Set(
-          // deprecated. For compatibility.
-          AppInfo.Embed.Counts,
-          AppInfo.Embed.Tasks,
-          AppInfo.Embed.LastTaskFailure,
-          AppInfo.Embed.Deployments)
+      val resolvedEmbed = InfoEmbedResolver
+        .resolveApp(embed.asScala.toSet) ++ Set(
+        // deprecated. For compatibility.
+        AppInfo.Embed.Counts,
+        AppInfo.Embed.Tasks,
+        AppInfo.Embed.LastTaskFailure,
+        AppInfo.Embed.Deployments)
 
       def transitiveApps(groupId: PathId): Response = {
         result(groupManager.group(groupId)) match {
@@ -184,7 +184,8 @@ class AppsResource @Inject() (
               now,
               force))
 
-          val response = plan.original
+          val response = plan
+            .original
             .app(appId)
             .map(_ => Response.ok())
             .getOrElse(Response.created(new URI(appId.toString)))
@@ -316,9 +317,7 @@ class AppsResource @Inject() (
     }
 
     def updateOrRollback(current: AppDefinition): AppDefinition =
-      appUpdate.version
-        .map(rollback(current, _))
-        .getOrElse(updateApp(current))
+      appUpdate.version.map(rollback(current, _)).getOrElse(updateApp(current))
 
     existing match {
       case Some(app) =>

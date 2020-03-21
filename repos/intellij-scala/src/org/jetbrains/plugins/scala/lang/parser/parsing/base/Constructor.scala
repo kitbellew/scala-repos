@@ -34,10 +34,8 @@ object Constructor {
       )
 
     if ((
-          !isAnnotation && !AnnotType.parse(
-            builder,
-            isPattern = false,
-            multipleSQBrackets = false)
+          !isAnnotation && !AnnotType
+            .parse(builder, isPattern = false, multipleSQBrackets = false)
         ) ||
         (isAnnotation && !SimpleType.parse(builder, isPattern = false))) {
       constrMarker.drop()

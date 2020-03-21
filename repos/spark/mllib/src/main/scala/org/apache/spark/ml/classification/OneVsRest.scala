@@ -112,29 +112,31 @@ final class OneVsRestModel private[ml] (
 
     // update the accumulator column with the result of prediction of models
     val aggregatedDataset =
-      models.zipWithIndex.foldLeft[DataFrame](newDataset) {
-        case (df, (model, index)) =>
-          val rawPredictionCol = model.getRawPredictionCol
-          val columns = origCols ++ List(col(rawPredictionCol), col(accColName))
+      models
+        .zipWithIndex
+        .foldLeft[DataFrame](newDataset) {
+          case (df, (model, index)) =>
+            val rawPredictionCol = model.getRawPredictionCol
+            val columns =
+              origCols ++ List(col(rawPredictionCol), col(accColName))
 
-          // add temporary column to store intermediate scores and update
-          val tmpColName = "mbc$tmp" + UUID.randomUUID().toString
-          val updateUDF = udf {
-            (predictions: Map[Int, Double], prediction: Vector) =>
-              predictions + ((index, prediction(1)))
-          }
-          val transformedDataset = model.transform(df).select(columns: _*)
-          val updatedDataset = transformedDataset
-            .withColumn(
+            // add temporary column to store intermediate scores and update
+            val tmpColName = "mbc$tmp" + UUID.randomUUID().toString
+            val updateUDF = udf {
+              (predictions: Map[Int, Double], prediction: Vector) =>
+                predictions + ((index, prediction(1)))
+            }
+            val transformedDataset = model.transform(df).select(columns: _*)
+            val updatedDataset = transformedDataset.withColumn(
               tmpColName,
               updateUDF(col(accColName), col(rawPredictionCol)))
-          val newColumns = origCols ++ List(col(tmpColName))
+            val newColumns = origCols ++ List(col(tmpColName))
 
-          // switch out the intermediate column with the accumulator column
-          updatedDataset
-            .select(newColumns: _*)
-            .withColumnRenamed(tmpColName, accColName)
-      }
+            // switch out the intermediate column with the accumulator column
+            updatedDataset
+              .select(newColumns: _*)
+              .withColumnRenamed(tmpColName, accColName)
+        }
 
     if (handlePersistence) {
       newDataset.unpersist()
@@ -229,10 +231,12 @@ final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
     }
 
     // create k columns, one for each binary classifier.
-    val models = Range(0, numClasses).par
+    val models = Range(0, numClasses)
+      .par
       .map { index =>
         // generate new label metadata for the binary problem.
-        val newLabelMeta = BinaryAttribute.defaultAttr
+        val newLabelMeta = BinaryAttribute
+          .defaultAttr
           .withName("label")
           .toMetadata()
         val labelColName = "mc2b$" + index
@@ -258,7 +262,8 @@ final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
     val labelAttribute =
       Attribute.fromStructField(labelSchema) match {
         case _: NumericAttribute | UnresolvedAttribute =>
-          NominalAttribute.defaultAttr
+          NominalAttribute
+            .defaultAttr
             .withName("label")
             .withNumValues(numClasses)
         case attr: Attribute =>

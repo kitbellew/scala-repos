@@ -368,17 +368,19 @@ sealed abstract class List[+A]
         var h: ::[B] = null
         var t: ::[B] = null
         while (rest ne Nil) {
-          f(rest.head).seq.foreach { b =>
-            if (!found) {
-              h = new ::(b, Nil)
-              t = h
-              found = true
-            } else {
-              val nx = new ::(b, Nil)
-              t.tl = nx
-              t = nx
+          f(rest.head)
+            .seq
+            .foreach { b =>
+              if (!found) {
+                h = new ::(b, Nil)
+                t = h
+                found = true
+              } else {
+                val nx = new ::(b, Nil)
+                t.tl = nx
+                t = nx
+              }
             }
-          }
           rest = rest.tail
         }
         (

@@ -268,8 +268,8 @@ class ActorMailboxSpec(conf: Config)
 
     "get an unbounded deque message queue when it is only configured on the props" in {
       checkMailboxQueue(
-        Props[QueueReportingActor].withMailbox(
-          "akka.actor.mailbox.unbounded-deque-based"),
+        Props[QueueReportingActor]
+          .withMailbox("akka.actor.mailbox.unbounded-deque-based"),
         "default-override-from-props",
         UnboundedDeqMailboxTypes)
     }
@@ -395,8 +395,8 @@ class ActorMailboxSpec(conf: Config)
 
     "get an unbounded message queue overriding configuration on the props" in {
       checkMailboxQueue(
-        Props[QueueReportingActor].withMailbox(
-          "akka.actor.mailbox.unbounded-deque-based"),
+        Props[QueueReportingActor]
+          .withMailbox("akka.actor.mailbox.unbounded-deque-based"),
         "bounded-unbounded-override-props",
         UnboundedMailboxTypes)
     }
@@ -508,16 +508,16 @@ class ActorMailboxSpec(conf: Config)
 
     "get a bounded message queue with a balancing bounded dispatcher" in {
       checkMailboxQueue(
-        Props[QueueReportingActor].withDispatcher(
-          "balancing-bounded-dispatcher"),
+        Props[QueueReportingActor]
+          .withDispatcher("balancing-bounded-dispatcher"),
         "bounded-balancing",
         BoundedMailboxTypes)
     }
 
     "get a bounded message queue with a requiring balancing bounded dispatcher" in {
       checkMailboxQueue(
-        Props[QueueReportingActor].withDispatcher(
-          "requiring-balancing-bounded-dispatcher"),
+        Props[QueueReportingActor]
+          .withDispatcher("requiring-balancing-bounded-dispatcher"),
         "requiring-bounded-balancing",
         BoundedMailboxTypes)
     }

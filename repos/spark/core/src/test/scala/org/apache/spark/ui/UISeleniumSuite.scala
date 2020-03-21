@@ -135,11 +135,11 @@ class UISeleniumSuite
 
       val storageJson = getJson(ui, "storage/rdd")
       storageJson.children.length should be(1)
-      (storageJson \ "storageLevel").extract[String] should be(
-        StorageLevels.DISK_ONLY.description)
+      (storageJson \ "storageLevel")
+        .extract[String] should be(StorageLevels.DISK_ONLY.description)
       val rddJson = getJson(ui, "storage/rdd/0")
-      (rddJson \ "storageLevel").extract[String] should be(
-        StorageLevels.DISK_ONLY.description)
+      (rddJson \ "storageLevel")
+        .extract[String] should be(StorageLevels.DISK_ONLY.description)
 
       rdd.unpersist()
       rdd.persist(StorageLevels.MEMORY_ONLY).count()
@@ -160,11 +160,11 @@ class UISeleniumSuite
 
       val updatedStorageJson = getJson(ui, "storage/rdd")
       updatedStorageJson.children.length should be(1)
-      (updatedStorageJson \ "storageLevel").extract[String] should be(
-        StorageLevels.MEMORY_ONLY.description)
+      (updatedStorageJson \ "storageLevel")
+        .extract[String] should be(StorageLevels.MEMORY_ONLY.description)
       val updatedRddJson = getJson(ui, "storage/rdd/0")
-      (updatedRddJson \ "storageLevel").extract[String] should be(
-        StorageLevels.MEMORY_ONLY.description)
+      (updatedRddJson \ "storageLevel")
+        .extract[String] should be(StorageLevels.MEMORY_ONLY.description)
     }
   }
 
@@ -172,7 +172,8 @@ class UISeleniumSuite
     withSpark(newSparkContext()) { sc =>
       // Regression test for SPARK-3021
       intercept[SparkException] {
-        sc.parallelize(1 to 10)
+        sc
+          .parallelize(1 to 10)
           .map { x =>
             throw new Exception()
           }
@@ -185,14 +186,15 @@ class UISeleniumSuite
       }
       val stageJson = getJson(sc.ui.get, "stages")
       stageJson.children.length should be(1)
-      (stageJson \ "status").extract[String] should be(
-        StageStatus.FAILED.name())
+      (stageJson \ "status")
+        .extract[String] should be(StageStatus.FAILED.name())
 
       // Regression test for SPARK-2105
       class NotSerializable
       val unserializableObject = new NotSerializable
       intercept[SparkException] {
-        sc.parallelize(1 to 10)
+        sc
+          .parallelize(1 to 10)
           .map { x =>
             unserializableObject
           }
@@ -214,7 +216,8 @@ class UISeleniumSuite
   test("spark.ui.killEnabled should properly control kill button display") {
     def hasKillLink: Boolean = find(className("kill-link")).isDefined
     def runSlowJob(sc: SparkContext) {
-      sc.parallelize(1 to 10)
+      sc
+        .parallelize(1 to 10)
         .map { x =>
           Thread.sleep(10000);
           x
@@ -278,7 +281,9 @@ class UISeleniumSuite
     withSpark(newSparkContext()) { sc =>
       val data = sc.parallelize(Seq(1, 2, 3), 1).map(identity).groupBy(identity)
       val shuffleHandle =
-        data.dependencies.head
+        data
+          .dependencies
+          .head
           .asInstanceOf[ShuffleDependency[_, _, _]]
           .shuffleHandle
       // Simulate fetch failures:
@@ -533,7 +538,8 @@ class UISeleniumSuite
     }
 
     withSpark(newSparkContext(killEnabled = true)) { sc =>
-      sc.parallelize(1 to 10)
+      sc
+        .parallelize(1 to 10)
         .map { x =>
           Thread.sleep(10000);
           x
@@ -542,7 +548,10 @@ class UISeleniumSuite
       eventually(timeout(5 seconds), interval(50 milliseconds)) {
         val url =
           new URL(
-            sc.ui.get.appUIAddress
+            sc
+              .ui
+              .get
+              .appUIAddress
               .stripSuffix("/") + "/stages/stage/kill/?id=0&terminate=true")
         // SPARK-6846: should be POST only but YARN AM doesn't proxy POST
         getResponseCode(url, "GET") should be(200)
@@ -568,7 +577,8 @@ class UISeleniumSuite
         // NOTE: if we reverse the order, things don't really behave nicely
         // we lose the stage for a job we keep, and then the job doesn't know
         // about its last stage
-        sc.parallelize(idx to (idx + 3))
+        sc
+          .parallelize(idx to (idx + 3))
           .map(identity)
           .groupBy(identity)
           .map(identity)
@@ -586,9 +596,11 @@ class UISeleniumSuite
           "Completed Jobs: 10, only showing 2")
         find("completed").get.text should be(
           "Completed Jobs (10, only showing 2)")
-        val rows = findAll(cssSelector("tbody tr")).toIndexedSeq.map {
-          _.underlying
-        }
+        val rows = findAll(cssSelector("tbody tr"))
+          .toIndexedSeq
+          .map {
+            _.underlying
+          }
         rows.size should be(expJobInfo.size)
         for {
           (row, idx) <- rows.zipWithIndex
@@ -618,8 +630,8 @@ class UISeleniumSuite
       goToUi(sc, "/jobs/job/?id=7")
       find("no-info").get.text should be("No information to display for job 7")
 
-      val badJob = HistoryServerSuite.getContentAndCode(
-        apiUrl(sc.ui.get, "jobs/7"))
+      val badJob = HistoryServerSuite
+        .getContentAndCode(apiUrl(sc.ui.get, "jobs/7"))
       badJob._1 should be(HttpServletResponse.SC_NOT_FOUND)
       badJob._2 should be(None)
       badJob._3 should be(Some("unknown job: 7"))
@@ -635,9 +647,11 @@ class UISeleniumSuite
           "Completed Stages: 20, only showing 3")
         find("completed").get.text should be(
           "Completed Stages (20, only showing 3)")
-        val rows = findAll(cssSelector("tbody tr")).toIndexedSeq.map {
-          _.underlying
-        }
+        val rows = findAll(cssSelector("tbody tr"))
+          .toIndexedSeq
+          .map {
+            _.underlying
+          }
         rows.size should be(3)
         for {
           (row, idx) <- rows.zipWithIndex
@@ -666,21 +680,21 @@ class UISeleniumSuite
       goToUi(sc, "/stages/stage/?id=12&attempt=0")
       find("no-info").get.text should be(
         "No information to display for Stage 12 (Attempt 0)")
-      val badStage = HistoryServerSuite.getContentAndCode(
-        apiUrl(sc.ui.get, "stages/12/0"))
+      val badStage = HistoryServerSuite
+        .getContentAndCode(apiUrl(sc.ui.get, "stages/12/0"))
       badStage._1 should be(HttpServletResponse.SC_NOT_FOUND)
       badStage._2 should be(None)
       badStage._3 should be(Some("unknown stage: 12"))
 
-      val badAttempt = HistoryServerSuite.getContentAndCode(
-        apiUrl(sc.ui.get, "stages/19/15"))
+      val badAttempt = HistoryServerSuite
+        .getContentAndCode(apiUrl(sc.ui.get, "stages/19/15"))
       badAttempt._1 should be(HttpServletResponse.SC_NOT_FOUND)
       badAttempt._2 should be(None)
       badAttempt._3 should be(
         Some("unknown attempt for stage 19.  Found attempts: [0]"))
 
-      val badStageAttemptList = HistoryServerSuite.getContentAndCode(
-        apiUrl(sc.ui.get, "stages/12"))
+      val badStageAttemptList = HistoryServerSuite
+        .getContentAndCode(apiUrl(sc.ui.get, "stages/12"))
       badStageAttemptList._1 should be(HttpServletResponse.SC_NOT_FOUND)
       badStageAttemptList._2 should be(None)
       badStageAttemptList._3 should be(Some("unknown stage: 12"))
@@ -689,8 +703,8 @@ class UISeleniumSuite
 
   test("live UI json application list") {
     withSpark(newSparkContext()) { sc =>
-      val appListRawJson = HistoryServerSuite.getUrl(
-        new URL(sc.ui.get.appUIAddress + "/api/v1/applications"))
+      val appListRawJson = HistoryServerSuite
+        .getUrl(new URL(sc.ui.get.appUIAddress + "/api/v1/applications"))
       val appListJsonAst = JsonMethods.parse(appListRawJson)
       appListJsonAst.children.length should be(1)
       val attempts = (appListJsonAst \ "attempts").children
@@ -795,6 +809,9 @@ class UISeleniumSuite
 
   def apiUrl(ui: SparkUI, path: String): URL = {
     new URL(
-      ui.appUIAddress + "/api/v1/applications/" + ui.sc.get.applicationId + "/" + path)
+      ui.appUIAddress + "/api/v1/applications/" + ui
+        .sc
+        .get
+        .applicationId + "/" + path)
   }
 }

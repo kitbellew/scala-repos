@@ -127,8 +127,8 @@ class ColumnTypeSuite extends SparkFunSuite with Logging {
       .allocate(DEFAULT_BUFFER_SIZE)
       .order(ByteOrder.nativeOrder())
     val proj = UnsafeProjection.create(Array[DataType](columnType.dataType))
-    val converter = CatalystTypeConverters.createToScalaConverter(
-      columnType.dataType)
+    val converter = CatalystTypeConverters
+      .createToScalaConverter(columnType.dataType)
     val seq = (0 until 4).map(_ => proj(makeRandomRow(columnType)).copy())
 
     test(s"$columnType append/extract") {

@@ -40,18 +40,21 @@ object Report extends LilaController {
   def create =
     AuthBody { implicit ctx => implicit me =>
       implicit val req = ctx.body
-      forms.create.bindFromRequest.fold(
-        err =>
-          get("username") ?? UserRepo.named flatMap { user =>
-            forms.anyCaptcha map { captcha =>
-              BadRequest(html.report.form(err, user, captcha))
+      forms
+        .create
+        .bindFromRequest
+        .fold(
+          err =>
+            get("username") ?? UserRepo.named flatMap { user =>
+              forms.anyCaptcha map { captcha =>
+                BadRequest(html.report.form(err, user, captcha))
+              }
+            },
+          data =>
+            api.create(data, me) map { report =>
+              Redirect(routes.Report.thanks(data.user.username))
             }
-          },
-        data =>
-          api.create(data, me) map { report =>
-            Redirect(routes.Report.thanks(data.user.username))
-          }
-      )
+        )
     }
 
   def thanks(reported: String) =

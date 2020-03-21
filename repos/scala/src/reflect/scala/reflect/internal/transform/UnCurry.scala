@@ -38,9 +38,8 @@ trait UnCurry {
                 def apply(tp: Type): Type = packSymbols(params, tp)
               }
             val existentiallyAbstractedParam1s = packSymbolsMap.mapOver(params1)
-            val substitutedResult = restpe.substSym(
-              params1,
-              existentiallyAbstractedParam1s)
+            val substitutedResult = restpe
+              .substSym(params1, existentiallyAbstractedParam1s)
             apply(
               MethodType(
                 params ::: existentiallyAbstractedParam1s,

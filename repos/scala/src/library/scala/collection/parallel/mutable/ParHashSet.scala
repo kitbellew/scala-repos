@@ -148,8 +148,8 @@ private[mutable] abstract class ParHashSetCombiner[T](
   private def parPopulate: FlatHashTable.Contents[T] = {
     // construct it in parallel
     val table = new AddingFlatHashTable(size, tableLoadFactor, seedvalue)
-    val (inserted, leftovers) = combinerTaskSupport.executeAndWaitResult(
-      new FillBlocks(buckets, table, 0, buckets.length))
+    val (inserted, leftovers) = combinerTaskSupport
+      .executeAndWaitResult(new FillBlocks(buckets, table, 0, buckets.length))
     var leftinserts = 0
     for (entry <- leftovers)
       leftinserts += table.insertEntry(0, table.tableLength, entry)
@@ -265,8 +265,8 @@ private[mutable] abstract class ParHashSetCombiner[T](
       }
       result = (totalinserts, leftover)
     }
-    private val blocksize =
-      table.tableLength >> ParHashSetCombiner.discriminantbits
+    private val blocksize = table.tableLength >> ParHashSetCombiner
+      .discriminantbits
     private def blockStart(block: Int) = block * blocksize
     private def nextBlockStart(block: Int) = (block + 1) * blocksize
     private def fillBlock(
@@ -351,9 +351,12 @@ private[mutable] abstract class ParHashSetCombiner[T](
         remainingLeftovers concat that.result._2)
     }
     def shouldSplitFurther =
-      howmany > scala.collection.parallel.thresholdFromSize(
-        ParHashMapCombiner.numblocks,
-        combinerTaskSupport.parallelismLevel)
+      howmany > scala
+        .collection
+        .parallel
+        .thresholdFromSize(
+          ParHashMapCombiner.numblocks,
+          combinerTaskSupport.parallelismLevel)
   }
 
 }
@@ -366,5 +369,6 @@ private[parallel] object ParHashSetCombiner {
 
   def apply[T] =
     new ParHashSetCombiner[T](
-      FlatHashTable.defaultLoadFactor) {} //with EnvironmentPassingCombiner[T, ParHashSet[T]]
+      FlatHashTable
+        .defaultLoadFactor) {} //with EnvironmentPassingCombiner[T, ParHashSet[T]]
 }

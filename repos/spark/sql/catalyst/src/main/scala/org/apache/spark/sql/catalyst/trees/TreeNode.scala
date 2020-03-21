@@ -177,20 +177,22 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
   def mapChildren(f: BaseType => BaseType): BaseType = {
     var changed = false
     val newArgs =
-      productIterator.map {
-        case arg: TreeNode[_] if containsChild(arg) =>
-          val newChild = f(arg.asInstanceOf[BaseType])
-          if (newChild fastEquals arg) {
-            arg
-          } else {
-            changed = true
-            newChild
-          }
-        case nonChild: AnyRef =>
-          nonChild
-        case null =>
-          null
-      }.toArray
+      productIterator
+        .map {
+          case arg: TreeNode[_] if containsChild(arg) =>
+            val newChild = f(arg.asInstanceOf[BaseType])
+            if (newChild fastEquals arg) {
+              arg
+            } else {
+              changed = true
+              newChild
+            }
+          case nonChild: AnyRef =>
+            nonChild
+          case null =>
+            null
+        }
+        .toArray
     if (changed)
       makeCopy(newArgs)
     else
@@ -207,28 +209,13 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     val remainingNewChildren = newChildren.toBuffer
     val remainingOldChildren = children.toBuffer
     val newArgs =
-      productIterator.map {
-        case s: StructType =>
-          s // Don't convert struct types to some other type of Seq[StructField]
-        // Handle Seq[TreeNode] in TreeNode parameters.
-        case s: Seq[_] =>
-          s.map {
-            case arg: TreeNode[_] if containsChild(arg) =>
-              val newChild = remainingNewChildren.remove(0)
-              val oldChild = remainingOldChildren.remove(0)
-              if (newChild fastEquals oldChild) {
-                oldChild
-              } else {
-                changed = true
-                newChild
-              }
-            case nonChild: AnyRef =>
-              nonChild
-            case null =>
-              null
-          }
-        case m: Map[_, _] =>
-          m.mapValues {
+      productIterator
+        .map {
+          case s: StructType =>
+            s // Don't convert struct types to some other type of Seq[StructField]
+          // Handle Seq[TreeNode] in TreeNode parameters.
+          case s: Seq[_] =>
+            s.map {
               case arg: TreeNode[_] if containsChild(arg) =>
                 val newChild = remainingNewChildren.remove(0)
                 val oldChild = remainingOldChildren.remove(0)
@@ -243,22 +230,40 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
               case null =>
                 null
             }
-            .view
-            .force // `mapValues` is lazy and we need to force it to materialize
-        case arg: TreeNode[_] if containsChild(arg) =>
-          val newChild = remainingNewChildren.remove(0)
-          val oldChild = remainingOldChildren.remove(0)
-          if (newChild fastEquals oldChild) {
-            oldChild
-          } else {
-            changed = true
-            newChild
-          }
-        case nonChild: AnyRef =>
-          nonChild
-        case null =>
-          null
-      }.toArray
+          case m: Map[_, _] =>
+            m
+              .mapValues {
+                case arg: TreeNode[_] if containsChild(arg) =>
+                  val newChild = remainingNewChildren.remove(0)
+                  val oldChild = remainingOldChildren.remove(0)
+                  if (newChild fastEquals oldChild) {
+                    oldChild
+                  } else {
+                    changed = true
+                    newChild
+                  }
+                case nonChild: AnyRef =>
+                  nonChild
+                case null =>
+                  null
+              }
+              .view
+              .force // `mapValues` is lazy and we need to force it to materialize
+          case arg: TreeNode[_] if containsChild(arg) =>
+            val newChild = remainingNewChildren.remove(0)
+            val oldChild = remainingOldChildren.remove(0)
+            if (newChild fastEquals oldChild) {
+              oldChild
+            } else {
+              changed = true
+              newChild
+            }
+          case nonChild: AnyRef =>
+            nonChild
+          case null =>
+            null
+        }
+        .toArray
 
     if (changed)
       makeCopy(newArgs)
@@ -332,25 +337,44 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
           PartialFunction[BaseType, BaseType]) => BaseType): BaseType = {
     var changed = false
     val newArgs =
-      productIterator.map {
-        case arg: TreeNode[_] if containsChild(arg) =>
-          val newChild = nextOperation(arg.asInstanceOf[BaseType], rule)
-          if (!(newChild fastEquals arg)) {
-            changed = true
-            newChild
-          } else {
-            arg
-          }
-        case Some(arg: TreeNode[_]) if containsChild(arg) =>
-          val newChild = nextOperation(arg.asInstanceOf[BaseType], rule)
-          if (!(newChild fastEquals arg)) {
-            changed = true
-            Some(newChild)
-          } else {
-            Some(arg)
-          }
-        case m: Map[_, _] =>
-          m.mapValues {
+      productIterator
+        .map {
+          case arg: TreeNode[_] if containsChild(arg) =>
+            val newChild = nextOperation(arg.asInstanceOf[BaseType], rule)
+            if (!(newChild fastEquals arg)) {
+              changed = true
+              newChild
+            } else {
+              arg
+            }
+          case Some(arg: TreeNode[_]) if containsChild(arg) =>
+            val newChild = nextOperation(arg.asInstanceOf[BaseType], rule)
+            if (!(newChild fastEquals arg)) {
+              changed = true
+              Some(newChild)
+            } else {
+              Some(arg)
+            }
+          case m: Map[_, _] =>
+            m
+              .mapValues {
+                case arg: TreeNode[_] if containsChild(arg) =>
+                  val newChild = nextOperation(arg.asInstanceOf[BaseType], rule)
+                  if (!(newChild fastEquals arg)) {
+                    changed = true
+                    newChild
+                  } else {
+                    arg
+                  }
+                case other =>
+                  other
+              }
+              .view
+              .force // `mapValues` is lazy and we need to force it to materialize
+          case d: DataType =>
+            d // Avoid unpacking Structs
+          case args: Traversable[_] =>
+            args.map {
               case arg: TreeNode[_] if containsChild(arg) =>
                 val newChild = nextOperation(arg.asInstanceOf[BaseType], rule)
                 if (!(newChild fastEquals arg)) {
@@ -359,42 +383,26 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
                 } else {
                   arg
                 }
+              case tuple @ (arg1: TreeNode[_], arg2: TreeNode[_]) =>
+                val newChild1 = nextOperation(arg1.asInstanceOf[BaseType], rule)
+                val newChild2 = nextOperation(arg2.asInstanceOf[BaseType], rule)
+                if (!(
+                      newChild1 fastEquals arg1
+                    ) || !(newChild2 fastEquals arg2)) {
+                  changed = true
+                  (newChild1, newChild2)
+                } else {
+                  tuple
+                }
               case other =>
                 other
             }
-            .view
-            .force // `mapValues` is lazy and we need to force it to materialize
-        case d: DataType =>
-          d // Avoid unpacking Structs
-        case args: Traversable[_] =>
-          args.map {
-            case arg: TreeNode[_] if containsChild(arg) =>
-              val newChild = nextOperation(arg.asInstanceOf[BaseType], rule)
-              if (!(newChild fastEquals arg)) {
-                changed = true
-                newChild
-              } else {
-                arg
-              }
-            case tuple @ (arg1: TreeNode[_], arg2: TreeNode[_]) =>
-              val newChild1 = nextOperation(arg1.asInstanceOf[BaseType], rule)
-              val newChild2 = nextOperation(arg2.asInstanceOf[BaseType], rule)
-              if (!(
-                    newChild1 fastEquals arg1
-                  ) || !(newChild2 fastEquals arg2)) {
-                changed = true
-                (newChild1, newChild2)
-              } else {
-                tuple
-              }
-            case other =>
-              other
-          }
-        case nonChild: AnyRef =>
-          nonChild
-        case null =>
-          null
-      }.toArray
+          case nonChild: AnyRef =>
+            nonChild
+          case null =>
+            null
+        }
+        .toArray
     if (changed)
       makeCopy(newArgs)
     else
@@ -576,14 +584,16 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
       lastChildren: Seq[Boolean],
       builder: StringBuilder): StringBuilder = {
     if (depth > 0) {
-      lastChildren.init.foreach { isLast =>
-        val prefixFragment =
-          if (isLast)
-            "   "
-          else
-            ":  "
-        builder.append(prefixFragment)
-      }
+      lastChildren
+        .init
+        .foreach { isLast =>
+          val prefixFragment =
+            if (isLast)
+              "   "
+            else
+              ":  "
+          builder.append(prefixFragment)
+        }
 
       val branch =
         if (lastChildren.last)
@@ -597,24 +607,26 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     builder.append("\n")
 
     if (innerChildren.nonEmpty) {
-      innerChildren.init.foreach(
-        _.generateTreeString(
-          depth + 2,
-          lastChildren :+ false :+ false,
-          builder))
-      innerChildren.last.generateTreeString(
-        depth + 2,
-        lastChildren :+ false :+ true,
-        builder)
+      innerChildren
+        .init
+        .foreach(
+          _.generateTreeString(
+            depth + 2,
+            lastChildren :+ false :+ false,
+            builder))
+      innerChildren
+        .last
+        .generateTreeString(depth + 2, lastChildren :+ false :+ true, builder)
     }
 
     if (treeChildren.nonEmpty) {
-      treeChildren.init.foreach(
-        _.generateTreeString(depth + 1, lastChildren :+ false, builder))
-      treeChildren.last.generateTreeString(
-        depth + 1,
-        lastChildren :+ true,
-        builder)
+      treeChildren
+        .init
+        .foreach(
+          _.generateTreeString(depth + 1, lastChildren :+ false, builder))
+      treeChildren
+        .last
+        .generateTreeString(depth + 1, lastChildren :+ true, builder)
     }
 
     builder
@@ -726,10 +738,12 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
       case t: Seq[_] =>
         JArray(t.map(parseToJson).toList)
       case m: Map[_, _] =>
-        val fields = m.toList.map {
-          case (k: String, v) =>
-            (k, parseToJson(v))
-        }
+        val fields = m
+          .toList
+          .map {
+            case (k: String, v) =>
+              (k, parseToJson(v))
+          }
         JObject(fields)
       case r: RDD[_] =>
         JNothing
@@ -787,25 +801,29 @@ object TreeNode {
         val numChildren =
           (nextNode \ "num-children").asInstanceOf[JInt].num.toInt
 
-        val children: Seq[TreeNode[_]] = (1 to numChildren).map(_ =>
-          parseNextNode())
+        val children: Seq[TreeNode[_]] = (1 to numChildren)
+          .map(_ => parseNextNode())
         val fields = getConstructorParameters(cls)
 
         val parameters: Array[AnyRef] =
-          fields.map {
-            case (fieldName, fieldType) =>
-              parseFromJson(nextNode \ fieldName, fieldType, children, sc)
-          }.toArray
-
-        val maybeCtor = cls.getConstructors.find { p =>
-          val expectedTypes = p.getParameterTypes
-          expectedTypes.length == fields.length && expectedTypes
-            .zip(fields.map(_._2))
-            .forall {
-              case (cls, tpe) =>
-                cls == getClassFromType(tpe)
+          fields
+            .map {
+              case (fieldName, fieldType) =>
+                parseFromJson(nextNode \ fieldName, fieldType, children, sc)
             }
-        }
+            .toArray
+
+        val maybeCtor = cls
+          .getConstructors
+          .find { p =>
+            val expectedTypes = p.getParameterTypes
+            expectedTypes.length == fields.length && expectedTypes
+              .zip(fields.map(_._2))
+              .forall {
+                case (cls, tpe) =>
+                  cls == getClassFromType(tpe)
+              }
+          }
         if (maybeCtor.isEmpty) {
           sys.error(s"No valid constructor for ${cls.getName}")
         } else {
@@ -902,10 +920,12 @@ object TreeNode {
         case t if t <:< localTypeOf[Map[_, _]] =>
           val TypeRef(_, _, Seq(keyType, valueType)) = t
           val JObject(fields) = value
-          fields.map {
-            case (name, value) =>
-              name -> parseFromJson(value, valueType, children, sc)
-          }.toMap
+          fields
+            .map {
+              case (name, value) =>
+                name -> parseFromJson(value, valueType, children, sc)
+            }
+            .toMap
         case t if t <:< localTypeOf[RDD[_]] =>
           new EmptyRDD[Any](sc)
         case _ if isScalaObject(value) =>
@@ -934,10 +954,12 @@ object TreeNode {
       children: Seq[TreeNode[_]],
       sc: SparkContext): AnyRef = {
     val parameters: Array[AnyRef] =
-      fields.map {
-        case (fieldName, fieldType) =>
-          parseFromJson(value \ fieldName, fieldType, children, sc)
-      }.toArray
+      fields
+        .map {
+          case (fieldName, fieldType) =>
+            parseFromJson(value \ fieldName, fieldType, children, sc)
+        }
+        .toArray
     val ctor = Utils
       .classForName(clsName)
       .getConstructors

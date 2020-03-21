@@ -69,9 +69,9 @@ final case class LazyEitherT[F[_], A, B](run: F[LazyEither[A, B]]) {
   def bitraverse[G[_], C, D](f: A => G[C], g: B => G[D])(implicit
       F: Traverse[F],
       G: Applicative[G]): G[LazyEitherT[F, C, D]] = {
-    Applicative[G].map(
-      F.traverse(run)(Bitraverse[LazyEither].bitraverseF(f, g)))(
-      LazyEitherT(_: F[LazyEither[C, D]]))
+    Applicative[G]
+      .map(F.traverse(run)(Bitraverse[LazyEither].bitraverseF(f, g)))(
+        LazyEitherT(_: F[LazyEither[C, D]]))
   }
 
   def traverse[G[_], C](f: B => G[C])(implicit
@@ -446,9 +446,9 @@ private trait LazyEitherTBitraverse[F[_]]
   def bitraverseImpl[G[_]: Applicative, A, B, C, D](fab: LazyEitherT[F, A, B])(
       f: A => G[C],
       g: B => G[D]): G[LazyEitherT[F, C, D]] =
-    Applicative[G].map(
-      F.traverse(fab.run)(Bitraverse[LazyEither].bitraverseF(f, g)))(
-      LazyEitherT.lazyEitherT(_))
+    Applicative[G]
+      .map(F.traverse(fab.run)(Bitraverse[LazyEither].bitraverseF(f, g)))(
+        LazyEitherT.lazyEitherT(_))
 }
 
 private trait LazyEitherTBindRec[F[_], E]

@@ -35,10 +35,8 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
     super.setUp()
 
     myFixture.allowTreeAccessForAllFiles()
-    libLoader = ScalaLibraryLoader.withMockJdk(
-      myFixture.getProject,
-      myFixture.getModule,
-      rootPath = null)
+    libLoader = ScalaLibraryLoader
+      .withMockJdk(myFixture.getProject, myFixture.getModule, rootPath = null)
     libLoader.loadScala(libVersion)
   }
 
@@ -86,11 +84,8 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
       .getInstance(getProject)
       .buildInitialFoldings(myFixture.getEditor)
 
-    myFixture.testHighlighting(
-      false,
-      false,
-      false,
-      myFixture.getFile.getVirtualFile)
+    myFixture
+      .testHighlighting(false, false, false, myFixture.getFile.getVirtualFile)
   }
 
   protected def checkTextHasNoErrors(
@@ -122,9 +117,8 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
     val cleanedText = text.replace("\r", "")
     val cleanedAssumed = assumedText.replace("\r", "")
     val caretIndex = cleanedText.indexOf(CARET_MARKER)
-    myFixture.configureByText(
-      "dummy.scala",
-      cleanedText.replace(CARET_MARKER, ""))
+    myFixture
+      .configureByText("dummy.scala", cleanedText.replace(CARET_MARKER, ""))
     myFixture.getEditor.getCaretModel.moveToOffset(caretIndex)
 
     testBody()
@@ -152,15 +146,17 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
       text: String,
       assumedText: String) {
     performTest(text, assumedText) { () =>
-      CommandProcessor.getInstance.executeCommand(
-        myFixture.getProject,
-        new Runnable {
-          def run() {
-            myFixture.performEditorAction(IdeActions.ACTION_EDITOR_BACKSPACE)
-          }
-        },
-        "",
-        null)
+      CommandProcessor
+        .getInstance
+        .executeCommand(
+          myFixture.getProject,
+          new Runnable {
+            def run() {
+              myFixture.performEditorAction(IdeActions.ACTION_EDITOR_BACKSPACE)
+            }
+          },
+          "",
+          null)
     }
   }
 
@@ -208,13 +204,14 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
       withRightDescription.nonEmpty,
       "No highlightings with such description: " + annotation)
 
-    val ranges = withRightDescription.map(info =>
-      (info.getStartOffset, info.getEndOffset))
-    val message = "Highlights with this description are at " + ranges.mkString(
-      " ") + ", but has to be at " + (selectionStart, selectionEnd)
+    val ranges = withRightDescription
+      .map(info => (info.getStartOffset, info.getEndOffset))
+    val message = "Highlights with this description are at " + ranges
+      .mkString(" ") + ", but has to be at " + (selectionStart, selectionEnd)
     assert(
       withRightDescription.exists(info =>
-        info.getStartOffset == selectionStart && info.getEndOffset == selectionEnd),
+        info.getStartOffset == selectionStart && info
+          .getEndOffset == selectionEnd),
       message)
 
   }

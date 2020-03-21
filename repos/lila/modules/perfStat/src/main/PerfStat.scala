@@ -107,12 +107,18 @@ case class Streak(v: Int, from: Option[RatingAt], to: Option[RatingAt]) {
   private def inc(pov: Pov, by: Int) =
     copy(
       v = v + by,
-      from = from orElse pov.player.rating.map {
-        RatingAt(_, pov.game.createdAt, pov.gameId)
-      },
-      to = pov.player.ratingAfter.map {
-        RatingAt(_, pov.game.updatedAtOrCreatedAt, pov.gameId)
-      }
+      from = from orElse pov
+        .player
+        .rating
+        .map {
+          RatingAt(_, pov.game.createdAt, pov.gameId)
+        },
+      to = pov
+        .player
+        .ratingAfter
+        .map {
+          RatingAt(_, pov.game.updatedAtOrCreatedAt, pov.gameId)
+        }
     )
 }
 object Streak {
@@ -176,7 +182,9 @@ case class Avg(avg: Double, pop: Int) {
 case class RatingAt(int: Int, at: DateTime, gameId: String)
 object RatingAt {
   def agg(cur: Option[RatingAt], pov: Pov, comp: Int) =
-    pov.player.stableRatingAfter
+    pov
+      .player
+      .stableRatingAfter
       .filter { r =>
         cur.fold(true) { c =>
           r.compare(c.int) == comp
@@ -191,15 +199,19 @@ case class Result(opInt: Int, opId: UserId, at: DateTime, gameId: String)
 
 case class Results(results: List[Result]) {
   def agg(pov: Pov, comp: Int) =
-    pov.opponent.rating.ifTrue(pov.game.rated).fold(this) { opInt =>
-      copy(results = (
-        Result(
-          opInt,
-          UserId(~pov.opponent.userId),
-          pov.game.updatedAtOrCreatedAt,
-          pov.game.id) :: results
-      ).sortBy(_.opInt * comp) take Results.nb)
-    }
+    pov
+      .opponent
+      .rating
+      .ifTrue(pov.game.rated)
+      .fold(this) { opInt =>
+        copy(results = (
+          Result(
+            opInt,
+            UserId(~pov.opponent.userId),
+            pov.game.updatedAtOrCreatedAt,
+            pov.game.id) :: results
+        ).sortBy(_.opInt * comp) take Results.nb)
+      }
 }
 object Results {
   val nb = 5

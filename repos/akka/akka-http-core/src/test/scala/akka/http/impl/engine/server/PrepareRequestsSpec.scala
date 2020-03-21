@@ -42,8 +42,8 @@ class PrepareRequestsSpec extends AkkaSpec {
     closeRequested = false
   )
 
-  val chunkPart = ParserOutput.EntityChunk(
-    HttpEntity.ChunkStreamPart(ByteString("abc")))
+  val chunkPart = ParserOutput
+    .EntityChunk(HttpEntity.ChunkStreamPart(ByteString("abc")))
 
   val chunkRequestComplete = ParserOutput.MessageEnd
 
@@ -89,7 +89,9 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       // and subscribe to it's streamed entity
       val entityProbe = TestSubscriber.manualProbe[ByteString]()
-      request.entity.dataBytes
+      request
+        .entity
+        .dataBytes
         .to(Sink.fromSubscriber(entityProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
         .run()
@@ -151,7 +153,9 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       // and subscribe to it's streamed entity
       val entityProbe = TestSubscriber.manualProbe[ByteString]()
-      request.entity.dataBytes
+      request
+        .entity
+        .dataBytes
         .to(Sink.fromSubscriber(entityProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
         .run()
@@ -204,7 +208,9 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       // and subscribe to it's streamed entity
       val entityProbe = TestSubscriber.manualProbe[ByteString]()
-      request.entity.dataBytes
+      request
+        .entity
+        .dataBytes
         .to(Sink.fromSubscriber(entityProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
         .run()
@@ -247,7 +253,9 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       // and subscribe to it's streamed entity
       val entityProbe = TestSubscriber.manualProbe[ByteString]()
-      request.entity.dataBytes
+      request
+        .entity
+        .dataBytes
         .to(Sink.fromSubscriber(entityProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
         .run()

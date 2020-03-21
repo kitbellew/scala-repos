@@ -75,8 +75,8 @@ class RPackageUtilsSuite
   test("pick which jars to unpack using the manifest") {
     val deps = Seq(dep1, dep2).mkString(",")
     IvyTestUtils.withRepository(main, Some(deps), None, withR = true) { repo =>
-      val jars = Seq(main, dep1, dep2).map(c =>
-        new JarFile(getJarPath(c, new File(new URI(repo)))))
+      val jars = Seq(main, dep1, dep2)
+        .map(c => new JarFile(getJarPath(c, new File(new URI(repo)))))
       assert(RPackageUtils.checkManifestForR(jars(0)), "should have R code")
       assert(
         !RPackageUtils.checkManifestForR(jars(1)),
@@ -96,10 +96,8 @@ class RPackageUtilsSuite
           getJarPath(c, new File(new URI(repo)))
         }
         .mkString(",")
-      RPackageUtils.checkAndBuildRPackage(
-        jars,
-        new BufferPrintStream,
-        verbose = true)
+      RPackageUtils
+        .checkAndBuildRPackage(jars, new BufferPrintStream, verbose = true)
       val firstJar = jars.substring(0, jars.indexOf(","))
       val output = lineBuffer.mkString("\n")
       assert(output.contains("Building R package"))
@@ -120,10 +118,8 @@ class RPackageUtilsSuite
           getJarPath(c, new File(new URI(repo))) + "dummy"
         }
         .mkString(",")
-      RPackageUtils.checkAndBuildRPackage(
-        jars,
-        new BufferPrintStream,
-        verbose = true)
+      RPackageUtils
+        .checkAndBuildRPackage(jars, new BufferPrintStream, verbose = true)
       val individualJars = jars.split(",")
       val output = lineBuffer.mkString("\n")
       individualJars.foreach { jarFile =>

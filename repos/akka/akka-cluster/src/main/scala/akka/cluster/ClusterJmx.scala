@@ -146,8 +146,11 @@ private[akka] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
         // JMX attributes (bean-style)
 
         def getClusterStatus: String = {
-          val members = clusterView.members.toSeq.sorted(Member.ordering).map {
-            m ⇒
+          val members = clusterView
+            .members
+            .toSeq
+            .sorted(Member.ordering)
+            .map { m ⇒
               s"""{
               |      "address": "${m.address}",
               |      "status": "${m.status}",
@@ -155,22 +158,25 @@ private[akka] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
               |        ${m.roles.map("\"" + _ + "\"").mkString(",\n        ")}
               |      ]
               |    }""".stripMargin
-          } mkString (",\n    ")
+            } mkString (",\n    ")
 
-          val unreachable =
-            clusterView.reachability.observersGroupedByUnreachable.toSeq
-              .sortBy(_._1)
-              .map {
-                case (subject, observers) ⇒
-                  s"""{
+          val unreachable = clusterView
+            .reachability
+            .observersGroupedByUnreachable
+            .toSeq
+            .sortBy(_._1)
+            .map {
+              case (subject, observers) ⇒
+                s"""{
               |      "node": "${subject.address}",
               |      "observed-by": [
-              |        ${observers.toSeq.sorted
-                       .map(_.address)
-                       .mkString("\"", "\",\n        \"", "\"")}
+              |        ${observers.toSeq.sorted.map(_.address).mkString(
+                     "\"",
+                     "\",\n        \"",
+                     "\"")}
               |      ]
               |    }""".stripMargin
-              } mkString (",\n")
+            } mkString (",\n")
 
           s"""{
         |  "self-address": "${clusterView.selfAddress}",

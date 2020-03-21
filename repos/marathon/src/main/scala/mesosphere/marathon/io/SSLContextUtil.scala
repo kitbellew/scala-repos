@@ -34,8 +34,8 @@ object SSLContextUtil {
     }
 
     // initialize a new TMF with the ts we just loaded
-    val tmf = TrustManagerFactory.getInstance(
-      TrustManagerFactory.getDefaultAlgorithm)
+    val tmf = TrustManagerFactory
+      .getInstance(TrustManagerFactory.getDefaultAlgorithm)
     tmf.init(ts)
 
     // acquire X509 trust manager from factory

@@ -37,8 +37,9 @@ trait Notifier
         getCollaborators(issue.userName, issue.repositoryName) :::
         // participants
         issue.openedUserName ::
-        getComments(issue.userName, issue.repositoryName, issue.issueId).map(
-          _.commentedUserName)).distinct
+        getComments(issue.userName, issue.repositoryName, issue.issueId)
+          .map(_.commentedUserName))
+      .distinct
       .withFilter(
         _ != context.loginAccount.get.userName
       ) // the operation in person is excluded
@@ -108,20 +109,29 @@ class Mailer(private val smtp: Smtp) extends Notifier {
               val email = new HtmlEmail
               email.setHostName(smtp.host)
               email.setSmtpPort(smtp.port.get)
-              smtp.user.foreach { user =>
-                email.setAuthenticator(
-                  new DefaultAuthenticator(user, smtp.password.getOrElse("")))
-              }
-              smtp.ssl.foreach { ssl =>
-                email.setSSLOnConnect(ssl)
-              }
-              smtp.fromAddress
+              smtp
+                .user
+                .foreach { user =>
+                  email.setAuthenticator(
+                    new DefaultAuthenticator(user, smtp.password.getOrElse("")))
+                }
+              smtp
+                .ssl
+                .foreach { ssl =>
+                  email.setSSLOnConnect(ssl)
+                }
+              smtp
+                .fromAddress
                 .map(
-                  _ -> smtp.fromName.getOrElse(
-                    context.loginAccount.get.userName))
+                  _ -> smtp
+                    .fromName
+                    .getOrElse(context.loginAccount.get.userName))
                 .orElse(
                   Some(
-                    "notifications@gitbucket.com" -> context.loginAccount.get.userName))
+                    "notifications@gitbucket.com" -> context
+                      .loginAccount
+                      .get
+                      .userName))
                 .foreach {
                   case (address, name) =>
                     email.setFrom(address, name)

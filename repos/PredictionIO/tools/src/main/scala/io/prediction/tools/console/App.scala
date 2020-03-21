@@ -36,14 +36,17 @@ object App extends Logging {
       error(s"App ${ca.app.name} already exists. Aborting.")
       1
     } getOrElse {
-      ca.app.id.map { id =>
-        apps.get(id) map { app =>
-          error(
-            s"App ID ${id} already exists and maps to the app '${app.name}'. " +
-              "Aborting.")
-          return 1
+      ca
+        .app
+        .id
+        .map { id =>
+          apps.get(id) map { app =>
+            error(
+              s"App ID ${id} already exists and maps to the app '${app.name}'. " +
+                "Aborting.")
+            return 1
+          }
         }
-      }
       val appid = apps.insert(
         storage.App(
           id = ca.app.id.getOrElse(0),
@@ -269,17 +272,20 @@ object App extends Logging {
     val apps = storage.Storage.getMetaDataApps
     val channels = storage.Storage.getMetaDataChannels
     apps.getByName(ca.app.name) map { app =>
-      val channelId = ca.app.dataDeleteChannel.map { ch =>
-        val channelMap =
-          channels.getByAppid(app.id).map(c => (c.name, c.id)).toMap
-        if (!channelMap.contains(ch)) {
-          error(s"Unable to delete data for channel.")
-          error(s"Channel ${ch} doesn't exist.")
-          return 1
-        }
+      val channelId = ca
+        .app
+        .dataDeleteChannel
+        .map { ch =>
+          val channelMap =
+            channels.getByAppid(app.id).map(c => (c.name, c.id)).toMap
+          if (!channelMap.contains(ch)) {
+            error(s"Unable to delete data for channel.")
+            error(s"Channel ${ch} doesn't exist.")
+            return 1
+          }
 
-        channelMap(ch)
-      }
+          channelMap(ch)
+        }
 
       if (channelId.isDefined) {
         info(s"Data of the following channel will be deleted. Are you sure?")
@@ -548,9 +554,8 @@ object App extends Logging {
         choice match {
           case "YES" => {
             // NOTE: remove storage first before remove meta data (in case remove storage failed)
-            val dbRemoved = events.remove(
-              app.id,
-              Some(channelMap(deleteChannel)))
+            val dbRemoved = events
+              .remove(app.id, Some(channelMap(deleteChannel)))
             if (dbRemoved) {
               info(s"Removed Event Store for this channel: ${deleteChannel}")
               try {

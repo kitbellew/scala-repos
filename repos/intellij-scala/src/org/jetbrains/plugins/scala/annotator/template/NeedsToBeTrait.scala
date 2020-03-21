@@ -15,13 +15,16 @@ object NeedsToBeTrait extends AnnotatorPart[ScTemplateDefinition] {
       definition: ScTemplateDefinition,
       holder: AnnotationHolder,
       typeAware: Boolean) {
-    definition.refs.drop(1).foreach {
-      case (refElement, Some((psiClass, _))) if !isMixable(psiClass) =>
-        holder.createErrorAnnotation(
-          refElement,
-          "%s %s needs to be trait to be mixed in"
-            .format(kindOf(psiClass), psiClass.name))
-      case _ =>
-    }
+    definition
+      .refs
+      .drop(1)
+      .foreach {
+        case (refElement, Some((psiClass, _))) if !isMixable(psiClass) =>
+          holder.createErrorAnnotation(
+            refElement,
+            "%s %s needs to be trait to be mixed in"
+              .format(kindOf(psiClass), psiClass.name))
+        case _ =>
+      }
   }
 }

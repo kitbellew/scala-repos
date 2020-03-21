@@ -55,9 +55,8 @@ object ImportZkOffsets extends Logging {
     parser.accepts("help", "Print this message.")
 
     if (args.length == 0)
-      CommandLineUtils.printUsageAndDie(
-        parser,
-        "Import offsets to zookeeper from files.")
+      CommandLineUtils
+        .printUsageAndDie(parser, "Import offsets to zookeeper from files.")
 
     val options = parser.parse(args: _*)
 

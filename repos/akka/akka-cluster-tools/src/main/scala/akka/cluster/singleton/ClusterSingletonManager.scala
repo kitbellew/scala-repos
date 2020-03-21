@@ -265,8 +265,9 @@ object ClusterSingletonManager {
       val cluster = Cluster(context.system)
       // sort by age, oldest first
       val ageOrdering = Member.ageOrdering
-      var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet.empty(
-        ageOrdering)
+      var membersByAge: immutable.SortedSet[Member] = immutable
+        .SortedSet
+        .empty(ageOrdering)
 
       var changes = Vector.empty[AnyRef]
 
@@ -293,15 +294,21 @@ object ClusterSingletonManager {
       }
 
       def handleInitial(state: CurrentClusterState): Unit = {
-        membersByAge =
-          immutable.SortedSet.empty(ageOrdering) union state.members.filter(m ⇒
+        membersByAge = immutable.SortedSet.empty(ageOrdering) union state
+          .members
+          .filter(m ⇒
             (
               m.status == MemberStatus.Up || m.status == MemberStatus.Leaving
             ) && matchingRole(m))
         val safeToBeOldest =
-          !state.members.exists { m ⇒
-            (m.status == MemberStatus.Down || m.status == MemberStatus.Exiting)
-          }
+          !state
+            .members
+            .exists { m ⇒
+              (
+                m.status == MemberStatus.Down || m.status == MemberStatus
+                  .Exiting
+              )
+            }
         val initial = InitialOldestState(
           membersByAge.headOption.map(_.address),
           safeToBeOldest)
@@ -456,7 +463,10 @@ class ClusterSingletonManager(
 
   val (maxHandOverRetries, maxTakeOverRetries) = {
     val n = (removalMargin.toMillis / handOverRetryInterval.toMillis).toInt
-    val minRetries = context.system.settings.config
+    val minRetries = context
+      .system
+      .settings
+      .config
       .getInt("akka.cluster.singleton.min-number-of-hand-over-retries")
     require(minRetries >= 1, "min-number-of-hand-over-retries must be >= 1")
     val handOverRetries = math.max(minRetries, n + 3)
@@ -668,10 +678,11 @@ class ClusterSingletonManager(
   def scheduleDelayedMemberRemoved(m: Member): Unit = {
     if (removalMargin > Duration.Zero) {
       log.debug("Schedule DelayedMemberRemoved for [{}]", m.address)
-      context.system.scheduler.scheduleOnce(
-        removalMargin,
-        self,
-        DelayedMemberRemoved(m))(context.dispatcher)
+      context
+        .system
+        .scheduler
+        .scheduleOnce(removalMargin, self, DelayedMemberRemoved(m))(
+          context.dispatcher)
     } else
       self ! DelayedMemberRemoved(m)
   }

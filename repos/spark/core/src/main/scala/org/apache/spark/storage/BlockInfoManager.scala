@@ -238,7 +238,8 @@ private[storage] class BlockInfoManager extends Logging {
             if (info.writerTask == currentTaskAttemptId) {
               throw new IllegalStateException(
                 s"Task $currentTaskAttemptId has already locked $blockId for writing")
-            } else if (info.writerTask == BlockInfo.NO_WRITER && info.readerCount == 0) {
+            } else if (info.writerTask == BlockInfo.NO_WRITER && info
+                         .readerCount == 0) {
               info.writerTask = currentTaskAttemptId
               writeLocksByTask.addBinding(currentTaskAttemptId, blockId)
               logTrace(
@@ -371,23 +372,29 @@ private[storage] class BlockInfoManager extends Logging {
     }
 
     for (blockId <- writeLocks) {
-      infos.get(blockId).foreach { info =>
-        assert(info.writerTask == taskAttemptId)
-        info.writerTask = BlockInfo.NO_WRITER
-      }
+      infos
+        .get(blockId)
+        .foreach { info =>
+          assert(info.writerTask == taskAttemptId)
+          info.writerTask = BlockInfo.NO_WRITER
+        }
       blocksWithReleasedLocks += blockId
     }
-    readLocks.entrySet().iterator().asScala.foreach { entry =>
-      val blockId = entry.getElement
-      val lockCount = entry.getCount
-      blocksWithReleasedLocks += blockId
-      synchronized {
-        get(blockId).foreach { info =>
-          info.readerCount -= lockCount
-          assert(info.readerCount >= 0)
+    readLocks
+      .entrySet()
+      .iterator()
+      .asScala
+      .foreach { entry =>
+        val blockId = entry.getElement
+        val lockCount = entry.getCount
+        blocksWithReleasedLocks += blockId
+        synchronized {
+          get(blockId).foreach { info =>
+            info.readerCount -= lockCount
+            assert(info.readerCount >= 0)
+          }
         }
       }
-    }
 
     synchronized {
       notifyAll()
@@ -456,10 +463,12 @@ private[storage] class BlockInfoManager extends Logging {
     */
   def clear(): Unit =
     synchronized {
-      infos.valuesIterator.foreach { blockInfo =>
-        blockInfo.readerCount = 0
-        blockInfo.writerTask = BlockInfo.NO_WRITER
-      }
+      infos
+        .valuesIterator
+        .foreach { blockInfo =>
+          blockInfo.readerCount = 0
+          blockInfo.writerTask = BlockInfo.NO_WRITER
+        }
       infos.clear()
       readLocksByTask.clear()
       writeLocksByTask.clear()

@@ -240,8 +240,9 @@ class HMACSHA1CookieSigner @Inject() (config: CryptoConfig)
     */
   def sign(message: String, key: Array[Byte]): String = {
     val mac =
-      config.provider.fold(Mac.getInstance("HmacSHA1"))(p =>
-        Mac.getInstance("HmacSHA1", p))
+      config
+        .provider
+        .fold(Mac.getInstance("HmacSHA1"))(p => Mac.getInstance("HmacSHA1", p))
     mac.init(new SecretKeySpec(key, "HmacSHA1"))
     Codecs.toHexString(mac.doFinal(message.getBytes("utf-8")))
   }
@@ -418,9 +419,11 @@ class AESCTRCrypter @Inject() (config: CryptoConfig) extends AESCrypter {
     */
   private def getCipherWithConfiguredProvider(
       transformation: String): Cipher = {
-    config.provider.fold(Cipher.getInstance(transformation)) { p =>
-      Cipher.getInstance(transformation, p)
-    }
+    config
+      .provider
+      .fold(Cipher.getInstance(transformation)) { p =>
+        Cipher.getInstance(transformation, p)
+      }
   }
 
   @deprecated("This method will be removed in future versions ", "2.5.0")

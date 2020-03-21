@@ -61,19 +61,23 @@ package scala.collection.mutable {
         case (k, v) =>
           RB.insert(tree, k, v)
       }
-      RB.isValid(tree) && entries.toMap.forall {
-        case (k, v) =>
-          RB.get(tree, k) == Some(v)
-      }
+      RB.isValid(tree) && entries
+        .toMap
+        .forall {
+          case (k, v) =>
+            RB.get(tree, k) == Some(v)
+        }
     }
 
     property("delete") = forAll { (tree: RB.Tree[K, V], ks: Seq[K]) =>
       ks.foreach { k =>
         RB.delete(tree, k)
       }
-      RB.isValid(tree) && ks.toSet.forall { k =>
-        RB.get(tree, k) == None
-      }
+      RB.isValid(tree) && ks
+        .toSet
+        .forall { k =>
+          RB.get(tree, k) == None
+        }
     }
 
     property("insert & delete") = forAll {
@@ -210,18 +214,22 @@ package scala.collection.mutable {
       val map = mutable.TreeMap[K, V]()
       map ++= entries
 
-      map
-        .keysIteratorFrom(k)
-        .toSeq == entries.keysIterator.filter(_ >= k).toSeq.sorted
+      map.keysIteratorFrom(k).toSeq == entries
+        .keysIterator
+        .filter(_ >= k)
+        .toSeq
+        .sorted
     }
 
     property("valuesIteratorFrom") = forAll { (entries: Map[K, V], k: K) =>
       val map = mutable.TreeMap[K, V]()
       map ++= entries
 
-      map
-        .valuesIteratorFrom(k)
-        .toSeq == entries.filterKeys(_ >= k).toSeq.sorted.map(_._2)
+      map.valuesIteratorFrom(k).toSeq == entries
+        .filterKeys(_ >= k)
+        .toSeq
+        .sorted
+        .map(_._2)
     }
 
     property("headOption") = forAll { (map: mutable.TreeMap[K, V]) =>
@@ -341,8 +349,8 @@ package scala.collection.mutable {
         val mapView = map.rangeImpl(from, until)
         mapView += (k -> v)
 
-        map.contains(k) && map.get(k) == Some(
-          v) && map.size == newExpectedSize &&
+        map.contains(k) && map.get(k) == Some(v) && map
+          .size == newExpectedSize &&
         mapView.contains(k) == isInRange &&
         mapView.get(k) == (
           if (isInRange)
@@ -360,16 +368,18 @@ package scala.collection.mutable {
           until: Option[K]) =>
         val mapView = map.rangeImpl(from, until)
         mapView ++= entries
-        entries.toMap.forall {
-          case (k, v) =>
-            map.get(k) == Some(v) &&
-              mapView.get(k) == (
-                if (in(k, from, until))
-                  Some(v)
-                else
-                  None
-              )
-        }
+        entries
+          .toMap
+          .forall {
+            case (k, v) =>
+              map.get(k) == Some(v) &&
+                mapView.get(k) == (
+                  if (in(k, from, until))
+                    Some(v)
+                  else
+                    None
+                )
+          }
     }
 
     property("-=") = forAll {
@@ -398,9 +408,11 @@ package scala.collection.mutable {
           until: Option[K]) =>
         val mapView = map.rangeImpl(from, until)
         mapView --= ks
-        ks.toSet.forall { k =>
-          map.get(k) == None && mapView.get(k) == None
-        }
+        ks
+          .toSet
+          .forall { k =>
+            map.get(k) == None && mapView.get(k) == None
+          }
     }
 
     property("iterator") = forAll {
@@ -409,10 +421,9 @@ package scala.collection.mutable {
         map ++= entries
 
         val mapView = map.rangeImpl(from, until)
-        mapView.iterator.toSeq == entriesInView(
-          entries,
-          from,
-          until).toSeq.sorted
+        mapView.iterator.toSeq == entriesInView(entries, from, until)
+          .toSeq
+          .sorted
     }
 
     property("iteratorFrom") = forAll {
@@ -422,10 +433,9 @@ package scala.collection.mutable {
 
         val mapView = map.rangeImpl(from, until)
         val newLower = Some(from.fold(k)(ord.max(_, k)))
-        mapView.iteratorFrom(k).toSeq == entriesInView(
-          entries,
-          newLower,
-          until).toSeq.sorted
+        mapView.iteratorFrom(k).toSeq == entriesInView(entries, newLower, until)
+          .toSeq
+          .sorted
     }
 
     property("keysIteratorFrom") = forAll {
@@ -457,15 +467,16 @@ package scala.collection.mutable {
     property("headOption") = forAll {
       (map: mutable.TreeMap[K, V], from: Option[K], until: Option[K]) =>
         val mapView = map.rangeImpl(from, until)
-        mapView.headOption == Try(
-          entriesInView(map.iterator, from, until).next()).toOption
+        mapView
+          .headOption == Try(entriesInView(map.iterator, from, until).next())
+          .toOption
     }
 
     property("lastOption") = forAll {
       (map: mutable.TreeMap[K, V], from: Option[K], until: Option[K]) =>
         val mapView = map.rangeImpl(from, until)
-        mapView.lastOption == Try(
-          entriesInView(map.iterator, from, until).max).toOption
+        mapView.lastOption == Try(entriesInView(map.iterator, from, until).max)
+          .toOption
     }
 
     property("clear") = forAll {

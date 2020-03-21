@@ -38,8 +38,8 @@ class ValidatedTests extends CatsSuite {
       .applicativeError[Int, Int, Int])
   checkAll(
     "ApplicativeError[Xor, String]",
-    SerializableTests.serializable(
-      ApplicativeError[Validated[String, ?], String]))
+    SerializableTests
+      .serializable(ApplicativeError[Validated[String, ?], String]))
 
   checkAll(
     "Validated[String, Int] with Option",
@@ -81,8 +81,8 @@ class ValidatedTests extends CatsSuite {
       OrderLaws[Validated[ListWrapper[String], ListWrapper[Int]]].eqv)
     checkAll(
       "Eq[Validated[ListWrapper[String], ListWrapper[Int]]]",
-      SerializableTests.serializable(
-        Eq[Validated[ListWrapper[String], ListWrapper[Int]]]))
+      SerializableTests
+        .serializable(Eq[Validated[ListWrapper[String], ListWrapper[Int]]]))
   }
 
   test("ap2 combines failures in order") {
@@ -110,13 +110,17 @@ class ValidatedTests extends CatsSuite {
 
   test("catchNonFatal catches non-fatal exceptions") {
     assert(
-      Validated.catchNonFatal {
-        "foo".toInt
-      }.isInvalid)
+      Validated
+        .catchNonFatal {
+          "foo".toInt
+        }
+        .isInvalid)
     assert(
-      Validated.catchNonFatal {
-        throw new Throwable("blargh")
-      }.isInvalid)
+      Validated
+        .catchNonFatal {
+          throw new Throwable("blargh")
+        }
+        .isInvalid)
   }
 
   test("fromTry is invalid for failed try") {

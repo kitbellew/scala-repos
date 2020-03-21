@@ -85,14 +85,16 @@ sealed class Metadata private[types] (private[types] val map: Map[String, Any])
     obj match {
       case that: Metadata =>
         if (map.keySet == that.map.keySet) {
-          map.keys.forall { k =>
-            (map(k), that.map(k)) match {
-              case (v0: Array[_], v1: Array[_]) =>
-                v0.view == v1.view
-              case (v0, v1) =>
-                v0 == v1
+          map
+            .keys
+            .forall { k =>
+              (map(k), that.map(k)) match {
+                case (v0: Array[_], v1: Array[_]) =>
+                  v0.view == v1.view
+                case (v0, v1) =>
+                  v0 == v1
+              }
             }
-          }
         } else {
           false
         }
@@ -123,53 +125,55 @@ object Metadata {
   /** Creates a Metadata instance from JSON AST. */
   private[sql] def fromJObject(jObj: JObject): Metadata = {
     val builder = new MetadataBuilder
-    jObj.obj.foreach {
-      case (key, JInt(value)) =>
-        builder.putLong(key, value.toLong)
-      case (key, JDouble(value)) =>
-        builder.putDouble(key, value)
-      case (key, JBool(value)) =>
-        builder.putBoolean(key, value)
-      case (key, JString(value)) =>
-        builder.putString(key, value)
-      case (key, o: JObject) =>
-        builder.putMetadata(key, fromJObject(o))
-      case (key, JArray(value)) =>
-        if (value.isEmpty) {
-          // If it is an empty array, we cannot infer its element type. We put an empty Array[Long].
-          builder.putLongArray(key, Array.empty)
-        } else {
-          value.head match {
-            case _: JInt =>
-              builder.putLongArray(
-                key,
-                value.asInstanceOf[List[JInt]].map(_.num.toLong).toArray)
-            case _: JDouble =>
-              builder.putDoubleArray(
-                key,
-                value.asInstanceOf[List[JDouble]].map(_.num).toArray)
-            case _: JBool =>
-              builder.putBooleanArray(
-                key,
-                value.asInstanceOf[List[JBool]].map(_.value).toArray)
-            case _: JString =>
-              builder.putStringArray(
-                key,
-                value.asInstanceOf[List[JString]].map(_.s).toArray)
-            case _: JObject =>
-              builder.putMetadataArray(
-                key,
-                value.asInstanceOf[List[JObject]].map(fromJObject).toArray)
-            case other =>
-              throw new RuntimeException(
-                s"Do not support array of type ${other.getClass}.")
+    jObj
+      .obj
+      .foreach {
+        case (key, JInt(value)) =>
+          builder.putLong(key, value.toLong)
+        case (key, JDouble(value)) =>
+          builder.putDouble(key, value)
+        case (key, JBool(value)) =>
+          builder.putBoolean(key, value)
+        case (key, JString(value)) =>
+          builder.putString(key, value)
+        case (key, o: JObject) =>
+          builder.putMetadata(key, fromJObject(o))
+        case (key, JArray(value)) =>
+          if (value.isEmpty) {
+            // If it is an empty array, we cannot infer its element type. We put an empty Array[Long].
+            builder.putLongArray(key, Array.empty)
+          } else {
+            value.head match {
+              case _: JInt =>
+                builder.putLongArray(
+                  key,
+                  value.asInstanceOf[List[JInt]].map(_.num.toLong).toArray)
+              case _: JDouble =>
+                builder.putDoubleArray(
+                  key,
+                  value.asInstanceOf[List[JDouble]].map(_.num).toArray)
+              case _: JBool =>
+                builder.putBooleanArray(
+                  key,
+                  value.asInstanceOf[List[JBool]].map(_.value).toArray)
+              case _: JString =>
+                builder.putStringArray(
+                  key,
+                  value.asInstanceOf[List[JString]].map(_.s).toArray)
+              case _: JObject =>
+                builder.putMetadataArray(
+                  key,
+                  value.asInstanceOf[List[JObject]].map(fromJObject).toArray)
+              case other =>
+                throw new RuntimeException(
+                  s"Do not support array of type ${other.getClass}.")
+            }
           }
-        }
-      case (key, JNull) =>
-        builder.putNull(key)
-      case (key, other) =>
-        throw new RuntimeException(s"Do not support type ${other.getClass}.")
-    }
+        case (key, JNull) =>
+          builder.putNull(key)
+        case (key, other) =>
+          throw new RuntimeException(s"Do not support type ${other.getClass}.")
+      }
     builder.build()
   }
 
@@ -177,10 +181,12 @@ object Metadata {
   private def toJsonValue(obj: Any): JValue = {
     obj match {
       case map: Map[_, _] =>
-        val fields = map.toList.map {
-          case (k: String, v) =>
-            (k, toJsonValue(v))
-        }
+        val fields = map
+          .toList
+          .map {
+            case (k: String, v) =>
+              (k, toJsonValue(v))
+          }
         JObject(fields)
       case arr: Array[_] =>
         val values = arr.toList.map(toJsonValue)

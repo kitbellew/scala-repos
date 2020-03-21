@@ -126,8 +126,8 @@ object TestPurgatoryPerformance {
     val latch = new CountDownLatch(numRequests)
     val start = System.currentTimeMillis
     val rand = new Random()
-    val keys = (0 until numKeys).map(i =>
-      "fakeKey%d".format(rand.nextInt(numPossibleKeys)))
+    val keys = (0 until numKeys)
+      .map(i => "fakeKey%d".format(rand.nextInt(numPossibleKeys)))
     @volatile
     var requestArrivalTime = start
     @volatile
@@ -178,12 +178,12 @@ object TestPurgatoryPerformance {
           .format(gcCountHeader, gcTimeHeader))
     }
 
-    val targetRate =
-      numRequests.toDouble * 1000d / (requestArrivalTime - start).toDouble
+    val targetRate = numRequests.toDouble * 1000d / (requestArrivalTime - start)
+      .toDouble
     val actualRate = numRequests.toDouble * 1000d / (end - start).toDouble
 
-    val cpuTime = getProcessCpuTimeNanos(osMXBean).map(x =>
-      (x - initialCpuTimeNano.get) / 1000000L)
+    val cpuTime = getProcessCpuTimeNanos(osMXBean)
+      .map(x => (x - initialCpuTimeNano.get) / 1000000L)
     val gcCounts = gcMXBeans.map(_.getCollectionCount)
     val gcTimes = gcMXBeans.map(_.getCollectionTime)
 
@@ -256,9 +256,11 @@ object TestPurgatoryPerformance {
         math.log(pct75) - normalMean
       ) / 0.674490d // 0.674490 is 75th percentile point in N(0,1)
       val dist = new LogNormalDistribution(normalMean, normalStDev)
-      (0 until sampleSize).map { _ =>
-        dist.next().toLong
-      }.toArray
+      (0 until sampleSize)
+        .map { _ =>
+          dist.next().toLong
+        }
+        .toArray
     }
     def next() = samples(rand.nextInt(sampleSize))
 
@@ -280,23 +282,24 @@ object TestPurgatoryPerformance {
     private[this] val samples = {
       val dist = new ExponentialDistribution(requestPerSecond / 1000d)
       var residue = 0.0
-      (0 until sampleSize).map { _ =>
-        val interval = dist.next() + residue
-        val roundedInterval = interval.toLong
-        residue = interval - roundedInterval.toDouble
-        roundedInterval
-      }.toArray
+      (0 until sampleSize)
+        .map { _ =>
+          val interval = dist.next() + residue
+          val roundedInterval = interval.toLong
+          residue = interval - roundedInterval.toDouble
+          roundedInterval
+        }
+        .toArray
     }
 
     def next() = samples(rand.nextInt(sampleSize))
 
     def printStats(): Unit = {
       println(
-        "# interval samples: rate = %f, min = %d, max = %d"
-          .format(
-            1000d / (samples.map(_.toDouble).sum / sampleSize.toDouble),
-            samples.min,
-            samples.max))
+        "# interval samples: rate = %f, min = %d, max = %d".format(
+          1000d / (samples.map(_.toDouble).sum / sampleSize.toDouble),
+          samples.min,
+          samples.max))
     }
   }
 

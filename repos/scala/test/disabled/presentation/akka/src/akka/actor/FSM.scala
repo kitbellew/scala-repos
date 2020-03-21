@@ -506,8 +506,8 @@ trait FSM[S, D] extends ListenerManagement {
   }
 
   private def terminate(reason: Reason) = {
-    terminateEvent.apply(
-      StopEvent(reason, currentState.stateName, currentState.stateData))
+    terminateEvent
+      .apply(StopEvent(reason, currentState.stateName, currentState.stateData))
     self.stop()
   }
 

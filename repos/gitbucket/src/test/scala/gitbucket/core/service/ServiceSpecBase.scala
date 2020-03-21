@@ -28,23 +28,22 @@ trait ServiceSpecBase {
           DatabaseConfig.password)
       org.h2.Driver.load()
       using(DriverManager.getConnection(url, user, pass)) { conn =>
-        AutoUpdate.versions.reverse
+        AutoUpdate
+          .versions
+          .reverse
           .foreach(_.update(conn, Thread.currentThread.getContextClassLoader))
       }
-      Database.forURL(url, user, pass).withSession { session =>
-        action(session)
-      }
+      Database
+        .forURL(url, user, pass)
+        .withSession { session =>
+          action(session)
+        }
     }
   }
 
   def generateNewAccount(name: String)(implicit s: Session): Account = {
-    AccountService.createAccount(
-      name,
-      name,
-      name,
-      s"${name}@example.com",
-      false,
-      None)
+    AccountService
+      .createAccount(name, name, name, s"${name}@example.com", false, None)
     user(name)
   }
 

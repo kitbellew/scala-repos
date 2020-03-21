@@ -39,7 +39,9 @@ object Test extends Properties("HtmlFactory") {
     // does partest actually guarantee this? to quote Leonard Nimoy: The answer, of course, is no.
     // this test _will_ fail again some time in the future.
     // Footnote: java.lang.ClassCastException: org.apache.tools.ant.loader.AntClassLoader5 cannot be cast to java.net.URLClassLoader
-    val loader = Thread.currentThread.getContextClassLoader
+    val loader = Thread
+      .currentThread
+      .getContextClassLoader
       .asInstanceOf[URLClassLoader]
     val paths = loader.getURLs.map(u => URLDecoder.decode(u.getPath))
     paths mkString java.io.File.pathSeparator
@@ -119,7 +121,8 @@ object Test extends Properties("HtmlFactory") {
           case None =>
             htmlFile
         }
-      val fileTextPretty = htmlAllFiles(fileName).text
+      val fileTextPretty = htmlAllFiles(fileName)
+        .text
         .replace('→', ' ')
         .replaceAll("\\s+", " ")
       val fileText = fileTextPretty.replaceAll(" ", "")
@@ -130,12 +133,14 @@ object Test extends Properties("HtmlFactory") {
       val checkValue = fileText.contains(checkText) == expected
       if (debug && (!checkValue)) {
         Console.err.println("")
-        Console.err.println(
-          "HTML Check failed for resource file " + scalaFile + ":")
+        Console
+          .err
+          .println("HTML Check failed for resource file " + scalaFile + ":")
         Console.err.println("Could not match: \n" + checkTextPretty)
         Console.err.println("In the extracted HTML text: \n" + fileTextPretty)
-        Console.err.println(
-          "NOTE: The whitespaces are eliminated before matching!")
+        Console
+          .err
+          .println("NOTE: The whitespaces are eliminated before matching!")
         Console.err.println("")
       }
       result &&= checkValue
@@ -145,17 +150,20 @@ object Test extends Properties("HtmlFactory") {
   }
 
   def shortComments(root: scala.xml.Node) =
-    XMLUtil.stripGroup(root).descendant.flatMap {
-      case e: scala.xml.Elem => {
-        if (e.attribute("class").toString.contains("shortcomment")) {
-          Some(e)
-        } else {
-          None
+    XMLUtil
+      .stripGroup(root)
+      .descendant
+      .flatMap {
+        case e: scala.xml.Elem => {
+          if (e.attribute("class").toString.contains("shortcomment")) {
+            Some(e)
+          } else {
+            None
+          }
         }
+        case _ =>
+          None
       }
-      case _ =>
-        None
-    }
 
   property("Trac #3790") = {
     createTemplate("Trac3790.scala") match {
@@ -325,9 +333,11 @@ object Test extends Properties("HtmlFactory") {
 
     files("Subclass.html") match {
       case node: scala.xml.Node => {
-        node.toString.contains {
-          """<dt>returns</dt><dd class="cmt"><p>123</p></dd>"""
-        }
+        node
+          .toString
+          .contains {
+            """<dt>returns</dt><dd class="cmt"><p>123</p></dd>"""
+          }
       }
       case _ =>
         false
@@ -402,8 +412,9 @@ object Test extends Properties("HtmlFactory") {
   property("SI-4507: Default arguments of synthesized constructor") = {
     createTemplate("SI_4507.scala") match {
       case node: scala.xml.Node =>
-        !node.toString.contains(
-          "<li>returns silently when evaluating true and true</li>")
+        !node
+          .toString
+          .contains("<li>returns silently when evaluating true and true</li>")
       case _ =>
         false
     }
@@ -750,7 +761,8 @@ object Test extends Properties("HtmlFactory") {
           node.toString contains "title=\"gt4s: $colon$colon\""
 
         property("gt4s of a deprecated method") =
-          node.toString contains "title=\"gt4s: $colon$colon$colon$colon. Deprecated: "
+          node
+            .toString contains "title=\"gt4s: $colon$colon$colon$colon. Deprecated: "
         true
       }
       case _ =>

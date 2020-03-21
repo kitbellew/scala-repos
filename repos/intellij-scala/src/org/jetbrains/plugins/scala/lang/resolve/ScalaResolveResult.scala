@@ -271,10 +271,8 @@ class ScalaResolveResult(
           case clazz: PsiClass =>
             return getClazzPrecedence(clazz)
           case memb @ (_: ScBindingPattern | _: PsiMember) =>
-            val clazzStub = ScalaPsiUtil.getContextOfType(
-              getActualElement,
-              false,
-              classOf[PsiClass])
+            val clazzStub = ScalaPsiUtil
+              .getContextOfType(getActualElement, false, classOf[PsiClass])
             val clazz: PsiClass =
               clazzStub match {
                 case clazz: PsiClass =>
@@ -296,10 +294,8 @@ class ScalaResolveResult(
                 case _ =>
                   clazz match {
                     case o: ScObject
-                        if o.isPackageObject && !PsiTreeUtil.isContextAncestor(
-                          o,
-                          place,
-                          false) =>
+                        if o.isPackageObject && !PsiTreeUtil
+                          .isContextAncestor(o, place, false) =>
                       var q = o.qualifiedName
                       val packageSuffix: String = ".`package`"
                       if (q.endsWith(packageSuffix))
@@ -318,8 +314,8 @@ class ScalaResolveResult(
         return OTHER_MEMBERS
       }
       val importsUsedSeq = importsUsed.toSeq
-      val importUsed: ImportUsed = importsUsedSeq.apply(
-        importsUsedSeq.length - 1)
+      val importUsed: ImportUsed = importsUsedSeq
+        .apply(importsUsedSeq.length - 1)
       // TODO this conflates imported functions and imported implicit views. ScalaResolveResult should really store
       //      these separately.
       importUsed match {

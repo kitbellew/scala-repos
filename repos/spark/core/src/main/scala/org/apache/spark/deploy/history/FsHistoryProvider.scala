@@ -81,19 +81,16 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
   private val NOT_STARTED = "<Not Started>"
 
   // Interval between safemode checks.
-  private val SAFEMODE_CHECK_INTERVAL_S = conf.getTimeAsSeconds(
-    "spark.history.fs.safemodeCheck.interval",
-    "5s")
+  private val SAFEMODE_CHECK_INTERVAL_S = conf
+    .getTimeAsSeconds("spark.history.fs.safemodeCheck.interval", "5s")
 
   // Interval between each check for event log updates
-  private val UPDATE_INTERVAL_S = conf.getTimeAsSeconds(
-    "spark.history.fs.update.interval",
-    "10s")
+  private val UPDATE_INTERVAL_S = conf
+    .getTimeAsSeconds("spark.history.fs.update.interval", "10s")
 
   // Interval between each cleaner checks for event logs to delete
-  private val CLEAN_INTERVAL_S = conf.getTimeAsSeconds(
-    "spark.history.fs.cleaner.interval",
-    "1d")
+  private val CLEAN_INTERVAL_S = conf
+    .getTimeAsSeconds("spark.history.fs.cleaner.interval", "1d")
 
   private val logDir = conf
     .getOption("spark.history.fs.logDirectory")
@@ -248,40 +245,48 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
       appId: String,
       attemptId: Option[String]): Option[LoadedAppUI] = {
     try {
-      applications.get(appId).flatMap { appInfo =>
-        appInfo.attempts.find(_.attemptId == attemptId).flatMap { attempt =>
-          val replayBus = new ReplayListenerBus()
-          val ui = {
-            val conf = this.conf.clone()
-            val appSecManager = new SecurityManager(conf)
-            SparkUI.createHistoryUI(
-              conf,
-              replayBus,
-              appSecManager,
-              appInfo.name,
-              HistoryServer.getAttemptURI(appId, attempt.attemptId),
-              attempt.startTime)
-            // Do not call ui.bind() to avoid creating a new server for each application
-          }
-          val appListener = new ApplicationEventListener()
-          replayBus.addListener(appListener)
-          val appAttemptInfo = replay(
-            fs.getFileStatus(new Path(logDir, attempt.logPath)),
-            replayBus)
-          appAttemptInfo.map { info =>
-            val uiAclsEnabled = conf
-              .getBoolean("spark.history.ui.acls.enable", false)
-            ui.getSecurityManager.setAcls(uiAclsEnabled)
-            // make sure to set admin acls before view acls so they are properly picked up
-            ui.getSecurityManager.setAdminAcls(
-              appListener.adminAcls.getOrElse(""))
-            ui.getSecurityManager.setViewAcls(
-              attempt.sparkUser,
-              appListener.viewAcls.getOrElse(""))
-            LoadedAppUI(ui, updateProbe(appId, attemptId, attempt.fileSize))
-          }
+      applications
+        .get(appId)
+        .flatMap { appInfo =>
+          appInfo
+            .attempts
+            .find(_.attemptId == attemptId)
+            .flatMap { attempt =>
+              val replayBus = new ReplayListenerBus()
+              val ui = {
+                val conf = this.conf.clone()
+                val appSecManager = new SecurityManager(conf)
+                SparkUI.createHistoryUI(
+                  conf,
+                  replayBus,
+                  appSecManager,
+                  appInfo.name,
+                  HistoryServer.getAttemptURI(appId, attempt.attemptId),
+                  attempt.startTime)
+                // Do not call ui.bind() to avoid creating a new server for each application
+              }
+              val appListener = new ApplicationEventListener()
+              replayBus.addListener(appListener)
+              val appAttemptInfo = replay(
+                fs.getFileStatus(new Path(logDir, attempt.logPath)),
+                replayBus)
+              appAttemptInfo.map { info =>
+                val uiAclsEnabled = conf
+                  .getBoolean("spark.history.ui.acls.enable", false)
+                ui.getSecurityManager.setAcls(uiAclsEnabled)
+                // make sure to set admin acls before view acls so they are properly picked up
+                ui
+                  .getSecurityManager
+                  .setAdminAcls(appListener.adminAcls.getOrElse(""))
+                ui
+                  .getSecurityManager
+                  .setViewAcls(
+                    attempt.sparkUser,
+                    appListener.viewAcls.getOrElse(""))
+                LoadedAppUI(ui, updateProbe(appId, attemptId, attempt.fileSize))
+              }
+            }
         }
-      }
     } catch {
       case e: FileNotFoundException =>
         None
@@ -427,9 +432,11 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
       case Some(appInfo) =>
         try {
           // If no attempt is specified, or there is no attemptId for attempts, return all attempts
-          appInfo.attempts
+          appInfo
+            .attempts
             .filter { attempt =>
-              attempt.attemptId.isEmpty || attemptId.isEmpty || attempt.attemptId.get == attemptId.get
+              attempt.attemptId.isEmpty || attemptId
+                .isEmpty || attempt.attemptId.get == attemptId.get
             }
             .foreach { attempt =>
               val logPath = new Path(logDir, attempt.logPath)
@@ -486,7 +493,8 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
         .orElse(applications.get(attempt.appId))
         .map { app =>
           val attempts =
-            app.attempts
+            app
+              .attempts
               .filter(_.attemptId != attempt.attemptId)
               .toList ++ List(attempt)
           new FsApplicationHistoryInfo(
@@ -536,8 +544,8 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
     */
   private[history] def cleanLogs(): Unit = {
     try {
-      val maxAge =
-        conf.getTimeAsSeconds("spark.history.fs.cleaner.maxAge", "7d") * 1000
+      val maxAge = conf
+        .getTimeAsSeconds("spark.history.fs.cleaner.maxAge", "7d") * 1000
 
       val now = clock.getTimeMillis()
       val appsToRetain =
@@ -549,19 +557,21 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
 
       // Scan all logs from the log directory.
       // Only completed applications older than the specified max age will be deleted.
-      applications.values.foreach { app =>
-        val (toClean, toRetain) = app.attempts.partition(shouldClean)
-        attemptsToClean ++= toClean
+      applications
+        .values
+        .foreach { app =>
+          val (toClean, toRetain) = app.attempts.partition(shouldClean)
+          attemptsToClean ++= toClean
 
-        if (toClean.isEmpty) {
-          appsToRetain += (app.id -> app)
-        } else if (toRetain.nonEmpty) {
-          appsToRetain += (
-            app.id ->
-              new FsApplicationHistoryInfo(app.id, app.name, toRetain.toList)
-          )
+          if (toClean.isEmpty) {
+            appsToRetain += (app.id -> app)
+          } else if (toRetain.nonEmpty) {
+            appsToRetain += (
+              app.id ->
+                new FsApplicationHistoryInfo(app.id, app.name, toRetain.toList)
+            )
+          }
         }
-      }
 
       applications = appsToRetain
 
@@ -719,9 +729,11 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
   def lookup(
       appId: String,
       attemptId: Option[String]): Option[FsApplicationAttemptInfo] = {
-    applications.get(appId).flatMap { appInfo =>
-      appInfo.attempts.find(_.attemptId == attemptId)
-    }
+    applications
+      .get(appId)
+      .flatMap { appInfo =>
+        appInfo.attempts.find(_.attemptId == attemptId)
+      }
   }
 
   /**

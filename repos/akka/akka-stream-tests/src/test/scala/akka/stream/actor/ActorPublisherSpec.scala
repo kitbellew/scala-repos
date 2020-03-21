@@ -339,8 +339,8 @@ class ActorPublisherSpec
         val probe = TestProbe()
 
         val source: Source[Int, ActorRef] = Source.actorPublisher(senderProps)
-        val sink: Sink[String, ActorRef] = Sink.actorSubscriber(
-          receiverProps(probe.ref))
+        val sink: Sink[String, ActorRef] = Sink
+          .actorSubscriber(receiverProps(probe.ref))
 
         val (snd, rcv) = source
           .collect {
@@ -381,8 +381,8 @@ class ActorPublisherSpec
 
       val sink1 = Sink.fromSubscriber(
         ActorSubscriber[String](system.actorOf(receiverProps(probe1.ref))))
-      val sink2: Sink[String, ActorRef] = Sink.actorSubscriber(
-        receiverProps(probe2.ref))
+      val sink2: Sink[String, ActorRef] = Sink
+        .actorSubscriber(receiverProps(probe2.ref))
 
       val senderRef2 = RunnableGraph
         .fromGraph(

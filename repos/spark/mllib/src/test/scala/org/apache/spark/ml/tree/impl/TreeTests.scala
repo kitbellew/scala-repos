@@ -51,15 +51,18 @@ private[ml] object TreeTests extends SparkFunSuite {
     val df = data.toDF()
     val numFeatures = data.first().features.size
     val featuresAttributes =
-      Range(0, numFeatures).map { feature =>
-        if (categoricalFeatures.contains(feature)) {
-          NominalAttribute.defaultAttr
-            .withIndex(feature)
-            .withNumValues(categoricalFeatures(feature))
-        } else {
-          NumericAttribute.defaultAttr.withIndex(feature)
+      Range(0, numFeatures)
+        .map { feature =>
+          if (categoricalFeatures.contains(feature)) {
+            NominalAttribute
+              .defaultAttr
+              .withIndex(feature)
+              .withNumValues(categoricalFeatures(feature))
+          } else {
+            NumericAttribute.defaultAttr.withIndex(feature)
+          }
         }
-      }.toArray
+        .toArray
     val featuresMetadata = new AttributeGroup("features", featuresAttributes)
       .toMetadata()
     val labelAttribute =
@@ -129,10 +132,13 @@ private[ml] object TreeTests extends SparkFunSuite {
     */
   def checkEqual(a: TreeEnsembleModel, b: TreeEnsembleModel): Unit = {
     try {
-      a.trees.zip(b.trees).foreach {
-        case (treeA, treeB) =>
-          TreeTests.checkEqual(treeA, treeB)
-      }
+      a
+        .trees
+        .zip(b.trees)
+        .foreach {
+          case (treeA, treeB) =>
+            TreeTests.checkEqual(treeA, treeB)
+        }
       assert(a.treeWeights === b.treeWeights)
     } catch {
       case ex: Exception =>

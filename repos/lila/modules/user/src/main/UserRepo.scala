@@ -102,8 +102,8 @@ object UserRepo {
   def usernamesByIds(ids: List[ID]) =
     coll.distinct(
       F.username,
-      BSONDocument(
-        "_id" -> BSONDocument("$in" -> ids)).some) map lila.db.BSON.asStrings
+      BSONDocument("_id" -> BSONDocument("$in" -> ids))
+        .some) map lila.db.BSON.asStrings
 
   def orderByGameCount(u1: String, u2: String): Fu[Option[(String, String)]] = {
     coll
@@ -115,8 +115,8 @@ object UserRepo {
       docs
         .sortBy {
           _.getAs[BSONDocument](F.count)
-            .flatMap(_.getAs[BSONNumberLike]("game"))
-            .??(_.toInt)
+          .flatMap(_.getAs[BSONNumberLike]("game"))
+          .??(_.toInt)
         }
         .map(_.getAs[String]("_id"))
         .flatten match {
@@ -129,24 +129,30 @@ object UserRepo {
   }
 
   def firstGetsWhite(u1O: Option[String], u2O: Option[String]): Fu[Boolean] =
-    (u1O |@| u2O).tupled.fold(fuccess(scala.util.Random.nextBoolean)) {
-      case (u1, u2) =>
-        coll
-          .find(
-            BSONDocument("_id" -> BSONDocument("$in" -> BSONArray(u1, u2))),
-            BSONDocument("_id" -> true))
-          .sort(BSONDocument(F.colorIt -> 1))
-          .one[BSONDocument]
-          .map {
-            _.fold(scala.util.Random.nextBoolean) { doc =>
-              doc.getAs[String]("_id") contains u1
+    (u1O |@| u2O)
+      .tupled
+      .fold(fuccess(scala.util.Random.nextBoolean)) {
+        case (u1, u2) =>
+          coll
+            .find(
+              BSONDocument("_id" -> BSONDocument("$in" -> BSONArray(u1, u2))),
+              BSONDocument("_id" -> true))
+            .sort(BSONDocument(F.colorIt -> 1))
+            .one[BSONDocument]
+            .map {
+              _.fold(scala.util.Random.nextBoolean) { doc =>
+                doc.getAs[String]("_id") contains u1
+              }
             }
-          }
-          .addEffect { v =>
-            $update.unchecked($select(u1), $incBson(F.colorIt -> v.fold(1, -1)))
-            $update.unchecked($select(u2), $incBson(F.colorIt -> v.fold(-1, 1)))
-          }
-    }
+            .addEffect { v =>
+              $update.unchecked(
+                $select(u1),
+                $incBson(F.colorIt -> v.fold(1, -1)))
+              $update.unchecked(
+                $select(u2),
+                $incBson(F.colorIt -> v.fold(-1, 1)))
+            }
+      }
 
   val lichessId = "lichess"
   def lichess = byId(lichessId)
@@ -280,8 +286,8 @@ object UserRepo {
 
     private def defaults = Json.obj("sha512" -> false)
 
-    lazy val reader =
-      (__.json update merge(defaults)) andThen Json.reads[AuthData]
+    lazy val reader = (__.json update merge(defaults)) andThen Json
+      .reads[AuthData]
   }
 
   def checkPasswordById(id: ID, password: String): Fu[Boolean] =
@@ -320,13 +326,15 @@ object UserRepo {
   def idExists(id: String): Fu[Boolean] = $count exists id
 
   def engineIds: Fu[Set[String]] =
-    coll.distinct(
-      "_id",
-      BSONDocument("engine" -> true).some) map lila.db.BSON.asStringSet
+    coll.distinct("_id", BSONDocument("engine" -> true).some) map lila
+      .db
+      .BSON
+      .asStringSet
 
   def usernamesLike(username: String, max: Int = 10): Fu[List[String]] = {
     import java.util.regex.Matcher.quoteReplacement
-    val escaped = """^([\w-]*).*$""".r
+    val escaped = """^([\w-]*).*$"""
+      .r
       .replaceAllIn(normalize(username), m => quoteReplacement(m group 1))
     val regex = "^" + escaped + ".*$"
     $primitive(
@@ -368,9 +376,11 @@ object UserRepo {
     $update(
       $select(user.id),
       BSONDocument("$set" -> BSONDocument("enabled" -> false)) ++
-        user.lameOrTroll.fold(
-          BSONDocument(),
-          BSONDocument("$unset" -> BSONDocument("email" -> true)))
+        user
+          .lameOrTroll
+          .fold(
+            BSONDocument(),
+            BSONDocument("$unset" -> BSONDocument("email" -> true)))
     )
 
   def passwd(id: ID, password: String): Funit =
@@ -397,7 +407,7 @@ object UserRepo {
       .one[BSONDocument]
       .map {
         _.flatMap(_.getAs[BSONDocument](F.perfs))
-          .flatMap(_.getAs[Perf](perfType.key))
+        .flatMap(_.getAs[Perf](perfType.key))
       }
 
   def setSeenAt(id: ID) {
@@ -433,9 +443,8 @@ object UserRepo {
 
   def countEngines(userIds: List[String]): Fu[Int] =
     coll.count(
-      BSONDocument(
-        "_id" -> BSONDocument("$in" -> userIds),
-        F.engine -> true).some)
+      BSONDocument("_id" -> BSONDocument("$in" -> userIds), F.engine -> true)
+        .some)
 
   def mustConfirmEmail(id: String): Fu[Boolean] =
     $count.exists($select(id) ++ Json.obj(F.mustConfirmEmail -> $exists(true)))

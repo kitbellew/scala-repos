@@ -121,9 +121,8 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
           (
             (r.end.toLong - r.start.toLong).abs / r.step.abs.toLong
               + (
-                if ((
-                      r.end.toLong - r.start.toLong
-                    ).abs % r.step.abs.toLong > 0L)
+                if ((r.end.toLong - r.start.toLong)
+                      .abs % r.step.abs.toLong > 0L)
                   1L
                 else
                   0L

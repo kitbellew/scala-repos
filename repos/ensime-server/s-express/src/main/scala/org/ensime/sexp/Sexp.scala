@@ -118,10 +118,12 @@ object SexpData {
       case SexpList(values) =>
         // order can be important in serialised forms
         val props = {
-          values.grouped(2).collect {
-            case List(SexpSymbol(key), value) if key.startsWith(":") =>
-              (SexpSymbol(key), value)
-          }
+          values
+            .grouped(2)
+            .collect {
+              case List(SexpSymbol(key), value) if key.startsWith(":") =>
+                (SexpSymbol(key), value)
+            }
         }.foldLeft(ListMap.empty[SexpSymbol, Sexp]) {
           case (res, el) =>
             // in elisp, first entry wins

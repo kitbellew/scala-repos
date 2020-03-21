@@ -94,10 +94,12 @@ private[sql] object StatFunctions extends Logging {
     def merge(
         sum1: Array[QuantileSummaries],
         sum2: Array[QuantileSummaries]): Array[QuantileSummaries] = {
-      sum1.zip(sum2).map {
-        case (s1, s2) =>
-          s1.compress().merge(s2.compress())
-      }
+      sum1
+        .zip(sum2)
+        .map {
+          case (s1, s2) =>
+            s1.compress().merge(s2.compress())
+        }
     }
     val summaries =
       df.select(columns: _*).rdd.aggregate(emptySummaries)(apply, merge)
@@ -175,8 +177,8 @@ private[sql] object StatFunctions extends Logging {
       while (opsIdx < sorted.length) {
         val currentSample = sorted(opsIdx)
         // Add all the samples before the next observation.
-        while (sampleIdx < sampled.size && sampled(
-                 sampleIdx).value <= currentSample) {
+        while (sampleIdx < sampled.size && sampled(sampleIdx)
+                 .value <= currentSample) {
           newSamples.append(sampled(sampleIdx))
           sampleIdx += 1
         }
@@ -436,16 +438,19 @@ private[sql] object StatFunctions extends Logging {
       cols.length == 2,
       s"Currently $functionName calculation is supported " +
         "between two columns.")
-    cols.map(name => (name, df.schema.fields.find(_.name == name))).foreach {
-      case (name, data) =>
-        require(data.nonEmpty, s"Couldn't find column with name $name")
-        require(
-          data.get.dataType.isInstanceOf[NumericType],
-          s"Currently $functionName calculation " +
-            s"for columns with dataType ${data.get.dataType} not supported.")
-    }
+    cols
+      .map(name => (name, df.schema.fields.find(_.name == name)))
+      .foreach {
+        case (name, data) =>
+          require(data.nonEmpty, s"Couldn't find column with name $name")
+          require(
+            data.get.dataType.isInstanceOf[NumericType],
+            s"Currently $functionName calculation " +
+              s"for columns with dataType ${data.get.dataType} not supported.")
+      }
     val columns = cols.map(n => Column(Cast(Column(n).expr, DoubleType)))
-    df.select(columns: _*)
+    df
+      .select(columns: _*)
       .queryExecution
       .toRdd
       .aggregate(new CovarianceCounter)(
@@ -519,9 +524,12 @@ private[sql] object StatFunctions extends Logging {
     }
     // In the map, the column names (._1) are not ordered by the index (._2). This was the bug in
     // SPARK-8681. We need to explicitly sort by the column index and assign the column names.
-    val headerNames = distinctCol2.toSeq.sortBy(_._2).map { r =>
-      StructField(cleanColumnName(r._1.toString), LongType)
-    }
+    val headerNames = distinctCol2
+      .toSeq
+      .sortBy(_._2)
+      .map { r =>
+        StructField(cleanColumnName(r._1.toString), LongType)
+      }
     val schema = StructType(StructField(tableName, StringType) +: headerNames)
 
     Dataset

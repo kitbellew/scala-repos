@@ -55,9 +55,11 @@ object AddOnlyStrategy {
 
 abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
   def addToFunction(function: ScFunctionDefinition) {
-    function.returnType.foreach {
-      addTypeAnnotation(_, function, function.paramClauses)
-    }
+    function
+      .returnType
+      .foreach {
+        addTypeAnnotation(_, function, function.paramClauses)
+      }
   }
 
   def removeFromFunction(function: ScFunctionDefinition) {
@@ -65,9 +67,12 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
   }
 
   def addToValue(value: ScPatternDefinition) {
-    value.getType(TypingContext.empty).toOption.foreach {
-      addTypeAnnotation(_, value, value.pList)
-    }
+    value
+      .getType(TypingContext.empty)
+      .toOption
+      .foreach {
+        addTypeAnnotation(_, value, value.pList)
+      }
   }
 
   def removeFromValue(value: ScPatternDefinition) {
@@ -75,9 +80,12 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
   }
 
   def addToVariable(variable: ScVariableDefinition) {
-    variable.getType(TypingContext.empty).toOption.foreach {
-      addTypeAnnotation(_, variable, variable.pList)
-    }
+    variable
+      .getType(TypingContext.empty)
+      .toOption
+      .foreach {
+        addTypeAnnotation(_, variable, variable.pList)
+      }
   }
 
   def removeFromVariable(variable: ScVariableDefinition) {
@@ -85,21 +93,24 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
   }
 
   def addToPattern(pattern: ScBindingPattern) {
-    pattern.expectedType.foreach {
-      addTypeAnnotation(_, pattern.getParent, pattern)
-    }
+    pattern
+      .expectedType
+      .foreach {
+        addTypeAnnotation(_, pattern.getParent, pattern)
+      }
   }
 
   def addToWildcardPattern(pattern: ScWildcardPattern) {
-    pattern.expectedType.foreach {
-      addTypeAnnotation(_, pattern.getParent, pattern)
-    }
+    pattern
+      .expectedType
+      .foreach {
+        addTypeAnnotation(_, pattern.getParent, pattern)
+      }
   }
 
   def removeFromPattern(pattern: ScTypedPattern) {
-    val newPattern = ScalaPsiElementFactory.createPatternFromText(
-      pattern.name,
-      pattern.getManager)
+    val newPattern = ScalaPsiElementFactory
+      .createPatternFromText(pattern.name, pattern.getManager)
     pattern.replace(newPattern)
   }
 
@@ -133,16 +144,12 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
   }
 
   def removeFromParameter(param: ScParameter) {
-    val newParam = ScalaPsiElementFactory.createParameterFromText(
-      param.name,
-      param.getManager)
-    val newClause = ScalaPsiElementFactory.createClauseForFunctionExprFromText(
-      newParam.getText,
-      param.getManager)
-    val expr: ScFunctionExpr = PsiTreeUtil.getParentOfType(
-      param,
-      classOf[ScFunctionExpr],
-      false)
+    val newParam = ScalaPsiElementFactory
+      .createParameterFromText(param.name, param.getManager)
+    val newClause = ScalaPsiElementFactory
+      .createClauseForFunctionExprFromText(newParam.getText, param.getManager)
+    val expr: ScFunctionExpr = PsiTreeUtil
+      .getParentOfType(param, classOf[ScFunctionExpr], false)
     if (expr != null) {
       val firstClause = expr.params.clauses.head
       val fcText = firstClause.getText
@@ -160,8 +167,8 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
       val parent = anchor.getParent
       val added = parent.addAfter(annotation, anchor)
       val colon = ScalaPsiElementFactory.createColon(context.getManager)
-      val whitespace = ScalaPsiElementFactory.createWhitespace(
-        context.getManager)
+      val whitespace = ScalaPsiElementFactory
+        .createWhitespace(context.getManager)
       parent.addAfter(whitespace, anchor)
       parent.addAfter(colon, anchor)
       added
@@ -195,8 +202,8 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
               }
           }
         case someOrNone
-            if Set("_root_.scala.Some", "_root_.scala.None").exists(
-              someOrNone.canonicalText.startsWith) =>
+            if Set("_root_.scala.Some", "_root_.scala.None")
+              .exists(someOrNone.canonicalText.startsWith) =>
           val replacement = BaseTypes
             .get(someOrNone)
             .find(_.canonicalText.startsWith("_root_.scala.Option"))

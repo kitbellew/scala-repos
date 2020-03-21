@@ -292,7 +292,15 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     val allBuiltinFunctions =
       (
         FunctionRegistry.builtin.listFunction().toSet[String] ++
-          org.apache.hadoop.hive.ql.exec.FunctionRegistry.getFunctionNames.asScala
+          org
+            .apache
+            .hadoop
+            .hive
+            .ql
+            .exec
+            .FunctionRegistry
+            .getFunctionNames
+            .asScala
       ).toList.sorted
     // The TestContext is shared by all the test cases, some functions may be registered before
     // this, so we check that all the builtin functions are returned.
@@ -391,7 +399,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("explode nested Field") {
-    Seq(NestedArray1(NestedArray2(Seq(1, 2, 3)))).toDF
+    Seq(NestedArray1(NestedArray2(Seq(1, 2, 3))))
+      .toDF
       .registerTempTable("nestedArray")
     checkAnswer(
       sql("SELECT ints FROM nestedArray LATERAL VIEW explode(a.b) a AS ints"),
@@ -823,8 +832,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("SPARK-4296 Grouping field with Hive UDF as sub expression") {
-    val rdd = sparkContext.makeRDD(
-      """{"a": "str", "b":"1", "c":"1970-01-01 00:00:00"}""" :: Nil)
+    val rdd = sparkContext
+      .makeRDD("""{"a": "str", "b":"1", "c":"1970-01-01 00:00:00"}""" :: Nil)
     read.json(rdd).registerTempTable("data")
     checkAnswer(
       sql(
@@ -842,16 +851,16 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("resolve udtf in projection #1") {
-    val rdd = sparkContext.makeRDD(
-      (1 to 5).map(i => s"""{"a":[$i, ${i + 1}]}"""))
+    val rdd = sparkContext
+      .makeRDD((1 to 5).map(i => s"""{"a":[$i, ${i + 1}]}"""))
     read.json(rdd).registerTempTable("data")
     val df = sql("SELECT explode(a) AS val FROM data")
     val col = df("val")
   }
 
   test("resolve udtf in projection #2") {
-    val rdd = sparkContext.makeRDD(
-      (1 to 2).map(i => s"""{"a":[$i, ${i + 1}]}"""))
+    val rdd = sparkContext
+      .makeRDD((1 to 2).map(i => s"""{"a":[$i, ${i + 1}]}"""))
     read.json(rdd).registerTempTable("data")
     checkAnswer(
       sql("SELECT explode(map(1, 1)) FROM data LIMIT 1"),
@@ -885,8 +894,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     // is not in a valid state (cannot be executed). Because of this bug, the analysis rule of
     // PreInsertionCasts will actually start to work before ImplicitGenerate and then
     // generates an invalid query plan.
-    val rdd = sparkContext.makeRDD(
-      (1 to 5).map(i => s"""{"a":[$i, ${i + 1}]}"""))
+    val rdd = sparkContext
+      .makeRDD((1 to 5).map(i => s"""{"a":[$i, ${i + 1}]}"""))
     read.json(rdd).registerTempTable("data")
     val originalConf = convertCTAS
     setConf(HiveContext.CONVERT_CTAS, false)
@@ -914,14 +923,16 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("sanity test for SPARK-6618") {
-    (1 to 100).par.map { i =>
-      val tableName = s"SPARK_6618_table_$i"
-      sql(s"CREATE TABLE $tableName (col1 string)")
-      sessionState.catalog.lookupRelation(TableIdentifier(tableName))
-      table(tableName)
-      tables()
-      sql(s"DROP TABLE $tableName")
-    }
+    (1 to 100)
+      .par
+      .map { i =>
+        val tableName = s"SPARK_6618_table_$i"
+        sql(s"CREATE TABLE $tableName (col1 string)")
+        sessionState.catalog.lookupRelation(TableIdentifier(tableName))
+        table(tableName)
+        tables()
+        sql(s"DROP TABLE $tableName")
+      }
   }
 
   test("SPARK-5203 union with different decimal precision") {
@@ -931,8 +942,9 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       .select($"d1".cast(DecimalType(10, 5)).as("d"))
       .registerTempTable("dn")
 
-    sql(
-      "select d from dn union all select d * 2 from dn").queryExecution.analyzed
+    sql("select d from dn union all select d * 2 from dn")
+      .queryExecution
+      .analyzed
   }
 
   test("test script transform for stdout") {
@@ -942,8 +954,9 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     data.toDF("d1", "d2", "d3").registerTempTable("script_trans")
     assert(
       100000 ===
-        sql(
-          "SELECT TRANSFORM (d1, d2, d3) USING 'cat' AS (a,b,c) FROM script_trans").queryExecution.toRdd
+        sql("SELECT TRANSFORM (d1, d2, d3) USING 'cat' AS (a,b,c) FROM script_trans")
+          .queryExecution
+          .toRdd
           .count())
   }
 
@@ -954,8 +967,9 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     data.toDF("d1", "d2", "d3").registerTempTable("script_trans")
     assert(
       0 ===
-        sql(
-          "SELECT TRANSFORM (d1, d2, d3) USING 'cat 1>&2' AS (a,b,c) FROM script_trans").queryExecution.toRdd
+        sql("SELECT TRANSFORM (d1, d2, d3) USING 'cat 1>&2' AS (a,b,c) FROM script_trans")
+          .queryExecution
+          .toRdd
           .count())
   }
 
@@ -1055,8 +1069,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
           |select area, rank() over (partition by area order by tmp.month) + tmp.tmp1 as c1
           |from (select month, area, product, 1 as tmp1 from windowData) tmp
         """.stripMargin),
-      Seq(("a", 2), ("a", 3), ("b", 2), ("b", 3), ("c", 2), ("c", 3)).map(i =>
-        Row(i._1, i._2))
+      Seq(("a", 2), ("a", 3), ("b", 2), ("b", 3), ("c", 2), ("c", 3))
+        .map(i => Row(i._1, i._2))
     )
   }
 
@@ -1204,8 +1218,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
           |select area, rank() over (partition by area order by tmp.month) + tmp.tmp1 as c1
           |from (select month, area, product as p, 1 as tmp1 from windowData) tmp order by p
         """.stripMargin),
-      Seq(("a", 2), ("b", 2), ("b", 3), ("c", 2), ("d", 2), ("c", 3)).map(i =>
-        Row(i._1, i._2))
+      Seq(("a", 2), ("b", 2), ("b", 3), ("c", 2), ("d", 2), ("c", 3))
+        .map(i => Row(i._1, i._2))
     )
 
     checkAnswer(
@@ -1213,8 +1227,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         |select area, rank() over (partition by area order by month) as c1
         |from windowData group by product, area, month order by product, area
       """.stripMargin),
-      Seq(("a", 1), ("b", 1), ("b", 2), ("c", 1), ("d", 1), ("c", 2)).map(i =>
-        Row(i._1, i._2))
+      Seq(("a", 1), ("b", 1), ("b", 2), ("c", 1), ("d", 1), ("c", 2))
+        .map(i => Row(i._1, i._2))
     )
 
     checkAnswer(
@@ -1250,8 +1264,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
           |where product > 3 group by area, product
           |having avg(month) > 0 order by avg(month), product
         """.stripMargin),
-      Seq(("a", 51), ("b", 51), ("b", 51), ("c", 51), ("c", 51), ("d", 51)).map(
-        i => Row(i._1, i._2))
+      Seq(("a", 51), ("b", 51), ("b", 51), ("c", 51), ("c", 51), ("d", 51))
+        .map(i => Row(i._1, i._2))
     )
   }
 
@@ -1530,9 +1544,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         .parallelize(1 to 10)
         .map(i => (i, i.toString))
         .toDF("num", "str")
-      df.write
-        .format("parquet")
-        .save(path)
+      df.write.format("parquet").save(path)
 
       val message =
         intercept[AnalysisException] {

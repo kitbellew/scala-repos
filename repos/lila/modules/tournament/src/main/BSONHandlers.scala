@@ -83,9 +83,11 @@ object BSONHandlers {
           "eco" -> o.position.some.filterNot(_.initial).map(_.eco),
           "mode" -> o.mode.some.filterNot(_.rated).map(_.id),
           "private" -> w.boolO(o.`private`),
-          "schedule" -> o.schedule.map { s =>
-            BSONDocument("freq" -> s.freq.name, "speed" -> s.speed.name)
-          },
+          "schedule" -> o
+            .schedule
+            .map { s =>
+              BSONDocument("freq" -> s.freq.name, "speed" -> s.speed.name)
+            },
           "nbPlayers" -> o.nbPlayers,
           "createdAt" -> w.date(o.createdAt),
           "createdBy" -> w.str(o.createdBy),

@@ -27,8 +27,9 @@ class WhileFilter extends ElementFilter {
             case x: ScDoStmt =>
               x
             case x
-                if x.isInstanceOf[
-                  PsiWhiteSpace] || x.getNode.getElementType == ScalaTokenTypes.tWHITE_SPACE_IN_LINE =>
+                if x.isInstanceOf[PsiWhiteSpace] || x
+                  .getNode
+                  .getElementType == ScalaTokenTypes.tWHITE_SPACE_IN_LINE =>
               x.getPrevSibling match {
                 case x: ScDoStmt =>
                   x

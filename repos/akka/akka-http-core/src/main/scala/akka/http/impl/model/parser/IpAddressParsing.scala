@@ -45,8 +45,8 @@ private[parser] trait IpAddressParsing {
       }
     def h8(ix: Int) =
       rule {
-        HEXDIG ~ HEXDIG ~ run(a(ix) =
-          (hv(charAt(-2)) * 16 + hv(lastChar)).toByte)
+        HEXDIG ~ HEXDIG ~ run(a(ix) = (hv(charAt(-2)) * 16 + hv(lastChar))
+          .toByte)
       }
     def h16(ix: Int) =
       rule {

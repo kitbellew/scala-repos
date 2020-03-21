@@ -54,12 +54,14 @@ class RunWorksheetAction extends AnAction with TopComponentAction {
   override def update(e: AnActionEvent) {
     val presentation = e.getPresentation
     presentation.setIcon(AllIcons.Actions.Execute)
-    val shortcuts = KeymapManager.getInstance.getActiveKeymap
+    val shortcuts = KeymapManager
+      .getInstance
+      .getActiveKeymap
       .getShortcuts("Scala.RunWorksheet")
     if (shortcuts.nonEmpty) {
       val shortcutText = " (" + KeymapUtil.getShortcutText(shortcuts(0)) + ")"
-      presentation.setText(
-        ScalaBundle.message("worksheet.execute.button") + shortcutText)
+      presentation
+        .setText(ScalaBundle.message("worksheet.execute.button") + shortcutText)
     }
 
     updateInner(presentation, e.getProject)
@@ -107,19 +109,23 @@ object RunWorksheetAction {
         val viewer = WorksheetViewerInfo getViewer editor
 
         if (viewer != null) {
-          ApplicationManager.getApplication.invokeAndWait(
-            new Runnable {
-              override def run() {
-                scala.extensions.inWriteAction {
-                  CleanWorksheetAction.resetScrollModel(viewer)
-                  if (!auto)
-                    CleanWorksheetAction
-                      .cleanWorksheet(file.getNode, editor, viewer, project)
+          ApplicationManager
+            .getApplication
+            .invokeAndWait(
+              new Runnable {
+                override def run() {
+                  scala
+                    .extensions
+                    .inWriteAction {
+                      CleanWorksheetAction.resetScrollModel(viewer)
+                      if (!auto)
+                        CleanWorksheetAction
+                          .cleanWorksheet(file.getNode, editor, viewer, project)
+                    }
                 }
-              }
-            },
-            ModalityState.any()
-          )
+              },
+              ModalityState.any()
+            )
         }
 
         def runnable() = {
@@ -198,10 +204,12 @@ object RunWorksheetAction {
 
     val project = module.getProject
 
-    val scalaSdk = module.scalaSdk.getOrElse {
-      throw new ExecutionException(
-        "No Scala facet configured for module " + module.getName)
-    }
+    val scalaSdk = module
+      .scalaSdk
+      .getOrElse {
+        throw new ExecutionException(
+          "No Scala facet configured for module " + module.getName)
+      }
 
     val rootManager = ModuleRootManager.getInstance(module)
     val sdk = rootManager.getSdk
@@ -224,7 +232,8 @@ object RunWorksheetAction {
     params.getProgramParametersList addParametersString worksheetField
     if (!consoleArgs.isEmpty)
       params.getProgramParametersList addParametersString consoleArgs
-    params.getProgramParametersList prepend mainClassName //IMPORTANT! this must be first program argument
+    params
+      .getProgramParametersList prepend mainClassName //IMPORTANT! this must be first program argument
 
     params
   }
@@ -234,9 +243,8 @@ object RunWorksheetAction {
 
     val editor = EditorHelper openInEditor file
 
-    val worksheetPrinter = WorksheetEditorPrinter.newWorksheetUiFor(
-      editor,
-      virtualFile)
+    val worksheetPrinter = WorksheetEditorPrinter
+      .newWorksheetUiFor(editor, virtualFile)
 
     val myProcessListener: ProcessAdapter =
       new ProcessAdapter {
@@ -290,9 +298,11 @@ object RunWorksheetAction {
   def getModuleFor(file: PsiFile): Module =
     WorksheetCompiler.getModuleForCpName(file) flatMap {
       case name =>
-        scala.extensions.inReadAction {
-          Option(
-            ModuleManager getInstance file.getProject findModuleByName name)
-        }
+        scala
+          .extensions
+          .inReadAction {
+            Option(
+              ModuleManager getInstance file.getProject findModuleByName name)
+          }
     } getOrElse getModuleFor(file.getVirtualFile, file.getProject)
 }

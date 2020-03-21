@@ -77,7 +77,8 @@ class LogisticRegressionSuite
     * so we can validate the training accuracy compared with R's glmnet package.
     */
   ignore("export test data into CSV format") {
-    binaryDataset.rdd
+    binaryDataset
+      .rdd
       .map {
         case Row(label: Double, features: Vector) =>
           label + "," + features.toArray.mkString(",")
@@ -251,21 +252,27 @@ class LogisticRegressionSuite
     val results = model.transform(dataset)
 
     // Compare rawPrediction with probability
-    results.select("rawPrediction", "probability").collect().foreach {
-      case Row(raw: Vector, prob: Vector) =>
-        assert(raw.size === 2)
-        assert(prob.size === 2)
-        val probFromRaw1 = 1.0 / (1.0 + math.exp(-raw(1)))
-        assert(prob(1) ~== probFromRaw1 relTol eps)
-        assert(prob(0) ~== 1.0 - probFromRaw1 relTol eps)
-    }
+    results
+      .select("rawPrediction", "probability")
+      .collect()
+      .foreach {
+        case Row(raw: Vector, prob: Vector) =>
+          assert(raw.size === 2)
+          assert(prob.size === 2)
+          val probFromRaw1 = 1.0 / (1.0 + math.exp(-raw(1)))
+          assert(prob(1) ~== probFromRaw1 relTol eps)
+          assert(prob(0) ~== 1.0 - probFromRaw1 relTol eps)
+      }
 
     // Compare prediction with probability
-    results.select("prediction", "probability").collect().foreach {
-      case Row(pred: Double, prob: Vector) =>
-        val predFromProb = prob.toArray.zipWithIndex.maxBy(_._1)._2
-        assert(pred == predFromProb)
-    }
+    results
+      .select("prediction", "probability")
+      .collect()
+      .foreach {
+        case Row(pred: Double, prob: Vector) =>
+          val predFromProb = prob.toArray.zipWithIndex.maxBy(_._1)._2
+          assert(pred == predFromProb)
+      }
   }
 
   test("MultiClassSummarizer") {
@@ -394,11 +401,8 @@ class LogisticRegressionSuite
        data.V5     -0.7996864
      */
     val interceptR = 2.8366423
-    val coefficientsR = Vectors.dense(
-      -0.5895848,
-      0.8931147,
-      -0.3925051,
-      -0.7996864)
+    val coefficientsR = Vectors
+      .dense(-0.5895848, 0.8931147, -0.3925051, -0.7996864)
 
     assert(model1.intercept ~== interceptR relTol 1e-3)
     assert(model1.coefficients ~= coefficientsR relTol 1e-3)
@@ -439,11 +443,8 @@ class LogisticRegressionSuite
        data.V5     -0.7407946
      */
     val interceptR = 0.0
-    val coefficientsR = Vectors.dense(
-      -0.3534996,
-      1.2964482,
-      -0.3571741,
-      -0.7407946)
+    val coefficientsR = Vectors
+      .dense(-0.3534996, 1.2964482, -0.3571741, -0.7407946)
 
     assert(model1.intercept ~== interceptR relTol 1e-3)
     assert(model1.coefficients ~= coefficientsR relTol 1e-2)
@@ -618,11 +619,8 @@ class LogisticRegressionSuite
        data.V5     -0.10062872
      */
     val interceptR1 = 0.15021751
-    val coefficientsR1 = Vectors.dense(
-      -0.07251837,
-      0.10724191,
-      -0.04865309,
-      -0.10062872)
+    val coefficientsR1 = Vectors
+      .dense(-0.07251837, 0.10724191, -0.04865309, -0.10062872)
 
     assert(model1.intercept ~== interceptR1 relTol 1e-3)
     assert(model1.coefficients ~= coefficientsR1 relTol 1e-3)
@@ -647,11 +645,8 @@ class LogisticRegressionSuite
        data.V5     -0.06266838
      */
     val interceptR2 = 0.48657516
-    val coefficientsR2 = Vectors.dense(
-      -0.05155371,
-      0.02301057,
-      -0.11482896,
-      -0.06266838)
+    val coefficientsR2 = Vectors
+      .dense(-0.05155371, 0.02301057, -0.11482896, -0.06266838)
 
     assert(model2.intercept ~== interceptR2 relTol 1e-3)
     assert(model2.coefficients ~= coefficientsR2 relTol 1e-3)
@@ -692,11 +687,8 @@ class LogisticRegressionSuite
        data.V5     -0.09799775
      */
     val interceptR1 = 0.0
-    val coefficientsR1 = Vectors.dense(
-      -0.06099165,
-      0.12857058,
-      -0.04708770,
-      -0.09799775)
+    val coefficientsR1 = Vectors
+      .dense(-0.06099165, 0.12857058, -0.04708770, -0.09799775)
 
     assert(model1.intercept ~== interceptR1 absTol 1e-3)
     assert(model1.coefficients ~= coefficientsR1 relTol 1e-2)
@@ -721,11 +713,8 @@ class LogisticRegressionSuite
        data.V5     -0.053314311
      */
     val interceptR2 = 0.0
-    val coefficientsR2 = Vectors.dense(
-      -0.005679651,
-      0.048967094,
-      -0.093714016,
-      -0.053314311)
+    val coefficientsR2 = Vectors
+      .dense(-0.005679651, 0.048967094, -0.093714016, -0.053314311)
 
     assert(model2.intercept ~== interceptR2 absTol 1e-3)
     assert(model2.coefficients ~= coefficientsR2 relTol 1e-2)
@@ -766,11 +755,8 @@ class LogisticRegressionSuite
        data.V5     -0.15458796
      */
     val interceptR1 = 0.57734851
-    val coefficientsR1 = Vectors.dense(
-      -0.05310287,
-      0.0,
-      -0.08849250,
-      -0.15458796)
+    val coefficientsR1 = Vectors
+      .dense(-0.05310287, 0.0, -0.08849250, -0.15458796)
 
     assert(model1.intercept ~== interceptR1 relTol 6e-3)
     assert(model1.coefficients ~== coefficientsR1 absTol 5e-3)
@@ -837,11 +823,8 @@ class LogisticRegressionSuite
        data.V5     -0.142534158
      */
     val interceptR1 = 0.0
-    val coefficientsR1 = Vectors.dense(
-      -0.001005743,
-      0.072577857,
-      -0.081203769,
-      -0.142534158)
+    val coefficientsR1 = Vectors
+      .dense(-0.001005743, 0.072577857, -0.081203769, -0.142534158)
 
     assert(model1.intercept ~== interceptR1 relTol 1e-3)
     assert(model1.coefficients ~= coefficientsR1 absTol 1e-2)
@@ -889,7 +872,8 @@ class LogisticRegressionSuite
     val model2 = trainer2.fit(binaryDataset)
 
     val histogram =
-      binaryDataset.rdd
+      binaryDataset
+        .rdd
         .map {
           case Row(label: Double, features: Vector) =>
             label
@@ -971,14 +955,17 @@ class LogisticRegressionSuite
     assert(summary.roc.collect() === sameSummary.roc.collect())
     assert(summary.pr.collect === sameSummary.pr.collect())
     assert(
-      summary.fMeasureByThreshold.collect() === sameSummary.fMeasureByThreshold
+      summary.fMeasureByThreshold.collect() === sameSummary
+        .fMeasureByThreshold
         .collect())
     assert(
-      summary.recallByThreshold.collect() === sameSummary.recallByThreshold
+      summary.recallByThreshold.collect() === sameSummary
+        .recallByThreshold
         .collect())
     assert(
-      summary.precisionByThreshold
-        .collect() === sameSummary.precisionByThreshold.collect())
+      summary.precisionByThreshold.collect() === sameSummary
+        .precisionByThreshold
+        .collect())
   }
 
   test("statistics on training data") {
@@ -988,10 +975,7 @@ class LogisticRegressionSuite
       .setRegParam(1.0)
       .setThreshold(0.6)
     val model = lr.fit(dataset)
-    assert(
-      model.summary.objectiveHistory
-        .sliding(2)
-        .forall(x => x(0) >= x(1)))
+    assert(model.summary.objectiveHistory.sliding(2).forall(x => x(0) >= x(1)))
 
   }
 
@@ -1140,16 +1124,16 @@ object LogisticRegressionSuite {
     * This is useful for tests which need to exercise all Params, such as save/load.
     * This excludes input columns to simplify some tests.
     */
-  val allParamSettings: Map[String, Any] =
-    ProbabilisticClassifierSuite.allParamSettings ++ Map(
-      "probabilityCol" -> "myProbability",
-      "thresholds" -> Array(0.4, 0.6),
-      "regParam" -> 0.01,
-      "elasticNetParam" -> 0.1,
-      "maxIter" -> 2, // intentionally small
-      "fitIntercept" -> true,
-      "tol" -> 0.8,
-      "standardization" -> false,
-      "threshold" -> 0.6
-    )
+  val allParamSettings: Map[String, Any] = ProbabilisticClassifierSuite
+    .allParamSettings ++ Map(
+    "probabilityCol" -> "myProbability",
+    "thresholds" -> Array(0.4, 0.6),
+    "regParam" -> 0.01,
+    "elasticNetParam" -> 0.1,
+    "maxIter" -> 2, // intentionally small
+    "fitIntercept" -> true,
+    "tol" -> 0.8,
+    "standardization" -> false,
+    "threshold" -> 0.6
+  )
 }

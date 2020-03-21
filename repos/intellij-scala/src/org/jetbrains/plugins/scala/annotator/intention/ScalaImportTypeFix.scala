@@ -136,15 +136,15 @@ class ScalaImportTypeFix(
 
   private def range(editor: Editor) = {
     val visibleRectangle = editor.getScrollingModel.getVisibleArea
-    val startPosition = editor.xyToLogicalPosition(
-      new Point(visibleRectangle.x, visibleRectangle.y))
+    val startPosition = editor
+      .xyToLogicalPosition(new Point(visibleRectangle.x, visibleRectangle.y))
     val myStartOffset = editor.logicalPositionToOffset(startPosition)
     val endPosition = editor.xyToLogicalPosition(
       new Point(
         visibleRectangle.x + visibleRectangle.width,
         visibleRectangle.y + visibleRectangle.height))
-    val myEndOffset = editor.logicalPositionToOffset(
-      new LogicalPosition(endPosition.line + 1, 0))
+    val myEndOffset = editor
+      .logicalPositionToOffset(new LogicalPosition(endPosition.line + 1, 0))
     new TextRange(myStartOffset, myEndOffset)
   }
 
@@ -153,41 +153,44 @@ class ScalaImportTypeFix(
   private def endOffset(editor: Editor) = range(editor).getEndOffset
 
   private def fixesAction(editor: Editor) {
-    ApplicationManager.getApplication.invokeLater(
-      new Runnable {
-        def run() {
-          if (!ref.isValid)
-            return
-          if (ref.resolve != null)
-            return
+    ApplicationManager
+      .getApplication
+      .invokeLater(
+        new Runnable {
+          def run() {
+            if (!ref.isValid)
+              return
+            if (ref.resolve != null)
+              return
 
-          if (HintManagerImpl.getInstanceImpl
-                .hasShownHintsThatWillHideByOtherHint(true))
-            return
-          val action =
-            new ScalaAddImportAction(editor, classes, ref: ScReferenceElement)
+            if (HintManagerImpl
+                  .getInstanceImpl
+                  .hasShownHintsThatWillHideByOtherHint(true))
+              return
+            val action =
+              new ScalaAddImportAction(editor, classes, ref: ScReferenceElement)
 
-          val offset = ref.getTextRange.getStartOffset
-          if (classes.nonEmpty && offset >= startOffset(
-                editor) && offset <= endOffset(editor) && editor != null &&
-              offset <= editor.getDocument.getTextLength) {
-            HintManager
-              .getInstance()
-              .showQuestionHint(
-                editor,
-                if (classes.length == 1)
-                  classes(0).qualifiedName + "? Alt+Enter"
-                else
-                  classes(
-                    0).qualifiedName + "? (multiple choices...) Alt+Enter",
-                offset,
-                offset + ref.getTextLength,
-                action
-              )
-            return
+            val offset = ref.getTextRange.getStartOffset
+            if (classes.nonEmpty && offset >= startOffset(
+                  editor) && offset <= endOffset(editor) && editor != null &&
+                offset <= editor.getDocument.getTextLength) {
+              HintManager
+                .getInstance()
+                .showQuestionHint(
+                  editor,
+                  if (classes.length == 1)
+                    classes(0).qualifiedName + "? Alt+Enter"
+                  else
+                    classes(0)
+                      .qualifiedName + "? (multiple choices...) Alt+Enter",
+                  offset,
+                  offset + ref.getTextLength,
+                  action
+                )
+              return
+            }
           }
-        }
-      })
+        })
   }
 
   def startInWriteAction(): Boolean = true
@@ -198,34 +201,37 @@ class ScalaImportTypeFix(
       ref: ScReferenceElement)
       extends QuestionAction {
     def addImportOrReference(clazz: TypeToImport) {
-      ApplicationManager.getApplication.invokeLater(
-        new Runnable() {
-          def run() {
-            if (!ref.isValid || !FileModificationService.getInstance
-                  .prepareFileForWrite(ref.getContainingFile))
-              return
-            ScalaUtils.runWriteAction(
-              new Runnable {
-                def run() {
-                  PsiDocumentManager
-                    .getInstance(project)
-                    .commitDocument(editor.getDocument)
-                  if (!ref.isValid)
-                    return
-                  if (!ref.isInstanceOf[ScDocResolvableCodeReference])
-                    ref.bindToElement(clazz.element)
-                  else
-                    ref.replace(
-                      ScalaPsiElementFactory.createDocLinkValue(
-                        clazz.qualifiedName,
-                        ref.getManager))
-                }
-              },
-              clazz.getProject,
-              "Add import action"
-            )
-          }
-        })
+      ApplicationManager
+        .getApplication
+        .invokeLater(
+          new Runnable() {
+            def run() {
+              if (!ref.isValid || !FileModificationService
+                    .getInstance
+                    .prepareFileForWrite(ref.getContainingFile))
+                return
+              ScalaUtils.runWriteAction(
+                new Runnable {
+                  def run() {
+                    PsiDocumentManager
+                      .getInstance(project)
+                      .commitDocument(editor.getDocument)
+                    if (!ref.isValid)
+                      return
+                    if (!ref.isInstanceOf[ScDocResolvableCodeReference])
+                      ref.bindToElement(clazz.element)
+                    else
+                      ref.replace(
+                        ScalaPsiElementFactory.createDocLinkValue(
+                          clazz.qualifiedName,
+                          ref.getManager))
+                  }
+                },
+                clazz.getProject,
+                "Add import action"
+              )
+            }
+          })
     }
 
     def chooseClass() {
@@ -281,7 +287,8 @@ class ScalaImportTypeFix(
             true
           }
         }
-      JBPopupFactory.getInstance
+      JBPopupFactory
+        .getInstance
         .createListPopup(popup)
         .showInBestPositionFor(editor)
     }
@@ -439,11 +446,11 @@ object ScalaImportTypeFix {
     val buffer = new ArrayBuffer[TypeToImport]
     for (clazz <- classes) {
       def addClazz(clazz: PsiClass) {
-        if (clazz != null && clazz.qualifiedName != null && clazz.qualifiedName
-              .indexOf(".") > 0 &&
-            ResolveUtils.kindMatches(clazz, kinds) && notInner(
-              clazz,
-              ref) && ResolveUtils.isAccessible(clazz, ref) &&
+        if (clazz != null && clazz
+              .qualifiedName != null && clazz.qualifiedName.indexOf(".") > 0 &&
+            ResolveUtils
+              .kindMatches(clazz, kinds) && notInner(clazz, ref) && ResolveUtils
+              .isAccessible(clazz, ref) &&
             !JavaCompletionUtil.isInExcludedPackage(clazz, false)) {
           buffer += ClassTypeToImport(clazz)
         }
@@ -462,15 +469,13 @@ object ScalaImportTypeFix {
       }
     }
 
-    val typeAliases = cache.getStableAliasesByName(
-      ref.refName,
-      ref.getResolveScope)
+    val typeAliases = cache
+      .getStableAliasesByName(ref.refName, ref.getResolveScope)
     for (alias <- typeAliases) {
       val containingClass = alias.containingClass
       if (containingClass != null && ScalaPsiUtil.hasStablePath(alias) &&
-          ResolveUtils.kindMatches(alias, kinds) && ResolveUtils.isAccessible(
-            alias,
-            ref) &&
+          ResolveUtils.kindMatches(alias, kinds) && ResolveUtils
+            .isAccessible(alias, ref) &&
           !JavaCompletionUtil.isInExcludedPackage(containingClass, false)) {
         buffer += TypeAliasToImport(alias)
       }
@@ -497,8 +502,9 @@ object ScalaImportTypeFix {
 
     for (packageQualifier <- packagesList) {
       val pack = ScPackageImpl.findPackage(myProject, packageQualifier)
-      if (pack != null && pack.getQualifiedName.indexOf(
-            '.') != -1 && ResolveUtils.kindMatches(pack, kinds) &&
+      if (pack != null && pack
+            .getQualifiedName
+            .indexOf('.') != -1 && ResolveUtils.kindMatches(pack, kinds) &&
           !JavaProjectCodeInsightSettings
             .getSettings(myProject)
             .isExcluded(pack.getQualifiedName)) {

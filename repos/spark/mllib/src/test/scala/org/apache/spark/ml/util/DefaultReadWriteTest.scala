@@ -54,7 +54,8 @@ trait DefaultReadWriteTest extends TempDirectory {
       instance.save(path)
     }
     instance.write.overwrite().save(path)
-    val loader = instance.getClass
+    val loader = instance
+      .getClass
       .getMethod("read")
       .invoke(null)
       .asInstanceOf[MLReader[T]]
@@ -62,24 +63,26 @@ trait DefaultReadWriteTest extends TempDirectory {
 
     assert(newInstance.uid === instance.uid)
     if (testParams) {
-      instance.params.foreach { p =>
-        if (instance.isDefined(p)) {
-          (instance.getOrDefault(p), newInstance.getOrDefault(p)) match {
-            case (Array(values), Array(newValues)) =>
-              assert(
-                values === newValues,
-                s"Values do not match on param ${p.name}.")
-            case (value, newValue) =>
-              assert(
-                value === newValue,
-                s"Values do not match on param ${p.name}.")
+      instance
+        .params
+        .foreach { p =>
+          if (instance.isDefined(p)) {
+            (instance.getOrDefault(p), newInstance.getOrDefault(p)) match {
+              case (Array(values), Array(newValues)) =>
+                assert(
+                  values === newValues,
+                  s"Values do not match on param ${p.name}.")
+              case (value, newValue) =>
+                assert(
+                  value === newValue,
+                  s"Values do not match on param ${p.name}.")
+            }
+          } else {
+            assert(
+              !newInstance.isDefined(p),
+              s"Param ${p.name} shouldn't be defined.")
           }
-        } else {
-          assert(
-            !newInstance.isDefined(p),
-            s"Param ${p.name} shouldn't be defined.")
         }
-      }
     }
 
     val load = instance.getClass.getMethod("load", classOf[String])

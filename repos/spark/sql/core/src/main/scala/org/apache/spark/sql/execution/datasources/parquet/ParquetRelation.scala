@@ -73,8 +73,8 @@ private[sql] class DefaultSource
     val conf = ContextUtil.getConfiguration(job)
 
     // SPARK-9849 DirectParquetOutputCommitter qualified name should be backward compatible
-    val committerClassName = conf.get(
-      SQLConf.PARQUET_OUTPUT_COMMITTER_CLASS.key)
+    val committerClassName = conf
+      .get(SQLConf.PARQUET_OUTPUT_COMMITTER_CLASS.key)
     if (committerClassName == "org.apache.spark.sql.parquet.DirectParquetOutputCommitter") {
       conf.set(
         SQLConf.PARQUET_OUTPUT_COMMITTER_CLASS.key,
@@ -92,7 +92,8 @@ private[sql] class DefaultSource
           classOf[ParquetOutputCommitter].getCanonicalName)
     } else {
       logInfo(
-        "Using user defined output committer for Parquet: " + committerClass.getCanonicalName)
+        "Using user defined output committer for Parquet: " + committerClass
+          .getCanonicalName)
     }
 
     val compressionCodec: Option[String] = options
@@ -101,10 +102,11 @@ private[sql] class DefaultSource
         // Validate if given compression codec is supported or not.
         val shortParquetCompressionCodecNames =
           ParquetRelation.shortParquetCompressionCodecNames
-        if (!shortParquetCompressionCodecNames.contains(
-              codecName.toLowerCase)) {
-          val availableCodecs = shortParquetCompressionCodecNames.keys.map(
-            _.toLowerCase)
+        if (!shortParquetCompressionCodecNames
+              .contains(codecName.toLowerCase)) {
+          val availableCodecs = shortParquetCompressionCodecNames
+            .keys
+            .map(_.toLowerCase)
           throw new IllegalArgumentException(
             s"Codec [$codecName] " +
               s"is not available. Available codecs are ${availableCodecs.mkString(", ")}.")
@@ -149,7 +151,8 @@ private[sql] class DefaultSource
     // Sets compression scheme
     conf.set(
       ParquetOutputFormat.COMPRESSION,
-      ParquetRelation.shortParquetCompressionCodecNames
+      ParquetRelation
+        .shortParquetCompressionCodecNames
         .getOrElse(
           compressionCodec
             .getOrElse(sqlContext.conf.parquetCompressionCodec.toLowerCase),
@@ -179,8 +182,9 @@ private[sql] class DefaultSource
       .getOrElse(
         sqlContext.conf.getConf(SQLConf.PARQUET_SCHEMA_MERGING_ENABLED))
 
-    val mergeRespectSummaries = sqlContext.conf.getConf(
-      SQLConf.PARQUET_SCHEMA_RESPECT_SUMMARIES)
+    val mergeRespectSummaries = sqlContext
+      .conf
+      .getConf(SQLConf.PARQUET_SCHEMA_RESPECT_SUMMARIES)
 
     val filesByType = splitFiles(files)
 
@@ -242,15 +246,16 @@ private[sql] class DefaultSource
       } else {
         // Tries any "_common_metadata" first. Parquet files written by old versions or Parquet
         // don't have this.
-        filesByType.commonMetadata.headOption
-        // Falls back to "_metadata"
+        filesByType
+          .commonMetadata
+          .headOption
+          // Falls back to "_metadata"
           .orElse(filesByType.metadata.headOption)
           // Summary file(s) not found, the Parquet file is either corrupted, or different part-
           // files contain conflicting user defined metadata (two or more values are associated
           // with a same key in different files).  In either case, we fall back to any of the
           // first part-file, and just assume all schemas are consistent.
-          .orElse(filesByType.data.headOption)
-          .toSeq
+          .orElse(filesByType.data.headOption).toSeq
       }
     ParquetRelation.mergeSchemasInParallel(filesToTouch, sqlContext)
   }
@@ -274,8 +279,8 @@ private[sql] class DefaultSource
 
     FileTypes(
       data = leaves.filterNot(f => isSummaryFile(f.getPath)),
-      metadata = leaves.filter(
-        _.getPath.getName == ParquetFileWriter.PARQUET_METADATA_FILE),
+      metadata = leaves
+        .filter(_.getPath.getName == ParquetFileWriter.PARQUET_METADATA_FILE),
       commonMetadata = leaves.filter(
         _.getPath.getName == ParquetFileWriter.PARQUET_COMMON_METADATA_FILE)
     )
@@ -303,8 +308,8 @@ private[sql] class DefaultSource
     // Parquet row group size. We will use this value as the value for
     // mapreduce.input.fileinputformat.split.minsize and mapred.min.split.size if the value
     // of these flags are smaller than the parquet row group size.
-    val parquetBlockSize = ParquetOutputFormat.getLongBlockSize(
-      broadcastedConf.value.value)
+    val parquetBlockSize = ParquetOutputFormat
+      .getLongBlockSize(broadcastedConf.value.value)
 
     // Create the function to set variable Parquet confs at both driver and executor side.
     val initLocalJobFuncOpt =
@@ -322,9 +327,8 @@ private[sql] class DefaultSource
 
     // Create the function to set input paths at the driver side.
     val setInputPaths =
-      ParquetRelation.initializeDriverSideJobFunc(
-        inputFiles,
-        parquetBlockSize) _
+      ParquetRelation
+        .initializeDriverSideJobFunc(inputFiles, parquetBlockSize) _
 
     Utils.withDummyCallSite(sqlContext.sparkContext) {
       new SqlNewHadoopRDD(
@@ -339,23 +343,25 @@ private[sql] class DefaultSource
 
         @transient
         val cachedStatuses =
-          inputFiles.map { f =>
-            // In order to encode the authority of a Path containing special characters such as '/'
-            // (which does happen in some S3N credentials), we need to use the string returned by the
-            // URI of the path to create a new Path.
-            val pathWithEscapedAuthority = escapePathUserInfo(f.getPath)
-            new FileStatus(
-              f.getLen,
-              f.isDirectory,
-              f.getReplication,
-              f.getBlockSize,
-              f.getModificationTime,
-              f.getAccessTime,
-              f.getPermission,
-              f.getOwner,
-              f.getGroup,
-              pathWithEscapedAuthority)
-          }.toSeq
+          inputFiles
+            .map { f =>
+              // In order to encode the authority of a Path containing special characters such as '/'
+              // (which does happen in some S3N credentials), we need to use the string returned by the
+              // URI of the path to create a new Path.
+              val pathWithEscapedAuthority = escapePathUserInfo(f.getPath)
+              new FileStatus(
+                f.getLen,
+                f.isDirectory,
+                f.getReplication,
+                f.getBlockSize,
+                f.getModificationTime,
+                f.getAccessTime,
+                f.getPermission,
+                f.getOwner,
+                f.getGroup,
+                pathWithEscapedAuthority)
+            }
+            .toSeq
 
         private def escapePathUserInfo(path: Path): Path = {
           val uri = path.toUri
@@ -422,8 +428,8 @@ private[sql] class ParquetOutputWriter(
             context: TaskAttemptContext,
             extension: String): Path = {
           val configuration = context.getConfiguration
-          val uniqueWriteJobId = configuration.get(
-            "spark.sql.sources.writeJobUUID")
+          val uniqueWriteJobId = configuration
+            .get("spark.sql.sources.writeJobUUID")
           val taskAttemptId = context.getTaskAttemptID
           val split = taskAttemptId.getTaskID.getId
           val bucketString = bucketId
@@ -569,7 +575,10 @@ private[sql] object ParquetRelation extends Logging {
     val seen = mutable.HashSet[String]()
     val finalSchemas: Seq[StructType] = footers.flatMap { footer =>
       val metadata = footer.getParquetMetadata.getFileMetaData
-      val serializedSchema = metadata.getKeyValueMetaData.asScala.toMap
+      val serializedSchema = metadata
+        .getKeyValueMetaData
+        .asScala
+        .toMap
         .get(CatalystReadSupport.SPARK_METADATA_KEY)
       if (serializedSchema.isEmpty) {
         // Falls back to Parquet schema if no Spark SQL schema found.
@@ -644,23 +653,28 @@ private[sql] object ParquetRelation extends Logging {
       schemaConflictMessage)
 
     val ordinalMap =
-      metastoreSchema.zipWithIndex.map {
-        case (field, index) =>
-          field.name.toLowerCase -> index
-      }.toMap
+      metastoreSchema
+        .zipWithIndex
+        .map {
+          case (field, index) =>
+            field.name.toLowerCase -> index
+        }
+        .toMap
 
     val reorderedParquetSchema = mergedParquetSchema.sortBy(f =>
       ordinalMap.getOrElse(f.name.toLowerCase, metastoreSchema.size + 1))
 
     StructType(
-      metastoreSchema.zip(reorderedParquetSchema).map {
-        // Uses Parquet field names but retains Metastore data types.
-        case (mSchema, pSchema)
-            if mSchema.name.toLowerCase == pSchema.name.toLowerCase =>
-          mSchema.copy(name = pSchema.name)
-        case _ =>
-          throw new SparkException(schemaConflictMessage)
-      })
+      metastoreSchema
+        .zip(reorderedParquetSchema)
+        .map {
+          // Uses Parquet field names but retains Metastore data types.
+          case (mSchema, pSchema)
+              if mSchema.name.toLowerCase == pSchema.name.toLowerCase =>
+            mSchema.copy(name = pSchema.name)
+          case _ =>
+            throw new SparkException(schemaConflictMessage)
+        })
   }
 
   /**
@@ -722,29 +736,32 @@ private[sql] object ParquetRelation extends Logging {
     // Since Parquet only relies on path and length information of those `FileStatus`es to read
     // footers, here we just extract them (which can be easily serialized), send them to executor
     // side, and resemble fake `FileStatus`es there.
-    val partialFileStatusInfo = filesToTouch.map(f =>
-      (f.getPath.toString, f.getLen))
+    val partialFileStatusInfo = filesToTouch
+      .map(f => (f.getPath.toString, f.getLen))
 
     // Issues a Spark job to read Parquet schema in parallel.
-    val partiallyMergedSchemas = sqlContext.sparkContext
+    val partiallyMergedSchemas = sqlContext
+      .sparkContext
       .parallelize(partialFileStatusInfo)
       .mapPartitions { iterator =>
         // Resembles fake `FileStatus`es with serialized path and length information.
         val fakeFileStatuses =
-          iterator.map {
-            case (path, length) =>
-              new FileStatus(
-                length,
-                false,
-                0,
-                0,
-                0,
-                0,
-                null,
-                null,
-                null,
-                new Path(path))
-          }.toSeq
+          iterator
+            .map {
+              case (path, length) =>
+                new FileStatus(
+                  length,
+                  false,
+                  0,
+                  0,
+                  0,
+                  0,
+                  null,
+                  null,
+                  null,
+                  new Path(path))
+            }
+            .toSeq
 
         // Skips row group information since we only need the schema
         val skipRowGroups = true
@@ -768,20 +785,22 @@ private[sql] object ParquetRelation extends Logging {
         if (footers.isEmpty) {
           Iterator.empty
         } else {
-          var mergedSchema = ParquetRelation.readSchemaFromFooter(
-            footers.head,
-            converter)
-          footers.tail.foreach { footer =>
-            val schema = ParquetRelation.readSchemaFromFooter(footer, converter)
-            try {
-              mergedSchema = mergedSchema.merge(schema)
-            } catch {
-              case cause: SparkException =>
-                throw new SparkException(
-                  s"Failed merging schema of file ${footer.getFile}:\n${schema.treeString}",
-                  cause)
+          var mergedSchema = ParquetRelation
+            .readSchemaFromFooter(footers.head, converter)
+          footers
+            .tail
+            .foreach { footer =>
+              val schema = ParquetRelation
+                .readSchemaFromFooter(footer, converter)
+              try {
+                mergedSchema = mergedSchema.merge(schema)
+              } catch {
+                case cause: SparkException =>
+                  throw new SparkException(
+                    s"Failed merging schema of file ${footer.getFile}:\n${schema.treeString}",
+                    cause)
+              }
             }
-          }
           Iterator.single(mergedSchema)
         }
       }
@@ -791,16 +810,18 @@ private[sql] object ParquetRelation extends Logging {
       None
     } else {
       var finalSchema = partiallyMergedSchemas.head
-      partiallyMergedSchemas.tail.foreach { schema =>
-        try {
-          finalSchema = finalSchema.merge(schema)
-        } catch {
-          case cause: SparkException =>
-            throw new SparkException(
-              s"Failed merging schema:\n${schema.treeString}",
-              cause)
+      partiallyMergedSchemas
+        .tail
+        .foreach { schema =>
+          try {
+            finalSchema = finalSchema.merge(schema)
+          } catch {
+            case cause: SparkException =>
+              throw new SparkException(
+                s"Failed merging schema:\n${schema.treeString}",
+                cause)
+          }
         }
-      }
       Some(finalSchema)
     }
   }
@@ -814,7 +835,10 @@ private[sql] object ParquetRelation extends Logging {
       footer: Footer,
       converter: CatalystSchemaConverter): StructType = {
     val fileMetaData = footer.getParquetMetadata.getFileMetaData
-    fileMetaData.getKeyValueMetaData.asScala.toMap
+    fileMetaData
+      .getKeyValueMetaData
+      .asScala
+      .toMap
       .get(CatalystReadSupport.SPARK_METADATA_KEY)
       .flatMap(deserializeSchemaString)
       .getOrElse(converter.convert(fileMetaData.getSchema))
@@ -846,8 +870,8 @@ private[sql] object ParquetRelation extends Logging {
   // JUL loggers must be held by a strong reference, otherwise they may get destroyed by GC.
   // However, the root JUL logger used by Parquet isn't properly referenced.  Here we keep
   // references to loggers in both parquet-mr <= 1.6 and >= 1.7
-  val apacheParquetLogger: JLogger = JLogger.getLogger(
-    classOf[ApacheParquetLog].getPackage.getName)
+  val apacheParquetLogger: JLogger = JLogger
+    .getLogger(classOf[ApacheParquetLog].getPackage.getName)
   val parquetLogger: JLogger = JLogger.getLogger("parquet")
 
   // Parquet initializes its own JUL logger in a static block which always prints to stdout.  Here

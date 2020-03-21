@@ -77,12 +77,8 @@ object GetOffsetShell {
 
     val options = parser.parse(args: _*)
 
-    CommandLineUtils.checkRequiredArgs(
-      parser,
-      options,
-      brokerListOpt,
-      topicOpt,
-      timeOpt)
+    CommandLineUtils
+      .checkRequiredArgs(parser, options, brokerListOpt, topicOpt, timeOpt)
 
     val clientId = "GetOffsetShell"
     val brokerList = options.valueOf(brokerListOpt)
@@ -103,11 +99,13 @@ object GetOffsetShell {
           maxWaitMs)
         .topicsMetadata
     if (topicsMetadata.size != 1 || !topicsMetadata(0).topic.equals(topic)) {
-      System.err.println(
-        (
-          "Error: no valid topic metadata for topic: %s, " + " probably the topic does not exist, run "
-        ).format(topic) +
-          "kafka-list-topic.sh to verify")
+      System
+        .err
+        .println(
+          (
+            "Error: no valid topic metadata for topic: %s, " + " probably the topic does not exist, run "
+          ).format(topic) +
+            "kafka-list-topic.sh to verify")
       System.exit(1)
     }
     val partitions =
@@ -117,7 +115,9 @@ object GetOffsetShell {
         partitionList.split(",").map(_.toInt).toSeq
       }
     partitions.foreach { partitionId =>
-      val partitionMetadataOpt = topicsMetadata.head.partitionsMetadata
+      val partitionMetadataOpt = topicsMetadata
+        .head
+        .partitionsMetadata
         .find(_.partitionId == partitionId)
       partitionMetadataOpt match {
         case Some(metadata) =>
@@ -145,13 +145,16 @@ object GetOffsetShell {
               println(
                 "%s:%d:%s".format(topic, partitionId, offsets.mkString(",")))
             case None =>
-              System.err.println(
-                "Error: partition %d does not have a leader. Skip getting offsets"
-                  .format(partitionId))
+              System
+                .err
+                .println(
+                  "Error: partition %d does not have a leader. Skip getting offsets"
+                    .format(partitionId))
           }
         case None =>
-          System.err.println(
-            "Error: partition %d does not exist".format(partitionId))
+          System
+            .err
+            .println("Error: partition %d does not exist".format(partitionId))
       }
     }
   }

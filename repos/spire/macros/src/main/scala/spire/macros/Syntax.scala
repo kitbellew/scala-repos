@@ -120,16 +120,20 @@ class InlineUtil[C <: Context with Singleton](val c: C) {
       override def transform(tree: Tree): Tree =
         tree match {
           case Apply(Select(Function(params, body), ApplyName), args) =>
-            params.zip(args).foldLeft(body) {
-              case (b, (param, arg)) =>
-                inlineSymbol(param.symbol, b, arg)
-            }
+            params
+              .zip(args)
+              .foldLeft(body) {
+                case (b, (param, arg)) =>
+                  inlineSymbol(param.symbol, b, arg)
+              }
 
           case Apply(Function(params, body), args) =>
-            params.zip(args).foldLeft(body) {
-              case (b, (param, arg)) =>
-                inlineSymbol(param.symbol, b, arg)
-            }
+            params
+              .zip(args)
+              .foldLeft(body) {
+                case (b, (param, arg)) =>
+                  inlineSymbol(param.symbol, b, arg)
+              }
 
           case _ =>
             super.transform(tree)
@@ -200,12 +204,8 @@ v     */
     import c.universe._
     val util = SyntaxUtil[c.type](c)
 
-    val List(range, index, end, limit, step) = util.names(
-      "range",
-      "index",
-      "end",
-      "limit",
-      "step")
+    val List(range, index, end, limit, step) = util
+      .names("range", "index", "end", "limit", "step")
 
     def isLiteral(t: Tree): Option[Int] =
       t match {

@@ -182,9 +182,8 @@ class YarnClusterSuite extends BaseYarnClusterSuite {
     val pyModule = new File(moduleDir, "mod1.py")
     Files.write(TEST_PYMODULE, pyModule, StandardCharsets.UTF_8)
 
-    val mod2Archive = TestUtils.createJarWithFiles(
-      Map("mod2.py" -> TEST_PYMODULE),
-      moduleDir)
+    val mod2Archive = TestUtils
+      .createJarWithFiles(Map("mod2.py" -> TEST_PYMODULE), moduleDir)
     val pyFiles = Seq(pyModule.getAbsolutePath(), mod2Archive.getPath())
       .mkString(",")
     val result = File.createTempFile("result", null, tempDir)
@@ -200,12 +199,10 @@ class YarnClusterSuite extends BaseYarnClusterSuite {
 
   private def testUseClassPathFirst(clientMode: Boolean): Unit = {
     // Create a jar file that contains a different version of "test.resource".
-    val originalJar = TestUtils.createJarWithFiles(
-      Map("test.resource" -> "ORIGINAL"),
-      tempDir)
-    val userJar = TestUtils.createJarWithFiles(
-      Map("test.resource" -> "OVERRIDDEN"),
-      tempDir)
+    val originalJar = TestUtils
+      .createJarWithFiles(Map("test.resource" -> "ORIGINAL"), tempDir)
+    val userJar = TestUtils
+      .createJarWithFiles(Map("test.resource" -> "OVERRIDDEN"), tempDir)
     val driverResult = File.createTempFile("driver", null, tempDir)
     val executorResult = File.createTempFile("executor", null, tempDir)
     val finalState = runSpark(
@@ -333,9 +330,11 @@ private object YarnClasspathTest extends Logging {
     readResource(args(0))
     val sc = new SparkContext(new SparkConf())
     try {
-      sc.parallelize(Seq(1)).foreach { x =>
-        readResource(args(1))
-      }
+      sc
+        .parallelize(Seq(1))
+        .foreach { x =>
+          readResource(args(1))
+        }
     } finally {
       sc.stop()
     }
@@ -367,11 +366,13 @@ private object YarnLauncherTestApp {
     // Do not stop the application; the test will stop it using the launcher lib. Just run a task
     // that will prevent the process from exiting.
     val sc = new SparkContext(new SparkConf())
-    sc.parallelize(Seq(1)).foreach { i =>
-      this.synchronized {
-        wait()
+    sc
+      .parallelize(Seq(1))
+      .foreach { i =>
+        this.synchronized {
+          wait()
+        }
       }
-    }
   }
 
 }

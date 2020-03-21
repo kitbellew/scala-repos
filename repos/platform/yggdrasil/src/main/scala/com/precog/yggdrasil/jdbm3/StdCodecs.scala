@@ -91,8 +91,8 @@ trait RowFormatCodecs extends StdCodecs {
   // implicit def BitSetCodec: Codec[BitSet] = Codec.BitSetCodec
   //@transient implicit lazy val BitSetCodec: Codec[BitSet] = Codec.SparseBitSetCodec(columnRefs.size)
   @transient
-  implicit lazy val BitSetCodec: Codec[BitSet] = Codec.SparseBitSetCodec(
-    columnRefs.size)
+  implicit lazy val BitSetCodec: Codec[BitSet] = Codec
+    .SparseBitSetCodec(columnRefs.size)
   @transient
   implicit lazy val RawBitSetCodec: Codec[RawBitSet] = Codec
     .SparseRawBitSetCodec(columnRefs.size)

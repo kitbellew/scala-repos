@@ -72,10 +72,12 @@ class ClientMergeable[K, V: Semigroup](
   private def fsg: Semigroup[FOpt[V]] =
     new Semigroup[FOpt[V]] {
       def plus(left: FOpt[V], right: FOpt[V]): FOpt[V] =
-        left.join(right).map {
-          case (l, v) =>
-            Monoid.plus(l, v)
-        }
+        left
+          .join(right)
+          .map {
+            case (l, v) =>
+              Monoid.plus(l, v)
+          }
     }
   // This should not be needed, but somehow this FOpt breaks the implicit resolution
   private val mm = new MapMonoid[K, FOpt[V]]()(fsg)
@@ -98,7 +100,8 @@ class ClientMergeable[K, V: Semigroup](
      * it is probably not worth it.
      */
     val batchForKey: Map[K1, V] =
-      ks.groupBy {
+      ks
+        .groupBy {
           case ((k, batchId), v) =>
             k
         }
@@ -132,7 +135,8 @@ class ClientMergeable[K, V: Semigroup](
       ks: Map[K1, V]): Map[K1, FOpt[V]] = {
     // Here we assume each K appears only once, because the previous call ensures it
     val result =
-      ks.groupBy {
+      ks
+        .groupBy {
           case ((_, batchId), _) =>
             batchId
         }
@@ -144,9 +148,8 @@ class ClientMergeable[K, V: Semigroup](
                 case ((k, _), _) =>
                   k
               }(breakOut)
-            val existing: Map[K, FOpt[V]] = readable.multiGetBatch[K](
-              batch.prev,
-              batchKeys)
+            val existing: Map[K, FOpt[V]] = readable
+              .multiGetBatch[K](batch.prev, batchKeys)
             // Now we merge into the current store:
             val preMerge: Map[K, FOpt[V]] =
               onlineStore
@@ -160,16 +163,21 @@ class ClientMergeable[K, V: Semigroup](
         }
         .flatMap {
           case (b, kvs) =>
-            kvs.iterator.map {
-              case (k, v) =>
-                ((k, b), v)
-            }
+            kvs
+              .iterator
+              .map {
+                case (k, v) =>
+                  ((k, b), v)
+              }
         }
         .toMap
     // Since the type is a subclass, we need to jump through this hoop:
-    ks.iterator.map {
-      case (k1, _) =>
-        (k1, result(k1))
-    }.toMap
+    ks
+      .iterator
+      .map {
+        case (k1, _) =>
+          (k1, result(k1))
+      }
+      .toMap
   }
 }

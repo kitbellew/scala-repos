@@ -97,9 +97,11 @@ private[rest] class StandaloneStatusRequestServlet(
     val response = masterEndpoint
       .askWithRetry[DeployMessages.DriverStatusResponse](
         DeployMessages.RequestDriverStatus(submissionId))
-    val message = response.exception.map {
-      s"Exception from the cluster:\n" + formatException(_)
-    }
+    val message = response
+      .exception
+      .map {
+        s"Exception from the cluster:\n" + formatException(_)
+      }
     val d = new SubmissionStatusResponse
     d.serverSparkVersion = sparkVersion
     d.submissionId = submissionId
@@ -143,12 +145,12 @@ private[rest] class StandaloneSubmitRequestServlet(
     val sparkProperties = request.sparkProperties
     val driverMemory = sparkProperties.get("spark.driver.memory")
     val driverCores = sparkProperties.get("spark.driver.cores")
-    val driverExtraJavaOptions = sparkProperties.get(
-      "spark.driver.extraJavaOptions")
-    val driverExtraClassPath = sparkProperties.get(
-      "spark.driver.extraClassPath")
-    val driverExtraLibraryPath = sparkProperties.get(
-      "spark.driver.extraLibraryPath")
+    val driverExtraJavaOptions = sparkProperties
+      .get("spark.driver.extraJavaOptions")
+    val driverExtraClassPath = sparkProperties
+      .get("spark.driver.extraClassPath")
+    val driverExtraLibraryPath = sparkProperties
+      .get("spark.driver.extraLibraryPath")
     val superviseDriver = sparkProperties.get("spark.driver.supervise")
     val appArgs = request.appArgs
     val environmentVariables = request.environmentVariables
@@ -157,10 +159,12 @@ private[rest] class StandaloneSubmitRequestServlet(
     val conf = new SparkConf(false)
       .setAll(sparkProperties)
       .set("spark.master", masterUrl)
-    val extraClassPath = driverExtraClassPath.toSeq.flatMap(
-      _.split(File.pathSeparator))
-    val extraLibraryPath = driverExtraLibraryPath.toSeq.flatMap(
-      _.split(File.pathSeparator))
+    val extraClassPath = driverExtraClassPath
+      .toSeq
+      .flatMap(_.split(File.pathSeparator))
+    val extraLibraryPath = driverExtraLibraryPath
+      .toSeq
+      .flatMap(_.split(File.pathSeparator))
     val extraJavaOpts = driverExtraJavaOptions
       .map(Utils.splitCommandString)
       .getOrElse(Seq.empty)

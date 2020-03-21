@@ -26,8 +26,8 @@ class RecipeWorkerPool extends RecipeSpec {
 
         Flow.fromGraph(
           GraphDSL.create() { implicit b =>
-            val balancer = b.add(
-              Balance[In](workerCount, waitForAllDownstreams = true))
+            val balancer = b
+              .add(Balance[In](workerCount, waitForAllDownstreams = true))
             val merge = b.add(Merge[Out](workerCount))
 
             for (_ <- 1 to workerCount) {
@@ -40,8 +40,8 @@ class RecipeWorkerPool extends RecipeSpec {
           })
       }
 
-      val processedJobs: Source[Result, NotUsed] = myJobs.via(
-        balancer(worker, 3))
+      val processedJobs: Source[Result, NotUsed] = myJobs
+        .via(balancer(worker, 3))
       //#worker-pool
 
       Await

@@ -103,19 +103,22 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
 
   def getAllScalaFieldNames: Seq[String] = {
     val res: ArrayBuffer[String] = new ArrayBuffer[String]
-    val valNames = StubIndex.getInstance
+    val valNames = StubIndex
+      .getInstance
       .getAllKeys(ScalaIndexKeys.VALUE_NAME_KEY, project)
     val valIterator = valNames.iterator()
     while (valIterator.hasNext) {
       res += valIterator.next()
     }
-    val varNames = StubIndex.getInstance
+    val varNames = StubIndex
+      .getInstance
       .getAllKeys(ScalaIndexKeys.VARIABLE_NAME_KEY, project)
     val varIterator = varNames.iterator()
     while (varIterator.hasNext) {
       res += varIterator.next()
     }
-    val classParamNames = StubIndex.getInstance
+    val classParamNames = StubIndex
+      .getInstance
       .getAllKeys(ScalaIndexKeys.CLASS_PARAMETER_NAME_KEY, project)
     val classParamIterator = classParamNames.iterator()
     while (classParamIterator.hasNext) {
@@ -168,7 +171,8 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
   }
 
   def getAllMethodNames: Seq[String] = {
-    val classNames = StubIndex.getInstance
+    val classNames = StubIndex
+      .getInstance
       .getAllKeys(ScalaIndexKeys.METHOD_NAME_KEY, project)
     import scala.collection.JavaConversions._
     classNames.toSeq
@@ -326,7 +330,8 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
   }
 
   def getAllClassNames: Seq[String] = {
-    val classNames = StubIndex.getInstance
+    val classNames = StubIndex
+      .getInstance
       .getAllKeys(ScalaIndexKeys.SHORT_NAME_KEY, project)
     import scala.collection.JavaConversions._
     classNames.toSeq

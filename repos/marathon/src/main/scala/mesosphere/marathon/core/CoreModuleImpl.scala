@@ -143,13 +143,13 @@ class CoreModuleImpl @Inject() (
     offerMatcherManagerModule.subOfferMatcherManager)
 
   /** Combine offersWanted state from multiple sources. */
-  private[this] lazy val offersWanted =
-    offerMatcherManagerModule.globalOfferMatcherWantsOffers
-      .combineLatest(offerMatcherReconcilerModule.offersWantedObservable)
-      .map {
-        case (managerWantsOffers, reconciliationWantsOffers) =>
-          managerWantsOffers || reconciliationWantsOffers
-      }
+  private[this] lazy val offersWanted = offerMatcherManagerModule
+    .globalOfferMatcherWantsOffers
+    .combineLatest(offerMatcherReconcilerModule.offersWantedObservable)
+    .map {
+      case (managerWantsOffers, reconciliationWantsOffers) =>
+        managerWantsOffers || reconciliationWantsOffers
+    }
 
   lazy val maybeOfferReviver = flowActors.maybeOfferReviver(
     clock,

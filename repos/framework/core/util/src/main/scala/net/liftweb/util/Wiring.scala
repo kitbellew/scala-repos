@@ -36,8 +36,8 @@ trait Dependent {
     */
   def youDependOnMe(who: Cell[_]): Unit =
     synchronized {
-      _iDependOn =
-        new WeakReference(who.asInstanceOf[Object]) :: _iDependOn.filter(
+      _iDependOn = new WeakReference(who.asInstanceOf[Object]) :: _iDependOn
+        .filter(
           _.get match {
             case null =>
               false
@@ -165,9 +165,8 @@ trait Cell[T] extends Dependent {
     * will be performed on a separate thread asynchronously
     */
   def notifyDependents(): Unit = {
-    Schedule.schedule(
-      () => dependents.foreach(_.predicateChanged(this)),
-      TimeSpan(0))
+    Schedule
+      .schedule(() => dependents.foreach(_.predicateChanged(this)), TimeSpan(0))
   }
 
   /**

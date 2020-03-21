@@ -86,7 +86,9 @@ object DataFlow {
               dataFlow.blockedReaders.poll ! s
           } else
             throw new DataFlowVariableException(
-              "Attempt to change data flow variable (from [" + dataFlow.value.get + "] to [" + v + "])")
+              "Attempt to change data flow variable (from [" + dataFlow
+                .value
+                .get + "] to [" + v + "])")
         case Exit =>
           self.stop()
       }
@@ -120,7 +122,9 @@ object DataFlow {
         in ! Set(ref())
       else
         throw new DataFlowVariableException(
-          "Attempt to change data flow variable (from [" + this.value.get + "] to [" + ref() + "])")
+          "Attempt to change data flow variable (from [" + this
+            .value
+            .get + "] to [" + ref() + "])")
     }
 
     /**
@@ -139,7 +143,9 @@ object DataFlow {
         in ! Set(value)
       else
         throw new DataFlowVariableException(
-          "Attempt to change data flow variable (from [" + this.value.get + "] to [" + value + "])")
+          "Attempt to change data flow variable (from [" + this
+            .value
+            .get + "] to [" + value + "])")
     }
 
     /**

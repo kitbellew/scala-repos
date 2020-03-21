@@ -137,7 +137,8 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
 
               // Second layer
               m11.out ~> b11.in
-              b11.out(0).grouped(1000) ~> sink2.in // Vertex 2 is omitted since it has only one in and out
+              b11.out(0).grouped(1000) ~> sink2
+                .in // Vertex 2 is omitted since it has only one in and out
               b11.out(1) ~> m9.in(0)
               b11.out(2) ~> m10.in(1)
 

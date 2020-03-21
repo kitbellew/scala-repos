@@ -45,11 +45,8 @@ private class JmDNSAnnouncer extends MDNSAnnouncerIface {
       name: String,
       regType: String,
       domain: String): Future[Announcement] = {
-    val info = ServiceInfo.create(
-      regType + "." + domain,
-      name,
-      addr.getPort,
-      "")
+    val info = ServiceInfo
+      .create(regType + "." + domain, name, addr.getPort, "")
     DNS.registerService(info) map { _ =>
       new Announcement {
         def unannounce() =

@@ -59,7 +59,8 @@ private[spark] case class CoalescedRDDPartition(
     */
   def localFraction: Double = {
     val loc = parents.count { p =>
-      val parentPreferredLocations = rdd.context
+      val parentPreferredLocations = rdd
+        .context
         .getPreferredLocs(rdd, p.index)
         .map(_.host)
       preferredLocation.exists(parentPreferredLocations.contains)
@@ -97,19 +98,26 @@ private[spark] class CoalescedRDD[T: ClassTag](
   override def getPartitions: Array[Partition] = {
     val pc = new PartitionCoalescer(maxPartitions, prev, balanceSlack)
 
-    pc.run().zipWithIndex.map {
-      case (pg, i) =>
-        val ids = pg.arr.map(_.index).toArray
-        new CoalescedRDDPartition(i, prev, ids, pg.prefLoc)
-    }
+    pc
+      .run()
+      .zipWithIndex
+      .map {
+        case (pg, i) =>
+          val ids = pg.arr.map(_.index).toArray
+          new CoalescedRDDPartition(i, prev, ids, pg.prefLoc)
+      }
   }
 
   override def compute(
       partition: Partition,
       context: TaskContext): Iterator[T] = {
-    partition.asInstanceOf[CoalescedRDDPartition].parents.iterator.flatMap {
-      parentPartition => firstParent[T].iterator(parentPartition, context)
-    }
+    partition
+      .asInstanceOf[CoalescedRDDPartition]
+      .parents
+      .iterator
+      .flatMap { parentPartition =>
+        firstParent[T].iterator(parentPartition, context)
+      }
   }
 
   override def getDependencies: Seq[Dependency[_]] = {
@@ -216,12 +224,15 @@ private class PartitionCoalescer(
     // initializes/resets to start iterating from the beginning
     def resetIterator(): Iterator[(String, Partition)] = {
       val iterators = (0 to 2).map(x =>
-        prev.partitions.iterator.flatMap(p => {
-          if (currPrefLocs(p).size > x)
-            Some((currPrefLocs(p)(x), p))
-          else
-            None
-        }))
+        prev
+          .partitions
+          .iterator
+          .flatMap(p => {
+            if (currPrefLocs(p).size > x)
+              Some((currPrefLocs(p)(x), p))
+            else
+              None
+          }))
       iterators.reduceLeft((x, y) => x ++ y)
     }
 
@@ -351,7 +362,8 @@ private class PartitionCoalescer(
 
     val prefPartActual = prefPart.get
 
-    if (minPowerOfTwo.size + slack <= prefPartActual.size) { // more imbalance than the slack allows
+    if (minPowerOfTwo.size + slack <= prefPartActual
+          .size) { // more imbalance than the slack allows
       minPowerOfTwo // prefer balance over locality
     } else {
       prefPartActual // prefer locality over balance

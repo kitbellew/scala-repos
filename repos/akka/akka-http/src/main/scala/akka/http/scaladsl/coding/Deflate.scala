@@ -52,11 +52,8 @@ class DeflateCompressor extends Compressor {
     drainDeflater(deflater, buffer)
   }
   protected def flushWithBuffer(buffer: Array[Byte]): ByteString = {
-    val written = deflater.deflate(
-      buffer,
-      0,
-      buffer.length,
-      Deflater.SYNC_FLUSH)
+    val written = deflater
+      .deflate(buffer, 0, buffer.length, Deflater.SYNC_FLUSH)
     ByteString.fromArray(buffer, 0, written)
   }
   protected def finishWithBuffer(buffer: Array[Byte]): ByteString = {

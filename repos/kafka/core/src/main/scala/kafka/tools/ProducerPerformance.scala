@@ -136,9 +136,8 @@ object ProducerPerformance extends Logging {
     val varyMessageSizeOpt = parser.accepts(
       "vary-message-size",
       "If set, message size will vary up to the given maximum.")
-    val syncOpt = parser.accepts(
-      "sync",
-      "If set, messages are sent synchronously.")
+    val syncOpt = parser
+      .accepts("sync", "If set, messages are sent synchronously.")
     val numThreadsOpt = parser
       .accepts("threads", "Number of sending threads.")
       .withRequiredArg
@@ -174,9 +173,8 @@ object ProducerPerformance extends Logging {
       .withRequiredArg
       .describedAs("metrics directory")
       .ofType(classOf[java.lang.String])
-    val useNewProducerOpt = parser.accepts(
-      "new-producer",
-      "Use the new producer implementation.")
+    val useNewProducerOpt = parser
+      .accepts("new-producer", "Use the new producer implementation.")
 
     val options = parser.parse(args: _*)
     CommandLineUtils.checkRequiredArgs(
@@ -199,8 +197,8 @@ object ProducerPerformance extends Logging {
     var isSync = options.has(syncOpt)
     var batchSize = options.valueOf(batchSizeOpt).intValue
     var numThreads = options.valueOf(numThreadsOpt).intValue
-    val compressionCodec = CompressionCodec.getCompressionCodec(
-      options.valueOf(compressionCodecOpt).intValue)
+    val compressionCodec = CompressionCodec
+      .getCompressionCodec(options.valueOf(compressionCodecOpt).intValue)
     val seqIdMode = options.has(initialMessageIdOpt)
     var initialMessageId: Int = 0
     if (seqIdMode)
@@ -228,9 +226,8 @@ object ProducerPerformance extends Logging {
     if (csvMetricsReporterEnabled) {
       val props = new Properties()
       props.put("kafka.metrics.polling.interval.secs", "1")
-      props.put(
-        "kafka.metrics.reporters",
-        "kafka.metrics.KafkaCSVMetricsReporter")
+      props
+        .put("kafka.metrics.reporters", "kafka.metrics.KafkaCSVMetricsReporter")
       if (options.has(metricsDirectoryOpt))
         props.put("kafka.csv.metrics.dir", options.valueOf(metricsDirectoryOpt))
       else
@@ -296,12 +293,10 @@ object ProducerPerformance extends Logging {
         props.put(
           "request.required.acks",
           config.producerRequestRequiredAcks.toString)
-        props.put(
-          "request.timeout.ms",
-          config.producerRequestTimeoutMs.toString)
-        props.put(
-          "message.send.max.retries",
-          config.producerNumRetries.toString)
+        props
+          .put("request.timeout.ms", config.producerRequestTimeoutMs.toString)
+        props
+          .put("message.send.max.retries", config.producerNumRetries.toString)
         props.put("retry.backoff.ms", config.producerRetryBackoffMs.toString)
         props.put("serializer.class", classOf[DefaultEncoder].getName)
         props.put("key.serializer.class", classOf[NullEncoder[Long]].getName)
@@ -325,9 +320,8 @@ object ProducerPerformance extends Logging {
       // thread 1 IDs : 100 ~ 199
       // thread 2 IDs : 200 ~ 299
       // . . .
-      leftPaddedSeqId = String.format(
-        "%0" + seqIdNumDigit + "d",
-        long2Long(msgId))
+      leftPaddedSeqId = String
+        .format("%0" + seqIdNumDigit + "d", long2Long(msgId))
 
       val msgHeader = topicLabel + SEP +
         topic + SEP +
@@ -352,8 +346,8 @@ object ProducerPerformance extends Logging {
         else
           1 + rand.nextInt(config.messageSize)
       if (config.seqIdMode) {
-        val seqId =
-          config.initialMessageId + (messagesPerThread * threadId) + messageId
+        val seqId = config
+          .initialMessageId + (messagesPerThread * threadId) + messageId
         generateMessageWithSeqId(topic, seqId, msgSize)
       } else {
         new Array[Byte](msgSize)
@@ -368,14 +362,16 @@ object ProducerPerformance extends Logging {
 
       while (i < messagesPerThread) {
         try {
-          config.topics.foreach(topic => {
-            message = generateProducerData(topic, i)
-            producer.send(topic, BigInteger.valueOf(i).toByteArray, message)
-            bytesSent += message.size
-            nSends += 1
-            if (config.messageSendGapMs > 0)
-              Thread.sleep(config.messageSendGapMs)
-          })
+          config
+            .topics
+            .foreach(topic => {
+              message = generateProducerData(topic, i)
+              producer.send(topic, BigInteger.valueOf(i).toByteArray, message)
+              bytesSent += message.size
+              nSends += 1
+              if (config.messageSendGapMs > 0)
+                Thread.sleep(config.messageSendGapMs)
+            })
         } catch {
           case e: Throwable =>
             error("Error when sending message " + new String(message), e)

@@ -29,7 +29,9 @@ trait MongoTestKit extends Specification with BeforeAfterEach {
   sequential
 
   def dbName =
-    "lift_record_" + this.getClass.getName
+    "lift_record_" + this
+      .getClass
+      .getName
       .replace("$", "")
       .replace("net.liftweb.mongodb.record.", "")
       .replace(".", "_")

@@ -41,7 +41,8 @@ abstract class RehighlightingPerformanceTypingTestBase
 
         override def tearDown(): Unit = ()
       }
-    myCodeInsightTestFixture = IdeaTestFixtureFactory.getFixtureFactory
+    myCodeInsightTestFixture = IdeaTestFixtureFactory
+      .getFixtureFactory
       .createCodeInsightFixture(fakeFixture)
     myCodeInsightTestFixture.setUp()
 

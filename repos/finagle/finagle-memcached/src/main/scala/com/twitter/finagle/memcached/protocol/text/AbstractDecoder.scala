@@ -12,8 +12,8 @@ import org.jboss.netty.channel._
 import org.jboss.netty.handler.codec.frame.FrameDecoder
 
 object AbstractDecoder {
-  private val Delimiter = ChannelBuffers.wrappedBuffer(
-    "\r\n".getBytes(Charsets.Utf8))
+  private val Delimiter = ChannelBuffers
+    .wrappedBuffer("\r\n".getBytes(Charsets.Utf8))
   private val DelimiterLength = Delimiter.capacity
   private val FindCRLF =
     new ChannelBufferIndexFinder() {

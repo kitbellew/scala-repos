@@ -157,8 +157,8 @@ class TcpConnectionSpec extends AkkaSpec("""
       run {
         val serverSideChannel = acceptServerSideConnection(localServerChannel)
 
-        serverSideChannel.write(
-          ByteBuffer.wrap("immediatedata".getBytes("ASCII")))
+        serverSideChannel
+          .write(ByteBuffer.wrap("immediatedata".getBytes("ASCII")))
         serverSideChannel.configureBlocking(false)
         interestCallReceiver.expectMsg(OP_CONNECT)
 
@@ -166,7 +166,9 @@ class TcpConnectionSpec extends AkkaSpec("""
         userHandler.expectMsg(
           Connected(
             serverAddress,
-            clientSideChannel.socket.getLocalSocketAddress
+            clientSideChannel
+              .socket
+              .getLocalSocketAddress
               .asInstanceOf[InetSocketAddress]))
 
         userHandler.send(connectionActor, Register(userHandler.ref))
@@ -257,7 +259,8 @@ class TcpConnectionSpec extends AkkaSpec("""
       run {
         // hacky: we need a file for testing purposes, so try to get the biggest one from our own classpath
         val testFile =
-          classOf[TcpConnectionSpec].getClassLoader
+          classOf[TcpConnectionSpec]
+            .getClassLoader
             .asInstanceOf[URLClassLoader]
             .getURLs
             .filter(_.getProtocol == "file")
@@ -664,9 +667,8 @@ class TcpConnectionSpec extends AkkaSpec("""
         run {
           val sel = SelectorProvider.provider().openSelector()
           try {
-            val key = clientSideChannel.register(
-              sel,
-              SelectionKey.OP_CONNECT | SelectionKey.OP_READ)
+            val key = clientSideChannel
+              .register(sel, SelectionKey.OP_CONNECT | SelectionKey.OP_READ)
             // This timeout should be large enough to work on Windows
             sel.select(3000)
 
@@ -716,7 +718,9 @@ class TcpConnectionSpec extends AkkaSpec("""
         userHandler.expectMsg(
           Connected(
             serverAddress,
-            clientSideChannel.socket.getLocalSocketAddress
+            clientSideChannel
+              .socket
+              .getLocalSocketAddress
               .asInstanceOf[InetSocketAddress]))
 
         watch(connectionActor)
@@ -956,7 +960,8 @@ class TcpConnectionSpec extends AkkaSpec("""
 
     def register(channel: SelectableChannel, initialOps: Int)(implicit
         channelActor: ActorRef): Unit =
-      registerCallReceiver.ref
+      registerCallReceiver
+        .ref
         .tell(Registration(channel, initialOps), channelActor)
 
     def setServerSocketOptions() = ()
@@ -1063,7 +1068,9 @@ class TcpConnectionSpec extends AkkaSpec("""
           userHandler.expectMsg(
             Connected(
               serverAddress,
-              clientSideChannel.socket.getLocalSocketAddress
+              clientSideChannel
+                .socket
+                .getLocalSocketAddress
                 .asInstanceOf[InetSocketAddress]))
 
           userHandler.send(
@@ -1218,7 +1225,8 @@ class TcpConnectionSpec extends AkkaSpec("""
         .mkString(", ")
 
     def abortClose(channel: SocketChannel): Unit = {
-      try channel.socket
+      try channel
+        .socket
         .setSoLinger(true, 0) // causes the following close() to send TCP RST
       catch {
         case NonFatal(e) ⇒

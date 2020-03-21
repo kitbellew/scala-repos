@@ -105,10 +105,12 @@ private[python] class WritableToJavaConverter(
         aw.get().map(convertWritable(_))
       case mw: MapWritable =>
         val map = new java.util.HashMap[Any, Any]()
-        mw.asScala.foreach {
-          case (k, v) =>
-            map.put(convertWritable(k), convertWritable(v))
-        }
+        mw
+          .asScala
+          .foreach {
+            case (k, v) =>
+              map.put(convertWritable(k), convertWritable(v))
+          }
         map
       case w: Writable =>
         WritableUtils.clone(w, conf.value.value)
@@ -160,10 +162,12 @@ private[python] class JavaToWritableConverter extends Converter[Any, Writable] {
         NullWritable.get()
       case map: java.util.Map[_, _] =>
         val mapWritable = new MapWritable()
-        map.asScala.foreach {
-          case (k, v) =>
-            mapWritable.put(convertToWritable(k), convertToWritable(v))
-        }
+        map
+          .asScala
+          .foreach {
+            case (k, v) =>
+              mapWritable.put(convertToWritable(k), convertToWritable(v))
+          }
         mapWritable
       case array: Array[Any] => {
         val arrayWriteable = new ArrayWritable(classOf[Writable])
@@ -193,10 +197,12 @@ private[python] object PythonHadoopUtil {
     */
   def mapToConf(map: java.util.Map[String, String]): Configuration = {
     val conf = new Configuration()
-    map.asScala.foreach {
-      case (k, v) =>
-        conf.set(k, v)
-    }
+    map
+      .asScala
+      .foreach {
+        case (k, v) =>
+          conf.set(k, v)
+      }
     conf
   }
 

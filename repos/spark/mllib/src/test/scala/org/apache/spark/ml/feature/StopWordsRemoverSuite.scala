@@ -24,7 +24,8 @@ import org.apache.spark.sql.{DataFrame, Row}
 
 object StopWordsRemoverSuite extends SparkFunSuite {
   def testStopWordsRemover(t: StopWordsRemover, dataset: DataFrame): Unit = {
-    t.transform(dataset)
+    t
+      .transform(dataset)
       .select("filtered", "expected")
       .collect()
       .foreach {
@@ -111,6 +112,7 @@ class StopWordsRemoverSuite
       testStopWordsRemover(remover, dataSet)
     }
     assert(
-      thrown.getMessage == s"requirement failed: Column $outputCol already exists.")
+      thrown
+        .getMessage == s"requirement failed: Column $outputCol already exists.")
   }
 }

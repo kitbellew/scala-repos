@@ -104,8 +104,8 @@ trait Errors extends Traces {
 
     private def abbreviateCoreAliases(s: String): String = {
       val coreAliases = List("WeakTypeTag", "Expr", "Tree")
-      coreAliases.foldLeft(s)((res, x) =>
-        res.replace("c.universe." + x, "c." + x))
+      coreAliases
+        .foldLeft(s)((res, x) => res.replace("c.universe." + x, "c." + x))
     }
 
     private def showMeth(

@@ -12,10 +12,12 @@ object Rewind {
   }
 
   def apply(game: Game, initialFen: Option[String]): Valid[Progress] =
-    chessPgn.Reader.movesWithSans(
-      moveStrs = game.pgnMoves,
-      op = sans => sans.isEmpty.fold(sans, sans.init),
-      tags = createTags(initialFen, game)) map { replay =>
+    chessPgn
+      .Reader
+      .movesWithSans(
+        moveStrs = game.pgnMoves,
+        op = sans => sans.isEmpty.fold(sans, sans.init),
+        tags = createTags(initialFen, game)) map { replay =>
       val rewindedGame = replay.state
       val rewindedHistory = rewindedGame.board.history
       val rewindedSituation = rewindedGame.situation
@@ -39,8 +41,8 @@ object Rewind {
             else
               None
         ),
-        binaryMoveTimes =
-          BinaryFormat.moveTime write (game.moveTimes take rewindedGame.turns),
+        binaryMoveTimes = BinaryFormat
+          .moveTime write (game.moveTimes take rewindedGame.turns),
         crazyData = rewindedSituation.board.crazyData,
         status = game.status,
         clock = game.clock map (_.takeback)
@@ -50,7 +52,8 @@ object Rewind {
         newGame,
         List(
           newGame.clock.map(Event.Clock.apply),
-          newGame.playableCorrespondenceClock.map(
-            Event.CorrespondenceClock.apply)).flatten)
+          newGame
+            .playableCorrespondenceClock
+            .map(Event.CorrespondenceClock.apply)).flatten)
     }
 }

@@ -30,25 +30,31 @@ class PipeliningDispatcher[Req, Rep](
   private[this] val q = new AsyncQueue[Promise[Rep]]
 
   private[this] val queueSize =
-    statsReceiver.scope("pipelining").addGauge("pending") {
-      q.size
-    }
+    statsReceiver
+      .scope("pipelining")
+      .addGauge("pending") {
+        q.size
+      }
 
   private[this] val transRead: Promise[Rep] => Unit =
     p =>
-      trans.read().respond { res =>
-        try p.update(res)
-        finally loop()
-      }
+      trans
+        .read()
+        .respond { res =>
+          try p.update(res)
+          finally loop()
+        }
 
   private[this] def loop(): Unit = q.poll().onSuccess(transRead)
 
   loop()
 
   protected def dispatch(req: Req, p: Promise[Rep]): Future[Unit] =
-    trans.write(req).onSuccess { _ =>
-      q.offer(p)
-    }
+    trans
+      .write(req)
+      .onSuccess { _ =>
+        q.offer(p)
+      }
 
   override def apply(req: Req): Future[Rep] = super.apply(req).masked
 }

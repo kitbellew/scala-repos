@@ -15,9 +15,12 @@ package client {
     def this(ws: WSClient) = this(ws, "https://api.github.com")
 
     def repositories(): Future[Seq[String]] = {
-      ws.url(baseUrl + "/repositories").get().map { response =>
-        (response.json \\ "full_name").map(_.as[String])
-      }
+      ws
+        .url(baseUrl + "/repositories")
+        .get()
+        .map { response =>
+          (response.json \\ "full_name").map(_.as[String])
+        }
     }
   }
 //#client
@@ -49,15 +52,14 @@ package test {
         Server.withRouter() {
           case GET(p"/repositories") =>
             Action {
-              Results.Ok(
-                Json.arr(Json.obj("full_name" -> "octocat/Hello-World")))
+              Results
+                .Ok(Json.arr(Json.obj("full_name" -> "octocat/Hello-World")))
             }
         } { implicit port =>
           implicit val materializer = Play.current.materializer
           WsTestClient.withClient { client =>
-            val result = Await.result(
-              new GitHubClient(client, "").repositories(),
-              10.seconds)
+            val result = Await
+              .result(new GitHubClient(client, "").repositories(), 10.seconds)
             result must_== Seq("octocat/Hello-World")
           }
         }

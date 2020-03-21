@@ -359,14 +359,12 @@ object SparkEnv extends Logging {
       "tungsten-sort" -> "org.apache.spark.shuffle.sort.SortShuffleManager"
     )
     val shuffleMgrName = conf.get("spark.shuffle.manager", "sort")
-    val shuffleMgrClass = shortShuffleMgrNames.getOrElse(
-      shuffleMgrName.toLowerCase,
-      shuffleMgrName)
+    val shuffleMgrClass = shortShuffleMgrNames
+      .getOrElse(shuffleMgrName.toLowerCase, shuffleMgrName)
     val shuffleManager = instantiateClass[ShuffleManager](shuffleMgrClass)
 
-    val useLegacyMemoryManager = conf.getBoolean(
-      "spark.memory.useLegacyMode",
-      false)
+    val useLegacyMemoryManager = conf
+      .getBoolean("spark.memory.useLegacyMode", false)
     val memoryManager: MemoryManager =
       if (useLegacyMemoryManager) {
         new StaticMemoryManager(conf, numUsableCores)
@@ -413,10 +411,8 @@ object SparkEnv extends Logging {
         // sinks specified in the metrics configuration file will want to incorporate this executor's
         // ID into the metrics they report.
         conf.set("spark.executor.id", executorId)
-        val ms = MetricsSystem.createMetricsSystem(
-          "executor",
-          conf,
-          securityManager)
+        val ms = MetricsSystem
+          .createMetricsSystem("executor", conf, securityManager)
         ms.start()
         ms
       }
@@ -501,10 +497,12 @@ object SparkEnv extends Logging {
     // System properties that are not java classpaths
     val systemProperties = Utils.getSystemProperties.toSeq
     val otherProperties =
-      systemProperties.filter {
-        case (k, _) =>
-          k != "java.class.path" && !k.startsWith("spark.")
-      }.sorted
+      systemProperties
+        .filter {
+          case (k, _) =>
+            k != "java.class.path" && !k.startsWith("spark.")
+        }
+        .sorted
 
     // Class paths including all added jars and files
     val classPathEntries = javaClassPath

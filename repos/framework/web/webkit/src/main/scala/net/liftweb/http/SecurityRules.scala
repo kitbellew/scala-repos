@@ -46,18 +46,20 @@ final case class HttpsRules(
       */
     includeSubDomains: Boolean = false) {
   lazy val headers: List[(String, String)] = {
-    requiredTime.toList.map { duration =>
-      val age = s"max-age=${duration.toSeconds}"
+    requiredTime
+      .toList
+      .map { duration =>
+        val age = s"max-age=${duration.toSeconds}"
 
-      val header =
-        if (includeSubDomains) {
-          s"$age ; includeSubDomains"
-        } else {
-          age
-        }
+        val header =
+          if (includeSubDomains) {
+            s"$age ; includeSubDomains"
+          } else {
+            age
+          }
 
-      ("Strict-Transport-Security" -> header)
-    }
+        ("Strict-Transport-Security" -> header)
+      }
   }
 
   /**
@@ -380,8 +382,8 @@ object ContentSecurityPolicyViolation extends LazyLoggable {
 
           case _ =>
             logger.warn(
-              s"Got a content security violation report we couldn't interpret: '${request.body
-                .map(new String(_, "UTF-8"))}'.")
+              s"Got a content security violation report we couldn't interpret: '${request.body.map(
+                new String(_, "UTF-8"))}'.")
 
             Full(
               BadRequestResponse(

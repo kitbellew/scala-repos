@@ -56,10 +56,13 @@ class DependencyAnnotatorTest extends AnnotatorTestBase {
 
     val moduleManager = Option(ModuleManager.getInstance(getProject))
     moduleManager.foreach { manager =>
-      manager.getModules.toSeq.foreach { module =>
-        val resolvers = SbtModule.getResolversFrom(module)
-        SbtModule.setResolversTo(module, resolvers + testResolver)
-      }
+      manager
+        .getModules
+        .toSeq
+        .foreach { module =>
+          val resolvers = SbtModule.getResolversFrom(module)
+          SbtModule.setResolversTo(module, resolvers + testResolver)
+        }
     }
   }
 

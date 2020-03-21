@@ -50,15 +50,13 @@ object WikiService {
 
   def wikiHttpUrl(repositoryInfo: RepositoryInfo)(implicit
       context: Context): String =
-    RepositoryService.httpUrl(
-      repositoryInfo.owner,
-      repositoryInfo.name + ".wiki")
+    RepositoryService
+      .httpUrl(repositoryInfo.owner, repositoryInfo.name + ".wiki")
 
   def wikiSshUrl(repositoryInfo: RepositoryInfo)(implicit
       context: Context): Option[String] =
-    RepositoryService.sshUrl(
-      repositoryInfo.owner,
-      repositoryInfo.name + ".wiki")
+    RepositoryService
+      .sshUrl(repositoryInfo.owner, repositoryInfo.name + ".wiki")
 
 }
 
@@ -101,8 +99,8 @@ trait WikiService {
           .map { file =>
             WikiPageInfo(
               file.name,
-              StringUtil.convertFromByteArray(
-                git.getRepository.open(file.id).getBytes),
+              StringUtil
+                .convertFromByteArray(git.getRepository.open(file.id).getBytes),
               file.author,
               file.time,
               file.commitId)
@@ -176,14 +174,14 @@ trait WikiService {
           git =>
             val reader = git.getRepository.newObjectReader
             val oldTreeIter = new CanonicalTreeParser
-            oldTreeIter.reset(
-              reader,
-              git.getRepository.resolve(from + "^{tree}"))
+            oldTreeIter
+              .reset(reader, git.getRepository.resolve(from + "^{tree}"))
 
             val newTreeIter = new CanonicalTreeParser
             newTreeIter.reset(reader, git.getRepository.resolve(to + "^{tree}"))
 
-            val diffs = git.diff
+            val diffs = git
+              .diff
               .setNewTree(oldTreeIter)
               .setOldTree(newTreeIter)
               .call
@@ -212,52 +210,56 @@ trait WikiService {
             }
             val revertInfo =
               (
-                p.getFiles.asScala.map { fh =>
-                  fh.getChangeType match {
-                    case DiffEntry.ChangeType.MODIFY => {
-                      val source = getWikiPage(
-                        owner,
-                        repository,
-                        fh.getNewPath.stripSuffix(".md"))
-                        .map(_.content)
-                        .getOrElse("")
-                      val applied = PatchUtil.apply(source, patch, fh)
-                      if (applied != null) {
-                        Seq(RevertInfo("ADD", fh.getNewPath, applied))
-                      } else
-                        Nil
-                    }
-                    case DiffEntry.ChangeType.ADD => {
-                      val applied = PatchUtil.apply("", patch, fh)
-                      if (applied != null) {
-                        Seq(RevertInfo("ADD", fh.getNewPath, applied))
-                      } else
-                        Nil
-                    }
-                    case DiffEntry.ChangeType.DELETE => {
-                      Seq(RevertInfo("DELETE", fh.getNewPath, ""))
-                    }
-                    case DiffEntry.ChangeType.RENAME => {
-                      val applied = PatchUtil.apply("", patch, fh)
-                      if (applied != null) {
-                        Seq(
-                          RevertInfo("DELETE", fh.getOldPath, ""),
-                          RevertInfo("ADD", fh.getNewPath, applied))
-                      } else {
-                        Seq(RevertInfo("DELETE", fh.getOldPath, ""))
+                p
+                  .getFiles
+                  .asScala
+                  .map { fh =>
+                    fh.getChangeType match {
+                      case DiffEntry.ChangeType.MODIFY => {
+                        val source = getWikiPage(
+                          owner,
+                          repository,
+                          fh.getNewPath.stripSuffix(".md"))
+                          .map(_.content)
+                          .getOrElse("")
+                        val applied = PatchUtil.apply(source, patch, fh)
+                        if (applied != null) {
+                          Seq(RevertInfo("ADD", fh.getNewPath, applied))
+                        } else
+                          Nil
                       }
+                      case DiffEntry.ChangeType.ADD => {
+                        val applied = PatchUtil.apply("", patch, fh)
+                        if (applied != null) {
+                          Seq(RevertInfo("ADD", fh.getNewPath, applied))
+                        } else
+                          Nil
+                      }
+                      case DiffEntry.ChangeType.DELETE => {
+                        Seq(RevertInfo("DELETE", fh.getNewPath, ""))
+                      }
+                      case DiffEntry.ChangeType.RENAME => {
+                        val applied = PatchUtil.apply("", patch, fh)
+                        if (applied != null) {
+                          Seq(
+                            RevertInfo("DELETE", fh.getOldPath, ""),
+                            RevertInfo("ADD", fh.getNewPath, applied))
+                        } else {
+                          Seq(RevertInfo("DELETE", fh.getOldPath, ""))
+                        }
+                      }
+                      case _ =>
+                        Nil
                     }
-                    case _ =>
-                      Nil
                   }
-                }
-              ).flatten
+                ).flatten
 
             if (revertInfo.nonEmpty) {
               val builder = DirCache.newInCore.builder()
               val inserter = git.getRepository.newObjectInserter()
-              val headId = git.getRepository.resolve(
-                Constants.HEAD + "^{commit}")
+              val headId = git
+                .getRepository
+                .resolve(Constants.HEAD + "^{commit}")
 
               JGitUtil.processTree(git, headId) { (path, tree) =>
                 if (revertInfo.find(x => x.filePath == path).isEmpty) {
@@ -269,14 +271,17 @@ trait WikiService {
                 }
               }
 
-              revertInfo.filter(_.operation == "ADD").foreach { x =>
-                builder.add(
-                  JGitUtil.createDirCacheEntry(
-                    x.filePath,
-                    FileMode.REGULAR_FILE,
-                    inserter
-                      .insert(Constants.OBJ_BLOB, x.source.getBytes("UTF-8"))))
-              }
+              revertInfo
+                .filter(_.operation == "ADD")
+                .foreach { x =>
+                  builder.add(
+                    JGitUtil.createDirCacheEntry(
+                      x.filePath,
+                      FileMode.REGULAR_FILE,
+                      inserter.insert(
+                        Constants.OBJ_BLOB,
+                        x.source.getBytes("UTF-8"))))
+                }
               builder.finish()
 
               JGitUtil.createNewCommit(

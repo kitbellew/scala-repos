@@ -19,9 +19,8 @@ private[tournament] final class Cached(
 
   def name(id: String): Option[String] = nameCache get id
 
-  val promotable = AsyncCache.single(
-    TournamentRepo.promotable,
-    timeToLive = createdTtl)
+  val promotable = AsyncCache
+    .single(TournamentRepo.promotable, timeToLive = createdTtl)
 
   def ranking(tour: Tournament): Fu[Ranking] =
     if (tour.isFinished)

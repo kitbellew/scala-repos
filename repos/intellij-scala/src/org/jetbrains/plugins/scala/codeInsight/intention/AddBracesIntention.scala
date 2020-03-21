@@ -62,7 +62,8 @@ class AddBracesIntention extends PsiElementBaseIntentionAction {
         case pattern @ ScPatternDefinition.expr(e) if isAncestorOfElement(e) =>
           Some(e)
         case ifStmt: ScIfStmt =>
-          ifStmt.thenBranch
+          ifStmt
+            .thenBranch
             .filter(isAncestorOfElement)
             .orElse(ifStmt.elseBranch.filter(isAncestorOfElement))
         case funDef: ScFunctionDefinition =>
@@ -84,10 +85,12 @@ class AddBracesIntention extends PsiElementBaseIntentionAction {
           None
       }
     val oneLinerExpr: Option[ScExpression] = expr.filter { x =>
-      val startLine = editor.getDocument.getLineNumber(
-        x.getTextRange.getStartOffset)
-      val endLine = editor.getDocument.getLineNumber(
-        x.getTextRange.getEndOffset)
+      val startLine = editor
+        .getDocument
+        .getLineNumber(x.getTextRange.getStartOffset)
+      val endLine = editor
+        .getDocument
+        .getLineNumber(x.getTextRange.getEndOffset)
       val isBlock =
         x match {
           case _: ScBlockExpr =>

@@ -37,10 +37,12 @@ private[lobby] final class Lobby(
         val lobbyUser = userOption map {
           LobbyUser.make(_, blocks)
         }
-        replyTo ! HookRepo.vector.filter { hook =>
-          ~(hook.userId |@| lobbyUser.map(_.id))
-            .apply(_ == _) || Biter.canJoin(hook, lobbyUser)
-        }
+        replyTo ! HookRepo
+          .vector
+          .filter { hook =>
+            ~(hook.userId |@| lobbyUser.map(_.id)).apply(_ == _) || Biter
+              .canJoin(hook, lobbyUser)
+          }
       }
 
     case msg @ AddHook(hook) => {
@@ -118,7 +120,8 @@ private[lobby] final class Lobby(
     case Broom =>
       HookRepo.truncateIfNeeded
       implicit val timeout = makeTimeout seconds 1
-      (socket ? GetUids mapTo manifest[SocketUids]).chronometer
+      (socket ? GetUids mapTo manifest[SocketUids])
+        .chronometer
         .logIfSlow(100, logger) { r =>
           s"GetUids size=${r.uids.size}"
         }
@@ -171,10 +174,8 @@ private[lobby] final class Lobby(
         Biter.canJoin(h, hook.user) ?? ! {
           (h.user |@| hook.user).tupled ?? {
             case (u1, u2) =>
-              GameRepo.lastGameBetween(
-                u1.id,
-                u2.id,
-                DateTime.now minusHours 1) map {
+              GameRepo
+                .lastGameBetween(u1.id, u2.id, DateTime.now minusHours 1) map {
                 _ ?? (_.aborted)
               }
           }

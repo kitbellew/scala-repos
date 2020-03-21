@@ -137,24 +137,26 @@ object AutoUpdate {
                 rs.getString("REPOSITORY_NAME"))) {
               dir =>
                 if (dir.exists && dir.isDirectory) {
-                  dir.listFiles.foreach {
-                    file =>
-                      if (file.getName.indexOf('.') < 0) {
-                        val mimeType =
-                          MimeUtil2
-                            .getMostSpecificMimeType(
-                              mimeUtil.getMimeTypes(
-                                file,
-                                new MimeType("application/octet-stream")))
-                            .toString
-                        if (mimeType.startsWith("image/")) {
-                          file.renameTo(
-                            new File(
-                              file.getParent,
-                              file.getName + "." + mimeType.split("/")(1)))
+                  dir
+                    .listFiles
+                    .foreach {
+                      file =>
+                        if (file.getName.indexOf('.') < 0) {
+                          val mimeType =
+                            MimeUtil2
+                              .getMostSpecificMimeType(
+                                mimeUtil.getMimeTypes(
+                                  file,
+                                  new MimeType("application/octet-stream")))
+                              .toString
+                          if (mimeType.startsWith("image/")) {
+                            file.renameTo(
+                              new File(
+                                file.getParent,
+                                file.getName + "." + mimeType.split("/")(1)))
+                          }
                         }
-                      }
-                  }
+                    }
                 }
             }
         }
@@ -216,7 +218,8 @@ object AutoUpdate {
         case Array(majorVersion, minorVersion) => {
           versions
             .find { v =>
-              v.majorVersion == majorVersion.toInt && v.minorVersion == minorVersion.toInt
+              v.majorVersion == majorVersion.toInt && v
+                .minorVersion == minorVersion.toInt
             }
             .getOrElse(Version(0, 0))
         }

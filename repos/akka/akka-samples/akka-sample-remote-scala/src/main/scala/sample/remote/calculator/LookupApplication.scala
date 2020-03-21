@@ -27,17 +27,18 @@ object LookupApplication {
     val system = ActorSystem("LookupSystem", ConfigFactory.load("remotelookup"))
     val remotePath =
       "akka.tcp://CalculatorSystem@127.0.0.1:2552/user/calculator"
-    val actor = system.actorOf(
-      Props(classOf[LookupActor], remotePath),
-      "lookupActor")
+    val actor = system
+      .actorOf(Props(classOf[LookupActor], remotePath), "lookupActor")
 
     println("Started LookupSystem")
     import system.dispatcher
-    system.scheduler.schedule(1.second, 1.second) {
-      if (Random.nextInt(100) % 2 == 0)
-        actor ! Add(Random.nextInt(100), Random.nextInt(100))
-      else
-        actor ! Subtract(Random.nextInt(100), Random.nextInt(100))
-    }
+    system
+      .scheduler
+      .schedule(1.second, 1.second) {
+        if (Random.nextInt(100) % 2 == 0)
+          actor ! Add(Random.nextInt(100), Random.nextInt(100))
+        else
+          actor ! Subtract(Random.nextInt(100), Random.nextInt(100))
+      }
   }
 }

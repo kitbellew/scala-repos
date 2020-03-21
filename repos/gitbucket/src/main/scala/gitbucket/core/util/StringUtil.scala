@@ -108,7 +108,8 @@ object StringUtil {
     * @return the iterator of issue id
     */
   def extractCloseId(message: String): Iterator[String] =
-    "(?i)(?<!\\w)(?:fix(?:e[sd])?|resolve[sd]?|close[sd]?)\\s+#(\\d+)(?!\\w)".r
+    "(?i)(?<!\\w)(?:fix(?:e[sd])?|resolve[sd]?|close[sd]?)\\s+#(\\d+)(?!\\w)"
+      .r
       .findAllIn(message)
       .matchData
       .map(_.group(1))

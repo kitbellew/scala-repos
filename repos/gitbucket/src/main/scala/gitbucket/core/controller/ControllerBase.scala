@@ -53,7 +53,8 @@ abstract class ControllerBase
       val path = httpRequest.getRequestURI.substring(context.length)
 
       if (path.startsWith("/console/")) {
-        val account = httpRequest.getSession
+        val account = httpRequest
+          .getSession
           .getAttribute(Keys.Session.LoginAccount)
           .asInstanceOf[Account]
         val baseUrl = this.baseUrl(httpRequest)
@@ -153,18 +154,21 @@ abstract class ControllerBase
         if (request.getMethod.toUpperCase == "POST") {
           org.scalatra.Unauthorized(redirect("/signin"))
         } else {
-          org.scalatra.Unauthorized(
-            redirect(
-              "/signin?redirect=" + StringUtil.urlEncode(
-                defining(request.getQueryString) { queryString =>
-                  request.getRequestURI.substring(
-                    request.getContextPath.length) + (
-                    if (queryString != null)
-                      "?" + queryString
-                    else
-                      ""
-                  )
-                })))
+          org
+            .scalatra
+            .Unauthorized(
+              redirect(
+                "/signin?redirect=" + StringUtil.urlEncode(
+                  defining(request.getQueryString) { queryString =>
+                    request
+                      .getRequestURI
+                      .substring(request.getContextPath.length) + (
+                      if (queryString != null)
+                        "?" + queryString
+                      else
+                        ""
+                    )
+                  })))
         }
       }
     }
@@ -222,8 +226,9 @@ case class Context(
     loginAccount: Option[Account],
     request: HttpServletRequest) {
   val path = settings.baseUrl.getOrElse(request.getContextPath)
-  val currentPath = request.getRequestURI.substring(
-    request.getContextPath.length)
+  val currentPath = request
+    .getRequestURI
+    .substring(request.getContextPath.length)
   val baseUrl = settings.baseUrl(request)
   val host = new java.net.URL(baseUrl).getHost
   val platform =
@@ -268,14 +273,16 @@ trait AccountManagementControllerBase extends ControllerBase {
       fileId: Option[String],
       clearImage: Boolean): Unit =
     if (clearImage) {
-      getAccountByUserName(userName).flatMap(_.image).map { image =>
-        new java.io.File(getUserUploadDir(userName), image).delete()
-        updateAvatarImage(userName, None)
-      }
+      getAccountByUserName(userName)
+        .flatMap(_.image)
+        .map { image =>
+          new java.io.File(getUserUploadDir(userName), image).delete()
+          updateAvatarImage(userName, None)
+        }
     } else {
       fileId.map { fileId =>
-        val filename = "avatar." + FileUtil.getExtension(
-          session.getAndRemove(Keys.Session.Upload(fileId)).get)
+        val filename = "avatar." + FileUtil
+          .getExtension(session.getAndRemove(Keys.Session.Upload(fileId)).get)
         FileUtils.moveFile(
           new java.io.File(getTemporaryDir(session.getId), fileId),
           new java.io.File(getUserUploadDir(userName), filename))

@@ -7,9 +7,11 @@ object ThriftClient {
   def main(args: Array[String]) {
     //#thriftclientapi
     val client = Thrift.newIface[Hello.FutureIface]("localhost:8080")
-    client.hi().onSuccess { response =>
-      println("Received response: " + response)
-    }
+    client
+      .hi()
+      .onSuccess { response =>
+        println("Received response: " + response)
+      }
     //#thriftclientapi
   }
 }

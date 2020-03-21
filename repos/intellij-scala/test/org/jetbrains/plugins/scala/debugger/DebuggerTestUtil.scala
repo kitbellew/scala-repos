@@ -67,11 +67,13 @@ object DebuggerTestUtil {
   def discoverJre(paths: Seq[String], versionMajor: String): Option[String] = {
     import java.io._
     def isJDK(f: File) =
-      f.listFiles().exists { b =>
-        b.getName == "bin" && b
-          .listFiles()
-          .exists(x => x.getName == "javac.exe" || x.getName == "javac")
-      }
+      f
+        .listFiles()
+        .exists { b =>
+          b.getName == "bin" && b
+            .listFiles()
+            .exists(x => x.getName == "javac.exe" || x.getName == "javac")
+        }
     def inJvm(path: String, suffix: String) = {
       val postfix =
         if (path.startsWith("/Library"))
@@ -82,11 +84,10 @@ object DebuggerTestUtil {
         .filter(_.exists())
         .flatMap(
           _.listFiles()
-            .sortBy(_.getName)
-            .reverse
-            .find(f =>
-              f.getName.contains(suffix) && isJDK(new File(f, postfix)))
-            .map(new File(_, s"$postfix/jre").getAbsolutePath))
+          .sortBy(_.getName)
+          .reverse
+          .find(f => f.getName.contains(suffix) && isJDK(new File(f, postfix)))
+          .map(new File(_, s"$postfix/jre").getAbsolutePath))
     }
     def currentJava() = {
       sys.props.get("java.version") match {
@@ -105,9 +106,11 @@ object DebuggerTestUtil {
     val priorityPaths = Seq(
       currentJava(),
       Option(
-        sys.env.getOrElse(
-          s"JDK_1${versionMajor}_x64",
-          sys.env.getOrElse(s"JDK_1$versionMajor", null)))
+        sys
+          .env
+          .getOrElse(
+            s"JDK_1${versionMajor}_x64",
+            sys.env.getOrElse(s"JDK_1$versionMajor", null)))
         .map(_ + "/jre") // teamcity style
     )
     if (priorityPaths.exists(_.isDefined)) {

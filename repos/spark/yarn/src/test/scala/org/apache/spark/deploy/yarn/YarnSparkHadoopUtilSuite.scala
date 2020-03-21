@@ -71,10 +71,8 @@ class YarnSparkHadoopUtilSuite
       ignore(name)(fn)
 
   bashTest("shell script escaping") {
-    val scriptFile = File.createTempFile(
-      "script.",
-      ".sh",
-      Utils.createTempDir())
+    val scriptFile = File
+      .createTempFile("script.", ".sh", Utils.createTempDir())
     val args = Array(
       "arg1",
       "${arg.2}",
@@ -107,8 +105,7 @@ class YarnSparkHadoopUtilSuite
     val key = "yarn.nodemanager.hostname"
     val default = new YarnConfiguration()
 
-    val sparkConf = new SparkConf()
-      .set("spark.hadoop." + key, "someHostName")
+    val sparkConf = new SparkConf().set("spark.hadoop." + key, "someHostName")
     val yarnConf = new YarnSparkHadoopUtil().newConfiguration(sparkConf)
 
     yarnConf.getClass() should be(classOf[YarnConfiguration])
@@ -189,11 +186,11 @@ class YarnSparkHadoopUtilSuite
   test("test expandEnvironment result") {
     val target = Environment.PWD
     if (classOf[Environment].getMethods().exists(_.getName == "$$")) {
-      YarnSparkHadoopUtil.expandEnvironment(target) should be(
-        "{{" + target + "}}")
+      YarnSparkHadoopUtil
+        .expandEnvironment(target) should be("{{" + target + "}}")
     } else if (Utils.isWindows) {
-      YarnSparkHadoopUtil.expandEnvironment(target) should be(
-        "%" + target + "%")
+      YarnSparkHadoopUtil
+        .expandEnvironment(target) should be("%" + target + "%")
     } else {
       YarnSparkHadoopUtil.expandEnvironment(target) should be("$" + target)
     }
@@ -245,9 +242,8 @@ class YarnSparkHadoopUtilSuite
 
   test("check access two nns") {
     val sparkConf = new SparkConf()
-    sparkConf.set(
-      "spark.yarn.access.namenodes",
-      "hdfs://nn1:8032,hdfs://nn2:8032")
+    sparkConf
+      .set("spark.yarn.access.namenodes", "hdfs://nn1:8032,hdfs://nn2:8032")
     val util = new YarnSparkHadoopUtil
     val nns = util.getNameNodesToAccess(sparkConf)
     nns should be(Set(new Path("hdfs://nn1:8032"), new Path("hdfs://nn2:8032")))
@@ -256,9 +252,8 @@ class YarnSparkHadoopUtilSuite
   test("check token renewer") {
     val hadoopConf = new Configuration()
     hadoopConf.set("yarn.resourcemanager.address", "myrm:8033")
-    hadoopConf.set(
-      "yarn.resourcemanager.principal",
-      "yarn/myrm:8032@SPARKTEST.COM")
+    hadoopConf
+      .set("yarn.resourcemanager.principal", "yarn/myrm:8032@SPARKTEST.COM")
     val util = new YarnSparkHadoopUtil
     val renewer = util.getTokenRenewer(hadoopConf)
     renewer should be("yarn/myrm:8032@SPARKTEST.COM")
@@ -271,7 +266,8 @@ class YarnSparkHadoopUtilSuite
       util.getTokenRenewer(hadoopConf)
     }
     assert(
-      caught.getMessage === "Can't get Master Kerberos principal for use as renewer")
+      caught
+        .getMessage === "Can't get Master Kerberos principal for use as renewer")
   }
 
   test("check different hadoop utils based on env variable") {
@@ -328,7 +324,8 @@ class YarnSparkHadoopUtilSuite
   test("security manager token generation") {
     try {
       System.setProperty("SPARK_YARN_MODE", "true")
-      val initial = SparkHadoopUtil.get
+      val initial = SparkHadoopUtil
+        .get
         .getSecretKeyFromUserCredentials(SecurityManager.SECRET_LOOKUP_KEY)
       assert(initial === null || initial.length === 0)
 
@@ -337,7 +334,8 @@ class YarnSparkHadoopUtilSuite
         .set(SecurityManager.SPARK_AUTH_SECRET_CONF, "unused")
       val sm = new SecurityManager(conf)
 
-      val generated = SparkHadoopUtil.get
+      val generated = SparkHadoopUtil
+        .get
         .getSecretKeyFromUserCredentials(SecurityManager.SECRET_LOOKUP_KEY)
       assert(generated != null)
       val genString = new Text(generated).toString()
@@ -346,7 +344,8 @@ class YarnSparkHadoopUtilSuite
     } finally {
       // removeSecretKey() was only added in Hadoop 2.6, so instead we just set the secret
       // to an empty string.
-      SparkHadoopUtil.get
+      SparkHadoopUtil
+        .get
         .addSecretKeyToUserCredentials(SecurityManager.SECRET_LOOKUP_KEY, "")
       System.clearProperty("SPARK_YARN_MODE")
     }

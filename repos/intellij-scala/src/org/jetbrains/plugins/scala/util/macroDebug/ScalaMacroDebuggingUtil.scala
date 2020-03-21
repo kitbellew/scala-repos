@@ -55,9 +55,8 @@ object ScalaMacroDebuggingUtil {
 
     if (!isEnabled)
       return
-    val file = VfsUtil.findFileByIoFile(
-      new File(fileName stripPrefix MACRO_SIGN_PREFIX),
-      true)
+    val file = VfsUtil
+      .findFileByIoFile(new File(fileName stripPrefix MACRO_SIGN_PREFIX), true)
 
     val dataStream = SYNTHETIC_SOURCE_ATTRIBUTE writeAttribute file
     code foreach (dataStream writeUTF _.stripPrefix(MACRO_SIGN_PREFIX))
@@ -74,8 +73,8 @@ object ScalaMacroDebuggingUtil {
     val canonicalPath = file.getVirtualFile.getCanonicalPath
 
     def createFile(): PsiFile = {
-      val dataStream =
-        SYNTHETIC_SOURCE_ATTRIBUTE readAttribute file.getVirtualFile
+      val dataStream = SYNTHETIC_SOURCE_ATTRIBUTE readAttribute file
+        .getVirtualFile
       if (dataStream == null)
         return null
 
@@ -220,11 +219,12 @@ object ScalaMacroDebuggingUtil {
 
     copyTextBetweenEditors(sourceEditor, macroEditor, project)
 
-    for (elt <- macrosToExpand.toList.sortWith((a, b) =>
-           a.getTextOffset > b.getTextOffset)) {
+    for (elt <- macrosToExpand
+           .toList
+           .sortWith((a, b) => a.getTextOffset > b.getTextOffset)) {
       var macroCall = macrosheetFile.findElementAt(elt.getTextOffset)
-      while (macroCall != null && !ScalaMacroDebuggingUtil.isMacroCall(
-               macroCall)) {
+      while (macroCall != null && !ScalaMacroDebuggingUtil
+               .isMacroCall(macroCall)) {
         macroCall = macroCall.getParent
       }
       if (macroCall != null) {

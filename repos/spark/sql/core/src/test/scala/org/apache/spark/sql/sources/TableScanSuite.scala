@@ -76,33 +76,36 @@ case class AllDataTypesScan(
   override def needConversion: Boolean = true
 
   override def buildScan(): RDD[Row] = {
-    sqlContext.sparkContext.parallelize(from to to).map { i =>
-      Row(
-        s"str_$i",
-        s"str_$i".getBytes(StandardCharsets.UTF_8),
-        i % 2 == 0,
-        i.toByte,
-        i.toShort,
-        i,
-        i.toLong,
-        i.toFloat,
-        i.toDouble,
-        new java.math.BigDecimal(i),
-        new java.math.BigDecimal(i),
-        Date.valueOf("1970-01-01"),
-        new Timestamp(20000 + i),
-        s"varchar_$i",
-        s"char_$i",
-        Seq(i, i + 1),
-        Seq(Map(s"str_$i" -> Row(i.toLong))),
-        Map(i -> i.toString),
-        Map(Map(s"str_$i" -> i.toFloat) -> Row(i.toLong)),
-        Row(i, i.toString),
+    sqlContext
+      .sparkContext
+      .parallelize(from to to)
+      .map { i =>
         Row(
-          Seq(s"str_$i", s"str_${i + 1}"),
-          Row(Seq(Date.valueOf(s"1970-01-${i + 1}"))))
-      )
-    }
+          s"str_$i",
+          s"str_$i".getBytes(StandardCharsets.UTF_8),
+          i % 2 == 0,
+          i.toByte,
+          i.toShort,
+          i,
+          i.toLong,
+          i.toFloat,
+          i.toDouble,
+          new java.math.BigDecimal(i),
+          new java.math.BigDecimal(i),
+          Date.valueOf("1970-01-01"),
+          new Timestamp(20000 + i),
+          s"varchar_$i",
+          s"char_$i",
+          Seq(i, i + 1),
+          Seq(Map(s"str_$i" -> Row(i.toLong))),
+          Map(i -> i.toString),
+          Map(Map(s"str_$i" -> i.toFloat) -> Row(i.toLong)),
+          Row(i, i.toString),
+          Row(
+            Seq(s"str_$i", s"str_${i + 1}"),
+            Row(Seq(Date.valueOf(s"1970-01-${i + 1}"))))
+        )
+      }
   }
 }
 
@@ -110,33 +113,35 @@ class TableScanSuite extends DataSourceTest with SharedSQLContext {
   protected override lazy val sql = caseInsensitiveContext.sql _
 
   private lazy val tableWithSchemaExpected =
-    (1 to 10).map { i =>
-      Row(
-        s"str_$i",
-        s"str_$i",
-        i % 2 == 0,
-        i.toByte,
-        i.toShort,
-        i,
-        i.toLong,
-        i.toFloat,
-        i.toDouble,
-        new java.math.BigDecimal(i),
-        new java.math.BigDecimal(i),
-        Date.valueOf("1970-01-01"),
-        new Timestamp(20000 + i),
-        s"varchar_$i",
-        s"char_$i",
-        Seq(i, i + 1),
-        Seq(Map(s"str_$i" -> Row(i.toLong))),
-        Map(i -> i.toString),
-        Map(Map(s"str_$i" -> i.toFloat) -> Row(i.toLong)),
-        Row(i, i.toString),
+    (1 to 10)
+      .map { i =>
         Row(
-          Seq(s"str_$i", s"str_${i + 1}"),
-          Row(Seq(Date.valueOf(s"1970-01-${i + 1}"))))
-      )
-    }.toSeq
+          s"str_$i",
+          s"str_$i",
+          i % 2 == 0,
+          i.toByte,
+          i.toShort,
+          i,
+          i.toLong,
+          i.toFloat,
+          i.toDouble,
+          new java.math.BigDecimal(i),
+          new java.math.BigDecimal(i),
+          Date.valueOf("1970-01-01"),
+          new Timestamp(20000 + i),
+          s"varchar_$i",
+          s"char_$i",
+          Seq(i, i + 1),
+          Seq(Map(s"str_$i" -> Row(i.toLong))),
+          Map(i -> i.toString),
+          Map(Map(s"str_$i" -> i.toFloat) -> Row(i.toLong)),
+          Row(i, i.toString),
+          Row(
+            Seq(s"str_$i", s"str_${i + 1}"),
+            Row(Seq(Date.valueOf(s"1970-01-${i + 1}"))))
+        )
+      }
+      .toSeq
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -359,8 +364,9 @@ class TableScanSuite extends DataSourceTest with SharedSQLContext {
         """.stripMargin)
     }
     assert(
-      schemaNotAllowed.getMessage.contains(
-        "does not allow user-specified schemas"))
+      schemaNotAllowed
+        .getMessage
+        .contains("does not allow user-specified schemas"))
 
     val schemaNeeded = intercept[Exception] {
       sql("""
@@ -373,8 +379,9 @@ class TableScanSuite extends DataSourceTest with SharedSQLContext {
         """.stripMargin)
     }
     assert(
-      schemaNeeded.getMessage.contains(
-        "A schema needs to be specified when using"))
+      schemaNeeded
+        .getMessage
+        .contains("A schema needs to be specified when using"))
   }
 
   test("SPARK-5196 schema field with comment") {
@@ -391,7 +398,9 @@ class TableScanSuite extends DataSourceTest with SharedSQLContext {
        """.stripMargin)
 
     val planned = sql("SELECT * FROM student").queryExecution.executedPlan
-    val comments = planned.schema.fields
+    val comments = planned
+      .schema
+      .fields
       .map { field =>
         if (field.metadata.contains("comment"))
           field.metadata.getString("comment")

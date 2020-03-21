@@ -394,11 +394,17 @@ histogram
       val msgs =
         jvals match {
           case JArray(jvals) =>
-            jvals.zipWithIndex.map {
-              case (jval, idx) =>
-                val event = Event(Path("/test/null"), "apiKey", jval, Map.empty)
-                EventMessage(EventId(1, idx), event)
-            }
+            jvals
+              .zipWithIndex
+              .map {
+                case (jval, idx) =>
+                  val event = Event(
+                    Path("/test/null"),
+                    "apiKey",
+                    jval,
+                    Map.empty)
+                  EventMessage(EventId(1, idx), event)
+              }
         }
 
       Await.result(bifrost.storeBatch(msgs, timeout), timeout)
@@ -486,15 +492,17 @@ histogram
       val msgs =
         jvalues match {
           case JArray(jvals) =>
-            jvals.zipWithIndex.map {
-              case (jval, idx) =>
-                val event = Event(
-                  Path("/test/mixed"),
-                  "apiKey",
-                  jval,
-                  Map.empty)
-                EventMessage(EventId(2, idx), event)
-            }
+            jvals
+              .zipWithIndex
+              .map {
+                case (jval, idx) =>
+                  val event = Event(
+                    Path("/test/mixed"),
+                    "apiKey",
+                    jval,
+                    Map.empty)
+                  EventMessage(EventId(2, idx), event)
+              }
         }
 
       Await.result(bifrost.storeBatch(msgs, timeout), timeout)
@@ -523,8 +531,8 @@ class TestQueryExecutor(config: Configuration, testShard: TestShard)
   override type Dataset[A] = IterableDataset[A]
 
   lazy val actorSystem = ActorSystem("testQueryExecutor")
-  implicit lazy val asyncContext = ExecutionContext.defaultExecutionContext(
-    actorSystem)
+  implicit lazy val asyncContext = ExecutionContext
+    .defaultExecutionContext(actorSystem)
   lazy val yggConfig =
     new JDBMQueryExecutorConfig {
       val config = TestQueryExecutor.this.config

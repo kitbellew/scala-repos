@@ -79,14 +79,18 @@ private[finagle] object Handshake {
     * we can Tinit.
     */
   def canTinit(trans: Transport[Message, Message]): Future[Boolean] =
-    trans.write(Message.Rerr(TinitTag, CanTinitMsg)).before {
-      trans.read().transform {
-        case Return(Message.Rerr(`TinitTag`, `CanTinitMsg`)) =>
-          Future.True
-        case _ =>
-          Future.False
+    trans
+      .write(Message.Rerr(TinitTag, CanTinitMsg))
+      .before {
+        trans
+          .read()
+          .transform {
+            case Return(Message.Rerr(`TinitTag`, `CanTinitMsg`)) =>
+              Future.True
+            case _ =>
+              Future.False
+          }
       }
-    }
 
   /**
     * Returns a [[Transport]] that handles session negotiation from a client's
@@ -117,18 +121,23 @@ private[finagle] object Handshake {
       .transform {
         // We can start the official Tinit/Rinit handshake
         case Return(true) =>
-          msgTrans.write(Message.Tinit(TinitTag, version, headers)).before {
-            msgTrans.read().transform {
-              case Return(Message.Rinit(_, v, serverHeaders)) if v == version =>
-                Future(negotiate(serverHeaders, trans))
+          msgTrans
+            .write(Message.Tinit(TinitTag, version, headers))
+            .before {
+              msgTrans
+                .read()
+                .transform {
+                  case Return(Message.Rinit(_, v, serverHeaders))
+                      if v == version =>
+                    Future(negotiate(serverHeaders, trans))
 
-              case Return(Message.Rerr(_, msg)) =>
-                Future.exception(Failure(msg))
+                  case Return(Message.Rerr(_, msg)) =>
+                    Future.exception(Failure(msg))
 
-              case t @ Throw(_) =>
-                Future.const(t.cast[Transport[Message, Message]])
+                  case t @ Throw(_) =>
+                    Future.const(t.cast[Transport[Message, Message]])
+                }
             }
-          }
 
         // If we can't init, we return the session as is and assume that we
         // can speak mux pre version 1 and pre handshaking. Any subsequent
@@ -181,9 +190,11 @@ private[finagle] object Handshake {
         // A Tinit with a matching version
         case Return(Message.Tinit(tag, ver, clientHeaders)) if ver == version =>
           val hdrs = headers(clientHeaders)
-          msgTrans.write(Message.Rinit(tag, version, hdrs)).before {
-            Future(negotiate(hdrs, trans))
-          }
+          msgTrans
+            .write(Message.Rinit(tag, version, hdrs))
+            .before {
+              Future(negotiate(hdrs, trans))
+            }
 
         // A Tinit with a version mismatch. Write an Rerr and then return
         // a failed future.
@@ -199,9 +210,11 @@ private[finagle] object Handshake {
         // Echo back the Rerr message to indicate that we can and recurse
         // so we can be ready to handshake again.
         case Return(rerr @ Message.Rerr(tag, msg)) =>
-          msgTrans.write(rerr).before {
-            Future.value(server(trans, version, headers, negotiate))
-          }
+          msgTrans
+            .write(rerr)
+            .before {
+              Future.value(server(trans, version, headers, negotiate))
+            }
 
         // Client did not start a session with handshaking but we've consumed
         // a message from the transport. Replace the message and return the

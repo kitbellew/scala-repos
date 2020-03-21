@@ -70,8 +70,8 @@ class ClusterClientTest
 
     // connect to zookeeper server
     zookeeperClient = boundedWait(
-      zookeeperServer.createClient(
-        ZooKeeperClient.digestCredentials("user", "pass")))
+      zookeeperServer
+        .createClient(ZooKeeperClient.digestCredentials("user", "pass")))
 
     // create serverset
     val serverSet = boundedWait(
@@ -107,8 +107,8 @@ class ClusterClientTest
       boundedWait(zookeeperClient.get().setData(zkPath, output.toByteArray, -1))
 
       // a separate client which only does zk discovery for integration test
-      zookeeperClient = zookeeperServer.createClient(
-        ZooKeeperClient.digestCredentials("user", "pass"))
+      zookeeperClient = zookeeperServer
+        .createClient(ZooKeeperClient.digestCredentials("user", "pass"))
 
       // destination of the test cache endpoints
       dest = Resolver.eval(
@@ -346,9 +346,12 @@ class ClusterClientTest
       val myPool = initializePool(
         2,
         Some(
-          scala.collection.immutable.Set(
-            new CacheNode("host1", 11211, 1),
-            new CacheNode("host2", 11212, 1))))
+          scala
+            .collection
+            .immutable
+            .Set(
+              new CacheNode("host1", 11211, 1),
+              new CacheNode("host2", 11212, 1))))
 
       // bring the server back online
       // give it some time we should see the cache pool cluster pick up underlying pool
@@ -697,10 +700,8 @@ class ClusterClientTest
       ignoreConfigData: Boolean = false): Cluster[CacheNode] = {
     val myCachePool =
       if (!ignoreConfigData)
-        CachePoolCluster.newZkCluster(
-          zkPath,
-          zookeeperClient,
-          backupPool = backupPool)
+        CachePoolCluster
+          .newZkCluster(zkPath, zookeeperClient, backupPool = backupPool)
       else
         CachePoolCluster.newUnmanagedZkCluster(zkPath, zookeeperClient)
 

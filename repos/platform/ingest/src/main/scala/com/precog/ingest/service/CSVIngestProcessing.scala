@@ -154,13 +154,16 @@ class CSVIngestProcessing(
       */
     def normalizeHeaders(headers: Array[String]): Array[JPath] = {
       val positions =
-        headers.zipWithIndex.foldLeft(Map.empty[String, List[Int]]) {
-          case (hdrs, (h, i)) =>
-            val pos = i :: hdrs.getOrElse(h, Nil)
-            hdrs + (h -> pos)
-        }
+        headers
+          .zipWithIndex
+          .foldLeft(Map.empty[String, List[Int]]) {
+            case (hdrs, (h, i)) =>
+              val pos = i :: hdrs.getOrElse(h, Nil)
+              hdrs + (h -> pos)
+          }
 
-      positions.toList
+      positions
+        .toList
         .flatMap {
           case (h, Nil) =>
             Nil

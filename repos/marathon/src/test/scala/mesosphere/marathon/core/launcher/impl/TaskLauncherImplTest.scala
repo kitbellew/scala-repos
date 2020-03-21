@@ -35,7 +35,8 @@ class TaskLauncherImplTest extends MarathonSpec {
   private[this] val ops = Seq(launch1, launch2)
   private[this] val opsAsJava: util.List[Offer.Operation] =
     ops.flatMap(_.offerOperations).asJava
-  private[this] val filter = Protos.Filters
+  private[this] val filter = Protos
+    .Filters
     .newBuilder()
     .setRefuseSeconds(0)
     .build()
@@ -81,7 +82,8 @@ class TaskLauncherImplTest extends MarathonSpec {
 
   test("declineOffer with driver and defined refuse seconds") {
     launcher.declineOffer(offerId, Some(123))
-    val filter = Protos.Filters
+    val filter = Protos
+      .Filters
       .newBuilder()
       .setRefuseSeconds(123 / 1000.0)
       .build()

@@ -1460,10 +1460,8 @@ class QuadraticMinimizerTest extends OptimizeTestBase with Matchers {
 
     val directQpMl = QuadraticMinimizer(ml, EQUALITY, 0.0)
     val initialState = directQpMl.initialize
-    var directQpResult = directQpMl.minimizeAndReturnState(
-      Hml,
-      fml,
-      initialState)
+    var directQpResult = directQpMl
+      .minimizeAndReturnState(Hml, fml, initialState)
     directQpResult = directQpMl.minimizeAndReturnState(Hml, fml, initialState)
 
     val golden = DenseVector(

@@ -91,8 +91,8 @@ object ByteBufferMessageSet {
           output.close()
         }
       }
-      val buffer = ByteBuffer.allocate(
-        messageWriter.size + MessageSet.LogOverhead)
+      val buffer = ByteBuffer
+        .allocate(messageWriter.size + MessageSet.LogOverhead)
       writeMessage(buffer, messageWriter, offset)
       buffer.rewind()
       buffer
@@ -425,8 +425,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
               innerIter = null
               new MessageAndOffset(newMessage, offset)
             case _ =>
-              innerIter = ByteBufferMessageSet.deepIterator(
-                new MessageAndOffset(newMessage, offset))
+              innerIter = ByteBufferMessageSet
+                .deepIterator(new MessageAndOffset(newMessage, offset))
               if (!innerIter.hasNext)
                 innerIter = null
               makeNext()
@@ -507,47 +507,56 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
 
       // No in place assignment situation 1 and 2
       var inPlaceAssignment =
-        sourceCodec == targetCodec && messageFormatVersion > Message.MagicValue_V0
+        sourceCodec == targetCodec && messageFormatVersion > Message
+          .MagicValue_V0
 
       var maxTimestamp = Message.NoTimestamp
       val expectedInnerOffset = new LongRef(0)
       val validatedMessages = new mutable.ArrayBuffer[Message]
-      this.internalIterator(isShallow = false).foreach { messageAndOffset =>
-        val message = messageAndOffset.message
-        validateMessageKey(message, compactedTopic)
+      this
+        .internalIterator(isShallow = false)
+        .foreach { messageAndOffset =>
+          val message = messageAndOffset.message
+          validateMessageKey(message, compactedTopic)
 
-        if (message.magic > Message.MagicValue_V0 && messageFormatVersion > Message.MagicValue_V0) {
-          // No in place assignment situation 3
-          // Validate the timestamp
-          validateTimestamp(
-            message,
-            now,
-            messageTimestampType,
-            messageTimestampDiffMaxMs)
-          // Check if we need to overwrite offset
-          if (messageAndOffset.offset != expectedInnerOffset.getAndIncrement())
+          if (message.magic > Message
+                .MagicValue_V0 && messageFormatVersion > Message
+                .MagicValue_V0) {
+            // No in place assignment situation 3
+            // Validate the timestamp
+            validateTimestamp(
+              message,
+              now,
+              messageTimestampType,
+              messageTimestampDiffMaxMs)
+            // Check if we need to overwrite offset
+            if (messageAndOffset
+                  .offset != expectedInnerOffset.getAndIncrement())
+              inPlaceAssignment = false
+            maxTimestamp = math.max(maxTimestamp, message.timestamp)
+          }
+
+          if (sourceCodec != NoCompressionCodec && message
+                .compressionCodec != NoCompressionCodec)
+            throw new InvalidMessageException(
+              "Compressed outer message should not have an inner message with a " +
+                s"compression attribute set: $message")
+
+          // No in place assignment situation 4
+          if (message.magic != messageFormatVersion)
             inPlaceAssignment = false
-          maxTimestamp = math.max(maxTimestamp, message.timestamp)
+
+          validatedMessages += message.toFormatVersion(messageFormatVersion)
         }
-
-        if (sourceCodec != NoCompressionCodec && message.compressionCodec != NoCompressionCodec)
-          throw new InvalidMessageException(
-            "Compressed outer message should not have an inner message with a " +
-              s"compression attribute set: $message")
-
-        // No in place assignment situation 4
-        if (message.magic != messageFormatVersion)
-          inPlaceAssignment = false
-
-        validatedMessages += message.toFormatVersion(messageFormatVersion)
-      }
 
       if (!inPlaceAssignment) {
         // Cannot do in place assignment.
         val wrapperMessageTimestamp = {
           if (messageFormatVersion == Message.MagicValue_V0)
             Some(Message.NoTimestamp)
-          else if (messageFormatVersion > Message.MagicValue_V0 && messageTimestampType == TimestampType.CREATE_TIME)
+          else if (messageFormatVersion > Message
+                     .MagicValue_V0 && messageTimestampType == TimestampType
+                     .CREATE_TIME)
             Some(maxTimestamp)
           else // Log append time
             Some(now)
@@ -572,7 +581,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
         val attributeOffset = MessageSet.LogOverhead + Message.AttributesOffset
         val timestamp = buffer.getLong(timestampOffset)
         val attributes = buffer.get(attributeOffset)
-        if (messageTimestampType == TimestampType.CREATE_TIME && timestamp == maxTimestamp)
+        if (messageTimestampType == TimestampType
+              .CREATE_TIME && timestamp == maxTimestamp)
           // We don't need to recompute crc if the timestamp is not updated.
           crcUpdateNeeded = false
         else if (messageTimestampType == TimestampType.LOG_APPEND_TIME) {
@@ -616,26 +626,28 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
       .sum
     val newBuffer = ByteBuffer.allocate(sizeInBytesAfterConversion)
     var newMessagePosition = 0
-    this.internalIterator(isShallow = true).foreach {
-      case MessageAndOffset(message, _) =>
-        validateMessageKey(message, compactedTopic)
-        validateTimestamp(
-          message,
-          now,
-          timestampType,
-          messageTimestampDiffMaxMs)
-        newBuffer.position(newMessagePosition)
-        newBuffer.putLong(offsetCounter.getAndIncrement())
-        val newMessageSize =
-          message.size + Message.headerSizeDiff(message.magic, toMagicValue)
-        newBuffer.putInt(newMessageSize)
-        val newMessageBuffer = newBuffer.slice()
-        newMessageBuffer.limit(newMessageSize)
-        message
-          .convertToBuffer(toMagicValue, newMessageBuffer, now, timestampType)
+    this
+      .internalIterator(isShallow = true)
+      .foreach {
+        case MessageAndOffset(message, _) =>
+          validateMessageKey(message, compactedTopic)
+          validateTimestamp(
+            message,
+            now,
+            timestampType,
+            messageTimestampDiffMaxMs)
+          newBuffer.position(newMessagePosition)
+          newBuffer.putLong(offsetCounter.getAndIncrement())
+          val newMessageSize = message.size + Message
+            .headerSizeDiff(message.magic, toMagicValue)
+          newBuffer.putInt(newMessageSize)
+          val newMessageBuffer = newBuffer.slice()
+          newMessageBuffer.limit(newMessageSize)
+          message
+            .convertToBuffer(toMagicValue, newMessageBuffer, now, timestampType)
 
-        newMessagePosition += MessageSet.LogOverhead + newMessageSize
-    }
+          newMessagePosition += MessageSet.LogOverhead + newMessageSize
+      }
     newBuffer.rewind()
     new ByteBufferMessageSet(newBuffer)
   }
@@ -661,9 +673,11 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
         validateTimestamp(message, now, timestampType, timestampDiffMaxMs)
         if (timestampType == TimestampType.LOG_APPEND_TIME) {
           message.buffer.putLong(Message.TimestampOffset, now)
-          message.buffer.put(
-            Message.AttributesOffset,
-            timestampType.updateAttributes(message.attributes))
+          message
+            .buffer
+            .put(
+              Message.AttributesOffset,
+              timestampType.updateAttributes(message.attributes))
           Utils.writeUnsignedInt(
             message.buffer,
             Message.CrcOffset,
@@ -691,8 +705,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
       now: Long,
       timestampType: TimestampType,
       timestampDiffMaxMs: Long) {
-    if (timestampType == TimestampType.CREATE_TIME && math.abs(
-          message.timestamp - now) > timestampDiffMaxMs)
+    if (timestampType == TimestampType.CREATE_TIME && math
+          .abs(message.timestamp - now) > timestampDiffMaxMs)
       throw new InvalidTimestampException(
         s"Timestamp ${message.timestamp} of message is out of range. " +
           s"The timestamp should be within [${now - timestampDiffMaxMs}, ${now + timestampDiffMaxMs}")

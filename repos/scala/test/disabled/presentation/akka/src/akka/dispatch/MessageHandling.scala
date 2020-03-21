@@ -134,10 +134,8 @@ trait MessageDispatcher {
           shutdownSchedule match {
             case UNSCHEDULED =>
               shutdownSchedule = SCHEDULED
-              Scheduler.scheduleOnce(
-                shutdownAction,
-                timeoutMs,
-                TimeUnit.MILLISECONDS)
+              Scheduler
+                .scheduleOnce(shutdownAction, timeoutMs, TimeUnit.MILLISECONDS)
             case SCHEDULED =>
               shutdownSchedule = RESCHEDULED
             case RESCHEDULED => //Already marked for reschedule
@@ -165,10 +163,8 @@ trait MessageDispatcher {
         shutdownSchedule match {
           case UNSCHEDULED =>
             shutdownSchedule = SCHEDULED
-            Scheduler.scheduleOnce(
-              shutdownAction,
-              timeoutMs,
-              TimeUnit.MILLISECONDS)
+            Scheduler
+              .scheduleOnce(shutdownAction, timeoutMs, TimeUnit.MILLISECONDS)
           case SCHEDULED =>
             shutdownSchedule = RESCHEDULED
           case RESCHEDULED => //Already marked for reschedule
@@ -268,9 +264,8 @@ abstract class MessageDispatcherConfigurator {
   def configure(config: Configuration): MessageDispatcher
 
   def mailboxType(config: Configuration): MailboxType = {
-    val capacity = config.getInt(
-      "mailbox-capacity",
-      Dispatchers.MAILBOX_CAPACITY)
+    val capacity = config
+      .getInt("mailbox-capacity", Dispatchers.MAILBOX_CAPACITY)
     if (capacity < 1)
       UnboundedMailbox()
     else

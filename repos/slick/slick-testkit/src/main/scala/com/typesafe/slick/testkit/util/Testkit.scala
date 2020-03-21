@@ -46,19 +46,23 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
 
   def getChildren =
     if (tdb.isEnabled) {
-      profileTest.tests.flatMap { t =>
-        val ms = t.getMethods.filter { m =>
-          m.getName.startsWith("test") && m.getParameterTypes.length == 0
+      profileTest
+        .tests
+        .flatMap { t =>
+          val ms = t
+            .getMethods
+            .filter { m =>
+              m.getName.startsWith("test") && m.getParameterTypes.length == 0
+            }
+          ms.map { m =>
+            val tname = m.getName + '[' + tdb.confName + ']'
+            new TestMethod(
+              tname,
+              Description.createTestDescription(t, tname),
+              m,
+              t)
+          }
         }
-        ms.map { m =>
-          val tname = m.getName + '[' + tdb.confName + ']'
-          new TestMethod(
-            tname,
-            Description.createTestDescription(t, tname),
-            m,
-            t)
-        }
-      }
     } else
       Nil
 
@@ -67,7 +71,8 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
       tdb.cleanUpBefore()
       try {
         val is =
-          children.iterator
+          children
+            .iterator
             .map(ch => (ch, ch.cl.newInstance()))
             .filter {
               case (_, to) =>
@@ -140,8 +145,9 @@ case class TestMethod(
           await(method.invoke(testObject).asInstanceOf[Future[Any]])
         else if (r == classOf[DBIOAction[_, _, _]])
           await(
-            testObject.db.run(
-              method.invoke(testObject).asInstanceOf[DBIO[Any]]))
+            testObject
+              .db
+              .run(method.invoke(testObject).asInstanceOf[DBIO[Any]]))
         else
           throw new RuntimeException(
             s"Illegal return type: '${r.getName}' in test method '$name' -- AsyncTest methods must return Future or Action")
@@ -231,17 +237,22 @@ sealed abstract class GenericTest[TDB >: Null <: TestDB](implicit
         tdb.profile.queryCompiler.phases.takeWhile(_.name != "codeGen"))
     val cs = qc.run(q.toNode)
     val found =
-      cs.tree.collect {
-        case c: Comprehension =>
-          c
-      }.length
+      cs
+        .tree
+        .collect {
+          case c: Comprehension =>
+            c
+        }
+        .length
     if (found != exp)
-      throw cs.symbolNamer.use(
-        new SlickTreeException(
-          s"Found $found Comprehension nodes, should be $exp",
-          cs.tree,
-          mark = (_.isInstanceOf[Comprehension]),
-          removeUnmarked = false))
+      throw cs
+        .symbolNamer
+        .use(
+          new SlickTreeException(
+            s"Found $found Comprehension nodes, should be $exp",
+            cs.tree,
+            mark = (_.isInstanceOf[Comprehension]),
+            removeUnmarked = false))
   }
 
   def rcap = RelationalCapabilities
@@ -485,7 +496,9 @@ abstract class AsyncTest[TDB >: Null <: TestDB](implicit
       catch {
         case ex: AssertionError =>
           ex.setStackTrace(
-            ex.getStackTrace.iterator
+            ex
+              .getStackTrace
+              .iterator
               .filterNot(_.getClassName.startsWith(cln))
               .toArray)
           throw ex
@@ -515,7 +528,9 @@ abstract class AsyncTest[TDB >: Null <: TestDB](implicit
       if (!ct.runtimeClass.isInstance(v))
         fixStack(
           Assert.fail(
-            "Expected value of type " + ct.runtimeClass.getName + ", got " + v.getClass.getName))
+            "Expected value of type " + ct.runtimeClass.getName + ", got " + v
+              .getClass
+              .getName))
     }
   }
 
@@ -526,7 +541,9 @@ abstract class AsyncTest[TDB >: Null <: TestDB](implicit
       catch {
         case ex: AssertionError =>
           ex.setStackTrace(
-            ex.getStackTrace.iterator
+            ex
+              .getStackTrace
+              .iterator
               .filterNot(_.getClassName.startsWith(cln))
               .toArray)
           throw ex

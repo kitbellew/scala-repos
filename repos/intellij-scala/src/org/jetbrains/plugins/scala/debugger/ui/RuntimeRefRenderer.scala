@@ -148,8 +148,8 @@ class RuntimeRefRenderer extends NodeRendererImpl {
                   value.`type`.name)
               else
                 message
-            valueDescriptor.setValueLabelFailed(
-              new EvaluateException(msg, null))
+            valueDescriptor
+              .setValueLabelFailed(new EvaluateException(msg, null))
             labelListener.labelChanged()
           }
         })

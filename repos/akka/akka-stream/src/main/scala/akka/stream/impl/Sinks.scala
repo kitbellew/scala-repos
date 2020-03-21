@@ -111,8 +111,8 @@ private[akka] final class FanoutPublisherSink[In](
     val fanoutProcessor = ActorProcessorFactory[In, In](
       actorMaterializer.actorOf(
         context,
-        FanoutProcessorImpl.props(
-          actorMaterializer.effectiveSettings(attributes))))
+        FanoutProcessorImpl
+          .props(actorMaterializer.effectiveSettings(attributes))))
     (fanoutProcessor, fanoutProcessor)
   }
 
@@ -223,8 +223,8 @@ private[akka] final class ActorRefSink[In](
 
   override def create(context: MaterializationContext) = {
     val actorMaterializer = ActorMaterializer.downcast(context.materializer)
-    val effectiveSettings = actorMaterializer.effectiveSettings(
-      context.effectiveAttributes)
+    val effectiveSettings = actorMaterializer
+      .effectiveSettings(context.effectiveAttributes)
     val subscriberRef = actorMaterializer.actorOf(
       context,
       ActorRefSinkActor

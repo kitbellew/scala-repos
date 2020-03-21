@@ -89,7 +89,8 @@ class WriteAggregatorSpec
   val writeMajority = WriteMajority(timeout)
 
   def probes(probe: ActorRef): Map[Address, ActorRef] =
-    nodes.toSeq
+    nodes
+      .toSeq
       .map(_ -> system.actorOf(WriteAggregatorSpec.writeAckAdapterProps(probe)))
       .toMap
 

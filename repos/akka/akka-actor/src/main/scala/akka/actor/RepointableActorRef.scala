@@ -288,29 +288,40 @@ private[akka] class UnstartedCell(
         if (cellIsReady(cell)) {
           cell.sendMessage(msg)
         } else if (!queue.offer(msg)) {
-          system.eventStream.publish(
-            Warning(
-              self.path.toString,
-              getClass,
-              "dropping message of type " + msg.message.getClass + " due to enqueue failure"))
-          system.deadLetters
+          system
+            .eventStream
+            .publish(
+              Warning(
+                self.path.toString,
+                getClass,
+                "dropping message of type " + msg
+                  .message
+                  .getClass + " due to enqueue failure"))
+          system
+            .deadLetters
             .tell(DeadLetter(msg.message, msg.sender, self), msg.sender)
         } else if (Mailbox.debug)
           println(s"$self temp queueing ${msg.message} from ${msg.sender}")
       } finally lock.unlock()
     } else {
-      system.eventStream.publish(
-        Warning(
-          self.path.toString,
-          getClass,
-          "dropping message of type" + msg.message.getClass + " due to lock timeout"))
-      system.deadLetters
+      system
+        .eventStream
+        .publish(
+          Warning(
+            self.path.toString,
+            getClass,
+            "dropping message of type" + msg
+              .message
+              .getClass + " due to lock timeout"))
+      system
+        .deadLetters
         .tell(DeadLetter(msg.message, msg.sender, self), msg.sender)
     }
   }
 
   def sendSystemMessage(msg: SystemMessage): Unit = {
-    lock.lock // we cannot lose system messages, ever, and we cannot throw an Error from here as well
+    lock
+      .lock // we cannot lose system messages, ever, and we cannot throw an Error from here as well
     try {
       val cell = self.underlying
       if (cellIsReady(cell))

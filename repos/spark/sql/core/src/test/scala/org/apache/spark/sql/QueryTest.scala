@@ -187,10 +187,12 @@ abstract class QueryTest extends PlanTest {
       actualAnswer.length == expectedAnswer.length,
       s"actual num rows ${actualAnswer.length} != expected num of rows ${expectedAnswer.length}")
 
-    actualAnswer.zip(expectedAnswer).foreach {
-      case (actualRow, expectedRow) =>
-        QueryTest.checkAggregatesWithTol(actualRow, expectedRow, absTol)
-    }
+    actualAnswer
+      .zip(expectedAnswer)
+      .foreach {
+        case (actualRow, expectedRow) =>
+          QueryTest.checkAggregatesWithTol(actualRow, expectedRow, absTol)
+      }
   }
 
   protected def checkAggregatesWithTol(
@@ -325,8 +327,9 @@ abstract class QueryTest extends PlanTest {
       fail(
         s"""
            |== FAIL: the logical plan parsed from json does not match the original one ===
-           |${sideBySide(logicalPlan.treeString, normalized2.treeString)
-             .mkString("\n")}
+           |${sideBySide(
+             logicalPlan.treeString,
+             normalized2.treeString).mkString("\n")}
           """.stripMargin)
     }
   }
@@ -359,10 +362,13 @@ object QueryTest {
     */
   def checkAnswer(df: DataFrame, expectedAnswer: Seq[Row]): Option[String] = {
     val isSorted =
-      df.logicalPlan.collect {
-        case s: logical.Sort =>
-          s
-      }.nonEmpty
+      df
+        .logicalPlan
+        .collect {
+          case s: logical.Sort =>
+            s
+        }
+        .nonEmpty
 
     val sparkAnswer =
       try df.collect().toSeq
@@ -404,19 +410,21 @@ object QueryTest {
   // We need to call prepareRow recursively to handle schemas with struct types.
   def prepareRow(row: Row): Row = {
     Row.fromSeq(
-      row.toSeq.map {
-        case null =>
-          null
-        case d: java.math.BigDecimal =>
-          BigDecimal(d)
-        // Convert array to Seq for easy equality check.
-        case b: Array[_] =>
-          b.toSeq
-        case r: Row =>
-          prepareRow(r)
-        case o =>
-          o
-      })
+      row
+        .toSeq
+        .map {
+          case null =>
+            null
+          case d: java.math.BigDecimal =>
+            BigDecimal(d)
+          // Convert array to Seq for easy equality check.
+          case b: Array[_] =>
+            b.toSeq
+          case r: Row =>
+            prepareRow(r)
+          case o =>
+            o
+        })
   }
 
   def sameRows(
@@ -458,14 +466,17 @@ object QueryTest {
 
     // TODO: support other numeric types besides Double
     // TODO: support struct types?
-    actualAnswer.toSeq.zip(expectedAnswer.toSeq).foreach {
-      case (actual: Double, expected: Double) =>
-        assert(
-          math.abs(actual - expected) < absTol,
-          s"actual answer $actual not within $absTol of correct answer $expected")
-      case (actual, expected) =>
-        assert(actual == expected, s"$actual did not equal $expected")
-    }
+    actualAnswer
+      .toSeq
+      .zip(expectedAnswer.toSeq)
+      .foreach {
+        case (actual: Double, expected: Double) =>
+          assert(
+            math.abs(actual - expected) < absTol,
+            s"actual answer $actual not within $absTol of correct answer $expected")
+        case (actual, expected) =>
+          assert(actual == expected, s"$actual did not equal $expected")
+      }
   }
 
   def checkAnswer(

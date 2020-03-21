@@ -111,10 +111,8 @@ class OfferOperationFactoryTest
     val volumes = Seq(f.localVolume("mount"))
 
     When("We create a reserve operation")
-    val operation = factory.createVolumes(
-      f.frameworkId,
-      Task.Id(task.getTaskId),
-      volumes)
+    val operation = factory
+      .createVolumes(f.frameworkId, Task.Id(task.getTaskId), volumes)
 
     Then("The operation is as expected")
     operation.getType shouldEqual Mesos.Offer.Operation.Type.CREATE
@@ -133,8 +131,12 @@ class OfferOperationFactoryTest
     volume.getDisk.hasPersistence shouldEqual true
     volume.getDisk.getPersistence.getId shouldEqual originalVolume.id.idString
     volume.getDisk.hasVolume shouldEqual true
-    volume.getDisk.getVolume.getContainerPath shouldEqual originalVolume.persistentVolume.containerPath
-    volume.getDisk.getVolume.getMode shouldEqual originalVolume.persistentVolume.mode
+    volume.getDisk.getVolume.getContainerPath shouldEqual originalVolume
+      .persistentVolume
+      .containerPath
+    volume.getDisk.getVolume.getMode shouldEqual originalVolume
+      .persistentVolume
+      .mode
   }
 
   class Fixture {

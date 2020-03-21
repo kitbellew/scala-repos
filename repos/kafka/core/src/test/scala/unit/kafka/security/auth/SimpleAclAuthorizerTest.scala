@@ -279,8 +279,8 @@ class SimpleAclAuthorizerTest extends ZooKeeperTestHarness {
       "changes not propagated in timeout period")
     TestUtils.waitUntilTrue(
       () =>
-        Map(resource -> Set(acl3, acl4, acl5)) == simpleAclAuthorizer.getAcls(
-          user2),
+        Map(resource -> Set(acl3, acl4, acl5)) == simpleAclAuthorizer
+          .getAcls(user2),
       "changes not propagated in timeout period")
 
     val resourceToAcls = Map[Resource, Set[Acl]](
@@ -351,10 +351,8 @@ class SimpleAclAuthorizerTest extends ZooKeeperTestHarness {
     simpleAclAuthorizer.addAcls(Set(acl1), commonResource)
     simpleAclAuthorizer.addAcls(Set(acl2), commonResource)
 
-    TestUtils.waitAndVerifyAcls(
-      Set(acl1, acl2),
-      simpleAclAuthorizer,
-      commonResource)
+    TestUtils
+      .waitAndVerifyAcls(Set(acl1, acl2), simpleAclAuthorizer, commonResource)
   }
 
   @Test
@@ -371,14 +369,10 @@ class SimpleAclAuthorizerTest extends ZooKeeperTestHarness {
     simpleAclAuthorizer.addAcls(Set(acl1), commonResource)
     simpleAclAuthorizer2.addAcls(Set(acl2), commonResource)
 
-    TestUtils.waitAndVerifyAcls(
-      Set(acl1, acl2),
-      simpleAclAuthorizer,
-      commonResource)
-    TestUtils.waitAndVerifyAcls(
-      Set(acl1, acl2),
-      simpleAclAuthorizer2,
-      commonResource)
+    TestUtils
+      .waitAndVerifyAcls(Set(acl1, acl2), simpleAclAuthorizer, commonResource)
+    TestUtils
+      .waitAndVerifyAcls(Set(acl1, acl2), simpleAclAuthorizer2, commonResource)
 
     val user3 = new KafkaPrincipal(KafkaPrincipal.USER_TYPE, "joe")
     val acl3 = new Acl(user3, Deny, WildCardHost, Read)
@@ -391,14 +385,10 @@ class SimpleAclAuthorizerTest extends ZooKeeperTestHarness {
       "The authorizer should see a value that needs to be deleted",
       deleted)
 
-    TestUtils.waitAndVerifyAcls(
-      Set(acl1, acl2),
-      simpleAclAuthorizer,
-      commonResource)
-    TestUtils.waitAndVerifyAcls(
-      Set(acl1, acl2),
-      simpleAclAuthorizer2,
-      commonResource)
+    TestUtils
+      .waitAndVerifyAcls(Set(acl1, acl2), simpleAclAuthorizer, commonResource)
+    TestUtils
+      .waitAndVerifyAcls(Set(acl1, acl2), simpleAclAuthorizer2, commonResource)
   }
 
   @Test
@@ -426,24 +416,22 @@ class SimpleAclAuthorizerTest extends ZooKeeperTestHarness {
     }
 
     val expectedAcls =
-      acls.filter { acl =>
-        val aclId = acl.principal.getName.toInt
-        aclId % 10 != 0
-      }.toSet
+      acls
+        .filter { acl =>
+          val aclId = acl.principal.getName.toInt
+          aclId % 10 != 0
+        }
+        .toSet
 
     TestUtils.assertConcurrent(
       "Should support many concurrent calls",
       concurrentFuctions,
       15000)
 
-    TestUtils.waitAndVerifyAcls(
-      expectedAcls,
-      simpleAclAuthorizer,
-      commonResource)
-    TestUtils.waitAndVerifyAcls(
-      expectedAcls,
-      simpleAclAuthorizer2,
-      commonResource)
+    TestUtils
+      .waitAndVerifyAcls(expectedAcls, simpleAclAuthorizer, commonResource)
+    TestUtils
+      .waitAndVerifyAcls(expectedAcls, simpleAclAuthorizer2, commonResource)
   }
 
   private def changeAclAndVerify(

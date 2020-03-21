@@ -59,8 +59,8 @@ class ResizerSpec
 
   "Resizer fromConfig" must {
     def parseCfg(cfgString: String): Config = {
-      val referenceCfg = ConfigFactory.defaultReference(
-        ActorSystem.findClassLoader())
+      val referenceCfg = ConfigFactory
+        .defaultReference(ActorSystem.findClassLoader())
       ConfigFactory
         .parseString(cfgString)
         .withFallback(referenceCfg.getConfig("akka.actor.deployment.default"))

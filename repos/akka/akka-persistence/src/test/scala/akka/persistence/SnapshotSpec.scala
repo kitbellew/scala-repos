@@ -91,8 +91,8 @@ class SnapshotSpec
   override protected def beforeEach() {
     super.beforeEach()
 
-    val persistentActor = system.actorOf(
-      Props(classOf[SaveSnapshotTestPersistentActor], name, testActor))
+    val persistentActor = system
+      .actorOf(Props(classOf[SaveSnapshotTestPersistentActor], name, testActor))
     persistentActor ! "a"
     persistentActor ! TakeSnapshot
     persistentActor ! "b"

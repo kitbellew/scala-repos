@@ -319,9 +319,8 @@ class PromiseTests extends MinimalScalaTest {
     "zip properly" in {
       f { (future, message) =>
         intercept[E] {
-          Await.result(
-            future zip Promise.successful("foo").future,
-            defaultTimeout)
+          Await
+            .result(future zip Promise.successful("foo").future, defaultTimeout)
         }.getMessage mustBe (message)
       }
     }

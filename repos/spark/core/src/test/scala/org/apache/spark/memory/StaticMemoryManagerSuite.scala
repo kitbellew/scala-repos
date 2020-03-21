@@ -46,7 +46,8 @@ class StaticMemoryManagerSuite extends MemoryManagerSuite {
       maxOnHeapExecutionMemory: Long,
       maxOffHeapExecutionMemory: Long): StaticMemoryManager = {
     new StaticMemoryManager(
-      conf.clone
+      conf
+        .clone
         .set("spark.memory.fraction", "1")
         .set("spark.testing.memory", maxOnHeapExecutionMemory.toString)
         .set("spark.memory.offHeap.size", maxOffHeapExecutionMemory.toString),

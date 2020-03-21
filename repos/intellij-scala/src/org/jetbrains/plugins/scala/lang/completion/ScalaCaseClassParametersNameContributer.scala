@@ -50,7 +50,8 @@ class ScalaCaseClassParametersNameContributer
                 if funcDef.syntheticCaseClass.isDefined =>
               funcDef.syntheticCaseClass.get.parameters
             case fundef: ScFunctionDefinition
-                if fundef.getName == "unapply" || fundef.getName == "unapplySeq" =>
+                if fundef.getName == "unapply" || fundef
+                  .getName == "unapplySeq" =>
               fundef.getParameterList.params
             case _ =>
               return
@@ -112,7 +113,8 @@ class ScalaCaseClassParametersNameContributer
               case s: ScalaLookupItem =>
                 s.element match {
                   case param: ScParameter
-                      if param.name == s.name /*not equals when name computed by type*/ =>
+                      if param.name == s
+                        .name /*not equals when name computed by type*/ =>
                     val positionInClassParameters = classParams.indexOf(param)
                     if (currentPosition == positionInClassParameters)
                       -1

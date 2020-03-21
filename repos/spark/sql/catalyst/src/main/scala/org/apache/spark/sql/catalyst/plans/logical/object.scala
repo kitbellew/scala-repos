@@ -45,10 +45,13 @@ trait ObjectOperator extends LogicalPlan {
     */
   def outputObject: NamedExpression =
     Alias(
-      serializer.head.collect {
-        case b: BoundReference =>
-          b
-      }.head,
+      serializer
+        .head
+        .collect {
+          case b: BoundReference =>
+            b
+        }
+        .head,
       "obj")()
 
   /**
@@ -65,12 +68,14 @@ trait ObjectOperator extends LogicalPlan {
   /** Returns a copy of this operator with a different serializer. */
   def withNewSerializer(newSerializer: Seq[NamedExpression]): LogicalPlan =
     makeCopy {
-      productIterator.map {
-        case c if c == serializer =>
-          newSerializer
-        case other: AnyRef =>
-          other
-      }.toArray
+      productIterator
+        .map {
+          case c if c == serializer =>
+            newSerializer
+          case other: AnyRef =>
+            other
+        }
+        .toArray
     }
 }
 
@@ -194,8 +199,8 @@ object CoGroup {
       left: LogicalPlan,
       right: LogicalPlan): CoGroup = {
     require(
-      StructType.fromAttributes(leftGroup) == StructType.fromAttributes(
-        rightGroup))
+      StructType.fromAttributes(leftGroup) == StructType
+        .fromAttributes(rightGroup))
 
     CoGroup(
       func.asInstanceOf[(Any, Iterator[Any], Iterator[Any]) => TraversableOnce[

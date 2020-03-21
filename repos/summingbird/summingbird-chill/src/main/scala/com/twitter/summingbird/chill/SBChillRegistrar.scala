@@ -49,9 +49,7 @@ object SBChillRegistrar {
       implicitly[Codec[T]])
 
   def kryoRegClass(clazz: Class[_]*) = { k: Kryo =>
-    clazz
-      .filter(k.alreadyRegistered(_))
-      .foreach(k.register(_))
+    clazz.filter(k.alreadyRegistered(_)).foreach(k.register(_))
   }
 
   def apply(

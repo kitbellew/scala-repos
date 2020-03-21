@@ -230,8 +230,9 @@ abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
   def assertNotTablesExist(tables: String*) =
     DBIO.seq(
       tables.map(t =>
-        sql"""select 1 from #${profile
-          .quoteIdentifier(t)} where 1 < 0""".as[Int].failed): _*)
+        sql"""select 1 from #${profile.quoteIdentifier(t)} where 1 < 0"""
+          .as[Int]
+          .failed): _*)
   def createSingleSessionDatabase(implicit
       session: profile.Backend#Session,
       executor: AsyncExecutor = AsyncExecutor
@@ -240,12 +241,15 @@ abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
       new DelegateConnection(session.conn) {
         override def close(): Unit = ()
       }
-    profile.backend.Database.forSource(
-      new JdbcDataSource {
-        def createConnection(): Connection = wrappedConn
-        def close(): Unit = ()
-      },
-      executor)
+    profile
+      .backend
+      .Database
+      .forSource(
+        new JdbcDataSource {
+          def createConnection(): Connection = wrappedConn
+          def close(): Unit = ()
+        },
+        executor)
   }
   final def blockingRunOnSession[R](
       f: ExecutionContext => DBIOAction[R, NoStream, Nothing])(implicit
@@ -319,8 +323,8 @@ abstract class ExternalJdbcTestDB(confName: String)
     }
     if (!postCreate.isEmpty) {
       await(
-        createDB().run(
-          DBIO.seq(postCreate.map(s => sqlu"#$s"): _*).withPinnedSession))
+        createDB()
+          .run(DBIO.seq(postCreate.map(s => sqlu"#$s"): _*).withPinnedSession))
     }
   }
 
@@ -328,8 +332,8 @@ abstract class ExternalJdbcTestDB(confName: String)
     if (!drop.isEmpty) {
       println("[Dropping test database " + this + "]")
       await(
-        databaseFor("adminConn").run(
-          DBIO.seq(drop.map(s => sqlu"#$s"): _*).withPinnedSession))
+        databaseFor("adminConn")
+          .run(DBIO.seq(drop.map(s => sqlu"#$s"): _*).withPinnedSession))
     }
   }
 

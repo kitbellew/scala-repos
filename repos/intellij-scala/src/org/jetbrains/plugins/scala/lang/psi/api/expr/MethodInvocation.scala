@@ -180,8 +180,8 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
       case _ =>
     }
 
-    val withExpectedType =
-      useExpectedType && expectedType().isDefined //optimization to avoid except
+    val withExpectedType = useExpectedType && expectedType()
+      .isDefined //optimization to avoid except
 
     if (useExpectedType)
       nonValueType = updateAccordingToExpectedType(nonValueType, check = true)
@@ -282,8 +282,8 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
         case _ =>
           None
       }
-      val applyFunction = functionClass.flatMap(
-        _.functions.find(_.name == "apply"))
+      val applyFunction = functionClass
+        .flatMap(_.functions.find(_.name == "apply"))
       params.mapWithIndex {
         case (tp, i) =>
           new Parameter(
@@ -392,7 +392,8 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
           ref
             .bind()
             .exists(result =>
-              result.isDynamic && result.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED)
+              result.isDynamic && result.name == ResolvableReferenceExpression
+                .APPLY_DYNAMIC_NAMED)
         case _ =>
           false
       }
@@ -412,8 +413,8 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
               this.applyOrUpdateElement)
           }
       if (useExpectedType) {
-        updateAccordingToExpectedType(Success(processedType, None)).foreach(x =>
-          processedType = x)
+        updateAccordingToExpectedType(Success(processedType, None))
+          .foreach(x => processedType = x)
       }
       setApplyOrUpdate(applyOrUpdateResult)
       setImportsUsed(importsUsed)
@@ -498,11 +499,11 @@ object MethodInvocation {
     Some(invocation.getInvokedExpr, invocation.argumentExpressions)
 
   private val APPLICABILITY_PROBLEMS_VAR_KEY
-      : Key[(Long, Seq[ApplicabilityProblem])] = Key.create(
-    "applicability.problems.var.key")
+      : Key[(Long, Seq[ApplicabilityProblem])] = Key
+    .create("applicability.problems.var.key")
   private val MATCHED_PARAMETERS_VAR_KEY
-      : Key[(Long, Seq[(Parameter, ScExpression)])] = Key.create(
-    "matched.parameter.var.key")
+      : Key[(Long, Seq[(Parameter, ScExpression)])] = Key
+    .create("matched.parameter.var.key")
   private val IMPORTS_USED_KEY: Key[(Long, collection.Set[ImportUsed])] = Key
     .create("imports.used.method.invocation.key")
   private val IMPLICIT_FUNCTION_KEY: Key[(Long, Option[PsiNamedElement])] = Key

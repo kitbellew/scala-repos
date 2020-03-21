@@ -149,8 +149,8 @@ class ZkAuthorizationTest extends ZooKeeperTestHarness with Logging {
   @Test
   def testDelete() {
     info(s"zkConnect string: $zkConnect")
-    ZkSecurityMigrator.run(
-      Array("--zookeeper.acl=secure", s"--zookeeper.connect=$zkConnect"))
+    ZkSecurityMigrator
+      .run(Array("--zookeeper.acl=secure", s"--zookeeper.connect=$zkConnect"))
     deleteAllUnsecure()
   }
 
@@ -216,8 +216,8 @@ class ZkAuthorizationTest extends ZooKeeperTestHarness with Logging {
           secondZk.createPersistentPath(ZkUtils.ConsumersPath)
           "unsecure"
       }
-    ZkSecurityMigrator.run(
-      Array(s"--zookeeper.acl=$secureOpt", s"--zookeeper.connect=$zkUrl"))
+    ZkSecurityMigrator
+      .run(Array(s"--zookeeper.acl=$secureOpt", s"--zookeeper.connect=$zkUrl"))
     info("Done with migration")
     for (path <- secondZk.securePersistentZkPaths) {
       val listParent = (secondZk.zkConnection.getAcl(path)).getKey
@@ -254,13 +254,15 @@ class ZkAuthorizationTest extends ZooKeeperTestHarness with Logging {
         case false =>
           list.size == 1
       }
-    isListSizeCorrect && list.asScala.forall(
-      secure match {
-        case true =>
-          isAclSecure
-        case false =>
-          isAclUnsecure
-      })
+    isListSizeCorrect && list
+      .asScala
+      .forall(
+        secure match {
+          case true =>
+            isAclSecure
+          case false =>
+            isAclUnsecure
+        })
   }
 
   /**

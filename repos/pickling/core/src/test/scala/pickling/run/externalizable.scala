@@ -49,11 +49,8 @@ class StorageLevel private (
     }
 
   override def toString: String =
-    "StorageLevel(%b, %b, %b, %d)".format(
-      useDisk,
-      useMemory,
-      deserialized,
-      replication)
+    "StorageLevel(%b, %b, %b, %d)"
+      .format(useDisk, useMemory, deserialized, replication)
 
   def toInt: Int = {
     var ret = 0
@@ -162,7 +159,8 @@ class StorageLevel2(
   override def equals(other: Any): Boolean =
     other.isInstanceOf[StorageLevel2] && {
       val o = other.asInstanceOf[StorageLevel2]
-      o.useDisk_ == useDisk_ && o.useMemory_ == useMemory_ && o.deserialized_ == deserialized_ && o.replication_ == replication_
+      o.useDisk_ == useDisk_ && o.useMemory_ == useMemory_ && o
+        .deserialized_ == deserialized_ && o.replication_ == replication_
     }
 }
 

@@ -169,28 +169,31 @@ final class ORMap[A <: ReplicatedData] private[akka] (
   override def merge(that: ORMap[A]): ORMap[A] = {
     val mergedKeys = keys.merge(that.keys)
     var mergedValues = Map.empty[String, A]
-    mergedKeys.elementsMap.keysIterator.foreach { key ⇒
-      (this.values.get(key), that.values.get(key)) match {
-        case (Some(thisValue), Some(thatValue)) ⇒
-          if (thisValue.getClass != thatValue.getClass) {
-            val errMsg =
-              s"Wrong type for merging [$key] in [${getClass.getName}], existing type " +
-                s"[${thisValue.getClass.getName}], got [${thatValue.getClass.getName}]"
-            throw new IllegalArgumentException(errMsg)
-          }
-          // TODO can we get rid of these (safe) casts?
-          val mergedValue = thisValue
-            .merge(thatValue.asInstanceOf[thisValue.T])
-            .asInstanceOf[A]
-          mergedValues = mergedValues.updated(key, mergedValue)
-        case (Some(thisValue), None) ⇒
-          mergedValues = mergedValues.updated(key, thisValue)
-        case (None, Some(thatValue)) ⇒
-          mergedValues = mergedValues.updated(key, thatValue)
-        case (None, None) ⇒
-          throw new IllegalStateException(s"missing value for $key")
+    mergedKeys
+      .elementsMap
+      .keysIterator
+      .foreach { key ⇒
+        (this.values.get(key), that.values.get(key)) match {
+          case (Some(thisValue), Some(thatValue)) ⇒
+            if (thisValue.getClass != thatValue.getClass) {
+              val errMsg =
+                s"Wrong type for merging [$key] in [${getClass.getName}], existing type " +
+                  s"[${thisValue.getClass.getName}], got [${thatValue.getClass.getName}]"
+              throw new IllegalArgumentException(errMsg)
+            }
+            // TODO can we get rid of these (safe) casts?
+            val mergedValue = thisValue
+              .merge(thatValue.asInstanceOf[thisValue.T])
+              .asInstanceOf[A]
+            mergedValues = mergedValues.updated(key, mergedValue)
+          case (Some(thisValue), None) ⇒
+            mergedValues = mergedValues.updated(key, thisValue)
+          case (None, Some(thatValue)) ⇒
+            mergedValues = mergedValues.updated(key, thatValue)
+          case (None, None) ⇒
+            throw new IllegalStateException(s"missing value for $key")
+        }
       }
-    }
 
     new ORMap(mergedKeys, mergedValues)
   }
@@ -212,9 +215,8 @@ final class ORMap[A <: ReplicatedData] private[akka] (
       values.foldLeft(values) {
         case (acc, (key, data: RemovedNodePruning))
             if data.needPruningFrom(removedNode) ⇒
-          acc.updated(
-            key,
-            data.prune(removedNode, collapseInto).asInstanceOf[A])
+          acc
+            .updated(key, data.prune(removedNode, collapseInto).asInstanceOf[A])
         case (acc, _) ⇒
           acc
       }

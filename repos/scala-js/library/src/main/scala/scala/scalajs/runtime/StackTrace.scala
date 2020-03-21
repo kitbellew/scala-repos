@@ -41,7 +41,8 @@ object StackTrace {
        * important so that Node.js will show stack traces if the exception
        * is never caught and reaches the global event queue.
        */
-      js.constructorOf[js.Error]
+      js
+        .constructorOf[js.Error]
         .captureStackTrace(throwable.asInstanceOf[js.Any])
       captureState(throwable, throwable)
     }
@@ -195,9 +196,11 @@ object StackTrace {
     */
   private def extractClassMethod(functionName: String): (String, String) = {
     val PatC =
-      """^(?:Object\.|\[object Object\]\.)?(?:ScalaJS\.c\.|\$c_)([^\.]+)(?:\.prototype)?\.([^\.]+)$""".re
+      """^(?:Object\.|\[object Object\]\.)?(?:ScalaJS\.c\.|\$c_)([^\.]+)(?:\.prototype)?\.([^\.]+)$"""
+        .re
     val PatS =
-      """^(?:Object\.|\[object Object\]\.)?(?:ScalaJS\.(?:s|f)\.|\$(?:s|f)_)((?:_[^_]|[^_])+)__([^\.]+)$""".re
+      """^(?:Object\.|\[object Object\]\.)?(?:ScalaJS\.(?:s|f)\.|\$(?:s|f)_)((?:_[^_]|[^_])+)__([^\.]+)$"""
+        .re
     val PatM =
       """^(?:Object\.|\[object Object\]\.)?(?:ScalaJS\.m\.|\$m_)([^\.]+)$""".re
 
@@ -260,7 +263,8 @@ object StackTrace {
   }
 
   private lazy val decompressedClasses: js.Dictionary[String] = {
-    val dict = js.Dynamic
+    val dict = js
+      .Dynamic
       .literal(
         O = "java_lang_Object",
         T = "java_lang_String",
@@ -287,7 +291,8 @@ object StackTrace {
     dict
   }
 
-  private lazy val decompressedPrefixes = js.Dynamic
+  private lazy val decompressedPrefixes = js
+    .Dynamic
     .literal(
       sjsr_ = "scala_scalajs_runtime_",
       sjs_ = "scala_scalajs_",
@@ -302,8 +307,9 @@ object StackTrace {
     )
     .asInstanceOf[js.Dictionary[String]]
 
-  private lazy val compressedPrefixes = js.Object.keys(
-    decompressedPrefixes.asInstanceOf[js.Object])
+  private lazy val compressedPrefixes = js
+    .Object
+    .keys(decompressedPrefixes.asInstanceOf[js.Object])
 
   // end of decodeClassName ----------------------------------------------------
 
@@ -412,10 +418,7 @@ object StackTrace {
   }
 
   private def extractRhino(e: js.Dynamic): js.Array[String] = {
-    (
-      e.stack
-        .asInstanceOf[js.UndefOr[String]]
-      )
+    (e.stack.asInstanceOf[js.UndefOr[String]])
       .getOrElse("")
       .jsReplace("""^\s+at\s+""".re("gm"), "") // remove 'at' and indentation
       .jsReplace("""^(.+?)(?: \((.+)\))?$""".re("gm"), "$2@$1")
@@ -450,20 +453,14 @@ object StackTrace {
   }
 
   private def extractFirefox(e: js.Dynamic): js.Array[String] = {
-    (
-      e.stack
-        .asInstanceOf[String]
-      )
+    (e.stack.asInstanceOf[String])
       .jsReplace("""(?:\n@:0)?\s+$""".re("m"), "")
       .jsReplace("""^(?:\((\S*)\))?@""".re("gm"), "{anonymous}($1)@")
       .jsSplit("\n")
   }
 
   private def extractIE(e: js.Dynamic): js.Array[String] = {
-    (
-      e.stack
-        .asInstanceOf[String]
-      )
+    (e.stack.asInstanceOf[String])
       .jsReplace("""^\s*at\s+(.*)$""".re("gm"), "$1")
       .jsReplace("""^Anonymous function\s+""".re("gm"), "{anonymous}() ")
       .jsReplace(
@@ -474,10 +471,7 @@ object StackTrace {
   }
 
   private def extractSafari(e: js.Dynamic): js.Array[String] = {
-    (
-      e.stack
-        .asInstanceOf[String]
-      )
+    (e.stack.asInstanceOf[String])
       .jsReplace("""\[native code\]\n""".re("m"), "")
       .jsReplace("""^(?=\w+Error\:).*$\n""".re("m"), "")
       .jsReplace("""^@""".re("gm"), "{anonymous}()@")
@@ -606,7 +600,8 @@ object StackTrace {
         fileName: String,
         lineNumber: Int,
         columnNumber: js.UndefOr[Int] = js.undefined): JSStackTraceElem = {
-      js.Dynamic
+      js
+        .Dynamic
         .literal(
           declaringClass = declaringClass,
           methodName = methodName,

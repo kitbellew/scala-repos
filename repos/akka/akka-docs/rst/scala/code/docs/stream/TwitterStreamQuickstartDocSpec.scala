@@ -186,9 +186,7 @@ class TwitterStreamQuickstartDocSpec extends AkkaSpec {
     val sumSink: Sink[Int, Future[Int]] = Sink.fold[Int, Int](0)(_ + _)
 
     val counterGraph: RunnableGraph[Future[Int]] =
-      tweets
-        .via(count)
-        .toMat(sumSink)(Keep.right)
+      tweets.via(count).toMat(sumSink)(Keep.right)
 
     val sum: Future[Int] = counterGraph.run()
 

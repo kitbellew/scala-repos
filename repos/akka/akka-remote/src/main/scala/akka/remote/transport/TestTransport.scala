@@ -162,10 +162,12 @@ class TestTransport(
 
   private def defaultDisassociate(
       handle: TestAssociationHandle): Future[Unit] = {
-    registry.deregisterAssociation(handle.key).foreach {
-      registry.remoteListenerRelativeTo(handle, _) notify Disassociated(
-        AssociationHandle.Unknown)
-    }
+    registry
+      .deregisterAssociation(handle.key)
+      .foreach {
+        registry.remoteListenerRelativeTo(handle, _) notify Disassociated(
+          AssociationHandle.Unknown)
+      }
     Future.successful(())
   }
 
@@ -522,7 +524,9 @@ object TestTransport {
  strongly recommended to use long, randomly generated strings to key the registry to avoid interference between tests.
  */
 object AssociationRegistry {
-  private final val registries = scala.collection.mutable
+  private final val registries = scala
+    .collection
+    .mutable
     .Map[String, AssociationRegistry]()
 
   def get(key: String): AssociationRegistry =

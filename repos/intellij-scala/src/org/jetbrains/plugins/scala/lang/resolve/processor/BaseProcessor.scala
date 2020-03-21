@@ -43,14 +43,14 @@ object BaseProcessor {
 
   val FROM_TYPE_KEY: Key[ScType] = Key.create("from.type.key")
 
-  val UNRESOLVED_TYPE_PARAMETERS_KEY: Key[Seq[TypeParameter]] = Key.create(
-    "unresolved.type.parameters.key")
+  val UNRESOLVED_TYPE_PARAMETERS_KEY: Key[Seq[TypeParameter]] = Key
+    .create("unresolved.type.parameters.key")
 
-  val COMPOUND_TYPE_THIS_TYPE_KEY: Key[Option[ScType]] = Key.create(
-    "compound.type.this.type.key")
+  val COMPOUND_TYPE_THIS_TYPE_KEY: Key[Option[ScType]] = Key
+    .create("compound.type.this.type.key")
 
-  val FORWARD_REFERENCE_KEY: Key[java.lang.Boolean] = Key.create(
-    "forward.reference.key")
+  val FORWARD_REFERENCE_KEY: Key[java.lang.Boolean] = Key
+    .create("forward.reference.key")
 
   val guard = RecursionManager.createGuard("process.element.guard")
 
@@ -330,7 +330,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
           visitedTypeParameter = visitedTypeParameter)
       case j: JavaArrayType =>
         processType(
-          j.getParameterizedType(place.getProject, place.getResolveScope)
+          j
+            .getParameterizedType(place.getProject, place.getResolveScope)
             .getOrElse(return true),
           place,
           state,
@@ -377,10 +378,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
       case proj @ ScProjectionType(des, elem, _) =>
         val s: ScSubstitutor =
           if (updateWithProjectionSubst)
-            new ScSubstitutor(
-              Map.empty,
-              Map.empty,
-              Some(proj)) followed proj.actualSubst
+            new ScSubstitutor(Map.empty, Map.empty, Some(proj)) followed proj
+              .actualSubst
           else
             proj.actualSubst
         processElement(
@@ -429,12 +428,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
         }
         true
       case comp @ ScCompoundType(components, signaturesMap, typesMap) =>
-        TypeDefinitionMembers.processDeclarations(
-          comp,
-          this,
-          state,
-          null,
-          place)
+        TypeDefinitionMembers
+          .processDeclarations(comp, this, state, null, place)
       case ex: ScExistentialType =>
         processType(
           ex.skolem,

@@ -193,9 +193,8 @@ trait CValueGenerators extends ArbitraryBigDecimal {
     } yield {
       (
         idCount,
-        (ids.map(_.toArray) zip values).toStream ++ (
-          falseIds2.map(_.toArray) zip falseValues
-        ).toStream)
+        (ids.map(_.toArray) zip values)
+          .toStream ++ (falseIds2.map(_.toArray) zip falseValues).toStream)
     }
 
   def assemble(parts: Seq[(JPath, JValue)]): JValue = {
@@ -302,9 +301,12 @@ trait ArbitraryBigDecimal {
         mantissa <- arbitrary[Long]
         exponent <- Gen.chooseNum(-MAX_EXPONENT, MAX_EXPONENT)
 
-        adjusted = if (exponent.toLong + mantissa.toString.length >= Int.MaxValue.toLong)
+        adjusted = if (exponent.toLong + mantissa.toString.length >= Int
+                         .MaxValue
+                         .toLong)
           exponent - mantissa.toString.length
-        else if (exponent.toLong - mantissa.toString.length <= Int.MinValue.toLong)
+        else if (exponent
+                   .toLong - mantissa.toString.length <= Int.MinValue.toLong)
           exponent + mantissa.toString.length
         else
           exponent

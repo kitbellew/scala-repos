@@ -19,8 +19,8 @@ import org.scalactic.ConversionCheckedTripleEquals
 import org.scalatest.concurrent.ScalaFutures
 
 object AkkaSpec {
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
       akka {
         loggers = ["akka.testkit.TestEventListener"]
         loglevel = "WARNING"
@@ -115,8 +115,9 @@ abstract class AkkaSpec(_system: ActorSystem)
       sys: ActorSystem = system): Unit =
     if (!sys.log.isDebugEnabled) {
       def mute(clazz: Class[_]): Unit =
-        sys.eventStream.publish(
-          Mute(DeadLettersFilter(clazz)(occurrences = Int.MaxValue)))
+        sys
+          .eventStream
+          .publish(Mute(DeadLettersFilter(clazz)(occurrences = Int.MaxValue)))
       if (messageClasses.isEmpty)
         mute(classOf[AnyRef])
       else

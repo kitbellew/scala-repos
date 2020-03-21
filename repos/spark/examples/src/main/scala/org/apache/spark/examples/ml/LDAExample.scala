@@ -58,10 +58,7 @@ object LDAExample {
     val dataset = sqlContext.createDataFrame(rowRDD, schema)
 
     // Trains a LDA model
-    val lda = new LDA()
-      .setK(10)
-      .setMaxIter(10)
-      .setFeaturesCol(FEATURES_COL)
+    val lda = new LDA().setK(10).setMaxIter(10).setFeaturesCol(FEATURES_COL)
     val model = lda.fit(dataset)
     val transformed = model.transform(dataset)
 

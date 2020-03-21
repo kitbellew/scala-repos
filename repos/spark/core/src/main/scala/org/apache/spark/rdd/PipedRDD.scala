@@ -97,8 +97,8 @@ private[spark] class PipedRDD[T: ClassTag](
     // When spark.worker.separated.working.directory option is turned on, each
     // task will be run in separate directory. This should be resolve file
     // access conflict issue
-    val taskDirectory =
-      "tasks" + File.separator + java.util.UUID.randomUUID.toString
+    val taskDirectory = "tasks" + File
+      .separator + java.util.UUID.randomUUID.toString
     var workInTaskDirectory = false
     logDebug("taskDirectory = " + taskDirectory)
     if (separateWorkingDir) {
@@ -212,9 +212,13 @@ private[spark] class PipedRDD[T: ClassTag](
       private def cleanup(): Unit = {
         // cleanup task working directory if used
         if (workInTaskDirectory) {
-          scala.util.control.Exception.ignoring(classOf[IOException]) {
-            Utils.deleteRecursively(new File(taskDirectory))
-          }
+          scala
+            .util
+            .control
+            .Exception
+            .ignoring(classOf[IOException]) {
+              Utils.deleteRecursively(new File(taskDirectory))
+            }
           logDebug(s"Removed task working directory $taskDirectory")
         }
       }

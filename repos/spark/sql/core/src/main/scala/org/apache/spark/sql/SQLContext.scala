@@ -94,9 +94,11 @@ class SQLContext private[sql] (
 
   // If spark.sql.allowMultipleContexts is true, we will throw an exception if a user
   // wants to create a new root SQLContext (a SQLContext that is not created by newSession).
-  private val allowMultipleContexts = sparkContext.conf.getBoolean(
-    SQLConf.ALLOW_MULTIPLE_CONTEXTS.key,
-    SQLConf.ALLOW_MULTIPLE_CONTEXTS.defaultValue.get)
+  private val allowMultipleContexts = sparkContext
+    .conf
+    .getBoolean(
+      SQLConf.ALLOW_MULTIPLE_CONTEXTS.key,
+      SQLConf.ALLOW_MULTIPLE_CONTEXTS.defaultValue.get)
 
   // Assert no root SQLContext is running when allowMultipleContexts is false.
   {
@@ -228,11 +230,14 @@ class SQLContext private[sql] (
     // For example, metadataHive in HiveContext may need both spark.sql.hive.metastore.version
     // and spark.sql.hive.metastore.jars to get correctly constructed.
     val properties = new Properties
-    sparkContext.getConf.getAll.foreach {
-      case (key, value) if key.startsWith("spark.sql") =>
-        properties.setProperty(key, value)
-      case _ =>
-    }
+    sparkContext
+      .getConf
+      .getAll
+      .foreach {
+        case (key, value) if key.startsWith("spark.sql") =>
+          properties.setProperty(key, value)
+        case _ =>
+      }
     // We directly put those settings to conf to avoid of calling setConf, which may have
     // side-effects. For example, in HiveContext, setConf may cause executionHive and metadataHive
     // get constructed. If we call setConf directly, the constructed metadataHive may have
@@ -240,10 +245,12 @@ class SQLContext private[sql] (
     conf.setConf(properties)
     // After we have populated SQLConf, we call setConf to populate other confs in the subclass
     // (e.g. hiveconf in HiveContext).
-    properties.asScala.foreach {
-      case (key, value) =>
-        setConf(key, value)
-    }
+    properties
+      .asScala
+      .foreach {
+        case (key, value) =>
+          setConf(key, value)
+      }
   }
 
   /**
@@ -557,8 +564,8 @@ class SQLContext private[sql] (
     val className = beanClass.getName
     val rowRdd = rdd.mapPartitions { iter =>
       // BeanInfo is not serializable so we must rediscover it remotely for each partition.
-      val localBeanInfo = Introspector.getBeanInfo(
-        Utils.classForName(className))
+      val localBeanInfo = Introspector
+        .getBeanInfo(Utils.classForName(className))
       SQLContext.beansToRows(iter, localBeanInfo, attributeSeq)
     }
     Dataset.newDataFrame(this, LogicalRDD(attributeSeq, rowRdd)(this))
@@ -733,9 +740,11 @@ class SQLContext private[sql] (
   private[sql] def registerDataFrameAsTable(
       df: DataFrame,
       tableName: String): Unit = {
-    sessionState.catalog.registerTable(
-      sessionState.sqlParser.parseTableIdentifier(tableName),
-      df.logicalPlan)
+    sessionState
+      .catalog
+      .registerTable(
+        sessionState.sqlParser.parseTableIdentifier(tableName),
+        df.logicalPlan)
   }
 
   /**
@@ -882,7 +891,8 @@ class SQLContext private[sql] (
     * @since 1.3.0
     */
   def tableNames(): Array[String] = {
-    sessionState.catalog
+    sessionState
+      .catalog
       .getTables(None)
       .map {
         case (tableName, _) =>
@@ -898,7 +908,8 @@ class SQLContext private[sql] (
     * @since 1.3.0
     */
   def tableNames(databaseName: String): Array[String] = {
-    sessionState.catalog
+    sessionState
+      .catalog
       .getTables(Some(databaseName))
       .map {
         case (tableName, _) =>
@@ -908,9 +919,8 @@ class SQLContext private[sql] (
   }
 
   @transient
-  protected[sql] lazy val emptyResult = sparkContext.parallelize(
-    Seq.empty[InternalRow],
-    1)
+  protected[sql] lazy val emptyResult = sparkContext
+    .parallelize(Seq.empty[InternalRow], 1)
 
   /**
     * Parses the data type in our internal string representation. The data type string should
@@ -948,9 +958,12 @@ class SQLContext private[sql] (
     */
   protected def getSchema(beanClass: Class[_]): Seq[AttributeReference] = {
     val (dataType, _) = JavaTypeInference.inferDataType(beanClass)
-    dataType.asInstanceOf[StructType].fields.map { f =>
-      AttributeReference(f.name, f.dataType, f.nullable)()
-    }
+    dataType
+      .asInstanceOf[StructType]
+      .fields
+      .map { f =>
+        AttributeReference(f.name, f.dataType, f.nullable)()
+      }
   }
 
   // Register a successfully instantiated context to the singleton. This should be at the end of
@@ -1075,13 +1088,16 @@ object SQLContext {
       data: Iterator[_],
       beanInfo: BeanInfo,
       attrs: Seq[AttributeReference]): Iterator[InternalRow] = {
-    val extractors = beanInfo.getPropertyDescriptors
+    val extractors = beanInfo
+      .getPropertyDescriptors
       .filterNot(_.getName == "class")
       .map(_.getReadMethod)
-    val methodsToConverts = extractors.zip(attrs).map {
-      case (e, attr) =>
-        (e, CatalystTypeConverters.createToCatalystConverter(attr.dataType))
-    }
+    val methodsToConverts = extractors
+      .zip(attrs)
+      .map {
+        case (e, attr) =>
+          (e, CatalystTypeConverters.createToCatalystConverter(attr.dataType))
+      }
     data.map { element =>
       new GenericInternalRow(
         methodsToConverts

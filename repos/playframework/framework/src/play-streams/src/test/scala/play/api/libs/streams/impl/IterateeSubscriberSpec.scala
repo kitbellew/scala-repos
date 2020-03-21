@@ -29,10 +29,13 @@ class IterateeSubscriberSpec extends Specification {
     {
       val iter = nextIteratee
       val subr = new IterateeSubscriber(iter)
-      subr.result.unflatten.onComplete { tryStep: Try[Step[T, T]] =>
-        record(Result(tryStep))
+      subr
+        .result
+        .unflatten
+        .onComplete { tryStep: Try[Step[T, T]] =>
+          record(Result(tryStep))
 
-      }
+        }
       publisher.subscribe(subr)
     }
 
@@ -225,8 +228,8 @@ class IterateeSubscriberSpec extends Specification {
       val testEnv = new TestEnv[Int]
 
       testEnv.errorStep("iteratee error", Input.El(99))
-      testEnv.next must_== Result(
-        Success(Error("iteratee error", Input.El(99))))
+      testEnv
+        .next must_== Result(Success(Error("iteratee error", Input.El(99))))
       testEnv.isEmptyAfterDelay() must beTrue
 
       testEnv.onSubscribe()
@@ -242,8 +245,8 @@ class IterateeSubscriberSpec extends Specification {
 
       testEnv.errorStep("iteratee error", Input.El(99))
       testEnv.next must_== Cancel
-      testEnv.next must_== Result(
-        Success(Error("iteratee error", Input.El(99))))
+      testEnv
+        .next must_== Result(Success(Error("iteratee error", Input.El(99))))
       testEnv.isEmptyAfterDelay() must beTrue
     }
 

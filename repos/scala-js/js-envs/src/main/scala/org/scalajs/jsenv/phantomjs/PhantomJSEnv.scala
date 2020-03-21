@@ -113,8 +113,8 @@ class PhantomJSEnv(
         else
           getClass().getClassLoader()
 
-      val clazz = loader.loadClass(
-        "org.scalajs.jsenv.phantomjs.JettyWebsocketManager")
+      val clazz = loader
+        .loadClass("org.scalajs.jsenv.phantomjs.JettyWebsocketManager")
 
       val ctors = clazz.getConstructors()
       assert(ctors.length == 1, "JettyWebsocketManager may only have one ctor")
@@ -262,9 +262,8 @@ class PhantomJSEnv(
           val fragParts = msg.length / MaxCharPayloadSize
 
           for (i <- 0 until fragParts) {
-            val payload = msg.substring(
-              i * MaxCharPayloadSize,
-              (i + 1) * MaxCharPayloadSize)
+            val payload = msg
+              .substring(i * MaxCharPayloadSize, (i + 1) * MaxCharPayloadSize)
             mgr.sendMessage("1" + payload)
           }
 
@@ -486,8 +485,8 @@ class PhantomJSEnv(
         out.close()
       }
 
-      logger.debug(
-        "PhantomJS using launcher at: " + launcherTmpF.getAbsolutePath())
+      logger
+        .debug("PhantomJS using launcher at: " + launcherTmpF.getAbsolutePath())
 
       launcherTmpF
     }

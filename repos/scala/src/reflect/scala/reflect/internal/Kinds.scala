@@ -191,7 +191,9 @@ trait Kinds {
           return kindErrors.arityError(arg -> param)
       } else
         foreach2(hkargs, hkparams) { (hkarg, hkparam) =>
-          if (hkparam.typeParams.isEmpty && hkarg.typeParams.isEmpty) { // base-case: kind *
+          if (hkparam.typeParams.isEmpty && hkarg
+                .typeParams
+                .isEmpty) { // base-case: kind *
             kindCheck(
               variancesMatch(hkarg, hkparam),
               _ varianceError (hkarg -> hkparam))
@@ -223,7 +225,8 @@ trait Kinds {
                 "checkKindBoundsHK base case: " + hkarg +
                 " has bounds: " + argumentBounds)
           } else {
-            hkarg.initialize // SI-7902 otherwise hkarg.typeParams yields List(NoSymbol)!
+            hkarg
+              .initialize // SI-7902 otherwise hkarg.typeParams yields List(NoSymbol)!
             debuglog(
               "checkKindBoundsHK recursing to compare params of " + hkparam + " with " + hkarg)
             kindErrors ++= checkKindBoundsHK(
@@ -416,7 +419,8 @@ trait Kinds {
     val order = 0
     private[internal] def buildState(sym: Symbol, v: Variance)(
         s: StringState): StringState = {
-      s.append(v.symbolicString)
+      s
+        .append(v.symbolicString)
         .appendHead(order, sym)
         .append(bounds.scalaNotation(_.toString))
     }

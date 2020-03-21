@@ -88,16 +88,17 @@ trait Formats {
       // The type inferencer infers an existential type below if we use
       // value :: list instead of list.::(value), and we get a feature
       // warning.
-      override val fieldSerializers: List[(Class[_], FieldSerializer[_])] =
-        self.fieldSerializers.::((mf.runtimeClass: Class[_], newSerializer))
+      override val fieldSerializers: List[(Class[_], FieldSerializer[_])] = self
+        .fieldSerializers
+        .::((mf.runtimeClass: Class[_], newSerializer))
     }
 
   private[json] def fieldSerializer(
       clazz: Class[_]): Option[FieldSerializer[_]] = {
     import ClassDelta._
 
-    val ord = Ordering[Int].on[(Class[_], FieldSerializer[_])](x =>
-      delta(x._1, clazz))
+    val ord = Ordering[Int]
+      .on[(Class[_], FieldSerializer[_])](x => delta(x._1, clazz))
     fieldSerializers filter (_._1.isAssignableFrom(clazz)) match {
       case Nil =>
         None
@@ -112,10 +113,10 @@ trait Formats {
     }
 
   def customDeserializer(implicit format: Formats) =
-    customSerializers.foldLeft(
-      Map(): PartialFunction[(TypeInfo, JValue), Any]) { (acc, x) =>
-      acc.orElse(x.deserialize)
-    }
+    customSerializers
+      .foldLeft(Map(): PartialFunction[(TypeInfo, JValue), Any]) { (acc, x) =>
+        acc.orElse(x.deserialize)
+      }
 }
 
 /** Conversions between String and Date.
@@ -189,7 +190,8 @@ trait TypeHints {
         .map(th =>
           (
             th.hintFor(clazz),
-            th.classFor(th.hintFor(clazz))
+            th
+              .classFor(th.hintFor(clazz))
               .getOrElse(
                 sys.error("hintFor/classFor not invertible for " + th))))
         .sortWith((x, y) => (delta(x._2, clazz) - delta(y._2, clazz)) < 0)
@@ -230,8 +232,8 @@ private[json] object ClassDelta {
     } else if (class2.isAssignableFrom(class1)) {
       1 + delta(class1.getSuperclass, class2)
     } else
-      sys.error(
-        "Don't call delta unless one class is assignable from the other")
+      sys
+        .error("Don't call delta unless one class is assignable from the other")
   }
 }
 

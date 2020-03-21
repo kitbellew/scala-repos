@@ -100,9 +100,11 @@ trait Mailer extends SimpleInjector {
 
   implicit def addressToAddress(in: AddressType): Address = {
     val ret = new InternetAddress(in.address)
-    in.name.foreach { n =>
-      ret.setPersonal(n)
-    }
+    in
+      .name
+      .foreach { n =>
+        ret.setPersonal(n)
+      }
     ret
   }
 
@@ -143,10 +145,12 @@ trait Mailer extends SimpleInjector {
     }
     // allow the properties file to set/override system properties
 
-    Props.props.foreach {
-      case (name, value) =>
-        p.setProperty(name, value)
-    }
+    Props
+      .props
+      .foreach {
+        case (name, value) =>
+          p.setProperty(name, value)
+      }
     p
   }
 
@@ -356,10 +360,12 @@ trait Mailer extends SimpleInjector {
       case n: Node =>
         n
       case ns =>
-        ns.toList.collect {
-          case e: Elem =>
-            e
-        } match {
+        ns
+          .toList
+          .collect {
+            case e: Elem =>
+              e
+          } match {
           case Nil =>
             if (ns.length == 0)
               Text("")
@@ -392,9 +398,8 @@ trait Mailer extends SimpleInjector {
         val relatedMultipart = new MimeMultipart("related")
 
         val htmlBodyPart = new MimeBodyPart
-        htmlBodyPart.setContent(
-          encodeHtmlBodyPart(html),
-          "text/html; charset=" + charSet)
+        htmlBodyPart
+          .setContent(encodeHtmlBodyPart(html), "text/html; charset=" + charSet)
         relatedMultipart.addBodyPart(htmlBodyPart)
 
         images.foreach { image =>

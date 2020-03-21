@@ -355,9 +355,8 @@ class Word2Vec extends Serializable with Logging {
                   // TODO: discount by iteration?
                   alpha =
                     learningRate * (
-                      1 - numPartitions * wordCount.toDouble / (
-                        trainWordsCount + 1
-                      )
+                      1 - numPartitions * wordCount
+                        .toDouble / (trainWordsCount + 1)
                     )
                   if (alpha < learningRate * 0.0001)
                     alpha = learningRate * 0.0001
@@ -383,24 +382,16 @@ class Word2Vec extends Serializable with Logging {
                           val inner = bcVocab.value(word).point(d)
                           val l2 = inner * vectorSize
                           // Propagate hidden -> output
-                          var f = blas.sdot(
-                            vectorSize,
-                            syn0,
-                            l1,
-                            1,
-                            syn1,
-                            l2,
-                            1)
+                          var f = blas
+                            .sdot(vectorSize, syn0, l1, 1, syn1, l2, 1)
                           if (f > -MAX_EXP && f < MAX_EXP) {
                             val ind =
-                              (
-                                (f + MAX_EXP) * (EXP_TABLE_SIZE / MAX_EXP / 2.0)
-                              ).toInt
+                              ((f + MAX_EXP) * (EXP_TABLE_SIZE / MAX_EXP / 2.0))
+                                .toInt
                             f = expTable.value(ind)
                             val g =
-                              (
-                                (1 - bcVocab.value(word).code(d) - f) * alpha
-                              ).toFloat
+                              ((1 - bcVocab.value(word).code(d) - f) * alpha)
+                                .toFloat
                             blas.saxpy(vectorSize, g, syn1, l2, 1, neu1e, 0, 1)
                             blas.saxpy(vectorSize, g, syn0, l1, 1, syn1, l2, 1)
                             syn1Modify(inner) += 1
@@ -457,12 +448,8 @@ class Word2Vec extends Serializable with Logging {
       while (i < synAgg.length) {
         val index = synAgg(i)._1
         if (index < vocabSize) {
-          Array.copy(
-            synAgg(i)._2,
-            0,
-            syn0Global,
-            index * vectorSize,
-            vectorSize)
+          Array
+            .copy(synAgg(i)._2, 0, syn0Global, index * vectorSize, vectorSize)
         } else {
           Array.copy(
             synAgg(i)._2,
@@ -554,9 +541,8 @@ class Word2VecModel private[spark] (
   def transform(word: String): Vector = {
     wordIndex.get(word) match {
       case Some(ind) =>
-        val vec = wordVectors.slice(
-          ind * vectorSize,
-          ind * vectorSize + vectorSize)
+        val vec = wordVectors
+          .slice(ind * vectorSize, ind * vectorSize + vectorSize)
         Vectors.dense(vec.map(_.toDouble))
       case None =>
         throw new IllegalStateException(s"$word not in vocabulary")
@@ -616,13 +602,7 @@ class Word2VecModel private[spark] (
       }
       ind += 1
     }
-    var topResults =
-      wordList
-        .zip(cosVec)
-        .toSeq
-        .sortBy(-_._2)
-        .take(num + 1)
-        .tail
+    var topResults = wordList.zip(cosVec).toSeq.sortBy(-_._2).take(num + 1).tail
     if (vecNorm != 0.0f) {
       topResults = topResults.map {
         case (word, cosVal) =>
@@ -714,11 +694,14 @@ object Word2VecModel extends Loader[Word2VecModel] {
       // floatSize * numWords * vectorSize
       val approxSize = 4L * numWords * vectorSize
       val nPartitions = ((approxSize / partitionSize) + 1).toInt
-      val dataArray = model.toSeq.map {
-        case (w, v) =>
-          Data(w, v)
-      }
-      sc.parallelize(dataArray.toSeq, nPartitions)
+      val dataArray = model
+        .toSeq
+        .map {
+          case (w, v) =>
+            Data(w, v)
+        }
+      sc
+        .parallelize(dataArray.toSeq, nPartitions)
         .toDF()
         .write
         .parquet(Loader.dataPath(path))
@@ -728,9 +711,8 @@ object Word2VecModel extends Loader[Word2VecModel] {
   @Since("1.4.0")
   override def load(sc: SparkContext, path: String): Word2VecModel = {
 
-    val (loadedClassName, loadedVersion, metadata) = Loader.loadMetadata(
-      sc,
-      path)
+    val (loadedClassName, loadedVersion, metadata) = Loader
+      .loadMetadata(sc, path)
     implicit val formats = DefaultFormats
     val expectedVectorSize = (metadata \ "vectorSize").extract[Int]
     val expectedNumWords = (metadata \ "numWords").extract[Int]

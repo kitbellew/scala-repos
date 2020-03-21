@@ -266,7 +266,8 @@ class ActorContextSpec
         if (!inert)
           s
         else
-          s.keep {
+          s
+            .keep {
               case (subj, child) ⇒
                 child ! BecomeInert(self)
             }
@@ -282,9 +283,11 @@ class ActorContextSpec
           f: T ⇒ Unit,
           ev: T ⇒ Event,
           timeout: FiniteDuration = 500.millis): StepWise.Steps[Event, T] =
-        startWith.keep(f).expectMessageKeep(timeout) { (msg, v) ⇒
-          msg should ===(ev(v))
-        }
+        startWith
+          .keep(f)
+          .expectMessageKeep(timeout) { (msg, v) ⇒
+            msg should ===(ev(v))
+          }
     }
 
     protected def stop(ref: ActorRef[Command]) = ref ! Stop
@@ -325,7 +328,8 @@ class ActorContextSpec
               occurrences = 1)
             subj ! Throw(ex)
             (subj, log)
-          }.expectFailureKeep(500.millis) {
+          }
+            .expectFailureKeep(500.millis) {
               case (f, (subj, _)) ⇒
                 f.cause should ===(ex)
                 f.child should ===(subj)

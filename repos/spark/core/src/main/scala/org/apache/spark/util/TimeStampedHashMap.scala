@@ -47,10 +47,8 @@ private[spark] class TimeStampedHashMap[A, B](
   def get(key: A): Option[B] = {
     val value = internalMap.get(key)
     if (value != null && updateTimeStampOnGet) {
-      internalMap.replace(
-        key,
-        value,
-        TimeStampedValue(value.value, currentTime))
+      internalMap
+        .replace(key, value, TimeStampedValue(value.value, currentTime))
     }
     Option(value).map(_.value)
   }
@@ -63,7 +61,8 @@ private[spark] class TimeStampedHashMap[A, B](
 
   override def +[B1 >: B](kv: (A, B1)): mutable.Map[A, B1] = {
     val newMap = new TimeStampedHashMap[A, B1]
-    val oldInternalMap = this.internalMap
+    val oldInternalMap = this
+      .internalMap
       .asInstanceOf[ConcurrentHashMap[A, TimeStampedValue[B1]]]
     newMap.internalMap.putAll(oldInternalMap)
     kv match {
@@ -104,7 +103,8 @@ private[spark] class TimeStampedHashMap[A, B](
   }
 
   override def filter(p: ((A, B)) => Boolean): mutable.Map[A, B] = {
-    internalMap.asScala
+    internalMap
+      .asScala
       .map {
         case (k, TimeStampedValue(v, t)) =>
           (k, v)
@@ -126,9 +126,8 @@ private[spark] class TimeStampedHashMap[A, B](
   }
 
   def putIfAbsent(key: A, value: B): Option[B] = {
-    val prev = internalMap.putIfAbsent(
-      key,
-      TimeStampedValue(value, currentTime))
+    val prev = internalMap
+      .putIfAbsent(key, TimeStampedValue(value, currentTime))
     Option(prev).map(_.value)
   }
 

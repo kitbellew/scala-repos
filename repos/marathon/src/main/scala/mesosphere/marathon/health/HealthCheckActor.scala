@@ -76,22 +76,30 @@ class HealthCheckActor(
         app.version,
         healthCheck)
       nextScheduledCheck = Some(
-        context.system.scheduler.scheduleOnce(healthCheck.interval) {
-          self ! Tick
-        })
+        context
+          .system
+          .scheduler
+          .scheduleOnce(healthCheck.interval) {
+            self ! Tick
+          })
     }
 
   def dispatchJobs(): Unit = {
     log.debug("Dispatching health check jobs to workers")
-    taskTracker.appTasksSync(app.id).foreach { task =>
-      task.launched.foreach { launched =>
-        if (launched.appVersion == app.version && launched.hasStartedRunning) {
-          log.debug("Dispatching health check job for {}", task.taskId)
-          val worker: ActorRef = context.actorOf(workerProps)
-          worker ! HealthCheckJob(app, task, launched, healthCheck)
-        }
+    taskTracker
+      .appTasksSync(app.id)
+      .foreach { task =>
+        task
+          .launched
+          .foreach { launched =>
+            if (launched.appVersion == app.version && launched
+                  .hasStartedRunning) {
+              log.debug("Dispatching health check job for {}", task.taskId)
+              val worker: ActorRef = context.actorOf(workerProps)
+              worker ! HealthCheckJob(app, task, launched, healthCheck)
+            }
+          }
       }
-    }
   }
 
   def checkConsecutiveFailures(task: Task, health: Health): Unit = {
@@ -104,23 +112,30 @@ class HealthCheckActor(
         s"Detected unhealthy ${task.taskId} of app [${app.id}] version [${app.version}] on host ${task.agentInfo.host}")
 
       // kill the task
-      marathonSchedulerDriverHolder.driver.foreach { driver =>
-        log.info(
-          s"Send kill request for ${task.taskId} on host ${task.agentInfo.host} to driver")
-        driver.killTask(task.taskId.mesosTaskId)
-      }
+      marathonSchedulerDriverHolder
+        .driver
+        .foreach { driver =>
+          log.info(
+            s"Send kill request for ${task.taskId} on host ${task.agentInfo.host} to driver")
+          driver.killTask(task.taskId.mesosTaskId)
+        }
     }
   }
 
   def ignoreFailures(task: Task, health: Health): Boolean = {
     // Ignore failures during the grace period, until the task becomes green
     // for the first time.  Also ignore failures while the task is staging.
-    task.launched.fold(true) { launched =>
-      health.firstSuccess.isEmpty &&
-      launched.status.startedAt.fold(true) { startedAt =>
-        startedAt + healthCheck.gracePeriod > Timestamp.now()
+    task
+      .launched
+      .fold(true) { launched =>
+        health.firstSuccess.isEmpty &&
+        launched
+          .status
+          .startedAt
+          .fold(true) { startedAt =>
+            startedAt + healthCheck.gracePeriod > Timestamp.now()
+          }
       }
-    }
   }
 
   //TODO: fix style issue and enable this scalastyle check
@@ -157,8 +172,8 @@ class HealthCheckActor(
                   // Don't update health
                   health
                 } else {
-                  eventBus.publish(
-                    FailedHealthCheck(app.id, taskId, healthCheck))
+                  eventBus
+                    .publish(FailedHealthCheck(app.id, taskId, healthCheck))
                   checkConsecutiveFailures(task, health)
                   health.update(result)
                 }

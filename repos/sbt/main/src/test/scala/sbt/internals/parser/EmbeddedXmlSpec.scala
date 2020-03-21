@@ -31,8 +31,9 @@ class EmbeddedXmlSpec extends CheckIfParsedSpec {
 
       split(buildSbt) must throwA[MessageOnlyException].like {
         case exception =>
-          val index =
-            buildSbt.lines.indexWhere(line => line.contains(errorLine)) + 1
+          val index = buildSbt
+            .lines
+            .indexWhere(line => line.contains(errorLine)) + 1
           val numberRegex = """(\d+)""".r
           val message = exception.getMessage
           val list = numberRegex.findAllIn(message).toList

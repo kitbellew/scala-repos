@@ -434,9 +434,8 @@ final case class ManyVersionVector(versions: TreeMap[UniqueAddress, Long])
       case ManyVersionVector(vs2) ⇒
         var mergedVersions = vs2
         for ((node, time) ← versions) {
-          val mergedVersionsCurrentTime = mergedVersions.getOrElse(
-            node,
-            Timestamp.Zero)
+          val mergedVersionsCurrentTime = mergedVersions
+            .getOrElse(node, Timestamp.Zero)
           if (time > mergedVersionsCurrentTime)
             mergedVersions = mergedVersions.updated(node, time)
         }

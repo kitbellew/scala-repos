@@ -80,27 +80,30 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
           s"Pruning directories with: ${partitionKeyFilters.mkString(",")}")
 
         val bucketColumns = AttributeSet(
-          files.bucketSpec
+          files
+            .bucketSpec
             .map(_.bucketColumnNames)
             .getOrElse(Nil)
             .map(
-              l.resolveQuoted(_, files.sqlContext.conf.resolver)
+              l
+                .resolveQuoted(_, files.sqlContext.conf.resolver)
                 .getOrElse(sys.error(""))))
 
         // Partition keys are not available in the statistics of the files.
-        val dataFilters = filters.filter(
-          _.references.intersect(partitionColumns).isEmpty)
+        val dataFilters = filters
+          .filter(_.references.intersect(partitionColumns).isEmpty)
 
         // Predicates with both partition keys and attributes need to be evaluated after the scan.
         val afterScanFilters = filterSet -- partitionKeyFilters
         logInfo(s"Post-Scan Filters: ${afterScanFilters.mkString(",")}")
 
-        val selectedPartitions = files.location.listFiles(
-          partitionKeyFilters.toSeq)
+        val selectedPartitions = files
+          .location
+          .listFiles(partitionKeyFilters.toSeq)
 
         val filterAttributes = AttributeSet(afterScanFilters)
-        val requiredExpressions: Seq[NamedExpression] =
-          filterAttributes.toSeq ++ projects
+        val requiredExpressions: Seq[NamedExpression] = filterAttributes
+          .toSeq ++ projects
         val requiredAttributes =
           AttributeSet(requiredExpressions).map(_.name).toSet
 
@@ -108,16 +111,18 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
           files.dataSchema.filter(f => requiredAttributes.contains(f.name)))
         logInfo(s"Pruned Data Schema: ${prunedDataSchema.simpleString(5)}")
 
-        val pushedDownFilters = dataFilters.flatMap(
-          DataSourceStrategy.translateFilter)
+        val pushedDownFilters = dataFilters
+          .flatMap(DataSourceStrategy.translateFilter)
         logInfo(s"Pushed Filters: ${pushedDownFilters.mkString(",")}")
 
-        val readFile = files.fileFormat.buildReader(
-          sqlContext = files.sqlContext,
-          partitionSchema = files.partitionSchema,
-          dataSchema = prunedDataSchema,
-          filters = pushedDownFilters,
-          options = files.options)
+        val readFile = files
+          .fileFormat
+          .buildReader(
+            sqlContext = files.sqlContext,
+            partitionSchema = files.partitionSchema,
+            dataSchema = prunedDataSchema,
+            filters = pushedDownFilters,
+            options = files.options)
 
         val plannedPartitions =
           files.bucketSpec match {
@@ -125,12 +130,14 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
               logInfo(s"Planning with ${bucketing.numBuckets} buckets")
               val bucketed = selectedPartitions
                 .flatMap { p =>
-                  p.files.map(f =>
-                    PartitionedFile(
-                      p.values,
-                      f.getPath.toUri.toString,
-                      0,
-                      f.getLen))
+                  p
+                    .files
+                    .map(f =>
+                      PartitionedFile(
+                        p.values,
+                        f.getPath.toUri.toString,
+                        0,
+                        f.getLen))
                 }
                 .groupBy { f =>
                   BucketingUtils
@@ -150,22 +157,24 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
               val splitFiles =
                 selectedPartitions
                   .flatMap { partition =>
-                    partition.files.flatMap { file =>
-                      assert(file.getLen != 0)
-                      (0L to file.getLen by maxSplitBytes).map { offset =>
-                        val remaining = file.getLen - offset
-                        val size =
-                          if (remaining > maxSplitBytes)
-                            maxSplitBytes
-                          else
-                            remaining
-                        PartitionedFile(
-                          partition.values,
-                          file.getPath.toUri.toString,
-                          offset,
-                          size)
+                    partition
+                      .files
+                      .flatMap { file =>
+                        assert(file.getLen != 0)
+                        (0L to file.getLen by maxSplitBytes).map { offset =>
+                          val remaining = file.getLen - offset
+                          val size =
+                            if (remaining > maxSplitBytes)
+                              maxSplitBytes
+                            else
+                              remaining
+                          PartitionedFile(
+                            partition.values,
+                            file.getPath.toUri.toString,
+                            offset,
+                            size)
+                        }
                       }
-                    }
                   }
                   .toArray
                   .sortBy(_.length)(implicitly[Ordering[Long]].reverse)
@@ -213,8 +222,9 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
           files,
           Map("format" -> files.fileFormat.toString))
 
-        val afterScanFilter = afterScanFilters.toSeq.reduceOption(
-          expressions.And)
+        val afterScanFilter = afterScanFilters
+          .toSeq
+          .reduceOption(expressions.And)
         val withFilter = afterScanFilter
           .map(execution.Filter(_, scan))
           .getOrElse(scan)

@@ -46,7 +46,10 @@ object ScroogeUnionOrderedBuf {
     val dispatcher = buildDispatcher
 
     val subClasses: List[Type] =
-      outerType.typeSymbol.asClass.knownDirectSubclasses
+      outerType
+        .typeSymbol
+        .asClass
+        .knownDirectSubclasses
         .map(_.asType.toType)
         .toList
 

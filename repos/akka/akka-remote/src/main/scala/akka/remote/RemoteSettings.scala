@@ -30,8 +30,8 @@ final class RemoteSettings(val config: Config) {
     immutableSeq(getStringList("akka.remote.trusted-selection-paths")).toSet
 
   val RemoteLifecycleEventsLogLevel: LogLevel =
-    getString("akka.remote.log-remote-lifecycle-events").toLowerCase(
-      Locale.ROOT) match {
+    getString("akka.remote.log-remote-lifecycle-events")
+      .toLowerCase(Locale.ROOT) match {
       case "on" ⇒
         Logging.DebugLevel
       case other ⇒
@@ -104,8 +104,8 @@ final class RemoteSettings(val config: Config) {
   } requiring (_ > 0, "system-message-buffer-size must be > 0")
 
   val InitialSysMsgDeliveryTimeout: FiniteDuration = {
-    config.getMillisDuration(
-      "akka.remote.initial-system-message-delivery-timeout")
+    config
+      .getMillisDuration("akka.remote.initial-system-message-delivery-timeout")
   } requiring (
     _ > Duration.Zero, "initial-system-message-delivery-timeout must be > 0"
   )
@@ -136,10 +136,11 @@ final class RemoteSettings(val config: Config) {
     _ > Duration.Zero, "watch-failure-detector.heartbeat-interval must be > 0"
   )
   val WatchUnreachableReaperInterval: FiniteDuration = {
-    WatchFailureDetectorConfig.getMillisDuration(
-      "unreachable-nodes-reaper-interval")
+    WatchFailureDetectorConfig
+      .getMillisDuration("unreachable-nodes-reaper-interval")
   } requiring (
-    _ > Duration.Zero, "watch-failure-detector.unreachable-nodes-reaper-interval must be > 0"
+    _ > Duration
+      .Zero, "watch-failure-detector.unreachable-nodes-reaper-interval must be > 0"
   )
   val WatchHeartbeatExpectedResponseAfter: FiniteDuration = {
     WatchFailureDetectorConfig.getMillisDuration("expected-response-after")
@@ -166,9 +167,14 @@ final class RemoteSettings(val config: Config) {
     getConfig(transportName)
 
   private def configToMap(cfg: Config): Map[String, String] =
-    cfg.root.unwrapped.asScala.toMap.map {
-      case (k, v) ⇒
-        (k, v.toString)
-    }
+    cfg
+      .root
+      .unwrapped
+      .asScala
+      .toMap
+      .map {
+        case (k, v) ⇒
+          (k, v.toString)
+      }
 
 }

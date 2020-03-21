@@ -53,20 +53,19 @@ class AdjustTypesIntention extends PsiElementBaseIntentionAction {
         case _ =>
           return
       }
-    val elements = ScalaRefactoringUtil.selectedElements(
-      editor,
-      file,
-      trimComments = true)
+    val elements = ScalaRefactoringUtil
+      .selectedElements(editor, file, trimComments = true)
     TypeAdjuster.adjustFor(elements)
   }
 
   private def containsPossiblyAdjustableRef(elem: PsiElement) =
-    elem.depthFirst.exists {
-      case ref: ScReferenceElement =>
-        ref.qualifier.isDefined && PsiTreeUtil.getParentOfType(
-          ref,
-          classOf[ScImportExpr]) == null
-      case _ =>
-        false
-    }
+    elem
+      .depthFirst
+      .exists {
+        case ref: ScReferenceElement =>
+          ref.qualifier.isDefined && PsiTreeUtil
+            .getParentOfType(ref, classOf[ScImportExpr]) == null
+        case _ =>
+          false
+      }
 }

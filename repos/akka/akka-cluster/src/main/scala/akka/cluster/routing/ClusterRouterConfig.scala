@@ -32,12 +32,12 @@ import scala.collection.immutable
 object ClusterRouterGroupSettings {
   def fromConfig(config: Config): ClusterRouterGroupSettings =
     ClusterRouterGroupSettings(
-      totalInstances = ClusterRouterSettingsBase.getMaxTotalNrOfInstances(
-        config),
+      totalInstances = ClusterRouterSettingsBase
+        .getMaxTotalNrOfInstances(config),
       routeesPaths = immutableSeq(config.getStringList("routees.paths")),
       allowLocalRoutees = config.getBoolean("cluster.allow-local-routees"),
-      useRole = ClusterRouterSettingsBase.useRoleOption(
-        config.getString("cluster.use-role"))
+      useRole = ClusterRouterSettingsBase
+        .useRoleOption(config.getString("cluster.use-role"))
     )
 }
 
@@ -85,13 +85,13 @@ final case class ClusterRouterGroupSettings(
 object ClusterRouterPoolSettings {
   def fromConfig(config: Config): ClusterRouterPoolSettings =
     ClusterRouterPoolSettings(
-      totalInstances = ClusterRouterSettingsBase.getMaxTotalNrOfInstances(
-        config),
-      maxInstancesPerNode = config.getInt(
-        "cluster.max-nr-of-instances-per-node"),
+      totalInstances = ClusterRouterSettingsBase
+        .getMaxTotalNrOfInstances(config),
+      maxInstancesPerNode = config
+        .getInt("cluster.max-nr-of-instances-per-node"),
       allowLocalRoutees = config.getBoolean("cluster.allow-local-routees"),
-      useRole = ClusterRouterSettingsBase.useRoleOption(
-        config.getString("cluster.use-role"))
+      useRole = ClusterRouterSettingsBase
+        .useRoleOption(config.getString("cluster.use-role"))
     )
 }
 
@@ -344,16 +344,18 @@ private[akka] class ClusterRouterPoolActor(
   def selectDeploymentTarget: Option[Address] = {
     val currentRoutees = cell.router.routees
     val currentNodes = availableNodes
-    if (currentNodes.isEmpty || currentRoutees.size >= settings.totalInstances) {
+    if (currentNodes
+          .isEmpty || currentRoutees.size >= settings.totalInstances) {
       None
     } else {
       // find the node with least routees
       val numberOfRouteesPerNode: Map[Address, Int] =
-        currentRoutees.foldLeft(
-          currentNodes.map(_ -> 0).toMap.withDefaultValue(0)) { (acc, x) ⇒
-          val address = fullAddress(x)
-          acc + (address -> (acc(address) + 1))
-        }
+        currentRoutees
+          .foldLeft(currentNodes.map(_ -> 0).toMap.withDefaultValue(0)) {
+            (acc, x) ⇒
+              val address = fullAddress(x)
+              acc + (address -> (acc(address) + 1))
+          }
 
       val (address, count) = numberOfRouteesPerNode.minBy(_._2)
       if (count < settings.maxInstancesPerNode)
@@ -379,7 +381,8 @@ private[akka] class ClusterRouterGroupActor(
         x
       case other ⇒
         throw ActorInitializationException(
-          "ClusterRouterGroupActor can only be used with group, not " + other.getClass)
+          "ClusterRouterGroupActor can only be used with group, not " + other
+            .getClass)
     }
 
   override def receive = clusterReceive orElse super.receive
@@ -416,7 +419,8 @@ private[akka] class ClusterRouterGroupActor(
   def selectDeploymentTarget: Option[(Address, String)] = {
     val currentRoutees = cell.router.routees
     val currentNodes = availableNodes
-    if (currentNodes.isEmpty || currentRoutees.size >= settings.totalInstances) {
+    if (currentNodes
+          .isEmpty || currentRoutees.size >= settings.totalInstances) {
       None
     } else {
       // find the node with least routees
@@ -430,10 +434,12 @@ private[akka] class ClusterRouterGroupActor(
             used.size
         }
         // pick next of the unused paths
-        settings.routeesPaths.collectFirst {
-          case p if !used.contains(p) ⇒
-            (address, p)
-        }
+        settings
+          .routeesPaths
+          .collectFirst {
+            case p if !used.contains(p) ⇒
+              (address, p)
+          }
       }
     }
   }
@@ -454,7 +460,8 @@ private[akka] trait ClusterRouterActor {
 
   def settings: ClusterRouterSettingsBase
 
-  if (!cell.routerConfig.isInstanceOf[Pool] && !cell.routerConfig
+  if (!cell.routerConfig.isInstanceOf[Pool] && !cell
+        .routerConfig
         .isInstanceOf[Group])
     throw ActorInitializationException(
       "Cluster router actor can only be used with Pool or Group, not with " +
@@ -470,10 +477,13 @@ private[akka] trait ClusterRouterActor {
 
   var nodes: immutable.SortedSet[Address] = {
     import akka.cluster.Member.addressOrdering
-    cluster.readView.members.collect {
-      case m if isAvailable(m) ⇒
-        m.address
-    }
+    cluster
+      .readView
+      .members
+      .collect {
+        case m if isAvailable(m) ⇒
+          m.address
+      }
   }
 
   def isAvailable(m: Member): Boolean =
@@ -544,10 +554,12 @@ private[akka] trait ClusterRouterActor {
   def clusterReceive: Receive = {
     case s: CurrentClusterState ⇒
       import akka.cluster.Member.addressOrdering
-      nodes = s.members.collect {
-        case m if isAvailable(m) ⇒
-          m.address
-      }
+      nodes = s
+        .members
+        .collect {
+          case m if isAvailable(m) ⇒
+            m.address
+        }
       addRoutees()
 
     case m: MemberEvent if isAvailable(m.member) ⇒

@@ -39,8 +39,10 @@ import org.apache.spark.util.IntParam
 object RawNetworkGrep {
   def main(args: Array[String]) {
     if (args.length != 4) {
-      System.err.println(
-        "Usage: RawNetworkGrep <numStreams> <host> <port> <batchMillis>")
+      System
+        .err
+        .println(
+          "Usage: RawNetworkGrep <numStreams> <host> <port> <batchMillis>")
       System.exit(1)
     }
 

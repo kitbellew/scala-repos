@@ -765,8 +765,7 @@ class ClientBuilder[
             case _ =>
               Ssl.client()
           }))
-      ))
-      .configured(Transporter.TLSHostname(Some(hostname)))
+      )).configured(Transporter.TLSHostname(Some(hostname)))
   }
 
   /**
@@ -804,8 +803,7 @@ class ClientBuilder[
             case _ =>
               Ssl.client(sslContext)
           }))
-      ))
-      .configured(Transporter.TLSHostname(hostname))
+      )).configured(Transporter.TLSHostname(hostname))
 
   /**
     * Do not perform TLS validation. Probably dangerous.

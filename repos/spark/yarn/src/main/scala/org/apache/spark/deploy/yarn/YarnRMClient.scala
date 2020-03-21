@@ -94,10 +94,8 @@ private[spark] class YarnRMClient(args: ApplicationMasterArguments)
       diagnostics: String = ""): Unit =
     synchronized {
       if (registered) {
-        amClient.unregisterApplicationMaster(
-          status,
-          diagnostics,
-          uiHistoryAddress)
+        amClient
+          .unregisterApplicationMaster(status, diagnostics, uiHistoryAddress)
       }
     }
 
@@ -123,12 +121,16 @@ private[spark] class YarnRMClient(args: ApplicationMasterArguments)
       val method = classOf[WebAppUtils]
         .getMethod("getProxyHostsAndPortsForAmFilter", classOf[Configuration])
       val proxies = method.invoke(null, conf).asInstanceOf[JList[String]]
-      val hosts = proxies.asScala.map { proxy =>
-        proxy.split(":")(0)
-      }
-      val uriBases = proxies.asScala.map { proxy =>
-        prefix + proxy + proxyBase
-      }
+      val hosts = proxies
+        .asScala
+        .map { proxy =>
+          proxy.split(":")(0)
+        }
+      val uriBases = proxies
+        .asScala
+        .map { proxy =>
+          prefix + proxy + proxyBase
+        }
       Map(
         "PROXY_HOSTS" -> hosts.mkString(","),
         "PROXY_URI_BASES" -> uriBases.mkString(","))

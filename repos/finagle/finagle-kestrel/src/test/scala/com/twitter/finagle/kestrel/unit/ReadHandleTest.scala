@@ -140,9 +140,11 @@ class ReadHandleTest extends FunSuite {
   test("ReadHandle.merged should") {
     new MergedReadHandle {
       var count = 0
-      merged.messages.foreach { _ =>
-        count += 1
-      }
+      merged
+        .messages
+        .foreach { _ =>
+          count += 1
+        }
       assert(count == 0)
 
       messages0 ! msg(0)
@@ -157,9 +159,11 @@ class ReadHandleTest extends FunSuite {
     "ReadHandle.merged should provide a merged stream of errors provide a merged stream of messages") {
     new MergedReadHandle {
       var count = 0
-      merged.error.foreach { _ =>
-        count += 1
-      }
+      merged
+        .error
+        .foreach { _ =>
+          count += 1
+        }
       assert(count == 0)
 
       error0 ! new Exception("sad panda")

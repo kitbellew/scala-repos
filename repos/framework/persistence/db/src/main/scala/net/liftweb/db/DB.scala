@@ -104,9 +104,10 @@ trait DB extends Loggable {
       },
       () => {
         logger.trace("Trying JNDI lookup on %s".format(name.jndiName))
-        (
-          new InitialContext
-        ).lookup(name.jndiName).asInstanceOf[DataSource].getConnection
+        (new InitialContext)
+          .lookup(name.jndiName)
+          .asInstanceOf[DataSource]
+          .getConnection
 
       }
     )
@@ -209,20 +210,23 @@ trait DB extends Loggable {
           else
             ""
         logger.debug(
-          "Connection ID " + uniqueId + " for JNDI connection " + name.jndiName + " opened")
+          "Connection ID " + uniqueId + " for JNDI connection " + name
+            .jndiName + " opened")
         new SuperConnection(
           c,
           () => {
             logger.debug(
-              "Connection ID " + uniqueId + " for JNDI connection " + name.jndiName + " closed");
+              "Connection ID " + uniqueId + " for JNDI connection " + name
+                .jndiName + " closed");
             c.close
           })
       })
 
     val cmConn =
       for {
-        connectionManager <- threadLocalConnectionManagers.box.flatMap(
-          _.get(name)) or Box(connectionManagers.get(name))
+        connectionManager <- threadLocalConnectionManagers
+          .box
+          .flatMap(_.get(name)) or Box(connectionManagers.get(name))
         connection <- cmSuperConnection(connectionManager)
       } yield connection
 
@@ -233,7 +237,8 @@ trait DB extends Loggable {
     ret openOr {
       throw new NullPointerException(
         "Looking for Connection Identifier " + name + " but failed to find either a JNDI data source " +
-          "with the name " + name.jndiName + " or a lift connection manager with the correct name")
+          "with the name " + name
+          .jndiName + " or a lift connection manager with the correct name")
     }
   }
 
@@ -401,9 +406,8 @@ trait DB extends Loggable {
       }
       case Some(ConnectionHolder(c, n, post, rb)) =>
         logger.trace(
-          "Did not release " + name + " on thread " + Thread.currentThread + " count " + (
-            n - 1
-          ))
+          "Did not release " + name + " on thread " + Thread
+            .currentThread + " count " + (n - 1))
         info(name) = ConnectionHolder(c, n - 1, post, rb)
       case x =>
       // ignore
@@ -590,37 +594,39 @@ trait DB extends Loggable {
   private def setPreparedParams(
       ps: PreparedStatement,
       params: List[Any]): PreparedStatement = {
-    params.zipWithIndex.foreach {
-      case (null, idx) =>
-        ps.setNull(idx + 1, Types.VARCHAR)
-      case (i: Int, idx) =>
-        ps.setInt(idx + 1, i)
-      case (l: Long, idx) =>
-        ps.setLong(idx + 1, l)
-      case (d: Double, idx) =>
-        ps.setDouble(idx + 1, d)
-      case (f: Float, idx) =>
-        ps.setFloat(idx + 1, f)
-      // Allow the user to specify how they want the Date handled based on the input type
-      case (t: java.sql.Timestamp, idx) =>
-        ps.setTimestamp(idx + 1, t)
-      case (d: java.sql.Date, idx) =>
-        ps.setDate(idx + 1, d)
-      case (t: java.sql.Time, idx) =>
-        ps.setTime(idx + 1, t)
-      /* java.util.Date has to go last, since the java.sql date/time classes subclass it. By default we
-       * assume a Timestamp value */
-      case (d: java.util.Date, idx) =>
-        ps.setTimestamp(idx + 1, new java.sql.Timestamp(d.getTime))
-      case (b: Boolean, idx) =>
-        ps.setBoolean(idx + 1, b)
-      case (s: String, idx) =>
-        ps.setString(idx + 1, s)
-      case (bn: java.math.BigDecimal, idx) =>
-        ps.setBigDecimal(idx + 1, bn)
-      case (obj, idx) =>
-        ps.setObject(idx + 1, obj)
-    }
+    params
+      .zipWithIndex
+      .foreach {
+        case (null, idx) =>
+          ps.setNull(idx + 1, Types.VARCHAR)
+        case (i: Int, idx) =>
+          ps.setInt(idx + 1, i)
+        case (l: Long, idx) =>
+          ps.setLong(idx + 1, l)
+        case (d: Double, idx) =>
+          ps.setDouble(idx + 1, d)
+        case (f: Float, idx) =>
+          ps.setFloat(idx + 1, f)
+        // Allow the user to specify how they want the Date handled based on the input type
+        case (t: java.sql.Timestamp, idx) =>
+          ps.setTimestamp(idx + 1, t)
+        case (d: java.sql.Date, idx) =>
+          ps.setDate(idx + 1, d)
+        case (t: java.sql.Time, idx) =>
+          ps.setTime(idx + 1, t)
+        /* java.util.Date has to go last, since the java.sql date/time classes subclass it. By default we
+         * assume a Timestamp value */
+        case (d: java.util.Date, idx) =>
+          ps.setTimestamp(idx + 1, new java.sql.Timestamp(d.getTime))
+        case (b: Boolean, idx) =>
+          ps.setBoolean(idx + 1, b)
+        case (s: String, idx) =>
+          ps.setString(idx + 1, s)
+        case (bn: java.math.BigDecimal, idx) =>
+          ps.setBigDecimal(idx + 1, bn)
+        case (obj, idx) =>
+          ps.setObject(idx + 1, obj)
+      }
     ps
   }
 
@@ -882,8 +888,10 @@ trait DB extends Loggable {
     *
     * TODO : Maybe this should be refactored to allow for driver-specific reserved words
     */
-  lazy val defaultReservedWords: scala.collection.immutable.Set[String] =
-    scala.collection.immutable.HashSet(
+  lazy val defaultReservedWords: scala.collection.immutable.Set[String] = scala
+    .collection
+    .immutable
+    .HashSet(
       "abort",
       "accept",
       "access",
@@ -1301,9 +1309,8 @@ class StandardDBVendor(
         }(DriverManager.getConnection(dbUrl, user, pwd))
       case _ =>
         tryo { t: Throwable =>
-          logger.error(
-            "Unable to get database connection. url=%s".format(dbUrl),
-            t)
+          logger
+            .error("Unable to get database connection. url=%s".format(dbUrl), t)
         }(DriverManager.getConnection(dbUrl))
     }
   }

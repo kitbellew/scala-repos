@@ -154,8 +154,11 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
 
     // set flags that Scala scala doesn't (default access, static) - a hacky way to test all access modes.
     val names = ('a' to 'h').map(_.toString).toSet
-    val List(a, b, c, d, e, f, g, h) = cCl.methods.asScala.toList.filter(m =>
-      names(m.name))
+    val List(a, b, c, d, e, f, g, h) = cCl
+      .methods
+      .asScala
+      .toList
+      .filter(m => names(m.name))
 
     def checkAccess(a: MethodNode, expected: Int): Unit = {
       assert(
@@ -187,10 +190,17 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
     h.access |= ACC_STATIC;
     checkAccess(h, ACC_STATIC | ACC_PRIVATE)
 
-    val List(raC, rbC, rcC, rdC, reC, rfC, rgC, rhC) =
-      cCl.methods.asScala.toList.filter(_.name(0) == 'r').sortBy(_.name)
+    val List(raC, rbC, rcC, rdC, reC, rfC, rgC, rhC) = cCl
+      .methods
+      .asScala
+      .toList
+      .filter(_.name(0) == 'r')
+      .sortBy(_.name)
 
-    val List(rbD, rcD, rfD, rgD) = dCl.methods.asScala.toList
+    val List(rbD, rcD, rfD, rgD) = dCl
+      .methods
+      .asScala
+      .toList
       .filter(_.name(0) == 'r')
       .sortBy(_.name)
 

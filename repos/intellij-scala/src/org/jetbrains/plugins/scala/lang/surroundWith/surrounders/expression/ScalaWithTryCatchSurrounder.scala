@@ -23,8 +23,8 @@ class ScalaWithTryCatchSurrounder extends ScalaExpressionSurrounder {
         "=>"
       else
         ScalaPsiUtil.functionArrow(elements(0).getProject)
-    "try {\n" + super.getTemplateAsString(
-      elements) + s"\n} catch {\n case _ $arrow \n}"
+    "try {\n" + super
+      .getTemplateAsString(elements) + s"\n} catch {\n case _ $arrow \n}"
   }
 
   override def getTemplateDescription = "try / catch"
@@ -48,7 +48,9 @@ class ScalaWithTryCatchSurrounder extends ScalaExpressionSurrounder {
 
     val catchBlockPsiElement: ScCatchBlock = tryCatchStmt.catchBlock.get
     val caseClause =
-      catchBlockPsiElement.expression.get
+      catchBlockPsiElement
+        .expression
+        .get
         .asInstanceOf[ScBlockExpr]
         .caseClauses
         .get

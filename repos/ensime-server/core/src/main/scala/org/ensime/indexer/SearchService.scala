@@ -50,8 +50,9 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
   private val index = new IndexService(config.cacheDir / ("index-" + version))
   private val db = new DatabaseService(config.cacheDir / ("sql-" + version))
 
-  implicit val workerEC = actorSystem.dispatchers.lookup(
-    "akka.search-service-dispatcher")
+  implicit val workerEC = actorSystem
+    .dispatchers
+    .lookup("akka.search-service-dispatcher")
 
   private def scan(f: FileObject) =
     f.findFiles(ClassfileSelector) match {
@@ -91,25 +92,31 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
     // a snapshot of everything that we want to index
     def findBases(): Set[FileObject] = {
       log.info("findBases")
-      config.modules.flatMap {
-        case (name, m) =>
-          m.targetDirs.flatMap {
-            case d if !d.exists() =>
-              Nil
-            case d if d.isJar =>
-              List(vfs.vfile(d))
-            case d =>
-              scan(vfs.vfile(d))
-          } ::: m.testTargetDirs.flatMap {
-            case d if !d.exists() =>
-              Nil
-            case d if d.isJar =>
-              List(vfs.vfile(d))
-            case d =>
-              scan(vfs.vfile(d))
-          } :::
-            m.compileJars.map(vfs.vfile) ::: m.testJars.map(vfs.vfile)
-      }
+      config
+        .modules
+        .flatMap {
+          case (name, m) =>
+            m
+              .targetDirs
+              .flatMap {
+                case d if !d.exists() =>
+                  Nil
+                case d if d.isJar =>
+                  List(vfs.vfile(d))
+                case d =>
+                  scan(vfs.vfile(d))
+              } ::: m
+              .testTargetDirs
+              .flatMap {
+                case d if !d.exists() =>
+                  Nil
+                case d if d.isJar =>
+                  List(vfs.vfile(d))
+                case d =>
+                  scan(vfs.vfile(d))
+              } :::
+              m.compileJars.map(vfs.vfile) ::: m.testJars.map(vfs.vfile)
+        }
     }.toSet ++ config.javaLibs.map(vfs.vfile)
 
     def indexBase(
@@ -120,8 +127,8 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
         Future.successful(None)
       else {
         val check = FileCheck(base)
-        extractSymbolsFromClassOrJar(base).flatMap(
-          persist(check, _, commitIndex = false))
+        extractSymbolsFromClassOrJar(base)
+          .flatMap(persist(check, _, commitIndex = false))
       }
     }
 
@@ -236,30 +243,41 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
             None,
             sourceUri,
             clazz.source.line) ::
-            clazz.methods.toList.filter(_.access == Public).map { method =>
-              val descriptor = method.descriptor.descriptorString
+            clazz
+              .methods
+              .toList
+              .filter(_.access == Public)
+              .map { method =>
+                val descriptor = method.descriptor.descriptorString
+                FqnSymbol(
+                  None,
+                  name,
+                  path,
+                  method.name.fqnString,
+                  Some(descriptor),
+                  None,
+                  sourceUri,
+                  method.line)
+              } ::: clazz
+            .fields
+            .toList
+            .filter(_.access == Public)
+            .map { field =>
+              val internal = field.clazz.internalString
               FqnSymbol(
                 None,
                 name,
                 path,
-                method.name.fqnString,
-                Some(descriptor),
+                field.name.fqnString,
                 None,
+                Some(internal),
                 sourceUri,
-                method.line)
-            } ::: clazz.fields.toList.filter(_.access == Public).map { field =>
-            val internal = field.clazz.internalString
-            FqnSymbol(
-              None,
-              name,
-              path,
-              field.name.fqnString,
-              None,
-              Some(internal),
-              sourceUri,
-              clazz.source.line)
-          } ::: depickler.getTypeAliases.toList.filter(_.access == Public).map {
-            rawType =>
+                clazz.source.line)
+            } ::: depickler
+            .getTypeAliases
+            .toList
+            .filter(_.access == Public)
+            .map { rawType =>
               FqnSymbol(
                 None,
                 name,
@@ -269,7 +287,7 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
                 None,
                 sourceUri,
                 None)
-          }
+            }
 
     }
   }.filterNot(sym => ignore.exists(sym.fqn.contains))
@@ -300,9 +318,8 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
    * the list of symbols is non-empty.
    */
 
-  val backlogActor = actorSystem.actorOf(
-    Props(new IndexingQueueActor(this)),
-    "ClassfileIndexer")
+  val backlogActor = actorSystem
+    .actorOf(Props(new IndexingQueueActor(this)), "ClassfileIndexer")
 
   // deletion in both Lucene and H2 is really slow, batching helps
   def deleteInBatches(

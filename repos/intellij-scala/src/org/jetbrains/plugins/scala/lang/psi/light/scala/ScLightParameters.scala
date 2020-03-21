@@ -18,10 +18,12 @@ class ScLightParameters(pTypes: List[List[ScType]], p: ScFunction)
     extends LightElement(p.getManager, p.getLanguage)
     with ScParameters {
   override def clauses: Seq[ScParameterClause] =
-    pTypes.zip(p.effectiveParameterClauses).map {
-      case (types: List[ScType], clause: ScParameterClause) =>
-        new ScLightParameterClause(types, clause)
-    }
+    pTypes
+      .zip(p.effectiveParameterClauses)
+      .map {
+        case (types: List[ScType], clause: ScParameterClause) =>
+          new ScLightParameterClause(types, clause)
+      }
 
   override def toString: String = "Light parameters"
 

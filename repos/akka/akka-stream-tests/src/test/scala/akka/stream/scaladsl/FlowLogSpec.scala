@@ -39,10 +39,10 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
         val debugging = Flow[Int].log("my-debug")
         Source(1 to 2).via(debugging).runWith(Sink.ignore)
 
-        logProbe.expectMsg(
-          Logging.Debug(LogSrc, LogClazz, "[my-debug] Element: 1"))
-        logProbe.expectMsg(
-          Logging.Debug(LogSrc, LogClazz, "[my-debug] Element: 2"))
+        logProbe
+          .expectMsg(Logging.Debug(LogSrc, LogClazz, "[my-debug] Element: 1"))
+        logProbe
+          .expectMsg(Logging.Debug(LogSrc, LogClazz, "[my-debug] Element: 2"))
         logProbe.expectMsg(
           Logging.Debug(LogSrc, LogClazz, "[my-debug] Upstream finished."))
       }
@@ -69,7 +69,8 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
       "debug each element" in {
         val log = Logging(system, "com.example.ImportantLogger")
 
-        val debugging: javadsl.Flow[Integer, Integer, NotUsed] = javadsl.Flow
+        val debugging: javadsl.Flow[Integer, Integer, NotUsed] = javadsl
+          .Flow
           .of(classOf[Integer])
           .log("log-1")
           .log(
@@ -85,7 +86,8 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
             log)
           .log("log-4", log)
 
-        javadsl.Source
+        javadsl
+          .Source
           .single[Integer](1)
           .via(debugging)
           .runWith(javadsl.Sink.ignore(), mat)
@@ -110,10 +112,10 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
       "debug each element" in {
         Source(1 to 2).log("flow-s2").runWith(Sink.ignore)
 
-        logProbe.expectMsg(
-          Logging.Debug(LogSrc, LogClazz, "[flow-s2] Element: 1"))
-        logProbe.expectMsg(
-          Logging.Debug(LogSrc, LogClazz, "[flow-s2] Element: 2"))
+        logProbe
+          .expectMsg(Logging.Debug(LogSrc, LogClazz, "[flow-s2] Element: 1"))
+        logProbe
+          .expectMsg(Logging.Debug(LogSrc, LogClazz, "[flow-s2] Element: 2"))
         logProbe.expectMsg(
           Logging.Debug(LogSrc, LogClazz, "[flow-s2] Upstream finished."))
       }
@@ -122,8 +124,8 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
         case class Complex(a: Int, b: String)
         Source.single(Complex(1, "42")).log("flow-s3", _.b).runWith(Sink.ignore)
 
-        logProbe.expectMsg(
-          Logging.Debug(LogSrc, LogClazz, "[flow-s3] Element: 42"))
+        logProbe
+          .expectMsg(Logging.Debug(LogSrc, LogClazz, "[flow-s3] Element: 42"))
         logProbe.expectMsg(
           Logging.Debug(LogSrc, LogClazz, "[flow-s3] Upstream finished."))
       }
@@ -143,8 +145,8 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
         val src = "com.example.ImportantLogger(akka://FlowLogSpec)"
         val clazz = classOf[DummyClassForStringSources]
         logProbe.expectMsg(Logging.Debug(src, clazz, "[flow-5] Element: 42"))
-        logProbe.expectMsg(
-          Logging.Debug(src, clazz, "[flow-5] Upstream finished."))
+        logProbe
+          .expectMsg(Logging.Debug(src, clazz, "[flow-5] Upstream finished."))
       }
 
       "allow configuring log levels via Attributes" in {
@@ -163,8 +165,8 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
               onFailure = Logging.DebugLevel))
           .runWith(Sink.ignore)
 
-        logProbe.expectMsg(
-          Logging.Warning(LogSrc, LogClazz, "[flow-6] Element: 42"))
+        logProbe
+          .expectMsg(Logging.Warning(LogSrc, LogClazz, "[flow-6] Element: 42"))
         logProbe.expectMsg(
           Logging.Info(LogSrc, LogClazz, "[flow-6] Upstream finished."))
 
@@ -195,7 +197,8 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
       "debug each element" in {
         val log = Logging(system, "com.example.ImportantLogger")
 
-        javadsl.Source
+        javadsl
+          .Source
           .single[Integer](1)
           .log("log-1")
           .log(

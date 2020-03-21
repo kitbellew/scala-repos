@@ -38,29 +38,18 @@ private[mesos] object MesosSchedulerBackendUtil extends Logging {
       .split(",")
       .map(_.split(":"))
       .flatMap { spec =>
-        val vol: Volume.Builder = Volume
-          .newBuilder()
-          .setMode(Volume.Mode.RW)
+        val vol: Volume.Builder = Volume.newBuilder().setMode(Volume.Mode.RW)
         spec match {
           case Array(container_path) =>
             Some(vol.setContainerPath(container_path))
           case Array(container_path, "rw") =>
             Some(vol.setContainerPath(container_path))
           case Array(container_path, "ro") =>
-            Some(
-              vol
-                .setContainerPath(container_path)
-                .setMode(Volume.Mode.RO))
+            Some(vol.setContainerPath(container_path).setMode(Volume.Mode.RO))
           case Array(host_path, container_path) =>
-            Some(
-              vol
-                .setContainerPath(container_path)
-                .setHostPath(host_path))
+            Some(vol.setContainerPath(container_path).setHostPath(host_path))
           case Array(host_path, container_path, "rw") =>
-            Some(
-              vol
-                .setContainerPath(container_path)
-                .setHostPath(host_path))
+            Some(vol.setContainerPath(container_path).setHostPath(host_path))
           case Array(host_path, container_path, "ro") =>
             Some(
               vol
@@ -97,7 +86,8 @@ private[mesos] object MesosSchedulerBackendUtil extends Logging {
       .split(",")
       .map(_.split(":"))
       .flatMap { spec: Array[String] =>
-        val portmap: DockerInfo.PortMapping.Builder = DockerInfo.PortMapping
+        val portmap: DockerInfo.PortMapping.Builder = DockerInfo
+          .PortMapping
           .newBuilder()
           .setProtocol("tcp")
         spec match {

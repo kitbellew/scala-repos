@@ -24,10 +24,16 @@ class ExpandTables extends Phase {
       tpe match {
         case p: ProductType =>
           ProductNode(
-            p.elements.zipWithIndex.map {
-              case (t, i) =>
-                createResult(expansions, Select(path, ElementSymbol(i + 1)), t)
-            })
+            p
+              .elements
+              .zipWithIndex
+              .map {
+                case (t, i) =>
+                  createResult(
+                    expansions,
+                    Select(path, ElementSymbol(i + 1)),
+                    t)
+              })
         case NominalType(tsym: TableIdentitySymbol, _)
             if expansions contains tsym =>
           val (sym, exp) = expansions(tsym)
@@ -90,12 +96,14 @@ class ExpandTables extends Phase {
               case r: Ref =>
                 r.untyped
               case d: Distinct =>
-                if (d.nodeType.existsType {
-                      case NominalType(_: TableIdentitySymbol, _) =>
-                        true;
-                      case _ =>
-                        false
-                    })
+                if (d
+                      .nodeType
+                      .existsType {
+                        case NominalType(_: TableIdentitySymbol, _) =>
+                          true;
+                        case _ =>
+                          false
+                      })
                   expandDistinct = true
                 d.mapChildren(tr)
             }
@@ -120,12 +128,14 @@ class ExpandTables extends Phase {
             }
 
           // Perform star expansion in query result
-          if (!tree.nodeType.existsType {
-                case NominalType(_: TableIdentitySymbol, _) =>
-                  true;
-                case _ =>
-                  false
-              })
+          if (!tree
+                .nodeType
+                .existsType {
+                  case NominalType(_: TableIdentitySymbol, _) =>
+                    true;
+                  case _ =>
+                    false
+                })
             tree3
           else {
             logger.debug("Expanding tables in result type")
@@ -134,9 +144,8 @@ class ExpandTables extends Phase {
             val mapping = createResult(
               tables,
               Ref(sym),
-              tree3.nodeType.asCollectionType.elementType)
-              .infer(
-                Type.Scope(sym -> tree3.nodeType.asCollectionType.elementType))
+              tree3.nodeType.asCollectionType.elementType).infer(
+              Type.Scope(sym -> tree3.nodeType.asCollectionType.elementType))
             Bind(sym, tree3, Pure(mapping)).infer()
           }
         }

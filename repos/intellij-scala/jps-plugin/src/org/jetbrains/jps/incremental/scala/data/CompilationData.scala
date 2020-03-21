@@ -68,11 +68,13 @@ object CompilationData {
         throw new RuntimeException(
           "Unknown build target output directory: " + output))
 
-      val relevantOutputToCacheMap = (outputToCacheMap - output).filter(p =>
-        classpath.contains(p._1))
+      val relevantOutputToCacheMap = (outputToCacheMap - output)
+        .filter(p => classpath.contains(p._1))
 
       val commonOptions = {
-        val encoding = context.getProjectDescriptor.getEncodingConfiguration
+        val encoding = context
+          .getProjectDescriptor
+          .getEncodingConfiguration
           .getPreferredModuleChunkEncoding(chunk)
         Option(encoding).map(Seq("-encoding", _)).getOrElse(Seq.empty)
       }
@@ -112,7 +114,9 @@ object CompilationData {
   }
 
   def outputsNotSpecified(chunk: ModuleChunk): Option[String] = {
-    chunk.getTargets.asScala
+    chunk
+      .getTargets
+      .asScala
       .find(_.getOutputDir == null)
       .map("Output directory not specified for module " + _.getModule.getName)
   }
@@ -122,8 +126,9 @@ object CompilationData {
       chunk: ModuleChunk): Seq[String] = {
     val compilerConfig = {
       val project = context.getProjectDescriptor.getProject
-      JpsJavaExtensionService.getInstance.getOrCreateCompilerConfiguration(
-        project)
+      JpsJavaExtensionService
+        .getInstance
+        .getOrCreateCompilerConfiguration(project)
     }
 
     val options = new util.ArrayList[String]()
@@ -169,8 +174,8 @@ object CompilationData {
 
   private def createOutputToCacheMap(
       context: CompileContext): Either[String, Map[File, File]] = {
-    val targetToOutput = targetsIn(context).map(target =>
-      (target, target.getOutputDir))
+    val targetToOutput = targetsIn(context)
+      .map(target => (target, target.getOutputDir))
 
     outputClashesIn(targetToOutput).toLeft {
       val paths = context.getProjectDescriptor.dataManager.getDataPaths
@@ -197,12 +202,16 @@ object CompilationData {
     }
 
     val buildTargetIndex = context.getProjectDescriptor.getBuildTargetIndex
-    val targets = JavaModuleBuildTargetType.ALL_TYPES.asScala
+    val targets = JavaModuleBuildTargetType
+      .ALL_TYPES
+      .asScala
       .flatMap(buildTargetIndex.getAllTargets(_).asScala)
 
-    targets.distinct.filterNot { target =>
-      buildTargetIndex.isDummy(target) || isExcluded(target)
-    }
+    targets
+      .distinct
+      .filterNot { target =>
+        buildTargetIndex.isDummy(target) || isExcluded(target)
+      }
   }
 
   private def outputClashesIn(

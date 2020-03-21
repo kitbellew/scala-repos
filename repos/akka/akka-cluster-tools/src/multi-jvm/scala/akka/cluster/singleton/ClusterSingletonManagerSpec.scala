@@ -39,8 +39,8 @@ object ClusterSingletonManagerSpec extends MultiNodeConfig {
   val sixth = role("sixth")
 
   commonConfig(
-    ConfigFactory.parseString(
-      """
+    ConfigFactory
+      .parseString("""
     akka.loglevel = INFO
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
     akka.remote.log-remote-lifecycle-events = off

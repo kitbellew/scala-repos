@@ -25,11 +25,10 @@ object Opening extends LilaController {
   private def renderShow(opening: OpeningModel)(implicit ctx: Context) =
     env userInfos ctx.me zip identify(opening) map {
       case (infos, identified) =>
-        views.html.opening.show(
-          opening,
-          identified,
-          infos,
-          env.AnimationDuration)
+        views
+          .html
+          .opening
+          .show(opening, identified, infos, env.AnimationDuration)
     }
 
   private def makeData(
@@ -87,38 +86,45 @@ object Opening extends LilaController {
     OpenBody { implicit ctx =>
       implicit val req = ctx.body
       OptionFuResult(env.api.opening find id) { opening =>
-        attemptForm.bindFromRequest.fold(
-          err => fuccess(BadRequest(errorsAsJson(err)) as JSON),
-          data => {
-            val (found, failed) = data
-            val win = found == opening.goal && failed == 0
-            ctx.me match {
-              case Some(me) =>
-                env.finisher(opening, me, win) flatMap {
-                  case (newAttempt, None) =>
-                    UserRepo byId me.id map (_ | me) flatMap { me2 =>
-                      (
-                        env.api.opening find id
-                      ) zip (env userInfos me2.some) flatMap {
-                        case (o2, infos) =>
-                          makeData(
-                            o2 | opening,
-                            infos,
-                            false,
-                            newAttempt.some,
-                            none)
+        attemptForm
+          .bindFromRequest
+          .fold(
+            err => fuccess(BadRequest(errorsAsJson(err)) as JSON),
+            data => {
+              val (found, failed) = data
+              val win = found == opening.goal && failed == 0
+              ctx.me match {
+                case Some(me) =>
+                  env.finisher(opening, me, win) flatMap {
+                    case (newAttempt, None) =>
+                      UserRepo byId me.id map (_ | me) flatMap { me2 =>
+                        (
+                          env.api.opening find id
+                        ) zip (env userInfos me2.some) flatMap {
+                          case (o2, infos) =>
+                            makeData(
+                              o2 | opening,
+                              infos,
+                              false,
+                              newAttempt.some,
+                              none)
+                        }
                       }
-                    }
-                  case (oldAttempt, Some(win)) =>
-                    env userInfos me.some flatMap { infos =>
-                      makeData(opening, infos, false, oldAttempt.some, win.some)
-                    }
-                }
-              case None =>
-                makeData(opening, none, false, none, win.some)
+                    case (oldAttempt, Some(win)) =>
+                      env userInfos me.some flatMap { infos =>
+                        makeData(
+                          opening,
+                          infos,
+                          false,
+                          oldAttempt.some,
+                          win.some)
+                      }
+                  }
+                case None =>
+                  makeData(opening, none, false, none, win.some)
+              }
             }
-          }
-        )
+          )
       }
     }
 }

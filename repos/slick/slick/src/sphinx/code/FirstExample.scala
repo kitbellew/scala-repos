@@ -95,7 +95,8 @@ object FirstExample extends App {
         //#readall
         // Read all coffees and print them to the console
         println("Coffees:")
-        db.run(coffees.result)
+        db
+          .run(coffees.result)
           .map(
             _.foreach {
               case (name, supID, price, sales, total) =>
@@ -115,9 +116,10 @@ object FirstExample extends App {
         //#projection
         val q1 =
           for (c <- coffees)
-            yield LiteralColumn("  ") ++ c.name ++ "\t" ++ c.supID
-              .asColumnOf[String] ++
-              "\t" ++ c.price.asColumnOf[String] ++ "\t" ++ c.sales
+            yield LiteralColumn("  ") ++ c
+              .name ++ "\t" ++ c.supID.asColumnOf[String] ++
+              "\t" ++ c.price.asColumnOf[String] ++ "\t" ++ c
+              .sales
               .asColumnOf[String] ++
               "\t" ++ c.total.asColumnOf[String]
         // The first string constant needs to be lifted manually to a LiteralColumn
@@ -145,7 +147,8 @@ object FirstExample extends App {
         // Equivalent SQL code:
         // select c.COF_NAME, s.SUP_NAME from COFFEES c, SUPPLIERS s where c.PRICE < 9.0 and s.SUP_ID = c.SUP_ID
         //#join
-        db.run(q2.result)
+        db
+          .run(q2.result)
           .map(_.foreach(t => println("  " + t._1 + " supplied by " + t._2)))
 
       }
@@ -162,7 +165,8 @@ object FirstExample extends App {
         // select c.COF_NAME, s.SUP_NAME from COFFEES c, SUPPLIERS s where c.PRICE < 9.0 and s.SUP_ID = c.SUP_ID
         //#fkjoin
 
-        db.run(q3.result)
+        db
+          .run(q3.result)
           .map(
             _.foreach {
               case (s1, s2) =>

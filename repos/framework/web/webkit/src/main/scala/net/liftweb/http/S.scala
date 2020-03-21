@@ -672,8 +672,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see DispatchHolder
     */
   def highLevelSessionDispatchList: List[DispatchHolder] =
-    session map (_.highLevelSessionDispatcher.toList.map(t =>
-      DispatchHolder(t._1, t._2))) openOr Nil
+    session map (
+      _.highLevelSessionDispatcher
+      .toList
+      .map(t => DispatchHolder(t._1, t._2))) openOr Nil
 
   /**
     * Adds a dispatch function for the current session, as opposed to a global
@@ -863,9 +865,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def addComet(cometActor: LiftCometActor): Unit = {
     requestCometVersions.set(
-      requestCometVersions.is + CVP(
-        cometActor.uniqueId,
-        cometActor.lastRenderTime))
+      requestCometVersions
+        .is + CVP(cometActor.uniqueId, cometActor.lastRenderTime))
   }
 
   /**
@@ -887,11 +888,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       receiveUpdatesOnPage: Boolean = false): Box[LiftCometActor] = {
     for {
       session <- session ?~ "Comet lookup and creation requires a session."
-      cometActor <- session.findOrCreateComet(
-        cometType,
-        cometName,
-        cometHtml,
-        cometAttributes)
+      cometActor <- session
+        .findOrCreateComet(cometType, cometName, cometHtml, cometAttributes)
     } yield {
       if (receiveUpdatesOnPage)
         addComet(cometActor)
@@ -974,14 +972,19 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
     if (cometVersions.nonEmpty) {
       List(
-        js.JE
+        js
+          .JE
           .Call(
             "lift.registerComets",
-            js.JE.JsObj(
-              cometVersions.toList.map {
-                case CometVersionPair(guid, version) =>
-                  (guid, js.JE.Num(version))
-              }: _*),
+            js
+              .JE
+              .JsObj(
+                cometVersions
+                  .toList
+                  .map {
+                    case CometVersionPair(guid, version) =>
+                      (guid, js.JE.Num(version))
+                  }: _*),
             // Don't kick off a new comet request client-side if we're responding
             // to a comet request right now.
             !currentCometActor.isDefined
@@ -1001,11 +1004,14 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     import js.JsCmds._
 
     val globalJs = _globalJsToAppend.is.toList
-    val postPageJs = S.session.toList.flatMap { session =>
-      session.postPageJavaScript(
-        RenderVersion.get ::
-          currentCometActor.map(_.uniqueId).toList)
-    }
+    val postPageJs = S
+      .session
+      .toList
+      .flatMap { session =>
+        session.postPageJavaScript(
+          RenderVersion.get ::
+            currentCometActor.map(_.uniqueId).toList)
+      }
     val cometJs = commandsForComets
 
     val allJs =
@@ -1137,29 +1143,36 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       case Full(Nil) => {
         _resBundle.set(
           LiftRules.resourceForCurrentLoc.vend() :::
-            LiftRules.resourceNames.flatMap(name =>
-              tryo {
-                if (Props.devMode) {
-                  tryo {
-                    val clz = this.getClass.getClassLoader
-                      .loadClass("java.util.ResourceBundle")
-                    val meth =
-                      clz.getDeclaredMethods
-                        .filter { m =>
-                          m.getName == "clearCache" && m.getParameterTypes.length == 0
-                        }
-                        .toList
-                        .head
-                    meth.invoke(null)
+            LiftRules
+              .resourceNames
+              .flatMap(name =>
+                tryo {
+                  if (Props.devMode) {
+                    tryo {
+                      val clz = this
+                        .getClass
+                        .getClassLoader
+                        .loadClass("java.util.ResourceBundle")
+                      val meth =
+                        clz
+                          .getDeclaredMethods
+                          .filter { m =>
+                            m.getName == "clearCache" && m
+                              .getParameterTypes
+                              .length == 0
+                          }
+                          .toList
+                          .head
+                      meth.invoke(null)
+                    }
                   }
-                }
-                List(ResourceBundle.getBundle(name, loc))
-              }.openOr(
-                NamedPF
-                  .applyBox(
-                    (name, loc),
-                    LiftRules.resourceBundleFactories.toList)
-                  .map(List(_)) openOr Nil)))
+                  List(ResourceBundle.getBundle(name, loc))
+                }.openOr(
+                  NamedPF
+                    .applyBox(
+                      (name, loc),
+                      LiftRules.resourceBundleFactories.toList)
+                    .map(List(_)) openOr Nil)))
         _resBundle.value
       }
       case Full(bundles) =>
@@ -1238,12 +1251,14 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       String.format(
         locale,
         ?(str),
-        params.flatMap {
-          case s: AnyRef =>
-            List(s)
-          case _ =>
-            Nil
-        }.toArray: _*)
+        params
+          .flatMap {
+            case s: AnyRef =>
+              List(s)
+            case _ =>
+              Nil
+          }
+          .toArray: _*)
 
   private def ?!(str: String, resBundle: List[ResourceBundle]): String =
     resBundle
@@ -1342,9 +1357,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       logger.error("An error occurred while running error handlers", t)
       logger.error("Original error causing error handlers to be run", orig)
     } {
-      NamedPF.applyBox(
-        (Props.mode, req, orig),
-        LiftRules.exceptionHandler.toList);
+      NamedPF
+        .applyBox((Props.mode, req, orig), LiftRules.exceptionHandler.toList);
     } openOr Full(
       PlainTextResponse(
         "An error has occurred while processing an error using the functions in LiftRules.exceptionHandler. Check the log for details.",
@@ -1918,24 +1932,26 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
   private def _init[B](request: Box[Req], session: LiftSession)(
       f: () => B): B = {
-    this._request.doWith(request.openOr(null)) {
-      _sessionInfo.doWith(session) {
-        _responseHeaders.doWith(new ResponseInfoHolder) {
-          TransientRequestVarHandler(
-            Full(session),
-            RequestVarHandler(
+    this
+      ._request
+      .doWith(request.openOr(null)) {
+        _sessionInfo.doWith(session) {
+          _responseHeaders.doWith(new ResponseInfoHolder) {
+            TransientRequestVarHandler(
               Full(session),
-              _responseCookies.doWith(
-                CookieHolder(getCookies(containerRequest), Nil)) {
-                if (Props.devMode)
-                  LiftRules.siteMap // materialize the sitemap very early
-                _innerInit(request, f)
-              }
+              RequestVarHandler(
+                Full(session),
+                _responseCookies
+                  .doWith(CookieHolder(getCookies(containerRequest), Nil)) {
+                    if (Props.devMode)
+                      LiftRules.siteMap // materialize the sitemap very early
+                    _innerInit(request, f)
+                  }
+              )
             )
-          )
+          }
         }
       }
-    }
   }
 
   /**
@@ -2030,7 +2046,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def prefixedAttrsToMap(
       prefix: String,
       start: Map[String, String]): Map[String, String] =
-    attrs.reverse
+    attrs
+      .reverse
       .flatMap {
         case (Right((pre, name)), value) if pre == prefix =>
           List((name, value))
@@ -2395,12 +2412,14 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def withAttrs[T](attrs: MetaData)(f: => T): T = {
     val currentStack = _attrs.value._2
-    val newFrame = attrs.toList.map {
-      case pa: PrefixedAttribute =>
-        (Right(pa.pre, pa.key), pa.value.text)
-      case m =>
-        (Left(m.key), m.value.text)
-    }
+    val newFrame = attrs
+      .toList
+      .map {
+        case pa: PrefixedAttribute =>
+          (Right(pa.pre, pa.key), pa.value.text)
+        case m =>
+          (Left(m.key), m.value.text)
+      }
 
     _attrs.doWith((attrs, newFrame ::: currentStack))(f)
   }
@@ -2441,14 +2460,16 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     type Info = String
 
     protected def findAttr(key: String): Option[Info] =
-      currentAttrs.toList
+      currentAttrs
+        .toList
         .find {
           _.key == key
         }
         .map(_.value.text)
 
     protected def findAttr(prefix: String, key: String): Option[Info] =
-      currentAttrs.toList
+      currentAttrs
+        .toList
         .find {
           _.prefixedKey == (prefix + ":" + key)
         }
@@ -2922,7 +2943,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       .format(bump + num)
     // take the first 2 non-Lift/non-Scala stack frames for use as hash issue 174
     "f" + prefix + "_" + Helpers.hashHex(
-      (new Exception).getStackTrace.toList
+      (new Exception)
+        .getStackTrace
+        .toList
         .filter(notLiftOrScala)
         .take(2)
         .map(_.toString)
@@ -3022,7 +3045,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
             .openOr("") +
             "function " + key + "(obj) {lift.ajax(" +
             "'" + key + "='+ encodeURIComponent(" +
-            LiftRules.jsArtifacts
+            LiftRules
+              .jsArtifacts
               .jsonStringify(JE.JsRaw("obj"))
               .toJsCmd + "), null," + onErrorParam + ");}"))
     }
@@ -3345,7 +3369,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def idMessages(
       f: => List[(NodeSeq, Box[String])]): List[(String, List[NodeSeq])] = {
     val res = new HashMap[String, List[NodeSeq]]
-    f.filter(_._2.isEmpty == false)
+    f
+      .filter(_._2.isEmpty == false)
       .foreach(
         _ match {
           case (node, id) =>

@@ -225,11 +225,13 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
     actor.mailbox match {
       case mbox: CallingThreadMailbox ⇒
         val queue = mbox.queue
-        val switched = mbox.suspendSwitch.switchOff {
-          CallingThreadDispatcherQueues(actor.system)
-            .gatherFromAllOtherQueues(mbox, queue)
-          mbox.resume()
-        }
+        val switched = mbox
+          .suspendSwitch
+          .switchOff {
+            CallingThreadDispatcherQueues(actor.system)
+              .gatherFromAllOtherQueues(mbox, queue)
+            mbox.resume()
+          }
         if (switched)
           runQueue(mbox, queue)
       case m ⇒
@@ -254,13 +256,15 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
       case mbox: CallingThreadMailbox ⇒
         val queue = mbox.queue
         val execute =
-          mbox.suspendSwitch.fold {
-            queue.enqueue(receiver.self, handle)
-            false
-          } {
-            queue.enqueue(receiver.self, handle)
-            true
-          }
+          mbox
+            .suspendSwitch
+            .fold {
+              queue.enqueue(receiver.self, handle)
+              false
+            } {
+              queue.enqueue(receiver.self, handle)
+              true
+            }
         if (execute)
           runQueue(mbox, queue)
       case m ⇒
@@ -310,12 +314,14 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
       val recurse = {
         mbox.processAllSystemMessages()
         val handle =
-          mbox.suspendSwitch.fold[Envelope](null) {
-            if (mbox.isClosed)
-              null
-            else
-              queue.dequeue()
-          }
+          mbox
+            .suspendSwitch
+            .fold[Envelope](null) {
+              if (mbox.isClosed)
+                null
+              else
+                queue.dequeue()
+            }
         if (handle ne null) {
           try {
             if (Mailbox.debug)

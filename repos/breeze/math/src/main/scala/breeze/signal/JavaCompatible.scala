@@ -113,7 +113,8 @@ object JavaCompatible {
       sampleRate: Double,
       taps: Int): Array[Double] =
     dvDToArray(
-      breeze.signal
+      breeze
+        .signal
         .filterBP(arrayDToDv(data), (omegaLow, omegaHigh), sampleRate, taps))
 
   /**See [[filterBP]]
@@ -150,7 +151,8 @@ object JavaCompatible {
       sampleRate: Double,
       taps: Int): Array[Double] =
     dvDToArray(
-      breeze.signal
+      breeze
+        .signal
         .filterBS(arrayDToDv(data), (omegaLow, omegaHigh), sampleRate, taps))
 
   /**See [[filterBS]]

@@ -183,7 +183,8 @@ class HiveSparkSubmitSuite
   // NOTE: This is an expensive operation in terms of time (10 seconds+). Use sparingly.
   // This is copied from org.apache.spark.deploy.SparkSubmitSuite
   private def runSparkSubmit(args: Seq[String]): Unit = {
-    val sparkHome = sys.props
+    val sparkHome = sys
+      .props
       .getOrElse("spark.test.home", fail("spark.test.home is not set!"))
     val history = ArrayBuffer.empty[String]
     val commands = Seq("./bin/spark-submit") ++ args
@@ -273,7 +274,8 @@ object SparkSubmitClassLoaderTest extends Logging {
     }
     // Second, we load classes at the executor side.
     logInfo("Testing load classes at the executor side.")
-    val result = df.rdd
+    val result = df
+      .rdd
       .mapPartitions { x =>
         var exception: String = null
         try {
@@ -293,8 +295,8 @@ object SparkSubmitClassLoaderTest extends Logging {
 
     // Load a Hive UDF from the jar.
     logInfo("Registering temporary Hive UDF provided in a jar.")
-    hiveContext.sql(
-      """
+    hiveContext
+      .sql("""
         |CREATE TEMPORARY FUNCTION example_max
         |AS 'org.apache.hadoop.hive.contrib.udaf.example.UDAFExampleMax'
       """.stripMargin)
@@ -343,8 +345,9 @@ object SparkSQLConfTest extends Logging {
             conf == "spark.sql.hive.metastore.version" || conf == "spark.sql.hive.metastore.jars"
           }
           // If there is any metastore settings, remove them.
-          val filteredSettings = super.getAll.filterNot(e =>
-            isMetastoreSetting(e._1))
+          val filteredSettings = super
+            .getAll
+            .filterNot(e => isMetastoreSetting(e._1))
 
           // Always add these two metastore settings at the beginning.
           ("spark.sql.hive.metastore.version" -> "0.12") +:
@@ -391,7 +394,8 @@ object SPARK_9757 extends QueryTest {
         val df = hiveContext
           .range(10)
           .select(('id + 0.1) cast DecimalType(10, 3) as 'dec)
-        df.write
+        df
+          .write
           .option("path", dir.getCanonicalPath)
           .mode("overwrite")
           .saveAsTable("t")
@@ -405,7 +409,8 @@ object SPARK_9757 extends QueryTest {
             callUDF(
               "struct",
               ('id + 0.2) cast DecimalType(10, 3)) as 'dec_struct)
-        df.write
+        df
+          .write
           .option("path", dir.getCanonicalPath)
           .mode("overwrite")
           .saveAsTable("t")
@@ -438,9 +443,8 @@ object SPARK_11009 extends QueryTest {
 
     try {
       val df = sqlContext.range(1 << 20)
-      val df2 = df.select(
-        (df("id") % 1000).alias("A"),
-        (df("id") / 1000).alias("B"))
+      val df2 = df
+        .select((df("id") % 1000).alias("A"), (df("id") / 1000).alias("B"))
       val ws = Window.partitionBy(df2("A")).orderBy(df2("B"))
       val df3 = df2
         .select(df2("A"), df2("B"), row_number().over(ws).alias("rn"))

@@ -122,9 +122,9 @@ trait JdbcActionComponent extends SqlActionComponent {
     def withTransactionIsolation(
         ti: TransactionIsolation): DBIOAction[R, S, E] = {
       val isolated =
-        (new SetTransactionIsolation(ti.intValue)).flatMap(old =>
-          a.andFinally(new SetTransactionIsolation(old)))(
-          DBIO.sameThreadExecutionContext)
+        (new SetTransactionIsolation(ti.intValue))
+          .flatMap(old => a.andFinally(new SetTransactionIsolation(old)))(
+            DBIO.sameThreadExecutionContext)
       val fused =
         if (a.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]])
           SynchronousDatabaseAction.fuseUnsafe(isolated)
@@ -342,7 +342,8 @@ trait JdbcActionComponent extends SqlActionComponent {
               protected[this] def createInvoker(sql: Iterable[String]) =
                 createQueryInvoker(rsm, param, sql.head)
               protected[this] def createBuilder =
-                ct.cons
+                ct
+                  .cons
                   .createBuilder(ct.elementType.classTag)
                   .asInstanceOf[Builder[Any, R]]
               def statements = List(sql)
@@ -417,10 +418,12 @@ trait JdbcActionComponent extends SqlActionComponent {
         _) = tree
       new SimpleJdbcProfileAction[Int]("delete", Vector(sres.sql)) {
         def run(ctx: Backend#Context, sql: Vector[String]): Int =
-          ctx.session.withPreparedStatement(sql.head) { st =>
-            sres.setter(st, 1, param)
-            st.executeUpdate
-          }
+          ctx
+            .session
+            .withPreparedStatement(sql.head) { st =>
+              sres.setter(st, 1, param)
+              st.executeUpdate
+            }
       }
     }
   }
@@ -479,12 +482,14 @@ trait JdbcActionComponent extends SqlActionComponent {
     def update(value: T): ProfileAction[Int, NoStream, Effect.Write] = {
       new SimpleJdbcProfileAction[Int]("update", Vector(sres.sql)) {
         def run(ctx: Backend#Context, sql: Vector[String]): Int =
-          ctx.session.withPreparedStatement(sql.head) { st =>
-            st.clearParameters
-            converter.set(value, st)
-            sres.setter(st, converter.width + 1, param)
-            st.executeUpdate
-          }
+          ctx
+            .session
+            .withPreparedStatement(sql.head) { st =>
+              st.clearParameters
+              converter.set(value, st)
+              sres.setter(st, converter.width + 1, param)
+              st.executeUpdate
+            }
       }
     }
 
@@ -957,7 +962,8 @@ trait JdbcActionComponent extends SqlActionComponent {
         st: Statement,
         values: Iterable[U],
         updateCounts: Array[Int]) =
-      (values, buildKeysResult(st).buildColl[Vector](null, implicitly)).zipped
+      (values, buildKeysResult(st).buildColl[Vector](null, implicitly))
+        .zipped
         .map(mux)(collection.breakOut)
 
     protected def retQuery(st: Statement, updateCount: Int) =

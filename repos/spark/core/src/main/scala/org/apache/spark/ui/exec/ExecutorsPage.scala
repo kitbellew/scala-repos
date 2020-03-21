@@ -234,18 +234,20 @@ private[ui] class ExecutorsPage(
       if (logsExist) {
         <td>
             {
-          info.executorLogs.map {
-            case (logName, logUrl) =>
-              <div>
+          info
+            .executorLogs
+            .map {
+              case (logName, logUrl) =>
+                <div>
                   <a href={
-                logUrl
-              }>
+                  logUrl
+                }>
                     {
-                logName
-              }
+                  logName
+                }
                   </a>
                 </div>
-          }
+            }
         }
           </td>
       }
@@ -505,7 +507,8 @@ private[spark] object ExecutorsPage {
     val totalGCTime = listener.executorToJvmGCTime.getOrElse(execId, 0L)
     val totalInputBytes = listener.executorToInputBytes.getOrElse(execId, 0L)
     val totalShuffleRead = listener.executorToShuffleRead.getOrElse(execId, 0L)
-    val totalShuffleWrite = listener.executorToShuffleWrite
+    val totalShuffleWrite = listener
+      .executorToShuffleWrite
       .getOrElse(execId, 0L)
     val executorLogs = listener.executorToLogUrls.getOrElse(execId, Map.empty)
 

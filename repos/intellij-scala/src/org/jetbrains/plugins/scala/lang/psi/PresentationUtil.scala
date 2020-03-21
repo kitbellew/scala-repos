@@ -31,20 +31,20 @@ object PresentationUtil {
           if (clause.isImplicit)
             buffer.append("implicit ")
           buffer.append(
-            clause.parameters
+            clause
+              .parameters
               .map(presentationString(_, substitutor))
               .mkString(", "))
           buffer.append(")")
           buffer.toString()
         case param: ScParameter =>
-          ScalaDocumentationProvider.parseParameter(
-            param,
-            presentationString(_, substitutor))
+          ScalaDocumentationProvider
+            .parseParameter(param, presentationString(_, substitutor))
         case param: Parameter =>
           val builder = new StringBuilder
           builder.append(param.name)
-          builder.append(
-            ": " + presentationString(param.paramType, substitutor))
+          builder
+            .append(": " + presentationString(param.paramType, substitutor))
           if (param.isRepeated)
             builder.append("*")
           if (param.isDefault)
@@ -59,7 +59,8 @@ object PresentationUtil {
             ScType.create(tp, DecompilerUtil.obtainProject),
             substitutor)
         case tp: ScTypeParamClause =>
-          tp.typeParameters
+          tp
+            .typeParameters
             .map(t => presentationString(t, substitutor))
             .mkString("[", ", ", "]")
         case param: ScTypeParam =>
@@ -94,7 +95,8 @@ object PresentationUtil {
           //todo: possibly add supers and extends?
           paramText
         case params: PsiParameterList =>
-          params.getParameters
+          params
+            .getParameters
             .map(presentationString(_, substitutor))
             .mkString("(", ", ", ")")
         case param: PsiParameter =>
@@ -140,8 +142,8 @@ object PresentationUtil {
           buffer
             .append(presentationString(fun.paramClauses, substitutor))
             .append(": ")
-          buffer.append(
-            presentationString(fun.returnType.getOrAny, substitutor))
+          buffer
+            .append(presentationString(fun.returnType.getOrAny, substitutor))
           buffer.toString()
         case elem: PsiElement =>
           elem.getText

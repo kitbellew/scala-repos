@@ -55,8 +55,10 @@ class AppRepository(
     */
   def currentAppVersions(): Future[Map[PathId, Timestamp]] =
     for (as <- apps())
-      yield as.map { a =>
-        a.id -> a.version
-      }.toMap
+      yield as
+        .map { a =>
+          a.id -> a.version
+        }
+        .toMap
 
 }

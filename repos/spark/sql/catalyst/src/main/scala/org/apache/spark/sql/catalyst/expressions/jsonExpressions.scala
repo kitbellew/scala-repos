@@ -370,12 +370,14 @@ case class JsonTuple(children: Seq[Expression])
   // eagerly evaluate any foldable the field names
   @transient
   private lazy val foldableFieldNames: IndexedSeq[String] = {
-    fieldExpressions.map {
-      case expr if expr.foldable =>
-        expr.eval().asInstanceOf[UTF8String].toString
-      case _ =>
-        null
-    }.toIndexedSeq
+    fieldExpressions
+      .map {
+        case expr if expr.foldable =>
+          expr.eval().asInstanceOf[UTF8String].toString
+        case _ =>
+          null
+      }
+      .toIndexedSeq
   }
 
   // and count the number of foldable fields, we'll use this later to optimize evaluation
@@ -383,19 +385,21 @@ case class JsonTuple(children: Seq[Expression])
   private lazy val constantFields: Int = foldableFieldNames.count(_ != null)
 
   override def elementTypes: Seq[(DataType, Boolean, String)] =
-    fieldExpressions.zipWithIndex.map {
-      case (_, idx) =>
-        (StringType, true, s"c$idx")
-    }
+    fieldExpressions
+      .zipWithIndex
+      .map {
+        case (_, idx) =>
+          (StringType, true, s"c$idx")
+      }
 
   override def prettyName: String = "json_tuple"
 
   override def checkInputDataTypes(): TypeCheckResult = {
     if (children.length < 2) {
-      TypeCheckResult.TypeCheckFailure(
-        s"$prettyName requires at least two arguments")
-    } else if (children.forall(child =>
-                 StringType.acceptsType(child.dataType))) {
+      TypeCheckResult
+        .TypeCheckFailure(s"$prettyName requires at least two arguments")
+    } else if (children
+                 .forall(child => StringType.acceptsType(child.dataType))) {
       TypeCheckResult.TypeCheckSuccess
     } else {
       TypeCheckResult.TypeCheckFailure(
@@ -440,12 +444,14 @@ case class JsonTuple(children: Seq[Expression])
       } else {
         // if there is a mix of constant and non-constant expressions
         // prefer the cached copy when available
-        foldableFieldNames.zip(fieldExpressions).map {
-          case (null, expr) =>
-            expr.eval(input).asInstanceOf[UTF8String].toString
-          case (fieldName, _) =>
-            fieldName
-        }
+        foldableFieldNames
+          .zip(fieldExpressions)
+          .map {
+            case (null, expr) =>
+              expr.eval(input).asInstanceOf[UTF8String].toString
+            case (fieldName, _) =>
+              fieldName
+          }
       }
 
     val row = Array.ofDim[Any](fieldNames.length)

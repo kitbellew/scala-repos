@@ -180,11 +180,8 @@ object Reflector {
           case v: TypeVariable[_] =>
             val a = owner.typeVars.getOrElse(v, scalaTypeOf(v))
             if (a.erasure == classOf[java.lang.Object]) {
-              val r = ScalaSigReader.readConstructor(
-                name,
-                owner,
-                index,
-                ctorParameterNames)
+              val r = ScalaSigReader
+                .readConstructor(name, owner, index, ctorParameterNames)
               scalaTypeOf(r)
             } else
               a
@@ -225,8 +222,9 @@ object Reflector {
       def constructors: Seq[ConstructorDescriptor] = {
         tpe.erasure.getConstructors.toSeq map { ctor =>
           val ctorParameterNames =
-            if (Modifier.isPublic(
-                  ctor.getModifiers) && ctor.getParameterTypes.length > 0)
+            if (Modifier.isPublic(ctor.getModifiers) && ctor
+                  .getParameterTypes
+                  .length > 0)
               allCatch opt {
                 paramNameReader.lookupParameterNames(ctor)
               } getOrElse Nil
@@ -269,9 +267,9 @@ object Reflector {
   def defaultValue(compClass: Class[_], compObj: AnyRef, argIndex: Int) = {
     allCatch.withApply(_ => None) {
       Option(
-        compClass.getMethod(
-          "%s$%d".format(ConstructorDefault, argIndex + 1))) map { meth => () =>
-        meth.invoke(compObj)
+        compClass
+          .getMethod("%s$%d".format(ConstructorDefault, argIndex + 1))) map {
+        meth => () => meth.invoke(compObj)
       }
     }
   }

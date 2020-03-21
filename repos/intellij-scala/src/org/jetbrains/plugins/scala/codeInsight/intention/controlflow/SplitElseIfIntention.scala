@@ -26,10 +26,8 @@ class SplitElseIfIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScIfStmt],
-      false)
+    val ifStmt: ScIfStmt = PsiTreeUtil
+      .getParentOfType(element, classOf[ScIfStmt], false)
     if (ifStmt == null)
       return false
 
@@ -40,7 +38,9 @@ class SplitElseIfIntention extends PsiElementBaseIntentionAction {
       return false
 
     if (!(
-          thenBranch.getTextRange.getEndOffset <= offset && offset <= elseBranch.getTextRange.getStartOffset
+          thenBranch.getTextRange.getEndOffset <= offset && offset <= elseBranch
+            .getTextRange
+            .getStartOffset
         ))
       return false
 
@@ -53,22 +53,27 @@ class SplitElseIfIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScIfStmt],
-      false)
+    val ifStmt: ScIfStmt = PsiTreeUtil
+      .getParentOfType(element, classOf[ScIfStmt], false)
     if (ifStmt == null || !ifStmt.isValid)
       return
 
     val start = ifStmt.getTextRange.getStartOffset
-    val startIndex =
-      ifStmt.thenBranch.get.getTextRange.getEndOffset - ifStmt.getTextRange.getStartOffset
-    val endIndex =
-      ifStmt.elseBranch.get.getTextRange.getStartOffset - ifStmt.getTextRange.getStartOffset
-    val elseIndex =
-      ifStmt.getText.substring(startIndex, endIndex).indexOf("else") - 1
-    val diff =
-      editor.getCaretModel.getOffset - ifStmt.thenBranch.get.getTextRange.getEndOffset - elseIndex
+    val startIndex = ifStmt.thenBranch.get.getTextRange.getEndOffset - ifStmt
+      .getTextRange
+      .getStartOffset
+    val endIndex = ifStmt.elseBranch.get.getTextRange.getStartOffset - ifStmt
+      .getTextRange
+      .getStartOffset
+    val elseIndex = ifStmt
+      .getText
+      .substring(startIndex, endIndex)
+      .indexOf("else") - 1
+    val diff = editor.getCaretModel.getOffset - ifStmt
+      .thenBranch
+      .get
+      .getTextRange
+      .getEndOffset - elseIndex
 
     val expr = new StringBuilder
     expr

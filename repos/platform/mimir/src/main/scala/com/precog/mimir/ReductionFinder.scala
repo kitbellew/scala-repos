@@ -72,8 +72,8 @@ trait ReductionFinderModule[M[+_]]
         node
           .foldDown[List[dag.Reduce]](true) {
             case r: dag.Reduce =>
-            List(r)
-        } distinct
+              List(r)
+          } distinct
 
       val info: List[ReduceInfo] = reduces map {
         buildReduceInfo(_: dag.Reduce, ctx)
@@ -166,8 +166,9 @@ trait ReductionFinderModule[M[+_]]
               result
             }
 
-            val firstIndex =
-              st.parentsByAncestor(ancestor).reverse indexOf parent
+            val firstIndex = st
+              .parentsByAncestor(ancestor)
+              .reverse indexOf parent
             val secondIndex = st.reducesByParent(parent).reverse indexOf graph
 
             dag.Join(

@@ -13,12 +13,16 @@ object ForumPost extends LilaController with ForumController {
   def search(text: String, page: Int) =
     OpenBody { implicit ctx =>
       NotForKids {
-        text.trim.isEmpty.fold(
-          Redirect(routes.ForumCateg.index).fuccess,
-          Env.forumSearch(text, page, isGranted(_.StaffForum), ctx.troll) map {
-            paginator => html.forum.search(text, paginator)
-          }
-        )
+        text
+          .trim
+          .isEmpty
+          .fold(
+            Redirect(routes.ForumCateg.index).fuccess,
+            Env
+              .forumSearch(text, page, isGranted(_.StaffForum), ctx.troll) map {
+              paginator => html.forum.search(text, paginator)
+            }
+          )
       }
     }
 
@@ -41,25 +45,32 @@ object ForumPost extends LilaController with ForumController {
               if (topic.closed)
                 fuccess(BadRequest("This topic is closed"))
               else
-                forms.post.bindFromRequest.fold(
-                  err =>
-                    forms.anyCaptcha flatMap { captcha =>
-                      ctx.userId ?? Env.timeline.status(
-                        s"forum:${topic.id}") map { unsub =>
-                        BadRequest(
-                          html.forum.topic.show(
-                            categ,
-                            topic,
-                            posts,
-                            Some(err -> captcha),
-                            unsub))
+                forms
+                  .post
+                  .bindFromRequest
+                  .fold(
+                    err =>
+                      forms.anyCaptcha flatMap { captcha =>
+                        ctx.userId ?? Env
+                          .timeline
+                          .status(s"forum:${topic.id}") map { unsub =>
+                          BadRequest(
+                            html
+                              .forum
+                              .topic
+                              .show(
+                                categ,
+                                topic,
+                                posts,
+                                Some(err -> captcha),
+                                unsub))
+                        }
+                      },
+                    data =>
+                      postApi.makePost(categ, topic, data) map { post =>
+                        Redirect(routes.ForumPost.redirect(post.id))
                       }
-                    },
-                  data =>
-                    postApi.makePost(categ, topic, data) map { post =>
-                      Redirect(routes.ForumPost.redirect(post.id))
-                    }
-                )
+                  )
           }
         }
       }

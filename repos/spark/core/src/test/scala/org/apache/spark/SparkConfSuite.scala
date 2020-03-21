@@ -51,7 +51,8 @@ class SparkConfSuite
     assert(
       conf.getTimeAsMs("fake", "1ms") === TimeUnit.MILLISECONDS.toMillis(1))
     assert(
-      conf.getTimeAsSeconds("fake", "1000ms") === TimeUnit.MILLISECONDS
+      conf.getTimeAsSeconds("fake", "1000ms") === TimeUnit
+        .MILLISECONDS
         .toSeconds(1000))
   }
 
@@ -202,14 +203,14 @@ class SparkConfSuite
     conf.registerKryoClasses(Array(classOf[Class3]))
     assert(
       conf.get("spark.kryo.classesToRegister") ===
-        classOf[Class1].getName + "," + classOf[Class2].getName + "," + classOf[
-          Class3].getName)
+        classOf[Class1].getName + "," + classOf[Class2]
+          .getName + "," + classOf[Class3].getName)
 
     conf.registerKryoClasses(Array(classOf[Class2]))
     assert(
       conf.get("spark.kryo.classesToRegister") ===
-        classOf[Class1].getName + "," + classOf[Class2].getName + "," + classOf[
-          Class3].getName)
+        classOf[Class1].getName + "," + classOf[Class2]
+          .getName + "," + classOf[Class3].getName)
 
     // Kryo doesn't expose a way to discover registered classes, but at least make sure this doesn't
     // blow up.
@@ -264,10 +265,12 @@ class SparkConfSuite
     conf.set(newName, "4")
     assert(conf.get(newName) === "4")
 
-    val count = conf.getAll.count {
-      case (k, v) =>
-        k.startsWith("spark.history.")
-    }
+    val count = conf
+      .getAll
+      .count {
+        case (k, v) =>
+          k.startsWith("spark.history.")
+      }
     assert(count === 4)
 
     conf.set("spark.yarn.applicationMaster.waitTries", "42")

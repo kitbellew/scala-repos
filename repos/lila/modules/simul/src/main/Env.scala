@@ -84,7 +84,8 @@ final class Env(
     Props(
       new Actor {
         override def preStart() {
-          system.lilaBus
+          system
+            .lilaBus
             .subscribe(self, 'finishGame, 'adjustCheater, 'moveEvent)
         }
         import akka.pattern.pipe
@@ -98,10 +99,15 @@ final class Env(
           case move: lila.hub.actorApi.round.MoveEvent =>
             move.simulId foreach { simulId =>
               move.opponentUserId foreach { opId =>
-                hub.actor.userRegister ! lila.hub.actorApi.SendTo(
-                  opId,
-                  lila.socket.Socket
-                    .makeMessage("simulPlayerMove", move.gameId))
+                hub.actor.userRegister ! lila
+                  .hub
+                  .actorApi
+                  .SendTo(
+                    opId,
+                    lila
+                      .socket
+                      .Socket
+                      .makeMessage("simulPlayerMove", move.gameId))
               }
             }
         }
@@ -112,10 +118,14 @@ final class Env(
   def isHosting(userId: String): Fu[Boolean] =
     api.currentHostIds map (_ contains userId)
 
-  val allCreated = lila.memo.AsyncCache
+  val allCreated = lila
+    .memo
+    .AsyncCache
     .single(repo.allCreated, timeToLive = CreatedCacheTtl)
 
-  val allCreatedFeaturable = lila.memo.AsyncCache
+  val allCreatedFeaturable = lila
+    .memo
+    .AsyncCache
     .single(repo.allCreatedFeaturable, timeToLive = CreatedCacheTtl)
 
   def version(tourId: String): Fu[Int] =

@@ -45,7 +45,9 @@ case class ScCompoundType(
           rtDepth
     } ++ typesMap.map {
       case (s: String, sign: TypeAliasSignature) =>
-        val boundsDepth = sign.lowerBound.typeDepth
+        val boundsDepth = sign
+          .lowerBound
+          .typeDepth
           .max(sign.upperBound.typeDepth)
         if (sign.typeParams.nonEmpty) {
           (ScType.typeParamsDepth(sign.typeParams.toArray) + 1).max(boundsDepth)
@@ -78,8 +80,9 @@ case class ScCompoundType(
               tp.ptp)
           }
 
-          val pTypes: List[Seq[() => ScType]] = s.substitutedTypes.map(
-            _.map(f => () => f().removeAbstracts))
+          val pTypes: List[Seq[() => ScType]] = s
+            .substitutedTypes
+            .map(_.map(f => () => f().removeAbstracts))
           val tParams: Array[TypeParameter] =
             if (s.typeParams.length == 0)
               TypeParameter.EMPTY_ARRAY
@@ -149,8 +152,10 @@ case class ScCompoundType(
           components.map(_.recursiveUpdate(update, visited + this)),
           signatureMap.map {
             case (s: Signature, tp) =>
-              val pTypes: List[Seq[() => ScType]] = s.substitutedTypes.map(
-                _.map(f => () => f().recursiveUpdate(update, visited + this)))
+              val pTypes: List[Seq[() => ScType]] = s
+                .substitutedTypes
+                .map(
+                  _.map(f => () => f().recursiveUpdate(update, visited + this)))
               val tParams: Array[TypeParameter] =
                 if (s.typeParams.length == 0)
                   TypeParameter.EMPTY_ARRAY
@@ -225,13 +230,15 @@ case class ScCompoundType(
               (
                 new Signature(
                   s.name,
-                  s.substitutedTypes.map(
-                    _.map(f =>
-                      () =>
-                        f().recursiveVarianceUpdateModifiable(
-                          newData,
-                          update,
-                          1))),
+                  s
+                    .substitutedTypes
+                    .map(
+                      _.map(f =>
+                        () =>
+                          f().recursiveVarianceUpdateModifiable(
+                            newData,
+                            update,
+                            1))),
                   s.paramLength,
                   tParams,
                   ScSubstitutor.empty,

@@ -339,33 +339,35 @@ trait Holes {
     }
     // Returns a list of vals that will defined required unlifters
     def preamble(): List[Tree] =
-      records.zipWithIndex.map {
-        case ((tpe, rank), idx) =>
-          val name = TermName(nme.QUASIQUOTE_UNLIFT_HELPER + idx)
-          val helperName =
-            rank match {
-              case DotDot =>
-                nme.UnliftListElementwise
-              case DotDotDot =>
-                nme.UnliftListOfListsElementwise
-            }
-          val lifter = inferUnliftable(tpe)
-          assert(helperName.isTermName)
-          // q"val $name: $u.internal.reificationSupport.${helperName.toTypeName} = $u.internal.reificationSupport.$helperName($lifter)"
-          ValDef(
-            NoMods,
-            name,
-            AppliedTypeTree(
-              Select(
-                Select(Select(u, nme.internal), nme.reificationSupport),
-                helperName.toTypeName),
-              List(TypeTree(tpe))),
-            Apply(
-              Select(
-                Select(Select(u, nme.internal), nme.reificationSupport),
-                helperName),
-              lifter :: Nil)
-          )
-      }
+      records
+        .zipWithIndex
+        .map {
+          case ((tpe, rank), idx) =>
+            val name = TermName(nme.QUASIQUOTE_UNLIFT_HELPER + idx)
+            val helperName =
+              rank match {
+                case DotDot =>
+                  nme.UnliftListElementwise
+                case DotDotDot =>
+                  nme.UnliftListOfListsElementwise
+              }
+            val lifter = inferUnliftable(tpe)
+            assert(helperName.isTermName)
+            // q"val $name: $u.internal.reificationSupport.${helperName.toTypeName} = $u.internal.reificationSupport.$helperName($lifter)"
+            ValDef(
+              NoMods,
+              name,
+              AppliedTypeTree(
+                Select(
+                  Select(Select(u, nme.internal), nme.reificationSupport),
+                  helperName.toTypeName),
+                List(TypeTree(tpe))),
+              Apply(
+                Select(
+                  Select(Select(u, nme.internal), nme.reificationSupport),
+                  helperName),
+                lifter :: Nil)
+            )
+        }
   }
 }

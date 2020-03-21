@@ -94,7 +94,8 @@ abstract class Expression extends TreeNode[Expression] {
     * @return [[ExprCode]]
     */
   def gen(ctx: CodegenContext): ExprCode = {
-    ctx.subExprEliminationExprs
+    ctx
+      .subExprEliminationExprs
       .get(this)
       .map { subExprState =>
         // This expression is repeated meaning the code to evaluated has already been added
@@ -135,8 +136,8 @@ abstract class Expression extends TreeNode[Expression] {
     * Implementations of expressions should override this if the resolution of this type of
     * expression involves more than just the resolution of its children and type checking.
     */
-  lazy val resolved: Boolean =
-    childrenResolved && checkInputDataTypes().isSuccess
+  lazy val resolved: Boolean = childrenResolved && checkInputDataTypes()
+    .isSuccess
 
   /**
     * Returns the [[DataType]] of the result of evaluating this expression.  It is
@@ -598,14 +599,13 @@ abstract class TernaryExpression extends Expression {
       val nullSafeEval =
         leftGen.code + ctx.nullSafeExec(children(0).nullable, leftGen.isNull) {
           midGen.code + ctx.nullSafeExec(children(1).nullable, midGen.isNull) {
-            rightGen.code + ctx.nullSafeExec(
-              children(2).nullable,
-              rightGen.isNull) {
-              s"""
+            rightGen.code + ctx
+              .nullSafeExec(children(2).nullable, rightGen.isNull) {
+                s"""
                 ${ev.isNull} = false; // resultCode could change nullability.
                 $resultCode
               """
-            }
+              }
           }
         }
 

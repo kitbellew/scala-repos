@@ -403,21 +403,23 @@ private[sql] case class ScalaUDAF(
     aggBufferAttributes.map(_.newInstance())
 
   private[this] lazy val childrenSchema: StructType = {
-    val inputFields = children.zipWithIndex.map {
-      case (child, index) =>
-        StructField(
-          s"input$index",
-          child.dataType,
-          child.nullable,
-          Metadata.empty)
-    }
+    val inputFields = children
+      .zipWithIndex
+      .map {
+        case (child, index) =>
+          StructField(
+            s"input$index",
+            child.dataType,
+            child.nullable,
+            Metadata.empty)
+      }
     StructType(inputFields)
   }
 
   private lazy val inputProjection = {
     val inputAttributes = childrenSchema.toAttributes
-    log.debug(
-      s"Creating MutableProj: $children, inputSchema: $inputAttributes.")
+    log
+      .debug(s"Creating MutableProj: $children, inputSchema: $inputAttributes.")
     GenerateMutableProjection.generate(children, inputAttributes)()
   }
 
@@ -425,15 +427,19 @@ private[sql] case class ScalaUDAF(
     CatalystTypeConverters.createToScalaConverter(childrenSchema)
 
   private[this] lazy val bufferValuesToCatalystConverters: Array[Any => Any] = {
-    aggBufferSchema.fields.map { field =>
-      CatalystTypeConverters.createToCatalystConverter(field.dataType)
-    }
+    aggBufferSchema
+      .fields
+      .map { field =>
+        CatalystTypeConverters.createToCatalystConverter(field.dataType)
+      }
   }
 
   private[this] lazy val bufferValuesToScalaConverters: Array[Any => Any] = {
-    aggBufferSchema.fields.map { field =>
-      CatalystTypeConverters.createToScalaConverter(field.dataType)
-    }
+    aggBufferSchema
+      .fields
+      .map { field =>
+        CatalystTypeConverters.createToScalaConverter(field.dataType)
+      }
   }
 
   private[this] lazy val outputToCatalystConverter: Any => Any = {

@@ -105,9 +105,9 @@ class FlowExpandSpec extends AkkaSpec {
           .expand(Iterator.continually(_))
           .runFold(Set.empty[Int])(_ + _)
 
-      Await.result(future, 10.seconds) should contain theSameElementsAs (
-        1 to 100
-      ).toSet
+      Await
+        .result(future, 10.seconds) should contain theSameElementsAs (1 to 100)
+        .toSet
     }
 
     "backpressure publisher when subscriber is slower" in {
@@ -156,18 +156,10 @@ class FlowExpandSpec extends AkkaSpec {
         .expand(i ⇒ Iterator.from(0).map(i -> _).take(3))
         .toMat(TestSink.probe)(Keep.both)
         .run()
-      source
-        .sendNext(1)
-      sink
-        .request(4)
-        .expectNext(1 -> 0, 1 -> 1, 1 -> 2)
-        .expectNoMsg(100.millis)
-      source
-        .sendNext(2)
-        .sendComplete()
-      sink
-        .expectNext(2 -> 0)
-        .expectComplete()
+      source.sendNext(1)
+      sink.request(4).expectNext(1 -> 0, 1 -> 1, 1 -> 2).expectNoMsg(100.millis)
+      source.sendNext(2).sendComplete()
+      sink.expectNext(2 -> 0).expectComplete()
     }
   }
 

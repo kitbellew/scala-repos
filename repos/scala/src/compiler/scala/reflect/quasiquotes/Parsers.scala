@@ -237,7 +237,8 @@ trait Parsers {
             in.nextToken()
             annot :: readAnnots(annot)
           case _ if isHole && lookingAhead {
-                isAnnotation || isModifier || isDefIntro || isIdent || isStatSep || in.token == LPAREN
+                isAnnotation || isModifier || isDefIntro || isIdent || isStatSep || in
+                  .token == LPAREN
               } =>
             val ann = ModsPlaceholder(in.name)
             in.nextToken()
@@ -273,12 +274,14 @@ trait Parsers {
         )
 
       override def topStat =
-        super.topStat.orElse {
-          case _ if isHole =>
-            val stats = PackageStatPlaceholder(in.name) :: Nil
-            in.nextToken()
-            stats
-        }
+        super
+          .topStat
+          .orElse {
+            case _ if isHole =>
+              val stats = PackageStatPlaceholder(in.name) :: Nil
+              in.nextToken()
+              stats
+          }
 
       override def enumerator(isFirst: Boolean, allowNestedIf: Boolean = true) =
         if (isHole && lookingAhead {

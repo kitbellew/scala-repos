@@ -110,10 +110,9 @@ class OneHotEncoderSuite
   }
 
   test("input column with ML attribute") {
-    val attr = NominalAttribute.defaultAttr.withValues(
-      "small",
-      "medium",
-      "large")
+    val attr = NominalAttribute
+      .defaultAttr
+      .withValues("small", "medium", "large")
     val df = sqlContext
       .createDataFrame(Seq(0.0, 1.0, 2.0, 1.0).map(Tuple1.apply))
       .toDF("size")
@@ -125,11 +124,13 @@ class OneHotEncoderSuite
     val group = AttributeGroup.fromStructField(output.schema("encoded"))
     assert(group.size === 2)
     assert(
-      group.getAttr(0) === BinaryAttribute.defaultAttr
+      group.getAttr(0) === BinaryAttribute
+        .defaultAttr
         .withName("small")
         .withIndex(0))
     assert(
-      group.getAttr(1) === BinaryAttribute.defaultAttr
+      group.getAttr(1) === BinaryAttribute
+        .defaultAttr
         .withName("medium")
         .withIndex(1))
   }

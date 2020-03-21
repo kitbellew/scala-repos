@@ -188,15 +188,17 @@ class ScribeHandlerTest extends WordSpec with BeforeAndAfter with Eventually {
 
       // Set up a rejectedExecutionHandler to count number of rejected tasks.
       val rejected = new AtomicInteger(0)
-      scribe.flusher.setRejectedExecutionHandler(
-        new RejectedExecutionHandler {
-          val inner = scribe.flusher.getRejectedExecutionHandler()
-          def rejectedExecution(r: Runnable, executor: ThreadPoolExecutor)
-              : Unit = {
-            rejected.getAndIncrement()
-            inner.rejectedExecution(r, executor)
-          }
-        })
+      scribe
+        .flusher
+        .setRejectedExecutionHandler(
+          new RejectedExecutionHandler {
+            val inner = scribe.flusher.getRejectedExecutionHandler()
+            def rejectedExecution(r: Runnable, executor: ThreadPoolExecutor)
+                : Unit = {
+              rejected.getAndIncrement()
+              inner.rejectedExecution(r, executor)
+            }
+          })
 
       // crude form to allow all 100 submission and get predictable dropping of tasks
       scribe.synchronized {

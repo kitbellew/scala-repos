@@ -137,74 +137,86 @@ class RatioBasedReducerEstimatorTest
 
   "Single-step job with ratio-based reducer estimator" should {
     "not set reducers when no history is found" in {
-      val customConfig =
-        Config.empty.addReducerEstimator(classOf[EmptyHistoryBasedEstimator]) +
-          (InputSizeReducerEstimator.BytesPerReducer -> "1k") +
-          (RatioBasedEstimator.inputRatioThresholdKey -> 0.10f.toString)
+      val customConfig = Config
+        .empty
+        .addReducerEstimator(classOf[EmptyHistoryBasedEstimator]) +
+        (InputSizeReducerEstimator.BytesPerReducer -> "1k") +
+        (RatioBasedEstimator.inputRatioThresholdKey -> 0.10f.toString)
 
       HadoopPlatformJobTest(
         new SimpleJobWithNoSetReducers(_, customConfig),
-        cluster).inspectCompletedFlow { flow =>
-        val steps = flow.getFlowSteps.asScala
-        steps should have size 1
+        cluster)
+        .inspectCompletedFlow { flow =>
+          val steps = flow.getFlowSteps.asScala
+          steps should have size 1
 
-        val conf = steps.head.getConfig
-        conf.getNumReduceTasks should equal(1) // default
-      }.run
+          val conf = steps.head.getConfig
+          conf.getNumReduceTasks should equal(1) // default
+        }
+        .run
     }
 
     "not set reducers when error fetching history" in {
-      val customConfig =
-        Config.empty.addReducerEstimator(classOf[ErrorHistoryBasedEstimator]) +
-          (InputSizeReducerEstimator.BytesPerReducer -> "1k") +
-          (RatioBasedEstimator.inputRatioThresholdKey -> 0.10f.toString)
+      val customConfig = Config
+        .empty
+        .addReducerEstimator(classOf[ErrorHistoryBasedEstimator]) +
+        (InputSizeReducerEstimator.BytesPerReducer -> "1k") +
+        (RatioBasedEstimator.inputRatioThresholdKey -> 0.10f.toString)
 
       HadoopPlatformJobTest(
         new SimpleJobWithNoSetReducers(_, customConfig),
-        cluster).inspectCompletedFlow { flow =>
-        val steps = flow.getFlowSteps.asScala
-        steps should have size 1
+        cluster)
+        .inspectCompletedFlow { flow =>
+          val steps = flow.getFlowSteps.asScala
+          steps should have size 1
 
-        val conf = steps.head.getConfig
-        conf.getNumReduceTasks should equal(1) // default
-      }.run
+          val conf = steps.head.getConfig
+          conf.getNumReduceTasks should equal(1) // default
+        }
+        .run
     }
 
     "set reducers correctly when there is valid history" in {
-      val customConfig = Config.empty
+      val customConfig = Config
+        .empty
         .addReducerEstimator(classOf[ValidHistoryBasedEstimator]) +
         (InputSizeReducerEstimator.BytesPerReducer -> "1k") +
         (RatioBasedEstimator.inputRatioThresholdKey -> 0.10f.toString)
 
       HadoopPlatformJobTest(
         new SimpleJobWithNoSetReducers(_, customConfig),
-        cluster).inspectCompletedFlow { flow =>
-        val steps = flow.getFlowSteps.asScala
-        steps should have size 1
+        cluster)
+        .inspectCompletedFlow { flow =>
+          val steps = flow.getFlowSteps.asScala
+          steps should have size 1
 
-        // base estimate from input size reducer = 3
-        // reducer ratio from history = 0.5
-        // final estimate = ceil(3 * 0.5) = 2
-        val conf = steps.head.getConfig
-        conf.getNumReduceTasks should equal(2)
-      }.run
+          // base estimate from input size reducer = 3
+          // reducer ratio from history = 0.5
+          // final estimate = ceil(3 * 0.5) = 2
+          val conf = steps.head.getConfig
+          conf.getNumReduceTasks should equal(2)
+        }
+        .run
     }
 
     "not set reducers when there is no valid history" in {
-      val customConfig = Config.empty.addReducerEstimator(
-        classOf[InvalidHistoryBasedEstimator]) +
+      val customConfig = Config
+        .empty
+        .addReducerEstimator(classOf[InvalidHistoryBasedEstimator]) +
         (InputSizeReducerEstimator.BytesPerReducer -> "1k") +
         (RatioBasedEstimator.inputRatioThresholdKey -> 0.10f.toString)
 
       HadoopPlatformJobTest(
         new SimpleJobWithNoSetReducers(_, customConfig),
-        cluster).inspectCompletedFlow { flow =>
-        val steps = flow.getFlowSteps.asScala
-        steps should have size 1
+        cluster)
+        .inspectCompletedFlow { flow =>
+          val steps = flow.getFlowSteps.asScala
+          steps should have size 1
 
-        val conf = steps.head.getConfig
-        conf.getNumReduceTasks should equal(1) // default
-      }.run
+          val conf = steps.head.getConfig
+          conf.getNumReduceTasks should equal(1) // default
+        }
+        .run
     }
   }
 }

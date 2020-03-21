@@ -84,9 +84,7 @@ class FlowWatchTerminationSpec extends AkkaSpec {
       sourceProbe.sendComplete()
       expectMsg(Done)
 
-      sinkProbe
-        .expectNextN(2 to 5)
-        .expectComplete()
+      sinkProbe.expectNextN(2 to 5).expectComplete()
     }
 
   }

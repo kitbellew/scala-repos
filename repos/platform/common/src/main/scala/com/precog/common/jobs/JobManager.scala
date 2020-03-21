@@ -289,8 +289,8 @@ trait JobStateManager[M[+_]] {
         Right(Aborted(reason, abortedAt, prev))
       case badState =>
         Left(
-          "Job already in terminal state. %s" format JobState.describe(
-            badState))
+          "Job already in terminal state. %s" format JobState
+            .describe(badState))
     }
 
   def finish(
@@ -301,8 +301,8 @@ trait JobStateManager[M[+_]] {
         Right(Finished(finishedAt, prev))
       case badState =>
         Left(
-          "Job already in terminal state. %s" format JobState.describe(
-            badState))
+          "Job already in terminal state. %s" format JobState
+            .describe(badState))
     }
 
   def expire(
@@ -313,8 +313,8 @@ trait JobStateManager[M[+_]] {
         Right(Expired(expiredAt, prev))
       case badState =>
         Left(
-          "Job already in terminal state. %s" format JobState.describe(
-            badState))
+          "Job already in terminal state. %s" format JobState
+            .describe(badState))
     }
 }
 

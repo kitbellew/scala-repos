@@ -64,9 +64,8 @@ package object hypothesis {
      * statistically significant difference between the probabilities of success
      * between control and a variant.
      */
-    val meanP = (successControl + successVariant).toDouble / (
-      trialsControl + trialsVariant
-    ).toDouble
+    val meanP = (successControl + successVariant)
+      .toDouble / (trialsControl + trialsVariant).toDouble
     val chi2 =
       (chiSquaredTerm(meanP * trialsControl, successControl) + chiSquaredTerm(
         (1 - meanP) * trialsControl,

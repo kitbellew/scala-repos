@@ -210,11 +210,8 @@ private[engine] final class HttpHeaderParser private (
       cursor: Int = valueStart,
       nodeIx: Int = branch.branchRootNodeIx): Int = {
     def parseAndInsertHeader() = {
-      val (header, endIx) = branch.parser(
-        this,
-        input,
-        valueStart,
-        onIllegalHeader)
+      val (header, endIx) = branch
+        .parser(this, input, valueStart, onIllegalHeader)
       if (branch.spaceLeft)
         try {
           insert(input, header)(cursor, endIx, nodeIx, colonIx = 0)
@@ -613,13 +610,15 @@ private[http] object HttpHeaderParser {
 
   def prime(parser: HttpHeaderParser): HttpHeaderParser = {
     val valueParsers: Seq[HeaderValueParser] =
-      HeaderParser.ruleNames.map { name ⇒
-        new ModeledHeaderValueParser(
-          name,
-          parser.settings.maxHeaderValueLength,
-          parser.settings.headerValueCacheLimit(name),
-          parser.settings)
-      }(collection.breakOut)
+      HeaderParser
+        .ruleNames
+        .map { name ⇒
+          new ModeledHeaderValueParser(
+            name,
+            parser.settings.maxHeaderValueLength,
+            parser.settings.headerValueCacheLimit(name),
+            parser.settings)
+        }(collection.breakOut)
     def insertInGoodOrder(
         items: Seq[Any])(startIx: Int = 0, endIx: Int = items.size): Unit =
       if (endIx - startIx > 0) {
@@ -798,7 +797,8 @@ private[http] object HttpHeaderParser {
               hhp.decodeByteBuffer() match { // if we cannot decode as UTF8 we don't decode but simply copy
                 case -1 ⇒
                   if (sb != null)
-                    sb.append(c)
+                    sb
+                      .append(c)
                       .append(byteChar(input, ix + 1))
                       .append(byteChar(input, ix + 2))
                   else
@@ -815,7 +815,8 @@ private[http] object HttpHeaderParser {
               hhp.decodeByteBuffer() match { // if we cannot decode as UTF8 we don't decode but simply copy
                 case -1 ⇒
                   if (sb != null)
-                    sb.append(c)
+                    sb
+                      .append(c)
                       .append(byteChar(input, ix + 1))
                       .append(byteChar(input, ix + 2))
                       .append(byteChar(input, ix + 3))

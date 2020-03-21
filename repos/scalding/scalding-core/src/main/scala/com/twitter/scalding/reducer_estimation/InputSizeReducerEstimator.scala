@@ -45,8 +45,8 @@ class InputSizeReducerEstimator extends ReducerEstimator {
               .mkString("\n - "))
         None
       case inputSizes =>
-        val bytesPerReducer = InputSizeReducerEstimator.getBytesPerReducer(
-          info.step.getConfig)
+        val bytesPerReducer = InputSizeReducerEstimator
+          .getBytesPerReducer(info.step.getConfig)
 
         val totalBytes = inputSizes.map(_._2).sum
         val nReducers = (totalBytes.toDouble / bytesPerReducer).ceil.toInt max 1

@@ -44,9 +44,8 @@ case class BulkReply(message: ChannelBuffer) extends MultiLineReply {
 case class EmptyBulkReply() extends MultiLineReply {
   val message = "$-1"
   override def toChannelBuffer =
-    ChannelBuffers.wrappedBuffer(
-      RedisCodec.NIL_BULK_REPLY_BA,
-      RedisCodec.EOL_DELIMITER_BA)
+    ChannelBuffers
+      .wrappedBuffer(RedisCodec.NIL_BULK_REPLY_BA, RedisCodec.EOL_DELIMITER_BA)
 }
 
 case class MBulkReply(messages: List[Reply]) extends MultiLineReply {
@@ -66,9 +65,8 @@ case class EmptyMBulkReply() extends MultiLineReply {
 case class NilMBulkReply() extends MultiLineReply {
   val message = "*-1"
   override def toChannelBuffer =
-    ChannelBuffers.wrappedBuffer(
-      RedisCodec.NIL_MBULK_REPLY_BA,
-      RedisCodec.EOL_DELIMITER_BA)
+    ChannelBuffers
+      .wrappedBuffer(RedisCodec.NIL_MBULK_REPLY_BA, RedisCodec.EOL_DELIMITER_BA)
 }
 
 class ReplyCodec extends UnifiedProtocolCodec {
@@ -188,8 +186,8 @@ class ReplyCodec extends UnifiedProtocolCodec {
               i - 1,
               stack,
               IntegerReply(
-                NumberFormat.toLong(
-                  BytesToString(line.drop(1).getBytes))) :: lines)
+                NumberFormat
+                  .toLong(BytesToString(line.drop(1).getBytes))) :: lines)
           case ERROR_REPLY =>
             decodeMBulkLines(
               i - 1,

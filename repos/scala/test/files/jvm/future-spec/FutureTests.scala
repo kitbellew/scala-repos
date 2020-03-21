@@ -44,11 +44,14 @@ class FutureTests extends MinimalScalaTest {
     "shouldHandleThrowables" in {
       val ms =
         new mutable.HashSet[Throwable] with mutable.SynchronizedSet[Throwable]
-      implicit val ec = scala.concurrent.ExecutionContext.fromExecutor(
-        new java.util.concurrent.ForkJoinPool(),
-        { t =>
-          ms += t
-        })
+      implicit val ec = scala
+        .concurrent
+        .ExecutionContext
+        .fromExecutor(
+          new java.util.concurrent.ForkJoinPool(),
+          { t =>
+            ms += t
+          })
 
       class ThrowableTest(m: String) extends Throwable(m)
 
@@ -293,8 +296,8 @@ class FutureTests extends MinimalScalaTest {
         test.flatMap(_ => fail("flatMap should not have been called"))(
           ec) eq test)
       ECNotUsed(ec =>
-        test.filter(_ => fail("filter should not have been called"))(
-          ec) eq test)
+        test
+          .filter(_ => fail("filter should not have been called"))(ec) eq test)
       ECNotUsed(ec =>
         test.collect({
           case _ =>
@@ -326,9 +329,8 @@ class FutureTests extends MinimalScalaTest {
     "report uncaught exceptions" in {
       val p = Promise[Throwable]()
       val logThrowable: Throwable => Unit = p.trySuccess(_)
-      val ec: ExecutionContext = ExecutionContext.fromExecutor(
-        null,
-        logThrowable)
+      val ec: ExecutionContext = ExecutionContext
+        .fromExecutor(null, logThrowable)
 
       val t = new InterruptedException()
       val f = Future(throw t)(ec)
@@ -582,12 +584,14 @@ class FutureTests extends MinimalScalaTest {
     }
 
     "transformWith results" in {
-      val f1 = Future.successful("foo").transformWith {
-        case Success(r) =>
-          Future(r.toUpperCase)
-        case f @ Failure(_) =>
-          Future.fromTry(f)
-      }
+      val f1 = Future
+        .successful("foo")
+        .transformWith {
+          case Success(r) =>
+            Future(r.toUpperCase)
+          case f @ Failure(_) =>
+            Future.fromTry(f)
+        }
       val f2 = Future("bar").transformWith {
         case Success(r) =>
           Future(r.toUpperCase)
@@ -610,12 +614,14 @@ class FutureTests extends MinimalScalaTest {
         case x =>
           Future fromTry x
       }
-      val f2 = Future.failed[Int](initial).transformWith {
-        case Failure(`initial`) =>
-          Future failed expected2
-        case x =>
-          Future fromTry x
-      }
+      val f2 = Future
+        .failed[Int](initial)
+        .transformWith {
+          case Failure(`initial`) =>
+            Future failed expected2
+          case x =>
+            Future fromTry x
+        }
       val f3 = Future[Int](throw initial).transformWith {
         case Failure(`initial`) =>
           throw expected3
@@ -636,12 +642,14 @@ class FutureTests extends MinimalScalaTest {
 
     "transformWith failures to future success" in {
       val initial = new Exception("Initial")
-      val f1 = Future.failed[String](initial).transformWith {
-        case Failure(`initial`) =>
-          Future("FOO")
-        case _ =>
-          Future failed initial
-      }
+      val f1 = Future
+        .failed[String](initial)
+        .transformWith {
+          case Failure(`initial`) =>
+            Future("FOO")
+          case _ =>
+            Future failed initial
+        }
       val f2 = Future[String](throw initial).transformWith {
         case Failure(`initial`) =>
           Future("BAR")
@@ -765,38 +773,48 @@ class FutureTests extends MinimalScalaTest {
       val f = new IllegalStateException("test")
       intercept[IllegalStateException] {
         val failed =
-          Future.failed[String](f).zipWith(Future.successful("foo")) {
-            _ -> _
-          }
+          Future
+            .failed[String](f)
+            .zipWith(Future.successful("foo")) {
+              _ -> _
+            }
         Await.result(failed, timeout)
       } mustBe (f)
 
       intercept[IllegalStateException] {
         val failed =
-          Future.successful("foo").zipWith(Future.failed[String](f)) {
-            _ -> _
-          }
+          Future
+            .successful("foo")
+            .zipWith(Future.failed[String](f)) {
+              _ -> _
+            }
         Await.result(failed, timeout)
       } mustBe (f)
 
       intercept[IllegalStateException] {
         val failed =
-          Future.failed[String](f).zipWith(Future.failed[String](f)) {
-            _ -> _
-          }
+          Future
+            .failed[String](f)
+            .zipWith(Future.failed[String](f)) {
+              _ -> _
+            }
         Await.result(failed, timeout)
       } mustBe (f)
 
       val successful =
-        Future.successful("foo").zipWith(Future.successful("foo")) {
-          _ -> _
-        }
+        Future
+          .successful("foo")
+          .zipWith(Future.successful("foo")) {
+            _ -> _
+          }
       Await.result(successful, timeout) mustBe (("foo", "foo"))
 
       val failure =
-        Future.successful("foo").zipWith(Future.successful("foo")) { (_, _) =>
-          throw f
-        }
+        Future
+          .successful("foo")
+          .zipWith(Future.successful("foo")) { (_, _) =>
+            throw f
+          }
       intercept[IllegalStateException] {
         Await.result(failure, timeout)
       } mustBe (f)

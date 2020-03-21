@@ -76,7 +76,8 @@ object Example extends App {
   val dbname = flag("database", "test", "default database to connect to")
 
   def main() {
-    val client = Mysql.client
+    val client = Mysql
+      .client
       .withCredentials(username(), password())
       .withDatabase(dbname())
       .newRichClient("%s:%d".format(host().getHostName, host().getPort))
@@ -123,12 +124,14 @@ object Example extends App {
       val DateValue(date) = row("date").get
       val StringValue(name) = row("name").get
       val time =
-        row("time").map {
-          case FloatValue(f) =>
-            f
-          case _ =>
-            0.0f
-        }.get
+        row("time")
+          .map {
+            case FloatValue(f) =>
+              f
+            case _ =>
+              0.0f
+          }
+          .get
 
       (name, time, date)
     }

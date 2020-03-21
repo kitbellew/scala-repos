@@ -142,7 +142,8 @@ trait CheckAnalysis {
             def checkValidJoinConditionExprs(expr: Expression): Unit =
               expr match {
                 case p: Predicate =>
-                  p.asInstanceOf[Expression]
+                  p
+                    .asInstanceOf[Expression]
                     .children
                     .foreach(checkValidJoinConditionExprs)
                 case e if e.dataType.isInstanceOf[BinaryType] =>
@@ -162,22 +163,25 @@ trait CheckAnalysis {
             def checkValidAggregateExpression(expr: Expression): Unit =
               expr match {
                 case aggExpr: AggregateExpression =>
-                  aggExpr.aggregateFunction.children.foreach { child =>
-                    child.foreach {
-                      case agg: AggregateExpression =>
-                        failAnalysis(
-                          s"It is not allowed to use an aggregate function in the argument of " +
-                            s"another aggregate function. Please use the inner aggregate function " +
-                            s"in a sub-query.")
-                      case other => // OK
-                    }
+                  aggExpr
+                    .aggregateFunction
+                    .children
+                    .foreach { child =>
+                      child.foreach {
+                        case agg: AggregateExpression =>
+                          failAnalysis(
+                            s"It is not allowed to use an aggregate function in the argument of " +
+                              s"another aggregate function. Please use the inner aggregate function " +
+                              s"in a sub-query.")
+                        case other => // OK
+                      }
 
-                    if (!child.deterministic) {
-                      failAnalysis(
-                        s"nondeterministic expression ${expr.sql} should not " +
-                          s"appear in the arguments of an aggregate function.")
+                      if (!child.deterministic) {
+                        failAnalysis(
+                          s"nondeterministic expression ${expr.sql} should not " +
+                            s"appear in the arguments of an aggregate function.")
+                      }
                     }
-                  }
                 case e: Attribute
                     if !groupingExprs.exists(_.semanticEquals(e)) =>
                   failAnalysis(
@@ -229,10 +233,12 @@ trait CheckAnalysis {
                 s"${right.output.length}")
 
           case s: Union
-              if s.children.exists(
-                _.output.length != s.children.head.output.length) =>
+              if s
+                .children
+                .exists(_.output.length != s.children.head.output.length) =>
             val firstError =
-              s.children
+              s
+                .children
                 .find(_.output.length != s.children.head.output.length)
                 .get
             failAnalysis(s"""
@@ -258,7 +264,9 @@ trait CheckAnalysis {
                  | ${exprs.map(_.sql).mkString(",")}""".stripMargin)
 
           case j: Join if !j.duplicateResolved =>
-            val conflictingAttributes = j.left.outputSet
+            val conflictingAttributes = j
+              .left
+              .outputSet
               .intersect(j.right.outputSet)
             failAnalysis(s"""
                  |Failure when resolving conflicting references in Join:
@@ -267,7 +275,9 @@ trait CheckAnalysis {
                  |""".stripMargin)
 
           case i: Intersect if !i.duplicateResolved =>
-            val conflictingAttributes = i.left.outputSet
+            val conflictingAttributes = i
+              .left
+              .outputSet
               .intersect(i.right.outputSet)
             failAnalysis(s"""
                  |Failure when resolving conflicting references in Intersect:

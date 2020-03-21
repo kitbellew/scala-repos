@@ -36,10 +36,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     val json =
       """{"string": "query string", "optional": "optional string", "default": "d"}"""
 
-    val query = JsonExtractor.extract(
-      JsonExtractorOption.Json4sNative,
-      json,
-      classOf[ScalaQuery])
+    val query = JsonExtractor
+      .extract(JsonExtractorOption.Json4sNative, json, classOf[ScalaQuery])
 
     query should be(ScalaQuery("query string", Some("optional string"), "d"))
   }
@@ -50,10 +48,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
 
     val json = """{"string": "query string"}"""
 
-    val query = JsonExtractor.extract(
-      JsonExtractorOption.Json4sNative,
-      json,
-      classOf[ScalaQuery])
+    val query = JsonExtractor
+      .extract(JsonExtractorOption.Json4sNative, json, classOf[ScalaQuery])
 
     query should be(ScalaQuery("query string", None, "default"))
   }
@@ -65,10 +61,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     val json =
       """{"string": "query string", "optional": null, "default": null}"""
 
-    val query = JsonExtractor.extract(
-      JsonExtractorOption.Json4sNative,
-      json,
-      classOf[ScalaQuery])
+    val query = JsonExtractor
+      .extract(JsonExtractorOption.Json4sNative, json, classOf[ScalaQuery])
 
     query should be(ScalaQuery("query string", None, "default"))
   }
@@ -79,10 +73,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     val json =
       """{"string": "query string", "optional": "optional string", "default": "d"}"""
 
-    val query = JsonExtractor.extract(
-      JsonExtractorOption.Json4sNative,
-      json,
-      classOf[ScalaQuery])
+    val query = JsonExtractor
+      .extract(JsonExtractorOption.Json4sNative, json, classOf[ScalaQuery])
 
     query should be(ScalaQuery("query string", Some("optional string"), "d"))
   }
@@ -93,10 +85,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
 
     val json = """{"string": "query string"}"""
 
-    val query = JsonExtractor.extract(
-      JsonExtractorOption.Json4sNative,
-      json,
-      classOf[ScalaQuery])
+    val query = JsonExtractor
+      .extract(JsonExtractorOption.Json4sNative, json, classOf[ScalaQuery])
 
     query should be(ScalaQuery("query string", None, "default"))
   }
@@ -107,10 +97,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     val json =
       """{"string": "query string", "optional": null, "default": null}"""
 
-    val query = JsonExtractor.extract(
-      JsonExtractorOption.Json4sNative,
-      json,
-      classOf[ScalaQuery])
+    val query = JsonExtractor
+      .extract(JsonExtractorOption.Json4sNative, json, classOf[ScalaQuery])
 
     query should be(ScalaQuery("query string", None, "default"))
   }
@@ -120,10 +108,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
       " value") {
 
     val json = """{"string": "query string"}"""
-    val query = JsonExtractor.extract(
-      JsonExtractorOption.Gson,
-      json,
-      classOf[ScalaQuery])
+    val query = JsonExtractor
+      .extract(JsonExtractorOption.Gson, json, classOf[ScalaQuery])
 
     query should be(ScalaQuery("query string", null, null))
   }
@@ -142,10 +128,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
 
     val json = """{"q": "query string"}"""
 
-    val query = JsonExtractor.extract(
-      JsonExtractorOption.Gson,
-      json,
-      classOf[JavaQuery])
+    val query = JsonExtractor
+      .extract(JsonExtractorOption.Gson, json, classOf[JavaQuery])
 
     query should be(new JavaQuery("query string"))
   }
@@ -154,10 +138,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
 
     val json = """{"q": "query string"}"""
 
-    val query = JsonExtractor.extract(
-      JsonExtractorOption.Both,
-      json,
-      classOf[JavaQuery])
+    val query = JsonExtractor
+      .extract(JsonExtractorOption.Both, json, classOf[JavaQuery])
 
     query should be(new JavaQuery("query string"))
   }
@@ -168,10 +150,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     val json = """{"q": "query string"}"""
 
     intercept[MappingException] {
-      JsonExtractor.extract(
-        JsonExtractorOption.Json4sNative,
-        json,
-        classOf[JavaQuery])
+      JsonExtractor
+        .extract(JsonExtractorOption.Json4sNative, json, classOf[JavaQuery])
     }
   }
 
@@ -294,9 +274,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
 
   test("Scala Param to Json using option Json4sNative") {
     val param = ("algo", AlgorithmParams("parameter"))
-    val json = JsonExtractor.paramToJson(
-      JsonExtractorOption.Json4sNative,
-      param)
+    val json = JsonExtractor
+      .paramToJson(JsonExtractorOption.Json4sNative, param)
 
     json should be("""{"algo":{"a":"parameter"}}""")
   }
@@ -335,9 +314,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     val params = Seq(
       ("algo", AlgorithmParams("parameter")),
       ("algo2", AlgorithmParams("parameter2")))
-    val json = JsonExtractor.paramsToJson(
-      JsonExtractorOption.Json4sNative,
-      params)
+    val json = JsonExtractor
+      .paramsToJson(JsonExtractorOption.Json4sNative, params)
 
     json should be(
       org.json4s.native.Serialization.write(params)(Utils.json4sDefaultFormats))
@@ -359,9 +337,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
         dataSourceParams = ("ds", DataSourceParams("dsp")),
         algorithmParamsList = Seq(("a0", AlgorithmParams("ap"))))
 
-    val json = JsonExtractor.engineParamsToJson(
-      JsonExtractorOption.Json4sNative,
-      ep)
+    val json = JsonExtractor
+      .engineParamsToJson(JsonExtractorOption.Json4sNative, ep)
 
     json should be(
       """{"dataSourceParams":{"ds":{"a":"dsp"}},"preparatorParams":{"":{}},""" +

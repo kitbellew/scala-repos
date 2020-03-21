@@ -191,7 +191,8 @@ class JoinSuite extends QueryTest with SharedSQLContext {
     val x = testData2.as("x")
     val y = testData2.as("y")
     val join =
-      x.join(y, ($"x.a" === $"y.a") && ($"x.b" === $"y.b"))
+      x
+        .join(y, ($"x.a" === $"y.a") && ($"x.b" === $"y.b"))
         .queryExecution
         .optimizedPlan
     val planned = sqlContext.sessionState.planner.EquiJoinSelection(join)
@@ -245,7 +246,8 @@ class JoinSuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       bigDataX.join(bigDataY).where($"x.key" === $"y.key"),
-      testData.rdd
+      testData
+        .rdd
         .flatMap(row => Seq.fill(16)(Row.merge(row, row)))
         .collect()
         .toSeq)

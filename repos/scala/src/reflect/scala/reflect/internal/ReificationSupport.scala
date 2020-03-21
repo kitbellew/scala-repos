@@ -454,12 +454,14 @@ trait ReificationSupport {
           val (gvdefs, etdefs) = rawEdefs.partition(treeInfo.isEarlyValDef)
           val (fieldDefs, UnCtor(ctorMods, ctorVparamss, lvdefs) :: body) = rest
             .splitAt(indexOfCtor(rest))
-          val evdefs = gvdefs.zip(lvdefs).map {
-            case (
-                  gvdef @ ValDef(_, _, tpt: TypeTree, _),
-                  ValDef(_, _, _, rhs)) =>
-              copyValDef(gvdef)(tpt = tpt.original, rhs = rhs)
-          }
+          val evdefs = gvdefs
+            .zip(lvdefs)
+            .map {
+              case (
+                    gvdef @ ValDef(_, _, tpt: TypeTree, _),
+                    ValDef(_, _, _, rhs)) =>
+                copyValDef(gvdef)(tpt = tpt.original, rhs = rhs)
+            }
           val edefs = evdefs ::: etdefs
           if (ctorMods.isTrait)
             result(ctorMods, Nil, edefs, body)
@@ -475,14 +477,18 @@ trait ReificationSupport {
               }
             // undo flag modifications by merging flag info from constructor args and fieldDefs
             val modsMap =
-              fieldDefs.map {
-                case ValDef(mods, name, _, _) =>
-                  name -> mods
-              }.toMap
+              fieldDefs
+                .map {
+                  case ValDef(mods, name, _, _) =>
+                    name -> mods
+                }
+                .toMap
             def ctorArgsCorrespondToFields =
-              vparamssRestoredImplicits.flatten.forall { vd =>
-                modsMap.contains(vd.name)
-              }
+              vparamssRestoredImplicits
+                .flatten
+                .forall { vd =>
+                  modsMap.contains(vd.name)
+                }
             if (!ctorArgsCorrespondToFields)
               None
             else {
@@ -546,12 +552,8 @@ trait ReificationSupport {
             parents)
         val body0 = earlyDefs ::: body
         val selfType0 = mkSelfType(selfType)
-        val templ = gen.mkTemplate(
-          parents0,
-          selfType0,
-          constrMods,
-          vparamss0,
-          body0)
+        val templ = gen
+          .mkTemplate(parents0, selfType0, constrMods, vparamss0, body0)
         gen.mkClassDef(mods, name, tparams0, templ)
       }
 
@@ -702,10 +704,12 @@ trait ReificationSupport {
     // match references to `scala.$name`
     protected class ScalaMemberRef(symbols: Seq[Symbol]) {
       def result(name: Name): Option[Symbol] =
-        symbols.collect {
-          case sym if sym.name == name =>
-            sym
-        }.headOption
+        symbols
+          .collect {
+            case sym if sym.name == name =>
+              sym
+          }
+          .headOption
       def unapply(tree: Tree): Option[Symbol] =
         tree match {
           case id @ Ident(name)
@@ -723,9 +727,11 @@ trait ReificationSupport {
     protected object TupleClassRef extends ScalaMemberRef(TupleClass.seq)
     protected object TupleCompanionRef
         extends ScalaMemberRef(
-          TupleClass.seq.map {
-            _.companionModule
-          })
+          TupleClass
+            .seq
+            .map {
+              _.companionModule
+            })
     protected object UnitClassRef extends ScalaMemberRef(Seq(UnitClass))
     protected object FunctionClassRef extends ScalaMemberRef(FunctionClass.seq)
 
@@ -1338,13 +1344,15 @@ trait ReificationSupport {
           throw new IllegalArgumentException(
             s"$t is not a valid first enumerator of for loop")
       }
-      enums.tail.foreach {
-        case SyntacticValEq(_, _) | SyntacticValFrom(_, _) |
-            SyntacticFilter(_) =>
-        case t =>
-          throw new IllegalArgumentException(
-            s"$t is not a valid representation of a for loop enumerator")
-      }
+      enums
+        .tail
+        .foreach {
+          case SyntacticValEq(_, _) | SyntacticValFrom(_, _) |
+              SyntacticFilter(_) =>
+          case t =>
+            throw new IllegalArgumentException(
+              s"$t is not a valid representation of a for loop enumerator")
+        }
       enums
     }
 
@@ -1482,8 +1490,10 @@ trait ReificationSupport {
                     List())),
                 pf: TypeTree)
               if pf.tpe != null && pf.tpe.typeSymbol.eq(PartialFunctionClass) &&
-                abspf.tpe != null && abspf.tpe.typeSymbol.eq(
-                AbstractPartialFunctionClass) &&
+                abspf.tpe != null && abspf
+                .tpe
+                .typeSymbol
+                .eq(AbstractPartialFunctionClass) &&
                 ser.tpe != null && ser.tpe.typeSymbol.eq(SerializableClass) &&
                 clsMods.hasFlag(FINAL) && clsMods.hasFlag(SYNTHETIC) =>
             Some(cases)
@@ -1724,20 +1734,22 @@ trait ReificationSupport {
       }
 
       def unapply(imp: Import): Some[(Tree, List[Tree])] = {
-        val selectors = imp.selectors.map {
-          case WildcardSelector(offset) =>
-            WildcardSelectorRepr(derivedPos(imp, offset))
-          case NameSelector(name, offset) =>
-            NameSelectorRepr(name, derivedPos(imp, offset))
-          case RenameSelector(name1, offset1, name2, offset2) =>
-            RenameSelectorRepr(
-              name1,
-              derivedPos(imp, offset1),
-              name2,
-              derivedPos(imp, offset2))
-          case UnimportSelector(name, offset) =>
-            UnimportSelectorRepr(name, derivedPos(imp, offset))
-        }
+        val selectors = imp
+          .selectors
+          .map {
+            case WildcardSelector(offset) =>
+              WildcardSelectorRepr(derivedPos(imp, offset))
+            case NameSelector(name, offset) =>
+              NameSelectorRepr(name, derivedPos(imp, offset))
+            case RenameSelector(name1, offset1, name2, offset2) =>
+              RenameSelectorRepr(
+                name1,
+                derivedPos(imp, offset1),
+                name2,
+                derivedPos(imp, offset2))
+            case UnimportSelector(name, offset) =>
+              UnimportSelectorRepr(name, derivedPos(imp, offset))
+          }
         Some((imp.expr, selectors))
       }
     }

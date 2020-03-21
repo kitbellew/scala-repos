@@ -30,10 +30,8 @@ class ScTupleTypeElementImpl(node: ASTNode)
     val n = components.length
     val newTypeText =
       s"_root_.scala.Tuple$n[${components.map(_.getText).mkString(", ")}]"
-    val newTypeElement = ScalaPsiElementFactory.createTypeElementFromText(
-      newTypeText,
-      getContext,
-      this)
+    val newTypeElement = ScalaPsiElementFactory
+      .createTypeElementFromText(newTypeText, getContext, this)
     newTypeElement match {
       case p: ScParameterizedTypeElement =>
         Some(p)

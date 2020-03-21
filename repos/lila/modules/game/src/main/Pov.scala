@@ -25,7 +25,8 @@ case class Pov(game: Game, color: Color) {
 
   lazy val isMyTurn = game.started && game.playable && game.turnColor == color
 
-  lazy val remainingSeconds: Option[Int] = game.clock
+  lazy val remainingSeconds: Option[Int] = game
+    .clock
     .map(_.remainingTime(color).toInt)
     .orElse {
       game.playableCorrespondenceClock.map(_.remainingTime(color).toInt)
@@ -45,9 +46,11 @@ case class Pov(game: Game, color: Color) {
 object Pov {
 
   def apply(game: Game): List[Pov] =
-    game.players.map {
-      apply(game, _)
-    }
+    game
+      .players
+      .map {
+        apply(game, _)
+      }
 
   def first(game: Game) =
     apply(

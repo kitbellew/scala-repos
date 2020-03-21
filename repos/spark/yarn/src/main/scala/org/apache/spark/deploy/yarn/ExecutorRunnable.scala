@@ -165,20 +165,27 @@ private[yarn] class ExecutorRunnable(
     javaOpts += "-Xmx" + executorMemoryString
 
     // Set extra Java options for the executor, if defined
-    sparkConf.get(EXECUTOR_JAVA_OPTIONS).foreach { opts =>
-      javaOpts ++= Utils
-        .splitCommandString(opts)
-        .map(YarnSparkHadoopUtil.escapeForShell)
-    }
-    sys.env.get("SPARK_JAVA_OPTS").foreach { opts =>
-      javaOpts ++= Utils
-        .splitCommandString(opts)
-        .map(YarnSparkHadoopUtil.escapeForShell)
-    }
-    sparkConf.get(EXECUTOR_LIBRARY_PATH).foreach { p =>
-      prefixEnv = Some(
-        Client.getClusterPath(sparkConf, Utils.libraryPathEnvPrefix(Seq(p))))
-    }
+    sparkConf
+      .get(EXECUTOR_JAVA_OPTIONS)
+      .foreach { opts =>
+        javaOpts ++= Utils
+          .splitCommandString(opts)
+          .map(YarnSparkHadoopUtil.escapeForShell)
+      }
+    sys
+      .env
+      .get("SPARK_JAVA_OPTS")
+      .foreach { opts =>
+        javaOpts ++= Utils
+          .splitCommandString(opts)
+          .map(YarnSparkHadoopUtil.escapeForShell)
+      }
+    sparkConf
+      .get(EXECUTOR_LIBRARY_PATH)
+      .foreach { p =>
+        prefixEnv = Some(
+          Client.getClusterPath(sparkConf, Utils.libraryPathEnvPrefix(Seq(p))))
+      }
 
     javaOpts += "-Djava.io.tmpdir=" +
       new Path(
@@ -189,7 +196,8 @@ private[yarn] class ExecutorRunnable(
     // registers with the Scheduler and transfers the spark configs. Since the Executor backend
     // uses RPC to connect to the scheduler, the RPC settings are needed as well as the
     // authentication settings.
-    sparkConf.getAll
+    sparkConf
+      .getAll
       .filter {
         case (k, v) =>
           SparkConf.isExecutorStartupConf(k)
@@ -227,7 +235,8 @@ private[yarn] class ExecutorRunnable(
 
     // For log4j configuration to reference
     javaOpts += (
-      "-Dspark.yarn.app.container.log.dir=" + ApplicationConstants.LOG_DIR_EXPANSION_VAR
+      "-Dspark.yarn.app.container.log.dir=" + ApplicationConstants
+        .LOG_DIR_EXPANSION_VAR
     )
     YarnCommandBuilderUtils.addPermGenSizeOpt(javaOpts)
 
@@ -246,8 +255,8 @@ private[yarn] class ExecutorRunnable(
         .toSeq
 
     val commands = prefixEnv ++ Seq(
-      YarnSparkHadoopUtil.expandEnvironment(
-        Environment.JAVA_HOME) + "/bin/java",
+      YarnSparkHadoopUtil
+        .expandEnvironment(Environment.JAVA_HOME) + "/bin/java",
       "-server",
       // Kill if OOM is raised - leverage yarn's failure handling to cause rescheduling.
       // Not killing the task leaves various aspects of the executor and (to some extent) the jvm in
@@ -367,17 +376,22 @@ private[yarn] class ExecutorRunnable(
       false,
       sparkConf.get(EXECUTOR_CLASS_PATH))
 
-    sparkConf.getExecutorEnv.foreach {
-      case (key, value) =>
-        // This assumes each executor environment variable set here is a path
-        // This is kept for backward compatibility and consistency with hadoop
-        YarnSparkHadoopUtil.addPathToEnvironment(env, key, value)
-    }
+    sparkConf
+      .getExecutorEnv
+      .foreach {
+        case (key, value) =>
+          // This assumes each executor environment variable set here is a path
+          // This is kept for backward compatibility and consistency with hadoop
+          YarnSparkHadoopUtil.addPathToEnvironment(env, key, value)
+      }
 
     // Keep this for backwards compatibility but users should move to the config
-    sys.env.get("SPARK_YARN_USER_ENV").foreach { userEnvs =>
-      YarnSparkHadoopUtil.setEnvFromInputString(env, userEnvs)
-    }
+    sys
+      .env
+      .get("SPARK_YARN_USER_ENV")
+      .foreach { userEnvs =>
+        YarnSparkHadoopUtil.setEnvFromInputString(env, userEnvs)
+      }
 
     // lookup appropriate http scheme for container log urls
     val yarnHttpPolicy = yarnConf.get(
@@ -390,14 +404,18 @@ private[yarn] class ExecutorRunnable(
         "http://"
 
     // Add log urls
-    sys.env.get("SPARK_USER").foreach { user =>
-      val containerId = ConverterUtils.toString(container.getId)
-      val address = container.getNodeHttpAddress
-      val baseUrl = s"$httpScheme$address/node/containerlogs/$containerId/$user"
+    sys
+      .env
+      .get("SPARK_USER")
+      .foreach { user =>
+        val containerId = ConverterUtils.toString(container.getId)
+        val address = container.getNodeHttpAddress
+        val baseUrl =
+          s"$httpScheme$address/node/containerlogs/$containerId/$user"
 
-      env("SPARK_LOG_URL_STDERR") = s"$baseUrl/stderr?start=-4096"
-      env("SPARK_LOG_URL_STDOUT") = s"$baseUrl/stdout?start=-4096"
-    }
+        env("SPARK_LOG_URL_STDERR") = s"$baseUrl/stderr?start=-4096"
+        env("SPARK_LOG_URL_STDOUT") = s"$baseUrl/stdout?start=-4096"
+      }
 
     System
       .getenv()

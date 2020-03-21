@@ -38,8 +38,8 @@ class CodeGenerationSuite extends SparkFunSuite with ExpressionEvalHelper {
     val futures = (1 to 20).map { _ =>
       Future {
         GeneratePredicate.generate(EqualTo(Literal(1), Literal(1)))
-        GenerateMutableProjection.generate(
-          EqualTo(Literal(1), Literal(1)) :: Nil)
+        GenerateMutableProjection
+          .generate(EqualTo(Literal(1), Literal(1)) :: Nil)
         GenerateOrdering.generate(Add(Literal(1), Literal(1)).asc :: Nil)
       }
     }

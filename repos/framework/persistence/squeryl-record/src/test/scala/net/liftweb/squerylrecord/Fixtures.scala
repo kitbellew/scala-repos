@@ -199,8 +199,8 @@ object MySchema extends Schema {
   val employees = table[Employee]
   val rooms = table[Room]
 
-  val companyToEmployees = oneToManyRelation(companies, employees).via((c, e) =>
-    c.id === e.companyId)
+  val companyToEmployees = oneToManyRelation(companies, employees)
+    .via((c, e) => c.id === e.companyId)
 
   val roomAssignments = manyToManyRelation(employees, rooms)
     .via[RoomAssignment]((employee, room, roomAssignment) =>
@@ -239,19 +239,22 @@ object MySchema extends Schema {
 
   object TestData {
 
-    val c1 = Company.createRecord
+    val c1 = Company
+      .createRecord
       .name("First Company USA")
       .created(Calendar.getInstance())
       .country(Countries.USA)
       .postCode("12345")
 
-    val c2 = Company.createRecord
+    val c2 = Company
+      .createRecord
       .name("Second Company USA")
       .created(Calendar.getInstance())
       .country(Countries.USA)
       .postCode("54321")
 
-    val c3 = Company.createRecord
+    val c3 = Company
+      .createRecord
       .name("Company or Employee")
       .created(Calendar.getInstance())
       .country(Countries.Canada)
@@ -259,7 +262,8 @@ object MySchema extends Schema {
 
     val allCompanies = List(c1, c2, c3)
 
-    lazy val e1 = Employee.createRecord
+    lazy val e1 = Employee
+      .createRecord
       .companyId(c1.idField.get)
       .name("Peter Example")
       .email("peter@example.com")
@@ -272,7 +276,8 @@ object MySchema extends Schema {
       .role(EmployeeRole.Programmer)
       .photo(Array[Byte](0, 1, 2, 3, 4))
 
-    lazy val e2 = Employee.createRecord
+    lazy val e2 = Employee
+      .createRecord
       .companyId(c2.idField.get)
       .name("Company or Employee")
       .email("test@example.com")
@@ -285,7 +290,8 @@ object MySchema extends Schema {
       .role(EmployeeRole.Manager)
       .photo(Array[Byte](1))
 
-    lazy val e3 = Employee.createRecord
+    lazy val e3 = Employee
+      .createRecord
       .companyId(c2.idField.get)
       .name("Joe Shmo")
       .email("joe@shmo.com")

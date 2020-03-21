@@ -425,9 +425,9 @@ class SetMapConsistencyTest {
               None
           }
         throw new Exception(
-          s"Disagreement after ${what.result} between ${map1.title} and ${map2.title} because ${map1.keys
-            .map(map2 has _)
-            .mkString(",")} ${map2.keys.map(map1 has _).mkString(",")} at step $i:\n$map1\n$map2\n$temp")
+          s"Disagreement after ${what.result} between ${map1.title} and ${map2.title} because ${map1.keys.map(
+            map2 has _).mkString(",")} ${map2.keys.map(map1 has _).mkString(
+            ",")} at step $i:\n$map1\n$map2\n$temp")
       }
       what ++= " (%d) ".format(i)
       if (rn.nextInt(10) == 0) {
@@ -504,8 +504,8 @@ class SetMapConsistencyTest {
     1397198789151L,
     -41402148014L)
   val stringKeys = intKeys.map(_.toString) ++ Array("", null)
-  val anyKeys =
-    stringKeys.filter(_ != null) ++ Array(0L) ++ Array(true) ++ Array(math.Pi)
+  val anyKeys = stringKeys
+    .filter(_ != null) ++ Array(0L) ++ Array(true) ++ Array(math.Pi)
 
   @Test
   def churnIntMaps() {
@@ -520,9 +520,11 @@ class SetMapConsistencyTest {
       () => boxIlm[Int],
       () => boxItm[Int])
     assert(
-      maps.sliding(2).forall { ms =>
-        churn(ms(0)(), ms(1)(), intKeys, 2000)
-      })
+      maps
+        .sliding(2)
+        .forall { ms =>
+          churn(ms(0)(), ms(1)(), intKeys, 2000)
+        })
   }
 
   @Test
@@ -538,9 +540,11 @@ class SetMapConsistencyTest {
       () => boxIhm[Long],
       () => boxIlm[Long])
     assert(
-      maps.sliding(2).forall { ms =>
-        churn(ms(0)(), ms(1)(), longKeys, 10000)
-      })
+      maps
+        .sliding(2)
+        .forall { ms =>
+          churn(ms(0)(), ms(1)(), longKeys, 10000)
+        })
   }
 
   @Test
@@ -554,9 +558,11 @@ class SetMapConsistencyTest {
       () => boxIhm[String],
       () => boxIlm[String])
     assert(
-      maps.sliding(2).forall { ms =>
-        churn(ms(0)(), ms(1)(), stringKeys, 5000)
-      })
+      maps
+        .sliding(2)
+        .forall { ms =>
+          churn(ms(0)(), ms(1)(), stringKeys, 5000)
+        })
   }
 
   @Test
@@ -569,9 +575,11 @@ class SetMapConsistencyTest {
       () => boxIhm[Any],
       () => boxIlm[Any])
     assert(
-      maps.sliding(2).forall { ms =>
-        churn(ms(0)(), ms(1)(), anyKeys, 10000)
-      })
+      maps
+        .sliding(2)
+        .forall { ms =>
+          churn(ms(0)(), ms(1)(), anyKeys, 10000)
+        })
   }
 
   @Test
@@ -589,9 +597,11 @@ class SetMapConsistencyTest {
       () => boxIts[Int]
     )
     assert(
-      sets.sliding(2).forall { ms =>
-        churn(ms(0)(), ms(1)(), smallKeys, 1000, valuer = _ => 0)
-      })
+      sets
+        .sliding(2)
+        .forall { ms =>
+          churn(ms(0)(), ms(1)(), smallKeys, 1000, valuer = _ => 0)
+        })
   }
 
   @Test
@@ -604,24 +614,30 @@ class SetMapConsistencyTest {
       () => boxIhs[Any],
       () => boxIls[Any])
     assert(
-      sets.sliding(2).forall { ms =>
-        churn(ms(0)(), ms(1)(), anyKeys, 10000, valuer = _ => 0)
-      })
+      sets
+        .sliding(2)
+        .forall { ms =>
+          churn(ms(0)(), ms(1)(), anyKeys, 10000, valuer = _ => 0)
+        })
   }
 
   @Test
   def extraMutableLongMapTests() {
     import cm.{LongMap, HashMap}
     var lm = LongMap.empty[Long]
-    longKeys.zipWithIndex.foreach {
-      case (k, i) =>
-        lm(k) = i
-    }
+    longKeys
+      .zipWithIndex
+      .foreach {
+        case (k, i) =>
+          lm(k) = i
+      }
     assert {
-      lm.map {
-        case (k, v) =>
-          -k * k -> v.toString
-      }.getClass == lm.getClass
+      lm
+        .map {
+          case (k, v) =>
+            -k * k -> v.toString
+        }
+        .getClass == lm.getClass
     }
 
     assert {
@@ -670,21 +686,25 @@ class SetMapConsistencyTest {
   def extraMutableAnyRefMapTests() {
     import cm.{AnyRefMap, HashMap}
     var arm = AnyRefMap.empty[String, Int]
-    stringKeys.zipWithIndex.foreach {
-      case (k, i) =>
-        arm(k) = i
-    }
+    stringKeys
+      .zipWithIndex
+      .foreach {
+        case (k, i) =>
+          arm(k) = i
+      }
 
     assert {
-      arm.map {
-        case (k, v) =>
-          (
-            if (k == null)
-              ""
-            else
-              k + k
-          ) -> v.toString
-      }.getClass == arm.getClass
+      arm
+        .map {
+          case (k, v) =>
+            (
+              if (k == null)
+                ""
+              else
+                k + k
+            ) -> v.toString
+        }
+        .getClass == arm.getClass
     }
 
     assert {

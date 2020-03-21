@@ -370,9 +370,11 @@ class Generic1Macros(val c: whitebox.Context) extends CaseClassMacros {
       val name = TermName(c.freshName("pat"))
 
       val tc = tpe.typeConstructor
-      val params = tc.typeParams.map { _ =>
-        Bind(typeNames.WILDCARD, EmptyTree)
-      }
+      val params = tc
+        .typeParams
+        .map { _ =>
+          Bind(typeNames.WILDCARD, EmptyTree)
+        }
       val tpeTpt = AppliedTypeTree(mkAttributedRef(tc), params)
 
       cq"$name: $tpeTpt => $index"
@@ -383,8 +385,8 @@ class Generic1Macros(val c: whitebox.Context) extends CaseClassMacros {
     val rnme = TypeName(c.freshName)
 
     val to = {
-      val toCases =
-        ctorsOf1(tpe) zip (Stream from 0) map (mkCoproductCases _).tupled
+      val toCases = ctorsOf1(tpe) zip (Stream from 0) map (mkCoproductCases _)
+        .tupled
       q"""_root_.shapeless.Coproduct.unsafeMkCoproduct((ft: Any) match { case ..$toCases }, ft).asInstanceOf[R[$nme]]"""
     }
 
@@ -565,16 +567,18 @@ class Split1Macros(val c: whitebox.Context) extends CaseClassMacros {
       lDealiasedTpe match {
         case tpe @ TypeRef(pre, sym, args) if balanced(args) =>
           val Some(pivot) = args.find(_.contains(lParam))
-          val oPoly = c.internal.polyType(
-            List(lParam),
-            appliedType(
-              tpe.typeConstructor,
-              args.map { arg =>
-                if (arg =:= pivot)
-                  lParamTpe
-                else
-                  arg
-              }))
+          val oPoly = c
+            .internal
+            .polyType(
+              List(lParam),
+              appliedType(
+                tpe.typeConstructor,
+                args.map { arg =>
+                  if (arg =:= pivot)
+                    lParamTpe
+                  else
+                    arg
+                }))
           val oTpt = appliedTypTree1(oPoly, lParamTpe, nme)
           val iPoly = c.internal.polyType(List(lParam), pivot)
           val iTpt = appliedTypTree1(iPoly, lParamTpe, nme)

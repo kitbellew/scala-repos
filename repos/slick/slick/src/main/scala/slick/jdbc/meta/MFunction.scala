@@ -16,10 +16,12 @@ case class MFunction(
 object MFunction {
   def getFunctions(namePattern: MQName) = {
     ResultSetAction[MFunction] { s =>
-      try s.metaData.getFunctions(
-        namePattern.catalog_?,
-        namePattern.schema_?,
-        namePattern.name)
+      try s
+        .metaData
+        .getFunctions(
+          namePattern.catalog_?,
+          namePattern.schema_?,
+          namePattern.name)
       catch {
         case _: AbstractMethodError =>
           null

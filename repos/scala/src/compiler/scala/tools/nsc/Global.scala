@@ -214,8 +214,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       if (unit.body == null)
         println(": tree is null")
       else {
-        val source = util.stringFromWriter(w =>
-          newTreePrinter(w) print unit.body)
+        val source = util
+          .stringFromWriter(w => newTreePrinter(w) print unit.body)
 
         // treePrinter show unit.body
         if (lastPrintedSource == source)
@@ -378,11 +378,12 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
           None
       }
 
-    val charset =
-      settings.encoding.valueSetByUser flatMap loadCharset getOrElse {
-        settings.encoding.value = defaultEncoding // A mandatory charset
-        Charset.forName(defaultEncoding)
-      }
+    val charset = settings
+      .encoding
+      .valueSetByUser flatMap loadCharset getOrElse {
+      settings.encoding.value = defaultEncoding // A mandatory charset
+      Charset.forName(defaultEncoding)
+    }
 
     def loadReader(name: String): Option[SourceReader] = {
       def ccon =
@@ -889,10 +890,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       .foldLeft(List[(Phase, T)]()) { (res, ph) =>
         val value = exitingPhase(ph)(op)
         if (res.nonEmpty && res.head._2 == value)
-        res
-      else
-        ((ph, value)) :: res
-    } reverse
+          res
+        else
+          ((ph, value)) :: res
+      } reverse
   }
 
   // ------------ REPL utilities ---------------------------------
@@ -1219,7 +1220,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         try {
           // Taking 3 before, 3 after the fingered line.
           val start = 0 max (tree.pos.line - 3)
-          val xs = scala.reflect.io
+          val xs = scala
+            .reflect
+            .io
             .File(tree.pos.source.file.file)
             .lines drop start take 7
           val strs = xs.zipWithIndex map {
@@ -1253,8 +1256,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         "tree position" -> pos_s,
         "tree tpe" -> tpe,
         "symbol" -> Option(sym).fold("null")(_.debugLocationString),
-        "symbol definition" -> Option(sym).fold("null")(s =>
-          s.defString + s" (a ${s.shortSymbolClass})"),
+        "symbol definition" -> Option(sym)
+          .fold("null")(s => s.defString + s" (a ${s.shortSymbolClass})"),
         "symbol package" -> sym.enclosingPackage.fullName,
         "symbol owners" -> ownerChainString(sym),
         "call site" -> (
@@ -1277,7 +1280,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     /* Only output a summary message under debug if we aren't echoing each file. */
     if (settings.debug && !(settings.verbose || currentRun.size < 5))
       inform(
-        "[running phase " + ph.name + " on " + currentRun.size + " compilation units]")
+        "[running phase " + ph.name + " on " + currentRun
+          .size + " compilation units]")
   }
 
   def newSourceFile(code: String, filename: String = "<console>") =
@@ -1571,15 +1575,21 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     private def warnDeprecatedAndConflictingSettings(unit: CompilationUnit) {
       // issue warnings for any usage of deprecated settings
       settings.userSetSettings filter (_.isDeprecated) foreach { s =>
-        currentRun.reporting.deprecationWarning(
-          NoPosition,
-          s.name + " is deprecated: " + s.deprecationMessage.get)
+        currentRun
+          .reporting
+          .deprecationWarning(
+            NoPosition,
+            s.name + " is deprecated: " + s.deprecationMessage.get)
       }
       val supportedTarget = "jvm-1.8"
       if (settings.target.value != supportedTarget) {
-        currentRun.reporting.deprecationWarning(
-          NoPosition,
-          settings.target.name + ":" + settings.target.value + " is deprecated and has no effect, setting to " + supportedTarget)
+        currentRun
+          .reporting
+          .deprecationWarning(
+            NoPosition,
+            settings.target.name + ":" + settings
+              .target
+              .value + " is deprecated and has no effect, setting to " + supportedTarget)
         settings.target.value = supportedTarget
       }
       settings.conflictWarning.foreach(reporter.warning(NoPosition, _))
@@ -1732,11 +1742,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
         // progress update
         informTime(globalPhase.description, startTime)
-        if ((
-              settings.Xprint containsPhase globalPhase
-            ) || settings.printLate && runIsAt(cleanupPhase)) {
+        if ((settings.Xprint containsPhase globalPhase) || settings
+              .printLate && runIsAt(cleanupPhase)) {
           // print trees
-          if (settings.Xshowtrees || settings.XshowtreesCompact || settings.XshowtreesStringified)
+          if (settings.Xshowtrees || settings.XshowtreesCompact || settings
+                .XshowtreesStringified)
             nodePrinters.printAll()
           else
             printAllUnits()
@@ -1905,10 +1915,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       }
 
     syms foreach { sym =>
-      val name = "\n<<-- %s %s after phase '%s' -->>".format(
-        sym.kindString,
-        sym.fullName,
-        ph.name)
+      val name = "\n<<-- %s %s after phase '%s' -->>"
+        .format(sym.kindString, sym.fullName, ph.name)
       val baseClasses = bases(sym).mkString("Base classes:\n  ", "\n  ", "")
       val contents =
         if (declsOnly)

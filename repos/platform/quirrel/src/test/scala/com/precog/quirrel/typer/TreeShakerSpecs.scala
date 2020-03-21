@@ -676,8 +676,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "avoid false negatives with used formal" in {
@@ -776,8 +776,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in import" in {
@@ -872,8 +872,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in assert" in {
@@ -958,8 +958,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in new" in {
@@ -1130,8 +1130,8 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result.errors mustEqual Set(
-          UnusedFormalBinding(Identifier(Vector(), "b")))
+        result
+          .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
       }
 
       {
@@ -1156,8 +1156,8 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result.errors mustEqual Set(
-          UnusedFormalBinding(Identifier(Vector(), "b")))
+        result
+          .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
       }
 
       {
@@ -1182,8 +1182,8 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result.errors mustEqual Set(
-          UnusedFormalBinding(Identifier(Vector(), "b")))
+        result
+          .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
       }
     }
 
@@ -1324,8 +1324,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in object definition" in {
@@ -1416,8 +1416,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in array definition" in {
@@ -1506,8 +1506,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in descent" in {
@@ -1596,8 +1596,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in metadescent" in {
@@ -1730,8 +1730,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in deref" in {
@@ -1833,8 +1833,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in dispatch" in {
@@ -1965,8 +1965,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in where" in {
@@ -2096,8 +2096,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in addition" in {
@@ -2227,8 +2227,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in subtraction" in {
@@ -2358,8 +2358,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in multiplication" in {
@@ -2489,8 +2489,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in division" in {
@@ -2620,8 +2620,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in mod" in {
@@ -2751,8 +2751,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in pow" in {
@@ -2882,8 +2882,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in less-than" in {
@@ -3013,8 +3013,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in less-than-equal" in {
@@ -3144,8 +3144,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in greater-than" in {
@@ -3275,8 +3275,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in greater-than-equal" in {
@@ -3406,8 +3406,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in equality" in {
@@ -3537,8 +3537,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in not equality" in {
@@ -3668,8 +3668,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in boolean and" in {
@@ -3799,8 +3799,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in boolean or" in {
@@ -3885,8 +3885,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in complement" in {
@@ -3970,8 +3970,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result.errors mustEqual Set(
-        UnusedFormalBinding(Identifier(Vector(), "b")))
+      result
+        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in negation" in {

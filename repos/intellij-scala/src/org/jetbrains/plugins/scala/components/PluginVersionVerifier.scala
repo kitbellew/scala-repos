@@ -68,8 +68,8 @@ object ScalaPluginVersionVerifier {
   lazy val getPluginVersion: Option[Version] = {
     getClass.getClassLoader match {
       case pluginLoader: PluginClassLoader =>
-        Version.parse(
-          PluginManager.getPlugin(pluginLoader.getPluginId).getVersion)
+        Version
+          .parse(PluginManager.getPlugin(pluginLoader.getPluginId).getVersion)
       case _ =>
         Some(Version.Snapshot)
     }
@@ -120,13 +120,15 @@ class ScalaPluginVersionVerifierApplicationComponent
                       s"""<p/><a href="Yes">Yes, disable it</a>\n""" +
                       s"""<p/><a href="No">No, leave it enabled</a>"""
                   if (ApplicationManager.getApplication.isUnitTestMode) {
-                    ScalaPluginVersionVerifierApplicationComponent.LOG.error(
-                      message)
+                    ScalaPluginVersionVerifierApplicationComponent
+                      .LOG
+                      .error(message)
                   } else {
                     val Scala_Group = "Scala Plugin Incompatibility"
                     val app: Application = ApplicationManager.getApplication
                     if (!app.isDisposed) {
-                      app.getMessageBus
+                      app
+                        .getMessageBus
                         .syncPublisher(Notifications.TOPIC)
                         .register(
                           Scala_Group,
@@ -147,8 +149,8 @@ class ScalaPluginVersionVerifierApplicationComponent
                             val description = event.getDescription
                             description match {
                               case "Yes" =>
-                                PluginManagerCore.disablePlugin(
-                                  plugin.getPluginId.getIdString)
+                                PluginManagerCore
+                                  .disablePlugin(plugin.getPluginId.getIdString)
                                 PluginManagerConfigurable.showRestartDialog()
                               case "No" => //do nothing it seems all is ok for the user
                               case _    => //do nothing it seems all is ok for the user

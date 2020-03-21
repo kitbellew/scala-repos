@@ -145,11 +145,11 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
     assert(accums.forall(_.name.get.startsWith(METRICS_PREFIX)))
     // assert they all start with the expected prefixes
     assert(
-      shuffleReadAccums.forall(
-        _.name.get.startsWith(SHUFFLE_READ_METRICS_PREFIX)))
+      shuffleReadAccums
+        .forall(_.name.get.startsWith(SHUFFLE_READ_METRICS_PREFIX)))
     assert(
-      shuffleWriteAccums.forall(
-        _.name.get.startsWith(SHUFFLE_WRITE_METRICS_PREFIX)))
+      shuffleWriteAccums
+        .forall(_.name.get.startsWith(SHUFFLE_WRITE_METRICS_PREFIX)))
     assert(inputAccums.forall(_.name.get.startsWith(INPUT_METRICS_PREFIX)))
     assert(outputAccums.forall(_.name.get.startsWith(OUTPUT_METRICS_PREFIX)))
   }
@@ -169,10 +169,12 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
     sc = new SparkContext("local", "test")
     sc.addSparkListener(listener)
     // Have each task add 1 to the internal accumulator
-    val rdd = sc.parallelize(1 to 100, numPartitions).mapPartitions { iter =>
-      TaskContext.get().taskMetrics().getAccum(TEST_ACCUM) += 1
-      iter
-    }
+    val rdd = sc
+      .parallelize(1 to 100, numPartitions)
+      .mapPartitions { iter =>
+        TaskContext.get().taskMetrics().getAccum(TEST_ACCUM) += 1
+        iter
+      }
     // Register asserts in job completion callback to avoid flakiness
     listener.registerJobCompletionCallback { () =>
       val stageInfos = listener.getCompletedStageInfos
@@ -239,7 +241,9 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
       assert(
         secondStageAccum.value.get.asInstanceOf[Long] === numPartitions * 10)
       assert(
-        thirdStageAccum.value.get
+        thirdStageAccum
+          .value
+          .get
           .asInstanceOf[Long] === numPartitions * 2 * 100)
     }
     rdd.count()
@@ -263,7 +267,9 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
       }
       .groupBy(identity)
     val sid =
-      x.dependencies.head
+      x
+        .dependencies
+        .head
         .asInstanceOf[ShuffleDependency[_, _, _]]
         .shuffleHandle
         .shuffleId
@@ -273,8 +279,8 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
         // This job runs 2 stages, and we're in the second stage. Therefore, any task attempt
         // ID that's < 2 * numPartitions belongs to the first attempt of this stage.
         val taskContext = TaskContext.get()
-        val isFirstStageAttempt =
-          taskContext.taskAttemptId() < numPartitions * 2
+        val isFirstStageAttempt = taskContext
+          .taskAttemptId() < numPartitions * 2
         if (isFirstStageAttempt) {
           throw new FetchFailedException(
             SparkEnv.get.blockManager.blockManagerId,
@@ -296,9 +302,12 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
       val mapStageId = stageInfos.head.stageId
       val mapStageInfo1stAttempt = stageInfos.head
       val mapStageInfo2ndAttempt = {
-        stageInfos.tail.find(_.stageId == mapStageId).getOrElse {
-          fail("expected two attempts of the same shuffle map stage.")
-        }
+        stageInfos
+          .tail
+          .find(_.stageId == mapStageId)
+          .getOrElse {
+            fail("expected two attempts of the same shuffle map stage.")
+          }
       }
       val stageAccum1stAttempt = findTestAccum(
         mapStageInfo1stAttempt.accumulables.values)
@@ -329,7 +338,8 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
       override def cleaner: Option[ContextCleaner] = Some(myCleaner)
     }
     assert(Accumulators.originals.isEmpty)
-    sc.parallelize(1 to 100)
+    sc
+      .parallelize(1 to 100)
       .map { i =>
         (i, i)
       }

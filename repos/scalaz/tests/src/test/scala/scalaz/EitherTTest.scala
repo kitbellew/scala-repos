@@ -65,8 +65,8 @@ object EitherTTest extends SpecLite {
 
   "orElse only executes the left hand monad once" should {
     val counter = new AtomicInteger(0)
-    val inc: EitherTComputation[Int] = EitherT.right(() =>
-      counter.incrementAndGet())
+    val inc: EitherTComputation[Int] = EitherT
+      .right(() => counter.incrementAndGet())
     val other: EitherTComputation[Int] = EitherT.right(() => 0) // does nothing
 
     (inc orElse other).run.apply() must_== \/-(1)

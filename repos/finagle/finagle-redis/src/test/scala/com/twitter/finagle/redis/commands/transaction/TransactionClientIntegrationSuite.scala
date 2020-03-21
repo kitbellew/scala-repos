@@ -24,8 +24,8 @@ final class TransactionClientIntegrationSuite extends RedisClientTest {
 
   test("Correctly set and get transaction", RedisTest, ClientTest) {
     withRedisClient { client =>
-      val txResult = Await.result(
-        client.transaction(Seq(Set(foo, bar), Set(baz, boo))))
+      val txResult = Await
+        .result(client.transaction(Seq(Set(foo, bar), Set(baz, boo))))
       assert(ReplyFormat.toString(txResult.toList) == Seq("OK", "OK"))
     }
   }
@@ -49,8 +49,8 @@ final class TransactionClientIntegrationSuite extends RedisClientTest {
     ClientTest) {
     withRedisClient { client =>
       val txResult = Await.result(
-        client.transaction(
-          Seq(HSet(foo, boo, moo), Get(foo), HDel(foo, Seq(boo)))))
+        client
+          .transaction(Seq(HSet(foo, boo, moo), Get(foo), HDel(foo, Seq(boo)))))
       txResult.toList match {
         case Seq(IntegerReply(1), ErrorReply(message), IntegerReply(1)) =>
           // TODO: the exact error message varies in different versions of redis. fix this later
@@ -90,8 +90,8 @@ final class TransactionClientIntegrationSuite extends RedisClientTest {
     RedisTest,
     ClientTest) {
     withRedisClient { client =>
-      val txResult = Await.result(
-        client.transaction(Seq(Set(foo, bar), Get(foo))))
+      val txResult = Await
+        .result(client.transaction(Seq(Set(foo, bar), Get(foo))))
       assert(ReplyFormat.toString(txResult.toList) == Seq("OK", "bar"))
     }
   }

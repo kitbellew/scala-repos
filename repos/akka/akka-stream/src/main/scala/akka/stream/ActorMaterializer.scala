@@ -376,8 +376,8 @@ final class ActorMaterializerSettings private (
       maxInputBufferSize: Int = this.maxInputBufferSize,
       dispatcher: String = this.dispatcher,
       supervisionDecider: Supervision.Decider = this.supervisionDecider,
-      subscriptionTimeoutSettings: StreamSubscriptionTimeoutSettings =
-        this.subscriptionTimeoutSettings,
+      subscriptionTimeoutSettings: StreamSubscriptionTimeoutSettings = this
+        .subscriptionTimeoutSettings,
       debugLogging: Boolean = this.debugLogging,
       outputBurstLimit: Int = this.outputBurstLimit,
       fuzzingMode: Boolean = this.fuzzingMode,
@@ -408,7 +408,8 @@ final class ActorMaterializerSettings private (
   def withInputBuffer(
       initialSize: Int,
       maxSize: Int): ActorMaterializerSettings = {
-    if (initialSize == this.initialInputBufferSize && maxSize == this.maxInputBufferSize)
+    if (initialSize == this.initialInputBufferSize && maxSize == this
+          .maxInputBufferSize)
       this
     else
       copy(initialInputBufferSize = initialSize, maxInputBufferSize = maxSize)

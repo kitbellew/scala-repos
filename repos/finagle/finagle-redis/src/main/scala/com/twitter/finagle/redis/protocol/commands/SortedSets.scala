@@ -209,8 +209,8 @@ case class ZRemRangeByRank(key: ChannelBuffer, start: Long, stop: Long)
 }
 object ZRemRangeByRank {
   def apply(args: Seq[Array[Byte]]) = {
-    val list = BytesToString.fromList(
-      trimList(args, 3, "ZREMRANGEBYRANK requires 3 arguments"))
+    val list = BytesToString
+      .fromList(trimList(args, 3, "ZREMRANGEBYRANK requires 3 arguments"))
     val key = ChannelBuffers.wrappedBuffer(args(0))
     val start = RequireClientProtocol.safe {
       NumberFormat.toInt(list(1))
@@ -233,8 +233,8 @@ case class ZRemRangeByScore(key: ChannelBuffer, min: ZInterval, max: ZInterval)
 }
 object ZRemRangeByScore {
   def apply(args: Seq[Array[Byte]]) = {
-    val list = BytesToString.fromList(
-      trimList(args, 3, "ZREMRANGEBYSCORE requires 3 arguments"))
+    val list = BytesToString
+      .fromList(trimList(args, 3, "ZREMRANGEBYSCORE requires 3 arguments"))
     val key = ChannelBuffers.wrappedBuffer(args(0))
     val min = ZInterval(list(1))
     val max = ZInterval(list(2))
@@ -361,9 +361,12 @@ object ZUnionStore extends ZStoreCompanion {
   */
 case class ZRangeResults(entries: Array[ChannelBuffer], scores: Array[Double]) {
   def asTuples(): Seq[(ChannelBuffer, Double)] =
-    (entries, scores).zipped.map { (entry, score) =>
-      (entry, score)
-    }.toSeq
+    (entries, scores)
+      .zipped
+      .map { (entry, score) =>
+        (entry, score)
+      }
+      .toSeq
 }
 object ZRangeResults {
   def apply(tuples: Seq[(ChannelBuffer, ChannelBuffer)]): ZRangeResults = {
@@ -433,14 +436,18 @@ sealed trait StrictZMembersCommand extends ZMembersCommand {
     RequireClientProtocol(member != null, "Empty member found")
   }
   def membersByteArray: Seq[Array[Byte]] = {
-    members.map { member =>
-      Seq(StringToBytes(member.score.toString), member.member.array)
-    }.flatten
+    members
+      .map { member =>
+        Seq(StringToBytes(member.score.toString), member.member.array)
+      }
+      .flatten
   }
   def membersChannelBuffers: Seq[ChannelBuffer] = {
-    members.map { member =>
-      Seq(StringToChannelBuffer(member.score.toString), member.member)
-    }.flatten
+    members
+      .map { member =>
+        Seq(StringToChannelBuffer(member.score.toString), member.member)
+      }
+      .flatten
   }
 }
 

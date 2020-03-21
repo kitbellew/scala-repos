@@ -1864,6 +1864,7 @@ object Boxed {
          |a large, but fixed, supply of unique wrapper types to box values in
          |order to control which serialization is used.  Exhausting this supply
          |means that you happen to have a very complex Scalding job that uses
-         |ordered serialization for a very large number of diverse types""".stripMargin)
+         |ordered serialization for a very large number of diverse types"""
+            .stripMargin)
     }
 }

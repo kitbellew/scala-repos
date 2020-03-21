@@ -92,8 +92,9 @@ class ScalaCompositeTypeValidator(
           }
         }
 
-      val helper: PsiSearchHelper = PsiSearchHelper.SERVICE.getInstance(
-        directory.getProject)
+      val helper: PsiSearchHelper = PsiSearchHelper
+        .SERVICE
+        .getInstance(directory.getProject)
       helper.processAllFilesWithWord(
         word,
         GlobalSearchScopesCore.directoryScope(directory, true),
@@ -113,12 +114,10 @@ class ScalaCompositeTypeValidator(
   }
 
   private def messageForTypeAliasMember(name: String) =
-    ScalaBundle.message(
-      "introduced.typealias.will.conflict.with.type.name",
-      name)
+    ScalaBundle
+      .message("introduced.typealias.will.conflict.with.type.name", name)
 
   private def messageForClassMember(name: String) =
-    ScalaBundle.message(
-      "introduced.typealias.will.conflict.with.class.name",
-      name)
+    ScalaBundle
+      .message("introduced.typealias.will.conflict.with.class.name", name)
 }

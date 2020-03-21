@@ -60,10 +60,12 @@ trait MiscDirectives {
   def selectPreferredLanguage(
       first: Language,
       more: Language*): Directive1[Language] =
-    BasicDirectives.extractRequest.map { request ⇒
-      LanguageNegotiator(request.headers)
-        .pickLanguage(first :: List(more: _*)) getOrElse first
-    }
+    BasicDirectives
+      .extractRequest
+      .map { request ⇒
+        LanguageNegotiator(request.headers)
+          .pickLanguage(first :: List(more: _*)) getOrElse first
+      }
 }
 
 object MiscDirectives extends MiscDirectives {

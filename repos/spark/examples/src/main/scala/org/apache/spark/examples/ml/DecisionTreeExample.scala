@@ -169,7 +169,8 @@ object DecisionTreeExample {
       case "libsvm" =>
         expectedNumFeatures match {
           case Some(numFeatures) =>
-            sqlContext.read
+            sqlContext
+              .read
               .option("numFeatures", numFeatures.toString)
               .format("libsvm")
               .load(path)
@@ -308,7 +309,9 @@ object DecisionTreeExample {
     // Get the trained Decision Tree from the fitted PipelineModel
     algo match {
       case "classification" =>
-        val treeModel = pipelineModel.stages.last
+        val treeModel = pipelineModel
+          .stages
+          .last
           .asInstanceOf[DecisionTreeClassificationModel]
         if (treeModel.numNodes < 20) {
           println(treeModel.toDebugString) // Print full model.
@@ -316,7 +319,9 @@ object DecisionTreeExample {
           println(treeModel) // Print model summary.
         }
       case "regression" =>
-        val treeModel = pipelineModel.stages.last
+        val treeModel = pipelineModel
+          .stages
+          .last
           .asInstanceOf[DecisionTreeRegressionModel]
         if (treeModel.numNodes < 20) {
           println(treeModel.toDebugString) // Print full model.

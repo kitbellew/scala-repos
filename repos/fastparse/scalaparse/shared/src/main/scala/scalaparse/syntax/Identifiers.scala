@@ -32,9 +32,8 @@ object Identifiers {
       CharsWhile(_ == '_', min = 0) ~ CharsWhile(c =>
         NonLetterDigitId.contains(c) || c.isLetter || c.isDigit))
     P(
-      IdUnderscoreChunk.rep ~ (
-        CharsWhile(_ == '_') ~ CharsWhile(isOpChar, min = 0)
-      ).?)
+      IdUnderscoreChunk
+        .rep ~ (CharsWhile(_ == '_') ~ CharsWhile(isOpChar, min = 0)).?)
   }
 
   val alphaKeywords = Seq(

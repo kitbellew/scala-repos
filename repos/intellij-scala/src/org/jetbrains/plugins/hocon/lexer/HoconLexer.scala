@@ -179,7 +179,8 @@ class HoconLexer extends LexerBase {
     def matchToken(seq: CharSequence, state: State) =
       if (seq.startsWith("\"\"\"")) {
         val strWithoutOpening = seq.subSequence(3, seq.length)
-        val length = HoconConstants.MultilineStringEnd
+        val length = HoconConstants
+          .MultilineStringEnd
           .findFirstMatchIn(strWithoutOpening)
           .map(m => m.end + 3)
           .getOrElse(seq.length)
@@ -253,7 +254,8 @@ class HoconLexer extends LexerBase {
     val seq = input.subSequence(tokenStart, endOffset)
     if (seq.length > 0) {
 
-      val TokenMatch(newToken, length, newState) = matchers.iterator
+      val TokenMatch(newToken, length, newState) = matchers
+        .iterator
         .flatMap(_.matchToken(seq, stateAfter))
         .next()
 

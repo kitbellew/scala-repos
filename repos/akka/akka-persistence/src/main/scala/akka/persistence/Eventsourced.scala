@@ -54,8 +54,8 @@ private[persistence] trait Eventsourced
   private val extension = Persistence(context.system)
 
   private[persistence] lazy val journal = extension.journalFor(journalPluginId)
-  private[persistence] lazy val snapshotStore = extension.snapshotStoreFor(
-    snapshotPluginId)
+  private[persistence] lazy val snapshotStore = extension
+    .snapshotStoreFor(snapshotPluginId)
 
   private val instanceId: Int = Eventsourced.instanceIdCounter.getAndIncrement()
   private val writerUuid = UUID.randomUUID.toString

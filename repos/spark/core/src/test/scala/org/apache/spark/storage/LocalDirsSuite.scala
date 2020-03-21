@@ -37,10 +37,9 @@ class LocalDirsSuite extends SparkFunSuite with BeforeAndAfter {
     "Utils.getLocalDir() returns a valid directory, even if some local dirs are missing") {
     // Regression test for SPARK-2974
     assert(!new File("/NONEXISTENT_DIR").exists())
-    val conf = new SparkConf(false)
-      .set(
-        "spark.local.dir",
-        s"/NONEXISTENT_PATH,${System.getProperty("java.io.tmpdir")}")
+    val conf = new SparkConf(false).set(
+      "spark.local.dir",
+      s"/NONEXISTENT_PATH,${System.getProperty("java.io.tmpdir")}")
     assert(new File(Utils.getLocalDir(conf)).exists())
   }
 

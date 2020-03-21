@@ -48,8 +48,8 @@ private[ml] case class ParsedRFormula(label: ColumnRef, terms: Seq[Term]) {
             includedTerms = includedTerms.filter(_ != Seq(inner.value))
           case ColumnInteraction(cols) =>
             val fromInteraction = expandInteraction(schema, cols).map(_.toSet)
-            includedTerms = includedTerms.filter(t =>
-              !fromInteraction.contains(t.toSet))
+            includedTerms = includedTerms
+              .filter(t => !fromInteraction.contains(t.toSet))
           case Dot =>
             // e.g. "- .", which removes all first-order terms
             includedTerms = includedTerms.filter {
@@ -118,7 +118,8 @@ private[ml] case class ParsedRFormula(label: ColumnRef, terms: Seq[Term]) {
 
   // the dot operator excludes complex column types
   private def expandDot(schema: StructType): Seq[String] = {
-    schema.fields
+    schema
+      .fields
       .filter(
         _.dataType match {
           case _: NumericType | StringType | BooleanType | _: VectorUDT =>

@@ -73,20 +73,22 @@ trait ScInterpolated extends ScalaPsiElement {
   }
 
   def getInjections: Array[ScExpression] = {
-    getNode.getChildren(null).flatMap {
-      _.getPsi match {
-        case a: ScBlockExpr =>
-          Array[ScExpression](a)
-        case _: ScInterpolatedStringPartReference =>
-          Array[ScExpression]()
-        case _: ScInterpolatedPrefixReference =>
-          Array[ScExpression]()
-        case b: ScReferenceExpression =>
-          Array[ScExpression](b)
-        case _ =>
-          Array[ScExpression]()
+    getNode
+      .getChildren(null)
+      .flatMap {
+        _.getPsi match {
+          case a: ScBlockExpr =>
+            Array[ScExpression](a)
+          case _: ScInterpolatedStringPartReference =>
+            Array[ScExpression]()
+          case _: ScInterpolatedPrefixReference =>
+            Array[ScExpression]()
+          case b: ScReferenceExpression =>
+            Array[ScExpression](b)
+          case _ =>
+            Array[ScExpression]()
+        }
       }
-    }
   }
 
   def getStringParts(l: ScInterpolated): Seq[String] = {
@@ -115,8 +117,8 @@ trait ScInterpolated extends ScalaPsiElement {
             case _ =>
               result += emptyString
           }
-        case ScalaTokenTypes.tINTERPOLATED_STRING_INJECTION |
-            ScalaTokenTypes.tINTERPOLATED_STRING_END =>
+        case ScalaTokenTypes.tINTERPOLATED_STRING_INJECTION | ScalaTokenTypes
+              .tINTERPOLATED_STRING_END =>
           val prev = child.getTreePrev
           if (prev != null)
             prev.getElementType match {

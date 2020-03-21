@@ -149,23 +149,27 @@ class LabelledMacros(val c: whitebox.Context)
       if (tpeString.trim.isEmpty)
         Array.empty[(Type, Type)]
       else
-        tpeString.split(",").map(_.trim).map(_.split("->").map(_.trim)).map {
-          case Array(key, value) =>
-            val keyTpe = parseLiteralType(key)
-              .getOrElse(
+        tpeString
+          .split(",")
+          .map(_.trim)
+          .map(_.split("->").map(_.trim))
+          .map {
+            case Array(key, value) =>
+              val keyTpe = parseLiteralType(key).getOrElse(
                 c.abort(c.enclosingPosition, s"Malformed literal type $key"))
 
-            val valueTpe = parseType(value)
-              .getOrElse(
+              val valueTpe = parseType(value).getOrElse(
                 c.abort(
                   c.enclosingPosition,
                   s"Malformed literal or standard type $value"))
 
-            (keyTpe, valueTpe)
+              (keyTpe, valueTpe)
 
-          case other =>
-            c.abort(c.enclosingPosition, s"Malformed $variety type $tpeString")
-        }
+            case other =>
+              c.abort(
+                c.enclosingPosition,
+                s"Malformed $variety type $tpeString")
+          }
 
     val labelledTpe =
       fields.foldRight(nilTpe) {
@@ -193,13 +197,15 @@ class LabelledMacros(val c: whitebox.Context)
       if (tpeString.trim.isEmpty)
         Array.empty[Type]
       else
-        tpeString.split(",").map(_.trim).map { elemTypeStr =>
-          parseType(elemTypeStr)
-            .getOrElse(
+        tpeString
+          .split(",")
+          .map(_.trim)
+          .map { elemTypeStr =>
+            parseType(elemTypeStr).getOrElse(
               c.abort(
                 c.enclosingPosition,
                 s"Malformed literal or standard type $elemTypeStr"))
-        }
+          }
 
     val tpe =
       elemTypes.foldRight(nilTpe) {

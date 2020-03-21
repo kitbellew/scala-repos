@@ -56,7 +56,10 @@ class TlsEndpointVerificationSpec
         timeout) { response ⇒
         response.status shouldEqual StatusCodes.OK
         val tlsInfo = response.header[`Tls-Session-Info`].get
-        tlsInfo.peerPrincipal.get.getName shouldEqual "CN=akka.example.org,O=Internet Widgits Pty Ltd,ST=Some-State,C=AU"
+        tlsInfo
+          .peerPrincipal
+          .get
+          .getName shouldEqual "CN=akka.example.org,O=Internet Widgits Pty Ltd,ST=Some-State,C=AU"
       }
     }
     "not accept certificates for foreign hosts" in {
@@ -131,10 +134,8 @@ class TlsEndpointVerificationSpec
 
     val serverSideTls = Http()
       .sslTlsStage(ExampleHttpContexts.exampleServerContext, Server)
-    val clientSideTls = Http().sslTlsStage(
-      clientContext,
-      Client,
-      Some(hostname -> 8080))
+    val clientSideTls = Http()
+      .sslTlsStage(clientContext, Client, Some(hostname -> 8080))
 
     val server = Http()
       .serverLayer()
@@ -142,9 +143,7 @@ class TlsEndpointVerificationSpec
       .reversed
       .join(Flow[HttpRequest].map(handler))
 
-    val client = Http()
-      .clientLayer(Host(hostname, 8080))
-      .atop(clientSideTls)
+    val client = Http().clientLayer(Host(hostname, 8080)).atop(clientSideTls)
 
     client.join(server)
   }

@@ -63,15 +63,19 @@ object Cross {
         val (add, exclude) =
           if (home.exists) {
             val instance = ScalaInstance(home)(state.classLoaderCache.apply _)
-            state.log.info(
-              "Setting Scala home to " + home + " with actual version " + instance.actualVersion)
+            state
+              .log
+              .info(
+                "Setting Scala home to " + home + " with actual version " + instance
+                  .actualVersion)
             val version =
               if (resolveVersion.isEmpty)
                 instance.actualVersion
               else
                 resolveVersion
-            state.log.info(
-              "\tand using " + version + " for resolving dependencies.")
+            state
+              .log
+              .info("\tand using " + version + " for resolving dependencies.")
             val settings = Seq(
               scalaVersion in GlobalScope :== version,
               scalaHome in GlobalScope :== Some(home),
@@ -90,8 +94,8 @@ object Cross {
             (settings, excludeKeys(Set(scalaVersion.key, scalaHome.key)))
           }
 
-        val isForceGc = getOpt(
-          Keys.forcegc in Global) getOrElse GCUtil.defaultForceGarbageCollection
+        val isForceGc = getOpt(Keys.forcegc in Global) getOrElse GCUtil
+          .defaultForceGarbageCollection
         // This is how to get the interval, but ignore it, and just forcegc
         // val gcInterval = getOpt(Keys.minForcegcInterval in Global) getOrElse GCUtil.defaultMinForcegcInterval
         if (isForceGc) {
@@ -113,9 +117,8 @@ object Cross {
 
   // Creates a delegate for a scoped key that pulls the setting from the global scope.
   private[this] def delegateToGlobal[T](key: ScopedKey[T]): Setting[_] =
-    SettingKey[T](key.key) in key.scope := (
-      SettingKey[T](key.key) in GlobalScope
-    ).value
+    SettingKey[T](key.key) in key
+      .scope := (SettingKey[T](key.key) in GlobalScope).value
 
   @deprecated("No longer used.", "0.13.0")
   def crossExclude(s: Setting[_]): Boolean =
@@ -141,9 +144,8 @@ object Cross {
       import x._
       val versions = crossVersions(state)
       val current =
-        scalaVersion in currentRef get structure.data map (
-          SwitchCommand + " " + _
-        ) toList;
+        scalaVersion in currentRef get structure
+          .data map (SwitchCommand + " " + _) toList;
       if (versions.isEmpty)
         command :: state
       else {

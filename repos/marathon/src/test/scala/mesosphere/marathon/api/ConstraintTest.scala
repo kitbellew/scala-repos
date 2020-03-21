@@ -78,27 +78,31 @@ class ConstraintTest extends MarathonSpec with Matchers {
 
     shouldMatch(
       """["hostname","UNIQUE"]""",
-      Constraint.newBuilder
+      Constraint
+        .newBuilder
         .setField("hostname")
         .setOperator(Constraint.Operator.UNIQUE)
         .build)
     shouldMatch(
       """["rackid","GROUP_BY","1"]""",
-      Constraint.newBuilder
+      Constraint
+        .newBuilder
         .setField("rackid")
         .setOperator(Constraint.Operator.GROUP_BY)
         .setValue("1")
         .build)
     shouldMatch(
       """["jdk","LIKE","7"]""",
-      Constraint.newBuilder
+      Constraint
+        .newBuilder
         .setField("jdk")
         .setOperator(Constraint.Operator.LIKE)
         .setValue("7")
         .build)
     shouldMatch(
       """["jdk","UNLIKE","7"]""",
-      Constraint.newBuilder
+      Constraint
+        .newBuilder
         .setField("jdk")
         .setOperator(Constraint.Operator.UNLIKE)
         .setValue("7")

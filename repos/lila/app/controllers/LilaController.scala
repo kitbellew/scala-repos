@@ -27,8 +27,8 @@ private[controllers] trait LilaController
 
   protected val logger = lila.log("controller")
 
-  protected implicit val LilaResultZero = Zero.instance[Result](
-    Results.NotFound)
+  protected implicit val LilaResultZero = Zero
+    .instance[Result](Results.NotFound)
 
   protected implicit val LilaHtmlMonoid =
     lila.app.templating.Environment.LilaHtmlMonoid
@@ -114,9 +114,15 @@ private[controllers] trait LilaController
       f: Context => UserModel => Fu[Result]): Action[A] =
     Action.async(p) { req =>
       reqToCtx(req) flatMap { implicit ctx =>
-        ctx.me.fold(authenticationFailed) { me =>
-          Env.i18n.requestHandler.forUser(req, ctx.me).fold(f(ctx)(me))(fuccess)
-        }
+        ctx
+          .me
+          .fold(authenticationFailed) { me =>
+            Env
+              .i18n
+              .requestHandler
+              .forUser(req, ctx.me)
+              .fold(f(ctx)(me))(fuccess)
+          }
       }
     }
 
@@ -239,17 +245,20 @@ private[controllers] trait LilaController
 
   protected def FormResult[A](form: Form[A])(op: A => Fu[Result])(implicit
       req: Request[_]): Fu[Result] =
-    form.bindFromRequest
+    form
+      .bindFromRequest
       .fold(form => fuccess(BadRequest(form.errors mkString "\n")), op)
 
   protected def FormFuResult[A, B: Writeable: ContentTypeOf](form: Form[A])(
       err: Form[A] => Fu[B])(op: A => Fu[Result])(implicit req: Request[_]) =
-    form.bindFromRequest.fold(
-      form =>
-        err(form) map {
-          BadRequest(_)
-        },
-      data => op(data))
+    form
+      .bindFromRequest
+      .fold(
+        form =>
+          err(form) map {
+            BadRequest(_)
+          },
+        data => op(data))
 
   protected def FuRedirect(fua: Fu[Call]) =
     fua map {
@@ -348,7 +357,9 @@ private[controllers] trait LilaController
     Forbidden("no permission")
 
   protected def ensureSessionId(req: RequestHeader)(res: Result): Result =
-    req.session.data
+    req
+      .session
+      .data
       .contains(LilaCookie.sessionId)
       .fold(res, res withCookies LilaCookie.makeSessionId(req))
 
@@ -382,38 +393,42 @@ private[controllers] trait LilaController
   private def pageDataBuilder(
       ctx: UserContext,
       hasFingerprint: Boolean): Fu[PageData] =
-    ctx.me.fold(fuccess(PageData anon blindMode(ctx))) { me =>
-      val isPage = HTTPRequest.isSynchronousHttp(ctx.req)
-      (Env.pref.api getPref me) zip {
-        isPage ?? {
-          import lila.hub.actorApi.relation._
-          import akka.pattern.ask
-          import makeTimeout.short
-          (
-            Env.hub.actor.relation ? GetOnlineFriends(me.id) map {
-              case OnlineFriends(users) =>
-                users
-            } recover {
-              case _ =>
-                Nil
-            }
-          ) zip
-            Env.team.api.nbRequests(me.id) zip
-            Env.message.api.unreadIds(me.id) zip
-            Env.challenge.api.countInFor(me.id)
+    ctx
+      .me
+      .fold(fuccess(PageData anon blindMode(ctx))) { me =>
+        val isPage = HTTPRequest.isSynchronousHttp(ctx.req)
+        (Env.pref.api getPref me) zip {
+          isPage ?? {
+            import lila.hub.actorApi.relation._
+            import akka.pattern.ask
+            import makeTimeout.short
+            (
+              Env.hub.actor.relation ? GetOnlineFriends(me.id) map {
+                case OnlineFriends(users) =>
+                  users
+              } recover {
+                case _ =>
+                  Nil
+              }
+            ) zip
+              Env.team.api.nbRequests(me.id) zip
+              Env.message.api.unreadIds(me.id) zip
+              Env.challenge.api.countInFor(me.id)
+          }
+        } map {
+          case (
+                pref,
+                (((friends, teamNbRequests), messageIds), nbChallenges)) =>
+            PageData(
+              friends,
+              teamNbRequests,
+              messageIds.size,
+              nbChallenges,
+              pref,
+              blindMode = blindMode(ctx),
+              hasFingerprint = hasFingerprint)
         }
-      } map {
-        case (pref, (((friends, teamNbRequests), messageIds), nbChallenges)) =>
-          PageData(
-            friends,
-            teamNbRequests,
-            messageIds.size,
-            nbChallenges,
-            pref,
-            blindMode = blindMode(ctx),
-            hasFingerprint = hasFingerprint)
       }
-    }
 
   private def blindMode(implicit ctx: UserContext) =
     ctx.req.cookies.get(Env.api.Accessibility.blindCookieName) ?? { c =>

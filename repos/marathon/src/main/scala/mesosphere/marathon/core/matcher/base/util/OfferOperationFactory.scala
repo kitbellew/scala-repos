@@ -37,12 +37,17 @@ class OfferOperationFactory(
 
   /** Create a launch operation for the given taskInfo. */
   def launch(taskInfo: Mesos.TaskInfo): Mesos.Offer.Operation = {
-    val launch = Mesos.Offer.Operation.Launch
+    val launch = Mesos
+      .Offer
+      .Operation
+      .Launch
       .newBuilder()
       .addTaskInfos(taskInfo)
       .build()
 
-    Mesos.Offer.Operation
+    Mesos
+      .Offer
+      .Operation
       .newBuilder()
       .setType(Mesos.Offer.Operation.Type.LAUNCH)
       .setLaunch(launch)
@@ -55,7 +60,8 @@ class OfferOperationFactory(
       resources: Iterable[Mesos.Resource]): Mesos.Offer.Operation = {
     import scala.collection.JavaConverters._
     val reservedResources = resources.map { resource =>
-      Mesos.Resource
+      Mesos
+        .Resource
         .newBuilder(resource)
         .setRole(role)
         .setReservation(
@@ -67,12 +73,17 @@ class OfferOperationFactory(
         .build()
     }
 
-    val reserve = Mesos.Offer.Operation.Reserve
+    val reserve = Mesos
+      .Offer
+      .Operation
+      .Reserve
       .newBuilder()
       .addAllResources(reservedResources.asJava)
       .build()
 
-    Mesos.Offer.Operation
+    Mesos
+      .Offer
+      .Operation
       .newBuilder()
       .setType(Mesos.Offer.Operation.Type.RESERVE)
       .setReserve(reserve)
@@ -87,33 +98,44 @@ class OfferOperationFactory(
 
     val volumes: Iterable[Mesos.Resource] = localVolumes.map { vol =>
       val disk = {
-        val persistence = Mesos.Resource.DiskInfo.Persistence
+        val persistence = Mesos
+          .Resource
+          .DiskInfo
+          .Persistence
           .newBuilder()
           .setId(vol.id.idString)
 
-        val volume = Mesos.Volume
+        val volume = Mesos
+          .Volume
           .newBuilder()
           .setContainerPath(vol.persistentVolume.containerPath)
           .setMode(vol.persistentVolume.mode)
 
-        Mesos.Resource.DiskInfo
+        Mesos
+          .Resource
+          .DiskInfo
           .newBuilder()
           .setPersistence(persistence)
           .setVolume(volume)
       }
 
-      val reservation = Mesos.Resource.ReservationInfo
+      val reservation = Mesos
+        .Resource
+        .ReservationInfo
         .newBuilder()
         .setPrincipal(principal)
         .setLabels(TaskLabels.labelsForTask(frameworkId, taskId).mesosLabels)
         .build()
 
-      Mesos.Resource
+      Mesos
+        .Resource
         .newBuilder()
         .setName("disk")
         .setType(Mesos.Value.Type.SCALAR)
         .setScalar(
-          Mesos.Value.Scalar
+          Mesos
+            .Value
+            .Scalar
             .newBuilder()
             .setValue(vol.persistentVolume.persistent.size.toDouble)
             .build())
@@ -123,11 +145,16 @@ class OfferOperationFactory(
         .build()
     }
 
-    val create = Mesos.Offer.Operation.Create
+    val create = Mesos
+      .Offer
+      .Operation
+      .Create
       .newBuilder()
       .addAllVolumes(volumes.asJava)
 
-    Mesos.Offer.Operation
+    Mesos
+      .Offer
+      .Operation
       .newBuilder()
       .setType(Mesos.Offer.Operation.Type.CREATE)
       .setCreate(create)

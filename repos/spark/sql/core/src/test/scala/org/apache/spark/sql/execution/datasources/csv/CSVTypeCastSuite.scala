@@ -32,13 +32,15 @@ class CSVTypeCastSuite extends SparkFunSuite {
     val decimalValues = Seq(10.05, 1000.01, 158058049.001)
     val decimalType = new DecimalType()
 
-    stringValues.zip(decimalValues).foreach {
-      case (strVal, decimalVal) =>
-        val decimalValue = new BigDecimal(decimalVal.toString)
-        assert(
-          CSVTypeCast.castTo(strVal, decimalType) ===
-            Decimal(decimalValue, decimalType.precision, decimalType.scale))
-    }
+    stringValues
+      .zip(decimalValues)
+      .foreach {
+        case (strVal, decimalVal) =>
+          val decimalValue = new BigDecimal(decimalVal.toString)
+          assert(
+            CSVTypeCast.castTo(strVal, decimalType) ===
+              Decimal(decimalValue, decimalType.precision, decimalType.scale))
+      }
   }
 
   test("Can parse escaped characters") {
@@ -63,8 +65,9 @@ class CSVTypeCastSuite extends SparkFunSuite {
       CSVTypeCast.toChar("""\1""")
     }
     assert(
-      exception.getMessage.contains(
-        "Unsupported special character for delimiter"))
+      exception
+        .getMessage
+        .contains("Unsupported special character for delimiter"))
   }
 
   test("Nullable types are handled") {
@@ -101,8 +104,8 @@ class CSVTypeCastSuite extends SparkFunSuite {
         DateTimeUtils.stringToTime(timestamp).getTime * 1000L)
     assert(
       CSVTypeCast.castTo("2015-01-01", DateType) ==
-        DateTimeUtils.millisToDays(
-          DateTimeUtils.stringToTime("2015-01-01").getTime))
+        DateTimeUtils
+          .millisToDays(DateTimeUtils.stringToTime("2015-01-01").getTime))
   }
 
   test("Float and Double Types are cast correctly with Locale") {

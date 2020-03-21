@@ -75,7 +75,8 @@ trait PatternMatching
               // TODO: this should never happen; error should've been reported during type checking
               reporter.error(
                 tree.pos,
-                "error during expansion of this match (this is a scalac bug).\nThe underlying error was: " + x.msg)
+                "error during expansion of this match (this is a scalac bug).\nThe underlying error was: " + x
+                  .msg)
               translated
           }
         case Try(block, catches, finalizer) =>
@@ -253,17 +254,19 @@ trait Interface extends ast.TreeDSL {
           case i @ Ident(_) =>
             from contains i.symbol
           case tt: TypeTree =>
-            tt.tpe.exists {
-              case SingleType(_, sym) =>
-                (from contains sym) && {
-                  if (!toIdents)
-                    global.devWarning(
-                      s"Unexpected substitution of non-Ident into TypeTree `$tt`, subst= $this")
-                  true
-                }
-              case _ =>
-                false
-            }
+            tt
+              .tpe
+              .exists {
+                case SingleType(_, sym) =>
+                  (from contains sym) && {
+                    if (!toIdents)
+                      global.devWarning(
+                        s"Unexpected substitution of non-Ident into TypeTree `$tt`, subst= $this")
+                    true
+                  }
+                case _ =>
+                  false
+              }
           case _ =>
             false
         }
@@ -311,10 +314,12 @@ trait Interface extends ast.TreeDSL {
         }
         if (containsSym) {
           if (to.forall(_.isInstanceOf[Ident]))
-            tree.duplicate.substituteSymbols(
-              from,
-              to.map(_.symbol)
-            ) // SI-7459 catches `case t => new t.Foo`
+            tree
+              .duplicate
+              .substituteSymbols(
+                from,
+                to.map(_.symbol)
+              ) // SI-7459 catches `case t => new t.Foo`
           else
             substIdentsForTrees.transform(tree)
         } else
@@ -346,20 +351,16 @@ trait Interface extends ast.TreeDSL {
 object PatternMatchingStats {
   val patmatNanos = Statistics.newTimer("time spent in patmat", "patmat")
   val patmatAnaDPLL = Statistics.newSubTimer("  of which DPLL", patmatNanos)
-  val patmatCNF = Statistics.newSubTimer(
-    "  of which in CNF conversion",
-    patmatNanos)
+  val patmatCNF = Statistics
+    .newSubTimer("  of which in CNF conversion", patmatNanos)
   val patmatCNFSizes =
-    Statistics.newQuantMap[Int, Statistics.Counter](
-      "  CNF size counts",
-      "patmat")(Statistics.newCounter(""))
-  val patmatAnaVarEq = Statistics.newSubTimer(
-    "  of which variable equality",
-    patmatNanos)
-  val patmatAnaExhaust = Statistics.newSubTimer(
-    "  of which in exhaustivity",
-    patmatNanos)
-  val patmatAnaReach = Statistics.newSubTimer(
-    "  of which in unreachability",
-    patmatNanos)
+    Statistics
+      .newQuantMap[Int, Statistics.Counter]("  CNF size counts", "patmat")(
+        Statistics.newCounter(""))
+  val patmatAnaVarEq = Statistics
+    .newSubTimer("  of which variable equality", patmatNanos)
+  val patmatAnaExhaust = Statistics
+    .newSubTimer("  of which in exhaustivity", patmatNanos)
+  val patmatAnaReach = Statistics
+    .newSubTimer("  of which in unreachability", patmatNanos)
 }

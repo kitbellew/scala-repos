@@ -202,10 +202,13 @@ class AFTSurvivalRegression @Since("1.6.0") (
     * and put it in an RDD with strong types.
     */
   protected[ml] def extractAFTPoints(dataset: DataFrame): RDD[AFTPoint] = {
-    dataset.select($(featuresCol), $(labelCol), $(censorCol)).rdd.map {
-      case Row(features: Vector, label: Double, censor: Double) =>
-        AFTPoint(features, label, censor)
-    }
+    dataset
+      .select($(featuresCol), $(labelCol), $(censorCol))
+      .rdd
+      .map {
+        case Row(features: Vector, label: Double, censor: Double) =>
+          AFTPoint(features, label, censor)
+      }
   }
 
   @Since("1.6.0")
@@ -352,8 +355,7 @@ class AFTSurvivalRegressionModel private[ml] (
   override def copy(extra: ParamMap): AFTSurvivalRegressionModel = {
     copyValues(
       new AFTSurvivalRegressionModel(uid, coefficients, intercept, scale),
-      extra)
-      .setParent(parent)
+      extra).setParent(parent)
   }
 
   @Since("1.6.0")
@@ -407,7 +409,8 @@ object AFTSurvivalRegressionModel
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
+      val data = sqlContext
+        .read
         .parquet(dataPath)
         .select("coefficients", "intercept", "scale")
         .head()

@@ -43,8 +43,9 @@ private[sql] class ExecutionPage(parent: SQLTab)
         .map { executionUIData =>
           val currentTime = System.currentTimeMillis()
           val duration =
-            executionUIData.completionTime.getOrElse(
-              currentTime) - executionUIData.submissionTime
+            executionUIData
+              .completionTime
+              .getOrElse(currentTime) - executionUIData.submissionTime
 
           val summary =
             <div>
@@ -64,13 +65,16 @@ private[sql] class ExecutionPage(parent: SQLTab)
                 <li>
                 <strong>Running Jobs: </strong>
                 {
-                  executionUIData.runningJobs.sorted.map { jobId =>
-                    <a href={
-                      jobURL(jobId)
-                    }>{
-                      jobId.toString
-                    }</a><span>&nbsp;</span>
-                  }
+                  executionUIData
+                    .runningJobs
+                    .sorted
+                    .map { jobId =>
+                      <a href={
+                        jobURL(jobId)
+                      }>{
+                        jobId.toString
+                      }</a><span>&nbsp;</span>
+                    }
                 }
               </li>
               }
@@ -80,13 +84,16 @@ private[sql] class ExecutionPage(parent: SQLTab)
                 <li>
                 <strong>Succeeded Jobs: </strong>
                 {
-                  executionUIData.succeededJobs.sorted.map { jobId =>
-                    <a href={
-                      jobURL(jobId)
-                    }>{
-                      jobId.toString
-                    }</a><span>&nbsp;</span>
-                  }
+                  executionUIData
+                    .succeededJobs
+                    .sorted
+                    .map { jobId =>
+                      <a href={
+                        jobURL(jobId)
+                      }>{
+                        jobId.toString
+                      }</a><span>&nbsp;</span>
+                    }
                 }
               </li>
               }
@@ -96,13 +103,16 @@ private[sql] class ExecutionPage(parent: SQLTab)
                 <li>
                 <strong>Failed Jobs: </strong>
                 {
-                  executionUIData.failedJobs.sorted.map { jobId =>
-                    <a href={
-                      jobURL(jobId)
-                    }>{
-                      jobId.toString
-                    }</a><span>&nbsp;</span>
-                  }
+                  executionUIData
+                    .failedJobs
+                    .sorted
+                    .map { jobId =>
+                      <a href={
+                        jobURL(jobId)
+                      }>{
+                        jobId.toString
+                      }</a><span>&nbsp;</span>
+                    }
                 }
               </li>
               }
@@ -152,14 +162,16 @@ private[sql] class ExecutionPage(parent: SQLTab)
   private def planVisualization(
       metrics: Map[Long, String],
       graph: SparkPlanGraph): Seq[Node] = {
-    val metadata = graph.allNodes.flatMap { node =>
-      val nodeId = s"plan-meta-data-${node.id}"
-      <div id={
-        nodeId
-      }>{
-        node.desc
-      }</div>
-    }
+    val metadata = graph
+      .allNodes
+      .flatMap { node =>
+        val nodeId = s"plan-meta-data-${node.id}"
+        <div id={
+          nodeId
+        }>{
+          node.desc
+        }</div>
+      }
 
     <div>
       <div id="plan-viz-graph"></div>

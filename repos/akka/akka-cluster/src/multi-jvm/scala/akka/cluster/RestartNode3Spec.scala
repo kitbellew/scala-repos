@@ -27,8 +27,8 @@ object RestartNode3MultiJvmSpec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false)
       .withFallback(
-        ConfigFactory.parseString(
-          "akka.cluster.auto-down-unreachable-after = off"))
+        ConfigFactory
+          .parseString("akka.cluster.auto-down-unreachable-after = off"))
       .withFallback(MultiNodeClusterSpec.clusterConfig))
 
   testTransport(on = true)
@@ -124,10 +124,13 @@ abstract class RestartNode3Spec
         Cluster(secondSystem).joinSeedNodes(seedNodes)
         awaitAssert(Cluster(secondSystem).readView.members.size should ===(3))
         awaitAssert(
-          Cluster(secondSystem).readView.members.collectFirst {
-            case m if m.address == Cluster(secondSystem).selfAddress ⇒
-              m.status
-          } should ===(Some(Joining)))
+          Cluster(secondSystem)
+            .readView
+            .members
+            .collectFirst {
+              case m if m.address == Cluster(secondSystem).selfAddress ⇒
+                m.status
+            } should ===(Some(Joining)))
       }
       enterBarrier("second-joined")
 
@@ -146,15 +149,21 @@ abstract class RestartNode3Spec
         awaitAssert(
           Cluster(restartedSecondSystem).readView.members.size should ===(3))
         awaitAssert(
-          Cluster(restartedSecondSystem).readView.members
+          Cluster(restartedSecondSystem)
+            .readView
+            .members
             .map(_.status) should ===(Set(Up)))
       }
       runOn(first, third) {
         awaitAssert {
           Cluster(system).readView.members.size should ===(3)
-          Cluster(system).readView.members.exists { m ⇒
-            m.address == secondUniqueAddress.address && m.uniqueAddress.uid != secondUniqueAddress.uid
-          }
+          Cluster(system)
+            .readView
+            .members
+            .exists { m ⇒
+              m.address == secondUniqueAddress
+                .address && m.uniqueAddress.uid != secondUniqueAddress.uid
+            }
         }
       }
       enterBarrier("second-restarted")

@@ -53,18 +53,20 @@ class MarathonStore[S <: MarathonState[_, S]](
       f: Update): Future[S] = {
     lockManager.executeSequentially(key) {
       log.debug(s"Modify $prefix$key")
-      val res = store.load(prefix + key).flatMap {
-        case Some(entity) =>
-          bytesRead.update(entity.bytes.length)
-          val updated = f(() => stateFromBytes(entity.bytes.toArray))
-          val updatedEntity = entity.withNewContent(updated.toProtoByteArray)
-          bytesWritten.update(updatedEntity.bytes.length)
-          store.update(updatedEntity)
-        case None =>
-          val created = f(() => newState()).toProtoByteArray
-          bytesWritten.update(created.length)
-          store.create(prefix + key, created)
-      }
+      val res = store
+        .load(prefix + key)
+        .flatMap {
+          case Some(entity) =>
+            bytesRead.update(entity.bytes.length)
+            val updated = f(() => stateFromBytes(entity.bytes.toArray))
+            val updatedEntity = entity.withNewContent(updated.toProtoByteArray)
+            bytesWritten.update(updatedEntity.bytes.length)
+            store.update(updatedEntity)
+          case None =>
+            val created = f(() => newState()).toProtoByteArray
+            bytesWritten.update(created.length)
+            store.create(prefix + key, created)
+        }
       res
         .map { entity =>
           val result = stateFromBytes(entity.bytes.toArray)

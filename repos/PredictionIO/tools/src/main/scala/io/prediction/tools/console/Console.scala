@@ -200,9 +200,11 @@ object Console extends Logging {
             }
         )
         note("")
-        cmd("build").text("Build an engine at the current directory.").action {
-          (_, c) => c.copy(commands = c.commands :+ "build")
-        } children (
+        cmd("build")
+          .text("Build an engine at the current directory.")
+          .action { (_, c) =>
+            c.copy(commands = c.commands :+ "build")
+          } children (
           opt[String]("sbt-extra") action { (x, c) =>
             c.copy(build = c.build.copy(sbtExtra = Some(x)))
           } text ("Extra command to pass to SBT when it builds your engine."),
@@ -268,7 +270,8 @@ object Console extends Logging {
             c.copy(common = c.common.copy(engineParamsKey = Some(x)))
           },
           opt[String]("json-extractor") action { (x, c) =>
-            c.copy(common = c.common
+            c.copy(common = c
+              .common
               .copy(jsonExtractor = JsonExtractorOption.withName(x)))
           } validate { x =>
             if (JsonExtractorOption.values.map(_.toString).contains(x)) {
@@ -303,7 +306,8 @@ object Console extends Logging {
             c.copy(common = c.common.copy(batch = x))
           } text ("Batch label of the run."),
           opt[String]("json-extractor") action { (x, c) =>
-            c.copy(common = c.common
+            c.copy(common = c
+              .common
               .copy(jsonExtractor = JsonExtractorOption.withName(x)))
           } validate { x =>
             if (JsonExtractorOption.values.map(_.toString).contains(x)) {
@@ -364,7 +368,8 @@ object Console extends Logging {
             c.copy(deploy = c.deploy.copy(logPrefix = Some(x)))
           },
           opt[String]("json-extractor") action { (x, c) =>
-            c.copy(common = c.common
+            c.copy(common = c
+              .common
               .copy(jsonExtractor = JsonExtractorOption.withName(x)))
           } validate { x =>
             if (JsonExtractorOption.values.map(_.toString).contains(x)) {
@@ -461,9 +466,11 @@ object Console extends Logging {
             c.copy(commands = c.commands :+ "status")
           }
         note("")
-        cmd("upgrade").text("Upgrade tool").action { (_, c) =>
-          c.copy(commands = c.commands :+ "upgrade")
-        } children (
+        cmd("upgrade")
+          .text("Upgrade tool")
+          .action { (_, c) =>
+            c.copy(commands = c.commands :+ "upgrade")
+          } children (
           arg[String]("<from version>") action { (x, c) =>
             c.copy(upgrade = c.upgrade.copy(from = x))
           } text ("The version upgraded from."),
@@ -478,12 +485,16 @@ object Console extends Logging {
           } text ("New App ID.")
         )
         note("")
-        cmd("app").text("Manage apps.\n").action { (_, c) =>
-          c.copy(commands = c.commands :+ "app")
-        } children (
-          cmd("new").text("Create a new app key to app ID mapping.").action {
-            (_, c) => c.copy(commands = c.commands :+ "new")
+        cmd("app")
+          .text("Manage apps.\n")
+          .action { (_, c) =>
+            c.copy(commands = c.commands :+ "app")
           } children (
+          cmd("new")
+            .text("Create a new app key to app ID mapping.")
+            .action { (_, c) =>
+              c.copy(commands = c.commands :+ "new")
+            } children (
             opt[Int]("id") action { (x, c) =>
               c.copy(app = c.app.copy(id = Some(x)))
             },
@@ -498,21 +509,27 @@ object Console extends Logging {
             }
           ),
           note(""),
-          cmd("list").text("List all apps.").action { (_, c) =>
-            c.copy(commands = c.commands :+ "list")
-          },
+          cmd("list")
+            .text("List all apps.")
+            .action { (_, c) =>
+              c.copy(commands = c.commands :+ "list")
+            },
           note(""),
-          cmd("show").text("Show details of an app.").action { (_, c) =>
-            c.copy(commands = c.commands :+ "show")
-          } children (
+          cmd("show")
+            .text("Show details of an app.")
+            .action { (_, c) =>
+              c.copy(commands = c.commands :+ "show")
+            } children (
             arg[String]("<name>") action { (x, c) =>
               c.copy(app = c.app.copy(name = x))
             } text ("Name of the app to be shown.")
           ),
           note(""),
-          cmd("delete").text("Delete an app.").action { (_, c) =>
-            c.copy(commands = c.commands :+ "delete")
-          } children (
+          cmd("delete")
+            .text("Delete an app.")
+            .action { (_, c) =>
+              c.copy(commands = c.commands :+ "delete")
+            } children (
             arg[String]("<name>") action { (x, c) =>
               c.copy(app = c.app.copy(name = x))
             } text ("Name of the app to be deleted."),
@@ -521,9 +538,11 @@ object Console extends Logging {
             } text ("Delete an app without prompting for confirmation")
           ),
           note(""),
-          cmd("data-delete").text("Delete data of an app").action { (_, c) =>
-            c.copy(commands = c.commands :+ "data-delete")
-          } children (
+          cmd("data-delete")
+            .text("Delete data of an app")
+            .action { (_, c) =>
+              c.copy(commands = c.commands :+ "data-delete")
+            } children (
             arg[String]("<name>") action { (x, c) =>
               c.copy(app = c.app.copy(name = x))
             } text ("Name of the app whose data to be deleted."),
@@ -538,9 +557,11 @@ object Console extends Logging {
             } text ("Delete data of an app without prompting for confirmation")
           ),
           note(""),
-          cmd("channel-new").text("Create a new channel for the app.").action {
-            (_, c) => c.copy(commands = c.commands :+ "channel-new")
-          } children (
+          cmd("channel-new")
+            .text("Create a new channel for the app.")
+            .action { (_, c) =>
+              c.copy(commands = c.commands :+ "channel-new")
+            } children (
             arg[String]("<name>") action { (x, c) =>
               c.copy(app = c.app.copy(name = x))
             } text ("App name."),
@@ -549,9 +570,11 @@ object Console extends Logging {
             } text ("Channel name to be created.")
           ),
           note(""),
-          cmd("channel-delete").text("Delete a channel of the app.").action {
-            (_, c) => c.copy(commands = c.commands :+ "channel-delete")
-          } children (
+          cmd("channel-delete")
+            .text("Delete a channel of the app.")
+            .action { (_, c) =>
+              c.copy(commands = c.commands :+ "channel-delete")
+            } children (
             arg[String]("<name>") action { (x, c) =>
               c.copy(app = c.app.copy(name = x))
             } text ("App name."),
@@ -566,12 +589,16 @@ object Console extends Logging {
           )
         )
         note("")
-        cmd("accesskey").text("Manage app access keys.\n").action { (_, c) =>
-          c.copy(commands = c.commands :+ "accesskey")
-        } children (
-          cmd("new").text("Add allowed event(s) to an access key.").action {
-            (_, c) => c.copy(commands = c.commands :+ "new")
+        cmd("accesskey")
+          .text("Manage app access keys.\n")
+          .action { (_, c) =>
+            c.copy(commands = c.commands :+ "accesskey")
           } children (
+          cmd("new")
+            .text("Add allowed event(s) to an access key.")
+            .action { (_, c) =>
+              c.copy(commands = c.commands :+ "new")
+            } children (
             opt[String]("key") action { (x, c) =>
               c.copy(accessKey = c.accessKey.copy(accessKey = x))
             },
@@ -580,21 +607,26 @@ object Console extends Logging {
             },
             arg[String]("[<event1> <event2> ...]") unbounded () optional ()
               action { (x, c) =>
-                c.copy(accessKey = c.accessKey
+                c.copy(accessKey = c
+                  .accessKey
                   .copy(events = c.accessKey.events :+ x))
               }
           ),
-          cmd("list").text("List all access keys of an app.").action { (_, c) =>
-            c.copy(commands = c.commands :+ "list")
-          } children (
+          cmd("list")
+            .text("List all access keys of an app.")
+            .action { (_, c) =>
+              c.copy(commands = c.commands :+ "list")
+            } children (
             arg[String]("<app name>") optional () action { (x, c) =>
               c.copy(app = c.app.copy(name = x))
             } text ("App name.")
           ),
           note(""),
-          cmd("delete").text("Delete an access key.").action { (_, c) =>
-            c.copy(commands = c.commands :+ "delete")
-          } children (
+          cmd("delete")
+            .text("Delete an access key.")
+            .action { (_, c) =>
+              c.copy(commands = c.commands :+ "delete")
+            } children (
             arg[String]("<access key>") action { (x, c) =>
               c.copy(accessKey = c.accessKey.copy(accessKey = x))
             } text ("The access key to be deleted.")
@@ -678,9 +710,11 @@ object Console extends Logging {
       }
 
     parser.parse(consoleArgs, ConsoleArgs()) map { pca =>
-      val ca = pca.copy(common = pca.common.copy(
-        sparkPassThrough = sparkPassThroughArgs,
-        driverPassThrough = driverPassThroughArgs))
+      val ca = pca.copy(common = pca
+        .common
+        .copy(
+          sparkPassThrough = sparkPassThroughArgs,
+          driverPassThrough = driverPassThroughArgs))
       WorkflowUtils.modifyLogging(ca.common.verbose)
       val rv: Int =
         ca.commands match {
@@ -926,9 +960,8 @@ object Console extends Logging {
 
   def compile(ca: ConsoleArgs): Unit = {
     // only add pioVersion to sbt if project/pio.sbt exists
-    if (new File(
-          "project",
-          "pio-build.sbt").exists || ca.build.forceGeneratePIOSbt) {
+    if (new File("project", "pio-build.sbt")
+          .exists || ca.build.forceGeneratePIOSbt) {
       FileUtils.writeLines(
         new File("pio.sbt"),
         Seq(
@@ -974,10 +1007,8 @@ object Console extends Logging {
       info(s"Uber JAR enabled. Putting ${core.getName} in lib.")
       val dst = new File("lib")
       dst.mkdir()
-      FileUtils.copyFileToDirectory(
-        coreAssembly(ca.common.pioHome.get),
-        dst,
-        true)
+      FileUtils
+        .copyFileToDirectory(coreAssembly(ca.common.pioHome.get), dst, true)
     } else {
       if (new File("engine.json").exists()) {
         info(s"Uber JAR disabled. Making sure lib/${core.getName} is absent.")
@@ -1043,7 +1074,8 @@ object Console extends Logging {
     val proc = Process(
       cmd,
       None,
-      "SPARK_YARN_USER_ENV" -> sys.env
+      "SPARK_YARN_USER_ENV" -> sys
+        .env
         .filter(kv => kv._1.startsWith("PIO_"))
         .map(kv => s"${kv._1}=${kv._2}")
         .mkString(","))
@@ -1175,7 +1207,9 @@ object Console extends Logging {
   def regenerateManifestJson(json: File): Unit = {
     val cwd = sys.props("user.dir")
     val ha =
-      java.security.MessageDigest
+      java
+        .security
+        .MessageDigest
         .getInstance("SHA-1")
         .digest(cwd.getBytes)
         .map("%02x".format(_))
@@ -1204,7 +1238,9 @@ object Console extends Logging {
       new EngineManifestSerializer
     val rand = Random.alphanumeric.take(32).mkString
     val ha =
-      java.security.MessageDigest
+      java
+        .security
+        .MessageDigest
         .getInstance("SHA-1")
         .digest(cwd.getBytes)
         .map("%02x".format(_))

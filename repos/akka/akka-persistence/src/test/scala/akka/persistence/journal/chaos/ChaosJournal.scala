@@ -32,7 +32,10 @@ private object ChaosJournalMessages extends InmemMessages
 class ChaosJournal extends AsyncWriteJournal {
   import ChaosJournalMessages.{delete ⇒ del, _}
 
-  val config = context.system.settings.config
+  val config = context
+    .system
+    .settings
+    .config
     .getConfig("akka.persistence.journal.chaos")
   val writeFailureRate = config.getDouble("write-failure-rate")
   val deleteFailureRate = config.getDouble("delete-failure-rate")
@@ -81,8 +84,8 @@ class ChaosJournal extends AsyncWriteJournal {
       sm.foreach(replayCallback)
       Future.failed(new ReplayFailedException(sm))
     } else {
-      read(persistenceId, fromSequenceNr, toSequenceNr, max).foreach(
-        replayCallback)
+      read(persistenceId, fromSequenceNr, toSequenceNr, max)
+        .foreach(replayCallback)
       Future.successful(())
     }
 

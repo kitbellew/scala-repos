@@ -156,9 +156,9 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes =
       Try(
-        ScalaReflection
-          .schemaFor[A1]
-          .dataType :: ScalaReflection.schemaFor[A2].dataType :: Nil).toOption
+        ScalaReflection.schemaFor[A1].dataType :: ScalaReflection
+          .schemaFor[A2]
+          .dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -196,11 +196,11 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes =
       Try(
-        ScalaReflection
-          .schemaFor[A1]
-          .dataType :: ScalaReflection.schemaFor[A2].dataType :: ScalaReflection
-          .schemaFor[A3]
-          .dataType :: ScalaReflection.schemaFor[A4].dataType :: Nil).toOption
+        ScalaReflection.schemaFor[A1].dataType :: ScalaReflection
+          .schemaFor[A2]
+          .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
+          .schemaFor[A4]
+          .dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -253,13 +253,13 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes =
       Try(
-        ScalaReflection
-          .schemaFor[A1]
-          .dataType :: ScalaReflection.schemaFor[A2].dataType :: ScalaReflection
-          .schemaFor[A3]
-          .dataType :: ScalaReflection.schemaFor[A4].dataType :: ScalaReflection
-          .schemaFor[A5]
-          .dataType :: ScalaReflection.schemaFor[A6].dataType :: Nil).toOption
+        ScalaReflection.schemaFor[A1].dataType :: ScalaReflection
+          .schemaFor[A2]
+          .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
+          .schemaFor[A4]
+          .dataType :: ScalaReflection.schemaFor[A5].dataType :: ScalaReflection
+          .schemaFor[A6]
+          .dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -319,15 +319,15 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes =
       Try(
-        ScalaReflection
-          .schemaFor[A1]
-          .dataType :: ScalaReflection.schemaFor[A2].dataType :: ScalaReflection
-          .schemaFor[A3]
-          .dataType :: ScalaReflection.schemaFor[A4].dataType :: ScalaReflection
-          .schemaFor[A5]
-          .dataType :: ScalaReflection.schemaFor[A6].dataType :: ScalaReflection
-          .schemaFor[A7]
-          .dataType :: ScalaReflection.schemaFor[A8].dataType :: Nil).toOption
+        ScalaReflection.schemaFor[A1].dataType :: ScalaReflection
+          .schemaFor[A2]
+          .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
+          .schemaFor[A4]
+          .dataType :: ScalaReflection.schemaFor[A5].dataType :: ScalaReflection
+          .schemaFor[A6]
+          .dataType :: ScalaReflection.schemaFor[A7].dataType :: ScalaReflection
+          .schemaFor[A8]
+          .dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -394,17 +394,17 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes =
       Try(
-        ScalaReflection
-          .schemaFor[A1]
-          .dataType :: ScalaReflection.schemaFor[A2].dataType :: ScalaReflection
-          .schemaFor[A3]
-          .dataType :: ScalaReflection.schemaFor[A4].dataType :: ScalaReflection
-          .schemaFor[A5]
-          .dataType :: ScalaReflection.schemaFor[A6].dataType :: ScalaReflection
-          .schemaFor[A7]
-          .dataType :: ScalaReflection.schemaFor[A8].dataType :: ScalaReflection
-          .schemaFor[A9]
-          .dataType :: ScalaReflection.schemaFor[A10].dataType :: Nil).toOption
+        ScalaReflection.schemaFor[A1].dataType :: ScalaReflection
+          .schemaFor[A2]
+          .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
+          .schemaFor[A4]
+          .dataType :: ScalaReflection.schemaFor[A5].dataType :: ScalaReflection
+          .schemaFor[A6]
+          .dataType :: ScalaReflection.schemaFor[A7].dataType :: ScalaReflection
+          .schemaFor[A8]
+          .dataType :: ScalaReflection.schemaFor[A9].dataType :: ScalaReflection
+          .schemaFor[A10]
+          .dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -1333,7 +1333,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[UDF4[Any, Any, Any, Any, Any]]
+          f
+            .asInstanceOf[UDF4[Any, Any, Any, Any, Any]]
             .call(_: Any, _: Any, _: Any, _: Any),
           returnType,
           e))
@@ -1351,7 +1352,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[UDF5[Any, Any, Any, Any, Any, Any]]
+          f
+            .asInstanceOf[UDF5[Any, Any, Any, Any, Any, Any]]
             .call(_: Any, _: Any, _: Any, _: Any, _: Any),
           returnType,
           e))
@@ -1369,7 +1371,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[UDF6[Any, Any, Any, Any, Any, Any, Any]]
+          f
+            .asInstanceOf[UDF6[Any, Any, Any, Any, Any, Any, Any]]
             .call(_: Any, _: Any, _: Any, _: Any, _: Any, _: Any),
           returnType,
           e))
@@ -1387,7 +1390,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[UDF7[Any, Any, Any, Any, Any, Any, Any, Any]]
+          f
+            .asInstanceOf[UDF7[Any, Any, Any, Any, Any, Any, Any, Any]]
             .call(_: Any, _: Any, _: Any, _: Any, _: Any, _: Any, _: Any),
           returnType,
           e)
@@ -1406,7 +1410,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[UDF8[Any, Any, Any, Any, Any, Any, Any, Any, Any]]
+          f
+            .asInstanceOf[UDF8[Any, Any, Any, Any, Any, Any, Any, Any, Any]]
             .call(
               _: Any,
               _: Any,
@@ -1433,7 +1438,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[
+          f
+            .asInstanceOf[
               UDF9[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any]]
             .call(
               _: Any,
@@ -1462,7 +1468,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[
+          f
+            .asInstanceOf[
               UDF10[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any]]
             .call(
               _: Any,
@@ -1492,7 +1499,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[
+          f
+            .asInstanceOf[
               UDF11[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any]]
             .call(
               _: Any,
@@ -1524,7 +1532,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[UDF12[
+          f
+            .asInstanceOf[UDF12[
               Any,
               Any,
               Any,
@@ -1569,7 +1578,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[UDF13[
+          f
+            .asInstanceOf[UDF13[
               Any,
               Any,
               Any,
@@ -1616,7 +1626,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[UDF14[
+          f
+            .asInstanceOf[UDF14[
               Any,
               Any,
               Any,
@@ -1665,7 +1676,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[UDF15[
+          f
+            .asInstanceOf[UDF15[
               Any,
               Any,
               Any,
@@ -1716,7 +1728,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[UDF16[
+          f
+            .asInstanceOf[UDF16[
               Any,
               Any,
               Any,
@@ -1769,7 +1782,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[UDF17[
+          f
+            .asInstanceOf[UDF17[
               Any,
               Any,
               Any,
@@ -1824,7 +1838,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[UDF18[
+          f
+            .asInstanceOf[UDF18[
               Any,
               Any,
               Any,
@@ -1881,7 +1896,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[UDF19[
+          f
+            .asInstanceOf[UDF19[
               Any,
               Any,
               Any,
@@ -1940,7 +1956,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[UDF20[
+          f
+            .asInstanceOf[UDF20[
               Any,
               Any,
               Any,
@@ -2023,7 +2040,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[UDF21[
+          f
+            .asInstanceOf[UDF21[
               Any,
               Any,
               Any,
@@ -2109,7 +2127,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       name,
       (e: Seq[Expression]) =>
         ScalaUDF(
-          f.asInstanceOf[UDF22[
+          f
+            .asInstanceOf[UDF22[
               Any,
               Any,
               Any,

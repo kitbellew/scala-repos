@@ -72,7 +72,8 @@ abstract class ScSyntheticPackage(name: String, manager: PsiManager)
               return false
           }
         }
-        if (bp.kinds.contains(CLASS) || bp.kinds.contains(OBJECT) || bp.kinds
+        if (bp.kinds.contains(CLASS) || bp.kinds.contains(OBJECT) || bp
+              .kinds
               .contains(METHOD)) {
           for (clazz <- getClasses) {
             if (!processor.execute(clazz, state))
@@ -101,7 +102,8 @@ object ScSyntheticPackage {
     val packages =
       StubIndex
         .getElements(
-          ScalaIndexKeys.PACKAGE_FQN_KEY
+          ScalaIndexKeys
+            .PACKAGE_FQN_KEY
             .asInstanceOf[StubIndexKey[Any, ScPackageContainer]],
           fqn.hashCode(),
           project,
@@ -113,7 +115,8 @@ object ScSyntheticPackage {
     if (packages.isEmpty) {
       StubIndex
         .getElements(
-          ScalaIndexKeys.PACKAGE_OBJECT_KEY
+          ScalaIndexKeys
+            .PACKAGE_OBJECT_KEY
             .asInstanceOf[StubIndexKey[Any, PsiClass]],
           fqn.hashCode(),
           project,
@@ -184,13 +187,15 @@ object ScSyntheticPackage {
             Array(
               pkgs.flatMap(p =>
                 if (p.fqn.length == fqn.length)
-                  p.typeDefs.flatMap {
-                    case td @ (c: ScTypeDefinition)
-                        if c.fakeCompanionModule.isDefined =>
-                      Seq(td, c.fakeCompanionModule.get)
-                    case td =>
-                      Seq(td)
-                  }
+                  p
+                    .typeDefs
+                    .flatMap {
+                      case td @ (c: ScTypeDefinition)
+                          if c.fakeCompanionModule.isDefined =>
+                        Seq(td, c.fakeCompanionModule.get)
+                      case td =>
+                        Seq(td)
+                    }
                 else
                   Seq.empty): _*)
           }
@@ -221,23 +226,27 @@ object ScSyntheticPackage {
                 else
                   ""
               if (tail.length == 0) {
-                p.packagings.foreach { pack =>
-                  {
-                    val own = pack.ownNamePart
-                    val i = own.indexOf(".")
-                    addPackage(
-                      if (i > 0)
-                        own.substring(0, i)
-                      else
-                        own)
+                p
+                  .packagings
+                  .foreach { pack =>
+                    {
+                      val own = pack.ownNamePart
+                      val i = own.indexOf(".")
+                      addPackage(
+                        if (i > 0)
+                          own.substring(0, i)
+                        else
+                          own)
+                    }
                   }
-                }
-                p.typeDefs.foreach {
-                  case o: ScObject
-                      if o.isPackageObject && o.getName != "`package`" =>
-                    addPackage(o.name)
-                  case _ =>
-                }
+                p
+                  .typeDefs
+                  .foreach {
+                    case o: ScObject
+                        if o.isPackageObject && o.getName != "`package`" =>
+                      addPackage(o.name)
+                    case _ =>
+                  }
               } else {
                 val i = tail.indexOf(".")
                 val next =

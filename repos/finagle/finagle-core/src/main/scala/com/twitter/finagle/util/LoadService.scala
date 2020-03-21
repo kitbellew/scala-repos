@@ -184,9 +184,8 @@ private object ClassPath {
         Some(uri)
       else
         Some(
-          new File(
-            jarFile.getParentFile,
-            path.replace('/', File.separatorChar)).toURI)
+          new File(jarFile.getParentFile, path.replace('/', File.separatorChar))
+            .toURI)
     } catch {
       case _: URISyntaxException =>
         None
@@ -194,19 +193,22 @@ private object ClassPath {
 
   private[util] def readLines(source: Source): Seq[String] = {
     try {
-      source.getLines().toArray.flatMap { line =>
-        val commentIdx = line.indexOf('#')
-        val end =
-          if (commentIdx != -1)
-            commentIdx
+      source
+        .getLines()
+        .toArray
+        .flatMap { line =>
+          val commentIdx = line.indexOf('#')
+          val end =
+            if (commentIdx != -1)
+              commentIdx
+            else
+              line.length
+          val str = line.substring(0, end).trim
+          if (str.isEmpty)
+            Nil
           else
-            line.length
-        val str = line.substring(0, end).trim
-        if (str.isEmpty)
-          Nil
-        else
-          Seq(str)
-      }
+            Seq(str)
+        }
     } catch {
       case ex: MalformedInputException =>
         Nil /* skip malformed files (e.g. non UTF-8) */
@@ -273,12 +275,13 @@ object LoadService {
         } yield line
 
       val buffer = mutable.ListBuffer.empty[String]
-      val result = (classNames ++ classNamesFromResources).distinct
+      val result = (classNames ++ classNamesFromResources)
+        .distinct
         .filterNot { className =>
           val isDenied = denied.contains(className)
           if (isDenied)
-            DefaultLogger.info(
-              s"LoadService: skipped $className due to deny list flag")
+            DefaultLogger
+              .info(s"LoadService: skipped $className due to deny list flag")
           isDenied
         }
         .flatMap { className =>
@@ -306,7 +309,8 @@ object LoadService {
           }
         }
 
-      GlobalRegistry.get
+      GlobalRegistry
+        .get
         .put(Seq("loadservice", ifaceName), buffer.mkString(","))
       result
     }

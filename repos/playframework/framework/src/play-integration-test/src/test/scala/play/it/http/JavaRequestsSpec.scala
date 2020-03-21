@@ -20,8 +20,8 @@ class JavaRequestsSpec extends PlaySpecification with Mockito {
   "JavaHelpers" should {
 
     "create a request with case insensitive headers" in {
-      val requestHeader: RequestHeader = FakeRequest().withHeaders(
-        "Content-type" -> "application/json")
+      val requestHeader: RequestHeader = FakeRequest()
+        .withHeaders("Content-type" -> "application/json")
       val javaRequest: Http.Request = new RequestImpl(requestHeader)
 
       val ct = javaRequest.getHeader("Content-Type")

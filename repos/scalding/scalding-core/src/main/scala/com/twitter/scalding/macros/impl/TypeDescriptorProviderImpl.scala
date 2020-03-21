@@ -54,7 +54,8 @@ object TypeDescriptorProviderImpl {
     import c.universe._
 
     def flattenOnce(t: Type): List[Type] =
-      t.declarations
+      t
+        .declarations
         .collect {
           case m: MethodSymbol if m.isCaseAccessor =>
             m
@@ -92,11 +93,10 @@ object TypeDescriptorProviderImpl {
         case tpe
             if (tpe.typeSymbol.isClass && tpe.typeSymbol.asClass.isCaseClass) =>
           val flattened =
-            flattenOnce(tpe)
-              .scanLeft((offset, Option.empty[Int])) {
-                case ((off, _), t) =>
-                  go(t, off)
-              }
+            flattenOnce(tpe).scanLeft((offset, Option.empty[Int])) {
+              case ((off, _), t) =>
+                go(t, off)
+            }
 
           val nextPos = flattened.last._1
           val ev = flattened.collectFirst {

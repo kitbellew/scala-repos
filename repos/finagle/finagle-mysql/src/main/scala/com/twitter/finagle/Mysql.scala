@@ -102,7 +102,8 @@ object Mysql
     * client which exposes a rich mysql api.
     */
   case class Client(
-      stack: Stack[ServiceFactory[Request, Result]] = StackClient.newStack
+      stack: Stack[ServiceFactory[Request, Result]] = StackClient
+        .newStack
         .replace(ClientTracingFilter.role, MySqlClientTracingFilter.Stackable),
       params: Stack.Params = StackClient.defaultParams + DefaultPool.Param(
         low = 0,

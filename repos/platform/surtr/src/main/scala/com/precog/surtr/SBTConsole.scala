@@ -106,8 +106,8 @@ object SBTConsole {
     new SBTConsolePlatform {
       console =>
       implicit val actorSystem = ActorSystem("sbtConsoleActorSystem")
-      implicit val asyncContext = ExecutionContext.defaultExecutionContext(
-        actorSystem)
+      implicit val asyncContext = ExecutionContext
+        .defaultExecutionContext(actorSystem)
       implicit val M: Monad[Future] with Comonad[Future] =
         new UnsafeFutureComonad(asyncContext, yggConfig.maxEvalDuration)
 

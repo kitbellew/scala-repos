@@ -106,7 +106,8 @@ trait JoinOptimizerSpecs[M[+_]]
         | a := //users
         | b := //heightWeight
         | a ~ b
-        |   { name: a.name, height: b.height } where a.userid = b.userId """.stripMargin
+        |   { name: a.name, height: b.height } where a.userid = b.userId """
+          .stripMargin
 
       val line = Line(1, 1, "")
       val users =
@@ -204,7 +205,8 @@ trait JoinOptimizerSpecs[M[+_]]
         | a := //users
         | b := //heightWeight
         | a ~ b
-        |   { name: a.name, height: b.height } where std::string::toLowerCase(a.userId) = b.userId """.stripMargin
+        |   { name: a.name, height: b.height } where std::string::toLowerCase(a.userId) = b.userId """
+          .stripMargin
 
       val line = Line(1, 1, "")
       val users =
@@ -307,7 +309,8 @@ trait JoinOptimizerSpecs[M[+_]]
         | a := //users
         | b := //heightWeight
         | a ~ b
-        |   std::math::hypot(a.weight, b.height) where a.userid = b.userId """.stripMargin
+        |   std::math::hypot(a.weight, b.height) where a.userid = b.userId """
+          .stripMargin
 
       val line = Line(1, 1, "")
       val users =
@@ -801,7 +804,8 @@ trait JoinOptimizerSpecs[M[+_]]
         | a := //users
         | b := //heightWeight
         | a ~ b
-        |   { name: a.name, height: b.height, weight: b.weight } where a.userId = b.userId """.stripMargin
+        |   { name: a.name, height: b.height, weight: b.weight } where a.userId = b.userId """
+          .stripMargin
 
       val line = Line(1, 1, "")
       val users = dag.AbsoluteLoad(Const(CString("/users"))(line))(line)

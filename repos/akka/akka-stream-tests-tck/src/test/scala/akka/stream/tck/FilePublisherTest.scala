@@ -26,8 +26,9 @@ class FilePublisherTest extends AkkaPublisherVerification[ByteString] {
     _system = ActorSystem(
       Logging.simpleName(getClass),
       UnboundedMailboxConfig.withFallback(AkkaSpec.testConf))
-    _system.eventStream.publish(
-      TestEvent.Mute(EventFilter[RuntimeException]("Test exception")))
+    _system
+      .eventStream
+      .publish(TestEvent.Mute(EventFilter[RuntimeException]("Test exception")))
   }
 
   val file = {

@@ -97,14 +97,14 @@ class AkkaConsoleReporter(
     output.print("              mean = %2.2f%n".format(snapshot.getMean))
     output.print("            stddev = %2.2f%n".format(snapshot.getStdDev))
     output.print("            median = %2.2f%n".format(snapshot.getMedian))
-    output.print(
-      "              75%% <= %2.2f%n".format(snapshot.get75thPercentile))
-    output.print(
-      "              95%% <= %2.2f%n".format(snapshot.get95thPercentile))
-    output.print(
-      "              98%% <= %2.2f%n".format(snapshot.get98thPercentile))
-    output.print(
-      "              99%% <= %2.2f%n".format(snapshot.get99thPercentile))
+    output
+      .print("              75%% <= %2.2f%n".format(snapshot.get75thPercentile))
+    output
+      .print("              95%% <= %2.2f%n".format(snapshot.get95thPercentile))
+    output
+      .print("              98%% <= %2.2f%n".format(snapshot.get98thPercentile))
+    output
+      .print("              99%% <= %2.2f%n".format(snapshot.get99thPercentile))
     output.print(
       "            99.9%% <= %2.2f%n".format(snapshot.get999thPercentile))
   }

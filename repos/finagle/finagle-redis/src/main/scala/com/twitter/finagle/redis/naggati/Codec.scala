@@ -144,11 +144,13 @@ class Codec[A: Manifest](
         }
         obj match {
           case signalling: Codec.Signalling => {
-            signalling.signals.foreach {
-              case Codec.Disconnect =>
-                context.getChannel.close()
-              case _ =>
-            }
+            signalling
+              .signals
+              .foreach {
+                case Codec.Disconnect =>
+                  context.getChannel.close()
+                case _ =>
+              }
           }
           case _ =>
         }

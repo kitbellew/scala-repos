@@ -77,9 +77,8 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
       system.actorFor(system / Seq("c2", "c21")) should ===(c21)
 
       import scala.collection.JavaConverters._
-      system.actorFor(
-        system descendant Seq("c2", "c21").asJava
-      ) // test Java API
+      system
+        .actorFor(system descendant Seq("c2", "c21").asJava) // test Java API
     }
 
     "find actors by looking up their string representation" in {

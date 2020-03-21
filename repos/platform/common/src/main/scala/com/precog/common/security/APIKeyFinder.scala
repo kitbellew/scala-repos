@@ -87,29 +87,31 @@ class DirectAPIKeyFinder[M[+_]](underlying: APIKeyManager[M])(implicit
   def recordDetails(rootKey: Option[APIKey])
       : PartialFunction[APIKeyRecord, M[v1.APIKeyDetails]] = {
     case APIKeyRecord(apiKey, name, description, issuer, grantIds, false) =>
-      underlying.findAPIKeyAncestry(apiKey).flatMap { ancestors =>
-        val ancestorKeys = ancestors
-          .drop(1)
-          .map(
-            _.apiKey
-          ) // The first element of ancestors is the key itself, so we drop it
-        grantIds.map(underlying.findGrant).toList.sequence map { grants =>
-          val divulgedIssuers = rootKey
-            .map { rk =>
-              ancestorKeys.reverse.dropWhile(_ != rk).reverse
-            }
-            .getOrElse(Nil)
-          logger.debug(
-            "Divulging issuers %s for key %s based on root key %s and ancestors %s"
-              .format(divulgedIssuers, apiKey, rootKey, ancestorKeys))
-          v1.APIKeyDetails(
-            apiKey,
-            name,
-            description,
-            grants.flatten.map(grantDetails)(collection.breakOut),
-            divulgedIssuers)
+      underlying
+        .findAPIKeyAncestry(apiKey)
+        .flatMap { ancestors =>
+          val ancestorKeys = ancestors
+            .drop(1)
+            .map(
+              _.apiKey
+            ) // The first element of ancestors is the key itself, so we drop it
+          grantIds.map(underlying.findGrant).toList.sequence map { grants =>
+            val divulgedIssuers = rootKey
+              .map { rk =>
+                ancestorKeys.reverse.dropWhile(_ != rk).reverse
+              }
+              .getOrElse(Nil)
+            logger.debug(
+              "Divulging issuers %s for key %s based on root key %s and ancestors %s"
+                .format(divulgedIssuers, apiKey, rootKey, ancestorKeys))
+            v1.APIKeyDetails(
+              apiKey,
+              name,
+              description,
+              grants.flatten.map(grantDetails)(collection.breakOut),
+              divulgedIssuers)
+          }
         }
-      }
   }
 
   val recordDetails: PartialFunction[APIKeyRecord, M[v1.APIKeyDetails]] =

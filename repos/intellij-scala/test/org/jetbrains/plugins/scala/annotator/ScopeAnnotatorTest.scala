@@ -559,9 +559,11 @@ class ScopeAnnotatorTest extends SimpleTestCase {
     val annotator = new ScopeAnnotator() {}
     val mock = new AnnotatorHolderMock
 
-    psi.depthFirst.foreach {
-      annotator.annotateScope(_, mock)
-    }
+    psi
+      .depthFirst
+      .foreach {
+        annotator.annotateScope(_, mock)
+      }
 
     mock.annotations
   }

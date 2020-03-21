@@ -213,11 +213,8 @@ import scala.language.implicitConversions"""
     def mkShiftOps =
       (for (op <- shiftOps;
             arg <- List(I, L))
-        yield "%s\n  def %s(x: %s): %s".format(
-          op.doc,
-          op.op,
-          arg,
-          this opType I))
+        yield "%s\n  def %s(x: %s): %s"
+          .format(op.doc, op.op, arg, this opType I))
 
     def clumps: List[List[String]] = {
       val xs1 =
@@ -251,10 +248,10 @@ import scala.language.implicitConversions"""
           cardinalCompanion
         else
           floatingCompanion
-      interpolate(
-        comp + allCompanions + "\n" + nonUnitCompanions).trim.lines.toList ++ (
-        implicitCoercions map interpolate
-      )
+      interpolate(comp + allCompanions + "\n" + nonUnitCompanions)
+        .trim
+        .lines
+        .toList ++ (implicitCoercions map interpolate)
     }
 
     /** Makes a set of binary operations based on the given set of ops, args, and resultFn.
@@ -271,11 +268,8 @@ import scala.language.implicitConversions"""
       (
         ops flatMap (op =>
           args.map(arg =>
-            "%s\n  def %s(x: %s): %s".format(
-              op.doc,
-              op.op,
-              arg,
-              resultFn(arg))) :+ "")
+            "%s\n  def %s(x: %s): %s"
+              .format(op.doc, op.op, arg, resultFn(arg))) :+ "")
       ).toList
   }
 

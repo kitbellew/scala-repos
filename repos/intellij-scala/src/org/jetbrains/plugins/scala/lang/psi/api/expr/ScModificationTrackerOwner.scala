@@ -104,10 +104,8 @@ trait ScModificationTrackerOwner
   }
 
   def createMirror(text: String): PsiElement = {
-    ScalaPsiElementFactory.createExpressionWithContextFromText(
-      text,
-      getContext,
-      this)
+    ScalaPsiElementFactory
+      .createExpressionWithContextFromText(text, getContext, this)
   }
 
   @Cached(synchronized = true, ModCount.getBlockModificationCount, this)

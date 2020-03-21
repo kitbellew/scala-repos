@@ -23,7 +23,8 @@ class ScalaIntorduceVariablePostfixTemplate
       expression: PsiElement,
       editor: Editor): Unit = {
     val range = expression.getTextRange
-    editor.getSelectionModel
+    editor
+      .getSelectionModel
       .setSelection(range.getStartOffset, range.getEndOffset)
     new ScalaIntroduceVariableHandler().invokeExpression(
       expression.getProject,

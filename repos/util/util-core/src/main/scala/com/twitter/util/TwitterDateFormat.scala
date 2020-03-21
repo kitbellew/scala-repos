@@ -22,8 +22,8 @@ object TwitterDateFormat {
     val stripped = stripSingleQuoted(pattern)
     if (stripped.contains('Y') && !(stripped.contains('w'))) {
       throw new IllegalArgumentException(
-        "Invalid date format uses 'Y' for week-of-year without 'w': %s".format(
-          pattern))
+        "Invalid date format uses 'Y' for week-of-year without 'w': %s"
+          .format(pattern))
     }
   }
 

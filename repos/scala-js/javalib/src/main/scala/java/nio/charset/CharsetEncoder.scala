@@ -55,10 +55,8 @@ abstract class CharsetEncoder protected (
     @inline
     @tailrec
     def loop(outBufSize: Int): Boolean = {
-      val result = decoder.decode(
-        replBuf,
-        CharBuffer.allocate(outBufSize),
-        true)
+      val result = decoder
+        .decode(replBuf, CharBuffer.allocate(outBufSize), true)
       if (result.isOverflow) {
         loop(outBufSize * 2)
       } else {

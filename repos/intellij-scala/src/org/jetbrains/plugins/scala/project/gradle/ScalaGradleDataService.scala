@@ -79,8 +79,8 @@ private object ScalaGradleDataService {
     private def configureScalaSdk(
         module: Module,
         compilerClasspath: Seq[File]): Unit = {
-      val compilerVersionOption = findScalaLibraryIn(compilerClasspath).flatMap(
-        getVersionFromJar)
+      val compilerVersionOption = findScalaLibraryIn(compilerClasspath)
+        .flatMap(getVersionFromJar)
       if (compilerVersionOption.isEmpty) {
         showWarning(
           ScalaBundle.message(
@@ -94,8 +94,8 @@ private object ScalaGradleDataService {
       if (scalaLibraries.isEmpty)
         return
 
-      val scalaLibraryOption = scalaLibraries.find(
-        _.scalaVersion.contains(compilerVersion))
+      val scalaLibraryOption = scalaLibraries
+        .find(_.scalaVersion.contains(compilerVersion))
       if (scalaLibraryOption.isEmpty) {
         showWarning(
           ScalaBundle.message(
@@ -107,8 +107,9 @@ private object ScalaGradleDataService {
       val scalaLibrary = scalaLibraryOption.get
 
       if (!scalaLibrary.isScalaSdk) {
-        val languageLevel = scalaLibrary.scalaLanguageLevel.getOrElse(
-          ScalaLanguageLevel.Default)
+        val languageLevel = scalaLibrary
+          .scalaLanguageLevel
+          .getOrElse(ScalaLanguageLevel.Default)
         convertToScalaSdk(scalaLibrary, languageLevel, compilerClasspath)
       }
     }
@@ -120,28 +121,31 @@ private object ScalaGradleDataService {
       JarVersion.findFirstIn(scalaLibrary.getName).map(Version(_))
 
     private def compilerOptionsFrom(data: ScalaModelData): Seq[String] =
-      Option(data.getScalaCompileOptions).toSeq.flatMap { options =>
-        val presentations = Seq(
-          options.isDeprecation -> "-deprecation",
-          options.isUnchecked -> "-unchecked",
-          options.isOptimize -> "-optimise",
-          !isEmpty(options.getDebugLevel) -> s"-g:${options.getDebugLevel}",
-          !isEmpty(options.getEncoding) -> s"-encoding",
-          // the encoding value needs to be a separate option, otherwise the -encoding flag and the value will be
-          // treated as a single flag
-          !isEmpty(options.getEncoding) -> options.getEncoding,
-          !isEmpty(
-            data.getTargetCompatibility) -> s"-target:jvm-${data.getTargetCompatibility}"
-        )
+      Option(data.getScalaCompileOptions)
+        .toSeq
+        .flatMap { options =>
+          val presentations = Seq(
+            options.isDeprecation -> "-deprecation",
+            options.isUnchecked -> "-unchecked",
+            options.isOptimize -> "-optimise",
+            !isEmpty(options.getDebugLevel) -> s"-g:${options.getDebugLevel}",
+            !isEmpty(options.getEncoding) -> s"-encoding",
+            // the encoding value needs to be a separate option, otherwise the -encoding flag and the value will be
+            // treated as a single flag
+            !isEmpty(options.getEncoding) -> options.getEncoding,
+            !isEmpty(
+              data
+                .getTargetCompatibility) -> s"-target:jvm-${data.getTargetCompatibility}"
+          )
 
-        val additionalOptions =
-          if (options.getAdditionalParameters != null)
-            options.getAdditionalParameters.asScala
-          else
-            Seq.empty
+          val additionalOptions =
+            if (options.getAdditionalParameters != null)
+              options.getAdditionalParameters.asScala
+            else
+              Seq.empty
 
-        presentations.flatMap((include _).tupled) ++ additionalOptions
-      }
+          presentations.flatMap((include _).tupled) ++ additionalOptions
+        }
 
     private def isEmpty(s: String) = s == null || s.isEmpty
 

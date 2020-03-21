@@ -184,7 +184,8 @@ object RecordSpec extends Specification {
       val cal = Calendar.getInstance
       val dt: DateTime = DateTime.now
 
-      val fttr = FieldTypeTestRecord.createRecord
+      val fttr = FieldTypeTestRecord
+        .createRecord
         .mandatoryBinaryField(gu)
         .mandatoryBooleanField(false)
         .mandatoryCountryField(Countries.USA)

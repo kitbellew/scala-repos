@@ -93,12 +93,16 @@ object Simul extends LilaController {
     AuthBody { implicit ctx => implicit me =>
       NoEngine {
         implicit val req = ctx.body
-        env.forms.create.bindFromRequest.fold(
-          err => BadRequest(html.simul.form(err, env.forms)).fuccess,
-          setup =>
-            env.api.create(setup, me) map { simul =>
-              Redirect(routes.Simul.show(simul.id))
-            })
+        env
+          .forms
+          .create
+          .bindFromRequest
+          .fold(
+            err => BadRequest(html.simul.form(err, env.forms)).fuccess,
+            setup =>
+              env.api.create(setup, me) map { simul =>
+                Redirect(routes.Simul.show(simul.id))
+              })
       }
     }
 

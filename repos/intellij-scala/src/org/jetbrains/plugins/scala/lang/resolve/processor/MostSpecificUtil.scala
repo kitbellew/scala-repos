@@ -123,8 +123,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
       applicable.map(r => {
         var callByName = false
         def checkCallByName(clauses: Seq[ScParameterClause]): Unit = {
-          if (clauses.length > 0 && clauses(
-                0).parameters.length == 1 && clauses(0)
+          if (clauses
+                .length > 0 && clauses(0).parameters.length == 1 && clauses(0)
                 .parameters(0)
                 .isCallByNameParameter) {
             callByName = true
@@ -200,12 +200,14 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                         (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
                         new ScTypeVariable(tp.name))
                   }
-                val arguments = typeParams.toList.map(tp =>
-                  new ScExistentialArgument(
-                    tp.name,
-                    List.empty /* todo? */,
-                    s.subst(tp.lowerType()),
-                    s.subst(tp.upperType())))
+                val arguments = typeParams
+                  .toList
+                  .map(tp =>
+                    new ScExistentialArgument(
+                      tp.name,
+                      List.empty /* todo? */,
+                      s.subst(tp.lowerType()),
+                      s.subst(tp.upperType())))
                 Left(
                   params.map(p =>
                     p.copy(paramType = ScExistentialType(
@@ -231,12 +233,14 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                         (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
                         new ScTypeVariable(tp.name))
                   }
-                val arguments = typeParams.toList.map(tp =>
-                  new ScExistentialArgument(
-                    tp.name,
-                    List.empty /* todo? */,
-                    s.subst(tp.lowerType()),
-                    s.subst(tp.upperType())))
+                val arguments = typeParams
+                  .toList
+                  .map(tp =>
+                    new ScExistentialArgument(
+                      tp.name,
+                      List.empty /* todo? */,
+                      s.subst(tp.lowerType()),
+                      s.subst(tp.upperType())))
                 Right(ScExistentialType(s.subst(internal), arguments))
               }
             case _ =>
@@ -319,9 +323,9 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                   else
                     types.Nothing,
                   elem)
-              val exprs: Seq[Expression] =
-                params1.map(p => new Expression(p.paramType, elem)) ++
-                  Seq.fill(i)(default)
+              val exprs: Seq[Expression] = params1
+                .map(p => new Expression(p.paramType, elem)) ++
+                Seq.fill(i)(default)
               Compatibility.checkConformance(
                 checkNames = false,
                 params2,
@@ -558,10 +562,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
         case p: ScPrimaryConstructor =>
           p.polymorphicType
         case m: PsiMethod =>
-          ResolveUtils.javaPolymorphicType(
-            m,
-            ScSubstitutor.empty,
-            elem.getResolveScope)
+          ResolveUtils
+            .javaPolymorphicType(m, ScSubstitutor.empty, elem.getResolveScope)
         case refPatt: ScReferencePattern =>
           refPatt.getParent /*id list*/ .getParent match {
             case pd: ScPatternDefinition

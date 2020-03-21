@@ -68,12 +68,14 @@ class DuplicateMatch(
       return false
     if (filteredP.size == 0)
       return true
-    filteredP.zip(filteredC).forall {
-      case (e1, e2) =>
-        checkElement(e1, e2)
-      case _ =>
-        false
-    }
+    filteredP
+      .zip(filteredC)
+      .forall {
+        case (e1, e2) =>
+          checkElement(e1, e2)
+        case _ =>
+          false
+      }
   }
 
   private def checkChildren(
@@ -99,9 +101,8 @@ class DuplicateMatch(
           if pattern.paramOccurences.contains(ref) =>
         val p = pattern.paramOccurences(ref)
         val paramValue = parameterValues.getOrElseUpdate(p, expr)
-        PsiEquivalenceUtil.areElementsEquivalent(
-          paramValue,
-          expr) && typesEquiv(ref, expr)
+        PsiEquivalenceUtil
+          .areElementsEquivalent(paramValue, expr) && typesEquiv(ref, expr)
       case Both(
             (ref1: ScReferenceExpression, ref2: ScReferenceExpression),
             (
@@ -142,10 +143,12 @@ class DuplicateMatch(
           else
             Some(t)
         val Seq(newTp1, newTp2) = Seq(t1, t2).map(extractFromSingletonType)
-        newTp1.zip(newTp2).forall {
-          case (tp1, tp2) =>
-            tp1.equiv(tp2)
-        }
+        newTp1
+          .zip(newTp2)
+          .forall {
+            case (tp1, tp2) =>
+              tp1.equiv(tp2)
+          }
       case (Failure(_, _), Failure(_, _)) =>
         true
       case _ =>

@@ -67,8 +67,9 @@ object SourceBuilder {
       eventCodec: Codec[T]) = {
     implicit val te = TimeExtractor[T](timeOf(_).getTime)
     val newID = nextName[T]
-    val scaldingSource = eventSource.offline.map(s =>
-      Scalding.pipeFactory(s.scaldingSource(_)))
+    val scaldingSource = eventSource
+      .offline
+      .map(s => Scalding.pipeFactory(s.scaldingSource(_)))
     val stormSource = eventSource.spout.map(Storm.toStormSource(_))
     new SourceBuilder[T](
       Source[PlatformPair, T]((scaldingSource, stormSource)),
@@ -116,28 +117,34 @@ case class SourceBuilder[T: Manifest] private (
       .flatMap(conversion)
       .write(
         sink.offline.map(new BatchedSinkFromOffline[U](batcher, _)),
-        sink.online.map { supplier =>
-          new StormSink[U] {
-            lazy val toFn = supplier()
-          }
-        })
-    copy(node = node.either(newNode).flatMap[T] {
-      case Left(t) =>
-        Some(t)
-      case Right(u) =>
-        None
-    })
+        sink
+          .online
+          .map { supplier =>
+            new StormSink[U] {
+              lazy val toFn = supplier()
+            }
+          })
+    copy(node = node
+      .either(newNode)
+      .flatMap[T] {
+        case Left(t) =>
+          Some(t)
+        case Right(u) =>
+          None
+      })
   }
 
   def write(sink: CompoundSink[T])(implicit
       batcher: Batcher): SourceBuilder[T] =
     copy(node = node.write(
       sink.offline.map(new BatchedSinkFromOffline[T](batcher, _)),
-      sink.online.map { supplier =>
-        new StormSink[T] {
-          lazy val toFn = supplier()
-        }
-      }))
+      sink
+        .online
+        .map { supplier =>
+          new StormSink[T] {
+            lazy val toFn = supplier()
+          }
+        }))
 
   def leftJoin[K, V, JoinedValue](
       service: CompoundService[K, JoinedValue])(implicit
@@ -151,9 +158,11 @@ case class SourceBuilder[T: Manifest] private (
       .leftJoin(
         (
           service.offline,
-          service.online.map { fn: Function0[ReadableStore[K, JoinedValue]] =>
-            ReadableServiceFactory(fn)
-          })))
+          service
+            .online
+            .map { fn: Function0[ReadableStore[K, JoinedValue]] =>
+              ReadableServiceFactory(fn)
+            })))
 
   /** Set's an Option on all nodes ABOVE this point */
   def set(opt: Any): SourceBuilder[T] =
@@ -206,8 +215,9 @@ case class SourceBuilder[T: Manifest] private (
     val cb =
       env match {
         case scalding: ScaldingEnv =>
-          val givenStore = store.offlineStore.getOrElse(
-            sys.error("No offline store given in Scalding mode"))
+          val givenStore = store
+            .offlineStore
+            .getOrElse(sys.error("No offline store given in Scalding mode"))
           // Set the store to reset if needed
           val batchSetStore = scalding
             .initialBatch(batcher)
@@ -216,11 +226,10 @@ case class SourceBuilder[T: Manifest] private (
             }
             .getOrElse(givenStore)
 
-          val newNode = OptionalUnzip2[Scalding, Storm]()(node)._1
+          val newNode = OptionalUnzip2[Scalding, Storm]()(node)
+            ._1
             .map { p =>
-              Producer
-                .evToKeyed(p.name(id))
-                .sumByKey(batchSetStore)
+              Producer.evToKeyed(p.name(id)).sumByKey(batchSetStore)
             }
             .getOrElse(
               sys.error(
@@ -235,15 +244,15 @@ case class SourceBuilder[T: Manifest] private (
             opts)
 
         case storm: StormEnv =>
-          val supplier = store.onlineSupplier.getOrElse(
-            sys.error("No online store given in Storm mode"))
+          val supplier = store
+            .onlineSupplier
+            .getOrElse(sys.error("No online store given in Storm mode"))
           val givenStore = MergeableStoreFactory.from(supplier())
 
-          val newNode = OptionalUnzip2[Scalding, Storm]()(node)._2
+          val newNode = OptionalUnzip2[Scalding, Storm]()(node)
+            ._2
             .map { p =>
-              Producer
-                .evToKeyed(p.name(id))
-                .sumByKey(givenStore)
+              Producer.evToKeyed(p.name(id)).sumByKey(givenStore)
             }
             .getOrElse(
               sys.error(

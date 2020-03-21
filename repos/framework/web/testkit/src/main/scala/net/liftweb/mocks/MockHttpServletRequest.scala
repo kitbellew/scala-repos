@@ -204,24 +204,26 @@ class MockHttpServletRequest(
     if (q != null && q.length > 0) {
       val newParams = ListBuffer[(String, String)]()
 
-      q.split('&').foreach { pair =>
-        pair.split('=') match {
-          case Array(key, value) => {
-            // Append to the current key's value
-            newParams += key -> value
+      q
+        .split('&')
+        .foreach { pair =>
+          pair.split('=') match {
+            case Array(key, value) => {
+              // Append to the current key's value
+              newParams += key -> value
+            }
+            case Array("") =>
+              throw new IllegalArgumentException(
+                "Invalid query string: \"" + q + "\"")
+            case Array(key) => {
+              // Append to the current key's value
+              newParams += key -> ""
+            }
+            case invalid =>
+              throw new IllegalArgumentException(
+                "Invalid query string: \"" + q + "\"")
           }
-          case Array("") =>
-            throw new IllegalArgumentException(
-              "Invalid query string: \"" + q + "\"")
-          case Array(key) => {
-            // Append to the current key's value
-            newParams += key -> ""
-          }
-          case invalid =>
-            throw new IllegalArgumentException(
-              "Invalid query string: \"" + q + "\"")
         }
-      }
 
       parameters = newParams.toList
       method = "GET"
@@ -278,9 +280,8 @@ class MockHttpServletRequest(
   var session: HttpSession = null
 
   // BEGIN PRIMARY CONSTRUCTOR LOGIC
-  if (contextPath.length > 0 && (
-        contextPath(0) != '/' || contextPath.last == '/'
-      )) {
+  if (contextPath
+        .length > 0 && (contextPath(0) != '/' || contextPath.last == '/')) {
     throw new IllegalArgumentException(
       "Context path must be empty, or must start with a '/' and not end with a '/': " + contextPath)
   }

@@ -25,15 +25,17 @@ class ScalaDocInlinedTagInspection extends LocalInspectionTool {
     new ScalaElementVisitor {
       override def visitInlinedTag(s: ScDocInlinedTag) {
         holder.registerProblem(
-          holder.getManager.createProblemDescriptor(
-            s,
-            getDisplayName,
-            true,
-            ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
-            isOnTheFly,
-            new ScalaDocInlinedTagDeleteQuickFix(s),
-            new ScalaDocInlinedTagReplaceQuickFix(s)
-          ))
+          holder
+            .getManager
+            .createProblemDescriptor(
+              s,
+              getDisplayName,
+              true,
+              ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
+              isOnTheFly,
+              new ScalaDocInlinedTagDeleteQuickFix(s),
+              new ScalaDocInlinedTagReplaceQuickFix(s)
+            ))
       }
     }
   }
@@ -69,7 +71,9 @@ class ScalaDocInlinedTagReplaceQuickFix(inlinedTag: ScDocInlinedTag)
         ScalaPsiElementFactory
           .createMonospaceSyntaxFromText("", tag.getManager))
     } else {
-      val tagText = tag.getValueElement.getText
+      val tagText = tag
+        .getValueElement
+        .getText
         .replace("`", MyScaladocParsing.escapeSequencesForWiki.get("`").get)
       tag.replace(
         ScalaPsiElementFactory

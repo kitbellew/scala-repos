@@ -26,7 +26,8 @@ object ScalaStatisticManager {
       element match {
         case f: ScFunction =>
           s"function#${f.name}" +
-            f.parameters
+            f
+              .parameters
               .map(p =>
                 "#" + p.getType(TypingContext.empty).getOrAny.presentableText)
               .mkString

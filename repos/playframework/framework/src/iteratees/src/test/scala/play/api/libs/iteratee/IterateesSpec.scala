@@ -333,8 +333,8 @@ object IterateesSpec
     "fold input" in {
       mustExecute(4) { foldEC =>
         await(
-          Enumerator(1, 2, 3, 4) |>>> Iteratee.fold[Int, Int](0)(_ + _)(
-            foldEC)) must equalTo(10)
+          Enumerator(1, 2, 3, 4) |>>> Iteratee
+            .fold[Int, Int](0)(_ + _)(foldEC)) must equalTo(10)
       }
     }
 
@@ -358,8 +358,8 @@ object IterateesSpec
       mustExecute(4) { foldEC =>
         val folder = (x: Int, y: Int) => Future.successful((x + y, false))
         await(
-          Enumerator(1, 2, 3, 4) |>>> Iteratee.fold2[Int, Int](0)(folder)(
-            foldEC)) must equalTo(10)
+          Enumerator(1, 2, 3, 4) |>>> Iteratee
+            .fold2[Int, Int](0)(folder)(foldEC)) must equalTo(10)
       }
     }
 
@@ -367,8 +367,8 @@ object IterateesSpec
       mustExecute(3) { foldEC =>
         val folder = (x: Int, y: Int) => Future.successful((x + y, y > 2))
         await(
-          Enumerator(1, 2, 3, 4) |>>> Iteratee.fold2[Int, Int](0)(folder)(
-            foldEC)) must equalTo(6)
+          Enumerator(1, 2, 3, 4) |>>> Iteratee
+            .fold2[Int, Int](0)(folder)(foldEC)) must equalTo(6)
       }
     }
 
@@ -711,8 +711,8 @@ object IterateesSpec
     }
 
     "skip Input.Empty when taking elements" in {
-      val enum = Enumerator(1, 2) >>> Enumerator.enumInput(
-        Input.Empty) >>> Enumerator(3, 4)
+      val enum = Enumerator(1, 2) >>> Enumerator
+        .enumInput(Input.Empty) >>> Enumerator(3, 4)
       await(enum |>>> takenAndNotTaken(3)) must equalTo((Seq(1, 2, 3), Seq(4)))
     }
 
@@ -788,8 +788,8 @@ object IterateesSpec
     }
 
     "skip Input.Empty when taking elements" in {
-      val enum = Enumerator(1, 2) >>> Enumerator.enumInput(
-        Input.Empty) >>> Enumerator(3, 4)
+      val enum = Enumerator(1, 2) >>> Enumerator
+        .enumInput(Input.Empty) >>> Enumerator(3, 4)
       await(enum |>>> process(3)) must equalTo((Seq(1, 2, 3), false, Seq(4)))
     }
 

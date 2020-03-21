@@ -80,20 +80,22 @@ private[kinesis] class KinesisCheckpointer(
       checkpointer: IRecordProcessorCheckpointer): Unit = {
     try {
       if (checkpointer != null) {
-        receiver.getLatestSeqNumToCheckpoint(shardId).foreach { latestSeqNum =>
-          val lastSeqNum = lastCheckpointedSeqNums.get(shardId)
-          // Kinesis sequence numbers are monotonically increasing strings, therefore we can do
-          // safely do the string comparison
-          if (lastSeqNum == null || latestSeqNum > lastSeqNum) {
-            /* Perform the checkpoint */
-            KinesisRecordProcessor
-              .retryRandom(checkpointer.checkpoint(latestSeqNum), 4, 100)
-            logDebug(
-              s"Checkpoint:  WorkerId $workerId completed checkpoint at sequence number" +
-                s" $latestSeqNum for shardId $shardId")
-            lastCheckpointedSeqNums.put(shardId, latestSeqNum)
+        receiver
+          .getLatestSeqNumToCheckpoint(shardId)
+          .foreach { latestSeqNum =>
+            val lastSeqNum = lastCheckpointedSeqNums.get(shardId)
+            // Kinesis sequence numbers are monotonically increasing strings, therefore we can do
+            // safely do the string comparison
+            if (lastSeqNum == null || latestSeqNum > lastSeqNum) {
+              /* Perform the checkpoint */
+              KinesisRecordProcessor
+                .retryRandom(checkpointer.checkpoint(latestSeqNum), 4, 100)
+              logDebug(
+                s"Checkpoint:  WorkerId $workerId completed checkpoint at sequence number" +
+                  s" $latestSeqNum for shardId $shardId")
+              lastCheckpointedSeqNums.put(shardId, latestSeqNum)
+            }
           }
-        }
       } else {
         logDebug(
           s"Checkpointing skipped for shardId $shardId. Checkpointer not set.")

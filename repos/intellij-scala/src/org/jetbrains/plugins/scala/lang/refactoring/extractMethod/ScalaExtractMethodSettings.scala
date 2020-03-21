@@ -33,9 +33,11 @@ class ScalaExtractMethodSettings(
     val nextRange = nextSibling.getTextRange
     while (elem != null && !(
              elem.getTextRange.contains(nextRange) &&
-               !elem.getTextRange.equalsToRange(
-                 nextRange.getStartOffset,
-                 nextRange.getEndOffset)
+               !elem
+                 .getTextRange
+                 .equalsToRange(
+                   nextRange.getStartOffset,
+                   nextRange.getEndOffset)
            )) {
       elem match {
         case tpo: ScTypeParametersOwner =>

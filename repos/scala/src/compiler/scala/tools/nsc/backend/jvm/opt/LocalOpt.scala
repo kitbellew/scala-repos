@@ -177,8 +177,8 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
         method,
         ownerClassName)
       if (insnsRemoved) {
-        val liveHandlerRemoved = removeEmptyExceptionHandlers(method).exists(
-          h => liveLabels(h.start))
+        val liveHandlerRemoved = removeEmptyExceptionHandlers(method)
+          .exists(h => liveLabels(h.start))
         if (liveHandlerRemoved)
           removalRound()
       }
@@ -200,10 +200,13 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
     * @return      `true` if unreachable code was eliminated in some method, `false` otherwise.
     */
   def methodOptimizations(clazz: ClassNode): Boolean = {
-    !compilerSettings.YoptNone && clazz.methods.asScala.foldLeft(false) {
-      case (changed, method) =>
-        methodOptimizations(method, clazz.name) || changed
-    }
+    !compilerSettings.YoptNone && clazz
+      .methods
+      .asScala
+      .foldLeft(false) {
+        case (changed, method) =>
+          methodOptimizations(method, clazz.name) || changed
+      }
   }
 
   /**
@@ -244,8 +247,9 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
     // for local variables in dead blocks. Maybe that's a bug in the ASM framework.
 
     var currentTrace: String = null
-    val doTrace =
-      compilerSettings.YoptTrace.isSetByUser && compilerSettings.YoptTrace.value == ownerClassName + "." + method.name
+    val doTrace = compilerSettings.YoptTrace.isSetByUser && compilerSettings
+      .YoptTrace
+      .value == ownerClassName + "." + method.name
     def traceIfChanged(optName: String): Unit =
       if (doTrace) {
         val after = AsmUtils.textify(method)
@@ -286,9 +290,8 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
       // Both AliasingAnalyzer (used in copyProp) and ProdConsAnalyzer (used in eliminateStaleStores,
       // boxUnboxElimination) require not having unreachable instructions (null frames).
       val runDCE = (
-        compilerSettings.YoptUnreachableCode && (
-          requestDCE || nullnessOptChanged
-        )
+        compilerSettings
+          .YoptUnreachableCode && (requestDCE || nullnessOptChanged)
       ) ||
         compilerSettings.YoptBoxUnbox ||
         compilerSettings.YoptCopyPropagation
@@ -300,16 +303,15 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
       traceIfChanged("dce")
 
       // BOX-UNBOX
-      val runBoxUnbox =
-        compilerSettings.YoptBoxUnbox && (requestBoxUnbox || nullnessOptChanged)
+      val runBoxUnbox = compilerSettings
+        .YoptBoxUnbox && (requestBoxUnbox || nullnessOptChanged)
       val boxUnboxChanged =
         runBoxUnbox && boxUnboxElimination(method, ownerClassName)
       traceIfChanged("boxUnbox")
 
       // COPY PROPAGATION
-      val runCopyProp = compilerSettings.YoptCopyPropagation && (
-        firstIteration || boxUnboxChanged
-      )
+      val runCopyProp = compilerSettings
+        .YoptCopyPropagation && (firstIteration || boxUnboxChanged)
       val copyPropChanged =
         runCopyProp && copyPropagation(method, ownerClassName)
       traceIfChanged("copyProp")
@@ -323,9 +325,8 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
       traceIfChanged("staleStores")
 
       // REDUNDANT CASTS
-      val runRedundantCasts = compilerSettings.YoptRedundantCasts && (
-        firstIteration || boxUnboxChanged
-      )
+      val runRedundantCasts = compilerSettings
+        .YoptRedundantCasts && (firstIteration || boxUnboxChanged)
       val castRemoved =
         runRedundantCasts && eliminateRedundantCasts(method, ownerClassName)
       traceIfChanged("redundantCasts")
@@ -484,7 +485,8 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
         nullness(insn, slot).contains(NullValue)
 
       // cannot change instructions while iterating, it gets the analysis out of synch (indexed by instructions)
-      val toReplace = mutable.Map
+      val toReplace = mutable
+        .Map
         .empty[AbstractInsnNode, List[AbstractInsnNode]]
 
       val it = method.instructions.iterator()
@@ -841,18 +843,22 @@ object LocalOptImpls {
     else {
       // update variable instructions according to the renumber table
       method.maxLocals = nextIndex
-      method.instructions.iterator().asScala.foreach {
-        case VarInstruction(varIns, slot) =>
-          val oldIndex = slot
-          if (oldIndex >= firstLocalIndex && renumber(oldIndex) != oldIndex)
-            varIns match {
-              case vi: VarInsnNode =>
-                vi.`var` = renumber(slot)
-              case ii: IincInsnNode =>
-                ii.`var` = renumber(slot)
-            }
-        case _ =>
-      }
+      method
+        .instructions
+        .iterator()
+        .asScala
+        .foreach {
+          case VarInstruction(varIns, slot) =>
+            val oldIndex = slot
+            if (oldIndex >= firstLocalIndex && renumber(oldIndex) != oldIndex)
+              varIns match {
+                case vi: VarInsnNode =>
+                  vi.`var` = renumber(slot)
+                case ii: IincInsnNode =>
+                  ii.`var` = renumber(slot)
+              }
+          case _ =>
+        }
       true
     }
   }

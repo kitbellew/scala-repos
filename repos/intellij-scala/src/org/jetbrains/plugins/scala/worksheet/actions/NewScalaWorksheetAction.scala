@@ -19,7 +19,8 @@ class NewScalaWorksheetAction
     with DumbAware {
   override def update(e: AnActionEvent) {
     super.update(e)
-    val module: Module = e.getDataContext
+    val module: Module = e
+      .getDataContext
       .getData(LangDataKeys.MODULE.getName)
       .asInstanceOf[Module]
     val isEnabled: Boolean = Option(module).exists(_.hasScala)

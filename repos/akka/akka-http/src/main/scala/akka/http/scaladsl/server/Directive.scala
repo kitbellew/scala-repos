@@ -113,12 +113,14 @@ abstract class Directive[L](implicit val ev: Tuple[L]) {
       tapply({ list ⇒ c ⇒
         rejectedFromInnerRoute = true;
         inner(list)(c)
-      })(ctx).fast.flatMap {
-        case RouteResult.Rejected(rejections) if !rejectedFromInnerRoute ⇒
-          recovery(rejections).tapply(inner)(ctx)
-        case x ⇒
-          FastFuture.successful(x)
-      }
+      })(ctx)
+        .fast
+        .flatMap {
+          case RouteResult.Rejected(rejections) if !rejectedFromInnerRoute ⇒
+            recovery(rejections).tapply(inner)(ctx)
+          case x ⇒
+            FastFuture.successful(x)
+        }
     }
 
   /**

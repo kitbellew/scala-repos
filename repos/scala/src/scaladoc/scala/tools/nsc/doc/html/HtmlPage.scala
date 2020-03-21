@@ -335,18 +335,22 @@ abstract class HtmlPage extends Page {
               name
           }</a>
         } else {
-          scala.xml.Text(
-            if (name eq null)
-              dTpl.name
-            else
-              name)
+          scala
+            .xml
+            .Text(
+              if (name eq null)
+                dTpl.name
+              else
+                name)
         }
       case ndTpl: NoDocTemplate =>
-        scala.xml.Text(
-          if (name eq null)
-            ndTpl.name
-          else
-            name)
+        scala
+          .xml
+          .Text(
+            if (name eq null)
+              ndTpl.name
+            else
+              name)
     }
 
   /** Returns the HTML code that represents the templates in `tpls` as a list of hyperlinked names. */
@@ -464,8 +468,9 @@ abstract class HtmlPage extends Page {
       }
 
     val templatePath = templateToPath(containingTemplate)
-    val url =
-      "../" * (templatePath.size - 1) + templatePath.reverse.mkString("/")
+    val url = "../" * (templatePath.size - 1) + templatePath
+      .reverse
+      .mkString("/")
     url + signature.map("#" + _).getOrElse("")
   }
 }

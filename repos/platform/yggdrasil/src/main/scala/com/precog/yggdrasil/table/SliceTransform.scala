@@ -164,13 +164,19 @@ trait SliceTransforms[M[+_]]
                 } else {
 
                   val definedAt = new BitSet
-                  filter.columns.values.foreach {
-                    case col: BoolColumn => {
-                      cf.util.isSatisfied(col).foreach { c =>
-                        definedAt.or(c.definedAt(0, s.size))
+                  filter
+                    .columns
+                    .values
+                    .foreach {
+                      case col: BoolColumn => {
+                        cf
+                          .util
+                          .isSatisfied(col)
+                          .foreach { c =>
+                            definedAt.or(c.definedAt(0, s.size))
+                          }
                       }
                     }
-                  }
 
                   s mapColumns {
                     cf.util.filter(0, s.size, definedAt)
@@ -253,7 +259,8 @@ trait SliceTransforms[M[+_]]
 
                   class FuzzyEqColumn(left: Column, right: Column)
                       extends BoolColumn {
-                    val equality = cf.std
+                    val equality = cf
+                      .std
                       .Eq(left, right)
                       .get
                       .asInstanceOf[BoolColumn] // yay!
@@ -334,10 +341,10 @@ trait SliceTransforms[M[+_]]
                         unifiedNonNum.isDefinedAt(row) || unifiedNum
                           .isDefinedAt(row)
                       def apply(row: Int): Boolean = {
-                        val left =
-                          !unifiedNonNum.isDefinedAt(row) || unifiedNonNum(row)
-                        val right =
-                          !unifiedNum.isDefinedAt(row) || unifiedNum(row)
+                        val left = !unifiedNonNum
+                          .isDefinedAt(row) || unifiedNonNum(row)
+                        val right = !unifiedNum
+                          .isDefinedAt(row) || unifiedNum(row)
                         left && right
                       }
                     }
@@ -371,22 +378,31 @@ trait SliceTransforms[M[+_]]
               new Slice {
                 val size = ss.size
                 val columns = {
-                  val (comparable0, other0) = ss.columns.toList.partition {
-                    case (ref @ ColumnRef(CPath.Identity, tpe), col)
-                        if CType.canCompare(CType.of(value), tpe) =>
-                      true
-                    case _ =>
-                      false
-                  }
-
-                  val comparable = comparable0.map(_._2).flatMap { col =>
-                    Eq.partialRight(value)(col).map(_.asInstanceOf[BoolColumn])
-                  }
-                  val other = other0.map(_._2).map { col =>
-                    new Map1Column(col) with BoolColumn {
-                      def apply(row: Int) = false
+                  val (comparable0, other0) = ss
+                    .columns
+                    .toList
+                    .partition {
+                      case (ref @ ColumnRef(CPath.Identity, tpe), col)
+                          if CType.canCompare(CType.of(value), tpe) =>
+                        true
+                      case _ =>
+                        false
                     }
-                  }
+
+                  val comparable = comparable0
+                    .map(_._2)
+                    .flatMap { col =>
+                      Eq
+                        .partialRight(value)(col)
+                        .map(_.asInstanceOf[BoolColumn])
+                    }
+                  val other = other0
+                    .map(_._2)
+                    .map { col =>
+                      new Map1Column(col) with BoolColumn {
+                        def apply(row: Int) = false
+                      }
+                    }
 
                   val columns = comparable ++ other
                   val aggregate =
@@ -433,43 +449,45 @@ trait SliceTransforms[M[+_]]
               val typed = Typed(objects.head, JObjectUnfixedT)
               composeSliceTransform2(typed)
             } else {
-              objects.map(composeSliceTransform2).reduceLeft { (l0, r0) =>
-                l0.zip(r0) { (sl, sr) =>
-                  new Slice {
-                    val size = sl.size
+              objects
+                .map(composeSliceTransform2)
+                .reduceLeft { (l0, r0) =>
+                  l0.zip(r0) { (sl, sr) =>
+                    new Slice {
+                      val size = sl.size
 
-                    val columns: Map[ColumnRef, Column] = {
-                      val (leftObjectBits, leftEmptyBits) = buildFilters(
-                        sl.columns,
-                        sl.size,
-                        filterObjects,
-                        filterEmptyObjects)
-                      val (rightObjectBits, rightEmptyBits) = buildFilters(
-                        sr.columns,
-                        sr.size,
-                        filterObjects,
-                        filterEmptyObjects)
+                      val columns: Map[ColumnRef, Column] = {
+                        val (leftObjectBits, leftEmptyBits) = buildFilters(
+                          sl.columns,
+                          sl.size,
+                          filterObjects,
+                          filterEmptyObjects)
+                        val (rightObjectBits, rightEmptyBits) = buildFilters(
+                          sr.columns,
+                          sr.size,
+                          filterObjects,
+                          filterEmptyObjects)
 
-                      val (leftFields, rightFields) = buildFields(
-                        sl.columns,
-                        sr.columns)
+                        val (leftFields, rightFields) = buildFields(
+                          sl.columns,
+                          sr.columns)
 
-                      val emptyBits = buildOuterBits(
-                        leftEmptyBits,
-                        rightEmptyBits,
-                        leftObjectBits,
-                        rightObjectBits)
+                        val emptyBits = buildOuterBits(
+                          leftEmptyBits,
+                          rightEmptyBits,
+                          leftObjectBits,
+                          rightObjectBits)
 
-                      val emptyObjects = buildEmptyObjects(emptyBits)
-                      val nonemptyObjects = buildNonemptyObjects(
-                        leftFields,
-                        rightFields)
+                        val emptyObjects = buildEmptyObjects(emptyBits)
+                        val nonemptyObjects = buildNonemptyObjects(
+                          leftFields,
+                          rightFields)
 
-                      emptyObjects ++ nonemptyObjects
+                        emptyObjects ++ nonemptyObjects
+                      }
                     }
                   }
                 }
-              }
             }
 
           case InnerObjectConcat(objects @ _*) =>
@@ -502,9 +520,8 @@ trait SliceTransforms[M[+_]]
             } else {
               objects map composeSliceTransform2 reduceLeft { (l0, r0) =>
                 l0.zip(r0) { (sl0, sr0) =>
-                  val sl = sl0.typed(
-                    JObjectUnfixedT
-                  ) // Help out the special cases.
+                  val sl = sl0
+                    .typed(JObjectUnfixedT) // Help out the special cases.
                   val sr = sr0.typed(JObjectUnfixedT)
 
                   new Slice {
@@ -548,7 +565,8 @@ trait SliceTransforms[M[+_]]
                         val result = emptyObjects ++ nonemptyObjects
 
                         result lazyMapValues { col =>
-                          cf.util
+                          cf
+                            .util
                             .filter(0, sl.size max sr.size, nonemptyBits)(col)
                             .get
                         }
@@ -564,55 +582,14 @@ trait SliceTransforms[M[+_]]
               val typed = Typed(elements.head, JArrayUnfixedT)
               composeSliceTransform2(typed)
             } else {
-              elements.map(composeSliceTransform2).reduceLeft { (l0, r0) =>
-                l0.zip(r0) { (sl, sr) =>
-                  new Slice {
-                    val size = sl.size
+              elements
+                .map(composeSliceTransform2)
+                .reduceLeft { (l0, r0) =>
+                  l0.zip(r0) { (sl, sr) =>
+                    new Slice {
+                      val size = sl.size
 
-                    val columns: Map[ColumnRef, Column] = {
-                      val (leftArrayBits, leftEmptyBits) = buildFilters(
-                        sl.columns,
-                        sl.size,
-                        filterArrays,
-                        filterEmptyArrays)
-                      val (rightArrayBits, rightEmptyBits) = buildFilters(
-                        sr.columns,
-                        sr.size,
-                        filterArrays,
-                        filterEmptyArrays)
-
-                      val emptyBits = buildOuterBits(
-                        leftEmptyBits,
-                        rightEmptyBits,
-                        leftArrayBits,
-                        rightArrayBits)
-
-                      val emptyArrays = buildEmptyArrays(emptyBits)
-                      val nonemptyArrays = buildNonemptyArrays(
-                        sl.columns,
-                        sr.columns)
-
-                      emptyArrays ++ nonemptyArrays
-                    }
-                  }
-                }
-              }
-            }
-
-          case InnerArrayConcat(elements @ _*) =>
-            if (elements.size == 1) {
-              val typed = Typed(elements.head, JArrayUnfixedT)
-              composeSliceTransform2(typed)
-            } else {
-              elements.map(composeSliceTransform2).reduceLeft { (l0, r0) =>
-                l0.zip(r0) { (sl, sr) =>
-                  new Slice {
-                    val size = sl.size
-
-                    val columns: Map[ColumnRef, Column] = {
-                      if (sl.columns.isEmpty || sr.columns.isEmpty) {
-                        Map.empty[ColumnRef, Column]
-                      } else {
+                      val columns: Map[ColumnRef, Column] = {
                         val (leftArrayBits, leftEmptyBits) = buildFilters(
                           sl.columns,
                           sl.size,
@@ -624,7 +601,7 @@ trait SliceTransforms[M[+_]]
                           filterArrays,
                           filterEmptyArrays)
 
-                        val (emptyBits, nonemptyBits) = buildInnerBits(
+                        val emptyBits = buildOuterBits(
                           leftEmptyBits,
                           rightEmptyBits,
                           leftArrayBits,
@@ -635,18 +612,64 @@ trait SliceTransforms[M[+_]]
                           sl.columns,
                           sr.columns)
 
-                        val result = emptyArrays ++ nonemptyArrays
+                        emptyArrays ++ nonemptyArrays
+                      }
+                    }
+                  }
+                }
+            }
 
-                        result lazyMapValues { col =>
-                          cf.util
-                            .filter(0, sl.size max sr.size, nonemptyBits)(col)
-                            .get
+          case InnerArrayConcat(elements @ _*) =>
+            if (elements.size == 1) {
+              val typed = Typed(elements.head, JArrayUnfixedT)
+              composeSliceTransform2(typed)
+            } else {
+              elements
+                .map(composeSliceTransform2)
+                .reduceLeft { (l0, r0) =>
+                  l0.zip(r0) { (sl, sr) =>
+                    new Slice {
+                      val size = sl.size
+
+                      val columns: Map[ColumnRef, Column] = {
+                        if (sl.columns.isEmpty || sr.columns.isEmpty) {
+                          Map.empty[ColumnRef, Column]
+                        } else {
+                          val (leftArrayBits, leftEmptyBits) = buildFilters(
+                            sl.columns,
+                            sl.size,
+                            filterArrays,
+                            filterEmptyArrays)
+                          val (rightArrayBits, rightEmptyBits) = buildFilters(
+                            sr.columns,
+                            sr.size,
+                            filterArrays,
+                            filterEmptyArrays)
+
+                          val (emptyBits, nonemptyBits) = buildInnerBits(
+                            leftEmptyBits,
+                            rightEmptyBits,
+                            leftArrayBits,
+                            rightArrayBits)
+
+                          val emptyArrays = buildEmptyArrays(emptyBits)
+                          val nonemptyArrays = buildNonemptyArrays(
+                            sl.columns,
+                            sr.columns)
+
+                          val result = emptyArrays ++ nonemptyArrays
+
+                          result lazyMapValues { col =>
+                            cf
+                              .util
+                              .filter(0, sl.size max sr.size, nonemptyBits)(col)
+                              .get
+                          }
                         }
                       }
                     }
                   }
                 }
-              }
             }
 
           case ObjectDelete(source, mask) =>
@@ -841,7 +864,8 @@ trait SliceTransforms[M[+_]]
                               val right2 =
                                 cf.util.filter(0, size, rightMask)(right).get
 
-                              ref -> cf.util
+                              ref -> cf
+                                .util
                                 .MaskedUnion(leftMask)(left2, right2)
                                 .get // safe because types are grouped
                             }
@@ -1618,10 +1642,12 @@ trait ConcatHelpers {
       size: Int,
       filter: Map[ColumnRef, Column] => Map[ColumnRef, Column],
       filterEmpty: Map[ColumnRef, Column] => Map[ColumnRef, Column]) = {
-    val definedBits = filter(columns).values
+    val definedBits = filter(columns)
+      .values
       .map(_.definedAt(0, size))
       .reduceOption(_ | _) getOrElse new BitSet
-    val emptyBits = filterEmpty(columns).values
+    val emptyBits = filterEmpty(columns)
+      .values
       .map(_.definedAt(0, size))
       .reduceOption(_ | _) getOrElse new BitSet
     (definedBits, emptyBits)

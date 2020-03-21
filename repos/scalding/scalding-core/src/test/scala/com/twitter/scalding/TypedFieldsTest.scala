@@ -41,10 +41,12 @@ class TypedFieldsTest extends WordSpec with Matchers {
           List("0" -> "5,foo", "1" -> "6,bar", "2" -> "9,foo"))
         .sink[(Opaque, Int)](Tsv("outputFile")) { outputBuffer =>
           val outMap =
-            outputBuffer.map {
-              case (opaque: Opaque, i: Int) =>
-                (opaque.str, i)
-            }.toMap
+            outputBuffer
+              .map {
+                case (opaque: Opaque, i: Int) =>
+                  (opaque.str, i)
+              }
+              .toMap
           outMap should have size 2
           outMap("foo") shouldBe 14
           outMap("bar") shouldBe 6
@@ -73,7 +75,8 @@ class TypedFieldsTest extends WordSpec with Matchers {
 
 class UntypedFieldsJob(args: Args) extends Job(args) {
 
-  TextLine(args("input")).read
+  TextLine(args("input"))
+    .read
     .map('line -> ('x, 'y)) { line: String =>
       val split = line.split(",")
       (split(0).toInt, new Opaque(split(1)))
@@ -97,7 +100,8 @@ class TypedFieldsJob(args: Args) extends Job(args) {
   val xField = Field[String]('x)
   val yField = Field[Opaque]('y)
 
-  TextLine(args("input")).read
+  TextLine(args("input"))
+    .read
     .map('line -> (xField, yField)) { line: String =>
       val split = line.split(",")
       (split(0).toInt, new Opaque(split(1)))

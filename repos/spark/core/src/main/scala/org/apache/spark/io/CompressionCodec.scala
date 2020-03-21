@@ -71,9 +71,8 @@ private[spark] object CompressionCodec {
   }
 
   def createCodec(conf: SparkConf, codecName: String): CompressionCodec = {
-    val codecClass = shortCompressionCodecNames.getOrElse(
-      codecName.toLowerCase,
-      codecName)
+    val codecClass = shortCompressionCodecNames
+      .getOrElse(codecName.toLowerCase, codecName)
     val codec =
       try {
         val ctor = Utils

@@ -26,7 +26,8 @@ import org.eclipse.jgit.errors.RepositoryNotFoundException
 
 object GitCommand {
   val DefaultCommandRegex =
-    """\Agit-(upload|receive)-pack '/([a-zA-Z0-9\-_.]+)/([a-zA-Z0-9\-_.]+).git'\Z""".r
+    """\Agit-(upload|receive)-pack '/([a-zA-Z0-9\-_.]+)/([a-zA-Z0-9\-_.]+).git'\Z"""
+      .r
   val SimpleCommandRegex = """\Agit-(upload|receive)-pack '/(.+\.git)'\Z""".r
 }
 
@@ -162,12 +163,12 @@ class PluginGitUploadPack(repoName: String, routing: GitRepositoryRouting)
 
   override protected def runTask(user: String)(implicit
       session: Session): Unit = {
-    if (routing.filter.filter(
-          "/" + repoName,
-          Some(user),
-          loadSystemSettings(),
-          false)) {
-      val path = routing.urlPattern.r
+    if (routing
+          .filter
+          .filter("/" + repoName, Some(user), loadSystemSettings(), false)) {
+      val path = routing
+        .urlPattern
+        .r
         .replaceFirstIn(repoName, routing.localPath)
       using(Git.open(new File(Directory.GitBucketHome, path))) { git =>
         val repository = git.getRepository
@@ -184,12 +185,12 @@ class PluginGitReceivePack(repoName: String, routing: GitRepositoryRouting)
 
   override protected def runTask(user: String)(implicit
       session: Session): Unit = {
-    if (routing.filter.filter(
-          "/" + repoName,
-          Some(user),
-          loadSystemSettings(),
-          true)) {
-      val path = routing.urlPattern.r
+    if (routing
+          .filter
+          .filter("/" + repoName, Some(user), loadSystemSettings(), true)) {
+      val path = routing
+        .urlPattern
+        .r
         .replaceFirstIn(repoName, routing.localPath)
       using(Git.open(new File(Directory.GitBucketHome, path))) { git =>
         val repository = git.getRepository

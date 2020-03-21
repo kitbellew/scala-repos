@@ -54,17 +54,20 @@ private[spark] class ApplicationMaster(
   // Load the properties file with the Spark configuration and set entries as system properties,
   // so that user code run inside the AM also has access to them.
   if (args.propertiesFile != null) {
-    Utils.getPropertiesFromFile(args.propertiesFile).foreach {
-      case (k, v) =>
-        sys.props(k) = v
-    }
+    Utils
+      .getPropertiesFromFile(args.propertiesFile)
+      .foreach {
+        case (k, v) =>
+          sys.props(k) = v
+      }
   }
 
   // TODO: Currently, task to container is computed once (TaskSetManager) - which need not be
   // optimal as more containers are available. Might need to handle this better.
 
   private val sparkConf = new SparkConf()
-  private val yarnConf: YarnConfiguration = SparkHadoopUtil.get
+  private val yarnConf: YarnConfiguration = SparkHadoopUtil
+    .get
     .newConfiguration(sparkConf)
     .asInstanceOf[YarnConfiguration]
   private val isClusterMode = args.userClass != null
@@ -118,9 +121,8 @@ private[spark] class ApplicationMaster(
   // requests to RM.
   private val heartbeatInterval = {
     // Ensure that progress is sent before YarnConfiguration.RM_AM_EXPIRY_INTERVAL_MS elapses.
-    val expiryInterval = yarnConf.getInt(
-      YarnConfiguration.RM_AM_EXPIRY_INTERVAL_MS,
-      120000)
+    val expiryInterval = yarnConf
+      .getInt(YarnConfiguration.RM_AM_EXPIRY_INTERVAL_MS, 120000)
     math.max(
       0,
       math.min(expiryInterval / 2, sparkConf.get(RM_HEARTBEAT_INTERVAL)))
@@ -128,9 +130,8 @@ private[spark] class ApplicationMaster(
 
   // Initial wait interval before allocator poll, to allow for quicker ramp up when executors are
   // being requested.
-  private val initialAllocationInterval = math.min(
-    heartbeatInterval,
-    sparkConf.get(INITIAL_HEARTBEAT_INTERVAL))
+  private val initialAllocationInterval = math
+    .min(heartbeatInterval, sparkConf.get(INITIAL_HEARTBEAT_INTERVAL))
 
   // Next wait interval before allocator poll.
   private var nextAllocationInterval = initialAllocationInterval
@@ -177,8 +178,9 @@ private[spark] class ApplicationMaster(
       val priority = ShutdownHookManager.SPARK_CONTEXT_SHUTDOWN_PRIORITY - 1
       ShutdownHookManager.addShutdownHook(priority) { () =>
         val maxAppAttempts = client.getMaxRegAttempts(sparkConf, yarnConf)
-        val isLastAttempt =
-          client.getAttemptId().getAttemptId() >= maxAppAttempts
+        val isLastAttempt = client
+          .getAttemptId()
+          .getAttemptId() >= maxAppAttempts
 
         if (!finished) {
           // The default state of ApplicationMaster is failed if it is invoked by shut down hook.
@@ -194,7 +196,8 @@ private[spark] class ApplicationMaster(
 
         if (!unregistered) {
           // we only want to unregister if we don't want the RM to retry
-          if (finalStatus == FinalApplicationStatus.SUCCEEDED || isLastAttempt) {
+          if (finalStatus == FinalApplicationStatus
+                .SUCCEEDED || isLastAttempt) {
             unregister(finalStatus, finalMsg)
             cleanupStagingDir(fs)
           }
@@ -473,10 +476,10 @@ private[spark] class ApplicationMaster(
               val numPendingAllocate = allocator.getPendingAllocate.size
               allocatorLock.synchronized {
                 val sleepInterval =
-                  if (numPendingAllocate > 0 || allocator.getNumPendingLossReasonRequests > 0) {
-                    val currentAllocationInterval = math.min(
-                      heartbeatInterval,
-                      nextAllocationInterval)
+                  if (numPendingAllocate > 0 || allocator
+                        .getNumPendingLossReasonRequests > 0) {
+                    val currentAllocationInterval = math
+                      .min(heartbeatInterval, nextAllocationInterval)
                     nextAllocationInterval =
                       currentAllocationInterval * 2 // avoid overflow
                     currentAllocationInterval
@@ -533,8 +536,8 @@ private[spark] class ApplicationMaster(
       val totalWaitTime = sparkConf.get(AM_MAX_WAIT_TIME)
       val deadline = System.currentTimeMillis() + totalWaitTime
 
-      while (sparkContextRef
-               .get() == null && System.currentTimeMillis < deadline && !finished) {
+      while (sparkContextRef.get() == null && System
+               .currentTimeMillis < deadline && !finished) {
         logInfo("Waiting for spark context initialization ... ")
         sparkContextRef.wait(10000L)
       }
@@ -589,8 +592,8 @@ private[spark] class ApplicationMaster(
 
   /** Add the Yarn IP filter that is required for properly securing the UI. */
   private def addAmIpFilter() = {
-    val proxyBase = System.getenv(
-      ApplicationConstants.APPLICATION_WEB_PROXY_BASE_ENV)
+    val proxyBase = System
+      .getenv(ApplicationConstants.APPLICATION_WEB_PROXY_BASE_ENV)
     val amFilter = "org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter"
     val params = client.getAmIpFilterParams(yarnConf, proxyBase)
     if (isClusterMode) {
@@ -773,10 +776,12 @@ object ApplicationMaster extends Logging {
   def main(args: Array[String]): Unit = {
     SignalLogger.register(log)
     val amArgs = new ApplicationMasterArguments(args)
-    SparkHadoopUtil.get.runAsSparkUser { () =>
-      master = new ApplicationMaster(amArgs, new YarnRMClient(amArgs))
-      System.exit(master.run())
-    }
+    SparkHadoopUtil
+      .get
+      .runAsSparkUser { () =>
+        master = new ApplicationMaster(amArgs, new YarnRMClient(amArgs))
+        System.exit(master.run())
+      }
   }
 
   private[spark] def sparkContextInitialized(sc: SparkContext): Unit = {

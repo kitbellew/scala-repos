@@ -233,7 +233,9 @@ object GBTExample {
     // Get the trained GBT from the fitted PipelineModel
     algo match {
       case "classification" =>
-        val rfModel = pipelineModel.stages.last
+        val rfModel = pipelineModel
+          .stages
+          .last
           .asInstanceOf[GBTClassificationModel]
         if (rfModel.totalNumNodes < 30) {
           println(rfModel.toDebugString) // Print full model.
@@ -255,26 +257,18 @@ object GBTExample {
     algo match {
       case "classification" =>
         println("Training data results:")
-        DecisionTreeExample.evaluateClassificationModel(
-          pipelineModel,
-          training,
-          labelColName)
+        DecisionTreeExample
+          .evaluateClassificationModel(pipelineModel, training, labelColName)
         println("Test data results:")
-        DecisionTreeExample.evaluateClassificationModel(
-          pipelineModel,
-          test,
-          labelColName)
+        DecisionTreeExample
+          .evaluateClassificationModel(pipelineModel, test, labelColName)
       case "regression" =>
         println("Training data results:")
-        DecisionTreeExample.evaluateRegressionModel(
-          pipelineModel,
-          training,
-          labelColName)
+        DecisionTreeExample
+          .evaluateRegressionModel(pipelineModel, training, labelColName)
         println("Test data results:")
-        DecisionTreeExample.evaluateRegressionModel(
-          pipelineModel,
-          test,
-          labelColName)
+        DecisionTreeExample
+          .evaluateRegressionModel(pipelineModel, test, labelColName)
       case _ =>
         throw new IllegalArgumentException("Algo ${params.algo} not supported.")
     }

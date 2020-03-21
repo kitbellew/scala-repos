@@ -63,10 +63,8 @@ trait Contexts {
       s"it is both defined in $owner and imported subsequently by \n$imp")
 
   private lazy val startContext = NoContext.make(
-    Template(
-      List(),
-      noSelfType,
-      List()) setSymbol global.NoSymbol setType global.NoType,
+    Template(List(), noSelfType, List()) setSymbol global
+      .NoSymbol setType global.NoType,
     rootMirror.RootClass,
     rootMirror.RootClass.info.decls)
 
@@ -137,8 +135,8 @@ trait Contexts {
       if (!unit.hasXml || ScalaXmlTopScope == NoSymbol)
         rootImportsContext
       else
-        rootImportsContext.make(
-          gen.mkImport(ScalaXmlPackage, nme.TopScope, nme.dollarScope))
+        rootImportsContext
+          .make(gen.mkImport(ScalaXmlPackage, nme.TopScope, nme.dollarScope))
 
     val c = contextWithXML.make(tree, unit = unit)
 
@@ -685,14 +683,13 @@ trait Contexts {
       * accessible.
       */
     def makeConstructorContext = {
-      val baseContext = enclClass.outer.nextEnclosing(
-        !_.tree.isInstanceOf[Template])
+      val baseContext = enclClass
+        .outer
+        .nextEnclosing(!_.tree.isInstanceOf[Template])
       // must propagate reporter!
       // (caught by neg/t3649 when refactoring reporting to be specified only by this.reporter and not also by this.contextMode)
-      val argContext = baseContext.makeNewScope(
-        tree,
-        owner,
-        reporter = this.reporter)
+      val argContext = baseContext
+        .makeNewScope(tree, owner, reporter = this.reporter)
       argContext.contextMode = contextMode
       argContext.inSelfSuperCall = true
       def enterElems(c: Context) {
@@ -744,10 +741,12 @@ trait Contexts {
     def deprecationWarning(pos: Position, sym: Symbol, msg: String): Unit =
       currentRun.reporting.deprecationWarning(fixPosition(pos), sym, msg)
     def deprecationWarning(pos: Position, sym: Symbol): Unit =
-      currentRun.reporting.deprecationWarning(
-        fixPosition(pos),
-        sym
-      ) // TODO: allow this to escalate to an error, and implicit search will ignore deprecated implicits
+      currentRun
+        .reporting
+        .deprecationWarning(
+          fixPosition(pos),
+          sym
+        ) // TODO: allow this to escalate to an error, and implicit search will ignore deprecated implicits
 
     def featureWarning(
         pos: Position,
@@ -756,13 +755,15 @@ trait Contexts {
         featureTrait: Symbol,
         construct: => String = "",
         required: Boolean): Unit =
-      currentRun.reporting.featureWarning(
-        fixPosition(pos),
-        featureName,
-        featureDesc,
-        featureTrait,
-        construct,
-        required)
+      currentRun
+        .reporting
+        .featureWarning(
+          fixPosition(pos),
+          featureName,
+          featureDesc,
+          featureTrait,
+          construct,
+          required)
 
     // nextOuter determines which context is searched next for implicits
     // (after `this`, which contributes `newImplicits` below.) In
@@ -902,9 +903,11 @@ trait Contexts {
             "\n Access to protected " + target + " not permitted because" +
               "\n " + "enclosing " + this.enclClass.owner +
               this.enclClass.owner.locationString + " is not a subclass of " +
-              "\n " + sym.owner + sym.owner.locationString + " where target is defined"
+              "\n " + sym
+              .owner + sym.owner.locationString + " where target is defined"
         c != NoContext && {
-          target.isType || { // allow accesses to types from arbitrary subclasses fixes #4737
+          target
+            .isType || { // allow accesses to types from arbitrary subclasses fixes #4737
             val res =
               isSubClassOrCompanion(pre.widen.typeSymbol, c.owner) ||
                 c.owner.isModuleClass &&
@@ -915,7 +918,9 @@ trait Contexts {
               lastAccessCheckDetails =
                 "\n Access to protected " + target + " not permitted because" +
                   "\n prefix type " + pre.widen + " does not conform to" +
-                  "\n " + c.owner + c.owner.locationString + " where the access take place"
+                  "\n " + c.owner + c
+                  .owner
+                  .locationString + " where the access take place"
             res
           }
         }
@@ -1129,7 +1134,8 @@ trait Contexts {
     /** @return None if a cycle is detected, or Some(infos) containing the in-scope implicits at this context */
     private def implicits(nextOuter: Context): Option[List[ImplicitInfo]] = {
       val imports = this.imports
-      if (owner != nextOuter.owner && owner.isClass && !owner.isPackageClass && !inSelfSuperCall) {
+      if (owner != nextOuter.owner && owner.isClass && !owner
+            .isPackageClass && !inSelfSuperCall) {
         if (!owner.isInitialized)
           None
         else
@@ -1214,7 +1220,8 @@ trait Contexts {
         // Monomorphism restriction on types is in part because type aliases could have the
         // same target type but attach different variance to the parameters. Maybe it can be
         // relaxed, but doesn't seem worth it at present.
-        else if (mt1 =:= mt2 && name.isTypeName && imp1Symbol.isMonomorphicType && imp2Symbol.isMonomorphicType) {
+        else if (mt1 =:= mt2 && name.isTypeName && imp1Symbol
+                   .isMonomorphicType && imp2Symbol.isMonomorphicType) {
           log(
             s"Suppressing ambiguous import: $mt1 =:= $mt2 && $imp1Symbol and $imp2Symbol are equivalent")
           Some(imp1)
@@ -1307,9 +1314,8 @@ trait Contexts {
       }
 
       def lookupInScope(scope: Scope) =
-        (
-          scope lookupUnshadowedEntries name filter (e => qualifies(e.sym))
-        ).toList
+        (scope lookupUnshadowedEntries name filter (e => qualifies(e.sym)))
+          .toList
 
       def newOverloaded(owner: Symbol, pre: Type, entries: List[ScopeEntry]) =
         logResult(s"overloaded symbol in $pre")(
@@ -1384,8 +1390,8 @@ trait Contexts {
       def depthOk(imp: ImportInfo) =
         (imp.depth > symbolDepth
           || (
-            unit.isJava && imp.isExplicitImport(
-              name) && imp.depth == symbolDepth
+            unit.isJava && imp.isExplicitImport(name) && imp
+              .depth == symbolDepth
           ))
 
       while (!impSym.exists && imports.nonEmpty && depthOk(imports.head)) {
@@ -1501,7 +1507,8 @@ trait Contexts {
     override final def firstImport = Some(impInfo)
     override final def isRootImport = !tree.pos.isDefined
     override final def toString =
-      super.toString + " with " + s"ImportContext { $impInfo; outer.owner = ${outer.owner} }"
+      super
+        .toString + " with " + s"ImportContext { $impInfo; outer.owner = ${outer.owner} }"
   }
 
   /** A reporter for use during type checking. It has multiple modes for handling errors.
@@ -1663,7 +1670,8 @@ trait Contexts {
     // [JZ] Contexts, pre- the SI-7345 refactor, avoided allocating the buffers until needed. This
     // is replicated here out of conservatism.
     private def newBuffer[A] =
-      mutable.LinkedHashSet
+      mutable
+        .LinkedHashSet
         .empty[A] // Important to use LinkedHS for stable results.
     final protected def errorBuffer = {
       if (_errorBuffer == null)
@@ -1790,7 +1798,8 @@ trait Contexts {
       def current = selectors.head
       while ((selectors ne Nil) && result == NoSymbol) {
         if (current.rename == name.toTermName)
-          result = qual.tpe
+          result = qual
+            .tpe
             .nonLocalMember( // new to address #2733: consider only non-local members for imports
               if (name.isTypeName)
                 current.name.toTypeName
@@ -1804,7 +1813,8 @@ trait Contexts {
         if (result == NoSymbol)
           selectors = selectors.tail
       }
-      if (record && settings.warnUnusedImport && selectors.nonEmpty && result != NoSymbol && pos != NoPosition)
+      if (record && settings.warnUnusedImport && selectors
+            .nonEmpty && result != NoSymbol && pos != NoPosition)
         recordUsage(current, result)
 
       // Harden against the fallout from bugs like SI-6745

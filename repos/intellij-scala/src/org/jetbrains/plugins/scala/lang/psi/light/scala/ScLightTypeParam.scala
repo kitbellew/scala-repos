@@ -59,10 +59,13 @@ class ScLightTypeParam(t: TypeParameter, tParam: ScTypeParam)
   override def toString: String = tParam.toString
 
   override def typeParameters: Seq[ScTypeParam] =
-    t.typeParams.zip(tParam.typeParameters).map {
-      case (t: TypeParameter, tParam: ScTypeParam) =>
-        new ScLightTypeParam(t, tParam)
-    }
+    t
+      .typeParams
+      .zip(tParam.typeParameters)
+      .map {
+        case (t: TypeParameter, tParam: ScTypeParam) =>
+          new ScLightTypeParam(t, tParam)
+      }
 
   override protected def findChildrenByClassScala[T >: Null <: ScalaPsiElement](
       clazz: Class[T]): Array[T] =

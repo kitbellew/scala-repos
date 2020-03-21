@@ -91,7 +91,8 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
     "be exceeded when using the maxLength body parser" in {
       val (parser, parsed) = bodyParser
       val result = feed(
-        BodyParsers.parse
+        BodyParsers
+          .parse
           .maxLength(MaxLength10, BodyParser(req => parser))
           .apply(req))
       maxLengthParserEnforced(result)
@@ -101,7 +102,8 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
     "be exceeded when using the maxLength body parser and an equal enforceMaxLength" in {
       val (parser, parsed) = bodyParser
       val result = feed(
-        BodyParsers.parse
+        BodyParsers
+          .parse
           .maxLength(
             MaxLength10,
             BodyParser(req =>
@@ -114,7 +116,8 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
     "be exceeded when using the maxLength body parser and a longer enforceMaxLength" in {
       val (parser, parsed) = bodyParser
       val result = feed(
-        BodyParsers.parse
+        BodyParsers
+          .parse
           .maxLength(
             MaxLength10,
             BodyParser(req =>
@@ -127,7 +130,8 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
     "be exceeded when using enforceMaxLength and a longer maxLength body parser" in {
       val (parser, parsed) = bodyParser
       val result = feed(
-        BodyParsers.parse
+        BodyParsers
+          .parse
           .maxLength(
             MaxLength20,
             BodyParser(req =>
@@ -140,7 +144,8 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
     "not be exceeded when nothing is exceeded" in {
       val (parser, parsed) = bodyParser
       val result = feed(
-        BodyParsers.parse
+        BodyParsers
+          .parse
           .maxLength(
             MaxLength20,
             BodyParser(req =>

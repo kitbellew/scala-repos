@@ -22,7 +22,8 @@ object MBestRowIdentifierColumn {
       scope: Scope,
       nullable: Boolean = false) =
     ResultSetAction[MBestRowIdentifierColumn](
-      _.metaData.getBestRowIdentifier(
+      _.metaData
+      .getBestRowIdentifier(
         table.catalog_?,
         table.schema_?,
         table.name,

@@ -97,15 +97,17 @@ object IngestTest {
 
           (0 until n).foldLeft(Map.empty[String, Option[Statistics]]) {
             (stats, _) =>
-              config.ingest.foldLeft(stats) {
-                case (stats, (path, file)) =>
-                  stats + (
-                    path -> (
-                      stats.getOrElse(path, None) |+| Some(
-                        timeIngest(path, file))
+              config
+                .ingest
+                .foldLeft(stats) {
+                  case (stats, (path, file)) =>
+                    stats + (
+                      path -> (
+                        stats.getOrElse(path, None) |+| Some(
+                          timeIngest(path, file))
+                      )
                     )
-                  )
-              }
+                }
           }
         }
 

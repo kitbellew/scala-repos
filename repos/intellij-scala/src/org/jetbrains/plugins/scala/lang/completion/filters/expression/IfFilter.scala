@@ -27,8 +27,16 @@ class IfFilter extends ElementFilter {
           import org.jetbrains.plugins.scala.extensions._
           if (leaf.getParent != null && //reference
               leaf.getParent.getParent != null && //pattern
-              leaf.getParent.getParent.getPrevSiblingNotWhitespace != null && //case keyword
-              leaf.getParent.getParent.getPrevSiblingNotWhitespace.getNode.getElementType == ScalaTokenTypes.kCASE)
+              leaf
+                .getParent
+                .getParent
+                .getPrevSiblingNotWhitespace != null && //case keyword
+              leaf
+                .getParent
+                .getParent
+                .getPrevSiblingNotWhitespace
+                .getNode
+                .getElementType == ScalaTokenTypes.kCASE)
             return false
           return true
         }
@@ -46,7 +54,9 @@ class IfFilter extends ElementFilter {
             val text = clause.getText
             while (text(position - 1).isWhitespace)
               position -= 1
-            return leaf.getTextRange.getEndOffset == clause.getTextRange.getStartOffset + position
+            return leaf.getTextRange.getEndOffset == clause
+              .getTextRange
+              .getStartOffset + position
           case _ =>
         }
         parent = parent.getParent

@@ -34,22 +34,22 @@ trait Mappable6[A, B, C, D, E, F] extends Mappable[Tuple6[A, B, C, D, E, F]] {
 trait Mappable7[A, B, C, D, E, F, G]
     extends Mappable[Tuple7[A, B, C, D, E, F, G]] {
   def converter[Z >: Tuple7[A, B, C, D, E, F, G]] =
-    TupleConverter.asSuperConverter(
-      TupleConverter.of[Tuple7[A, B, C, D, E, F, G]])
+    TupleConverter
+      .asSuperConverter(TupleConverter.of[Tuple7[A, B, C, D, E, F, G]])
 }
 
 trait Mappable8[A, B, C, D, E, F, G, H]
     extends Mappable[Tuple8[A, B, C, D, E, F, G, H]] {
   def converter[Z >: Tuple8[A, B, C, D, E, F, G, H]] =
-    TupleConverter.asSuperConverter(
-      TupleConverter.of[Tuple8[A, B, C, D, E, F, G, H]])
+    TupleConverter
+      .asSuperConverter(TupleConverter.of[Tuple8[A, B, C, D, E, F, G, H]])
 }
 
 trait Mappable9[A, B, C, D, E, F, G, H, I]
     extends Mappable[Tuple9[A, B, C, D, E, F, G, H, I]] {
   def converter[Z >: Tuple9[A, B, C, D, E, F, G, H, I]] =
-    TupleConverter.asSuperConverter(
-      TupleConverter.of[Tuple9[A, B, C, D, E, F, G, H, I]])
+    TupleConverter
+      .asSuperConverter(TupleConverter.of[Tuple9[A, B, C, D, E, F, G, H, I]])
 }
 
 trait Mappable10[A, B, C, D, E, F, G, H, I, J]

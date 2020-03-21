@@ -97,9 +97,8 @@ abstract class ScalaIntroduceFieldHandlerBase extends RefactoringActionHandler {
       expr: ScExpression,
       occurrences: Array[TextRange],
       aClass: ScTemplateDefinition): PsiElement = {
-    val commonParent = ScalaRefactoringUtil.commonParent(
-      aClass.getContainingFile,
-      occurrences: _*)
+    val commonParent = ScalaRefactoringUtil
+      .commonParent(aClass.getContainingFile, occurrences: _*)
     val firstOccOffset = occurrences.map(_.getStartOffset).min
     val anchor = ScalaRefactoringUtil
       .statementsAndMembersInClass(aClass)
@@ -144,8 +143,8 @@ object ScalaIntroduceFieldHandlerBase {
     val parExpr: ScExpression = ScalaRefactoringUtil.findParentExpr(
       ScalaRefactoringUtil.commonParent(ifc.file, occurrences: _*))
     val container = ScalaRefactoringUtil.container(parExpr, ifc.file)
-    val stmtsAndMmbrs = ScalaRefactoringUtil.statementsAndMembersInClass(
-      ifc.aClass)
+    val stmtsAndMmbrs = ScalaRefactoringUtil
+      .statementsAndMembersInClass(ifc.aClass)
     val containerIsLocal =
       (Iterator(container) ++ new ParentsIterator(container))
         .exists(stmtsAndMmbrs.contains(_))

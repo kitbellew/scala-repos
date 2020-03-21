@@ -10,9 +10,8 @@ import org.eclipse.jetty.servlet._
 import org.scalatra.servlet.{HasMultipartConfig, ScalatraAsyncSupport}
 
 object JettyContainer {
-  private val DefaultDispatcherTypes: EnumSet[DispatcherType] = EnumSet.of(
-    DispatcherType.REQUEST,
-    DispatcherType.ASYNC)
+  private val DefaultDispatcherTypes: EnumSet[DispatcherType] = EnumSet
+    .of(DispatcherType.REQUEST, DispatcherType.ASYNC)
 }
 
 trait JettyContainer extends Container {
@@ -53,8 +52,9 @@ trait JettyContainer extends Container {
 
     servlet match {
       case s: HasMultipartConfig => {
-        holder.getRegistration.setMultipartConfig(
-          s.multipartConfig.toMultipartConfigElement)
+        holder
+          .getRegistration
+          .setMultipartConfig(s.multipartConfig.toMultipartConfigElement)
       }
       case s: ScalatraAsyncSupport =>
         holder.getRegistration.setAsyncSupported(true)
@@ -95,12 +95,12 @@ trait JettyContainer extends Container {
   // Add a default servlet.  If there is no underlying servlet, then
   // filters just return 404.
   if (!skipDefaultServlet)
-    servletContextHandler.addServlet(
-      new ServletHolder("default", classOf[DefaultServlet]),
-      "/")
+    servletContextHandler
+      .addServlet(new ServletHolder("default", classOf[DefaultServlet]), "/")
 
   protected def ensureSessionIsSerializable() {
-    servletContextHandler.getSessionHandler.addEventListener(
-      SessionSerializingListener)
+    servletContextHandler
+      .getSessionHandler
+      .addEventListener(SessionSerializingListener)
   }
 }

@@ -100,10 +100,13 @@ object Util {
             ".field" #> fieldBind
           }
         } else {
-          mapper.formFields.filter(filter).map {
-            case field: MappedField[_, T] =>
-              ".field" #> fn(field)
-          }
+          mapper
+            .formFields
+            .filter(filter)
+            .map {
+              case field: MappedField[_, T] =>
+                ".field" #> fn(field)
+            }
         }
 
       bind.map(_(ns))

@@ -41,7 +41,8 @@ class QueueResource @Inject() (
     authenticated(req) { implicit identity =>
       import Formats._
 
-      val queuedWithDelay = launchQueue.list
+      val queuedWithDelay = launchQueue
+        .list
         .filter(t => t.inProgress && isAuthorized(ViewApp, t.app))
         .map {
           case taskCount: LaunchQueue.QueuedTaskInfo =>

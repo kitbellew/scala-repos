@@ -231,7 +231,8 @@ object StageActorRefSpec {
       val logic =
         new GraphStageLogic(shape) {
           implicit def self =
-            stageActor.ref // must be a `def`; we want self to be the sender for our replies
+            stageActor
+              .ref // must be a `def`; we want self to be the sender for our replies
           var sum: Int = 0
 
           override def preStart(): Unit = {

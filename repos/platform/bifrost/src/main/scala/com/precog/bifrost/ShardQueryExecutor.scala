@@ -106,8 +106,8 @@ trait ShardQueryExecutorPlatform[M[+_]]
       with QueryExecutor[N, (Set[Fault], StreamT[N, Slice])] {
 
     type YggConfig <: ShardQueryExecutorConfig
-    protected lazy val queryLogger = LoggerFactory.getLogger(
-      "com.precog.bifrost.ShardQueryExecutor")
+    protected lazy val queryLogger = LoggerFactory
+      .getLogger("com.precog.bifrost.ShardQueryExecutor")
 
     implicit val M: Monad[M]
     private implicit val N: Monad[N] = N0
@@ -150,8 +150,8 @@ trait ShardQueryExecutorPlatform[M[+_]]
             val resultVN: N[EvaluationError \/ Table] = {
               bytecode map { instrs =>
                 (
-                  (systemError _) <-: (StackException(_)) <-: decorate(
-                    instrs).disjunction
+                  (systemError _) <-: (StackException(_)) <-: decorate(instrs)
+                    .disjunction
                 ) traverse { dag =>
                   applyQueryOptions(opts) {
                     logger.debug("[QID:%d] Evaluating query".format(qid))
@@ -220,12 +220,14 @@ trait ShardQueryExecutorPlatform[M[+_]]
           val sortKey = InnerArrayConcat(
             opts.sortOn map { cpath =>
               WrapArray(
-                cpath.nodes.foldLeft(constants.SourceValue.Single: TransSpec1) {
-                  case (inner, f @ CPathField(_)) =>
-                    DerefObjectStatic(inner, f)
-                  case (inner, i @ CPathIndex(_)) =>
-                    DerefArrayStatic(inner, i)
-                })
+                cpath
+                  .nodes
+                  .foldLeft(constants.SourceValue.Single: TransSpec1) {
+                    case (inner, f @ CPathField(_)) =>
+                      DerefObjectStatic(inner, f)
+                    case (inner, i @ CPathIndex(_)) =>
+                      DerefArrayStatic(inner, i)
+                  })
             }: _*)
 
           table flatMap { tbl =>

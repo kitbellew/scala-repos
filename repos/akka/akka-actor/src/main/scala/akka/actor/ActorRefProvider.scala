@@ -660,8 +660,9 @@ private[akka] class LocalActorRefProvider private[akka] (
   private lazy val defaultDispatcher =
     system.dispatchers.defaultGlobalDispatcher
 
-  private lazy val defaultMailbox = system.mailboxes.lookup(
-    Mailboxes.DefaultMailboxId)
+  private lazy val defaultMailbox = system
+    .mailboxes
+    .lookup(Mailboxes.DefaultMailboxId)
 
   override lazy val rootGuardian: LocalActorRef =
     new LocalActorRef(
@@ -695,8 +696,10 @@ private[akka] class LocalActorRefProvider private[akka] (
     val ref =
       new LocalActorRef(
         system,
-        system.guardianProps.getOrElse(
-          Props(classOf[LocalActorRefProvider.Guardian], guardianStrategy)),
+        system
+          .guardianProps
+          .getOrElse(
+            Props(classOf[LocalActorRefProvider.Guardian], guardianStrategy)),
         defaultDispatcher,
         defaultMailbox,
         rootGuardian,
@@ -888,7 +891,8 @@ private[akka] class LocalActorRefProvider private[akka] (
 
         try {
           val dispatcher = system.dispatchers.lookup(props2.dispatcher)
-          val mailboxType = system.mailboxes
+          val mailboxType = system
+            .mailboxes
             .getMailboxType(props2, dispatcher.configurator.config)
 
           if (async)
@@ -939,15 +943,18 @@ private[akka] class LocalActorRefProvider private[akka] (
         val routeeProps = p.withRouter(NoRouter)
 
         try {
-          val routerDispatcher = system.dispatchers.lookup(
-            p.routerConfig.routerDispatcher)
-          val routerMailbox = system.mailboxes
+          val routerDispatcher = system
+            .dispatchers
+            .lookup(p.routerConfig.routerDispatcher)
+          val routerMailbox = system
+            .mailboxes
             .getMailboxType(routerProps, routerDispatcher.configurator.config)
 
           // routers use context.actorOf() to create the routees, which does not allow us to pass
           // these through, but obtain them here for early verification
           val routeeDispatcher = system.dispatchers.lookup(p.dispatcher)
-          val routeeMailbox = system.mailboxes
+          val routeeMailbox = system
+            .mailboxes
             .getMailboxType(routeeProps, routeeDispatcher.configurator.config)
 
           new RoutedActorRef(

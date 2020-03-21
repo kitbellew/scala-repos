@@ -47,7 +47,8 @@ object Def {
       if (isMod) {
         while (Modifier.parse(builder)) {}
       } else {
-        while (builder.getTokenType == ScalaTokenTypes.kIMPLICIT || builder.getTokenType == ScalaTokenTypes.kLAZY) {
+        while (builder.getTokenType == ScalaTokenTypes
+                 .kIMPLICIT || builder.getTokenType == ScalaTokenTypes.kLAZY) {
           builder.advanceLexer()
         }
       }
@@ -97,8 +98,8 @@ object Def {
           defMarker.rollbackTo()
           false
         }
-      case ScalaTokenTypes.kCASE | ScalaTokenTypes.kCLASS |
-          ScalaTokenTypes.kOBJECT | ScalaTokenTypes.kTRAIT =>
+      case ScalaTokenTypes.kCASE | ScalaTokenTypes.kCLASS | ScalaTokenTypes
+            .kOBJECT | ScalaTokenTypes.kTRAIT =>
         defMarker.rollbackTo()
         TmplDef parse builder
       case _ =>

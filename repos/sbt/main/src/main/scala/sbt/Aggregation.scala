@@ -89,10 +89,13 @@ final object Aggregation {
         case Inc(_) =>
           false
       }
-    results.toEither.right.foreach { r =>
-      if (show.taskValues)
-        printSettings(r, show.print)
-    }
+    results
+      .toEither
+      .right
+      .foreach { r =>
+        if (show.taskValues)
+          printSettings(r, show.print)
+      }
     if (show.success)
       printSuccess(start, stop, extracted, success, log)
   }
@@ -286,11 +289,13 @@ final object Aggregation {
       extra: BuildUtil[Proj],
       reverse: Boolean): Seq[ProjectRef] = {
     val resRef = proj.map(p => extra.projectRefFor(extra.resolveRef(p)))
-    resRef.toList.flatMap(ref =>
-      if (reverse)
-        extra.aggregates.reverse(ref)
-      else
-        extra.aggregates.forward(ref))
+    resRef
+      .toList
+      .flatMap(ref =>
+        if (reverse)
+          extra.aggregates.reverse(ref)
+        else
+          extra.aggregates.forward(ref))
   }
 
   def aggregate[T, Proj](
@@ -337,9 +342,8 @@ final object Aggregation {
     }
 
   def aggregationEnabled(key: ScopedKey[_], data: Settings[Scope]): Boolean =
-    Keys.aggregate in Scope.fillTaskAxis(
-      key.scope,
-      key.key) get data getOrElse true
+    Keys.aggregate in Scope
+      .fillTaskAxis(key.scope, key.key) get data getOrElse true
 
   @deprecated("Use BuildUtil.aggregationRelation", "0.13.0")
   def relation(

@@ -76,10 +76,12 @@ class SubstreamSubscriptionTimeoutSpec(conf: String) extends AkkaSpec(conf) {
       Thread.sleep(1500)
 
       // Must be a Sink.seq, otherwise there is a race due to the concat in the `lift` implementation
-      val f = s3.runWith(Sink.seq).recover {
-        case _: SubscriptionTimeoutException ⇒
-          "expected"
-      }
+      val f = s3
+        .runWith(Sink.seq)
+        .recover {
+          case _: SubscriptionTimeoutException ⇒
+            "expected"
+        }
       Await.result(f, 300.millis) should equal("expected")
 
       publisherProbe.sendComplete()

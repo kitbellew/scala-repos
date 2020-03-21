@@ -250,10 +250,12 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
 
         for {
           screen <- VisitedScreens.is.toList
-          field <- screen.screenFields.collect {
-            case c: ConfirmField =>
-              c
-          } if field.show_? && field.onConfirm_?
+          field <- screen
+            .screenFields
+            .collect {
+              case c: ConfirmField =>
+                c
+            } if field.show_? && field.onConfirm_?
         } yield ScreenFieldInfo(
           field,
           field.displayHtml,
@@ -263,19 +265,23 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
         Nil
 
     renderAll(
-      CurrentScreen.is.map(s =>
-        Text(
-          (s.myScreenNum + 1).toString
-        )), //currentScreenNumber: Box[NodeSeq],
+      CurrentScreen
+        .is
+        .map(s =>
+          Text(
+            (s.myScreenNum + 1).toString
+          )), //currentScreenNumber: Box[NodeSeq],
       Full(Text(screenCount.toString)), //screenCount: Box[NodeSeq],
       wizardTop, // wizardTop: Box[Elem],
       theScreen.screenTop, //screenTop: Box[Elem],
       extraFields :::
-        theScreen.screenFields.flatMap(f =>
-          if (f.show_?)
-            List(ScreenFieldInfo(f, f.displayHtml, f.helpAsHtml, f.toForm))
-          else
-            Nil), //fields: List[ScreenFieldInfo],
+        theScreen
+          .screenFields
+          .flatMap(f =>
+            if (f.show_?)
+              List(ScreenFieldInfo(f, f.displayHtml, f.helpAsHtml, f.toForm))
+            else
+              Nil), //fields: List[ScreenFieldInfo],
       prevButton, // prev: Box[Elem],
       Full(cancelButton), // cancel: Box[Elem],
       nextButton, // next: Box[Elem],
@@ -439,9 +445,11 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
             val snapshot = createSnapshot
             PrevSnapshot.set(Full(snapshot))
             val nextScreen = screen.nextScreen
-            CurrentScreen.is.foreach { s =>
-              VisitedScreens.set(VisitedScreens :+ s)
-            }
+            CurrentScreen
+              .is
+              .foreach { s =>
+                VisitedScreens.set(VisitedScreens :+ s)
+              }
             doTransition(CurrentScreen.get, nextScreen)
             CurrentScreen.set(nextScreen)
             OnFirstScreen.set(false)
@@ -648,9 +656,9 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
     }
 
     override protected def testWasSet(name: String, bn: String): Boolean = {
-      WizardVarHandler
-        .get(name)
-        .isDefined || (WizardVarHandler.get(bn) openOr false)
+      WizardVarHandler.get(name).isDefined || (
+        WizardVarHandler.get(bn) openOr false
+      )
     }
 
     /**

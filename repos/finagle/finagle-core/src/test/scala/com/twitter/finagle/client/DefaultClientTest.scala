@@ -60,9 +60,8 @@ class DefaultClientTest
     val name = "name"
     val socket = new InetSocketAddress(0)
     val client: Client[Int, Int]
-    lazy val service: Service[Int, Int] = client.newService(
-      Name.bound(Address(socket)),
-      name)
+    lazy val service: Service[Int, Int] = client
+      .newService(Name.bound(Address(socket)), name)
   }
 
   trait BaseClientHelper extends ServiceHelper {
@@ -205,13 +204,15 @@ class DefaultClientTest
       @volatile
       var closed = false
 
-      val dest = Name.Bound.singleton(
-        Var.async(Addr.Bound(Seq.empty[Address]: _*)) { _ =>
-          Closable.make { _ =>
-            closed = true
-            Future.Done
-          }
-        })
+      val dest = Name
+        .Bound
+        .singleton(
+          Var.async(Addr.Bound(Seq.empty[Address]: _*)) { _ =>
+            Closable.make { _ =>
+              closed = true
+              Future.Done
+            }
+          })
       val svc = client.newService(dest, "test")
       assert(!closed, "client closed too early")
       val f = svc.close()
@@ -294,8 +295,9 @@ class DefaultClientTest
         control.advance(4.seconds)
         timer.tick()
         assert(
-          statsReceiver.counters.get(
-            Seq("failure_accrual", "revivals")) == None)
+          statsReceiver
+            .counters
+            .get(Seq("failure_accrual", "revivals")) == None)
       }
     }
   }

@@ -71,7 +71,9 @@ class HealthCheckTest extends MarathonSpec {
 
   test("MergeFromProto with portIndex") {
     val proto =
-      Protos.HealthCheckDefinition.newBuilder
+      Protos
+        .HealthCheckDefinition
+        .newBuilder
         .setPath("/health")
         .setProtocol(Protocol.HTTP)
         .setPortIndex(0)
@@ -99,7 +101,9 @@ class HealthCheckTest extends MarathonSpec {
 
   test("MergeFromProto with port") {
     val proto =
-      Protos.HealthCheckDefinition.newBuilder
+      Protos
+        .HealthCheckDefinition
+        .newBuilder
         .setPath("/health")
         .setProtocol(Protocol.HTTP)
         .setGracePeriodSeconds(10)
@@ -127,7 +131,9 @@ class HealthCheckTest extends MarathonSpec {
 
   test("MergeFromProto with neither port nor portIndex") {
     val proto =
-      Protos.HealthCheckDefinition.newBuilder
+      Protos
+        .HealthCheckDefinition
+        .newBuilder
         .setPath("/health")
         .setProtocol(Protocol.HTTP)
         .setGracePeriodSeconds(10)
@@ -154,7 +160,9 @@ class HealthCheckTest extends MarathonSpec {
 
   test("MergeFromProtoTcp") {
     val proto =
-      Protos.HealthCheckDefinition.newBuilder
+      Protos
+        .HealthCheckDefinition
+        .newBuilder
         .setProtocol(Protocol.TCP)
         .setPortIndex(1)
         .setGracePeriodSeconds(7)
@@ -179,7 +187,9 @@ class HealthCheckTest extends MarathonSpec {
 
   test("MergeFromProtoHttps") {
     val proto =
-      Protos.HealthCheckDefinition.newBuilder
+      Protos
+        .HealthCheckDefinition
+        .newBuilder
         .setPath("/health")
         .setProtocol(Protocol.HTTPS)
         .setPortIndex(0)

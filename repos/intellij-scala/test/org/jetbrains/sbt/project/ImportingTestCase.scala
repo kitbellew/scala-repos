@@ -62,6 +62,7 @@ abstract class ImportingTestCase
   }
 
   private def setUpProjectDirectory(): Unit =
-    myProjectRoot = LocalFileSystem.getInstance.refreshAndFindFileByIoFile(
-      testProjectDir)
+    myProjectRoot = LocalFileSystem
+      .getInstance
+      .refreshAndFindFileByIoFile(testProjectDir)
 }

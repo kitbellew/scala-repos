@@ -82,8 +82,8 @@ object ExtractionExamples extends Specification {
     (json \ "name").extract[String] mustEqual "joe"
     (json \ "name").extractOpt[String] mustEqual Some("joe")
     (json \ "name").extractOpt[Int] mustEqual None
-    ((json \ "children")(0) \ "birthdate").extract[Date] mustEqual date(
-      "2004-09-04T18:06:22Z")
+    ((json \ "children")(0) \ "birthdate")
+      .extract[Date] mustEqual date("2004-09-04T18:06:22Z")
 
     JInt(1).extract[Int] mustEqual 1
     JInt(1).extract[String] mustEqual "1"
@@ -142,8 +142,8 @@ object ExtractionExamples extends Specification {
 
   "Flatten example with simple case class" in {
     val f = Extraction.flatten(
-      Extraction.decompose(
-        SimplePerson("joe", Address("Bulevard", "Helsinki"))))
+      Extraction
+        .decompose(SimplePerson("joe", Address("Bulevard", "Helsinki"))))
     val e = Map(
       ".name" -> "\"joe\"",
       ".address.street" -> "\"Bulevard\"",
@@ -288,8 +288,8 @@ object ExtractionExamples extends Specification {
   }
 
   "Map with nested non-polymorphic list extraction example" in {
-    parse("""{"a":["b"]}""").extract[Map[String, List[String]]] mustEqual Map(
-      "a" -> List("b"))
+    parse("""{"a":["b"]}""")
+      .extract[Map[String, List[String]]] mustEqual Map("a" -> List("b"))
   }
 
   "List with nested non-polymorphic list extraction example" in {

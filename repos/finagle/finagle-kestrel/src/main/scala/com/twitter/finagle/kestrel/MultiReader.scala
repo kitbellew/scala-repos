@@ -67,16 +67,20 @@ private[finagle] object MultiReaderHelper {
         outstandingReads.incrementAndGet()
         ReadMessage(
           msg.bytes,
-          msg.ack.map { v =>
-            ackCounter.incr()
-            outstandingReads.decrementAndGet()
-            v
-          },
-          msg.abort.map { v =>
-            abortCounter.incr()
-            outstandingReads.decrementAndGet()
-            v
-          }
+          msg
+            .ack
+            .map { v =>
+              ackCounter.incr()
+              outstandingReads.decrementAndGet()
+              v
+            },
+          msg
+            .abort
+            .map { v =>
+              abortCounter.incr()
+              outstandingReads.decrementAndGet()
+              v
+            }
         )
       } else {
         msg
@@ -101,18 +105,22 @@ private[finagle] object MultiReaderHelper {
       }
 
       val queues =
-        handles.map {
-          _.messages
-        }.toSeq
-      val errors =
-        handles.map { h =>
-          h.error map { e =>
-            logger.warning(
-              s"Read handle ${_root_.java.lang.System.identityHashCode(h)} " +
-                s"encountered exception : ${e.getMessage}")
-            h
+        handles
+          .map {
+            _.messages
           }
-        }.toSeq
+          .toSeq
+      val errors =
+        handles
+          .map { h =>
+            h.error map { e =>
+              logger.warning(
+                s"Read handle ${_root_.java.lang.System.identityHashCode(h)} " +
+                  s"encountered exception : ${e.getMessage}")
+              h
+            }
+          }
+          .toSeq
 
       // We sequence here to ensure that `close` gets priority over reads.
       Offer
@@ -149,7 +157,8 @@ private[finagle] object MultiReaderHelper {
     }
 
     // Wait until the ReadHandles set is populated before initializing.
-    val readHandlesPopulatedFuture = readHandles.changes
+    val readHandlesPopulatedFuture = readHandles
+      .changes
       .collect[Try[Set[ReadHandle]]] {
         case r @ Return(x) if x.nonEmpty =>
           r
@@ -582,13 +591,11 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
     val event = config.va.changes map {
       case Addr.Bound(addrs, _) => {
         (currentHandles.keySet &~ addrs) foreach { addr =>
-          logger.info(
-            s"Host ${addr} left for reading queue ${config.queueName}")
+          logger
+            .info(s"Host ${addr} left for reading queue ${config.queueName}")
         }
         val newHandles = (addrs &~ currentHandles.keySet) map { addr =>
-          val factory = baseClientBuilder
-            .addrs(addr)
-            .buildFactory()
+          val factory = baseClientBuilder.addrs(addr).buildFactory()
 
           val client = createClient(factory)
 

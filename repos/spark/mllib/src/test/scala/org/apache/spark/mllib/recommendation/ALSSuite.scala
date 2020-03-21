@@ -93,11 +93,13 @@ object ALSSuite {
           new BDM(
             users,
             products,
-            raw.data.map(v =>
-              if (v > 0)
-                1.0
-              else
-                0.0))
+            raw
+              .data
+              .map(v =>
+                if (v > 0)
+                  1.0
+                else
+                  0.0))
         (raw, prefs)
       } else {
         (userMatrix * productMatrix, null)
@@ -156,9 +158,8 @@ class ALSSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("pseudorandomness") {
-    val ratings = sc.parallelize(
-      ALSSuite.generateRatings(10, 20, 5, 0.5, false, false)._1,
-      2)
+    val ratings = sc
+      .parallelize(ALSSuite.generateRatings(10, 20, 5, 0.5, false, false)._1, 2)
     val model11 = ALS.train(ratings, 5, 1, 1.0, 2, 1)
     val model12 = ALS.train(ratings, 5, 1, 1.0, 2, 1)
     val u11 = model11.userFeatures.values.flatMap(_.toList).collect().toList
@@ -170,9 +171,8 @@ class ALSSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("Storage Level for RDDs in model") {
-    val ratings = sc.parallelize(
-      ALSSuite.generateRatings(10, 20, 5, 0.5, false, false)._1,
-      2)
+    val ratings = sc
+      .parallelize(ALSSuite.generateRatings(10, 20, 5, 0.5, false, false)._1, 2)
     var storageLevel = StorageLevel.MEMORY_ONLY
     var model = new ALS()
       .setRank(5)
@@ -200,10 +200,12 @@ class ALSSuite extends SparkFunSuite with MLlibTestSparkContext {
   test("negative ids") {
     val data = ALSSuite.generateRatings(50, 50, 2, 0.7, false, false)
     val ratings = sc.parallelize(
-      data._1.map {
-        case Rating(u, p, r) =>
-          Rating(u - 25, p - 25, r)
-      })
+      data
+        ._1
+        .map {
+          case Rating(u, p, r) =>
+            Rating(u - 25, p - 25, r)
+        })
     val correct = data._2
     val model = ALS.train(ratings, 5, 15)
 
@@ -293,9 +295,12 @@ class ALSSuite extends SparkFunSuite with MLlibTestSparkContext {
                p <- 0 until products)
             yield (u, p)
         val userProductsRDD = sc.parallelize(usersProducts)
-        model.predict(userProductsRDD).collect().foreach { elem =>
-          allRatings(elem.user, elem.product) = elem.rating
-        }
+        model
+          .predict(userProductsRDD)
+          .collect()
+          .foreach { elem =>
+            allRatings(elem.user, elem.product) = elem.rating
+          }
         allRatings
       } else {
         predictedU * predictedP.t

@@ -348,17 +348,15 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
   "A Failure is an Empty Box which" can {
     "return its cause as an exception" in {
       case class LiftException(m: String) extends Exception
-      Failure(
-        "error",
-        Full(new LiftException("broken")),
-        Empty).exception must_== Full(new LiftException("broken"))
+      Failure("error", Full(new LiftException("broken")), Empty)
+        .exception must_== Full(new LiftException("broken"))
     }
     "return a chained list of causes" in {
       Failure(
         "error",
         Full(new Exception("broken")),
-        Full(Failure("nested cause", Empty, Empty))).chain must_== Full(
-        Failure("nested cause", Empty, Empty))
+        Full(Failure("nested cause", Empty, Empty)))
+        .chain must_== Full(Failure("nested cause", Empty, Empty))
     }
     "be converted to a ParamFailure" in {
       Failure("hi mom") ~> 404 must_== ParamFailure("hi mom", Empty, Empty, 404)
@@ -461,8 +459,8 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
         Full("bacon"),
         Full("sammich"),
         Failure("I HATE BACON"))
-      val singleBox = someBoxes.toSingleBox(
-        "This should be in the param failure.")
+      val singleBox = someBoxes
+        .toSingleBox("This should be in the param failure.")
 
       singleBox must beLike {
         case ParamFailure(message, _, _, _) =>

@@ -127,26 +127,30 @@ sealed trait SValue {
           if (m.isEmpty)
             List((JPath(), CEmptyObject))
           else {
-            m.toSeq.flatMap {
-              case (name, value) =>
-                value.structure map {
-                  case (path, ctype) =>
-                    (JPathField(name) \ path, ctype)
-                }
-            }
+            m
+              .toSeq
+              .flatMap {
+                case (name, value) =>
+                  value.structure map {
+                    case (path, ctype) =>
+                      (JPathField(name) \ path, ctype)
+                  }
+              }
           }
 
         case SArray(a) =>
           if (a.isEmpty)
             List((JPath(), CEmptyArray))
           else {
-            a.zipWithIndex.flatMap {
-              case (value, index) =>
-                value.structure map {
-                  case (path, ctype) =>
-                    (JPathIndex(index) \ path, ctype)
-                }
-            }
+            a
+              .zipWithIndex
+              .flatMap {
+                case (value, index) =>
+                  value.structure map {
+                    case (path, ctype) =>
+                      (JPathIndex(index) \ path, ctype)
+                  }
+              }
           }
 
         case SString(_) =>

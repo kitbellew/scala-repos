@@ -507,7 +507,8 @@ class TaskMetricsSuite extends SparkFunSuite {
     acc1 += 1
     acc2 += 2
     val newUpdates =
-      tm.accumulatorUpdates()
+      tm
+        .accumulatorUpdates()
         .map { a =>
           (a.id, a)
         }
@@ -586,15 +587,17 @@ class TaskMetricsSuite extends SparkFunSuite {
   }
 
   test("from accumulator updates") {
-    val accumUpdates1 = InternalAccumulator.createAll().map { a =>
-      AccumulableInfo(
-        a.id,
-        a.name,
-        Some(3L),
-        None,
-        a.isInternal,
-        a.countFailedValues)
-    }
+    val accumUpdates1 = InternalAccumulator
+      .createAll()
+      .map { a =>
+        AccumulableInfo(
+          a.id,
+          a.name,
+          Some(3L),
+          None,
+          a.isInternal,
+          a.countFailedValues)
+      }
     val metrics1 = TaskMetrics.fromAccumulatorUpdates(accumUpdates1)
     assertUpdatesEquals(metrics1.accumulatorUpdates(), accumUpdates1)
     // Test this with additional accumulators to ensure that we do not crash when handling
@@ -648,14 +651,18 @@ class TaskMetricsSuite extends SparkFunSuite {
       assert(!Accumulators.originals.contains(a.id))
     }
     // set some values in these accums
-    registeredAccums.zipWithIndex.foreach {
-      case (a, i) =>
-        a.setValue(i)
-    }
-    unregisteredAccums.zipWithIndex.foreach {
-      case (a, i) =>
-        a.setValue(i)
-    }
+    registeredAccums
+      .zipWithIndex
+      .foreach {
+        case (a, i) =>
+          a.setValue(i)
+      }
+    unregisteredAccums
+      .zipWithIndex
+      .foreach {
+        case (a, i) =>
+          a.setValue(i)
+      }
     val registeredAccumInfos = registeredAccums.map(makeInfo)
     val unregisteredAccumInfos = unregisteredAccums.map(makeInfo)
     val accumUpdates2 =
@@ -699,15 +706,17 @@ private[spark] object TaskMetricsSuite extends Assertions {
       updates1: Seq[AccumulableInfo],
       updates2: Seq[AccumulableInfo]): Unit = {
     assert(updates1.size === updates2.size)
-    updates1.zip(updates2).foreach {
-      case (info1, info2) =>
-        // do not assert ID equals here
-        assert(info1.name === info2.name)
-        assert(info1.update === info2.update)
-        assert(info1.value === info2.value)
-        assert(info1.internal === info2.internal)
-        assert(info1.countFailedValues === info2.countFailedValues)
-    }
+    updates1
+      .zip(updates2)
+      .foreach {
+        case (info1, info2) =>
+          // do not assert ID equals here
+          assert(info1.name === info2.name)
+          assert(info1.update === info2.update)
+          assert(info1.value === info2.value)
+          assert(info1.internal === info2.internal)
+          assert(info1.countFailedValues === info2.countFailedValues)
+      }
   }
 
   /**

@@ -1,8 +1,10 @@
 object Test {
-  scala.sys.addShutdownHook {
-    Thread.sleep(1000)
-    println("Test#shutdown.")
-  }
+  scala
+    .sys
+    .addShutdownHook {
+      Thread.sleep(1000)
+      println("Test#shutdown.")
+    }
 
   def daemon() = {
     val t =
@@ -32,8 +34,10 @@ object Test {
   def main(args: Array[String]): Unit = {
     daemon()
     nonDaemon()
-    scala.sys.addShutdownHook {
-      println("main#shutdown.")
-    }
+    scala
+      .sys
+      .addShutdownHook {
+        println("main#shutdown.")
+      }
   }
 }

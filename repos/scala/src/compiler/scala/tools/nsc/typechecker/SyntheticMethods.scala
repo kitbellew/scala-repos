@@ -204,8 +204,8 @@ trait SyntheticMethods extends ast.TreeDSL {
      */
     def equalsCore(eqmeth: Symbol, accessors: List[Symbol]) = {
       val otherName = context.unit.freshTermName(clazz.name + "$")
-      val otherSym =
-        eqmeth.newValue(otherName, eqmeth.pos, SYNTHETIC) setInfo clazz.tpe
+      val otherSym = eqmeth
+        .newValue(otherName, eqmeth.pos, SYNTHETIC) setInfo clazz.tpe
       val pairwise = accessors map (acc =>
         fn(
           Select(mkThis, acc),
@@ -316,8 +316,8 @@ trait SyntheticMethods extends ast.TreeDSL {
 
     def specializedHashcode = {
       createMethod(nme.hashCode_, Nil, IntTpe) { m =>
-        val accumulator =
-          m.newVariable(newTermName("acc"), m.pos, SYNTHETIC) setInfo IntTpe
+        val accumulator = m
+          .newVariable(newTermName("acc"), m.pos, SYNTHETIC) setInfo IntTpe
         val valdef = ValDef(accumulator, Literal(Constant(0xcafebabe)))
         val mixes = accessors map (acc =>
           Assign(
@@ -402,12 +402,13 @@ trait SyntheticMethods extends ast.TreeDSL {
               // Without a means to suppress this warning, I've thought better of it.
               if (settings.warnValueOverrides) {
                 (clazz.info nonPrivateMember m.name) filter (m =>
-                  (
-                    m.owner != AnyClass
-                  ) && (m.owner != clazz) && !m.isDeferred) andAlso { m =>
-                  typer.context.warning(
-                    clazz.pos,
-                    s"Implementation of ${m.name} inherited from ${m.owner} overridden in $clazz to enforce value class semantics")
+                  (m.owner != AnyClass) && (m.owner != clazz) && !m
+                    .isDeferred) andAlso { m =>
+                  typer
+                    .context
+                    .warning(
+                      clazz.pos,
+                      s"Implementation of ${m.name} inherited from ${m.owner} overridden in $clazz to enforce value class semantics")
                 }
               }
               true
@@ -474,11 +475,12 @@ trait SyntheticMethods extends ast.TreeDSL {
         // TODO: shouldn't the next line be: `original resetFlag CASEACCESSOR`?
         ddef.symbol resetFlag CASEACCESSOR
         lb += logResult("case accessor new")(newAcc)
-        val renamedInClassMap = renamedCaseAccessors.getOrElseUpdate(
-          clazz,
-          mutable.Map() withDefault (x => x))
-        renamedInClassMap(original.name.toTermName) =
-          newAcc.symbol.name.toTermName
+        val renamedInClassMap = renamedCaseAccessors
+          .getOrElseUpdate(clazz, mutable.Map() withDefault (x => x))
+        renamedInClassMap(original.name.toTermName) = newAcc
+          .symbol
+          .name
+          .toTermName
       }
 
       (lb ++= templ.body ++= synthesize()).toList

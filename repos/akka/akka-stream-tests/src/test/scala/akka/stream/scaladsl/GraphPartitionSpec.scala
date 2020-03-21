@@ -30,25 +30,26 @@ class GraphPartitionSpec extends AkkaSpec {
 
       val (s1, s2, s3) = RunnableGraph
         .fromGraph(
-          GraphDSL.create(Sink.seq[Int], Sink.seq[Int], Sink.seq[Int])(
-            Tuple3.apply) { implicit b ⇒ (sink1, sink2, sink3) ⇒
-            val partition = b.add(
-              Partition[Int](
-                3,
-                {
-                  case g if (g > 3) ⇒
-                    0
-                  case l if (l < 3) ⇒
-                    1
-                  case e if (e == 3) ⇒
-                    2
-                }))
-            Source(List(1, 2, 3, 4, 5)) ~> partition.in
-            partition.out(0) ~> sink1.in
-            partition.out(1) ~> sink2.in
-            partition.out(2) ~> sink3.in
-            ClosedShape
-          })
+          GraphDSL
+            .create(Sink.seq[Int], Sink.seq[Int], Sink.seq[Int])(Tuple3.apply) {
+              implicit b ⇒ (sink1, sink2, sink3) ⇒
+                val partition = b.add(
+                  Partition[Int](
+                    3,
+                    {
+                      case g if (g > 3) ⇒
+                        0
+                      case l if (l < 3) ⇒
+                        1
+                      case e if (e == 3) ⇒
+                        2
+                    }))
+                Source(List(1, 2, 3, 4, 5)) ~> partition.in
+                partition.out(0) ~> sink1.in
+                partition.out(1) ~> sink2.in
+                partition.out(2) ~> sink3.in
+                ClosedShape
+            })
         .run()
 
       s1.futureValue.toSet should ===(Set(4, 5))
@@ -73,8 +74,8 @@ class GraphPartitionSpec extends AkkaSpec {
                   case _ ⇒
                     1
                 }))
-            Source(
-              List("this", "is", "just", "another", "test")) ~> partition.in
+            Source(List("this", "is", "just", "another", "test")) ~> partition
+              .in
             partition.out(0) ~> Sink.fromSubscriber(c1)
             partition.out(1) ~> Sink.fromSubscriber(c2)
             ClosedShape
@@ -143,12 +144,12 @@ class GraphPartitionSpec extends AkkaSpec {
                     1
                 }))
             Source.fromPublisher(p1.getPublisher) ~> partition.in
-            partition.out(0) ~> Flow[Int].buffer(
-              16,
-              OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c1)
-            partition.out(1) ~> Flow[Int].buffer(
-              16,
-              OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c2)
+            partition.out(0) ~> Flow[Int]
+              .buffer(16, OverflowStrategy.backpressure) ~> Sink
+              .fromSubscriber(c1)
+            partition.out(1) ~> Flow[Int]
+              .buffer(16, OverflowStrategy.backpressure) ~> Sink
+              .fromSubscriber(c2)
             ClosedShape
           })
         .run()

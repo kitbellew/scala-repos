@@ -35,10 +35,7 @@ private[prediction] object Common {
     appOpt
       .map { app =>
         val channelMap: Map[String, Int] =
-          channelsDb
-            .getByAppid(app.id)
-            .map(c => (c.name, c.id))
-            .toMap
+          channelsDb.getByAppid(app.id).map(c => (c.name, c.id)).toMap
 
         val channelId: Option[Int] = channelName.map { ch =>
           if (channelMap.contains(ch)) {

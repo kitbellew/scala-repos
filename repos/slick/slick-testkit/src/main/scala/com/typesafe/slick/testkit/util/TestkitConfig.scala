@@ -35,8 +35,8 @@ object TestkitConfig {
           ref.getConfig("testkit").resolve()
       c.withValue(
         "absTestDir",
-        ConfigValueFactory.fromAnyRef(
-          new File(c.getString("testDir")).getAbsolutePath))
+        ConfigValueFactory
+          .fromAnyRef(new File(c.getString("testDir")).getAbsolutePath))
     }
     val defaults =
       ref

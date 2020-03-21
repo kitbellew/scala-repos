@@ -793,7 +793,8 @@ private[akka] class ActorCell(
             "self",
             self))
         throw new IllegalActorStateException(
-          actorInstance.getClass + " is not an Actor since it have not mixed in the 'Actor' trait")
+          actorInstance
+            .getClass + " is not an Actor since it have not mixed in the 'Actor' trait")
     }
 
   // logging is not the main purpose, and if it fails there’s nothing we can do

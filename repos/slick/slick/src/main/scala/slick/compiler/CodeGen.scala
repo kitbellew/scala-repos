@@ -20,9 +20,8 @@ abstract class CodeGen extends Phase {
 
       val nfrom =
         ClientSideOp.mapServerSide(rsm.from, keepType = true) { ss =>
-          logger.debug(
-            "Compiling server-side and mapping with server-side:",
-            ss)
+          logger
+            .debug("Compiling server-side and mapping with server-side:", ss)
           val (nss, nmapOpt) = compileServerSideAndMapping(
             ss,
             compileMap,

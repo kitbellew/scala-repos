@@ -29,8 +29,10 @@ class FoldTrueAndTest extends OperationsOnCollectionInspectionTest {
   }
 
   def test_3() {
-    val selected = s"""def a(x: String) = false
-                     |List("a").${START}fold(true) ((x,y) => x && a(y))$END""".stripMargin
+    val selected =
+      s"""def a(x: String) = false
+                     |List("a").${START}fold(true) ((x,y) => x && a(y))$END"""
+        .stripMargin
     check(selected)
     val text = """def a(x: String) = false
                  |List("a").fold(true) ((x,y) => x && a(y))""".stripMargin

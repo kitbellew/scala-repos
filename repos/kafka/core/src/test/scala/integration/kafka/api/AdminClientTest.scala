@@ -43,25 +43,33 @@ class AdminClientTest extends IntegrationTestHarness with Logging {
   var client: AdminClient = null
 
   // configure the servers and clients
-  this.serverConfig.setProperty(
-    KafkaConfig.ControlledShutdownEnableProp,
-    "false"
-  ) // speed up shutdown
-  this.serverConfig.setProperty(
-    KafkaConfig.OffsetsTopicReplicationFactorProp,
-    "3"
-  ) // don't want to lose offset
+  this
+    .serverConfig
+    .setProperty(
+      KafkaConfig.ControlledShutdownEnableProp,
+      "false"
+    ) // speed up shutdown
+  this
+    .serverConfig
+    .setProperty(
+      KafkaConfig.OffsetsTopicReplicationFactorProp,
+      "3"
+    ) // don't want to lose offset
   this.serverConfig.setProperty(KafkaConfig.OffsetsTopicPartitionsProp, "1")
-  this.serverConfig.setProperty(
-    KafkaConfig.GroupMinSessionTimeoutMsProp,
-    "100"
-  ) // set small enough session timeout
+  this
+    .serverConfig
+    .setProperty(
+      KafkaConfig.GroupMinSessionTimeoutMsProp,
+      "100"
+    ) // set small enough session timeout
   this.producerConfig.setProperty(ProducerConfig.ACKS_CONFIG, "all")
   this.consumerConfig.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId)
   this.consumerConfig.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, clientId)
-  this.consumerConfig
+  this
+    .consumerConfig
     .setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
-  this.consumerConfig
+  this
+    .consumerConfig
     .setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false")
   this.consumerConfig.setProperty(ConsumerConfig.METADATA_MAX_AGE_CONFIG, "100")
 

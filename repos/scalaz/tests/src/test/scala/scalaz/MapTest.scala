@@ -29,14 +29,14 @@ object MapTest extends SpecLite {
 
   "findLeft" ! forAll { (a: Int ==>> Int) =>
     val f = (_: Int) % 3 == 0
-    Foldable[Int ==>> ?].findLeft(a)(f) must_=== Foldable[List].findLeft(
-      a.values)(f)
+    Foldable[Int ==>> ?].findLeft(a)(f) must_=== Foldable[List]
+      .findLeft(a.values)(f)
   }
 
   "findRight" ! forAll { (a: Int ==>> Int) =>
     val f = (_: Int) % 3 == 0
-    Foldable[Int ==>> ?].findRight(a)(f) must_=== Foldable[List].findRight(
-      a.values)(f)
+    Foldable[Int ==>> ?].findRight(a)(f) must_=== Foldable[List]
+      .findRight(a.values)(f)
   }
 
   "index" ! forAll { (a: Int ==>> Int, i: Byte) =>
@@ -193,9 +193,8 @@ object MapTest extends SpecLite {
       import std.tuple._
       implicit val listTupleShow = Show[List[(Int, String)]]
 
-      fromList(List(5 -> "a", 3 -> "b")).toAscList must_=== (
-        fromList(List(3 -> "b", 5 -> "a")).toAscList
-      )
+      fromList(List(5 -> "a", 3 -> "b"))
+        .toAscList must_=== (fromList(List(3 -> "b", 5 -> "a")).toAscList)
       fromList(List(5 -> "a", 7 -> "c", 3 -> "b")) must_=== (
         fromList(List(3 -> "b", 5 -> "a", 7 -> "c"))
       )
@@ -235,9 +234,11 @@ object MapTest extends SpecLite {
         else
           Some(x)
       )
-      a.lookupIndex(n).foreach { b =>
-        a.elemAt(b).map(_._1) must_=== Some(n)
-      }
+      a
+        .lookupIndex(n)
+        .foreach { b =>
+          a.elemAt(b).map(_._1) must_=== Some(n)
+        }
     }
   }
 
@@ -637,10 +638,12 @@ object MapTest extends SpecLite {
       if (a isSubmapOf b) {
         (a.keySet isSubsetOf b.keySet) must_=== true
         a.difference(b) must_=== ==>>.empty
-        a.toList.foreach {
-          case (k, v) =>
-            b.lookup(k) must_=== Some(v)
-        }
+        a
+          .toList
+          .foreach {
+            case (k, v) =>
+              b.lookup(k) must_=== Some(v)
+          }
       }
     }
   }
@@ -733,10 +736,10 @@ object MapTest extends SpecLite {
     "mapKeys" in {
       fromList(List(5 -> "a", 3 -> "b"))
         .mapKeys(_ + 1) must_=== (fromList(List(4 -> "b", 6 -> "a")))
-      fromList(List(1 -> "b", 2 -> "a", 3 -> "d", 4 -> "c")).mapKeys(_ =>
-        1) must_=== (singleton(1, "c"))
-      fromList(List(1 -> "b", 2 -> "a", 3 -> "d", 4 -> "c")).mapKeys(_ =>
-        3) must_=== (singleton(3, "c"))
+      fromList(List(1 -> "b", 2 -> "a", 3 -> "d", 4 -> "c"))
+        .mapKeys(_ => 1) must_=== (singleton(1, "c"))
+      fromList(List(1 -> "b", 2 -> "a", 3 -> "d", 4 -> "c"))
+        .mapKeys(_ => 3) must_=== (singleton(3, "c"))
     }
 
     "mapKeys sound" ! forAll { a: Int ==>> Int =>
@@ -816,8 +819,8 @@ object MapTest extends SpecLite {
   "==>> fold" should {
     "fold" in {
       val f = (a: Int, b: String) => a + b.length
-      fromList(List(5 -> "a", 3 -> "bbb")).fold(0)((_, x, z) =>
-        f(z, x)) must_== 4
+      fromList(List(5 -> "a", 3 -> "bbb"))
+        .fold(0)((_, x, z) => f(z, x)) must_== 4
     }
 
     "foldrWithKey" in {
@@ -838,9 +841,8 @@ object MapTest extends SpecLite {
     }
 
     "keySet" in {
-      fromList(List(5 -> "a", 3 -> "b")).keySet must_=== (
-        ISet.fromList(List(3, 5))
-      )
+      fromList(List(5 -> "a", 3 -> "b"))
+        .keySet must_=== (ISet.fromList(List(3, 5)))
       empty[Int, String].keySet must_=== (ISet.empty[Int])
     }
 
@@ -874,9 +876,8 @@ object MapTest extends SpecLite {
 
     "toList" in {
       import std.tuple._
-      fromList(List(5 -> "a", 3 -> "b")).toList must_=== (
-        List(3 -> "b", 5 -> "a")
-      )
+      fromList(List(5 -> "a", 3 -> "b"))
+        .toList must_=== (List(3 -> "b", 5 -> "a"))
       empty[Int, String].toList must_=== (List.empty[(Int, String)])
     }
   }

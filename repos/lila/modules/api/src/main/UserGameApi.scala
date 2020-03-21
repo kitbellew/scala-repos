@@ -34,9 +34,11 @@ final class UserGameApi(bookmarkApi: lila.bookmark.BookmarkApi) {
         "turns" -> g.turns,
         "status" -> g.status,
         "clock" -> g.clock,
-        "correspondence" -> g.daysPerTurn.map { d =>
-          Json.obj("daysPerTurn" -> d)
-        },
+        "correspondence" -> g
+          .daysPerTurn
+          .map { d =>
+            Json.obj("daysPerTurn" -> d)
+          },
         "opening" -> g.opening,
         "players" -> JsObject(
           g.players map { p =>

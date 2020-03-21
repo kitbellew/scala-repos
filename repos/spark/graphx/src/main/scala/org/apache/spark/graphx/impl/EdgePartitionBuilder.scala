@@ -116,12 +116,11 @@ private[impl] class ExistingEdgePartitionBuilder[
 
   def toEdgePartition: EdgePartition[ED, VD] = {
     val edgeArray = edges.trim().array
-    new Sorter(EdgeWithLocalIds.edgeArraySortDataFormat[ED])
-      .sort(
-        edgeArray,
-        0,
-        edgeArray.length,
-        EdgeWithLocalIds.lexicographicOrdering)
+    new Sorter(EdgeWithLocalIds.edgeArraySortDataFormat[ED]).sort(
+      edgeArray,
+      0,
+      edgeArray.length,
+      EdgeWithLocalIds.lexicographicOrdering)
     val localSrcIds = new Array[Int](edgeArray.length)
     val localDstIds = new Array[Int](edgeArray.length)
     val data = new Array[ED](edgeArray.length)

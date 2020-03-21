@@ -3,7 +3,8 @@ import scala.collection.immutable.Range
 object Test {
   // ha ha, I always forget math.abs(Int.MinValue) == Int.MinValue
   val numbers = (
-    ((-3 to 3) ++ List(17, 127, Int.MaxValue, Int.MinValue + 1)).distinct
+    ((-3 to 3) ++ List(17, 127, Int.MaxValue, Int.MinValue + 1))
+      .distinct
       .sortBy(n => (math.abs(n), n))) :+ Int.MinValue
 
   // reducing output a little
@@ -46,11 +47,8 @@ object Test {
   def runGroup(label: String, f: (Int, Int, Int) => Range) {
     println(">>> " + label + " <<<\n")
     for (start <- endpoints) {
-      val s = "%-7s %-7s %-7s %s".format(
-        "start",
-        "end",
-        "step",
-        "length/first/last")
+      val s = "%-7s %-7s %-7s %s"
+        .format("start", "end", "step", "length/first/last")
       println(s + "\n" + ("-" * s.length))
       for (end <- endpoints;
            step <- numbers) {

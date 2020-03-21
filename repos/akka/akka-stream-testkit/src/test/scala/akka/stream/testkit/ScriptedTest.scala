@@ -114,9 +114,8 @@ trait ScriptedTest extends Matchers {
     def someInsPending: Boolean = !noInsPending
 
     def debug: String =
-      s"Script(pending=($pendingIns in, $pendingOuts out), remainingIns=${providedInputs
-        .drop(inputCursor)
-        .mkString("/")}, remainingOuts=${expectedOutputs.drop(outputCursor).mkString("/")})"
+      s"Script(pending=($pendingIns in, $pendingOuts out), remainingIns=${providedInputs.drop(inputCursor).mkString(
+        "/")}, remainingOuts=${expectedOutputs.drop(outputCursor).mkString("/")})"
   }
 
   class ScriptRunner[In, Out, M](

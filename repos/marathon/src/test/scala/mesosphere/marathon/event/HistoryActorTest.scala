@@ -84,7 +84,8 @@ class HistoryActorTest
   }
 
   private def statusMessage(state: TaskState) = {
-    val ipAddress: NetworkInfo.IPAddress = NetworkInfo.IPAddress
+    val ipAddress: NetworkInfo.IPAddress = NetworkInfo
+      .IPAddress
       .newBuilder()
       .setIpAddress("123.123.123.123")
       .setProtocol(NetworkInfo.Protocol.IPv4)

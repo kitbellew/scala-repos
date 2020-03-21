@@ -78,10 +78,12 @@ private[kestrel] class DecodingToCommand
 
     val queueName = split.head
 
-    val timeout = splitTimeout.lastOption.map {
-      case Buf.Utf8(s) =>
-        s.drop(2).toInt.milliseconds
-    }
+    val timeout = splitTimeout
+      .lastOption
+      .map {
+        case Buf.Utf8(s) =>
+          s.drop(2).toInt.milliseconds
+      }
 
     split.tail match {
       case Seq() =>
@@ -98,10 +100,12 @@ private[kestrel] class DecodingToCommand
         Peek(queueName, timeout)
       case _ =>
         throw new NonexistentCommand(
-          tokens.map {
-            case Buf.Utf8(s) =>
-              s
-          }.mkString)
+          tokens
+            .map {
+              case Buf.Utf8(s) =>
+                s
+            }
+            .mkString)
     }
   }
 }

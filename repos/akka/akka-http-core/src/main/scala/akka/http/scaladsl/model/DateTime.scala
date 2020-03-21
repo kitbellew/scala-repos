@@ -224,7 +224,8 @@ object DateTime {
   def apply(clicks: Long): DateTime = {
     require(
       DateTime.MinValue.clicks <= clicks && clicks <= DateTime.MaxValue.clicks,
-      "DateTime value must be >= " + DateTime.MinValue + " and <= " + DateTime.MaxValue)
+      "DateTime value must be >= " + DateTime.MinValue + " and <= " + DateTime
+        .MaxValue)
 
     // based on a fast RFC1123 implementation (C) 2000 by Tim Kientzle <kientzle@acm.org>
     val c = clicks - clicks % 1000

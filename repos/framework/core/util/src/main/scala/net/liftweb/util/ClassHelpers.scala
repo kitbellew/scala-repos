@@ -343,10 +343,13 @@ trait ClassHelpers {
        * add some extra $ for ex.
        */
       def alternateMethods: List[Method] =
-        clz.getDeclaredMethods.toList.filter(m =>
-          m.getName.equals(meth) &&
-            isPublic(m.getModifiers) &&
-            m.getParameterTypes.length == params.length)
+        clz
+          .getDeclaredMethods
+          .toList
+          .filter(m =>
+            m.getName.equals(meth) &&
+              isPublic(m.getModifiers) &&
+              m.getParameterTypes.length == params.length)
       methCacheLock.read {
         def key = (clz.getName, meth, params.length)
         if (Props.productionMode && methodCache.contains(key)) {
@@ -355,8 +358,8 @@ trait ClassHelpers {
 
           val ret =
             try {
-              val classes: Array[Class[_]] =
-                ptypes openOr params.map(_.getClass)
+              val classes: Array[Class[_]] = ptypes openOr params
+                .map(_.getClass)
               List(clz.getMethod(meth, classes: _*))
             } catch {
               case e: NullPointerException =>
@@ -382,7 +385,8 @@ trait ClassHelpers {
      }
      }
      */
-    possibleMethods.iterator
+    possibleMethods
+      .iterator
       .filter(m => inst != null || isStatic(m.getModifiers))
       .map((m: Method) =>
         tryo {
@@ -436,10 +440,14 @@ trait ClassHelpers {
     */
   def createInvoker[C <: AnyRef](name: String, on: C): Box[() => Box[Any]] = {
     def controllerMethods(instance: C) =
-      instance.getClass.getDeclaredMethods.filter { m =>
-        m.getName == name && isPublic(
-          m.getModifiers) && m.getParameterTypes.isEmpty
-      }
+      instance
+        .getClass
+        .getDeclaredMethods
+        .filter { m =>
+          m.getName == name && isPublic(m.getModifiers) && m
+            .getParameterTypes
+            .isEmpty
+        }
     on match {
       case null =>
         Empty

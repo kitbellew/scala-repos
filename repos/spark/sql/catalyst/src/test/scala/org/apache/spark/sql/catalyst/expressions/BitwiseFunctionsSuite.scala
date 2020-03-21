@@ -45,9 +45,11 @@ class BitwiseFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
     checkEvaluation(BitwiseNot(positiveLongLit), ~positiveLong)
     checkEvaluation(BitwiseNot(negativeLongLit), ~negativeLong)
 
-    DataTypeTestUtils.integralType.foreach { dt =>
-      checkConsistencyBetweenInterpretedAndCodegen(BitwiseNot, dt)
-    }
+    DataTypeTestUtils
+      .integralType
+      .foreach { dt =>
+        checkConsistencyBetweenInterpretedAndCodegen(BitwiseNot, dt)
+      }
   }
 
   test("BitwiseAnd") {
@@ -77,9 +79,11 @@ class BitwiseFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       BitwiseAnd(positiveLongLit, negativeLongLit),
       positiveLong & negativeLong)
 
-    DataTypeTestUtils.integralType.foreach { dt =>
-      checkConsistencyBetweenInterpretedAndCodegen(BitwiseAnd, dt, dt)
-    }
+    DataTypeTestUtils
+      .integralType
+      .foreach { dt =>
+        checkConsistencyBetweenInterpretedAndCodegen(BitwiseAnd, dt, dt)
+      }
   }
 
   test("BitwiseOr") {
@@ -109,9 +113,11 @@ class BitwiseFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       BitwiseOr(positiveLongLit, negativeLongLit),
       positiveLong | negativeLong)
 
-    DataTypeTestUtils.integralType.foreach { dt =>
-      checkConsistencyBetweenInterpretedAndCodegen(BitwiseOr, dt, dt)
-    }
+    DataTypeTestUtils
+      .integralType
+      .foreach { dt =>
+        checkConsistencyBetweenInterpretedAndCodegen(BitwiseOr, dt, dt)
+      }
   }
 
   test("BitwiseXor") {
@@ -141,8 +147,10 @@ class BitwiseFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       BitwiseXor(positiveLongLit, negativeLongLit),
       positiveLong ^ negativeLong)
 
-    DataTypeTestUtils.integralType.foreach { dt =>
-      checkConsistencyBetweenInterpretedAndCodegen(BitwiseXor, dt, dt)
-    }
+    DataTypeTestUtils
+      .integralType
+      .foreach { dt =>
+        checkConsistencyBetweenInterpretedAndCodegen(BitwiseXor, dt, dt)
+      }
   }
 }

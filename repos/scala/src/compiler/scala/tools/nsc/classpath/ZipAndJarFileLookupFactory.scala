@@ -55,8 +55,8 @@ object ZipAndJarFlatClassPathFactory extends ZipAndJarFileLookupFactory {
       with NoSourcePaths {
 
     override def findClassFile(className: String): Option[AbstractFile] = {
-      val (pkg, simpleClassName) = PackageNameUtils.separatePkgAndClassNames(
-        className)
+      val (pkg, simpleClassName) = PackageNameUtils
+        .separatePkgAndClassNames(className)
       classes(pkg).find(_.name == simpleClassName).map(_.file)
     }
 
@@ -82,8 +82,8 @@ object ZipAndJarFlatClassPathFactory extends ZipAndJarFileLookupFactory {
       with NoSourcePaths {
 
     override def findClassFile(className: String): Option[AbstractFile] = {
-      val (pkg, simpleClassName) = PackageNameUtils.separatePkgAndClassNames(
-        className)
+      val (pkg, simpleClassName) = PackageNameUtils
+        .separatePkgAndClassNames(className)
       classes(pkg).find(_.name == simpleClassName).map(_.file)
     }
 
@@ -137,9 +137,8 @@ object ZipAndJarFlatClassPathFactory extends ZipAndJarFileLookupFactory {
         }
 
       val subpackages = getSubpackages(file)
-      packages.put(
-        FlatClassPath.RootPackage,
-        PackageFileInfo(file, subpackages))
+      packages
+        .put(FlatClassPath.RootPackage, PackageFileInfo(file, subpackages))
       traverse(
         FlatClassPath.RootPackage,
         subpackages,
@@ -153,8 +152,8 @@ object ZipAndJarFlatClassPathFactory extends ZipAndJarFileLookupFactory {
           Seq.empty
         case Some(PackageFileInfo(_, subpackages)) =>
           val prefix = PackageNameUtils.packagePrefix(inPackage)
-          subpackages.map(packageFile =>
-            PackageEntryImpl(prefix + packageFile.name))
+          subpackages
+            .map(packageFile => PackageEntryImpl(prefix + packageFile.name))
       }
 
     override private[nsc] def classes(inPackage: String): Seq[ClassFileEntry] =

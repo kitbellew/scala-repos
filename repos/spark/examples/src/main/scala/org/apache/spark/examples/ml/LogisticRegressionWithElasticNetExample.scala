@@ -34,7 +34,8 @@ object LogisticRegressionWithElasticNetExample {
 
     // $example on$
     // Load training data
-    val training = sqlCtx.read
+    val training = sqlCtx
+      .read
       .format("libsvm")
       .load("data/mllib/sample_libsvm_data.txt")
 

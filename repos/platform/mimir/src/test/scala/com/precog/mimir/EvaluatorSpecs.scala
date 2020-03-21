@@ -120,54 +120,59 @@ trait EvaluatorTestSupport[M[+_]]
     override def load(table: Table, apiKey: APIKey, jtpe: JType) =
       EitherT {
         table.toJson map { events =>
-          val eventsV = events.toStream.traverse[
-            ({
-              type λ[α] = Validation[ResourceError, α]
-            })#λ,
-            Stream[JValue]] {
-            case JString(pathStr) =>
-              success {
-                indexLock synchronized { // block the WHOLE WORLD
-                  val path = Path(pathStr)
+          val eventsV = events
+            .toStream
+            .traverse[
+              ({
+                type λ[α] = Validation[ResourceError, α]
+              })#λ,
+              Stream[JValue]] {
+              case JString(pathStr) =>
+                success {
+                  indexLock synchronized { // block the WHOLE WORLD
+                    val path = Path(pathStr)
 
-                  val index = initialIndices get path getOrElse {
-                    initialIndices += (path -> currentIndex)
-                    currentIndex
-                  }
+                    val index = initialIndices get path getOrElse {
+                      initialIndices += (path -> currentIndex)
+                      currentIndex
+                    }
 
-                  val prefix = "filesystem"
-                  val target = path.path
-                    .replaceAll("/$", ".json")
-                    .replaceAll("^/" + prefix, prefix)
+                    val prefix = "filesystem"
+                    val target = path
+                      .path
+                      .replaceAll("/$", ".json")
+                      .replaceAll("^/" + prefix, prefix)
 
-                  val src =
-                    if (target startsWith prefix)
-                      io.Source.fromFile(
-                        new File(target.substring(prefix.length)))
-                    else
-                      io.Source.fromInputStream(
-                        getClass.getResourceAsStream(target))
+                    val src =
+                      if (target startsWith prefix)
+                        io
+                          .Source
+                          .fromFile(new File(target.substring(prefix.length)))
+                      else
+                        io
+                          .Source
+                          .fromInputStream(getClass.getResourceAsStream(target))
 
-                  val parsed: Stream[JValue] =
-                    src.getLines map JParser.parseUnsafe toStream
+                    val parsed: Stream[JValue] =
+                      src.getLines map JParser.parseUnsafe toStream
 
-                  currentIndex += parsed.length
+                    currentIndex += parsed.length
 
-                  parsed zip (Stream from index) map {
-                    case (value, id) =>
-                      JObject(
-                        JField("key", JArray(JNum(id) :: Nil)) :: JField(
-                          "value",
-                          value) :: Nil)
+                    parsed zip (Stream from index) map {
+                      case (value, id) =>
+                        JObject(
+                          JField("key", JArray(JNum(id) :: Nil)) :: JField(
+                            "value",
+                            value) :: Nil)
+                    }
                   }
                 }
-              }
 
-            case x =>
-              failure(
-                ResourceError.corrupt(
-                  "Attempted to load JSON as a table from something that wasn't a string: " + x))
-          }
+              case x =>
+                failure(
+                  ResourceError.corrupt(
+                    "Attempted to load JSON as a table from something that wasn't a string: " + x))
+            }
 
           eventsV.disjunction.map(ss => fromJson(ss.flatten))
         }
@@ -176,7 +181,8 @@ trait EvaluatorTestSupport[M[+_]]
 
   object Table extends TableCompanion
 
-  private var initialIndices = collection.mutable
+  private var initialIndices = collection
+    .mutable
     .Map[Path, Int]() // if we were doing this for real: j.u.c.HashMap
   private var currentIndex =
     0 // if we were doing this for real: j.u.c.a.AtomicInteger
@@ -220,9 +226,8 @@ trait EvaluatorSpecs[M[+_]]
       path: Path = Path.Root,
       scriptPath: Path = Path.Root,
       optimize: Boolean = true)(test: Set[SEvent] => Result): Result = {
-    val ctx = defaultEvaluationContext.copy(
-      basePath = path,
-      scriptPath = scriptPath)
+    val ctx = defaultEvaluationContext
+      .copy(basePath = path, scriptPath = scriptPath)
     (
       consumeEval(graph, ctx, optimize) match {
         case Success(results) =>
@@ -606,12 +611,10 @@ trait EvaluatorSpecs[M[+_]]
         dag.AbsoluteLoad(Const(CString("/hom/heightWeightAcrossSlices"))(line))(
           line)
 
-      val height = trans.DerefObjectStatic(
-        trans.Leaf(trans.Source),
-        CPathField("height"))
-      val weight = trans.DerefObjectStatic(
-        trans.Leaf(trans.Source),
-        CPathField("weight"))
+      val height = trans
+        .DerefObjectStatic(trans.Leaf(trans.Source), CPathField("height"))
+      val weight = trans
+        .DerefObjectStatic(trans.Leaf(trans.Source), CPathField("weight"))
       val mean = List(Mean)
       val max = List(Max)
 
@@ -638,12 +641,10 @@ trait EvaluatorSpecs[M[+_]]
         dag.AbsoluteLoad(Const(CString("/hom/heightWeightAcrossSlices"))(line))(
           line)
 
-      val height = trans.DerefObjectStatic(
-        trans.Leaf(trans.Source),
-        CPathField("height"))
-      val weight = trans.DerefObjectStatic(
-        trans.Leaf(trans.Source),
-        CPathField("weight"))
+      val height = trans
+        .DerefObjectStatic(trans.Leaf(trans.Source), CPathField("height"))
+      val weight = trans
+        .DerefObjectStatic(trans.Leaf(trans.Source), CPathField("weight"))
       val mean = List(Mean)
       val max = List(Max)
 
@@ -1924,9 +1925,8 @@ trait EvaluatorSpecs[M[+_]]
       val line = Line(1, 1, "")
 
       val parent = dag.AbsoluteLoad(Const(CString("/hom/numbers"))(line))(line)
-      val input = dag.MegaReduce(
-        List((trans.Leaf(trans.Source), List(Count, Sum))),
-        parent)
+      val input = dag
+        .MegaReduce(List((trans.Leaf(trans.Source), List(Count, Sum))), parent)
 
       // We don't optimize since MegaReduce can only be created through an optimization.
       testEval(input, optimize = false) { result =>
@@ -1947,9 +1947,8 @@ trait EvaluatorSpecs[M[+_]]
       val parent = dag.AbsoluteLoad(Const(CString("/hom/numbers"))(line))(line)
       val red = Sum
 
-      val mega = dag.MegaReduce(
-        List((trans.Leaf(trans.Source), List(red))),
-        parent)
+      val mega = dag
+        .MegaReduce(List((trans.Leaf(trans.Source), List(red))), parent)
       val input =
         Join(
           DerefArray,
@@ -3610,9 +3609,8 @@ trait EvaluatorSpecs[M[+_]]
     "memoize properly in a load" in {
       val line = Line(1, 1, "")
 
-      val input0 = dag.Memoize(
-        dag.AbsoluteLoad(Const(CString("/clicks"))(line))(line),
-        1)
+      val input0 = dag
+        .Memoize(dag.AbsoluteLoad(Const(CString("/clicks"))(line))(line), 1)
       val input1 = dag.AbsoluteLoad(Const(CString("/clicks"))(line))(line)
 
       testEval(input0) { result0 =>
@@ -4592,8 +4590,8 @@ trait EvaluatorSpecs[M[+_]]
 
       val source =
         dag.New(
-          dag.Const(RObject("a" -> CBoolean(false), "c" -> CNum(2)))(line))(
-          line)
+          dag
+            .Const(RObject("a" -> CBoolean(false), "c" -> CNum(2)))(line))(line)
 
       val input =
         dag.Cond(

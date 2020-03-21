@@ -77,17 +77,26 @@ private class ClientEndpoint(
         val mainClass = "org.apache.spark.deploy.worker.DriverWrapper"
 
         val classPathConf = "spark.driver.extraClassPath"
-        val classPathEntries = sys.props.get(classPathConf).toSeq.flatMap {
-          cp => cp.split(java.io.File.pathSeparator)
-        }
+        val classPathEntries = sys
+          .props
+          .get(classPathConf)
+          .toSeq
+          .flatMap { cp =>
+            cp.split(java.io.File.pathSeparator)
+          }
 
         val libraryPathConf = "spark.driver.extraLibraryPath"
-        val libraryPathEntries = sys.props.get(libraryPathConf).toSeq.flatMap {
-          cp => cp.split(java.io.File.pathSeparator)
-        }
+        val libraryPathEntries = sys
+          .props
+          .get(libraryPathConf)
+          .toSeq
+          .flatMap { cp =>
+            cp.split(java.io.File.pathSeparator)
+          }
 
         val extraJavaOptsConf = "spark.driver.extraJavaOptions"
-        val extraJavaOpts = sys.props
+        val extraJavaOpts = sys
+          .props
           .get(extraJavaOptsConf)
           .map(Utils.splitCommandString)
           .getOrElse(Seq.empty)
@@ -164,11 +173,13 @@ private class ClientEndpoint(
           case _ =>
         }
         // Exception, if present
-        statusResponse.exception.map { e =>
-          logError(s"Exception from cluster was: $e")
-          e.printStackTrace()
-          System.exit(-1)
-        }
+        statusResponse
+          .exception
+          .map { e =>
+            logError(s"Exception from cluster was: $e")
+            e.printStackTrace()
+            System.exit(-1)
+          }
         System.exit(0)
     }
   }
@@ -259,7 +270,8 @@ object Client {
       conf,
       new SecurityManager(conf))
 
-    val masterEndpoints = driverArgs.masters
+    val masterEndpoints = driverArgs
+      .masters
       .map(RpcAddress.fromSparkURL)
       .map(rpcEnv.setupEndpointRef(_, Master.ENDPOINT_NAME))
     rpcEnv.setupEndpoint(

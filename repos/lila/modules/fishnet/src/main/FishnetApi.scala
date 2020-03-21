@@ -54,7 +54,8 @@ final class FishnetApi(
         case Skill.All =>
           acquireMove(client) orElse acquireAnalysis(client)
       }
-    ).chronometer
+    )
+      .chronometer
       .mon(_.fishnet.acquire time client.skill.key)
       .logIfSlow(100, logger)(_ => s"acquire ${client.skill}")
       .result
@@ -108,9 +109,11 @@ final class FishnetApi(
             case Some(uci) =>
               moveDb delete work
               monitor.move(work, client)
-              hub.actor.roundMap ! hubApi.map.Tell(
-                work.game.id,
-                hubApi.round.FishnetPlay(uci, work.currentFen))
+              hub.actor.roundMap ! hubApi
+                .map
+                .Tell(
+                  work.game.id,
+                  hubApi.round.FishnetPlay(uci, work.currentFen))
             case _ =>
               moveDb updateOrGiveUp work.invalid
               monitor.failure(work, client)
@@ -118,7 +121,8 @@ final class FishnetApi(
         case Some(work) =>
           monitor.notAcquired(work, client)
       }
-    }.chronometer
+    }
+      .chronometer
       .mon(_.fishnet.move.post)
       .logIfSlow(100, logger)(_ => "post move")
       .result
@@ -150,7 +154,8 @@ final class FishnetApi(
           monitor.notAcquired(work, client)
           fuccess(none)
       }
-    }.chronometer
+    }
+      .chronometer
       .mon(_.fishnet.analysis.post)
       .logIfSlow(200, logger) { res =>
         s"post analysis for ${res.??(_.id)}"
@@ -178,8 +183,10 @@ final class FishnetApi(
   private[fishnet] def createClient(
       userId: Client.UserId,
       skill: String): Fu[Client] =
-    Client.Skill.byKey(skill).fold(fufail[Client](s"Invalid skill $skill")) {
-      sk =>
+    Client
+      .Skill
+      .byKey(skill)
+      .fold(fufail[Client](s"Invalid skill $skill")) { sk =>
         val client = Client(
           _id = Client.makeKey,
           userId = userId,
@@ -188,15 +195,17 @@ final class FishnetApi(
           enabled = true,
           createdAt = DateTime.now)
         repo addClient client inject client
-    }
+      }
 
   private[fishnet] def setClientSkill(key: Client.Key, skill: String) =
-    Client.Skill.byKey(skill).fold(fufail[Unit](s"Invalid skill $skill")) {
-      sk =>
+    Client
+      .Skill
+      .byKey(skill)
+      .fold(fufail[Unit](s"Invalid skill $skill")) { sk =>
         repo getClient key flatten s"No client with key $key" flatMap {
           client => repo updateClient client.copy(skill = sk)
         }
-    }
+      }
 }
 
 object FishnetApi {

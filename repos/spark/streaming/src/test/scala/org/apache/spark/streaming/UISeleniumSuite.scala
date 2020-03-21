@@ -187,8 +187,8 @@ class UISeleniumSuite
 
         // Check we have 2 output op ids
         val outputOpIds = findAll(cssSelector(".output-op-id-cell")).toSeq
-        outputOpIds.map(_.attribute("rowspan")) should be(
-          List(Some("2"), Some("2")))
+        outputOpIds
+          .map(_.attribute("rowspan")) should be(List(Some("2"), Some("2")))
         outputOpIds.map(_.text) should be(List("0", "1"))
 
         // Check job ids

@@ -282,8 +282,8 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
   }
 
   private def checkIsr(servers: Seq[KafkaServer]): Unit = {
-    val activeBrokers: Seq[KafkaServer] = servers.filter(x =>
-      x.brokerState.currentState != NotRunning.state)
+    val activeBrokers: Seq[KafkaServer] = servers
+      .filter(x => x.brokerState.currentState != NotRunning.state)
     val expectedIsr: Seq[BrokerEndPoint] = activeBrokers.map(x =>
       new BrokerEndPoint(
         x.config.brokerId,
@@ -315,8 +315,12 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
           )
           metadata.topicsMetadata.nonEmpty &&
           metadata.topicsMetadata.head.partitionsMetadata.nonEmpty &&
-          expectedIsr.sortBy(
-            _.id) == metadata.topicsMetadata.head.partitionsMetadata.head.isr
+          expectedIsr.sortBy(_.id) == metadata
+            .topicsMetadata
+            .head
+            .partitionsMetadata
+            .head
+            .isr
             .sortBy(_.id)
         },
         "Topic metadata is not correctly updated for broker " + x + ".\n" +
@@ -397,10 +401,12 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
               2000,
               0
             )
-            topicMetadata.brokers.sortBy(_.id) == foundMetadata.brokers.sortBy(
-              _.id) &&
-            topicMetadata.topicsMetadata.sortBy(
-              _.topic) == foundMetadata.topicsMetadata.sortBy(_.topic)
+            topicMetadata.brokers.sortBy(_.id) == foundMetadata
+              .brokers
+              .sortBy(_.id) &&
+            topicMetadata.topicsMetadata.sortBy(_.topic) == foundMetadata
+              .topicsMetadata
+              .sortBy(_.topic)
           },
           s"Topic metadata is not correctly updated"
         ))

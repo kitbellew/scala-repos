@@ -45,7 +45,9 @@ class QueryExecution(val sqlContext: SQLContext, val logical: LogicalPlan) {
         throw ae
     }
 
-  lazy val analyzed: LogicalPlan = sqlContext.sessionState.analyzer
+  lazy val analyzed: LogicalPlan = sqlContext
+    .sessionState
+    .analyzer
     .execute(logical)
 
   lazy val withCachedData: LogicalPlan = {
@@ -53,7 +55,9 @@ class QueryExecution(val sqlContext: SQLContext, val logical: LogicalPlan) {
     sqlContext.cacheManager.useCachedData(analyzed)
   }
 
-  lazy val optimizedPlan: LogicalPlan = sqlContext.sessionState.optimizer
+  lazy val optimizedPlan: LogicalPlan = sqlContext
+    .sessionState
+    .optimizer
     .execute(withCachedData)
 
   lazy val sparkPlan: SparkPlan = {
@@ -63,7 +67,9 @@ class QueryExecution(val sqlContext: SQLContext, val logical: LogicalPlan) {
 
   // executedPlan should not be used to initialize any SparkPlan. It should be
   // only used for execution.
-  lazy val executedPlan: SparkPlan = sqlContext.sessionState.prepareForExecution
+  lazy val executedPlan: SparkPlan = sqlContext
+    .sessionState
+    .prepareForExecution
     .execute(sparkPlan)
 
   /** Internal version of the RDD. Avoids copies and has no schema */
@@ -84,7 +90,8 @@ class QueryExecution(val sqlContext: SQLContext, val logical: LogicalPlan) {
 
   override def toString: String = {
     def output =
-      analyzed.output
+      analyzed
+        .output
         .map(o => s"${o.name}: ${o.dataType.simpleString}")
         .mkString(", ")
 

@@ -84,9 +84,8 @@ object ConsumerOffsetChecker extends Logging {
         ._1
     zkUtils.getLeaderForPartition(topic, pid) match {
       case Some(bid) =>
-        val consumerOpt = consumerMap.getOrElseUpdate(
-          bid,
-          getConsumer(zkUtils, bid))
+        val consumerOpt = consumerMap
+          .getOrElseUpdate(bid, getConsumer(zkUtils, bid))
         consumerOpt match {
           case Some(consumer) =>
             val topicAndPartition = TopicAndPartition(topic, pid)
@@ -131,9 +130,11 @@ object ConsumerOffsetChecker extends Logging {
   private def processTopic(zkUtils: ZkUtils, group: String, topic: String) {
     topicPidMap.get(topic) match {
       case Some(pids) =>
-        pids.sorted.foreach { pid =>
-          processPartition(zkUtils, group, topic, pid)
-        }
+        pids
+          .sorted
+          .foreach { pid =>
+            processPartition(zkUtils, group, topic, pid)
+          }
       case None => // ignore
     }
   }
@@ -188,9 +189,8 @@ object ConsumerOffsetChecker extends Logging {
     parser.accepts("help", "Print this message.")
 
     if (args.length == 0)
-      CommandLineUtils.printUsageAndDie(
-        parser,
-        "Check the offset of your consumers.")
+      CommandLineUtils
+        .printUsageAndDie(parser, "Check the offset of your consumers.")
 
     val options = parser.parse(args: _*)
 
@@ -236,13 +236,15 @@ object ConsumerOffsetChecker extends Logging {
             zkUtils.getChildren(groupDirs.consumerGroupDir + "/owners").toList
         }
 
-      topicPidMap = immutable.Map(
-        zkUtils.getPartitionsForTopics(topicList).toSeq: _*)
+      topicPidMap = immutable
+        .Map(zkUtils.getPartitionsForTopics(topicList).toSeq: _*)
       val topicPartitions =
-        topicPidMap.flatMap {
-          case (topic, partitionSeq) =>
-            partitionSeq.map(TopicAndPartition(topic, _))
-        }.toSeq
+        topicPidMap
+          .flatMap {
+            case (topic, partitionSeq) =>
+              partitionSeq.map(TopicAndPartition(topic, _))
+          }
+          .toSeq
       val channel = ClientUtils.channelToOffsetManager(
         group,
         zkUtils,
@@ -253,49 +255,54 @@ object ConsumerOffsetChecker extends Logging {
         "Sending offset fetch request to coordinator %s:%d."
           .format(channel.host, channel.port))
       channel.send(OffsetFetchRequest(group, topicPartitions))
-      val offsetFetchResponse = OffsetFetchResponse.readFrom(
-        channel.receive().payload())
+      val offsetFetchResponse = OffsetFetchResponse
+        .readFrom(channel.receive().payload())
       debug("Received offset fetch response %s.".format(offsetFetchResponse))
 
-      offsetFetchResponse.requestInfo.foreach {
-        case (topicAndPartition, offsetAndMetadata) =>
-          if (offsetAndMetadata == OffsetMetadataAndError.NoOffset) {
-            val topicDirs = new ZKGroupTopicDirs(group, topicAndPartition.topic)
-            // this group may not have migrated off zookeeper for offsets storage (we don't expose the dual-commit option in this tool
-            // (meaning the lag may be off until all the consumers in the group have the same setting for offsets storage)
-            try {
-              val offset =
-                zkUtils
-                  .readData(
-                    topicDirs.consumerOffsetDir + "/%d".format(
-                      topicAndPartition.partition))
-                  ._1
-                  .toLong
-              offsetMap.put(topicAndPartition, offset)
-            } catch {
-              case z: ZkNoNodeException =>
-                if (zkUtils.pathExists(topicDirs.consumerOffsetDir))
-                  offsetMap.put(topicAndPartition, -1)
-                else
-                  throw z
+      offsetFetchResponse
+        .requestInfo
+        .foreach {
+          case (topicAndPartition, offsetAndMetadata) =>
+            if (offsetAndMetadata == OffsetMetadataAndError.NoOffset) {
+              val topicDirs =
+                new ZKGroupTopicDirs(group, topicAndPartition.topic)
+              // this group may not have migrated off zookeeper for offsets storage (we don't expose the dual-commit option in this tool
+              // (meaning the lag may be off until all the consumers in the group have the same setting for offsets storage)
+              try {
+                val offset =
+                  zkUtils
+                    .readData(
+                      topicDirs.consumerOffsetDir + "/%d"
+                        .format(topicAndPartition.partition))
+                    ._1
+                    .toLong
+                offsetMap.put(topicAndPartition, offset)
+              } catch {
+                case z: ZkNoNodeException =>
+                  if (zkUtils.pathExists(topicDirs.consumerOffsetDir))
+                    offsetMap.put(topicAndPartition, -1)
+                  else
+                    throw z
+              }
+            } else if (offsetAndMetadata.error == Errors.NONE.code)
+              offsetMap.put(topicAndPartition, offsetAndMetadata.offset)
+            else {
+              println(
+                "Could not fetch offset for %s due to %s.".format(
+                  topicAndPartition,
+                  Errors.forCode(offsetAndMetadata.error).exception))
             }
-          } else if (offsetAndMetadata.error == Errors.NONE.code)
-            offsetMap.put(topicAndPartition, offsetAndMetadata.offset)
-          else {
-            println(
-              "Could not fetch offset for %s due to %s.".format(
-                topicAndPartition,
-                Errors.forCode(offsetAndMetadata.error).exception))
-          }
-      }
+        }
       channel.disconnect()
 
       println(
         "%-15s %-30s %-3s %-15s %-15s %-15s %s"
           .format("Group", "Topic", "Pid", "Offset", "logSize", "Lag", "Owner"))
-      topicList.sorted.foreach { topic =>
-        processTopic(zkUtils, group, topic)
-      }
+      topicList
+        .sorted
+        .foreach { topic =>
+          processTopic(zkUtils, group, topic)
+        }
 
       if (options.has("broker-info"))
         printBrokerInfo()

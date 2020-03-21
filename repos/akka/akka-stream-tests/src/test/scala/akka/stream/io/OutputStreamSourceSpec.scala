@@ -28,8 +28,8 @@ import akka.testkit.AkkaSpec
 class OutputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
   import system.dispatcher
 
-  val settings = ActorMaterializerSettings(system).withDispatcher(
-    "akka.actor.default-dispatcher")
+  val settings = ActorMaterializerSettings(system)
+    .withDispatcher("akka.actor.default-dispatcher")
   implicit val materializer = ActorMaterializer(settings)
 
   val timeout = 300.milliseconds
@@ -157,7 +157,8 @@ class OutputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
           .supervisor
           .tell(StreamSupervisor.GetChildren, testActor)
         val ref =
-          expectMsgType[Children].children
+          expectMsgType[Children]
+            .children
             .find(_.path.toString contains "outputStreamSource")
             .get
         assertDispatcher(ref, "akka.stream.default-blocking-io-dispatcher")
@@ -216,14 +217,17 @@ class OutputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
       sub.cancel()
 
       def threadsBlocked =
-        ManagementFactory.getThreadMXBean
+        ManagementFactory
+          .getThreadMXBean
           .dumpAllThreads(true, true)
           .toSeq
           .filter(t ⇒
             t.getThreadName.startsWith("OutputStreamSourceSpec") &&
               t.getLockName != null &&
-              t.getLockName.startsWith(
-                "java.util.concurrent.locks.AbstractQueuedSynchronizer"))
+              t
+                .getLockName
+                .startsWith(
+                  "java.util.concurrent.locks.AbstractQueuedSynchronizer"))
 
       awaitAssert(threadsBlocked should ===(Seq()), 3.seconds)
     }

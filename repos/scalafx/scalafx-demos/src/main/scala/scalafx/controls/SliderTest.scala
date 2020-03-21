@@ -106,26 +106,30 @@ class SliderControls(target: Slider)
     new TextField {
       text = originalBlockIncrement.get.toString
     }
-  target.blockIncrement
+  target
+    .blockIncrement
     .onChange(txfBlockIncrement.text = target.blockIncrement.get.toString)
   txfBlockIncrement.onAction = handle {
     fillDoublePropertyFromText(target.blockIncrement, txfBlockIncrement, false)
   }
 
   val txfLabelFormatter = new TextField
-  txfLabelFormatter.text.onChange(
-    if (txfLabelFormatter.text.get.isEmpty) {
-      target.labelFormatter = null
-    } else {
-      target.labelFormatter = new DoubleStringConverter
-    })
+  txfLabelFormatter
+    .text
+    .onChange(
+      if (txfLabelFormatter.text.get.isEmpty) {
+        target.labelFormatter = null
+      } else {
+        target.labelFormatter = new DoubleStringConverter
+      })
 
   val originalMajorTickUnit = target.majorTickUnit.get()
   val txfMajorTickUnit =
     new TextField {
       text = originalMajorTickUnit.toString
     }
-  target.majorTickUnit
+  target
+    .majorTickUnit
     .onChange(txfMajorTickUnit.text = target.majorTickUnit.get.toString)
   txfMajorTickUnit.onAction = handle {
     fillDoublePropertyFromText(target.majorTickUnit, txfMajorTickUnit, false)
@@ -146,7 +150,8 @@ class SliderControls(target: Slider)
     new TextField {
       text = originalMinorTickCount.toString
     }
-  target.minorTickCount
+  target
+    .minorTickCount
     .onChange(txfMinorTickCount.text = target.minorTickCount.get.toString)
   txfMinorTickCount.onAction = handle {
     fillIntPropertyFromText(target.minorTickCount, txfMinorTickCount, false)
@@ -199,15 +204,19 @@ class SliderControls(target: Slider)
       toggleGroup = tggOrientation
     }
   rdbHorizontal.selected = (target.orientation.get() == Orientation.Horizontal)
-  target.orientation.onChange(rdbHorizontal.selected =
-    (target.orientation.get() == Orientation.Horizontal))
-  tggOrientation.selectedToggle.onChange {
-    target.orientation =
-      if (rdbHorizontal.selected.get)
-        Orientation.Horizontal
-      else
-        Orientation.Vertical
-  }
+  target
+    .orientation
+    .onChange(rdbHorizontal.selected =
+      (target.orientation.get() == Orientation.Horizontal))
+  tggOrientation
+    .selectedToggle
+    .onChange {
+      target.orientation =
+        if (rdbHorizontal.selected.get)
+          Orientation.Horizontal
+        else
+          Orientation.Vertical
+    }
 
   super.addNode("Value", txfValue)
   super.addNode("Block Increment", txfBlockIncrement)

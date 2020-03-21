@@ -48,38 +48,40 @@ trait BuildFileModifier {
     var res = false
     val project = module.getProject
     val vfsFileToCopy = mutable.Map[VirtualFile, LightVirtualFile]()
-    CommandProcessor.getInstance.executeCommand(
-      project,
-      new Runnable {
-        def run(): Unit = {
-          modifyInner(module, vfsFileToCopy) match {
-            case Some(changes) =>
-              if (!needPreviewChanges) {
-                applyChanges(changes, project, vfsFileToCopy)
-                res = true
-              } else {
-                previewChanges(
-                  module.getProject,
-                  changes,
-                  vfsFileToCopy) match {
-                  case Some(acceptedChanges) if acceptedChanges.nonEmpty =>
-                    applyChanges(acceptedChanges, project, vfsFileToCopy)
-                    res = true
-                  case _ =>
-                    res = false
+    CommandProcessor
+      .getInstance
+      .executeCommand(
+        project,
+        new Runnable {
+          def run(): Unit = {
+            modifyInner(module, vfsFileToCopy) match {
+              case Some(changes) =>
+                if (!needPreviewChanges) {
+                  applyChanges(changes, project, vfsFileToCopy)
+                  res = true
+                } else {
+                  previewChanges(
+                    module.getProject,
+                    changes,
+                    vfsFileToCopy) match {
+                    case Some(acceptedChanges) if acceptedChanges.nonEmpty =>
+                      applyChanges(acceptedChanges, project, vfsFileToCopy)
+                      res = true
+                    case _ =>
+                      res = false
+                  }
                 }
-              }
-            case None =>
-              res = false
+              case None =>
+                res = false
+            }
           }
-        }
-      },
-      "Sbt build file modification",
-      this
-    )
+        },
+        "Sbt build file modification",
+        this
+      )
     if (res)
-      ExternalSystemUtil.refreshProjects(
-        new ImportSpecBuilder(project, SbtProjectSystem.Id))
+      ExternalSystemUtil
+        .refreshProjects(new ImportSpecBuilder(project, SbtProjectSystem.Id))
     res
   }
 
@@ -92,29 +94,31 @@ trait BuildFileModifier {
     val fileStatusMap = mutable
       .Map[VirtualFile, (BuildFileModifiedStatus, Long)]()
     val documentManager = FileDocumentManager.getInstance()
-    val vcsChanges = filesToWorkingCopies.toSeq.map {
-      case (original, copy) =>
-        val originalRevision =
-          new SimpleContentRevision(
-            VfsUtilCore.loadText(original),
-            VcsUtil getFilePath original,
-            "original")
-        val copyRevision =
-          new CurrentContentRevision(VcsUtil getFilePath copy) {
-            override def getVirtualFile = copy
-          }
-        val isModified = changes.contains(copy)
-        assert(!fileStatusMap.contains(copy))
-        val buildFileStatus =
-          if (isModified)
-            BuildFileModifiedStatus.MODIFIED_AUTOMATICALLY
-          else
-            BuildFileModifiedStatus.DETECTED
-        val buildFileModificationStamp =
-          documentManager.getDocument(copy).getModificationStamp
-        fileStatusMap.put(copy, (buildFileStatus, buildFileModificationStamp))
-        new BuildFileChange(originalRevision, copyRevision, buildFileStatus)
-    }
+    val vcsChanges = filesToWorkingCopies
+      .toSeq
+      .map {
+        case (original, copy) =>
+          val originalRevision =
+            new SimpleContentRevision(
+              VfsUtilCore.loadText(original),
+              VcsUtil getFilePath original,
+              "original")
+          val copyRevision =
+            new CurrentContentRevision(VcsUtil getFilePath copy) {
+              override def getVirtualFile = copy
+            }
+          val isModified = changes.contains(copy)
+          assert(!fileStatusMap.contains(copy))
+          val buildFileStatus =
+            if (isModified)
+              BuildFileModifiedStatus.MODIFIED_AUTOMATICALLY
+            else
+              BuildFileModifiedStatus.DETECTED
+          val buildFileModificationStamp =
+            documentManager.getDocument(copy).getModificationStamp
+          fileStatusMap.put(copy, (buildFileStatus, buildFileModificationStamp))
+          new BuildFileChange(originalRevision, copyRevision, buildFileStatus)
+      }
     val changesToWorkingCopies = (vcsChanges zip changes).toMap
     val dialog = ChangesConfirmationDialog(
       project,

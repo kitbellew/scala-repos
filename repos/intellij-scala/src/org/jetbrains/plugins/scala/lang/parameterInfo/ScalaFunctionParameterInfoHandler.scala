@@ -136,8 +136,8 @@ class ScalaFunctionParameterInfoHandler
       context: ParameterInfoContext): Array[Object] = {
     if (!item.isInstanceOf[LookupItem[_]])
       return null
-    val allElements = JavaCompletionUtil.getAllPsiElements(
-      item.asInstanceOf[LookupItem[_]])
+    val allElements = JavaCompletionUtil
+      .getAllPsiElements(item.asInstanceOf[LookupItem[_]])
 
     if (allElements != null &&
         allElements.size > 0 &&
@@ -162,7 +162,8 @@ class ScalaFunctionParameterInfoHandler
   }
 
   def updateUI(p: Any, context: ParameterInfoUIContext) {
-    if (context == null || context.getParameterOwner == null || !context.getParameterOwner.isValid)
+    if (context == null || context
+          .getParameterOwner == null || !context.getParameterOwner.isValid)
       return
     context.getParameterOwner match {
       case args: PsiElement =>
@@ -299,7 +300,8 @@ class ScalaFunctionParameterInfoHandler
               if (k != parameters.length)
                 buffer.append(", ")
             }
-            if (!isGrey && exprs.length > parameters.length && index >= parameters.length) {
+            if (!isGrey && exprs.length > parameters
+                  .length && index >= parameters.length) {
               if (!namedMode && parameters.last._1.isRepeated) {
                 val paramType = parameters.last._1.paramType
                 while (!isGrey && k < exprs.length.min(index)) {
@@ -315,37 +317,39 @@ class ScalaFunctionParameterInfoHandler
                 isGrey = true
             }
           } else
-            buffer.append(
-              CodeInsightBundle.message("parameter.info.no.parameters"))
+            buffer
+              .append(CodeInsightBundle.message("parameter.info.no.parameters"))
         }
         p match {
           case x: String if x == "" =>
-            buffer.append(
-              CodeInsightBundle.message("parameter.info.no.parameters"))
+            buffer
+              .append(CodeInsightBundle.message("parameter.info.no.parameters"))
           case (a: AnnotationParameters, i: Int) =>
             val seq = a.seq
             if (seq.isEmpty)
               buffer.append(
                 CodeInsightBundle.message("parameter.info.no.parameters"))
             else {
-              val paramsSeq: Seq[(Parameter, String)] = seq.zipWithIndex.map {
-                case (t, paramIndex) =>
-                  (
-                    new Parameter(
-                      t._1,
-                      None,
-                      t._2,
-                      t._3 != null,
-                      false,
-                      false,
-                      paramIndex),
-                    t._1 + ": " + ScType.presentableText(t._2) + (
-                      if (t._3 != null)
-                        " = " + t._3.getText
-                      else
-                        ""
-                    ))
-              }
+              val paramsSeq: Seq[(Parameter, String)] = seq
+                .zipWithIndex
+                .map {
+                  case (t, paramIndex) =>
+                    (
+                      new Parameter(
+                        t._1,
+                        None,
+                        t._2,
+                        t._3 != null,
+                        false,
+                        false,
+                        paramIndex),
+                      t._1 + ": " + ScType.presentableText(t._2) + (
+                        if (t._3 != null)
+                          " = " + t._3.getText
+                        else
+                          ""
+                      ))
+                }
               applyToParameters(
                 paramsSeq,
                 ScSubstitutor.empty,
@@ -388,7 +392,8 @@ class ScalaFunctionParameterInfoHandler
                     CodeInsightBundle.message("parameter.info.no.parameters"))
                 else {
                   buffer.append(
-                    method.params
+                    method
+                      .params
                       .map((param: Parameter) => {
                         val buffer: StringBuilder = new StringBuilder("")
                         val paramType = param.paramType
@@ -406,8 +411,9 @@ class ScalaFunctionParameterInfoHandler
 
                         val isBold =
                           if (method.params.indexOf(param) == index || (
-                                param.isRepeated && method.params.indexOf(
-                                  param) <= index
+                                param.isRepeated && method
+                                  .params
+                                  .indexOf(param) <= index
                               ))
                             true
                           else {
@@ -429,7 +435,8 @@ class ScalaFunctionParameterInfoHandler
                     CodeInsightBundle.message("parameter.info.no.parameters"))
                 else {
                   buffer.append(
-                    p.getParameters
+                    p
+                      .getParameters
                       .map((param: PsiParameter) => {
                         val buffer: StringBuilder = new StringBuilder("")
                         val list = param.getModifierList
@@ -459,8 +466,9 @@ class ScalaFunctionParameterInfoHandler
 
                         val isBold =
                           if (p.getParameters.indexOf(param) == index || (
-                                param.isVarArgs && p.getParameters.indexOf(
-                                  param) <= index
+                                param.isVarArgs && p
+                                  .getParameters
+                                  .indexOf(param) <= index
                               ))
                             true
                           else {
@@ -485,8 +493,10 @@ class ScalaFunctionParameterInfoHandler
             else {
               val clause: ScParameterClause = clauses(i)
               applyToParameters(
-                clause.effectiveParameters.map(param =>
-                  (new Parameter(param), paramText(param, subst))),
+                clause
+                  .effectiveParameters
+                  .map(param =>
+                    (new Parameter(param), paramText(param, subst))),
                 subst,
                 canBeNaming = true,
                 isImplicit = clause.isImplicit)
@@ -636,12 +646,14 @@ class ScalaFunctionParameterInfoHandler
                 val tp: Array[(String, PsiElement)] =
                   element match {
                     case tpo: ScTypeParametersOwner =>
-                      tpo.typeParameters
+                      tpo
+                        .typeParameters
                         .map(p => (p.name, ScalaPsiUtil.getPsiElementId(p)))
                         .toArray
                     case ptpo: PsiTypeParameterListOwner =>
-                      ptpo.getTypeParameters.map(p =>
-                        (p.name, ScalaPsiUtil.getPsiElementId(p)))
+                      ptpo
+                        .getTypeParameters
+                        .map(p => (p.name, ScalaPsiUtil.getPsiElementId(p)))
                     case _ =>
                       return ScSubstitutor.empty
                   }
@@ -703,7 +715,9 @@ class ScalaFunctionParameterInfoHandler
                             ScalaResolveResult(
                               function: ScFunction,
                               subst: ScSubstitutor))
-                          if function.effectiveParameterClauses.length >= count =>
+                          if function
+                            .effectiveParameterClauses
+                            .length >= count =>
                         res += (
                           (
                             new PhysicalSignature(
@@ -711,9 +725,11 @@ class ScalaFunctionParameterInfoHandler
                               subst.followed(collectSubstitutor(function))),
                             count - 1))
                       case _ =>
-                        for (typez <- call.getEffectiveInvokedExpr.getType(
-                               TypingContext.empty
-                             )) //todo: implicit conversions
+                        for (typez <- call
+                               .getEffectiveInvokedExpr
+                               .getType(
+                                 TypingContext.empty
+                               )) //todo: implicit conversions
                           {
                             collectForType(typez)
                           }
@@ -752,8 +768,11 @@ class ScalaFunctionParameterInfoHandler
                 case None =>
                   call match {
                     case call: ScMethodCall =>
-                      for (typez <- call.getEffectiveInvokedExpr.getType(
-                             TypingContext.empty)) { //todo: implicit conversions
+                      for (typez <- call
+                             .getEffectiveInvokedExpr
+                             .getType(
+                               TypingContext
+                                 .empty)) { //todo: implicit conversions
                         collectForType(typez)
                       }
                   }
@@ -776,17 +795,18 @@ class ScalaFunctionParameterInfoHandler
                           if i < constr.effectiveParameterClauses.length =>
                         typeElement match {
                           case gen: ScParameterizedTypeElement =>
-                            val tp = clazz.typeParameters.map(p =>
-                              (p.name, ScalaPsiUtil.getPsiElementId(p)))
+                            val tp = clazz
+                              .typeParameters
+                              .map(p =>
+                                (p.name, ScalaPsiUtil.getPsiElementId(p)))
                             val typeArgs: Seq[ScTypeElement] =
                               gen.typeArgList.typeArgs
                             val map =
                               new collection.mutable.HashMap[
                                 (String, PsiElement),
                                 ScType]
-                            for (i <- 0 to Math.min(
-                                   tp.length,
-                                   typeArgs.length) - 1) {
+                            for (i <- 0 to Math
+                                   .min(tp.length, typeArgs.length) - 1) {
                               map += ((tp(i), typeArgs(i).calcType))
                             }
                             val substitutor =
@@ -821,7 +841,9 @@ class ScalaFunctionParameterInfoHandler
                     val resulting: (AnnotationParameters, Int) =
                       (
                         AnnotationParameters(
-                          clazz.getMethods.toSeq
+                          clazz
+                            .getMethods
+                            .toSeq
                             .filter(_.isInstanceOf[PsiAnnotationMethod])
                             .map(meth =>
                               (
@@ -840,17 +862,17 @@ class ScalaFunctionParameterInfoHandler
                     for (constructor <- clazz.getConstructors) {
                       typeElement match {
                         case gen: ScParameterizedTypeElement =>
-                          val tp = clazz.getTypeParameters.map(p =>
-                            (p.name, ScalaPsiUtil.getPsiElementId(p)))
+                          val tp = clazz
+                            .getTypeParameters
+                            .map(p => (p.name, ScalaPsiUtil.getPsiElementId(p)))
                           val typeArgs: Seq[ScTypeElement] =
                             gen.typeArgList.typeArgs
                           val map =
                             new collection.mutable.HashMap[
                               (String, PsiElement),
                               ScType]
-                          for (i <- 0 to Math.min(
-                                 tp.length,
-                                 typeArgs.length) - 1) {
+                          for (i <- 0 to Math
+                                 .min(tp.length, typeArgs.length) - 1) {
                             map += ((tp(i), typeArgs(i).calcType))
                           }
                           val substitutor =
@@ -879,10 +901,8 @@ class ScalaFunctionParameterInfoHandler
           case self: ScSelfInvocation =>
             val res: ArrayBuffer[Object] = new ArrayBuffer[Object]
             val i = self.arguments.indexOf(args.element)
-            val clazz = PsiTreeUtil.getParentOfType(
-              self,
-              classOf[ScClass],
-              true)
+            val clazz = PsiTreeUtil
+              .getParentOfType(self, classOf[ScClass], true)
             clazz match {
               case clazz: ScClass =>
                 clazz.constructor match {
@@ -902,7 +922,9 @@ class ScalaFunctionParameterInfoHandler
                     constr.clauses.map(_.clauses.length).getOrElse(1) > i
                 } {
                   if (!PsiTreeUtil.isAncestor(constr, self, true) &&
-                      constr.getTextRange.getStartOffset < self.getTextRange.getStartOffset) {
+                      constr.getTextRange.getStartOffset < self
+                        .getTextRange
+                        .getStartOffset) {
                     res += (
                       (
                         new PhysicalSignature(constr, ScSubstitutor.empty),

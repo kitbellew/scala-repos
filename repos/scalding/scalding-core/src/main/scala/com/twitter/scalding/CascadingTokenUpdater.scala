@@ -39,7 +39,8 @@ object CascadingTokenUpdater {
   // does the inverse of the previous function, given a Map of index to class
   // return the cascading token format for it
   private def toksToString(m: Map[Int, String]): String =
-    m.map {
+    m
+      .map {
         case (tok, clazz) =>
           s"$tok=$clazz"
       }

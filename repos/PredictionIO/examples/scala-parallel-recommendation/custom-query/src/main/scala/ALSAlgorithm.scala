@@ -45,7 +45,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
     // HOWTO: collect Item as Map and convert ID to Int index
     val items: Map[Int, Item] =
-      data.items
+      data
+        .items
         .map {
           case (id, item) ⇒
             (itemStringIntMap(id), item)
@@ -53,7 +54,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         .collectAsMap
         .toMap
 
-    val mllibRatings = data.ratings
+    val mllibRatings = data
+      .ratings
       .map { r =>
         // Convert user and item String IDs to Int index for MLlib
         val iindex = itemStringIntMap.getOrElse(r.item, -1)
@@ -101,7 +103,9 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
   }
 
   def predict(model: ALSModel, query: Query): PredictedResult = {
-    val queryFeatures = model.items.keys
+    val queryFeatures = model
+      .items
+      .keys
       .flatMap(model.productFeatures.lookup(_).headOption)
 
     val indexScores =
@@ -109,7 +113,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         logger.info(s"No productFeatures found for query ${query}.")
         Array[(Int, Double)]()
       } else {
-        model.productFeatures
+        model
+          .productFeatures
           .mapValues { f ⇒
             queryFeatures.map(cosine(_, f)).reduce(_ + _)
           }
@@ -179,10 +184,13 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       selectedScores: Array[(Int, Double)],
       items: Map[Int, Item],
       query: Query) =
-    selectedScores.view.filter {
-      case (iId, _) ⇒
-        items(iId).creationYear
-          .map(icr ⇒ query.creationYear.forall(icr >= _))
-          .getOrElse(true)
-    }
+    selectedScores
+      .view
+      .filter {
+        case (iId, _) ⇒
+          items(iId)
+            .creationYear
+            .map(icr ⇒ query.creationYear.forall(icr >= _))
+            .getOrElse(true)
+      }
 }

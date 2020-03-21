@@ -105,8 +105,8 @@ private[finagle] class LatencyProfile(stopWatch: () => Duration) {
           (1.0 / time.inNanoseconds) * (end.inNanoseconds)
         else
           1.0
-      Duration.fromNanoseconds(
-        (next().inNanoseconds * factor.min(maxFactor)).toLong)
+      Duration
+        .fromNanoseconds((next().inNanoseconds * factor.min(maxFactor)).toLong)
     }
 }
 
@@ -126,12 +126,16 @@ private[finagle] class LatencyFactory(sr: StatsReceiver) {
         val load = new AtomicInteger(0)
         val maxload = new AtomicInteger(0)
         val gauges = Seq(
-          sr.scope("load").addGauge("" + name) {
-            load.get()
-          },
-          sr.scope("maxload").addGauge("" + name) {
-            maxload.get()
-          })
+          sr
+            .scope("load")
+            .addGauge("" + name) {
+              load.get()
+            },
+          sr
+            .scope("maxload")
+            .addGauge("" + name) {
+              maxload.get()
+            })
         val count = sr.scope("count").counter("" + name)
 
         def apply(req: Unit) = {
@@ -170,8 +174,9 @@ private[finagle] object Simulation extends com.twitter.app.App {
     val noBrokers = new NoBrokersAvailableException
     val newFactory = new LatencyFactory(stats)
 
-    val data = getClass.getClassLoader.getResource(
-      "resources/real_latencies.data")
+    val data = getClass
+      .getClassLoader
+      .getResource("resources/real_latencies.data")
     val dist = LatencyProfile.fromFile(data)
     val stable: Set[ServiceFactory[Unit, Unit]] =
       Seq.tabulate(nstable())(i => newFactory(i, dist)).toSet
@@ -220,8 +225,8 @@ private[finagle] object Simulation extends com.twitter.app.App {
     val stopWatch = Stopwatch.start()
     val p = new LatencyProfile(stopWatch)
 
-    val coldStart =
-      p.warmup(10.seconds) _ andThen p.slowWithin(19.seconds, 23.seconds, 10)
+    val coldStart = p.warmup(10.seconds) _ andThen p
+      .slowWithin(19.seconds, 23.seconds, 10)
     underlying() += newFactory(nstable() + 1, coldStart(dist))
     underlying() += newFactory(nstable() + 2, p.slowBy(2)(dist))
 

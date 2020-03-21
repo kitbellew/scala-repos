@@ -56,10 +56,12 @@ class MetricsCollectorSpec
 
     "collect accurate metrics for a node" in {
       val sample = collector.sample
-      val metrics = sample.metrics.collect {
-        case m ⇒
-          (m.name, m.value)
-      }
+      val metrics = sample
+        .metrics
+        .collect {
+          case m ⇒
+            (m.name, m.value)
+        }
       val used = metrics collectFirst {
         case (HeapMemoryUsed, b) ⇒
           b

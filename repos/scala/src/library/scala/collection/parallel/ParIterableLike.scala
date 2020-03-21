@@ -478,8 +478,8 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
     *  @param combop    an associative operator used to combine results from different partitions
     */
   def aggregate[S](z: => S)(seqop: (S, T) => S, combop: (S, S) => S): S = {
-    tasksupport.executeAndWaitResult(
-      new Aggregate(() => z, seqop, combop, splitter))
+    tasksupport
+      .executeAndWaitResult(new Aggregate(() => z, seqop, combop, splitter))
   }
 
   def foldLeft[S](z: S)(op: (S, T) => S): S = seq.foldLeft(z)(op)
@@ -993,8 +993,8 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
 
   def copyToArray[U >: T](xs: Array[U], start: Int, len: Int) =
     if (len > 0) {
-      tasksupport.executeAndWaitResult(
-        new CopyToArray(start, len, xs, splitter))
+      tasksupport
+        .executeAndWaitResult(new CopyToArray(start, len, xs, splitter))
     }
 
   def sameElements[U >: T](that: GenIterable[U]) = seq.sameElements(that)
@@ -1124,7 +1124,8 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
       pit.splitWithSignalling.map(newSubtask(_)) // default split procedure
     private[parallel] override def signalAbort = pit.abort()
     override def toString =
-      this.getClass.getSimpleName + "(" + pit.toString + ")(" + result + ")(supername: " + super.toString + ")"
+      this.getClass.getSimpleName + "(" + pit
+        .toString + ")(" + result + ")(supername: " + super.toString + ")"
   }
 
   protected[this] trait NonDivisibleTask[R, Tp]
@@ -1479,8 +1480,8 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
     @volatile
     var result: Combiner[U, That] = null
     def leaf(prev: Option[Combiner[U, That]]) =
-      result = pit.copy2builder[U, That, Combiner[U, That]](
-        reuse(prev, cfactory()))
+      result = pit
+        .copy2builder[U, That, Combiner[U, That]](reuse(prev, cfactory()))
     protected[this] def newSubtask(p: IterableSplitter[T]) =
       new Copy[U, That](cfactory, p)
     override def merge(that: Copy[U, That]) =
@@ -1761,11 +1762,8 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
     @volatile
     var result: Result = null
     def leaf(prev: Option[Result]) =
-      result = pit.zipAll2combiner[U, S, That](
-        othpit,
-        thiselem,
-        thatelem,
-        pbf())
+      result = pit
+        .zipAll2combiner[U, S, That](othpit, thiselem, thatelem, pbf())
     protected[this] def newSubtask(p: IterableSplitter[T]) =
       throw new UnsupportedOperationException
     override def split =

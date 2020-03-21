@@ -187,16 +187,16 @@ trait TransSpecableModule[M[+_]]
           parent.flatMap(leftMap(_)(trans.WrapObject(_, field)))
 
         def DerefObjectStatic(node: Join)(parent: N[S], field: String) =
-          parent.flatMap(
-            leftMap(_)(trans.DerefObjectStatic(_, CPathField(field))))
+          parent
+            .flatMap(leftMap(_)(trans.DerefObjectStatic(_, CPathField(field))))
 
         def DerefMetadataStatic(node: Join)(parent: N[S], field: String) =
-          parent.flatMap(
-            leftMap(_)(trans.DerefMetadataStatic(_, CPathMeta(field))))
+          parent
+            .flatMap(leftMap(_)(trans.DerefMetadataStatic(_, CPathMeta(field))))
 
         def DerefArrayStatic(node: Join)(parent: N[S], index: Int) =
-          parent.flatMap(
-            leftMap(_)(trans.DerefArrayStatic(_, CPathIndex(index))))
+          parent
+            .flatMap(leftMap(_)(trans.DerefArrayStatic(_, CPathIndex(index))))
 
         def ArraySwap(node: Join)(parent: N[S], index: Int) = {
           parent.flatMap(leftMap(_)(trans.ArraySwap(_, index)))

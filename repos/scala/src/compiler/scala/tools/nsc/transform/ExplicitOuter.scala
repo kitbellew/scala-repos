@@ -222,9 +222,8 @@ abstract class ExplicitOuter
               else {
                 if (decls1 eq decls)
                   decls1 = decls.cloneScope
-                val newAcc = mixinOuterAcc.cloneSymbol(
-                  clazz,
-                  mixinOuterAcc.flags & ~DEFERRED)
+                val newAcc = mixinOuterAcc
+                  .cloneSymbol(clazz, mixinOuterAcc.flags & ~DEFERRED)
                 newAcc setInfo (clazz.thisType memberType mixinOuterAcc)
                 decls1 enter newAcc
               }
@@ -301,7 +300,8 @@ abstract class ExplicitOuter
         }
       } else {
         val currentClass =
-          this.currentClass //todo: !!! if this line is removed, we get a build failure that protected$currentClass need an override modifier
+          this
+            .currentClass //todo: !!! if this line is removed, we get a build failure that protected$currentClass need an override modifier
         // outerFld is the $outer field of the current class, if the reference can
         // use it (i.e. reference is allowed to be of the form this.$outer),
         // otherwise it is NoSymbol
@@ -444,8 +444,8 @@ abstract class ExplicitOuter
         "No outer accessor for inner mixin " + mixinClass + " in " + currentClass)
       assert(
         outerAcc.alternatives.size == 1,
-        s"Multiple outer accessors match inner mixin $mixinClass in $currentClass : ${outerAcc.alternatives
-          .map(_.defString)}")
+        s"Multiple outer accessors match inner mixin $mixinClass in $currentClass : ${outerAcc.alternatives.map(
+          _.defString)}")
       // I added the mixinPrefix.typeArgs.nonEmpty condition to address the
       // crash in SI-4970.  I feel quite sure this can be improved.
       val path = (if (mixinClass.owner.isTerm)
@@ -508,9 +508,9 @@ abstract class ExplicitOuter
                         s"Implementation restriction: ${clazz.fullLocationString} requires premature access to ${clazz.outerClass}.")
                     }
                     val outerParam =
-                      sym.newValueParameter(
-                        nme.OUTER,
-                        sym.pos) setInfo clazz.outerClass.thisType
+                      sym.newValueParameter(nme.OUTER, sym.pos) setInfo clazz
+                        .outerClass
+                        .thisType
                     (
                       (ValDef(outerParam) setType NoType) :: vparamss.head
                     ) :: vparamss.tail
@@ -539,9 +539,8 @@ abstract class ExplicitOuter
             closestEnclMethod(currentOwner) hasAnnotation ScalaInlineClass
           // SI-8710 The extension method condition reflects our knowledge that a call to `new Meter(12).privateMethod`
           //         with later be rewritten (in erasure) to `Meter.privateMethod$extension(12)`.
-          if ((
-                currentClass != sym.owner || enclMethodIsInline
-              ) && !sym.isMethodWithExtension)
+          if ((currentClass != sym.owner || enclMethodIsInline) && !sym
+                .isMethodWithExtension)
             sym.makeNotPrivate(sym.owner)
 
           val qsym = qual.tpe.widen.typeSymbol
@@ -590,9 +589,11 @@ abstract class ExplicitOuter
               // at least don't crash... this duplicates maybeOmittable from constructors
               (acc.owner.isEffectivelyFinal && !acc.isOverridingSymbol)) {
             if (!base.tpe.hasAnnotation(UncheckedClass))
-              currentRun.reporting.uncheckedWarning(
-                tree.pos,
-                "The outer reference in this type test cannot be checked at run time.")
+              currentRun
+                .reporting
+                .uncheckedWarning(
+                  tree.pos,
+                  "The outer reference in this type test cannot be checked at run time.")
             transform(
               TRUE
             ) // urgh... drop condition if there's no accessor (or if it may disappear after constructors)

@@ -86,9 +86,8 @@ class REPLConfig(dataDir: Option[String])
     with EvaluatorConfig
     with ColumnarTableModuleConfig
     with BlockStoreColumnarTableModuleConfig {
-  val defaultConfig = Configuration.loadResource(
-    "/default_ingest.conf",
-    BlockFormat)
+  val defaultConfig = Configuration
+    .loadResource("/default_ingest.conf", BlockFormat)
   val config = dataDir map {
     defaultConfig.set("precog.storage.root", _)
   } getOrElse {
@@ -182,7 +181,8 @@ trait REPL
                 val result = {
                   consumeEval(graph, dummyEvaluationContext) fold (
                     error =>
-                      "An error occurred processing your query: " + error.getMessage,
+                      "An error occurred processing your query: " + error
+                        .getMessage,
                     results =>
                       JArray(results.toList.map(_._2.toJValue)).renderPretty
                   )
@@ -243,8 +243,8 @@ trait REPL
           val command =
             if ((successes lengthCompare 1) > 0)
               throw new AssertionError(
-                "Fatal error: ambiguous parse results: " + results.mkString(
-                  ", "))
+                "Fatal error: ambiguous parse results: " + results
+                  .mkString(", "))
             else
               successes.head
 
@@ -330,8 +330,8 @@ object Console extends App {
           val storageTimeout = yggConfig.storageTimeout
 
           implicit val actorSystem = ActorSystem("replActorSystem")
-          implicit val asyncContext = ExecutionContext.defaultExecutionContext(
-            actorSystem)
+          implicit val asyncContext = ExecutionContext
+            .defaultExecutionContext(actorSystem)
           implicit val M =
             new blueeyes.bkka.UnsafeFutureComonad(
               asyncContext,

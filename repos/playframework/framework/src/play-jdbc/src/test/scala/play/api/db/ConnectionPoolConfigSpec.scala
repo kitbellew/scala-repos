@@ -15,9 +15,11 @@ class ConnectionPoolConfigSpec extends PlaySpecification {
         "db.other.driver" -> "org.h2.Driver",
         "db.other.url" -> "jdbc:h2:mem:other")) {
       val db = app.injector.instanceOf[DBApi]
-      db.database("default").withConnection { c =>
-        c.getClass.getName must contain("hikari")
-      }
+      db
+        .database("default")
+        .withConnection { c =>
+          c.getClass.getName must contain("hikari")
+        }
     }
 
     "use HikariCP when default pool is 'hikaricp'" in new WithApplication(
@@ -27,9 +29,11 @@ class ConnectionPoolConfigSpec extends PlaySpecification {
         "db.other.driver" -> "org.h2.Driver",
         "db.other.url" -> "jdbc:h2:mem:other")) {
       val db = app.injector.instanceOf[DBApi]
-      db.database("default").withConnection { c =>
-        c.getClass.getName must contain("hikari")
-      }
+      db
+        .database("default")
+        .withConnection { c =>
+          c.getClass.getName must contain("hikari")
+        }
     }
 
     "use BoneCP when default pool is 'bonecp'" in new WithApplication(
@@ -39,9 +43,11 @@ class ConnectionPoolConfigSpec extends PlaySpecification {
         "db.other.driver" -> "org.h2.Driver",
         "db.other.url" -> "jdbc:h2:mem:other")) {
       val db = app.injector.instanceOf[DBApi]
-      db.database("default").withConnection { c =>
-        c.getClass.getName must contain("bonecp")
-      }
+      db
+        .database("default")
+        .withConnection { c =>
+          c.getClass.getName must contain("bonecp")
+        }
     }
 
     "use BoneCP with 'bonecp' specific settings" in new WithApplication(
@@ -69,9 +75,11 @@ class ConnectionPoolConfigSpec extends PlaySpecification {
         "db.other.driver" -> "org.h2.Driver",
         "db.other.url" -> "jdbc:h2:mem:other"))) {
       val db = app.injector.instanceOf[DBApi]
-      db.database("default").withConnection { c =>
-        c.getClass.getName must contain("bonecp")
-      }
+      db
+        .database("default")
+        .withConnection { c =>
+          c.getClass.getName must contain("bonecp")
+        }
     }
 
   }

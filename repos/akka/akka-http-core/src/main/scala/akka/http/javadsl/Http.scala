@@ -96,8 +96,8 @@ class Http(system: ExtendedActorSystem) extends akka.actor.Extension {
     HttpRequest,
     NotUsed] =
     adaptServerLayer(
-      delegate.serverLayer(settings.asScala, remoteAddress.asScala)(
-        materializer))
+      delegate
+        .serverLayer(settings.asScala, remoteAddress.asScala)(materializer))
 
   /**
     * Constructs a server layer stage using the given [[ServerSettings]]. The returned [[BidiFlow]] isn't reusable and
@@ -466,7 +466,8 @@ class Http(system: ExtendedActorSystem) extends akka.actor.Extension {
         delegate.outgoingConnectionHttps(
           to.host,
           to.port,
-          to.effectiveConnectionContext(defaultClientHttpsContext)
+          to
+            .effectiveConnectionContext(defaultClientHttpsContext)
             .asInstanceOf[HttpsConnectionContext]
             .asScala,
           localAddress.asScala,
@@ -837,9 +838,9 @@ class Http(system: ExtendedActorSystem) extends akka.actor.Extension {
       materializer: Materializer)
       : Pair[CompletionStage[WebSocketUpgradeResponse], T] =
     adaptWsResultTuple {
-      delegate.singleWebSocketRequest(
-        request.asScala,
-        adaptWsFlow[T](clientFlow))(materializer)
+      delegate
+        .singleWebSocketRequest(request.asScala, adaptWsFlow[T](clientFlow))(
+          materializer)
     }
 
   /**
@@ -938,7 +939,9 @@ class Http(system: ExtendedActorSystem) extends akka.actor.Extension {
         Future[scaladsl.Http.OutgoingConnection]])
       : Flow[HttpRequest, HttpResponse, CompletionStage[OutgoingConnection]] =
     Flow.fromGraph {
-      akka.stream.scaladsl
+      akka
+        .stream
+        .scaladsl
         .Flow[HttpRequest]
         .map(_.asScala)
         .viaMat(scalaFlow)(Keep.right)
@@ -1004,7 +1007,8 @@ class Http(system: ExtendedActorSystem) extends akka.actor.Extension {
     scaladsl.model.ws.Message,
     scaladsl.model.ws.Message,
     Mat] =
-    stream.scaladsl
+    stream
+      .scaladsl
       .Flow[scaladsl.model.ws.Message]
       .map(Message.adapt)
       .viaMat(javaFlow.asScala)(Keep.right)

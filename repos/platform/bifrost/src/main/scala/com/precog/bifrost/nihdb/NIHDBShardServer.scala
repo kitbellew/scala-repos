@@ -55,8 +55,8 @@ object NIHDBShardServer
   val clock = Clock.System
 
   val actorSystem = ActorSystem("PrecogShard")
-  implicit val executionContext = ExecutionContext.defaultExecutionContext(
-    actorSystem)
+  implicit val executionContext = ExecutionContext
+    .defaultExecutionContext(actorSystem)
   implicit val M: Monad[Future] = new FutureMonad(executionContext)
 
   override def configureShardState(config: Configuration) =
@@ -66,7 +66,8 @@ object NIHDBShardServer
           WebAPIKeyFinder(config.detach("security"))
             .map(_.withM[Future]) valueOr { errs =>
             sys.error(
-              "Unable to build new WebAPIKeyFinder: " + errs.list
+              "Unable to build new WebAPIKeyFinder: " + errs
+                .list
                 .mkString("\n", "\n", ""))
           })
 
@@ -75,7 +76,8 @@ object NIHDBShardServer
           WebAccountFinder(config.detach("accounts"))
             .map(_.withM[Future]) valueOr { errs =>
             sys.error(
-              "Unable to build new WebAccountFinder: " + errs.list
+              "Unable to build new WebAccountFinder: " + errs
+                .list
                 .mkString("\n", "\n", ""))
           })
 
@@ -89,7 +91,8 @@ object NIHDBShardServer
             (ShardStateOptions.NoOptions, webJobManager.withM[Future])
           } valueOr { errs =>
             sys.error(
-              "Unable to build new WebJobManager: " + errs.list
+              "Unable to build new WebJobManager: " + errs
+                .list
                 .mkString("\n", "\n", ""))
           }
         }

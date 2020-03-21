@@ -126,8 +126,8 @@ case class Game(
   def lastMoveTimeInSeconds: Option[Int] = lastMoveTime.map(x => (x / 10).toInt)
 
   // in tenths of seconds
-  lazy val moveTimes: Vector[Int] =
-    BinaryFormat.moveTime read binaryMoveTimes take playedTurns
+  lazy val moveTimes: Vector[Int] = BinaryFormat
+    .moveTime read binaryMoveTimes take playedTurns
 
   def moveTimes(color: Color): List[Int] = {
     val pivot =
@@ -135,10 +135,13 @@ case class Game(
         0
       else
         1
-    moveTimes.toList.zipWithIndex.collect {
-      case (e, i) if (i % 2) == pivot =>
-        e
-    }
+    moveTimes
+      .toList
+      .zipWithIndex
+      .collect {
+        case (e, i) if (i % 2) == pivot =>
+          e
+      }
   }
 
   def moveTimesInSeconds: Vector[Float] = moveTimes.map(_.toFloat / 10)
@@ -153,10 +156,12 @@ case class Game(
         0
       else
         1
-    pgnMoves.zipWithIndex.collect {
-      case (e, i) if (i % 2) == pivot =>
-        e
-    }
+    pgnMoves
+      .zipWithIndex
+      .collect {
+        case (e, i) if (i % 2) == pivot =>
+          e
+      }
   }
 
   lazy val toChess: ChessGame = {
@@ -192,9 +197,9 @@ case class Game(
     def copyPlayer(player: Player) =
       player.copy(blurs = math.min(
         playerMoves(player.color),
-        player.blurs + (
-          blur && moveOrDrop.fold(_.color, _.color) == player.color
-        ).fold(1, 0)))
+        player
+          .blurs + (blur && moveOrDrop.fold(_.color, _.color) == player.color)
+          .fold(1, 0)))
 
     val updated = copy(
       whitePlayer = copyPlayer(whitePlayer),
@@ -348,12 +353,14 @@ case class Game(
     clock.??(_.berserkable) && status == Status.Started && playedTurns < 2
 
   def goBerserk(color: Color) =
-    clock.ifTrue(berserkable && !player(color).berserk).map { c =>
-      val newClock = c berserk color
-      withClock(newClock).map(_.withPlayer(color, _.goBerserk)) +
-        Event.Clock(newClock) +
-        Event.Berserk(color)
-    }
+    clock
+      .ifTrue(berserkable && !player(color).berserk)
+      .map { c =>
+        val newClock = c berserk color
+        withClock(newClock).map(_.withPlayer(color, _.goBerserk)) +
+          Event.Clock(newClock) +
+          Event.Berserk(color)
+      }
 
   def withPlayer(color: Color, f: Player => Player) =
     copy(
@@ -429,9 +436,8 @@ case class Game(
   private def outoftimeClock(playerLag: Color => Int): Boolean =
     clock ?? { c =>
       started && playable && (bothPlayersHaveMoved || isSimul) && {
-        (!c.isRunning && !c.isInit) || c.outoftimeWithGrace(
-          player.color,
-          playerLag(player.color))
+        (!c.isRunning && !c.isInit) || c
+          .outoftimeWithGrace(player.color, playerLag(player.color))
       }
     }
 
@@ -495,9 +501,8 @@ case class Game(
 
   def abandoned =
     (status <= Status.Started) && (
-      (updatedAt | createdAt) isBefore hasAi.fold(
-        Game.aiAbandonedDate,
-        Game.abandonedDate)
+      (updatedAt | createdAt) isBefore hasAi
+        .fold(Game.aiAbandonedDate, Game.abandonedDate)
     )
 
   def forecastable = started && playable && isCorrespondence && !hasAi
@@ -558,8 +563,9 @@ object Game {
     chess.variant.ThreeCheck,
     chess.variant.FromPosition)
 
-  val unanalysableVariants: Set[Variant] =
-    Variant.all.toSet -- analysableVariants
+  val unanalysableVariants: Set[Variant] = Variant
+    .all
+    .toSet -- analysableVariants
 
   val variantsWhereWhiteIsBetter: Set[Variant] = Set(
     chess.variant.ThreeCheck,
@@ -608,7 +614,8 @@ object Game {
       turns = game.turns,
       startedAtTurn = game.startedAtTurn,
       clock = game.clock,
-      castleLastMoveTime = CastleLastMoveTime.init
+      castleLastMoveTime = CastleLastMoveTime
+        .init
         .copy(castles = game.board.history.castles),
       daysPerTurn = daysPerTurn,
       mode = mode,

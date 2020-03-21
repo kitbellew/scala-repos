@@ -144,9 +144,11 @@ class NIHDBProjectionSpecs
 
         val expected: Seq[JValue] = Seq(JNum(0L), JNum(1L), JNum(2L))
 
-        val toInsert = (0L to 2L).toSeq.map { i =>
-          NIHDB.Batch(i, Seq(JNum(i)))
-        }
+        val toInsert = (0L to 2L)
+          .toSeq
+          .map { i =>
+            NIHDB.Batch(i, Seq(JNum(i)))
+          }
 
         val results =
           for {
@@ -162,8 +164,9 @@ class NIHDBProjectionSpecs
               min mustEqual 0L
               max mustEqual 0L
               data.size mustEqual 3
-              data.toJsonElements.map(_("value")) must containAllOf(
-                expected).only.inOrder
+              data.toJsonElements.map(_("value")) must containAllOf(expected)
+                .only
+                .inOrder
           })
     }
 
@@ -181,18 +184,24 @@ class NIHDBProjectionSpecs
 
         val io =
           nihdb.insert(
-            (0L to 2L).toSeq.map { i =>
-              NIHDB.Batch(i, Seq(JNum(i)))
-            }) >>
-            // Ensure we handle skips/overlap properly. First tests a complete skip, second tests partial
-            nihdb.insert(
-              (0L to 2L).toSeq.map { i =>
+            (0L to 2L)
+              .toSeq
+              .map { i =>
                 NIHDB.Batch(i, Seq(JNum(i)))
               }) >>
+            // Ensure we handle skips/overlap properly. First tests a complete skip, second tests partial
             nihdb.insert(
-              (0L to 4L).toSeq.map { i =>
-                NIHDB.Batch(i, Seq(JNum(i)))
-              })
+              (0L to 2L)
+                .toSeq
+                .map { i =>
+                  NIHDB.Batch(i, Seq(JNum(i)))
+                }) >>
+            nihdb.insert(
+              (0L to 4L)
+                .toSeq
+                .map { i =>
+                  NIHDB.Batch(i, Seq(JNum(i)))
+                })
 
         val result =
           for {
@@ -211,8 +220,9 @@ class NIHDBProjectionSpecs
               min mustEqual 0L
               max mustEqual 0L
               data.size mustEqual 5
-              data.toJsonElements.map(_("value")) must containAllOf(
-                expected).only.inOrder
+              data.toJsonElements.map(_("value")) must containAllOf(expected)
+                .only
+                .inOrder
           }
         }
     }

@@ -42,12 +42,14 @@ class OffsetFetchRequest(
       import JavaConversions._
       requestInfo: mutable.Buffer[TopicAndPartition]
     }
-    kafka.api.OffsetFetchRequest(
-      groupId = groupId,
-      requestInfo = scalaSeq,
-      versionId = versionId,
-      correlationId = correlationId,
-      clientId = clientId)
+    kafka
+      .api
+      .OffsetFetchRequest(
+        groupId = groupId,
+        requestInfo = scalaSeq,
+        versionId = versionId,
+        correlationId = correlationId,
+        clientId = clientId)
   }
 
   override def toString = underlying.toString

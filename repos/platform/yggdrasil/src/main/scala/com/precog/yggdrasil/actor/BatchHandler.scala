@@ -71,7 +71,9 @@ class BatchHandler(
 
   override def preStart() = {
     logger.debug("Starting new BatchHandler reporting to " + requestor)
-    context.system.scheduler
+    context
+      .system
+      .scheduler
       .scheduleOnce(ingestTimeout.duration, self, PoisonPill)
   }
 

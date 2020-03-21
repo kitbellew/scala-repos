@@ -267,10 +267,14 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
       options = extraOptions.toMap,
       partitionColumns = normalizedParCols.getOrElse(Nil))
 
-    df.sqlContext.sessionState.continuousQueryManager.startQuery(
-      extraOptions.getOrElse("queryName", StreamExecution.nextName),
-      df,
-      dataSource.createSink())
+    df
+      .sqlContext
+      .sessionState
+      .continuousQueryManager
+      .startQuery(
+        extraOptions.getOrElse("queryName", StreamExecution.nextName),
+        df,
+        dataSource.createSink())
   }
 
   /**
@@ -288,8 +292,8 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
 
   private def insertInto(tableIdent: TableIdentifier): Unit = {
     assertNotBucketed()
-    val partitions = normalizedParCols.map(
-      _.map(col => col -> (None: Option[String])).toMap)
+    val partitions = normalizedParCols
+      .map(_.map(col => col -> (None: Option[String])).toMap)
     val overwrite = mode == SaveMode.Overwrite
 
     // A partitioned relation's schema can be different from the input logicalPlan, since
@@ -297,14 +301,18 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
     // TODO: this belongs to the analyzer.
     val input = normalizedParCols
       .map { parCols =>
-        val (inputPartCols, inputDataCols) = df.logicalPlan.output.partition {
-          attr => parCols.contains(attr.name)
-        }
+        val (inputPartCols, inputDataCols) = df
+          .logicalPlan
+          .output
+          .partition { attr =>
+            parCols.contains(attr.name)
+          }
         Project(inputDataCols ++ inputPartCols, df.logicalPlan)
       }
       .getOrElse(df.logicalPlan)
 
-    df.sqlContext
+    df
+      .sqlContext
       .executePlan(
         InsertIntoTable(
           UnresolvedRelation(tableIdent),
@@ -346,7 +354,9 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
 
       // partitionBy columns cannot be used in bucketBy
       if (normalizedParCols.nonEmpty &&
-          normalizedBucketColNames.get.toSet
+          normalizedBucketColNames
+            .get
+            .toSet
             .intersect(normalizedParCols.get.toSet)
             .nonEmpty) {
         throw new AnalysisException(

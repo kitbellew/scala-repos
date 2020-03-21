@@ -117,9 +117,11 @@ class OneHotEncoder(override val uid: String)
 
     val outputAttrGroup =
       if (filteredOutputAttrNames.isDefined) {
-        val attrs: Array[Attribute] = filteredOutputAttrNames.get.map { name =>
-          BinaryAttribute.defaultAttr.withName(name)
-        }
+        val attrs: Array[Attribute] = filteredOutputAttrNames
+          .get
+          .map { name =>
+            BinaryAttribute.defaultAttr.withName(name)
+          }
         new AttributeGroup($(outputCol), attrs)
       } else {
         new AttributeGroup($(outputCol))
@@ -134,8 +136,8 @@ class OneHotEncoder(override val uid: String)
     val inputColName = $(inputCol)
     val outputColName = $(outputCol)
     val shouldDropLast = $(dropLast)
-    var outputAttrGroup = AttributeGroup.fromStructField(
-      transformSchema(dataset.schema)(outputColName))
+    var outputAttrGroup = AttributeGroup
+      .fromStructField(transformSchema(dataset.schema)(outputColName))
     if (outputAttrGroup.size < 0) {
       // If the number of attributes is unknown, we check the values from the input column.
       val numAttrs = dataset
@@ -163,8 +165,8 @@ class OneHotEncoder(override val uid: String)
           outputAttrNames.dropRight(1)
         else
           outputAttrNames
-      val outputAttrs: Array[Attribute] = filtered.map(name =>
-        BinaryAttribute.defaultAttr.withName(name))
+      val outputAttrs: Array[Attribute] = filtered
+        .map(name => BinaryAttribute.defaultAttr.withName(name))
       outputAttrGroup = new AttributeGroup(outputColName, outputAttrs)
     }
     val metadata = outputAttrGroup.toMetadata()

@@ -28,8 +28,8 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
           ExecutionContext.fromExecutorService(es)
         executorService should not be (null)
 
-        val jExecutor: ExecutionContextExecutor = ExecutionContext.fromExecutor(
-          es)
+        val jExecutor: ExecutionContextExecutor = ExecutionContext
+          .fromExecutor(es)
         jExecutor should not be (null)
 
         val jExecutorService: ExecutionContextExecutorService =

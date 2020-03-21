@@ -127,9 +127,8 @@ class ConfiguredLocalRoutingSpec
     }
 
     "use routees.paths from config" in {
-      val actor = system.actorOf(
-        RandomPool(12).props(routeeProps = Props[EchoProps]),
-        "paths")
+      val actor = system
+        .actorOf(RandomPool(12).props(routeeProps = Props[EchoProps]), "paths")
       routerConfig(actor) should ===(
         RandomGroup(List("/user/service1", "/user/service2")))
       Await.result(gracefulStop(actor, 3 seconds), 3 seconds)

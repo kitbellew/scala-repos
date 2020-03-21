@@ -61,10 +61,12 @@ class BTypesFromClassfileTest {
     assert(
       fromSyms.size == fromClassfiles.size,
       s"\n$fromSyms\n$fromClassfiles")
-    (fromSyms, fromClassfiles).zipped.foldLeft(checked) {
-      case (chk, (fromSym, fromClassfile)) =>
-        sameBType(fromSym, fromClassfile, chk)
-    }
+    (fromSyms, fromClassfiles)
+      .zipped
+      .foldLeft(checked) {
+        case (chk, (fromSym, fromClassfile)) =>
+          sameBType(fromSym, fromClassfile, chk)
+      }
   }
 
   def sameInfo(
@@ -110,8 +112,9 @@ class BTypesFromClassfileTest {
     //   and anonymous classes as members of the outer class. But not for unpickled symbols).
     // The fromClassfile info has all nested classes, including anonymous and local. So we filter
     // them out: member classes are identified by having the `outerName` defined.
-    val memberClassesFromClassfile = fromClassfile.nestedClasses.filter(
-      _.info.get.nestedInfo.get.outerName.isDefined)
+    val memberClassesFromClassfile = fromClassfile
+      .nestedClasses
+      .filter(_.info.get.nestedInfo.get.outerName.isDefined)
     // Sorting is required: the backend sorts all InnerClass entries by internalName before writing
     // them to the classfile (to make it deterministic: the entries are collected in a Set during
     // code generation).
@@ -130,8 +133,8 @@ class BTypesFromClassfileTest {
       clearCache()
       val fromSymbol = classBTypeFromSymbol(classSym)
       clearCache()
-      val fromClassfile = bTypes.classBTypeFromParsedClassfile(
-        fromSymbol.internalName)
+      val fromClassfile = bTypes
+        .classBTypeFromParsedClassfile(fromSymbol.internalName)
       sameBType(fromSymbol, fromClassfile)
     }
 

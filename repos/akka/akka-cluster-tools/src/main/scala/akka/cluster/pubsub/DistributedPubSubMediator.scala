@@ -340,11 +340,10 @@ object DistributedPubSubMediator {
     trait TopicLike extends Actor {
       import context.dispatcher
       val pruneInterval: FiniteDuration = emptyTimeToLive / 2
-      val pruneTask = context.system.scheduler.schedule(
-        pruneInterval,
-        pruneInterval,
-        self,
-        Prune)
+      val pruneTask = context
+        .system
+        .scheduler
+        .schedule(pruneInterval, pruneInterval, self, Prune)
       var pruneDeadline: Option[Deadline] = None
 
       var subscribers = Set.empty[ActorRef]
@@ -570,20 +569,19 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
 
   //Start periodic gossip to random nodes in cluster
   import context.dispatcher
-  val gossipTask = context.system.scheduler.schedule(
-    gossipInterval,
-    gossipInterval,
-    self,
-    GossipTick)
+  val gossipTask = context
+    .system
+    .scheduler
+    .schedule(gossipInterval, gossipInterval, self, GossipTick)
   val pruneInterval: FiniteDuration = removedTimeToLive / 2
-  val pruneTask = context.system.scheduler.schedule(
-    pruneInterval,
-    pruneInterval,
-    self,
-    Prune)
+  val pruneTask = context
+    .system
+    .scheduler
+    .schedule(pruneInterval, pruneInterval, self, Prune)
 
-  var registry: Map[Address, Bucket] = Map.empty.withDefault(a ⇒
-    Bucket(a, 0L, TreeMap.empty))
+  var registry: Map[Address, Bucket] = Map
+    .empty
+    .withDefault(a ⇒ Bucket(a, 0L, TreeMap.empty))
   var nodes: Set[Address] = Set.empty
 
   // the version is a timestamp because it is also used when pruning removed entries
@@ -755,10 +753,12 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
       recreateAndForwardMessagesIfNeeded(key, newTopicActor(a.path.name))
 
     case state: CurrentClusterState ⇒
-      nodes = state.members.collect {
-        case m if m.status != MemberStatus.Joining && matchingRole(m) ⇒
-          m.address
-      }
+      nodes = state
+        .members
+        .collect {
+          case m if m.status != MemberStatus.Joining && matchingRole(m) ⇒
+            m.address
+        }
 
     case MemberUp(m) ⇒
       if (matchingRole(m))
@@ -780,13 +780,17 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
 
     case Count ⇒
       val count =
-        registry.map {
-          case (owner, bucket) ⇒
-            bucket.content.count {
-              case (_, valueHolder) ⇒
-                valueHolder.ref.isDefined
-            }
-        }.sum
+        registry
+          .map {
+            case (owner, bucket) ⇒
+              bucket
+                .content
+                .count {
+                  case (_, valueHolder) ⇒
+                    valueHolder.ref.isDefined
+                }
+          }
+          .sum
       sender() ! count
   }
 
@@ -872,18 +876,20 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
       case (owner, v)
           if registry(owner).version > v && count < maxDeltaElements ⇒
         val bucket = registry(owner)
-        val deltaContent = bucket.content.filter {
-          case (_, value) ⇒
-            value.version > v
-        }
+        val deltaContent = bucket
+          .content
+          .filter {
+            case (_, value) ⇒
+              value.version > v
+          }
         count += deltaContent.size
         if (count <= maxDeltaElements)
           bucket.copy(content = deltaContent)
         else {
           // exceeded the maxDeltaElements, pick the elements with lowest versions
           val sortedContent = deltaContent.toVector.sortBy(_._2.version)
-          val chunk = sortedContent.take(
-            maxDeltaElements - (count - sortedContent.size))
+          val chunk = sortedContent
+            .take(maxDeltaElements - (count - sortedContent.size))
           bucket.copy(
             content = TreeMap.empty[String, ValueHolder] ++ chunk,
             version = chunk.last._2.version)
@@ -918,14 +924,16 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   def prune(): Unit = {
     registry foreach {
       case (owner, bucket) ⇒
-        val oldRemoved = bucket.content.collect {
-          case (key, ValueHolder(version, None))
-              if (bucket.version - version > removedTimeToLiveMillis) ⇒
-            key
-        }
+        val oldRemoved = bucket
+          .content
+          .collect {
+            case (key, ValueHolder(version, None))
+                if (bucket.version - version > removedTimeToLiveMillis) ⇒
+              key
+          }
         if (oldRemoved.nonEmpty)
-          registry += owner -> bucket.copy(content =
-            bucket.content -- oldRemoved)
+          registry += owner -> bucket
+            .copy(content = bucket.content -- oldRemoved)
     }
   }
 
@@ -962,8 +970,8 @@ class DistributedPubSub(system: ExtendedActorSystem) extends Extension {
     * mediator.
     */
   def isTerminated: Boolean =
-    Cluster(system).isTerminated || !settings.role.forall(
-      Cluster(system).selfRoles.contains)
+    Cluster(system)
+      .isTerminated || !settings.role.forall(Cluster(system).selfRoles.contains)
 
   /**
     * The [[DistributedPubSubMediator]]
@@ -974,7 +982,9 @@ class DistributedPubSub(system: ExtendedActorSystem) extends Extension {
     else {
       val name = system.settings.config.getString("akka.cluster.pub-sub.name")
       val dispatcher =
-        system.settings.config
+        system
+          .settings
+          .config
           .getString("akka.cluster.pub-sub.use-dispatcher") match {
           case "" ⇒
             Dispatchers.DefaultDispatcherId

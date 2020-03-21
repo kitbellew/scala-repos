@@ -59,7 +59,8 @@ object Validation {
     Json.obj(
       "message" -> "Object is not valid",
       "details" -> {
-        f.violations
+        f
+          .violations
           .flatMap(allRuleViolationsWithFullDescription(_))
           .groupBy(_.description)
           .map {
@@ -95,44 +96,50 @@ object Validation {
       case r: RuleViolation =>
         Set(
           parentDesc.map { p =>
-            r.description.map {
-              // Error is on object level, having a parent description. Omit 'value', prepend '/' as root.
-              case "value" =>
-                r.withDescription("/" + p)
-              // Error is on property level, having a parent description. Prepend '/' as root.
-              case s: String =>
-                r.withDescription(
-                  concatPath("/" + p, r.description, prependSlash))
-              // Error is on unknown level, having a parent description. Prepend '/' as root.
-            } getOrElse r.withDescription("/" + p)
+            r
+              .description
+              .map {
+                // Error is on object level, having a parent description. Omit 'value', prepend '/' as root.
+                case "value" =>
+                  r.withDescription("/" + p)
+                // Error is on property level, having a parent description. Prepend '/' as root.
+                case s: String =>
+                  r.withDescription(
+                    concatPath("/" + p, r.description, prependSlash))
+                // Error is on unknown level, having a parent description. Prepend '/' as root.
+              } getOrElse r.withDescription("/" + p)
           } getOrElse {
             r.withDescription(
-              r.description.map {
-                // Error is on object level, having no parent description, being a root error.
-                case "value" =>
-                  "/"
-                // Error is on property level, having no parent description, being a property of root error.
-                case s: String =>
-                  "/" + s
-              } getOrElse "/")
+              r
+                .description
+                .map {
+                  // Error is on object level, having no parent description, being a root error.
+                  case "value" =>
+                    "/"
+                  // Error is on property level, having no parent description, being a property of root error.
+                  case s: String =>
+                    "/" + s
+                } getOrElse "/")
           })
       case g: GroupViolation =>
-        g.children.flatMap { c =>
-          val dot =
-            g.value match {
-              case _: Iterable[_] =>
-                false
-              case _ =>
-                true
-            }
+        g
+          .children
+          .flatMap { c =>
+            val dot =
+              g.value match {
+                case _: Iterable[_] =>
+                  false
+                case _ =>
+                  true
+              }
 
-          val desc = parentDesc.map { p =>
-            Some(concatPath(p, g.description, prependSlash))
-          } getOrElse {
-            g.description.map(d => concatPath("", Some(d), prependSlash))
+            val desc = parentDesc.map { p =>
+              Some(concatPath(p, g.description, prependSlash))
+            } getOrElse {
+              g.description.map(d => concatPath("", Some(d), prependSlash))
+            }
+            allRuleViolationsWithFullDescription(c, desc, dot)
           }
-          allRuleViolationsWithFullDescription(c, desc, dot)
-        }
     }
   }
 
@@ -225,12 +232,14 @@ object Validation {
       def apply(option: Option[B]) = {
         option match {
           case Some(prop) =>
-            val n = product.productIterator.count {
-              case Some(_) =>
-                true
-              case _ =>
-                false
-            }
+            val n = product
+              .productIterator
+              .count {
+                case Some(_) =>
+                  true
+                case _ =>
+                  false
+              }
 
             if (n == 1)
               Success

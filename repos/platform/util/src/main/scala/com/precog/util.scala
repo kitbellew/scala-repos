@@ -135,7 +135,8 @@ package object util {
     result
   }
 
-  implicit val InstantOrdering: Ordering[Instant] = Ordering.Long
+  implicit val InstantOrdering: Ordering[Instant] = Ordering
+    .Long
     .on[Instant](_.getMillis)
 
   implicit val FutureBind: Bind[Future] =

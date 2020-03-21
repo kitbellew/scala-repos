@@ -233,7 +233,8 @@ class ScalaRearranger
 
   private def setupGettersAndSetters(properties: Iterable[ScalaPropertyInfo]) {
     for (propertyInfo <- properties) {
-      if (propertyInfo.isComplete && propertyInfo.setter.getDependencies == null) {
+      if (propertyInfo
+            .isComplete && propertyInfo.setter.getDependencies == null) {
         propertyInfo.setter.addDependency(propertyInfo.getter)
       }
     }
@@ -257,8 +258,8 @@ object ScalaRearranger {
     } else {
       val composite = new ArrangementCompositeMatchCondition
       for (condition <- conditions) {
-        composite.addOperand(
-          new ArrangementAtomMatchCondition(condition, condition))
+        composite
+          .addOperand(new ArrangementAtomMatchCondition(condition, condition))
       }
       ArrangementSectionRule.create(
         new StdArrangementMatchRule(

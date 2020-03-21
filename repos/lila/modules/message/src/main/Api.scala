@@ -59,7 +59,10 @@ final class Api(
           sendUnlessBlocked(thread, fromMod) >>-
             updateUser(invited) >>- {
             val text = s"${data.subject} ${data.text}"
-            shutup ! lila.hub.actorApi.shutup
+            shutup ! lila
+              .hub
+              .actorApi
+              .shutup
               .RecordPrivateMessage(me.id, invited.id, text)
           } inject thread
         }
@@ -100,7 +103,10 @@ final class Api(
             }
           } >>- {
             val toUserId = newThread otherUserId me
-            shutup ! lila.hub.actorApi.shutup
+            shutup ! lila
+              .hub
+              .actorApi
+              .shutup
               .RecordPrivateMessage(me.id, toUserId, text)
           } inject newThread
       }

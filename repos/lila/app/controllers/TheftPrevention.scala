@@ -27,7 +27,9 @@ private[controllers] trait TheftPrevention {
           playerId != userId && !(ctx.me ?? Granter.superAdmin)
         case (None, _) =>
           lila.api.Mobile.Api.requestVersion(ctx.req).isEmpty &&
-            !ctx.req.cookies
+            !ctx
+              .req
+              .cookies
               .get(AnonCookie.name)
               .map(_.value)
               .contains(pov.playerId)
@@ -38,10 +40,13 @@ private[controllers] trait TheftPrevention {
 
   protected def playablePovForReq(game: GameModel)(implicit ctx: Context) =
     (!game.isPgnImport && game.playable) ?? {
-      ctx.userId
+      ctx
+        .userId
         .flatMap(game.playerByUserId)
         .orElse {
-          ctx.req.cookies
+          ctx
+            .req
+            .cookies
             .get(AnonCookie.name)
             .map(_.value)
             .flatMap(game.player)

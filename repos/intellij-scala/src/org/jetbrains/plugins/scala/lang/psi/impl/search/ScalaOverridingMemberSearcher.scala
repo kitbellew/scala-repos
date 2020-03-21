@@ -93,9 +93,8 @@ object ScalaOverridingMemberSearcher {
   def getOverridingMethods(method: ScNamedElement): Array[PsiNamedElement] = {
     val result = new ArrayBuffer[PsiNamedElement]
     inReadAction {
-      for (psiMethod <- ScalaOverridingMemberSearcher.search(
-             method,
-             deep = true)) {
+      for (psiMethod <- ScalaOverridingMemberSearcher
+             .search(method, deep = true)) {
         result += psiMethod
       }
     }
@@ -211,9 +210,8 @@ object ScalaOverridingMemberSearcher {
     }
 
     if (withSelfType) {
-      val inheritors = ScalaStubsUtil.getSelfTypeInheritors(
-        parentClass,
-        parentClass.getResolveScope)
+      val inheritors = ScalaStubsUtil
+        .getSelfTypeInheritors(parentClass, parentClass.getResolveScope)
       break = false
       for (clazz <- inheritors if !break) {
         break = !process(clazz)

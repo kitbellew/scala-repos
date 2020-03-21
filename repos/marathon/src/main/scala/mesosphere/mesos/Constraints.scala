@@ -106,7 +106,9 @@ object Constraints {
         case Operator.GROUP_BY =>
           val groupFunc =
             (task: Task) =>
-              task.agentInfo.attributes
+              task
+                .agentInfo
+                .attributes
                 .find(_.getName == field)
                 .map(_.getText.getValue)
           checkGroupBy(attr.get.getText.getValue, groupFunc)
@@ -138,10 +140,13 @@ object Constraints {
         field: String,
         value: String) =
       tasks.filter {
-        _.agentInfo.attributes.filter { y =>
+        _.agentInfo
+        .attributes
+        .filter { y =>
           y.getName == field &&
           y.getText.getValue == value
-        }.nonEmpty
+        }
+        .nonEmpty
       }
   }
 
@@ -175,7 +180,8 @@ object Constraints {
       return runningTasks
 
     //currently, only the GROUP_BY operator is able to select tasks to kill
-    val distributions = app.constraints
+    val distributions = app
+      .constraints
       .filter(_.getOperator == Operator.GROUP_BY)
       .map { constraint =>
         def groupFn(task: Task): Option[String] =
@@ -183,7 +189,9 @@ object Constraints {
             case "hostname" =>
               Some(task.agentInfo.host)
             case field: String =>
-              task.agentInfo.attributes
+              task
+                .agentInfo
+                .attributes
                 .find(_.getName == field)
                 .map(_.getText.getValue)
           }
@@ -201,14 +209,15 @@ object Constraints {
     while (flag && toKillTasks.size != toKillCount) {
       val tried = distributions
       //sort all distributions in descending order based on distribution difference
-      .toSeq
+        .toSeq
         .sortBy(_.distributionDifference(toKillTasks))
         .reverseIterator
         //select tasks to kill (without already selected ones)
         .flatMap(_.tasksToKillIterator(toKillTasks)) ++
         //fallback: if the distributions did not select a task, choose one of the not chosen ones
-        runningTasks.iterator.filterNot(task =>
-          toKillTasks.contains(task.taskId))
+        runningTasks
+          .iterator
+          .filterNot(task => toKillTasks.contains(task.taskId))
 
       val matchingTask = tried.find(tryTask =>
         distributions.forall(
@@ -224,9 +233,12 @@ object Constraints {
 
     //log the selected tasks and why they were selected
     if (log.isInfoEnabled) {
-      val taskDesc = toKillTasks.values
+      val taskDesc = toKillTasks
+        .values
         .map { task =>
-          val attrs = task.agentInfo.attributes
+          val attrs = task
+            .agentInfo
+            .attributes
             .map(a => s"${a.getName}=${a.getText.getValue}")
             .mkString(", ")
           s"${task.taskId} host:${task.agentInfo.host} attrs:$attrs"
@@ -262,10 +274,15 @@ object Constraints {
       if (updated.size == 1)
         /* even distributed */ Iterator.empty
       else {
-        updated.maxBy(_._1)._2.iterator.flatten.map {
-          case (taskId, task) =>
-            task
-        }
+        updated
+          .maxBy(_._1)
+          ._2
+          .iterator
+          .flatten
+          .map {
+            case (taskId, task) =>
+              task
+          }
       }
     }
 

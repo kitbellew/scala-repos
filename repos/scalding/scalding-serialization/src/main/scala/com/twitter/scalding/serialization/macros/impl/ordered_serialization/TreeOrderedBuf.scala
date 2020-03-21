@@ -90,9 +90,8 @@ object TreeOrderedBuf {
           case f: FastLengthCalculation[_] =>
             Some(
               q"""
-        _root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.DynamicLen(${f
-                .asInstanceOf[FastLengthCalculation[c.type]]
-                .t})
+        _root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.DynamicLen(${f.asInstanceOf[
+                FastLengthCalculation[c.type]].t})
         """)
           case m: MaybeLengthCalculation[_] =>
             Some(m.asInstanceOf[MaybeLengthCalculation[c.type]].t)
@@ -236,11 +235,13 @@ object TreeOrderedBuf {
       }
     }
 
-    val lazyVariables = t.lazyOuterVariables.map {
-      case (n, t) =>
-        val termName = newTermName(n)
-        q"""lazy val $termName = $t"""
-    }
+    val lazyVariables = t
+      .lazyOuterVariables
+      .map {
+        case (n, t) =>
+          val termName = newTermName(n)
+          q"""lazy val $termName = $t"""
+      }
 
     val element = freshT("element")
 

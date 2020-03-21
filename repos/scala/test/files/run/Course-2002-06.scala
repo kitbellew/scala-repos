@@ -132,8 +132,8 @@ class PostScript(filename: String, _width: Double, _height: Double)
   /** Print the PS header.*/
   Console.println("%!PS-Adobe-3.0 EPSF-3.0\n%%Title: ProgrammationIV");
   Console.println("%%Creator: LAMP");
-  Console.println(
-    "%%BoundingBox: 0 0 " + mm2ps(psWidth) + " " + mm2ps(psHeight));
+  Console
+    .println("%%BoundingBox: 0 0 " + mm2ps(psWidth) + " " + mm2ps(psHeight));
   Console.println("%%EndComments\n");
   Console.println("/m {moveto} bind def\n/l {lineto} bind def\n");
   Console.println(mm2ps(line_thickness) + " setlinewidth\nnewpath");

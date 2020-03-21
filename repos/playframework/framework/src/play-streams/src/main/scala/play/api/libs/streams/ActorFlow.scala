@@ -46,8 +46,8 @@ object ActorFlow {
         factory.actorOf(
           Props(
             new Actor {
-              val flowActor = context.watch(
-                context.actorOf(props(outActor), "flowActor"))
+              val flowActor = context
+                .watch(context.actorOf(props(outActor), "flowActor"))
 
               def receive = {
                 case Status.Success(_) | Status.Failure(_) =>

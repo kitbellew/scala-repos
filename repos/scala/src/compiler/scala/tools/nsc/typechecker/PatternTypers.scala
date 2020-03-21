@@ -102,7 +102,8 @@ trait PatternTypers {
           || (resultType <:< BooleanTpe)
           || (isEmptyType <:< BooleanTpe)
           || member.isMacro
-          || member.isOverloaded // the whole overloading situation is over the rails
+          || member
+            .isOverloaded // the whole overloading situation is over the rails
         )
 
       // Dueling test cases: pos/overloaded-unapply.scala, run/case-class-23.scala, pos/t5022.scala
@@ -155,8 +156,8 @@ trait PatternTypers {
     }
 
     private def boundedArrayType(bound: Type): Type = {
-      val tparam =
-        context.owner freshExistential "" setInfo (TypeBounds upper bound)
+      val tparam = context
+        .owner freshExistential "" setInfo (TypeBounds upper bound)
       newExistentialType(tparam :: Nil, arrayType(tparam.tpe_*))
     }
 
@@ -238,10 +239,12 @@ trait PatternTypers {
                           else
                             TypeBounds.lower(tpSym.tpeHK))
             // origin must be the type param so we can deskolemize
-            val skolem = context.owner.newGADTSkolem(
-              unit.freshTypeName("?" + tpSym.name),
-              tpSym,
-              bounds)
+            val skolem = context
+              .owner
+              .newGADTSkolem(
+                unit.freshTypeName("?" + tpSym.name),
+                tpSym,
+                bounds)
             skolemBuffer += skolem
             logResult(
               s"Created gadt skolem $skolem: ${skolem.tpe_*} to stand in for $tpSym")(
@@ -291,8 +294,8 @@ trait PatternTypers {
       )
       val variantToSkolem = new VariantToSkolemMap
       val caseClassType = tree.tpe.prefix memberType caseClass
-      val caseConstructorType =
-        caseClassType memberType caseClass.primaryConstructor
+      val caseConstructorType = caseClassType memberType caseClass
+        .primaryConstructor
       val tree1 = TypeTree(caseConstructorType) setOriginal tree
       val pt =
         if (untrustworthyPt)
@@ -312,7 +315,8 @@ trait PatternTypers {
       // as instantiateTypeVar's bounds would end up there
       val ctorContext = context.makeNewScope(tree, context.owner)
       freeVars foreach ctorContext.scope.enter
-      newTyper(ctorContext).infer
+      newTyper(ctorContext)
+        .infer
         .inferConstructorInstance(tree1, caseClass.typeParams, ptSafe)
 
       // simplify types without losing safety,
@@ -387,21 +391,18 @@ trait PatternTypers {
           unapplyType.skolemizeExistential(context.owner, tree))
         val unapplyContext = context.makeNewScope(context.tree, context.owner)
         freeVars foreach unapplyContext.scope.enter
-        val pattp = newTyper(unapplyContext).infer.inferTypedPattern(
-          tree,
-          unappFormal,
-          pt,
-          canRemedy)
+        val pattp = newTyper(unapplyContext)
+          .infer
+          .inferTypedPattern(tree, unappFormal, pt, canRemedy)
         // turn any unresolved type variables in freevars into existential skolems
         val skolems =
           freeVars map (fv => unapplyContext.owner.newExistentialSkolem(fv, fv))
         pattp.substSym(freeVars, skolems)
       }
 
-      val unapplyArg = (context.owner.newValue(
-        nme.SELECTOR_DUMMY,
-        fun.pos,
-        Flags.SYNTHETIC) setInfo (
+      val unapplyArg = (context
+        .owner
+        .newValue(nme.SELECTOR_DUMMY, fun.pos, Flags.SYNTHETIC) setInfo (
         if (isApplicableSafe(Nil, unapplyType, pt :: Nil, WildcardType))
           pt
         else

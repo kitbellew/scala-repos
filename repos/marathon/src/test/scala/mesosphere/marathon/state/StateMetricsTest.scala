@@ -45,25 +45,46 @@ class StateMetricsTest
     val attempt = Try(timed(throw failure))
 
     Then("we get the expected metric results")
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(untested.errorMeterName)
       .getCount should be(0)
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(tested.errorMeterName)
       .getCount should be(1)
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(untested.requestsMeterName)
       .getCount should be(0)
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(tested.requestsMeterName)
       .getCount should be(1)
-    metrics.metrics.registry.getHistograms
+    metrics
+      .metrics
+      .registry
+      .getHistograms
       .get(untested.durationHistogramName)
       .getCount should be(0)
-    metrics.metrics.registry.getHistograms
+    metrics
+      .metrics
+      .registry
+      .getHistograms
       .get(tested.durationHistogramName)
       .getCount should be(1)
-    metrics.metrics.registry.getHistograms
+    metrics
+      .metrics
+      .registry
+      .getHistograms
       .get(tested.durationHistogramName)
       .getSnapshot
       .getMax should
@@ -103,25 +124,46 @@ class StateMetricsTest
     val result = timed(promise.future)
 
     Then("we get the expected metric results (only invocation count)")
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(untested.errorMeterName)
       .getCount should be(0)
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(tested.errorMeterName)
       .getCount should be(0)
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(untested.requestsMeterName)
       .getCount should be(0)
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(tested.requestsMeterName)
       .getCount should be(1)
-    metrics.metrics.registry.getHistograms
+    metrics
+      .metrics
+      .registry
+      .getHistograms
       .get(untested.durationHistogramName)
       .getCount should be(0)
-    metrics.metrics.registry.getHistograms
+    metrics
+      .metrics
+      .registry
+      .getHistograms
       .get(tested.durationHistogramName)
       .getCount should be(0)
-    metrics.metrics.registry.getHistograms
+    metrics
+      .metrics
+      .registry
+      .getHistograms
       .get(tested.durationHistogramName)
       .getSnapshot
       .getMax should be(0)
@@ -130,25 +172,46 @@ class StateMetricsTest
     promise.success(())
 
     Then("we get the expected metric results")
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(untested.errorMeterName)
       .getCount should be(0)
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(tested.errorMeterName)
       .getCount should be(0)
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(untested.requestsMeterName)
       .getCount should be(0)
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(tested.requestsMeterName)
       .getCount should be(1)
-    metrics.metrics.registry.getHistograms
+    metrics
+      .metrics
+      .registry
+      .getHistograms
       .get(untested.durationHistogramName)
       .getCount should be(0)
-    metrics.metrics.registry.getHistograms
+    metrics
+      .metrics
+      .registry
+      .getHistograms
       .get(tested.durationHistogramName)
       .getCount should be(1)
-    metrics.metrics.registry.getHistograms
+    metrics
+      .metrics
+      .registry
+      .getHistograms
       .get(tested.durationHistogramName)
       .getSnapshot
       .getMax should
@@ -187,25 +250,46 @@ class StateMetricsTest
     val result = timed(promise.future)
 
     Then("we get the expected metric results (only invocation count)")
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(untested.errorMeterName)
       .getCount should be(0)
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(tested.errorMeterName)
       .getCount should be(0)
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(untested.requestsMeterName)
       .getCount should be(0)
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(tested.requestsMeterName)
       .getCount should be(1)
-    metrics.metrics.registry.getHistograms
+    metrics
+      .metrics
+      .registry
+      .getHistograms
       .get(untested.durationHistogramName)
       .getCount should be(0)
-    metrics.metrics.registry.getHistograms
+    metrics
+      .metrics
+      .registry
+      .getHistograms
       .get(tested.durationHistogramName)
       .getCount should be(0)
-    metrics.metrics.registry.getHistograms
+    metrics
+      .metrics
+      .registry
+      .getHistograms
       .get(tested.durationHistogramName)
       .getSnapshot
       .getMax should be(0)
@@ -216,25 +300,46 @@ class StateMetricsTest
     promise.failure(failure)
 
     Then("we get the expected metric results")
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(untested.errorMeterName)
       .getCount should be(0)
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(tested.errorMeterName)
       .getCount should be(1)
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(untested.requestsMeterName)
       .getCount should be(0)
-    metrics.metrics.registry.getMeters
+    metrics
+      .metrics
+      .registry
+      .getMeters
       .get(tested.requestsMeterName)
       .getCount should be(1)
-    metrics.metrics.registry.getHistograms
+    metrics
+      .metrics
+      .registry
+      .getHistograms
       .get(untested.durationHistogramName)
       .getCount should be(0)
-    metrics.metrics.registry.getHistograms
+    metrics
+      .metrics
+      .registry
+      .getHistograms
       .get(tested.durationHistogramName)
       .getCount should be(1)
-    metrics.metrics.registry.getHistograms
+    metrics
+      .metrics
+      .registry
+      .getHistograms
       .get(tested.durationHistogramName)
       .getSnapshot
       .getMax should

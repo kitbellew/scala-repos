@@ -92,11 +92,10 @@ class ProducerSendThread[K, V](
         val expired = currentQueueItem == null
         if (currentQueueItem != null) {
           trace(
-            "Dequeued item for topic %s, partition key: %s, data: %s"
-              .format(
-                currentQueueItem.topic,
-                currentQueueItem.key,
-                currentQueueItem.message))
+            "Dequeued item for topic %s, partition key: %s, data: %s".format(
+              currentQueueItem.topic,
+              currentQueueItem.key,
+              currentQueueItem.message))
           events += currentQueueItem
         }
 

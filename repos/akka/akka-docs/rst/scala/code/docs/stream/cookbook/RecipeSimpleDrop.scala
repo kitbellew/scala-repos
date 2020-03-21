@@ -18,8 +18,8 @@ class RecipeSimpleDrop extends RecipeSpec {
         .conflate((lastMessage, newMessage) => newMessage)
       //#simple-drop
       val latch = TestLatch(2)
-      val realDroppyStream = Flow[Message].conflate(
-        (lastMessage, newMessage) => {
+      val realDroppyStream = Flow[Message]
+        .conflate((lastMessage, newMessage) => {
           latch.countDown();
           newMessage
         })

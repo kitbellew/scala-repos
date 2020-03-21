@@ -46,7 +46,8 @@ object ReaderWriterStateTTest extends SpecLite {
   "ReaderWriterStateT can be trampolined without stack overflow" in {
     import scalaz.Free._
     val result =
-      (0 to 10000).toList
+      (0 to 10000)
+        .toList
         .map(ii =>
           ReaderWriterStateT[Trampoline, Unit, String, Int, Int]((_, i: Int) =>
             Trampoline.done(("", i, ii))))

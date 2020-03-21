@@ -70,11 +70,9 @@ class RandomForestModel @Since("1.2.0") (
     */
   @Since("1.3.0")
   override def save(sc: SparkContext, path: String): Unit = {
-    TreeEnsembleModel.SaveLoadV1_0.save(
-      sc,
-      path,
-      this,
-      RandomForestModel.SaveLoadV1_0.thisClassName)
+    TreeEnsembleModel
+      .SaveLoadV1_0
+      .save(sc, path, this, RandomForestModel.SaveLoadV1_0.thisClassName)
   }
 
   override protected def formatVersion: String = RandomForestModel.formatVersion
@@ -100,10 +98,9 @@ object RandomForestModel extends Loader[RandomForestModel] {
       case (className, "1.0") if className == classNameV1_0 =>
         val metadata = TreeEnsembleModel.SaveLoadV1_0.readMetadata(jsonMetadata)
         assert(metadata.treeWeights.forall(_ == 1.0))
-        val trees = TreeEnsembleModel.SaveLoadV1_0.loadTrees(
-          sc,
-          path,
-          metadata.treeAlgo)
+        val trees = TreeEnsembleModel
+          .SaveLoadV1_0
+          .loadTrees(sc, path, metadata.treeAlgo)
         new RandomForestModel(Algo.fromString(metadata.algo), trees)
       case _ =>
         throw new Exception(
@@ -145,11 +142,13 @@ class GradientBoostedTreesModel @Since("1.2.0") (
     */
   @Since("1.3.0")
   override def save(sc: SparkContext, path: String): Unit = {
-    TreeEnsembleModel.SaveLoadV1_0.save(
-      sc,
-      path,
-      this,
-      GradientBoostedTreesModel.SaveLoadV1_0.thisClassName)
+    TreeEnsembleModel
+      .SaveLoadV1_0
+      .save(
+        sc,
+        path,
+        this,
+        GradientBoostedTreesModel.SaveLoadV1_0.thisClassName)
   }
 
   /**
@@ -188,18 +187,19 @@ class GradientBoostedTreesModel @Since("1.2.0") (
 
     val broadcastTrees = sc.broadcast(trees)
     (1 until numIterations).foreach { nTree =>
-      predictionAndError = remappedData.zip(predictionAndError).mapPartitions {
-        iter =>
+      predictionAndError = remappedData
+        .zip(predictionAndError)
+        .mapPartitions { iter =>
           val currentTree = broadcastTrees.value(nTree)
           val currentTreeWeight = localTreeWeights(nTree)
           iter.map {
             case (point, (pred, error)) =>
-              val newPred =
-                pred + currentTree.predict(point.features) * currentTreeWeight
+              val newPred = pred + currentTree
+                .predict(point.features) * currentTreeWeight
               val newError = loss.computeError(newPred, point.label)
               (newPred, newError)
           }
-      }
+        }
       evaluationArray(nTree) = predictionAndError.values.mean()
     }
 
@@ -262,14 +262,16 @@ object GradientBoostedTreesModel extends Loader[GradientBoostedTreesModel] {
       tree: DecisionTreeModel,
       loss: Loss): RDD[(Double, Double)] = {
 
-    val newPredError = data.zip(predictionAndError).mapPartitions { iter =>
-      iter.map {
-        case (lp, (pred, error)) =>
-          val newPred = pred + tree.predict(lp.features) * treeWeight
-          val newError = loss.computeError(newPred, lp.label)
-          (newPred, newError)
+    val newPredError = data
+      .zip(predictionAndError)
+      .mapPartitions { iter =>
+        iter.map {
+          case (lp, (pred, error)) =>
+            val newPred = pred + tree.predict(lp.features) * treeWeight
+            val newError = loss.computeError(newPred, lp.label)
+            (newPred, newError)
+        }
       }
-    }
     newPredError
   }
 
@@ -291,10 +293,9 @@ object GradientBoostedTreesModel extends Loader[GradientBoostedTreesModel] {
       case (className, "1.0") if className == classNameV1_0 =>
         val metadata = TreeEnsembleModel.SaveLoadV1_0.readMetadata(jsonMetadata)
         assert(metadata.combiningStrategy == Sum.toString)
-        val trees = TreeEnsembleModel.SaveLoadV1_0.loadTrees(
-          sc,
-          path,
-          metadata.treeAlgo)
+        val trees = TreeEnsembleModel
+          .SaveLoadV1_0
+          .loadTrees(sc, path, metadata.treeAlgo)
         new GradientBoostedTreesModel(
           Algo.fromString(metadata.algo),
           trees,
@@ -350,11 +351,14 @@ private[tree] sealed class TreeEnsembleModel(
     */
   private def predictByVoting(features: Vector): Double = {
     val votes = mutable.Map.empty[Int, Double]
-    trees.view.zip(treeWeights).foreach {
-      case (tree, weight) =>
-        val prediction = tree.predict(features).toInt
-        votes(prediction) = votes.getOrElse(prediction, 0.0) + weight
-    }
+    trees
+      .view
+      .zip(treeWeights)
+      .foreach {
+        case (tree, weight) =>
+          val prediction = tree.predict(features).toInt
+          votes(prediction) = votes.getOrElse(prediction, 0.0) + weight
+      }
     votes.maxBy(_._2)._1
   }
 
@@ -422,7 +426,8 @@ private[tree] sealed class TreeEnsembleModel(
     */
   def toDebugString: String = {
     val header = toString + "\n"
-    header + trees.zipWithIndex
+    header + trees
+      .zipWithIndex
       .map {
         case (tree, treeIndex) =>
           s"  Tree $treeIndex:\n" + tree.topNode.subtreeToString(4)
@@ -480,7 +485,8 @@ private[tree] object TreeEnsembleModel extends Logging {
       // TODO: Fix this issue for real.
       val memThreshold = 768
       if (sc.isLocal) {
-        val driverMemory = sc.getConf
+        val driverMemory = sc
+          .getConf
           .getOption("spark.driver.memory")
           .orElse(Option(System.getenv("SPARK_DRIVER_MEMORY")))
           .map(Utils.memoryStringToMb)
@@ -518,8 +524,11 @@ private[tree] object TreeEnsembleModel extends Logging {
         .parallelize(model.trees.zipWithIndex)
         .flatMap {
           case (tree, treeId) =>
-            tree.topNode.subtreeIterator.toSeq.map(node =>
-              NodeData(treeId, node))
+            tree
+              .topNode
+              .subtreeIterator
+              .toSeq
+              .map(node => NodeData(treeId, node))
         }
         .toDF()
       dataRDD.write.parquet(Loader.dataPath(path))

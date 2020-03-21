@@ -109,19 +109,22 @@ object ExpressionEncoder {
     encoders.foreach(_.assertUnresolved())
 
     val schema = StructType(
-      encoders.zipWithIndex.map {
-        case (e, i) =>
-          val (dataType, nullable) =
-            if (e.flat) {
-              e.schema.head.dataType -> e.schema.head.nullable
-            } else {
-              e.schema -> true
-            }
-          StructField(s"_${i + 1}", dataType, nullable)
-      })
+      encoders
+        .zipWithIndex
+        .map {
+          case (e, i) =>
+            val (dataType, nullable) =
+              if (e.flat) {
+                e.schema.head.dataType -> e.schema.head.nullable
+              } else {
+                e.schema -> true
+              }
+            StructField(s"_${i + 1}", dataType, nullable)
+        })
 
-    val cls = Utils.getContextOrSparkClassLoader.loadClass(
-      s"scala.Tuple${encoders.size}")
+    val cls = Utils
+      .getContextOrSparkClassLoader
+      .loadClass(s"scala.Tuple${encoders.size}")
 
     val toRowExpressions = encoders
       .map {
@@ -142,24 +145,30 @@ object ExpressionEncoder {
           }
       }
 
-    val fromRowExpressions = encoders.zipWithIndex.map {
-      case (enc, index) =>
-        if (enc.flat) {
-          enc.fromRowExpression.transform {
-            case b: BoundReference =>
-              b.copy(ordinal = index)
+    val fromRowExpressions = encoders
+      .zipWithIndex
+      .map {
+        case (enc, index) =>
+          if (enc.flat) {
+            enc
+              .fromRowExpression
+              .transform {
+                case b: BoundReference =>
+                  b.copy(ordinal = index)
+              }
+          } else {
+            val input = BoundReference(index, enc.schema, nullable = true)
+            enc
+              .fromRowExpression
+              .transformUp {
+                case UnresolvedAttribute(nameParts) =>
+                  assert(nameParts.length == 1)
+                  UnresolvedExtractValue(input, Literal(nameParts.head))
+                case BoundReference(ordinal, dt, _) =>
+                  GetStructField(input, ordinal)
+              }
           }
-        } else {
-          val input = BoundReference(index, enc.schema, nullable = true)
-          enc.fromRowExpression.transformUp {
-            case UnresolvedAttribute(nameParts) =>
-              assert(nameParts.length == 1)
-              UnresolvedExtractValue(input, Literal(nameParts.head))
-            case BoundReference(ordinal, dt, _) =>
-              GetStructField(input, ordinal)
-          }
-        }
-    }
+      }
 
     val fromRowExpression = NewInstance(
       cls,
@@ -224,15 +233,15 @@ case class ExpressionEncoder[T](
     require(toRowExpressions.size == 1)
 
   @transient
-  private lazy val extractProjection = GenerateUnsafeProjection.generate(
-    toRowExpressions)
+  private lazy val extractProjection = GenerateUnsafeProjection
+    .generate(toRowExpressions)
 
   @transient
   private lazy val inputRow = new GenericMutableRow(1)
 
   @transient
-  private lazy val constructProjection = GenerateSafeProjection.generate(
-    fromRowExpression :: Nil)
+  private lazy val constructProjection = GenerateSafeProjection
+    .generate(fromRowExpression :: Nil)
 
   /**
     * Returns this encoder where it has been bound to its own output (i.e. no remaping of columns
@@ -248,12 +257,15 @@ case class ExpressionEncoder[T](
     * of this object.
     */
   def namedExpressions: Seq[NamedExpression] =
-    schema.map(_.name).zip(toRowExpressions).map {
-      case (_, ne: NamedExpression) =>
-        ne.newInstance()
-      case (name, e) =>
-        Alias(e, name)()
-    }
+    schema
+      .map(_.name)
+      .zip(toRowExpressions)
+      .map {
+        case (_, ne: NamedExpression) =>
+          ne.newInstance()
+        case (name, e) =>
+          Alias(e, name)()
+      }
 
   /**
     * Returns an encoded version of `t` as a Spark SQL row.  Note that multiple calls to
@@ -339,7 +351,10 @@ case class ExpressionEncoder[T](
         schema(b.ordinal)
     }
 
-    val exprToMaxOrdinal = scala.collection.mutable.HashMap
+    val exprToMaxOrdinal = scala
+      .collection
+      .mutable
+      .HashMap
       .empty[Expression, Int]
     unbound.foreach {
       case g: GetStructField =>
@@ -365,7 +380,8 @@ case class ExpressionEncoder[T](
   def resolve(
       schema: Seq[Attribute],
       outerScopes: ConcurrentMap[String, AnyRef]): ExpressionEncoder[T] = {
-    val deserializer = SimpleAnalyzer.ResolveReferences
+    val deserializer = SimpleAnalyzer
+      .ResolveReferences
       .resolveDeserializer(fromRowExpression, schema)
 
     // Make a fake plan to wrap the deserializer, so that we can go though the whole analyzer, check

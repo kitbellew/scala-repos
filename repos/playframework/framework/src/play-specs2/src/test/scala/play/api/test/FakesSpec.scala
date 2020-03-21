@@ -61,8 +61,7 @@ object FakesSpec extends PlaySpecification {
           </bar>
         </foo>
       val bytes = ByteString(xml.toString, "utf-16le")
-      val req = FakeRequest(PUT, "/process")
-        .withRawBody(bytes)
+      val req = FakeRequest(PUT, "/process").withRawBody(bytes)
       route(req) aka "response" must beSome.which { resp =>
         contentAsString(resp) aka "content" must_== "application/octet-stream"
       }

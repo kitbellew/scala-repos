@@ -21,8 +21,8 @@ object TestProject extends Build {
     },
     check <<= InputTask(_ =>
       Space ~> token(
-        Compile.name.id | Runtime.name | Provided.name | Test.name) ~ token(
-        Space ~> Bool)) { result =>
+        Compile.name.id | Runtime.name | Provided.name | Test
+          .name) ~ token(Space ~> Bool)) { result =>
       (
         result,
         managedClasspath in Provided,
@@ -55,7 +55,7 @@ object TestProject extends Build {
       if (servletAPI.isEmpty)
         sys.error("Servlet API should have been included in " + label + ".")
     } else
-      servletAPI.foreach(s =>
-        sys.error(s + " incorrectly included in " + label + "."))
+      servletAPI
+        .foreach(s => sys.error(s + " incorrectly included in " + label + "."))
   }
 }

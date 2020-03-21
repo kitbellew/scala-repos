@@ -49,8 +49,8 @@ class AddPartitionsTest extends ZooKeeperTestHarness {
           .createBrokerConfig(i, zkConnect, enableControlledShutdown = false)))
     // start all the servers
     servers = configs.map(c => TestUtils.createServer(c))
-    brokers = servers.map(s =>
-      new Broker(s.config.brokerId, s.config.hostName, s.boundPort()))
+    brokers = servers
+      .map(s => new Broker(s.config.brokerId, s.config.hostName, s.boundPort()))
 
     // create topics first
     createTopic(
@@ -130,7 +130,9 @@ class AddPartitionsTest extends ZooKeeperTestHarness {
           0)
         .topicsMetadata
     val metaDataForTopic1 = metadata.filter(p => p.topic.equals(topic1))
-    val partitionDataForTopic1 = metaDataForTopic1.head.partitionsMetadata
+    val partitionDataForTopic1 = metaDataForTopic1
+      .head
+      .partitionsMetadata
       .sortBy(_.partitionId)
     assertEquals(partitionDataForTopic1.size, 3)
     assertEquals(partitionDataForTopic1(1).partitionId, 1)
@@ -164,7 +166,9 @@ class AddPartitionsTest extends ZooKeeperTestHarness {
           0)
         .topicsMetadata
     val metaDataForTopic2 = metadata.filter(p => p.topic.equals(topic2))
-    val partitionDataForTopic2 = metaDataForTopic2.head.partitionsMetadata
+    val partitionDataForTopic2 = metaDataForTopic2
+      .head
+      .partitionsMetadata
       .sortBy(_.partitionId)
     assertEquals(partitionDataForTopic2.size, 3)
     assertEquals(partitionDataForTopic2(1).partitionId, 1)
@@ -238,8 +242,9 @@ class AddPartitionsTest extends ZooKeeperTestHarness {
       partitionId: Int,
       expectedLeaderId: Int,
       expectedReplicas: Set[Int]) = {
-    val partitionOpt = metadata.partitionsMetadata.find(
-      _.partitionId == partitionId)
+    val partitionOpt = metadata
+      .partitionsMetadata
+      .find(_.partitionId == partitionId)
     assertTrue(s"Partition $partitionId should exist", partitionOpt.isDefined)
     val partition = partitionOpt.get
 

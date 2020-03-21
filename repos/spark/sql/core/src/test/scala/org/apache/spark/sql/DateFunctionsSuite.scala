@@ -31,10 +31,10 @@ class DateFunctionsSuite extends QueryTest with SharedSQLContext {
   test("function current_date") {
     val df1 = Seq((1, 2), (3, 1)).toDF("a", "b")
     val d0 = DateTimeUtils.millisToDays(System.currentTimeMillis())
-    val d1 = DateTimeUtils.fromJavaDate(
-      df1.select(current_date()).collect().head.getDate(0))
-    val d2 = DateTimeUtils.fromJavaDate(
-      sql("""SELECT CURRENT_DATE()""").collect().head.getDate(0))
+    val d1 = DateTimeUtils
+      .fromJavaDate(df1.select(current_date()).collect().head.getDate(0))
+    val d2 = DateTimeUtils
+      .fromJavaDate(sql("""SELECT CURRENT_DATE()""").collect().head.getDate(0))
     val d3 = DateTimeUtils.millisToDays(System.currentTimeMillis())
     assert(d0 <= d1 && d1 <= d2 && d2 <= d3 && d3 - d0 <= 1)
   }
@@ -453,11 +453,8 @@ class DateFunctionsSuite extends QueryTest with SharedSQLContext {
     val ss1 = "2015-07-24 10:00:00"
     val ss2 = "2015-07-25 02:02:02"
     val fmt = "yyyy/MM/dd HH:mm:ss.S"
-    val df = Seq((date1, ts1, s1, ss1), (date2, ts2, s2, ss2)).toDF(
-      "d",
-      "ts",
-      "s",
-      "ss")
+    val df = Seq((date1, ts1, s1, ss1), (date2, ts2, s2, ss2))
+      .toDF("d", "ts", "s", "ss")
     checkAnswer(
       df.select(unix_timestamp(col("ts"))),
       Seq(Row(ts1.getTime / 1000L), Row(ts2.getTime / 1000L)))
@@ -499,11 +496,8 @@ class DateFunctionsSuite extends QueryTest with SharedSQLContext {
     val ss1 = "2015-07-24 10:00:00"
     val ss2 = "2015-07-25 02:02:02"
     val fmt = "yyyy/MM/dd HH:mm:ss.S"
-    val df = Seq((date1, ts1, s1, ss1), (date2, ts2, s2, ss2)).toDF(
-      "d",
-      "ts",
-      "s",
-      "ss")
+    val df = Seq((date1, ts1, s1, ss1), (date2, ts2, s2, ss2))
+      .toDF("d", "ts", "s", "ss")
     checkAnswer(
       df.selectExpr("to_unix_timestamp(ts)"),
       Seq(Row(ts1.getTime / 1000L), Row(ts2.getTime / 1000L)))

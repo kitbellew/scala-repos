@@ -39,24 +39,27 @@ class PermuteArgumentsIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Option[() => Unit] = {
-    val argList = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScArgumentExprList])
+    val argList = PsiTreeUtil
+      .getParentOfType(element, classOf[ScArgumentExprList])
     if (argList == null)
       return None
 
-    val argsAndMatchingParams: Seq[(ScExpression, Parameter)] =
-      argList.matchedParameters.sortBy(_._1.getTextOffset)
+    val argsAndMatchingParams: Seq[(ScExpression, Parameter)] = argList
+      .matchedParameters
+      .sortBy(_._1.getTextOffset)
     val argumentParamIndices: Seq[Int] = argsAndMatchingParams.map(_._2.index)
     val sorted: Seq[Int] = argumentParamIndices.sorted
     if (argumentParamIndices != sorted) {
       val doIt = () => {
         val argsCopy = argList.exprs.map(_.copy)
-        argList.exprs.zipWithIndex.foreach {
-          case (argExpr, i) =>
-            val i2 = argumentParamIndices.indexOf(sorted(i))
-            argExpr.replace(argsCopy(i2))
-        }
+        argList
+          .exprs
+          .zipWithIndex
+          .foreach {
+            case (argExpr, i) =>
+              val i2 = argumentParamIndices.indexOf(sorted(i))
+              argExpr.replace(argsCopy(i2))
+          }
       }
       Some(doIt)
     } else

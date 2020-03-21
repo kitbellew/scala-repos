@@ -129,8 +129,8 @@ package docs.serialization {
     }
 
     "demonstrate configuration of serializers" in {
-      val config = ConfigFactory.parseString(
-        """
+      val config = ConfigFactory
+        .parseString("""
       #//#serialize-serializers-config
       akka {
         actor {
@@ -148,8 +148,8 @@ package docs.serialization {
     }
 
     "demonstrate configuration of serialization-bindings" in {
-      val config = ConfigFactory.parseString(
-        """
+      val config = ConfigFactory
+        .parseString("""
       #//#serialization-bindings-config
       akka {
         actor {
@@ -223,8 +223,9 @@ package docs.serialization {
 
       // Deserialize
       // (beneath fromBinary)
-      val deserializedActorRef = extendedSystem.provider.resolveActorRef(
-        identifier)
+      val deserializedActorRef = extendedSystem
+        .provider
+        .resolveActorRef(identifier)
       // Then just use the ActorRef
       //#actorref-serializer
 
@@ -241,8 +242,10 @@ package docs.serialization {
       }
 
       def serializeTo(ref: ActorRef, remote: Address): String =
-        ref.path.toSerializationFormatWithAddress(
-          ExternalAddress(extendedSystem).addressFor(remote))
+        ref
+          .path
+          .toSerializationFormatWithAddress(
+            ExternalAddress(extendedSystem).addressFor(remote))
       //#external-address
     }
 
@@ -257,8 +260,10 @@ package docs.serialization {
       }
 
       def serializeAkkaDefault(ref: ActorRef): String =
-        ref.path.toSerializationFormatWithAddress(
-          ExternalAddress(theActorSystem).addressForAkka)
+        ref
+          .path
+          .toSerializationFormatWithAddress(
+            ExternalAddress(theActorSystem).addressForAkka)
       //#external-address-default
     }
   }

@@ -111,11 +111,14 @@ class APIKeyRequiredService[A, B](
     with Logging {
   val service =
     (request: HttpRequest[A]) => {
-      request.parameters.get('apiKey).toSuccess[NotServed] {
-        DispatchError(
-          BadRequest,
-          "An apiKey query parameter is required to access this URL")
-      } flatMap { apiKey =>
+      request
+        .parameters
+        .get('apiKey)
+        .toSuccess[NotServed] {
+          DispatchError(
+            BadRequest,
+            "An apiKey query parameter is required to access this URL")
+        } flatMap { apiKey =>
         delegate.service(request) map {
           (f: Validation[String, APIKey] => Future[B]) =>
             keyFinder(apiKey) flatMap { maybeApiKey =>

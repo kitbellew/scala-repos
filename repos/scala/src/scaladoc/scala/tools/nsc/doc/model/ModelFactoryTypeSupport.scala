@@ -125,7 +125,8 @@ trait ModelFactoryTypeSupport {
                 // I tried several tricks BUT adding the method for which I'm creating the type => that simply won't scale,
                 // as ValueParams are independent of their parent member, and I really don't want to add this information to
                 // all terms, as we're already over the allowed memory footprint
-                if (aSym.isTypeParameterOrSkolem || aSym.isExistentiallyBound /* existential or existential skolem */ )
+                if (aSym.isTypeParameterOrSkolem || aSym
+                      .isExistentiallyBound /* existential or existential skolem */ )
                   return false
 
                 for (tpl <- inTpl.sym.ownerChain) {
@@ -203,7 +204,8 @@ trait ModelFactoryTypeSupport {
                   nameBuffer append (" { " + x.defString + " }")
                 case xs =>
                   nameBuffer append (
-                    " { ... /* %d definitions in type refinement */ }" format xs.size
+                    " { ... /* %d definitions in type refinement */ }" format xs
+                      .size
                   )
               }
             /* Eval-by-name types */
@@ -220,8 +222,8 @@ trait ModelFactoryTypeSupport {
                 else
                   tps
                     .map { tparam =>
-                      tparam.varianceString + tparam.name + typeParamsToString(
-                        tparam.typeParams)
+                      tparam.varianceString + tparam
+                        .name + typeParamsToString(tparam.typeParams)
                     }
                     .mkString("[", ", ", "]")
               nameBuffer append typeParamsToString(tparams)
@@ -327,7 +329,11 @@ trait ModelFactoryTypeSupport {
             case tpen @ ThisType(sym) =>
               appendType0(typeRef(NoPrefix, sym, Nil))
               nameBuffer append ".this"
-              if (!tpen.underlying.typeSymbol.skipPackageObject.isOmittablePrefix)
+              if (!tpen
+                    .underlying
+                    .typeSymbol
+                    .skipPackageObject
+                    .isOmittablePrefix)
                 nameBuffer append ".type"
             case tpen @ SuperType(thistpe, supertpe) =>
               nameBuffer append "super["
@@ -335,7 +341,11 @@ trait ModelFactoryTypeSupport {
               nameBuffer append "]"
             case tpen @ SingleType(pre, sym) =>
               appendType0(typeRef(pre, sym, Nil))
-              if (!tpen.underlying.typeSymbol.skipPackageObject.isOmittablePrefix)
+              if (!tpen
+                    .underlying
+                    .typeSymbol
+                    .skipPackageObject
+                    .isOmittablePrefix)
                 nameBuffer append ".type"
             case tpen =>
               nameBuffer append tpen.toString

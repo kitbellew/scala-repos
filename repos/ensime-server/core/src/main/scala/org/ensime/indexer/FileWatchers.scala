@@ -43,14 +43,16 @@ class ClassfileWatcher(
     if (config.disableClassMonitoring)
       Nil
     else
-      config.targetClasspath.map { target =>
-        val (selector, dir, rec) =
-          if (target.isJar)
-            (JarSelector, target.getParentFile, false)
-          else
-            (ClassfileSelector, target, true)
-        new ApachePollingFileWatcher(dir, selector, rec, listeners)
-      }
+      config
+        .targetClasspath
+        .map { target =>
+          val (selector, dir, rec) =
+            if (target.isJar)
+              (JarSelector, target.getParentFile, false)
+            else
+              (ClassfileSelector, target, true)
+          new ApachePollingFileWatcher(dir, selector, rec, listeners)
+        }
 
   override def receive: Receive = {
     case _ =>

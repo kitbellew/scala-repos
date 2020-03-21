@@ -75,31 +75,41 @@ trait RandomLibrary extends Library {
   )
 
   lazy val libMorphism1 =
-    containerOfN[Set, Morphism1](30, genMorphism1).sample.get
+    containerOfN[Set, Morphism1](30, genMorphism1)
+      .sample
+      .get
       .map(op => (op.opcode, op))
       .toMap
       .values
       .toSet //make sure no duplicate opcodes
   lazy val libMorphism2 =
-    containerOfN[Set, Morphism2](30, genMorphism2).sample.get
+    containerOfN[Set, Morphism2](30, genMorphism2)
+      .sample
+      .get
       .map(op => (op.opcode, op))
       .toMap
       .values
       .toSet //make sure no duplicate opcodes
   lazy val lib1 =
-    containerOfN[Set, Op1](30, genOp1).sample.get
+    containerOfN[Set, Op1](30, genOp1)
+      .sample
+      .get
       .map(op => (op.opcode, op))
       .toMap
       .values
       .toSet //make sure no duplicate opcodes
   lazy val lib2 =
-    containerOfN[Set, Op2](30, genOp2).sample.get
+    containerOfN[Set, Op2](30, genOp2)
+      .sample
+      .get
       .map(op => (op.opcode, op))
       .toMap
       .values
       .toSet //make sure no duplicate opcodes
   lazy val libReduction =
-    reductions ++ containerOfN[Set, Reduction](30, genReduction).sample.get
+    reductions ++ containerOfN[Set, Reduction](30, genReduction)
+      .sample
+      .get
       .map(op => (op.opcode, op))
       .toMap
       .values

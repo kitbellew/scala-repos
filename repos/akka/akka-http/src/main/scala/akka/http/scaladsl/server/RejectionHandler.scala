@@ -150,8 +150,8 @@ object RejectionHandler {
         complete((
           MethodNotAllowed,
           List(Allow(methods)),
-          "HTTP method not allowed, supported methods: " + names.mkString(
-            ", ")))
+          "HTTP method not allowed, supported methods: " + names
+            .mkString(", ")))
       }
       .handle {
         case AuthorizationFailedRejection ⇒
@@ -243,8 +243,8 @@ object RejectionHandler {
         //
         // See https://code.google.com/p/chromium/issues/detail?id=103220
         // and https://bugzilla.mozilla.org/show_bug.cgi?id=669675
-        val authenticateHeaders = rejections.map(r ⇒
-          `WWW-Authenticate`(r.challenge))
+        val authenticateHeaders = rejections
+          .map(r ⇒ `WWW-Authenticate`(r.challenge))
         complete((Unauthorized, authenticateHeaders, rejectionMessage))
       }
       .handleAll[UnacceptedResponseContentTypeRejection] { rejections ⇒
@@ -287,9 +287,8 @@ object RejectionHandler {
           HttpResponse(
             BadRequest,
             entity =
-              s"None of the websocket subprotocols offered in the request are supported. Supported are ${supported
-                .map("'" + _ + "'")
-                .mkString(",")}.",
+              s"None of the websocket subprotocols offered in the request are supported. Supported are ${supported.map(
+                "'" + _ + "'").mkString(",")}.",
             headers = `Sec-WebSocket-Protocol`(supported) :: Nil
           ))
       }
@@ -312,8 +311,8 @@ object RejectionHandler {
     */
   def applyTransformations(
       rejections: immutable.Seq[Rejection]): immutable.Seq[Rejection] = {
-    val (transformations, rest) = rejections.partition(
-      _.isInstanceOf[TransformationRejection])
+    val (transformations, rest) = rejections
+      .partition(_.isInstanceOf[TransformationRejection])
     (
       rest.distinct /: transformations
         .asInstanceOf[Seq[TransformationRejection]]

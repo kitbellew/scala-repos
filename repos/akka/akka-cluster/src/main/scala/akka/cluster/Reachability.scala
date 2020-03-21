@@ -76,7 +76,10 @@ private[cluster] class Reachability private (
         val allUnreachable = Set.empty[UniqueAddress]
         (observerRowsMap, allUnreachable, allTerminated)
       } else {
-        val mapBuilder = scala.collection.mutable.Map
+        val mapBuilder = scala
+          .collection
+          .mutable
+          .Map
           .empty[UniqueAddress, Map[UniqueAddress, Reachability.Record]]
         import scala.collection.mutable.SetBuilder
         val terminatedBuilder =
@@ -104,8 +107,8 @@ private[cluster] class Reachability private (
             : Map[UniqueAddress, Map[UniqueAddress, Reachability.Record]] =
           mapBuilder.toMap
         val allTerminated: Set[UniqueAddress] = terminatedBuilder.result()
-        val allUnreachable: Set[UniqueAddress] =
-          unreachableBuilder.result() diff allTerminated
+        val allUnreachable: Set[UniqueAddress] = unreachableBuilder
+          .result() diff allTerminated
 
         (observerRowsMap, allUnreachable, allTerminated)
       }
@@ -189,9 +192,8 @@ private[cluster] class Reachability private (
                   records.filterNot(_.observer == observer),
                   newVersions)
               } else {
-                val newRecords = records.updated(
-                  records.indexOf(oldRecord),
-                  newRecord)
+                val newRecords = records
+                  .updated(records.indexOf(oldRecord), newRecord)
                 new Reachability(newRecords, newVersions)
               }
             }
@@ -249,8 +251,8 @@ private[cluster] class Reachability private (
 
   def remove(nodes: Iterable[UniqueAddress]): Reachability = {
     val nodesSet = nodes.to[immutable.HashSet]
-    val newRecords = records.filterNot(r ⇒
-      nodesSet(r.observer) || nodesSet(r.subject))
+    val newRecords = records
+      .filterNot(r ⇒ nodesSet(r.observer) || nodesSet(r.subject))
     if (newRecords.size == records.size)
       this
     else {
@@ -326,15 +328,17 @@ private[cluster] class Reachability private (
     }
 
   def observersGroupedByUnreachable: Map[UniqueAddress, Set[UniqueAddress]] = {
-    records.groupBy(_.subject).collect {
-      case (subject, records) if records.exists(_.status == Unreachable) ⇒
-        val observers: Set[UniqueAddress] =
-          records.collect {
-            case r if r.status == Unreachable ⇒
-              r.observer
-          }(breakOut)
-        (subject -> observers)
-    }
+    records
+      .groupBy(_.subject)
+      .collect {
+        case (subject, records) if records.exists(_.status == Unreachable) ⇒
+          val observers: Set[UniqueAddress] =
+            records.collect {
+              case r if r.status == Unreachable ⇒
+                r.observer
+            }(breakOut)
+          (subject -> observers)
+      }
   }
 
   def allObservers: Set[UniqueAddress] = versions.keySet

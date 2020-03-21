@@ -74,7 +74,8 @@ object InterpolatedStringParser extends StringParser {
             }
             Text(text)
           case (e, _)
-              if e.getNode.getElementType == ScalaTokenTypes.tINTERPOLATED_STRING_ESCAPE =>
+              if e.getNode.getElementType == ScalaTokenTypes
+                .tINTERPOLATED_STRING_ESCAPE =>
             Text(e.getText.drop(1))
         }
 

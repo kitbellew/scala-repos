@@ -14,7 +14,8 @@ final class PgnDump(
 
   def apply(game: Game, initialFen: Option[String]): Pgn = {
     val pgn = dumper(game, initialFen)
-    game.tournamentId
+    game
+      .tournamentId
       .flatMap(tournamentName)
       .orElse {
         game.simulId.flatMap(simulName)
@@ -40,11 +41,13 @@ final class PgnDump(
 
   private def PgnStream(
       cursor: reactivemongo.api.Cursor[Game]): Enumerator[String] = {
-    val toPgn = Enumeratee.mapM[Game].apply[String] { game =>
-      GameRepo initialFen game map { initialFen =>
-        apply(game, initialFen).toString + "\n\n\n"
+    val toPgn = Enumeratee
+      .mapM[Game]
+      .apply[String] { game =>
+        GameRepo initialFen game map { initialFen =>
+          apply(game, initialFen).toString + "\n\n\n"
+        }
       }
-    }
     cursor.enumerate() &> toPgn
   }
 }

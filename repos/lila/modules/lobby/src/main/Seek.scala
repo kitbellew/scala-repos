@@ -64,10 +64,8 @@ case class Seek(
         "name" -> perfType.map(_.name))
     )
 
-  lazy val perfType = PerfPicker.perfType(
-    Speed.Correspondence,
-    realVariant,
-    daysPerTurn)
+  lazy val perfType = PerfPicker
+    .perfType(Speed.Correspondence, realVariant, daysPerTurn)
 }
 
 object Seek {

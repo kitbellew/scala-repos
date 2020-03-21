@@ -153,21 +153,23 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
 
   private def setAcl(path: String, setPromise: Promise[String]) = {
     info("Setting ACL for path %s".format(path))
-    zkUtils.zkConnection.getZookeeper.setACL(
-      path,
-      ZkUtils.DefaultAcls(zkUtils.isSecure),
-      -1,
-      SetACLCallback,
-      setPromise)
+    zkUtils
+      .zkConnection
+      .getZookeeper
+      .setACL(
+        path,
+        ZkUtils.DefaultAcls(zkUtils.isSecure),
+        -1,
+        SetACLCallback,
+        setPromise)
   }
 
   private def getChildren(path: String, childrenPromise: Promise[String]) = {
     info("Getting children to set ACLs for path %s".format(path))
-    zkUtils.zkConnection.getZookeeper.getChildren(
-      path,
-      false,
-      GetChildrenCallback,
-      childrenPromise)
+    zkUtils
+      .zkConnection
+      .getZookeeper
+      .getChildren(path, false, GetChildrenCallback, childrenPromise)
   }
 
   private def setAclIndividually(path: String) = {
@@ -200,7 +202,8 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
       Code.get(rc) match {
         case Code.OK =>
           // Set ACL for each child
-          children.asScala
+          children
+            .asScala
             .map { child =>
               path match {
                 case "/" =>
@@ -222,12 +225,12 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
           // Starting a new session isn't really a problem, but it'd complicate
           // the logic of the tool, so we quit and let the user re-run it.
           System.out.println("ZooKeeper session expired while changing ACLs")
-          promise failure ZkException.create(
-            KeeperException.create(Code.get(rc)))
+          promise failure ZkException
+            .create(KeeperException.create(Code.get(rc)))
         case _ =>
           System.out.println("Unexpected return code: %d".format(rc))
-          promise failure ZkException.create(
-            KeeperException.create(Code.get(rc)))
+          promise failure ZkException
+            .create(KeeperException.create(Code.get(rc)))
       }
     }
   }
@@ -257,12 +260,12 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
           // Starting a new session isn't really a problem, but it'd complicate
           // the logic of the tool, so we quit and let the user re-run it.
           System.out.println("ZooKeeper session expired while changing ACLs")
-          promise failure ZkException.create(
-            KeeperException.create(Code.get(rc)))
+          promise failure ZkException
+            .create(KeeperException.create(Code.get(rc)))
         case _ =>
           System.out.println("Unexpected return code: %d".format(rc))
-          promise failure ZkException.create(
-            KeeperException.create(Code.get(rc)))
+          promise failure ZkException
+            .create(KeeperException.create(Code.get(rc)))
       }
     }
   }

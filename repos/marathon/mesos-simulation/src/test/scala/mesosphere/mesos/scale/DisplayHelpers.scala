@@ -33,10 +33,13 @@ object DisplayHelpers {
       } yield rows.iterator.map(_(column).length).max
 
     for (row <- rows) {
-      val formatted = columnFormats.zipWithIndex.zip(row).map {
-        case ((format, index), value) =>
-          format(value, maxColumnLengths(index))
-      }
+      val formatted = columnFormats
+        .zipWithIndex
+        .zip(row)
+        .map {
+          case ((format, index), value) =>
+            format(value, maxColumnLengths(index))
+        }
 
       println(formatted.mkString(" "))
     }

@@ -44,8 +44,8 @@ class ScalaTestLocationProvider extends SMTestLocator {
             val clazzes = ScalaShortNamesCacheManager
               .getInstance(project)
               .getClassesByFQName(className, scope)
-            val found = clazzes.find(c =>
-              Option(c.getContainingFile).exists(_.name == fileName))
+            val found = clazzes
+              .find(c => Option(c.getContainingFile).exists(_.name == fileName))
 
             found match {
               case Some(file) =>
@@ -83,14 +83,16 @@ class ScalaTestLocationProvider extends SMTestLocator {
               .orElse(classes.headOption)
             methodOwner match {
               case Some(td: ScTypeDefinition) =>
-                td.signaturesByName(methodName).foreach {
-                  case signature: PhysicalSignature =>
-                    res.add(
-                      new PsiLocationWithName(
-                        project,
-                        signature.method,
-                        testName))
-                }
+                td
+                  .signaturesByName(methodName)
+                  .foreach {
+                    case signature: PhysicalSignature =>
+                      res.add(
+                        new PsiLocationWithName(
+                          project,
+                          signature.method,
+                          testName))
+                  }
               case _ =>
             }
             if (res.isEmpty && methodOwner.isDefined) {
@@ -107,8 +109,8 @@ class ScalaTestLocationProvider extends SMTestLocator {
             val clazzes = ScalaPsiManager
               .instance(project)
               .getCachedClass(GlobalSearchScope.allScope(project), classFqn)
-            val found = clazzes.find(c =>
-              Option(c.getContainingFile).exists(_.name == fileName))
+            val found = clazzes
+              .find(c => Option(c.getContainingFile).exists(_.name == fileName))
             found match {
               case Some(file) =>
                 res.add(

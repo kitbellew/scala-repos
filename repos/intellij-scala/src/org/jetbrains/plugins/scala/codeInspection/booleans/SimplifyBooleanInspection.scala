@@ -74,8 +74,8 @@ object SimplifyBooleanUtil {
             case _ =>
               false
           }
-        isBooleanOperation && isOfBooleanType(expr) && children.exists(
-          canBeSimplified(_, isTopLevel = false))
+        isBooleanOperation && isOfBooleanType(expr) && children
+          .exists(canBeSimplified(_, isTopLevel = false))
     }
   }
 
@@ -87,9 +87,11 @@ object SimplifyBooleanUtil {
         expr)
       val children = getScExprChildren(exprCopy)
       children.foreach(child =>
-        exprCopy.getNode.replaceChild(
-          child.getNode,
-          simplify(child, isTopLevel = false).getNode))
+        exprCopy
+          .getNode
+          .replaceChild(
+            child.getNode,
+            simplify(child, isTopLevel = false).getNode))
       simplifyTrivially(exprCopy)
     } else
       expr
@@ -102,10 +104,13 @@ object SimplifyBooleanUtil {
       .conforms(lang.psi.types.Boolean, checkWeak = true)
 
   private def getScExprChildren(expr: ScExpression) =
-    expr.children.collect {
-      case expr: ScExpression =>
-        expr
-    }.toList
+    expr
+      .children
+      .collect {
+        case expr: ScExpression =>
+          expr
+      }
+      .toList
 
   private def booleanConst(expr: ScExpression): Option[Boolean] =
     expr match {
@@ -135,9 +140,8 @@ object SimplifyBooleanUtil {
         else {
           booleanConst(operand) match {
             case Some(bool: Boolean) =>
-              ScalaPsiElementFactory.createExpressionFromText(
-                (!bool).toString,
-                expr.getManager)
+              ScalaPsiElementFactory
+                .createExpressionFromText((!bool).toString, expr.getManager)
             case None =>
               expr
           }
@@ -193,7 +197,8 @@ object SimplifyBooleanUtil {
                 .createExpressionFromText("!a", manager)
                 .asInstanceOf[ScPrefixExpr]
               val copyExpr = expr.copy.asInstanceOf[ScExpression]
-              negated.operand
+              negated
+                .operand
                 .replaceExpression(copyExpr, removeParenthesis = true)
               negated.getText
             case (true, "||") | (true, "|") =>

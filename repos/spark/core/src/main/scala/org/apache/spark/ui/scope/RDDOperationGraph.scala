@@ -117,58 +117,69 @@ private[ui] object RDDOperationGraph extends Logging {
     val rootCluster = new RDDOperationCluster(stageClusterId, stageClusterName)
 
     // Find nodes, edges, and operation scopes that belong to this stage
-    stage.rddInfos.foreach { rdd =>
-      edges ++= rdd.parentIds.map { parentId =>
-        RDDOperationEdge(parentId, rdd.id)
-      }
+    stage
+      .rddInfos
+      .foreach { rdd =>
+        edges ++= rdd
+          .parentIds
+          .map { parentId =>
+            RDDOperationEdge(parentId, rdd.id)
+          }
 
-      // TODO: differentiate between the intention to cache an RDD and whether it's actually cached
-      val node = nodes.getOrElseUpdate(
-        rdd.id,
-        RDDOperationNode(
+        // TODO: differentiate between the intention to cache an RDD and whether it's actually cached
+        val node = nodes.getOrElseUpdate(
           rdd.id,
-          rdd.name,
-          rdd.storageLevel != StorageLevel.NONE,
-          rdd.callSite))
+          RDDOperationNode(
+            rdd.id,
+            rdd.name,
+            rdd.storageLevel != StorageLevel.NONE,
+            rdd.callSite))
 
-      if (rdd.scope.isEmpty) {
-        // This RDD has no encompassing scope, so we put it directly in the root cluster
-        // This should happen only if an RDD is instantiated outside of a public RDD API
-        rootCluster.attachChildNode(node)
-      } else {
-        // Otherwise, this RDD belongs to an inner cluster,
-        // which may be nested inside of other clusters
-        val rddScopes = rdd.scope
-          .map { scope =>
-            scope.getAllScopes
+        if (rdd.scope.isEmpty) {
+          // This RDD has no encompassing scope, so we put it directly in the root cluster
+          // This should happen only if an RDD is instantiated outside of a public RDD API
+          rootCluster.attachChildNode(node)
+        } else {
+          // Otherwise, this RDD belongs to an inner cluster,
+          // which may be nested inside of other clusters
+          val rddScopes = rdd
+            .scope
+            .map { scope =>
+              scope.getAllScopes
+            }
+            .getOrElse(Seq.empty)
+          val rddClusters = rddScopes.map { scope =>
+            val clusterId = scope.id
+            val clusterName = scope.name.replaceAll("\\n", "\\\\n")
+            clusters.getOrElseUpdate(
+              clusterId,
+              new RDDOperationCluster(clusterId, clusterName))
           }
-          .getOrElse(Seq.empty)
-        val rddClusters = rddScopes.map { scope =>
-          val clusterId = scope.id
-          val clusterName = scope.name.replaceAll("\\n", "\\\\n")
-          clusters.getOrElseUpdate(
-            clusterId,
-            new RDDOperationCluster(clusterId, clusterName))
-        }
-        // Build the cluster hierarchy for this RDD
-        rddClusters.sliding(2).foreach { pc =>
-          if (pc.size == 2) {
-            val parentCluster = pc(0)
-            val childCluster = pc(1)
-            parentCluster.attachChildCluster(childCluster)
-          }
-        }
-        // Attach the outermost cluster to the root cluster, and the RDD to the innermost cluster
-        rddClusters.headOption.foreach { cluster =>
-          if (!rootCluster.childClusters.contains(cluster)) {
-            rootCluster.attachChildCluster(cluster)
-          }
-        }
-        rddClusters.lastOption.foreach { cluster =>
-          cluster.attachChildNode(node)
+          // Build the cluster hierarchy for this RDD
+          rddClusters
+            .sliding(2)
+            .foreach { pc =>
+              if (pc.size == 2) {
+                val parentCluster = pc(0)
+                val childCluster = pc(1)
+                parentCluster.attachChildCluster(childCluster)
+              }
+            }
+          // Attach the outermost cluster to the root cluster, and the RDD to the innermost cluster
+          rddClusters
+            .headOption
+            .foreach { cluster =>
+              if (!rootCluster.childClusters.contains(cluster)) {
+                rootCluster.attachChildCluster(cluster)
+              }
+            }
+          rddClusters
+            .lastOption
+            .foreach { cluster =>
+              cluster.attachChildNode(node)
+            }
         }
       }
-    }
 
     // Classify each edge as internal, outgoing or incoming
     // This information is needed to reason about how stages relate to each other
@@ -209,9 +220,11 @@ private[ui] object RDDOperationGraph extends Logging {
     val dotFile = new StringBuilder
     dotFile.append("digraph G {\n")
     makeDotSubgraph(dotFile, graph.rootCluster, indent = "  ")
-    graph.edges.foreach { edge =>
-      dotFile.append(s"""  ${edge.fromId}->${edge.toId};\n""")
-    }
+    graph
+      .edges
+      .foreach { edge =>
+        dotFile.append(s"""  ${edge.fromId}->${edge.toId};\n""")
+      }
     dotFile.append("}")
     val result = dotFile.toString()
     logDebug(result)
@@ -234,12 +247,16 @@ private[ui] object RDDOperationGraph extends Logging {
       .append(s"subgraph cluster${cluster.id} {\n")
       .append(indent)
       .append(s"""  label="${StringEscapeUtils.escapeJava(cluster.name)}";\n""")
-    cluster.childNodes.foreach { node =>
-      subgraph.append(indent).append(s"  ${makeDotNode(node)};\n")
-    }
-    cluster.childClusters.foreach { cscope =>
-      makeDotSubgraph(subgraph, cscope, indent + "  ")
-    }
+    cluster
+      .childNodes
+      .foreach { node =>
+        subgraph.append(indent).append(s"  ${makeDotNode(node)};\n")
+      }
+    cluster
+      .childClusters
+      .foreach { cscope =>
+        makeDotSubgraph(subgraph, cscope, indent + "  ")
+      }
     subgraph.append(indent).append("}\n")
   }
 }

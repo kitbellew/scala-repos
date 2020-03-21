@@ -82,9 +82,8 @@ abstract class SuperAccessors
     private val accDefs = mutable.Map[Symbol, ListBuffer[Tree]]()
 
     private def storeAccessorDefinition(clazz: Symbol, tree: Tree) = {
-      val buf = accDefs.getOrElse(
-        clazz,
-        sys.error("no acc def buf for " + clazz))
+      val buf = accDefs
+        .getOrElse(clazz, sys.error("no acc def buf for " + clazz))
       buf += typers(clazz) typed tree
     }
     private def ensureAccessor(sel: Select, mixName: TermName = nme.EMPTY) = {
@@ -92,31 +91,33 @@ abstract class SuperAccessors
       val sym = sel.symbol
       val clazz = qual.symbol
       val supername = nme.superName(name, mixName)
-      val superAcc =
-        clazz.info.decl(supername).suchThat(_.alias == sym) orElse {
-          debuglog(s"add super acc ${sym.fullLocationString} to $clazz")
-          val acc = clazz.newMethod(
-            supername,
+      val superAcc = clazz
+        .info
+        .decl(supername)
+        .suchThat(_.alias == sym) orElse {
+        debuglog(s"add super acc ${sym.fullLocationString} to $clazz")
+        val acc = clazz.newMethod(
+          supername,
+          sel.pos,
+          SUPERACCESSOR | PRIVATE | ARTIFACT) setAlias sym
+        val tpe =
+          clazz.thisType memberType sym match {
+            case t if sym.isModuleNotMethod =>
+              NullaryMethodType(t)
+            case t =>
+              t
+          }
+        acc setInfoAndEnter (tpe cloneInfo acc)
+        // Diagnostic for SI-7091
+        if (!accDefs.contains(clazz))
+          reporter.error(
             sel.pos,
-            SUPERACCESSOR | PRIVATE | ARTIFACT) setAlias sym
-          val tpe =
-            clazz.thisType memberType sym match {
-              case t if sym.isModuleNotMethod =>
-                NullaryMethodType(t)
-              case t =>
-                t
-            }
-          acc setInfoAndEnter (tpe cloneInfo acc)
-          // Diagnostic for SI-7091
-          if (!accDefs.contains(clazz))
-            reporter.error(
-              sel.pos,
-              s"Internal error: unable to store accessor definition in ${clazz}. clazz.hasPackageFlag=${clazz.hasPackageFlag}. Accessor required for ${sel} (${showRaw(sel)})"
-            )
-          else
-            storeAccessorDefinition(clazz, DefDef(acc, EmptyTree))
-          acc
-        }
+            s"Internal error: unable to store accessor definition in ${clazz}. clazz.hasPackageFlag=${clazz.hasPackageFlag}. Accessor required for ${sel} (${showRaw(sel)})"
+          )
+        else
+          storeAccessorDefinition(clazz, DefDef(acc, EmptyTree))
+        acc
+      }
 
       atPos(sel.pos)(
         Select(gen.mkAttributedThis(clazz), superAcc) setType sel.tpe)
@@ -145,7 +146,9 @@ abstract class SuperAccessors
             reporter.error(
               sym.pos,
               "name clash: " + sym.owner + " defines " + sym +
-                "\nand its companion " + sym.owner.companionModule + " also defines " +
+                "\nand its companion " + sym
+                .owner
+                .companionModule + " also defines " +
                 other)
         }
       }
@@ -161,12 +164,16 @@ abstract class SuperAccessors
             !(member.isAbstractOverride && member.isIncompleteIn(clazz)))
           reporter.error(
             sel.pos,
-            "" + sym.fullLocationString + " is accessed from super. It may not be abstract " +
+            "" + sym
+              .fullLocationString + " is accessed from super. It may not be abstract " +
               "unless it is overridden by a member declared `abstract' and `override'"
           )
       } else if (mix == tpnme.EMPTY && !sym.owner.isTrait) {
         // SI-4989 Check if an intermediate class between `clazz` and `sym.owner` redeclares the method as abstract.
-        val intermediateClasses = clazz.info.baseClasses.tail
+        val intermediateClasses = clazz
+          .info
+          .baseClasses
+          .tail
           .takeWhile(_ != sym.owner)
         intermediateClasses
           .map(sym.overridingSymbol)
@@ -242,7 +249,8 @@ abstract class SuperAccessors
             checkCompanionNameClashes(sym)
             val decls = sym.info.decls
             for (s <- decls) {
-              if (s.privateWithin.isClass && !s.isProtected && !s.privateWithin.isModuleClass &&
+              if (s.privateWithin.isClass && !s
+                    .isProtected && !s.privateWithin.isModuleClass &&
                   !s.hasFlag(EXPANDEDNAME) && !s.isConstructor) {
                 val savedName = s.name
                 decls.unlink(s)
@@ -282,8 +290,10 @@ abstract class SuperAccessors
 
         // set a flag for all type parameters with `@specialized` annotation so it can be pickled
         case typeDef: TypeDef
-            if typeDef.symbol.deSkolemize.hasAnnotation(
-              definitions.SpecializedClass) =>
+            if typeDef
+              .symbol
+              .deSkolemize
+              .hasAnnotation(definitions.SpecializedClass) =>
           debuglog(
             "setting SPECIALIZED flag on typeDef.symbol.deSkolemize where typeDef = " + typeDef)
           // we need to deSkolemize symbol so we get the same symbol as others would get when
@@ -300,8 +310,8 @@ abstract class SuperAccessors
             //
             // [1] https://groups.google.com/forum/#!topic/scala-internals/iPkMCygzws4
             //
-            if (closestEnclMethod(
-                  currentOwner) hasAnnotation definitions.ScalaInlineClass)
+            if (closestEnclMethod(currentOwner) hasAnnotation definitions
+                  .ScalaInlineClass)
               sym.makeNotPrivate(sym.owner)
 
             qual match {
@@ -315,12 +325,18 @@ abstract class SuperAccessors
                     qual.symbol.ancestors foreach { parent =>
                       parent.info.decls filterNot (x =>
                         x.isPrivate || x.isLocalToThis) foreach { m2 =>
-                        if (sym.name == m2.name && m2.isGetter && m2.accessed.isMutable) {
+                        if (sym.name == m2.name && m2
+                              .isGetter && m2.accessed.isMutable) {
                           reporter.warning(
                             sel.pos,
-                            sym.accessString + " " + sym.fullLocationString + " shadows mutable " + m2.name
-                              + " inherited from " + m2.owner + ".  Changes to " + m2.name + " will not be visible within "
-                              + sym.owner + " - you may want to give them distinct names."
+                            sym.accessString + " " + sym
+                              .fullLocationString + " shadows mutable " + m2
+                              .name
+                              + " inherited from " + m2
+                              .owner + ".  Changes to " + m2
+                              .name + " will not be visible within "
+                              + sym
+                                .owner + " - you may want to give them distinct names."
                           )
                         }
                       }
@@ -336,18 +352,16 @@ abstract class SuperAccessors
                 // Direct calls to aliases of param accessors to the superclass in order to avoid
                 // duplicating fields.
                 // ... but, only if accessible (SI-6793)
-                if (sym.isParamAccessor && sym.alias != NoSymbol && isAccessibleFromSuper(
-                      sym.alias)) {
+                if (sym.isParamAccessor && sym
+                      .alias != NoSymbol && isAccessibleFromSuper(sym.alias)) {
                   val result =
                     (
-                      localTyper
-                        .typedPos(tree.pos) {
-                          Select(
-                            Super(qual, tpnme.EMPTY) setPos qual.pos,
-                            sym.alias)
-                        }
-                      )
-                      .asInstanceOf[Select]
+                      localTyper.typedPos(tree.pos) {
+                        Select(
+                          Super(qual, tpnme.EMPTY) setPos qual.pos,
+                          sym.alias)
+                      }
+                    ).asInstanceOf[Select]
                   debuglog(
                     s"alias replacement: $sym --> ${sym.alias} / $tree ==> $result"
                   ); //debug
@@ -372,14 +386,18 @@ abstract class SuperAccessors
                   val shouldEnsureAccessor = (currentClass.isTrait
                     && sym.isProtected
                     && sym.enclClass != currentClass
-                    && !sym.owner.isPackageClass // SI-7091 no accessor needed package owned (ie, top level) symbols
+                    && !sym
+                      .owner
+                      .isPackageClass // SI-7091 no accessor needed package owned (ie, top level) symbols
                     && !sym.owner.isTrait
-                    && sym.owner.enclosingPackageClass != currentClass.enclosingPackageClass
+                    && sym.owner.enclosingPackageClass != currentClass
+                      .enclosingPackageClass
                     && qual.symbol.info.member(sym.name).exists
                     && !needsProtectedAccessor(sym, tree.pos))
                   if (shouldEnsureAccessor) {
                     log(
-                      "Ensuring accessor for call to protected " + sym.fullLocationString + " from " + currentClass)
+                      "Ensuring accessor for call to protected " + sym
+                        .fullLocationString + " from " + currentClass)
                     ensureAccessor(sel)
                   } else
                     mayNeedProtectedAccessor(
@@ -397,7 +415,8 @@ abstract class SuperAccessors
                 } else if (isDisallowed(sym)) {
                   reporter.error(
                     tree.pos,
-                    "super not allowed here: use this." + name.decode + " instead")
+                    "super not allowed here: use this." + name
+                      .decode + " instead")
                 }
                 transformSuperSelect(sel)
 
@@ -432,10 +451,8 @@ abstract class SuperAccessors
 
         case Apply(fn, args) =>
           assert(fn.tpe != null, tree)
-          treeCopy.Apply(
-            tree,
-            transform(fn),
-            transformArgs(fn.tpe.params, args))
+          treeCopy
+            .Apply(tree, transform(fn), transformArgs(fn.tpe.params, args))
 
         case Function(vparams, body) =>
           withInvalidOwner {
@@ -526,7 +543,8 @@ abstract class SuperAccessors
                 memberType.cloneInfo(protAcc).asSeenFrom(qual.tpe, sym.owner))
           }
 
-      val protAcc = clazz.info
+      val protAcc = clazz
+        .info
         .decl(accName)
         .suchThat(s => s == NoSymbol || s.tpe =:= accType(s)) orElse {
         val newAcc = clazz.newMethod(
@@ -643,8 +661,8 @@ abstract class SuperAccessors
     private def needsProtectedAccessor(sym: Symbol, pos: Position): Boolean = {
       val clazz = currentClass
       def accessibleThroughSubclassing =
-        validCurrentOwner && clazz.thisSym.isSubClass(
-          sym.owner) && !clazz.isTrait
+        validCurrentOwner && clazz.thisSym.isSubClass(sym.owner) && !clazz
+          .isTrait
 
       val isCandidate = (sym.isProtected
         && sym.isJavaDefined
@@ -652,8 +670,8 @@ abstract class SuperAccessors
         && !accessibleThroughSubclassing
         && (sym.enclosingPackageClass != currentClass.enclosingPackageClass)
         && (
-          sym.enclosingPackageClass == sym.accessBoundary(
-            sym.enclosingPackageClass)
+          sym.enclosingPackageClass == sym
+            .accessBoundary(sym.enclosingPackageClass)
         ))
       val host = hostForAccessorOf(sym, clazz)
       def isSelfType =
@@ -689,7 +707,8 @@ abstract class SuperAccessors
         referencingClass: Symbol): Symbol = {
       if (referencingClass.isSubClass(sym.owner.enclClass)
           || referencingClass.thisSym.isSubClass(sym.owner.enclClass)
-          || referencingClass.enclosingPackageClass == sym.owner.enclosingPackageClass) {
+          || referencingClass
+            .enclosingPackageClass == sym.owner.enclosingPackageClass) {
         assert(referencingClass.isClass, referencingClass)
         referencingClass
       } else if (referencingClass.owner.enclClass != NoSymbol)

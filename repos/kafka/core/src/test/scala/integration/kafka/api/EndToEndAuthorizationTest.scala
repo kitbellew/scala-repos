@@ -186,12 +186,15 @@ trait EndToEndAuthorizationTest extends IntegrationTestHarness with SaslSetup {
   // The next two configuration parameters enable ZooKeeper secure ACLs
   // and sets the Kafka authorizer, both necessary to enable security.
   this.serverConfig.setProperty(KafkaConfig.ZkEnableSecureAclsProp, "true")
-  this.serverConfig.setProperty(
-    KafkaConfig.AuthorizerClassNameProp,
-    classOf[SimpleAclAuthorizer].getName)
+  this
+    .serverConfig
+    .setProperty(
+      KafkaConfig.AuthorizerClassNameProp,
+      classOf[SimpleAclAuthorizer].getName)
   // Some needed configuration for brokers, producers, and consumers
   this.serverConfig.setProperty(KafkaConfig.OffsetsTopicPartitionsProp, "1")
-  this.serverConfig
+  this
+    .serverConfig
     .setProperty(KafkaConfig.OffsetsTopicReplicationFactorProp, "1")
   this.serverConfig.setProperty(KafkaConfig.MinInSyncReplicasProp, "3")
   this.consumerConfig.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "group")

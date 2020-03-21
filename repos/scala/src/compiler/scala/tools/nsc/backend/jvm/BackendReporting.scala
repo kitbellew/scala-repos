@@ -132,8 +132,8 @@ object BackendReporting {
               descriptor,
               ownerInternalName,
               missingClasses) =>
-          val (javaDef, others) = missingClasses.partition(
-            _.definedInJavaSource)
+          val (javaDef, others) = missingClasses
+            .partition(_.definedInJavaSource)
           s"The method $name$descriptor could not be found in the class $ownerInternalName or any of its parents." +
             (
               if (others.isEmpty)
@@ -175,12 +175,12 @@ object BackendReporting {
           if (m.isArrayMethod)
             false
           else
-            settings.YoptWarningNoInlineMissingBytecode || missing.exists(
-              _.emitWarning(settings))
+            settings.YoptWarningNoInlineMissingBytecode || missing
+              .exists(_.emitWarning(settings))
 
         case FieldNotFound(_, _, _, missing) =>
-          settings.YoptWarningNoInlineMissingBytecode || missing.exists(
-            _.emitWarning(settings))
+          settings.YoptWarningNoInlineMissingBytecode || missing
+            .exists(_.emitWarning(settings))
       }
   }
 
@@ -318,8 +318,7 @@ object BackendReporting {
               callsiteClass,
               instruction,
               cause) =>
-          s"Failed to check if $calleeMethodSig can be safely inlined to $callsiteClass without causing an IllegalAccessError. Checking instruction ${AsmUtils
-            .textify(instruction)} failed:\n" + cause
+          s"Failed to check if $calleeMethodSig can be safely inlined to $callsiteClass without causing an IllegalAccessError. Checking instruction ${AsmUtils.textify(instruction)} failed:\n" + cause
 
         case MethodWithHandlerCalledOnNonEmptyStack(
               _,
@@ -328,13 +327,13 @@ object BackendReporting {
               callsiteClass,
               callsiteName,
               callsiteDesc) =>
-          s"""The operand stack at the callsite in ${BackendReporting
-               .methodSignature(
-                 callsiteClass,
-                 callsiteName,
-                 callsiteDesc)} contains more values than the
+          s"""The operand stack at the callsite in ${BackendReporting.methodSignature(
+               callsiteClass,
+               callsiteName,
+               callsiteDesc)} contains more values than the
            |arguments expected by the callee $calleeMethodSig. These values would be discarded
-           |when entering an exception handler declared in the inlined method.""".stripMargin
+           |when entering an exception handler declared in the inlined method."""
+            .stripMargin
 
         case SynchronizedMethod(_, _, _) =>
           s"Method $calleeMethodSig cannot be inlined because it is synchronized."
@@ -360,8 +359,10 @@ object BackendReporting {
               callsiteClass,
               callsiteName,
               callsiteDesc) =>
-          s"""The size of the callsite method ${BackendReporting
-               .methodSignature(callsiteClass, callsiteName, callsiteDesc)}
+          s"""The size of the callsite method ${BackendReporting.methodSignature(
+               callsiteClass,
+               callsiteName,
+               callsiteDesc)}
            |would exceed the JVM method size limit after inlining $calleeMethodSig.
          """.stripMargin
       }
@@ -371,8 +372,9 @@ object BackendReporting {
         case _: IllegalAccessInstruction |
             _: MethodWithHandlerCalledOnNonEmptyStack | _: SynchronizedMethod |
             _: StrictfpMismatch | _: ResultingMethodTooLarge =>
-          settings.YoptWarnings.contains(
-            settings.YoptWarningsChoices.anyInlineFailed)
+          settings
+            .YoptWarnings
+            .contains(settings.YoptWarningsChoices.anyInlineFailed)
 
         case IllegalAccessCheckFailed(_, _, _, _, _, cause) =>
           cause.emitWarning(settings)
@@ -429,8 +431,9 @@ object BackendReporting {
     override def toString =
       "The callee contains an InvokeDynamic instruction with an unknown bootstrap method (not a LambdaMetaFactory)."
     def emitWarning(settings: ScalaSettings): Boolean =
-      settings.YoptWarnings.contains(
-        settings.YoptWarningsChoices.anyInlineFailed)
+      settings
+        .YoptWarnings
+        .contains(settings.YoptWarningsChoices.anyInlineFailed)
   }
 
   /**
@@ -445,8 +448,9 @@ object BackendReporting {
         case RewriteClosureAccessCheckFailed(_, cause) =>
           cause.emitWarning(settings)
         case RewriteClosureIllegalAccess(_, _) =>
-          settings.YoptWarnings.contains(
-            settings.YoptWarningsChoices.anyInlineFailed)
+          settings
+            .YoptWarnings
+            .contains(settings.YoptWarningsChoices.anyInlineFailed)
       }
 
     override def toString: String =

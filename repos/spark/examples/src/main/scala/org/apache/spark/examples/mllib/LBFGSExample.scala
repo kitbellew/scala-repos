@@ -57,8 +57,8 @@ object LBFGSExample {
     val convergenceTol = 1e-4
     val maxNumIterations = 20
     val regParam = 0.1
-    val initialWeightsWithIntercept = Vectors.dense(
-      new Array[Double](numFeatures + 1))
+    val initialWeightsWithIntercept = Vectors
+      .dense(new Array[Double](numFeatures + 1))
 
     val (weightsWithIntercept, loss) = LBFGS.runLBFGS(
       training,

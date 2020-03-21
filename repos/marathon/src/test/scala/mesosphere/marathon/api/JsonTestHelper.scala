@@ -68,8 +68,8 @@ object JsonTestHelper extends Assertions with Matchers {
       val diff = JsonDiff.diff(expected, actual)
       require(
         diff.ops.forall(isAddition),
-        s"unexpected differences in actual json:\n$actual\nexpected:\n$expected\n${diff.ops
-          .filter(!isAddition(_))}")
+        s"unexpected differences in actual json:\n$actual\nexpected:\n$expected\n${diff.ops.filter(
+          !isAddition(_))}")
     }
 
     def containsEverythingInJsonOf[T](expected: T)(implicit

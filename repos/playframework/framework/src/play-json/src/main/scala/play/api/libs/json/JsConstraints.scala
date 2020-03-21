@@ -171,13 +171,16 @@ trait ConstraintReads {
       regex: => scala.util.matching.Regex,
       error: String = "error.pattern")(implicit reads: Reads[String]) =
     Reads[String](js =>
-      reads.reads(js).flatMap { o =>
-        regex.unapplySeq(o).map(_ => JsSuccess(o)).getOrElse(JsError(error))
-      })
+      reads
+        .reads(js)
+        .flatMap { o =>
+          regex.unapplySeq(o).map(_ => JsSuccess(o)).getOrElse(JsError(error))
+        })
 
   def email(implicit reads: Reads[String]): Reads[String] =
     pattern(
-      """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r,
+      """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"""
+        .r,
       "error.email"
     )
 
@@ -187,16 +190,21 @@ trait ConstraintReads {
   def verifyingIf[A](cond: A => Boolean)(subreads: Reads[_])(implicit
       rds: Reads[A]) =
     Reads[A] { js =>
-      rds.reads(js).flatMap { t =>
-        (scala.util.control.Exception.catching(classOf[MatchError]) opt cond(t))
-          .flatMap { b =>
-            if (b)
-              Some(subreads.reads(js).map(_ => t))
-            else
-              None
-          }
-          .getOrElse(JsSuccess(t))
-      }
+      rds
+        .reads(js)
+        .flatMap { t =>
+          (
+            scala.util.control.Exception.catching(classOf[MatchError]) opt cond(
+              t)
+          )
+            .flatMap { b =>
+              if (b)
+                Some(subreads.reads(js).map(_ => t))
+              else
+                None
+            }
+            .getOrElse(JsSuccess(t))
+        }
     }
 
   def pure[A](a: => A) =
@@ -242,7 +250,8 @@ trait PathWrites {
       wrs: OWrites[JsValue]): OWrites[JsValue] =
     OWrites[JsValue] { js =>
       JsPath.createObj(
-        path -> path(js).headOption
+        path -> path(js)
+          .headOption
           .flatMap(js =>
             js.asOpt[JsObject].map(obj => obj.deepMerge(wrs.writes(obj))))
           .getOrElse(JsNull))

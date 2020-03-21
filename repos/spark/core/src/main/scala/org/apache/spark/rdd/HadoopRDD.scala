@@ -131,7 +131,8 @@ class HadoopRDD[K, V](
       minPartitions: Int) = {
     this(
       sc,
-      sc.broadcast(new SerializableConfiguration(conf))
+      sc
+        .broadcast(new SerializableConfiguration(conf))
         .asInstanceOf[Broadcast[SerializableConfiguration]],
       initLocalJobConfFuncOpt = None,
       inputFormatClass,
@@ -147,7 +148,8 @@ class HadoopRDD[K, V](
   // used to build JobTracker ID
   private val createTime = new Date()
 
-  private val shouldCloneJobConf = sparkContext.conf
+  private val shouldCloneJobConf = sparkContext
+    .conf
     .getBoolean("spark.hadoop.cloneConf", false)
 
   // Returns a JobConf that will be used on slaves to obtain input splits for Hadoop reads.
@@ -161,14 +163,16 @@ class HadoopRDD[K, V](
       // clone can be very expensive.  To avoid unexpected performance regressions for workloads and
       // Hadoop versions that do not suffer from these thread-safety issues, this cloning is
       // disabled by default.
-      HadoopRDD.CONFIGURATION_INSTANTIATION_LOCK.synchronized {
-        logDebug("Cloning Hadoop Configuration")
-        val newJobConf = new JobConf(conf)
-        if (!conf.isInstanceOf[JobConf]) {
-          initLocalJobConfFuncOpt.map(f => f(newJobConf))
+      HadoopRDD
+        .CONFIGURATION_INSTANTIATION_LOCK
+        .synchronized {
+          logDebug("Cloning Hadoop Configuration")
+          val newJobConf = new JobConf(conf)
+          if (!conf.isInstanceOf[JobConf]) {
+            initLocalJobConfFuncOpt.map(f => f(newJobConf))
+          }
+          newJobConf
         }
-        newJobConf
-      }
     } else {
       if (conf.isInstanceOf[JobConf]) {
         logDebug("Re-using user-broadcasted JobConf")
@@ -181,13 +185,15 @@ class HadoopRDD[K, V](
         // local process. The local cache is accessed through HadoopRDD.putCachedMetadata().
         // The caching helps minimize GC, since a JobConf can contain ~10KB of temporary objects.
         // Synchronize to prevent ConcurrentModificationException (SPARK-1097, HADOOP-10456).
-        HadoopRDD.CONFIGURATION_INSTANTIATION_LOCK.synchronized {
-          logDebug("Creating new JobConf and caching it for later re-use")
-          val newJobConf = new JobConf(conf)
-          initLocalJobConfFuncOpt.map(f => f(newJobConf))
-          HadoopRDD.putCachedMetadata(jobConfCacheKey, newJobConf)
-          newJobConf
-        }
+        HadoopRDD
+          .CONFIGURATION_INSTANTIATION_LOCK
+          .synchronized {
+            logDebug("Creating new JobConf and caching it for later re-use")
+            val newJobConf = new JobConf(conf)
+            initLocalJobConfFuncOpt.map(f => f(newJobConf))
+            HadoopRDD.putCachedMetadata(jobConfCacheKey, newJobConf)
+            newJobConf
+          }
       }
     }
   }
@@ -270,10 +276,8 @@ class HadoopRDD[K, V](
           theSplit.index,
           context.attemptNumber,
           jobConf)
-        reader = inputFormat.getRecordReader(
-          split.inputSplit.value,
-          jobConf,
-          Reporter.NULL)
+        reader = inputFormat
+          .getRecordReader(split.inputSplit.value, jobConf, Reporter.NULL)
 
         // Register an on-task-completion callback to close the input stream.
         context.addTaskCompletionListener { context =>
@@ -292,7 +296,8 @@ class HadoopRDD[K, V](
           if (!finished) {
             inputMetrics.incRecordsReadInternal(1)
           }
-          if (inputMetrics.recordsRead % SparkHadoopUtil.UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
+          if (inputMetrics.recordsRead % SparkHadoopUtil
+                .UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
             updateBytesRead()
           }
           (key, value)
@@ -322,8 +327,8 @@ class HadoopRDD[K, V](
               // If we can't get the bytes read from the FS stats, fall back to the split size,
               // which may be inaccurate.
               try {
-                inputMetrics.incBytesReadInternal(
-                  split.inputSplit.value.getLength)
+                inputMetrics
+                  .incBytesReadInternal(split.inputSplit.value.getLength)
               } catch {
                 case e: java.io.IOException =>
                   logWarning(
@@ -352,7 +357,8 @@ class HadoopRDD[K, V](
         case Some(c) =>
           try {
             val lsplit = c.inputSplitWithLocationInfo.cast(hsplit)
-            val infos = c.getLocationInfo
+            val infos = c
+              .getLocationInfo
               .invoke(lsplit)
               .asInstanceOf[Array[AnyRef]]
             Some(HadoopRDD.convertSplitLocationInfo(infos))
@@ -456,15 +462,15 @@ private[spark] object HadoopRDD extends Logging {
   }
 
   private[spark] class SplitInfoReflections {
-    val inputSplitWithLocationInfo = Utils.classForName(
-      "org.apache.hadoop.mapred.InputSplitWithLocationInfo")
-    val getLocationInfo = inputSplitWithLocationInfo.getMethod(
-      "getLocationInfo")
-    val newInputSplit = Utils.classForName(
-      "org.apache.hadoop.mapreduce.InputSplit")
+    val inputSplitWithLocationInfo = Utils
+      .classForName("org.apache.hadoop.mapred.InputSplitWithLocationInfo")
+    val getLocationInfo = inputSplitWithLocationInfo
+      .getMethod("getLocationInfo")
+    val newInputSplit = Utils
+      .classForName("org.apache.hadoop.mapreduce.InputSplit")
     val newGetLocationInfo = newInputSplit.getMethod("getLocationInfo")
-    val splitLocationInfo = Utils.classForName(
-      "org.apache.hadoop.mapred.SplitLocationInfo")
+    val splitLocationInfo = Utils
+      .classForName("org.apache.hadoop.mapred.SplitLocationInfo")
     val isInMemory = splitLocationInfo.getMethod("isInMemory")
     val getLocation = splitLocationInfo.getMethod("getLocation")
   }
@@ -486,11 +492,17 @@ private[spark] object HadoopRDD extends Logging {
     val out = ListBuffer[String]()
     infos.foreach { loc =>
       {
-        val locationStr = HadoopRDD.SPLIT_INFO_REFLECTIONS.get.getLocation
+        val locationStr = HadoopRDD
+          .SPLIT_INFO_REFLECTIONS
+          .get
+          .getLocation
           .invoke(loc)
           .asInstanceOf[String]
         if (locationStr != "localhost") {
-          if (HadoopRDD.SPLIT_INFO_REFLECTIONS.get.isInMemory
+          if (HadoopRDD
+                .SPLIT_INFO_REFLECTIONS
+                .get
+                .isInMemory
                 .invoke(loc)
                 .asInstanceOf[Boolean]) {
             logDebug("Partition " + locationStr + " is cached by Hadoop.")

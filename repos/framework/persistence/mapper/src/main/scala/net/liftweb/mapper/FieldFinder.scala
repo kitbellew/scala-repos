@@ -27,8 +27,9 @@ class FieldFinder[T: ClassTag](
   logger.debug("Created FieldFinder for " + classTag[T].runtimeClass)
 
   def isMagicObject(m: Method) =
-    m.getReturnType.getName
-      .endsWith("$" + m.getName + "$") && m.getParameterTypes.length == 0
+    m.getReturnType.getName.endsWith("$" + m.getName + "$") && m
+      .getParameterTypes
+      .length == 0
 
   def typeFilter: Class[_] => Boolean =
     classTag[T].runtimeClass.isAssignableFrom
@@ -55,12 +56,13 @@ class FieldFinder[T: ClassTag](
           // get the names of fields that represent the type we want
 
           val fields = Map(
-            c.getDeclaredFields
+            c
+              .getDeclaredFields
               .filter { f =>
                 val ret = typeFilter(f.getType)
                 logger.trace(
-                  "typeFilter(" + f.getType + "); T=" + classTag[
-                    T].runtimeClass)
+                  "typeFilter(" + f
+                    .getType + "); T=" + classTag[T].runtimeClass)
                 ret
               }
               .map(f => (deMod(f.getName), f)): _*)
@@ -84,8 +86,8 @@ class FieldFinder[T: ClassTag](
               // invoke the method
               meth.invoke(onMagic) match {
                 case null =>
-                  logger.debug(
-                    "Not a valid mapped field: %s".format(meth.getName))
+                  logger
+                    .debug("Not a valid mapped field: %s".format(meth.getName))
                   false
                 case inst =>
                   // do we get a T of some sort back?
@@ -95,9 +97,11 @@ class FieldFinder[T: ClassTag](
                     // find out if the class name of the actual thing starts
                     // with the name of this class or some superclass...
                     // basically, is an inner class of this class
-                    getAllSupers(clz).find { c =>
-                      inst.getClass.getName.startsWith(c.getName)
-                    }.isDefined
+                    getAllSupers(clz)
+                      .find { c =>
+                        inst.getClass.getName.startsWith(c.getName)
+                      }
+                      .isDefined
                   }
               }
 
@@ -111,7 +115,9 @@ class FieldFinder[T: ClassTag](
           }
 
           // find all the declared methods
-          val meths = c.getDeclaredMethods.toList
+          val meths = c
+            .getDeclaredMethods
+            .toList
             .filter(_.getParameterTypes.length == 0)
             . // that take no parameters
             filter(m => Modifier.isPublic(m.getModifiers))

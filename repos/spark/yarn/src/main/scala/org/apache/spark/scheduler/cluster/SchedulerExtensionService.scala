@@ -107,7 +107,8 @@ private[spark] class SchedulerExtensionServices
     logInfo(
       s"Starting Yarn extension services with app $appId and attemptId $attemptId")
 
-    services = sparkContext.conf
+    services = sparkContext
+      .conf
       .get(SCHEDULER_SERVICES)
       .map { sClass =>
         val instance = Utils

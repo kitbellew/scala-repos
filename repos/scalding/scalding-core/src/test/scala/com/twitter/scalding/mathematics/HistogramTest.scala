@@ -20,10 +20,9 @@ import com.twitter.scalding._
 
 class HistogramJob(args: Args) extends Job(args) {
   try {
-    val hist = Tsv("input", 'n)
-      .groupAll {
-        _.histogram('n -> 'hist)
-      }
+    val hist = Tsv("input", 'n).groupAll {
+      _.histogram('n -> 'hist)
+    }
 
     hist
       .flatMapTo('hist -> ('bin, 'cdf)) { h: Histogram =>

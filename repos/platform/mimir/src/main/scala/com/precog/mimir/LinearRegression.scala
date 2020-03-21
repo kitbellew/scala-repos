@@ -141,7 +141,9 @@ trait LinearRegressionLibModule[M[+_]]
                 t1.product
               } else {
                 assert(
-                  t1.product.getColumnDimension == t2.product.getColumnDimension &&
+                  t1.product.getColumnDimension == t2
+                    .product
+                    .getColumnDimension &&
                     t1.product.getRowDimension == t2.product.getRowDimension)
 
                 t1.product plus t2.product
@@ -346,8 +348,8 @@ trait LinearRegressionLibModule[M[+_]]
                     else if (rank < matrixRank0)
                       inner(matrix, idx + 1, colDim, removed)
                     else
-                      sys.error(
-                        "Rank cannot increase when a column is removed.")
+                      sys
+                        .error("Rank cannot increase when a column is removed.")
                   } else {
                     sys.error(
                       "Matrix cannot have rank larger than number of columns.")
@@ -481,9 +483,8 @@ trait LinearRegressionLibModule[M[+_]]
           jtype: JType): Table = {
         val cpaths = Schema.cpath(jtype)
 
-        val tree = CPath.makeTree(
-          cpaths,
-          Range(1, coeffs.beta.length).toSeq :+ 0)
+        val tree = CPath
+          .makeTree(cpaths, Range(1, coeffs.beta.length).toSeq :+ 0)
 
         val spec = TransSpec.concatChildren(tree)
 
@@ -526,19 +527,19 @@ trait LinearRegressionLibModule[M[+_]]
           }: _*)
         val varCovarTable0 = Table.fromRValues(Stream(varCovarRv))
 
-        val varCovarTable = varCovarTable0.transform(
-          trans.WrapObject(Leaf(Source), "varianceCovarianceMatrix"))
+        val varCovarTable = varCovarTable0
+          .transform(trans.WrapObject(Leaf(Source), "varianceCovarianceMatrix"))
 
-        val coeffsTable = thetaInSchema.transform(
-          trans.WrapObject(Leaf(Source), "coefficients"))
+        val coeffsTable = thetaInSchema
+          .transform(trans.WrapObject(Leaf(Source), "coefficients"))
 
         val stdErrResult = RObject(
           Map(
             "estimate" -> CNum(math.sqrt(varianceEst)),
             "degreesOfFreedom" -> CNum(degOfFreedom)))
         val residualStdError = Table.fromRValues(Stream(stdErrResult))
-        val stdErrorTable = residualStdError.transform(
-          trans.WrapObject(Leaf(Source), "residualStandardError"))
+        val stdErrorTable = residualStdError
+          .transform(trans.WrapObject(Leaf(Source), "residualStandardError"))
 
         val rSquared = {
           if (errors.tss == 0)
@@ -547,8 +548,8 @@ trait LinearRegressionLibModule[M[+_]]
             1 - (errors.rss / errors.tss)
         }
         val rSquaredTable0 = Table.fromRValues(Stream(CNum(rSquared)))
-        val rSquaredTable = rSquaredTable0.transform(
-          trans.WrapObject(Leaf(Source), "RSquared"))
+        val rSquaredTable = rSquaredTable0
+          .transform(trans.WrapObject(Leaf(Source), "RSquared"))
 
         val result2 =
           coeffsTable.cross(rSquaredTable)(
@@ -560,10 +561,11 @@ trait LinearRegressionLibModule[M[+_]]
           result1.cross(stdErrorTable)(
             InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
 
-        val valueTable = result.transform(
-          trans.WrapObject(Leaf(Source), paths.Value.name))
-        val keyTable = Table.constEmptyArray.transform(
-          trans.WrapObject(Leaf(Source), paths.Key.name))
+        val valueTable = result
+          .transform(trans.WrapObject(Leaf(Source), paths.Value.name))
+        val keyTable = Table
+          .constEmptyArray
+          .transform(trans.WrapObject(Leaf(Source), paths.Key.name))
 
         valueTable.cross(keyTable)(
           InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
@@ -672,9 +674,8 @@ trait LinearRegressionLibModule[M[+_]]
 
       override val idPolicy = IdentityPolicy.Retain.Merge
 
-      lazy val alignment = MorphismAlignment.Custom(
-        IdentityPolicy.Retain.Cross,
-        alignCustom _)
+      lazy val alignment = MorphismAlignment
+        .Custom(IdentityPolicy.Retain.Cross, alignCustom _)
 
       def alignCustom(t1: Table, t2: Table): M[(Table, Morph1Apply)] = {
         val spec = liftToValues(

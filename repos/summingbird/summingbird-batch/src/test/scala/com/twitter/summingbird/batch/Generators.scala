@@ -26,9 +26,11 @@ import com.twitter.algebird.Interval
   */
 object Generators {
   implicit val batchIdArb: Arbitrary[BatchID] = Arbitrary {
-    Arbitrary.arbitrary[Long].map {
-      BatchID(_)
-    }
+    Arbitrary
+      .arbitrary[Long]
+      .map {
+        BatchID(_)
+      }
   }
 
   implicit val arbTimestamp: Arbitrary[Timestamp] = Arbitrary {

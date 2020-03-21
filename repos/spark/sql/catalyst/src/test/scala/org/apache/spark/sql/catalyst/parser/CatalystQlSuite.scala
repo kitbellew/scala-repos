@@ -45,8 +45,8 @@ class CatalystQlSuite extends PlanTest {
 
   test("test Union Distinct operator") {
     val parsed1 = parser.parsePlan("SELECT * FROM t0 UNION SELECT * FROM t1")
-    val parsed2 = parser.parsePlan(
-      "SELECT * FROM t0 UNION DISTINCT SELECT * FROM t1")
+    val parsed2 = parser
+      .parsePlan("SELECT * FROM t0 UNION DISTINCT SELECT * FROM t1")
     val expected = Project(
       UnresolvedAlias(UnresolvedStar(None)) :: Nil,
       SubqueryAlias(

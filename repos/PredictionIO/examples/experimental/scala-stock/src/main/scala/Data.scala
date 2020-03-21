@@ -18,9 +18,8 @@ class RawData(
     extends Serializable {
 
   @transient
-  lazy val _priceFrame: Frame[DateTime, String, Double] = SaddleWrapper.ToFrame(
-    timeIndex,
-    _price)
+  lazy val _priceFrame: Frame[DateTime, String, Double] = SaddleWrapper
+    .ToFrame(timeIndex, _price)
 
   // FIXME. Fill NA of result.
   @transient

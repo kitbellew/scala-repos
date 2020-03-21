@@ -106,11 +106,13 @@ case class Model(tables: Seq[Table], options: Set[ModelOption[_]] = Set()) {
         assert(
           tablesByName.isDefinedAt(pk.table),
           msg("table " + pk.table, "primary key " + pk))
-        pk.columns.foreach { column =>
-          assert(
-            table.columns.contains(column),
-            msg("column " + column, "primary key " + pk))
-        }
+        pk
+          .columns
+          .foreach { column =>
+            assert(
+              table.columns.contains(column),
+              msg("column " + column, "primary key " + pk))
+          }
       }
       assert(
         foreignKeys.count(_.name.isDefined) == foreignKeys
@@ -131,20 +133,24 @@ case class Model(tables: Seq[Table], options: Set[ModelOption[_]] = Set()) {
         assert(
           table == fkTable,
           "Referencing table $fkTable does not match table $table the foreign key $fk is contained in.")
-        fk.referencedColumns.foreach { pkColumn =>
-          assert(
-            pkTable.columns.contains(pkColumn),
-            msg(
-              "column " + pkColumn + " of table " + pkTable,
-              "foreign key " + fk))
-        }
-        fk.referencingColumns.foreach { fkColumn =>
-          assert(
-            fkTable.columns.contains(fkColumn),
-            msg(
-              "column " + fkColumn + " of table " + fkTable,
-              "foreign key " + fk))
-        }
+        fk
+          .referencedColumns
+          .foreach { pkColumn =>
+            assert(
+              pkTable.columns.contains(pkColumn),
+              msg(
+                "column " + pkColumn + " of table " + pkTable,
+                "foreign key " + fk))
+          }
+        fk
+          .referencingColumns
+          .foreach { fkColumn =>
+            assert(
+              fkTable.columns.contains(fkColumn),
+              msg(
+                "column " + fkColumn + " of table " + fkTable,
+                "foreign key " + fk))
+          }
       }
       assert(
         indices.count(_.name.isDefined) == indices
@@ -157,11 +163,13 @@ case class Model(tables: Seq[Table], options: Set[ModelOption[_]] = Set()) {
         assert(
           tablesByName.isDefinedAt(idx.table),
           msg("table " + idx.table, "index " + idx))
-        idx.columns.foreach { column =>
-          assert(
-            table.columns.contains(column),
-            msg("column " + column, "index " + idx))
-        }
+        idx
+          .columns
+          .foreach { column =>
+            assert(
+              table.columns.contains(column),
+              msg("column " + column, "index " + idx))
+          }
       }
     }
   }

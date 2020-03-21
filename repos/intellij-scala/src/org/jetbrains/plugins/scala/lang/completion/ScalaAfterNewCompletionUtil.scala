@@ -63,15 +63,16 @@ object ScalaAfterNewCompletionUtil {
     val data =
       if (isAfter) {
         val element = position
-        val newExpr: ScNewTemplateDefinition = PsiTreeUtil.getContextOfType(
-          element,
-          classOf[ScNewTemplateDefinition])
-        newExpr.expectedTypes().map {
-          case ScAbstractType(_, lower, upper) =>
-            upper
-          case tp =>
-            tp
-        }
+        val newExpr: ScNewTemplateDefinition = PsiTreeUtil
+          .getContextOfType(element, classOf[ScNewTemplateDefinition])
+        newExpr
+          .expectedTypes()
+          .map {
+            case ScAbstractType(_, lower, upper) =>
+              upper
+            case tp =>
+              tp
+          }
       } else
         Array[ScType]()
 
@@ -86,8 +87,10 @@ object ScalaAfterNewCompletionUtil {
       clazz: PsiClass,
       renamesMap: mutable.HashMap[String, (String, PsiNamedElement)])
       : LookupElement = {
-    val undefines: Seq[ScUndefinedType] = clazz.getTypeParameters.map(ptp =>
-      new ScUndefinedType(new ScTypeParameterType(ptp, ScSubstitutor.empty)))
+    val undefines: Seq[ScUndefinedType] = clazz
+      .getTypeParameters
+      .map(ptp =>
+        new ScUndefinedType(new ScTypeParameterType(ptp, ScSubstitutor.empty)))
     val predefinedType =
       if (clazz.getTypeParameters.length == 1) {
         ScParameterizedType(ScDesignatorType(clazz), undefines)
@@ -97,8 +100,9 @@ object ScalaAfterNewCompletionUtil {
       if (clazz.getTypeParameters.length == 1) {
         ScParameterizedType(
           ScDesignatorType(clazz),
-          clazz.getTypeParameters.map(ptp =>
-            new ScTypeParameterType(ptp, ScSubstitutor.empty)))
+          clazz
+            .getTypeParameters
+            .map(ptp => new ScTypeParameterType(ptp, ScSubstitutor.empty)))
       } else
         ScDesignatorType(clazz)
 
@@ -214,9 +218,10 @@ object ScalaAfterNewCompletionUtil {
         }
       }
     lookupElement.isRenamed = isRenamed
-    if (ApplicationManager.getApplication.isUnitTestMode || psiClass.isInterface ||
-        psiClass.isInstanceOf[ScTrait] || psiClass.hasModifierPropertyScala(
-          "abstract"))
+    if (ApplicationManager.getApplication.isUnitTestMode || psiClass
+          .isInterface ||
+        psiClass.isInstanceOf[ScTrait] || psiClass
+          .hasModifierPropertyScala("abstract"))
       lookupElement.setAutoCompletionPolicy(
         if (ApplicationManager.getApplication.isUnitTestMode)
           AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE
@@ -307,7 +312,8 @@ object ScalaAfterNewCompletionUtil {
               def process(clazz: PsiClass): Boolean = {
                 if (clazz.name == null || clazz.name == "")
                   return true
-                val undefines: Seq[ScUndefinedType] = clazz.getTypeParameters
+                val undefines: Seq[ScUndefinedType] = clazz
+                  .getTypeParameters
                   .map(ptp =>
                     new ScUndefinedType(
                       new ScTypeParameterType(ptp, ScSubstitutor.empty)))
@@ -320,8 +326,10 @@ object ScalaAfterNewCompletionUtil {
                   if (clazz.getTypeParameters.nonEmpty) {
                     ScParameterizedType(
                       ScDesignatorType(clazz),
-                      clazz.getTypeParameters.map(ptp =>
-                        new ScTypeParameterType(ptp, ScSubstitutor.empty)))
+                      clazz
+                        .getTypeParameters
+                        .map(ptp =>
+                          new ScTypeParameterType(ptp, ScSubstitutor.empty)))
                   } else
                     ScDesignatorType(clazz)
                 if (!predefinedType.conforms(typez))

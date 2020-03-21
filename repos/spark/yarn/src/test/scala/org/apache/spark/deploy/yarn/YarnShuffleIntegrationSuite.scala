@@ -51,8 +51,8 @@ class YarnShuffleIntegrationSuite extends BaseYarnClusterSuite {
     val shuffleServicePort = YarnTestAccessor.getShuffleServicePort
     val shuffleService = YarnTestAccessor.getShuffleServiceInstance
 
-    val registeredExecFile = YarnTestAccessor.getRegisteredExecutorFile(
-      shuffleService)
+    val registeredExecFile = YarnTestAccessor
+      .getRegisteredExecutorFile(shuffleService)
 
     logInfo("Shuffle service port = " + shuffleServicePort)
     val result = File.createTempFile("result", null, tempDir)
@@ -88,9 +88,7 @@ private object YarnExternalShuffleDriver extends Logging with Matchers {
     }
 
     val sc =
-      new SparkContext(
-        new SparkConf()
-          .setAppName("External Shuffle Test"))
+      new SparkContext(new SparkConf().setAppName("External Shuffle Test"))
     val conf = sc.getConf
     val status = new File(args(0))
     val registeredExecFile = new File(args(1))
@@ -99,7 +97,8 @@ private object YarnExternalShuffleDriver extends Logging with Matchers {
     val execStateCopy = new File(registeredExecFile.getAbsolutePath + "_dup")
     try {
       val data =
-        sc.parallelize(0 until 100, 10)
+        sc
+          .parallelize(0 until 100, 10)
           .map { x =>
             (x % 10) -> x
           }
@@ -110,9 +109,11 @@ private object YarnExternalShuffleDriver extends Logging with Matchers {
           .toSet
       sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
       data should be(
-        (0 until 10).map { x =>
-          x -> (x * 10 + 450)
-        }.toSet)
+        (0 until 10)
+          .map { x =>
+            x -> (x * 10 + 450)
+          }
+          .toSet)
       result = "success"
       // only one process can open a leveldb file at a time, so we copy the files
       FileUtils.copyDirectory(registeredExecFile, execStateCopy)

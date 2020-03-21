@@ -28,15 +28,19 @@ class CheckpointJob(args: Args) extends Job(args) {
 
   def in0 =
     Checkpoint[(Int, Int, Int)]("c0", ('x0, 'y0, 's0)) {
-      Tsv("input0").read.mapTo((0, 1, 2) -> ('x0, 'y0, 's0)) {
-        x: (Int, Int, Int) => x
-      }
+      Tsv("input0")
+        .read
+        .mapTo((0, 1, 2) -> ('x0, 'y0, 's0)) { x: (Int, Int, Int) =>
+          x
+        }
     }
   def in1 =
     Checkpoint[(Int, Int, Int)]("c1", ('x1, 'y1, 's1)) {
-      Tsv("input1").read.mapTo((0, 1, 2) -> ('x1, 'y1, 's1)) {
-        x: (Int, Int, Int) => x
-      }
+      Tsv("input1")
+        .read
+        .mapTo((0, 1, 2) -> ('x1, 'y1, 's1)) { x: (Int, Int, Int) =>
+          x
+        }
     }
   def out =
     Checkpoint[(Int, Int, Int)]("c2", ('x0, 'x1, 'score)) {

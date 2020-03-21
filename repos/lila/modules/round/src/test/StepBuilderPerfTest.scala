@@ -10,9 +10,12 @@ class StepBuilderPerfTest extends Specification {
   sequential
 
   val nb = 200
-  val gameMoves = Fixtures.prod500standard.take(nb).map {
-    _.split(' ').toList
-  }
+  val gameMoves = Fixtures
+    .prod500standard
+    .take(nb)
+    .map {
+      _.split(' ').toList
+    }
   val iterations = 10
   // val nb = 1
   // val iterations = 1

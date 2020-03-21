@@ -172,10 +172,12 @@ class RelationalGroupedDataset protected[sql] (
     */
   def agg(exprs: Map[String, String]): DataFrame = {
     toDF(
-      exprs.map {
-        case (colName, expr) =>
-          strToExpr(expr)(df(colName).expr)
-      }.toSeq)
+      exprs
+        .map {
+          case (colName, expr) =>
+            strToExpr(expr)(df(colName).expr)
+        }
+        .toSeq)
   }
 
   /**
@@ -319,19 +321,19 @@ class RelationalGroupedDataset protected[sql] (
     */
   def pivot(pivotColumn: String): RelationalGroupedDataset = {
     // This is to prevent unintended OOM errors when the number of distinct values is large
-    val maxValues = df.sqlContext.conf
+    val maxValues = df
+      .sqlContext
+      .conf
       .getConf(SQLConf.DATAFRAME_PIVOT_MAX_VALUES)
     // Get the distinct values of the column and sort them so its consistent
     val values =
-      df.select(pivotColumn)
+      df
+        .select(pivotColumn)
         .distinct()
         .sort(
           pivotColumn
         ) // ensure that the output columns are in a consistent logical order
-        .rdd
-        .map(_.get(0))
-        .take(maxValues + 1)
-        .toSeq
+        .rdd.map(_.get(0)).take(maxValues + 1).toSeq
 
     if (values.length > maxValues) {
       throw new AnalysisException(

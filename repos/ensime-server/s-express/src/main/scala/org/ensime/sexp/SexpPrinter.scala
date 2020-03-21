@@ -71,7 +71,9 @@ trait SexpPrinter extends (Sexp => String) {
   // we prefer not to escape some characters when in strings
   private val exclude = Set("\n", "\t", " ")
   private val specials = SexpParser.specialChars.toList.map(_.swap)
-  private val stringSpecials = SexpParser.specialChars.toList
+  private val stringSpecials = SexpParser
+    .specialChars
+    .toList
     .map(_.swap)
     .filterNot {
       case (from, to) =>

@@ -8,9 +8,11 @@ trait A[T] {
 object A {
   def min[T: c.WeakTypeTag, U >: T: c.WeakTypeTag](c: Context)(
       ord: c.Expr[Numeric[U]]): c.Expr[T] = {
-    c.universe.reify {
-      ord.splice.zero.asInstanceOf[T]
-    }
+    c
+      .universe
+      .reify {
+        ord.splice.zero.asInstanceOf[T]
+      }
   }
 }
 
@@ -21,8 +23,10 @@ class B extends A[Int] {
 object B {
   def min[U >: Int: c.WeakTypeTag](c: Context)(
       ord: c.Expr[Numeric[U]]): c.Expr[Int] = {
-    c.universe.reify {
-      ord.splice.zero.asInstanceOf[Int]
-    }
+    c
+      .universe
+      .reify {
+        ord.splice.zero.asInstanceOf[Int]
+      }
   }
 }

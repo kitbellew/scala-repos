@@ -107,8 +107,8 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
       new ArtifactScanningListener {
         override def scanningStarted(p1: IndexingContext) =
           progressIndicator foreach { indicator =>
-            indicator.setText2(
-              SbtBundle("sbt.resolverIndexer.progress.scanning"))
+            indicator
+              .setText2(SbtBundle("sbt.resolverIndexer.progress.scanning"))
             indicator.setFraction(0.0)
           }
         override def scanningFinished(p1: IndexingContext, p2: ScanningResult) =
@@ -173,8 +173,8 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
           }
         override def transferStarted(evt: TransferEvent) =
           progressIndicator foreach { indicator =>
-            indicator.setText2(
-              SbtBundle("sbt.resolverIndexer.progress.downloading"))
+            indicator
+              .setText2(SbtBundle("sbt.resolverIndexer.progress.downloading"))
             indicator.setFraction(0.0)
           }
       }
@@ -198,9 +198,8 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
         progressIndicator foreach {
           _.checkCanceled()
         }
-        val info = IndexUtils.constructArtifactInfo(
-          reader.document(i - 1),
-          context)
+        val info = IndexUtils
+          .constructArtifactInfo(reader.document(i - 1), context)
         if (info != null)
           f(info)
         progressIndicator foreach (

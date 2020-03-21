@@ -161,9 +161,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
                 (method, declarationClass) <- byteCodeRepository.methodNode(
                   call.owner,
                   call.name,
-                  call.desc): Either[
-                  OptimizerWarning,
-                  (MethodNode, InternalName)]
+                  call
+                    .desc): Either[OptimizerWarning, (MethodNode, InternalName)]
                 (declarationClassNode, source) <- byteCodeRepository
                   .classNodeAndSource(declarationClass): Either[
                   OptimizerWarning,
@@ -287,9 +286,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
     }
     sams flatMap {
       case (index, _) =>
-        val prods = prodConsI.initialProducersForValueAt(
-          consumerInsn,
-          firstConsumedSlot + index)
+        val prods = prodConsI
+          .initialProducersForValueAt(consumerInsn, firstConsumedSlot + index)
         if (prods.size != 1)
           None
         else {
@@ -372,11 +370,15 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
       // The inlineInfo.methodInfos of a ClassBType holds an InlineInfo for each method *declared*
       // within a class (not for inherited methods). Since we already have the  classBType of the
       // callee, we only check there for the methodInlineInfo, we should find it there.
-      calleeDeclarationClassBType.info.orThrow.inlineInfo.methodInfos
+      calleeDeclarationClassBType
+        .info
+        .orThrow
+        .inlineInfo
+        .methodInfos
         .get(methodSignature) match {
         case Some(methodInlineInfo) =>
-          val canInlineFromSource =
-            compilerSettings.YoptInlineGlobal || calleeSource == CompilationUnit
+          val canInlineFromSource = compilerSettings
+            .YoptInlineGlobal || calleeSource == CompilationUnit
 
           val isAbstract = BytecodeUtils.isAbstractMethod(calleeMethodNode)
 
@@ -405,8 +407,12 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
 
           val isRewritableTraitCall = false
 
-          val warning =
-            calleeDeclarationClassBType.info.orThrow.inlineInfo.warning.map(
+          val warning = calleeDeclarationClassBType
+            .info
+            .orThrow
+            .inlineInfo
+            .warning
+            .map(
               MethodInlineInfoIncomplete(
                 calleeDeclarationClassBType.internalName,
                 calleeMethodNode.name,
@@ -501,7 +507,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
 
     override def toString =
       "Invocation of" +
-        s" ${callee.map(_.calleeDeclarationClass.internalName).getOrElse("?")}.${callsiteInstruction.name + callsiteInstruction.desc}" +
+        s" ${callee.map(_.calleeDeclarationClass.internalName).getOrElse(
+          "?")}.${callsiteInstruction.name + callsiteInstruction.desc}" +
         s"@${callsiteMethod.instructions.indexOf(callsiteInstruction)}" +
         s" in ${callsiteClass.internalName}.${callsiteMethod.name}"
   }
@@ -572,7 +579,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
       */
     val inlinedClones = mutable.Set.empty[ClosureInstantiation]
     override def toString =
-      s"ClosureInstantiation($lambdaMetaFactoryCall, ${ownerMethod.name + ownerMethod.desc}, $ownerClass)"
+      s"ClosureInstantiation($lambdaMetaFactoryCall, ${ownerMethod
+        .name + ownerMethod.desc}, $ownerClass)"
   }
   final case class LambdaMetaFactoryCall(
       indy: InvokeDynamicInsnNode,
@@ -610,7 +618,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
         : Option[(InvokeDynamicInsnNode, Type, Handle, Type)] =
       insn match {
         case indy: InvokeDynamicInsnNode
-            if indy.bsm == metafactoryHandle || indy.bsm == altMetafactoryHandle =>
+            if indy.bsm == metafactoryHandle || indy
+              .bsm == altMetafactoryHandle =>
           indy.bsmArgs match {
             case Array(
                   samMethodType: Type,
@@ -664,16 +673,18 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
                   paramTypes: _*)
               }
 
-              val isIndyLambda = (Type.getType(
-                implMethod.getDesc) == expectedImplMethodType // (1)
+              val isIndyLambda = (Type
+                .getType(implMethod.getDesc) == expectedImplMethodType // (1)
                 && (
-                  isStatic || implMethod.getOwner == indyParamTypes(
-                    0).getInternalName
+                  isStatic || implMethod
+                    .getOwner == indyParamTypes(0).getInternalName
                 ) // (2)
-                && samMethodType.getArgumentTypes.corresponds(
-                  instantiatedMethodArgTypes)((samArgType, instArgType) =>
-                  samArgType == instArgType || isReference(
-                    samArgType) && isReference(instArgType)) // (3)
+                && samMethodType
+                  .getArgumentTypes
+                  .corresponds(instantiatedMethodArgTypes)(
+                    (samArgType, instArgType) =>
+                      samArgType == instArgType || isReference(
+                        samArgType) && isReference(instArgType)) // (3)
               )
 
               if (isIndyLambda)

@@ -69,8 +69,9 @@ class ScaloidCodeGenerator(
 
   def prefixedClassDef = {
     val name = cls.name
-    if (cls.hasBlankConstructor || CustomClassBodies.toMap.isDefinedAt(
-          name) || companionObjectBodies.toMap.isDefinedAt(name))
+    if (cls.hasBlankConstructor || CustomClassBodies
+          .toMap
+          .isDefinedAt(name) || companionObjectBodies.toMap.isDefinedAt(name))
       s"""$prefixedClassScalaDoc
          |${deprecated}class S$name$customClassGenerics($customClassExplicitArgs)$classImplicitArgs
          |    extends $baseClassInstance with $helperTraitName[S$name$customSimpleClassGenerics] {
@@ -162,8 +163,9 @@ class ScaloidCodeGenerator(
       concatArgs(con.implicitArgs, customConstImplicitArgs, isImplicit = true)
 
     private def constTypeParams = {
-      val argStrings = con.paramedTypes.map(
-        paramedType(_, define = true)) :+ customConstTypeParams.trim
+      val argStrings = con
+        .paramedTypes
+        .map(paramedType(_, define = true)) :+ customConstTypeParams.trim
       argStrings.filter(_.nonEmpty) match {
         case Nil =>
           ""
@@ -199,14 +201,16 @@ class ScaloidCodeGenerator(
 
   def baseClassInstance = {
     val args =
-      BaseClassArgs.toMap
+      BaseClassArgs
+        .toMap
         .get(cls.name)
         .fold(cls.constructors.head.args.map(_.name).mkString(", "))(_(cls))
     s"${cls.tpe.name}${typeVar(cls.tpe)}($args)"
   }
 
   def constructors =
-    cls.constructors
+    cls
+      .constructors
       .map(new ConstructorGenerator(_).constructor)
       .mkString("\n\n")
 
@@ -225,7 +229,8 @@ class ScaloidCodeGenerator(
       case t :: Nil =>
         "p: " + genType(t)
       case ts =>
-        ts.zipWithIndex
+        ts
+          .zipWithIndex
           .map {
             case (t, i) =>
               s"p${i + 1}: ${genType(t)}"
@@ -238,7 +243,8 @@ class ScaloidCodeGenerator(
       case t :: Nil =>
         "p"
       case ts =>
-        ts.zipWithIndex
+        ts
+          .zipWithIndex
           .map {
             case (_, i) =>
               "p" + (i + 1)
@@ -284,9 +290,8 @@ class ScaloidCodeGenerator(
 
   def unitListener(l: AndroidListener) =
     s"""${commonListener(l)}
-       |    ${l.callbackMethods
-         .map(callbackMethod(_, isUnit = true))
-         .mkString("\n")}
+       |    ${l.callbackMethods.map(callbackMethod(_, isUnit = true)).mkString(
+         "\n")}
        |  })
        |  basis
        |}""".stripMargin
@@ -332,7 +337,8 @@ class ScaloidCodeGenerator(
       name)}(implicit no: NoGetterForThisProperty): Nothing = throw new Error("Android does not support the getter for '${name}'")"""
 
   def getter(prop: AndroidProperty) =
-    prop.getter
+    prop
+      .getter
       .fold(
         if (prop.nameClashes)
           ""

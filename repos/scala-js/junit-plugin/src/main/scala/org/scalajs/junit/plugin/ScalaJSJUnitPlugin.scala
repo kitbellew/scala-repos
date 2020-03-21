@@ -94,10 +94,13 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
         def registerModuleExports(
             sym: ScalaJSJUnitPluginComponent.global.Symbol): Unit
       }
-    global.plugins
+    global
+      .plugins
       .collectFirst {
         case pl
-            if pl.getClass.getName == "org.scalajs.core.compiler.ScalaJSPlugin" =>
+            if pl
+              .getClass
+              .getName == "org.scalajs.core.compiler.ScalaJSPlugin" =>
           pl.asInstanceOf[ScalaJSPlugin]
       }
       .getOrElse {
@@ -155,23 +158,29 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
             def isClassWithJUnitAnnotation(sym: Symbol): Boolean =
               sym match {
                 case _: ClassSymbol | _: ModuleSymbol =>
-                  val hasAnnotationInClass = sym.selfType.members.exists {
-                    case mtdSym: MethodSymbol =>
-                      hasAnnotation(mtdSym, TestClass)
-                    case _ =>
-                      false
-                  }
+                  val hasAnnotationInClass = sym
+                    .selfType
+                    .members
+                    .exists {
+                      case mtdSym: MethodSymbol =>
+                        hasAnnotation(mtdSym, TestClass)
+                      case _ =>
+                        false
+                    }
                   if (hasAnnotationInClass)
                     true
                   else
-                    sym.parentSymbols.headOption
+                    sym
+                      .parentSymbols
+                      .headOption
                       .fold(false)(isClassWithJUnitAnnotation)
 
                 case _ =>
                   false
               }
 
-            val bootstrappers = tree.stats
+            val bootstrappers = tree
+              .stats
               .groupBy { // Group the class with its module
                 case clDef: ClassDef =>
                   Some(clDef.name)
@@ -249,19 +258,13 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
         val bootParents = List(
           TypeTree(definitions.ObjectTpe),
           TypeTree(jUnitTestMetadataType))
-        val bootImpl = treeCopy.Template(
-          clazz.impl,
-          bootParents,
-          clazz.impl.self,
-          bootBody)
+        val bootImpl = treeCopy
+          .Template(clazz.impl, bootParents, clazz.impl.self, bootBody)
 
         val bootName = newTypeName(
           clazz.name.toString + "$scalajs$junit$bootstrapper")
-        val bootClazz = gen.mkClassDef(
-          Modifiers(Flags.MODULE),
-          bootName,
-          Nil,
-          bootImpl)
+        val bootClazz = gen
+          .mkClassDef(Modifiers(Flags.MODULE), bootName, Nil, bootImpl)
         bootSym.flags += Flags.MODULE
         bootSym.withoutAnnotations
         bootSym.setName(bootName)
@@ -286,10 +289,14 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
       }
 
       def jUnitAnnotatedMethods(sym: Symbol): List[MethodSymbol] = {
-        sym.selfType.members.collect {
-          case m: MethodSymbol if hasJUnitMethodAnnotation(m) =>
-            m
-        }.toList
+        sym
+          .selfType
+          .members
+          .collect {
+            case m: MethodSymbol if hasJUnitMethodAnnotation(m) =>
+              m
+          }
+          .toList
       }
 
       /** This method generates a method that invokes a test method in the module
@@ -405,7 +412,8 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
           // Find and report unsupported JUnit annotations
           annotations.foreach {
             case ann
-                if ann.atp.typeSymbol == TestClass && ann.original
+                if ann.atp.typeSymbol == TestClass && ann
+                  .original
                   .isInstanceOf[Block] =>
               reporter.error(
                 ann.pos,
@@ -460,8 +468,8 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
               mkList(liftAnnotations(clSym)),
               gen.mkNil,
               mkMethodList(jUnitMethodMetadataTypeTree)(methods),
-              modMethods.fold(gen.mkNil)(
-                mkMethodList(jUnitMethodMetadataTypeTree))
+              modMethods
+                .fold(gen.mkNil)(mkMethodList(jUnitMethodMetadataTypeTree))
             )
           )
         }
@@ -493,8 +501,8 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
         val mkNewInstanceDefRhs = mkNewInstance(
           TypeTree(classSym.typeConstructor),
           Nil)
-        val mkNewInstanceDefSym = bootSymbol.newMethodSymbol(
-          newTermName("newInstance"))
+        val mkNewInstanceDefSym = bootSymbol
+          .newMethodSymbol(newTermName("newInstance"))
         mkNewInstanceDefSym.setInfo(MethodType(Nil, definitions.ObjectTpe))
 
         typer.typedDefDef(newDefDef(mkNewInstanceDefSym, mkNewInstanceDefRhs)())
@@ -516,8 +524,8 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
           methodRhs: Tree,
           paramSymbols: List[Symbol]): DefDef = {
         val paramValDefs = List(paramSymbols.map(newValDef(_, EmptyTree)()))
-        typer.typedDefDef(
-          newDefDef(methodSym, methodRhs)(vparamss = paramValDefs))
+        typer
+          .typedDefDef(newDefDef(methodSym, methodRhs)(vparamss = paramValDefs))
       }
 
       private def mkMethodResolutionAndCall(

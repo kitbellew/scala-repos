@@ -53,7 +53,8 @@ private[sql] abstract class ParquetCompatibilityTest
     val fsPath = new Path(path)
     val fs = fsPath.getFileSystem(hadoopConfiguration)
     val parquetFiles =
-      fs.listStatus(
+      fs
+        .listStatus(
           fsPath,
           new PathFilter {
             override def accept(path: Path): Boolean = pathFilter(path)
@@ -61,10 +62,8 @@ private[sql] abstract class ParquetCompatibilityTest
         .toSeq
         .asJava
 
-    val footers = ParquetFileReader.readAllFootersInParallel(
-      hadoopConfiguration,
-      parquetFiles,
-      true)
+    val footers = ParquetFileReader
+      .readAllFootersInParallel(hadoopConfiguration, parquetFiles, true)
     footers.asScala.head.getParquetMetadata.getFileMetaData.getSchema
   }
 

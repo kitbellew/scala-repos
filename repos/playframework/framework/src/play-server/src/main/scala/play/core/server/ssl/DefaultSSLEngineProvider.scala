@@ -37,7 +37,9 @@ class DefaultSSLEngineProvider(
   }
 
   def createSSLContext(applicationProvider: ApplicationProvider): SSLContext = {
-    val httpsConfig = serverConfig.configuration.underlying
+    val httpsConfig = serverConfig
+      .configuration
+      .underlying
       .getConfig("play.server.https")
     val keyStoreConfig = httpsConfig.getConfig("keyStore")
     val keyManagerFactory: KeyManagerFactory =
@@ -89,8 +91,8 @@ class DefaultSSLEngineProvider(
             "side CA verification. Requires http://webid.info/ for client certificate verification.")
         Array[TrustManager](noCATrustManager)
       } else {
-        logger.debug(
-          "Using default trust store for client side CA verification")
+        logger
+          .debug("Using default trust store for client side CA verification")
         null
       }
 

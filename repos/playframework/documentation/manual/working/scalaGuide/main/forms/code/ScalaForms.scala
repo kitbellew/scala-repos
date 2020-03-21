@@ -92,8 +92,8 @@ package scalaguide.forms.scalaforms {
           .withFormUrlEncodedBody("name" -> "", "age" -> "25")
 
         //#userForm-constraints-2-with-errors
-        val boundForm = userFormConstraints2.bind(
-          Map("bob" -> "", "age" -> "25"))
+        val boundForm = userFormConstraints2
+          .bind(Map("bob" -> "", "age" -> "25"))
         boundForm.hasErrors must beTrue
         //#userForm-constraints-2-with-errors
       }
@@ -220,18 +220,20 @@ package scalaguide.forms.scalaforms {
           val userForm = userFormConstraints
 
           //#userForm-handling-failure
-          userForm.bindFromRequest.fold(
-            formWithErrors => {
-              // binding failure, you retrieve the form containing errors:
-              BadRequest(views.html.user(formWithErrors))
-            },
-            userData => {
-              /* binding success, you get the actual value. */
-              val newUser = models.User(userData.name, userData.age)
-              val id = models.User.create(newUser)
-              Redirect(routes.Application.home(id))
-            }
-          )
+          userForm
+            .bindFromRequest
+            .fold(
+              formWithErrors => {
+                // binding failure, you retrieve the form containing errors:
+                BadRequest(views.html.user(formWithErrors))
+              },
+              userData => {
+                /* binding success, you get the actual value. */
+                val newUser = models.User(userData.name, userData.age)
+                val id = models.User.create(newUser)
+                Redirect(routes.Application.home(id))
+              }
+            )
         //#userForm-handling-failure
 
         }
@@ -299,8 +301,8 @@ package scalaguide.forms.scalaforms {
       val userFormConstraints = Form(
         mapping(
           "name" -> text.verifying(nonEmpty),
-          "age" -> number.verifying(min(0), max(100)))(UserData.apply)(
-          UserData.unapply))
+          "age" -> number
+            .verifying(min(0), max(100)))(UserData.apply)(UserData.unapply))
       //#userForm-constraints
 
       val userFormConstraintsName = {
@@ -481,16 +483,18 @@ package scalaguide.forms.scalaforms {
       // #contact-save
       def saveContact =
         Action { implicit request =>
-          contactForm.bindFromRequest.fold(
-            formWithErrors => {
-              BadRequest(views.html.contact.form(formWithErrors))
-            },
-            contact => {
-              val contactId = Contact.save(contact)
-              Redirect(routes.Application.showContact(contactId))
-                .flashing("success" -> "Contact saved!")
-            }
-          )
+          contactForm
+            .bindFromRequest
+            .fold(
+              formWithErrors => {
+                BadRequest(views.html.contact.form(formWithErrors))
+              },
+              contact => {
+                val contactId = Contact.save(contact)
+                Redirect(routes.Application.showContact(contactId))
+                  .flashing("success" -> "Contact saved!")
+              }
+            )
         }
       // #contact-save
 

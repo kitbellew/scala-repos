@@ -110,8 +110,7 @@ class FlowFlattenMergeSpec extends AkkaSpec {
         Source(
           List(Source.fromPublisher(p1), Source.fromPublisher(p2))) ++ Source
           .fromFuture(p.future)
-      ).flatMapMerge(5, identity)
-        .runWith(Sink.head)
+      ).flatMapMerge(5, identity).runWith(Sink.head)
       p1.expectRequest()
       p2.expectRequest()
       p.failure(ex)

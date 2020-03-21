@@ -59,8 +59,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     */
   def isAnonymousOrLocalClass(classSym: Symbol): Boolean = {
     assert(classSym.isClass, s"not a class: $classSym")
-    val r = exitingPickler(
-      classSym.isAnonymousClass) || !classSym.originalOwner.isClass
+    val r = exitingPickler(classSym.isAnonymousClass) || !classSym
+      .originalOwner
+      .isClass
     if (r) {
       // phase travel necessary: after flatten, the name includes the name of outer classes.
       // if some outer name contains $lambda, a non-lambda class is considered lambda.
@@ -246,8 +247,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     * the owner of U is T, so UModuleClass.isStatic is true. Phase travel does not help here.
     */
   def isOriginallyStaticOwner(sym: Symbol): Boolean =
-    sym.isPackageClass || sym.isModuleClass && isOriginallyStaticOwner(
-      sym.originalOwner)
+    sym.isPackageClass || sym
+      .isModuleClass && isOriginallyStaticOwner(sym.originalOwner)
 
   /**
     * This is a hack to work around SI-9111. The completer of `methodSym` may report type errors. We
@@ -310,7 +311,10 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     // Primitive methods cannot be inlined, so there's no point in building a MethodInlineInfo. Also, some
     // primitive methods (e.g., `isInstanceOf`) have non-erased types, which confuses [[typeToBType]].
     val methodInlineInfos =
-      classSym.info.decls.iterator
+      classSym
+        .info
+        .decls
+        .iterator
         .filter(m => m.isMethod && !scalaPrimitives.isPrimitive(m))
         .flatMap({
           case methodSym =>
@@ -370,7 +374,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       csym: Symbol,
       cName: String,
       cunit: CompilationUnit): _root_.scala.tools.nsc.io.AbstractFile =
-    _root_.scala.util
+    _root_
+      .scala
+      .util
       .Try {
         outputDirectory(csym)
       }
@@ -426,8 +432,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         reporter.warning(
           sym.pos,
           sym.name +
-            s" has a main method with parameter type Array[String], but ${sym
-              .fullName('.')} will not be a runnable program.\n  Reason: $msg"
+            s" has a main method with parameter type Array[String], but ${sym.fullName(
+              '.')} will not be a runnable program.\n  Reason: $msg"
           // TODO: make this next claim true, if possible
           //   by generating valid main methods as static in module classes
           //   not sure what the jvm allows here
@@ -734,9 +740,11 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     private def isRuntimeVisible(annot: AnnotationInfo): Boolean = {
       annot.atp.typeSymbol.getAnnotation(AnnotationRetentionAttr) match {
         case Some(retentionAnnot) =>
-          retentionAnnot.assocs.contains(
-            nme.value -> LiteralAnnotArg(
-              Constant(AnnotationRetentionPolicyRuntimeValue)))
+          retentionAnnot
+            .assocs
+            .contains(
+              nme.value -> LiteralAnnotArg(
+                Constant(AnnotationRetentionPolicyRuntimeValue)))
         case _ =>
           // SI-8926: if the annotation class symbol doesn't have a @RetentionPolicy annotation, the
           // annotation is emitted with visibility `RUNTIME`
@@ -745,7 +753,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     }
 
     private def retentionPolicyOf(annot: AnnotationInfo): Symbol =
-      annot.atp.typeSymbol
+      annot
+        .atp
+        .typeSymbol
         .getAnnotation(AnnotationRetentionAttr)
         .map(_.assocs)
         .flatMap(assoc =>
@@ -848,7 +858,10 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
                   const.tpe
                 ) // the class descriptor of the enumeration class.
                 val evalue =
-                  const.symbolValue.name.toString // value the actual enumeration value.
+                  const
+                    .symbolValue
+                    .name
+                    .toString // value the actual enumeration value.
                 av.visitEnum(name, edesc, evalue)
             }
           }
@@ -1050,7 +1063,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
             """|compiler bug: created invalid generic signature for %s in %s
                  |signature: %s
                  |if this is reproducible, please report bug at https://issues.scala-lang.org/
-              """.trim.stripMargin
+              """
+              .trim
+              .stripMargin
               .format(sym, sym.owner.skipPackageObject.fullName, sig)
           )
           return null
@@ -1071,13 +1086,16 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
                  |normalized type: %s
                  |erasure type: %s
                  |if this is reproducible, please report bug at http://issues.scala-lang.org/
-              """.trim.stripMargin.format(
-              sym,
-              sym.owner.skipPackageObject.fullName,
-              sig,
-              memberTpe,
-              normalizedTpe,
-              bytecodeTpe)
+              """
+              .trim
+              .stripMargin
+              .format(
+                sym,
+                sym.owner.skipPackageObject.fullName,
+                sig,
+                memberTpe,
+                normalizedTpe,
+                bytecodeTpe)
           )
           return null
         }
@@ -1101,12 +1119,14 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         isJMethodPublic: Boolean,
         meth: Symbol) {
       def hasThrowsRemoteException =
-        meth.annotations.exists {
-          case ThrownException(exc) =>
-            exc.typeSymbol == definitions.RemoteExceptionClass
-          case _ =>
-            false
-        }
+        meth
+          .annotations
+          .exists {
+            case ThrownException(exc) =>
+              exc.typeSymbol == definitions.RemoteExceptionClass
+            case _ =>
+              false
+          }
       val needsAnnotation = {
         (
           isRemoteClass ||
@@ -1170,8 +1190,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       // TODO needed? for(ann <- m.annotations) { ann.symbol.initialize }
       val jgensig = staticForwarderGenericSignature(m, module)
       addRemoteExceptionAnnot(isRemoteClass, hasPublicBitSet(flags), m)
-      val (throws, others) =
-        m.annotations partition (_.symbol == definitions.ThrowsClass)
+      val (throws, others) = m
+        .annotations partition (_.symbol == definitions.ThrowsClass)
       val thrownExceptions: List[String] = getExceptions(throws)
 
       val jReturnType = typeToBType(methodInfo.resultType)
@@ -1197,9 +1217,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
 
       var index = 0
       for (jparamType <- paramJavaTypes) {
-        mirrorMethod.visitVarInsn(
-          jparamType.typedOpcode(asm.Opcodes.ILOAD),
-          index)
+        mirrorMethod
+          .visitVarInsn(jparamType.typedOpcode(asm.Opcodes.ILOAD), index)
         assert(!jparamType.isInstanceOf[MethodBType], jparamType)
         index += jparamType.size
       }
@@ -1244,18 +1263,20 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       debuglog(
         s"Potentially conflicting names for forwarders: $conflictingNames")
 
-      for (m <- moduleClass.info.membersBasedOnFlags(
-             BCodeHelpers.ExcludedForwarderFlags,
-             symtab.Flags.METHOD)) {
-        if (m.isType || m.isDeferred || (
-              m.owner eq definitions.ObjectClass
-            ) || m.isConstructor)
+      for (m <- moduleClass
+             .info
+             .membersBasedOnFlags(
+               BCodeHelpers.ExcludedForwarderFlags,
+               symtab.Flags.METHOD)) {
+        if (m.isType || m
+              .isDeferred || (m.owner eq definitions.ObjectClass) || m
+              .isConstructor)
           debuglog(
-            s"No forwarder for '$m' from $jclassName to '$moduleClass': ${m.isType} || ${m.isDeferred} || ${m.owner eq definitions.ObjectClass} || ${m.isConstructor}")
+            s"No forwarder for '$m' from $jclassName to '$moduleClass': ${m.isType} || ${m.isDeferred} || ${m
+              .owner eq definitions.ObjectClass} || ${m.isConstructor}")
         else if (conflictingNames(m.name))
           log(
-            s"No forwarder for $m due to conflict with ${linkedClass.info
-              .member(m.name)}")
+            s"No forwarder for $m due to conflict with ${linkedClass.info.member(m.name)}")
         else if (m.hasAccessBoundary)
           log(s"No forwarder for non-public member $m")
         else {
@@ -1346,9 +1367,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         EMPTY_STRING_ARRAY)
 
       if (emitSource)
-        mirrorClass.visitSource(
-          "" + cunit.source,
-          null /* SourceDebugExtension */ )
+        mirrorClass
+          .visitSource("" + cunit.source, null /* SourceDebugExtension */ )
 
       val ssa = getAnnotPickle(bType.internalName, moduleClass.companionSymbol)
       mirrorClass.visitAttribute(
@@ -1445,7 +1465,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       val stringArrayJType: BType = ArrayBType(StringRef)
       val conJType: BType = MethodBType(
         classBTypeFromSymbol(
-          definitions.ClassClass) :: stringArrayJType :: stringArrayJType :: Nil,
+          definitions
+            .ClassClass) :: stringArrayJType :: stringArrayJType :: Nil,
         UNIT)
 
       def push(lst: List[String]) {
@@ -1577,9 +1598,15 @@ object BCodeHelpers {
     * See http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.6
     */
   val INNER_CLASSES_FLAGS = {
-    asm.Opcodes.ACC_PUBLIC | asm.Opcodes.ACC_PRIVATE | asm.Opcodes.ACC_PROTECTED |
-      asm.Opcodes.ACC_STATIC | asm.Opcodes.ACC_FINAL | asm.Opcodes.ACC_INTERFACE |
-      asm.Opcodes.ACC_ABSTRACT | asm.Opcodes.ACC_SYNTHETIC | asm.Opcodes.ACC_ANNOTATION |
+    asm.Opcodes.ACC_PUBLIC | asm.Opcodes.ACC_PRIVATE | asm
+      .Opcodes
+      .ACC_PROTECTED |
+      asm.Opcodes.ACC_STATIC | asm.Opcodes.ACC_FINAL | asm
+      .Opcodes
+      .ACC_INTERFACE |
+      asm.Opcodes.ACC_ABSTRACT | asm.Opcodes.ACC_SYNTHETIC | asm
+      .Opcodes
+      .ACC_ANNOTATION |
       asm.Opcodes.ACC_ENUM
   }
 

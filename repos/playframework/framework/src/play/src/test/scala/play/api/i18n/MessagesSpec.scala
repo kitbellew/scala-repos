@@ -25,8 +25,8 @@ object MessagesSpec extends Specification {
       new Environment(new File("."), this.getClass.getClassLoader, Mode.Dev),
       Configuration.reference,
       new DefaultLangs(
-        Configuration.reference ++ Configuration.from(
-          Map("play.i18n.langs" -> Seq("en", "fr", "fr-CH"))))) {
+        Configuration.reference ++ Configuration
+          .from(Map("play.i18n.langs" -> Seq("en", "fr", "fr-CH"))))) {
       override protected def loadAllMessages = testMessages
     }
 

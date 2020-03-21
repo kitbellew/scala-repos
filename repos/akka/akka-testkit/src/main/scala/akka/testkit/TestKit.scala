@@ -99,7 +99,9 @@ class TestActor(queue: BlockingDeque[TestActor.Message]) extends Actor {
   override def postStop() = {
     import scala.collection.JavaConverters._
     queue.asScala foreach { m ⇒
-      context.system.deadLetters
+      context
+        .system
+        .deadLetters
         .tell(DeadLetter(m.msg, m.sender, self), m.sender)
     }
   }
@@ -144,9 +146,7 @@ trait TestKitBase {
   val testActor: ActorRef = {
     val impl = system.asInstanceOf[ExtendedActorSystem]
     val ref = impl.systemActorOf(
-      TestActor
-        .props(queue)
-        .withDispatcher(CallingThreadDispatcher.Id),
+      TestActor.props(queue).withDispatcher(CallingThreadDispatcher.Id),
       "%s-%d".format(testActorName, TestKit.testActorId.incrementAndGet))
     awaitCond(
       ref match {
@@ -576,8 +576,7 @@ trait TestKitBase {
     val o = receiveOne(max)
     assert(
       o ne null,
-      s"timeout ($max) during expectMsgAnyClassOf waiting for ${obj
-        .mkString("(", ", ", ")")}")
+      s"timeout ($max) during expectMsgAnyClassOf waiting for ${obj.mkString("(", ", ", ")")}")
     assert(obj exists (c ⇒ BoxedType(c) isInstance o), s"found unexpected $o")
     o.asInstanceOf[C]
   }

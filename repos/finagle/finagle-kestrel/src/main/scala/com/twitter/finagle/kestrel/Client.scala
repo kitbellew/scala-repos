@@ -150,13 +150,17 @@ object ReadHandle {
   def merged(handles: Seq[ReadHandle]): ReadHandle =
     new ReadHandle {
       val messages = Offer.choose(
-        handles.map {
-          _.messages
-        }.toSeq: _*)
+        handles
+          .map {
+            _.messages
+          }
+          .toSeq: _*)
       val error = Offer.choose(
-        handles.map {
-          _.error
-        }.toSeq: _*)
+        handles
+          .map {
+            _.error
+          }
+          .toSeq: _*)
       def close() =
         handles.foreach {
           _.close()
@@ -453,14 +457,16 @@ abstract protected[kestrel] class ClientBase[
       queueName: String,
       offer: Offer[Buf],
       closed: Promise[Throwable]) {
-    offer.sync().foreach { item =>
-      set(queueName, item).unit respond {
-        case Return(_) =>
-          write(queueName, offer)
-        case Throw(t) =>
-          closed() = Return(t)
+    offer
+      .sync()
+      .foreach { item =>
+        set(queueName, item).unit respond {
+          case Return(_) =>
+            write(queueName, offer)
+          case Throw(t) =>
+            closed() = Return(t)
+        }
       }
-    }
   }
 
   def close() {
@@ -512,14 +518,16 @@ protected[kestrel] class ConnectedClient(
   def get(
       queueName: String,
       waitUpTo: Duration = 0.seconds): Future[Option[Buf]] =
-    underlying.toService(Get(Buf.Utf8(queueName), Some(waitUpTo))).map {
-      case Values(Seq()) =>
-        None
-      case Values(Seq(Value(key, value: Buf))) =>
-        Some(value)
-      case _ =>
-        throw new IllegalArgumentException
-    }
+    underlying
+      .toService(Get(Buf.Utf8(queueName), Some(waitUpTo)))
+      .map {
+        case Values(Seq()) =>
+          None
+        case Values(Seq(Value(key, value: Buf))) =>
+          Some(value)
+        case _ =>
+          throw new IllegalArgumentException
+      }
 
   private def MemCommand(command: Command)(
       service: Service[Command, Response]) = service(command)
@@ -601,15 +609,19 @@ protected[kestrel] class ThriftConnectedClient(
 
   def flush(queueName: String): Future[Response] =
     withClient[Values](client =>
-      client.flushQueue(queueName).map { _ =>
-        Values(Nil)
-      })
+      client
+        .flushQueue(queueName)
+        .map { _ =>
+          Values(Nil)
+        })
 
   def delete(queueName: String): Future[Response] =
     withClient[Response](client =>
-      client.deleteQueue(queueName).map { _ =>
-        Deleted()
-      })
+      client
+        .deleteQueue(queueName)
+        .map { _ =>
+          Deleted()
+        })
 
   def set(
       queueName: String,
@@ -629,14 +641,16 @@ protected[kestrel] class ThriftConnectedClient(
       waitUpTo: Duration = 0.seconds): Future[Option[Buf]] = {
     val waitUpToMsec = safeLongToInt(waitUpTo.inMilliseconds)
     withClient[Option[Buf]](client =>
-      client.get(queueName, 1, waitUpToMsec).map {
-        case Seq() =>
-          None
-        case Seq(item: Item) =>
-          Some(Buf.ByteBuffer.Owned(item.data))
-        case _ =>
-          throw new IllegalArgumentException
-      })
+      client
+        .get(queueName, 1, waitUpToMsec)
+        .map {
+          case Seq() =>
+            None
+          case Seq(item: Item) =>
+            Some(Buf.ByteBuffer.Owned(item.data))
+          case _ =>
+            throw new IllegalArgumentException
+        })
   }
 
   private def openRead(queueName: String)(
@@ -655,9 +669,11 @@ protected[kestrel] class ThriftConnectedClient(
 
   private def abortReadCommand(queueName: String)(id: Long)(
       client: FinagledClosableClient): Future[Seq[Item]] =
-    client.abort(queueName, collection.Set(id)).map { _ =>
-      collection.Seq[Item]()
-    }
+    client
+      .abort(queueName, collection.Set(id))
+      .map { _ =>
+        collection.Seq[Item]()
+      }
 
   def read(queueName: String): ReadHandle =
     read(

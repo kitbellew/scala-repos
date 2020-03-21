@@ -16,8 +16,8 @@ object JarRunner extends CommonRunner {
       jarPath: String,
       arguments: Seq[String]): Either[Throwable, Boolean] = {
     val jar = new io.Jar(jarPath)
-    val mainClass = jar.mainClass getOrElse sys.error(
-      "Cannot find main class for jar: " + jarPath)
+    val mainClass = jar.mainClass getOrElse sys
+      .error("Cannot find main class for jar: " + jarPath)
     val jarURLs = ClassPath expandManifestPath jarPath
     val urls =
       if (jarURLs.isEmpty)
@@ -96,10 +96,8 @@ class MainGenericRunner {
               thingToRun,
               command.arguments)
           case AsScript =>
-            ScriptRunner.runScriptAndCatch(
-              settings,
-              thingToRun,
-              command.arguments)
+            ScriptRunner
+              .runScriptAndCatch(settings, thingToRun, command.arguments)
           case AsJar =>
             JarRunner.runJar(settings, thingToRun, command.arguments)
           case Error =>
@@ -117,10 +115,8 @@ class MainGenericRunner {
         *  This all needs a rewrite though.
         */
       if (isE) {
-        ScriptRunner.runCommand(
-          settings,
-          combinedCode,
-          thingToRun +: command.arguments)
+        ScriptRunner
+          .runCommand(settings, combinedCode, thingToRun +: command.arguments)
       } else
         runTarget() match {
           case Left(ex) =>

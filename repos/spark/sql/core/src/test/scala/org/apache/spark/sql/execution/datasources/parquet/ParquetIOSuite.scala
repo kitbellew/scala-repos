@@ -96,8 +96,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
   }
 
   test("SPARK-11694 Parquet logical types are not being tested properly") {
-    val parquetSchema = MessageTypeParser.parseMessageType(
-      """message root {
+    val parquetSchema = MessageTypeParser
+      .parseMessageType("""message root {
         |  required int32 a(INT_8);
         |  required int32 b(INT_16);
         |  required int32 c(DATE);
@@ -148,8 +148,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
         .range(1000)
         // Parquet doesn't allow column names with spaces, have to add an alias here.
         // Minus 500 here so that negative decimals are also tested.
-        .select((('id - 500) / 100.0) cast decimal as 'dec)
-        .coalesce(1)
+        .select((('id - 500) / 100.0) cast decimal as 'dec).coalesce(1)
     }
 
     val combinations = Seq(
@@ -201,8 +200,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
   }
 
   testStandardAndLegacyModes("array and double") {
-    val data = (1 to 4).map(i =>
-      (i.toDouble, Seq(i.toDouble, (i + 1).toDouble)))
+    val data = (1 to 4)
+      .map(i => (i.toDouble, Seq(i.toDouble, (i + 1).toDouble)))
     checkParquetFile(data)
   }
 
@@ -275,8 +274,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
   }
 
   test("SPARK-10113 Support for unsigned Parquet logical types") {
-    val parquetSchema = MessageTypeParser.parseMessageType(
-      """message root {
+    val parquetSchema = MessageTypeParser
+      .parseMessageType("""message root {
         |  required int32 c(UINT_32);
         |}
       """.stripMargin)
@@ -295,8 +294,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
 
   test(
     "SPARK-11692 Support for Parquet logical types, JSON and BSON (embedded types)") {
-    val parquetSchema = MessageTypeParser.parseMessageType(
-      """message root {
+    val parquetSchema = MessageTypeParser
+      .parseMessageType("""message root {
         |  required binary a(JSON);
         |  required binary b(BSON);
         |}
@@ -308,7 +307,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
       val path = new Path(location.getCanonicalPath)
       val conf = sparkContext.hadoopConfiguration
       writeMetadata(parquetSchema, path, conf)
-      val sparkTypes = sqlContext.read
+      val sparkTypes = sqlContext
+        .read
         .parquet(path.toString)
         .schema
         .map(_.dataType)
@@ -397,8 +397,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
     withTempPath { file =>
       val path = new Path(file.toURI.toString)
       val fs = FileSystem.getLocal(hadoopConfiguration)
-      val schema = StructType.fromAttributes(
-        ScalaReflection.attributesFor[(Int, String)])
+      val schema = StructType
+        .fromAttributes(ScalaReflection.attributesFor[(Int, String)])
       writeMetadata(schema, path, hadoopConfiguration)
 
       assert(
@@ -523,8 +523,9 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
     } finally {
       // Hadoop 1 doesn't have `Configuration.unset`
       hadoopConfiguration.clear()
-      clonedConf.asScala.foreach(entry =>
-        hadoopConfiguration.set(entry.getKey, entry.getValue))
+      clonedConf
+        .asScala
+        .foreach(entry => hadoopConfiguration.set(entry.getKey, entry.getValue))
     }
   }
 
@@ -553,8 +554,9 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
     } finally {
       // Hadoop 1 doesn't have `Configuration.unset`
       hadoopConfiguration.clear()
-      clonedConf.asScala.foreach(entry =>
-        hadoopConfiguration.set(entry.getKey, entry.getValue))
+      clonedConf
+        .asScala
+        .foreach(entry => hadoopConfiguration.set(entry.getKey, entry.getValue))
     }
   }
 
@@ -580,8 +582,10 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
       } finally {
         // Hadoop 1 doesn't have `Configuration.unset`
         hadoopConfiguration.clear()
-        clonedConf.asScala.foreach(entry =>
-          hadoopConfiguration.set(entry.getKey, entry.getValue))
+        clonedConf
+          .asScala
+          .foreach(entry =>
+            hadoopConfiguration.set(entry.getKey, entry.getValue))
       }
     }
   }
@@ -634,8 +638,9 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
     } finally {
       // Hadoop 1 doesn't have `Configuration.unset`
       hadoopConfiguration.clear()
-      clonedConf.asScala.foreach(entry =>
-        hadoopConfiguration.set(entry.getKey, entry.getValue))
+      clonedConf
+        .asScala
+        .foreach(entry => hadoopConfiguration.set(entry.getKey, entry.getValue))
     }
   }
 
@@ -653,9 +658,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
 
         // By default, dictionary encoding is enabled from Parquet 1.2.0 but
         // it is enabled just in case.
-        hadoopConfiguration.setBoolean(
-          ParquetOutputFormat.ENABLE_DICTIONARY,
-          true)
+        hadoopConfiguration
+          .setBoolean(ParquetOutputFormat.ENABLE_DICTIONARY, true)
         val path = s"${dir.getCanonicalPath}/part-r-0.parquet"
         sqlContext
           .range(1 << 16)
@@ -676,8 +680,10 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
       } finally {
         // Manually clear the hadoop configuration for other tests.
         hadoopConfiguration.clear()
-        clonedConf.asScala.foreach(entry =>
-          hadoopConfiguration.set(entry.getKey, entry.getValue))
+        clonedConf
+          .asScala
+          .foreach(entry =>
+            hadoopConfiguration.set(entry.getKey, entry.getValue))
       }
     }
   }

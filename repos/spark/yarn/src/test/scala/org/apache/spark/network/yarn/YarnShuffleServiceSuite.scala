@@ -47,14 +47,17 @@ class YarnShuffleServiceSuite
       classOf[YarnShuffleService].getCanonicalName)
     yarnConfig.setInt("spark.shuffle.service.port", 0)
 
-    yarnConfig.get("yarn.nodemanager.local-dirs").split(",").foreach { dir =>
-      val d = new File(dir)
-      if (d.exists()) {
-        FileUtils.deleteDirectory(d)
+    yarnConfig
+      .get("yarn.nodemanager.local-dirs")
+      .split(",")
+      .foreach { dir =>
+        val d = new File(dir)
+        if (d.exists()) {
+          FileUtils.deleteDirectory(d)
+        }
+        FileUtils.forceMkdir(d)
+        logInfo(s"creating yarn.nodemanager.local-dirs: $d")
       }
-      FileUtils.forceMkdir(d)
-      logInfo(s"creating yarn.nodemanager.local-dirs: $d")
-    }
   }
 
   var s1: YarnShuffleService = null
@@ -99,8 +102,8 @@ class YarnShuffleServiceSuite
 
     val blockHandler = s1.blockHandler
     val blockResolver = ShuffleTestAccessor.getBlockResolver(blockHandler)
-    ShuffleTestAccessor.registeredExecutorFile(blockResolver) should be(
-      execStateFile)
+    ShuffleTestAccessor
+      .registeredExecutorFile(blockResolver) should be(execStateFile)
 
     blockResolver.registerExecutor(app1Id.toString, "exec-1", shuffleInfo1)
     blockResolver.registerExecutor(app2Id.toString, "exec-2", shuffleInfo2)
@@ -141,8 +144,8 @@ class YarnShuffleServiceSuite
     s2.stopApplication(new ApplicationTerminationContext(app2Id))
     ShuffleTestAccessor.getExecutorInfo(app1Id, "exec-1", resolver2) should be(
       Some(shuffleInfo1))
-    ShuffleTestAccessor.getExecutorInfo(app2Id, "exec-2", resolver2) should be(
-      None)
+    ShuffleTestAccessor
+      .getExecutorInfo(app2Id, "exec-2", resolver2) should be(None)
 
     // Act like the NM restarts one more time
     s2.stop()
@@ -157,8 +160,8 @@ class YarnShuffleServiceSuite
     s3.initializeApplication(app1Data)
     ShuffleTestAccessor.getExecutorInfo(app1Id, "exec-1", resolver3) should be(
       Some(shuffleInfo1))
-    ShuffleTestAccessor.getExecutorInfo(app2Id, "exec-2", resolver3) should be(
-      None)
+    ShuffleTestAccessor
+      .getExecutorInfo(app2Id, "exec-2", resolver3) should be(None)
     s3.stop()
   }
 
@@ -181,8 +184,8 @@ class YarnShuffleServiceSuite
 
     val blockHandler = s1.blockHandler
     val blockResolver = ShuffleTestAccessor.getBlockResolver(blockHandler)
-    ShuffleTestAccessor.registeredExecutorFile(blockResolver) should be(
-      execStateFile)
+    ShuffleTestAccessor
+      .registeredExecutorFile(blockResolver) should be(execStateFile)
 
     blockResolver.registerExecutor(app1Id.toString, "exec-1", shuffleInfo1)
     blockResolver.registerExecutor(app2Id.toString, "exec-2", shuffleInfo2)
@@ -209,8 +212,8 @@ class YarnShuffleServiceSuite
 
     val blockHandler = s1.blockHandler
     val blockResolver = ShuffleTestAccessor.getBlockResolver(blockHandler)
-    ShuffleTestAccessor.registeredExecutorFile(blockResolver) should be(
-      execStateFile)
+    ShuffleTestAccessor
+      .registeredExecutorFile(blockResolver) should be(execStateFile)
 
     blockResolver.registerExecutor(app1Id.toString, "exec-1", shuffleInfo1)
 
@@ -218,9 +221,11 @@ class YarnShuffleServiceSuite
     // make a corrupt registeredExecutor File
     s1.stop()
 
-    execStateFile.listFiles().foreach {
-      _.delete()
-    }
+    execStateFile
+      .listFiles()
+      .foreach {
+        _.delete()
+      }
 
     val out =
       new DataOutputStream(new FileOutputStream(execStateFile + "/CURRENT"))

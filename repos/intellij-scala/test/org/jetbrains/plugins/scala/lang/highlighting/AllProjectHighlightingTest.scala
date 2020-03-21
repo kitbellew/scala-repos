@@ -111,9 +111,8 @@ class AllProjectHighlightingTest
           JavaFileType.INSTANCE),
         myProject)
 
-    val files: util.Collection[VirtualFile] = FileTypeIndex.getFiles(
-      ScalaFileType.SCALA_FILE_TYPE,
-      searchScope)
+    val files: util.Collection[VirtualFile] = FileTypeIndex
+      .getFiles(ScalaFileType.SCALA_FILE_TYPE, searchScope)
 
     LocalFileSystem.getInstance().refreshFiles(files)
 
@@ -185,8 +184,9 @@ class AllProjectHighlightingTest
     val projectDir: File = new File(getRootDir, getTestName(false))
     if (!projectDir.exists())
       return
-    myProjectRoot = LocalFileSystem.getInstance.refreshAndFindFileByIoFile(
-      projectDir)
+    myProjectRoot = LocalFileSystem
+      .getInstance
+      .refreshAndFindFileByIoFile(projectDir)
     setUpSbtLauncherAndStructure(myProject)
   }
 }

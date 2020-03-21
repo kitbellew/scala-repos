@@ -228,15 +228,17 @@ object ConsumerGroupCommand {
       val topicPartitions = getTopicPartitions(topic)
       val groupDirs = new ZKGroupTopicDirs(group, topic)
       val ownerByTopicPartition =
-        topicPartitions.flatMap { topicPartition =>
-          zkUtils
-            .readDataMaybeNull(
-              groupDirs.consumerOwnerDir + "/" + topicPartition.partition)
-            ._1
-            .map { owner =>
-              topicPartition -> owner
-            }
-        }.toMap
+        topicPartitions
+          .flatMap { topicPartition =>
+            zkUtils
+              .readDataMaybeNull(
+                groupDirs.consumerOwnerDir + "/" + topicPartition.partition)
+              ._1
+              .map { owner =>
+                topicPartition -> owner
+              }
+          }
+          .toMap
       val partitionOffsets = getPartitionOffsets(
         group,
         topicPartitions,
@@ -299,88 +301,94 @@ object ConsumerGroupCommand {
         channelSocketTimeoutMs,
         channelRetryBackoffMs)
       channel.send(OffsetFetchRequest(group, topicPartitions))
-      val offsetFetchResponse = OffsetFetchResponse.readFrom(
-        channel.receive().payload())
+      val offsetFetchResponse = OffsetFetchResponse
+        .readFrom(channel.receive().payload())
 
-      offsetFetchResponse.requestInfo.foreach {
-        case (topicAndPartition, offsetAndMetadata) =>
-          if (offsetAndMetadata == OffsetMetadataAndError.NoOffset) {
-            val topicDirs = new ZKGroupTopicDirs(group, topicAndPartition.topic)
-            // this group may not have migrated off zookeeper for offsets storage (we don't expose the dual-commit option in this tool
-            // (meaning the lag may be off until all the consumers in the group have the same setting for offsets storage)
-            try {
-              val offset =
-                zkUtils
-                  .readData(
-                    topicDirs.consumerOffsetDir + "/" + topicAndPartition.partition)
-                  ._1
-                  .toLong
-              offsetMap.put(topicAndPartition, offset)
-            } catch {
-              case z: ZkNoNodeException =>
-                println(
-                  "Could not fetch offset from zookeeper for group %s partition %s due to missing offset data in zookeeper."
-                    .format(group, topicAndPartition))
-            }
-          } else if (offsetAndMetadata.error == Errors.NONE.code)
-            offsetMap.put(topicAndPartition, offsetAndMetadata.offset)
-          else
-            println(
-              "Could not fetch offset from kafka for group %s partition %s due to %s."
-                .format(
-                  group,
-                  topicAndPartition,
-                  Errors.forCode(offsetAndMetadata.error).exception))
-      }
+      offsetFetchResponse
+        .requestInfo
+        .foreach {
+          case (topicAndPartition, offsetAndMetadata) =>
+            if (offsetAndMetadata == OffsetMetadataAndError.NoOffset) {
+              val topicDirs =
+                new ZKGroupTopicDirs(group, topicAndPartition.topic)
+              // this group may not have migrated off zookeeper for offsets storage (we don't expose the dual-commit option in this tool
+              // (meaning the lag may be off until all the consumers in the group have the same setting for offsets storage)
+              try {
+                val offset =
+                  zkUtils
+                    .readData(
+                      topicDirs.consumerOffsetDir + "/" + topicAndPartition
+                        .partition)
+                    ._1
+                    .toLong
+                offsetMap.put(topicAndPartition, offset)
+              } catch {
+                case z: ZkNoNodeException =>
+                  println(
+                    "Could not fetch offset from zookeeper for group %s partition %s due to missing offset data in zookeeper."
+                      .format(group, topicAndPartition))
+              }
+            } else if (offsetAndMetadata.error == Errors.NONE.code)
+              offsetMap.put(topicAndPartition, offsetAndMetadata.offset)
+            else
+              println(
+                "Could not fetch offset from kafka for group %s partition %s due to %s."
+                  .format(
+                    group,
+                    topicAndPartition,
+                    Errors.forCode(offsetAndMetadata.error).exception))
+        }
       channel.disconnect()
       offsetMap.toMap
     }
 
     private def deleteForGroup() {
       val groups = opts.options.valuesOf(opts.groupOpt)
-      groups.asScala.foreach { group =>
-        try {
-          if (AdminUtils.deleteConsumerGroupInZK(zkUtils, group))
-            println(
-              "Deleted all consumer group information for group %s in zookeeper."
-                .format(group))
-          else
-            println(
-              "Delete for group %s failed because its consumers are still active."
-                .format(group))
-        } catch {
-          case e: ZkNoNodeException =>
-            println(
-              "Delete for group %s failed because group does not exist.".format(
-                group))
+      groups
+        .asScala
+        .foreach { group =>
+          try {
+            if (AdminUtils.deleteConsumerGroupInZK(zkUtils, group))
+              println(
+                "Deleted all consumer group information for group %s in zookeeper."
+                  .format(group))
+            else
+              println(
+                "Delete for group %s failed because its consumers are still active."
+                  .format(group))
+          } catch {
+            case e: ZkNoNodeException =>
+              println(
+                "Delete for group %s failed because group does not exist."
+                  .format(group))
+          }
         }
-      }
     }
 
     private def deleteForTopic() {
       val groups = opts.options.valuesOf(opts.groupOpt)
       val topic = opts.options.valueOf(opts.topicOpt)
       Topic.validate(topic)
-      groups.asScala.foreach { group =>
-        try {
-          if (AdminUtils.deleteConsumerGroupInfoForTopicInZK(
-                zkUtils,
-                group,
-                topic))
-            println(
-              "Deleted consumer group information for group %s topic %s in zookeeper."
-                .format(group, topic))
-          else
-            println(
-              "Delete for group %s topic %s failed because its consumers are still active."
-                .format(group, topic))
-        } catch {
-          case e: ZkNoNodeException =>
-            println(
-              "Delete for group %s topic %s failed because group does not exist."
-                .format(group, topic))
+      groups
+        .asScala
+        .foreach { group =>
+          try {
+            if (AdminUtils
+                  .deleteConsumerGroupInfoForTopicInZK(zkUtils, group, topic))
+              println(
+                "Deleted consumer group information for group %s topic %s in zookeeper."
+                  .format(group, topic))
+            else
+              println(
+                "Delete for group %s topic %s failed because its consumers are still active."
+                  .format(group, topic))
+          } catch {
+            case e: ZkNoNodeException =>
+              println(
+                "Delete for group %s topic %s failed because group does not exist."
+                  .format(group, topic))
+          }
         }
-      }
     }
 
     private def deleteAllForTopic() {
@@ -449,18 +457,21 @@ object ConsumerGroupCommand {
         val consumer = getConsumer()
         printDescribeHeader()
         consumerSummaries.foreach { consumerSummary =>
-          val topicPartitions = consumerSummary.assignment.map(tp =>
-            TopicAndPartition(tp.topic, tp.partition))
+          val topicPartitions = consumerSummary
+            .assignment
+            .map(tp => TopicAndPartition(tp.topic, tp.partition))
           val partitionOffsets =
-            topicPartitions.flatMap { topicPartition =>
-              Option(
-                consumer.committed(
-                  new TopicPartition(
-                    topicPartition.topic,
-                    topicPartition.partition))).map { offsetAndMetadata =>
-                topicPartition -> offsetAndMetadata.offset
+            topicPartitions
+              .flatMap { topicPartition =>
+                Option(
+                  consumer.committed(
+                    new TopicPartition(
+                      topicPartition.topic,
+                      topicPartition.partition))).map { offsetAndMetadata =>
+                  topicPartition -> offsetAndMetadata.offset
+                }
               }
-            }.toMap
+              .toMap
           describeTopicPartition(
             group,
             topicPartitions,
@@ -518,12 +529,11 @@ object ConsumerGroupCommand {
       properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false")
       properties.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000")
       properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, deserializer)
-      properties.put(
-        ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-        deserializer)
+      properties
+        .put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer)
       if (opts.options.has(opts.commandConfigOpt))
-        properties.putAll(
-          Utils.loadProps(opts.options.valueOf(opts.commandConfigOpt)))
+        properties
+          .putAll(Utils.loadProps(opts.options.valueOf(opts.commandConfigOpt)))
 
       new KafkaConsumer(properties)
     }
@@ -628,8 +638,8 @@ object ConsumerGroupCommand {
 
       if (options.has(describeOpt))
         CommandLineUtils.checkRequiredArgs(parser, options, groupOpt)
-      if (options.has(deleteOpt) && !options.has(groupOpt) && !options.has(
-            topicOpt))
+      if (options.has(deleteOpt) && !options.has(groupOpt) && !options
+            .has(topicOpt))
         CommandLineUtils.printUsageAndDie(
           parser,
           "Option %s either takes %s, %s, or both"

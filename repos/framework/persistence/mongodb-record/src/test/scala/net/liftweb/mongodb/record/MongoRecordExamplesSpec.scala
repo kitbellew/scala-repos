@@ -135,9 +135,11 @@ package mongotestrecords {
           {
             val dbo = new BasicDBObject
 
-            m.keys.foreach(k => {
-              dbo.put(k.toString, m.getOrElse(k, ""))
-            })
+            m
+              .keys
+              .foreach(k => {
+                dbo.put(k.toString, m.getOrElse(k, ""))
+              })
 
             dbl.add(dbo)
           }
@@ -148,7 +150,9 @@ package mongotestrecords {
 
       override def setFromDBObject(
           dbo: DBObject): Box[List[Map[String, String]]] = {
-        val lst: List[Map[String, String]] = dbo.keySet.toList
+        val lst: List[Map[String, String]] = dbo
+          .keySet
+          .toList
           .map(k => {
             dbo.get(k.toString) match {
               case bdbo: BasicDBObject
@@ -260,7 +264,9 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
       for (t <- fromDb) {
         t.id.value must_== tr.id.value
         t.booleanfield.value must_== tr.booleanfield.value
-        TstRecord.formats.dateFormat
+        TstRecord
+          .formats
+          .dateFormat
           .format(t.datetimefield.value.getTime) must_==
           TstRecord.formats.dateFormat.format(tr.datetimefield.value.getTime)
         t.doublefield.value must_== tr.doublefield.value
@@ -280,11 +286,15 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
         t.person.value.address.city must_== tr.person.value.address.city
         t.person.value.children.size must_== tr.person.value.children.size
         for (i <- List.range(0, t.person.value.children.size - 1)) {
-          t.person.value.children(i).name must_== tr.person.value
+          t.person.value.children(i).name must_== tr
+            .person
+            .value
             .children(i)
             .name
           t.person.value.children(i).age must_== tr.person.value.children(i).age
-          t.person.value.children(i).birthdate must_== tr.person.value
+          t.person.value.children(i).birthdate must_== tr
+            .person
+            .value
             .children(i)
             .birthdate
         }
@@ -455,12 +465,15 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
     ld1.objidlist.set(List(ObjectId.get, ObjectId.get))
     ld1.dtlist.set(List(now, now))
     ld1.jsonobjlist.set(List(jd1, JsonDoc("2", "jsondoc2"), jd1))
-    ld1.patternlist.set(
-      List(Pattern.compile("^Mongo"), Pattern.compile("^Mongo2")))
-    ld1.maplist.set(
-      List(
-        Map("name" -> "map1", "type" -> "map"),
-        Map("name" -> "map2", "type" -> "map")))
+    ld1
+      .patternlist
+      .set(List(Pattern.compile("^Mongo"), Pattern.compile("^Mongo2")))
+    ld1
+      .maplist
+      .set(
+        List(
+          Map("name" -> "map1", "type" -> "map"),
+          Map("name" -> "map2", "type" -> "map")))
     ld1.binarylist.set(List[Array[Byte]]("foo".getBytes(), "bar".getBytes()))
 
     ld1.save() must_== ld1
@@ -525,18 +538,22 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
     od1.stringbox.valueBox must_== Empty
     od1.save() must_== od1
 
-    OptionalDoc.find(od1.id.get).foreach { od1FromDB =>
-      od1FromDB.stringbox.valueBox must_== od1.stringbox.valueBox
-    }
+    OptionalDoc
+      .find(od1.id.get)
+      .foreach { od1FromDB =>
+        od1FromDB.stringbox.valueBox must_== od1.stringbox.valueBox
+      }
 
     val od2 = OptionalDoc.createRecord
     od1.stringbox.valueBox must_== Empty
     od2.stringbox.set("aloha")
     od2.save() must_== od2
 
-    OptionalDoc.find(od2.id.get).foreach { od2FromDB =>
-      od2FromDB.stringbox.valueBox must_== od2.stringbox.valueBox
-    }
+    OptionalDoc
+      .find(od2.id.get)
+      .foreach { od2FromDB =>
+        od2FromDB.stringbox.valueBox must_== od2.stringbox.valueBox
+      }
 
     if (!debug)
       OptionalDoc.drop

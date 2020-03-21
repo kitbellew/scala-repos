@@ -68,9 +68,8 @@ sealed trait Multipart extends jm.Multipart {
           partHeadersSizeHint = 128,
           log))
       .flatMapConcat(ConstantFun.scalaIdentityFunction)
-    HttpEntity.Chunked(
-      mediaType withBoundary boundary withCharset charset,
-      chunks)
+    HttpEntity
+      .Chunked(mediaType withBoundary boundary withCharset charset, chunks)
   }
 
   /** Java API */
@@ -120,7 +119,8 @@ object Multipart {
 
     /** Java API */
     override def getParts: JSource[_ <: jm.Multipart.BodyPart.Strict, AnyRef] =
-      super.getParts
+      super
+        .getParts
         .asInstanceOf[JSource[_ <: jm.Multipart.BodyPart.Strict, AnyRef]]
 
     /** Java API */
@@ -239,13 +239,15 @@ object Multipart {
     def toStrict(timeout: FiniteDuration)(implicit
         fm: Materializer): Future[Multipart.General.Strict] = {
       import fm.executionContext
-      strictify(parts)(_.toStrict(timeout)).fast
+      strictify(parts)(_.toStrict(timeout))
+        .fast
         .map(General.Strict(mediaType, _))
     }
 
     /** Java API */
     override def getParts: JSource[_ <: jm.Multipart.General.BodyPart, AnyRef] =
-      super.getParts
+      super
+        .getParts
         .asInstanceOf[JSource[_ <: jm.Multipart.General.BodyPart, AnyRef]]
 
     /** Java API */
@@ -291,15 +293,19 @@ object Multipart {
       /** Java API */
       override def getParts
           : JSource[jm.Multipart.General.BodyPart.Strict, AnyRef] =
-        super.getParts.asInstanceOf[JSource[
-          _ <: jm.Multipart.General.BodyPart.Strict,
-          AnyRef]]
+        super
+          .getParts
+          .asInstanceOf[JSource[
+            _ <: jm.Multipart.General.BodyPart.Strict,
+            AnyRef]]
 
       /** Java API */
       override def getStrictParts
           : java.lang.Iterable[jm.Multipart.General.BodyPart.Strict] =
-        super.getStrictParts.asInstanceOf[java.lang.Iterable[
-          jm.Multipart.General.BodyPart.Strict]]
+        super
+          .getStrictParts
+          .asInstanceOf[java.lang.Iterable[
+            jm.Multipart.General.BodyPart.Strict]]
     }
 
     /**
@@ -410,14 +416,16 @@ object Multipart {
     def toStrict(timeout: FiniteDuration)(implicit
         fm: Materializer): Future[Multipart.FormData.Strict] = {
       import fm.executionContext
-      strictify(parts)(_.toStrict(timeout)).fast
+      strictify(parts)(_.toStrict(timeout))
+        .fast
         .map(Multipart.FormData.Strict(_))
     }
 
     /** Java API */
     override def getParts
         : JSource[_ <: jm.Multipart.FormData.BodyPart, AnyRef] =
-      super.getParts
+      super
+        .getParts
         .asInstanceOf[JSource[_ <: jm.Multipart.FormData.BodyPart, AnyRef]]
 
     /** Java API */
@@ -437,12 +445,14 @@ object Multipart {
 
     def apply(
         fields: Map[String, HttpEntity.Strict]): Multipart.FormData.Strict =
-      Multipart.FormData.Strict {
-        fields.map {
-          case (name, entity) ⇒
-            Multipart.FormData.BodyPart.Strict(name, entity)
-        }(collection.breakOut)
-      }
+      Multipart
+        .FormData
+        .Strict {
+          fields.map {
+            case (name, entity) ⇒
+              Multipart.FormData.BodyPart.Strict(name, entity)
+          }(collection.breakOut)
+        }
 
     def apply(
         _parts: Source[Multipart.FormData.BodyPart, Any]): Multipart.FormData =
@@ -464,7 +474,9 @@ object Multipart {
         chunkSize: Int = -1): Multipart.FormData =
       Multipart.FormData(
         Source.single(
-          Multipart.FormData.BodyPart
+          Multipart
+            .FormData
+            .BodyPart
             .fromFile(name, contentType, file, chunkSize)))
 
     /**
@@ -484,14 +496,17 @@ object Multipart {
       /** Java API */
       override def getParts
           : JSource[jm.Multipart.FormData.BodyPart.Strict, AnyRef] =
-        super.getParts
+        super
+          .getParts
           .asInstanceOf[JSource[jm.Multipart.FormData.BodyPart.Strict, AnyRef]]
 
       /** Java API */
       override def getStrictParts
           : java.lang.Iterable[jm.Multipart.FormData.BodyPart.Strict] =
-        super.getStrictParts.asInstanceOf[java.lang.Iterable[
-          jm.Multipart.FormData.BodyPart.Strict]]
+        super
+          .getStrictParts
+          .asInstanceOf[java.lang.Iterable[
+            jm.Multipart.FormData.BodyPart.Strict]]
     }
 
     /**
@@ -534,7 +549,9 @@ object Multipart {
         entity
           .toStrict(timeout)
           .map(
-            Multipart.FormData.BodyPart
+            Multipart
+              .FormData
+              .BodyPart
               .Strict(name, _, additionalDispositionParams, additionalHeaders))
       }
 
@@ -638,7 +655,8 @@ object Multipart {
     /** Java API */
     override def getParts
         : JSource[_ <: jm.Multipart.ByteRanges.BodyPart, AnyRef] =
-      super.getParts
+      super
+        .getParts
         .asInstanceOf[JSource[_ <: jm.Multipart.ByteRanges.BodyPart, AnyRef]]
 
     /** Java API */
@@ -677,15 +695,19 @@ object Multipart {
       /** Java API */
       override def getParts
           : JSource[jm.Multipart.ByteRanges.BodyPart.Strict, AnyRef] =
-        super.getParts.asInstanceOf[JSource[
-          jm.Multipart.ByteRanges.BodyPart.Strict,
-          AnyRef]]
+        super
+          .getParts
+          .asInstanceOf[JSource[
+            jm.Multipart.ByteRanges.BodyPart.Strict,
+            AnyRef]]
 
       /** Java API */
       override def getStrictParts
           : java.lang.Iterable[jm.Multipart.ByteRanges.BodyPart.Strict] =
-        super.getStrictParts.asInstanceOf[java.lang.Iterable[
-          jm.Multipart.ByteRanges.BodyPart.Strict]]
+        super
+          .getStrictParts
+          .asInstanceOf[java.lang.Iterable[
+            jm.Multipart.ByteRanges.BodyPart.Strict]]
     }
 
     /**
@@ -722,7 +744,9 @@ object Multipart {
         entity
           .toStrict(timeout)
           .map(
-            Multipart.ByteRanges.BodyPart
+            Multipart
+              .ByteRanges
+              .BodyPart
               .Strict(contentRange, _, rangeUnit, additionalHeaders))
       }
 

@@ -143,7 +143,9 @@ private[akka] trait StashSupport {
 
   /* The capacity of the stash. Configured in the actor's mailbox or dispatcher config.
    */
-  private val capacity: Int = context.system.mailboxes
+  private val capacity: Int = context
+    .system
+    .mailboxes
     .stashCapacity(context.props.dispatcher, context.props.mailbox)
 
   /**
@@ -242,8 +244,9 @@ private[akka] trait StashSupport {
     */
   private[akka] def unstashAll(filterPredicate: Any ⇒ Boolean): Unit = {
     try {
-      val i = theStash.reverseIterator.filter(envelope ⇒
-        filterPredicate(envelope.message))
+      val i = theStash
+        .reverseIterator
+        .filter(envelope ⇒ filterPredicate(envelope.message))
       while (i.hasNext)
         enqueueFirst(i.next())
     } finally {

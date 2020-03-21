@@ -69,9 +69,8 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
     <tr>
       <td>
         <a href={
-      "%s/storage/rdd?id=%s".format(
-        UIUtils.prependBaseUri(parent.basePath),
-        rdd.id)
+      "%s/storage/rdd?id=%s"
+        .format(UIUtils.prependBaseUri(parent.basePath), rdd.id)
     }>
           {
       rdd.name
@@ -227,8 +226,10 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
         replications.head,
         replications.size,
         true) ++
-        replications.tail.flatMap(
-          streamBlockTableSubrow(block._1, _, replications.size, false))
+        replications
+          .tail
+          .flatMap(
+            streamBlockTableSubrow(block._1, _, replications.size, false))
     }
   }
 
@@ -274,9 +275,13 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
       block: BlockUIData): (String, Long) = {
     if (block.storageLevel.useDisk) {
       ("Disk", block.diskSize)
-    } else if (block.storageLevel.useMemory && block.storageLevel.deserialized) {
+    } else if (block.storageLevel.useMemory && block
+                 .storageLevel
+                 .deserialized) {
       ("Memory", block.memSize)
-    } else if (block.storageLevel.useMemory && !block.storageLevel.deserialized) {
+    } else if (block.storageLevel.useMemory && !block
+                 .storageLevel
+                 .deserialized) {
       ("Memory Serialized", block.memSize)
     } else {
       throw new IllegalStateException(

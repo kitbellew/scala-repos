@@ -67,9 +67,8 @@ class ExecutorClassLoader(
       case "http" | "https" | "ftp" =>
         getClassFileInputStreamFromHttpServer
       case _ =>
-        val fileSystem = FileSystem.get(
-          uri,
-          SparkHadoopUtil.get.newConfiguration(conf))
+        val fileSystem = FileSystem
+          .get(uri, SparkHadoopUtil.get.newConfiguration(conf))
         getClassFileInputStreamFromFileSystem(fileSystem)
     }
 
@@ -135,9 +134,8 @@ class ExecutorClassLoader(
     val url =
       if (SparkEnv.get.securityManager.isAuthenticationEnabled()) {
         val uri = new URI(classUri + "/" + urlEncode(pathInDirectory))
-        val newuri = Utils.constructURIForAuthentication(
-          uri,
-          SparkEnv.get.securityManager)
+        val newuri = Utils
+          .constructURIForAuthentication(uri, SparkEnv.get.securityManager)
         newuri.toURL
       } else {
         new URL(classUri + "/" + urlEncode(pathInDirectory))

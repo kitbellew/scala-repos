@@ -30,8 +30,8 @@ class ZookeeperServerSetClusterSpec extends FunSuite with MockitoSugar {
           ZookeeperServerSetCluster,
           (InetSocketAddress, EndpointMap) => Unit) => Unit) {
     val serverSet = mock[ServerSet]
-    val monitorCaptor = ArgumentCaptor.forClass(
-      classOf[HostChangeMonitor[ServiceInstance]])
+    val monitorCaptor = ArgumentCaptor
+      .forClass(classOf[HostChangeMonitor[ServiceInstance]])
 
     val cluster = new ZookeeperServerSetCluster(serverSet, endpointName)
     cluster.thread.join()
@@ -91,10 +91,8 @@ class ZookeeperServerSetClusterSpec extends FunSuite with MockitoSugar {
 
     cluster.join(localAddress, Map("alt" -> altLocalAddress))
 
-    verify(serverSet).join(
-      localAddress,
-      Map("alt" -> altLocalAddress).asJava,
-      Status.ALIVE)
+    verify(serverSet)
+      .join(localAddress, Map("alt" -> altLocalAddress).asJava, Status.ALIVE)
   }
 
   // CSL-2175

@@ -301,11 +301,10 @@ final class ClusterClient(settings: ClusterClientSettings)
   sendGetContacts()
 
   import context.dispatcher
-  val heartbeatTask = context.system.scheduler.schedule(
-    heartbeatInterval,
-    heartbeatInterval,
-    self,
-    HeartbeatTick)
+  val heartbeatTask = context
+    .system
+    .scheduler
+    .schedule(heartbeatInterval, heartbeatInterval, self, HeartbeatTick)
   var refreshContactsTask: Option[Cancellable] = None
   scheduleRefreshContactsTick(establishingGetContactsInterval)
   self ! RefreshContactsTick
@@ -317,7 +316,9 @@ final class ClusterClient(settings: ClusterClientSettings)
       _.cancel()
     }
     refreshContactsTask = Some(
-      context.system.scheduler
+      context
+        .system
+        .scheduler
         .schedule(interval, interval, self, RefreshContactsTick))
   }
 
@@ -332,9 +333,11 @@ final class ClusterClient(settings: ClusterClientSettings)
   def receive = establishing
 
   def establishing: Actor.Receive = {
-    val connectTimerCancelable = settings.reconnectTimeout.map { timeout ⇒
-      context.system.scheduler.scheduleOnce(timeout, self, ReconnectTimeout)
-    }
+    val connectTimerCancelable = settings
+      .reconnectTimeout
+      .map { timeout ⇒
+        context.system.scheduler.scheduleOnce(timeout, self, ReconnectTimeout)
+      }
 
     {
       case Contacts(contactPoints) ⇒
@@ -372,10 +375,8 @@ final class ClusterClient(settings: ClusterClientSettings)
 
   def active(receptionist: ActorRef): Actor.Receive = {
     case Send(path, msg, localAffinity) ⇒
-      receptionist forward DistributedPubSubMediator.Send(
-        path,
-        msg,
-        localAffinity)
+      receptionist forward DistributedPubSubMediator
+        .Send(path, msg, localAffinity)
     case SendToAll(path, msg) ⇒
       receptionist forward DistributedPubSubMediator.SendToAll(path, msg)
     case Publish(topic, msg) ⇒
@@ -465,7 +466,9 @@ object ClusterClientReceptionist
 final class ClusterClientReceptionist(system: ExtendedActorSystem)
     extends Extension {
 
-  private val config = system.settings.config
+  private val config = system
+    .settings
+    .config
     .getConfig("akka.cluster.client.receptionist")
   private val role: Option[String] =
     config.getString("role") match {
@@ -480,8 +483,8 @@ final class ClusterClientReceptionist(system: ExtendedActorSystem)
     * receptionist.
     */
   def isTerminated: Boolean =
-    Cluster(system).isTerminated || !role.forall(
-      Cluster(system).selfRoles.contains)
+    Cluster(system).isTerminated || !role
+      .forall(Cluster(system).selfRoles.contains)
 
   /**
     * Register the actors that should be reachable for the clients in this [[DistributedPubSubMediator]].
@@ -501,8 +504,8 @@ final class ClusterClientReceptionist(system: ExtendedActorSystem)
     * but it can also be explicitly unregistered before termination.
     */
   def unregisterService(actor: ActorRef): Unit =
-    pubSubMediator ! DistributedPubSubMediator.Remove(
-      actor.path.toStringWithoutAddress)
+    pubSubMediator ! DistributedPubSubMediator
+      .Remove(actor.path.toStringWithoutAddress)
 
   /**
     * Register an actor that should be reachable for the clients to a named topic.
@@ -809,8 +812,8 @@ final class ClusterReceptionist(
       } else {
         // using toStringWithAddress in case the client is local, normally it is not, and
         // toStringWithAddress will use the remote address of the client
-        val a = consistentHash.nodeFor(
-          sender().path.toStringWithAddress(cluster.selfAddress))
+        val a = consistentHash
+          .nodeFor(sender().path.toStringWithAddress(cluster.selfAddress))
         val slice = {
           val first = nodes.from(a).tail.take(numberOfContacts)
           if (first.size == numberOfContacts)
@@ -829,10 +832,12 @@ final class ClusterReceptionist(
       }
 
     case state: CurrentClusterState ⇒
-      nodes = nodes.empty union state.members.collect {
-        case m if m.status != MemberStatus.Joining && matchingRole(m) ⇒
-          m.address
-      }
+      nodes = nodes.empty union state
+        .members
+        .collect {
+          case m if m.status != MemberStatus.Joining && matchingRole(m) ⇒
+            m.address
+        }
       consistentHash = ConsistentHash(nodes, virtualNodesFactor)
 
     case MemberUp(m) ⇒

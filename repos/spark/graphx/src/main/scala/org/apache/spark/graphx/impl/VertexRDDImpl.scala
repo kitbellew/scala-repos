@@ -95,9 +95,8 @@ class VertexRDDImpl[VD] private[graphx] (
   override private[graphx] def mapVertexPartitions[VD2: ClassTag](
       f: ShippableVertexPartition[VD] => ShippableVertexPartition[VD2])
       : VertexRDD[VD2] = {
-    val newPartitionsRDD = partitionsRDD.mapPartitions(
-      _.map(f),
-      preservesPartitioning = true)
+    val newPartitionsRDD = partitionsRDD
+      .mapPartitions(_.map(f), preservesPartitioning = true)
     this.withPartitionsRDD(newPartitionsRDD)
   }
 
@@ -146,26 +145,26 @@ class VertexRDDImpl[VD] private[graphx] (
           VertexRDD(other.partitionBy(this.partitioner.get)).partitionsRDD
       }
     val newPartitionsRDD =
-      partitionsRDD.zipPartitions(
-        otherPartition,
-        preservesPartitioning = true) { (thisIter, otherIter) =>
-        val thisPart = thisIter.next()
-        val otherPart = otherIter.next()
-        Iterator(thisPart.diff(otherPart))
-      }
+      partitionsRDD
+        .zipPartitions(otherPartition, preservesPartitioning = true) {
+          (thisIter, otherIter) =>
+            val thisPart = thisIter.next()
+            val otherPart = otherIter.next()
+            Iterator(thisPart.diff(otherPart))
+        }
     this.withPartitionsRDD(newPartitionsRDD)
   }
 
   override def leftZipJoin[VD2: ClassTag, VD3: ClassTag](other: VertexRDD[VD2])(
       f: (VertexId, VD, Option[VD2]) => VD3): VertexRDD[VD3] = {
     val newPartitionsRDD =
-      partitionsRDD.zipPartitions(
-        other.partitionsRDD,
-        preservesPartitioning = true) { (thisIter, otherIter) =>
-        val thisPart = thisIter.next()
-        val otherPart = otherIter.next()
-        Iterator(thisPart.leftJoin(otherPart)(f))
-      }
+      partitionsRDD
+        .zipPartitions(other.partitionsRDD, preservesPartitioning = true) {
+          (thisIter, otherIter) =>
+            val thisPart = thisIter.next()
+            val otherPart = otherIter.next()
+            Iterator(thisPart.leftJoin(otherPart)(f))
+        }
     this.withPartitionsRDD(newPartitionsRDD)
   }
 
@@ -190,13 +189,13 @@ class VertexRDDImpl[VD] private[graphx] (
   override def innerZipJoin[U: ClassTag, VD2: ClassTag](other: VertexRDD[U])(
       f: (VertexId, VD, U) => VD2): VertexRDD[VD2] = {
     val newPartitionsRDD =
-      partitionsRDD.zipPartitions(
-        other.partitionsRDD,
-        preservesPartitioning = true) { (thisIter, otherIter) =>
-        val thisPart = thisIter.next()
-        val otherPart = otherIter.next()
-        Iterator(thisPart.innerJoin(otherPart)(f))
-      }
+      partitionsRDD
+        .zipPartitions(other.partitionsRDD, preservesPartitioning = true) {
+          (thisIter, otherIter) =>
+            val thisPart = thisIter.next()
+            val otherPart = otherIter.next()
+            Iterator(thisPart.innerJoin(otherPart)(f))
+        }
     this.withPartitionsRDD(newPartitionsRDD)
   }
 
@@ -233,9 +232,8 @@ class VertexRDDImpl[VD] private[graphx] (
       vPart.withRoutingTable(vPart.routingTable.reverse))
 
   override def withEdges(edges: EdgeRDD[_]): VertexRDD[VD] = {
-    val routingTables = VertexRDD.createRoutingTables(
-      edges,
-      this.partitioner.get)
+    val routingTables = VertexRDD
+      .createRoutingTables(edges, this.partitioner.get)
     val vertexPartitions =
       partitionsRDD.zipPartitions(routingTables, true) {
         (partIter, routingTableIter) =>
@@ -262,8 +260,8 @@ class VertexRDDImpl[VD] private[graphx] (
   override private[graphx] def shipVertexAttributes(
       shipSrc: Boolean,
       shipDst: Boolean): RDD[(PartitionID, VertexAttributeBlock[VD])] = {
-    partitionsRDD.mapPartitions(
-      _.flatMap(_.shipVertexAttributes(shipSrc, shipDst)))
+    partitionsRDD
+      .mapPartitions(_.flatMap(_.shipVertexAttributes(shipSrc, shipDst)))
   }
 
   override private[graphx] def shipVertexIds()

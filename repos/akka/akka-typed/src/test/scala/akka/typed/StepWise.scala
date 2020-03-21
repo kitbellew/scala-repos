@@ -65,11 +65,14 @@ object StepWise {
   private sealed trait Trace {
     def getStackTrace: Array[StackTraceElement]
     protected def getFrames: Array[StackTraceElement] =
-      Thread.currentThread.getStackTrace.dropWhile { elem ⇒
-        val name = elem.getClassName
-        name.startsWith("java.lang.Thread") || name.startsWith(
-          "akka.typed.StepWise")
-      }
+      Thread
+        .currentThread
+        .getStackTrace
+        .dropWhile { elem ⇒
+          val name = elem.getClassName
+          name.startsWith("java.lang.Thread") || name
+            .startsWith("akka.typed.StepWise")
+        }
   }
   private class WithTrace extends Trace {
     private val trace = getFrames

@@ -122,8 +122,8 @@ trait JdbcTypesComponent extends RelationalTypesComponent {
   def defaultSqlTypeName(tmd: JdbcType[_], sym: Option[FieldSymbol]): String =
     tmd.sqlType match {
       case java.sql.Types.VARCHAR =>
-        val size = sym.flatMap(
-          _.findColumnOption[RelationalProfile.ColumnOption.Length])
+        val size = sym
+          .flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length])
         size.fold("VARCHAR(254)")(l =>
           if (l.varying)
             s"VARCHAR(${l.length})"
@@ -132,10 +132,12 @@ trait JdbcTypesComponent extends RelationalTypesComponent {
       case java.sql.Types.DECIMAL =>
         "DECIMAL(21,2)"
       case t =>
-        JdbcTypesComponent.typeNames.getOrElse(
-          t,
-          throw new SlickException(
-            "No SQL type name found in java.sql.Types for code " + t))
+        JdbcTypesComponent
+          .typeNames
+          .getOrElse(
+            t,
+            throw new SlickException(
+              "No SQL type name found in java.sql.Types for code " + t))
     }
 
   abstract class DriverJdbcType[@specialized T](implicit
@@ -255,7 +257,10 @@ trait JdbcTypesComponent extends RelationalTypesComponent {
 
     class FloatJdbcType extends DriverJdbcType[Float] with NumericTypedType {
       def sqlType =
-        java.sql.Types.REAL // see http://docs.oracle.com/javase/1.5.0/docs/guide/jdbc/getstart/mapping.html#1055162
+        java
+          .sql
+          .Types
+          .REAL // see http://docs.oracle.com/javase/1.5.0/docs/guide/jdbc/getstart/mapping.html#1055162
       def setValue(v: Float, p: PreparedStatement, idx: Int) =
         p.setFloat(idx, v)
       def getValue(r: ResultSet, idx: Int) = r.getFloat(idx)

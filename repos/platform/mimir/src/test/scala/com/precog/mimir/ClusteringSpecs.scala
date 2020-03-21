@@ -105,7 +105,8 @@ trait ClusteringLibSpecs[M[+_]]
       }
 
     val clusters: Array[Array[Double]] =
-      clusterMap.values
+      clusterMap
+        .values
         .map({ sval =>
           val arr = getPoint(sval)
           arr must haveSize(dimension)
@@ -355,20 +356,25 @@ trait ClusteringLibSpecs[M[+_]]
   def assign(
       points: Array[Array[Double]],
       centers: Array[Array[Double]]): Map[RValue, String] = {
-    points.map { p =>
-      val id = (0 until centers.length) minBy { i =>
-        (p - centers(i)).norm
+    points
+      .map { p =>
+        val id = (0 until centers.length) minBy { i =>
+          (p - centers(i)).norm
+        }
+        pointToJson(p) -> ("cluster" + (id + 1))
       }
-      pointToJson(p) -> ("cluster" + (id + 1))
-    }.toMap
+      .toMap
   }
 
   def makeClusters(centers: Array[Array[Double]]) = {
     RObject(
-      pointsToJson(centers).zipWithIndex.map {
-        case (ctr, idx) =>
-          ("cluster" + (idx + 1), ctr)
-      }.toMap)
+      pointsToJson(centers)
+        .zipWithIndex
+        .map {
+          case (ctr, idx) =>
+            ("cluster" + (idx + 1), ctr)
+        }
+        .toMap)
   }
 
   def createDAG(pointsDataSet: String, modelDataSet: String) = {

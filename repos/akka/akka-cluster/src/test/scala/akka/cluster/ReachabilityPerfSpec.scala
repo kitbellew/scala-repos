@@ -11,12 +11,14 @@ import akka.actor.Address
 class ReachabilityPerfSpec extends WordSpec with Matchers {
 
   val nodesSize =
-    sys.props
+    sys
+      .props
       .get("akka.cluster.ReachabilityPerfSpec.nodesSize")
       .getOrElse("250")
       .toInt
   val iterations =
-    sys.props
+    sys
+      .props
       .get("akka.cluster.ReachabilityPerfSpec.iterations")
       .getOrElse("10000")
       .toInt
@@ -103,9 +105,11 @@ class ReachabilityPerfSpec extends WordSpec with Matchers {
   }
 
   private def recordsFrom(r1: Reachability): Unit = {
-    r1.allObservers.foreach { o ⇒
-      r1.recordsFrom(o) should not be be(null)
-    }
+    r1
+      .allObservers
+      .foreach { o ⇒
+        r1.recordsFrom(o) should not be be(null)
+      }
   }
 
   s"Reachability of size $nodesSize" must {

@@ -18,10 +18,8 @@ abstract class AbstractTestRunConfigurationFactory(val typez: ConfigurationType)
       name: String,
       template: RunConfiguration): RunConfiguration = {
 
-    val configuration =
-      (
-        super.createConfiguration(name, template)
-      ).asInstanceOf[AbstractTestRunConfiguration]
+    val configuration = (super.createConfiguration(name, template))
+      .asInstanceOf[AbstractTestRunConfiguration]
     template.getProject.anyScalaModule.foreach(configuration.setModule(_))
     configuration
   }

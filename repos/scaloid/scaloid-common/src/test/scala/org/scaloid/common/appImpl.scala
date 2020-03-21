@@ -24,9 +24,11 @@ class SActivityImpl extends SActivity {
     sld.addState(Array.empty, android.R.drawable.btn_star_big_off)
     contentView = new SVerticalLayout {
       STextView("Hello").id(1)
-      SButton("Button").id(2).onClick { v: View =>
-        v.asInstanceOf[Button].setText("Pressed")
-      }
+      SButton("Button")
+        .id(2)
+        .onClick { v: View =>
+          v.asInstanceOf[Button].setText("Pressed")
+        }
       SImageView(stateListDrawable).id(3)
     }
   }

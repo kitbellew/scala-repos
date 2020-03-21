@@ -178,9 +178,8 @@ case class ThreadedBufferedRand[T](
     new Thread {
       override def run() {
         while (!stopWorker) {
-          val buff = usedArrayQueue.poll(
-            1,
-            java.util.concurrent.TimeUnit.SECONDS)
+          val buff = usedArrayQueue
+            .poll(1, java.util.concurrent.TimeUnit.SECONDS)
           if (buff != null) {
             cfor(0)(i => i < bufferSize, i => i + 1)(i => {
               buff(i) = wrapped.draw()

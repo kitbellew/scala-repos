@@ -66,7 +66,8 @@ class WorksheetFoldingBuilder extends FoldingBuilder {
           node,
           new TextRange(
             node.getPsi.asInstanceOf[PsiComment].getTextRange.getStartOffset,
-            node.getPsi
+            node
+              .getPsi
               .asInstanceOf[PsiComment]
               .getTextRange
               .getStartOffset + length),

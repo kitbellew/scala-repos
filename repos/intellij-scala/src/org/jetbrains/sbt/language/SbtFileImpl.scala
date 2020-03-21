@@ -34,16 +34,10 @@ class SbtFileImpl(provider: FileViewProvider)
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean =
-    super[ScalaFileImpl].processDeclarations(
-      processor,
-      state,
-      lastParent,
-      place) &&
-      super[ScDeclarationSequenceHolder].processDeclarations(
-        processor,
-        state,
-        lastParent,
-        place) &&
+    super[ScalaFileImpl]
+      .processDeclarations(processor, state, lastParent, place) &&
+      super[ScDeclarationSequenceHolder]
+        .processDeclarations(processor, state, lastParent, place) &&
       processImplicitImports(processor, state, lastParent, place)
 
   private def processImplicitImports(
@@ -51,9 +45,8 @@ class SbtFileImpl(provider: FileViewProvider)
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    val expressions =
-      implicitImportExpressions ++ localObjectsWithDefinitions.map(
-        _.qualifiedName + "._")
+    val expressions = implicitImportExpressions ++ localObjectsWithDefinitions
+      .map(_.qualifiedName + "._")
 
     // TODO this is a workaround, we need to find out why references stopped resolving via the chained imports
     val expressions0 = expressions.map {
@@ -89,7 +82,8 @@ class SbtFileImpl(provider: FileViewProvider)
       val moduleScope = module.getModuleScope
       val moduleWithLibrariesScope = module.getModuleWithLibrariesScope
 
-      Sbt.DefinitionHolderClasses
+      Sbt
+        .DefinitionHolderClasses
         .flatMap(manager.getCachedClasses(moduleWithLibrariesScope, _))
         .flatMap(
           ClassInheritorsSearch.search(_, moduleScope, true).findAll.asScala)
@@ -97,8 +91,8 @@ class SbtFileImpl(provider: FileViewProvider)
   }
 
   override def getFileResolveScope: GlobalSearchScope =
-    projectDefinitionModule.fold(super.getFileResolveScope)(
-      _.getModuleWithLibrariesScope)
+    projectDefinitionModule
+      .fold(super.getFileResolveScope)(_.getModuleWithLibrariesScope)
 
   private def projectDefinitionModule: Option[Module] =
     fileModule.flatMap { module =>

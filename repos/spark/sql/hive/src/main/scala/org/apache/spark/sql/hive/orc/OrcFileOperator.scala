@@ -70,7 +70,8 @@ private[orc] object OrcFileOperator extends Logging {
       hdfsPath.getFileSystem(conf)
     }
 
-    listOrcFiles(basePath, conf).iterator
+    listOrcFiles(basePath, conf)
+      .iterator
       .map { path =>
         path -> OrcFile.createReader(fs, path)
       }
@@ -85,21 +86,25 @@ private[orc] object OrcFileOperator extends Logging {
       conf: Option[Configuration]): Option[StructType] = {
     // Take the first file where we can open a valid reader if we can find one.  Otherwise just
     // return None to indicate we can't infer the schema.
-    paths.flatMap(getFileReader(_, conf)).headOption.map { reader =>
-      val readerInspector = reader.getObjectInspector
-        .asInstanceOf[StructObjectInspector]
-      val schema = readerInspector.getTypeName
-      logDebug(
-        s"Reading schema from file $paths, got Hive schema string: $schema")
-      HiveMetastoreTypes.toDataType(schema).asInstanceOf[StructType]
-    }
+    paths
+      .flatMap(getFileReader(_, conf))
+      .headOption
+      .map { reader =>
+        val readerInspector = reader
+          .getObjectInspector
+          .asInstanceOf[StructObjectInspector]
+        val schema = readerInspector.getTypeName
+        logDebug(
+          s"Reading schema from file $paths, got Hive schema string: $schema")
+        HiveMetastoreTypes.toDataType(schema).asInstanceOf[StructType]
+      }
   }
 
   def getObjectInspector(
       path: String,
       conf: Option[Configuration]): Option[StructObjectInspector] = {
-    getFileReader(path, conf).map(
-      _.getObjectInspector.asInstanceOf[StructObjectInspector])
+    getFileReader(path, conf)
+      .map(_.getObjectInspector.asInstanceOf[StructObjectInspector])
   }
 
   def listOrcFiles(pathStr: String, conf: Configuration): Seq[Path] = {
@@ -107,7 +112,8 @@ private[orc] object OrcFileOperator extends Logging {
     val origPath = new Path(pathStr)
     val fs = origPath.getFileSystem(conf)
     val path = origPath.makeQualified(fs.getUri, fs.getWorkingDirectory)
-    val paths = SparkHadoopUtil.get
+    val paths = SparkHadoopUtil
+      .get
       .listLeafStatuses(fs, origPath)
       .filterNot(_.isDirectory)
       .map(_.getPath)

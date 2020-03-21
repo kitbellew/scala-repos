@@ -52,14 +52,17 @@ class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
   // Essentially doing a leftFlatMap here
   def size(apiKey: APIKey, path: Path): EitherT[M, ResourceError, JNum] =
     EitherT {
-      vfs.size(apiKey, path, Version.Current).run.map {
-        case -\/(ResourceError.NotFound(_)) =>
-          \/-(0L)
-        case otherError @ -\/(_) =>
-          otherError
-        case okValue @ \/-(_) =>
-          okValue
-      }
+      vfs
+        .size(apiKey, path, Version.Current)
+        .run
+        .map {
+          case -\/(ResourceError.NotFound(_)) =>
+            \/-(0L)
+          case otherError @ -\/(_) =>
+            otherError
+          case okValue @ \/-(_) =>
+            okValue
+        }
     } map {
       JNum(_)
     }
@@ -165,7 +168,8 @@ class BrowseServiceHandler[A](
             }
 
           case "structure" =>
-            val cpath = request.parameters
+            val cpath = request
+              .parameters
               .get('property)
               .map(CPath(_))
               .getOrElse(CPath.Identity)
@@ -185,10 +189,8 @@ class BrowseServiceHandler[A](
               browse(apiKey, path)
             struct <- structure(apiKey, path, CPath.Identity)
           } yield {
-            JObject(
-              "size" -> sz,
-              "children" -> children,
-              "structure" -> struct).normalize
+            JObject("size" -> sz, "children" -> children, "structure" -> struct)
+              .normalize
           }
         } map { content0 =>
           HttpResponse[JValue](OK, content = Some(content0))

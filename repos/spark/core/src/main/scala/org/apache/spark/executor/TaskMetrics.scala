@@ -66,10 +66,12 @@ class TaskMetrics private[spark] (initialAccums: Seq[Accumulator[_]])
   private val initialAccumsMap: Map[String, Accumulator[_]] = {
     val map = new mutable.HashMap[String, Accumulator[_]]
     initialAccums.foreach { a =>
-      val name = a.name.getOrElse {
-        throw new IllegalArgumentException(
-          "initial accumulators passed to TaskMetrics must be named")
-      }
+      val name = a
+        .name
+        .getOrElse {
+          throw new IllegalArgumentException(
+            "initial accumulators passed to TaskMetrics must be named")
+        }
       require(
         a.isInternal,
         s"initial accumulator '$name' passed to TaskMetrics must be marked as internal")
@@ -303,12 +305,12 @@ class TaskMetrics private[spark] (initialAccums: Seq[Accumulator[_]])
           tempShuffleReadMetrics.map(_.remoteBlocksFetched).sum)
         metrics.setLocalBlocksFetched(
           tempShuffleReadMetrics.map(_.localBlocksFetched).sum)
-        metrics.setFetchWaitTime(
-          tempShuffleReadMetrics.map(_.fetchWaitTime).sum)
-        metrics.setRemoteBytesRead(
-          tempShuffleReadMetrics.map(_.remoteBytesRead).sum)
-        metrics.setLocalBytesRead(
-          tempShuffleReadMetrics.map(_.localBytesRead).sum)
+        metrics
+          .setFetchWaitTime(tempShuffleReadMetrics.map(_.fetchWaitTime).sum)
+        metrics
+          .setRemoteBytesRead(tempShuffleReadMetrics.map(_.remoteBytesRead).sum)
+        metrics
+          .setLocalBytesRead(tempShuffleReadMetrics.map(_.localBytesRead).sum)
         metrics.setRecordsRead(tempShuffleReadMetrics.map(_.recordsRead).sum)
         _shuffleReadMetrics = Some(metrics)
       }

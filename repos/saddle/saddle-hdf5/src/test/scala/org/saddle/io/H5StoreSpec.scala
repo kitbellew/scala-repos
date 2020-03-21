@@ -150,12 +150,9 @@ class H5StoreSpec extends Specification {
       H5Store.readSeries[Double, Double](fid, "s5") must_== s5
 
       // try slicing
-      H5Store.readSeriesSlice[DateTime, Double](
-        fid,
-        "s1",
-        d2,
-        d3,
-        true) must_== s1.sliceBy(d2, d3)
+      H5Store
+        .readSeriesSlice[DateTime, Double](fid, "s1", d2, d3, true) must_== s1
+        .sliceBy(d2, d3)
 
       H5Store.closeFile(fid)
 

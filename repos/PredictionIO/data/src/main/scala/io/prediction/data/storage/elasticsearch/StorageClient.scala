@@ -29,11 +29,13 @@ class StorageClient(val config: StorageClientConfig)
   override val prefix = "ES"
   val client =
     try {
-      val hosts = config.properties
+      val hosts = config
+        .properties
         .get("HOSTS")
         .map(_.split(",").toSeq)
         .getOrElse(Seq("localhost"))
-      val ports = config.properties
+      val ports = config
+        .properties
         .get("PORTS")
         .map(_.split(",").toSeq.map(_.toInt))
         .getOrElse(Seq(9300))
@@ -44,8 +46,8 @@ class StorageClient(val config: StorageClientConfig)
           config.properties.getOrElse("CLUSTERNAME", "elasticsearch"))
       val transportClient = new TransportClient(settings)
       (hosts zip ports) foreach { hp =>
-        transportClient.addTransportAddress(
-          new InetSocketTransportAddress(hp._1, hp._2))
+        transportClient
+          .addTransportAddress(new InetSocketTransportAddress(hp._1, hp._2))
       }
       transportClient
     } catch {

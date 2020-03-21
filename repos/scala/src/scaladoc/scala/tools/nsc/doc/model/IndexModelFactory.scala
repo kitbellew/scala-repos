@@ -34,15 +34,19 @@ object IndexModelFactory {
               else
                 '_'
             }
-            val letter = this.get(firstLetter).getOrElse {
-              immutable.SortedMap[String, SortedSet[MemberEntity]]()
-            }
-            val members = letter.get(d.name).getOrElse {
-              SortedSet.empty[MemberEntity](
-                Ordering.by {
-                  _.toString
-                })
-            } + d
+            val letter = this
+              .get(firstLetter)
+              .getOrElse {
+                immutable.SortedMap[String, SortedSet[MemberEntity]]()
+              }
+            val members = letter
+              .get(d.name)
+              .getOrElse {
+                SortedSet.empty[MemberEntity](
+                  Ordering.by {
+                    _.toString
+                  })
+              } + d
             if (!deprecated && members.find(_.deprecation.isDefined).isDefined)
               deprecated = true
             this(firstLetter) = letter + (d.name -> members)
@@ -51,8 +55,9 @@ object IndexModelFactory {
 
         //@scala.annotation.tailrec // TODO
         def gather(owner: DocTemplateEntity): Unit =
-          for (m <- owner.members
-               if m.inDefinitionTemplates.isEmpty || m.inDefinitionTemplates.head == owner)
+          for (m <- owner.members if m.inDefinitionTemplates.isEmpty || m
+                 .inDefinitionTemplates
+                 .head == owner)
             m match {
               case tpl: DocTemplateEntity =>
                 result.addMember(tpl)

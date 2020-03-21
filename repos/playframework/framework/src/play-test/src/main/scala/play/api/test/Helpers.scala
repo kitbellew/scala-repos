@@ -51,14 +51,16 @@ trait PlayRunners extends HttpVerbs {
     * Executes a block of code in a running application.
     */
   def running[T](app: Application)(block: => T): T = {
-    PlayRunners.mutex.synchronized {
-      try {
-        Play.start(app)
-        block
-      } finally {
-        Play.stop(app)
+    PlayRunners
+      .mutex
+      .synchronized {
+        try {
+          Play.start(app)
+          block
+        } finally {
+          Play.stop(app)
+        }
       }
-    }
   }
 
   def running[T](builder: GuiceApplicationBuilder => GuiceApplicationBuilder)(
@@ -71,14 +73,16 @@ trait PlayRunners extends HttpVerbs {
     * Executes a block of code in a running server.
     */
   def running[T](testServer: TestServer)(block: => T): T = {
-    PlayRunners.mutex.synchronized {
-      try {
-        testServer.start()
-        block
-      } finally {
-        testServer.stop()
+    PlayRunners
+      .mutex
+      .synchronized {
+        try {
+          testServer.start()
+          block
+        } finally {
+          testServer.stop()
+        }
       }
-    }
   }
 
   /**
@@ -96,18 +100,20 @@ trait PlayRunners extends HttpVerbs {
   def running[T](testServer: TestServer, webDriver: WebDriver)(
       block: TestBrowser => T): T = {
     var browser: TestBrowser = null
-    PlayRunners.mutex.synchronized {
-      try {
-        testServer.start()
-        browser = TestBrowser(webDriver, None)
-        block(browser)
-      } finally {
-        if (browser != null) {
-          browser.quit()
+    PlayRunners
+      .mutex
+      .synchronized {
+        try {
+          testServer.start()
+          browser = TestBrowser(webDriver, None)
+          block(browser)
+        } finally {
+          if (browser != null) {
+            browser.quit()
+          }
+          testServer.stop()
         }
-        testServer.stop()
       }
-    }
   }
 
   /**

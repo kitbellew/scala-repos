@@ -47,15 +47,12 @@ private[ml] object GradientBoostedTrees extends Logging {
     val algo = boostingStrategy.treeStrategy.algo
     algo match {
       case OldAlgo.Regression =>
-        GradientBoostedTrees.boost(
-          input,
-          input,
-          boostingStrategy,
-          validate = false)
+        GradientBoostedTrees
+          .boost(input, input, boostingStrategy, validate = false)
       case OldAlgo.Classification =>
         // Map labels to -1, +1 so binary classification can be treated as regression.
-        val remappedInput = input.map(x =>
-          new LabeledPoint((x.label * 2) - 1, x.features))
+        val remappedInput = input
+          .map(x => new LabeledPoint((x.label * 2) - 1, x.features))
         GradientBoostedTrees.boost(
           remappedInput,
           remappedInput,
@@ -86,17 +83,14 @@ private[ml] object GradientBoostedTrees extends Logging {
     val algo = boostingStrategy.treeStrategy.algo
     algo match {
       case OldAlgo.Regression =>
-        GradientBoostedTrees.boost(
-          input,
-          validationInput,
-          boostingStrategy,
-          validate = true)
+        GradientBoostedTrees
+          .boost(input, validationInput, boostingStrategy, validate = true)
       case OldAlgo.Classification =>
         // Map labels to -1, +1 so binary classification can be treated as regression.
-        val remappedInput = input.map(x =>
-          new LabeledPoint((x.label * 2) - 1, x.features))
-        val remappedValidationInput = validationInput.map(x =>
-          new LabeledPoint((x.label * 2) - 1, x.features))
+        val remappedInput = input
+          .map(x => new LabeledPoint((x.label * 2) - 1, x.features))
+        val remappedValidationInput = validationInput
+          .map(x => new LabeledPoint((x.label * 2) - 1, x.features))
         GradientBoostedTrees.boost(
           remappedInput,
           remappedValidationInput,
@@ -124,8 +118,10 @@ private[ml] object GradientBoostedTrees extends Logging {
       initTree: DecisionTreeRegressionModel,
       loss: OldLoss): RDD[(Double, Double)] = {
     data.map { lp =>
-      val pred =
-        initTreeWeight * initTree.rootNode.predictImpl(lp.features).prediction
+      val pred = initTreeWeight * initTree
+        .rootNode
+        .predictImpl(lp.features)
+        .prediction
       val error = loss.computeError(pred, lp.label)
       (pred, error)
     }
@@ -149,16 +145,19 @@ private[ml] object GradientBoostedTrees extends Logging {
       tree: DecisionTreeRegressionModel,
       loss: OldLoss): RDD[(Double, Double)] = {
 
-    val newPredError = data.zip(predictionAndError).mapPartitions { iter =>
-      iter.map {
-        case (lp, (pred, error)) =>
-          val newPred = pred + tree.rootNode
-            .predictImpl(lp.features)
-            .prediction * treeWeight
-          val newError = loss.computeError(newPred, lp.label)
-          (newPred, newError)
+    val newPredError = data
+      .zip(predictionAndError)
+      .mapPartitions { iter =>
+        iter.map {
+          case (lp, (pred, error)) =>
+            val newPred = pred + tree
+              .rootNode
+              .predictImpl(lp.features)
+              .prediction * treeWeight
+            val newError = loss.computeError(newPred, lp.label)
+            (newPred, newError)
+        }
       }
-    }
     newPredError
   }
 
@@ -259,10 +258,12 @@ private[ml] object GradientBoostedTrees extends Logging {
     var doneLearning = false
     while (m < numIterations && !doneLearning) {
       // Update data with pseudo-residuals
-      val data = predError.zip(input).map {
-        case ((pred, _), point) =>
-          LabeledPoint(-loss.gradient(pred, point.label), point.features)
-      }
+      val data = predError
+        .zip(input)
+        .map {
+          case ((pred, _), point) =>
+            LabeledPoint(-loss.gradient(pred, point.label), point.features)
+        }
 
       timer.start(s"building tree $m")
       logDebug("###################################################")
@@ -301,9 +302,8 @@ private[ml] object GradientBoostedTrees extends Logging {
           loss)
         validatePredErrorCheckpointer.update(validatePredError)
         val currentValidateError = validatePredError.values.mean()
-        if (bestValidateError - currentValidateError < validationTol * Math.max(
-              currentValidateError,
-              0.01)) {
+        if (bestValidateError - currentValidateError < validationTol * Math
+              .max(currentValidateError, 0.01)) {
           doneLearning = true
         } else if (currentValidateError < bestValidateError) {
           bestValidateError = currentValidateError

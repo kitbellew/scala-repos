@@ -95,11 +95,13 @@ abstract class SymbolTable
   def debugStack(t: Throwable): Unit = devWarning(throwableAsString(t))
 
   private[scala] def printCaller[T](msg: String)(result: T) = {
-    Console.err.println(
-      "%s: %s\nCalled from: %s".format(
-        msg,
-        result,
-        (new Throwable).getStackTrace.drop(2).take(50).mkString("\n")))
+    Console
+      .err
+      .println(
+        "%s: %s\nCalled from: %s".format(
+          msg,
+          result,
+          (new Throwable).getStackTrace.drop(2).take(50).mkString("\n")))
 
     result
   }
@@ -364,7 +366,8 @@ abstract class SymbolTable
           formals.last.typeArgs.head match {
             case RefinedType(List(t1, t2), _)
                 if (
-                  t1.typeSymbol.isAbstractType && t2.typeSymbol == definitions.ObjectClass
+                  t1.typeSymbol.isAbstractType && t2.typeSymbol == definitions
+                    .ObjectClass
                 ) =>
               t1 // drop intersection with Object for abstract types in varargs. UnCurry can handle them.
             case t =>

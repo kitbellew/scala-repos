@@ -83,7 +83,8 @@ class ConversionsSpecs extends Specification {
       cal.setTime(converted.get)
 
       cal.get(
-        Calendar.MILLISECOND) aka "The extracted milliseconds from converted Date" must_== currentMs
+        Calendar
+          .MILLISECOND) aka "The extracted milliseconds from converted Date" must_== currentMs
     }
 
     "provide DEF conversion for Seq" in {
@@ -94,8 +95,8 @@ class ConversionsSpecs extends Specification {
           mf: Manifest[T],
           t: TypeConverter[String, T]) = {
         val (source, expected) = args
-        Impl.stringToSeq(t).apply(source).get must containAllOf(
-          expected).inOrder
+        Impl.stringToSeq(t).apply(source).get must containAllOf(expected)
+          .inOrder
       }
 
       testConversion("1,2,3" -> List(1, 2, 3))

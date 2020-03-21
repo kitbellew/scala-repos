@@ -29,28 +29,31 @@ abstract class InspectionTestCase[T <: LocalInspectionTool: ClassTag]
     fixture.configureByText("dummy.scala", code)
     fixture.enableInspections(inspection)
 
-    fixture.doHighlighting().asScala.flatMap { it =>
-      val severity =
-        it.getSeverity match {
-          case HighlightSeverity.ERROR =>
-            Error
-          case HighlightSeverity.WARNING =>
-            Warning
-          case HighlightSeverity.WEAK_WARNING =>
-            WeakWarning
-          case _ =>
-            Information
-        }
-      if (severity == Information)
-        Seq.empty
-      else
-        Seq(
-          Highlight(
-            it.getStartOffset,
-            it.getEndOffset,
-            it.getDescription,
-            severity))
-    }
+    fixture
+      .doHighlighting()
+      .asScala
+      .flatMap { it =>
+        val severity =
+          it.getSeverity match {
+            case HighlightSeverity.ERROR =>
+              Error
+            case HighlightSeverity.WARNING =>
+              Warning
+            case HighlightSeverity.WEAK_WARNING =>
+              WeakWarning
+            case _ =>
+              Information
+          }
+        if (severity == Information)
+          Seq.empty
+        else
+          Seq(
+            Highlight(
+              it.getStartOffset,
+              it.getEndOffset,
+              it.getDescription,
+              severity))
+      }
   }
 
   protected sealed trait Severity

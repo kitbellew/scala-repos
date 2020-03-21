@@ -52,8 +52,9 @@ object RequestVals {
   def requestContext: RequestVal[RequestContext] =
     new StandaloneExtractionImpl[RequestContext] {
       def directive: Directive1[RequestContext] =
-        BasicDirectives.extractRequestContext.map(
-          RequestContextImpl(_): RequestContext)
+        BasicDirectives
+          .extractRequestContext
+          .map(RequestContextImpl(_): RequestContext)
     }
 
   /**
@@ -88,8 +89,8 @@ object RequestVals {
     new StandaloneExtractionImpl[String] {
       // important to use a val here so that invalid patterns are
       // detected at construction and `IllegalArgumentException` is thrown
-      override val directive: Directive1[String] = HostDirectives.host(
-        regex.pattern().r)
+      override val directive: Directive1[String] = HostDirectives
+        .host(regex.pattern().r)
     }
 
   /**
@@ -101,8 +102,9 @@ object RequestVals {
   def clientIP(): RequestVal[RemoteAddress] =
     new StandaloneExtractionImpl[RemoteAddress] {
       def directive: Directive1[RemoteAddress] =
-        MiscDirectives.extractClientIP.map(x ⇒
-          x: RemoteAddress) // missing covariance of Directive
+        MiscDirectives
+          .extractClientIP
+          .map(x ⇒ x: RemoteAddress) // missing covariance of Directive
     }
 
   /**

@@ -33,9 +33,12 @@ case class UserRecord(
     !banInEffect &&
     nbBadOutcomes >= nbBadOutcomesBeforeBan &&
     badOutcomeRatio >= 1d / 3
-  } option bans.lastOption.filterNot(_.isOld).fold(TempBan.initial) { prev =>
-    TempBan(prev.mins * 2)
-  }
+  } option bans
+    .lastOption
+    .filterNot(_.isOld)
+    .fold(TempBan.initial) { prev =>
+      TempBan(prev.mins * 2)
+    }
 }
 
 case class TempBan(date: DateTime, mins: Int) {

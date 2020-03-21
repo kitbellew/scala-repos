@@ -138,9 +138,13 @@ private[finagle] class MessageHeaderMap(httpMessage: HttpMessageProxy)
   def get(key: String): Option[String] = Option(httpMessage.headers.get(key))
 
   def iterator: Iterator[(String, String)] =
-    httpMessage.headers.iterator.asScala.map { entry =>
-      (entry.getKey, entry.getValue)
-    }
+    httpMessage
+      .headers
+      .iterator
+      .asScala
+      .map { entry =>
+        (entry.getKey, entry.getValue)
+      }
 
   override def keys: Iterable[String] = httpMessage.headers.names.asScala
 

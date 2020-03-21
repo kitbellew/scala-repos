@@ -250,7 +250,9 @@ object Plot {
   }
 
   // color cycle ignoring bright colors
-  val paints: Array[Paint] = PaintScale.Category20.values
+  val paints: Array[Paint] = PaintScale
+    .Category20
+    .values
     .asInstanceOf[Array[Paint]]
 
   def paint(series: Int) = paints(series % paints.length)

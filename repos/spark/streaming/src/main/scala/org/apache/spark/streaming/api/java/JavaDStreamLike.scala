@@ -272,11 +272,8 @@ trait JavaDStreamLike[
       invReduceFunc: JFunction2[T, T, T],
       windowDuration: Duration,
       slideDuration: Duration): JavaDStream[T] = {
-    dstream.reduceByWindow(
-      reduceFunc,
-      invReduceFunc,
-      windowDuration,
-      slideDuration)
+    dstream
+      .reduceByWindow(reduceFunc, invReduceFunc, windowDuration, slideDuration)
   }
 
   /**

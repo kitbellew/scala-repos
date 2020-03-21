@@ -54,11 +54,13 @@ class ProducerPool(val config: ProducerConfig) extends Logging {
   def updateProducer(topicMetadata: Seq[TopicMetadata]) {
     val newBrokers = new collection.mutable.HashSet[BrokerEndPoint]
     topicMetadata.foreach(tmd => {
-      tmd.partitionsMetadata.foreach(pmd => {
-        if (pmd.leader.isDefined) {
-          newBrokers += pmd.leader.get
-        }
-      })
+      tmd
+        .partitionsMetadata
+        .foreach(pmd => {
+          if (pmd.leader.isDefined) {
+            newBrokers += pmd.leader.get
+          }
+        })
     })
     lock synchronized {
       newBrokers.foreach(b => {

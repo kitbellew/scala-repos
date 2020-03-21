@@ -281,7 +281,9 @@ trait Scanners extends ScannersCommon {
       *  @pre inStringInterpolation
       */
     private def inMultiLineInterpolation =
-      inStringInterpolation && sepRegions.tail.nonEmpty && sepRegions.tail.head == STRINGPART
+      inStringInterpolation && sepRegions.tail.nonEmpty && sepRegions
+        .tail
+        .head == STRINGPART
 
     /** read next token and return last offset
       */
@@ -1642,8 +1644,8 @@ trait Scanners extends ScannersCommon {
                 patches1
               else {
                 var lin = line(loff) + 1
-                while (lin < lineStart.length && column(
-                         lineStart(lin)) > lindent)
+                while (lin < lineStart
+                         .length && column(lineStart(lin)) > lindent)
                   lin += 1
                 if (lin < lineStart.length) {
                   val patches1 = insertPatch(

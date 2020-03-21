@@ -134,7 +134,8 @@ object OneVsRestExample {
         case Some(t) => {
           // compute the number of features in the training set.
           val numFeatures = inputData.first().getAs[Vector](1).size
-          val testData = sqlContext.read
+          val testData = sqlContext
+            .read
             .option("numFeatures", numFeatures.toString)
             .format("libsvm")
             .load(t)
@@ -181,8 +182,8 @@ object OneVsRestExample {
     // compute the false positive rate per label
     val predictionColSchema = predictions.schema("prediction")
     val numClasses = MetadataUtils.getNumClasses(predictionColSchema).get
-    val fprs = Range(0, numClasses).map(p =>
-      (p, metrics.falsePositiveRate(p.toDouble)))
+    val fprs = Range(0, numClasses)
+      .map(p => (p, metrics.falsePositiveRate(p.toDouble)))
 
     println(s" Training Time ${trainingDuration} sec\n")
 

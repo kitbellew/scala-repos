@@ -60,8 +60,8 @@ private[spark] class BlockManagerMasterEndpoint(
   private val blockLocations =
     new JHashMap[BlockId, mutable.HashSet[BlockManagerId]]
 
-  private val askThreadPool = ThreadUtils.newDaemonCachedThreadPool(
-    "block-manager-ask-thread-pool")
+  private val askThreadPool = ThreadUtils
+    .newDaemonCachedThreadPool("block-manager-ask-thread-pool")
   private implicit val askExecutionContext = ExecutionContext
     .fromExecutorService(askThreadPool)
 
@@ -84,8 +84,8 @@ private[spark] class BlockManagerMasterEndpoint(
           storageLevel,
           deserializedSize,
           size))
-      listenerBus.post(
-        SparkListenerBlockUpdated(BlockUpdatedInfo(_updateBlockInfo)))
+      listenerBus
+        .post(SparkListenerBlockUpdated(BlockUpdatedInfo(_updateBlockInfo)))
 
     case GetLocations(blockId) =>
       context.reply(getLocations(blockId))
@@ -155,13 +155,15 @@ private[spark] class BlockManagerMasterEndpoint(
 
     // Find all blocks for the given RDD, remove the block from both blockLocations and
     // the blockManagerInfo that is tracking the blocks.
-    val blocks = blockLocations.asScala.keys
+    val blocks = blockLocations
+      .asScala
+      .keys
       .flatMap(_.asRDDId)
       .filter(_.rddId == rddId)
     blocks.foreach { blockId =>
       val bms: mutable.HashSet[BlockManagerId] = blockLocations.get(blockId)
-      bms.foreach(bm =>
-        blockManagerInfo.get(bm).foreach(_.removeBlock(blockId)))
+      bms
+        .foreach(bm => blockManagerInfo.get(bm).foreach(_.removeBlock(blockId)))
       blockLocations.remove(blockId)
     }
 
@@ -169,18 +171,24 @@ private[spark] class BlockManagerMasterEndpoint(
     // The dispatcher is used as an implicit argument into the Future sequence construction.
     val removeMsg = RemoveRdd(rddId)
     Future.sequence(
-      blockManagerInfo.values.map { bm =>
-        bm.slaveEndpoint.ask[Int](removeMsg)
-      }.toSeq)
+      blockManagerInfo
+        .values
+        .map { bm =>
+          bm.slaveEndpoint.ask[Int](removeMsg)
+        }
+        .toSeq)
   }
 
   private def removeShuffle(shuffleId: Int): Future[Seq[Boolean]] = {
     // Nothing to do in the BlockManagerMasterEndpoint data structures
     val removeMsg = RemoveShuffle(shuffleId)
     Future.sequence(
-      blockManagerInfo.values.map { bm =>
-        bm.slaveEndpoint.ask[Boolean](removeMsg)
-      }.toSeq)
+      blockManagerInfo
+        .values
+        .map { bm =>
+          bm.slaveEndpoint.ask[Boolean](removeMsg)
+        }
+        .toSeq)
   }
 
   /**
@@ -192,13 +200,17 @@ private[spark] class BlockManagerMasterEndpoint(
       broadcastId: Long,
       removeFromDriver: Boolean): Future[Seq[Int]] = {
     val removeMsg = RemoveBroadcast(broadcastId, removeFromDriver)
-    val requiredBlockManagers = blockManagerInfo.values.filter { info =>
-      removeFromDriver || !info.blockManagerId.isDriver
-    }
+    val requiredBlockManagers = blockManagerInfo
+      .values
+      .filter { info =>
+        removeFromDriver || !info.blockManagerId.isDriver
+      }
     Future.sequence(
-      requiredBlockManagers.map { bm =>
-        bm.slaveEndpoint.ask[Int](removeMsg)
-      }.toSeq)
+      requiredBlockManagers
+        .map { bm =>
+          bm.slaveEndpoint.ask[Int](removeMsg)
+        }
+        .toSeq)
   }
 
   private def removeBlockManager(blockManagerId: BlockManagerId) {
@@ -262,17 +274,21 @@ private[spark] class BlockManagerMasterEndpoint(
 
   // Return a map from the block manager id to max memory and remaining memory.
   private def memoryStatus: Map[BlockManagerId, (Long, Long)] = {
-    blockManagerInfo.map {
-      case (blockManagerId, info) =>
-        (blockManagerId, (info.maxMem, info.remainingMem))
-    }.toMap
+    blockManagerInfo
+      .map {
+        case (blockManagerId, info) =>
+          (blockManagerId, (info.maxMem, info.remainingMem))
+      }
+      .toMap
   }
 
   private def storageStatus: Array[StorageStatus] = {
-    blockManagerInfo.map {
-      case (blockManagerId, info) =>
-        new StorageStatus(blockManagerId, info.maxMem, info.blocks.asScala)
-    }.toArray
+    blockManagerInfo
+      .map {
+        case (blockManagerId, info) =>
+          new StorageStatus(blockManagerId, info.maxMem, info.blocks.asScala)
+      }
+      .toArray
   }
 
   /**
@@ -292,17 +308,20 @@ private[spark] class BlockManagerMasterEndpoint(
      * Futures to avoid potential deadlocks. This can arise if there exists a block manager
      * that is also waiting for this master endpoint's response to a previous message.
      */
-    blockManagerInfo.values.map { info =>
-      val blockStatusFuture =
-        if (askSlaves) {
-          info.slaveEndpoint.ask[Option[BlockStatus]](getBlockStatus)
-        } else {
-          Future {
-            info.getStatus(blockId)
+    blockManagerInfo
+      .values
+      .map { info =>
+        val blockStatusFuture =
+          if (askSlaves) {
+            info.slaveEndpoint.ask[Option[BlockStatus]](getBlockStatus)
+          } else {
+            Future {
+              info.getStatus(blockId)
+            }
           }
-        }
-      (info.blockManagerId, blockStatusFuture)
-    }.toMap
+        (info.blockManagerId, blockStatusFuture)
+      }
+      .toMap
   }
 
   /**
@@ -319,17 +338,19 @@ private[spark] class BlockManagerMasterEndpoint(
     val getMatchingBlockIds = GetMatchingBlockIds(filter)
     Future
       .sequence(
-        blockManagerInfo.values.map { info =>
-          val future =
-            if (askSlaves) {
-              info.slaveEndpoint.ask[Seq[BlockId]](getMatchingBlockIds)
-            } else {
-              Future {
-                info.blocks.asScala.keys.filter(filter).toSeq
+        blockManagerInfo
+          .values
+          .map { info =>
+            val future =
+              if (askSlaves) {
+                info.slaveEndpoint.ask[Seq[BlockId]](getMatchingBlockIds)
+              } else {
+                Future {
+                  info.blocks.asScala.keys.filter(filter).toSeq
+                }
               }
-            }
-          future
-        })
+            future
+          })
       .map(_.flatten.toSeq)
   }
 
@@ -385,11 +406,8 @@ private[spark] class BlockManagerMasterEndpoint(
       return true
     }
 
-    blockManagerInfo(blockManagerId).updateBlockInfo(
-      blockId,
-      storageLevel,
-      memSize,
-      diskSize)
+    blockManagerInfo(blockManagerId)
+      .updateBlockInfo(blockId, storageLevel, memSize, diskSize)
 
     var locations: mutable.HashSet[BlockManagerId] = null
     if (blockLocations.containsKey(blockId)) {

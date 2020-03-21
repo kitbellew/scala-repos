@@ -20,7 +20,8 @@ import org.junit.Assert
   */
 class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   private def generateByElement(docElement: PsiElement, assumedText: String) {
-    val generatedText = QuickDocTest.quickDocGenerator
+    val generatedText = QuickDocTest
+      .quickDocGenerator
       .generateDoc(docElement, docElement)
     Assert.assertEquals(
       assumedText,
@@ -294,7 +295,8 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
         |    
         |    Some notes on implementation performance, the function runs in O(1).
         |    <br>
-        |<DD><DL><DT><b>Parameters:</b><DD><code>i</code> - An important parameter""".stripMargin
+        |<DD><DL><DT><b>Parameters:</b><DD><code>i</code> - An important parameter"""
+        .stripMargin
         .replaceAll("\r", "")
 
     generateNested(fileText, "B", "f", test)
@@ -375,7 +377,8 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
     val expected =
       """<html><body><PRE>@<a href="psi_element://scala.deprecated"><code>deprecated</code></a>("use 'foo' instead", "1.2.3")
         |@<a href="psi_element://scala.throws"><code>throws</code></a>[<a href="psi_element://scala"><code>scala</code></a>.Exception](classOf[Exception])
-        |def <b>boo</b>(): Unit</PRE></body></html>""".stripMargin
+        |def <b>boo</b>(): Unit</PRE></body></html>"""
+        .stripMargin
         .replaceAll("\r", "")
 
     configureFromFileTextAdapter(

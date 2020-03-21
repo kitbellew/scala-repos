@@ -59,11 +59,12 @@ trait MacroRuntimes extends JavaReflectionRuntimes {
     val methName = binding.methName
 
     def resolveRuntime(): MacroRuntime = {
-      if (className == Predef_???.owner.javaClassName && methName == Predef_???.name.encoded) {
-        args =>
-          throw new AbortMacroException(
-            args.c.enclosingPosition,
-            "macro implementation is missing")
+      if (className == Predef_???.owner.javaClassName && methName == Predef_???
+            .name
+            .encoded) { args =>
+        throw new AbortMacroException(
+          args.c.enclosingPosition,
+          "macro implementation is missing")
       } else {
         try {
           macroLogVerbose(

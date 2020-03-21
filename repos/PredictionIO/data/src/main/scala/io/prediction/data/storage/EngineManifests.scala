@@ -114,7 +114,8 @@ class EngineManifestSerializer
                 JField("name", JString(enginemanifest.name)) ::
                 JField(
                   "description",
-                  enginemanifest.description
+                  enginemanifest
+                    .description
                     .map(x => JString(x))
                     .getOrElse(JNothing)) ::
                 JField(

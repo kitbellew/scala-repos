@@ -102,17 +102,15 @@ object DecimalPrecision extends Rule[LogicalPlan] {
     case Add(
           e1 @ DecimalType.Expression(p1, s1),
           e2 @ DecimalType.Expression(p2, s2)) =>
-      val dt = DecimalType.bounded(
-        max(s1, s2) + max(p1 - s1, p2 - s2) + 1,
-        max(s1, s2))
+      val dt = DecimalType
+        .bounded(max(s1, s2) + max(p1 - s1, p2 - s2) + 1, max(s1, s2))
       CheckOverflow(Add(promotePrecision(e1, dt), promotePrecision(e2, dt)), dt)
 
     case Subtract(
           e1 @ DecimalType.Expression(p1, s1),
           e2 @ DecimalType.Expression(p2, s2)) =>
-      val dt = DecimalType.bounded(
-        max(s1, s2) + max(p1 - s1, p2 - s2) + 1,
-        max(s1, s2))
+      val dt = DecimalType
+        .bounded(max(s1, s2) + max(p1 - s1, p2 - s2) + 1, max(s1, s2))
       CheckOverflow(
         Subtract(promotePrecision(e1, dt), promotePrecision(e2, dt)),
         dt)
@@ -149,9 +147,8 @@ object DecimalPrecision extends Rule[LogicalPlan] {
     case Remainder(
           e1 @ DecimalType.Expression(p1, s1),
           e2 @ DecimalType.Expression(p2, s2)) =>
-      val resultType = DecimalType.bounded(
-        min(p1 - s1, p2 - s2) + max(s1, s2),
-        max(s1, s2))
+      val resultType = DecimalType
+        .bounded(min(p1 - s1, p2 - s2) + max(s1, s2), max(s1, s2))
       // resultType may have lower precision, so we cast them into wider type first.
       val widerType = widerDecimalType(p1, s1, p2, s2)
       CheckOverflow(
@@ -163,9 +160,8 @@ object DecimalPrecision extends Rule[LogicalPlan] {
     case Pmod(
           e1 @ DecimalType.Expression(p1, s1),
           e2 @ DecimalType.Expression(p2, s2)) =>
-      val resultType = DecimalType.bounded(
-        min(p1 - s1, p2 - s2) + max(s1, s2),
-        max(s1, s2))
+      val resultType = DecimalType
+        .bounded(min(p1 - s1, p2 - s2) + max(s1, s2), max(s1, s2))
       // resultType may have lower precision, so we cast them into wider type first.
       val widerType = widerDecimalType(p1, s1, p2, s2)
       CheckOverflow(

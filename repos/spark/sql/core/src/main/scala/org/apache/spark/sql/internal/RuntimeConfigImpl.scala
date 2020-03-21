@@ -26,7 +26,9 @@ class RuntimeConfigImpl extends RuntimeConfig {
 
   private val conf = new SQLConf
 
-  private val hadoopConf = java.util.Collections
+  private val hadoopConf = java
+    .util
+    .Collections
     .synchronizedMap(new java.util.HashMap[String, String]())
 
   override def set(key: String, value: String): RuntimeConfig = {

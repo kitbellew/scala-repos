@@ -65,8 +65,8 @@ object ExtractionBugs extends Specification {
   }
 
   "Extraction should handle AnyRef" in {
-    implicit val formats = DefaultFormats.withHints(
-      FullTypeHints(classOf[ExtractWithAnyRef] :: Nil))
+    implicit val formats = DefaultFormats
+      .withHints(FullTypeHints(classOf[ExtractWithAnyRef] :: Nil))
     val json = JObject(
       JField("jsonClass", JString(classOf[ExtractWithAnyRef].getName)) :: Nil)
     val extracted = Extraction.extract[AnyRef](json)
@@ -79,8 +79,8 @@ object ExtractionBugs extends Specification {
   }
 
   "Extraction should not fail if case class has a companion object" in {
-    parse("""{"nums":[10]}""").extract[HasCompanion] mustEqual HasCompanion(
-      List(10))
+    parse("""{"nums":[10]}""")
+      .extract[HasCompanion] mustEqual HasCompanion(List(10))
   }
 
   "Issue 1169" in {

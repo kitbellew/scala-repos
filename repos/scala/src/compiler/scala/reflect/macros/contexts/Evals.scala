@@ -7,10 +7,11 @@ import scala.tools.reflect.ToolBox
 trait Evals {
   self: Context =>
 
-  private lazy val evalMirror = ru.runtimeMirror(
-    universe.analyzer.defaultMacroClassloader)
+  private lazy val evalMirror = ru
+    .runtimeMirror(universe.analyzer.defaultMacroClassloader)
   private lazy val evalToolBox = evalMirror.mkToolBox()
-  private lazy val evalImporter = ru.internal
+  private lazy val evalImporter = ru
+    .internal
     .createImporter(universe)
     .asInstanceOf[
       ru.Importer {

@@ -80,9 +80,8 @@ class ScalaFileStructureViewElement(
       val buffer = new mutable.StringBuilder
       buffer.append(console.getHistory)
       buffer.append(file.getText)
-      val newFile = ScalaPsiElementFactory.createScalaFile(
-        buffer.toString(),
-        file.getManager)
+      val newFile = ScalaPsiElementFactory
+        .createScalaFile(buffer.toString(), file.getManager)
       newFile
     } else {
       file

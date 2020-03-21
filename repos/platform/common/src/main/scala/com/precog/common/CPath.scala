@@ -145,14 +145,16 @@ sealed trait CPath {
               val R = name.r
               jvalue match {
                 case JObject(fields) =>
-                  fields.toList.flatMap {
-                    case (R(name), value) =>
-                      val expandedNode = CPathField(name)
-                      expand0(current :+ expandedNode, tail, value)
+                  fields
+                    .toList
+                    .flatMap {
+                      case (R(name), value) =>
+                        val expandedNode = CPathField(name)
+                        expand0(current :+ expandedNode, tail, value)
 
-                    case _ =>
-                      Nil
-                  }
+                      case _ =>
+                        Nil
+                    }
 
                 case _ =>
                   Nil

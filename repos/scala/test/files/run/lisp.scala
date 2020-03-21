@@ -350,8 +350,8 @@ object LispCaseClasses extends Lisp {
         sys.error("unbalanced parentheses")
       else if ('0' <= token.charAt(0) && token.charAt(0) <= '9')
         NUM(token.toInt)
-      else if (token.charAt(0) == '\"' && token.charAt(
-                 token.length() - 1) == '\"')
+      else if (token.charAt(0) == '\"' && token
+                 .charAt(token.length() - 1) == '\"')
         STR(token.substring(1, token.length() - 1))
       else
         SYM(token)
@@ -631,8 +631,8 @@ object LispAny extends Lisp {
       //else if (Character.isDigit(token.charAt(0)))
       else if (token.charAt(0).isDigit)
         token.toInt
-      else if (token.charAt(0) == '\"' && token.charAt(
-                 token.length() - 1) == '\"')
+      else if (token.charAt(0) == '\"' && token
+                 .charAt(token.length() - 1) == '\"')
         token.substring(1, token.length() - 1)
       else
         Symbol(token)
@@ -659,8 +659,8 @@ class LispUser(lisp: Lisp) {
 
   def run = {
 
-    Console.println(
-      string2lisp("(lambda (x) (+ (* x x) 1))").asInstanceOf[AnyRef]);
+    Console
+      .println(string2lisp("(lambda (x) (+ (* x x) 1))").asInstanceOf[AnyRef]);
     Console.println(lisp2string(string2lisp("(lambda (x) (+ (* x x) 1))")));
     Console.println;
 

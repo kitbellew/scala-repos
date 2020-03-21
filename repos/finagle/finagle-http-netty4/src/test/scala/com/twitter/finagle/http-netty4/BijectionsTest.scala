@@ -154,13 +154,16 @@ class BijectionsTest extends FunSuite with GeneratorDrivenPropertyChecks {
         assert(out.contentString == body)
         assert(
           out.version == Bijections.netty.versionToFinagle(in.protocolVersion))
-        out.headerMap.foreach {
-          case (k, v) =>
-            assert(
-              in.headers.getAll(k).asScala.toSet == out.headerMap
-                .getAll(k)
-                .toSet)
-        }
+        out
+          .headerMap
+          .foreach {
+            case (k, v) =>
+              assert(
+                in.headers.getAll(k).asScala.toSet == out
+                  .headerMap
+                  .getAll(k)
+                  .toSet)
+          }
     }
   }
 
@@ -173,13 +176,16 @@ class BijectionsTest extends FunSuite with GeneratorDrivenPropertyChecks {
         assert(out.contentString == body)
         assert(
           out.version == Bijections.netty.versionToFinagle(in.protocolVersion))
-        out.headerMap.foreach {
-          case (k, v) =>
-            assert(
-              in.headers.getAll(k).asScala.toSet == out.headerMap
-                .getAll(k)
-                .toSet)
-        }
+        out
+          .headerMap
+          .foreach {
+            case (k, v) =>
+              assert(
+                in.headers.getAll(k).asScala.toSet == out
+                  .headerMap
+                  .getAll(k)
+                  .toSet)
+          }
     }
   }
 
@@ -191,13 +197,16 @@ class BijectionsTest extends FunSuite with GeneratorDrivenPropertyChecks {
         assert(
           out.protocolVersion == Bijections.finagle.versionToNetty(in.version))
         assert(out.content.toString(UTF_8) == body)
-        in.headerMap.foreach {
-          case (k, v) =>
-            assert(
-              out.headers.getAll(k).asScala.toSet == in.headerMap
-                .getAll(k)
-                .toSet)
-        }
+        in
+          .headerMap
+          .foreach {
+            case (k, v) =>
+              assert(
+                out.headers.getAll(k).asScala.toSet == in
+                  .headerMap
+                  .getAll(k)
+                  .toSet)
+          }
     }
   }
 
@@ -211,13 +220,16 @@ class BijectionsTest extends FunSuite with GeneratorDrivenPropertyChecks {
         assert(out.method == Bijections.finagle.methodToNetty(in.method))
         assert(out.uri == in.getUri)
         assert(out.content.toString(UTF_8) == body)
-        in.headerMap.foreach {
-          case (k, v) =>
-            assert(
-              out.headers.getAll(k).asScala.toSet == in.headerMap
-                .getAll(k)
-                .toSet)
-        }
+        in
+          .headerMap
+          .foreach {
+            case (k, v) =>
+              assert(
+                out.headers.getAll(k).asScala.toSet == in
+                  .headerMap
+                  .getAll(k)
+                  .toSet)
+          }
     }
   }
 }

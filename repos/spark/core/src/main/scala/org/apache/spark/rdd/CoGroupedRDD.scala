@@ -121,16 +121,19 @@ class CoGroupedRDD[K: ClassTag](
       // Each CoGroupPartition will have a dependency per contributing RDD
       array(i) = new CoGroupPartition(
         i,
-        rdds.zipWithIndex.map {
-          case (rdd, j) =>
-            // Assume each RDD contributed a single dependency, and get it
-            dependencies(j) match {
-              case s: ShuffleDependency[_, _, _] =>
-                None
-              case _ =>
-                Some(new NarrowCoGroupSplitDep(rdd, i, rdd.partitions(i)))
-            }
-        }.toArray)
+        rdds
+          .zipWithIndex
+          .map {
+            case (rdd, j) =>
+              // Assume each RDD contributed a single dependency, and get it
+              dependencies(j) match {
+                case s: ShuffleDependency[_, _, _] =>
+                  None
+                case _ =>
+                  Some(new NarrowCoGroupSplitDep(rdd, i, rdd.partitions(i)))
+              }
+          }
+          .toArray)
     }
     array
   }
@@ -156,7 +159,9 @@ class CoGroupedRDD[K: ClassTag](
 
         case shuffleDependency: ShuffleDependency[_, _, _] =>
           // Read map outputs of shuffle
-          val it = SparkEnv.get.shuffleManager
+          val it = SparkEnv
+            .get
+            .shuffleManager
             .getReader(
               shuffleDependency.shuffleHandle,
               split.index,
@@ -168,8 +173,8 @@ class CoGroupedRDD[K: ClassTag](
 
     val map = createExternalMap(numRdds)
     for ((it, depNum) <- rddIterators) {
-      map.insertAll(
-        it.map(pair => (pair._1, new CoGroupValue(pair._2, depNum))))
+      map
+        .insertAll(it.map(pair => (pair._1, new CoGroupValue(pair._2, depNum))))
     }
     context.taskMetrics().incMemoryBytesSpilled(map.memoryBytesSpilled)
     context.taskMetrics().incDiskBytesSpilled(map.diskBytesSpilled)

@@ -124,8 +124,9 @@ class LanguageFeatureInspection
     PartialFunction.apply { e: PsiElement =>
       val module = ModuleUtilCore.findModuleForPsiElement(e)
 
-      if (module != null && module.scalaSdk.exists(
-            _.languageLevel >= Scala_2_10)) {
+      if (module != null && module
+            .scalaSdk
+            .exists(_.languageLevel >= Scala_2_10)) {
         Features.foreach(_.process(e, holder))
       }
     }
@@ -140,27 +141,31 @@ private case class Feature(
     findIn: PartialFunction[PsiElement, PsiElement]) {
 
   def process(e: PsiElement, holder: ProblemsHolder) {
-    e.module.foreach { module =>
-      if (!isEnabled(module.scalaCompilerSettings)) {
-        findIn.lift(e).foreach { it =>
-          if (!isFlagImportedFor(it)) {
-            holder.registerProblem(
-              it,
-              "Advanced language feature: " + name,
-              new ImportFeatureFlagFix(
-                it,
-                name,
-                flagQualifier + "." + flagName),
-              new EnableFeatureFix(
-                module.scalaCompilerSettings,
-                it,
-                name,
-                enable)
-            )
-          }
+    e
+      .module
+      .foreach { module =>
+        if (!isEnabled(module.scalaCompilerSettings)) {
+          findIn
+            .lift(e)
+            .foreach { it =>
+              if (!isFlagImportedFor(it)) {
+                holder.registerProblem(
+                  it,
+                  "Advanced language feature: " + name,
+                  new ImportFeatureFlagFix(
+                    it,
+                    name,
+                    flagQualifier + "." + flagName),
+                  new EnableFeatureFix(
+                    module.scalaCompilerSettings,
+                    it,
+                    name,
+                    enable)
+                )
+              }
+            }
         }
       }
-    }
   }
 
   private def isFlagImportedFor(e: PsiElement): Boolean = {
@@ -182,9 +187,8 @@ private class ImportFeatureFlagFix(e: PsiElement, name: String, flag: String)
 
   def doApplyFix(project: Project) {
     val elem = getElement
-    val importsHolder = ScalaImportTypeFix.getImportHolder(
-      elem,
-      elem.getProject)
+    val importsHolder = ScalaImportTypeFix
+      .getImportHolder(elem, elem.getProject)
     importsHolder.addImportForPath(flag, elem)
   }
 }

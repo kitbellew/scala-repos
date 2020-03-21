@@ -208,8 +208,8 @@ final class MongoJobManager(
         .where("id" === jobId)
         .returnNew(true)) map {
       case Some(obj) =>
-        (obj \ "sequence").validated[Long] getOrElse sys.error(
-          "Expected an integral sequence number.")
+        (obj \ "sequence").validated[Long] getOrElse sys
+          .error("Expected an integral sequence number.")
       case None =>
         sys.error("Sequence number doesn't exist. This shouldn't happen.")
     }

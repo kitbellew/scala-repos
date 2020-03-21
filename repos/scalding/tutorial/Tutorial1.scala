@@ -45,7 +45,5 @@ class Tutorial1(args: Args) extends Job(args) {
   /**
   We generally write each step of the pipeline on a separate line.
   **/
-  input.read
-    .project('line)
-    .write(output)
+  input.read.project('line).write(output)
 }

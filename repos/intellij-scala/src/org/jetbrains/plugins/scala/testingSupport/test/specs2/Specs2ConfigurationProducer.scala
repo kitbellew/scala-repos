@@ -67,10 +67,8 @@ with AbstractTestConfigurationProducer {
               .message("test.in.scope.specs2.presentable.text", name))))
     }
 
-    val parent: ScTypeDefinition = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScTypeDefinition],
-      false)
+    val parent: ScTypeDefinition = PsiTreeUtil
+      .getParentOfType(element, classOf[ScTypeDefinition], false)
 
     if (parent == null)
       return None
@@ -78,7 +76,8 @@ with AbstractTestConfigurationProducer {
     val settings = RunManager
       .getInstance(location.getProject)
       .createRunConfiguration(parent.name, confFactory)
-    val runConfiguration = settings.getConfiguration
+    val runConfiguration = settings
+      .getConfiguration
       .asInstanceOf[Specs2RunConfiguration]
     val (testClass, testName) = getLocationClassAndTest(location)
     if (testClass == null)
@@ -107,7 +106,8 @@ with AbstractTestConfigurationProducer {
     } catch {
       case e: Exception =>
     }
-    JavaRunConfigurationExtensionManager.getInstance
+    JavaRunConfigurationExtensionManager
+      .getInstance
       .extendCreatedConfiguration(runConfiguration, location)
     Some((testClass, settings))
   }
@@ -122,14 +122,11 @@ with AbstractTestConfigurationProducer {
           .isInstanceOf[PsiDirectory]) {
       if (!configuration.isInstanceOf[Specs2RunConfiguration])
         return false
-      return TestConfigurationUtil.isPackageConfiguration(
-        element,
-        configuration)
+      return TestConfigurationUtil
+        .isPackageConfiguration(element, configuration)
     }
-    val parent: ScTypeDefinition = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScTypeDefinition],
-      false)
+    val parent: ScTypeDefinition = PsiTreeUtil
+      .getParentOfType(element, classOf[ScTypeDefinition], false)
     if (parent == null)
       return false
     val suiteClasses = suitePaths
@@ -169,7 +166,8 @@ with AbstractTestConfigurationProducer {
 
   private def extractStaticTestName(
       testDefExpr: ScInfixExpr): Option[String] = {
-    testDefExpr.getChildren
+    testDefExpr
+      .getChildren
       .filter(_.isInstanceOf[ScExpression])
       .map(_.asInstanceOf[ScExpression])
       .headOption
@@ -179,10 +177,8 @@ with AbstractTestConfigurationProducer {
   def getLocationClassAndTest(
       location: Location[_ <: PsiElement]): (ScTypeDefinition, String) = {
     val element = location.getPsiElement
-    val testClassDef: ScTypeDefinition = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScTypeDefinition],
-      false)
+    val testClassDef: ScTypeDefinition = PsiTreeUtil
+      .getParentOfType(element, classOf[ScTypeDefinition], false)
     if (testClassDef == null)
       return (null, null)
 

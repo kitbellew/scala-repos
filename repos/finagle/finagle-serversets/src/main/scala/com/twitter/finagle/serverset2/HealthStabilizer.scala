@@ -32,7 +32,9 @@ private[serverset2] object HealthStabilizer {
 
     Var.async[ClientHealth](ClientHealth.Healthy) { u =>
       val stateChanges =
-        va.changes.dedup
+        va
+          .changes
+          .dedup
           .select(probationEpoch.event)
           .foldLeft[Status](Unknown) {
             // always take the first update as our status
@@ -61,10 +63,12 @@ private[serverset2] object HealthStabilizer {
           }
 
       val currentStatus = new AtomicReference[Status]()
-      val gaugeListener = stateChanges.dedup.register(
-        Witness {
-          currentStatus
-        })
+      val gaugeListener = stateChanges
+        .dedup
+        .register(
+          Witness {
+            currentStatus
+          })
       val gauge =
         statsReceiver.addGauge("zkHealth") {
           currentStatus.get() match {

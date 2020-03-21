@@ -95,12 +95,12 @@ class PermissionsFinder[M[+_]: Monad](
       at: Option[Instant]): M[Option[Authorities]] = {
     def selectWriter(
         writePermissions: Set[WritePermission]): M[Option[Authorities]] = {
-      lazy val accountWriter: M[Option[Authorities]] =
-        accountFinder.findAccountByAPIKey(apiKey) map {
-          _ map {
-            Authorities(_)
-          }
+      lazy val accountWriter: M[Option[Authorities]] = accountFinder
+        .findAccountByAPIKey(apiKey) map {
+        _ map {
+          Authorities(_)
         }
+      }
       val eithers: List[M[Option[Authorities]] \/ M[Option[Authorities]]] =
         writePermissions.map({
           case WritePermission(_, WriteAsAny) =>

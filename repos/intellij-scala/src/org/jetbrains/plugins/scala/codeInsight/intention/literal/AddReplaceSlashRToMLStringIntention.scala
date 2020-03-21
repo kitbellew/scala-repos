@@ -19,13 +19,12 @@ class AddReplaceSlashRToMLStringIntention
       editor: Editor,
       element: PsiElement): Boolean = {
     if (element == null || element.getNode == null || element.getText == null ||
-        element.getNode.getElementType != ScalaTokenTypes.tMULTILINE_STRING || !element.getText
-          .contains("\n"))
+        element.getNode.getElementType != ScalaTokenTypes
+          .tMULTILINE_STRING || !element.getText.contains("\n"))
       return false
 
-    val calls = MultilineStringUtil.findAllMethodCallsOnMLString(
-      element,
-      "replace")
+    val calls = MultilineStringUtil
+      .findAllMethodCallsOnMLString(element, "replace")
     !MultilineStringUtil.containsArgs(calls, """"\r"""", "\"\"")
   }
 
@@ -35,9 +34,11 @@ class AddReplaceSlashRToMLStringIntention
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     extensions.inWriteAction {
-      editor.getDocument.insertString(
-        element.getTextRange.getEndOffset,
-        ".replace(\"\\r\", \"\")")
+      editor
+        .getDocument
+        .insertString(
+          element.getTextRange.getEndOffset,
+          ".replace(\"\\r\", \"\")")
     }
   }
 }

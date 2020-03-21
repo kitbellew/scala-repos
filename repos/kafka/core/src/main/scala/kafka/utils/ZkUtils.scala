@@ -226,7 +226,8 @@ class ZkUtils(
         Json.parseFull(leaderAndIsr) match {
           case Some(m) =>
             Some(
-              m.asInstanceOf[Map[String, Any]]
+              m
+                .asInstanceOf[Map[String, Any]]
                 .get("leader")
                 .get
                 .asInstanceOf[Int])
@@ -254,7 +255,8 @@ class ZkUtils(
               "No epoch, leaderAndISR data for partition [%s,%d] is invalid"
                 .format(topic, partition))
           case Some(m) =>
-            m.asInstanceOf[Map[String, Any]]
+            m
+              .asInstanceOf[Map[String, Any]]
               .get("leader_epoch")
               .get
               .asInstanceOf[Int]
@@ -284,7 +286,8 @@ class ZkUtils(
       case Some(leaderAndIsr) =>
         Json.parseFull(leaderAndIsr) match {
           case Some(m) =>
-            m.asInstanceOf[Map[String, Any]]
+            m
+              .asInstanceOf[Map[String, Any]]
               .get("isr")
               .get
               .asInstanceOf[Seq[Int]]
@@ -842,8 +845,8 @@ class ZkUtils(
       case Some(jsonPartitionMap) =>
         val reassignedPartitions = parsePartitionReassignmentData(
           jsonPartitionMap)
-        reassignedPartitions.map(p =>
-          (p._1 -> new ReassignedPartitionsContext(p._2)))
+        reassignedPartitions
+          .map(p => (p._1 -> new ReassignedPartitionsContext(p._2)))
       case None =>
         Map.empty[TopicAndPartition, ReassignedPartitionsContext]
     }
@@ -941,8 +944,8 @@ class ZkUtils(
       readDataMaybeNull(PreferredReplicaLeaderElectionPath)._1
     jsonPartitionListOpt match {
       case Some(jsonPartitionList) =>
-        PreferredReplicaLeaderElectionCommand.parsePreferredReplicaElectionData(
-          jsonPartitionList)
+        PreferredReplicaLeaderElectionCommand
+          .parsePreferredReplicaElectionData(jsonPartitionList)
       case None =>
         Set.empty[TopicAndPartition]
     }
@@ -951,8 +954,8 @@ class ZkUtils(
   def deletePartition(brokerId: Int, topic: String) {
     val brokerIdPath = BrokerIdsPath + "/" + brokerId
     zkClient.delete(brokerIdPath)
-    val brokerPartTopicPath =
-      ZkUtils.BrokerTopicsPath + "/" + topic + "/" + brokerId
+    val brokerPartTopicPath = ZkUtils
+      .BrokerTopicsPath + "/" + topic + "/" + brokerId
     zkClient.delete(brokerPartTopicPath)
   }
 
@@ -968,14 +971,10 @@ class ZkUtils(
     val consumersPerTopicMap =
       new mutable.HashMap[String, List[ConsumerThreadId]]
     for (consumer <- consumers) {
-      val topicCount = TopicCount.constructTopicCount(
-        group,
-        consumer,
-        this,
-        excludeInternalTopics)
-      for ((
-             topic,
-             consumerThreadIdSet) <- topicCount.getConsumerThreadIdsPerTopic) {
+      val topicCount = TopicCount
+        .constructTopicCount(group, consumer, this, excludeInternalTopics)
+      for ((topic, consumerThreadIdSet) <- topicCount
+             .getConsumerThreadIdsPerTopic) {
         for (consumerThreadId <- consumerThreadIdSet)
           consumersPerTopicMap.get(topic) match {
             case Some(curConsumers) =>
@@ -1025,10 +1024,8 @@ class ZkUtils(
           0
         } catch {
           case e: ZkNodeExistsException =>
-            val stat = zkClient.writeDataReturnStat(
-              BrokerSequenceIdPath,
-              "",
-              -1)
+            val stat = zkClient
+              .writeDataReturnStat(BrokerSequenceIdPath, "", -1)
             stat.getVersion
         }
       }
@@ -1140,9 +1137,8 @@ class ZKConfig(props: VerifiableProperties) {
   val zkSessionTimeoutMs = props.getInt("zookeeper.session.timeout.ms", 6000)
 
   /** the max time that the client waits to establish a connection to zookeeper */
-  val zkConnectionTimeoutMs = props.getInt(
-    "zookeeper.connection.timeout.ms",
-    zkSessionTimeoutMs)
+  val zkConnectionTimeoutMs = props
+    .getInt("zookeeper.connection.timeout.ms", zkSessionTimeoutMs)
 
   /** how far a ZK follower can be behind a ZK leader */
   val zkSyncTimeMs = props.getInt("zookeeper.sync.time.ms", 2000)
@@ -1315,8 +1311,8 @@ class ZKCheckedEphemeral(
                 createRecursive(path, suffix)
               case Code.NONODE =>
                 error(
-                  "No node for path %s (could be the parent missing)".format(
-                    path))
+                  "No node for path %s (could be the parent missing)"
+                    .format(path))
                 setResult(Code.get(rc))
               case Code.SESSIONEXPIRED =>
                 error("Session has expired while creating %s".format(path))

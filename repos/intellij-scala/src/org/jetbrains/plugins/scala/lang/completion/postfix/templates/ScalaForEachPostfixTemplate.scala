@@ -16,8 +16,8 @@ class ScalaForEachPostfixTemplate
       "for",
       "for (elem: collection) {...}",
       new AncestorSelector(
-        SelectorConditions.isDescendantCondition(
-          "scala.collection.GenTraversableOnce") ||
+        SelectorConditions
+          .isDescendantCondition("scala.collection.GenTraversableOnce") ||
           SelectorConditions.isDescendantCondition("scala.Array"),
         Topmost)) {
 

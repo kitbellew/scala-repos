@@ -220,7 +220,8 @@ object LiftedEmbedding extends App {
           criteriaRoast.map(
             coffee.name === _
           ) // not a condition as `criteriaRoast` evaluates to `None`
-        ).collect({
+        )
+          .collect({
             case Some(criteria) =>
               criteria
           })
@@ -384,9 +385,8 @@ object LiftedEmbedding extends App {
             into ((user, id) => user.copy(id = Some(id)))
         ) += User(None, "Stefan", "Zeiger")
       //#insert3b
-      val userWithIdRes = Await.result(
-        db.run(users.schema.create >> userWithId),
-        Duration.Inf)
+      val userWithIdRes = Await
+        .result(db.run(users.schema.create >> userWithId), Duration.Inf)
       println(userWithIdRes)
 
       //#insert4
@@ -412,8 +412,8 @@ object LiftedEmbedding extends App {
       val updated = users.insertOrUpdate(User(Some(1), "Admin", "Zeiger"))
       // returns: number of rows updated
 
-      val updatedAdmin = (users returning users).insertOrUpdate(
-        User(Some(1), "Slick Admin", "Zeiger"))
+      val updatedAdmin = (users returning users)
+        .insertOrUpdate(User(Some(1), "Slick Admin", "Zeiger"))
       // returns: None if updated, Some((Int, String)) if row inserted
       //#insertOrUpdate
       Await.result(db.run(updated), Duration.Inf)
@@ -602,10 +602,8 @@ object LiftedEmbedding extends App {
       val as = TableQuery[A]
 
       // Insert data with the custom shape
-      val insertAction = DBIO.seq(
-        as += Pair(1, "a"),
-        as += Pair(2, "c"),
-        as += Pair(3, "b"))
+      val insertAction = DBIO
+        .seq(as += Pair(1, "a"), as += Pair(2, "c"), as += Pair(3, "b"))
 
       // Use it for returning data from a query
       val q2 = as
@@ -631,9 +629,8 @@ object LiftedEmbedding extends App {
       assert(
         Await.result(
           db.run(as.schema.create >> insertAction >> q2.result),
-          Duration.Inf) == Vector(
-          Pair(3, Pair(42, "bb")),
-          Pair(2, Pair(42, "cc"))))
+          Duration
+            .Inf) == Vector(Pair(3, Pair(42, "bb")), Pair(2, Pair(42, "cc"))))
 
       //#case-class-shape
       // two custom case class variants

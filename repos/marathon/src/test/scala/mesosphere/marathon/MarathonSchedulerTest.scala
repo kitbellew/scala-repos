@@ -77,9 +77,7 @@ class MarathonSchedulerTest
 
   test("Publishes event when registered") {
     val driver = mock[SchedulerDriver]
-    val frameworkId = FrameworkID.newBuilder
-      .setValue("some_id")
-      .build()
+    val frameworkId = FrameworkID.newBuilder.setValue("some_id").build()
 
     val masterInfo = MasterInfo
       .newBuilder()

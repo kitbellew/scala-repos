@@ -269,8 +269,8 @@ class FileMessageSetTest extends BaseMessageSetTestCases {
     var fileMessageSet = new FileMessageSet(tempFile())
     fileMessageSet.append(messageSetV1)
     fileMessageSet.flush()
-    var convertedMessageSet = fileMessageSet.toMessageFormat(
-      Message.MagicValue_V0)
+    var convertedMessageSet = fileMessageSet
+      .toMessageFormat(Message.MagicValue_V0)
     verifyConvertedMessageSet(convertedMessageSet, Message.MagicValue_V0)
 
     // down conversion for compressed messages

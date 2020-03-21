@@ -16,6 +16,7 @@ class ScalaFrameworkType extends FrameworkTypeEx("Scala") {
 }
 
 object ScalaFrameworkType {
-  val Instance = FrameworkTypeEx.EP_NAME.findExtension(
-    classOf[ScalaFrameworkType])
+  val Instance = FrameworkTypeEx
+    .EP_NAME
+    .findExtension(classOf[ScalaFrameworkType])
 }

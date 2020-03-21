@@ -482,8 +482,8 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
         case _: Filter =>
           val registrations =
             servletContext.getFilterRegistrations.asScala.values
-          val registration = registrations.find(
-            _.getClassName == getClass.getName) getOrElse throwAFit
+          val registration = registrations
+            .find(_.getClassName == getClass.getName) getOrElse throwAFit
           registration.getServletNameMappings.asScala foreach { name =>
             Option(servletContext.getServletRegistration(name)) foreach { reg =>
               reg.getMappings.asScala foreach registerInSwagger
@@ -491,8 +491,8 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
           }
 
         case _: Servlet =>
-          val registration =
-            ScalatraBase.getServletRegistration(this) getOrElse throwAFit
+          val registration = ScalatraBase
+            .getServletRegistration(this) getOrElse throwAFit
           //          println("Registering for mappings: " + registration.getMappings().asScala.mkString("[", ", ", "]"))
           registration.getMappings.asScala foreach registerInSwagger
 
@@ -661,10 +661,8 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
     swaggerParam(name, model).fromHeader
   protected def pathParam[T: Manifest: NotNothing](
       name: String): ParameterBuilder[T] =
-    swaggerParam[T](
-      name,
-      allowsCollection = false,
-      allowsOption = false).fromPath
+    swaggerParam[T](name, allowsCollection = false, allowsOption = false)
+      .fromPath
   protected def pathParam(name: String, model: Model): ModelParameterBuilder =
     swaggerParam(name, model).fromPath
 
@@ -775,16 +773,17 @@ trait SwaggerSupport
         _.asInstanceOf[DataType]
       ) getOrElse DataType.Void
       val summary =
-        (
-          route.metadata.get(Symbols.Summary) map (_.asInstanceOf[String])
-        ).orNull
+        (route.metadata.get(Symbols.Summary) map (_.asInstanceOf[String]))
+          .orNull
       val notes = route.metadata.get(Symbols.Notes) map (_.asInstanceOf[String])
       val nick =
         route.metadata.get(Symbols.Nickname) map (_.asInstanceOf[String])
-      val produces = route.metadata
-        .get(Symbols.Produces) map (_.asInstanceOf[List[String]]) getOrElse Nil
-      val consumes = route.metadata
-        .get(Symbols.Consumes) map (_.asInstanceOf[List[String]]) getOrElse Nil
+      val produces = route.metadata.get(Symbols.Produces) map (
+        _.asInstanceOf[List[String]]
+      ) getOrElse Nil
+      val consumes = route.metadata.get(Symbols.Consumes) map (
+        _.asInstanceOf[List[String]]
+      ) getOrElse Nil
       Operation(
         method = method,
         responseClass = responseClass,

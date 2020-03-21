@@ -27,8 +27,8 @@ class FlowIdleInjectSpec extends AkkaSpec {
 
     "emit elements periodically after silent periods" in Utils
       .assertAllStagesStopped {
-        val sourceWithIdleGap =
-          Source(1 to 5) ++ Source(6 to 10).initialDelay(2.second)
+        val sourceWithIdleGap = Source(1 to 5) ++ Source(6 to 10)
+          .initialDelay(2.second)
 
         val result = Await.result(
           sourceWithIdleGap

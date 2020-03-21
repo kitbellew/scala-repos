@@ -152,17 +152,22 @@ object WSClientAutobahnTest extends App {
         println()
         println(s"${GREEN}OK$RESET: ${grouped.getOrElse("OK", Nil).size}")
         val notOk = grouped.filterNot(_._1 == "OK")
-        notOk.toSeq.sortBy(_._2.size).foreach {
-          case (status, cases) ⇒
-            println(s"$RED$status$RESET: ${cases.size}")
-        }
+        notOk
+          .toSeq
+          .sortBy(_._2.size)
+          .foreach {
+            case (status, cases) ⇒
+              println(s"$RED$status$RESET: ${cases.size}")
+          }
         println()
         println("Not OK tests: ")
         println()
-        results.filterNot(_.status.behavior == "OK").foreach { r ⇒
-          println(
-            f"$RED${r.status.behavior}%-20s$RESET $YELLOW${r.info.id}%-7s$RESET - $RESET${r.info.description}")
-        }
+        results
+          .filterNot(_.status.behavior == "OK")
+          .foreach { r ⇒
+            println(
+              f"$RED${r.status.behavior}%-20s$RESET $YELLOW${r.info.id}%-7s$RESET - $RESET${r.info.description}")
+          }
 
         ()
       }

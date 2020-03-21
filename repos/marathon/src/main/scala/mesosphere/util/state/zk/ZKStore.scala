@@ -76,10 +76,13 @@ class ZKStore(
     */
   override def update(entity: PersistentEntity): Future[ZKEntity] = {
     val zk = zkEntity(entity)
-    val version = zk.version.getOrElse(
-      throw new StoreCommandFailedException(
-        s"Can not store entity $entity, since there is no version!"))
-    zk.node
+    val version = zk
+      .version
+      .getOrElse(
+        throw new StoreCommandFailedException(
+          s"Can not store entity $entity, since there is no version!"))
+    zk
+      .node
       .setData(zk.data.toProto(compressionConf).toByteArray, version)
       .asScala
       .map { data =>
@@ -185,7 +188,8 @@ case class ZKData(
         (IO.gzipCompress(bytes.toArray), true)
       else
         (bytes.toArray, false)
-    Protos.ZKStoreEntry
+    Protos
+      .ZKStoreEntry
       .newBuilder()
       .setName(name)
       .setUuid(ByteString.copyFromUtf8(uuid.toString))

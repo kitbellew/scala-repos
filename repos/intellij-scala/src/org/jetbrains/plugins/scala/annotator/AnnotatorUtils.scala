@@ -58,24 +58,27 @@ private[annotator] object AnnotatorUtils {
       expression: ScExpression,
       typeElement: ScTypeElement,
       holder: AnnotationHolder) {
-    expression.getTypeAfterImplicitConversion().tr.foreach { actual =>
-      val expected = typeElement.calcType
-      if (!actual.conforms(expected)) {
-        val expr =
-          expression match {
-            case b: ScBlockExpr =>
-              b.getRBrace.map(_.getPsi).getOrElse(b)
-            case _ =>
-              expression
-          }
-        val (actualText, expText) = ScTypePresentation
-          .different(actual, expected)
-        val annotation = holder.createErrorAnnotation(
-          expr,
-          ScalaBundle
-            .message("type.mismatch.found.required", actualText, expText))
-        annotation.registerFix(ReportHighlightingErrorQuickFix)
+    expression
+      .getTypeAfterImplicitConversion()
+      .tr
+      .foreach { actual =>
+        val expected = typeElement.calcType
+        if (!actual.conforms(expected)) {
+          val expr =
+            expression match {
+              case b: ScBlockExpr =>
+                b.getRBrace.map(_.getPsi).getOrElse(b)
+              case _ =>
+                expression
+            }
+          val (actualText, expText) = ScTypePresentation
+            .different(actual, expected)
+          val annotation = holder.createErrorAnnotation(
+            expr,
+            ScalaBundle
+              .message("type.mismatch.found.required", actualText, expText))
+          annotation.registerFix(ReportHighlightingErrorQuickFix)
+        }
       }
-    }
   }
 }

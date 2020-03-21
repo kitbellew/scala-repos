@@ -21,9 +21,13 @@ object Coordinate extends LilaController {
   def score =
     AuthBody { implicit ctx => me =>
       implicit val body = ctx.body
-      env.forms.score.bindFromRequest.fold(
-        err => fuccess(BadRequest),
-        data => env.api.addScore(me.id, data.isWhite, data.score)) >> {
+      env
+        .forms
+        .score
+        .bindFromRequest
+        .fold(
+          err => fuccess(BadRequest),
+          data => env.api.addScore(me.id, data.isWhite, data.score)) >> {
         env.api getScore me.id map { s =>
           Ok(views.html.coordinate.scoreCharts(s))
         }
@@ -33,12 +37,19 @@ object Coordinate extends LilaController {
   def color =
     AuthBody { implicit ctx => me =>
       implicit val req = ctx.body
-      env.forms.color.bindFromRequest.fold(
-        err => fuccess(BadRequest),
-        value =>
-          Env.pref.api.setPref(
-            me,
-            (p: lila.pref.Pref) => p.copy(coordColor = value),
-            notifyChange = false) inject Ok(()))
+      env
+        .forms
+        .color
+        .bindFromRequest
+        .fold(
+          err => fuccess(BadRequest),
+          value =>
+            Env
+              .pref
+              .api
+              .setPref(
+                me,
+                (p: lila.pref.Pref) => p.copy(coordColor = value),
+                notifyChange = false) inject Ok(()))
     }
 }

@@ -59,9 +59,8 @@ object ExportZkOffsets extends Logging {
     parser.accepts("help", "Print this message.")
 
     if (args.length == 0)
-      CommandLineUtils.printUsageAndDie(
-        parser,
-        "Export consumer offsets to an output file.")
+      CommandLineUtils
+        .printUsageAndDie(parser, "Export consumer offsets to an output file.")
 
     val options = parser.parse(args: _*)
 
@@ -70,11 +69,8 @@ object ExportZkOffsets extends Logging {
       System.exit(0)
     }
 
-    CommandLineUtils.checkRequiredArgs(
-      parser,
-      options,
-      zkConnectOpt,
-      outFileOpt)
+    CommandLineUtils
+      .checkRequiredArgs(parser, options, zkConnectOpt, outFileOpt)
 
     val zkConnect = options.valueOf(zkConnectOpt)
     val groups = options.valuesOf(groupOpt)

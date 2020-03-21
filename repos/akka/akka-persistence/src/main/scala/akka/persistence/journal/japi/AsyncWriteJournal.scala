@@ -24,12 +24,14 @@ abstract class AsyncWriteJournal
   final def asyncWriteMessages(
       messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] =
     doAsyncWriteMessages(messages.asJava).map { results ⇒
-      results.asScala.map { r ⇒
-        if (r.isPresent)
-          Failure(r.get)
-        else
-          successUnit
-      }(collection.breakOut)
+      results
+        .asScala
+        .map { r ⇒
+          if (r.isPresent)
+            Failure(r.get)
+          else
+            successUnit
+        }(collection.breakOut)
     }
 
   final def asyncDeleteMessagesTo(persistenceId: String, toSequenceNr: Long) =

@@ -31,8 +31,8 @@ class JdbcRDDSuite
 
   before {
     Utils.classForName("org.apache.derby.jdbc.EmbeddedDriver")
-    val conn = DriverManager.getConnection(
-      "jdbc:derby:target/JdbcRDDSuiteDb;create=true")
+    val conn = DriverManager
+      .getConnection("jdbc:derby:target/JdbcRDDSuiteDb;create=true")
     try {
 
       try {
@@ -57,11 +57,11 @@ class JdbcRDDSuite
 
       try {
         val create = conn.createStatement
-        create.execute(
-          "CREATE TABLE BIGINT_TEST(ID BIGINT NOT NULL, DATA INTEGER)")
+        create
+          .execute("CREATE TABLE BIGINT_TEST(ID BIGINT NOT NULL, DATA INTEGER)")
         create.close()
-        val insert = conn.prepareStatement(
-          "INSERT INTO BIGINT_TEST VALUES(?,?)")
+        val insert = conn
+          .prepareStatement("INSERT INTO BIGINT_TEST VALUES(?,?)")
         (1 to 100).foreach { i =>
           insert.setLong(1, 100000000000000000L + 4000000000000000L * i)
           insert.setInt(2, i)
@@ -119,8 +119,8 @@ class JdbcRDDSuite
 
   after {
     try {
-      DriverManager.getConnection(
-        "jdbc:derby:target/JdbcRDDSuiteDb;shutdown=true")
+      DriverManager
+        .getConnection("jdbc:derby:target/JdbcRDDSuiteDb;shutdown=true")
     } catch {
       case se: SQLException if se.getSQLState == "08006" =>
       // Normal single database shutdown

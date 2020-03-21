@@ -330,8 +330,9 @@ abstract class SurviveNetworkInstabilitySpec
       runOn(others: _*) {
         // second should be removed because of quarantine
         awaitAssert(
-          clusterView.members
-            .map(_.address) should not contain (address(second)))
+          clusterView.members.map(_.address) should not contain (
+            address(second)
+          ))
       }
 
       enterBarrier("after-6")
@@ -377,10 +378,12 @@ abstract class SurviveNetworkInstabilitySpec
         val expected = (side1AfterJoin map address).toSet
         awaitAssert(clusterView.members.map(_.address) should ===(expected))
         awaitAssert(
-          clusterView.members.collectFirst {
-            case m if m.address == address(eighth) ⇒
-              m.status
-          } should ===(Some(MemberStatus.Up)))
+          clusterView
+            .members
+            .collectFirst {
+              case m if m.address == address(eighth) ⇒
+                m.status
+            } should ===(Some(MemberStatus.Up)))
       }
 
       enterBarrier("side2-removed")

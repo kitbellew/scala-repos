@@ -17,9 +17,8 @@ class StreamTestKitSpec extends AkkaSpec {
 
   "A TestSink Probe" must {
     "#toStrict" in {
-      Source(1 to 4)
-        .runWith(TestSink.probe)
-        .toStrict(300.millis) should ===(List(1, 2, 3, 4))
+      Source(1 to 4).runWith(TestSink.probe).toStrict(300.millis) should ===(
+        List(1, 2, 3, 4))
     }
 
     "#toStrict with failing source" in {
@@ -54,10 +53,7 @@ class StreamTestKitSpec extends AkkaSpec {
     }
 
     "#expectNextOrError with right element" in {
-      Source(1 to 4)
-        .runWith(TestSink.probe)
-        .request(4)
-        .expectNextOrError(1, ex)
+      Source(1 to 4).runWith(TestSink.probe).request(4).expectNextOrError(1, ex)
     }
 
     "#expectNextOrError with right exception" in {
@@ -87,10 +83,7 @@ class StreamTestKitSpec extends AkkaSpec {
 
     "#expectError fail if no error signalled" in {
       intercept[AssertionError] {
-        Source(1 to 4)
-          .runWith(TestSink.probe)
-          .request(1)
-          .expectError()
+        Source(1 to 4).runWith(TestSink.probe).request(1).expectError()
       }.getMessage should include("OnNext")
     }
 
@@ -106,18 +99,12 @@ class StreamTestKitSpec extends AkkaSpec {
 
     "#expectComplete should fail if next element signalled" in {
       intercept[AssertionError] {
-        Source(1 to 4)
-          .runWith(TestSink.probe)
-          .request(1)
-          .expectComplete()
+        Source(1 to 4).runWith(TestSink.probe).request(1).expectComplete()
       }.getMessage should include("OnNext")
     }
 
     "#expectNextOrComplete with right element" in {
-      Source(1 to 4)
-        .runWith(TestSink.probe)
-        .request(4)
-        .expectNextOrComplete(1)
+      Source(1 to 4).runWith(TestSink.probe).request(4).expectNextOrComplete(1)
     }
 
     "#expectNextOrComplete with completion" in {

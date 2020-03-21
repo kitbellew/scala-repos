@@ -67,9 +67,8 @@ class MarathonSchedulerActor private (
 
   override def preStart(): Unit = {
     schedulerActions = createSchedulerActions(self)
-    deploymentManager = context.actorOf(
-      deploymentManagerProps(schedulerActions),
-      "DeploymentManager")
+    deploymentManager = context
+      .actorOf(deploymentManagerProps(schedulerActions), "DeploymentManager")
     historyActor = context.actorOf(historyActorProps, "HistoryActor")
 
     leaderInfo.subscribe(self)
@@ -318,7 +317,9 @@ class MarathonSchedulerActor private (
           origSender ! cmd.answer
       case Failure(e: LockingFailedException) if cmd.force =>
         deploymentManager ! CancelConflictingDeployments(plan)
-        val cancellationHandler = context.system.scheduler
+        val cancellationHandler = context
+          .system
+          .scheduler
           .scheduleOnce(cancellationTimeout, self, CancellationTimeoutExceeded)
 
         context.become(awaitCancellation(plan, origSender, cancellationHandler))
@@ -330,7 +331,8 @@ class MarathonSchedulerActor private (
             case RunningDeployments(plans) =>
               def intersectsWithNewPlan(
                   existingPlan: DeploymentPlan): Boolean = {
-                existingPlan.affectedApplicationIds
+                existingPlan
+                  .affectedApplicationIds
                   .intersect(plan.affectedApplicationIds)
                   .nonEmpty
               }
@@ -346,9 +348,11 @@ class MarathonSchedulerActor private (
   }
 
   def deploy(driver: SchedulerDriver, plan: DeploymentPlan): Unit = {
-    deploymentRepository.store(plan).foreach { _ =>
-      deploymentManager ! PerformDeployment(driver, plan)
-    }
+    deploymentRepository
+      .store(plan)
+      .foreach { _ =>
+        deploymentManager ! PerformDeployment(driver, plan)
+      }
   }
 
   def deploymentSuccess(plan: DeploymentPlan): Unit = {
@@ -481,17 +485,19 @@ class SchedulerActions(
     healthCheckManager.removeAllFor(app.id)
 
     log.info(s"Stopping app ${app.id}")
-    taskTracker.appTasks(app.id).map { tasks =>
-      for (taskId <- tasks.iterator.flatMap(_.launchedMesosId)) {
-        log.info(s"Killing task [${taskId.getValue}]")
-        driver.killTask(taskId)
-      }
-      taskQueue.purge(app.id)
-      taskQueue.resetDelay(app)
-      // TODO after all tasks have been killed we should remove the app from taskTracker
+    taskTracker
+      .appTasks(app.id)
+      .map { tasks =>
+        for (taskId <- tasks.iterator.flatMap(_.launchedMesosId)) {
+          log.info(s"Killing task [${taskId.getValue}]")
+          driver.killTask(taskId)
+        }
+        taskQueue.purge(app.id)
+        taskQueue.resetDelay(app)
+        // TODO after all tasks have been killed we should remove the app from taskTracker
 
-      eventBus.publish(AppTerminatedEvent(app.id))
-    }
+        eventBus.publish(AppTerminatedEvent(app.id))
+      }
   }
 
   def scaleApps(): Future[Unit] = {
@@ -517,31 +523,36 @@ class SchedulerActions(
     * @param driver scheduler driver
     */
   def reconcileTasks(driver: SchedulerDriver): Future[Status] = {
-    appRepository.allPathIds().map(_.toSet).flatMap { appIds =>
-      taskTracker.tasksByApp().map { tasksByApp =>
-        val knownTaskStatuses = appIds.flatMap { appId =>
-          tasksByApp.appTasks(appId).flatMap(_.mesosStatus)
-        }
+    appRepository
+      .allPathIds()
+      .map(_.toSet)
+      .flatMap { appIds =>
+        taskTracker
+          .tasksByApp()
+          .map { tasksByApp =>
+            val knownTaskStatuses = appIds.flatMap { appId =>
+              tasksByApp.appTasks(appId).flatMap(_.mesosStatus)
+            }
 
-        for (unknownAppId <- tasksByApp.allAppIdsWithTasks -- appIds) {
-          log.warn(
-            s"App $unknownAppId exists in TaskTracker, but not App store. " +
-              "The app was likely terminated. Will now expunge.")
-          for (orphanTask <- tasksByApp.marathonAppTasks(unknownAppId)) {
-            log.info(s"Killing task ${orphanTask.getId}")
-            driver.killTask(protos.TaskID(orphanTask.getId))
+            for (unknownAppId <- tasksByApp.allAppIdsWithTasks -- appIds) {
+              log.warn(
+                s"App $unknownAppId exists in TaskTracker, but not App store. " +
+                  "The app was likely terminated. Will now expunge.")
+              for (orphanTask <- tasksByApp.marathonAppTasks(unknownAppId)) {
+                log.info(s"Killing task ${orphanTask.getId}")
+                driver.killTask(protos.TaskID(orphanTask.getId))
+              }
+            }
+
+            log.info("Requesting task reconciliation with the Mesos master")
+            log.debug(s"Tasks to reconcile: $knownTaskStatuses")
+            if (knownTaskStatuses.nonEmpty)
+              driver.reconcileTasks(knownTaskStatuses.asJava)
+
+            // in addition to the known statuses send an empty list to get the unknown
+            driver.reconcileTasks(java.util.Arrays.asList())
           }
-        }
-
-        log.info("Requesting task reconciliation with the Mesos master")
-        log.debug(s"Tasks to reconcile: $knownTaskStatuses")
-        if (knownTaskStatuses.nonEmpty)
-          driver.reconcileTasks(knownTaskStatuses.asJava)
-
-        // in addition to the known statuses send an empty list to get the unknown
-        driver.reconcileTasks(java.util.Arrays.asList())
       }
-    }
   }
 
   def reconcileHealthChecks(): Unit = {

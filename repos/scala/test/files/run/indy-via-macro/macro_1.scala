@@ -20,9 +20,8 @@ object Macro {
       val dummySymbol = NoSymbol
         .newTermSymbol(TermName("compile"))
         .setInfo(NullaryMethodType(typeOf[Pattern]))
-      val args: List[Tree] =
-        Literal(Constant(bootstrapMethod)).setType(NoType) :: bootstrapArgs
-          .asInstanceOf[List[Tree]]
+      val args: List[Tree] = Literal(Constant(bootstrapMethod))
+        .setType(NoType) :: bootstrapArgs.asInstanceOf[List[Tree]]
       val result = ApplyDynamic(
         Ident(dummySymbol).setType(dummySymbol.info),
         args)
@@ -32,7 +31,8 @@ object Macro {
     import c.universe._
     s match {
       case l @ Literal(Constant(s: String)) =>
-        val boostrapSym = typeOf[test.Bootstrap].companion
+        val boostrapSym = typeOf[test.Bootstrap]
+          .companion
           .member(TermName("bootstrap"))
         Indy(boostrapSym, l :: Nil)
       case _ =>

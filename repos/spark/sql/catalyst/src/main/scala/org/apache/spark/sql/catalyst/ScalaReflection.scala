@@ -405,31 +405,33 @@ object ScalaReflection extends ScalaReflection {
 
           val cls = getClassFromType(tpe)
 
-          val arguments = params.zipWithIndex.map {
-            case ((fieldName, fieldType), i) =>
-              val Schema(dataType, nullable) = schemaFor(fieldType)
-              val clsName = getClassNameFromType(fieldType)
-              val newTypePath =
-                s"""- field (class: "$clsName", name: "$fieldName")""" +: walkedTypePath
-              // For tuples, we based grab the inner fields by ordinal instead of name.
-              if (cls.getName startsWith "scala.Tuple") {
-                constructorFor(
-                  fieldType,
-                  Some(addToPathOrdinal(i, dataType, newTypePath)),
-                  newTypePath)
-              } else {
-                val constructor = constructorFor(
-                  fieldType,
-                  Some(addToPath(fieldName, dataType, newTypePath)),
-                  newTypePath)
-
-                if (!nullable) {
-                  AssertNotNull(constructor, newTypePath)
+          val arguments = params
+            .zipWithIndex
+            .map {
+              case ((fieldName, fieldType), i) =>
+                val Schema(dataType, nullable) = schemaFor(fieldType)
+                val clsName = getClassNameFromType(fieldType)
+                val newTypePath =
+                  s"""- field (class: "$clsName", name: "$fieldName")""" +: walkedTypePath
+                // For tuples, we based grab the inner fields by ordinal instead of name.
+                if (cls.getName startsWith "scala.Tuple") {
+                  constructorFor(
+                    fieldType,
+                    Some(addToPathOrdinal(i, dataType, newTypePath)),
+                    newTypePath)
                 } else {
-                  constructor
+                  val constructor = constructorFor(
+                    fieldType,
+                    Some(addToPath(fieldName, dataType, newTypePath)),
+                    newTypePath)
+
+                  if (!nullable) {
+                    AssertNotNull(constructor, newTypePath)
+                  } else {
+                    constructor
+                  }
                 }
-              }
-          }
+            }
 
           val newInstance = NewInstance(
             cls,
@@ -598,7 +600,8 @@ object ScalaReflection extends ScalaReflection {
 
                 expressions.If(
                   IsNull(unwrapped),
-                  expressions.Literal
+                  expressions
+                    .Literal
                     .create(null, silentSchemaFor(optType).dataType),
                   extractorFor(unwrapped, optType, newPath))
             }
@@ -620,7 +623,8 @@ object ScalaReflection extends ScalaReflection {
                     fieldType,
                     newPath) :: Nil
               })
-            val nullOutput = expressions.Literal
+            val nullOutput = expressions
+              .Literal
               .create(null, nonNullOutput.dataType)
             expressions.If(IsNull(inputObject), nullOutput, nonNullOutput)
 
@@ -949,8 +953,10 @@ trait ScalaReflection {
     * Returns classes of input parameters of scala function object.
     */
   def getParameterTypes(func: AnyRef): Seq[Class[_]] = {
-    val methods = func.getClass.getMethods.filter(m =>
-      m.getName == "apply" && !m.isBridge)
+    val methods = func
+      .getClass
+      .getMethods
+      .filter(m => m.getName == "apply" && !m.isBridge)
     assert(methods.length == 1)
     methods.head.getParameterTypes
   }
@@ -965,7 +971,8 @@ trait ScalaReflection {
     val formalTypeArgs = tpe.typeSymbol.asClass.typeParams
     val TypeRef(_, _, actualTypeArgs) = tpe
     constructParams(tpe).map { p =>
-      p.name.toString -> p.typeSignature
+      p.name.toString -> p
+        .typeSignature
         .substituteTypes(formalTypeArgs, actualTypeArgs)
     }
   }
@@ -977,9 +984,10 @@ trait ScalaReflection {
         constructorSymbol.asMethod.paramss
       } else {
         // Find the primary constructor, and use its parameter ordering.
-        val primaryConstructorSymbol: Option[Symbol] =
-          constructorSymbol.asTerm.alternatives.find(s =>
-            s.isMethod && s.asMethod.isPrimaryConstructor)
+        val primaryConstructorSymbol: Option[Symbol] = constructorSymbol
+          .asTerm
+          .alternatives
+          .find(s => s.isMethod && s.asMethod.isPrimaryConstructor)
         if (primaryConstructorSymbol.isEmpty) {
           sys.error(
             "Internal SQL error: Product object did not have a primary constructor.")

@@ -26,17 +26,20 @@ trait QaController extends LilaController {
       case (((answers, popular), related), captcha) =>
         fuccess {
           Ok(
-            views.html.qa.questionShow(
-              q,
-              answers,
-              popular,
-              related,
-              answerForm =
-                if (QaAuth canAnswer q)
-                  answerForm orElse Some(forms.answer)
-                else
-                  None,
-              captcha = captcha))
+            views
+              .html
+              .qa
+              .questionShow(
+                q,
+                answers,
+                popular,
+                related,
+                answerForm =
+                  if (QaAuth canAnswer q)
+                    answerForm orElse Some(forms.answer)
+                  else
+                    None,
+                captcha = captcha))
         }
       case _ =>
         notFound
@@ -83,9 +86,8 @@ trait QaController extends LilaController {
   protected def WithOwnAnswer(questionId: QuestionId, answerId: AnswerId)(
       block: Question => Answer => Fu[Result])(implicit
       ctx: Context): Fu[Result] =
-    api.question findById questionId zip (
-      api.answer findById answerId
-    ) flatMap {
+    api
+      .question findById questionId zip (api.answer findById answerId) flatMap {
       case (Some(q), Some(a)) if (QaAuth canEdit a) =>
         block(q)(a)
       case (Some(q), Some(a)) =>

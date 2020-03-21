@@ -64,9 +64,8 @@ class HistoryServer(
     with ApplicationCacheOperations {
 
   // How many applications to retain
-  private val retainedApplications = conf.getInt(
-    "spark.history.retainedApplications",
-    50)
+  private val retainedApplications = conf
+    .getInt("spark.history.retainedApplications", 50)
 
   // application
   private val appCache =
@@ -108,9 +107,11 @@ class HistoryServer(
               appId
             } not found.</div>
           res.setStatus(HttpServletResponse.SC_NOT_FOUND)
-          UIUtils.basicSparkPage(msg, "Not Found").foreach { n =>
-            res.getWriter().write(n.toString)
-          }
+          UIUtils
+            .basicSparkPage(msg, "Not Found")
+            .foreach { n =>
+              res.getWriter().write(n.toString)
+            }
           return
         }
 
@@ -118,9 +119,8 @@ class HistoryServer(
         // the app's UI, and all we need to do is redirect the user to the same URI that was
         // requested, and the proper data should be served at that point.
         // Also, make sure that the redirect url contains the query string present in the request.
-        val requestURI = req.getRequestURI + Option(req.getQueryString)
-          .map("?" + _)
-          .getOrElse("")
+        val requestURI = req
+          .getRequestURI + Option(req.getQueryString).map("?" + _).getOrElse("")
         res.sendRedirect(res.encodeRedirectURL(requestURI))
       }
 
@@ -215,7 +215,8 @@ class HistoryServer(
   }
 
   def getApplicationInfoList: Iterator[ApplicationInfo] = {
-    getApplicationList().iterator
+    getApplicationList()
+      .iterator
       .map(ApplicationsListResource.appHistoryInfoToPublicAppInfo)
   }
 

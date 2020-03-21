@@ -292,9 +292,11 @@ class Eval(target: Option[File]) {
   }
 
   def findClass(className: String): Class[_] = {
-    compiler.findClass(className).getOrElse {
-      throw new ClassNotFoundException("no such class: " + className)
-    }
+    compiler
+      .findClass(className)
+      .getOrElse {
+        throw new ClassNotFoundException("no such class: " + className)
+      }
   }
 
   private[util] def uniqueId(
@@ -378,7 +380,8 @@ class Eval(target: Option[File]) {
       val cp =
         cl match {
           case urlClassLoader: URLClassLoader =>
-            urlClassLoader.getURLs
+            urlClassLoader
+              .getURLs
               .filter(_.getProtocol == "file")
               .map(u => new File(u.toURI).getPath)
               .toList
@@ -401,7 +404,9 @@ class Eval(target: Option[File]) {
       if (currentClassPath.size == 1 && currentClassPath(0).endsWith(".jar")) {
         val jarFile = currentClassPath(0)
         val relativeRoot = new File(jarFile).getParentFile()
-        val nestedClassPath = new JarFile(jarFile).getManifest.getMainAttributes
+        val nestedClassPath = new JarFile(jarFile)
+          .getManifest
+          .getMainAttributes
           .getValue("Class-Path")
         if (nestedClassPath eq null) {
           Nil
@@ -508,8 +513,8 @@ class Eval(target: Option[File]) {
     outputDirs.setSingleOutput(compilerOutputDir)
     private[this] val pathList = compilerPath ::: libPath
     bootclasspath.value = pathList.mkString(File.pathSeparator)
-    classpath.value = (pathList ::: impliedClassPath).mkString(
-      File.pathSeparator)
+    classpath.value = (pathList ::: impliedClassPath)
+      .mkString(File.pathSeparator)
   }
 
   /**
@@ -591,8 +596,10 @@ class Eval(target: Option[File]) {
         }
         case Some(t) => {
           target.foreach { abstractFile =>
-            if (abstractFile.file == null || abstractFile.file.getName.endsWith(
-                  ".class")) {
+            if (abstractFile.file == null || abstractFile
+                  .file
+                  .getName
+                  .endsWith(".class")) {
               abstractFile.delete()
             }
           }
@@ -621,16 +628,18 @@ class Eval(target: Option[File]) {
 
     def findClass(className: String): Option[Class[_]] = {
       synchronized {
-        cache.get(className).orElse {
-          try {
-            val cls = classLoader.loadClass(className)
-            cache(className) = cls
-            Some(cls)
-          } catch {
-            case e: ClassNotFoundException =>
-              None
+        cache
+          .get(className)
+          .orElse {
+            try {
+              val cls = classLoader.loadClass(className)
+              cache(className) = cls
+              Some(cls)
+            } catch {
+              case e: ClassNotFoundException =>
+                None
+            }
           }
-        }
       }
     }
 

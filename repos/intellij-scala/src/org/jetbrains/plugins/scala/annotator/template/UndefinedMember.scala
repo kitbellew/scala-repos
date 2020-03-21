@@ -30,18 +30,20 @@ object UndefinedMember extends AnnotatorPart[ScTemplateDefinition] {
     if (!isNew && !isObject)
       return
 
-    definition.members.foreach {
-      case declaration: ScDeclaration =>
-        val isNative =
-          declaration match {
-            case a: ScAnnotationsHolder =>
-              a.hasAnnotation("scala.native").isDefined
-            case _ =>
-              false
-          }
-        if (!isNative)
-          holder.createErrorAnnotation(declaration, Message)
-      case _ =>
-    }
+    definition
+      .members
+      .foreach {
+        case declaration: ScDeclaration =>
+          val isNative =
+            declaration match {
+              case a: ScAnnotationsHolder =>
+                a.hasAnnotation("scala.native").isDefined
+              case _ =>
+                false
+            }
+          if (!isNative)
+            holder.createErrorAnnotation(declaration, Message)
+        case _ =>
+      }
   }
 }

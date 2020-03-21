@@ -142,8 +142,8 @@ class GroupCoordinator(
         if (memberId != JoinGroupRequest.UNKNOWN_MEMBER_ID) {
           responseCallback(joinError(memberId, Errors.UNKNOWN_MEMBER_ID.code))
         } else {
-          group = groupManager.addGroup(
-            new GroupMetadata(groupId, protocolType))
+          group = groupManager
+            .addGroup(new GroupMetadata(groupId, protocolType))
           doJoinGroup(
             group,
             memberId,
@@ -178,13 +178,13 @@ class GroupCoordinator(
       protocols: List[(String, Array[Byte])],
       responseCallback: JoinCallback) {
     group synchronized {
-      if (group.protocolType != protocolType || !group.supportsProtocols(
-            protocols.map(_._1).toSet)) {
+      if (group.protocolType != protocolType || !group
+            .supportsProtocols(protocols.map(_._1).toSet)) {
         // if the new member does not support the group protocol, reject it
         responseCallback(
           joinError(memberId, Errors.INCONSISTENT_GROUP_PROTOCOL.code))
-      } else if (memberId != JoinGroupRequest.UNKNOWN_MEMBER_ID && !group.has(
-                   memberId)) {
+      } else if (memberId != JoinGroupRequest.UNKNOWN_MEMBER_ID && !group
+                   .has(memberId)) {
         // if the member trying to register with a un-recognized id, send the response to let
         // it reset its member id and retry
         responseCallback(joinError(memberId, Errors.UNKNOWN_MEMBER_ID.code))
@@ -354,8 +354,9 @@ class GroupCoordinator(
 
               // fill any missing members with an empty assignment
               val missing = group.allMembers -- groupAssignment.keySet
-              val assignment =
-                groupAssignment ++ missing.map(_ -> Array.empty[Byte]).toMap
+              val assignment = groupAssignment ++ missing
+                .map(_ -> Array.empty[Byte])
+                .toMap
 
               delayedGroupStore = Some(
                 groupManager.prepareStoreGroup(
@@ -366,8 +367,8 @@ class GroupCoordinator(
                       // another member may have joined the group while we were awaiting this callback,
                       // so we must ensure we are still in the AwaitingSync state and the same generation
                       // when it gets invoked. if we have transitioned to another state, then do nothing
-                      if (group.is(
-                            AwaitingSync) && generationId == group.generationId) {
+                      if (group.is(AwaitingSync) && generationId == group
+                            .generationId) {
                         if (errorCode != Errors.NONE.code) {
                           resetAndPropagateAssignmentError(group, errorCode)
                           maybePrepareRebalance(group)
@@ -541,35 +542,41 @@ class GroupCoordinator(
   def handleFetchOffsets(groupId: String, partitions: Seq[TopicPartition])
       : Map[TopicPartition, OffsetFetchResponse.PartitionData] = {
     if (!isActive.get) {
-      partitions.map {
-        case topicPartition =>
-          (
-            topicPartition,
-            new OffsetFetchResponse.PartitionData(
-              OffsetFetchResponse.INVALID_OFFSET,
-              "",
-              Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code))
-      }.toMap
+      partitions
+        .map {
+          case topicPartition =>
+            (
+              topicPartition,
+              new OffsetFetchResponse.PartitionData(
+                OffsetFetchResponse.INVALID_OFFSET,
+                "",
+                Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code))
+        }
+        .toMap
     } else if (!isCoordinatorForGroup(groupId)) {
-      partitions.map {
-        case topicPartition =>
-          (
-            topicPartition,
-            new OffsetFetchResponse.PartitionData(
-              OffsetFetchResponse.INVALID_OFFSET,
-              "",
-              Errors.NOT_COORDINATOR_FOR_GROUP.code))
-      }.toMap
+      partitions
+        .map {
+          case topicPartition =>
+            (
+              topicPartition,
+              new OffsetFetchResponse.PartitionData(
+                OffsetFetchResponse.INVALID_OFFSET,
+                "",
+                Errors.NOT_COORDINATOR_FOR_GROUP.code))
+        }
+        .toMap
     } else if (isCoordinatorLoadingInProgress(groupId)) {
-      partitions.map {
-        case topicPartition =>
-          (
-            topicPartition,
-            new OffsetFetchResponse.PartitionData(
-              OffsetFetchResponse.INVALID_OFFSET,
-              "",
-              Errors.GROUP_LOAD_IN_PROGRESS.code))
-      }.toMap
+      partitions
+        .map {
+          case topicPartition =>
+            (
+              topicPartition,
+              new OffsetFetchResponse.PartitionData(
+                OffsetFetchResponse.INVALID_OFFSET,
+                "",
+                Errors.GROUP_LOAD_IN_PROGRESS.code))
+        }
+        .toMap
     } else {
       // return offsets blindly regardless the current group state since the group may be using
       // Kafka commit storage without automatic group management
@@ -638,8 +645,8 @@ class GroupCoordinator(
                 Errors.NOT_COORDINATOR_FOR_GROUP.code)
               member.awaitingSyncCallback = null
             }
-            heartbeatPurgatory.checkAndComplete(
-              MemberKey(member.groupId, member.memberId))
+            heartbeatPurgatory
+              .checkAndComplete(MemberKey(member.groupId, member.memberId))
           }
       }
     }
@@ -650,8 +657,9 @@ class GroupCoordinator(
       info(
         s"Loading group metadata for ${group.groupId} with generation ${group.generationId}")
       assert(group.is(Stable))
-      group.allMemberMetadata.foreach(
-        completeAndScheduleNextHeartbeatExpiration(group, _))
+      group
+        .allMemberMetadata
+        .foreach(completeAndScheduleNextHeartbeatExpiration(group, _))
     }
   }
 
@@ -660,17 +668,17 @@ class GroupCoordinator(
   }
 
   def handleGroupEmigration(offsetTopicPartitionId: Int) {
-    groupManager.removeGroupsForPartition(
-      offsetTopicPartitionId,
-      onGroupUnloaded)
+    groupManager
+      .removeGroupsForPartition(offsetTopicPartitionId, onGroupUnloaded)
   }
 
   private def setAndPropagateAssignment(
       group: GroupMetadata,
       assignment: Map[String, Array[Byte]]) {
     assert(group.is(AwaitingSync))
-    group.allMemberMetadata.foreach(member =>
-      member.assignment = assignment(member.memberId))
+    group
+      .allMemberMetadata
+      .foreach(member => member.assignment = assignment(member.memberId))
     propagateAssignment(group, Errors.NONE.code)
   }
 

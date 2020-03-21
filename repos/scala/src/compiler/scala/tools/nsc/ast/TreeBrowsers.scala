@@ -119,12 +119,12 @@ abstract class TreeBrowsers {
     */
   class BrowserFrame(phaseName: String = "unknown") {
     try {
-      UIManager.setLookAndFeel(
-        "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel")
+      UIManager
+        .setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel")
     } catch {
       case _: Throwable =>
-        UIManager.setLookAndFeel(
-          UIManager.getCrossPlatformLookAndFeelClassName())
+        UIManager
+          .setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName())
     }
 
     val frame = new JFrame("Scala AST after " + phaseName + " phase")
@@ -577,7 +577,9 @@ abstract class TreeBrowsers {
           str + " annotations: " + s.annotations.mkString("", " ", "")
             + (
               if (s.isTypeSkolem)
-                "\ndeSkolemized annotations: " + s.deSkolemize.annotations
+                "\ndeSkolemized annotations: " + s
+                  .deSkolemize
+                  .annotations
                   .mkString("", " ", "")
               else
                 ""
@@ -604,8 +606,10 @@ abstract class TreeBrowsers {
           Document.group(toDocument(s))
         case _ =>
           Document.group(
-            syms.tail.foldLeft(toDocument(syms.head) :: ", ")(
-              (d: Document, s2: Symbol) => toDocument(s2) :: ", " :/: d))
+            syms
+              .tail
+              .foldLeft(toDocument(syms.head) :: ", ")(
+                (d: Document, s2: Symbol) => toDocument(s2) :: ", " :/: d))
       }
 
     def toDocument(ts: List[Type]): Document =
@@ -616,8 +620,10 @@ abstract class TreeBrowsers {
           Document.group(toDocument(t))
         case _ =>
           Document.group(
-            ts.tail.foldLeft(toDocument(ts.head) :: ", ")(
-              (d: Document, t2: Type) => toDocument(t2) :: ", " :/: d))
+            ts
+              .tail
+              .foldLeft(toDocument(ts.head) :: ", ")((d: Document, t2: Type) =>
+                toDocument(t2) :: ", " :/: d))
       }
 
     def toDocument(t: Type): Document =

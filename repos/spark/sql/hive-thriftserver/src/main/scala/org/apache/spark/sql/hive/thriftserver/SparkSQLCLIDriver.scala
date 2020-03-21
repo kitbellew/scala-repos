@@ -87,10 +87,12 @@ private[hive] object SparkSQLCLIDriver extends Logging {
 
     val cliConf = new HiveConf(classOf[SessionState])
     // Override the location of the metastore since this is only used for local execution.
-    HiveContext.newTemporaryConfiguration(useInMemoryDerby = false).foreach {
-      case (key, value) =>
-        cliConf.set(key, value)
-    }
+    HiveContext
+      .newTemporaryConfiguration(useInMemoryDerby = false)
+      .foreach {
+        case (key, value) =>
+          cliConf.set(key, value)
+      }
     val sessionState = new CliSessionState(cliConf)
 
     sessionState.in = System.in
@@ -109,15 +111,19 @@ private[hive] object SparkSQLCLIDriver extends Logging {
 
     // Set all properties specified via command line.
     val conf: HiveConf = sessionState.getConf
-    sessionState.cmdProperties.entrySet().asScala.foreach { item =>
-      val key = item.getKey.toString
-      val value = item.getValue.toString
-      // We do not propagate metastore options to the execution copy of hive.
-      if (key != "javax.jdo.option.ConnectionURL") {
-        conf.set(key, value)
-        sessionState.getOverriddenConfigurations.put(key, value)
+    sessionState
+      .cmdProperties
+      .entrySet()
+      .asScala
+      .foreach { item =>
+        val key = item.getKey.toString
+        val value = item.getValue.toString
+        // We do not propagate metastore options to the execution copy of hive.
+        if (key != "javax.jdo.option.ConnectionURL") {
+          conf.set(key, value)
+          sessionState.getOverriddenConfigurations.put(key, value)
+        }
       }
-    }
 
     SessionState.start(sessionState)
 
@@ -135,9 +141,8 @@ private[hive] object SparkSQLCLIDriver extends Logging {
       var loader = conf.getClassLoader
       val auxJars = HiveConf.getVar(conf, HiveConf.ConfVars.HIVEAUXJARS)
       if (StringUtils.isNotBlank(auxJars)) {
-        loader = Utilities.addToClassPath(
-          loader,
-          StringUtils.split(auxJars, ","))
+        loader = Utilities
+          .addToClassPath(loader, StringUtils.split(auxJars, ","))
       }
       conf.setClassLoader(loader)
       Thread.currentThread().setContextClassLoader(loader)
@@ -216,7 +221,8 @@ private[hive] object SparkSQLCLIDriver extends Logging {
           } catch {
             case e: IOException =>
               logWarning(
-                "WARNING: Failed to write command history file: " + e.getMessage)
+                "WARNING: Failed to write command history file: " + e
+                  .getMessage)
           }
         case _ =>
       }
@@ -363,9 +369,8 @@ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
 
           val res = new JArrayList[String]()
 
-          if (HiveConf.getBoolVar(
-                conf,
-                HiveConf.ConfVars.HIVE_CLI_PRINT_HEADER)) {
+          if (HiveConf
+                .getBoolVar(conf, HiveConf.ConfVars.HIVE_CLI_PRINT_HEADER)) {
             // Print the column names.
             Option(driver.getSchema.getFieldSchemas).foreach { fields =>
               out.println(fields.asScala.map(_.getName).mkString("\t"))
@@ -375,10 +380,12 @@ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
           var counter = 0
           try {
             while (!out.checkError() && driver.getResults(res)) {
-              res.asScala.foreach { l =>
-                counter += 1
-                out.println(l)
-              }
+              res
+                .asScala
+                .foreach { l =>
+                  counter += 1
+                  out.println(l)
+                }
               res.clear()
             }
           } catch {

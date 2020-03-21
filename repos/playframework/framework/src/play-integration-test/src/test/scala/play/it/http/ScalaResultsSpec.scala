@@ -38,8 +38,8 @@ object ScalaResultsSpec extends PlaySpecification {
     setCookies("lang").value must be_==("fr")
     setCookies("logged").maxAge must beSome
     setCookies("logged").maxAge must beSome(0)
-    val playSession = Session.decodeFromCookie(
-      setCookies.get(Session.COOKIE_NAME))
+    val playSession = Session
+      .decodeFromCookie(setCookies.get(Session.COOKIE_NAME))
     playSession.data must_== Map("user" -> "kiki", "langs" -> "fr:en:de")
   }
 
@@ -47,9 +47,8 @@ object ScalaResultsSpec extends PlaySpecification {
     val data = Map("user" -> "alice")
     val encodedSession = Session.encode(data)
     // Change a value in the session
-    val maliciousSession = encodedSession.replaceFirst(
-      "user=alice",
-      "user=mallory")
+    val maliciousSession = encodedSession
+      .replaceFirst("user=alice", "user=mallory")
     val decodedSession = Session.decode(maliciousSession)
     decodedSession must beEmpty
   }

@@ -58,9 +58,8 @@ final class Env(
   lazy val crosstableApi = new CrosstableApi(db(CollectionCrosstable))
 
   // load captcher actor
-  private val captcher = system.actorOf(
-    Props(new Captcher),
-    name = CaptcherName)
+  private val captcher = system
+    .actorOf(Props(new Captcher), name = CaptcherName)
 
   scheduler.message(CaptcherDuration) {
     captcher -> actorApi.NewCaptcha
@@ -73,9 +72,11 @@ final class Env(
       _ foreach { game =>
         system.lilaBus.publish(actorApi.StartGame(game), 'startGame)
         game.userIds foreach { userId =>
-          system.lilaBus.publish(
-            actorApi.UserStartGame(userId, game),
-            Symbol(s"userStartGame:$userId"))
+          system
+            .lilaBus
+            .publish(
+              actorApi.UserStartGame(userId, game),
+              Symbol(s"userStartGame:$userId"))
         }
       }
     }

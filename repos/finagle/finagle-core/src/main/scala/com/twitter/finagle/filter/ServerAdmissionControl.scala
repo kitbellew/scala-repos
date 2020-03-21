@@ -85,10 +85,13 @@ private[twitter] object ServerAdmissionControl {
         } else {
           // assume the order of filters doesn't matter
           val typeAgnosticFilters =
-            acs.values.asScala.foldLeft(Filter.TypeAgnostic.Identity) {
-              case (sum, f) =>
-                f.andThen(sum)
-            }
+            acs
+              .values
+              .asScala
+              .foldLeft(Filter.TypeAgnostic.Identity) {
+                case (sum, f) =>
+                  f.andThen(sum)
+              }
           typeAgnosticFilters.toFilter.andThen(next)
         }
       }

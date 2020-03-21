@@ -113,8 +113,8 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
     * [[org.apache.spark.sql.catalyst.analysis.UnresolvedRelation UnresolvedRelation]]
     * should return `false`).
     */
-  lazy val resolved: Boolean =
-    expressions.forall(_.resolved) && childrenResolved
+  lazy val resolved: Boolean = expressions
+    .forall(_.resolved) && childrenResolved
 
   override protected def statePrefix =
     if (!resolved)
@@ -304,18 +304,21 @@ abstract class UnaryNode extends LogicalPlan {
     */
   protected def getAliasedConstraints(
       projectList: Seq[NamedExpression]): Set[Expression] = {
-    projectList.flatMap {
-      case a @ Alias(e, _) =>
-        child.constraints
-          .map(
-            _ transform {
-              case expr: Expression if expr.semanticEquals(e) =>
-                a.toAttribute
-            })
-          .union(Set(EqualNullSafe(e, a.toAttribute)))
-      case _ =>
-        Set.empty[Expression]
-    }.toSet
+    projectList
+      .flatMap {
+        case a @ Alias(e, _) =>
+          child
+            .constraints
+            .map(
+              _ transform {
+                case expr: Expression if expr.semanticEquals(e) =>
+                  a.toAttribute
+              })
+            .union(Set(EqualNullSafe(e, a.toAttribute)))
+        case _ =>
+          Set.empty[Expression]
+      }
+      .toSet
   }
 
   override protected def validConstraints: Set[Expression] = child.constraints

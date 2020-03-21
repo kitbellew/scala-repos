@@ -37,7 +37,8 @@ final class Source[+Out, +Mat](private[stream] override val module: Module)
   override type Closed = RunnableGraph[Mat @uncheckedVariance]
   override type ClosedMat[+M] = RunnableGraph[M]
 
-  override val shape: SourceShape[Out] = module.shape
+  override val shape: SourceShape[Out] = module
+    .shape
     .asInstanceOf[SourceShape[Out]]
 
   override def toString: String = s"Source($shape, $module)"

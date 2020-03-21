@@ -30,9 +30,12 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
 
   override def preStart {
     if (startsOnApplicationBoot)
-      context.system.scheduler.scheduleOnce(1 second) {
-        lilaBus.publish(lila.socket.SocketHub.Open(self), 'socket)
-      }
+      context
+        .system
+        .scheduler
+        .scheduleOnce(1 second) {
+          lilaBus.publish(lila.socket.SocketHub.Open(self), 'socket)
+        }
     else
       lilaBus.publish(lila.socket.SocketHub.Open(self), 'socket)
   }
@@ -135,9 +138,12 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
 
   protected def resync(member: M) {
     import scala.concurrent.duration._
-    context.system.scheduler.scheduleOnce((Random nextInt 2000).milliseconds) {
-      resyncNow(member)
-    }
+    context
+      .system
+      .scheduler
+      .scheduleOnce((Random nextInt 2000).milliseconds) {
+        resyncNow(member)
+      }
   }
 
   protected def resync(uid: String) {

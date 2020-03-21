@@ -84,7 +84,9 @@ class HeartbeatReceiverSuite
     when(scheduler.sc).thenReturn(sc)
     heartbeatReceiverClock = new ManualClock
     heartbeatReceiver = new HeartbeatReceiver(sc, heartbeatReceiverClock)
-    heartbeatReceiverRef = sc.env.rpcEnv
+    heartbeatReceiverRef = sc
+      .env
+      .rpcEnv
       .setupEndpoint("heartbeat", heartbeatReceiver)
     when(scheduler.executorHeartbeatReceived(any(), any(), any()))
       .thenReturn(true)
@@ -173,9 +175,8 @@ class HeartbeatReceiverSuite
     // Set up a fake backend and cluster manager to simulate killing executors
     val rpcEnv = sc.env.rpcEnv
     val fakeClusterManager = new FakeClusterManager(rpcEnv)
-    val fakeClusterManagerRef = rpcEnv.setupEndpoint(
-      "fake-cm",
-      fakeClusterManager)
+    val fakeClusterManagerRef = rpcEnv
+      .setupEndpoint("fake-cm", fakeClusterManager)
     val fakeSchedulerBackend =
       new FakeSchedulerBackend(scheduler, rpcEnv, fakeClusterManagerRef)
     when(sc.schedulerBackend).thenReturn(fakeSchedulerBackend)
@@ -185,16 +186,18 @@ class HeartbeatReceiverSuite
     fakeSchedulerBackend.start()
     val dummyExecutorEndpoint1 = new FakeExecutorEndpoint(rpcEnv)
     val dummyExecutorEndpoint2 = new FakeExecutorEndpoint(rpcEnv)
-    val dummyExecutorEndpointRef1 = rpcEnv.setupEndpoint(
-      "fake-executor-1",
-      dummyExecutorEndpoint1)
-    val dummyExecutorEndpointRef2 = rpcEnv.setupEndpoint(
-      "fake-executor-2",
-      dummyExecutorEndpoint2)
-    fakeSchedulerBackend.driverEndpoint.askWithRetry[RegisterExecutorResponse](
-      RegisterExecutor(executorId1, dummyExecutorEndpointRef1, 0, Map.empty))
-    fakeSchedulerBackend.driverEndpoint.askWithRetry[RegisterExecutorResponse](
-      RegisterExecutor(executorId2, dummyExecutorEndpointRef2, 0, Map.empty))
+    val dummyExecutorEndpointRef1 = rpcEnv
+      .setupEndpoint("fake-executor-1", dummyExecutorEndpoint1)
+    val dummyExecutorEndpointRef2 = rpcEnv
+      .setupEndpoint("fake-executor-2", dummyExecutorEndpoint2)
+    fakeSchedulerBackend
+      .driverEndpoint
+      .askWithRetry[RegisterExecutorResponse](
+        RegisterExecutor(executorId1, dummyExecutorEndpointRef1, 0, Map.empty))
+    fakeSchedulerBackend
+      .driverEndpoint
+      .askWithRetry[RegisterExecutorResponse](
+        RegisterExecutor(executorId2, dummyExecutorEndpointRef2, 0, Map.empty))
     heartbeatReceiverRef.askWithRetry[Boolean](TaskSchedulerIsSet)
     addExecutorAndVerify(executorId1)
     addExecutorAndVerify(executorId2)
@@ -251,16 +254,20 @@ class HeartbeatReceiverSuite
 
   private def addExecutorAndVerify(executorId: String): Unit = {
     assert(
-      heartbeatReceiver.addExecutor(executorId).map { f =>
-        Await.result(f, 10.seconds)
-      } === Some(true))
+      heartbeatReceiver
+        .addExecutor(executorId)
+        .map { f =>
+          Await.result(f, 10.seconds)
+        } === Some(true))
   }
 
   private def removeExecutorAndVerify(executorId: String): Unit = {
     assert(
-      heartbeatReceiver.removeExecutor(executorId).map { f =>
-        Await.result(f, 10.seconds)
-      } === Some(true))
+      heartbeatReceiver
+        .removeExecutor(executorId)
+        .map { f =>
+          Await.result(f, 10.seconds)
+        } === Some(true))
   }
 
   private def getTrackedExecutors: Map[String, Long] = {

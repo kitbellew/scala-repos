@@ -6,7 +6,9 @@ import org.apache.mesos.{Protos => MesosProtos}
 
 case class DiscoveryInfo(ports: Seq[DiscoveryInfo.Port] = Seq.empty) {
   def toProto: Protos.DiscoveryInfo = {
-    Protos.DiscoveryInfo.newBuilder
+    Protos
+      .DiscoveryInfo
+      .newBuilder
       .addAllPorts(ports.map(_.toProto).asJava)
       .build
   }
@@ -25,7 +27,9 @@ object DiscoveryInfo {
       "protocol can only be 'tcp' or 'udp'")
 
     def toProto: MesosProtos.Port = {
-      MesosProtos.Port.newBuilder
+      MesosProtos
+        .Port
+        .newBuilder
         .setNumber(number)
         .setName(name)
         .setProtocol(protocol)

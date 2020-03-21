@@ -101,12 +101,12 @@ trait CommentFactoryBase {
           }
       }
 
-      override val shortDescription: Option[Text] =
-        shortDescription0.lastOption collect {
-          case Body(List(Paragraph(Chain(List(Summary(Text(e)))))))
-              if !e.trim.contains("\n") =>
-            Text(e)
-        }
+      override val shortDescription: Option[Text] = shortDescription0
+        .lastOption collect {
+        case Body(List(Paragraph(Chain(List(Summary(Text(e)))))))
+            if !e.trim.contains("\n") =>
+          Text(e)
+      }
 
       override val hideImplicitConversions: List[String] =
         hideImplicitConversions0 flatMap {
@@ -262,7 +262,10 @@ trait CommentFactoryBase {
       val markedTagComment = SafeTags.replaceAllIn(
         javadoclessComment,
         { mtch =>
-          java.util.regex.Matcher
+          java
+            .util
+            .regex
+            .Matcher
             .quoteReplacement(safeTagMarker + mtch.matched + safeTagMarker)
         })
       markedTagComment.lines.toList map (cleanLine(_))
@@ -451,8 +454,8 @@ trait CommentFactoryBase {
             contentDiagramTag,
             SimpleTagKey("template"),
             SimpleTagKey("documentable"))
-          val tagsWithoutDiagram = tags.filterNot(pair =>
-            stripTags.contains(pair._1))
+          val tagsWithoutDiagram = tags
+            .filterNot(pair => stripTags.contains(pair._1))
 
           val bodyTags: mutable.Map[TagKey, List[Body]] = mutable.Map(
             tagsWithoutDiagram mapValues { tag =>
@@ -465,9 +468,8 @@ trait CommentFactoryBase {
             ((bodyTags remove key): @unchecked) match {
               case Some(r :: rs) if !(filterEmpty && r.blocks.isEmpty) =>
                 if (!rs.isEmpty)
-                  reporter.warning(
-                    pos,
-                    s"Only one '@${key.name}' tag is allowed")
+                  reporter
+                    .warning(pos, s"Only one '@${key.name}' tag is allowed")
                 Some(r)
               case _ =>
                 None
@@ -1086,8 +1088,8 @@ trait CommentFactoryBase {
       * @return true only if the correct characters have been jumped */
     final def jump(chars: String): Boolean = {
       var index = 0
-      while (index < chars.length && char == chars.charAt(
-               index) && char != endOfText) {
+      while (index < chars
+               .length && char == chars.charAt(index) && char != endOfText) {
         nextChar()
         index += 1
       }

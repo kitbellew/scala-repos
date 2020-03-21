@@ -37,9 +37,14 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     // Convert user and item String IDs to Int index for MLlib
     val userStringIntMap = BiMap.stringInt(data.ratings.map(_.user))
     val itemStringIntMap = BiMap.stringInt(data.ratings.map(_.item))
-    val mllibRatings = data.ratings.map(r =>
-      // MLlibRating requires integer index for user and item
-      MLlibRating(userStringIntMap(r.user), itemStringIntMap(r.item), r.rating))
+    val mllibRatings = data
+      .ratings
+      .map(r =>
+        // MLlibRating requires integer index for user and item
+        MLlibRating(
+          userStringIntMap(r.user),
+          itemStringIntMap(r.item),
+          r.rating))
 
     // seed for MLlib ALS
     val seed = ap.seed.getOrElse(System.nanoTime)
@@ -66,13 +71,16 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val categories = data.items.flatMap(_.categories).distinct().collect().toSet
 
     val categoriesMap =
-      categories.map { category =>
-        category -> data.items
-          .filter(_.categories.contains(category))
-          .map(item => itemStringIntMap(item.id))
-          .collect()
-          .toSet
-      }.toMap
+      categories
+        .map { category =>
+          category -> data
+            .items
+            .filter(_.categories.contains(category))
+            .map(item => itemStringIntMap(item.id))
+            .collect()
+            .toSet
+        }
+        .toMap
 
     new ALSModel(
       rank = m.rank,
@@ -85,15 +93,18 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
   def predict(model: ALSModel, query: Query): PredictedResult = {
     // Convert String ID to Int index for Mllib
-    model.userStringIntMap
+    model
+      .userStringIntMap
       .get(query.user)
       .map { userInt =>
         // create inverse view of itemStringIntMap
         val itemIntStringMap = model.itemStringIntMap.inverse
         // Find items on query category
-        val categoriesItems = query.categories.map { category =>
-          model.categoryItemsMap.getOrElse(category, Set.empty)
-        }
+        val categoriesItems = query
+          .categories
+          .map { category =>
+            model.categoryItemsMap.getOrElse(category, Set.empty)
+          }
         // recommendProductsFromCategory() returns Array[MLlibRating], which uses item Int
         // index. Convert it to String ID for returning PredictedResult
         val itemScores = model

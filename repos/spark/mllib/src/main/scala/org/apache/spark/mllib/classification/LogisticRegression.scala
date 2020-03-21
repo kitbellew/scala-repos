@@ -65,7 +65,8 @@ class LogisticRegressionModel @Since("1.3.0") (
     val weightsSizeWithoutIntercept = (numClasses - 1) * numFeatures
     val weightsSizeWithIntercept = (numClasses - 1) * (numFeatures + 1)
     require(
-      weights.size == weightsSizeWithoutIntercept || weights.size == weightsSizeWithIntercept,
+      weights.size == weightsSizeWithoutIntercept || weights
+        .size == weightsSizeWithIntercept,
       s"LogisticRegressionModel.load with numClasses = $numClasses and numFeatures = $numFeatures" +
         s" expected weights of length $weightsSizeWithoutIntercept (without intercept)" +
         s" or $weightsSizeWithIntercept (with intercept)," +
@@ -175,15 +176,17 @@ class LogisticRegressionModel @Since("1.3.0") (
 
   @Since("1.3.0")
   override def save(sc: SparkContext, path: String): Unit = {
-    GLMClassificationModel.SaveLoadV1_0.save(
-      sc,
-      path,
-      this.getClass.getName,
-      numFeatures,
-      numClasses,
-      weights,
-      intercept,
-      threshold)
+    GLMClassificationModel
+      .SaveLoadV1_0
+      .save(
+        sc,
+        path,
+        this.getClass.getName,
+        numFeatures,
+        numClasses,
+        weights,
+        intercept,
+        threshold)
   }
 
   override protected def formatVersion: String = "1.0"
@@ -206,10 +209,9 @@ object LogisticRegressionModel extends Loader[LogisticRegressionModel] {
       case (className, "1.0") if className == classNameV1_0 =>
         val (numFeatures, numClasses) = ClassificationModel
           .getNumFeaturesClasses(metadata)
-        val data = GLMClassificationModel.SaveLoadV1_0.loadData(
-          sc,
-          path,
-          classNameV1_0)
+        val data = GLMClassificationModel
+          .SaveLoadV1_0
+          .loadData(sc, path, classNameV1_0)
         // numFeatures, numClasses, weights are checked in model initialization
         val model =
           new LogisticRegressionModel(
@@ -308,8 +310,7 @@ object LogisticRegressionWithSGD {
       stepSize,
       numIterations,
       0.0,
-      miniBatchFraction)
-      .run(input, initialWeights)
+      miniBatchFraction).run(input, initialWeights)
   }
 
   /**
@@ -334,8 +335,7 @@ object LogisticRegressionWithSGD {
       stepSize,
       numIterations,
       0.0,
-      miniBatchFraction)
-      .run(input)
+      miniBatchFraction).run(input)
   }
 
   /**
@@ -502,8 +502,8 @@ class LogisticRegressionWithLBFGS
         // Train our model
         val mlLogisticRegresionModel = lr.train(df, handlePersistence)
         // convert the model
-        val weights = Vectors.dense(
-          mlLogisticRegresionModel.coefficients.toArray)
+        val weights = Vectors
+          .dense(mlLogisticRegresionModel.coefficients.toArray)
         createModel(weights, mlLogisticRegresionModel.intercept)
       }
       optimizer.getUpdater() match {

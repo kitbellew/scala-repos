@@ -156,8 +156,8 @@ object HttpConfiguration {
         executeActionCreatorActionFirst = config.get[Boolean](
           "play.http.actionComposition.executeActionCreatorActionFirst")
       ),
-      cookies = CookiesConfiguration(strict = config.get[Boolean](
-        "play.http.cookies.strict")),
+      cookies = CookiesConfiguration(strict = config
+        .get[Boolean]("play.http.cookies.strict")),
       session = SessionConfiguration(
         cookieName = config.getDeprecated[String](
           "play.http.session.cookieName",
@@ -191,6 +191,7 @@ object HttpConfiguration {
     * Don't use this - only exists for transition from global state
     */
   private[play] def current =
-    Play.privateMaybeApplication.fold(HttpConfiguration())(
-      httpConfigurationCache)
+    Play
+      .privateMaybeApplication
+      .fold(HttpConfiguration())(httpConfigurationCache)
 }

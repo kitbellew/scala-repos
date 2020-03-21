@@ -66,12 +66,14 @@ object Form extends DispatchSnippet {
             new UnprefixedAttribute(
               "action",
               S.uri,
-              e.attributes.filter {
-                case up: UnprefixedAttribute =>
-                  up.key != "method" && up.key != "action"
-                case x =>
-                  true
-              }))
+              e
+                .attributes
+                .filter {
+                  case up: UnprefixedAttribute =>
+                    up.key != "method" && up.key != "action"
+                  case x =>
+                    true
+                }))
         new Elem(null, "form", meta, e.scope, e.minimizeEmpty, e.child: _*)
       } else {
         <form method="post" action={

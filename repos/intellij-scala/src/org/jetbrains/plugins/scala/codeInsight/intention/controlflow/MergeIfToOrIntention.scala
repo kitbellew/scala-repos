@@ -29,10 +29,8 @@ class MergeIfToOrIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScIfStmt],
-      false)
+    val ifStmt: ScIfStmt = PsiTreeUtil
+      .getParentOfType(element, classOf[ScIfStmt], false)
     if (ifStmt == null)
       return false
 
@@ -48,10 +46,16 @@ class MergeIfToOrIntention extends PsiElementBaseIntentionAction {
       return false
 
     if (!(
-          thenBranch.getTextRange.getEndOffset <= offset && offset <= elseBranch.getTextRange.getStartOffset
+          thenBranch.getTextRange.getEndOffset <= offset && offset <= elseBranch
+            .getTextRange
+            .getStartOffset
         ) &&
         !(
-          ifStmt.getTextRange.getStartOffset <= offset && offset <= ifStmt.condition.get.getTextRange.getStartOffset
+          ifStmt.getTextRange.getStartOffset <= offset && offset <= ifStmt
+            .condition
+            .get
+            .getTextRange
+            .getStartOffset
         ))
       return false
 
@@ -79,18 +83,13 @@ class MergeIfToOrIntention extends PsiElementBaseIntentionAction {
         }
       }
 
-    PsiEquivalenceUtil.areElementsEquivalent(
-      thenBranch,
-      innerThenBranch,
-      comparator,
-      false)
+    PsiEquivalenceUtil
+      .areElementsEquivalent(thenBranch, innerThenBranch, comparator, false)
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScIfStmt],
-      false)
+    val ifStmt: ScIfStmt = PsiTreeUtil
+      .getParentOfType(element, classOf[ScIfStmt], false)
     if (ifStmt == null || !ifStmt.isValid)
       return
 

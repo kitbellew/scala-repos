@@ -46,9 +46,11 @@ class KetamaDistributorTest extends WordSpec {
 
       // Test that ketamaClient.clientOf(key) == expected IP
       val handleToIp =
-        nodes.map { n =>
-          n.handle -> n.identifier
-        }.toMap
+        nodes
+          .map { n =>
+            n.handle -> n.identifier
+          }
+          .toMap
       for (testcase <- expected) {
         val hash = KeyHasher.KETAMA.hashKey(testcase(0).getBytes)
 

@@ -34,7 +34,9 @@ private class BackoffOnRestartSupervisor(
       strategy.withinTimeRange,
       strategy.loggingEnabled) {
       case ex ⇒
-        val defaultDirective: Directive = super.supervisorStrategy.decider
+        val defaultDirective: Directive = super
+          .supervisorStrategy
+          .decider
           .applyOrElse(ex, (_: Any) ⇒ Escalate)
 
         strategy.decider.applyOrElse(ex, (_: Any) ⇒ defaultDirective) match {
@@ -56,12 +58,11 @@ private class BackoffOnRestartSupervisor(
     case Terminated(`childRef`) ⇒
       become(receive)
       child = None
-      val restartDelay = BackoffSupervisor.calculateDelay(
-        restartCount,
-        minBackoff,
-        maxBackoff,
-        randomFactor)
-      context.system.scheduler
+      val restartDelay = BackoffSupervisor
+        .calculateDelay(restartCount, minBackoff, maxBackoff, randomFactor)
+      context
+        .system
+        .scheduler
         .scheduleOnce(restartDelay, self, BackoffSupervisor.StartChild)
       restartCount += 1
 

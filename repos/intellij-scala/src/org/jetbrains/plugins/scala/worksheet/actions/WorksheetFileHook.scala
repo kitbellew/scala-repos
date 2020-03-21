@@ -38,22 +38,26 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
   override def initComponent() {}
 
   override def projectClosed() {
-    ApplicationManager.getApplication.invokeAndWait(
-      new Runnable {
-        def run() {
-          WorksheetViewerInfo.invalidate()
-        }
-      },
-      ModalityState.any())
+    ApplicationManager
+      .getApplication
+      .invokeAndWait(
+        new Runnable {
+          def run() {
+            WorksheetViewerInfo.invalidate()
+          }
+        },
+        ModalityState.any())
   }
 
   override def projectOpened() {
-    project.getMessageBus
+    project
+      .getMessageBus
       .connect(project)
       .subscribe(
         FileEditorManagerListener.FILE_EDITOR_MANAGER,
         WorksheetEditorListener)
-    project.getMessageBus
+    project
+      .getMessageBus
       .connect(project)
       .subscribe(
         DumbService.DUMB_MODE,
@@ -66,8 +70,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
             if (editor == null)
               return
 
-            val file = PsiDocumentManager.getInstance(
-              project) getPsiFile editor.getDocument
+            val file = PsiDocumentManager.getInstance(project) getPsiFile editor
+              .getDocument
             if (file == null)
               return
 
@@ -79,11 +83,13 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
               case ref =>
                 val panel = ref.get()
                 if (panel != null) {
-                  panel.getComponents.foreach {
-                    case ab: ActionButton =>
-                      ab.addNotify()
-                    case _ =>
-                  }
+                  panel
+                    .getComponents
+                    .foreach {
+                      case ab: ActionButton =>
+                        ab.addNotify()
+                      case _ =>
+                    }
                 }
             }
           }
@@ -108,13 +114,15 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
         case ref =>
           val p = ref.get()
 
-          ApplicationManager.getApplication.invokeLater(
-            new Runnable {
-              override def run() {
-                if (p != null)
-                  myFileEditorManager.removeTopComponent(editor, p)
-              }
-            })
+          ApplicationManager
+            .getApplication
+            .invokeLater(
+              new Runnable {
+                override def run() {
+                  if (p != null)
+                    myFileEditorManager.removeTopComponent(editor, p)
+                }
+              })
       }
 
       val panel = new WorksheetFileHook.MyPanel(file)
@@ -213,10 +221,11 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
         case txt: TextEditor =>
           txt.getEditor match {
             case ext: EditorEx =>
-              PsiDocumentManager getInstance project getPsiFile ext.getDocument match {
+              PsiDocumentManager getInstance project getPsiFile ext
+                .getDocument match {
                 case scalaFile: ScalaFile =>
-                  WorksheetEditorPrinter.loadWorksheetEvaluation(
-                    scalaFile) foreach {
+                  WorksheetEditorPrinter
+                    .loadWorksheetEvaluation(scalaFile) foreach {
                     case (result, ratio) if !result.isEmpty =>
                       val viewer = WorksheetEditorPrinter.createRightSideViewer(
                         ext,
@@ -225,7 +234,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
                         modelSync = true)
                       val document = viewer.getDocument
 
-                      val splitter = WorksheetEditorPrinter.DIFF_SPLITTER_KEY
+                      val splitter = WorksheetEditorPrinter
+                        .DIFF_SPLITTER_KEY
                         .get(viewer)
 
                       extensions.inWriteAction {
@@ -236,12 +246,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
 
                         if (splitter != null) {
                           splitter setProportion ratio
-                          WorksheetFoldGroup.load(
-                            viewer,
-                            ext,
-                            project,
-                            splitter,
-                            scalaFile)
+                          WorksheetFoldGroup
+                            .load(viewer, ext, project, splitter, scalaFile)
                         }
                       }
                     case _ =>

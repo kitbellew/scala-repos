@@ -75,15 +75,18 @@ private[spark] class SubtractedRDD[K: ClassTag, V: ClassTag, W: ClassTag](
       // Each CoGroupPartition will depend on rdd1 and rdd2
       array(i) = new CoGroupPartition(
         i,
-        Seq(rdd1, rdd2).zipWithIndex.map {
-          case (rdd, j) =>
-            dependencies(j) match {
-              case s: ShuffleDependency[_, _, _] =>
-                None
-              case _ =>
-                Some(new NarrowCoGroupSplitDep(rdd, i, rdd.partitions(i)))
-            }
-        }.toArray)
+        Seq(rdd1, rdd2)
+          .zipWithIndex
+          .map {
+            case (rdd, j) =>
+              dependencies(j) match {
+                case s: ShuffleDependency[_, _, _] =>
+                  None
+                case _ =>
+                  Some(new NarrowCoGroupSplitDep(rdd, i, rdd.partitions(i)))
+              }
+          }
+          .toArray)
     }
     array
   }
@@ -107,13 +110,16 @@ private[spark] class SubtractedRDD[K: ClassTag, V: ClassTag, W: ClassTag](
       dependencies(depNum) match {
         case oneToOneDependency: OneToOneDependency[_] =>
           val dependencyPartition = partition.narrowDeps(depNum).get.split
-          oneToOneDependency.rdd
+          oneToOneDependency
+            .rdd
             .iterator(dependencyPartition, context)
             .asInstanceOf[Iterator[Product2[K, V]]]
             .foreach(op)
 
         case shuffleDependency: ShuffleDependency[_, _, _] =>
-          val iter = SparkEnv.get.shuffleManager
+          val iter = SparkEnv
+            .get
+            .shuffleManager
             .getReader(
               shuffleDependency.shuffleHandle,
               partition.index,

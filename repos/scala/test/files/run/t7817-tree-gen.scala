@@ -69,7 +69,9 @@ object Test extends CompilerTest {
         val d = staticClass("D")
         val p = d.info.decl(TermName("P"))
         checkTree("P", gen.mkAttributedQualifier(p.moduleClass.thisType))
-        val po = staticModule("test2.package").moduleClass.info
+        val po = staticModule("test2.package")
+          .moduleClass
+          .info
           .decl(TermName("PO"))
         checkTree(
           "test2.PO",
@@ -88,7 +90,9 @@ object Test extends CompilerTest {
         val d = staticClass("DSep")
         val p = d.info.decl(TermName("P"))
         checkTree("P", gen.mkAttributedQualifier(p.moduleClass.thisType))
-        val po = staticModule("test2.package").moduleClass.info
+        val po = staticModule("test2.package")
+          .moduleClass
+          .info
           .decl(TermName("PO"))
         checkTree("PO", gen.mkAttributedQualifier(po.moduleClass.thisType))
         checkTree(

@@ -705,7 +705,8 @@ object Future {
   def sequence[A, M[X] <: TraversableOnce[X]](in: M[Future[A]])(implicit
       cbf: CanBuildFrom[M[Future[A]], A, M[A]],
       executor: ExecutionContext): Future[M[A]] = {
-    in.foldLeft(successful(cbf(in))) { (fr, fa) =>
+    in
+      .foldLeft(successful(cbf(in))) { (fr, fa) =>
         for (r <- fr;
              a <- fa)
           yield (r += a)
@@ -786,12 +787,14 @@ object Future {
       if (!i.hasNext)
         successful[Option[T]](None)
       else {
-        i.next().transformWith {
-          case Success(r) if p(r) =>
-            successful(Some(r))
-          case other =>
-            searchNext(i)
-        }
+        i
+          .next()
+          .transformWith {
+            case Success(r) if p(r) =>
+              successful(Some(r))
+            case other =>
+              searchNext(i)
+          }
       }
     searchNext(futures.iterator)
   }
@@ -826,9 +829,11 @@ object Future {
     if (!i.hasNext)
       successful(prevValue)
     else
-      i.next().flatMap { value =>
-        foldNext(i, op(prevValue, value), op)
-      }
+      i
+        .next()
+        .flatMap { value =>
+          foldNext(i, op(prevValue, value), op)
+        }
 
   /** A non-blocking, asynchronous fold over the specified futures, with the start value of the given zero.
     *  The fold is performed on the thread where the last future is completed,
@@ -924,7 +929,8 @@ object Future {
       fn: A => Future[B])(implicit
       cbf: CanBuildFrom[M[A], B, M[B]],
       executor: ExecutionContext): Future[M[B]] =
-    in.foldLeft(successful(cbf(in))) { (fr, a) =>
+    in
+      .foldLeft(successful(cbf(in))) { (fr, a) =>
         val fb = fn(a)
         for (r <- fr;
              b <- fb)

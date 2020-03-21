@@ -28,7 +28,8 @@ class PluginsResource @Inject() (
     extends RestResource {
 
   val pluginIdToHandler =
-    definitions.plugins
+    definitions
+      .plugins
       .filter(_.plugin == classOf[HttpRequestHandler].getName)
       .flatMap { d =>
         requestHandlers

@@ -586,14 +586,19 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
       cb.sizeHint(remaining)
       cb.ifIs[ResizableParArrayCombiner[T]] { pac =>
         // with res. combiner:
-        val targetarr: Array[Any] = pac.lastbuff.internalArray
+        val targetarr: Array[Any] = pac
+          .lastbuff
+          .internalArray
           .asInstanceOf[Array[Any]]
         Array.copy(arr, i, targetarr, pac.lastbuff.size, until - i)
         pac.lastbuff.setInternalSize(remaining)
       } otherwise {
         cb.ifIs[UnrolledParArrayCombiner[T]] { pac =>
           // with unr. combiner:
-          val targetarr: Array[Any] = pac.buff.lastPtr.array
+          val targetarr: Array[Any] = pac
+            .buff
+            .lastPtr
+            .array
             .asInstanceOf[Array[Any]]
           Array.copy(arr, i, targetarr, 0, until - i)
           pac.buff.size = pac.buff.size + until - i
@@ -672,7 +677,9 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
         // with res. combiner:
         val sz = remaining
         pac.sizeHint(sz)
-        val targetarr: Array[Any] = pac.lastbuff.internalArray
+        val targetarr: Array[Any] = pac
+          .lastbuff
+          .internalArray
           .asInstanceOf[Array[Any]]
         reverse2combiner_quick(targetarr, arr, 0, i, until)
         pac.lastbuff.setInternalSize(sz)
@@ -681,7 +688,10 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
           // with unr. combiner:
           val sz = remaining
           pac.sizeHint(sz)
-          val targetarr: Array[Any] = pac.buff.lastPtr.array
+          val targetarr: Array[Any] = pac
+            .buff
+            .lastPtr
+            .array
             .asInstanceOf[Array[Any]]
           reverse2combiner_quick(targetarr, arr, 0, i, until)
           pac.buff.size = pac.buff.size + sz
@@ -775,8 +785,8 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
       if (length > 0)
         tasksupport.executeAndWaitResult(
           new CreateScanTree[U](0, size, z, op, splitter) mapResult { tree =>
-            tasksupport.executeAndWaitResult(
-              new ScanToArray(tree, z, op, targetarr))
+            tasksupport
+              .executeAndWaitResult(new ScanToArray(tree, z, op, targetarr))
           })
 
       // wrap the array into a parallel array
@@ -860,7 +870,9 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
         new Map(f, targetarr, offset + fp, howmany - fp))
     }
     def shouldSplitFurther =
-      howmany > scala.collection.parallel
+      howmany > scala
+        .collection
+        .parallel
         .thresholdFromSize(length, tasksupport.parallelismLevel)
   }
 

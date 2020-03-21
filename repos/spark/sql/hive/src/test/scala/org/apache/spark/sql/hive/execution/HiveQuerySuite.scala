@@ -65,10 +65,12 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   }
 
   test("SPARK-4908: concurrent hive native commands") {
-    (1 to 100).par.map { _ =>
-      sql("USE default")
-      sql("SHOW DATABASES")
-    }
+    (1 to 100)
+      .par
+      .map { _ =>
+        sql("USE default")
+        sql("SHOW DATABASES")
+      }
   }
 
   // Testing the Broadcast based join for cartesian join (cross join)
@@ -121,10 +123,14 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     "SPARK-10484 Optimize the Cartesian (Cross) Join with broadcast based JOIN") {
     def assertBroadcastNestedLoopJoin(sqlText: String): Unit = {
       assert(
-        sql(sqlText).queryExecution.sparkPlan.collect {
-          case _: BroadcastNestedLoopJoin =>
-            1
-        }.nonEmpty)
+        sql(sqlText)
+          .queryExecution
+          .sparkPlan
+          .collect {
+            case _: BroadcastNestedLoopJoin =>
+              1
+          }
+          .nonEmpty)
     }
 
     assertBroadcastNestedLoopJoin(spark_10484_1)
@@ -782,7 +788,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
   test("implement identity function using case statement") {
     val actual =
-      sql("SELECT (CASE key WHEN key THEN key END) FROM src").rdd
+      sql("SELECT (CASE key WHEN key THEN key END) FROM src")
+        .rdd
         .map {
           case Row(i: Int) =>
             i
@@ -791,7 +798,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
         .toSet
 
     val expected =
-      sql("SELECT key FROM src").rdd
+      sql("SELECT key FROM src")
+        .rdd
         .map {
           case Row(i: Int) =>
             i
@@ -816,9 +824,11 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     "SELECT srcalias.KEY, SRCALIAS.value FROM sRc SrCAlias WHERE SrCAlias.kEy < 15")
 
   test("case sensitivity: registered table") {
-    val testData = TestHive.sparkContext.parallelize(
-      TestData(1, "str1") ::
-        TestData(2, "str2") :: Nil)
+    val testData = TestHive
+      .sparkContext
+      .parallelize(
+        TestData(1, "str1") ::
+          TestData(2, "str2") :: Nil)
     testData.toDF().registerTempTable("REGisteredTABle")
 
     assertResult(Array(Row(2, "str2"))) {
@@ -829,10 +839,13 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   }
 
   def isExplanation(result: DataFrame): Boolean = {
-    val explanation = result.select('plan).collect().map {
-      case Row(plan: String) =>
-        plan
-    }
+    val explanation = result
+      .select('plan)
+      .collect()
+      .map {
+        case Row(plan: String) =>
+          plan
+      }
     explanation.contains("== Physical Plan ==")
   }
 
@@ -846,15 +859,14 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   }
 
   test("SPARK-2180: HAVING support in GROUP BY clauses (positive)") {
-    val fixture = List(
-      ("foo", 2),
-      ("bar", 1),
-      ("foo", 4),
-      ("bar", 3)).zipWithIndex.map {
-      case ((value, attr), key) =>
-        HavingRow(key, value, attr)
-    }
-    TestHive.sparkContext
+    val fixture = List(("foo", 2), ("bar", 1), ("foo", 4), ("bar", 3))
+      .zipWithIndex
+      .map {
+        case ((value, attr), key) =>
+          HavingRow(key, value, attr)
+      }
+    TestHive
+      .sparkContext
       .parallelize(fixture)
       .toDF()
       .registerTempTable("having_test")
@@ -1021,9 +1033,11 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     }
 
     // Describe a registered temporary table.
-    val testData = TestHive.sparkContext.parallelize(
-      TestData(1, "str1") ::
-        TestData(1, "str2") :: Nil)
+    val testData = TestHive
+      .sparkContext
+      .parallelize(
+        TestData(1, "str1") ::
+          TestData(1, "str2") :: Nil)
     testData.toDF().registerTempTable("test_describe_commands2")
 
     assertResult(Array(Row("a", "int", ""), Row("b", "string", ""))) {
@@ -1065,8 +1079,10 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     val testData =
       TestHive.getHiveFile("data/files/sample.json").getCanonicalPath
     sql(s"ADD JAR $testJar")
-    sql("""CREATE TABLE t1(a string, b string)
-      |ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'""".stripMargin)
+    sql(
+      """CREATE TABLE t1(a string, b string)
+      |ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'"""
+        .stripMargin)
     sql(s"""LOAD DATA LOCAL INPATH "$testData" INTO TABLE t1""")
     sql("select * from src join t1 on src.key = t1.a")
     sql("DROP TABLE t1")
@@ -1087,9 +1103,11 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     val testFile = TestHive.getHiveFile("data/files/v1.txt").getCanonicalFile
     sql(s"ADD FILE $testFile")
 
-    val checkAddFileRDD = sparkContext.parallelize(1 to 2, 1).mapPartitions {
-      _ => Iterator.single(new File(SparkFiles.get("v1.txt")).canRead)
-    }
+    val checkAddFileRDD = sparkContext
+      .parallelize(1 to 2, 1)
+      .mapPartitions { _ =>
+        Iterator.single(new File(SparkFiles.get("v1.txt")).canRead)
+      }
 
     assert(checkAddFileRDD.first())
   }
@@ -1236,14 +1254,18 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
       sql("DROP TABLE IF EXISTS withparts")
       sql("CREATE TABLE withparts LIKE srcpart")
       sql(
-        "INSERT INTO TABLE withparts PARTITION(ds='1', hr='2') SELECT key, value FROM src").queryExecution.analyzed
+        "INSERT INTO TABLE withparts PARTITION(ds='1', hr='2') SELECT key, value FROM src")
+        .queryExecution
+        .analyzed
     }
 
     assertResult(1, "Duplicated project detected\n" + analyzedPlan) {
-      analyzedPlan.collect {
-        case _: Project =>
-          ()
-      }.size
+      analyzedPlan
+        .collect {
+          case _: Project =>
+            ()
+        }
+        .size
     }
   }
 
@@ -1256,14 +1278,18 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
       sql("CREATE TABLE IF NOT EXISTS withparts LIKE srcpart")
       sql(
-        "INSERT INTO TABLE withparts PARTITION(ds, hr) SELECT key, value FROM src").queryExecution.analyzed
+        "INSERT INTO TABLE withparts PARTITION(ds, hr) SELECT key, value FROM src")
+        .queryExecution
+        .analyzed
     }
 
     assertResult(1, "Duplicated project detected\n" + analyzedPlan) {
-      analyzedPlan.collect {
-        case _: Project =>
-          ()
-      }.size
+      analyzedPlan
+        .collect {
+          case _: Project =>
+            ()
+        }
+        .size
     }
   }
 
@@ -1293,7 +1319,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     val testVal = "test.val.0"
     val nonexistentKey = "nonexistent"
     def collectResults(df: DataFrame): Set[Any] =
-      df.collect()
+      df
+        .collect()
         .map {
           case Row(key: String, value: String) =>
             key -> value

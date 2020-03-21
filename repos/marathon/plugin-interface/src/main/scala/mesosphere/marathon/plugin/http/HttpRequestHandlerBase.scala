@@ -26,7 +26,8 @@ abstract class HttpRequestHandlerBase extends HttpRequestHandler {
   }
 
   protected[this] def mediaMime(url: URL): String = {
-    url.getPath
+    url
+      .getPath
       .split("\\.")
       .lastOption
       .flatMap(wellKnownMimes.get)

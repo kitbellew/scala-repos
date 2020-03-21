@@ -15,14 +15,17 @@ trait Helpers {
     val members =
       if (sym.isModule || sym.isModuleClass || sym.isPackageObject) {
         sym.tpe.members
-      } else if (sym.isClass || sym.isPackageClass || sym.isPackageObjectClass) {
+      } else if (sym.isClass || sym.isPackageClass || sym
+                   .isPackageObjectClass) {
         sym.companionModule.tpe.members
       } else {
         List.empty
       }
-    members.toList.filter {
-      _.name.toString == "apply"
-    }
+    members
+      .toList
+      .filter {
+        _.name.toString == "apply"
+      }
   }
 
   def constructorSynonyms(sym: Symbol): List[Symbol] = {
@@ -34,9 +37,11 @@ trait Helpers {
       } else {
         List.empty
       }
-    members.toList.filter {
-      _.isConstructor
-    }
+    members
+      .toList
+      .filter {
+        _.isConstructor
+      }
   }
 
   def isArrowType(tpe: Type): Boolean = {
@@ -75,15 +80,19 @@ trait Helpers {
   def completionSignatureForType(tpe: Type): CompletionSignature = {
     if (isArrowType(tpe)) {
       CompletionSignature(
-        tpe.paramss.map { sect =>
-          sect.map { p =>
-            (p.name.toString, typeFullName(p.tpe, true))
-          }
-        },
+        tpe
+          .paramss
+          .map { sect =>
+            sect.map { p =>
+              (p.name.toString, typeFullName(p.tpe, true))
+            }
+          },
         typeFullName(tpe.finalResultType, true),
-        tpe.paramss.exists { sect =>
-          sect.exists(_.isImplicit)
-        }
+        tpe
+          .paramss
+          .exists { sect =>
+            sect.exists(_.isImplicit)
+          }
       )
     } else
       CompletionSignature(List.empty, typeFullName(tpe, true), false)

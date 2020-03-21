@@ -84,8 +84,9 @@ abstract class DownloadingAndImportingTestCase
     Assert.assertTrue(
       "Project dir does not exist. Download or unpack failed!",
       projectDir.exists())
-    myProjectRoot = LocalFileSystem.getInstance.refreshAndFindFileByIoFile(
-      projectDir)
+    myProjectRoot = LocalFileSystem
+      .getInstance
+      .refreshAndFindFileByIoFile(projectDir)
     setUpSbtLauncherAndStructure(myProject)
     extensions.inWriteAction {
       val internalSdk =
@@ -119,9 +120,8 @@ abstract class DownloadingAndImportingTestCase
           JavaFileType.INSTANCE),
         myProject)
 
-    val files: util.Collection[VirtualFile] = FileTypeIndex.getFiles(
-      ScalaFileType.SCALA_FILE_TYPE,
-      searchScope)
+    val files: util.Collection[VirtualFile] = FileTypeIndex
+      .getFiles(ScalaFileType.SCALA_FILE_TYPE, searchScope)
     val file =
       files.filter(_.getName == filename).toList match {
         case vf :: Nil =>

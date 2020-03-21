@@ -58,11 +58,12 @@ class ScalaSyntheticSteppingFilter extends ExtraSteppingFilter {
       return false
 
     inReadAction {
-      positionManager.findElementByReferenceType(
-        location.declaringType()) match {
+      positionManager
+        .findElementByReferenceType(location.declaringType()) match {
         case Some(td: ScTemplateDefinition) =>
-          td.functions
-            .forall(f => !nameMatches(name, f.name)) && !hasLocalFun(name, td)
+          td.functions.forall(f => !nameMatches(name, f.name)) && !hasLocalFun(
+            name,
+            td)
         case _ =>
           false
       }
@@ -70,7 +71,8 @@ class ScalaSyntheticSteppingFilter extends ExtraSteppingFilter {
   }
 
   private def hasLocalFun(name: String, td: PsiElement): Boolean = {
-    td.depthFirst(elem =>
+    td
+      .depthFirst(elem =>
         elem == td || !ScalaEvaluatorBuilderUtil.isGenerateClass(elem))
       .exists {
         case fun: ScFunction if fun.isLocal =>
@@ -82,7 +84,7 @@ class ScalaSyntheticSteppingFilter extends ExtraSteppingFilter {
 
   private def nameMatches(jvmName: String, funName: String) = {
     val encoded = ScalaNamesUtil.toJavaName(funName)
-    encoded == jvmName || jvmName.startsWith(encoded + "$") || jvmName.contains(
-      "$$" + encoded + "$")
+    encoded == jvmName || jvmName.startsWith(encoded + "$") || jvmName
+      .contains("$$" + encoded + "$")
   }
 }

@@ -149,14 +149,16 @@ trait APIKeyManager[M[+_]] extends Logging {
         if (grant.isExpired(at))
           None.point[M]
         else
-          grant.parentIds.foldLeft(some(grant).point[M]) {
-            case (accM, parentId) =>
-              accM flatMap {
-                _ traverse { grant =>
-                  findValidGrant(parentId, at).map(_ => grant)
+          grant
+            .parentIds
+            .foldLeft(some(grant).point[M]) {
+              case (accM, parentId) =>
+                accM flatMap {
+                  _ traverse { grant =>
+                    findValidGrant(parentId, at).map(_ => grant)
+                  }
                 }
-              }
-          }
+            }
       } getOrElse {
         None.point[M]
       }

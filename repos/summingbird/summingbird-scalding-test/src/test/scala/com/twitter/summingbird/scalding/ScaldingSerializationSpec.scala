@@ -63,10 +63,12 @@ class ScaldingSerializationSpecs extends WordSpec {
   "ScaldingPlatform" should {
     "serialize Hadoop Jobs for single step jobs" in {
       // Add a time:
-      val inWithTime = List(1, 2, 3).zipWithIndex.map {
-        case (item, time) =>
-          (time.toLong, item)
-      }
+      val inWithTime = List(1, 2, 3)
+        .zipWithIndex
+        .map {
+          case (item, time) =>
+            (time.toLong, item)
+        }
       val batcher = TestUtil.randomBatcher(inWithTime)
       val testStore = TestStore[Int, Int](
         "test",
@@ -76,11 +78,10 @@ class ScaldingSerializationSpecs extends WordSpec {
       val (buffer, source) = TestSource(inWithTime)
 
       val summer =
-        TestGraphs.singleStepJob[Scalding, (Long, Int), Int, Int](
-          source,
-          testStore) { tup =>
-          List((1 -> tup._2))
-        }
+        TestGraphs
+          .singleStepJob[Scalding, (Long, Int), Int, Int](source, testStore) {
+            tup => List((1 -> tup._2))
+          }
 
       val mode = HadoopTest(
         new Configuration,
@@ -88,9 +89,8 @@ class ScaldingSerializationSpecs extends WordSpec {
           case x: ScaldingSource =>
             buffer.get(x)
         })
-      val intr = Interval.leftClosedRightOpen(
-        Timestamp(0L),
-        Timestamp(inWithTime.size.toLong))
+      val intr = Interval
+        .leftClosedRightOpen(Timestamp(0L), Timestamp(inWithTime.size.toLong))
       val scald = Scalding("scalaCheckJob")
 
       assert(

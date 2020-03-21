@@ -30,7 +30,8 @@ package scalaguide.upload.fileupload {
         //#upload-file-action
         def upload =
           Action(parse.multipartFormData) { request =>
-            request.body
+            request
+              .body
               .file("picture")
               .map { picture =>
                 import java.io.File

@@ -40,15 +40,12 @@ class LogRecoveryTest extends ZooKeeperTestHarness {
   val replicaFetchMinBytes = 20
 
   val overridingProps = new Properties()
-  overridingProps.put(
-    KafkaConfig.ReplicaLagTimeMaxMsProp,
-    replicaLagTimeMaxMs.toString)
-  overridingProps.put(
-    KafkaConfig.ReplicaFetchWaitMaxMsProp,
-    replicaFetchWaitMaxMs.toString)
-  overridingProps.put(
-    KafkaConfig.ReplicaFetchMinBytesProp,
-    replicaFetchMinBytes.toString)
+  overridingProps
+    .put(KafkaConfig.ReplicaLagTimeMaxMsProp, replicaLagTimeMaxMs.toString)
+  overridingProps
+    .put(KafkaConfig.ReplicaFetchWaitMaxMsProp, replicaFetchWaitMaxMs.toString)
+  overridingProps
+    .put(KafkaConfig.ReplicaFetchMinBytesProp, replicaFetchMinBytes.toString)
 
   var configs: Seq[KafkaConfig] = null
   val topic = "new-topic"
@@ -125,7 +122,8 @@ class LogRecoveryTest extends ZooKeeperTestHarness {
     // give some time for the follower 1 to record leader HW
     TestUtils.waitUntilTrue(
       () =>
-        server2.replicaManager
+        server2
+          .replicaManager
           .getReplica(topic, 0)
           .get
           .highWatermark
@@ -194,7 +192,8 @@ class LogRecoveryTest extends ZooKeeperTestHarness {
     // give some time for follower 1 to record leader HW of 60
     TestUtils.waitUntilTrue(
       () =>
-        server2.replicaManager
+        server2
+          .replicaManager
           .getReplica(topic, 0)
           .get
           .highWatermark
@@ -213,7 +212,8 @@ class LogRecoveryTest extends ZooKeeperTestHarness {
     // give some time for follower 1 to record leader HW of 600
     TestUtils.waitUntilTrue(
       () =>
-        server2.replicaManager
+        server2
+          .replicaManager
           .getReplica(topic, 0)
           .get
           .highWatermark
@@ -237,7 +237,8 @@ class LogRecoveryTest extends ZooKeeperTestHarness {
     // allow some time for the follower to get the leader HW
     TestUtils.waitUntilTrue(
       () =>
-        server2.replicaManager
+        server2
+          .replicaManager
           .getReplica(topic, 0)
           .get
           .highWatermark
@@ -278,7 +279,8 @@ class LogRecoveryTest extends ZooKeeperTestHarness {
     // allow some time for the follower to get the leader HW
     TestUtils.waitUntilTrue(
       () =>
-        server1.replicaManager
+        server1
+          .replicaManager
           .getReplica(topic, 0)
           .get
           .highWatermark

@@ -74,9 +74,11 @@ abstract class ContextCleanerSuiteBase(
   protected def newRDDWithShuffleDependencies()
       : (RDD[_], Seq[ShuffleDependency[_, _, _]]) = {
     def getAllDependencies(rdd: RDD[_]): Seq[Dependency[_]] = {
-      rdd.dependencies ++ rdd.dependencies.flatMap { dep =>
-        getAllDependencies(dep.rdd)
-      }
+      rdd.dependencies ++ rdd
+        .dependencies
+        .flatMap { dep =>
+          getAllDependencies(dep.rdd)
+        }
     }
     val rdd = newShuffleRDD()
 
@@ -110,7 +112,8 @@ abstract class ContextCleanerSuiteBase(
     System
       .gc() // Make a best effort to run the garbage collection. It *usually* runs GC.
     // Wait until a weak reference object has been GCed
-    while (System.currentTimeMillis - startTime < 10000 && weakRef.get != null) {
+    while (System.currentTimeMillis - startTime < 10000 && weakRef
+             .get != null) {
       System.gc()
       Thread.sleep(200)
     }
@@ -143,8 +146,8 @@ class ContextCleanerSuite extends ContextCleanerSuiteBase {
       new CleanerTester(sc, shuffleIds = shuffleDeps.map(_.shuffleId))
 
     // Explicit cleanup
-    shuffleDeps.foreach(s =>
-      cleaner.doCleanupShuffle(s.shuffleId, blocking = true))
+    shuffleDeps
+      .foreach(s => cleaner.doCleanupShuffle(s.shuffleId, blocking = true))
     tester.assertCleanup()
 
     // Verify that shuffles can be re-executed after cleaning up
@@ -317,7 +320,10 @@ class ContextCleanerSuite extends ContextCleanerSuiteBase {
     // Make sure the broadcasted task closure no longer exists after GC.
     val taskClosureBroadcastId = broadcastIds.max + 1
     assert(
-      sc.env.blockManager.master
+      sc
+        .env
+        .blockManager
+        .master
         .getMatchingBlockIds(
           {
             case BroadcastBlockId(`taskClosureBroadcastId`, _) =>
@@ -364,7 +370,10 @@ class ContextCleanerSuite extends ContextCleanerSuiteBase {
     // Make sure the broadcasted task closure no longer exists after GC.
     val taskClosureBroadcastId = broadcastIds.max + 1
     assert(
-      sc.env.blockManager.master
+      sc
+        .env
+        .blockManager
+        .master
         .getMatchingBlockIds(
           {
             case BroadcastBlockId(`taskClosureBroadcastId`, _) =>
@@ -389,8 +398,8 @@ class SortShuffleContextCleanerSuite
       new CleanerTester(sc, shuffleIds = shuffleDeps.map(_.shuffleId))
 
     // Explicit cleanup
-    shuffleDeps.foreach(s =>
-      cleaner.doCleanupShuffle(s.shuffleId, blocking = true))
+    shuffleDeps
+      .foreach(s => cleaner.doCleanupShuffle(s.shuffleId, blocking = true))
     tester.assertCleanup()
 
     // Verify that shuffles can be re-executed after cleaning up
@@ -452,7 +461,10 @@ class SortShuffleContextCleanerSuite
     // Make sure the broadcasted task closure no longer exists after GC.
     val taskClosureBroadcastId = broadcastIds.max + 1
     assert(
-      sc.env.blockManager.master
+      sc
+        .env
+        .blockManager
+        .master
         .getMatchingBlockIds(
           {
             case BroadcastBlockId(`taskClosureBroadcastId`, _) =>
@@ -647,38 +659,44 @@ class CleanerTester(
       }
 
   private def getRDDBlocks(rddId: Int): Seq[BlockId] = {
-    blockManager.master.getMatchingBlockIds(
-      _ match {
-        case RDDBlockId(`rddId`, _) =>
-          true
-        case _ =>
-          false
-      },
-      askSlaves = true)
+    blockManager
+      .master
+      .getMatchingBlockIds(
+        _ match {
+          case RDDBlockId(`rddId`, _) =>
+            true
+          case _ =>
+            false
+        },
+        askSlaves = true)
   }
 
   private def getShuffleBlocks(shuffleId: Int): Seq[BlockId] = {
-    blockManager.master.getMatchingBlockIds(
-      _ match {
-        case ShuffleBlockId(`shuffleId`, _, _) =>
-          true
-        case ShuffleIndexBlockId(`shuffleId`, _, _) =>
-          true
-        case _ =>
-          false
-      },
-      askSlaves = true)
+    blockManager
+      .master
+      .getMatchingBlockIds(
+        _ match {
+          case ShuffleBlockId(`shuffleId`, _, _) =>
+            true
+          case ShuffleIndexBlockId(`shuffleId`, _, _) =>
+            true
+          case _ =>
+            false
+        },
+        askSlaves = true)
   }
 
   private def getBroadcastBlocks(broadcastId: Long): Seq[BlockId] = {
-    blockManager.master.getMatchingBlockIds(
-      _ match {
-        case BroadcastBlockId(`broadcastId`, _) =>
-          true
-        case _ =>
-          false
-      },
-      askSlaves = true)
+    blockManager
+      .master
+      .getMatchingBlockIds(
+        _ match {
+          case BroadcastBlockId(`broadcastId`, _) =>
+            true
+          case _ =>
+            false
+        },
+        askSlaves = true)
   }
 
   private def blockManager = sc.env.blockManager

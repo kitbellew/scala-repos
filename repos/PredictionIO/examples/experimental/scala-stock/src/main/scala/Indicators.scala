@@ -92,8 +92,8 @@ class RSIIndicator(rsiPeriod: Int = 14) extends BaseIndicator {
   def getTraining(
       logPrice: Series[DateTime, Double]): Series[DateTime, Double] = {
     val rsSeries = calcRS(getRet(logPrice))
-    val rsiSeries = rsSeries.mapValues[Double]((x: Double) =>
-      100 - (100 / (1 + x)))
+    val rsiSeries = rsSeries
+      .mapValues[Double]((x: Double) => 100 - (100 / (1 + x)))
 
     // Fill in first 14 days offset with 50 to maintain results
     rsiSeries.reindex(logPrice.rowIx).fillNA(_ => 50.0)

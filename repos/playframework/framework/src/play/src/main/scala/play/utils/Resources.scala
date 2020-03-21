@@ -89,8 +89,8 @@ object Resources {
       else
         path + '/'
 
-    classLoader.getResource(path) != null && classLoader.getResource(
-      pathSlash) != null
+    classLoader.getResource(path) != null && classLoader
+      .getResource(pathSlash) != null
   }
 
   private def isZipResourceDirectory(url: URL): Boolean = {

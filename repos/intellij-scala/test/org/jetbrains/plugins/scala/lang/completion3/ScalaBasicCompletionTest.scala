@@ -144,10 +144,12 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
     assert(
-      activeLookup.collect {
-        case le if le.getLookupString == "getGoo" =>
-          le
-      }.length == 1)
+      activeLookup
+        .collect {
+          case le if le.getLookupString == "getGoo" =>
+            le
+        }
+        .length == 1)
   }
 
   def testSCL3546() {

@@ -369,12 +369,14 @@ private[stream] object ActorGraphInterpreter {
       if (elements < 1) {
         cancel(in)
         fail(
-          ReactiveStreamsCompliance.numberOfElementsInRequestMustBePositiveException)
+          ReactiveStreamsCompliance
+            .numberOfElementsInRequestMustBePositiveException)
       } else {
         downstreamDemand += elements
         if (downstreamDemand < 0)
           downstreamDemand =
-            Long.MaxValue // Long overflow, Reactive Streams Spec 3:17: effectively unbounded
+            Long
+              .MaxValue // Long overflow, Reactive Streams Spec 3:17: effectively unbounded
         if (!hasBeenPulled(in) && !isClosed(in))
           pull(in)
       }
@@ -383,8 +385,8 @@ private[stream] object ActorGraphInterpreter {
     def cancel(): Unit = {
       downstreamCompleted = true
       subscriber = null
-      exposedPublisher.shutdown(
-        Some(new ActorPublisher.NormalShutdownException))
+      exposedPublisher
+        .shutdown(Some(new ActorPublisher.NormalShutdownException))
       cancel(in)
     }
 
@@ -453,8 +455,8 @@ private[stream] final class GraphInterpreterShell(
    *  - if the event limit is greater than maxInputBufferSize * (ins + outs) than there will always be expand activity
    *  because no data can enter “fast enough” from the outside
    */
-  val shellEventLimit =
-    settings.maxInputBufferSize * (assembly.ins.length + assembly.outs.length)
+  val shellEventLimit = settings
+    .maxInputBufferSize * (assembly.ins.length + assembly.outs.length)
   // Limits the number of events processed by the interpreter on an abort event.
   // TODO: Better heuristic here
   private val abortLimit = shellEventLimit * 2
@@ -589,8 +591,8 @@ private[stream] final class GraphInterpreterShell(
   def runBatch(actorEventLimit: Int): Int = {
     try {
       val usingShellLimit = shellEventLimit < actorEventLimit
-      val remainingQuota = interpreter.execute(
-        Math.min(actorEventLimit, shellEventLimit))
+      val remainingQuota = interpreter
+        .execute(Math.min(actorEventLimit, shellEventLimit))
       if (interpreter.isCompleted) {
         // Cannot stop right away if not completely subscribed
         if (canShutDown)
@@ -732,7 +734,8 @@ private[stream] class ActorGraphInterpreter(_initial: GraphInterpreterShell)
   }
 
   private def shortCircuitBatch(): Unit = {
-    while (!shortCircuitBuffer.isEmpty && currentLimit > 0 && activeInterpreters.nonEmpty)
+    while (!shortCircuitBuffer.isEmpty && currentLimit > 0 && activeInterpreters
+             .nonEmpty)
       shortCircuitBuffer.poll() match {
         case b: BoundaryEvent ⇒
           processEvent(b)

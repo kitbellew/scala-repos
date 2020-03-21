@@ -166,9 +166,8 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
         ref.path.toStringWithoutAddress
       }
 
-      val actor = system.actorOf(
-        RoundRobinGroup(paths).props(),
-        "round-robin-group1")
+      val actor = system
+        .actorOf(RoundRobinGroup(paths).props(), "round-robin-group1")
 
       for (_ ← 1 to iterationCount;
            _ ← 1 to connectionCount) {

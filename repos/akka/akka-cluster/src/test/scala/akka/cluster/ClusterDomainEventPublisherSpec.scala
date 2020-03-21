@@ -67,9 +67,10 @@ class ClusterDomainEventPublisherSpec
     .seen(aUp.uniqueAddress)
   val g8 = Gossip(
     members = SortedSet(aUp, bExiting, cUp, dUp),
-    overview = GossipOverview(reachability = Reachability.empty.unreachable(
-      aUp.uniqueAddress,
-      dUp.uniqueAddress))).seen(aUp.uniqueAddress)
+    overview = GossipOverview(reachability = Reachability
+      .empty
+      .unreachable(aUp.uniqueAddress, dUp.uniqueAddress)))
+    .seen(aUp.uniqueAddress)
 
   // created in beforeEach
   var memberSubscriber: TestProbe = _
@@ -78,7 +79,8 @@ class ClusterDomainEventPublisherSpec
     memberSubscriber = TestProbe()
     system.eventStream.subscribe(memberSubscriber.ref, classOf[MemberEvent])
     system.eventStream.subscribe(memberSubscriber.ref, classOf[LeaderChanged])
-    system.eventStream
+    system
+      .eventStream
       .subscribe(memberSubscriber.ref, ClusterShuttingDown.getClass)
 
     publisher = system.actorOf(Props[ClusterDomainEventPublisher])

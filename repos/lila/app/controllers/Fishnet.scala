@@ -18,9 +18,12 @@ object Fishnet extends LilaController {
   override val logger = lila.log("fishnet")
 
   def clientIp(req: RequestHeader) =
-    lila.fishnet.Client.IpAddress {
-      HTTPRequest lastRemoteAddress req
-    }
+    lila
+      .fishnet
+      .Client
+      .IpAddress {
+        HTTPRequest lastRemoteAddress req
+      }
 
   def acquire =
     ClientAction[JsonApi.Request.Acquire] { req => client =>
@@ -46,7 +49,8 @@ object Fishnet extends LilaController {
       f: A => lila.fishnet.Client => Fu[Option[JsonApi.Work]])(implicit
       reads: Reads[A]) =
     Action.async(BodyParsers.parse.tolerantJson) { req =>
-      req.body
+      req
+        .body
         .validate[A]
         .fold(
           err => {

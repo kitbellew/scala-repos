@@ -96,15 +96,17 @@ class MultiReaderTest
     }
 
     val hostQueuesMap =
-      hosts.map { host =>
-        val queues = CacheBuilder
-          .newBuilder()
-          .build(
-            new CacheLoader[Buf, BlockingDeque[Buf]] {
-              def load(k: Buf) = new LinkedBlockingDeque[Buf]
-            })
-        (host, queues)
-      }.toMap
+      hosts
+        .map { host =>
+          val queues = CacheBuilder
+            .newBuilder()
+            .build(
+              new CacheLoader[Buf, BlockingDeque[Buf]] {
+                def load(k: Buf) = new LinkedBlockingDeque[Buf]
+              })
+          (host, queues)
+        }
+        .toMap
 
     lazy val mockClientBuilder = {
       val result = mock[ClientBuilder[
@@ -215,15 +217,17 @@ class MultiReaderTest
     }
 
     val hostQueuesMap =
-      hosts.map { host =>
-        val queues = CacheBuilder
-          .newBuilder()
-          .build(
-            new CacheLoader[Buf, BlockingDeque[Buf]] {
-              def load(k: Buf) = new LinkedBlockingDeque[Buf]
-            })
-        (host, queues)
-      }.toMap
+      hosts
+        .map { host =>
+          val queues = CacheBuilder
+            .newBuilder()
+            .build(
+              new CacheLoader[Buf, BlockingDeque[Buf]] {
+                def load(k: Buf) = new LinkedBlockingDeque[Buf]
+              })
+          (host, queues)
+        }
+        .toMap
 
     lazy val mockClientBuilder = {
       val result = mock[ClientBuilder[
@@ -449,33 +453,35 @@ class MultiReaderTest
       eventually {
         assert(messages == sentMessages.toSet)
       }
-      rest.zipWithIndex.foreach {
-        case (host, hostIndex) =>
-          messages.clear()
-          mutableHosts = (mutableHosts.toSet - host).toSeq
-          va.update(Addr.Bound(mutableHosts: _*))
+      rest
+        .zipWithIndex
+        .foreach {
+          case (host, hostIndex) =>
+            messages.clear()
+            mutableHosts = (mutableHosts.toSet - host).toSeq
+            va.update(Addr.Bound(mutableHosts: _*))
 
-          // write to all 3
-          sentMessages.zipWithIndex foreach {
-            case (m, i) =>
-              Await.result(
-                services(i % services.size)
-                  .apply(Set(queueNameBuf, Time.now, Buf.Utf8(m))))
-          }
+            // write to all 3
+            sentMessages.zipWithIndex foreach {
+              case (m, i) =>
+                Await.result(
+                  services(i % services.size)
+                    .apply(Set(queueNameBuf, Time.now, Buf.Utf8(m))))
+            }
 
-          // expect fewer to be read on each pass
-          val expectFirstN = N - hostIndex - 1
-          eventually {
-            assert(
-              messages == sentMessages
-                .grouped(N)
-                .map {
-                  _.take(expectFirstN)
-                }
-                .flatten
-                .toSet)
-          }
-      }
+            // expect fewer to be read on each pass
+            val expectFirstN = N - hostIndex - 1
+            eventually {
+              assert(
+                messages == sentMessages
+                  .grouped(N)
+                  .map {
+                    _.take(expectFirstN)
+                  }
+                  .flatten
+                  .toSet)
+            }
+        }
     }
   }
 
@@ -644,32 +650,35 @@ class MultiReaderTest
         assert(messages == sentMessages.toSet)
       }
 
-      rest.reverse.zipWithIndex.foreach {
-        case (host, hostIndex) =>
-          messages.clear()
-          cluster.del(host)
+      rest
+        .reverse
+        .zipWithIndex
+        .foreach {
+          case (host, hostIndex) =>
+            messages.clear()
+            cluster.del(host)
 
-          // write to all 3
-          sentMessages.zipWithIndex foreach {
-            case (m, i) =>
-              Await.result(
-                services(i % services.size)
-                  .apply(Set(Buf.Utf8("the_queue"), Time.now, Buf.Utf8(m))))
-          }
+            // write to all 3
+            sentMessages.zipWithIndex foreach {
+              case (m, i) =>
+                Await.result(
+                  services(i % services.size)
+                    .apply(Set(Buf.Utf8("the_queue"), Time.now, Buf.Utf8(m))))
+            }
 
-          // expect fewer to be read on each pass
-          val expectFirstN = N - hostIndex - 1
-          eventually {
-            assert(
-              messages == sentMessages
-                .grouped(N)
-                .map {
-                  _.take(expectFirstN)
-                }
-                .flatten
-                .toSet)
-          }
-      }
+            // expect fewer to be read on each pass
+            val expectFirstN = N - hostIndex - 1
+            eventually {
+              assert(
+                messages == sentMessages
+                  .grouped(N)
+                  .map {
+                    _.take(expectFirstN)
+                  }
+                  .flatten
+                  .toSet)
+            }
+        }
     }
   }
 

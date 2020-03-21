@@ -34,8 +34,8 @@ case class SegmentsWrapper(
     extends Slice {
   import TransSpecModule.paths
 
-  val logger = LoggerFactory.getLogger(
-    "com.precog.yggdrasil.table.SegmentsWrapper")
+  val logger = LoggerFactory
+    .getLogger("com.precog.yggdrasil.table.SegmentsWrapper")
 
   // FIXME: This should use an identity of Array[Long](projectionId,
   // blockId), but the evaluator will cry if we do that right now

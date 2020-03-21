@@ -78,13 +78,15 @@ private[streaming] object MapWithStateRDDRecord {
     // Get the timed out state records, call the mapping function on each and collect the
     // data returned
     if (removeTimedoutData && timeoutThresholdTime.isDefined) {
-      newStateMap.getByTime(timeoutThresholdTime.get).foreach {
-        case (key, state, _) =>
-          wrappedState.wrapTimingOutState(state)
-          val returned = mappingFunction(batchTime, key, None, wrappedState)
-          mappedData ++= returned
-          newStateMap.remove(key)
-      }
+      newStateMap
+        .getByTime(timeoutThresholdTime.get)
+        .foreach {
+          case (key, state, _) =>
+            wrappedState.wrapTimingOutState(state)
+            val returned = mappingFunction(batchTime, key, None, wrappedState)
+            mappedData ++= returned
+            newStateMap.remove(key)
+        }
     }
 
     MapWithStateRDDRecord(newStateMap, mappedData)
@@ -166,12 +168,10 @@ private[streaming] class MapWithStateRDD[
       context: TaskContext): Iterator[MapWithStateRDDRecord[K, S, E]] = {
 
     val stateRDDPartition = partition.asInstanceOf[MapWithStateRDDPartition]
-    val prevStateRDDIterator = prevStateRDD.iterator(
-      stateRDDPartition.previousSessionRDDPartition,
-      context)
-    val dataIterator = partitionedDataRDD.iterator(
-      stateRDDPartition.partitionedDataRDDPartition,
-      context)
+    val prevStateRDDIterator = prevStateRDD
+      .iterator(stateRDDPartition.previousSessionRDDPartition, context)
+    val dataIterator = partitionedDataRDD
+      .iterator(stateRDDPartition.partitionedDataRDDPartition, context)
 
     val prevRecord =
       if (prevStateRDDIterator.hasNext)
@@ -228,7 +228,8 @@ private[streaming] object MapWithStateRDD {
         preservesPartitioning = true
       )
 
-    val emptyDataRDD = pairRDD.sparkContext
+    val emptyDataRDD = pairRDD
+      .sparkContext
       .emptyRDD[(K, V)]
       .partitionBy(partitioner)
 
@@ -265,7 +266,8 @@ private[streaming] object MapWithStateRDD {
         preservesPartitioning = true
       )
 
-    val emptyDataRDD = pairRDD.sparkContext
+    val emptyDataRDD = pairRDD
+      .sparkContext
       .emptyRDD[(K, V)]
       .partitionBy(partitioner)
 

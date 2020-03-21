@@ -176,9 +176,11 @@ private[coordinator] class GroupMetadata(
   def allMemberMetadata = members.values.toList
 
   def rebalanceTimeout =
-    members.values.foldLeft(0) { (timeout, member) =>
-      timeout.max(member.sessionTimeoutMs)
-    }
+    members
+      .values
+      .foldLeft(0) { (timeout, member) =>
+        timeout.max(member.sessionTimeoutMs)
+      }
 
   // TODO: decide if ids should be predictable or random
   def generateMemberIdSuffix = UUID.randomUUID().toString
@@ -230,24 +232,34 @@ private[coordinator] class GroupMetadata(
     if (is(Dead) || is(PreparingRebalance))
       throw new IllegalStateException(
         "Cannot obtain member metadata for group in state %s".format(state))
-    members.map {
-      case (memberId, memberMetadata) =>
-        (memberId, memberMetadata.metadata(protocol))
-    }.toMap
+    members
+      .map {
+        case (memberId, memberMetadata) =>
+          (memberId, memberMetadata.metadata(protocol))
+      }
+      .toMap
   }
 
   def summary: GroupSummary = {
     if (is(Stable)) {
       val members =
-        this.members.values.map { member =>
-          member.summary(protocol)
-        }.toList
+        this
+          .members
+          .values
+          .map { member =>
+            member.summary(protocol)
+          }
+          .toList
       GroupSummary(state.toString, protocolType, protocol, members)
     } else {
       val members =
-        this.members.values.map { member =>
-          member.summaryNoMetadata()
-        }.toList
+        this
+          .members
+          .values
+          .map { member =>
+            member.summaryNoMetadata()
+          }
+          .toList
       GroupSummary(
         state.toString,
         protocolType,
@@ -272,10 +284,7 @@ private[coordinator] class GroupMetadata(
   }
 
   override def toString = {
-    "[%s,%s,%s,%s]".format(
-      groupId,
-      protocolType,
-      currentState.toString,
-      members)
+    "[%s,%s,%s,%s]"
+      .format(groupId, protocolType, currentState.toString, members)
   }
 }

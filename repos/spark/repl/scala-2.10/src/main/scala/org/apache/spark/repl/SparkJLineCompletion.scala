@@ -123,9 +123,11 @@ class SparkJLineCompletion(val intp: SparkIMain)
         var upgraded = false
         lazy val upgrade = {
           intp rebind param
-          intp.reporter.printMessage(
-            "\nRebinding stable value %s from %s to %s"
-              .format(param.name, tp, param.tpe))
+          intp
+            .reporter
+            .printMessage(
+              "\nRebinding stable value %s from %s to %s"
+                .format(param.name, tp, param.tpe))
           upgraded = true
           new TypeMemberCompletion(runtimeType)
         }
@@ -336,10 +338,10 @@ class SparkJLineCompletion(val intp: SparkIMain)
   }
   // members of java.lang.*
   object javalang extends PackageCompletion(JavaLangPackage.tpe) {
-    override lazy val excludeEndsWith =
-      super.excludeEndsWith ++ List("Exception", "Error")
-    override lazy val excludeStartsWith =
-      super.excludeStartsWith ++ List("CharacterData")
+    override lazy val excludeEndsWith = super
+      .excludeEndsWith ++ List("Exception", "Error")
+    override lazy val excludeStartsWith = super
+      .excludeStartsWith ++ List("CharacterData")
 
     override def completions(verbosity: Int) =
       verbosity match {

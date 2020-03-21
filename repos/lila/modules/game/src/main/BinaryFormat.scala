@@ -29,9 +29,8 @@ object BinaryFormat {
     private type MT = Int // tenths of seconds
     private val size = 16
     private val encodeList: List[(MT, Int)] =
-      List(
-        1, 5, 10, 15, 20, 30, 40, 50, 60, 80, 100, 150, 200, 300, 400,
-        600).zipWithIndex
+      List(1, 5, 10, 15, 20, 30, 40, 50, 60, 80, 100, 150, 200, 300, 400, 600)
+        .zipWithIndex
     private val encodeMap: Map[MT, Int] = encodeList.toMap
     private val decodeList: List[(Int, MT)] = encodeList.map(x => x._2 -> x._1)
     private val decodeMap: Map[Int, MT] = decodeList.toMap
@@ -170,19 +169,25 @@ object BinaryFormat {
     def write(clmt: CastleLastMoveTime): ByteArray = {
 
       val castleInt =
-        clmt.castles.toList.zipWithIndex.foldLeft(0) {
-          case (acc, (false, _)) =>
-            acc
-          case (acc, (true, p)) =>
-            acc + (1 << (3 - p))
-        }
+        clmt
+          .castles
+          .toList
+          .zipWithIndex
+          .foldLeft(0) {
+            case (acc, (false, _)) =>
+              acc
+            case (acc, (true, p)) =>
+              acc + (1 << (3 - p))
+          }
 
       def posInt(pos: Pos): Int = ((pos.x - 1) << 3) + pos.y - 1
       val lastMoveInt =
-        clmt.lastMove.fold(0) {
-          case (f, t) =>
-            (posInt(f) << 6) + posInt(t)
-        }
+        clmt
+          .lastMove
+          .fold(0) {
+            case (f, t) =>
+              (posInt(f) << 6) + posInt(t)
+          }
       val time = clmt.lastMoveTime getOrElse 0
 
       val ints = Array(

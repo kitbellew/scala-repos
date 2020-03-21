@@ -43,7 +43,8 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
       Resource.PORTS,
       Seq(protos.Range(30000, 30003), protos.Range(31000, 31000)))
     val offer =
-      Offer.newBuilder
+      Offer
+        .newBuilder
         .setId(OfferID("1"))
         .setFrameworkId(FrameworkID("marathon"))
         .setSlaveId(SlaveID("slave0"))
@@ -65,7 +66,8 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
       Resource.PORTS,
       Seq(protos.Range(80, 83), protos.Range(100, 100)))
     val offer =
-      Offer.newBuilder
+      Offer
+        .newBuilder
         .setId(OfferID("1"))
         .setFrameworkId(FrameworkID("marathon"))
         .setSlaveId(SlaveID("slave0"))
@@ -107,7 +109,8 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
       Seq(protos.Range(31000, 31000)),
       "marathon")
     val offer =
-      Offer.newBuilder
+      Offer
+        .newBuilder
         .setId(OfferID("1"))
         .setFrameworkId(FrameworkID("marathon"))
         .setSlaveId(SlaveID("slave0"))
@@ -143,7 +146,8 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
       Seq(protos.Range(30000, 30003), protos.Range(31000, 31009)),
       role = "marathon")
     val offer =
-      Offer.newBuilder
+      Offer
+        .newBuilder
         .setId(OfferID("1"))
         .setFrameworkId(FrameworkID("marathon"))
         .setSlaveId(SlaveID("slave0"))

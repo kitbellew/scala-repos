@@ -61,14 +61,16 @@ class AFTSurvivalRegressionSuite
     * so we can validate the training accuracy compared with R's survival package.
     */
   ignore("export test data into CSV format") {
-    datasetUnivariate.rdd
+    datasetUnivariate
+      .rdd
       .map {
         case Row(features: Vector, label: Double, censor: Double) =>
           features.toArray.mkString(",") + "," + censor + "," + label
       }
       .repartition(1)
       .saveAsTextFile("target/tmp/AFTSurvivalRegressionSuite/datasetUnivariate")
-    datasetMultivariate.rdd
+    datasetMultivariate
+      .rdd
       .map {
         case Row(features: Vector, label: Double, censor: Double) =>
           features.toArray.mkString(",") + "," + censor + "," + label
@@ -154,9 +156,11 @@ class AFTSurvivalRegressionSuite
       (weibull.nextValue(), exponential.nextValue())
     }
 
-    y.zip(x).map { p =>
-      AFTPoint(Vectors.dense(p._2), p._1._1, censor(p._1._1, p._1._2))
-    }
+    y
+      .zip(x)
+      .map { p =>
+        AFTPoint(Vectors.dense(p._2), p._1._1, censor(p._1._1, p._1._2))
+      }
   }
 
   test("aft survival regression with univariate") {

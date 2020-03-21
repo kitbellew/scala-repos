@@ -45,7 +45,8 @@ object Redis extends Client[Command, Reply] {
       * A default client stack which supports the pipelined redis client.
       */
     def newStack: Stack[ServiceFactory[Command, Reply]] =
-      StackClient.newStack
+      StackClient
+        .newStack
         .replace(DefaultPool.Role, SingletonPool.module[Command, Reply])
   }
 
@@ -70,7 +71,8 @@ object Redis extends Client[Command, Reply] {
         transport: Transport[In, Out]): Service[Command, Reply] =
       new PipeliningDispatcher(
         transport,
-        params[finagle.param.Stats].statsReceiver
+        params[finagle.param.Stats]
+          .statsReceiver
           .scope(GenSerialClientDispatcher.StatsScope))
 
     // Java-friendly forwarders

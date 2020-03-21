@@ -134,11 +134,14 @@ class MonitorFilterTest
 
     val m = new MockChannel
     when(
-      m.codec.prepareConnFactory(
-        any[ServiceFactory[String, String]],
-        any[Stack.Params])) thenReturn preparedFactory
+      m
+        .codec
+        .prepareConnFactory(
+          any[ServiceFactory[String, String]],
+          any[Stack.Params])) thenReturn preparedFactory
 
-    val client = m.clientBuilder
+    val client = m
+      .clientBuilder
       .monitor(_ => monitor)
       .logger(mockLogger)
       .build()

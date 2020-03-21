@@ -170,7 +170,8 @@ class StringIndexerModel(override val uid: String, val labels: Array[String])
       }
     }
 
-    val metadata = NominalAttribute.defaultAttr
+    val metadata = NominalAttribute
+      .defaultAttr
       .withName($(inputCol))
       .withValues(labels)
       .toMetadata()
@@ -237,10 +238,7 @@ object StringIndexerModel extends MLReadable[StringIndexerModel] {
     override def load(path: String): StringIndexerModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select("labels")
-        .head()
+      val data = sqlContext.read.parquet(dataPath).select("labels").head()
       val labels = data.getAs[Seq[String]](0).toArray
       val model = new StringIndexerModel(metadata.uid, labels)
       DefaultParamsReader.getAndSetParams(model, metadata)

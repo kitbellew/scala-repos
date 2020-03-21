@@ -75,9 +75,11 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
       it: Iterator[Phase],
       state: CompilerState): CompilerState = {
     if (logger.isDebugEnabled)
-      state.symbolNamer.use {
-        logger.debug("Source:", state.tree)
-      }
+      state
+        .symbolNamer
+        .use {
+          logger.debug("Source:", state.tree)
+        }
     if (benchmarkLogger.isDebugEnabled) {
       val (res, times) =
         it.foldLeft((state, Nil: List[(String, Long)])) {
@@ -88,11 +90,13 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
             (pout, (p.name, time) :: times)
         }
       benchmarkLogger.debug("------------------- Phase: Time ---------")
-      (("TOTAL", times.map(_._2).sum) :: times).reverse.foreach {
-        case (name, nanos) =>
-          val millis = nanos / 1000000.0
-          benchmarkLogger.debug(f"$name%25s: $millis%11.6f ms")
-      }
+      (("TOTAL", times.map(_._2).sum) :: times)
+        .reverse
+        .foreach {
+          case (name, nanos) =>
+            val millis = nanos / 1000000.0
+            benchmarkLogger.debug(f"$name%25s: $millis%11.6f ms")
+        }
       res
     } else
       it.foldLeft(state) {
@@ -102,25 +106,27 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
   }
 
   protected[this] def runPhase(p: Phase, state: CompilerState): CompilerState =
-    state.symbolNamer.use {
-      val s2 = p(state)
-      if (s2.tree ne state.tree) {
-        if (logger.isDebugEnabled) {
-          if (GlobalConfig.detectRebuild && s2.tree == state.tree) {
-            val rebuilt = detectRebuiltLeafs(state.tree, s2.tree)
-            logger.debug(
-              "After phase " + p.name + ": (no change but not identical)",
-              s2.tree,
-              (d => rebuilt.contains(RefId(d))))
-          } else
-            logger.debug("After phase " + p.name + ":", s2.tree)
-        }
-        if (GlobalConfig.verifyTypes && s2.wellTyped)
-          (new VerifyTypes(after = Some(p))).apply(s2)
-      } else
-        logger.debug("After phase " + p.name + ": (no change)")
-      s2
-    }
+    state
+      .symbolNamer
+      .use {
+        val s2 = p(state)
+        if (s2.tree ne state.tree) {
+          if (logger.isDebugEnabled) {
+            if (GlobalConfig.detectRebuild && s2.tree == state.tree) {
+              val rebuilt = detectRebuiltLeafs(state.tree, s2.tree)
+              logger.debug(
+                "After phase " + p.name + ": (no change but not identical)",
+                s2.tree,
+                (d => rebuilt.contains(RefId(d))))
+            } else
+              logger.debug("After phase " + p.name + ":", s2.tree)
+          }
+          if (GlobalConfig.verifyTypes && s2.wellTyped)
+            (new VerifyTypes(after = Some(p))).apply(s2)
+        } else
+          logger.debug("After phase " + p.name + ": (no change)")
+        s2
+      }
 
   protected[this] def detectRebuiltLeafs(
       n1: Node,
@@ -129,7 +135,9 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
       Set.empty
     else {
       val chres =
-        n1.children.iterator
+        n1
+          .children
+          .iterator
           .zip(n2.children.iterator)
           .map {
             case (n1, n2) =>

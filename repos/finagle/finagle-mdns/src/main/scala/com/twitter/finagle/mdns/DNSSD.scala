@@ -212,14 +212,16 @@ private object DNSSD {
           }
       }
 
-    instance.browseMethod.invoke(
-      instance.DNSSDClass,
-      instance.UNIQUE.asInstanceOf[Object],
-      instance.LOCALHOST_ONLY.asInstanceOf[Object],
-      regType.asInstanceOf[String],
-      domain.asInstanceOf[String],
-      proxy
-    )
+    instance
+      .browseMethod
+      .invoke(
+        instance.DNSSDClass,
+        instance.UNIQUE.asInstanceOf[Object],
+        instance.LOCALHOST_ONLY.asInstanceOf[Object],
+        regType.asInstanceOf[String],
+        domain.asInstanceOf[String],
+        proxy
+      )
 
     v
   }

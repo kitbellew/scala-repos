@@ -46,10 +46,8 @@ object RichPipe extends java.io.Serializable {
     */
   def setReducers(p: Pipe, reducers: Int): Pipe = {
     if (reducers > 0) {
-      p.getStepConfigDef()
-        .setProperty(REDUCER_KEY, reducers.toString)
-      p.getStepConfigDef()
-        .setProperty(Config.WithReducersSetExplicitly, "true")
+      p.getStepConfigDef().setProperty(REDUCER_KEY, reducers.toString)
+      p.getStepConfigDef().setProperty(Config.WithReducersSetExplicitly, "true")
     } else if (reducers != -1) {
       throw new IllegalArgumentException(
         s"Number of reducers must be non-negative. Got: ${reducers}")
@@ -75,12 +73,14 @@ object RichPipe extends java.io.Serializable {
       Nil
     else {
       // We use empty getter so we can get latest config value of Config.PipeDescriptions in the step ConfigDef.
-      val encodedResult = p.getStepConfigDef.apply(
-        Config.PipeDescriptions,
-        new Getter {
-          override def update(s: String, s1: String): String = ???
-          override def get(s: String): String = null
-        })
+      val encodedResult = p
+        .getStepConfigDef
+        .apply(
+          Config.PipeDescriptions,
+          new Getter {
+            override def update(s: String, s1: String): String = ???
+            override def get(s: String): String = null
+          })
       Option(encodedResult)
         .filterNot(_.isEmpty)
         .map(decodePipeDescriptions)
@@ -89,7 +89,8 @@ object RichPipe extends java.io.Serializable {
   }
 
   def setPipeDescriptions(p: Pipe, descriptions: Seq[String]): Pipe = {
-    p.getStepConfigDef()
+    p
+      .getStepConfigDef()
       .setProperty(
         Config.PipeDescriptions,
         encodePipeDescriptions(getPipeDescriptions(p) ++ descriptions))
@@ -293,7 +294,8 @@ class RichPipe(val pipe: Pipe)
   def groupAll(gs: GroupBuilder => GroupBuilder) =
     map(() -> '__groupAll__) { (u: Unit) =>
       1
-    }.groupBy('__groupAll__) {
+    }
+      .groupBy('__groupAll__) {
         gs(_).reducers(1)
       }
       .discard('__groupAll__)
@@ -885,14 +887,18 @@ class RichPipe(val pipe: Pipe)
     }
     val allPipes = go(pipe, Set[Pipe](), ToVisit[Pipe](Queue.empty, Set.empty))
 
-    FlowStateMap.get(flowDef).foreach { fstm =>
-      fstm.flowConfigUpdates.foreach {
-        case (k, v) =>
-          allPipes.foreach { p =>
-            p.getStepConfigDef().setProperty(k, v)
+    FlowStateMap
+      .get(flowDef)
+      .foreach { fstm =>
+        fstm
+          .flowConfigUpdates
+          .foreach {
+            case (k, v) =>
+              allPipes.foreach { p =>
+                p.getStepConfigDef().setProperty(k, v)
+              }
           }
       }
-    }
     pipe
   }
 

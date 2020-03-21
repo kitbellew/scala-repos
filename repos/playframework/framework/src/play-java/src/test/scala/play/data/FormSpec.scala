@@ -41,14 +41,16 @@ object FormSpec extends Specification {
           "name" -> Array("peter"),
           "done" -> Array("true"),
           "dueDate" -> Array("15/12/2009")))
-      Context.current.set(
-        new Context(
-          666,
-          null,
-          req,
-          Map.empty.asJava,
-          Map.empty.asJava,
-          Map.empty.asJava))
+      Context
+        .current
+        .set(
+          new Context(
+            666,
+            null,
+            req,
+            Map.empty.asJava,
+            Map.empty.asJava,
+            Map.empty.asJava))
 
       val myForm = formFactory
         .form(classOf[play.data.models.Task])
@@ -61,14 +63,16 @@ object FormSpec extends Specification {
           "id" -> Array("1234567891"),
           "name" -> Array("peter"),
           "dueDate" -> Array("15/12/2009")))
-      Context.current.set(
-        new Context(
-          666,
-          null,
-          req,
-          Map.empty.asJava,
-          Map.empty.asJava,
-          Map.empty.asJava))
+      Context
+        .current
+        .set(
+          new Context(
+            666,
+            null,
+            req,
+            Map.empty.asJava,
+            Map.empty.asJava,
+            Map.empty.asJava))
 
       val myForm = formFactory
         .form(classOf[play.data.models.Task])
@@ -81,14 +85,16 @@ object FormSpec extends Specification {
           "id" -> Array("1234567891"),
           "name" -> Array("peter"),
           "dueDate" -> Array("2009/11e/11")))
-      Context.current.set(
-        new Context(
-          666,
-          null,
-          req,
-          Map.empty.asJava,
-          Map.empty.asJava,
-          Map.empty.asJava))
+      Context
+        .current
+        .set(
+          new Context(
+            666,
+            null,
+            req,
+            Map.empty.asJava,
+            Map.empty.asJava,
+            Map.empty.asJava))
 
       val myForm = formFactory
         .form(classOf[play.data.models.Task])
@@ -111,14 +117,16 @@ object FormSpec extends Specification {
           "id" -> Array("1234567891"),
           "name" -> Array("peter"),
           "dueDate" -> Array("2009/11e/11")))
-      Context.current.set(
-        new Context(
-          666,
-          null,
-          req,
-          Map.empty.asJava,
-          Map.empty.asJava,
-          Map.empty.asJava))
+      Context
+        .current
+        .set(
+          new Context(
+            666,
+            null,
+            req,
+            Map.empty.asJava,
+            Map.empty.asJava,
+            Map.empty.asJava))
 
       Context.current.get().setTransientLang("fr");
 
@@ -149,14 +157,16 @@ object FormSpec extends Specification {
           "id" -> Array("1234567891"),
           "name" -> Array("peter"),
           "dueDate" -> Array("2009/11e/11")))
-      Context.current.set(
-        new Context(
-          666,
-          null,
-          req,
-          Map.empty.asJava,
-          Map.empty.asJava,
-          Map.empty.asJava))
+      Context
+        .current
+        .set(
+          new Context(
+            666,
+            null,
+            req,
+            Map.empty.asJava,
+            Map.empty.asJava,
+            Map.empty.asJava))
 
       Context.current.get().changeLang("fr");
 
@@ -181,14 +191,16 @@ object FormSpec extends Specification {
     "have an error due to missing required value" in new WithApplication() {
       val req = dummyRequest(
         Map("id" -> Array("1234567891x"), "name" -> Array("peter")))
-      Context.current.set(
-        new Context(
-          666,
-          null,
-          req,
-          Map.empty.asJava,
-          Map.empty.asJava,
-          Map.empty.asJava))
+      Context
+        .current
+        .set(
+          new Context(
+            666,
+            null,
+            req,
+            Map.empty.asJava,
+            Map.empty.asJava,
+            Map.empty.asJava))
 
       val myForm = formFactory
         .form(classOf[play.data.models.Task])
@@ -203,14 +215,16 @@ object FormSpec extends Specification {
           "id" -> Array("1234567891x"),
           "name" -> Array("peter"),
           "dueDate" -> Array("12/12/2009")))
-      Context.current.set(
-        new Context(
-          666,
-          null,
-          req,
-          Map.empty.asJava,
-          Map.empty.asJava,
-          Map.empty.asJava))
+      Context
+        .current
+        .set(
+          new Context(
+            666,
+            null,
+            req,
+            Map.empty.asJava,
+            Map.empty.asJava,
+            Map.empty.asJava))
 
       val myForm = formFactory
         .form(classOf[play.data.models.Task])
@@ -226,14 +240,16 @@ object FormSpec extends Specification {
           "name" -> Array("peter"),
           "dueDate" -> Array("15/12/2009"),
           "endDate" -> Array("2008-11-21")))
-      Context.current.set(
-        new Context(
-          666,
-          null,
-          req,
-          Map.empty.asJava,
-          Map.empty.asJava,
-          Map.empty.asJava))
+      Context
+        .current
+        .set(
+          new Context(
+            666,
+            null,
+            req,
+            Map.empty.asJava,
+            Map.empty.asJava,
+            Map.empty.asJava))
 
       val myForm = formFactory
         .form(classOf[play.data.models.Task])
@@ -247,14 +263,16 @@ object FormSpec extends Specification {
           "name" -> Array("peter"),
           "dueDate" -> Array("15/12/2009"),
           "endDate" -> Array("2008-11e-21")))
-      Context.current.set(
-        new Context(
-          666,
-          null,
-          req,
-          Map.empty.asJava,
-          Map.empty.asJava,
-          Map.empty.asJava))
+      Context
+        .current
+        .set(
+          new Context(
+            666,
+            null,
+            req,
+            Map.empty.asJava,
+            Map.empty.asJava,
+            Map.empty.asJava))
 
       val myForm = formFactory
         .form(classOf[play.data.models.Task])
@@ -428,7 +446,10 @@ object FormSpec extends Specification {
       import play.core.j.PlayMagicForJava._
 
       def render(form: Form[_], min: Int = 1) =
-        views.html.helper.repeat
+        views
+          .html
+          .helper
+          .repeat
           .apply(form("foo"), min) { f =>
             val a = f("a")
             val b = f("b")
@@ -439,10 +460,13 @@ object FormSpec extends Specification {
 
       def fillNoBind(values: (String, String)*) = {
         val map =
-          values.zipWithIndex.flatMap {
-            case ((a, b), i) =>
-              Seq("foo[" + i + "].a" -> a, "foo[" + i + "].b" -> b)
-          }.toMap
+          values
+            .zipWithIndex
+            .flatMap {
+              case ((a, b), i) =>
+                Seq("foo[" + i + "].a" -> a, "foo[" + i + "].b" -> b)
+            }
+            .toMap
         // Don't use bind, the point here is to have a form with data that isn't bound, otherwise the mapping indexes
         // used come from the form, not the input data
         new Form[JavaForm](

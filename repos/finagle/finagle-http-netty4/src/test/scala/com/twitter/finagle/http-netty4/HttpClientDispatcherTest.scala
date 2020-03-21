@@ -49,9 +49,11 @@ class HttpClientDispatcherTest extends FunSuite {
     val c = res.reader.read(Int.MaxValue)
     assert(!c.isDefined)
     req.writer.write(Buf.Utf8("a"))
-    serverT.read().flatMap { c =>
-      serverT.write(c)
-    }
+    serverT
+      .read()
+      .flatMap { c =>
+        serverT.write(c)
+      }
     assert(Await.result(c, timeout) == Some(Buf.Utf8("a")))
 
     val cc = res.reader.read(Int.MaxValue)

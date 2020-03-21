@@ -74,10 +74,12 @@ abstract class BaseRunConfiguration(
     if (module == null)
       throw new ExecutionException("Module is not specified")
 
-    val scalaSdk = module.scalaSdk.getOrElse {
-      throw new ExecutionException(
-        "No Scala facet configured for module " + module.getName)
-    }
+    val scalaSdk = module
+      .scalaSdk
+      .getOrElse {
+        throw new ExecutionException(
+          "No Scala facet configured for module " + module.getName)
+      }
 
     val rootManager = ModuleRootManager.getInstance(module)
     val sdk = rootManager.getSdk

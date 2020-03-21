@@ -1133,8 +1133,8 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
       _ => Iterator.empty,
       (_, x) => Iterator.single(x),
       (_, pr, m, sf) =>
-        sf.reverseIterator ++ m.reverseIterator.flatMap(
-          _.reverseIterator) ++ pr.reverseIterator)
+        sf.reverseIterator ++ m.reverseIterator.flatMap(_.reverseIterator) ++ pr
+          .reverseIterator)
 
   /** Convert the leaves of the tree to a `scala.Stream` */
   def toStream: Stream[A] = map(x => x)(Reducer.StreamReducer[A]).measure
@@ -1392,16 +1392,20 @@ object FingerTree extends FingerTreeInstances {
 
   def rotL[V, A](m: FingerTree[V, Node[V, A]], sf: Finger[V, A])(implicit
       ms: Reducer[A, V]): FingerTree[V, A] =
-    m.viewl.fold(
-      sf.toTree,
-      (a, mm) =>
-        deep(fingerMeasure[A, V].snoc(m.measure, sf), a.toDigit, mm, sf))
+    m
+      .viewl
+      .fold(
+        sf.toTree,
+        (a, mm) =>
+          deep(fingerMeasure[A, V].snoc(m.measure, sf), a.toDigit, mm, sf))
 
   def rotR[V, A](pr: Finger[V, A], m: FingerTree[V, Node[V, A]])(implicit
       ms: Reducer[A, V]): FingerTree[V, A] =
-    m.viewr.fold(
-      pr.toTree,
-      (mm, a) => deep(mappendVal(pr.measure, m), pr, mm, a.toDigit))
+    m
+      .viewr
+      .fold(
+        pr.toTree,
+        (mm, a) => deep(mappendVal(pr.measure, m), pr, mm, a.toDigit))
 
 }
 
@@ -1516,10 +1520,10 @@ sealed abstract class OrdSeq[A] extends Ops[FingerTree[LastOption[A], A]] {
     *                                priority than `a`, and of lower or equal priority respectively.
     */
   def partition(a: A): (OrdSeq[A], OrdSeq[A]) =
-    function1Instance.product(
-      OrdSeq.ordSeq[A](_: FingerTree[LastOption[A], A]))(
-      self.split(a1 =>
-        Order[LastOption[A]].greaterThanOrEqual(a1, Tags.Last(some(a)))))
+    function1Instance
+      .product(OrdSeq.ordSeq[A](_: FingerTree[LastOption[A], A]))(
+        self.split(a1 =>
+          Order[LastOption[A]].greaterThanOrEqual(a1, Tags.Last(some(a)))))
 
   /** Insert `a` at a the first point that all elements to the left are of higher priority */
   def insert(a: A): OrdSeq[A] =

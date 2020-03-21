@@ -104,16 +104,16 @@ abstract class MultiNodeConfig {
   private[testkit] def config: Config = {
     val transportConfig =
       if (_testTransport)
-        ConfigFactory.parseString(
-          """
+        ConfigFactory
+          .parseString("""
            akka.remote.netty.tcp.applied-adapters = [trttl, gremlin]
         """)
       else
         ConfigFactory.empty
 
-    val configs = (
-      _nodeConf get myself
-    ).toList ::: _commonConf.toList ::: transportConfig :: MultiNodeSpec.nodeConfig :: MultiNodeSpec.baseConfig :: Nil
+    val configs = (_nodeConf get myself).toList ::: _commonConf
+      .toList ::: transportConfig :: MultiNodeSpec.nodeConfig :: MultiNodeSpec
+      .baseConfig :: Nil
     configs reduceLeft (_ withFallback _)
   }
 
@@ -234,8 +234,8 @@ object MultiNodeSpec {
       "akka.remote.netty.tcp.hostname" -> selfName,
       "akka.remote.netty.tcp.port" -> selfPort))
 
-  private[testkit] val baseConfig: Config = ConfigFactory.parseString(
-    """
+  private[testkit] val baseConfig: Config = ConfigFactory
+    .parseString("""
       akka {
         loggers = ["akka.testkit.TestEventListener"]
         loglevel = "WARNING"
@@ -420,8 +420,9 @@ abstract class MultiNodeSpec(
       sys: ActorSystem = system): Unit =
     if (!sys.log.isDebugEnabled) {
       def mute(clazz: Class[_]): Unit =
-        sys.eventStream.publish(
-          Mute(DeadLettersFilter(clazz)(occurrences = Int.MaxValue)))
+        sys
+          .eventStream
+          .publish(Mute(DeadLettersFilter(clazz)(occurrences = Int.MaxValue)))
       if (messageClasses.isEmpty)
         mute(classOf[AnyRef])
       else
@@ -475,8 +476,9 @@ abstract class MultiNodeSpec(
                     // might happen if all test cases are ignored (excluded) and
                     // controller node is finished/exited before r.addr is run
                     // on the other nodes
-                    val unresolved =
-                      "akka://unresolved-replacement-" + r.role.name
+                    val unresolved = "akka://unresolved-replacement-" + r
+                      .role
+                      .name
                     log.warning(unresolved + " due to: " + e.getMessage)
                     unresolved
                 }

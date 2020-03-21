@@ -157,10 +157,8 @@ object AsmUtils {
     classNode.accept(cw)
     val sw = new StringWriter()
     val pw = new PrintWriter(sw)
-    CheckClassAdapter.verify(
-      new ClassReader(cw.toByteArray),
-      dumpNonErroneous,
-      pw)
+    CheckClassAdapter
+      .verify(new ClassReader(cw.toByteArray), dumpNonErroneous, pw)
     val res = sw.toString
     if (res.isEmpty)
       None

@@ -223,7 +223,8 @@ trait Internals extends api.Internals {
       self.BoundedWildcardType(bounds)
 
     def subpatterns(tree: Tree): Option[List[Tree]] =
-      tree.attachments
+      tree
+        .attachments
         .get[SubpatternsAttachment]
         .map(_.patterns.map(duplicateAndKeepPositions))
 

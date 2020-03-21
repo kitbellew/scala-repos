@@ -53,7 +53,9 @@ object JdbcUtils extends Logging {
     }
     () => {
       userSpecifiedDriverClass.foreach(DriverRegistry.register)
-      val driver: Driver = DriverManager.getDrivers.asScala
+      val driver: Driver = DriverManager
+        .getDrivers
+        .asScala
         .collectFirst {
           case d: DriverWrapper
               if d.wrapped.getClass.getCanonicalName == driverClass =>
@@ -240,11 +242,12 @@ object JdbcUtils extends Logging {
                 case ArrayType(et, _) =>
                   // remove type length parameters from end of type name
                   val typeName =
-                    getJdbcType(et, dialect).databaseTypeDefinition.toLowerCase
+                    getJdbcType(et, dialect)
+                      .databaseTypeDefinition
+                      .toLowerCase
                       .split("\\(")(0)
-                  val array = conn.createArrayOf(
-                    typeName,
-                    row.getSeq[AnyRef](i).toArray)
+                  val array = conn
+                    .createArrayOf(typeName, row.getSeq[AnyRef](i).toArray)
                   stmt.setArray(i + 1, array)
                 case _ =>
                   throw new IllegalArgumentException(
@@ -326,9 +329,12 @@ object JdbcUtils extends Logging {
       table: String,
       properties: Properties) {
     val dialect = JdbcDialects.get(url)
-    val nullTypes: Array[Int] = df.schema.fields.map { field =>
-      getJdbcType(field.dataType, dialect).jdbcNullType
-    }
+    val nullTypes: Array[Int] = df
+      .schema
+      .fields
+      .map { field =>
+        getJdbcType(field.dataType, dialect).jdbcNullType
+      }
 
     val rddSchema = df.schema
     val getConnection: () => Connection = createConnectionFactory(

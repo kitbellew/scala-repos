@@ -28,8 +28,9 @@ class ValidationSupportSpec extends Specification {
       ageValidatedForm.bindTo(params)
 
       ageValidatedForm.a.validation must_== params("name").toUpperCase.success
-      ageValidatedForm.lower.validation must_== params(
-        "surname").toLowerCase.success
+      ageValidatedForm.lower.validation must_== params("surname")
+        .toLowerCase
+        .success
       ageValidatedForm.age.validation must_== 18.success
 
     }
@@ -49,7 +50,9 @@ class ValidationSupportSpec extends Specification {
         x.name == "age"
       }
 
-      ageValidatedForm.legalAge.validation aka "the validation result" must_== Failure(
+      ageValidatedForm
+        .legalAge
+        .validation aka "the validation result" must_== Failure(
         ValidationError(
           "Age must be greater than or equal to 18",
           FieldName("age"),

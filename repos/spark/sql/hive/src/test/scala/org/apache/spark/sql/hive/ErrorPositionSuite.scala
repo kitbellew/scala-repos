@@ -145,16 +145,21 @@ class ErrorPositionSuite
         }
         .headOption
         .getOrElse(sys.error(s"Invalid test. Token $token not in $query"))
-      val actualLine = error.line.getOrElse {
-        fail(
-          s"line not returned for error '${error.getMessage}' on token $token\n$parseTree")
-      }
+      val actualLine = error
+        .line
+        .getOrElse {
+          fail(
+            s"line not returned for error '${error.getMessage}' on token $token\n$parseTree")
+        }
       assert(actualLine === expectedLineNum, "wrong line")
 
       val expectedStart = line.indexOf(token)
-      val actualStart = error.startPosition.getOrElse {
-        fail(s"start not returned for error on token $token\n${ast.treeString}")
-      }
+      val actualStart = error
+        .startPosition
+        .getOrElse {
+          fail(
+            s"start not returned for error on token $token\n${ast.treeString}")
+        }
       assert(
         expectedStart === actualStart,
         s"""Incorrect start position.

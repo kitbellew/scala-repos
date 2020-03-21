@@ -28,7 +28,8 @@ object ServiceFactoryExample {
   import Shared._
 
   //#client
-  val client = Mysql.client
+  val client = Mysql
+    .client
     .withCredentials("<user>", "<password>")
     .withDatabase("test")
     .configured(
@@ -65,7 +66,8 @@ object RichExample {
   import Shared._
 
   //#richClient
-  val richClient = Mysql.client
+  val richClient = Mysql
+    .client
     .withCredentials("<user>", "<password>")
     .withDatabase("test")
     .configured(

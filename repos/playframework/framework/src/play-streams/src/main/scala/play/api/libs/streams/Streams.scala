@@ -241,7 +241,8 @@ object Streams {
     new Iteratee[T, U] {
       def fold[B](folder: (Step[T, U]) => Future[B])(implicit
           ec: ExecutionContext) = {
-        Source.asSubscriber
+        Source
+          .asSubscriber
           .toMat(accumulator.toSink) { (subscriber, result) =>
             import play.api.libs.iteratee.Execution.Implicits.trampoline
             subscriberToIteratee(subscriber).mapM(_ => result)(trampoline)

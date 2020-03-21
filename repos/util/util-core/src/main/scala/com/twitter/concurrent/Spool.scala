@@ -129,10 +129,12 @@ sealed trait Spool[+A] {
     else
       new LazyCons(
         (head, that.head),
-        Future.join(tail, that.tail).map {
-          case (thisTail, thatTail) =>
-            thisTail.zip(thatTail)
-        })
+        Future
+          .join(tail, that.tail)
+          .map {
+            case (thisTail, thatTail) =>
+              thisTail.zip(thatTail)
+          })
 
   /**
     * The standard Scala collect, in order to implement map & filter.
@@ -439,10 +441,12 @@ object Spool {
     */
   class ToSpool[A](s: Seq[A]) {
     def toSpool: Spool[A] =
-      s.reverse.foldLeft(Spool.empty: Spool[A]) {
-        case (tail, head) =>
-          head *:: Future.value(tail)
-      }
+      s
+        .reverse
+        .foldLeft(Spool.empty: Spool[A]) {
+          case (tail, head) =>
+            head *:: Future.value(tail)
+        }
   }
 
   implicit def seqToSpool[A](s: Seq[A]): ToSpool[A] = new ToSpool[A](s)
@@ -460,15 +464,17 @@ object Spool {
 
   private[this] def mergeNonempty[A](
       spools: Seq[Future[Spool[A]]]): Future[Spool[A]] =
-    Future.select(spools).flatMap {
-      case (anything, Nil) =>
-        new ConstFuture(anything)
-      case (Return(Spool.Empty), rest) =>
-        merge(rest)
-      case (Return(spool), rest) =>
-        Future.value(new LazyCons(spool.head, merge(rest :+ spool.tail)))
-      case (Throw(exc), _) =>
-        Future.exception(exc)
-    }
+    Future
+      .select(spools)
+      .flatMap {
+        case (anything, Nil) =>
+          new ConstFuture(anything)
+        case (Return(Spool.Empty), rest) =>
+          merge(rest)
+        case (Return(spool), rest) =>
+          Future.value(new LazyCons(spool.head, merge(rest :+ spool.tail)))
+        case (Throw(exc), _) =>
+          Future.exception(exc)
+      }
 
 }

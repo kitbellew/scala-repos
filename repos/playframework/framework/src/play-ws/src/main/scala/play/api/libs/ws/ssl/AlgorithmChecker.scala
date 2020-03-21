@@ -173,8 +173,8 @@ class AlgorithmChecker(
       // a SHA-1-based signature as part of the certificate chain, will be treated as
       // “neutral, lacking security”.
       val january2017 = new DateTime(2017, 1, 1, 0, 0, 0, 0)
-      if (january2017.isEqual(expirationDate) || january2017.isBefore(
-            expirationDate)) {
+      if (january2017.isEqual(expirationDate) || january2017
+            .isBefore(expirationDate)) {
         warnOnSunset(x509Cert, expirationDate)
       }
     }

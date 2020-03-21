@@ -226,10 +226,12 @@ class KMeans private (
     // Compute squared norms and cache them.
     val norms = data.map(Vectors.norm(_, 2.0))
     norms.persist()
-    val zippedData = data.zip(norms).map {
-      case (v, norm) =>
-        new VectorWithNorm(v, norm)
-    }
+    val zippedData = data
+      .zip(norms)
+      .map {
+        case (v, norm) =>
+          new VectorWithNorm(v, norm)
+      }
     val model = runAlgorithm(zippedData)
     norms.unpersist()
 
@@ -277,8 +279,8 @@ class KMeans private (
       }
     val initTimeInSeconds = (System.nanoTime() - initStartTime) / 1e9
     logInfo(
-      s"Initialization with $initializationMode took " + "%.3f".format(
-        initTimeInSeconds) +
+      s"Initialization with $initializationMode took " + "%.3f"
+        .format(initTimeInSeconds) +
         " seconds.")
 
     val active = Array.fill(numRuns)(true)
@@ -315,9 +317,8 @@ class KMeans private (
 
           points.foreach { point =>
             (0 until runs).foreach { i =>
-              val (bestCenter, cost) = KMeans.findClosest(
-                thisActiveCenters(i),
-                point)
+              val (bestCenter, cost) = KMeans
+                .findClosest(thisActiveCenters(i), point)
               costAccums(i) += cost
               val sum = sums(i)(bestCenter)
               axpy(1.0, point.vector, sum)
@@ -451,26 +452,25 @@ class KMeans private (
         }
         .persist(StorageLevel.MEMORY_AND_DISK)
       val sumCosts =
-        costs
-          .aggregate(new Array[Double](runs))(
-            seqOp = (s, v) => {
-              // s += v
-              var r = 0
-              while (r < runs) {
-                s(r) += v(r)
-                r += 1
-              }
-              s
-            },
-            combOp = (s0, s1) => {
-              // s0 += s1
-              var r = 0
-              while (r < runs) {
-                s0(r) += s1(r)
-                r += 1
-              }
-              s0
-            })
+        costs.aggregate(new Array[Double](runs))(
+          seqOp = (s, v) => {
+            // s += v
+            var r = 0
+            while (r < runs) {
+              s(r) += v(r)
+              r += 1
+            }
+            s
+          },
+          combOp = (s0, s1) => {
+            // s0 += s1
+            var r = 0
+            while (r < runs) {
+              s0(r) += s1(r)
+              r += 1
+            }
+            s0
+          })
 
       bcNewCenters.unpersist(blocking = false)
       preCosts.unpersist(blocking = false)
@@ -517,14 +517,16 @@ class KMeans private (
 
     bcCenters.unpersist(blocking = false)
 
-    val finalCenters = (0 until runs).par.map { r =>
-      val myCenters = centers(r).toArray
-      val myWeights =
-        (0 until myCenters.length)
-          .map(i => weightMap.getOrElse((r, i), 0.0))
-          .toArray
-      LocalKMeans.kMeansPlusPlus(r, myCenters, myWeights, k, 30)
-    }
+    val finalCenters = (0 until runs)
+      .par
+      .map { r =>
+        val myCenters = centers(r).toArray
+        val myWeights =
+          (0 until myCenters.length)
+            .map(i => weightMap.getOrElse((r, i), 0.0))
+            .toArray
+        LocalKMeans.kMeansPlusPlus(r, myCenters, myWeights, k, 30)
+      }
 
     finalCenters.toArray
   }

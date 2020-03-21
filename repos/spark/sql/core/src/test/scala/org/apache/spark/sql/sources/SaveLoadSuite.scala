@@ -43,15 +43,16 @@ class SaveLoadSuite
     path = Utils.createTempDir()
     path.delete()
 
-    val rdd = sparkContext.parallelize(
-      (1 to 10).map(i => s"""{"a":$i, "b":"str${i}"}"""))
+    val rdd = sparkContext
+      .parallelize((1 to 10).map(i => s"""{"a":$i, "b":"str${i}"}"""))
     df = caseInsensitiveContext.read.json(rdd)
     df.registerTempTable("jsonTable")
   }
 
   override def afterAll(): Unit = {
     try {
-      caseInsensitiveContext.conf
+      caseInsensitiveContext
+        .conf
         .setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, originalDefaultSource)
     } finally {
       super.afterAll()
@@ -63,14 +64,16 @@ class SaveLoadSuite
   }
 
   def checkLoad(expectedDF: DataFrame = df, tbl: String = "jsonTable"): Unit = {
-    caseInsensitiveContext.conf
+    caseInsensitiveContext
+      .conf
       .setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, "org.apache.spark.sql.json")
     checkAnswer(
       caseInsensitiveContext.read.load(path.toString),
       expectedDF.collect())
 
     // Test if we can pick up the data source name passed in load.
-    caseInsensitiveContext.conf
+    caseInsensitiveContext
+      .conf
       .setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, "not a source name")
     checkAnswer(
       caseInsensitiveContext.read.format("json").load(path.toString),
@@ -80,7 +83,8 @@ class SaveLoadSuite
       expectedDF.collect())
     val schema = StructType(StructField("b", StringType, true) :: Nil)
     checkAnswer(
-      caseInsensitiveContext.read
+      caseInsensitiveContext
+        .read
         .format("json")
         .schema(schema)
         .load(path.toString),
@@ -88,14 +92,16 @@ class SaveLoadSuite
   }
 
   test("save with path and load") {
-    caseInsensitiveContext.conf
+    caseInsensitiveContext
+      .conf
       .setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, "org.apache.spark.sql.json")
     df.write.save(path.toString)
     checkLoad()
   }
 
   test("save with string mode and path, and load") {
-    caseInsensitiveContext.conf
+    caseInsensitiveContext
+      .conf
       .setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, "org.apache.spark.sql.json")
     path.createNewFile()
     df.write.mode("overwrite").save(path.toString)
@@ -103,14 +109,16 @@ class SaveLoadSuite
   }
 
   test("save with path and datasource, and load") {
-    caseInsensitiveContext.conf
+    caseInsensitiveContext
+      .conf
       .setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, "not a source name")
     df.write.json(path.toString)
     checkLoad()
   }
 
   test("save with data source and options, and load") {
-    caseInsensitiveContext.conf
+    caseInsensitiveContext
+      .conf
       .setConf(SQLConf.DEFAULT_DATA_SOURCE_NAME, "not a source name")
     df.write.mode(SaveMode.ErrorIfExists).json(path.toString)
     checkLoad()

@@ -662,7 +662,8 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
         val error = expectError(messageIn)
           .asInstanceOf[PeerClosedConnectionException]
         error.closeCode shouldEqual Protocol.CloseCodes.UnexpectedCondition
-        error.closeReason shouldEqual "This alien landing came quite unexpected. Communication has been garbled."
+        error
+          .closeReason shouldEqual "This alien landing came quite unexpected. Communication has been garbled."
 
         expectCloseCodeOnNetwork(Protocol.CloseCodes.UnexpectedCondition)
         messageOut.sendError(error)
@@ -720,19 +721,18 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
       "if user handler fails" in new ServerTestSetup {
         EventFilter[RuntimeException](
           message = "Oops, user handler failed!",
-          occurrences = 1)
-          .intercept {
-            messageOut.sendError(
-              new RuntimeException("Oops, user handler failed!"))
-            expectCloseCodeOnNetwork(Protocol.CloseCodes.UnexpectedCondition)
+          occurrences = 1).intercept {
+          messageOut
+            .sendError(new RuntimeException("Oops, user handler failed!"))
+          expectCloseCodeOnNetwork(Protocol.CloseCodes.UnexpectedCondition)
 
-            expectNoNetworkData() // wait for peer to close regularly
-            pushInput(closeFrame(Protocol.CloseCodes.Regular, mask = true))
+          expectNoNetworkData() // wait for peer to close regularly
+          pushInput(closeFrame(Protocol.CloseCodes.Regular, mask = true))
 
-            expectComplete(messageIn)
-            netOut.expectComplete()
-            netIn.expectCancellation()
-          }
+          expectComplete(messageIn)
+          netOut.expectComplete()
+          netIn.expectCancellation()
+        }
       }
       "if peer closes with invalid close frame" - {
         "close code outside of the valid range" in new ServerTestSetup {
@@ -741,7 +741,8 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
           val error = expectError(messageIn)
             .asInstanceOf[PeerClosedConnectionException]
           error.closeCode shouldEqual Protocol.CloseCodes.ProtocolError
-          error.closeReason shouldEqual "Peer sent illegal close frame (invalid close code '5700')."
+          error
+            .closeReason shouldEqual "Peer sent illegal close frame (invalid close code '5700')."
 
           expectCloseCodeOnNetwork(Protocol.CloseCodes.ProtocolError)
           netOut.expectComplete()
@@ -758,7 +759,8 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
           val error = expectError(messageIn)
             .asInstanceOf[PeerClosedConnectionException]
           error.closeCode shouldEqual Protocol.CloseCodes.ProtocolError
-          error.closeReason shouldEqual "Peer sent illegal close frame (close code must be length 2 but was 1)."
+          error
+            .closeReason shouldEqual "Peer sent illegal close frame (close code must be length 2 but was 1)."
 
           expectCloseCodeOnNetwork(Protocol.CloseCodes.ProtocolError)
           netOut.expectComplete()
@@ -774,7 +776,8 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
           val error = expectError(messageIn)
             .asInstanceOf[PeerClosedConnectionException]
           error.closeCode shouldEqual Protocol.CloseCodes.ProtocolError
-          error.closeReason shouldEqual "Peer sent illegal close frame (close reason message is invalid UTF8)."
+          error
+            .closeReason shouldEqual "Peer sent illegal close frame (close reason message is invalid UTF8)."
 
           expectCloseCodeOnNetwork(Protocol.CloseCodes.ProtocolError)
           netOut.expectComplete()
@@ -1010,8 +1013,7 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
         1,
         OverflowStrategy.backpressure
       ) // alternatively need to request(1) before expectComplete
-      .to(netOut.sink)
-      .run()
+      .to(netOut.sink).run()
 
     def pushInput(data: ByteString): Unit = netIn.sendNext(data)
     def pushMessage(msg: Message): Unit = messageOut.sendNext(msg)

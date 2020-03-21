@@ -271,8 +271,8 @@ private[akka] class MetricsKitSettings(config: Config) {
         v ⇒ !v.trim.isEmpty,
         "akka.test.metrics.reporter.graphite.host was used but was empty!")
     val Port = config.getInt("akka.test.metrics.reporter.graphite.port")
-    val Verbose = config.getBoolean(
-      "akka.test.metrics.reporter.graphite.verbose")
+    val Verbose = config
+      .getBoolean("akka.test.metrics.reporter.graphite.verbose")
 
     val ScheduledReportInterval = config.getMillisDuration(
       "akka.test.metrics.reporter.graphite.scheduled-report-interval")
@@ -281,8 +281,8 @@ private[akka] class MetricsKitSettings(config: Config) {
   object ConsoleReporter {
     val ScheduledReportInterval = config.getMillisDuration(
       "akka.test.metrics.reporter.console.scheduled-report-interval")
-    val Verbose = config.getBoolean(
-      "akka.test.metrics.reporter.console.verbose")
+    val Verbose = config
+      .getBoolean("akka.test.metrics.reporter.console.verbose")
   }
 
 }

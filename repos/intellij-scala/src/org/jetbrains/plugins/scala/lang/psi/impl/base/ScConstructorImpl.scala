@@ -123,12 +123,14 @@ class ScConstructorImpl(node: ASTNode)
     } else {
       ScParameterizedType(
         tp,
-        clazz.getTypeParameters.map {
-          case tp: ScTypeParam =>
-            new ScTypeParameterType(tp, subst)
-          case ptp =>
-            new ScTypeParameterType(ptp, subst)
-        })
+        clazz
+          .getTypeParameters
+          .map {
+            case tp: ScTypeParam =>
+              new ScTypeParameterType(tp, subst)
+            case ptp =>
+              new ScTypeParameterType(ptp, subst)
+          })
     }
   }
 
@@ -253,24 +255,27 @@ class ScConstructorImpl(node: ASTNode)
             case r @ ScalaResolveResult(constr: PsiMethod, subst) =>
               buffer += workWithResolveResult(constr, r, subst, s, ref)
             case ScalaResolveResult(clazz: PsiClass, subst)
-                if !clazz.isInstanceOf[
-                  ScTemplateDefinition] && clazz.isAnnotationType =>
-              val params = clazz.getMethods.flatMap {
-                case p: PsiAnnotationMethod =>
-                  val paramType = subst.subst(
-                    ScType.create(p.getReturnType, getProject, getResolveScope))
-                  Seq(
-                    Parameter(
-                      p.getName,
-                      None,
-                      paramType,
-                      paramType,
-                      p.getDefaultValue != null,
-                      isRepeated = false,
-                      isByName = false))
-                case _ =>
-                  Seq.empty
-              }
+                if !clazz.isInstanceOf[ScTemplateDefinition] && clazz
+                  .isAnnotationType =>
+              val params = clazz
+                .getMethods
+                .flatMap {
+                  case p: PsiAnnotationMethod =>
+                    val paramType = subst.subst(
+                      ScType
+                        .create(p.getReturnType, getProject, getResolveScope))
+                    Seq(
+                      Parameter(
+                        p.getName,
+                        None,
+                        paramType,
+                        paramType,
+                        p.getDefaultValue != null,
+                        isRepeated = false,
+                        isByName = false))
+                  case _ =>
+                    Seq.empty
+                }
               buffer += Success(
                 ScMethodType(
                   ScDesignatorType(clazz),

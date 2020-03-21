@@ -284,10 +284,10 @@ class SyntheticClasses(project: Project)
 
     val any = registerClass(Any, "Any")
     val manager = any.manager
-    any.addMethod(
-      new ScSyntheticFunction(manager, "==", Boolean, Seq(Seq(Any))))
-    any.addMethod(
-      new ScSyntheticFunction(manager, "!=", Boolean, Seq(Seq(Any))))
+    any
+      .addMethod(new ScSyntheticFunction(manager, "==", Boolean, Seq(Seq(Any))))
+    any
+      .addMethod(new ScSyntheticFunction(manager, "!=", Boolean, Seq(Seq(Any))))
     any.addMethod(new ScSyntheticFunction(manager, "##", Int, Seq.empty))
     any.addMethod(
       new ScSyntheticFunction(
@@ -328,8 +328,8 @@ class SyntheticClasses(project: Project)
               false,
               false,
               0)))
-        override val retType: ScType = ScalaPsiManager.typeVariable(
-          typeParams(0))
+        override val retType: ScType = ScalaPsiManager
+          .typeVariable(typeParams(0))
       })
 
     registerClass(AnyVal, "AnyVal")

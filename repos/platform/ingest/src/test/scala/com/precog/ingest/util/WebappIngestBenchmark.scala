@@ -139,20 +139,22 @@ abstract class IngestProducer(args: Array[String])
             new Instant(),
             StreamRef.Append)
 
-          0.until(messages).foreach { i =>
-            if (i % 10 == 0 && verbose)
-              println("Sending to [%s]: %d".format(path, i))
-            try {
-              send(event, timeout)
-            } catch {
-              case ex =>
-                ex.printStackTrace
-                errors += 1
+          0
+            .until(messages)
+            .foreach { i =>
+              if (i % 10 == 0 && verbose)
+                println("Sending to [%s]: %d".format(path, i))
+              try {
+                send(event, timeout)
+              } catch {
+                case ex =>
+                  ex.printStackTrace
+                  errors += 1
+              }
+              if (delay > 0) {
+                Thread.sleep(delay)
+              }
             }
-            if (delay > 0) {
-              Thread.sleep(delay)
-            }
-          }
       }
     }
   }
@@ -257,9 +259,8 @@ object WebappIngestProducer {
 
 class WebappIngestProducer(args: Array[String]) extends IngestProducer(args) {
 
-  lazy val base = config.getProperty(
-    "serviceUrl",
-    "http://localhost:30050/vfs/")
+  lazy val base = config
+    .getProperty("serviceUrl", "http://localhost:30050/vfs/")
   lazy val ingestAPIKey = config.getProperty("apiKey", "dummy")
   val ingestOwnerAccountId = Authorities("dummy")
   val client = new HttpClientXLightWeb
@@ -289,7 +290,8 @@ class WebappIngestProducer(args: Array[String]) extends IngestProducer(args) {
   }
 
   override def usageMessage =
-    super.usageMessage + """
+    super
+      .usageMessage + """
 serviceUrl - base url for web application (default: http://localhost:30050/vfs/)
   """
 

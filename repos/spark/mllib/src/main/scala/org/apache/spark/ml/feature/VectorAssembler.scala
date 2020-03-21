@@ -78,20 +78,25 @@ class VectorAssembler(override val uid: String)
           val group = AttributeGroup.fromStructField(field)
           if (group.attributes.isDefined) {
             // If attributes are defined, copy them with updated names.
-            group.attributes.get.zipWithIndex.map {
-              case (attr, i) =>
-                if (attr.name.isDefined) {
-                  // TODO: Define a rigorous naming scheme.
-                  attr.withName(c + "_" + attr.name.get)
-                } else {
-                  attr.withName(c + "_" + i)
-                }
-            }
+            group
+              .attributes
+              .get
+              .zipWithIndex
+              .map {
+                case (attr, i) =>
+                  if (attr.name.isDefined) {
+                    // TODO: Define a rigorous naming scheme.
+                    attr.withName(c + "_" + attr.name.get)
+                  } else {
+                    attr.withName(c + "_" + i)
+                  }
+              }
           } else {
             // Otherwise, treat all attributes as numeric. If we cannot get the number of attributes
             // from metadata, check the first row.
-            val numAttrs = group.numAttributes.getOrElse(
-              first.getAs[Vector](index).size)
+            val numAttrs = group
+              .numAttributes
+              .getOrElse(first.getAs[Vector](index).size)
             Array.tabulate(numAttrs)(i =>
               NumericAttribute.defaultAttr.withName(c + "_" + i))
           }

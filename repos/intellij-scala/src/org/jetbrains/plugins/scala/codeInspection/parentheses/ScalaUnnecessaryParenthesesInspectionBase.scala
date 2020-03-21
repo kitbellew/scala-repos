@@ -32,12 +32,12 @@ abstract class ScalaUnnecessaryParenthesesInspectionBase
 
   def actionFor(holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
     case parenthesized: ScParenthesisedExpr
-        if !parenthesized.getParent
+        if !parenthesized
+          .getParent
           .isInstanceOf[ScParenthesisedExpr] && IntentionAvailabilityChecker
           .checkInspection(this, parenthesized) &&
-          UnnecessaryParenthesesUtil.canBeStripped(
-            parenthesized,
-            getIgnoreClarifying) =>
+          UnnecessaryParenthesesUtil
+            .canBeStripped(parenthesized, getIgnoreClarifying) =>
       holder.registerProblem(
         parenthesized,
         "Unnecessary parentheses",
@@ -72,15 +72,13 @@ class UnnecessaryParenthesesQuickFix(
     if (!parenthExpr.isValid)
       return
 
-    val newExpr = ScalaPsiElementFactory.createExpressionFromText(
-      textOfStripped,
-      parenthExpr.getManager)
-    val replaced = parenthExpr.replaceExpression(
-      newExpr,
-      removeParenthesis = true)
+    val newExpr = ScalaPsiElementFactory
+      .createExpressionFromText(textOfStripped, parenthExpr.getManager)
+    val replaced = parenthExpr
+      .replaceExpression(newExpr, removeParenthesis = true)
 
-    val comments = Option(parenthExpr.expr.get).map(expr =>
-      IntentionUtil.collectComments(expr))
+    val comments = Option(parenthExpr.expr.get)
+      .map(expr => IntentionUtil.collectComments(expr))
     comments.foreach(value =>
       IntentionUtil.addComments(value, replaced.getParent, replaced))
 

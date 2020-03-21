@@ -155,12 +155,8 @@ object MetricsStatsReceiver {
           case Event(etype, when, delta, name: String, _, tid, sid)
               if etype eq this =>
             val (t, s) = serializeTrace(tid, sid)
-            val env = Json.Envelope(
-              id,
-              when.inMilliseconds,
-              t,
-              s,
-              StatAddData(name, delta))
+            val env = Json
+              .Envelope(id, when.inMilliseconds, t, s, StatAddData(name, delta))
             Try(Buf.Utf8(Json.serialize(env)))
 
           case _ =>
@@ -240,20 +236,22 @@ class MetricsStatsReceiver(
       None
   }
 
-  GlobalRules.get.add(
-    Rule(
-      Category.Performance,
-      "Elevated metric creation requests",
-      "For best performance, metrics should be created and stored in member variables " +
-        "and not requested via `StatsReceiver.{counter,stat,addGauge}` at runtime. " +
-        "Large numbers are an indication that these metrics are being requested " +
-        "frequently at runtime."
-    ) {
-      Seq(
-        checkRequestsLimit("counter", counterRequests),
-        checkRequestsLimit("stat", statRequests),
-        checkRequestsLimit("addGauge", gaugeRequests)).flatten
-    })
+  GlobalRules
+    .get
+    .add(
+      Rule(
+        Category.Performance,
+        "Elevated metric creation requests",
+        "For best performance, metrics should be created and stored in member variables " +
+          "and not requested via `StatsReceiver.{counter,stat,addGauge}` at runtime. " +
+          "Large numbers are an indication that these metrics are being requested " +
+          "frequently at runtime."
+      ) {
+        Seq(
+          checkRequestsLimit("counter", counterRequests),
+          checkRequestsLimit("stat", statRequests),
+          checkRequestsLimit("addGauge", gaugeRequests)).flatten
+      })
 
   // Scope separator, a string value used to separate scopes defined by `StatsReceiver`.
   private[this] val separator: String = scopeSeparator()

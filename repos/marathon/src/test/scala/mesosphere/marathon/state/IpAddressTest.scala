@@ -41,7 +41,8 @@ class IpAddressTest extends MarathonSpec with Matchers {
     val proto = f.defaultIpAddress.toProto
 
     // The default IpAddress has an empty DiscoveryInfo
-    val defaultIpAddressProto = Protos.IpAddress
+    val defaultIpAddressProto = Protos
+      .IpAddress
       .newBuilder()
       .setDiscoveryInfo(Protos.DiscoveryInfo.getDefaultInstance)
       .build()
@@ -69,15 +70,15 @@ class IpAddressTest extends MarathonSpec with Matchers {
     val proto = f.ipAddressWithDiscoveryInfo.toProto
 
     val portProto =
-      MesosProtos.Port.newBuilder
+      MesosProtos
+        .Port
+        .newBuilder
         .setName("http")
         .setNumber(80)
         .setProtocol("tcp")
         .build
     val discoveryInfoProto =
-      Protos.DiscoveryInfo.newBuilder
-        .addPorts(portProto)
-        .build
+      Protos.DiscoveryInfo.newBuilder.addPorts(portProto).build
 
     proto.getGroupsList.asScala should equal(
       f.ipAddressWithGroupsAndLabels.groups)
@@ -97,9 +98,7 @@ class IpAddressTest extends MarathonSpec with Matchers {
   test("ConstructFromProto with groups") {
     val f = fixture()
     val protoWithGroups =
-      Protos.IpAddress.newBuilder
-        .addAllGroups(Seq("foo", "bar").asJava)
-        .build
+      Protos.IpAddress.newBuilder.addAllGroups(Seq("foo", "bar").asJava).build
     val result = IpAddress.fromProto(protoWithGroups)
     result should equal(f.ipAddressWithGroups)
   }
@@ -107,7 +106,9 @@ class IpAddressTest extends MarathonSpec with Matchers {
   test("ConstructFromProto with groups and labels") {
     val f = fixture()
     val protoWithGroupsAndLabels =
-      Protos.IpAddress.newBuilder
+      Protos
+        .IpAddress
+        .newBuilder
         .addAllGroups(Seq("a", "b", "c").asJava)
         .addLabels(MesosProtos.Label.newBuilder.setKey("foo").setValue("bar"))
         .addLabels(MesosProtos.Label.newBuilder.setKey("baz").setValue("buzz"))
@@ -120,18 +121,20 @@ class IpAddressTest extends MarathonSpec with Matchers {
     val f = fixture()
 
     val portProto =
-      MesosProtos.Port.newBuilder
+      MesosProtos
+        .Port
+        .newBuilder
         .setName("http")
         .setNumber(80)
         .setProtocol("tcp")
         .build
     val discoveryInfoProto =
-      Protos.DiscoveryInfo.newBuilder
-        .addPorts(portProto)
-        .build
+      Protos.DiscoveryInfo.newBuilder.addPorts(portProto).build
 
     val protoWithDiscovery =
-      Protos.IpAddress.newBuilder
+      Protos
+        .IpAddress
+        .newBuilder
         .addAllGroups(Seq("a", "b", "c").asJava)
         .addLabels(MesosProtos.Label.newBuilder.setKey("foo").setValue("bar"))
         .addLabels(MesosProtos.Label.newBuilder.setKey("baz").setValue("buzz"))
@@ -153,14 +156,14 @@ class IpAddressTest extends MarathonSpec with Matchers {
 
   test("JSON Serialization round-trip ipAddressWithGroupsAndLabels") {
     val f = fixture()
-    JsonTestHelper.assertSerializationRoundtripWorks(
-      f.ipAddressWithGroupsAndLabels)
+    JsonTestHelper
+      .assertSerializationRoundtripWorks(f.ipAddressWithGroupsAndLabels)
   }
 
   test("JSON Serialization round-trip ipAddressWithDiscoveryInfo") {
     val f = fixture()
-    JsonTestHelper.assertSerializationRoundtripWorks(
-      f.ipAddressWithDiscoveryInfo)
+    JsonTestHelper
+      .assertSerializationRoundtripWorks(f.ipAddressWithDiscoveryInfo)
   }
 
   private[this] def fromJson(json: String): IpAddress = {

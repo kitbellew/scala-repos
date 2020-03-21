@@ -235,9 +235,8 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
   case class FirstOf(ops: Seq[OpTree]) extends DefaultNonTerminalOpTree {
     def ruleTraceNonTerminalKey = reify(RuleTrace.FirstOf).tree
     def renderInner(wrapped: Boolean): Tree =
-      q"""val mark = __saveState; ${ops
-        .map(_.render(wrapped))
-        .reduceLeft((l, r) ⇒
+      q"""val mark = __saveState; ${ops.map(_.render(wrapped)).reduceLeft(
+        (l, r) ⇒
           q"val l = $l; if (!l) { __restoreState(mark); $r } else true // work-around for https://issues.scala-lang.org/browse/SI-8657")}"""
   }
 
@@ -888,10 +887,12 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
       val argTypes = actionType dropRight 1
 
       def popToVals(valNames: List[TermName]): List[Tree] =
-        (valNames zip argTypes).map {
-          case (n, t) ⇒
-            q"val $n = valueStack.pop().asInstanceOf[$t]"
-        }.reverse
+        (valNames zip argTypes)
+          .map {
+            case (n, t) ⇒
+              q"val $n = valueStack.pop().asInstanceOf[$t]"
+          }
+          .reverse
 
       def actionBody(tree: Tree): Tree =
         tree match {
@@ -900,9 +901,11 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
 
           case x @ (Ident(_) | Select(_, _)) ⇒
             val valNames: List[TermName] =
-              argTypes.indices.map { i ⇒
-                newTermName("value" + i)
-              }(collection.breakOut)
+              argTypes
+                .indices
+                .map { i ⇒
+                  newTermName("value" + i)
+                }(collection.breakOut)
             val args = valNames map Ident.apply
             block(popToVals(valNames), q"__push($x(..$args))")
 

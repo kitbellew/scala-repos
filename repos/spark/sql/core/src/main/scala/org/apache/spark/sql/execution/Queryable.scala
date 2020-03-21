@@ -33,10 +33,12 @@ private[sql] trait Queryable {
   override def toString: String = {
     try {
       val builder = new StringBuilder
-      val fields = schema.take(2).map {
-        case f =>
-          s"${f.name}: ${f.dataType.simpleString(2)}"
-      }
+      val fields = schema
+        .take(2)
+        .map {
+          case f =>
+            s"${f.name}: ${f.dataType.simpleString(2)}"
+        }
       builder.append("[")
       builder.append(fields.mkString(", "))
       if (schema.length > 2) {
@@ -94,7 +96,9 @@ private[sql] trait Queryable {
       .toString()
 
     // column names
-    rows.head.zipWithIndex
+    rows
+      .head
+      .zipWithIndex
       .map {
         case (cell, i) =>
           if (truncate) {
@@ -108,8 +112,10 @@ private[sql] trait Queryable {
     sb.append(sep)
 
     // data
-    rows.tail.map {
-      _.zipWithIndex
+    rows
+      .tail
+      .map {
+        _.zipWithIndex
         .map {
           case (cell, i) =>
             if (truncate) {
@@ -119,7 +125,7 @@ private[sql] trait Queryable {
             }
         }
         .addString(sb, "|", "|", "|\n")
-    }
+      }
 
     sb.append(sep)
 

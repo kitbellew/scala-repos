@@ -154,8 +154,8 @@ class MavenResolutionSpec extends BaseIvySpecification {
     (newJars should have size 1)
     (oldJars should have size 1)
     (
-      oldJars.map(_._2) should not(
-        contain theSameElementsAs (newJars.map(_._2)))
+      oldJars
+        .map(_._2) should not(contain theSameElementsAs (newJars.map(_._2)))
     )
   }
 
@@ -349,39 +349,47 @@ class MavenResolutionSpec extends BaseIvySpecification {
       Seq(),
       None,
       defaultUpdateOptions.withLatestSnapshots(true))
-    sbt.io.IO.withTemporaryDirectory { dir =>
-      val pomFile = new java.io.File(dir, "pom.xml")
-      sbt.io.IO.write(
-        pomFile,
-        """
+    sbt
+      .io
+      .IO
+      .withTemporaryDirectory { dir =>
+        val pomFile = new java.io.File(dir, "pom.xml")
+        sbt
+          .io
+          .IO
+          .write(
+            pomFile,
+            """
           |<project>
           |   <groupId>com.example</groupId>
           |   <name>test-it</name>
           |   <version>1.0-SNAPSHOT</version>
           |</project>
         """.stripMargin
-      )
-      val jarFile = new java.io.File(dir, "test-it-1.0-SNAPSHOT.jar")
-      sbt.io.IO.touch(jarFile)
-      System.err.println(
-        s"DEBUGME - Publishing $m to ${Resolver.publishMavenLocal}")
-      ivyPublish(
-        m,
-        mkPublishConfiguration(
-          Resolver.publishMavenLocal,
-          Map(
-            Artifact("test-it-1.0-SNAPSHOT.jar") -> pomFile,
-            Artifact("test-it-1.0-SNAPSHOT.pom", "pom", "pom") -> jarFile))
-      )
-    }
+          )
+        val jarFile = new java.io.File(dir, "test-it-1.0-SNAPSHOT.jar")
+        sbt.io.IO.touch(jarFile)
+        System
+          .err
+          .println(s"DEBUGME - Publishing $m to ${Resolver.publishMavenLocal}")
+        ivyPublish(
+          m,
+          mkPublishConfiguration(
+            Resolver.publishMavenLocal,
+            Map(
+              Artifact("test-it-1.0-SNAPSHOT.jar") -> pomFile,
+              Artifact("test-it-1.0-SNAPSHOT.pom", "pom", "pom") -> jarFile))
+        )
+      }
     val baseLocalMavenDir: java.io.File = Resolver.publishMavenLocal.rootFile
     val allFiles: Seq[java.io.File] =
-      sbt.io
+      sbt
+        .io
         .PathFinder(new java.io.File(baseLocalMavenDir, "com/example/test-it"))
         .allPaths
         .get
-    val metadataFiles = allFiles.filter(
-      _.getName contains "maven-metadata-local")
+    val metadataFiles = allFiles
+      .filter(_.getName contains "maven-metadata-local")
     // TODO - maybe we check INSIDE the metadata, or make sure we can get a publication date on resolve...
     // We end up with 4 files, two mavne-metadata files, and 2 maven-metadata-local files.
     metadataFiles should have size 2

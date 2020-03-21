@@ -138,8 +138,8 @@ class CustomSerializersSpec extends Specification with MongoTestKit {
       checkMongoIsRunning
 
       // test data
-      val pattern = Pattern.compile(
-        "(?idmsux-idmsux)m(a)gi(?:ic)?[a-zA-Z]+boom")
+      val pattern = Pattern
+        .compile("(?idmsux-idmsux)m(a)gi(?:ic)?[a-zA-Z]+boom")
       val jack = PersonWithPattern(ObjectId.get, pattern)
 
       // save the PersonWithPattern document

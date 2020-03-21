@@ -309,12 +309,14 @@ private[spark] object StorageUtils extends Logging {
     val blockLocations =
       new mutable.HashMap[BlockId, mutable.ListBuffer[String]]
     statuses.foreach { status =>
-      status.rddBlocksById(rddId).foreach {
-        case (bid, _) =>
-          val location = status.blockManagerId.hostPort
-          blockLocations
-            .getOrElseUpdate(bid, mutable.ListBuffer.empty) += location
-      }
+      status
+        .rddBlocksById(rddId)
+        .foreach {
+          case (bid, _) =>
+            val location = status.blockManagerId.hostPort
+            blockLocations
+              .getOrElseUpdate(bid, mutable.ListBuffer.empty) += location
+        }
     }
     blockLocations
   }

@@ -121,9 +121,8 @@ abstract class AsyncBase[I, O, S, D, RC](
         Await.ready(Future.collect(toForce), maxWaitingTime.get)
       } catch {
         case te: TimeoutException =>
-          logger.error(
-            "forceExtra failed on %d Futures".format(toForce.size),
-            te)
+          logger
+            .error("forceExtra failed on %d Futures".format(toForce.size), te)
       }
     }
   }

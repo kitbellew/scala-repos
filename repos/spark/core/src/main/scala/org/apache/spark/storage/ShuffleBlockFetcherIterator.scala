@@ -170,10 +170,13 @@ private[spark] final class ShuffleBlockFetcherIterator(
 
     // so we can look up the size of each blockID
     val sizeMap =
-      req.blocks.map {
-        case (blockId, size) =>
-          (blockId.toString, size)
-      }.toMap
+      req
+        .blocks
+        .map {
+          case (blockId, size) =>
+            (blockId.toString, size)
+        }
+        .toMap
     val remainingBlocks = new HashSet[String]() ++= sizeMap.keys
     val blockIds = req.blocks.map(_._1.toString)
 
@@ -206,8 +209,8 @@ private[spark] final class ShuffleBlockFetcherIterator(
             }
           }
           logTrace(
-            "Got remote block " + blockId + " after " + Utils.getUsedTimeMs(
-              startTime))
+            "Got remote block " + blockId + " after " + Utils
+              .getUsedTimeMs(startTime))
         }
 
         override def onBlockFetchFailure(
@@ -327,8 +330,8 @@ private[spark] final class ShuffleBlockFetcherIterator(
 
     val numFetches = remoteRequests.size - fetchRequests.size
     logInfo(
-      "Started " + numFetches + " remote fetches in" + Utils.getUsedTimeMs(
-        startTime))
+      "Started " + numFetches + " remote fetches in" + Utils
+        .getUsedTimeMs(startTime))
 
     // Get Local Blocks
     fetchLocalBlocks()

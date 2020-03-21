@@ -108,9 +108,11 @@ class IorTests extends CatsSuite {
 
   test("foreach is noop for left") {
     forAll { (i: Int) =>
-      Ior.left[Int, String](i).foreach { _ =>
-        fail("should not be called")
-      }
+      Ior
+        .left[Int, String](i)
+        .foreach { _ =>
+          fail("should not be called")
+        }
     }
   }
 

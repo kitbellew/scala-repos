@@ -122,12 +122,14 @@ private[netty] class Inbox(
             }
 
           case OneWayMessage(_sender, content) =>
-            endpoint.receive.applyOrElse[Any, Unit](
-              content,
-              { msg =>
-                throw new SparkException(
-                  s"Unsupported message $message from ${_sender}")
-              })
+            endpoint
+              .receive
+              .applyOrElse[Any, Unit](
+                content,
+                { msg =>
+                  throw new SparkException(
+                    s"Unsupported message $message from ${_sender}")
+                })
 
           case OnStart =>
             endpoint.onStart()

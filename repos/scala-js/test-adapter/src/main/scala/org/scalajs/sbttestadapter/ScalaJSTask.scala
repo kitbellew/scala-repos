@@ -60,9 +60,11 @@ final class ScalaJSTask private (
     val taskInfos = ComUtils.receiveLoop(slave)(handlerChain)
 
     // Flush log buffer
-    runner.loggerLock.synchronized {
-      logBuffer.foreach(_.call(loggers))
-    }
+    runner
+      .loggerLock
+      .synchronized {
+        logBuffer.foreach(_.call(loggers))
+      }
 
     taskInfos.map(ScalaJSTask.fromInfo(runner, _)).toArray
   }

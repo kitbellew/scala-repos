@@ -85,7 +85,8 @@ class ScalaPatternParameterInfoHandler
       context: ParameterInfoContext): Array[Object] = null
 
   def updateUI(p: Any, context: ParameterInfoUIContext): Unit = {
-    if (context == null || context.getParameterOwner == null || !context.getParameterOwner.isValid)
+    if (context == null || context
+          .getParameterOwner == null || !context.getParameterOwner.isValid)
       return
     context.getParameterOwner match {
       case args: ScPatternArgumentList =>
@@ -280,9 +281,8 @@ class ScalaPatternParameterInfoHandler
     val element = file.findElementAt(offset)
     if (element == null)
       return null
-    val args: ScPatternArgumentList = PsiTreeUtil.getParentOfType(
-      element,
-      getArgumentListClass)
+    val args: ScPatternArgumentList = PsiTreeUtil
+      .getParentOfType(element, getArgumentListClass)
     if (args != null) {
       context match {
         case context: CreateParameterInfoContext =>
@@ -304,15 +304,17 @@ class ScalaPatternParameterInfoHandler
                           substitutor
                         else {
                           val undefSubst =
-                            fun.typeParameters.foldLeft(ScSubstitutor.empty)(
-                              (s, p) =>
+                            fun
+                              .typeParameters
+                              .foldLeft(ScSubstitutor.empty)((s, p) =>
                                 s.bindT(
                                   (p.name, ScalaPsiUtil.getPsiElementId(p)),
                                   ScUndefinedType(
                                     new ScTypeParameterType(p, substitutor))))
                           val emptySubst: ScSubstitutor =
-                            fun.typeParameters.foldLeft(ScSubstitutor.empty)(
-                              (s, p) =>
+                            fun
+                              .typeParameters
+                              .foldLeft(ScSubstitutor.empty)((s, p) =>
                                 s.bindT(
                                   (p.name, ScalaPsiUtil.getPsiElementId(p)),
                                   p.upperBound.getOrAny))
@@ -327,9 +329,8 @@ class ScalaPatternParameterInfoHandler
                               case Some(tp) =>
                                 val t = Conformance.conforms(tp, funType)
                                 if (t) {
-                                  val undefSubst = Conformance.undefinedSubst(
-                                    tp,
-                                    funType)
+                                  val undefSubst = Conformance
+                                    .undefinedSubst(tp, funType)
                                   undefSubst.getSubstitutor match {
                                     case Some(newSubst) =>
                                       newSubst.followed(substitutor)

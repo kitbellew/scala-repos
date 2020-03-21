@@ -65,16 +65,12 @@ object CrossValidatorExample {
       ))
 
     // Configure an ML pipeline, which consists of three stages: tokenizer, hashingTF, and lr.
-    val tokenizer = new Tokenizer()
-      .setInputCol("text")
-      .setOutputCol("words")
+    val tokenizer = new Tokenizer().setInputCol("text").setOutputCol("words")
     val hashingTF = new HashingTF()
       .setInputCol(tokenizer.getOutputCol)
       .setOutputCol("features")
-    val lr = new LogisticRegression()
-      .setMaxIter(10)
-    val pipeline = new Pipeline()
-      .setStages(Array(tokenizer, hashingTF, lr))
+    val lr = new LogisticRegression().setMaxIter(10)
+    val pipeline = new Pipeline().setStages(Array(tokenizer, hashingTF, lr))
 
     // We now treat the Pipeline as an Estimator, wrapping it in a CrossValidator instance.
     // This will allow us to jointly choose parameters for all Pipeline stages.

@@ -221,9 +221,8 @@ object Plugins extends PluginsFunctions {
           s"deducing auto plugins based on known facts ${knowlege0.toString} and clauses ${clauses.toString}")
         Logic.reduce(
           clauses,
-          (
-            flattenConvert(requestedPlugins) ++ convertAll(alwaysEnabled)
-          ).toSet) match {
+          (flattenConvert(requestedPlugins) ++ convertAll(alwaysEnabled))
+            .toSet) match {
           case Left(problem) =>
             throw AutoPluginException(problem)
           case Right(results) =>

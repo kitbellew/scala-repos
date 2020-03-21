@@ -281,9 +281,8 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
   }
 
   test("failure detection") {
-    val config = FailureDetector.ThresholdConfig(
-      minPeriod = 10.milliseconds,
-      closeTimeout = Duration.Top)
+    val config = FailureDetector
+      .ThresholdConfig(minPeriod = 10.milliseconds, closeTimeout = Duration.Top)
 
     val ctx = new Ctx(config)
     import ctx._
@@ -342,19 +341,18 @@ class ClientServerTestDispatch extends ClientServerTest(true) {
       new Answer[Future[Response]] {
         def answer(invocation: InvocationOnMock) =
           Future.value(
-            Response(
-              Contexts.broadcast
-                .get(testContext)
-                .getOrElse(Buf.Empty)))
+            Response(Contexts.broadcast.get(testContext).getOrElse(Buf.Empty)))
       })
 
     // No context set
     assert(Await.result(client(Request(Path.empty, Buf.Empty))).body.isEmpty)
 
     val f =
-      Contexts.broadcast.let(testContext, Buf.Utf8("My context!")) {
-        client(Request.empty)
-      }
+      Contexts
+        .broadcast
+        .let(testContext, Buf.Utf8("My context!")) {
+          client(Request.empty)
+        }
 
     assert(Await.result(f).body == Buf.Utf8("My context!"))
   }

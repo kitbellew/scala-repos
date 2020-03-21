@@ -33,9 +33,8 @@ class ScalaUnusedImportsPassFactory(
   def createHighlightingPass(
       file: PsiFile,
       editor: Editor): TextEditorHighlightingPass = {
-    val textRange: TextRange = FileStatusMap.getDirtyTextRange(
-      editor,
-      Pass.UPDATE_ALL)
+    val textRange: TextRange = FileStatusMap
+      .getDirtyTextRange(editor, Pass.UPDATE_ALL)
     if (textRange == null && ScalaUnusedImportPass.isUpToDate(file))
       return null
     create(file, editor.getDocument, editor, new DefaultHighlightInfoProcessor)

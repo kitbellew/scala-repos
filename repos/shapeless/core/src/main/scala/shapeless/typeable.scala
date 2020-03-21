@@ -470,8 +470,8 @@ class TypeableMacros(val c: blackbox.Context) extends SingletonTypeUtils {
         val tArgs = dealiased.typeArgs
         val normalized = appliedType(dealiased.typeConstructor, tArgs)
 
-        val normalizedTypeable = c.inferImplicitValue(
-          appliedType(typeableTpe, List(normalized)))
+        val normalizedTypeable = c
+          .inferImplicitValue(appliedType(typeableTpe, List(normalized)))
         if (normalizedTypeable == EmptyTree)
           c.abort(
             c.enclosingPosition,
@@ -488,9 +488,11 @@ class TypeableMacros(val c: blackbox.Context) extends SingletonTypeUtils {
           c.abort(
             c.enclosingPosition,
             "No Typeable for a refinement with non-empty decls")
-        val parentTypeables = parents.filterNot(_ =:= typeOf[AnyRef]).map {
-          parent => c.inferImplicitValue(appliedType(typeableTpe, List(parent)))
-        }
+        val parentTypeables = parents
+          .filterNot(_ =:= typeOf[AnyRef])
+          .map { parent =>
+            c.inferImplicitValue(appliedType(typeableTpe, List(parent)))
+          }
         if (parentTypeables.exists(_ == EmptyTree))
           c.abort(
             c.enclosingPosition,
@@ -511,7 +513,8 @@ class TypeableMacros(val c: blackbox.Context) extends SingletonTypeUtils {
               s"No default Typeable for parametrized type $tpe")
 
           val pSym0 = sym.asClass
-          pSym0.typeSignature // Workaround for <https://issues.scala-lang.org/browse/SI-7755>
+          pSym0
+            .typeSignature // Workaround for <https://issues.scala-lang.org/browse/SI-7755>
 
           pSym0
         }

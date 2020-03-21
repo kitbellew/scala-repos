@@ -142,9 +142,11 @@ private object PeriodicGraphCheckpointerSuite {
       graphs: Seq[GraphToCheck],
       iteration: Int,
       checkpointInterval: Int): Unit = {
-    graphs.reverse.foreach { g =>
-      checkCheckpoint(g.graph, g.gIndex, iteration, checkpointInterval)
-    }
+    graphs
+      .reverse
+      .foreach { g =>
+        checkCheckpoint(g.graph, g.gIndex, iteration, checkpointInterval)
+      }
   }
 
   def confirmCheckpointRemoved(graph: Graph[_, _]): Unit = {
@@ -153,11 +155,13 @@ private object PeriodicGraphCheckpointerSuite {
     //       This test should continue to work even after this graph.isCheckpointed issue
     //       is fixed (though it can then be simplified and not look for the files).
     val fs = FileSystem.get(graph.vertices.sparkContext.hadoopConfiguration)
-    graph.getCheckpointFiles.foreach { checkpointFile =>
-      assert(
-        !fs.exists(new Path(checkpointFile)),
-        "Graph checkpoint file should have been removed")
-    }
+    graph
+      .getCheckpointFiles
+      .foreach { checkpointFile =>
+        assert(
+          !fs.exists(new Path(checkpointFile)),
+          "Graph checkpoint file should have been removed")
+      }
   }
 
   /**

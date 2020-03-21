@@ -89,7 +89,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val userStringIntMap = BiMap.stringInt(data.users.keys)
     val itemStringIntMap = BiMap.stringInt(data.items.keys)
 
-    val mllibRatings = data.viewEvents
+    val mllibRatings = data
+      .viewEvents
       .map { r =>
         // Convert user and item String IDs to Int index for MLlib
         val uindex = userStringIntMap.getOrElse(r.user, -1)
@@ -117,8 +118,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         case ((u, i), v) =>
           // MLlibRating requires integer index for user and item
           MLlibRating(u, i, v)
-      }
-      .cache()
+      }.cache()
 
     // MLLib ALS cannot handle empty training data.
     require(
@@ -141,10 +141,12 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val userFeatures = m.userFeatures.collectAsMap.toMap
 
     // convert ID to Int index
-    val items = data.items.map {
-      case (id, item) =>
-        (itemStringIntMap(id), item)
-    }
+    val items = data
+      .items
+      .map {
+        case (id, item) =>
+          (itemStringIntMap(id), item)
+      }
 
     // join item with the trained productFeatures
     val productFeatures =
@@ -164,8 +166,9 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val productFeatures = model.productFeatures
 
     // convert whiteList's string ID to integer index
-    val whiteList: Option[Set[Int]] = query.whiteList.map(set =>
-      set.map(model.itemStringIntMap.get).flatten)
+    val whiteList: Option[Set[Int]] = query
+      .whiteList
+      .map(set => set.map(model.itemStringIntMap.get).flatten)
 
     val blackList: Set[String] = query.blackList.getOrElse(Set[String]())
 
@@ -192,16 +195,18 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
             }
           }
 
-        seenEvents.map { event =>
-          try {
-            event.targetEntityId.get
-          } catch {
-            case e => {
-              logger.error(s"Can't get targetEntityId of event ${event}.")
-              throw e
+        seenEvents
+          .map { event =>
+            try {
+              event.targetEntityId.get
+            } catch {
+              case e => {
+                logger.error(s"Can't get targetEntityId of event ${event}.")
+                throw e
+              }
             }
           }
-        }.toSet
+          .toSet
       } else {
         Set[String]()
       }
@@ -257,8 +262,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
           item <- group.items
           index <- model.itemStringIntMap.get(item)
         } yield (index, group.weight)
-      ).toMap
-        .withDefaultValue(1.0)
+      ).toMap.withDefaultValue(1.0)
 
     // combine query's blackList,seenItems and unavailableItems
     // into final blackList.
@@ -269,7 +273,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         .flatten
 
     val userFeature =
-      model.userStringIntMap
+      model
+        .userStringIntMap
         .get(query.user)
         .map { userIndex =>
           userFeatures.get(userIndex)
@@ -282,7 +287,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         // the user has feature vector
         val uf = userFeature.get
         val indexScores: Map[Int, Double] =
-          productFeatures.par // convert to parallel collection
+          productFeatures
+            .par // convert to parallel collection
             .filter {
               case (i, (item, feature)) =>
                 feature.isDefined &&
@@ -365,40 +371,44 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       }
 
     val recentItems: Set[String] =
-      recentEvents.map { event =>
-        try {
-          event.targetEntityId.get
-        } catch {
-          case e => {
-            logger.error("Can't get targetEntityId of event ${event}.")
-            throw e
+      recentEvents
+        .map { event =>
+          try {
+            event.targetEntityId.get
+          } catch {
+            case e => {
+              logger.error("Can't get targetEntityId of event ${event}.")
+              throw e
+            }
           }
         }
-      }.toSet
+        .toSet
 
     val recentList: Set[Int] =
       recentItems.map(x => model.itemStringIntMap.get(x)).flatten
 
     val recentFeatures: Vector[Array[Double]] =
-      recentList.toVector
-      // productFeatures may not contain the requested item
-      .map { i =>
-        productFeatures
-          .get(i)
-          .map {
-            case (item, f) =>
-              f
-          }
-          .flatten
-      }.flatten
+      recentList
+        .toVector
+        // productFeatures may not contain the requested item
+        .map { i =>
+          productFeatures
+            .get(i)
+            .map {
+              case (item, f) =>
+                f
+            }
+            .flatten
+        }.flatten
 
     val indexScores: Map[Int, Double] =
       if (recentFeatures.isEmpty) {
-        logger.info(
-          s"No productFeatures vector for recent items ${recentItems}.")
+        logger
+          .info(s"No productFeatures vector for recent items ${recentItems}.")
         Map[Int, Double]()
       } else {
-        productFeatures.par // convert to parallel collection
+        productFeatures
+          .par // convert to parallel collection
           .filter {
             case (i, (item, feature)) =>
               feature.isDefined &&
@@ -412,9 +422,11 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
           .map {
             case (i, (item, feature)) =>
               val originalScore =
-                recentFeatures.map { rf =>
-                  cosine(rf, feature.get) // feature is defined
-                }.sum
+                recentFeatures
+                  .map { rf =>
+                    cosine(rf, feature.get) // feature is defined
+                  }
+                  .sum
               // Adjusting score according to given item weights
               val adjustedScore = originalScore * weights(i)
               (i, adjustedScore)
@@ -491,10 +503,12 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     // filter categories
     categories
       .map { cat =>
-        item.categories.exists { itemCat =>
-          // keep this item if its categories overlap with the query categories
-          itemCat.toSet.intersect(cat).nonEmpty
-        } // discard this item if it has no categories
+        item
+          .categories
+          .exists { itemCat =>
+            // keep this item if its categories overlap with the query categories
+            itemCat.toSet.intersect(cat).nonEmpty
+          } // discard this item if it has no categories
       }
       .getOrElse(true)
   }

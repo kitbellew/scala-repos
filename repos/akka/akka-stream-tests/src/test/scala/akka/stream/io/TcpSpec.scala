@@ -292,8 +292,9 @@ class TcpSpec
       serverConnection.waitRead() should be(testData)
 
       // Cause error
-      tcpWriteProbe.tcpWriteSubscription.sendError(
-        new IllegalStateException("test"))
+      tcpWriteProbe
+        .tcpWriteSubscription
+        .sendError(new IllegalStateException("test"))
 
       tcpReadProbe.subscriberProbe.expectError()
       serverConnection.expectClosed(_.isErrorClosed)
@@ -327,8 +328,9 @@ class TcpSpec
       serverConnection.read(5)
       serverConnection.waitRead() should be(testData)
 
-      tcpWriteProbe.tcpWriteSubscription.sendError(
-        new IllegalStateException("test"))
+      tcpWriteProbe
+        .tcpWriteSubscription
+        .sendError(new IllegalStateException("test"))
       serverConnection.expectClosed(_.isErrorClosed)
       serverConnection.expectTerminated()
     }
@@ -487,7 +489,8 @@ class TcpSpec
 
       // Getting rid of existing connection actors by using a blunt instrument
       system2.actorSelection(
-        akka.io
+        akka
+          .io
           .Tcp(system2)
           .getManager
           .path / "selectors" / s"$$a" / "*") ! Kill
@@ -495,10 +498,12 @@ class TcpSpec
       a[StreamTcpException] should be thrownBy
         Await.result(result, 3.seconds)
 
-      binding.map(_.unbind()).recover {
-        case NonFatal(_) ⇒
-          ()
-      } foreach (_ ⇒ system2.shutdown())
+      binding
+        .map(_.unbind())
+        .recover {
+          case NonFatal(_) ⇒
+            ()
+        } foreach (_ ⇒ system2.shutdown())
     }
 
   }
@@ -517,8 +522,7 @@ class TcpSpec
           serverAddress.getHostName,
           serverAddress.getPort
         ) // TODO getHostString in Java7
-        .toMat(echoHandler)(Keep.both)
-        .run()
+        .toMat(echoHandler)(Keep.both).run()
 
       // make sure that the server has bound to the socket
       val binding = Await.result(bindingFuture, 100.millis)
@@ -542,8 +546,7 @@ class TcpSpec
           serverAddress.getHostName,
           serverAddress.getPort
         ) // TODO getHostString in Java7
-        .toMat(echoHandler)(Keep.both)
-        .run()
+        .toMat(echoHandler)(Keep.both).run()
 
       // make sure that the server has bound to the socket
       val binding = Await.result(bindingFuture, 100.millis)
@@ -579,9 +582,8 @@ class TcpSpec
           address.getPort
         ) // TODO getHostString in Java7
         // Bind succeeded, we have a local address
-        val binding1 = Await.result(
-          bind.to(Sink.fromSubscriber(probe1)).run(),
-          3.second)
+        val binding1 = Await
+          .result(bind.to(Sink.fromSubscriber(probe1)).run(), 3.second)
 
         probe1.expectSubscription()
 
@@ -606,9 +608,8 @@ class TcpSpec
 
         val probe4 = TestSubscriber.manualProbe[Tcp.IncomingConnection]()
         // Bind succeeded, we have a local address
-        val binding4 = Await.result(
-          bind.to(Sink.fromSubscriber(probe4)).run(),
-          3.second)
+        val binding4 = Await
+          .result(bind.to(Sink.fromSubscriber(probe4)).run(), 3.second)
         probe4.expectSubscription()
 
         // clean up
@@ -617,12 +618,14 @@ class TcpSpec
 
     "not shut down connections after the connection stream cancelled" in assertAllStagesStopped {
       val address = temporaryServerAddress()
-      Tcp().bind(address.getHostName, address.getPort).take(1).runForeach {
-        tcp ⇒
+      Tcp()
+        .bind(address.getHostName, address.getPort)
+        .take(1)
+        .runForeach { tcp ⇒
           Thread
             .sleep(1000) // we're testing here to see if it survives such race
           tcp.flow.join(Flow[ByteString]).run()
-      }
+        }
 
       val total =
         Source(immutable.Iterable.fill(1000)(ByteString(0)))

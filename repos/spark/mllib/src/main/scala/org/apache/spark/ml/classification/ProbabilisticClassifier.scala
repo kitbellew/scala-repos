@@ -36,10 +36,8 @@ private[classification] trait ProbabilisticClassifierParams
       schema: StructType,
       fitting: Boolean,
       featuresDataType: DataType): StructType = {
-    val parentSchema = super.validateAndTransformSchema(
-      schema,
-      fitting,
-      featuresDataType)
+    val parentSchema = super
+      .validateAndTransformSchema(schema, fitting, featuresDataType)
     SchemaUtils.appendColumn(parentSchema, $(probabilityCol), new VectorUDT)
   }
 }
@@ -122,9 +120,8 @@ abstract class ProbabilisticClassificationModel[
       val predictRawUDF = udf { (features: Any) =>
         predictRaw(features.asInstanceOf[FeaturesType])
       }
-      outputData = outputData.withColumn(
-        getRawPredictionCol,
-        predictRawUDF(col(getFeaturesCol)))
+      outputData = outputData
+        .withColumn(getRawPredictionCol, predictRawUDF(col(getFeaturesCol)))
       numColsOutput += 1
     }
     if ($(probabilityCol).nonEmpty) {
@@ -212,7 +209,8 @@ abstract class ProbabilisticClassificationModel[
       probability.argmax
     } else {
       val thresholds: Array[Double] = getThresholds
-      val scaledProbability: Array[Double] = probability.toArray
+      val scaledProbability: Array[Double] = probability
+        .toArray
         .zip(thresholds)
         .map {
           case (p, t) =>

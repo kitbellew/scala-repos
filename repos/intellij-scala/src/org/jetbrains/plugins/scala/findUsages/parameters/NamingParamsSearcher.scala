@@ -42,23 +42,26 @@ class NamingParamsSearcher
           new TextOccurenceProcessor {
             def execute(element: PsiElement, offsetInElement: Int): Boolean = {
               val references = inReadAction(element.getReferences)
-              for (ref <- references if ref.getRangeInElement.contains(
-                     offsetInElement) && !collectedReferences.contains(ref)) {
+              for (ref <- references if ref
+                     .getRangeInElement
+                     .contains(offsetInElement) && !collectedReferences
+                     .contains(ref)) {
                 ref match {
                   case refElement: ScReferenceElement =>
                     inReadAction {
                       refElement.getParent match {
                         case assign: ScAssignStmt
                             if assign.getLExpression == refElement &&
-                              assign.getParent
+                              assign
+                                .getParent
                                 .isInstanceOf[ScArgumentExprList] =>
                           Option(refElement.resolve()) match {
                             case Some(`parameter`) =>
                               if (!consumer.process(ref))
                                 return false
                             case Some(x: ScParameter) =>
-                              ScalaPsiUtil.parameterForSyntheticParameter(
-                                x) match {
+                              ScalaPsiUtil
+                                .parameterForSyntheticParameter(x) match {
                                 case Some(realParam) =>
                                   if (realParam == parameter && !consumer
                                         .process(ref))
@@ -76,8 +79,9 @@ class NamingParamsSearcher
               true
             }
           }
-        val helper: PsiSearchHelper = PsiSearchHelper.SERVICE.getInstance(
-          queryParameters.getProject)
+        val helper: PsiSearchHelper = PsiSearchHelper
+          .SERVICE
+          .getInstance(queryParameters.getProject)
         helper.processElementsWithWord(
           processor,
           scope,

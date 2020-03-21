@@ -94,9 +94,11 @@ class SocksConnectHandler(
   private[this] val bytes = new Array[Byte](4)
   private[this] val connectFuture = new AtomicReference[ChannelFuture](null)
   private[this] val authenticationMap =
-    authenticationSettings.map { setting =>
-      setting.typeByte -> setting
-    }.toMap
+    authenticationSettings
+      .map { setting =>
+        setting.typeByte -> setting
+      }
+      .toMap
   private[this] val supportedTypes = authenticationMap.keys.toArray.sorted
 
   // following Netty's ReplayingDecoderBuffer, we throw this when we run out of bytes
@@ -227,13 +229,15 @@ class SocksConnectHandler(
 
         // proxy cancellation
         val wrappedConnectFuture = Channels.future(de.getChannel, true)
-        de.getFuture.addListener(
-          new ChannelFutureListener {
-            def operationComplete(f: ChannelFuture) {
-              if (f.isCancelled)
-                wrappedConnectFuture.cancel()
-            }
-          })
+        de
+          .getFuture
+          .addListener(
+            new ChannelFutureListener {
+              def operationComplete(f: ChannelFuture) {
+                if (f.isCancelled)
+                  wrappedConnectFuture.cancel()
+              }
+            })
         // Proxy failures here so that if the connect fails, it is
         // propagated to the listener, not just on the channel.
         wrappedConnectFuture.addListener(
@@ -270,15 +274,17 @@ class SocksConnectHandler(
     }
 
     // proxy cancellations again.
-    connectFuture.get.addListener(
-      new ChannelFutureListener {
-        def operationComplete(f: ChannelFuture) {
-          if (f.isSuccess)
-            SocksConnectHandler.super.channelConnected(ctx, e)
-          else if (f.isCancelled)
-            fail(ctx.getChannel, new ChannelClosedException(addr))
-        }
-      })
+    connectFuture
+      .get
+      .addListener(
+        new ChannelFutureListener {
+          def operationComplete(f: ChannelFuture) {
+            if (f.isSuccess)
+              SocksConnectHandler.super.channelConnected(ctx, e)
+            else if (f.isCancelled)
+              fail(ctx.getChannel, new ChannelClosedException(addr))
+          }
+        })
 
     state = Connected
     writeInit(ctx)

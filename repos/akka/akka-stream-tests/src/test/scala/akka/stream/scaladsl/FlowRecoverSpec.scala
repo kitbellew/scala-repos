@@ -72,7 +72,8 @@ class FlowRecoverSpec extends AkkaSpec {
     }
 
     "finish stream if it's empty" in assertAllStagesStopped {
-      Source.empty
+      Source
+        .empty
         .map(identity)
         .recover {
           case t: Throwable ⇒

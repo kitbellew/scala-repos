@@ -17,17 +17,14 @@ object Test extends App {
       .mapValues(_ + "!")
       .map(t => (t._1, t._2.toString.length)): SortedMap[Int, Int])
   println(
-    sortedmap
-      .filterKeys(_ % 2 == 0)
-      .filter(t => t._1 < 2): SortedMap[Int, Boolean])
+    sortedmap.filterKeys(_ % 2 == 0).filter(t => t._1 < 2): SortedMap[
+      Int,
+      Boolean])
   println(
     sortedmap.mapValues(_ + "!").filter(t => t._1 < 2): SortedMap[Int, String])
 
-  val immsortedmap = immutable.SortedMap(
-    1 -> false,
-    2 -> true,
-    3 -> false,
-    4 -> true)
+  val immsortedmap = immutable
+    .SortedMap(1 -> false, 2 -> true, 3 -> false, 4 -> true)
   println(
     immsortedmap.filterKeys(_ % 2 == 0): immutable.SortedMap[Int, Boolean])
   println(immsortedmap.mapValues(_ + "!"): immutable.SortedMap[Int, String])
@@ -44,8 +41,8 @@ object Test extends App {
       .filterKeys(_ % 2 == 0)
       .filter(t => t._1 < 2): immutable.SortedMap[Int, Boolean])
   println(
-    immsortedmap
-      .mapValues(_ + "!")
-      .filter(t => t._1 < 2): immutable.SortedMap[Int, String])
+    immsortedmap.mapValues(_ + "!").filter(t => t._1 < 2): immutable.SortedMap[
+      Int,
+      String])
 
 }

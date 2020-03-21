@@ -46,9 +46,11 @@ class MergeableStatReporter[K, V](
 
   override def traceMerge(kv: (K, V), request: Future[Option[V]]) = {
     mergeMetric.incr()
-    request.onFailure { _ =>
-      mergeFailedMetric.incr()
-    }.unit
+    request
+      .onFailure { _ =>
+        mergeFailedMetric.incr()
+      }
+      .unit
   }
 
   override def traceMultiMerge[K1 <: K](
@@ -59,9 +61,11 @@ class MergeableStatReporter[K, V](
     request.map {
       case (k, v) =>
         val failureWrapV =
-          v.onFailure { _ =>
-            multiMergeTupleFailedMetric.incr()
-          }.unit
+          v
+            .onFailure { _ =>
+              multiMergeTupleFailedMetric.incr()
+            }
+            .unit
         (k, failureWrapV)
     }
   }
@@ -93,25 +97,31 @@ class StoreStatReporter[K, V](context: TopologyContext, val self: Store[K, V])
     request.map {
       case (k, v) =>
         val failureWrapV =
-          v.onFailure { _ =>
-            multiGetTupleFailedMetric.incr()
-          }.unit
+          v
+            .onFailure { _ =>
+              multiGetTupleFailedMetric.incr()
+            }
+            .unit
         (k, failureWrapV)
     }
   }
 
   override def traceGet(k: K, request: Future[Option[V]]) = {
     getMetric.incr()
-    request.onFailure { _ =>
-      getFailedMetric.incr()
-    }.unit
+    request
+      .onFailure { _ =>
+        getFailedMetric.incr()
+      }
+      .unit
   }
 
   override def tracePut(kv: (K, Option[V]), request: Future[Unit]) = {
     putMetric.incr()
-    request.onFailure { _ =>
-      putFailedMetric.incr()
-    }.unit
+    request
+      .onFailure { _ =>
+        putFailedMetric.incr()
+      }
+      .unit
   }
 
   override def traceMultiPut[K1 <: K](
@@ -123,9 +133,11 @@ class StoreStatReporter[K, V](context: TopologyContext, val self: Store[K, V])
     request.map {
       case (k, v) =>
         val failureWrapV =
-          v.onFailure { _ =>
-            multiPutTupleFailedMetric.incr()
-          }.unit
+          v
+            .onFailure { _ =>
+              multiPutTupleFailedMetric.incr()
+            }
+            .unit
         (k, failureWrapV)
     }
   }

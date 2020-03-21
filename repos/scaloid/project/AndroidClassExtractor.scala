@@ -11,7 +11,8 @@ import scala.collection.JavaConversions._
 
 object AndroidClassExtractor extends JavaConversionHelpers {
 
-  private val sourceJars: List[JarFile] = getClass.getClassLoader
+  private val sourceJars: List[JarFile] = getClass
+    .getClassLoader
     .getResources("android")
     .toList
     .map { binUrl =>
@@ -47,12 +48,14 @@ object AndroidClassExtractor extends JavaConversionHelpers {
   }
 
   private def fixClassParamedType(tpe: ScalaType) =
-    tpe.copy(params = tpe.params.map { t =>
-      if (t.isVar && t.bounds.head.name == "Any") {
-        t.copy(bounds = List(ScalaType("AnyRef")))
-      } else
-        t
-    })
+    tpe.copy(params = tpe
+      .params
+      .map { t =>
+        if (t.isVar && t.bounds.head.name == "Any") {
+          t.copy(bounds = List(ScalaType("AnyRef")))
+        } else
+          t
+      })
 
   private def toAndroidClass(cls: Class[_]) = {
 
@@ -88,7 +91,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
     def toAndroidMethod(m: Method): AndroidMethod = {
       val name = m.getName
       val retType = AndroidClassExtractor.toScalaType(m.getGenericReturnType)
-      val argTypes = m.getGenericParameterTypes.toList
+      val argTypes = m
+        .getGenericParameterTypes
+        .toList
         .map(AndroidClassExtractor.toScalaType(_))
       val paramedTypes = (retType +: argTypes).filter(_.isVar).distinct
 
@@ -110,8 +115,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
     def hasIntentAsParam(m: Method): Boolean = {
       val params = m.getParameterTypes
       if (params.length > 0)
-        "android.content.Intent".equals(
-          m.getParameterTypes.apply(0).getName) && !superMethods(
+        "android.content.Intent"
+          .equals(m.getParameterTypes.apply(0).getName) && !superMethods(
           methodSignature(m))
       else
         false
@@ -121,7 +126,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       isAbstract(m) && !m.getName.startsWith("get")
 
     def extractMethodsFromListener(callbackCls: Class[_]): List[AndroidMethod] =
-      callbackCls.getMethods.view
+      callbackCls
+        .getMethods
+        .view
         .filter(isCallbackMethod)
         .map(toAndroidMethod)
         .toList
@@ -151,12 +158,14 @@ object AndroidClassExtractor extends JavaConversionHelpers {
         }
         .filter { m =>
           (
-            !cls.getName.endsWith("Service") || !m.getName.equals(
-              "setForeground")
+            !cls.getName.endsWith("Service") || !m
+              .getName
+              .equals("setForeground")
           ) && // Android 2.1.1 has a weird undocumented method. manually ignore this.
           (
-            !cls.getName.endsWith("WebView") || !m.getName.equals(
-              "getZoomControls")
+            !cls.getName.endsWith("WebView") || !m
+              .getName
+              .equals("getZoomControls")
           ) && //https://github.com/pocorall/scaloid/issues/56
           (
             !cls.getName.endsWith("View") || !m.getName.equals("setBackground")
@@ -267,8 +276,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
           val specificName = transforms(setter)
           val generalName = "^on".r.replaceAllIn(am.name, "")
 
-          if (specificName.length > am.name.length && specificName.contains(
-                generalName))
+          if (specificName
+                .length > am.name.length && specificName.contains(generalName))
             specificName
           else
             am.name
@@ -340,10 +349,12 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       constructorNames
         .find {
           case (key, _) =>
-            types.zip(key).forall {
-              case (t, k) =>
-                t.endsWith(k)
-            }
+            types
+              .zip(key)
+              .forall {
+                case (t, k) =>
+                  t.endsWith(k)
+              }
         }
         .map(_._2)
 
@@ -362,8 +373,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
             Nil
           case last :: init =>
             (
-              toTypeStr(last, isVarArgs, true) :: init.map(
-                toTypeStr(_, isVarArgs, false))
+              toTypeStr(last, isVarArgs, true) :: init
+                .map(toTypeStr(_, isVarArgs, false))
             ).reverse
         }
 
@@ -381,10 +392,12 @@ object AndroidClassExtractor extends JavaConversionHelpers {
               }
             val types = javaTypes.map(toScalaType)
 
-            paramNames.zip(types).map {
-              case (n, t) =>
-                Argument(n, t)
-            }
+            paramNames
+              .zip(types)
+              .map {
+                case (n, t) =>
+                  Argument(n, t)
+              }
         }
 
       val (implicits, explicits) = args.partition(isImplicit)
@@ -407,20 +420,25 @@ object AndroidClassExtractor extends JavaConversionHelpers {
         getHierarchy(c.getSuperclass, simpleClassName(c) :: accu)
 
     val listeners = resolveListenerDuplication(
-      cls.getMethods.view
+      cls
+        .getMethods
+        .view
         .filter(isListenerSetterOrAdder)
         .map(toAndroidListeners)
         .flatten
         .toList
         .sortBy(_.name))
 
-    val intentMethods = cls.getMethods.view
+    val intentMethods = cls
+      .getMethods
+      .view
       .filter(hasIntentAsParam)
       .map(toAndroidIntentMethods)
       .toList
       .sortBy(m => m.name + m.argTypes.length)
 
-    val constructors = cls.getConstructors
+    val constructors = cls
+      .getConstructors
       .map(toScalaConstructor)
       .toList
       .sortBy(c => (c.explicitArgs.length, -c.implicitArgs.length))
@@ -473,10 +491,12 @@ object AndroidClassExtractor extends JavaConversionHelpers {
 
         val clss = asScalaSet(r.getSubTypesOf(classOf[java.lang.Object]))
         val res =
-          clss.toList
+          clss
+            .toList
             .filter(isPublic)
             .filter {
-              !_.getName.contains(
+              !_.getName
+              .contains(
                 "$"
               ) // excludes inner classes for now - let's deal with it later
             }
@@ -487,7 +507,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
               ) // excludes android.webkit.* in Android 2.1.1, which is deprecated
             }
             .filter {
-              !_.getName.contains(
+              !_.getName
+              .contains(
                 "RemoteViewsService"
               ) // excludes RemoteViewsService, because it is packaged weird place "android.view"
             }

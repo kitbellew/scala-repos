@@ -103,13 +103,18 @@ case class RichRequest(r: HttpServletRequest) extends AttributesMap {
     }
     // At the very least in jetty 8 we see problems under load related to this
     if (r.getQueryString.nonBlank && r.getParameterMap.isEmpty) {
-      val queryStringParams: Map[String, Seq[String]] = rl.MapQueryString
+      val queryStringParams: Map[String, Seq[String]] = rl
+        .MapQueryString
         .parseString(r.getQueryString)
       queryStringParams ++ bodyParams
     } else {
-      val paramMap = r.getParameterMap.asScala.toMap.transform { (k, v) =>
-        v: Seq[String]
-      }
+      val paramMap = r
+        .getParameterMap
+        .asScala
+        .toMap
+        .transform { (k, v) =>
+          v: Seq[String]
+        }
       paramMap ++ bodyParams
     }
   }

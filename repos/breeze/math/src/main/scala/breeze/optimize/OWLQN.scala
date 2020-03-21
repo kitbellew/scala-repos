@@ -48,16 +48,18 @@ class OWLQN[K, T](maxIter: Int, m: Int, l1reg: K => Double, tolerance: Double)(
     // in the same directional (within the same hypercube) as the adjusted gradient for proof.
     // Although this doesn't seem to affect the outcome that much in most of cases, there are some cases
     // where the algorithm won't converge (confirmed with the author, Galen Andrew).
-    val correctedDir = space.zipMapValues.map(
-      descentDir,
-      state.adjustedGradient,
-      {
-        case (d, g) =>
-          if (d * g < 0)
-            d
-          else
-            0.0
-      })
+    val correctedDir = space
+      .zipMapValues
+      .map(
+        descentDir,
+        state.adjustedGradient,
+        {
+          case (d, g) =>
+            if (d * g < 0)
+              d
+            else
+              0.0
+        })
 
     correctedDir
   }
@@ -120,13 +122,15 @@ class OWLQN[K, T](maxIter: Int, m: Int, l1reg: K => Double, tolerance: Double)(
   override protected def takeStep(state: State, dir: T, stepSize: Double) = {
     val stepped = state.x + dir * stepSize
     val orthant = computeOrthant(state.x, state.adjustedGradient)
-    space.zipMapValues.map(
-      stepped,
-      orthant,
-      {
-        case (v, ov) =>
-          v * I(math.signum(v) == math.signum(ov))
-      })
+    space
+      .zipMapValues
+      .map(
+        stepped,
+        orthant,
+        {
+          case (v, ov) =>
+            v * I(math.signum(v) == math.signum(ov))
+        })
   }
 
   // Adds in the regularization stuff to the gradient
@@ -135,49 +139,53 @@ class OWLQN[K, T](maxIter: Int, m: Int, l1reg: K => Double, tolerance: Double)(
       newGrad: T,
       newVal: Double): (Double, T) = {
     var adjValue = newVal
-    val res = space.zipMapKeyValues.mapActive(
-      newX,
-      newGrad,
-      {
-        case (i, xv, v) =>
-          val l1regValue = l1reg(i)
-          require(l1regValue >= 0.0)
+    val res = space
+      .zipMapKeyValues
+      .mapActive(
+        newX,
+        newGrad,
+        {
+          case (i, xv, v) =>
+            val l1regValue = l1reg(i)
+            require(l1regValue >= 0.0)
 
-          if (l1regValue == 0.0) {
-            v
-          } else {
-            adjValue += Math.abs(l1regValue * xv)
-            xv match {
-              case 0.0 => {
-                val delta_+ = v + l1regValue
-                val delta_- = v - l1regValue
-                if (delta_- > 0)
-                  delta_-
-                else if (delta_+ < 0)
-                  delta_+
-                else
-                  0.0
+            if (l1regValue == 0.0) {
+              v
+            } else {
+              adjValue += Math.abs(l1regValue * xv)
+              xv match {
+                case 0.0 => {
+                  val delta_+ = v + l1regValue
+                  val delta_- = v - l1regValue
+                  if (delta_- > 0)
+                    delta_-
+                  else if (delta_+ < 0)
+                    delta_+
+                  else
+                    0.0
+                }
+                case _ =>
+                  v + math.signum(xv) * l1regValue
               }
-              case _ =>
-                v + math.signum(xv) * l1regValue
             }
-          }
-      }
-    )
+        }
+      )
     adjValue -> res
   }
 
   private def computeOrthant(x: T, grad: T) = {
-    val orth = space.zipMapValues.map(
-      x,
-      grad,
-      {
-        case (v, gv) =>
-          if (v != 0)
-            math.signum(v)
-          else
-            math.signum(-gv)
-      })
+    val orth = space
+      .zipMapValues
+      .map(
+        x,
+        grad,
+        {
+          case (v, gv) =>
+            if (v != 0)
+              math.signum(v)
+            else
+              math.signum(-gv)
+        })
     orth
   }
 

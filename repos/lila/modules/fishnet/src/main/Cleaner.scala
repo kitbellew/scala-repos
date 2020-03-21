@@ -25,11 +25,13 @@ private final class Cleaner(
 
   private def cleanMoves: Unit = {
     val since = durationAgo(moveTimeout)
-    moveDb.find(_ acquiredBefore since).map { move =>
-      moveDb updateOrGiveUp move.timeout
-      clientTimeout(move)
-      logger.warn(s"Timeout move ${move.game.id}")
-    }
+    moveDb
+      .find(_ acquiredBefore since)
+      .map { move =>
+        moveDb updateOrGiveUp move.timeout
+        clientTimeout(move)
+        logger.warn(s"Timeout move ${move.game.id}")
+      }
     scheduleMoves
   }
 
@@ -45,14 +47,15 @@ private final class Cleaner(
       .flatMap {
         _.filter { ana =>
           ana.acquiredAt.??(_ isBefore durationAgo(analysisTimeout(ana.nbPly)))
-        }.map { ana =>
-            repo.updateOrGiveUpAnalysis(ana.timeout) >>- {
-              clientTimeout(ana)
-              logger.warn(s"Timeout analysis ${ana.game.id}")
-            }
+        }
+        .map { ana =>
+          repo.updateOrGiveUpAnalysis(ana.timeout) >>- {
+            clientTimeout(ana)
+            logger.warn(s"Timeout analysis ${ana.game.id}")
           }
-          .sequenceFu
-          .void
+        }
+        .sequenceFu
+        .void
       } andThenAnyway scheduleAnalysis
 
   private def clientTimeout(work: Work) =

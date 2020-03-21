@@ -95,33 +95,34 @@ object Multipart {
     val attrs = new mutable.HashMap[String, mutable.ListBuffer[String]]()
     val files = new mutable.HashMap[String, mutable.ListBuffer[FileUpload]]()
 
-    decoder.getBodyHttpDatas.asScala.foreach {
-      case attr: multipart.Attribute =>
-        val buf = attrs.getOrElseUpdate(
-          attr.getName,
-          mutable.ListBuffer[String]())
-        buf += attr.getValue
+    decoder
+      .getBodyHttpDatas
+      .asScala
+      .foreach {
+        case attr: multipart.Attribute =>
+          val buf = attrs
+            .getOrElseUpdate(attr.getName, mutable.ListBuffer[String]())
+          buf += attr.getValue
 
-      case fu: multipart.FileUpload =>
-        val buf = files.getOrElseUpdate(
-          fu.getName,
-          mutable.ListBuffer[FileUpload]())
-        if (fu.isInMemory) {
-          buf += InMemoryFileUpload(
-            Buf.ByteArray.Owned(fu.get()),
-            fu.getContentType,
-            fu.getFilename,
-            fu.getContentTransferEncoding)
-        } else {
-          buf += OnDiskFileUpload(
-            fu.getFile,
-            fu.getContentType,
-            fu.getFilename,
-            fu.getContentTransferEncoding)
-        }
+        case fu: multipart.FileUpload =>
+          val buf = files
+            .getOrElseUpdate(fu.getName, mutable.ListBuffer[FileUpload]())
+          if (fu.isInMemory) {
+            buf += InMemoryFileUpload(
+              Buf.ByteArray.Owned(fu.get()),
+              fu.getContentType,
+              fu.getFilename,
+              fu.getContentTransferEncoding)
+          } else {
+            buf += OnDiskFileUpload(
+              fu.getFile,
+              fu.getContentType,
+              fu.getFilename,
+              fu.getContentTransferEncoding)
+          }
 
-      case _ => // ignore everything else
-    }
+        case _ => // ignore everything else
+      }
 
     Multipart(attrs.mapValues(_.toSeq).toMap, files.mapValues(_.toSeq).toMap)
   }

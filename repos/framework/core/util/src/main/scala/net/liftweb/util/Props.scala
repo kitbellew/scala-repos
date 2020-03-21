@@ -35,25 +35,20 @@ private[util] trait Props extends Logger {
     * @return the value of the property if defined
     */
   def get(name: String): Box[String] = {
-    lockedProviders
-      .flatMap(_.get(name))
-      .headOption
-      .map(interpolate)
+    lockedProviders.flatMap(_.get(name)).headOption.map(interpolate)
   }
 
   private[this] val interpolateRegex = """(.*?)\Q${\E(.*?)\Q}\E([^$]*)""".r
 
   private[this] def interpolate(value: String): String = {
     def lookup(key: String) = {
-      lockedInterpolationValues
-        .flatMap(_.get(key))
-        .headOption
+      lockedInterpolationValues.flatMap(_.get(key)).headOption
     }
 
     val interpolated =
       for {
-        interpolateRegex(before, key, after) <- interpolateRegex.findAllMatchIn(
-          value.toString)
+        interpolateRegex(before, key, after) <- interpolateRegex
+          .findAllMatchIn(value.toString)
       } yield {
         val lookedUp = lookup(key).getOrElse(("${" + key + "}"))
 
@@ -100,8 +95,8 @@ private[util] trait Props extends Logger {
       case Nil =>
       case bad =>
         throw new Exception(
-          "The following required properties are not defined: " + bad.mkString(
-            ","))
+          "The following required properties are not defined: " + bad
+            .mkString(","))
     }
   }
 
@@ -443,16 +438,20 @@ private[util] trait Props extends Logger {
       // if we've got a propety file, create name/value pairs and turn them into a Map
       case Full(prop) =>
         Map(
-          prop.entrySet.toArray.flatMap {
-            case s: JMap.Entry[_, _] =>
-              List((s.getKey.toString, s.getValue.toString))
-            case _ =>
-              Nil
-          }: _*)
+          prop
+            .entrySet
+            .toArray
+            .flatMap {
+              case s: JMap.Entry[_, _] =>
+                List((s.getKey.toString, s.getValue.toString))
+              case _ =>
+                Nil
+            }: _*)
 
       case _ =>
         error(
-          "Failed to find a properties file (but properties were accessed).  Searched: " + tried.reverse
+          "Failed to find a properties file (but properties were accessed).  Searched: " + tried
+            .reverse
             .mkString(", "))
         Map()
     }

@@ -739,8 +739,8 @@ class ArraysTest {
       Arrays.hashCode(Array[Long](0L, 45L, 100L, 1L, 1L, Int.MaxValue)))
     assertEquals(
       -1952288964,
-      Arrays.hashCode(
-        Array[Long](0L, 34573566354545L, 100L, 1L, 1L, Int.MaxValue)))
+      Arrays
+        .hashCode(Array[Long](0L, 34573566354545L, 100L, 1L, 1L, Int.MaxValue)))
   }
 
   @Test
@@ -1193,8 +1193,8 @@ class ArraysTest {
       Arrays.deepToString(Array[AnyRef](Array[Int](1, 2, 3))))
     assertEquals(
       "[[1, 2, 3], [4, 5, 6]]",
-      Arrays.deepToString(
-        Array[AnyRef](Array[Int](1, 2, 3), Array[Int](4, 5, 6))))
+      Arrays
+        .deepToString(Array[AnyRef](Array[Int](1, 2, 3), Array[Int](4, 5, 6))))
     assertEquals("[[]]", Arrays.deepToString(Array[AnyRef](Array[AnyRef]())))
     assertEquals(
       "[[[]]]",

@@ -146,8 +146,9 @@ final class ClosureLinkerBackend(
   private def closureOptions(outputName: String) = {
     val options = new ClosureOptions
     options.prettyPrint = config.prettyPrint
-    CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(
-      options)
+    CompilationLevel
+      .ADVANCED_OPTIMIZATIONS
+      .setOptionsForCompilationLevel(options)
     options.setLanguageIn(ClosureOptions.LanguageMode.ECMASCRIPT5)
     options.setCheckGlobalThisLevel(CheckLevel.OFF)
 

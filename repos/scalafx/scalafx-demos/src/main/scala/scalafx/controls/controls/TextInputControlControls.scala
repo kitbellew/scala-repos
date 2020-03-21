@@ -56,8 +56,10 @@ class TextInputControlControls(target: TextInputControl)
     }
 
   val lblSelectedTextLength = new Label
-  target.selectedText.onChange(lblSelectedTextLength.text =
-    target.selectedText.get.length.toString)
+  target
+    .selectedText
+    .onChange(lblSelectedTextLength.text =
+      target.selectedText.get.length.toString)
 
   val lblSelection = new Label
   target.selection.onChange(lblSelection.text = target.selection.value.toString)

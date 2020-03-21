@@ -62,8 +62,8 @@ case class Project(projectList: Seq[NamedExpression], child: SparkPlan)
       input: Seq[ExprCode],
       row: String): String = {
     val exprs = projectList.map(x =>
-      ExpressionCanonicalizer.execute(
-        BindReferences.bindReference(x, child.output)))
+      ExpressionCanonicalizer
+        .execute(BindReferences.bindReference(x, child.output)))
     ctx.currentVars = input
     val resultVars = exprs.map(_.gen(ctx))
     // Evaluation of non-deterministic expressions can't be deferred.
@@ -80,11 +80,13 @@ case class Project(projectList: Seq[NamedExpression], child: SparkPlan)
   }
 
   protected override def doExecute(): RDD[InternalRow] = {
-    child.execute().mapPartitionsInternal { iter =>
-      val project = UnsafeProjection
-        .create(projectList, child.output, subexpressionEliminationEnabled)
-      iter.map(project)
-    }
+    child
+      .execute()
+      .mapPartitionsInternal { iter =>
+        val project = UnsafeProjection
+          .create(projectList, child.output, subexpressionEliminationEnabled)
+        iter.map(project)
+      }
   }
 
   override def outputOrdering: Seq[SortOrder] = child.outputOrdering
@@ -108,13 +110,15 @@ case class Filter(condition: Expression, child: SparkPlan)
   private val notNullAttributes = notNullPreds.flatMap(_.references)
 
   override def output: Seq[Attribute] = {
-    child.output.map { a =>
-      if (a.nullable && notNullAttributes.contains(a)) {
-        a.withNullability(false)
-      } else {
-        a
+    child
+      .output
+      .map { a =>
+        if (a.nullable && notNullAttributes.contains(a)) {
+          a.withNullability(false)
+        } else {
+          a
+        }
       }
-    }
   }
 
   private[sql] override lazy val metrics = Map(
@@ -146,8 +150,8 @@ case class Filter(condition: Expression, child: SparkPlan)
     ctx.currentVars = input
     val predicates = otherPreds
       .map { e =>
-        val bound = ExpressionCanonicalizer.execute(
-          BindReferences.bindReference(e, output))
+        val bound = ExpressionCanonicalizer
+          .execute(BindReferences.bindReference(e, output))
         val ev = bound.gen(ctx)
         val nullCheck =
           if (bound.nullable) {
@@ -164,13 +168,15 @@ case class Filter(condition: Expression, child: SparkPlan)
 
     // Reset the isNull to false for the not-null columns, then the followed operators could
     // generate better code (remove dead branches).
-    val resultVars = input.zipWithIndex.map {
-      case (ev, i) =>
-        if (notNullAttributes.contains(child.output(i))) {
-          ev.isNull = "false"
-        }
-        ev
-    }
+    val resultVars = input
+      .zipWithIndex
+      .map {
+        case (ev, i) =>
+          if (notNullAttributes.contains(child.output(i))) {
+            ev.isNull = "false"
+          }
+          ev
+      }
     s"""
        |$filterOutNull
        |$predicates
@@ -181,15 +187,17 @@ case class Filter(condition: Expression, child: SparkPlan)
 
   protected override def doExecute(): RDD[InternalRow] = {
     val numOutputRows = longMetric("numOutputRows")
-    child.execute().mapPartitionsInternal { iter =>
-      val predicate = newPredicate(condition, child.output)
-      iter.filter { row =>
-        val r = predicate(row)
-        if (r)
-          numOutputRows += 1
-        r
+    child
+      .execute()
+      .mapPartitionsInternal { iter =>
+        val predicate = newPredicate(condition, child.output)
+        iter.filter { row =>
+          val r = predicate(row)
+          if (r)
+            numOutputRows += 1
+          r
+        }
       }
-    }
   }
 
   override def outputOrdering: Seq[SortOrder] = child.outputOrdering
@@ -252,7 +260,8 @@ case class Range(
     numElements)
 
   override def upstreams(): Seq[RDD[InternalRow]] = {
-    sqlContext.sparkContext
+    sqlContext
+      .sparkContext
       .parallelize(0 until numSlices, numSlices)
       .map(i => InternalRow(i)) :: Nil
   }
@@ -343,7 +352,8 @@ case class Range(
 
   protected override def doExecute(): RDD[InternalRow] = {
     val numOutputRows = longMetric("numOutputRows")
-    sqlContext.sparkContext
+    sqlContext
+      .sparkContext
       .parallelize(0 until numSlices, numSlices)
       .mapPartitionsWithIndex((i, _) => {
         val partitionStart = (i * numElements) / numSlices * step + start
@@ -358,8 +368,8 @@ case class Range(
           }
         val safePartitionStart = getSafeMargin(partitionStart)
         val safePartitionEnd = getSafeMargin(partitionEnd)
-        val rowSize =
-          UnsafeRow.calculateBitSetWidthInBytes(1) + LongType.defaultSize
+        val rowSize = UnsafeRow.calculateBitSetWidthInBytes(1) + LongType
+          .defaultSize
         val unsafeRow = UnsafeRow.createFromByteArray(rowSize, 1)
 
         new Iterator[InternalRow] {

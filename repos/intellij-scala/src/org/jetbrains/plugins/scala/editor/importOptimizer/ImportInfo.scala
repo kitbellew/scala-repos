@@ -60,9 +60,12 @@ case class ImportInfo(
 
   def split: Seq[ImportInfo] = {
     val result = new ArrayBuffer[ImportInfo]()
-    result ++= singleNames.toSeq.sorted.map { name =>
-      template.copy(singleNames = Set(name))
-    }
+    result ++= singleNames
+      .toSeq
+      .sorted
+      .map { name =>
+        template.copy(singleNames = Set(name))
+      }
     result ++= renames.map { rename =>
       template.copy(renames = Map(rename))
     }
@@ -179,15 +182,17 @@ object ImportInfo {
           collectImplicits = true,
           includePrefixImports = false)
 
-      reference.doResolve(reference, processor).foreach {
-        case rr: ScalaResolveResult if shouldAddName(rr) =>
-          val element = rr.element
-          val nameToAdd = name(element.name)
-          namesForWildcard += nameToAdd
-          if (ScalaPsiUtil.isImplicit(element))
-            implicitNames += nameToAdd
-        case _ =>
-      }
+      reference
+        .doResolve(reference, processor)
+        .foreach {
+          case rr: ScalaResolveResult if shouldAddName(rr) =>
+            val element = rr.element
+            val nameToAdd = name(element.name)
+            namesForWildcard += nameToAdd
+            if (ScalaPsiUtil.isImplicit(element))
+              implicitNames += nameToAdd
+          case _ =>
+        }
     }
 
     collectAllNamesForWildcard()

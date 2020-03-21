@@ -112,16 +112,16 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
       return false
     }
 
-    if (tokenType == DOC_LINK_TAG && builder.getTokenType == ScalaTokenTypes.tIDENTIFIER && !isEndOfComment) {
-      StableId.parse(
-        new ScalaPsiBuilderImpl(builder),
-        true,
-        DOC_CODE_LINK_VALUE)
+    if (tokenType == DOC_LINK_TAG && builder.getTokenType == ScalaTokenTypes
+          .tIDENTIFIER && !isEndOfComment) {
+      StableId
+        .parse(new ScalaPsiBuilderImpl(builder), true, DOC_CODE_LINK_VALUE)
     }
 
     while (!isEndOfComment) {
       if (!(
-            builder.getTokenType == DOC_WHITESPACE && builder.getTokenText
+            builder.getTokenType == DOC_WHITESPACE && builder
+              .getTokenText
               .contains("\n")
           ) &&
           builder.getTokenType != DOC_COMMENT_LEADING_ASTERISKS) {
@@ -146,7 +146,8 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
         case DOC_HEADER =>
           val headerEnd = builder.getTokenText
           builder.advanceLexer()
-          if (tokenType == VALID_DOC_HEADER && tokenText.length <= headerEnd.length) {
+          if (tokenType == VALID_DOC_HEADER && tokenText.length <= headerEnd
+                .length) {
             canHaveTags = true
             marker.done(tokenType)
             return true
@@ -193,7 +194,8 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
           }
           if (!hasClosingElementsInWikiSyntax &&
               (
-                builder.getTokenText.indexOf("\n") == builder.getTokenText
+                builder.getTokenText.indexOf("\n") == builder
+                  .getTokenText
                   .lastIndexOf("\n")
               )) { //check is it single nl
             hasClosingElementsInWikiSyntax = true
@@ -228,7 +230,8 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
     }
     builder.advanceLexer()
 
-    while (!isEndOfComment && builder.getTokenType != DOC_INNER_CLOSE_CODE_TAG) {
+    while (!isEndOfComment && builder
+             .getTokenType != DOC_INNER_CLOSE_CODE_TAG) {
       builder.advanceLexer()
     }
     if (isEndOfComment) {
@@ -267,15 +270,11 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
           if (!isEndOfComment) {
             builder.advanceLexer()
           }
-          StableId.parse(
-            new ScalaPsiBuilderImpl(builder),
-            true,
-            DOC_TAG_VALUE_TOKEN)
+          StableId
+            .parse(new ScalaPsiBuilderImpl(builder), true, DOC_TAG_VALUE_TOKEN)
         case PARAM_TAG | TYPE_PARAM_TAG | DEFINE_TAG =>
-          if (!ParserUtils.lookAhead(
-                builder,
-                builder.getTokenType,
-                DOC_TAG_VALUE_TOKEN))
+          if (!ParserUtils
+                .lookAhead(builder, builder.getTokenType, DOC_TAG_VALUE_TOKEN))
             builder.error("Missing tag param")
         case SEE_TAG | AUTHOR_TAG | NOTE_TAG | RETURN_TAG | SINCE_TAG |
             VERSION_TAG | USECASE_TAG | EXAMPLE_TAG | TODO_TAG |

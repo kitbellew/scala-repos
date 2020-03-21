@@ -39,7 +39,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
   // must be lazy because serializer is initialized from Cluster extension constructor
   private lazy val GossipTimeToLive = Cluster(system).settings.GossipTimeToLive
 
-  private val fromBinaryMap = collection.immutable
+  private val fromBinaryMap = collection
+    .immutable
     .HashMap[Class[_ <: ClusterMessage], Array[Byte] ⇒ AnyRef](
       classOf[InternalClusterAction.Join] -> {
         case bytes ⇒
@@ -159,7 +160,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
   private def addressToProto(address: Address): cm.Address.Builder =
     address match {
       case Address(protocol, actorSystem, Some(host), Some(port)) ⇒
-        cm.Address
+        cm
+          .Address
           .newBuilder()
           .setSystem(actorSystem)
           .setHostname(host)
@@ -175,7 +177,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
 
   private def uniqueAddressToProto(
       uniqueAddress: UniqueAddress): cm.UniqueAddress.Builder =
-    cm.UniqueAddress
+    cm
+      .UniqueAddress
       .newBuilder()
       .setAddress(addressToProto(uniqueAddress.address))
       .setUid(uniqueAddress.uid)
@@ -225,7 +228,9 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
       addressFromProto(uniqueAddress.getAddress),
       uniqueAddress.getUid)
 
-  private val memberStatusToInt = scala.collection.immutable
+  private val memberStatusToInt = scala
+    .collection
+    .immutable
     .HashMap[MemberStatus, Int](
       MemberStatus.Joining -> cm.MemberStatus.Joining_VALUE,
       MemberStatus.Up -> cm.MemberStatus.Up_VALUE,
@@ -241,7 +246,9 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
       (b, a)
   }
 
-  private val reachabilityStatusToInt = scala.collection.immutable
+  private val reachabilityStatusToInt = scala
+    .collection
+    .immutable
     .HashMap[Reachability.ReachabilityStatus, Int](
       Reachability.Reachable -> cm.ReachabilityStatus.Reachable_VALUE,
       Reachability.Unreachable -> cm.ReachabilityStatus.Unreachable_VALUE,
@@ -266,14 +273,16 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
     }
 
   private def joinToProto(node: UniqueAddress, roles: Set[String]): cm.Join =
-    cm.Join
+    cm
+      .Join
       .newBuilder()
       .setNode(uniqueAddressToProto(node))
       .addAllRoles(roles.asJava)
       .build()
 
   private def welcomeToProto(from: UniqueAddress, gossip: Gossip): cm.Welcome =
-    cm.Welcome
+    cm
+      .Welcome
       .newBuilder()
       .setFrom(uniqueAddressToProto(from))
       .setGossip(gossipToProto(gossip))
@@ -296,7 +305,9 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
       mapWithErrorMessage(roleMapping, role, "role")
 
     def memberToProto(member: Member) =
-      cm.Member.newBuilder
+      cm
+        .Member
+        .newBuilder
         .setAddressIndex(mapUniqueAddress(member.uniqueAddress))
         .setUpNumber(member.upNumber)
         .setStatus(cm.MemberStatus.valueOf(memberStatusToInt(member.status)))
@@ -304,35 +315,44 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
 
     def reachabilityToProto(reachability: Reachability)
         : Iterable[cm.ObserverReachability.Builder] = {
-      reachability.versions.map {
-        case (observer, version) ⇒
-          val subjectReachability = reachability
-            .recordsFrom(observer)
-            .map(r ⇒
-              cm.SubjectReachability
-                .newBuilder()
-                .setAddressIndex(mapUniqueAddress(r.subject))
-                .setStatus(
-                  cm.ReachabilityStatus.valueOf(
-                    reachabilityStatusToInt(r.status)))
-                .setVersion(r.version))
-          cm.ObserverReachability
-            .newBuilder()
-            .setAddressIndex(mapUniqueAddress(observer))
-            .setVersion(version)
-            .addAllSubjectReachability(subjectReachability.map(_.build).asJava)
-      }
+      reachability
+        .versions
+        .map {
+          case (observer, version) ⇒
+            val subjectReachability = reachability
+              .recordsFrom(observer)
+              .map(r ⇒
+                cm
+                  .SubjectReachability
+                  .newBuilder()
+                  .setAddressIndex(mapUniqueAddress(r.subject))
+                  .setStatus(
+                    cm
+                      .ReachabilityStatus
+                      .valueOf(reachabilityStatusToInt(r.status)))
+                  .setVersion(r.version))
+            cm
+              .ObserverReachability
+              .newBuilder()
+              .setAddressIndex(mapUniqueAddress(observer))
+              .setVersion(version)
+              .addAllSubjectReachability(
+                subjectReachability.map(_.build).asJava)
+        }
     }
 
     val reachability = reachabilityToProto(gossip.overview.reachability)
     val members = gossip.members.map(memberToProto)
     val seen = gossip.overview.seen.map(mapUniqueAddress)
 
-    val overview = cm.GossipOverview.newBuilder
+    val overview = cm
+      .GossipOverview
+      .newBuilder
       .addAllSeen(seen.asJava)
       .addAllObserverReachability(reachability.map(_.build).asJava)
 
-    cm.Gossip
+    cm
+      .Gossip
       .newBuilder()
       .addAllAllAddresses(
         allAddresses.map(uniqueAddressToProto(_).build).asJava)
@@ -346,15 +366,19 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
   private def vectorClockToProto(
       version: VectorClock,
       hashMapping: Map[String, Int]): cm.VectorClock.Builder = {
-    val versions: Iterable[cm.VectorClock.Version.Builder] = version.versions
+    val versions: Iterable[cm.VectorClock.Version.Builder] = version
+      .versions
       .map {
         case (n, t) ⇒
-          cm.VectorClock.Version
+          cm
+            .VectorClock
+            .Version
             .newBuilder()
             .setHashIndex(mapWithErrorMessage(hashMapping, n, "hash"))
             .setTimestamp(t)
       }
-    cm.VectorClock
+    cm
+      .VectorClock
       .newBuilder()
       .setTimestamp(0)
       .addAllVersions(versions.map(_.build).asJava)
@@ -362,7 +386,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
 
   private def gossipEnvelopeToProto(
       envelope: GossipEnvelope): cm.GossipEnvelope =
-    cm.GossipEnvelope
+    cm
+      .GossipEnvelope
       .newBuilder()
       .setFrom(uniqueAddressToProto(envelope.from))
       .setTo(uniqueAddressToProto(envelope.to))
@@ -373,7 +398,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
   private def gossipStatusToProto(status: GossipStatus): cm.GossipStatus = {
     val allHashes = status.version.versions.keys.toVector
     val hashMapping = allHashes.zipWithIndex.toMap
-    cm.GossipStatus
+    cm
+      .GossipStatus
       .newBuilder()
       .setFrom(uniqueAddressToProto(status.from))
       .addAllAllHashes(allHashes.asJava)
@@ -448,10 +474,13 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
       hashMapping: immutable.Seq[String]) = {
     import scala.collection.breakOut
     VectorClock(
-      version.getVersionsList.asScala.map(v ⇒
-        (
-          VectorClock.Node.fromHash(hashMapping(v.getHashIndex)),
-          v.getTimestamp))(breakOut))
+      version
+        .getVersionsList
+        .asScala
+        .map(v ⇒
+          (
+            VectorClock.Node.fromHash(hashMapping(v.getHashIndex)),
+            v.getTimestamp))(breakOut))
   }
 
   private def gossipEnvelopeFromProto(
@@ -527,7 +556,9 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
     }
 
     def metricToProto(metric: Metric): cm.NodeMetrics.Metric.Builder = {
-      val builder = cm.NodeMetrics.Metric
+      val builder = cm
+        .NodeMetrics
+        .Metric
         .newBuilder()
         .setNameIndex(mapName(metric.name))
         .setNumber(numberToProto(metric.value))
@@ -535,20 +566,23 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
     }
 
     def nodeMetricsToProto(nodeMetrics: NodeMetrics): cm.NodeMetrics.Builder =
-      cm.NodeMetrics
+      cm
+        .NodeMetrics
         .newBuilder()
         .setAddressIndex(mapAddress(nodeMetrics.address))
         .setTimestamp(nodeMetrics.timestamp)
         .addAllMetrics(nodeMetrics.metrics.map(metricToProto(_).build).asJava)
 
-    val nodeMetrics: Iterable[cm.NodeMetrics] = allNodeMetrics.map(
-      nodeMetricsToProto(_).build)
+    val nodeMetrics: Iterable[cm.NodeMetrics] = allNodeMetrics
+      .map(nodeMetricsToProto(_).build)
 
-    cm.MetricsGossipEnvelope
+    cm
+      .MetricsGossipEnvelope
       .newBuilder()
       .setFrom(addressToProto(envelope.from))
       .setGossip(
-        cm.MetricsGossip
+        cm
+          .MetricsGossip
           .newBuilder()
           .addAllAllAddresses(
             allAddresses.map(addressToProto(_).build()).asJava)

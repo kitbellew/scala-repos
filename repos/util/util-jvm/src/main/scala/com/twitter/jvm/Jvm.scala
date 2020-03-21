@@ -54,11 +54,8 @@ case class PoolState(
     )
 
   override def toString =
-    "PoolState(n=%d,remaining=%s[%s of %s])".format(
-      numCollections,
-      capacity - used,
-      used,
-      capacity)
+    "PoolState(n=%d,remaining=%s[%s of %s])"
+      .format(numCollections, capacity - used, used, capacity)
 }
 
 /**
@@ -216,13 +213,18 @@ trait Jvm {
   def mainClassName: String = {
     val mainClass =
       for {
-        (_, stack) <- Thread.getAllStackTraces().asScala.find {
-          case (t, s) =>
-            t.getName == "main"
-        }
-        frame <- stack.reverse.find { elem =>
-          !(elem.getClassName.startsWith("scala.tools.nsc.MainGenericRunner"))
-        }
+        (_, stack) <- Thread
+          .getAllStackTraces()
+          .asScala
+          .find {
+            case (t, s) =>
+              t.getName == "main"
+          }
+        frame <- stack
+          .reverse
+          .find { elem =>
+            !(elem.getClassName.startsWith("scala.tools.nsc.MainGenericRunner"))
+          }
       } yield frame.getClassName
 
     mainClass.getOrElse("unknown")
@@ -241,7 +243,9 @@ object Jvm {
     */
   lazy val ProcessId: Option[Int] =
     try {
-      ManagementFactory.getRuntimeMXBean.getName
+      ManagementFactory
+        .getRuntimeMXBean
+        .getName
         .split("@")
         .headOption
         .map(_.toInt)

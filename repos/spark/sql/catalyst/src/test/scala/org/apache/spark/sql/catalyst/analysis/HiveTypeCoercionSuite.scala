@@ -33,7 +33,8 @@ class HiveTypeCoercionSuite extends PlanTest {
         from: DataType,
         to: AbstractDataType,
         expected: DataType): Unit = {
-      val got = HiveTypeCoercion.ImplicitTypeCasts
+      val got = HiveTypeCoercion
+        .ImplicitTypeCasts
         .implicitCast(Literal.create(null, from), to)
       assert(
         got.map(_.dataType) == Option(expected),
@@ -130,7 +131,8 @@ class HiveTypeCoercionSuite extends PlanTest {
 
   test("ineligible implicit type cast") {
     def shouldNotCast(from: DataType, to: AbstractDataType): Unit = {
-      val got = HiveTypeCoercion.ImplicitTypeCasts
+      val got = HiveTypeCoercion
+        .ImplicitTypeCasts
         .implicitCast(Literal.create(null, from), to)
       assert(
         got.isEmpty,
@@ -475,10 +477,13 @@ class HiveTypeCoercionSuite extends PlanTest {
   private def checkOutput(
       logical: LogicalPlan,
       expectTypes: Seq[DataType]): Unit = {
-    logical.output.zip(expectTypes).foreach {
-      case (attr, dt) =>
-        assert(attr.dataType === dt)
-    }
+    logical
+      .output
+      .zip(expectTypes)
+      .foreach {
+        case (attr, dt) =>
+          assert(attr.dataType === dt)
+      }
   }
 
   test("WidenSetOperationTypes for except and intersect") {
@@ -578,10 +583,13 @@ class HiveTypeCoercionSuite extends PlanTest {
 
   test("Transform Decimal precision/scale for union except and intersect") {
     def checkOutput(logical: LogicalPlan, expectTypes: Seq[DataType]): Unit = {
-      logical.output.zip(expectTypes).foreach {
-        case (attr, dt) =>
-          assert(attr.dataType === dt)
-      }
+      logical
+        .output
+        .zip(expectTypes)
+        .foreach {
+          case (attr, dt) =>
+            assert(attr.dataType === dt)
+        }
     }
 
     val dp = HiveTypeCoercion.WidenSetOperationTypes
@@ -618,26 +626,28 @@ class HiveTypeCoercionSuite extends PlanTest {
       DoubleType,
       DoubleType)
 
-    rightTypes.zip(expectedTypes).foreach {
-      case (rType, expectedType) =>
-        val plan2 = LocalRelation(AttributeReference("r", rType)())
+    rightTypes
+      .zip(expectedTypes)
+      .foreach {
+        case (rType, expectedType) =>
+          val plan2 = LocalRelation(AttributeReference("r", rType)())
 
-        val r1 = dp(Union(plan1, plan2)).asInstanceOf[Union]
-        val r2 = dp(Except(plan1, plan2)).asInstanceOf[Except]
-        val r3 = dp(Intersect(plan1, plan2)).asInstanceOf[Intersect]
+          val r1 = dp(Union(plan1, plan2)).asInstanceOf[Union]
+          val r2 = dp(Except(plan1, plan2)).asInstanceOf[Except]
+          val r3 = dp(Intersect(plan1, plan2)).asInstanceOf[Intersect]
 
-        checkOutput(r1.children.last, Seq(expectedType))
-        checkOutput(r2.right, Seq(expectedType))
-        checkOutput(r3.right, Seq(expectedType))
+          checkOutput(r1.children.last, Seq(expectedType))
+          checkOutput(r2.right, Seq(expectedType))
+          checkOutput(r3.right, Seq(expectedType))
 
-        val r4 = dp(Union(plan2, plan1)).asInstanceOf[Union]
-        val r5 = dp(Except(plan2, plan1)).asInstanceOf[Except]
-        val r6 = dp(Intersect(plan2, plan1)).asInstanceOf[Intersect]
+          val r4 = dp(Union(plan2, plan1)).asInstanceOf[Union]
+          val r5 = dp(Except(plan2, plan1)).asInstanceOf[Except]
+          val r6 = dp(Intersect(plan2, plan1)).asInstanceOf[Intersect]
 
-        checkOutput(r4.children.last, Seq(expectedType))
-        checkOutput(r5.left, Seq(expectedType))
-        checkOutput(r6.left, Seq(expectedType))
-    }
+          checkOutput(r4.children.last, Seq(expectedType))
+          checkOutput(r5.left, Seq(expectedType))
+          checkOutput(r6.left, Seq(expectedType))
+      }
   }
 
   test("rule for date/timestamp operations") {

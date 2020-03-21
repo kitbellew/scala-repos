@@ -33,11 +33,10 @@ class ForwardedHeaderHandlerSpec extends Specification {
       results(0)._1 must_== ForwardedEntry(Some("_gazonk"), None)
       results(0)._2 must beLeft
       results(0)._3 must beNone
-      results(1)._1 must_== ForwardedEntry(
-        Some("[2001:db8:cafe::17]:4711"),
-        None)
-      results(1)._2 must beRight(
-        ConnectionInfo(addr("2001:db8:cafe::17"), false))
+      results(1)
+        ._1 must_== ForwardedEntry(Some("[2001:db8:cafe::17]:4711"), None)
+      results(1)
+        ._2 must beRight(ConnectionInfo(addr("2001:db8:cafe::17"), false))
       results(1)._3 must beSome(false)
       results(2)._1 must_== ForwardedEntry(Some("192.0.2.60"), Some("http"))
       results(2)._2 must beRight(ConnectionInfo(addr("192.0.2.60"), false))
@@ -75,11 +74,10 @@ class ForwardedHeaderHandlerSpec extends Specification {
       results(1)._1 must_== ForwardedEntry(Some("::1"), Some("http"))
       results(1)._2 must beRight(ConnectionInfo(addr("::1"), false))
       results(1)._3 must beSome(false)
-      results(2)._1 must_== ForwardedEntry(
-        Some("[2001:db8:cafe::17]"),
-        Some("https"))
-      results(2)._2 must beRight(
-        ConnectionInfo(addr("2001:db8:cafe::17"), true))
+      results(2)
+        ._1 must_== ForwardedEntry(Some("[2001:db8:cafe::17]"), Some("https"))
+      results(2)
+        ._2 must beRight(ConnectionInfo(addr("2001:db8:cafe::17"), true))
       results(2)._3 must beSome(true)
       results(3)._1 must_== ForwardedEntry(Some("127.0.0.1"), Some("http"))
       results(3)._2 must beRight(ConnectionInfo(addr("127.0.0.1"), false))
@@ -518,17 +516,19 @@ class ForwardedHeaderHandlerSpec extends Specification {
     (ForwardedEntry, Either[String, ConnectionInfo], Option[Boolean])] = {
     val configuration = ForwardedHeaderHandlerConfig(
       Some(Configuration.from(config)))
-    configuration.forwardedHeaders(headers).map { forwardedEntry =>
-      val errorOrConnection = configuration.parseEntry(forwardedEntry)
-      val trusted =
-        errorOrConnection match {
-          case Left(_) =>
-            None
-          case Right(connection) =>
-            Some(configuration.isTrustedProxy(connection))
-        }
-      (forwardedEntry, errorOrConnection, trusted)
-    }
+    configuration
+      .forwardedHeaders(headers)
+      .map { forwardedEntry =>
+        val errorOrConnection = configuration.parseEntry(forwardedEntry)
+        val trusted =
+          errorOrConnection match {
+            case Left(_) =>
+              None
+            case Right(connection) =>
+              Some(configuration.isTrustedProxy(connection))
+          }
+        (forwardedEntry, errorOrConnection, trusted)
+      }
   }
 
   def addr(ip: String): InetAddress = InetAddress.getByName(ip)

@@ -36,8 +36,9 @@ class HBPEvents(
     extends PEvents {
 
   def checkTableExists(appId: Int, channelId: Option[Int]): Unit = {
-    if (!client.admin.tableExists(
-          HBEventsUtil.tableName(namespace, appId, channelId))) {
+    if (!client
+          .admin
+          .tableExists(HBEventsUtil.tableName(namespace, appId, channelId))) {
       if (channelId.nonEmpty) {
         logger.error(
           s"The appId $appId with channelId $channelId does not exist." +
@@ -46,8 +47,8 @@ class HBPEvents(
           s"HBase table not found for appId $appId" +
             s" with channelId $channelId.")
       } else {
-        logger.error(
-          s"The appId $appId does not exist. Please use valid appId.")
+        logger
+          .error(s"The appId $appId does not exist. Please use valid appId.")
         throw new Exception(s"HBase table not found for appId $appId.")
       }
     }

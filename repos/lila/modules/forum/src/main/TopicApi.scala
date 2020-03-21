@@ -47,8 +47,8 @@ private[forum] final class TopicApi(
 
   def makeTopic(categ: Categ, data: DataForm.TopicData)(implicit
       ctx: UserContext): Fu[Topic] =
-    TopicRepo.nextSlug(categ, data.name) zip detectLanguage(
-      data.post.text) flatMap {
+    TopicRepo
+      .nextSlug(categ, data.name) zip detectLanguage(data.post.text) flatMap {
       case (slug, lang) =>
         val topic = Topic.make(
           categId = categ.slug,
@@ -73,16 +73,25 @@ private[forum] final class TopicApi(
           $update(categ withTopic post) >>-
           (indexer ! InsertPost(post)) >>
           env.recent.invalidate >>-
-          ctx.userId.?? { userId =>
-            val text = topic.name + " " + post.text
-            shutup ! post.isTeam.fold(
-              lila.hub.actorApi.shutup.RecordTeamForumMessage(userId, text),
-              lila.hub.actorApi.shutup.RecordPublicForumMessage(userId, text))
-          } >>- {
+          ctx
+            .userId
+            .?? { userId =>
+              val text = topic.name + " " + post.text
+              shutup ! post
+                .isTeam
+                .fold(
+                  lila.hub.actorApi.shutup.RecordTeamForumMessage(userId, text),
+                  lila
+                    .hub
+                    .actorApi
+                    .shutup
+                    .RecordPublicForumMessage(userId, text))
+            } >>- {
           (ctx.userId ifFalse post.troll) ?? { userId =>
             timeline ! Propagate(
               ForumPost(userId, topic.id.some, topic.name, post.id)).|>(prop =>
-              post.isStaff
+              post
+                .isStaff
                 .fold(prop toStaffFriendsOf userId, prop toFollowersOf userId))
           }
           lila.mon.forum.post.create()
@@ -123,11 +132,8 @@ private[forum] final class TopicApi(
     TopicRepo.hide(topic.id, topic.visibleOnHome) >> {
       MasterGranter(_.ModerateForum)(mod) ?? {
         PostRepo.hideByTopic(topic.id, topic.visibleOnHome) zip
-          modLog.toggleHideTopic(
-            mod,
-            categ.name,
-            topic.name,
-            topic.visibleOnHome)
+          modLog
+            .toggleHideTopic(mod, categ.name, topic.name, topic.visibleOnHome)
       } >> env.recent.invalidate
     }
 

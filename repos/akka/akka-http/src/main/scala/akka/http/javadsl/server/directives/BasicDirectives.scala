@@ -195,14 +195,16 @@ abstract class BasicDirectives extends BasicDirectivesBase {
       def returnsFuture(method: Method): Boolean =
         method.getReturnType == classOf[Future[_]] &&
           method.getGenericReturnType.isInstanceOf[ParameterizedType] &&
-          method.getGenericReturnType
+          method
+            .getGenericReturnType
             .asInstanceOf[ParameterizedType]
             .getActualTypeArguments()(0) == classOf[RouteResult]
 
       def returnsCompletionStage(method: Method): Boolean =
         method.getReturnType == classOf[CompletionStage[_]] &&
           method.getGenericReturnType.isInstanceOf[ParameterizedType] &&
-          method.getGenericReturnType
+          method
+            .getGenericReturnType
             .asInstanceOf[ParameterizedType]
             .getActualTypeArguments()(0) == classOf[RouteResult]
 
@@ -234,7 +236,8 @@ abstract class BasicDirectives extends BasicDirectivesBase {
               ctx,
               method.invoke(
                 instance,
-                adaptParams(ctx, params).toArray
+                adaptParams(ctx, params)
+                  .toArray
                   .asInstanceOf[Array[AnyRef]]: _*))
       }
 

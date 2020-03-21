@@ -296,8 +296,10 @@ object SupervisorHierarchySpec {
               "unhandled exception from " + sender() + Logging.stackTraceFor(x),
               identityHashCode(this))
             sender() ! Dump(0)
-            context.system.scheduler.scheduleOnce(1 second, self, Dump(0))(
-              context.dispatcher)
+            context
+              .system
+              .scheduler
+              .scheduleOnce(1 second, self, Dump(0))(context.dispatcher)
             Resume
         })
 
@@ -320,7 +322,9 @@ object SupervisorHierarchySpec {
       }
       if (context.children.size != state.kids.size) {
         abort(
-          "invariant violated: " + state.kids.size + " != " + context.children.size)
+          "invariant violated: " + state.kids.size + " != " + context
+            .children
+            .size)
       }
       cause match {
         case f: Failure if f.failPost > 0 ⇒ {
@@ -358,10 +362,13 @@ object SupervisorHierarchySpec {
       } else if (context.asInstanceOf[ActorCell].mailbox.isSuspended) {
         abort("processing message while suspended")
         false
-      } else if (!Thread.currentThread.getName.startsWith(
-                   "SupervisorHierarchySpec-hierarchy")) {
+      } else if (!Thread
+                   .currentThread
+                   .getName
+                   .startsWith("SupervisorHierarchySpec-hierarchy")) {
         abort(
-          "running on wrong thread " + Thread.currentThread + " dispatcher=" + context.props.dispatcher + "=>" +
+          "running on wrong thread " + Thread
+            .currentThread + " dispatcher=" + context.props.dispatcher + "=>" +
             context.asInstanceOf[ActorCell].dispatcher.id)
         false
       } else
@@ -646,8 +653,10 @@ object SupervisorHierarchySpec {
 
     when(Stress) {
       case Event(Work, _) if idleChildren.isEmpty ⇒
-        context.system.scheduler.scheduleOnce(workSchedule, self, Work)(
-          context.dispatcher)
+        context
+          .system
+          .scheduler
+          .scheduleOnce(workSchedule, self, Work)(context.dispatcher)
         stay
       case Event(Work, x) if x > 0 ⇒
         nextJob.next match {
@@ -675,8 +684,10 @@ object SupervisorHierarchySpec {
         if (idleChildren.nonEmpty)
           self ! Work
         else
-          context.system.scheduler.scheduleOnce(workSchedule, self, Work)(
-            context.dispatcher)
+          context
+            .system
+            .scheduler
+            .scheduleOnce(workSchedule, self, Work)(context.dispatcher)
         stay using (x - 1)
       case Event(Work, _) ⇒
         if (pingChildren.isEmpty)
@@ -693,7 +704,8 @@ object SupervisorHierarchySpec {
       case Event(StateTimeout, todo) ⇒
         log.info("dumping state due to StateTimeout")
         log.info(
-          "children: " + children.size + " pinged: " + pingChildren.size + " idle: " + idleChildren.size + " work: " + todo)
+          "children: " + children.size + " pinged: " + pingChildren
+            .size + " idle: " + idleChildren.size + " work: " + todo)
         pingChildren foreach println
         println(system.asInstanceOf[ActorSystemImpl].printTree)
         pingChildren foreach getErrorsUp
@@ -773,7 +785,9 @@ object SupervisorHierarchySpec {
           children = Vector.empty
           pingChildren = Set.empty
           idleChildren = Vector.empty
-          context.system.scheduler
+          context
+            .system
+            .scheduler
             .scheduleOnce(workSchedule, self, GCcheck(weak))(context.dispatcher)
           System.gc()
           goto(GC)
@@ -799,7 +813,9 @@ object SupervisorHierarchySpec {
         val next = weak filter (_.get ne null)
         if (next.nonEmpty) {
           println(next.size + " left")
-          context.system.scheduler
+          context
+            .system
+            .scheduler
             .scheduleOnce(workSchedule, self, GCcheck(next))(context.dispatcher)
           System.gc()
           stay
@@ -901,7 +917,8 @@ object SupervisorHierarchySpec {
         }
       case Event(StateTimeout, _) ⇒
         println(
-          "pingChildren:\n" + pingChildren.view
+          "pingChildren:\n" + pingChildren
+            .view
             .map(_.path.toString)
             .toSeq
             .sorted
@@ -944,15 +961,13 @@ class SupervisorHierarchySpec
 
       val managerProps = Props(
         new CountDownActor(countDown, AllForOneStrategy()(List())))
-      val manager = Await.result(
-        (boss ? managerProps).mapTo[ActorRef],
-        timeout.duration)
+      val manager = Await
+        .result((boss ? managerProps).mapTo[ActorRef], timeout.duration)
 
       val workerProps = Props(
         new CountDownActor(countDown, SupervisorStrategy.defaultStrategy))
-      val workerOne, workerTwo, workerThree = Await.result(
-        (manager ? workerProps).mapTo[ActorRef],
-        timeout.duration)
+      val workerOne, workerTwo, workerThree = Await
+        .result((manager ? workerProps).mapTo[ActorRef], timeout.duration)
 
       filterException[ActorKilledException] {
         workerOne ! Kill
@@ -1126,17 +1141,19 @@ class SupervisorHierarchySpec
     }
 
     "survive being stressed" in {
-      system.eventStream.publish(
-        Mute(
-          EventFilter[Failure](),
-          EventFilter.warning("Failure"),
-          EventFilter[ActorInitializationException](),
-          EventFilter[NoSuchElementException]("head of empty list"),
-          EventFilter.error(start = "changing Resume into Restart"),
-          EventFilter.error(start = "changing Resume into Create"),
-          EventFilter.error(start = "changing Recreate into Create"),
-          EventFilter.warning(start = "received dead ")
-        ))
+      system
+        .eventStream
+        .publish(
+          Mute(
+            EventFilter[Failure](),
+            EventFilter.warning("Failure"),
+            EventFilter[ActorInitializationException](),
+            EventFilter[NoSuchElementException]("head of empty list"),
+            EventFilter.error(start = "changing Resume into Restart"),
+            EventFilter.error(start = "changing Resume into Create"),
+            EventFilter.error(start = "changing Recreate into Create"),
+            EventFilter.warning(start = "received dead ")
+          ))
 
       val fsm = system.actorOf(
         Props(new StressTest(testActor, size = 500, breadth = 6)),

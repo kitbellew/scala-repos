@@ -145,7 +145,8 @@ trait StreamTest extends QueryTest with Timeouts {
 
   /** Signals that a failure is expected and should not kill the test. */
   case class ExpectFailure[T <: Throwable: ClassTag]() extends StreamAction {
-    val causeClass: Class[T] = implicitly[ClassTag[T]].runtimeClass
+    val causeClass: Class[T] = implicitly[ClassTag[T]]
+      .runtimeClass
       .asInstanceOf[Class[T]]
     override def toString(): String =
       s"ExpectFailure[${causeClass.getCanonicalName}]"
@@ -230,7 +231,8 @@ trait StreamTest extends QueryTest with Timeouts {
         StartStream +: actions
 
     def testActions =
-      actions.zipWithIndex
+      actions
+        .zipWithIndex
         .map {
           case (a, i) =>
             if ((
@@ -332,17 +334,20 @@ trait StreamTest extends QueryTest with Timeouts {
           case StartStream =>
             verify(currentStream == null, "stream already running")
             lastStream = currentStream
-            currentStream = sqlContext.streams
+            currentStream = sqlContext
+              .streams
               .startQuery(StreamExecution.nextName, stream, sink)
               .asInstanceOf[StreamExecution]
-            currentStream.microBatchThread.setUncaughtExceptionHandler(
-              new UncaughtExceptionHandler {
-                override def uncaughtException(t: Thread, e: Throwable)
-                    : Unit = {
-                  streamDeathCause = e
-                  testThread.interrupt()
-                }
-              })
+            currentStream
+              .microBatchThread
+              .setUncaughtExceptionHandler(
+                new UncaughtExceptionHandler {
+                  override def uncaughtException(t: Thread, e: Throwable)
+                      : Unit = {
+                    streamDeathCause = e
+                    testThread.interrupt()
+                  }
+                })
 
           case StopStream =>
             verify(
@@ -454,9 +459,11 @@ trait StreamTest extends QueryTest with Timeouts {
                   failTest("Exception while getting data from sink", e)
               }
 
-            QueryTest.sameRows(expectedAnswer, allData).foreach { error =>
-              failTest(error)
-            }
+            QueryTest
+              .sameRows(expectedAnswer, allData)
+              .foreach { error =>
+                failTest(error)
+              }
         }
         pos += 1
       }

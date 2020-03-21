@@ -61,19 +61,23 @@ class SbtAnnotator extends Annotator {
       }
 
     private def annotateTypeMismatch(expression: ScExpression): Unit =
-      expression.getType(TypingContext.empty).foreach { expressionType =>
-        if (expressionType.equiv(types.Nothing) || expressionType.equiv(
-              types.Null)) {
-          holder.createErrorAnnotation(
-            expression,
-            SbtBundle("sbt.annotation.expectedExpressionType"))
-        } else {
-          if (!isTypeAllowed(expression, expressionType))
+      expression
+        .getType(TypingContext.empty)
+        .foreach { expressionType =>
+          if (expressionType.equiv(types.Nothing) || expressionType
+                .equiv(types.Null)) {
             holder.createErrorAnnotation(
               expression,
-              SbtBundle("sbt.annotation.expressionMustConform", expressionType))
+              SbtBundle("sbt.annotation.expectedExpressionType"))
+          } else {
+            if (!isTypeAllowed(expression, expressionType))
+              holder.createErrorAnnotation(
+                expression,
+                SbtBundle(
+                  "sbt.annotation.expressionMustConform",
+                  expressionType))
+          }
         }
-      }
 
     private def findTypeByText(
         exp: ScExpression,
@@ -84,19 +88,23 @@ class SbtAnnotator extends Annotator {
     private def isTypeAllowed(
         expression: ScExpression,
         expressionType: ScType): Boolean =
-      SbtAnnotator.AllowedTypes.exists(typeStr =>
-        findTypeByText(expression, typeStr) exists (t =>
-          expressionType conforms t))
+      SbtAnnotator
+        .AllowedTypes
+        .exists(typeStr =>
+          findTypeByText(expression, typeStr) exists (t =>
+            expressionType conforms t))
 
     private def annotateMissingBlankLines(): Unit =
-      sbtFileElements.sliding(3).foreach {
-        case Seq(_: ScExpression, space: PsiWhiteSpace, e: ScExpression)
-            if space.getText.count(_ == '\n') == 1 =>
-          holder.createErrorAnnotation(
-            e,
-            SbtBundle("sbt.annotation.blankLineRequired", sbtVersion))
-        case _ =>
-      }
+      sbtFileElements
+        .sliding(3)
+        .foreach {
+          case Seq(_: ScExpression, space: PsiWhiteSpace, e: ScExpression)
+              if space.getText.count(_ == '\n') == 1 =>
+            holder.createErrorAnnotation(
+              e,
+              SbtBundle("sbt.annotation.blankLineRequired", sbtVersion))
+          case _ =>
+        }
 
     private def sbtVersionLessThan(version: String): Boolean =
       StringUtil.compareVersionNumbers(sbtVersion, version) < 0

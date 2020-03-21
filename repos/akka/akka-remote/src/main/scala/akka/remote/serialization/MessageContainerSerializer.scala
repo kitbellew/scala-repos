@@ -64,14 +64,16 @@ class MessageContainerSerializer(val system: ExtendedActorSystem)
             ByteString.copyFromUtf8(message.getClass.getName))
     }
 
-    sel.elements.foreach {
-      case SelectChildName(name) ⇒
-        builder.addPattern(buildPattern(Some(name), CHILD_NAME))
-      case SelectChildPattern(patternStr) ⇒
-        builder.addPattern(buildPattern(Some(patternStr), CHILD_PATTERN))
-      case SelectParent ⇒
-        builder.addPattern(buildPattern(None, PARENT))
-    }
+    sel
+      .elements
+      .foreach {
+        case SelectChildName(name) ⇒
+          builder.addPattern(buildPattern(Some(name), CHILD_NAME))
+        case SelectChildPattern(patternStr) ⇒
+          builder.addPattern(buildPattern(Some(patternStr), CHILD_PATTERN))
+        case SelectParent ⇒
+          builder.addPattern(buildPattern(None, PARENT))
+      }
 
     builder.build().toByteArray
   }
@@ -101,17 +103,20 @@ class MessageContainerSerializer(val system: ExtendedActorSystem)
 
     import scala.collection.JavaConverters._
     val elements: immutable.Iterable[SelectionPathElement] =
-      selectionEnvelope.getPatternList.asScala.map { x ⇒
-        x.getType match {
-          case CHILD_NAME ⇒
-            SelectChildName(x.getMatcher)
-          case CHILD_PATTERN ⇒
-            SelectChildPattern(x.getMatcher)
-          case PARENT ⇒
-            SelectParent
-        }
+      selectionEnvelope
+        .getPatternList
+        .asScala
+        .map { x ⇒
+          x.getType match {
+            case CHILD_NAME ⇒
+              SelectChildName(x.getMatcher)
+            case CHILD_PATTERN ⇒
+              SelectChildPattern(x.getMatcher)
+            case PARENT ⇒
+              SelectParent
+          }
 
-      }(collection.breakOut)
+        }(collection.breakOut)
     val wildcardFanOut =
       if (selectionEnvelope.hasWildcardFanOut)
         selectionEnvelope.getWildcardFanOut

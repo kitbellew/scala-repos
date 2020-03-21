@@ -56,9 +56,9 @@ class LastSinkSpec extends AkkaSpec with ScriptedTest {
     }
 
     "yield None for empty stream" in assertAllStagesStopped {
-      Await.result(
-        Source.empty[Int].runWith(Sink.lastOption),
-        1.second) should be(None)
+      Await
+        .result(Source.empty[Int].runWith(Sink.lastOption), 1.second) should be(
+        None)
     }
 
   }

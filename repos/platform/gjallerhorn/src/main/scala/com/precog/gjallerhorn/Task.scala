@@ -184,7 +184,8 @@ abstract class Task(settings: Settings) extends Specification {
         tpe map ("type" -> _),
         prop map ("property" -> _)).flatten
     val req = f(metadata / "fs") <<? params
-    Http(req OK as.String).either
+    Http(req OK as.String)
+      .either
       .apply()
       .fold(
         error => JUndefined,
@@ -220,7 +221,8 @@ abstract class Task(settings: Settings) extends Specification {
       grantId: String,
       perms: List[(String, String, List[String])]): ApiResult =
     http(
-      (grants / grantId / "children" / "").POST
+      (grants / grantId / "children" / "")
+        .POST
         .addQueryParameter("apiKey", apiKey) << grantBody(perms))()
 
   def addToGrant(

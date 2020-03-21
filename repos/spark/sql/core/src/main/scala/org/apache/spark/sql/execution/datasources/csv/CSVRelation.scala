@@ -74,7 +74,8 @@ object CSVRelation extends Logging {
         requiredFields
       }
     val safeRequiredIndices = new Array[Int](safeRequiredFields.length)
-    schemaFields.zipWithIndex
+    schemaFields
+      .zipWithIndex
       .filter {
         case (field, _) =>
           safeRequiredFields.contains(field)
@@ -165,8 +166,8 @@ private[sql] class CsvOutputWriter(
           context: TaskAttemptContext,
           extension: String): Path = {
         val configuration = context.getConfiguration
-        val uniqueWriteJobId = configuration.get(
-          "spark.sql.sources.writeJobUUID")
+        val uniqueWriteJobId = configuration
+          .get("spark.sql.sources.writeJobUUID")
         val taskAttemptId = context.getTaskAttemptID
         val split = taskAttemptId.getTaskID.getId
         new Path(path, f"part-r-$split%05d-$uniqueWriteJobId.csv$extension")
@@ -192,9 +193,8 @@ private[sql] class CsvOutputWriter(
 
   override protected[sql] def writeInternal(row: InternalRow): Unit = {
     // TODO: Instead of converting and writing every row, we should use the univocity buffer
-    val resultString = csvWriter.writeRow(
-      rowToString(row.toSeq(dataSchema)),
-      firstRow)
+    val resultString = csvWriter
+      .writeRow(rowToString(row.toSeq(dataSchema)), firstRow)
     if (firstRow) {
       firstRow = false
     }

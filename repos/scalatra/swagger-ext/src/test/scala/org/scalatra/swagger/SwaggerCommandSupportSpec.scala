@@ -6,9 +6,8 @@ import org.scalatra.commands._
 import org.scalatra.test.specs2.MutableScalatraSpec
 
 object SwaggerCommandSupportSpec {
-  implicit val stringFormat = DefaultJsonFormats.GenericFormat(
-    DefaultReaders.StringReader,
-    DefaultWriters.StringWriter)
+  implicit val stringFormat = DefaultJsonFormats
+    .GenericFormat(DefaultReaders.StringReader, DefaultWriters.StringWriter)
   class SimpleCommand extends ParamsOnlyCommand {
     val name: Field[String] = asString("name").notBlank.position(1)
     val age: Field[Int] = bind[Int]("age").optional(0)
@@ -69,8 +68,8 @@ class SwaggerCommandSupportSpec extends MutableScalatraSpec {
   // Parameter(limit,ValueDataType(integer,Some(int32),None),Some(the max number of items to return),None,query,Some(20),AnyValue,false,None,0)
   "SwaggerCommandSupport" should {
     "generate a model and parameters for a simple command" in {
-      val (parameters, model) = SwaggerCommandSupport.parametersFromCommand(
-        new SimpleCommand)
+      val (parameters, model) = SwaggerCommandSupport
+        .parametersFromCommand(new SimpleCommand)
       parameters must_== List(
         Parameter(
           "body",
@@ -116,9 +115,10 @@ class SwaggerCommandSupportSpec extends MutableScalatraSpec {
           allowableValues = AllowableValues("123")
         )
       )
-      val (parameters, model) = SwaggerCommandSupport.parametersFromCommand(
-        new FullCommand)
-      parameters.size must_== 3 // parameterList.size // disabled for swagger codegen for now
+      val (parameters, model) = SwaggerCommandSupport
+        .parametersFromCommand(new FullCommand)
+      parameters
+        .size must_== 3 // parameterList.size // disabled for swagger codegen for now
       parameters must contain(parameterList(0))
       parameters must contain(parameterList(1))
       parameters must contain(parameterList(2))

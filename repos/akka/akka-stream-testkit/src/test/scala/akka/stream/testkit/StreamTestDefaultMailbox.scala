@@ -43,7 +43,8 @@ private[akka] final case class StreamTestDefaultMailbox()
           // this logging should not be needed when issue #15947 has been fixed
           case e: AssertionError ⇒
             system.foreach(
-              _.log.error(
+              _.log
+              .error(
                 e,
                 s"StreamTestDefaultMailbox assertion failed: ${e.getMessage}"))
             throw e

@@ -104,9 +104,8 @@ final class QuantileDiscretizer(override val uid: String)
         case Row(feature: Double) =>
           feature
       }
-    val candidates = QuantileDiscretizer.findSplitCandidates(
-      samples,
-      $(numBuckets) - 1)
+    val candidates = QuantileDiscretizer
+      .findSplitCandidates(samples, $(numBuckets) - 1)
     val splits = QuantileDiscretizer.getSplits(candidates)
     val bucketizer = new Bucketizer(uid).setSplits(splits)
     copyValues(bucketizer.setParent(this))

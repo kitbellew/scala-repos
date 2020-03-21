@@ -127,12 +127,14 @@ trait HTTPProvider {
 
   private def preBoot() {
     // do this stateless
-    LiftRules.statelessDispatch.prepend(
-      NamedPF("Classpath service") {
-        case r @ Req(mainPath :: subPath, suffx, _)
-            if (mainPath == LiftRules.resourceServerPath) =>
-          ResourceServer.findResourceInClasspath(r, r.path.wholePath.drop(1))
-      })
+    LiftRules
+      .statelessDispatch
+      .prepend(
+        NamedPF("Classpath service") {
+          case r @ Req(mainPath :: subPath, suffx, _)
+              if (mainPath == LiftRules.resourceServerPath) =>
+            ResourceServer.findResourceInClasspath(r, r.path.wholePath.drop(1))
+        })
   }
 
   private def postBoot {

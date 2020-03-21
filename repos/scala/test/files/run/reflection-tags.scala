@@ -3,7 +3,8 @@ import scala.reflect.ClassTag
 
 object Test extends App {
   var typeMembers =
-    typeOf[scala.reflect.api.Universe].members
+    typeOf[scala.reflect.api.Universe]
+      .members
       .filter(sym => sym.isType && !sym.isClass)
       .toList
   typeMembers = typeMembers.filter(
@@ -14,7 +15,8 @@ object Test extends App {
   typeMembers = typeMembers.filter(_.name != TypeName("Compat")) // internal
   typeMembers = typeMembers.filter(_.name != TypeName("BuildApi")) // deprecated
   val tags =
-    typeOf[scala.reflect.api.Universe].members
+    typeOf[scala.reflect.api.Universe]
+      .members
       .filter(sym => sym.isImplicit)
       .toList
 

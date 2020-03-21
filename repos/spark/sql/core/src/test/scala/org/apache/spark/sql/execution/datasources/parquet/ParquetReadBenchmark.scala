@@ -39,7 +39,8 @@ object ParquetReadBenchmark {
   val sqlContext = new SQLContext(sc)
 
   // Set default configs. Individual cases will change them if necessary.
-  sqlContext.conf
+  sqlContext
+    .conf
     .setConfString(SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key, "true")
   sqlContext.conf.setConfString(SQLConf.WHOLESTAGE_CODEGEN_ENABLED.key, "true")
 
@@ -57,17 +58,19 @@ object ParquetReadBenchmark {
 
   def withSQLConf(pairs: (String, String)*)(f: => Unit): Unit = {
     val (keys, values) = pairs.unzip
-    val currentValues = keys.map(key =>
-      Try(sqlContext.conf.getConfString(key)).toOption)
+    val currentValues = keys
+      .map(key => Try(sqlContext.conf.getConfString(key)).toOption)
     (keys, values).zipped.foreach(sqlContext.conf.setConfString)
     try f
     finally {
-      keys.zip(currentValues).foreach {
-        case (key, Some(value)) =>
-          sqlContext.conf.setConfString(key, value)
-        case (key, None) =>
-          sqlContext.conf.unsetConf(key)
-      }
+      keys
+        .zip(currentValues)
+        .foreach {
+          case (key, Some(value)) =>
+            sqlContext.conf.setConfString(key, value)
+          case (key, None) =>
+            sqlContext.conf.unsetConf(key)
+        }
     }
   }
 
@@ -85,7 +88,8 @@ object ParquetReadBenchmark {
           .sql("select cast(id as INT) as id from t1")
           .write
           .parquet(dir.getCanonicalPath)
-        sqlContext.read
+        sqlContext
+          .read
           .parquet(dir.getCanonicalPath)
           .registerTempTable("tempTable")
 
@@ -104,48 +108,52 @@ object ParquetReadBenchmark {
         // Driving the parquet reader in batch mode directly.
         parquetReaderBenchmark.addCase("ParquetReader Vectorized") { num =>
           var sum = 0L
-          files.map(_.asInstanceOf[String]).foreach { p =>
-            val reader = new VectorizedParquetRecordReader
-            try {
-              reader.initialize(p, ("id" :: Nil).asJava)
-              val batch = reader.resultBatch()
-              val col = batch.column(0)
-              while (reader.nextBatch()) {
-                val numRows = batch.numRows()
-                var i = 0
-                while (i < numRows) {
-                  if (!col.getIsNull(i))
-                    sum += col.getInt(i)
-                  i += 1
-                }
-              }
-            } finally {
-              reader.close()
-            }
-          }
-        }
-
-        // Decoding in vectorized but having the reader return rows.
-        parquetReaderBenchmark.addCase("ParquetReader Vectorized -> Row") {
-          num =>
-            var sum = 0L
-            files.map(_.asInstanceOf[String]).foreach { p =>
+          files
+            .map(_.asInstanceOf[String])
+            .foreach { p =>
               val reader = new VectorizedParquetRecordReader
               try {
                 reader.initialize(p, ("id" :: Nil).asJava)
                 val batch = reader.resultBatch()
+                val col = batch.column(0)
                 while (reader.nextBatch()) {
-                  val it = batch.rowIterator()
-                  while (it.hasNext) {
-                    val record = it.next()
-                    if (!record.isNullAt(0))
-                      sum += record.getInt(0)
+                  val numRows = batch.numRows()
+                  var i = 0
+                  while (i < numRows) {
+                    if (!col.getIsNull(i))
+                      sum += col.getInt(i)
+                    i += 1
                   }
                 }
               } finally {
                 reader.close()
               }
             }
+        }
+
+        // Decoding in vectorized but having the reader return rows.
+        parquetReaderBenchmark.addCase("ParquetReader Vectorized -> Row") {
+          num =>
+            var sum = 0L
+            files
+              .map(_.asInstanceOf[String])
+              .foreach { p =>
+                val reader = new VectorizedParquetRecordReader
+                try {
+                  reader.initialize(p, ("id" :: Nil).asJava)
+                  val batch = reader.resultBatch()
+                  while (reader.nextBatch()) {
+                    val it = batch.rowIterator()
+                    while (it.hasNext) {
+                      val record = it.next()
+                      if (!record.isNullAt(0))
+                        sum += record.getInt(0)
+                    }
+                  }
+                } finally {
+                  reader.close()
+                }
+              }
         }
 
         /*
@@ -177,7 +185,8 @@ object ParquetReadBenchmark {
           .sql("select cast(id as INT) as c1, cast(id as STRING) as c2 from t1")
           .write
           .parquet(dir.getCanonicalPath)
-        sqlContext.read
+        sqlContext
+          .read
           .parquet(dir.getCanonicalPath)
           .registerTempTable("tempTable")
 
@@ -220,7 +229,8 @@ object ParquetReadBenchmark {
           .sql("select cast((id % 200) + 10000 as STRING) as c1 from t1")
           .write
           .parquet(dir.getCanonicalPath)
-        sqlContext.read
+        sqlContext
+          .read
           .parquet(dir.getCanonicalPath)
           .registerTempTable("tempTable")
 
@@ -258,7 +268,8 @@ object ParquetReadBenchmark {
           .write
           .partitionBy("p")
           .parquet(dir.getCanonicalPath)
-        sqlContext.read
+        sqlContext
+          .read
           .parquet(dir.getCanonicalPath)
           .registerTempTable("tempTable")
 
@@ -301,7 +312,8 @@ object ParquetReadBenchmark {
               s"IF(rand(2) < $fractionOfNulls, NULL, cast(id as STRING)) as c2 from t1")
           .write
           .parquet(dir.getCanonicalPath)
-        sqlContext.read
+        sqlContext
+          .read
           .parquet(dir.getCanonicalPath)
           .registerTempTable("tempTable")
 
@@ -318,45 +330,49 @@ object ParquetReadBenchmark {
         val files = SpecificParquetRecordReaderBase.listDirectory(dir).toArray
         benchmark.addCase("PR Vectorized") { num =>
           var sum = 0
-          files.map(_.asInstanceOf[String]).foreach { p =>
-            val reader = new VectorizedParquetRecordReader
-            try {
-              reader.initialize(p, ("c1" :: "c2" :: Nil).asJava)
-              val batch = reader.resultBatch()
-              while (reader.nextBatch()) {
-                val rowIterator = batch.rowIterator()
-                while (rowIterator.hasNext) {
-                  val row = rowIterator.next()
-                  val value = row.getUTF8String(0)
-                  if (!row.isNullAt(0) && !row.isNullAt(1))
-                    sum += value.numBytes()
+          files
+            .map(_.asInstanceOf[String])
+            .foreach { p =>
+              val reader = new VectorizedParquetRecordReader
+              try {
+                reader.initialize(p, ("c1" :: "c2" :: Nil).asJava)
+                val batch = reader.resultBatch()
+                while (reader.nextBatch()) {
+                  val rowIterator = batch.rowIterator()
+                  while (rowIterator.hasNext) {
+                    val row = rowIterator.next()
+                    val value = row.getUTF8String(0)
+                    if (!row.isNullAt(0) && !row.isNullAt(1))
+                      sum += value.numBytes()
+                  }
                 }
+              } finally {
+                reader.close()
               }
-            } finally {
-              reader.close()
             }
-          }
         }
 
         benchmark.addCase("PR Vectorized (Null Filtering)") { num =>
           var sum = 0L
-          files.map(_.asInstanceOf[String]).foreach { p =>
-            val reader = new VectorizedParquetRecordReader
-            try {
-              reader.initialize(p, ("c1" :: "c2" :: Nil).asJava)
-              val batch = reader.resultBatch()
-              batch.filterNullsInColumn(0)
-              batch.filterNullsInColumn(1)
-              while (reader.nextBatch()) {
-                val rowIterator = batch.rowIterator()
-                while (rowIterator.hasNext) {
-                  sum += rowIterator.next().getUTF8String(0).numBytes()
+          files
+            .map(_.asInstanceOf[String])
+            .foreach { p =>
+              val reader = new VectorizedParquetRecordReader
+              try {
+                reader.initialize(p, ("c1" :: "c2" :: Nil).asJava)
+                val batch = reader.resultBatch()
+                batch.filterNullsInColumn(0)
+                batch.filterNullsInColumn(1)
+                while (reader.nextBatch()) {
+                  val rowIterator = batch.rowIterator()
+                  while (rowIterator.hasNext) {
+                    sum += rowIterator.next().getUTF8String(0).numBytes()
+                  }
                 }
+              } finally {
+                reader.close()
               }
-            } finally {
-              reader.close()
             }
-          }
         }
 
         /*

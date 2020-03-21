@@ -50,7 +50,8 @@ private[round] final class Finisher(
       Color.all foreach notifyTimeline(prog.game)
     lila.mon.game.finish(status.name)()
     casualOnly.fold(
-      GameRepo unrate prog.game.id inject prog.game
+      GameRepo unrate prog.game.id inject prog
+        .game
         .copy(mode = chess.Mode.Casual),
       fuccess(prog.game)) flatMap { g =>
       (GameRepo save prog) >>
@@ -59,20 +60,22 @@ private[round] final class Finisher(
           winnerColor = winner,
           winnerId = winner flatMap (g.player(_).userId),
           status = prog.game.status) >>
-        UserRepo.pair(g.whitePlayer.userId, g.blackPlayer.userId).flatMap {
-          case (whiteO, blackO) => {
-            val finish = FinishGame(g, whiteO, blackO)
-            updateCountAndPerfs(finish) inject {
-              message foreach {
-                messenger.system(g, _)
+        UserRepo
+          .pair(g.whitePlayer.userId, g.blackPlayer.userId)
+          .flatMap {
+            case (whiteO, blackO) => {
+              val finish = FinishGame(g, whiteO, blackO)
+              updateCountAndPerfs(finish) inject {
+                message foreach {
+                  messenger.system(g, _)
+                }
+                GameRepo game g.id foreach { newGame =>
+                  bus.publish(finish.copy(game = newGame | g), 'finishGame)
+                }
+                prog.events
               }
-              GameRepo game g.id foreach { newGame =>
-                bus.publish(finish.copy(game = newGame | g), 'finishGame)
-              }
-              prog.events
             }
           }
-        }
     }
   }
 
@@ -97,10 +100,8 @@ private[round] final class Finisher(
     (!finish.isVsSelf && !finish.game.aborted) ?? {
       (finish.white |@| finish.black).tupled ?? {
         case (white, black) =>
-          crosstableApi add finish.game zip perfsUpdater.save(
-            finish.game,
-            white,
-            black)
+          crosstableApi add finish.game zip perfsUpdater
+            .save(finish.game, white, black)
       } zip
         (finish.white ?? incNbGames(finish.game)) zip
         (finish.black ?? incNbGames(finish.game)) void

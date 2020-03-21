@@ -48,8 +48,8 @@ private[akka] final case class ScatterGatherFirstCompletedRoutees(
   override def send(message: Any, sender: ActorRef): Unit =
     if (routees.isEmpty) {
       implicit val ec = ExecutionContexts.sameThreadExecutionContext
-      val reply = Future.failed(
-        new TimeoutException("Timeout due to no routees"))
+      val reply = Future
+        .failed(new TimeoutException("Timeout due to no routees"))
       reply.pipeTo(sender)
     } else {
       implicit val ec = ExecutionContexts.sameThreadExecutionContext
@@ -105,8 +105,8 @@ final case class ScatterGatherFirstCompletedPool(
     override val nrOfInstances: Int,
     override val resizer: Option[Resizer] = None,
     within: FiniteDuration,
-    override val supervisorStrategy: SupervisorStrategy =
-      Pool.defaultSupervisorStrategy,
+    override val supervisorStrategy: SupervisorStrategy = Pool
+      .defaultSupervisorStrategy,
     override val routerDispatcher: String = Dispatchers.DefaultDispatcherId,
     override val usePoolDispatcher: Boolean = false)
     extends Pool

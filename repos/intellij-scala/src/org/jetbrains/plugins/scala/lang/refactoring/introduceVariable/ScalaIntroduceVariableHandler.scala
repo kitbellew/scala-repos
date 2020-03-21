@@ -42,12 +42,8 @@ class ScalaIntroduceVariableHandler
     def selectionEnd = editor.getSelectionModel.getSelectionEnd
 
     val selectedElement: Option[PsiElement] = {
-      val typeElem = ScalaRefactoringUtil.getTypeElement(
-        project,
-        editor,
-        file,
-        selectionStart,
-        selectionEnd)
+      val typeElem = ScalaRefactoringUtil
+        .getTypeElement(project, editor, file, selectionStart, selectionEnd)
       val expr = ScalaRefactoringUtil
         .getExpression(project, editor, file, selectionStart, selectionEnd)
         .map(_._1)
@@ -88,8 +84,8 @@ class ScalaIntroduceVariableHandler
     }
 
     if (hasSelection && selectedElement.isEmpty) {
-      val message = ScalaBundle.message(
-        "cannot.refactor.not.expression.nor.type")
+      val message = ScalaBundle
+        .message("cannot.refactor.not.expression.nor.type")
       CommonRefactoringUtil.showErrorHint(
         project,
         editor,

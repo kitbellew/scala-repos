@@ -82,7 +82,8 @@ object SbtRepositoryLayout extends RepositoryLayout {
           .append(artifact.getVersion)
     }
 
-    if (artifact.getClassifier != null && !artifact.getClassifier.trim.isEmpty) {
+    if (artifact
+          .getClassifier != null && !artifact.getClassifier.trim.isEmpty) {
       path.append("-").append(artifact.getClassifier)
     }
     if (artifact.getExtension.length > 0) {
@@ -141,7 +142,10 @@ object SbtRepositoryLayout extends RepositoryLayout {
       location: URI): java.util.List[Checksum] = getChecksums(location)
 
   private def getChecksums(location: URI): java.util.List[Checksum] =
-    java.util.Arrays.asList(
-      Checksum.forLocation(location, "SHA-1"),
-      Checksum.forLocation(location, "MD5"))
+    java
+      .util
+      .Arrays
+      .asList(
+        Checksum.forLocation(location, "SHA-1"),
+        Checksum.forLocation(location, "MD5"))
 }

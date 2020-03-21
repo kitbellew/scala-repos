@@ -70,8 +70,9 @@ object ValidationSpec extends Specification {
     "throw an IllegalArgumentException if regex is null" in {
       {
         Form(
-          "value" -> Forms.text.verifying(
-            Constraints.pattern(null, "nullRegex", "error")))
+          "value" -> Forms
+            .text
+            .verifying(Constraints.pattern(null, "nullRegex", "error")))
           .bind(Map("value" -> "hello"))
       }.must(throwAn[IllegalArgumentException])
     }
@@ -79,8 +80,9 @@ object ValidationSpec extends Specification {
     "throw an IllegalArgumentException if name is null" in {
       {
         Form(
-          "value" -> Forms.text.verifying(
-            Constraints.pattern(".*".r, null, "error")))
+          "value" -> Forms
+            .text
+            .verifying(Constraints.pattern(".*".r, null, "error")))
           .bind(Map("value" -> "hello"))
       }.must(throwAn[IllegalArgumentException])
     }

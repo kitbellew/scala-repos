@@ -274,9 +274,13 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
         return;
         Seq((1, 1)).toIterator
       }
-    val initialRDD = ds.ssc.sparkContext.emptyRDD[Int].map { i =>
-      (i, i)
-    }
+    val initialRDD = ds
+      .ssc
+      .sparkContext
+      .emptyRDD[Int]
+      .map { i =>
+        (i, i)
+      }
     expectCorrectException {
       ds.updateStateByKey(updateF1)
     }

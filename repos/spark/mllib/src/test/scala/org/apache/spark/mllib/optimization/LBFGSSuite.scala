@@ -62,8 +62,8 @@ class LBFGSSuite
     "LBFGS loss should be decreasing and match the result of Gradient Descent.") {
     val regParam = 0
 
-    val initialWeightsWithIntercept = Vectors.dense(
-      1.0 +: initialWeights.toArray)
+    val initialWeightsWithIntercept = Vectors
+      .dense(1.0 +: initialWeights.toArray)
     val convergenceTol = 1e-12
     val numIterations = 10
 
@@ -227,9 +227,8 @@ class LBFGSSuite
       .setNumIterations(numIterations)
       .setRegParam(regParam)
 
-    val weightLBFGS = lbfgsOptimizer.optimize(
-      dataRDD,
-      initialWeightsWithIntercept)
+    val weightLBFGS = lbfgsOptimizer
+      .optimize(dataRDD, initialWeightsWithIntercept)
 
     val numGDIterations = 50
     val stepSize = 1.0
@@ -273,8 +272,7 @@ class LBFGSClusterSuite extends SparkFunSuite with LocalClusterSparkContext {
     val random = new Random(0)
     // If we serialize data directly in the task closure, the size of the serialized task would be
     // greater than 1MB and hence Spark would throw an error.
-    val weights = lbfgs.optimize(
-      examples,
-      Vectors.dense(Array.fill(n)(random.nextDouble)))
+    val weights = lbfgs
+      .optimize(examples, Vectors.dense(Array.fill(n)(random.nextDouble)))
   }
 }

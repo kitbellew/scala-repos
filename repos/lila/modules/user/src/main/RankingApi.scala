@@ -24,7 +24,9 @@ final class RankingApi(
     lightUser: String => Option[lila.common.LightUser]) {
 
   import RankingApi._
-  private implicit val rankingBSONHandler = reactivemongo.bson.Macros
+  private implicit val rankingBSONHandler = reactivemongo
+    .bson
+    .Macros
     .handler[Ranking]
 
   def save(userId: User.ID, perfType: Option[PerfType], perfs: Perfs): Funit =
@@ -54,7 +56,8 @@ final class RankingApi(
           .remove(
             BSONDocument(
               "_id" -> BSONDocument(
-                "$in" -> PerfType.leaderboardable
+                "$in" -> PerfType
+                  .leaderboardable
                   .filter { pt =>
                     user.perfs(pt).nonEmpty
                   }
@@ -89,12 +92,14 @@ final class RankingApi(
     private type Rank = Int
 
     def of(userId: User.ID): Fu[Map[Perf.Key, Int]] =
-      lila.common.Future.traverseSequentially(PerfType.leaderboardable) {
-        perf =>
+      lila
+        .common
+        .Future
+        .traverseSequentially(PerfType.leaderboardable) { perf =>
           cache(perf.id) map {
             _ get userId map (perf.key -> _)
           }
-      } map (_.flatten.toMap)
+        } map (_.flatten.toMap)
 
     private val cache = AsyncCache[Perf.ID, Map[User.ID, Rank]](
       f = compute,
@@ -133,7 +138,8 @@ final class RankingApi(
 
     // from 800 to 2500 by Stat.group
     private def compute(perfId: Perf.ID): Fu[List[NbUsers]] =
-      lila.rating
+      lila
+        .rating
         .PerfType(perfId)
         .exists(lila.rating.PerfType.leaderboardable.contains) ?? {
         coll
@@ -153,15 +159,20 @@ final class RankingApi(
           )
           .map { res =>
             val hash =
-              res.documents.flatMap { obj =>
-                for {
-                  rating <- obj.getAs[Int]("_id")
-                  nb <- obj.getAs[NbUsers]("nb")
-                } yield rating -> nb
-              }.toMap
-            (800 to 2800 by Stat.group).map { r =>
-              hash.getOrElse(r, 0)
-            }.toList
+              res
+                .documents
+                .flatMap { obj =>
+                  for {
+                    rating <- obj.getAs[Int]("_id")
+                    nb <- obj.getAs[NbUsers]("nb")
+                  } yield rating -> nb
+                }
+                .toMap
+            (800 to 2800 by Stat.group)
+              .map { r =>
+                hash.getOrElse(r, 0)
+              }
+              .toList
           }
       }
   }

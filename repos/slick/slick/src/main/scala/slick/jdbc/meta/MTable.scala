@@ -36,7 +36,8 @@ object MTable {
       namePattern: Option[String],
       types: Option[Seq[String]]) =
     ResultSetAction[MTable](
-      _.metaData.getTables(
+      _.metaData
+      .getTables(
         cat.orNull,
         schemaPattern.orNull,
         namePattern.orNull,

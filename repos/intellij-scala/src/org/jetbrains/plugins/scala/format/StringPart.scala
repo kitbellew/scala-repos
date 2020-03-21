@@ -20,9 +20,8 @@ sealed trait StringPart
 
 case class Text(s: String) extends StringPart {
   def withEscapedPercent(manager: PsiManager): List[StringPart] = {
-    val literal = ScalaPsiElementFactory.createExpressionFromText(
-      "\"%\"",
-      manager)
+    val literal = ScalaPsiElementFactory
+      .createExpressionFromText("\"%\"", manager)
     if (s == "%")
       List(Text(""), Injection(literal, None), Text(""))
     else {

@@ -135,9 +135,7 @@ trait Config extends Serializable {
     this + (ScaldingRequireOrderedSerialization -> (b.toString))
 
   def getRequireOrderedSerialization: Boolean =
-    get(ScaldingRequireOrderedSerialization)
-      .map(_.toBoolean)
-      .getOrElse(false)
+    get(ScaldingRequireOrderedSerialization).map(_.toBoolean).getOrElse(false)
 
   def getCascadingSerializationTokens: Map[Int, String] =
     get(Config.CascadingSerializationTokens)
@@ -212,7 +210,8 @@ trait Config extends Serializable {
     }
     val withKryo = Config(chillConf.toMap + hadoopKV)
 
-    val kryoClasses = withKryo.getKryoRegisteredClasses
+    val kryoClasses = withKryo
+      .getKryoRegisteredClasses
       .filterNot(_.isPrimitive) // Cascading handles primitives and arrays
       .filterNot(_.isArray)
 
@@ -244,13 +243,9 @@ trait Config extends Serializable {
 
   def getScaldingVersion: Option[String] = get(Config.ScaldingVersion)
   def setScaldingVersion: Config =
-    (
-      this
-        .+(Config.ScaldingVersion -> scaldingVersion)
-      )
-      .+(
-        // This is setting a property for cascading/driven
-        (AppProps.APP_FRAMEWORKS -> ("scalding:" + scaldingVersion.toString)))
+    (this.+(Config.ScaldingVersion -> scaldingVersion)).+(
+      // This is setting a property for cascading/driven
+      (AppProps.APP_FRAMEWORKS -> ("scalding:" + scaldingVersion.toString)))
 
   def getUniqueIds: Set[UniqueID] =
     get(UniqueID.UNIQUE_JOB_ID)
@@ -366,7 +361,8 @@ trait Config extends Serializable {
   }
 
   def getFlowListeners: List[Try[(Mode, Config) => FlowListener]] =
-    get(Config.FlowListeners).toIterable
+    get(Config.FlowListeners)
+      .toIterable
       .flatMap(s => StringUtility.fastSplit(s, ","))
       .map(flowListenerSerializer.invert(_))
       .toList
@@ -383,7 +379,8 @@ trait Config extends Serializable {
   }
 
   def getFlowStepListeners: List[Try[(Mode, Config) => FlowStepListener]] =
-    get(Config.FlowStepListeners).toIterable
+    get(Config.FlowStepListeners)
+      .toIterable
       .flatMap(s => StringUtility.fastSplit(s, ","))
       .map(flowStepListenerSerializer.invert(_))
       .toList
@@ -404,7 +401,8 @@ trait Config extends Serializable {
 
   def getFlowStepStrategies
       : List[Try[(Mode, Config) => FlowStepStrategy[JobConf]]] =
-    get(Config.FlowStepStrategies).toIterable
+    get(Config.FlowStepStrategies)
+      .toIterable
       .flatMap(s => StringUtility.fastSplit(s, ","))
       .map(flowStepStrategiesSerializer.invert(_))
       .toList
@@ -422,9 +420,7 @@ trait Config extends Serializable {
     this + (HashJoinAutoForceRight -> (b.toString))
 
   def getHashJoinAutoForceRight: Boolean =
-    get(HashJoinAutoForceRight)
-      .map(_.toBoolean)
-      .getOrElse(false)
+    get(HashJoinAutoForceRight).map(_.toBoolean).getOrElse(false)
 
   override def hashCode = toMap.hashCode
   override def equals(that: Any) =
@@ -535,8 +531,7 @@ object Config {
     val initConf = from(strings)
 
     (
-      nonStrings
-        .get(AppProps.APP_JAR_CLASS) match {
+      nonStrings.get(AppProps.APP_JAR_CLASS) match {
         case Some(clazz) =>
           // Again, the _ causes problem with Try
           try {
@@ -609,9 +604,12 @@ object Config {
   def fromHadoop(conf: Configuration): Config =
     // use `conf.get` to force JobConf to evaluate expressions
     Config(
-      conf.asScala.map { e =>
-        e.getKey -> conf.get(e.getKey)
-      }.toMap)
+      conf
+        .asScala
+        .map { e =>
+          e.getKey -> conf.get(e.getKey)
+        }
+        .toMap)
 
   /*
    * For everything BUT SERIALIZATION, this prefers values in conf,
@@ -624,7 +622,8 @@ object Config {
         .setListSpillThreshold(100 * 1000)
         .setMapSpillThreshold(100 * 1000)
         .setMapSideAggregationThreshold(100 * 1000) ++ fromHadoop(conf)
-    ).setSerialization(Right(classOf[serialization.KryoHadoop]))
+    )
+      .setSerialization(Right(classOf[serialization.KryoHadoop]))
       .setScaldingVersion
   /*
    * This can help with versioning Class files into configurations if they are

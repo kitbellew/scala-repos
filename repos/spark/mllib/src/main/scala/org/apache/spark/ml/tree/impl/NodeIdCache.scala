@@ -81,8 +81,8 @@ private[spark] class NodeIdCache(
     nodeIdsForInstances.sparkContext.getCheckpointDir.nonEmpty
 
   // FileSystem instance for deleting checkpoints as needed
-  private val fs = FileSystem.get(
-    nodeIdsForInstances.sparkContext.hadoopConfiguration)
+  private val fs = FileSystem
+    .get(nodeIdsForInstances.sparkContext.hadoopConfiguration)
 
   /**
     * Update the node index values in the cache.
@@ -103,23 +103,25 @@ private[spark] class NodeIdCache(
     }
 
     prevNodeIdsForInstances = nodeIdsForInstances
-    nodeIdsForInstances = data.zip(nodeIdsForInstances).map {
-      case (point, ids) =>
-        var treeId = 0
-        while (treeId < nodeIdUpdaters.length) {
-          val nodeIdUpdater = nodeIdUpdaters(treeId)
-            .getOrElse(ids(treeId), null)
-          if (nodeIdUpdater != null) {
-            val featureIndex = nodeIdUpdater.split.featureIndex
-            val newNodeIndex = nodeIdUpdater.updateNodeIndex(
-              binnedFeature = point.datum.binnedFeatures(featureIndex),
-              splits = splits(featureIndex))
-            ids(treeId) = newNodeIndex
+    nodeIdsForInstances = data
+      .zip(nodeIdsForInstances)
+      .map {
+        case (point, ids) =>
+          var treeId = 0
+          while (treeId < nodeIdUpdaters.length) {
+            val nodeIdUpdater = nodeIdUpdaters(treeId)
+              .getOrElse(ids(treeId), null)
+            if (nodeIdUpdater != null) {
+              val featureIndex = nodeIdUpdater.split.featureIndex
+              val newNodeIndex = nodeIdUpdater.updateNodeIndex(
+                binnedFeature = point.datum.binnedFeatures(featureIndex),
+                splits = splits(featureIndex))
+              ids(treeId) = newNodeIndex
+            }
+            treeId += 1
           }
-          treeId += 1
-        }
-        ids
-    }
+          ids
+      }
 
     // Keep on persisting new ones.
     nodeIdsForInstances.persist(StorageLevel.MEMORY_AND_DISK)

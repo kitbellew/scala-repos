@@ -25,7 +25,8 @@ object DocGen {
 
   private def cleanSite(dir: File, git: GitRunner, s: TaskStreams): Unit = {
     val toClean =
-      IO.listFiles(dir)
+      IO
+        .listFiles(dir)
         .filterNot(_.getName == ".git")
         .map(_.getAbsolutePath)
         .toList
@@ -59,6 +60,6 @@ object DocGen {
       ghkeys.synchLocal <<= syncLocal
     )
 
-  lazy val publishSettings =
-    site.settings ++ Unidoc.settings ++ ghpages.settings ++ unidocSettings
+  lazy val publishSettings = site.settings ++ Unidoc.settings ++ ghpages
+    .settings ++ unidocSettings
 }

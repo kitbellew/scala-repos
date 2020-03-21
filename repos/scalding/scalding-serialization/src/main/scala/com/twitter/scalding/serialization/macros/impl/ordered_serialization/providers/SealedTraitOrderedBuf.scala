@@ -30,7 +30,10 @@ object SealedTraitOrderedBuf {
       case tpe
           if (
             tpe.typeSymbol.isClass && (
-              tpe.typeSymbol.asClass.isAbstractClass || tpe.typeSymbol.asClass.isTrait
+              tpe.typeSymbol.asClass.isAbstractClass || tpe
+                .typeSymbol
+                .asClass
+                .isTrait
             )
           ) =>
         SealedTraitOrderedBuf(c)(buildDispatcher, tpe)

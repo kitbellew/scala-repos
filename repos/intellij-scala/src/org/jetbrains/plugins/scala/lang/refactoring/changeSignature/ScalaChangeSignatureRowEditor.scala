@@ -82,7 +82,9 @@ class ScalaChangeSignatureRowEditor(
   }
 
   def getColumnWidth(letters: Int): Int = {
-    val editorFont: Font = EditorColorsManager.getInstance.getGlobalScheme
+    val editorFont: Font = EditorColorsManager
+      .getInstance
+      .getGlobalScheme
       .getFont(EditorFontType.PLAIN)
     val font = new Font(editorFont.getFontName, editorFont.getStyle, 12)
     letters * Toolkit.getDefaultToolkit.getFontMetrics(font).stringWidth("W")
@@ -95,8 +97,8 @@ class ScalaChangeSignatureRowEditor(
 
   def addDefaultValueEditor(additionalPanel: JPanel) {
     myDefaultValueEditor.setPreferredWidth(table.getWidth / 2)
-    myDefaultValueEditor.addDocumentListener(
-      new this.RowEditorChangeListener(2))
+    myDefaultValueEditor
+      .addDocumentListener(new this.RowEditorChangeListener(2))
     myDefaultValueEditor.addDocumentListener(
       new DocumentAdapter {
         override def documentChanged(e: DocumentEvent): Unit = {

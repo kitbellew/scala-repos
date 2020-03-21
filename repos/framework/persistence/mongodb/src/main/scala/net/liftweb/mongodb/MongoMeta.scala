@@ -28,8 +28,8 @@ trait JsonFormats {
 
   implicit lazy val _formats: Formats = formats
 
-  lazy val allFormats =
-    DefaultFormats.lossless + new ObjectIdSerializer + new DateSerializer + new DateTimeSerializer + new PatternSerializer + new UUIDSerializer
+  lazy val allFormats = DefaultFormats
+    .lossless + new ObjectIdSerializer + new DateSerializer + new DateTimeSerializer + new PatternSerializer + new UUIDSerializer
 }
 
 /*
@@ -40,7 +40,8 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
   def connectionIdentifier: ConnectionIdentifier
 
   // class name has a $ at the end.
-  private lazy val _collectionName = getClass.getName
+  private lazy val _collectionName = getClass
+    .getName
     .replaceAllLiterally("$", "")
 
   /*
@@ -53,7 +54,9 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
    * From: http://www.mongodb.org/display/DOCS/Collections
    */
   def fixCollectionName = {
-    val colName = MongoRules.collectionName.vend
+    val colName = MongoRules
+      .collectionName
+      .vend
       .apply(connectionIdentifier, _collectionName)
 
     if (colName.contains("$"))
@@ -190,7 +193,8 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
    */
   def update(qry: DBObject, newobj: DBObject, db: DB, opts: UpdateOption*) {
     val dboOpts = opts.toList
-    db.getCollection(collectionName)
+    db
+      .getCollection(collectionName)
       .update(
         qry,
         newobj,

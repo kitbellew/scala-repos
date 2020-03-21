@@ -171,13 +171,15 @@ abstract class Request extends Message with HttpRequestProxy {
   /** Get all parameters. */
   def getParams(): JList[JMap.Entry[String, String]] =
     (
-      params.toList.map {
-        case (k, v) =>
-          // cast to appease asJava
-          (new AbstractMap.SimpleImmutableEntry(k, v))
-            .asInstanceOf[JMap.Entry[String, String]]
-      }
-    ).asJava
+      params
+        .toList
+        .map {
+          case (k, v) =>
+            // cast to appease asJava
+            (new AbstractMap.SimpleImmutableEntry(k, v))
+              .asInstanceOf[JMap.Entry[String, String]]
+        }
+      ).asJava
 
   /** Check if parameter exists. */
   def containsParam(name: String): Boolean = params.contains(name)
@@ -326,7 +328,8 @@ object Request {
       channel: Channel): Request =
     new Request {
       val httpRequest = httpRequestArg
-      lazy val remoteSocketAddress = channel.getRemoteAddress
+      lazy val remoteSocketAddress = channel
+        .getRemoteAddress
         .asInstanceOf[InetSocketAddress]
     }
 

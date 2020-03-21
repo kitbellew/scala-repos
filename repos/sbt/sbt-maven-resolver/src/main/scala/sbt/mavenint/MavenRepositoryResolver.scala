@@ -174,8 +174,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
               dd.getDependencyRevisionId.getRevision)) {
           Message.debug(
             s"Got a dynamic revision, attempting to convert to real revision: ${dd.getDependencyRevisionId}")
-          val revision = MakePom.makeDependencyVersion(
-            dd.getDependencyRevisionId.getRevision)
+          val revision = MakePom
+            .makeDependencyVersion(dd.getDependencyRevisionId.getRevision)
           // TODO - Alter revision id to be maven-friendly first.
           val coords =
             s"${dd.getDependencyRevisionId.getOrganisation}:${aetherArtifactIdFromMrid(
@@ -208,8 +208,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       val request = new AetherDescriptorRequest()
       val coords = aetherCoordsFromMrid(drid)
       Message.debug(s"Aether about to resolve [$coords]...")
-      request.setArtifact(
-        new AetherArtifact(coords, getArtifactProperties(drid)))
+      request
+        .setArtifact(new AetherArtifact(coords, getArtifactProperties(drid)))
       addRepositories(request)
       val result = system.readArtifactDescriptor(session, request)
       val packaging = getPackagingFromPomProperties(result.getProperties)
@@ -247,8 +247,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
         // Here we rip out license info.
         addLicenseInfo(md, result.getProperties)
         md.addExtraInfo(SbtPomExtraProperties.MAVEN_PACKAGING_KEY, packaging)
-        Message.debug(
-          s"Setting publication date to ${new Date(lastModifiedTime)}")
+        Message
+          .debug(s"Setting publication date to ${new Date(lastModifiedTime)}")
         // TODO - Figure out the differences between these items.
         md.setPublicationDate(new Date(lastModifiedTime))
         md.setLastModified(lastModifiedTime)
@@ -259,9 +259,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       }
 
       // Here we need to pretend we downloaded the pom.xml file
-      val pom = DefaultArtifact.newPomArtifact(
-        drid,
-        new java.util.Date(lastModifiedTime))
+      val pom = DefaultArtifact
+        .newPomArtifact(drid, new java.util.Date(lastModifiedTime))
       val madr = new MetadataArtifactDownloadReport(pom)
       madr.setSearched(true)
       madr.setDownloadStatus(
@@ -418,8 +417,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
               MavenRepositoryResolver.DEFAULT_ARTIFACT_CONFIGURATION,
               defaultArt)
           case Some(scope) =>
-            Message.debug(
-              s"Adding additional artifact in $scope, $requestedArt")
+            Message
+              .debug(s"Adding additional artifact in $scope, $requestedArt")
             // TODO - more Extra attributes?
             val mda =
               new MDArtifact(
@@ -466,8 +465,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
     // This is necessary for transitive maven-based sbt plugin dependencies, where we need to
     // attach the sbtVersion/scalaVersion to the dependency id otherwise we'll fail to resolve the
     // dependency correctly.
-    val extraAttributes = PomExtraDependencyAttributes.readFromAether(
-      result.getProperties)
+    val extraAttributes = PomExtraDependencyAttributes
+      .readFromAether(result.getProperties)
     for (d <- result.getDependencies.asScala) {
       // TODO - Is this correct for changing detection.  We should use the Ivy mechanism configured...
       val isChanging = d.getArtifact.getVersion.endsWith("-SNAPSHOT")
@@ -478,8 +477,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
           d.getArtifact.getVersion)
         extraAttributes get tmp match {
           case Some(props) =>
-            Message.debug(
-              s"Found $tmp w/ extra attributes ${props.mkString(",")}")
+            Message
+              .debug(s"Found $tmp w/ extra attributes ${props.mkString(",")}")
             ModuleRevisionId.newInstance(
               d.getArtifact.getGroupId,
               d.getArtifact.getArtifactId,
@@ -502,10 +501,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
 
       // TODO - Configuration mappings (are we grabbing scope correctly, or should the default not always be compile?)
       val scope = Option(d.getScope).filterNot(_.isEmpty).getOrElse("compile")
-      val mapping = ReplaceMavenConfigurationMappings.addMappings(
-        dd,
-        scope,
-        d.isOptional)
+      val mapping = ReplaceMavenConfigurationMappings
+        .addMappings(dd, scope, d.isOptional)
       Message.debug(
         s"Adding maven transitive dependency ${md.getModuleRevisionId} -> ${dd}")
       // TODO - Unify this borrowed Java code into something a bit friendlier.

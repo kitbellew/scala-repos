@@ -40,20 +40,17 @@ class CompilerFactoryImpl(sbtData: SbtData) extends CompilerFactory {
     compilerData.incrementalType match {
       case IncrementalityType.SBT =>
         val javac = {
-          val scala = getScalaInstance(compilerData.compilerJars)
-            .getOrElse(
-              new ScalaInstance(
-                "stub",
-                null,
-                new File(""),
-                new File(""),
-                Seq.empty,
-                None))
+          val scala = getScalaInstance(compilerData.compilerJars).getOrElse(
+            new ScalaInstance(
+              "stub",
+              null,
+              new File(""),
+              new File(""),
+              Seq.empty,
+              None))
           val classpathOptions = ClasspathOptions.javac(compiler = false)
-          AggressiveCompile.directOrFork(
-            scala,
-            classpathOptions,
-            compilerData.javaHome)
+          AggressiveCompile
+            .directOrFork(scala, classpathOptions, compilerData.javaHome)
         }
         new SbtCompiler(javac, scalac, fileToStore)
 

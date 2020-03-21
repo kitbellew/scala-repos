@@ -157,9 +157,8 @@ class ScObjectImpl protected (
       val newState = state.put(BaseProcessor.FROM_TYPE_KEY, null)
       val qual = qualifiedName
       val facade = JavaPsiFacade.getInstance(getProject)
-      val pack = facade.findPackage(
-        qual
-      ) //do not wrap into ScPackage to avoid SOE
+      val pack = facade
+        .findPackage(qual) //do not wrap into ScPackage to avoid SOE
       if (pack != null && !ResolveUtils.packageProcessDeclarations(
             pack,
             processor,
@@ -180,11 +179,8 @@ class ScObjectImpl protected (
       import org.jetbrains.plugins.scala.lang.psi.impl.ScPackageImpl._
       startPackageObjectProcessing()
       try {
-        super[ScTemplateDefinition].processDeclarations(
-          processor,
-          state,
-          lastParent,
-          place)
+        super[ScTemplateDefinition]
+          .processDeclarations(processor, state, lastParent, place)
       } catch {
         case ignore: DoNotProcessPackageObjectException =>
           true //do nothing, just let's move on
@@ -192,11 +188,8 @@ class ScObjectImpl protected (
         stopPackageObjectProcessing()
       }
     } else {
-      super[ScTemplateDefinition].processDeclarations(
-        processor,
-        state,
-        lastParent,
-        place)
+      super[ScTemplateDefinition]
+        .processDeclarations(processor, state, lastParent, place)
     }
   }
 
@@ -208,17 +201,19 @@ class ScObjectImpl protected (
         ScalaPsiUtil.getCompanionModule(this) match {
           case Some(c: ScClass) if c.isCase =>
             val res = new ArrayBuffer[PsiMethod]
-            c.getSyntheticMethodsText.foreach(s => {
-              try {
-                val method = ScalaPsiElementFactory
-                  .createMethodWithContext(s, c.getContext, c)
-                method.setSynthetic(this)
-                method.syntheticCaseClass = Some(c)
-                res += method
-              } catch {
-                case e: Exception => //do not add methods with wrong signature
-              }
-            })
+            c
+              .getSyntheticMethodsText
+              .foreach(s => {
+                try {
+                  val method = ScalaPsiElementFactory
+                    .createMethodWithContext(s, c.getContext, c)
+                  method.setSynthetic(this)
+                  method.syntheticCaseClass = Some(c)
+                  res += method
+                } catch {
+                  case e: Exception => //do not add methods with wrong signature
+                }
+              })
             res.toSeq
           case _ =>
             Seq.empty
@@ -295,19 +290,21 @@ class ScObjectImpl protected (
   override def getAllMethods: Array[PsiMethod] = {
     val res = new ArrayBuffer[PsiMethod]()
     res ++= getConstructors
-    TypeDefinitionMembers.SignatureNodes.forAllSignatureNodes(this) { node =>
-      val isInterface =
-        node.info.namedElement match {
-          case t: ScTypedDefinition if t.isAbstractMember =>
-            true
-          case _ =>
-            false
-        }
-      this.processPsiMethodsForNode(
-        node,
-        isStatic = false,
-        isInterface = isInterface)(res += _)
-    }
+    TypeDefinitionMembers
+      .SignatureNodes
+      .forAllSignatureNodes(this) { node =>
+        val isInterface =
+          node.info.namedElement match {
+            case t: ScTypedDefinition if t.isAbstractMember =>
+              true
+            case _ =>
+              false
+          }
+        this.processPsiMethodsForNode(
+          node,
+          isStatic = false,
+          isInterface = isInterface)(res += _)
+      }
 
     for (synthetic <- syntheticMethodsNoOverride) {
       this.processPsiMethodsForNode(
@@ -364,9 +361,8 @@ class ScObjectImpl protected (
       : mutable.WeakHashMap[Project, TypeDefinitionMembers.TypeNodes.Map] =
     new mutable.WeakHashMap[Project, TypeDefinitionMembers.TypeNodes.Map]
   def getHardTypes: TypeDefinitionMembers.TypeNodes.Map = {
-    hardTypes.getOrElseUpdate(
-      getProject,
-      TypeDefinitionMembers.TypeNodes.build(this))
+    hardTypes
+      .getOrElseUpdate(getProject, TypeDefinitionMembers.TypeNodes.build(this))
   }
 
   private val hardSignatures

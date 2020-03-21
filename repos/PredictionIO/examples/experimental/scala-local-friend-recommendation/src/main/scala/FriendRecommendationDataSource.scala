@@ -46,9 +46,11 @@ class FriendRecommendationDataSource(
       val data = line.split("\\s")
       itemIdMap += (data(0).toInt -> internalId)
       var keywordMap = new HashMap[Int, Double]()
-      data(2).split(";").foreach { term =>
-        keywordMap += (term.toInt -> 1.0)
-      }
+      data(2)
+        .split(";")
+        .foreach { term =>
+          keywordMap += (term.toInt -> 1.0)
+        }
       itemKeyword(internalId) = keywordMap
       internalId += 1
     }
@@ -68,10 +70,12 @@ class FriendRecommendationDataSource(
       val data = line.split("\\s")
       userIdMap += (data(0).toInt -> internalId)
       var keywordMap = new HashMap[Int, Double]()
-      data(1).split(";").foreach { termWeight =>
-        val termWeightPair = termWeight.split(":")
-        keywordMap += (termWeightPair(0).toInt -> termWeightPair(1).toDouble)
-      }
+      data(1)
+        .split(";")
+        .foreach { termWeight =>
+          val termWeightPair = termWeight.split(":")
+          keywordMap += (termWeightPair(0).toInt -> termWeightPair(1).toDouble)
+        }
       userKeyword(internalId) = keywordMap
       internalId += 1
     }

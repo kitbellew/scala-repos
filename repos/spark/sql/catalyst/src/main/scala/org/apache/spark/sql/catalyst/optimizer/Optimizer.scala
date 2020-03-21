@@ -218,7 +218,9 @@ object LimitPushDown extends Rule[LogicalPlan] {
             case FullOuter =>
               (left.maxRows, right.maxRows) match {
                 case (None, None) =>
-                  if (left.statistics.sizeInBytes >= right.statistics.sizeInBytes) {
+                  if (left.statistics.sizeInBytes >= right
+                        .statistics
+                        .sizeInBytes) {
                     join.copy(left = maybePushLimit(exp, left))
                   } else {
                     join.copy(right = maybePushLimit(exp, right))
@@ -305,10 +307,12 @@ object SetOperationPushDown extends Rule[LogicalPlan] with PredicateHelper {
         assert(children.nonEmpty)
         if (projectList.forall(_.deterministic)) {
           val newFirstChild = Project(projectList, children.head)
-          val newOtherChildren = children.tail.map(child => {
-            val rewrites = buildRewrites(children.head, child)
-            Project(projectList.map(pushToRight(_, rewrites)), child)
-          })
+          val newOtherChildren = children
+            .tail
+            .map(child => {
+              val rewrites = buildRewrites(children.head, child)
+              Project(projectList.map(pushToRight(_, rewrites)), child)
+            })
           Union(newFirstChild +: newOtherChildren)
         } else {
           p
@@ -320,12 +324,14 @@ object SetOperationPushDown extends Rule[LogicalPlan] with PredicateHelper {
         val (deterministic, nondeterministic) = partitionByDeterministic(
           condition)
         val newFirstChild = Filter(deterministic, children.head)
-        val newOtherChildren = children.tail.map { child =>
-          {
-            val rewrites = buildRewrites(children.head, child)
-            Filter(pushToRight(deterministic, rewrites), child)
+        val newOtherChildren = children
+          .tail
+          .map { child =>
+            {
+              val rewrites = buildRewrites(children.head, child)
+              Filter(pushToRight(deterministic, rewrites), child)
+            }
           }
-        }
         Filter(nondeterministic, Union(newFirstChild +: newOtherChildren))
 
       // Push down filter through EXCEPT
@@ -367,21 +373,24 @@ object ColumnPruning extends Rule[LogicalPlan] {
           .copy(projectList = p2.projectList.filter(p.references.contains)))
       case p @ Project(_, a: Aggregate)
           if (a.outputSet -- p.references).nonEmpty =>
-        p.copy(child = a.copy(aggregateExpressions = a.aggregateExpressions
+        p.copy(child = a.copy(aggregateExpressions = a
+          .aggregateExpressions
           .filter(p.references.contains)))
       case a @ Project(_, e @ Expand(_, _, grandChild))
           if (e.outputSet -- a.references).nonEmpty =>
         val newOutput = e.output.filter(a.references.contains(_))
-        val newProjects = e.projections.map { proj =>
-          proj
-            .zip(e.output)
-            .filter {
-              case (e, a) =>
-                newOutput.contains(a)
-            }
-            .unzip
-            ._1
-        }
+        val newProjects = e
+          .projections
+          .map { proj =>
+            proj
+              .zip(e.output)
+              .filter {
+                case (e, a) =>
+                  newOutput.contains(a)
+              }
+              .unzip
+              ._1
+          }
         a.copy(child = Expand(newProjects, newOutput, grandChild))
 
       // Prunes the unused columns from child of MapPartitions
@@ -420,15 +429,19 @@ object ColumnPruning extends Rule[LogicalPlan] {
           val firstChild = u.children.head
           val newOutput = prunedChild(firstChild, p.references).output
           // pruning the columns of all children based on the pruned first child.
-          val newChildren = u.children.map { p =>
-            val selected = p.output.zipWithIndex
-              .filter {
-                case (a, i) =>
-                  newOutput.contains(firstChild.output(i))
-              }
-              .map(_._1)
-            Project(selected, p)
-          }
+          val newChildren = u
+            .children
+            .map { p =>
+              val selected = p
+                .output
+                .zipWithIndex
+                .filter {
+                  case (a, i) =>
+                    newOutput.contains(firstChild.output(i))
+                }
+                .map(_._1)
+              Project(selected, p)
+            }
           p.copy(child = u.withNewChildren(newChildren))
         } else {
           p
@@ -437,8 +450,9 @@ object ColumnPruning extends Rule[LogicalPlan] {
       // Prune unnecessary window expressions
       case p @ Project(_, w: Window)
           if (w.windowOutputSet -- p.references).nonEmpty =>
-        p.copy(child = w.copy(windowExpressions = w.windowExpressions.filter(
-          p.references.contains)))
+        p.copy(child = w.copy(windowExpressions = w
+          .windowExpressions
+          .filter(p.references.contains)))
 
       // Eliminate no-op Window
       case w: Window if w.windowExpressions.isEmpty =>
@@ -742,10 +756,13 @@ object InferFiltersFromConstraints
       case join @ Join(left, right, joinType, conditionOpt) =>
         // Only consider constraints that can be pushed down completely to either the left or the
         // right child
-        val constraints = join.constraints.filter { c =>
-          c.references.subsetOf(left.outputSet) || c.references.subsetOf(
-            right.outputSet)
-        }
+        val constraints = join
+          .constraints
+          .filter { c =>
+            c.references.subsetOf(left.outputSet) || c
+              .references
+              .subsetOf(right.outputSet)
+          }
         // Remove those constraints that are already enforced by either the left or the right child
         val additionalConstraints =
           constraints -- (left.constraints ++ right.constraints)
@@ -1165,19 +1182,24 @@ object PushPredicateThroughAggregate
         // Find all the aliased expressions in the aggregate list that don't include any actual
         // AggregateExpression, and create a map from the alias to the expression
         val aliasMap = AttributeMap(
-          aggregate.aggregateExpressions.collect {
-            case a: Alias
-                if a.child.find(_.isInstanceOf[AggregateExpression]).isEmpty =>
-              (a.toAttribute, a.child)
-          })
+          aggregate
+            .aggregateExpressions
+            .collect {
+              case a: Alias
+                  if a
+                    .child
+                    .find(_.isInstanceOf[AggregateExpression])
+                    .isEmpty =>
+                (a.toAttribute, a.child)
+            })
 
         // For each filter, expand the alias and check if the filter can be evaluated using
         // attributes produced by the aggregate operator's child operator.
         val (pushDown, stayUp) = splitConjunctivePredicates(condition)
           .partition { cond =>
             val replaced = replaceAlias(cond, aliasMap)
-            replaced.references.subsetOf(
-              aggregate.child.outputSet) && replaced.deterministic
+            replaced.references.subsetOf(aggregate.child.outputSet) && replaced
+              .deterministic
           }
 
         if (pushDown.nonEmpty) {
@@ -1234,8 +1256,8 @@ object ReorderJoin extends Rule[LogicalPlan] with PredicateHelper {
       val right = conditionalJoin.getOrElse(rest.head)
 
       val joinedRefs = left.outputSet ++ right.outputSet
-      val (joinConditions, others) = conditions.partition(
-        _.references.subsetOf(joinedRefs))
+      val (joinConditions, others) = conditions
+        .partition(_.references.subsetOf(joinedRefs))
       val joined = Join(
         left,
         right,
@@ -1290,11 +1312,13 @@ object OuterJoinElimination extends Rule[LogicalPlan] with PredicateHelper {
       .filter(_.references.subsetOf(join.right.outputSet))
 
     val leftHasNonNullPredicate = leftConditions.exists(canFilterOutNull) ||
-      filter.constraints
+      filter
+        .constraints
         .filter(_.isInstanceOf[IsNotNull])
         .exists(expr => join.left.outputSet.intersect(expr.references).nonEmpty)
     val rightHasNonNullPredicate = rightConditions.exists(canFilterOutNull) ||
-      filter.constraints
+      filter
+        .constraints
         .filter(_.isInstanceOf[IsNotNull])
         .exists(expr =>
           join.right.outputSet.intersect(expr.references).nonEmpty)
@@ -1350,10 +1374,10 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
       condition: Seq[Expression],
       left: LogicalPlan,
       right: LogicalPlan) = {
-    val (leftEvaluateCondition, rest) = condition.partition(
-      _.references subsetOf left.outputSet)
-    val (rightEvaluateCondition, commonCondition) = rest.partition(
-      _.references subsetOf right.outputSet)
+    val (leftEvaluateCondition, rest) = condition
+      .partition(_.references subsetOf left.outputSet)
+    val (rightEvaluateCondition, commonCondition) = rest
+      .partition(_.references subsetOf right.outputSet)
 
     (leftEvaluateCondition, rightEvaluateCondition, commonCondition)
   }
@@ -1397,9 +1421,10 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
             val newJoinCond = joinCondition
             val newJoin = Join(newLeft, newRight, RightOuter, newJoinCond)
 
-            (
-              leftFilterConditions ++ commonFilterCondition
-            ).reduceLeftOption(And).map(Filter(_, newJoin)).getOrElse(newJoin)
+            (leftFilterConditions ++ commonFilterCondition)
+              .reduceLeftOption(And)
+              .map(Filter(_, newJoin))
+              .getOrElse(newJoin)
           case _ @(LeftOuter | LeftSemi) =>
             // push down the left side only `where` condition
             val newLeft = leftFilterConditions
@@ -1410,9 +1435,10 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
             val newJoinCond = joinCondition
             val newJoin = Join(newLeft, newRight, joinType, newJoinCond)
 
-            (
-              rightFilterConditions ++ commonFilterCondition
-            ).reduceLeftOption(And).map(Filter(_, newJoin)).getOrElse(newJoin)
+            (rightFilterConditions ++ commonFilterCondition)
+              .reduceLeftOption(And)
+              .map(Filter(_, newJoin))
+              .getOrElse(newJoin)
           case FullOuter =>
             f // DO Nothing for Full Outer Join
           case NaturalJoin(_) =>
@@ -1619,10 +1645,13 @@ object ReplaceIntersectWithSemiJoin extends Rule[LogicalPlan] {
     plan transform {
       case Intersect(left, right) =>
         assert(left.output.size == right.output.size)
-        val joinCond = left.output.zip(right.output).map {
-          case (l, r) =>
-            EqualNullSafe(l, r)
-        }
+        val joinCond = left
+          .output
+          .zip(right.output)
+          .map {
+            case (l, r) =>
+              EqualNullSafe(l, r)
+          }
         Distinct(Join(left, right, LeftSemi, joinCond.reduceLeftOption(And)))
     }
 }

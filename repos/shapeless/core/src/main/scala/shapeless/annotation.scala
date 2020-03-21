@@ -158,10 +158,13 @@ class AnnotationMacros(val c: whitebox.Context) extends CaseClassMacros {
 
     val tpe = weakTypeOf[T]
 
-    val annTreeOpt = tpe.typeSymbol.annotations.collectFirst {
-      case ann if ann.tree.tpe =:= annTpe =>
-        construct0(ann.tree.children.tail)
-    }
+    val annTreeOpt = tpe
+      .typeSymbol
+      .annotations
+      .collectFirst {
+        case ann if ann.tree.tpe =:= annTpe =>
+          construct0(ann.tree.children.tail)
+      }
 
     annTreeOpt match {
       case Some(annTree) =>
@@ -199,17 +202,22 @@ class AnnotationMacros(val c: whitebox.Context) extends CaseClassMacros {
           case (name, _) =>
             val paramConstrSym = constructorSyms(name.decodedName.toString)
 
-            paramConstrSym.annotations.collectFirst {
-              case ann if ann.tree.tpe =:= annTpe =>
-                construct0(ann.tree.children.tail)
-            }
+            paramConstrSym
+              .annotations
+              .collectFirst {
+                case ann if ann.tree.tpe =:= annTpe =>
+                  construct0(ann.tree.children.tail)
+              }
         }
       } else if (isCoproduct(tpe))
         ctorsOf(tpe).map { cTpe =>
-          cTpe.typeSymbol.annotations.collectFirst {
-            case ann if ann.tree.tpe =:= annTpe =>
-              construct0(ann.tree.children.tail)
-          }
+          cTpe
+            .typeSymbol
+            .annotations
+            .collectFirst {
+              case ann if ann.tree.tpe =:= annTpe =>
+                construct0(ann.tree.children.tail)
+            }
         }
       else
         abort(

@@ -47,24 +47,24 @@ object OperationOnCollectionInspectionBase {
   private val likeCollectionKey = "operation.on.collection.like.collection"
 
   private val inputMessages = Map(
-    likeCollectionKey -> InspectionBundle.message(
-      "operation.on.collection.like.collection.input.message"),
-    likeOptionKey -> InspectionBundle.message(
-      "operation.on.collection.like.option.input.message")
+    likeCollectionKey -> InspectionBundle
+      .message("operation.on.collection.like.collection.input.message"),
+    likeOptionKey -> InspectionBundle
+      .message("operation.on.collection.like.option.input.message")
   )
 
   private val inputTitles = Map(
-    likeCollectionKey -> InspectionBundle.message(
-      "operation.on.collection.like.collection.input.title"),
-    likeOptionKey -> InspectionBundle.message(
-      "operation.on.collection.like.option.input.title")
+    likeCollectionKey -> InspectionBundle
+      .message("operation.on.collection.like.collection.input.title"),
+    likeOptionKey -> InspectionBundle
+      .message("operation.on.collection.like.option.input.title")
   )
 
   private val panelTitles = Map(
-    likeCollectionKey -> InspectionBundle.message(
-      "operation.on.collection.like.collection.panel.title"),
-    likeOptionKey -> InspectionBundle.message(
-      "operation.on.collection.like.option.panel.title")
+    likeCollectionKey -> InspectionBundle
+      .message("operation.on.collection.like.collection.panel.title"),
+    likeOptionKey -> InspectionBundle
+      .message("operation.on.collection.like.option.panel.title")
   )
 }
 
@@ -94,8 +94,8 @@ abstract class OperationOnCollectionInspectionBase
         if getSimplificationTypesEnabled(idx)
       } yield st
 
-    simplificationTypes.flatMap(st =>
-      st.getSimplifications(expr) ++ st.getSimplification(expr))
+    simplificationTypes
+      .flatMap(st => st.getSimplifications(expr) ++ st.getSimplification(expr))
   }
 
   def getLikeCollectionClasses: Array[String] =
@@ -128,13 +128,15 @@ abstract class OperationOnCollectionInspectionBase
         val enabled: Array[java.lang.Boolean] = getSimplificationTypesEnabled
         val checkBox =
           new JCheckBox(possibleSimplificationTypes(i).description, enabled(i))
-        checkBox.getModel.addChangeListener(
-          new ChangeListener {
-            def stateChanged(e: ChangeEvent) {
-              enabled(i) = checkBox.isSelected
-              setSimplificationTypesEnabled(enabled)
-            }
-          })
+        checkBox
+          .getModel
+          .addChangeListener(
+            new ChangeListener {
+              def stateChanged(e: ChangeEvent) {
+                enabled(i) = checkBox.isSelected
+                setSimplificationTypesEnabled(enabled)
+              }
+            })
         innerPanel.add(checkBox)
       }
       val extPanel = new JPanel()
@@ -174,7 +176,8 @@ abstract class OperationOnCollectionInspectionBase
                 resetValues()
                 patternJBList.setSelectedValue(pattern, true)
                 ScrollingUtil.ensureIndexIsVisible(patternJBList, index, 0)
-                IdeFocusManager.getGlobalInstance
+                IdeFocusManager
+                  .getGlobalInstance
                   .requestFocus(patternJBList, false)
               }
 
@@ -196,8 +199,9 @@ abstract class OperationOnCollectionInspectionBase
           .setRemoveAction(
             new AnActionButtonRunnable {
               def run(t: AnActionButton) {
-                patternJBList.getSelectedIndices.foreach(
-                  listModel.removeElementAt)
+                patternJBList
+                  .getSelectedIndices
+                  .foreach(listModel.removeElementAt)
                 resetValues()
               }
             })

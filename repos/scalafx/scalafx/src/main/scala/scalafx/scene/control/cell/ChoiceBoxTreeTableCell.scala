@@ -112,7 +112,8 @@ object ChoiceBoxTreeTableCell {
       items: ObservableBuffer[T])
       : (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) =
     (view: jfxsc.TreeTableColumn[S, T]) =>
-      jfxscc.ChoiceBoxTreeTableCell
+      jfxscc
+        .ChoiceBoxTreeTableCell
         .forTreeTableColumn[S, T](converter, items)
         .call(view)
 
@@ -141,7 +142,8 @@ object ChoiceBoxTreeTableCell {
       converter: StringConverter[T],
       items: T*): (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) =
     (view: jfxsc.TreeTableColumn[S, T]) =>
-      jfxscc.ChoiceBoxTreeTableCell
+      jfxscc
+        .ChoiceBoxTreeTableCell
         .forTreeTableColumn[S, T](converter, items: _*)
         .call(view)
 
@@ -165,7 +167,8 @@ object ChoiceBoxTreeTableCell {
   def forTreeTableColumn[S, T](
       items: T*): (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) =
     (view: jfxsc.TreeTableColumn[S, T]) =>
-      jfxscc.ChoiceBoxTreeTableCell
+      jfxscc
+        .ChoiceBoxTreeTableCell
         .forTreeTableColumn[S, T](items: _*)
         .call(view)
 

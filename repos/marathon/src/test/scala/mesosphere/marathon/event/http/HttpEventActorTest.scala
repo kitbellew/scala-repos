@@ -47,10 +47,8 @@ class HttpEventActorTest
 
     Then("The callback listener is rate limited")
     waitUntil("Wait for rate limiting 2 subscribers", 1.second) {
-      aut.underlyingActor
-        .limiter("host1")
-        .backoffUntil
-        .isDefined && aut.underlyingActor
+      aut.underlyingActor.limiter("host1").backoffUntil.isDefined && aut
+        .underlyingActor
         .limiter("host2")
         .backoffUntil
         .isDefined
@@ -102,7 +100,9 @@ class HttpEventActorTest
     aut.underlyingActor.limiter += "host1" -> EventNotificationLimit(
       23,
       Some((-100).seconds.fromNow))
-    aut.underlyingActor.limiter
+    aut
+      .underlyingActor
+      .limiter
       .map(_._2.backoffUntil)
       .forall(_.map(_.isOverdue()).getOrElse(true))
 
@@ -128,8 +128,8 @@ class HttpEventActorTest
   before {
     system = ActorSystem(
       "test-system",
-      ConfigFactory.parseString(
-        """akka.loggers = ["akka.testkit.TestEventListener"]"""))
+      ConfigFactory
+        .parseString("""akka.loggers = ["akka.testkit.TestEventListener"]"""))
     clock = ConstantClock()
     conf = mock[HttpEventConfiguration]
     conf.slowConsumerTimeout returns 10.seconds

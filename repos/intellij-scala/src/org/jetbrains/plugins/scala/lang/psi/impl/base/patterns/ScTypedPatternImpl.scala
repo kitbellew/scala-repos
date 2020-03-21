@@ -64,7 +64,8 @@ class ScTypedPatternImpl(node: ASTNode)
       case Some(tp) =>
         if (tp.typeElement == null)
           return Failure("No type element for type pattern", Some(this))
-        val typeElementType: TypeResult[ScType] = tp.typeElement
+        val typeElementType: TypeResult[ScType] = tp
+          .typeElement
           .getType(ctx)
           .map {
             case tp: ScExistentialType =>
@@ -79,26 +80,28 @@ class ScTypedPatternImpl(node: ASTNode)
                         if typeArgs.length == typeParams.length =>
                       ScParameterizedType(
                         des,
-                        typeArgs.zip(typeParams).map {
-                          case (arg: ScSkolemizedType, param: ScTypeParam) =>
-                            val lowerBound =
-                              if (arg.lower.equiv(psi.types.Nothing))
-                                subst subst param.lowerBound.getOrNothing
-                              else
-                                arg.lower //todo: lub?
-                            val upperBound =
-                              if (arg.upper.equiv(psi.types.Any))
-                                subst subst param.upperBound.getOrAny
-                              else
-                                arg.upper //todo: glb?
-                            ScSkolemizedType(
-                              arg.name,
-                              arg.args,
-                              lowerBound,
-                              upperBound)
-                          case (tp: ScType, param: ScTypeParam) =>
-                            tp
-                        }
+                        typeArgs
+                          .zip(typeParams)
+                          .map {
+                            case (arg: ScSkolemizedType, param: ScTypeParam) =>
+                              val lowerBound =
+                                if (arg.lower.equiv(psi.types.Nothing))
+                                  subst subst param.lowerBound.getOrNothing
+                                else
+                                  arg.lower //todo: lub?
+                              val upperBound =
+                                if (arg.upper.equiv(psi.types.Any))
+                                  subst subst param.upperBound.getOrAny
+                                else
+                                  arg.upper //todo: glb?
+                              ScSkolemizedType(
+                                arg.name,
+                                arg.args,
+                                lowerBound,
+                                upperBound)
+                            case (tp: ScType, param: ScTypeParam) =>
+                              tp
+                          }
                       ).unpackedType
                     case _ =>
                       tp
@@ -111,36 +114,40 @@ class ScTypedPatternImpl(node: ASTNode)
                         if typeArgs.length == typeParams.length =>
                       ScParameterizedType(
                         des,
-                        typeArgs.zip(typeParams).map {
-                          case (
-                                arg: ScSkolemizedType,
-                                param: PsiTypeParameter) =>
-                            val lowerBound = arg.lower
-                            val upperBound =
-                              if (arg.upper.equiv(psi.types.Any)) {
-                                val listTypes: Array[PsiClassType] =
-                                  param.getExtendsListTypes
-                                if (listTypes.isEmpty)
-                                  types.Any
-                                else
-                                  subst.subst(
-                                    Bounds.glb(
-                                      listTypes.toSeq.map(
-                                        ScType.create(
-                                          _,
-                                          getProject,
-                                          param.getResolveScope)),
-                                      checkWeak = true))
-                              } else
-                                arg.upper //todo: glb?
-                            ScSkolemizedType(
-                              arg.name,
-                              arg.args,
-                              lowerBound,
-                              upperBound)
-                          case (tp: ScType, _) =>
-                            tp
-                        }
+                        typeArgs
+                          .zip(typeParams)
+                          .map {
+                            case (
+                                  arg: ScSkolemizedType,
+                                  param: PsiTypeParameter) =>
+                              val lowerBound = arg.lower
+                              val upperBound =
+                                if (arg.upper.equiv(psi.types.Any)) {
+                                  val listTypes: Array[PsiClassType] =
+                                    param.getExtendsListTypes
+                                  if (listTypes.isEmpty)
+                                    types.Any
+                                  else
+                                    subst.subst(
+                                      Bounds.glb(
+                                        listTypes
+                                          .toSeq
+                                          .map(
+                                            ScType.create(
+                                              _,
+                                              getProject,
+                                              param.getResolveScope)),
+                                        checkWeak = true))
+                                } else
+                                  arg.upper //todo: glb?
+                              ScSkolemizedType(
+                                arg.name,
+                                arg.args,
+                                lowerBound,
+                                upperBound)
+                            case (tp: ScType, _) =>
+                              tp
+                          }
                       ).unpackedType
                     case _ =>
                       tp

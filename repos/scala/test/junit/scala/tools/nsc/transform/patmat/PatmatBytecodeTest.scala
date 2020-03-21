@@ -121,8 +121,9 @@ class PatmatBytecodeTest extends ClearAfterClass {
       """.stripMargin
     val c = compileClasses(optCompiler)(code).head
     assert(
-      !getSingleMethod(c, "a").instructions.exists(i =>
-        i.opcode == IFNULL || i.opcode == IFNONNULL),
+      !getSingleMethod(c, "a")
+        .instructions
+        .exists(i => i.opcode == IFNULL || i.opcode == IFNONNULL),
       textify(findAsmMethod(c, "a")))
   }
 

@@ -28,9 +28,11 @@ class InjectorReviewDialog(
   var editorsPanel: JPanel = null
   val editors: Seq[Editor] = {
     val containingJar = manifest._1.jarPath
-    val files = manifest._2
+    val files = manifest
+      ._2
       .flatMap { injectorDescriptor =>
-        injectorDescriptor.sources
+        injectorDescriptor
+          .sources
           .flatMap { source =>
             val file = VirtualFileManager
               .getInstance()
@@ -55,11 +57,11 @@ class InjectorReviewDialog(
   }
 
   private val highlighterFactory = EditorHighlighterFactory.getInstance
-  editors
-    .foreach(
-      _.asInstanceOf[EditorEx].setHighlighter(
-        highlighterFactory
-          .createEditorHighlighter(project, ScalaFileType.SCALA_FILE_TYPE)))
+  editors.foreach(
+    _.asInstanceOf[EditorEx]
+    .setHighlighter(
+      highlighterFactory
+        .createEditorHighlighter(project, ScalaFileType.SCALA_FILE_TYPE)))
   setTitle(s"Library '${manifest._1.jarPath}' Injectors Source Review")
   setOKButtonText("Accept")
   setCancelButtonText("Reject")

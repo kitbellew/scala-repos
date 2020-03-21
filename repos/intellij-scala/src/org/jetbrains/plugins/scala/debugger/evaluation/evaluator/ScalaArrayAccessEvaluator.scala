@@ -56,7 +56,8 @@ class ScalaArrayAccessEvaluator(
         }
         def getExpectedType: Type = {
           try {
-            val tp: ArrayType = myEvaluatedArrayReference.referenceType
+            val tp: ArrayType = myEvaluatedArrayReference
+              .referenceType
               .asInstanceOf[ArrayType]
             tp.componentType
           } catch {

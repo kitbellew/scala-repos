@@ -53,8 +53,8 @@ class StashCreationBenchmark {
   @Benchmark
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def testCustom: Boolean = {
-    val stash = system.actorOf(
-      StashCreationBenchmark.props.withDispatcher("my-dispatcher"))
+    val stash = system
+      .actorOf(StashCreationBenchmark.props.withDispatcher("my-dispatcher"))
     stash.tell("hello", probe.ref)
     probe.expectMsg("hello")
     true

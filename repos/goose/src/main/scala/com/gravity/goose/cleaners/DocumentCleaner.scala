@@ -158,8 +158,8 @@ trait DocumentCleaner {
     for (node <- naughtyList5) {
 
       trace(
-        "Removing node with class: " + node.attr(
-          "class") + " id: " + node.id + " name: " + node.attr("name"))
+        "Removing node with class: " + node.attr("class") + " id: " + node
+          .id + " name: " + node.attr("name"))
 
       removeNode(node)
     }
@@ -173,18 +173,16 @@ trait DocumentCleaner {
     */
   private def removeNodesViaRegEx(doc: Document, pattern: Pattern): Document = {
     try {
-      val naughtyList: Elements = doc.getElementsByAttributeValueMatching(
-        "id",
-        pattern)
+      val naughtyList: Elements = doc
+        .getElementsByAttributeValueMatching("id", pattern)
 
       trace(naughtyList.size + " ID elements found against pattern: " + pattern)
 
       for (node <- naughtyList) {
         removeNode(node)
       }
-      val naughtyList3: Elements = doc.getElementsByAttributeValueMatching(
-        "class",
-        pattern)
+      val naughtyList3: Elements = doc
+        .getElementsByAttributeValueMatching("class", pattern)
       trace(
         naughtyList3.size + " CLASS elements found against pattern: " + pattern)
 
@@ -253,8 +251,8 @@ trait DocumentCleaner {
 
     for (div <- divs) {
       try {
-        val divToPElementsMatcher: Matcher = divToPElementsPattern.matcher(
-          div.html.toLowerCase)
+        val divToPElementsMatcher: Matcher = divToPElementsPattern
+          .matcher(div.html.toLowerCase)
         if (divToPElementsMatcher.find == false) {
           replaceElementsWithPara(doc, div)
           badDivs += 1;
@@ -333,8 +331,8 @@ trait DocumentCleaner {
 
           var prevSibNode = kidTextNode.previousSibling()
           while (prevSibNode != null && prevSibNode
-                   .nodeName() == "a" && prevSibNode.attr(
-                   "grv-usedalready") != "yes") {
+                   .nodeName() == "a" && prevSibNode
+                   .attr("grv-usedalready") != "yes") {
             replacementText.append(" " + prevSibNode.outerHtml() + " ")
             nodesToRemove += prevSibNode
             prevSibNode.attr("grv-usedalready", "yes")
@@ -350,8 +348,8 @@ trait DocumentCleaner {
           //          check the next set of links that might be after text (see businessinsider2.txt)
           var nextSibNode = kidTextNode.nextSibling()
           while (nextSibNode != null && nextSibNode
-                   .nodeName() == "a" && nextSibNode.attr(
-                   "grv-usedalready") != "yes") {
+                   .nodeName() == "a" && nextSibNode
+                   .attr("grv-usedalready") != "yes") {
             replacementText.append(" " + nextSibNode.outerHtml() + " ")
             nodesToRemove += nextSibNode
             nextSibNode.attr("grv-usedalready", "yes")
@@ -411,8 +409,8 @@ object DocumentCleaner extends Logging {
   /**
     * regex to detect if there are block level elements inside of a div element
     */
-  val divToPElementsPattern: Pattern = Pattern.compile(
-    "<(a|blockquote|dl|div|img|ol|p|pre|table|ul)")
+  val divToPElementsPattern: Pattern = Pattern
+    .compile("<(a|blockquote|dl|div|img|ol|p|pre|table|ul)")
 
   val blockElemementTags = TagsEvaluator(
     "a",

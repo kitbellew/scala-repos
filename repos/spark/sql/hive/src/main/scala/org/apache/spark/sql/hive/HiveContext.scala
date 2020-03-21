@@ -129,9 +129,11 @@ class HiveContext private[hive] (
 
   // The Hive UDF current_database() is foldable, will be evaluated by optimizer,
   // but the optimizer can't access the SessionState of metadataHive.
-  sessionState.functionRegistry.registerFunction(
-    "current_database",
-    (e: Seq[Expression]) => new CurrentDatabase(self))
+  sessionState
+    .functionRegistry
+    .registerFunction(
+      "current_database",
+      (e: Seq[Expression]) => new CurrentDatabase(self))
 
   /**
     * When true, enables an experimental feature where metastore tables that use the parquet SerDe
@@ -263,13 +265,15 @@ class HiveContext private[hive] (
       // into the isolated client loader
       val metadataConf = new HiveConf(sc.hadoopConfiguration, classOf[HiveConf])
 
-      val defaultWarehouseLocation = metadataConf.get(
-        "hive.metastore.warehouse.dir")
+      val defaultWarehouseLocation = metadataConf
+        .get("hive.metastore.warehouse.dir")
       logInfo("default warehouse location is " + defaultWarehouseLocation)
 
       // `configure` goes second to override other settings.
-      val allConfig =
-        metadataConf.asScala.map(e => e.getKey -> e.getValue).toMap ++ configure
+      val allConfig = metadataConf
+        .asScala
+        .map(e => e.getKey -> e.getValue)
+        .toMap ++ configure
 
       val isolatedLoader =
         if (hiveMetastoreJars == "builtin") {
@@ -418,7 +422,8 @@ class HiveContext private[hive] (
           val fileStatus = fs.getFileStatus(path)
           val size =
             if (fileStatus.isDirectory) {
-              fs.listStatus(path)
+              fs
+                .listStatus(path)
                 .map { status =>
                   if (!status.getPath().getName().startsWith(stagingDir)) {
                     calculateTableSize(fs, status.getPath)
@@ -462,9 +467,14 @@ class HiveContext private[hive] (
         // recorded in the Hive metastore.
         // This logic is based on org.apache.hadoop.hive.ql.exec.StatsTask.aggregateStats().
         if (newTotalSize > 0 && newTotalSize != oldTotalSize) {
-          sessionState.catalog.client.alterTable(
-            relation.table.copy(properties = relation.table.properties +
-              (StatsSetupConst.TOTAL_SIZE -> newTotalSize.toString)))
+          sessionState
+            .catalog
+            .client
+            .alterTable(
+              relation
+                .table
+                .copy(properties = relation.table.properties +
+                  (StatsSetupConst.TOTAL_SIZE -> newTotalSize.toString)))
         }
       case otherRelation =>
         throw new UnsupportedOperationException(
@@ -508,10 +518,13 @@ class HiveContext private[hive] (
       ConfVars.METASTORE_EVENT_CLEAN_FREQ -> TimeUnit.SECONDS,
       ConfVars.METASTORE_EVENT_EXPIRY_DURATION -> TimeUnit.SECONDS,
       ConfVars.METASTORE_AGGREGATE_STATS_CACHE_TTL -> TimeUnit.SECONDS,
-      ConfVars.METASTORE_AGGREGATE_STATS_CACHE_MAX_WRITER_WAIT -> TimeUnit.MILLISECONDS,
-      ConfVars.METASTORE_AGGREGATE_STATS_CACHE_MAX_READER_WAIT -> TimeUnit.MILLISECONDS,
+      ConfVars.METASTORE_AGGREGATE_STATS_CACHE_MAX_WRITER_WAIT -> TimeUnit
+        .MILLISECONDS,
+      ConfVars.METASTORE_AGGREGATE_STATS_CACHE_MAX_READER_WAIT -> TimeUnit
+        .MILLISECONDS,
       ConfVars.HIVES_AUTO_PROGRESS_TIMEOUT -> TimeUnit.SECONDS,
-      ConfVars.HIVE_LOG_INCREMENTAL_PLAN_PROGRESS_INTERVAL -> TimeUnit.MILLISECONDS,
+      ConfVars.HIVE_LOG_INCREMENTAL_PLAN_PROGRESS_INTERVAL -> TimeUnit
+        .MILLISECONDS,
       ConfVars.HIVE_STATS_JDBC_TIMEOUT -> TimeUnit.SECONDS,
       ConfVars.HIVE_STATS_RETRIES_WAIT -> TimeUnit.MILLISECONDS,
       ConfVars.HIVE_LOCK_SLEEP_BETWEEN_RETRIES -> TimeUnit.SECONDS,
@@ -522,9 +535,11 @@ class HiveContext private[hive] (
       ConfVars.HIVE_COMPACTOR_CHECK_INTERVAL -> TimeUnit.SECONDS,
       ConfVars.HIVE_COMPACTOR_CLEANER_RUN_INTERVAL -> TimeUnit.MILLISECONDS,
       ConfVars.HIVE_SERVER2_THRIFT_HTTP_MAX_IDLE_TIME -> TimeUnit.MILLISECONDS,
-      ConfVars.HIVE_SERVER2_THRIFT_HTTP_WORKER_KEEPALIVE_TIME -> TimeUnit.SECONDS,
+      ConfVars.HIVE_SERVER2_THRIFT_HTTP_WORKER_KEEPALIVE_TIME -> TimeUnit
+        .SECONDS,
       ConfVars.HIVE_SERVER2_THRIFT_HTTP_COOKIE_MAX_AGE -> TimeUnit.SECONDS,
-      ConfVars.HIVE_SERVER2_THRIFT_LOGIN_BEBACKOFF_SLOT_LENGTH -> TimeUnit.MILLISECONDS,
+      ConfVars.HIVE_SERVER2_THRIFT_LOGIN_BEBACKOFF_SLOT_LENGTH -> TimeUnit
+        .MILLISECONDS,
       ConfVars.HIVE_SERVER2_THRIFT_LOGIN_TIMEOUT -> TimeUnit.SECONDS,
       ConfVars.HIVE_SERVER2_THRIFT_WORKER_KEEPALIVE_TIME -> TimeUnit.SECONDS,
       ConfVars.HIVE_SERVER2_ASYNC_EXEC_SHUTDOWN_TIMEOUT -> TimeUnit.SECONDS,
@@ -539,10 +554,12 @@ class HiveContext private[hive] (
       ConfVars.SPARK_JOB_MONITOR_TIMEOUT -> TimeUnit.SECONDS,
       ConfVars.SPARK_RPC_CLIENT_CONNECT_TIMEOUT -> TimeUnit.MILLISECONDS,
       ConfVars.SPARK_RPC_CLIENT_HANDSHAKE_TIMEOUT -> TimeUnit.MILLISECONDS
-    ).map {
-      case (confVar, unit) =>
-        confVar.varname -> hiveconf.getTimeVar(confVar, unit).toString
-    }.toMap
+    )
+      .map {
+        case (confVar, unit) =>
+          confVar.varname -> hiveconf.getTimeVar(confVar, unit).toString
+      }
+      .toMap
   }
 
   /**
@@ -603,15 +620,17 @@ class HiveContext private[hive] (
         case ExecutedCommand(desc: DescribeHiveTableCommand) =>
           // If it is a describe command for a Hive table, we want to have the output format
           // be similar with Hive.
-          desc.run(self).map {
-            case Row(name: String, dataType: String, comment) =>
-              Seq(
-                name,
-                dataType,
-                Option(comment.asInstanceOf[String]).getOrElse(""))
-                .map(s => String.format(s"%-20s", s))
-                .mkString("\t")
-          }
+          desc
+            .run(self)
+            .map {
+              case Row(name: String, dataType: String, comment) =>
+                Seq(
+                  name,
+                  dataType,
+                  Option(comment.asInstanceOf[String]).getOrElse(""))
+                  .map(s => String.format(s"%-20s", s))
+                  .mkString("\t")
+            }
         case command: ExecutedCommand =>
           command.executeCollect().map(_.getString(0))
 
@@ -753,13 +772,17 @@ private[hive] object HiveContext {
     val propMap: HashMap[String, String] = HashMap()
     // We have to mask all properties in hive-site.xml that relates to metastore data source
     // as we used a local metastore here.
-    HiveConf.ConfVars.values().foreach { confvar =>
-      if (confvar.varname.contains("datanucleus") || confvar.varname.contains(
-            "jdo")
-          || confvar.varname.contains("hive.metastore.rawstore.impl")) {
-        propMap.put(confvar.varname, confvar.getDefaultExpr())
+    HiveConf
+      .ConfVars
+      .values()
+      .foreach { confvar =>
+        if (confvar.varname.contains("datanucleus") || confvar
+              .varname
+              .contains("jdo")
+            || confvar.varname.contains("hive.metastore.rawstore.impl")) {
+          propMap.put(confvar.varname, confvar.getDefaultExpr())
+        }
       }
-    }
     propMap.put(
       HiveConf.ConfVars.METASTOREWAREHOUSE.varname,
       localMetastore.toURI.toString)
@@ -803,7 +826,8 @@ private[hive] object HiveContext {
   protected[sql] def toHiveString(a: (Any, DataType)): String =
     a match {
       case (struct: Row, StructType(fields)) =>
-        struct.toSeq
+        struct
+          .toSeq
           .zip(fields)
           .map {
             case (v, t) =>
@@ -841,7 +865,8 @@ private[hive] object HiveContext {
   protected def toHiveStructString(a: (Any, DataType)): String =
     a match {
       case (struct: Row, StructType(fields)) =>
-        struct.toSeq
+        struct
+          .toSeq
           .zip(fields)
           .map {
             case (v, t) =>

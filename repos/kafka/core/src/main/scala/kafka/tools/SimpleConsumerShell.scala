@@ -97,9 +97,8 @@ object SimpleConsumerShell extends Logging {
       .withRequiredArg
       .describedAs("prop")
       .ofType(classOf[String])
-    val printOffsetOpt = parser.accepts(
-      "print-offsets",
-      "Print the offsets returned by the iterator")
+    val printOffsetOpt = parser
+      .accepts("print-offsets", "Print the offsets returned by the iterator")
     val maxWaitMsOpt = parser
       .accepts(
         "max-wait-ms",
@@ -156,10 +155,10 @@ object SimpleConsumerShell extends Logging {
         false
     val noWaitAtEndOfLog = options.has(noWaitAtEndOfLogOpt)
 
-    val messageFormatterClass = Class.forName(
-      options.valueOf(messageFormatterOpt))
-    val formatterArgs = CommandLineUtils.parseKeyValueArgs(
-      options.valuesOf(messageFormatterArgOpt))
+    val messageFormatterClass = Class
+      .forName(options.valueOf(messageFormatterOpt))
+    val formatterArgs = CommandLineUtils
+      .parseKeyValueArgs(options.valuesOf(messageFormatterArgOpt))
 
     val fetchRequestBuilder = new FetchRequestBuilder()
       .clientId(clientId)
@@ -181,21 +180,25 @@ object SimpleConsumerShell extends Logging {
           maxWaitMs)
         .topicsMetadata
     if (topicsMetadata.size != 1 || !topicsMetadata(0).topic.equals(topic)) {
-      System.err.println(
-        (
-          "Error: no valid topic metadata for topic: %s, " + "what we get from server is only: %s"
-        ).format(topic, topicsMetadata))
+      System
+        .err
+        .println(
+          (
+            "Error: no valid topic metadata for topic: %s, " + "what we get from server is only: %s"
+          ).format(topic, topicsMetadata))
       System.exit(1)
     }
 
     // validating partition id
     val partitionsMetadata = topicsMetadata(0).partitionsMetadata
-    val partitionMetadataOpt = partitionsMetadata.find(p =>
-      p.partitionId == partitionId)
+    val partitionMetadataOpt = partitionsMetadata
+      .find(p => p.partitionId == partitionId)
     if (!partitionMetadataOpt.isDefined) {
-      System.err.println(
-        "Error: partition %d does not exist for topic %s"
-          .format(partitionId, topic))
+      System
+        .err
+        .println(
+          "Error: partition %d does not exist for topic %s"
+            .format(partitionId, topic))
       System.exit(1)
     }
 
@@ -205,18 +208,22 @@ object SimpleConsumerShell extends Logging {
     if (replicaId == UseLeaderReplica) {
       replicaOpt = partitionMetadataOpt.get.leader
       if (!replicaOpt.isDefined) {
-        System.err.println(
-          "Error: user specifies to fetch from leader for partition (%s, %d) which has not been elected yet"
-            .format(topic, partitionId))
+        System
+          .err
+          .println(
+            "Error: user specifies to fetch from leader for partition (%s, %d) which has not been elected yet"
+              .format(topic, partitionId))
         System.exit(1)
       }
     } else {
       val replicasForPartition = partitionMetadataOpt.get.replicas
       replicaOpt = replicasForPartition.find(r => r.id == replicaId)
       if (!replicaOpt.isDefined) {
-        System.err.println(
-          "Error: replica %d does not exist for partition (%s, %d)"
-            .format(replicaId, topic, partitionId))
+        System
+          .err
+          .println(
+            "Error: replica %d does not exist for partition (%s, %d)"
+              .format(replicaId, topic, partitionId))
         System.exit(1)
       }
     }
@@ -242,9 +249,11 @@ object SimpleConsumerShell extends Logging {
           Request.DebuggingConsumerId)
       } catch {
         case t: Throwable =>
-          System.err.println(
-            "Error in getting earliest or latest offset due to: " + Utils
-              .stackTrace(t))
+          System
+            .err
+            .println(
+              "Error in getting earliest or latest offset due to: " + Utils
+                .stackTrace(t))
           System.exit(1)
       } finally {
         if (simpleConsumer != null)
@@ -300,7 +309,8 @@ object SimpleConsumerShell extends Logging {
                 return
               }
               debug(
-                "multi fetched " + messageSet.sizeInBytes + " bytes from offset " + offset)
+                "multi fetched " + messageSet
+                  .sizeInBytes + " bytes from offset " + offset)
               for (messageAndOffset <- messageSet
                    if numMessagesConsumed < maxMessages) {
                 try {
@@ -354,8 +364,10 @@ object SimpleConsumerShell extends Logging {
                 }
                 if (System.out.checkError()) {
                   // This means no one is listening to our output stream any more, time to shutdown
-                  System.err.println(
-                    "Unable to write to standard out, closing consumer.")
+                  System
+                    .err
+                    .println(
+                      "Unable to write to standard out, closing consumer.")
                   formatter.close()
                   simpleConsumer.close()
                   System.exit(1)

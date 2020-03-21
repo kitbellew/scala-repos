@@ -52,9 +52,11 @@ class CaseClassPickling(
             val pickle = PickleBehavior(
               Seq(
                 PickleEntry(
-                  fields.map { field =>
-                    GetField(field.name, field.sym)
-                  }.toSeq ++ standAloneVars.map { field =>
+                  fields
+                    .map { field =>
+                      GetField(field.name, field.sym)
+                    }
+                    .toSeq ++ standAloneVars.map { field =>
                     GetField(field.methodName, field)
                   })))
             val unpickle = UnpickleBehavior(
@@ -121,7 +123,8 @@ class CaseClassPickling(
     (
       for {
         companion <- tpe.companion
-        factoryMethod <- tpe.methods
+        factoryMethod <- tpe
+          .methods
           .filter(_.methodName == "apply")
           .sortBy(_.parameterNames.flatten.size)
           .headOption
@@ -146,9 +149,11 @@ class CaseClassPickling(
           val pickle = PickleBehavior(
             Seq(
               PickleEntry(
-                fields.map { field =>
-                  GetField(field.name, field.sym)
-                }.toSeq)))
+                fields
+                  .map { field =>
+                    GetField(field.name, field.sym)
+                  }
+                  .toSeq)))
           val unpickle = UnpickleBehavior(
             Seq(CallModuleFactory(fieldNameList, companion, factoryMethod)))
           PickleUnpickleImplementation(pickle, unpickle)

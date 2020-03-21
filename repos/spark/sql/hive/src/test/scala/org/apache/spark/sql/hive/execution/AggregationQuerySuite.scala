@@ -104,13 +104,9 @@ class ScalaAggregateFunctionWithoutInputSchema
 
 class LongProductSum extends UserDefinedAggregateFunction {
   def inputSchema: StructType =
-    new StructType()
-      .add("a", LongType)
-      .add("b", LongType)
+    new StructType().add("a", LongType).add("b", LongType)
 
-  def bufferSchema: StructType =
-    new StructType()
-      .add("product", LongType)
+  def bufferSchema: StructType = new StructType().add("product", LongType)
 
   def dataType: DataType = LongType
 
@@ -385,8 +381,8 @@ abstract class AggregationQuerySuite
     )
 
     checkAnswer(
-      sqlContext.sql(
-        """
+      sqlContext
+        .sql("""
           |SELECT sum(distinct value1), kEY - 100, count(distinct value1)
           |FROM agg2
           |GROUP BY Key - 100
@@ -926,10 +922,12 @@ abstract class AggregationQuerySuite
     // SortBasedAggregate to use a safe row as the aggregation buffer.
     Seq(dataTypes, UnsafeRow.mutableFieldTypes.asScala.toSeq).foreach {
       dataTypes =>
-        val fields = dataTypes.zipWithIndex.map {
-          case (dataType, index) =>
-            StructField(s"col$index", dataType, nullable = true)
-        }
+        val fields = dataTypes
+          .zipWithIndex
+          .map {
+            case (dataType, index) =>
+              StructField(s"col$index", dataType, nullable = true)
+          }
         // The schema used for data generator.
         val schemaForGenerator = StructType(fields)
         // The schema used for the DataFrame df.
@@ -944,10 +942,9 @@ abstract class AggregationQuerySuite
           dataType = schemaForGenerator,
           nullable = true,
           new Random(System.nanoTime()))
-        val dataGenerator = maybeDataGenerator
-          .getOrElse(
-            fail(
-              s"Failed to create data generator for schema $schemaForGenerator"))
+        val dataGenerator = maybeDataGenerator.getOrElse(
+          fail(
+            s"Failed to create data generator for schema $schemaForGenerator"))
         val data = (1 to 50).map { i =>
           dataGenerator.apply() match {
             case row: Row =>
@@ -978,7 +975,8 @@ abstract class AggregationQuerySuite
 
   test("udaf without specifying inputSchema") {
     withTempTable("noInputSchemaUDAF") {
-      sqlContext.udf
+      sqlContext
+        .udf
         .register("noInputSchema", new ScalaAggregateFunctionWithoutInputSchema)
 
       val data =
@@ -1021,7 +1019,8 @@ class TungstenAggregationQueryWithControlledFallbackSuite
       expectedAnswer: Seq[Row]): Unit = {
     (0 to 2).foreach { fallbackStartsAt =>
       withSQLConf(
-        "spark.sql.TungstenAggregate.testFallbackStartsAt" -> fallbackStartsAt.toString) {
+        "spark.sql.TungstenAggregate.testFallbackStartsAt" -> fallbackStartsAt
+          .toString) {
         // Create a new df to make sure its physical operator picks up
         // spark.sql.TungstenAggregate.testFallbackStartsAt.
         // todo: remove it?

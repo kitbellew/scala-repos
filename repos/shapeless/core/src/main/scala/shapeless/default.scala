@@ -261,7 +261,8 @@ class DefaultMacros(val c: whitebox.Context) extends CaseClassMacros {
         Some(m)
     }
 
-    val primaryConstructor = tpe.decls
+    val primaryConstructor = tpe
+      .decls
       .collectFirst {
         case m if m.isMethod && m.asMethod.isPrimaryConstructor =>
           m.asMethod
@@ -279,10 +280,12 @@ class DefaultMacros(val c: whitebox.Context) extends CaseClassMacros {
     // with wrong types, making the compilation fail with the wrong error.
     // We do this check here to detect that beforehand.
     def overloadsWithDefaultCount(tpe: Type): Int =
-      tpe.members.count { m =>
-        m.isMethod && m.name.toString == "apply" && methodHasDefaults(
-          m.asMethod)
-      }
+      tpe
+        .members
+        .count { m =>
+          m.isMethod && m.name.toString == "apply" && methodHasDefaults(
+            m.asMethod)
+        }
 
     val mainOverloadsWithDefaultCount = overloadsWithDefaultCount(tpe.companion)
     val secondOverloadsWithDefaultCount = overloadsWithDefaultCount(
@@ -319,10 +322,12 @@ class DefaultMacros(val c: whitebox.Context) extends CaseClassMacros {
         (noneTpe, q"_root_.scala.None")
     }
 
-    val wrapTpeTrees = fieldsOf(tpe).zipWithIndex.map {
-      case ((_, argTpe), idx) =>
-        wrapTpeTree(idx, devarargify(argTpe))
-    }
+    val wrapTpeTrees = fieldsOf(tpe)
+      .zipWithIndex
+      .map {
+        case ((_, argTpe), idx) =>
+          wrapTpeTree(idx, devarargify(argTpe))
+      }
 
     val resultTpe = mkHListTpe(
       wrapTpeTrees.map {

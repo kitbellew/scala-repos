@@ -45,8 +45,8 @@ trait ScalaUnusedImportPassBase {
         val psiOption: Option[PsiElement] =
           imp match {
             case ImportExprUsed(expr)
-                if !PsiTreeUtil.hasErrorElements(
-                  expr) && !isLanguageFeatureImport(imp) =>
+                if !PsiTreeUtil
+                  .hasErrorElements(expr) && !isLanguageFeatureImport(imp) =>
               val impSt = expr.getParent.asInstanceOf[ScImportStmt]
               if (impSt == null)
                 None //todo: investigate this case, this cannot be null
@@ -60,8 +60,8 @@ trait ScalaUnusedImportPassBase {
                 if e.selectors.nonEmpty && !isLanguageFeatureImport(imp) =>
               Some(e.wildcardElement.get)
             case ImportWildcardSelectorUsed(e)
-                if !PsiTreeUtil.hasErrorElements(e) && !isLanguageFeatureImport(
-                  imp) =>
+                if !PsiTreeUtil
+                  .hasErrorElements(e) && !isLanguageFeatureImport(imp) =>
               Some(e.getParent)
             case _ =>
               None
@@ -81,9 +81,8 @@ trait ScalaUnusedImportPassBase {
                   .isAlwaysUsedImport(qName)) =>
             Seq.empty
           case Some(psi) =>
-            val annotation = annotationHolder.createWarningAnnotation(
-              psi,
-              "Unused import statement")
+            val annotation = annotationHolder
+              .createWarningAnnotation(psi, "Unused import statement")
             annotation setHighlightType ProblemHighlightType.LIKE_UNUSED_SYMBOL
             getFixes.foreach(annotation.registerFix)
             qName.foreach(name =>

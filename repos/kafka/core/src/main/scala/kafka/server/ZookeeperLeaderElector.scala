@@ -43,13 +43,16 @@ class ZookeeperLeaderElector(
   // create the election path in ZK, if one does not exist
   val index = electionPath.lastIndexOf("/")
   if (index > 0)
-    controllerContext.zkUtils.makeSurePersistentPathExists(
-      electionPath.substring(0, index))
+    controllerContext
+      .zkUtils
+      .makeSurePersistentPathExists(electionPath.substring(0, index))
   val leaderChangeListener = new LeaderChangeListener
 
   def startup {
     inLock(controllerContext.controllerLock) {
-      controllerContext.zkUtils.zkClient
+      controllerContext
+        .zkUtils
+        .zkClient
         .subscribeDataChanges(electionPath, leaderChangeListener)
       elect
     }
@@ -108,8 +111,8 @@ class ZookeeperLeaderElector(
 
       case e2: Throwable =>
         error(
-          "Error while electing or becoming leader on broker %d".format(
-            brokerId),
+          "Error while electing or becoming leader on broker %d"
+            .format(brokerId),
           e2)
         resign()
     }

@@ -69,9 +69,9 @@ private[round] final class Titivate(
               }
             case None =>
               delayF {
-                val days = game.daysPerTurn | game.hasAi.fold(
-                  Game.aiAbandonedDays,
-                  Game.abandonedDays)
+                val days = game.daysPerTurn | game
+                  .hasAi
+                  .fold(Game.aiAbandonedDays, Game.abandonedDays)
                 GameRepo.setCheckAt(game, DateTime.now plusDays days)
               }
           }

@@ -59,16 +59,12 @@ object ModelSelectionViaCrossValidationExample {
       .toDF("id", "text", "label")
 
     // Configure an ML pipeline, which consists of three stages: tokenizer, hashingTF, and lr.
-    val tokenizer = new Tokenizer()
-      .setInputCol("text")
-      .setOutputCol("words")
+    val tokenizer = new Tokenizer().setInputCol("text").setOutputCol("words")
     val hashingTF = new HashingTF()
       .setInputCol(tokenizer.getOutputCol)
       .setOutputCol("features")
-    val lr = new LogisticRegression()
-      .setMaxIter(10)
-    val pipeline = new Pipeline()
-      .setStages(Array(tokenizer, hashingTF, lr))
+    val lr = new LogisticRegression().setMaxIter(10)
+    val pipeline = new Pipeline().setStages(Array(tokenizer, hashingTF, lr))
 
     // We use a ParamGridBuilder to construct a grid of parameters to search over.
     // With 3 values for hashingTF.numFeatures and 2 values for lr.regParam,

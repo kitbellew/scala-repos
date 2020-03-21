@@ -18,7 +18,8 @@ class TfIdfJob(args: Args) extends Job(args) {
 
   import Matrix._
 
-  val docWordMatrix = Tsv(args("input"), ('doc, 'word, 'count)).read
+  val docWordMatrix = Tsv(args("input"), ('doc, 'word, 'count))
+    .read
     .toMatrix[Long, String, Double]('doc, 'word, 'count)
 
   // compute the overall document frequency of each row

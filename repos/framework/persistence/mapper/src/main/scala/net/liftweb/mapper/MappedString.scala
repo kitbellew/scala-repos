@@ -324,7 +324,8 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
     * Make sure that the field is unique in the database
     */
   def valUnique(msg: => String)(value: String): List[FieldError] =
-    fieldOwner.getSingleton
+    fieldOwner
+      .getSingleton
       .findAll(By(this, value))
       .filter(!_.comparePrimaryKeys(this.fieldOwner)) match {
       case Nil =>

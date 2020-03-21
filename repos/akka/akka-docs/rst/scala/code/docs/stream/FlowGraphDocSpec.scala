@@ -184,12 +184,12 @@ class FlowGraphDocSpec extends AkkaSpec {
           val priorityPool2 = b.add(PriorityWorkerPool(worker2, 2))
 
           Source(1 to 100).map("job: " + _) ~> priorityPool1.jobsIn
-          Source(1 to 100).map(
-            "priority job: " + _) ~> priorityPool1.priorityJobsIn
+          Source(1 to 100).map("priority job: " + _) ~> priorityPool1
+            .priorityJobsIn
 
           priorityPool1.resultsOut ~> priorityPool2.jobsIn
-          Source(1 to 100).map(
-            "one-step, priority " + _) ~> priorityPool2.priorityJobsIn
+          Source(1 to 100).map("one-step, priority " + _) ~> priorityPool2
+            .priorityJobsIn
 
           priorityPool2.resultsOut ~> Sink.foreach(println)
           ClosedShape
@@ -234,17 +234,16 @@ class FlowGraphDocSpec extends AkkaSpec {
     import GraphDSL.Implicits._
     // This cannot produce any value:
     val cyclicFold: Source[Int, Future[Int]] = Source.fromGraph(
-      GraphDSL.create(Sink.fold[Int, Int](0)(_ + _)) {
-        implicit builder =>
-          fold =>
-            // - Fold cannot complete until its upstream mapAsync completes
-            // - mapAsync cannot complete until the materialized Future produced by
-            //   fold completes
-            // As a result this Source will never emit anything, and its materialited
-            // Future will never complete
-            builder.materializedValue.mapAsync(4)(identity) ~> fold
-            SourceShape(builder.materializedValue.mapAsync(4)(identity).outlet)
-      })
+      GraphDSL
+        .create(Sink.fold[Int, Int](0)(_ + _)) { implicit builder => fold =>
+          // - Fold cannot complete until its upstream mapAsync completes
+          // - mapAsync cannot complete until the materialized Future produced by
+          //   fold completes
+          // As a result this Source will never emit anything, and its materialited
+          // Future will never complete
+          builder.materializedValue.mapAsync(4)(identity) ~> fold
+          SourceShape(builder.materializedValue.mapAsync(4)(identity).outlet)
+        })
     //#flow-graph-matvalue-cycle
   }
 

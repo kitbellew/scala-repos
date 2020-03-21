@@ -66,16 +66,16 @@ class CamelSettings private[camel] (
   /**
     * Configured setting for how long the actor should wait for activation before it fails.
     */
-  final val ActivationTimeout: FiniteDuration = config.getMillisDuration(
-    "akka.camel.consumer.activation-timeout")
+  final val ActivationTimeout: FiniteDuration = config
+    .getMillisDuration("akka.camel.consumer.activation-timeout")
 
   /**
     * Configured setting, when endpoint is out-capable (can produce responses) replyTimeout is the maximum time
     * the endpoint can take to send the response before the message exchange fails.
     * This setting is used for out-capable, in-only, manually acknowledged communication.
     */
-  final val ReplyTimeout: FiniteDuration = config.getMillisDuration(
-    "akka.camel.consumer.reply-timeout")
+  final val ReplyTimeout: FiniteDuration = config
+    .getMillisDuration("akka.camel.consumer.reply-timeout")
 
   /**
     * Configured setting which determines whether one-way communications between an endpoint and this consumer actor
@@ -89,8 +89,8 @@ class CamelSettings private[camel] (
   /**
     * enables or disables streamingCache on the Camel Context
     */
-  final val StreamingCache: Boolean = config.getBoolean(
-    "akka.camel.streamingCache")
+  final val StreamingCache: Boolean = config
+    .getBoolean("akka.camel.streamingCache")
 
   final val Conversions: (String, RouteDefinition) ⇒ RouteDefinition = {
     val specifiedConversions = {

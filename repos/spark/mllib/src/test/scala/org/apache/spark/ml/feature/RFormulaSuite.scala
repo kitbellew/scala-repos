@@ -199,9 +199,8 @@ class RFormulaSuite
         Array[Attribute](
           NumericAttribute.defaultAttr,
           NumericAttribute.defaultAttr)).toMetadata
-    val original = base.select(
-      base.col("id"),
-      base.col("vec").as("vec2", metadata))
+    val original = base
+      .select(base.col("id"), base.col("vec").as("vec2", metadata))
     val model = formula.fit(original)
     val result = model.transform(original)
     val attrs = AttributeGroup.fromStructField(result.schema("features"))
@@ -318,15 +317,21 @@ class RFormulaSuite
       assert(model.resolvedFormula.label === model2.resolvedFormula.label)
       assert(model.resolvedFormula.terms === model2.resolvedFormula.terms)
       assert(
-        model.resolvedFormula.hasIntercept === model2.resolvedFormula.hasIntercept)
+        model.resolvedFormula.hasIntercept === model2
+          .resolvedFormula
+          .hasIntercept)
 
       assert(model.pipelineModel.uid === model2.pipelineModel.uid)
 
-      model.pipelineModel.stages.zip(model2.pipelineModel.stages).foreach {
-        case (transformer1, transformer2) =>
-          assert(transformer1.uid === transformer2.uid)
-          assert(transformer1.params === transformer2.params)
-      }
+      model
+        .pipelineModel
+        .stages
+        .zip(model2.pipelineModel.stages)
+        .foreach {
+          case (transformer1, transformer2) =>
+            assert(transformer1.uid === transformer2.uid)
+            assert(transformer1.params === transformer2.params)
+        }
     }
 
     val dataset = sqlContext

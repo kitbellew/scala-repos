@@ -52,11 +52,7 @@ class ScalaQualifiedNameProvider extends QualifiedNameProvider {
       element: PsiElement,
       editor: Editor,
       project: Project) {
-    new JavaQualifiedNameProvider().insertQualifiedName(
-      fqn,
-      element,
-      editor,
-      project
-    ) //todo:
+    new JavaQualifiedNameProvider()
+      .insertQualifiedName(fqn, element, editor, project) //todo:
   }
 }

@@ -30,9 +30,11 @@ trait ScAnnotationsHolder extends ScalaPsiElement with PsiAnnotationOwner {
     val stub: StubElement[_ <: PsiElement] =
       this match {
         case st: StubBasedPsiElement[_] if st.getStub != null =>
-          st.getStub.asInstanceOf[StubElement[
-            _ <: PsiElement
-          ]] // !!! Appeasing an unexplained compile error
+          st
+            .getStub
+            .asInstanceOf[StubElement[
+              _ <: PsiElement
+            ]] // !!! Appeasing an unexplained compile error
         case file: PsiFileImpl if file.getStub != null =>
           file.getStub
         case _ =>
@@ -97,9 +99,8 @@ trait ScAnnotationsHolder extends ScalaPsiElement with PsiAnnotationOwner {
   def addAnnotation(qualifiedName: String): PsiAnnotation = {
     val container = findChildByClassScala(classOf[ScAnnotations])
 
-    val element = ScalaPsiElementFactory.createAnAnnotation(
-      qualifiedName,
-      getManager)
+    val element = ScalaPsiElementFactory
+      .createAnAnnotation(qualifiedName, getManager)
 
     val added = container.add(element).asInstanceOf[PsiAnnotation]
     container.add(ScalaPsiElementFactory.createNewLine(getManager))

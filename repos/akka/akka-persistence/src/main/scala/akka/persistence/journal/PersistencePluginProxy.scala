@@ -29,15 +29,19 @@ object PersistencePluginProxy {
 
   def setTargetLocation(system: ActorSystem, address: Address): Unit = {
     Persistence(system).journalFor(null) ! TargetLocation(address)
-    if (system.settings.config.getString(
-          "akka.persistence.snapshot-store.plugin") != "")
+    if (system
+          .settings
+          .config
+          .getString("akka.persistence.snapshot-store.plugin") != "")
       Persistence(system).snapshotStoreFor(null) ! TargetLocation(address)
   }
 
   def start(system: ActorSystem): Unit = {
     Persistence(system).journalFor(null)
-    if (system.settings.config.getString(
-          "akka.persistence.snapshot-store.plugin") != "")
+    if (system
+          .settings
+          .config
+          .getString("akka.persistence.snapshot-store.plugin") != "")
       Persistence(system).snapshotStoreFor(null)
 
   }
@@ -100,8 +104,8 @@ final class PersistencePluginProxy(config: Config)
     val key = s"target-${pluginType.qualifier}-plugin"
     config.getString(key).requiring(_ != "", s"$pluginId.$key must be defined")
   }
-  private val startTarget: Boolean = config.getBoolean(
-    s"start-target-${pluginType.qualifier}")
+  private val startTarget: Boolean = config
+    .getBoolean(s"start-target-${pluginType.qualifier}")
 
   override def preStart(): Unit = {
     if (startTarget) {
@@ -136,8 +140,10 @@ final class PersistencePluginProxy(config: Config)
         }
       }
 
-      context.system.scheduler.scheduleOnce(initTimeout, self, InitTimeout)(
-        context.dispatcher)
+      context
+        .system
+        .scheduler
+        .scheduleOnce(initTimeout, self, InitTimeout)(context.dispatcher)
     }
   }
 
@@ -174,8 +180,8 @@ final class PersistencePluginProxy(config: Config)
   }
 
   def sendIdentify(address: Address): Unit = {
-    val sel = context.actorSelection(
-      RootActorPath(address) / "system" / targetPluginId)
+    val sel = context
+      .actorSelection(RootActorPath(address) / "system" / targetPluginId)
     log.info("Trying to identify target {} at {}", pluginType.qualifier, sel)
     sel ! Identify(targetPluginId)
   }
@@ -215,12 +221,14 @@ final class PersistencePluginProxy(config: Config)
           persistentActor ! WriteMessagesFailed(timeoutException)
           messages.foreach {
             case a: AtomicWrite ⇒
-              a.payload.foreach { p ⇒
-                persistentActor ! WriteMessageFailure(
-                  p,
-                  timeoutException,
-                  actorInstanceId)
-              }
+              a
+                .payload
+                .foreach { p ⇒
+                  persistentActor ! WriteMessageFailure(
+                    p,
+                    timeoutException,
+                    actorInstanceId)
+                }
             case r: NonPersistentRepr ⇒
               persistentActor ! LoopMessageSuccess(r.payload, actorInstanceId)
           }

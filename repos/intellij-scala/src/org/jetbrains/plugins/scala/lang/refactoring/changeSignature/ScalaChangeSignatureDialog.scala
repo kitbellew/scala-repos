@@ -162,10 +162,8 @@ class ScalaChangeSignatureDialog(
               val ed: TableCellEditor = parametersTable.getCellEditor
               if (ed != null) {
                 val editorValue: AnyRef = ed.getCellEditorValue
-                myParametersTableModel.setValueAtWithoutUpdate(
-                  editorValue,
-                  row,
-                  column)
+                myParametersTableModel
+                  .setValueAtWithoutUpdate(editorValue, row, column)
                 updateSignature()
               }
             }
@@ -289,9 +287,8 @@ class ScalaChangeSignatureDialog(
       (name2, idx2) <- namesWithIndices
       if name == name2 && idx < idx2
     } {
-      problems += ScalaBundle.message(
-        "change.signature.parameters.same.name.{0}",
-        name)
+      problems += ScalaBundle
+        .message("change.signature.parameters.same.name.{0}", name)
     }
     paramItems.foreach(_.updateType(problems))
 
@@ -300,8 +297,8 @@ class ScalaChangeSignatureDialog(
           if item.parameter.isRepeatedParameter && !splittedItems
             .flatMap(_.lastOption)
             .contains(item) =>
-        problems += ScalaBundle.message(
-          "change.signature.vararg.should.be.last.in.clause")
+        problems += ScalaBundle
+          .message("change.signature.vararg.should.be.last.in.clause")
       case _ =>
     }
 
@@ -315,8 +312,8 @@ class ScalaChangeSignatureDialog(
     if (!getTableComponent.isEditing) {
       for {
         item <- parameterItems
-        if item.parameter.oldIndex < 0 && StringUtil.isEmpty(
-          item.defaultValueCodeFragment.getText)
+        if item.parameter.oldIndex < 0 && StringUtil
+          .isEmpty(item.defaultValueCodeFragment.getText)
       } {
         val stuff =
           if (isAddDefaultArgs)
@@ -387,10 +384,8 @@ class ScalaChangeSignatureDialog(
       StdType.ANY
     else {
       val fragment = myReturnTypeCodeFragment
-      ScalaPsiElementFactory.createTypeFromText(
-        fragment.getText,
-        fragment.getContext,
-        fragment)
+      ScalaPsiElementFactory
+        .createTypeFromText(fragment.getText, fragment.getContext, fragment)
     }
   }
 
@@ -534,8 +529,9 @@ class ScalaChangeSignatureDialog(
 
   protected def decorateParameterTable(table: JBTable): JPanel = {
     table.setCellSelectionEnabled(true)
-    table.getSelectionModel.setSelectionMode(
-      ListSelectionModel.SINGLE_SELECTION)
+    table
+      .getSelectionModel
+      .setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
     table.getSelectionModel.setSelectionInterval(0, 0)
     table.setSurrendersFocusOnKeystroke(true)
     val buttonsPanel: JPanel =

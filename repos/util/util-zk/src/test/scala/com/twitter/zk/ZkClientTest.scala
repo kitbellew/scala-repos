@@ -152,7 +152,8 @@ class ZkClientTest extends WordSpec with MockitoSugar {
               0,
               path,
               null,
-              znode.children
+              znode
+                .children
                 .map {
                   _.name
                 }
@@ -501,8 +502,8 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         "with a name and data" in {
           val data = "blah".getBytes
           create(childPath, data)(Future(childPath))
-          val znode = Await.result(
-            zkClient(path).create(data, child = Some("child")))
+          val znode = Await
+            .result(zkClient(path).create(data, child = Some("child")))
           assert(znode.path == childPath)
         }
 
@@ -706,10 +707,8 @@ class ZkClientTest extends WordSpec with MockitoSugar {
       import h._
 
       val znode = zkClient("/parent")
-      val result = ZNode.Children(
-        znode,
-        new Stat,
-        "doe" :: "ray" :: "me" :: Nil)
+      val result = ZNode
+        .Children(znode, new Stat, "doe" :: "ray" :: "me" :: Nil)
 
       "apply" should {
         "ok" in {
@@ -736,20 +735,23 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         watchChildren(znode.path)(Future(result))(
           Future(NodeEvent.ChildrenChanged(znode.path)))
         Await.ready(
-          znode.getChildren.watch().onSuccess {
-            case ZNode.Watch(r, f) =>
-              r onSuccess {
-                case ZNode.Children(p, s, c) =>
-                  assert(p == result.path)
-                  assert(s == result.stat)
-                  f onSuccess {
-                    case NodeEvent.ChildrenChanged(name) =>
-                      assert(name == znode.path)
-                    case e =>
-                      fail("Incorrect event: %s".format(e))
-                  }
-              }
-          })
+          znode
+            .getChildren
+            .watch()
+            .onSuccess {
+              case ZNode.Watch(r, f) =>
+                r onSuccess {
+                  case ZNode.Children(p, s, c) =>
+                    assert(p == result.path)
+                    assert(s == result.stat)
+                    f onSuccess {
+                      case NodeEvent.ChildrenChanged(name) =>
+                        assert(name == znode.path)
+                      case e =>
+                        fail("Incorrect event: %s".format(e))
+                    }
+                }
+            })
       }
 
       "monitor" in {
@@ -819,19 +821,22 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         }
         try {
           Await.ready(
-            znode.getData.watch().onSuccess {
-              case ZNode.Watch(Return(z), u) => {
-                assert(z == result)
-                u onSuccess {
-                  case NodeEvent.DataChanged(name) =>
-                    assert(name == znode.path)
-                  case e =>
-                    fail("Incorrect event: %s".format(e))
+            znode
+              .getData
+              .watch()
+              .onSuccess {
+                case ZNode.Watch(Return(z), u) => {
+                  assert(z == result)
+                  u onSuccess {
+                    case NodeEvent.DataChanged(name) =>
+                      assert(name == znode.path)
+                    case e =>
+                      fail("Incorrect event: %s".format(e))
+                  }
                 }
-              }
-              case _ =>
-                fail("unexpected return value")
-            })
+                case _ =>
+                  fail("unexpected return value")
+              })
         } catch {
           case e: Throwable =>
             fail("unexpected error: %s".format(e))
@@ -893,50 +898,60 @@ class ZkClientTest extends WordSpec with MockitoSugar {
             })
         }
         .flatMap { z =>
-          z +: z.children.map { c =>
-            ZNode.Children(c, new Stat, Nil)
-          }
+          z +: z
+            .children
+            .map { c =>
+              ZNode.Children(c, new Stat, Nil)
+            }
         }
 
       // Lay out node updates for the tree: Add a 'z' node to all nodes named 'a'
       val updateTree =
-        treeChildren.collect {
-          case z @ ZNode.Children(p, s, c) if (p.endsWith("/c")) => {
-            val newChild = ZNode.Children(z("z"), new Stat, Nil)
-            val kids = c.filterNot {
-              _.path.endsWith("/")
-            } :+ newChild
-            ZNode.Children(ZNode.Exists(z, s), kids) :: newChild :: Nil
+        treeChildren
+          .collect {
+            case z @ ZNode.Children(p, s, c) if (p.endsWith("/c")) => {
+              val newChild = ZNode.Children(z("z"), new Stat, Nil)
+              val kids = c.filterNot {
+                _.path.endsWith("/")
+              } :+ newChild
+              ZNode.Children(ZNode.Exists(z, s), kids) :: newChild :: Nil
+            }
           }
-        }.flatten
+          .flatten
 
       // Initially, we should get a ZNode.TreeUpdate for each node in the tree with only added nodes
       val expectedByPath =
-        treeChildren.map { z =>
-          z.path -> ZNode.TreeUpdate(z, z.children.toSet)
-        }.toMap
+        treeChildren
+          .map { z =>
+            z.path -> ZNode.TreeUpdate(z, z.children.toSet)
+          }
+          .toMap
 
       val updatesByPath =
-        updateTree.map { z =>
-          val prior: Set[ZNode] = expectedByPath
-            .get(z.path)
-            .map {
-              _.added
-            }
-            .getOrElse(Set.empty)
-          z.path -> ZNode.TreeUpdate(
-            z,
-            z.children.toSet -- prior,
-            prior -- z.children.toSet)
-        }.toMap
+        updateTree
+          .map { z =>
+            val prior: Set[ZNode] = expectedByPath
+              .get(z.path)
+              .map {
+                _.added
+              }
+              .getOrElse(Set.empty)
+            z.path -> ZNode.TreeUpdate(
+              z,
+              z.children.toSet -- prior,
+              prior -- z.children.toSet)
+          }
+          .toMap
 
       def okUpdates(event: String => WatchedEvent) {
         // Create promises for each node in the tree -- satisfying a promise will fire a
         // ChildrenChanged event for its associated node.
         val updatePromises =
-          treeChildren.map {
-            _.path -> new Promise[WatchedEvent]
-          }.toMap
+          treeChildren
+            .map {
+              _.path -> new Promise[WatchedEvent]
+            }
+            .toMap
         treeChildren foreach { z =>
           watchChildren(z.path)(Future(z))(updatePromises(z.path))
         }
@@ -947,11 +962,16 @@ class ZkClientTest extends WordSpec with MockitoSugar {
           val e = expectedByPath(ztu.parent.path)
           assert(ztu.parent.path == e.parent.path)
           assert(
-            ztu.added.map {
-              _.path
-            } == e.added.map {
-              _.path
-            }.toSet)
+            ztu
+              .added
+              .map {
+                _.path
+              } == e
+              .added
+              .map {
+                _.path
+              }
+              .toSet)
           assert(ztu.removed == Set())
         }
 
@@ -969,11 +989,16 @@ class ZkClientTest extends WordSpec with MockitoSugar {
           val e = updatesByPath(z.path)
           assert(ztu.parent.path == e.parent.path)
           assert(
-            ztu.added.map {
-              _.path
-            } == e.added.map {
-              _.path
-            }.toSet)
+            ztu
+              .added
+              .map {
+                _.path
+              } == e
+              .added
+              .map {
+                _.path
+              }
+              .toSet)
           assert(ztu.removed == Set())
         }
         intercept[TimeoutException] {
@@ -1004,11 +1029,16 @@ class ZkClientTest extends WordSpec with MockitoSugar {
             val e = expectedByPath(ztu.parent.path)
             assert(ztu.parent == e.parent)
             assert(
-              ztu.added.map {
-                _.path
-              } == e.added.map {
-                _.path
-              }.toSet)
+              ztu
+                .added
+                .map {
+                  _.path
+                } == e
+                .added
+                .map {
+                  _.path
+                }
+                .toSet)
             assert(ztu.removed == List())
           }
           Await.result(offer.sync(), 1.second)

@@ -129,9 +129,8 @@ case class HandshakeResponse(
       }
       .getOrElse(0)
     val packetBodySize =
-      username
-        .getOrElse("")
-        .length + hashPassword.length + dbStrSize + fixedBodySize
+      username.getOrElse("").length + hashPassword
+        .length + dbStrSize + fixedBodySize
     val bw = BufferWriter(new Array[Byte](packetBodySize))
     bw.writeInt(clientCap.mask)
     bw.writeInt(maxPacketSize)
@@ -201,8 +200,8 @@ class ExecuteRequest(
       // Unsupported type. Write the error to log, and write the type as null.
       // This allows us to safely skip writing the parameter without corrupting the buffer.
       log.warning(
-        "Unknown parameter %s will be treated as SQL NULL.".format(
-          param.getClass.getName))
+        "Unknown parameter %s will be treated as SQL NULL."
+          .format(param.getClass.getName))
       writer.writeShort(Type.Null)
     }
   }

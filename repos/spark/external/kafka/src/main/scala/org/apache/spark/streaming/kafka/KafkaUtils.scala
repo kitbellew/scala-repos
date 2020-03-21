@@ -364,17 +364,19 @@ object KafkaUtils {
       valueDecoderClass: Class[VD],
       kafkaParams: JMap[String, String],
       offsetRanges: Array[OffsetRange]): JavaPairRDD[K, V] =
-    jsc.sc.withScope {
-      implicit val keyCmt: ClassTag[K] = ClassTag(keyClass)
-      implicit val valueCmt: ClassTag[V] = ClassTag(valueClass)
-      implicit val keyDecoderCmt: ClassTag[KD] = ClassTag(keyDecoderClass)
-      implicit val valueDecoderCmt: ClassTag[VD] = ClassTag(valueDecoderClass)
-      new JavaPairRDD(
-        createRDD[K, V, KD, VD](
-          jsc.sc,
-          Map(kafkaParams.asScala.toSeq: _*),
-          offsetRanges))
-    }
+    jsc
+      .sc
+      .withScope {
+        implicit val keyCmt: ClassTag[K] = ClassTag(keyClass)
+        implicit val valueCmt: ClassTag[V] = ClassTag(valueClass)
+        implicit val keyDecoderCmt: ClassTag[KD] = ClassTag(keyDecoderClass)
+        implicit val valueDecoderCmt: ClassTag[VD] = ClassTag(valueDecoderClass)
+        new JavaPairRDD(
+          createRDD[K, V, KD, VD](
+            jsc.sc,
+            Map(kafkaParams.asScala.toSeq: _*),
+            offsetRanges))
+      }
 
   /**
     * Create a RDD from Kafka using offset ranges for each topic and partition. This allows you
@@ -409,20 +411,22 @@ object KafkaUtils {
       offsetRanges: Array[OffsetRange],
       leaders: JMap[TopicAndPartition, Broker],
       messageHandler: JFunction[MessageAndMetadata[K, V], R]): JavaRDD[R] =
-    jsc.sc.withScope {
-      implicit val keyCmt: ClassTag[K] = ClassTag(keyClass)
-      implicit val valueCmt: ClassTag[V] = ClassTag(valueClass)
-      implicit val keyDecoderCmt: ClassTag[KD] = ClassTag(keyDecoderClass)
-      implicit val valueDecoderCmt: ClassTag[VD] = ClassTag(valueDecoderClass)
-      implicit val recordCmt: ClassTag[R] = ClassTag(recordClass)
-      val leaderMap = Map(leaders.asScala.toSeq: _*)
-      createRDD[K, V, KD, VD, R](
-        jsc.sc,
-        Map(kafkaParams.asScala.toSeq: _*),
-        offsetRanges,
-        leaderMap,
-        messageHandler.call(_))
-    }
+    jsc
+      .sc
+      .withScope {
+        implicit val keyCmt: ClassTag[K] = ClassTag(keyClass)
+        implicit val valueCmt: ClassTag[V] = ClassTag(valueClass)
+        implicit val keyDecoderCmt: ClassTag[KD] = ClassTag(keyDecoderClass)
+        implicit val valueDecoderCmt: ClassTag[VD] = ClassTag(valueDecoderClass)
+        implicit val recordCmt: ClassTag[R] = ClassTag(recordClass)
+        val leaderMap = Map(leaders.asScala.toSeq: _*)
+        createRDD[K, V, KD, VD, R](
+          jsc.sc,
+          Map(kafkaParams.asScala.toSeq: _*),
+          offsetRanges,
+          leaderMap,
+          messageHandler.call(_))
+      }
 
   /**
     * Create an input stream that directly pulls messages from Kafka Brokers
@@ -782,9 +786,12 @@ private[kafka] class KafkaUtilsPythonHelper {
               s"do not equal to the topic from offsets: ${topicsFromOffsets.mkString(" ")}")
         }
         Map(
-          fromOffsets.asScala.mapValues {
-            _.longValue()
-          }.toSeq: _*)
+          fromOffsets
+            .asScala
+            .mapValues {
+              _.longValue()
+            }
+            .toSeq: _*)
       } else {
         val kc = new KafkaCluster(Map(kafkaParams.asScala.toSeq: _*))
         KafkaUtils.getFromOffsets(
@@ -816,8 +823,8 @@ private[kafka] class KafkaUtilsPythonHelper {
 
   def offsetRangesOfKafkaRDD(rdd: RDD[_]): JList[OffsetRange] = {
     val parentRDDs = rdd.getNarrowAncestors
-    val kafkaRDDs = parentRDDs.filter(rdd =>
-      rdd.isInstanceOf[KafkaRDD[_, _, _, _, _]])
+    val kafkaRDDs = parentRDDs
+      .filter(rdd => rdd.isInstanceOf[KafkaRDD[_, _, _, _, _]])
 
     require(
       kafkaRDDs.length == 1,
@@ -868,8 +875,8 @@ private object KafkaUtilsPythonHelper {
       if (obj == this) {
         out.write(Opcodes.GLOBAL)
         out.write(
-          s"$module\nKafkaMessageAndMetadata\n".getBytes(
-            StandardCharsets.UTF_8))
+          s"$module\nKafkaMessageAndMetadata\n"
+            .getBytes(StandardCharsets.UTF_8))
       } else {
         pickler.save(this)
         val msgAndMetaData = obj.asInstanceOf[PythonMessageAndMetadata]

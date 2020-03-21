@@ -21,11 +21,13 @@ abstract class SimpleTestCase extends UsefulTestCase {
   override def setUp() {
     super.setUp()
     val fixtureBuilder: TestFixtureBuilder[IdeaProjectTestFixture] =
-      IdeaTestFixtureFactory.getFixtureFactory.createFixtureBuilder(
-        "SimpleTestCase")
+      IdeaTestFixtureFactory
+        .getFixtureFactory
+        .createFixtureBuilder("SimpleTestCase")
 
-    fixture = IdeaTestFixtureFactory.getFixtureFactory.createCodeInsightFixture(
-      fixtureBuilder.getFixture)
+    fixture = IdeaTestFixtureFactory
+      .getFixtureFactory
+      .createCodeInsightFixture(fixtureBuilder.getFixture)
     fixture.setUp()
   }
 
@@ -47,7 +49,8 @@ abstract class SimpleTestCase extends UsefulTestCase {
 
   implicit class Findable(val element: ScalaFile) {
     def target: PsiElement =
-      element.depthFirst
+      element
+        .depthFirst
         .dropWhile(!_.isInstanceOf[PsiComment])
         .drop(1)
         .dropWhile(_.isInstanceOf[PsiWhiteSpace])
@@ -79,8 +82,7 @@ abstract class SimpleTestCase extends UsefulTestCase {
 
   implicit class ScalaCode(@Language("Scala") val s: String) {
     def stripComments: String =
-      s.replaceAll("""(?s)/\*.*?\*/""", "")
-        .replaceAll("""(?m)//.*$""", "")
+      s.replaceAll("""(?s)/\*.*?\*/""", "").replaceAll("""(?m)//.*$""", "")
 
     def parse: ScalaFile = parseText(s)
 
@@ -88,10 +90,13 @@ abstract class SimpleTestCase extends UsefulTestCase {
       parse(classTag[T].runtimeClass.asInstanceOf[Class[T]])
 
     def parse[T <: PsiElement](aClass: Class[T]): T =
-      parse.depthFirst.findByType(aClass).getOrElse {
-        throw new RuntimeException(
-          "Unable to find PSI element with type " + aClass.getSimpleName)
-      }
+      parse
+        .depthFirst
+        .findByType(aClass)
+        .getOrElse {
+          throw new RuntimeException(
+            "Unable to find PSI element with type " + aClass.getSimpleName)
+        }
   }
 
   case class ContainsPattern(fragment: String) {

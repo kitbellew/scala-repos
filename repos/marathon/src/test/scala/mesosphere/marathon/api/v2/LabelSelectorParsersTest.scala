@@ -13,10 +13,11 @@ class LabelSelectorParsersTest extends MarathonSpec with Matchers {
     existence.selectors should have size 1
     existence.selectors.head.key should be("existence")
     existence.selectors.head.value should have size 0
-    existence.matches(
-      AppDefinition(labels = Map("existence" -> "one"))) should be(true)
-    existence.matches(AppDefinition(labels = Map("none" -> "one"))) should be(
-      false)
+    existence
+      .matches(AppDefinition(labels = Map("existence" -> "one"))) should be(
+      true)
+    existence
+      .matches(AppDefinition(labels = Map("none" -> "one"))) should be(false)
   }
 
   test("A valid label equals query can be parsed") {
@@ -79,10 +80,10 @@ class LabelSelectorParsersTest extends MarathonSpec with Matchers {
         "foo" -> "one",
         "bla" -> "four",
         "existence" -> "true"))) should be(true)
-    combined.matches(AppDefinition(labels = Map("foo" -> "one"))) should be(
-      false)
-    combined.matches(AppDefinition(labels = Map("bla" -> "four"))) should be(
-      false)
+    combined
+      .matches(AppDefinition(labels = Map("foo" -> "one"))) should be(false)
+    combined
+      .matches(AppDefinition(labels = Map("bla" -> "four"))) should be(false)
   }
 
   test(
@@ -96,10 +97,10 @@ class LabelSelectorParsersTest extends MarathonSpec with Matchers {
         "{{{" -> "&&&",
         "^^^" -> "&&&",
         "###" -> "&&&"))) should be(true)
-    combined.matches(AppDefinition(labels = Map("^^^" -> "---"))) should be(
-      false)
-    combined.matches(AppDefinition(labels = Map("###" -> "four"))) should be(
-      false)
+    combined
+      .matches(AppDefinition(labels = Map("^^^" -> "---"))) should be(false)
+    combined
+      .matches(AppDefinition(labels = Map("###" -> "four"))) should be(false)
   }
 
   test("An invalid combined label query can not be parsed") {

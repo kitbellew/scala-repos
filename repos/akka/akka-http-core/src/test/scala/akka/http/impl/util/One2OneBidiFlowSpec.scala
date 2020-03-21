@@ -142,9 +142,9 @@ class One2OneBidiFlowSpec extends AkkaSpec {
       Source(1 to 1000)
         .log("", seen.set)
         .via(
-          One2OneBidiFlow[Int, Int](MAX_PENDING) join Flow.fromSinkAndSourceMat(
-            Sink.ignore,
-            Source.fromPublisher(out))(Keep.left))
+          One2OneBidiFlow[Int, Int](MAX_PENDING) join Flow
+            .fromSinkAndSourceMat(Sink.ignore, Source.fromPublisher(out))(
+              Keep.left))
         .runWith(Sink.ignore)
 
       Thread.sleep(50)

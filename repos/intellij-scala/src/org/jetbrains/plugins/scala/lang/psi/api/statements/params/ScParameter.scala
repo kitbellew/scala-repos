@@ -107,10 +107,8 @@ trait ScParameter
   }
 
   def getDeclarationScope =
-    PsiTreeUtil.getParentOfType(
-      this,
-      classOf[ScParameterOwner],
-      classOf[ScFunctionExpr])
+    PsiTreeUtil
+      .getParentOfType(this, classOf[ScParameterOwner], classOf[ScFunctionExpr])
 
   def deprecatedName: Option[String]
 
@@ -267,10 +265,8 @@ trait ScParameter
       getContainingFile match {
         case file: ScalaFile =>
           if (file.isCompiled) {
-            val containingMember = PsiTreeUtil.getContextOfType(
-              this,
-              true,
-              classOf[ScMember])
+            val containingMember = PsiTreeUtil
+              .getContextOfType(this, true, classOf[ScMember])
             if (containingMember == null)
               res
             else {

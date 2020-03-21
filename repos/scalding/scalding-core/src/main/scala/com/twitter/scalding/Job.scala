@@ -154,7 +154,8 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
     * By default, this uses reflection and the single argument Args constructor
     */
   def clone(nextargs: Args): Job =
-    this.getClass
+    this
+      .getClass
       .getConstructor(classOf[Args])
       .newInstance(Mode.putMode(mode, nextargs))
       .asInstanceOf[Job]
@@ -193,7 +194,8 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
     * This returns Map[AnyRef, AnyRef] for compatibility with older code
     */
   def config: Map[AnyRef, AnyRef] = {
-    val base = Config.empty
+    val base = Config
+      .empty
       .setListSpillThreshold(defaultSpillThreshold)
       .setMapSpillThreshold(defaultSpillThreshold)
       .setMapSideAggregationThreshold(defaultSpillThreshold)
@@ -246,9 +248,11 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
   def stepStrategy: Option[FlowStepStrategy[_]] = None
 
   private def executionContext: Try[ExecutionContext] =
-    Config.tryFrom(config).map { conf =>
-      ExecutionContext.newContext(conf)(flowDef, mode)
-    }
+    Config
+      .tryFrom(config)
+      .map { conf =>
+        ExecutionContext.newContext(conf)(flowDef, mode)
+      }
 
   /**
     * combine the config, flowDef and the Mode to produce a flow
@@ -297,9 +301,8 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
     scaldingCascadingStats = Some(statsData)
     // TODO: Why the two ways to do stats? Answer: jank-den.
     if (args.boolean("scalding.flowstats")) {
-      val statsFilename = args.getOrElse(
-        "scalding.flowstats",
-        name + "._flowstats.json")
+      val statsFilename = args
+        .getOrElse("scalding.flowstats", name + "._flowstats.json")
       val br =
         new BufferedWriter(
           new OutputStreamWriter(new FileOutputStream(statsFilename), "utf-8"))
@@ -381,8 +384,8 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
   /*
    * Need to be lazy to be used within pipes.
    */
-  private lazy val timeoutExecutor = Executors.newSingleThreadExecutor(
-    new NamedPoolThreadFactory("job-timer", true))
+  private lazy val timeoutExecutor = Executors
+    .newSingleThreadExecutor(new NamedPoolThreadFactory("job-timer", true))
 
   /*
    * Safely execute some operation within a deadline.
@@ -548,19 +551,21 @@ abstract class ExecutionJob[+T](args: Args) extends Job(args) {
 class ScriptJob(cmds: Iterable[String]) extends Job(Args("")) {
   override def run = {
     try {
-      cmds.dropWhile { cmd: String =>
-        {
-          new java.lang.ProcessBuilder("bash", "-c", cmd)
-            .start()
-            .waitFor() match {
-            case x if x != 0 =>
-              println(cmd + " failed, exitStatus: " + x)
-              false
-            case 0 =>
-              true
+      cmds
+        .dropWhile { cmd: String =>
+          {
+            new java.lang.ProcessBuilder("bash", "-c", cmd)
+              .start()
+              .waitFor() match {
+              case x if x != 0 =>
+                println(cmd + " failed, exitStatus: " + x)
+                false
+              case 0 =>
+                true
+            }
           }
         }
-      }.isEmpty
+        .isEmpty
     } catch {
       case e: Exception => {
         e.printStackTrace

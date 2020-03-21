@@ -91,10 +91,12 @@ class TaskStatsByVersionTest
   private val intermediaryScalingAt: Timestamp = now - 20.seconds
   private val lastConfigChangeAt: Timestamp = now - 100.seconds
   private val outdatedVersion: Timestamp = now - 200.seconds
-  private[this] val versionInfo = AppDefinition.VersionInfo.FullVersionInfo(
-    version = lastScalingAt,
-    lastScalingAt = lastScalingAt,
-    lastConfigChangeAt = lastConfigChangeAt)
+  private[this] val versionInfo = AppDefinition
+    .VersionInfo
+    .FullVersionInfo(
+      version = lastScalingAt,
+      lastScalingAt = lastScalingAt,
+      lastConfigChangeAt = lastConfigChangeAt)
   private[this] var taskIdCounter = 0
   private[this] def newTaskId(): String = {
     taskIdCounter += 1

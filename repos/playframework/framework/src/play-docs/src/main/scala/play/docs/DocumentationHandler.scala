@@ -68,14 +68,18 @@ class DocumentationHandler(
     // Assumes caller consumes result, closing entry
     def sendFileInline(repo: FileRepository, path: String): Option[Result] = {
       repo.handleFile(path) { handle =>
-        Results.Ok.sendEntity(
-          HttpEntity.Streamed(
-            StreamConverters
-              .fromInputStream(() => handle.is)
-              .mapMaterializedValue(_ => handle.close),
-            Some(handle.size),
-            MimeTypes.forFileName(handle.name).orElse(Some(ContentTypes.BINARY))
-          ))
+        Results
+          .Ok
+          .sendEntity(
+            HttpEntity.Streamed(
+              StreamConverters
+                .fromInputStream(() => handle.is)
+                .mapMaterializedValue(_ => handle.close),
+              Some(handle.size),
+              MimeTypes
+                .forFileName(handle.name)
+                .orElse(Some(ContentTypes.BINARY))
+            ))
       }
     }
 
@@ -92,9 +96,8 @@ class DocumentationHandler(
         Some(Redirect("/@documentation/Home"))
       case apiDoc(page) =>
         Some(
-          sendFileInline(apiRepo, "api/" + page)
-            .getOrElse(
-              NotFound(views.html.play20.manual(page, None, None, locator))))
+          sendFileInline(apiRepo, "api/" + page).getOrElse(
+            NotFound(views.html.play20.manual(page, None, None, locator))))
       case wikiResource(path) =>
         Some(
           sendFileInline(repo, path)
@@ -109,7 +112,9 @@ class DocumentationHandler(
               Ok(views.html.play20.manual(page, Some(mainPage), None, locator))
             case Some(RenderedPage(mainPage, Some(sidebar), _)) =>
               Ok(
-                views.html.play20
+                views
+                  .html
+                  .play20
                   .manual(page, Some(mainPage), Some(sidebar), locator))
           })
       case _ =>

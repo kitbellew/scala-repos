@@ -47,12 +47,12 @@ trait Mimes {
 
   protected[this] def mimeUtil: MimeUtil2 = new MimeUtil2()
   quiet {
-    mimeUtil.registerMimeDetector(
-      "eu.medsea.mimeutil.detector.MagicMimeMimeDetector")
+    mimeUtil
+      .registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector")
   }
   quiet {
-    mimeUtil.registerMimeDetector(
-      "eu.medsea.mimeutil.detector.ExtensionMimeDetector")
+    mimeUtil
+      .registerMimeDetector("eu.medsea.mimeutil.detector.ExtensionMimeDetector")
   }
 
   def bytesMime(

@@ -109,13 +109,15 @@ object JsonPerformanceTest extends App {
       import ExecutionContext.Implicits.global
       Await.ready(
         Future.sequence(
-          List.range(0, threads).map { t =>
-            Future {
-              for (i <- 0 to timesPerThread) {
-                test
-              }
-            }(context)
-          }),
+          List
+            .range(0, threads)
+            .map { t =>
+              Future {
+                for (i <- 0 to timesPerThread) {
+                  test
+                }
+              }(context)
+            }),
         Duration.Inf)
       System.currentTimeMillis() - start
     } finally {

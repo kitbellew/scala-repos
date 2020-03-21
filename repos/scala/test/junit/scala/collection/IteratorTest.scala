@@ -186,14 +186,18 @@ class IteratorTest {
   def indexWhere(): Unit = {
     assertEquals(
       3,
-      List(1, 2, 3, 4, 5).iterator.indexWhere { x: Int =>
-        x >= 4
-      })
+      List(1, 2, 3, 4, 5)
+        .iterator
+        .indexWhere { x: Int =>
+          x >= 4
+        })
     assertEquals(
       -1,
-      List(1, 2, 3, 4, 5).iterator.indexWhere { x: Int =>
-        x >= 16
-      })
+      List(1, 2, 3, 4, 5)
+        .iterator
+        .indexWhere { x: Int =>
+          x >= 16
+        })
   }
   @Test
   def indexOfFrom(): Unit = {
@@ -241,9 +245,13 @@ class IteratorTest {
     val s1 = mkIterator.toStream
     val s2 = mkInfinite.toStream
     // back and forth without slipping into nontermination.
-    results += (
-      Stream from 1
-    ).toIterator.drop(10).toStream.drop(10).toIterator.next()
+    results += (Stream from 1)
+      .toIterator
+      .drop(10)
+      .toStream
+      .drop(10)
+      .toIterator
+      .next()
     assertSameElements(List(1, 1, 21), results)
   }
   // SI-8552

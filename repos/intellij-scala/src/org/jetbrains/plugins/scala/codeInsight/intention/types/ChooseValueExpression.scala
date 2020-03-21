@@ -32,19 +32,21 @@ abstract class ChooseValueExpression[T](lookupItems: Seq[T], defaultItem: T)
             override def handleInsert(
                 context: InsertionContext,
                 item: LookupElement): Unit = {
-              val topLevelEditor = InjectedLanguageUtil.getTopLevelEditor(
-                context.getEditor)
-              val templateState = TemplateManagerImpl.getTemplateState(
-                topLevelEditor)
+              val topLevelEditor = InjectedLanguageUtil
+                .getTopLevelEditor(context.getEditor)
+              val templateState = TemplateManagerImpl
+                .getTemplateState(topLevelEditor)
               if (templateState != null) {
                 val range = templateState.getCurrentVariableRange
                 if (range != null) {
                   //need to insert with FQNs
                   val newText = result(item.getObject.asInstanceOf[T])
-                  topLevelEditor.getDocument.replaceString(
-                    range.getStartOffset,
-                    range.getEndOffset,
-                    newText)
+                  topLevelEditor
+                    .getDocument
+                    .replaceString(
+                      range.getStartOffset,
+                      range.getEndOffset,
+                      newText)
                 }
               }
             }
@@ -74,8 +76,8 @@ class ChooseTypeTextExpression(
   }
 
   override def lookupString(elem: ScTypeText): String = {
-    val useCanonicalText: Boolean =
-      lookupItems.count(_.presentableText == elem.presentableText) > 1
+    val useCanonicalText: Boolean = lookupItems
+      .count(_.presentableText == elem.presentableText) > 1
     if (useCanonicalText)
       elem.canonicalText.replace("_root_.", "")
     else
@@ -83,11 +85,13 @@ class ChooseTypeTextExpression(
   }
 
   override def calcLookupElements(): Seq[LookupElementBuilder] = {
-    super.calcLookupElements().map { le =>
-      val text = le.getObject.asInstanceOf[ScTypeText]
-      //if we use canonical text we still want to be able to search search by presentable text
-      le.withLookupString(text.presentableText)
-    }
+    super
+      .calcLookupElements()
+      .map { le =>
+        val text = le.getObject.asInstanceOf[ScTypeText]
+        //if we use canonical text we still want to be able to search search by presentable text
+        le.withLookupString(text.presentableText)
+      }
   }
 
   override def result(element: ScTypeText): String = element.canonicalText

@@ -46,8 +46,8 @@ abstract class IdeClient(
     val sourcePath = source.map(file => file.getPath)
 
     context.getProjectDescriptor.getProject.getName
-    if (kind == Kind.WARNING && ScalaReflectMacroExpansionParser.isMacroMessage(
-          text)) {
+    if (kind == Kind.WARNING && ScalaReflectMacroExpansionParser
+          .isMacroMessage(text)) {
       ScalaReflectMacroExpansionParser.processMessage(text)
     } else {
       val withoutPointer =
@@ -79,15 +79,13 @@ abstract class IdeClient(
       if (text.isEmpty)
         ""
       else {
-        val decapitalizedText =
-          text.charAt(0).toLower.toString + text.substring(1)
-        "%s: %s [%s]".format(
-          compilerName,
-          decapitalizedText,
-          modules.mkString(", "))
+        val decapitalizedText = text.charAt(0).toLower.toString + text
+          .substring(1)
+        "%s: %s [%s]"
+          .format(compilerName, decapitalizedText, modules.mkString(", "))
       }
-    context.processMessage(
-      new ProgressMessage(formattedText, done.getOrElse(-1.0f)))
+    context
+      .processMessage(new ProgressMessage(formattedText, done.getOrElse(-1.0f)))
   }
 
   def debug(text: String) {
@@ -95,8 +93,9 @@ abstract class IdeClient(
   }
 
   def deleted(module: File) {
-    val paths = util.Collections.singletonList(
-      FileUtil.toCanonicalPath(module.getPath))
+    val paths = util
+      .Collections
+      .singletonList(FileUtil.toCanonicalPath(module.getPath))
     context.processMessage(new FileDeletedEvent(paths))
   }
 

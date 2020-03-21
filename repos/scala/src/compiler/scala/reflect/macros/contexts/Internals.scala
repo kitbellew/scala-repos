@@ -30,8 +30,10 @@ trait Internals extends scala.tools.nsc.transform.TypingTransformers {
         self =>
         currentOwner = callsiteTyper.context.owner
         curTree = EmptyTree
-        localTyper = global.analyzer.newTyper(
-          callsiteTyper.context.make(unit = callsiteTyper.context.unit))
+        localTyper = global
+          .analyzer
+          .newTyper(
+            callsiteTyper.context.make(unit = callsiteTyper.context.unit))
 
         val api =
           new TypingTransformApi {

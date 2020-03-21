@@ -117,8 +117,8 @@ class ServerMediator(project: Project) extends ProjectComponent {
             modulesWithClashes.foreach { module =>
               val model =
                 ModuleRootManager.getInstance(module).getModifiableModel
-              val extension = model.getModuleExtension(
-                classOf[CompilerModuleExtension])
+              val extension = model
+                .getModuleExtension(classOf[CompilerModuleExtension])
 
               val outputUrlParts =
                 extension.getCompilerOutputUrl match {

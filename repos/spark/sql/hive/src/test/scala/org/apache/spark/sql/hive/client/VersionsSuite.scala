@@ -52,13 +52,13 @@ class VersionsSuite extends SparkFunSuite with Logging {
   // In order to speed up test execution during development or in Jenkins, you can specify the path
   // of an existing Ivy cache:
   private val ivyPath: Option[String] = {
-    sys.env
+    sys
+      .env
       .get("SPARK_VERSIONS_SUITE_IVY_PATH")
       .orElse(
         Some(
-          new File(
-            sys.props("java.io.tmpdir"),
-            "hive-ivy-cache").getAbsolutePath))
+          new File(sys.props("java.io.tmpdir"), "hive-ivy-cache")
+            .getAbsolutePath))
   }
 
   private def buildConf() = {
@@ -177,9 +177,9 @@ class VersionsSuite extends SparkFunSuite with Logging {
           inputFormat = Some(
             classOf[org.apache.hadoop.mapred.TextInputFormat].getName),
           outputFormat = Some(
-            classOf[org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat[
-              _,
-              _]].getName),
+            classOf[
+              org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat[_, _]]
+              .getName),
           serde = Some(
             classOf[org.apache.hadoop.hive.serde2.`lazy`.LazySimpleSerDe]
               .getName()),

@@ -268,8 +268,8 @@ class MutableSettings(val errorFn: String => Unit)
       descr: String,
       choices: List[String],
       default: String) =
-    ChoiceSetting(name, helpArg, descr, choices, default).withPostSetHook(
-      sett =>
+    ChoiceSetting(name, helpArg, descr, choices, default)
+      .withPostSetHook(sett =>
         if (sett.value != default) {
           sett.withDeprecationMessage(
             s"${name}:${sett.value} is deprecated, forcing use of $default")
@@ -347,9 +347,8 @@ class MutableSettings(val errorFn: String => Unit)
         allowJar: Boolean = false): AbstractFile =
       (if (dir != null && dir.isDirectory)
          dir
-       else if (allowJar && dir == null && Jar.isJarOrZip(
-                  name,
-                  examineFile = false))
+       else if (allowJar && dir == null && Jar
+                  .isJarOrZip(name, examineFile = false))
          new PlainFile(Path(name))
        else
          throw new FatalError(name + " does not exist or is not a directory"))
@@ -950,10 +949,12 @@ class MutableSettings(val errorFn: String => Unit)
     def help: String = {
       val choiceLength = choices.map(_.length).max + 1
       val formatStr = s"  %-${choiceLength}s %s"
-      choices.zipAll(descriptions, "", "").map {
-        case (arg, descr) =>
-          formatStr.format(arg, descr)
-      } mkString (f"$descr%n", f"%n", "")
+      choices
+        .zipAll(descriptions, "", "")
+        .map {
+          case (arg, descr) =>
+            formatStr.format(arg, descr)
+        } mkString (f"$descr%n", f"%n", "")
     }
 
     def clear(): Unit = {

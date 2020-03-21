@@ -99,7 +99,8 @@ class PersistenceQuery(system: ExtendedActorSystem) extends Extension {
       system.dynamicAccess.getClassFor[AnyRef](pluginClassName).get
 
     def instantiate(args: collection.immutable.Seq[(Class[_], AnyRef)]) =
-      system.dynamicAccess
+      system
+        .dynamicAccess
         .createInstanceFor[ReadJournalProvider](pluginClass, args)
 
     instantiate(

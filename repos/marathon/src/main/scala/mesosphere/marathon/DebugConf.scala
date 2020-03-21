@@ -102,17 +102,20 @@ class DebugModule(conf: DebugConf) extends AbstractModule {
 
   override def configure(): Unit = {
     //set trace log level
-    conf.logLevel.get.foreach { levelName =>
-      val level = Level.toLevel(
-        if ("fatal".equalsIgnoreCase(levelName))
-          "fatal"
-        else
-          levelName)
-      val rootLogger = LoggerFactory
-        .getLogger(Logger.ROOT_LOGGER_NAME)
-        .asInstanceOf[ch.qos.logback.classic.Logger]
-      rootLogger.setLevel(level)
-    }
+    conf
+      .logLevel
+      .get
+      .foreach { levelName =>
+        val level = Level.toLevel(
+          if ("fatal".equalsIgnoreCase(levelName))
+            "fatal"
+          else
+            levelName)
+        val rootLogger = LoggerFactory
+          .getLogger(Logger.ROOT_LOGGER_NAME)
+          .asInstanceOf[ch.qos.logback.classic.Logger]
+        rootLogger.setLevel(level)
+      }
 
     //add behaviors
     val metricsProvider = getProvider(classOf[Metrics])
@@ -122,7 +125,9 @@ class DebugModule(conf: DebugConf) extends AbstractModule {
         Some(new TracingBehavior(metricsProvider))
       else
         None
-    val metricsBehavior = conf.metrics.get
+    val metricsBehavior = conf
+      .metrics
+      .get
       .filter(identity)
       .map(_ => new MetricsBehavior(metricsProvider))
 

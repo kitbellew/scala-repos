@@ -57,10 +57,8 @@ private[puzzle] final class PuzzleApi(
             val p = puzzle(id)
             val fenStart = p.fen.split(' ').take(2).mkString(" ")
             puzzleColl.count(
-              BSONDocument(
-                "fen" -> BSONRegex(
-                  fenStart.replace("/", "\\/"),
-                  "")).some) flatMap {
+              BSONDocument("fen" -> BSONRegex(fenStart.replace("/", "\\/"), ""))
+                .some) flatMap {
               case 0 =>
                 (puzzleColl insert p) >> {
                   insertPuzzles(rest) map (Success(id) :: _)
@@ -135,14 +133,14 @@ private[puzzle] final class PuzzleApi(
     def hasPlayed(user: User, puzzle: Puzzle): Fu[Boolean] =
       attemptColl.count(
         BSONDocument(
-          Attempt.BSONFields.id -> Attempt
-            .makeId(puzzle.id, user.id)).some) map (0 !=)
+          Attempt.BSONFields.id -> Attempt.makeId(puzzle.id, user.id))
+          .some) map (0 !=)
 
     def playedIds(user: User, max: Int): Fu[BSONArray] =
       attemptColl.distinct(
         Attempt.BSONFields.puzzleId,
-        BSONDocument(
-          Attempt.BSONFields.userId -> user.id).some) map BSONArray.apply
+        BSONDocument(Attempt.BSONFields.userId -> user.id).some) map BSONArray
+        .apply
 
     def hasVoted(user: User): Fu[Boolean] =
       attemptColl

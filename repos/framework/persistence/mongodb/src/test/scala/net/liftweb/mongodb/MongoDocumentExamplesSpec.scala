@@ -509,11 +509,8 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
     }
 
     // skip and limit (get first 10, skipping the first 5, where i > 50)
-    val list5 = IDoc.findAll(
-      ("i" -> ("$gt" -> 50)),
-      ("i" -> 1),
-      Limit(10),
-      Skip(5))
+    val list5 = IDoc
+      .findAll(("i" -> ("$gt" -> 50)), ("i" -> 1), Limit(10), Skip(5))
     var cntr5 = 0
     for (idoc <- list5) {
       cntr5 += 1
@@ -570,13 +567,13 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
       SessCollection.update(qry, o2, db, Multi)
 
       // regex query example
-      val lst = SessCollection.findAll(
-        new BasicDBObject("name", Pattern.compile("^Mongo")))
+      val lst = SessCollection
+        .findAll(new BasicDBObject("name", Pattern.compile("^Mongo")))
       lst.size must_== 2
 
       // jobject query now also works
-      val lstjobj = SessCollection.findAll(
-        ("name" -> (("$regex" -> "^Mon") ~ ("$flags" -> 0))))
+      val lstjobj = SessCollection
+        .findAll(("name" -> (("$regex" -> "^Mon") ~ ("$flags" -> 0))))
       lstjobj.size must_== 2
 
       // use regex and another clause

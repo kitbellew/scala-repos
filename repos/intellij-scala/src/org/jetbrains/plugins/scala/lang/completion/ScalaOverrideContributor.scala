@@ -32,13 +32,16 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
       keyword: String) {
     extend(
       CompletionType.BASIC,
-      PlatformPatterns.psiElement.and(
-        new FilterPattern(
-          new AndFilter(
-            new NotFilter(new LeftNeighbour(new TextContainFilter("override"))),
+      PlatformPatterns
+        .psiElement
+        .and(
+          new FilterPattern(
             new AndFilter(
-              new NotFilter(new LeftNeighbour(new TextFilter("."))),
-              filter)))),
+              new NotFilter(
+                new LeftNeighbour(new TextContainFilter("override"))),
+              new AndFilter(
+                new NotFilter(new LeftNeighbour(new TextFilter("."))),
+                filter)))),
       new CompletionProvider[CompletionParameters] {
         def addCompletions(
             parameters: CompletionParameters,
@@ -99,16 +102,13 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
       parameters: CompletionParameters): Unit = {
     val position = positionFromParameters(parameters)
 
-    val clazz = PsiTreeUtil.getParentOfType(
-      position,
-      classOf[ScTemplateDefinition],
-      false)
+    val clazz = PsiTreeUtil
+      .getParentOfType(position, classOf[ScTemplateDefinition], false)
     if (clazz == null)
       return
 
-    val classMembers = ScalaOIUtil.getMembersToOverride(
-      clazz,
-      withSelfType = true)
+    val classMembers = ScalaOIUtil
+      .getMembersToOverride(clazz, withSelfType = true)
     if (classMembers.isEmpty)
       return
 
@@ -139,9 +139,8 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
     else if (mlo.isDefined && !mlo.get.hasModifierProperty("override"))
       return
 
-    val classMembers = ScalaOIUtil.getMembersToOverride(
-      clazz,
-      withSelfType = true)
+    val classMembers = ScalaOIUtil
+      .getMembersToOverride(clazz, withSelfType = true)
     if (classMembers.isEmpty)
       return
 
@@ -178,9 +177,8 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
 
         elementOption.foreach { element =>
           TypeAdjuster.markToAdjust(element)
-          ScalaGenerationInfo.positionCaret(
-            context.getEditor,
-            element.asInstanceOf[PsiMember])
+          ScalaGenerationInfo
+            .positionCaret(context.getEditor, element.asInstanceOf[PsiMember])
           context.commitDocument()
         }
       }
@@ -197,10 +195,8 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
     val text: String =
       classMember match {
         case mm: ScMethodMember =>
-          val mBody = ScalaGenerationInfo.getMethodBody(
-            mm,
-            td,
-            isImplement = false)
+          val mBody = ScalaGenerationInfo
+            .getMethodBody(mm, td, isImplement = false)
           val fun =
             if (full)
               ScalaPsiElementFactory.createOverrideImplementMethod(
@@ -264,13 +260,13 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
         val lookupItem = LookupElementBuilder
           .create(mm.getElement, name(mm, td))
           .withIcon(
-            mm.getPsiElement.getIcon(
-              ICON_FLAG_VISIBILITY | ICON_FLAG_READ_STATUS))
+            mm
+              .getPsiElement
+              .getIcon(ICON_FLAG_VISIBILITY | ICON_FLAG_READ_STATUS))
           .withInsertHandler(insertionHandler(mm))
 
-        val renderingDecorator = LookupElementDecorator.withRenderer(
-          lookupItem,
-          new MyElementRenderer(mm))
+        val renderingDecorator = LookupElementDecorator
+          .withRenderer(lookupItem, new MyElementRenderer(mm))
         resultSet.consume(renderingDecorator)
       case _ =>
     }

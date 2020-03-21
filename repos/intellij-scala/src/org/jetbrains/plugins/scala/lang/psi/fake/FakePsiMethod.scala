@@ -162,7 +162,8 @@ class FakePsiTypeElement(manager: PsiManager, language: Language, tp: ScType)
     extends LightElement(manager, language)
     with PsiTypeElement {
   def getTypeNoResolve(context: PsiElement): PsiType =
-    PsiType.VOID //ScType.toPsi(tp, manager.getProject, GlobalSearchScope.allScope(manager.getProject))
+    PsiType
+      .VOID //ScType.toPsi(tp, manager.getProject, GlobalSearchScope.allScope(manager.getProject))
 
   def getOwner(annotation: PsiAnnotation): PsiAnnotationOwner = null
 

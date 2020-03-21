@@ -72,9 +72,8 @@ class EdgePartitionSuite extends SparkFunSuite {
       builder.add(e.srcId, e.dstId, e.attr)
     }
     val edgePartition = builder.toEdgePartition
-    val filtered = edgePartition.filter(
-      et => et.srcId == 0,
-      (vid, attr) => vid == 0 || vid == 1)
+    val filtered = edgePartition
+      .filter(et => et.srcId == 0, (vid, attr) => vid == 0 || vid == 1)
     assert(
       filtered
         .tripletIterator()
@@ -111,7 +110,8 @@ class EdgePartitionSuite extends SparkFunSuite {
     val b = makeEdgePartition(bList)
 
     assert(
-      a.innerJoin(b) { (src, dst, a, b) =>
+      a
+        .innerJoin(b) { (src, dst, a, b) =>
           a
         }
         .iterator
@@ -121,7 +121,8 @@ class EdgePartitionSuite extends SparkFunSuite {
   }
 
   test("isActive, numActives, replaceActives") {
-    val ep = new EdgePartitionBuilder[Nothing, Nothing].toEdgePartition
+    val ep = new EdgePartitionBuilder[Nothing, Nothing]
+      .toEdgePartition
       .withActiveSet(Iterator(0L, 2L, 0L))
     assert(ep.isActive(0))
     assert(!ep.isActive(1))

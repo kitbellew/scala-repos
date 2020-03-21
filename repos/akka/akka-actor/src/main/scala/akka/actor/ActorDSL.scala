@@ -108,7 +108,8 @@ object ActorDSL extends dsl.Inbox with dsl.Creators {
 
     def mkChild(p: Props, name: String): ActorRef =
       if (boss.isStarted)
-        boss.underlying
+        boss
+          .underlying
           .asInstanceOf[ActorCell]
           .attachChild(p, name, systemService = true)
       else {

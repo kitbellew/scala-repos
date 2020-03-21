@@ -37,8 +37,9 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
       .union(inferAdditionalConstraints(constraints))
       .union(constructIsNotNullConstraints(constraints))
       .filter(constraint =>
-        constraint.references.nonEmpty && constraint.references.subsetOf(
-          outputSet))
+        constraint.references.nonEmpty && constraint
+          .references
+          .subsetOf(outputSet))
   }
 
   /**
@@ -270,16 +271,18 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
           Nil
       }
 
-    productIterator.flatMap {
-      case e: Expression =>
-        e :: Nil
-      case Some(e: Expression) =>
-        e :: Nil
-      case seq: Traversable[_] =>
-        seqToExpressions(seq)
-      case other =>
-        Nil
-    }.toSeq
+    productIterator
+      .flatMap {
+        case e: Expression =>
+          e :: Nil
+        case Some(e: Expression) =>
+          e :: Nil
+        case seq: Traversable[_] =>
+          seqToExpressions(seq)
+        case other =>
+          Nil
+      }
+      .toSeq
   }
 
   lazy val schema: StructType = StructType.fromAttributes(output)
@@ -360,10 +363,8 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
             ExprId(-1),
             a.qualifiers,
             isGenerated = a.isGenerated)
-        BindReferences.bindReference(
-          cleanedExprId,
-          allAttributes,
-          allowFailures = true)
+        BindReferences
+          .bindReference(cleanedExprId, allAttributes, allowFailures = true)
       case other =>
         BindReferences.bindReference(other, allAttributes, allowFailures = true)
     }
@@ -378,20 +379,22 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
           other
       }
 
-    productIterator.map {
-      // Children are checked using sameResult above.
-      case tn: TreeNode[_] if containsChild(tn) =>
-        null
-      case e: Expression =>
-        cleanArg(e)
-      case s: Option[_] =>
-        s.map(cleanArg)
-      case s: Seq[_] =>
-        s.map(cleanArg)
-      case m: Map[_, _] =>
-        m.mapValues(cleanArg)
-      case other =>
-        other
-    }.toSeq
+    productIterator
+      .map {
+        // Children are checked using sameResult above.
+        case tn: TreeNode[_] if containsChild(tn) =>
+          null
+        case e: Expression =>
+          cleanArg(e)
+        case s: Option[_] =>
+          s.map(cleanArg)
+        case s: Seq[_] =>
+          s.map(cleanArg)
+        case m: Map[_, _] =>
+          m.mapValues(cleanArg)
+        case other =>
+          other
+      }
+      .toSeq
   }
 }

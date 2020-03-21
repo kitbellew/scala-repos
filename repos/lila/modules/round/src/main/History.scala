@@ -49,7 +49,8 @@ private[round] final class History(
   def addEvents(xs: List[Event]): VersionedEvents = {
     waitForLoadedEvents
     val vevs =
-      xs.foldLeft(List.empty[VersionedEvent] -> getVersion) {
+      xs
+        .foldLeft(List.empty[VersionedEvent] -> getVersion) {
           case ((vevs, v), e) =>
             (VersionedEvent(e, v + 1) :: vevs, v + 1)
         }
@@ -93,9 +94,12 @@ private[round] object History {
       coll: Coll,
       gameId: String,
       withPersistence: Boolean): Fu[VersionedEvents] =
-    coll.find(BSONDocument("_id" -> gameId)).one[BSONDocument].map {
-      _.flatMap(_.getAs[VersionedEvents]("e")) ?? (_.reverse)
-    } addEffect {
+    coll
+      .find(BSONDocument("_id" -> gameId))
+      .one[BSONDocument]
+      .map {
+        _.flatMap(_.getAs[VersionedEvents]("e")) ?? (_.reverse)
+      } addEffect {
       case events if events.nonEmpty && !withPersistence =>
         coll.remove(BSONDocument("_id" -> gameId)).void
       case _ =>

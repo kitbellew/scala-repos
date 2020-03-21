@@ -50,8 +50,9 @@ package object serialization {
         jv.validated[String] map (MimeTypes.parseMimeTypes(_).toList) flatMap {
           case Nil =>
             Failure(
-              Extractor.Error.invalid(
-                "No mime types found in " + jv.renderCompact))
+              Extractor
+                .Error
+                .invalid("No mime types found in " + jv.renderCompact))
 
           case primary :: rest =>
             Success(primary)

@@ -109,25 +109,27 @@ private[spark] class NodeIdCache(
     }
 
     prevNodeIdsForInstances = nodeIdsForInstances
-    nodeIdsForInstances = data.zip(nodeIdsForInstances).map {
-      case (point, node) => {
-        var treeId = 0
-        while (treeId < nodeIdUpdaters.length) {
-          val nodeIdUpdater = nodeIdUpdaters(treeId)
-            .getOrElse(node(treeId), null)
-          if (nodeIdUpdater != null) {
-            val newNodeIndex = nodeIdUpdater.updateNodeIndex(
-              binnedFeatures = point.datum.binnedFeatures,
-              bins = bins)
-            node(treeId) = newNodeIndex
+    nodeIdsForInstances = data
+      .zip(nodeIdsForInstances)
+      .map {
+        case (point, node) => {
+          var treeId = 0
+          while (treeId < nodeIdUpdaters.length) {
+            val nodeIdUpdater = nodeIdUpdaters(treeId)
+              .getOrElse(node(treeId), null)
+            if (nodeIdUpdater != null) {
+              val newNodeIndex = nodeIdUpdater.updateNodeIndex(
+                binnedFeatures = point.datum.binnedFeatures,
+                bins = bins)
+              node(treeId) = newNodeIndex
+            }
+
+            treeId += 1
           }
 
-          treeId += 1
+          node
         }
-
-        node
       }
-    }
 
     // Keep on persisting new ones.
     nodeIdsForInstances.persist(StorageLevel.MEMORY_AND_DISK)

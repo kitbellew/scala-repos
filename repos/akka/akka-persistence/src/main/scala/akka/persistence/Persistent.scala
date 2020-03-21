@@ -58,9 +58,13 @@ final case class AtomicWrite(payload: immutable.Seq[PersistentRepr])
 
   def persistenceId = payload.head.persistenceId
   def lowestSequenceNr =
-    payload.head.sequenceNr // this assumes they're gapless; they should be (it is only our code creating AWs)
+    payload
+      .head
+      .sequenceNr // this assumes they're gapless; they should be (it is only our code creating AWs)
   def highestSequenceNr =
-    payload.last.sequenceNr // TODO: could be optimised, since above require traverses already
+    payload
+      .last
+      .sequenceNr // TODO: could be optimised, since above require traverses already
 
   override def sender: ActorRef = ActorRef.noSender
   override def size: Int = payload.size

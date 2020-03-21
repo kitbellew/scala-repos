@@ -52,10 +52,12 @@ class DefaultSource extends FileFormat with DataSourceRegister {
     } else {
       val parsedOptions: JSONOptions = new JSONOptions(options)
       val jsonFiles =
-        files.filterNot { status =>
-          val name = status.getPath.getName
-          name.startsWith("_") || name.startsWith(".")
-        }.toArray
+        files
+          .filterNot { status =>
+            val name = status.getPath.getName
+            name.startsWith("_") || name.startsWith(".")
+          }
+          .toArray
 
       val jsonSchema = InferSchema.infer(
         createBaseRdd(sqlContext, jsonFiles),
@@ -74,9 +76,11 @@ class DefaultSource extends FileFormat with DataSourceRegister {
       dataSchema: StructType): OutputWriterFactory = {
     val conf = job.getConfiguration
     val parsedOptions: JSONOptions = new JSONOptions(options)
-    parsedOptions.compressionCodec.foreach { codec =>
-      CompressionCodecs.setCodecConfiguration(conf, codec)
-    }
+    parsedOptions
+      .compressionCodec
+      .foreach { codec =>
+        CompressionCodecs.setCodecConfiguration(conf, codec)
+      }
 
     new OutputWriterFactory {
       override def newInstance(
@@ -127,7 +131,8 @@ class DefaultSource extends FileFormat with DataSourceRegister {
       FileInputFormat.setInputPaths(job, paths: _*)
     }
 
-    sqlContext.sparkContext
+    sqlContext
+      .sparkContext
       .hadoopRDD(
         conf.asInstanceOf[JobConf],
         classOf[TextInputFormat],
@@ -139,7 +144,8 @@ class DefaultSource extends FileFormat with DataSourceRegister {
   /** Constraints to be imposed on schema to be stored. */
   private def checkConstraints(schema: StructType): Unit = {
     if (schema.fieldNames.length != schema.fieldNames.distinct.length) {
-      val duplicateColumns = schema.fieldNames
+      val duplicateColumns = schema
+        .fieldNames
         .groupBy(identity)
         .collect {
           case (x, ys) if ys.length > 1 =>
@@ -177,8 +183,8 @@ private[json] class JsonOutputWriter(
           context: TaskAttemptContext,
           extension: String): Path = {
         val configuration = context.getConfiguration
-        val uniqueWriteJobId = configuration.get(
-          "spark.sql.sources.writeJobUUID")
+        val uniqueWriteJobId = configuration
+          .get("spark.sql.sources.writeJobUUID")
         val taskAttemptId = context.getTaskAttemptID
         val split = taskAttemptId.getTaskID.getId
         val bucketString = bucketId

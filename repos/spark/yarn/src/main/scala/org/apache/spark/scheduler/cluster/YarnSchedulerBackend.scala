@@ -47,9 +47,8 @@ private[spark] abstract class YarnSchedulerBackend(
 
   private val yarnSchedulerEndpoint = new YarnSchedulerEndpoint(rpcEnv)
 
-  private val yarnSchedulerEndpointRef = rpcEnv.setupEndpoint(
-    YarnSchedulerBackend.ENDPOINT_NAME,
-    yarnSchedulerEndpoint)
+  private val yarnSchedulerEndpointRef = rpcEnv
+    .setupEndpoint(YarnSchedulerBackend.ENDPOINT_NAME, yarnSchedulerEndpoint)
 
   private implicit val askTimeout = RpcUtils.askRpcTimeout(sc.conf)
 
@@ -115,10 +114,12 @@ private[spark] abstract class YarnSchedulerBackend(
     * @return The application ID
     */
   override def applicationId(): String = {
-    appId.map(_.toString).getOrElse {
-      logWarning("Application ID is not initialized yet.")
-      super.applicationId
-    }
+    appId
+      .map(_.toString)
+      .getOrElse {
+        logWarning("Application ID is not initialized yet.")
+        super.applicationId
+      }
   }
 
   /**
@@ -166,9 +167,12 @@ private[spark] abstract class YarnSchedulerBackend(
         case (k, v) =>
           conf.set(s"spark.$filterName.param.$k", v)
       }
-      scheduler.sc.ui.foreach { ui =>
-        JettyUtils.addFilters(ui.getHandlers, conf)
-      }
+      scheduler
+        .sc
+        .ui
+        .foreach { ui =>
+          JettyUtils.addFilters(ui.getHandlers, conf)
+        }
     }
   }
 
@@ -209,12 +213,14 @@ private[spark] abstract class YarnSchedulerBackend(
       * not count towards a job failure.
       */
     override def onDisconnected(rpcAddress: RpcAddress): Unit = {
-      addressToExecutorId.get(rpcAddress).foreach { executorId =>
-        if (disableExecutor(executorId)) {
-          yarnSchedulerEndpoint
-            .handleExecutorDisconnectedFromDriver(executorId, rpcAddress)
+      addressToExecutorId
+        .get(rpcAddress)
+        .foreach { executorId =>
+          if (disableExecutor(executorId)) {
+            yarnSchedulerEndpoint
+              .handleExecutorDisconnectedFromDriver(executorId, rpcAddress)
+          }
         }
-      }
     }
   }
 
@@ -226,8 +232,8 @@ private[spark] abstract class YarnSchedulerBackend(
       with Logging {
     private var amEndpoint: Option[RpcEndpointRef] = None
 
-    private val askAmThreadPool = ThreadUtils.newDaemonCachedThreadPool(
-      "yarn-scheduler-ask-am-thread-pool")
+    private val askAmThreadPool = ThreadUtils
+      .newDaemonCachedThreadPool("yarn-scheduler-ask-am-thread-pool")
     implicit val askAmExecutor = ExecutionContext.fromExecutor(askAmThreadPool)
 
     private[YarnSchedulerBackend] def handleExecutorDisconnectedFromDriver(
@@ -239,8 +245,8 @@ private[spark] abstract class YarnSchedulerBackend(
           val future = am.ask[ExecutorLossReason](lossReasonRequest, askTimeout)
           future onSuccess {
             case reason: ExecutorLossReason => {
-              driverEndpoint.askWithRetry[Boolean](
-                RemoveExecutor(executorId, reason))
+              driverEndpoint
+                .askWithRetry[Boolean](RemoveExecutor(executorId, reason))
             }
           }
           future onFailure {
@@ -251,8 +257,8 @@ private[spark] abstract class YarnSchedulerBackend(
                   s" but got no response. Marking as slave lost.",
                 e
               )
-              driverEndpoint.askWithRetry[Boolean](
-                RemoveExecutor(executorId, SlaveLost()))
+              driverEndpoint
+                .askWithRetry[Boolean](RemoveExecutor(executorId, SlaveLost()))
             }
             case t =>
               throw t

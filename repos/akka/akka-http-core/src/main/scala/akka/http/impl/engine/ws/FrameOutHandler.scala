@@ -44,9 +44,8 @@ private[http] class FrameOutHandler(
                 reason)))
           ctx.pull()
         case PeerClosed(code, reason) ⇒
-          val closeFrame = FrameEvent.closeFrame(
-            code.getOrElse(Protocol.CloseCodes.Regular),
-            reason)
+          val closeFrame = FrameEvent
+            .closeFrame(code.getOrElse(Protocol.CloseCodes.Regular), reason)
           if (serverSide)
             ctx.pushAndFinish(closeFrame)
           else {
@@ -54,9 +53,8 @@ private[http] class FrameOutHandler(
             ctx.push(closeFrame)
           }
         case ActivelyCloseWithCode(code, reason) ⇒
-          val closeFrame = FrameEvent.closeFrame(
-            code.getOrElse(Protocol.CloseCodes.Regular),
-            reason)
+          val closeFrame = FrameEvent
+            .closeFrame(code.getOrElse(Protocol.CloseCodes.Regular), reason)
           become(new WaitingForPeerCloseFrame())
           ctx.push(closeFrame)
         case UserHandlerCompleted ⇒
@@ -203,6 +201,6 @@ private[http] object FrameOutHandler {
       serverSide: Boolean,
       closeTimeout: FiniteDuration,
       log: LoggingAdapter): Flow[Input, FrameStart, NotUsed] =
-    Flow[Input].transform(() ⇒
-      new FrameOutHandler(serverSide, closeTimeout, log))
+    Flow[Input]
+      .transform(() ⇒ new FrameOutHandler(serverSide, closeTimeout, log))
 }

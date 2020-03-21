@@ -65,31 +65,33 @@ private[spark] class LiveListenerBus extends SparkListenerBus {
       setDaemon(true)
       override def run(): Unit =
         Utils.tryOrStopSparkContext(sparkContext) {
-          LiveListenerBus.withinListenerThread.withValue(true) {
-            while (true) {
-              eventLock.acquire()
-              self.synchronized {
-                processingEvent = true
-              }
-              try {
-                val event = eventQueue.poll
-                if (event == null) {
-                  // Get out of the while loop and shutdown the daemon thread
-                  if (!stopped.get) {
-                    throw new IllegalStateException(
-                      "Polling `null` from eventQueue means" +
-                        " the listener bus has been stopped. So `stopped` must be true")
-                  }
-                  return
-                }
-                postToAll(event)
-              } finally {
+          LiveListenerBus
+            .withinListenerThread
+            .withValue(true) {
+              while (true) {
+                eventLock.acquire()
                 self.synchronized {
-                  processingEvent = false
+                  processingEvent = true
+                }
+                try {
+                  val event = eventQueue.poll
+                  if (event == null) {
+                    // Get out of the while loop and shutdown the daemon thread
+                    if (!stopped.get) {
+                      throw new IllegalStateException(
+                        "Polling `null` from eventQueue means" +
+                          " the listener bus has been stopped. So `stopped` must be true")
+                    }
+                    return
+                  }
+                  postToAll(event)
+                } finally {
+                  self.synchronized {
+                    processingEvent = false
+                  }
                 }
               }
             }
-          }
         }
     }
 

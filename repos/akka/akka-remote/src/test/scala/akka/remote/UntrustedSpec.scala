@@ -78,17 +78,16 @@ akka.loglevel = DEBUG
 
   val client = ActorSystem(
     "UntrustedSpec-client",
-    ConfigFactory.parseString(
-      """
+    ConfigFactory
+      .parseString("""
       akka.actor.provider = akka.remote.RemoteActorRefProvider
       akka.remote.netty.tcp.port = 0
   """)
   )
   val addr = system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
 
-  val receptionist = system.actorOf(
-    Props(classOf[Receptionist], testActor),
-    "receptionist")
+  val receptionist = system
+    .actorOf(Props(classOf[Receptionist], testActor), "receptionist")
 
   lazy val remoteDaemon = {
     {
@@ -118,8 +117,8 @@ akka.loglevel = DEBUG
   "UntrustedMode" must {
 
     "allow actor selection to configured white list" in {
-      val sel = client.actorSelection(
-        RootActorPath(addr) / receptionist.path.elements)
+      val sel = client
+        .actorSelection(RootActorPath(addr) / receptionist.path.elements)
       sel ! "hello"
       expectMsg("hello")
     }
@@ -127,21 +126,23 @@ akka.loglevel = DEBUG
     "discard harmful messages to /remote" in {
       val logProbe = TestProbe()
       // but instead install our own listener
-      system.eventStream.subscribe(
-        system.actorOf(
-          Props(
-            new Actor {
-              import Logging._
-              def receive = {
-                case d @ Debug(_, _, msg: String) if msg contains "dropping" ⇒
-                  logProbe.ref ! d
-                case _ ⇒
-              }
-            }).withDeploy(Deploy.local),
-          "debugSniffer"
-        ),
-        classOf[Logging.Debug]
-      )
+      system
+        .eventStream
+        .subscribe(
+          system.actorOf(
+            Props(
+              new Actor {
+                import Logging._
+                def receive = {
+                  case d @ Debug(_, _, msg: String) if msg contains "dropping" ⇒
+                    logProbe.ref ! d
+                  case _ ⇒
+                }
+              }).withDeploy(Deploy.local),
+            "debugSniffer"
+          ),
+          classOf[Logging.Debug]
+        )
 
       remoteDaemon ! "hello"
       logProbe.expectMsgType[Logging.Debug]
@@ -174,8 +175,8 @@ akka.loglevel = DEBUG
     }
 
     "discard actor selection" in {
-      val sel = client.actorSelection(
-        RootActorPath(addr) / testActor.path.elements)
+      val sel = client
+        .actorSelection(RootActorPath(addr) / testActor.path.elements)
       sel ! "hello"
       expectNoMsg(1.second)
     }
@@ -202,15 +203,15 @@ akka.loglevel = DEBUG
     }
 
     "discard actor selection with wildcard" in {
-      val sel = client.actorSelection(
-        RootActorPath(addr) / receptionist.path.elements / "*")
+      val sel = client
+        .actorSelection(RootActorPath(addr) / receptionist.path.elements / "*")
       sel ! "hello"
       expectNoMsg(1.second)
     }
 
     "discard actor selection containing harmful message" in {
-      val sel = client.actorSelection(
-        RootActorPath(addr) / receptionist.path.elements)
+      val sel = client
+        .actorSelection(RootActorPath(addr) / receptionist.path.elements)
       sel ! PoisonPill
       expectNoMsg(1.second)
     }

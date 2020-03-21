@@ -42,8 +42,8 @@ class PingPongActorSystemActivatorTest
 
   val testBundles: immutable.Seq[BundleDescriptor] = buildTestBundles(
     List(
-      bundle(TEST_BUNDLE_NAME).withActivator(
-        classOf[PingPongActorSystemActivator])))
+      bundle(TEST_BUNDLE_NAME)
+        .withActivator(classOf[PingPongActorSystemActivator])))
 
   "PingPongActorSystemActivator" must {
 
@@ -80,16 +80,17 @@ class RuntimeNameActorSystemActivatorTest
 
   val testBundles: immutable.Seq[BundleDescriptor] = buildTestBundles(
     List(
-      bundle(TEST_BUNDLE_NAME).withActivator(
-        classOf[RuntimeNameActorSystemActivator])))
+      bundle(TEST_BUNDLE_NAME)
+        .withActivator(classOf[RuntimeNameActorSystemActivator])))
 
   "RuntimeNameActorSystemActivator" must {
 
     "register an ActorSystem and add the bundle id to the system name" in {
       filterErrors() {
         serviceForType[ActorSystem].name should be(
-          TestActivators.ACTOR_SYSTEM_NAME_PATTERN.format(
-            bundleForName(TEST_BUNDLE_NAME).getBundleId))
+          TestActivators
+            .ACTOR_SYSTEM_NAME_PATTERN
+            .format(bundleForName(TEST_BUNDLE_NAME).getBundleId))
       }
     }
   }

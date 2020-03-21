@@ -94,23 +94,25 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
       input: ByteBuffer): Unit = {
     val benchmark = new Benchmark(name, iters * count)
 
-    schemes.filter(_.supports(tpe)).map { scheme =>
-      val (compressFunc, compressionRatio, buf) = prepareEncodeInternal(
-        count,
-        tpe,
-        scheme,
-        input)
-      val label =
-        s"${getFormattedClassName(scheme)}(${compressionRatio.formatted("%.3f")})"
+    schemes
+      .filter(_.supports(tpe))
+      .map { scheme =>
+        val (compressFunc, compressionRatio, buf) = prepareEncodeInternal(
+          count,
+          tpe,
+          scheme,
+          input)
+        val label =
+          s"${getFormattedClassName(scheme)}(${compressionRatio.formatted("%.3f")})"
 
-      benchmark.addCase(label)({ i: Int =>
-        for (n <- 0L until iters) {
-          compressFunc(input, buf)
-          input.rewind()
-          buf.rewind()
-        }
-      })
-    }
+        benchmark.addCase(label)({ i: Int =>
+          for (n <- 0L until iters) {
+            compressFunc(input, buf)
+            input.rewind()
+            buf.rewind()
+          }
+        })
+      }
 
     benchmark.run()
   }
@@ -123,29 +125,31 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
       input: ByteBuffer): Unit = {
     val benchmark = new Benchmark(name, iters * count)
 
-    schemes.filter(_.supports(tpe)).map { scheme =>
-      val (compressFunc, _, buf) = prepareEncodeInternal(
-        count,
-        tpe,
-        scheme,
-        input)
-      val compressedBuf = compressFunc(input, buf)
-      val label = s"${getFormattedClassName(scheme)}"
+    schemes
+      .filter(_.supports(tpe))
+      .map { scheme =>
+        val (compressFunc, _, buf) = prepareEncodeInternal(
+          count,
+          tpe,
+          scheme,
+          input)
+        val compressedBuf = compressFunc(input, buf)
+        val label = s"${getFormattedClassName(scheme)}"
 
-      input.rewind()
+        input.rewind()
 
-      benchmark.addCase(label)({ i: Int =>
-        val rowBuf = new GenericMutableRow(1)
+        benchmark.addCase(label)({ i: Int =>
+          val rowBuf = new GenericMutableRow(1)
 
-        for (n <- 0L until iters) {
-          compressedBuf.rewind.position(4)
-          val decoder = scheme.decoder(compressedBuf, tpe)
-          while (decoder.hasNext) {
-            decoder.next(rowBuf, 0)
+          for (n <- 0L until iters) {
+            compressedBuf.rewind.position(4)
+            val decoder = scheme.decoder(compressedBuf, tpe)
+            while (decoder.hasNext) {
+              decoder.next(rowBuf, 0)
+            }
           }
-        }
-      })
-    }
+        })
+      }
 
     benchmark.run()
   }
@@ -361,8 +365,8 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
     val testData = allocateLocal(count * (4 + strLen))
 
     val g = {
-      val dataTable = (0 until tableSize).map(_ =>
-        RandomStringUtils.randomAlphabetic(strLen))
+      val dataTable = (0 until tableSize)
+        .map(_ => RandomStringUtils.randomAlphabetic(strLen))
       val rng = genHigherSkewData()
       () => dataTable(rng().toInt % tableSize)
     }

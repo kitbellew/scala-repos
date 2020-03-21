@@ -484,8 +484,10 @@ abstract class ParallelIterableCheck[T](collName: String)
             for ((trav, ind) <- (addAllTraversables).zipWithIndex)
               yield {
                 val tadded = t ++ trav
-                val cadded =
-                  coll ++ collection.parallel.mutable.ParArray(trav.toSeq: _*)
+                val cadded = coll ++ collection
+                  .parallel
+                  .mutable
+                  .ParArray(trav.toSeq: _*)
                 if (!areEqual(tadded, cadded)) {
                   println("----------------------")
                   println("from: " + t)

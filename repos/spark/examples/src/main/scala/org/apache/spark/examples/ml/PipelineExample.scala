@@ -47,18 +47,13 @@ object PipelineExample {
       .toDF("id", "text", "label")
 
     // Configure an ML pipeline, which consists of three stages: tokenizer, hashingTF, and lr.
-    val tokenizer = new Tokenizer()
-      .setInputCol("text")
-      .setOutputCol("words")
+    val tokenizer = new Tokenizer().setInputCol("text").setOutputCol("words")
     val hashingTF = new HashingTF()
       .setNumFeatures(1000)
       .setInputCol(tokenizer.getOutputCol)
       .setOutputCol("features")
-    val lr = new LogisticRegression()
-      .setMaxIter(10)
-      .setRegParam(0.01)
-    val pipeline = new Pipeline()
-      .setStages(Array(tokenizer, hashingTF, lr))
+    val lr = new LogisticRegression().setMaxIter(10).setRegParam(0.01)
+    val pipeline = new Pipeline().setStages(Array(tokenizer, hashingTF, lr))
 
     // Fit the pipeline to training documents.
     val model = pipeline.fit(training)

@@ -49,14 +49,16 @@ case class LogicalRelation(
     expectedOutputAttributes
       .map { expectedAttrs =>
         assert(expectedAttrs.length == attrs.length)
-        attrs.zip(expectedAttrs).map {
-          // We should respect the attribute names provided by base relation and only use the
-          // exprId in `expectedOutputAttributes`.
-          // The reason is that, some relations(like parquet) will reconcile attribute names to
-          // workaround case insensitivity issue.
-          case (attr, expected) =>
-            attr.withExprId(expected.exprId)
-        }
+        attrs
+          .zip(expectedAttrs)
+          .map {
+            // We should respect the attribute names provided by base relation and only use the
+            // exprId in `expectedOutputAttributes`.
+            // The reason is that, some relations(like parquet) will reconcile attribute names to
+            // workaround case insensitivity issue.
+            case (attr, expected) =>
+              attr.withExprId(expected.exprId)
+          }
       }
       .getOrElse(attrs)
   }

@@ -42,21 +42,25 @@ class PoolingReadRepairClient(
       }
 
       // Second pass
-      Future.collect(futureAttempts).map { results =>
-        // Generate the union of the clients answers, and call it truth
-        val canon = results.foldLeft(new GetResult())(_ ++ _)
+      Future
+        .collect(futureAttempts)
+        .map { results =>
+          // Generate the union of the clients answers, and call it truth
+          val canon = results.foldLeft(new GetResult())(_ ++ _)
 
-        // Return the truth, if we didn't earlier
-        answer.updateIfEmpty(Try(canon))
+          // Return the truth, if we didn't earlier
+          answer.updateIfEmpty(Try(canon))
 
-        // Read-repair clients that had partial values
-        results.zip(clients).map { tuple =>
-          val missing = canon.hits -- tuple._1.hits.keys
-          missing.map { hit =>
-            set(hit._1, hit._2.value)
-          }
+          // Read-repair clients that had partial values
+          results
+            .zip(clients)
+            .map { tuple =>
+              val missing = canon.hits -- tuple._1.hits.keys
+              missing.map { hit =>
+                set(hit._1, hit._2.value)
+              }
+            }
         }
-      }
 
       answer
     }

@@ -46,11 +46,13 @@ class ScalaMethodCallFixer extends ScalaFixer {
                 return NoOperation
 
               val rightArgs = {
-                var currentPsi = psiElement.getContainingFile.findElementAt(
-                  editor.getCaretModel.getOffset)
+                var currentPsi = psiElement
+                  .getContainingFile
+                  .findElementAt(editor.getCaretModel.getOffset)
 
-                while (currentPsi != null && methodCall.getTextRange.contains(
-                         currentPsi.getTextRange) &&
+                while (currentPsi != null && methodCall
+                         .getTextRange
+                         .contains(currentPsi.getTextRange) &&
                        !currentPsi.isInstanceOf[ScArgumentExprList]) {
                   currentPsi = currentPsi.getParent
                 }
@@ -76,9 +78,11 @@ class ScalaMethodCallFixer extends ScalaFixer {
                     case resolvedCl: ScParameterClause
                         if cl.contains(resolvedCl) && resolvedCl != cl.last =>
                       moveToEnd(editor, args.getLastChild)
-                      editor.getDocument.insertString(
-                        args.getLastChild.getTextRange.getEndOffset,
-                        "()")
+                      editor
+                        .getDocument
+                        .insertString(
+                          args.getLastChild.getTextRange.getEndOffset,
+                          "()")
                       return WithReformat(1)
                     case _ =>
                   }

@@ -46,7 +46,9 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
       if (factors.isEmpty)
         "1"
       else
-        factors.toSeq.sorted
+        factors
+          .toSeq
+          .sorted
           .map {
             case (p, e) =>
               s"$p^$e"
@@ -106,18 +108,22 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
 
   def gcd(rhs: Factors): Factors =
     Factors(
-      lhs.factors.flatMap {
-        case (p, le) =>
-          rhs.factors.get(p).map(re => (p, le min re))
-      },
+      lhs
+        .factors
+        .flatMap {
+          case (p, le) =>
+            rhs.factors.get(p).map(re => (p, le min re))
+        },
       Positive)
 
   def lcm(rhs: Factors): Factors =
     Factors(
-      lhs.factors.foldLeft(rhs.factors) {
-        case (fs, (p, e)) =>
-          fs.updated(p, fs.getOrElse(p, 0) max e)
-      },
+      lhs
+        .factors
+        .foldLeft(rhs.factors) {
+          case (fs, (p, e)) =>
+            fs.updated(p, fs.getOrElse(p, 0) max e)
+        },
       Positive)
 
   def unary_-(): Factors = Factors(factors, -sign)
@@ -138,10 +144,12 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
     val (nn, dd) = (lhs.factors - rhs.factors)
       .filter(_._2 != 0)
       .partition(_._2 > 0)
-    val cc = lhs.factors.flatMap {
-      case (p, le) =>
-        rhs.factors.get(p).map(re => (p, le min re))
-    }
+    val cc = lhs
+      .factors
+      .flatMap {
+        case (p, le) =>
+          rhs.factors.get(p).map(re => (p, le min re))
+      }
     (
       sign,
       nn,
@@ -219,10 +227,12 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
             sign
         }
       Factors(
-        lhs.factors.map {
-          case (p, e) =>
-            (p, e * rhs)
-        },
+        lhs
+          .factors
+          .map {
+            case (p, e) =>
+              (p, e * rhs)
+          },
         sign)
     }
 }

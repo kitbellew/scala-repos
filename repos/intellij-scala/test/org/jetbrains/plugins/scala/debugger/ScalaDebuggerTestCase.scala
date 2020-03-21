@@ -70,9 +70,13 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
           }
           addBreakpoints()
           val runner =
-            ProgramRunner.PROGRAM_RUNNER_EP.getExtensions.find {
-              _.getClass == classOf[GenericDebuggerRunner]
-            }.get
+            ProgramRunner
+              .PROGRAM_RUNNER_EP
+              .getExtensions
+              .find {
+                _.getClass == classOf[GenericDebuggerRunner]
+              }
+              .get
           processHandler = runProcess(
             mainClass,
             getModule,
@@ -109,8 +113,9 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
         ApplicationConfigurationType.getInstance)
     configuration.setModule(module)
     configuration.setMainClassName(className)
-    val executor: Executor = Executor.EXECUTOR_EXTENSION_NAME.findExtension(
-      executorClass)
+    val executor: Executor = Executor
+      .EXECUTOR_EXTENSION_NAME
+      .findExtension(executorClass)
     val executionEnvironmentBuilder: ExecutionEnvironmentBuilder =
       new ExecutionEnvironmentBuilder(module.getProject, executor)
     executionEnvironmentBuilder.runProfile(configuration)
@@ -182,16 +187,18 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
           val xBreakpointManager =
             XDebuggerManager.getInstance(getProject).getBreakpointManager
           inWriteAction {
-            xBreakpointManager.getAllBreakpoints.foreach(
-              xBreakpointManager.removeBreakpoint)
+            xBreakpointManager
+              .getAllBreakpoints
+              .foreach(xBreakpointManager.removeBreakpoint)
           }
         }
       })
   }
 
   protected def scalaLineBreakpointType =
-    XBreakpointType.EXTENSION_POINT_NAME.findExtension(
-      classOf[ScalaLineBreakpointType])
+    XBreakpointType
+      .EXTENSION_POINT_NAME
+      .findExtension(classOf[ScalaLineBreakpointType])
 
   protected def waitForBreakpoint(): SuspendContextImpl = {
     val (suspendContext, processTerminated) = waitForBreakpointInner()
@@ -224,13 +231,15 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
       DebuggerContextUtil.createDebuggerContext(getDebugSession, suspendContext)
     val semaphore = new Semaphore()
     semaphore.down()
-    getDebugProcess.getManagerThread.invokeAndWait(
-      new DebuggerContextCommandImpl(ctx) {
-        def threadAction() {
-          result = callback
-          semaphore.up()
-        }
-      })
+    getDebugProcess
+      .getManagerThread
+      .invokeAndWait(
+        new DebuggerContextCommandImpl(ctx) {
+          def threadAction() {
+            result = callback
+            semaphore.up()
+          }
+        })
     def finished = semaphore.waitFor(20000)
     assert(finished, "Too long debugger action")
     result
@@ -298,10 +307,8 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
   }
 
   protected def evalEquals(codeText: String, expected: String) {
-    Assert.assertEquals(
-      s"Evaluating:\n $codeText",
-      expected,
-      evalResult(codeText))
+    Assert
+      .assertEquals(s"Evaluating:\n $codeText", expected, evalResult(codeText))
   }
 
   protected def evalStartsWith(codeText: String, startsWith: String) {

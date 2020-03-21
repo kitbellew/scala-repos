@@ -156,8 +156,9 @@ class StreamingContext private[streaming] (
     }
   }
 
-  if (sc.conf.get("spark.master") == "local" || sc.conf.get(
-        "spark.master") == "local[1]") {
+  if (sc.conf.get("spark.master") == "local" || sc
+        .conf
+        .get("spark.master") == "local[1]") {
     logWarning(
       "spark.master should be set as local[n], n > 1 in local mode if you have receivers" +
         " to get data, otherwise Spark jobs will not get resources to process the received data.")
@@ -292,11 +293,8 @@ class StreamingContext private[streaming] (
     * Note: Return statements are NOT allowed in the given body.
     */
   private[streaming] def withNamedScope[U](name: String)(body: => U): U = {
-    RDDOperationScope.withScope(
-      sc,
-      name,
-      allowNesting = false,
-      ignoreParent = false)(body)
+    RDDOperationScope
+      .withScope(sc, name, allowNesting = false, ignoreParent = false)(body)
   }
 
   /**
@@ -611,32 +609,36 @@ class StreamingContext private[streaming] (
       state match {
         case INITIALIZED =>
           startSite.set(DStream.getCreationSite())
-          StreamingContext.ACTIVATION_LOCK.synchronized {
-            StreamingContext.assertNoOtherContextIsActive()
-            try {
-              validate()
+          StreamingContext
+            .ACTIVATION_LOCK
+            .synchronized {
+              StreamingContext.assertNoOtherContextIsActive()
+              try {
+                validate()
 
-              // Start the streaming scheduler in a new thread, so that thread local properties
-              // like call sites and job groups can be reset without affecting those of the
-              // current thread.
-              ThreadUtils.runInNewThread("streaming-start") {
-                sparkContext.setCallSite(startSite.get)
-                sparkContext.clearJobGroup()
-                sparkContext.setLocalProperty(
-                  SparkContext.SPARK_JOB_INTERRUPT_ON_CANCEL,
-                  "false")
-                scheduler.start()
+                // Start the streaming scheduler in a new thread, so that thread local properties
+                // like call sites and job groups can be reset without affecting those of the
+                // current thread.
+                ThreadUtils.runInNewThread("streaming-start") {
+                  sparkContext.setCallSite(startSite.get)
+                  sparkContext.clearJobGroup()
+                  sparkContext.setLocalProperty(
+                    SparkContext.SPARK_JOB_INTERRUPT_ON_CANCEL,
+                    "false")
+                  scheduler.start()
+                }
+                state = StreamingContextState.ACTIVE
+              } catch {
+                case NonFatal(e) =>
+                  logError(
+                    "Error starting the context, marking it as stopped",
+                    e)
+                  scheduler.stop(false)
+                  state = StreamingContextState.STOPPED
+                  throw e
               }
-              state = StreamingContextState.ACTIVE
-            } catch {
-              case NonFatal(e) =>
-                logError("Error starting the context, marking it as stopped", e)
-                scheduler.stop(false)
-                state = StreamingContextState.STOPPED
-                throw e
+              StreamingContext.setActiveContext(this)
             }
-            StreamingContext.setActiveContext(this)
-          }
           shutdownHookRef =
             ShutdownHookManager.addShutdownHook(
               StreamingContext.SHUTDOWN_HOOK_PRIORITY)(stopOnShutdown)
@@ -684,9 +686,8 @@ class StreamingContext private[streaming] (
     *                         started.
     */
   def stop(
-      stopSparkContext: Boolean = conf.getBoolean(
-        "spark.streaming.stopSparkContextByDefault",
-        true)): Unit =
+      stopSparkContext: Boolean = conf
+        .getBoolean("spark.streaming.stopSparkContextByDefault", true)): Unit =
     synchronized {
       stop(stopSparkContext, false)
     }
@@ -755,9 +756,8 @@ class StreamingContext private[streaming] (
   }
 
   private def stopOnShutdown(): Unit = {
-    val stopGracefully = conf.getBoolean(
-      "spark.streaming.stopGracefullyOnShutdown",
-      false)
+    val stopGracefully = conf
+      .getBoolean("spark.streaming.stopGracefullyOnShutdown", false)
     logInfo(s"Invoking stop(stopGracefully=$stopGracefully) from shutdown hook")
     // Do not stop SparkContext, let its own shutdown hook stop it
     stop(stopSparkContext = false, stopGracefully = stopGracefully)
@@ -776,8 +776,8 @@ object StreamingContext extends Logging {
     */
   private val ACTIVATION_LOCK = new Object()
 
-  private val SHUTDOWN_HOOK_PRIORITY =
-    ShutdownHookManager.SPARK_CONTEXT_SHUTDOWN_PRIORITY + 1
+  private val SHUTDOWN_HOOK_PRIORITY = ShutdownHookManager
+    .SPARK_CONTEXT_SHUTDOWN_PRIORITY + 1
 
   private val activeContext = new AtomicReference[StreamingContext](null)
 
@@ -875,11 +875,8 @@ object StreamingContext extends Logging {
       creatingFunc: () => StreamingContext,
       hadoopConf: Configuration = SparkHadoopUtil.get.conf,
       createOnError: Boolean = false): StreamingContext = {
-    val checkpointOption = CheckpointReader.read(
-      checkpointPath,
-      new SparkConf(),
-      hadoopConf,
-      createOnError)
+    val checkpointOption = CheckpointReader
+      .read(checkpointPath, new SparkConf(), hadoopConf, createOnError)
     checkpointOption
       .map(new StreamingContext(null, _, null))
       .getOrElse(creatingFunc())
@@ -934,11 +931,8 @@ private class StreamingContextPythonHelper {
     */
   def tryRecoverFromCheckpoint(
       checkpointPath: String): Option[StreamingContext] = {
-    val checkpointOption = CheckpointReader.read(
-      checkpointPath,
-      new SparkConf(),
-      SparkHadoopUtil.get.conf,
-      false)
+    val checkpointOption = CheckpointReader
+      .read(checkpointPath, new SparkConf(), SparkHadoopUtil.get.conf, false)
     checkpointOption.map(new StreamingContext(null, _, null))
   }
 }

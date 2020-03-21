@@ -44,10 +44,8 @@ private[finagle] object TimerStats {
             TimeUnit.MILLISECONDS)
         }
       }
-    hwt.newTimeout(
-      timerTask,
-      tickDuration.inMilliseconds,
-      TimeUnit.MILLISECONDS)
+    hwt
+      .newTimeout(timerTask, tickDuration.inMilliseconds, TimeUnit.MILLISECONDS)
   }
 
   /**
@@ -89,9 +87,8 @@ private[finagle] object TimerStats {
     def bucketTimeouts(hashedWheelBucket: Object): Int = {
       bucketHeadField
         .map { headField =>
-          val head = headField.get(
-            hashedWheelBucket
-          ) // this is a HashedWheelTimeout
+          val head = headField
+            .get(hashedWheelBucket) // this is a HashedWheelTimeout
           if (head == null) {
             0
           } else {
@@ -125,14 +122,13 @@ private[finagle] object TimerStats {
             pendingTimeouts.add(qTimeouts.size() + wTimeouts)
           }
 
-          val elapsedMicros = TimeUnit.NANOSECONDS.toMicros(
-            System.nanoTime() - startAt)
+          val elapsedMicros = TimeUnit
+            .NANOSECONDS
+            .toMicros(System.nanoTime() - startAt)
           if (log.isLoggable(Level.TRACE))
             log.trace(s"hashedWheelTimerInternals.run took $elapsedMicros us")
-          hwt.newTimeout(
-            this,
-            nextRunAt().inMilliseconds,
-            TimeUnit.MILLISECONDS)
+          hwt
+            .newTimeout(this, nextRunAt().inMilliseconds, TimeUnit.MILLISECONDS)
         }
       }
     hwt.newTimeout(timerTask, nextRunAt().inMilliseconds, TimeUnit.MILLISECONDS)

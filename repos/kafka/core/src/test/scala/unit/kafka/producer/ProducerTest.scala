@@ -46,8 +46,8 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
   private var server2: KafkaServer = null
   private var consumer1: SimpleConsumer = null
   private var consumer2: SimpleConsumer = null
-  private val requestHandlerLogger = Logger.getLogger(
-    classOf[KafkaRequestHandler])
+  private val requestHandlerLogger = Logger
+    .getLogger(classOf[KafkaRequestHandler])
   private var servers = List.empty[KafkaServer]
 
   // Creation of consumers is deferred until they are actually needed. This allows us to kill brokers that use random
@@ -140,8 +140,8 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
     }
 
     val producer2 = TestUtils.createProducer[String, String](
-      brokerList =
-        "localhost:80," + TestUtils.getBrokerListStrFromServers(Seq(server1)),
+      brokerList = "localhost:80," + TestUtils
+        .getBrokerListStrFromServers(Seq(server1)),
       encoder = classOf[StringEncoder].getName,
       keyEncoder = classOf[StringEncoder].getName
     )
@@ -206,12 +206,12 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
 
     val messageSet =
       if (leader == server1.config.brokerId) {
-        val response1 = getConsumer1().fetch(
-          new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())
+        val response1 = getConsumer1()
+          .fetch(new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())
         response1.messageSet("new-topic", 0).iterator.toBuffer
       } else {
-        val response2 = getConsumer2().fetch(
-          new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())
+        val response2 = getConsumer2()
+          .fetch(new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())
         response2.messageSet("new-topic", 0).iterator.toBuffer
       }
     assertEquals("Should have fetched 2 messages", 2, messageSet.size)
@@ -221,8 +221,9 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
     assertTrue(
       ByteBuffer.wrap("test".getBytes).equals(messageSet(0).message.key))
     assertTrue(
-      messageSet(0).message.timestamp >= startTime && messageSet(
-        0).message.timestamp < endTime)
+      messageSet(0).message.timestamp >= startTime && messageSet(0)
+        .message
+        .timestamp < endTime)
     assertEquals(TimestampType.CREATE_TIME, messageSet(0).message.timestampType)
     assertEquals(Message.MagicValue_V1, messageSet(0).message.magic)
 
@@ -232,8 +233,9 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
     assertTrue(
       ByteBuffer.wrap("test".getBytes).equals(messageSet(1).message.key))
     assertTrue(
-      messageSet(1).message.timestamp >= startTime && messageSet(
-        1).message.timestamp < endTime)
+      messageSet(1).message.timestamp >= startTime && messageSet(1)
+        .message
+        .timestamp < endTime)
     assertEquals(TimestampType.CREATE_TIME, messageSet(1).message.timestampType)
     assertEquals(Message.MagicValue_V1, messageSet(1).message.magic)
     producer1.close()
@@ -245,8 +247,8 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
 
     try {
       val producer2 = TestUtils.createProducer[String, String](
-        brokerList = TestUtils.getBrokerListStrFromServers(
-          Seq(server1, server2)),
+        brokerList = TestUtils
+          .getBrokerListStrFromServers(Seq(server1, server2)),
         encoder = classOf[StringEncoder].getName,
         keyEncoder = classOf[StringEncoder].getName,
         partitioner = classOf[StaticPartitioner].getName,
@@ -321,8 +323,8 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
 
     try {
       // cross check if broker 1 got the messages
-      val response1 = getConsumer1().fetch(
-        new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())
+      val response1 = getConsumer1()
+        .fetch(new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())
       val messageSet1 = response1.messageSet(topic, 0).iterator
       assertTrue("Message set should have 1 message", messageSet1.hasNext)
       val message = messageSet1.next.message
@@ -348,9 +350,8 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
     props.put("request.timeout.ms", String.valueOf(timeoutMs))
     props.put("request.required.acks", "1")
     props.put("message.send.max.retries", "0")
-    props.put(
-      "client.id",
-      "ProducerTest-testAsyncSendCanCorrectlyFailWithTimeout")
+    props
+      .put("client.id", "ProducerTest-testAsyncSendCanCorrectlyFailWithTimeout")
     val producer = TestUtils.createProducer[String, String](
       brokerList = TestUtils.getBrokerListStrFromServers(Seq(server1, server2)),
       encoder = classOf[StringEncoder].getName,
@@ -372,8 +373,8 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
       // this message should be assigned to partition 0 whose leader is on broker 0
       producer.send(new KeyedMessage[String, String](topic, "test", "test"))
       // cross check if brokers got the messages
-      val response1 = getConsumer1().fetch(
-        new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())
+      val response1 = getConsumer1()
+        .fetch(new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())
       val messageSet1 = response1.messageSet("new-topic", 0).iterator
       assertTrue("Message set should have 1 message", messageSet1.hasNext)
       assertEquals(new Message("test".getBytes), messageSet1.next.message)

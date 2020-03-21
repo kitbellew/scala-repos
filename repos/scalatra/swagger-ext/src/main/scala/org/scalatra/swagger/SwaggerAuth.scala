@@ -33,30 +33,27 @@ class SwaggerWithAuth(
       produces: List[String],
       protocols: List[String],
       authorizations: List[String]) {
-    val endpoints: List[AuthEndpoint[AnyRef]] =
-      s.endpoints(resourcePath) collect {
-        case m: AuthEndpoint[AnyRef] =>
-          m
-      }
+    val endpoints: List[AuthEndpoint[AnyRef]] = s
+      .endpoints(resourcePath) collect {
+      case m: AuthEndpoint[AnyRef] =>
+        m
+    }
     _docs += listingPath -> AuthApi(
       apiVersion,
       swaggerVersion,
       resourcePath,
       description,
-      (
-        produces ::: endpoints.flatMap(_.operations.flatMap(_.produces))
-      ).distinct,
-      (
-        consumes ::: endpoints.flatMap(_.operations.flatMap(_.consumes))
-      ).distinct,
-      (
-        protocols ::: endpoints.flatMap(_.operations.flatMap(_.protocols))
-      ).distinct,
+      (produces ::: endpoints.flatMap(_.operations.flatMap(_.produces)))
+        .distinct,
+      (consumes ::: endpoints.flatMap(_.operations.flatMap(_.consumes)))
+        .distinct,
+      (protocols ::: endpoints.flatMap(_.operations.flatMap(_.protocols)))
+        .distinct,
       endpoints,
       s.models.toMap,
       (
-        authorizations ::: endpoints.flatMap(
-          _.operations.flatMap(_.authorizations))
+        authorizations ::: endpoints
+          .flatMap(_.operations.flatMap(_.authorizations))
       ).distinct,
       0
     )
@@ -269,7 +266,8 @@ trait SwaggerAuthBase[TypeForUser <: AnyRef] extends SwaggerBaseBase {
 
     get("/" + indexRoute + "(.:format)") {
       val docs =
-        swagger.docs
+        swagger
+          .docs
           .filter(_.apis.exists(_.operations.exists(_.allows(userOption))))
           .toList
       if (docs.isEmpty)
@@ -286,8 +284,9 @@ trait SwaggerAuthBase[TypeForUser <: AnyRef] extends SwaggerBaseBase {
           (
             docs
               .filter(s =>
-                s.apis.nonEmpty && s.apis.exists(
-                  _.operations.exists(_.allows(userOption))))
+                s.apis.nonEmpty && s
+                  .apis
+                  .exists(_.operations.exists(_.allows(userOption))))
               .toList map { doc =>
               (
                 "path" -> (
@@ -307,14 +306,15 @@ trait SwaggerAuthBase[TypeForUser <: AnyRef] extends SwaggerBaseBase {
           )
       ) ~
       (
-        "authorizations" -> swagger.authorizations.foldLeft(JObject(Nil)) {
-          (acc, auth) =>
+        "authorizations" -> swagger
+          .authorizations
+          .foldLeft(JObject(Nil)) { (acc, auth) =>
             acc merge JObject(
               List(
                 auth.`type` -> Extraction.decompose(auth)(
-                  SwaggerAuthSerializers.authFormats(userOption)(
-                    userManifest))))
-        }
+                  SwaggerAuthSerializers
+                    .authFormats(userOption)(userManifest))))
+          }
       ) ~
       (
         "info" -> Option(swagger.apiInfo).map(
@@ -469,8 +469,9 @@ trait SwaggerAuthSupport[TypeForUser <: AnyRef]
   protected def extractOperation(
       route: Route,
       method: HttpMethod): AuthOperation[TypeForUser] = {
-    val op = route.metadata
-      .get(Symbols.Operation) map (_.asInstanceOf[AuthOperation[TypeForUser]])
+    val op = route.metadata.get(Symbols.Operation) map (
+      _.asInstanceOf[AuthOperation[TypeForUser]]
+    )
     op map (_.copy(method = method)) getOrElse {
       val theParams = route.metadata.get(Symbols.Parameters) map (
         _.asInstanceOf[List[Parameter]]
@@ -482,19 +483,20 @@ trait SwaggerAuthSupport[TypeForUser <: AnyRef]
         _.asInstanceOf[DataType]
       ) getOrElse DataType.Void
       val summary =
-        (
-          route.metadata.get(Symbols.Summary) map (_.asInstanceOf[String])
-        ).orNull
+        (route.metadata.get(Symbols.Summary) map (_.asInstanceOf[String]))
+          .orNull
       val notes = route.metadata.get(Symbols.Notes) map (_.asInstanceOf[String])
       val nick =
         route.metadata.get(Symbols.Nickname) map (_.asInstanceOf[String])
-      val produces = route.metadata
-        .get(Symbols.Produces) map (_.asInstanceOf[List[String]]) getOrElse Nil
+      val produces = route.metadata.get(Symbols.Produces) map (
+        _.asInstanceOf[List[String]]
+      ) getOrElse Nil
       val allows = route.metadata.get(Symbols.Allows) map (
         _.asInstanceOf[Option[TypeForUser] => Boolean]
       ) getOrElse allowAll
-      val consumes = route.metadata
-        .get(Symbols.Consumes) map (_.asInstanceOf[List[String]]) getOrElse Nil
+      val consumes = route.metadata.get(Symbols.Consumes) map (
+        _.asInstanceOf[List[String]]
+      ) getOrElse Nil
       AuthOperation[TypeForUser](
         method = method,
         responseClass = responseClass,

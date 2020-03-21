@@ -159,9 +159,11 @@ private[ml] class WeightedLeastSquares(
     // aaInv is a packed upper triangular matrix, here we get all elements on diagonal
     val diagInvAtWA =
       new DenseVector(
-        (1 to k).map { i =>
-          aaInv(i + (i - 1) * i / 2 - 1) / wSum
-        }.toArray)
+        (1 to k)
+          .map { i =>
+            aaInv(i + (i - 1) * i / 2 - 1) / wSum
+          }
+          .toArray)
 
     val (coefficients, intercept) =
       if (fitIntercept) {

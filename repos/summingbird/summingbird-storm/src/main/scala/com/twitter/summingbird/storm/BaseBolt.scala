@@ -81,16 +81,16 @@ case class BaseBolt[I, O](
   private[this] val upperBound = maxExecutePerSec.upperBound * 10
   private[this] val PERIOD_LENGTH_MS = 10000L
 
-  private[this] val rampPeriods =
-    maxExecutePerSec.rampUptimeMS / PERIOD_LENGTH_MS
+  private[this] val rampPeriods = maxExecutePerSec
+    .rampUptimeMS / PERIOD_LENGTH_MS
   private[this] val deltaPerPeriod: Long =
     if (rampPeriods > 0)
       (upperBound - lowerBound) / rampPeriods
     else
       0
 
-  private[this] lazy val startPeriod =
-    System.currentTimeMillis / PERIOD_LENGTH_MS
+  private[this] lazy val startPeriod = System
+    .currentTimeMillis / PERIOD_LENGTH_MS
   private[this] lazy val endRampPeriod = startPeriod + rampPeriods
 
   /*
@@ -157,7 +157,8 @@ case class BaseBolt[I, O](
     val curResults =
       if (!tuple.getSourceStreamId.equals("__tick")) {
         val tsIn =
-          executor.decoder
+          executor
+            .decoder
             .invert(tuple.getValues)
             .get // Failing to decode here is an ERROR
         // Don't hold on to the input values
@@ -221,9 +222,8 @@ case class BaseBolt[I, O](
     executor.init(context)
     StormStatProvider.registerMetrics(jobID, context, countersForBolt)
     SummingbirdRuntimeStats.addPlatformStatProvider(StormStatProvider)
-    logger.debug(
-      "In Bolt prepare: added jobID stat provider for jobID {}",
-      jobID)
+    logger
+      .debug("In Bolt prepare: added jobID stat provider for jobID {}", jobID)
   }
 
   override def declareOutputFields(declarer: OutputFieldsDeclarer) {

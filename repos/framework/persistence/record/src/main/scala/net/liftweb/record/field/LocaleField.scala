@@ -28,7 +28,9 @@ import http.{S, SHtml}
 import S._
 
 object LocaleField {
-  lazy val localeList = Locale.getAvailableLocales.toList
+  lazy val localeList = Locale
+    .getAvailableLocales
+    .toList
     .sortWith(_.getDisplayName < _.getDisplayName)
     .map(lo => (lo.toString, lo.getDisplayName))
 }

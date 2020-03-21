@@ -36,8 +36,8 @@ private[storage] class BlockManagerSlaveEndpoint(
     extends ThreadSafeRpcEndpoint
     with Logging {
 
-  private val asyncThreadPool = ThreadUtils.newDaemonCachedThreadPool(
-    "block-manager-slave-async-thread-pool")
+  private val asyncThreadPool = ThreadUtils
+    .newDaemonCachedThreadPool("block-manager-slave-async-thread-pool")
   private implicit val asyncExecutionContext = ExecutionContext
     .fromExecutorService(asyncThreadPool)
 

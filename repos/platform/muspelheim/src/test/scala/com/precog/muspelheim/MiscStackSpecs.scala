@@ -1691,7 +1691,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
         """
         | campaigns := //campaigns
         | solve 'gender 
-        |   { gender: 'gender, num: count(campaigns.gender where campaigns.gender = 'gender) }""".stripMargin
+        |   { gender: 'gender, num: count(campaigns.gender where campaigns.gender = 'gender) }"""
+          .stripMargin
 
       eval(input) mustEqual Set(
         SObject(Map("gender" -> SString("female"), "num" -> SDecimal(46))),
@@ -2143,7 +2144,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
         val input =
           """
           | time := (//clicks).timeString
-          | std::time::yearsBetween(time, "2012-02-09T19:31:13.616+10:00")""".stripMargin
+          | std::time::yearsBetween(time, "2012-02-09T19:31:13.616+10:00")"""
+            .stripMargin
 
         val results = evalE(input)
         val results2 = results map {
@@ -3235,7 +3237,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
         | meanAbove := mean(spacings.above)
         | meanBelow := mean(spacings.below)
         | 
-        | spacings.click where spacings.below > meanBelow & spacings.above > meanAbove""".stripMargin
+        | spacings.click where spacings.below > meanBelow & spacings.above > meanAbove"""
+          .stripMargin
 
       val resultsE = evalE(input)
 
@@ -3436,7 +3439,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
         | newClicks := new clicks
         |
         | clicks ~ newClicks
-        |   {timeString: clicks.timeString, nonexistant: clicks.nonexistant}""".stripMargin
+        |   {timeString: clicks.timeString, nonexistant: clicks.nonexistant}"""
+          .stripMargin
 
       eval(input) must beEmpty
     }
@@ -3662,10 +3666,12 @@ trait MiscStackSpecs extends EvalStackSpecs {
       totalResult must haveSize(1)
 
       val total =
-        totalResult.collectFirst {
-          case (_, SDecimal(d)) =>
-            d
-        }.get
+        totalResult
+          .collectFirst {
+            case (_, SDecimal(d)) =>
+              d
+          }
+          .get
 
       val result = evalE(input)
 
@@ -3695,10 +3701,12 @@ trait MiscStackSpecs extends EvalStackSpecs {
       totalResult must haveSize(1)
 
       val total =
-        totalResult.collectFirst {
-          case (_, SDecimal(d)) =>
-            d
-        }.get
+        totalResult
+          .collectFirst {
+            case (_, SDecimal(d)) =>
+              d
+          }
+          .get
 
       val result = evalE(input)
 

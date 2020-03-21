@@ -68,9 +68,8 @@ package object util {
             localClass = Class.forName(resultClassDescriptor.getName)
           } catch {
             case e: ClassNotFoundException =>
-              logger.error(
-                "No local class for " + resultClassDescriptor.getName,
-                e)
+              logger
+                .error("No local class for " + resultClassDescriptor.getName, e)
               return resultClassDescriptor
           }
 
@@ -164,7 +163,8 @@ package object util {
   // this should be a separate trait but Scala is freaking out
   class SeqExtras[T](s: Seq[T]) {
     def argmax(implicit ordering: Ordering[T]) = {
-      s.zipWithIndex
+      s
+        .zipWithIndex
         .reduceLeft((a, b) =>
           if (ordering.gt(a._1, b._1))
             a
@@ -173,7 +173,8 @@ package object util {
         ._2
     }
     def argmin(implicit ordering: Ordering[T]) = {
-      s.zipWithIndex
+      s
+        .zipWithIndex
         .reduceLeft((a, b) =>
           if (ordering.lt(a._1, b._1))
             a

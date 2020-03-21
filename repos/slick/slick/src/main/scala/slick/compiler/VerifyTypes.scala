@@ -48,19 +48,21 @@ class VerifyTypes(after: Option[Phase] = None) extends Phase {
           errors += RefId(n1)
         }
       }
-      n1.children.zip(n2.children).force.foreach {
-        case (n1, n2) =>
-          compare(n1, n2)
-      }
+      n1
+        .children
+        .zip(n2.children)
+        .force
+        .foreach {
+          case (n1, n2) =>
+            compare(n1, n2)
+        }
     }
     compare(tree, retyped)
 
     if (errors.nonEmpty)
       throw new SlickTreeException(
-        after
-          .map(p => "After " + p.name + ": ")
-          .getOrElse(
-            "") + errors.size + " type errors found in " + nodeCount + " nodes:",
+        after.map(p => "After " + p.name + ": ").getOrElse("") + errors
+          .size + " type errors found in " + nodeCount + " nodes:",
         tree,
         removeUnmarked = false,
         mark = (errors contains RefId(_)))

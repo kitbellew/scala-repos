@@ -355,7 +355,8 @@ class EventTest extends FunSuite {
     val e = Event[Int]()
     val ref = new AtomicReference[IndexedSeq[Int]]
 
-    e.dedupWith { (a, b) =>
+    e
+      .dedupWith { (a, b) =>
         a >= b
       }
       .build

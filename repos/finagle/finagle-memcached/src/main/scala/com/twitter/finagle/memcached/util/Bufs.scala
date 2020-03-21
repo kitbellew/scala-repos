@@ -44,9 +44,11 @@ private[finagle] object Bufs {
       */
     def split(delimiter: Char): Seq[Buf] = {
       val Buf.Utf8(decoded) = buffer
-      decoded.split(delimiter).map {
-        Buf.Utf8(_)
-      }
+      decoded
+        .split(delimiter)
+        .map {
+          Buf.Utf8(_)
+        }
     }
 
     /**

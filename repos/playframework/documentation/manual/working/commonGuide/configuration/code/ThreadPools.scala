@@ -102,8 +102,9 @@ object ThreadPoolsSpec extends PlaySpecification {
       #my-context-config """) { implicit app =>
       val akkaSystem = app.actorSystem
       //#my-context-usage
-      val myExecutionContext: ExecutionContext = akkaSystem.dispatchers.lookup(
-        "my-context")
+      val myExecutionContext: ExecutionContext = akkaSystem
+        .dispatchers
+        .lookup("my-context")
       //#my-context-usage
       await(
         Future(Thread.currentThread().getName)(
@@ -189,14 +190,18 @@ object ThreadPoolsSpec extends PlaySpecification {
       val akkaSystem = app.actorSystem
       //#many-specific-contexts
       object Contexts {
-        implicit val simpleDbLookups: ExecutionContext = akkaSystem.dispatchers
+        implicit val simpleDbLookups: ExecutionContext = akkaSystem
+          .dispatchers
           .lookup("contexts.simple-db-lookups")
-        implicit val expensiveDbLookups: ExecutionContext =
-          akkaSystem.dispatchers.lookup("contexts.expensive-db-lookups")
-        implicit val dbWriteOperations: ExecutionContext =
-          akkaSystem.dispatchers.lookup("contexts.db-write-operations")
-        implicit val expensiveCpuOperations: ExecutionContext =
-          akkaSystem.dispatchers.lookup("contexts.expensive-cpu-operations")
+        implicit val expensiveDbLookups: ExecutionContext = akkaSystem
+          .dispatchers
+          .lookup("contexts.expensive-db-lookups")
+        implicit val dbWriteOperations: ExecutionContext = akkaSystem
+          .dispatchers
+          .lookup("contexts.db-write-operations")
+        implicit val expensiveCpuOperations: ExecutionContext = akkaSystem
+          .dispatchers
+          .lookup("contexts.expensive-cpu-operations")
       }
       //#many-specific-contexts
       def test(context: ExecutionContext, name: String) = {
@@ -228,12 +233,15 @@ class Samples @Inject() (wsClient: WSClient) {
 
   def someAsyncAction =
     Action.async {
-      wsClient.url("http://www.playframework.com").get().map { response =>
-        // This code block is executed in the imported default execution context
-        // which happens to be the same thread pool in which the outer block of
-        // code in this action will be executed.
-        Results.Ok("The response code was " + response.status)
-      }
+      wsClient
+        .url("http://www.playframework.com")
+        .get()
+        .map { response =>
+          // This code block is executed in the imported default execution context
+          // which happens to be the same thread pool in which the outer block of
+          // code in this action will be executed.
+          Results.Ok("The response code was " + response.status)
+        }
     }
   //#global-thread-pool
 

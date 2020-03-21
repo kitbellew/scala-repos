@@ -50,8 +50,8 @@ package object security {
       override def validated(obj: JValue): Validation[Error, DateTime] =
         obj match {
           case JString(dt) =>
-            (Thrown.apply _) <-: Validation.fromTryCatch(
-              isoFormat.parseDateTime(dt))
+            (Thrown.apply _) <-: Validation
+              .fromTryCatch(isoFormat.parseDateTime(dt))
           case _ =>
             Failure(Invalid("Date time must be represented as JSON string"))
         }

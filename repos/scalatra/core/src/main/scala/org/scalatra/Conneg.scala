@@ -85,9 +85,8 @@ object Conneg {
     /** Parser for the content-negotiation `q` parameter. */
     def qValue: Parser[Float] = {
       opt(
-        paramSep ~> (
-          "q" ~ valueSep
-        ) ~> """[0-1](\.[0-9]{1,3})?""".r ^^ (_.toFloat)) ^^ {
+        paramSep ~> ("q" ~ valueSep) ~> """[0-1](\.[0-9]{1,3})?"""
+          .r ^^ (_.toFloat)) ^^ {
         case Some(q) =>
           q
         case _ =>
@@ -139,12 +138,14 @@ object Conneg {
       None
     else
       Some(
-        all.reduce { (a, b) =>
-          if (a.q < b.q)
-            b
-          else
-            a
-        }.value)
+        all
+          .reduce { (a, b) =>
+            if (a.q < b.q)
+              b
+            else
+              a
+          }
+          .value)
   }
 
   // - Encoding --------------------------------------------------------------------------------------------------------

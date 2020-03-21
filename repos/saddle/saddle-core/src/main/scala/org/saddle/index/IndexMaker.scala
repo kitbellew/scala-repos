@@ -125,7 +125,8 @@ object IndexMaker extends IndexMakerLowPriority {
       d: T[D],
       e: T[E]): Index[(A, B, C, D, E)] = {
     require(
-      a.length == b.length && b.length == c.length && c.length == d.length && d.length == e.length,
+      a.length == b.length && b.length == c.length && c.length == d.length && d
+        .length == e.length,
       "Arguments must have same length")
     val sz = a.length
     val arr = Array.ofDim[(A, B, C, D, E)](sz)

@@ -139,32 +139,33 @@ private[streaming] class ReliableKafkaReceiver[
       consumerConfig.zkConnectionTimeoutMs,
       ZKStringSerializer)
 
-    messageHandlerThreadPool = ThreadUtils.newDaemonFixedThreadPool(
-      topics.values.sum,
-      "KafkaMessageHandler")
+    messageHandlerThreadPool = ThreadUtils
+      .newDaemonFixedThreadPool(topics.values.sum, "KafkaMessageHandler")
 
     blockGenerator.start()
 
-    val keyDecoder = classTag[U].runtimeClass
+    val keyDecoder = classTag[U]
+      .runtimeClass
       .getConstructor(classOf[VerifiableProperties])
       .newInstance(consumerConfig.props)
       .asInstanceOf[Decoder[K]]
 
-    val valueDecoder = classTag[T].runtimeClass
+    val valueDecoder = classTag[T]
+      .runtimeClass
       .getConstructor(classOf[VerifiableProperties])
       .newInstance(consumerConfig.props)
       .asInstanceOf[Decoder[V]]
 
-    val topicMessageStreams = consumerConnector.createMessageStreams(
-      topics,
-      keyDecoder,
-      valueDecoder)
+    val topicMessageStreams = consumerConnector
+      .createMessageStreams(topics, keyDecoder, valueDecoder)
 
-    topicMessageStreams.values.foreach { streams =>
-      streams.foreach { stream =>
-        messageHandlerThreadPool.submit(new MessageHandler(stream))
+    topicMessageStreams
+      .values
+      .foreach { streams =>
+        streams.foreach { stream =>
+          messageHandlerThreadPool.submit(new MessageHandler(stream))
+        }
       }
-    }
   }
 
   override def onStop(): Unit = {

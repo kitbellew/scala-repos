@@ -10,8 +10,10 @@ import scala.collection.JavaConverters._
 class CORSFilter @Inject() (config: MarathonConf) extends Filter {
 
   // Map access_control_allow_origin flag into separate headers
-  lazy val maybeOrigins: Option[Seq[String]] =
-    config.accessControlAllowOrigin.get.map { configValue =>
+  lazy val maybeOrigins: Option[Seq[String]] = config
+    .accessControlAllowOrigin
+    .get
+    .map { configValue =>
       configValue.split(",").map(_.trim)
     }
 
@@ -42,9 +44,8 @@ class CORSFilter @Inject() (config: MarathonConf) extends Filter {
           "Access-Control-Allow-Headers",
           accessControlRequestHeaders.mkString(", "))
 
-        httpResponse.setHeader(
-          "Access-Control-Allow-Methods",
-          "GET, HEAD, OPTIONS")
+        httpResponse
+          .setHeader("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS")
         httpResponse.setHeader("Access-Control-Max-Age", "86400")
 
       case _ => // Ignore other responses

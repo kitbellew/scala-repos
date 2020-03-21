@@ -119,7 +119,8 @@ object Extraction {
         case x if (x.getClass.isArray) =>
           JArray(x.asInstanceOf[Array[_]].toList map decompose)
         case x: Option[_] =>
-          x.flatMap[JValue] { y =>
+          x
+            .flatMap[JValue] { y =>
               Some(decompose(y))
             }
             .getOrElse(JNothing)
@@ -135,22 +136,25 @@ object Extraction {
               JField(unmangleName(name), decompose(f get x))
           } match {
             case args =>
-              val fields = formats.fieldSerializer(x.getClass).map {
-                serializer =>
-                  Reflection.fields(x.getClass).map {
-                    case (mangledName, _) =>
-                      val n = Meta.unmangleName(mangledName)
-                      val fieldVal = Reflection.getField(x, mangledName)
-                      val s = serializer.serializer orElse Map(
-                        (n, fieldVal) -> Some(n, fieldVal))
-                      s((n, fieldVal))
-                        .map {
-                          case (name, value) =>
-                            JField(name, decompose(value))
-                        }
-                        .getOrElse(JField(n, JNothing))
-                  }
-              } getOrElse Nil
+              val fields = formats
+                .fieldSerializer(x.getClass)
+                .map { serializer =>
+                  Reflection
+                    .fields(x.getClass)
+                    .map {
+                      case (mangledName, _) =>
+                        val n = Meta.unmangleName(mangledName)
+                        val fieldVal = Reflection.getField(x, mangledName)
+                        val s = serializer.serializer orElse Map(
+                          (n, fieldVal) -> Some(n, fieldVal))
+                        s((n, fieldVal))
+                          .map {
+                            case (name, value) =>
+                              JField(name, decompose(value))
+                          }
+                          .getOrElse(JField(n, JNothing))
+                    }
+                } getOrElse Nil
               val uniqueFields =
                 fields filterNot (f => args.find(_.name == f.name).isDefined)
               mkObject(x.getClass, uniqueFields ++ args)
@@ -232,8 +236,9 @@ object Extraction {
       Map(
         map
           .filter(t =>
-            t._1 == prefix || t._1.startsWith(prefix + ".") || t._1.startsWith(
-              prefix + "["))
+            t._1 == prefix || t._1.startsWith(prefix + ".") || t
+              ._1
+              .startsWith(prefix + "["))
           .map(t => (t._1.substring(prefix.length), t._2))
           .toList
           .toArray: _*)
@@ -242,7 +247,8 @@ object Extraction {
     val ArrayElem = new Regex("""^(\[(\d+)\]).*$""")
     val OtherProp = new Regex("""^(\.([^\.\[]+)).*$""")
 
-    val uniquePaths = map.keys
+    val uniquePaths = map
+      .keys
       .foldLeft[Set[String]](Set()) { (set, key) =>
         key match {
           case ArrayProp(p, f, i) =>
@@ -311,60 +317,70 @@ object Extraction {
             .bestMatching(argNames)
             .getOrElse(
               fail(
-                "No constructor for type " + constructor.targetType.clazz + ", " + json))
+                "No constructor for type " + constructor
+                  .targetType
+                  .clazz + ", " + json))
         }
       }
 
       def setFields(a: AnyRef, json: JValue, constructor: JConstructor[_]) =
         json match {
           case o: JObject =>
-            formats.fieldSerializer(a.getClass).map { serializer =>
-              val constructorArgNames =
-                Reflection
-                  .constructorArgs(
-                    a.getClass,
-                    constructor,
-                    formats.parameterNameReader,
-                    None)
-                  .map(_._1)
-                  .toSet
-              val jsonFields =
-                o.obj.map { f =>
-                  val JField(n, v) =
-                    (serializer.deserializer orElse Map(f -> f))(f)
-                  (n, (n, v))
-                }.toMap
+            formats
+              .fieldSerializer(a.getClass)
+              .map { serializer =>
+                val constructorArgNames =
+                  Reflection
+                    .constructorArgs(
+                      a.getClass,
+                      constructor,
+                      formats.parameterNameReader,
+                      None)
+                    .map(_._1)
+                    .toSet
+                val jsonFields =
+                  o
+                    .obj
+                    .map { f =>
+                      val JField(n, v) =
+                        (serializer.deserializer orElse Map(f -> f))(f)
+                      (n, (n, v))
+                    }
+                    .toMap
 
-              val fieldsToSet = Reflection
-                .fields(a.getClass)
-                .filterNot(f => constructorArgNames.contains(f._1))
+                val fieldsToSet = Reflection
+                  .fields(a.getClass)
+                  .filterNot(f => constructorArgNames.contains(f._1))
 
-              fieldsToSet.foreach {
-                case (name, typeInfo) =>
-                  jsonFields.get(name).foreach {
-                    case (n, v) =>
-                      val typeArgs = typeInfo.parameterizedType
-                        .map(
-                          _.getActualTypeArguments
-                            .map(_.asInstanceOf[Class[_]])
-                            .toList
-                            .zipWithIndex
-                            .map {
-                              case (t, idx) =>
-                                if (t == classOf[java.lang.Object])
-                                  ScalaSigReader
-                                    .readField(name, a.getClass, idx)
-                                else
-                                  t
-                            })
-                      val value = extract0(
-                        v,
-                        typeInfo.clazz,
-                        typeArgs.getOrElse(Nil))
-                      Reflection.setField(a, n, value)
-                  }
+                fieldsToSet.foreach {
+                  case (name, typeInfo) =>
+                    jsonFields
+                      .get(name)
+                      .foreach {
+                        case (n, v) =>
+                          val typeArgs = typeInfo
+                            .parameterizedType
+                            .map(
+                              _.getActualTypeArguments
+                              .map(_.asInstanceOf[Class[_]])
+                              .toList
+                              .zipWithIndex
+                              .map {
+                                case (t, idx) =>
+                                  if (t == classOf[java.lang.Object])
+                                    ScalaSigReader
+                                      .readField(name, a.getClass, idx)
+                                  else
+                                    t
+                              })
+                          val value = extract0(
+                            v,
+                            typeInfo.clazz,
+                            typeArgs.getOrElse(Nil))
+                          Reflection.setField(a, n, value)
+                      }
+                }
               }
-            }
             a
           case _ =>
             a
@@ -378,8 +394,8 @@ object Extraction {
           if (jconstructor.getDeclaringClass == classOf[java.lang.Object])
             fail("No information known about type")
 
-          val instance = jconstructor.newInstance(
-            args.map(_.asInstanceOf[AnyRef]).toArray: _*)
+          val instance = jconstructor
+            .newInstance(args.map(_.asInstanceOf[AnyRef]).toArray: _*)
           setFields(instance.asInstanceOf[AnyRef], json, jconstructor)
         } catch {
           case e @ (_: IllegalArgumentException | _: InstantiationException) =>
@@ -404,10 +420,12 @@ object Extraction {
           fields filterNot (_.name == formats.typeHintFieldName))
         val deserializer = formats.typeHints.deserialize
         if (!deserializer.isDefinedAt(typeHint, obj)) {
-          val concreteClass =
-            formats.typeHints.classFor(typeHint) getOrElse fail(
-              "Do not know how to deserialize '" + typeHint + "'")
-          val typeArgs = typeInfo.parameterizedType
+          val concreteClass = formats
+            .typeHints
+            .classFor(typeHint) getOrElse fail(
+            "Do not know how to deserialize '" + typeHint + "'")
+          val typeArgs = typeInfo
+            .parameterizedType
             .map(_.getActualTypeArguments.toList.map(Meta.rawClassOf))
             .getOrElse(Nil)
           build(obj, mappingOf(concreteClass, typeArgs))
@@ -515,7 +533,8 @@ object Extraction {
     def mkTypedArray(c: Class[_])(a: Array[_]) = {
       import java.lang.reflect.Array.{newInstance => newArray}
 
-      a.foldLeft((newArray(c.getComponentType, a.length), 0)) { (tuple, e) =>
+      a
+        .foldLeft((newArray(c.getComponentType, a.length), 0)) { (tuple, e) =>
           {
             java.lang.reflect.Array.set(tuple._1, tuple._2, e);
             (tuple._1, tuple._2 + 1)
@@ -621,7 +640,8 @@ object Extraction {
         formats.dateFormat.parse(s).getOrElse(fail("Invalid date '" + s + "'"))
       case JString(s) if (targetType == classOf[Timestamp]) =>
         new Timestamp(
-          formats.dateFormat
+          formats
+            .dateFormat
             .parse(s)
             .getOrElse(fail("Invalid date '" + s + "'"))
             .getTime)
@@ -639,7 +659,8 @@ object Extraction {
         null
       case JNothing =>
         fail(
-          "Did not find value which can be converted into " + targetType.getName)
+          "Did not find value which can be converted into " + targetType
+            .getName)
       case _ =>
         val custom = formats.customDeserializer(formats)
         val typeInfo = TypeInfo(targetType, None)

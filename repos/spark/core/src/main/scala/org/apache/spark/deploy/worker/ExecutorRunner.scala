@@ -167,7 +167,8 @@ private[deploy] class ExecutorRunner(
       logInfo(s"Launch command: $formattedCommand")
 
       builder.directory(executorDir)
-      builder.environment
+      builder
+        .environment
         .put("SPARK_EXECUTOR_DIRS", appLocalDirs.mkString(File.pathSeparator))
       // In case we are running this from within the Spark Shell, avoid creating a "scala"
       // parent process for the executor command
@@ -180,9 +181,8 @@ private[deploy] class ExecutorRunner(
       builder.environment.put("SPARK_LOG_URL_STDOUT", s"${baseUrl}stdout")
 
       process = builder.start()
-      val header = "Spark Executor Command: %s\n%s\n\n".format(
-        formattedCommand,
-        "=" * 40)
+      val header = "Spark Executor Command: %s\n%s\n\n"
+        .format(formattedCommand, "=" * 40)
 
       // Redirect its stdout and stderr to files
       val stdout = new File(executorDir, "stdout")

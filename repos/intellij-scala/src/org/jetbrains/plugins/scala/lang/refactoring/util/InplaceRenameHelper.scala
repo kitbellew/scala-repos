@@ -96,8 +96,8 @@ class InplaceRenameHelper(parent: PsiElement) {
     val template = builder.buildInlineTemplate().asInstanceOf[TemplateImpl]
     val templateVariables = template.getVariables
     val stopAtVariables = templateVariables.asScala.filter(_.isAlwaysStopAt)
-    val primarySortedVariables = primaries.flatMap(p =>
-      stopAtVariables.find(_.getName == primaryNames(p)))
+    val primarySortedVariables = primaries
+      .flatMap(p => stopAtVariables.find(_.getName == primaryNames(p)))
     for ((v, idx) <- primarySortedVariables.zipWithIndex) {
       templateVariables.set(idx, v)
     }
@@ -167,16 +167,18 @@ class InplaceRenameHelper(parent: PsiElement) {
 
             for (i <- 0 until templateState.getSegmentsCount) {
               val segmentRange: TextRange = templateState.getSegmentRange(i)
-              val segmentMarker: RangeMarker = document.createRangeMarker(
-                segmentRange)
+              val segmentMarker: RangeMarker = document
+                .createRangeMarker(segmentRange)
               val name: String = template.getSegmentName(i)
               val attributes: TextAttributes =
                 if (name == primaryNames(primary))
-                  colorsManager.getGlobalScheme.getAttributes(
-                    EditorColors.WRITE_SEARCH_RESULT_ATTRIBUTES)
+                  colorsManager
+                    .getGlobalScheme
+                    .getAttributes(EditorColors.WRITE_SEARCH_RESULT_ATTRIBUTES)
                 else if (dependentNames(primary) contains name)
-                  colorsManager.getGlobalScheme.getAttributes(
-                    EditorColors.SEARCH_RESULT_ATTRIBUTES)
+                  colorsManager
+                    .getGlobalScheme
+                    .getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES)
                 else
                   null
               if (attributes != null)

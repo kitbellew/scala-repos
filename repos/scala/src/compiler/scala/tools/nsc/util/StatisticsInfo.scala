@@ -16,8 +16,8 @@ abstract class StatisticsInfo {
 
   val retainedCount = Statistics.newCounter("#retained tree nodes")
   val retainedByType =
-    Statistics.newByClass("#retained tree nodes by type")(
-      Statistics.newCounter(""))
+    Statistics
+      .newByClass("#retained tree nodes by type")(Statistics.newCounter(""))
 
   def print(phase: Phase) =
     if (settings.Ystatistics contains phase.name) {

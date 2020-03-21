@@ -51,18 +51,22 @@ final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
     if (!pov.isMyTurn)
       fufail("not my turn")
     else
-      Uci.Move(uciMove).fold[Funit](fufail(s"Invalid move $uciMove")) { uci =>
-        val promise = Promise[Unit]
-        roundMap ! Tell(
-          pov.game.id,
-          actorApi.round.HumanPlay(
-            playerId = pov.playerId,
-            uci = uci,
-            blur = true,
-            lag = Duration.Zero,
-            promise = promise.some))
-        saveSteps(pov, steps) >> promise.future
-      }
+      Uci
+        .Move(uciMove)
+        .fold[Funit](fufail(s"Invalid move $uciMove")) { uci =>
+          val promise = Promise[Unit]
+          roundMap ! Tell(
+            pov.game.id,
+            actorApi
+              .round
+              .HumanPlay(
+                playerId = pov.playerId,
+                uci = uci,
+                blur = true,
+                lag = Duration.Zero,
+                promise = promise.some))
+          saveSteps(pov, steps) >> promise.future
+        }
 
   def loadForDisplay(pov: Pov): Fu[Option[Forecast]] =
     pov.forecastable ?? coll
@@ -98,9 +102,8 @@ final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
         case Some(fc) =>
           fc(g, last) match {
             case Some((newFc, uciMove)) if newFc.steps.nonEmpty =>
-              coll.update(
-                BSONDocument("_id" -> fc._id),
-                newFc) inject uciMove.some
+              coll.update(BSONDocument("_id" -> fc._id), newFc) inject uciMove
+                .some
             case Some((newFc, uciMove)) =>
               clearPov(Pov player g) inject uciMove.some
             case _ =>

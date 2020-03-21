@@ -12,10 +12,12 @@ trait Counter2Ops {
     new CanCopy[Counter2[K1, K2, V]] {
       def apply(t: Counter2[K1, K2, V]): Counter2[K1, K2, V] = {
         Counter2(
-          t.iterator.map {
-            case ((k1, k2), v) =>
-              (k1, k2, v)
-          })
+          t
+            .iterator
+            .map {
+              case ((k1, k2), v) =>
+                (k1, k2, v)
+            })
       }
     }
 

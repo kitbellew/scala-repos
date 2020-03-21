@@ -88,8 +88,7 @@ private[akka] object EventAdapters {
       boundAdapter ← boundToAdapters
     } require(
       adapterNames(boundAdapter.toString),
-      s"$fqn was bound to undefined event-adapter: $boundAdapter (bindings: ${boundToAdapters
-        .mkString("[", ", ", "]")}, known adapters: ${adapters.keys.mkString})"
+      s"$fqn was bound to undefined event-adapter: $boundAdapter (bindings: ${boundToAdapters.mkString("[", ", ", "]")}, known adapters: ${adapters.keys.mkString})"
     )
 
     // A Map of handler from alias to implementation (i.e. class implementing akka.serialization.Serializer)
@@ -166,9 +165,11 @@ private[akka] object EventAdapters {
   private def instantiate[T: ClassTag](
       fqn: FQN,
       system: ExtendedActorSystem): Try[T] =
-    system.dynamicAccess.createInstanceFor[T](
-      fqn,
-      List(classOf[ExtendedActorSystem] -> system)) recoverWith {
+    system
+      .dynamicAccess
+      .createInstanceFor[T](
+        fqn,
+        List(classOf[ExtendedActorSystem] -> system)) recoverWith {
       case _: NoSuchMethodException ⇒
         system.dynamicAccess.createInstanceFor[T](fqn, Nil)
     }

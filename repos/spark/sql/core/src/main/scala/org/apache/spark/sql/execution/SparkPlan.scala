@@ -168,15 +168,17 @@ abstract class SparkPlan
         case e: ScalarSubquery =>
           e
       })
-    allSubqueries.asInstanceOf[Seq[ScalarSubquery]].foreach { e =>
-      val futureResult =
-        Future {
-          // Each subquery should return only one row (and one column). We take two here and throws
-          // an exception later if the number of rows is greater than one.
-          e.executedPlan.executeTake(2)
-        }(SparkPlan.subqueryExecutionContext)
-      subqueryResults += e -> futureResult
-    }
+    allSubqueries
+      .asInstanceOf[Seq[ScalarSubquery]]
+      .foreach { e =>
+        val futureResult =
+          Future {
+            // Each subquery should return only one row (and one column). We take two here and throws
+            // an exception later if the number of rows is greater than one.
+            e.executedPlan.executeTake(2)
+          }(SparkPlan.subqueryExecutionContext)
+        subqueryResults += e -> futureResult
+      }
   }
 
   /**
@@ -297,9 +299,11 @@ abstract class SparkPlan
     val byteArrayRdd = getByteArrayRdd()
 
     val results = ArrayBuffer[InternalRow]()
-    byteArrayRdd.collect().foreach { bytes =>
-      decodeUnsafeRows(bytes, results)
-    }
+    byteArrayRdd
+      .collect()
+      .foreach { bytes =>
+        decodeUnsafeRows(bytes, results)
+      }
     results.toArray
   }
 
@@ -340,14 +344,12 @@ abstract class SparkPlan
           numPartsToTry = (1.5 * n * partsScanned / buf.size).toInt
         }
       }
-      numPartsToTry = math.max(
-        0,
-        numPartsToTry
-      ) // guard against negative num of partitions
+      numPartsToTry = math
+        .max(0, numPartsToTry) // guard against negative num of partitions
 
       val left = n - buf.size
-      val p = partsScanned.until(
-        math.min(partsScanned + numPartsToTry, totalParts).toInt)
+      val p = partsScanned
+        .until(math.min(partsScanned + numPartsToTry, totalParts).toInt)
       val sc = sqlContext.sparkContext
       val res = sc.runJob(
         childRDD,
@@ -379,10 +381,8 @@ abstract class SparkPlan
       inputSchema: Seq[Attribute],
       useSubexprElimination: Boolean = false): () => MutableProjection = {
     log.debug(s"Creating MutableProj: $expressions, inputSchema: $inputSchema")
-    GenerateMutableProjection.generate(
-      expressions,
-      inputSchema,
-      useSubexprElimination)
+    GenerateMutableProjection
+      .generate(expressions, inputSchema, useSubexprElimination)
   }
 
   protected def newPredicate(
@@ -402,10 +402,12 @@ abstract class SparkPlan
     */
   protected def newNaturalAscendingOrdering(
       dataTypes: Seq[DataType]): Ordering[InternalRow] = {
-    val order: Seq[SortOrder] = dataTypes.zipWithIndex.map {
-      case (dt, index) =>
-        new SortOrder(BoundReference(index, dt, nullable = true), Ascending)
-    }
+    val order: Seq[SortOrder] = dataTypes
+      .zipWithIndex
+      .map {
+        case (dt, index) =>
+          new SortOrder(BoundReference(index, dt, nullable = true), Ascending)
+      }
     newOrdering(order, Seq.empty)
   }
 }

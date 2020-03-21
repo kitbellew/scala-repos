@@ -58,10 +58,12 @@ package com.twitter.scalding {
     private[scalding] def getFunction = fn
 
     def operate(flowProcess: FlowProcess[_], functionCall: FunctionCall[Any]) {
-      lockedFn.get(conv(functionCall.getArguments)).foreach { arg: T =>
-        val this_tup = set(arg)
-        functionCall.getOutputCollector.add(this_tup)
-      }
+      lockedFn
+        .get(conv(functionCall.getArguments))
+        .foreach { arg: T =>
+          val this_tup = set(arg)
+          functionCall.getOutputCollector.add(this_tup)
+        }
     }
   }
 
@@ -304,7 +306,9 @@ package com.twitter.scalding {
     @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
     private[this] def mergeTraversableOnce[K, V: Semigroup](
         items: TraversableOnce[(K, V)]): Map[K, V] = {
-      val mutable = scala.collection.mutable
+      val mutable = scala
+        .collection
+        .mutable
         .OpenHashMap[K, V]() // Scala's OpenHashMap seems faster than Java and Scala's HashMap Impl's
       val innerIter = items.toIterator
       while (innerIter.hasNext) {
@@ -793,12 +797,17 @@ package com.twitter.scalding {
 
     def operate(flowProcess: FlowProcess[_], call: BufferCall[Any]) {
       val oc = call.getOutputCollector
-      val in = call.getArgumentsIterator.asScala.map { entry =>
-        conv(entry)
-      }
-      iterfn.get(initCopy, in).foreach { x =>
-        oc.add(set(x))
-      }
+      val in = call
+        .getArgumentsIterator
+        .asScala
+        .map { entry =>
+          conv(entry)
+        }
+      iterfn
+        .get(initCopy, in)
+        .foreach { x =>
+          oc.add(set(x))
+        }
     }
   }
 
@@ -824,12 +833,17 @@ package com.twitter.scalding {
     def operate(flowProcess: FlowProcess[_], call: BufferCall[C]) {
       val context = call.getContext
       val oc = call.getOutputCollector
-      val in = call.getArgumentsIterator.asScala.map { entry =>
-        conv(entry)
-      }
-      iterfn.get(initCopy, context, in).foreach { x =>
-        oc.add(set(x))
-      }
+      val in = call
+        .getArgumentsIterator
+        .asScala
+        .map { entry =>
+          conv(entry)
+        }
+      iterfn
+        .get(initCopy, context, in)
+        .foreach { x =>
+          oc.add(set(x))
+        }
     }
   }
 
@@ -871,8 +885,7 @@ package com.twitter.scalding {
     def operate(flowProcess: FlowProcess[_], call: BufferCall[Any]) {
       val oc = call.getOutputCollector
       val key = conv(call.getGroup)
-      val values = call.getArgumentsIterator.asScala
-        .map(convV(_))
+      val values = call.getArgumentsIterator.asScala.map(convV(_))
 
       // Avoiding a lambda here
       val resIter = reduceFnSer.get(key, values)

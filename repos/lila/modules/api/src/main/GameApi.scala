@@ -56,8 +56,8 @@ private[api] final class GameApi(
           projection = BSONDocument(),
           sort = BSONDocument(G.createdAt -> -1)),
         nbResults = fuccess {
-          rated.fold(user.count.game)(
-            _.fold(user.count.rated, user.count.casual))
+          rated
+            .fold(user.count.game)(_.fold(user.count.rated, user.count.casual))
         }),
       currentPage = math.max(0, page | 1),
       maxPerPage = math.max(1, math.min(100, nb | 10))
@@ -153,12 +153,14 @@ private[api] final class GameApi(
         "timestamp" -> g.createdAt.getDate,
         "turns" -> g.turns,
         "status" -> g.status.name,
-        "clock" -> g.clock.map { clock =>
-          Json.obj(
-            "initial" -> clock.limit,
-            "increment" -> clock.increment,
-            "totalTime" -> clock.estimateTotalTime)
-        },
+        "clock" -> g
+          .clock
+          .map { clock =>
+            Json.obj(
+              "initial" -> clock.limit,
+              "increment" -> clock.increment,
+              "totalTime" -> clock.estimateTotalTime)
+          },
         "daysPerTurn" -> g.daysPerTurn,
         "players" -> JsObject(
           g.players.zipWithIndex map {
@@ -174,12 +176,14 @@ private[api] final class GameApi(
                     g.moveTimes.zipWithIndex.filter(_._2 % 2 == i).map(_._1),
                     JsNull),
                   "blurs" -> withBlurs.option(p.blurs),
-                  "hold" -> p.holdAlert.ifTrue(withHold).fold[JsValue](JsNull) {
-                    h =>
+                  "hold" -> p
+                    .holdAlert
+                    .ifTrue(withHold)
+                    .fold[JsValue](JsNull) { h =>
                       Json.obj("ply" -> h.ply, "mean" -> h.mean, "sd" -> h.sd)
-                  },
-                  "analysis" -> analysisOption.flatMap(
-                    analysisApi.player(p.color))
+                    },
+                  "analysis" -> analysisOption
+                    .flatMap(analysisApi.player(p.color))
                 )
                 .noNull
           }),

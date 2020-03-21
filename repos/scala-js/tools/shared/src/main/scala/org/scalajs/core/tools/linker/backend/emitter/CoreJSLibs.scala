@@ -149,8 +149,7 @@ private[scalajs] object CoreJSLibs {
 
     outputMode match {
       case OutputMode.ECMAScript51Global | OutputMode.ECMAScript51Isolated =>
-        content1
-          .replaceAll(raw"\b(let|const)\b", "var")
+        content1.replaceAll(raw"\b(let|const)\b", "var")
 
       case OutputMode.ECMAScript6 =>
         content1

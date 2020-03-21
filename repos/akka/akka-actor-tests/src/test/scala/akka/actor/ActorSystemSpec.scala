@@ -125,10 +125,8 @@ object ActorSystemSpec {
             mbox: Mailbox,
             hasMessageHint: Boolean,
             hasSystemMessageHint: Boolean): Boolean = {
-          val ret = super.registerForExecution(
-            mbox,
-            hasMessageHint,
-            hasSystemMessageHint)
+          val ret = super
+            .registerForExecution(mbox, hasMessageHint, hasSystemMessageHint)
           doneIt.switchOn {
             TestKit.awaitCond(mbox.actor.actor != null, 1.second)
             mbox.actor.actor match {
@@ -278,9 +276,11 @@ class ActorSystemSpec
         callbackWasRun = true
       }
       import system.dispatcher
-      system2.scheduler.scheduleOnce(200.millis.dilated) {
-        system2.terminate()
-      }
+      system2
+        .scheduler
+        .scheduleOnce(200.millis.dilated) {
+          system2.terminate()
+        }
 
       system2.awaitTermination(5 seconds)
       Await.ready(system2.whenTerminated, 5 seconds)
@@ -334,9 +334,11 @@ class ActorSystemSpec
     "reliable deny creation of actors while shutting down" in {
       val system = ActorSystem()
       import system.dispatcher
-      system.scheduler.scheduleOnce(100 millis) {
-        system.terminate()
-      }
+      system
+        .scheduler
+        .scheduleOnce(100 millis) {
+          system.terminate()
+        }
       var failing = false
       var created = Vector.empty[ActorRef]
       while (!system.whenTerminated.isCompleted) {

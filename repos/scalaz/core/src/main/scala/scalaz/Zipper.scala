@@ -431,14 +431,16 @@ sealed abstract class ZipperInstances {
         fa.lefts.exists(f) || f(fa.focus) || fa.rights.exists(f)
       override def foldMap1[A, B](fa: Zipper[A])(f: A => B)(implicit
           F: Semigroup[B]) =
-        fa.rights.foldLeft(
-          Foldable[Stream].foldMapRight1Opt(fa.lefts)(f)((a, b) =>
-            F.append(b, f(a))) match {
-            case Some(b) =>
-              F.append(b, f(fa.focus))
-            case None =>
-              f(fa.focus)
-          })((b, a) => F.append(b, f(a)))
+        fa
+          .rights
+          .foldLeft(
+            Foldable[Stream].foldMapRight1Opt(fa.lefts)(f)((a, b) =>
+              F.append(b, f(a))) match {
+              case Some(b) =>
+                F.append(b, f(fa.focus))
+              case None =>
+                f(fa.focus)
+            })((b, a) => F.append(b, f(a)))
       override def foldMapRight1[A, B](fa: Zipper[A])(z: A => B)(
           f: (A, => B) => B) =
         Foldable[Stream].foldLeft(
@@ -451,14 +453,16 @@ sealed abstract class ZipperInstances {
           })((b, a) => f(a, b))
       override def foldMapLeft1[A, B](fa: Zipper[A])(z: A => B)(
           f: (B, A) => B) =
-        fa.rights.foldLeft(
-          Foldable[Stream].foldMapRight1Opt(fa.lefts)(z)((a, b) =>
-            f(b, a)) match {
-            case Some(b) =>
-              f(b, fa.focus)
-            case None =>
-              z(fa.focus)
-          })(f)
+        fa
+          .rights
+          .foldLeft(
+            Foldable[Stream].foldMapRight1Opt(fa.lefts)(z)((a, b) =>
+              f(b, a)) match {
+              case Some(b) =>
+                f(b, fa.focus)
+              case None =>
+                z(fa.focus)
+            })(f)
       override def traverse1Impl[G[_], A, B](fa: Zipper[A])(f: A => G[B])(
           implicit G: Apply[G]) = {
         val F = Traverse1[OneAnd[Stream, ?]]
@@ -497,9 +501,9 @@ sealed abstract class ZipperInstances {
     new Equal[Zipper[A]] {
       import std.stream.streamEqual
       def equal(a1: Zipper[A], a2: Zipper[A]) =
-        streamEqual[A].equal(a1.lefts, a2.lefts) && Equal[A].equal(
-          a1.focus,
-          a2.focus) && streamEqual[A].equal(a1.rights, a2.rights)
+        streamEqual[A].equal(a1.lefts, a2.lefts) && Equal[A]
+          .equal(a1.focus, a2.focus) && streamEqual[A]
+          .equal(a1.rights, a2.rights)
     }
 
   implicit def zipperShow[A: Show]: Show[Zipper[A]] =

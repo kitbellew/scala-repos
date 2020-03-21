@@ -37,7 +37,8 @@ object Test {
   def extract[A, CC[X]](xs: CC[A]): CC[A] = xs
   def whatis[T: TypeTag](x: T): Unit = {
     val tpe = typeOf[T]
-    val access = tpe.typeSymbol
+    val access = tpe
+      .typeSymbol
       .asInstanceOf[scala.reflect.internal.HasFlags]
       .accessString
       .replaceAllLiterally("package ", "")

@@ -35,10 +35,10 @@ object Code {}
 class Code extends UsefulStuff {
   object sym {
     val Set: ClassSymbol = RootClass.newClass("Set")
-    val PartialFunction1: ClassSymbol = RootClass.newClass(
-      "PartialFunction[SValue, SValue]")
-    val PartialFunction2: ClassSymbol = RootClass.newClass(
-      "PartialFunction[(SValue, SValue), SValue]")
+    val PartialFunction1: ClassSymbol = RootClass
+      .newClass("PartialFunction[SValue, SValue]")
+    val PartialFunction2: ClassSymbol = RootClass
+      .newClass("PartialFunction[(SValue, SValue), SValue]")
     val BIF1: ClassSymbol = RootClass.newClass("Set[BIF1]")
     val BIF2: ClassSymbol = RootClass.newClass("Set[BIF2]")
   }

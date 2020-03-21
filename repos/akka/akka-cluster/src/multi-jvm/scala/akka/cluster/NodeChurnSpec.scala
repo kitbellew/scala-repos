@@ -84,9 +84,8 @@ abstract class NodeChurnSpec
 
   "Cluster with short lived members" must {
     "setup stable nodes" taggedAs LongRunningTest in within(15.seconds) {
-      val logListener = system.actorOf(
-        Props(classOf[LogListener], testActor),
-        "logListener")
+      val logListener = system
+        .actorOf(Props(classOf[LogListener], testActor), "logListener")
       system.eventStream.subscribe(logListener, classOf[Info])
       cluster.joinSeedNodes(seedNodes)
       awaitMembersUp(roles.size)

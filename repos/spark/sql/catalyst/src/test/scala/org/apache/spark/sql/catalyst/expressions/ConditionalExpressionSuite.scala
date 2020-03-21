@@ -80,9 +80,11 @@ class ConditionalExpressionSuite
 
     testIf(_.toString, StringType)
 
-    DataTypeTestUtils.propertyCheckSupported.foreach { dt =>
-      checkConsistencyBetweenInterpretedAndCodegen(If, BooleanType, dt, dt)
-    }
+    DataTypeTestUtils
+      .propertyCheckSupported
+      .foreach { dt =>
+        checkConsistencyBetweenInterpretedAndCodegen(If, BooleanType, dt, dt)
+      }
   }
 
   test("case when") {
@@ -129,9 +131,8 @@ class ConditionalExpressionSuite
     assert(CaseWhen(Seq((c2, c4_notNull)), c6).nullable === true)
 
     assert(
-      CaseWhen(
-        Seq((c2, c4_notNull), (c3, c5_notNull)),
-        c6_notNull).nullable === false)
+      CaseWhen(Seq((c2, c4_notNull), (c3, c5_notNull)), c6_notNull)
+        .nullable === false)
     assert(
       CaseWhen(Seq((c2, c4), (c3, c5_notNull)), c6_notNull).nullable === true)
     assert(
@@ -241,9 +242,11 @@ class ConditionalExpressionSuite
       InternalRow.empty
     )
 
-    DataTypeTestUtils.ordered.foreach { dt =>
-      checkConsistencyBetweenInterpretedAndCodegen(Least, dt, 2)
-    }
+    DataTypeTestUtils
+      .ordered
+      .foreach { dt =>
+        checkConsistencyBetweenInterpretedAndCodegen(Least, dt, 2)
+      }
   }
 
   test("function greatest") {
@@ -320,8 +323,10 @@ class ConditionalExpressionSuite
       InternalRow.empty
     )
 
-    DataTypeTestUtils.ordered.foreach { dt =>
-      checkConsistencyBetweenInterpretedAndCodegen(Greatest, dt, 2)
-    }
+    DataTypeTestUtils
+      .ordered
+      .foreach { dt =>
+        checkConsistencyBetweenInterpretedAndCodegen(Greatest, dt, 2)
+      }
   }
 }

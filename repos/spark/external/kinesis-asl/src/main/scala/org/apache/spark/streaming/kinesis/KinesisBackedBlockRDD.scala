@@ -119,14 +119,18 @@ private[kinesis] class KinesisBackedBlockRDD[T: ClassTag](
       val credentials = awsCredentialsOption.getOrElse {
         new DefaultAWSCredentialsProviderChain().getCredentials()
       }
-      partition.seqNumberRanges.ranges.iterator.flatMap { range =>
-        new KinesisSequenceRangeIterator(
-          credentials,
-          endpointUrl,
-          regionName,
-          range,
-          retryTimeoutMs).map(messageHandler)
-      }
+      partition
+        .seqNumberRanges
+        .ranges
+        .iterator
+        .flatMap { range =>
+          new KinesisSequenceRangeIterator(
+            credentials,
+            endpointUrl,
+            regionName,
+            range,
+            retryTimeoutMs).map(messageHandler)
+        }
     }
     if (partition.isBlockIdValid) {
       getBlockFromBlockManager().getOrElse {

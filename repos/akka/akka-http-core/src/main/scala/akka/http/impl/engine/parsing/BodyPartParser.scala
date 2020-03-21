@@ -68,7 +68,9 @@ private[http] final class BodyPartParser(
             .formatPretty)
     }
 
-  private[this] var output = collection.immutable.Queue
+  private[this] var output = collection
+    .immutable
+    .Queue
     .empty[Output] // FIXME this probably is too wasteful
   private[this] var state: ByteString ⇒ StateResult = tryParseInitialBoundary
   private[this] var terminated = false
@@ -352,8 +354,8 @@ private[http] final class BodyPartParser(
 
 private[http] object BodyPartParser {
   // http://tools.ietf.org/html/rfc2046#section-5.1.1
-  val boundaryChar =
-    CharPredicate.Digit ++ CharPredicate.Alpha ++ "'()+_,-./:=? "
+  val boundaryChar = CharPredicate.Digit ++ CharPredicate
+    .Alpha ++ "'()+_,-./:=? "
 
   private object BoundaryHeader extends HttpHeader {
     def renderInRequests = false

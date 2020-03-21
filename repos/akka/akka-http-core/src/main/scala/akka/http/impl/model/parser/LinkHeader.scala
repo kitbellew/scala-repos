@@ -33,8 +33,8 @@ private[parser] trait LinkHeader {
         | ws("hreflang") ~ ws('=') ~ language ~> LinkParams.hreflang
         | ws("media") ~ ws('=') ~ word ~> LinkParams.media
         | ws("title") ~ ws('=') ~ word ~> LinkParams.title
-        | ws("title*") ~ ws(
-          '=') ~ word ~> LinkParams.`title*` // support full `ext-value` notation from http://tools.ietf.org/html/rfc5987#section-3.2.1
+        | ws("title*") ~ ws('=') ~ word ~> LinkParams
+          .`title*` // support full `ext-value` notation from http://tools.ietf.org/html/rfc5987#section-3.2.1
         | ws("type") ~ ws('=') ~ (
           ws('"') ~ `link-media-type` ~ ws('"') | `link-media-type`
         ) ~> LinkParams.`type`)

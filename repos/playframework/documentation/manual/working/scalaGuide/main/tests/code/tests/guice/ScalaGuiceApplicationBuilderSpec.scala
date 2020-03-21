@@ -48,10 +48,7 @@ class ScalaGuiceApplicationBuilderSpec extends PlaySpecification {
         new GuiceApplicationBuilder()
           .load(new play.api.inject.BuiltinModule) // ###skip
           .loadConfig(Configuration.reference) // ###skip
-          .in(new File("path/to/app"))
-          .in(Mode.Test)
-          .in(classLoader)
-          .build
+          .in(new File("path/to/app")).in(Mode.Test).in(classLoader).build
       // #set-environment-values
 
       application.path must_== new File("path/to/app")
@@ -105,8 +102,7 @@ class ScalaGuiceApplicationBuilderSpec extends PlaySpecification {
         new GuiceApplicationBuilder()
           .configure("play.http.router" -> classOf[Routes].getName) // ###skip
           .bindings(new ComponentModule) // ###skip
-          .overrides(bind[Component].to[MockComponent])
-          .build
+          .overrides(bind[Component].to[MockComponent]).build
       // #override-bindings
 
       running(application) {
@@ -133,8 +129,7 @@ class ScalaGuiceApplicationBuilderSpec extends PlaySpecification {
       val injector =
         new GuiceApplicationBuilder()
           .bindings(new ComponentModule) // ###skip
-          .disable[ComponentModule]
-          .injector
+          .disable[ComponentModule].injector
       // #disable-modules
 
       injector.instanceOf[Component] must throwA[

@@ -23,8 +23,8 @@ class CamelConfigSpec extends WordSpec with Matchers {
     }
 
     "have correct autoAck config" in {
-      settings.AutoAck should ===(
-        config.getBoolean("akka.camel.consumer.auto-ack"))
+      settings
+        .AutoAck should ===(config.getBoolean("akka.camel.consumer.auto-ack"))
     }
 
     "have correct replyTimeout config" in {

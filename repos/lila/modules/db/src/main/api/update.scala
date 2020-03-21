@@ -19,7 +19,8 @@ object $update {
       update: B,
       upsert: Boolean = false,
       multi: Boolean = false): Funit =
-    implicitly[InColl[A]].coll
+    implicitly[InColl[A]]
+      .coll
       .update(selector, update, upsert = upsert, multi = multi)
       .void
 
@@ -59,7 +60,8 @@ object $update {
       update: B,
       upsert: Boolean = false,
       multi: Boolean = false) {
-    implicitly[InColl[A]].coll
+    implicitly[InColl[A]]
+      .coll
       .uncheckedUpdate(selector, update, upsert = upsert, multi = multi)
   }
 

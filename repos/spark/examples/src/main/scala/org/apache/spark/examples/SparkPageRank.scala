@@ -35,8 +35,10 @@ import org.apache.spark.{SparkConf, SparkContext}
 object SparkPageRank {
 
   def showWarning() {
-    System.err.println(
-      """WARN: This is a naive implementation of PageRank and is given as an example!
+    System
+      .err
+      .println(
+        """WARN: This is a naive implementation of PageRank and is given as an example!
         |Please use the PageRank implementation found in org.apache.spark.graphx.lib.PageRank
         |for more conventional use.
       """.stripMargin)
@@ -69,11 +71,14 @@ object SparkPageRank {
     var ranks = links.mapValues(v => 1.0)
 
     for (i <- 1 to iters) {
-      val contribs = links.join(ranks).values.flatMap {
-        case (urls, rank) =>
-          val size = urls.size
-          urls.map(url => (url, rank / size))
-      }
+      val contribs = links
+        .join(ranks)
+        .values
+        .flatMap {
+          case (urls, rank) =>
+            val size = urls.size
+            urls.map(url => (url, rank / size))
+        }
       ranks = contribs.reduceByKey(_ + _).mapValues(0.15 + 0.85 * _)
     }
 

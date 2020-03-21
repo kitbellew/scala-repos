@@ -282,48 +282,50 @@ final class CircuitBreakerProxy(
       log: LoggingAdapter) = {
     import context.dispatcher
 
-    target.ask(message)(callTimeout).onComplete {
-      case Success(response) ⇒
-        log.debug(
-          "Request '{}' has been replied to with response {}, forwarding to original sender {}",
-          message,
-          currentSender)
-
-        currentSender ! response
-
-        val isFailure = failureDetector(response)
-
-        if (isFailure) {
+    target
+      .ask(message)(callTimeout)
+      .onComplete {
+        case Success(response) ⇒
           log.debug(
-            "Response '{}' is considered as failure sending self-message to ask incrementing failure count (origin state was {})",
-            response,
-            state)
-
-          self ! CallFailed
-        } else {
-
-          log.debug(
-            "Request '{}' succeeded with response {}, returning response to sender {} and sending message to ask to reset failure count (origin state was {})",
+            "Request '{}' has been replied to with response {}, forwarding to original sender {}",
             message,
-            response,
-            currentSender,
+            currentSender)
+
+          currentSender ! response
+
+          val isFailure = failureDetector(response)
+
+          if (isFailure) {
+            log.debug(
+              "Response '{}' is considered as failure sending self-message to ask incrementing failure count (origin state was {})",
+              response,
+              state)
+
+            self ! CallFailed
+          } else {
+
+            log.debug(
+              "Request '{}' succeeded with response {}, returning response to sender {} and sending message to ask to reset failure count (origin state was {})",
+              message,
+              response,
+              currentSender,
+              state
+            )
+
+            self ! CallSucceeded
+          }
+
+        case Failure(reason) ⇒
+          log.debug(
+            "Request '{}' to target {} failed with exception {}, sending self-message to ask incrementing failure count (origin state was {})",
+            message,
+            target,
+            reason,
             state
           )
 
-          self ! CallSucceeded
-        }
-
-      case Failure(reason) ⇒
-        log.debug(
-          "Request '{}' to target {} failed with exception {}, sending self-message to ask incrementing failure count (origin state was {})",
-          message,
-          target,
-          reason,
-          state
-        )
-
-        self ! CallFailed
-    }
+          self ! CallFailed
+      }
   }
 
   onTransition {

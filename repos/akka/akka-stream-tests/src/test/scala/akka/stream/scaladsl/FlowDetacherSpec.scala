@@ -19,9 +19,7 @@ class FlowDetacherSpec extends AkkaSpec {
   "A Detacher" must {
 
     "pass through all elements" in Utils.assertAllStagesStopped {
-      Source(1 to 100).detach
-        .runWith(Sink.seq)
-        .futureValue should ===(1 to 100)
+      Source(1 to 100).detach.runWith(Sink.seq).futureValue should ===(1 to 100)
     }
 
     "pass through failure" in Utils.assertAllStagesStopped {

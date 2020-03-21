@@ -25,8 +25,8 @@ object FormUrlEncodedParserSpec extends Specification {
         "foo3" -> List("bar3"))
     }
     "decode form elements with multiple values" in {
-      FormUrlEncodedParser.parse("foo=bar1&foo=bar2") must_== Map(
-        "foo" -> List("bar1", "bar2"))
+      FormUrlEncodedParser
+        .parse("foo=bar1&foo=bar2") must_== Map("foo" -> List("bar1", "bar2"))
     }
     "decode fields with empty names" in {
       FormUrlEncodedParser
@@ -45,8 +45,8 @@ object FormUrlEncodedParserSpec extends Specification {
     "ensure field order is retained, when requested" in {
       val url_encoded =
         "Zero=zero&One=one&Two=two&Three=three&Four=four&Five=five&Six=six&Seven=seven"
-      val result: Map[String, Seq[String]] = FormUrlEncodedParser.parse(
-        url_encoded)
+      val result: Map[String, Seq[String]] = FormUrlEncodedParser
+        .parse(url_encoded)
       val strings =
         (
           for (k <- result.keysIterator)

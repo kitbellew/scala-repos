@@ -95,8 +95,8 @@ object StormRunner {
     *
     * First, the backing store:
     */
-  lazy val stringLongStore = Memcache.mergeable[(String, BatchID), Long](
-    "urlCount")
+  lazy val stringLongStore = Memcache
+    .mergeable[(String, BatchID), Long]("urlCount")
 
   /**
     * the param to store is by name, so this is still not created created

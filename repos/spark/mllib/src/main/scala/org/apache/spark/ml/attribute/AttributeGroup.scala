@@ -72,17 +72,22 @@ class AttributeGroup private (
     * Optional array of attributes. At most one of `numAttributes` and `attributes` can be defined.
     */
   val attributes: Option[Array[Attribute]] = attrs.map(
-    _.view.zipWithIndex.map {
+    _.view
+    .zipWithIndex
+    .map {
       case (attr, i) =>
         attr.withIndex(i)
-    }.toArray)
+    }
+    .toArray)
 
   private lazy val nameToIndex: Map[String, Int] = {
     attributes
       .map(
-        _.view.flatMap { attr =>
+        _.view
+        .flatMap { attr =>
           attr.name.map(_ -> attr.index.get)
-        }.toMap)
+        }
+        .toMap)
       .getOrElse(Map.empty)
   }
 
@@ -125,33 +130,32 @@ class AttributeGroup private (
       val numericMetadata = ArrayBuffer.empty[Metadata]
       val nominalMetadata = ArrayBuffer.empty[Metadata]
       val binaryMetadata = ArrayBuffer.empty[Metadata]
-      attributes.get.foreach {
-        case numeric: NumericAttribute =>
-          // Skip default numeric attributes.
-          if (numeric.withoutIndex != NumericAttribute.defaultAttr) {
-            numericMetadata += numeric.toMetadataImpl(withType = false)
-          }
-        case nominal: NominalAttribute =>
-          nominalMetadata += nominal.toMetadataImpl(withType = false)
-        case binary: BinaryAttribute =>
-          binaryMetadata += binary.toMetadataImpl(withType = false)
-        case UnresolvedAttribute =>
-      }
+      attributes
+        .get
+        .foreach {
+          case numeric: NumericAttribute =>
+            // Skip default numeric attributes.
+            if (numeric.withoutIndex != NumericAttribute.defaultAttr) {
+              numericMetadata += numeric.toMetadataImpl(withType = false)
+            }
+          case nominal: NominalAttribute =>
+            nominalMetadata += nominal.toMetadataImpl(withType = false)
+          case binary: BinaryAttribute =>
+            binaryMetadata += binary.toMetadataImpl(withType = false)
+          case UnresolvedAttribute =>
+        }
       val attrBldr = new MetadataBuilder
       if (numericMetadata.nonEmpty) {
-        attrBldr.putMetadataArray(
-          AttributeType.Numeric.name,
-          numericMetadata.toArray)
+        attrBldr
+          .putMetadataArray(AttributeType.Numeric.name, numericMetadata.toArray)
       }
       if (nominalMetadata.nonEmpty) {
-        attrBldr.putMetadataArray(
-          AttributeType.Nominal.name,
-          nominalMetadata.toArray)
+        attrBldr
+          .putMetadataArray(AttributeType.Nominal.name, nominalMetadata.toArray)
       }
       if (binaryMetadata.nonEmpty) {
-        attrBldr.putMetadataArray(
-          AttributeType.Binary.name,
-          binaryMetadata.toArray)
+        attrBldr
+          .putMetadataArray(AttributeType.Binary.name, binaryMetadata.toArray)
       }
       bldr.putMetadata(ATTRIBUTES, attrBldr.build())
       bldr.putLong(NUM_ATTRIBUTES, attributes.get.length)

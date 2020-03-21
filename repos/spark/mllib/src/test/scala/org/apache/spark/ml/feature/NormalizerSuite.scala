@@ -73,39 +73,46 @@ class NormalizerSuite
       Vectors.sparse(3, Seq())
     )
 
-    dataFrame = sqlContext.createDataFrame(
-      sc.parallelize(data, 2).map(NormalizerSuite.FeatureData))
+    dataFrame = sqlContext
+      .createDataFrame(sc.parallelize(data, 2).map(NormalizerSuite.FeatureData))
     normalizer = new Normalizer()
       .setInputCol("features")
       .setOutputCol("normalized_features")
   }
 
   def collectResult(result: DataFrame): Array[Vector] = {
-    result.select("normalized_features").collect().map {
-      case Row(features: Vector) =>
-        features
-    }
+    result
+      .select("normalized_features")
+      .collect()
+      .map {
+        case Row(features: Vector) =>
+          features
+      }
   }
 
   def assertTypeOfVector(lhs: Array[Vector], rhs: Array[Vector]): Unit = {
     assert(
-      (lhs, rhs).zipped.forall {
-        case (v1: DenseVector, v2: DenseVector) =>
-          true
-        case (v1: SparseVector, v2: SparseVector) =>
-          true
-        case _ =>
-          false
-      },
+      (lhs, rhs)
+        .zipped
+        .forall {
+          case (v1: DenseVector, v2: DenseVector) =>
+            true
+          case (v1: SparseVector, v2: SparseVector) =>
+            true
+          case _ =>
+            false
+        },
       "The vector type should be preserved after normalization."
     )
   }
 
   def assertValues(lhs: Array[Vector], rhs: Array[Vector]): Unit = {
     assert(
-      (lhs, rhs).zipped.forall { (vector1, vector2) =>
-        vector1 ~== vector2 absTol 1e-5
-      },
+      (lhs, rhs)
+        .zipped
+        .forall { (vector1, vector2) =>
+          vector1 ~== vector2 absTol 1e-5
+        },
       "The vector value is not correct after normalization.")
   }
 

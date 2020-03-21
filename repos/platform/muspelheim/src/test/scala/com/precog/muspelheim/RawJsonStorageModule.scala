@@ -93,7 +93,8 @@ trait RawJsonStorageModule[M[+_]] {
       projections += (path -> json.elements)
 
       val structure: Set[ColumnRef] =
-        json.elements
+        json
+          .elements
           .foldLeft(Map.empty[ColumnRef, ArrayColumn[_]]) { (acc, jv) =>
             Slice.withIdsAndValues(jv, acc, 0, 1)
           }
@@ -125,7 +126,8 @@ trait RawJsonStorageModule[M[+_]] {
           path: Path): EitherT[M, ResourceError, Set[PathMetadata]] =
         EitherT.right {
           M.point(
-            projections.keySet
+            projections
+              .keySet
               .filter(_.isDirectChildOf(path))
               .map(PathMetadata(_, DataOnly(FileContent.XQuirrelData))))
         }

@@ -44,20 +44,23 @@ class NormalizerSuite extends SparkFunSuite with MLlibTestSparkContext {
     val data1RDD = l1Normalizer.transform(dataRDD)
 
     assert(
-      (data, data1, data1RDD.collect()).zipped.forall {
-        case (v1: DenseVector, v2: DenseVector, v3: DenseVector) =>
-          true
-        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) =>
-          true
-        case _ =>
-          false
-      },
+      (data, data1, data1RDD.collect())
+        .zipped
+        .forall {
+          case (v1: DenseVector, v2: DenseVector, v3: DenseVector) =>
+            true
+          case (v1: SparseVector, v2: SparseVector, v3: SparseVector) =>
+            true
+          case _ =>
+            false
+        },
       "The vector type should be preserved after normalization."
     )
 
     assert(
-      (data1, data1RDD.collect()).zipped.forall((v1, v2) =>
-        v1 ~== v2 absTol 1e-5))
+      (data1, data1RDD.collect())
+        .zipped
+        .forall((v1, v2) => v1 ~== v2 absTol 1e-5))
 
     assert(brzNorm(data1(0).toBreeze, 1) ~== 1.0 absTol 1e-5)
     assert(brzNorm(data1(2).toBreeze, 1) ~== 1.0 absTol 1e-5)
@@ -86,20 +89,23 @@ class NormalizerSuite extends SparkFunSuite with MLlibTestSparkContext {
     val data2RDD = l2Normalizer.transform(dataRDD)
 
     assert(
-      (data, data2, data2RDD.collect()).zipped.forall {
-        case (v1: DenseVector, v2: DenseVector, v3: DenseVector) =>
-          true
-        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) =>
-          true
-        case _ =>
-          false
-      },
+      (data, data2, data2RDD.collect())
+        .zipped
+        .forall {
+          case (v1: DenseVector, v2: DenseVector, v3: DenseVector) =>
+            true
+          case (v1: SparseVector, v2: SparseVector, v3: SparseVector) =>
+            true
+          case _ =>
+            false
+        },
       "The vector type should be preserved after normalization."
     )
 
     assert(
-      (data2, data2RDD.collect()).zipped.forall((v1, v2) =>
-        v1 ~== v2 absTol 1e-5))
+      (data2, data2RDD.collect())
+        .zipped
+        .forall((v1, v2) => v1 ~== v2 absTol 1e-5))
 
     assert(brzNorm(data2(0).toBreeze, 2) ~== 1.0 absTol 1e-5)
     assert(brzNorm(data2(2).toBreeze, 2) ~== 1.0 absTol 1e-5)
@@ -129,20 +135,23 @@ class NormalizerSuite extends SparkFunSuite with MLlibTestSparkContext {
     val dataInfRDD = lInfNormalizer.transform(dataRDD)
 
     assert(
-      (data, dataInf, dataInfRDD.collect()).zipped.forall {
-        case (v1: DenseVector, v2: DenseVector, v3: DenseVector) =>
-          true
-        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) =>
-          true
-        case _ =>
-          false
-      },
+      (data, dataInf, dataInfRDD.collect())
+        .zipped
+        .forall {
+          case (v1: DenseVector, v2: DenseVector, v3: DenseVector) =>
+            true
+          case (v1: SparseVector, v2: SparseVector, v3: SparseVector) =>
+            true
+          case _ =>
+            false
+        },
       "The vector type should be preserved after normalization."
     )
 
     assert(
-      (dataInf, dataInfRDD.collect()).zipped.forall((v1, v2) =>
-        v1 ~== v2 absTol 1e-5))
+      (dataInf, dataInfRDD.collect())
+        .zipped
+        .forall((v1, v2) => v1 ~== v2 absTol 1e-5))
 
     assert(dataInf(0).toArray.map(math.abs).max ~== 1.0 absTol 1e-5)
     assert(dataInf(2).toArray.map(math.abs).max ~== 1.0 absTol 1e-5)

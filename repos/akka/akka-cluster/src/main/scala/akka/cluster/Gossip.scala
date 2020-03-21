@@ -80,8 +80,9 @@ private[cluster] final case class Gossip(
         s"Live members must have status [${Removed}], " +
           s"got [${members.filter(_.status == Removed)}]")
 
-    val inReachabilityButNotMember =
-      overview.reachability.allObservers diff members.map(_.uniqueAddress)
+    val inReachabilityButNotMember = overview
+      .reachability
+      .allObservers diff members.map(_.uniqueAddress)
     if (inReachabilityButNotMember.nonEmpty)
       throw new IllegalArgumentException(
         "Nodes not part of cluster in reachability table, got [%s]"
@@ -157,12 +158,13 @@ private[cluster] final case class Gossip(
     val mergedVClock = this.version merge that.version
 
     // 2. merge members by selecting the single Member with highest MemberStatus out of the Member groups
-    val mergedMembers = Gossip.emptyMembers union Member.pickHighestPriority(
-      this.members,
-      that.members)
+    val mergedMembers = Gossip.emptyMembers union Member
+      .pickHighestPriority(this.members, that.members)
 
     // 3. merge reachability table by picking records with highest version
-    val mergedReachability = this.overview.reachability
+    val mergedReachability = this
+      .overview
+      .reachability
       .merge(mergedMembers.map(_.uniqueAddress), that.overview.reachability)
 
     // 4. Nobody can have seen this new gossip yet
@@ -188,8 +190,9 @@ private[cluster] final case class Gossip(
     // Else we can't continue to check for convergence
     // When that is done we check that all members with a convergence
     // status is in the seen table, i.e. has seen this version
-    val unreachable =
-      reachabilityExcludingDownedObservers.allUnreachableOrTerminated.collect {
+    val unreachable = reachabilityExcludingDownedObservers
+      .allUnreachableOrTerminated
+      .collect {
         case node if (node != selfUniqueAddress) ⇒
           member(node)
       }
@@ -226,8 +229,8 @@ private[cluster] final case class Gossip(
         mbrs
       else
         mbrs.filter(m ⇒
-          overview.reachability.isReachable(
-            m.uniqueAddress) || m.uniqueAddress == selfUniqueAddress)
+          overview.reachability.isReachable(m.uniqueAddress) || m
+            .uniqueAddress == selfUniqueAddress)
     if (reachableMembers.isEmpty)
       None
     else
@@ -242,10 +245,8 @@ private[cluster] final case class Gossip(
   def isSingletonCluster: Boolean = members.size == 1
 
   def member(node: UniqueAddress): Member = {
-    membersMap.getOrElse(
-      node,
-      Member.removed(node)
-    ) // placeholder for removed member
+    membersMap
+      .getOrElse(node, Member.removed(node)) // placeholder for removed member
   }
 
   def hasMember(node: UniqueAddress): Boolean = membersMap.contains(node)

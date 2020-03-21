@@ -48,7 +48,8 @@ private[spark] object AllRDDResource {
       listener: StorageListener,
       includeDetails: Boolean): Option[RDDStorageInfo] = {
     val storageStatusList = listener.activeStorageStatusList
-    listener.rddInfoList
+    listener
+      .rddInfoList
       .find {
         _.id == rddId
       }
@@ -65,9 +66,8 @@ private[spark] object AllRDDResource {
     val workers = storageStatusList.map {
       (rddId, _)
     }
-    val blockLocations = StorageUtils.getRddBlockLocations(
-      rddId,
-      storageStatusList)
+    val blockLocations = StorageUtils
+      .getRddBlockLocations(rddId, storageStatusList)
     val blocks = storageStatusList
       .flatMap {
         _.rddBlocksById(rddId)

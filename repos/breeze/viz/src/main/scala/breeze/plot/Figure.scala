@@ -147,13 +147,15 @@ class Figure(
     for (opt <- plots) {
       opt match {
         case Some(plot) =>
-          plot.chart.draw(
-            g2d,
-            new java.awt.Rectangle(
-              px * plotWidth,
-              py * plotHeight,
-              plotWidth,
-              plotHeight))
+          plot
+            .chart
+            .draw(
+              g2d,
+              new java.awt.Rectangle(
+                px * plotWidth,
+                py * plotHeight,
+                plotWidth,
+                plotHeight))
         case None => {}
       }
       px = (px + 1) % cols

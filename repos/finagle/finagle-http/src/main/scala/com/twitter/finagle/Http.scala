@@ -141,7 +141,8 @@ object Http
     }
 
   object Client {
-    val stack: Stack[ServiceFactory[Request, Response]] = StackClient.newStack
+    val stack: Stack[ServiceFactory[Request, Response]] = StackClient
+      .newStack
       .replace(
         TraceInitializerFilter.role,
         new HttpClientTraceInitializer[Request, Response])
@@ -151,8 +152,8 @@ object Http
 
   case class Client(
       stack: Stack[ServiceFactory[Request, Response]] = Client.stack,
-      params: Stack.Params =
-        StackClient.defaultParams + ProtocolLibrary("http"))
+      params: Stack.Params = StackClient
+        .defaultParams + ProtocolLibrary("http"))
       extends StdStackClient[Request, Response, Client]
       with WithSessionPool[Client]
       with WithDefaultLoadBalancer[Client] {
@@ -161,8 +162,8 @@ object Http
     protected type Out = Any
 
     protected def newTransporter(): Transporter[Any, Any] = {
-      val com.twitter.finagle.param
-        .Label(label) = params[com.twitter.finagle.param.Label]
+      val com.twitter.finagle.param.Label(label) = params[
+        com.twitter.finagle.param.Label]
       val codec = param
         .applyToCodec(params, http.Http())
         .client(ClientCodecConfig(label))
@@ -182,7 +183,8 @@ object Http
       val dispatcher =
         new HttpClientDispatcher(
           transport,
-          params[Stats].statsReceiver
+          params[Stats]
+            .statsReceiver
             .scope(GenSerialClientDispatcher.StatsScope))
 
       new ClientContextFilter[Request, Response].andThen(dispatcher)
@@ -260,7 +262,8 @@ object Http
     client.newClient(dest, label)
 
   object Server {
-    val stack: Stack[ServiceFactory[Request, Response]] = StackServer.newStack
+    val stack: Stack[ServiceFactory[Request, Response]] = StackServer
+      .newStack
       .replace(
         TraceInitializerFilter.role,
         new HttpServerTraceInitializer[Request, Response])
@@ -270,16 +273,16 @@ object Http
 
   case class Server(
       stack: Stack[ServiceFactory[Request, Response]] = Server.stack,
-      params: Stack.Params =
-        StackServer.defaultParams + ProtocolLibrary("http"))
+      params: Stack.Params = StackServer
+        .defaultParams + ProtocolLibrary("http"))
       extends StdStackServer[Request, Response, Server] {
 
     protected type In = Any
     protected type Out = Any
 
     protected def newListener(): Listener[Any, Any] = {
-      val com.twitter.finagle.param
-        .Label(label) = params[com.twitter.finagle.param.Label]
+      val com.twitter.finagle.param.Label(label) = params[
+        com.twitter.finagle.param.Label]
       val httpPipeline =
         param
           .applyToCodec(params, http.Http())

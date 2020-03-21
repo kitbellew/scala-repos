@@ -78,16 +78,18 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
   }
 
   def summersOnlyShareNoOps[P <: Platform[P]](dag: Dag[P]): Boolean =
-    dag.nodes.forall { n =>
-      val producersWithoutNOP = n.members.filterNot(Producer.isNoOp(_))
-      producersWithoutNOP.forall { p =>
-        val inError =
-          (p.isInstanceOf[Summer[_, _, _]] && producersWithoutNOP.size != 1)
-        if (inError)
-          dumpGraph(dag)
-        !inError
+    dag
+      .nodes
+      .forall { n =>
+        val producersWithoutNOP = n.members.filterNot(Producer.isNoOp(_))
+        producersWithoutNOP.forall { p =>
+          val inError =
+            (p.isInstanceOf[Summer[_, _, _]] && producersWithoutNOP.size != 1)
+          if (inError)
+            dumpGraph(dag)
+          !inError
+        }
       }
-    }
 
   property("Dag Nodes must be unique") = forAll { (dag: MemoryDag) =>
     dag.nodes.size == dag.nodes.toSet.size
@@ -95,9 +97,11 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
 
   property("Must have at least one producer in each MemoryNode") = forAll {
     (dag: MemoryDag) =>
-      dag.nodes.forall { n =>
-        n.members.size > 0
-      }
+      dag
+        .nodes
+        .forall { n =>
+          n.members.size > 0
+        }
   }
 
   property("If a Node contains a Summer, all other producers must be NOP's") =
@@ -107,132 +111,159 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
 
   property("The first producer in a online node cannot be a NamedProducer") =
     forAll { (dag: MemoryDag) =>
-      dag.nodes.forall { n =>
-        val inError = n.members.last.isInstanceOf[NamedProducer[_, _]]
-        if (inError)
-          dumpGraph(dag)
-        !inError
-      }
+      dag
+        .nodes
+        .forall { n =>
+          val inError = n.members.last.isInstanceOf[NamedProducer[_, _]]
+          if (inError)
+            dumpGraph(dag)
+          !inError
+        }
     }
 
   property(
     "0 or more merge producers at the start of every online bolts, followed by 1+ non-merge producers and no other merge producers following those.") =
     forAll { (dag: MemoryDag) =>
-      dag.nodes.forall { n =>
-        val (_, inError) =
-          n.members.foldLeft((false, false)) {
-            case ((seenMergeProducer, inError), producer) =>
-              producer match {
-                case MergedProducer(_, _) =>
-                  (true, inError)
-                case NamedProducer(_, _) =>
-                  (seenMergeProducer, inError)
-                case _ =>
-                  (seenMergeProducer, (inError || seenMergeProducer))
+      dag
+        .nodes
+        .forall { n =>
+          val (_, inError) =
+            n
+              .members
+              .foldLeft((false, false)) {
+                case ((seenMergeProducer, inError), producer) =>
+                  producer match {
+                    case MergedProducer(_, _) =>
+                      (true, inError)
+                    case NamedProducer(_, _) =>
+                      (seenMergeProducer, inError)
+                    case _ =>
+                      (seenMergeProducer, (inError || seenMergeProducer))
+                  }
               }
-          }
-        if (inError)
-          dumpGraph(dag)
-        !inError
-      }
+          if (inError)
+            dumpGraph(dag)
+          !inError
+        }
     }
 
   property("No producer is repeated") = forAll { (dag: MemoryDag) =>
     val numAllProducers =
-      dag.nodes.foldLeft(0) { (sum, n) =>
-        sum + n.members.size
-      }
+      dag
+        .nodes
+        .foldLeft(0) { (sum, n) =>
+          sum + n.members.size
+        }
     val allProducersSet =
-      dag.nodes.foldLeft(Set[Producer[Memory, _]]()) { (runningSet, n) =>
-        runningSet | n.members.toSet
-      }
+      dag
+        .nodes
+        .foldLeft(Set[Producer[Memory, _]]()) { (runningSet, n) =>
+          runningSet | n.members.toSet
+        }
     numAllProducers == allProducersSet.size
   }
 
   property("All producers are in a Node") = forAll { (dag: MemoryDag) =>
     val allProducers = Producer.entireGraphOf(dag.tail).toSet + dag.tail
     val numAllProducersInDag =
-      dag.nodes.foldLeft(0) { (sum, n) =>
-        sum + n.members.size
-      }
+      dag
+        .nodes
+        .foldLeft(0) { (sum, n) =>
+          sum + n.members.size
+        }
     allProducers.size == numAllProducersInDag
   }
 
   property("Only sources can have no incoming dependencies") = forAll {
     (dag: MemoryDag) =>
-      dag.nodes.forall { n =>
-        val success =
-          n match {
-            case _: SourceNode[_] =>
-              true
-            case _ =>
-              dag.dependenciesOf(n).size > 0
-          }
-        if (!success)
-          dumpGraph(dag)
-        success
-      }
+      dag
+        .nodes
+        .forall { n =>
+          val success =
+            n match {
+              case _: SourceNode[_] =>
+                true
+              case _ =>
+                dag.dependenciesOf(n).size > 0
+            }
+          if (!success)
+            dumpGraph(dag)
+          success
+        }
   }
 
   property(
     "Sources must have no incoming dependencies, and they must have dependants") =
     forAll { (dag: MemoryDag) =>
-      dag.nodes.forall { n =>
-        val success =
-          n match {
-            case _: SourceNode[_] =>
-              dag.dependenciesOf(n).size == 0 && dag.dependantsOf(n).size > 0
-            case _ =>
-              true
-          }
-        if (!success)
-          dumpGraph(dag)
-        success
-      }
+      dag
+        .nodes
+        .forall { n =>
+          val success =
+            n match {
+              case _: SourceNode[_] =>
+                dag.dependenciesOf(n).size == 0 && dag.dependantsOf(n).size > 0
+              case _ =>
+                true
+            }
+          if (!success)
+            dumpGraph(dag)
+          success
+        }
     }
 
   property("Prior to a summer the Node should be a FlatMap Node") = forAll {
     (dag: MemoryDag) =>
-      dag.nodes.forall { n =>
-        val firstP = n.members.last
-        val success =
-          firstP match {
-            case Summer(_, _, _) =>
-              dag.dependenciesOf(n).size > 0 && dag.dependenciesOf(n).forall {
-                otherN => otherN.isInstanceOf[FlatMapNode[_]]
-              }
-            case _ =>
-              true
-          }
-        if (!success)
-          dumpGraph(dag)
-        success
-      }
+      dag
+        .nodes
+        .forall { n =>
+          val firstP = n.members.last
+          val success =
+            firstP match {
+              case Summer(_, _, _) =>
+                dag.dependenciesOf(n).size > 0 && dag
+                  .dependenciesOf(n)
+                  .forall { otherN =>
+                    otherN.isInstanceOf[FlatMapNode[_]]
+                  }
+              case _ =>
+                true
+            }
+          if (!success)
+            dumpGraph(dag)
+          success
+        }
   }
 
   property("There should be no flatmap producers in the source node") = forAll {
     (dag: MemoryDag) =>
-      dag.nodes.forall { n =>
-        val success =
-          n match {
-            case n: SourceNode[_] =>
-              n.members.forall { p =>
-                !p.isInstanceOf[FlatMappedProducer[_, _, _]]
-              }
-            case _ =>
-              true
-          }
-        if (!success)
-          dumpGraph(dag)
-        success
-      }
+      dag
+        .nodes
+        .forall { n =>
+          val success =
+            n match {
+              case n: SourceNode[_] =>
+                n
+                  .members
+                  .forall { p =>
+                    !p.isInstanceOf[FlatMappedProducer[_, _, _]]
+                  }
+              case _ =>
+                true
+            }
+          if (!success)
+            dumpGraph(dag)
+          success
+        }
   }
 
   property("Nodes in the DAG should have unique names") = forAll {
     (dag: MemoryDag) =>
-      val allNames = dag.nodes.toList.map { n =>
-        dag.getNodeName(n)
-      }
+      val allNames = dag
+        .nodes
+        .toList
+        .map { n =>
+          dag.getNodeName(n)
+        }
       allNames.size == allNames.distinct.size
   }
 

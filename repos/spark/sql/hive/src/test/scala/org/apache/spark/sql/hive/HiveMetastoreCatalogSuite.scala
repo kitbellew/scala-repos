@@ -80,7 +80,8 @@ class DataSourceWithHiveMetastoreCatalogSuite
         s"Persist non-partitioned $provider relation into metastore as managed table") {
         withTable("t") {
           withSQLConf(SQLConf.PARQUET_WRITE_LEGACY_FORMAT.key -> "true") {
-            testDF.write
+            testDF
+              .write
               .mode(SaveMode.Overwrite)
               .format(provider)
               .saveAsTable("t")
@@ -110,7 +111,8 @@ class DataSourceWithHiveMetastoreCatalogSuite
             val path = dir.getCanonicalFile
 
             withSQLConf(SQLConf.PARQUET_WRITE_LEGACY_FORMAT.key -> "true") {
-              testDF.write
+              testDF
+                .write
                 .mode(SaveMode.Overwrite)
                 .format(provider)
                 .option("path", path.toString)

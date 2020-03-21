@@ -19,7 +19,8 @@ class AvroTutorial0(args: Args) extends Job(args) {
 { "name": "optionalField", "type": ["string", "null"] }
 ] }"""
 
-  JsonLine("tutorial/data/session.json", ('sessionId, 'optionalField)).read
+  JsonLine("tutorial/data/session.json", ('sessionId, 'optionalField))
+    .read
     .write(
       UnpackedAvroSource(
         "tutorial/data/avrooutput0.avro",

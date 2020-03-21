@@ -658,8 +658,8 @@ object CompactByteString {
     if (bytes.isEmpty)
       empty
     else
-      ByteString.ByteString1C(
-        bytes.map(x ⇒ num.toInt(x).toByte)(collection.breakOut))
+      ByteString
+        .ByteString1C(bytes.map(x ⇒ num.toInt(x).toByte)(collection.breakOut))
   }
 
   /**

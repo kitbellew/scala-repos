@@ -20,7 +20,9 @@ class ScalaIterableComponentTypeMacro extends Macro {
     Option(params(0).calculateResult(context))
       .flatMap(MacroUtil.resultToScExpr(_, context))
       .flatMap(
-        _.getType().toOption.flatMap { exprType =>
+        _.getType()
+        .toOption
+        .flatMap { exprType =>
           MacroUtil.getComponentFromArrayType(exprType) match {
             case Some(arrComponentType) =>
               Some(arrComponentType)
@@ -42,8 +44,8 @@ class ScalaIterableComponentTypeMacro extends Macro {
     MacroUtil.scalaIdPrefix + "iterableComponentType"
 
   override def getPresentableName: String =
-    MacroUtil.scalaPresentablePrefix + CodeInsightBundle.message(
-      "macro.iterable.component.type")
+    MacroUtil.scalaPresentablePrefix + CodeInsightBundle
+      .message("macro.iterable.component.type")
 
   override def calculateQuickResult(
       params: Array[Expression],

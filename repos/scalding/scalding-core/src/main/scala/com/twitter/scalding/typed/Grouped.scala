@@ -407,7 +407,8 @@ case class UnsortedIdentityReduce[K, V1](
         keyOrdering,
         pretake,
         reducers,
-        descriptions).forceToReducers // jump to ValueSortedReduce
+        descriptions)
+        .forceToReducers // jump to ValueSortedReduce
         .take(n)
     }
 
@@ -553,7 +554,8 @@ case class IdentityValueSortedReduce[K, V1](
         pretake,
         valueSort,
         reducers,
-        descriptions).forceToReducers // jump to ValueSortedReduce
+        descriptions)
+        .forceToReducers // jump to ValueSortedReduce
         .take(n)
     }
 
@@ -581,9 +583,7 @@ case class IdentityValueSortedReduce[K, V1](
         else
           gb
 
-      mappedGB
-        .reducers(reducers.getOrElse(-1))
-        .setDescriptions(descriptions)
+      mappedGB.reducers(reducers.getOrElse(-1)).setDescriptions(descriptions)
     }
 }
 
@@ -664,8 +664,8 @@ case class ValueSortedReduce[K, V1, V2](
             reduceFn,
             Grouped.valueField),
           Fields.REPLACE))
-        .reducers(reducers.getOrElse(-1))
-        .setDescriptions(descriptions)
+      .reducers(reducers.getOrElse(-1))
+      .setDescriptions(descriptions)
     }
   }
 }
@@ -717,8 +717,8 @@ case class IteratorMappedReduce[K, V1, V2](
           reduceFn,
           Grouped.valueField),
         Fields.REPLACE))
-      .reducers(reducers.getOrElse(-1))
-      .setDescriptions(descriptions)
+    .reducers(reducers.getOrElse(-1))
+    .setDescriptions(descriptions)
   }
 
   override def joinFunction = {

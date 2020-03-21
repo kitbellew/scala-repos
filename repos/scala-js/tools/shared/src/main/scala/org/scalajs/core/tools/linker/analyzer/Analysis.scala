@@ -103,7 +103,8 @@ object Analysis {
               "[" * dimensions + decodeClassName(base)
           }
 
-        val (simpleName, paramTypes, resultType) = ir.Definitions
+        val (simpleName, paramTypes, resultType) = ir
+          .Definitions
           .decodeMethodName(encodedName)
 
         simpleName + "(" + paramTypes.map(typeDisplayName).mkString(",") + ")" +

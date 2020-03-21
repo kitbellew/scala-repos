@@ -141,9 +141,8 @@ class ActorLifeCycleSpec
           OneForOneStrategy(maxNrOfRetries = 3)(List(classOf[Exception]))))
       val gen = new AtomicInteger(0)
       val props = Props(classOf[LifeCycleTestActor], testActor, id, gen)
-      val a = Await.result(
-        (supervisor ? props).mapTo[ActorRef],
-        timeout.duration)
+      val a = Await
+        .result((supervisor ? props).mapTo[ActorRef], timeout.duration)
       expectMsg(("preStart", id, 0))
       a ! "status"
       expectMsg(("OK", id, 0))

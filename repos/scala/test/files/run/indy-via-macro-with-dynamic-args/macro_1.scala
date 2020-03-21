@@ -25,9 +25,8 @@ object Macro {
         .newTermSymbol(TermName("matcher"))
         .setInfo(
           internal.methodType(paramSym :: Nil, typeOf[java.util.regex.Matcher]))
-      val bootstrapArgTrees: List[Tree] =
-        Literal(Constant(bootstrapMethod)).setType(NoType) :: bootstrapArgs
-          .asInstanceOf[List[Tree]]
+      val bootstrapArgTrees: List[Tree] = Literal(Constant(bootstrapMethod))
+        .setType(NoType) :: bootstrapArgs.asInstanceOf[List[Tree]]
       val result = ApplyDynamic(
         Ident(dummySymbol).setType(dummySymbol.info),
         bootstrapArgTrees ::: dynArgs.asInstanceOf[List[Tree]])
@@ -37,7 +36,8 @@ object Macro {
     import c.universe._
     pat match {
       case l @ Literal(Constant(pat: String)) =>
-        val boostrapSym = typeOf[test.Bootstrap].companion
+        val boostrapSym = typeOf[test.Bootstrap]
+          .companion
           .member(TermName("bootstrap"))
         Indy(boostrapSym, l :: Nil, text :: Nil)
       case _ =>

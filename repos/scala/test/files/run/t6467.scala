@@ -12,7 +12,8 @@ object Test extends App {
       .toString,
     "1234")
   compare(
-    List(1, 2, 3, 4).par
+    List(1, 2, 3, 4)
+      .par
       .aggregate(new java.lang.StringBuffer)(_ append _, _ append _)
       .toString,
     "1234")
@@ -22,7 +23,8 @@ object Test extends App {
       .toString,
     (0 until 100).mkString)
   compare(
-    Seq(0 until 100: _*).par
+    Seq(0 until 100: _*)
+      .par
       .aggregate(new java.lang.StringBuffer)(_ append _, _ append _)
       .toString,
     (0 until 100).mkString)

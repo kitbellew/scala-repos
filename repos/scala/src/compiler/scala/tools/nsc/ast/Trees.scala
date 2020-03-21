@@ -208,18 +208,20 @@ trait Trees extends scala.reflect.internal.Trees {
       tree: Tree): Tree =
     tree match {
       case DocDef(comment, definition) =>
-        transformer.treeCopy.DocDef(
-          tree,
-          comment,
-          transformer.transform(definition))
+        transformer
+          .treeCopy
+          .DocDef(tree, comment, transformer.transform(definition))
       case SelectFromArray(qualifier, selector, erasure) =>
-        transformer.treeCopy.SelectFromArray(
-          tree,
-          transformer.transform(qualifier),
-          selector,
-          erasure)
+        transformer
+          .treeCopy
+          .SelectFromArray(
+            tree,
+            transformer.transform(qualifier),
+            selector,
+            erasure)
       case InjectDerivedValue(arg) =>
-        transformer.treeCopy
+        transformer
+          .treeCopy
           .InjectDerivedValue(tree, transformer.transform(arg))
       case TypeTreeWithDeferredRefCheck() =>
         transformer.treeCopy.TypeTreeWithDeferredRefCheck(tree)

@@ -584,7 +584,9 @@ class RichPresentationCompilerSpec
     val info = cc.askInspectTypeAt(p).get
     val sup = info.supers.find(sup => sup.tpe.name == "A").get;
     {
-      val mem = sup.tpe.members
+      val mem = sup
+        .tpe
+        .members
         .find(_.name == "banana")
         .get
         .asInstanceOf[NamedTypeMemberInfo]
@@ -598,7 +600,9 @@ class RichPresentationCompilerSpec
       paramTpe.args.head.name shouldBe "String"
     }
     {
-      val mem = sup.tpe.members
+      val mem = sup
+        .tpe
+        .members
         .find(_.name == "pineapple")
         .get
         .asInstanceOf[NamedTypeMemberInfo]
@@ -759,9 +763,11 @@ class RichPresentationCompilerSpec
       Await.result(cc.search.refresh(), Duration.Inf)
 
       val scalaVersion = scala.util.Properties.versionNumberString
-      val parts = scalaVersion.split("\\.").map {
-        _.toInt
-      }
+      val parts = scalaVersion
+        .split("\\.")
+        .map {
+          _.toInt
+        }
       if (parts(0) > 2 || (parts(0) == 2 && parts(1) > 10)) {
         /* in Scala 2.10, the declaration position of "pacakge object" is
        different so we just skip this test */
@@ -862,10 +868,13 @@ object ReallyRichPresentationCompilerFixture
     var offset = 0
     var points = Queue.empty[(Int, String)]
     val re = """@([a-z0-9\.]*)@"""
-    re.r.findAllMatchIn(contents).foreach { m =>
-      points :+= ((m.start - offset, m.group(1)))
-      offset += (m.end - m.start)
-    }
+    re
+      .r
+      .findAllMatchIn(contents)
+      .foreach { m =>
+        points :+= ((m.start - offset, m.group(1)))
+        offset += (m.end - m.start)
+      }
     val file = srcFile(config, "def.scala", contents.replaceAll(re, ""))
     cc.askReloadFile(file)
     cc.askLoadedTyped(file)

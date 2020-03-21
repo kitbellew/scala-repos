@@ -31,7 +31,8 @@ object ReplicatedMetrics {
 
   case class UsedHeap(percentPerNode: Map[String, Double]) {
     override def toString =
-      percentPerNode.toSeq
+      percentPerNode
+        .toSeq
         .sortBy(_._1)
         .map {
           case (key, value) ⇒
@@ -58,17 +59,17 @@ class ReplicatedMetrics(
   val node = nodeKey(cluster.selfAddress)
 
   val tickTask =
-    context.system.scheduler.schedule(
-      measureInterval,
-      measureInterval,
-      self,
-      Tick)(context.dispatcher)
+    context
+      .system
+      .scheduler
+      .schedule(measureInterval, measureInterval, self, Tick)(
+        context.dispatcher)
   val cleanupTask =
-    context.system.scheduler.schedule(
-      cleanupInterval,
-      cleanupInterval,
-      self,
-      Cleanup)(context.dispatcher)
+    context
+      .system
+      .scheduler
+      .schedule(cleanupInterval, cleanupInterval, self, Cleanup)(
+        context.dispatcher)
   val memoryMBean: MemoryMXBean = ManagementFactory.getMemoryMXBean
 
   val UsedHeapKey = LWWMapKey[Long]("usedHeap")
@@ -113,10 +114,13 @@ class ReplicatedMetrics(
 
     case c @ Changed(UsedHeapKey) ⇒
       val usedHeapPercent = UsedHeap(
-        c.get(UsedHeapKey).entries.collect {
-          case (key, value) if maxHeap.contains(key) ⇒
-            (key -> (value.toDouble / maxHeap(key)) * 100.0)
-        })
+        c
+          .get(UsedHeapKey)
+          .entries
+          .collect {
+            case (key, value) if maxHeap.contains(key) ⇒
+              (key -> (value.toDouble / maxHeap(key)) * 100.0)
+          })
       log.debug("Node {} observed:\n{}", node, usedHeapPercent)
       context.system.eventStream.publish(usedHeapPercent)
 

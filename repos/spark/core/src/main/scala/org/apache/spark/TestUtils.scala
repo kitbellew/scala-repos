@@ -246,9 +246,9 @@ private class SpillListener extends SparkListener {
   def numSpilledStages: Int = spilledStageIds.size
 
   override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit = {
-    stageIdToTaskMetrics.getOrElseUpdate(
-      taskEnd.stageId,
-      new ArrayBuffer[TaskMetrics]) += taskEnd.taskMetrics
+    stageIdToTaskMetrics
+      .getOrElseUpdate(taskEnd.stageId, new ArrayBuffer[TaskMetrics]) += taskEnd
+      .taskMetrics
   }
 
   override def onStageCompleted(

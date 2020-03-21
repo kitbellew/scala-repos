@@ -55,9 +55,11 @@ class ArithmeticExpressionSuite
     checkEvaluation(Add(positiveIntLit, negativeIntLit), -1)
     checkEvaluation(Add(positiveLongLit, negativeLongLit), -1L)
 
-    DataTypeTestUtils.numericAndInterval.foreach { tpe =>
-      checkConsistencyBetweenInterpretedAndCodegen(Add, tpe, tpe)
-    }
+    DataTypeTestUtils
+      .numericAndInterval
+      .foreach { tpe =>
+        checkConsistencyBetweenInterpretedAndCodegen(Add, tpe, tpe)
+      }
   }
 
   test("- (UnaryMinus)") {
@@ -78,9 +80,11 @@ class ArithmeticExpressionSuite
     checkEvaluation(UnaryMinus(positiveLongLit), -positiveLong)
     checkEvaluation(UnaryMinus(negativeLongLit), -negativeLong)
 
-    DataTypeTestUtils.numericAndInterval.foreach { tpe =>
-      checkConsistencyBetweenInterpretedAndCodegen(UnaryMinus, tpe)
-    }
+    DataTypeTestUtils
+      .numericAndInterval
+      .foreach { tpe =>
+        checkConsistencyBetweenInterpretedAndCodegen(UnaryMinus, tpe)
+      }
   }
 
   test("- (Minus)") {
@@ -105,9 +109,11 @@ class ArithmeticExpressionSuite
       Subtract(positiveLongLit, negativeLongLit),
       positiveLong - negativeLong)
 
-    DataTypeTestUtils.numericAndInterval.foreach { tpe =>
-      checkConsistencyBetweenInterpretedAndCodegen(Subtract, tpe, tpe)
-    }
+    DataTypeTestUtils
+      .numericAndInterval
+      .foreach { tpe =>
+        checkConsistencyBetweenInterpretedAndCodegen(Subtract, tpe, tpe)
+      }
   }
 
   test("* (Multiply)") {
@@ -132,9 +138,11 @@ class ArithmeticExpressionSuite
       Multiply(positiveLongLit, negativeLongLit),
       positiveLong * negativeLong)
 
-    DataTypeTestUtils.numericTypeWithoutDecimal.foreach { tpe =>
-      checkConsistencyBetweenInterpretedAndCodegen(Multiply, tpe, tpe)
-    }
+    DataTypeTestUtils
+      .numericTypeWithoutDecimal
+      .foreach { tpe =>
+        checkConsistencyBetweenInterpretedAndCodegen(Multiply, tpe, tpe)
+      }
   }
 
   test("/ (Divide) basic") {
@@ -148,9 +156,11 @@ class ArithmeticExpressionSuite
       checkEvaluation(Divide(left, Literal(convert(0))), null) // divide by zero
     }
 
-    DataTypeTestUtils.numericTypeWithoutDecimal.foreach { tpe =>
-      checkConsistencyBetweenInterpretedAndCodegen(Divide, tpe, tpe)
-    }
+    DataTypeTestUtils
+      .numericTypeWithoutDecimal
+      .foreach { tpe =>
+        checkConsistencyBetweenInterpretedAndCodegen(Divide, tpe, tpe)
+      }
   }
 
   test("/ (Divide) for integral type") {
@@ -214,9 +224,11 @@ class ArithmeticExpressionSuite
     checkEvaluation(Abs(positiveLongLit), positiveLong)
     checkEvaluation(Abs(negativeLongLit), -negativeLong)
 
-    DataTypeTestUtils.numericTypeWithoutDecimal.foreach { tpe =>
-      checkConsistencyBetweenInterpretedAndCodegen(Abs, tpe)
-    }
+    DataTypeTestUtils
+      .numericTypeWithoutDecimal
+      .foreach { tpe =>
+        checkConsistencyBetweenInterpretedAndCodegen(Abs, tpe)
+      }
   }
 
   test("MaxOf basic") {
@@ -238,9 +250,11 @@ class ArithmeticExpressionSuite
     checkEvaluation(MaxOf(positiveIntLit, negativeIntLit), positiveInt)
     checkEvaluation(MaxOf(positiveLongLit, negativeLongLit), positiveLong)
 
-    DataTypeTestUtils.ordered.foreach { tpe =>
-      checkConsistencyBetweenInterpretedAndCodegen(MaxOf, tpe, tpe)
-    }
+    DataTypeTestUtils
+      .ordered
+      .foreach { tpe =>
+        checkConsistencyBetweenInterpretedAndCodegen(MaxOf, tpe, tpe)
+      }
   }
 
   test("MaxOf for atomic type") {
@@ -270,9 +284,11 @@ class ArithmeticExpressionSuite
     checkEvaluation(MinOf(positiveIntLit, negativeIntLit), negativeInt)
     checkEvaluation(MinOf(positiveLongLit, negativeLongLit), negativeLong)
 
-    DataTypeTestUtils.ordered.foreach { tpe =>
-      checkConsistencyBetweenInterpretedAndCodegen(MinOf, tpe, tpe)
-    }
+    DataTypeTestUtils
+      .ordered
+      .foreach { tpe =>
+        checkConsistencyBetweenInterpretedAndCodegen(MinOf, tpe, tpe)
+      }
   }
 
   test("MinOf for atomic type") {
@@ -303,7 +319,9 @@ class ArithmeticExpressionSuite
     checkEvaluation(Pmod(positiveLong, negativeLong), positiveLong)
   }
 
-  DataTypeTestUtils.numericTypeWithoutDecimal.foreach { tpe =>
-    checkConsistencyBetweenInterpretedAndCodegen(MinOf, tpe, tpe)
-  }
+  DataTypeTestUtils
+    .numericTypeWithoutDecimal
+    .foreach { tpe =>
+      checkConsistencyBetweenInterpretedAndCodegen(MinOf, tpe, tpe)
+    }
 }

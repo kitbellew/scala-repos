@@ -277,9 +277,8 @@ class ScExtendsBlockImpl private (
           addClass(t)
         }
       case _ =>
-        ScTemplateParents.extractSupers(
-          syntheticTypeElements,
-          getProject) foreach { t =>
+        ScTemplateParents
+          .extractSupers(syntheticTypeElements, getProject) foreach { t =>
           addClass(t)
         }
     }
@@ -463,11 +462,13 @@ class ScExtendsBlockImpl private (
         getParentByStub)
       val extBlock = templDef.extendsBlock
       val kExtends =
-        extBlock.children
+        extBlock
+          .children
           .find(_.getNode.getElementType == ScalaTokenTypes.kEXTENDS)
           .get
       val kWith =
-        extBlock.children
+        extBlock
+          .children
           .find(_.getNode.getElementType == ScalaTokenTypes.kWITH)
           .get
       val firstElem =

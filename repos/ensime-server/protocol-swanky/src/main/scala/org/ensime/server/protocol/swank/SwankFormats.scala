@@ -125,7 +125,8 @@ object SwankProtocolCommon {
     def read(sexp: Sexp): RefactorType =
       sexp match {
         case SexpSymbol(name) =>
-          RefactorType.allTypes
+          RefactorType
+            .allTypes
             .find(_.symbol.name == name)
             .getOrElse(deserializationError(sexp))
         case _ =>
@@ -138,7 +139,8 @@ object SwankProtocolCommon {
     def read(sexp: Sexp): DeclaredAs =
       sexp match {
         case SexpSymbol(name) =>
-          DeclaredAs.allDeclarations
+          DeclaredAs
+            .allDeclarations
             .find(_.symbol.name == name)
             .getOrElse(deserializationError(sexp))
         case _ =>

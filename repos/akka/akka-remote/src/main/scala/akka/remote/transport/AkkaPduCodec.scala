@@ -144,8 +144,8 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
 
     val envelopeBuilder = RemoteEnvelope.newBuilder
 
-    envelopeBuilder.setRecipient(
-      serializeActorRef(recipient.path.address, recipient))
+    envelopeBuilder
+      .setRecipient(serializeActorRef(recipient.path.address, recipient))
     senderOption foreach { ref ⇒
       envelopeBuilder.setSender(serializeActorRef(localAddress, ref))
     }
@@ -165,7 +165,8 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
 
   override def constructPureAck(ack: Ack): ByteString =
     ByteString.ByteString1C(
-      AckAndEnvelopeContainer.newBuilder
+      AckAndEnvelopeContainer
+        .newBuilder
         .setAck(ackBuilder(ack))
         .build()
         .toByteArray
@@ -181,7 +182,8 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
     ) //Reuse Byte Array (naughty!)
 
   override def constructAssociate(info: HandshakeInfo): ByteString = {
-    val handshakeInfo = AkkaHandshakeInfo.newBuilder
+    val handshakeInfo = AkkaHandshakeInfo
+      .newBuilder
       .setOrigin(serializeAddress(info.origin))
       .setUid(info.uid)
     info.cookie foreach handshakeInfo.setCookie
@@ -292,7 +294,9 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
         Associate(
           HandshakeInfo(
             decodeAddress(handshakeInfo.getOrigin),
-            handshakeInfo.getUid.toInt, // 64 bits are allocated in the wire formats, but we use only 32 for now
+            handshakeInfo
+              .getUid
+              .toInt, // 64 bits are allocated in the wire formats, but we use only 32 for now
             cookie))
       case CommandType.DISASSOCIATE ⇒
         Disassociate(AssociationHandle.Unknown)
@@ -336,7 +340,8 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
   private def serializeActorRef(
       defaultAddress: Address,
       ref: ActorRef): ActorRefData = {
-    ActorRefData.newBuilder
+    ActorRefData
+      .newBuilder
       .setPath(
         if (ref.path.address.host.isDefined)
           ref.path.toSerializationFormat
@@ -348,7 +353,8 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
   private def serializeAddress(address: Address): AddressData =
     address match {
       case Address(protocol, system, Some(host), Some(port)) ⇒
-        AddressData.newBuilder
+        AddressData
+          .newBuilder
           .setHostname(host)
           .setPort(port)
           .setSystem(system)

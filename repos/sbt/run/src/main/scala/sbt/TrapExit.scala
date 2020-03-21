@@ -272,9 +272,8 @@ private final class TrapExit(delegateManager: SecurityManager)
       try execute()
       catch {
         case x: Throwable =>
-          exitCode.set(
-            1
-          ) //exceptions in the main thread cause the exit code to be 1
+          exitCode
+            .set(1) //exceptions in the main thread cause the exit code to be 1
           throw x
       }
     }
@@ -435,8 +434,10 @@ private final class TrapExit(delegateManager: SecurityManager)
   private[this] def exitApp(t: Thread, status: Int): Unit =
     getApp(t) match {
       case None =>
-        System.err.println(
-          s"Could not exit($status): no application associated with $t")
+        System
+          .err
+          .println(
+            s"Could not exit($status): no application associated with $t")
       case Some(a) =>
         a.exitCode.set(status)
         stopAllThreads(a)
@@ -455,7 +456,8 @@ private final class TrapExit(delegateManager: SecurityManager)
 
   /** This ensures that only actual calls to exit are trapped and not just calls to check if exit is allowed.*/
   private def isRealExit(element: StackTraceElement): Boolean =
-    element.getClassName == "java.lang.Runtime" && element.getMethodName == "exit"
+    element.getClassName == "java.lang.Runtime" && element
+      .getMethodName == "exit"
 
   // These are overridden to do nothing because there is a substantial filesystem performance penalty
   // when there is a SecurityManager defined.  The default implementations of these construct a

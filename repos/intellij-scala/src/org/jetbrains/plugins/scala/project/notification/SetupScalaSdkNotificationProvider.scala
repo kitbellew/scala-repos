@@ -25,7 +25,8 @@ class SetupScalaSdkNotificationProvider(
     notifications: EditorNotifications)
     extends EditorNotifications.Provider[EditorNotificationPanel] {
 
-  project.getMessageBus
+  project
+    .getMessageBus
     .connect(project)
     .subscribe(
       ProjectTopics.PROJECT_ROOTS,
@@ -63,8 +64,8 @@ class SetupScalaSdkNotificationProvider(
 }
 
 object SetupScalaSdkNotificationProvider {
-  private val ProviderKey = Key.create[EditorNotificationPanel](
-    "Setup Scala SDK")
+  private val ProviderKey = Key
+    .create[EditorNotificationPanel]("Setup Scala SDK")
 
   private def createPanel(
       project: Project,
@@ -83,9 +84,8 @@ object SetupScalaSdkNotificationProvider {
 
   private def setupSdk(parent: JComponent, project: Project, file: PsiFile) {
     Option(ModuleUtilCore.findModuleForPsiElement(file)).foreach { module =>
-      val dialog = AddSupportForSingleFrameworkDialog.createDialog(
-        module,
-        new ScalaSupportProvider())
+      val dialog = AddSupportForSingleFrameworkDialog
+        .createDialog(module, new ScalaSupportProvider())
       dialog.showAndGet()
     }
   }

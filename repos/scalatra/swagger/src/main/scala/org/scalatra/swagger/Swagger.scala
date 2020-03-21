@@ -115,11 +115,13 @@ object Swagger {
           case descriptor: ClassDescriptor =>
             val ctorModels =
               descriptor.mostComprehensive.filterNot(_.isPrimitive).toVector
-            val propModels = descriptor.properties.filterNot(p =>
-              p.isPrimitive || ctorModels.exists(_.name == p.name))
-            val subModels = (
-              ctorModels.map(_.argType) ++ propModels.map(_.returnType)
-            ).toSet -- known
+            val propModels = descriptor
+              .properties
+              .filterNot(p =>
+                p.isPrimitive || ctorModels.exists(_.name == p.name))
+            val subModels =
+              (ctorModels.map(_.argType) ++ propModels.map(_.returnType))
+                .toSet -- known
             val topLevel =
               for {
                 tl <- subModels + descriptor.erasure
@@ -175,9 +177,8 @@ object Swagger {
     prop.name -> mp
   }
   def modelToSwagger(klass: ScalaType): Option[Model] = {
-    if (Reflector.isPrimitive(klass.erasure) || Reflector.isExcluded(
-          klass.erasure,
-          excludes.toSeq))
+    if (Reflector.isPrimitive(klass.erasure) || Reflector
+          .isExcluded(klass.erasure, excludes.toSeq))
       None
     else {
       val name = klass.simpleName
@@ -316,20 +317,17 @@ class Swagger(
       swaggerVersion,
       resourcePath,
       description,
-      (
-        produces ::: endpoints.flatMap(_.operations.flatMap(_.produces))
-      ).distinct,
-      (
-        consumes ::: endpoints.flatMap(_.operations.flatMap(_.consumes))
-      ).distinct,
-      (
-        protocols ::: endpoints.flatMap(_.operations.flatMap(_.protocols))
-      ).distinct,
+      (produces ::: endpoints.flatMap(_.operations.flatMap(_.produces)))
+        .distinct,
+      (consumes ::: endpoints.flatMap(_.operations.flatMap(_.consumes)))
+        .distinct,
+      (protocols ::: endpoints.flatMap(_.operations.flatMap(_.protocols)))
+        .distinct,
       endpoints,
       s.models.toMap,
       (
-        authorizations ::: endpoints.flatMap(
-          _.operations.flatMap(_.authorizations))
+        authorizations ::: endpoints
+          .flatMap(_.operations.flatMap(_.authorizations))
       ).distinct,
       0
     )
@@ -483,8 +481,8 @@ object DataType {
         st.typeArgs.head.erasure
       else
         st.erasure
-    if (classOf[Unit].isAssignableFrom(klass) || classOf[Void].isAssignableFrom(
-          klass))
+    if (classOf[Unit].isAssignableFrom(klass) || classOf[Void]
+          .isAssignableFrom(klass))
       this.Void
     else if (isString(klass))
       this.String

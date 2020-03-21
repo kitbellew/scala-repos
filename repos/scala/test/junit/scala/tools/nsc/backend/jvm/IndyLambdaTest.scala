@@ -28,15 +28,19 @@ class IndyLambdaTest extends ClearAfterClass {
       val method =
         compileMethods(compiler)(s"""def f = $code """).find(_.name == "f").get
       val x = method.instructions.iterator.asScala.toList
-      x.flatMap {
-        case insn: InvokeDynamicInsnNode =>
-          insn.bsmArgs.collect {
-            case h: Handle =>
-              h.getDesc
-          }
-        case _ =>
-          Nil
-      }.head
+      x
+        .flatMap {
+          case insn: InvokeDynamicInsnNode =>
+            insn
+              .bsmArgs
+              .collect {
+                case h: Handle =>
+                  h.getDesc
+              }
+          case _ =>
+            Nil
+        }
+        .head
     }
     // unspecialized functions that have a primitive in parameter or return position
     // give rise to a "boxing bridge" method (which has the suffix `$adapted`).

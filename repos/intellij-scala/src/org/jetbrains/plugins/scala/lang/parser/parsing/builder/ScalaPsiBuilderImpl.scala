@@ -39,8 +39,9 @@ class ScalaPsiBuilderImpl(builder: PsiBuilder)
       return 0
 
     var i = 1
-    while (i < getCurrentOffset && TokenSets.WHITESPACE_OR_COMMENT_SET.contains(
-             rawLookup(-i)))
+    while (i < getCurrentOffset && TokenSets
+             .WHITESPACE_OR_COMMENT_SET
+             .contains(rawLookup(-i)))
       i += 1
     val textBefore =
       getOriginalText

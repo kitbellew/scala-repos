@@ -28,10 +28,8 @@ class UTestRunConfiguration(
   private def getClassPath(
       currentClass: ScTypeDefinition,
       acc: String = ""): String = {
-    val parentTypeDef = PsiTreeUtil.getParentOfType(
-      currentClass,
-      classOf[ScTypeDefinition],
-      true)
+    val parentTypeDef = PsiTreeUtil
+      .getParentOfType(currentClass, classOf[ScTypeDefinition], true)
     if (parentTypeDef == null) {
       currentClass.qualifiedName + acc
     } else {
@@ -48,12 +46,14 @@ class UTestRunConfiguration(
 
   override protected def getClassFileNames(
       classes: scala.collection.mutable.HashSet[PsiClass]): Seq[String] =
-    classes.map {
-      case typeDef: ScTypeDefinition =>
-        getClassPath(typeDef)
-      case aClass =>
-        aClass.qualifiedName
-    }.toSeq
+    classes
+      .map {
+        case typeDef: ScTypeDefinition =>
+          getClassPath(typeDef)
+        case aClass =>
+          aClass.qualifiedName
+      }
+      .toSeq
 
   override def reporterClass: String = null
 

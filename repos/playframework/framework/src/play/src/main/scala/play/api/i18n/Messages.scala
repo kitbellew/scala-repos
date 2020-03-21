@@ -169,8 +169,8 @@ class DefaultLangs @Inject() (configuration: Configuration) extends Langs {
 
   val availables: Seq[Lang] = {
     val langs = configuration.getString("application.langs") map { langsStr =>
-      Logger.warn(
-        "application.langs is deprecated, use play.i18n.langs instead")
+      Logger
+        .warn("application.langs is deprecated, use play.i18n.langs instead")
       langsStr.split(",").map(_.trim).toSeq
     } getOrElse {
       config.get[Seq[String]]("play.i18n.langs")
@@ -264,11 +264,16 @@ object Messages {
     */
   def parse(messageSource: MessageSource, messageSourceName: String)
       : Either[PlayException.ExceptionSource, Map[String, String]] = {
-    new Messages.MessagesParser(messageSource, "").parse.right.map { messages =>
-      messages.map { message =>
-        message.key -> message.pattern
-      }.toMap
-    }
+    new Messages.MessagesParser(messageSource, "")
+      .parse
+      .right
+      .map { messages =>
+        messages
+          .map { message =>
+            message.key -> message.pattern
+          }
+          .toMap
+      }
   }
 
   /**
@@ -544,11 +549,12 @@ class DefaultMessagesApi @Inject() (
     Messages(langs.preferred(candidates), this)
 
   def preferred(request: RequestHeader) = {
-    val maybeLangFromCookie = request.cookies
+    val maybeLangFromCookie = request
+      .cookies
       .get(langCookieName)
       .flatMap(c => Lang.get(c.value))
-    val lang = langs.preferred(
-      maybeLangFromCookie.toSeq ++ request.acceptLanguages)
+    val lang = langs
+      .preferred(maybeLangFromCookie.toSeq ++ request.acceptLanguages)
     Messages(lang, this)
   }
 
@@ -620,7 +626,8 @@ class DefaultMessagesApi @Inject() (
   protected def loadMessages(file: String): Map[String, String] = {
     import scala.collection.JavaConverters._
 
-    environment.classLoader
+    environment
+      .classLoader
       .getResources(joinPaths(messagesPrefix, file))
       .asScala
       .toList
@@ -637,7 +644,8 @@ class DefaultMessagesApi @Inject() (
   }
 
   protected def loadAllMessages: Map[String, Map[String, String]] = {
-    langs.availables
+    langs
+      .availables
       .map(_.code)
       .map { lang =>
         (lang, loadMessages("messages." + lang))
@@ -653,8 +661,8 @@ class DefaultMessagesApi @Inject() (
 
   lazy val langCookieSecure = config.get[Boolean]("play.i18n.langCookieSecure")
 
-  lazy val langCookieHttpOnly = config.get[Boolean](
-    "play.i18n.langCookieHttpOnly")
+  lazy val langCookieHttpOnly = config
+    .get[Boolean]("play.i18n.langCookieHttpOnly")
 
 }
 

@@ -58,9 +58,12 @@ private[twitter] object ClientRegistry extends StackRegistry {
       }
 
       val start = Time.now
-      Future.collect(fs.toSeq).map(_.toSet).ensure {
-        initialResolutionTime.incr((Time.now - start).inMilliseconds.toInt)
-      }
+      Future
+        .collect(fs.toSeq)
+        .map(_.toSet)
+        .ensure {
+          initialResolutionTime.incr((Time.now - start).inMilliseconds.toInt)
+        }
     }
 }
 

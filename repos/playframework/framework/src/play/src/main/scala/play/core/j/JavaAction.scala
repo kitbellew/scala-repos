@@ -43,11 +43,14 @@ class JavaActionAnnotations(
     .getOrElse(classOf[JBodyParser.Default])
 
   val controllerAnnotations =
-    play.api.libs.Collections
+    play
+      .api
+      .libs
+      .Collections
       .unfoldLeft[Seq[java.lang.annotation.Annotation], Option[Class[_]]](
         Option(controller)) { clazz =>
-        clazz.map(c =>
-          (Option(c.getSuperclass), c.getDeclaredAnnotations.toSeq))
+        clazz
+          .map(c => (Option(c.getSuperclass), c.getDeclaredAnnotations.toSeq))
       }
       .flatten
 
@@ -64,7 +67,8 @@ class JavaActionAnnotations(
           a.value.map(c => (a, c)).toSeq
         case a
             if a.annotationType.isAnnotationPresent(classOf[play.mvc.With]) =>
-          a.annotationType
+          a
+            .annotationType
             .getAnnotation(classOf[play.mvc.With])
             .value
             .map(c => (a, c))
@@ -106,7 +110,8 @@ abstract class JavaAction(components: JavaHandlerComponents)
         }
       }
 
-    val baseAction = components.actionCreator
+    val baseAction = components
+      .actionCreator
       .createAction(javaContext.request, annotations.method)
 
     val endOfChainAction =
@@ -118,23 +123,27 @@ abstract class JavaAction(components: JavaHandlerComponents)
       }
 
     val finalUserDeclaredAction =
-      annotations.actionMixins.foldLeft[JAction[_ <: Any]](endOfChainAction) {
-        case (delegate, (annotation, actionClass)) =>
-          val action = components
-            .getAction(actionClass)
-            .asInstanceOf[play.mvc.Action[Object]]
-          action.configuration = annotation
-          action.delegate = delegate
-          action
-      }
+      annotations
+        .actionMixins
+        .foldLeft[JAction[_ <: Any]](endOfChainAction) {
+          case (delegate, (annotation, actionClass)) =>
+            val action = components
+              .getAction(actionClass)
+              .asInstanceOf[play.mvc.Action[Object]]
+            action.configuration = annotation
+            action.delegate = delegate
+            action
+        }
 
-    val finalAction = components.actionCreator.wrapAction(
-      if (config.executeActionCreatorActionFirst) {
-        baseAction.delegate = finalUserDeclaredAction
-        baseAction
-      } else {
-        finalUserDeclaredAction
-      })
+    val finalAction = components
+      .actionCreator
+      .wrapAction(
+        if (config.executeActionCreatorActionFirst) {
+          baseAction.delegate = finalUserDeclaredAction
+          baseAction
+        } else {
+          finalUserDeclaredAction
+        })
 
     val trampolineWithContext: ExecutionContext = {
       val javaClassLoader = Thread.currentThread.getContextClassLoader

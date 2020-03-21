@@ -51,10 +51,12 @@ class RealServerProcess(val args: Seq[String]) extends ServerProcess {
     ManagementFactory.getRuntimeMXBean.getName.split('@').headOption
   }
   def addShutdownHook(hook: => Unit): Unit = {
-    Runtime.getRuntime.addShutdownHook(
-      new Thread {
-        override def run() = hook
-      })
+    Runtime
+      .getRuntime
+      .addShutdownHook(
+        new Thread {
+          override def run() = hook
+        })
   }
   def exit(
       message: String,

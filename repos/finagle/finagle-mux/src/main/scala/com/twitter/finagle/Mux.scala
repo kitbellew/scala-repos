@@ -63,14 +63,14 @@ object Mux
   }
 
   object Client {
-    val stack: Stack[ServiceFactory[mux.Request, mux.Response]] =
-      StackClient.newStack
-        .replace(
-          StackClient.Role.pool,
-          SingletonPool.module[mux.Request, mux.Response])
-        .replace(StackClient.Role.protoTracing, new ClientProtoTracing)
-        .replace(BindingFactory.role, MuxBindingFactory)
-        .prepend(PayloadSizeFilter.module(_.body.length, _.body.length))
+    val stack: Stack[ServiceFactory[mux.Request, mux.Response]] = StackClient
+      .newStack
+      .replace(
+        StackClient.Role.pool,
+        SingletonPool.module[mux.Request, mux.Response])
+      .replace(StackClient.Role.protoTracing, new ClientProtoTracing)
+      .replace(BindingFactory.role, MuxBindingFactory)
+      .prepend(PayloadSizeFilter.module(_.body.length, _.body.length))
   }
 
   case class Client(
@@ -96,11 +96,13 @@ object Mux
 
       val FailureDetector.Param(detectorConfig) = params[FailureDetector.Param]
 
-      val negotiatedTrans = mux.Handshake.client(
-        trans = transport,
-        version = LatestVersion,
-        headers = Nil,
-        negotiate = mux.Handshake.NoopNegotiator)
+      val negotiatedTrans = mux
+        .Handshake
+        .client(
+          trans = transport,
+          version = LatestVersion,
+          headers = Nil,
+          negotiate = mux.Handshake.NoopNegotiator)
 
       val session =
         new mux.ClientSession(
@@ -129,11 +131,11 @@ object Mux
       extends ProtoTracing("srv", StackServer.Role.protoTracing)
 
   object Server {
-    val stack: Stack[ServiceFactory[mux.Request, mux.Response]] =
-      StackServer.newStack
-        .remove(TraceInitializerFilter.role)
-        .replace(StackServer.Role.protoTracing, new ServerProtoTracing)
-        .prepend(PayloadSizeFilter.module(_.body.length, _.body.length))
+    val stack: Stack[ServiceFactory[mux.Request, mux.Response]] = StackServer
+      .newStack
+      .remove(TraceInitializerFilter.role)
+      .replace(StackServer.Role.protoTracing, new ServerProtoTracing)
+      .prepend(PayloadSizeFilter.module(_.body.length, _.body.length))
   }
 
   case class Server(
@@ -162,18 +164,22 @@ object Mux
       val param.Tracer(tracer) = params[param.Tracer]
       val Lessor.Param(lessor) = params[Lessor.Param]
 
-      val negotiatedTrans = mux.Handshake.server(
-        trans = transport,
-        version = LatestVersion,
-        headers = _ => Nil,
-        negotiate = mux.Handshake.NoopNegotiator)
+      val negotiatedTrans = mux
+        .Handshake
+        .server(
+          trans = transport,
+          version = LatestVersion,
+          headers = _ => Nil,
+          negotiate = mux.Handshake.NoopNegotiator)
 
-      mux.ServerDispatcher.newRequestResponse(
-        negotiatedTrans,
-        service,
-        lessor,
-        tracer,
-        statsReceiver)
+      mux
+        .ServerDispatcher
+        .newRequestResponse(
+          negotiatedTrans,
+          service,
+          lessor,
+          tracer,
+          statsReceiver)
     }
   }
 

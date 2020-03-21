@@ -64,8 +64,8 @@ object NamedCometPerTabSpec extends Specification {
       NamedCometListener
         .getOrAddDispatchersFor(Full("3"))
         .foreach(actor =>
-          actor.toString must startWith(
-            "net.liftweb.http.NamedCometDispatcher"))
+          actor
+            .toString must startWith("net.liftweb.http.NamedCometDispatcher"))
       success
     }
     "not be created for a non existing key" in {

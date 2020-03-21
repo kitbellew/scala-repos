@@ -283,12 +283,12 @@ object KafkaConfig {
   val LogFlushOffsetCheckpointIntervalMsProp =
     "log.flush.offset.checkpoint.interval.ms"
   val LogPreAllocateProp = "log.preallocate"
-  val LogMessageFormatVersionProp =
-    LogConfigPrefix + LogConfig.MessageFormatVersionProp
-  val LogMessageTimestampTypeProp =
-    LogConfigPrefix + LogConfig.MessageTimestampTypeProp
-  val LogMessageTimestampDifferenceMaxMsProp =
-    LogConfigPrefix + LogConfig.MessageTimestampDifferenceMaxMsProp
+  val LogMessageFormatVersionProp = LogConfigPrefix + LogConfig
+    .MessageFormatVersionProp
+  val LogMessageTimestampTypeProp = LogConfigPrefix + LogConfig
+    .MessageTimestampTypeProp
+  val LogMessageTimestampDifferenceMaxMsProp = LogConfigPrefix + LogConfig
+    .MessageTimestampDifferenceMaxMsProp
   val NumRecoveryThreadsPerDataDirProp = "num.recovery.threads.per.data.dir"
   val AutoCreateTopicsEnableProp = "auto.create.topics.enable"
   val MinInSyncReplicasProp = "min.insync.replicas"
@@ -1610,8 +1610,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   val logMessageFormatVersionString = getString(
     KafkaConfig.LogMessageFormatVersionProp)
   val logMessageFormatVersion = ApiVersion(logMessageFormatVersionString)
-  val logMessageTimestampType = TimestampType.forName(
-    getString(KafkaConfig.LogMessageTimestampTypeProp))
+  val logMessageTimestampType = TimestampType
+    .forName(getString(KafkaConfig.LogMessageTimestampTypeProp))
   val logMessageTimestampDifferenceMaxMs = getLong(
     KafkaConfig.LogMessageTimestampDifferenceMaxMsProp)
 
@@ -1643,8 +1643,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     KafkaConfig.LeaderImbalanceCheckIntervalSecondsProp)
   val uncleanLeaderElectionEnable: java.lang.Boolean = getBoolean(
     KafkaConfig.UncleanLeaderElectionEnableProp)
-  val interBrokerSecurityProtocol = SecurityProtocol.forName(
-    getString(KafkaConfig.InterBrokerSecurityProtocolProp))
+  val interBrokerSecurityProtocol = SecurityProtocol
+    .forName(getString(KafkaConfig.InterBrokerSecurityProtocolProp))
   // We keep the user-provided String as `ApiVersion.apply` can choose a slightly different version (eg if `0.10.0`
   // is passed, `0.10.0-IV0` may be picked)
   val interBrokerProtocolVersionString = getString(
@@ -1809,8 +1809,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     if (getString(KafkaConfig.AdvertisedListenersProp) != null) {
       validateUniquePortAndProtocol(
         getString(KafkaConfig.AdvertisedListenersProp))
-      CoreUtils.listenerListToEndPoints(
-        getString(KafkaConfig.AdvertisedListenersProp))
+      CoreUtils
+        .listenerListToEndPoints(getString(KafkaConfig.AdvertisedListenersProp))
     } else if (getString(KafkaConfig.AdvertisedHostNameProp) != null || getInt(
                  KafkaConfig.AdvertisedPortProp) != null) {
       CoreUtils.listenerListToEndPoints(
@@ -1863,7 +1863,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     require(
       BrokerCompressionCodec.isValid(compressionType),
       "compression.type : " + compressionType + " is not valid." +
-        " Valid options are " + BrokerCompressionCodec.brokerCompressionOptions
+        " Valid options are " + BrokerCompressionCodec
+        .brokerCompressionOptions
         .mkString(",")
     )
     require(

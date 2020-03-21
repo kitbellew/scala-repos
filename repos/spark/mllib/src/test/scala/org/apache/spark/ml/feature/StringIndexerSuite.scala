@@ -209,10 +209,14 @@ class StringIndexerSuite
       .setInputCol("index")
       .setOutputCol("actual")
       .setLabels(labels)
-    idxToStr0.transform(df0).select("actual", "expected").collect().foreach {
-      case Row(actual, expected) =>
-        assert(actual === expected)
-    }
+    idxToStr0
+      .transform(df0)
+      .select("actual", "expected")
+      .collect()
+      .foreach {
+        case Row(actual, expected) =>
+          assert(actual === expected)
+      }
 
     val attr = NominalAttribute.defaultAttr.withValues(labels)
     val df1 = df0.select(
@@ -222,10 +226,14 @@ class StringIndexerSuite
     val idxToStr1 = new IndexToString()
       .setInputCol("indexWithAttr")
       .setOutputCol("actual")
-    idxToStr1.transform(df1).select("actual", "expected").collect().foreach {
-      case Row(actual, expected) =>
-        assert(actual === expected)
-    }
+    idxToStr1
+      .transform(df1)
+      .select("actual", "expected")
+      .collect()
+      .foreach {
+        case Row(actual, expected) =>
+          assert(actual === expected)
+      }
   }
 
   test("StringIndexer, IndexToString are inverses") {

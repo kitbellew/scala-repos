@@ -287,8 +287,8 @@ private[parser] trait CommonRules {
   def challenge =
     rule {
       `challenge-or-credentials` ~> { (scheme, params) ⇒
-        val (realms, otherParams) = params.partition(
-          _._1 equalsIgnoreCase "realm")
+        val (realms, otherParams) = params
+          .partition(_._1 equalsIgnoreCase "realm")
         HttpChallenge(
           scheme,
           realms.headOption.map(_._2).getOrElse(""),

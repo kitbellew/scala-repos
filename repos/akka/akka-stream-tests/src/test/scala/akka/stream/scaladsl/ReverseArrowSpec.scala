@@ -201,9 +201,8 @@ class ReverseArrowSpec extends AkkaSpec {
               val src = b.add(source)
               Source.empty ~> f
               src ~> f
-              (
-                the[IllegalArgumentException] thrownBy (s <~ f <~ src)
-              ).getMessage should include("no more inlets free")
+              (the[IllegalArgumentException] thrownBy (s <~ f <~ src))
+                .getMessage should include("no more inlets free")
               ClosedShape
             })
           .run(),
@@ -237,9 +236,8 @@ class ReverseArrowSpec extends AkkaSpec {
               val src = b.add(source)
               src ~> f
               sink2 <~ f
-              (
-                the[IllegalArgumentException] thrownBy (s <~ f <~ src)
-              ).getMessage should include("already connected")
+              (the[IllegalArgumentException] thrownBy (s <~ f <~ src))
+                .getMessage should include("already connected")
               ClosedShape
             })
           .run(),

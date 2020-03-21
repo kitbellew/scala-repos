@@ -136,8 +136,8 @@ trait Inbox {
           val overdue = clientsByTimeout.iterator.takeWhile(pred)
           while (overdue.hasNext) {
             val toKick = overdue.next()
-            toKick.client ! Status.Failure(
-              new TimeoutException("deadline passed"))
+            toKick.client ! Status
+              .Failure(new TimeoutException("deadline passed"))
           }
           clients = clients.filterNot(pred)
           clientsByTimeout = clientsByTimeout.from(Get(now))

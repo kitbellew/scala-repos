@@ -42,9 +42,8 @@ final class Emitter private (
   private[this] var statsMethodsReused: Int = 0
   private[this] var statsMethodsInvalidated: Int = 0
 
-  val symbolRequirements: SymbolRequirement = Emitter.symbolRequirements(
-    semantics,
-    outputMode.esLevel)
+  val symbolRequirements: SymbolRequirement = Emitter
+    .symbolRequirements(semantics, outputMode.esLevel)
 
   // Private API for the Closure backend (could be opened if necessary)
   private[backend] def withOptimizeBracketSelects(
@@ -151,8 +150,9 @@ final class Emitter private (
     }
 
     if (linkedClass.hasInstances && kind.isAnyScalaJSDefinedClass) {
-      val ctor = classTreeCache.constructor.getOrElseUpdate(
-        classEmitter.genConstructor(linkedClass))
+      val ctor = classTreeCache
+        .constructor
+        .getOrElseUpdate(classEmitter.genConstructor(linkedClass))
 
       // Normal methods
       val memberMethods =
@@ -166,8 +166,9 @@ final class Emitter private (
           }
 
       // Exported Members
-      val exportedMembers = classTreeCache.exportedMembers.getOrElseUpdate(
-        classEmitter.genExportedMembers(linkedClass))
+      val exportedMembers = classTreeCache
+        .exportedMembers
+        .getOrElseUpdate(classEmitter.genExportedMembers(linkedClass))
 
       outputMode match {
         case OutputMode.ECMAScript51Global | OutputMode.ECMAScript51Isolated =>
@@ -204,31 +205,39 @@ final class Emitter private (
 
     if (classEmitter.needInstanceTests(linkedClass)) {
       addTree(
-        classTreeCache.instanceTests.getOrElseUpdate(
-          js.Block(
-            classEmitter.genInstanceTests(linkedClass),
-            classEmitter.genArrayInstanceTests(linkedClass))(linkedClass.pos)))
+        classTreeCache
+          .instanceTests
+          .getOrElseUpdate(
+            js.Block(
+              classEmitter.genInstanceTests(linkedClass),
+              classEmitter
+                .genArrayInstanceTests(linkedClass))(linkedClass.pos)))
     }
 
     if (linkedClass.hasRuntimeTypeInfo) {
       addTree(
-        classTreeCache.typeData.getOrElseUpdate(
-          classEmitter.genTypeData(linkedClass)))
+        classTreeCache
+          .typeData
+          .getOrElseUpdate(classEmitter.genTypeData(linkedClass)))
     }
 
-    if (linkedClass.hasInstances && kind.isClass && linkedClass.hasRuntimeTypeInfo)
+    if (linkedClass.hasInstances && kind.isClass && linkedClass
+          .hasRuntimeTypeInfo)
       addTree(
-        classTreeCache.setTypeData.getOrElseUpdate(
-          classEmitter.genSetTypeData(linkedClass)))
+        classTreeCache
+          .setTypeData
+          .getOrElseUpdate(classEmitter.genSetTypeData(linkedClass)))
 
     if (linkedClass.kind.hasModuleAccessor)
       addTree(
-        classTreeCache.moduleAccessor.getOrElseUpdate(
-          classEmitter.genModuleAccessor(linkedClass)))
+        classTreeCache
+          .moduleAccessor
+          .getOrElseUpdate(classEmitter.genModuleAccessor(linkedClass)))
 
     addTree(
-      classTreeCache.classExports.getOrElseUpdate(
-        classEmitter.genClassExports(linkedClass)))
+      classTreeCache
+        .classExports
+        .getOrElseUpdate(classEmitter.genClassExports(linkedClass)))
   }
 
   // Helpers

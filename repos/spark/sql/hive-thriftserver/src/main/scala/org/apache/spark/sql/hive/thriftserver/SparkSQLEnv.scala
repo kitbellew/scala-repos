@@ -38,8 +38,8 @@ private[hive] object SparkSQLEnv extends Logging {
     if (hiveContext == null) {
       val sparkConf = new SparkConf(loadDefaults = true)
       val maybeSerializer = sparkConf.getOption("spark.serializer")
-      val maybeKryoReferenceTracking = sparkConf.getOption(
-        "spark.kryo.referenceTracking")
+      val maybeKryoReferenceTracking = sparkConf
+        .getOption("spark.kryo.referenceTracking")
       // If user doesn't specify the appName, we want to get [SparkSQL::localHostName] instead of
       // the default appName [SparkSQLCLIDriver] in cli or beeline.
       val maybeAppName = sparkConf
@@ -51,8 +51,8 @@ private[hive] object SparkSQLEnv extends Logging {
           maybeAppName.getOrElse(s"SparkSQL::${Utils.localHostName()}"))
         .set(
           "spark.serializer",
-          maybeSerializer.getOrElse(
-            "org.apache.spark.serializer.KryoSerializer"))
+          maybeSerializer
+            .getOrElse("org.apache.spark.serializer.KryoSerializer"))
         .set(
           "spark.kryo.referenceTracking",
           maybeKryoReferenceTracking.getOrElse("false"))
@@ -61,22 +61,30 @@ private[hive] object SparkSQLEnv extends Logging {
       sparkContext.addSparkListener(new StatsReportListener())
       hiveContext = new HiveContext(sparkContext)
 
-      hiveContext.metadataHive.setOut(
-        new PrintStream(System.out, true, "UTF-8"))
-      hiveContext.metadataHive.setInfo(
-        new PrintStream(System.err, true, "UTF-8"))
-      hiveContext.metadataHive.setError(
-        new PrintStream(System.err, true, "UTF-8"))
+      hiveContext
+        .metadataHive
+        .setOut(new PrintStream(System.out, true, "UTF-8"))
+      hiveContext
+        .metadataHive
+        .setInfo(new PrintStream(System.err, true, "UTF-8"))
+      hiveContext
+        .metadataHive
+        .setError(new PrintStream(System.err, true, "UTF-8"))
 
-      hiveContext.setConf(
-        "spark.sql.hive.version",
-        HiveContext.hiveExecutionVersion)
+      hiveContext
+        .setConf("spark.sql.hive.version", HiveContext.hiveExecutionVersion)
 
       if (log.isDebugEnabled) {
-        hiveContext.hiveconf.getAllProperties.asScala.toSeq.sorted.foreach {
-          case (k, v) =>
-            logDebug(s"HiveConf var: $k=$v")
-        }
+        hiveContext
+          .hiveconf
+          .getAllProperties
+          .asScala
+          .toSeq
+          .sorted
+          .foreach {
+            case (k, v) =>
+              logDebug(s"HiveConf var: $k=$v")
+          }
       }
     }
   }

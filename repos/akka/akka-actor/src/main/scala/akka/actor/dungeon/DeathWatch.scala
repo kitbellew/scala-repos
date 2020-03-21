@@ -55,7 +55,8 @@ private[akka] trait DeathWatch {
 
   protected def receivedTerminated(t: Terminated): Unit =
     if (terminatedQueued(t.actor)) {
-      terminatedQueued -= t.actor // here we know that it is the SAME ref which was put in
+      terminatedQueued -= t
+        .actor // here we know that it is the SAME ref which was put in
       receiveMessage(t)
     }
 
@@ -72,9 +73,8 @@ private[akka] trait DeathWatch {
         watching = removeFromSet(actor, watching)
       }
       if (!isTerminating) {
-        self.tell(
-          Terminated(actor)(existenceConfirmed, addressTerminated),
-          actor)
+        self
+          .tell(Terminated(actor)(existenceConfirmed, addressTerminated), actor)
         terminatedQueuedFor(actor)
       }
     }

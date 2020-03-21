@@ -117,7 +117,8 @@ object Modules {
         None
       else
         try {
-          val defaultModuleClass = environment.classLoader
+          val defaultModuleClass = environment
+            .classLoader
             .loadClass(DefaultModuleName)
             .asInstanceOf[Class[Any]]
           Some(
@@ -131,14 +132,19 @@ object Modules {
             None
         }
 
-    moduleClassNames.map { className =>
-      constructModule(
-        environment,
-        configuration,
-        className,
-        () =>
-          environment.classLoader.loadClass(className).asInstanceOf[Class[Any]])
-    }.toSeq ++ defaultModule
+    moduleClassNames
+      .map { className =>
+        constructModule(
+          environment,
+          configuration,
+          className,
+          () =>
+            environment
+              .classLoader
+              .loadClass(className)
+              .asInstanceOf[Class[Any]])
+      }
+      .toSeq ++ defaultModule
   }
 
   private def constructModule[T](

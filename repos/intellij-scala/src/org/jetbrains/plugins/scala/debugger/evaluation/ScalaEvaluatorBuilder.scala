@@ -159,7 +159,8 @@ private[evaluation] class ScalaEvaluatorBuilder(
   }
 
   def fragmentEvaluator(fragment: ScalaCodeFragment): Evaluator = {
-    val childrenEvaluators = fragment.children
+    val childrenEvaluators = fragment
+      .children
       .filter(!_.isInstanceOf[ScImportStmt])
       .collect {
         case e @ (_: ScBlockStatement | _: ScMember) =>

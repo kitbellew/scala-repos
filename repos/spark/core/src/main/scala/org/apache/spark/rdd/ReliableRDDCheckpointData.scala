@@ -64,12 +64,17 @@ private[spark] class ReliableRDDCheckpointData[T: ClassTag](
     val newRDD = ReliableCheckpointRDD.writeRDDToCheckpointDirectory(rdd, cpDir)
 
     // Optionally clean our checkpoint files if the reference is out of scope
-    if (rdd.conf.getBoolean(
-          "spark.cleaner.referenceTracking.cleanCheckpoints",
-          false)) {
-      rdd.context.cleaner.foreach { cleaner =>
-        cleaner.registerRDDCheckpointDataForCleanup(newRDD, rdd.id)
-      }
+    if (rdd
+          .conf
+          .getBoolean(
+            "spark.cleaner.referenceTracking.cleanCheckpoints",
+            false)) {
+      rdd
+        .context
+        .cleaner
+        .foreach { cleaner =>
+          cleaner.registerRDDCheckpointDataForCleanup(newRDD, rdd.id)
+        }
     }
 
     logInfo(
@@ -83,9 +88,11 @@ private[spark] object ReliableRDDCheckpointData extends Logging {
 
   /** Return the path of the directory to which this RDD's checkpoint data is written. */
   def checkpointPath(sc: SparkContext, rddId: Int): Option[Path] = {
-    sc.checkpointDir.map { dir =>
-      new Path(dir, s"rdd-$rddId")
-    }
+    sc
+      .checkpointDir
+      .map { dir =>
+        new Path(dir, s"rdd-$rddId")
+      }
   }
 
   /** Clean up the files associated with the checkpoint data for this RDD. */

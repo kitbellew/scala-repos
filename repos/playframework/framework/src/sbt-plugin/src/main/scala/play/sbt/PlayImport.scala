@@ -33,7 +33,8 @@ object PlayImport {
   def anorm =
     movedExternal(
       """Anorm has been moved to an external module.
-      |See https://playframework.com/documentation/2.4.x/Migration24 for details.""".stripMargin)
+      |See https://playframework.com/documentation/2.4.x/Migration24 for details."""
+        .stripMargin)
 
   val javaCore = component("play-java")
 
@@ -42,7 +43,8 @@ object PlayImport {
   def javaEbean =
     movedExternal(
       """Play ebean module has been replaced with an external Play ebean plugin.
-      |See https://playframework.com/documentation/2.4.x/Migration24 for details.""".stripMargin)
+      |See https://playframework.com/documentation/2.4.x/Migration24 for details."""
+        .stripMargin)
 
   val javaJpa = component("play-java-jpa")
 

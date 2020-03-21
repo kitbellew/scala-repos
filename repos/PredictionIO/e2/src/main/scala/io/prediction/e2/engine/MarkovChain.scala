@@ -32,12 +32,14 @@ object MarkovChain {
     */
   def train(matrix: CoordinateMatrix, topN: Int): MarkovChainModel = {
     val noOfStates = matrix.numCols().toInt
-    val transitionVectors = matrix.entries
+    val transitionVectors = matrix
+      .entries
       .keyBy(_.i.toInt)
       .groupByKey()
       .mapValues { rowEntries =>
         val total = rowEntries.map(_.value).sum
-        val sortedTopN = rowEntries.toSeq
+        val sortedTopN = rowEntries
+          .toSeq
           .sortBy(_.value)(Ordering.Double.reverse)
           .take(topN)
           .map(me => (me.j.toInt, me.value / total))
@@ -73,9 +75,11 @@ case class MarkovChainModel(
     val nextStateVectors = transitionVectors
       .map {
         case (rowIndex, vector) =>
-          val values = vector.indices.map { index =>
-            vector(index) * currentState(rowIndex)
-          }
+          val values = vector
+            .indices
+            .map { index =>
+              vector(index) * currentState(rowIndex)
+            }
 
           Vectors.sparse(currentState.size, vector.indices, values)
       }
@@ -83,9 +87,11 @@ case class MarkovChainModel(
 
     // sum up to get the total probabilities
     (0 until currentState.size).map { index =>
-      nextStateVectors.map { vector =>
-        vector(index)
-      }.sum
+      nextStateVectors
+        .map { vector =>
+          vector(index)
+        }
+        .sum
     }
   }
 }

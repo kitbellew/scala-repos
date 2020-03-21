@@ -79,9 +79,8 @@ trait GenJSExports extends SubComponent {
       } else {
         val exports =
           for {
-            (jsName, specs) <- ctorExports.groupBy(
-              _._1.jsName
-            ) // group by exported name
+            (jsName, specs) <- ctorExports
+              .groupBy(_._1.jsName) // group by exported name
           } yield {
             val (namedExports, normalExports) = specs.partition(_._1.isNamed)
 
@@ -162,18 +161,16 @@ trait GenJSExports extends SubComponent {
         pos: Position) = {
 
       if (hasRepeatedParam(trgSym)) {
-        reporter.error(
-          pos,
-          "You may not name-export a method with a *-parameter")
+        reporter
+          .error(pos, "You may not name-export a method with a *-parameter")
       }
 
       val jsArgs =
         for {
           (pSym, index) <- trgSym.info.params.zipWithIndex
         } yield {
-          val rhs = js.JSBracketSelect(
-            inArg,
-            js.StringLiteral(pSym.name.decoded))
+          val rhs = js
+            .JSBracketSelect(inArg, js.StringLiteral(pSym.name.decoded))
           js.VarDef(
             js.Ident("namedArg$" + index),
             jstpe.AnyType,
@@ -201,8 +198,9 @@ trait GenJSExports extends SubComponent {
       val (jsName, isProp) = jsInterop.jsExportInfo(name)
 
       // Check if we have a conflicting export of the other kind
-      val conflicting = classSym.info.member(
-        jsInterop.scalaExportName(jsName, !isProp))
+      val conflicting = classSym
+        .info
+        .member(jsInterop.scalaExportName(jsName, !isProp))
 
       if (conflicting != NoSymbol) {
         val kind =
@@ -593,8 +591,8 @@ trait GenJSExports extends SubComponent {
 
         if (!alt.isClassConstructor) {
           // get parameter type while resolving repeated params
-          if (paramsTypesUncurry.size <= paramIndex || isRepeatedUncurry(
-                paramIndex)) {
+          if (paramsTypesUncurry
+                .size <= paramIndex || isRepeatedUncurry(paramIndex)) {
             assert(isRepeatedUncurry.last)
             repeatedToSingle(paramsTypesUncurry.last)
           } else {
@@ -710,8 +708,9 @@ trait GenJSExports extends SubComponent {
       }
 
       // normal arguments
-      val jsArgRefs = (1 to normalArgc).toList.map(i =>
-        genFormalArgRef(i, minArgc))
+      val jsArgRefs = (1 to normalArgc)
+        .toList
+        .map(i => genFormalArgRef(i, minArgc))
 
       // Generate JS code to prepare arguments (default getters and unboxes)
       val jsArgPrep = genPrepareArgs(jsArgRefs, sym) ++ jsVarArgPrep
@@ -766,8 +765,9 @@ trait GenJSExports extends SubComponent {
                     sym.owner
                   }
                 }
-                val defaultGetter = trgSym.tpe.member(
-                  nme.defaultGetterName(sym.name, i + 1))
+                val defaultGetter = trgSym
+                  .tpe
+                  .member(nme.defaultGetterName(sym.name, i + 1))
 
                 assert(
                   defaultGetter.exists,
@@ -953,8 +953,8 @@ trait GenJSExports extends SubComponent {
       else if (coll.tail.isEmpty)
         coll.head :: acc
       else {
-        val (lhs, rhs) = coll.span(x =>
-          !coll.forall(y => (x eq y) || !ord.lteq(f(x), f(y))))
+        val (lhs, rhs) = coll
+          .span(x => !coll.forall(y => (x eq y) || !ord.lteq(f(x), f(y))))
         assert(!rhs.isEmpty, s"cycle while ordering $coll")
         loop(lhs ::: rhs.tail, rhs.head :: acc)
       }

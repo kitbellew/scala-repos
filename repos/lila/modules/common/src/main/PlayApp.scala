@@ -30,14 +30,15 @@ object PlayApp {
       play.api.libs.concurrent.Akka.system
     }
 
-  lazy val langs =
-    loadConfig.getStringList("play.i18n.langs").toList map Lang.apply
+  lazy val langs = loadConfig.getStringList("play.i18n.langs").toList map Lang
+    .apply
 
   protected def loadMessages(file: String): Map[String, String] =
     withApp { app =>
       import scala.collection.JavaConverters._
       import play.utils.Resources
-      app.classloader
+      app
+        .classloader
         .getResources(file)
         .asScala
         .toList

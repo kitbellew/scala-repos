@@ -514,10 +514,13 @@ sealed abstract class LDAModel private[ml] (
     */
   @Since("1.6.0")
   def describeTopics(maxTermsPerTopic: Int): DataFrame = {
-    val topics = getModel.describeTopics(maxTermsPerTopic).zipWithIndex.map {
-      case ((termIndices, termWeights), topic) =>
-        (topic, termIndices.toSeq, termWeights.toSeq)
-    }
+    val topics = getModel
+      .describeTopics(maxTermsPerTopic)
+      .zipWithIndex
+      .map {
+        case ((termIndices, termWeights), topic) =>
+          (topic, termIndices.toSeq, termWeights.toSeq)
+      }
     sqlContext
       .createDataFrame(topics)
       .toDF("topic", "termIndices", "termWeights")
@@ -596,7 +599,8 @@ object LocalLDAModel extends MLReadable[LocalLDAModel] {
     override def load(path: String): LocalLDAModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
+      val data = sqlContext
+        .read
         .parquet(dataPath)
         .select(
           "vocabSize",

@@ -65,8 +65,8 @@ package root {
         request: RequestHeader,
         statusCode: Int,
         message: String) = {
-      Future.successful(
-        Status(statusCode)("A client error occurred: " + message))
+      Future
+        .successful(Status(statusCode)("A client error occurred: " + message))
     }
 
     def onServerError(request: RequestHeader, exception: Throwable) = {
@@ -103,8 +103,8 @@ package default {
     }
 
     override def onForbidden(request: RequestHeader, message: String) = {
-      Future.successful(
-        Forbidden("You're not allowed to access this resource."))
+      Future
+        .successful(Forbidden("You're not allowed to access this resource."))
     }
   }
 //#default

@@ -174,13 +174,15 @@ object ShuffleExchange {
     val conf = SparkEnv.get.conf
     val shuffleManager = SparkEnv.get.shuffleManager
     val sortBasedShuffleOn = shuffleManager.isInstanceOf[SortShuffleManager]
-    val bypassMergeThreshold = conf.getInt(
-      "spark.shuffle.sort.bypassMergeThreshold",
-      200)
+    val bypassMergeThreshold = conf
+      .getInt("spark.shuffle.sort.bypassMergeThreshold", 200)
     if (sortBasedShuffleOn) {
-      val bypassIsSupported = SparkEnv.get.shuffleManager
+      val bypassIsSupported = SparkEnv
+        .get
+        .shuffleManager
         .isInstanceOf[SortShuffleManager]
-      if (bypassIsSupported && partitioner.numPartitions <= bypassMergeThreshold) {
+      if (bypassIsSupported && partitioner
+            .numPartitions <= bypassMergeThreshold) {
         // If we're using the original SortShuffleManager and the number of output partitions is
         // sufficiently small, then Spark will fall back to the hash-based shuffle write path, which
         // doesn't buffer deserialized records.
@@ -262,9 +264,8 @@ object ShuffleExchange {
             position
           }
         case h: HashPartitioning =>
-          val projection = UnsafeProjection.create(
-            h.partitionIdExpression :: Nil,
-            outputAttributes)
+          val projection = UnsafeProjection
+            .create(h.partitionIdExpression :: Nil, outputAttributes)
           row => projection(row).getInt(0)
         case RangePartitioning(_, _) | SinglePartition =>
           identity

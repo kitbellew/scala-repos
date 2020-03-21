@@ -22,7 +22,8 @@ object ExpandLibJarsGlobs {
   def apply(inputArgs: Array[String]): Array[String] = {
     // First we are going to expand out the libjars if we find it
     val libJarsIdx = inputArgs.indexOf("-libjars") + 1
-    if (libJarsIdx > 0 && libJarsIdx < inputArgs.length) { // 0 would mean we never found -libjars
+    if (libJarsIdx > 0 && libJarsIdx < inputArgs
+          .length) { // 0 would mean we never found -libjars
       val newArgs = new Array[String](inputArgs.length)
       System.arraycopy(inputArgs, 0, newArgs, 0, inputArgs.length)
 

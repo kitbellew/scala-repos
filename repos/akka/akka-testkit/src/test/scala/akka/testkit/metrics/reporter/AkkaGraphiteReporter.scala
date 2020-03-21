@@ -31,10 +31,8 @@ class AkkaGraphiteReporter(
   private final val ConsoleWidth = 80
 
   val locale = Locale.getDefault
-  val dateFormat = DateFormat.getDateTimeInstance(
-    DateFormat.SHORT,
-    DateFormat.MEDIUM,
-    locale)
+  val dateFormat = DateFormat
+    .getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, locale)
   val clock = Clock.defaultClock()
 
   override def report(
@@ -50,10 +48,9 @@ class AkkaGraphiteReporter(
     val hdrHistograms = registry.getHdrHistograms
     val averagingGauges = registry.getAveragingGauges
 
-    val metricsCount =
-      List(gauges, counters, histograms, meters, timers).map(_.size).sum + List(
-        knownOpsInTimespanCounters,
-        hdrHistograms).map(_.size).sum
+    val metricsCount = List(gauges, counters, histograms, meters, timers)
+      .map(_.size)
+      .sum + List(knownOpsInTimespanCounters, hdrHistograms).map(_.size).sum
     sendWithBanner(
       "== AkkaGraphiteReporter @ " + dateTime + " == (" + metricsCount + " metrics)",
       '=')
@@ -176,8 +173,9 @@ class AkkaGraphiteReporter(
       graphite.close()
     } catch {
       case ex: Exception ⇒
-        System.err.println(
-          "Was unable to close Graphite connection: " + ex.getMessage)
+        System
+          .err
+          .println("Was unable to close Graphite connection: " + ex.getMessage)
     }
 
   private def sendNumericOrIgnore(key: String, value: Any, now: Long) {

@@ -35,10 +35,12 @@ class SbtCompiler(
 
     val analysisStore = fileToStore(compilationData.cacheFile)
     val (previousAnalysis, previousSetup) = {
-      analysisStore.get().map {
-        case (a, s) =>
-          (a, Some(s))
-      } getOrElse {
+      analysisStore
+        .get()
+        .map {
+          case (a, s) =>
+            (a, Some(s))
+        } getOrElse {
         (Analysis.Empty, None)
       }
     }
@@ -47,21 +49,24 @@ class SbtCompiler(
     val reporter = getReporter(client)
     val logger = getLogger(client)
 
-    val outputToAnalysisMap = compilationData.outputToCacheMap.map {
-      case (output, cache) =>
-        val analysis = fileToStore(cache)
-          .get()
-          .map(_._1)
-          .getOrElse(Analysis.Empty)
-        (output, analysis)
-    }
+    val outputToAnalysisMap = compilationData
+      .outputToCacheMap
+      .map {
+        case (output, cache) =>
+          val analysis = fileToStore(cache)
+            .get()
+            .map(_._1)
+            .getOrElse(Analysis.Empty)
+          (output, analysis)
+      }
 
     val incOptions =
       compilationData.sbtIncOptions match {
         case None =>
           IncOptions.Default
         case Some(opt) =>
-          IncOptions.Default
+          IncOptions
+            .Default
             .withNameHashing(opt.nameHashing)
             .withRecompileOnMacroDef(opt.recompileOnMacroDef)
             .withTransitiveStep(opt.transitiveStep)

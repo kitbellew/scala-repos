@@ -37,7 +37,8 @@ object Docs {
           "snapshot"
         else
           "public"
-      Path.userHome / ".sbt" / "ghpages" / status / organization.value / name.value
+      Path.userHome / ".sbt" / "ghpages" / status / organization.value / name
+        .value
     }
 
   def siteIncludeSxr(prefix: String) =

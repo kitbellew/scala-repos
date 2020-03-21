@@ -311,13 +311,15 @@ class FramingSpec extends FreeSpec with Matchers with WithMaterializerSpec {
     parseMultipleTo(events: _*).compose(Seq(_))
 
   private def parseMultipleTo(events: FrameEvent*): Matcher[Seq[ByteString]] =
-    equal(events).matcher[Seq[FrameEvent]].compose { (chunks: Seq[ByteString]) ⇒
-      val result = parseToEvents(chunks)
-      result shouldEqual events
-      val rendered = renderToByteString(result)
-      rendered shouldEqual chunks.reduce(_ ++ _)
-      result
-    }
+    equal(events)
+      .matcher[Seq[FrameEvent]]
+      .compose { (chunks: Seq[ByteString]) ⇒
+        val result = parseToEvents(chunks)
+        result shouldEqual events
+        val rendered = renderToByteString(result)
+        rendered shouldEqual chunks.reduce(_ ++ _)
+        result
+      }
 
   private def parseToEvents(bytes: Seq[ByteString]): immutable.Seq[FrameEvent] =
     Source(bytes.toVector)

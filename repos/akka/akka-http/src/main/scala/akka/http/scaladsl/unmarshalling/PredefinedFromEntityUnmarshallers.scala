@@ -51,8 +51,9 @@ trait PredefinedFromEntityUnmarshallers extends MultipartUnmarshallers {
       MediaTypes.`application/x-www-form-urlencoded`)
   def urlEncodedFormDataUnmarshaller(
       ranges: ContentTypeRange*): FromEntityUnmarshaller[FormData] =
-    stringUnmarshaller.forContentTypes(ranges: _*).mapWithInput {
-      (entity, string) ⇒
+    stringUnmarshaller
+      .forContentTypes(ranges: _*)
+      .mapWithInput { (entity, string) ⇒
         if (entity.isKnownEmpty)
           FormData.Empty
         else {
@@ -66,7 +67,7 @@ trait PredefinedFromEntityUnmarshallers extends MultipartUnmarshallers {
                 info.formatPretty.replace("Query,", "form content,"))
           }
         }
-    }
+      }
 }
 
 object PredefinedFromEntityUnmarshallers

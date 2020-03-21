@@ -42,9 +42,11 @@ class EndToEndTest
   // turn off failure detector since we don't need it for these tests.
   override def test(testName: String, testTags: Tag*)(f: => Unit) {
     super.test(testName, testTags: _*) {
-      mux.sessionFailureDetector.let("none") {
-        f
-      }
+      mux
+        .sessionFailureDetector
+        .let("none") {
+          f
+        }
     }
   }
 
@@ -97,9 +99,8 @@ class EndToEndTest
     Dtab.unwind {
       Dtab.local ++= Dtab.read("/foo=>/bar; /web=>/$/inet/twitter.com/80")
       for (n <- 0 until 2) {
-        val rsp = Await.result(
-          client(Request(Path.empty, Buf.Empty)),
-          30.seconds)
+        val rsp = Await
+          .result(client(Request(Path.empty, Buf.Empty)), 30.seconds)
         val Buf.Utf8(str) = rsp.body
         assert(
           str == "Dtab(2)\n\t/foo => /bar\n\t/web => /$/inet/twitter.com/80\n")
@@ -144,7 +145,8 @@ class EndToEndTest
     var count: Int = 0
     var client: Service[Request, Response] = null
 
-    val server = Mux.server
+    val server = Mux
+      .server
       .configured(param.Tracer(tracer))
       .configured(param.Label("theServer"))
       .serve(
@@ -159,7 +161,8 @@ class EndToEndTest
           }
         })
 
-    client = Mux.client
+    client = Mux
+      .client
       .configured(param.Tracer(tracer))
       .configured(param.Label("theClient"))
       .newService(server)
@@ -332,7 +335,8 @@ EOF
       }
       val lessor = new FakeLessor
 
-      val server = Mux.server
+      val server = Mux
+        .server
         .configured(Lessor.Param(lessor))
         .serve(
           "localhost:*",
@@ -348,27 +352,33 @@ EOF
         assert(fclient.isDefined)
       }
 
-      val Some((_, available)) = sr.gauges.find {
-        case (_ +: Seq("loadbalancer", "available"), value) =>
-          true
-        case _ =>
-          false
-      }
-
-      val Some((_, leaseDuration)) = sr.gauges.find {
-        case (_ +: Seq("mux", "current_lease_ms"), value) =>
-          true
-        case _ =>
-          false
-      }
-
-      val leaseCtr: () => Int = { () =>
-        val Some((_, ctr)) = sr.counters.find {
-          case (_ +: Seq("mux", "leased"), value) =>
+      val Some((_, available)) = sr
+        .gauges
+        .find {
+          case (_ +: Seq("loadbalancer", "available"), value) =>
             true
           case _ =>
             false
         }
+
+      val Some((_, leaseDuration)) = sr
+        .gauges
+        .find {
+          case (_ +: Seq("mux", "current_lease_ms"), value) =>
+            true
+          case _ =>
+            false
+        }
+
+      val leaseCtr: () => Int = { () =>
+        val Some((_, ctr)) = sr
+          .counters
+          .find {
+            case (_ +: Seq("mux", "leased"), value) =>
+              true
+            case _ =>
+              false
+          }
         ctr
       }
       def format(duration: Duration): Float = duration.inMilliseconds.toFloat
@@ -412,12 +422,14 @@ EOF
         def apply(req: Request) =
           Future.value(Response(req.body.concat(req.body)))
       }
-    val server = Mux.server
+    val server = Mux
+      .server
       .withLabel("server")
       .withStatsReceiver(sr)
       .serve("localhost:*", service)
 
-    val client = Mux.client
+    val client = Mux
+      .client
       .withLabel("client")
       .withStatsReceiver(sr)
       .newService(server)

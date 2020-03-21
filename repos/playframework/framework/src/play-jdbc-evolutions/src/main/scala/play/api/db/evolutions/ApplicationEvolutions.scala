@@ -34,8 +34,8 @@ class ApplicationEvolutions @Inject() (
     */
   def start(): Unit = {
 
-    webCommands.addHandler(
-      new EvolutionsWebCommands(evolutions, reader, config))
+    webCommands
+      .addHandler(new EvolutionsWebCommands(evolutions, reader, config))
 
     // allow db modules to write evolution files
     dynamicEvolutions.create()
@@ -366,33 +366,35 @@ class DefaultEvolutionsConfigParser @Inject() (configuration: Configuration)
     // Since not all the datasources will necessarily appear in the db map, because some will come from deprecated
     // configuration, we create a map of them to the default config, and then override any of them with the ones
     // from db.
-    val datasourceConfigMap =
-      datasources.map(_ -> config).toMap ++ config.getPrototypedMap("db", "")
+    val datasourceConfigMap = datasources.map(_ -> config).toMap ++ config
+      .getPrototypedMap("db", "")
     val datasourceConfig =
-      datasourceConfigMap.map {
-        case (datasource, dsConfig) =>
-          val enabled = dsConfig.get[Boolean]("enabled")
-          val schema = dsConfig.get[String]("schema")
-          val autocommit = dsConfig.get[Boolean]("autocommit")
-          val useLocks = dsConfig.get[Boolean]("useLocks")
-          val autoApply = getDeprecated[Boolean](
-            dsConfig,
-            s"play.evolutions.db.$datasource",
-            "autoApply",
-            s"applyEvolutions.$datasource")
-          val autoApplyDowns = getDeprecated[Boolean](
-            dsConfig,
-            s"play.evolutions.db.$datasource",
-            "autoApplyDowns",
-            s"applyDownEvolutions.$datasource")
-          datasource -> new DefaultEvolutionsDatasourceConfig(
-            enabled,
-            schema,
-            autocommit,
-            useLocks,
-            autoApply,
-            autoApplyDowns)
-      }.toMap
+      datasourceConfigMap
+        .map {
+          case (datasource, dsConfig) =>
+            val enabled = dsConfig.get[Boolean]("enabled")
+            val schema = dsConfig.get[String]("schema")
+            val autocommit = dsConfig.get[Boolean]("autocommit")
+            val useLocks = dsConfig.get[Boolean]("useLocks")
+            val autoApply = getDeprecated[Boolean](
+              dsConfig,
+              s"play.evolutions.db.$datasource",
+              "autoApply",
+              s"applyEvolutions.$datasource")
+            val autoApplyDowns = getDeprecated[Boolean](
+              dsConfig,
+              s"play.evolutions.db.$datasource",
+              "autoApplyDowns",
+              s"applyDownEvolutions.$datasource")
+            datasource -> new DefaultEvolutionsDatasourceConfig(
+              enabled,
+              schema,
+              autocommit,
+              useLocks,
+              autoApply,
+              autoApplyDowns)
+        }
+        .toMap
 
     new DefaultEvolutionsConfig(defaultConfig, datasourceConfig)
   }
@@ -403,9 +405,11 @@ class DefaultEvolutionsConfigParser @Inject() (configuration: Configuration)
   def enabledKeys(
       configuration: Configuration,
       section: String): Set[String] = {
-    configuration.getConfig(section).fold(Set.empty[String]) { conf =>
-      conf.keys.filter(conf.getBoolean(_).getOrElse(false))
-    }
+    configuration
+      .getConfig(section)
+      .fold(Set.empty[String]) { conf =>
+        conf.keys.filter(conf.getBoolean(_).getOrElse(false))
+      }
   }
 }
 
@@ -434,22 +438,22 @@ class EvolutionsWebCommands @Inject() (
     val resolveEvolutions =
       """/@evolutions/resolve/([a-zA-Z0-9_]+)/([0-9]+)""".r
 
-    lazy val redirectUrl = request.queryString
+    lazy val redirectUrl = request
+      .queryString
       .get("redirect")
       .filterNot(_.isEmpty)
       .map(_.head)
       .getOrElse("/")
 
     // Regex removes all parent directories from request path
-    request.path
+    request
+      .path
       .replaceFirst("^((?!/@evolutions).)*(/@evolutions.*$)", "$2") match {
 
       case applyEvolutions(db) => {
         Some {
-          val scripts = evolutions.scripts(
-            db,
-            reader,
-            config.forDatasource(db).schema)
+          val scripts = evolutions
+            .scripts(db, reader, config.forDatasource(db).schema)
           evolutions.evolve(
             db,
             scripts,

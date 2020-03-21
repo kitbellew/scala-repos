@@ -73,10 +73,14 @@ case class OAuth(info: ServiceInfo, use10a: Boolean = true) {
     * @param token request token
     */
   def redirectUrl(token: String): String = {
-    _root_.oauth.signpost.OAuth.addQueryParameters(
-      provider.getAuthorizationWebsiteUrl(),
-      _root_.oauth.signpost.OAuth.OAUTH_TOKEN,
-      token)
+    _root_
+      .oauth
+      .signpost
+      .OAuth
+      .addQueryParameters(
+        provider.getAuthorizationWebsiteUrl(),
+        _root_.oauth.signpost.OAuth.OAUTH_TOKEN,
+        token)
   }
 
 }

@@ -58,8 +58,8 @@ class MongoAPIKeyManagerSpec
   override def mongoStartupPause = Some(0L)
   val timeout = Duration(10, "seconds")
 
-  lazy val logger = LoggerFactory.getLogger(
-    "com.precog.common.security.MongoAPIKeyManagerSpec")
+  lazy val logger = LoggerFactory
+    .getLogger("com.precog.common.security.MongoAPIKeyManagerSpec")
 
   "mongo API key manager" should {
 
@@ -90,19 +90,15 @@ class MongoAPIKeyManagerSpec
     }
 
     "not find missing API key" in new TestAPIKeyManager {
-      val result = Await.result(
-        apiKeyManager.findAPIKey(notFoundAPIKeyID),
-        timeout)
+      val result = Await
+        .result(apiKeyManager.findAPIKey(notFoundAPIKeyID), timeout)
       result must beNone
     }
 
     "issue new API key" in new TestAPIKeyManager {
       val name = "newAPIKey"
-      val fResult = apiKeyManager.createAPIKey(
-        Some(name),
-        None,
-        rootAPIKey,
-        Set.empty)
+      val fResult = apiKeyManager
+        .createAPIKey(Some(name), None, rootAPIKey, Set.empty)
 
       val result = Await.result(fResult, timeout)
 
@@ -189,8 +185,8 @@ class MongoAPIKeyManagerSpec
   trait TestAPIKeyManager extends After {
     import MongoAPIKeyManagerSpec.dbId
     val defaultActorSystem = ActorSystem("apiKeyManagerTest")
-    implicit val execContext = ExecutionContext.defaultExecutionContext(
-      defaultActorSystem)
+    implicit val execContext = ExecutionContext
+      .defaultExecutionContext(defaultActorSystem)
 
     val dbName = "test_v1_" + dbId.getAndIncrement()
     val testDB =
@@ -216,7 +212,8 @@ class MongoAPIKeyManagerSpec
       new MongoAPIKeyManager(
         mongo,
         testDB,
-        MongoAPIKeyManagerSettings.defaults
+        MongoAPIKeyManagerSettings
+          .defaults
           .copy(rootKeyId = rootAPIKeyOrig.apiKey))
 
     val notFoundAPIKeyID = "NOT-GOING-TO-FIND"

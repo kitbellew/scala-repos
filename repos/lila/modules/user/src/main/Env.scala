@@ -62,7 +62,8 @@ final class Env(
     Props(
       new Actor {
         override def preStart() {
-          system.lilaBus
+          system
+            .lilaBus
             .subscribe(self, 'adjustCheater, 'adjustBooster, 'userActive)
         }
         def receive = {

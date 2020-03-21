@@ -114,14 +114,14 @@ object FieldSpec extends Specification {
         }
       }
 
-      "which have readable and writable boxed values" in S.initIfUninitted(
-        session) {
-        in.setBox(Full(example))
-        in.valueBox.isDefined must_== true
-        in.valueBox must_== Full(example)
-        in.clear
-        in.valueBox must_!= Full(example)
-      }
+      "which have readable and writable boxed values" in S
+        .initIfUninitted(session) {
+          in.setBox(Full(example))
+          in.valueBox.isDefined must_== true
+          in.valueBox must_== Full(example)
+          in.clear
+          in.valueBox must_!= Full(example)
+        }
 
       if (canCheckDefaultValues) {
         "which correctly clear back to the default box value" in S
@@ -145,9 +145,11 @@ object FieldSpec extends Specification {
         in.clear
         in match {
           case owned: OwnedField[_] =>
-            owned.owner.runSafe {
-              in.resetDirty
-            }
+            owned
+              .owner
+              .runSafe {
+                in.resetDirty
+              }
           case _ =>
             in.resetDirty
         }
@@ -432,7 +434,10 @@ object FieldSpec extends Specification {
   "DateTimeField with custom format" should {
     val rec = CustomFormatDateTimeRecord.createRecord
     val dt = Calendar.getInstance
-    val dtStr = rec.customFormatDateTimeField.formats.dateFormat
+    val dtStr = rec
+      .customFormatDateTimeField
+      .formats
+      .dateFormat
       .format(dt.getTime)
     passConversionTests(
       dt,
@@ -682,8 +687,9 @@ object FieldSpec extends Specification {
       val rec = PasswordTestRecord.createRecord.password("testpassword")
       rec.password.match_?("testpassword") must_== true
 
-      rec.password.set(
-        "$2a$10$6CJWdXpKoP8bVTjGH8SbKOWevNQVL8MkYVlBLmqtywVi7dp/YgPXC")
+      rec
+        .password
+        .set("$2a$10$6CJWdXpKoP8bVTjGH8SbKOWevNQVL8MkYVlBLmqtywVi7dp/YgPXC")
       rec.password.match_?("dummyPassw0rd") must_== true
     }
   }

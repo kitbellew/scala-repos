@@ -55,9 +55,11 @@ object RedisCluster {
     .addShutdownHook(
       new Thread {
         override def run() {
-          self.instanceStack.foreach { instance =>
-            instance.stop()
-          }
+          self
+            .instanceStack
+            .foreach { instance =>
+              instance.stop()
+            }
         }
       });
 }

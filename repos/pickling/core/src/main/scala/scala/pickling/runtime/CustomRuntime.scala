@@ -32,12 +32,13 @@ object CustomRuntime {
           builder.pinHints()
         }
 
-        (coll: Traversable[_]).asInstanceOf[Traversable[AnyRef]].foreach {
-          (elem: AnyRef) =>
+        (coll: Traversable[_])
+          .asInstanceOf[Traversable[AnyRef]]
+          .foreach { (elem: AnyRef) =>
             builder putElement { b =>
               elemPickler.pickle(elem, b)
             }
-        }
+          }
 
         builder.popHints()
         builder.endCollection()
@@ -54,7 +55,10 @@ object CustomRuntime {
         }
 
         val length = reader.readLength()
-        val newArray = java.lang.reflect.Array
+        val newArray = java
+          .lang
+          .reflect
+          .Array
           .newInstance(elemClass, length)
           .asInstanceOf[Array[AnyRef]]
 
@@ -80,7 +84,8 @@ object CustomRuntime {
               throw PicklingException(
                 s"""exception in unpickle of 'mkRuntimeTravPickler':
                                        |collTag: '${collTag.key}'
-                                       |elemTag: '${elemTag.key}'""".stripMargin,
+                                       |elemTag: '${elemTag.key}'"""
+                  .stripMargin,
                 Some(e)
               )
           }
@@ -130,7 +135,11 @@ class Tuple2RTPickler() extends AbstractPicklerUnpickler[(Any, Any)] {
         val tag = FastTypeTag
           .mkRaw(clazz, reflectRuntime.currentMirror)
           .asInstanceOf[FastTypeTag[Any]]
-        val pickler = scala.pickling.internal.currentRuntime.picklers
+        val pickler = scala
+          .pickling
+          .internal
+          .currentRuntime
+          .picklers
           .genPickler(clazz.getClassLoader, clazz, tag)
           .asInstanceOf[Pickler[Any]]
         (tag, pickler)
@@ -168,7 +177,9 @@ class Tuple2RTPickler() extends AbstractPicklerUnpickler[(Any, Any)] {
       if (reader1.atPrimitive) {
         reader1.readPrimitive()
       } else {
-        val unpickler1 = internal.currentRuntime.picklers
+        val unpickler1 = internal
+          .currentRuntime
+          .picklers
           .genUnpickler(reflectRuntime.currentMirror, tag1)
         try {
           unpickler1.unpickle(tag1, reader1)

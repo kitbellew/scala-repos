@@ -82,7 +82,8 @@ class BacktestingEvaluator(val params: BacktestingParams)
     val todayIdx = queryDate.idx
 
     // Decide enter / exit, also sort by pValue desc
-    val data = prediction.data
+    val data = prediction
+      .data
       .map {
         case (ticker, pValue) => {
           val dir =
@@ -111,11 +112,7 @@ class BacktestingEvaluator(val params: BacktestingParams)
 
   def evaluateAll(
       input: Seq[(DataParams, Seq[DailyResult])]): BacktestingResult = {
-    var dailyResultsSeq = input
-      .map(_._2)
-      .flatten
-      .toArray
-      .sortBy(_.dateIdx)
+    var dailyResultsSeq = input.map(_._2).flatten.toArray.sortBy(_.dateIdx)
 
     var rawData = input.head._1.rawDataB.value
     val retFrame = rawData._retFrame
@@ -139,26 +136,31 @@ class BacktestingEvaluator(val params: BacktestingParams)
       val todayPrice = priceFrame.rowAt(todayIdx)
 
       // Update price change
-      positions.keys.foreach { ticker =>
-        {
-          positions(ticker) *= todayRet.first(ticker).get
-        }
-      }
-
-      // Determine exit
-      daily.toExit.foreach { ticker =>
-        {
-          if (positions.contains(ticker)) {
-            val money = positions.remove(ticker).get
-            cash += money
+      positions
+        .keys
+        .foreach { ticker =>
+          {
+            positions(ticker) *= todayRet.first(ticker).get
           }
         }
-      }
+
+      // Determine exit
+      daily
+        .toExit
+        .foreach { ticker =>
+          {
+            if (positions.contains(ticker)) {
+              val money = positions.remove(ticker).get
+              cash += money
+            }
+          }
+        }
 
       // Determine enter
       val slack = maxPositions - positions.size
       val money = cash / slack
-      daily.toEnter
+      daily
+        .toEnter
         .filter(t => !positions.contains(t))
         .take(slack)
         .map { ticker =>
@@ -207,9 +209,11 @@ class BacktestingEvaluator(val params: BacktestingParams)
 
     val result = BacktestingResult(daily = dailyStats, overall = overall)
 
-    params.optOutputPath.map { path =>
-      MV.save(result, path)
-    }
+    params
+      .optOutputPath
+      .map { path =>
+        MV.save(result, path)
+      }
 
     result
   }

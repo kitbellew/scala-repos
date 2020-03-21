@@ -160,9 +160,7 @@ class QueueSourceSpec extends AkkaSpec {
       val probe = TestProbe()
       val queue = TestSourceStage(
         new QueueSource[Int](1, OverflowStrategy.dropHead),
-        probe)
-        .to(Sink.fromSubscriber(s))
-        .run()
+        probe).to(Sink.fromSubscriber(s)).run()
       val sub = s.expectSubscription
 
       sub.request(1)
@@ -190,10 +188,7 @@ class QueueSourceSpec extends AkkaSpec {
       expectMsg(QueueOfferResult.Enqueued)
       queue.complete()
 
-      probe
-        .request(6)
-        .expectNext(2, 3, 4, 5, 6)
-        .expectComplete()
+      probe.request(6).expectNext(2, 3, 4, 5, 6).expectComplete()
     }
 
     "complete watching future with failure if stream failed" in assertAllStagesStopped {
@@ -260,10 +255,12 @@ class QueueSourceSpec extends AkkaSpec {
       sub.cancel()
       expectMsg(Done)
 
-      queue.offer(1).onFailure {
-        case e ⇒
-          e.isInstanceOf[IllegalStateException] should ===(true)
-      }
+      queue
+        .offer(1)
+        .onFailure {
+          case e ⇒
+            e.isInstanceOf[IllegalStateException] should ===(true)
+        }
     }
 
     "not share future across materializations" in {
@@ -296,9 +293,7 @@ class QueueSourceSpec extends AkkaSpec {
           .run()
         source.complete()
         source.watchCompletion().futureValue should ===(Done)
-        probe
-          .ensureSubscription()
-          .expectComplete()
+        probe.ensureSubscription().expectComplete()
       }
 
       "buffer is full" in {
@@ -308,9 +303,7 @@ class QueueSourceSpec extends AkkaSpec {
           .run()
         source.offer(1)
         source.complete()
-        probe
-          .requestNext(1)
-          .expectComplete()
+        probe.requestNext(1).expectComplete()
         source.watchCompletion().futureValue should ===(Done)
       }
 
@@ -322,10 +315,7 @@ class QueueSourceSpec extends AkkaSpec {
         source.offer(1)
         source.offer(2)
         source.complete()
-        probe
-          .requestNext(1)
-          .requestNext(2)
-          .expectComplete()
+        probe.requestNext(1).requestNext(2).expectComplete()
         source.watchCompletion().futureValue should ===(Done)
       }
 
@@ -336,9 +326,7 @@ class QueueSourceSpec extends AkkaSpec {
           .run()
         source.complete()
         source.watchCompletion().futureValue should ===(Done)
-        probe
-          .ensureSubscription()
-          .expectComplete()
+        probe.ensureSubscription().expectComplete()
       }
 
       "no buffer is used and element is pending" in {
@@ -348,9 +336,7 @@ class QueueSourceSpec extends AkkaSpec {
           .run()
         source.offer(1)
         source.complete()
-        probe
-          .requestNext(1)
-          .expectComplete()
+        probe.requestNext(1).expectComplete()
         source.watchCompletion().futureValue should ===(Done)
       }
     }
@@ -365,9 +351,7 @@ class QueueSourceSpec extends AkkaSpec {
           .run()
         source.fail(ex)
         source.watchCompletion().failed.futureValue should ===(ex)
-        probe
-          .ensureSubscription()
-          .expectError(ex)
+        probe.ensureSubscription().expectError(ex)
       }
 
       "buffer is full" in {
@@ -378,9 +362,7 @@ class QueueSourceSpec extends AkkaSpec {
         source.offer(1)
         source.fail(ex)
         source.watchCompletion().failed.futureValue should ===(ex)
-        probe
-          .ensureSubscription()
-          .expectError(ex)
+        probe.ensureSubscription().expectError(ex)
       }
 
       "buffer is full and element is pending" in {
@@ -392,9 +374,7 @@ class QueueSourceSpec extends AkkaSpec {
         source.offer(2)
         source.fail(ex)
         source.watchCompletion().failed.futureValue should ===(ex)
-        probe
-          .ensureSubscription()
-          .expectError(ex)
+        probe.ensureSubscription().expectError(ex)
       }
 
       "no buffer is used" in {
@@ -404,9 +384,7 @@ class QueueSourceSpec extends AkkaSpec {
           .run()
         source.fail(ex)
         source.watchCompletion().failed.futureValue should ===(ex)
-        probe
-          .ensureSubscription()
-          .expectError(ex)
+        probe.ensureSubscription().expectError(ex)
       }
 
       "no buffer is used and element is pending" in {
@@ -417,9 +395,7 @@ class QueueSourceSpec extends AkkaSpec {
         source.offer(1)
         source.fail(ex)
         source.watchCompletion().failed.futureValue should ===(ex)
-        probe
-          .ensureSubscription()
-          .expectError(ex)
+        probe.ensureSubscription().expectError(ex)
       }
     }
 

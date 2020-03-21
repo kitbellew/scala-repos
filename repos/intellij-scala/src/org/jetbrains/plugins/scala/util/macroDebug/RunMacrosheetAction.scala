@@ -27,14 +27,16 @@ class RunMacrosheetAction extends AnAction with TopComponentAction {
       project: Project,
       defaultText: String = "",
       lang: Language = StdLanguages.TEXT): Editor = {
-    val editor = EditorFactory.getInstance.createViewer(
-      PsiDocumentManager
-        .getInstance(project)
-        .getDocument(
-          PsiFileFactory
-            .getInstance(project)
-            .createFileFromText("dummy", lang, defaultText)),
-      project)
+    val editor = EditorFactory
+      .getInstance
+      .createViewer(
+        PsiDocumentManager
+          .getInstance(project)
+          .getDocument(
+            PsiFileFactory
+              .getInstance(project)
+              .createFileFromText("dummy", lang, defaultText)),
+        project)
     editor setBorder null
     editor
   }
@@ -58,23 +60,26 @@ class RunMacrosheetAction extends AnAction with TopComponentAction {
         val project = e.getProject
 
         if (viewer != null) {
-          ApplicationManager.getApplication.invokeAndWait(
-            new Runnable {
-              override def run() {
-                extensions.inWriteAction {
-                  CleanWorksheetAction.resetScrollModel(viewer)
-                  CleanWorksheetAction
-                    .cleanWorksheet(file.getNode, editor, viewer, project)
+          ApplicationManager
+            .getApplication
+            .invokeAndWait(
+              new Runnable {
+                override def run() {
+                  extensions.inWriteAction {
+                    CleanWorksheetAction.resetScrollModel(viewer)
+                    CleanWorksheetAction
+                      .cleanWorksheet(file.getNode, editor, viewer, project)
+                  }
                 }
-              }
-            },
-            ModalityState.any()
-          )
+              },
+              ModalityState.any()
+            )
         }
 
         ScalaMacroDebuggingUtil.macrosToExpand.clear()
-        ScalaMacroDebuggingUtil.allMacroCalls.foreach(
-          ScalaMacroDebuggingUtil.macrosToExpand.add)
+        ScalaMacroDebuggingUtil
+          .allMacroCalls
+          .foreach(ScalaMacroDebuggingUtil.macrosToExpand.add)
         ScalaMacroDebuggingUtil.expandMacros(project)
 
       case _ =>

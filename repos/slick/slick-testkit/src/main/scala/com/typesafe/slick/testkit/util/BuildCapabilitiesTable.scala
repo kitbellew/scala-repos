@@ -55,14 +55,17 @@ object BuildCapabilitiesTable extends App {
   val capabilities =
     for {
       (caps, linkBase) <- profileCapabilities
-      cap <- caps.toVector.sortBy(c =>
-        if (c.toString.endsWith(".other"))
-          ""
-        else
-          c.toString)
+      cap <- caps
+        .toVector
+        .sortBy(c =>
+          if (c.toString.endsWith(".other"))
+            ""
+          else
+            c.toString)
     } yield (
       cap,
-      linkBase + cap.toString
+      linkBase + cap
+        .toString
         .replaceFirst(".*\\.", "") + ":slick.basic.Capability")
 
   val out = new FileOutputStream(args(0))

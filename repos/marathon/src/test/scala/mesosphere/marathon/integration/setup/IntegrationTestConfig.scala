@@ -70,7 +70,8 @@ object IntegrationTestConfig {
     * @return the detected location of the native mesos library.
     */
   private[this] def defaultMesosLibConfig: String = {
-    val javaLibraryPath = sys.props
+    val javaLibraryPath = sys
+      .props
       .getOrElse("java.library.path", "/usr/local/lib:/usr/lib:/usr/lib64")
     val mesos_dir = sys.env.get("MESOS_DIR").map(_ + "/lib").toStream
     val dirs =
@@ -84,10 +85,13 @@ object IntegrationTestConfig {
         new File(libDir, "libmesos.so"))
     }
 
-    libCandidates.find(_.exists()).map(_.getAbsolutePath).getOrElse {
-      throw new RuntimeException(
-        s"No mesos library found. Candidates: ${libCandidates.mkString(", ")}")
-    }
+    libCandidates
+      .find(_.exists())
+      .map(_.getAbsolutePath)
+      .getOrElse {
+        throw new RuntimeException(
+          s"No mesos library found. Candidates: ${libCandidates.mkString(", ")}")
+      }
   }
 
   def apply(config: ConfigMap): IntegrationTestConfig = {

@@ -67,23 +67,30 @@ class ScalaChangeSignatureUsageProcessor
               val inExistingClasses =
                 (clazz +: ScalaPsiUtil.getBaseCompanionModule(clazz).toSeq)
                   .flatMap(_.allSynthetics)
-              val inFakeCompanion = clazz.fakeCompanionModule.toSeq
+              val inFakeCompanion = clazz
+                .fakeCompanionModule
+                .toSeq
                 .flatMap(_.members)
               inExistingClasses ++ inFakeCompanion
             case _ =>
               Nil
           }
 
-        val overriders =
-          OverridingMethodsSearch.search(method).findAll.asScala.toSeq ++
-            ScalaOverridingMemberSearcher.search(method).toSeq
+        val overriders = OverridingMethodsSearch
+          .search(method)
+          .findAll
+          .asScala
+          .toSeq ++
+          ScalaOverridingMemberSearcher.search(method).toSeq
         val methods =
-          (method +: overriders ++: synthetics).map {
-            case isWrapper(m) =>
-              m
-            case other =>
-              other
-          }.distinct
+          (method +: overriders ++: synthetics)
+            .map {
+              case isWrapper(m) =>
+                m
+              case other =>
+                other
+            }
+            .distinct
 
         if (info.isParameterSetOrOrderChanged || info.isParameterNamesChanged) {
           methods.foreach {
@@ -151,10 +158,8 @@ class ScalaChangeSignatureUsageProcessor
               element.getParent.addAfter(newElement, element)
               element.delete()
             case _: ScVariableDeclaration | _: ScValueDeclaration =>
-              val newElement = ScalaPsiElementFactory.createDeclarationFromText(
-                text,
-                element.getContext,
-                element)
+              val newElement = ScalaPsiElementFactory
+                .createDeclarationFromText(text, element.getContext, element)
               element.getParent.addAfter(newElement, element)
               element.delete()
             case _ =>
@@ -182,7 +187,9 @@ class ScalaChangeSignatureUsageProcessor
 
       for {
         jc @ (_u: JavaCallUsageInfo) <- usages
-        call @ (_c: PsiMethodCallExpression) <- jc.getElement.toOption
+        call @ (_c: PsiMethodCallExpression) <- jc
+          .getElement
+          .toOption
           .map(_.getParent)
         exprs = call.getArgumentList.getExpressions
         (defaultArg @ (_d: PsiMethodCallExpression), idx) <- exprs.zipWithIndex
@@ -239,10 +246,8 @@ class ScalaChangeSignatureUsageProcessor
       case ScalaNamedElementUsageInfo(u: OverriderValUsageInfo) =>
         ConflictsUtil.addBindingPatternConflicts(u.namedElement, info, result)
       case javaOverriderUsage: OverriderUsageInfo =>
-        ConflictsUtil.addJavaOverriderConflicts(
-          javaOverriderUsage,
-          info,
-          result)
+        ConflictsUtil
+          .addJavaOverriderConflicts(javaOverriderUsage, info, result)
       case p: PatternUsageInfo =>
         ConflictsUtil.addUnapplyUsagesConflicts(p, info, result)
       case _ =>
@@ -346,7 +351,8 @@ class ScalaChangeSignatureUsageProcessor
       if parameters.length > oldIdx
       param = parameters(oldIdx)
       newName = paramInfo.getName
-      if oldName == param.name /*skip overriders with other param name*/ && newName != param.name
+      if oldName == param
+        .name /*skip overriders with other param name*/ && newName != param.name
     } {
       addParameterUsages(param, oldIdx, newName, results)
     }

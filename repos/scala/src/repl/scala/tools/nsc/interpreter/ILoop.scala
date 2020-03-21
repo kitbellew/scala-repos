@@ -314,8 +314,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
     handlers.filterNot(_.importedSymbols.isEmpty).zipWithIndex foreach {
       case (handler, idx) =>
-        val (types, terms) =
-          handler.importedSymbols partition (_.name.isTypeName)
+        val (types, terms) = handler
+          .importedSymbols partition (_.name.isTypeName)
         val imps = handler.implicitSymbols
         val found = tokens filter (handler importsSymbolNamed _)
         val typeMsg =
@@ -342,9 +342,11 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
           _ == ""
         ) mkString ("(", ", ", ")")
 
-        intp.reporter.printMessage(
-          "%2d) %-30s %s%s"
-            .format(idx + 1, handler.importString, statsMsg, foundMsg))
+        intp
+          .reporter
+          .printMessage(
+            "%2d) %-30s %s%s"
+              .format(idx + 1, handler.importString, statsMsg, foundMsg))
     }
   }
 
@@ -628,7 +630,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       }
       if (intp.namedDefinedTerms.nonEmpty)
         echo(
-          "Forgetting all expression results and named terms: " + intp.namedDefinedTerms
+          "Forgetting all expression results and named terms: " + intp
+            .namedDefinedTerms
             .mkString(", "))
       if (intp.definedTypes.nonEmpty)
         echo("Forgetting defined types: " + intp.definedTypes.mkString(", "))
@@ -1188,7 +1191,10 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       if (settings.debug) {
         val readerDiags = (readerClasses, readers).zipped map {
           case (cls, Failure(e)) =>
-            s"  - $cls --> \n\t" + scala.tools.nsc.util
+            s"  - $cls --> \n\t" + scala
+              .tools
+              .nsc
+              .util
               .stackTraceString(e) + "\n"
           case (cls, Success(_)) =>
             s"  - $cls OK"
@@ -1203,8 +1209,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   private def loopPostInit() {
     // Bind intp somewhere out of the regular namespace where
     // we can get at it in generated code.
-    intp.quietBind(
-      NamedParam[IMain]("$intp", intp)(tagOfIMain, classTag[IMain]))
+    intp
+      .quietBind(NamedParam[IMain]("$intp", intp)(tagOfIMain, classTag[IMain]))
     // Auto-run code via some setting.
     (
       replProps.replAutorunCode.option

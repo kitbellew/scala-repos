@@ -192,11 +192,14 @@ class LDASuite
     expectedColumns.foreach { column =>
       assert(transformed.columns.contains(column))
     }
-    transformed.select(lda.getTopicDistributionCol).collect().foreach { r =>
-      val topicDistribution = r.getAs[Vector](0)
-      assert(topicDistribution.size === k)
-      assert(topicDistribution.toArray.forall(w => w >= 0.0 && w <= 1.0))
-    }
+    transformed
+      .select(lda.getTopicDistributionCol)
+      .collect()
+      .foreach { r =>
+        val topicDistribution = r.getAs[Vector](0)
+        assert(topicDistribution.size === k)
+        assert(topicDistribution.toArray.forall(w => w >= 0.0 && w <= 1.0))
+      }
 
     // logLikelihood, logPerplexity
     val ll = model.logLikelihood(dataset)
@@ -211,18 +214,24 @@ class LDASuite
       topics.select("topic").rdd.map(_.getInt(0)).collect().toSet === Range(
         0,
         k).toSet)
-    topics.select("termIndices").collect().foreach {
-      case r: Row =>
-        val termIndices = r.getAs[Seq[Int]](0)
-        assert(termIndices.length === 3 && termIndices.toSet.size === 3)
-    }
-    topics.select("termWeights").collect().foreach {
-      case r: Row =>
-        val termWeights = r.getAs[Seq[Double]](0)
-        assert(
-          termWeights.length === 3 && termWeights.forall(w =>
-            w >= 0.0 && w <= 1.0))
-    }
+    topics
+      .select("termIndices")
+      .collect()
+      .foreach {
+        case r: Row =>
+          val termIndices = r.getAs[Seq[Int]](0)
+          assert(termIndices.length === 3 && termIndices.toSet.size === 3)
+      }
+    topics
+      .select("termWeights")
+      .collect()
+      .foreach {
+        case r: Row =>
+          val termWeights = r.getAs[Seq[Double]](0)
+          assert(
+            termWeights.length === 3 && termWeights
+              .forall(w => w >= 0.0 && w <= 1.0))
+      }
   }
 
   test("fit & transform with EM LDA") {

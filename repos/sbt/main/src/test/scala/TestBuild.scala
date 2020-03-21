@@ -52,7 +52,9 @@ object TestBuild {
       keyIndex: KeyIndex,
       keyMap: Map[String, AttributeKey[_]]) {
     override def toString =
-      env.toString + "\n" + "current: " + current + "\nSettings:\n\t" + showData + keyMap.keys
+      env
+        .toString + "\n" + "current: " + current + "\nSettings:\n\t" + showData + keyMap
+        .keys
         .mkString("All keys:\n\t", ", ", "")
     def showKeys(map: AttributeMap): String =
       map.keys.mkString("\n\t   ", ",", "\n")
@@ -175,10 +177,10 @@ object TestBuild {
       val delegates: Seq[ProjectRef],
       val configurations: Seq[Config]) {
     override def toString =
-      "Project " + id + "\n      Delegates:\n        " + delegates.mkString(
-        "\n        ") +
-        "\n      Configurations:\n        " + configurations.mkString(
-        "\n        ")
+      "Project " + id + "\n      Delegates:\n        " + delegates
+        .mkString("\n        ") +
+        "\n      Configurations:\n        " + configurations
+        .mkString("\n        ")
     val confMap = mapBy(configurations)(_.name)
   }
 
@@ -224,9 +226,13 @@ object TestBuild {
   def makeParser(structure: Structure): Parser[ScopedKey[_]] = {
     import structure._
     def confs(uri: URI) =
-      env.buildMap.get(uri).toList.flatMap {
-        _.root.configurations.map(_.name)
-      }
+      env
+        .buildMap
+        .get(uri)
+        .toList
+        .flatMap {
+          _.root.configurations.map(_.name)
+        }
     val defaultConfs: Option[ResolvedReference] => Seq[String] = {
       case None =>
         confs(env.root.uri)
@@ -242,9 +248,8 @@ object TestBuild {
       env: Env,
       settings: Seq[Setting[_]],
       current: ProjectRef): Structure = {
-    implicit val display = Def.showRelativeKey(
-      current,
-      env.allProjects.size > 1)
+    implicit val display = Def
+      .showRelativeKey(current, env.allProjects.size > 1)
     val data = Def.make(settings)(env.delegates, const(Nil), display)
     val keys = data.allKeys((s, key) => ScopedKey(s, key))
     val keyMap = keys

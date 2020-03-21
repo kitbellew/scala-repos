@@ -33,16 +33,19 @@ trait FunctionAnnotator {
       holder: AnnotationHolder,
       typeAware: Boolean) {
     if (!function.hasExplicitType && !function.returnTypeIsDefined) {
-      function.recursiveReferences.foreach { ref =>
-        val message = ScalaBundle.message(
-          "function.recursive.need.result.type",
-          function.name)
-        holder.createErrorAnnotation(ref.element, message)
-      }
+      function
+        .recursiveReferences
+        .foreach { ref =>
+          val message = ScalaBundle
+            .message("function.recursive.need.result.type", function.name)
+          holder.createErrorAnnotation(ref.element, message)
+        }
     }
 
-    val tailrecAnnotation = function.annotations.find(
-      _.typeElement
+    val tailrecAnnotation = function
+      .annotations
+      .find(
+        _.typeElement
         .getType(TypingContext.empty)
         .map(_.canonicalText)
         .filter(_ == "_root_.scala.annotation.tailrec")
@@ -69,20 +72,22 @@ trait FunctionAnnotator {
           annotation.registerFix(
             new RemoveElementQuickFix(it, "Remove @tailrec annotation"))
         } else {
-          recursiveReferences.filter(!_.isTailCall).foreach { ref =>
-            val target =
-              ref.element.getParent match {
-                case call: ScMethodCall =>
-                  call
-                case _ =>
-                  ref.element
-              }
-            val annotation = holder.createErrorAnnotation(
-              target,
-              "Recursive call not in tail position (in @tailrec annotated method)")
-            annotation.registerFix(
-              new RemoveElementQuickFix(it, "Remove @tailrec annotation"))
-          }
+          recursiveReferences
+            .filter(!_.isTailCall)
+            .foreach { ref =>
+              val target =
+                ref.element.getParent match {
+                  case call: ScMethodCall =>
+                    call
+                  case _ =>
+                    ref.element
+                }
+              val annotation = holder.createErrorAnnotation(
+                target,
+                "Recursive call not in tail position (in @tailrec annotated method)")
+              annotation.registerFix(
+                new RemoveElementQuickFix(it, "Remove @tailrec annotation"))
+            }
         }
       }
     }
@@ -100,8 +105,10 @@ trait FunctionAnnotator {
       val unitFunction = !hasAssign || unitType
 
       val explicitReturn = usage.isInstanceOf[ScReturnStmt]
-      val emptyReturn =
-        explicitReturn && usage.asInstanceOf[ScReturnStmt].expr.isEmpty
+      val emptyReturn = explicitReturn && usage
+        .asInstanceOf[ScReturnStmt]
+        .expr
+        .isEmpty
       val anyReturn = usageType == AnyType
       val underCatchBlock = usage.getContext.isInstanceOf[ScCatchBlock]
 
@@ -115,9 +122,8 @@ trait FunctionAnnotator {
       }
 
       def needsTypeAnnotation() = {
-        val message = ScalaBundle.message(
-          "function.must.define.type.explicitly",
-          function.name)
+        val message = ScalaBundle
+          .message("function.must.define.type.explicitly", function.name)
         val returnTypes = function
           .returnUsages(withBooleanInfix = false)
           .toSeq
@@ -135,9 +141,8 @@ trait FunctionAnnotator {
       }
 
       def redundantReturnExpression() = {
-        val message = ScalaBundle.message(
-          "return.expression.is.redundant",
-          usageType.presentableText)
+        val message = ScalaBundle
+          .message("return.expression.is.redundant", usageType.presentableText)
         holder.createWarningAnnotation(
           usage.asInstanceOf[ScReturnStmt].expr.get,
           message)
@@ -145,9 +150,8 @@ trait FunctionAnnotator {
 
       def typeMismatch() {
         if (typeAware) {
-          val (usageTypeText, functionTypeText) = ScTypePresentation.different(
-            usageType,
-            functionType)
+          val (usageTypeText, functionTypeText) = ScTypePresentation
+            .different(usageType, functionType)
           val message = ScalaBundle.message(
             "type.mismatch.found.required",
             usageTypeText,

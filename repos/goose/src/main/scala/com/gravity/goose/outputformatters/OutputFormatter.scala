@@ -88,9 +88,7 @@ trait OutputFormatter {
             .children()
             .map((e: Element) => {
               StringEscapeUtils.unescapeHtml(e.text).trim
-            }))
-          .toList
-          .mkString("\n\n")
+            })).toList.mkString("\n\n")
       }
 
     }
@@ -167,15 +165,17 @@ trait OutputFormatter {
   private def getTagCleanedText(item: Node): String = {
     val sb = new StringBuilder()
 
-    item.childNodes().foreach {
-      case childText: TextNode => {
-        sb.append(childText.getWholeText)
+    item
+      .childNodes()
+      .foreach {
+        case childText: TextNode => {
+          sb.append(childText.getWholeText)
+        }
+        case childElement: Element => {
+          sb.append(childElement.outerHtml())
+        }
+        case _ =>
       }
-      case childElement: Element => {
-        sb.append(childElement.outerHtml())
-      }
-      case _ =>
-    }
 
     val text = tagReplace replaceAllIn (sb.toString(), "")
     text
@@ -215,8 +215,8 @@ trait OutputFormatter {
           // check for open parens as the first paragraph, e.g. businessweek4.txt (IT)
           val trimmed = firstModdedNode.text().trim()
           if (trimmed.startsWith("(") && trimmed.endsWith(")")) {
-            logger.trace(
-              "Removing parenthesis paragraph that is first paragraph")
+            logger
+              .trace("Removing parenthesis paragraph that is first paragraph")
             firstModdedNode.remove()
           }
         }

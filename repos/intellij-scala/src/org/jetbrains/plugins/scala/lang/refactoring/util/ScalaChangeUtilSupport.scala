@@ -31,9 +31,8 @@ class ScalaChangeUtilSupport extends TreeCopyHandler {
       return
     if (original.isInstanceOf[CompositeElement]) {
       original.getElementType match {
-        case ScalaElementTypes.REFERENCE |
-            ScalaElementTypes.REFERENCE_EXPRESSION |
-            ScalaElementTypes.TYPE_PROJECTION => {
+        case ScalaElementTypes.REFERENCE | ScalaElementTypes
+              .REFERENCE_EXPRESSION | ScalaElementTypes.TYPE_PROJECTION => {
           val res = original.getPsi.asInstanceOf[ScReferenceElement].bind
           res match {
             case Some(
@@ -58,13 +57,14 @@ class ScalaChangeUtilSupport extends TreeCopyHandler {
     if (!element.isInstanceOf[ScalaPsiElement])
       return null
     if (element.isInstanceOf[CompositeElement]) {
-      if (element.getElementType == ScalaElementTypes.REFERENCE || element.getElementType == ScalaElementTypes.REFERENCE_EXPRESSION ||
+      if (element.getElementType == ScalaElementTypes.REFERENCE || element
+            .getElementType == ScalaElementTypes.REFERENCE_EXPRESSION ||
           element.getElementType == ScalaElementTypes.TYPE_PROJECTION) {
         var ref = SourceTreeToPsiMap
           .treeElementToPsi(element)
           .asInstanceOf[ScReferenceElement]
-        val named: PsiNamedElement = element.getCopyableUserData(
-          ScalaChangeUtilSupport.REFERENCED_MEMBER_KEY)
+        val named: PsiNamedElement = element
+          .getCopyableUserData(ScalaChangeUtilSupport.REFERENCED_MEMBER_KEY)
         if (named != null) {
           element.putCopyableUserData(
             ScalaChangeUtilSupport.REFERENCED_MEMBER_KEY,
@@ -91,6 +91,6 @@ class ScalaChangeUtilSupport extends TreeCopyHandler {
 }
 
 object ScalaChangeUtilSupport {
-  val REFERENCED_MEMBER_KEY: Key[PsiNamedElement] = Key.create(
-    "REFERENCED_MEMBER_KEY")
+  val REFERENCED_MEMBER_KEY: Key[PsiNamedElement] = Key
+    .create("REFERENCED_MEMBER_KEY")
 }

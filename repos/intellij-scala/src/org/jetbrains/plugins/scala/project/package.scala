@@ -229,10 +229,13 @@ package object project {
 
   class ScalaModule(val module: Module) {
     def sdk: ScalaSdk =
-      module.scalaSdk.map(new ScalaSdk(_)).getOrElse {
-        throw new IllegalStateException(
-          "Module has no Scala SDK: " + module.getName)
-      }
+      module
+        .scalaSdk
+        .map(new ScalaSdk(_))
+        .getOrElse {
+          throw new IllegalStateException(
+            "Module has no Scala SDK: " + module.getName)
+        }
   }
 
   object ScalaModule {
@@ -241,10 +244,12 @@ package object project {
 
   class ScalaSdk(val library: Library) {
     private def properties: ScalaLibraryProperties =
-      library.scalaProperties.getOrElse {
-        throw new IllegalStateException(
-          "Library is not Scala SDK: " + library.getName)
-      }
+      library
+        .scalaProperties
+        .getOrElse {
+          throw new IllegalStateException(
+            "Library is not Scala SDK: " + library.getName)
+        }
 
     def compilerVersion: Option[String] =
       LibraryVersion.findFirstIn(library.getName)
@@ -287,7 +292,8 @@ package object project {
       val file: PsiFile = getContainingFileByContext(element)
       if (file == null || file.getVirtualFile == null)
         return ScalaLanguageLevel.Default
-      val module: Module = ProjectFileIndex.SERVICE
+      val module: Module = ProjectFileIndex
+        .SERVICE
         .getInstance(element.getProject)
         .getModuleForFile(file.getVirtualFile)
       if (module == null)

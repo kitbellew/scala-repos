@@ -51,8 +51,8 @@ object ScalazProperties {
 
     def scalaOrdering[A: Order: SOrdering: Arbitrary] =
       forAll((a1: A, a2: A) =>
-        Order[A].order(a1, a2) == Ordering.fromInt(
-          SOrdering[A].compare(a1, a2)))
+        Order[A].order(a1, a2) == Ordering
+          .fromInt(SOrdering[A].compare(a1, a2)))
 
     def laws[A](implicit A: Order[A], arb: Arbitrary[A]): Properties =
       newProperties("order") { p =>
@@ -844,9 +844,11 @@ object ScalazProperties {
         el: Equal[(Int =>: Int) =>: Int],
         er: Equal[Int =>: (Int =>: Int)]): Properties =
       newProperties("associative") { p =>
-        p.property("left and then right reassociation is identity") =
+        p
+          .property("left and then right reassociation is identity") =
           leftRight[=>:, Int, Int, Int]
-        p.property("right and then left reassociation is identity") =
+        p
+          .property("right and then left reassociation is identity") =
           rightLeft[=>:, Int, Int, Int]
       }
   }

@@ -141,7 +141,8 @@ object GenerateUnsafeRowJoiner
      """.stripMargin
 
     // ------------- update fixed length data for variable length data type  --------------- //
-    val updateOffset = (schema1 ++ schema2).zipWithIndex
+    val updateOffset = (schema1 ++ schema2)
+      .zipWithIndex
       .map {
         case (field, i) =>
           // Skip fixed length data types, and only generate code for variable length data
@@ -166,7 +167,8 @@ object GenerateUnsafeRowJoiner
       .mkString("\n")
 
     // ------------------------ Finally, put everything together  --------------------------- //
-    val code = s"""
+    val code =
+      s"""
        |public java.lang.Object generate(Object[] references) {
        |  return new SpecificUnsafeRowJoiner();
        |}
@@ -178,7 +180,8 @@ object GenerateUnsafeRowJoiner
        |  public UnsafeRow join(UnsafeRow row1, UnsafeRow row2) {
        |    // row1: ${schema1.size} fields, $bitset1Words words in bitset
        |    // row2: ${schema2.size}, $bitset2Words words in bitset
-       |    // output: ${schema1.size + schema2.size} fields, $outputBitsetWords words in bitset
+       |    // output: ${schema1
+           .size + schema2.size} fields, $outputBitsetWords words in bitset
        |    final int sizeInBytes = row1.getSizeInBytes() + row2.getSizeInBytes() - $sizeReduction;
        |    if (sizeInBytes > buf.length) {
        |      buf = new byte[sizeInBytes];

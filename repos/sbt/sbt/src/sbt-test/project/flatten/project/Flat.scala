@@ -24,9 +24,8 @@ object Flat extends Build {
   def unpackageSettings(name: String) =
     Seq(
       unmanagedSourceDirectories := (baseDirectory.value / name) :: Nil,
-      excludeFilter in unmanagedResources := (
-        includeFilter in unmanagedSources
-      ).value,
+      excludeFilter in unmanagedResources := (includeFilter in unmanagedSources)
+        .value,
       unmanagedResourceDirectories := unmanagedSourceDirectories.value,
       unpackage := IO
         .unzip(artifactPath in packageSrc value, baseDirectory.value / name)

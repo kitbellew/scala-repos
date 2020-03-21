@@ -67,14 +67,12 @@ object Memcache {
           .andThen(concat _)
           .andThen(HashEncoder())
           .andThen(Bijection.connect[Array[Byte], Base64String])
-        )(key)
-        .str
+        )(key).str
   }
 
   def store[K: Codec, V: Codec](keyPrefix: String): Store[K, V] = {
     implicit val valueToBuf = Injection.connect[V, Array[Byte], ChannelBuffer]
-    MemcacheStore(client)
-      .convert(keyEncoder[K](keyPrefix))
+    MemcacheStore(client).convert(keyEncoder[K](keyPrefix))
   }
 
   def mergeable[K: Codec, V: Codec: Monoid](

@@ -95,8 +95,10 @@ final case class DeploymentPlan(
     affectedApplicationIds.intersect(other.affectedApplicationIds).nonEmpty
 
   def createdOrUpdatedApps: Seq[AppDefinition] = {
-    target.transitiveApps.toIndexedSeq.filter(app =>
-      affectedApplicationIds(app.id))
+    target
+      .transitiveApps
+      .toIndexedSeq
+      .filter(app => affectedApplicationIds(app.id))
   }
 
   override def toString: String = {
@@ -104,8 +106,9 @@ final case class DeploymentPlan(
       val cmdString = app.cmd.fold("")(cmd => ", cmd=\"" + cmd + "\"")
       val argsString =
         app.args.fold("")(args => ", args=\"" + args.mkString(" ") + "\"")
-      val maybeDockerImage: Option[String] = app.container.flatMap(
-        _.docker.map(_.image))
+      val maybeDockerImage: Option[String] = app
+        .container
+        .flatMap(_.docker.map(_.image))
       val dockerImageString =
         maybeDockerImage.fold("")(image => ", image=\"" + image + "\"")
 
@@ -156,7 +159,9 @@ final case class DeploymentPlan(
       version = Timestamp(msg.getVersion)).copy(id = msg.getId)
 
   override def toProto: Protos.DeploymentPlanDefinition =
-    Protos.DeploymentPlanDefinition.newBuilder
+    Protos
+      .DeploymentPlanDefinition
+      .newBuilder
       .setId(id)
       .setOriginal(original.toProto)
       .setTarget(target.toProto)
@@ -229,9 +234,11 @@ object DeploymentPlan {
 
     }
 
-    val unsortedEquivalenceClasses = group.transitiveApps.groupBy { app =>
-      longestPathFromVertex(group.dependencyGraph, app).length
-    }
+    val unsortedEquivalenceClasses = group
+      .transitiveApps
+      .groupBy { app =>
+        longestPathFromVertex(group.dependencyGraph, app).length
+      }
 
     SortedMap(unsortedEquivalenceClasses.toSeq: _*)
   }
@@ -250,7 +257,8 @@ object DeploymentPlan {
     val appsByLongestPath: SortedMap[Int, Set[AppDefinition]] =
       appsGroupedByLongestPath(target)
 
-    appsByLongestPath.valuesIterator
+    appsByLongestPath
+      .valuesIterator
       .map { (equivalenceClass: Set[AppDefinition]) =>
         val actions: Set[DeploymentAction] = equivalenceClass.flatMap {
           (newApp: AppDefinition) =>
@@ -313,7 +321,8 @@ object DeploymentPlan {
 
     // 1. Destroy apps that do not exist in the target.
     steps += DeploymentStep(
-      (originalApps -- targetApps.keys).valuesIterator
+      (originalApps -- targetApps.keys)
+        .valuesIterator
         .map { oldApp =>
           StopApplication(oldApp)
         }
@@ -323,7 +332,8 @@ object DeploymentPlan {
     //    instances.  These are scaled as needed in the dependency-ordered
     //    steps that follow.
     steps += DeploymentStep(
-      (targetApps -- originalApps.keys).valuesIterator
+      (targetApps -- originalApps.keys)
+        .valuesIterator
         .map { newApp =>
           StartApplication(newApp, 0)
         }

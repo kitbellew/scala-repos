@@ -273,8 +273,8 @@ class ScalaJsonCombinatorsSpec extends Specification {
       val json = Json.toJson(place)
       //#writes-model
 
-      val some =
-        (JsPath \ "lat").write[Double] and (JsPath \ "long").write[Double]
+      val some = (JsPath \ "lat").write[Double] and (JsPath \ "long")
+        .write[Double]
       val placeSome = Place.unapply(place)
 
       (json \ "name").get === JsString("Watership Down")

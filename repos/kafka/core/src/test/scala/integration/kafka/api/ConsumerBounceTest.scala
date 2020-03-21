@@ -42,28 +42,38 @@ class ConsumerBounceTest extends IntegrationTestHarness with Logging {
   val tp = new TopicPartition(topic, part)
 
   // configure the servers and clients
-  this.serverConfig.setProperty(
-    KafkaConfig.ControlledShutdownEnableProp,
-    "false"
-  ) // speed up shutdown
-  this.serverConfig.setProperty(
-    KafkaConfig.OffsetsTopicReplicationFactorProp,
-    "3"
-  ) // don't want to lose offset
+  this
+    .serverConfig
+    .setProperty(
+      KafkaConfig.ControlledShutdownEnableProp,
+      "false"
+    ) // speed up shutdown
+  this
+    .serverConfig
+    .setProperty(
+      KafkaConfig.OffsetsTopicReplicationFactorProp,
+      "3"
+    ) // don't want to lose offset
   this.serverConfig.setProperty(KafkaConfig.OffsetsTopicPartitionsProp, "1")
-  this.serverConfig.setProperty(
-    KafkaConfig.GroupMinSessionTimeoutMsProp,
-    "10"
-  ) // set small enough session timeout
+  this
+    .serverConfig
+    .setProperty(
+      KafkaConfig.GroupMinSessionTimeoutMsProp,
+      "10"
+    ) // set small enough session timeout
   this.producerConfig.setProperty(ProducerConfig.ACKS_CONFIG, "all")
   this.consumerConfig.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "my-test")
-  this.consumerConfig
+  this
+    .consumerConfig
     .setProperty(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, 4096.toString)
-  this.consumerConfig
+  this
+    .consumerConfig
     .setProperty(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "100")
-  this.consumerConfig
+  this
+    .consumerConfig
     .setProperty(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, "30")
-  this.consumerConfig
+  this
+    .consumerConfig
     .setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
 
   override def generateConfigs() = {
@@ -154,7 +164,8 @@ class ConsumerBounceTest extends IntegrationTestHarness with Logging {
     TestUtils.waitUntilTrue(
       () =>
         servers.forall(server =>
-          server.replicaManager
+          server
+            .replicaManager
             .getReplica(tp.topic(), tp.partition())
             .get
             .highWatermark

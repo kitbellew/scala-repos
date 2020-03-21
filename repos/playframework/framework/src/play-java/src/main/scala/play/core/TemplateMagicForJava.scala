@@ -34,14 +34,22 @@ object PlayMagicForJava {
     new play.api.data.Field(
       null,
       jField.name,
-      jField.constraints.asScala.map { jT =>
-        jT._1 -> jT._2.asScala
-      },
+      jField
+        .constraints
+        .asScala
+        .map { jT =>
+          jT._1 -> jT._2.asScala
+        },
       Option(jField.format).map(f => f._1 -> f._2.asScala),
-      jField.errors.asScala.map { jE =>
-        play.api.data
-          .FormError(jE.key, jE.messages.asScala, jE.arguments.asScala)
-      },
+      jField
+        .errors
+        .asScala
+        .map { jE =>
+          play
+            .api
+            .data
+            .FormError(jE.key, jE.messages.asScala, jE.arguments.asScala)
+        },
       Option(jField.value)) {
 
       override def apply(key: String) = {
@@ -60,7 +68,9 @@ object PlayMagicForJava {
   implicit def implicitJavaMessages: play.api.i18n.Messages =
     try {
       val jmessages = play.mvc.Http.Context.current().messages()
-      play.api.i18n
+      play
+        .api
+        .i18n
         .Messages(jmessages.lang(), jmessages.messagesApi().scalaApi())
     } catch {
       case NonFatal(_) =>

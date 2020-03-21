@@ -45,12 +45,14 @@ private[serverset2] class ZkSession(
     }
 
   private def limit[T](f: => Future[T]): Future[T] =
-    limiter.acquire().flatMap { permit =>
-      f.ensure {
-        // don't release the permit until f is complete
-        permit.release()
+    limiter
+      .acquire()
+      .flatMap { permit =>
+        f.ensure {
+          // don't release the permit until f is complete
+          permit.release()
+        }
       }
-    }
 
   private def retryWithDelay[T](f: => Future[T]): Future[T] =
     Future.sleep(retryStream.next()).before(f)
@@ -67,11 +69,10 @@ private[serverset2] class ZkSession(
       case None =>
         // if there was no previous value, ensure we have a gauge
         synchronized {
-          watchUpdateGauges ::= statsReceiver.addGauge(
-            "last_watch_update",
-            path) {
-            Time.now.inLongSeconds - lastGoodUpdate.getOrElse(path, 0L)
-          }
+          watchUpdateGauges ::= statsReceiver
+            .addGauge("last_watch_update", path) {
+              Time.now.inLongSeconds - lastGoodUpdate.getOrElse(path, 0L)
+            }
         }
       case _ => //gauge is already there
     }
@@ -122,8 +123,8 @@ private[serverset2] class ZkSession(
                 u() = Activity.Failed(e)
 
               case Throw(exc) =>
-                logger.error(
-                  s"Operation failed with $exc. Session $sessionIdAsHex")
+                logger
+                  .error(s"Operation failed with $exc. Session $sessionIdAsHex")
                 u() = Activity.Failed(exc)
                 retryWithDelay {
                   loop()
@@ -134,53 +135,55 @@ private[serverset2] class ZkSession(
                 retryStream.reset()
                 u() = ok
 
-                state.changes.respond {
-                  case WatchState.Pending =>
-                  // Ignore updates WatchState is Pending.
+                state
+                  .changes
+                  .respond {
+                    case WatchState.Pending =>
+                    // Ignore updates WatchState is Pending.
 
-                  case WatchState.Determined(_) =>
-                    // Note: since the watch transitioned to determined, we know
-                    // that this observation will produce no more values, so there's
-                    // no need to apply concurrency control to the subsequent
-                    // branches.
-                    loop()
-
-                  case WatchState.SessionState(sessionState)
-                      if sessionState == SessionState.ConnectedReadOnly |
-                        sessionState == SessionState.SaslAuthenticated |
-                        sessionState == SessionState.SyncConnected =>
-                    u() = ok
-                    logger.info(
-                      s"Reacquiring watch on $sessionState. Session: $sessionIdAsHex")
-                    // We may have lost or never set our watch correctly. Retry to ensure we stay connected
-                    retryWithDelay {
+                    case WatchState.Determined(_) =>
+                      // Note: since the watch transitioned to determined, we know
+                      // that this observation will produce no more values, so there's
+                      // no need to apply concurrency control to the subsequent
+                      // branches.
                       loop()
-                    }
 
-                  case WatchState.SessionState(SessionState.Expired) =>
-                    u() = Activity.Failed(new Exception("session expired"))
-                  // Do NOT retry here as the session has expired. We expect the watcher of this
-                  // ZkSession to retry at this point (See [[ZkSession.retrying]]).
+                    case WatchState.SessionState(sessionState)
+                        if sessionState == SessionState.ConnectedReadOnly |
+                          sessionState == SessionState.SaslAuthenticated |
+                          sessionState == SessionState.SyncConnected =>
+                      u() = ok
+                      logger.info(
+                        s"Reacquiring watch on $sessionState. Session: $sessionIdAsHex")
+                      // We may have lost or never set our watch correctly. Retry to ensure we stay connected
+                      retryWithDelay {
+                        loop()
+                      }
 
-                  // Disconnected, NoSyncConnected
-                  case WatchState.SessionState(sessionState)
-                      if sessionState == SessionState.Disconnected |
-                        sessionState == SessionState.NoSyncConnected =>
-                    logger.warning(
-                      s"Intermediate Failure session state: $sessionState. " +
-                        s"Session: $sessionIdAsHex. Data is now unavailable.")
-                    u() = Activity.Failed(new Exception("" + sessionState))
-                  // Do NOT keep retrying, wait to be reconnected automatically by the underlying session
+                    case WatchState.SessionState(SessionState.Expired) =>
+                      u() = Activity.Failed(new Exception("session expired"))
+                    // Do NOT retry here as the session has expired. We expect the watcher of this
+                    // ZkSession to retry at this point (See [[ZkSession.retrying]]).
 
-                  case WatchState.SessionState(sessionState) =>
-                    logger.error(
-                      s"Unexpected session state $sessionState. Session: $sessionIdAsHex")
-                    u() = Activity.Failed(new Exception("" + sessionState))
-                    // We don't know what happened. Retry.
-                    retryWithDelay {
-                      loop()
-                    }
-                }
+                    // Disconnected, NoSyncConnected
+                    case WatchState.SessionState(sessionState)
+                        if sessionState == SessionState.Disconnected |
+                          sessionState == SessionState.NoSyncConnected =>
+                      logger.warning(
+                        s"Intermediate Failure session state: $sessionState. " +
+                          s"Session: $sessionIdAsHex. Data is now unavailable.")
+                      u() = Activity.Failed(new Exception("" + sessionState))
+                    // Do NOT keep retrying, wait to be reconnected automatically by the underlying session
+
+                    case WatchState.SessionState(sessionState) =>
+                      logger.error(
+                        s"Unexpected session state $sessionState. Session: $sessionIdAsHex")
+                      u() = Activity.Failed(new Exception("" + sessionState))
+                      // We don't know what happened. Retry.
+                      retryWithDelay {
+                        loop()
+                      }
+                  }
             }
           Future.Done
         }
@@ -357,14 +360,15 @@ private[serverset2] object ZkSession {
       logger.info(s"Starting new zk session ${zkSession.sessionId}")
 
       // Upon initial connection, send auth info, then update `u`.
-      zkSession.state.changes
+      zkSession
+        .state
+        .changes
         .filter {
           _ == WatchState.SessionState(SessionState.SyncConnected)
         }
         .toFuture
-        .unit before zkSession.addAuthInfo(
-        "digest",
-        Buf.Utf8(authInfo)) onSuccess { _ =>
+        .unit before zkSession
+        .addAuthInfo("digest", Buf.Utf8(authInfo)) onSuccess { _ =>
         logger.info(
           s"New ZKSession is connected. Session ID: ${zkSession.sessionIdAsHex}")
         v() = zkSession
@@ -372,7 +376,9 @@ private[serverset2] object ZkSession {
       }
 
       // Kick off a delayed reconnection on session expiration.
-      zkSession.state.changes
+      zkSession
+        .state
+        .changes
         .filter {
           _ == WatchState.SessionState(SessionState.Expired)
         }

@@ -50,8 +50,8 @@ class DecisionTreeClassifierSuite
 
   override def beforeAll() {
     super.beforeAll()
-    categoricalDataPointsRDD = sc.parallelize(
-      OldDecisionTreeSuite.generateCategoricalDataPoints())
+    categoricalDataPointsRDD = sc
+      .parallelize(OldDecisionTreeSuite.generateCategoricalDataPoints())
     orderedLabeledPointsWithLabel0RDD = sc.parallelize(
       OldDecisionTreeSuite.generateOrderedLabeledPointsWithLabel0())
     orderedLabeledPointsWithLabel1RDD = sc.parallelize(
@@ -92,29 +92,27 @@ class DecisionTreeClassifierSuite
   }
 
   test("Binary classification stump with fixed labels 0,1 for Entropy,Gini") {
-    val dt = new DecisionTreeClassifier()
-      .setMaxDepth(3)
-      .setMaxBins(100)
+    val dt = new DecisionTreeClassifier().setMaxDepth(3).setMaxBins(100)
     val numClasses = 2
     Array(orderedLabeledPointsWithLabel0RDD, orderedLabeledPointsWithLabel1RDD)
       .foreach { rdd =>
-        DecisionTreeClassifier.supportedImpurities.foreach { impurity =>
-          dt.setImpurity(impurity)
-          compareAPIs(
-            rdd,
-            dt,
-            categoricalFeatures = Map.empty[Int, Int],
-            numClasses)
-        }
+        DecisionTreeClassifier
+          .supportedImpurities
+          .foreach { impurity =>
+            dt.setImpurity(impurity)
+            compareAPIs(
+              rdd,
+              dt,
+              categoricalFeatures = Map.empty[Int, Int],
+              numClasses)
+          }
       }
   }
 
   test(
     "Multiclass classification stump with 3-ary (unordered) categorical features") {
     val rdd = categoricalDataPointsForMulticlassRDD
-    val dt = new DecisionTreeClassifier()
-      .setImpurity("Gini")
-      .setMaxDepth(4)
+    val dt = new DecisionTreeClassifier().setImpurity("Gini").setMaxDepth(4)
     val numClasses = 3
     val categoricalFeatures = Map(0 -> 3, 1 -> 3)
     compareAPIs(rdd, dt, categoricalFeatures, numClasses)
@@ -128,9 +126,7 @@ class DecisionTreeClassifierSuite
       LabeledPoint(1.0, Vectors.dense(2.0)),
       LabeledPoint(1.0, Vectors.dense(3.0)))
     val rdd = sc.parallelize(arr)
-    val dt = new DecisionTreeClassifier()
-      .setImpurity("Gini")
-      .setMaxDepth(4)
+    val dt = new DecisionTreeClassifier().setImpurity("Gini").setMaxDepth(4)
     val numClasses = 2
     compareAPIs(rdd, dt, categoricalFeatures = Map.empty[Int, Int], numClasses)
   }
@@ -143,9 +139,7 @@ class DecisionTreeClassifierSuite
       LabeledPoint(1.0, Vectors.sparse(2, Seq((1, 2.0))))
     )
     val rdd = sc.parallelize(arr)
-    val dt = new DecisionTreeClassifier()
-      .setImpurity("Gini")
-      .setMaxDepth(4)
+    val dt = new DecisionTreeClassifier().setImpurity("Gini").setMaxDepth(4)
     val numClasses = 2
     compareAPIs(rdd, dt, categoricalFeatures = Map.empty[Int, Int], numClasses)
   }
@@ -272,10 +266,8 @@ class DecisionTreeClassifierSuite
     val categoricalFeatures = Map(0 -> 3)
     val numClasses = 3
 
-    val newData: DataFrame = TreeTests.setMetadata(
-      rdd,
-      categoricalFeatures,
-      numClasses)
+    val newData: DataFrame = TreeTests
+      .setMetadata(rdd, categoricalFeatures, numClasses)
     val newTree = dt.fit(newData)
 
     // copied model must have the same parent.
@@ -394,14 +386,12 @@ class DecisionTreeClassifierSuite
     val dt = new DecisionTreeClassifier()
     val rdd = TreeTests.getTreeReadWriteData(sc)
 
-    val allParamSettings =
-      TreeTests.allParamSettings ++ Map("impurity" -> "entropy")
+    val allParamSettings = TreeTests
+      .allParamSettings ++ Map("impurity" -> "entropy")
 
     // Categorical splits with tree depth 2
-    val categoricalData: DataFrame = TreeTests.setMetadata(
-      rdd,
-      Map(0 -> 2, 1 -> 3),
-      numClasses = 2)
+    val categoricalData: DataFrame = TreeTests
+      .setMetadata(rdd, Map(0 -> 2, 1 -> 3), numClasses = 2)
     testEstimatorAndModelReadWrite(
       dt,
       categoricalData,
@@ -409,10 +399,8 @@ class DecisionTreeClassifierSuite
       checkModelData)
 
     // Continuous splits with tree depth 2
-    val continuousData: DataFrame = TreeTests.setMetadata(
-      rdd,
-      Map.empty[Int, Int],
-      numClasses = 2)
+    val continuousData: DataFrame = TreeTests
+      .setMetadata(rdd, Map.empty[Int, Int], numClasses = 2)
     testEstimatorAndModelReadWrite(
       dt,
       continuousData,
@@ -442,10 +430,8 @@ private[ml] object DecisionTreeClassifierSuite extends SparkFunSuite {
     val numFeatures = data.first().features.size
     val oldStrategy = dt.getOldStrategy(categoricalFeatures, numClasses)
     val oldTree = OldDecisionTree.train(data, oldStrategy)
-    val newData: DataFrame = TreeTests.setMetadata(
-      data,
-      categoricalFeatures,
-      numClasses)
+    val newData: DataFrame = TreeTests
+      .setMetadata(data, categoricalFeatures, numClasses)
     val newTree = dt.fit(newData)
     // Use parent from newTree since this is not checked anyways.
     val oldTreeAsNew = DecisionTreeClassificationModel.fromOld(

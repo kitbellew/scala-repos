@@ -141,9 +141,8 @@ class ColumnPruningSuite extends PlanTest {
     val input = LocalRelation('a.int, 'b.string, 'c.double)
     val query = Project('a :: Nil, Filter('c > Literal(0.0), input)).analyze
     val expected =
-      Project(
-        'a :: Nil,
-        Filter('c > Literal(0.0), Project(Seq('a, 'c), input))).analyze
+      Project('a :: Nil, Filter('c > Literal(0.0), Project(Seq('a, 'c), input)))
+        .analyze
     comparePlans(Optimize.execute(query), expected)
   }
 
@@ -184,16 +183,10 @@ class ColumnPruningSuite extends PlanTest {
 
   test("column pruning for group") {
     val testRelation = LocalRelation('a.int, 'b.int, 'c.int)
-    val originalQuery = testRelation
-      .groupBy('a)('a, count('b))
-      .select('a)
+    val originalQuery = testRelation.groupBy('a)('a, count('b)).select('a)
 
     val optimized = Optimize.execute(originalQuery.analyze)
-    val correctAnswer =
-      testRelation
-        .select('a)
-        .groupBy('a)('a)
-        .analyze
+    val correctAnswer = testRelation.select('a).groupBy('a)('a).analyze
 
     comparePlans(optimized, correctAnswer)
   }
@@ -201,16 +194,10 @@ class ColumnPruningSuite extends PlanTest {
   test("column pruning for group with alias") {
     val testRelation = LocalRelation('a.int, 'b.int, 'c.int)
 
-    val originalQuery = testRelation
-      .groupBy('a)('a as 'c, count('b))
-      .select('c)
+    val originalQuery = testRelation.groupBy('a)('a as 'c, count('b)).select('c)
 
     val optimized = Optimize.execute(originalQuery.analyze)
-    val correctAnswer =
-      testRelation
-        .select('a)
-        .groupBy('a)('a as 'c)
-        .analyze
+    val correctAnswer = testRelation.select('a).groupBy('a)('a as 'c).analyze
 
     comparePlans(optimized, correctAnswer)
   }
@@ -218,17 +205,10 @@ class ColumnPruningSuite extends PlanTest {
   test("column pruning for Project(ne, Limit)") {
     val testRelation = LocalRelation('a.int, 'b.int, 'c.int)
 
-    val originalQuery = testRelation
-      .select('a, 'b)
-      .limit(2)
-      .select('a)
+    val originalQuery = testRelation.select('a, 'b).limit(2).select('a)
 
     val optimized = Optimize.execute(originalQuery.analyze)
-    val correctAnswer =
-      testRelation
-        .select('a)
-        .limit(2)
-        .analyze
+    val correctAnswer = testRelation.select('a).limit(2).analyze
 
     comparePlans(optimized, correctAnswer)
   }
@@ -239,32 +219,22 @@ class ColumnPruningSuite extends PlanTest {
 
     // push down valid
     val originalQuery = {
-      x.select('a, 'b)
-        .sortBy(SortOrder('a, Ascending))
-        .select('a)
+      x.select('a, 'b).sortBy(SortOrder('a, Ascending)).select('a)
     }
 
     val optimized = Optimize.execute(originalQuery.analyze)
-    val correctAnswer =
-      x.select('a)
-        .sortBy(SortOrder('a, Ascending))
-        .analyze
+    val correctAnswer = x.select('a).sortBy(SortOrder('a, Ascending)).analyze
 
     comparePlans(optimized, analysis.EliminateSubqueryAliases(correctAnswer))
 
     // push down invalid
     val originalQuery1 = {
-      x.select('a, 'b)
-        .sortBy(SortOrder('a, Ascending))
-        .select('b)
+      x.select('a, 'b).sortBy(SortOrder('a, Ascending)).select('b)
     }
 
     val optimized1 = Optimize.execute(originalQuery1.analyze)
     val correctAnswer1 =
-      x.select('a, 'b)
-        .sortBy(SortOrder('a, Ascending))
-        .select('b)
-        .analyze
+      x.select('a, 'b).sortBy(SortOrder('a, Ascending)).select('b).analyze
 
     comparePlans(optimized1, analysis.EliminateSubqueryAliases(correctAnswer1))
   }
@@ -368,10 +338,8 @@ class ColumnPruningSuite extends PlanTest {
     val expected =
       Project(
         'b :: Nil,
-        Union(
-          Project('b :: Nil, input1) :: Project(
-            'd :: Nil,
-            input2) :: Nil)).analyze
+        Union(Project('b :: Nil, input1) :: Project('d :: Nil, input2) :: Nil))
+        .analyze
     comparePlans(Optimize.execute(query), expected)
   }
 

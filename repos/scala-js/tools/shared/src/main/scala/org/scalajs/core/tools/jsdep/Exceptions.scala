@@ -89,8 +89,8 @@ object JSLibResolveException {
       if (p.isMissing) {
         msg.append(s"- Missing JS library: ${p.resourceName}\n")
       } else {
-        msg.append(
-          s"- Ambiguous reference to a JS library: ${p.resourceName}\n")
+        msg
+          .append(s"- Ambiguous reference to a JS library: ${p.resourceName}\n")
         msg.append("  Possible paths found on the classpath:\n")
         for (relPath <- p.possiblePaths)
           msg.append(s"  - $relPath\n")

@@ -29,9 +29,11 @@ case class Video(
       )
 
   def durationString =
-    metadata.duration.map { seconds =>
-      "%02d:%02d".format(seconds / 60, seconds % 60)
-    }
+    metadata
+      .duration
+      .map { seconds =>
+        "%02d:%02d".format(seconds / 60, seconds % 60)
+      }
 
   override def toString = s"[$id] $title ($author)"
 }

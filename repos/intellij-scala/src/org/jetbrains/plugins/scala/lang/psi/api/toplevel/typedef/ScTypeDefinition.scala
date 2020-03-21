@@ -114,23 +114,31 @@ trait ScTypeDefinition
 
           val extendsText = {
             try {
-              if (typeParameters.isEmpty && clazz.constructor.get.effectiveParameterClauses.length == 1) {
-                val typeElementText =
-                  clazz.constructor.get.effectiveParameterClauses
-                    .map { clause =>
-                      clause.effectiveParameters
-                        .map(parameter => {
-                          val parameterText =
-                            parameter.typeElement.fold("_root_.scala.Nothing")(
-                              _.getText)
-                          if (parameter.isRepeatedParameter)
-                            s"_root_.scala.Seq[$parameterText]"
-                          else
-                            parameterText
-                        })
-                        .mkString("(", ", ", ")")
-                    }
-                    .mkString("(", " => ", s" => $name)")
+              if (typeParameters.isEmpty && clazz
+                    .constructor
+                    .get
+                    .effectiveParameterClauses
+                    .length == 1) {
+                val typeElementText = clazz
+                  .constructor
+                  .get
+                  .effectiveParameterClauses
+                  .map { clause =>
+                    clause
+                      .effectiveParameters
+                      .map(parameter => {
+                        val parameterText =
+                          parameter
+                            .typeElement
+                            .fold("_root_.scala.Nothing")(_.getText)
+                        if (parameter.isRepeatedParameter)
+                          s"_root_.scala.Seq[$parameterText]"
+                        else
+                          parameterText
+                      })
+                      .mkString("(", ", ", ")")
+                  }
+                  .mkString("(", " => ", s" => $name)")
                 val typeElement = ScalaPsiElementFactory
                   .createTypeElementFromText(typeElementText, getManager)
                 s" extends ${typeElement.getText}"
@@ -164,18 +172,20 @@ trait ScTypeDefinition
     val objOption: Option[ScObject] = obj.toOption
     objOption.foreach { (obj: ScObject) =>
       obj.setSyntheticObject()
-      obj.members.foreach {
-        case s: ScFunctionDefinition =>
-          s.setSynthetic(
-            this
-          ) // So we find the `apply` method in ScalaPsiUtil.syntheticParamForParam
-          this match {
-            case clazz: ScClass if clazz.isCase =>
-              s.syntheticCaseClass = Some(clazz)
-            case _ =>
-          }
-        case _ =>
-      }
+      obj
+        .members
+        .foreach {
+          case s: ScFunctionDefinition =>
+            s.setSynthetic(
+              this
+            ) // So we find the `apply` method in ScalaPsiUtil.syntheticParamForParam
+            this match {
+              case clazz: ScClass if clazz.isCase =>
+                s.syntheticCaseClass = Some(clazz)
+              case _ =>
+            }
+          case _ =>
+        }
     }
     objOption
   }

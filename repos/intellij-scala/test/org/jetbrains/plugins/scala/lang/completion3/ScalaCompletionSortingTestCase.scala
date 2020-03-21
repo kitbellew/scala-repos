@@ -29,7 +29,8 @@ abstract class ScalaCompletionSortingTestCase(
   @throws[Exception]
   override protected def setUp(): Unit = {
     super.setUp()
-    StatisticsManager.getInstance
+    StatisticsManager
+      .getInstance
       .asInstanceOf[StatisticsManagerImpl]
       .enableStatistics(getTestRootDisposable)
   }

@@ -103,8 +103,8 @@ private[regression] trait GeneralizedLinearRegressionBase
     }
     if (isDefined(link)) {
       require(
-        supportedFamilyAndLinkPairs.contains(
-          Family.fromName($(family)) -> Link.fromName($(link))),
+        supportedFamilyAndLinkPairs
+          .contains(Family.fromName($(family)) -> Link.fromName($(link))),
         "Generalized Linear Regression " +
           s"with ${$(family)} family does not support ${$(link)} link function."
       )
@@ -267,8 +267,7 @@ class GeneralizedLinearRegression @Since("2.0.0") (
         new GeneralizedLinearRegressionModel(
           uid,
           wlsModel.coefficients,
-          wlsModel.intercept)
-          .setParent(this))
+          wlsModel.intercept).setParent(this))
       // Handle possible missing or invalid prediction columns
       val (summaryModel, predictionColName) = model
         .findSummaryModelAndPredictionCol()
@@ -283,10 +282,8 @@ class GeneralizedLinearRegression @Since("2.0.0") (
     }
 
     // Fit Generalized Linear Model by iteratively reweighted least squares (IRLS).
-    val initialModel = familyAndLink.initialize(
-      instances,
-      $(fitIntercept),
-      $(regParam))
+    val initialModel = familyAndLink
+      .initialize(instances, $(fitIntercept), $(regParam))
     val optimizer =
       new IterativelyReweightedLeastSquares(
         initialModel,
@@ -301,8 +298,7 @@ class GeneralizedLinearRegression @Since("2.0.0") (
       new GeneralizedLinearRegressionModel(
         uid,
         irlsModel.coefficients,
-        irlsModel.intercept)
-        .setParent(this))
+        irlsModel.intercept).setParent(this))
     // Handle possible missing or invalid prediction columns
     val (summaryModel, predictionColName) = model
       .findSummaryModelAndPredictionCol()
@@ -347,12 +343,12 @@ object GeneralizedLinearRegression
   )
 
   /** Set of family names that GeneralizedLinearRegression supports. */
-  private[ml] lazy val supportedFamilyNames = supportedFamilyAndLinkPairs.map(
-    _._1.name)
+  private[ml] lazy val supportedFamilyNames = supportedFamilyAndLinkPairs
+    .map(_._1.name)
 
   /** Set of link names that GeneralizedLinearRegression supports. */
-  private[ml] lazy val supportedLinkNames = supportedFamilyAndLinkPairs.map(
-    _._2.name)
+  private[ml] lazy val supportedLinkNames = supportedFamilyAndLinkPairs
+    .map(_._2.name)
 
   private[ml] val epsilon: Double = 1e-16
 
@@ -386,8 +382,7 @@ object GeneralizedLinearRegression
           fitIntercept,
           regParam,
           standardizeFeatures = true,
-          standardizeLabel = true)
-          .fit(newInstances)
+          standardizeLabel = true).fit(newInstances)
       initialModel
     }
 
@@ -402,9 +397,8 @@ object GeneralizedLinearRegression
           val eta = model.predict(instance.features)
           val mu = fitted(eta)
           val offset = eta + (instance.label - mu) * link.deriv(mu)
-          val weight = instance.weight / (
-            math.pow(this.link.deriv(mu), 2.0) * family.variance(mu)
-          )
+          val weight = instance
+            .weight / (math.pow(this.link.deriv(mu), 2.0) * family.variance(mu))
           (offset, weight)
         }
     }
@@ -819,8 +813,11 @@ class GeneralizedLinearRegressionModel private[ml] (
       : (GeneralizedLinearRegressionModel, String) = {
     $(predictionCol) match {
       case "" =>
-        val predictionColName =
-          "prediction_" + java.util.UUID.randomUUID.toString()
+        val predictionColName = "prediction_" + java
+          .util
+          .UUID
+          .randomUUID
+          .toString()
         (
           copy(ParamMap.empty).setPredictionCol(predictionColName),
           predictionColName)
@@ -833,8 +830,7 @@ class GeneralizedLinearRegressionModel private[ml] (
   override def copy(extra: ParamMap): GeneralizedLinearRegressionModel = {
     copyValues(
       new GeneralizedLinearRegressionModel(uid, coefficients, intercept),
-      extra)
-      .setParent(parent)
+      extra).setParent(parent)
   }
 
   @Since("2.0.0")
@@ -887,7 +883,8 @@ object GeneralizedLinearRegressionModel
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
+      val data = sqlContext
+        .read
         .parquet(dataPath)
         .select("intercept", "coefficients")
         .head()
@@ -1150,9 +1147,11 @@ class GeneralizedLinearRegressionSummary private[regression] (
       } else {
         model.coefficients.toArray
       }
-    estimate.zip(coefficientStandardErrors).map { x =>
-      x._1 / x._2
-    }
+    estimate
+      .zip(coefficientStandardErrors)
+      .map { x =>
+        x._1 / x._2
+      }
   }
 
   /**

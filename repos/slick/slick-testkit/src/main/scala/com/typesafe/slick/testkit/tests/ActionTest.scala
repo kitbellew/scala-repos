@@ -105,22 +105,27 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
 
   def testDeepRecursion =
     if (tdb == StandardTestDBs.H2Disk) {
-      val a1 = DBIO.sequence(
-        (1 to 5000).toSeq.map(i => LiteralColumn(i).result))
+      val a1 = DBIO
+        .sequence((1 to 5000).toSeq.map(i => LiteralColumn(i).result))
       val a2 = DBIO.sequence(
-        (1 to 20).toSeq.map(i =>
-          if (i % 2 == 0)
-            LiteralColumn(i).result
-          else
-            DBIO.from(Future.successful(i))))
+        (1 to 20)
+          .toSeq
+          .map(i =>
+            if (i % 2 == 0)
+              LiteralColumn(i).result
+            else
+              DBIO.from(Future.successful(i))))
       val a3 = DBIO.sequence(
-        (1 to 20).toSeq.map(i =>
-          if ((i / 4) % 2 == 0)
-            LiteralColumn(i).result
-          else
-            DBIO.from(Future.successful(i))))
+        (1 to 20)
+          .toSeq
+          .map(i =>
+            if ((i / 4) % 2 == 0)
+              LiteralColumn(i).result
+            else
+              DBIO.from(Future.successful(i))))
       val a4 = DBIO.seq((1 to 50000).toSeq.map(i => DBIO.successful("a4")): _*)
-      val a5 = (1 to 50000).toSeq
+      val a5 = (1 to 50000)
+        .toSeq
         .map(i => DBIO.successful("a5"))
         .reduceLeft(_ andThen _)
 
@@ -165,10 +170,13 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
       }
       q1 = ts.sortBy(_.a).map(_.a).take(1)
       result <- db.run(
-        q1.result.head.zipWith(q1.result.head)({
-          case (a, b) =>
-            a + b
-        }))
+        q1
+          .result
+          .head
+          .zipWith(q1.result.head)({
+            case (a, b) =>
+              a + b
+          }))
       _ = result shouldBe 2
     } yield ()
   }
@@ -187,17 +195,23 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
       }
       q1 = ts.sortBy(_.a).map(_.a).take(1)
       result <- db.run(
-        q1.result.headOption.collect {
-          case Some(a) =>
-            a
-        })
+        q1
+          .result
+          .headOption
+          .collect {
+            case Some(a) =>
+              a
+          })
       _ = result shouldBe 1
       _ = result shouldFail { _ =>
         val future = db.run(
-          q1.result.headOption.collect {
-            case None =>
-              ()
-          })
+          q1
+            .result
+            .headOption
+            .collect {
+              case None =>
+                ()
+            })
         import scala.concurrent.duration.Duration
         import scala.concurrent.Await
         Await.result(future, Duration.Inf)

@@ -206,22 +206,24 @@ object TournamentRepo {
     }
 
   private def isPromotable(tour: Tournament) =
-    tour.startsAt isBefore DateTime.now.plusMinutes {
-      tour.schedule.map(_.freq) map {
-        case Schedule.Freq.Marathon =>
-          24 * 60
-        case Schedule.Freq.Unique =>
-          24 * 60
-        case Schedule.Freq.Monthly =>
-          6 * 60
-        case Schedule.Freq.Weekly =>
-          3 * 60
-        case Schedule.Freq.Daily =>
-          1 * 60
-        case _ =>
-          30
-      } getOrElse 30
-    }
+    tour.startsAt isBefore DateTime
+      .now
+      .plusMinutes {
+        tour.schedule.map(_.freq) map {
+          case Schedule.Freq.Marathon =>
+            24 * 60
+          case Schedule.Freq.Unique =>
+            24 * 60
+          case Schedule.Freq.Monthly =>
+            6 * 60
+          case Schedule.Freq.Weekly =>
+            3 * 60
+          case Schedule.Freq.Daily =>
+            1 * 60
+          case _ =>
+            30
+        } getOrElse 30
+      }
 
   def promotable: Fu[List[Tournament]] =
     stillWorthEntering zip publicCreatedSorted(24 * 60) map {
@@ -257,23 +259,24 @@ object TournamentRepo {
       import Schedule.Freq
       _.flatMap { tour =>
         tour.schedule map (tour -> _)
-      }.foldLeft(List[Tournament]() -> none[Freq]) {
-          case ((tours, skip), (_, sched)) if skip.contains(sched.freq) =>
-            (tours, skip)
-          case ((tours, skip), (tour, sched)) =>
-            (
-              tour :: tours,
-              sched.freq match {
-                case Freq.Daily =>
-                  Freq.Eastern.some
-                case Freq.Eastern =>
-                  Freq.Daily.some
-                case _ =>
-                  skip
-              })
-        }
-        ._1
-        .reverse
+      }
+      .foldLeft(List[Tournament]() -> none[Freq]) {
+        case ((tours, skip), (_, sched)) if skip.contains(sched.freq) =>
+          (tours, skip)
+        case ((tours, skip), (tour, sched)) =>
+          (
+            tour :: tours,
+            sched.freq match {
+              case Freq.Daily =>
+                Freq.Eastern.some
+              case Freq.Eastern =>
+                Freq.Daily.some
+              case _ =>
+                skip
+            })
+      }
+      ._1
+      .reverse
     }
 
   def lastFinishedScheduledByFreq(

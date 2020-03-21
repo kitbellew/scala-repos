@@ -157,8 +157,9 @@ object helpers
     * Tests whether the given file is renderable. It's tested by the file extension.
     */
   def isRenderable(fileName: String): Boolean = {
-    PluginRegistry().renderableExtensions.exists(extension =>
-      fileName.toLowerCase.endsWith("." + extension))
+    PluginRegistry()
+      .renderableExtensions
+      .exists(extension => fileName.toLowerCase.endsWith("." + extension))
   }
 
   /**
@@ -241,9 +242,9 @@ object helpers
         .replaceAll(
           "\\[commit:([^\\s]+?)/([^\\s]+?)\\@([^\\s]+?)\\]",
           (m: Match) =>
-            s"""<a href="${context.path}/${m.group(1)}/${m.group(2)}/commit/${m
-              .group(3)}">${m.group(1)}/${m
-              .group(2)}@${m.group(3).substring(0, 7)}</a>"""
+            s"""<a href="${context.path}/${m.group(1)}/${m.group(
+              2)}/commit/${m.group(3)}">${m.group(1)}/${m.group(2)}@${m.group(
+              3).substring(0, 7)}</a>"""
         ))
 
   /**
@@ -438,7 +439,8 @@ object helpers
 
   // This pattern comes from: http://stackoverflow.com/a/4390768/1771641 (extract-url-from-string)
   private[this] val detectAndRenderLinksRegex =
-    """(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,13}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))""".r
+    """(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,13}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))"""
+      .r
 
   def detectAndRenderLinks(text: String): Html = {
     val matches = detectAndRenderLinksRegex.findAllMatchIn(text).toSeq

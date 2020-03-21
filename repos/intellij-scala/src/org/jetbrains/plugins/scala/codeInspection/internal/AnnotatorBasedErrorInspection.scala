@@ -49,20 +49,23 @@ class AnnotatorBasedErrorInspection extends LocalInspectionTool {
             element.getProject)
           val highlightInfoHolder = new HighlightInfoHolder(file)
 
-          highlightVisitors.headOption.map {
-            case vr: HighlightVisitorImpl =>
-              vr.clone()
-                .analyze(
-                  file,
-                  true,
-                  highlightInfoHolder,
-                  new Runnable {
-                    def run() {
-                      vr.visit(element)
-                    }
-                  })
-            case _ =>
-          }
+          highlightVisitors
+            .headOption
+            .map {
+              case vr: HighlightVisitorImpl =>
+                vr
+                  .clone()
+                  .analyze(
+                    file,
+                    true,
+                    highlightInfoHolder,
+                    new Runnable {
+                      def run() {
+                        vr.visit(element)
+                      }
+                    })
+              case _ =>
+            }
 
           if (highlightInfoHolder.hasErrorResults) {
             holder.registerProblem(

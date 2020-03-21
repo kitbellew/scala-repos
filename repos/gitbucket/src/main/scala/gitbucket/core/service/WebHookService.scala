@@ -102,9 +102,11 @@ trait WebHookService {
       events: Set[WebHook.Event],
       token: Option[String])(implicit s: Session): Unit = {
     WebHooks insert WebHook(owner, repository, url, token)
-    events.toSet.map { event: WebHook.Event =>
-      WebHookEvents insert WebHookEvent(owner, repository, url, event)
-    }
+    events
+      .toSet
+      .map { event: WebHook.Event =>
+        WebHookEvents insert WebHookEvent(owner, repository, url, event)
+      }
   }
 
   def updateWebHook(
@@ -118,9 +120,11 @@ trait WebHookService {
       .map(w => w.token)
       .update(token)
     WebHookEvents.filter(_.byWebHook(owner, repository, url)).delete
-    events.toSet.map { event: WebHook.Event =>
-      WebHookEvents insert WebHookEvent(owner, repository, url, event)
-    }
+    events
+      .toSet
+      .map { event: WebHook.Event =>
+        WebHookEvents insert WebHookEvent(owner, repository, url, event)
+      }
   }
 
   def deleteWebHook(owner: String, repository: String, url: String)(implicit
@@ -164,9 +168,8 @@ trait WebHookService {
               HttpClientBuilder.create.addInterceptorLast(itcp).build
             logger.debug(s"start web hook invocation for ${webHook.url}")
             val httpPost = new HttpPost(webHook.url)
-            httpPost.addHeader(
-              "Content-Type",
-              "application/x-www-form-urlencoded")
+            httpPost
+              .addHeader("Content-Type", "application/x-www-form-urlencoded")
             httpPost.addHeader("X-Github-Event", event.name)
             httpPost.addHeader(
               "X-Github-Delivery",
@@ -312,8 +315,8 @@ trait WebHookPullRequestService extends WebHookService {
     (
       for {
         is <- Issues if is.closed === false.bind
-        pr <- PullRequests
-        if pr.byPrimaryKey(is.userName, is.repositoryName, is.issueId)
+        pr <- PullRequests if pr
+          .byPrimaryKey(is.userName, is.repositoryName, is.issueId)
         if pr.requestUserName === userName.bind
         if pr.requestRepositoryName === repositoryName.bind
         if pr.requestBranch === branch.bind
@@ -321,9 +324,9 @@ trait WebHookPullRequestService extends WebHookService {
         ru <- Accounts if ru.userName === pr.requestUserName
         iu <- Accounts if iu.userName === is.openedUserName
         wh <- WebHooks if wh.byRepository(is.userName, is.repositoryName)
-        wht <- WebHookEvents if wht.event === WebHook.PullRequest
-          .asInstanceOf[WebHook.Event]
-          .bind && wht.byWebHook(wh)
+        wht <- WebHookEvents if wht
+          .event === WebHook.PullRequest.asInstanceOf[WebHook.Event].bind && wht
+          .byWebHook(wh)
       } yield {
         ((is, iu, pr, bu, ru), wh)
       }

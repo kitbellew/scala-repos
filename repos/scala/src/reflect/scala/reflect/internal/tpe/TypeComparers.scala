@@ -73,7 +73,8 @@ trait TypeComparers {
       sym2: Symbol,
       pre2: Type): Boolean =
     (if (sym1 eq sym2)
-       sym1.hasPackageFlag || sym1.owner.hasPackageFlag || phase.erasedTypes || pre1 =:= pre2
+       sym1.hasPackageFlag || sym1.owner.hasPackageFlag || phase
+         .erasedTypes || pre1 =:= pre2
      else
        (sym1.name == sym2.name) && isUnifiable(pre1, pre2))
 
@@ -193,8 +194,8 @@ trait TypeComparers {
     (
       sameLength(tparams1, tparams2)
       && (tparams1 corresponds tparams2)((p1, p2) =>
-        methodHigherOrderTypeParamsSameVariance(p1, p2) && p1.info =:= subst(
-          p2.info))
+        methodHigherOrderTypeParamsSameVariance(p1, p2) && p1
+          .info =:= subst(p2.info))
       && (res1 =:= subst(res2))
     )
   }
@@ -205,16 +206,17 @@ trait TypeComparers {
       sym2: Symbol) = {
     def ignoreVariance(sym: Symbol) =
       !(sym.isHigherOrderTypeParameter && sym.logicallyEnclosingMember.isMethod)
-    !settings.isScala211 || ignoreVariance(sym1) || ignoreVariance(
-      sym2) || sym1.variance == sym2.variance
+    !settings.isScala211 || ignoreVariance(sym1) || ignoreVariance(sym2) || sym1
+      .variance == sym2.variance
   }
 
   private def methodHigherOrderTypeParamsSubVariance(
       low: Symbol,
       high: Symbol) =
-    !settings.isScala211 || methodHigherOrderTypeParamsSameVariance(
-      low,
-      high) || low.variance.isInvariant
+    !settings
+      .isScala211 || methodHigherOrderTypeParamsSameVariance(low, high) || low
+      .variance
+      .isInvariant
 
   def isSameType2(tp1: Type, tp2: Type): Boolean = {
     def retry(lhs: Type, rhs: Type) =
@@ -411,12 +413,12 @@ trait TypeComparers {
       ((tp1 eq tp2)
         || isErrorOrWildcard(tp1)
         || isErrorOrWildcard(tp2)
-        || (
-          tp1 eq NoPrefix
-        ) && tp2.typeSymbol.isPackageClass // !! I do not see how this would be warranted by the spec
-        || (
-          tp2 eq NoPrefix
-        ) && tp1.typeSymbol.isPackageClass // !! I do not see how this would be warranted by the spec
+        || (tp1 eq NoPrefix) && tp2
+          .typeSymbol
+          .isPackageClass // !! I do not see how this would be warranted by the spec
+        || (tp2 eq NoPrefix) && tp1
+          .typeSymbol
+          .isPackageClass // !! I do not see how this would be warranted by the spec
       )
     // isFalse, assuming !isTrue
     def isFalse =
@@ -559,13 +561,13 @@ trait TypeComparers {
                 (
                   (
                     if (sym1 eq sym2)
-                      phase.erasedTypes || sym1.owner.hasPackageFlag || isSubType(
-                        pre1,
-                        pre2,
-                        depth)
+                      phase.erasedTypes || sym1
+                        .owner
+                        .hasPackageFlag || isSubType(pre1, pre2, depth)
                     else
                       (
-                        sym1.name == sym2.name && !sym1.isModuleClass && !sym2.isModuleClass &&
+                        sym1.name == sym2.name && !sym1.isModuleClass && !sym2
+                          .isModuleClass &&
                         (
                           isUnifiable(pre1, pre2) ||
                           isSameSpecializedSkolem(sym1, sym2, pre1, pre2) ||

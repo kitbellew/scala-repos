@@ -38,14 +38,16 @@ private[tracker] object TaskOpProcessorImpl {
       */
     def resolve(taskId: Task.Id, status: TaskStatus)(implicit
         ec: ExecutionContext): Future[Action] = {
-      directTaskTracker.task(taskId).map {
-        case Some(existingTask) =>
-          actionForTaskAndStatus(existingTask, status)
-        case None =>
-          Action.Fail(
-            new IllegalStateException(
-              s"$taskId of app [${taskId.appId}] does not exist"))
-      }
+      directTaskTracker
+        .task(taskId)
+        .map {
+          case Some(existingTask) =>
+            actionForTaskAndStatus(existingTask, status)
+          case None =>
+            Action.Fail(
+              new IllegalStateException(
+                s"$taskId of app [${taskId.appId}] does not exist"))
+        }
     }
 
     private[this] def actionForTaskAndStatus(
@@ -93,9 +95,8 @@ private[tracker] class TaskOpProcessorImpl(
         repo
           .store(marathonTask)
           .map { _ =>
-            taskTrackerRef ! TaskTrackerActor.TaskUpdated(
-              task,
-              TaskTrackerActor.Ack(op.sender))
+            taskTrackerRef ! TaskTrackerActor
+              .TaskUpdated(task, TaskTrackerActor.Ack(op.sender))
           }
           .recoverWith(tryToRecover(op)(expectedTaskState = Some(task)))
 
@@ -105,19 +106,19 @@ private[tracker] class TaskOpProcessorImpl(
         repo
           .expunge(op.taskId.idString)
           .map { _ =>
-            taskTrackerRef ! TaskTrackerActor.TaskRemoved(
-              op.taskId,
-              TaskTrackerActor.Ack(op.sender))
+            taskTrackerRef ! TaskTrackerActor
+              .TaskRemoved(op.taskId, TaskTrackerActor.Ack(op.sender))
           }
           .recoverWith(tryToRecover(op)(expectedTaskState = None))
 
       case Action.UpdateStatus(status) =>
-        statusUpdateActionResolver.resolve(op.taskId, status).flatMap {
-          action: Action =>
+        statusUpdateActionResolver
+          .resolve(op.taskId, status)
+          .flatMap { action: Action =>
             // Since this action is mapped to another action, we delegate the responsibility to inform
             // the sender to that other action.
             process(op.copy(action = action))
-        }
+          }
 
       case Action.Noop =>
         // Used if a task status update does not result in any changes.
@@ -166,9 +167,8 @@ private[tracker] class TaskOpProcessorImpl(
         .map {
           case Some(task) =>
             val taskState = TaskSerializer.fromProto(task)
-            taskTrackerRef ! TaskTrackerActor.TaskUpdated(
-              taskState,
-              ack(Some(task)))
+            taskTrackerRef ! TaskTrackerActor
+              .TaskUpdated(taskState, ack(Some(task)))
           case None =>
             taskTrackerRef ! TaskTrackerActor.TaskRemoved(op.taskId, ack(None))
         }

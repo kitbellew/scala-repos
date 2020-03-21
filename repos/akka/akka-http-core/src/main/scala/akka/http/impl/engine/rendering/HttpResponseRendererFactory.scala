@@ -137,8 +137,8 @@ private[http] class HttpResponseRendererFactory(
           val r = new ByteStringRendering(responseHeaderSizeHint)
 
           import ctx.response._
-          val noEntity =
-            entity.isKnownEmpty || ctx.requestMethod == HttpMethods.HEAD
+          val noEntity = entity.isKnownEmpty || ctx.requestMethod == HttpMethods
+            .HEAD
 
           def renderStatusLine(): Unit =
             protocol match {
@@ -332,8 +332,10 @@ private[http] class HttpResponseRendererFactory(
                 // Do we render an explicit Connection header?
                 val renderConnectionHeader =
                   protocol == `HTTP/1.0` && !close || protocol == `HTTP/1.1` && close || // if we don't follow the default behavior
-                    close != ctx.closeRequested || // if we override the client's closing request
-                    protocol != ctx.requestProtocol // if we reply with a mismatching protocol (let's be very explicit in this case)
+                    close != ctx
+                      .closeRequested || // if we override the client's closing request
+                    protocol != ctx
+                      .requestProtocol // if we reply with a mismatching protocol (let's be very explicit in this case)
 
                 if (renderConnectionHeader)
                   r ~~ Connection ~~ (
@@ -394,8 +396,8 @@ private[http] class HttpResponseRendererFactory(
                 renderContentLengthHeader(contentLength) ~~ CrLf
                 Streamed(
                   byteStrings(
-                    data.via(
-                      CheckContentLengthTransformer.flow(contentLength))))
+                    data
+                      .via(CheckContentLengthTransformer.flow(contentLength))))
 
               case HttpEntity.CloseDelimited(_, data) ⇒
                 renderHeaders(

@@ -404,8 +404,8 @@ object Project extends ProjectExtra {
       id: String,
       base: File,
       aggregate: => Seq[ProjectReference]): Project = {
-    validProjectID(id).foreach(errMsg =>
-      sys.error("Invalid project ID: " + errMsg))
+    validProjectID(id)
+      .foreach(errMsg => sys.error("Invalid project ID: " + errMsg))
     new ProjectDef[ProjectReference](
       id,
       base,
@@ -502,8 +502,8 @@ object Project extends ProjectExtra {
       auto: AddSettings,
       plugins: Plugins,
       autoPlugins: Seq[AutoPlugin]): Project = {
-    validProjectID(id).foreach(errMsg =>
-      sys.error("Invalid project ID: " + errMsg))
+    validProjectID(id)
+      .foreach(errMsg => sys.error("Invalid project ID: " + errMsg))
     new ProjectDef[ProjectReference](
       id,
       base,
@@ -575,7 +575,8 @@ object Project extends ProjectExtra {
       s: State): State = {
     val unloaded = runUnloadHooks(s)
     val (onLoad, onUnload) = getHooks(structure.data)
-    val newAttrs = unloaded.attributes
+    val newAttrs = unloaded
+      .attributes
       .put(stateBuildStructure, structure)
       .put(sessionSettings, session)
       .put(Keys.onUnload.key, onUnload)
@@ -608,12 +609,12 @@ object Project extends ProjectExtra {
     val history = get(historyPath) flatMap idFun
     val prompt = get(shellPrompt)
     val watched = get(watch)
-    val commandDefs = allCommands.distinct
+    val commandDefs = allCommands
+      .distinct
       .flatten[Command]
       .map(_ tag (projectCommand, true))
-    val newDefinedCommands = commandDefs ++ BasicCommands.removeTagged(
-      s.definedCommands,
-      projectCommand)
+    val newDefinedCommands = commandDefs ++ BasicCommands
+      .removeTagged(s.definedCommands, projectCommand)
     val newAttrs = setCond(Watched.Configuration, watched, s.attributes)
       .put(historyPath.key, history)
     s.copy(
@@ -755,7 +756,8 @@ object Project extends ProjectExtra {
       comp
         .get(c)
         .map(
-          _.settings.flatMap(s =>
+          _.settings
+          .flatMap(s =>
             if (s.isDerived)
               s.dependencies
             else
@@ -1054,10 +1056,12 @@ object Project extends ProjectExtra {
 
   def projectMacroImpl(c: Context): c.Expr[Project] = {
     import c.universe._
-    val enclosingValName = std.KeyMacro.definingValName(
-      c,
-      methodName =>
-        s"""$methodName must be directly assigned to a val, such as `val x = $methodName`.""")
+    val enclosingValName = std
+      .KeyMacro
+      .definingValName(
+        c,
+        methodName =>
+          s"""$methodName must be directly assigned to a val, such as `val x = $methodName`.""")
     val name = c.Expr[String](Literal(Constant(enclosingValName)))
     reify {
       Project(name.splice, new File(name.splice))

@@ -105,17 +105,19 @@ private[sql] trait SQLTestUtils
     */
   protected def withSQLConf(pairs: (String, String)*)(f: => Unit): Unit = {
     val (keys, values) = pairs.unzip
-    val currentValues = keys.map(key =>
-      Try(sqlContext.conf.getConfString(key)).toOption)
+    val currentValues = keys
+      .map(key => Try(sqlContext.conf.getConfString(key)).toOption)
     (keys, values).zipped.foreach(sqlContext.conf.setConfString)
     try f
     finally {
-      keys.zip(currentValues).foreach {
-        case (key, Some(value)) =>
-          sqlContext.conf.setConfString(key, value)
-        case (key, None) =>
-          sqlContext.conf.unsetConf(key)
-      }
+      keys
+        .zip(currentValues)
+        .foreach {
+          case (key, Some(value)) =>
+            sqlContext.conf.setConfString(key, value)
+          case (key, None) =>
+            sqlContext.conf.unsetConf(key)
+        }
     }
   }
 
@@ -218,7 +220,9 @@ private[sql] trait SQLTestUtils
     */
   protected def stripSparkFilter(df: DataFrame): DataFrame = {
     val schema = df.schema
-    val childRDD = df.queryExecution.sparkPlan
+    val childRDD = df
+      .queryExecution
+      .sparkPlan
       .asInstanceOf[org.apache.spark.sql.execution.Filter]
       .child
       .execute()
@@ -266,14 +270,16 @@ private[sql] object SQLTestUtils {
       // This function is copied from Catalyst's QueryTest
       val converted: Seq[Row] = answer.map { s =>
         Row.fromSeq(
-          s.toSeq.map {
-            case d: java.math.BigDecimal =>
-              BigDecimal(d)
-            case b: Array[Byte] =>
-              b.toSeq
-            case o =>
-              o
-          })
+          s
+            .toSeq
+            .map {
+              case d: java.math.BigDecimal =>
+                BigDecimal(d)
+              case b: Array[Byte] =>
+                b.toSeq
+              case o =>
+                o
+            })
       }
       if (sort) {
         converted.sortBy(_.toString())

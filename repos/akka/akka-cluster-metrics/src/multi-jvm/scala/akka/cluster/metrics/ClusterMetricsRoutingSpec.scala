@@ -67,7 +67,8 @@ object AdaptiveLoadBalancingRouterConfig extends MultiNodeConfig {
   nodeList foreach { role ⇒
     nodeConfig(role) {
       ConfigFactory.parseString(
-        "akka.cluster.metrics.native-library-extract-folder=${user.dir}/target/native/" + role.name)
+        "akka.cluster.metrics.native-library-extract-folder=${user.dir}/target/native/" + role
+          .name)
     }
   }
 
@@ -178,10 +179,12 @@ abstract class AdaptiveLoadBalancingRouterSpec
       currentRoutees(router).size should ===(roles.size)
     }
     val routees = currentRoutees(router)
-    routees.map {
-      case ActorRefRoutee(ref) ⇒
-        fullAddress(ref)
-    }.toSet should ===(roles.map(address).toSet)
+    routees
+      .map {
+        case ActorRefRoutee(ref) ⇒
+          fullAddress(ref)
+      }
+      .toSet should ===(roles.map(address).toSet)
     router
   }
 
@@ -263,10 +266,12 @@ abstract class AdaptiveLoadBalancingRouterSpec
           currentRoutees(router3).size should ===(9)
         }
         val routees = currentRoutees(router3)
-        routees.map {
-          case ActorRefRoutee(ref) ⇒
-            fullAddress(ref)
-        }.toSet should ===(Set(address(node1)))
+        routees
+          .map {
+            case ActorRefRoutee(ref) ⇒
+              fullAddress(ref)
+          }
+          .toSet should ===(Set(address(node1)))
       }
       enterBarrier("after-4")
     }
@@ -279,10 +284,12 @@ abstract class AdaptiveLoadBalancingRouterSpec
           currentRoutees(router4).size should ===(6)
         }
         val routees = currentRoutees(router4)
-        routees.map {
-          case ActorRefRoutee(ref) ⇒
-            fullAddress(ref)
-        }.toSet should ===(Set(address(node1), address(node2), address(node3)))
+        routees
+          .map {
+            case ActorRefRoutee(ref) ⇒
+              fullAddress(ref)
+          }
+          .toSet should ===(Set(address(node1), address(node2), address(node3)))
       }
       enterBarrier("after-5")
     }

@@ -45,14 +45,14 @@ object ScalaProjectSettingsUtil {
       private def checkInput(
           inputString: String,
           checkExcludes: Boolean): Boolean = {
-        if (checkExcludes && inputString.startsWith(
-              ScalaCodeStyleSettings.EXCLUDE_PREFIX))
+        if (checkExcludes && inputString
+              .startsWith(ScalaCodeStyleSettings.EXCLUDE_PREFIX))
           checkInput(
             inputString.substring(ScalaCodeStyleSettings.EXCLUDE_PREFIX.length),
             checkExcludes = false)
         else
-          inputString.contains(".") && ScalaProjectSettingsUtil.isValidPackage(
-            inputString)
+          inputString.contains(".") && ScalaProjectSettingsUtil
+            .isValidPackage(inputString)
       }
 
       def canClose(inputString: String): Boolean = {
@@ -63,9 +63,8 @@ object ScalaProjectSettingsUtil {
   def getPackageValidator: InputValidator =
     new InputValidator {
       def checkInput(inputString: String): Boolean = {
-        ScalaProjectSettingsUtil.isValidPackage(
-          inputString,
-          checkPlaceholder = false)
+        ScalaProjectSettingsUtil
+          .isValidPackage(inputString, checkPlaceholder = false)
       }
 
       def canClose(inputString: String): Boolean = {
@@ -84,8 +83,8 @@ object ScalaProjectSettingsUtil {
       if (pattern == null)
         return
       val listModel =
-        JListCompatibility.getDefaultListModel(
-          patternJBList.getList.getModel) match {
+        JListCompatibility
+          .getDefaultListModel(patternJBList.getList.getModel) match {
           case null =>
             return
           case default =>
@@ -97,7 +96,8 @@ object ScalaProjectSettingsUtil {
       JListCompatibility.add(listModel, index, pattern)
       patternJBList.getList.setSelectedValue(pattern, true)
       ScrollingUtil.ensureIndexIsVisible(patternJBList.getList, index, 0)
-      IdeFocusManager.getGlobalInstance
+      IdeFocusManager
+        .getGlobalInstance
         .requestFocus(patternJBList.getList, false)
     }
 
@@ -133,8 +133,8 @@ object ScalaProjectSettingsUtil {
       if (pattern == null)
         return
       val listModel =
-        JListCompatibility.getDefaultListModel(
-          patternJBList.getList.getModel) match {
+        JListCompatibility
+          .getDefaultListModel(patternJBList.getList.getModel) match {
           case null =>
             return
           case default =>
@@ -144,7 +144,8 @@ object ScalaProjectSettingsUtil {
       JListCompatibility.add(listModel, index + 1, pattern)
       patternJBList.getList.setSelectedValue(pattern, true)
       ScrollingUtil.ensureIndexIsVisible(patternJBList.getList, index, 0)
-      IdeFocusManager.getGlobalInstance
+      IdeFocusManager
+        .getGlobalInstance
         .requestFocus(patternJBList.getList, false)
     }
 
@@ -177,8 +178,8 @@ object ScalaProjectSettingsUtil {
         new AnActionButtonRunnable {
           override def run(t: AnActionButton): Unit = {
             val listModel =
-              JListCompatibility.getDefaultListModel(
-                patternJBList.getList.getModel) match {
+              JListCompatibility
+                .getDefaultListModel(patternJBList.getList.getModel) match {
                 case null =>
                   return
                 case default =>
@@ -186,8 +187,8 @@ object ScalaProjectSettingsUtil {
               }
             val index = patternJBList.getList.getSelectedIndex
             if (index != -1) {
-              if (listModel.get(
-                    index) == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS)
+              if (listModel.get(index) == ScalaCodeStyleSettings
+                    .ALL_OTHER_IMPORTS)
                 return
               val size = listModel.size()
               listModel.remove(index)
@@ -198,7 +199,8 @@ object ScalaProjectSettingsUtil {
                   index
               patternJBList.getList.setSelectedIndex(to)
               ScrollingUtil.ensureIndexIsVisible(patternJBList.getList, to, 0)
-              IdeFocusManager.getGlobalInstance
+              IdeFocusManager
+                .getGlobalInstance
                 .requestFocus(patternJBList.getList, false)
             }
           }

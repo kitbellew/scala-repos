@@ -973,7 +973,8 @@ class HttpServerSpec
                 val error =
                   the[Exception]
                     .thrownBy(
-                      entity.dataBytes
+                      entity
+                        .dataBytes
                         .runFold(ByteString.empty)(_ ++ _)
                         .awaitResult(100.millis))
                     .getCause
@@ -1002,7 +1003,8 @@ class HttpServerSpec
                 val error =
                   the[Exception]
                     .thrownBy(
-                      entity.dataBytes
+                      entity
+                        .dataBytes
                         .runFold(ByteString.empty)(_ ++ _)
                         .awaitResult(100.millis))
                     .getCause

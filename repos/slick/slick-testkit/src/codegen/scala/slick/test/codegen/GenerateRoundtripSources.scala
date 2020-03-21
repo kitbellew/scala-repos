@@ -20,8 +20,9 @@ object GenerateRoundtripSources {
     object Tables extends Tables(profile)
     import Tables._
     import Tables.profile.api._
-    val ddl =
-      posts.schema ++ categories.schema ++ typeTest.schema ++ large.schema ++ `null`.schema ++ X.schema ++ SingleNonOptionColumn.schema ++ SelfRef.schema
+    val ddl = posts.schema ++ categories.schema ++ typeTest.schema ++ large
+      .schema ++ `null`.schema ++ X.schema ++ SingleNonOptionColumn
+      .schema ++ SelfRef.schema
     val a1 = profile
       .createModel(ignoreInvalidDefaults = false)
       .map(m =>
@@ -42,10 +43,8 @@ object GenerateRoundtripSources {
               override def autoIncLastAsOption = true
             }
         })
-    val db = Database.forURL(
-      url = url,
-      driver = jdbcDriver,
-      keepAliveConnection = true)
+    val db = Database
+      .forURL(url = url, driver = jdbcDriver, keepAliveConnection = true)
     val (gen, gen2) =
       try Await.result(db.run(ddl.create >> (a1 zip a2)), Duration.Inf)
       finally db.close

@@ -53,7 +53,8 @@ case class SimplePrunedScan(from: Int, to: Int)(
         (i: Int) => Seq(i * 2)
     }
 
-    sqlContext.sparkContext
+    sqlContext
+      .sparkContext
       .parallelize(from to to)
       .map(i =>
         Row.fromSeq(
@@ -121,15 +122,18 @@ class PrunedScanSuite extends DataSourceTest with SharedSQLContext {
     test(s"Columns output ${expectedColumns.mkString(",")}: $sqlString") {
 
       // These tests check a particular plan, disable whole stage codegen.
-      caseInsensitiveContext.conf
+      caseInsensitiveContext
+        .conf
         .setConf(SQLConf.WHOLESTAGE_CODEGEN_ENABLED, false)
       try {
         val queryExecution = sql(sqlString).queryExecution
         val rawPlan =
-          queryExecution.executedPlan.collect {
-            case p: execution.DataSourceScan =>
-              p
-          } match {
+          queryExecution
+            .executedPlan
+            .collect {
+              case p: execution.DataSourceScan =>
+                p
+            } match {
             case Seq(p) =>
               p
             case _ =>
@@ -149,9 +153,11 @@ class PrunedScanSuite extends DataSourceTest with SharedSQLContext {
           fail(s"Wrong output row. Got $rawOutput\n$queryExecution")
         }
       } finally {
-        caseInsensitiveContext.conf.setConf(
-          SQLConf.WHOLESTAGE_CODEGEN_ENABLED,
-          SQLConf.WHOLESTAGE_CODEGEN_ENABLED.defaultValue.get)
+        caseInsensitiveContext
+          .conf
+          .setConf(
+            SQLConf.WHOLESTAGE_CODEGEN_ENABLED,
+            SQLConf.WHOLESTAGE_CODEGEN_ENABLED.defaultValue.get)
       }
     }
   }

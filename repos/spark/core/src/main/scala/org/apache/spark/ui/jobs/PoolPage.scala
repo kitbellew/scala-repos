@@ -57,8 +57,10 @@ private[ui] class PoolPage(parent: StagesTab) extends WebUIPage("pool") {
 
       // For now, pool information is only accessible in live UIs
       val pools =
-        sc.map(
-            _.getPoolForName(poolName).getOrElse {
+        sc
+          .map(
+            _.getPoolForName(poolName)
+            .getOrElse {
               throw new IllegalArgumentException(s"Unknown poolname: $poolName")
             })
           .toSeq
@@ -70,10 +72,8 @@ private[ui] class PoolPage(parent: StagesTab) extends WebUIPage("pool") {
             activeStages.size
           } Active Stages</h4> ++ activeStagesTable.toNodeSeq
 
-      UIUtils.headerSparkPage(
-        "Fair Scheduler Pool: " + poolName,
-        content,
-        parent)
+      UIUtils
+        .headerSparkPage("Fair Scheduler Pool: " + poolName, content, parent)
     }
   }
 }

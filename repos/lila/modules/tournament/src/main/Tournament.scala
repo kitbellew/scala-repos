@@ -109,9 +109,11 @@ case class Tournament(
 
   def spotlightedNow =
     spotlight.filter { s =>
-      !isFinished && s.homepageHours.?? { hours =>
-        startsAt.minusHours(hours) isBefore DateTime.now
-      }
+      !isFinished && s
+        .homepageHours
+        .?? { hours =>
+          startsAt.minusHours(hours) isBefore DateTime.now
+        }
     } map {
       this -> _
     }

@@ -650,9 +650,8 @@ private[collection] object RedBlackTree {
       }
 
     private[this] def setNullIfAfterEnd(): Unit =
-      if (end.isDefined && (nextNode ne null) && ord.compare(
-            nextNode.key,
-            end.get) >= 0)
+      if (end.isDefined && (nextNode ne null) && ord
+            .compare(nextNode.key, end.get) >= 0)
         nextNode = null
 
     setNullIfAfterEnd()

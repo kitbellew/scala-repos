@@ -105,18 +105,20 @@ object Crosstable {
             Crosstable(
               user1 = User(u1Id, r intD "s1"),
               user2 = User(u2Id, r intD "s2"),
-              results = r.get[List[String]](results).map { r =>
-                r drop 8 match {
-                  case "" =>
-                    Result(r take 8, none)
-                  case "+" =>
-                    Result(r take 8, Some(u1Id))
-                  case "-" =>
-                    Result(r take 8, Some(u2Id))
-                  case _ =>
-                    sys error s"Invalid result string $r"
-                }
-              },
+              results = r
+                .get[List[String]](results)
+                .map { r =>
+                  r drop 8 match {
+                    case "" =>
+                      Result(r take 8, none)
+                    case "+" =>
+                      Result(r take 8, Some(u1Id))
+                    case "-" =>
+                      Result(r take 8, Some(u2Id))
+                    case _ =>
+                      sys error s"Invalid result string $r"
+                  }
+                },
               nbGames = r int nbGames
             )
           case x =>
@@ -138,9 +140,11 @@ object Crosstable {
           id -> makeKey(o.user1.id, o.user2.id),
           score1 -> o.user1.score,
           score2 -> o.user2.score,
-          results -> o.results.map {
-            writeResult(_, o.user1.id)
-          },
+          results -> o
+            .results
+            .map {
+              writeResult(_, o.user1.id)
+            },
           nbGames -> w.int(o.nbGames)
         )
     }

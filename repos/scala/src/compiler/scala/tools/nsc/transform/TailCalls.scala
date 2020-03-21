@@ -90,10 +90,10 @@ abstract class TailCalls extends Transform {
   class TailCallElimination(unit: CompilationUnit) extends Transformer {
     private def defaultReason =
       "it contains a recursive call not in tail position"
-    private val failPositions =
-      perRunCaches.newMap[TailContext, Position]() withDefault (_.methodPos)
-    private val failReasons =
-      perRunCaches.newMap[TailContext, String]() withDefaultValue defaultReason
+    private val failPositions = perRunCaches
+      .newMap[TailContext, Position]() withDefault (_.methodPos)
+    private val failReasons = perRunCaches
+      .newMap[TailContext, String]() withDefaultValue defaultReason
     private def tailrecFailure(ctx: TailContext) {
       val method = ctx.method
       val failReason = failReasons(ctx)
@@ -132,8 +132,8 @@ abstract class TailCalls extends Transform {
               method.ownerChain.mkString(" -> "),
               currentClass.ownerChain.mkString(" -> "))
         logResult(msg)(
-          method
-            .newValue(nme.THIS, pos, SYNTHETIC) setInfo currentClass.typeOfThis)
+          method.newValue(nme.THIS, pos, SYNTHETIC) setInfo currentClass
+            .typeOfThis)
       }
       override def toString =
         s"${method.name} tparams=$tparams tailPos=$tailPos label=$label label info=${label.info}"
@@ -268,7 +268,8 @@ abstract class TailCalls extends Transform {
          */
         def fail(reason: String) = {
           debuglog(
-            "Cannot rewrite recursive call at: " + fun.pos + " because: " + reason)
+            "Cannot rewrite recursive call at: " + fun
+              .pos + " because: " + reason)
           if (ctx.isMandatory)
             failReasons(ctx) = reason
           treeCopy.Apply(tree, noTailTransform(target), transformArgs)
@@ -395,11 +396,8 @@ abstract class TailCalls extends Transform {
           deriveCaseDef(tree)(transform)
 
         case If(cond, thenp, elsep) =>
-          treeCopy.If(
-            tree,
-            noTailTransform(cond),
-            transform(thenp),
-            transform(elsep))
+          treeCopy
+            .If(tree, noTailTransform(cond), transform(thenp), transform(elsep))
 
         case Match(selector, cases) =>
           treeCopy.Match(

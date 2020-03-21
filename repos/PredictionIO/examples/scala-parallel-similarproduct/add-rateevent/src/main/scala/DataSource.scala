@@ -101,8 +101,7 @@ class DataSource(val dsp: DataSourceParams)
             }
           }
         rateEvent
-      }
-      .cache()
+      }.cache()
 
     new TrainingData(
       users = usersRDD,

@@ -70,8 +70,8 @@ class ProductFormatsSpec
     // but tolerate missing entries
     SexpData(
       SexpSymbol(":thing") -> SexpString("wibble"),
-      SexpSymbol(":thong") -> SexpNumber(13)).convertTo[Wibble] should ===(
-      wobble)
+      SexpSymbol(":thong") -> SexpNumber(13))
+      .convertTo[Wibble] should ===(wobble)
   }
 
   val bar = (13, "bar")

@@ -295,13 +295,15 @@ private[spark] class PythonWorkerFactory(
     synchronized {
       if (useDaemon) {
         if (daemon != null) {
-          daemonWorkers.get(worker).foreach { pid =>
-            // tell daemon to kill worker by pid
-            val output = new DataOutputStream(daemon.getOutputStream)
-            output.writeInt(pid)
-            output.flush()
-            daemon.getOutputStream.flush()
-          }
+          daemonWorkers
+            .get(worker)
+            .foreach { pid =>
+              // tell daemon to kill worker by pid
+              val output = new DataOutputStream(daemon.getOutputStream)
+              output.writeInt(pid)
+              output.flush()
+              daemon.getOutputStream.flush()
+            }
         }
       } else {
         simpleWorkers.get(worker).foreach(_.destroy())

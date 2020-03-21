@@ -70,7 +70,8 @@ object CofreeTest extends SpecLite {
       def from[A](fa: CofreeLazyOption[A]) =
         OneAnd(
           fa.head,
-          fa.tail
+          fa
+            .tail
             .map(s =>
               Foldable[CofreeLazyOption].foldRight(s, Stream.empty[A])(_ #:: _))
             .getOrElse(Stream.empty))

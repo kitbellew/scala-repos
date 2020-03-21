@@ -77,7 +77,9 @@ class ScalaJsonHttpSpec extends PlaySpecification with Results {
       //#handle-json
       def savePlace =
         Action { request =>
-          request.body.asJson
+          request
+            .body
+            .asJson
             .map { json =>
               val placeResult = json.validate[Place]
               placeResult.fold(

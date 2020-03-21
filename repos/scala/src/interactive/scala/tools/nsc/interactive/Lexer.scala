@@ -294,9 +294,8 @@ class Lexer(rd: Reader) {
           case 't' =>
             sb += '\t'
           case 'u' =>
-            sb += (
-              udigit() << 12 | udigit() << 8 | udigit() << 4 | udigit()
-            ).toChar
+            sb += (udigit() << 12 | udigit() << 8 | udigit() << 4 | udigit())
+              .toChar
           case _ =>
             error("illegal escape character: '" + ch + "'")
         }

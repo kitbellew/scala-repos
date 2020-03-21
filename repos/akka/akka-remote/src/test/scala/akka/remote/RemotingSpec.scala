@@ -76,13 +76,10 @@ object RemotingSpec {
     }
   }
 
-  val cfg: Config = ConfigFactory parseString (
-    s"""
+  val cfg: Config = ConfigFactory parseString (s"""
     common-ssl-settings {
       key-store = "${getClass.getClassLoader.getResource("keystore").getPath}"
-      trust-store = "${getClass.getClassLoader
-      .getResource("truststore")
-      .getPath}"
+      trust-store = "${getClass.getClassLoader.getResource("truststore").getPath}"
       key-store-password = "changeme"
       key-password = "changeme"
       trust-store-password = "changeme"
@@ -133,15 +130,16 @@ object RemotingSpec {
         /looker2/child/grandchild.remote = "akka.test://RemotingSpec@localhost:12345"
       }
     }
-  """
-  )
+  """)
 
   def muteSystem(system: ActorSystem) {
-    system.eventStream.publish(
-      TestEvent.Mute(
-        EventFilter.error(start = "AssociationError"),
-        EventFilter.warning(start = "AssociationError"),
-        EventFilter.warning(pattern = "received dead letter.*")))
+    system
+      .eventStream
+      .publish(
+        TestEvent.Mute(
+          EventFilter.error(start = "AssociationError"),
+          EventFilter.warning(start = "AssociationError"),
+          EventFilter.warning(pattern = "received dead letter.*")))
   }
 }
 
@@ -203,8 +201,8 @@ class RemotingSpec
           }
         }).withDeploy(Deploy.local),
       bigBounceId)
-    val bigBounceHere = system.actorFor(
-      s"akka.test://remote-sys@localhost:12346/user/$bigBounceId")
+    val bigBounceHere = system
+      .actorFor(s"akka.test://remote-sys@localhost:12346/user/$bigBounceId")
 
     val eventForwarder = system.actorOf(
       Props(
@@ -221,9 +219,11 @@ class RemotingSpec
       afterSend
       expectNoMsg(500.millis.dilated)
     } finally {
-      system.eventStream
+      system
+        .eventStream
         .unsubscribe(eventForwarder, classOf[AssociationErrorEvent])
-      system.eventStream
+      system
+        .eventStream
         .unsubscribe(eventForwarder, classOf[DisassociatedEvent])
       eventForwarder ! PoisonPill
       bigBounceOther ! PoisonPill
@@ -232,20 +232,24 @@ class RemotingSpec
 
   override def atStartup() = {
     muteSystem(system);
-    remoteSystem.eventStream.publish(
-      TestEvent.Mute(
-        EventFilter[EndpointException](),
-        EventFilter.error(start = "AssociationError"),
-        EventFilter.warning(pattern =
-          "received dead letter.*(InboundPayload|Disassociate|HandleListener)")
-      ))
+    remoteSystem
+      .eventStream
+      .publish(
+        TestEvent.Mute(
+          EventFilter[EndpointException](),
+          EventFilter.error(start = "AssociationError"),
+          EventFilter.warning(pattern =
+            "received dead letter.*(InboundPayload|Disassociate|HandleListener)")
+        ))
   }
 
   private def byteStringOfSize(size: Int) =
     ByteString.fromArray(Array.fill(size)(42: Byte))
 
   val maxPayloadBytes =
-    system.settings.config
+    system
+      .settings
+      .config
       .getBytes("akka.remote.test.maximum-payload-bytes")
       .toInt
 
@@ -295,15 +299,17 @@ class RemotingSpec
       val moreSystems =
         Vector.fill(5)(ActorSystem(remoteSystem.name, tcpOnlyConfig))
       moreSystems foreach { sys ⇒
-        sys.eventStream.publish(
-          TestEvent.Mute(
-            EventFilter[EndpointDisassociatedException](),
-            EventFilter.warning(pattern = "received dead letter.*")))
+        sys
+          .eventStream
+          .publish(
+            TestEvent.Mute(
+              EventFilter[EndpointDisassociatedException](),
+              EventFilter.warning(pattern = "received dead letter.*")))
         sys.actorOf(Props[Echo2], name = "echo")
       }
       val moreRefs = moreSystems map (sys ⇒
-        system.actorSelection(
-          RootActorPath(addr(sys, "tcp")) / "user" / "echo"))
+        system
+          .actorSelection(RootActorPath(addr(sys, "tcp")) / "user" / "echo"))
       val aliveEcho = system.actorSelection(
         RootActorPath(addr(remoteSystem, "tcp")) / "user" / "echo")
       val n = 100
@@ -374,8 +380,8 @@ class RemotingSpec
       remoteSystem.actorFor("/user/otherEcho1") ! 75
       expectMsg(75)
 
-      system.actorFor(
-        "akka.test://remote-sys@localhost:12346/user/otherEcho1") ! 76
+      system
+        .actorFor("akka.test://remote-sys@localhost:12346/user/otherEcho1") ! 76
       expectMsg(76)
 
       remoteSystem.actorSelection("/user/otherEcho1") ! 77
@@ -461,8 +467,8 @@ class RemotingSpec
       grandchild.asInstanceOf[ActorRefScope].isLocal should ===(true)
       grandchild ! 53
       expectMsg(53)
-      val mysel = system.actorSelection(
-        system / "looker2" / "child" / "grandchild")
+      val mysel = system
+        .actorSelection(system / "looker2" / "child" / "grandchild")
       mysel ! 54
       expectMsg(54)
       lastSender should ===(grandchild)
@@ -489,8 +495,8 @@ class RemotingSpec
       system.actorSelection("/user/looker2/*") ! Identify("idReq3")
       expectMsg(ActorIdentity("idReq3", Some(child)))
 
-      system.actorSelection("/user/looker2/child/grandchild") ! Identify(
-        "idReq4")
+      system
+        .actorSelection("/user/looker2/child/grandchild") ! Identify("idReq4")
       expectMsg(ActorIdentity("idReq4", Some(grandchild)))
       system.actorSelection(child.path / "grandchild") ! Identify("idReq5")
       expectMsg(ActorIdentity("idReq5", Some(grandchild)))
@@ -516,8 +522,8 @@ class RemotingSpec
         "idReq13")
       expectMsg(ActorIdentity("idReq13", Some(grandgrandchild)))
 
-      val sel1 = system.actorSelection(
-        "/user/looker2/child/grandchild/grandgrandchild")
+      val sel1 = system
+        .actorSelection("/user/looker2/child/grandchild/grandgrandchild")
       system.actorSelection(sel1.toSerializationFormat) ! Identify("idReq18")
       expectMsg(ActorIdentity("idReq18", Some(grandgrandchild)))
 
@@ -662,8 +668,9 @@ class RemotingSpec
       try {
         val otherGuy = otherSystem.actorOf(Props[Echo2], "other-guy")
         // check that we use the specified transport address instead of the default
-        val otherGuyRemoteTcp = otherGuy.path.toSerializationFormatWithAddress(
-          addr(otherSystem, "tcp"))
+        val otherGuyRemoteTcp = otherGuy
+          .path
+          .toSerializationFormatWithAddress(addr(otherSystem, "tcp"))
         val remoteEchoHereTcp = system.actorFor(
           s"akka.tcp://remote-sys@localhost:${port(remoteSystem, "tcp")}/user/echo")
         val proxyTcp = system.actorOf(
@@ -672,8 +679,9 @@ class RemotingSpec
         proxyTcp ! otherGuy
         expectMsg(3.seconds, ("pong", otherGuyRemoteTcp))
         // now check that we fall back to default when we haven't got a corresponding transport
-        val otherGuyRemoteTest = otherGuy.path.toSerializationFormatWithAddress(
-          addr(otherSystem, "test"))
+        val otherGuyRemoteTest = otherGuy
+          .path
+          .toSerializationFormatWithAddress(addr(otherSystem, "test"))
         val remoteEchoHereSsl = system.actorFor(
           s"akka.ssl.tcp://remote-sys@localhost:${port(remoteSystem, "ssl.tcp")}/user/echo")
         val proxySsl = system.actorOf(
@@ -732,8 +740,10 @@ class RemotingSpec
             case None ⇒
               false
             case Some((testTransport, _)) ⇒
-              testTransport.associateBehavior.pushError(
-                new InvalidAssociationException("Test connection error"))
+              testTransport
+                .associateBehavior
+                .pushError(
+                  new InvalidAssociationException("Test connection error"))
               true
           }
         }
@@ -807,21 +817,25 @@ class RemotingSpec
 
         val remoteHandle = remoteTransportProbe
           .expectMsgType[Transport.InboundAssociation]
-        remoteHandle.association.readHandlerPromise.success(
-          new HandleEventListener {
-            override def notify(ev: HandleEvent): Unit = ()
-          })
+        remoteHandle
+          .association
+          .readHandlerPromise
+          .success(
+            new HandleEventListener {
+              override def notify(ev: HandleEvent): Unit = ()
+            })
 
         // Now we initiate an emulated inbound connection to the real system
         val inboundHandleProbe = TestProbe()
-        val inboundHandle = Await.result(
-          remoteTransport.associate(rawLocalAddress),
-          3.seconds)
-        inboundHandle.readHandlerPromise.success(
-          new AssociationHandle.HandleEventListener {
-            override def notify(ev: HandleEvent): Unit =
-              inboundHandleProbe.ref ! ev
-          })
+        val inboundHandle = Await
+          .result(remoteTransport.associate(rawLocalAddress), 3.seconds)
+        inboundHandle
+          .readHandlerPromise
+          .success(
+            new AssociationHandle.HandleEventListener {
+              override def notify(ev: HandleEvent): Unit =
+                inboundHandleProbe.ref ! ev
+            })
 
         awaitAssert {
           registry
@@ -832,8 +846,8 @@ class RemotingSpec
 
         val handshakePacket = AkkaPduProtobufCodec.constructAssociate(
           HandshakeInfo(rawRemoteAddress, uid = 0, cookie = None))
-        val brokenPacket = AkkaPduProtobufCodec.constructPayload(
-          ByteString(0, 1, 2, 3, 4, 5, 6))
+        val brokenPacket = AkkaPduProtobufCodec
+          .constructPayload(ByteString(0, 1, 2, 3, 4, 5, 6))
 
         // Finish the inbound handshake so now it is handed up to Remoting
         inboundHandle.write(handshakePacket)
@@ -908,21 +922,25 @@ class RemotingSpec
 
         val remoteHandle = remoteTransportProbe
           .expectMsgType[Transport.InboundAssociation]
-        remoteHandle.association.readHandlerPromise.success(
-          new HandleEventListener {
-            override def notify(ev: HandleEvent): Unit = ()
-          })
+        remoteHandle
+          .association
+          .readHandlerPromise
+          .success(
+            new HandleEventListener {
+              override def notify(ev: HandleEvent): Unit = ()
+            })
 
         // Now we initiate an emulated inbound connection to the real system
         val inboundHandleProbe = TestProbe()
-        val inboundHandle = Await.result(
-          remoteTransport.associate(rawLocalAddress),
-          3.seconds)
-        inboundHandle.readHandlerPromise.success(
-          new AssociationHandle.HandleEventListener {
-            override def notify(ev: HandleEvent): Unit =
-              inboundHandleProbe.ref ! ev
-          })
+        val inboundHandle = Await
+          .result(remoteTransport.associate(rawLocalAddress), 3.seconds)
+        inboundHandle
+          .readHandlerPromise
+          .success(
+            new AssociationHandle.HandleEventListener {
+              override def notify(ev: HandleEvent): Unit =
+                inboundHandleProbe.ref ! ev
+            })
 
         awaitAssert {
           registry

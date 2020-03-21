@@ -18,9 +18,8 @@ trait ParserNode extends ScalaTokenTypes {
     val rb: PsiBuilder.Marker = builder.mark
     builder.advanceLexer()
     var i: Int = 1
-    while (!builder.eof && i < elems.length && (
-             elems(i) == builder.getTokenType
-           )) {
+    while (!builder
+             .eof && i < elems.length && (elems(i) == builder.getTokenType)) {
       builder.advanceLexer()
       i += 1
     }

@@ -43,33 +43,35 @@ class ScalaAnnotatedMembersSearcher
           return true
       }
 
-    ApplicationManager.getApplication.runReadAction(
-      new Computable[Boolean] {
-        def compute: Boolean = {
-          val candidates: java.util.Collection[ScAnnotation] = StubIndex
-            .getElements(
-              ScAnnotatedMemberIndex.KEY,
-              annClass.name,
-              annClass.getProject,
-              scope,
-              classOf[ScAnnotation])
-          val iter = candidates.iterator
-          while (iter.hasNext) {
-            val annotation = iter.next
-            annotation.getParent match {
-              case ann: ScAnnotations =>
-                ann.getParent match {
-                  case member: PsiMember =>
-                    if (!consumer.process(member))
-                      return false
-                  case _ =>
-                }
-              case _ =>
+    ApplicationManager
+      .getApplication
+      .runReadAction(
+        new Computable[Boolean] {
+          def compute: Boolean = {
+            val candidates: java.util.Collection[ScAnnotation] = StubIndex
+              .getElements(
+                ScAnnotatedMemberIndex.KEY,
+                annClass.name,
+                annClass.getProject,
+                scope,
+                classOf[ScAnnotation])
+            val iter = candidates.iterator
+            while (iter.hasNext) {
+              val annotation = iter.next
+              annotation.getParent match {
+                case ann: ScAnnotations =>
+                  ann.getParent match {
+                    case member: PsiMember =>
+                      if (!consumer.process(member))
+                        return false
+                    case _ =>
+                  }
+                case _ =>
+              }
             }
+            true
           }
-          true
-        }
-      })
+        })
 
     true
   }

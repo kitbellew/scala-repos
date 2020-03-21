@@ -166,7 +166,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFIntegerToString") {
-    val testData = hiveContext.sparkContext
+    val testData = hiveContext
+      .sparkContext
       .parallelize(IntegerCaseClass(1) :: IntegerCaseClass(2) :: Nil)
       .toDF()
     testData.registerTempTable("integerTable")
@@ -182,7 +183,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFToListString") {
-    val testData = hiveContext.sparkContext
+    val testData = hiveContext
+      .sparkContext
       .parallelize(StringCaseClass("") :: Nil)
       .toDF()
     testData.registerTempTable("inputTable")
@@ -201,7 +203,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFToListInt") {
-    val testData = hiveContext.sparkContext
+    val testData = hiveContext
+      .sparkContext
       .parallelize(StringCaseClass("") :: Nil)
       .toDF()
     testData.registerTempTable("inputTable")
@@ -220,7 +223,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFToStringIntMap") {
-    val testData = hiveContext.sparkContext
+    val testData = hiveContext
+      .sparkContext
       .parallelize(StringCaseClass("") :: Nil)
       .toDF()
     testData.registerTempTable("inputTable")
@@ -240,7 +244,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFToIntIntMap") {
-    val testData = hiveContext.sparkContext
+    val testData = hiveContext
+      .sparkContext
       .parallelize(StringCaseClass("") :: Nil)
       .toDF()
     testData.registerTempTable("inputTable")
@@ -260,7 +265,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFListListInt") {
-    val testData = hiveContext.sparkContext
+    val testData = hiveContext
+      .sparkContext
       .parallelize(
         ListListIntCaseClass(Nil) ::
           ListListIntCaseClass(Seq((1, 2, 3))) ::
@@ -279,7 +285,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFListString") {
-    val testData = hiveContext.sparkContext
+    val testData = hiveContext
+      .sparkContext
       .parallelize(
         ListStringCaseClass(Seq("a", "b", "c")) ::
           ListStringCaseClass(Seq("d", "e")) :: Nil)
@@ -297,7 +304,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFStringString") {
-    val testData = hiveContext.sparkContext
+    val testData = hiveContext
+      .sparkContext
       .parallelize(
         StringCaseClass("world") :: StringCaseClass("goodbye") :: Nil)
       .toDF()
@@ -320,7 +328,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFTwoListList") {
-    val testData = hiveContext.sparkContext
+    val testData = hiveContext
+      .sparkContext
       .parallelize(
         ListListIntCaseClass(Nil) ::
           ListListIntCaseClass(Seq((1, 2, 3))) ::
@@ -539,17 +548,16 @@ class PairSerDe extends AbstractSerDe {
   override def initialize(p1: Configuration, p2: Properties): Unit = {}
 
   override def getObjectInspector: ObjectInspector = {
-    ObjectInspectorFactory
-      .getStandardStructObjectInspector(
-        Arrays.asList("pair"),
-        Arrays.asList(
-          ObjectInspectorFactory.getStandardStructObjectInspector(
-            Arrays.asList("id", "value"),
-            Arrays.asList(
-              PrimitiveObjectInspectorFactory.javaIntObjectInspector,
-              PrimitiveObjectInspectorFactory.javaIntObjectInspector)
-          ))
-      )
+    ObjectInspectorFactory.getStandardStructObjectInspector(
+      Arrays.asList("pair"),
+      Arrays.asList(
+        ObjectInspectorFactory.getStandardStructObjectInspector(
+          Arrays.asList("id", "value"),
+          Arrays.asList(
+            PrimitiveObjectInspectorFactory.javaIntObjectInspector,
+            PrimitiveObjectInspectorFactory.javaIntObjectInspector)
+        ))
+    )
   }
 
   override def getSerializedClass: Class[_ <: Writable] = classOf[TestPair]

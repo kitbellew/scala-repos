@@ -103,9 +103,11 @@ object BinaryClassification {
         """.stripMargin)
       }
 
-    parser.parse(args, defaultParams).map { params =>
-      run(params)
-    } getOrElse {
+    parser
+      .parse(args, defaultParams)
+      .map { params =>
+        run(params)
+      } getOrElse {
       sys.exit(1)
     }
   }
@@ -140,14 +142,16 @@ object BinaryClassification {
       params.algorithm match {
         case LR =>
           val algorithm = new LogisticRegressionWithLBFGS()
-          algorithm.optimizer
+          algorithm
+            .optimizer
             .setNumIterations(params.numIterations)
             .setUpdater(updater)
             .setRegParam(params.regParam)
           algorithm.run(training).clearThreshold()
         case SVM =>
           val algorithm = new SVMWithSGD()
-          algorithm.optimizer
+          algorithm
+            .optimizer
             .setNumIterations(params.numIterations)
             .setStepSize(params.stepSize)
             .setUpdater(updater)

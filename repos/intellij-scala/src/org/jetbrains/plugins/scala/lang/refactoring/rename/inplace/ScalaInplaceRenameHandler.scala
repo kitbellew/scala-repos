@@ -63,11 +63,8 @@ trait ScalaInplaceRenameHandler {
       project: Project,
       nameSuggestionContext: PsiElement,
       editor: Editor): Unit = {
-    PsiElementRenameHandler.rename(
-      element,
-      project,
-      nameSuggestionContext,
-      editor)
+    PsiElementRenameHandler
+      .rename(element, project, nameSuggestionContext, editor)
   }
 
   def afterElementSubstitution(
@@ -81,7 +78,8 @@ trait ScalaInplaceRenameHandler {
         subst: => PsiNamedElement): Unit = {
       val cancel = ScalaBundle.message("rename.cancel")
       val list = JListCompatibility.createJBListFromListData(positive, cancel)
-      JBPopupFactory.getInstance
+      JBPopupFactory
+        .getInstance
         .createListPopupBuilder(list)
         .setTitle(title)
         .setMovable(false)
@@ -93,8 +91,9 @@ trait ScalaInplaceRenameHandler {
               list.getSelectedValue match {
                 case s: String if s == positive =>
                   val file = subst.getContainingFile.getVirtualFile
-                  if (FileDocumentManager.getInstance.getDocument(
-                        file) == editor.getDocument) {
+                  if (FileDocumentManager
+                        .getInstance
+                        .getDocument(file) == editor.getDocument) {
                     editor.getCaretModel.moveToOffset(subst.getTextOffset)
                     inplaceRename(subst)
                   } else {
@@ -122,9 +121,8 @@ trait ScalaInplaceRenameHandler {
             "instance"
         }
       val title = ScalaBundle.message("rename.special.method.title")
-      val positive = ScalaBundle.message(
-        "rename.special.method.rename.class",
-        clazzType)
+      val positive = ScalaBundle
+        .message("rename.special.method.rename.class", clazzType)
       showSubstitutePopup(
         title,
         positive,
@@ -155,8 +153,8 @@ trait ScalaInplaceRenameHandler {
       }
     elementToRename match {
       case Both(`selected`, fun: ScFunction)
-          if Seq("apply", "unapply", "unapplySeq").contains(
-            fun.name) || fun.isConstructor =>
+          if Seq("apply", "unapply", "unapplySeq").contains(fun.name) || fun
+            .isConstructor =>
         specialMethodPopup(fun)
         null
       case elem =>

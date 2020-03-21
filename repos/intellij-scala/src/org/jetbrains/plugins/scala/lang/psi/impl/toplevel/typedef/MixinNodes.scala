@@ -91,8 +91,8 @@ abstract class MixinNodes {
       }
       val thisMap: NodesMap = toNodesMap(
         getOrElse(convertedName, new ArrayBuffer))
-      val maps: List[NodesMap] = supersList.map(sup =>
-        toNodesMap(sup.getOrElse(convertedName, new ArrayBuffer)))
+      val maps: List[NodesMap] = supersList
+        .map(sup => toNodesMap(sup.getOrElse(convertedName, new ArrayBuffer)))
       val supers = mergeWithSupers(thisMap, mergeSupers(maps))
       val list = supersList.flatMap(
         _.privatesMap.getOrElse(convertedName, new ArrayBuffer[(T, Node)]))
@@ -480,9 +480,11 @@ abstract class MixinNodes {
                   zSubst)
               case syn: ScSyntheticClass =>
                 (
-                  syn.getSuperTypes.map { psiType =>
-                    ScType.create(psiType, syn.getProject)
-                  }: Seq[ScType],
+                  syn
+                    .getSuperTypes
+                    .map { psiType =>
+                      ScType.create(psiType, syn.getProject)
+                    }: Seq[ScType],
                   ScSubstitutor.empty,
                   ScSubstitutor.empty)
               case clazz: PsiClass =>
@@ -629,8 +631,10 @@ object MixinNodes {
           else
             ScParameterizedType(
               ScType.designator(clazz),
-              clazz.getTypeParameters.map(tp =>
-                ScalaPsiManager.instance(clazz.getProject).typeVariable(tp)))
+              clazz
+                .getTypeParameters
+                .map(tp =>
+                  ScalaPsiManager.instance(clazz.getProject).typeVariable(tp)))
         clazz match {
           case td: ScTypeDefinition =>
             td.getType(TypingContext.empty).getOrElse(default)
@@ -643,16 +647,19 @@ object MixinNodes {
           case td: ScTemplateDefinition =>
             td.superTypes
           case clazz: PsiClass =>
-            clazz.getSuperTypes.map {
-              case ctp: PsiClassType =>
-                val cl = ctp.resolve()
-                if (cl != null && cl.qualifiedName == "java.lang.Object")
-                  ScDesignatorType(cl)
-                else
+            clazz
+              .getSuperTypes
+              .map {
+                case ctp: PsiClassType =>
+                  val cl = ctp.resolve()
+                  if (cl != null && cl.qualifiedName == "java.lang.Object")
+                    ScDesignatorType(cl)
+                  else
+                    ScType.create(ctp, clazz.getProject)
+                case ctp =>
                   ScType.create(ctp, clazz.getProject)
-              case ctp =>
-                ScType.create(ctp, clazz.getProject)
-            }.toSeq
+              }
+              .toSeq
         }
       }
 
@@ -695,8 +702,8 @@ object MixinNodes {
     def add(tp: ScType) {
       ScType.extractClass(tp, project) match {
         case Some(clazz)
-            if clazz.qualifiedName != null && !set.contains(
-              classString(clazz)) =>
+            if clazz.qualifiedName != null && !set
+              .contains(classString(clazz)) =>
           tp +=: buffer
           set += classString(clazz)
         case Some(clazz) if clazz.getTypeParameters.nonEmpty =>

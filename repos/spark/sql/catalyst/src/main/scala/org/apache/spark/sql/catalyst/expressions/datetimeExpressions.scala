@@ -449,16 +449,14 @@ abstract class UnixTime extends BinaryExpression with ExpectsInputTypes {
         if (fString == null) {
           s"""
             boolean ${ev.isNull} = true;
-            ${ctx.javaType(dataType)} ${ev.value} = ${ctx
-            .defaultValue(dataType)};
+            ${ctx.javaType(dataType)} ${ev.value} = ${ctx.defaultValue(dataType)};
           """
         } else {
           val eval1 = left.gen(ctx)
           s"""
             ${eval1.code}
             boolean ${ev.isNull} = ${eval1.isNull};
-            ${ctx.javaType(dataType)} ${ev.value} = ${ctx
-            .defaultValue(dataType)};
+            ${ctx.javaType(dataType)} ${ev.value} = ${ctx.defaultValue(dataType)};
             if (!${ev.isNull}) {
               try {
                 $sdf $formatter = new $sdf("$fString");
@@ -657,8 +655,8 @@ case class NextDay(startDate: Expression, dayOfWeek: Expression)
   override def nullable: Boolean = true
 
   override def nullSafeEval(start: Any, dayOfW: Any): Any = {
-    val dow = DateTimeUtils.getDayOfWeekFromString(
-      dayOfW.asInstanceOf[UTF8String])
+    val dow = DateTimeUtils
+      .getDayOfWeekFromString(dayOfW.asInstanceOf[UTF8String])
     if (dow == -1) {
       null
     } else {
@@ -676,8 +674,8 @@ case class NextDay(startDate: Expression, dayOfWeek: Expression)
         val dayOfWeekTerm = ctx.freshName("dayOfWeek")
         if (dayOfWeek.foldable) {
           val input = dayOfWeek.eval().asInstanceOf[UTF8String]
-          if ((input eq null) || DateTimeUtils.getDayOfWeekFromString(
-                input) == -1) {
+          if ((input eq null) || DateTimeUtils
+                .getDayOfWeekFromString(input) == -1) {
             s"""
              |${ev.isNull} = true;
            """.stripMargin
@@ -845,9 +843,8 @@ case class AddMonths(startDate: Expression, numMonths: Expression)
   override def dataType: DataType = DateType
 
   override def nullSafeEval(start: Any, months: Any): Any = {
-    DateTimeUtils.dateAddMonths(
-      start.asInstanceOf[Int],
-      months.asInstanceOf[Int])
+    DateTimeUtils
+      .dateAddMonths(start.asInstanceOf[Int], months.asInstanceOf[Int])
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
@@ -987,8 +984,8 @@ case class TruncDate(date: Expression, format: Expression)
   override def nullable: Boolean = true
   override def prettyName: String = "trunc"
 
-  private lazy val truncLevel: Int = DateTimeUtils.parseTruncLevel(
-    format.eval().asInstanceOf[UTF8String])
+  private lazy val truncLevel: Int = DateTimeUtils
+    .parseTruncLevel(format.eval().asInstanceOf[UTF8String])
 
   override def eval(input: InternalRow): Any = {
     val level =

@@ -62,7 +62,8 @@ final class Env(
       import tube._
       def process = {
         case "forum" :: "denormalize" :: Nil =>
-          topicApi.denormalize >> categApi.denormalize inject "Forum denormalized"
+          topicApi.denormalize >> categApi
+            .denormalize inject "Forum denormalized"
       }
     }
 

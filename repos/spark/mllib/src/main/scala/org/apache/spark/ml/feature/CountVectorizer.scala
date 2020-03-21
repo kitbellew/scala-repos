@@ -350,10 +350,7 @@ object CountVectorizerModel extends MLReadable[CountVectorizerModel] {
     override def load(path: String): CountVectorizerModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select("vocabulary")
-        .head()
+      val data = sqlContext.read.parquet(dataPath).select("vocabulary").head()
       val vocabulary = data.getAs[Seq[String]](0).toArray
       val model = new CountVectorizerModel(metadata.uid, vocabulary)
       DefaultParamsReader.getAndSetParams(model, metadata)

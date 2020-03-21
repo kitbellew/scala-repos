@@ -68,14 +68,10 @@ object CassandraTest {
     ConfigHelper.setInputRpcPort(job.getConfiguration(), port)
     ConfigHelper.setOutputInitialAddress(job.getConfiguration(), host)
     ConfigHelper.setOutputRpcPort(job.getConfiguration(), port)
-    ConfigHelper.setInputColumnFamily(
-      job.getConfiguration(),
-      "casDemo",
-      "Words")
-    ConfigHelper.setOutputColumnFamily(
-      job.getConfiguration(),
-      "casDemo",
-      "WordCount")
+    ConfigHelper
+      .setInputColumnFamily(job.getConfiguration(), "casDemo", "Words")
+    ConfigHelper
+      .setOutputColumnFamily(job.getConfiguration(), "casDemo", "WordCount")
 
     val predicate = new SlicePredicate()
     val sliceRange = new SliceRange()
@@ -84,12 +80,10 @@ object CassandraTest {
     predicate.setSlice_range(sliceRange)
     ConfigHelper.setInputSlicePredicate(job.getConfiguration(), predicate)
 
-    ConfigHelper.setInputPartitioner(
-      job.getConfiguration(),
-      "Murmur3Partitioner")
-    ConfigHelper.setOutputPartitioner(
-      job.getConfiguration(),
-      "Murmur3Partitioner")
+    ConfigHelper
+      .setInputPartitioner(job.getConfiguration(), "Murmur3Partitioner")
+    ConfigHelper
+      .setOutputPartitioner(job.getConfiguration(), "Murmur3Partitioner")
 
     // Make a new Hadoop RDD
     val casRdd = sc.newAPIHadoopRDD(
@@ -111,10 +105,12 @@ object CassandraTest {
       .map(word => (word, 1))
       .reduceByKey(_ + _)
 
-    counts.collect().foreach {
-      case (word, count) =>
-        println(word + ":" + count)
-    }
+    counts
+      .collect()
+      .foreach {
+        case (word, count) =>
+          println(word + ":" + count)
+      }
 
     counts
       .map {
@@ -129,8 +125,8 @@ object CassandraTest {
           colCount.setValue(ByteBufferUtil.bytes(count.toLong))
           colCount.setTimestamp(System.currentTimeMillis)
 
-          val outputkey = ByteBufferUtil.bytes(
-            word + "-COUNT-" + System.currentTimeMillis)
+          val outputkey = ByteBufferUtil
+            .bytes(word + "-COUNT-" + System.currentTimeMillis)
 
           val mutations = Arrays.asList(new Mutation(), new Mutation())
           mutations.get(0).setColumn_or_supercolumn(new ColumnOrSuperColumn())

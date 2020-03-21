@@ -85,8 +85,8 @@ private[spark] class Executor(
   }
 
   // Start worker thread pool
-  private val threadPool = ThreadUtils.newDaemonCachedThreadPool(
-    "Executor task launch worker")
+  private val threadPool = ThreadUtils
+    .newDaemonCachedThreadPool("Executor task launch worker")
   private val executorSource = new ExecutorSource(threadPool, executorId)
 
   if (!isLocal) {
@@ -95,9 +95,8 @@ private[spark] class Executor(
   }
 
   // Whether to load classes in user jars before those in Spark jars
-  private val userClassPathFirst = conf.getBoolean(
-    "spark.executor.userClassPathFirst",
-    false)
+  private val userClassPathFirst = conf
+    .getBoolean("spark.executor.userClassPathFirst", false)
 
   // Create our ClassLoader
   // do this after SparkEnv creation so can access the SecurityManager
@@ -120,23 +119,20 @@ private[spark] class Executor(
   private val runningTasks = new ConcurrentHashMap[Long, TaskRunner]
 
   // Executor for the heartbeat task.
-  private val heartbeater = ThreadUtils.newDaemonSingleThreadScheduledExecutor(
-    "driver-heartbeater")
+  private val heartbeater = ThreadUtils
+    .newDaemonSingleThreadScheduledExecutor("driver-heartbeater")
 
   // must be initialized before running startDriverHeartbeat()
-  private val heartbeatReceiverRef = RpcUtils.makeDriverRef(
-    HeartbeatReceiver.ENDPOINT_NAME,
-    conf,
-    env.rpcEnv)
+  private val heartbeatReceiverRef = RpcUtils
+    .makeDriverRef(HeartbeatReceiver.ENDPOINT_NAME, conf, env.rpcEnv)
 
   /**
     * When an executor is unable to send heartbeats to the driver more than `HEARTBEAT_MAX_FAILURES`
     * times, it should kill itself. The default value is 60. It means we will retry to send
     * heartbeats about 10 minutes because the heartbeat interval is 10s.
     */
-  private val HEARTBEAT_MAX_FAILURES = conf.getInt(
-    "spark.executor.heartbeat.maxFailures",
-    60)
+  private val HEARTBEAT_MAX_FAILURES = conf
+    .getInt("spark.executor.heartbeat.maxFailures", 60)
 
   /**
     * Count the failure times of heartbeat. It should only be accessed in the heartbeat thread. Each
@@ -182,7 +178,9 @@ private[spark] class Executor(
 
   /** Returns the total amount of time this JVM process has spent in garbage collection. */
   private def computeTotalGcTime(): Long = {
-    ManagementFactory.getGarbageCollectorMXBeans.asScala
+    ManagementFactory
+      .getGarbageCollectorMXBeans
+      .asScala
       .map(_.getCollectionTime)
       .sum
   }
@@ -229,8 +227,8 @@ private[spark] class Executor(
       startGCTime = computeTotalGcTime()
 
       try {
-        val (taskFiles, taskJars, taskBytes) = Task.deserializeWithDependencies(
-          serializedTask)
+        val (taskFiles, taskJars, taskBytes) = Task
+          .deserializeWithDependencies(serializedTask)
         updateDependencies(taskFiles, taskJars)
         task = ser.deserialize[Task[Any]](
           taskBytes,
@@ -334,10 +332,12 @@ private[spark] class Executor(
                 resultSize))
           } else if (resultSize > maxDirectResultSize) {
             val blockId = TaskResultBlockId(taskId)
-            env.blockManager.putBytes(
-              blockId,
-              new ChunkedByteBuffer(serializedDirectResult.duplicate()),
-              StorageLevel.MEMORY_AND_DISK_SER)
+            env
+              .blockManager
+              .putBytes(
+                blockId,
+                new ChunkedByteBuffer(serializedDirectResult.duplicate()),
+                StorageLevel.MEMORY_AND_DISK_SER)
             logInfo(
               s"Finished $taskName (TID $taskId). $resultSize bytes result sent via BlockManager)")
             ser.serialize(new IndirectTaskResult[Any](blockId, resultSize))
@@ -353,24 +353,18 @@ private[spark] class Executor(
       } catch {
         case ffe: FetchFailedException =>
           val reason = ffe.toTaskEndReason
-          execBackend.statusUpdate(
-            taskId,
-            TaskState.FAILED,
-            ser.serialize(reason))
+          execBackend
+            .statusUpdate(taskId, TaskState.FAILED, ser.serialize(reason))
 
         case _: TaskKilledException | _: InterruptedException if task.killed =>
           logInfo(s"Executor killed $taskName (TID $taskId)")
-          execBackend.statusUpdate(
-            taskId,
-            TaskState.KILLED,
-            ser.serialize(TaskKilled))
+          execBackend
+            .statusUpdate(taskId, TaskState.KILLED, ser.serialize(TaskKilled))
 
         case cDE: CommitDeniedException =>
           val reason = cDE.toTaskEndReason
-          execBackend.statusUpdate(
-            taskId,
-            TaskState.FAILED,
-            ser.serialize(reason))
+          execBackend
+            .statusUpdate(taskId, TaskState.FAILED, ser.serialize(reason))
 
         case t: Throwable =>
           // Attempt to exit cleanly by informing the driver of our failure.
@@ -381,10 +375,12 @@ private[spark] class Executor(
           // Collect latest accumulator values to report back to the driver
           val accumulatorUpdates: Seq[AccumulableInfo] =
             if (task != null) {
-              task.metrics.foreach { m =>
-                m.setExecutorRunTime(System.currentTimeMillis() - taskStart)
-                m.setJvmGCTime(computeTotalGcTime() - startGCTime)
-              }
+              task
+                .metrics
+                .foreach { m =>
+                  m.setExecutorRunTime(System.currentTimeMillis() - taskStart)
+                  m.setJvmGCTime(computeTotalGcTime() - startGCTime)
+                }
               task.collectAccumulatorUpdates(taskFailed = true)
             } else {
               Seq.empty[AccumulableInfo]
@@ -403,10 +399,8 @@ private[spark] class Executor(
                     preserveCause = false))
             }
           }
-          execBackend.statusUpdate(
-            taskId,
-            TaskState.FAILED,
-            serializedTaskEndReason)
+          execBackend
+            .statusUpdate(taskId, TaskState.FAILED, serializedTaskEndReason)
 
           // Don't forcibly exit unless the exception was inherently fatal, to avoid
           // stopping other tasks unnecessarily.
@@ -435,9 +429,11 @@ private[spark] class Executor(
 
     // For each of the jars in the jarSet, add them to the class loader.
     // We assume each of the files has already been fetched.
-    val urls = userClassPath.toArray ++ currentJars.keySet.map { uri =>
-      new File(uri.split("/").last).toURI.toURL
-    }
+    val urls = userClassPath.toArray ++ currentJars
+      .keySet
+      .map { uri =>
+        new File(uri.split("/").last).toURI.toURL
+      }
     if (userClassPathFirst) {
       new ChildFirstURLClassLoader(urls, currentLoader)
     } else {
@@ -464,12 +460,8 @@ private[spark] class Executor(
           classOf[String],
           classOf[ClassLoader],
           classOf[Boolean])
-        constructor.newInstance(
-          conf,
-          env,
-          classUri,
-          parent,
-          _userClassPathFirst)
+        constructor
+          .newInstance(conf, env, classUri, parent, _userClassPathFirst)
       } catch {
         case _: ClassNotFoundException =>
           logError(
@@ -544,11 +536,14 @@ private[spark] class Executor(
 
     for (taskRunner <- runningTasks.values().asScala) {
       if (taskRunner.task != null) {
-        taskRunner.task.metrics.foreach { metrics =>
-          metrics.mergeShuffleReadMetrics()
-          metrics.setJvmGCTime(curGCTime - taskRunner.startGCTime)
-          accumUpdates += ((taskRunner.taskId, metrics.accumulatorUpdates()))
-        }
+        taskRunner
+          .task
+          .metrics
+          .foreach { metrics =>
+            metrics.mergeShuffleReadMetrics()
+            metrics.setJvmGCTime(curGCTime - taskRunner.startGCTime)
+            accumUpdates += ((taskRunner.taskId, metrics.accumulatorUpdates()))
+          }
       }
     }
 

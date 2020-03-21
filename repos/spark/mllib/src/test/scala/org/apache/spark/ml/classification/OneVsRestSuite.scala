@@ -74,8 +74,7 @@ class OneVsRestSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("one-vs-rest: default params") {
     val numClasses = 3
-    val ova = new OneVsRest()
-      .setClassifier(new LogisticRegression)
+    val ova = new OneVsRest().setClassifier(new LogisticRegression)
     assert(ova.getLabelCol === "label")
     assert(ova.getPredictionCol === "prediction")
     val ovaModel = ova.fit(dataset)
@@ -87,13 +86,16 @@ class OneVsRestSuite extends SparkFunSuite with MLlibTestSparkContext {
     val transformedDataset = ovaModel.transform(dataset)
 
     // check for label metadata in prediction col
-    val predictionColSchema = transformedDataset.schema(
-      ovaModel.getPredictionCol)
+    val predictionColSchema = transformedDataset
+      .schema(ovaModel.getPredictionCol)
     assert(MetadataUtils.getNumClasses(predictionColSchema) === Some(3))
 
-    val ovaResults = transformedDataset.select("prediction", "label").rdd.map {
-      row => (row.getDouble(0), row.getDouble(1))
-    }
+    val ovaResults = transformedDataset
+      .select("prediction", "label")
+      .rdd
+      .map { row =>
+        (row.getDouble(0), row.getDouble(1))
+      }
 
     val lr = new LogisticRegressionWithLBFGS()
       .setIntercept(true)
@@ -115,7 +117,8 @@ class OneVsRestSuite extends SparkFunSuite with MLlibTestSparkContext {
     val ova = new OneVsRest()
     ova.setClassifier(new MockLogisticRegression)
 
-    val labelMetadata = NominalAttribute.defaultAttr
+    val labelMetadata = NominalAttribute
+      .defaultAttr
       .withName("label")
       .withNumValues(numClasses)
     val labelWithMetadata = dataset("label")
@@ -151,18 +154,15 @@ class OneVsRestSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("SPARK-8049: OneVsRest shouldn't output temp columns") {
-    val logReg = new LogisticRegression()
-      .setMaxIter(1)
-    val ovr = new OneVsRest()
-      .setClassifier(logReg)
+    val logReg = new LogisticRegression().setMaxIter(1)
+    val ovr = new OneVsRest().setClassifier(logReg)
     val output = ovr.fit(dataset).transform(dataset)
     assert(
       output.schema.fieldNames.toSet === Set("label", "features", "prediction"))
   }
 
   test("OneVsRest.copy and OneVsRestModel.copy") {
-    val lr = new LogisticRegression()
-      .setMaxIter(1)
+    val lr = new LogisticRegression().setMaxIter(1)
 
     val ovr = new OneVsRest()
     withClue("copy with classifier unset should work") {
@@ -180,10 +180,14 @@ class OneVsRestSuite extends SparkFunSuite with MLlibTestSparkContext {
     val ovrModel = ovr1
       .fit(dataset)
       .copy(ParamMap(lr.thresholds -> Array(0.9, 0.1)))
-    ovrModel.models.foreach {
-      case m: LogisticRegressionModel =>
-        require(m.getThreshold === 0.1, "copy should handle extra model params")
-    }
+    ovrModel
+      .models
+      .foreach {
+        case m: LogisticRegressionModel =>
+          require(
+            m.getThreshold === 0.1,
+            "copy should handle extra model params")
+      }
   }
 }
 

@@ -30,7 +30,8 @@ object MProcedureColumn {
       procedurePattern: MQName,
       columnNamePattern: String = "%") =
     ResultSetAction[MProcedureColumn](
-      _.metaData.getProcedureColumns(
+      _.metaData
+      .getProcedureColumns(
         procedurePattern.catalog_?,
         procedurePattern.schema_?,
         procedurePattern.name,

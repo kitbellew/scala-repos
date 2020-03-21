@@ -134,10 +134,9 @@ class StreamLayoutSpec extends AkkaSpec {
     "fail fusing when value computation is too complex" in {
       // this tests that the canary in to coal mine actually works
       val g =
-        (1 to tooDeepForStack)
-          .foldLeft(Flow[Int].mapMaterializedValue(_ ⇒ 1)) { (flow, i) ⇒
-            flow.mapMaterializedValue(x ⇒ x + i)
-          }
+        (1 to tooDeepForStack).foldLeft(Flow[Int].mapMaterializedValue(_ ⇒ 1)) {
+          (flow, i) ⇒ flow.mapMaterializedValue(x ⇒ x + i)
+        }
       a[StackOverflowError] shouldBe thrownBy {
         Fusing.aggressive(g)
       }
@@ -158,9 +157,8 @@ class StreamLayoutSpec extends AkkaSpec {
       "starting from a Flow" in {
         val g =
           (1 to tooDeepForStack).foldLeft(Flow[Int])((f, i) ⇒ f.map(identity))
-        val (mat, fut) = g.runWith(
-          Source.single(42).mapMaterializedValue(_ ⇒ 1),
-          Sink.seq)
+        val (mat, fut) = g
+          .runWith(Source.single(42).mapMaterializedValue(_ ⇒ 1), Sink.seq)
         mat should ===(1)
         fut.futureValue should ===(List(42))
       }
@@ -191,9 +189,8 @@ class StreamLayoutSpec extends AkkaSpec {
       "starting from a Flow" in {
         val g = Flow fromGraph Fusing.aggressive(
           (1 to tooDeepForStack).foldLeft(Flow[Int])((f, i) ⇒ f.map(identity)))
-        val (mat, fut) = g.runWith(
-          Source.single(42).mapMaterializedValue(_ ⇒ 1),
-          Sink.seq)
+        val (mat, fut) = g
+          .runWith(Source.single(42).mapMaterializedValue(_ ⇒ 1), Sink.seq)
         mat should ===(1)
         fut.futureValue should ===(List(42))
       }
@@ -304,14 +301,18 @@ class StreamLayoutSpec extends AkkaSpec {
            subscriber = inToSubscriber(in)) {
         subscriber.owner should be(atomic)
         subscriber.upstreamPort should be(topLevel.upstreams(in))
-        subscriber.upstreamModule.outPorts
+        subscriber
+          .upstreamModule
+          .outPorts
           .exists(outToPublisher(_).downstreamPort == in)
       }
       for (out ← atomic.outPorts;
            publisher = outToPublisher(out)) {
         publisher.owner should be(atomic)
         publisher.downstreamPort should be(topLevel.downstreams(out))
-        publisher.downstreamModule.inPorts
+        publisher
+          .downstreamModule
+          .inPorts
           .exists(inToSubscriber(_).upstreamPort == out)
       }
     }

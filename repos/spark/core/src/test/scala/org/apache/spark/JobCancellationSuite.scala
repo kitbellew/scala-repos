@@ -59,7 +59,8 @@ class JobCancellationSuite
 
   test("local mode, fair scheduler") {
     val conf = new SparkConf().set("spark.scheduler.mode", "FAIR")
-    val xmlPath = getClass.getClassLoader
+    val xmlPath = getClass
+      .getClassLoader
       .getResource("fairscheduler.xml")
       .getFile()
     conf.set("spark.scheduler.allocation.file", xmlPath)
@@ -81,7 +82,8 @@ class JobCancellationSuite
 
   test("cluster mode, fair scheduler") {
     val conf = new SparkConf().set("spark.scheduler.mode", "FAIR")
-    val xmlPath = getClass.getClassLoader
+    val xmlPath = getClass
+      .getClassLoader
       .getResource("fairscheduler.xml")
       .getFile()
     conf.set("spark.scheduler.allocation.file", xmlPath)
@@ -141,7 +143,8 @@ class JobCancellationSuite
     // jobA is the one to be cancelled.
     val jobA = Future {
       sc.setJobGroup("jobA", "this is a job to be cancelled")
-      sc.parallelize(1 to 10000, 2)
+      sc
+        .parallelize(1 to 10000, 2)
         .map { i =>
           Thread.sleep(10);
           i
@@ -184,7 +187,8 @@ class JobCancellationSuite
         // The job group should be inherited by this thread
         override def run(): Unit = {
           exception = intercept[SparkException] {
-            sc.parallelize(1 to 10000, 2)
+            sc
+              .parallelize(1 to 10000, 2)
               .map { i =>
                 Thread.sleep(10);
                 i
@@ -225,7 +229,8 @@ class JobCancellationSuite
         "jobA",
         "this is a job to be cancelled",
         interruptOnCancel = true)
-      sc.parallelize(1 to 10000, 2)
+      sc
+        .parallelize(1 to 10000, 2)
         .map { i =>
           Thread.sleep(100000);
           i

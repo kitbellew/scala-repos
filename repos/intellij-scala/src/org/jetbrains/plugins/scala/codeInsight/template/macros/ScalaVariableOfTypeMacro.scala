@@ -217,16 +217,14 @@ class ScalaVariableOfTypeMacro extends Macro {
         array += item
       case ScalaVariableOfTypeMacro.iterableId
           if scType.canonicalText.startsWith("_root_.scala.Array") =>
-        array += LookupElementBuilder.create(
-          variant.getElement,
-          variant.getElement.name)
+        array += LookupElementBuilder
+          .create(variant.getElement, variant.getElement.name)
       case ScalaVariableOfTypeMacro.iterableId =>
         ScType.extractClass(scType) match {
           case Some(x: ScTypeDefinition)
               if x.functionsByName("foreach").nonEmpty =>
-            array += LookupElementBuilder.create(
-              variant.getElement,
-              variant.getElement.name)
+            array += LookupElementBuilder
+              .create(variant.getElement, variant.getElement.name)
           case _ =>
         }
       case _ =>
@@ -239,9 +237,8 @@ class ScalaVariableOfTypeMacro extends Macro {
                     ""
                 }
               ) == expr)
-            array += LookupElementBuilder.create(
-              variant.getElement,
-              variant.getElement.name)
+            array += LookupElementBuilder
+              .create(variant.getElement, variant.getElement.name)
         }
     }
   }

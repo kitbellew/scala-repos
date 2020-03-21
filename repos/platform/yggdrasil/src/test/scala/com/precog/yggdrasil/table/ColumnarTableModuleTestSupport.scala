@@ -144,30 +144,32 @@ trait ColumnarTableModuleTestSupport[M[+_]]
             }
 
           val (a2, arr) =
-            mask.toList.foldLeft((a, new Array[BigDecimal](range.end))) {
-              case ((acc, arr), i) => {
-                val col = prioritized find {
-                  _ isDefinedAt i
+            mask
+              .toList
+              .foldLeft((a, new Array[BigDecimal](range.end))) {
+                case ((acc, arr), i) => {
+                  val col = prioritized find {
+                    _ isDefinedAt i
+                  }
+
+                  val acc2 = col map {
+                    case lc: LongColumn =>
+                      acc + lc(i)
+
+                    case dc: DoubleColumn =>
+                      acc + dc(i)
+
+                    case nc: NumColumn =>
+                      acc + nc(i)
+                  }
+
+                  acc2 foreach {
+                    arr(i) = _
+                  }
+
+                  (acc2 getOrElse acc, arr)
                 }
-
-                val acc2 = col map {
-                  case lc: LongColumn =>
-                    acc + lc(i)
-
-                  case dc: DoubleColumn =>
-                    acc + dc(i)
-
-                  case nc: NumColumn =>
-                    acc + nc(i)
-                }
-
-                acc2 foreach {
-                  arr(i) = _
-                }
-
-                (acc2 getOrElse acc, arr)
               }
-            }
 
           (
             a2,

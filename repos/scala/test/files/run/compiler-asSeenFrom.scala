@@ -117,7 +117,9 @@ package ll {
     def fname(sym: Symbol) = {
       val p = "" + sym.owner.name
       val x =
-        if (sym.owner.isPackageClass || sym.owner.isModuleClass || sym.owner.isTerm)
+        if (sym.owner.isPackageClass || sym.owner.isModuleClass || sym
+              .owner
+              .isTerm)
           "."
         else
           "#"
@@ -175,15 +177,16 @@ package ll {
   def signaturesIn(info: Type): List[String] =
     (info.members.toList
       filterNot (s =>
-        s.isType || s.owner == ObjectClass || s.owner == AnyClass || s.isConstructor)
+        s.isType || s.owner == ObjectClass || s
+          .owner == AnyClass || s.isConstructor)
       map (_.defString))
 
   def check(source: String, unit: global.CompilationUnit) = {
     import syms._
 
     exitingTyper {
-      val typeArgs =
-        List[Type](IntClass.tpe, ListClass[Int]) ++ tparams.map(_.tpe)
+      val typeArgs = List[Type](IntClass.tpe, ListClass[Int]) ++ tparams
+        .map(_.tpe)
       permute(typeArgs) foreach println
     }
     for (x <- classes ++ terms) {

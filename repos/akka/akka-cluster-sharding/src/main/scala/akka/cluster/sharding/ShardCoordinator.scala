@@ -535,11 +535,10 @@ abstract class ShardCoordinator(
   var regionTerminationInProgress = Set.empty[ActorRef]
 
   import context.dispatcher
-  val rebalanceTask = context.system.scheduler.schedule(
-    rebalanceInterval,
-    rebalanceInterval,
-    self,
-    RebalanceTick)
+  val rebalanceTask = context
+    .system
+    .scheduler
+    .schedule(rebalanceInterval, rebalanceInterval, self, RebalanceTick)
 
   cluster.subscribe(
     self,
@@ -556,8 +555,10 @@ abstract class ShardCoordinator(
     val regionAddress = region.path.address
     (
       region.path.address == self.path.address ||
-      cluster.state.members.exists(m ⇒
-        m.address == regionAddress && m.status == MemberStatus.Up)
+      cluster
+        .state
+        .members
+        .exists(m ⇒ m.address == regionAddress && m.status == MemberStatus.Up)
     )
   }
 
@@ -614,10 +615,8 @@ abstract class ShardCoordinator(
               val activeRegions = state.regions -- gracefulShutdownInProgress
               if (activeRegions.nonEmpty) {
                 val getShardHomeSender = sender()
-                val regionFuture = allocationStrategy.allocateShard(
-                  getShardHomeSender,
-                  shard,
-                  activeRegions)
+                val regionFuture = allocationStrategy
+                  .allocateShard(getShardHomeSender, shard, activeRegions)
                 regionFuture.value match {
                   case Some(Success(region)) ⇒
                     continueGetShardHome(shard, region, getShardHomeSender)
@@ -663,9 +662,8 @@ abstract class ShardCoordinator(
 
       case RebalanceTick ⇒
         if (state.regions.nonEmpty) {
-          val shardsFuture = allocationStrategy.rebalance(
-            state.regions,
-            rebalanceInProgress)
+          val shardsFuture = allocationStrategy
+            .rebalance(state.regions, rebalanceInProgress)
           shardsFuture.value match {
             case Some(Success(shards)) ⇒
               continueRebalance(shards)
@@ -725,17 +723,20 @@ abstract class ShardCoordinator(
             })
           .map { allRegionStats ⇒
             ShardRegion.ClusterShardingStats(
-              allRegionStats.map {
-                case (region, stats) ⇒
-                  val regionAddress = region.path.address
-                  val address: Address =
-                    if (regionAddress.hasLocalScope && regionAddress.system == cluster.selfAddress.system)
-                      cluster.selfAddress
-                    else
-                      regionAddress
+              allRegionStats
+                .map {
+                  case (region, stats) ⇒
+                    val regionAddress = region.path.address
+                    val address: Address =
+                      if (regionAddress.hasLocalScope && regionAddress
+                            .system == cluster.selfAddress.system)
+                        cluster.selfAddress
+                      else
+                        regionAddress
 
-                  address -> stats
-              }.toMap)
+                    address -> stats
+                }
+                .toMap)
           }
           .recover {
             case x: AskTimeoutException ⇒
@@ -755,12 +756,15 @@ abstract class ShardCoordinator(
 
       case ShardRegion.GetCurrentRegions ⇒
         val reply = ShardRegion.CurrentRegions(
-          state.regions.keySet.map { ref ⇒
-            if (ref.path.address.host.isEmpty)
-              cluster.selfAddress
-            else
-              ref.path.address
-          })
+          state
+            .regions
+            .keySet
+            .map { ref ⇒
+              if (ref.path.address.host.isEmpty)
+                cluster.selfAddress
+              else
+                ref.path.address
+            })
         sender() ! reply
 
     }: Receive).orElse[Any, Unit](receiveTerminated)
@@ -768,12 +772,15 @@ abstract class ShardCoordinator(
   def receiveTerminated: Receive = {
     case t @ Terminated(ref) ⇒
       if (state.regions.contains(ref)) {
-        if (removalMargin != Duration.Zero && t.addressTerminated && aliveRegions(
-              ref)) {
-          context.system.scheduler.scheduleOnce(
-            removalMargin,
-            self,
-            DelayedShardRegionTerminated(ref))
+        if (removalMargin != Duration.Zero && t
+              .addressTerminated && aliveRegions(ref)) {
+          context
+            .system
+            .scheduler
+            .scheduleOnce(
+              removalMargin,
+              self,
+              DelayedShardRegionTerminated(ref))
           regionTerminationInProgress += ref
         } else
           regionTerminated(ref)
@@ -794,21 +801,25 @@ abstract class ShardCoordinator(
     // This is an optimization that makes it operational faster and reduces the
     // amount of lost messages during startup.
     val nodes = cluster.state.members.map(_.address)
-    state.regions.foreach {
-      case (ref, _) ⇒
+    state
+      .regions
+      .foreach {
+        case (ref, _) ⇒
+          val a = ref.path.address
+          if (a.hasLocalScope || nodes(a))
+            context.watch(ref)
+          else
+            regionTerminated(ref) // not part of cluster
+      }
+    state
+      .regionProxies
+      .foreach { ref ⇒
         val a = ref.path.address
         if (a.hasLocalScope || nodes(a))
           context.watch(ref)
         else
-          regionTerminated(ref) // not part of cluster
-    }
-    state.regionProxies.foreach { ref ⇒
-      val a = ref.path.address
-      if (a.hasLocalScope || nodes(a))
-        context.watch(ref)
-      else
-        regionProxyTerminated(ref) // not part of cluster
-    }
+          regionProxyTerminated(ref) // not part of cluster
+      }
 
     // Let the quick (those not involving failure detection) Terminated messages
     // be processed before starting to reply to GetShardHome.
@@ -818,19 +829,23 @@ abstract class ShardCoordinator(
   }
 
   def stateInitialized(): Unit = {
-    state.shards.foreach {
-      case (a, r) ⇒
-        sendHostShardMsg(a, r)
-    }
+    state
+      .shards
+      .foreach {
+        case (a, r) ⇒
+          sendHostShardMsg(a, r)
+      }
     allocateShardHomes()
   }
 
   def regionTerminated(ref: ActorRef): Unit =
     if (state.regions.contains(ref)) {
       log.debug("ShardRegion terminated: [{}]", ref)
-      state.regions(ref).foreach { s ⇒
-        self ! GetShardHome(s)
-      }
+      state
+        .regions(ref)
+        .foreach { s ⇒
+          self ! GetShardHome(s)
+        }
 
       update(ShardRegionTerminated(ref)) { evt ⇒
         state = state.updated(evt)
@@ -855,16 +870,20 @@ abstract class ShardCoordinator(
 
   def sendHostShardMsg(shard: ShardId, region: ActorRef): Unit = {
     region ! HostShard(shard)
-    val cancel = context.system.scheduler
+    val cancel = context
+      .system
+      .scheduler
       .scheduleOnce(shardStartTimeout, self, ResendShardHost(shard, region))
     unAckedHostShards = unAckedHostShards.updated(shard, cancel)
   }
 
   def allocateShardHomes(): Unit = {
     if (settings.rememberEntities)
-      state.unallocatedShards.foreach {
-        self ! GetShardHome(_)
-      }
+      state
+        .unallocatedShards
+        .foreach {
+          self ! GetShardHome(_)
+        }
   }
 
   def continueGetShardHome(
@@ -1039,8 +1058,9 @@ class DDataShardCoordinator(
   implicit val node = Cluster(context.system)
   val CoordinatorStateKey = LWWRegisterKey[State](
     s"${typeName}CoordinatorState")
-  val initEmptyState = State.empty.withRememberEntities(
-    settings.rememberEntities)
+  val initEmptyState = State
+    .empty
+    .withRememberEntities(settings.rememberEntities)
 
   node.subscribe(self, ClusterShuttingDown.getClass)
 

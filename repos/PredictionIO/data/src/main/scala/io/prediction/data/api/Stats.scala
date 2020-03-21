@@ -56,7 +56,8 @@ class Stats(val startTime: DateTime) {
   def extractByAppId[K, V](
       appId: Int,
       m: mutable.Map[(Int, K), V]): Seq[KV[K, V]] = {
-    m.toSeq
+    m
+      .toSeq
       .flatMap {
         case (k, v) =>
           if (k._1 == appId) {

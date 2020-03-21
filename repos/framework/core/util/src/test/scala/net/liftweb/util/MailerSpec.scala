@@ -54,9 +54,11 @@ object MailerSpec extends Specification {
       @volatile
       var lastMessage: Box[MimeMessage] = Empty
 
-      testModeSend.default.set((msg: MimeMessage) => {
-        lastMessage = Full(msg)
-      })
+      testModeSend
+        .default
+        .set((msg: MimeMessage) => {
+          lastMessage = Full(msg)
+        })
     }
 
   import myMailer._
@@ -117,8 +119,10 @@ object MailerSpec extends Specification {
       val attachmentBytes =
         Source
           .fromInputStream(
-            getClass.getClassLoader.getResourceAsStream(
-              "net/liftweb/util/Html5ParserSpec.page1.html"))
+            getClass
+              .getClassLoader
+              .getResourceAsStream(
+                "net/liftweb/util/Html5ParserSpec.page1.html"))
           .map(_.toByte)
           .toArray
       val msg = doNewMessage {

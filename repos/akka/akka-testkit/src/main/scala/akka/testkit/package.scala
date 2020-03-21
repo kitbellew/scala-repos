@@ -24,7 +24,9 @@ package object testkit {
       val failed = eventFilters filterNot (
         _.awaitDone(Duration(stop - now, MILLISECONDS))
       ) map (
-        "Timeout (" + testKitSettings.TestEventFilterLeeway.dilated + ") waiting for " + _
+        "Timeout (" + testKitSettings
+          .TestEventFilterLeeway
+          .dilated + ") waiting for " + _
       )
       if (failed.nonEmpty)
         throw new AssertionError(
@@ -32,8 +34,9 @@ package object testkit {
 
       result
     } finally {
-      system.eventStream.publish(
-        TestEvent.UnMute(eventFilters.to[immutable.Seq]))
+      system
+        .eventStream
+        .publish(TestEvent.UnMute(eventFilters.to[immutable.Seq]))
     }
   }
 

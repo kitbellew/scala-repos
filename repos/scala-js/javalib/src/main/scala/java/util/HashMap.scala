@@ -54,10 +54,12 @@ class HashMap[K, V] protected (inner: mutable.Map[Box[K], V])
 
   override def remove(key: Any): V = {
     val boxedKey = Box(key.asInstanceOf[K])
-    inner.get(boxedKey).fold(null.asInstanceOf[V]) { value =>
-      inner -= boxedKey
-      value
-    }
+    inner
+      .get(boxedKey)
+      .fold(null.asInstanceOf[V]) { value =>
+        inner -= boxedKey
+        value
+      }
   }
 
   override def size(): Int = inner.size

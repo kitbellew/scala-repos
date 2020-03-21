@@ -69,9 +69,8 @@ class SbtProjectDataServiceTest extends ProjectDataServiceTestCase {
       "-Werror")
     importProjectData(generateProject(Seq.empty, None, options, ""))
 
-    val compilerOptions = JavacConfiguration.getOptions(
-      getProject,
-      classOf[JavacConfiguration])
+    val compilerOptions = JavacConfiguration
+      .getOptions(getProject, classOf[JavacConfiguration])
     assertFalse(compilerOptions.DEBUGGING_INFO)
     assertTrue(compilerOptions.GENERATE_NO_WARNINGS)
     assertTrue(compilerOptions.DEPRECATION)
@@ -127,15 +126,17 @@ class SbtProjectDataServiceTest extends ProjectDataServiceTestCase {
   }
 
   private def setUpJdks(): Unit = {
-    ApplicationManagerEx.getApplicationEx.runWriteAction(
-      new Runnable {
-        def run(): Unit = {
-          val projectJdkTable = ProjectJdkTable.getInstance()
-          projectJdkTable.getAllJdks.foreach(projectJdkTable.removeJdk)
-          projectJdkTable.addJdk(IdeaTestUtil.getMockJdk17)
-          projectJdkTable.addJdk(IdeaTestUtil.getMockJdk18)
-        }
-      })
+    ApplicationManagerEx
+      .getApplicationEx
+      .runWriteAction(
+        new Runnable {
+          def run(): Unit = {
+            val projectJdkTable = ProjectJdkTable.getInstance()
+            projectJdkTable.getAllJdks.foreach(projectJdkTable.removeJdk)
+            projectJdkTable.addJdk(IdeaTestUtil.getMockJdk17)
+            projectJdkTable.addJdk(IdeaTestUtil.getMockJdk18)
+          }
+        })
     // TODO: find a way to create mock Android SDK
   }
 
@@ -185,7 +186,8 @@ class SbtProjectDataServiceTest extends ProjectDataServiceTestCase {
       .getInstance(getProject)
     val actualLanguageLevel = languageLevelProjectExtension.getLanguageLevel
     assertEquals(expectedLanguageLevel, actualLanguageLevel)
-    if (data.SdkUtils
+    if (data
+          .SdkUtils
           .defaultJavaLanguageLevelIn(expectedSdk)
           .fold(false)(_ != expectedLanguageLevel))
       assertFalse(languageLevelProjectExtension.getDefault)

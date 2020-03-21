@@ -281,9 +281,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
   def actuallyWait: Boolean = false
 
   // A SparkConf to use in tests. Can be modified before calling setupStreams to configure things.
-  val conf = new SparkConf()
-    .setMaster(master)
-    .setAppName(framework)
+  val conf = new SparkConf().setMaster(master).setAppName(framework)
 
   // Timeout for use in ScalaTest `eventually` blocks
   val eventuallyTimeout: PatienceConfiguration.Timeout = timeout(
@@ -408,8 +406,8 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       numBatches: Int,
       numExpectedOutput: Int): Seq[Seq[V]] = {
     // Flatten each RDD into a single Seq
-    runStreamsWithPartitions(ssc, numBatches, numExpectedOutput).map(
-      _.flatten.toSeq)
+    runStreamsWithPartitions(ssc, numBatches, numExpectedOutput)
+      .map(_.flatten.toSeq)
   }
 
   /**
@@ -434,7 +432,9 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       "numBatches = " + numBatches + ", numExpectedOutput = " + numExpectedOutput)
 
     // Get the output buffer
-    val outputStream = ssc.graph.getOutputStreams
+    val outputStream = ssc
+      .graph
+      .getOutputStreams
       .filter(_.isInstanceOf[TestOutputStreamWithPartitions[_]])
       .head
       .asInstanceOf[TestOutputStreamWithPartitions[V]]
@@ -463,7 +463,8 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       while (output.size < numExpectedOutput &&
              System.currentTimeMillis() - startTime < maxWaitTimeMillis) {
         logInfo(
-          "output.size = " + output.size + ", numExpectedOutput = " + numExpectedOutput)
+          "output.size = " + output
+            .size + ", numExpectedOutput = " + numExpectedOutput)
         ssc.awaitTerminationOrTimeout(50)
       }
       val timeTaken = System.currentTimeMillis() - startTime
@@ -476,9 +477,8 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
         output.size === numExpectedOutput,
         "Unexpected number of outputs generated")
 
-      Thread.sleep(
-        100
-      ) // Give some time for the forgetting old RDDs to complete
+      Thread
+        .sleep(100) // Give some time for the forgetting old RDDs to complete
     } finally {
       ssc.stop(stopSparkContext = true)
     }

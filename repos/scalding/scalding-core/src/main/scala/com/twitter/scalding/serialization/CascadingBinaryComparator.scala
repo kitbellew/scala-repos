@@ -87,20 +87,26 @@ object CascadingBinaryComparator {
     def getDescriptionsForMissingOrdSer[U](
         bfs: BaseFlowStep[U]): Option[String] =
       // does this job have any Splices without OrderedSerialization:
-      if (bfs.getGraph.vertexSet.asScala.exists {
-            case gb: GroupBy =>
-              check(gb).isFailure
-            case cg: CoGroup =>
-              check(cg).isFailure
-            case _ =>
-              false // only do sorting in groupBy/cogroupBy
-          }) {
+      if (bfs
+            .getGraph
+            .vertexSet
+            .asScala
+            .exists {
+              case gb: GroupBy =>
+                check(gb).isFailure
+              case cg: CoGroup =>
+                check(cg).isFailure
+              case _ =>
+                false // only do sorting in groupBy/cogroupBy
+            }) {
         Some(getDesc(bfs).mkString(", "))
       } else
         None
 
     // Get all the steps that have missing OrderedSerializations
-    val missing = flow.getFlowSteps.asScala
+    val missing = flow
+      .getFlowSteps
+      .asScala
       .map {
         case bfs: BaseFlowStep[_] =>
           getDescriptionsForMissingOrdSer(bfs)
@@ -115,10 +121,13 @@ object CascadingBinaryComparator {
     else {
       val badSteps = missing.size
       val msg =
-        missing.zipWithIndex.map {
-          case (msg, idx) =>
-            s"<step$idx>$msg</step$idx>"
-        }.mkString
+        missing
+          .zipWithIndex
+          .map {
+            case (msg, idx) =>
+              s"<step$idx>$msg</step$idx>"
+          }
+          .mkString
       error(s"There are $badSteps missing OrderedSerializations: $msg")
     }
   }

@@ -51,11 +51,13 @@ class RowFormatSpec
     Gen.listOf(Gen.alphaStr filter (_.size > 0)) flatMap { paths =>
       Gen
         .sequence[List, List[ColumnRef]](
-          paths.distinct.map { name =>
-            Gen.listOf(genCType) map {
-              _.distinct map (ColumnRef(CPath(name), _))
-            }
-          })
+          paths
+            .distinct
+            .map { name =>
+              Gen.listOf(genCType) map {
+                _.distinct map (ColumnRef(CPath(name), _))
+              }
+            })
         .map(_.flatten)
     }
 

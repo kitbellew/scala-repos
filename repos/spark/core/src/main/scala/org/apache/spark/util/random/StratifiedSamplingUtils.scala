@@ -117,21 +117,17 @@ private[spark] object StratifiedSamplingUtils extends Logging {
         }
         val copiesWaitlisted = rng.nextPoisson(acceptResult.waitListBound)
         if (copiesWaitlisted > 0) {
-          acceptResult.waitList ++= ArrayBuffer.fill(copiesWaitlisted)(
-            rng.nextUniform())
+          acceptResult.waitList ++= ArrayBuffer
+            .fill(copiesWaitlisted)(rng.nextUniform())
         }
       } else {
         // We use the streaming version of the algorithm for sampling without replacement to avoid
         // using an extra pass over the RDD for computing the count.
         // Hence, acceptBound and waitListBound change on every iteration.
-        acceptResult.acceptBound = BinomialBounds.getLowerBound(
-          delta,
-          acceptResult.numItems,
-          fraction)
-        acceptResult.waitListBound = BinomialBounds.getUpperBound(
-          delta,
-          acceptResult.numItems,
-          fraction)
+        acceptResult.acceptBound = BinomialBounds
+          .getLowerBound(delta, acceptResult.numItems, fraction)
+        acceptResult.waitListBound = BinomialBounds
+          .getUpperBound(delta, acceptResult.numItems, fraction)
 
         val x = rng.nextUniform()
         if (x < acceptResult.acceptBound) {
@@ -156,17 +152,20 @@ private[spark] object StratifiedSamplingUtils extends Logging {
         result2: mutable.Map[K, AcceptanceResult]) =>
       {
         // take union of both key sets in case one partition doesn't contain all keys
-        result1.keySet.union(result2.keySet).foreach { key =>
-          // Use result2 to keep the combined result since r1 is usual empty
-          val entry1 = result1.get(key)
-          if (result2.contains(key)) {
-            result2(key).merge(entry1)
-          } else {
-            if (entry1.isDefined) {
-              result2 += (key -> entry1.get)
+        result1
+          .keySet
+          .union(result2.keySet)
+          .foreach { key =>
+            // Use result2 to keep the combined result since r1 is usual empty
+            val entry1 = result1.get(key)
+            if (result2.contains(key)) {
+              result2(key).merge(entry1)
+            } else {
+              if (entry1.isDefined) {
+                result2 += (key -> entry1.get)
+              }
             }
           }
-        }
         result2
       }
   }
@@ -271,8 +270,8 @@ private[spark] object StratifiedSamplingUtils extends Logging {
               rng.nextPoisson(acceptBound)
           val copiesWaitlisted = rng.nextPoisson(finalResult(key).waitListBound)
           val copiesInSample = copiesAccepted +
-            (0 until copiesWaitlisted).count(i =>
-              rng.nextUniform() < thresholdByKey(key))
+            (0 until copiesWaitlisted)
+              .count(i => rng.nextUniform() < thresholdByKey(key))
           if (copiesInSample > 0) {
             Iterator.fill(copiesInSample.toInt)(item)
           } else {

@@ -22,9 +22,8 @@ private[serverset2] class ApacheWatcher(
           state,
           WatchState.SessionState(ApacheSessionState(event.getState)))
       case e =>
-        EventDeliveryThread.offer(
-          state,
-          WatchState.Determined(EventFilter(ApacheNodeEvent(e))))
+        EventDeliveryThread
+          .offer(state, WatchState.Determined(EventFilter(ApacheNodeEvent(e))))
     }
   }
 }

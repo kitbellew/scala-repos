@@ -183,12 +183,12 @@ abstract class GuiceBuilder[Self] protected (
       binderOptions
     )
     val enabledModules = modules.map(_.disable(disabled))
-    val bindingModules =
-      GuiceableModule.guiced(environment, configuration, binderOptions)(
+    val bindingModules = GuiceableModule
+      .guiced(environment, configuration, binderOptions)(
         enabledModules) :+ injectorModule
     val overrideModules =
-      GuiceableModule.guiced(environment, configuration, binderOptions)(
-        overrides)
+      GuiceableModule
+        .guiced(environment, configuration, binderOptions)(overrides)
     GuiceModules
       .`override`(bindingModules.asJava)
       .`with`(overrideModules.asJava)
@@ -216,12 +216,15 @@ abstract class GuiceBuilder[Self] protected (
           case p: PlayException =>
             throw p
           case _ => {
-            e.getErrorMessages.asScala.foreach(
-              _.getCause match {
-                case p: PlayException =>
-                  throw p
-                case _ => // do nothing
-              })
+            e
+              .getErrorMessages
+              .asScala
+              .foreach(
+                _.getCause match {
+                  case p: PlayException =>
+                    throw p
+                  case _ => // do nothing
+                })
             throw e
           }
         }
@@ -437,16 +440,18 @@ trait GuiceableModuleConversions {
         for (b <- bindings) {
           val binding = b.asInstanceOf[PlayBinding[Any]]
           val builder = binder().withSource(binding).bind(GuiceKey(binding.key))
-          binding.target.foreach {
-            case ProviderTarget(provider) =>
-              builder.toProvider(GuiceProviders.guicify(provider))
-            case ProviderConstructionTarget(provider) =>
-              builder.toProvider(provider)
-            case ConstructionTarget(implementation) =>
-              builder.to(implementation)
-            case BindingKeyTarget(key) =>
-              builder.to(GuiceKey(key))
-          }
+          binding
+            .target
+            .foreach {
+              case ProviderTarget(provider) =>
+                builder.toProvider(GuiceProviders.guicify(provider))
+              case ProviderConstructionTarget(provider) =>
+                builder.toProvider(provider)
+              case ConstructionTarget(implementation) =>
+                builder.to(implementation)
+              case BindingKeyTarget(key) =>
+                builder.to(GuiceKey(key))
+            }
           (binding.scope, binding.eager) match {
             case (Some(scope), false) =>
               builder.in(scope)

@@ -161,12 +161,14 @@ sealed abstract class AsyncStream[+A] {
         if (pending.size >= concurrencyLevel)
           Future.never
         else
-          inputs().uncons.flatMap {
-            case None if pending.nonEmpty =>
-              Future.never
-            case other =>
-              Future.value(Left(other))
-          }
+          inputs()
+            .uncons
+            .flatMap {
+              case None if pending.nonEmpty =>
+                Future.never
+              case other =>
+                Future.value(Left(other))
+            }
 
       // The inputReady.isDefined check is an optimization to avoid the
       // wasted allocation of calling Future.select when we know that
@@ -179,43 +181,45 @@ sealed abstract class AsyncStream[+A] {
 
       // Wait for either the next input to be ready (Left) or for some pending
       // work to complete (Right).
-      inputReady.or(workDone).flatMap {
-        case Left(None) =>
-          // There is no work pending and we have exhausted the
-          // inputs, so we are done.
-          Future.value(empty)
+      inputReady
+        .or(workDone)
+        .flatMap {
+          case Left(None) =>
+            // There is no work pending and we have exhausted the
+            // inputs, so we are done.
+            Future.value(empty)
 
-        case Left(Some((a, tl))) =>
-          // There is available concurrency and a new input is ready,
-          // so start the work and add it to `pending`.
-          step(f(a).map(Some(_)) +: pending, tl)
+          case Left(Some((a, tl))) =>
+            // There is available concurrency and a new input is ready,
+            // so start the work and add it to `pending`.
+            step(f(a).map(Some(_)) +: pending, tl)
 
-        case Right((Throw(t), _)) =>
-          // Some work finished with failure, so terminate the stream.
-          Future.exception(t)
+          case Right((Throw(t), _)) =>
+            // Some work finished with failure, so terminate the stream.
+            Future.exception(t)
 
-        case Right((Return(None), newPending)) =>
-          // A cons cell was forced, freeing up a spot in `pending`.
-          step(newPending, inputs)
+          case Right((Return(None), newPending)) =>
+            // A cons cell was forced, freeing up a spot in `pending`.
+            step(newPending, inputs)
 
-        case Right((Return(Some(a)), newPending)) =>
-          // Some work finished. Eagerly start the next step, so
-          // that all available inputs have work started on them. In
-          // the next step, we replace the pending Future for the
-          // work that just completed with a Future that will be
-          // satisfied by forcing the next element of the result
-          // stream. Keeping `pending` full is the mechanism that we
-          // use to bound the evaluation depth at `concurrencyLevel`
-          // until the stream is forced.
-          val cellForced = new Promise[Option[B]]
-          val rest = step(cellForced +: newPending, inputs)
-          Future.value(
-            mk(
-              a, {
-                cellForced.setValue(None);
-                embed(rest)
-              }))
-      }
+          case Right((Return(Some(a)), newPending)) =>
+            // Some work finished. Eagerly start the next step, so
+            // that all available inputs have work started on them. In
+            // the next step, we replace the pending Future for the
+            // work that just completed with a Future that will be
+            // satisfied by forcing the next element of the result
+            // stream. Keeping `pending` full is the mechanism that we
+            // use to bound the evaluation depth at `concurrencyLevel`
+            // until the stream is forced.
+            val cellForced = new Promise[Option[B]]
+            val rest = step(cellForced +: newPending, inputs)
+            Future.value(
+              mk(
+                a, {
+                  cellForced.setValue(None);
+                  embed(rest)
+                }))
+        }
     }
 
     if (concurrencyLevel == 1) {

@@ -94,8 +94,8 @@ trait AccountManager[M[+_]] extends AccountFinder[M] {
           logger.warn("Located expired reset token: " + token)
           M.point(-\/("Reset token %s has expired".format(tokenId)))
         } else if (token.usedAt.nonEmpty) {
-          logger.warn(
-            "Reset attempted with previously used reset token: " + token)
+          logger
+            .warn("Reset attempted with previously used reset token: " + token)
           M.point(-\/("Reset token %s has already been used".format(tokenId)))
         } else if (token.accountId != accountId) {
           logger.debug(
@@ -151,9 +151,8 @@ trait AccountManager[M[+_]] extends AccountFinder[M] {
       M: Monad[M]): M[Validation[String, Account]] = {
     findAccountByEmail(email) map {
       case Some(account)
-          if account.passwordHash == saltAndHashSHA1(
-            password,
-            account.passwordSalt) ||
+          if account
+            .passwordHash == saltAndHashSHA1(password, account.passwordSalt) ||
             account.passwordHash == saltAndHashSHA256(
               password,
               account.passwordSalt) ||

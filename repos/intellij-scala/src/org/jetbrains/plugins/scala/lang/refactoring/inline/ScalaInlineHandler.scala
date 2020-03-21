@@ -67,7 +67,8 @@ class ScalaInlineHandler extends InlineHandler {
       val children = new ArrayBuffer[PsiElement]
       var psiElement = value.getNextSibling
       while (psiElement != null && (
-               psiElement.getNode.getElementType == ScalaTokenTypes.tSEMICOLON || psiElement.getText.trim == ""
+               psiElement.getNode.getElementType == ScalaTokenTypes
+                 .tSEMICOLON || psiElement.getText.trim == ""
              )) {
         children += psiElement
         psiElement = psiElement.getNextSibling
@@ -80,9 +81,8 @@ class ScalaInlineHandler extends InlineHandler {
 
     element match {
       case rp: ScBindingPattern =>
-        PsiTreeUtil.getParentOfType(
-          rp,
-          classOf[ScDeclaredElementsHolder]) match {
+        PsiTreeUtil
+          .getParentOfType(rp, classOf[ScDeclaredElementsHolder]) match {
           case v @ (_: ScValue | _: ScVariable)
               if v.declaredElements.length == 1 =>
             removeElementWithNonSignificantSibilings(v)
@@ -102,9 +102,8 @@ class ScalaInlineHandler extends InlineHandler {
     val replacementValue =
       element match {
         case rp: ScBindingPattern =>
-          PsiTreeUtil.getParentOfType(
-            rp,
-            classOf[ScDeclaredElementsHolder]) match {
+          PsiTreeUtil
+            .getParentOfType(rp, classOf[ScDeclaredElementsHolder]) match {
             case v @ ScPatternDefinition.expr(e)
                 if v.declaredElements == Seq(element) =>
               e.getText
@@ -161,10 +160,8 @@ class ScalaInlineHandler extends InlineHandler {
           val project = newValue.getProject
           val manager = FileEditorManager.getInstance(project)
           val editor = manager.getSelectedTextEditor
-          occurrenceHighlighters = ScalaRefactoringUtil.highlightOccurrences(
-            project,
-            Array[PsiElement](newValue),
-            editor)
+          occurrenceHighlighters = ScalaRefactoringUtil
+            .highlightOccurrences(project, Array[PsiElement](newValue), editor)
           CodeStyleManager
             .getInstance(project)
             .reformatRange(
@@ -262,20 +259,23 @@ class ScalaInlineHandler extends InlineHandler {
     }
 
     def isSimpleTypeAlias(typeAlias: ScTypeAliasDefinition): Boolean = {
-      typeAlias.aliasedTypeElement.depthFirst.forall {
-        case t: ScTypeElement =>
-          t.calcType match {
-            case part: ScTypeParameterType =>
-              false
-            case part: ScProjectionType
-                if !ScalaPsiUtil.hasStablePath(part.element) =>
-              false
-            case _ =>
-              true
-          }
-        case _ =>
-          true
-      }
+      typeAlias
+        .aliasedTypeElement
+        .depthFirst
+        .forall {
+          case t: ScTypeElement =>
+            t.calcType match {
+              case part: ScTypeParameterType =>
+                false
+              case part: ScProjectionType
+                  if !ScalaPsiUtil.hasStablePath(part.element) =>
+                false
+              case _ =>
+                true
+            }
+          case _ =>
+            true
+        }
     }
 
     def isParametrizedTypeAlias(typeAlias: ScTypeAliasDefinition): Boolean =
@@ -364,10 +364,8 @@ class ScalaInlineHandler extends InlineHandler {
           .findAll
           .asScala
           .forall { ref =>
-            member.containingClass == null || PsiTreeUtil.isAncestor(
-              member.containingClass,
-              ref.getElement,
-              true)
+            member.containingClass == null || PsiTreeUtil
+              .isAncestor(member.containingClass, ref.getElement, true)
           }
       case _ =>
         true

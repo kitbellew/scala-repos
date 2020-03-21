@@ -102,8 +102,8 @@ object JacksonParser extends Logging {
         val stringValue = parser.getText
         if (stringValue.contains("-")) {
           // The format of this string will probably be "yyyy-mm-dd".
-          DateTimeUtils.millisToDays(
-            DateTimeUtils.stringToTime(parser.getText).getTime)
+          DateTimeUtils
+            .millisToDays(DateTimeUtils.stringToTime(parser.getText).getTime)
         } else {
           // In Spark 1.5.0, we store the data as number of days since epoch in string.
           // So, we just convert it to Int.
@@ -120,10 +120,10 @@ object JacksonParser extends Logging {
 
       case (_, StringType) =>
         val writer = new ByteArrayOutputStream()
-        Utils.tryWithResource(
-          factory.createGenerator(writer, JsonEncoding.UTF8)) { generator =>
-          generator.copyCurrentStructure(parser)
-        }
+        Utils
+          .tryWithResource(factory.createGenerator(writer, JsonEncoding.UTF8)) {
+            generator => generator.copyCurrentStructure(parser)
+          }
         UTF8String.fromBytes(writer.toByteArray)
 
       case (VALUE_NUMBER_INT | VALUE_NUMBER_FLOAT, FloatType) =>

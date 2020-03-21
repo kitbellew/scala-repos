@@ -71,10 +71,10 @@ object OrmToSlick extends App {
     };
     {
       //#slickNavigation
-      val peopleQuery: Query[People, Person, Seq] = people.filter(
-        _.id inSet (Set(2, 99, 17, 234)))
-      val addressesQuery: Query[Addresses, Address, Seq] = peopleQuery.flatMap(
-        _.address)
+      val peopleQuery: Query[People, Person, Seq] = people
+        .filter(_.id inSet (Set(2, 99, 17, 234)))
+      val addressesQuery: Query[Addresses, Address, Seq] = peopleQuery
+        .flatMap(_.address)
       //#slickNavigation
       //#slickExecution
       val addressesAction: DBIO[Seq[Address]] = addressesQuery.result
@@ -110,10 +110,7 @@ object OrmToSlick extends App {
       val age = Property.forName("age")
       val q = session
         .createCriteria(classOf[Person])
-        .add(
-          Restrictions.disjunction
-            .add(age lt 5)
-            .add(age gt 65))
+        .add(Restrictions.disjunction.add(age lt 5).add(age gt 65))
       //#criteriaComposition
     };
     {
@@ -207,10 +204,10 @@ object OrmToSlick extends App {
         val chrisQuery = people.filter(_.id === 2)
         val stefanQuery = people.filter(_.id === 3)
 
-        val chrisWithAddress: Future[(Person, Address)] = db.run(
-          chrisQuery.withAddress.result.head)
-        val stefanWithAddress: Future[(Person, Address)] = db.run(
-          stefanQuery.withAddress.result.head)
+        val chrisWithAddress: Future[(Person, Address)] = db
+          .run(chrisQuery.withAddress.result.head)
+        val stefanWithAddress: Future[(Person, Address)] = db
+          .run(stefanQuery.withAddress.result.head)
         //#slickRelationships
         Await.result(chrisWithAddress, Duration.Inf)
         Await.result(stefanWithAddress, Duration.Inf)
@@ -232,8 +229,9 @@ object OrmToSlick extends App {
       {
         //#slickRelationships2
         val chrisQuery: Query[People, Person, Seq] = people.filter(_.id === 2)
-        val addressQuery: Query[Addresses, Address, Seq] =
-          chrisQuery.withAddress.map(_._2)
+        val addressQuery: Query[Addresses, Address, Seq] = chrisQuery
+          .withAddress
+          .map(_._2)
         val address = db.run(addressQuery.result.head)
         //#slickRelationships2
         Await.result(address, Duration.Inf)

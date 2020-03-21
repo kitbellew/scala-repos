@@ -76,8 +76,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
   }
 
   override protected def startProcess: OSProcessHandler = {
-    val handler: OSProcessHandler = JavaCommandLineStateUtil.startProcess(
-      createCommandLine)
+    val handler: OSProcessHandler = JavaCommandLineStateUtil
+      .startProcess(createCommandLine)
     if (showInBrowser) {
       handler.addProcessListener(
         new ProcessAdapter {
@@ -110,8 +110,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
           visitInner(c, scope, acc)
         }
       } else {
-        if (file.getExtension == "scala" && file.isValid && scope.contains(
-              file)) {
+        if (file.getExtension == "scala" && file.isValid && scope
+              .contains(file)) {
           PsiManager.getInstance(project).findFile(file) match {
             case f: ScalaFile if !f.isScriptFile() =>
               acc += file
@@ -138,8 +138,9 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
           if ScaladocCommandLineState.generatedParamsWithArgs.contains(param) =>
         true
       case (_, param: String) =>
-        if (!ScaladocCommandLineState.generatedParamsWithoutArgs.contains(
-              param))
+        if (!ScaladocCommandLineState
+              .generatedParamsWithoutArgs
+              .contains(param))
           result += param
         false
     }
@@ -182,9 +183,11 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
       jdk)
     jp.setWorkingDirectory(project.getBaseDir.getPath)
 
-    val scalaModule = project.anyScalaModule.getOrElse {
-      throw new ExecutionException("No modules with Scala SDK are configured")
-    }
+    val scalaModule = project
+      .anyScalaModule
+      .getOrElse {
+        throw new ExecutionException("No modules with Scala SDK are configured")
+      }
     val classpathWithFacet = ListBuffer.apply[String]()
     val sourcepathWithFacet = ListBuffer.apply[String]()
     jp.getClassPath.addAllFiles(scalaModule.sdk.compilerClasspath.asJava)
@@ -213,8 +216,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
     val modulesNeeded = MutableHashSet.apply[Module]()
 
     def filterModulesList(files: VirtualFile*) {
-      modulesNeeded ++= allModules.filter(m =>
-        files.exists(f => m.getModuleScope.contains(f)))
+      modulesNeeded ++= allModules
+        .filter(m => files.exists(f => m.getModuleScope.contains(f)))
       allModules --= modulesNeeded
     }
 
@@ -225,12 +228,17 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
       Set(
         classesCollector -> target.classes(),
         sourcesCollector -> target.sources()).foreach { entry =>
-        entry._1 ++= entry._2.withoutSelfModuleOutput().getRoots.map {
-          virtualFile =>
-            virtualFile.getPath.replaceAll(
-              Pattern.quote(".") + "(\\S{2,6})" + Pattern.quote("!/"),
-              ".$1/")
-        }
+        entry._1 ++= entry
+          ._2
+          .withoutSelfModuleOutput()
+          .getRoots
+          .map { virtualFile =>
+            virtualFile
+              .getPath
+              .replaceAll(
+                Pattern.quote(".") + "(\\S{2,6})" + Pattern.quote("!/"),
+                ".$1/")
+          }
       }
     }
 
@@ -317,9 +325,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
 
     if (JdkUtil.useDynamicClasspath(project)) {
       try {
-        val tempParamsFile: File = File.createTempFile(
-          "scaladocfileargs",
-          ".tmp")
+        val tempParamsFile: File = File
+          .createTempFile("scaladocfileargs", ".tmp")
         val pw: PrintStream =
           new PrintStream(new FileOutputStream(tempParamsFile))
 

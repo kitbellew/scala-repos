@@ -98,8 +98,7 @@ class HtmlNormalizerSpec extends Specification with XmlMatchers with Mockito {
         "testJs7",
         "testJs8",
         "testJs9",
-        "testJs10")
-        .foreach(js.toJsCmd must contain(_))
+        "testJs10").foreach(js.toJsCmd must contain(_))
 
       html.toString must beLike {
         case eventAttributeMatcher(eventAttribute) =>
@@ -152,7 +151,7 @@ class HtmlNormalizerSpec extends Specification with XmlMatchers with Mockito {
           .lines
           .mkString("\n")
           .r
-      )
+        )
     }
 
     "extract events from hrefs and actions" in {
@@ -182,7 +181,7 @@ class HtmlNormalizerSpec extends Specification with XmlMatchers with Mockito {
           .lines
           .mkString("\n")
           .r
-      )
+        )
     }
 
     "not extract events from hrefs and actions without the proper prefix" in {

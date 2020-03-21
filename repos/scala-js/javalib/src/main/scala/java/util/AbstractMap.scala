@@ -88,7 +88,8 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
     entrySet.iterator.exists(entry => entry === key)
 
   def get(key: Any): V = {
-    entrySet.iterator
+    entrySet
+      .iterator
       .find(_.getKey === key)
       .fold[V] {
         null.asInstanceOf[V]
@@ -178,7 +179,8 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
     entrySet.foldLeft(0)((prev, item) => item.hashCode + prev)
 
   override def toString(): String = {
-    entrySet.iterator
+    entrySet
+      .iterator
       .map(e => s"${e.getKey}=${e.getValue}")
       .mkString("{", ", ", "}")
   }

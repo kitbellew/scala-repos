@@ -176,8 +176,8 @@ class ZookeeperConsumerConnectorTest
         TestUtils.createConsumerProperties(zkConnect, group, consumer3))
     val zkConsumerConnector3 =
       new ZookeeperConsumerConnector(consumerConfig3, true)
-    val topicMessageStreams3 = zkConsumerConnector3.createMessageStreams(
-      new mutable.HashMap[String, Int]())
+    val topicMessageStreams3 = zkConsumerConnector3
+      .createMessageStreams(new mutable.HashMap[String, Int]())
     // send some messages to each broker
     val sentMessages3 = sendMessages(servers, topic, nMessages, 0) ++
       sendMessages(servers, topic, nMessages, 1)
@@ -196,8 +196,8 @@ class ZookeeperConsumerConnectorTest
 
     // call createMesssageStreams twice should throw MessageStreamsExistException
     try {
-      val topicMessageStreams4 = zkConsumerConnector3.createMessageStreams(
-        new mutable.HashMap[String, Int]())
+      val topicMessageStreams4 = zkConsumerConnector3
+        .createMessageStreams(new mutable.HashMap[String, Int]())
       fail("Should fail with MessageStreamsExistException")
     } catch {
       case e: MessageStreamsExistException => // expected
@@ -212,8 +212,8 @@ class ZookeeperConsumerConnectorTest
 
   @Test
   def testCompression() {
-    val requestHandlerLogger = Logger.getLogger(
-      classOf[kafka.server.KafkaRequestHandler])
+    val requestHandlerLogger = Logger
+      .getLogger(classOf[kafka.server.KafkaRequestHandler])
     requestHandlerLogger.setLevel(Level.FATAL)
 
     // send some messages to each broker
@@ -350,8 +350,8 @@ class ZookeeperConsumerConnectorTest
 
   @Test
   def testConsumerDecoder() {
-    val requestHandlerLogger = Logger.getLogger(
-      classOf[kafka.server.KafkaRequestHandler])
+    val requestHandlerLogger = Logger
+      .getLogger(classOf[kafka.server.KafkaRequestHandler])
     requestHandlerLogger.setLevel(Level.FATAL)
 
     // send some messages to each broker
@@ -422,8 +422,8 @@ class ZookeeperConsumerConnectorTest
     val topicRegistry = zkConsumerConnector1.getTopicRegistry
     assertEquals(1, topicRegistry.map(r => r._1).size)
     assertEquals(topic, topicRegistry.map(r => r._1).head)
-    val topicsAndPartitionsInRegistry = topicRegistry.map(r =>
-      (r._1, r._2.map(p => p._2)))
+    val topicsAndPartitionsInRegistry = topicRegistry
+      .map(r => (r._1, r._2.map(p => p._2)))
     val brokerPartition = topicsAndPartitionsInRegistry.head._2.head
     assertEquals(0, brokerPartition.partitionId)
 

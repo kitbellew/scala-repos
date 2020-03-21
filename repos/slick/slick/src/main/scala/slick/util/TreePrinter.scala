@@ -94,20 +94,22 @@ case class TreePrinter(
           ))
       }
       val children = di.children.toIndexedSeq
-      children.zipWithIndex.foreach {
-        case ((name, value), idx) =>
-          val (p1, p2) =
-            if (idx == children.size - 1)
-              (lastChildPrefix1, lastChildPrefix2)
-            else
-              (childPrefix1, childPrefix2)
-          val (cp1, cp2) =
-            if (level % 2 == 0)
-              (cBlue + p1, cBlue + p2)
-            else
-              (cGreen + p1, cGreen + p2)
-          dump(value, prefix2 + cp1, prefix2 + cp2, name, level + 1)
-      }
+      children
+        .zipWithIndex
+        .foreach {
+          case ((name, value), idx) =>
+            val (p1, p2) =
+              if (idx == children.size - 1)
+                (lastChildPrefix1, lastChildPrefix2)
+              else
+                (childPrefix1, childPrefix2)
+            val (cp1, cp2) =
+              if (level % 2 == 0)
+                (cBlue + p1, cBlue + p2)
+              else
+                (cGreen + p1, cGreen + p2)
+            dump(value, prefix2 + cp1, prefix2 + cp2, name, level + 1)
+        }
     }
     dump(
       n,
@@ -128,10 +130,12 @@ case class TreePrinter(
         Some(n)
       else {
         val children = value.getDumpInfo.children.map(_._2).toVector
-        val markedChildren = children.map(find).collect {
-          case Some(d) =>
-            d
-        }
+        val markedChildren = children
+          .map(find)
+          .collect {
+            case Some(d) =>
+              d
+          }
         if (markedChildren.length > 1)
           Some(n)
         else if (markedChildren.length == 1)
@@ -197,11 +201,14 @@ object Ellipsis {
         else if (poss contains Nil)
           DumpInfo("...")
         else
-          parent.copy(children = parent.children.zipWithIndex.map {
-            case ((name, ch), idx) =>
-              val chposs = poss.filter(_.head == idx).map(_.tail)
-              (name, apply(ch, chposs: _*))
-          })
+          parent.copy(children = parent
+            .children
+            .zipWithIndex
+            .map {
+              case ((name, ch), idx) =>
+                val chposs = poss.filter(_.head == idx).map(_.tail)
+                (name, apply(ch, chposs: _*))
+            })
       }
     }
 }

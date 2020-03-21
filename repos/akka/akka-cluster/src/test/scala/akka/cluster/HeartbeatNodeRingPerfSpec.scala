@@ -11,19 +11,21 @@ import akka.actor.Address
 class HeartbeatNodeRingPerfSpec extends WordSpec with Matchers {
 
   val nodesSize =
-    sys.props
+    sys
+      .props
       .get("akka.cluster.HeartbeatNodeRingPerfSpec.nodesSize")
       .getOrElse("250")
       .toInt
   val iterations =
-    sys.props
+    sys
+      .props
       .get("akka.cluster.HeartbeatNodeRingPerfSpec.iterations")
       .getOrElse("10000")
       .toInt
 
   def createHeartbeatNodeRingOfSize(size: Int): HeartbeatNodeRing = {
-    val nodes = (1 to size).map(n ⇒
-      UniqueAddress(Address("akka.tcp", "sys", "node-" + n, 2552), n))
+    val nodes = (1 to size)
+      .map(n ⇒ UniqueAddress(Address("akka.tcp", "sys", "node-" + n, 2552), n))
     val selfAddress = nodes(size / 2)
     HeartbeatNodeRing(selfAddress, nodes.toSet, Set.empty, 5)
   }

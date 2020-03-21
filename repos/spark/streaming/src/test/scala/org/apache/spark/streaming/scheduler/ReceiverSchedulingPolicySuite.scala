@@ -31,11 +31,8 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
   val receiverSchedulingPolicy = new ReceiverSchedulingPolicy
 
   test("rescheduleReceiver: empty executors") {
-    val scheduledLocations = receiverSchedulingPolicy.rescheduleReceiver(
-      0,
-      None,
-      Map.empty,
-      executors = Seq.empty)
+    val scheduledLocations = receiverSchedulingPolicy
+      .rescheduleReceiver(0, None, Map.empty, executors = Seq.empty)
     assert(scheduledLocations === Seq.empty)
   }
 
@@ -43,19 +40,16 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
     val executors = Seq(ExecutorCacheTaskLocation("host2", "2"))
     val receiverTrackingInfoMap = Map(
       0 -> ReceiverTrackingInfo(0, ReceiverState.INACTIVE, None, None))
-    val scheduledLocations = receiverSchedulingPolicy.rescheduleReceiver(
-      0,
-      Some("host1"),
-      receiverTrackingInfoMap,
-      executors)
+    val scheduledLocations = receiverSchedulingPolicy
+      .rescheduleReceiver(0, Some("host1"), receiverTrackingInfoMap, executors)
     assert(
       scheduledLocations.toSet === Set(HostTaskLocation("host1"), executors(0)))
   }
 
   test(
     "rescheduleReceiver: return all idle executors if there are any idle executors") {
-    val executors = (1 to 5).map(i =>
-      ExecutorCacheTaskLocation(s"host$i", s"$i"))
+    val executors = (1 to 5)
+      .map(i => ExecutorCacheTaskLocation(s"host$i", s"$i"))
     // executor 1 is busy, others are idle.
     val receiverTrackingInfoMap = Map(
       0 -> ReceiverTrackingInfo(
@@ -63,11 +57,8 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
         ReceiverState.ACTIVE,
         None,
         Some(executors(0))))
-    val scheduledLocations = receiverSchedulingPolicy.rescheduleReceiver(
-      1,
-      None,
-      receiverTrackingInfoMap,
-      executors)
+    val scheduledLocations = receiverSchedulingPolicy
+      .rescheduleReceiver(1, None, receiverTrackingInfoMap, executors)
     assert(scheduledLocations.toSet === executors.tail.toSet)
   }
 
@@ -112,11 +103,8 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
             ExecutorCacheTaskLocation("host5", "5"))),
         None)
     )
-    val scheduledLocations = receiverSchedulingPolicy.rescheduleReceiver(
-      4,
-      None,
-      receiverTrackingInfoMap,
-      executors)
+    val scheduledLocations = receiverSchedulingPolicy
+      .rescheduleReceiver(4, None, receiverTrackingInfoMap, executors)
     val expectedScheduledLocations = Set(
       ExecutorCacheTaskLocation("host2", "2"),
       ExecutorCacheTaskLocation("host4", "4"),
@@ -130,17 +118,16 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
     val receivers = (0 until 6).map(new RateTestReceiver(_))
     val executors = (0 until 3).map(executorId =>
       ExecutorCacheTaskLocation("localhost", executorId.toString))
-    val scheduledLocations = receiverSchedulingPolicy.scheduleReceivers(
-      receivers,
-      executors)
+    val scheduledLocations = receiverSchedulingPolicy
+      .scheduleReceivers(receivers, executors)
     val numReceiversOnExecutor = mutable.HashMap[TaskLocation, Int]()
     // There should be 2 receivers running on each executor and each receiver has one executor
     scheduledLocations.foreach {
       case (receiverId, locations) =>
         assert(locations.size == 1)
         assert(locations(0).isInstanceOf[ExecutorCacheTaskLocation])
-        numReceiversOnExecutor(locations(0)) =
-          numReceiversOnExecutor.getOrElse(locations(0), 0) + 1
+        numReceiversOnExecutor(locations(0)) = numReceiversOnExecutor
+          .getOrElse(locations(0), 0) + 1
     }
     assert(numReceiversOnExecutor === executors.map(_ -> 2).toMap)
   }
@@ -151,9 +138,8 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
     val receivers = (0 until 3).map(new RateTestReceiver(_))
     val executors = (0 until 6).map(executorId =>
       ExecutorCacheTaskLocation("localhost", executorId.toString))
-    val scheduledLocations = receiverSchedulingPolicy.scheduleReceivers(
-      receivers,
-      executors)
+    val scheduledLocations = receiverSchedulingPolicy
+      .scheduleReceivers(receivers, executors)
     val numReceiversOnExecutor = mutable.HashMap[TaskLocation, Int]()
     // There should be 1 receiver running on each executor and each receiver has two executors
     scheduledLocations.foreach {
@@ -175,9 +161,8 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
       ExecutorCacheTaskLocation("localhost", executorId.toString)) ++
       (3 until 6).map(executorId =>
         ExecutorCacheTaskLocation("localhost2", executorId.toString))
-    val scheduledLocations = receiverSchedulingPolicy.scheduleReceivers(
-      receivers,
-      executors)
+    val scheduledLocations = receiverSchedulingPolicy
+      .scheduleReceivers(receivers, executors)
     val numReceiversOnExecutor = mutable.HashMap[TaskLocation, Int]()
     // There should be 1 receiver running on each executor and each receiver has 1 executor
     scheduledLocations.foreach {
@@ -214,9 +199,8 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
 
   test("scheduleReceivers: return empty scheduled executors if no executors") {
     val receivers = (0 until 3).map(new RateTestReceiver(_))
-    val scheduledLocations = receiverSchedulingPolicy.scheduleReceivers(
-      receivers,
-      Seq.empty)
+    val scheduledLocations = receiverSchedulingPolicy
+      .scheduleReceivers(receivers, Seq.empty)
     scheduledLocations.foreach {
       case (receiverId, executors) =>
         assert(executors.isEmpty)

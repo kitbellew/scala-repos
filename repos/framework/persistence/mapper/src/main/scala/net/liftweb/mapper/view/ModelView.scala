@@ -167,14 +167,14 @@ class ModelView[T <: Mapper[T]](var entity: T, val snippet: ModelSnippet[T]) {
   /**
     * Returns a CssSel that binds a link to ".edit" to load and edit this entity
     */
-  lazy val editAction =
-    ".edit" #> snippet.link("edit", () => load, Text(?("Edit")))
+  lazy val editAction = ".edit" #> snippet
+    .link("edit", () => load, Text(?("Edit")))
 
   /**
     * Returns a CssSel that binds a link to ".remove" that contains a link to delete this entity
     */
-  lazy val removeAction =
-    ".remove" #> snippet.link("list", () => remove, Text(?("Remove")))
+  lazy val removeAction = ".remove" #> snippet
+    .link("list", () => remove, Text(?("Remove")))
 
   /**
     * Returns a CssSel that binds the contents of an element with class ".<name>"

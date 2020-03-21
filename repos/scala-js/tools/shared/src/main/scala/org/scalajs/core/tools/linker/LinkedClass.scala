@@ -6,6 +6,7 @@
 **                          |/____/                                     **
 \*                                                                      */
 
+
 package org.scalajs.core.tools.linker
 
 import scala.collection.mutable
@@ -18,20 +19,20 @@ import ir.ClassKind
 import ir.Definitions
 
 /** A ClassDef after linking.
-  *
-  *  Note that the [[version]] in the LinkedClass does not cover
-  *  [[staticMethods]], [[memberMethods]], [[abstractMethods]] and
-  *  [[exportedMembers]] as they have their individual versions. (The collections
-  *  themselves are not versioned).
-  *
-  *  Moreover, the [[version]] is relative to the identity of a LinkedClass.
-  *  The definition of identity varies as linked classes progress through the
-  *  linking pipeline, but it only gets stronger, i.e., if two linked classes
-  *  are id-different at phase P, then they must also be id-different at phase
-  *  P+1. The converse is not true. This guarantees that versions can be used
-  *  reliably to determine at phase P+1 whether a linked class coming from phase
-  *  P must be reprocessed.
-  */
+ *
+ *  Note that the [[version]] in the LinkedClass does not cover
+ *  [[staticMethods]], [[memberMethods]], [[abstractMethods]] and
+ *  [[exportedMembers]] as they have their individual versions. (The collections
+ *  themselves are not versioned).
+ *
+ *  Moreover, the [[version]] is relative to the identity of a LinkedClass.
+ *  The definition of identity varies as linked classes progress through the
+ *  linking pipeline, but it only gets stronger, i.e., if two linked classes
+ *  are id-different at phase P, then they must also be id-different at phase
+ *  P+1. The converse is not true. This guarantees that versions can be used
+ *  reliably to determine at phase P+1 whether a linked class coming from phase
+ *  P must be reprocessed.
+ */
 final class LinkedClass(
     // Stuff from Tree
     val name: Ident,
@@ -48,6 +49,7 @@ final class LinkedClass(
     val classExportInfo: Option[Infos.MethodInfo],
     val optimizerHints: OptimizerHints,
     val pos: Position,
+
     // Actual Linking info
     val ancestors: List[String],
     val hasInstances: Boolean,
@@ -62,19 +64,16 @@ final class LinkedClass(
   def fullName: String = Definitions.decodeClassName(encodedName)
 
   def toInfo: Infos.ClassInfo = {
-    val methodInfos = (staticMethods.map(_.info) ++
-      memberMethods.map(_.info) ++
-      abstractMethods.map(_.info) ++
-      exportedMembers.map(_.info) ++
-      classExportInfo)
+    val methodInfos = (
+        staticMethods.map(_.info) ++
+        memberMethods.map(_.info) ++
+        abstractMethods.map(_.info) ++
+        exportedMembers.map(_.info) ++
+        classExportInfo
+    )
 
-    Infos.ClassInfo(
-      encodedName,
-      isExported,
-      kind,
-      superClass.map(_.name),
-      interfaces.map(_.name),
-      methodInfos)
+    Infos.ClassInfo(encodedName, isExported, kind, superClass.map(_.name),
+      interfaces.map(_.name), methodInfos)
   }
 
   def copy(
@@ -98,33 +97,31 @@ final class LinkedClass(
       hasRuntimeTypeInfo: Boolean = this.hasRuntimeTypeInfo,
       version: Option[String] = this.version) = {
     new LinkedClass(
-      name,
-      kind,
-      superClass,
-      interfaces,
-      jsName,
-      fields,
-      staticMethods,
-      memberMethods,
-      abstractMethods,
-      exportedMembers,
-      classExports,
-      classExportInfo,
-      optimizerHints,
-      pos,
-      ancestors,
-      hasInstances,
-      hasInstanceTests,
-      hasRuntimeTypeInfo,
-      version)
+        name,
+        kind,
+        superClass,
+        interfaces,
+        jsName,
+        fields,
+        staticMethods,
+        memberMethods,
+        abstractMethods,
+        exportedMembers,
+        classExports,
+        classExportInfo,
+        optimizerHints,
+        pos,
+        ancestors,
+        hasInstances,
+        hasInstanceTests,
+        hasRuntimeTypeInfo,
+        version)
   }
 }
 
 object LinkedClass {
 
-  def apply(
-      info: Infos.ClassInfo,
-      classDef: ClassDef,
+  def apply(info: Infos.ClassInfo, classDef: ClassDef,
       ancestors: List[String]): LinkedClass = {
 
     val memberInfoByName = Map(info.methods.map(m => m.encodedName -> m): _*)
@@ -178,29 +175,29 @@ object LinkedClass {
         sys.error(s"Illegal tree in ClassDef of class ${tree.getClass}")
     }
 
-    val classExportInfo = memberInfoByName.get(
-      Definitions.ExportedConstructorsName)
+    val classExportInfo =
+      memberInfoByName.get(Definitions.ExportedConstructorsName)
 
     new LinkedClass(
-      classDef.name,
-      classDef.kind,
-      classDef.superClass,
-      classDef.interfaces,
-      classDef.jsName,
-      fields.toList,
-      staticMethods.toList,
-      memberMethods.toList,
-      abstractMethods.toList,
-      exportedMembers.toList,
-      classExports.toList,
-      classExportInfo,
-      classDef.optimizerHints,
-      classDef.pos,
-      ancestors,
-      hasInstances = true,
-      hasInstanceTests = true,
-      hasRuntimeTypeInfo = true,
-      version = None)
+        classDef.name,
+        classDef.kind,
+        classDef.superClass,
+        classDef.interfaces,
+        classDef.jsName,
+        fields.toList,
+        staticMethods.toList,
+        memberMethods.toList,
+        abstractMethods.toList,
+        exportedMembers.toList,
+        classExports.toList,
+        classExportInfo,
+        classDef.optimizerHints,
+        classDef.pos,
+        ancestors,
+        hasInstances = true,
+        hasInstanceTests = true,
+        hasRuntimeTypeInfo = true,
+        version = None)
   }
 
   def dummyParent(encodedName: String, version: Option[String]): LinkedClass = {
@@ -209,25 +206,25 @@ object LinkedClass {
     implicit val pos = Position.NoPosition
 
     new LinkedClass(
-      name = Ident(encodedName),
-      kind = ClassKind.Class,
-      superClass = Some(Ident(Definitions.ObjectClass)),
-      interfaces = Nil,
-      jsName = None,
-      fields = Nil,
-      staticMethods = Nil,
-      memberMethods = Nil,
-      abstractMethods = Nil,
-      exportedMembers = Nil,
-      classExports = Nil,
-      classExportInfo = None,
-      optimizerHints = OptimizerHints.empty,
-      pos = Position.NoPosition,
-      ancestors = List(Definitions.ObjectClass, encodedName),
-      hasInstances = true,
-      hasInstanceTests = true,
-      hasRuntimeTypeInfo = true,
-      version = version)
+        name = Ident(encodedName),
+        kind = ClassKind.Class,
+        superClass = Some(Ident(Definitions.ObjectClass)),
+        interfaces = Nil,
+        jsName = None,
+        fields = Nil,
+        staticMethods = Nil,
+        memberMethods = Nil,
+        abstractMethods = Nil,
+        exportedMembers = Nil,
+        classExports = Nil,
+        classExportInfo = None,
+        optimizerHints = OptimizerHints.empty,
+        pos = Position.NoPosition,
+        ancestors = List(Definitions.ObjectClass, encodedName),
+        hasInstances = true,
+        hasInstanceTests = true,
+        hasRuntimeTypeInfo = true,
+        version = version)
   }
 
 }

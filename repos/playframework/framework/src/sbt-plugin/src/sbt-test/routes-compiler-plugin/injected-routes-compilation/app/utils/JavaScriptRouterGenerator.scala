@@ -16,7 +16,9 @@ object JavaScriptRouterGenerator extends App {
       "localhost"
 
   val jsFile =
-    play.api.routing
+    play
+      .api
+      .routing
       .JavaScriptReverseRouter(
         "jsRoutes",
         None,

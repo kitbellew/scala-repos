@@ -95,10 +95,12 @@ case class ASTNode(
                || !check(_.numChildren)) {
       false
     } else {
-      children.zip(other.children).forall {
-        case (l, r) =>
-          l treeEquals r
-      }
+      children
+        .zip(other.children)
+        .forall {
+          case (l, r) =>
+            l treeEquals r
+        }
     }
   }
 

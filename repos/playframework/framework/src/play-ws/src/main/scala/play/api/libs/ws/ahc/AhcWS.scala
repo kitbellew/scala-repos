@@ -99,9 +99,12 @@ case object AhcWSRequest {
   private[libs] def ahcHeadersToMap(
       headers: HttpHeaders): TreeMap[String, Seq[String]] = {
     val mutableMap = scala.collection.mutable.HashMap[String, Seq[String]]()
-    headers.names().asScala.foreach { name =>
-      mutableMap.put(name, headers.getAll(name).asScala)
-    }
+    headers
+      .names()
+      .asScala
+      .foreach { name =>
+        mutableMap.put(name, headers.getAll(name).asScala)
+      }
     TreeMap[String, Seq[String]]()(CaseInsensitiveOrdered) ++ mutableMap
   }
 }
@@ -272,10 +275,13 @@ case class AhcWSRequest(
   }
 
   def contentType: Option[String] = {
-    this.headers.find(p => p._1 == HttpHeaders.Names.CONTENT_TYPE).map {
-      case (header, values) =>
-        values.head
-    }
+    this
+      .headers
+      .find(p => p._1 == HttpHeaders.Names.CONTENT_TYPE)
+      .map {
+        case (header, values) =>
+          values.head
+      }
   }
 
   /**
@@ -330,13 +336,17 @@ case class AhcWSRequest(
             try {
               // Only parse out the form body if we are doing the signature calculation.
               if (ct.contains(
-                    HttpHeaders.Values.APPLICATION_X_WWW_FORM_URLENCODED) && calc.isDefined) {
+                    HttpHeaders
+                      .Values
+                      .APPLICATION_X_WWW_FORM_URLENCODED) && calc.isDefined) {
                 // If we are taking responsibility for setting the request body, we should block any
                 // externally defined Content-Length field (see #5221 for the details)
-                val filteredHeaders = this.headers.filterNot {
-                  case (k, v) =>
-                    k.equalsIgnoreCase(HttpHeaders.Names.CONTENT_LENGTH)
-                }
+                val filteredHeaders = this
+                  .headers
+                  .filterNot {
+                    case (k, v) =>
+                      k.equalsIgnoreCase(HttpHeaders.Names.CONTENT_LENGTH)
+                  }
 
                 // extract the content type and the charset
                 val charsetOption = Option(HttpUtils.parseCharset(ct))
@@ -425,7 +435,8 @@ case class AhcWSRequest(
           wsProxyServer.principal.orNull,
           wsProxyServer.password.orNull)
       val scheme: Realm.AuthScheme =
-        wsProxyServer.protocol
+        wsProxyServer
+          .protocol
           .getOrElse("http")
           .toLowerCase(java.util.Locale.ENGLISH) match {
           case "http" | "https" =>
@@ -440,16 +451,19 @@ case class AhcWSRequest(
             scala.sys.error("Unrecognized protocol!")
         }
       realmBuilder.setScheme(scheme)
-      wsProxyServer.encoding.foreach(enc =>
-        realmBuilder.setCharset(Charset.forName(enc)))
+      wsProxyServer
+        .encoding
+        .foreach(enc => realmBuilder.setCharset(Charset.forName(enc)))
       wsProxyServer.ntlmDomain.foreach(realmBuilder.setNtlmDomain)
       proxyBuilder.setRealm(realmBuilder)
     }
 
-    wsProxyServer.nonProxyHosts.foreach { nonProxyHosts =>
-      import scala.collection.JavaConverters._
-      proxyBuilder.setNonProxyHosts(nonProxyHosts.asJava)
-    }
+    wsProxyServer
+      .nonProxyHosts
+      .foreach { nonProxyHosts =>
+        import scala.collection.JavaConverters._
+        proxyBuilder.setNonProxyHosts(nonProxyHosts.asJava)
+      }
     proxyBuilder.build()
   }
 
@@ -483,8 +497,8 @@ class AhcWSAPI @Inject() (
     if (clientConfig.wsClientConfig.ssl.debug.enabled) {
       environment.mode match {
         case Mode.Prod =>
-          logger.warn(
-            "AhcWSAPI: ws.ssl.debug settings enabled in production mode!")
+          logger
+            .warn("AhcWSAPI: ws.ssl.debug settings enabled in production mode!")
         case _ => // do nothing
       }
       new DebugConfiguration().configure(clientConfig.wsClientConfig.ssl.debug)

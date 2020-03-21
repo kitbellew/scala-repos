@@ -32,10 +32,12 @@ trait CollectionsOnCheckedMapTest extends CollectionsOnMapsTest {
       def empty[K, V](implicit
           kct: ClassTag[K],
           vct: ClassTag[V]): ju.Map[K, V] = {
-        ju.Collections.checkedMap(
-          originalFactory.empty[K, V],
-          kct.runtimeClass.asInstanceOf[Class[K]],
-          vct.runtimeClass.asInstanceOf[Class[V]])
+        ju
+          .Collections
+          .checkedMap(
+            originalFactory.empty[K, V],
+            kct.runtimeClass.asInstanceOf[Class[K]],
+            vct.runtimeClass.asInstanceOf[Class[V]])
       }
 
       override def allowsNullKeys: Boolean = originalFactory.allowsNullKeys
@@ -83,10 +85,12 @@ trait CollectionsOnCheckedSortedMapTest extends CollectionsOnSortedMapsTest {
       def empty[K, V](implicit
           kct: ClassTag[K],
           vct: ClassTag[V]): ju.SortedMap[K, V] = {
-        ju.Collections.checkedSortedMap(
-          originalFactory.empty[K, V],
-          kct.runtimeClass.asInstanceOf[Class[K]],
-          vct.runtimeClass.asInstanceOf[Class[V]])
+        ju
+          .Collections
+          .checkedSortedMap(
+            originalFactory.empty[K, V],
+            kct.runtimeClass.asInstanceOf[Class[K]],
+            vct.runtimeClass.asInstanceOf[Class[V]])
       }
 
       override def allowsNullKeys: Boolean = originalFactory.allowsNullKeys

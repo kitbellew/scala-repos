@@ -191,8 +191,8 @@ object Tests {
           .mkString("\n\t"))
 
     def includeTest(test: TestDefinition) =
-      !excludeTestsSet.contains(test.name) && testFilters.forall(filter =>
-        filter(test.name))
+      !excludeTestsSet.contains(test.name) && testFilters
+        .forall(filter => filter(test.name))
     val filtered0 = discovered.filter(includeTest).toList.distinct
     val tests =
       if (orderedFilters.isEmpty)
@@ -252,13 +252,8 @@ object Tests {
         a(loader)
       }
 
-    val (frameworkSetup, runnables, frameworkCleanup) = TestFramework.testTasks(
-      frameworks,
-      runners,
-      loader,
-      tests,
-      log,
-      testListeners)
+    val (frameworkSetup, runnables, frameworkCleanup) = TestFramework
+      .testTasks(frameworks, runners, loader, tests, log, testListeners)
 
     val setupTasks = fj(partApp(userSetup) :+ frameworkSetup)
     val mainTasks =
@@ -312,17 +307,20 @@ object Tests {
       case (name, test) =>
         toTask(loader, name, test, tags)
     }
-    tasks.join.map(
-      _.foldLeft(Map.empty[String, SuiteResult]) {
-        case (sum, e) =>
-          val merged = sum.toSeq ++ e.toSeq
-          val grouped = merged.groupBy(_._1)
-          grouped.mapValues(
-            _.map(_._2).foldLeft(SuiteResult.Empty) {
-              case (resultSum, result) =>
-                resultSum + result
-            })
-      })
+    tasks
+      .join
+      .map(
+        _.foldLeft(Map.empty[String, SuiteResult]) {
+          case (sum, e) =>
+            val merged = sum.toSeq ++ e.toSeq
+            val grouped = merged.groupBy(_._1)
+            grouped.mapValues(
+              _.map(_._2)
+              .foldLeft(SuiteResult.Empty) {
+                case (resultSum, result) =>
+                  resultSum + result
+              })
+        })
   }
 
   def toTask(
@@ -495,7 +493,8 @@ object Tests {
       log: Logger,
       results: Output,
       noTestsMessage: => String): Unit =
-    TestResultLogger.Default
+    TestResultLogger
+      .Default
       .copy(printNoTests = TestResultLogger.const(_ info noTestsMessage))
       .run(log, results, "")
 }

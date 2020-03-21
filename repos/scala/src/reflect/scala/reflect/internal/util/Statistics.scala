@@ -281,7 +281,8 @@ object Statistics {
       elem
     }
     override def toString =
-      this.toSeq
+      this
+        .toSeq
         .sortWith(_._2 > _._2)
         .map {
           case (cls: Class[_], elem) =>

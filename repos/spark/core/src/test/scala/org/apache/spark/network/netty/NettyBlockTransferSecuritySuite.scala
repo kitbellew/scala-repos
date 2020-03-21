@@ -42,8 +42,7 @@ class NettyBlockTransferSecuritySuite
     with MockitoSugar
     with ShouldMatchers {
   test("security default off") {
-    val conf = new SparkConf()
-      .set("spark.app.id", "app-id")
+    val conf = new SparkConf().set("spark.app.id", "app-id")
     testConnection(conf, conf) match {
       case Success(_) => // expected
       case Failure(t) =>

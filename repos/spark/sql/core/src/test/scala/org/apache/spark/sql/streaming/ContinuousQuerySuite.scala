@@ -34,9 +34,11 @@ class ContinuousQuerySuite extends StreamTest with SharedSQLContext {
 
   testQuietly("lifecycle states and awaitTermination") {
     val inputData = MemoryStream[Int]
-    val mapped = inputData.toDS().map {
-      6 / _
-    }
+    val mapped = inputData
+      .toDS()
+      .map {
+        6 / _
+      }
 
     testStream(mapped)(
       AssertOnQuery(_.isActive === true),
@@ -71,7 +73,8 @@ class ContinuousQuerySuite extends StreamTest with SharedSQLContext {
       TestAwaitTermination(ExpectException[SparkException], timeoutMs = 10),
       AssertOnQuery(
         q =>
-          q.exception.get.startOffset.get === q.streamProgress
+          q.exception.get.startOffset.get === q
+            .streamProgress
             .toCompositeOffset(Seq(inputData)),
         "incorrect start offset on exception")
     )

@@ -128,38 +128,45 @@ class RFormula(override val uid: String)
 
     // First we index each string column referenced by the input terms.
     val indexed: Map[String, String] =
-      resolvedFormula.terms.flatten.distinct.map { term =>
-        dataset.schema(term) match {
-          case column if column.dataType == StringType =>
-            val indexCol = tmpColumn("stridx")
-            encoderStages += new StringIndexer()
-              .setInputCol(term)
-              .setOutputCol(indexCol)
-            (term, indexCol)
-          case _ =>
-            (term, term)
+      resolvedFormula
+        .terms
+        .flatten
+        .distinct
+        .map { term =>
+          dataset.schema(term) match {
+            case column if column.dataType == StringType =>
+              val indexCol = tmpColumn("stridx")
+              encoderStages += new StringIndexer()
+                .setInputCol(term)
+                .setOutputCol(indexCol)
+              (term, indexCol)
+            case _ =>
+              (term, term)
+          }
         }
-      }.toMap
+        .toMap
 
     // Then we handle one-hot encoding and interactions between terms.
-    val encodedTerms = resolvedFormula.terms.map {
-      case Seq(term) if dataset.schema(term).dataType == StringType =>
-        val encodedCol = tmpColumn("onehot")
-        encoderStages += new OneHotEncoder()
-          .setInputCol(indexed(term))
-          .setOutputCol(encodedCol)
-        prefixesToRewrite(encodedCol + "_") = term + "_"
-        encodedCol
-      case Seq(term) =>
-        term
-      case terms =>
-        val interactionCol = tmpColumn("interaction")
-        encoderStages += new Interaction()
-          .setInputCols(terms.map(indexed).toArray)
-          .setOutputCol(interactionCol)
-        prefixesToRewrite(interactionCol + "_") = ""
-        interactionCol
-    }
+    val encodedTerms = resolvedFormula
+      .terms
+      .map {
+        case Seq(term) if dataset.schema(term).dataType == StringType =>
+          val encodedCol = tmpColumn("onehot")
+          encoderStages += new OneHotEncoder()
+            .setInputCol(indexed(term))
+            .setOutputCol(encodedCol)
+          prefixesToRewrite(encodedCol + "_") = term + "_"
+          encodedCol
+        case Seq(term) =>
+          term
+        case terms =>
+          val interactionCol = tmpColumn("interaction")
+          encoderStages += new Interaction()
+            .setInputCols(terms.map(indexed).toArray)
+            .setOutputCol(interactionCol)
+          prefixesToRewrite(interactionCol + "_") = ""
+          interactionCol
+      }
 
     encoderStages += new VectorAssembler(uid)
       .setInputCols(encodedTerms.toArray)
@@ -280,8 +287,8 @@ class RFormulaModel private[feature] (
       !columnNames.contains($(featuresCol)),
       "Features column already exists.")
     require(
-      !columnNames.contains($(labelCol)) || schema(
-        $(labelCol)).dataType == DoubleType,
+      !columnNames.contains($(labelCol)) || schema($(labelCol))
+        .dataType == DoubleType,
       "Label column already exists and is not of type DoubleType.")
   }
 
@@ -327,7 +334,8 @@ object RFormulaModel extends MLReadable[RFormulaModel] {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
+      val data = sqlContext
+        .read
         .parquet(dataPath)
         .select("label", "terms", "hasIntercept")
         .head()
@@ -410,7 +418,8 @@ private object ColumnPruner extends MLReadable[ColumnPruner] {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
+      val data = sqlContext
+        .read
         .parquet(dataPath)
         .select("columnsToPrune")
         .head()
@@ -449,23 +458,26 @@ private class VectorAttributeRewriter(
   override def transform(dataset: DataFrame): DataFrame = {
     val metadata = {
       val group = AttributeGroup.fromStructField(dataset.schema(vectorCol))
-      val attrs = group.attributes.get.map { attr =>
-        if (attr.name.isDefined) {
-          val name = attr.name.get
-          val replacement = prefixesToRewrite.filter {
-            case (k, _) =>
-              name.startsWith(k)
-          }
-          if (replacement.nonEmpty) {
-            val (k, v) = replacement.headOption.get
-            attr.withName(v + name.stripPrefix(k))
+      val attrs = group
+        .attributes
+        .get
+        .map { attr =>
+          if (attr.name.isDefined) {
+            val name = attr.name.get
+            val replacement = prefixesToRewrite.filter {
+              case (k, _) =>
+                name.startsWith(k)
+            }
+            if (replacement.nonEmpty) {
+              val (k, v) = replacement.headOption.get
+              attr.withName(v + name.stripPrefix(k))
+            } else {
+              attr
+            }
           } else {
             attr
           }
-        } else {
-          attr
         }
-      }
       new AttributeGroup(vectorCol, attrs).toMetadata()
     }
     val otherCols = dataset.columns.filter(_ != vectorCol).map(dataset.col)
@@ -527,7 +539,8 @@ private object VectorAttributeRewriter
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
+      val data = sqlContext
+        .read
         .parquet(dataPath)
         .select("vectorCol", "prefixesToRewrite")
         .head()

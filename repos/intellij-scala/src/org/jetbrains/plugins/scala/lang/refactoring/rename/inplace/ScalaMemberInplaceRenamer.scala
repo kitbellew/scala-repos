@@ -85,18 +85,15 @@ class ScalaMemberInplaceRenamer(
   override def beforeTemplateStart() {
     super.beforeTemplateStart()
 
-    val revertInfo = ScalaRefactoringUtil.RevertInfo(
-      editor.getDocument.getText,
-      editor.getCaretModel.getOffset)
+    val revertInfo = ScalaRefactoringUtil
+      .RevertInfo(editor.getDocument.getText, editor.getCaretModel.getOffset)
     editor.putUserData(ScalaMemberInplaceRenamer.REVERT_INFO, revertInfo)
 
     val file = PsiDocumentManager
       .getInstance(myProject)
       .getPsiFile(myEditor.getDocument)
-    val offset = TargetElementUtil.adjustOffset(
-      file,
-      editor.getDocument,
-      editor.getCaretModel.getOffset)
+    val offset = TargetElementUtil
+      .adjustOffset(file, editor.getDocument, editor.getCaretModel.getOffset)
     val range = file.findElementAt(offset).getTextRange
     myCaretRangeMarker = myEditor.getDocument.createRangeMarker(range)
     myCaretRangeMarker.setGreedyToLeft(true)
@@ -107,60 +104,66 @@ class ScalaMemberInplaceRenamer(
     if (myOldName == null)
       return
 
-    CommandProcessor.getInstance.executeCommand(
-      myProject,
-      new Runnable {
-        def run() {
-          val revertInfo = editor.getUserData(
-            ScalaMemberInplaceRenamer.REVERT_INFO)
-          val document = myEditor.getDocument
-          if (revertInfo != null) {
-            extensions.inWriteAction {
-              document
-                .replaceString(0, document.getTextLength, revertInfo.fileText)
+    CommandProcessor
+      .getInstance
+      .executeCommand(
+        myProject,
+        new Runnable {
+          def run() {
+            val revertInfo = editor
+              .getUserData(ScalaMemberInplaceRenamer.REVERT_INFO)
+            val document = myEditor.getDocument
+            if (revertInfo != null) {
+              extensions.inWriteAction {
+                document
+                  .replaceString(0, document.getTextLength, revertInfo.fileText)
+                PsiDocumentManager
+                  .getInstance(myProject)
+                  .commitDocument(document)
+              }
+              val offset = revertInfo.caretOffset
+              myEditor.getCaretModel.moveToOffset(offset)
+              myEditor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
+              PsiDocumentManager
+                .getInstance(myEditor.getProject)
+                .commitDocument(document)
+              val clazz = myElementToRename.getClass
+              val element = TargetElementUtil.findTargetElement(
+                myEditor,
+                TargetElementUtil
+                  .REFERENCED_ELEMENT_ACCEPTED | TargetElementUtil
+                  .ELEMENT_NAME_ACCEPTED)
+              myElementToRename = element match {
+                case null =>
+                  null
+                case named: PsiNamedElement if named.getClass == clazz =>
+                  named
+                case _ =>
+                  RenamePsiElementProcessor
+                    .forElement(element)
+                    .substituteElementToRename(element, myEditor) match {
+                    case named: PsiNamedElement if named.getClass == clazz =>
+                      named
+                    case _ =>
+                      null
+                  }
+              }
+            }
+            if (!myProject.isDisposed && myProject.isOpen) {
               PsiDocumentManager.getInstance(myProject).commitDocument(document)
             }
-            val offset = revertInfo.caretOffset
-            myEditor.getCaretModel.moveToOffset(offset)
-            myEditor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
-            PsiDocumentManager
-              .getInstance(myEditor.getProject)
-              .commitDocument(document)
-            val clazz = myElementToRename.getClass
-            val element = TargetElementUtil.findTargetElement(
-              myEditor,
-              TargetElementUtil.REFERENCED_ELEMENT_ACCEPTED | TargetElementUtil.ELEMENT_NAME_ACCEPTED)
-            myElementToRename = element match {
-              case null =>
-                null
-              case named: PsiNamedElement if named.getClass == clazz =>
-                named
-              case _ =>
-                RenamePsiElementProcessor
-                  .forElement(element)
-                  .substituteElementToRename(element, myEditor) match {
-                  case named: PsiNamedElement if named.getClass == clazz =>
-                    named
-                  case _ =>
-                    null
-                }
-            }
           }
-          if (!myProject.isDisposed && myProject.isOpen) {
-            PsiDocumentManager.getInstance(myProject).commitDocument(document)
-          }
-        }
-      },
-      getCommandName,
-      null
-    )
+        },
+        getCommandName,
+        null
+      )
 
   }
 
   override def getVariable: PsiNamedElement = {
     Option(super.getVariable).getOrElse {
-      if (myElementToRename != null && myElementToRename.isValid && oldName == ScalaNamesUtil
-            .scalaName(myElementToRename))
+      if (myElementToRename != null && myElementToRename
+            .isValid && oldName == ScalaNamesUtil.scalaName(myElementToRename))
         myElementToRename
       else
         null
@@ -226,7 +229,10 @@ class ScalaMemberInplaceRenamer(
       case lightPsi: PsiNamedElement if !lightPsi.isPhysical =>
         null
       case nameIdentifierOwner: PsiNameIdentifierOwner
-          if myElementToRename.getContainingFile.getViewProvider.getAllFiles
+          if myElementToRename
+            .getContainingFile
+            .getViewProvider
+            .getAllFiles
             .size() > 1 =>
         nameIdentifierOwner.getNameIdentifier
       case _ =>
@@ -240,7 +246,8 @@ class ScalaMemberInplaceRenamer(
       case _: ScalaMemberInplaceRenameHandler =>
         val caretOffset = editor.getCaretModel.getOffset
         myCaretRangeMarker != null && myCaretRangeMarker.isValid &&
-        myCaretRangeMarker.getStartOffset <= caretOffset && myCaretRangeMarker.getEndOffset >= caretOffset
+        myCaretRangeMarker.getStartOffset <= caretOffset && myCaretRangeMarker
+          .getEndOffset >= caretOffset
       case _ =>
         false
     }

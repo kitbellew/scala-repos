@@ -18,9 +18,11 @@ object Macros {
             List(c.unreifyTree(world)))))
       val typedGreeting = c.Expr[String](greeting)
 
-      c.universe.reify {
-        println("hello " + s.splice + " = " + typedGreeting.splice)
-      }
+      c
+        .universe
+        .reify {
+          println("hello " + s.splice + " = " + typedGreeting.splice)
+        }
     }
   }
 }

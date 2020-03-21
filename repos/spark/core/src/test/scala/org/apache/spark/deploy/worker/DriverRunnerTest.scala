@@ -153,8 +153,7 @@ class DriverRunnerTest extends SparkFunSuite {
       .thenReturn(10000) // fail 3 (long)
       .thenReturn(10000)
       .thenReturn(11000) // fail 4 (short)
-      .thenReturn(11000)
-      .thenReturn(21000) // success (long)
+      .thenReturn(11000).thenReturn(21000) // success (long)
 
     runner.runCommandWithRetry(processBuilder, p => (), supervise = true)
 

@@ -82,8 +82,8 @@ abstract class ScalaRuntimeTypeEvaluator(
 
 object ScalaRuntimeTypeEvaluator {
 
-  val KEY: Key[ScExpression => ScType] = Key.create(
-    "SCALA_RUNTIME_TYPE_EVALUATOR")
+  val KEY: Key[ScExpression => ScType] = Key
+    .create("SCALA_RUNTIME_TYPE_EVALUATOR")
 
   def getCastableRuntimeType(project: Project, value: Value): PsiClass = {
     val unwrapped = DebuggerUtil.unwrapScalaRuntimeObjectRef(value)
@@ -107,7 +107,8 @@ object ScalaRuntimeTypeEvaluator {
           }
         }
         import scala.collection.JavaConversions._
-        classType.interfaces
+        classType
+          .interfaces
           .map(findPsiClass(project, _))
           .find(_ != null)
           .orNull

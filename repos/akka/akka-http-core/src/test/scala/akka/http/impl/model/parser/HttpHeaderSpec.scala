@@ -19,9 +19,8 @@ import HttpMethods._
 import java.net.InetAddress
 
 class HttpHeaderSpec extends FreeSpec with Matchers {
-  val `application/vnd.spray` = MediaType.applicationBinary(
-    "vnd.spray",
-    MediaType.Compressible)
+  val `application/vnd.spray` = MediaType
+    .applicationBinary("vnd.spray", MediaType.Compressible)
   val PROPFIND = HttpMethod.custom("PROPFIND")
 
   "The HTTP header model must correctly parse and render the headers" - {
@@ -66,8 +65,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
     "Accept-Charset" in {
       "Accept-Charset: *" =!= `Accept-Charset`(HttpCharsetRange.`*`)
       "Accept-Charset: UTF-8" =!= `Accept-Charset`(`UTF-8`)
-      "Accept-Charset: utf16;q=1" =!= `Accept-Charset`(`UTF-16`).renderedTo(
-        "UTF-16")
+      "Accept-Charset: utf16;q=1" =!= `Accept-Charset`(`UTF-16`)
+        .renderedTo("UTF-16")
       "Accept-Charset: utf-8; q=0.5, *" =!= `Accept-Charset`(
         `UTF-8` withQValue 0.5,
         HttpCharsetRange.`*`).renderedTo("UTF-8;q=0.5, *")
@@ -77,8 +76,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
           `UTF-16` withQValue 0,
           HttpCharsetRange.`*` withQValue 0.8)
           .renderedTo("ISO-8859-1, UTF-16;q=0.0, *;q=0.8")
-      `Accept-Charset`(
-        `UTF-16` withQValue 0.234567).toString shouldEqual "Accept-Charset: UTF-16;q=0.235"
+      `Accept-Charset`(`UTF-16` withQValue 0.234567)
+        .toString shouldEqual "Accept-Charset: UTF-16;q=0.235"
       "Accept-Charset: UTF-16, unsupported42" =!= `Accept-Charset`(
         `UTF-16`,
         HttpCharset.custom("unsupported42"))
@@ -107,12 +106,13 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
 
     "Access-Control-Allow-Origin" in {
       "Access-Control-Allow-Origin: *" =!= `Access-Control-Allow-Origin`.`*`
-      "Access-Control-Allow-Origin: null" =!= `Access-Control-Allow-Origin`.`null`
+      "Access-Control-Allow-Origin: null" =!= `Access-Control-Allow-Origin`
+        .`null`
       "Access-Control-Allow-Origin: http://spray.io" =!= `Access-Control-Allow-Origin`(
         "http://spray.io")
       "Access-Control-Allow-Origin: http://akka.io http://spray.io" =!=
-        `Access-Control-Allow-Origin`.forRange(
-          HttpOriginRange("http://akka.io", "http://spray.io"))
+        `Access-Control-Allow-Origin`
+          .forRange(HttpOriginRange("http://akka.io", "http://spray.io"))
     }
 
     "Access-Control-Expose-Headers" in {
@@ -184,9 +184,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
     }
 
     "Authorization" in {
-      BasicHttpCredentials(
-        "Aladdin",
-        "open sesame").token shouldEqual "QWxhZGRpbjpvcGVuIHNlc2FtZQ=="
+      BasicHttpCredentials("Aladdin", "open sesame")
+        .token shouldEqual "QWxhZGRpbjpvcGVuIHNlc2FtZQ=="
       "Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==" =!=
         Authorization(BasicHttpCredentials("Aladdin", "open sesame"))
       "Authorization: bAsIc QWxhZGRpbjpvcGVuIHNlc2FtZQ==" =!=
@@ -268,8 +267,7 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
     "Content-Length" in {
       "Content-Length: 42" =!= `Content-Length`(42)
       "Content-Length: 12345678901234567890123456789" =!= `Content-Length`(
-        999999999999999999L)
-        .renderedTo("999999999999999999")
+        999999999999999999L).renderedTo("999999999999999999")
     }
 
     "Content-Type" in {
@@ -519,9 +517,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
         Link(
           Uri("http://example.com/TheBook/chapter2"),
           LinkParams.rel("previous"),
-          LinkParams.title("previous chapter"))
-          .renderedTo(
-            """<http://example.com/TheBook/chapter2>; rel=previous; title="previous chapter"""")
+          LinkParams.title("previous chapter")).renderedTo(
+          """<http://example.com/TheBook/chapter2>; rel=previous; title="previous chapter"""")
 
       """Link: </>; rel="http://example.net/foo"""" =!= Link(
         Uri("/"),
@@ -715,9 +712,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
             "lang",
             "",
             expires = Some(DateTime(2014, 12, 7, 0, 42, 55)),
-            maxAge = Some(12345)))
-          .renderedTo(
-            "lang=; Expires=Sun, 07 Dec 2014 00:42:55 GMT; Max-Age=12345")
+            maxAge = Some(12345))).renderedTo(
+          "lang=; Expires=Sun, 07 Dec 2014 00:42:55 GMT; Max-Age=12345")
 
       "Set-Cookie: lang=; Expires=Mon, 08 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
         `Set-Cookie`(
@@ -732,9 +728,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
             "lang",
             "",
             expires = Some(DateTime(2014, 12, 8, 0, 42, 55)),
-            maxAge = Some(12345)))
-          .renderedTo(
-            "lang=; Expires=Mon, 08 Dec 2014 00:42:55 GMT; Max-Age=12345")
+            maxAge = Some(12345))).renderedTo(
+          "lang=; Expires=Mon, 08 Dec 2014 00:42:55 GMT; Max-Age=12345")
 
       "Set-Cookie: lang=; Expires=Tue, 09 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
         `Set-Cookie`(
@@ -749,9 +744,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
             "lang",
             "",
             expires = Some(DateTime(2014, 12, 9, 0, 42, 55)),
-            maxAge = Some(12345)))
-          .renderedTo(
-            "lang=; Expires=Tue, 09 Dec 2014 00:42:55 GMT; Max-Age=12345")
+            maxAge = Some(12345))).renderedTo(
+          "lang=; Expires=Tue, 09 Dec 2014 00:42:55 GMT; Max-Age=12345")
 
       "Set-Cookie: lang=; Expires=Wed, 10 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
         `Set-Cookie`(
@@ -766,9 +760,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
             "lang",
             "",
             expires = Some(DateTime(2014, 12, 10, 0, 42, 55)),
-            maxAge = Some(12345)))
-          .renderedTo(
-            "lang=; Expires=Wed, 10 Dec 2014 00:42:55 GMT; Max-Age=12345")
+            maxAge = Some(12345))).renderedTo(
+          "lang=; Expires=Wed, 10 Dec 2014 00:42:55 GMT; Max-Age=12345")
 
       "Set-Cookie: lang=; Expires=Thu, 11 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
         `Set-Cookie`(
@@ -783,9 +776,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
             "lang",
             "",
             expires = Some(DateTime(2014, 12, 11, 0, 42, 55)),
-            maxAge = Some(12345)))
-          .renderedTo(
-            "lang=; Expires=Thu, 11 Dec 2014 00:42:55 GMT; Max-Age=12345")
+            maxAge = Some(12345))).renderedTo(
+          "lang=; Expires=Thu, 11 Dec 2014 00:42:55 GMT; Max-Age=12345")
 
       "Set-Cookie: lang=; Expires=Fri, 12 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
         `Set-Cookie`(
@@ -800,9 +792,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
             "lang",
             "",
             expires = Some(DateTime(2014, 12, 12, 0, 42, 55)),
-            maxAge = Some(12345)))
-          .renderedTo(
-            "lang=; Expires=Fri, 12 Dec 2014 00:42:55 GMT; Max-Age=12345")
+            maxAge = Some(12345))).renderedTo(
+          "lang=; Expires=Fri, 12 Dec 2014 00:42:55 GMT; Max-Age=12345")
 
       "Set-Cookie: lang=; Expires=Sat, 13 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
         `Set-Cookie`(
@@ -817,9 +808,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
             "lang",
             "",
             expires = Some(DateTime(2014, 12, 13, 0, 42, 55)),
-            maxAge = Some(12345)))
-          .renderedTo(
-            "lang=; Expires=Sat, 13 Dec 2014 00:42:55 GMT; Max-Age=12345")
+            maxAge = Some(12345))).renderedTo(
+          "lang=; Expires=Sat, 13 Dec 2014 00:42:55 GMT; Max-Age=12345")
 
       "Set-Cookie: lang=; Expires=Mon, 13 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
         ErrorInfo(
@@ -847,9 +837,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
             "",
             expires = Some(DateTime(2014, 12, 7, 22, 48, 47)),
             path = Some("/"),
-            httpOnly = true))
-          .renderedTo(
-            "PLAY_FLASH=; Expires=Sun, 07 Dec 2014 22:48:47 GMT; Path=/; HttpOnly")
+            httpOnly = true)).renderedTo(
+          "PLAY_FLASH=; Expires=Sun, 07 Dec 2014 22:48:47 GMT; Path=/; HttpOnly")
     }
 
     "Upgrade" in {
@@ -997,10 +986,10 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
   "The header parser should" - {
     import HttpHeader._
     "not accept illegal header names" in {
-      parse("X:", "a") shouldEqual ParsingResult.Error(
-        ErrorInfo("Illegal HTTP header name", "X:"))
-      parse(" X", "a") shouldEqual ParsingResult.Error(
-        ErrorInfo("Illegal HTTP header name", " X"))
+      parse("X:", "a") shouldEqual ParsingResult
+        .Error(ErrorInfo("Illegal HTTP header name", "X:"))
+      parse(" X", "a") shouldEqual ParsingResult
+        .Error(ErrorInfo("Illegal HTTP header name", " X"))
     }
     "not accept illegal header values" in {
       parse("Foo", "ba\u0000r") shouldEqual ParsingResult.Error(
@@ -1015,14 +1004,12 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
           Nil)
     }
     "compress value whitespace into single spaces and trim" in {
-      parse("Foo", " b  a \tr\t") shouldEqual ParsingResult.Ok(
-        RawHeader("Foo", "b a r"),
-        Nil)
+      parse("Foo", " b  a \tr\t") shouldEqual ParsingResult
+        .Ok(RawHeader("Foo", "b a r"), Nil)
     }
     "resolve obs-fold occurrences" in {
-      parse("Foo", "b\r\n\ta \r\n r") shouldEqual ParsingResult.Ok(
-        RawHeader("Foo", "b a r"),
-        Nil)
+      parse("Foo", "b\r\n\ta \r\n r") shouldEqual ParsingResult
+        .Ok(RawHeader("Foo", "b a r"), Nil)
     }
 
     "parse with custom uri parsing mode" in {
@@ -1032,8 +1019,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
       HeaderParser.parseFull(
         "location",
         "http://example.org/?abc=def=ghi",
-        HeaderParser.Settings(uriParsingMode =
-          Uri.ParsingMode.Relaxed)) shouldEqual
+        HeaderParser
+          .Settings(uriParsingMode = Uri.ParsingMode.Relaxed)) shouldEqual
         Right(Location(targetUri))
     }
   }
@@ -1042,11 +1029,10 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
     def =!=(testHeader: TestExample) = testHeader(line)
     def =!=>(expectedRendering: String) = {
       val Array(name, value) = line.split(": ", 2)
-      val HttpHeader.ParsingResult
-        .Ok(header, Nil) = HttpHeader.parse(name, value)
-      header.toString shouldEqual header
-        .renderedTo(expectedRendering)
-        .rendering("")
+      val HttpHeader.ParsingResult.Ok(header, Nil) = HttpHeader
+        .parse(name, value)
+      header
+        .toString shouldEqual header.renderedTo(expectedRendering).rendering("")
     }
   }
   sealed trait TestExample extends (String ⇒ Unit)
@@ -1086,8 +1072,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
   implicit class TestError(expectedError: ErrorInfo) extends TestExample {
     def apply(line: String) = {
       val Array(name, value) = line.split(": ", 2)
-      val HttpHeader.ParsingResult
-        .Ok(_, error :: Nil) = HttpHeader.parse(name, value)
+      val HttpHeader.ParsingResult.Ok(_, error :: Nil) = HttpHeader
+        .parse(name, value)
       error shouldEqual expectedError
     }
   }

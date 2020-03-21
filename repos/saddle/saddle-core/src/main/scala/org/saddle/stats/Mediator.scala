@@ -13,15 +13,13 @@ class Mediator(winSz: Int) {
 
   // auxiliary data
   private val data = Array.ofDim[Double](winSz) // circular buffer of values
-  private val loc = Array.ofDim[Int](
-    winSz
-  ) // ith value's location within heap array
+  private val loc = Array
+    .ofDim[Int](winSz) // ith value's location within heap array
   private val heap = Array.ofDim[Int](
     winSz
   ) // orders data array into [max heap] :: median :: [min heap]
-  private val sawNa = Array.ofDim[Boolean](
-    winSz
-  ) // circular buffer of na markers
+  private val sawNa = Array
+    .ofDim[Boolean](winSz) // circular buffer of na markers
   private var idx = 0 // position in circular buffer
   private var naIdx = 0 // position in circular buffer
   private var minCt = 0 // # items in minheap

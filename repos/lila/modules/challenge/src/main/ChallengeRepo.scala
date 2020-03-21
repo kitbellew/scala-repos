@@ -25,14 +25,18 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
   def exists(id: Challenge.ID) = coll.count(selectId(id).some).map(0 <)
 
   def insert(c: Challenge): Funit =
-    coll.insert(c) >> c.challenger.right.toOption.?? { challenger =>
-      createdByChallengerId(challenger.id).flatMap {
-        case challenges if challenges.size <= maxPerUser =>
-          funit
-        case challenges =>
-          challenges.drop(maxPerUser).map(_.id).map(remove).sequenceFu.void
+    coll.insert(c) >> c
+      .challenger
+      .right
+      .toOption
+      .?? { challenger =>
+        createdByChallengerId(challenger.id).flatMap {
+          case challenges if challenges.size <= maxPerUser =>
+            funit
+          case challenges =>
+            challenges.drop(maxPerUser).map(_.id).map(remove).sequenceFu.void
+        }
       }
-    }
 
   def createdByChallengerId(userId: String): Fu[List[Challenge]] =
     coll
@@ -87,9 +91,8 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
   private[challenge] def expiredIds(max: Int): Fu[List[Challenge.ID]] =
     coll.distinct(
       "_id",
-      BSONDocument(
-        "expiresAt" -> BSONDocument(
-          "$lt" -> DateTime.now)).some) map lila.db.BSON.asStrings
+      BSONDocument("expiresAt" -> BSONDocument("$lt" -> DateTime.now))
+        .some) map lila.db.BSON.asStrings
 
   def setSeenAgain(id: Challenge.ID) =
     coll

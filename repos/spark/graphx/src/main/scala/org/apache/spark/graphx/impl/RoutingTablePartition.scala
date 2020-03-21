@@ -54,15 +54,19 @@ private[graphx] object RoutingTablePartition {
     // Determine which positions each vertex id appears in using a map where the low 2 bits
     // represent src and dst
     val map = new GraphXPrimitiveKeyOpenHashMap[VertexId, Byte]
-    edgePartition.iterator.foreach { e =>
-      map.changeValue(e.srcId, 0x1, (b: Byte) => (b | 0x1).toByte)
-      map.changeValue(e.dstId, 0x2, (b: Byte) => (b | 0x2).toByte)
-    }
-    map.iterator.map { vidAndPosition =>
-      val vid = vidAndPosition._1
-      val position = vidAndPosition._2
-      toMessage(vid, pid, position)
-    }
+    edgePartition
+      .iterator
+      .foreach { e =>
+        map.changeValue(e.srcId, 0x1, (b: Byte) => (b | 0x1).toByte)
+        map.changeValue(e.dstId, 0x2, (b: Byte) => (b | 0x2).toByte)
+      }
+    map
+      .iterator
+      .map { vidAndPosition =>
+        val vid = vidAndPosition._1
+        val position = vidAndPosition._2
+        toMessage(vid, pid, position)
+      }
   }
 
   /** Build a `RoutingTablePartition` from `RoutingTableMessage`s. */
@@ -82,10 +86,15 @@ private[graphx] object RoutingTablePartition {
     }
 
     new RoutingTablePartition(
-      pid2vid.zipWithIndex.map {
-        case (vids, pid) =>
-          (vids.trim().array, toBitSet(srcFlags(pid)), toBitSet(dstFlags(pid)))
-      })
+      pid2vid
+        .zipWithIndex
+        .map {
+          case (vids, pid) =>
+            (
+              vids.trim().array,
+              toBitSet(srcFlags(pid)),
+              toBitSet(dstFlags(pid)))
+        })
   }
 
   /** Compact the given vector of Booleans into a BitSet. */
@@ -151,9 +160,11 @@ private[graphx] class RoutingTablePartition(
           srcVids
         else
           dstVids
-      relevantVids.iterator.foreach { i =>
-        f(vidsCandidate(i))
-      }
+      relevantVids
+        .iterator
+        .foreach { i =>
+          f(vidsCandidate(i))
+        }
     }
   }
 }

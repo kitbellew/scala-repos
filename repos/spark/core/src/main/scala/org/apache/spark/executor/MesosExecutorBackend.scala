@@ -62,7 +62,9 @@ private[spark] class MesosExecutorBackend
       slaveInfo: SlaveInfo) {
 
     // Get num cores for this task from ExecutorInfo, created in MesosSchedulerBackend.
-    val cpusPerTask = executorInfo.getResourcesList.asScala
+    val cpusPerTask = executorInfo
+      .getResourcesList
+      .asScala
       .find(_.getName == "cpus")
       .map(_.getScalar.getValue.toInt)
       .getOrElse(0)
@@ -98,14 +100,16 @@ private[spark] class MesosExecutorBackend
     if (executor == null) {
       logError("Received launchTask but executor was null")
     } else {
-      SparkHadoopUtil.get.runAsSparkUser { () =>
-        executor.launchTask(
-          this,
-          taskId = taskId,
-          attemptNumber = taskData.attemptNumber,
-          taskInfo.getName,
-          taskData.serializedTask)
-      }
+      SparkHadoopUtil
+        .get
+        .runAsSparkUser { () =>
+          executor.launchTask(
+            this,
+            taskId = taskId,
+            attemptNumber = taskData.attemptNumber,
+            taskInfo.getName,
+            taskData.serializedTask)
+        }
     }
   }
 

@@ -24,12 +24,14 @@ private[appinfo] class DefaultInfoService(
       selector: AppSelector,
       embed: Set[AppInfo.Embed]): Future[Option[AppInfo]] = {
     log.debug(s"queryForAppId $id")
-    appRepository.currentVersion(id).flatMap {
-      case Some(app) if selector.matches(app) =>
-        newBaseData().appInfoFuture(app, embed).map(Some(_))
-      case None =>
-        Future.successful(None)
-    }
+    appRepository
+      .currentVersion(id)
+      .flatMap {
+        case Some(app) if selector.matches(app) =>
+          newBaseData().appInfoFuture(app, embed).map(Some(_))
+        case None =>
+          Future.successful(None)
+      }
   }
 
   override def selectAppsBy(
@@ -59,12 +61,14 @@ private[appinfo] class DefaultInfoService(
       groupSelector: GroupSelector,
       appEmbed: Set[Embed],
       groupEmbed: Set[GroupInfo.Embed]): Future[Option[GroupInfo]] = {
-    groupManager.group(groupId).flatMap {
-      case Some(group) =>
-        queryForGroup(group, groupSelector, appEmbed, groupEmbed)
-      case None =>
-        Future.successful(None)
-    }
+    groupManager
+      .group(groupId)
+      .flatMap {
+        case Some(group) =>
+          queryForGroup(group, groupSelector, appEmbed, groupEmbed)
+        case None =>
+          Future.successful(None)
+      }
   }
 
   override def selectGroupVersion(
@@ -72,12 +76,14 @@ private[appinfo] class DefaultInfoService(
       version: Timestamp,
       groupSelector: GroupSelector,
       groupEmbed: Set[GroupInfo.Embed]): Future[Option[GroupInfo]] = {
-    groupManager.group(groupId, version).flatMap {
-      case Some(group) =>
-        queryForGroup(group, groupSelector, Set.empty, groupEmbed)
-      case None =>
-        Future.successful(None)
-    }
+    groupManager
+      .group(groupId, version)
+      .flatMap {
+        case Some(group) =>
+          queryForGroup(group, groupSelector, Set.empty, groupEmbed)
+        case None =>
+          Future.successful(None)
+      }
   }
 
   private[this] def queryForGroup(
@@ -109,7 +115,9 @@ private[appinfo] class DefaultInfoService(
         def apps: Option[Seq[AppInfo]] =
           if (groupEmbed(GroupInfo.Embed.Apps))
             Some(
-              ref.apps.toIndexedSeq
+              ref
+                .apps
+                .toIndexedSeq
                 .flatMap(a => infoById.get(a.id))
                 .sortBy(_.app.id))
           else
@@ -138,10 +146,12 @@ private[appinfo] class DefaultInfoService(
       .foldLeft(Future.successful(Seq.newBuilder[AppInfo])) {
         case (builderFuture, app) =>
           builderFuture.flatMap { builder =>
-            baseData.appInfoFuture(app, embed).map { appInfo =>
-              builder += appInfo
-              builder
-            }
+            baseData
+              .appInfoFuture(app, embed)
+              .map { appInfo =>
+                builder += appInfo
+                builder
+              }
           }
       }
       .map(_.result())

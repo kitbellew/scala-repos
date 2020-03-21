@@ -59,7 +59,8 @@ private[scalding] class VersionedState(
   private class VersionedPrepareState
       extends PrepareState[Interval[Timestamp]] {
     def newestCompleted: Option[BatchID] =
-      meta.versions
+      meta
+        .versions
         .map { vers =>
           val thisMeta = meta(vers)
           thisMeta

@@ -35,8 +35,9 @@ abstract class PatternParameterInfoTestBase
   protected def doTest() {
     import _root_.junit.framework.Assert._
     val filePath = folderPath + getTestName(false) + ".scala"
-    val file = LocalFileSystem.getInstance.findFileByPath(
-      filePath.replace(File.separatorChar, '/'))
+    val file = LocalFileSystem
+      .getInstance
+      .findFileByPath(filePath.replace(File.separatorChar, '/'))
     assert(file != null, "file " + filePath + " not found")
     val fileText = StringUtil.convertLineSeparators(
       FileUtil.loadFile(new File(file.getCanonicalPath), CharsetToolkit.UTF8))
@@ -59,9 +60,8 @@ abstract class PatternParameterInfoTestBase
         -1)
     val handler = new ScalaPatternParameterInfoHandler
     val leafElement = scalaFile.findElementAt(offset)
-    val element = PsiTreeUtil.getParentOfType(
-      leafElement,
-      handler.getArgumentListClass)
+    val element = PsiTreeUtil
+      .getParentOfType(leafElement, handler.getArgumentListClass)
     handler.findElementForParameterInfo(context)
     val items = new ArrayBuffer[String]
 

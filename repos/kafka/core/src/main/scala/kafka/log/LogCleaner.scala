@@ -185,7 +185,8 @@ class LogCleaner(
       offset: Long,
       maxWaitMs: Long = 60000L): Boolean = {
     def isCleaned =
-      cleanerManager.allCleanerCheckpoints
+      cleanerManager
+        .allCleanerCheckpoints
         .get(TopicAndPartition(topic, part))
         .fold(false)(_ >= offset)
     var remainingWaitMs = maxWaitMs
@@ -306,8 +307,8 @@ class LogCleaner(
               stats.elapsedIndexSecs,
               mb(stats.mapBytesRead) / stats.elapsedIndexSecs,
               100 * stats.elapsedIndexSecs / stats.elapsedSecs) +
-          "\tBuffer utilization: %.1f%%%n".format(
-            100 * stats.bufferUtilization) +
+          "\tBuffer utilization: %.1f%%%n"
+            .format(100 * stats.bufferUtilization) +
           "\tCleaned %,.1f MB in %.1f seconds (%,.1f Mb/sec, %.1f%% of total time)%n"
             .format(
               mb(stats.bytesRead),
@@ -315,24 +316,21 @@ class LogCleaner(
               mb(stats.bytesRead) / (
                 stats.elapsedSecs - stats.elapsedIndexSecs
               ),
-              100 * (
-                stats.elapsedSecs - stats.elapsedIndexSecs
-              ).toDouble / stats.elapsedSecs
+              100 * (stats.elapsedSecs - stats.elapsedIndexSecs)
+                .toDouble / stats.elapsedSecs
             ) +
-          "\tStart size: %,.1f MB (%,d messages)%n".format(
-            mb(stats.bytesRead),
-            stats.messagesRead) +
-          "\tEnd size: %,.1f MB (%,d messages)%n".format(
-            mb(stats.bytesWritten),
-            stats.messagesWritten) +
+          "\tStart size: %,.1f MB (%,d messages)%n"
+            .format(mb(stats.bytesRead), stats.messagesRead) +
+          "\tEnd size: %,.1f MB (%,d messages)%n"
+            .format(mb(stats.bytesWritten), stats.messagesWritten) +
           "\t%.1f%% size reduction (%.1f%% fewer messages)%n".format(
             100.0 * (1.0 - stats.bytesWritten.toDouble / stats.bytesRead),
             100.0 * (1.0 - stats.messagesWritten.toDouble / stats.messagesRead))
       info(message)
       if (stats.invalidMessagesRead > 0) {
         warn(
-          "\tFound %d invalid messages during compaction.".format(
-            stats.invalidMessagesRead))
+          "\tFound %d invalid messages during compaction."
+            .format(stats.invalidMessagesRead))
       }
     }
 
@@ -546,12 +544,11 @@ private[log] class Cleaner(
         stats.readMessage(size)
         if (entry.message.compressionCodec == NoCompressionCodec) {
           if (shouldRetainMessage(source, map, retainDeletes, entry)) {
-            val convertedMessage = entry.message.toFormatVersion(
-              messageFormatVersion)
-            ByteBufferMessageSet.writeMessage(
-              writeBuffer,
-              convertedMessage,
-              entry.offset)
+            val convertedMessage = entry
+              .message
+              .toFormatVersion(messageFormatVersion)
+            ByteBufferMessageSet
+              .writeMessage(writeBuffer, convertedMessage, entry.offset)
             stats.recopyMessage(size)
           }
           messagesRead += 1
@@ -572,8 +569,9 @@ private[log] class Cleaner(
                 if (messageAndOffset.message.magic != messageFormatVersion) {
                   writeOriginalMessageSet = false
                   new MessageAndOffset(
-                    messageAndOffset.message.toFormatVersion(
-                      messageFormatVersion),
+                    messageAndOffset
+                      .message
+                      .toFormatVersion(messageFormatVersion),
                     messageAndOffset.offset)
                 } else
                   messageAndOffset
@@ -584,10 +582,8 @@ private[log] class Cleaner(
 
           // There are no messages compacted out and no message format conversion, write the original message set back
           if (writeOriginalMessageSet)
-            ByteBufferMessageSet.writeMessage(
-              writeBuffer,
-              entry.message,
-              entry.offset)
+            ByteBufferMessageSet
+              .writeMessage(writeBuffer, entry.message, entry.offset)
           else if (retainedMessages.nonEmpty)
             compressMessages(
               writeBuffer,
@@ -623,10 +619,8 @@ private[log] class Cleaner(
       MessageSet.Empty.sizeInBytes
     } else if (compressionCodec == NoCompressionCodec) {
       for (messageOffset <- messageAndOffsets)
-        ByteBufferMessageSet.writeMessage(
-          buffer,
-          messageOffset.message,
-          messageOffset.offset)
+        ByteBufferMessageSet
+          .writeMessage(buffer, messageOffset.message, messageOffset.offset)
       MessageSet.messageSetSize(messages)
     } else {
       val magicAndTimestamp = MessageSet.magicAndLargestTimestamp(messages)
@@ -697,13 +691,15 @@ private[log] class Cleaner(
     * Double the I/O buffer capacity
     */
   def growBuffers() {
-    if (readBuffer.capacity >= maxIoBufferSize || writeBuffer.capacity >= maxIoBufferSize)
+    if (readBuffer.capacity >= maxIoBufferSize || writeBuffer
+          .capacity >= maxIoBufferSize)
       throw new IllegalStateException(
         "This log contains a message larger than maximum allowable size of %s."
           .format(maxIoBufferSize))
     val newSize = math.min(this.readBuffer.capacity * 2, maxIoBufferSize)
     info(
-      "Growing cleaner I/O buffers from " + readBuffer.capacity + "bytes to " + newSize + " bytes.")
+      "Growing cleaner I/O buffers from " + readBuffer
+        .capacity + "bytes to " + newSize + " bytes.")
     this.readBuffer = ByteBuffer.allocate(newSize)
     this.writeBuffer = ByteBuffer.allocate(newSize)
   }
@@ -743,7 +739,8 @@ private[log] class Cleaner(
       while (!segs.isEmpty &&
              logSize + segs.head.size <= maxSize &&
              indexSize + segs.head.index.sizeInBytes <= maxIndexSize &&
-             segs.head.index.lastOffset - group.last.index.baseOffset <= Int.MaxValue) {
+             segs.head.index.lastOffset - group.last.index.baseOffset <= Int
+               .MaxValue) {
         group = segs.head :: group
         logSize += segs.head.size
         indexSize += segs.head.index.sizeInBytes

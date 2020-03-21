@@ -93,9 +93,7 @@ object ContravariantCoyonedaUsage extends App {
   // Schwartzian transform:
 
   def schwartzian[A, B](xs: List[A])(f: A => B)(implicit B: Order[B]): List[A] =
-    xs.map(a => (a, f(a)))
-      .sortBy(_._2)(B.toScalaOrdering)
-      .map(_._1)
+    xs.map(a => (a, f(a))).sortBy(_._2)(B.toScalaOrdering).map(_._1)
 
   def nonschwartzian[A, B](xs: List[A])(f: A => B)(implicit
       B: Order[B]): List[A] = xs.sorted(Order.orderBy(f).toScalaOrdering)

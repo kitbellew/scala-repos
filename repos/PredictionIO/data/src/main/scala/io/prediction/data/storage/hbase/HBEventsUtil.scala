@@ -149,7 +149,8 @@ object HBEventsUtil {
 
   def eventToPut(event: Event, appId: Int): (Put, RowKey) = {
     // generate new rowKey if eventId is None
-    val rowKey = event.eventId
+    val rowKey = event
+      .eventId
       .map { id =>
         RowKey(id) // create rowKey from eventId
       }
@@ -179,22 +180,28 @@ object HBEventsUtil {
     addStringToE(colNames("entityType"), event.entityType)
     addStringToE(colNames("entityId"), event.entityId)
 
-    event.targetEntityType.foreach { targetEntityType =>
-      addStringToE(colNames("targetEntityType"), targetEntityType)
-    }
+    event
+      .targetEntityType
+      .foreach { targetEntityType =>
+        addStringToE(colNames("targetEntityType"), targetEntityType)
+      }
 
-    event.targetEntityId.foreach { targetEntityId =>
-      addStringToE(colNames("targetEntityId"), targetEntityId)
-    }
+    event
+      .targetEntityId
+      .foreach { targetEntityId =>
+        addStringToE(colNames("targetEntityId"), targetEntityId)
+      }
 
     // TODO: make properties Option[]
     if (!event.properties.isEmpty) {
       addStringToE(colNames("properties"), write(event.properties.toJObject))
     }
 
-    event.prId.foreach { prId =>
-      addStringToE(colNames("prId"), prId)
-    }
+    event
+      .prId
+      .foreach { prId =>
+        addStringToE(colNames("prId"), prId)
+      }
 
     addLongToE(colNames("eventTime"), event.eventTime.getMillis)
     val eventTimeZone = event.eventTime.getZone
@@ -308,10 +315,8 @@ object HBEventsUtil {
         val start = PartialRowKey(et, eid, startTime.map(_.getMillis)).toBytes
         // if no untilTime, stop when reach next bytes of entityTypeAndId
         val stop =
-          PartialRowKey(
-            et,
-            eid,
-            untilTime.map(_.getMillis).orElse(Some(-1))).toBytes
+          PartialRowKey(et, eid, untilTime.map(_.getMillis).orElse(Some(-1)))
+            .toBytes
 
         if (reversed.getOrElse(false)) {
           // Reversed order.

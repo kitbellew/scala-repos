@@ -96,20 +96,19 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
       alreadyCollected: util.Set[String]) = {
     val initialCandidates = inReadAction {
       val completionProcessor = new CollectingProcessor(elem)
-      PsiTreeUtil.treeWalkUp(
-        completionProcessor,
-        elem,
-        null,
-        ResolveState.initial)
-      completionProcessor.candidates
+      PsiTreeUtil
+        .treeWalkUp(completionProcessor, elem, null, ResolveState.initial)
+      completionProcessor
+        .candidates
         .filter(srr =>
-          !alreadyCollected.asScala
+          !alreadyCollected
+            .asScala
             .map(ScalaParameterNameAdjuster.fixName)
             .contains(srr.name))
         .filter(canEvaluate(_, elem))
     }
-    val candidates = initialCandidates.filter(
-      canEvaluateLong(_, elem, evaluationContext))
+    val candidates = initialCandidates
+      .filter(canEvaluateLong(_, elem, evaluationContext))
     val sorted =
       mutable.SortedSet()(
         Ordering.by[ScalaResolveResult, Int](
@@ -133,18 +132,14 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
         false
       case cp: ScClassParameter if !cp.isEffectiveVal =>
         def notInThisClass(elem: PsiElement) = {
-          elem != null && !PsiTreeUtil.isAncestor(
-            cp.containingClass,
-            elem,
-            true)
+          elem != null && !PsiTreeUtil
+            .isAncestor(cp.containingClass, elem, true)
         }
-        val funDef = PsiTreeUtil.getParentOfType(
-          place,
-          classOf[ScFunctionDefinition])
+        val funDef = PsiTreeUtil
+          .getParentOfType(place, classOf[ScFunctionDefinition])
         val lazyVal =
-          PsiTreeUtil.getParentOfType(
-            place,
-            classOf[ScPatternDefinition]) match {
+          PsiTreeUtil
+            .getParentOfType(place, classOf[ScPatternDefinition]) match {
             case null =>
               null
             case LazyVal(lzy) =>
@@ -213,9 +208,8 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
       named: PsiNamedElement,
       place: PsiElement): Boolean = {
     inReadAction {
-      val contextClass = ScalaEvaluatorBuilderUtil.getContextClass(
-        place,
-        strict = false)
+      val contextClass = ScalaEvaluatorBuilderUtil
+        .getContextClass(place, strict = false)
       val containingClass = ScalaEvaluatorBuilderUtil.getContextClass(named)
       if (contextClass == containingClass)
         return false
@@ -295,10 +289,13 @@ private class CollectingProcessor(element: PsiElement)
     classOf[PsiFile])
   val usedNames: Set[String] =
     if (containingBlock != null) {
-      containingBlock.depthFirst.collect {
-        case ref: ScReferenceExpression if ref.qualifier.isEmpty =>
-          ref.refName
-      }.toSet
+      containingBlock
+        .depthFirst
+        .collect {
+          case ref: ScReferenceExpression if ref.qualifier.isEmpty =>
+            ref.refName
+        }
+        .toSet
     } else
       Set.empty
 
@@ -321,6 +318,8 @@ private class CollectingProcessor(element: PsiElement)
           other
       }
     def usedInContainingBlock = usedNames.contains(candElem.name)
-    candElem.getContainingFile == containingFile && candElemContext.getTextRange.getEndOffset < startOffset && usedInContainingBlock
+    candElem.getContainingFile == containingFile && candElemContext
+      .getTextRange
+      .getEndOffset < startOffset && usedInContainingBlock
   }
 }

@@ -26,9 +26,11 @@ trait LiftRulesSetup extends Around {
 
   abstract override def around[T: AsResult](test: => T): Result = {
     super.around {
-      LiftRulesMocker.devTestLiftRulesInstance.doWith(rules) {
-        AsResult(test)
-      }
+      LiftRulesMocker
+        .devTestLiftRulesInstance
+        .doWith(rules) {
+          AsResult(test)
+        }
     }
   }
 }
@@ -65,9 +67,13 @@ class LiftMergeSpec extends Specification with XmlMatchers with Mockito {
   val testRules = new LiftRules()
   // Avoid extra appended elements by default.
   testRules.javaScriptSettings.default.set(() => () => Empty)
-  testRules.autoIncludeAjaxCalc.default.set(() =>
-    () => (_: LiftSession) => false)
-  testRules.excludePathFromContextPathRewriting.default
+  testRules
+    .autoIncludeAjaxCalc
+    .default
+    .set(() => () => (_: LiftSession) => false)
+  testRules
+    .excludePathFromContextPathRewriting
+    .default
     .set(() => {
       in: String => in.startsWith("exclude-me")
     })

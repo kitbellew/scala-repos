@@ -172,5 +172,12 @@ object LeveldbReadJournal {
     * to the absolute path to the read journal configuration entry.
     */
   final val Identifier =
-    akka.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal.Identifier
+    akka
+      .persistence
+      .query
+      .journal
+      .leveldb
+      .scaladsl
+      .LeveldbReadJournal
+      .Identifier
 }

@@ -28,14 +28,16 @@ class LegacyStringFormattingInspection extends AbstractInspection {
       extends AbstractFixOnPsiElement("Convert to interpolated string", e) {
     def doApplyFix(project: Project) {
       val elem = getElement
-      FormattedStringParser.parse(elem).foreach { parts =>
-        val expression = {
-          val s = InterpolatedStringFormatter.format(parts)
-          ScalaPsiElementFactory.createExpressionFromText(s, elem.getManager)
-        }
+      FormattedStringParser
+        .parse(elem)
+        .foreach { parts =>
+          val expression = {
+            val s = InterpolatedStringFormatter.format(parts)
+            ScalaPsiElementFactory.createExpressionFromText(s, elem.getManager)
+          }
 
-        elem.replace(expression)
-      }
+          elem.replace(expression)
+        }
     }
   }
 }

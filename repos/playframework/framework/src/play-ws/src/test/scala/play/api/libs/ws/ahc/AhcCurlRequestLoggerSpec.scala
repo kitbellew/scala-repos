@@ -41,12 +41,14 @@ class AhcCurlRequestLoggerSpec
           .get()
         responseFuture must beAnInstanceOf[AhcWSResponse].await
 
-        val curlStatement = s"""curl \\
+        val curlStatement =
+          s"""curl \\
                               |  --verbose \\
                               |  --request GET \\
                               |  --header 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' \\
                               |  --header 'user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.94 Safari/537.36' \\
-                              |  'http://localhost:$testServerPort/'""".stripMargin
+                              |  'http://localhost:$testServerPort/'"""
+            .stripMargin
         there was one(logger).info(curlStatement)
       }
 
@@ -59,12 +61,14 @@ class AhcCurlRequestLoggerSpec
           .post(Map("key" -> Seq("value")))
         responseFuture must beAnInstanceOf[AhcWSResponse].await
 
-        val curlStatement = s"""curl \\
+        val curlStatement =
+          s"""curl \\
                               |  --verbose \\
                               |  --request POST \\
                               |  --header 'Content-Type: application/x-www-form-urlencoded' \\
                               |  --data 'key=value' \\
-                              |  'http://localhost:$testServerPort/'""".stripMargin
+                              |  'http://localhost:$testServerPort/'"""
+            .stripMargin
         there was one(logger).info(curlStatement)
       }
 
@@ -79,12 +83,14 @@ class AhcCurlRequestLoggerSpec
           .post("this is plain text")
         responseFuture must beAnInstanceOf[AhcWSResponse].await
 
-        val curlStatement = s"""curl \\
+        val curlStatement =
+          s"""curl \\
                               |  --verbose \\
                               |  --request POST \\
                               |  --header 'Content-Type: text/plain; charset=utf-8' \\
                               |  --data 'this is plain text' \\
-                              |  'http://localhost:$testServerPort/'""".stripMargin
+                              |  'http://localhost:$testServerPort/'"""
+            .stripMargin
         there was one(logger).info(curlStatement)
       }
 
@@ -99,10 +105,12 @@ class AhcCurlRequestLoggerSpec
           .get()
         responseFuture must beAnInstanceOf[AhcWSResponse].await
 
-        val curlStatement = s"""curl \\
+        val curlStatement =
+          s"""curl \\
                               |  --verbose \\
                               |  --request GET \\
-                              |  'http://localhost:$testServerPort/?search=%26%3F%24HOME%27'""".stripMargin
+                              |  'http://localhost:$testServerPort/?search=%26%3F%24HOME%27'"""
+            .stripMargin
         there was one(logger).info(curlStatement)
       }
 
@@ -118,12 +126,14 @@ class AhcCurlRequestLoggerSpec
           .post("this is ' text with a hanging quote")
         responseFuture must beAnInstanceOf[AhcWSResponse].await
 
-        val curlStatement = s"""curl \\
+        val curlStatement =
+          s"""curl \\
                               |  --verbose \\
                               |  --request POST \\
                               |  --header 'Content-Type: text/plain; charset=utf-8' \\
                               |  --data 'this is '\\'' text with a hanging quote' \\
-                              |  'http://localhost:$testServerPort/'""".stripMargin
+                              |  'http://localhost:$testServerPort/'"""
+            .stripMargin
 
         there was one(logger).info(curlStatement)
       }
@@ -138,12 +148,14 @@ class AhcCurlRequestLoggerSpec
           .put(Map("key" -> Seq("value")))
         responseFuture must beAnInstanceOf[AhcWSResponse].await
 
-        val curlStatement = s"""curl \\
+        val curlStatement =
+          s"""curl \\
                               |  --verbose \\
                               |  --request PUT \\
                               |  --header 'Content-Type: application/x-www-form-urlencoded' \\
                               |  --data 'key=value' \\
-                              |  'http://localhost:$testServerPort/'""".stripMargin
+                              |  'http://localhost:$testServerPort/'"""
+            .stripMargin
 
         there was one(logger).info(curlStatement)
       }

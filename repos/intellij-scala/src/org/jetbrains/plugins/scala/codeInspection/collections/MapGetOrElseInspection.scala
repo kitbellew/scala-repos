@@ -61,9 +61,8 @@ object MapGetOrElse extends SimplificationType() {
         case _ =>
           return false
       }
-    ScalaPsiElementFactory.createExpressionFromText(
-      replacementText,
-      qual.getContext) match {
+    ScalaPsiElementFactory
+      .createExpressionFromText(replacementText, qual.getContext) match {
       case ScMethodCall(ScMethodCall(_, Seq(firstArg)), _) =>
         mapArgRetType.conforms(firstArg.getType().getOrNothing)
       case _ =>
@@ -100,9 +99,8 @@ object MapGetOrElse extends SimplificationType() {
     val secondArgText = stripped(mapArg).getText
     val newExprText =
       s"${baseExpr.getText}.fold {$firstArgText}{$secondArgText}"
-    ScalaPsiElementFactory.createExpressionFromText(
-      newExprText,
-      baseExpr.getContext) match {
+    ScalaPsiElementFactory
+      .createExpressionFromText(newExprText, baseExpr.getContext) match {
       case ScMethodCall(ScMethodCall(_, Seq(firstArg)), _) =>
         mapArgRetType.conforms(firstArg.getType().getOrNothing)
       case _ =>

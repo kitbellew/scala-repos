@@ -4,8 +4,8 @@ object Macros {
   def impl(c: Context) = {
     import c.universe._
 
-    val inscope = c.inferImplicitValue(
-      c.mirror.staticClass("SourceLocation").toType)
+    val inscope = c
+      .inferImplicitValue(c.mirror.staticClass("SourceLocation").toType)
     val outer = c.Expr[SourceLocation](
       if (!inscope.isEmpty)
         inscope
@@ -17,13 +17,15 @@ object Macros {
     val line = fun.pos.line
     val charOffset = fun.pos.point
     def literal[T](x: T) = c.Expr[T](Literal(Constant(x)))
-    c.universe.reify {
-      SourceLocation1(
-        outer.splice,
-        literal(fileName).splice,
-        literal(line).splice,
-        literal(charOffset).splice)
-    }
+    c
+      .universe
+      .reify {
+        SourceLocation1(
+          outer.splice,
+          literal(fileName).splice,
+          literal(line).splice,
+          literal(charOffset).splice)
+      }
   }
 
   implicit def sourceLocation: SourceLocation1 = macro impl

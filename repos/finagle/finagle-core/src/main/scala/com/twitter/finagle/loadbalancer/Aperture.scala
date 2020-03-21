@@ -60,8 +60,8 @@ private class ApertureLoadBandBalancer[Req, Rep](
     with LoadBand[Req, Rep]
     with Updating[Req, Rep] {
 
-  protected[this] val maxEffortExhausted = statsReceiver.counter(
-    "max_effort_exhausted")
+  protected[this] val maxEffortExhausted = statsReceiver
+    .counter("max_effort_exhausted")
 
 }
 
@@ -138,9 +138,8 @@ private trait Aperture[Req, Rep] {
         (ring, unit, max)
       }
 
-    private[this] val minAperture = math.min(
-      Aperture.this.minAperture,
-      maxAperture)
+    private[this] val minAperture = math
+      .min(Aperture.this.minAperture, maxAperture)
 
     @volatile
     private[Aperture] var aperture = initAperture
@@ -304,20 +303,24 @@ private trait LoadBand[Req, Rep] {
 
     override def apply(conn: ClientConnection) = {
       adjustNode(this, 1)
-      super.apply(conn).transform {
-        case Return(svc) =>
-          Future.value(
-            new ServiceProxy(svc) {
-              override def close(deadline: Time) =
-                super.close(deadline).ensure {
-                  adjustNode(Node.this, -1)
-                }
-            })
+      super
+        .apply(conn)
+        .transform {
+          case Return(svc) =>
+            Future.value(
+              new ServiceProxy(svc) {
+                override def close(deadline: Time) =
+                  super
+                    .close(deadline)
+                    .ensure {
+                      adjustNode(Node.this, -1)
+                    }
+              })
 
-        case t @ Throw(_) =>
-          adjustNode(this, -1)
-          Future.const(t)
-      }
+          case t @ Throw(_) =>
+            adjustNode(this, -1)
+            Future.const(t)
+        }
     }
   }
 

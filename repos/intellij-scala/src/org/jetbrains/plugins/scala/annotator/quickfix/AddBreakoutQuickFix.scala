@@ -86,8 +86,9 @@ object AddBreakoutQuickFix {
   def isImplicitCanBuildFromParam(p: ScParameter): Boolean = {
     p.getType(TypingContext.empty) match {
       case Success(tpe, _)
-          if tpe.canonicalText.startsWith(
-            "_root_.scala.collection.generic.CanBuildFrom") =>
+          if tpe
+            .canonicalText
+            .startsWith("_root_.scala.collection.generic.CanBuildFrom") =>
         true
       case _ =>
         false

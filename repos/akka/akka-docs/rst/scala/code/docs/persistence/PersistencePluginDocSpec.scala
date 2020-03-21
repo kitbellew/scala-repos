@@ -220,8 +220,8 @@ object PersistenceTCKDoc {
     //#journal-tck-before-after-scala
     class MyJournalSpec
         extends JournalSpec(
-          config = ConfigFactory.parseString(
-            """
+          config = ConfigFactory
+            .parseString("""
         akka.persistence.journal.plugin = "my.journal.plugin"
         """)) {
 
@@ -230,7 +230,9 @@ object PersistenceTCKDoc {
 
       val storageLocations = List(
         new File(
-          system.settings.config
+          system
+            .settings
+            .config
             .getString("akka.persistence.journal.leveldb.dir")),
         new File(config.getString("akka.persistence.snapshot-store.local.dir"))
       )

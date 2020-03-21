@@ -49,8 +49,8 @@ class RemoteConfigSpec
       Transports.head._2 should ===(Nil)
       Adapters should ===(
         Map(
-          "gremlin" -> classOf[
-            akka.remote.transport.FailureInjectorProvider].getName,
+          "gremlin" -> classOf[akka.remote.transport.FailureInjectorProvider]
+            .getName,
           "trttl" -> classOf[akka.remote.transport.ThrottlerProvider].getName))
 
       WatchFailureDetectorImplementationClass should ===(
@@ -58,16 +58,17 @@ class RemoteConfigSpec
       WatchHeartBeatInterval should ===(1 seconds)
       WatchHeartbeatExpectedResponseAfter should ===(1 seconds)
       WatchUnreachableReaperInterval should ===(1 second)
-      WatchFailureDetectorConfig.getDouble("threshold") should ===(
-        10.0 +- 0.0001)
+      WatchFailureDetectorConfig
+        .getDouble("threshold") should ===(10.0 +- 0.0001)
       WatchFailureDetectorConfig.getInt("max-sample-size") should ===(200)
-      WatchFailureDetectorConfig.getMillisDuration(
-        "acceptable-heartbeat-pause") should ===(10 seconds)
-      WatchFailureDetectorConfig.getMillisDuration(
-        "min-std-deviation") should ===(100 millis)
+      WatchFailureDetectorConfig
+        .getMillisDuration("acceptable-heartbeat-pause") should ===(10 seconds)
+      WatchFailureDetectorConfig
+        .getMillisDuration("min-std-deviation") should ===(100 millis)
 
-      remoteSettings.config.getString(
-        "akka.remote.log-frame-size-exceeding") should ===("off")
+      remoteSettings
+        .config
+        .getString("akka.remote.log-frame-size-exceeding") should ===("off")
     }
 
     "be able to parse AkkaProtocol related config elements" in {
@@ -81,21 +82,24 @@ class RemoteConfigSpec
       TransportFailureDetectorImplementationClass should ===(
         classOf[DeadlineFailureDetector].getName)
       TransportHeartBeatInterval should ===(4.seconds)
-      TransportFailureDetectorConfig.getMillisDuration(
-        "acceptable-heartbeat-pause") should ===(16.seconds)
+      TransportFailureDetectorConfig
+        .getMillisDuration("acceptable-heartbeat-pause") should ===(16.seconds)
 
     }
 
     "contain correct netty.tcp values in reference.conf" in {
-      val c = RARP(system).provider.remoteSettings.config
+      val c = RARP(system)
+        .provider
+        .remoteSettings
+        .config
         .getConfig("akka.remote.netty.tcp")
       val s = new NettyTransportSettings(c)
       import s._
 
       ConnectionTimeout should ===(15.seconds)
       ConnectionTimeout should ===(
-        new AkkaProtocolSettings(
-          RARP(system).provider.remoteSettings.config).HandshakeTimeout)
+        new AkkaProtocolSettings(RARP(system).provider.remoteSettings.config)
+          .HandshakeTimeout)
       WriteBufferHighWaterMark should ===(None)
       WriteBufferLowWaterMark should ===(None)
       SendBufferSize should ===(Some(256000))
@@ -113,7 +117,10 @@ class RemoteConfigSpec
     }
 
     "contain correct socket worker pool configuration values in reference.conf" in {
-      val c = RARP(system).provider.remoteSettings.config
+      val c = RARP(system)
+        .provider
+        .remoteSettings
+        .config
         .getConfig("akka.remote.netty.tcp")
 
       // server-socket-worker-pool
@@ -145,13 +152,16 @@ class RemoteConfigSpec
       sslSettings.SSLTrustStore should ===(Some("truststore"))
       sslSettings.SSLTrustStorePassword should ===(Some("changeme"))
       sslSettings.SSLProtocol should ===(Some("TLSv1.2"))
-      sslSettings.SSLEnabledAlgorithms should ===(
-        Set("TLS_RSA_WITH_AES_128_CBC_SHA"))
+      sslSettings
+        .SSLEnabledAlgorithms should ===(Set("TLS_RSA_WITH_AES_128_CBC_SHA"))
       sslSettings.SSLRandomNumberGenerator should ===(None)
     }
 
     "have debug logging of the failure injector turned off in reference.conf" in {
-      val c = RARP(system).provider.remoteSettings.config
+      val c = RARP(system)
+        .provider
+        .remoteSettings
+        .config
         .getConfig("akka.remote.gremlin")
       c.getBoolean("debug") should ===(false)
     }

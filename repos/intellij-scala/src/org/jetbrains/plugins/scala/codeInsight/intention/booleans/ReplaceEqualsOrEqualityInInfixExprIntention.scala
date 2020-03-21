@@ -27,10 +27,8 @@ class ReplaceEqualsOrEqualityInInfixExprIntention
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val infixExpr: ScInfixExpr = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScInfixExpr],
-      false)
+    val infixExpr: ScInfixExpr = PsiTreeUtil
+      .getParentOfType(element, classOf[ScInfixExpr], false)
     if (infixExpr == null)
       return false
 
@@ -51,10 +49,8 @@ class ReplaceEqualsOrEqualityInInfixExprIntention
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val infixExpr: ScInfixExpr = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScInfixExpr],
-      false)
+    val infixExpr: ScInfixExpr = PsiTreeUtil
+      .getParentOfType(element, classOf[ScInfixExpr], false)
     if (infixExpr == null || !infixExpr.isValid)
       return
 
@@ -69,9 +65,8 @@ class ReplaceEqualsOrEqualityInInfixExprIntention
       .append(" ")
       .append(infixExpr.getArgExpr.getText)
 
-    val newInfixExpr = ScalaPsiElementFactory.createExpressionFromText(
-      expr.toString(),
-      element.getManager)
+    val newInfixExpr = ScalaPsiElementFactory
+      .createExpressionFromText(expr.toString(), element.getManager)
 
     val size = newInfixExpr
       .asInstanceOf[ScInfixExpr]

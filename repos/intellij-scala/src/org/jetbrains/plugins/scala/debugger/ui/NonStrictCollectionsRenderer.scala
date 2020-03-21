@@ -79,10 +79,8 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
       .referenceType()
       .methodsByName(methodName, "()" + signature)
     if (suitableMethods.size() > 0) {
-      companionObject.invokeEmptyArgsMethod(
-        objectRef,
-        suitableMethods get 0,
-        context)
+      companionObject
+        .invokeEmptyArgsMethod(objectRef, suitableMethods get 0, context)
     } else {
       MethodNotFound()
     }
@@ -96,9 +94,9 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
       invokeLengthMethodByName(objectRef, name, 'I', context)
 
     try {
-      if (!ScalaCollectionRenderer.hasDefiniteSize(
-            objectRef,
-            context) || isStreamView(objectRef.referenceType()))
+      if (!ScalaCollectionRenderer
+            .hasDefiniteSize(objectRef, context) || isStreamView(
+            objectRef.referenceType()))
         return Success[String]("?")
     } catch {
       case e: EvaluateException =>
@@ -126,11 +124,13 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
         return null
 
       try {
-        evaluationContext.getDebugProcess.invokeMethod(
-          evaluationContext,
-          obj,
-          suitableMethods get 0,
-          companionObject.EMPTY_ARGS)
+        evaluationContext
+          .getDebugProcess
+          .invokeMethod(
+            evaluationContext,
+            obj,
+            suitableMethods get 0,
+            companionObject.EMPTY_ARGS)
       } catch {
         case (
               _: EvaluateException | _: InvocationException |
@@ -174,12 +174,14 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
         for (i <- getStartIndex to getEndIndex) {
           getAll(currentTail, currentTail.referenceType()) match {
             case (newHead: ObjectReference, newTail: ObjectReference) =>
-              val newNode = builder.getNodeManager.createNode(
-                new CollectionElementNodeDescriptor(
-                  indexCount.toString,
-                  evaluationContext.getProject,
-                  newHead),
-                evaluationContext)
+              val newNode = builder
+                .getNodeManager
+                .createNode(
+                  new CollectionElementNodeDescriptor(
+                    indexCount.toString,
+                    evaluationContext.getProject,
+                    newHead),
+                  evaluationContext)
               myChildren add newNode
               currentTail = newTail
               indexCount += 1
@@ -275,8 +277,9 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
 }
 
 object NonStrictCollectionsRenderer {
-  private val EMPTY_ARGS = util.Collections.unmodifiableList(
-    new util.ArrayList[Value]())
+  private val EMPTY_ARGS = util
+    .Collections
+    .unmodifiableList(new util.ArrayList[Value]())
 
   //it considers only part of cases so it is not intended to be used outside
   private def invokeEmptyArgsMethod(
@@ -284,11 +287,9 @@ object NonStrictCollectionsRenderer {
       method: Method,
       context: EvaluationContext): SimpleMethodInvocationResult[_] = {
     try {
-      context.getDebugProcess.invokeMethod(
-        context,
-        obj,
-        method,
-        EMPTY_ARGS) match {
+      context
+        .getDebugProcess
+        .invokeMethod(context, obj, method, EMPTY_ARGS) match {
         case intValue: IntegerValue =>
           Success[Int](intValue.intValue())
         case boolValue: BooleanValue =>

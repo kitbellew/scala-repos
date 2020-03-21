@@ -53,11 +53,8 @@ abstract class NumericRange[T](
   import num._
 
   // See comment in Range for why this must be lazy.
-  private lazy val numRangeElements: Int = NumericRange.count(
-    start,
-    end,
-    step,
-    isInclusive)
+  private lazy val numRangeElements: Int = NumericRange
+    .count(start, end, step, isInclusive)
 
   override def length = numRangeElements
   override def isEmpty = length == 0
@@ -295,8 +292,8 @@ object NumericRange {
         *  overflow turn up as an empty range.
         */
       // The second condition contradicts an empty result.
-      val isOverflow =
-        longCount == 0 && num.lt(num.plus(start, step), end) == upward
+      val isOverflow = longCount == 0 && num
+        .lt(num.plus(start, step), end) == upward
 
       if (longCount > scala.Int.MaxValue || longCount < 0L || isOverflow) {
         val word =

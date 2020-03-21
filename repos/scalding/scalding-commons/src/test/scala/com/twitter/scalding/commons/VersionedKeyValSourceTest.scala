@@ -64,7 +64,9 @@ class ToIteratorJob(args: Args) extends Job(args) {
 
   val duplicatedPipe = TypedPipe.from(source) ++ iteratorPipe
 
-  duplicatedPipe.group.sum
+  duplicatedPipe
+    .group
+    .sum
     .writeIncremental(VersionedKeyValSource[Int, Int]("output"))
 }
 

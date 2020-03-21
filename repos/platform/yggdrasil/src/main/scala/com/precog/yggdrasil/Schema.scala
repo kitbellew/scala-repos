@@ -35,13 +35,19 @@ object Schema {
       case JObjectFixedT(fields) if fields.isEmpty =>
         Set(CEmptyObject)
       case JArrayFixedT(indices) =>
-        indices.values.toSet.flatMap { tpe: JType =>
-          ctypes(tpe)
-        }
+        indices
+          .values
+          .toSet
+          .flatMap { tpe: JType =>
+            ctypes(tpe)
+          }
       case JObjectFixedT(fields) =>
-        fields.values.toSet.flatMap { tpe: JType =>
-          ctypes(tpe)
-        }
+        fields
+          .values
+          .toSet
+          .flatMap { tpe: JType =>
+            ctypes(tpe)
+          }
       case JArrayHomogeneousT(elemType) =>
         ctypes(elemType) collect {
           case cType: CValueType[_] =>
@@ -92,10 +98,13 @@ object Schema {
       flatten(jtype, Nil) groupBy {
         _.selector
       } toSeq
-    val sampledPaths: Seq[ColumnRef] =
-      scala.util.Random.shuffle(paths).take(size) flatMap {
-        _._2
-      }
+    val sampledPaths: Seq[ColumnRef] = scala
+      .util
+      .Random
+      .shuffle(paths)
+      .take(size) flatMap {
+      _._2
+    }
 
     mkType(sampledPaths)
   }
@@ -113,24 +122,30 @@ object Schema {
           ColumnRef(CPath(nodes.reverse), CEmptyObject) :: Nil
 
         case JArrayFixedT(indices) =>
-          indices.toList.flatMap {
-            case (idx, tpe) =>
-              val refs0 = refs collect {
-                case ColumnRef(CPath(CPathIndex(`idx`), rest @ _*), ctype) =>
-                  ColumnRef(CPath(rest: _*), ctype)
-              }
-              buildPath(CPathIndex(idx) :: nodes, refs0, tpe)
-          }
+          indices
+            .toList
+            .flatMap {
+              case (idx, tpe) =>
+                val refs0 = refs collect {
+                  case ColumnRef(CPath(CPathIndex(`idx`), rest @ _*), ctype) =>
+                    ColumnRef(CPath(rest: _*), ctype)
+                }
+                buildPath(CPathIndex(idx) :: nodes, refs0, tpe)
+            }
 
         case JObjectFixedT(fields) => {
-          fields.toList.flatMap {
-            case (field, tpe) =>
-              val refs0 = refs collect {
-                case ColumnRef(CPath(CPathField(`field`), rest @ _*), ctype) =>
-                  ColumnRef(CPath(rest: _*), ctype)
-              }
-              buildPath(CPathField(field) :: nodes, refs0, tpe)
-          }
+          fields
+            .toList
+            .flatMap {
+              case (field, tpe) =>
+                val refs0 = refs collect {
+                  case ColumnRef(
+                        CPath(CPathField(`field`), rest @ _*),
+                        ctype) =>
+                    ColumnRef(CPath(rest: _*), ctype)
+                }
+                buildPath(CPathField(field) :: nodes, refs0, tpe)
+            }
         }
 
         case JArrayUnfixedT =>
@@ -262,8 +277,8 @@ object Schema {
           lazy val nonemptyCrit = {
             if (seenPathLength + 1 <= path.nodes.length) {
               val pathToCompare = path.nodes.take(seenPathLength)
-              pathToCompare == seenPath.nodes && checkNode(
-                path.nodes(seenPathLength))
+              pathToCompare == seenPath
+                .nodes && checkNode(path.nodes(seenPathLength))
             } else {
               false
             }

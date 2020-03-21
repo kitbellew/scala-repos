@@ -75,7 +75,8 @@ trait Constraints {
     * '''error'''[error.email]
     */
   private val emailRegex =
-    """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
+    """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"""
+      .r
   def emailAddress: Constraint[String] =
     Constraint[String]("constraint.email") { e =>
       if (e == null)
@@ -257,18 +258,20 @@ object ParameterValidator {
   def apply[T](
       constraints: Iterable[Constraint[T]],
       optionalParam: Option[T]*) =
-    optionalParam.flatMap {
-      _.map { param =>
-        constraints.flatMap {
-          _(param) match {
-            case i: Invalid =>
-              Some(i)
-            case _ =>
-              None
+    optionalParam
+      .flatMap {
+        _.map { param =>
+          constraints.flatMap {
+            _(param) match {
+              case i: Invalid =>
+                Some(i)
+              case _ =>
+                None
+            }
           }
         }
       }
-    }.flatten match {
+      .flatten match {
       case Nil =>
         Valid
       case invalids =>

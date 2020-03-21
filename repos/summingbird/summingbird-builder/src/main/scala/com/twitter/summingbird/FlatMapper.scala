@@ -48,9 +48,11 @@ object FlatMapper {
       fm2: FlatMapper[U, V]): FlatMapper[T, V] =
     new FlatMapper[T, V] {
       override def encode(t: T) =
-        fm.encode(t).flatMap {
-          fm2.encode(_)
-        }
+        fm
+          .encode(t)
+          .flatMap {
+            fm2.encode(_)
+          }
     }
 
   def filter[T, U](

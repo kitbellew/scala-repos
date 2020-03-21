@@ -10,7 +10,8 @@ object KMeans {
     */
   private def distance(v1: Vector[Double], v2: Vector[Double]): Double =
     math.sqrt(
-      v1.iterator
+      v1
+        .iterator
         .zip(v2.iterator)
         .map {
           case (l, r) =>
@@ -20,10 +21,12 @@ object KMeans {
 
   // Just normal vector addition
   private def add(v1: Vector[Double], v2: Vector[Double]): Vector[Double] =
-    v1.zip(v2).map {
-      case (l, r) =>
-        l + r
-    }
+    v1
+      .zip(v2)
+      .map {
+        case (l, r) =>
+          l + r
+      }
 
   // normal scalar multiplication
   private def scale(s: Double, v: Vector[Double]): Vector[Double] =
@@ -95,15 +98,15 @@ object KMeans {
             (id, vector)
           case (_, None) =>
             sys.error("Missing clusters, this should never happen")
-        }
-        .forceToDiskExecution
+        }.forceToDiskExecution
 
     // Now update the clusters:
     next.map { pipe =>
       (
         ComputedValue(
-          pipe.group
-          // There is no need to use more than k reducers
+          pipe
+            .group
+            // There is no need to use more than k reducers
             .withReducers(k)
             .mapValueStream { vectors =>
               Iterator(centroidOf(vectors))
@@ -129,10 +132,14 @@ object KMeans {
         .groupAll
         .sortedTake(k)(Ordering.by(_._1))
         .mapValues { randk =>
-          randk.iterator.zipWithIndex.map {
-            case ((_, v), id) =>
-              (id, v)
-          }.toList
+          randk
+            .iterator
+            .zipWithIndex
+            .map {
+              case ((_, v), id) =>
+                (id, v)
+            }
+            .toList
         }
         .values
 
@@ -162,7 +169,8 @@ object KMeans {
         p: TypedPipe[LabeledVector],
         step: Int): Execution[
       (Int, ValuePipe[List[LabeledVector]], TypedPipe[LabeledVector])] =
-      kmeansStep(k, s, c, p).getAndResetCounters
+      kmeansStep(k, s, c, p)
+        .getAndResetCounters
         .flatMap {
           case ((nextC, nextP), counters) =>
             val changed = counters(key)

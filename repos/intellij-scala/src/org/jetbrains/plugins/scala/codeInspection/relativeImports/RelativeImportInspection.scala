@@ -90,10 +90,8 @@ private class MakeFullQualifiedImportFix(
     val ref = getElement
     if (ref == null || !ref.isValid)
       return
-    val newRef = ScalaPsiElementFactory.createReferenceFromText(
-      fqn,
-      ref.getContext,
-      ref)
+    val newRef = ScalaPsiElementFactory
+      .createReferenceFromText(fqn, ref.getContext, ref)
     import org.jetbrains.plugins.scala.codeInspection.relativeImports.RelativeImportInspection.qual
     val newFqn =
       qual(newRef).resolve() match {

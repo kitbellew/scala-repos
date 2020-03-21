@@ -646,7 +646,8 @@ class Scaladoc extends ScalaMatchingTask {
       // in task Scaladoc you may write:
       //   doctitle="&lt;div&gt;Scala&lt;/div&gt;"
       // so we have to decode them here.
-      s.replaceAll("&lt;", "<")
+      s
+        .replaceAll("&lt;", "<")
         .replaceAll("&gt;", ">")
         .replaceAll("&amp;", "&")
         .replaceAll("&quot;", "\"")

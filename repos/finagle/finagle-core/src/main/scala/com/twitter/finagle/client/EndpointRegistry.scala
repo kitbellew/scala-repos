@@ -37,12 +37,16 @@ private[twitter] class EndpointRegistry {
     synchronized {
       registry.get(client) match {
         case Some(dtabMap) =>
-          dtabMap.mapValues { paths =>
-            paths.mapValues {
-              case (observation, _) =>
-                observation.get()
-            }.toMap
-          }.toMap
+          dtabMap
+            .mapValues { paths =>
+              paths
+                .mapValues {
+                  case (observation, _) =>
+                    observation.get()
+                }
+                .toMap
+            }
+            .toMap
         case None =>
           Map.empty
       }
@@ -99,19 +103,25 @@ private[twitter] class EndpointRegistry {
     */
   def removeObservation(client: String, dtab: Dtab, path: String) =
     synchronized {
-      registry.get(client).foreach { dtabEntries =>
-        dtabEntries.get(dtab).foreach { entry =>
-          entry.remove(path).foreach {
-            case (_, closable) =>
-              closable.close()
-          }
-          if (entry.isEmpty) {
-            dtabEntries.remove(dtab)
-            if (dtabEntries.isEmpty) {
-              registry.remove(client)
+      registry
+        .get(client)
+        .foreach { dtabEntries =>
+          dtabEntries
+            .get(dtab)
+            .foreach { entry =>
+              entry
+                .remove(path)
+                .foreach {
+                  case (_, closable) =>
+                    closable.close()
+                }
+              if (entry.isEmpty) {
+                dtabEntries.remove(dtab)
+                if (dtabEntries.isEmpty) {
+                  registry.remove(client)
+                }
+              }
             }
-          }
         }
-      }
     }
 }

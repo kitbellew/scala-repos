@@ -134,7 +134,8 @@ class MasterSuite
       rpcEnv.awaitTermination()
     }
 
-    CustomRecoveryModeFactory.instantiationAttempts should be > instantiationAttempts
+    CustomRecoveryModeFactory
+      .instantiationAttempts should be > instantiationAttempts
   }
 
   test("master/worker web ui available") {
@@ -153,10 +154,7 @@ class MasterSuite
         workers.foreach { workerSummaryJson =>
           val JString(workerWebUi) = workerSummaryJson \ "webuiaddress"
           val workerResponse = parse(
-            Source
-              .fromURL(s"${workerWebUi}/json")
-              .getLines()
-              .mkString("\n"))
+            Source.fromURL(s"${workerWebUi}/json").getLines().mkString("\n"))
           (workerResponse \ "cores").extract[Int] should be(2)
         }
       }
@@ -488,12 +486,8 @@ class MasterSuite
   private def makeMaster(conf: SparkConf = new SparkConf): Master = {
     assert(_master === null, "Some Master's RpcEnv is leaked in tests")
     val securityMgr = new SecurityManager(conf)
-    val rpcEnv = RpcEnv.create(
-      Master.SYSTEM_NAME,
-      "localhost",
-      0,
-      conf,
-      securityMgr)
+    val rpcEnv = RpcEnv
+      .create(Master.SYSTEM_NAME, "localhost", 0, conf, securityMgr)
     _master = new Master(rpcEnv, rpcEnv.address, 0, securityMgr, conf)
     _master
   }
@@ -542,36 +536,41 @@ class MasterSuite
     val master = makeMaster()
     master.rpcEnv.setupEndpoint(Master.ENDPOINT_NAME, master)
     eventually(timeout(10.seconds)) {
-      val masterState = master.self
+      val masterState = master
+        .self
         .askWithRetry[MasterStateResponse](RequestMasterState)
       assert(masterState.status === RecoveryState.ALIVE, "Master is not alive")
     }
 
     val killedExecutors = new ConcurrentLinkedQueue[(String, Int)]()
     val killedDrivers = new ConcurrentLinkedQueue[String]()
-    val fakeWorker = master.rpcEnv.setupEndpoint(
-      "worker",
-      new RpcEndpoint {
-        override val rpcEnv: RpcEnv = master.rpcEnv
+    val fakeWorker = master
+      .rpcEnv
+      .setupEndpoint(
+        "worker",
+        new RpcEndpoint {
+          override val rpcEnv: RpcEnv = master.rpcEnv
 
-        override def receive: PartialFunction[Any, Unit] = {
-          case KillExecutor(_, appId, execId) =>
-            killedExecutors.add(appId, execId)
-          case KillDriver(driverId) =>
-            killedDrivers.add(driverId)
+          override def receive: PartialFunction[Any, Unit] = {
+            case KillExecutor(_, appId, execId) =>
+              killedExecutors.add(appId, execId)
+            case KillDriver(driverId) =>
+              killedDrivers.add(driverId)
+          }
         }
-      }
-    )
+      )
 
-    master.self.ask(
-      RegisterWorker(
-        "1",
-        "localhost",
-        9999,
-        fakeWorker,
-        10,
-        1024,
-        "http://localhost:8080"))
+    master
+      .self
+      .ask(
+        RegisterWorker(
+          "1",
+          "localhost",
+          9999,
+          fakeWorker,
+          10,
+          1024,
+          "http://localhost:8080"))
     val executors = (0 until 3).map { i =>
       new ExecutorDescription(
         appId = i.toString,
@@ -579,8 +578,9 @@ class MasterSuite
         2,
         ExecutorState.RUNNING)
     }
-    master.self.send(
-      WorkerLatestState("1", executors, driverIds = Seq("0", "1", "2")))
+    master
+      .self
+      .send(WorkerLatestState("1", executors, driverIds = Seq("0", "1", "2")))
 
     eventually(timeout(10.seconds)) {
       assert(

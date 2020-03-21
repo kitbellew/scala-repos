@@ -241,8 +241,8 @@ object Reader {
               Future.value(Some(buf.slice(0, n)))
 
             case Reading(_, _) =>
-              Future.exception(
-                new IllegalStateException("read() while Reading"))
+              Future
+                .exception(new IllegalStateException("read() while Reading"))
           }
         }
 

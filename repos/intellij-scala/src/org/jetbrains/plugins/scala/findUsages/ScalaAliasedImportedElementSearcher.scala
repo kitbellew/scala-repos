@@ -59,7 +59,8 @@ class ScalaAliasedImportedElementSearcher
     private def getAlias(element: PsiElement): String = {
       if (!element.getParent.isInstanceOf[ScImportSelector])
         return null
-      val importStatement: ScImportSelector = element.getParent
+      val importStatement: ScImportSelector = element
+        .getParent
         .asInstanceOf[ScImportSelector]
       importStatement.importedName
     }
@@ -89,7 +90,8 @@ class ScalaAliasedImportedElementSearcher
           UsageSearchContext.IN_CODE,
           true,
           myTarget)
-        PsiSearchHelper.SERVICE
+        PsiSearchHelper
+          .SERVICE
           .getInstance(element.getProject)
           .processRequests(collector, consumer)
       }

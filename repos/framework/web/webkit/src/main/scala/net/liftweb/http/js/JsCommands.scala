@@ -70,8 +70,8 @@ case class JsonCall(funcId: String) {
   def apply(command: String): JsCmd = apply(JE.Str(command))
 
   def apply(command: JsExp): JsCmd =
-    JsCmds.Run(
-      funcId + "({'command': " + command.toJsCmd + ", 'params': false});")
+    JsCmds
+      .Run(funcId + "({'command': " + command.toJsCmd + ", 'params': false});")
 
   def apply(command: String, params: JsExp) =
     JsCmds.Run(
@@ -158,17 +158,20 @@ trait JsObj extends JsExp {
     */
   def extend(other: JsObj) = {
     // existing, non-existing props
-    val (ep, nep) = other.props.partition {
-      case (key, exp) =>
-        props.exists {
-          case (k, e) =>
-            k == key
-        }
-    }
+    val (ep, nep) = other
+      .props
+      .partition {
+        case (key, exp) =>
+          props.exists {
+            case (k, e) =>
+              k == key
+          }
+      }
     // replaced props
     val rp = props.map {
       case (key, exp) =>
-        ep.find {
+        ep
+          .find {
             case (k, e) =>
               k == key
           }
@@ -234,10 +237,12 @@ trait JsExp extends HtmlFixer with ToJsCmd {
   def appendToParent(parentName: String): JsCmd = {
     val ran = "v" + Helpers.nextFuncName
     JsCmds.JsCrVar(ran, this) &
-      JE.JsRaw(
+      JE
+        .JsRaw(
           "if (" + ran + ".parentNode) " + ran + " = " + ran + ".cloneNode(true)")
         .cmd &
-      JE.JsRaw(
+      JE
+        .JsRaw(
           "if (" + ran + ".nodeType) {" + parentName + ".appendChild(" + ran + ");} else {" +
             parentName + ".appendChild(document.createTextNode(" + ran + "));}")
         .cmd
@@ -316,7 +321,9 @@ object JE {
 
   case class ValById(id: String) extends JsExp {
     def toJsCmd =
-      "(function() {if (document.getElementById(" + id.encJs + ")) {return document.getElementById(" + id.encJs + ").value;} else {return null;}})()"
+      "(function() {if (document.getElementById(" + id
+        .encJs + ")) {return document.getElementById(" + id
+        .encJs + ").value;} else {return null;}})()"
   }
 
   /**
@@ -324,7 +331,9 @@ object JE {
     */
   case class CheckedById(id: String) extends JsExp {
     def toJsCmd =
-      "(function() {if (document.getElementById(" + id.encJs + ")) {return document.getElementById(" + id.encJs + ").checked} else {return false;}})()"
+      "(function() {if (document.getElementById(" + id
+        .encJs + ")) {return document.getElementById(" + id
+        .encJs + ").checked} else {return false;}})()"
   }
 
   /**
@@ -447,13 +456,15 @@ object JE {
     def apply(obj: JsExp, func: JsExp, alt: String): JsExp =
       new JsExp {
         def toJsCmd =
-          "lift$.alt(" + obj.toJsCmd + ", " + func.toJsCmd + ", " + alt.encJs + ")"
+          "lift$.alt(" + obj.toJsCmd + ", " + func.toJsCmd + ", " + alt
+            .encJs + ")"
       }
 
     def apply(obj: JsExp, func: JsExp, alt: JsExp): JsExp =
       new JsExp {
         def toJsCmd =
-          "lift$.alt(" + obj.toJsCmd + ", " + func.toJsCmd + ", " + alt.toJsCmd + ")"
+          "lift$.alt(" + obj.toJsCmd + ", " + func.toJsCmd + ", " + alt
+            .toJsCmd + ")"
       }
   }
 
@@ -465,7 +476,8 @@ object JE {
         toUpdate: JsExp): JsExp =
       new JsExp {
         def toJsCmd =
-          "lift$.magicUpdate(" + obj + ", " + field.encJs + ", " + idField.encJs + ", " + toUpdate.toJsCmd + ")"
+          "lift$.magicUpdate(" + obj + ", " + field.encJs + ", " + idField
+            .encJs + ", " + toUpdate.toJsCmd + ")"
       }
 
     def apply(
@@ -475,7 +487,8 @@ object JE {
         toUpdate: JsExp): JsExp =
       new JsExp {
         def toJsCmd =
-          "lift$.magicUpdate(" + obj.toJsCmd + ", " + field.encJs + ", " + idField.encJs + ", " + toUpdate.toJsCmd + ")"
+          "lift$.magicUpdate(" + obj.toJsCmd + ", " + field
+            .encJs + ", " + idField.encJs + ", " + toUpdate.toJsCmd + ")"
       }
   }
 
@@ -495,13 +508,15 @@ object JE {
     def apply(what: JsExp, init1: JsExp, func: String): JsExp =
       new JsExp {
         def toJsCmd =
-          "lift$.fold(" + what.toJsCmd + ", " + init1.toJsCmd + ", " + func.encJs + ")"
+          "lift$.fold(" + what.toJsCmd + ", " + init1.toJsCmd + ", " + func
+            .encJs + ")"
       }
 
     def apply(what: JsExp, init1: JsExp, func: AnonFunc): JsExp =
       new JsExp {
         def toJsCmd =
-          "lift$.fold(" + what.toJsCmd + ", " + init1.toJsCmd + ", " + func.toJsCmd + ")"
+          "lift$.fold(" + what.toJsCmd + ", " + init1.toJsCmd + ", " + func
+            .toJsCmd + ")"
       }
   }
 
@@ -697,9 +712,11 @@ trait HtmlFixer {
       case (str, Nil) =>
         f(str)
       case (str, cmds) =>
-        "((function() {" + cmds.reduceLeft {
-          _ & _
-        }.toJsCmd + " return " + f(str) + ";})())"
+        "((function() {" + cmds
+          .reduceLeft {
+            _ & _
+          }
+          .toJsCmd + " return " + f(str) + ";})())"
     }
 
   /**
@@ -730,10 +747,12 @@ trait HtmlFixer {
     val w = new java.io.StringWriter
 
     val xhtml =
-      S.session.map { session =>
-        session.normalizeHtmlAndAppendEventHandlers(
-          session.processSurroundAndInclude(s"JS SetHTML id: $uid", content))
-      } openOr {
+      S
+        .session
+        .map { session =>
+          session.normalizeHtmlAndAppendEventHandlers(
+            session.processSurroundAndInclude(s"JS SetHTML id: $uid", content))
+        } openOr {
         content
       }
 
@@ -763,7 +782,8 @@ trait HtmlFixer {
     def unapply(in: NodeSeq): Option[Elem] =
       in match {
         case e: Elem => {
-          e.attribute("type")
+          e
+            .attribute("type")
             .map(_.text)
             .filter(_ == "text/javascript")
             .flatMap { a =>
@@ -855,9 +875,13 @@ object JsCmds {
     def apply(in: Elem): NodeSeq = {
       val (elem, id) = findOrAddId(in)
       elem ++ Script(
-        LiftRules.jsArtifacts.onLoad(
-          Run(
-            "if (document.getElementById(" + id.encJs + ")) {document.getElementById(" + id.encJs + ").focus();};")))
+        LiftRules
+          .jsArtifacts
+          .onLoad(
+            Run(
+              "if (document.getElementById(" + id
+                .encJs + ")) {document.getElementById(" + id
+                .encJs + ").focus();};")))
     }
   }
 
@@ -866,7 +890,8 @@ object JsCmds {
     */
   case class SetValueAndFocus(id: String, value: String) extends JsCmd {
     def toJsCmd =
-      "if (document.getElementById(" + id.encJs + ")) {document.getElementById(" + id.encJs + ").value = " +
+      "if (document.getElementById(" + id
+        .encJs + ")) {document.getElementById(" + id.encJs + ").value = " +
         value.encJs +
         "; document.getElementById(" + id.encJs + ").focus();};"
   }
@@ -876,7 +901,8 @@ object JsCmds {
     */
   case class Focus(id: String) extends JsCmd {
     def toJsCmd =
-      "if (document.getElementById(" + id.encJs + ")) {document.getElementById(" + id.encJs + ").focus();};"
+      "if (document.getElementById(" + id
+        .encJs + ")) {document.getElementById(" + id.encJs + ").focus();};"
   }
 
   /**
@@ -908,7 +934,8 @@ object JsCmds {
     */
   case class SetValById(id: String, right: JsExp) extends JsCmd {
     def toJsCmd =
-      "if (document.getElementById(" + id.encJs + ")) {document.getElementById(" + id.encJs + ").value = " +
+      "if (document.getElementById(" + id
+        .encJs + ")) {document.getElementById(" + id.encJs + ").value = " +
         right.toJsCmd + ";};"
   }
 
@@ -935,7 +962,8 @@ object JsCmds {
   case class SetElemById(id: String, right: JsExp, thenStr: String*)
       extends JsCmd {
     def toJsCmd =
-      "if (document.getElementById(" + id.encJs + ")) {document.getElementById(" + id.encJs + ")" + (
+      "if (document.getElementById(" + id
+        .encJs + ")) {document.getElementById(" + id.encJs + ")" + (
         if (thenStr.isEmpty)
           ""
         else
@@ -1071,7 +1099,8 @@ object JsCmds {
       dflt: Box[String])
       extends JsCmd {
     def toJsCmd =
-      """var x=document.getElementById(""" + select.encJs + """);
+      """var x=document.getElementById(""" + select
+        .encJs + """);
     if (x) {
     while (x.length > 0) {x.remove(0);}
     var y = null;
@@ -1099,14 +1128,16 @@ object JsCmds {
 
     def apply(condition: JsExp, bodyTrue: JsCmd, bodyFalse: JsCmd): JsCmd =
       JE.JsRaw(
-        "if ( " + condition.toJsCmd + " ) { " + bodyTrue.toJsCmd + " } else { " + bodyFalse.toJsCmd + " }")
+        "if ( " + condition.toJsCmd + " ) { " + bodyTrue
+          .toJsCmd + " } else { " + bodyFalse.toJsCmd + " }")
 
     def apply(condition: JsExp, body: JsExp): JsCmd =
       JE.JsRaw("if ( " + condition.toJsCmd + " ) { " + body.toJsCmd + " }")
 
     def apply(condition: JsExp, bodyTrue: JsExp, bodyFalse: JsExp): JsCmd =
       JE.JsRaw(
-        "if ( " + condition.toJsCmd + " ) { " + bodyTrue.toJsCmd + " } else { " + bodyFalse.toJsCmd + " }")
+        "if ( " + condition.toJsCmd + " ) { " + bodyTrue
+          .toJsCmd + " } else { " + bodyFalse.toJsCmd + " }")
   }
 
   case class JsWhile(condition: JsExp, body: JsExp) extends JsCmd {
@@ -1137,7 +1168,8 @@ object JsCmds {
   case class JsForIn(initialExp: JsExp, reference: String, body: JsCmd)
       extends JsCmd {
     def toJsCmd =
-      "for ( " + initialExp.toJsCmd + " in " + reference + ") { " + body.toJsCmd + " }"
+      "for ( " + initialExp.toJsCmd + " in " + reference + ") { " + body
+        .toJsCmd + " }"
   }
 
   case object JsBreak extends JsCmd {

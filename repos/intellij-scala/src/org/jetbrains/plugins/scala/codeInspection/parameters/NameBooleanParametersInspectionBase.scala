@@ -42,12 +42,14 @@ abstract class NameBooleanParametersInspectionBase extends LocalInspectionTool {
                   IntentionUtils
                     .addNameToArgumentsFix(expr, onlyBoolean = true)
                     .isDefined =>
-              val descriptor = holder.getManager.createProblemDescriptor(
-                expr,
-                InspectionBundle.message("name.boolean"),
-                new NameBooleanParametersQuickFix(lit),
-                ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
-                isOnTheFly)
+              val descriptor = holder
+                .getManager
+                .createProblemDescriptor(
+                  expr,
+                  InspectionBundle.message("name.boolean"),
+                  new NameBooleanParametersQuickFix(lit),
+                  ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
+                  isOnTheFly)
               holder.registerProblem(descriptor)
             case _ =>
           }
@@ -72,12 +74,14 @@ abstract class NameBooleanParametersInspectionBase extends LocalInspectionTool {
       def isSingleParamMethodCall(mc: ScMethodCall): Boolean = {
         mc.getInvokedExpr match {
           case ref: ScReferenceExpression =>
-            ref.bind().exists { srr =>
-              val targets =
-                (Seq(srr.element) ++ srr.innerResolveResult.map(_.getElement))
-                  .filterBy(classOf[ScFunction])
-              targets.exists(_.parameters.size == 1)
-            }
+            ref
+              .bind()
+              .exists { srr =>
+                val targets =
+                  (Seq(srr.element) ++ srr.innerResolveResult.map(_.getElement))
+                    .filterBy(classOf[ScFunction])
+                targets.exists(_.parameters.size == 1)
+              }
           case _ =>
             false
         }

@@ -17,7 +17,8 @@ import org.jetbrains.plugins.scala.worksheet.runconfiguration.WorksheetViewerInf
 class MacrosheetFileHook(private val project: Project)
     extends ProjectComponent {
   override def projectOpened() {
-    project.getMessageBus
+    project
+      .getMessageBus
       .connect(project)
       .subscribe(
         FileEditorManagerListener.FILE_EDITOR_MANAGER,
@@ -25,13 +26,15 @@ class MacrosheetFileHook(private val project: Project)
   }
 
   override def projectClosed() {
-    ApplicationManager.getApplication.invokeAndWait(
-      new Runnable {
-        def run() {
-          WorksheetViewerInfo.invalidate()
-        }
-      },
-      ModalityState.any())
+    ApplicationManager
+      .getApplication
+      .invokeAndWait(
+        new Runnable {
+          def run() {
+            WorksheetViewerInfo.invalidate()
+          }
+        },
+        ModalityState.any())
   }
 
   override def disposeComponent() {}
@@ -67,7 +70,8 @@ class MacrosheetFileHook(private val project: Project)
 
   private object MacrosheetEditorListener extends FileEditorManagerListener {
     override def fileOpened(source: FileEditorManager, file: VirtualFile) {
-      if (!ScalaMacroDebuggingUtil.isEnabled || ScalaFileType.DEFAULT_EXTENSION != file.getExtension)
+      if (!ScalaMacroDebuggingUtil
+            .isEnabled || ScalaFileType.DEFAULT_EXTENSION != file.getExtension)
         return
 
       val document =
@@ -102,7 +106,9 @@ class MacrosheetFileHook(private val project: Project)
             val sourcEditor =
               FileEditorManager.getInstance(project).getSelectedTextEditor
             val macroEditor = WorksheetViewerInfo.getViewer(sourcEditor)
-            if (macroEditor != null && macroEditor.getDocument.getTextLength > 0) {
+            if (macroEditor != null && macroEditor
+                  .getDocument
+                  .getTextLength > 0) {
               ScalaMacroDebuggingUtil.expandMacros(sourcEditor.getProject)
             }
           }

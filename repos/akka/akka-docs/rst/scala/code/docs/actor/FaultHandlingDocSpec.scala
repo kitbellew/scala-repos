@@ -106,8 +106,8 @@ object FaultHandlingDocSpec {
   }
   //#child
 
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
       akka {
         loggers = ["akka.testkit.TestEventListener"]
       }

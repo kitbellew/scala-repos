@@ -80,7 +80,9 @@ final class Env(
             api autoAdjust userId
           case lila.analyse.actorApi.AnalysisReady(game, analysis) =>
             assessApi.onAnalysisReady(game, analysis)
-          case lila.game.actorApi
+          case lila
+                .game
+                .actorApi
                 .FinishGame(game, whiteUserOption, blackUserOption) =>
             (whiteUserOption |@| blackUserOption) apply {
               case (whiteUser, blackUser) =>

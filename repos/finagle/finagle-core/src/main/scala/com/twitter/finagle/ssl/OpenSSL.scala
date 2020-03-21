@@ -45,18 +45,16 @@ object OpenSSL {
     val bufferPoolCtor = bufferPoolClass.getConstructor(classOf[Int])
 
     val configurationClass = classNamed("ssl.SSLConfiguration")
-    val configurationCtor = configurationClass.getConstructor(
-      classOf[MapOfStrings])
+    val configurationCtor = configurationClass
+      .getConstructor(classOf[MapOfStrings])
 
     val contextHolderClass = classNamed("ssl.SSLContextHolder")
-    val contextHolderCtor = contextHolderClass.getConstructor(
-      classOf[Long],
-      configurationClass)
+    val contextHolderCtor = contextHolderClass
+      .getConstructor(classOf[Long], configurationClass)
 
     val sslEngineClass = classNamed("ssl.OpenSSLEngine")
-    val sslEngineCtor = sslEngineClass.getConstructor(
-      contextHolderClass,
-      bufferPoolClass)
+    val sslEngineCtor = sslEngineClass
+      .getConstructor(contextHolderClass, bufferPoolClass)
 
     if (initializedLibrary.compareAndSet(false, true)) {
       aprInitMethod.invoke(aprClass, null)
@@ -119,14 +117,16 @@ object OpenSSL {
       if (nextProtos != null)
         configMap.put("ssl.next_protos", nextProtos)
 
-      val config = linker.configurationCtor.newInstance(
-        configMap.asInstanceOf[MapOfStrings])
+      val config = linker
+        .configurationCtor
+        .newInstance(configMap.asInstanceOf[MapOfStrings])
 
       log.finest(
-        "OpenSSL context instantiated for certificate '%s'".format(
-          certificatePath))
+        "OpenSSL context instantiated for certificate '%s'"
+          .format(certificatePath))
 
-      linker.contextHolderCtor
+      linker
+        .contextHolderCtor
         .newInstance(mallocPool, config.asInstanceOf[AnyRef])
         .asInstanceOf[AnyRef]
     }
@@ -138,7 +138,8 @@ object OpenSSL {
         makeContextHolder
     }
 
-    val engine: SSLEngine = linker.sslEngineCtor
+    val engine: SSLEngine = linker
+      .sslEngineCtor
       .newInstance(contextHolder, bufferPool)
       .asInstanceOf[SSLEngine]
 

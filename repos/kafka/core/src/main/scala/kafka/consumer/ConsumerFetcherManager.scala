@@ -71,8 +71,8 @@ class ConsumerFetcherManager(
         }
 
         trace("Partitions without leader %s".format(noLeaderPartitionSet))
-        val brokers = zkUtils.getAllBrokerEndPointsForChannel(
-          SecurityProtocol.PLAINTEXT)
+        val brokers = zkUtils
+          .getAllBrokerEndPointsForChannel(SecurityProtocol.PLAINTEXT)
         val topicsMetadata =
           ClientUtils
             .fetchTopicMetadata(
@@ -83,19 +83,21 @@ class ConsumerFetcherManager(
               correlationId.getAndIncrement)
             .topicsMetadata
         if (logger.isDebugEnabled)
-          topicsMetadata.foreach(topicMetadata =>
-            debug(topicMetadata.toString()))
+          topicsMetadata
+            .foreach(topicMetadata => debug(topicMetadata.toString()))
         topicsMetadata.foreach { tmd =>
           val topic = tmd.topic
-          tmd.partitionsMetadata.foreach { pmd =>
-            val topicAndPartition = TopicAndPartition(topic, pmd.partitionId)
-            if (pmd.leader.isDefined && noLeaderPartitionSet.contains(
-                  topicAndPartition)) {
-              val leaderBroker = pmd.leader.get
-              leaderForPartitionsMap.put(topicAndPartition, leaderBroker)
-              noLeaderPartitionSet -= topicAndPartition
+          tmd
+            .partitionsMetadata
+            .foreach { pmd =>
+              val topicAndPartition = TopicAndPartition(topic, pmd.partitionId)
+              if (pmd.leader.isDefined && noLeaderPartitionSet
+                    .contains(topicAndPartition)) {
+                val leaderBroker = pmd.leader.get
+                leaderForPartitionsMap.put(topicAndPartition, leaderBroker)
+                noLeaderPartitionSet -= topicAndPartition
+              }
             }
-          }
         }
       } catch {
         case t: Throwable => {
@@ -122,8 +124,8 @@ class ConsumerFetcherManager(
             throw t /* If this thread is stopped, propagate this exception to kill the thread. */
           else {
             warn(
-              "Failed to add leader for partitions %s; will retry".format(
-                leaderForPartitionsMap.keySet.mkString(",")),
+              "Failed to add leader for partitions %s; will retry"
+                .format(leaderForPartitionsMap.keySet.mkString(",")),
               t)
             lock.lock()
             noLeaderPartitionSet ++= leaderForPartitionsMap.keySet
@@ -161,8 +163,8 @@ class ConsumerFetcherManager(
         .map(tpi => (TopicAndPartition(tpi.topic, tpi.partitionId), tpi))
         .toMap
       this.cluster = cluster
-      noLeaderPartitionSet ++= topicInfos.map(tpi =>
-        TopicAndPartition(tpi.topic, tpi.partitionId))
+      noLeaderPartitionSet ++= topicInfos
+        .map(tpi => TopicAndPartition(tpi.topic, tpi.partitionId))
       cond.signalAll()
     }
   }

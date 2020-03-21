@@ -68,8 +68,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
     with YggConfigComponent {
   self =>
 
-  protected lazy val blockModuleLogger = LoggerFactory.getLogger(
-    "com.precog.yggdrasil.table.BlockStoreColumnarTableModule")
+  protected lazy val blockModuleLogger = LoggerFactory
+    .getLogger("com.precog.yggdrasil.table.BlockStoreColumnarTableModule")
 
   import trans._
   import TransSpec.deepMap
@@ -225,9 +225,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
           cells: List[Cell]): List[Cell] =
         if (queue.isEmpty) {
           cells
-        } else if (cells.isEmpty || cellMatrix.compare(
-                     queue.head,
-                     cells.head) == EQ) {
+        } else if (cells.isEmpty || cellMatrix
+                     .compare(queue.head, cells.head) == EQ) {
           dequeueEqual(queue, cellMatrix, queue.dequeue() :: cells)
         } else {
           cells
@@ -288,32 +287,37 @@ trait BlockStoreColumnarTableModule[M[+_]]
               val size = finishedSize
               val columns: Map[ColumnRef, Column] = {
                 (
-                  completeSlices.flatMap(_.columns) ++ prefixes.flatMap(
-                    _.columns)
-                ).groupBy(_._1).map {
-                  case (ref, columns) => {
-                    val cp: Pair[ColumnRef, Column] =
-                      if (columns.size == 1) {
-                        columns.head
-                      } else {
-                        (
-                          ref,
-                          ArraySetColumn(ref.ctype, columns.map(_._2).toArray))
-                      }
-                    cp
+                  completeSlices
+                    .flatMap(_.columns) ++ prefixes.flatMap(_.columns)
+                )
+                  .groupBy(_._1)
+                  .map {
+                    case (ref, columns) => {
+                      val cp: Pair[ColumnRef, Column] =
+                        if (columns.size == 1) {
+                          columns.head
+                        } else {
+                          (
+                            ref,
+                            ArraySetColumn(
+                              ref.ctype,
+                              columns.map(_._2).toArray))
+                        }
+                      cp
+                    }
                   }
-                }
               }
             }
 
-          blockModuleLogger.trace(
-            "Emitting a new slice of size " + emission.size)
+          blockModuleLogger
+            .trace("Emitting a new slice of size " + emission.size)
 
           val successorStatesM = expired
             .map(_.succ)
             .sequence
             .map(
-              _.toStream.collect({
+              _.toStream
+              .collect({
                 case Some(cs) =>
                   cs
               }))
@@ -365,10 +369,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
         streamId: String,
         keyRefs: List[ColumnRef],
         valRefs: List[ColumnRef]) {
-      val name = streamId + ";krefs=" + keyRefs.mkString(
-        "[",
-        ",",
-        "]") + ";vrefs=" + valRefs.mkString("[", ",", "]")
+      val name = streamId + ";krefs=" + keyRefs
+        .mkString("[", ",", "]") + ";vrefs=" + valRefs.mkString("[", ",", "]")
     }
 
     type IndexMap = Map[IndexKey, SliceSorter]
@@ -678,10 +680,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
                   NoSpan)
 
               case LT =>
-                val leftIdx = comparator.nextLeftIndex(
-                  leftRow + 1,
-                  lhead.size - 1,
-                  0)
+                val leftIdx = comparator
+                  .nextLeftIndex(leftRow + 1, lhead.size - 1, 0)
                 //println("found next left index " + leftIdx + " from " + (lhead.size - 1, lhead.size, 0, lhead.size - leftRow - 1))
                 if (leftIdx == lhead.size) {
                   MoreLeft(NoSpan, leq, rightRow, req)
@@ -698,10 +698,9 @@ trait BlockStoreColumnarTableModule[M[+_]]
                 }
 
               case GT =>
-                val rightIdx = comparator.swap.nextLeftIndex(
-                  rightRow + 1,
-                  rhead.size - 1,
-                  0)
+                val rightIdx = comparator
+                  .swap
+                  .nextLeftIndex(rightRow + 1, rhead.size - 1, 0)
                 //println("found next right index " + rightIdx + " from " + (rhead.size - 1, rhead.size, 0, rhead.size - rightRow - 1))
                 if (rightIdx == rhead.size) {
                   MoreRight(NoSpan, leftRow, leq, req)
@@ -771,8 +770,10 @@ trait BlockStoreColumnarTableModule[M[+_]]
                       //println("No more data on left; emitting right based on bitset " + req.toList.mkString("[", ",", "]"))
                       // done on left, and we're not in an equal span on the right (since LeftSpan can only
                       // be emitted if we're not in a right span) so we're entirely done.
-                      val remission = req.nonEmpty.option(
-                        rhead.mapColumns(cf.util.filter(0, rhead.size, req)))
+                      val remission = req
+                        .nonEmpty
+                        .option(
+                          rhead.mapColumns(cf.util.filter(0, rhead.size, req)))
                       (
                         remission map { e =>
                           writeAlignedSlices(
@@ -788,8 +789,9 @@ trait BlockStoreColumnarTableModule[M[+_]]
                   }
 
                 //println("Requested more left; emitting left based on bitset " + leq.toList.mkString("[", ",", "]"))
-                val lemission = leq.nonEmpty.option(
-                  lhead.mapColumns(cf.util.filter(0, lhead.size, leq)))
+                val lemission = leq
+                  .nonEmpty
+                  .option(lhead.mapColumns(cf.util.filter(0, lhead.size, leq)))
                 lemission map { e =>
                   for {
                     nextLeftWriteState <- writeAlignedSlices(
@@ -840,9 +842,11 @@ trait BlockStoreColumnarTableModule[M[+_]]
                         case NoSpan =>
                           //println("No more data on right and not in a span; emitting left based on bitset " + leq.toList.mkString("[", ",", "]"))
                           // entirely done; just emit both
-                          val lemission = leq.nonEmpty.option(
-                            lhead.mapColumns(
-                              cf.util.filter(0, lhead.size, leq)))
+                          val lemission = leq
+                            .nonEmpty
+                            .option(
+                              lhead
+                                .mapColumns(cf.util.filter(0, lhead.size, leq)))
                           (
                             lemission map { e =>
                               writeAlignedSlices(
@@ -881,8 +885,9 @@ trait BlockStoreColumnarTableModule[M[+_]]
                   }
 
                 //println("Requested more right; emitting right based on bitset " + req.toList.mkString("[", ",", "]"))
-                val remission = req.nonEmpty.option(
-                  rhead.mapColumns(cf.util.filter(0, rhead.size, req)))
+                val remission = req
+                  .nonEmpty
+                  .option(rhead.mapColumns(cf.util.filter(0, rhead.size, req)))
                 remission map { e =>
                   for {
                     nextRightWriteState <- writeAlignedSlices(
@@ -1015,49 +1020,51 @@ trait BlockStoreColumnarTableModule[M[+_]]
 
         left.uncons flatMap {
           case Some((lhead, ltail)) =>
-            right.uncons.flatMap {
-              case Some((rhead, rtail)) =>
-                //println("Got data from both left and right.")
-                //println("initial left: \n" + lhead + "\n\n")
-                //println("initial right: \n" + rhead + "\n\n")
-                val stepResult = leftKeyTrans(lhead) flatMap {
-                  case (lstate, lkey) => {
-                    step(
-                      FindEqualAdvancingRight(0, lkey),
-                      lhead,
-                      ltail,
-                      new BitSet,
-                      rhead,
-                      rtail,
-                      new BitSet,
-                      lstate,
-                      rightKeyTrans.initial,
-                      leftWriteState,
-                      rightWriteState)
+            right
+              .uncons
+              .flatMap {
+                case Some((rhead, rtail)) =>
+                  //println("Got data from both left and right.")
+                  //println("initial left: \n" + lhead + "\n\n")
+                  //println("initial right: \n" + rhead + "\n\n")
+                  val stepResult = leftKeyTrans(lhead) flatMap {
+                    case (lstate, lkey) => {
+                      step(
+                        FindEqualAdvancingRight(0, lkey),
+                        lhead,
+                        ltail,
+                        new BitSet,
+                        rhead,
+                        rtail,
+                        new BitSet,
+                        lstate,
+                        rightKeyTrans.initial,
+                        leftWriteState,
+                        rightWriteState)
+                    }
                   }
-                }
 
-                for {
-                  writeStates <- stepResult
-                } yield {
-                  val (leftState, rightState) = writeStates
-                  val closedLeftState = leftState.closed()
-                  val closedRightState = rightState.closed()
-                  (
-                    loadTable(
-                      sortMergeEngine,
-                      closedLeftState.indices,
-                      SortAscending),
-                    loadTable(
-                      sortMergeEngine,
-                      closedRightState.indices,
-                      SortAscending))
-                }
+                  for {
+                    writeStates <- stepResult
+                  } yield {
+                    val (leftState, rightState) = writeStates
+                    val closedLeftState = leftState.closed()
+                    val closedRightState = rightState.closed()
+                    (
+                      loadTable(
+                        sortMergeEngine,
+                        closedLeftState.indices,
+                        SortAscending),
+                      loadTable(
+                        sortMergeEngine,
+                        closedRightState.indices,
+                        SortAscending))
+                  }
 
-              case None =>
-                //println("uncons right returned none")
-                (Table.empty, Table.empty).point[M]
-            }
+                case None =>
+                  //println("uncons right returned none")
+                  (Table.empty, Table.empty).point[M]
+              }
 
           case None =>
             //println("uncons left returned none")
@@ -1158,8 +1165,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
                       kslice.columns.toList.sortBy(_._1).unzip
                     if (keyColumnRefs.nonEmpty) {
                       val keyRowFormat = RowFormat.forSortingKey(keyColumnRefs)
-                      val keyColumnEncoder = keyRowFormat.ColumnEncoder(
-                        keyColumns)
+                      val keyColumnEncoder = keyRowFormat
+                        .ColumnEncoder(keyColumns)
                       val keyComparator = SortingKeyComparator(
                         keyRowFormat,
                         sortOrder.isAscending)
@@ -1252,9 +1259,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
           def storeRow(row: Int, insertCount: Long): Long = {
             if (row < vslice.size) {
               if (vslice.isDefinedAt(row) && kslice.isDefinedAt(row)) {
-                storage.put(
-                  kEncoder.encodeFromRow(row),
-                  vEncoder.encodeFromRow(row))
+                storage
+                  .put(kEncoder.encodeFromRow(row), vEncoder.encodeFromRow(row))
 
                 if (insertCount % jdbmCommitInterval == 0 && insertCount > 0)
                   jdbmState.commit()
@@ -1338,8 +1344,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
             // Although we have a global count of inserts, we also want to
             // specifically track counts on the index since some operations
             // may not use all indices (e.g. groupByN)
-            val newIndex = index.copy(count =
-              index.count + (newInsertCount - jdbmState.insertCount))
+            val newIndex = index.copy(count = index
+              .count + (newInsertCount - jdbmState.insertCount))
 
             jdbmState.copy(
               indices = jdbmState.indices + (indexMapKey -> newIndex),
@@ -1375,10 +1381,13 @@ trait BlockStoreColumnarTableModule[M[+_]]
       import mergeEngine._
 
       val totalCount =
-        indices.toList.map {
-          case (_, sliceIndex) =>
-            sliceIndex.count
-        }.sum
+        indices
+          .toList
+          .map {
+            case (_, sliceIndex) =>
+              sliceIndex.count
+          }
+          .sum
 
       // Map the distinct indices into SortProjections/Cells, then merge them
       def cellsMs: Stream[M[Option[CellState]]] =
@@ -1536,9 +1545,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
       val right1 = right0.compact(rightKeySpec)
 
       if (yggConfig.hashJoins) {
-        (
-          left1.toInternalTable().toEither |@| right1.toInternalTable().toEither
-        ).tupled flatMap {
+        (left1.toInternalTable().toEither |@| right1.toInternalTable().toEither)
+          .tupled flatMap {
           case (Right(left), Right(right)) =>
             orderHint match {
               case Some(JoinOrder.LeftOrder) =>
@@ -1568,16 +1576,12 @@ trait BlockStoreColumnarTableModule[M[+_]]
           case (leftE, rightE) =>
             val idT = Predef.identity[Table](_)
             val (left, right) = (leftE.fold(idT, idT), rightE.fold(idT, idT))
-            super.join(left, right, orderHint)(
-              leftKeySpec,
-              rightKeySpec,
-              joinSpec)
+            super
+              .join(left, right, orderHint)(leftKeySpec, rightKeySpec, joinSpec)
         }
       } else {
-        super.join(left1, right1, orderHint)(
-          leftKeySpec,
-          rightKeySpec,
-          joinSpec)
+        super
+          .join(left1, right1, orderHint)(leftKeySpec, rightKeySpec, joinSpec)
       }
     }
 

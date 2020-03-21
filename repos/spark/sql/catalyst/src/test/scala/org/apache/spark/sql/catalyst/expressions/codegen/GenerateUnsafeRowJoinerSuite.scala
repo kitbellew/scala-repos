@@ -81,20 +81,16 @@ class GenerateUnsafeRowJoinerSuite extends SparkFunSuite {
       candidateTypes: Seq[DataType]) {
     info(s"schema size $numFields1, $numFields2")
     val random = new Random()
-    val schema1 = RandomDataGenerator.randomSchema(
-      random,
-      numFields1,
-      candidateTypes)
-    val schema2 = RandomDataGenerator.randomSchema(
-      random,
-      numFields2,
-      candidateTypes)
+    val schema1 = RandomDataGenerator
+      .randomSchema(random, numFields1, candidateTypes)
+    val schema2 = RandomDataGenerator
+      .randomSchema(random, numFields2, candidateTypes)
 
     // Create the converters needed to convert from external row to internal row and to UnsafeRows.
-    val internalConverter1 = CatalystTypeConverters.createToCatalystConverter(
-      schema1)
-    val internalConverter2 = CatalystTypeConverters.createToCatalystConverter(
-      schema2)
+    val internalConverter1 = CatalystTypeConverters
+      .createToCatalystConverter(schema1)
+    val internalConverter2 = CatalystTypeConverters
+      .createToCatalystConverter(schema2)
     val converter1 = UnsafeProjection.create(schema1)
     val converter2 = UnsafeProjection.create(schema2)
 
@@ -107,10 +103,10 @@ class GenerateUnsafeRowJoinerSuite extends SparkFunSuite {
       .forType(schema2, nullable = false)
       .get
       .apply()
-    val row1 = converter1.apply(
-      internalConverter1.apply(extRow1).asInstanceOf[InternalRow])
-    val row2 = converter2.apply(
-      internalConverter2.apply(extRow2).asInstanceOf[InternalRow])
+    val row1 = converter1
+      .apply(internalConverter1.apply(extRow1).asInstanceOf[InternalRow])
+    val row2 = converter2
+      .apply(internalConverter2.apply(extRow2).asInstanceOf[InternalRow])
 
     // Run the joiner.
     val mergedSchema = StructType(schema1 ++ schema2)

@@ -48,21 +48,25 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     // Check: describeTopics() with all terms
     val fullTopicSummary = model.describeTopics()
     assert(fullTopicSummary.length === tinyK)
-    fullTopicSummary.zip(tinyTopicDescription).foreach {
-      case ((algTerms, algTermWeights), (terms, termWeights)) =>
-        assert(algTerms === terms)
-        assert(algTermWeights === termWeights)
-    }
+    fullTopicSummary
+      .zip(tinyTopicDescription)
+      .foreach {
+        case ((algTerms, algTermWeights), (terms, termWeights)) =>
+          assert(algTerms === terms)
+          assert(algTermWeights === termWeights)
+      }
 
     // Check: describeTopics() with some terms
     val smallNumTerms = 3
-    val smallTopicSummary = model.describeTopics(maxTermsPerTopic =
-      smallNumTerms)
-    smallTopicSummary.zip(tinyTopicDescription).foreach {
-      case ((algTerms, algTermWeights), (terms, termWeights)) =>
-        assert(algTerms === terms.slice(0, smallNumTerms))
-        assert(algTermWeights === termWeights.slice(0, smallNumTerms))
-    }
+    val smallTopicSummary = model
+      .describeTopics(maxTermsPerTopic = smallNumTerms)
+    smallTopicSummary
+      .zip(tinyTopicDescription)
+      .foreach {
+        case ((algTerms, algTermWeights), (terms, termWeights)) =>
+          assert(algTerms === terms.slice(0, smallNumTerms))
+          assert(algTermWeights === termWeights.slice(0, smallNumTerms))
+      }
   }
 
   test("running and DistributedLDAModel with default Optimizer (EM)") {
@@ -108,10 +112,12 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
           Vectors.sparse(tinyVocabSize, terms, termWeights)
       }
       .sortBy(_.toString)
-    topicSummary.zip(localTopicSummary).foreach {
-      case (topics, topicsLocal) =>
-        assert(topics ~== topicsLocal absTol 0.01)
-    }
+    topicSummary
+      .zip(localTopicSummary)
+      .foreach {
+        case (topics, topicsLocal) =>
+          assert(topics ~== topicsLocal absTol 0.01)
+      }
 
     // Check: per-doc topic distributions
     val topicDistributions = model.topicDistributions.collect()
@@ -133,15 +139,19 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     val top2TopicsPerDoc = model
       .topTopicsPerDocument(2)
       .map(t => (t._1, (t._2, t._3)))
-    model.topicDistributions.join(top2TopicsPerDoc).collect().foreach {
-      case (docId, (topicDistribution, (indices, weights))) =>
-        assert(indices.length == 2)
-        assert(weights.length == 2)
-        val bdvTopicDist = topicDistribution.toBreeze
-        val top2Indices = argtopk(bdvTopicDist, 2)
-        assert(top2Indices.toArray === indices)
-        assert(bdvTopicDist(top2Indices).toArray === weights)
-    }
+    model
+      .topicDistributions
+      .join(top2TopicsPerDoc)
+      .collect()
+      .foreach {
+        case (docId, (topicDistribution, (indices, weights))) =>
+          assert(indices.length == 2)
+          assert(weights.length == 2)
+          val bdvTopicDist = topicDistribution.toBreeze
+          val top2Indices = argtopk(bdvTopicDist, 2)
+          assert(top2Indices.toArray === indices)
+          assert(bdvTopicDist(top2Indices).toArray === weights)
+      }
 
     // Check: log probabilities
     assert(model.logLikelihood < 0.0)
@@ -150,27 +160,35 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     // Check: topDocumentsPerTopic
     // Compare it with top documents per topic derived from topicDistributions
     val topDocsByTopicDistributions = { n: Int =>
-      Range(0, k).map { topic =>
-        val (doc, docWeights) =
-          topicDistributions.sortBy(-_._2(topic)).take(n).unzip
-        (doc.toArray, docWeights.map(_(topic)).toArray)
-      }.toArray
+      Range(0, k)
+        .map { topic =>
+          val (doc, docWeights) =
+            topicDistributions.sortBy(-_._2(topic)).take(n).unzip
+          (doc.toArray, docWeights.map(_(topic)).toArray)
+        }
+        .toArray
     }
 
     // Top 3 documents per topic
-    model.topDocumentsPerTopic(3).zip(topDocsByTopicDistributions(3)).foreach {
-      case (t1, t2) =>
-        assert(t1._1 === t2._1)
-        assert(t1._2 === t2._2)
-    }
+    model
+      .topDocumentsPerTopic(3)
+      .zip(topDocsByTopicDistributions(3))
+      .foreach {
+        case (t1, t2) =>
+          assert(t1._1 === t2._1)
+          assert(t1._2 === t2._2)
+      }
 
     // All documents per topic
     val q = tinyCorpus.length
-    model.topDocumentsPerTopic(q).zip(topDocsByTopicDistributions(q)).foreach {
-      case (t1, t2) =>
-        assert(t1._1 === t2._1)
-        assert(t1._2 === t2._2)
-    }
+    model
+      .topDocumentsPerTopic(q)
+      .zip(topDocsByTopicDistributions(q))
+      .foreach {
+        case (t1, t2) =>
+          assert(t1._1 === t2._1)
+          assert(t1._2 === t2._2)
+      }
 
     // Check: topTopicAssignments
     // Make sure it assigns a topic to each term appearing in each doc.
@@ -253,15 +271,14 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
           Array(0, 1, 2),
           Array(1, 1, 1)
         ), // apple, orange, banana
-        Vectors.sparse(
-          vocabSize,
-          Array(3, 4, 5),
-          Array(1, 1, 1)
-        ) // tiger, cat, dog
-      ).zipWithIndex.map {
-        case (wordCounts, docId) =>
-          (docId.toLong, wordCounts)
-      }
+        Vectors
+          .sparse(vocabSize, Array(3, 4, 5), Array(1, 1, 1)) // tiger, cat, dog
+      )
+        .zipWithIndex
+        .map {
+          case (wordCounts, docId) =>
+            (docId.toLong, wordCounts)
+        }
     val corpus = sc.parallelize(docs, 2)
 
     // Set GammaShape large to avoid the stochastic impact.
@@ -293,10 +310,10 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     // [[https://github.com/Blei-Lab/onlineldavb]]
     val topic1: Vector = Vectors.fromBreeze(op.getLambda(0, ::).t)
     val topic2: Vector = Vectors.fromBreeze(op.getLambda(1, ::).t)
-    val expectedTopic1 = Vectors.dense(
-      1.1101, 1.2076, 1.3050, 0.8899, 0.7924, 0.6950)
-    val expectedTopic2 = Vectors.dense(
-      0.8899, 0.7924, 0.6950, 1.1101, 1.2076, 1.3050)
+    val expectedTopic1 = Vectors
+      .dense(1.1101, 1.2076, 1.3050, 0.8899, 0.7924, 0.6950)
+    val expectedTopic2 = Vectors
+      .dense(0.8899, 0.7924, 0.6950, 1.1101, 1.2076, 1.3050)
     assert(topic1 ~== expectedTopic1 absTol 0.01)
     assert(topic2 ~== expectedTopic2 absTol 0.01)
   }
@@ -334,13 +351,15 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     val ldaModel: LocalLDAModel = toyModel
 
     val docsSingleWord = sc.parallelize(
-      Array(Vectors.sparse(6, Array(0), Array(1))).zipWithIndex
+      Array(Vectors.sparse(6, Array(0), Array(1)))
+        .zipWithIndex
         .map {
           case (wordCounts, docId) =>
             (docId.toLong, wordCounts)
         })
     val docsRepeatedWord = sc.parallelize(
-      Array(Vectors.sparse(6, Array(0), Array(5))).zipWithIndex
+      Array(Vectors.sparse(6, Array(0), Array(5)))
+        .zipWithIndex
         .map {
           case (wordCounts, docId) =>
             (docId.toLong, wordCounts)
@@ -442,11 +461,14 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
       .values
       .collect()
 
-    expectedPredictions.zip(topTopics).foreach {
-      case (expected, actual) =>
-        assert(
-          expected._1 === actual._1 && (expected._2 ~== actual._2 relTol 1e-3d))
-    }
+    expectedPredictions
+      .zip(topTopics)
+      .foreach {
+        case (expected, actual) =>
+          assert(
+            expected._1 === actual
+              ._1 && (expected._2 ~== actual._2 relTol 1e-3d))
+      }
 
     docs
       .collect()
@@ -600,27 +622,33 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
       assert(
         distributedModel.iterationTimes === sameDistributedModel.iterationTimes)
       assert(
-        distributedModel.docConcentration === sameDistributedModel.docConcentration)
+        distributedModel.docConcentration === sameDistributedModel
+          .docConcentration)
       assert(
-        distributedModel.topicConcentration === sameDistributedModel.topicConcentration)
+        distributedModel.topicConcentration === sameDistributedModel
+          .topicConcentration)
       assert(distributedModel.gammaShape === sameDistributedModel.gammaShape)
       assert(
-        distributedModel.globalTopicTotals === sameDistributedModel.globalTopicTotals)
+        distributedModel.globalTopicTotals === sameDistributedModel
+          .globalTopicTotals)
 
       val graph = distributedModel.graph
       val sameGraph = sameDistributedModel.graph
       assert(
-        graph.vertices.sortByKey().collect() === sameGraph.vertices
+        graph.vertices.sortByKey().collect() === sameGraph
+          .vertices
           .sortByKey()
           .collect())
-      val edge = graph.edges
+      val edge = graph
+        .edges
         .map {
           case Edge(sid: Long, did: Long, nos: Double) =>
             (sid, did, nos)
         }
         .sortBy(x => (x._1, x._2))
         .collect()
-      val sameEdge = sameGraph.edges
+      val sameEdge = sameGraph
+        .edges
         .map {
           case Edge(sid: Long, did: Long, nos: Double) =>
             (sid, did, nos)
@@ -638,10 +666,12 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     val vocabSize = 6
     val emptyDocsArray =
       Array.fill(6)(Vectors.sparse(vocabSize, Array.empty, Array.empty))
-    val emptyDocs = emptyDocsArray.zipWithIndex.map {
-      case (wordCounts, docId) =>
-        (docId.toLong, wordCounts)
-    }
+    val emptyDocs = emptyDocsArray
+      .zipWithIndex
+      .map {
+        case (wordCounts, docId) =>
+          (docId.toLong, wordCounts)
+      }
     val distributedEmptyDocs = sc.parallelize(emptyDocs, 2)
 
     val op = new EMLDAOptimizer()
@@ -659,10 +689,12 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     val vocabSize = 6
     val emptyDocsArray =
       Array.fill(6)(Vectors.sparse(vocabSize, Array.empty, Array.empty))
-    val emptyDocs = emptyDocsArray.zipWithIndex.map {
-      case (wordCounts, docId) =>
-        (docId.toLong, wordCounts)
-    }
+    val emptyDocs = emptyDocsArray
+      .zipWithIndex
+      .map {
+        case (wordCounts, docId) =>
+          (docId.toLong, wordCounts)
+      }
     val distributedEmptyDocs = sc.parallelize(emptyDocs, 2)
 
     val op = new OnlineLDAOptimizer()
@@ -708,10 +740,12 @@ private[clustering] object LDASuite {
       Vectors.dense(0, 0, 0, 0, 0), // empty doc
       Vectors.dense(0, 3, 1, 9, 8),
       Vectors.dense(1, 1, 4, 2, 6)
-    ).zipWithIndex.map {
-      case (wordCounts, docId) =>
-        (docId.toLong, wordCounts)
-    }
+    )
+      .zipWithIndex
+      .map {
+        case (wordCounts, docId) =>
+          (docId.toLong, wordCounts)
+      }
   assert(
     tinyCorpus.forall(_._2.size == tinyVocabSize)
   ) // sanity check for test data
@@ -730,10 +764,12 @@ private[clustering] object LDASuite {
       Vectors.sparse(6, Array(3, 4), Array(1, 1)),
       Vectors.sparse(6, Array(3, 5), Array(1, 1)),
       Vectors.sparse(6, Array(4, 5), Array(1, 1))
-    ).zipWithIndex.map {
-      case (wordCounts, docId) =>
-        (docId.toLong, wordCounts)
-    }
+    )
+      .zipWithIndex
+      .map {
+        case (wordCounts, docId) =>
+          (docId.toLong, wordCounts)
+      }
 
   /** Used in the Java Test Suite */
   def javaToyData: JArrayList[(java.lang.Long, Vector)] = {

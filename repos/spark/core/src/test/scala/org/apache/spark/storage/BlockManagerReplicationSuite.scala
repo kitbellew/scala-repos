@@ -130,9 +130,11 @@ class BlockManagerReplicationSuite
       makeBlockManager(1000, s"store$i")
     }
     val storeIds =
-      stores.map {
-        _.blockManagerId
-      }.toSet
+      stores
+        .map {
+          _.blockManagerId
+        }
+        .toSet
     assert(
       master.getPeers(stores(0).blockManagerId).toSet ===
         storeIds.filterNot {
@@ -396,10 +398,9 @@ class BlockManagerReplicationSuite
         false,
         true,
         replicationFactor)
-      initialStores.head.putSingle(
-        blockId,
-        new Array[Byte](blockSize),
-        storageLevel)
+      initialStores
+        .head
+        .putSingle(blockId, new Array[Byte](blockSize), storageLevel)
       val numLocations = master.getLocations(blockId).size
       allStores.foreach {
         _.removeBlock(blockId)
@@ -470,7 +471,8 @@ class BlockManagerReplicationSuite
       // Put the block into one of the stores
       val blockId =
         new TestBlockId(
-          "block-with-" + storageLevel.description
+          "block-with-" + storageLevel
+            .description
             .replace(" ", "-")
             .toLowerCase)
       stores(0).putSingle(blockId, new Array[Byte](blockSize), storageLevel)
@@ -508,13 +510,15 @@ class BlockManagerReplicationSuite
             blockStatus.storageLevel.useDisk === storageLevel.useDisk &&
               blockStatus.storageLevel.useMemory === storageLevel.useMemory &&
               blockStatus.storageLevel.useOffHeap === storageLevel.useOffHeap &&
-              blockStatus.storageLevel.deserialized === storageLevel.deserialized,
+              blockStatus.storageLevel.deserialized === storageLevel
+                .deserialized,
             s"master does not know correct storage level for ${blockId.name} in $testStoreName"
           )
 
           // Assert that the block status in the master for this store has correct memory usage info
           assert(
-            !blockStatus.storageLevel.useMemory || blockStatus.memSize >= blockSize,
+            !blockStatus.storageLevel.useMemory || blockStatus
+              .memSize >= blockSize,
             s"master does not know size of ${blockId.name} stored in memory of $testStoreName"
           )
 
@@ -539,7 +543,8 @@ class BlockManagerReplicationSuite
             // Assert that the block status in the master either does not exist (block removed
             // from every store) or has zero memory usage for this store
             assert(
-              newBlockStatusOption.isEmpty || newBlockStatusOption.get.memSize === 0,
+              newBlockStatusOption
+                .isEmpty || newBlockStatusOption.get.memSize === 0,
               s"after dropping, master does not know size of ${blockId.name} " +
                 s"stored in memory of $testStoreName"
             )

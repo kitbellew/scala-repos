@@ -123,13 +123,15 @@ class ScalaShortNamesCache(project: Project) extends PsiShortNamesCache {
   }
 
   def getAllClassNames: Array[String] = {
-    val keys = StubIndex.getInstance
+    val keys = StubIndex
+      .getInstance
       .getAllKeys(ScalaIndexKeys.ALL_CLASS_NAMES, project)
     keys.toArray(new Array[String](keys.size()))
   }
 
   def getAllClassNames(dest: HashSet[String]) {
-    val keys = StubIndex.getInstance
+    val keys = StubIndex
+      .getInstance
       .getAllKeys(ScalaIndexKeys.ALL_CLASS_NAMES, project)
     dest.addAll(keys)
   }
@@ -176,6 +178,6 @@ class ScalaShortNamesCache(project: Project) extends PsiShortNamesCache {
     Array.empty //todo:
   }
 
-  private var LOG: Logger = Logger.getInstance(
-    "#org.jetbrains.plugins.scala.caches.ScalaShortNamesCache")
+  private var LOG: Logger = Logger
+    .getInstance("#org.jetbrains.plugins.scala.caches.ScalaShortNamesCache")
 }

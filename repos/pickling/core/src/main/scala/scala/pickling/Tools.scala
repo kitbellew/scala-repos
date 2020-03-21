@@ -54,7 +54,8 @@ class Tools[C <: Context](val c: C) {
 
   private def directSubclassesAnnotation(
       sym: TypeSymbol): Option[Seq[TypeSymbol]] = {
-    val annotatedSubclasses = sym.annotations
+    val annotatedSubclasses = sym
+      .annotations
       .collect({
         case annotation
             if annotation.tpe == typeOf[scala.pickling.directSubclasses] =>
@@ -92,8 +93,8 @@ class Tools[C <: Context](val c: C) {
   def isRelevantSubclass(baseSym: Symbol, subSym: Symbol) = {
     !blackList(baseSym) && !blackList(subSym) && subSym.isClass && {
       val subClass = subSym.asClass
-      subClass.baseClasses.contains(
-        baseSym) && !subClass.isAbstractClass && !subClass.isTrait
+      subClass.baseClasses.contains(baseSym) && !subClass
+        .isAbstractClass && !subClass.isTrait
     }
   }
 
@@ -101,8 +102,8 @@ class Tools[C <: Context](val c: C) {
       tpe: Type,
       mirror: Mirror,
       excludeSelf: Boolean): List[Type] = {
-    val subtypes = allStaticallyKnownConcreteSubclasses(tpe, mirror).filter(
-      subtpe => subtpe.typeSymbol != tpe.typeSymbol)
+    val subtypes = allStaticallyKnownConcreteSubclasses(tpe, mirror)
+      .filter(subtpe => subtpe.typeSymbol != tpe.typeSymbol)
     val selfTpe =
       if (isRelevantSubclass(tpe.typeSymbol, tpe.typeSymbol))
         List(tpe)
@@ -222,9 +223,15 @@ class Tools[C <: Context](val c: C) {
               })
               def recurIntoPackage(pkg: Symbol) = {
                 pkg.name.toString != "_root_" &&
-                pkg.name.toString != "quicktime" && // TODO: pesky thing on my classpath, crashes ClassfileParser
-                pkg.name.toString != "j3d" && // TODO: another ClassfileParser crash
-                pkg.name.toString != "jansi" && // TODO: and another one (jline.jar)
+                pkg
+                  .name
+                  .toString != "quicktime" && // TODO: pesky thing on my classpath, crashes ClassfileParser
+                pkg
+                  .name
+                  .toString != "j3d" && // TODO: another ClassfileParser crash
+                pkg
+                  .name
+                  .toString != "jansi" && // TODO: and another one (jline.jar)
                 pkg.name.toString != "jsoup" // TODO: SI-3809
               }
               val subpackages =
@@ -252,17 +259,18 @@ class Tools[C <: Context](val c: C) {
       }
       // NOTE: need to order the list: children first, parents last
       // otherwise pattern match which uses this list might work funnily
-      val subSyms = unsorted.distinct.sortWith((c1, c2) =>
-        c1.asClass.baseClasses.contains(c2))
+      val subSyms = unsorted
+        .distinct
+        .sortWith((c1, c2) => c1.asClass.baseClasses.contains(c2))
       val subTpes = subSyms
         .map(_.asClass)
         .map(subSym => {
           def tparamNames(sym: TypeSymbol) = sym.typeParams.map(_.name.toString)
           // val tparamsMatch = subSym.typeParams.nonEmpty && tparamNames(baseSym) == tparamNames(subSym)
-          val tparamsMatch = subSym.typeParams.nonEmpty && tparamNames(
-            baseSym).length == tparamNames(subSym).length
-          val targsAreConcrete =
-            baseTargs.nonEmpty && baseTargs.forall(_.typeSymbol.isClass)
+          val tparamsMatch = subSym.typeParams.nonEmpty && tparamNames(baseSym)
+            .length == tparamNames(subSym).length
+          val targsAreConcrete = baseTargs.nonEmpty && baseTargs
+            .forall(_.typeSymbol.isClass)
           // NOTE: this is an extremely naïve heuristics
           // see http://groups.google.com/group/scala-internals/browse_thread/thread/3a43a6364b97b521 for more information
           if (tparamsMatch && targsAreConcrete)
@@ -287,8 +295,8 @@ trait RichTypes {
     def key: String = {
       tpe.normalize match {
         case ExistentialType(tparams, TypeRef(pre, sym, targs))
-            if targs.nonEmpty && targs.forall(targ =>
-              tparams.contains(targ.typeSymbol)) =>
+            if targs.nonEmpty && targs
+              .forall(targ => tparams.contains(targ.typeSymbol)) =>
           TypeRef(pre, sym, Nil).key
         case TypeRef(pre, sym, targs) if pre.typeSymbol.isModuleClass =>
           sym.fullName +
@@ -314,7 +322,10 @@ trait RichTypes {
         case TypeRef(_, sym: ClassSymbol, _) if sym.isPrimitive =>
           true
         case TypeRef(_, sym, eltpe :: Nil)
-            if sym == ArrayClass && eltpe.typeSymbol.isClass && eltpe.typeSymbol.asClass.isPrimitive =>
+            if sym == ArrayClass && eltpe.typeSymbol.isClass && eltpe
+              .typeSymbol
+              .asClass
+              .isPrimitive =>
           true
         case _ =>
           false
@@ -349,7 +360,9 @@ abstract class ShareAnalyzer[U <: Universe](val u: U) extends RichTypes {
               true // TODO: make sure this sanely works for polymorphic types
             else
               loop(rest, visited)
-          } else if (currTpe.isNotNullable || currTpe.isEffectivelyPrimitive || currSym == StringClass || currSym.isModuleClass)
+          } else if (currTpe.isNotNullable || currTpe
+                       .isEffectivelyPrimitive || currSym == StringClass || currSym
+                       .isModuleClass)
             loop(rest, visited)
           // TODO: extend the traversal logic to support sealed classes
           // when doing that don't forget:
@@ -425,10 +438,10 @@ abstract class Macro extends RichTypes {
     shareAnalyzer.shouldBotherAboutLooping(tpe)
 
   def shareEverything = {
-    val shareEverything =
-      c.inferImplicitValue(typeOf[refs.ShareEverything]) != EmptyTree
-    val shareNothing =
-      c.inferImplicitValue(typeOf[refs.ShareNothing]) != EmptyTree
+    val shareEverything = c
+      .inferImplicitValue(typeOf[refs.ShareEverything]) != EmptyTree
+    val shareNothing = c
+      .inferImplicitValue(typeOf[refs.ShareNothing]) != EmptyTree
     if (shareEverything && shareNothing)
       c.abort(
         c.enclosingPosition,
@@ -437,10 +450,10 @@ abstract class Macro extends RichTypes {
   }
 
   def shareNothing = {
-    val shareEverything =
-      c.inferImplicitValue(typeOf[refs.ShareEverything]) != EmptyTree
-    val shareNothing =
-      c.inferImplicitValue(typeOf[refs.ShareNothing]) != EmptyTree
+    val shareEverything = c
+      .inferImplicitValue(typeOf[refs.ShareEverything]) != EmptyTree
+    val shareNothing = c
+      .inferImplicitValue(typeOf[refs.ShareNothing]) != EmptyTree
     if (shareEverything && shareNothing)
       c.abort(
         c.enclosingPosition,

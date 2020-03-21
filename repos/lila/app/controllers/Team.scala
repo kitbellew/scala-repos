@@ -59,13 +59,16 @@ object Team extends LilaController {
   def search(text: String, page: Int) =
     OpenBody { implicit ctx =>
       NotForKids {
-        text.trim.isEmpty.fold(
-          paginator popularTeams page map {
-            html.team.all(_)
-          },
-          Env.teamSearch(text, page) map {
-            html.team.search(text, _)
-          })
+        text
+          .trim
+          .isEmpty
+          .fold(
+            paginator popularTeams page map {
+              html.team.all(_)
+            },
+            Env.teamSearch(text, page) map {
+              html.team.search(text, _)
+            })
       }
     }
 
@@ -149,18 +152,21 @@ object Team extends LilaController {
     AuthBody { implicit ctx => implicit me =>
       OnePerWeek(me) {
         implicit val req = ctx.body
-        forms.create.bindFromRequest.fold(
-          err =>
-            forms.anyCaptcha map { captcha =>
-              BadRequest(html.team.form(err, captcha))
-            },
-          data =>
-            api.create(data, me) ?? {
-              _ map { team =>
-                Redirect(routes.Team.show(team.id)): Result
+        forms
+          .create
+          .bindFromRequest
+          .fold(
+            err =>
+              forms.anyCaptcha map { captcha =>
+                BadRequest(html.team.form(err, captcha))
+              },
+            data =>
+              api.create(data, me) ?? {
+                _ map { team =>
+                  Redirect(routes.Team.show(team.id)): Result
+                }
               }
-            }
-        )
+          )
       }
     }
 
@@ -175,9 +181,11 @@ object Team extends LilaController {
     Auth { implicit ctx => me =>
       NotForKids {
         OptionResult(api.requestable(id, me)) { team =>
-          team.open.fold(
-            Ok(html.team.join(team)),
-            Redirect(routes.Team.requestForm(team.id)))
+          team
+            .open
+            .fold(
+              Ok(html.team.join(team)),
+              Redirect(routes.Team.requestForm(team.id)))
         }
       }
     }
@@ -214,15 +222,18 @@ object Team extends LilaController {
     AuthBody { implicit ctx => me =>
       OptionFuResult(api.requestable(id, me)) { team =>
         implicit val req = ctx.body
-        forms.request.bindFromRequest.fold(
-          err =>
-            forms.anyCaptcha map { captcha =>
-              BadRequest(html.team.requestForm(team, err, captcha))
-            },
-          setup =>
-            api.createRequest(team, setup, me) inject Redirect(
-              routes.Team.show(team.id))
-        )
+        forms
+          .request
+          .bindFromRequest
+          .fold(
+            err =>
+              forms.anyCaptcha map { captcha =>
+                BadRequest(html.team.requestForm(team, err, captcha))
+              },
+            setup =>
+              api.createRequest(team, setup, me) inject Redirect(
+                routes.Team.show(team.id))
+          )
       }
     }
 
@@ -235,15 +246,18 @@ object Team extends LilaController {
         } yield (teamOption |@| requestOption).tupled) {
         case (team, request) => {
           implicit val req = ctx.body
-          forms.processRequest.bindFromRequest.fold(
-            _ => fuccess(routes.Team.show(team.id).toString),
-            {
-              case (decision, url) =>
-                api.processRequest(
-                  team,
-                  request,
-                  (decision === "accept")) inject url
-            })
+          forms
+            .processRequest
+            .bindFromRequest
+            .fold(
+              _ => fuccess(routes.Team.show(team.id).toString),
+              {
+                case (decision, url) =>
+                  api.processRequest(
+                    team,
+                    request,
+                    (decision === "accept")) inject url
+              })
         }
       }
     }

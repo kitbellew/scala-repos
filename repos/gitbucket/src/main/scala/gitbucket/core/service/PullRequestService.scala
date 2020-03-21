@@ -241,13 +241,14 @@ object PullRequestService {
       ).map(
         CommitStatus
           .pending(branchProtection.owner, branchProtection.repository, _))
-    val hasRequiredStatusProblem =
-      needStatusCheck && branchProtection.contexts.exists(context =>
+    val hasRequiredStatusProblem = needStatusCheck && branchProtection
+      .contexts
+      .exists(context =>
         statuses.find(_.context == context).map(_.state) != Some(
           CommitState.SUCCESS))
     val hasProblem = hasRequiredStatusProblem || hasConflict || (
-      !statuses.isEmpty && CommitState.combine(
-        statuses.map(_.state).toSet) != CommitState.SUCCESS
+      !statuses.isEmpty && CommitState
+        .combine(statuses.map(_.state).toSet) != CommitState.SUCCESS
     )
     val canUpdate = branchIsOutOfDate && !hasConflict
     val canMerge =

@@ -60,8 +60,8 @@ class DefaultEventHandler[K, V](
   private val topicMetadataToRefresh = Set.empty[String]
   private val sendPartitionPerTopicCache = HashMap.empty[String, Int]
 
-  private val producerStats = ProducerStatsRegistry.getProducerStats(
-    config.clientId)
+  private val producerStats = ProducerStatsRegistry
+    .getProducerStats(config.clientId)
   private val producerTopicStats = ProducerTopicStatsRegistry
     .getProducerTopicStats(config.clientId)
 
@@ -82,7 +82,8 @@ class DefaultEventHandler[K, V](
     while (remainingRetries > 0 && outstandingProduceRequests.size > 0) {
       topicMetadataToRefresh ++= outstandingProduceRequests.map(_.topic)
       if (topicMetadataRefreshInterval >= 0 &&
-          SystemTime.milliseconds - lastTopicMetadataRefreshTime > topicMetadataRefreshInterval) {
+          SystemTime
+            .milliseconds - lastTopicMetadataRefreshTime > topicMetadataRefreshInterval) {
         CoreUtils.swallowError(
           brokerPartitionInfo.updateInfo(
             topicMetadataToRefresh.toSet,
@@ -119,7 +120,8 @@ class DefaultEventHandler[K, V](
             correlationIdStart,
             correlationIdEnd - 1))
       throw new FailedToSendMessageException(
-        "Failed to send messages after " + config.messageSendMaxRetries + " tries.",
+        "Failed to send messages after " + config
+          .messageSendMaxRetries + " tries.",
         null)
     }
   }
@@ -152,8 +154,9 @@ class DefaultEventHandler[K, V](
                 }
               })
             case None => // failed to group messages
-              messagesPerBrokerMap.values.foreach(m =>
-                failedProduceRequests.appendAll(m))
+              messagesPerBrokerMap
+                .values
+                .foreach(m => failedProduceRequests.appendAll(m))
           }
         }
         failedProduceRequests
@@ -250,29 +253,30 @@ class DefaultEventHandler[K, V](
     } catch { // Swallow recoverable exceptions and return None so that they can be retried.
       case ute: UnknownTopicOrPartitionException =>
         warn(
-          "Failed to collate messages by topic,partition due to: " + ute.getMessage);
+          "Failed to collate messages by topic,partition due to: " + ute
+            .getMessage);
         None
       case lnae: LeaderNotAvailableException =>
         warn(
-          "Failed to collate messages by topic,partition due to: " + lnae.getMessage);
+          "Failed to collate messages by topic,partition due to: " + lnae
+            .getMessage);
         None
       case oe: Throwable =>
         error(
-          "Failed to collate messages by topic, partition due to: " + oe.getMessage);
+          "Failed to collate messages by topic, partition due to: " + oe
+            .getMessage);
         None
     }
   }
 
   private def getPartitionListForTopic(
       m: KeyedMessage[K, Message]): Seq[PartitionAndLeader] = {
-    val topicPartitionsList = brokerPartitionInfo.getBrokerPartitionInfo(
-      m.topic,
-      correlationId.getAndIncrement)
+    val topicPartitionsList = brokerPartitionInfo
+      .getBrokerPartitionInfo(m.topic, correlationId.getAndIncrement)
     debug(
-      "Broker partitions registered for topic: %s are %s"
-        .format(
-          m.topic,
-          topicPartitionsList.map(p => p.partitionId).mkString(",")))
+      "Broker partitions registered for topic: %s are %s".format(
+        m.topic,
+        topicPartitionsList.map(p => p.partitionId).mkString(",")))
     val totalNumPartitions = topicPartitionsList.length
     if (totalNumPartitions == 0)
       throw new NoBrokersForPartitionException("Partition key = " + m.key)
@@ -306,8 +310,8 @@ class DefaultEventHandler[K, V](
             // since we want to postpone the failure until the send operation anyways
             partitionId
           case None =>
-            val availablePartitions = topicPartitionList.filter(
-              _.leaderBrokerIdOpt.isDefined)
+            val availablePartitions = topicPartitionList
+              .filter(_.leaderBrokerIdOpt.isDefined)
             if (availablePartitions.isEmpty)
               throw new LeaderNotAvailableException(
                 "No leader for any partition in topic " + topic)
@@ -350,8 +354,8 @@ class DefaultEventHandler[K, V](
         ByteBufferMessageSet]) = {
     if (brokerId < 0) {
       warn(
-        "Failed to send data since partitions %s don't have a leader".format(
-          messagesPerTopic.map(_._1).mkString(",")))
+        "Failed to send data since partitions %s don't have a leader"
+          .format(messagesPerTopic.map(_._1).mkString(",")))
       messagesPerTopic.keys.toSeq
     } else if (messagesPerTopic.size > 0) {
       val currentCorrelationId = correlationId.getAndIncrement
@@ -388,8 +392,9 @@ class DefaultEventHandler[K, V](
               "Incomplete response (%s) for producer request (%s)"
                 .format(response, producerRequest))
           if (logger.isTraceEnabled) {
-            val successfullySentData = response.status.filter(
-              _._2.error == Errors.NONE.code)
+            val successfullySentData = response
+              .status
+              .filter(_._2.error == Errors.NONE.code)
             successfullySentData.foreach(m =>
               messagesPerTopic(m._1).foreach(message =>
                 trace(
@@ -401,15 +406,16 @@ class DefaultEventHandler[K, V](
           }
           val failedPartitionsAndStatus =
             response.status.filter(_._2.error != Errors.NONE.code).toSeq
-          failedTopicPartitions = failedPartitionsAndStatus.map(
-            partitionStatus => partitionStatus._1)
+          failedTopicPartitions = failedPartitionsAndStatus
+            .map(partitionStatus => partitionStatus._1)
           if (failedTopicPartitions.size > 0) {
             val errorString = failedPartitionsAndStatus
               .sortWith((p1, p2) =>
                 p1._1.topic.compareTo(p2._1.topic) < 0 ||
                   (
-                    p1._1.topic.compareTo(
-                      p2._1.topic) == 0 && p1._1.partition < p2._1.partition
+                    p1._1.topic.compareTo(p2._1.topic) == 0 && p1
+                      ._1
+                      .partition < p2._1.partition
                   ))
               .map {
                 case (topicAndPartition, status) =>
@@ -479,8 +485,9 @@ class DefaultEventHandler[K, V](
                       config.compressionCodec,
                       rawMessages: _*)
                   case _ =>
-                    if (config.compressedTopics.contains(
-                          topicAndPartition.topic)) {
+                    if (config
+                          .compressedTopics
+                          .contains(topicAndPartition.topic)) {
                       debug(
                         "Sending %d messages with compression codec %d to %s"
                           .format(

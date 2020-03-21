@@ -43,8 +43,8 @@ trait UnrolledParArrayCombiner[T] extends Combiner[T, ParArray[T]] {
     val arrayseq = new ArraySeq[T](size)
     val array = arrayseq.array.asInstanceOf[Array[Any]]
 
-    combinerTaskSupport.executeAndWaitResult(
-      new CopyUnrolledToArray(array, 0, size))
+    combinerTaskSupport
+      .executeAndWaitResult(new CopyUnrolledToArray(array, 0, size))
 
     new ParArray(arrayseq)
   }
@@ -112,7 +112,9 @@ trait UnrolledParArrayCombiner[T] extends Combiner[T, ParArray[T]] {
         new CopyUnrolledToArray(array, offset + fp, howmany - fp))
     }
     def shouldSplitFurther =
-      howmany > scala.collection.parallel
+      howmany > scala
+        .collection
+        .parallel
         .thresholdFromSize(size, combinerTaskSupport.parallelismLevel)
     override def toString =
       "CopyUnrolledToArray(" + offset + ", " + howmany + ")"

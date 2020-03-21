@@ -34,7 +34,8 @@ class ActivityTest extends FunSuite {
     val (a, w) = Activity[Int]()
 
     val ref = new AtomicReference[Activity.State[Int]]
-    a.handle {
+    a
+      .handle {
         case E(x) =>
           x
       }
@@ -224,10 +225,8 @@ class ActivityTest extends FunSuite {
     assert(ref.get == Seq(Activity.Pending, Activity.Pending))
     bw.notify(Return("ok"))
     assert(
-      ref.get == Seq(
-        Activity.Pending,
-        Activity.Pending,
-        Activity.Ok((1, "ok"))))
+      ref
+        .get == Seq(Activity.Pending, Activity.Pending, Activity.Ok((1, "ok"))))
 
     val exc = new Exception
     aw.notify(Throw(exc))

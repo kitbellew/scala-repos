@@ -118,7 +118,8 @@ trait CorsSupport extends Handler with Initializable {
           .getOrElse(true)
       )
 
-    val corsCfg = config.context
+    val corsCfg = config
+      .context
       .getOrElseUpdate(CorsConfigKey, createDefault)
       .asInstanceOf[CORSConfig]
     import corsCfg._
@@ -139,11 +140,12 @@ trait CorsSupport extends Handler with Initializable {
     augmentSimpleRequest()
     // 5.2.8
     if (corsConfig.preflightMaxAge > 0)
-      response.headers(AccessControlMaxAgeHeader) =
-        corsConfig.preflightMaxAge.toString
+      response.headers(AccessControlMaxAgeHeader) = corsConfig
+        .preflightMaxAge
+        .toString
     // 5.2.9
-    response.headers(AccessControlAllowMethodsHeader) =
-      corsConfig.allowedMethods mkString ","
+    response.headers(AccessControlAllowMethodsHeader) = corsConfig
+      .allowedMethods mkString ","
     // 5.2.10
     val rh = corsConfig.allowedHeaders ++ request
       .getHeaders(AccessControlRequestHeadersHeader)
@@ -155,8 +157,9 @@ trait CorsSupport extends Handler with Initializable {
   }
 
   protected def augmentSimpleRequest(): Unit = {
-    val anyOriginAllowed: Boolean = corsConfig.allowedOrigins.contains(
-      AnyOrigin)
+    val anyOriginAllowed: Boolean = corsConfig
+      .allowedOrigins
+      .contains(AnyOrigin)
     val hdr =
       if (anyOriginAllowed && !corsConfig.allowCredentials)
         AnyOrigin
@@ -178,21 +181,21 @@ trait CorsSupport extends Handler with Initializable {
   private[this] def originMatches: Boolean = // 6.2.2
     corsConfig.allowedOrigins.contains(AnyOrigin) ||
       (
-        corsConfig.allowedOrigins contains request.headers
+        corsConfig.allowedOrigins contains request
+          .headers
           .get(OriginHeader)
           .getOrElse("")
       )
 
   private[this] def isEnabled: Boolean =
     !(
-      "Upgrade".equalsIgnoreCase(
-        request.headers.get("Connection").getOrElse("")) &&
-        "WebSocket".equalsIgnoreCase(
-          request.headers.get("Upgrade").getOrElse(""))
+      "Upgrade"
+        .equalsIgnoreCase(request.headers.get("Connection").getOrElse("")) &&
+        "WebSocket"
+          .equalsIgnoreCase(request.headers.get("Upgrade").getOrElse(""))
     ) &&
-      !requestPath.contains(
-        "eb_ping"
-      ) // don't do anything for the ping endpoint
+      !requestPath
+        .contains("eb_ping") // don't do anything for the ping endpoint
 
   private[this] def isValidRoute: Boolean =
     routes.matchingMethods(requestPath).nonEmpty
@@ -200,7 +203,8 @@ trait CorsSupport extends Handler with Initializable {
     val isCors = isCORSRequest
     val validRoute = isValidRoute
     val isPreflight =
-      request.headers
+      request
+        .headers
         .get(AccessControlRequestMethodHeader)
         .flatMap(_.blankOption)
         .isDefined
@@ -233,7 +237,8 @@ trait CorsSupport extends Handler with Initializable {
 
   private[this] def allOriginsMatch: Boolean = { // 6.1.2
     val h = request.headers.get(OriginHeader).flatMap(_.blankOption)
-    h.isDefined && h.get.split(" ").nonEmpty && h.get
+    h.isDefined && h.get.split(" ").nonEmpty && h
+      .get
       .split(" ")
       .forall(corsConfig.allowedOrigins.contains)
   }
@@ -242,7 +247,9 @@ trait CorsSupport extends Handler with Initializable {
     val isCors = isCORSRequest
     val enabled = isEnabled
     val allOrigins = allOriginsMatch
-    val res = isCors && enabled && allOrigins && request.headers.keys
+    val res = isCors && enabled && allOrigins && request
+      .headers
+      .keys
       .forall(isSimpleHeader)
     //    logger debug "This is a simple request: %s, because: %s, %s, %s".format(res, isCors, enabled, allOrigins)
     res
@@ -250,29 +257,32 @@ trait CorsSupport extends Handler with Initializable {
 
   private[this] def allowsMethod: Boolean = { // 5.2.3 and 5.2.5
     val accessControlRequestMethod: String = {
-      request.headers
+      request
+        .headers
         .get(AccessControlRequestMethodHeader)
         .flatMap(_.blankOption)
         .getOrElse("")
     }
     val result: Boolean = {
       accessControlRequestMethod.nonBlank &&
-      corsConfig.allowedMethods.contains(
-        accessControlRequestMethod.toUpperCase(ENGLISH))
+      corsConfig
+        .allowedMethods
+        .contains(accessControlRequestMethod.toUpperCase(ENGLISH))
     }
     result
   }
 
   private[this] def headersAreAllowed: Boolean = { // 5.2.4 and 5.2.6
-    val allowedHeaders = corsConfig.allowedHeaders.map(
-      _.trim.toUpperCase(ENGLISH))
+    val allowedHeaders = corsConfig
+      .allowedHeaders
+      .map(_.trim.toUpperCase(ENGLISH))
     val requestedHeaders =
       for (header <- request.headers.getMulti(AccessControlRequestHeadersHeader)
            if header.nonBlank)
         yield header.toUpperCase(ENGLISH)
 
-    requestedHeaders.forall(h =>
-      isSimpleHeader(h) || allowedHeaders.contains(h))
+    requestedHeaders
+      .forall(h => isSimpleHeader(h) || allowedHeaders.contains(h))
   }
 
   abstract override def handle(

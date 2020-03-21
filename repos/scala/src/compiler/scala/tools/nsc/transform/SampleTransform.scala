@@ -23,9 +23,8 @@ abstract class SampleTransform extends Transform {
   class SampleTransformer(unit: CompilationUnit) extends Transformer {
 
     override def transform(tree: Tree): Tree = {
-      val tree1 = super.transform(
-        tree
-      ); // transformers always maintain `currentOwner`.
+      val tree1 = super
+        .transform(tree); // transformers always maintain `currentOwner`.
       tree1 match {
         case Block(List(), expr) => // a simple optimization
           expr
@@ -43,9 +42,10 @@ abstract class SampleTransform extends Transform {
               )( // `atPos` fills in position of its tree argument
                 Select( // The `Select` factory method is defined in class `Trees`
                   sup,
-                  currentOwner.newValue( // creates a new term symbol owned by `currentowner`
-                    newTermName("sample"), // The standard term name creator
-                    tree1.pos)
+                  currentOwner
+                    .newValue( // creates a new term symbol owned by `currentowner`
+                      newTermName("sample"), // The standard term name creator
+                      tree1.pos)
                 )))
           )
         case _ =>

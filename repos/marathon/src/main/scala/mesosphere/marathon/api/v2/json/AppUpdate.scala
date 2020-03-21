@@ -83,8 +83,8 @@ case class AppUpdate(
         .getOrElse(app.dependencies),
       upgradeStrategy = upgradeStrategy.getOrElse(app.upgradeStrategy),
       labels = labels.getOrElse(app.labels),
-      acceptedResourceRoles = acceptedResourceRoles.orElse(
-        app.acceptedResourceRoles),
+      acceptedResourceRoles = acceptedResourceRoles
+        .orElse(app.acceptedResourceRoles),
       ipAddress = ipAddress.orElse(app.ipAddress),
       // The versionInfo may never be overridden by an AppUpdate.
       // Setting the version in AppUpdate means that the user wants to revert to that version. In that

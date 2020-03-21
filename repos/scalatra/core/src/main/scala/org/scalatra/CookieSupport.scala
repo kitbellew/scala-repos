@@ -49,7 +49,8 @@ case class Cookie(name: String, value: String)(implicit
     sb append value
 
     if (cookieOptions.domain.nonBlank && cookieOptions.domain != "localhost")
-      sb.append("; Domain=")
+      sb
+        .append("; Domain=")
         .append({
             if (!cookieOptions.domain.startsWith("."))
               "." + cookieOptions.domain
@@ -116,8 +117,8 @@ class SweetCookies(
     private[this] val response: HttpServletResponse)
     extends ServletApiImplicits {
 
-  private[this] lazy val cookies =
-    mutable.HashMap[String, String]() ++ reqCookies
+  private[this] lazy val cookies = mutable
+    .HashMap[String, String]() ++ reqCookies
 
   def get(key: String): Option[String] = cookies.get(key)
 

@@ -60,8 +60,10 @@ private[mesos] class MesosClusterDispatcherArguments(
       case ("--master" | "-m") :: value :: tail =>
         if (!value.startsWith("mesos://")) {
           // scalastyle:off println
-          System.err.println(
-            "Cluster dispatcher only supports mesos (uri begins with mesos://)")
+          System
+            .err
+            .println(
+              "Cluster dispatcher only supports mesos (uri begins with mesos://)")
           // scalastyle:on println
           System.exit(1)
         }
@@ -94,19 +96,21 @@ private[mesos] class MesosClusterDispatcherArguments(
 
   private def printUsageAndExit(exitCode: Int): Unit = {
     // scalastyle:off println
-    System.err.println(
-      "Usage: MesosClusterDispatcher [options]\n" +
-        "\n" +
-        "Options:\n" +
-        "  -h HOST, --host HOST    Hostname to listen on\n" +
-        "  -p PORT, --port PORT    Port to listen on (default: 7077)\n" +
-        "  --webui-port WEBUI_PORT WebUI Port to listen on (default: 8081)\n" +
-        "  --name NAME             Framework name to show in Mesos UI\n" +
-        "  -m --master MASTER      URI for connecting to Mesos master\n" +
-        "  -z --zk ZOOKEEPER       Comma delimited URLs for connecting to \n" +
-        "                          Zookeeper for persistence\n" +
-        "  --properties-file FILE  Path to a custom Spark properties file.\n" +
-        "                          Default is conf/spark-defaults.conf.")
+    System
+      .err
+      .println(
+        "Usage: MesosClusterDispatcher [options]\n" +
+          "\n" +
+          "Options:\n" +
+          "  -h HOST, --host HOST    Hostname to listen on\n" +
+          "  -p PORT, --port PORT    Port to listen on (default: 7077)\n" +
+          "  --webui-port WEBUI_PORT WebUI Port to listen on (default: 8081)\n" +
+          "  --name NAME             Framework name to show in Mesos UI\n" +
+          "  -m --master MASTER      URI for connecting to Mesos master\n" +
+          "  -z --zk ZOOKEEPER       Comma delimited URLs for connecting to \n" +
+          "                          Zookeeper for persistence\n" +
+          "  --properties-file FILE  Path to a custom Spark properties file.\n" +
+          "                          Default is conf/spark-defaults.conf.")
     // scalastyle:on println
     System.exit(exitCode)
   }

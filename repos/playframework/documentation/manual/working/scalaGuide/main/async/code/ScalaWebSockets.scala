@@ -23,26 +23,28 @@ object ScalaWebSockets extends PlaySpecification {
         in: Source[Message, _],
         expectOut: Int)(implicit
         mat: Materializer): Either[Result, List[Message]] = {
-      await(webSocket(FakeRequest())).right.map { flow =>
-        // When running in the real world, if the flow cancels upstream, Play's WebSocket protocol implementation will
-        // handle this and close the WebSocket, but here, that won't happen, so we redeem the future when we receive
-        // enough.
-        val promise = Promise[List[Message]]()
-        if (expectOut == 0)
-          promise.success(Nil)
-        val flowResult = in via flow runWith Sink
-          .fold[(List[Message], Int), Message]((Nil, expectOut)) {
-            (state, out) =>
-              val (result, remaining) = state
-              if (remaining == 1) {
-                promise.success(result :+ out)
-              }
-              (result :+ out, remaining - 1)
-          }
-        import play.api.libs.iteratee.Execution.Implicits.trampoline
-        await(
-          Future.firstCompletedOf(Seq(promise.future, flowResult.map(_._1))))
-      }
+      await(webSocket(FakeRequest()))
+        .right
+        .map { flow =>
+          // When running in the real world, if the flow cancels upstream, Play's WebSocket protocol implementation will
+          // handle this and close the WebSocket, but here, that won't happen, so we redeem the future when we receive
+          // enough.
+          val promise = Promise[List[Message]]()
+          if (expectOut == 0)
+            promise.success(Nil)
+          val flowResult = in via flow runWith Sink
+            .fold[(List[Message], Int), Message]((Nil, expectOut)) {
+              (state, out) =>
+                val (result, remaining) = state
+                if (remaining == 1) {
+                  promise.success(result :+ out)
+                }
+                (result :+ out, remaining - 1)
+            }
+          import play.api.libs.iteratee.Execution.Implicits.trampoline
+          await(
+            Future.firstCompletedOf(Seq(promise.future, flowResult.map(_._1))))
+        }
     }
 
     "support actors" in {
@@ -76,8 +78,8 @@ object ScalaWebSockets extends PlaySpecification {
         }
 
         runWebSocket(
-          WebSocket.acceptWithActor[String, String](req =>
-            out => Props(new MyActor)),
+          WebSocket
+            .acceptWithActor[String, String](req => out => Props(new MyActor)),
           Source.empty,
           0) must beRight[List[Message]]
         await(closed.future) must_== ()
@@ -95,8 +97,8 @@ object ScalaWebSockets extends PlaySpecification {
         }
 
         runWebSocket(
-          WebSocket.acceptWithActor[String, String](req =>
-            out => Props(new MyActor)),
+          WebSocket
+            .acceptWithActor[String, String](req => out => Props(new MyActor)),
           Source.maybe,
           0) must beRight[List[Message]]
       }
@@ -123,13 +125,13 @@ object ScalaWebSockets extends PlaySpecification {
           Samples.Controller5.socket,
           Source.single(
             TextMessage(
-              Json.stringify(
-                Json.toJson(Samples.Controller5.InEvent("blah"))))),
+              Json
+                .stringify(Json.toJson(Samples.Controller5.InEvent("blah"))))),
           1) must beRight.which { out =>
           out must_== List(
             TextMessage(
-              Json.stringify(
-                Json.toJson(Samples.Controller5.OutEvent("blah")))))
+              Json
+                .stringify(Json.toJson(Samples.Controller5.OutEvent("blah")))))
         }
       }
 
@@ -309,9 +311,11 @@ object Samples {
     def socket =
       WebSocket.using[String] { request =>
         // Log events to the console
-        val in = Iteratee.foreach[String](println).map { _ =>
-          println("Disconnected")
-        }
+        val in = Iteratee
+          .foreach[String](println)
+          .map { _ =>
+            println("Disconnected")
+          }
 
         // Send a single 'Hello!' message
         val out = Enumerator("Hello!")

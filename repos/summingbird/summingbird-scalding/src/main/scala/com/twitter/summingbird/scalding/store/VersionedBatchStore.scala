@@ -110,7 +110,8 @@ abstract class VersionedBatchStoreBase[K, V](val rootPath: String)
       exclusiveUB: BatchID,
       mode: HdfsMode): Option[(BatchID, FlowProducer[TypedPipe[(K, V)]])] = {
     val meta = HDFSMetadata(mode.conf, rootPath)
-    meta.versions
+    meta
+      .versions
       .map { ver =>
         (versionToBatchID(ver), readVersion(ver))
       }
@@ -146,8 +147,8 @@ class VersionedBatchStore[K, V, K2, V2](
     override val ordering: Ordering[K])
     extends VersionedBatchStoreBase[K, V](rootPath) {
   @transient
-  private val logger = LoggerFactory.getLogger(
-    classOf[VersionedBatchStore[_, _, _, _]])
+  private val logger = LoggerFactory
+    .getLogger(classOf[VersionedBatchStore[_, _, _, _]])
 
   override def toString: String =
     s"${this.getClass.getSimpleName}(rootPath=$rootPath, versionesToKeep=$versionsToKeep, batcher=$batcher)"
@@ -183,9 +184,7 @@ class VersionedBatchStore[K, V, K2, V2](
     if (!target.sinkExists(mode)) {
       logger.info(
         s"Versioned batched store version for $this @ $newVersion doesn't exist. Will write out.")
-      lastVals
-        .map(pack(batchID, _))
-        .write(target)
+      lastVals.map(pack(batchID, _)).write(target)
     } else {
       logger.warn(
         s"Versioned batched store version for $this @ $newVersion already exists! Will skip adding to plan.")
@@ -201,8 +200,6 @@ class VersionedBatchStore[K, V, K2, V2](
       val mappable = VersionedKeyValSource[K2, V2](
         rootPath,
         sourceVersion = Some(v))
-      TypedPipe
-        .from(mappable)
-        .map(unpack)
+      TypedPipe.from(mappable).map(unpack)
     }
 }

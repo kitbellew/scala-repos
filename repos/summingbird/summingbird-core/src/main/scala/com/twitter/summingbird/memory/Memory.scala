@@ -44,11 +44,14 @@ class Memory(implicit jobID: JobId = JobId("default.memory.jobId"))
   private type JamfMap = HMap[Prod, Stream]
 
   def counter(group: Group, name: Name): Option[Long] =
-    MemoryStatProvider.getCountersForJob(jobID).flatMap {
-      _.get(group.getString + "/" + name.getString).map {
-        _.get
+    MemoryStatProvider
+      .getCountersForJob(jobID)
+      .flatMap {
+        _.get(group.getString + "/" + name.getString)
+        .map {
+          _.get
+        }
       }
-    }
 
   private def toStream[T](
       outerProducer: Prod[T],
@@ -154,9 +157,8 @@ class Memory(implicit jobID: JobId = JobId("default.memory.jobId"))
     }
 
     val dagOptimizer = new DagOptimizer[Memory] {}
-    val memoryTail = dagOptimizer.optimize(
-      prod,
-      dagOptimizer.ValueFlatMapToFlatMap)
+    val memoryTail = dagOptimizer
+      .optimize(prod, dagOptimizer.ValueFlatMapToFlatMap)
     val memoryDag = memoryTail.asInstanceOf[TailProducer[Memory, T]]
 
     toStream(memoryDag, HMap.empty)._1

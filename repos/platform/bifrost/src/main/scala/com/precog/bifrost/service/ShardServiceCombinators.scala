@@ -102,7 +102,8 @@ object ShardServiceCombinators extends Logging {
         mimeType <- accept.mimeTypes.headOption
       } yield mimeType
 
-    val requested = (request.headers
+    val requested = (request
+      .headers
       .header[Accept]
       .toSeq
       .flatMap(_.mimeTypes) ++ requestParamType)
@@ -114,7 +115,8 @@ object ShardServiceCombinators extends Logging {
 
   private def getTimeout(
       request: HttpRequest[_]): Validation[String, Option[Long]] = {
-    request.parameters
+    request
+      .parameters
       .get('timeout)
       .filter(_ != null)
       .map {
@@ -135,9 +137,8 @@ object ShardServiceCombinators extends Logging {
     import blueeyes.json.serialization.Extractor._
     val onError: Error => String = {
       case err @ Thrown(ex) =>
-        logger.warn(
-          "Exceptiion thrown from JSON parsing of sortOn parameter",
-          ex)
+        logger
+          .warn("Exceptiion thrown from JSON parsing of sortOn parameter", ex)
         err.message
       case other =>
         other.message
@@ -168,8 +169,9 @@ object ShardServiceCombinators extends Logging {
 
   private def getSortOrder(
       request: HttpRequest[_]): Validation[String, DesiredSortOrder] = {
-    request.parameters
-      .get('sortOrder) filter (_ != null) map (_.toLowerCase) map {
+    request.parameters.get('sortOrder) filter (
+      _ != null
+    ) map (_.toLowerCase) map {
       case "asc" | "\"asc\"" | "ascending" | "\"ascending\"" =>
         success(TableModule.SortAscending)
       case "desc" | "\"desc\"" | "descending" | "\"descending\"" =>
@@ -181,15 +183,16 @@ object ShardServiceCombinators extends Logging {
 
   private def getOffsetAndLimit(
       request: HttpRequest[_]): ValidationNel[String, Option[(Long, Long)]] = {
-    val limit = request.parameters
+    val limit = request
+      .parameters
       .get('limit)
       .filter(_ != null)
       .map {
         case Limit(n) =>
           Validation.success(n)
         case _ =>
-          Validation.failure(
-            "The limit query parameter must be a positive integer.")
+          Validation
+            .failure("The limit query parameter must be a positive integer.")
       }
       .sequence[
         ({
@@ -197,7 +200,8 @@ object ShardServiceCombinators extends Logging {
         })#λ,
         Long]
 
-    val offset = request.parameters
+    val offset = request
+      .parameters
       .get('skip)
       .filter(_ != null)
       .map {
@@ -297,7 +301,8 @@ trait ShardServiceCombinators
                   (APIKey, AccountDetails),
                   Path) => Future[HttpResponse[B]] = {
                 case ((apiKey, account), path) =>
-                  val query: Option[Future[String]] = request.parameters
+                  val query: Option[Future[String]] = request
+                    .parameters
                     .get('q)
                     .filter(_ != null)
                     .map(Promise.successful)
@@ -344,7 +349,8 @@ trait ShardServiceCombinators
       HttpResponse[B]]] {
       val delegate = query[B](next)
       val service = { (request: HttpRequest[ByteChunk]) =>
-        val path = request.parameters
+        val path = request
+          .parameters
           .get('prefixPath)
           .filter(_ != null)
           .getOrElse("")

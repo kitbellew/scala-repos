@@ -74,9 +74,8 @@ object DotGraph {
     for ((key, values) <- relation.forwardMap;
          keyString = keyToString(key);
          value <- values)
-      mappedGraph.getOrElseUpdate(
-        keyString,
-        new HashSet[String]) += valueToString(value)
+      mappedGraph
+        .getOrElseUpdate(keyString, new HashSet[String]) += valueToString(value)
 
     val mappings =
       for {

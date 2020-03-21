@@ -42,11 +42,11 @@ trait ZookeeperStateMonitor {
   import ZookeeperStateMonitor._
 
   private[this] val zkWorkFailedCounter = statsReceiver.counter("zkWork.failed")
-  private[this] val zkWorkSucceededCounter = statsReceiver.counter(
-    "zkWork.succeeded")
+  private[this] val zkWorkSucceededCounter = statsReceiver
+    .counter("zkWork.succeeded")
   private[this] val loadZKDataCounter = statsReceiver.counter("loadZKData")
-  private[this] val loadZKChildrenCounter = statsReceiver.counter(
-    "loadZKChildren")
+  private[this] val loadZKChildrenCounter = statsReceiver
+    .counter("loadZKChildren")
   private[this] val reconnectZKCounter = statsReceiver.counter("reconnectZK")
 
   private[this] val zookeeperWorkQueue = new Broker[() => Unit]

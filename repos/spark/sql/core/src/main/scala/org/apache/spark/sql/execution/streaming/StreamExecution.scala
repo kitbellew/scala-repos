@@ -167,10 +167,12 @@ class StreamExecution(
         }
 
         assert(sources.size == storedProgress.size)
-        sources.zip(storedProgress).foreach {
-          case (source, offset) =>
-            offset.foreach(streamProgress.update(source, _))
-        }
+        sources
+          .zip(storedProgress)
+          .foreach {
+            case (source, offset) =>
+              offset.foreach(streamProgress.update(source, _))
+          }
       case None => // We are starting this stream for the first time.
       case _ =>
         throw new IllegalArgumentException(
@@ -222,8 +224,8 @@ class StreamExecution(
 
       lastExecution = new QueryExecution(sqlContext, newPlan)
       val executedPlan = lastExecution.executedPlan
-      val optimizerTime =
-        (System.nanoTime() - optimizerStart).toDouble / 1000000
+      val optimizerTime = (System.nanoTime() - optimizerStart)
+        .toDouble / 1000000
       logDebug(s"Optimized batch in ${optimizerTime}ms")
 
       streamProgress.synchronized {

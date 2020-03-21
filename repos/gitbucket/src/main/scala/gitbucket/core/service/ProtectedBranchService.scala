@@ -40,8 +40,8 @@ trait ProtectedBranchService {
 
   def getProtectedBranchInfo(owner: String, repository: String, branch: String)(
       implicit session: Session): ProtectedBranchInfo =
-    getProtectedBranchInfoOpt(owner, repository, branch).getOrElse(
-      ProtectedBranchInfo.disabled(owner, repository))
+    getProtectedBranchInfoOpt(owner, repository, branch)
+      .getOrElse(ProtectedBranchInfo.disabled(owner, repository))
 
   def getProtectedBranchList(owner: String, repository: String)(implicit
       session: Session): List[String] =
@@ -64,8 +64,8 @@ trait ProtectedBranchService {
         branch,
         includeAdministrators && contexts.nonEmpty))
     contexts.map { context =>
-      ProtectedBranchContexts.insert(
-        new ProtectedBranchContext(owner, repository, branch, context))
+      ProtectedBranchContexts
+        .insert(new ProtectedBranchContext(owner, repository, branch, context))
     }
   }
 
@@ -90,10 +90,8 @@ object ProtectedBranchService {
         pusher: String)(implicit session: Session): Option[String] = {
       val branch = command.getRefName.stripPrefix("refs/heads/")
       if (branch != command.getRefName) {
-        getProtectedBranchInfo(owner, repository, branch).getStopReason(
-          receivePack.isAllowNonFastForwards,
-          command,
-          pusher)
+        getProtectedBranchInfo(owner, repository, branch)
+          .getStopReason(receivePack.isAllowNonFastForwards, command, pusher)
       } else {
         None
       }

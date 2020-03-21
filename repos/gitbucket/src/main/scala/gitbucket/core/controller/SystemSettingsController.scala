@@ -220,11 +220,13 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
         .getOrElse(false)
       val users = getAllUsers(includeRemoved)
       val members =
-        users.collect {
-          case account if (account.isGroupAccount) =>
-            account.userName -> getGroupMembers(account.userName).map(
-              _.userName)
-        }.toMap
+        users
+          .collect {
+            case account if (account.isGroupAccount) =>
+              account.userName -> getGroupMembers(account.userName)
+                .map(_.userName)
+          }
+          .toMap
 
       html.userlist(users, members, includeRemoved)
     })
@@ -296,7 +298,8 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
       createGroup(form.groupName, form.url)
       updateGroupMembers(
         form.groupName,
-        form.members
+        form
+          .members
           .split(",")
           .map {
             _.split(":") match {
@@ -322,7 +325,8 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
     adminOnly { form =>
       defining(
         params("groupName"),
-        form.members
+        form
+          .members
           .split(",")
           .map {
             _.split(":") match {
@@ -380,12 +384,14 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
           name: String,
           value: String,
           messages: Messages): Option[String] = {
-        if (value.split(",").exists {
-              _.split(":") match {
-                case Array(userName, isManager) =>
-                  isManager.toBoolean
-              }
-            })
+        if (value
+              .split(",")
+              .exists {
+                _.split(":") match {
+                  case Array(userName, isManager) =>
+                    isManager.toBoolean
+                }
+              })
           None
         else
           Some("Must select one manager at least.")
@@ -398,13 +404,15 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
           name: String,
           value: String,
           messages: Messages): Option[String] = {
-        params.get(paramName).flatMap { userName =>
-          if (userName == context.loginAccount.get.userName && params.get(
-                "removed") == Some("true"))
-            Some("You can't disable your account yourself")
-          else
-            None
-        }
+        params
+          .get(paramName)
+          .flatMap { userName =>
+            if (userName == context.loginAccount.get.userName && params
+                  .get("removed") == Some("true"))
+              Some("You can't disable your account yourself")
+            else
+              None
+          }
       }
     }
 

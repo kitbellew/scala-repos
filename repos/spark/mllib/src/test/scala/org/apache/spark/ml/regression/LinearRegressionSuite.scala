@@ -152,7 +152,8 @@ class LinearRegressionSuite
     * so we can validate the training accuracy compared with R's glmnet package.
     */
   ignore("export test data into CSV format") {
-    datasetWithDenseFeature.rdd
+    datasetWithDenseFeature
+      .rdd
       .map {
         case Row(label: Double, features: Vector) =>
           label + "," + features.toArray.mkString(",")
@@ -161,7 +162,8 @@ class LinearRegressionSuite
       .saveAsTextFile(
         "target/tmp/LinearRegressionSuite/datasetWithDenseFeature")
 
-    datasetWithDenseFeatureWithoutIntercept.rdd
+    datasetWithDenseFeatureWithoutIntercept
+      .rdd
       .map {
         case Row(label: Double, features: Vector) =>
           label + "," + features.toArray.mkString(",")
@@ -170,7 +172,8 @@ class LinearRegressionSuite
       .saveAsTextFile(
         "target/tmp/LinearRegressionSuite/datasetWithDenseFeatureWithoutIntercept")
 
-    datasetWithSparseFeature.rdd
+    datasetWithSparseFeature
+      .rdd
       .map {
         case Row(label: Double, features: Vector) =>
           label + "," + features.toArray.mkString(",")
@@ -273,11 +276,11 @@ class LinearRegressionSuite
         .setStandardization(false)
         .setSolver(solver)
       val model1 = trainer1.fit(datasetWithDenseFeature)
-      val modelWithoutIntercept1 = trainer1.fit(
-        datasetWithDenseFeatureWithoutIntercept)
+      val modelWithoutIntercept1 = trainer1
+        .fit(datasetWithDenseFeatureWithoutIntercept)
       val model2 = trainer2.fit(datasetWithDenseFeature)
-      val modelWithoutIntercept2 = trainer2.fit(
-        datasetWithDenseFeatureWithoutIntercept)
+      val modelWithoutIntercept2 = trainer2
+        .fit(datasetWithDenseFeatureWithoutIntercept)
 
       /*
          coefficients <- coef(glmnet(features, label, family="gaussian", alpha = 0, lambda = 0,
@@ -309,10 +312,12 @@ class LinearRegressionSuite
 
       assert(modelWithoutIntercept1.intercept ~== 0 absTol 1e-3)
       assert(
-        modelWithoutIntercept1.coefficients ~= coefficientsWithourInterceptR relTol 1e-3)
+        modelWithoutIntercept1
+          .coefficients ~= coefficientsWithourInterceptR relTol 1e-3)
       assert(modelWithoutIntercept2.intercept ~== 0 absTol 1e-3)
       assert(
-        modelWithoutIntercept2.coefficients ~= coefficientsWithourInterceptR relTol 1e-3)
+        modelWithoutIntercept2
+          .coefficients ~= coefficientsWithourInterceptR relTol 1e-3)
     }
   }
 
@@ -815,8 +820,8 @@ class LinearRegressionSuite
       val trainer = new LinearRegression().setSolver(solver)
       val model = trainer.fit(datasetWithDenseFeature)
       val trainerNoPredictionCol = trainer.setPredictionCol("")
-      val modelNoPredictionCol = trainerNoPredictionCol.fit(
-        datasetWithDenseFeature)
+      val modelNoPredictionCol = trainerNoPredictionCol
+        .fit(datasetWithDenseFeature)
 
       // Training results for the model should be available
       assert(model.hasSummary)
@@ -830,8 +835,9 @@ class LinearRegressionSuite
       val modelNoPredictionColFieldNames =
         modelNoPredictionCol.summary.predictions.schema.fieldNames
       assert(
-        (datasetWithDenseFeature.schema.fieldNames.toSet)
-          .subsetOf(modelNoPredictionColFieldNames.toSet))
+        (
+          datasetWithDenseFeature.schema.fieldNames.toSet
+        ).subsetOf(modelNoPredictionColFieldNames.toSet))
       assert(
         modelNoPredictionColFieldNames.exists(s => s.startsWith("prediction_")))
 
@@ -902,9 +908,7 @@ class LinearRegressionSuite
       if (solver == "l-bfgs") {
         // Objective function should be monotonically decreasing for linear regression
         assert(
-          model.summary.objectiveHistory
-            .sliding(2)
-            .forall(x => x(0) >= x(1)))
+          model.summary.objectiveHistory.sliding(2).forall(x => x(0) >= x(1)))
       } else {
         // To clalify that the normal solver is used here.
         assert(model.summary.objectiveHistory.length == 1)
@@ -913,18 +917,36 @@ class LinearRegressionSuite
         val seCoefR = Array(0.0011805, 0.0009044, 0.0018600)
         val tValsR = Array(3980, 7961, 3388)
         val pValsR = Array(0, 0, 0)
-        model.summary.devianceResiduals.zip(devianceResidualsR).foreach { x =>
-          assert(x._1 ~== x._2 absTol 1e-4)
-        }
-        model.summary.coefficientStandardErrors.zip(seCoefR).foreach { x =>
-          assert(x._1 ~== x._2 absTol 1e-4)
-        }
-        model.summary.tValues.map(_.round).zip(tValsR).foreach { x =>
-          assert(x._1 === x._2)
-        }
-        model.summary.pValues.map(_.round).zip(pValsR).foreach { x =>
-          assert(x._1 === x._2)
-        }
+        model
+          .summary
+          .devianceResiduals
+          .zip(devianceResidualsR)
+          .foreach { x =>
+            assert(x._1 ~== x._2 absTol 1e-4)
+          }
+        model
+          .summary
+          .coefficientStandardErrors
+          .zip(seCoefR)
+          .foreach { x =>
+            assert(x._1 ~== x._2 absTol 1e-4)
+          }
+        model
+          .summary
+          .tValues
+          .map(_.round)
+          .zip(tValsR)
+          .foreach { x =>
+            assert(x._1 === x._2)
+          }
+        model
+          .summary
+          .pValues
+          .map(_.round)
+          .zip(pValsR)
+          .foreach { x =>
+            assert(x._1 === x._2)
+          }
       }
     }
   }
@@ -937,9 +959,12 @@ class LinearRegressionSuite
       // Evaluating on training dataset should yield results summary equal to training summary
       val testSummary = model.evaluate(datasetWithDenseFeature)
       assert(
-        model.summary.meanSquaredError ~== testSummary.meanSquaredError relTol 1e-5)
+        model.summary.meanSquaredError ~== testSummary
+          .meanSquaredError relTol 1e-5)
       assert(model.summary.r2 ~== testSummary.r2 relTol 1e-5)
-      model.summary.residuals
+      model
+        .summary
+        .residuals
         .select("residuals")
         .collect()
         .zip(testSummary.residuals.select("residuals").collect())
@@ -1098,10 +1123,7 @@ class LinearRegressionSuite
     // Training results for the model should be available
     assert(model.hasSummary)
     // When LBFGS is used as optimizer, objective history can be restored.
-    assert(
-      model.summary.objectiveHistory
-        .sliding(2)
-        .forall(x => x(0) >= x(1)))
+    assert(model.summary.objectiveHistory.sliding(2).forall(x => x(0) >= x(1)))
   }
 
   test(
@@ -1147,18 +1169,34 @@ class LinearRegressionSuite
 
     assert(model.coefficients ~== coefficientsR absTol 1e-3)
     assert(model.intercept ~== interceptR absTol 1e-3)
-    model.summary.devianceResiduals.zip(devianceResidualsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    model.summary.coefficientStandardErrors.zip(seCoefR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    model.summary.tValues.zip(tValsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    model.summary.pValues.zip(pValsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
+    model
+      .summary
+      .devianceResiduals
+      .zip(devianceResidualsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    model
+      .summary
+      .coefficientStandardErrors
+      .zip(seCoefR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    model
+      .summary
+      .tValues
+      .zip(tValsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    model
+      .summary
+      .pValues
+      .zip(pValsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
   }
 
   test(
@@ -1206,18 +1244,34 @@ class LinearRegressionSuite
 
     assert(model.coefficients ~== coefficientsR absTol 1e-3)
     assert(model.intercept === interceptR)
-    model.summary.devianceResiduals.zip(devianceResidualsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    model.summary.coefficientStandardErrors.zip(seCoefR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    model.summary.tValues.zip(tValsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
-    model.summary.pValues.zip(pValsR).foreach { x =>
-      assert(x._1 ~== x._2 absTol 1e-3)
-    }
+    model
+      .summary
+      .devianceResiduals
+      .zip(devianceResidualsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    model
+      .summary
+      .coefficientStandardErrors
+      .zip(seCoefR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    model
+      .summary
+      .tValues
+      .zip(tValsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
+    model
+      .summary
+      .pValues
+      .zip(pValsR)
+      .foreach { x =>
+        assert(x._1 ~== x._2 absTol 1e-3)
+      }
   }
 
   test("read/write") {

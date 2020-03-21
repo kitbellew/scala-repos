@@ -23,15 +23,18 @@ class IncrementalLexerHighlightingTest
 
     typed foreach {
       case '\r' =>
-        CommandProcessor.getInstance.executeCommand(
-          myFixture.getProject,
-          new Runnable {
-            def run() {
-              myFixture.performEditorAction(IdeActions.ACTION_EDITOR_BACKSPACE)
-            }
-          },
-          "",
-          null)
+        CommandProcessor
+          .getInstance
+          .executeCommand(
+            myFixture.getProject,
+            new Runnable {
+              def run() {
+                myFixture
+                  .performEditorAction(IdeActions.ACTION_EDITOR_BACKSPACE)
+              }
+            },
+            "",
+            null)
       case '\n' =>
         CommandProcessor
           .getInstance()
@@ -49,7 +52,8 @@ class IncrementalLexerHighlightingTest
     }
 
     val incSegments =
-      myFixture.getEditor
+      myFixture
+        .getEditor
         .asInstanceOf[EditorImpl]
         .getHighlighter
         .asInstanceOf[LexerEditorHighlighter]
@@ -58,7 +62,8 @@ class IncrementalLexerHighlightingTest
     val secondText = myFixture.getFile.getText
     myFixture.configureByText("dummy.scala", secondText)
     val segments =
-      myFixture.getEditor
+      myFixture
+        .getEditor
         .asInstanceOf[EditorImpl]
         .getHighlighter
         .asInstanceOf[LexerEditorHighlighter]

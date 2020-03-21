@@ -45,9 +45,8 @@ object ToHeadUsages extends Specification {
     }
   }
 
-  private val host_ = System.getProperty(
-    "net.liftweb.webapptest.oneshot.host",
-    reachableLocalAddress)
+  private val host_ = System
+    .getProperty("net.liftweb.webapptest.oneshot.host", reachableLocalAddress)
   private val port_ =
     System.getProperty("net.liftweb.webapptest.toheadusages.port", "8282").toInt
 
@@ -80,8 +79,8 @@ object ToHeadUsages extends Specification {
       jetty.browse(
         "/htmlSnippetWithHead",
         html =>
-          html.getElementByXPath(
-            "/html/head/script[@src='snippet.js']") must not(
+          html
+            .getElementByXPath("/html/head/script[@src='snippet.js']") must not(
             beNull when jetty.running))
     }
 
@@ -191,25 +190,23 @@ object ToHeadUsages extends Specification {
       def excludeBar(in: String): Boolean = in.startsWith("/bar")
 
       val second =
-        LiftRules.excludePathFromContextPathRewriting.doWith(excludeBar _) {
-          Req.fixHtml("/wombat", <span>
+        LiftRules
+          .excludePathFromContextPathRewriting
+          .doWith(excludeBar _) {
+            Req.fixHtml("/wombat", <span>
             <a href="/foo" id="foo">foo</a>
             <a href="/bar" id="bar">bar</a>
           </span>)
-        }
+          }
 
-      (
-        (first \\ "a").filter(e => (e \ "@id").text == "foo") \ "@href"
-      ).text must be_==("/wombat/foo").when(jetty.running)
-      (
-        (first \\ "a").filter(e => (e \ "@id").text == "bar") \ "@href"
-      ).text must be_==("/wombat/bar").when(jetty.running)
-      (
-        (second \\ "a").filter(e => (e \ "@id").text == "foo") \ "@href"
-      ).text must be_==("/wombat/foo").when(jetty.running)
-      (
-        (second \\ "a").filter(e => (e \ "@id").text == "bar") \ "@href"
-      ).text must be_==("/bar").when(jetty.running)
+      ((first \\ "a").filter(e => (e \ "@id").text == "foo") \ "@href")
+        .text must be_==("/wombat/foo").when(jetty.running)
+      ((first \\ "a").filter(e => (e \ "@id").text == "bar") \ "@href")
+        .text must be_==("/wombat/bar").when(jetty.running)
+      ((second \\ "a").filter(e => (e \ "@id").text == "foo") \ "@href")
+        .text must be_==("/wombat/foo").when(jetty.running)
+      ((second \\ "a").filter(e => (e \ "@id").text == "bar") \ "@href")
+        .text must be_==("/bar").when(jetty.running)
     }
   }
 

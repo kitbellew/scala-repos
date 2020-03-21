@@ -60,12 +60,14 @@ class ScNewTemplateDefinitionImpl private (
     val earlyHolders: Seq[ScDeclaredElementsHolder] =
       extendsBlock.earlyDefinitions match {
         case Some(e: ScEarlyDefinitions) =>
-          e.members.flatMap {
-            case holder: ScDeclaredElementsHolder =>
-              Seq(holder)
-            case _ =>
-              Seq.empty
-          }
+          e
+            .members
+            .flatMap {
+              case holder: ScDeclaredElementsHolder =>
+                Seq(holder)
+              case _ =>
+                Seq.empty
+            }
         case None =>
           Seq.empty
       }
@@ -78,12 +80,14 @@ class ScNewTemplateDefinitionImpl private (
           (earlyHolders, Seq.empty)
       }
 
-    val superTypes = extendsBlock.superTypes.filter {
-      case ScDesignatorType(clazz: PsiClass) =>
-        clazz.qualifiedName != "scala.ScalaObject"
-      case _ =>
-        true
-    }
+    val superTypes = extendsBlock
+      .superTypes
+      .filter {
+        case ScDesignatorType(clazz: PsiClass) =>
+          clazz.qualifiedName != "scala.ScalaObject"
+        case _ =>
+          true
+      }
 
     if (superTypes.length > 1 || holders.nonEmpty || aliases.nonEmpty) {
       new Success(
@@ -132,12 +136,15 @@ class ScNewTemplateDefinitionImpl private (
 
   override def getSupers: Array[PsiClass] = {
     val direct =
-      extendsBlock.supers.filter {
-        case clazz: PsiClass =>
-          clazz.qualifiedName != "scala.ScalaObject"
-        case _ =>
-          true
-      }.toArray
+      extendsBlock
+        .supers
+        .filter {
+          case clazz: PsiClass =>
+            clazz.qualifiedName != "scala.ScalaObject"
+          case _ =>
+            true
+        }
+        .toArray
     val res = new ArrayBuffer[PsiClass]
     res ++= direct
     for (sup <- direct if !res.contains(sup))
@@ -151,11 +158,8 @@ class ScNewTemplateDefinitionImpl private (
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    super[ScNewTemplateDefinition].processDeclarations(
-      processor,
-      state,
-      lastParent,
-      place)
+    super[ScNewTemplateDefinition]
+      .processDeclarations(processor, state, lastParent, place)
   }
 
   override def getExtendsListTypes: Array[PsiClassType] = innerExtendsListTypes
@@ -241,12 +245,14 @@ class ScNewTemplateDefinitionImpl private (
 
   override def getAllMethods: Array[PsiMethod] = {
     val res = new ArrayBuffer[PsiMethod]()
-    TypeDefinitionMembers.SignatureNodes.forAllSignatureNodes(this) { node =>
-      this.processPsiMethodsForNode(
-        node,
-        isStatic = false,
-        isInterface = false)(res += _)
-    }
+    TypeDefinitionMembers
+      .SignatureNodes
+      .forAllSignatureNodes(this) { node =>
+        this.processPsiMethodsForNode(
+          node,
+          isStatic = false,
+          isInterface = false)(res += _)
+      }
     res.toArray
   }
 

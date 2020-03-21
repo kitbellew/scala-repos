@@ -31,9 +31,11 @@ private[logging] object Formatter {
       limit: Int): List[String] = {
     var out = new mutable.ListBuffer[String]
     if (limit > 0) {
-      out ++= t.getStackTrace.map { elem =>
-        "    at %s".format(elem.toString)
-      }
+      out ++= t
+        .getStackTrace
+        .map { elem =>
+          "    at %s".format(elem.toString)
+        }
       if (out.length > limit) {
         out.trimEnd(out.length - limit)
         out += "    (...more...)"
@@ -172,9 +174,8 @@ class Formatter(
       lines ++= splitOnNewlines
 
       if (record.getThrown ne null) {
-        val traceLines = Formatter.formatStackTrace(
-          record.getThrown,
-          truncateStackTracesAt)
+        val traceLines = Formatter
+          .formatStackTrace(record.getThrown, truncateStackTracesAt)
         lines += record.getThrown.toString
         if (traceLines.nonEmpty)
           lines ++= traceLines
@@ -215,10 +216,8 @@ class Formatter(
       record.getLevel,
       dateFormat.format(new Date(record.getMillis)),
       name)
-    formatMessageLines(record).mkString(
-      prefix,
-      lineTerminator + prefix,
-      lineTerminator)
+    formatMessageLines(record)
+      .mkString(prefix, lineTerminator + prefix, lineTerminator)
   }
 
   /**

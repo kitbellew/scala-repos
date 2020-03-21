@@ -40,9 +40,11 @@ object ScalaCSRFActionSpec extends CSRFCommonSpecs {
           case _ =>
             csrfAddToken(
               Action { implicit req =>
-                CSRF.getToken.map { token =>
-                  Results.Ok(token.value)
-                } getOrElse Results.NotFound
+                CSRF
+                  .getToken
+                  .map { token =>
+                    Results.Ok(token.value)
+                  } getOrElse Results.NotFound
               })
         } {
           import play.api.Play.current

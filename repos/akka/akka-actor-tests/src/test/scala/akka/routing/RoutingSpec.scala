@@ -62,8 +62,8 @@ class RoutingSpec
   "routers in general" must {
 
     "evict terminated routees" in {
-      val router = system.actorOf(
-        RoundRobinPool(2).props(routeeProps = Props[Echo]))
+      val router = system
+        .actorOf(RoundRobinPool(2).props(routeeProps = Props[Echo]))
       router ! ""
       router ! ""
       val c1, c2 = expectMsgType[ActorRef]
@@ -113,9 +113,8 @@ class RoutingSpec
     }
 
     "use configured nr-of-instances when FromConfig" in {
-      val router = system.actorOf(
-        FromConfig.props(routeeProps = Props[TestActor]),
-        "router1")
+      val router = system
+        .actorOf(FromConfig.props(routeeProps = Props[TestActor]), "router1")
       router ! GetRoutees
       expectMsgType[Routees].routees.size should ===(3)
       watch(router)
@@ -261,8 +260,8 @@ class RoutingSpec
         }
       }
 
-      val routedActor = system.actorOf(
-        NoRouter.props(routeeProps = Props(new Actor1)))
+      val routedActor = system
+        .actorOf(NoRouter.props(routeeProps = Props(new Actor1)))
       routedActor ! "hello"
       routedActor ! "end"
 

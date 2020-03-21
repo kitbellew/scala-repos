@@ -119,7 +119,8 @@ trait Positions extends api.Positions {
         else
           ""
       inform(
-        "== " + prefix + " tree [" + tree.id + "] of type " + tree.productPrefix + " at " + tree.pos.show + source)
+        "== " + prefix + " tree [" + tree.id + "] of type " + tree
+          .productPrefix + " at " + tree.pos.show + source)
       inform("")
       inform(treeStatus(tree))
       inform("")
@@ -152,13 +153,15 @@ trait Positions extends api.Positions {
         if (tree.pos.isRange) {
           if (!encltree.pos.isRange)
             positionError(
-              "Synthetic tree [" + encltree.id + "] contains nonsynthetic tree [" + tree.id + "]") {
+              "Synthetic tree [" + encltree
+                .id + "] contains nonsynthetic tree [" + tree.id + "]") {
               reportTree("Enclosing", encltree)
               reportTree("Enclosed", tree)
             }
           if (!(encltree.pos includes tree.pos))
             positionError(
-              "Enclosing tree [" + encltree.id + "] does not include tree [" + tree.id + "]") {
+              "Enclosing tree [" + encltree
+                .id + "] does not include tree [" + tree.id + "]") {
               reportTree("Enclosing", encltree)
               reportTree("Enclosed", tree)
             }

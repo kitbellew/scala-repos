@@ -33,27 +33,31 @@ class HasManyThrough[From <: KeyedMapper[ThroughType, From], To <: Mapper[
 
   private val others = FatLazy[List[To]] {
     DB.use(owner.connectionIdentifier) { conn =>
-      val query =
-        "SELECT DISTINCT " + otherSingleton._dbTableNameLC + ".* FROM " + otherSingleton._dbTableNameLC + "," +
-          through._dbTableNameLC + " WHERE " +
-          otherSingleton._dbTableNameLC + "." + otherSingleton
-          .indexedField(otherSingleton.asInstanceOf[To])
-          .openOrThrowException("legacy code")
-          ._dbColumnNameLC + " = " +
-          through._dbTableNameLC + "." + throughToField._dbColumnNameLC + " AND " +
-          through._dbTableNameLC + "." + throughFromField._dbColumnNameLC + " = ?"
+      val query = "SELECT DISTINCT " + otherSingleton
+        ._dbTableNameLC + ".* FROM " + otherSingleton._dbTableNameLC + "," +
+        through._dbTableNameLC + " WHERE " +
+        otherSingleton._dbTableNameLC + "." + otherSingleton
+        .indexedField(otherSingleton.asInstanceOf[To])
+        .openOrThrowException("legacy code")
+        ._dbColumnNameLC + " = " +
+        through._dbTableNameLC + "." + throughToField
+        ._dbColumnNameLC + " AND " +
+        through._dbTableNameLC + "." + throughFromField._dbColumnNameLC + " = ?"
       DB.prepareStatement(query, conn) { st =>
-        owner.getSingleton.indexedField(owner).map { indVal =>
-          if (indVal.dbIgnoreSQLType_?)
-            st.setObject(1, indVal.jdbcFriendly)
-          else
-            st.setObject(1, indVal.jdbcFriendly, indVal.targetSQLType)
+        owner
+          .getSingleton
+          .indexedField(owner)
+          .map { indVal =>
+            if (indVal.dbIgnoreSQLType_?)
+              st.setObject(1, indVal.jdbcFriendly)
+            else
+              st.setObject(1, indVal.jdbcFriendly, indVal.targetSQLType)
 
-          DB.exec(st) { rs =>
-            otherSingleton
-              .createInstances(owner.connectionIdentifier, rs, Empty, Empty)
-          }
-        } openOr Nil
+            DB.exec(st) { rs =>
+              otherSingleton
+                .createInstances(owner.connectionIdentifier, rs, Empty, Empty)
+            }
+          } openOr Nil
       }
     }
   }
@@ -70,31 +74,37 @@ class HasManyThrough[From <: KeyedMapper[ThroughType, From], To <: Mapper[
   }
 
   override def beforeDelete {
-    through.findAll(By(throughFromField, owner.primaryKeyField.get)).foreach {
-      toDelete => toDelete.delete_!
-    }
+    through
+      .findAll(By(throughFromField, owner.primaryKeyField.get))
+      .foreach { toDelete =>
+        toDelete.delete_!
+      }
   }
 
   override def afterUpdate {
-    val current = through.findAll(
-      By(throughFromField, owner.primaryKeyField.get))
+    val current = through
+      .findAll(By(throughFromField, owner.primaryKeyField.get))
 
     val newKeys = new HashSet[ThroughType];
 
     theSetList.foreach(i => newKeys += i)
-    val toDelete = current.filter(c =>
-      !newKeys.contains(throughToField.actualField(c).get))
+    val toDelete = current
+      .filter(c => !newKeys.contains(throughToField.actualField(c).get))
     toDelete.foreach(_.delete_!)
 
     val oldKeys = new HashSet[ThroughType];
     current.foreach(i => oldKeys += throughToField.actualField(i).get)
 
-    theSetList.toList.distinct.filter(i => !oldKeys.contains(i)).foreach { i =>
-      val toCreate = through.createInstance
-      throughFromField.actualField(toCreate).set(owner.primaryKeyField.get)
-      throughToField.actualField(toCreate).set(i)
-      toCreate.save
-    }
+    theSetList
+      .toList
+      .distinct
+      .filter(i => !oldKeys.contains(i))
+      .foreach { i =>
+        val toCreate = through.createInstance
+        throughFromField.actualField(toCreate).set(owner.primaryKeyField.get)
+        throughToField.actualField(toCreate).set(i)
+        toCreate.save
+      }
 
     theSetList = Nil
     others.reset
@@ -102,12 +112,15 @@ class HasManyThrough[From <: KeyedMapper[ThroughType, From], To <: Mapper[
   }
 
   override def afterCreate {
-    theSetList.toList.distinct.foreach { i =>
-      val toCreate = through.createInstance
-      throughFromField.actualField(toCreate)(owner.primaryKeyField.get)
-      throughToField.actualField(toCreate)(i)
-      toCreate.save
-    }
+    theSetList
+      .toList
+      .distinct
+      .foreach { i =>
+        val toCreate = through.createInstance
+        throughFromField.actualField(toCreate)(owner.primaryKeyField.get)
+        throughToField.actualField(toCreate)(i)
+        toCreate.save
+      }
     theSetList = Nil
     others.reset
     super.afterCreate

@@ -86,10 +86,13 @@ final class IDF(override val uid: String)
 
   override def fit(dataset: DataFrame): IDFModel = {
     transformSchema(dataset.schema, logging = true)
-    val input = dataset.select($(inputCol)).rdd.map {
-      case Row(v: Vector) =>
-        v
-    }
+    val input = dataset
+      .select($(inputCol))
+      .rdd
+      .map {
+        case Row(v: Vector) =>
+          v
+      }
     val idf = new feature.IDF($(minDocFreq)).fit(input)
     copyValues(new IDFModel(uid, idf).setParent(this))
   }
@@ -179,10 +182,7 @@ object IDFModel extends MLReadable[IDFModel] {
     override def load(path: String): IDFModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select("idf")
-        .head()
+      val data = sqlContext.read.parquet(dataPath).select("idf").head()
       val idf = data.getAs[Vector](0)
       val model = new IDFModel(metadata.uid, new feature.IDFModel(idf))
       DefaultParamsReader.getAndSetParams(model, metadata)

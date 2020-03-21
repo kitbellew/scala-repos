@@ -45,27 +45,29 @@ private[finagle] class SocketAddressResolveHandler(
     (e, e.getValue) match {
       case (de: DownstreamChannelStateEvent, socketAddress: InetSocketAddress)
           if socketAddress.isUnresolved =>
-        ctx.getPipeline.execute(
-          new Runnable {
-            override def run() {
-              resolver(socketAddress.getHostName) match {
-                case Right(address) =>
-                  val resolvedSocketAddress =
-                    new InetSocketAddress(address, socketAddress.getPort)
-                  val resolvedEvent =
-                    new DownstreamChannelStateEvent(
-                      de.getChannel,
-                      de.getFuture,
-                      de.getState,
-                      resolvedSocketAddress)
-                  SocketAddressResolveHandler.super
-                    .connectRequested(ctx, resolvedEvent)
-                case Left(t) =>
-                  de.getFuture.setFailure(t)
-                  Channels.close(ctx.getChannel)
+        ctx
+          .getPipeline
+          .execute(
+            new Runnable {
+              override def run() {
+                resolver(socketAddress.getHostName) match {
+                  case Right(address) =>
+                    val resolvedSocketAddress =
+                      new InetSocketAddress(address, socketAddress.getPort)
+                    val resolvedEvent =
+                      new DownstreamChannelStateEvent(
+                        de.getChannel,
+                        de.getFuture,
+                        de.getState,
+                        resolvedSocketAddress)
+                    SocketAddressResolveHandler.super
+                      .connectRequested(ctx, resolvedEvent)
+                  case Left(t) =>
+                    de.getFuture.setFailure(t)
+                    Channels.close(ctx.getChannel)
+                }
               }
-            }
-          })
+            })
       case _ =>
         e.getFuture.setFailure(new InconsistentStateException(addr))
         Channels.close(ctx.getChannel)

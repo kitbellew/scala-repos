@@ -59,7 +59,8 @@ private[spark] object TreePoint {
     val featureArity: Array[Int] = new Array[Int](metadata.numFeatures)
     var featureIndex = 0
     while (featureIndex < metadata.numFeatures) {
-      featureArity(featureIndex) = metadata.featureArity
+      featureArity(featureIndex) = metadata
+        .featureArity
         .getOrElse(featureIndex, 0)
       featureIndex += 1
     }

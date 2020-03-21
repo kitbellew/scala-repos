@@ -99,10 +99,8 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("gram") {
-    val expected = Matrices.dense(
-      n,
-      n,
-      Array(126.0, 54.0, 72.0, 54.0, 66.0, 78.0, 72.0, 78.0, 94.0))
+    val expected = Matrices
+      .dense(n, n, Array(126.0, 54.0, 72.0, 54.0, 66.0, 78.0, 72.0, 78.0, 94.0))
     for (mat <- Seq(denseMat, sparseMat)) {
       val G = mat.computeGramianMatrix()
       assert(G.toBreeze === expected.toBreeze)
@@ -171,13 +169,8 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
                 s.toBreeze.asInstanceOf[BDV[Double]] - localSigma(0 until k)))
           }
         }
-        val svdWithoutU = mat.computeSVD(
-          1,
-          computeU = false,
-          1e-9,
-          300,
-          1e-10,
-          mode)
+        val svdWithoutU = mat
+          .computeSVD(1, computeU = false, 1e-9, 300, 1e-10, mode)
         assert(svdWithoutU.U === null)
       }
     }
@@ -337,11 +330,12 @@ class RowMatrixClusterSuite
     super.beforeAll()
     val m = 4
     val n = 200000
-    val rows = sc.parallelize(0 until m, 2).mapPartitionsWithIndex {
-      (idx, iter) =>
+    val rows = sc
+      .parallelize(0 until m, 2)
+      .mapPartitionsWithIndex { (idx, iter) =>
         val random = new Random(idx)
         iter.map(i => Vectors.dense(Array.fill(n)(random.nextDouble())))
-    }
+      }
     mat = new RowMatrix(rows)
   }
 

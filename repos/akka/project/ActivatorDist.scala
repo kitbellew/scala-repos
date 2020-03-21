@@ -33,8 +33,8 @@ object ActivatorDist {
           val directories = projectBase
             .listFiles(DirectoryFilter)
             .filter(dir => (dir / "activator.properties").exists)
-          val rootGitignoreLines = IO.readLines(
-            AkkaBuild.root.base / ".gitignore")
+          val rootGitignoreLines = IO
+            .readLines(AkkaBuild.root.base / ".gitignore")
           for (dir <- directories) {
             val localGitignoreLines =
               if ((dir / ".gitignore").exists)
@@ -47,9 +47,8 @@ object ActivatorDist {
             val filteredPathFinder = PathFinder(dir) descendantsExcept (
               "*", gitignoreFileFilter
             ) filter (_.isFile)
-            filteredPathFinder pair Path.rebase(
-              dir,
-              activatorDistDirectory / dir.name) map {
+            filteredPathFinder pair Path
+              .rebase(dir, activatorDistDirectory / dir.name) map {
               case (source, target) =>
                 s.log.info(s"copying: $source -> $target")
                 IO.copyFile(source, target, preserveLastModified = true)

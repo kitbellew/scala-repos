@@ -26,7 +26,8 @@ trait Calculate {
   }
 
   private def localSymbols: Map[Symbol, Int] =
-    state.localSymbols // set of all symbols that are local to the tree to be reified
+    state
+      .localSymbols // set of all symbols that are local to the tree to be reified
   private def localSymbols_=(value: Map[Symbol, Int]): Unit =
     state.localSymbols = value
   private def registerLocalSymbol(sym: Symbol, metalevel: Int): Unit =

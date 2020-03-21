@@ -27,8 +27,8 @@ object RestartNodeMultiJvmSpec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false)
       .withFallback(
-        ConfigFactory.parseString(
-          "akka.cluster.auto-down-unreachable-after = 5s"))
+        ConfigFactory
+          .parseString("akka.cluster.auto-down-unreachable-after = 5s"))
       .withFallback(MultiNodeClusterSpec.clusterConfig))
 }
 
@@ -126,15 +126,21 @@ abstract class RestartNodeSpec
         awaitAssert(
           Cluster(restartedSecondSystem).readView.members.size should ===(3))
         awaitAssert(
-          Cluster(restartedSecondSystem).readView.members
+          Cluster(restartedSecondSystem)
+            .readView
+            .members
             .map(_.status) should ===(Set(Up)))
       }
       runOn(first, third) {
         awaitAssert {
           Cluster(system).readView.members.size should ===(3)
-          Cluster(system).readView.members.exists { m ⇒
-            m.address == secondUniqueAddress.address && m.uniqueAddress.uid != secondUniqueAddress.uid
-          }
+          Cluster(system)
+            .readView
+            .members
+            .exists { m ⇒
+              m.address == secondUniqueAddress
+                .address && m.uniqueAddress.uid != secondUniqueAddress.uid
+            }
         }
       }
       enterBarrier("second-restarted")

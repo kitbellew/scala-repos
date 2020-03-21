@@ -38,7 +38,8 @@ class AccessTokenAuthenticationFilter extends Filter with AccessTokenService {
       }
       .orElse {
         Option(
-          request.getSession
+          request
+            .getSession
             .getAttribute(Keys.Session.LoginAccount)
             .asInstanceOf[Account]).map(Right(_))
       } match {

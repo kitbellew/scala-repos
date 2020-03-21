@@ -115,7 +115,8 @@ trait Base {
       def read(json: JValue) =
         json match {
           case JArray(xs) => {
-            xs.map(fromJSON[A])
+            xs
+              .map(fromJSON[A])
               .sequence[
                 ({
                   type λ[α] = ValidationNel[Error, α]

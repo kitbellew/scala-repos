@@ -190,11 +190,13 @@ object KetamaClientStress extends App {
                 case Some((_, unique)) =>
                   ketamaClient.cas(key, value, unique)
                 case None =>
-                  ketamaClient.gets(key).map {
-                    case Some(r) =>
-                      casMap(key) = r
-                    case None => // not expecting
-                  }
+                  ketamaClient
+                    .gets(key)
+                    .map {
+                      case Some(r) =>
+                        casMap(key) = r
+                      case None => // not expecting
+                    }
               }
             }
           case "add" =>
@@ -203,9 +205,8 @@ object KetamaClientStress extends App {
                 randomString(config.keysize()),
                 Buf.Utf8(randomString(config.valuesize())))
             () =>
-              ketamaClient.add(
-                key + load_count.getAndIncrement().toString,
-                value)
+              ketamaClient
+                .add(key + load_count.getAndIncrement().toString, value)
           case "replace" =>
             keyValueSet foreach {
               case (k, v) =>
@@ -324,9 +325,11 @@ object KetamaClientStress extends App {
                   // not expecting this to ever happen
                   replicationClient.set(key, value)
                 case None =>
-                  replicationClient.getsAll(key).map {
-                    casMap(key) = _
-                  }
+                  replicationClient
+                    .getsAll(key)
+                    .map {
+                      casMap(key) = _
+                    }
               }
             }
           case "add" =>
@@ -335,9 +338,8 @@ object KetamaClientStress extends App {
                 randomString(config.keysize()),
                 Buf.Utf8(randomString(config.valuesize())))
             () => {
-              replicationClient.add(
-                key + load_count.getAndIncrement().toString,
-                value)
+              replicationClient
+                .add(key + load_count.getAndIncrement().toString, value)
             }
           case "replace" =>
             keyValueSet foreach {

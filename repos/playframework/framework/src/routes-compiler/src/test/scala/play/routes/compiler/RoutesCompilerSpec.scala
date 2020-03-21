@@ -57,7 +57,9 @@ object RoutesCompilerSpec extends Specification with FileMatchers {
       tmp =>
         val file =
           new File(
-            this.getClass.getClassLoader
+            this
+              .getClass
+              .getClassLoader
               .getResource("duplicateHandlers.routes")
               .toURI)
         RoutesCompiler.compile(

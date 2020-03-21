@@ -25,8 +25,8 @@ class NumericTypeTest extends FunSuite with IntegrationClient {
         PRIMARY KEY (`smallint`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"""))
 
-    Await.ready(
-      c.query("""INSERT INTO `numeric` (`smallint`,
+    Await
+      .ready(c.query("""INSERT INTO `numeric` (`smallint`,
         `tinyint`, `mediumint`, `int`,
         `bigint`, `float`, `double`, `decimal`, `bit`)
         VALUES (1, 2, 3, 4, 5, 1.61, 1.618, 1.61803398875, 1);"""))
@@ -135,8 +135,8 @@ class NumericTypeTest extends FunSuite with IntegrationClient {
 @RunWith(classOf[JUnitRunner])
 class BlobTypeTest extends FunSuite with IntegrationClient {
   for (c <- client) {
-    Await.ready(
-      c.query("""CREATE TEMPORARY TABLE `blobs` (
+    Await
+      .ready(c.query("""CREATE TEMPORARY TABLE `blobs` (
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `char` char(5) DEFAULT NULL,
         `varchar` varchar(10) DEFAULT NULL,
@@ -348,7 +348,9 @@ class DateTimeTypeTest extends FunSuite with IntegrationClient {
       test("extract %s from %s in local time".format(repr, rowType)) {
         row(repr) match {
           case Some(timestampValueLocal(t)) =>
-            val timestamp = java.sql.Timestamp
+            val timestamp = java
+              .sql
+              .Timestamp
               .valueOf("2013-11-02 19:56:" + secs)
             assert(t == timestamp)
           case a =>

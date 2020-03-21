@@ -19,8 +19,8 @@ object UnapplyTest extends SpecLite {
     implicitly[ue.B === String]
 
     // needs only transient stable type
-    Unapply2[Arrow, Kleisli[NonEmptyList, Int, String]].TC: Arrow[
-      Kleisli[NonEmptyList, ?, ?]]
+    Unapply2[Arrow, Kleisli[NonEmptyList, Int, String]]
+      .TC: Arrow[Kleisli[NonEmptyList, ?, ?]]
   }
 
   object unapplyProduct {

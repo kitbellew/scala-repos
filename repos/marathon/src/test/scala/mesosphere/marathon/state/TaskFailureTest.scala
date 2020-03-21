@@ -22,7 +22,9 @@ class TaskFailureTest extends MarathonSpec with Matchers {
 
   test("ConstructFromProto") {
     val proto =
-      Protos.TaskFailure.newBuilder
+      Protos
+        .TaskFailure
+        .newBuilder
         .setAppId(taskFailure.appId.toString)
         .setTaskId(taskFailure.taskId)
         .setState(taskFailure.state)
@@ -41,7 +43,9 @@ class TaskFailureTest extends MarathonSpec with Matchers {
       .copy(slaveId = Some(slaveIDToProto(SlaveID("slave id"))))
 
     val proto =
-      Protos.TaskFailure.newBuilder
+      Protos
+        .TaskFailure
+        .newBuilder
         .setAppId(taskFailureFixture.appId.toString)
         .setTaskId(taskFailureFixture.taskId)
         .setState(taskFailureFixture.state)

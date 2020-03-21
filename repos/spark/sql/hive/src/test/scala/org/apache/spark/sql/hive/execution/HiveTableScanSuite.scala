@@ -68,14 +68,15 @@ class HiveTableScanSuite extends HiveComparisonTest {
 
   test("Spark-4077: timestamp query for null value") {
     TestHive.sql("DROP TABLE IF EXISTS timestamp_query_null")
-    TestHive.sql(
-      """
+    TestHive
+      .sql("""
         CREATE EXTERNAL TABLE timestamp_query_null (time TIMESTAMP,id INT)
         ROW FORMAT DELIMITED
         FIELDS TERMINATED BY ','
         LINES TERMINATED BY '\n'
       """.stripMargin)
-    val location = Utils.getSparkClassLoader
+    val location = Utils
+      .getSparkClassLoader
       .getResource("data/files/issue-4077-data.txt")
       .getFile()
 

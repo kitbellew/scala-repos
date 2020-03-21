@@ -77,7 +77,11 @@ package scalaguide.http.scalaresults {
       }
 
       "HTML method works" in {
-        val result = scalaguide.http.scalaresults.full.CodeShow
+        val result = scalaguide
+          .http
+          .scalaresults
+          .full
+          .CodeShow
           .HTML(Codec.javaSupported("iso-8859-1"))
         result must contain("iso-8859-1")
       }

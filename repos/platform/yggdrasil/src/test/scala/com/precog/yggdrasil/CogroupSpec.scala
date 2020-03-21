@@ -737,8 +737,8 @@ trait CogroupSpec[M[+_]]
           left <- 0 until 22
           right <- 0 until 22
         } yield {
-          JParser.parseUnsafe(
-            """{ "left": %d, "right": %d }""" format (left, right))
+          JParser
+            .parseUnsafe("""{ "left": %d, "right": %d }""" format (left, right))
         }
       ).toStream
 

@@ -179,10 +179,12 @@ object RankingMetrics {
   def of[E, T <: jl.Iterable[E]](
       predictionAndLabels: JavaRDD[(T, T)]): RankingMetrics[E] = {
     implicit val tag = JavaSparkContext.fakeClassTag[E]
-    val rdd = predictionAndLabels.rdd.map {
-      case (predictions, labels) =>
-        (predictions.asScala.toArray, labels.asScala.toArray)
-    }
+    val rdd = predictionAndLabels
+      .rdd
+      .map {
+        case (predictions, labels) =>
+          (predictions.asScala.toArray, labels.asScala.toArray)
+      }
     new RankingMetrics(rdd)
   }
 }

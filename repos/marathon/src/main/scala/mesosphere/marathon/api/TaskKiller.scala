@@ -59,9 +59,11 @@ class TaskKiller @Inject() (
       implicit identity: Identity): Future[DeploymentPlan] = {
     def scaleApp(app: AppDefinition): AppDefinition = {
       checkAuthorization(UpdateApp, app)
-      appTasks.get(app.id).fold(app) { toKill =>
-        app.copy(instances = app.instances - toKill.size)
-      }
+      appTasks
+        .get(app.id)
+        .fold(app) { toKill =>
+          app.copy(instances = app.instances - toKill.size)
+        }
     }
 
     def updateGroup(group: Group): Group = {
@@ -78,7 +80,8 @@ class TaskKiller @Inject() (
         force = force,
         toKill = appTasks)
 
-    appTasks.keys
+    appTasks
+      .keys
       .find(id => !taskTracker.hasAppTasksSync(id))
       .map(id => Future.failed(UnknownAppException(id)))
       .getOrElse(killTasks)

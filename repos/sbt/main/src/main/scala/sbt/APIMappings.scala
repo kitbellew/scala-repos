@@ -20,9 +20,11 @@ private[sbt] object APIMappings {
       case Some(u) =>
         Some((entry.data, u))
       case None =>
-        entry.get(Keys.moduleID.key).flatMap { mid =>
-          extractFromID(entry.data, mid, log)
-        }
+        entry
+          .get(Keys.moduleID.key)
+          .flatMap { mid =>
+            extractFromID(entry.data, mid, log)
+          }
     }
 
   private[this] def extractFromID(

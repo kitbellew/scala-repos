@@ -40,8 +40,8 @@ trait ScFunctionDefinition extends ScFunction with ScControlFlowOwner {
       (
         exp
           .depthFirst(!_.isInstanceOf[ScFunction])
-          .filter(_.isInstanceOf[ScReturnStmt]) ++ exp.calculateReturns(
-          withBooleanInfix)
+          .filter(_.isInstanceOf[ScReturnStmt]) ++ exp
+          .calculateReturns(withBooleanInfix)
       ).filter(_.getContainingFile == getContainingFile).toArray.distinct
     })
 
@@ -61,9 +61,9 @@ trait ScFunctionDefinition extends ScFunction with ScControlFlowOwner {
   def hasTailRecursionAnnotation: Boolean =
     annotations.exists(
       _.typeElement
-        .getType(TypingContext.empty)
-        .map(_.canonicalText)
-        .exists(_ == "_root_.scala.annotation.tailrec"))
+      .getType(TypingContext.empty)
+      .map(_.canonicalText)
+      .exists(_ == "_root_.scala.annotation.tailrec"))
 
   def recursiveReferences: Seq[RecursiveReference] = {
     val resultExpressions = returnUsages(withBooleanInfix = true)

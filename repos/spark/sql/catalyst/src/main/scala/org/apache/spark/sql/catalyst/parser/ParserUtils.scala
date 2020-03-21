@@ -90,8 +90,8 @@ object ParserUtils {
       nodeList: Seq[ASTNode]): Seq[Option[ASTNode]] = {
     var remainingNodes = nodeList
     val clauses = clauseNames.map { clauseName =>
-      val (matches, nonMatches) = remainingNodes.partition(
-        _.text.toUpperCase == clauseName)
+      val (matches, nonMatches) = remainingNodes
+        .partition(_.text.toUpperCase == clauseName)
       remainingNodes = nonMatches ++ (
         if (matches.nonEmpty)
           matches.tail
@@ -102,11 +102,12 @@ object ParserUtils {
     }
 
     if (remainingNodes.nonEmpty) {
-      sys.error(
-        s"""Unhandled clauses: ${remainingNodes
-             .map(_.treeString)
-             .mkString("\n")}.
-            |You are likely trying to use an unsupported Hive feature."""".stripMargin)
+      sys
+        .error(
+          s"""Unhandled clauses: ${remainingNodes.map(_.treeString).mkString(
+               "\n")}.
+            |You are likely trying to use an unsupported Hive feature.""""
+            .stripMargin)
     }
     clauses
   }
@@ -114,7 +115,8 @@ object ParserUtils {
   def getClause(clauseName: String, nodeList: Seq[ASTNode]): ASTNode = {
     getClauseOption(clauseName, nodeList).getOrElse(
       sys.error(
-        s"Expected clause $clauseName missing from ${nodeList.map(_.treeString).mkString("\n")}"))
+        s"Expected clause $clauseName missing from ${nodeList.map(
+          _.treeString).mkString("\n")}"))
   }
 
   def getClauseOption(
@@ -134,10 +136,12 @@ object ParserUtils {
   }
 
   def extractTableIdent(tableNameParts: ASTNode): TableIdentifier = {
-    tableNameParts.children.map {
-      case Token(part, Nil) =>
-        cleanIdentifier(part)
-    } match {
+    tableNameParts
+      .children
+      .map {
+        case Token(part, Nil) =>
+          cleanIdentifier(part)
+      } match {
       case Seq(tableOnly) =>
         TableIdentifier(tableOnly)
       case Seq(databaseName, table) =>

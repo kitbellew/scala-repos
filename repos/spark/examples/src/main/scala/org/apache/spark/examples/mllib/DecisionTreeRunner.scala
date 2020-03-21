@@ -157,7 +157,8 @@ object DecisionTreeRunner {
             if (params.algo == Classification &&
                 (params.impurity == Gini || params.impurity == Entropy)) {
               success
-            } else if (params.algo == Regression && params.impurity == Variance) {
+            } else if (params.algo == Regression && params
+                         .impurity == Variance) {
               success
             } else {
               failure(
@@ -222,8 +223,8 @@ object DecisionTreeRunner {
             if (classIndexMap.isEmpty) {
               origExamples
             } else {
-              origExamples.map(lp =>
-                LabeledPoint(classIndexMap(lp.label), lp.features))
+              origExamples
+                .map(lp => LabeledPoint(classIndexMap(lp.label), lp.features))
             }
           }
           val numExamples = examples.count()
@@ -262,8 +263,8 @@ object DecisionTreeRunner {
               if (classIndexMap.isEmpty) {
                 origTestExamples
               } else {
-                origTestExamples.map(lp =>
-                  LabeledPoint(classIndexMap(lp.label), lp.features))
+                origTestExamples
+                  .map(lp => LabeledPoint(classIndexMap(lp.label), lp.features))
               }
             }
             Array(examples, testExamples)
@@ -339,8 +340,8 @@ object DecisionTreeRunner {
       if (params.algo == Classification) {
         val trainAccuracy =
           new MulticlassMetrics(
-            training.map(lp =>
-              (model.predict(lp.features), lp.label))).precision
+            training.map(lp => (model.predict(lp.features), lp.label)))
+            .precision
         println(s"Train accuracy = $trainAccuracy")
         val testAccuracy =
           new MulticlassMetrics(
@@ -372,8 +373,8 @@ object DecisionTreeRunner {
         }
         val trainAccuracy =
           new MulticlassMetrics(
-            training.map(lp =>
-              (model.predict(lp.features), lp.label))).precision
+            training.map(lp => (model.predict(lp.features), lp.label)))
+            .precision
         println(s"Train accuracy = $trainAccuracy")
         val testAccuracy =
           new MulticlassMetrics(

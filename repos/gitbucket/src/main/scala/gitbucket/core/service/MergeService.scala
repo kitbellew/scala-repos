@@ -65,11 +65,12 @@ trait MergeService {
       requestBranch: String,
       issueId: Int) {
     using(Git.open(getRepositoryDir(userName, repositoryName))) { git =>
-      git.fetch
+      git
+        .fetch
         .setRemote(
-          getRepositoryDir(
-            requestUserName,
-            requestRepositoryName).toURI.toString)
+          getRepositoryDir(requestUserName, requestRepositoryName)
+            .toURI
+            .toString)
         .setRefSpecs(
           new RefSpec(s"refs/heads/${requestBranch}:refs/pull/${issueId}/head"))
         .call
@@ -95,18 +96,21 @@ trait MergeService {
           .setForceUpdate(true)
         try {
           // fetch objects from origin repository branch
-          git.fetch
+          git
+            .fetch
             .setRemote(
-              getRepositoryDir(
-                remoteUserName,
-                remoteRepositoryName).toURI.toString)
+              getRepositoryDir(remoteUserName, remoteRepositoryName)
+                .toURI
+                .toString)
             .setRefSpecs(refSpec)
             .call
           // merge conflict check
-          val merger = MergeStrategy.RECURSIVE
+          val merger = MergeStrategy
+            .RECURSIVE
             .newMerger(git.getRepository, true)
-          val mergeBaseTip = git.getRepository.resolve(
-            s"refs/heads/${localBranch}")
+          val mergeBaseTip = git
+            .getRepository
+            .resolve(s"refs/heads/${localBranch}")
           val mergeTip = git.getRepository.resolve(tmpRefName)
           try {
             if (merger.merge(mergeBaseTip, mergeTip)) {

@@ -125,14 +125,18 @@ class TimeoutFilter[Req, Rep](
           timeoutDeadline
       }
 
-    Contexts.broadcast.let(Deadline, deadline) {
-      val res = service(request)
-      res.within(timer, timeout).rescue {
-        case exc: java.util.concurrent.TimeoutException =>
-          res.raise(exc)
-          Trace.record(TimeoutFilter.TimeoutAnnotation)
-          Future.exception(exception)
+    Contexts
+      .broadcast
+      .let(Deadline, deadline) {
+        val res = service(request)
+        res
+          .within(timer, timeout)
+          .rescue {
+            case exc: java.util.concurrent.TimeoutException =>
+              res.raise(exc)
+              Trace.record(TimeoutFilter.TimeoutAnnotation)
+              Future.exception(exception)
+          }
       }
-    }
   }
 }

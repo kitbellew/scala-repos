@@ -48,13 +48,14 @@ class RunConsoleAction extends AnAction {
     file match {
       case file: ScalaFile =>
         val runManagerEx = RunManagerEx.getInstanceEx(file.getProject)
-        val configurationType = ConfigurationTypeUtil.findConfigurationType(
-          classOf[ScalaConsoleConfigurationType])
-        val settings = runManagerEx.getConfigurationSettingsList(
-          configurationType)
+        val configurationType = ConfigurationTypeUtil
+          .findConfigurationType(classOf[ScalaConsoleConfigurationType])
+        val settings = runManagerEx
+          .getConfigurationSettingsList(configurationType)
 
         def execute(setting: RunnerAndConfigurationSettings) {
-          val configuration = setting.getConfiguration
+          val configuration = setting
+            .getConfiguration
             .asInstanceOf[ScalaConsoleRunConfiguration]
           runManagerEx.setSelectedConfiguration(setting)
           val runExecutor = DefaultRunExecutor.getRunExecutorInstance
@@ -91,7 +92,8 @@ class RunConsoleAction extends AnAction {
           new ActionRunner.InterruptibleRunnable {
             def run() {
               val factory: ScalaConsoleRunConfigurationFactory =
-                configurationType.getConfigurationFactories
+                configurationType
+                  .getConfigurationFactories
                   .apply(0)
                   .asInstanceOf[ScalaConsoleRunConfigurationFactory]
               val setting = RunManager

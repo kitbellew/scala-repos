@@ -89,7 +89,8 @@ trait MySQLProfile extends JdbcProfile {
         meta: MColumn): ColumnBuilder =
       new ColumnBuilder(tableBuilder, meta) {
         override def default =
-          meta.columnDef
+          meta
+            .columnDef
             .map((_, tpe))
             .collect {
               case (v, "String") =>
@@ -124,8 +125,8 @@ trait MySQLProfile extends JdbcProfile {
 
   override val columnTypes = new JdbcTypes
   override protected def computeQueryCompiler =
-    super.computeQueryCompiler
-      .replace(new MySQLResolveZipJoins) - Phase.fixRowNumberOrdering
+    super.computeQueryCompiler.replace(new MySQLResolveZipJoins) - Phase
+      .fixRowNumberOrdering
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder =
     new QueryBuilder(n, state)
   override def createUpsertBuilder(node: Insert): InsertBuilder =
@@ -174,8 +175,8 @@ trait MySQLProfile extends JdbcProfile {
         super.defaultSqlTypeName(tmd, sym)
     }
 
-  protected lazy val defaultStringType = profileConfig.getStringOpt(
-    "defaultStringType")
+  protected lazy val defaultStringType = profileConfig
+    .getStringOpt("defaultStringType")
 
   class MySQLResolveZipJoins extends ResolveZipJoins {
     // MySQL does not support ROW_NUMBER() but you can manually increment a variable in the SELECT
@@ -330,11 +331,13 @@ trait MySQLProfile extends JdbcProfile {
         else
           fromInt(java.lang.Integer.MAX_VALUE)
       )
-      val start = seq._start.getOrElse(
-        if (desc)
-          maxValue
-        else
-          minValue)
+      val start = seq
+        ._start
+        .getOrElse(
+          if (desc)
+            maxValue
+          else
+            minValue)
       val beforeStart = start - increment
       if (!seq._cycle && (
             seq._minValue.isDefined && desc || seq._maxValue.isDefined && !desc
@@ -359,7 +362,8 @@ trait MySQLProfile extends JdbcProfile {
           "insert into " + quoteIdentifier(
             seq.name + "_seq") + " values (" + beforeStart + ")",
           "create function " + quoteIdentifier(
-            seq.name + "_nextval") + "() returns " + sqlType + " begin update " +
+            seq
+              .name + "_nextval") + "() returns " + sqlType + " begin update " +
             quoteIdentifier(
               seq.name + "_seq") + " set id=last_insert_id(" + incExpr + "); return last_insert_id(); end",
           "create function " + quoteIdentifier(

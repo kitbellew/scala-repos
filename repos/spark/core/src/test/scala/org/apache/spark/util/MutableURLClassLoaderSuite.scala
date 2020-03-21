@@ -51,8 +51,9 @@ class MutableURLClassLoaderSuite extends SparkFunSuite with Matchers {
           "resource2" -> "resource2Contents"))).toArray
   val fileUrlsParent =
     List(
-      TestUtils.createJarWithFiles(
-        Map("resource1" -> "resource1Contents-parent"))).toArray
+      TestUtils
+        .createJarWithFiles(Map("resource1" -> "resource1Contents-parent")))
+      .toArray
 
   test("child first") {
     val parentLoader = new URLClassLoader(urls2, null)
@@ -131,7 +132,8 @@ class MutableURLClassLoaderSuite extends SparkFunSuite with Matchers {
     val sc = new SparkContext("local", "driverLoaderTest")
 
     try {
-      sc.makeRDD(1 to 5, 2)
+      sc
+        .makeRDD(1 to 5, 2)
         .mapPartitions { x =>
           val loader = Thread.currentThread().getContextClassLoader
           // scalastyle:off classforname

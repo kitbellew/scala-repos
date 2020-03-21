@@ -24,7 +24,9 @@ private[tournament] final class StartedOrganizer(
   case object AllStartedTournaments
 
   def scheduleNext =
-    context.system.scheduler
+    context
+      .system
+      .scheduler
       .scheduleOnce(3 seconds, self, AllStartedTournaments)
 
   def receive = {
@@ -37,32 +39,36 @@ private[tournament] final class StartedOrganizer(
     case AllStartedTournaments =>
       val myself = self
       val startAt = nowMillis
-      TournamentRepo.started.flatMap { started =>
-        lila.common.Future
-          .traverseSequentially(started) { tour =>
-            PlayerRepo activeUserIds tour.id flatMap { activeUserIds =>
-              val nb = activeUserIds.size
-              val result: Funit =
-                if (tour.secondsToFinish == 0)
-                  fuccess(api finish tour)
-                else if (!tour.scheduled && nb < 2)
-                  fuccess(api finish tour)
-                else if (!tour.isAlmostFinished)
-                  startPairing(tour, activeUserIds, startAt)
-                else
-                  funit
-              result >>- {
-                reminder ! RemindTournament(tour, activeUserIds)
-              } inject nb
+      TournamentRepo
+        .started
+        .flatMap { started =>
+          lila
+            .common
+            .Future
+            .traverseSequentially(started) { tour =>
+              PlayerRepo activeUserIds tour.id flatMap { activeUserIds =>
+                val nb = activeUserIds.size
+                val result: Funit =
+                  if (tour.secondsToFinish == 0)
+                    fuccess(api finish tour)
+                  else if (!tour.scheduled && nb < 2)
+                    fuccess(api finish tour)
+                  else if (!tour.isAlmostFinished)
+                    startPairing(tour, activeUserIds, startAt)
+                  else
+                    funit
+                result >>- {
+                  reminder ! RemindTournament(tour, activeUserIds)
+                } inject nb
+              }
             }
-          }
-          .addEffect { playerCounts =>
-            val nbPlayers = playerCounts.sum
-            pairingLogger.debug(s"Started - players: $nbPlayers")
-            lila.mon.tournament.player(nbPlayers)
-            lila.mon.tournament.started(started.size)
-          }
-      } andThenAnyway scheduleNext
+            .addEffect { playerCounts =>
+              val nbPlayers = playerCounts.sum
+              pairingLogger.debug(s"Started - players: $nbPlayers")
+              lila.mon.tournament.player(nbPlayers)
+              lila.mon.tournament.started(started.size)
+            }
+        } andThenAnyway scheduleNext
   }
 
   private def startPairing(

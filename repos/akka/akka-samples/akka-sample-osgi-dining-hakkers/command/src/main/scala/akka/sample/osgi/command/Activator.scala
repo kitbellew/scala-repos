@@ -33,7 +33,9 @@ class Activator extends BundleActivator {
     service.foreach(
       startHakker(
         _,
-        context.getBundle.getSymbolicName + ":" + context.getBundle.getBundleId))
+        context.getBundle.getSymbolicName + ":" + context
+          .getBundle
+          .getBundleId))
   }
 
   def startHakker(service: DiningHakkersService, name: String) {

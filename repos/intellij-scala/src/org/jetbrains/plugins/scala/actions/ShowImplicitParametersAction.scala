@@ -150,12 +150,8 @@ class ShowImplicitParametersAction
     if (editor.getSelectionModel.hasSelection) {
       val selectionStart = editor.getSelectionModel.getSelectionStart
       val selectionEnd = editor.getSelectionModel.getSelectionEnd
-      val opt = ScalaRefactoringUtil.getExpression(
-        project,
-        editor,
-        file,
-        selectionStart,
-        selectionEnd)
+      val opt = ScalaRefactoringUtil
+        .getExpression(project, editor, file, selectionStart, selectionEnd)
       opt match {
         case Some((expr, _)) =>
           forExpr(expr)
@@ -198,9 +194,11 @@ class ShowImplicitParametersAction
       }
       val expressions = getExpressions
       def chooseExpression(expr: PsiElement) {
-        editor.getSelectionModel.setSelection(
-          expr.getTextRange.getStartOffset,
-          expr.getTextRange.getEndOffset)
+        editor
+          .getSelectionModel
+          .setSelection(
+            expr.getTextRange.getStartOffset,
+            expr.getTextRange.getEndOffset)
         forExpr(expr)
       }
       if (expressions.length == 0) {
@@ -306,7 +304,8 @@ class ShowImplicitParametersAction
     panel.add(scrollPane, BorderLayout.CENTER)
 
     val F4: Array[Shortcut] =
-      ActionManager.getInstance
+      ActionManager
+        .getInstance
         .getAction(IdeActions.ACTION_EDIT_SOURCE)
         .getShortcutSet
         .getShortcuts
@@ -384,26 +383,30 @@ class ImplicitParametersTreeStructure(
         value.implicitSearchState match {
           case Some(state) =>
             val collector = new ImplicitCollector(state)
-            collector.collect(fullInfo = true).foreach { r =>
-              r.implicitReason match {
-                case TypeDoesntConformResult       =>
-                case BadTypeResult                 =>
-                case CantFindExtensionMethodResult =>
-                case FunctionForParameterResult    =>
-                case implicitRes =>
-                  list.add(new ImplicitParametersNode(r, Some(implicitRes)))
+            collector
+              .collect(fullInfo = true)
+              .foreach { r =>
+                r.implicitReason match {
+                  case TypeDoesntConformResult       =>
+                  case BadTypeResult                 =>
+                  case CantFindExtensionMethodResult =>
+                  case FunctionForParameterResult    =>
+                  case implicitRes =>
+                    list.add(new ImplicitParametersNode(r, Some(implicitRes)))
+                }
               }
-            }
             if (list.isEmpty)
               addErrorLeaf("Applicable by type implicits were not found")
           case _ =>
             addErrorLeaf("No information for no reason")
         }
       } else {
-        value.implicitParameters.foreach {
-          case result =>
-            list.add(new ImplicitParametersNode(result))
-        }
+        value
+          .implicitParameters
+          .foreach {
+            case result =>
+              list.add(new ImplicitParametersNode(result))
+          }
       }
       list
     }

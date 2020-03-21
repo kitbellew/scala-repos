@@ -22,8 +22,9 @@ object OptionEqualsSomeToContains extends SimplificationType {
   override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case _
-          if expr.scalaLanguageLevel.exists(
-            _ <= ScalaLanguageLevel.Scala_2_10) =>
+          if expr
+            .scalaLanguageLevel
+            .exists(_ <= ScalaLanguageLevel.Scala_2_10) =>
         None
       case qual `==` `scalaSome`(elem) if isOption(qual) =>
         Some(
@@ -47,8 +48,9 @@ object OptionNotEqualsSomeToNotContains extends SimplificationType {
   override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case _
-          if expr.scalaLanguageLevel.exists(
-            _ <= ScalaLanguageLevel.Scala_2_10) =>
+          if expr
+            .scalaLanguageLevel
+            .exists(_ <= ScalaLanguageLevel.Scala_2_10) =>
         None
       case qual `!=` `scalaSome`(elem) if isOption(qual) =>
         Some(

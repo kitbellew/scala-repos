@@ -620,8 +620,8 @@ trait ScalaSettings
   def YoptWarningNoInlineMissingBytecode =
     YoptWarnings.contains(YoptWarningsChoices.noInlineMissingBytecode)
   def YoptWarningNoInlineMissingScalaInlineInfoAttr =
-    YoptWarnings.contains(
-      YoptWarningsChoices.noInlineMissingScalaInlineInfoAttr)
+    YoptWarnings
+      .contains(YoptWarningsChoices.noInlineMissingScalaInlineInfoAttr)
 
   val YoptTrace = StringSetting(
     "-Yopt-trace",

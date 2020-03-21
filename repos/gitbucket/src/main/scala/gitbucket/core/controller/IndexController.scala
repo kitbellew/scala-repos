@@ -58,15 +58,18 @@ trait IndexControllerBase extends ControllerBase {
   get("/") {
     val loginAccount = context.loginAccount
     if (loginAccount.isEmpty) {
-      gitbucket.core.html.index(
-        getRecentActivities(),
-        getVisibleRepositories(loginAccount, withoutPhysicalInfo = true),
-        loginAccount
-          .map { account =>
-            getUserRepositories(account.userName, withoutPhysicalInfo = true)
-          }
-          .getOrElse(Nil)
-      )
+      gitbucket
+        .core
+        .html
+        .index(
+          getRecentActivities(),
+          getVisibleRepositories(loginAccount, withoutPhysicalInfo = true),
+          loginAccount
+            .map { account =>
+              getUserRepositories(account.userName, withoutPhysicalInfo = true)
+            }
+            .getOrElse(Nil)
+        )
     } else {
       val loginUserName = loginAccount.get.userName
       val loginUserGroups = getGroupsByUserName(loginUserName)
@@ -74,15 +77,18 @@ trait IndexControllerBase extends ControllerBase {
 
       visibleOwnerSet ++= loginUserGroups
 
-      gitbucket.core.html.index(
-        getRecentActivitiesByOwners(visibleOwnerSet),
-        getVisibleRepositories(loginAccount, withoutPhysicalInfo = true),
-        loginAccount
-          .map { account =>
-            getUserRepositories(account.userName, withoutPhysicalInfo = true)
-          }
-          .getOrElse(Nil)
-      )
+      gitbucket
+        .core
+        .html
+        .index(
+          getRecentActivitiesByOwners(visibleOwnerSet),
+          getVisibleRepositories(loginAccount, withoutPhysicalInfo = true),
+          loginAccount
+            .map { account =>
+              getUserRepositories(account.userName, withoutPhysicalInfo = true)
+            }
+            .getOrElse(Nil)
+        )
     }
   }
 
@@ -145,12 +151,16 @@ trait IndexControllerBase extends ControllerBase {
   get("/_user/proposals")(
     usersOnly {
       contentType = formats("json")
-      org.json4s.jackson.Serialization.write(
-        Map(
-          "options" -> getAllUsers(false)
-            .filter(!_.isGroupAccount)
-            .map(_.userName)
-            .toArray))
+      org
+        .json4s
+        .jackson
+        .Serialization
+        .write(
+          Map(
+            "options" -> getAllUsers(false)
+              .filter(!_.isGroupAccount)
+              .map(_.userName)
+              .toArray))
     })
 
   /**
@@ -186,20 +196,28 @@ trait IndexControllerBase extends ControllerBase {
 
           target.toLowerCase match {
             case "issue" =>
-              gitbucket.core.search.html.issues(
-                searchIssues(repository.owner, repository.name, query),
-                countFiles(repository.owner, repository.name, query),
-                query,
-                page,
-                repository)
+              gitbucket
+                .core
+                .search
+                .html
+                .issues(
+                  searchIssues(repository.owner, repository.name, query),
+                  countFiles(repository.owner, repository.name, query),
+                  query,
+                  page,
+                  repository)
 
             case _ =>
-              gitbucket.core.search.html.code(
-                searchFiles(repository.owner, repository.name, query),
-                countIssues(repository.owner, repository.name, query),
-                query,
-                page,
-                repository)
+              gitbucket
+                .core
+                .search
+                .html
+                .code(
+                  searchFiles(repository.owner, repository.name, query),
+                  countIssues(repository.owner, repository.name, query),
+                  query,
+                  page,
+                  repository)
           }
       }
     })

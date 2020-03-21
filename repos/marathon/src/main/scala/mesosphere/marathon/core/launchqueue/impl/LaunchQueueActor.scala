@@ -122,16 +122,15 @@ private[impl] class LaunchQueueActor(
                 pathId,
                 actorRef)
             case Some(deferredMessages) =>
-              deferredMessages.foreach(msg =>
-                self.tell(msg.message, msg.sender))
+              deferredMessages
+                .foreach(msg => self.tell(msg.message, msg.sender))
 
               suspendedLauncherPathIds -= pathId
               suspendedLaunchersMessages -= actorRef
           }
         case None =>
-          log.warning(
-            "Don't know anything about terminated actor: {}",
-            actorRef)
+          log
+            .warning("Don't know anything about terminated actor: {}", actorRef)
       }
   }
 
@@ -177,7 +176,8 @@ private[impl] class LaunchQueueActor(
   private[this] def receiveHandleNormalCommands: Receive = {
     case List =>
       import context.dispatcher
-      val scatter = launchers.keys
+      val scatter = launchers
+        .keys
         .map(appId => (self ? Count(appId)).mapTo[Option[QueuedTaskInfo]])
       val gather: Future[Seq[QueuedTaskInfo]] = Future
         .sequence(scatter)

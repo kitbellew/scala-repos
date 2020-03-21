@@ -16,7 +16,9 @@ private[api] final class AnalysisApi {
             .obj(
               "eval" -> info.score.map(_.centipawns),
               "mate" -> info.mate,
-              "variation" -> info.variation.isEmpty
+              "variation" -> info
+                .variation
+                .isEmpty
                 .fold(JsNull, info.variation mkString " "),
               "comment" -> adviceOption.map(_.makeComment(false, true))
             )
@@ -24,7 +26,8 @@ private[api] final class AnalysisApi {
       })
 
   def player(color: chess.Color)(analysis: Analysis) =
-    analysis.summary
+    analysis
+      .summary
       .find(_._1 == color)
       .map(_._2)
       .map(s =>

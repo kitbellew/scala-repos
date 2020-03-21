@@ -64,7 +64,8 @@ class FlowSlidingSpec extends AkkaSpec with GeneratorDrivenPropertyChecks {
     }
 
     "work with empty sources" in assertAllStagesStopped {
-      Source.empty
+      Source
+        .empty
         .sliding(1)
         .runForeach(testActor ! _)
         .map(_ ⇒ "done") pipeTo testActor

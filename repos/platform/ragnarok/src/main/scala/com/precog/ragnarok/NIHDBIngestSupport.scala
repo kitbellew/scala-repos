@@ -80,7 +80,8 @@ trait NIHDBIngestSupport
         val enum = zippedData.entries
         def next() = enum.nextElement()
         def hasNext = enum.hasMoreElements()
-      }.map { zipEntry =>
+      }
+        .map { zipEntry =>
           new InputStreamReader(zippedData.getInputStream(zipEntry))
         }
         .flatMap { reader =>
@@ -125,7 +126,8 @@ trait NIHDBIngestSupport
       val projection = {
         for {
           _ <- M point {
-            vfs.unsecured
+            vfs
+              .unsecured
               .writeAll(
                 Seq(
                   (
@@ -140,8 +142,8 @@ trait NIHDBIngestSupport
                       StreamRef.Append))))
               .unsafePerformIO
           }
-          _ = logger.debug(
-            "Insert complete on //%s, waiting for cook".format(db))
+          _ = logger
+            .debug("Insert complete on //%s, waiting for cook".format(db))
           projection <- vfs
             .readProjection(apiKey, path, Version.Current, AccessMode.Read)
             .run
