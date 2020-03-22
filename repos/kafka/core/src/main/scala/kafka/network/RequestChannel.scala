@@ -115,7 +115,8 @@ object RequestChannel extends Logging {
         catch {
           case ex: Throwable =>
             throw new InvalidRequestException(
-              s"Error getting request for apiKey: ${header.apiKey} and apiVersion: ${header.apiVersion}",
+              s"Error getting request for apiKey: ${header
+                .apiKey} and apiVersion: ${header.apiVersion}",
               ex)
         }
       else

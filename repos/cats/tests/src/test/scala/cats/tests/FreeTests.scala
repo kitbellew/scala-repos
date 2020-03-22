@@ -56,10 +56,11 @@ class FreeTests extends CatsSuite {
     def a(i: Int): FTest[Int] =
       for {
         j <- tb(i)
-        z <- if (j < 10000)
-          a(j)
-        else
-          Free.pure[FTestApi, Int](j)
+        z <-
+          if (j < 10000)
+            a(j)
+          else
+            Free.pure[FTestApi, Int](j)
       } yield z
 
     def runner: FTestApi ~> Id =

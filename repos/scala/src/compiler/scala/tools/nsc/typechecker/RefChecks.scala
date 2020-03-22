@@ -1070,7 +1070,8 @@ abstract class RefChecks
                 .map(m => m.defStringSeenAs(clazz.tpe memberType m))
                 .mkString("\n")
               issueError(
-                s".\nNote: the super classes of ${member.owner} contain the following, non final members named ${member.name}:\n${superSigs}")
+                s".\nNote: the super classes of ${member.owner} contain the following, non final members named ${member
+                  .name}:\n${superSigs}")
           }
           member resetFlag (OVERRIDE | ABSOVERRIDE) // Any Override
         }
@@ -1699,14 +1700,17 @@ abstract class RefChecks
         if (changed)
           reporter.warning(
             pos,
-            s"${sym.fullLocationString} has changed semantics in version ${sym.migrationVersion.get}:\n${sym.migrationMessage.get}")
+            s"${sym.fullLocationString} has changed semantics in version ${sym
+              .migrationVersion
+              .get}:\n${sym.migrationMessage.get}")
       }
       // See an explanation of compileTimeOnly in its scaladoc at scala.annotation.compileTimeOnly.
       if (sym.isCompileTimeOnly && !currentOwner
             .ownerChain
             .exists(x => x.isCompileTimeOnly)) {
         def defaultMsg =
-          sm"""Reference to ${sym.fullLocationString} should not have survived past type checking,
+          sm"""Reference to ${sym
+            .fullLocationString} should not have survived past type checking,
               |it should have been processed and eliminated during expansion of an enclosing macro."""
         // The getOrElse part should never happen, it's just here as a backstop.
         reporter.error(pos, sym.compileTimeOnlyMessage getOrElse defaultMsg)
@@ -1838,8 +1842,9 @@ abstract class RefChecks
             .deprecationWarning(
               tree.pos,
               symbol,
-              s"${symbol.toString} overrides concrete, non-deprecated symbol(s):    ${concrOvers.map(
-                _.name.decode).mkString(", ")}")
+              s"${symbol.toString} overrides concrete, non-deprecated symbol(s):    ${concrOvers
+                .map(_.name.decode)
+                .mkString(", ")}")
       }
     }
     private def isRepeatedParamArg(tree: Tree) =

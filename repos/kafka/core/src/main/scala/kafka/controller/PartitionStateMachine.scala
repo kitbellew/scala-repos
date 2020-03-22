@@ -131,8 +131,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
                .deleteTopicManager
                .isTopicQueuedUpForDeletion(topicAndPartition.topic)
            )) {
-        if (partitionState
-              .equals(OfflinePartition) || partitionState.equals(NewPartition))
+        if (partitionState.equals(OfflinePartition) || partitionState
+              .equals(NewPartition))
           handleStateChange(
             topicAndPartition.topic,
             topicAndPartition.partition,
@@ -334,8 +334,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
     * zookeeper
     */
   private def initializePartitionState() {
-    for ((topicPartition, replicaAssignment) <- controllerContext
-           .partitionReplicaAssignment) {
+    for ((topicPartition, replicaAssignment) <-
+           controllerContext.partitionReplicaAssignment) {
       // check if leader and isr path exists for partition. If not, then it is in NEW state
       controllerContext.partitionLeadershipInfo.get(topicPartition) match {
         case Some(currentLeaderIsrAndEpoch) =>

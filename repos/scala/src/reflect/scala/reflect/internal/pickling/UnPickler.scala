@@ -316,11 +316,12 @@ abstract class UnPickler {
                 val advice = moduleAdvice(s"${owner.fullName}.$name")
                 val missingMessage =
                   s"""|missing or invalid dependency detected while loading class file '$filename'.
-                      |Could not access ${name.longString} in ${owner.kindString} ${owner.fullName},
+                      |Could not access ${name
+                       .longString} in ${owner.kindString} ${owner.fullName},
                       |because it (or its dependencies) are missing. Check your build definition for
                       |missing or conflicting dependencies. (Re-run with `-Ylog-classpath` to see the problematic classpath.)
-                      |A full rebuild may help if '$filename' was compiled against an incompatible version of ${owner.fullName}.$advice"""
-                    .stripMargin
+                      |A full rebuild may help if '$filename' was compiled against an incompatible version of ${owner
+                       .fullName}.$advice""".stripMargin
                 owner.newStubSymbol(name, missingMessage)
               }
             }

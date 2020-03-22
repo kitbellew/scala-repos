@@ -205,8 +205,8 @@ trait GameHelper {
           val content = playerUsername(player, withRating)
           val diff =
             (player.ratingDiff ifTrue withDiff).fold(Html(""))(showRatingDiff)
-          val mark =
-            engine ?? s"""<span class="engine_mark" title="${trans.thisPlayerUsesChessComputerAssistance()}"></span>"""
+          val mark = engine ?? s"""<span class="engine_mark" title="${trans
+            .thisPlayerUsesChessComputerAssistance()}"></span>"""
           val dataIcon = withOnline ?? """data-icon="r""""
           val space =
             if (withOnline)
@@ -358,14 +358,19 @@ trait GameHelper {
           "a"
         else
           "span"
-      s"""<$tag $href $title class="mini_board mini_board_${game.id} parse_fen is2d $cssClass $variant" data-live="$live" data-color="${pov.color.name}" data-fen="$fen" data-lastmove="$lastMove">$miniBoardContent</$tag>"""
+      s"""<$tag $href $title class="mini_board mini_board_${game
+        .id} parse_fen is2d $cssClass $variant" data-live="$live" data-color="${pov
+        .color
+        .name}" data-fen="$fen" data-lastmove="$lastMove">$miniBoardContent</$tag>"""
     }
 
   def gameFenNoCtx(pov: Pov, tv: Boolean = false, blank: Boolean = false) =
     Html {
       var isLive = pov.game.isBeingPlayed
       val variant = pov.game.variant.key
-      s"""<a href="%s%s" title="%s" class="mini_board mini_board_${pov.game.id} parse_fen is2d %s $variant" data-live="%s" data-color="%s" data-fen="%s" data-lastmove="%s"%s>$miniBoardContent</a>"""
+      s"""<a href="%s%s" title="%s" class="mini_board mini_board_${pov
+        .game
+        .id} parse_fen is2d %s $variant" data-live="%s" data-color="%s" data-fen="%s" data-lastmove="%s"%s>$miniBoardContent</a>"""
         .format(
           blank ?? netBaseUrl,
           tv.fold(

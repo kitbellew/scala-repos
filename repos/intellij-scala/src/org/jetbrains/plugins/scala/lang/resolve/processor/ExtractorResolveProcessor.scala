@@ -127,10 +127,11 @@ class ExtractorResolveProcessor(
               val clauses = fun.paramClauses.clauses
               if (clauses
                     .length != 0 && clauses.apply(0).parameters.length == 1) {
-                for (paramType <- clauses(0)
-                       .parameters
-                       .apply(0)
-                       .getType(TypingContext.empty)
+                for (paramType <-
+                       clauses(0)
+                         .parameters
+                         .apply(0)
+                         .getType(TypingContext.empty)
                      if tp conforms r.substitutor.subst(paramType))
                   return true
               }

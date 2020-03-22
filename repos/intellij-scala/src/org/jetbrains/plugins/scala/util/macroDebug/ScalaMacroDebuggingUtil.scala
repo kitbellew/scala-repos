@@ -219,9 +219,10 @@ object ScalaMacroDebuggingUtil {
 
     copyTextBetweenEditors(sourceEditor, macroEditor, project)
 
-    for (elt <- macrosToExpand
-           .toList
-           .sortWith((a, b) => a.getTextOffset > b.getTextOffset)) {
+    for (elt <-
+           macrosToExpand
+             .toList
+             .sortWith((a, b) => a.getTextOffset > b.getTextOffset)) {
       var macroCall = macrosheetFile.findElementAt(elt.getTextOffset)
       while (macroCall != null && !ScalaMacroDebuggingUtil
                .isMacroCall(macroCall)) {

@@ -728,7 +728,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       cachedGateway(hcps)
     } else {
       val msg =
-        s"Cannot determine request scheme and target endpoint as ${request.method} request to ${request.uri} doesn't have an absolute URI"
+        s"Cannot determine request scheme and target endpoint as ${request
+          .method} request to ${request.uri} doesn't have an absolute URI"
       throw new IllegalUriException(ErrorInfo(msg))
     }
 

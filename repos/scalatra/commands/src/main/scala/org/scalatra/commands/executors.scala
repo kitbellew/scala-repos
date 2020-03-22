@@ -95,7 +95,8 @@ abstract class BlockingExecutor[T <: Command, S](
         else
           "failures"
       logger.debug(
-        s"Command [${cmd.getClass.getName}}] executed with ${f.size} $failures.\n${f.toList}")
+        s"Command [${cmd.getClass.getName}}] executed with ${f
+          .size} $failures.\n${f.toList}")
       NonEmptyList(f.head, f.tail: _*).failure
     }
   }
@@ -175,7 +176,8 @@ abstract class AsyncExecutor[T <: Command, S](
         else
           "failures"
       logger.debug(
-        s"Command [${cmd.getClass.getName}] executed with ${f.size} $failures.\n${f.toList}")
+        s"Command [${cmd.getClass.getName}] executed with ${f
+          .size} $failures.\n${f.toList}")
       Future.successful(NonEmptyList(f.head, f.tail: _*).failure)
     }
   }

@@ -91,8 +91,7 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
            |
            | Candidates (signatures normalized):
            |
-           | ${candidates.map(c =>
-          c.name + ":" + normalize(c.tpe, imeth.owner)).mkString("\n")}
+           | ${candidates.map(c => c.name + ":" + normalize(c.tpe, imeth.owner)).mkString("\n")}
            |
            | Eligible Names: ${extensionNames(imeth).mkString(",")}" """
       )
@@ -273,7 +272,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
           extensionMeth setInfo newInfo
 
           log(
-            s"Value class $origThis spawns extension method.\n  Old: ${origMeth.defString}\n  New: ${extensionMeth.defString}")
+            s"Value class $origThis spawns extension method.\n  Old: ${origMeth
+              .defString}\n  New: ${extensionMeth.defString}")
 
           val GenPolyType(
             extensionTpeParams,

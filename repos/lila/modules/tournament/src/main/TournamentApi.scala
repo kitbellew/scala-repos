@@ -77,7 +77,8 @@ private[tournament] final class TournamentApi(
               funit
             case pairings if nowMillis - startAt > 1000 =>
               pairingLogger.warn(
-                s"Give up making http://lichess.org/tournament/${tour.id} ${pairings.size} pairings in ${nowMillis - startAt}ms")
+                s"Give up making http://lichess.org/tournament/${tour
+                  .id} ${pairings.size} pairings in ${nowMillis - startAt}ms")
               funit
             case pairings =>
               pairings

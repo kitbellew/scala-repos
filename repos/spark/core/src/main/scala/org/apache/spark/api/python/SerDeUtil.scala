@@ -209,21 +209,37 @@ private[spark] object SerDeUtil extends Logging {
     }
     (kt, vt) match {
       case (Failure(kf), Failure(vf)) =>
-        logWarning(s"""
-               |Failed to pickle Java object as key: ${t._1.getClass.getSimpleName}, falling back
+        logWarning(
+          s"""
+               |Failed to pickle Java object as key: ${t
+               ._1
+               .getClass
+               .getSimpleName}, falling back
                |to 'toString'. Error: ${kf.getMessage}""".stripMargin)
-        logWarning(s"""
-               |Failed to pickle Java object as value: ${t._2.getClass.getSimpleName}, falling back
+        logWarning(
+          s"""
+               |Failed to pickle Java object as value: ${t
+               ._2
+               .getClass
+               .getSimpleName}, falling back
                |to 'toString'. Error: ${vf.getMessage}""".stripMargin)
         (true, true)
       case (Failure(kf), _) =>
-        logWarning(s"""
-               |Failed to pickle Java object as key: ${t._1.getClass.getSimpleName}, falling back
+        logWarning(
+          s"""
+               |Failed to pickle Java object as key: ${t
+               ._1
+               .getClass
+               .getSimpleName}, falling back
                |to 'toString'. Error: ${kf.getMessage}""".stripMargin)
         (true, false)
       case (_, Failure(vf)) =>
-        logWarning(s"""
-               |Failed to pickle Java object as value: ${t._2.getClass.getSimpleName}, falling back
+        logWarning(
+          s"""
+               |Failed to pickle Java object as value: ${t
+               ._2
+               .getClass
+               .getSimpleName}, falling back
                |to 'toString'. Error: ${vf.getMessage}""".stripMargin)
         (false, true)
       case _ =>

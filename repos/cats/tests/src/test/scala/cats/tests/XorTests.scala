@@ -79,10 +79,11 @@ class XorTests extends CatsSuite {
   implicit val arbitraryXor: Arbitrary[Xor[Int, String]] = Arbitrary {
     for {
       left <- arbitrary[Boolean]
-      xor <- if (left)
-        arbitrary[Int].map(Xor.left)
-      else
-        arbitrary[String].map(Xor.right)
+      xor <-
+        if (left)
+          arbitrary[Int].map(Xor.left)
+        else
+          arbitrary[String].map(Xor.right)
     } yield xor
   }
 

@@ -170,7 +170,8 @@ abstract class TestResponse(
     else
       assertTrue(
         headers.exists(_.value == value),
-        s"`$name` header was found but had the wrong value. Found headers: ${headers.mkString(", ")}")
+        s"`$name` header was found but had the wrong value. Found headers: ${headers
+          .mkString(", ")}")
 
     this
   }

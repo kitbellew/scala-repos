@@ -185,9 +185,8 @@ case class Group(
       app <- group.apps
       dependencyId <- app.dependencies
       dependentApp = transitiveApps.find(_.id == dependencyId).map(a => Set(a))
-      dependentGroup = allGroups
-        .find(_.id == dependencyId)
-        .map(_.transitiveApps)
+      dependentGroup =
+        allGroups.find(_.id == dependencyId).map(_.transitiveApps)
       dependent <- dependentApp orElse dependentGroup getOrElse Set.empty
     } result ::= app -> dependent
     result
@@ -333,11 +332,8 @@ object Group {
                   existingApp <- group.transitiveApps.toList
                   if existingApp.id != app
                     .id // in case of an update, do not compare the app against itself
-                  existingServicePort <- existingApp
-                    .portMappings
-                    .toList
-                    .flatten
-                    .map(_.servicePort)
+                  existingServicePort <-
+                    existingApp.portMappings.toList.flatten.map(_.servicePort)
                   if existingServicePort != 0 // ignore zero ports, which will be chosen at random
                   if servicePorts contains existingServicePort
                 } yield RuleViolation(

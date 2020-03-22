@@ -155,8 +155,8 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
       newMessage.sparkProperties("spark.jars") === "mayonnaise.jar,ketchup.jar")
     assert(newMessage.sparkProperties("spark.files") === "fireball.png")
     assert(
-      newMessage.sparkProperties(
-        "spark.driver.memory") === s"${Utils.DEFAULT_DRIVER_MEM_MB}m")
+      newMessage
+        .sparkProperties("spark.driver.memory") === s"${Utils.DEFAULT_DRIVER_MEM_MB}m")
     assert(newMessage.sparkProperties("spark.driver.cores") === "180")
     assert(
       newMessage.sparkProperties("spark.driver.extraJavaOptions") ===

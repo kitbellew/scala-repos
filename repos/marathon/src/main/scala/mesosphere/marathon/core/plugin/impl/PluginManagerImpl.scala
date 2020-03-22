@@ -40,7 +40,8 @@ private[plugin] class PluginManagerImpl(
     */
   private[this] def load[T](implicit ct: ClassTag[T]): PluginHolder[T] = {
     log.info(
-      s"Loading plugins implementing '${ct.runtimeClass.getName}' from these urls: [${urls.mkString(", ")}]")
+      s"Loading plugins implementing '${ct.runtimeClass.getName}' from these urls: [${urls
+        .mkString(", ")}]")
     def configure(plugin: T, definition: PluginDefinition): T =
       plugin match {
         case cf: PluginConfiguration if definition.configuration.isDefined =>

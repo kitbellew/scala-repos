@@ -298,8 +298,8 @@ class AccountServiceHandlers(
                 case (JString(email), JString(password), profile) =>
                   logger.debug("About to create account for email " + email)
                   for {
-                    existingAccountOpt <- accountManager
-                      .findAccountByEmail(email)
+                    existingAccountOpt <-
+                      accountManager.findAccountByEmail(email)
                     accountResponse <- existingAccountOpt map {
                       account =>
                         logger.warn(

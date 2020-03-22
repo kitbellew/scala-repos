@@ -27,8 +27,8 @@ class PruneProjections extends Phase {
             .toSet
         val unrefTSyms = allTSyms -- referenced.map(_._1)
         logger.debug(
-          s"Unreferenced: ${unrefTSyms.mkString(
-            ", ")}; Field refs: ${referenced.mkString(", ")}")
+          s"Unreferenced: ${unrefTSyms.mkString(", ")}; Field refs: ${referenced
+            .mkString(", ")}")
         n
           .replaceInvalidate {
             case Pure(s @ StructNode(ch), pts) if !unrefTSyms.contains(pts) =>

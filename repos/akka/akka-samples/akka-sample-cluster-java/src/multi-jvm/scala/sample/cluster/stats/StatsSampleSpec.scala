@@ -30,13 +30,15 @@ object StatsSampleSpecConfig extends MultiNodeConfig {
   // Extract individual sigar library for every node.
   nodeList foreach { role ⇒
     nodeConfig(role) {
-      ConfigFactory.parseString(s"""
+      ConfigFactory.parseString(
+        s"""
       # Disable legacy metrics in akka-cluster.
       akka.cluster.metrics.enabled=off
       # Enable metrics extension in akka-cluster-metrics.
       akka.extensions=["akka.cluster.metrics.ClusterMetricsExtension"]
       # Sigar native library extract location during tests.
-      akka.cluster.metrics.native-library-extract-folder=target/native/${role.name}
+      akka.cluster.metrics.native-library-extract-folder=target/native/${role
+          .name}
       """)
     }
   }

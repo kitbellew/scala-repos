@@ -52,8 +52,9 @@ private[std] trait Tuple${n}BindRec[$tparams] extends BindRec[($tparams, ?)] wit
     ).map(i => s"s$i: A$i").mkString(", ")})(z: A): ($tparams, B) =
       f(z) match {
         case (${(1 until n).map("a" + _).mkString(", ")}, b0) =>
-          ${(1 until n).map(i => s"val x$i = _$i.append(s$i, a$i)").mkString(
-      "; ")}
+          ${(
+      1 until n
+    ).map(i => s"val x$i = _$i.append(s$i, a$i)").mkString("; ")}
           b0 match {
             case -\\/(a0) => go($xs)(a0)
             case \\/-(b1) => ($xs, b1)

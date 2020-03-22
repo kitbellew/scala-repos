@@ -439,8 +439,8 @@ class DeploymentPlanRevertTest
     }
 
     test(
-      s"Reverting ${firstDeployment.name} after deploying ${deployments.tail.map(
-        _.name).mkString(", ")}") {
+      s"Reverting ${firstDeployment
+        .name} after deploying ${deployments.tail.map(_.name).mkString(", ")}") {
       Given("an existing group with apps")
       val original = performDeployments(
         originalBeforeChanges,
@@ -525,8 +525,8 @@ class DeploymentPlanRevertTest
       else if (addedIds.isEmpty)
         s"group '$groupId' remove deps {${removedIds.mkString(", ")}}"
       else
-        s"group '$groupId' change deps -{${removedIds.mkString(
-          ", ")}} +{${addedIds.mkString(", ")}}"
+        s"group '$groupId' change deps -{${removedIds
+          .mkString(", ")}} +{${addedIds.mkString(", ")}}"
 
     Deployment(
       name,

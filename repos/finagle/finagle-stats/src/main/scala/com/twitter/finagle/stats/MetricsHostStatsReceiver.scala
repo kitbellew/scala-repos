@@ -26,10 +26,12 @@ class HostMetricsExporter(val registry: Metrics)
     } else {
       val response = Response()
       response.contentType = MediaType.Json
-      response.content = Buf.Utf8(s"""{
+      response.content = Buf.Utf8(
+        s"""{
         |  "com.twitter.finagle.loadbalancer.perHostStats": {
         |    "enabled": "false",
-        |    "to enable": "run with -${perHostStats.name} and configure LoadBalancerFactory.HostStats"
+        |    "to enable": "run with -${perHostStats
+             .name} and configure LoadBalancerFactory.HostStats"
         |  }
         |}""".stripMargin)
       Future.value(response)

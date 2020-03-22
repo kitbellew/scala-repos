@@ -137,7 +137,8 @@ case class ConcatWs(children: Seq[Expression])
                 case StringType =>
                   (
                     "", // we count all the StringType arguments num at once below.
-                    s"$array[$idxInVararg ++] = ${eval.isNull} ? (UTF8String) null : ${eval.value};")
+                    s"$array[$idxInVararg ++] = ${eval
+                      .isNull} ? (UTF8String) null : ${eval.value};")
                 case _: ArrayType =>
                   val size = ctx.freshName("n")
                   (
@@ -150,10 +151,8 @@ case class ConcatWs(children: Seq[Expression])
             if (!${eval.isNull}) {
               final int $size = ${eval.value}.numElements();
               for (int j = 0; j < $size; j ++) {
-                $array[$idxInVararg ++] = ${ctx.getValue(
-                      eval.value,
-                      StringType,
-                      "j")};
+                $array[$idxInVararg ++] = ${ctx
+                      .getValue(eval.value, StringType, "j")};
               }
             }
             """)
@@ -168,7 +167,8 @@ case class ConcatWs(children: Seq[Expression])
         ${varargCount.mkString("\n")}
         UTF8String[] $array = new UTF8String[$varargNum];
         ${varargBuild.mkString("\n")}
-        UTF8String ${ev.value} = UTF8String.concatWs(${evals.head.value}, $array);
+        UTF8String ${ev
+          .value} = UTF8String.concatWs(${evals.head.value}, $array);
         boolean ${ev.isNull} = ${ev.value} == null;
       """
     }
@@ -778,7 +778,8 @@ case class StringSpace(child: Expression)
       ctx,
       ev,
       (length) =>
-        s"""${ev.value} = UTF8String.blankString(($length < 0) ? 0 : $length);""")
+        s"""${ev
+          .value} = UTF8String.blankString(($length < 0) ? 0 : $length);""")
   }
 
   override def prettyName: String = "space"
@@ -1000,7 +1001,8 @@ case class UnBase64(child: Expression)
       ev,
       (child) => {
         s"""
-         ${ev.value} = org.apache.commons.codec.binary.Base64.decodeBase64($child.toString());
+         ${ev
+          .value} = org.apache.commons.codec.binary.Base64.decodeBase64($child.toString());
        """
       })
   }
@@ -1030,9 +1032,11 @@ case class Decode(bin: Expression, charset: Expression)
     nullSafeCodeGen(
       ctx,
       ev,
-      (bytes, charset) => s"""
+      (bytes, charset) =>
+        s"""
         try {
-          ${ev.value} = UTF8String.fromString(new String($bytes, $charset.toString()));
+          ${ev
+          .value} = UTF8String.fromString(new String($bytes, $charset.toString()));
         } catch (java.io.UnsupportedEncodingException e) {
           org.apache.spark.unsafe.Platform.throwException(e);
         }

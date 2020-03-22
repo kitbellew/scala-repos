@@ -94,7 +94,8 @@ object Test extends App {
           s"$instance != f(deserialize(prevResult))")
         assert(
           prevResult == result,
-          s"instance = $instance : ${instance.getClass}\n serialization unstable: ${prevResult}\n   found: ${result}")
+          s"instance = $instance : ${instance
+            .getClass}\n serialization unstable: ${prevResult}\n   found: ${result}")
     }
   }
 

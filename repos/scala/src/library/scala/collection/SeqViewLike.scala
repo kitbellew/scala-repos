@@ -79,8 +79,7 @@ trait SeqViewLike[
     protected[this] lazy val index = {
       val index = new Array[Int](self.length + 1)
       index(0) = 0
-      for (i <- 0 until self
-             .length) // note that if the mapping returns a list, performance is bad, bad
+      for (i <- 0 until self.length) // note that if the mapping returns a list, performance is bad, bad
         index(i + 1) = index(i) + mapping(self(i)).seq.size
       index
     }

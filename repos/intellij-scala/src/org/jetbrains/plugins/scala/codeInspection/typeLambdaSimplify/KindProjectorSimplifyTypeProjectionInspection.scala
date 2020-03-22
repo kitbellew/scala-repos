@@ -122,7 +122,8 @@ class KindProjectorSimplifyTypeProjectionInspection
               }
             if (!typeParamIt.hasNext && currentTypeParam.isEmpty) {
               Some(
-                s"${paramType.designator}${newTypeArgs.mkString(start = "[", sep = ",", end = "]")}")
+                s"${paramType.designator}${newTypeArgs
+                  .mkString(start = "[", sep = ",", end = "]")}")
             } else
               None
           } else

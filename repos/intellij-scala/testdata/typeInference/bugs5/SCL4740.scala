@@ -60,8 +60,8 @@ object PhoneCode {
                   val matchingWords =
                     (
                       for (len <- 1 to matchAgainst.length;
-                           opt <- dictEntriesDigified2Words
-                             .get(matchAgainst.take(len)))
+                           opt <- dictEntriesDigified2Words.get(
+                             matchAgainst.take(len)))
                         yield opt
                     ).flatten
                   if (matchingWords.nonEmpty) //spead the tree

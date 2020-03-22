@@ -20,8 +20,9 @@ private[opening] case class Generated(
           .map {
             case (first, move) =>
               for {
-                pgn <- Generated
-                  .toPgn(parsed.situation, first :: move.line.split(' ').toList)
+                pgn <- Generated.toPgn(
+                  parsed.situation,
+                  first :: move.line.split(' ').toList)
                 cp <- parseIntOption(move.cp) match {
                   case None =>
                     Failure(new Exception(s"Invalid cp ${move.cp}"))

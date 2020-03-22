@@ -914,7 +914,8 @@ private[akka] class LocalActorRefProvider private[akka] (
         } catch {
           case NonFatal(e) ⇒
             throw new ConfigurationException(
-              s"configuration problem while creating [$path] with dispatcher [${props2.dispatcher}] and mailbox [${props2.mailbox}]",
+              s"configuration problem while creating [$path] with dispatcher [${props2
+                .dispatcher}] and mailbox [${props2.mailbox}]",
               e)
         }
 
@@ -968,8 +969,10 @@ private[akka] class LocalActorRefProvider private[akka] (
         } catch {
           case NonFatal(e) ⇒
             throw new ConfigurationException(
-              s"configuration problem while creating [$path] with router dispatcher [${routerProps.dispatcher}] and mailbox [${routerProps.mailbox}] " +
-                s"and routee dispatcher [${routeeProps.dispatcher}] and mailbox [${routeeProps.mailbox}]",
+              s"configuration problem while creating [$path] with router dispatcher [${routerProps
+                .dispatcher}] and mailbox [${routerProps.mailbox}] " +
+                s"and routee dispatcher [${routeeProps
+                  .dispatcher}] and mailbox [${routeeProps.mailbox}]",
               e)
         }
     }

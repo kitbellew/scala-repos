@@ -115,13 +115,14 @@ object CSVConverter {
           case (before, after) =>
             for {
               front <- scv.value.from(before)
-              back <- sct
-                .value
-                .from(
-                  if (after.isEmpty)
-                    after
-                  else
-                    after.tail)
+              back <-
+                sct
+                  .value
+                  .from(
+                    if (after.isEmpty)
+                      after
+                    else
+                      after.tail)
             } yield front :: back
 
           case _ =>
@@ -144,13 +145,14 @@ object CSVConverter {
             (
               for {
                 front <- scv.value.from(before)
-                back <- sct
-                  .value
-                  .from(
-                    if (after.isEmpty)
-                      after
-                    else
-                      after.tail)
+                back <-
+                  sct
+                    .value
+                    .from(
+                      if (after.isEmpty)
+                        after
+                      else
+                        after.tail)
               } yield Some(front) :: back
             ).orElse {
               sct.value.from(s).map(None :: _)

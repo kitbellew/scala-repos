@@ -163,10 +163,11 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
                   call.name,
                   call
                     .desc): Either[OptimizerWarning, (MethodNode, InternalName)]
-                (declarationClassNode, source) <- byteCodeRepository
-                  .classNodeAndSource(declarationClass): Either[
-                  OptimizerWarning,
-                  (ClassNode, Source)]
+                (declarationClassNode, source) <-
+                  byteCodeRepository
+                    .classNodeAndSource(declarationClass): Either[
+                    OptimizerWarning,
+                    (ClassNode, Source)]
               } yield {
                 val declarationClassBType = classBTypeFromClassNode(
                   declarationClassNode)
@@ -507,8 +508,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
 
     override def toString =
       "Invocation of" +
-        s" ${callee.map(_.calleeDeclarationClass.internalName).getOrElse(
-          "?")}.${callsiteInstruction.name + callsiteInstruction.desc}" +
+        s" ${callee.map(_.calleeDeclarationClass.internalName).getOrElse("?")}.${callsiteInstruction
+          .name + callsiteInstruction.desc}" +
         s"@${callsiteMethod.instructions.indexOf(callsiteInstruction)}" +
         s" in ${callsiteClass.internalName}.${callsiteMethod.name}"
   }

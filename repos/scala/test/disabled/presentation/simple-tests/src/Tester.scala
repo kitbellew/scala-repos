@@ -116,10 +116,11 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
     }
 
     def insertAll() {
-      for (chr <- if (toLeft)
-             deleted
-           else
-             deleted.reverse) {
+      for (chr <-
+             if (toLeft)
+               deleted
+             else
+               deleted.reverse) {
         val sf = inputs(sfidx)
         val (pre, post) = sf. /*!*/ content splitAt pos
         pos += 1

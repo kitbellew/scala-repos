@@ -237,11 +237,12 @@ trait EvaluatorModule[M[+_]]
               case Some(reducedTarget) =>
                 for {
                   pendingTarget <- prepareEval(reducedTarget, splits)
-                  resultTargetTable = pendingTarget
-                    .table
-                    .transform {
-                      liftToValues(pendingTarget.trans)
-                    }
+                  resultTargetTable =
+                    pendingTarget
+                      .table
+                      .transform {
+                        liftToValues(pendingTarget.trans)
+                      }
                   _ <- monadState.gets(identity)
                   subSpec <- resolveLowLevelGroup(
                     resultTargetTable,
@@ -279,30 +280,18 @@ trait EvaluatorModule[M[+_]]
         forest match {
           case UnionBucketSpec(left, right) =>
             for {
-              leftRes <- resolveLowLevelGroup(
-                commonTable,
-                commonGraph,
-                left,
-                splits)
-              rightRes <- resolveLowLevelGroup(
-                commonTable,
-                commonGraph,
-                right,
-                splits)
+              leftRes <-
+                resolveLowLevelGroup(commonTable, commonGraph, left, splits)
+              rightRes <-
+                resolveLowLevelGroup(commonTable, commonGraph, right, splits)
             } yield GroupKeySpecOr(leftRes, rightRes)
 
           case IntersectBucketSpec(left, right) =>
             for {
-              leftRes <- resolveLowLevelGroup(
-                commonTable,
-                commonGraph,
-                left,
-                splits)
-              rightRes <- resolveLowLevelGroup(
-                commonTable,
-                commonGraph,
-                right,
-                splits)
+              leftRes <-
+                resolveLowLevelGroup(commonTable, commonGraph, left, splits)
+              rightRes <-
+                resolveLowLevelGroup(commonTable, commonGraph, right, splits)
             } yield GroupKeySpecAnd(leftRes, rightRes)
 
           case UnfixedSolution(id, solution) =>
@@ -767,10 +756,11 @@ trait EvaluatorModule[M[+_]]
                   Map(
                     paths.Key -> trans
                       .WrapArray(Scan(Leaf(Source), freshIdScanner))))
-                tableM2 = pendingTable
-                  .table
-                  .transform(liftToValues(pendingTable.trans))
-                  .transform(idSpec)
+                tableM2 =
+                  pendingTable
+                    .table
+                    .transform(liftToValues(pendingTable.trans))
+                    .transform(idSpec)
               } yield PendingTable(
                 tableM2,
                 graph,
@@ -787,24 +777,27 @@ trait EvaluatorModule[M[+_]]
                 trans2 = trans.Map1(
                   trans.DerefObjectStatic(pendingTable.trans, paths.Value),
                   f1)
-                loaded = pendingTable
-                  .table
-                  .transform(trans2)
-                  .load(ctx.apiKey, jtpe)
-                  .fold(
-                    {
-                      case ResourceError.NotFound(message) =>
-                        report.warn(graph.loc, message) >> Table.empty.point[N]
-                      case ResourceError.PermissionsError(message) =>
-                        report.warn(graph.loc, message) >> Table.empty.point[N]
-                      case fatal =>
-                        report.error(
-                          graph.loc,
-                          "Fatal error while loading dataset") >> report
-                          .die() >> Table.empty.point[N]
-                    },
-                    table => table.point[N]
-                  )
+                loaded =
+                  pendingTable
+                    .table
+                    .transform(trans2)
+                    .load(ctx.apiKey, jtpe)
+                    .fold(
+                      {
+                        case ResourceError.NotFound(message) =>
+                          report
+                            .warn(graph.loc, message) >> Table.empty.point[N]
+                        case ResourceError.PermissionsError(message) =>
+                          report
+                            .warn(graph.loc, message) >> Table.empty.point[N]
+                        case fatal =>
+                          report.error(
+                            graph.loc,
+                            "Fatal error while loading dataset") >> report
+                            .die() >> Table.empty.point[N]
+                      },
+                      table => table.point[N]
+                    )
                 back <- transState liftM mn(loaded).join
               } yield PendingTable(
                 back,
@@ -818,32 +811,36 @@ trait EvaluatorModule[M[+_]]
 
                 Path(prefixStr) = ctx.basePath
                 Path(midStr) = ctx.scriptPath
-                fullPrefix = prefixStr.replaceAll("([^/])$", "$1/") + midStr
-                  .replaceAll("([^/])$", "$1/")
+                fullPrefix =
+                  prefixStr.replaceAll("([^/])$", "$1/") + midStr
+                    .replaceAll("([^/])$", "$1/")
 
                 f1 = concatString(MorphContext(ctx, graph))
                   .applyl(CString(fullPrefix))
                 trans2 = trans.Map1(
                   trans.DerefObjectStatic(pendingTable.trans, paths.Value),
                   f1)
-                loaded = pendingTable
-                  .table
-                  .transform(trans2)
-                  .load(ctx.apiKey, jtpe)
-                  .fold(
-                    {
-                      case ResourceError.NotFound(message) =>
-                        report.warn(graph.loc, message) >> Table.empty.point[N]
-                      case ResourceError.PermissionsError(message) =>
-                        report.warn(graph.loc, message) >> Table.empty.point[N]
-                      case fatal =>
-                        report.error(
-                          graph.loc,
-                          "Fatal error while loading dataset") >> report
-                          .die() >> Table.empty.point[N]
-                    },
-                    table => table.point[N]
-                  )
+                loaded =
+                  pendingTable
+                    .table
+                    .transform(trans2)
+                    .load(ctx.apiKey, jtpe)
+                    .fold(
+                      {
+                        case ResourceError.NotFound(message) =>
+                          report
+                            .warn(graph.loc, message) >> Table.empty.point[N]
+                        case ResourceError.PermissionsError(message) =>
+                          report
+                            .warn(graph.loc, message) >> Table.empty.point[N]
+                        case fatal =>
+                          report.error(
+                            graph.loc,
+                            "Fatal error while loading dataset") >> report
+                            .die() >> Table.empty.point[N]
+                      },
+                      table => table.point[N]
+                    )
                 back <- transState liftM mn(loaded).join
               } yield PendingTable(
                 back,
@@ -1118,26 +1115,29 @@ trait EvaluatorModule[M[+_]]
                 childPending <- prepareEval(child, splits)
 
                 liftedTrans = liftToValues(predPending.trans)
-                predTable = predPending
-                  .table transform DerefObjectStatic(liftedTrans, paths.Value)
+                predTable =
+                  predPending
+                    .table transform DerefObjectStatic(liftedTrans, paths.Value)
 
                 truthiness <- transState liftM mn(
                   predTable.reduce(Forall reducer MorphContext(ctx, graph))(
                     Forall.monoid))
 
-                assertion = if (truthiness getOrElse false) {
-                  N.point(())
-                } else {
-                  for {
-                    _ <- report.error(graph.loc, "Assertion failed")
-                    _ <- report
-                      .die() // Arrrrrrrgggghhhhhhhhhhhhhh........ *gurgle*
-                  } yield ()
-                }
+                assertion =
+                  if (truthiness getOrElse false) {
+                    N.point(())
+                  } else {
+                    for {
+                      _ <- report.error(graph.loc, "Assertion failed")
+                      _ <-
+                        report
+                          .die() // Arrrrrrrgggghhhhhhhhhhhhhh........ *gurgle*
+                    } yield ()
+                  }
                 _ <- transState liftM assertion
 
-                result = childPending
-                  .table transform liftToValues(childPending.trans)
+                result =
+                  childPending.table transform liftToValues(childPending.trans)
               } yield PendingTable(
                 result,
                 graph,
@@ -1150,19 +1150,16 @@ trait EvaluatorModule[M[+_]]
             case IUI(union, left, right) =>
               // TODO: Get rid of ValueSorts.
               for {
-                pair <- zip(
-                  prepareEval(left, splits),
-                  prepareEval(right, splits))
+                pair <-
+                  zip(prepareEval(left, splits), prepareEval(right, splits))
                 (leftPending, rightPending) = pair
 
                 keyValueSpec = TransSpec1.PruneToKeyValue
 
-                leftTable = leftPending
-                  .table
-                  .transform(liftToValues(leftPending.trans))
-                rightTable = rightPending
-                  .table
-                  .transform(liftToValues(rightPending.trans))
+                leftTable =
+                  leftPending.table.transform(liftToValues(leftPending.trans))
+                rightTable =
+                  rightPending.table.transform(liftToValues(rightPending.trans))
 
                 leftSortedM = transState liftM mn(
                   leftTable.sort(keyValueSpec, SortAscending))
@@ -1172,17 +1169,18 @@ trait EvaluatorModule[M[+_]]
                 pair <- zip(leftSortedM, rightSortedM)
                 (leftSorted, rightSorted) = pair
 
-                result = if (union) {
-                  leftSorted.cogroup(keyValueSpec, keyValueSpec, rightSorted)(
-                    Leaf(Source),
-                    Leaf(Source),
-                    Leaf(SourceLeft))
-                } else {
-                  leftSorted.cogroup(keyValueSpec, keyValueSpec, rightSorted)(
-                    TransSpec1.DeleteKeyValue,
-                    TransSpec1.DeleteKeyValue,
-                    TransSpec2.LeftId)
-                }
+                result =
+                  if (union) {
+                    leftSorted.cogroup(keyValueSpec, keyValueSpec, rightSorted)(
+                      Leaf(Source),
+                      Leaf(Source),
+                      Leaf(SourceLeft))
+                  } else {
+                    leftSorted.cogroup(keyValueSpec, keyValueSpec, rightSorted)(
+                      TransSpec1.DeleteKeyValue,
+                      TransSpec1.DeleteKeyValue,
+                      TransSpec2.LeftId)
+                  }
               } yield {
                 PendingTable(result, graph, TransSpec1.Id, IdentityOrder(graph))
               }
@@ -1190,17 +1188,14 @@ trait EvaluatorModule[M[+_]]
             // TODO unify with IUI
             case Diff(left, right) =>
               for {
-                pair <- zip(
-                  prepareEval(left, splits),
-                  prepareEval(right, splits))
+                pair <-
+                  zip(prepareEval(left, splits), prepareEval(right, splits))
                 (leftPending, rightPending) = pair
 
-                leftTable = leftPending
-                  .table
-                  .transform(liftToValues(leftPending.trans))
-                rightTable = rightPending
-                  .table
-                  .transform(liftToValues(rightPending.trans))
+                leftTable =
+                  leftPending.table.transform(liftToValues(leftPending.trans))
+                rightTable =
+                  rightPending.table.transform(liftToValues(rightPending.trans))
 
                 // this transspec prunes everything that is not a key or a value.
                 keyValueSpec = TransSpec1.PruneToKeyValue
@@ -1213,8 +1208,8 @@ trait EvaluatorModule[M[+_]]
                 pair <- zip(leftSortedM, rightSortedM)
                 (leftSorted, rightSorted) = pair
 
-                result = leftSorted
-                  .cogroup(keyValueSpec, keyValueSpec, rightSorted)(
+                result =
+                  leftSorted.cogroup(keyValueSpec, keyValueSpec, rightSorted)(
                     TransSpec1.Id,
                     TransSpec1.DeleteKeyValue,
                     TransSpec2.DeleteKeyValueLeft)

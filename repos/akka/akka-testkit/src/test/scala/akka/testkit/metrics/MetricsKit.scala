@@ -71,7 +71,9 @@ private[akka] trait MetricsKit extends MetricsKitOps {
     def configureGraphiteReporter() {
       if (settings.Reporters.contains("graphite")) {
         note(
-          s"MetricsKit: Graphite reporter enabled, sending metrics to: ${settings.GraphiteReporter.Host}:${settings.GraphiteReporter.Port}")
+          s"MetricsKit: Graphite reporter enabled, sending metrics to: ${settings
+            .GraphiteReporter
+            .Host}:${settings.GraphiteReporter.Port}")
         val address =
           new InetSocketAddress(
             settings.GraphiteReporter.Host,

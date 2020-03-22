@@ -37,8 +37,8 @@ object XMLSpec extends Specification {
         s"""<?xml version="1.0" encoding="ISO-8859-1"?>
                   | <!DOCTYPE foo [
                   |   <!ELEMENT foo ANY >
-                  |   <!ENTITY xxe SYSTEM "${f.toURI}">]><foo>hello&xxe;</foo>"""
-          .stripMargin
+                  |   <!ENTITY xxe SYSTEM "${f
+             .toURI}">]><foo>hello&xxe;</foo>""".stripMargin
 
       parse(xml) must throwA[RuntimeException].like {
         case re =>

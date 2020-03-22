@@ -102,8 +102,8 @@ abstract class RuleExecutor[TreeType <: TreeNode[_]] extends Logging {
                   logTrace(
                     s"""
                   |=== Applying Rule ${rule.ruleName} ===
-                  |${sideBySide(plan.treeString, result.treeString).mkString(
-                         "\n")}
+                  |${sideBySide(plan.treeString, result.treeString)
+                         .mkString("\n")}
                 """.stripMargin)
                 }
 

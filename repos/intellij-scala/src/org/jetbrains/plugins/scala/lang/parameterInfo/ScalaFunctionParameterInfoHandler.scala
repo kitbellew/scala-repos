@@ -250,8 +250,8 @@ class ScalaFunctionParameterInfoHandler
                           buffer.append(namedPostfix)
                         assign.getRExpression match {
                           case Some(expr: ScExpression) =>
-                            for (exprType <- expr.getType(
-                                   TypingContext.empty)) {
+                            for (exprType <-
+                                   expr.getType(TypingContext.empty)) {
                               val paramType = param._1.paramType
                               if (!exprType.conforms(paramType))
                                 isGrey = true
@@ -725,11 +725,12 @@ class ScalaFunctionParameterInfoHandler
                               subst.followed(collectSubstitutor(function))),
                             count - 1))
                       case _ =>
-                        for (typez <- call
-                               .getEffectiveInvokedExpr
-                               .getType(
-                                 TypingContext.empty
-                               )) //todo: implicit conversions
+                        for (typez <-
+                               call
+                                 .getEffectiveInvokedExpr
+                                 .getType(
+                                   TypingContext.empty
+                                 )) //todo: implicit conversions
                           {
                             collectForType(typez)
                           }
@@ -768,11 +769,12 @@ class ScalaFunctionParameterInfoHandler
                 case None =>
                   call match {
                     case call: ScMethodCall =>
-                      for (typez <- call
-                             .getEffectiveInvokedExpr
-                             .getType(
-                               TypingContext
-                                 .empty)) { //todo: implicit conversions
+                      for (typez <-
+                             call
+                               .getEffectiveInvokedExpr
+                               .getType(
+                                 TypingContext
+                                   .empty)) { //todo: implicit conversions
                         collectForType(typez)
                       }
                   }
@@ -805,8 +807,9 @@ class ScalaFunctionParameterInfoHandler
                               new collection.mutable.HashMap[
                                 (String, PsiElement),
                                 ScType]
-                            for (i <- 0 to Math
-                                   .min(tp.length, typeArgs.length) - 1) {
+                            for (i <- 0 to Math.min(
+                                   tp.length,
+                                   typeArgs.length) - 1) {
                               map += ((tp(i), typeArgs(i).calcType))
                             }
                             val substitutor =
@@ -871,8 +874,9 @@ class ScalaFunctionParameterInfoHandler
                             new collection.mutable.HashMap[
                               (String, PsiElement),
                               ScType]
-                          for (i <- 0 to Math
-                                 .min(tp.length, typeArgs.length) - 1) {
+                          for (i <- 0 to Math.min(
+                                 tp.length,
+                                 typeArgs.length) - 1) {
                             map += ((tp(i), typeArgs(i).calcType))
                           }
                           val substitutor =

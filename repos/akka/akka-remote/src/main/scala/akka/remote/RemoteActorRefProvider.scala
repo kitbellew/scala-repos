@@ -374,7 +374,8 @@ private[akka] class RemoteActorRefProvider(
               } catch {
                 case NonFatal(e) ⇒
                   throw new ConfigurationException(
-                    s"configuration problem while creating [$path] with dispatcher [${props.dispatcher}] and mailbox [${props.mailbox}]",
+                    s"configuration problem while creating [$path] with dispatcher [${props
+                      .dispatcher}] and mailbox [${props.mailbox}]",
                     e)
               }
               val localAddress = transport.localAddressForRemote(addr)

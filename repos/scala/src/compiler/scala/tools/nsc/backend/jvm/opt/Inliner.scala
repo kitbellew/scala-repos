@@ -169,11 +169,12 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     val res =
       for {
         selfParamType <- selfParamTypeV
-        implMethodDescriptor = asm
-          .Type
-          .getMethodDescriptor(
-            asm.Type.getReturnType(callee.desc),
-            selfParamType.toASMType +: traitMethodArgumentTypes: _*)
+        implMethodDescriptor =
+          asm
+            .Type
+            .getMethodDescriptor(
+              asm.Type.getReturnType(callee.desc),
+              selfParamType.toASMType +: traitMethodArgumentTypes: _*)
         implClassMethod <- implClassMethodV(implMethodDescriptor)
         implClassBType = classBTypeFromParsedClassfile(implClassInternalName)
         selfTypeOk <- calleeDeclarationClass.isSubtypeOf(selfParamType)
@@ -1007,8 +1008,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
             val methodRefClass = classBTypeFromParsedClassfile(mi.owner)
             for {
-              (methodNode, methodDeclClassNode) <- byteCodeRepository
-                .methodNode(
+              (methodNode, methodDeclClassNode) <-
+                byteCodeRepository.methodNode(
                   methodRefClass.internalName,
                   mi.name,
                   mi.desc): Either[OptimizerWarning, (MethodNode, InternalName)]

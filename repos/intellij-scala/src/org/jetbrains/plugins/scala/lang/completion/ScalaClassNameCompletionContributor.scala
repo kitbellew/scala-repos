@@ -297,9 +297,10 @@ object ScalaClassNameCompletionContributor {
     for {
       name <- ScalaPsiManager.instance(project).getStableTypeAliasesNames
       if prefixMatcher.prefixMatches(name)
-      alias <- ScalaPsiManager
-        .instance(project)
-        .getStableAliasesByName(name, position.getResolveScope)
+      alias <-
+        ScalaPsiManager
+          .instance(project)
+          .getStableAliasesByName(name, position.getResolveScope)
     } {
       addTypeForCompletion(TypeAliasToImport(alias))
     }

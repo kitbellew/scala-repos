@@ -359,11 +359,12 @@ class StateMapSuite extends SparkFunSuite {
       assert(mapToTest.getAll().toSet === refMapToTestWith.getAll().toSet)
 
       // Assert that get on every key returns the right value
-      for (keyId <- refMapToTestWith
-             .getAll()
-             .map {
-               _._1
-             }) {
+      for (keyId <-
+             refMapToTestWith
+               .getAll()
+               .map {
+                 _._1
+               }) {
         assert(mapToTest.get(keyId) === refMapToTestWith.get(keyId))
       }
 

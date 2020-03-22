@@ -1114,7 +1114,8 @@ abstract class ClassfileParser {
             Some(LiteralAnnotArg(Constant(s)))
           else {
             warning(
-              s"""While parsing annotations in ${in.file}, could not find $n in enum $module.\nThis is likely due to an implementation restriction: an annotation argument cannot refer to a member of the annotated class (SI-7014).""")
+              s"""While parsing annotations in ${in
+                .file}, could not find $n in enum $module.\nThis is likely due to an implementation restriction: an annotation argument cannot refer to a member of the annotated class (SI-7014).""")
             None
           }
 

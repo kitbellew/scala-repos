@@ -177,8 +177,8 @@ case class Expand(
           val code =
             s"""
           |boolean $isNull = true;
-          |${ctx.javaType(firstExpr.dataType)} $value = ${ctx.defaultValue(
-                 firstExpr.dataType)};
+          |${ctx.javaType(firstExpr.dataType)} $value = ${ctx
+                 .defaultValue(firstExpr.dataType)};
          """.stripMargin
           ExprCode(code, isNull, value)
         }

@@ -397,7 +397,8 @@ class KafkaApis(
           case (topicPartition, errorCode) =>
             if (errorCode != Errors.NONE.code) {
               debug(
-                s"Offset commit request with correlation id ${header.correlationId} from client ${header.clientId} " +
+                s"Offset commit request with correlation id ${header
+                  .correlationId} from client ${header.clientId} " +
                   s"on partition $topicPartition failed due to ${Errors.forCode(errorCode).exceptionName}")
             }
         }
@@ -703,9 +704,9 @@ class KafkaApis(
         case (topicAndPartition, data) =>
           if (data.error != Errors.NONE.code)
             debug(
-              s"Fetch request with correlation id ${fetchRequest.correlationId} from client ${fetchRequest.clientId} " +
-                s"on partition $topicAndPartition failed due to ${Errors.forCode(
-                  data.error).exceptionName}")
+              s"Fetch request with correlation id ${fetchRequest
+                .correlationId} from client ${fetchRequest.clientId} " +
+                s"on partition $topicAndPartition failed due to ${Errors.forCode(data.error).exceptionName}")
           // record the bytes out metrics only when the response is being sent
           BrokerTopicStats
             .getBrokerTopicStats(topicAndPartition.topic)
@@ -1195,7 +1196,8 @@ class KafkaApis(
       }
 
     trace(
-      s"Sending offset fetch response $offsetFetchResponse for correlation id ${header.correlationId} to client ${header.clientId}.")
+      s"Sending offset fetch response $offsetFetchResponse for correlation id ${header
+        .correlationId} to client ${header.clientId}.")
     requestChannel.sendResponse(
       new Response(
         request,

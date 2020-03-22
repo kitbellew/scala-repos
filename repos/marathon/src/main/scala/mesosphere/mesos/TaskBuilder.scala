@@ -69,7 +69,8 @@ class TaskBuilder(
       val portsString = s"ports=($portStrings)"
 
       log.info(
-        s"Offer [${offer.getId.getValue}]. Insufficient resources for [${app.id}] (need cpus=${app.cpus}, " +
+        s"Offer [${offer.getId.getValue}]. Insufficient resources for [${app
+          .id}] (need cpus=${app.cpus}, " +
           s"mem=${app.mem}, disk=${app.disk}, $portsString, available in offer: " +
           s"[${TextFormat.shortDebugString(offer)}]")
     }

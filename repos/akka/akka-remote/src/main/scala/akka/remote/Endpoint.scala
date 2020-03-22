@@ -495,8 +495,7 @@ private[remote] class ReliableDeliverySupervisor(
         uid,
         new TimeoutException(
           "Remote system has been silent for too long. " +
-            s"(more than ${settings.QuarantineSilentSystemTimeout.toUnit(
-              TimeUnit.HOURS)} hours)"))
+            s"(more than ${settings.QuarantineSilentSystemTimeout.toUnit(TimeUnit.HOURS)} hours)"))
     case EndpointWriter.FlushAndStop ⇒
       context.stop(self)
     case EndpointWriter.StopReading(w, replyTo) ⇒
@@ -1009,7 +1008,8 @@ private[remote] class EndpointWriter(
         case Some(h) ⇒
           if (provider.remoteSettings.LogSend) {
             def msgLog =
-              s"RemoteMessage: [${s.message}] to [${s.recipient}]<+[${s.recipient.path}] from [${s.senderOption.getOrElse(extendedSystem.deadLetters)}]"
+              s"RemoteMessage: [${s.message}] to [${s
+                .recipient}]<+[${s.recipient.path}] from [${s.senderOption.getOrElse(extendedSystem.deadLetters)}]"
             log.debug("sending message {}", msgLog)
           }
 
@@ -1027,7 +1027,8 @@ private[remote] class EndpointWriter(
           if (pduSize > transport.maximumPayloadBytes) {
             val reason =
               new OversizedPayloadException(
-                s"Discarding oversized payload sent to ${s.recipient}: max allowed size ${transport.maximumPayloadBytes} bytes, actual size of encoded ${s.message.getClass} was ${pdu.size} bytes.")
+                s"Discarding oversized payload sent to ${s.recipient}: max allowed size ${transport
+                  .maximumPayloadBytes} bytes, actual size of encoded ${s.message.getClass} was ${pdu.size} bytes.")
             log.error(
               reason,
               "Transient association error (association remains live)")

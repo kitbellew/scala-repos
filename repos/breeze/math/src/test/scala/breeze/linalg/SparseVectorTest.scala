@@ -391,23 +391,26 @@ class SparseVectorOps_DoubleTest
     (SparseVector[Double], SparseVector[Double], SparseVector[Double])] = {
     Arbitrary {
       for {
-        x <- Arbitrary
-          .arbitrary[Double]
-          .map {
-            _ % 1e100
-          }
+        x <-
+          Arbitrary
+            .arbitrary[Double]
+            .map {
+              _ % 1e100
+            }
         xl <- Arbitrary.arbitrary[List[Int]]
-        y <- Arbitrary
-          .arbitrary[Double]
-          .map {
-            _ % 1e100
-          }
+        y <-
+          Arbitrary
+            .arbitrary[Double]
+            .map {
+              _ % 1e100
+            }
         yl <- Arbitrary.arbitrary[List[Int]]
-        z <- Arbitrary
-          .arbitrary[Double]
-          .map {
-            _ % 1e100
-          }
+        z <-
+          Arbitrary
+            .arbitrary[Double]
+            .map {
+              _ % 1e100
+            }
         zl <- Arbitrary.arbitrary[List[Int]]
       } yield {
         (
@@ -442,23 +445,26 @@ class SparseVectorOps_FloatTest
     (SparseVector[Float], SparseVector[Float], SparseVector[Float])] = {
     Arbitrary {
       for {
-        x <- Arbitrary
-          .arbitrary[Float]
-          .map {
-            _ % 100
-          }
+        x <-
+          Arbitrary
+            .arbitrary[Float]
+            .map {
+              _ % 100
+            }
         xl <- Arbitrary.arbitrary[List[Int]]
-        y <- Arbitrary
-          .arbitrary[Float]
-          .map {
-            _ % 100
-          }
+        y <-
+          Arbitrary
+            .arbitrary[Float]
+            .map {
+              _ % 100
+            }
         yl <- Arbitrary.arbitrary[List[Int]]
-        z <- Arbitrary
-          .arbitrary[Float]
-          .map {
-            _ % 100
-          }
+        z <-
+          Arbitrary
+            .arbitrary[Float]
+            .map {
+              _ % 100
+            }
         zl <- Arbitrary.arbitrary[List[Int]]
       } yield {
         (
@@ -496,23 +502,26 @@ class SparseVectorOps_IntTest
       : Arbitrary[(SparseVector[Int], SparseVector[Int], SparseVector[Int])] = {
     Arbitrary {
       for {
-        x <- Arbitrary
-          .arbitrary[Int]
-          .map {
-            _ % 100
-          }
+        x <-
+          Arbitrary
+            .arbitrary[Int]
+            .map {
+              _ % 100
+            }
         xl <- Arbitrary.arbitrary[List[Int]]
-        y <- Arbitrary
-          .arbitrary[Int]
-          .map {
-            _ % 100
-          }
+        y <-
+          Arbitrary
+            .arbitrary[Int]
+            .map {
+              _ % 100
+            }
         yl <- Arbitrary.arbitrary[List[Int]]
-        z <- Arbitrary
-          .arbitrary[Int]
-          .map {
-            _ % 100
-          }
+        z <-
+          Arbitrary
+            .arbitrary[Int]
+            .map {
+              _ % 100
+            }
         zl <- Arbitrary.arbitrary[List[Int]]
       } yield {
         (

@@ -350,41 +350,46 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
         Tab("foo", "bar", "bat", 2, 6),
         Tab("foo", "quux", "bat", 3, 7),
         Tab("baz", "quux", "bat", 4, 8))
-      q1 = Tabs
-        .groupBy(t => (t.col1, t.col2, t.col3))
-        .map {
-          case (grp, t) =>
-            (grp._1, grp._2, t.map(_.col4).sum)
-        }
-        .to[Set]
-      _ <- q1
-        .result
-        .map(
-          _ shouldBe Set(
-            ("baz", "quux", Some(4)),
-            ("foo", "quux", Some(3)),
-            ("foo", "bar", Some(3))))
-      q2 = Tabs
-        .groupBy(t => ((t.col1, t.col2), t.col3))
-        .map {
-          case (grp, t) =>
-            (grp._1._1, grp._1._2, t.map(_.col4).sum)
-        }
-        .to[Set]
-      _ <- q2
-        .result
-        .map(
-          _ shouldBe Set(
-            ("baz", "quux", Some(4)),
-            ("foo", "quux", Some(3)),
-            ("foo", "bar", Some(3))))
-      q3 = Tabs
-        .groupBy(_.col1)
-        .map {
-          case (grp, t) =>
-            (grp, t.map(x => x.col4 + x.col5).sum)
-        }
-        .to[Set]
+      q1 =
+        Tabs
+          .groupBy(t => (t.col1, t.col2, t.col3))
+          .map {
+            case (grp, t) =>
+              (grp._1, grp._2, t.map(_.col4).sum)
+          }
+          .to[Set]
+      _ <-
+        q1
+          .result
+          .map(
+            _ shouldBe Set(
+              ("baz", "quux", Some(4)),
+              ("foo", "quux", Some(3)),
+              ("foo", "bar", Some(3))))
+      q2 =
+        Tabs
+          .groupBy(t => ((t.col1, t.col2), t.col3))
+          .map {
+            case (grp, t) =>
+              (grp._1._1, grp._1._2, t.map(_.col4).sum)
+          }
+          .to[Set]
+      _ <-
+        q2
+          .result
+          .map(
+            _ shouldBe Set(
+              ("baz", "quux", Some(4)),
+              ("foo", "quux", Some(3)),
+              ("foo", "bar", Some(3))))
+      q3 =
+        Tabs
+          .groupBy(_.col1)
+          .map {
+            case (grp, t) =>
+              (grp, t.map(x => x.col4 + x.col5).sum)
+          }
+          .to[Set]
       _ <- q3.result.map(_ shouldBe Set(("baz", Some(12)), ("foo", Some(24))))
     } yield ()
   }
@@ -430,27 +435,28 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
           (name.min, s.map(_.map(_.b)).min, supId, c.length)
         }
       _ <- q2.result.map(_ shouldBe Nil)
-      q4 = as
-        .flatMap { t1 =>
-          bs
-            .withFilter { t2 =>
-              t1.fkId === t2.id && t2.d === ""
-            }
-            .map(t2 => (t1, t2))
-        }
-        .groupBy { prop =>
-          val t1 = prop._1
-          val t2 = prop._2
-          (t1.a, t2.b)
-        }
-        .map { prop =>
-          val a = prop._1._1
-          val b = prop._1._2
-          val t1 = prop._2.map(_._1)
-          val t2 = prop._2.map(_._2)
-          val c3 = t1.map(_.c).max
-          scala.Tuple3(a, b, c3)
-        }
+      q4 =
+        as
+          .flatMap { t1 =>
+            bs
+              .withFilter { t2 =>
+                t1.fkId === t2.id && t2.d === ""
+              }
+              .map(t2 => (t1, t2))
+          }
+          .groupBy { prop =>
+            val t1 = prop._1
+            val t2 = prop._2
+            (t1.a, t2.b)
+          }
+          .map { prop =>
+            val a = prop._1._1
+            val b = prop._1._2
+            val t1 = prop._2.map(_._1)
+            val t2 = prop._2.map(_._2)
+            val c3 = t1.map(_.c).max
+            scala.Tuple3(a, b, c3)
+          }
       _ <- q4.result.map(_ shouldBe Nil)
     } yield ()
   }

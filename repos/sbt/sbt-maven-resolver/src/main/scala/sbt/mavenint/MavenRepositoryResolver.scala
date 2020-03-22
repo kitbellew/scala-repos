@@ -203,8 +203,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       // TODO - Check to see if we're asking for latest.* version, and if so, we should run a latest version query
       //        first and use that result to return the metadata/final module.
       Message.debug(
-        s"Requesting conf [${dd.getModuleConfigurations.mkString(
-          ",")}] from Aether module ${drid} in resolver ${getName}")
+        s"Requesting conf [${dd.getModuleConfigurations.mkString(",")}] from Aether module ${drid} in resolver ${getName}")
       val request = new AetherDescriptorRequest()
       val coords = aetherCoordsFromMrid(drid)
       Message.debug(s"Aether about to resolve [$coords]...")

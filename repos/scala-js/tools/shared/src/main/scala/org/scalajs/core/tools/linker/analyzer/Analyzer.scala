@@ -159,8 +159,8 @@ private final class Analyzer(
      * superclasses of classes whose data we can already reach.
      */
     for {
-      getSuperclassMethodInfo <- classClassInfo
-        .flatMap(_.methodInfos.get("getSuperclass__jl_Class"))
+      getSuperclassMethodInfo <-
+        classClassInfo.flatMap(_.methodInfos.get("getSuperclass__jl_Class"))
       if getSuperclassMethodInfo.isReachable
     } {
       // calledFrom should always be nonEmpty if isReachable, but let's be robust

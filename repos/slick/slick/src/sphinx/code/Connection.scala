@@ -114,10 +114,8 @@ object Connection extends App {
       val a =
         (
           for {
-            ns <- coffees
-              .filter(_.name.startsWith("ESPRESSO"))
-              .map(_.name)
-              .result
+            ns <-
+              coffees.filter(_.name.startsWith("ESPRESSO")).map(_.name).result
             _ <- DBIO.seq(ns.map(n => coffees.filter(_.name === n).delete): _*)
           } yield ()
         ).transactionally

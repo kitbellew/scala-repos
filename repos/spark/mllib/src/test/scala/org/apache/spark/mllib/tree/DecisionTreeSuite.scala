@@ -1344,7 +1344,8 @@ object DecisionTreeSuite extends SparkFunSuite {
       case (None, None) =>
       case _ =>
         throw new AssertionError(
-          s"Only one instance has stats defined. (a.stats: ${a.stats}, b.stats: ${b.stats})")
+          s"Only one instance has stats defined. (a.stats: ${a
+            .stats}, b.stats: ${b.stats})")
     }
     (a.leftNode, b.leftNode) match {
       case (Some(aNode), Some(bNode)) =>

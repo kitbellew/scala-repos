@@ -178,13 +178,15 @@ object SealedTraitLike {
                   m.asInstanceOf[MaybeLengthCalculation[c.type]].t
 
                 case f: FastLengthCalculation[_] =>
-                  q"""_root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.DynamicLen(${f.asInstanceOf[
-                    FastLengthCalculation[c.type]].t})"""
+                  q"""_root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.DynamicLen(${f
+                    .asInstanceOf[FastLengthCalculation[c.type]]
+                    .t})"""
 
                 case _: NoLengthCalculationAvailable[_] =>
                   return NoLengthCalculationAvailable(c)
                 case const: ConstantLengthCalculation[_] =>
-                  q"""_root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.ConstLen(${const.toInt})"""
+                  q"""_root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.ConstLen(${const
+                    .toInt})"""
                 case e =>
                   sys.error("unexpected input to union length code of " + e)
               }

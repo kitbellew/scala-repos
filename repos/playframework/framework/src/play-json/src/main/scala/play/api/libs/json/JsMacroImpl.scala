@@ -339,7 +339,8 @@ object JsMacroImpl {
         // lazy val
         q"""
         new $LazyHelper[${matag.tpe.typeSymbol}, ${atag.tpe.typeSymbol}] {
-          override lazy val lazyStuff: ${matag.tpe.typeSymbol}[${atag.tpe}] = $finalTree
+          override lazy val lazyStuff: ${matag.tpe.typeSymbol}[${atag
+          .tpe}] = $finalTree
         }.lazyStuff
        """
       }

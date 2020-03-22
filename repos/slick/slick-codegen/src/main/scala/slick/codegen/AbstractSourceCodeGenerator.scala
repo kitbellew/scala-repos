@@ -160,7 +160,8 @@ ${result(rearranged)} // putting AutoInc last
           } else
             result(positional)
         s"""
-implicit def ${name}(implicit $dependencies): GR[${TableClass.elementType}] = GR{
+implicit def ${name}(implicit $dependencies): GR[${TableClass
+          .elementType}] = GR{
   prs => import prs._
   ${indent(body)}
 }
@@ -237,8 +238,8 @@ implicit def ${name}(implicit $dependencies): GR[${TableClass.elementType}] = GR
         val args = model.name.schema.map(n => s"""Some("$n")""") ++ Seq(
           "\"" + model.name.table + "\"")
         s"""
-class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args.mkString(
-          ", ")})$prns {
+class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
+          .mkString(", ")})$prns {
   ${indent(body.map(_.mkString("\n")).mkString("\n\n"))}
 }
         """.trim()
@@ -303,8 +304,8 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args.mkStri
       // Explicit type to allow overloading existing Slick method names.
       // Explicit type argument for better error message when implicit type mapper not found.
       def code =
-        s"""val $name: Rep[$actualType] = column[$actualType]("${model.name}"${options.map(
-          ", " + _).mkString("")})"""
+        s"""val $name: Rep[$actualType] = column[$actualType]("${model
+          .name}"${options.map(", " + _).mkString("")})"""
     }
 
     class PrimaryKeyDef(model: m.PrimaryKey)

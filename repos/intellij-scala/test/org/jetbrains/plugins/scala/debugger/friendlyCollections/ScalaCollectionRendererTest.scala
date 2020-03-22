@@ -128,8 +128,8 @@ class ScalaCollectionRendererTest
         NodeRendererSettings.getInstance().getClassRenderer
       val typeName = classRenderer.renderTypeName(collectionClass)
       val expectedLabel =
-        s"$collectionName = {$typeName@$UNIQUE_ID}${ScalaCollectionRenderer.transformName(
-          collectionClass)} size = $collectionLength"
+        s"$collectionName = {$typeName@$UNIQUE_ID}${ScalaCollectionRenderer
+          .transformName(collectionClass)} size = $collectionLength"
 
       assertEquals(expectedLabel, label)
       val intType = classRenderer.renderTypeName("java.lang.Integer")

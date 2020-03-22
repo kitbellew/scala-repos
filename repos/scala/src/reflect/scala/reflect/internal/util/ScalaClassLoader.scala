@@ -86,8 +86,8 @@ trait ScalaClassLoader extends JClassLoader {
         errorFn(
           s"""Loader for ${classTag[T]}:   [${show(
                classTag[T].runtimeClass.getClassLoader)}]
-                   |Loader for ${clazz.getName}: [${show(
-               clazz.getClassLoader)}]""".stripMargin)
+                   |Loader for ${clazz
+               .getName}: [${show(clazz.getClassLoader)}]""".stripMargin)
         fail(s"Not a ${classTag[T]}: ${path}")
       }
     } catch {

@@ -510,10 +510,8 @@ abstract class ScTypeDefinitionImpl protected (
 
   def signaturesByName(name: String): Seq[PhysicalSignature] = {
     (
-      for ((s: PhysicalSignature, _) <- TypeDefinitionMembers
-             .getSignatures(this)
-             .forName(name)
-             ._1)
+      for ((s: PhysicalSignature, _) <-
+             TypeDefinitionMembers.getSignatures(this).forName(name)._1)
         yield s
     ) ++
       syntheticMethodsNoOverride

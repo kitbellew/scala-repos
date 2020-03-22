@@ -246,12 +246,13 @@ private[http] object RenderVersion {
     val ret: Box[T] =
       for {
         sess <- S.session
-        func <- sess
-          .findFunc(v)
-          .collect {
-            case f: S.PageStateHolder =>
-              f
-          }
+        func <-
+          sess
+            .findFunc(v)
+            .collect {
+              case f: S.PageStateHolder =>
+                f
+            }
       } yield {
         val tret =
           ver.doWith(v) {
@@ -1378,22 +1379,25 @@ class LiftSession(
       case n: java.util.Iterator[_] =>
         for {
           i <- n.toSeq;
-          nodes <- currentSourceContext
-            .doWith(i)(processSurroundAndInclude("Source", xform(ns)))
+          nodes <-
+            currentSourceContext
+              .doWith(i)(processSurroundAndInclude("Source", xform(ns)))
         } yield nodes
       case en: java.util.Enumeration[_] =>
         for {
           i <- en.toSeq;
-          nodes <- currentSourceContext
-            .doWith(i)(processSurroundAndInclude("Source", xform(ns)))
+          nodes <-
+            currentSourceContext
+              .doWith(i)(processSurroundAndInclude("Source", xform(ns)))
         } yield nodes
       case se: scala.collection.Iterable[_] =>
         runSourceContext(se.iterator, xform, ns)
       case se: scala.collection.Iterator[_] =>
         for {
           i <- se.toSeq;
-          nodes <- currentSourceContext
-            .doWith(i)(processSurroundAndInclude("Source", xform(ns)))
+          nodes <-
+            currentSourceContext
+              .doWith(i)(processSurroundAndInclude("Source", xform(ns)))
         } yield nodes
       case a: Array[_] =>
         runSourceContext(a.toList, xform, ns)
@@ -1665,9 +1669,8 @@ class LiftSession(
         .headOption
 
     for {
-      template <- Templates(name, S.locale) ?~ (
-        "Template " + name + " not found"
-      )
+      template <-
+        Templates(name, S.locale) ?~ ("Template " + name + " not found")
       res <- findElem(
         processSurroundAndInclude(name.mkString("/", "/", ""), template))
     } yield res
@@ -3270,24 +3273,25 @@ class LiftSession(
               JString(name) <- in \ "name"
               func <- map.get(name)
               payload = in \ "payload"
-              reified <- if (func.manifest == jvmanifest)
-                Some(payload)
-              else {
-                try {
-                  Some(payload.extract(defaultFormats, func.manifest))
-                } catch {
-                  case e: Exception =>
-                    logger.error(
-                      "Failed to extract " + payload + " as " + func.manifest,
-                      e)
-                    ca ! FailMsg(
-                      guid,
-                      "Failed to extract payload as " + func
-                        .manifest + " exception " + e.getMessage)
-                    None
+              reified <-
+                if (func.manifest == jvmanifest)
+                  Some(payload)
+                else {
+                  try {
+                    Some(payload.extract(defaultFormats, func.manifest))
+                  } catch {
+                    case e: Exception =>
+                      logger.error(
+                        "Failed to extract " + payload + " as " + func.manifest,
+                        e)
+                      ca ! FailMsg(
+                        guid,
+                        "Failed to extract payload as " + func
+                          .manifest + " exception " + e.getMessage)
+                      None
 
+                  }
                 }
-              }
             } {
               func match {
                 case StreamRoundTrip(_, func) =>
@@ -3389,9 +3393,9 @@ class LiftSession(
       }
 
       lazy val theFunc = JsRaw(
-        s"""function(v) {${SHtml.jsonCall(
-          JsRaw("v"),
-          localFunc(_)).toJsCmd}}""")
+        s"""function(v) {${SHtml
+          .jsonCall(JsRaw("v"), localFunc(_))
+          .toJsCmd}}""")
 
       lazy val build: (String, JsExp) = "_call_server" -> theFunc
 

@@ -626,7 +626,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       // to a local class symbol that no longer exists, which is not updated by lambdalift.
       devWarning(
         innerClassSym.pos,
-        s"""The class symbol $innerClassSym with the term symbol ${innerClassSym.rawowner} as `rawowner` reached the backend.
+        s"""The class symbol $innerClassSym with the term symbol ${innerClassSym
+             .rawowner} as `rawowner` reached the backend.
            |Most likely this indicates a stale reference to a non-existing class introduced by a macro, see SI-9392."""
           .stripMargin
       )

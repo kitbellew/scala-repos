@@ -1013,8 +1013,8 @@ object Load {
         discover(AddSettings.defaultSbtFiles, buildBase) match {
           case DiscoveredProjects(Some(root), discovered, files, generated) =>
             log.debug(
-              s"[Loading] Found root project ${root.id} w/ remaining ${discovered.map(
-                _.id).mkString(",")}")
+              s"[Loading] Found root project ${root
+                .id} w/ remaining ${discovered.map(_.id).mkString(",")}")
             val finalRoot = finalizeProject(root, files)
             loadTransitive(
               discovered,
@@ -1062,17 +1062,14 @@ object Load {
             val root = finalizeProject(root0, files)
             val result = root +: (acc ++ otherProjects.projects)
             log.debug(
-              s"[Loading] Done in ${buildBase}, returning: ${result.map(
-                _.id).mkString("(", ", ", ")")}")
+              s"[Loading] Done in ${buildBase}, returning: ${result.map(_.id).mkString("(", ", ", ")")}")
             LoadedProjects(
               result,
               generated ++ otherGenerated ++ generatedConfigClassFiles)
         }
       case Nil =>
-        log
-          .debug(
-            s"[Loading] Done in ${buildBase}, returning: ${acc.map(
-              _.id).mkString("(", ", ", ")")}")
+        log.debug(
+          s"[Loading] Done in ${buildBase}, returning: ${acc.map(_.id).mkString("(", ", ", ")")}")
         LoadedProjects(acc, generatedConfigClassFiles)
     }
   }

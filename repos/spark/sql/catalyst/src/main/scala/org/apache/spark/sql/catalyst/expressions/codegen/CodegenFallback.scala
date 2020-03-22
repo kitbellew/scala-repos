@@ -50,8 +50,8 @@ trait CodegenFallback extends Expression {
         /* expression: ${toCommentSafeString(this.toString)} */
         Object $objectTerm = ((Expression) references[$idx]).eval($input);
         boolean ${ev.isNull} = $objectTerm == null;
-        ${ctx.javaType(this.dataType)} ${ev.value} = ${ctx.defaultValue(
-        this.dataType)};
+        ${ctx.javaType(this.dataType)} ${ev.value} = ${ctx
+        .defaultValue(this.dataType)};
         if (!${ev.isNull}) {
           ${ev.value} = (${ctx.boxedType(this.dataType)}) $objectTerm;
         }
@@ -61,8 +61,8 @@ trait CodegenFallback extends Expression {
       s"""
         /* expression: ${toCommentSafeString(this.toString)} */
         Object $objectTerm = ((Expression) references[$idx]).eval($input);
-        ${ctx.javaType(this.dataType)} ${ev.value} = (${ctx.boxedType(
-        this.dataType)}) $objectTerm;
+        ${ctx.javaType(this.dataType)} ${ev.value} = (${ctx
+        .boxedType(this.dataType)}) $objectTerm;
       """
     }
   }

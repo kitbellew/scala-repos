@@ -109,7 +109,8 @@ object ActorPath {
             invalidAt)}] at position: $invalidAt. """ +
             """Actor paths MUST: """ +
             """not start with `$`, """ +
-            s"""include only ASCII letters and can only contain these special characters: ${ActorPath.ValidSymbols}.""")
+            s"""include only ASCII letters and can only contain these special characters: ${ActorPath
+              .ValidSymbols}.""")
     }
   }
 

@@ -125,10 +125,12 @@ object FieldsProviderImpl {
               val indices = fb.names.zipWithIndex.map(_._2)
               q"""_root_.scala.Array.apply[_root_.java.lang.Comparable[_]](..$indices)"""
             case _ =>
-              q"""_root_.scala.Array.apply[_root_.java.lang.Comparable[_]](..${fb.names})"""
+              q"""_root_.scala.Array.apply[_root_.java.lang.Comparable[_]](..${fb
+                .names})"""
           }
         q"""new _root_.cascading.tuple.Fields($nameTree,
-          _root_.scala.Array.apply[_root_.java.lang.reflect.Type](..${fb.columnTypes}))
+          _root_.scala.Array.apply[_root_.java.lang.reflect.Type](..${fb
+          .columnTypes}))
          """
       }
     }

@@ -103,17 +103,20 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
 
     assert(
       regions.length == assumedRegionRanges.size,
-      s"Different region count, expected: ${assumedRegionRanges.size}, but got: ${regions.length}")
+      s"Different region count, expected: ${assumedRegionRanges
+        .size}, but got: ${regions.length}")
 
     (regions zip assumedRegionRanges).zipWithIndex foreach {
       case ((region, assumedRange), idx) =>
         assert(
           region.getRange.getStartOffset == assumedRange.getStartOffset,
-          s"Different start offsets in region #$idx : expected ${assumedRange.getStartOffset}, but got ${region.getRange.getStartOffset}"
+          s"Different start offsets in region #$idx : expected ${assumedRange
+            .getStartOffset}, but got ${region.getRange.getStartOffset}"
         )
         assert(
           region.getRange.getEndOffset == assumedRange.getEndOffset,
-          s"Different end offsets in region #$idx : expected ${assumedRange.getEndOffset}, but got ${region.getRange.getEndOffset}"
+          s"Different end offsets in region #$idx : expected ${assumedRange
+            .getEndOffset}, but got ${region.getRange.getEndOffset}"
         )
     }
   }

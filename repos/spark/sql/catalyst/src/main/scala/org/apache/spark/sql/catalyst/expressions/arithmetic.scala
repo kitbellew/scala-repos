@@ -535,7 +535,8 @@ case class Pmod(left: Expression, right: Expression) extends BinaryArithmetic {
           // byte and short are casted into int when add, minus, times or divide
           case ByteType | ShortType =>
             s"""
-            ${ctx.javaType(dataType)} r = (${ctx.javaType(dataType)})($eval1 % $eval2);
+            ${ctx.javaType(dataType)} r = (${ctx
+              .javaType(dataType)})($eval1 % $eval2);
             if (r < 0) {
               ${ev.value} = (${ctx.javaType(dataType)})((r + $eval2) % $eval2);
             } else {

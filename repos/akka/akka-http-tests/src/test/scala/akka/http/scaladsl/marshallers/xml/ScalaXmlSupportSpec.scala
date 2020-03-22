@@ -54,8 +54,8 @@ class ScalaXmlSupportSpec
             s"""<?xml version="1.0" encoding="ISO-8859-1"?>
                      | <!DOCTYPE foo [
                      |   <!ELEMENT foo ANY >
-                     |   <!ENTITY xxe SYSTEM "${f.toURI}">]><foo>hello&xxe;</foo>"""
-              .stripMargin
+                     |   <!ENTITY xxe SYSTEM "${f
+                 .toURI}">]><foo>hello&xxe;</foo>""".stripMargin
 
           shouldHaveFailedWithSAXParseException(
             Unmarshal(HttpEntity(ContentTypes.`text/xml(UTF-8)`, xml))

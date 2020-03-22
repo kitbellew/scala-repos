@@ -64,15 +64,16 @@ object ProductLike {
         val target = freshT("target")
         q"""
           val $target = $element.$accessorSymbol
-            $currentHash = _root_.com.twitter.scalding.serialization.MurmurHashUtils.mixH1($currentHash, ${tBuf.hash(
-          target)})
+            $currentHash = _root_.com.twitter.scalding.serialization.MurmurHashUtils.mixH1($currentHash, ${tBuf
+          .hash(target)})
           """
     }
 
     q"""
       var $currentHash: Int = _root_.com.twitter.scalding.serialization.MurmurHashUtils.seed
       ..${hashUpdates}
-      _root_.com.twitter.scalding.serialization.MurmurHashUtils.fmix($currentHash, ${elementData.size})
+      _root_.com.twitter.scalding.serialization.MurmurHashUtils.fmix($currentHash, ${elementData
+      .size})
     """
   }
 

@@ -287,8 +287,9 @@ object RejectionHandler {
           HttpResponse(
             BadRequest,
             entity =
-              s"None of the websocket subprotocols offered in the request are supported. Supported are ${supported.map(
-                "'" + _ + "'").mkString(",")}.",
+              s"None of the websocket subprotocols offered in the request are supported. Supported are ${supported
+                .map("'" + _ + "'")
+                .mkString(",")}.",
             headers = `Sec-WebSocket-Protocol`(supported) :: Nil
           ))
       }

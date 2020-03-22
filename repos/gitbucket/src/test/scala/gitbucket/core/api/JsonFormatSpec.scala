@@ -192,11 +192,14 @@ class JsonFormatSpec extends FunSuite {
         ApiCommitListItem
           .Parent("6dcb09b5b57875f334f61aebed695e2e4193db5e")(repo1Name))
     )(repo1Name)
-  val apiCommitListItemJson = s"""{
-    "url": "${context.baseUrl}/api/v3/repos/octocat/Hello-World/commits/6dcb09b5b57875f334f61aebed695e2e4193db5e",
+  val apiCommitListItemJson =
+    s"""{
+    "url": "${context
+      .baseUrl}/api/v3/repos/octocat/Hello-World/commits/6dcb09b5b57875f334f61aebed695e2e4193db5e",
     "sha": "6dcb09b5b57875f334f61aebed695e2e4193db5e",
     "commit": {
-      "url": "${context.baseUrl}/api/v3/repos/octocat/Hello-World/git/commits/6dcb09b5b57875f334f61aebed695e2e4193db5e",
+      "url": "${context
+      .baseUrl}/api/v3/repos/octocat/Hello-World/git/commits/6dcb09b5b57875f334f61aebed695e2e4193db5e",
       "author": $apiPersonIdentJson,
       "committer": $apiPersonIdentJson,
       "message": "Fix all the bugs"
@@ -205,7 +208,8 @@ class JsonFormatSpec extends FunSuite {
     "committer": $apiUserJson,
     "parents": [
       {
-        "url": "${context.baseUrl}/api/v3/repos/octocat/Hello-World/commits/6dcb09b5b57875f334f61aebed695e2e4193db5e",
+        "url": "${context
+      .baseUrl}/api/v3/repos/octocat/Hello-World/commits/6dcb09b5b57875f334f61aebed695e2e4193db5e",
         "sha": "6dcb09b5b57875f334f61aebed695e2e4193db5e"
       }
     ]
@@ -217,13 +221,15 @@ class JsonFormatSpec extends FunSuite {
     total_count = 2,
     statuses = List(apiCommitStatus),
     repository = repository)
-  val apiCombinedCommitStatusJson = s"""{
+  val apiCombinedCommitStatusJson =
+    s"""{
     "state": "success",
     "sha": "$sha1",
     "total_count": 2,
     "statuses": [ $apiCommitStatusJson ],
     "repository": $repositoryJson,
-    "url": "${context.baseUrl}/api/v3/repos/octocat/Hello-World/commits/$sha1/status"
+    "url": "${context
+      .baseUrl}/api/v3/repos/octocat/Hello-World/commits/$sha1/status"
   }"""
 
   val apiLabel =
@@ -244,13 +250,15 @@ class JsonFormatSpec extends FunSuite {
       body = "I'm having a problem with this.",
       created_at = date1,
       updated_at = date1)(RepositoryName("octocat", "Hello-World"), false)
-  val apiIssueJson = s"""{
+  val apiIssueJson =
+    s"""{
     "number": 1347,
     "state": "open",
     "title": "Found a bug",
     "body": "I'm having a problem with this.",
     "user": $apiUserJson,
-    "comments_url": "${context.baseUrl}/api/v3/repos/octocat/Hello-World/issues/1347/comments",
+    "comments_url": "${context
+      .baseUrl}/api/v3/repos/octocat/Hello-World/issues/1347/comments",
     "html_url": "${context.baseUrl}/octocat/Hello-World/issues/1347",
     "created_at": "2011-04-14T16:00:49Z",
     "updated_at": "2011-04-14T16:00:49Z"
@@ -265,13 +273,15 @@ class JsonFormatSpec extends FunSuite {
       body = "I'm having a problem with this.",
       created_at = date1,
       updated_at = date1)(RepositoryName("octocat", "Hello-World"), true)
-  val apiIssuePRJson = s"""{
+  val apiIssuePRJson =
+    s"""{
     "number": 1347,
     "state": "open",
     "title": "Found a bug",
     "body": "I'm having a problem with this.",
     "user": $apiUserJson,
-    "comments_url": "${context.baseUrl}/api/v3/repos/octocat/Hello-World/issues/1347/comments",
+    "comments_url": "${context
+      .baseUrl}/api/v3/repos/octocat/Hello-World/issues/1347/comments",
     "html_url": "${context.baseUrl}/octocat/Hello-World/pull/1347",
     "pull_request": {
       "url": "${context.baseUrl}/api/v3/repos/octocat/Hello-World/pulls/1347",
@@ -298,17 +308,24 @@ class JsonFormatSpec extends FunSuite {
     body = "Please pull these awesome changes",
     user = apiUser
   )
-  val apiPullRequestJson = s"""{
+  val apiPullRequestJson =
+    s"""{
     "url": "${context.baseUrl}/api/v3/repos/octocat/Hello-World/pulls/1347",
     "html_url": "${context.baseUrl}/octocat/Hello-World/pull/1347",
   //  "diff_url": "${context.baseUrl}/octocat/Hello-World/pull/1347.diff",
   //  "patch_url": "${context.baseUrl}/octocat/Hello-World/pull/1347.patch",
-  //  "issue_url": "${context.baseUrl}/api/v3/repos/octocat/Hello-World/issues/1347",
-    "commits_url": "${context.baseUrl}/api/v3/repos/octocat/Hello-World/pulls/1347/commits",
-    "review_comments_url": "${context.baseUrl}/api/v3/repos/octocat/Hello-World/pulls/1347/comments",
-    "review_comment_url": "${context.baseUrl}/api/v3/repos/octocat/Hello-World/pulls/comments/{number}",
-    "comments_url": "${context.baseUrl}/api/v3/repos/octocat/Hello-World/issues/1347/comments",
-    "statuses_url": "${context.baseUrl}/api/v3/repos/octocat/Hello-World/statuses/6dcb09b5b57875f334f61aebed695e2e4193db5e",
+  //  "issue_url": "${context
+      .baseUrl}/api/v3/repos/octocat/Hello-World/issues/1347",
+    "commits_url": "${context
+      .baseUrl}/api/v3/repos/octocat/Hello-World/pulls/1347/commits",
+    "review_comments_url": "${context
+      .baseUrl}/api/v3/repos/octocat/Hello-World/pulls/1347/comments",
+    "review_comment_url": "${context
+      .baseUrl}/api/v3/repos/octocat/Hello-World/pulls/comments/{number}",
+    "comments_url": "${context
+      .baseUrl}/api/v3/repos/octocat/Hello-World/issues/1347/comments",
+    "statuses_url": "${context
+      .baseUrl}/api/v3/repos/octocat/Hello-World/statuses/6dcb09b5b57875f334f61aebed695e2e4193db5e",
     "number": 1347,
   //  "state": "open",
     "title": "new-feature",

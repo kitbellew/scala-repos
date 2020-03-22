@@ -224,7 +224,8 @@ trait SingleMarathonIntegrationTest
       dependencies: Set[PathId] = Set.empty): AppDefinition = {
     val targetDirs = sys.env.getOrElse("TARGET_DIRS", "/marathon")
     val cmd = Some(
-      s"""bash -c 'echo APP PROXY $$MESOS_TASK_ID RUNNING; $appProxyMainInvocationImpl $appId $versionId http://$$HOST:${config.httpPort}/health$appId/$versionId'""")
+      s"""bash -c 'echo APP PROXY $$MESOS_TASK_ID RUNNING; $appProxyMainInvocationImpl $appId $versionId http://$$HOST:${config
+        .httpPort}/health$appId/$versionId'""")
     AppDefinition(
       id = appId,
       cmd = cmd,
@@ -232,9 +233,9 @@ trait SingleMarathonIntegrationTest
         new Container(
           docker = Some(
             new mesosphere.marathon.state.Container.Docker(
-              image = s"""marathon-buildbase:${sys.env.getOrElse(
-                "BUILD_ID",
-                "test")}""",
+              image = s"""marathon-buildbase:${sys
+                .env
+                .getOrElse("BUILD_ID", "test")}""",
               network = Some(Protos.ContainerInfo.DockerInfo.Network.HOST))),
           volumes = collection
             .immutable
@@ -279,7 +280,8 @@ trait SingleMarathonIntegrationTest
       withHealth: Boolean = true,
       dependencies: Set[PathId] = Set.empty): AppDefinition = {
     val cmd = Some(
-      s"""echo APP PROXY $$MESOS_TASK_ID RUNNING; $appProxyMainInvocation $appId $versionId http://localhost:${config.httpPort}/health$appId/$versionId""")
+      s"""echo APP PROXY $$MESOS_TASK_ID RUNNING; $appProxyMainInvocation $appId $versionId http://localhost:${config
+        .httpPort}/health$appId/$versionId""")
     AppDefinition(
       id = appId,
       cmd = cmd,

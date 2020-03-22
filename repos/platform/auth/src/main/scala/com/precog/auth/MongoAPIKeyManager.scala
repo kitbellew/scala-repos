@@ -376,8 +376,8 @@ class MongoAPIKeyManager(
           _ <- database(
             insert(t.serialize.asInstanceOf[JObject])
               .into(settings.deletedAPIKeys))
-          _ <- database(
-            remove.from(settings.apiKeys).where("apiKey" === apiKey))
+          _ <-
+            database(remove.from(settings.apiKeys).where("apiKey" === apiKey))
         } yield {
           ot
         }

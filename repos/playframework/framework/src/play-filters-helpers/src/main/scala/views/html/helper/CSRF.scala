@@ -41,8 +41,8 @@ object CSRF {
       .getOrElse(sys.error("No CSRF token present!"))
     // probably not possible for an attacker to XSS with a CSRF token, but just to be on the safe side...
     Html(
-      s"""<input type="hidden" name="${token.name}" value="${HtmlFormat.escape(
-        token.value)}"/>""")
+      s"""<input type="hidden" name="${token.name}" value="${HtmlFormat
+        .escape(token.value)}"/>""")
   }
 
 }

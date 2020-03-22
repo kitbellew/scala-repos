@@ -221,7 +221,8 @@ private[sbt] object PluginsDebug {
         val projectNames = definedInAggregated.map(
           _.project
         ) // TODO: usually in this build, but could technically require the build to be qualified
-        s"Plugin ${plugin.label} is not activated on this project, but this project aggregates projects where it is activated:\n\t${projectNames.mkString("\n\t")}"
+        s"Plugin ${plugin.label} is not activated on this project, but this project aggregates projects where it is activated:\n\t${projectNames
+          .mkString("\n\t")}"
       } else {
         val base = debug.deactivatedHelp(plugin, context)
         val aggNote =

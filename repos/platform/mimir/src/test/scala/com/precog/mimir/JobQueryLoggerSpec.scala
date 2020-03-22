@@ -66,9 +66,8 @@ class JobQueryLoggerSpec extends Specification {
           for {
             _ <- f(report, "Hi there!")
             _ <- f(report, "Goodbye now.")
-            messages <- report
-              .jobManager
-              .listMessages(report.jobId, channel, None)
+            messages <-
+              report.jobManager.listMessages(report.jobId, channel, None)
           } yield messages
         ).copoint.toList
 

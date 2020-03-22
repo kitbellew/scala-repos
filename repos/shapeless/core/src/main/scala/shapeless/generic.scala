@@ -384,13 +384,14 @@ trait CaseClassMacros extends ReprTypes {
 
   def accessiblePrimaryCtorOf(tpe: Type): Option[Symbol] = {
     for {
-      ctor <- tpe
-        .decls
-        .find { sym =>
-          sym.isMethod && sym.asMethod.isPrimaryConstructor && isAccessible(
-            tpe,
-            sym)
-        }
+      ctor <-
+        tpe
+          .decls
+          .find { sym =>
+            sym.isMethod && sym.asMethod.isPrimaryConstructor && isAccessible(
+              tpe,
+              sym)
+          }
       if !ctor.isJava || productCtorsOf(tpe).size == 1
     } yield ctor
   }

@@ -68,8 +68,8 @@ class ScalaDocUnknownParameterInspection extends LocalInspectionTool {
         }
 
         def collectDocParams() {
-          for (tagParam <- s
-                 .findTagsByName(Set("@param", "@tparam").contains(_))) {
+          for (tagParam <-
+                 s.findTagsByName(Set("@param", "@tparam").contains(_))) {
             if (tagParam.getValueElement != null) {
               tagParam.name match {
                 case "@param" =>

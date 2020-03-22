@@ -122,10 +122,8 @@ object GenerateOrdering
         else
           "-1"};
           } else {
-            int comp = ${ctx.genComp(
-          order.child.dataType,
-          primitiveA,
-          primitiveB)};
+            int comp = ${ctx
+          .genComp(order.child.dataType, primitiveA, primitiveB)};
             if (comp != 0) {
               return ${if (asc)
           "comp"
@@ -142,7 +140,8 @@ object GenerateOrdering
   protected def create(ordering: Seq[SortOrder]): BaseOrdering = {
     val ctx = newCodeGenContext()
     val comparisons = genComparisons(ctx, ordering)
-    val code = s"""
+    val code =
+      s"""
       public SpecificOrdering generate(Object[] references) {
         return new SpecificOrdering(references);
       }
@@ -159,7 +158,8 @@ object GenerateOrdering
         }
 
         public int compare(InternalRow a, InternalRow b) {
-          InternalRow ${ctx.INPUT_ROW} = null;  // Holds current row being evaluated.
+          InternalRow ${ctx
+        .INPUT_ROW} = null;  // Holds current row being evaluated.
           $comparisons
           return 0;
         }

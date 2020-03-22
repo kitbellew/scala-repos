@@ -266,10 +266,8 @@ trait PullRequestsControllerBase extends ControllerBase {
         for {
           issueId <- params("id").toIntOpt
           loginAccount <- context.loginAccount
-          (issue, pullreq) <- getPullRequest(
-            baseRepository.owner,
-            baseRepository.name,
-            issueId)
+          (issue, pullreq) <-
+            getPullRequest(baseRepository.owner, baseRepository.name, issueId)
           owner = pullreq.requestUserName
           name = pullreq.requestRepositoryName
           if hasWritePermission(owner, name, context.loginAccount)
@@ -432,7 +430,8 @@ trait PullRequestsControllerBase extends ControllerBase {
                         git,
                         pullreq.branch,
                         issueId,
-                        s"Merge pull request #${issueId} from ${pullreq.requestUserName}/${pullreq.requestBranch}\n\n" + form
+                        s"Merge pull request #${issueId} from ${pullreq
+                          .requestUserName}/${pullreq.requestBranch}\n\n" + form
                           .message,
                         new PersonIdent(
                           loginAccount.fullName,
@@ -528,7 +527,8 @@ trait PullRequestsControllerBase extends ControllerBase {
                         ._2)
 
                   redirect(
-                    s"/${forkedRepository.owner}/${forkedRepository.name}/compare/${originUserName}:${oldBranch}...${newBranch}")
+                    s"/${forkedRepository.owner}/${forkedRepository
+                      .name}/compare/${originUserName}:${oldBranch}...${newBranch}")
               }
           } getOrElse NotFound
         }
@@ -544,7 +544,8 @@ trait PullRequestsControllerBase extends ControllerBase {
                 .map {
                   case (_, defaultBranch) =>
                     redirect(
-                      s"/${forkedRepository.owner}/${forkedRepository.name}/compare/${defaultBranch}...${headBranch.getOrElse(defaultBranch)}")
+                      s"/${forkedRepository.owner}/${forkedRepository
+                        .name}/compare/${defaultBranch}...${headBranch.getOrElse(defaultBranch)}")
                 } getOrElse {
                 redirect(s"/${forkedRepository.owner}/${forkedRepository.name}")
               }
@@ -564,35 +565,35 @@ trait PullRequestsControllerBase extends ControllerBase {
         forkedRepository.owner)
 
       (
-        for (originRepositoryName <- if (originOwner == forkedOwner) {
-               // Self repository
-               Some(forkedRepository.name)
-             } else if (forkedRepository.repository.originUserName.isEmpty) {
-               // when ForkedRepository is the original repository
-               getForkedRepositories(
-                 forkedRepository.owner,
-                 forkedRepository.name).find(_._1 == originOwner).map(_._2)
-             } else if (Some(originOwner) == forkedRepository
-                          .repository
-                          .originUserName) {
-               // Original repository
-               forkedRepository.repository.originRepositoryName
-             } else {
-               // Sibling repository
-               getUserRepositories(originOwner)
-                 .find { x =>
-                   x.repository.originUserName == forkedRepository
-                     .repository
-                     .originUserName &&
-                   x.repository.originRepositoryName == forkedRepository
-                     .repository
-                     .originRepositoryName
-                 }
-                 .map(_.repository.repositoryName)
-             };
-             originRepository <- getRepository(
-               originOwner,
-               originRepositoryName))
+        for (originRepositoryName <-
+               if (originOwner == forkedOwner) {
+                 // Self repository
+                 Some(forkedRepository.name)
+               } else if (forkedRepository.repository.originUserName.isEmpty) {
+                 // when ForkedRepository is the original repository
+                 getForkedRepositories(
+                   forkedRepository.owner,
+                   forkedRepository.name).find(_._1 == originOwner).map(_._2)
+               } else if (Some(originOwner) == forkedRepository
+                            .repository
+                            .originUserName) {
+                 // Original repository
+                 forkedRepository.repository.originRepositoryName
+               } else {
+                 // Sibling repository
+                 getUserRepositories(originOwner)
+                   .find { x =>
+                     x.repository.originUserName == forkedRepository
+                       .repository
+                       .originUserName &&
+                     x.repository.originRepositoryName == forkedRepository
+                       .repository
+                       .originRepositoryName
+                   }
+                   .map(_.repository.repositoryName)
+               };
+             originRepository <-
+               getRepository(originOwner, originRepositoryName))
           yield {
             using(
               Git.open(
@@ -702,10 +703,8 @@ trait PullRequestsControllerBase extends ControllerBase {
                   case (oldId, newId) =>
                     redirect(
                       s"/${forkedRepository.owner}/${forkedRepository.name}/compare/" +
-                        s"${originOwner}:${oldId.map(_ => originId).getOrElse(
-                          originRepository.repository.defaultBranch)}..." +
-                        s"${forkedOwner}:${newId.map(_ => forkedId).getOrElse(
-                          forkedRepository.repository.defaultBranch)}")
+                        s"${originOwner}:${oldId.map(_ => originId).getOrElse(originRepository.repository.defaultBranch)}..." +
+                        s"${forkedOwner}:${newId.map(_ => forkedId).getOrElse(forkedRepository.repository.defaultBranch)}")
                 }
             }
           }
@@ -723,21 +722,22 @@ trait PullRequestsControllerBase extends ControllerBase {
         forkedRepository.owner)
 
       (
-        for (originRepositoryName <- if (originOwner == forkedOwner) {
-               Some(forkedRepository.name)
-             } else {
-               forkedRepository
-                 .repository
-                 .originRepositoryName
-                 .orElse {
-                   getForkedRepositories(
-                     forkedRepository.owner,
-                     forkedRepository.name).find(_._1 == originOwner).map(_._2)
-                 }
-             };
-             originRepository <- getRepository(
-               originOwner,
-               originRepositoryName))
+        for (originRepositoryName <-
+               if (originOwner == forkedOwner) {
+                 Some(forkedRepository.name)
+               } else {
+                 forkedRepository
+                   .repository
+                   .originRepositoryName
+                   .orElse {
+                     getForkedRepositories(
+                       forkedRepository.owner,
+                       forkedRepository
+                         .name).find(_._1 == originOwner).map(_._2)
+                   }
+               };
+             originRepository <-
+               getRepository(originOwner, originRepositoryName))
           yield {
             using(
               Git.open(

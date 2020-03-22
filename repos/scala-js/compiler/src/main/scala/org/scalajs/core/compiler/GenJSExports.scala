@@ -79,8 +79,8 @@ trait GenJSExports extends SubComponent {
       } else {
         val exports =
           for {
-            (jsName, specs) <- ctorExports
-              .groupBy(_._1.jsName) // group by exported name
+            (jsName, specs) <-
+              ctorExports.groupBy(_._1.jsName) // group by exported name
           } yield {
             val (namedExports, normalExports) = specs.partition(_._1.isNamed)
 

@@ -235,8 +235,9 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
   case class FirstOf(ops: Seq[OpTree]) extends DefaultNonTerminalOpTree {
     def ruleTraceNonTerminalKey = reify(RuleTrace.FirstOf).tree
     def renderInner(wrapped: Boolean): Tree =
-      q"""val mark = __saveState; ${ops.map(_.render(wrapped)).reduceLeft(
-        (l, r) ⇒
+      q"""val mark = __saveState; ${ops
+        .map(_.render(wrapped))
+        .reduceLeft((l, r) ⇒
           q"val l = $l; if (!l) { __restoreState(mark); $r } else true // work-around for https://issues.scala-lang.org/browse/SI-8657")}"""
   }
 
@@ -636,9 +637,11 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
             case x: RuleCall ⇒
               q"akka.parboiled2.RuleTrace.NotPredicate.RuleCall(${x.calleeNameTree})"
             case x: StringMatch ⇒
-              q"""akka.parboiled2.RuleTrace.NotPredicate.Named('"' + ${x.stringTree} + '"')"""
+              q"""akka.parboiled2.RuleTrace.NotPredicate.Named('"' + ${x
+                .stringTree} + '"')"""
             case x: IgnoreCaseString ⇒
-              q"""akka.parboiled2.RuleTrace.NotPredicate.Named('"' + ${x.stringTree} + '"')"""
+              q"""akka.parboiled2.RuleTrace.NotPredicate.Named('"' + ${x
+                .stringTree} + '"')"""
             case x: Named ⇒
               q"akka.parboiled2.RuleTrace.NotPredicate.Named(${x.stringTree})"
             case _ ⇒

@@ -45,8 +45,9 @@ object RecordSpec extends Specification {
     val allExpectedFieldNames: List[String] =
       (
         for {
-          typeName <- "Binary Boolean Country DateTime Decimal Double Email Enum Int Locale Long PostalCode String Textarea TimeZone JodaTime"
-            .split(" ")
+          typeName <-
+            "Binary Boolean Country DateTime Decimal Double Email Enum Int Locale Long PostalCode String Textarea TimeZone JodaTime"
+              .split(" ")
           flavor <- "mandatory legacyOptional optional".split(" ")
         } yield flavor + typeName + "Field"
       ).toList

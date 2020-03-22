@@ -202,8 +202,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
         this.consumers(0).poll(50)
         this.consumers(0).assignment() == subscriptions.asJava
       },
-      s"Expected partitions ${subscriptions.asJava} but actually got ${this.consumers(
-        0).assignment()}"
+      s"Expected partitions ${subscriptions
+        .asJava} but actually got ${this.consumers(0).assignment()}"
     )
 
     val topic4 = "tsomec" // matches subscribed pattern
@@ -220,8 +220,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
         this.consumers(0).poll(50)
         this.consumers(0).assignment() == subscriptions.asJava
       },
-      s"Expected partitions ${subscriptions.asJava} but actually got ${this.consumers(
-        0).assignment()}"
+      s"Expected partitions ${subscriptions
+        .asJava} but actually got ${this.consumers(0).assignment()}"
     )
 
     this.consumers(0).unsubscribe()
@@ -256,8 +256,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
         this.consumers(0).poll(50)
         this.consumers(0).assignment() == subscriptions.asJava
       },
-      s"Expected partitions ${subscriptions.asJava} but actually got ${this.consumers(
-        0).assignment()}"
+      s"Expected partitions ${subscriptions
+        .asJava} but actually got ${this.consumers(0).assignment()}"
     )
 
     this.consumers(0).unsubscribe()
@@ -301,7 +301,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
         this.consumers(0).poll(50)
         this.consumers(0).assignment == subscriptions.asJava
       },
-      s"Expected partitions ${subscriptions.asJava} but actually got ${this.consumers(0).assignment}"
+      s"Expected partitions ${subscriptions
+        .asJava} but actually got ${this.consumers(0).assignment}"
     )
 
     TestUtils
@@ -312,7 +313,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
         this.consumers(0).poll(50)
         this.consumers(0).assignment == expandedSubscriptions.asJava
       },
-      s"Expected partitions ${expandedSubscriptions.asJava} but actually got ${this.consumers(0).assignment}"
+      s"Expected partitions ${expandedSubscriptions
+        .asJava} but actually got ${this.consumers(0).assignment}"
     )
   }
 
@@ -335,7 +337,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
         this.consumers(0).poll(50)
         this.consumers(0).assignment == subscriptions.asJava
       },
-      s"Expected partitions ${subscriptions.asJava} but actually got ${this.consumers(0).assignment}"
+      s"Expected partitions ${subscriptions
+        .asJava} but actually got ${this.consumers(0).assignment}"
     )
 
     this.consumers(0).subscribe(List(topic).asJava)
@@ -344,7 +347,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
         this.consumers(0).poll(50)
         this.consumers(0).assignment == shrunkenSubscriptions.asJava
       },
-      s"Expected partitions ${shrunkenSubscriptions.asJava} but actually got ${this.consumers(0).assignment}"
+      s"Expected partitions ${shrunkenSubscriptions
+        .asJava} but actually got ${this.consumers(0).assignment}"
     )
   }
 

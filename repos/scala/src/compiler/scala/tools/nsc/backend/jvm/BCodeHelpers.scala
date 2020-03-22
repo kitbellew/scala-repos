@@ -432,8 +432,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         reporter.warning(
           sym.pos,
           sym.name +
-            s" has a main method with parameter type Array[String], but ${sym.fullName(
-              '.')} will not be a runnable program.\n  Reason: $msg"
+            s" has a main method with parameter type Array[String], but ${sym
+              .fullName('.')} will not be a runnable program.\n  Reason: $msg"
           // TODO: make this next claim true, if possible
           //   by generating valid main methods as static in module classes
           //   not sure what the jvm allows here
@@ -1263,17 +1263,19 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       debuglog(
         s"Potentially conflicting names for forwarders: $conflictingNames")
 
-      for (m <- moduleClass
-             .info
-             .membersBasedOnFlags(
-               BCodeHelpers.ExcludedForwarderFlags,
-               symtab.Flags.METHOD)) {
+      for (m <-
+             moduleClass
+               .info
+               .membersBasedOnFlags(
+                 BCodeHelpers.ExcludedForwarderFlags,
+                 symtab.Flags.METHOD)) {
         if (m.isType || m
               .isDeferred || (m.owner eq definitions.ObjectClass) || m
               .isConstructor)
           debuglog(
-            s"No forwarder for '$m' from $jclassName to '$moduleClass': ${m.isType} || ${m.isDeferred} || ${m
-              .owner eq definitions.ObjectClass} || ${m.isConstructor}")
+            s"No forwarder for '$m' from $jclassName to '$moduleClass': ${m
+              .isType} || ${m.isDeferred} || ${m.owner eq definitions
+              .ObjectClass} || ${m.isConstructor}")
         else if (conflictingNames(m.name))
           log(
             s"No forwarder for $m due to conflict with ${linkedClass.info.member(m.name)}")

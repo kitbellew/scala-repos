@@ -32,9 +32,10 @@ object ScaldingILoop {
       filename: String): List[File] = {
     val matchingFiles =
       for {
-        ancestor <- Iterator
-          .iterate(currentDir)(new File(_).getParent)
-          .takeWhile(_ != "/")
+        ancestor <-
+          Iterator
+            .iterate(currentDir)(new File(_).getParent)
+            .takeWhile(_ != "/")
 
         children: Array[File] = Option(new File(ancestor).listFiles).getOrElse {
           println(

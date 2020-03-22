@@ -207,8 +207,9 @@ trait PrecogLibModule[M[+_]]
                     for {
                       response <- httpError <-: responseE.validation
                       body <- httpError <-: response.ok.validation
-                      json <- jsonError <-: (Error.thrown(_)) <-: JParser
-                        .parseFromString(body)
+                      json <-
+                        jsonError <-: (Error.thrown(_)) <-: JParser
+                          .parseFromString(body)
                       data <- jsonError <-: (json \ "data")
                         .validated[List[JValue]]
                       result <- jsonError <-: populate(data)

@@ -55,8 +55,10 @@ trait TreeAndTypeAnalysis extends Debugging {
           if (settings.warnUnsoundMatch && unsoundAssumptionUsed)
             reporter.warning(
               pat.pos,
-              sm"""The value matched by $pat is bound to ${binder.name}, which may be used under the
-                  |unsound assumption that it has type ${pat.tpe}, whereas we can only safely
+              sm"""The value matched by $pat is bound to ${binder
+                .name}, which may be used under the
+                  |unsound assumption that it has type ${pat
+                .tpe}, whereas we can only safely
                   |count on it having type $pt, as the pattern is matched using `==` (see SI-1503)."""
             )
 

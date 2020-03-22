@@ -153,7 +153,8 @@ object GenerateColumnAccessor
         }
         .unzip
 
-    val code = s"""
+    val code =
+      s"""
       import java.nio.ByteBuffer;
       import java.nio.ByteOrder;
       import scala.collection.Iterator;
@@ -166,7 +167,8 @@ object GenerateColumnAccessor
         return new SpecificColumnarIterator();
       }
 
-      class SpecificColumnarIterator extends ${classOf[ColumnarIterator].getName} {
+      class SpecificColumnarIterator extends ${classOf[ColumnarIterator]
+        .getName} {
 
         private ByteOrder nativeOrder = null;
         private byte[][] buffers = null;
@@ -206,7 +208,8 @@ object GenerateColumnAccessor
             return false;
           }
 
-          ${classOf[CachedBatch].getName} batch = (${classOf[CachedBatch].getName}) input.next();
+          ${classOf[CachedBatch].getName} batch = (${classOf[CachedBatch]
+        .getName}) input.next();
           currentRow = 0;
           numRowsInBatch = batch.numRows();
           for (int i = 0; i < columnIndexes.length; i ++) {

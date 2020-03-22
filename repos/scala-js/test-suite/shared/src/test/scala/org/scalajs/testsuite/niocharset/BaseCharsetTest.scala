@@ -108,14 +108,16 @@ class BaseCharsetTest(val charset: Charset) {
     val hasAnyUnmappable = outParts.exists(_.isInstanceOf[Unmappable])
 
     for {
-      malformedAction <- if (hasAnyMalformed)
-        AllErrorActions
-      else
-        ReportActions
-      unmappableAction <- if (hasAnyUnmappable)
-        AllErrorActions
-      else
-        ReportActions
+      malformedAction <-
+        if (hasAnyMalformed)
+          AllErrorActions
+        else
+          ReportActions
+      unmappableAction <-
+        if (hasAnyUnmappable)
+          AllErrorActions
+        else
+          ReportActions
       readOnly <- List(false, true)
     } {
       testOneConfig(malformedAction, unmappableAction, readOnly)
@@ -202,14 +204,16 @@ class BaseCharsetTest(val charset: Charset) {
     val hasAnyUnmappable = outParts.exists(_.isInstanceOf[Unmappable])
 
     for {
-      malformedAction <- if (hasAnyMalformed)
-        AllErrorActions
-      else
-        ReportActions
-      unmappableAction <- if (hasAnyUnmappable)
-        AllErrorActions
-      else
-        ReportActions
+      malformedAction <-
+        if (hasAnyMalformed)
+          AllErrorActions
+        else
+          ReportActions
+      unmappableAction <-
+        if (hasAnyUnmappable)
+          AllErrorActions
+        else
+          ReportActions
       readOnly <- List(false, true)
     } {
       testOneConfig(malformedAction, unmappableAction, readOnly)

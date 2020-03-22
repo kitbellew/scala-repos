@@ -1004,24 +1004,24 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                  |Status: ${taskInfo.status}<br>
                  |Launch Time: ${UIUtils.formatDate(new Date(launchTime))}
                  |${if (!taskInfo.running) {
-               s"""<br>Finish Time: ${UIUtils.formatDate(
-                 new Date(finishTime))}"""
+               s"""<br>Finish Time: ${UIUtils
+                 .formatDate(new Date(finishTime))}"""
              } else {
                ""
              }}
                  |<br>Scheduler Delay: $schedulerDelay ms
-                 |<br>Task Deserialization Time: ${UIUtils.formatDuration(
-               deserializationTime)}
-                 |<br>Shuffle Read Time: ${UIUtils.formatDuration(
-               shuffleReadTime)}
-                 |<br>Executor Computing Time: ${UIUtils.formatDuration(
-               executorComputingTime)}
-                 |<br>Shuffle Write Time: ${UIUtils.formatDuration(
-               shuffleWriteTime)}
-                 |<br>Result Serialization Time: ${UIUtils.formatDuration(
-               serializationTime)}
-                 |<br>Getting Result Time: ${UIUtils.formatDuration(
-               gettingResultTime)}">
+                 |<br>Task Deserialization Time: ${UIUtils
+               .formatDuration(deserializationTime)}
+                 |<br>Shuffle Read Time: ${UIUtils
+               .formatDuration(shuffleReadTime)}
+                 |<br>Executor Computing Time: ${UIUtils
+               .formatDuration(executorComputingTime)}
+                 |<br>Shuffle Write Time: ${UIUtils
+               .formatDuration(shuffleWriteTime)}
+                 |<br>Result Serialization Time: ${UIUtils
+               .formatDuration(serializationTime)}
+                 |<br>Getting Result Time: ${UIUtils
+               .formatDuration(gettingResultTime)}">
                  |$svgTag',
                |'start': new Date($launchTime),
                |'end': new Date($finishTime)

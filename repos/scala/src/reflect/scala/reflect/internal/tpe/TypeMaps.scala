@@ -659,7 +659,8 @@ private[internal] trait TypeMaps {
             .SINGLETON_SUFFIX setInfo singletonBounds(pre)
           _capturedParams ::= qvar
           debuglog(
-            s"Captured This(${clazz.fullNameString}) seen from $seenFromPrefix: ${qvar.defString}")
+            s"Captured This(${clazz
+              .fullNameString}) seen from $seenFromPrefix: ${qvar.defString}")
           qvar.tpe
       }
     }

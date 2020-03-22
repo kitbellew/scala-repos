@@ -173,7 +173,8 @@ object GenerateUnsafeRowJoiner
        |  return new SpecificUnsafeRowJoiner();
        |}
        |
-       |class SpecificUnsafeRowJoiner extends ${classOf[UnsafeRowJoiner].getName} {
+       |class SpecificUnsafeRowJoiner extends ${classOf[UnsafeRowJoiner]
+           .getName} {
        |  private byte[] buf = new byte[64];
        |  private UnsafeRow out = new UnsafeRow(${schema1.size + schema2.size});
        |

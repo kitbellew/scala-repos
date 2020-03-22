@@ -46,7 +46,8 @@ private[pickling] class IrScalaSymbols[
       } else {
         List(
           s"'${sym.fullName}' allows unknown subclasses (it is not sealed or final isCaseClass=${isCaseClass(
-            sym.asInstanceOf[u.TypeSymbol])} isEffectivelyFinal=${sym.isEffectivelyFinal} isSealed=${classSym.isSealed} directSubclasses=${tools.directSubclasses(classSym)})")
+            sym.asInstanceOf[u.TypeSymbol])} isEffectivelyFinal=${sym.isEffectivelyFinal} isSealed=${classSym
+            .isSealed} directSubclasses=${tools.directSubclasses(classSym)})")
       }
     } else {
       List(s"'${sym.fullName}' is not a class or trait")

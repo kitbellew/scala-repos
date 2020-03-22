@@ -112,7 +112,8 @@ abstract class SuperAccessors
         if (!accDefs.contains(clazz))
           reporter.error(
             sel.pos,
-            s"Internal error: unable to store accessor definition in ${clazz}. clazz.hasPackageFlag=${clazz.hasPackageFlag}. Accessor required for ${sel} (${showRaw(sel)})"
+            s"Internal error: unable to store accessor definition in ${clazz}. clazz.hasPackageFlag=${clazz
+              .hasPackageFlag}. Accessor required for ${sel} (${showRaw(sel)})"
           )
         else
           storeAccessorDefinition(clazz, DefDef(acc, EmptyTree))
@@ -690,7 +691,8 @@ abstract class SuperAccessors
             pos,
             unit,
             sm"""$clazz accesses protected $sym inside a concrete trait method.
-              |Add an accessor in a class extending ${sym.enclClass} as a workaround."""
+              |Add an accessor in a class extending ${sym
+              .enclClass} as a workaround."""
           )
           true
         }

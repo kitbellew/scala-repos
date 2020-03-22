@@ -18,7 +18,8 @@ object Macros {
       println("enclosingMethod = " + ${c.enclosingMethod.toString})
       println("enclosingDef = " + ${c.enclosingDef.toString})
       println("enclosingOwner = " + ${c.internal.enclosingOwner.toString})
-      println("enclosingOwnerChain = " + ${chain(c.internal.enclosingOwner).toString})
+      println("enclosingOwnerChain = " + ${chain(c.internal.enclosingOwner)
+      .toString})
     """
   }
 

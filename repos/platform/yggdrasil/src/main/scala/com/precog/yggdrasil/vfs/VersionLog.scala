@@ -67,10 +67,8 @@ object VersionLog {
       IO {
         if (currentFile.exists) {
           for {
-            jv <- JParser
-              .parseFromFile(currentFile)
-              .leftMap(ioError)
-              .disjunction
+            jv <-
+              JParser.parseFromFile(currentFile).leftMap(ioError).disjunction
             version <- jv match {
               case JString(`unsetSentinel`) =>
                 \/.left(
@@ -127,13 +125,14 @@ object VersionLog {
         if (logFile.exists) {
           for {
             jvs <- JParser.parseManyFromFile(logFile).leftMap(Error.thrown)
-            versions <- jvs
-              .toList
-              .traverse[
-                ({
-                  type λ[α] = Validation[Error, α]
-                })#λ,
-                VersionEntry](_.validated[VersionEntry])
+            versions <-
+              jvs
+                .toList
+                .traverse[
+                  ({
+                    type λ[α] = Validation[Error, α]
+                  })#λ,
+                  VersionEntry](_.validated[VersionEntry])
           } yield versions
         } else {
           Success(Nil)
@@ -142,16 +141,16 @@ object VersionLog {
       val completedVersions: Validation[Error, Set[UUID]] =
         if (completedFile.exists) {
           for {
-            jvs <- JParser
-              .parseManyFromFile(completedFile)
-              .leftMap(Error.thrown)
-            versions <- jvs
-              .toList
-              .traverse[
-                ({
-                  type λ[α] = Validation[Error, α]
-                })#λ,
-                UUID](_.validated[UUID])
+            jvs <-
+              JParser.parseManyFromFile(completedFile).leftMap(Error.thrown)
+            versions <-
+              jvs
+                .toList
+                .traverse[
+                  ({
+                    type λ[α] = Validation[Error, α]
+                  })#λ,
+                  UUID](_.validated[UUID])
           } yield versions.toSet
         } else {
           Success(Set.empty)

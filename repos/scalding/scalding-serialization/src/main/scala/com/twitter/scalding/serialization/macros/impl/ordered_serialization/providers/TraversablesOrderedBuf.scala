@@ -178,7 +178,8 @@ object TraversablesOrderedBuf {
           if($len > 0) {
             val $asArray = $element.toArray[${innerBuf.tpe}]
             // Sorting on the in-memory is the same as binary
-            _root_.scala.util.Sorting.quickSort[${innerBuf.tpe}]($asArray)($innerOrd)
+            _root_.scala.util.Sorting.quickSort[${innerBuf
+              .tpe}]($asArray)($innerOrd)
             var $pos = 0
             while($pos < $len) {
               val $innerElement = $asArray($pos)
@@ -210,8 +211,8 @@ object TraversablesOrderedBuf {
             $element.foreach { t =>
               val $target = t
               $currentHash =
-                _root_.com.twitter.scalding.serialization.MurmurHashUtils.mixH1($currentHash, ${innerBuf.hash(
-              target)})
+                _root_.com.twitter.scalding.serialization.MurmurHashUtils.mixH1($currentHash, ${innerBuf
+              .hash(target)})
               // go ahead and compute the length so we don't traverse twice for lists
               $len += 1
             }
@@ -286,12 +287,14 @@ object TraversablesOrderedBuf {
         maybeSort match {
           case DoSort =>
             q"""
-              _root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.TraversableHelpers.sortedCompare[${innerBuf.tpe}]($elementA, $elementB)($innerOrd)
+              _root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.TraversableHelpers.sortedCompare[${innerBuf
+              .tpe}]($elementA, $elementB)($innerOrd)
               """
 
           case NoSort =>
             q"""
-              _root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.TraversableHelpers.iteratorCompare[${innerBuf.tpe}]($elementA.iterator, $elementB.iterator)($innerOrd)
+              _root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.TraversableHelpers.iteratorCompare[${innerBuf
+              .tpe}]($elementA.iterator, $elementB.iterator)($innerOrd)
               """
         }
 

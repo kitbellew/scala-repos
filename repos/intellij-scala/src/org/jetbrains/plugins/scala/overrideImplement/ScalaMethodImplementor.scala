@@ -41,12 +41,13 @@ class ScalaMethodImplementor extends MethodImplementor {
     (
       for {
         td <- inClass.asOptionOf[ScTemplateDefinition].toSeq
-        member <- ScalaOIUtil
-          .getMembersToImplement(td)
-          .collect {
-            case mm: ScMethodMember if mm.getElement == method =>
-              mm
-          }
+        member <-
+          ScalaOIUtil
+            .getMembersToImplement(td)
+            .collect {
+              case mm: ScMethodMember if mm.getElement == method =>
+                mm
+            }
       } yield {
         val specifyType =
           ScalaApplicationSettings.getInstance().SPECIFY_RETURN_TYPE_EXPLICITLY

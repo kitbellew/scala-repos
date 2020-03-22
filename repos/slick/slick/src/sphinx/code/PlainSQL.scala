@@ -105,7 +105,8 @@ object PlainSQL extends App {
   def insertCoffees: DBIO[Unit] = {
     //#bind
     def insert(c: Coffee): DBIO[Int] =
-      sqlu"insert into coffees values (${c.name}, ${c.supID}, ${c.price}, ${c.sales}, ${c.total})"
+      sqlu"insert into coffees values (${c.name}, ${c.supID}, ${c.price}, ${c
+        .sales}, ${c.total})"
     //#bind
 
     // Insert some coffees. The SQL statement is the same for all calls:

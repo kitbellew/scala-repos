@@ -337,8 +337,9 @@ private[stream] object Fusing {
       }
     if (Debug)
       log(
-        s"entering ${m.getClass} (hash=${struct.hash(
-          m)}, async=$async, name=${m.attributes.nameLifted}, dispatcher=${dispatcher(m)})")
+        s"entering ${m.getClass} (hash=${struct.hash(m)}, async=$async, name=${m
+          .attributes
+          .nameLifted}, dispatcher=${dispatcher(m)})")
     val localGroup =
       if (async)
         struct.newGroup(indent)
@@ -785,8 +786,7 @@ private[stream] object Fusing {
 
     def hash(obj: AnyRef) = f"${System.identityHashCode(obj)}%08x"
     def printShape(s: Shape) =
-      s"${s.getClass.getSimpleName}(ins=${s.inlets.map(hash).mkString(
-        ",")} outs=${s.outlets.map(hash).mkString(",")})"
+      s"${s.getClass.getSimpleName}(ins=${s.inlets.map(hash).mkString(",")} outs=${s.outlets.map(hash).mkString(",")})"
 
     /**
       * Create and return a new grouping (i.e. an AsyncBoundary-delimited context)

@@ -48,14 +48,15 @@ object Benchmark {
       .sortBy(_._1.last.asc)
       .map(uo => (uo._1.first, uo._2.orderID))
     val q5 =
-      for (o <- orders
-             filter { o =>
-               o.orderID === (
-                 for {
-                   o2 <- orders filter (o.userID === _.userID)
-                 } yield o2.orderID
-               ).max
-             })
+      for (o <-
+             orders
+               filter { o =>
+                 o.orderID === (
+                   for {
+                     o2 <- orders filter (o.userID === _.userID)
+                   } yield o2.orderID
+                 ).max
+               })
         yield o.orderID
 
     val s1 = q1.result.statements

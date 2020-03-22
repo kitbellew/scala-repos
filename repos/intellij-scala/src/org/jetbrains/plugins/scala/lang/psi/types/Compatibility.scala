@@ -332,12 +332,13 @@ object Compatibility {
               ScType.designator(seqClass),
               Seq(param.expectedType))
 
-            for (exprType <- expr
-                   .getTypeAfterImplicitConversion(
-                     checkWithImplicits,
-                     isShapesResolve,
-                     Some(expectedType))
-                   .tr)
+            for (exprType <-
+                   expr
+                     .getTypeAfterImplicitConversion(
+                       checkWithImplicits,
+                       isShapesResolve,
+                       Some(expectedType))
+                     .tr)
               yield {
                 val conforms = Conformance
                   .conforms(tp, exprType, checkWeak = true)
@@ -389,12 +390,13 @@ object Compatibility {
               case Some(expr: ScExpression) =>
                 val paramType = param.paramType
                 val expectedType = param.expectedType
-                for (exprType <- expr
-                       .getTypeAfterImplicitConversion(
-                         checkWithImplicits,
-                         isShapesResolve,
-                         Some(expectedType))
-                       .tr) {
+                for (exprType <-
+                       expr
+                         .getTypeAfterImplicitConversion(
+                           checkWithImplicits,
+                           isShapesResolve,
+                           Some(expectedType))
+                         .tr) {
                   val conforms = Conformance
                     .conforms(paramType, exprType, checkWeak = true)
                   if (!conforms) {

@@ -132,10 +132,11 @@ object FreeTest extends SpecLite {
     def a(i: Int): Free[FTestApi, Int] =
       for {
         j <- Free.liftF(TB(i))
-        z <- if (j < n)
-          a(j)
-        else
-          Free.pure[FTestApi, Int](j)
+        z <-
+          if (j < n)
+            a(j)
+          else
+            Free.pure[FTestApi, Int](j)
       } yield z
 
     val runner =

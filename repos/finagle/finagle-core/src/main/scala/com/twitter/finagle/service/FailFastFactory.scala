@@ -199,7 +199,8 @@ private[finagle] class FailFastFactory[Req, Rep](
             if (logger.isLoggable(Level.DEBUG))
               logger.log(
                 Level.DEBUG,
-                s"""FailFastFactory marking connection to "$label" as dead. Remote Address: ${endpoint.toString}""")
+                s"""FailFastFactory marking connection to "$label" as dead. Remote Address: ${endpoint
+                  .toString}""")
 
             state = Retrying(now, task, 0, rest)
 

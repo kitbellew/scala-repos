@@ -234,13 +234,14 @@ object KafkaUtils {
     val result =
       for {
         topicPartitions <- kc.getPartitions(topics).right
-        leaderOffsets <- (
-          if (reset == Some("smallest")) {
-            kc.getEarliestLeaderOffsets(topicPartitions)
-          } else {
-            kc.getLatestLeaderOffsets(topicPartitions)
-          }
-        ).right
+        leaderOffsets <-
+          (
+            if (reset == Some("smallest")) {
+              kc.getEarliestLeaderOffsets(topicPartitions)
+            } else {
+              kc.getLatestLeaderOffsets(topicPartitions)
+            }
+          ).right
       } yield {
         leaderOffsets.map {
           case (tp, lo) =>

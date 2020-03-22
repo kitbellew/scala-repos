@@ -257,9 +257,8 @@ class JobServiceSpec extends TestJobService {
           for {
             res <- postJob(simpleJob, validAPIKey)
             Some(JString(jobId)) = res.content map (_ \ "id")
-            HttpResponse(HttpStatus(OK, _), _, Some(obj1), _) <- putState(
-              jobId,
-              startJob(Some(dt)))
+            HttpResponse(HttpStatus(OK, _), _, Some(obj1), _) <-
+              putState(jobId, startJob(Some(dt)))
             HttpResponse(_, _, Some(obj2), _) <- getJob(jobId)
           } yield (obj1, obj2)
         ).copoint
@@ -302,9 +301,8 @@ class JobServiceSpec extends TestJobService {
           for {
             jobId <- postJobAndGetId(simpleJob)
             _ <- putState(jobId, startJob())
-            HttpResponse(HttpStatus(OK, _), _, Some(st), _) <- putState(
-              jobId,
-              cancellation)
+            HttpResponse(HttpStatus(OK, _), _, Some(st), _) <-
+              putState(jobId, cancellation)
           } yield st
         ).copoint
 
@@ -540,13 +538,8 @@ class JobServiceSpec extends TestJobService {
       (
         for {
           jobId <- postJobAndGetId(simpleJob)
-          id1 <- putStatusAndGetId(
-            jobId,
-            "Nearly there!",
-            99.999,
-            "%",
-            None,
-            None)
+          id1 <-
+            putStatusAndGetId(jobId, "Nearly there!", 99.999, "%", None, None)
           id2 <- putStatusAndGetId(
             jobId,
             "Very nearly there!",
@@ -573,13 +566,8 @@ class JobServiceSpec extends TestJobService {
       (
         for {
           jobId <- postJobAndGetId(simpleJob)
-          id <- putStatusAndGetId(
-            jobId,
-            "Nearly there!",
-            99.999,
-            "%",
-            None,
-            None)
+          id <-
+            putStatusAndGetId(jobId, "Nearly there!", 99.999, "%", None, None)
           _ <- putStatusAndGetId(
             jobId,
             "Very nearly there!",

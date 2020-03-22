@@ -148,19 +148,23 @@ abstract class EndToEndEventAdapterSpec(
 
   val noAdaptersConfig = ConfigFactory.parseString("")
 
-  val adaptersConfig = ConfigFactory.parseString(s"""
+  val adaptersConfig = ConfigFactory.parseString(
+    s"""
     |akka.persistence.journal {
     |  $journalName {
     |    event-adapters {
-    |      a = "${classOf[EndToEndEventAdapterSpec].getCanonicalName}$$AEndToEndAdapter"
-    |      b = "${classOf[EndToEndEventAdapterSpec].getCanonicalName}$$BEndToEndAdapter"
+    |      a = "${classOf[EndToEndEventAdapterSpec]
+         .getCanonicalName}$$AEndToEndAdapter"
+    |      b = "${classOf[EndToEndEventAdapterSpec]
+         .getCanonicalName}$$BEndToEndAdapter"
     |    }
     |    event-adapter-bindings {
     |      # to journal
     |      "${classOf[EndToEndEventAdapterSpec].getCanonicalName}$$A" = a
     |      "${classOf[EndToEndEventAdapterSpec].getCanonicalName}$$B" = b
     |      # from journal
-    |      "${classOf[EndToEndEventAdapterSpec].getCanonicalName}$$JSON" = [a, b]
+    |      "${classOf[EndToEndEventAdapterSpec]
+         .getCanonicalName}$$JSON" = [a, b]
     |
     |    }
     |  }
@@ -168,19 +172,23 @@ abstract class EndToEndEventAdapterSpec(
     |akka.loggers = ["akka.testkit.TestEventListener"]
     """.stripMargin)
 
-  val newAdaptersConfig = ConfigFactory.parseString(s"""
+  val newAdaptersConfig = ConfigFactory.parseString(
+    s"""
     |akka.persistence.journal {
     |  $journalName {
     |    event-adapters {
-    |      a = "${classOf[EndToEndEventAdapterSpec].getCanonicalName}$$NewAEndToEndAdapter"
-    |      b = "${classOf[EndToEndEventAdapterSpec].getCanonicalName}$$NewBEndToEndAdapter"
+    |      a = "${classOf[EndToEndEventAdapterSpec]
+         .getCanonicalName}$$NewAEndToEndAdapter"
+    |      b = "${classOf[EndToEndEventAdapterSpec]
+         .getCanonicalName}$$NewBEndToEndAdapter"
     |    }
     |    event-adapter-bindings {
     |      # to journal
     |      "${classOf[EndToEndEventAdapterSpec].getCanonicalName}$$A" = a
     |      "${classOf[EndToEndEventAdapterSpec].getCanonicalName}$$B" = b
     |      # from journal
-    |      "${classOf[EndToEndEventAdapterSpec].getCanonicalName}$$JSON" = [a, b]
+    |      "${classOf[EndToEndEventAdapterSpec]
+         .getCanonicalName}$$JSON" = [a, b]
     |
     |    }
     |  }

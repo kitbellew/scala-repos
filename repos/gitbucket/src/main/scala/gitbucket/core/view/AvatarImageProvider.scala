@@ -23,8 +23,8 @@ trait AvatarImageProvider {
         // by user name
         getAccountByUserName(userName).map { account =>
           if (account.image.isEmpty && context.settings.gravatar) {
-            s"""https://www.gravatar.com/avatar/${StringUtil.md5(
-              account.mailAddress.toLowerCase)}?s=${size}&d=retro&r=g"""
+            s"""https://www.gravatar.com/avatar/${StringUtil
+              .md5(account.mailAddress.toLowerCase)}?s=${size}&d=retro&r=g"""
           } else {
             s"""${context.path}/${account.userName}/_avatar"""
           }
@@ -35,15 +35,15 @@ trait AvatarImageProvider {
         // by mail address
         getAccountByMailAddress(mailAddress).map { account =>
           if (account.image.isEmpty && context.settings.gravatar) {
-            s"""https://www.gravatar.com/avatar/${StringUtil.md5(
-              account.mailAddress.toLowerCase)}?s=${size}&d=retro&r=g"""
+            s"""https://www.gravatar.com/avatar/${StringUtil
+              .md5(account.mailAddress.toLowerCase)}?s=${size}&d=retro&r=g"""
           } else {
             s"""${context.path}/${account.userName}/_avatar"""
           }
         } getOrElse {
           if (context.settings.gravatar) {
-            s"""https://www.gravatar.com/avatar/${StringUtil.md5(
-              mailAddress.toLowerCase)}?s=${size}&d=retro&r=g"""
+            s"""https://www.gravatar.com/avatar/${StringUtil
+              .md5(mailAddress.toLowerCase)}?s=${size}&d=retro&r=g"""
           } else {
             s"""${context.path}/_unknown/_avatar"""
           }

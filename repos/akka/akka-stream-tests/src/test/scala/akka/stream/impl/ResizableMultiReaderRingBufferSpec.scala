@@ -154,8 +154,10 @@ class ResizableMultiReaderRingBufferSpec extends WordSpec with ShouldMatchers {
               fail(
                 s"""|Run $run, cursorNr $cursorNr, counter $counter: got unexpected $x
                          |  Buf: ${buf.inspect}
-                         |  Cursors: ${buf.cursors.cursors.mkString(
-                     "\n           ")}
+                         |  Cursors: ${buf
+                     .cursors
+                     .cursors
+                     .mkString("\n           ")}
                          |Log:\n$sb
                       """.stripMargin)
             counter += 1

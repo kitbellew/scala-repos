@@ -290,8 +290,10 @@ class ScaloidCodeGenerator(
 
   def unitListener(l: AndroidListener) =
     s"""${commonListener(l)}
-       |    ${l.callbackMethods.map(callbackMethod(_, isUnit = true)).mkString(
-         "\n")}
+       |    ${l
+         .callbackMethods
+         .map(callbackMethod(_, isUnit = true))
+         .mkString("\n")}
        |  })
        |  basis
        |}""".stripMargin

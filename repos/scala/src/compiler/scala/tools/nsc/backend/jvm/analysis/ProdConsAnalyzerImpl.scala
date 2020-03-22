@@ -174,9 +174,8 @@ trait ProdConsAnalyzerImpl {
             // see cyclicProdCons in ProdConsAnalyzerTest
             _ultimateConsumersCache(key) = Set.empty
             for {
-              producedSlot <- copyOperationProducedValueSlots(
-                insn,
-                consumedSlot)
+              producedSlot <-
+                copyOperationProducedValueSlots(insn, consumedSlot)
               consumer <- consumersOfValueAt(insn.getNext, producedSlot)
               ultimateConsumer <- ultimateConsumers(consumer, producedSlot)
             } yield ultimateConsumer

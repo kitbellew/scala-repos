@@ -63,7 +63,10 @@ object Main extends LilaController {
   def embed =
     Action { req =>
       Ok {
-        s"""document.write("<iframe src='${Env.api.Net.BaseUrl}?embed=" + document.domain + "' class='lichess-iframe' allowtransparency='true' frameBorder='0' style='width: ${getInt(
+        s"""document.write("<iframe src='${Env
+          .api
+          .Net
+          .BaseUrl}?embed=" + document.domain + "' class='lichess-iframe' allowtransparency='true' frameBorder='0' style='width: ${getInt(
           "w",
           req) | 820}px; height: ${getInt(
           "h",

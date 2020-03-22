@@ -12,7 +12,8 @@ object Release {
 
   def launcherSettings(launcher: TaskKey[File]): Seq[Setting[_]] =
     Seq(
-      launcherRemotePath := s"${organization.value}/${moduleName.value}/${version.value}/${moduleName.value}.jar",
+      launcherRemotePath := s"${organization.value}/${moduleName
+        .value}/${version.value}/${moduleName.value}.jar",
       deployLauncher := {
         val repo = bintrayRepo.value
         repo.upload(

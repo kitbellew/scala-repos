@@ -428,12 +428,14 @@ object GenerateUnsafeProjection
     val ctx = newCodeGenContext()
     val eval = createCode(ctx, expressions, subexpressionEliminationEnabled)
 
-    val code = s"""
+    val code =
+      s"""
       public java.lang.Object generate(Object[] references) {
         return new SpecificUnsafeProjection(references);
       }
 
-      class SpecificUnsafeProjection extends ${classOf[UnsafeProjection].getName} {
+      class SpecificUnsafeProjection extends ${classOf[UnsafeProjection]
+        .getName} {
 
         private Object[] references;
         ${ctx.declareMutableStates()}

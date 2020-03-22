@@ -227,14 +227,14 @@ object helpers
         .replaceAll(
           "\\[branch:([^\\s]+?)/([^\\s]+?)#([^\\s]+?)\\]",
           (m: Match) =>
-            s"""<a href="${context.path}/${m.group(1)}/${m.group(
-              2)}/tree/${encodeRefName(m.group(3))}">${m.group(3)}</a>"""
+            s"""<a href="${context.path}/${m.group(1)}/${m
+              .group(2)}/tree/${encodeRefName(m.group(3))}">${m.group(3)}</a>"""
         )
         .replaceAll(
           "\\[tag:([^\\s]+?)/([^\\s]+?)#([^\\s]+?)\\]",
           (m: Match) =>
-            s"""<a href="${context.path}/${m.group(1)}/${m.group(
-              2)}/tree/${encodeRefName(m.group(3))}">${m.group(3)}</a>"""
+            s"""<a href="${context.path}/${m.group(1)}/${m
+              .group(2)}/tree/${encodeRefName(m.group(3))}">${m.group(3)}</a>"""
         )
         .replaceAll(
           "\\[user:([^\\s]+?)\\]",
@@ -242,9 +242,9 @@ object helpers
         .replaceAll(
           "\\[commit:([^\\s]+?)/([^\\s]+?)\\@([^\\s]+?)\\]",
           (m: Match) =>
-            s"""<a href="${context.path}/${m.group(1)}/${m.group(
-              2)}/commit/${m.group(3)}">${m.group(1)}/${m.group(2)}@${m.group(
-              3).substring(0, 7)}</a>"""
+            s"""<a href="${context.path}/${m.group(1)}/${m.group(2)}/commit/${m
+              .group(3)}">${m
+              .group(1)}/${m.group(2)}@${m.group(3).substring(0, 7)}</a>"""
         ))
 
   /**

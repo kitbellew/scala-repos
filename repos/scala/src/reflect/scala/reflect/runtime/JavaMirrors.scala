@@ -184,10 +184,12 @@ private[scala] trait JavaMirrors
         s"Cannot instantiate arrays with mirrors. Consider using `scala.reflect.ClassTag(<class of element>).newArray(<length>)` instead")
     private def ErrorFree(member: Symbol, freeType: Symbol) =
       abort(
-        s"cannot reflect ${member.kindString} ${member.name}, because it's a member of a weak type ${freeType.name}")
+        s"cannot reflect ${member.kindString} ${member
+          .name}, because it's a member of a weak type ${freeType.name}")
     private def ErrorNonExistentField(sym: Symbol) =
       abort(
-        sm"""Scala field ${sym.name} of ${sym.owner} isn't represented as a Java field, nor does it have a
+        sm"""Scala field ${sym.name} of ${sym
+          .owner} isn't represented as a Java field, nor does it have a
           |Java accessor method. One common reason for this is that it may be a private class parameter
           |not used outside the primary constructor.""")
 
@@ -935,10 +937,10 @@ private[scala] trait JavaMirrors
           if (result
                 .isEmpty && (anns exists (_.annotationType.getName == name)))
             throw new ClassNotFoundException(
-              sm"""Mirror classloader mismatch: $jclazz (loaded by ${ReflectionUtils.show(
-                jclazz.getClassLoader)})
-                  |is unrelated to the mirror's classloader: (${ReflectionUtils.show(
-                classLoader)})""")
+              sm"""Mirror classloader mismatch: $jclazz (loaded by ${ReflectionUtils
+                .show(jclazz.getClassLoader)})
+                  |is unrelated to the mirror's classloader: (${ReflectionUtils
+                .show(classLoader)})""")
           result
         }
       def loadBytes[T: ClassTag](name: String): Option[T] =

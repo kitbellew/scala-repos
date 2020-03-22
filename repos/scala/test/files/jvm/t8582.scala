@@ -39,7 +39,8 @@ object Test extends BytecodeTest {
         .asScala
         .toList
         .map(i =>
-          s"className[${i.name}] outerClassName[${i.outerName}] innerName[${i.innerName}] access[${i.access}]")
+          s"className[${i.name}] outerClassName[${i.outerName}] innerName[${i
+            .innerName}] access[${i.access}]")
         .mkString(" ", "\n ", ""))
   }
 

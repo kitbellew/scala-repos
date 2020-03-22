@@ -1854,9 +1854,8 @@ private[optimizer] abstract class OptimizerCore(
 
       val argsBindings =
         for {
-          (
-            ParamDef(Ident(name, originalName), tpe, mutable, rest),
-            arg) <- formals zip args
+          (ParamDef(Ident(name, originalName), tpe, mutable, rest), arg) <-
+            formals zip args
         } yield {
           assert(
             !rest,
@@ -2167,9 +2166,8 @@ private[optimizer] abstract class OptimizerCore(
     pretransformExprs(initialFieldValues) { tinitialFieldValues =>
       val initialFieldBindings =
         for {
-          (
-            RecordType.Field(name, originalName, tpe, mutable),
-            value) <- recordType.fields zip tinitialFieldValues
+          (RecordType.Field(name, originalName, tpe, mutable), value) <-
+            recordType.fields zip tinitialFieldValues
         } yield {
           Binding(name, originalName, tpe, mutable, value)
         }
@@ -2238,9 +2236,8 @@ private[optimizer] abstract class OptimizerCore(
 
       val argsBindings =
         for {
-          (
-            ParamDef(Ident(name, originalName), tpe, mutable, _),
-            arg) <- formals zip args
+          (ParamDef(Ident(name, originalName), tpe, mutable, _), arg) <-
+            formals zip args
         } yield {
           Binding(name, originalName, tpe, mutable, arg)
         }

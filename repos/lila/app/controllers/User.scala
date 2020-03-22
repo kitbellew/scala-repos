@@ -169,8 +169,8 @@ object User extends LilaController {
       blocked <- ctx.userId ?? {
         relationApi.fetchBlocks(u.id, _)
       }
-      searchForm = GameFilterMenu
-        .searchForm(userGameSearch, filters.current)(ctx.body)
+      searchForm =
+        GameFilterMenu.searchForm(userGameSearch, filters.current)(ctx.body)
     } yield html
       .user
       .show(
@@ -350,9 +350,10 @@ object User extends LilaController {
                 distribution <- u.perfs(perfType).established ?? {
                   Env.user.cached.ratingDistribution(perfType) map some
                 }
-                data = Env
-                  .perfStat
-                  .jsonView(u, perfStat, ranks get perfType.key, distribution)
+                data =
+                  Env
+                    .perfStat
+                    .jsonView(u, perfStat, ranks get perfType.key, distribution)
                 response <- negotiate(
                   html =
                     Ok(html.user.perfStat(u, ranks, perfType, data)).fuccess,

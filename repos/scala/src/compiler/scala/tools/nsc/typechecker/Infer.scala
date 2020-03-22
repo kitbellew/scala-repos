@@ -1618,7 +1618,8 @@ trait Infer extends Checkable {
             else
               "not "
           devWarning(
-            s"failed inferConstructorInstance for $tree: ${tree.tpe} undet=$undetparams, pt=$pt (${not}fully defined)")
+            s"failed inferConstructorInstance for $tree: ${tree
+              .tpe} undet=$undetparams, pt=$pt (${not}fully defined)")
           ConstrInstantiationError(tree, resTp, pt)
       }
     }
@@ -1671,8 +1672,8 @@ trait Infer extends Checkable {
         if (lo1 <:< lo0 && hi0 <:< hi1) // bounds unimproved
           log(
             s"redundant bounds: discarding TypeBounds($lo1, $hi1) for $tparam, no improvement on TypeBounds($lo0, $hi0)")
-        else if (tparam == lo1
-                   .typeSymbolDirect || tparam == hi1.typeSymbolDirect)
+        else if (tparam == lo1.typeSymbolDirect || tparam == hi1
+                   .typeSymbolDirect)
           log(
             s"cyclical bounds: discarding TypeBounds($lo1, $hi1) for $tparam because $tparam appears as bounds")
         else {

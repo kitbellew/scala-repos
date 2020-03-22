@@ -458,8 +458,8 @@ object ShapedValue {
                 q"v.$n :: $z"
             }
         (
-          q"({ case $pat => new $rTag(..${fields.map(
-            _._3)}) } : ($rTypeAsHList => $rTag)): ($uTag => $rTag)",
+          q"({ case $pat => new $rTag(..${fields
+            .map(_._3)}) } : ($rTypeAsHList => $rTag)): ($uTag => $rTag)",
           q"{ case v => $cons }: ($rTag => $uTag)")
       } else if (fields.length == 1) { // Map from single value
         (

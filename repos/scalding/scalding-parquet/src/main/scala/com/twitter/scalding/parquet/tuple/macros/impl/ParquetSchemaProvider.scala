@@ -12,7 +12,8 @@ object ParquetSchemaProvider {
     if (!IsCaseClassImpl.isCaseClassType(c)(T.tpe))
       c.abort(
         c.enclosingPosition,
-        s"""We cannot enforce ${T.tpe} is a case class, either it is not a case class or this macro call is possibly enclosed in a class.
+        s"""We cannot enforce ${T
+          .tpe} is a case class, either it is not a case class or this macro call is possibly enclosed in a class.
         This will mean the macro is operating on a non-resolved type."""
       )
 

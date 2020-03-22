@@ -757,7 +757,8 @@ object QuadraticMinimizer {
         owlqnResult.x - sparseQpResult.x,
         2)} inf-norm ${norm(owlqnResult.x - sparseQpResult.x, inf)}")
     println(
-      s"sparseQp ${sparseQpTime / 1e6} ms iters ${sparseQpResult.iter} owlqn ${owlqnTime / 1e6} ms iters ${owlqnResult.iter}")
+      s"sparseQp ${sparseQpTime / 1e6} ms iters ${sparseQpResult
+        .iter} owlqn ${owlqnTime / 1e6} ms iters ${owlqnResult.iter}")
 
     val posQp = QuadraticMinimizer(h.rows, POSITIVE, 0.0)
     val posQpStart = System.nanoTime()
@@ -770,7 +771,8 @@ object QuadraticMinimizer {
     val nnlsTime = System.nanoTime() - nnlsStart
 
     println(
-      s"posQp ${posQpTime / 1e6} ms iters ${posQpResult.iter} nnls ${nnlsTime / 1e6} ms iters ${nnlsResult.iter}")
+      s"posQp ${posQpTime / 1e6} ms iters ${posQpResult
+        .iter} nnls ${nnlsTime / 1e6} ms iters ${nnlsResult.iter}")
 
     val boundsQp = new QuadraticMinimizer(h.rows, ProjectBox(bl, bu))
     val boundsQpStart = System.nanoTime()
@@ -778,7 +780,8 @@ object QuadraticMinimizer {
     val boundsQpTime = System.nanoTime() - boundsQpStart
 
     println(
-      s"boundsQp ${boundsQpTime / 1e6} ms iters ${boundsQpResult.iter} converged ${boundsQpResult.converged}")
+      s"boundsQp ${boundsQpTime / 1e6} ms iters ${boundsQpResult
+        .iter} converged ${boundsQpResult.converged}")
 
     val qpEquality = new QuadraticMinimizer(h.rows, ProjectPos(), aeq, b)
     val qpEqualityStart = System.nanoTime()
@@ -786,6 +789,7 @@ object QuadraticMinimizer {
     val qpEqualityTime = System.nanoTime() - qpEqualityStart
 
     println(
-      s"Qp Equality ${qpEqualityTime / 1e6} ms iters ${qpEqualityResult.iter} converged ${qpEqualityResult.converged}")
+      s"Qp Equality ${qpEqualityTime / 1e6} ms iters ${qpEqualityResult
+        .iter} converged ${qpEqualityResult.converged}")
   }
 }

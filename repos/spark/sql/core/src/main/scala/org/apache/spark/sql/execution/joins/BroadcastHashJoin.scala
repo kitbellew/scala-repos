@@ -278,7 +278,8 @@ case class BroadcastHashJoin(
          |// generate join key for stream side
          |${keyEv.code}
          |// find matches from HashedRelation
-         |UnsafeRow $matched = $anyNull ? null: (UnsafeRow)$relationTerm.getValue(${keyEv.value});
+         |UnsafeRow $matched = $anyNull ? null: (UnsafeRow)$relationTerm.getValue(${keyEv
+           .value});
          |if ($matched == null) continue;
          |$checkCondition
          |$numOutput.add(1);
@@ -295,7 +296,8 @@ case class BroadcastHashJoin(
          |// generate join key for stream side
          |${keyEv.code}
          |// find matches from HashRelation
-         |$bufferType $matches = $anyNull ? null : ($bufferType)$relationTerm.get(${keyEv.value});
+         |$bufferType $matches = $anyNull ? null : ($bufferType)$relationTerm.get(${keyEv
+           .value});
          |if ($matches == null) continue;
          |int $size = $matches.size();
          |for (int $i = 0; $i < $size; $i++) {
@@ -358,13 +360,13 @@ case class BroadcastHashJoin(
          |// generate join key for stream side
          |${keyEv.code}
          |// find matches from HashedRelation
-         |UnsafeRow $matched = $anyNull ? null: (UnsafeRow)$relationTerm.getValue(${keyEv.value});
+         |UnsafeRow $matched = $anyNull ? null: (UnsafeRow)$relationTerm.getValue(${keyEv
+           .value});
          |${checkCondition.trim}
          |if (!$conditionPassed) {
          |  $matched = null;
          |  // reset the variables those are already evaluated.
-         |  ${buildVars.filter(_.code == "").map(v =>
-           s"${v.isNull} = true;").mkString("\n")}
+         |  ${buildVars.filter(_.code == "").map(v => s"${v.isNull} = true;").mkString("\n")}
          |}
          |$numOutput.add(1);
          |${consume(ctx, resultVars)}
@@ -381,7 +383,8 @@ case class BroadcastHashJoin(
          |// generate join key for stream side
          |${keyEv.code}
          |// find matches from HashRelation
-         |$bufferType $matches = $anyNull ? null : ($bufferType)$relationTerm.get(${keyEv.value});
+         |$bufferType $matches = $anyNull ? null : ($bufferType)$relationTerm.get(${keyEv
+           .value});
          |int $size = $matches != null ? $matches.size() : 0;
          |boolean $found = false;
          |// the last iteration of this loop is to emit an empty row if there is no matched rows.
@@ -434,7 +437,8 @@ case class BroadcastHashJoin(
          |// generate join key for stream side
          |${keyEv.code}
          |// find matches from HashedRelation
-         |UnsafeRow $matched = $anyNull ? null: (UnsafeRow)$relationTerm.getValue(${keyEv.value});
+         |UnsafeRow $matched = $anyNull ? null: (UnsafeRow)$relationTerm.getValue(${keyEv
+           .value});
          |if ($matched == null) continue;
          |$checkCondition
          |$numOutput.add(1);
@@ -450,7 +454,8 @@ case class BroadcastHashJoin(
          |// generate join key for stream side
          |${keyEv.code}
          |// find matches from HashRelation
-         |$bufferType $matches = $anyNull ? null : ($bufferType)$relationTerm.get(${keyEv.value});
+         |$bufferType $matches = $anyNull ? null : ($bufferType)$relationTerm.get(${keyEv
+           .value});
          |if ($matches == null) continue;
          |int $size = $matches.size();
          |boolean $found = false;

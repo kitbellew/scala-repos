@@ -214,11 +214,11 @@ abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
         _ <- DBIO.seq(
           (
             tables.map(t =>
-              sqlu"""drop table if exists #${profile.quoteIdentifier(
-                t)} cascade""") ++
+              sqlu"""drop table if exists #${profile
+                .quoteIdentifier(t)} cascade""") ++
               sequences.map(t =>
-                sqlu"""drop sequence if exists #${profile.quoteIdentifier(
-                  t)} cascade""")
+                sqlu"""drop sequence if exists #${profile
+                  .quoteIdentifier(t)} cascade""")
           ): _*)
       } yield ()
     }
@@ -230,9 +230,8 @@ abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
   def assertNotTablesExist(tables: String*) =
     DBIO.seq(
       tables.map(t =>
-        sql"""select 1 from #${profile.quoteIdentifier(t)} where 1 < 0"""
-          .as[Int]
-          .failed): _*)
+        sql"""select 1 from #${profile
+          .quoteIdentifier(t)} where 1 < 0""".as[Int].failed): _*)
   def createSingleSessionDatabase(implicit
       session: profile.Backend#Session,
       executor: AsyncExecutor = AsyncExecutor

@@ -266,7 +266,8 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(implicit
                   } catch {
                     case e @ PicklingException(msg, cause) =>
                       debug(
-                        s"""error in interpreted runtime unpickler while reading tag of field '${fir.name}
+                        s"""error in interpreted runtime unpickler while reading tag of field '${fir
+                             .name}
 ':
                          |$msg
 
@@ -388,7 +389,8 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
                   } catch {
                     case e @ PicklingException(msg, cause) =>
                       debug(
-                        s"""error in interpreted runtime unpickler while reading tag of field '${fir.name}':
+                        s"""error in interpreted runtime unpickler while reading tag of field '${fir
+                             .name}':
                          |$msg
                          |enclosing object has type: '${tagKey}'
                          |static type of field: '${fir.tpe.key}'

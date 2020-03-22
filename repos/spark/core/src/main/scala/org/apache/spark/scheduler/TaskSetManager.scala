@@ -393,9 +393,8 @@ private[spark] class TaskSetManager(
       host: String,
       maxLocality: TaskLocality.Value)
       : Option[(Int, TaskLocality.Value, Boolean)] = {
-    for (index <- dequeueTaskFromList(
-           execId,
-           getPendingTasksForExecutor(execId))) {
+    for (index <-
+           dequeueTaskFromList(execId, getPendingTasksForExecutor(execId))) {
       return Some((index, TaskLocality.PROCESS_LOCAL, false))
     }
 
@@ -779,7 +778,8 @@ private[spark] class TaskSetManager(
             logWarning(failureReason)
           } else {
             logInfo(
-              s"Lost task ${info.id} in stage ${taskSet.id} (TID $tid) on executor ${info.host}: " +
+              s"Lost task ${info.id} in stage ${taskSet
+                .id} (TID $tid) on executor ${info.host}: " +
                 s"${ef.className} (${ef.description}) [duplicate $dupCount]")
           }
           ef.exception

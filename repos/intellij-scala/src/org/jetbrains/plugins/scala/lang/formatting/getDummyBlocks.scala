@@ -181,10 +181,11 @@ object getDummyBlocks {
           .nonEmpty && afterOpenBrace.head.getElementType == ScalaTokenTypes
           .tLBRACE &&
           afterOpenBrace.last.getElementType == ScalaTokenTypes.tRBRACE
-        for (child <- if (hasValidTail)
-               beforeOpenBrace
-             else
-               correctChildren) {
+        for (child <-
+               if (hasValidTail)
+                 beforeOpenBrace
+               else
+                 correctChildren) {
           subBlocks.add(
             getSubBlock(
               block,

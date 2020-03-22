@@ -29,9 +29,12 @@ final class Env(
         val db = DB(dbUri, connection)
         registerDriverShutdownHook(driver)
         logger.info(
-          s"""ReactiveMongoApi successfully started with DB '$dbUri'! Servers: ${parsedUri.hosts.map {
-            s => s"[${s._1}:${s._2}]"
-          }.mkString("\n\t\t")}""")
+          s"""ReactiveMongoApi successfully started with DB '$dbUri'! Servers: ${parsedUri
+            .hosts
+            .map { s =>
+              s"[${s._1}:${s._2}]"
+            }
+            .mkString("\n\t\t")}""")
         db
       }
   }

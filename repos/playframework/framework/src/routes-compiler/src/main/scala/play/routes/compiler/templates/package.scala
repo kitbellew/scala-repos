@@ -653,8 +653,7 @@ package object templates {
   def refCall(route: Route, useInjector: Route => Boolean): String = {
     val controllerRef = s"${route.call.packageName}.${route.call.controller}"
     val methodCall =
-      s"${route.call.method}(${route.call.parameters.getOrElse(Nil).map(x =>
-        safeKeyword(x.name)).mkString(", ")})"
+      s"${route.call.method}(${route.call.parameters.getOrElse(Nil).map(x => safeKeyword(x.name)).mkString(", ")})"
     if (useInjector(route)) {
       s"$Injector.instanceOf(classOf[$controllerRef]).$methodCall"
     } else {

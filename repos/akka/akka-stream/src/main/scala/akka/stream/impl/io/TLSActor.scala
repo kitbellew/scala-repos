@@ -469,7 +469,8 @@ private[akka] class TLSActor(
     lastHandshakeStatus = result.getHandshakeStatus
     if (tracing)
       log.debug(
-        s"wrap: status=${result.getStatus} handshake=$lastHandshakeStatus remaining=${userInBuffer.remaining} out=${transportOutBuffer.position}")
+        s"wrap: status=${result.getStatus} handshake=$lastHandshakeStatus remaining=${userInBuffer
+          .remaining} out=${transportOutBuffer.position}")
     if (lastHandshakeStatus == FINISHED)
       handshakeFinished()
     runDelegatedTasks()
@@ -496,7 +497,8 @@ private[akka] class TLSActor(
     lastHandshakeStatus = result.getHandshakeStatus
     if (tracing)
       log.debug(
-        s"unwrap: status=${result.getStatus} handshake=$lastHandshakeStatus remaining=${transportInBuffer.remaining} out=${userOutBuffer.position}")
+        s"unwrap: status=${result.getStatus} handshake=$lastHandshakeStatus remaining=${transportInBuffer
+          .remaining} out=${userOutBuffer.position}")
     runDelegatedTasks()
     result.getStatus match {
       case OK ⇒

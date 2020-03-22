@@ -52,7 +52,8 @@ class BigDataBenchmarkSuite extends HiveComparisonTest {
         |  pageRank INT,
         |  avgDuration INT)
         |  ROW FORMAT DELIMITED FIELDS TERMINATED BY ","
-        |  STORED AS TEXTFILE LOCATION "${new File(testDataDirectory, "scratch").getCanonicalPath}"
+        |  STORED AS TEXTFILE LOCATION "${new File(testDataDirectory, "scratch")
+           .getCanonicalPath}"
       """.stripMargin.cmd
     ),
     TestTable(

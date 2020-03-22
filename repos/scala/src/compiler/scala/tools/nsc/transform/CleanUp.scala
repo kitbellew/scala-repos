@@ -434,7 +434,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
               case tpe @ OverloadedType(pre, alts) =>
                 reporter.warning(
                   ad.pos,
-                  s"Overloaded type reached the backend! This is a bug in scalac.\n     Symbol: ${ad.symbol}\n  Overloads: $tpe\n  Arguments: " + ad
+                  s"Overloaded type reached the backend! This is a bug in scalac.\n     Symbol: ${ad
+                    .symbol}\n  Overloads: $tpe\n  Arguments: " + ad
                     .args
                     .map(_.tpe)
                 )
@@ -479,7 +480,9 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
                 ""
             }
           log(
-            s"""Dynamically application '$qual.${ad.symbol.name}(${paramsToString(
+            s"""Dynamically application '$qual.${ad
+              .symbol
+              .name}(${paramsToString(
               params)})' $mstr - resulting code: '$t'""")
         }
 

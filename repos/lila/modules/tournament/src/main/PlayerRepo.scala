@@ -228,7 +228,8 @@ object PlayerRepo {
       }
       .chronometer
       .logIfSlow(200, logger) { players =>
-        s"PlayerRepo.rankedByTourAndUserIds $tourId ${userIds.size} user IDs, ${ranking.size} ranking, ${players.size} players"
+        s"PlayerRepo.rankedByTourAndUserIds $tourId ${userIds
+          .size} user IDs, ${ranking.size} ranking, ${players.size} players"
       }
       .result
 }

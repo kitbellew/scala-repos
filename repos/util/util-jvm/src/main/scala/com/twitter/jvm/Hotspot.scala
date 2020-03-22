@@ -119,8 +119,8 @@ class Hotspot extends Jvm {
           for {
             thresh <- tenuringThreshold.toSeq
             i <- 1L to thresh
-            bucket <- cs
-              .get("sun.gc.generation.0.agetable.bytes.%02d".format(i))
+            bucket <-
+              cs.get("sun.gc.generation.0.agetable.bytes.%02d".format(i))
           } yield long(bucket)
 
         Heap(allocated, tenuringThreshold getOrElse -1, ageHisto)

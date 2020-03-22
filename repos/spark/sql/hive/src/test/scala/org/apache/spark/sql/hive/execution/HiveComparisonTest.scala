@@ -606,8 +606,11 @@ abstract class HiveComparisonTest
                 val errorMessage =
                   s"""
                   |Results do not match for $testCaseName:
-                  |$hiveQuery\n${hiveQuery.analyzed.output.map(_.name).mkString(
-                       "\t")}
+                  |$hiveQuery\n${hiveQuery
+                       .analyzed
+                       .output
+                       .map(_.name)
+                       .mkString("\t")}
                   |$resultComparison
                   |$computedTablesMessages
                 """.stripMargin

@@ -306,8 +306,8 @@ class MarathonSchedulerService @Inject() (
 
         //run all leadership callbacks
         log.info(
-          s"""Call onElected leadership callbacks on ${leadershipCallbacks.mkString(
-            ", ")}""")
+          s"""Call onElected leadership callbacks on ${leadershipCallbacks
+            .mkString(", ")}""")
         Await.result(
           Future.sequence(leadershipCallbacks.map(_.onElected)),
           config.onElectedPrepareTimeout().millis)

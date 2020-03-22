@@ -45,9 +45,7 @@ class FlagTest extends FunSuite {
 
     assert(Flaggable.ofInetSocketAddress.show(local) == s":$port")
     assert(
-      Flaggable
-        .ofInetSocketAddress
-        .show(remote) == s"${remote.getHostName}:$port")
+      Flaggable.ofInetSocketAddress.show(remote) == s"${remote.getHostName}:$port")
   }
 
   test("Flaggable: parse seqs") {

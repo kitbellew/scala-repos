@@ -232,12 +232,13 @@ object HRavenHistoryService extends HistoryService {
           step.getVersion,
           "")
         // update HRavenHistoryService.TaskDetailFields when consuming additional task fields from hraven below
-        tasks = step
-          .getTasks
-          .asScala
-          .map { t =>
-            Task(t.getType, t.getStatus, t.getStartTime, t.getFinishTime)
-          }
+        tasks =
+          step
+            .getTasks
+            .asScala
+            .map { t =>
+              Task(t.getType, t.getStatus, t.getStartTime, t.getFinishTime)
+            }
       } yield toFlowStepHistory(keys, step, tasks)
     }
 

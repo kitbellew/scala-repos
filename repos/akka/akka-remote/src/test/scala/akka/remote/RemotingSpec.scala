@@ -162,10 +162,8 @@ class RemotingSpec
     .resolve()
   val remoteSystem = ActorSystem("remote-sys", conf)
 
-  for ((name, proto) ← Seq(
-         "/gonk" -> "tcp",
-         "/zagzag" -> "udp",
-         "/roghtaar" -> "ssl.tcp"))
+  for ((name, proto) ←
+         Seq("/gonk" -> "tcp", "/zagzag" -> "udp", "/roghtaar" -> "ssl.tcp"))
     deploy(system, Deploy(name, scope = RemoteScope(addr(remoteSystem, proto))))
 
   def addr(sys: ActorSystem, proto: String) =
@@ -703,15 +701,19 @@ class RemotingSpec
       val rawLocalAddress = localAddress.copy(protocol = "test")
       val remoteAddress = Address("akka.test", "system2", "localhost", 2)
 
-      val config = ConfigFactory.parseString(s"""
+      val config = ConfigFactory
+        .parseString(
+          s"""
             akka.remote.enabled-transports = ["akka.remote.test"]
             akka.remote.retry-gate-closed-for = 5s
 
             akka.remote.test {
               registry-key = tFdVxq
-              local-address = "test://${localAddress.system}@${localAddress.host.get}:${localAddress.port.get}"
+              local-address = "test://${localAddress
+            .system}@${localAddress.host.get}:${localAddress.port.get}"
             }
-            """).withFallback(remoteSystem.settings.config)
+            """)
+        .withFallback(remoteSystem.settings.config)
 
       val thisSystem = ActorSystem("this-system", config)
 
@@ -767,7 +769,9 @@ class RemotingSpec
       val remoteAddress = Address("akka.test", "system2", "localhost", 2)
       val rawRemoteAddress = remoteAddress.copy(protocol = "test")
 
-      val config = ConfigFactory.parseString(s"""
+      val config = ConfigFactory
+        .parseString(
+          s"""
         akka.remote.enabled-transports = ["akka.remote.test"]
         akka.remote.retry-gate-closed-for = 5s
         akka.remote.log-remote-lifecycle-events = on
@@ -775,9 +779,11 @@ class RemotingSpec
 
         akka.remote.test {
           registry-key = TRKAzR
-          local-address = "test://${localAddress.system}@${localAddress.host.get}:${localAddress.port.get}"
+          local-address = "test://${localAddress
+            .system}@${localAddress.host.get}:${localAddress.port.get}"
         }
-        """).withFallback(remoteSystem.settings.config)
+        """)
+        .withFallback(remoteSystem.settings.config)
       val thisSystem = ActorSystem("this-system", config)
       muteSystem(thisSystem)
 
@@ -873,16 +879,20 @@ class RemotingSpec
       val rawRemoteAddress = remoteAddress.copy(protocol = "test")
       val remoteUID = 16
 
-      val config = ConfigFactory.parseString(s"""
+      val config = ConfigFactory
+        .parseString(
+          s"""
         akka.remote.enabled-transports = ["akka.remote.test"]
         akka.remote.retry-gate-closed-for = 5s
         akka.remote.log-remote-lifecycle-events = on
 
         akka.remote.test {
           registry-key = JMeMndLLsw
-          local-address = "test://${localAddress.system}@${localAddress.host.get}:${localAddress.port.get}"
+          local-address = "test://${localAddress
+            .system}@${localAddress.host.get}:${localAddress.port.get}"
         }
-        """).withFallback(remoteSystem.settings.config)
+        """)
+        .withFallback(remoteSystem.settings.config)
       val thisSystem = ActorSystem("this-system", config)
       muteSystem(thisSystem)
 

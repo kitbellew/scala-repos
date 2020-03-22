@@ -54,10 +54,11 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
           (c, p) <- categories join posts on (_.id === _.category)
         } yield (p.id, c.id, c.name, p.title)
       ).sortBy(_._1)
-      _ <- q2
-        .map(p => (p._1, p._2))
-        .result
-        .map(_ shouldBe List((2, 1), (3, 2), (4, 3), (5, 2)))
+      _ <-
+        q2
+          .map(p => (p._1, p._2))
+          .result
+          .map(_ shouldBe List((2, 1), (3, 2), (4, 3), (5, 2)))
       q3 = posts.flatMap(_.withCategory)
       _ <- mark("q3", q3.result).map(_ should (_.length == 20))
       q4 = (
@@ -317,11 +318,12 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
         _ <- mark("q3", q3.result)
           .map(_ shouldBe List((1, -1), (2, 1), (3, 2), (4, 3)))
         q4 = for {
-          res <- categories
-            .sortBy(_.id)
-            .zipWith(
-              posts.sortBy(_.id),
-              (c: Categories, p: Posts) => (c.id, p.category))
+          res <-
+            categories
+              .sortBy(_.id)
+              .zipWith(
+                posts.sortBy(_.id),
+                (c: Categories, p: Posts) => (c.id, p.category))
         } yield res
         _ <- mark("q4", q4.result)
           .map(_ shouldBe List((1, -1), (2, 1), (3, 2), (4, 3)))

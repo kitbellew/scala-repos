@@ -69,7 +69,8 @@ object ColumnDefinitionProviderImpl {
     if (!IsCaseClassImpl.isCaseClassType(c)(T.tpe))
       c.abort(
         c.enclosingPosition,
-        s"""We cannot enforce ${T.tpe} is a case class, either it is not a case class or this macro call is possibly enclosed in a class.
+        s"""We cannot enforce ${T
+          .tpe} is a case class, either it is not a case class or this macro call is possibly enclosed in a class.
         This will mean the macro is operating on a non-resolved type."""
       )
 
@@ -330,17 +331,21 @@ object ColumnDefinitionProviderImpl {
               case f =>
                 q"""$f == $typeNameTerm"""
             }
-          val typeAssert = q"""
+          val typeAssert =
+            q"""
         if (!$typeValidation) {
           throw new _root_.com.twitter.scalding.db.JdbcValidationException(
-            "Mismatched type for column '" + $fieldName + "'. Expected " + ${cf.fieldType} +
+            "Mismatched type for column '" + $fieldName + "'. Expected " + ${cf
+              .fieldType} +
               " but set to " + $typeNameTerm + " in DB.")
         }
         """
           val nullableTerm = newTermName(c.fresh(s"isNullable_$pos"))
-          val nullableValidation = q"""
+          val nullableValidation =
+            q"""
         val $nullableTerm = $rsmdTerm.isNullable(${pos + 1})
-        if ($nullableTerm == _root_.java.sql.ResultSetMetaData.columnNoNulls && ${cf.nullable}) {
+        if ($nullableTerm == _root_.java.sql.ResultSetMetaData.columnNoNulls && ${cf
+              .nullable}) {
           throw new _root_.com.twitter.scalding.db.JdbcValidationException(
             "Column '" + $fieldName + "' is not nullable in DB.")
         }

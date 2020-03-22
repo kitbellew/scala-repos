@@ -72,8 +72,7 @@ private[akka] object FixedSizeBuffer {
   sealed abstract class FixedSizeBuffer[T](val capacity: Int)
       extends Buffer[T] {
     override def toString =
-      s"Buffer($capacity, $readIdx, $writeIdx)(${(readIdx until writeIdx).map(
-        get).mkString(", ")})"
+      s"Buffer($capacity, $readIdx, $writeIdx)(${(readIdx until writeIdx).map(get).mkString(", ")})"
     private val buffer = new Array[AnyRef](capacity)
 
     protected var readIdx = 0L

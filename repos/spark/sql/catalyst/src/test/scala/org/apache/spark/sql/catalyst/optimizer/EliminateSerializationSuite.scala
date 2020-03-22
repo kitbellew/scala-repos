@@ -53,8 +53,10 @@ class EliminateSerializationSuite extends PlanTest {
       })
 
     if (newInstances.size != count) {
-      fail(s"""
-           |Wrong number of object creations in plan: ${newInstances.size} != $count
+      fail(
+        s"""
+           |Wrong number of object creations in plan: ${newInstances
+             .size} != $count
            |$plan
          """.stripMargin)
     }

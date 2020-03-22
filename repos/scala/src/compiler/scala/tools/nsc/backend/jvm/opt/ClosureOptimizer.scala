@@ -193,12 +193,13 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
           // method as the allocation) should have access too.
           val bodyAccessible: Either[OptimizerWarning, Boolean] =
             for {
-              (bodyMethodNode, declClass) <- byteCodeRepository.methodNode(
-                lambdaBodyHandle.getOwner,
-                lambdaBodyHandle.getName,
-                lambdaBodyHandle.getDesc): Either[
-                OptimizerWarning,
-                (MethodNode, InternalName)]
+              (bodyMethodNode, declClass) <-
+                byteCodeRepository.methodNode(
+                  lambdaBodyHandle.getOwner,
+                  lambdaBodyHandle.getName,
+                  lambdaBodyHandle.getDesc): Either[
+                  OptimizerWarning,
+                  (MethodNode, InternalName)]
               isAccessible <- inliner.memberIsAccessible(
                 bodyMethodNode.access,
                 classBTypeFromParsedClassfile(declClass),

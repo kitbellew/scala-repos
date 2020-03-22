@@ -834,7 +834,8 @@ trait ContextErrors {
           if (meth.isMacro)
             MacroTooFewArgumentListsMessage
           else
-            s"""missing argument list for ${meth.fullLocationString}${if (!meth.isConstructor)
+            s"""missing argument list for ${meth
+              .fullLocationString}${if (!meth.isConstructor)
               advice
             else
               ""}"""
@@ -1244,8 +1245,8 @@ trait ContextErrors {
         val ambiguousBuffered = !context.ambiguousErrors
         if (validTargets || ambiguousBuffered)
           context.issueAmbiguousError(
-            if (sym1.hasDefault && sym2.hasDefault && sym1.enclClass == sym2
-                  .enclClass) {
+            if (sym1.hasDefault && sym2.hasDefault && sym1
+                  .enclClass == sym2.enclClass) {
               val methodName = nme.defaultGetterToMethod(sym1.name)
               AmbiguousTypeError(
                 sym1.enclClass.pos,
@@ -1750,15 +1751,19 @@ trait ContextErrors {
               (
                 if (sym == AnyClass || sym == UnitClass)
                   (
-                    sm"""|Note: ${sym.name} is not implicitly converted to AnyRef.  You can safely
+                    sm"""|Note: ${sym
+                      .name} is not implicitly converted to AnyRef.  You can safely
                       |pattern match `x: AnyRef` or cast `x.asInstanceOf[AnyRef]` to do so."""
                   )
                 else
                   boxedClass get sym map (boxed =>
-                    sm"""|Note: an implicit exists from ${sym.fullName} => ${boxed.fullName}, but
+                    sm"""|Note: an implicit exists from ${sym
+                      .fullName} => ${boxed.fullName}, but
                       |methods inherited from Object are rendered ambiguous.  This is to avoid
-                      |a blanket implicit which would convert any ${sym.fullName} to any AnyRef.
-                      |You may wish to use a type ascription: `x: ${boxed.fullName}`.""") getOrElse ""
+                      |a blanket implicit which would convert any ${sym
+                      .fullName} to any AnyRef.
+                      |You may wish to use a type ascription: `x: ${boxed
+                      .fullName}`.""") getOrElse ""
               )
             else
               sm"""|Note that implicit conversions are not applicable because they are ambiguous:

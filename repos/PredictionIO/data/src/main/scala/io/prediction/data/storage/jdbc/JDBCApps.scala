@@ -40,7 +40,8 @@ class JDBCApps(client: String, config: StorageClientConfig, prefix: String)
       val q =
         if (app.id == 0) {
           sql"""
-      insert into $tableName (name, description) values(${app.name}, ${app.description})
+      insert into $tableName (name, description) values(${app.name}, ${app
+            .description})
       """
         } else {
           sql"""

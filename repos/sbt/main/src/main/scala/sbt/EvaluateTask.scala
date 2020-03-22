@@ -545,7 +545,8 @@ object EvaluateTask {
 
     val log = state.log
     log.debug(
-      s"Running task... Cancel: ${config.cancelStrategy}, check cycles: ${config.checkCycles}, forcegc: ${config.forceGarbageCollection}")
+      s"Running task... Cancel: ${config.cancelStrategy}, check cycles: ${config
+        .checkCycles}, forcegc: ${config.forceGarbageCollection}")
     val tags = tagged[Task[_]](
       _.info get tagsKey getOrElse Map.empty,
       Tags.predicate(config.restrictions))
@@ -607,8 +608,8 @@ object EvaluateTask {
       results: RMap[Task, Result],
       state: State,
       streams: Streams): Unit =
-    for (referenced <- Previous
-           .references in Global get Project.structure(state).data)
+    for (referenced <-
+           Previous.references in Global get Project.structure(state).data)
       Previous.complete(referenced, results, streams)
 
   def applyResults[T](

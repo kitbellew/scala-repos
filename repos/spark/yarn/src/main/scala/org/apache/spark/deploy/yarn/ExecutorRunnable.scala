@@ -103,10 +103,12 @@ private[yarn] class ExecutorRunnable(
       |===============================================================================
       |YARN executor launch context:
       |  env:
-      |${env.map {
-           case (k, v) =>
-             s"    $k -> $v\n"
-         }.mkString}
+      |${env
+           .map {
+             case (k, v) =>
+               s"    $k -> $v\n"
+           }
+           .mkString}
       |  command:
       |    ${commands.mkString(" ")}
       |===============================================================================

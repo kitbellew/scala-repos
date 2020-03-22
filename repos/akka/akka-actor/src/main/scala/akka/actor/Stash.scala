@@ -187,7 +187,8 @@ private[akka] trait StashSupport {
       theStash :+= currMsg
     else
       throw new StashOverflowException(
-        s"Couldn't enqueue message ${currMsg.message.getClass.getName} from ${currMsg.sender} to stash of $self")
+        s"Couldn't enqueue message ${currMsg.message.getClass.getName} from ${currMsg
+          .sender} to stash of $self")
   }
 
   /**

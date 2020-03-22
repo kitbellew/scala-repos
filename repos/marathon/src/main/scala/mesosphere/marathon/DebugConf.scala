@@ -84,8 +84,9 @@ class DebugModule(conf: DebugConf) extends AbstractModule {
       val className = metrics.get.className(in.getThis.getClass)
       val logger = LoggerFactory.getLogger(className)
       val method =
-        s"""$className.${in.getMethod.getName}(${in.getArguments.mkString(
-          ", ")})"""
+        s"""$className.${in.getMethod.getName}(${in
+          .getArguments
+          .mkString(", ")})"""
       logger.trace(s">>> $method")
       val result = in.proceed()
       logger.trace(s"<<< $method")

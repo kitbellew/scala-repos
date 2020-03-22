@@ -578,10 +578,12 @@ private[spark] object BLAS extends Serializable with Logging {
       y: DenseVector): Unit = {
     require(
       A.numCols == x.size,
-      s"The columns of A don't match the number of elements of x. A: ${A.numCols}, x: ${x.size}")
+      s"The columns of A don't match the number of elements of x. A: ${A
+        .numCols}, x: ${x.size}")
     require(
       A.numRows == y.size,
-      s"The rows of A don't match the number of elements of y. A: ${A.numRows}, y:${y.size}")
+      s"The rows of A don't match the number of elements of y. A: ${A
+        .numRows}, y:${y.size}")
     if (alpha == 0.0 && beta == 1.0) {
       logDebug("gemv: alpha is equal to 0 and beta is equal to 1. Returning y.")
     } else if (alpha == 0.0) {

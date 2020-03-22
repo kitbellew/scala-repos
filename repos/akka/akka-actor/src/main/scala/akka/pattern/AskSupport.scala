@@ -319,12 +319,16 @@ final class AskableActorRef(val actorRef: ActorRef) extends AnyVal {
         actorRef ! message
         Future.failed[Any](
           new AskTimeoutException(
-            s"""Recipient[$actorRef] had already been terminated. Sender[$sender] sent the message of type "${message.getClass.getName}"."""))
+            s"""Recipient[$actorRef] had already been terminated. Sender[$sender] sent the message of type "${message
+              .getClass
+              .getName}"."""))
       case ref: InternalActorRef ⇒
         if (timeout.duration.length <= 0)
           Future.failed[Any](
             new IllegalArgumentException(
-              s"""Timeout length must not be negative, question not sent to [$actorRef]. Sender[$sender] sent the message of type "${message.getClass.getName}"."""))
+              s"""Timeout length must not be negative, question not sent to [$actorRef]. Sender[$sender] sent the message of type "${message
+                .getClass
+                .getName}"."""))
         else {
           val a = PromiseActorRef(
             ref.provider,
@@ -338,7 +342,9 @@ final class AskableActorRef(val actorRef: ActorRef) extends AnyVal {
       case _ ⇒
         Future.failed[Any](
           new IllegalArgumentException(
-            s"""Unsupported recipient ActorRef type, question not sent to [$actorRef]. Sender[$sender] sent the message of type "${message.getClass.getName}"."""))
+            s"""Unsupported recipient ActorRef type, question not sent to [$actorRef]. Sender[$sender] sent the message of type "${message
+              .getClass
+              .getName}"."""))
     }
 
 }
@@ -371,13 +377,17 @@ final class ExplicitlyAskableActorRef(val actorRef: ActorRef) extends AnyVal {
         actorRef ! message
         Future.failed[Any](
           new AskTimeoutException(
-            s"""Recipient[$actorRef] had already been terminated. Sender[$sender] sent the message of type "${message.getClass.getName}"."""))
+            s"""Recipient[$actorRef] had already been terminated. Sender[$sender] sent the message of type "${message
+              .getClass
+              .getName}"."""))
       case ref: InternalActorRef ⇒
         if (timeout.duration.length <= 0) {
           val message = messageFactory(ref.provider.deadLetters)
           Future.failed[Any](
             new IllegalArgumentException(
-              s"""Timeout length must not be negative, question not sent to [$actorRef]. Sender[$sender] sent the message of type "${message.getClass.getName}"."""))
+              s"""Timeout length must not be negative, question not sent to [$actorRef]. Sender[$sender] sent the message of type "${message
+                .getClass
+                .getName}"."""))
         } else {
           val a = PromiseActorRef(
             ref.provider,
@@ -399,7 +409,9 @@ final class ExplicitlyAskableActorRef(val actorRef: ActorRef) extends AnyVal {
           sender.asInstanceOf[InternalActorRef].provider.deadLetters)
         Future.failed[Any](
           new IllegalArgumentException(
-            s"""Unsupported recipient ActorRef type, question not sent to [$actorRef]. Sender[$sender] sent the message of type "${message.getClass.getName}"."""))
+            s"""Unsupported recipient ActorRef type, question not sent to [$actorRef]. Sender[$sender] sent the message of type "${message
+              .getClass
+              .getName}"."""))
     }
 }
 
@@ -463,7 +475,9 @@ final class AskableActorSelection(val actorSel: ActorSelection) extends AnyVal {
         if (timeout.duration.length <= 0)
           Future.failed[Any](
             new IllegalArgumentException(
-              s"""Timeout length must not be negative, question not sent to [$actorSel]. Sender[$sender] sent the message of type "${message.getClass.getName}"."""))
+              s"""Timeout length must not be negative, question not sent to [$actorSel]. Sender[$sender] sent the message of type "${message
+                .getClass
+                .getName}"."""))
         else {
           val a = PromiseActorRef(
             ref.provider,
@@ -477,7 +491,9 @@ final class AskableActorSelection(val actorSel: ActorSelection) extends AnyVal {
       case _ ⇒
         Future.failed[Any](
           new IllegalArgumentException(
-            s"""Unsupported recipient ActorRef type, question not sent to [$actorSel]. Sender[$sender] sent the message of type "${message.getClass.getName}"."""))
+            s"""Unsupported recipient ActorRef type, question not sent to [$actorSel]. Sender[$sender] sent the message of type "${message
+              .getClass
+              .getName}"."""))
     }
 }
 
@@ -510,7 +526,9 @@ final class ExplicitlyAskableActorSelection(val actorSel: ActorSelection)
           val message = messageFactory(ref.provider.deadLetters)
           Future.failed[Any](
             new IllegalArgumentException(
-              s"""Timeout length must not be negative, question not sent to [$actorSel]. Sender[$sender] sent the message of type "${message.getClass.getName}"."""))
+              s"""Timeout length must not be negative, question not sent to [$actorSel]. Sender[$sender] sent the message of type "${message
+                .getClass
+                .getName}"."""))
         } else {
           val a = PromiseActorRef(
             ref.provider,
@@ -532,7 +550,9 @@ final class ExplicitlyAskableActorSelection(val actorSel: ActorSelection)
           sender.asInstanceOf[InternalActorRef].provider.deadLetters)
         Future.failed[Any](
           new IllegalArgumentException(
-            s"""Unsupported recipient ActorRef type, question not sent to [$actorSel]. Sender[$sender] sent the message of type "${message.getClass.getName}"."""))
+            s"""Unsupported recipient ActorRef type, question not sent to [$actorSel]. Sender[$sender] sent the message of type "${message
+              .getClass
+              .getName}"."""))
     }
 }
 
@@ -800,7 +820,10 @@ private[akka] object PromiseActorRef {
       scheduler.scheduleOnce(timeout.duration) {
         result tryComplete Failure(
           new AskTimeoutException(
-            s"""Ask timed out on [$targetName] after [${timeout.duration.toMillis} ms]. Sender[$sender] sent message of type "${a.messageClassName}"."""))
+            s"""Ask timed out on [$targetName] after [${timeout
+              .duration
+              .toMillis} ms]. Sender[$sender] sent message of type "${a
+              .messageClassName}"."""))
       }
     result.future onComplete { _ ⇒
       try a.stop()

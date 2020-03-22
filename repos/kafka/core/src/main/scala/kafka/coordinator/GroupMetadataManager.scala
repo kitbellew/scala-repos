@@ -220,8 +220,8 @@ class GroupMetadataManager(
     def putCacheCallback(
         responseStatus: Map[TopicPartition, PartitionResponse]) {
       // the append response should only contain the topics partition
-      if (responseStatus
-            .size != 1 || !responseStatus.contains(groupMetadataPartition))
+      if (responseStatus.size != 1 || !responseStatus
+            .contains(groupMetadataPartition))
         throw new IllegalStateException(
           "Append status %s should only have one partition %s"
             .format(responseStatus, groupMetadataPartition))
@@ -334,8 +334,8 @@ class GroupMetadataManager(
     def putCacheCallback(
         responseStatus: Map[TopicPartition, PartitionResponse]) {
       // the append response should only contain the topics partition
-      if (responseStatus
-            .size != 1 || !responseStatus.contains(offsetTopicPartition))
+      if (responseStatus.size != 1 || !responseStatus
+            .contains(offsetTopicPartition))
         throw new IllegalStateException(
           "Append status %s should only have one partition %s"
             .format(responseStatus, offsetTopicPartition))
@@ -534,7 +534,8 @@ class GroupMetadataManager(
                         msgAndOffset.message.payload)
                     if (groupMetadata != null) {
                       trace(
-                        s"Loaded group metadata for group ${groupMetadata.groupId} with generation ${groupMetadata.generationId}")
+                        s"Loaded group metadata for group ${groupMetadata
+                          .groupId} with generation ${groupMetadata.generationId}")
                       removedGroups.remove(groupId)
                       loadedGroups.put(groupId, groupMetadata)
                     } else {

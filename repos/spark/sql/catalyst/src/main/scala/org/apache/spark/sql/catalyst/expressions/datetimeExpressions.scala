@@ -449,14 +449,16 @@ abstract class UnixTime extends BinaryExpression with ExpectsInputTypes {
         if (fString == null) {
           s"""
             boolean ${ev.isNull} = true;
-            ${ctx.javaType(dataType)} ${ev.value} = ${ctx.defaultValue(dataType)};
+            ${ctx.javaType(dataType)} ${ev.value} = ${ctx
+            .defaultValue(dataType)};
           """
         } else {
           val eval1 = left.gen(ctx)
           s"""
             ${eval1.code}
             boolean ${ev.isNull} = ${eval1.isNull};
-            ${ctx.javaType(dataType)} ${ev.value} = ${ctx.defaultValue(dataType)};
+            ${ctx.javaType(dataType)} ${ev.value} = ${ctx
+            .defaultValue(dataType)};
             if (!${ev.isNull}) {
               try {
                 $sdf $formatter = new $sdf("$fString");
@@ -585,7 +587,8 @@ case class FromUnixTime(sec: Expression, format: Expression)
           ${ctx.javaType(dataType)} ${ev.value} = ${ctx.defaultValue(dataType)};
           if (!${ev.isNull}) {
             try {
-              ${ev.value} = UTF8String.fromString(new $sdf("${constFormat.toString}").format(
+              ${ev.value} = UTF8String.fromString(new $sdf("${constFormat
+          .toString}").format(
                 new java.util.Date(${t.value} * 1000L)));
             } catch (java.lang.Throwable e) {
               ${ev.isNull} = true;
@@ -682,7 +685,8 @@ case class NextDay(startDate: Expression, dayOfWeek: Expression)
           } else {
             val dayOfWeekValue = DateTimeUtils.getDayOfWeekFromString(input)
             s"""
-             |${ev.value} = $dateTimeUtilClass.getNextDateForDayOfWeek($sd, $dayOfWeekValue);
+             |${ev
+                 .value} = $dateTimeUtilClass.getNextDateForDayOfWeek($sd, $dayOfWeekValue);
            """.stripMargin
           }
         } else {
@@ -691,7 +695,8 @@ case class NextDay(startDate: Expression, dayOfWeek: Expression)
            |if ($dayOfWeekTerm == -1) {
            |  ${ev.isNull} = true;
            |} else {
-           |  ${ev.value} = $dateTimeUtilClass.getNextDateForDayOfWeek($sd, $dayOfWeekTerm);
+           |  ${ev
+               .value} = $dateTimeUtilClass.getNextDateForDayOfWeek($sd, $dayOfWeekTerm);
            |}
          """.stripMargin
         }

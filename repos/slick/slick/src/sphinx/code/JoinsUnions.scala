@@ -114,8 +114,9 @@ object JoinsUnions extends App {
 
   val zipWithJoin =
     for {
-      res <- coffees
-        .zipWith(suppliers, (c: Coffees, s: Suppliers) => (c.name, s.name))
+      res <-
+        coffees
+          .zipWith(suppliers, (c: Coffees, s: Suppliers) => (c.name, s.name))
     } yield res
   //#zip
   //println(zipJoinQuery.result.statements.head)

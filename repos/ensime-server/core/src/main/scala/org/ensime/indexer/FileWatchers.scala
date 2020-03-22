@@ -139,10 +139,11 @@ private class ApachePollingFileWatcher(
       listeners.foreach(_.baseReCreated(base))
     fm.addFile(base)
     for {
-      file <- if (recursive)
-        watched.tree
-      else
-        watched.children
+      file <-
+        if (recursive)
+          watched.tree
+        else
+          watched.children
       fo = vfs.vfile(file)
     } {
       // VFS doesn't send "file created" messages when it first starts

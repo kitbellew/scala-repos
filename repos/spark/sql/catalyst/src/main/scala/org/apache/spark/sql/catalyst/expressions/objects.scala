@@ -306,9 +306,11 @@ case class UnwrapOption(dataType: DataType, child: Expression)
     s"""
       ${inputObject.code}
 
-      boolean ${ev.isNull} = ${inputObject.value} == null || ${inputObject.value}.isEmpty();
+      boolean ${ev.isNull} = ${inputObject.value} == null || ${inputObject
+      .value}.isEmpty();
       $javaType ${ev.value} =
-        ${ev.isNull} ? ${ctx.defaultValue(dataType)} : ($javaType)${inputObject.value}.get();
+        ${ev.isNull} ? ${ctx.defaultValue(dataType)} : ($javaType)${inputObject
+      .value}.get();
     """
   }
 }
@@ -343,7 +345,8 @@ case class WrapOption(child: Expression, optType: DataType)
       boolean ${ev.isNull} = false;
       scala.Option ${ev.value} =
         ${inputObject.isNull} ?
-        scala.Option$$.MODULE$$.apply(null) : new scala.Some(${inputObject.value});
+        scala.Option$$.MODULE$$.apply(null) : new scala.Some(${inputObject
+      .value});
     """
   }
 }
@@ -667,7 +670,8 @@ case class DecodeUsingSerializer[T](
       ${ctx.javaType(dataType)} ${ev.value} = ${ctx.defaultValue(dataType)};
       if (!${ev.isNull}) {
         ${ev.value} = (${ctx.javaType(dataType)})
-          $serializer.deserialize(java.nio.ByteBuffer.wrap(${input.value}), null);
+          $serializer.deserialize(java.nio.ByteBuffer.wrap(${input
+      .value}), null);
       }
      """
   }

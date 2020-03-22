@@ -188,9 +188,8 @@ abstract class Shape {
     require(hasSamePortsAndShapeAs(s), nonCorrespondingMessage(s))
 
   private def nonCorrespondingMessage(s: Shape) =
-    s"The inlets [${s.inlets.mkString(", ")}] and outlets [${s.outlets.mkString(
-      ", ")}] must correspond to the inlets [${inlets.mkString(
-      ", ")}] and outlets [${outlets.mkString(", ")}]"
+    s"The inlets [${s.inlets.mkString(", ")}] and outlets [${s.outlets.mkString(", ")}] must correspond to the inlets [${inlets
+      .mkString(", ")}] and outlets [${outlets.mkString(", ")}]"
 }
 
 /**

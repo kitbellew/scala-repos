@@ -586,8 +586,9 @@ trait ParSeqLike[
     override def split = {
       val fp = pit.remaining / 2
       val sp = pit.remaining - fp
-      for ((p, op) <- pit.psplitWithSignalling(fp, sp) zip otherpit
-             .psplitWithSignalling(fp, sp))
+      for ((p, op) <-
+             pit.psplitWithSignalling(fp, sp) zip otherpit
+               .psplitWithSignalling(fp, sp))
         yield new SameElements(p, op)
     }
     override def merge(that: SameElements[U]) = result = result && that.result
@@ -659,8 +660,9 @@ trait ParSeqLike[
     override def split = {
       val fp = pit.remaining / 2
       val sp = pit.remaining - fp
-      for ((p, op) <- pit.psplitWithSignalling(fp, sp) zip otherpit
-             .psplitWithSignalling(fp, sp))
+      for ((p, op) <-
+             pit.psplitWithSignalling(fp, sp) zip otherpit
+               .psplitWithSignalling(fp, sp))
         yield new Corresponds(corr, p, op)
     }
     override def merge(that: Corresponds[S]) = result = result && that.result

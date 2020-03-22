@@ -100,8 +100,8 @@ object MultivariateSummarizer {
     println(
       s"var\t${labelSummary.variance(0)}\t${featureSummary.variance.toArray.mkString("\t")}")
     println(
-      s"nnz\t${labelSummary.numNonzeros(
-        0)}\t${featureSummary.numNonzeros.toArray.mkString("\t")}")
+      s"nnz\t${labelSummary
+        .numNonzeros(0)}\t${featureSummary.numNonzeros.toArray.mkString("\t")}")
     println(
       s"max\t${labelSummary.max(0)}\t${featureSummary.max.toArray.mkString("\t")}")
     println(

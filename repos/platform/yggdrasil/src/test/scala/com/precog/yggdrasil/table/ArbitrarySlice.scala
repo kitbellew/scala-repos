@@ -107,9 +107,8 @@ trait ArbitrarySlice {
     }
 
     for {
-      ids <- listOfN(
-        identities,
-        listOfN(sz, arbitrary[Long]).map(_.sorted.toArray))
+      ids <-
+        listOfN(identities, listOfN(sz, arbitrary[Long]).map(_.sorted.toArray))
       data <- sequence(
         refs
           .toList

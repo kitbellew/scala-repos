@@ -95,14 +95,16 @@ private[remote] object Remoting {
 
           case _ ⇒
             throw new RemoteTransportException(
-              s"Multiple transports are available for [$remote]: [${responsibleTransports.mkString(",")}]. " +
+              s"Multiple transports are available for [$remote]: [${responsibleTransports
+                .mkString(",")}]. " +
                 "Remoting cannot decide which transport to use to reach the remote system. Change your configuration " +
                 "so that only one transport is responsible for the address.",
               null)
         }
       case None ⇒
         throw new RemoteTransportException(
-          s"No transport is loaded for protocol: [${remote.protocol}], available protocols: [${transportMapping.keys.mkString(", ")}]",
+          s"No transport is loaded for protocol: [${remote
+            .protocol}], available protocols: [${transportMapping.keys.mkString(", ")}]",
           null)
     }
   }

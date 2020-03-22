@@ -370,8 +370,7 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
           val ProducedValue(prod, size) = queue.dequeue()
 
           def prodString =
-            s"Producer ${AsmUtils textify prod}@${method.instructions.indexOf(
-              prod)}\n${AsmUtils textify method}"
+            s"Producer ${AsmUtils textify prod}@${method.instructions.indexOf(prod)}\n${AsmUtils textify method}"
           def popAfterProd(): Unit = toInsertAfter(prod) = getPop(size)
 
           (prod.getOpcode: @switch) match {
@@ -485,8 +484,9 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
           changed = true
         }
 
-        for (mi <- sideEffectFreeConstructorCalls
-               .toList) { // toList to allow removing elements while traversing
+        for (mi <-
+               sideEffectFreeConstructorCalls
+                 .toList) { // toList to allow removing elements while traversing
           val frame = prodCons.frameAt(mi)
           val stackTop = frame.stackTop
           val numArgs = Type.getArgumentTypes(mi.desc).length

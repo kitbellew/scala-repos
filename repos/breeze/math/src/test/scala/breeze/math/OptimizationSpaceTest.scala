@@ -331,21 +331,24 @@ class DenseOptimizationSpaceTest_Double
     (DenseMatrix[Double], DenseMatrix[Double], DenseMatrix[Double])] = {
     Arbitrary {
       for {
-        x <- Arbitrary
-          .arbitrary[Double]
-          .map {
-            _ % 1e100
-          }
-        y <- Arbitrary
-          .arbitrary[Double]
-          .map {
-            _ % 1e100
-          }
-        z <- Arbitrary
-          .arbitrary[Double]
-          .map {
-            _ % 1e100
-          }
+        x <-
+          Arbitrary
+            .arbitrary[Double]
+            .map {
+              _ % 1e100
+            }
+        y <-
+          Arbitrary
+            .arbitrary[Double]
+            .map {
+              _ % 1e100
+            }
+        z <-
+          Arbitrary
+            .arbitrary[Double]
+            .map {
+              _ % 1e100
+            }
       } yield {
         (
           DenseMatrix.fill(N, N)(math.random * x),
@@ -359,21 +362,24 @@ class DenseOptimizationSpaceTest_Double
     (DenseVector[Double], DenseVector[Double], DenseVector[Double])] = {
     Arbitrary {
       for {
-        x <- Arbitrary
-          .arbitrary[Double]
-          .map {
-            _ % 1e100
-          }
-        y <- Arbitrary
-          .arbitrary[Double]
-          .map {
-            _ % 1e100
-          }
-        z <- Arbitrary
-          .arbitrary[Double]
-          .map {
-            _ % 1e100
-          }
+        x <-
+          Arbitrary
+            .arbitrary[Double]
+            .map {
+              _ % 1e100
+            }
+        y <-
+          Arbitrary
+            .arbitrary[Double]
+            .map {
+              _ % 1e100
+            }
+        z <-
+          Arbitrary
+            .arbitrary[Double]
+            .map {
+              _ % 1e100
+            }
       } yield {
         (
           DenseVector.fill(N)(math.random * x),

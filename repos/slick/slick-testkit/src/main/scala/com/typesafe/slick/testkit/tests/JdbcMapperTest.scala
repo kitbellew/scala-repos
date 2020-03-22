@@ -525,11 +525,12 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       ares: String <- as.result.head
       _ = ares shouldBe "Foo"
       _ <- as.update("Foo")
-      _ <- as
-        .map(a => a :: a :: HNil)
-        .result
-        .head
-        .map(_ shouldBe "Foo" :: "Foo" :: HNil)
+      _ <-
+        as
+          .map(a => a :: a :: HNil)
+          .result
+          .head
+          .map(_ shouldBe "Foo" :: "Foo" :: HNil)
       _ <- bs.schema.create
       _ <- bs += Tuple1("Foo")
       _ <- bs.update(Tuple1("Foo"))

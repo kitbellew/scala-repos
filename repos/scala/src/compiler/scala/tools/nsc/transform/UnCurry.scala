@@ -382,8 +382,7 @@ abstract class UnCurry
             if (isJava)
               mkArray
             else if (args.isEmpty)
-              gen
-                .mkNil // avoid needlessly double-wrapping an empty argument list
+              gen.mkNil // avoid needlessly double-wrapping an empty argument list
             else
               arrayToSequence(mkArray, varargsElemType)
           }

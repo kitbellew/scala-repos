@@ -605,9 +605,8 @@ trait EntityPage extends HtmlPage {
         {
       // linearization
       NodeSeq fromSeq (
-        for ((superTpl, superType) <- (
-               tpl.linearizationTemplates zip tpl.linearizationTypes
-             ))
+        for ((superTpl, superType) <-
+               (tpl.linearizationTemplates zip tpl.linearizationTypes))
           yield <div class="parent" name={
             superTpl.qualifiedName
           }>

@@ -56,10 +56,11 @@ case class VonMises(mu: Double, k: Double)(implicit rand: RandBasis = Rand)
       accept = v < (c * (2.0 - c)) || v <= c * exp(1.0 - c)
       if accept
       choice <- rand.uniform
-      theta = if (choice > 0.5)
-        mu + acos(w)
-      else
-        mu - acos(w)
+      theta =
+        if (choice > 0.5)
+          mu + acos(w)
+        else
+          mu - acos(w)
     } yield theta
 
   def draw = {

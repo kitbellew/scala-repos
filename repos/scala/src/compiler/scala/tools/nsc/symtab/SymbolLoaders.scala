@@ -144,9 +144,10 @@ abstract class SymbolLoaders {
             s"${clazz.fullLocationString} (from ${clazz.associatedFile})"
         sm"""Inconsistent class/module symbol pair for `$name` loaded from ${symLocation(
           root)}.
-            |clazz = ${symLocation(clazz)}; clazz.companionModule = ${clazz.companionModule}
-            |module = ${symLocation(
-          module)}; module.companionClass = ${module.companionClass}"""
+            |clazz = ${symLocation(clazz)}; clazz.companionModule = ${clazz
+          .companionModule}
+            |module = ${symLocation(module)}; module.companionClass = ${module
+          .companionClass}"""
       }
       assert(clazz.companionModule == module, msg)
       assert(module.companionClass == clazz, msg)

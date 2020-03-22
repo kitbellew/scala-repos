@@ -305,10 +305,11 @@ object IO extends IOInstances {
           case (r, o) =>
             for {
               refCnt <- r.refcount.mod(_ - 1)
-              _ <- if (refCnt == 0)
-                r.finalizer
-              else
-                IO.ioUnit
+              _ <-
+                if (refCnt == 0)
+                  r.finalizer
+                else
+                  IO.ioUnit
             } yield ()
         }
       } yield ()

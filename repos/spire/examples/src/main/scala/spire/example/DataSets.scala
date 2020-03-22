@@ -39,7 +39,8 @@ final class DataSet[V, @sp(Double) F, @sp(Double) K](
         s"    %2d. ${v.label} (${varType(v)})" format (i + 1)
     } mkString "\n"
 
-    s"""$name - ${data.size} points with ${variables.size} variables (${space.dimensions} effective):
+    s"""$name - ${data.size} points with ${variables.size} variables (${space
+         .dimensions} effective):
        |$vars""".stripMargin
   }
 }

@@ -337,9 +337,12 @@ private[cors] trait AbstractCORSPolicy {
   private def handleInvalidCORSRequest(
       request: RequestHeader): Future[Result] = {
     logger.trace(
-      s"""Invalid CORS request;Origin=${request.headers.get(
-        HeaderNames.ORIGIN)};Method=${request.method};${HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS}=${request.headers.get(
-        HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS)}""")
+      s"""Invalid CORS request;Origin=${request
+        .headers
+        .get(HeaderNames.ORIGIN)};Method=${request.method};${HeaderNames
+        .ACCESS_CONTROL_REQUEST_HEADERS}=${request
+        .headers
+        .get(HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS)}""")
     Future.successful(Results.Forbidden)
   }
 

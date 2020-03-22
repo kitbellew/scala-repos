@@ -178,8 +178,8 @@ trait WikiControllerBase extends ControllerBase {
       } else {
         flash += "info" -> "This patch was not able to be reversed."
         redirect(
-          s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(
-            pageName)}/_compare/${from}...${to}")
+          s"/${repository.owner}/${repository.name}/wiki/${StringUtil
+            .urlEncode(pageName)}/_compare/${from}...${to}")
       }
     })
 
@@ -235,7 +235,8 @@ trait WikiControllerBase extends ControllerBase {
           }
           if (notReservedPageName(form.pageName)) {
             redirect(
-              s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(form.pageName)}")
+              s"/${repository.owner}/${repository.name}/wiki/${StringUtil
+                .urlEncode(form.pageName)}")
           } else {
             redirect(s"/${repository.owner}/${repository.name}/wiki")
           }
@@ -270,7 +271,8 @@ trait WikiControllerBase extends ControllerBase {
 
           if (notReservedPageName(form.pageName)) {
             redirect(
-              s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(form.pageName)}")
+              s"/${repository.owner}/${repository.name}/wiki/${StringUtil
+                .urlEncode(form.pageName)}")
           } else {
             redirect(s"/${repository.owner}/${repository.name}/wiki")
           }

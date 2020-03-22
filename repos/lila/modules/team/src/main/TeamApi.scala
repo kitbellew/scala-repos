@@ -123,10 +123,11 @@ final class TeamApi(
       _ ← $remove(request)
       _ ← cached.nbRequests remove team.createdBy
       userOption ← $find.byId[User](request.user)
-      _ ← userOption
-        .filter(_ => accept)
-        .??(user =>
-          doJoin(team, user.id) >>- notifier.acceptRequest(team, request))
+      _ ←
+        userOption
+          .filter(_ => accept)
+          .??(user =>
+            doJoin(team, user.id) >>- notifier.acceptRequest(team, request))
     } yield ()
 
   def doJoin(team: Team, userId: String): Funit =

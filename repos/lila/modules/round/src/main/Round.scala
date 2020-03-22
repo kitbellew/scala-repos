@@ -178,9 +178,9 @@ private[round] final class Round(
           lila
             .log("cheat")
             .info(
-              s"hold alert $ip http://lichess.org/${pov.gameId}/${pov.color.name}#${pov.game.turns} ${pov
-                .player
-                .userId | "anon"} mean: $mean SD: $sd")
+              s"hold alert $ip http://lichess.org/${pov.gameId}/${pov.color.name}#${pov
+                .game
+                .turns} ${pov.player.userId | "anon"} mean: $mean SD: $sd")
           lila.mon.cheat.holdAlert()
           GameRepo.setHoldAlert(pov, mean, sd) inject List[Event]()
         }

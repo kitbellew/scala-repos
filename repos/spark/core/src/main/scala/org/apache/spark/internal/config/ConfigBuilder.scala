@@ -102,8 +102,8 @@ private[spark] class TypedConfigBuilder[T](
     transform { v =>
       if (!validValues.contains(v)) {
         throw new IllegalArgumentException(
-          s"The value of ${parent.key} should be one of ${validValues.mkString(
-            ", ")}, but was $v")
+          s"The value of ${parent.key} should be one of ${validValues
+            .mkString(", ")}, but was $v")
       }
       v
     }

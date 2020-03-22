@@ -456,7 +456,8 @@ trait SyntheticMethods extends ast.TreeDSL {
         val i = original.owner.caseFieldAccessors.indexOf(original)
         def freshAccessorName = {
           devWarning(
-            s"Unable to find $original among case accessors of ${original.owner}: ${original.owner.caseFieldAccessors}")
+            s"Unable to find $original among case accessors of ${original
+              .owner}: ${original.owner.caseFieldAccessors}")
           context.unit.freshTermName(original.name + "$")
         }
         def nameSuffixedByParamIndex =

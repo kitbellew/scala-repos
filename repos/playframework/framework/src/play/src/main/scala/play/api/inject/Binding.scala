@@ -59,8 +59,8 @@ final case class Binding[T](
         " eagerly"
       else
         ""
-    s"$source:\nBinding($key to ${target.getOrElse("self")}${scope.fold("")(
-      " in " + _)}$eagerDesc)"
+    s"$source:\nBinding($key to ${target.getOrElse("self")}${scope
+      .fold("")(" in " + _)}$eagerDesc)"
   }
 }
 

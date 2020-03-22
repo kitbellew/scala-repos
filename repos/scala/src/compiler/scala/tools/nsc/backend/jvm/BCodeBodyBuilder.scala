@@ -318,7 +318,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         coercionTo(code)
       } else
         abort(
-          s"Primitive operation not handled yet: ${sym.fullName}(${fun.symbol.simpleName}) at: ${tree.pos}")
+          s"Primitive operation not handled yet: ${sym
+            .fullName}(${fun.symbol.simpleName}) at: ${tree.pos}")
     }
 
     def genLoad(tree: Tree) {
@@ -408,7 +409,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           val symIsModuleClass = tree.symbol.isModuleClass
           assert(
             tree.symbol == claszSymbol || symIsModuleClass,
-            s"Trying to access the this of another class: tree.symbol = ${tree.symbol}, class symbol = $claszSymbol compilation unit: $cunit"
+            s"Trying to access the this of another class: tree.symbol = ${tree
+              .symbol}, class symbol = $claszSymbol compilation unit: $cunit"
           )
           if (symIsModuleClass && tree.symbol != claszSymbol) {
             generatedType = genLoadModule(tree)
@@ -424,7 +426,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         case Select(Ident(nme.EMPTY_PACKAGE_NAME), module) =>
           assert(
             tree.symbol.isModule,
-            s"Selection of non-module from empty package: $tree sym: ${tree.symbol} at: ${tree.pos}")
+            s"Selection of non-module from empty package: $tree sym: ${tree
+              .symbol} at: ${tree.pos}")
           genLoadModule(tree)
 
         case Select(qualifier, selector) =>
@@ -788,7 +791,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
               if (argsSize > dims) {
                 reporter.error(
                   app.pos,
-                  s"too many arguments for array constructor: found ${args.length} but array has only $dims dimension(s)")
+                  s"too many arguments for array constructor: found ${args
+                    .length} but array has only $dims dimension(s)")
               }
               if (argsSize < dims) {
                 /* In one step:

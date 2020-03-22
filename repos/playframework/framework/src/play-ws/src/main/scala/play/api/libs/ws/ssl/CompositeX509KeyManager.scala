@@ -72,7 +72,8 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
       issuers: Array[Principal],
       engine: SSLEngine): String = {
     logger.debug(
-      s"chooseEngineClientAlias: keyType = ${keyType.toSeq}, issuers = ${issuers.toSeq}, engine = $engine")
+      s"chooseEngineClientAlias: keyType = ${keyType.toSeq}, issuers = ${issuers
+        .toSeq}, engine = $engine")
     withKeyManagers { keyManager: X509KeyManager =>
       keyManager match {
         case extendedKeyManager: X509ExtendedKeyManager =>
@@ -95,7 +96,8 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
       issuers: Array[Principal],
       engine: SSLEngine): String = {
     logger.debug(
-      s"chooseEngineServerAlias: keyType = ${keyType.toSeq}, issuers = ${issuers.toSeq}, engine = $engine")
+      s"chooseEngineServerAlias: keyType = ${keyType.toSeq}, issuers = ${issuers
+        .toSeq}, engine = $engine")
 
     withKeyManagers { keyManager: X509KeyManager =>
       keyManager match {

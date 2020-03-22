@@ -74,15 +74,15 @@ class MainTest extends AsyncTest[JdbcTestDB] {
         (
           for {
             _ <- ddl.create
-            ins1 <- users
-              .map(u => (u.first, u.last)) += ("Homer", Some("Simpson"))
+            ins1 <-
+              users.map(u => (u.first, u.last)) += ("Homer", Some("Simpson"))
             ins2 <- users.map(u => (u.first, u.last)) ++= Seq(
               ("Marge", Some("Simpson")),
               ("Apu", Some("Nahasapeemapetilon")),
               ("Carl", Some("Carlson")),
               ("Lenny", Some("Leonard")))
-            ins3 <- users
-              .map(_.first) ++= Seq("Santa's Little Helper", "Snowball")
+            ins3 <-
+              users.map(_.first) ++= Seq("Santa's Little Helper", "Snowball")
             total = for (i2 <- ins2;
                          i3 <- ins3)
               yield ins1 + i2 + i3
@@ -191,10 +191,8 @@ class MainTest extends AsyncTest[JdbcTestDB] {
               ("Carl", 6),
               ("Lenny", 8),
               ("Santa's Little Helper", 10))
-            r4b <- q4b
-              .to[Set]
-              .result
-              .named("Latest Order per User, using maxOfPer")
+            r4b <-
+              q4b.to[Set].result.named("Latest Order per User, using maxOfPer")
             _ = r4b shouldBe Set(
               ("Homer", 2),
               ("Marge", 4),

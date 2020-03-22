@@ -444,8 +444,7 @@ abstract class ExplicitOuter
         "No outer accessor for inner mixin " + mixinClass + " in " + currentClass)
       assert(
         outerAcc.alternatives.size == 1,
-        s"Multiple outer accessors match inner mixin $mixinClass in $currentClass : ${outerAcc.alternatives.map(
-          _.defString)}")
+        s"Multiple outer accessors match inner mixin $mixinClass in $currentClass : ${outerAcc.alternatives.map(_.defString)}")
       // I added the mixinPrefix.typeArgs.nonEmpty condition to address the
       // crash in SI-4970.  I feel quite sure this can be improved.
       val path = (if (mixinClass.owner.isTerm)

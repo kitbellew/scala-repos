@@ -338,7 +338,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
             totalGossipStats)
           if (infolog)
             log.info(
-              s"[${title}] completed in [${aggregated.duration.toMillis}] ms\n${aggregated.clusterStats}\n${formatMetrics}\n\n${formatPhi}\n\n${formatStats}")
+              s"[${title}] completed in [${aggregated.duration.toMillis}] ms\n${aggregated
+                .clusterStats}\n${formatMetrics}\n\n${formatPhi}\n\n${formatStats}")
           reportTo foreach {
             _ ! aggregated
           }

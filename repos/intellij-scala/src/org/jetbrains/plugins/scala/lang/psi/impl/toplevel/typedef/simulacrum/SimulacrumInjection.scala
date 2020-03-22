@@ -54,7 +54,8 @@ class SimulacrumInjection extends SyntheticMembersInjector {
 
             val tpText = ScalaPsiUtil.typeParamString(clazz.typeParameters.head)
             Seq(
-              s"def apply[$tpText](implicit instance: ${clazz.name}[$tpName]): ${clazz.name}[$tpName] = instance")
+              s"def apply[$tpText](implicit instance: ${clazz
+                .name}[$tpName]): ${clazz.name}[$tpName] = instance")
           case _ =>
             Seq.empty
         }

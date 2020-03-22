@@ -72,9 +72,10 @@ class TemplateTest extends AsyncTest[RelationalTestDB] {
       _ <- q3.result.map(_.toSet shouldBe Set("Marge", "Apu", "Carl", "Lenny"))
       _ <- q4.result.map(_.toSet shouldBe Set("Marge", "Apu"))
       _ <- q5a.result.map(_ shouldBe List("Apu"))
-      _ <- q5b
-        .result
-        .map(_.toSet shouldBe Set("Homer", "Marge", "Apu", "Carl", "Lenny"))
+      _ <-
+        q5b
+          .result
+          .map(_.toSet shouldBe Set("Homer", "Marge", "Apu", "Carl", "Lenny"))
     } yield ()
   }
 

@@ -128,12 +128,15 @@ class EventAdapterSpec(
     this(
       "inmem",
       PersistenceSpec.config("inmem", "InmemPersistentTaggingSpec"),
-      ConfigFactory.parseString(s"""
+      ConfigFactory.parseString(
+        s"""
          |akka.persistence.journal {
          |
          |  common-event-adapters {
-         |    age                 = "${classOf[EventAdapterSpec].getCanonicalName}$$UserAgeTaggingAdapter"
-         |    replay-pass-through = "${classOf[EventAdapterSpec].getCanonicalName}$$ReplayPassThroughAdapter"
+         |    age                 = "${classOf[EventAdapterSpec]
+             .getCanonicalName}$$UserAgeTaggingAdapter"
+         |    replay-pass-through = "${classOf[EventAdapterSpec]
+             .getCanonicalName}$$ReplayPassThroughAdapter"
          |  }
          |
          |  inmem {
@@ -149,7 +152,8 @@ class EventAdapterSpec(
          |    dir = "journal-1"
          |
          |    event-adapters {
-         |      logging = "${classOf[EventAdapterSpec].getCanonicalName}$$LoggingAdapter"
+         |      logging = "${classOf[EventAdapterSpec]
+             .getCanonicalName}$$LoggingAdapter"
          |    }
          |    event-adapter-bindings {
          |      "java.lang.Object" = logging
@@ -162,8 +166,10 @@ class EventAdapterSpec(
          |
          |    event-adapters = $${akka.persistence.journal.common-event-adapters}
          |    event-adapter-bindings {
-         |      "${EventAdapterSpec.JournalModelClassName}" = replay-pass-through
-         |      "${EventAdapterSpec.DomainEventClassName}"  = replay-pass-through
+         |      "${EventAdapterSpec
+             .JournalModelClassName}" = replay-pass-through
+         |      "${EventAdapterSpec
+             .DomainEventClassName}"  = replay-pass-through
          |    }
          |  }
          |

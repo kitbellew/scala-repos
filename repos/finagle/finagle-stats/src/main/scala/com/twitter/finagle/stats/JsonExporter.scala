@@ -120,7 +120,8 @@ class JsonExporter(registry: Metrics, timer: Timer)
           true
         else {
           log.warning(
-            s"${getClass.getName} request ignored due to unsupported period: '${vals.mkString(",")}'")
+            s"${getClass.getName} request ignored due to unsupported period: '${vals
+              .mkString(",")}'")
           false
         }
       }

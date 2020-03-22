@@ -218,7 +218,8 @@ object Plugins extends PluginsFunctions {
             _.head subsetOf knowlege0
           })
         log.debug(
-          s"deducing auto plugins based on known facts ${knowlege0.toString} and clauses ${clauses.toString}")
+          s"deducing auto plugins based on known facts ${knowlege0
+            .toString} and clauses ${clauses.toString}")
         Logic.reduce(
           clauses,
           (flattenConvert(requestedPlugins) ++ convertAll(alwaysEnabled))

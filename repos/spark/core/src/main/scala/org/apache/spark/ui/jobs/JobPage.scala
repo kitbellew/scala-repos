@@ -76,7 +76,8 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
          |  'end': new Date(${completionTime}),
          |  'content': '<div class="job-timeline-content" data-toggle="tooltip"' +
          |   'data-placement="top" data-html="true"' +
-         |   'data-title="${Utility.escape(escapedName)} (Stage ${stageId}.${attemptId})<br>' +
+         |   'data-title="${Utility
+           .escape(escapedName)} (Stage ${stageId}.${attemptId})<br>' +
          |   'Status: ${status.toUpperCase}<br>' +
          |   'Submitted: ${UIUtils.formatDate(new Date(submissionTime))}' +
          |   '${if (status != "running") {
@@ -119,8 +120,8 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
                |  'content': '<div class="executor-event-content"' +
                |    'data-toggle="tooltip" data-placement="bottom"' +
                |    'data-title="Executor ${executorId}<br>' +
-               |    'Removed at ${UIUtils.formatDate(
-                 new Date(event.finishTime.get))}' +
+               |    'Removed at ${UIUtils
+                 .formatDate(new Date(event.finishTime.get))}' +
                |    '${if (event.finishReason.isDefined) {
                  s"""<br>Reason: ${event.finishReason.get}"""
                } else {

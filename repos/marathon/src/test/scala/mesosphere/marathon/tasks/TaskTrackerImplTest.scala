@@ -306,9 +306,7 @@ class TaskTrackerImplTest
     val res = taskUpdater.statusUpdate(TEST_APP_NAME, runningTaskStatus)
     ScalaFutures.whenReady(res.failed) { e =>
       assert(
-        e
-          .getCause
-          .getMessage == s"${sampleTask.taskId} of app [/foo] does not exist",
+        e.getCause.getMessage == s"${sampleTask.taskId} of app [/foo] does not exist",
         s"Got message: ${e.getCause.getMessage}")
     }
     shouldNotContainTask(taskTracker.appTasksSync(TEST_APP_NAME), sampleTask)

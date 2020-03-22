@@ -506,7 +506,8 @@ object WorksheetSourceProcessor {
         val lineNums = psiToLineNumbers(assign)
         val defName = s"`get$$$$instance_$assignCount$$$$$pName`"
 
-        classRes append s"def $defName = { $END_GENERATED_MARKER${assign.getText}}${insertNlsFromWs(assign)}"
+        classRes append s"def $defName = { $END_GENERATED_MARKER${assign
+          .getText}}${insertNlsFromWs(assign)}"
         objectRes append s"$instanceName.$defName; " append (
           printMethodName + "(\"" + startText + pName + ": \" + " +
             withTempVar(pName) + ")\n"

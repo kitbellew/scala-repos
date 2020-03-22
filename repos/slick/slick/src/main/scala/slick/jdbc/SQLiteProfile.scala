@@ -213,11 +213,12 @@ trait SQLiteProfile extends JdbcProfile {
         case Library.LCase(ch) =>
           b"lower(!$ch)"
         case Library.Substring(n, start, end) =>
-          b"substr($n, ${QueryParameter.constOp[Int]("+")(_ + _)(
-            start,
-            LiteralNode(1).infer())}, ${QueryParameter.constOp[Int]("-")(_ - _)(end, start)})"
+          b"substr($n, ${QueryParameter
+            .constOp[Int]("+")(_ + _)(start, LiteralNode(1).infer())}, ${QueryParameter
+            .constOp[Int]("-")(_ - _)(end, start)})"
         case Library.Substring(n, start) =>
-          b"substr($n, ${QueryParameter.constOp[Int]("+")(_ + _)(start, LiteralNode(1).infer())})\)"
+          b"substr($n, ${QueryParameter
+            .constOp[Int]("+")(_ + _)(start, LiteralNode(1).infer())})\)"
         case Library.IndexOf(n, str) =>
           b"\(charindex($str, $n) - 1\)"
         case Library.%(l, r) =>

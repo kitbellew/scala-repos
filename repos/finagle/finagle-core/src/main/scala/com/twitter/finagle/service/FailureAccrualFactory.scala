@@ -365,7 +365,8 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
       if (logger.isLoggable(Level.DEBUG))
         logger.log(
           Level.DEBUG,
-          s"""FailureAccrualFactory marking connection to "$label" as dead. Remote Address: ${endpoint.toString}""")
+          s"""FailureAccrualFactory marking connection to "$label" as dead. Remote Address: ${endpoint
+            .toString}""")
       removedForCounter.incr(duration.inMilliseconds.toInt)
 
       didMarkDead()

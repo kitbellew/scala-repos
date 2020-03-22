@@ -235,8 +235,9 @@ class Dataset[T] private[sql] (
       .resolveQuoted(colName, sqlContext.sessionState.analyzer.resolver)
       .getOrElse {
         throw new AnalysisException(
-          s"""Cannot resolve column name "$colName" among (${schema.fieldNames.mkString(
-            ", ")})""")
+          s"""Cannot resolve column name "$colName" among (${schema
+            .fieldNames
+            .mkString(", ")})""")
       }
   }
 

@@ -178,14 +178,16 @@ private final class ExplorerIndexer(
       for {
         whiteRating <- stableRating(game.whitePlayer)
         blackRating <- stableRating(game.blackPlayer)
-        minPlayerRating = if (game.variant.exotic)
-          1400
-        else
-          1500
-        minAverageRating = if (game.variant.exotic)
-          1520
-        else
-          1600
+        minPlayerRating =
+          if (game.variant.exotic)
+            1400
+          else
+            1500
+        minAverageRating =
+          if (game.variant.exotic)
+            1520
+          else
+            1600
         if whiteRating >= minPlayerRating
         if blackRating >= minPlayerRating
         averageRating = (whiteRating + blackRating) / 2

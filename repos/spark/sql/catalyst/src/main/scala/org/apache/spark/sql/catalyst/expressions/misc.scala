@@ -410,10 +410,8 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
 
     ctx.nullSafeExec(nullable, s"$input.isNullAt($index)") {
       s"""
-        final ${ctx.javaType(elementType)} $element = ${ctx.getValue(
-        input,
-        elementType,
-        index)};
+        final ${ctx.javaType(elementType)} $element = ${ctx
+        .getValue(input, elementType, index)};
         ${computeHash(element, elementType, result, ctx)}
       """
     }

@@ -133,9 +133,7 @@ private object ScalaGradleDataService {
             // the encoding value needs to be a separate option, otherwise the -encoding flag and the value will be
             // treated as a single flag
             !isEmpty(options.getEncoding) -> options.getEncoding,
-            !isEmpty(
-              data
-                .getTargetCompatibility) -> s"-target:jvm-${data.getTargetCompatibility}"
+            !isEmpty(data.getTargetCompatibility) -> s"-target:jvm-${data.getTargetCompatibility}"
           )
 
           val additionalOptions =

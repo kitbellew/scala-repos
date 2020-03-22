@@ -232,9 +232,12 @@ class PersistentReceivePipelineSpec(config: Config)
   import PersistentReceivePipelineSpec._
 
   def this() {
-    this(ConfigFactory.parseString(s"""
+    this(
+      ConfigFactory.parseString(
+        s"""
         |akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-        |akka.persistence.journal.leveldb.dir = "target/journal-${getClass.getSimpleName}"
+        |akka.persistence.journal.leveldb.dir = "target/journal-${getClass
+             .getSimpleName}"
       """.stripMargin))
   }
 

@@ -363,9 +363,8 @@ case class AhcWSRequest(
 
                 val params =
                   for {
-                    (key, values) <- FormUrlEncodedParser
-                      .parse(stringBody)
-                      .toSeq
+                    (key, values) <-
+                      FormUrlEncodedParser.parse(stringBody).toSeq
                     value <- values
                   } yield new Param(key, value)
                 builder.setFormParams(params.asJava)

@@ -148,10 +148,8 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
       coffees.sortBy(_.price).take(3) join suppliers on (_.supID === _.id)
     def q1b =
       for {
-        (c, s) <- q1b_0
-          .sortBy(_._1.price)
-          .take(2)
-          .filter(_._1.name =!= "Colombian")
+        (c, s) <-
+          q1b_0.sortBy(_._1.price).take(2).filter(_._1.name =!= "Colombian")
         (c2, s2) <- q1b_0
       } yield (c.name, s.city, c2.name)
 
@@ -252,11 +250,12 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
     // Map to tuple, then filter
     def q4 =
       for {
-        c <- coffees
-          .map(c => (c.name, c.price, 42))
-          .sortBy(_._1)
-          .take(2)
-          .filter(_._2 < 800)
+        c <-
+          coffees
+            .map(c => (c.name, c.price, 42))
+            .sortBy(_._1)
+            .take(2)
+            .filter(_._2 < 800)
       } yield (c._1, c._3)
 
     // Map to tuple, then filter, with self-join
@@ -269,35 +268,50 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
 
     def a3 =
       for {
-        _ <- q2
-          .result
-          .named("More elaborate query")
-          .map(_.toSet)
-          .map { r2 =>
-            r2 shouldBe Set(
-              ("Colombian", "Acme, Inc."),
-              ("French_Roast", "Superior Coffee"),
-              ("Colombian_Decaf", "Acme, Inc."))
-          }
-        _ <- q3
-          .result
-          .named("Lifting scalar values")
-          .map(_.toSet)
-          .map { r3 =>
-            r3 shouldBe Set(
-              ("Colombian_Decaf", "Acme, Inc.", "Colombian_Decaf", 0, 3396))
-          }
-        _ <- q3b
-          .result
-          .named("Lifting scalar values, with extra tuple")
-          .map(_.toSet)
-          .map { r3b =>
-            r3b shouldBe Set(
-              ("Colombian", "Acme, Inc.", "Colombian", 0, 799, 42),
-              ("French_Roast", "Superior Coffee", "French_Roast", 0, 1598, 42),
-              ("Colombian_Decaf", "Acme, Inc.", "Colombian_Decaf", 0, 3396, 42)
-            )
-          }
+        _ <-
+          q2
+            .result
+            .named("More elaborate query")
+            .map(_.toSet)
+            .map { r2 =>
+              r2 shouldBe Set(
+                ("Colombian", "Acme, Inc."),
+                ("French_Roast", "Superior Coffee"),
+                ("Colombian_Decaf", "Acme, Inc."))
+            }
+        _ <-
+          q3
+            .result
+            .named("Lifting scalar values")
+            .map(_.toSet)
+            .map { r3 =>
+              r3 shouldBe Set(
+                ("Colombian_Decaf", "Acme, Inc.", "Colombian_Decaf", 0, 3396))
+            }
+        _ <-
+          q3b
+            .result
+            .named("Lifting scalar values, with extra tuple")
+            .map(_.toSet)
+            .map { r3b =>
+              r3b shouldBe Set(
+                ("Colombian", "Acme, Inc.", "Colombian", 0, 799, 42),
+                (
+                  "French_Roast",
+                  "Superior Coffee",
+                  "French_Roast",
+                  0,
+                  1598,
+                  42),
+                (
+                  "Colombian_Decaf",
+                  "Acme, Inc.",
+                  "Colombian_Decaf",
+                  0,
+                  3396,
+                  42)
+              )
+            }
         _ <- ifCap(rcap.pagingNested) {
           mark("q4", q4.result)
             .named("q4: Map to tuple, then filter")
@@ -372,9 +386,10 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
     // Union
     val q7 =
       for {
-        c <- coffees.filter(_.price < 800).map((_, 1)) union coffees
-          .filter(_.price > 950)
-          .map((_, 2))
+        c <-
+          coffees.filter(_.price < 800).map((_, 1)) union coffees
+            .filter(_.price > 950)
+            .map((_, 2))
       } yield (c._1.name, c._1.supID, c._2)
 
     // Transitive push-down without union
@@ -422,18 +437,20 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
     // Outer join
     val q8 =
       for {
-        (c1, c2) <- coffees.filter(_.price < 900) joinLeft coffees
-          .filter(_.price < 800) on (_.name === _.name)
+        (c1, c2) <-
+          coffees.filter(_.price < 900) joinLeft coffees
+            .filter(_.price < 800) on (_.name === _.name)
       } yield (c1.name, c2.map(_.name))
 
     // Nested outer join
     val q8b =
       for {
-        t <- coffees.sortBy(_.sales).take(1) joinLeft coffees
-          .sortBy(_.sales)
-          .take(2) on (_.name === _.name) joinLeft coffees
-          .sortBy(_.sales)
-          .take(4) on (_._1.supID === _.supID)
+        t <-
+          coffees.sortBy(_.sales).take(1) joinLeft coffees
+            .sortBy(_.sales)
+            .take(2) on (_.name === _.name) joinLeft coffees
+            .sortBy(_.sales)
+            .take(4) on (_._1.supID === _.supID)
       } yield (t._1, t._2)
 
     def a6 =

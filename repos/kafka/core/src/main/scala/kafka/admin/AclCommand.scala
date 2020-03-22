@@ -88,8 +88,7 @@ object AclCommand {
       for ((resource, acls) <- resourceToAcl) {
         val acls = resourceToAcl(resource)
         println(
-          s"Adding ACLs for resource `${resource}`: $Newline ${acls.map(
-            "\t" + _).mkString(Newline)} $Newline")
+          s"Adding ACLs for resource `${resource}`: $Newline ${acls.map("\t" + _).mkString(Newline)} $Newline")
         authorizer.addAcls(acls, resource)
       }
 
@@ -108,8 +107,9 @@ object AclCommand {
             authorizer.removeAcls(resource)
         } else {
           if (confirmAction(
-                s"Are you sure you want to remove ACLs: $Newline ${acls.map("\t" + _).mkString(
-                  Newline)} $Newline from resource `${resource}`? (y/n)"))
+                s"Are you sure you want to remove ACLs: $Newline ${acls
+                  .map("\t" + _)
+                  .mkString(Newline)} $Newline from resource `${resource}`? (y/n)"))
             authorizer.removeAcls(acls, resource)
         }
       }
@@ -130,8 +130,7 @@ object AclCommand {
 
       for ((resource, acls) <- resourceToAcls)
         println(
-          s"Current ACLs for resource `${resource}`: $Newline ${acls.map(
-            "\t" + _).mkString(Newline)} $Newline")
+          s"Current ACLs for resource `${resource}`: $Newline ${acls.map("\t" + _).mkString(Newline)} $Newline")
     }
   }
 
@@ -312,7 +311,8 @@ object AclCommand {
       if ((acls.map(_.operation) -- validOps).nonEmpty)
         CommandLineUtils.printUsageAndDie(
           opts.parser,
-          s"ResourceType ${resource.resourceType} only supports operations ${validOps.mkString(",")}")
+          s"ResourceType ${resource
+            .resourceType} only supports operations ${validOps.mkString(",")}")
     }
   }
 

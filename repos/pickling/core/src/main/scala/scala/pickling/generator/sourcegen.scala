@@ -610,10 +610,12 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
     val valueTree =
       value match {
         case field: IrField =>
-          val get = q"""
+          val get =
+            q"""
               _root_.scala.Predef.locally {
                 val cls = $target.getClass
-                val field = _root_.scala.pickling.internal.Reflect.getField(cls, ${field.javaReflectionName})
+                val field = _root_.scala.pickling.internal.Reflect.getField(cls, ${field
+              .javaReflectionName})
                 field.setAccessible(true)
                 field.get($target)
              }"""
@@ -625,13 +627,15 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
           val fieldName = mthd.javaReflectionName
           // TODO - We may need to do a specialied lookup for magic named methods.
           q"""_root_.scala.Predef.locally {
-                  val mthd = _root_.scala.pickling.internal.Reflect.getMethod($target.getClass, ${mthd.javaReflectionName}, Array())
+                  val mthd = _root_.scala.pickling.internal.Reflect.getMethod($target.getClass, ${mthd
+            .javaReflectionName}, Array())
                   mthd.setAccessible(true)
                   mthd.invoke($target)
                 }"""
         case mthd: IrMethod =>
           q"""_root_.scala.Predef.locally {
-                  val mthd = _root_.scala.pickling.internal.Reflect.getMethod($target.getClass, ${mthd.javaReflectionName}, Array())
+                  val mthd = _root_.scala.pickling.internal.Reflect.getMethod($target.getClass, ${mthd
+            .javaReflectionName}, Array())
                   mthd.setAccessible(true)
                   mthd.invoke($target)
                 }"""
@@ -651,7 +655,8 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
         val fieldTerm = c.fresh(newTermName("field"))
         val result =
           q"""
-                 val $fieldTerm = _root_.scala.pickling.internal.Reflect.getField($target.getClass, ${field.javaReflectionName})
+                 val $fieldTerm = _root_.scala.pickling.internal.Reflect.getField($target.getClass, ${field
+            .javaReflectionName})
                  $fieldTerm.setAccessible(true)
                  $fieldTerm.set($target, ${liftPrimitives(
             value,
@@ -666,7 +671,8 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
         // TODO - We should ensure types align.
         val List(List(tpe)) = mthd.parameterTypes[c.universe.type](c.universe)
         q"""
-                val $methodTerm = _root_.scala.pickling.internal.Reflect.getMethod($target.getClass, ${mthd.javaReflectionName}, Array(classOf[$tpe]))
+                val $methodTerm = _root_.scala.pickling.internal.Reflect.getMethod($target.getClass, ${mthd
+          .javaReflectionName}, Array(classOf[$tpe]))
                 $methodTerm.setAccessible(true)
                 $methodTerm.invoke($target, ${liftPrimitives(value, tpe)})
               """

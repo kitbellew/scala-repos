@@ -373,7 +373,8 @@ router-dispatcher {}
     val threads10bNr = threads10b.size
     require(
       threads10bNr == 5,
-      s"Expected 5 threads for router10b, had $threads10bNr! Got: ${threads10b.map(_.getName)}")
+      s"Expected 5 threads for router10b, had $threads10bNr! Got: ${threads10b
+        .map(_.getName)}")
 
     //#smallest-mailbox-pool-1
     val router11: ActorRef = context

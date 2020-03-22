@@ -50,31 +50,32 @@ object RatingFest {
       _ <- fuccess(log("Removing history"))
       _ <- db("history3").remove(BSONDocument())
       _ = log("Reseting perfs")
-      _ <- lila
-        .user
-        .tube
-        .userTube
-        .coll
-        .update(
-          BSONDocument(),
-          BSONDocument(
-            "$unset" -> BSONDocument(
-              List(
-                "global",
-                "white",
-                "black",
-                "standard",
-                "chess960",
-                "kingOfTheHill",
-                "threeCheck",
-                "bullet",
-                "blitz",
-                "classical",
-                "correspondence").map { name =>
-                s"perfs.$name" -> BSONBoolean(true)
-              })),
-          multi = true
-        )
+      _ <-
+        lila
+          .user
+          .tube
+          .userTube
+          .coll
+          .update(
+            BSONDocument(),
+            BSONDocument(
+              "$unset" -> BSONDocument(
+                List(
+                  "global",
+                  "white",
+                  "black",
+                  "standard",
+                  "chess960",
+                  "kingOfTheHill",
+                  "threeCheck",
+                  "bullet",
+                  "blitz",
+                  "classical",
+                  "correspondence").map { name =>
+                  s"perfs.$name" -> BSONBoolean(true)
+                })),
+            multi = true
+          )
       _ = log("Gathering cheater IDs")
       engineIds <- UserRepo.engineIds
       _ = log(s"Found ${engineIds.size} cheaters")

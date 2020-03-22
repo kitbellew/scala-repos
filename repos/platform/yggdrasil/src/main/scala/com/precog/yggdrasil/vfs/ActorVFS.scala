@@ -512,8 +512,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
         for {
           _ <- IOUtils.makeDirectory(pathDir)
-          _ = logger
-            .debug("Created new path dir for %s : %s".format(path, pathDir))
+          _ =
+            logger
+              .debug("Created new path dir for %s : %s".format(path, pathDir))
           vlog <- VersionLog.open(pathDir)
           actorV <- vlog traverse { versionLog =>
             logger.debug("Creating new PathManagerActor for " + path)
@@ -742,8 +743,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         complete: Boolean): IO[PathActionResponse] = {
       implicit val ioId = NaturalTransformation.refl[IO]
       for {
-        _ <- versionLog
-          .addVersion(VersionEntry(version, data.typeName, clock.instant()))
+        _ <- versionLog.addVersion(
+          VersionEntry(version, data.typeName, clock.instant()))
         created <- data match {
           case BlobData(bytes, mimeType) =>
             resourceBuilder.createBlob[IO](
@@ -968,8 +969,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                   msg,
                   streamId,
                   false)
-                _ <- versionLog.completeVersion(streamId) >> versionLog
-                  .setHead(streamId)
+                _ <-
+                  versionLog.completeVersion(streamId) >> versionLog
+                    .setHead(streamId)
               } yield PrecogUnit
           }
 

@@ -117,17 +117,19 @@ trait SegmentFormatSupport {
       blockId <- arbitrary[Long]
       cpath <- genCPath
       defined <- genBitSet(length, 0.5)
-      values <- genArray(length, g)(
-        ctype.manifest
-      ) // map (toCTypeArray(ctype)) // (_.toArray(ctype.manifest))
+      values <-
+        genArray(length, g)(
+          ctype.manifest
+        ) // map (toCTypeArray(ctype)) // (_.toArray(ctype.manifest))
     } yield ArraySegment(blockId, cpath, ctype, defined, values)
   }
 
   def genArraySegment(length: Int): Gen[ArraySegment[_]] =
     for {
-      ctype <- genCValueType(2) filter (
-        _ != CBoolean
-      ) // Note: CArrayType(CBoolean) is OK!
+      ctype <-
+        genCValueType(2) filter (
+          _ != CBoolean
+        ) // Note: CArrayType(CBoolean) is OK!
       segment <- genArraySegmentForCType(ctype, length)
     } yield segment
 

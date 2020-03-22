@@ -112,12 +112,14 @@ object GenerateMutableProjection
     val allProjections = ctx.splitExpressions(ctx.INPUT_ROW, projectionCodes)
     val allUpdates = ctx.splitExpressions(ctx.INPUT_ROW, updates)
 
-    val code = s"""
+    val code =
+      s"""
       public java.lang.Object generate(Object[] references) {
         return new SpecificMutableProjection(references);
       }
 
-      class SpecificMutableProjection extends ${classOf[BaseMutableProjection].getName} {
+      class SpecificMutableProjection extends ${classOf[BaseMutableProjection]
+        .getName} {
 
         private Object[] references;
         private MutableRow mutableRow;
@@ -130,7 +132,8 @@ object GenerateMutableProjection
           ${ctx.initMutableStates()}
         }
 
-        public ${classOf[BaseMutableProjection].getName} target(MutableRow row) {
+        public ${classOf[BaseMutableProjection]
+        .getName} target(MutableRow row) {
           mutableRow = row;
           return this;
         }

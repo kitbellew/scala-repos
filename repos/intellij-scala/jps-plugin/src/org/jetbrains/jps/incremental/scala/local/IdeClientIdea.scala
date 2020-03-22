@@ -132,10 +132,8 @@ class IdeClientIdea(
       .replace("/", ".")
     for {
       typeName <- baseTypes.map(_.replace('/', '.'))
-      packObjectBaseClass = PackageObjectBaseClass(
-        source,
-        packageName,
-        typeName)
+      packObjectBaseClass =
+        PackageObjectBaseClass(source, packageName, typeName)
       if !packageObjectsBaseClasses.contains(packObjectBaseClass)
     } yield {
       packObjectBaseClass

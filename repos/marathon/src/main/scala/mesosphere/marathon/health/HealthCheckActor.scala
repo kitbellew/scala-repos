@@ -109,7 +109,8 @@ class HealthCheckActor(
     // ignore failures if maxFailures == 0
     if (consecutiveFailures >= maxFailures && maxFailures > 0) {
       log.info(
-        s"Detected unhealthy ${task.taskId} of app [${app.id}] version [${app.version}] on host ${task.agentInfo.host}")
+        s"Detected unhealthy ${task.taskId} of app [${app.id}] version [${app
+          .version}] on host ${task.agentInfo.host}")
 
       // kill the task
       marathonSchedulerDriverHolder

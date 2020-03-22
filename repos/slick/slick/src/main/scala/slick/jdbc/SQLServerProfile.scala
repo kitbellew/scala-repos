@@ -231,9 +231,8 @@ trait SQLServerProfile extends JdbcProfile {
           super.expr(n, skipParens)
           b" as ${columnTypes.timeJdbcType.sqlTypeName(None)})"
         case Library.Substring(n, start) =>
-          b"\({fn substring($n, ${QueryParameter.constOp[Int]("+")(_ + _)(
-            start,
-            LiteralNode(1).infer())}, ${Int.MaxValue})}\)"
+          b"\({fn substring($n, ${QueryParameter
+            .constOp[Int]("+")(_ + _)(start, LiteralNode(1).infer())}, ${Int.MaxValue})}\)"
         case Library.Repeat(str, count) =>
           b"replicate($str, $count)"
         case n =>

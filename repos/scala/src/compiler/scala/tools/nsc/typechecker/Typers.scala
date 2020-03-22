@@ -2665,9 +2665,8 @@ trait Typers
       // associate superclass paramaccessors with their aliases
       if (superConstr.symbol.isPrimaryConstructor && !superClazz
             .isJavaDefined && sameLength(superParamAccessors, superArgs)) {
-        for ((
-               superAcc,
-               superArg @ Ident(name)) <- superParamAccessors zip superArgs) {
+        for ((superAcc, superArg @ Ident(name)) <-
+               superParamAccessors zip superArgs) {
           if (mexists(vparamss)(_.symbol == superArg.symbol)) {
             val alias = (superAcc.initialize.alias
               orElse (superAcc getterIn superAcc.owner)
@@ -2792,7 +2791,10 @@ trait Typers
             def check(sym: Symbol): Boolean =
               !sym.isAbstractType || {
                 log(
-                  s"""checking $tp0 in refinement$parentString at ${meth.owner.owner.fullLocationString}""")
+                  s"""checking $tp0 in refinement$parentString at ${meth
+                    .owner
+                    .owner
+                    .fullLocationString}""")
                 (
                   (
                     !sym.hasTransOwner(meth.owner) && failStruct(
@@ -3672,7 +3674,9 @@ trait Typers
             case _: NoInstance | _: TypeError =>
               devWarning(
                 sampos,
-                s"Could not define type $samClassTp using ${samBodyDef.symbol.rawInfo} <:< ${samClassTp memberInfo sam} (for $sam)")
+                s"Could not define type $samClassTp using ${samBodyDef
+                  .symbol
+                  .rawInfo} <:< ${samClassTp memberInfo sam} (for $sam)")
               samClassTp
           }
 
@@ -5654,7 +5658,7 @@ trait Typers
         if (enclMethod == NoContext ||
             enclMethod.owner.isConstructor ||
             context.enclClass.enclMethod == enclMethod // i.e., we are in a constructor of a local class
-            ) {
+        ) {
           ReturnOutsideOfDefError(tree)
         } else {
           val DefDef(_, name, _, _, restpt, _) = enclMethod.tree
@@ -6991,8 +6995,8 @@ trait Typers
           // whatever type to tree; we just have to survive until a real error message is issued.
           devWarning(
             tree.pos,
-            s"Assigning Any type to TypeTree because tree.original is null: tree is $tree/${System.identityHashCode(
-              tree)}, sym=${tree.symbol}, tpe=${tree.tpe}"
+            s"Assigning Any type to TypeTree because tree.original is null: tree is $tree/${System
+              .identityHashCode(tree)}, sym=${tree.symbol}, tpe=${tree.tpe}"
           )
           tree setType AnyTpe
         }

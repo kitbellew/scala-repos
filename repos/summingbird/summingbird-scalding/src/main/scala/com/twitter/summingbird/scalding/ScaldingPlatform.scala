@@ -386,7 +386,9 @@ object Scalding {
         default
       case Some((id, opt)) =>
         logger.info(
-          s"Producer (${producer.getClass.getName}) Using $opt found via NamedProducer ${'"'}$id${'"'}")
+          s"Producer (${producer
+            .getClass
+            .getName}) Using $opt found via NamedProducer ${'"'}$id${'"'}")
         opt
     }
 
@@ -569,23 +571,24 @@ object Scalding {
                   for {
                     // Handle the Option[Producer] return value from getLoopInputs properly.
                     // If there was no producer returned, pass an empty TypedPipe to the join for that part.
-                    flowToPipe <- deltaLogOpt
-                      .map { del =>
-                        leftPf
-                          .join(del)
-                          .map {
-                            case (ftpA, ftpB) =>
-                              Scalding.joinFP(
-                                ftpA,
-                                ftpB
-                              ) // extra producer for store, join the two FlowToPipes
-                          }
-                      }
-                      .getOrElse(
-                        leftPf.map { p =>
-                          p.map((_, TypedPipe.empty))
+                    flowToPipe <-
+                      deltaLogOpt
+                        .map { del =>
+                          leftPf
+                            .join(del)
+                            .map {
+                              case (ftpA, ftpB) =>
+                                Scalding.joinFP(
+                                  ftpA,
+                                  ftpB
+                                ) // extra producer for store, join the two FlowToPipes
+                            }
                         }
-                      ) // no extra producer for store
+                        .getOrElse(
+                          leftPf.map { p =>
+                            p.map((_, TypedPipe.empty))
+                          }
+                        ) // no extra producer for store
                     servOut = flowToPipe.map {
                       case (lpipe, dpipe) =>
                         InternalService.loopJoin[Timestamp, K, V, U](
@@ -709,8 +712,9 @@ object Scalding {
                 for {
                   leftAndRight <- pfl.join(pfr)
                   merged = Scalding.merge(leftAndRight._1, leftAndRight._2)
-                  maxAvailable <- StateWithError
-                    .getState // read the latest state, which is the time
+                  maxAvailable <-
+                    StateWithError
+                      .getState // read the latest state, which is the time
                 } yield Scalding.limitTimes(maxAvailable._1, merged)
               (merged, mr)
             }
@@ -727,8 +731,9 @@ object Scalding {
                 for {
                   leftAndRight <- pfl.join(pfr)
                   justRight = Scalding.also(leftAndRight._1, leftAndRight._2)
-                  maxAvailable <- StateWithError
-                    .getState // read the latest state, which is the time
+                  maxAvailable <-
+                    StateWithError
+                      .getState // read the latest state, which is the time
                 } yield Scalding.limitTimes(maxAvailable._1, justRight)
               (onlyRight, mr)
             }

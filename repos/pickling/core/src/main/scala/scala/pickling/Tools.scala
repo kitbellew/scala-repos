@@ -596,9 +596,14 @@ abstract class Macro extends RichTypes {
     // 1) private[this] fields
     // 2) inherited private[this] fields
     // 3) overridden fields
-    val wrappedBody = q"""
-        val $ownerSymbol = implicitly[scala.pickling.FastTypeTag[${owner.asClass.toType.erasure}]].tpe
-        val $firSymbol = $ownerSymbol.member(scala.reflect.runtime.universe.newTermName(${fir.name}))
+    val wrappedBody =
+      q"""
+        val $ownerSymbol = implicitly[scala.pickling.FastTypeTag[${owner
+        .asClass
+        .toType
+        .erasure}]].tpe
+        val $firSymbol = $ownerSymbol.member(scala.reflect.runtime.universe.newTermName(${fir
+        .name}))
         if ($firSymbol.isTerm) ${body(q"im.reflectField($firSymbol.asTerm)")}
       """.asInstanceOf[Block]
     prologue ++ wrappedBody.stats :+ wrappedBody.expr

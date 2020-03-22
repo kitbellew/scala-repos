@@ -383,7 +383,8 @@ object NonlinearMinimizer {
       }
 
     println(
-      s"owlqn ${owlqnTime / 1e6} ms iters ${owlqnResult.iter} sparseQp ${sparseQpTime / 1e6} ms iters ${sparseQpResult.iter}")
+      s"owlqn ${owlqnTime / 1e6} ms iters ${owlqnResult
+        .iter} sparseQp ${sparseQpTime / 1e6} ms iters ${sparseQpResult.iter}")
     println(
       s"nlSparseTime ${nlSparseTime / 1e6} ms iters ${nlSparseResult.iter}")
     println(s"nlProxTime ${nlProxTime / 1e6} ms iters ${nlProxResult.iter}")

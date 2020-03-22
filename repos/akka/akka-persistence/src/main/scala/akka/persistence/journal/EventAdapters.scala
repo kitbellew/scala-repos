@@ -88,7 +88,8 @@ private[akka] object EventAdapters {
       boundAdapter ← boundToAdapters
     } require(
       adapterNames(boundAdapter.toString),
-      s"$fqn was bound to undefined event-adapter: $boundAdapter (bindings: ${boundToAdapters.mkString("[", ", ", "]")}, known adapters: ${adapters.keys.mkString})"
+      s"$fqn was bound to undefined event-adapter: $boundAdapter (bindings: ${boundToAdapters
+        .mkString("[", ", ", "]")}, known adapters: ${adapters.keys.mkString})"
     )
 
     // A Map of handler from alias to implementation (i.e. class implementing akka.serialization.Serializer)

@@ -232,14 +232,10 @@ class AccountServiceSpec extends TestAccountService with Tags {
     "not create duplicate accounts" in {
       val msgFuture =
         for {
-          HttpResponse(HttpStatus(OK, _), _, Some(jv1), _) <- createAccount(
-            "test0002@email.com",
-            "password1")
-          HttpResponse(
-            HttpStatus(Conflict, _),
-            _,
-            Some(errorMessage),
-            _) <- createAccount("test0002@email.com", "password2")
+          HttpResponse(HttpStatus(OK, _), _, Some(jv1), _) <-
+            createAccount("test0002@email.com", "password1")
+          HttpResponse(HttpStatus(Conflict, _), _, Some(errorMessage), _) <-
+            createAccount("test0002@email.com", "password2")
         } yield errorMessage
 
       msgFuture.copoint must beLike {

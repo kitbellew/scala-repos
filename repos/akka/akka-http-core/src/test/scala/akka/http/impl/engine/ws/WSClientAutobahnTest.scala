@@ -166,7 +166,9 @@ object WSClientAutobahnTest extends App {
           .filterNot(_.status.behavior == "OK")
           .foreach { r ⇒
             println(
-              f"$RED${r.status.behavior}%-20s$RESET $YELLOW${r.info.id}%-7s$RESET - $RESET${r.info.description}")
+              f"$RED${r.status.behavior}%-20s$RESET $YELLOW${r
+                .info
+                .id}%-7s$RESET - $RESET${r.info.description}")
           }
 
         ()

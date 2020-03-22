@@ -339,7 +339,8 @@ object DumpLogSegments {
     var validBytes = 0L
     var lastOffset = -1L
     val shallowIterator = messageSet.iterator(maxMessageSize)
-    for (shallowMessageAndOffset <- shallowIterator) { // this only does shallow iteration
+    for (shallowMessageAndOffset <-
+           shallowIterator) { // this only does shallow iteration
       val itr = getIterator(shallowMessageAndOffset, isDeepIteration)
       for (messageAndOffset <- itr) {
         val msg = messageAndOffset.message

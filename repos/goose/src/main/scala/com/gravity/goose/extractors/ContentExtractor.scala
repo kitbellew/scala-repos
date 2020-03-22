@@ -607,8 +607,8 @@ trait ContentExtractor {
             for {
               firstParagraph <- potentialParagraphs
               if (firstParagraph.text.length() > 0)
-              wordStats: WordStats = StopWords
-                .getStopWordCount(firstParagraph.text)
+              wordStats: WordStats =
+                StopWords.getStopWordCount(firstParagraph.text)
               paragraphScore: Int = wordStats.getStopWordCount
               siblingBaseLineScore: Double = .30
               if (

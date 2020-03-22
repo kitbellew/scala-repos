@@ -86,8 +86,10 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
           (
             for (te <- tp1.allTypeElements;
                  t = te.getType(TypingContext.empty).getOrAny;
-                 asPsi = ScType
-                   .toPsi(t, getProject, GlobalSearchScope.allScope(getProject))
+                 asPsi = ScType.toPsi(
+                   t,
+                   getProject,
+                   GlobalSearchScope.allScope(getProject))
                  if asPsi.isInstanceOf[PsiClassType])
               yield asPsi.asInstanceOf[PsiClassType]
           ).toArray[PsiClassType]
@@ -610,10 +612,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
 
   def functionsByName(name: String): Seq[PsiMethod] = {
     (
-      for ((p: PhysicalSignature, _) <- TypeDefinitionMembers
-             .getSignatures(this)
-             .forName(name)
-             ._1)
+      for ((p: PhysicalSignature, _) <-
+             TypeDefinitionMembers.getSignatures(this).forName(name)._1)
         yield p.method
     ).++(syntheticMethodsNoOverride.filter(_.name == name))
   }
