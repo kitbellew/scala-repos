@@ -198,11 +198,13 @@ private[cluster] class Reachability private (
           recordBuilder ++= rows.collect {
             case (_, r) if allowed(r.subject) ⇒ r
           }
-        case (Some(rows1), None) ⇒ if (observerVersion1 > observerVersion2)
+        case (Some(rows1), None) ⇒
+          if (observerVersion1 > observerVersion2)
             recordBuilder ++= rows1.collect {
               case (_, r) if allowed(r.subject) ⇒ r
             }
-        case (None, Some(rows2)) ⇒ if (observerVersion2 > observerVersion1)
+        case (None, Some(rows2)) ⇒
+          if (observerVersion2 > observerVersion1)
             recordBuilder ++= rows2.collect {
               case (_, r) if allowed(r.subject) ⇒ r
             }

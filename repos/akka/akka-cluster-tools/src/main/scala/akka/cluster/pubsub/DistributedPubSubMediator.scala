@@ -428,7 +428,8 @@ object DistributedPubSubMediator {
     class Group(val emptyTimeToLive: FiniteDuration, routingLogic: RoutingLogic)
         extends TopicLike {
       def business = {
-        case SendToOneSubscriber(msg) ⇒ if (subscribers.nonEmpty)
+        case SendToOneSubscriber(msg) ⇒
+          if (subscribers.nonEmpty)
             Router(routingLogic, (subscribers map ActorRefRoutee).toVector)
               .route(wrapIfNeeded(msg), sender())
       }

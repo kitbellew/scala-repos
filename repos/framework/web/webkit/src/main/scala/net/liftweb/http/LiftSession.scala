@@ -1234,20 +1234,23 @@ class LiftSession(
       case n: java.lang.Iterable[_] => runSourceContext(n.iterator(), xform, ns)
       case n: java.util.Iterator[_] => for {
           i <- n.toSeq;
-          nodes <- currentSourceContext
-            .doWith(i)(processSurroundAndInclude("Source", xform(ns)))
+          nodes <-
+            currentSourceContext
+              .doWith(i)(processSurroundAndInclude("Source", xform(ns)))
         } yield nodes
       case en: java.util.Enumeration[_] => for {
           i <- en.toSeq;
-          nodes <- currentSourceContext
-            .doWith(i)(processSurroundAndInclude("Source", xform(ns)))
+          nodes <-
+            currentSourceContext
+              .doWith(i)(processSurroundAndInclude("Source", xform(ns)))
         } yield nodes
       case se: scala.collection.Iterable[_] =>
         runSourceContext(se.iterator, xform, ns)
       case se: scala.collection.Iterator[_] => for {
           i <- se.toSeq;
-          nodes <- currentSourceContext
-            .doWith(i)(processSurroundAndInclude("Source", xform(ns)))
+          nodes <-
+            currentSourceContext
+              .doWith(i)(processSurroundAndInclude("Source", xform(ns)))
         } yield nodes
       case a: Array[_] => runSourceContext(a.toList, xform, ns)
       case x =>
@@ -1443,9 +1446,8 @@ class LiftSession(
       }.headOption
 
     for {
-      template <- Templates(name, S.locale) ?~ (
-        "Template " + name + " not found"
-      )
+      template <-
+        Templates(name, S.locale) ?~ ("Template " + name + " not found")
       res <- findElem(
         processSurroundAndInclude(name.mkString("/", "/", ""), template))
     } yield res
@@ -2839,28 +2841,29 @@ class LiftSession(
             JString(name) <- in \ "name"
             func <- map.get(name)
             payload = in \ "payload"
-            reified <- if (func.manifest == jvmanifest) Some(payload)
-            else {
-              try { Some(payload.extract(defaultFormats, func.manifest)) }
-              catch {
-                case e: Exception =>
-                  logger.error(
-                    "Failed to extract " + payload + " as " + func.manifest,
-                    e)
-                  ca ! FailMsg(
-                    guid,
-                    "Failed to extract payload as " + func
-                      .manifest + " exception " + e.getMessage)
-                  None
+            reified <-
+              if (func.manifest == jvmanifest) Some(payload)
+              else {
+                try { Some(payload.extract(defaultFormats, func.manifest)) }
+                catch {
+                  case e: Exception =>
+                    logger.error(
+                      "Failed to extract " + payload + " as " + func.manifest,
+                      e)
+                    ca ! FailMsg(
+                      guid,
+                      "Failed to extract payload as " + func
+                        .manifest + " exception " + e.getMessage)
+                    None
 
+                }
               }
-            }
           } {
             func match {
               case StreamRoundTrip(_, func) =>
                 try {
-                  for (v <- func
-                         .asInstanceOf[Function1[Any, Stream[Any]]](reified)) {
+                  for (v <- func.asInstanceOf[Function1[Any, Stream[Any]]](
+                         reified)) {
                     v match {
                       case jsCmd: JsCmd => ca ! jsCmd
                       case jsExp: JsExp => ca ! jsExp

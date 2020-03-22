@@ -298,7 +298,8 @@ trait Scanners extends ScannersCommon {
             sepRegions = sepRegions.tail
 
           discardDocBuffer()
-        case ARROW => if (!sepRegions.isEmpty && sepRegions.head == lastToken)
+        case ARROW =>
+          if (!sepRegions.isEmpty && sepRegions.head == lastToken)
             sepRegions = sepRegions.tail
         case STRINGLIT =>
           if (inMultiLineInterpolation) sepRegions = sepRegions.tail.tail

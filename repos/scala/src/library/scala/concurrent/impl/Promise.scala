@@ -377,7 +377,8 @@ private[concurrent] object Promise {
     private def link(target: DefaultPromise[T]): Unit =
       if (this ne target) {
         get() match {
-          case r: Try[_] => if (!target.tryComplete(r.asInstanceOf[Try[T]]))
+          case r: Try[_] =>
+            if (!target.tryComplete(r.asInstanceOf[Try[T]]))
               throw new IllegalStateException(
                 "Cannot link completed promises together")
           case dp: DefaultPromise[_] => compressedRoot(dp).link(target)

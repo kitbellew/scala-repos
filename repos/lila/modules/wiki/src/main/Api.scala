@@ -12,10 +12,11 @@ private[wiki] final class Api {
 
   def show(slug: String, lang: String): Fu[Option[(Page, List[Page])]] =
     for {
-      page ← $find.one(Json.obj("slug" -> slug, "lang" -> lang)) zip
-        $find.one(Json.obj("slug" -> slug, "lang" -> DefaultLang)) map {
-        case (a, b) => a orElse b
-      }
+      page ←
+        $find.one(Json.obj("slug" -> slug, "lang" -> lang)) zip
+          $find.one(Json.obj("slug" -> slug, "lang" -> DefaultLang)) map {
+          case (a, b) => a orElse b
+        }
       pages ← $find(
         $query(Json.obj("lang" -> $in(Seq(lang, DefaultLang))))
           .sort($sort asc "number"))

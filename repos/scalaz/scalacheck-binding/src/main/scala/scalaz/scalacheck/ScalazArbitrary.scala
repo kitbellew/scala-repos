@@ -127,10 +127,11 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
         val ns = Traverse[Stream].traverseS(s) { n =>
           for {
             sum <- State.get[Int]
-            r <- if (sum >= size) { State.state[Int, Option[Int]](None) }
-            else if ((sum + n) > size) {
-              State((s: Int) => (s + n) -> Option(size - sum))
-            } else { State((s: Int) => (s + n) -> Option(n)) }
+            r <-
+              if (sum >= size) { State.state[Int, Option[Int]](None) }
+              else if ((sum + n) > size) {
+                State((s: Int) => (s + n) -> Option(size - sum))
+              } else { State((s: Int) => (s + n) -> Option(n)) }
           } yield r
         }.eval(0).flatten
 

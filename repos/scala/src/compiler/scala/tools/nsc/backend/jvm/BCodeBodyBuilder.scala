@@ -395,16 +395,16 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             generatedType = tk
           }
 
-        case Literal(value) => if (value.tag != UnitTag)
-            (value.tag, expectedType) match {
-              case (IntTag, LONG) =>
-                bc.lconst(value.longValue); generatedType = LONG
-              case (FloatTag, DOUBLE) =>
-                bc.dconst(value.doubleValue); generatedType = DOUBLE
-              case (NullTag, _) =>
-                bc.emit(asm.Opcodes.ACONST_NULL); generatedType = srNullRef
-              case _ => genConstant(value); generatedType = tpeTK(tree)
-            }
+        case Literal(value) =>
+          if (value.tag != UnitTag) (value.tag, expectedType) match {
+            case (IntTag, LONG) =>
+              bc.lconst(value.longValue); generatedType = LONG
+            case (FloatTag, DOUBLE) =>
+              bc.dconst(value.doubleValue); generatedType = DOUBLE
+            case (NullTag, _) =>
+              bc.emit(asm.Opcodes.ACONST_NULL); generatedType = srNullRef
+            case _ => genConstant(value); generatedType = tpeTK(tree)
+          }
 
         case blck: Block => genBlock(blck, expectedType)
 

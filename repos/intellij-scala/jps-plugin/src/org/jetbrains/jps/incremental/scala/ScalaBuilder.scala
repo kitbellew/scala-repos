@@ -155,8 +155,9 @@ object ScalaBuilder {
   def isMakeProject(context: CompileContext): Boolean =
     JavaBuilderUtil.isCompileJavaIncrementally(context) && {
       for {
-        chunk <- context.getProjectDescriptor.getBuildTargetIndex
-          .getSortedTargetChunks(context).asScala
+        chunk <-
+          context.getProjectDescriptor.getBuildTargetIndex
+            .getSortedTargetChunks(context).asScala
         target <- chunk.getTargets.asScala
       } { if (!context.getScope.isAffected(target)) return false }
       true

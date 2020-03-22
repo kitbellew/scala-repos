@@ -162,8 +162,8 @@ private[simul] final class SimulApi(
   private def makeGame(simul: Simul, host: User)(
       pairing: SimulPairing): Fu[(Game, chess.Color)] =
     for {
-      user ← UserRepo byId pairing.player
-        .user flatten s"No user with id ${pairing.player.user}"
+      user ←
+        UserRepo byId pairing.player.user flatten s"No user with id ${pairing.player.user}"
       hostColor = simul.hostColor
       whiteUser = hostColor.fold(host, user)
       blackUser = hostColor.fold(user, host)
@@ -189,9 +189,10 @@ private[simul] final class SimulApi(
             blackUser.id,
             lila.game.PerfPicker.mainOrDefault(game1)(blackUser.perfs)))
         .withSimulId(simul.id).withId(pairing.gameId).start
-      _ ← (GameRepo insertDenormalized game2) >>-
-        onGameStart(game2.id) >>-
-        sendTo(simul.id, actorApi.StartGame(game2, simul.hostId))
+      _ ←
+        (GameRepo insertDenormalized game2) >>-
+          onGameStart(game2.id) >>-
+          sendTo(simul.id, actorApi.StartGame(game2, simul.hostId))
     } yield game2 -> hostColor
 
   private def update(simul: Simul) =

@@ -150,8 +150,8 @@ class MainTest extends AsyncTest[JdbcTestDB] {
             ("Carl", 6),
             ("Lenny", 8),
             ("Santa's Little Helper", 10))
-          r4b <- q4b.to[Set].result
-            .named("Latest Order per User, using maxOfPer")
+          r4b <-
+            q4b.to[Set].result.named("Latest Order per User, using maxOfPer")
           _ = r4b shouldBe Set(
             ("Homer", 2),
             ("Marge", 4),

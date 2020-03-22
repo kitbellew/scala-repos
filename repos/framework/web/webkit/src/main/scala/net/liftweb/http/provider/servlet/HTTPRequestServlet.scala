@@ -56,8 +56,8 @@ class HTTPRequestServlet(
 
   def headers(name: String): List[String] =
     for {
-      h <- (Box !! req.getHeaders(name)).asA[java.util.Enumeration[String]]
-        .toList
+      h <- (Box !! req.getHeaders(name))
+        .asA[java.util.Enumeration[String]].toList
       li <- enumToList[String](h) if null != li
     } yield li
 

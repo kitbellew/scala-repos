@@ -177,7 +177,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
           val manifest = ser2.manifest(payload)
           if (manifest != PersistentRepr.Undefined)
             builder.setPayloadManifest(ByteString.copyFromUtf8(manifest))
-        case _ ⇒ if (serializer.includeManifest)
+        case _ ⇒
+          if (serializer.includeManifest)
             builder.setPayloadManifest(
               ByteString.copyFromUtf8(payload.getClass.getName))
       }

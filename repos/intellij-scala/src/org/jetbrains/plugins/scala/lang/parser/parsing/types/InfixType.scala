@@ -86,7 +86,8 @@ object InfixType {
           val typeMarker = builder.mark()
           builder.advanceLexer()
           typeMarker.done(ScalaElementTypes.WILDCARD_TYPE)
-        case _ => if (!CompoundType.parse(builder, isPattern))
+        case _ =>
+          if (!CompoundType.parse(builder, isPattern))
             builder error ScalaBundle.message("compound.type.expected")
       }
       if (assoc == 1) {

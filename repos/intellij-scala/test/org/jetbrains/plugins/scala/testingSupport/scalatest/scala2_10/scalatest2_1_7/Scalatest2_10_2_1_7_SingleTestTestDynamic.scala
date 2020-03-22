@@ -1,5 +1,4 @@
-package org.jetbrains.plugins.scala.testingSupport.scalatest.scala2_10
-  .scalatest2_1_7
+package org.jetbrains.plugins.scala.testingSupport.scalatest.scala2_10.scalatest2_1_7
 
 import org.jetbrains.plugins.scala.testingSupport.scalatest.singleTest.FunSuiteSingleTestTest
 

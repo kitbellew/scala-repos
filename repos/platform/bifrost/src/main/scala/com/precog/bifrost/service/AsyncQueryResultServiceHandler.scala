@@ -59,10 +59,10 @@ class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(implicit
                   Future(HttpResponse[ByteChunk](Accepted))
                 case Finished(_, _) => for {
                     result <- jobManager.getResult(jobId)
-                    warnings <- jobManager
-                      .listMessages(jobId, channels.Warning, None)
-                    errors <- jobManager
-                      .listMessages(jobId, channels.Error, None)
+                    warnings <-
+                      jobManager.listMessages(jobId, channels.Warning, None)
+                    errors <-
+                      jobManager.listMessages(jobId, channels.Error, None)
                   } yield {
                     result.fold(
                       { _ => HttpResponse[ByteChunk](NotFound) },

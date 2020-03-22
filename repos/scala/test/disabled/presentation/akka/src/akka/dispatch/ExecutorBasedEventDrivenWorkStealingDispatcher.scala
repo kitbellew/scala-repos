@@ -109,7 +109,8 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
     //Verify actor type conformity
     actorType match {
       case None => actorType = Some(actorRef.actor.getClass)
-      case Some(aType) => if (aType != actorRef.actor.getClass)
+      case Some(aType) =>
+        if (aType != actorRef.actor.getClass)
           throw new IllegalActorStateException(String.format(
             "Can't register actor %s in a work stealing dispatcher which already knows actors of type %s",
             actorRef,

@@ -420,13 +420,12 @@ trait EntityPage extends HtmlPage {
         {
       // linearization
       NodeSeq fromSeq (
-        for ((superTpl, superType) <- (tpl.linearizationTemplates zip tpl
-               .linearizationTypes)) yield <div class="parent" name={
-          superTpl.qualifiedName
-        }>
+        for ((superTpl, superType) <-
+               (tpl.linearizationTemplates zip tpl.linearizationTypes))
+          yield <div class="parent" name={superTpl.qualifiedName}>
               <h3>Inherited from {
-          typeToHtmlWithStupidTypes(tpl, superTpl, superType)
-        }</h3>
+            typeToHtmlWithStupidTypes(tpl, superTpl, superType)
+          }</h3>
             </div>
       )
     }

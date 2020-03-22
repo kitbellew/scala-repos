@@ -441,7 +441,8 @@ final class SubSink[T](
   def pullSubstream(): Unit =
     status.get match {
       case f: AsyncCallback[Any] @unchecked ⇒ f.invoke(RequestOne)
-      case null ⇒ if (!status.compareAndSet(null, RequestOne))
+      case null ⇒
+        if (!status.compareAndSet(null, RequestOne))
           status.get.asInstanceOf[Command ⇒ Unit](RequestOne)
     }
 

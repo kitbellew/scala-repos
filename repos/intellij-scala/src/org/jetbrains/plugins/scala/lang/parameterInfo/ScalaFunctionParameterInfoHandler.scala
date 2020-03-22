@@ -223,8 +223,8 @@ class ScalaFunctionParameterInfoHandler
                         if (namedMode) buffer.append(namedPostfix)
                         assign.getRExpression match {
                           case Some(expr: ScExpression) =>
-                            for (exprType <- expr
-                                   .getType(TypingContext.empty)) {
+                            for (exprType <-
+                                   expr.getType(TypingContext.empty)) {
                               val paramType = param._1.paramType
                               if (!exprType.conforms(paramType)) isGrey = true
                             }
@@ -679,8 +679,9 @@ class ScalaFunctionParameterInfoHandler
                             val map = new collection.mutable.HashMap[
                               (String, PsiElement),
                               ScType]
-                            for (i <- 0 to Math
-                                   .min(tp.length, typeArgs.length) - 1) {
+                            for (i <-
+                                   0 to Math
+                                     .min(tp.length, typeArgs.length) - 1) {
                               map += ((tp(i), typeArgs(i).calcType))
                             }
                             val substitutor = new ScSubstitutor(
@@ -729,8 +730,9 @@ class ScalaFunctionParameterInfoHandler
                           val map = new collection.mutable.HashMap[
                             (String, PsiElement),
                             ScType]
-                          for (i <- 0 to Math
-                                 .min(tp.length, typeArgs.length) - 1) {
+                          for (i <-
+                                 0 to Math
+                                   .min(tp.length, typeArgs.length) - 1) {
                             map += ((tp(i), typeArgs(i).calcType))
                           }
                           val substitutor = new ScSubstitutor(

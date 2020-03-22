@@ -44,5 +44,5 @@ object Test extends App {
 //    q <- Some(17)
 //    r <- Some(18);
 //    s <- Some(19)
-         ) yield a)
+    ) yield a)
 }

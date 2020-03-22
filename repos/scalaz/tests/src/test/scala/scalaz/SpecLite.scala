@@ -89,7 +89,8 @@ abstract class SpecLite extends Properties("") with SpecLitePlatform {
         actual
         fail("no exception thrown, expected " + erasedClass)
       } catch {
-        case ex: Throwable => if (!erasedClass.isInstance(ex))
+        case ex: Throwable =>
+          if (!erasedClass.isInstance(ex))
             fail(
               "wrong exception thrown, expected: " + erasedClass + " got: " + ex)
       }

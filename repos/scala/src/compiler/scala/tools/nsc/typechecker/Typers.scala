@@ -2375,9 +2375,8 @@ trait Typers
       // associate superclass paramaccessors with their aliases
       if (superConstr.symbol.isPrimaryConstructor && !superClazz
             .isJavaDefined && sameLength(superParamAccessors, superArgs)) {
-        for ((
-               superAcc,
-               superArg @ Ident(name)) <- superParamAccessors zip superArgs) {
+        for ((superAcc, superArg @ Ident(name)) <-
+               superParamAccessors zip superArgs) {
           if (mexists(vparamss)(_.symbol == superArg.symbol)) {
             val alias = (superAcc.initialize.alias
               orElse (superAcc getterIn superAcc.owner)
@@ -2644,7 +2643,8 @@ trait Typers
 
     private def enterLabelDef(stat: Tree) {
       stat match {
-        case ldef @ LabelDef(_, _, _) => if (ldef.symbol == NoSymbol)
+        case ldef @ LabelDef(_, _, _) =>
+          if (ldef.symbol == NoSymbol)
             ldef.symbol = namer.enterInScope(
               context.owner.newLabel(ldef.name, ldef.pos) setInfo MethodType(
                 List(),
@@ -5022,7 +5022,7 @@ trait Typers
             enclMethod.owner.isConstructor ||
             context.enclClass
               .enclMethod == enclMethod // i.e., we are in a constructor of a local class
-            ) { ReturnOutsideOfDefError(tree) }
+        ) { ReturnOutsideOfDefError(tree) }
         else {
           val DefDef(_, name, _, _, restpt, _) = enclMethod.tree
           if (restpt.tpe eq null) {

@@ -133,11 +133,12 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
     val result = for {
       // TODO: No idea how to work with EitherT[TestFuture, so sys.error it is]
       executor <- executorFor(apiKey) valueOr { err => sys.error(err.toString) }
-      result0 <- executor
-        .execute(numTicks.toString, ctx, QueryOptions(timeout = timeout))
-        .valueOr(err => sys.error(err.toString)) mapValue {
-        case (w, s) => (w, (w: Option[(JobId, AtomicInteger)], s))
-      }
+      result0 <-
+        executor
+          .execute(numTicks.toString, ctx, QueryOptions(timeout = timeout))
+          .valueOr(err => sys.error(err.toString)) mapValue {
+          case (w, s) => (w, (w: Option[(JobId, AtomicInteger)], s))
+        }
     } yield {
       val (Some((jobId, ticks)), result) = result0
 

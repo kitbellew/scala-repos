@@ -600,7 +600,8 @@ private[akka] class EmptyLocalActorRef(
         true
       case sel: ActorSelectionMessage ⇒
         sel.identifyRequest match {
-          case Some(identify) ⇒ if (!sel.wildcardFanOut)
+          case Some(identify) ⇒
+            if (!sel.wildcardFanOut)
               sender ! ActorIdentity(identify.messageId, None)
           case None ⇒
             eventStream.publish(DeadLetter(
@@ -637,7 +638,8 @@ private[akka] class DeadLetterActorRef(
       case Identify(messageId) ⇒ sender ! ActorIdentity(messageId, None)
       case d: DeadLetter ⇒
         if (!specialHandle(d.message, d.sender)) eventStream.publish(d)
-      case _ ⇒ if (!specialHandle(message, sender))
+      case _ ⇒
+        if (!specialHandle(message, sender))
           eventStream.publish(DeadLetter(
             message,
             if (sender eq Actor.noSender) provider.deadLetters else sender,

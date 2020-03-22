@@ -246,7 +246,8 @@ abstract class ContainerVar[T](dflt: => T)(implicit
         localSet(session, name, containerSerializer.serialize(value))
       }
 
-      case _ => if (showWarningWhenAccessedOutOfSessionScope_?)
+      case _ =>
+        if (showWarningWhenAccessedOutOfSessionScope_?)
           logger.warn(
             "Setting a ContainerVar " + name + " to " + value + " outside session scope"
           ) // added warning per issue 188

@@ -231,8 +231,8 @@ class UpgradedImageIExtractor(
 
     images.take(30).foreach((image: Element) => {
       for {
-        locallyStoredImage <- getLocallyStoredImage(
-          buildImagePath(image.attr("src")))
+        locallyStoredImage <-
+          getLocallyStoredImage(buildImagePath(image.attr("src")))
         width = locallyStoredImage.width
         if (width > MIN_WIDTH)
         height = locallyStoredImage.height

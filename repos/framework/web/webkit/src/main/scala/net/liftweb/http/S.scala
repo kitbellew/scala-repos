@@ -592,8 +592,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def templateFromTemplateAttr: Box[NodeSeq] =
     for (templateName <- attr("template") ?~ "Template Attribute missing";
          tmplList = templateName.roboSplit("/");
-         template <- Templates(tmplList) ?~
-           "couldn't find template") yield template
+         template <-
+           Templates(tmplList) ?~
+             "couldn't find template") yield template
 
   /**
     * Returns the Locale for this request based on the LiftRules.localeCalculator
@@ -874,8 +875,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       receiveUpdatesOnPage: Boolean = false): Box[LiftCometActor] = {
     for {
       session <- session ?~ "Comet lookup and creation requires a session."
-      cometActor <- session
-        .findOrCreateComet(cometType, cometName, cometHtml, cometAttributes)
+      cometActor <-
+        session
+          .findOrCreateComet(cometType, cometName, cometHtml, cometAttributes)
     } yield {
       if (receiveUpdatesOnPage) addComet(cometActor)
 
@@ -902,8 +904,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       cometManifest: Manifest[T]): Box[T] = {
     for {
       session <- session ?~ "Comet lookup and creation requires a session."
-      cometActor <- session
-        .findOrCreateComet[T](cometName, cometHtml, cometAttributes)
+      cometActor <-
+        session.findOrCreateComet[T](cometName, cometHtml, cometAttributes)
     } yield {
       if (receiveUpdatesOnPage) addComet(cometActor)
 

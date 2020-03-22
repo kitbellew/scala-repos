@@ -759,8 +759,7 @@ trait Crudify {
     def loop(html: NodeSeq): NodeSeq = {
       def error(field: BaseField): NodeSeq = {
         field.uniqueFieldId match {
-          case fid @ Full(id) =>
-            S.getNotices.filter(_._3 == fid).flatMap(err =>
+          case fid @ Full(id) => S.getNotices.filter(_._3 == fid).flatMap(err =>
               List(Text(" "), <span class={editErrorClass}>{err._2}</span>))
 
           case _ => NodeSeq.Empty
@@ -773,11 +772,12 @@ trait Crudify {
           field <- computeFieldFromPointer(item, pointer).toList
           if field.show_?
           form <- field.toForm.toList
-          bindNode = ".name *" #> {
-            wrapNameInRequired(field.displayHtml, field.required_?) ++
-              error(field)
-          } &
-            ".form *" #> form
+          bindNode =
+            ".name *" #> {
+              wrapNameInRequired(field.displayHtml, field.required_?) ++
+                error(field)
+            } &
+              ".form *" #> form
           node <- bindNode(html)
         } yield node
 

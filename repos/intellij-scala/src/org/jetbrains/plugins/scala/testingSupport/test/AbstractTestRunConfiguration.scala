@@ -538,8 +538,8 @@ abstract class AbstractTestRunConfiguration(
           params.getProgramParametersList.addParametersString(getTestArgs)
         }
 
-        for (ext <- Extensions
-               .getExtensions(RunConfigurationExtension.EP_NAME)) {
+        for (ext <-
+               Extensions.getExtensions(RunConfigurationExtension.EP_NAME)) {
           ext.updateJavaParameters(
             currentConfiguration,
             params,

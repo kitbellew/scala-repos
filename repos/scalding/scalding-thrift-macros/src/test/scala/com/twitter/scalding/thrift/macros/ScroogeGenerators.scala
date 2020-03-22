@@ -226,12 +226,12 @@ object ScroogeGenerators {
         aDoubleSet <- Gen.listOf(arb[Double]).map(_.toSet)
         aStringSet <- Gen.listOf(Gen.alphaStr).map(_.toSet)
         aStructSet <- Gen.listOf(arb[TestStruct]).map(_.toSet)
-        aListSet <- Gen
-          .listOf(Gen.listOf(Gen.alphaStr).map(l => l.to[collection.Seq]))
-          .map(_.to[collection.Set])
-        aSetSet <- Gen
-          .listOf(Gen.listOf(Gen.alphaStr).map(l => l.to[collection.Set]))
-          .map(_.to[collection.Set])
+        aListSet <-
+          Gen.listOf(Gen.listOf(Gen.alphaStr).map(l => l.to[collection.Seq]))
+            .map(_.to[collection.Set])
+        aSetSet <-
+          Gen.listOf(Gen.listOf(Gen.alphaStr).map(l => l.to[collection.Set]))
+            .map(_.to[collection.Set])
         aMapSet <- Gen.listOf(Gen.listOf(arb[(Int, Int)]).map(l =>
           l.toMap.asInstanceOf[collection.Map[Int, Int]]))
           .map(_.to[collection.Set])

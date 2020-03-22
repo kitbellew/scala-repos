@@ -316,7 +316,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
         phiValuesObservedByNode += from -> phiValues
       case StatsResult(from, stats) ⇒
         clusterStatsObservedByNode += from -> stats
-      case ReportTick ⇒ if (infolog)
+      case ReportTick ⇒
+        if (infolog)
           log.info(
             s"[${title}] in progress\n${formatMetrics}\n\n${formatPhi}\n\n${formatStats}")
       case r: ClusterResult ⇒

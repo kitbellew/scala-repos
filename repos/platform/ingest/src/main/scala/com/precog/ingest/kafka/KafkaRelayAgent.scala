@@ -146,9 +146,10 @@ final class KafkaRelayAgent(
       val fetchRequest = new FetchRequest(localTopic, 0, offset, bufferSize)
 
       val ingestStep = for {
-        messages <- Future(
-          consumer.fetch(fetchRequest)
-        ) // try/catch is for this line. Okay to wrap in a future & flatMap instead?
+        messages <-
+          Future(
+            consumer.fetch(fetchRequest)
+          ) // try/catch is for this line. Okay to wrap in a future & flatMap instead?
         _ <- forwardAll(messages.toList)
       } yield {
         val newDelay = delayStrategy(

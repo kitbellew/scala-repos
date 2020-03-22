@@ -48,8 +48,8 @@ class MethodImplementationsSearch
       consumer: Processor[PsiElement]): Boolean = {
     sourceElement match {
       case namedElement: ScNamedElement =>
-        for (implementation <- ScalaOverridingMemberSearcher
-               .getOverridingMethods(namedElement)
+        for (implementation <-
+               ScalaOverridingMemberSearcher.getOverridingMethods(namedElement)
              //to avoid duplicates with ScalaOverridingMemberSearcher
              if !namedElement.isInstanceOf[PsiMethod] || !implementation
                .isInstanceOf[PsiMethod]) {
@@ -73,8 +73,8 @@ class ScalaOverridingMemberSearcher
     val method = queryParameters.getMethod
     method match {
       case namedElement: ScNamedElement =>
-        for (implementation <- ScalaOverridingMemberSearcher
-               .getOverridingMethods(namedElement)
+        for (implementation <-
+               ScalaOverridingMemberSearcher.getOverridingMethods(namedElement)
              if implementation.isInstanceOf[PsiMethod]) {
           if (!consumer.process(implementation.asInstanceOf[PsiMethod])) {
             return false
@@ -90,8 +90,10 @@ object ScalaOverridingMemberSearcher {
   def getOverridingMethods(method: ScNamedElement): Array[PsiNamedElement] = {
     val result = new ArrayBuffer[PsiNamedElement]
     inReadAction {
-      for (psiMethod <- ScalaOverridingMemberSearcher
-             .search(method, deep = true)) { result += psiMethod }
+      for (psiMethod <-
+             ScalaOverridingMemberSearcher.search(method, deep = true)) {
+        result += psiMethod
+      }
     }
     result.toArray
   }

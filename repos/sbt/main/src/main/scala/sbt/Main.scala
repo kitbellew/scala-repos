@@ -485,8 +485,9 @@ object BuiltinCommands {
     for {
       lastOnly_keys <- keysParser
       kvs = Act.keyValues(structure)(lastOnly_keys._2)
-      f <- if (lastOnly_keys._1) success(() => s)
-      else Aggregation.evaluatingParser(s, structure, show)(kvs)
+      f <-
+        if (lastOnly_keys._1) success(() => s)
+        else Aggregation.evaluatingParser(s, structure, show)(kvs)
     } yield () => {
       def export0(s: State): State = lastImpl(s, kvs, Some(ExportStream))
       val newS =

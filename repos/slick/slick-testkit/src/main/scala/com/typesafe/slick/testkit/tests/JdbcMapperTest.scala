@@ -391,8 +391,8 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
 
     val q1 =
       (for {
-        id :: b :: s :: HNil <- (for { b <- bs } yield b.id :: b.b :: b
-          .s :: HNil) if !b
+        id :: b :: s :: HNil <-
+          (for { b <- bs } yield b.id :: b.b :: b.s :: HNil) if !b
       } yield id :: b :: (s ++ s) :: HNil).sortBy(h => h(2)).map {
         case id :: b :: ss :: HNil => id :: ss :: (42 :: HNil) :: HNil
       }
@@ -451,8 +451,9 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       ares: String <- as.result.head
       _ = ares shouldBe "Foo"
       _ <- as.update("Foo")
-      _ <- as.map(a => a :: a :: HNil).result.head
-        .map(_ shouldBe "Foo" :: "Foo" :: HNil)
+      _ <-
+        as.map(a => a :: a :: HNil).result.head
+          .map(_ shouldBe "Foo" :: "Foo" :: HNil)
       _ <- bs.schema.create
       _ <- bs += Tuple1("Foo")
       _ <- bs.update(Tuple1("Foo"))

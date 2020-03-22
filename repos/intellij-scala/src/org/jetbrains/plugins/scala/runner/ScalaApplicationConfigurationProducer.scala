@@ -209,9 +209,9 @@ object ScalaApplicationConfigurationProducer {
           case f: ScFunction => f.containingClass match {
               case o: ScObject =>
                 for {
-                  wrapper <- f
-                    .getFunctionWrappers(isStatic = true, isInterface = false)
-                    .headOption
+                  wrapper <-
+                    f.getFunctionWrappers(isStatic = true, isInterface = false)
+                      .headOption
                   if PsiMethodUtil.isMainMethod(wrapper)
                 } yield wrapper
               case _ => None

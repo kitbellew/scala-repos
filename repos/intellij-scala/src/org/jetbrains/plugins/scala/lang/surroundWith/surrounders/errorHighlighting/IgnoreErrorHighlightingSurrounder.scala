@@ -1,5 +1,4 @@
-package org.jetbrains.plugins.scala.lang.surroundWith.surrounders
-  .errorHighlighting
+package org.jetbrains.plugins.scala.lang.surroundWith.surrounders.errorHighlighting
 
 import com.intellij.lang.surroundWith.Surrounder
 import com.intellij.openapi.editor.Editor

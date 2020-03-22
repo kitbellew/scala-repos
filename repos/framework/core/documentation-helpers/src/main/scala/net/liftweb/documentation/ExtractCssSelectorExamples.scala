@@ -157,11 +157,8 @@ object ExtractCssSelectorExamples extends App {
           val filename = camelify(normalizedFilename.replace('-', '_'))
 
           val examples = for {
-            ExampleContents(
-              _,
-              exampleLabel,
-              setupCode,
-              exampleParts) <- contents
+            ExampleContents(_, exampleLabel, setupCode, exampleParts) <-
+              contents
             i <- (0 to (exampleParts.length / 3))
             ExampleInput(input) <- exampleParts.lift(i)
             ExampleFunction(function) <- exampleParts.lift(i + 1)

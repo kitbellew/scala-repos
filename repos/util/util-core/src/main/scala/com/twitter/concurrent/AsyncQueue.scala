@@ -147,7 +147,8 @@ class AsyncQueue[T](maxPendingOffers: Int) {
   @tailrec
   final def fail(exc: Throwable, discard: Boolean): Unit =
     state.get match {
-      case Idle => if (!state.compareAndSet(Idle, Excepting(Queue.empty, exc)))
+      case Idle =>
+        if (!state.compareAndSet(Idle, Excepting(Queue.empty, exc)))
           fail(exc, discard)
 
       case s @ Polling(q) =>

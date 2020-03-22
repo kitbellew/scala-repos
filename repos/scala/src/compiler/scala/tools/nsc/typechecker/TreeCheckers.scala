@@ -343,7 +343,8 @@ abstract class TreeCheckers extends Analyzer {
                 ownerstr(sym) + " has getter but cannot be found. " + sym
                   .ownerChain)
             }
-          case Apply(fn, args) => if (args exists (_ == EmptyTree))
+          case Apply(fn, args) =>
+            if (args exists (_ == EmptyTree))
               errorFn(
                 tree.pos,
                 "Apply arguments to " + fn + " contains an empty tree: " + args)

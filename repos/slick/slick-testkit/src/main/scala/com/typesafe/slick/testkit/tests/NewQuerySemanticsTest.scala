@@ -309,8 +309,9 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
 
     // Union
     val q7 = for {
-      c <- coffees.filter(_.price < 800).map((_, 1)) union coffees
-        .filter(_.price > 950).map((_, 2))
+      c <-
+        coffees.filter(_.price < 800).map((_, 1)) union coffees
+          .filter(_.price > 950).map((_, 2))
     } yield (c._1.name, c._1.supID, c._2)
 
     // Transitive push-down without union
@@ -347,8 +348,9 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
 
     // Outer join
     val q8 = for {
-      (c1, c2) <- coffees.filter(_.price < 900) joinLeft coffees
-        .filter(_.price < 800) on (_.name === _.name)
+      (c1, c2) <-
+        coffees.filter(_.price < 900) joinLeft coffees
+          .filter(_.price < 800) on (_.name === _.name)
     } yield (c1.name, c2.map(_.name))
 
     // Nested outer join

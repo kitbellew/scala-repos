@@ -516,8 +516,8 @@ object ScalaDocumentationProvider {
     def processProbablyJavaDocCommentWithOwner(owner: PsiDocCommentOwner) {
       owner.getDocComment match {
         case scalaComment: ScDocComment =>
-          for (docTag <- scalaComment
-                 .findTagsByName(Set(PARAM_TAG, TYPE_PARAM_TAG).contains _)) {
+          for (docTag <- scalaComment.findTagsByName(
+                 Set(PARAM_TAG, TYPE_PARAM_TAG).contains _)) {
             docTag.name match {
               case PARAM_TAG => registerInheritedParam(inheritedParams, docTag)
               case TYPE_PARAM_TAG =>

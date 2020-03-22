@@ -1,5 +1,4 @@
-package org.jetbrains.plugins.scala.testingSupport.scalatest.scala2_10
-  .scalatest2_2_1
+package org.jetbrains.plugins.scala.testingSupport.scalatest.scala2_10.scalatest2_2_1
 
 import com.intellij.execution.filters.Filter
 import com.intellij.psi.search.ProjectScope

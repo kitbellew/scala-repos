@@ -46,14 +46,16 @@ class ForeignKeyTest extends AsyncTest[RelationalTestDB] {
         p <- posts
         c <- p.categoryJoin
       } yield (p.id, c.id, c.name, p.title)).sortBy(_._1)
-      _ <- q1.map(p => (p._1, p._2)).result
-        .map(_ shouldBe List((2, 1), (3, 2), (4, 3), (5, 2)))
+      _ <-
+        q1.map(p => (p._1, p._2)).result
+          .map(_ shouldBe List((2, 1), (3, 2), (4, 3), (5, 2)))
       q2 = (for {
         p <- posts
         c <- p.categoryFK
       } yield (p.id, c.id, c.name, p.title)).sortBy(_._1)
-      _ <- q2.map(p => (p._1, p._2)).result
-        .map(_ shouldBe List((2, 1), (3, 2), (4, 3), (5, 2)))
+      _ <-
+        q2.map(p => (p._1, p._2)).result
+          .map(_ shouldBe List((2, 1), (3, 2), (4, 3), (5, 2)))
       _ <- (categories.schema ++ posts.schema).drop
       _ <- tdb.assertNotTablesExist("categories", "posts")
     } yield ()

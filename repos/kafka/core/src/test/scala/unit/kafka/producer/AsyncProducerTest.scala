@@ -415,9 +415,8 @@ class AsyncProducerTest {
     partitionedDataOpt match {
       case Some(partitionedData) =>
         for ((brokerId, dataPerBroker) <- partitionedData) {
-          for ((
-                 TopicAndPartition(topic, partitionId),
-                 dataPerTopic) <- dataPerBroker) assertTrue(partitionId == 0)
+          for ((TopicAndPartition(topic, partitionId), dataPerTopic) <-
+                 dataPerBroker) assertTrue(partitionId == 0)
         }
       case None => fail("Failed to collate requests by topic, partition")
     }

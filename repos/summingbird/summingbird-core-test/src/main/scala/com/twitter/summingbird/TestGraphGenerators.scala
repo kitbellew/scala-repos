@@ -246,8 +246,8 @@ object TestGraphGenerators {
     for {
       _ <- Gen.choose(0, 1) // avoids blowup on self recursion
       out <- genProd1
-      ignored <- oneOf(summed, written, aTailDependency(out)): Gen[
-        TailProducer[P, _]]
+      ignored <-
+        oneOf(summed, written, aTailDependency(out)): Gen[TailProducer[P, _]]
     } yield ignored.name("Named ignore").also(out)
 
   def also2[P <: Platform[P]](implicit
@@ -260,8 +260,8 @@ object TestGraphGenerators {
     for {
       _ <- Gen.choose(0, 1) // avoids blowup on self recursion
       out <- genProd2
-      ignored <- oneOf(summed, written, aTailDependency(out)): Gen[
-        TailProducer[P, _]]
+      ignored <-
+        oneOf(summed, written, aTailDependency(out)): Gen[TailProducer[P, _]]
     } yield IdentityKeyedProducer(ignored.also(out))
 
   def service2[P <: Platform[P]](implicit

@@ -114,16 +114,13 @@ trait BaselineComparisons {
           case (acc, obj) => (obj \? "stats") match {
               case Some(stats) =>
                 (for {
-                  JArray(jpath) <- obj \? "path" flatMap (
-                    _ -->? classOf[JArray]
-                  )
+                  JArray(jpath) <-
+                    obj \? "path" flatMap (_ -->? classOf[JArray])
                   JNum(mean) <- stats \? "mean" flatMap (_ -->? classOf[JNum])
-                  JNum(variance) <- stats \? "variance" flatMap (
-                    _ -->? classOf[JNum]
-                  )
-                  JNum(stdDev) <- stats \? "stdDev" flatMap (
-                    _ -->? classOf[JNum]
-                  )
+                  JNum(variance) <-
+                    stats \? "variance" flatMap (_ -->? classOf[JNum])
+                  JNum(stdDev) <-
+                    stats \? "stdDev" flatMap (_ -->? classOf[JNum])
                   JNum(min) <- stats \? "min" flatMap (_ -->? classOf[JNum])
                   JNum(max) <- stats \? "max" flatMap (_ -->? classOf[JNum])
                   JNum(count) <- stats \? "count" flatMap (_ -->? classOf[JNum])

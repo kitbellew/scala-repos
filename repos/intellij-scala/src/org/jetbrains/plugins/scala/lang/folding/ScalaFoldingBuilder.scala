@@ -58,7 +58,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
       node.getElementType match {
         case ScalaTokenTypes.tBLOCK_COMMENT | ScalaTokenTypes.tSH_COMMENT |
             ScalaElementTypes.TEMPLATE_BODY | ScalaDocElementTypes
-              .SCALA_DOC_COMMENT => if (!isWorksheetResults(node))
+              .SCALA_DOC_COMMENT =>
+          if (!isWorksheetResults(node))
             descriptors += new FoldingDescriptor(node, nodeTextRange)
         case ScalaElementTypes.IMPORT_STMT if isGoodImport(node) =>
           descriptors += new FoldingDescriptor(

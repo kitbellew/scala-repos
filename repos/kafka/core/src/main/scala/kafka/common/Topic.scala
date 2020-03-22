@@ -36,7 +36,8 @@ object Topic {
         "topic name is illegal, can't be longer than " + maxNameLength + " characters")
 
     rgx.findFirstIn(topic) match {
-      case Some(t) => if (!t.equals(topic))
+      case Some(t) =>
+        if (!t.equals(topic))
           throw new org.apache.kafka.common.errors.InvalidTopicException(
             "topic name " + topic + " is illegal, contains a character other than ASCII alphanumerics, '.', '_' and '-'")
       case None =>

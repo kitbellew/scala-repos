@@ -47,7 +47,8 @@ object TopStatSeq {
                   builder.advanceLexer //it is good
                 case ScalaTokenTypes.tRBRACE if waitBrace => return parseState
                 case null                                 => return parseState
-                case _ => if (!builder.newlineBeforeCurrentToken)
+                case _ =>
+                  if (!builder.newlineBeforeCurrentToken)
                     builder error ScalaBundle.message("semi.expected")
               }
             }
@@ -57,7 +58,8 @@ object TopStatSeq {
                   builder.advanceLexer //it is good
                 case ScalaTokenTypes.tRBRACE if waitBrace => return parseState
                 case null                                 => return parseState
-                case _ => if (!builder.newlineBeforeCurrentToken)
+                case _ =>
+                  if (!builder.newlineBeforeCurrentToken)
                     builder error ScalaBundle.message("semi.expected")
 
                 //else is ok

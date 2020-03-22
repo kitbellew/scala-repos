@@ -565,7 +565,8 @@ object Future {
           throw new IllegalArgumentException("cannot wait for Undefined period")
         case Duration.Inf      => new CountDownLatch(1).await()
         case Duration.MinusInf => // Drop out
-        case f: FiniteDuration => if (f > Duration.Zero)
+        case f: FiniteDuration =>
+          if (f > Duration.Zero)
             new CountDownLatch(1).await(f.toNanos, TimeUnit.NANOSECONDS)
       }
       throw new TimeoutException(s"Future timed out after [$atMost]")

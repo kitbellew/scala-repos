@@ -168,11 +168,12 @@ private[twitter] object ThriftUtil {
 
     def tryScroogeFinagleService(iface: Class[_]): Option[BinaryService] =
       (for {
-        baseName <- findRootWithSuffix(iface.getName, "$FutureIface") orElse
-          Some(iface.getName)
-        serviceCls <- findClass[BinaryService](
-          baseName + "$FinagleService") orElse
-          findClass[BinaryService](baseName + "$FinagledService")
+        baseName <-
+          findRootWithSuffix(iface.getName, "$FutureIface") orElse
+            Some(iface.getName)
+        serviceCls <-
+          findClass[BinaryService](baseName + "$FinagleService") orElse
+            findClass[BinaryService](baseName + "$FinagledService")
         baseClass <- findClass1(baseName)
       } yield {
         // The new constructor takes one more 'label' paramater than the old one, so we first try find
@@ -201,11 +202,12 @@ private[twitter] object ThriftUtil {
     // The legacy $FinagleService that doesn't take stats.
     def tryLegacyScroogeFinagleService(iface: Class[_]): Option[BinaryService] =
       for {
-        baseName <- findRootWithSuffix(iface.getName, "$FutureIface") orElse
-          Some(iface.getName)
-        serviceCls <- findClass[BinaryService](
-          baseName + "$FinagleService") orElse
-          findClass[BinaryService](baseName + "$FinagledService")
+        baseName <-
+          findRootWithSuffix(iface.getName, "$FutureIface") orElse
+            Some(iface.getName)
+        serviceCls <-
+          findClass[BinaryService](baseName + "$FinagleService") orElse
+            findClass[BinaryService](baseName + "$FinagledService")
         cons <- findConstructor(serviceCls, iface, classOf[TProtocolFactory])
       } yield cons.newInstance(impl, protocolFactory)
 

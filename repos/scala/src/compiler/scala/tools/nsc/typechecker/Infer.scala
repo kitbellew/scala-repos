@@ -1626,7 +1626,8 @@ trait Infer extends Checkable {
                   competing,
                   pt,
                   isSecondTry)
-            case _ => if (bests.isEmpty || alts0.isEmpty)
+            case _ =>
+              if (bests.isEmpty || alts0.isEmpty)
                 NoBestExprAlternativeError(tree, pt, isSecondTry)
           }
         }

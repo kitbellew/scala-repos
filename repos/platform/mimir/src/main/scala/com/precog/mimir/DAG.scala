@@ -861,8 +861,8 @@ trait DAG extends Instructions {
           else
             for {
               node <- rewritten
-              _ <- monadState
-                .modify(_.copy(rewrittenScope = scopeUpdate[S].update(node)))
+              _ <- monadState.modify(
+                _.copy(rewrittenScope = scopeUpdate[S].update(node)))
             } yield node
         }
 
@@ -919,8 +919,8 @@ trait DAG extends Instructions {
         else
           for {
             node <- rewritten
-            _ <- monadState
-              .modify(_.copy(rewrittenScope = scopeUpdate[S].update(node)))
+            _ <- monadState.modify(
+              _.copy(rewrittenScope = scopeUpdate[S].update(node)))
           } yield node
       }
 

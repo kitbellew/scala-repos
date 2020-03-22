@@ -910,9 +910,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                   fTpe)
           }
           js.Block(for {
-            (
-              RecordType.Field(fName, fOrigName, fTpe, fMutable),
-              fRhs) <- fields zip elems
+            (RecordType.Field(fName, fOrigName, fTpe, fMutable), fRhs) <-
+              fields zip elems
           } yield {
             doVarDef(
               makeRecordFieldIdent(ident, fName, fOrigName),
@@ -952,9 +951,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                   fTpe)
           }
           js.Block(for {
-            (
-              RecordType.Field(fName, fOrigName, fTpe, fMutable),
-              fRhs) <- fields zip elems
+            (RecordType.Field(fName, fOrigName, fTpe, fMutable), fRhs) <-
+              fields zip elems
           } yield {
             doAssign(
               VarRef(makeRecordFieldIdent(ident, fName, fOrigName))(fTpe),

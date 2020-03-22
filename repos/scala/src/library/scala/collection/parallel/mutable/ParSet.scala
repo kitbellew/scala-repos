@@ -17,7 +17,7 @@ import scala.collection.parallel.Combiner
   *  @author Aleksandar Prokopec
   */
 trait ParSet[T]
-    extends scala.collection /*.mutable*/.GenSet[T]
+    extends scala.collection /*.mutable*/ .GenSet[T]
     with ParIterable[T]
     with scala.collection.parallel.ParSet[T]
     with GenericParTemplate[T, ParSet]

@@ -143,7 +143,8 @@ private object PoolSlot {
         context
           .become(waitingForDemandFromConnection(connInport, connOutport, rc))
 
-      case Request(_) ⇒ if (remainingRequested == 0)
+      case Request(_) ⇒
+        if (remainingRequested == 0)
           request(1) // ask for first request if necessary
 
       case OnComplete ⇒ onComplete()

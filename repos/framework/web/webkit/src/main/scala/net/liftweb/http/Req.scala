@@ -55,8 +55,9 @@ object UserAgentCalculator extends Factory {
       userAgent <- userAgent
       ieMatch = iePattern.pattern.matcher(userAgent)
       findResult = ieMatch.find if findResult
-      ieVersionString <- Box.legacyNullTest(ieMatch.group(2)) or Box
-        .legacyNullTest(ieMatch.group(3))
+      ieVersionString <-
+        Box.legacyNullTest(ieMatch.group(2)) or Box
+          .legacyNullTest(ieMatch.group(3))
       ver <- Helpers.asDouble(ieVersionString)
     } yield ver
 
@@ -835,8 +836,8 @@ object ContentType {
     */
   def parse(str: String): List[ContentType] =
     (for {
-      (part, index) <- str.charSplit(',').map(_.trim)
-        .zipWithIndex // split at comma
+      (part, index) <-
+        str.charSplit(',').map(_.trim).zipWithIndex // split at comma
       content <- parseIt(part, index)
     } yield content).sortWith(_ < _)
 

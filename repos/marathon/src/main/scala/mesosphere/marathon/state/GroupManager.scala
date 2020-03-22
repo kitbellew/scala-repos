@@ -166,10 +166,11 @@ class GroupManager @Singleton @Inject() (
 
       val deployment = for {
         from <- rootGroup()
-        (toUnversioned, resolve) <- resolveStoreUrls(
-          assignDynamicServicePorts(from, change(from)))
-        to = GroupVersioningUtil
-          .updateVersionInfoForChangedApps(version, from, toUnversioned)
+        (toUnversioned, resolve) <-
+          resolveStoreUrls(assignDynamicServicePorts(from, change(from)))
+        to =
+          GroupVersioningUtil
+            .updateVersionInfoForChangedApps(version, from, toUnversioned)
         _ = validateOrThrow(to)(Group.validGroupWithConfig(config.maxApps.get))
         plan = DeploymentPlan(from, to, resolve, version, toKill)
         _ = validateOrThrow(plan)
@@ -177,8 +178,8 @@ class GroupManager @Singleton @Inject() (
         _ <- scheduler.deploy(plan, force)
         _ <- storeUpdatedApps(plan)
         _ <- groupRepo.store(zkName, plan.target)
-        _ = log
-          .info(s"Updated groups/apps according to deployment plan ${plan.id}")
+        _ = log.info(
+          s"Updated groups/apps according to deployment plan ${plan.id}")
       } yield plan
 
       deployment.onComplete {

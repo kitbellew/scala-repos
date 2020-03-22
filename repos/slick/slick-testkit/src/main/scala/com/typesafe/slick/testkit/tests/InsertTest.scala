@@ -145,8 +145,8 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
       _ <- ts ++= Seq((1, "a"), (2, "b"))
       _ <- ts.insertOrUpdate((3, "c")).map(_ shouldBe 1)
       _ <- ts.insertOrUpdate((1, "d")).map(_ shouldBe 1)
-      _ <- ts.sortBy(_.id).result
-        .map(_ shouldBe Seq((1, "d"), (2, "b"), (3, "c")))
+      _ <-
+        ts.sortBy(_.id).result.map(_ shouldBe Seq((1, "d"), (2, "b"), (3, "c")))
     } yield ()
   }
 
@@ -164,15 +164,16 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
       _ <- ts ++= Seq((1, "a"), (2, "b"))
       _ <- ts.insertOrUpdate((0, "c")).map(_ shouldBe 1)
       _ <- ts.insertOrUpdate((1, "d")).map(_ shouldBe 1)
-      _ <- ts.sortBy(_.id).result
-        .map(_ shouldBe Seq((1, "d"), (2, "b"), (3, "c")))
+      _ <-
+        ts.sortBy(_.id).result.map(_ shouldBe Seq((1, "d"), (2, "b"), (3, "c")))
       _ <- ifCap(jcap.returnInsertKey) {
         val q = ts returning ts.map(_.id)
         for {
           _ <- q.insertOrUpdate((0, "e")).map(_ shouldBe Some(4))
           _ <- q.insertOrUpdate((1, "f")).map(_ shouldBe None)
-          _ <- ts.sortBy(_.id).result
-            .map(_ shouldBe Seq((1, "f"), (2, "b"), (3, "c"), (4, "e")))
+          _ <-
+            ts.sortBy(_.id).result
+              .map(_ shouldBe Seq((1, "f"), (2, "b"), (3, "c"), (4, "e")))
         } yield ()
       }
     } yield ()).withPinnedSession

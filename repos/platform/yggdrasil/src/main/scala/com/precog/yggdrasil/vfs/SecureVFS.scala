@@ -174,16 +174,16 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
         case Path.Root =>
           logger.debug("Defaulting on root-level child browse to account path")
           for {
-            children <- EitherT
-              .right(permissionsFinder.findBrowsableChildren(apiKey, path))
+            children <- EitherT.right(
+              permissionsFinder.findBrowsableChildren(apiKey, path))
             nonRoot = children.filterNot(_ == Path.Root)
             childMetadata <- nonRoot.toList.traverseU(vfs.findPathMetadata)
           } yield { childMetadata.toSet }
 
         case other => for {
             children <- vfs.findDirectChildren(path)
-            permitted <- EitherT
-              .right(permissionsFinder.findBrowsableChildren(apiKey, path))
+            permitted <- EitherT.right(
+              permissionsFinder.findBrowsableChildren(apiKey, path))
           } yield {
             children filter {
               case PathMetadata(child, _) =>
@@ -308,8 +308,8 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
           AccessMode.Execute) leftMap { storageError _ }
         query <- Resource.asQuery(path, Version.Current)
           .apply(queryRes) leftMap { storageError _ }
-        _ = logger
-          .debug("Text of stored query at %s: \n%s".format(path.path, query))
+        _ = logger.debug(
+          "Text of stored query at %s: \n%s".format(path.path, query))
         raw <- executor.execute(query, ctx, queryOptions)
         result <- cacheAt match {
           case Some(cachePath) =>

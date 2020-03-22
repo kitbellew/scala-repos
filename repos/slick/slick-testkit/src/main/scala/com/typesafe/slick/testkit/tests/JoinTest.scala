@@ -50,8 +50,9 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       q2 = (for {
         (c, p) <- categories join posts on (_.id === _.category)
       } yield (p.id, c.id, c.name, p.title)).sortBy(_._1)
-      _ <- q2.map(p => (p._1, p._2)).result
-        .map(_ shouldBe List((2, 1), (3, 2), (4, 3), (5, 2)))
+      _ <-
+        q2.map(p => (p._1, p._2)).result
+          .map(_ shouldBe List((2, 1), (3, 2), (4, 3), (5, 2)))
       q3 = posts.flatMap(_.withCategory)
       _ <- mark("q3", q3.result).map(_ should (_.length == 20))
       q4 = (for {
@@ -276,9 +277,8 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
             3),
           ("A ScalaQuery Update", 2)
         )
-        q1 = for { (c, i) <- categories.sortBy(_.id).zipWithIndex } yield (
-          c.id,
-          i)
+        q1 =
+          for { (c, i) <- categories.sortBy(_.id).zipWithIndex } yield (c.id, i)
         _ <- mark("q1", q1.result)
           .map(_ shouldBe List((1, 0), (2, 1), (3, 2), (4, 3)))
         q2 = for {
@@ -298,9 +298,8 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
         } yield res
         _ <- mark("q4", q4.result)
           .map(_ shouldBe List((1, -1), (2, 1), (3, 2), (4, 3)))
-        q5 = for { (c, i) <- categories.sortBy(_.id).zipWithIndex } yield (
-          c.id,
-          i)
+        q5 =
+          for { (c, i) <- categories.sortBy(_.id).zipWithIndex } yield (c.id, i)
         _ <- mark("q5", q5.result)
           .map(_ shouldBe List((1, 0), (2, 1), (3, 2), (4, 3)))
         q5b = for { (c, i) <- categories.zipWithIndex } yield (c.id, i)

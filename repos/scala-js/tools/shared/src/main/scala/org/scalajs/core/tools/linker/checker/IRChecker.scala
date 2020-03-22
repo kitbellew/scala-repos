@@ -158,7 +158,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
     name match {
       case _: Ident =>
       // ok
-      case _: StringLiteral => if (!classDef.kind.isJSClass)
+      case _: StringLiteral =>
+        if (!classDef.kind.isJSClass)
           reportError(s"FieldDef '$name' cannot have a string literal name")
     }
 
@@ -606,7 +607,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
           NoType,
           isStatic = false)
 
-      case LoadModule(cls) => if (!cls.className.endsWith("$"))
+      case LoadModule(cls) =>
+        if (!cls.className.endsWith("$"))
           reportError("LoadModule of non-module class $cls")
 
       case Select(qualifier, Ident(item, _)) =>
@@ -717,7 +719,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       case ArraySelect(array, index) =>
         typecheckExpect(index, env, IntType)
         typecheckExpr(array, env) match {
-          case arrayType: ArrayType => if (tree.tpe != arrayElemType(arrayType))
+          case arrayType: ArrayType =>
+            if (tree.tpe != arrayElemType(arrayType))
               reportError(
                 s"Array select of array type $arrayType typed as ${tree.tpe}")
           case arrayType => reportError(
@@ -812,7 +815,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
                 s"typed as ${tree.tpe}")
         }
 
-      case This() => if (!isSubtype(env.thisTpe, tree.tpe))
+      case This() =>
+        if (!isSubtype(env.thisTpe, tree.tpe))
           reportError(s"this of type ${env.thisTpe} typed as ${tree.tpe}")
 
       case Closure(captureParams, params, body, captureValues) =>
@@ -821,9 +825,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
             "Mismatched size for captures: " +
               s"${captureParams.size} params vs ${captureValues.size} values")
 
-        for ((
-               ParamDef(name, ctpe, mutable, rest),
-               value) <- captureParams zip captureValues) {
+        for ((ParamDef(name, ctpe, mutable, rest), value) <-
+               captureParams zip captureValues) {
           if (mutable) reportError(s"Capture parameter $name cannot be mutable")
           if (rest)
             reportError(s"Capture parameter $name cannot be a rest parameter")

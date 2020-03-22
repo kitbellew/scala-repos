@@ -2809,7 +2809,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         }
         if (newmods.isDeferred) {
           trees match {
-            case List(ValDef(_, _, _, EmptyTree)) => if (mods.isLazy)
+            case List(ValDef(_, _, _, EmptyTree)) =>
+              if (mods.isLazy)
                 syntaxError(
                   p.pos,
                   "lazy values may not be abstract",

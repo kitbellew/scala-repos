@@ -20,12 +20,19 @@ object Export extends LilaController {
         OptionFuResult(GameRepo game id) { game =>
           (game.pgnImport.ifTrue(~get("as") == "imported") match {
             case Some(i) => fuccess(i.pgn)
-            case None => for {
+            case None =>
+              for {
                 initialFen <- GameRepo initialFen game
                 pgn = Env.api.pgnDump(game, initialFen)
                 analysis ← !get("as").contains("raw") ?? (Env.analyse
                   .analyser get game.id)
-              } yield Env.analyse.annotator(pgn, analysis, game.opening, game.winnerColor, game.status, game.clock).toString
+              } yield Env.analyse.annotator(
+                pgn,
+                analysis,
+                game.opening,
+                game.winnerColor,
+                game.status,
+                game.clock).toString
           }) map { content =>
             Ok(content).withHeaders(
               CONTENT_TYPE -> ContentTypes.TEXT,
