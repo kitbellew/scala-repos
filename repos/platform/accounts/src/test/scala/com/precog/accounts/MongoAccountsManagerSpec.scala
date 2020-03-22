@@ -126,8 +126,9 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
     "properly generate and retrieve a reset token" in new AccountManager {
       (for {
         tokenId <- accountManager.generateResetToken(account)
-        resolvedAccount <-
-          accountManager.findAccountByResetToken(account.accountId, tokenId)
+        resolvedAccount <- accountManager.findAccountByResetToken(
+          account.accountId,
+          tokenId)
       } yield resolvedAccount).copoint must beLike {
         case \/-(resolvedAccount) =>
           resolvedAccount.accountId must_== account.accountId
@@ -139,8 +140,9 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
         tokenId <- accountManager.generateResetToken(
           account,
           (new DateTime).minusMinutes(5))
-        resolvedAccount <-
-          accountManager.findAccountByResetToken(account.accountId, tokenId)
+        resolvedAccount <- accountManager.findAccountByResetToken(
+          account.accountId,
+          tokenId)
       } yield resolvedAccount).copoint must beLike {
         case -\/(_) => ok
       }

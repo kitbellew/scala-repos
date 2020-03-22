@@ -448,8 +448,9 @@ trait EntityPage extends HtmlPage {
         <div id="inheritedMembers">
         {
       // linearization
-      NodeSeq fromSeq (for ((superTpl, superType) <-
-                              (tpl.linearizationTemplates zip tpl.linearizationTypes))
+      NodeSeq fromSeq (for ((
+                              superTpl,
+                              superType) <- (tpl.linearizationTemplates zip tpl.linearizationTypes))
         yield <div class="parent" name={superTpl.qualifiedName}>
               <h3>Inherited from {
           typeToHtmlWithStupidTypes(tpl, superTpl, superType)

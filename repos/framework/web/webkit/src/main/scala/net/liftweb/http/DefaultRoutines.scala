@@ -41,14 +41,13 @@ object DefaultRoutines {
     }
 
     for {
-      xml <-
-        Templates(realPath, loc) or
-          Templates("templates-hidden" :: realPath, loc) or
-          Templates(
-            realPath.dropRight(1) :::
-              ("resources-hidden" ::
-              realPath.takeRight(1)),
-            loc)
+      xml <- Templates(realPath, loc) or
+        Templates("templates-hidden" :: realPath, loc) or
+        Templates(
+          realPath.dropRight(1) :::
+            ("resources-hidden" ::
+            realPath.takeRight(1)),
+          loc)
 
       bundle <- BundleBuilder.convert(xml, loc)
     } yield bundle
@@ -105,9 +104,8 @@ object DefaultRoutines {
     val cb =
       for {
         req <- S.originalRequest
-        path =
-          req.path.partPath.dropRight(1) :::
-            req.path.partPath.takeRight(1).map(s => "_resources_" + s)
+        path = req.path.partPath.dropRight(1) :::
+          req.path.partPath.takeRight(1).map(s => "_resources_" + s)
         bundle <- resBundleFor(loc, path)
       } yield bundle
 

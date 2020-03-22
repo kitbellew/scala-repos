@@ -82,8 +82,7 @@ private[this] class MVarImpl[A](
         v match {
           case Some(_) =>
             for {
-              _ <-
-                writeLatch awaitPhase p // if there is a value, wait until someone takes it
+              _ <- writeLatch awaitPhase p // if there is a value, wait until someone takes it
               _ <- write(
                 a,
                 read

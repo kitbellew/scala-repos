@@ -255,8 +255,9 @@ class ScalaFindUsagesHandler(
     inReadAction {
       element match {
         case function: ScFunction if !function.isLocal =>
-          for (elem <-
-                 ScalaOverridingMemberSearcher.search(function, deep = true)) {
+          for (elem <- ScalaOverridingMemberSearcher.search(
+                 function,
+                 deep = true)) {
             val processed = super.processElementUsages(elem, processor, options)
             if (!processed) return false
           }

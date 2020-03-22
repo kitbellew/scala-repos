@@ -14,9 +14,8 @@ case class Generated(position: String, solution: JsObject, id: String) {
     for {
       lines ← Generated readLines solution
       history = position split ' '
-      _ ←
-        if (history.isEmpty) Failure(new Exception("Empty history"))
-        else Success(true)
+      _ ← if (history.isEmpty) Failure(new Exception("Empty history"))
+      else Success(true)
       fen ← Generated fenOf history
     } yield Puzzle.make(
       gameId = id.some,

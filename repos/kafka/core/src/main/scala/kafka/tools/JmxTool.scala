@@ -152,8 +152,9 @@ object JmxTool extends Logging {
     var attributes = new mutable.HashMap[String, Any]()
     for (name <- names) {
       val mbean = mbsc.getMBeanInfo(name)
-      for (attrObj <-
-             mbsc.getAttributes(name, mbean.getAttributes.map(_.getName))) {
+      for (attrObj <- mbsc.getAttributes(
+             name,
+             mbean.getAttributes.map(_.getName))) {
         val attr = attrObj.asInstanceOf[Attribute]
         attributesWhitelist match {
           case Some(allowedAttributes) =>

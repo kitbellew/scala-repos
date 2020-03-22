@@ -238,8 +238,10 @@ trait PullRequestsControllerBase extends ControllerBase {
       (for {
         issueId <- params("id").toIntOpt
         loginAccount <- context.loginAccount
-        (issue, pullreq) <-
-          getPullRequest(baseRepository.owner, baseRepository.name, issueId)
+        (issue, pullreq) <- getPullRequest(
+          baseRepository.owner,
+          baseRepository.name,
+          issueId)
         owner = pullreq.requestUserName
         name = pullreq.requestRepositoryName
         if hasWritePermission(owner, name, context.loginAccount)
@@ -499,25 +501,24 @@ trait PullRequestsControllerBase extends ControllerBase {
     val (forkedOwner, forkedId) =
       parseCompareIdentifie(forked, forkedRepository.owner)
 
-    (for (originRepositoryName <-
-            if (originOwner == forkedOwner) {
-              // Self repository
-              Some(forkedRepository.name)
-            } else if (forkedRepository.repository.originUserName.isEmpty) {
-              // when ForkedRepository is the original repository
-              getForkedRepositories(
-                forkedRepository.owner,
-                forkedRepository.name).find(_._1 == originOwner).map(_._2)
-            } else if (Some(originOwner) == forkedRepository.repository.originUserName) {
-              // Original repository
-              forkedRepository.repository.originRepositoryName
-            } else {
-              // Sibling repository
-              getUserRepositories(originOwner).find { x =>
-                x.repository.originUserName == forkedRepository.repository.originUserName &&
-                x.repository.originRepositoryName == forkedRepository.repository.originRepositoryName
-              }.map(_.repository.repositoryName)
-            };
+    (for (originRepositoryName <- if (originOwner == forkedOwner) {
+            // Self repository
+            Some(forkedRepository.name)
+          } else if (forkedRepository.repository.originUserName.isEmpty) {
+            // when ForkedRepository is the original repository
+            getForkedRepositories(
+              forkedRepository.owner,
+              forkedRepository.name).find(_._1 == originOwner).map(_._2)
+          } else if (Some(originOwner) == forkedRepository.repository.originUserName) {
+            // Original repository
+            forkedRepository.repository.originRepositoryName
+          } else {
+            // Sibling repository
+            getUserRepositories(originOwner).find { x =>
+              x.repository.originUserName == forkedRepository.repository.originUserName &&
+              x.repository.originRepositoryName == forkedRepository.repository.originRepositoryName
+            }.map(_.repository.repositoryName)
+          };
           originRepository <- getRepository(originOwner, originRepositoryName))
       yield {
         using(
@@ -628,18 +629,18 @@ trait PullRequestsControllerBase extends ControllerBase {
       val (forkedOwner, tmpForkedBranch) =
         parseCompareIdentifie(forked, forkedRepository.owner)
 
-      (for (originRepositoryName <-
-              if (originOwner == forkedOwner) {
-                Some(forkedRepository.name)
-              } else {
-                forkedRepository.repository.originRepositoryName.orElse {
-                  getForkedRepositories(
-                    forkedRepository.owner,
-                    forkedRepository.name).find(_._1 == originOwner).map(_._2)
-                }
-              };
-            originRepository <-
-              getRepository(originOwner, originRepositoryName)) yield {
+      (for (originRepositoryName <- if (originOwner == forkedOwner) {
+              Some(forkedRepository.name)
+            } else {
+              forkedRepository.repository.originRepositoryName.orElse {
+                getForkedRepositories(
+                  forkedRepository.owner,
+                  forkedRepository.name).find(_._1 == originOwner).map(_._2)
+              }
+            };
+            originRepository <- getRepository(
+              originOwner,
+              originRepositoryName)) yield {
         using(
           Git.open(
             getRepositoryDir(originRepository.owner, originRepository.name)),

@@ -269,18 +269,30 @@ trait EvaluatorModule[M[+_]]
         forest match {
           case UnionBucketSpec(left, right) =>
             for {
-              leftRes <-
-                resolveLowLevelGroup(commonTable, commonGraph, left, splits)
-              rightRes <-
-                resolveLowLevelGroup(commonTable, commonGraph, right, splits)
+              leftRes <- resolveLowLevelGroup(
+                commonTable,
+                commonGraph,
+                left,
+                splits)
+              rightRes <- resolveLowLevelGroup(
+                commonTable,
+                commonGraph,
+                right,
+                splits)
             } yield GroupKeySpecOr(leftRes, rightRes)
 
           case IntersectBucketSpec(left, right) =>
             for {
-              leftRes <-
-                resolveLowLevelGroup(commonTable, commonGraph, left, splits)
-              rightRes <-
-                resolveLowLevelGroup(commonTable, commonGraph, right, splits)
+              leftRes <- resolveLowLevelGroup(
+                commonTable,
+                commonGraph,
+                left,
+                splits)
+              rightRes <- resolveLowLevelGroup(
+                commonTable,
+                commonGraph,
+                right,
+                splits)
             } yield GroupKeySpecAnd(leftRes, rightRes)
 
           case UnfixedSolution(id, solution) =>
@@ -1018,20 +1030,18 @@ trait EvaluatorModule[M[+_]]
                   predTable.reduce(Forall reducer MorphContext(ctx, graph))(
                     Forall.monoid))
 
-                assertion =
-                  if (truthiness getOrElse false) {
-                    N.point(())
-                  } else {
-                    for {
-                      _ <- report.error(graph.loc, "Assertion failed")
-                      _ <-
-                        report.die() // Arrrrrrrgggghhhhhhhhhhhhhh........ *gurgle*
-                    } yield ()
-                  }
+                assertion = if (truthiness getOrElse false) {
+                  N.point(())
+                } else {
+                  for {
+                    _ <- report.error(graph.loc, "Assertion failed")
+                    _ <- report.die() // Arrrrrrrgggghhhhhhhhhhhhhh........ *gurgle*
+                  } yield ()
+                }
                 _ <- transState liftM assertion
 
-                result =
-                  childPending.table transform liftToValues(childPending.trans)
+                result = childPending.table transform liftToValues(
+                  childPending.trans)
               } yield PendingTable(
                 result,
                 graph,
@@ -1044,16 +1054,17 @@ trait EvaluatorModule[M[+_]]
             case IUI(union, left, right) =>
               // TODO: Get rid of ValueSorts.
               for {
-                pair <-
-                  zip(prepareEval(left, splits), prepareEval(right, splits))
+                pair <- zip(
+                  prepareEval(left, splits),
+                  prepareEval(right, splits))
                 (leftPending, rightPending) = pair
 
                 keyValueSpec = TransSpec1.PruneToKeyValue
 
-                leftTable =
-                  leftPending.table.transform(liftToValues(leftPending.trans))
-                rightTable =
-                  rightPending.table.transform(liftToValues(rightPending.trans))
+                leftTable = leftPending.table.transform(
+                  liftToValues(leftPending.trans))
+                rightTable = rightPending.table.transform(
+                  liftToValues(rightPending.trans))
 
                 leftSortedM = transState liftM mn(
                   leftTable.sort(keyValueSpec, SortAscending))
@@ -1063,18 +1074,17 @@ trait EvaluatorModule[M[+_]]
                 pair <- zip(leftSortedM, rightSortedM)
                 (leftSorted, rightSorted) = pair
 
-                result =
-                  if (union) {
-                    leftSorted.cogroup(keyValueSpec, keyValueSpec, rightSorted)(
-                      Leaf(Source),
-                      Leaf(Source),
-                      Leaf(SourceLeft))
-                  } else {
-                    leftSorted.cogroup(keyValueSpec, keyValueSpec, rightSorted)(
-                      TransSpec1.DeleteKeyValue,
-                      TransSpec1.DeleteKeyValue,
-                      TransSpec2.LeftId)
-                  }
+                result = if (union) {
+                  leftSorted.cogroup(keyValueSpec, keyValueSpec, rightSorted)(
+                    Leaf(Source),
+                    Leaf(Source),
+                    Leaf(SourceLeft))
+                } else {
+                  leftSorted.cogroup(keyValueSpec, keyValueSpec, rightSorted)(
+                    TransSpec1.DeleteKeyValue,
+                    TransSpec1.DeleteKeyValue,
+                    TransSpec2.LeftId)
+                }
               } yield {
                 PendingTable(result, graph, TransSpec1.Id, IdentityOrder(graph))
               }
@@ -1082,14 +1092,15 @@ trait EvaluatorModule[M[+_]]
             // TODO unify with IUI
             case Diff(left, right) =>
               for {
-                pair <-
-                  zip(prepareEval(left, splits), prepareEval(right, splits))
+                pair <- zip(
+                  prepareEval(left, splits),
+                  prepareEval(right, splits))
                 (leftPending, rightPending) = pair
 
-                leftTable =
-                  leftPending.table.transform(liftToValues(leftPending.trans))
-                rightTable =
-                  rightPending.table.transform(liftToValues(rightPending.trans))
+                leftTable = leftPending.table.transform(
+                  liftToValues(leftPending.trans))
+                rightTable = rightPending.table.transform(
+                  liftToValues(rightPending.trans))
 
                 // this transspec prunes everything that is not a key or a value.
                 keyValueSpec = TransSpec1.PruneToKeyValue
@@ -1102,11 +1113,13 @@ trait EvaluatorModule[M[+_]]
                 pair <- zip(leftSortedM, rightSortedM)
                 (leftSorted, rightSorted) = pair
 
-                result =
-                  leftSorted.cogroup(keyValueSpec, keyValueSpec, rightSorted)(
-                    TransSpec1.Id,
-                    TransSpec1.DeleteKeyValue,
-                    TransSpec2.DeleteKeyValueLeft)
+                result = leftSorted.cogroup(
+                  keyValueSpec,
+                  keyValueSpec,
+                  rightSorted)(
+                  TransSpec1.Id,
+                  TransSpec1.DeleteKeyValue,
+                  TransSpec2.DeleteKeyValueLeft)
               } yield {
                 PendingTable(result, graph, TransSpec1.Id, IdentityOrder(graph))
               }

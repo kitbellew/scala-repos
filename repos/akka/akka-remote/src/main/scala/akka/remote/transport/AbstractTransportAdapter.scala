@@ -224,8 +224,9 @@ abstract class ActorTransportAdapter(
 
   override def shutdown(): Future[Boolean] =
     for {
-      stopResult ←
-        gracefulStop(manager, RARP(system).provider.remoteSettings.FlushWait)
+      stopResult ← gracefulStop(
+        manager,
+        RARP(system).provider.remoteSettings.FlushWait)
       wrappedStopResult ← wrappedTransport.shutdown()
     } yield stopResult && wrappedStopResult
 }

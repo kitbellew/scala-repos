@@ -316,22 +316,23 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       _ <- (as.schema ++ bs.schema).create
       q1 = as.groupBy(_.id).map(_._2.map(x => x).map(x => x.a).min)
       _ <- q1.result.map(v => v.toList shouldBe Nil)
-      q2 = (as joinLeft bs on (_.id === _.id)).map {
-        case (c, so) =>
-          val nameo = so.map(_.b)
-          (c, so, nameo)
-      }.groupBy { prop =>
-        val c = prop._1
-        val so = prop._2
-        val nameo = prop._3
-        so.map(_.id)
-      }.map { prop =>
-        val supId = prop._1
-        val c = prop._2.map(x => x._1)
-        val s = prop._2.map(x => x._2)
-        val name = prop._2.map(x => x._3)
-        (name.min, s.map(_.map(_.b)).min, supId, c.length)
-      }
+      q2 =
+        (as joinLeft bs on (_.id === _.id)).map {
+          case (c, so) =>
+            val nameo = so.map(_.b)
+            (c, so, nameo)
+        }.groupBy { prop =>
+          val c = prop._1
+          val so = prop._2
+          val nameo = prop._3
+          so.map(_.id)
+        }.map { prop =>
+          val supId = prop._1
+          val c = prop._2.map(x => x._1)
+          val s = prop._2.map(x => x._2)
+          val name = prop._2.map(x => x._3)
+          (name.min, s.map(_.map(_.b)).min, supId, c.length)
+        }
       _ <- q2.result.map(_ shouldBe Nil)
       q4 = as.flatMap { t1 =>
         bs.withFilter { t2 => t1.fkId === t2.id && t2.d === "" }.map(t2 =>

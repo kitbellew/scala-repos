@@ -943,11 +943,12 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
             val methodRefClass = classBTypeFromParsedClassfile(mi.owner)
             for {
-              (methodNode, methodDeclClassNode) <-
-                byteCodeRepository.methodNode(
-                  methodRefClass.internalName,
-                  mi.name,
-                  mi.desc): Either[OptimizerWarning, (MethodNode, InternalName)]
+              (
+                methodNode,
+                methodDeclClassNode) <- byteCodeRepository.methodNode(
+                methodRefClass.internalName,
+                mi.name,
+                mi.desc): Either[OptimizerWarning, (MethodNode, InternalName)]
               methodDeclClass = classBTypeFromParsedClassfile(
                 methodDeclClassNode)
               res <- canInlineCall(
@@ -1015,13 +1016,12 @@ class Inliner[BT <: BTypes](val btypes: BT) {
           val methodRefClass = classBTypeFromParsedClassfile(
             implMethod.getOwner)
           for {
-            (methodNode, methodDeclClassNode) <-
-              byteCodeRepository.methodNode(
-                methodRefClass.internalName,
-                implMethod.getName,
-                implMethod.getDesc): Either[
-                OptimizerWarning,
-                (MethodNode, InternalName)]
+            (methodNode, methodDeclClassNode) <- byteCodeRepository.methodNode(
+              methodRefClass.internalName,
+              implMethod.getName,
+              implMethod.getDesc): Either[
+              OptimizerWarning,
+              (MethodNode, InternalName)]
             methodDeclClass = classBTypeFromParsedClassfile(methodDeclClassNode)
             res <- memberIsAccessible(
               methodNode.access,

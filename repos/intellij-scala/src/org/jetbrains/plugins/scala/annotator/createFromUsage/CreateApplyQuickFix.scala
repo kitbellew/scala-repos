@@ -27,8 +27,8 @@ class CreateApplyQuickFix(td: ScTypeDefinition, call: ScMethodCall) extends {
       method: ScFunction,
       builder: TemplateBuilder) = {
     for (aType <- methodType;
-         typeElement <-
-           method.children.findByType(classOf[ScSimpleTypeElement])) {
+         typeElement <- method.children.findByType(
+           classOf[ScSimpleTypeElement])) {
       builder.replaceElement(typeElement, aType)
     }
 

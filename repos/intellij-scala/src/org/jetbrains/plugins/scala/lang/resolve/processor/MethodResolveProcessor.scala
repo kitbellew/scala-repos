@@ -549,8 +549,12 @@ object MethodResolveProcessor {
             }
             hasRecursiveTypeParameters
           }
-          for (TypeParameter(name, typeParams, lowerType, upperType, tParam) <-
-                 typeParameters) {
+          for (TypeParameter(
+                 name,
+                 typeParams,
+                 lowerType,
+                 upperType,
+                 tParam) <- typeParameters) {
             if (lowerType() != Nothing) {
               val substedLower = s.subst(unSubst.subst(lowerType()))
               if (!hasRecursiveTypeParameters(substedLower)) {

@@ -348,9 +348,8 @@ private[kafka] class ZookeeperConsumerConnector(
   }
 
   private def sendShutdownToAllQueues() = {
-    for (queue <-
-           topicThreadIdAndQueues.values.toSet[
-             BlockingQueue[FetchedDataChunk]]) {
+    for (queue <- topicThreadIdAndQueues.values.toSet[BlockingQueue[
+           FetchedDataChunk]]) {
       debug("Clearing up queue")
       queue.clear()
       queue.put(ZookeeperConsumerConnector.shutdownCommand)

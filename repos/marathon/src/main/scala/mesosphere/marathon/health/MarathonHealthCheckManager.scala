@@ -258,8 +258,8 @@ class MarathonHealthCheckManager @Inject() (
     appHealthChecks.readLock { ahcs =>
       implicit val timeout: Timeout = Timeout(2, SECONDS)
       val futureHealths = for {
-        ActiveHealthCheck(_, actor) <-
-          ahcs(appId).values.iterator.flatten.toVector
+        ActiveHealthCheck(_, actor) <- ahcs(
+          appId).values.iterator.flatten.toVector
       } yield (actor ? GetAppHealth).mapTo[AppHealth]
 
       Future.sequence(futureHealths) flatMap { healths =>

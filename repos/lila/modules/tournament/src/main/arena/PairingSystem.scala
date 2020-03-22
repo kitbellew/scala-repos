@@ -30,13 +30,12 @@ object PairingSystem extends AbstractPairingSystem {
         fuccess(false),
         PlayerRepo.countActive(tour.id).map(2 ==))
       data = Data(tour, lastOpponents, ranking, onlyTwoActivePlayers)
-      preps <-
-        if (lastOpponents.hash.isEmpty) evenOrAll(data, users)
-        else
-          makePreps(data, users.waiting) flatMap {
-            case Nil => fuccess(Nil)
-            case _   => evenOrAll(data, users)
-          }
+      preps <- if (lastOpponents.hash.isEmpty) evenOrAll(data, users)
+      else
+        makePreps(data, users.waiting) flatMap {
+          case Nil => fuccess(Nil)
+          case _   => evenOrAll(data, users)
+        }
       pairings <- preps.map { prep =>
         UserRepo.firstGetsWhite(
           prep.user1.some,

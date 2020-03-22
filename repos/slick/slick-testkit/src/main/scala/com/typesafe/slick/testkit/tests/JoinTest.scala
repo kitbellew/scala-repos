@@ -125,9 +125,8 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
         (1, Some(1)),
         (5, None))
       // Nested left outer, lift non-primitive value
-      q5 =
-        ((xs joinLeft ys on (_.b === _.b)) joinLeft ys on (_._1.b === _.b)).to[
-          Set]
+      q5 = ((xs joinLeft ys on (_.b === _.b)) joinLeft ys on (_._1.b === _.b)).to[
+        Set]
       r5 <- mark("q5", q5.result)
       r5t: Set[
         (((Int, String), Option[(Int, String)]), Option[(Int, String)])] = r5
@@ -315,8 +314,8 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
         _ <- mark("q5b", q5b.result).map(
           _.map(_._2).toSet shouldBe Set(0L, 1L, 2L, 3L))
         q6 = for {
-          ((c, p), i) <-
-            (categories.sortBy(_.id) zip posts.sortBy(_.id)).zipWithIndex
+          ((c, p), i) <- (categories.sortBy(_.id) zip posts.sortBy(
+            _.id)).zipWithIndex
         } yield (c.id, p.category, i)
         _ <- mark("q6", q6.result).map(
           _ shouldBe List((1, -1, 0), (2, 1, 1), (3, 2, 2), (4, 3, 3)))

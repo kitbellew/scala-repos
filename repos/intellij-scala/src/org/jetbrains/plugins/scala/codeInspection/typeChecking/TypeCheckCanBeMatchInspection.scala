@@ -318,8 +318,11 @@ object TypeCheckToMatchUtil {
     val renameData = new RenameData()
     for {
       index <- ifStmts.indices
-      text <-
-        buildCaseClauseText(ifStmts(index), isInstOf(index), index, renameData)
+      text <- buildCaseClauseText(
+        ifStmts(index),
+        isInstOf(index),
+        index,
+        renameData)
     } {
       builder.append(text)
     }

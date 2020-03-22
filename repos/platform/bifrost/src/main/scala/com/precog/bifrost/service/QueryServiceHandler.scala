@@ -139,8 +139,8 @@ abstract class QueryServiceHandler[A](implicit M: Monad[Future])
             new DateTime
           ) //CLOCK!!!!!!
           result <- executor.execute(query, ctx, opts)
-          httpResponse <-
-            EitherT.right(extractResponse(request, result, opts.output))
+          httpResponse <- EitherT.right(
+            extractResponse(request, result, opts.output))
         } yield {
           appendHeaders(opts) { httpResponse }
         }

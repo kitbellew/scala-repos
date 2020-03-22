@@ -131,8 +131,8 @@ object User extends LilaController {
       }
       followable <- ctx.isAuth ?? { Env.pref.api followable u.id }
       blocked <- ctx.userId ?? { relationApi.fetchBlocks(u.id, _) }
-      searchForm =
-        GameFilterMenu.searchForm(userGameSearch, filters.current)(ctx.body)
+      searchForm = GameFilterMenu.searchForm(userGameSearch, filters.current)(
+        ctx.body)
     } yield html.user.show(
       u,
       info,

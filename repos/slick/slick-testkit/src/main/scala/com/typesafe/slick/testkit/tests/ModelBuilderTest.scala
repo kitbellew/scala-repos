@@ -260,8 +260,7 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
       val DBTypePattern = "^[a-zA-Z][a-zA-Z0-9 ]*$".r
 
       for {
-        _ <-
-          (posts.schema ++ categories.schema ++ defaultTest.schema ++ noDefaultTest.schema ++ typeTest.schema).create
+        _ <- (posts.schema ++ categories.schema ++ defaultTest.schema ++ noDefaultTest.schema ++ typeTest.schema).create
         _ <- createModel(ignoreInvalidDefaults = false).map(_.assertConsistency)
         tables <- tdb.profile.defaultTables
         _ <- createModel(Some(tables), ignoreInvalidDefaults = false).map(

@@ -71,8 +71,9 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         Nil
       } else {
         val exports = for {
-          (jsName, specs) <-
-            ctorExports.groupBy(_._1.jsName) // group by exported name
+          (jsName, specs) <- ctorExports.groupBy(
+            _._1.jsName
+          ) // group by exported name
         } yield {
           val (namedExports, normalExports) = specs.partition(_._1.isNamed)
 
@@ -389,12 +390,13 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         if methods != varArgMeths.toSet
 
         // body of case to disambiguates methods with current count
-        caseBody = genExportSameArgc(
-          minArgc,
-          needsRestParam,
-          methods.toList,
-          0,
-          Some(argcs.min))
+        caseBody =
+          genExportSameArgc(
+            minArgc,
+            needsRestParam,
+            methods.toList,
+            0,
+            Some(argcs.min))
 
         // argc in reverse order
         argcList = argcs.toList.sortBy(-_)

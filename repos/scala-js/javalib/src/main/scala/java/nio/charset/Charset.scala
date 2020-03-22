@@ -120,8 +120,11 @@ object Charset {
            "unicodebigunmarked"))
       m(s) = UTF_16BE
 
-    for (s <-
-           Seq("utf-16le", "utf_16le", "x-utf-16le", "unicodelittleunmarked"))
+    for (s <- Seq(
+           "utf-16le",
+           "utf_16le",
+           "x-utf-16le",
+           "unicodelittleunmarked"))
       m(s) = UTF_16LE
 
     for (s <- Seq("utf-16", "utf_16", "unicode", "unicodebig"))

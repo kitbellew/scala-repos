@@ -129,8 +129,8 @@ abstract class ApplicabilityTestBase extends SimpleTestCase {
   }
 
   private def problemsIn(file: ScalaFile): List[ApplicabilityProblem] = {
-    for (ref <-
-           file.depthFirst.filterByType(classOf[ScReferenceElement]).toList;
+    for (ref <- file.depthFirst.filterByType(
+           classOf[ScReferenceElement]).toList;
          result <- ref.advancedResolve.toList;
          problem <- result.problems.filter(_ != ExpectedTypeMismatch))
       yield problem

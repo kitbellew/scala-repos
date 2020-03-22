@@ -29,8 +29,10 @@ private[lobby] object Biter {
     for {
       userOption ← lobbyUserOption.map(_.id) ?? UserRepo.byId
       ownerOption ← hook.userId ?? UserRepo.byId
-      creatorColor <-
-        assignCreatorColor(ownerOption, userOption, hook.realColor)
+      creatorColor <- assignCreatorColor(
+        ownerOption,
+        userOption,
+        hook.realColor)
       game = blame(
         !creatorColor,
         userOption,
@@ -42,8 +44,7 @@ private[lobby] object Biter {
   private def join(seek: Seek, lobbyUser: LobbyUser): Fu[JoinSeek] =
     for {
       user ← UserRepo byId lobbyUser.id flatten s"No such user: ${lobbyUser.id}"
-      owner ←
-        UserRepo byId seek.user.id flatten s"No such user: ${seek.user.id}"
+      owner ← UserRepo byId seek.user.id flatten s"No such user: ${seek.user.id}"
       creatorColor <- assignCreatorColor(owner.some, user.some, seek.realColor)
       game = blame(
         !creatorColor,
