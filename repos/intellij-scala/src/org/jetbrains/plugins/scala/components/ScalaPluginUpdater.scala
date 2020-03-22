@@ -162,10 +162,7 @@ object ScalaPluginUpdater {
 
   def upgradeRepo() = {
     val updateSettings = UpdateSettings.getInstance()
-    for {
-      (version, repo) <- knownVersions
-      if version != currentVersion
-    } {
+    for { (version, repo) <- knownVersions if version != currentVersion } {
       if (updateSettings.getStoredPluginHosts.contains(repo(EAP))) {
         updateSettings.getStoredPluginHosts.remove(repo(EAP))
         if (!currentRepo(EAP).isEmpty)

@@ -167,10 +167,7 @@ private[scalajs] object UseAsMacros {
         !member.asTerm.isParamWithDefault
       }
 
-      val tups = for {
-        member <- tpe.members
-        if isAPIMember(member)
-      } yield {
+      val tups = for { member <- tpe.members if isAPIMember(member) } yield {
         val memberMethod = member.asMethod
         (jsMemberSelection(memberMethod), jsMemberFor(tpe, memberMethod))
       }
@@ -258,8 +255,7 @@ private[scalajs] object UseAsMacros {
       lazy val default = defaultName(sym)
 
       val explicitNames = for {
-        annot <- memberAnnotations(sym)
-        if annotIs(annot, JSExportAnnotation)
+        annot <- memberAnnotations(sym) if annotIs(annot, JSExportAnnotation)
       } yield { annotStringArg(annot).getOrElse(default) }
 
       if (exportAll && sym.isPublic) default :: explicitNames else explicitNames

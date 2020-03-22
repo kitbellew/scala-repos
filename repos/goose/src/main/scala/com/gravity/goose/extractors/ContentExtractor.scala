@@ -476,10 +476,7 @@ trait ContentExtractor {
 
     trace(logPrefix + "Starting cleanup Node")
     val node = addSiblings(targetNode)
-    for {
-      e <- node.children
-      if (e.tagName != "p")
-    } {
+    for { e <- node.children if (e.tagName != "p") } {
       trace(logPrefix + "CLEANUP  NODE: " + e.id + " class: " + e.attr("class"))
       if (isHighLinkDensity(e) || isTableTagAndNoParagraphsExist(
             e) || !isNodeScoreThreshholdMet(node, e)) {

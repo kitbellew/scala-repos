@@ -259,8 +259,7 @@ class ScalaChangeSignatureDialog(
     val namesWithIndices = paramNames.zipWithIndex
     for {
       (name, idx) <- namesWithIndices
-      (name2, idx2) <- namesWithIndices
-      if name == name2 && idx < idx2
+      (name2, idx2) <- namesWithIndices if name == name2 && idx < idx2
     } {
       problems += ScalaBundle
         .message("change.signature.parameters.same.name.{0}", name)

@@ -20,10 +20,8 @@ object RatingRange {
   // ^\d{3,4}\-\d{3,4}$
   def apply(from: String): Option[RatingRange] =
     for {
-      min ← parseIntOption(from takeWhile ('-' !=))
-      if acceptable(min)
-      max ← parseIntOption(from dropWhile ('-' !=) tail)
-      if acceptable(max)
+      min ← parseIntOption(from takeWhile ('-' !=)) if acceptable(min)
+      max ← parseIntOption(from dropWhile ('-' !=) tail) if acceptable(max)
       if min <= max
     } yield RatingRange(min, max)
 

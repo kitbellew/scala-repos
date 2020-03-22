@@ -769,8 +769,7 @@ trait Crudify {
       def doFields(html: NodeSeq): NodeSeq =
         for {
           pointer <- fieldsForEditing
-          field <- computeFieldFromPointer(item, pointer).toList
-          if field.show_?
+          field <- computeFieldFromPointer(item, pointer).toList if field.show_?
           form <- field.toForm.toList
           bindNode =
             ".name *" #> {

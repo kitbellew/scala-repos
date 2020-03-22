@@ -180,10 +180,7 @@ trait LoggingBus extends ActorEventBus {
         this.getClass,
         "shutting down: StandardOutLogger started"))
     }
-    for {
-      logger ← loggers
-      if logger != StandardOutLogger
-    } {
+    for { logger ← loggers if logger != StandardOutLogger } {
       // this is very necessary, else you get infinite loop with DeadLetter
       unsubscribe(logger)
       logger match {

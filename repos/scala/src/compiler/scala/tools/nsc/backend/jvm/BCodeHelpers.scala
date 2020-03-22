@@ -476,8 +476,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
    *  must-single-thread
    */
   def fieldSymbols(cls: Symbol): List[Symbol] = {
-    for (f <- cls.info.decls.toList;
-         if !f.isMethod && f.isTerm && !f.isModule) yield f
+    for (f <- cls.info.decls.toList; if !f.isMethod && f.isTerm && !f.isModule)
+      yield f
   }
 
   /*
@@ -1311,8 +1311,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
 
       for (f <- fieldSymbols if f.hasGetter;
            g = f.getterIn(cls);
-           s = f.setterIn(cls);
-           if g.isPublic && !(f.name startsWith "$")) {
+           s = f.setterIn(cls); if g.isPublic && !(f.name startsWith "$")) {
         // inserting $outer breaks the bean
         fieldList =
           javaSimpleName(f) :: javaSimpleName(g) :: (if (s != NoSymbol)

@@ -239,8 +239,8 @@ trait ShardServiceCombinators
             def quirrelContent(
                 request: HttpRequest[ByteChunk]): Option[ByteChunk] =
               for {
-                header <- request.headers.header[`Content-Type`] if header
-                  .mimeTypes exists { t =>
+                header <- request.headers.header[`Content-Type`]
+                if header.mimeTypes exists { t =>
                   t == text / plain || (t.maintype == "text" && t
                     .subtype == "x-quirrel-script")
                 }

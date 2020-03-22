@@ -1571,8 +1571,7 @@ abstract class GenJSCode
       val quadruplets = {
         for {
           (formalArgSym, actualArg) <- formalArgs zip actualArgs
-          formalArg = encodeLocalSym(formalArgSym)
-          if (actualArg match {
+          formalArg = encodeLocalSym(formalArgSym) if (actualArg match {
             case js.VarRef(`formalArg`) => false
             case _                      => true
           })

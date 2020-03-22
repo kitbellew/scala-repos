@@ -31,8 +31,7 @@ class ScalaAliasedImportedElementSearcher
     }
     for {
       named <- target
-      name <- Option(named.name)
-      if !StringUtil.isEmptyOrSpaces(name)
+      name <- Option(named.name) if !StringUtil.isEmptyOrSpaces(name)
     } {
       val scope: SearchScope = inReadAction(
         parameters.getEffectiveSearchScope

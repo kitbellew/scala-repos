@@ -2135,8 +2135,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         val mbrs = new mutable.ListBuffer[Tree]
         var hasSpecializedFields = false
 
-        for (m <- sClass.info.decls
-             if m.hasFlag(SPECIALIZED)
+        for (m <- sClass.info.decls if m.hasFlag(SPECIALIZED)
                && (m.sourceFile ne null)
                && satisfiable(typeEnv(m), !sClass.hasFlag(SPECIALIZED))) {
           debuglog("creating tree for " + m.fullName)

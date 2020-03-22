@@ -150,14 +150,12 @@ class ScalaGlobalMembersCompletionContributor
         val qualName = containingClass.qualifiedName
         if (qualName == null) return false
         for {
-          element <- elemsSet
-          if element.name == name
+          element <- elemsSet if element.name == name
           if element.getContainingFile == file
           cClass = ScalaPsiUtil.nameContext(element) match {
             case member: PsiMember => member.containingClass
             case _                 => null
-          }
-          if cClass != null
+          } if cClass != null
           if cClass.qualifiedName != null
           if cClass.qualifiedName == qualName
         } { return true }
@@ -264,14 +262,12 @@ class ScalaGlobalMembersCompletionContributor
         val qualName = containingClass.qualifiedName
         if (qualName == null) return false
         for {
-          element <- elemsSet
-          if element.name == name
+          element <- elemsSet if element.name == name
           if element.getContainingFile == file
           cClass = ScalaPsiUtil.nameContext(element) match {
             case member: PsiMember => member.containingClass
             case _                 => null
-          }
-          if cClass != null
+          } if cClass != null
           if cClass.qualifiedName != null
           if cClass.qualifiedName == qualName
         } { return true }

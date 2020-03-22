@@ -123,8 +123,7 @@ object MetricsStatsReceiver {
             case None => Throw(new IllegalArgumentException("unknown format"))
             case Some(str) =>
               Try(Json.deserialize[Json.Envelope[CounterIncrData]](str))
-          }
-          if env.id == id
+          } if env.id == id
         } yield {
           val when = Time.fromMilliseconds(env.when)
           // This line fails without the JsonDeserialize annotation in Envelope.
@@ -167,8 +166,7 @@ object MetricsStatsReceiver {
             case None => Throw(new IllegalArgumentException("unknown format"))
             case Some(str) =>
               Try(Json.deserialize[Json.Envelope[StatAddData]](str))
-          }
-          if env.id == id
+          } if env.id == id
         } yield {
           val when = Time.fromMilliseconds(env.when)
           // This line fails without the JsonDeserialize annotation in Envelope.

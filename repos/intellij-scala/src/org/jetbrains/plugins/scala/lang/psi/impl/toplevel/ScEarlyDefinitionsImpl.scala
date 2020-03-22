@@ -67,8 +67,7 @@ class ScEarlyDefinitionsImpl private (
         import scala.collection.JavaConverters._
         for {
           child <- stub.getChildrenStubs.asScala
-          psi = child.getPsi
-          if psi.isInstanceOf[ScMember]
+          psi = child.getPsi if psi.isInstanceOf[ScMember]
         } yield psi.asInstanceOf[ScMember]
       case _ => findChildrenByClassScala(classOf[ScMember])
     }

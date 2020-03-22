@@ -204,10 +204,7 @@ object Build extends sbt.Build {
         FilesInfo.lastModified,
         FilesInfo.exists) {
         files =>
-          for {
-            file <- files
-            if file != additionalStylesFile
-          } yield {
+          for { file <- files if file != additionalStylesFile } yield {
             val relPath = docPaths(file)
             val outFile = outDir / relPath
 

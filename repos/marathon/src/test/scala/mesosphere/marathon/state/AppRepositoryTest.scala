@@ -163,9 +163,7 @@ class AppRepositoryTest extends MarathonSpec {
         "app1",
         null
       ) //the null is due to mockito and default arguments in scala
-    for {
-      app <- allApps
-      if app.id.toString == "app1"
-    } verify(store).expunge(s"${app.id}:${app.version}")
+    for { app <- allApps if app.id.toString == "app1" } verify(store)
+      .expunge(s"${app.id}:${app.version}")
   }
 }

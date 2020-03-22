@@ -86,8 +86,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
       psiFile <-
         getPsiFileByReferenceType(debugProcess.getProject, loc.declaringType)
           .toOption
-      lineNumber = exactLineNumber(location)
-      if lineNumber >= 0
+      lineNumber = exactLineNumber(location) if lineNumber >= 0
     } yield {
       calcPosition(psiFile, location, lineNumber).getOrElse {
         SourcePosition.createFromLine(psiFile, lineNumber)
@@ -438,8 +437,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
         override def process(vDir: VirtualFile): Boolean = {
           var isFound = false
           for {
-            fileName <- fileNames
-            if !isFound
+            fileName <- fileNames if !isFound
             vFile <- vDir.findChild(fileName).toOption
           } {
             val psiFile: PsiFile = PsiManager.getInstance(project)

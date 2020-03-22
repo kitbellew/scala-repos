@@ -203,16 +203,14 @@ trait SingletonTypeUtils extends ReprTypes {
   def parseLiteralType(typeStr: String): Option[Type] =
     for {
       parsed <- Try(c.parse(typeStr)).toOption
-      checked = c.typecheck(parsed, silent = true)
-      if checked.nonEmpty
+      checked = c.typecheck(parsed, silent = true) if checked.nonEmpty
       tpe <- SingletonType.unapply(checked)
     } yield tpe
 
   def parseStandardType(typeStr: String): Option[Type] =
     for {
       parsed <- Try(c.parse(s"null.asInstanceOf[$typeStr]")).toOption
-      checked = c.typecheck(parsed, silent = true)
-      if checked.nonEmpty
+      checked = c.typecheck(parsed, silent = true) if checked.nonEmpty
     } yield checked.tpe
 
   def parseType(typeStr: String): Option[Type] =

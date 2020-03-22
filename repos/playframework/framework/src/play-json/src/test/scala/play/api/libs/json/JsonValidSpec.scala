@@ -921,10 +921,7 @@ object JsonValidSpec extends Specification {
 
     "be usable in for-comprehensions" in {
       val res = JsSuccess("foo")
-      val x = for {
-        s <- res
-        if s.size < 5
-      } yield 42
+      val x = for { s <- res if s.size < 5 } yield 42
       x must equalTo(JsSuccess(42))
     }
 

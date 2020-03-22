@@ -110,8 +110,7 @@ object DependencyResolver {
     // Verify all dependencies are met
     for {
       lib <- flatDeps
-      dep <- lib.dependencies
-      if !jsDeps.contains(dep)
+      dep <- lib.dependencies if !jsDeps.contains(dep)
     } throw new MissingDependencyException(lib, dep)
 
     // Sort according to dependencies and return
@@ -167,8 +166,7 @@ object DependencyResolver {
         (x.relPath == y.relPath ^ x.commonJSName == y.commonJSName))
 
     val conflicts = for {
-      dep <- flatDeps
-      if flatDeps.exists(hasConflict(dep, _))
+      dep <- flatDeps if flatDeps.exists(hasConflict(dep, _))
     } yield dep
 
     if (conflicts.nonEmpty) throw new ConflictingNameException(conflicts.toList)

@@ -128,8 +128,7 @@ class DslConsistencySpec extends WordSpec with Matchers {
         s"provide same $element transforming operators" in {
           val allOps = (for {
             c ← classes
-            m ← c.getMethods
-            if !Modifier.isStatic(m.getModifiers)
+            m ← c.getMethods if !Modifier.isStatic(m.getModifiers)
             if !ignore(m.getName)
             if !m.getName.contains("$")
             if !materializing(m)
@@ -141,8 +140,7 @@ class DslConsistencySpec extends WordSpec with Matchers {
         s"provide same $element materializing operators" in {
           val materializingOps = (for {
             c ← classes
-            m ← c.getMethods
-            if !Modifier.isStatic(m.getModifiers)
+            m ← c.getMethods if !Modifier.isStatic(m.getModifiers)
             if !ignore(m.getName)
             if !m.getName.contains("$")
             if materializing(m)

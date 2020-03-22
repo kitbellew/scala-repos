@@ -87,8 +87,7 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
           case Some(x: ScPrimaryConstructor) =>
             (for {
               c1 <- x.parameterList.clauses.headOption
-              plast <- c1.parameters.lastOption
-              if plast.isRepeatedParameter
+              plast <- c1.parameters.lastOption if plast.isRepeatedParameter
             } yield "unapplySeq").getOrElse("unapply")
           case None => "unapply"
         }

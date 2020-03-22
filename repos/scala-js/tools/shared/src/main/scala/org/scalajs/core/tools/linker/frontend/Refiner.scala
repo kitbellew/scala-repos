@@ -56,8 +56,7 @@ final class Refiner {
       }
 
       val linkedClassDefs = for {
-        classInfo <- analysis.classInfos.values
-        if classInfo.isNeededAtAll
+        classInfo <- analysis.classInfos.values if classInfo.isNeededAtAll
         linkedClassDef <- optClassDef(classInfo)
       } yield linkedClassDef
 

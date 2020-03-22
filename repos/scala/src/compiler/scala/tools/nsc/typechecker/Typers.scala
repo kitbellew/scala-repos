@@ -3599,8 +3599,7 @@ trait Typers
           def shouldAdd(sym: Symbol) =
             inBlock || !context.isInPackageObject(sym, context.owner)
           for (sym <- scope)
-            for (tree <- context.unit.synthetics get sym
-                 if shouldAdd(sym)) { // OPT: shouldAdd is usually true. Call it here, rather than in the outer loop
+            for (tree <- context.unit.synthetics get sym if shouldAdd(sym)) { // OPT: shouldAdd is usually true. Call it here, rather than in the outer loop
               newStats += typedStat(
                 tree
               ) // might add even more synthetics to the scope

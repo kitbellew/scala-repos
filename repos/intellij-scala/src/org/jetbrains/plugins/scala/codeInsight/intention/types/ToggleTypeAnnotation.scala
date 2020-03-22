@@ -41,8 +41,7 @@ object ToggleTypeAnnotation {
       function <-
         element.parentsInFile.findByType(classOf[ScFunctionDefinition])
       if function.hasAssign
-      body <- function.body
-      if !body.isAncestorOf(element)
+      body <- function.body if !body.isAncestorOf(element)
     } {
 
       if (function.returnTypeElement.isDefined)
@@ -56,8 +55,7 @@ object ToggleTypeAnnotation {
       value <- element.parentsInFile.findByType(classOf[ScPatternDefinition])
       if value.expr.forall(!_.isAncestorOf(element))
       if value.pList.allPatternsSimple
-      bindings = value.bindings
-      if bindings.size == 1
+      bindings = value.bindings if bindings.size == 1
       binding <- bindings
     } {
 
@@ -72,8 +70,7 @@ object ToggleTypeAnnotation {
         element.parentsInFile.findByType(classOf[ScVariableDefinition])
       if variable.expr.forall(!_.isAncestorOf(element))
       if variable.pList.allPatternsSimple
-      bindings = variable.bindings
-      if bindings.size == 1
+      bindings = variable.bindings if bindings.size == 1
       binding <- bindings
     } {
 

@@ -84,8 +84,7 @@ class TasksResource @Inject() (
 
       val enrichedTasks: IterableView[EnrichedTask, Iterable[_]] = for {
         (appId, task) <- tasks
-        app <- appIdsToApps(appId)
-        if isAuthorized(ViewApp, app)
+        app <- appIdsToApps(appId) if isAuthorized(ViewApp, app)
         if statusSet.isEmpty || task.mesosStatus
           .exists(s => statusSet(s.getState))
       } yield {

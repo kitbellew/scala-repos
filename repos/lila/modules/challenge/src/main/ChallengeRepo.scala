@@ -50,8 +50,7 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
   def like(c: Challenge) =
     ~(for {
       challengerId <- c.challengerUserId
-      destUserId <- c.destUserId
-      if c.active
+      destUserId <- c.destUserId if c.active
     } yield coll.find(
       selectCreated ++ BSONDocument(
         "challenger.id" -> challengerId,

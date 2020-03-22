@@ -404,8 +404,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
               case ClassType(clazz) =>
                 for {
                   c <- tryLookupClass(clazz).right
-                  f <- c.lookupField(name)
-                  if !f.mutable
+                  f <- c.lookupField(name) if !f.mutable
                 } reportError(s"Assignment to immutable field $name.")
               case _ =>
             }

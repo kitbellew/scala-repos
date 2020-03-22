@@ -233,10 +233,8 @@ class UpgradedImageIExtractor(
       for {
         locallyStoredImage <-
           getLocallyStoredImage(buildImagePath(image.attr("src")))
-        width = locallyStoredImage.width
-        if (width > MIN_WIDTH)
-        height = locallyStoredImage.height
-        if (height > MIN_HEIGHT)
+        width = locallyStoredImage.width if (width > MIN_WIDTH)
+        height = locallyStoredImage.height if (height > MIN_HEIGHT)
         fileExtension = locallyStoredImage.fileExtension
         if (fileExtension != ".gif" && fileExtension != "NA")
         imageSrc = locallyStoredImage.imgSrc

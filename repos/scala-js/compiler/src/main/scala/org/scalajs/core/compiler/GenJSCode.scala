@@ -592,8 +592,7 @@ abstract class GenJSCode
 
       // Non-method term members are fields, except for module members.
       (for {
-        f <- classSym.info.decls
-        if !f.isMethod && f.isTerm && !f.isModule
+        f <- classSym.info.decls if !f.isMethod && f.isTerm && !f.isModule
       } yield {
         implicit val pos = f.pos
 
@@ -2039,8 +2038,7 @@ abstract class GenJSCode
       val quadruplets = {
         for {
           (formalArgSym, actualArg) <- formalArgs zip actualArgs
-          formalArg = encodeLocalSym(formalArgSym)
-          if (actualArg match {
+          formalArg = encodeLocalSym(formalArgSym) if (actualArg match {
             case js.VarRef(`formalArg`) => false
             case _                      => true
           })

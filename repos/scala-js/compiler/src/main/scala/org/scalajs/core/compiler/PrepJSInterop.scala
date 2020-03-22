@@ -197,10 +197,8 @@ abstract class PrepJSInterop
 
             if (shouldPrepareExports && sym.isTrait) {
               // Check that interface/trait is not exported
-              for {
-                exp <- exportsOf(sym)
-                if !exp.ignoreInvalid
-              } reporter.error(exp.pos, "You may not export a trait")
+              for { exp <- exportsOf(sym) if !exp.ignoreInvalid } reporter
+                .error(exp.pos, "You may not export a trait")
             }
 
             enterOwner(OwnerKind.NonEnumScalaClass) { super.transform(cldef) }
@@ -421,10 +419,7 @@ abstract class PrepJSInterop
           val sym = memDef.symbol
           if (sym.isLocalToBlock && !sym.owner.isCaseApplyOrUnapply) {
             // We exclude case class apply (and unapply) to work around SI-8826
-            for {
-              exp <- exportsOf(sym)
-              if !exp.ignoreInvalid
-            } {
+            for { exp <- exportsOf(sym) if !exp.ignoreInvalid } {
               val msg = {
                 val base = "You may not export a local definition"
                 if (sym.owner.isPrimaryConstructor)
@@ -609,16 +604,12 @@ abstract class PrepJSInterop
       if (shouldPrepareExports) {
         if (sym.isTrait) {
           // Check that interface/trait is not exported
-          for {
-            exp <- exportsOf(sym)
-            if !exp.ignoreInvalid
-          } { reporter.error(exp.pos, "You may not export a trait") }
+          for { exp <- exportsOf(sym) if !exp.ignoreInvalid } {
+            reporter.error(exp.pos, "You may not export a trait")
+          }
         } else if (isJSNative) {
           // Check that a JS native type is not exported
-          for {
-            exp <- exportsOf(sym)
-            if !exp.ignoreInvalid
-          } {
+          for { exp <- exportsOf(sym) if !exp.ignoreInvalid } {
             reporter
               .error(exp.pos, "You may not export a native JS class or object")
           }
@@ -677,10 +668,7 @@ abstract class PrepJSInterop
       if (shouldPrepareExports) {
         // Exports are never valid on members of JS types
         lazy val memType = if (sym.isConstructor) "constructor" else "method"
-        for {
-          exp <- exportsOf(sym)
-          if !exp.ignoreInvalid
-        } {
+        for { exp <- exportsOf(sym) if !exp.ignoreInvalid } {
           reporter.error(
             exp.pos,
             s"You may not export a $memType of a subclass of js.Any")
@@ -936,8 +924,7 @@ abstract class PrepJSInterop
     */
   private def checkJSNameLiteral(sym: Symbol): Unit = {
     for {
-      annot <- sym.getAnnotation(JSNameAnnotation)
-      if annot.stringArg(0).isEmpty
+      annot <- sym.getAnnotation(JSNameAnnotation) if annot.stringArg(0).isEmpty
     } {
       reporter
         .error(annot.pos, "The argument to JSName must be a literal string")

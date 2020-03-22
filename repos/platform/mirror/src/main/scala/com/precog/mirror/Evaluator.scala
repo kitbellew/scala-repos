@@ -607,8 +607,7 @@ trait EvaluatorModule
         pf: PartialFunction[(JValue, JValue), JValue]): Dataset = {
       for {
         (idsLeft, leftV) <- left
-        (idsRight, rightV) <- right
-        if pf.isDefinedAt((leftV, rightV))
+        (idsRight, rightV) <- right if pf.isDefinedAt((leftV, rightV))
       } yield (idsLeft ++ idsRight, pf((leftV, rightV)))
     }
 

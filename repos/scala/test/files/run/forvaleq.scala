@@ -23,8 +23,7 @@ object Test {
     val input = L.range(0, 20)
     val oddFirstTimesTwo = for {
       x <- input
-      xf = firstDigit(x)
-      if xf % 2 == 1
+      xf = firstDigit(x) if xf % 2 == 1
     } yield x * 2
     println(oddFirstTimesTwo)
   }
@@ -37,8 +36,7 @@ object Test {
       x <- input
       xf = firstDigit(x)
       yf = x - firstDigit(x) / 10
-      (a, b) = (xf - yf, xf + yf)
-      if xf % 2 == 1
+      (a, b) = (xf - yf, xf + yf) if xf % 2 == 1
     } yield a + b
     println(oddFirstTimesTwo)
   }
@@ -50,8 +48,7 @@ object Test {
     val input = L.range(0, 20).iterator
     val oddFirstTimesTwo = for {
       x <- input
-      xf = firstDigit(x)
-      if xf % 2 == 1
+      xf = firstDigit(x) if xf % 2 == 1
     } yield x * 2
     println(oddFirstTimesTwo.toList)
   }
@@ -62,8 +59,7 @@ object Test {
     val input = L.range(0, 20)
     val oddFirstTimesTwo = for {
       x <- input
-      xf = firstDigit(x)
-      if xf % 2 == 1
+      xf = firstDigit(x) if xf % 2 == 1
     } yield xf * 2
     println(oddFirstTimesTwo)
   }
@@ -80,8 +76,7 @@ object Test {
     val input = L.range(0, 20)
     for {
       x <- input
-      xf = fdct(x)
-      if xf % 2 == 1
+      xf = fdct(x) if xf % 2 == 1
     } yield xf
 
     println("called " + count + " times")

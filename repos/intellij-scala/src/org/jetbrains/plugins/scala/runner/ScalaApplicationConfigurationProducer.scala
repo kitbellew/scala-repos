@@ -211,8 +211,7 @@ object ScalaApplicationConfigurationProducer {
                 for {
                   wrapper <-
                     f.getFunctionWrappers(isStatic = true, isInterface = false)
-                      .headOption
-                  if PsiMethodUtil.isMainMethod(wrapper)
+                      .headOption if PsiMethodUtil.isMainMethod(wrapper)
                 } yield wrapper
               case _ => None
             }

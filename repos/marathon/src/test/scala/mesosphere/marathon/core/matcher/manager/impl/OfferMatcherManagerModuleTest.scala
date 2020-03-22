@@ -240,8 +240,7 @@ class OfferMatcherManagerModuleTest
     val totalCpus: Double = {
       val cpuValues = for {
         task <- tasks
-        resource <- task.getResourcesList.asScala
-        if resource.getName == "cpus"
+        resource <- task.getResourcesList.asScala if resource.getName == "cpus"
         cpuScalar <- Option(resource.getScalar)
         cpus = cpuScalar.getValue
       } yield cpus

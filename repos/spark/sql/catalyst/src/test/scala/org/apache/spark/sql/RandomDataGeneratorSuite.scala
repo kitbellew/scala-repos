@@ -50,8 +50,7 @@ class RandomDataGeneratorSuite extends SparkFunSuite {
 
   // Basic types:
   for (dataType <- DataTypeTestUtils.atomicTypes;
-       nullable <- Seq(true, false)
-       if !dataType.isInstanceOf[DecimalType]) {
+       nullable <- Seq(true, false) if !dataType.isInstanceOf[DecimalType]) {
     test(s"$dataType (nullable=$nullable)") {
       testRandomDataGeneration(dataType)
     }

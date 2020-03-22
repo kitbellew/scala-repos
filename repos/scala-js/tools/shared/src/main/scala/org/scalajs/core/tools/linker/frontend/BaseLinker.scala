@@ -190,8 +190,7 @@ final class BaseLinker(
     }
 
     val linkedClassDefs = for {
-      classInfo <- analysis.classInfos.values
-      if classInfo.isNeededAtAll
+      classInfo <- analysis.classInfos.values if classInfo.isNeededAtAll
       linkedClassDef <- optClassDef(classInfo)
     } yield linkedClassDef
 
@@ -274,10 +273,7 @@ final class BaseLinker(
     }
 
     // Synthetic members
-    for {
-      m <- analyzerInfo.methodInfos.valuesIterator
-      if m.isReachable
-    } {
+    for { m <- analyzerInfo.methodInfos.valuesIterator if m.isReachable } {
       m.syntheticKind match {
         case MethodSyntheticKind.None =>
         // nothing to do

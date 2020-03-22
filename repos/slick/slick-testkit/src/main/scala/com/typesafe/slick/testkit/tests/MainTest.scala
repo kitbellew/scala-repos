@@ -117,8 +117,7 @@ class MainTest extends AsyncTest[JdbcTestDB] {
       }.flatMap { _ =>
         val q4 = for {
           u <- users
-          o <- u.orders
-          if (o.orderID === (for {
+          o <- u.orders if (o.orderID === (for {
             o2 <- orders filter (o.userID === _.userID)
           } yield o2.orderID).max)
         } yield (u.first, o.orderID)
@@ -132,8 +131,8 @@ class MainTest extends AsyncTest[JdbcTestDB] {
 
         val q4b =
           for (u <- users;
-               o <- maxOfPer(orders)(_.orderID, _.userID)
-               if o.userID === u.id) yield (u.first, o.orderID)
+               o <- maxOfPer(orders)(_.orderID, _.userID) if o.userID === u.id)
+            yield (u.first, o.orderID)
         q4b.result.statements.toSeq.length.should(_ >= 1)
 
         val q4d =

@@ -155,8 +155,7 @@ trait ScPrimaryConstructor
     val buffer = new ArrayBuffer[ScPrimaryConstructorWrapper]()
     buffer += new ScPrimaryConstructorWrapper(this)
     for {
-      first <- parameterList.clauses.headOption
-      if first.hasRepeatedParam
+      first <- parameterList.clauses.headOption if first.hasRepeatedParam
       if hasAnnotation("scala.annotation.varargs").isDefined
     } { buffer += new ScPrimaryConstructorWrapper(this, isJavaVarargs = true) }
 

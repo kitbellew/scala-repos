@@ -494,8 +494,7 @@ trait ScFunction
       buffer += new ScFunctionWrapper(this, isStatic, isInterface, cClass)
       for {
         clause <- clauses
-        first <- clause.clauses.headOption
-        if first.hasRepeatedParam
+        first <- clause.clauses.headOption if first.hasRepeatedParam
         if isJavaVarargs
       } {
         buffer += new ScFunctionWrapper(

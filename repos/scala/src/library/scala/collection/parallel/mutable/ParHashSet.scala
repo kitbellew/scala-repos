@@ -158,8 +158,7 @@ private[mutable] abstract class ParHashSetCombiner[T](
       sizeMapInit(table.length)
       seedvalue = ParHashSetCombiner.this.seedvalue
       for {
-        buffer <- buckets
-        if buffer ne null
+        buffer <- buckets if buffer ne null
         entry <- buffer
       } addEntry(entry)
     }

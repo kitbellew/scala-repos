@@ -214,8 +214,7 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
     else {
       for {
         i <- (-1 to 1).toList
-        j <- -1 to 1
-        if i != 0 || j != 0
+        j <- -1 to 1 if i != 0 || j != 0
         flip <- computeFlipsInDirection(square.x, square.y, i, j)
       } yield flip
     }

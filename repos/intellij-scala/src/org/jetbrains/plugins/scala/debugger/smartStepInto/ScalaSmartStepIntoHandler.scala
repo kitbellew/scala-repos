@@ -53,8 +53,7 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
     val line: Int = position.getLine
     if (line < 0) { return Collections.emptyList[SmartStepTarget] }
     val (element, doc) = (for {
-      sf @ (_sf: ScalaFile) <- position.getFile.toOption
-      if !sf.isCompiled
+      sf @ (_sf: ScalaFile) <- position.getFile.toOption if !sf.isCompiled
       vFile <- sf.getVirtualFile.toOption
       doc <- FileDocumentManager.getInstance().getDocument(vFile).toOption
       if doc.getLineCount > line

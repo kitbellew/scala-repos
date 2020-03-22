@@ -160,8 +160,7 @@ object ResourceMatcher {
 
     if (scalarMatchResults.forall(_.matches)) {
       for {
-        portsMatch <- portsMatchOpt
-        if meetsAllConstraints
+        portsMatch <- portsMatchOpt if meetsAllConstraints
       } yield ResourceMatch(
         scalarMatchResults.collect { case m: ScalarMatch => m },
         portsMatch)

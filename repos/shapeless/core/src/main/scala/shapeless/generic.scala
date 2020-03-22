@@ -371,8 +371,7 @@ trait CaseClassMacros extends ReprTypes {
         sym.isMethod && sym.asMethod.isPrimaryConstructor && isAccessible(
           tpe,
           sym)
-      }
-      if !ctor.isJava || productCtorsOf(tpe).size == 1
+      } if !ctor.isJava || productCtorsOf(tpe).size == 1
     } yield ctor
   }
 

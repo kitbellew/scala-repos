@@ -1050,8 +1050,7 @@ object ScalaRefactoringUtil {
       case block: ScConstrBlock =>
         for {
           selfInv <- block.selfInvocation
-          args <- selfInv.args
-          if args.isAncestorOf(expr)
+          args <- selfInv.args if args.isAncestorOf(expr)
         } errorMessage = ScalaBundle
           .message("cannot.refactor.arg.in.self.invocation.of.constructor")
       case _ =>

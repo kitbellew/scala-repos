@@ -231,8 +231,7 @@ trait AkkaMetricRegistry {
   import collection.JavaConverters._
   private def filterFor[T](clazz: Class[T]): mutable.Iterable[(String, T)] =
     for {
-      (key, metric) ← getMetrics.asScala
-      if clazz.isInstance(metric)
+      (key, metric) ← getMetrics.asScala if clazz.isInstance(metric)
     } yield key -> metric.asInstanceOf[T]
 }
 

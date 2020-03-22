@@ -51,8 +51,7 @@ class DeploymentManager(
   def receive: Receive = {
     case CancelConflictingDeployments(plan) =>
       val conflictingDeployments = for {
-        info <- runningDeployments.values
-        if info.plan.isAffectedBy(plan)
+        info <- runningDeployments.values if info.plan.isAffectedBy(plan)
       } yield info
 
       val cancellations = conflictingDeployments.map { info =>

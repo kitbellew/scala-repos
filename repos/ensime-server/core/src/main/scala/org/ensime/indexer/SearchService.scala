@@ -74,8 +74,7 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
       log.info("findStaleFileChecks")
       for {
         check <- checks
-        name = check.file.getName.getURI
-        if !check.file.exists || check.changed
+        name = check.file.getName.getURI if !check.file.exists || check.changed
       } yield check
     }.toList
 

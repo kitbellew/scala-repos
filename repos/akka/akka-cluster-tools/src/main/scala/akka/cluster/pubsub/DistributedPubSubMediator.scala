@@ -768,8 +768,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
     val topicPrefix = self.path.toStringWithoutAddress
     (for {
       (_, bucket) ← registry
-      (key, value) ← bucket.content
-      if key.startsWith(topicPrefix)
+      (key, value) ← bucket.content if key.startsWith(topicPrefix)
       topic = key.substring(topicPrefix.length + 1)
       if !topic.contains('/') // exclude group topics
     } yield URLDecoder.decode(topic, "utf-8")).toSet

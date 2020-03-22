@@ -315,8 +315,7 @@ class ScalaChangeSignatureUsageProcessor
       results: ArrayBuffer[UsageInfo]): Unit = {
     for {
       paramInfo <- changeInfo.getNewParameters
-      oldIdx = paramInfo.getOldIndex
-      if oldIdx >= 0
+      oldIdx = paramInfo.getOldIndex if oldIdx >= 0
       oldName = changeInfo.getOldParameterNames()(oldIdx)
       parameters = method.getParameterList.getParameters
       if parameters.length > oldIdx

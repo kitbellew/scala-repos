@@ -82,8 +82,7 @@ object AssertUtil {
         if (wkref.nonEmpty && o != null && !seen.containsKey(o)) {
           seen.put(o, ())
           for {
-            f <- o.getClass.allFields
-            if !Modifier.isStatic(f.getModifiers)
+            f <- o.getClass.allFields if !Modifier.isStatic(f.getModifiers)
             if !f.getType.isPrimitive
             if !classOf[Reference[_]].isAssignableFrom(f.getType)
           } loop(f follow o)

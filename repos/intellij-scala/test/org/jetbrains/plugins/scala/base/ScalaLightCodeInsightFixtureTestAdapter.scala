@@ -95,8 +95,7 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
 
     val caretIndex = text.indexOf(CARET_MARKER)
     val highlights: mutable.Buffer[HighlightInfo] = for {
-      info <- myFixture.doHighlighting()
-      if info.getDescription == annotation
+      info <- myFixture.doHighlighting() if info.getDescription == annotation
       if caretIndex == -1 || new TextRange(
         info.getStartOffset,
         info.getEndOffset).contains(caretIndex)

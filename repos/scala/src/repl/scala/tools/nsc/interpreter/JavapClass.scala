@@ -206,8 +206,7 @@ class JavapClass(
       val sw = new StringWriter
       val pw = new PrintWriter(sw)
       for {
-        line <- Source.fromString(text).getLines()
-        if checkFilter(line)
+        line <- Source.fromString(text).getLines() if checkFilter(line)
       } pw println line
       pw.flush()
       sw.toString

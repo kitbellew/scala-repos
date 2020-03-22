@@ -173,8 +173,9 @@ object M4 {
               isSafe(col, p.tail, delta + 1)));
 
         for (placement <- placeQueens(row - 1);
-             col <- columns;
-             if isSafe(col, placement, 1)) yield { col :: placement }
+             col <- columns; if isSafe(col, placement, 1)) yield {
+          col :: placement
+        }
       }
     }
     placeQueens(n);

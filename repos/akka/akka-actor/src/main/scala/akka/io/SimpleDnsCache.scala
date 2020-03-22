@@ -48,10 +48,7 @@ object SimpleDnsCache {
       cache: immutable.Map[String, CacheEntry],
       clock: () ⇒ Long) {
     def get(name: String): Option[Resolved] = {
-      for {
-        e ← cache.get(name)
-        if e.isValid(clock())
-      } yield e.answer
+      for { e ← cache.get(name) if e.isValid(clock()) } yield e.answer
     }
 
     def put(answer: Resolved, ttlMillis: Long): Cache = {

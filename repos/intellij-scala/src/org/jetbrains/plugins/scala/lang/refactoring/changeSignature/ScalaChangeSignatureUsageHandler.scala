@@ -336,10 +336,7 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
     def nonVarargArgs(clause: Seq[ParameterInfo]) = {
       var needNamed = false
       val buffer = new ListBuffer[String]
-      for {
-        (param, idx) <- clause.zipWithIndex
-        if !isRepeated(param)
-      } {
+      for { (param, idx) <- clause.zipWithIndex if !isRepeated(param) } {
         newArgumentExpression(
           oldArgsInfo,
           param,

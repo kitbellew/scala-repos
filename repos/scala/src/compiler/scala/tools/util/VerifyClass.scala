@@ -27,8 +27,7 @@ object VerifyClass {
 
   def checkClassesInDir(name: String, cl: ClassLoader) =
     (for {
-      file <- Path(name).walk
-      if file.name endsWith ".class"
+      file <- Path(name).walk if file.name endsWith ".class"
     } yield checkClass(name, cl)) toMap
 
   def checkClasses(name: String, cl: ClassLoader) =

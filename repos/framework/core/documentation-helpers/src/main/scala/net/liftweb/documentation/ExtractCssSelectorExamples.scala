@@ -34,8 +34,7 @@ object ExtractCssSelectorExamples extends App {
           _.isDirectory) ?~ s"'$docsFile' should be a directory, not a file.")
     } yield {
       for {
-        file <- docsDir.listFiles.toList
-        if file.getName.endsWith(".html")
+        file <- docsDir.listFiles.toList if file.getName.endsWith(".html")
         fileContents <- tryo(Source.fromFile(file).mkString)
       } yield { FileContents(file.getName.replace('.', '-'), fileContents) }
     }

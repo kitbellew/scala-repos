@@ -270,8 +270,7 @@ trait LocationLineManager {
 
         for {
           m <- methods
-          line <- baseLine
-          if locationsOfLine(m, line).size > 1
+          line <- baseLine if locationsOfLine(m, line).size > 1
         } { skipBaseLineExtraLocations(m, line) }
       }
 

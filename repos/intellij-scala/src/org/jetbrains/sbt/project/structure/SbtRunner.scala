@@ -211,8 +211,7 @@ object SbtRunner {
       jar,
       sectionName = "app")
     for {
-      name <- appProperties.get("name")
-      if name == "sbt"
+      name <- appProperties.get("name") if name == "sbt"
       versionStr <- appProperties.get("version")
       version <- "\\d+(\\.\\d+)+".r.findFirstIn(versionStr)
     } yield version

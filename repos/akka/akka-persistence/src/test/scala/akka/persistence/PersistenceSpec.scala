@@ -118,8 +118,7 @@ trait PersistenceMatchers {
       val results = for {
         (pos, seq) ← mapped
         nrs = seq.map(_.replaceFirst(prefixes(pos), "").toInt)
-        sortedNrs = nrs.sorted
-        if nrs != sortedNrs
+        sortedNrs = nrs.sorted if nrs != sortedNrs
       } yield MatchResult(
         false,
         s"""Messages sequence with prefix ${prefixes(

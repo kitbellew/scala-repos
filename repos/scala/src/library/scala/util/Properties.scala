@@ -80,8 +80,7 @@ private[scala] trait PropertiesTrait {
     *  cannot be read.
     */
   val releaseVersion = for {
-    v <- scalaPropOrNone("maven.version.number")
-    if !(v endsWith "-SNAPSHOT")
+    v <- scalaPropOrNone("maven.version.number") if !(v endsWith "-SNAPSHOT")
   } yield v
 
   /** The development Scala version, if this is not a final release.
@@ -93,8 +92,7 @@ private[scala] trait PropertiesTrait {
     *  is a final release or the version cannot be read.
     */
   val developmentVersion = for {
-    v <- scalaPropOrNone("maven.version.number")
-    if v endsWith "-SNAPSHOT"
+    v <- scalaPropOrNone("maven.version.number") if v endsWith "-SNAPSHOT"
     ov <- scalaPropOrNone("version.number")
   } yield ov
 

@@ -177,8 +177,7 @@ object TypeCheckToMatchUtil {
 
     for {
       args <- isInstOf.typeArgs
-      condition <- ifStmt.condition
-      if args.typeArgs.size == 1
+      condition <- ifStmt.condition if args.typeArgs.size == 1
     } yield {
       val typeElem = args.typeArgs.head
       val typeName0 = typeElem.getText
@@ -288,8 +287,7 @@ object TypeCheckToMatchUtil {
           for {
             nextCond <- nextIfStmt.condition
             nextCall <- findIsInstanceOfCalls(nextCond, onlyFirst)
-            nextBase <- baseExpr(nextCall)
-            if equiv(currentBase, nextBase)
+            nextBase <- baseExpr(nextCall) if equiv(currentBase, nextBase)
           } {
             return (currentIfStmt, currentCall) :: listOfIfAndIsInstOf(
               nextIfStmt,
@@ -386,8 +384,7 @@ object TypeCheckToMatchUtil {
       override def visitGenericCallExpression(call: ScGenericCall) {
         for {
           base1 <- baseExpr(isInstOfCall)
-          base2 <- baseExpr(call)
-          if isAsInstOfCall(call)
+          base2 <- baseExpr(call) if isAsInstOfCall(call)
           if equalTypes(call, isInstOfCall)
           if equiv(base1, base2)
         } { result += call }

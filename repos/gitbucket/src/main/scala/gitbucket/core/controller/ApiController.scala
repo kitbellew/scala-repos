@@ -198,8 +198,8 @@ trait ApiControllerBase extends ControllerBase {
         for {
           issueId <- params("id").toIntOpt
           issue <- getIssue(repository.owner, repository.name, issueId.toString)
-          body <- extractFromJsonBody[CreateAComment].map(_.body) if !body
-            .isEmpty
+          body <- extractFromJsonBody[CreateAComment].map(_.body)
+          if !body.isEmpty
           action = params.get("action").filter(_ =>
             isEditable(
               issue.userName,

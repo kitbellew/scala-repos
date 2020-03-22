@@ -288,8 +288,7 @@ object CompileServerLauncher {
     for {
       dir <- Option(project.getBaseDir)
       path <- Option(dir.getCanonicalPath)
-      file = new File(path)
-      if file.exists()
+      file = new File(path) if file.exists()
     } yield file
   }
 

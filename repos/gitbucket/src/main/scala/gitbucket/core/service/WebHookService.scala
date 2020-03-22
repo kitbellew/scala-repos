@@ -263,8 +263,8 @@ trait WebHookPullRequestService extends WebHookService {
       : Map[(Issue, Account, PullRequest, Account, Account), List[WebHook]] =
     (for {
       is <- Issues if is.closed === false.bind
-      pr <- PullRequests if pr
-        .byPrimaryKey(is.userName, is.repositoryName, is.issueId)
+      pr <- PullRequests
+      if pr.byPrimaryKey(is.userName, is.repositoryName, is.issueId)
       if pr.requestUserName === userName.bind
       if pr.requestRepositoryName === repositoryName.bind
       if pr.requestBranch === branch.bind
@@ -272,8 +272,9 @@ trait WebHookPullRequestService extends WebHookService {
       ru <- Accounts if ru.userName === pr.requestUserName
       iu <- Accounts if iu.userName === is.openedUserName
       wh <- WebHooks if wh.byRepository(is.userName, is.repositoryName)
-      wht <- WebHookEvents if wht.event === WebHook.PullRequest
-        .asInstanceOf[WebHook.Event].bind && wht.byWebHook(wh)
+      wht <- WebHookEvents
+      if wht.event === WebHook.PullRequest.asInstanceOf[WebHook.Event]
+        .bind && wht.byWebHook(wh)
     } yield { ((is, iu, pr, bu, ru), wh) }).list.groupBy(_._1)
       .mapValues(_.map(_._2))
 

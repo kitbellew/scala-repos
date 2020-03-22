@@ -145,10 +145,8 @@ object ReachingDefintionsCollector {
           readRef,
           Some(definitionToRead),
           false),
-        rdset) <- dfaResult
-      if !innerInstructions.contains(read)
-      reaching <- rdset
-      if innerInstructions.contains(reaching)
+        rdset) <- dfaResult if !innerInstructions.contains(read)
+      reaching <- rdset if innerInstructions.contains(reaching)
     } {
       reaching match {
         case DefinitionInstruction(_, named, _)

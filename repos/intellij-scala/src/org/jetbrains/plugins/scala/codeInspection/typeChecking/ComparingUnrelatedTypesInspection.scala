@@ -111,8 +111,7 @@ class ComparingUnrelatedTypesInspection
       for {
         ScParameterizedType(_, Seq(elemType)) <- baseExpr.getType()
           .map(tryExtractSingletonType)
-        argType <- arg.getType()
-        if cannotBeCompared(elemType, argType)
+        argType <- arg.getType() if cannotBeCompared(elemType, argType)
       } {
         val (elemTypeText, argTypeText) = ScTypePresentation
           .different(elemType, argType)
@@ -131,8 +130,7 @@ class ComparingUnrelatedTypesInspection
       val argType = call.arguments.headOption.flatMap(_.getType().toOption)
       for {
         t1 <- qualType
-        t2 <- argType
-        if cannotBeCompared(t1, t2)
+        t2 <- argType if cannotBeCompared(t1, t2)
       } {
         holder.registerProblem(
           call,

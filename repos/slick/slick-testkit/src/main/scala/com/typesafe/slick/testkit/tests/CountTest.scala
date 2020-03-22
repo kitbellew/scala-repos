@@ -52,8 +52,7 @@ class CountTest extends AsyncTest[RelationalTestDB] {
       _ <- posts ++= Seq((1, "Shiny features", 1), (2, "HotSpot", 2))
       joinedQuery = for {
         c <- categories
-        p <- posts
-        if p.category === c.id
+        p <- posts if p.category === c.id
       } yield (c, p)
       q1 = joinedQuery.length
       _ <- q1.result.map(_ shouldBe 2)

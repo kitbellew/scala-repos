@@ -104,7 +104,8 @@ object TypeDefinitionMembers {
         subst: ScSubstitutor,
         map: Map,
         place: Option[PsiElement]) {
-      for (method <- clazz.getMethods if nonBridge(place, method) &&
+      for (method <- clazz.getMethods
+           if nonBridge(place, method) &&
              !method.isConstructor && !method.hasModifierProperty("static") &&
              method.getParameterList.getParametersCount == 0) {
         val phys = new PhysicalSignature(method, subst)
@@ -313,7 +314,8 @@ object TypeDefinitionMembers {
         subst: ScSubstitutor,
         map: Map,
         place: Option[PsiElement]) {
-      for (inner <- clazz.getInnerClasses if nonBridge(place, inner) &&
+      for (inner <- clazz.getInnerClasses
+           if nonBridge(place, inner) &&
              !inner.hasModifierProperty("static")) {
         map addToMap (inner, new Node(inner, subst))
       }
@@ -401,7 +403,8 @@ object TypeDefinitionMembers {
         subst: ScSubstitutor,
         map: Map,
         place: Option[PsiElement]) {
-      for (method <- clazz.getMethods if nonBridge(place, method) &&
+      for (method <- clazz.getMethods
+           if nonBridge(place, method) &&
              !method.isConstructor && !method.hasModifierProperty("static")) {
         val phys = new PhysicalSignature(method, subst)
         map addToMap (phys, new Node(phys, subst))

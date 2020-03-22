@@ -42,8 +42,7 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
     Arbitrary {
       for {
         l <- Arbitrary.arbitrary[T]
-        u <- Arbitrary.arbitrary[T]
-        if implicitly[Ordering[T]].lt(l, u)
+        u <- Arbitrary.arbitrary[T] if implicitly[Ordering[T]].lt(l, u)
       } yield Intersection(InclusiveLower(l), ExclusiveUpper(u))
     }
 

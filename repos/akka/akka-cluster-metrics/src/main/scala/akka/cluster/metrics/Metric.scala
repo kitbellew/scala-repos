@@ -356,8 +356,7 @@ final case class NodeMetrics(
     // Average metrics present in both latest and current.
     val updated = for {
       latest ← latestNode.metrics
-      current ← currentNode.metrics
-      if (latest sameAs current)
+      current ← currentNode.metrics if (latest sameAs current)
     } yield { current :+ latest }
     // Append metrics missing from either latest or current.
     // Equality is based on the [[Metric.name]] and [[Set]] doesn't replace existing elements.

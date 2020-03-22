@@ -309,10 +309,8 @@ abstract class GenIncOptimizer private[optimizer] (
     val methods = mutable.Map.empty[String, MethodImpl]
 
     def optimizedDefs =
-      for {
-        method <- methods.values
-        if !method.deleted
-      } yield method.optimizedMethodDef
+      for { method <- methods.values if !method.deleted } yield method
+        .optimizedMethodDef
 
     /** UPDATE PASS ONLY. Global concurrency safe but not on same instance */
     def updateWith(

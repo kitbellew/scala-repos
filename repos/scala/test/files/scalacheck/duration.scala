@@ -31,8 +31,7 @@ object Test extends Properties("Division of Duration by Long") {
   } yield (a, b)
 
   val genClose = for {
-    a <- weightedLong
-    if a != 0
+    a <- weightedLong if a != 0
     b <- choose(Long.MaxValue / a - 10, Long.MaxValue / a + 10)
   } yield (a, b)
 

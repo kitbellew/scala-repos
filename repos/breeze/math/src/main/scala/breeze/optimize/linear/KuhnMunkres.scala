@@ -54,8 +54,8 @@ object KuhnMunkres extends BipartiteMatching {
     def findSmallestNotCovered() = {
       val mins =
         for (i <- 0 until n iterator;
-             j <- 0 until n iterator;
-             if !rowCovered(i) && !colCovered(j)) yield C(i)(j);
+             j <- 0 until n iterator; if !rowCovered(i) && !colCovered(j))
+          yield C(i)(j);
       mins.reduceLeft(_ min _)
     }
 
@@ -117,8 +117,7 @@ object KuhnMunkres extends BipartiteMatching {
     def step2() = {
       for {
         r <- 0 until n;
-        c <- 0 until n
-        if C(r)(c) == 0 && !rowCovered(r) && !colCovered(c)
+        c <- 0 until n if C(r)(c) == 0 && !rowCovered(r) && !colCovered(c)
       } {
         marked(r)(c) = 1;
         rowCovered(r) = true;
@@ -133,8 +132,7 @@ object KuhnMunkres extends BipartiteMatching {
       var count = 0;
       for {
         i <- 0 until n;
-        j <- 0 until n
-        if marked(i)(j) == 1
+        j <- 0 until n if marked(i)(j) == 1
       } {
         colCovered(j) = true
         count += 1

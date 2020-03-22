@@ -63,9 +63,8 @@ trait StdLibStaticInlinerModule[M[+_]]
                         val result = for {
                           // No Op1F1 that can be applied to a complex RValues
                           cvalue <- rValueToCValue(value)
-                          col <-
-                            newOp1.f1(MorphContext(ctx, graph)).apply(cvalue)
-                          if col isDefinedAt 0
+                          col <- newOp1.f1(MorphContext(ctx, graph))
+                            .apply(cvalue) if col isDefinedAt 0
                         } yield col cValue 0
 
                         Const(result getOrElse CUndefined)(graph.loc)

@@ -127,8 +127,7 @@ class ScalaVariableValidator(
             case scClass: ScClass =>
               for {
                 constructor <- scClass.constructor
-                parameter <- constructor.parameters
-                if parameter.name == name
+                parameter <- constructor.parameters if parameter.name == name
               } {
                 buf += ((parameter, messageForClassParameter(parameter.name)))
               }

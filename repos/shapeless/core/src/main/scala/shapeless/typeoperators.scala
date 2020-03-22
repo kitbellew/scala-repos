@@ -130,8 +130,7 @@ class TheMacros(val c: whitebox.Context) {
       (for {
         parsed <- Try(c.parse(s"{ type $dummyNme = " + tpeString + " }"))
           .toOption
-        checked = c.typecheck(parsed, silent = true)
-        if checked.nonEmpty
+        checked = c.typecheck(parsed, silent = true) if checked.nonEmpty
       } yield {
         val q"{ type $dummyNme = $tpt }" = checked
         tpt.tpe

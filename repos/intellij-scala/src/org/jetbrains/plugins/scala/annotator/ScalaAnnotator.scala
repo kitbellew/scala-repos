@@ -689,8 +689,7 @@ class ScalaAnnotator
       holder: AnnotationHolder) {
     for {
       lower <- sTypeParam.lowerBound
-      upper <- sTypeParam.upperBound
-      if !Conformance.conforms(upper, lower)
+      upper <- sTypeParam.upperBound if !Conformance.conforms(upper, lower)
       annotation = holder.createErrorAnnotation(
         sTypeParam,
         ScalaBundle.message("lower.bound.conform.to.upper", upper, lower))

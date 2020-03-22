@@ -162,8 +162,7 @@ private[sql] object InferSchema {
 
       case StructType(fields) =>
         val canonicalFields: Array[StructField] = for {
-          field <- fields
-          if field.name.length > 0
+          field <- fields if field.name.length > 0
           canonicalType <- canonicalizeType(field.dataType)
         } yield { field.copy(dataType = canonicalType) }
 

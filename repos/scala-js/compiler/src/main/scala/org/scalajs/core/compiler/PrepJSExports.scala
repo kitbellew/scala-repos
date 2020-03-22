@@ -141,10 +141,7 @@ trait PrepJSExports {
       } else {
         val (named, normal) = exports.partition(_.isNamed)
 
-        for {
-          exp <- named
-          if !exp.ignoreInvalid
-        } {
+        for { exp <- named if !exp.ignoreInvalid } {
           reporter.error(
             exp.pos,
             "You may not use @JSNamedExport on " +
@@ -306,8 +303,7 @@ trait PrepJSExports {
 
       val forcingSymInfos = for {
         forcingSym <- trgSym.ancestors
-        annot <- forcingSym.annotations
-        if annot.symbol == trgAnnot
+        annot <- forcingSym.annotations if annot.symbol == trgAnnot
       } yield {
         val ignoreInvalid = annot.constantAtIndex(0).fold(false)(_.booleanValue)
         (forcingSym, ignoreInvalid)

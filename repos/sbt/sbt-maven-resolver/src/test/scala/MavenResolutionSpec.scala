@@ -97,12 +97,9 @@ class MavenResolutionSpec extends BaseIvySpecification {
       defaultUpdateOptions)
     val report = ivyUpdate(m) // should not(throwAn[IllegalStateException])
     val jars = for {
-      conf <- report.configurations
-      if conf.configuration == Compile.name
-      m <- conf.modules
-      if (m.module.name contains "stringtemplate")
-      (a, f) <- m.artifacts
-      if a.extension == "jar"
+      conf <- report.configurations if conf.configuration == Compile.name
+      m <- conf.modules if (m.module.name contains "stringtemplate")
+      (a, f) <- m.artifacts if a.extension == "jar"
     } yield f
     jars should have size 1
   }
@@ -115,12 +112,9 @@ class MavenResolutionSpec extends BaseIvySpecification {
       defaultUpdateOptions)
     val report = ivyUpdate(m)
     val jars = for {
-      conf <- report.configurations
-      if conf.configuration == ScalaTool.name
-      m <- conf.modules
-      if (m.module.name contains "scala-compiler")
-      (a, f) <- m.artifacts
-      if a.extension == "jar"
+      conf <- report.configurations if conf.configuration == ScalaTool.name
+      m <- conf.modules if (m.module.name contains "scala-compiler")
+      (a, f) <- m.artifacts if a.extension == "jar"
     } yield f
     jars should have size 1
   }
@@ -136,12 +130,9 @@ class MavenResolutionSpec extends BaseIvySpecification {
         defaultUpdateOptions)
       val report = ivyUpdate(m)
       for {
-        conf <- report.configurations
-        if conf.configuration == "compile"
-        m <- conf.modules
-        if (m.module.name contains "sbt-idea")
-        (a, f) <- m.artifacts
-        if a.extension == "jar"
+        conf <- report.configurations if conf.configuration == "compile"
+        m <- conf.modules if (m.module.name contains "sbt-idea")
+        (a, f) <- m.artifacts if a.extension == "jar"
       } yield (f, sha(f))
     }
 
@@ -163,10 +154,8 @@ class MavenResolutionSpec extends BaseIvySpecification {
       defaultUpdateOptions.withLatestSnapshots(true))
     val report = ivyUpdate(m)
     val pubTime = for {
-      conf <- report.configurations
-      if conf.configuration == "compile"
-      m <- conf.modules
-      if m.module.revision endsWith "-SNAPSHOT"
+      conf <- report.configurations if conf.configuration == "compile"
+      m <- conf.modules if m.module.revision endsWith "-SNAPSHOT"
       date <- m.publicationDate
     } yield date
     (pubTime should have size 1)
@@ -180,12 +169,10 @@ class MavenResolutionSpec extends BaseIvySpecification {
       defaultUpdateOptions)
     val report = ivyUpdate(m)
     val jars = for {
-      conf <- report.configurations
-      if conf.configuration == "compile"
+      conf <- report.configurations if conf.configuration == "compile"
       m <- conf.modules
       if (m.module.name == "scala-library") || (m.module.name contains "parser")
-      (a, f) <- m.artifacts
-      if a.extension == "jar"
+      (a, f) <- m.artifacts if a.extension == "jar"
     } yield f
     jars should have size 2
   }
@@ -218,12 +205,9 @@ class MavenResolutionSpec extends BaseIvySpecification {
       defaultUpdateOptions)
     val report = ivyUpdate(m)
     val jars = for {
-      conf <- report.configurations
-      if conf.configuration == "compile"
-      m <- conf.modules
-      if m.module.name == "testng"
-      (a, f) <- m.artifacts
-      if a.extension == "jar"
+      conf <- report.configurations if conf.configuration == "compile"
+      m <- conf.modules if m.module.name == "testng"
+      (a, f) <- m.artifacts if a.extension == "jar"
     } yield f
     (report.configurations should have size configurations.size)
     (jars should have size 1)
@@ -239,12 +223,9 @@ class MavenResolutionSpec extends BaseIvySpecification {
       defaultUpdateOptions)
     val report = ivyUpdate(m)
     val jars = for {
-      conf <- report.configurations
-      if conf.configuration == "compile"
-      m <- conf.modules
-      if m.module.name == "scala-library"
-      (a, f) <- m.artifacts
-      if a.extension == "jar"
+      conf <- report.configurations if conf.configuration == "compile"
+      m <- conf.modules if m.module.name == "scala-library"
+      (a, f) <- m.artifacts if a.extension == "jar"
     } yield f
     (report.configurations should have size configurations.size)
     (jars should not be empty)
@@ -260,22 +241,16 @@ class MavenResolutionSpec extends BaseIvySpecification {
       defaultUpdateOptions)
     val report = ivyUpdate(m)
     val transitiveJars = for {
-      conf <- report.configurations
-      if conf.configuration == "compile"
-      m <- conf.modules
-      if (m.module.name contains "akka-actor") && !(m.module
+      conf <- report.configurations if conf.configuration == "compile"
+      m <- conf.modules if (m.module.name contains "akka-actor") && !(m.module
         .name contains "testkit")
-      (a, f) <- m.artifacts
-      if a.extension == "jar"
+      (a, f) <- m.artifacts if a.extension == "jar"
     } yield f
     val directJars = for {
-      conf <- report.configurations
-      if conf.configuration == "compile"
-      m <- conf.modules
-      if (m.module.name contains "akka-actor") && (m.module
+      conf <- report.configurations if conf.configuration == "compile"
+      m <- conf.modules if (m.module.name contains "akka-actor") && (m.module
         .name contains "testkit")
-      (a, f) <- m.artifacts
-      if a.extension == "jar"
+      (a, f) <- m.artifacts if a.extension == "jar"
     } yield f
     (report.configurations should have size configurations.size)
     (transitiveJars shouldBe empty)
@@ -290,12 +265,9 @@ class MavenResolutionSpec extends BaseIvySpecification {
       defaultUpdateOptions)
     val report = ivyUpdate(m)
     val jars = for {
-      conf <- report.configurations
-      if conf.configuration == "test"
-      m <- conf.modules
-      if m.module.name contains "akka-actor"
-      (a, f) <- m.artifacts
-      if a.extension == "jar"
+      conf <- report.configurations if conf.configuration == "test"
+      m <- conf.modules if m.module.name contains "akka-actor"
+      (a, f) <- m.artifacts if a.extension == "jar"
     } yield f
     (report.configurations should have size configurations.size)
     (jars should not be empty)

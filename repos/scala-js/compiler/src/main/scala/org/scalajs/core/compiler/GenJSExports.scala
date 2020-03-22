@@ -206,8 +206,7 @@ trait GenJSExports extends SubComponent {
         name: String): js.Tree = {
       var alts: List[Symbol] = Nil
       for {
-        sym <- classSym.info.members
-        if !sym.isBridge && jsNameOf(sym) == name
+        sym <- classSym.info.members if !sym.isBridge && jsNameOf(sym) == name
       } {
         val tpe = sym.tpe
         if (!alts.exists(alt => tpe.matches(alt.tpe))) alts ::= sym
@@ -616,8 +615,7 @@ trait GenJSExports extends SubComponent {
       // the (single) type of the repeated parameter if any
       val repeatedTpe = enteringPhase(currentRun.uncurryPhase) {
         for {
-          param <- sym.paramss.flatten.lastOption
-          if isRepeated(param)
+          param <- sym.paramss.flatten.lastOption if isRepeated(param)
         } yield repeatedToSingle(param.tpe)
       }
 

@@ -188,8 +188,7 @@ abstract class UnCurry
         import treeInfo.{catchesThrowable, isSyntheticCase}
         for {
           Try(t, catches, _) <- body
-          cdef <- catches
-          if catchesThrowable(cdef) && !isSyntheticCase(cdef)
+          cdef <- catches if catchesThrowable(cdef) && !isSyntheticCase(cdef)
         } {
           reporter.warning(
             body.pos,

@@ -153,10 +153,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
       symbol: Symbol,
       filterFirstCons: Boolean = false) {
     var firstConsFiltered = !filterFirstCons
-    for {
-      child <- symbol.children
-      if !(child.isParam && child.isType)
-    } {
+    for { child <- symbol.children if !(child.isParam && child.isType) } {
       if (!firstConsFiltered) child match {
         case m: MethodSymbol if m.name == CONSTRUCTOR_NAME =>
           firstConsFiltered = true

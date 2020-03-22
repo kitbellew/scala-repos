@@ -135,10 +135,8 @@ private object ClassPath {
         browseUri0(uri, loader, buf, history)
 
       for {
-        e <- jarFile.entries.asScala
-        if !e.isDirectory
-        n = e.getName
-        if !(ignoredPackages exists (n startsWith _))
+        e <- jarFile.entries.asScala if !e.isDirectory
+        n = e.getName if !(ignoredPackages exists (n startsWith _))
         iface <- ifaceOfName(n)
       } {
         val source = Source.fromInputStream(jarFile.getInputStream(e), "UTF-8")

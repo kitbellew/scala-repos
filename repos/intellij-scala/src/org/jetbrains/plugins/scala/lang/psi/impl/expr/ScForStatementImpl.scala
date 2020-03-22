@@ -324,8 +324,7 @@ class ScForStatementImpl(node: ASTNode)
                 bl = expr.asInstanceOf[ScBlockExpr]
                 clauses <- bl.caseClauses
                 clause <- clauses.caseClauses.headOption
-                expr <- clause.expr
-                if expr.isInstanceOf[ScForStatementImpl]
+                expr <- clause.expr if expr.isInstanceOf[ScForStatementImpl]
                 f = expr.asInstanceOf[ScForStatementImpl]
                 additionalReplacement = f.getDesugarizedExpr
                 repl <- additionalReplacement

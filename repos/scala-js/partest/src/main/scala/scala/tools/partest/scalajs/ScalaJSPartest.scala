@@ -134,8 +134,7 @@ trait ScalaJSSuiteRunner extends SuiteRunner {
 
     val fileNames = for {
       line <- source.getLines
-      trimmed = line.trim
-      if trimmed != "" && !trimmed.startsWith("#")
+      trimmed = line.trim if trimmed != "" && !trimmed.startsWith("#")
     } yield extendShortTestName(trimmed)
 
     fileNames.toSet
