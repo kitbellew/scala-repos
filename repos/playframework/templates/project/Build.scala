@@ -300,8 +300,8 @@ object Templates {
                     val uuid = (js \ "uuid").as[String]
                     val statusUrl = (for {
                       links <- (js \ "_links").asOpt[JsObject]
-                      status <- (links \ "activator/templates/status")
-                        .asOpt[JsObject]
+                      status <-
+                        (links \ "activator/templates/status").asOpt[JsObject]
                       url <- (status \ "href").asOpt[String]
                     } yield url).getOrElse(s"/activator/template/status/$uuid")
                     waitUntilNotPending(uuid, statusUrl)

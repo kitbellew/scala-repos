@@ -153,10 +153,10 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
                 call.owner,
                 call.name,
                 call.desc): Either[OptimizerWarning, (MethodNode, InternalName)]
-              (declarationClassNode, source) <- byteCodeRepository
-                .classNodeAndSource(declarationClass): Either[
-                OptimizerWarning,
-                (ClassNode, Source)]
+              (declarationClassNode, source) <-
+                byteCodeRepository.classNodeAndSource(declarationClass): Either[
+                  OptimizerWarning,
+                  (ClassNode, Source)]
             } yield {
               val declarationClassBType =
                 classBTypeFromClassNode(declarationClassNode)

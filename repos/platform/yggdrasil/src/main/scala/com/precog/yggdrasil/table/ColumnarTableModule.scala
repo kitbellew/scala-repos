@@ -1787,7 +1787,8 @@ trait ColumnarTableModule[M[+_]]
             right.slices.uncons flatMap {
               case Some((rhead, rtail)) =>
                 for {
-                  lempty <- ltail.isEmpty //TODO: Scalaz result here is negated from what it should be!
+                  lempty <-
+                    ltail.isEmpty //TODO: Scalaz result here is negated from what it should be!
                   rempty <- rtail.isEmpty
 
                   back <- {

@@ -188,9 +188,8 @@ abstract class GenIncOptimizer private[optimizer] (
     assert(!batchMode || (statics.isEmpty && defaults.isEmpty))
     if (!batchMode) {
       for {
-        (containerMap, neededLinkedClasses) <- Seq(
-          (statics, neededStatics),
-          (defaults, neededDefaults))
+        (containerMap, neededLinkedClasses) <-
+          Seq((statics, neededStatics), (defaults, neededDefaults))
       } {
         CollOps.retain(containerMap) { (namespaceName, namespace) =>
           CollOps

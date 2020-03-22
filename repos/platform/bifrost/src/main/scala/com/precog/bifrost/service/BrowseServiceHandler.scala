@@ -161,8 +161,8 @@ class BrowseServiceHandler[A](
             .format(path.path, apiKey))
         for {
           sz <- size(apiKey, path)
-          children <- if (legacy) children(apiKey, path)
-          else browse(apiKey, path)
+          children <-
+            if (legacy) children(apiKey, path) else browse(apiKey, path)
           struct <- structure(apiKey, path, CPath.Identity)
         } yield {
           JObject(

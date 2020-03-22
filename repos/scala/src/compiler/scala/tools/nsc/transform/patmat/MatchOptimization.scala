@@ -113,7 +113,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         val (sharedPrefix, suffix) = tests span { test =>
           (test.prop == True) || (for (reusedTest <- test.reuses;
                                        nextDeps <- dependencies.get(reusedTest);
-                                       diff <- (nextDeps -- currDeps).headOption;
+                                       diff <-
+                                         (nextDeps -- currDeps).headOption;
                                        _ <- Some(currDeps = nextDeps))
             yield diff).nonEmpty
         }
@@ -133,9 +134,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             // if the shared prefix contains interesting conditions (!= True)
             // and the last of such interesting shared conditions reuses another treemaker's test
             // replace the whole sharedPrefix by a ReusingCondTreeMaker
-            for (lastShared <- sharedPrefix.reverse
-                   .dropWhile(_.prop == True)
-                   .headOption;
+            for (lastShared <-
+                   sharedPrefix.reverse.dropWhile(_.prop == True).headOption;
                  lastReused <- lastShared.reuses)
               yield ReusingCondTreeMaker(sharedPrefix, reusedOrOrig) :: suffix
                 .map(_.treeMaker)

@@ -86,19 +86,20 @@ final class CrosstableApi(coll: Coll) {
         import reactivemongo.api.ReadPreference
 
         for {
-          localResults <- gameColl
-            .find(selector, BSONDocument(Game.BSONFields.winnerId -> true))
-            .sort(BSONDocument(Game.BSONFields.createdAt -> -1))
-            .cursor[BSONDocument](readPreference =
-              ReadPreference.secondaryPreferred)
-            .collect[List](maxGames)
-            .map {
-              _.flatMap { doc =>
-                doc.getAs[String](Game.BSONFields.id).map { id =>
-                  Result(id, doc.getAs[String](Game.BSONFields.winnerId))
-                }
-              }.reverse
-            }
+          localResults <-
+            gameColl
+              .find(selector, BSONDocument(Game.BSONFields.winnerId -> true))
+              .sort(BSONDocument(Game.BSONFields.createdAt -> -1))
+              .cursor[BSONDocument](readPreference =
+                ReadPreference.secondaryPreferred)
+              .collect[List](maxGames)
+              .map {
+                _.flatMap { doc =>
+                  doc.getAs[String](Game.BSONFields.id).map { id =>
+                    Result(id, doc.getAs[String](Game.BSONFields.winnerId))
+                  }
+                }.reverse
+              }
           nbGames <- gameColl.count(selector.some)
           ctDraft = Crosstable(
             Crosstable.User(su1, 0),
@@ -106,18 +107,19 @@ final class CrosstableApi(coll: Coll) {
             localResults,
             nbGames)
 
-          crosstable <- gameColl
-            .aggregate(
-              Match(selector),
-              List(GroupField(Game.BSONFields.winnerId)("nb" -> SumValue(1))))
-            .map(
-              _.documents.foldLeft(ctDraft) {
-                case (ct, obj) =>
-                  obj.getAs[Int]("nb").fold(ct) { nb =>
-                    ct.addWins(obj.getAs[String]("_id"), nb)
-                  }
-              }
-            )
+          crosstable <-
+            gameColl
+              .aggregate(
+                Match(selector),
+                List(GroupField(Game.BSONFields.winnerId)("nb" -> SumValue(1))))
+              .map(
+                _.documents.foldLeft(ctDraft) {
+                  case (ct, obj) =>
+                    obj.getAs[Int]("nb").fold(ct) { nb =>
+                      ct.addWins(obj.getAs[String]("_id"), nb)
+                    }
+                }
+              )
 
           _ <- coll insert crosstable
         } yield crosstable.some

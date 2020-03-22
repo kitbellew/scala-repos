@@ -201,18 +201,19 @@ object Multipart {
       val KeyValue = """^([a-zA-Z_0-9]+)="?(.*?)"?$""".r
 
       for {
-        values <- headers
-          .get("content-disposition")
-          .map(
-            split(_)
-              .map(_.trim)
-              .map {
-                // unescape escaped quotes
-                case KeyValue(key, v) =>
-                  (key.trim, v.trim.replaceAll("""\\"""", "\""))
-                case key => (key.trim, "")
-              }
-              .toMap)
+        values <-
+          headers
+            .get("content-disposition")
+            .map(
+              split(_)
+                .map(_.trim)
+                .map {
+                  // unescape escaped quotes
+                  case KeyValue(key, v) =>
+                    (key.trim, v.trim.replaceAll("""\\"""", "\""))
+                  case key => (key.trim, "")
+                }
+                .toMap)
 
         _ <- values.get("form-data")
         partName <- values.get("name")
@@ -228,16 +229,17 @@ object Multipart {
       val KeyValue = """^([a-zA-Z_0-9]+)="(.*)"$""".r
 
       for {
-        values <- headers
-          .get("content-disposition")
-          .map(
-            _.split(";")
-              .map(_.trim)
-              .map {
-                case KeyValue(key, v) => (key.trim, v.trim)
-                case key              => (key.trim, "")
-              }
-              .toMap)
+        values <-
+          headers
+            .get("content-disposition")
+            .map(
+              _.split(";")
+                .map(_.trim)
+                .map {
+                  case KeyValue(key, v) => (key.trim, v.trim)
+                  case key              => (key.trim, "")
+                }
+                .toMap)
         _ <- values.get("form-data")
         partName <- values.get("name")
       } yield partName

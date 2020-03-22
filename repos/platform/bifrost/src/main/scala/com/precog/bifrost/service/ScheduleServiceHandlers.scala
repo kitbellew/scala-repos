@@ -203,9 +203,10 @@ class DeleteScheduledQueryServiceHandler[A](scheduler: Scheduler[Future])(
   import com.precog.util._
   val service = (request: HttpRequest[A]) => {
     for {
-      idStr <- request.parameters
-        .get('scheduleId)
-        .toSuccess(DispatchError(BadRequest, "scheduleId parameter required"))
+      idStr <-
+        request.parameters
+          .get('scheduleId)
+          .toSuccess(DispatchError(BadRequest, "scheduleId parameter required"))
       id <- Validation.fromTryCatch { UUID.fromString(idStr) } leftMap {
         error =>
           DispatchError(BadRequest, "Invalid schedule Id \"%s\"".format(idStr))
@@ -230,9 +231,11 @@ class ScheduledQueryStatusServiceHandler[A](scheduler: Scheduler[Future])(
   import com.precog.util._
   val service = (request: HttpRequest[A]) => {
     for {
-      idStr <- request.parameters
-        .get('scheduleId)
-        .toSuccess(DispatchError(BadRequest, "Missing schedule Id for status."))
+      idStr <-
+        request.parameters
+          .get('scheduleId)
+          .toSuccess(
+            DispatchError(BadRequest, "Missing schedule Id for status."))
       id <- Validation.fromTryCatch { UUID.fromString(idStr) } leftMap { ex =>
         DispatchError(
           BadRequest,

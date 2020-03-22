@@ -104,9 +104,10 @@ trait BlockSortSpec[M[+_]]
     val cSortKeys = sortKeys map { CPath(_) }
 
     val resultM = for {
-      sorted <- module
-        .fromSample(sample)
-        .sort(module.sortTransspec(cSortKeys: _*), sortOrder)
+      sorted <-
+        module
+          .fromSample(sample)
+          .sort(module.sortTransspec(cSortKeys: _*), sortOrder)
       json <- sorted.toJson
     } yield (json, sorted)
 

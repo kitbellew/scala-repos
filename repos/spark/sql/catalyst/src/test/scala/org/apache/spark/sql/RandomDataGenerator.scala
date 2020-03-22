@@ -247,24 +247,23 @@ object RandomDataGenerator {
       }
       case MapType(keyType, valueType, valueContainsNull) => {
         for (keyGenerator <- forType(keyType, nullable = false, rand);
-             valueGenerator <- forType(
-               valueType,
-               nullable = valueContainsNull,
-               rand)) yield { () =>
-          {
-            val length = rand.nextInt(MAX_MAP_SIZE)
-            val keys = scala.collection.mutable
-              .HashSet(Seq.fill(length)(keyGenerator()): _*)
-            // In case the number of different keys is not enough, set a max iteration to avoid
-            // infinite loop.
-            var count = 0
-            while (keys.size < length && count < MAX_MAP_SIZE) {
-              keys += keyGenerator()
-              count += 1
+             valueGenerator <-
+               forType(valueType, nullable = valueContainsNull, rand)) yield {
+          () =>
+            {
+              val length = rand.nextInt(MAX_MAP_SIZE)
+              val keys = scala.collection.mutable
+                .HashSet(Seq.fill(length)(keyGenerator()): _*)
+              // In case the number of different keys is not enough, set a max iteration to avoid
+              // infinite loop.
+              var count = 0
+              while (keys.size < length && count < MAX_MAP_SIZE) {
+                keys += keyGenerator()
+                count += 1
+              }
+              val values = Seq.fill(keys.size)(valueGenerator())
+              keys.zip(values).toMap
             }
-            val values = Seq.fill(keys.size)(valueGenerator())
-            keys.zip(values).toMap
-          }
         }
       }
       case StructType(fields) => {

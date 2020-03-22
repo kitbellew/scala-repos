@@ -369,11 +369,8 @@ class ShardServiceSpec extends TestShardService {
 
     "create a job when an async query is posted" in {
       val res = for {
-        HttpResponse(
-          HttpStatus(Accepted, _),
-          _,
-          Some(Left(res)),
-          _) <- asyncQuery(simpleQuery)
+        HttpResponse(HttpStatus(Accepted, _), _, Some(Left(res)), _) <-
+          asyncQuery(simpleQuery)
         jobId = extractJobId(res)
         job <- jobManager.findJob(jobId)
       } yield job
@@ -384,18 +381,12 @@ class ShardServiceSpec extends TestShardService {
     }
     "results of an async job must eventually be made available" in {
       val res = for {
-        HttpResponse(
-          HttpStatus(Accepted, _),
-          _,
-          Some(Left(res)),
-          _) <- asyncQuery(simpleQuery)
+        HttpResponse(HttpStatus(Accepted, _), _, Some(Left(res)), _) <-
+          asyncQuery(simpleQuery)
         jobId = extractJobId(res)
         _ <- waitForJobCompletion(jobId)
-        HttpResponse(
-          HttpStatus(OK, _),
-          _,
-          Some(Right(data)),
-          _) <- asyncQueryResults(jobId)
+        HttpResponse(HttpStatus(OK, _), _, Some(Right(data)), _) <-
+          asyncQueryResults(jobId)
         result <- extractResult(data)
       } yield result
 
@@ -433,11 +424,8 @@ class ShardServiceSpec extends TestShardService {
     }
     "return 400 and errors if format is 'simple'" in {
       val result = for {
-        HttpResponse(
-          HttpStatus(BadRequest, _),
-          _,
-          Some(Left(result)),
-          _) <- query("bad query")
+        HttpResponse(HttpStatus(BadRequest, _), _, Some(Left(result)), _) <-
+          query("bad query")
       } yield result
 
       result.copoint must beLike {
@@ -446,9 +434,8 @@ class ShardServiceSpec extends TestShardService {
     }
     "return warnings/errors if format is 'detailed'" in {
       val result = for {
-        HttpResponse(HttpStatus(OK, _), _, Some(Right(data)), _) <- query(
-          simpleQuery,
-          format = Some("detailed"))
+        HttpResponse(HttpStatus(OK, _), _, Some(Right(data)), _) <-
+          query(simpleQuery, format = Some("detailed"))
         result <- extractResult(data)
       } yield result
 
@@ -464,9 +451,8 @@ class ShardServiceSpec extends TestShardService {
     }
     "return just the results if format is 'simple'" in {
       val result = for {
-        HttpResponse(HttpStatus(OK, _), _, Some(Right(data)), _) <- query(
-          simpleQuery,
-          format = Some("simple"))
+        HttpResponse(HttpStatus(OK, _), _, Some(Right(data)), _) <-
+          query(simpleQuery, format = Some("simple"))
         result <- extractResult(data)
       } yield result
 

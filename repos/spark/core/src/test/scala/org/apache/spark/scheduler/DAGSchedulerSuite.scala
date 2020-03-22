@@ -2333,9 +2333,8 @@ class DAGSchedulerSuite
     */
   private def assertLocations(taskSet: TaskSet, hosts: Seq[Seq[String]]) {
     assert(hosts.size === taskSet.tasks.size)
-    for ((taskLocs, expectedLocs) <- taskSet.tasks
-           .map(_.preferredLocations)
-           .zip(hosts)) {
+    for ((taskLocs, expectedLocs) <-
+           taskSet.tasks.map(_.preferredLocations).zip(hosts)) {
       assert(taskLocs.map(_.host).toSet === expectedLocs.toSet)
     }
   }

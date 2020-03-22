@@ -879,9 +879,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
             "Mismatched size for captures: " +
               s"${captureParams.size} params vs ${captureValues.size} values")
 
-        for ((
-               ParamDef(name, ctpe, mutable, rest),
-               value) <- captureParams zip captureValues) {
+        for ((ParamDef(name, ctpe, mutable, rest), value) <-
+               captureParams zip captureValues) {
           if (mutable)
             reportError(s"Capture parameter $name cannot be mutable")
           if (rest)

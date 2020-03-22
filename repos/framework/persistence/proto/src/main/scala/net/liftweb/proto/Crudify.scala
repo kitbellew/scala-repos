@@ -794,11 +794,12 @@ trait Crudify {
           field <- computeFieldFromPointer(item, pointer).toList
           if field.show_?
           form <- field.toForm.toList
-          bindNode = ".name *" #> {
-            wrapNameInRequired(field.displayHtml, field.required_?) ++
-              error(field)
-          } &
-            ".form *" #> form
+          bindNode =
+            ".name *" #> {
+              wrapNameInRequired(field.displayHtml, field.required_?) ++
+                error(field)
+            } &
+              ".form *" #> form
           node <- bindNode(html)
         } yield node
 

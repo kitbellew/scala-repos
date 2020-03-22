@@ -44,7 +44,8 @@ package scala.collection.immutable.redblacktree {
       } else {
         for {
           oddOrEven <- choose(0, 2)
-          tryRed = oddOrEven.sample.get % 2 == 0 // work around arbitrary[Boolean] bug
+          tryRed =
+            oddOrEven.sample.get % 2 == 0 // work around arbitrary[Boolean] bug
           isRed = parentIsBlack && tryRed
           nextLevel = if (isRed) level else level - 1
           left <- mkTree(nextLevel, !isRed, label + "L")
@@ -224,11 +225,8 @@ package scala.collection.immutable.redblacktree {
           None,
           Some(from)
         ) // Double Some(n) to get around a bug
-        optionalTo <- oneOf(
-          Some(to),
-          None,
-          Some(to)
-        ) // Double Some(n) to get around a bug
+        optionalTo <-
+          oneOf(Some(to), None, Some(to)) // Double Some(n) to get around a bug
       } yield (optionalFrom, optionalTo)
 
     override def modify(

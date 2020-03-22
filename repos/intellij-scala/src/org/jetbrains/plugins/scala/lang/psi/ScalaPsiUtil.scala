@@ -1030,8 +1030,8 @@ object ScalaPsiUtil {
                   .getOrAny))
           case _ =>
             for {
-              (clazz: PsiClass, subst: ScSubstitutor) <- ScType
-                .extractClassType(tp, Some(project))
+              (clazz: PsiClass, subst: ScSubstitutor) <-
+                ScType.extractClassType(tp, Some(project))
               if !visited.contains(clazz)
             } {
               clazz match {
@@ -1514,10 +1514,8 @@ object ScalaPsiUtil {
   def getMethodsForName(
       clazz: PsiClass,
       name: String): Seq[PhysicalSignature] = {
-    for ((n: PhysicalSignature, _) <- TypeDefinitionMembers
-           .getSignatures(clazz)
-           .forName(name)
-           ._1
+    for ((n: PhysicalSignature, _) <-
+           TypeDefinitionMembers.getSignatures(clazz).forName(name)._1
          if clazz
            .isInstanceOf[ScObject] || !n.method.hasModifierProperty("static"))
       yield n

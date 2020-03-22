@@ -1408,10 +1408,10 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
 
           mf.setName_!(v.getName)
           tArray += FieldHolder(mf.name, v, mf)
-          for (colName <- mf
-                 .dbColumnNames(v.getName)
-                 .map(MapperRules.quoteColumnName.vend)
-                 .map(_.toLowerCase)) {
+          for (colName <-
+                 mf.dbColumnNames(v.getName)
+                   .map(MapperRules.quoteColumnName.vend)
+                   .map(_.toLowerCase)) {
             mappedColumnInfo += colName -> mf
             mappedColumns += colName -> v
           }

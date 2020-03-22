@@ -55,10 +55,8 @@ class ScalaCopyPastePostProcessor
             override def run(): Unit = {
               breakable {
                 for ((startOffset, endOffset) <- startOffsets.zip(endOffsets);
-                     element <- getElementsStrictlyInRange(
-                       file,
-                       startOffset,
-                       endOffset);
+                     element <-
+                       getElementsStrictlyInRange(file, startOffset, endOffset);
                      reference <- element.asOptionOf[ScReferenceElement];
                      dependency <- Dependency.dependencyFor(reference)
                      if dependency.isExternal;

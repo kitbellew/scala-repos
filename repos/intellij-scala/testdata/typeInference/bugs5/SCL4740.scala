@@ -22,7 +22,8 @@ object PhoneCode {
                                       "bku",
                                       "lop",
                                       "ghz").zipWithIndex;
-                                    char <- (chars2Digit._1 ++ chars2Digit._1.toUpperCase))
+                                    char <-
+                                      (chars2Digit._1 ++ chars2Digit._1.toUpperCase))
           yield (char -> chars2Digit._2)).toMap
         (word: String) => word.map(mappingReversed).mkString
       }

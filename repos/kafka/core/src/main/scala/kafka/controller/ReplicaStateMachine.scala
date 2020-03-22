@@ -490,9 +490,8 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
     * in zookeeper
     */
   private def initializeReplicaState() {
-    for ((
-           topicPartition,
-           assignedReplicas) <- controllerContext.partitionReplicaAssignment) {
+    for ((topicPartition, assignedReplicas) <-
+           controllerContext.partitionReplicaAssignment) {
       val topic = topicPartition.topic
       val partition = topicPartition.partition
       assignedReplicas.foreach { replicaId =>

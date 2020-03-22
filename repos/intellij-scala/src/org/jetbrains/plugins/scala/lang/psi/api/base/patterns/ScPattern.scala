@@ -401,8 +401,8 @@ trait ScPattern extends ScalaPsiElement {
 
             tuple.expectedType.flatMap {
               case ScTupleType(comps) =>
-                for ((t, p) <- comps.iterator.zip(
-                       patternList.patterns.iterator)) {
+                for ((t, p) <-
+                       comps.iterator.zip(patternList.patterns.iterator)) {
                   if (p == this) return Some(t)
                 }
                 None
@@ -582,9 +582,10 @@ object ScPattern {
                   else {
                     val productFqn = "scala.Product" + productChance.length
                     (for {
-                      productClass <- ScalaPsiManager
-                        .instance(place.getProject)
-                        .getCachedClass(place.getResolveScope, productFqn)
+                      productClass <-
+                        ScalaPsiManager
+                          .instance(place.getProject)
+                          .getCachedClass(place.getResolveScope, productFqn)
                       clazz <- ScType.extractClass(tp, Some(place.getProject))
                     } yield clazz == productClass || clazz.isInheritor(
                       productClass,

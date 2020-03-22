@@ -1103,8 +1103,8 @@ object JavaToScala {
       val annotations = new ArrayBuffer[IntermediateNode]()
       for {
         a <- owner.getModifierList.getAnnotations
-        optValue = Option(a.getQualifiedName)
-          .map(annotationDropList.contains(_))
+        optValue =
+          Option(a.getQualifiedName).map(annotationDropList.contains(_))
         if optValue.isDefined && !optValue.get
       } {
         annotations.append(convertPsiToIntermdeiate(a, null))

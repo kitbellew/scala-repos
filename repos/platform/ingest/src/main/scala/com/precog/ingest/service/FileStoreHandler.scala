@@ -139,19 +139,20 @@ class FileStoreHandler(
               Some(timestamp.toInstant)) { authorities =>
               request.content map { content =>
                 (for {
-                  jobId <- jobManager
-                    .createJob(
-                      apiKey,
-                      "ingest-" + path,
-                      "ingest",
-                      None,
-                      Some(timestamp))
-                    .map(_.id)
-                    .leftMap { errors =>
-                      logger.error(
-                        "File creation failed due to errors in job service: " + errors)
-                      serverError(errors)
-                    }
+                  jobId <-
+                    jobManager
+                      .createJob(
+                        apiKey,
+                        "ingest-" + path,
+                        "ingest",
+                        None,
+                        Some(timestamp))
+                      .map(_.id)
+                      .leftMap { errors =>
+                        logger.error(
+                          "File creation failed due to errors in job service: " + errors)
+                        serverError(errors)
+                      }
                   bytes <- EitherT {
                     // FIXME: This should only read at most approximately the upload limit,
                     // so we don't read GB of data into memory from users.

@@ -477,8 +477,9 @@ trait QuirrelCache extends AST { parser: Parser =>
 
     val result = for {
       expr <- repl(expr0)
-      _ <- StateT { s: List[Binding] => s.isEmpty.option((Nil, ())) }: BindingS[
-        Unit]
+      _ <- StateT { s: List[Binding] =>
+        s.isEmpty.option((Nil, ()))
+      }: BindingS[Unit]
     } yield expr
 
     result.eval(bindings)

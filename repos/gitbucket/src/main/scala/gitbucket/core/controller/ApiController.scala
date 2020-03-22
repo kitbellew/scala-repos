@@ -142,8 +142,9 @@ trait ApiControllerBase extends ControllerBase {
     (for {
       branch <- params.get("branch")
       if repository.branchList.find(_ == branch).isDefined
-      protection <- extractFromJsonBody[
-        ApiBranchProtection.EnablingAndDisabling].map(_.protection)
+      protection <-
+        extractFromJsonBody[ApiBranchProtection.EnablingAndDisabling]
+          .map(_.protection)
     } yield {
       if (protection.enabled) {
         enableBranchProtection(
@@ -176,10 +177,8 @@ trait ApiControllerBase extends ControllerBase {
     repository =>
       (for {
         issueId <- params("id").toIntOpt
-        comments = getCommentsForApi(
-          repository.owner,
-          repository.name,
-          issueId.toInt)
+        comments =
+          getCommentsForApi(repository.owner, repository.name, issueId.toInt)
       } yield {
         JsonFormat(comments.map {
           case (issueComment, user, issue) =>
@@ -202,18 +201,17 @@ trait ApiControllerBase extends ControllerBase {
         issueId <- params("id").toIntOpt
         issue <- getIssue(repository.owner, repository.name, issueId.toString)
         body <- extractFromJsonBody[CreateAComment].map(_.body) if !body.isEmpty
-        action = params
-          .get("action")
-          .filter(_ =>
-            isEditable(
-              issue.userName,
-              issue.repositoryName,
-              issue.openedUserName))
+        action =
+          params
+            .get("action")
+            .filter(_ =>
+              isEditable(
+                issue.userName,
+                issue.repositoryName,
+                issue.openedUserName))
         (issue, id) <- handleComment(issue, Some(body), repository, action)
-        issueComment <- getComment(
-          repository.owner,
-          repository.name,
-          id.toString())
+        issueComment <-
+          getComment(repository.owner, repository.name, id.toString())
       } yield {
         JsonFormat(
           ApiComment(
@@ -364,10 +362,8 @@ trait ApiControllerBase extends ControllerBase {
     repository =>
       (for {
         issueId <- params("id").toIntOpt
-        (issue, pullRequest) <- getPullRequest(
-          repository.owner,
-          repository.name,
-          issueId)
+        (issue, pullRequest) <-
+          getPullRequest(repository.owner, repository.name, issueId)
         users = getAccountsByUserNames(
           Set(
             repository.owner,

@@ -96,8 +96,8 @@ private[sql] class SQLListener(conf: SparkConf)
     if (executions.size > retainedExecutions) {
       val toRemove = math.max(retainedExecutions / 10, 1)
       executions.take(toRemove).foreach { execution =>
-        for (executionUIData <- _executionIdToData.remove(
-               execution.executionId)) {
+        for (executionUIData <-
+               _executionIdToData.remove(execution.executionId)) {
           for (jobId <- executionUIData.jobs.keys) {
             _jobIdToExecutionId.remove(jobId)
           }
@@ -156,11 +156,8 @@ private[sql] class SQLListener(conf: SparkConf)
   override def onExecutorMetricsUpdate(
       executorMetricsUpdate: SparkListenerExecutorMetricsUpdate): Unit =
     synchronized {
-      for ((
-             taskId,
-             stageId,
-             stageAttemptID,
-             accumUpdates) <- executorMetricsUpdate.accumUpdates) {
+      for ((taskId, stageId, stageAttemptID, accumUpdates) <-
+             executorMetricsUpdate.accumUpdates) {
         updateTaskAccumulatorValues(
           taskId,
           stageId,

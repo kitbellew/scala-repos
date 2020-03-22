@@ -35,9 +35,10 @@ final class Api(
   def thread(id: String, me: User): Fu[Option[Thread]] =
     for {
       threadOption ← $find.byId(id) map (_ filter (_ hasUser me))
-      _ ← threadOption
-        .filter(_ isUnReadBy me)
-        .??(thread => (ThreadRepo setRead thread) >>- updateUser(me))
+      _ ←
+        threadOption
+          .filter(_ isUnReadBy me)
+          .??(thread => (ThreadRepo setRead thread) >>- updateUser(me))
     } yield threadOption
 
   def markThreadAsRead(id: String, me: User): Funit = thread(id, me).void

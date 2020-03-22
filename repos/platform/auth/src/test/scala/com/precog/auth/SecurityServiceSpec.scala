@@ -395,12 +395,11 @@ class SecurityServiceSpec
         None,
         Set(mkNewGrantRequest(user1Grant)))
       val result = for {
-        HttpResponse(HttpStatus(OK, _), _, Some(jid), _) <- createAPIKey(
-          user1.apiKey,
-          request)
+        HttpResponse(HttpStatus(OK, _), _, Some(jid), _) <-
+          createAPIKey(user1.apiKey, request)
         apiKey = jid.deserialize[v1.APIKeyDetails].apiKey
-        HttpResponse(HttpStatus(OK, _), _, Some(jtd), _) <- getAPIKeyDetails(
-          apiKey)
+        HttpResponse(HttpStatus(OK, _), _, Some(jtd), _) <-
+          getAPIKeyDetails(apiKey)
       } yield jtd.deserialize[v1.APIKeyDetails]
 
       result must awaited(to) {
@@ -615,17 +614,14 @@ class SecurityServiceSpec
             None)
         )
         details = jid.deserialize[v1.GrantDetails]
-        HttpResponse(HttpStatus(OK, _), _, Some(jgs), _) <- getGrantChildren(
-          user1.apiKey,
-          user1Grant.grantId)
+        HttpResponse(HttpStatus(OK, _), _, Some(jgs), _) <-
+          getGrantChildren(user1.apiKey, user1Grant.grantId)
         beforeDelete = jgs.deserialize[Set[v1.GrantDetails]]
         if beforeDelete.exists(_.grantId == details.grantId)
-        HttpResponse(HttpStatus(NoContent, _), _, None, _) <- deleteGrant(
-          user1.apiKey,
-          details.grantId)
-        HttpResponse(HttpStatus(OK, _), _, Some(jgs), _) <- getGrantChildren(
-          user1.apiKey,
-          user1Grant.grantId)
+        HttpResponse(HttpStatus(NoContent, _), _, None, _) <-
+          deleteGrant(user1.apiKey, details.grantId)
+        HttpResponse(HttpStatus(OK, _), _, Some(jgs), _) <-
+          getGrantChildren(user1.apiKey, user1Grant.grantId)
         afterDelete = jgs.deserialize[Set[v1.GrantDetails]]
       } yield !afterDelete.exists(_.grantId == details.grantId)) must awaited(
         to) { beTrue }
@@ -658,9 +654,8 @@ class SecurityServiceSpec
           user1.apiKey,
           user4.apiKey,
           jid.deserialize[v1.GrantDetails].grantId)
-        HttpResponse(HttpStatus(OK, _), _, Some(jperms), _) <- getPermissions(
-          user4.apiKey,
-          Path("/user1/public"))
+        HttpResponse(HttpStatus(OK, _), _, Some(jperms), _) <-
+          getPermissions(user4.apiKey, Path("/user1/public"))
       } yield jperms.deserialize[Set[Permission]]
 
       permsM must awaited(to) {

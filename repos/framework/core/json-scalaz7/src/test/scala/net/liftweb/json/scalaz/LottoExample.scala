@@ -38,8 +38,8 @@ object LottoExample extends Specification {
   implicit def lottoJSON: JSONR[Lotto] = {
     val winningNumbersResult = (jValue: JValue) =>
       (for {
-        winningNumbers <- field[List[Int]]("winning-numbers")(
-          jValue).disjunction
+        winningNumbers <-
+          field[List[Int]]("winning-numbers")(jValue).disjunction
         _ <- len(6)(winningNumbers).disjunction
       } yield winningNumbers).validation
     Lotto.applyJSON(

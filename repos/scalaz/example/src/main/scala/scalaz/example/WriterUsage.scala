@@ -19,9 +19,8 @@ object WriterUsage extends App {
       address <- Address("Baker Street", "London").set(List("Create address."))
       _ <- List(
         "tell lets us log something in between. Writer[List[String], Unit]").tell
-      moveWatson <- watson
-        .copy(address = Some(address))
-        .set(List("Move to new address."))
+      moveWatson <-
+        watson.copy(address = Some(address)).set(List("Move to new address."))
     } yield moveWatson
 
   // print log
@@ -34,9 +33,8 @@ object WriterUsage extends App {
     for {
       holmes <- Person("Holmes", 40).set(List("Create Holmes"))
       address <- Address("Baker Street", "London").set(List("Create address."))
-      moveHolmes <- holmes
-        .copy(address = Some(address))
-        .set(List("Move to new address."))
+      moveHolmes <-
+        holmes.copy(address = Some(address)).set(List("Move to new address."))
     } yield (moveHolmes)
 
   // map lets you map over the value side
