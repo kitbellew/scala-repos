@@ -325,8 +325,10 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
           path,
           Version.Current,
           AccessMode.Execute) leftMap { storageError _ }
-        query <- Resource.asQuery(path, Version.Current).apply(
-          queryRes) leftMap { storageError _ }
+        query <-
+          Resource.asQuery(path, Version.Current).apply(queryRes) leftMap {
+            storageError _
+          }
         _ = logger.debug(
           "Text of stored query at %s: \n%s".format(path.path, query))
         raw <- executor.execute(query, ctx, queryOptions)

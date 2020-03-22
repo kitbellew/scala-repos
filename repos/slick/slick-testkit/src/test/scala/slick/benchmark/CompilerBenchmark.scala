@@ -155,8 +155,8 @@ object CompilerBenchmark {
       coffees.sortBy(_.price).take(3) join suppliers on (_.supID === _.id)
     def q1b =
       for {
-        (c, s) <- q1b_0.sortBy(_._1.price).take(2).filter(
-          _._1.name =!= "Colombian")
+        (c, s) <-
+          q1b_0.sortBy(_._1.price).take(2).filter(_._1.name =!= "Colombian")
         (c2, s2) <- q1b_0
       } yield (c.name, s.city, c2.name)
     val q2 = for {

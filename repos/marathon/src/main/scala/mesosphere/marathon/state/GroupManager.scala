@@ -167,8 +167,8 @@ class GroupManager @Singleton @Inject() (
 
       val deployment = for {
         from <- rootGroup()
-        (toUnversioned, resolve) <- resolveStoreUrls(
-          assignDynamicServicePorts(from, change(from)))
+        (toUnversioned, resolve) <-
+          resolveStoreUrls(assignDynamicServicePorts(from, change(from)))
         to = GroupVersioningUtil.updateVersionInfoForChangedApps(
           version,
           from,

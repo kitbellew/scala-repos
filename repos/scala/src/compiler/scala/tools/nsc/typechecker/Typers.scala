@@ -2444,9 +2444,8 @@ trait Typers
       if (superConstr.symbol.isPrimaryConstructor && !superClazz.isJavaDefined && sameLength(
             superParamAccessors,
             superArgs)) {
-        for ((
-               superAcc,
-               superArg @ Ident(name)) <- superParamAccessors zip superArgs) {
+        for ((superAcc, superArg @ Ident(name)) <-
+               superParamAccessors zip superArgs) {
           if (mexists(vparamss)(_.symbol == superArg.symbol)) {
             val alias = (
               superAcc.initialize.alias
@@ -5193,7 +5192,7 @@ trait Typers
         if (enclMethod == NoContext ||
             enclMethod.owner.isConstructor ||
             context.enclClass.enclMethod == enclMethod // i.e., we are in a constructor of a local class
-            ) {
+        ) {
           ReturnOutsideOfDefError(tree)
         } else {
           val DefDef(_, name, _, _, restpt, _) = enclMethod.tree

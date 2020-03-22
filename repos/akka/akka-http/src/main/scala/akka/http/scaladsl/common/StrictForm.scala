@@ -137,8 +137,9 @@ object StrictForm {
       def tryUnmarshalToMultipartForm: Future[StrictForm] =
         for {
           multiPartFD ← multipartUM(entity).fast
-          strictMultiPartFD ← multiPartFD.toStrict(
-            10.seconds).fast // TODO: make timeout configurable
+          strictMultiPartFD ←
+            multiPartFD.toStrict(
+              10.seconds).fast // TODO: make timeout configurable
         } yield {
           new StrictForm {
             val fields = strictMultiPartFD.strictParts.map {

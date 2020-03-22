@@ -229,10 +229,11 @@ class SecurityServiceHandlers(
         val apiKeyV = request.parameters.get('apikey).toSuccess(
           badRequest("Missing API key from request URL"))
         for {
-          contentV <- request.content.toSuccess(
-            badRequest("Missing body content for grant creation.")).sequence[
-            Future,
-            JValue]
+          contentV <-
+            request.content.toSuccess(
+              badRequest("Missing body content for grant creation.")).sequence[
+              Future,
+              JValue]
           response <- (for (apiKey <- apiKeyV; content <- contentV)
             yield create(apiKey, content)).sequence[Future, R]
         } yield response.toEither.merge
@@ -386,10 +387,11 @@ class SecurityServiceHandlers(
         val parentIdV = request.parameters.get('grantId).toSuccess(
           badRequest("Missing grant ID from request URL"))
         for {
-          contentV <- request.content.toSuccess(
-            badRequest("Missing body content for grant creation.")).sequence[
-            Future,
-            JValue]
+          contentV <-
+            request.content.toSuccess(
+              badRequest("Missing body content for grant creation.")).sequence[
+              Future,
+              JValue]
           response <- (for (parentId <- parentIdV; content <- contentV)
             yield create(authAPIKey, parentId, content)).sequence[Future, R]
         } yield response.toEither.merge

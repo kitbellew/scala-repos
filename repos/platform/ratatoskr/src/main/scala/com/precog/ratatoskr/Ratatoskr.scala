@@ -1323,11 +1323,12 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
   def process(config: Config) {
     val job = for {
       (apiKeys, stoppable) <- apiKeyManager(config)
-      actions = (config.list).option(list(apiKeys)).toSeq ++
-        (config.showRoot).option(showRoot(apiKeys)).toSeq ++
+      actions =
+        (config.list).option(list(apiKeys)).toSeq ++
+          (config.showRoot).option(showRoot(apiKeys)).toSeq ++
 //              config.listChildren.map(listChildren(_, apiKeys)) ++
-        config.accountId.map(p => create(p, config.newAPIKeyName, apiKeys)) ++
-        config.delete.map(delete(_, apiKeys))
+          config.accountId.map(p => create(p, config.newAPIKeyName, apiKeys)) ++
+          config.delete.map(delete(_, apiKeys))
       _ <- Future.sequence(actions)
       _ <- Stoppable.stop(stoppable)
     } yield {

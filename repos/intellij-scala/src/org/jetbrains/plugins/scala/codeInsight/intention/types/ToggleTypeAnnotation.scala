@@ -43,8 +43,8 @@ class ToggleTypeAnnotation extends PsiElementBaseIntentionAction {
 object ToggleTypeAnnotation {
   def complete(strategy: Strategy, element: PsiElement): Boolean = {
     for {
-      function <- element.parentsInFile.findByType(
-        classOf[ScFunctionDefinition])
+      function <-
+        element.parentsInFile.findByType(classOf[ScFunctionDefinition])
       if function.hasAssign
       body <- function.body
       if !body.isAncestorOf(element)
@@ -76,8 +76,8 @@ object ToggleTypeAnnotation {
     }
 
     for {
-      variable <- element.parentsInFile.findByType(
-        classOf[ScVariableDefinition])
+      variable <-
+        element.parentsInFile.findByType(classOf[ScVariableDefinition])
       if variable.expr.forall(!_.isAncestorOf(element))
       if variable.pList.allPatternsSimple
       bindings = variable.bindings
@@ -116,8 +116,8 @@ object ToggleTypeAnnotation {
       }
     }
 
-    for (pattern <- element.parentsInFile.findByType(
-           classOf[ScBindingPattern])) {
+    for (pattern <-
+           element.parentsInFile.findByType(classOf[ScBindingPattern])) {
       pattern match {
         case p: ScTypedPattern if p.typePattern.isDefined =>
           strategy.removeFromPattern(p)
@@ -128,8 +128,8 @@ object ToggleTypeAnnotation {
         case _ =>
       }
     }
-    for (pattern <- element.parentsInFile.findByType(
-           classOf[ScWildcardPattern])) {
+    for (pattern <-
+           element.parentsInFile.findByType(classOf[ScWildcardPattern])) {
       strategy.addToWildcardPattern(pattern)
       return true
     }

@@ -126,7 +126,8 @@ class ScalaTestGenerator extends TestGenerator {
       editor: Editor,
       typeDef: ScTypeDefinition,
       testFramework: TestFramework,
-      methods: java.util.Collection[MemberInfo],
+      methods: java
+        .util.Collection[MemberInfo],
       generateBefore: Boolean,
       generateAfter: Boolean,
       className: String): Unit = {

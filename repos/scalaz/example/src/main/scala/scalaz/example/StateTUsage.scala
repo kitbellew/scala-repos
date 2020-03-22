@@ -131,8 +131,8 @@ object LaunchburyInterpreter extends App {
           // sub(Map(originalVar -> freshVar))
           subs = sub(newBindings.map(tpl => tpl.copy(_1 = tpl._1._1)).toMap) _
           // List[freshVar, Expr] - change to map when dolio's done
-          bs2 = newBindings.map(tpl =>
-            tpl.copy(_2 = tpl._1._2, _1 = tpl._2)).toList
+          bs2 =
+            newBindings.map(tpl => tpl.copy(_2 = tpl._1._2, _1 = tpl._2)).toList
           e3 <- freshen(subs(e2))
           freshendBs <- bs2.traverseS {
             case (x, e) => freshen(subs(e)).map((x, _))

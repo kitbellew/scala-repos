@@ -489,8 +489,8 @@ object Req {
       val params: List[(String, String)] =
         for {
           queryString <- request.queryString.toList
-          nameVal <- queryString.split("&").toList.map(_.trim).filter(
-            _.length > 0)
+          nameVal <-
+            queryString.split("&").toList.map(_.trim).filter(_.length > 0)
           (name, value) <- nameVal.split("=").toList match {
             case Nil         => Empty
             case n :: v :: _ => Full((urlDecode(n), urlDecode(v)))
@@ -846,8 +846,8 @@ object ContentType {
     */
   def parse(str: String): List[ContentType] =
     (for {
-      (part, index) <- str.charSplit(',').map(
-        _.trim).zipWithIndex // split at comma
+      (part, index) <-
+        str.charSplit(',').map(_.trim).zipWithIndex // split at comma
       content <- parseIt(part, index)
     } yield content).sortWith(_ < _)
 

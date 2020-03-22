@@ -215,11 +215,9 @@ class CompileSocket extends CompileOutputCommon {
 
   def getSocket(serverAdr: String): Option[Socket] =
     (
-      for ((name, portStr) <- splitWhere(
-             serverAdr,
-             _ == ':',
-             doDropIndex = true); port <- parseInt(portStr))
-        yield getSocket(name, port)
+      for ((name, portStr) <-
+             splitWhere(serverAdr, _ == ':', doDropIndex = true);
+           port <- parseInt(portStr)) yield getSocket(name, port)
     ) getOrElse fatal("Malformed server address: %s; exiting" format serverAdr)
 
   def getSocket(hostName: String, port: Int): Option[Socket] = {

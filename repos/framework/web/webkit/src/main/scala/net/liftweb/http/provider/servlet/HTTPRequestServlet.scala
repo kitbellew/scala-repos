@@ -56,15 +56,15 @@ class HTTPRequestServlet(
 
   def headers(name: String): List[String] =
     for {
-      h <- (Box !! req.getHeaders(name)).asA[
-        java.util.Enumeration[String]].toList
+      h <-
+        (Box !! req.getHeaders(name)).asA[java.util.Enumeration[String]].toList
       li <- enumToList[String](h) if null != li
     } yield li
 
   lazy val headers: List[HTTPParam] =
     for {
-      hne <- (Box !! req.getHeaderNames).asA[
-        java.util.Enumeration[String]].toList
+      hne <-
+        (Box !! req.getHeaderNames).asA[java.util.Enumeration[String]].toList
       n <- enumToList[String](hne) if null != n
       hl <- Full(headers(n)) if !hl.isEmpty
     } yield HTTPParam(n, hl)

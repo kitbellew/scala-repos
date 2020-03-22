@@ -136,10 +136,8 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
       (serverWhich, serverClosable, port) <- servers(pf)
     } {
       for {
-        (clientWhich, clientIface, clientClosable) <- clients(
-          pf,
-          clientId,
-          port)
+        (clientWhich, clientIface, clientClosable) <-
+          clients(pf, clientId, port)
       } withClue(
         s"Server ($serverWhich) Client ($clientWhich) clientId $clientId protocolFactory $pf"
       ) {

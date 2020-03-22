@@ -80,13 +80,10 @@ final class JsonView(
   def playerInfo(info: PlayerInfoExt): Fu[JsObject] =
     for {
       ranking <- cached ranking info.tour
-      pairings <- PairingRepo.finishedByPlayerChronological(
-        info.tour.id,
-        info.user.id)
-      sheet = info.tour.system.scoringSystem.sheet(
-        info.tour,
-        info.user.id,
-        pairings)
+      pairings <-
+        PairingRepo.finishedByPlayerChronological(info.tour.id, info.user.id)
+      sheet =
+        info.tour.system.scoringSystem.sheet(info.tour, info.user.id, pairings)
       tpr <- performance(info.tour, info.player, pairings)
     } yield info match {
       case PlayerInfoExt(tour, user, player, povs) =>
@@ -154,10 +151,8 @@ final class JsonView(
 
   private def computeStanding(tour: Tournament, page: Int): Fu[JsObject] =
     for {
-      rankedPlayers <- PlayerRepo.bestByTourWithRankByPage(
-        tour.id,
-        10,
-        page max 1)
+      rankedPlayers <-
+        PlayerRepo.bestByTourWithRankByPage(tour.id, 10, page max 1)
       sheets <- rankedPlayers.map { p =>
         PairingRepo.finishedByPlayerChronological(
           tour.id,
@@ -283,10 +278,8 @@ final class JsonView(
                 pairings <- PairingRepo.finishedByPlayerChronological(
                   tour.id,
                   player.userId)
-                sheet = tour.system.scoringSystem.sheet(
-                  tour,
-                  player.userId,
-                  pairings)
+                sheet =
+                  tour.system.scoringSystem.sheet(tour, player.userId, pairings)
                 tpr <- performance(tour, player, pairings)
               } yield playerJson(sheet.some, tour, rp) ++ Json.obj(
                 "nb" -> sheetNbs(player.userId, sheet, pairings),

@@ -1514,9 +1514,8 @@ class LiftSession(
       }.headOption
 
     for {
-      template <- Templates(
-        name,
-        S.locale) ?~ ("Template " + name + " not found")
+      template <-
+        Templates(name, S.locale) ?~ ("Template " + name + " not found")
       res <- findElem(
         processSurroundAndInclude(name.mkString("/", "/", ""), template))
     } yield res
@@ -2944,21 +2943,22 @@ class LiftSession(
             JString(name) <- in \ "name"
             func <- map.get(name)
             payload = in \ "payload"
-            reified <- if (func.manifest == jvmanifest) Some(payload)
-            else {
-              try { Some(payload.extract(defaultFormats, func.manifest)) }
-              catch {
-                case e: Exception =>
-                  logger.error(
-                    "Failed to extract " + payload + " as " + func.manifest,
-                    e)
-                  ca ! FailMsg(
-                    guid,
-                    "Failed to extract payload as " + func.manifest + " exception " + e.getMessage)
-                  None
+            reified <-
+              if (func.manifest == jvmanifest) Some(payload)
+              else {
+                try { Some(payload.extract(defaultFormats, func.manifest)) }
+                catch {
+                  case e: Exception =>
+                    logger.error(
+                      "Failed to extract " + payload + " as " + func.manifest,
+                      e)
+                    ca ! FailMsg(
+                      guid,
+                      "Failed to extract payload as " + func.manifest + " exception " + e.getMessage)
+                    None
 
+                }
               }
-            }
           } {
             func match {
               case StreamRoundTrip(_, func) =>

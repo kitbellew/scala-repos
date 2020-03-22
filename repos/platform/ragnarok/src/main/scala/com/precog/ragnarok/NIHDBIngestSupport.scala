@@ -134,8 +134,8 @@ trait NIHDBIngestSupport
                     clock.instant,
                     StreamRef.Append)))).unsafePerformIO
           }
-          _ = logger.debug(
-            "Insert complete on //%s, waiting for cook".format(db))
+          _ =
+            logger.debug("Insert complete on //%s, waiting for cook".format(db))
           projection <- vfs.readProjection(
             apiKey,
             path,

@@ -748,9 +748,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
                       leftWriteState,
                       "alignLeft",
                       SortAscending)
-                    resultWriteStates <- next(
-                      nextLeftWriteState,
-                      rightWriteState)
+                    resultWriteStates <-
+                      next(nextLeftWriteState, rightWriteState)
                   } yield resultWriteStates
                 } getOrElse {
                   next(leftWriteState, rightWriteState)
@@ -834,9 +833,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
                       rightWriteState,
                       "alignRight",
                       SortAscending)
-                    resultWriteStates <- next(
-                      leftWriteState,
-                      nextRightWriteState)
+                    resultWriteStates <-
+                      next(leftWriteState, nextRightWriteState)
                   } yield resultWriteStates
                 } getOrElse {
                   next(leftWriteState, rightWriteState)
