@@ -52,10 +52,12 @@ private[v1] class AllStagesResource(ui: SparkUI) {
     }
     for {
       (status, stageList) <- stageAndStatus
-      stageInfo: StageInfo <- stageList if adjStatuses.contains(status)
-      stageUiData: StageUIData <- listener.synchronized {
-        listener.stageIdToData.get((stageInfo.stageId, stageInfo.attemptId))
-      }
+      stageInfo: StageInfo <- stageList
+      if adjStatuses.contains(status)
+      stageUiData: StageUIData <-
+        listener.synchronized {
+          listener.stageIdToData.get((stageInfo.stageId, stageInfo.attemptId))
+        }
     } yield {
       AllStagesResource.stageUiToStageData(
         status,

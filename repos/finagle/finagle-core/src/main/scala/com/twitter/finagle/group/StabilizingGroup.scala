@@ -111,7 +111,8 @@ object StabilizingGroup {
               case (e, _) =>
                 e == elem
             }
-          for (el <- snap &~ newSet if !inQ(el)) {
+          for (el <- snap &~ newSet
+               if !inQ(el)) {
             val until = Time.now + grace
             q = q enqueue ((el, until))
           }

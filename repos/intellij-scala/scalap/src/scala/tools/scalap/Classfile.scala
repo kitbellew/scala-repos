@@ -141,7 +141,8 @@ class Classfile(in: ByteArrayReader) {
     def stringOf(x: Int) = apply(x).toString
     override def toString =
       (
-        for ((x, i) <- entries.zipWithIndex; if x != null)
+        for ((x, i) <- entries.zipWithIndex;
+             if x != null)
           yield "const #%d = %s\t%s\n".format(i + 1, x.typeString, x)
       ).mkString
   }

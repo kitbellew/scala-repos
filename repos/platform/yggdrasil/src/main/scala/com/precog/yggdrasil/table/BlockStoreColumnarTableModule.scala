@@ -188,7 +188,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
           val comparatorMatrix = Array.ofDim[RowComparator](size, size)
 
           for (Cell(i, _, s) <- initialCells;
-               Cell(i0, _, s0) <- initialCells if i != i0) {
+               Cell(i0, _, s0) <- initialCells
+               if i != i0) {
             comparatorMatrix(i)(i0) = Slice.rowComparatorFor(s, s0)(keyf)
           }
 
@@ -794,12 +795,13 @@ trait BlockStoreColumnarTableModule[M[+_]]
                   .option(lhead.mapColumns(cf.util.filter(0, lhead.size, leq)))
                 lemission map { e =>
                   for {
-                    nextLeftWriteState <- writeAlignedSlices(
-                      lkey,
-                      e,
-                      leftWriteState,
-                      "alignLeft",
-                      SortAscending)
+                    nextLeftWriteState <-
+                      writeAlignedSlices(
+                        lkey,
+                        e,
+                        leftWriteState,
+                        "alignLeft",
+                        SortAscending)
                     resultWriteStates <-
                       next(nextLeftWriteState, rightWriteState)
                   } yield resultWriteStates
@@ -889,12 +891,13 @@ trait BlockStoreColumnarTableModule[M[+_]]
                   .option(rhead.mapColumns(cf.util.filter(0, rhead.size, req)))
                 remission map { e =>
                   for {
-                    nextRightWriteState <- writeAlignedSlices(
-                      rkey,
-                      e,
-                      rightWriteState,
-                      "alignRight",
-                      SortAscending)
+                    nextRightWriteState <-
+                      writeAlignedSlices(
+                        rkey,
+                        e,
+                        rightWriteState,
+                        "alignRight",
+                        SortAscending)
                     resultWriteStates <-
                       next(leftWriteState, nextRightWriteState)
                   } yield resultWriteStates

@@ -581,7 +581,8 @@ trait ScFunction
       }
 
       val params = parameters
-      for (i <- params.indices if params(i).baseDefaultParam) {
+      for (i <- params.indices
+           if params(i).baseDefaultParam) {
         buffer += new ScFunctionWrapper(
           this,
           isStatic = isStatic || isConstructor,

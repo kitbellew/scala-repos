@@ -43,7 +43,8 @@ private[v1] class AllJobsResource(ui: SparkUI) {
     val jobInfos =
       for {
         (status, jobs) <- statusToJobs
-        job <- jobs if adjStatuses.contains(status)
+        job <- jobs
+        if adjStatuses.contains(status)
       } yield {
         AllJobsResource.convertJobData(job, ui.jobProgressListener, false)
       }

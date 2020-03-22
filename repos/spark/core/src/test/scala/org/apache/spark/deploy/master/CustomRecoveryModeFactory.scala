@@ -87,7 +87,8 @@ class CustomPersistenceEngine(serializer: Serializer)
   override def read[T: ClassTag](prefix: String): Seq[T] = {
     CustomPersistenceEngine.readAttempts += 1
     val results =
-      for ((name, bytes) <- data; if name.startsWith(prefix))
+      for ((name, bytes) <- data;
+           if name.startsWith(prefix))
         yield serializer.newInstance().deserialize[T](ByteBuffer.wrap(bytes))
     results.toSeq
   }

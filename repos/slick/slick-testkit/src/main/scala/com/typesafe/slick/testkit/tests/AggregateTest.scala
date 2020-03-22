@@ -15,7 +15,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
     val ts = TableQuery[T]
     def q1(i: Int) =
       for {
-        t <- ts if t.a === i
+        t <- ts
+        if t.a === i
       } yield t
     def q2(i: Int) =
       (
@@ -86,7 +87,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
           (
             for {
               u <- us
-              t <- ts if t.a === u.id
+              t <- ts
+              if t.a === u.id
             } yield (u, t)
           )
             .groupBy(_._1.id)
@@ -223,12 +225,13 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
           .map(_._2.max)
         db.run(
           for {
-            _ <- mark("q8a", q8a.result).map(
-              _.toSet shouldBe Set(
-                Some("1test"),
-                Some("2test"),
-                Some("3test"),
-                Some("4test")))
+            _ <-
+              mark("q8a", q8a.result).map(
+                _.toSet shouldBe Set(
+                  Some("1test"),
+                  Some("2test"),
+                  Some("3test"),
+                  Some("4test")))
             _ <- mark("q8d", q8d.result).map(_ shouldBe Seq(Some("test")))
             _ <- mark("q8", q8.result).map(_ shouldBe Seq(Some("test")))
             _ <- mark("q8b", q8b.result).map(_ shouldBe Seq(("x", Some("x"))))
@@ -345,11 +348,12 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
 
     for {
       _ <- Tabs.schema.create
-      _ <- Tabs ++= Seq(
-        Tab("foo", "bar", "bat", 1, 5),
-        Tab("foo", "bar", "bat", 2, 6),
-        Tab("foo", "quux", "bat", 3, 7),
-        Tab("baz", "quux", "bat", 4, 8))
+      _ <-
+        Tabs ++= Seq(
+          Tab("foo", "bar", "bat", 1, 5),
+          Tab("foo", "bar", "bat", 2, 6),
+          Tab("foo", "quux", "bat", 3, 7),
+          Tab("baz", "quux", "bat", 4, 8))
       q1 =
         Tabs
           .groupBy(t => (t.col1, t.col2, t.col3))
@@ -415,25 +419,26 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       _ <- (as.schema ++ bs.schema).create
       q1 = as.groupBy(_.id).map(_._2.map(x => x).map(x => x.a).min)
       _ <- q1.result.map(v => v.toList shouldBe Nil)
-      q2 = (as joinLeft bs on (_.id === _.id))
-        .map {
-          case (c, so) =>
-            val nameo = so.map(_.b)
-            (c, so, nameo)
-        }
-        .groupBy { prop =>
-          val c = prop._1
-          val so = prop._2
-          val nameo = prop._3
-          so.map(_.id)
-        }
-        .map { prop =>
-          val supId = prop._1
-          val c = prop._2.map(x => x._1)
-          val s = prop._2.map(x => x._2)
-          val name = prop._2.map(x => x._3)
-          (name.min, s.map(_.map(_.b)).min, supId, c.length)
-        }
+      q2 =
+        (as joinLeft bs on (_.id === _.id))
+          .map {
+            case (c, so) =>
+              val nameo = so.map(_.b)
+              (c, so, nameo)
+          }
+          .groupBy { prop =>
+            val c = prop._1
+            val so = prop._2
+            val nameo = prop._3
+            so.map(_.id)
+          }
+          .map { prop =>
+            val supId = prop._1
+            val c = prop._2.map(x => x._1)
+            val s = prop._2.map(x => x._2)
+            val name = prop._2.map(x => x._3)
+            (name.min, s.map(_.map(_.b)).min, supId, c.length)
+          }
       _ <- q2.result.map(_ shouldBe Nil)
       q4 =
         as

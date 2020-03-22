@@ -30,10 +30,11 @@ private[tournament] final class SocketHandler(
         for {
           socket ← socketHub ? Get(tourId) mapTo manifest[ActorRef]
           join = Join(uid = uid, user = user)
-          handler ← Handler(hub, socket, uid, join, user map (_.id)) {
-            case Connected(enum, member) =>
-              (controller(socket, tourId, uid, member), enum, member)
-          }
+          handler ←
+            Handler(hub, socket, uid, join, user map (_.id)) {
+              case Connected(enum, member) =>
+                (controller(socket, tourId, uid, member), enum, member)
+            }
         } yield handler.some
       }
     }

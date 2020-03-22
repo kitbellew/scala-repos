@@ -368,7 +368,8 @@ object DistributedPubSubMediator {
         case Terminated(ref) ⇒
           remove(ref)
         case Prune ⇒
-          for (d ← pruneDeadline if d.isOverdue) {
+          for (d ← pruneDeadline
+               if d.isOverdue) {
             pruneDeadline = None
             context.parent ! NoMoreSubscribers
           }

@@ -246,7 +246,8 @@ private class LoadBandTest extends FunSuite with ApertureTesting {
           Seq.fill(c) {
             Await.result(bal.apply())
           }
-        for (f <- counts if f.n > 0) {
+        for (f <- counts
+             if f.n > 0) {
           avgLoad.update(f.p)
         }
         // no need to avg ap, it's independent of the load distribution

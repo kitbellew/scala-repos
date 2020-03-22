@@ -175,7 +175,8 @@ final class Board {
   }
 
   def remove(piece: Piece) =
-    for (c <- cells; if c.piece == piece)
+    for (c <- cells;
+         if c.piece == piece)
       c.empty
 
   private def find(p: PieceCell, b: BoardCell): Unit = {

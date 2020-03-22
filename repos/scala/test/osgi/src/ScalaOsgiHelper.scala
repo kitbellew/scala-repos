@@ -13,7 +13,8 @@ trait ScalaOsgiHelper {
   }
 
   private def filteredBundleFiles(names: String*): Array[exam.Option] =
-    for (bundle <- allBundleFiles; if names exists (bundle.getName contains _))
+    for (bundle <- allBundleFiles;
+         if names exists (bundle.getName contains _))
       yield makeBundle(bundle)
 
   private def makeBundle(file: File): exam.Option =

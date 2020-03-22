@@ -26,8 +26,9 @@ object Export extends LilaController {
                 for {
                   initialFen <- GameRepo initialFen game
                   pgn = Env.api.pgnDump(game, initialFen)
-                  analysis ← !get("as")
-                    .contains("raw") ?? (Env.analyse.analyser get game.id)
+                  analysis ←
+                    !get("as")
+                      .contains("raw") ?? (Env.analyse.analyser get game.id)
                 } yield Env
                   .analyse
                   .annotator(

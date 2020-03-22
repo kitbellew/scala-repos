@@ -599,7 +599,8 @@ trait Implicits {
         // is a `PolyType`, the symbol of the result type is collected. This is precisely
         // what we require for SI-5318.
         val syms =
-          for (t <- tp; if t.typeSymbol.isTypeParameter)
+          for (t <- tp;
+               if t.typeSymbol.isTypeParameter)
             yield t.typeSymbol
         deriveTypeWithWildcards(syms.distinct)(tp)
       }

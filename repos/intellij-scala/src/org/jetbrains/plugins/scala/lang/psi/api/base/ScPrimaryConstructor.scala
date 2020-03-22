@@ -176,7 +176,8 @@ trait ScPrimaryConstructor
     }
 
     val params = parameters
-    for (i <- params.indices if params(i).baseDefaultParam) {
+    for (i <- params.indices
+         if params(i).baseDefaultParam) {
       buffer += new ScPrimaryConstructorWrapper(this, forDefault = Some(i + 1))
     }
 

@@ -868,8 +868,9 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         for {
           // The construction of the future for shutdownStatus has to happen after the flushStatus future has been finished
           // so that endpoints are shut down before transports.
-          flushStatus ← shutdownAll(endpoints.allEndpoints)(
-            gracefulStop(_, settings.FlushWait, EndpointWriter.FlushAndStop))
+          flushStatus ←
+            shutdownAll(endpoints.allEndpoints)(
+              gracefulStop(_, settings.FlushWait, EndpointWriter.FlushAndStop))
           shutdownStatus ← shutdownAll(transportMapping.values)(_.shutdown())
         } yield flushStatus && shutdownStatus
       ) pipeTo sender()

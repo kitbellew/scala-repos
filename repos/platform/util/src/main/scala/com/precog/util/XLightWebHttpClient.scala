@@ -83,9 +83,10 @@ trait XLightWebHttpClientModule[M[+_]] extends HttpClientModule[M] {
       for {
         httpRequest <- EitherT(M point buildRequest(request))
         response <- execute0(httpRequest)
-        body <- EitherT(
-          M point fromTryCatch(Some(httpRequest))(
-            Option(response.getBody) map (_.readString("UTF-8"))))
+        body <-
+          EitherT(
+            M point fromTryCatch(Some(httpRequest))(
+              Option(response.getBody) map (_.readString("UTF-8"))))
       } yield {
         Response(response.getStatus, response.getReason, body)
       }

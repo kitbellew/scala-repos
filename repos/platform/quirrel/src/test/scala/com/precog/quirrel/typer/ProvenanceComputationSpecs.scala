@@ -3015,7 +3015,8 @@ object ProvenanceComputationSpecs
 
   if (exampleDir.exists) {
     "specification examples" >> {
-      for (file <- exampleDir.listFiles if file.getName endsWith ".qrl") {
+      for (file <- exampleDir.listFiles
+           if file.getName endsWith ".qrl") {
         file.getName >> {
           val result = compileSingle(LineStream(Source.fromFile(file)))
           result.provenance mustNotEqual NullProvenance

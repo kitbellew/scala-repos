@@ -244,11 +244,12 @@ trait EvaluatorModule[M[+_]]
                         liftToValues(pendingTarget.trans)
                       }
                   _ <- monadState.gets(identity)
-                  subSpec <- resolveLowLevelGroup(
-                    resultTargetTable,
-                    reducedTarget,
-                    forest,
-                    splits)
+                  subSpec <-
+                    resolveLowLevelGroup(
+                      resultTargetTable,
+                      reducedTarget,
+                      forest,
+                      splits)
                 } yield {
                   // TODO FIXME if the target has forcing points, targetTrans is insufficient
                   val Some(trans) = mkTransSpec(target, reducedTarget, ctx)
@@ -298,10 +299,11 @@ trait EvaluatorModule[M[+_]]
             val Some(spec) = mkTransSpec(solution, commonGraph, ctx)
             for {
               _ <- monadState.gets(identity)
-              liftedTrans = TransSpec.deepMap(spec) {
-                case Leaf(_) =>
-                  DerefObjectStatic(Leaf(Source), paths.Value)
-              }
+              liftedTrans =
+                TransSpec.deepMap(spec) {
+                  case Leaf(_) =>
+                    DerefObjectStatic(Leaf(Source), paths.Value)
+                }
             } yield GroupKeySpecSource(CPathField(id.toString), liftedTrans)
 
           case dag.Extra(graph) =>
@@ -309,14 +311,16 @@ trait EvaluatorModule[M[+_]]
             for {
               state <- monadState.gets(identity)
               extraId = state.extraCount
-              _ <- monadState.modify {
-                _.copy(extraCount = extraId + 1)
-              }
+              _ <-
+                monadState.modify {
+                  _.copy(extraCount = extraId + 1)
+                }
 
-              liftedTrans = TransSpec.deepMap(spec) {
-                case Leaf(_) =>
-                  DerefObjectStatic(Leaf(Source), paths.Value)
-              }
+              liftedTrans =
+                TransSpec.deepMap(spec) {
+                  case Leaf(_) =>
+                    DerefObjectStatic(Leaf(Source), paths.Value)
+                }
             } yield GroupKeySpecSource(
               CPathField("extra" + extraId),
               trans.Filter(liftedTrans, liftedTrans))
@@ -344,10 +348,11 @@ trait EvaluatorModule[M[+_]]
               case graph: StagingPoint => {
                 for {
                   pending <- f(graph)
-                  _ <- monadState.modify { state =>
-                    state.copy(assume = state
-                      .assume + (graph -> (pending.table, pending.sort)))
-                  }
+                  _ <-
+                    monadState.modify { state =>
+                      state.copy(assume = state
+                        .assume + (graph -> (pending.table, pending.sort)))
+                    }
                 } yield pending
               }
 
@@ -376,9 +381,11 @@ trait EvaluatorModule[M[+_]]
         def set0(pt: PendingTable, tg: (TransSpec1, DepGraph))
             : StateT[N, EvaluatorState, PendingTable] = {
           for {
-            _ <- monadState.modify { state =>
-              state.copy(assume = state.assume + (tg._2 -> (pt.table, pt.sort)))
-            }
+            _ <-
+              monadState.modify { state =>
+                state
+                  .copy(assume = state.assume + (tg._2 -> (pt.table, pt.sort)))
+              }
           } yield pt.copy(trans = tg._1, graph = tg._2)
         }
 
@@ -752,10 +759,11 @@ trait EvaluatorModule[M[+_]]
             case dag.New(parent) =>
               for {
                 pendingTable <- prepareEval(parent, splits)
-                idSpec = makeTableTrans(
-                  Map(
-                    paths.Key -> trans
-                      .WrapArray(Scan(Leaf(Source), freshIdScanner))))
+                idSpec =
+                  makeTableTrans(
+                    Map(
+                      paths.Key -> trans
+                        .WrapArray(Scan(Leaf(Source), freshIdScanner))))
                 tableM2 =
                   pendingTable
                     .table
@@ -772,11 +780,13 @@ trait EvaluatorModule[M[+_]]
               for {
                 pendingTable <- prepareEval(parent, splits)
                 Path(prefixStr) = ctx.basePath
-                f1 = concatString(MorphContext(ctx, graph))
-                  .applyl(CString(prefixStr.replaceAll("([^/])$", "$1/")))
-                trans2 = trans.Map1(
-                  trans.DerefObjectStatic(pendingTable.trans, paths.Value),
-                  f1)
+                f1 =
+                  concatString(MorphContext(ctx, graph))
+                    .applyl(CString(prefixStr.replaceAll("([^/])$", "$1/")))
+                trans2 =
+                  trans.Map1(
+                    trans.DerefObjectStatic(pendingTable.trans, paths.Value),
+                    f1)
                 loaded =
                   pendingTable
                     .table
@@ -815,11 +825,13 @@ trait EvaluatorModule[M[+_]]
                   prefixStr.replaceAll("([^/])$", "$1/") + midStr
                     .replaceAll("([^/])$", "$1/")
 
-                f1 = concatString(MorphContext(ctx, graph))
-                  .applyl(CString(fullPrefix))
-                trans2 = trans.Map1(
-                  trans.DerefObjectStatic(pendingTable.trans, paths.Value),
-                  f1)
+                f1 =
+                  concatString(MorphContext(ctx, graph))
+                    .applyl(CString(fullPrefix))
+                trans2 =
+                  trans.Map1(
+                    trans.DerefObjectStatic(pendingTable.trans, paths.Value),
+                    f1)
                 loaded =
                   pendingTable
                     .table
@@ -851,12 +863,13 @@ trait EvaluatorModule[M[+_]]
             case dag.Morph1(mor, parent) =>
               for {
                 pendingTable <- prepareEval(parent, splits)
-                back <- transState liftM mn(
-                  mor(
-                    pendingTable
-                      .table
-                      .transform(liftToValues(pendingTable.trans)),
-                    MorphContext(ctx, graph)))
+                back <-
+                  transState liftM mn(
+                    mor(
+                      pendingTable
+                        .table
+                        .transform(liftToValues(pendingTable.trans)),
+                      MorphContext(ctx, graph)))
               } yield {
                 PendingTable(
                   back,
@@ -1011,38 +1024,43 @@ trait EvaluatorModule[M[+_]]
                 pendingTable <- prepareEval(parent, splits)
                 liftedTrans = liftToValues(pendingTable.trans)
 
-                result = mn(
-                  pendingTable
-                    .table
-                    .transform(liftedTrans)
-                    .transform(DerefObjectStatic(Leaf(Source), paths.Value))
-                    .transform(spec)
-                    .reduce(reduction.reducer(MorphContext(ctx, graph)))(
-                      reduction.monoid))
+                result =
+                  mn(
+                    pendingTable
+                      .table
+                      .transform(liftedTrans)
+                      .transform(DerefObjectStatic(Leaf(Source), paths.Value))
+                      .transform(spec)
+                      .reduce(reduction.reducer(MorphContext(ctx, graph)))(
+                        reduction.monoid))
 
                 table = result.map(reduction.extract)
 
-                keyWrapped = trans.WrapObject(
-                  trans.ConstLiteral(
-                    CEmptyArray,
-                    trans.DerefArrayStatic(Leaf(Source), CPathIndex(0))),
-                  paths.Key.name)
+                keyWrapped =
+                  trans.WrapObject(
+                    trans.ConstLiteral(
+                      CEmptyArray,
+                      trans.DerefArrayStatic(Leaf(Source), CPathIndex(0))),
+                    paths.Key.name)
 
-                valueWrapped = trans.InnerObjectConcat(
-                  keyWrapped,
-                  trans.WrapObject(Leaf(Source), paths.Value.name))
+                valueWrapped =
+                  trans.InnerObjectConcat(
+                    keyWrapped,
+                    trans.WrapObject(Leaf(Source), paths.Value.name))
 
-                wrapped <- transState liftM table map {
-                  _.transform(valueWrapped)
-                }
+                wrapped <-
+                  transState liftM table map {
+                    _.transform(valueWrapped)
+                  }
                 rvalue <- transState liftM result.map(reduction.extractValue)
 
-                _ <- monadState.modify { state =>
-                  state.copy(
-                    assume =
-                      state.assume + (m -> (wrapped, IdentityOrder.empty)),
-                    reductions = state.reductions + (m -> rvalue))
-                }
+                _ <-
+                  monadState.modify { state =>
+                    state.copy(
+                      assume =
+                        state.assume + (m -> (wrapped, IdentityOrder.empty)),
+                      reductions = state.reductions + (m -> rvalue))
+                  }
               } yield {
                 PendingTable(
                   wrapped,
@@ -1055,12 +1073,13 @@ trait EvaluatorModule[M[+_]]
               for {
                 pendingTable <- prepareEval(parent, splits)
                 liftedTrans = liftToValues(pendingTable.trans)
-                result <- transState liftM mn(
-                  red(
-                    pendingTable
-                      .table
-                      .transform(DerefObjectStatic(liftedTrans, paths.Value)),
-                    MorphContext(ctx, graph)))
+                result <-
+                  transState liftM mn(
+                    red(
+                      pendingTable
+                        .table
+                        .transform(DerefObjectStatic(liftedTrans, paths.Value)),
+                      MorphContext(ctx, graph)))
                 wrapped = result transform buildConstantWrapSpec(Leaf(Source))
               } yield PendingTable(
                 wrapped,
@@ -1085,22 +1104,26 @@ trait EvaluatorModule[M[+_]]
                   grouping <- resolveTopLevelGroup(spec, splits)
                   state <- monadState.gets(identity)
                   grouping2 <- transState liftM grouping
-                  result <- transState liftM mn(
-                    Table.merge(grouping2) { (key, map) =>
-                      val splits2 = splits + (id -> (map andThen mn))
-                      val rewritten =
-                        params.foldLeft(child) {
-                          case (child, param) =>
-                            val subKey = key \ param.id.toString
-                            replaceNode(child, param, Const(subKey)(param.loc))
-                        }
+                  result <-
+                    transState liftM mn(
+                      Table.merge(grouping2) { (key, map) =>
+                        val splits2 = splits + (id -> (map andThen mn))
+                        val rewritten =
+                          params.foldLeft(child) {
+                            case (child, param) =>
+                              val subKey = key \ param.id.toString
+                              replaceNode(
+                                child,
+                                param,
+                                Const(subKey)(param.loc))
+                          }
 
-                      val back = fullEval(
-                        rewritten,
-                        splits2,
-                        id :: splits.keys.toList)
-                      back.eval(state)
-                    })
+                        val back = fullEval(
+                          rewritten,
+                          splits2,
+                          id :: splits.keys.toList)
+                        back.eval(state)
+                      })
                 } yield {
                   result.transform(idSpec)
                 }
@@ -1119,9 +1142,10 @@ trait EvaluatorModule[M[+_]]
                   predPending
                     .table transform DerefObjectStatic(liftedTrans, paths.Value)
 
-                truthiness <- transState liftM mn(
-                  predTable.reduce(Forall reducer MorphContext(ctx, graph))(
-                    Forall.monoid))
+                truthiness <-
+                  transState liftM mn(
+                    predTable.reduce(Forall reducer MorphContext(ctx, graph))(
+                      Forall.monoid))
 
                 assertion =
                   if (truthiness getOrElse false) {
@@ -1161,10 +1185,12 @@ trait EvaluatorModule[M[+_]]
                 rightTable =
                   rightPending.table.transform(liftToValues(rightPending.trans))
 
-                leftSortedM = transState liftM mn(
-                  leftTable.sort(keyValueSpec, SortAscending))
-                rightSortedM = transState liftM mn(
-                  rightTable.sort(keyValueSpec, SortAscending))
+                leftSortedM =
+                  transState liftM mn(
+                    leftTable.sort(keyValueSpec, SortAscending))
+                rightSortedM =
+                  transState liftM mn(
+                    rightTable.sort(keyValueSpec, SortAscending))
 
                 pair <- zip(leftSortedM, rightSortedM)
                 (leftSorted, rightSorted) = pair
@@ -1200,10 +1226,12 @@ trait EvaluatorModule[M[+_]]
                 // this transspec prunes everything that is not a key or a value.
                 keyValueSpec = TransSpec1.PruneToKeyValue
 
-                leftSortedM = transState liftM mn(
-                  leftTable.sort(keyValueSpec, SortAscending))
-                rightSortedM = transState liftM mn(
-                  rightTable.sort(keyValueSpec, SortAscending))
+                leftSortedM =
+                  transState liftM mn(
+                    leftTable.sort(keyValueSpec, SortAscending))
+                rightSortedM =
+                  transState liftM mn(
+                    rightTable.sort(keyValueSpec, SortAscending))
 
                 pair <- zip(leftSortedM, rightSortedM)
                 (leftSorted, rightSorted) = pair
@@ -1302,20 +1330,23 @@ trait EvaluatorModule[M[+_]]
             graph: DepGraph): EvaluatorStateT[DepGraph] = {
           for {
             state <- monadState gets identity
-            optPoint = toEval find { g =>
-              !(state.assume contains g)
-            }
+            optPoint =
+              toEval find { g =>
+                !(state.assume contains g)
+              }
 
-            optBack = optPoint map { point =>
-              for {
-                _ <- prepareEval(point, splits)
-                rewritten <- stagedOptimizations(graph, ctx, optimize)
+            optBack =
+              optPoint map { point =>
+                for {
+                  _ <- prepareEval(point, splits)
+                  rewritten <- stagedOptimizations(graph, ctx, optimize)
 
-                toEval = listStagingPoints(
-                  Queue(rewritten)) filter referencesOnlySplit(parentSplits)
-                result <- stage(toEval, rewritten)
-              } yield result
-            }
+                  toEval =
+                    listStagingPoints(
+                      Queue(rewritten)) filter referencesOnlySplit(parentSplits)
+                  result <- stage(toEval, rewritten)
+                } yield result
+              }
 
             back <- optBack getOrElse (monadState point graph)
           } yield back

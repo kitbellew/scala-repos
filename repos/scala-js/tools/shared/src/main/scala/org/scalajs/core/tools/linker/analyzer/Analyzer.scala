@@ -388,7 +388,8 @@ private final class Analyzer(
     private def findDefaultTarget(methodName: String): Option[MethodInfo] = {
       val candidates =
         for {
-          intf <- ancestors if intf.isInterface
+          intf <- ancestors
+          if intf.isInterface
           m <- intf.methodInfos.get(methodName)
           if !m.isAbstract && !m.isDefaultBridge
         } yield m

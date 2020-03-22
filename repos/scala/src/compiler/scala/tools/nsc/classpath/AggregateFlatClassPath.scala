@@ -130,7 +130,8 @@ case class AggregateFlatClassPath(aggregates: Seq[FlatClassPath])
     val entriesBuffer = new ArrayBuffer[EntryType](1024)
     for {
       cp <- aggregates
-      entry <- getEntries(cp) if !seenNames.contains(entry.name)
+      entry <- getEntries(cp)
+      if !seenNames.contains(entry.name)
     } {
       entriesBuffer += entry
       seenNames += entry.name

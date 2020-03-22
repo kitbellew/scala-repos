@@ -71,9 +71,10 @@ trait NodeGen {
   def genNode =
     for {
       name <- genName
-      node <- Gen.containerOfN[List, Node](children, genXml) map { seq =>
-        new XmlNode(name, seq)
-      }
+      node <-
+        Gen.containerOfN[List, Node](children, genXml) map { seq =>
+          new XmlNode(name, seq)
+        }
     } yield node
 
   def genElem =

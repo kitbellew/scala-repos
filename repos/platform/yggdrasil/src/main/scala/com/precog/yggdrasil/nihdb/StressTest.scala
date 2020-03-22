@@ -103,9 +103,10 @@ class StressTest {
     def finish() = {
       (
         for {
-          _ <- IO {
-            close(nihdb)
-          }
+          _ <-
+            IO {
+              close(nihdb)
+            }
           _ <- IOUtils.recursiveDelete(workDir)
         } yield ()
       ).unsafePerformIO

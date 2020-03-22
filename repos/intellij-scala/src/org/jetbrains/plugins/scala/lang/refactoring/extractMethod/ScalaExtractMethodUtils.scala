@@ -198,7 +198,8 @@ object ScalaExtractMethodUtils {
                   !named.name.startsWith("_")) {
                 val oldName = named.name
                 var break = false
-                for (param <- settings.parameters if !break) {
+                for (param <- settings.parameters
+                     if !break) {
                   if (param.oldName == oldName) {
                     def tail() {
                       if (param.oldName != param.newName) {

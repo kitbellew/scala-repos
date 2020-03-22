@@ -95,7 +95,8 @@ object KuhnMunkres extends BipartiteMatching {
 
     def erasePrimes() {
       for (i <- 0 until n;
-           j <- 0 until n if marked(i)(j) == 2) {
+           j <- 0 until n
+           if marked(i)(j) == 2) {
         marked(i)(j) = 0;
       }
     }

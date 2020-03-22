@@ -824,7 +824,8 @@ object ResolveUtils {
                     classes = manager.getCachedClasses(scope, improvedFqn)
                   }
                 }
-                for (clazz <- classes if clazz.containingClass == null) {
+                for (clazz <- classes
+                     if clazz.containingClass == null) {
                   if (!processor.execute(clazz, state))
                     return false
                 }

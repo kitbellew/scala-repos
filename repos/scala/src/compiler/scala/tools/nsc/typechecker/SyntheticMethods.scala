@@ -415,7 +415,8 @@ trait SyntheticMethods extends ast.TreeDSL {
             }
           }
         }
-        for ((m, impl) <- methods; if shouldGenerate(m))
+        for ((m, impl) <- methods;
+             if shouldGenerate(m))
           yield impl()
       }
       def extras = {

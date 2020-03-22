@@ -80,7 +80,8 @@ class BytecodeTest extends ClearAfterClass {
     val outDir = compiler.settings.outputDirs.getSingleOutput.get
     val outfiles =
       (
-        for (f <- outDir.iterator if !f.isDirectory)
+        for (f <- outDir.iterator
+             if !f.isDirectory)
           yield (f.name, f.toByteArray)
       ).toList
 

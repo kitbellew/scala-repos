@@ -566,8 +566,9 @@ class SparkContext(config: SparkConf)
     // since we can't set env vars directly in sbt.
     for {
       (envKey, propKey) <- Seq(("SPARK_TESTING", "spark.testing"))
-      value <- Option(System.getenv(envKey))
-        .orElse(Option(System.getProperty(propKey)))
+      value <-
+        Option(System.getenv(envKey))
+          .orElse(Option(System.getProperty(propKey)))
     } {
       executorEnvs(envKey) = value
     }

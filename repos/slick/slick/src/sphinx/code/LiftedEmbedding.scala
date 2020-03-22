@@ -423,7 +423,8 @@ object LiftedEmbedding extends App {
       //#update1
       val q =
         for {
-          c <- coffees if c.name === "Espresso"
+          c <- coffees
+          if c.name === "Espresso"
         } yield c.price
       val updateAction = q.update(10.49)
 
@@ -444,7 +445,8 @@ object LiftedEmbedding extends App {
         //#compiled1
         def userNameByIDRange(min: Rep[Int], max: Rep[Int]) =
           for {
-            u <- users if u.id >= min && u.id < max
+            u <- users
+            if u.id >= min && u.id < max
           } yield u.first
 
         val userNameByIDRangeCompiled = Compiled(userNameByIDRange _)
@@ -471,7 +473,8 @@ object LiftedEmbedding extends App {
         val userNameByID =
           for {
             id <- Parameters[Int]
-            u <- users if u.id === id
+            u <- users
+            if u.id === id
           } yield u.first
 
         val nameAction = userNameByID(2).result.head
@@ -479,7 +482,8 @@ object LiftedEmbedding extends App {
         val userNameByIDRange =
           for {
             (min, max) <- Parameters[(Int, Int)]
-            u <- users if u.id >= min && u.id < max
+            u <- users
+            if u.id >= min && u.id < max
           } yield u.first
 
         val namesAction = userNameByIDRange(2, 5).result

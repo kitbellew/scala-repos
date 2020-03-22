@@ -48,21 +48,23 @@ object gen {
     val rationalFromLongs: Gen[Rational] =
       for {
         n <- arbitrary[Long]
-        d <- arbitrary[Long].map(n =>
-          if (n == 0)
-            1L
-          else
-            n)
+        d <-
+          arbitrary[Long].map(n =>
+            if (n == 0)
+              1L
+            else
+              n)
       } yield Rational(n, d)
 
     val rationalFromSafeLongs: Gen[Rational] =
       for {
         n <- safeLong
-        d <- safeLong.map(n =>
-          if (n.isZero)
-            SafeLong.one
-          else
-            n)
+        d <-
+          safeLong.map(n =>
+            if (n.isZero)
+              SafeLong.one
+            else
+              n)
       } yield Rational(n, d)
 
     val bigRational: Gen[Rational] = {

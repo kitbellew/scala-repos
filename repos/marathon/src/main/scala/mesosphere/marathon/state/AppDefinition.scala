@@ -302,7 +302,8 @@ case class AppDefinition(
     for {
       c <- container
       d <- c.docker
-      n <- d.network if n == DockerInfo.Network.BRIDGE
+      n <- d.network
+      if n == DockerInfo.Network.BRIDGE
       pms <- d.portMappings
     } yield pms
 

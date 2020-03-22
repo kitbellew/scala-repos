@@ -112,7 +112,8 @@ object ZipAndJarFlatClassPathFactory extends ZipAndJarFileLookupFactory {
 
       def getSubpackages(dir: AbstractFile): List[AbstractFile] =
         (
-          for (file <- dir if file.isPackage)
+          for (file <- dir
+               if file.isPackage)
             yield file
         )(collection.breakOut)
 
@@ -162,7 +163,8 @@ object ZipAndJarFlatClassPathFactory extends ZipAndJarFileLookupFactory {
           Seq.empty
         case Some(PackageFileInfo(pkg, _)) =>
           (
-            for (file <- pkg if file.isClass)
+            for (file <- pkg
+                 if file.isClass)
               yield ClassFileEntryImpl(file)
           )(collection.breakOut)
       }

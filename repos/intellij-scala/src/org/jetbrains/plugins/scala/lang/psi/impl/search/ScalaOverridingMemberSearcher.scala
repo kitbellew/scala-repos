@@ -143,7 +143,8 @@ object ScalaOverridingMemberSearcher {
       def inheritorsOfType(name: String): Boolean = {
         inheritor match {
           case inheritor: ScTypeDefinition =>
-            for (aliass <- inheritor.aliases if name == aliass.name) {
+            for (aliass <- inheritor.aliases
+                 if name == aliass.name) {
               buffer += aliass
               if (!deep)
                 return false
@@ -205,7 +206,8 @@ object ScalaOverridingMemberSearcher {
         .search(parentClass, scope, true)
         .toArray(PsiClass.EMPTY_ARRAY)
     }
-    for (clazz <- inheritors if !break) {
+    for (clazz <- inheritors
+         if !break) {
       break = !process(clazz)
     }
 
@@ -213,7 +215,8 @@ object ScalaOverridingMemberSearcher {
       val inheritors = ScalaStubsUtil
         .getSelfTypeInheritors(parentClass, parentClass.getResolveScope)
       break = false
-      for (clazz <- inheritors if !break) {
+      for (clazz <- inheritors
+           if !break) {
         break = !process(clazz)
       }
     }

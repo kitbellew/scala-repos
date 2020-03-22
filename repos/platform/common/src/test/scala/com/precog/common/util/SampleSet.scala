@@ -213,16 +213,19 @@ object AdSamples {
   def adCampaignSample =
     for {
       gender <- oneOf(genders)
-      plat <- exponentialIndex(platforms.size).map {
-        platforms(_)
-      }
-      camp <- gaussianIndex(campaigns.size).map {
-        campaigns(_)
-      }
+      plat <-
+        exponentialIndex(platforms.size).map {
+          platforms(_)
+        }
+      camp <-
+        gaussianIndex(campaigns.size).map {
+          campaigns(_)
+        }
       cpm <- chooseNum(1, 100)
-      ageRange <- gaussianIndex(ageRangeArrays.size).map {
-        ageRangeArrays(_)
-      }
+      ageRange <-
+        gaussianIndex(ageRangeArrays.size).map {
+          ageRangeArrays(_)
+        }
     } yield {
       JObject(
         Map(
@@ -238,9 +241,10 @@ object AdSamples {
       emps <- oneOf(employees)
       rev <- oneOf(revenue)
       cat <- oneOf(category)
-      camp <- gaussianIndex(campaigns.size).map {
-        campaigns(_)
-      }
+      camp <-
+        gaussianIndex(campaigns.size).map {
+          campaigns(_)
+        }
     } yield {
       JObject(
         Map(
@@ -298,9 +302,10 @@ object AdSamples {
   def usersSample =
     for {
       age <- chooseNum(18, 100)
-      income <- chooseNum(10, 250).map {
-        _ * 1000
-      }
+      income <-
+        chooseNum(10, 250).map {
+          _ * 1000
+        }
       state <- oneOf(states)
     } yield {
       JObject(
@@ -313,12 +318,14 @@ object AdSamples {
   def ordersSample =
     for {
       userId <- chooseNum(12345, 12545)
-      taxRate <- chooseNum(70, 110).map {
-        _.toDouble / 100
-      }
-      subTotal <- chooseNum(123, 11145).map {
-        _.toDouble / 100
-      }
+      taxRate <-
+        chooseNum(70, 110).map {
+          _.toDouble / 100
+        }
+      subTotal <-
+        chooseNum(123, 11145).map {
+          _.toDouble / 100
+        }
       shipping <- oneOf(shippingRates)
       handling <- oneOf(handlingCharges)
       val total = subTotal * taxRate + shipping + handling

@@ -608,19 +608,20 @@ class SecurityServiceSpec
     "delete a grant" in {
       (
         for {
-          HttpResponse(HttpStatus(OK, _), _, Some(jid), _) <- addGrantChild(
-            user1.apiKey,
-            user1Grant.grantId,
-            v1.NewGrantRequest(
-              None,
-              None,
-              Set.empty[GrantId],
-              Set(
-                ReadPermission(
-                  Path("/user1/secret"),
-                  WrittenByAccount("user1"))),
-              None)
-          )
+          HttpResponse(HttpStatus(OK, _), _, Some(jid), _) <-
+            addGrantChild(
+              user1.apiKey,
+              user1Grant.grantId,
+              v1.NewGrantRequest(
+                None,
+                None,
+                Set.empty[GrantId],
+                Set(
+                  ReadPermission(
+                    Path("/user1/secret"),
+                    WrittenByAccount("user1"))),
+                None)
+            )
           details = jid.deserialize[v1.GrantDetails]
           HttpResponse(HttpStatus(OK, _), _, Some(jgs), _) <-
             getGrantChildren(user1.apiKey, user1Grant.grantId)
@@ -652,21 +653,23 @@ class SecurityServiceSpec
     "retrieve permissions for a path we don't own" in {
       val permsM =
         for {
-          HttpResponse(HttpStatus(OK, _), _, Some(jid), _) <- createAPIKeyGrant(
-            user1.apiKey,
-            v1.NewGrantRequest(
-              None,
-              None,
-              Set.empty,
-              Set(
-                ReadPermission(
-                  Path("/user1/public"),
-                  WrittenByAccount("user1"))),
-              None))
-          _ <- addAPIKeyGrant(
-            user1.apiKey,
-            user4.apiKey,
-            jid.deserialize[v1.GrantDetails].grantId)
+          HttpResponse(HttpStatus(OK, _), _, Some(jid), _) <-
+            createAPIKeyGrant(
+              user1.apiKey,
+              v1.NewGrantRequest(
+                None,
+                None,
+                Set.empty,
+                Set(
+                  ReadPermission(
+                    Path("/user1/public"),
+                    WrittenByAccount("user1"))),
+                None))
+          _ <-
+            addAPIKeyGrant(
+              user1.apiKey,
+              user4.apiKey,
+              jid.deserialize[v1.GrantDetails].grantId)
           HttpResponse(HttpStatus(OK, _), _, Some(jperms), _) <-
             getPermissions(user4.apiKey, Path("/user1/public"))
         } yield jperms.deserialize[Set[Permission]]

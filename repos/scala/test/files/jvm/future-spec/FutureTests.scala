@@ -360,14 +360,16 @@ class FutureTests extends MinimalScalaTest {
       val future2 =
         for {
           a <- future0.mapTo[Int]
-          b <- (
+          b <-
+            (
+              Future {
+                (a * 2).toString
+              }
+            ).mapTo[Int]
+          c <-
             Future {
-              (a * 2).toString
+              (7 * 2).toString
             }
-          ).mapTo[Int]
-          c <- Future {
-            (7 * 2).toString
-          }
         } yield b + "-" + c
 
       Await.result(future1, defaultTimeout) mustBe ("10-14")

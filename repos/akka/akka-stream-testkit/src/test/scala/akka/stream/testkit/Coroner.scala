@@ -246,7 +246,8 @@ object Coroner { // FIXME: remove once going back to project dependencies
           }
         }
 
-        for (mi ← ti.getLockedMonitors if mi.getLockedStackDepth == i)
+        for (mi ← ti.getLockedMonitors
+             if mi.getLockedStackDepth == i)
           appendMsg("\t-  locked ", mi)
       }
 

@@ -906,7 +906,8 @@ object Project extends ProjectExtra {
       cMap: Map[ScopedKey[_], Flattened],
       scoped: ScopedKey[_]): Iterable[ScopedKey[_]] =
     for ((key, compiled) <- cMap;
-         dep <- compiled.dependencies if dep == scoped)
+         dep <- compiled.dependencies
+         if dep == scoped)
       yield key
 
   //@deprecated("Use SettingCompletions.setAll when available.", "0.13.0")

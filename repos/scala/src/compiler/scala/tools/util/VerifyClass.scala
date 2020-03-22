@@ -56,7 +56,8 @@ object VerifyClass {
     val results = run(args).asScala
     println("Processed " + results.size + " classes.")
     val errors = results.filter(_._2 != null)
-    for ((name, result) <- results; if result != null) {
+    for ((name, result) <- results;
+         if result != null) {
       println(name + " had error: " + result)
     }
     System.exit(

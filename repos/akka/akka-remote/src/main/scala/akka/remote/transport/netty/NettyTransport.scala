@@ -360,12 +360,14 @@ private[transport] object NettyTransport {
           c.getChannel
       }
     for {
-      _ ← always {
-        channel.write(ChannelBuffers.buffer(0))
-      } // Force flush by waiting on a final dummy write
-      _ ← always {
-        channel.disconnect()
-      }
+      _ ←
+        always {
+          channel.write(ChannelBuffers.buffer(0))
+        } // Force flush by waiting on a final dummy write
+      _ ←
+        always {
+          channel.disconnect()
+        }
     } channel.close()
   }
 
@@ -650,8 +652,9 @@ class NettyTransport(
 
   override def listen: Future[(Address, Promise[AssociationEventListener])] = {
     for {
-      address ← addressToSocketAddress(
-        Address("", "", settings.BindHostname, settings.BindPortSelector))
+      address ←
+        addressToSocketAddress(
+          Address("", "", settings.BindHostname, settings.BindPortSelector))
     } yield {
       try {
         val newServerChannel =

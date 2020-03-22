@@ -216,10 +216,11 @@ class ImplicitCollector(
       if (!fullInfo)
         processor = new ImplicitParametersProcessor(true)
 
-      for (obj <- ScalaPsiUtil.collectImplicitObjects(
-             expandedTp,
-             place.getProject,
-             place.getResolveScope)) {
+      for (obj <-
+             ScalaPsiUtil.collectImplicitObjects(
+               expandedTp,
+               place.getProject,
+               place.getResolveScope)) {
         processor.processType(obj, place, ResolveState.initial())
       }
 

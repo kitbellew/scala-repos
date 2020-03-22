@@ -269,7 +269,8 @@ trait OverridingAnnotator {
       }
       //fix for SCL-7831
       var overridesFinal = false
-      for (signature <- superSignatures if !overridesFinal) {
+      for (signature <- superSignatures
+           if !overridesFinal) {
         val e =
           signature match {
             case signature: Signature =>

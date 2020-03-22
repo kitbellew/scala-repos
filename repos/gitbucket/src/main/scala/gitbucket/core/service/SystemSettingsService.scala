@@ -172,7 +172,8 @@ object SystemSettingsService {
 
     def sshAddress: Option[SshAddress] =
       for {
-        host <- sshHost if ssh
+        host <- sshHost
+        if ssh
       } yield SshAddress(host, sshPort.getOrElse(DefaultSshPort))
   }
 

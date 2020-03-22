@@ -26,10 +26,11 @@ private[challenge] final class SocketHandler(
     for {
       socket ← socketHub ? Get(challengeId) mapTo manifest[ActorRef]
       join = Socket.Join(uid = uid, userId = userId, owner = owner)
-      handler ← Handler(hub, socket, uid, join, userId) {
-        case Socket.Connected(enum, member) =>
-          (controller(socket, challengeId, uid, member), enum, member)
-      }
+      handler ←
+        Handler(hub, socket, uid, join, userId) {
+          case Socket.Connected(enum, member) =>
+            (controller(socket, challengeId, uid, member), enum, member)
+        }
     } yield handler.some
 
   private def controller(

@@ -1550,8 +1550,8 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     val portsFromTaskInfo = {
       val asScalaRanges =
         for {
-          resource <- taskInfo.getResourcesList.asScala if resource
-            .getName == Resource.PORTS
+          resource <- taskInfo.getResourcesList.asScala
+          if resource.getName == Resource.PORTS
           range <- resource.getRanges.getRangeList.asScala
         } yield range.getBegin to range.getEnd
       asScalaRanges.flatMap(_.iterator).toList
@@ -1593,8 +1593,8 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     val portsFromTaskInfo = {
       val asScalaRanges =
         for {
-          resource <- taskInfo.getResourcesList.asScala if resource
-            .getName == Resource.PORTS
+          resource <- taskInfo.getResourcesList.asScala
+          if resource.getName == Resource.PORTS
           range <- resource.getRanges.getRangeList.asScala
         } yield range.getBegin to range.getEnd
       asScalaRanges.flatMap(_.iterator).toSet

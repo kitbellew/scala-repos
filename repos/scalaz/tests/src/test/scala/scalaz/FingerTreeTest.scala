@@ -155,7 +155,8 @@ object FingerTreeTest extends SpecLite {
     implicit def myGen: Arbitrary[TestInstance] =
       Arbitrary(
         for {
-          arr <- arbitrary[Array[Int]] if arr.nonEmpty
+          arr <- arbitrary[Array[Int]]
+          if arr.nonEmpty
           m <- Gen.choose(0, arr.length - 1)
         } yield TestInstance(arr, m))
 

@@ -237,7 +237,8 @@ class ObservableMapSpec[K, V]
     //      The `for` loop implements operation equivalent to `map.retain`
     //      without throwing ConcurrentModificationException.
     //    compareInstances(map.retain((i, str) => i % 2 == 0), map, true)
-    for (k <- map.keys.toArray if (k % 2 != 0)) {
+    for (k <- map.keys.toArray
+         if (k % 2 != 0)) {
       map.remove(k)
     }
     map should equal(

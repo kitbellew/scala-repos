@@ -1274,9 +1274,10 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                       // add the break statement
                       newBody = js.Block(pushLhsInto(newLhs, body), js.Break())
                       // desugar alternatives into several cases falling through
-                      caze <- (
-                        newValues.init map (v => (v, js.Skip()))
-                      ) :+ (newValues.last, newBody)
+                      caze <-
+                        (
+                          newValues.init map (v => (v, js.Skip()))
+                        ) :+ (newValues.last, newBody)
                     } yield {
                       caze
                     }

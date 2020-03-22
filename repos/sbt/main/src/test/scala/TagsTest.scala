@@ -16,10 +16,12 @@ object TagsTest extends Properties("Tags") {
          count <- Arbitrary.arbitrary[Int])
       yield (t, count)
   def tag: Gen[Tag] =
-    for (s <- Gen.alphaStr if !s.isEmpty)
+    for (s <- Gen.alphaStr
+         if !s.isEmpty)
       yield Tag(s)
   def size: Gen[Size] =
-    for (i <- Arbitrary.arbitrary[Int] if i != Int.MinValue)
+    for (i <- Arbitrary.arbitrary[Int]
+         if i != Int.MinValue)
       yield Size(math.abs(i))
 
   implicit def aTagMap = Arbitrary(tagMap)

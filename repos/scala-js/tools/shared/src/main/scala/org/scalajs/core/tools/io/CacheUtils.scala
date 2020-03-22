@@ -33,7 +33,8 @@ object CacheUtils {
     val upToDate = output.exists && (
       for {
         v <- version
-        c <- cache if c.exists
+        c <- cache
+        if c.exists
       } yield c.content == v
     ).getOrElse(false)
 

@@ -7,14 +7,16 @@ object Test extends App {
     (
       for {
         a <- Stream.from(1);
-        b <- 1 to 5; if a > 10
+        b <- 1 to 5;
+        if a > 10
       } yield a
     ).head)
   println(
     (
       for {
         a <- Stream.from(1);
-        b <- 1 to a; if a > 10
+        b <- 1 to a;
+        if a > 10
       } yield a
     ).head)
 }

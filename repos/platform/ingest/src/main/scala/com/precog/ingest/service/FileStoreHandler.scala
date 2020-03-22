@@ -164,31 +164,33 @@ class FileStoreHandler(
                           "File creation failed due to errors in job service: " + errors)
                         serverError(errors)
                       }
-                  bytes <- EitherT {
-                    // FIXME: This should only read at most approximately the upload limit,
-                    // so we don't read GB of data into memory from users.
-                    ByteChunk.forceByteArray(content) map {
-                      // TODO: Raise/remove this limit
-                      case b if b.length > 614400 =>
-                        logger.error(
-                          "Rejecting excessive file upload of size %d"
-                            .format(b.length))
-                        -\/(
-                          badRequest(
-                            "File uploads are currently limited to 600KB"))
+                  bytes <-
+                    EitherT {
+                      // FIXME: This should only read at most approximately the upload limit,
+                      // so we don't read GB of data into memory from users.
+                      ByteChunk.forceByteArray(content) map {
+                        // TODO: Raise/remove this limit
+                        case b if b.length > 614400 =>
+                          logger.error(
+                            "Rejecting excessive file upload of size %d"
+                              .format(b.length))
+                          -\/(
+                            badRequest(
+                              "File uploads are currently limited to 600KB"))
 
-                      case b =>
-                        \/-(b)
+                        case b =>
+                          \/-(b)
+                      }
                     }
-                  }
-                  storeFile = StoreFile(
-                    apiKey,
-                    fullPath,
-                    Some(authorities),
-                    jobId,
-                    FileContent(bytes, contentType),
-                    timestamp.toInstant,
-                    StreamRef.forWriteMode(storeMode, true))
+                  storeFile =
+                    StoreFile(
+                      apiKey,
+                      fullPath,
+                      Some(authorities),
+                      jobId,
+                      FileContent(bytes, contentType),
+                      timestamp.toInstant,
+                      StreamRef.forWriteMode(storeMode, true))
                   _ <- right(eventStore.save(storeFile, ingestTimeout))
                 } yield {
                   val resultsPath =

@@ -3021,7 +3021,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
         val f = pfp.pff()
         for {
           line <- in
-          parsed <- JsonParser.parseOpt(line) if f.isDefinedAt(parsed)
+          parsed <- JsonParser.parseOpt(line)
+          if f.isDefinedAt(parsed)
         } yield f(parsed)
       }.foldLeft(JsCmds.Noop)(_ & _)
 

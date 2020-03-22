@@ -409,10 +409,11 @@ private[log] class Cleaner(
     info(
       "Cleaning log %s (discarding tombstones prior to %s)..."
         .format(log.name, new Date(deleteHorizonMs)))
-    for (group <- groupSegmentsBySize(
-           log.logSegments(0, endOffset),
-           log.config.segmentSize,
-           log.config.maxIndexSize))
+    for (group <-
+           groupSegmentsBySize(
+             log.logSegments(0, endOffset),
+             log.config.segmentSize,
+             log.config.maxIndexSize))
       cleanSegments(log, group, offsetMap, deleteHorizonMs)
 
     // record buffer utilization
@@ -780,7 +781,8 @@ private[log] class Cleaner(
         .format(start, offset, log.name))
     val maxDesiredMapSize = (map.slots * this.dupBufferLoadFactor).toInt
     var full = false
-    for (segment <- dirty if !full) {
+    for (segment <- dirty
+         if !full) {
       checkDone(log.topicAndPartition)
       val segmentSize = segment.nextOffset() - segment.baseOffset
 

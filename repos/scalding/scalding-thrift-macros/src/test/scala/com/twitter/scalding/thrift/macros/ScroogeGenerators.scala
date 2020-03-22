@@ -182,12 +182,13 @@ object ScroogeGenerators {
   implicit def arbitraryTestEnum: Arbitrary[TestEnum] =
     Arbitrary {
       for {
-        aEnum <- Gen.oneOf(
-          TestEnum.Zero,
-          TestEnum.One,
-          TestEnum.Two,
-          TestEnum.Large,
-          TestEnum.Huge)
+        aEnum <-
+          Gen.oneOf(
+            TestEnum.Zero,
+            TestEnum.One,
+            TestEnum.Two,
+            TestEnum.Large,
+            TestEnum.Huge)
       } yield aEnum
     }
 
@@ -201,12 +202,13 @@ object ScroogeGenerators {
         aI64 <- arb[Long]
         aDouble <- arb[Double]
         aString <- Gen.alphaStr
-        aEnum <- Gen.oneOf(
-          TestEnum.Zero,
-          TestEnum.One,
-          TestEnum.Two,
-          TestEnum.Large,
-          TestEnum.Huge)
+        aEnum <-
+          Gen.oneOf(
+            TestEnum.Zero,
+            TestEnum.One,
+            TestEnum.Two,
+            TestEnum.Large,
+            TestEnum.Huge)
         aBinary <- Gen.alphaStr.map(s => ByteBuffer.wrap(s.getBytes("UTF-8")))
       } yield TestTypes(
         aBool,

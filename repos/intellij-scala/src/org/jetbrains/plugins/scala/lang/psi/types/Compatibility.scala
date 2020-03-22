@@ -456,12 +456,13 @@ object Compatibility {
       val paramType: ScType = parameters.last.paramType
       val expectedType: ScType = parameters.last.expectedType
       while (k < exprs.length) {
-        for (exprType <- exprs(k)
-               .getTypeAfterImplicitConversion(
-                 checkWithImplicits,
-                 isShapesResolve,
-                 Some(expectedType))
-               ._1) {
+        for (exprType <-
+               exprs(k)
+                 .getTypeAfterImplicitConversion(
+                   checkWithImplicits,
+                   isShapesResolve,
+                   Some(expectedType))
+                 ._1) {
           val conforms = Conformance
             .conforms(paramType, exprType, checkWeak = true)
           if (!conforms) {
@@ -514,7 +515,8 @@ object Compatibility {
       else {
         // inspect types default values
         val pack = parameters.zip(used)
-        for ((param, use) <- pack if param.isDefault && !use) {
+        for ((param, use) <- pack
+             if param.isDefault && !use) {
           val paramType: ScType = param.paramType
           val defaultExpr = param.paramInCode.flatMap(_.getDefaultExpression)
           param.defaultType match {

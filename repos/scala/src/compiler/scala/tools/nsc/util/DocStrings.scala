@@ -169,7 +169,8 @@ object DocStrings {
       tag: String,
       sections: List[(Int, Int)]): Map[String, (Int, Int)] =
     Map() ++ {
-      for (section <- sections if startsWithTag(str, section, tag))
+      for (section <- sections
+           if startsWithTag(str, section, tag))
         yield {
           val start = skipWhitespace(str, section._1 + tag.length)
           str.substring(start, skipIdent(str, start)) -> section

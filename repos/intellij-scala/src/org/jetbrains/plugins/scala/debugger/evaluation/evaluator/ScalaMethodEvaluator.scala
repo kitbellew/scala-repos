@@ -140,7 +140,8 @@ case class ScalaMethodEvaluator(
               .concreteMethodByName(methodName, signature.getName(debugProcess))
           }
           if (jdiMethod == null && localMethod) {
-            for (method <- sortedMethodCandidates if jdiMethod == null) {
+            for (method <- sortedMethodCandidates
+                 if jdiMethod == null) {
               mName = DebuggerUtilsEx
                 .methodName(referenceType.name, method.name(), sign)
               jdiMethod = referenceType

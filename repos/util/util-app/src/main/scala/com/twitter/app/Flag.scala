@@ -1078,7 +1078,8 @@ private object GlobalFlag {
     // Search for Scala objects annotated with GlobalFlagVisible:
     // Since Scala object classnames end with $, filter by name first
     // before attempting to load the class.
-    for (info <- ClassPath.browse(loader) if (info.name endsWith "$"))
+    for (info <- ClassPath.browse(loader)
+         if (info.name endsWith "$"))
       try {
         val cls = info.load()
         if (cls.isAnnotationPresent(markerClass)) {

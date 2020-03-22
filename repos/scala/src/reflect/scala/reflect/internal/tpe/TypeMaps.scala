@@ -665,7 +665,8 @@ private[internal] trait TypeMaps {
       }
     }
     protected def captureSkolems(skolems: List[Symbol]) {
-      for (p <- skolems; if !(capturedSkolems contains p)) {
+      for (p <- skolems;
+           if !(capturedSkolems contains p)) {
         debuglog(s"Captured $p seen from $seenFromPrefix")
         _capturedSkolems ::= p
       }

@@ -199,7 +199,8 @@ trait DiagramFactory extends DiagramDirectiveParser {
         }
 
         // for each node, add its subclasses
-        for (node <- nodesAll if !classExcluded(node)) {
+        for (node <- nodesAll
+             if !classExcluded(node)) {
           node match {
             case dnode: MemberTemplateImpl =>
               val superClasses = listSuperClasses(dnode)

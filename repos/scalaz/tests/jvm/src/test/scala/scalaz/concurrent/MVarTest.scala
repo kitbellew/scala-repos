@@ -18,12 +18,13 @@ object MVarTest extends SpecLite {
       def run =
         for {
           in <- newEmptyMVar[String]
-          _ <- forkIO {
-            for {
-              _ <- in.put("one")
-              _ <- in.put("two")
-            } yield ()
-          }
+          _ <-
+            forkIO {
+              for {
+                _ <- in.put("one")
+                _ <- in.put("two")
+              } yield ()
+            }
           a <- in.take
           b <- in.take
         } yield (a, b)

@@ -176,60 +176,65 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                   logger.trace("Running InitialLoad")
                   M.point {
                     for {
-                      db <- safeOp("Database " + dbName + " does not exist")(
-                        mongo.getDB(dbName)).flatMap {
-                        d =>
-                          if (!d.isAuthenticated && dbAuthParams
-                                .contains(dbName)) {
-                            logger.trace("Running auth setup for " + dbName)
-                            dbAuthParams.get(dbName).map(_.split(':')) flatMap {
-                              case Array(user, password) =>
-                                if (d.authenticate(
-                                      user,
-                                      password.toCharArray)) {
-                                  Some(d)
-                                } else {
+                      db <-
+                        safeOp("Database " + dbName + " does not exist")(
+                          mongo.getDB(dbName)).flatMap {
+                          d =>
+                            if (!d.isAuthenticated && dbAuthParams
+                                  .contains(dbName)) {
+                              logger.trace("Running auth setup for " + dbName)
+                              dbAuthParams
+                                .get(dbName)
+                                .map(_.split(':')) flatMap {
+                                case Array(user, password) =>
+                                  if (d.authenticate(
+                                        user,
+                                        password.toCharArray)) {
+                                    Some(d)
+                                  } else {
+                                    logger.error(
+                                      "Authentication failed for database " + dbName);
+                                    None
+                                  }
+
+                                case invalid =>
                                   logger.error(
-                                    "Authentication failed for database " + dbName);
+                                    "Invalid user:password for %s: \"%s\""
+                                      .format(dbName, invalid.mkString(":")));
                                   None
-                                }
-
-                              case invalid =>
-                                logger.error(
-                                  "Invalid user:password for %s: \"%s\""
-                                    .format(dbName, invalid.mkString(":")));
-                                None
+                              }
+                            } else {
+                              Some(d)
                             }
-                          } else {
-                            Some(d)
-                          }
-                      }
-                      coll <- safeOp(
-                        "Collection " + collectionName + " does not exist") {
-                        logger.trace("Fetching collection: " + collectionName)
-                        db.getCollection(collectionName)
-                      }
-                      slice <- safeOp("Invalid result in query") {
-                        logger.trace("Getting data from " + coll)
-                        val selector =
-                          jTypeToProperties(tpe, Set())
-                            .foldLeft(new BasicDBObject()) {
-                              case (obj, path) =>
-                                obj.append(path, 1)
-                            }
+                        }
+                      coll <-
+                        safeOp(
+                          "Collection " + collectionName + " does not exist") {
+                          logger.trace("Fetching collection: " + collectionName)
+                          db.getCollection(collectionName)
+                        }
+                      slice <-
+                        safeOp("Invalid result in query") {
+                          logger.trace("Getting data from " + coll)
+                          val selector =
+                            jTypeToProperties(tpe, Set())
+                              .foldLeft(new BasicDBObject()) {
+                                case (obj, path) =>
+                                  obj.append(path, 1)
+                              }
 
-                        val cursorGen =
-                          () => coll.find(new BasicDBObject(), selector)
+                          val cursorGen =
+                            () => coll.find(new BasicDBObject(), selector)
 
-                        val (slice, nextSkip) = makeSlice(cursorGen, 0)
+                          val (slice, nextSkip) = makeSlice(cursorGen, 0)
 
-                        logger.debug("Gen slice of size " + slice.size)
-                        (
-                          slice,
-                          nextSkip
-                            .map(InLoad(cursorGen, _, xs))
-                            .getOrElse(InitialLoad(xs)))
-                      }
+                          logger.debug("Gen slice of size " + slice.size)
+                          (
+                            slice,
+                            nextSkip
+                              .map(InLoad(cursorGen, _, xs))
+                              .getOrElse(InitialLoad(xs)))
+                        }
                     } yield slice
                   }
 

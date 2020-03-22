@@ -158,11 +158,11 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
               if a.frameAt(call) != null => // skips over unreachable code
             val callee: Either[OptimizerWarning, Callee] =
               for {
-                (method, declarationClass) <- byteCodeRepository.methodNode(
-                  call.owner,
-                  call.name,
-                  call
-                    .desc): Either[OptimizerWarning, (MethodNode, InternalName)]
+                (method, declarationClass) <-
+                  byteCodeRepository
+                    .methodNode(call.owner, call.name, call.desc): Either[
+                    OptimizerWarning,
+                    (MethodNode, InternalName)]
                 (declarationClassNode, source) <-
                   byteCodeRepository
                     .classNodeAndSource(declarationClass): Either[

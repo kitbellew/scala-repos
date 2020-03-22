@@ -83,7 +83,8 @@ trait ApiControllerBase extends ControllerBase {
       val owner = context.loginAccount.get.userName
       (
         for {
-          data <- extractFromJsonBody[CreateARepository] if data.isValid
+          data <- extractFromJsonBody[CreateARepository]
+          if data.isValid
         } yield {
           LockUtil.lock(s"${owner}/${data.name}") {
             if (getRepository(owner, data.name).isEmpty) {
@@ -118,7 +119,8 @@ trait ApiControllerBase extends ControllerBase {
       val groupName = params("org")
       (
         for {
-          data <- extractFromJsonBody[CreateARepository] if data.isValid
+          data <- extractFromJsonBody[CreateARepository]
+          if data.isValid
         } yield {
           LockUtil.lock(s"${groupName}/${data.name}") {
             if (getRepository(groupName, data.name).isEmpty) {
@@ -272,7 +274,8 @@ trait ApiControllerBase extends ControllerBase {
     collaboratorsOnly { repository =>
       (
         for {
-          data <- extractFromJsonBody[CreateALabel] if data.isValid
+          data <- extractFromJsonBody[CreateALabel]
+          if data.isValid
         } yield {
           LockUtil.lock(RepositoryName(repository).fullName) {
             if (getLabel(repository.owner, repository.name, data.name)
@@ -307,7 +310,8 @@ trait ApiControllerBase extends ControllerBase {
     collaboratorsOnly { repository =>
       (
         for {
-          data <- extractFromJsonBody[CreateALabel] if data.isValid
+          data <- extractFromJsonBody[CreateALabel]
+          if data.isValid
         } yield {
           LockUtil.lock(RepositoryName(repository).fullName) {
             getLabel(repository.owner, repository.name, params("labelName"))
@@ -400,18 +404,20 @@ trait ApiControllerBase extends ControllerBase {
           issueId <- params("id").toIntOpt
           (issue, pullRequest) <-
             getPullRequest(repository.owner, repository.name, issueId)
-          users = getAccountsByUserNames(
-            Set(
-              repository.owner,
-              pullRequest.requestUserName,
-              issue.openedUserName),
-            Set())
+          users =
+            getAccountsByUserNames(
+              Set(
+                repository.owner,
+                pullRequest.requestUserName,
+                issue.openedUserName),
+              Set())
           baseOwner <- users.get(repository.owner)
           headOwner <- users.get(pullRequest.requestUserName)
           issueUser <- users.get(issue.openedUserName)
-          headRepo <- getRepository(
-            pullRequest.requestUserName,
-            pullRequest.requestRepositoryName)
+          headRepo <-
+            getRepository(
+              pullRequest.requestUserName,
+              pullRequest.requestRepositoryName)
         } yield {
           JsonFormat(
             ApiPullRequest(
@@ -478,19 +484,21 @@ trait ApiControllerBase extends ControllerBase {
         for {
           ref <- params.get("sha")
           sha <- JGitUtil.getShaByRef(repository.owner, repository.name, ref)
-          data <- extractFromJsonBody[CreateAStatus] if data.isValid
+          data <- extractFromJsonBody[CreateAStatus]
+          if data.isValid
           creator <- context.loginAccount
           state <- CommitState.valueOf(data.state)
-          statusId = createCommitStatus(
-            repository.owner,
-            repository.name,
-            sha,
-            data.context.getOrElse("default"),
-            state,
-            data.target_url,
-            data.description,
-            new java.util.Date(),
-            creator)
+          statusId =
+            createCommitStatus(
+              repository.owner,
+              repository.name,
+              sha,
+              data.context.getOrElse("default"),
+              state,
+              data.target_url,
+              data.description,
+              new java.util.Date(),
+              creator)
           status <- getCommitStatus(repository.owner, repository.name, statusId)
         } yield {
           JsonFormat(ApiCommitStatus(status, ApiUser(creator)))

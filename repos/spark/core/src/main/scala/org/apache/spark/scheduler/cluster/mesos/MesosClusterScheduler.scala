@@ -682,7 +682,8 @@ private[spark] class MesosClusterScheduler(
         driver.launchTasks(Collections.singleton(offerId), taskInfos.asJava)
     }
 
-    for (o <- currentOffers if !tasks.contains(o.offerId)) {
+    for (o <- currentOffers
+         if !tasks.contains(o.offerId)) {
       driver.declineOffer(o.offerId)
     }
   }

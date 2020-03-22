@@ -120,12 +120,13 @@ object MetricsStatsReceiver {
 
       def deserialize(buf: Buf) =
         for {
-          env <- Buf.Utf8.unapply(buf) match {
-            case None =>
-              Throw(new IllegalArgumentException("unknown format"))
-            case Some(str) =>
-              Try(Json.deserialize[Json.Envelope[CounterIncrData]](str))
-          }
+          env <-
+            Buf.Utf8.unapply(buf) match {
+              case None =>
+                Throw(new IllegalArgumentException("unknown format"))
+              case Some(str) =>
+                Try(Json.deserialize[Json.Envelope[CounterIncrData]](str))
+            }
           if env.id == id
         } yield {
           val when = Time.fromMilliseconds(env.when)
@@ -165,12 +166,13 @@ object MetricsStatsReceiver {
 
       def deserialize(buf: Buf) =
         for {
-          env <- Buf.Utf8.unapply(buf) match {
-            case None =>
-              Throw(new IllegalArgumentException("unknown format"))
-            case Some(str) =>
-              Try(Json.deserialize[Json.Envelope[StatAddData]](str))
-          }
+          env <-
+            Buf.Utf8.unapply(buf) match {
+              case None =>
+                Throw(new IllegalArgumentException("unknown format"))
+              case Some(str) =>
+                Try(Json.deserialize[Json.Envelope[StatAddData]](str))
+            }
           if env.id == id
         } yield {
           val when = Time.fromMilliseconds(env.when)

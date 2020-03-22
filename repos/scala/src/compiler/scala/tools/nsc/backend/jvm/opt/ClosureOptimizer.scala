@@ -200,11 +200,12 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
                   lambdaBodyHandle.getDesc): Either[
                   OptimizerWarning,
                   (MethodNode, InternalName)]
-              isAccessible <- inliner.memberIsAccessible(
-                bodyMethodNode.access,
-                classBTypeFromParsedClassfile(declClass),
-                classBTypeFromParsedClassfile(lambdaBodyHandle.getOwner),
-                ownerClass)
+              isAccessible <-
+                inliner.memberIsAccessible(
+                  bodyMethodNode.access,
+                  classBTypeFromParsedClassfile(declClass),
+                  classBTypeFromParsedClassfile(lambdaBodyHandle.getOwner),
+                  ownerClass)
             } yield {
               isAccessible
             }

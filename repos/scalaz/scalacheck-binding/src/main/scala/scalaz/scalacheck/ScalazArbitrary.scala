@@ -196,11 +196,12 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
       b = size - a
       aa <- Gen.choose(1, a)
       ba <- Gen.choose(0, b)
-      t <- Apply[Gen].apply4(
-        treeGenSized[A](aa),
-        forest(a - aa),
-        forest(ba),
-        withSize(b - ba)(parent))(TreeLoc.apply[A])
+      t <-
+        Apply[Gen].apply4(
+          treeGenSized[A](aa),
+          forest(a - aa),
+          forest(ba),
+          withSize(b - ba)(parent))(TreeLoc.apply[A])
     } yield t
   }
 

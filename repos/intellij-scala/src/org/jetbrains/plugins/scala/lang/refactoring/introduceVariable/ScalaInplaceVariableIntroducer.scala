@@ -230,7 +230,8 @@ class ScalaInplaceVariableIntroducer(
             def setGreedyToRightToFalse(): Unit = {
               val highlighters: Array[RangeHighlighter] =
                 myEditor.getMarkupModel.getAllHighlighters
-              for (highlighter <- highlighters; if checkRange(
+              for (highlighter <- highlighters;
+                   if checkRange(
                      highlighter.getStartOffset,
                      highlighter.getEndOffset))
                 greedyToRight += (highlighter -> highlighter.isGreedyToRight)
@@ -238,7 +239,8 @@ class ScalaInplaceVariableIntroducer(
             def resetGreedyToRightBack(): Unit = {
               val highlighters: Array[RangeHighlighter] =
                 myEditor.getMarkupModel.getAllHighlighters
-              for (highlighter <- highlighters; if checkRange(
+              for (highlighter <- highlighters;
+                   if checkRange(
                      highlighter.getStartOffset,
                      highlighter.getEndOffset))
                 highlighter.setGreedyToRight(greedyToRight(highlighter))

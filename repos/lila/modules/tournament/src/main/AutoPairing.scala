@@ -39,27 +39,28 @@ final class AutoPairing(
     for {
       user1 ← getUser(pairing.user1)
       user2 ← getUser(pairing.user2)
-      game1 = Game.make(
-        game = chess.Game(
-          variant = tour.variant.some,
-          fen = tour.position.some.filterNot(_.initial).map(_.fen)) |> { g =>
-          val turns = g.player.fold(0, 1)
-          g.copy(
-            clock = tour.clock.chessClock.some,
-            turns = turns,
-            startedAtTurn = turns)
-        },
-        whitePlayer = GamePlayer.white,
-        blackPlayer = GamePlayer.black,
-        mode = tour.mode,
-        variant =
-          if (tour.position.initial)
-            tour.variant
-          else
-            chess.variant.FromPosition,
-        source = Source.Tournament,
-        pgnImport = None
-      )
+      game1 =
+        Game.make(
+          game = chess.Game(
+            variant = tour.variant.some,
+            fen = tour.position.some.filterNot(_.initial).map(_.fen)) |> { g =>
+            val turns = g.player.fold(0, 1)
+            g.copy(
+              clock = tour.clock.chessClock.some,
+              turns = turns,
+              startedAtTurn = turns)
+          },
+          whitePlayer = GamePlayer.white,
+          blackPlayer = GamePlayer.black,
+          mode = tour.mode,
+          variant =
+            if (tour.position.initial)
+              tour.variant
+            else
+              chess.variant.FromPosition,
+          source = Source.Tournament,
+          pgnImport = None
+        )
       game2 =
         game1
           .updatePlayer(

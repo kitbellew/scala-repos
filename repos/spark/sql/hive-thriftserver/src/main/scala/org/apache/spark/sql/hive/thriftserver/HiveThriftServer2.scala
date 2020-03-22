@@ -219,7 +219,8 @@ object HiveThriftServer2 extends Logging {
         for {
           props <- Option(jobStart.properties)
           groupId <- Option(props.getProperty(SparkContext.SPARK_JOB_GROUP_ID))
-          (_, info) <- executionList if info.groupId == groupId
+          (_, info) <- executionList
+          if info.groupId == groupId
         } {
           info.jobId += jobStart.jobId.toString
           info.groupId = groupId

@@ -165,7 +165,8 @@ object CompilerBenchmark {
     val q2 =
       for {
         c <- coffees.filter(_.price < 900).map(_.*)
-        s <- suppliers if s.id === c._2
+        s <- suppliers
+        if s.id === c._2
       } yield (c._1, s.name)
     val q3 = coffees.flatMap { c =>
       val cf = Query(c).filter(_.price === 849)
@@ -297,9 +298,11 @@ object CompilerBenchmark {
     val queryErr2 =
       for {
         a <- tableA
-        b <- tableB if b.id === a.id
+        b <- tableB
+        if b.id === a.id
         start = a.id + 1
-        c <- tableC if c.start <= start
+        c <- tableC
+        if c.start <= start
       } yield (b, c)
 
     Vector(queryErr2)

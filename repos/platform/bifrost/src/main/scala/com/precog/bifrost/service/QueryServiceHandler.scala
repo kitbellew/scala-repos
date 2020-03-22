@@ -130,16 +130,18 @@ abstract class QueryServiceHandler[A](implicit M: Monad[Future])
             opts: QueryOptions) =>
           val responseEither =
             for {
-              executor <- execution.executorFor(apiKey) leftMap {
-                EvaluationError.invalidState
-              }
-              ctx = EvaluationContext(
-                apiKey,
-                account,
-                path,
-                Path.Root,
-                new DateTime
-              ) //CLOCK!!!!!!
+              executor <-
+                execution.executorFor(apiKey) leftMap {
+                  EvaluationError.invalidState
+                }
+              ctx =
+                EvaluationContext(
+                  apiKey,
+                  account,
+                  path,
+                  Path.Root,
+                  new DateTime
+                ) //CLOCK!!!!!!
               result <- executor.execute(query, ctx, opts)
               httpResponse <-
                 EitherT.right(extractResponse(request, result, opts.output))

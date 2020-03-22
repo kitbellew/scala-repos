@@ -57,11 +57,12 @@ trait VFSColumnarTableModule
         apiKey: APIKey,
         tpe: JType): EitherT[Future, ResourceError, Table] = {
       for {
-        _ <- EitherT.right(
-          table.toJson map { json =>
-            logger
-              .trace("Starting load from " + json.toList.map(_.renderCompact))
-          })
+        _ <-
+          EitherT.right(
+            table.toJson map { json =>
+              logger
+                .trace("Starting load from " + json.toList.map(_.renderCompact))
+            })
         paths <- EitherT.right(pathsM(table))
         projections <-
           paths

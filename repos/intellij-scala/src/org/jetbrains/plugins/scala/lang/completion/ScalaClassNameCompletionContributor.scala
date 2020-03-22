@@ -234,13 +234,14 @@ object ScalaClassNameCompletionContributor {
         .filter(_._2 == typeToImport.element)
         .map(_._1)
       for {
-        el <- LookupElementManager.getLookupElement(
-          new ScalaResolveResult(typeToImport.element, nameShadow = renamed),
-          isClassName = true,
-          isInImport = isInImport,
-          isInStableCodeReference = stableRefElement != null,
-          isInSimpleString = inString
-        )
+        el <-
+          LookupElementManager.getLookupElement(
+            new ScalaResolveResult(typeToImport.element, nameShadow = renamed),
+            isClassName = true,
+            isInImport = isInImport,
+            isInStableCodeReference = stableRefElement != null,
+            isInSimpleString = inString
+          )
       } {
         if (!afterNewPattern.accepts(dummyPosition, context))
           result.addElement(el)

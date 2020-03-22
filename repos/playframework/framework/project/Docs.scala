@@ -225,9 +225,10 @@ object Docs {
         _.map { resources =>
           (
             for {
-              conf <- resources.filter(resource =>
-                resource
-                  .name == "reference.conf" || resource.name.endsWith(".xml"))
+              conf <-
+                resources.filter(resource =>
+                  resource
+                    .name == "reference.conf" || resource.name.endsWith(".xml"))
               id <- projectId.toSeq
             } yield id -> conf
           ).distinct

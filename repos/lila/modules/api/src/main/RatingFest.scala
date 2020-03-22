@@ -80,45 +80,46 @@ object RatingFest {
       engineIds <- UserRepo.engineIds
       _ = log(s"Found ${engineIds.size} cheaters")
       _ = log("Starting the party")
-      _ <- lila.game.tube.gameTube |> { implicit gameTube =>
-        val query = $query(lila.game.Query.rated)
-        // val query = $query.all
-        // .batch(100)
-          .sort($sort asc G.createdAt)
-        var started = nowMillis
-        $enumerate.bulk[Game](query, bulkSize, limit) { games =>
-          nb = nb + bulkSize
-          if (nb % 1000 == 0) {
-            val perS = 1000 * 1000 / math.max(1, nowMillis - started)
-            started = nowMillis
-            log("Processed %d games at %d/s".format(nb, perS))
-          }
-          games
-            .map { game =>
-              game.userIds match {
-                case _ if !game.rated =>
-                  funit
-                case _ if !game.finished =>
-                  funit
-                case _ if game.fromPosition =>
-                  funit
-                case List(uidW, uidB) if (uidW == uidB) =>
-                  funit
-                case List(uidW, uidB) if engineIds(uidW) || engineIds(uidB) =>
-                  unrate(game)
-                case List(uidW, uidB) =>
-                  rerate(game)
-                case _ =>
-                  funit
-              }
+      _ <-
+        lila.game.tube.gameTube |> { implicit gameTube =>
+          val query = $query(lila.game.Query.rated)
+          // val query = $query.all
+          // .batch(100)
+            .sort($sort asc G.createdAt)
+          var started = nowMillis
+          $enumerate.bulk[Game](query, bulkSize, limit) { games =>
+            nb = nb + bulkSize
+            if (nb % 1000 == 0) {
+              val perS = 1000 * 1000 / math.max(1, nowMillis - started)
+              started = nowMillis
+              log("Processed %d games at %d/s".format(nb, perS))
             }
-            .sequenceFu
-            .void
-        } andThen {
-          case _ =>
-            log(nb)
+            games
+              .map { game =>
+                game.userIds match {
+                  case _ if !game.rated =>
+                    funit
+                  case _ if !game.finished =>
+                    funit
+                  case _ if game.fromPosition =>
+                    funit
+                  case List(uidW, uidB) if (uidW == uidB) =>
+                    funit
+                  case List(uidW, uidB) if engineIds(uidW) || engineIds(uidB) =>
+                    unrate(game)
+                  case List(uidW, uidB) =>
+                    rerate(game)
+                  case _ =>
+                    funit
+                }
+              }
+              .sequenceFu
+              .void
+          } andThen {
+            case _ =>
+              log(nb)
+          }
         }
-      }
     } yield ()
   }
 }

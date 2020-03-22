@@ -134,8 +134,8 @@ class BasicAuthenticationFilter
               val passed =
                 for {
                   auth <- Option(request.getHeader("Authorization"))
-                  Array(username, password) = decodeAuthHeader(auth)
-                    .split(":", 2)
+                  Array(username, password) =
+                    decodeAuthHeader(auth).split(":", 2)
                   account <- authenticate(settings, username, password)
                 } yield
                   if (isUpdating || repository.repository.isPrivate) {

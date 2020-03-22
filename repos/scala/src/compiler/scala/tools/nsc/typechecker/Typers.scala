@@ -3106,7 +3106,8 @@ trait Typers
     def typedCase(cdef: CaseDef, pattpe: Type, pt: Type): CaseDef = {
       // verify no _* except in last position
       for (Apply(_, xs) <- cdef.pat;
-           x <- xs dropRight 1; if treeInfo isStar x)
+           x <- xs dropRight 1;
+           if treeInfo isStar x)
         StarPositionInPatternError(x)
 
       // withoutAnnotations - see continuations-run/z1673.scala
@@ -3896,7 +3897,8 @@ trait Typers
           .getOrElse(CompoundTypeTreeOriginalAttachment(Nil, Nil))
         templ.removeAttachment[CompoundTypeTreeOriginalAttachment]
         templ updateAttachment att.copy(stats = stats1)
-        for (stat <- stats1 if stat.isDef && stat.symbol.isOverridingSymbol)
+        for (stat <- stats1
+             if stat.isDef && stat.symbol.isOverridingSymbol)
           stat.symbol setFlag OVERRIDE
       }
     }
@@ -4031,7 +4033,8 @@ trait Typers
           def shouldAdd(sym: Symbol) =
             inBlock || !context.isInPackageObject(sym, context.owner)
           for (sym <- scope)
-            for (tree <- context.unit.synthetics get sym if shouldAdd(
+            for (tree <- context.unit.synthetics get sym
+                 if shouldAdd(
                    sym)) { // OPT: shouldAdd is usually true. Call it here, rather than in the outer loop
               newStats += typedStat(
                 tree
@@ -6503,7 +6506,8 @@ trait Typers
 
         // This is also checked later in typedStats, but that is too late for SI-5361, so
         // we eagerly check this here.
-        for (stat <- templ.body if !treeInfo.isDeclarationOrTypeDef(stat))
+        for (stat <- templ.body
+             if !treeInfo.isDeclarationOrTypeDef(stat))
           OnlyDeclarationsError(stat)
 
         if ((parents1 ++ templ.body) exists (_.isErrorTyped))

@@ -36,7 +36,8 @@ object Test extends App {
         // one generator and filter. The 'yield' expression is evaluated
         // for each 'p' which satisfies the filters and used to assemble
         // the resulting iterator
-        for (p <- xs if p.age > 20)
+        for (p <- xs
+             if p.age > 20)
           yield p.name
       }
     }
@@ -48,7 +49,8 @@ object Test extends App {
 
       /** Return the divisors of n. */
       def divisors(n: Int): List[Int] =
-        for (i <- List.range(1, n + 1) if n % i == 0)
+        for (i <- List.range(1, n + 1)
+             if n % i == 0)
           yield i
 
       /** Is 'n' a prime number? */
@@ -82,7 +84,8 @@ object Test extends App {
           xs
         else
           xs.head :: removeDuplicates(
-            for (x <- xs.tail if x != xs.head)
+            for (x <- xs.tail
+                 if x != xs.head)
               yield x)
     }
 

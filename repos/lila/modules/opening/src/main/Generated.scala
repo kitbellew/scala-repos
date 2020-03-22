@@ -20,15 +20,17 @@ private[opening] case class Generated(
           .map {
             case (first, move) =>
               for {
-                pgn <- Generated.toPgn(
-                  parsed.situation,
-                  first :: move.line.split(' ').toList)
-                cp <- parseIntOption(move.cp) match {
-                  case None =>
-                    Failure(new Exception(s"Invalid cp ${move.cp}"))
-                  case Some(cp) =>
-                    Success(cp)
-                }
+                pgn <-
+                  Generated.toPgn(
+                    parsed.situation,
+                    first :: move.line.split(' ').toList)
+                cp <-
+                  parseIntOption(move.cp) match {
+                    case None =>
+                      Failure(new Exception(s"Invalid cp ${move.cp}"))
+                    case Some(cp) =>
+                      Success(cp)
+                  }
               } yield Move(first = first, cp = cp, line = pgn)
           }
           .foldLeft(Try(List[Move]())) {

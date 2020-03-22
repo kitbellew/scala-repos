@@ -391,20 +391,21 @@ class AccountServiceSpec extends TestAccountService with Tags {
       (
         for {
           genToken <- createResetToken(accountId, user)
-          resetToken <- Future {
-            Mailbox.get(user).asScala.toList match {
-              case message :: Nil =>
-                // Our test email template subject is simply the token, so easy to extract
-                val output = new java.io.ByteArrayOutputStream
-                message.writeTo(output)
-                output.close
-                logger.debug("Got reset email: " + output.toString("UTF-8"))
-                message.getSubject
+          resetToken <-
+            Future {
+              Mailbox.get(user).asScala.toList match {
+                case message :: Nil =>
+                  // Our test email template subject is simply the token, so easy to extract
+                  val output = new java.io.ByteArrayOutputStream
+                  message.writeTo(output)
+                  output.close
+                  logger.debug("Got reset email: " + output.toString("UTF-8"))
+                  message.getSubject
 
-              case problem =>
-                failure("Reset email not received, got " + problem)
+                case problem =>
+                  failure("Reset email not received, got " + problem)
+              }
             }
-          }
           resetResult <- resetPassword(accountId, resetToken, newPass)
           newAuthResult <- getAccount(accountId, user, newPass)
         } yield (genToken, resetResult, newAuthResult)

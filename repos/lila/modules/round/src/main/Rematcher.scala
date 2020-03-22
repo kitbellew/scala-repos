@@ -92,17 +92,18 @@ private[round] final class Rematcher(
     for {
       initialFen <- GameRepo initialFen pov.game
       situation = initialFen flatMap Forsyth.<<<
-      pieces = pov.game.variant match {
-        case Chess960 =>
-          if (rematch960Cache.get(pov.game.id))
-            Chess960.pieces
-          else
-            situation.fold(Chess960.pieces)(_.situation.board.pieces)
-        case FromPosition =>
-          situation.fold(Standard.pieces)(_.situation.board.pieces)
-        case variant =>
-          variant.pieces
-      }
+      pieces =
+        pov.game.variant match {
+          case Chess960 =>
+            if (rematch960Cache.get(pov.game.id))
+              Chess960.pieces
+            else
+              situation.fold(Chess960.pieces)(_.situation.board.pieces)
+          case FromPosition =>
+            situation.fold(Standard.pieces)(_.situation.board.pieces)
+          case variant =>
+            variant.pieces
+        }
       users <- UserRepo byIds pov.game.userIds
     } yield Game.make(
       game = ChessGame(

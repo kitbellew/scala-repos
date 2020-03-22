@@ -309,7 +309,8 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
 
     /* Extract all the namespaces from the attribute map. */
     val namespaces: List[Tree] =
-      for (z <- attrMap.keys.toList; if z startsWith "xmlns")
+      for (z <- attrMap.keys.toList;
+           if z startsWith "xmlns")
         yield {
           val ns =
             splitPrefix(z) match {

@@ -257,29 +257,34 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
       val DBTypePattern = "^[a-zA-Z][a-zA-Z0-9 ]*$".r
 
       for {
-        _ <- (
-          posts.schema ++ categories.schema ++ defaultTest
-            .schema ++ noDefaultTest.schema ++ typeTest.schema
-        ).create
+        _ <-
+          (
+            posts.schema ++ categories.schema ++ defaultTest
+              .schema ++ noDefaultTest.schema ++ typeTest.schema
+          ).create
         _ <- createModel(ignoreInvalidDefaults = false).map(_.assertConsistency)
         tables <- tdb.profile.defaultTables
-        _ <- createModel(Some(tables), ignoreInvalidDefaults = false)
-          .map(_.assertConsistency)
+        _ <-
+          createModel(Some(tables), ignoreInvalidDefaults = false)
+            .map(_.assertConsistency)
         // checks that createModel filters out foreign keys pointing out
-        _ <- createModel(
-          Some(tables.filter(_.name.name.toUpperCase == "POSTS")),
-          ignoreInvalidDefaults = false).map { model =>
-          model.assertConsistency
-          assertEquals(0, model.tables.map(_.foreignKeys.size).sum)
-        }
-        _ <- createModel(
-          Some(tables.filter(_.name.name.toUpperCase == "CATEGORIES")),
-          ignoreInvalidDefaults = false).map(_.assertConsistency)
+        _ <-
+          createModel(
+            Some(tables.filter(_.name.name.toUpperCase == "POSTS")),
+            ignoreInvalidDefaults = false).map { model =>
+            model.assertConsistency
+            assertEquals(0, model.tables.map(_.foreignKeys.size).sum)
+          }
+        _ <-
+          createModel(
+            Some(tables.filter(_.name.name.toUpperCase == "CATEGORIES")),
+            ignoreInvalidDefaults = false).map(_.assertConsistency)
         // checks that assertConsistency fails when manually feeding the model with inconsistent tables
-        _ <- createModel(Some(tables), ignoreInvalidDefaults = false).map { m =>
-          Model(m.tables.filter(_.name.table.toUpperCase == "POSTS"))
-            .shouldFail(_.assertConsistency)
-        }
+        _ <-
+          createModel(Some(tables), ignoreInvalidDefaults = false).map { m =>
+            Model(m.tables.filter(_.name.table.toUpperCase == "POSTS"))
+              .shouldFail(_.assertConsistency)
+          }
         model <- createModel(ignoreInvalidDefaults = false)
         _ = {
           // check that the model matches the table classes
@@ -582,32 +587,40 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
           assertEquals(false, column("java_sql_Blob").nullable)
           assertEquals(true, column("Option_java_sql_Blob").nullable)
         }
-        _ <- ifCap(jcap.defaultValueMetaData) {
-          val typeTest =
-            model
-              .tables
-              .filter(_.name.table.toUpperCase == "NO_DEFAULT_TEST")
-              .head
-          def column(name: String) =
-            typeTest.columns.filter(_.name.toUpperCase == name.toUpperCase).head
-          def columnDefault(name: String) =
-            column(name)
-              .options
-              .collect {
-                case RelationalProfile.ColumnOption.Default(v) =>
-                  v
-              }
-              .headOption
+        _ <-
+          ifCap(jcap.defaultValueMetaData) {
+            val typeTest =
+              model
+                .tables
+                .filter(_.name.table.toUpperCase == "NO_DEFAULT_TEST")
+                .head
+            def column(name: String) =
+              typeTest
+                .columns
+                .filter(_.name.toUpperCase == name.toUpperCase)
+                .head
+            def columnDefault(name: String) =
+              column(name)
+                .options
+                .collect {
+                  case RelationalProfile.ColumnOption.Default(v) =>
+                    v
+                }
+                .headOption
 
-          ifCapU(jcap.nullableNoDefault) {
-            assertEquals(None, columnDefault("stringOption"))
+            ifCapU(jcap.nullableNoDefault) {
+              assertEquals(None, columnDefault("stringOption"))
+            }
+            assertEquals(Some(None), columnDefault("stringOptionDefaultNone"))
+
+            DBIO.seq(
+              noDefaultTest.map(_.int) += 1,
+              noDefaultTest
+                .map(_.stringOption)
+                .result
+                .head
+                .map(_ shouldBe None))
           }
-          assertEquals(Some(None), columnDefault("stringOptionDefaultNone"))
-
-          DBIO.seq(
-            noDefaultTest.map(_.int) += 1,
-            noDefaultTest.map(_.stringOption).result.head.map(_ shouldBe None))
-        }
       } yield ()
     }
 }

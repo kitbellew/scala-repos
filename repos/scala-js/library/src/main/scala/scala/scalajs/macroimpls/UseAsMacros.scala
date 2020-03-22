@@ -251,7 +251,8 @@ private[scalajs] object UseAsMacros {
       val exportAll = sym.annotations.exists(annotIs(_, JSExportAllAnnotation))
 
       for {
-        decl <- sym.info.decls if decl.isMethod && !decl.isConstructor
+        decl <- sym.info.decls
+        if decl.isMethod && !decl.isConstructor
         name <- exportNames(decl.asMethod, exportAll)
       } yield {
         (name, jsMemberFor(origTpe, decl.asMethod))
@@ -328,7 +329,8 @@ private[scalajs] object UseAsMacros {
           def allowedParent(sym: Symbol) =
             sym.asClass.isTrait || JSObjectAncestors(sym)
 
-          for (base <- sym.baseClasses if !allowedParent(base)) {
+          for (base <- sym.baseClasses
+               if !allowedParent(base)) {
             c.abort(
               c.enclosingPosition,
               s"Supertype ${base.fullName} of $sym " +
@@ -340,7 +342,8 @@ private[scalajs] object UseAsMacros {
         case tpe @ RefinedType(parents, decls) =>
           parents.foreach(verifyTargetType)
 
-          for (decl <- decls if !decl.isType) {
+          for (decl <- decls
+               if !decl.isType) {
             c.abort(
               c.enclosingPosition,
               s"Refinement ${decl.name} " +

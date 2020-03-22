@@ -3033,7 +3033,8 @@ object ParserSpecs
 
   if (exampleDir.exists) {
     "specification examples" >> {
-      for (file <- exampleDir.listFiles if file.getName endsWith ".qrl") {
+      for (file <- exampleDir.listFiles
+           if file.getName endsWith ".qrl") {
         file.getName >> {
           parseSingle(LineStream(Source.fromFile(file))) must not(
             throwA[Throwable])

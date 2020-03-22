@@ -202,14 +202,15 @@ object HRavenHistoryService extends HistoryService {
         signature <- conf.getFirstKey("scalding.flow.class.signature")
 
         // query hRaven for matching flows
-        flows <- fetchSuccessfulFlows(
-          client,
-          cluster,
-          user,
-          batch,
-          signature,
-          max,
-          conf.maxFetch)
+        flows <-
+          fetchSuccessfulFlows(
+            client,
+            cluster,
+            user,
+            batch,
+            signature,
+            max,
+            conf.maxFetch)
 
       } yield flows
 
@@ -224,13 +225,14 @@ object HRavenHistoryService extends HistoryService {
     fetchPastJobDetails(info.step, maxHistory).map { history =>
       for {
         step <- history
-        keys = FlowStepKeys(
-          step.getJobName,
-          step.getUser,
-          step.getPriority,
-          step.getStatus,
-          step.getVersion,
-          "")
+        keys =
+          FlowStepKeys(
+            step.getJobName,
+            step.getUser,
+            step.getPriority,
+            step.getStatus,
+            step.getVersion,
+            "")
         // update HRavenHistoryService.TaskDetailFields when consuming additional task fields from hraven below
         tasks =
           step

@@ -28,9 +28,10 @@ object SeriesArbitraries {
   def seriesDoubleWithNA: Gen[Series[Int, Double]] =
     for {
       n <- Gen.choose(0, 20)
-      lst <- Gen.listOfN(
-        n,
-        Gen.frequency((9, Gen.chooseNum(-1e3, 1e3)), (1, na.to[Double])))
+      lst <-
+        Gen.listOfN(
+          n,
+          Gen.frequency((9, Gen.chooseNum(-1e3, 1e3)), (1, na.to[Double])))
     } yield Series(Vec(lst: _*))
 
   // As above, but with arbitrary duplicates in (unsorted) index
@@ -39,9 +40,10 @@ object SeriesArbitraries {
   def dupSeriesDoubleWithNA: Gen[Series[Int, Double]] =
     for {
       n <- Gen.choose(0, 20)
-      lst <- Gen.listOfN(
-        n,
-        Gen.frequency((9, Gen.chooseNum(-1e3, 1e3)), (1, na.to[Double])))
+      lst <-
+        Gen.listOfN(
+          n,
+          Gen.frequency((9, Gen.chooseNum(-1e3, 1e3)), (1, na.to[Double])))
       idx <- Gen.listOfN(n, Gen.choose(0, 5))
     } yield Series(Vec(lst: _*), Index(idx: _*))
 
@@ -58,9 +60,10 @@ object SeriesArbitraries {
   def seriesDateTimeDoubleWithNA: Gen[Series[DateTime, Double]] =
     for {
       n <- Gen.choose(0, 20)
-      lst <- Gen.listOfN(
-        n,
-        Gen.frequency((9, Gen.chooseNum(-1e3, 1e3)), (1, na.to[Double])))
+      lst <-
+        Gen.listOfN(
+          n,
+          Gen.frequency((9, Gen.chooseNum(-1e3, 1e3)), (1, na.to[Double])))
       ix <- Gen.listOfN(n, IndexArbitraries.getDate)
     } yield Series(Vec(lst: _*), Index(ix: _*))
 

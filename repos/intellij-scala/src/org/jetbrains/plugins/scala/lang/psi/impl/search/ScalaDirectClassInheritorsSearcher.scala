@@ -93,7 +93,8 @@ class ScalaDirectClassInheritorsSearcher
       ScalaStubsUtil.getClassInheritors(clazz, scope)
     }
 
-    for (candidate <- candidates if candidate.showAsInheritor) {
+    for (candidate <- candidates
+         if candidate.showAsInheritor) {
       ProgressManager.checkCanceled()
       if (inReadAction {
             candidate.isInheritor(clazz, deep = false)

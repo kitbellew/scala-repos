@@ -850,7 +850,8 @@ object ScalaImportOptimizer {
 
     expr.findImplicitParameters match {
       case Some(seq) =>
-        for (rr <- seq if rr != null) {
+        for (rr <- seq
+             if rr != null) {
           res ++= rr.importsUsed
         }
       case _ =>

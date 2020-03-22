@@ -173,10 +173,11 @@ class ScImplicitlyConvertible(
           case None =>
             typez
         }
-      for (obj <- ScalaPsiUtil.collectImplicitObjects(
-             expandedType,
-             place.getProject,
-             place.getResolveScope)) {
+      for (obj <-
+             ScalaPsiUtil.collectImplicitObjects(
+               expandedType,
+               place.getProject,
+               place.getResolveScope)) {
         processor.processType(obj, place, ResolveState.initial())
       }
       for (res <- processor.candidatesS.map(forMap(_, typez))
@@ -295,7 +296,8 @@ class ScImplicitlyConvertible(
 
     val sigsFound = processor.candidatesS.map(forMap(_, typez))
 
-    for (res <- sigsFound if res.condition) {
+    for (res <- sigsFound
+         if res.condition) {
       result += res
     }
 

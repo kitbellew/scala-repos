@@ -69,13 +69,14 @@ class PythonMLLibAPISuite extends SparkFunSuite {
   }
 
   test("pickle double") {
-    for (x <- List(
-           123.0,
-           -10.0,
-           0.0,
-           Double.MaxValue,
-           Double.MinValue,
-           Double.NaN)) {
+    for (x <-
+           List(
+             123.0,
+             -10.0,
+             0.0,
+             Double.MaxValue,
+             Double.MinValue,
+             Double.NaN)) {
       val deser = SerDe
         .loads(SerDe.dumps(x.asInstanceOf[AnyRef]))
         .asInstanceOf[Double]

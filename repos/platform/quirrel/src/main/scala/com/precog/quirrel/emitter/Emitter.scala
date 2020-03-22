@@ -247,7 +247,8 @@ trait Emitter
         expr: Expr,
         dispatches: Set[ast.Dispatch]): EmitterState = {
       val optState =
-        for (const <- expr.constrainingExpr if !(const equalsIgnoreLoc expr))
+        for (const <- expr.constrainingExpr
+             if !(const equalsIgnoreLoc expr))
           yield {
             if (expr.children exists {
                   _.constrainingExpr == Some(const)

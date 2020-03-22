@@ -805,7 +805,8 @@ object JavaToScala {
           forClass += method
       }
       val serialVersionUID = serialVersion(inClass)
-      for (field <- inClass.getFields if !serialVersionUID.contains(field)) {
+      for (field <- inClass.getFields
+           if !serialVersionUID.contains(field)) {
         if (field.hasModifierProperty("static")) {
           forObject += field
         } else

@@ -785,12 +785,13 @@ object Execution {
         tail: List[ToWrite])(implicit
         cec: ConcurrentExecutionContext): Future[ExecutionCounters] = {
       for {
-        flowDef <- toFuture(
-          Try {
-            val fd = new FlowDef;
-            (head :: tail).foreach(_.write(conf, fd, mode));
-            fd
-          })
+        flowDef <-
+          toFuture(
+            Try {
+              val fd = new FlowDef;
+              (head :: tail).foreach(_.write(conf, fd, mode));
+              fd
+            })
         _ = FlowStateMap.validateSources(flowDef, mode)
         jobStats <- cache.runFlowDef(conf, mode, flowDef)
         _ = FlowStateMap.clear(flowDef)

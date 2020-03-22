@@ -135,20 +135,24 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
           "Job created in %d ms".format(System.currentTimeMillis - start))
       }
     for {
-      job <- futureJob map { job =>
-        Some(job)
-      } recover {
-        case _ =>
-          None
-      }
-      queryStateManager = job map { job =>
-        val mgr = JobQueryStateManager(
-          job.id,
+      job <-
+        futureJob map { job =>
+          Some(job)
+        } recover {
+          case _ =>
+            None
+        }
+      queryStateManager =
+        job map { job =>
+          val mgr = JobQueryStateManager(
+            job.id,
+            yggConfig.clock.now() plus timeout
+              .getOrElse(defaultTimeout)
+              .toMillis)
+          mgr.start()
+          mgr
+        } getOrElse FakeJobQueryStateManager(
           yggConfig.clock.now() plus timeout.getOrElse(defaultTimeout).toMillis)
-        mgr.start()
-        mgr
-      } getOrElse FakeJobQueryStateManager(
-        yggConfig.clock.now() plus timeout.getOrElse(defaultTimeout).toMillis)
     } yield {
       new JobQueryTFMonad {
         val jobId = job map (_.id)

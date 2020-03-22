@@ -13,17 +13,18 @@ object PhoneCode {
       val wordToDigits = {
         val mappingReversed =
           (
-            for (chars2Digit <- Array(
-                   "e",
-                   "jnq",
-                   "rwx",
-                   "dsy",
-                   "ft",
-                   "am",
-                   "civ",
-                   "bku",
-                   "lop",
-                   "ghz").zipWithIndex;
+            for (chars2Digit <-
+                   Array(
+                     "e",
+                     "jnq",
+                     "rwx",
+                     "dsy",
+                     "ft",
+                     "am",
+                     "civ",
+                     "bku",
+                     "lop",
+                     "ghz").zipWithIndex;
                  char <- (chars2Digit._1 ++ chars2Digit._1.toUpperCase))
               yield (char -> chars2Digit._2)
           ).toMap
@@ -60,13 +61,15 @@ object PhoneCode {
                   val matchingWords =
                     (
                       for (len <- 1 to matchAgainst.length;
-                           opt <- dictEntriesDigified2Words.get(
-                             matchAgainst.take(len)))
+                           opt <-
+                             dictEntriesDigified2Words
+                               .get(matchAgainst.take(len)))
                         yield opt
                     ).flatten
                   if (matchingWords.nonEmpty) //spead the tree
-                    for ((translated, remaining) <- matchingWords.map(e =>
-                           e -> matchAgainst.drop(e.count(_.isLetter))))
+                    for ((translated, remaining) <-
+                           matchingWords.map(e =>
+                             e -> matchAgainst.drop(e.count(_.isLetter))))
                       yield (
                         current.copy(
                           current.translated + " " + translated,

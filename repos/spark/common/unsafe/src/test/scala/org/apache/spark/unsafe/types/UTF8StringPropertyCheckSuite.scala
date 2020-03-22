@@ -89,7 +89,8 @@ class UTF8StringPropertyCheckSuite
   test("substring") {
     forAll { (s: String) =>
       for (start <- 0 to s.length;
-           end <- 0 to s.length; if start <= end) {
+           end <- 0 to s.length;
+           if start <= end) {
         assert(
           toUTF8(s).substring(start, end).toString === s.substring(start, end))
       }
@@ -99,7 +100,8 @@ class UTF8StringPropertyCheckSuite
   test("contains") {
     forAll { (s: String) =>
       for (start <- 0 to s.length;
-           end <- 0 to s.length; if start <= end) {
+           end <- 0 to s.length;
+           if start <= end) {
         val substring = s.substring(start, end)
         assert(toUTF8(s).contains(toUTF8(substring)) === s.contains(substring))
       }
@@ -153,7 +155,8 @@ class UTF8StringPropertyCheckSuite
   test("indexOf") {
     forAll { (s: String) =>
       for (start <- 0 to s.length;
-           end <- 0 to s.length; if start <= end) {
+           end <- 0 to s.length;
+           if start <= end) {
         val substring = s.substring(start, end)
         assert(toUTF8(s).indexOf(toUTF8(substring), 0) === s.indexOf(substring))
       }

@@ -275,9 +275,10 @@ class JobServiceSpec extends TestJobService {
           job <- postJob(simpleJob)
           Some(JString(jobId)) = job.content map (_ \ "id")
           _ <- putState(jobId, startJob())
-          res <- putState(
-            jobId,
-            JObject(JField("state", JString("cancelled")) :: Nil))
+          res <-
+            putState(
+              jobId,
+              JObject(JField("state", JString("cancelled")) :: Nil))
         } yield res
       ).copoint must beLike {
         case HttpResponse(HttpStatus(BadRequest, _), _, _, _) =>
@@ -540,20 +541,22 @@ class JobServiceSpec extends TestJobService {
           jobId <- postJobAndGetId(simpleJob)
           id1 <-
             putStatusAndGetId(jobId, "Nearly there!", 99.999, "%", None, None)
-          id2 <- putStatusAndGetId(
-            jobId,
-            "Very nearly there!",
-            99.99999,
-            "%",
-            None,
-            Some(id1))
-          res <- putStatus(
-            jobId,
-            "Very nearly, almost there!",
-            99.9999999,
-            "%",
-            None,
-            Some(id2))
+          id2 <-
+            putStatusAndGetId(
+              jobId,
+              "Very nearly there!",
+              99.99999,
+              "%",
+              None,
+              Some(id1))
+          res <-
+            putStatus(
+              jobId,
+              "Very nearly, almost there!",
+              99.9999999,
+              "%",
+              None,
+              Some(id2))
         } yield res
       ).copoint must beLike {
         case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
@@ -568,20 +571,22 @@ class JobServiceSpec extends TestJobService {
           jobId <- postJobAndGetId(simpleJob)
           id <-
             putStatusAndGetId(jobId, "Nearly there!", 99.999, "%", None, None)
-          _ <- putStatusAndGetId(
-            jobId,
-            "Very nearly there!",
-            99.99999,
-            "%",
-            None,
-            Some(id))
-          res <- putStatus(
-            jobId,
-            "Very nearly there!",
-            99.99999,
-            "%",
-            None,
-            Some(id))
+          _ <-
+            putStatusAndGetId(
+              jobId,
+              "Very nearly there!",
+              99.99999,
+              "%",
+              None,
+              Some(id))
+          res <-
+            putStatus(
+              jobId,
+              "Very nearly there!",
+              99.99999,
+              "%",
+              None,
+              Some(id))
         } yield res
       ).copoint must beLike {
         case HttpResponse(HttpStatus(Conflict, _), _, _, _) =>
@@ -595,21 +600,24 @@ class JobServiceSpec extends TestJobService {
           for {
             jobId <- postJobAndGetId(simpleJob)
             res1 <- putStatusRaw(jobId, None)(JObject(Nil))
-            res2 <- putStatusRaw(jobId, None)(
-              JObject(
-                JField("message", JString("a")) :: JField(
-                  "unit",
-                  JString("%")) :: Nil))
-            res3 <- putStatusRaw(jobId, None)(
-              JObject(
-                JField("message", JString("a")) :: JField(
-                  "progress",
-                  JNum(99)) :: Nil))
-            res4 <- putStatusRaw(jobId, None)(
-              JObject(
-                JField("progress", JNum(99)) :: JField(
-                  "unit",
-                  JString("%")) :: Nil))
+            res2 <-
+              putStatusRaw(jobId, None)(
+                JObject(
+                  JField("message", JString("a")) :: JField(
+                    "unit",
+                    JString("%")) :: Nil))
+            res3 <-
+              putStatusRaw(jobId, None)(
+                JObject(
+                  JField("message", JString("a")) :: JField(
+                    "progress",
+                    JNum(99)) :: Nil))
+            res4 <-
+              putStatusRaw(jobId, None)(
+                JObject(
+                  JField("progress", JNum(99)) :: JField(
+                    "unit",
+                    JString("%")) :: Nil))
           } yield (res1, res2, res3, res4)
         ).copoint
 

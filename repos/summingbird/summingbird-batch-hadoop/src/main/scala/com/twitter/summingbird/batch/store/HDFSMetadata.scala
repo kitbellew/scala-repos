@@ -115,7 +115,8 @@ class HDFSMetadata(conf: Configuration, rootPath: String) {
     for {
       v <- versions
       hmd = apply(v)
-      it <- hmd.get[T].toOption if fn(it)
+      it <- hmd.get[T].toOption
+      if fn(it)
     } yield (it, hmd)
 
   /**

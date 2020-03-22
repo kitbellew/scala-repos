@@ -115,15 +115,18 @@ class ScalaVariableValidator(
           for (member <- x.members) {
             member match {
               case x: ScVariable =>
-                for (el <- x.declaredElements if el.name == name)
+                for (el <- x.declaredElements
+                     if el.name == name)
                   buf += ((el, messageForMember(el.name)))
               case x: ScValue =>
-                for (el <- x.declaredElements if el.name == name)
+                for (el <- x.declaredElements
+                     if el.name == name)
                   buf += ((el, messageForMember(el.name)))
               case _ =>
             }
           }
-          for (function <- x.functions; if function.name == name) {
+          for (function <- x.functions;
+               if function.name == name) {
             buf += ((x, messageForMember(function.name)))
           }
           x match {
@@ -229,7 +232,8 @@ class ScalaVariableValidator(
         fromDoubles match {
           case x: ScVariableDefinition =>
             val elems = x.declaredElements
-            for (elem <- elems; if elem.name == name)
+            for (elem <- elems;
+                 if elem.name == name)
               buf += (
                 if (x.isLocal)
                   (elem, messageForLocal(elem.name))
@@ -238,7 +242,8 @@ class ScalaVariableValidator(
               )
           case x: ScPatternDefinition =>
             val elems = x.declaredElements
-            for (elem <- elems; if elem.name == name)
+            for (elem <- elems;
+                 if elem.name == name)
               buf += (
                 if (x.isLocal)
                   (elem, messageForLocal(elem.name))

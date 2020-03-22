@@ -66,7 +66,8 @@ private[internal] trait GlbLubs {
       val sym = ts.head.typeSymbol
       require(ts.tail forall (_.typeSymbol == sym), ts)
       for (p <- sym.typeParams;
-           in <- sym.typeParams; if in.info.bounds contains p)
+           in <- sym.typeParams;
+           if in.info.bounds contains p)
         yield p -> in
     }
   }
@@ -494,7 +495,8 @@ private[internal] trait GlbLubs {
           }
           // add a refinement symbol for all non-class members of lubBase
           // which are refined by every type in ts.
-          for (sym <- lubBase.nonPrivateMembers; if !excludeFromLub(sym)) {
+          for (sym <- lubBase.nonPrivateMembers;
+               if !excludeFromLub(sym)) {
             try lubsym(sym) andAlso (
               addMember(lubThisType, lubRefined, _, depth)
             )
@@ -700,7 +702,8 @@ private[internal] trait GlbLubs {
                         TypeBounds.empty
                       else
                         glbBounds(symbounds)
-                    for (t <- symtypes if !isTypeBound(t))
+                    for (t <- symtypes
+                         if !isTypeBound(t))
                       if (result.bounds containsType t)
                         result = t
                       else

@@ -700,8 +700,9 @@ class SparkIMain(
     // enough to just redefine them together but that may not always
     // be what people want so I'm waiting until I can do it better.
     for {
-      name <- req.definedNames filterNot (x =>
-        req.definedNames contains x.companionName)
+      name <-
+        req.definedNames filterNot (x =>
+          req.definedNames contains x.companionName)
       oldReq <- definedNameMap get name.companionName
       newSym <- req.definedSymbols get name
       oldSym <- oldReq.definedSymbols get name.companionName

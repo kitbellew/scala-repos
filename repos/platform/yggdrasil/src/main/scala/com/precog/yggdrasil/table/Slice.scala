@@ -104,10 +104,11 @@ trait Slice {
       val columns: Map[ColumnRef, Column] = {
         val resultColumns =
           for {
-            col <- source.columns collect {
-              case (ref, col) if ref.selector == CPath.Identity =>
-                col
-            }
+            col <-
+              source.columns collect {
+                case (ref, col) if ref.selector == CPath.Identity =>
+                  col
+              }
             result <- f(col)
           } yield result
 
@@ -736,10 +737,11 @@ trait Slice {
       val columns: Map[ColumnRef, Column] = {
         val resultColumns =
           for {
-            col <- source.columns collect {
-              case (ref, col) if ref.selector.hasPrefix(from) =>
-                col
-            }
+            col <-
+              source.columns collect {
+                case (ref, col) if ref.selector.hasPrefix(from) =>
+                  col
+              }
             result <- f(col)
           } yield result
 
@@ -760,14 +762,16 @@ trait Slice {
       val columns: Map[ColumnRef, Column] = {
         val resultColumns =
           for {
-            left <- source.columns collect {
-              case (ref, col) if ref.selector.hasPrefix(froml) =>
-                col
-            }
-            right <- source.columns collect {
-              case (ref, col) if ref.selector.hasPrefix(fromr) =>
-                col
-            }
+            left <-
+              source.columns collect {
+                case (ref, col) if ref.selector.hasPrefix(froml) =>
+                  col
+              }
+            right <-
+              source.columns collect {
+                case (ref, col) if ref.selector.hasPrefix(fromr) =>
+                  col
+              }
             result <- f(left, right)
           } yield result
 

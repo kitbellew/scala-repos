@@ -581,12 +581,14 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     val ret: Box[String] =
       for {
         url <- Box !! LiftRules.getClass.getResource("/" + cn + ".class")
-        newUrl = new java.net.URL(
-          url.toExternalForm.split("!")(0) + "!" + "/META-INF/MANIFEST.MF")
-        str <- tryo(
-          new String(
-            readWholeStream(newUrl.openConnection.getInputStream),
-            "UTF-8"))
+        newUrl =
+          new java.net.URL(
+            url.toExternalForm.split("!")(0) + "!" + "/META-INF/MANIFEST.MF")
+        str <-
+          tryo(
+            new String(
+              readWholeStream(newUrl.openConnection.getInputStream),
+              "UTF-8"))
         ma <- """Implementation-Version: (.*)""".r.findFirstMatchIn(str)
       } yield ma.group(1)
 
@@ -598,12 +600,14 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     val ret: Box[Date] =
       for {
         url <- Box !! LiftRules.getClass.getResource("/" + cn + ".class")
-        newUrl = new java.net.URL(
-          url.toExternalForm.split("!")(0) + "!" + "/META-INF/MANIFEST.MF")
-        str <- tryo(
-          new String(
-            readWholeStream(newUrl.openConnection.getInputStream),
-            "UTF-8"))
+        newUrl =
+          new java.net.URL(
+            url.toExternalForm.split("!")(0) + "!" + "/META-INF/MANIFEST.MF")
+        str <-
+          tryo(
+            new String(
+              readWholeStream(newUrl.openConnection.getInputStream),
+              "UTF-8"))
         ma <- """Built-Time: (.*)""".r.findFirstMatchIn(str)
         asLong <- asLong(ma.group(1))
       } yield new Date(asLong)
@@ -2571,8 +2575,9 @@ abstract class GenericValidator extends XHtmlValidator with Loggable {
       for {
         sc <- schema
         v <- tryo(sc.newValidator)
-        source = new StreamSource(
-          new ByteArrayInputStream(in.toString.getBytes("UTF-8")))
+        source =
+          new StreamSource(
+            new ByteArrayInputStream(in.toString.getBytes("UTF-8")))
       } yield try {
         v.validate(source)
         Nil

@@ -35,12 +35,14 @@ class LogNormalTest
 
   def arbParameter =
     Arbitrary {
-      for (mean <- arbitrary[Double].map {
-             _ % 10.0
-           };
-           std <- arbitrary[Double].map { x =>
-             math.abs(x) % 8.0 + .1
-           })
+      for (mean <-
+             arbitrary[Double].map {
+               _ % 10.0
+             };
+           std <-
+             arbitrary[Double].map { x =>
+               math.abs(x) % 8.0 + .1
+             })
         yield (mean, std)
     }
 
@@ -56,12 +58,14 @@ class LogNormalTest
 
   implicit def arbDistr =
     Arbitrary {
-      for (mean <- arbitrary[Double].map { x =>
-             math.abs(x) % 10.0
-           };
-           std <- arbitrary[Double].map { x =>
-             math.abs(x) % 1.0 + .1
-           })
+      for (mean <-
+             arbitrary[Double].map { x =>
+               math.abs(x) % 10.0
+             };
+           std <-
+             arbitrary[Double].map { x =>
+               math.abs(x) % 1.0 + .1
+             })
         yield new LogNormal(mean, std)
     }
 

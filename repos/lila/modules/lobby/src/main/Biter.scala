@@ -27,10 +27,11 @@ private[lobby] object Biter {
       ownerOption ← hook.userId ?? UserRepo.byId
       creatorColor <-
         assignCreatorColor(ownerOption, userOption, hook.realColor)
-      game = blame(
-        !creatorColor,
-        userOption,
-        blame(creatorColor, ownerOption, makeGame(hook))).start
+      game =
+        blame(
+          !creatorColor,
+          userOption,
+          blame(creatorColor, ownerOption, makeGame(hook))).start
       _ ← GameRepo insertDenormalized game
     } yield JoinHook(uid, hook, game, creatorColor)
 
@@ -40,10 +41,11 @@ private[lobby] object Biter {
       owner ←
         UserRepo byId seek.user.id flatten s"No such user: ${seek.user.id}"
       creatorColor <- assignCreatorColor(owner.some, user.some, seek.realColor)
-      game = blame(
-        !creatorColor,
-        user.some,
-        blame(creatorColor, owner.some, makeGame(seek))).start
+      game =
+        blame(
+          !creatorColor,
+          user.some,
+          blame(creatorColor, owner.some, makeGame(seek))).start
       _ ← GameRepo insertDenormalized game
     } yield JoinSeek(user.id, seek, game, creatorColor)
 

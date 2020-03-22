@@ -636,7 +636,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
     }
 
     // ensure all loaded units are typechecked
-    for (s <- allSources; if !ignoredFiles(s.file);
+    for (s <- allSources;
+         if !ignoredFiles(s.file);
          unit <- getUnit(s)) {
       try {
         if (!unit.isUpToDate)
@@ -1340,7 +1341,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
       for (view <- applicableViews) {
         val vtree = viewApply(view)
         val vpre = stabilizedType(vtree)
-        for (sym <- vtree.tpe.members if sym.isTerm) {
+        for (sym <- vtree.tpe.members
+             if sym.isTerm) {
           addTypeMember(sym, vpre, inherited = false, view.tree.symbol)
         }
       }

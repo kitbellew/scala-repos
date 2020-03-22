@@ -93,7 +93,8 @@ object TestDB {
     val dir = new File(TestkitConfig.testDir)
     if (!dir.isDirectory)
       throw new IOException("Directory " + TestkitConfig.testDir + " not found")
-    for (f <- dir.listFiles if f.getName startsWith prefix) {
+    for (f <- dir.listFiles
+         if f.getName startsWith prefix) {
       val p = TestkitConfig.testDir + "/" + f.getName
       if (deleteRec(f))
         println("[Deleted database file " + p + "]")
@@ -211,15 +212,16 @@ abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
       for {
         tables <- localTables
         sequences <- localSequences
-        _ <- DBIO.seq(
-          (
-            tables.map(t =>
-              sqlu"""drop table if exists #${profile
-                .quoteIdentifier(t)} cascade""") ++
-              sequences.map(t =>
-                sqlu"""drop sequence if exists #${profile
-                  .quoteIdentifier(t)} cascade""")
-          ): _*)
+        _ <-
+          DBIO.seq(
+            (
+              tables.map(t =>
+                sqlu"""drop table if exists #${profile
+                  .quoteIdentifier(t)} cascade""") ++
+                sequences.map(t =>
+                  sqlu"""drop sequence if exists #${profile
+                    .quoteIdentifier(t)} cascade""")
+            ): _*)
       } yield ()
     }
   def assertTablesExist(tables: String*) =

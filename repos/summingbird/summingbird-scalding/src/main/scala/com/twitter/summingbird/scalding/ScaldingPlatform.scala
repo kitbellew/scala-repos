@@ -523,11 +523,12 @@ object Scalding {
                 val res =
                   for {
                     leftAndDelta <- leftPf.join(allDeltas)
-                    joined = InternalService.doIndependentJoin[K, U, V](
-                      leftAndDelta._1,
-                      leftAndDelta._2,
-                      sg,
-                      Some(reducers))
+                    joined =
+                      InternalService.doIndependentJoin[K, U, V](
+                        leftAndDelta._1,
+                        leftAndDelta._2,
+                        sg,
+                        Some(reducers))
                     // read the latest state, which is the (time interval, mode)
                     maxAvailable <- StateWithError.getState
                   } yield Scalding.limitTimes(maxAvailable._1, joined)
@@ -589,14 +590,15 @@ object Scalding {
                             p.map((_, TypedPipe.empty))
                           }
                         ) // no extra producer for store
-                    servOut = flowToPipe.map {
-                      case (lpipe, dpipe) =>
-                        InternalService.loopJoin[Timestamp, K, V, U](
-                          lpipe,
-                          dpipe,
-                          flatMapFn,
-                          Some(reducers))
-                    }
+                    servOut =
+                      flowToPipe.map {
+                        case (lpipe, dpipe) =>
+                          InternalService.loopJoin[Timestamp, K, V, U](
+                            lpipe,
+                            dpipe,
+                            flatMapFn,
+                            Some(reducers))
+                      }
                     // servOut is both the store output and the join output
                     plannedStore = servOut.map(_._1)
                   } yield plannedStore

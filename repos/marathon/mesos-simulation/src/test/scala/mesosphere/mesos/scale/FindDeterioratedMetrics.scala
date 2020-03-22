@@ -25,7 +25,8 @@ object FindDeterioratedMetrics {
     for {
       (name, metricsBase) <- baseLine.all
       metricsSample <- sample.all.get(name).toList
-      metricBase <- metricsBase if metricBase.mean > 0
+      metricBase <- metricsBase
+      if metricBase.mean > 0
       metricSample <- metricsSample.find(_.name == metricBase.name)
       if (metricSample.mean / metricBase.mean) > factor
     } yield metricBase -> metricSample

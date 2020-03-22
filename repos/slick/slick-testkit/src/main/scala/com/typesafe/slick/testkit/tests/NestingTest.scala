@@ -395,11 +395,13 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
       Chord("dim7", ""))
     val minorChords =
       for {
-        chord <- chords if chord.name.startsWith("m7")
+        chord <- chords
+        if chord.name.startsWith("m7")
       } yield (chord.name.getOrElse(""), chord.popularOptions.getOrElse(""))
     val otherChords =
       for {
-        chord <- chords if !chord.name.startsWith("m7")
+        chord <- chords
+        if !chord.name.startsWith("m7")
       } yield (chord.name.getOrElse(""), chord.popularOptions.getOrElse(""))
     DBIO.seq(
       chords.schema.create,

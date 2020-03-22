@@ -249,7 +249,8 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
               info.getStartOffset,
               info.getEndOffset))
           actions ++= (
-            for (pair <- info.quickFixActionRanges if pair != null)
+            for (pair <- info.quickFixActionRanges
+                 if pair != null)
               yield pair.getFirst.getAction
           ))
 

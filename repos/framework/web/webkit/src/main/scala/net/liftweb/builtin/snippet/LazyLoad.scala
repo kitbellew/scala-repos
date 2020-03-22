@@ -71,10 +71,11 @@ object LazyLoad extends DispatchSnippet {
             placeholderTemplate or {
               for {
                 templatePath <- S.attr("template")
-                renderedTemplate <- S.eval(
-                  <lift:embed what={
-                    templatePath
-                  } />)
+                renderedTemplate <-
+                  S.eval(
+                    <lift:embed what={
+                      templatePath
+                    } />)
               } yield {
                 renderedTemplate
               }

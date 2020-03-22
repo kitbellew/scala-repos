@@ -1236,7 +1236,8 @@ object ScalaPsiUtil {
           //Implicit parameters
           expr.findImplicitParameters match {
             case Some(results) =>
-              for (r <- results if r != null)
+              for (r <- results
+                   if r != null)
                 res = res ++ r.importsUsed
             case _ =>
           }

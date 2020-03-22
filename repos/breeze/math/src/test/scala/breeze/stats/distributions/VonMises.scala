@@ -35,12 +35,14 @@ class VonMisesTest
 
   implicit def arbParameter =
     Arbitrary {
-      for (mu <- arbitrary[Double].map {
-             _.abs % (2 * math.Pi)
-           }; // Gamma pdf at 0 not defined when shape == 1
-           k <- arbitrary[Double].map {
-             _.abs % 3.0 + 1.5
-           })
+      for (mu <-
+             arbitrary[Double].map {
+               _.abs % (2 * math.Pi)
+             }; // Gamma pdf at 0 not defined when shape == 1
+           k <-
+             arbitrary[Double].map {
+               _.abs % 3.0 + 1.5
+             })
         yield (mu, k);
     }
 
@@ -57,12 +59,14 @@ class VonMisesTest
 
   implicit def arbDistr =
     Arbitrary {
-      for (shape <- arbitrary[Double].map { x =>
-             math.abs(x) % (2 * math.Pi)
-           };
-           scale <- arbitrary[Double].map { x =>
-             math.abs(x) % 3.0 + 1.1
-           })
+      for (shape <-
+             arbitrary[Double].map { x =>
+               math.abs(x) % (2 * math.Pi)
+             };
+           scale <-
+             arbitrary[Double].map { x =>
+               math.abs(x) % 3.0 + 1.1
+             })
         yield new VonMises(shape, scale);
     }
 

@@ -175,9 +175,10 @@ class PermissionsFinder[M[+_]: Monad](
 
   def findBrowsableChildren(apiKey: APIKey, path: Path): M[Set[Path]] = {
     for {
-      permissions <- apiKeyFinder.findAPIKey(apiKey, None) map { details =>
-        details.toSet.flatMap(_.grants).flatMap(_.permissions)
-      }
+      permissions <-
+        apiKeyFinder.findAPIKey(apiKey, None) map { details =>
+          details.toSet.flatMap(_.grants).flatMap(_.permissions)
+        }
       accountId <- accountFinder.findAccountByAPIKey(apiKey)
       accountPath <- accountId.traverse(accountFinder.findAccountDetailsById)
     } yield {

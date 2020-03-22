@@ -46,7 +46,8 @@ object JoinsUnions extends App {
   val monadicInnerJoin =
     for {
       c <- coffees
-      s <- suppliers if c.supID === s.id
+      s <- suppliers
+      if c.supID === s.id
     } yield (c.name, s.name)
   // compiles to SQL:
   //   select x2."COF_NAME", x3."SUP_NAME"

@@ -611,8 +611,9 @@ object ScalaDocumentationProvider {
     def processProbablyJavaDocCommentWithOwner(owner: PsiDocCommentOwner) {
       owner.getDocComment match {
         case scalaComment: ScDocComment =>
-          for (docTag <- scalaComment.findTagsByName(
-                 Set(PARAM_TAG, TYPE_PARAM_TAG).contains _)) {
+          for (docTag <-
+                 scalaComment
+                   .findTagsByName(Set(PARAM_TAG, TYPE_PARAM_TAG).contains _)) {
             docTag.name match {
               case PARAM_TAG =>
                 registerInheritedParam(inheritedParams, docTag)
@@ -771,7 +772,8 @@ object ScalaDocumentationProvider {
         }
       case scType: ScTypeAlias =>
         val parents = ScalaPsiUtil.superTypeMembers(scType)
-        for (parent <- parents if parent.isInstanceOf[ScTypeAlias]) {
+        for (parent <- parents
+             if parent.isInstanceOf[ScTypeAlias]) {
           processProbablyJavaDocCommentWithOwner(
             parent.asInstanceOf[ScTypeAlias])
         }
@@ -935,7 +937,8 @@ object ScalaDocumentationProvider {
       "implicit",
       "lazy",
       "override")
-    for (modifier <- modifiers if elem.hasModifierPropertyScala(modifier))
+    for (modifier <- modifiers
+         if elem.hasModifierPropertyScala(modifier))
       buffer.append(modifier + " ")
     buffer.toString()
   }

@@ -109,7 +109,8 @@ trait Plugins {
       (phasesSet map (_.phaseName)).toSet)
 
     // Verify required plugins are present.
-    for (req <- settings.require.value; if !(plugs exists (_.name == req)))
+    for (req <- settings.require.value;
+         if !(plugs exists (_.name == req)))
       globalError("Missing required plugin: " + req)
 
     // Verify no non-existent plugin given with -P

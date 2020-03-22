@@ -29,7 +29,10 @@ object Test2 {
   }
 
   def run: Int = {
-    val it = for (s <- ThreadState.values; if s.id != 0) yield s;
+    val it =
+      for (s <- ThreadState.values;
+           if s.id != 0)
+        yield s;
     it.toList.length
   }
 }
@@ -45,7 +48,8 @@ object Test3 {
 
   def run: Int = {
     val it =
-      for (d <- Direction.values; if d.toString() startsWith "N")
+      for (d <- Direction.values;
+           if d.toString() startsWith "N")
         yield d;
     it.toList.length
   }

@@ -201,7 +201,8 @@ abstract class TreeCheckers extends Analyzer {
       movedMsgs.clear()
 
       // duplicate defs
-      for ((sym, defs) <- defSyms; if defs.size > 1) {
+      for ((sym, defs) <- defSyms;
+           if defs.size > 1) {
         errorFn(
           "%s DefTrees with symbol '%s': %s"
             .format(defs.size, ownerstr(sym), defs map beststr mkString ", "))

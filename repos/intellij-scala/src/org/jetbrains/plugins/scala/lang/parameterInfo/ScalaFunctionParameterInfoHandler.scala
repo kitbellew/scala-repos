@@ -807,9 +807,9 @@ class ScalaFunctionParameterInfoHandler
                               new collection.mutable.HashMap[
                                 (String, PsiElement),
                                 ScType]
-                            for (i <- 0 to Math.min(
-                                   tp.length,
-                                   typeArgs.length) - 1) {
+                            for (i <-
+                                   0 to Math
+                                     .min(tp.length, typeArgs.length) - 1) {
                               map += ((tp(i), typeArgs(i).calcType))
                             }
                             val substitutor =
@@ -874,9 +874,9 @@ class ScalaFunctionParameterInfoHandler
                             new collection.mutable.HashMap[
                               (String, PsiElement),
                               ScType]
-                          for (i <- 0 to Math.min(
-                                 tp.length,
-                                 typeArgs.length) - 1) {
+                          for (i <-
+                                 0 to Math
+                                   .min(tp.length, typeArgs.length) - 1) {
                             map += ((tp(i), typeArgs(i).calcType))
                           }
                           val substitutor =
@@ -944,7 +944,8 @@ class ScalaFunctionParameterInfoHandler
         while (el.getParent != args.element)
           el = el.getParent
         var index = 1
-        for (expr <- getActualParameters(args.element) if expr != el)
+        for (expr <- getActualParameters(args.element)
+             if expr != el)
           index += 1
         context.setCurrentParameter(index)
         context.setHighlightedParameter(el)

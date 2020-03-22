@@ -36,7 +36,8 @@ object GettingStartedOverview extends App {
         coffees.schema.create andThen
 //#quick-query
           (
-            for (c <- coffees; if c.price < 10.0)
+            for (c <- coffees;
+                 if c.price < 10.0)
               yield c.name
           ).result
 //#quick-query
@@ -56,7 +57,8 @@ object GettingStartedOverview extends App {
 
         // Your query could look like this:
         (
-          for (c <- coffees; if c.price < limit)
+          for (c <- coffees;
+               if c.price < limit)
             yield c.name
         ).result
 

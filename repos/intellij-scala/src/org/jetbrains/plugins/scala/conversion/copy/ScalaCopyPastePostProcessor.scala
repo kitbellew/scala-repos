@@ -221,7 +221,8 @@ class ScalaCopyPastePostProcessor
     val range = dependency.range.shiftRight(offset)
 
     for (ref <- Option(file.findElementAt(range.getStartOffset));
-         parent <- ref.parent if parent.getTextRange == range)
+         parent <- ref.parent
+         if parent.getTextRange == range)
       yield parent
   }
 

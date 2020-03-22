@@ -358,7 +358,8 @@ class ScalaPatternParameterInfoHandler
           while (el.getParent != args)
             el = el.getParent
           var index = 1
-          for (pattern <- args.patterns if pattern != el)
+          for (pattern <- args.patterns
+               if pattern != el)
             index += 1
           context.setCurrentParameter(index)
           context.setHighlightedParameter(el)

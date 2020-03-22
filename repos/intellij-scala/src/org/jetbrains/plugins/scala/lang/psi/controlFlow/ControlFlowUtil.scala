@@ -28,7 +28,8 @@ object ControlFlowUtil {
         mainSeq --= currentSet
       } else {
         val currentSucc = new ArrayBuffer[Instruction]
-        for (n <- next if !currentSet.contains(n)) {
+        for (n <- next
+             if !currentSet.contains(n)) {
           currentSucc ++= n.succ
           currentSet += n
         }

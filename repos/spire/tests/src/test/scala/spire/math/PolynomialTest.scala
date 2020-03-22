@@ -293,13 +293,15 @@ class PolynomialCheck
   property("x % gcd(x, y) == 0 && y % gcd(x, y) == 0") {
     implicit val arbPolynomial: Arbitrary[Polynomial[Rational]] = Arbitrary(
       for {
-        ts <- Gen.listOf(
-          for {
-            c <- arbitrary[Rational]
-            e <- arbitrary[Int] map { n =>
-              (n % 10).abs
-            }
-          } yield (e, c))
+        ts <-
+          Gen.listOf(
+            for {
+              c <- arbitrary[Rational]
+              e <-
+                arbitrary[Int] map { n =>
+                  (n % 10).abs
+                }
+            } yield (e, c))
       } yield {
         Polynomial(ts.toMap).toDense
       })

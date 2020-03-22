@@ -29,14 +29,16 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
 
   def testBasicUnions = {
     val q1 =
-      for (m <- managers filter {
-             _.department === "IT"
-           })
+      for (m <-
+             managers filter {
+               _.department === "IT"
+             })
         yield (m.id, m.name)
     val q2 =
-      for (e <- employees filter {
-             _.departmentIs("IT")
-           })
+      for (e <-
+             employees filter {
+               _.departmentIs("IT")
+             })
         yield (e.id, e.name)
     val q3 = (q1 union q2).sortBy(_._2.asc)
     val q4 = managers.map(_.id)
@@ -47,39 +49,45 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
     (
       for {
         _ <- (managers.schema ++ employees.schema).create
-        _ <- managers ++= Seq(
-          (1, "Peter", "HR"),
-          (2, "Amy", "IT"),
-          (3, "Steve", "IT"))
-        _ <- employees ++= Seq(
-          (4, "Jennifer", 1),
-          (5, "Tom", 1),
-          (6, "Leonard", 2),
-          (7, "Ben", 2),
-          (8, "Greg", 3))
-        _ <- mark("q1", q1.result)
-          .map(r => r.toSet shouldBe Set((2, "Amy"), (3, "Steve")))
-        _ <- mark("q2", q2.result).map(r =>
-          r.toSet shouldBe Set((7, "Ben"), (8, "Greg"), (6, "Leonard")))
-        _ <- mark("q3", q3.result).map(
-          _ shouldBe List(
-            (2, "Amy"),
-            (7, "Ben"),
-            (8, "Greg"),
-            (6, "Leonard"),
-            (3, "Steve")))
+        _ <-
+          managers ++= Seq(
+            (1, "Peter", "HR"),
+            (2, "Amy", "IT"),
+            (3, "Steve", "IT"))
+        _ <-
+          employees ++= Seq(
+            (4, "Jennifer", 1),
+            (5, "Tom", 1),
+            (6, "Leonard", 2),
+            (7, "Ben", 2),
+            (8, "Greg", 3))
+        _ <-
+          mark("q1", q1.result)
+            .map(r => r.toSet shouldBe Set((2, "Amy"), (3, "Steve")))
+        _ <-
+          mark("q2", q2.result).map(r =>
+            r.toSet shouldBe Set((7, "Ben"), (8, "Greg"), (6, "Leonard")))
+        _ <-
+          mark("q3", q3.result).map(
+            _ shouldBe List(
+              (2, "Amy"),
+              (7, "Ben"),
+              (8, "Greg"),
+              (6, "Leonard"),
+              (3, "Steve")))
         _ <- mark("q4b", q4b.result).map(r => r.toSet shouldBe Set(1, 2, 3))
         _ <- mark("q4c", q4c.result).map(r => r.toSet shouldBe Set(1, 2, 3))
-        _ <- mark("q5", q5.result).map(r =>
-          r.toSet shouldBe Set(
-            (7, 7),
-            (6, 6),
-            (2, 0),
-            (4, 4),
-            (3, 0),
-            (8, 8),
-            (5, 5),
-            (1, 0)))
+        _ <-
+          mark("q5", q5.result).map(r =>
+            r.toSet shouldBe Set(
+              (7, 7),
+              (6, 6),
+              (2, 0),
+              (4, 4),
+              (3, 0),
+              (8, 8),
+              (5, 5),
+              (1, 0)))
       } yield ()
     ) andFinally (managers.schema ++ employees.schema).drop
   }
@@ -116,12 +124,14 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
     val q1 =
       for {
         coffee <- coffees
-        tea <- teas if coffee.pkCup === tea.pkCup
+        tea <- teas
+        if coffee.pkCup === tea.pkCup
       } yield (coffee.pk, coffee.pkCup)
     val q2 =
       for {
         coffee <- coffees
-        tea <- teas if coffee.pkCup === tea.pkCup
+        tea <- teas
+        if coffee.pkCup === tea.pkCup
       } yield (tea.pk, tea.pkCup)
     val q3 = q1 union q2
 
@@ -173,7 +183,8 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
       (
         for {
           d <- TableQuery[Deliveries]
-          m <- TableQuery[Messages] if d.messageId === m.id
+          m <- TableQuery[Messages]
+          if d.messageId === m.id
         } yield (d, m)
       ).filter {
         case (d, m) =>
@@ -185,7 +196,8 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
       (
         for {
           d <- TableQuery[Deliveries]
-          m <- TableQuery[Messages] if d.messageId === m.id
+          m <- TableQuery[Messages]
+          if d.messageId === m.id
         } yield (d, m)
       ).filter {
         case (d, m) =>

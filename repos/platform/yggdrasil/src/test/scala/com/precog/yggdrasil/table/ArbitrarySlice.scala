@@ -109,13 +109,14 @@ trait ArbitrarySlice {
     for {
       ids <-
         listOfN(identities, listOfN(sz, arbitrary[Long]).map(_.sorted.toArray))
-      data <- sequence(
-        refs
-          .toList
-          .map { cr =>
-            genColumn(cr, sz).map(col => (cr, col))
-          },
-        value(Nil))
+      data <-
+        sequence(
+          refs
+            .toList
+            .map { cr =>
+              genColumn(cr, sz).map(col => (cr, col))
+            },
+          value(Nil))
     } yield {
       new Slice {
         val size = sz

@@ -173,7 +173,8 @@ trait ItemsList[T <: Mapper[T]] {
     current = current.filterNot(successRemove.contains)
     removed = failRemove
 
-    for (c <- current if c.validate.isEmpty)
+    for (c <- current
+         if c.validate.isEmpty)
       c.save
 
     current ++= successAdd

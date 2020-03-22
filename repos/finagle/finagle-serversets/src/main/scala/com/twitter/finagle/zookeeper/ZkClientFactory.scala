@@ -22,12 +22,13 @@ private[finagle] class ZooKeeperHealthHandler extends Watcher {
   def process(evt: WatchedEvent) =
     for {
       permit <- mu.acquire()
-      () <- evt.getState match {
-        case KeeperState.SyncConnected =>
-          pulse ! Healthy
-        case _ =>
-          pulse ! Unhealthy
-      }
+      () <-
+        evt.getState match {
+          case KeeperState.SyncConnected =>
+            pulse ! Healthy
+          case _ =>
+            pulse ! Unhealthy
+        }
     } permit.release()
 }
 

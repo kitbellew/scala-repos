@@ -5686,7 +5686,8 @@ trait Types
 
   def invalidateTreeTpeCaches(tree: Tree, updatedSyms: List[Symbol]) =
     if (updatedSyms.nonEmpty)
-      for (t <- tree if t.tpe != null)
+      for (t <- tree
+           if t.tpe != null)
         for (tp <- t.tpe) {
           invalidateCaches(tp, updatedSyms)
         }

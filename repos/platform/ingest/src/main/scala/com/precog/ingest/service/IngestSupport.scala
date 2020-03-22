@@ -60,7 +60,8 @@ trait IngestSupport extends Logging {
       for {
         paramIds <- request.parameters.get('ownerAccountId)
         ids = paramIds.split("""\s*,\s*""")
-        auths <- Authorities.ifPresent(ids.toSet) if ids.nonEmpty
+        auths <- Authorities.ifPresent(ids.toSet)
+        if ids.nonEmpty
       } yield auths
 
     requestAuthorities map { authorities =>

@@ -165,7 +165,8 @@ class LogManager(
       val jobsForDir =
         for {
           dirContent <- Option(dir.listFiles).toList
-          logDir <- dirContent if logDir.isDirectory
+          logDir <- dirContent
+          if logDir.isDirectory
         } yield {
           CoreUtils.runnable {
             debug("Loading log '" + logDir.getName + "'")
@@ -504,7 +505,8 @@ class LogManager(
     debug("Beginning log cleanup...")
     var total = 0
     val startMs = time.milliseconds
-    for (log <- allLogs; if !log.config.compact) {
+    for (log <- allLogs;
+         if !log.config.compact) {
       debug("Garbage collecting '" + log.name + "'")
       total += cleanupExpiredSegments(log) + cleanupSegmentsToMaintainSize(log)
     }

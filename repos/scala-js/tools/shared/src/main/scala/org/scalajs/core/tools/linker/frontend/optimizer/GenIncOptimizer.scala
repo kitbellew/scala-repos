@@ -545,7 +545,8 @@ abstract class GenIncOptimizer private[optimizer] (
 
       // Inlineable class
       if (updateIsInlineable(linkedClass)) {
-        for (method <- methods.values; if isConstructorName(method.encodedName))
+        for (method <- methods.values;
+             if isConstructorName(method.encodedName))
           myInterface.tagStaticCallersOf(method.encodedName)
       }
 

@@ -1550,7 +1550,8 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
     override def split = {
       val pits = pit.splitWithSignalling
       val sizes = pits.scanLeft(0)(_ + _.remaining)
-      for ((p, untilp) <- pits zip sizes; if untilp <= n)
+      for ((p, untilp) <- pits zip sizes;
+           if untilp <= n)
         yield {
           if (untilp + p.remaining < n)
             new Take(p.remaining, cbf, p)
@@ -1577,7 +1578,8 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
     override def split = {
       val pits = pit.splitWithSignalling
       val sizes = pits.scanLeft(0)(_ + _.remaining)
-      for ((p, withp) <- pits zip sizes.tail; if withp >= n)
+      for ((p, withp) <- pits zip sizes.tail;
+           if withp >= n)
         yield {
           if (withp - p.remaining > n)
             new Drop(0, cbf, p)

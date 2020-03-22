@@ -47,12 +47,13 @@ class ProactiveClosureSerializationSuite
   // iterating over a map from transformation names to functions that perform that
   // transformation on a given RDD, creating one test case for each
 
-  for (transformation <- Map(
-         "map" -> xmap _,
-         "flatMap" -> xflatMap _,
-         "filter" -> xfilter _,
-         "mapPartitions" -> xmapPartitions _,
-         "mapPartitionsWithIndex" -> xmapPartitionsWithIndex _)) {
+  for (transformation <-
+         Map(
+           "map" -> xmap _,
+           "flatMap" -> xflatMap _,
+           "filter" -> xfilter _,
+           "mapPartitions" -> xmapPartitions _,
+           "mapPartitionsWithIndex" -> xmapPartitionsWithIndex _)) {
     val (name, xf) = transformation
 
     test(s"$name transformations throw proactive serialization exceptions") {

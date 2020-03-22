@@ -320,9 +320,10 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
     def compressionCodecFor(path: String, codecName: String): String = {
       val codecs =
         for {
-          footer <- readAllFootersWithoutSummaryFiles(
-            new Path(path),
-            hadoopConfiguration)
+          footer <-
+            readAllFootersWithoutSummaryFiles(
+              new Path(path),
+              hadoopConfiguration)
           block <- footer.getParquetMetadata.getBlocks.asScala
           column <- block.getColumns.asScala
         } yield column.getCodec.name()

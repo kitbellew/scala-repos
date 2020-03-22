@@ -63,18 +63,19 @@ class ParamsSuite extends SparkFunSuite {
 
     { // FloatParam
       val param = new FloatParam(dummy, "name", "doc")
-      for (value <- Seq(
-             Float.NaN,
-             Float.NegativeInfinity,
-             Float.MinValue,
-             -1.0f,
-             -0.5f,
-             0.0f,
-             Float.MinPositiveValue,
-             0.5f,
-             1.0f,
-             Float.MaxValue,
-             Float.PositiveInfinity)) {
+      for (value <-
+             Seq(
+               Float.NaN,
+               Float.NegativeInfinity,
+               Float.MinValue,
+               -1.0f,
+               -0.5f,
+               0.0f,
+               Float.MinPositiveValue,
+               0.5f,
+               1.0f,
+               Float.MaxValue,
+               Float.PositiveInfinity)) {
         val json = param.jsonEncode(value)
         val decoded = param.jsonDecode(json)
         if (value.isNaN) {
@@ -87,18 +88,19 @@ class ParamsSuite extends SparkFunSuite {
 
     { // DoubleParam
       val param = new DoubleParam(dummy, "name", "doc")
-      for (value <- Seq(
-             Double.NaN,
-             Double.NegativeInfinity,
-             Double.MinValue,
-             -1.0,
-             -0.5,
-             0.0,
-             Double.MinPositiveValue,
-             0.5,
-             1.0,
-             Double.MaxValue,
-             Double.PositiveInfinity)) {
+      for (value <-
+             Seq(
+               Double.NaN,
+               Double.NegativeInfinity,
+               Double.MinValue,
+               -1.0,
+               -0.5,
+               0.0,
+               Double.MinPositiveValue,
+               0.5,
+               1.0,
+               Double.MaxValue,
+               Double.PositiveInfinity)) {
         val json = param.jsonEncode(value)
         val decoded = param.jsonDecode(json)
         if (value.isNaN) {

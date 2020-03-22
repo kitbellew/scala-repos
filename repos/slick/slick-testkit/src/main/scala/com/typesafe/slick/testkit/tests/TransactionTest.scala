@@ -78,21 +78,29 @@ class TransactionTest extends AsyncTest[JdbcTestDB] {
         (
           for {
             ti1 <- getTI
-            _ <- (
-              for {
-                _ <- getTI.map(
-                  _ should (_ >= TransactionIsolation.ReadUncommitted.intValue))
-                _ <-
-                  getTI
-                    .withTransactionIsolation(TransactionIsolation.Serializable)
-                    .map(
+            _ <-
+              (
+                for {
+                  _ <-
+                    getTI.map(
                       _ should (
-                        _ >= TransactionIsolation.Serializable.intValue
+                        _ >= TransactionIsolation.ReadUncommitted.intValue
                       ))
-                _ <- getTI.map(
-                  _ should (_ >= TransactionIsolation.ReadUncommitted.intValue))
-              } yield ()
-            ).withTransactionIsolation(TransactionIsolation.ReadUncommitted)
+                  _ <-
+                    getTI
+                      .withTransactionIsolation(
+                        TransactionIsolation.Serializable)
+                      .map(
+                        _ should (
+                          _ >= TransactionIsolation.Serializable.intValue
+                        ))
+                  _ <-
+                    getTI.map(
+                      _ should (
+                        _ >= TransactionIsolation.ReadUncommitted.intValue
+                      ))
+                } yield ()
+              ).withTransactionIsolation(TransactionIsolation.ReadUncommitted)
             _ <- getTI.map(_ shouldBe ti1)
           } yield ()
         ).withPinnedSession

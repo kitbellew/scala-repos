@@ -628,8 +628,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
                     case _ =>
                       for {
                         clazz <- ScalaPsiUtil.drvTemplate(this)
-                        qualifier <- convertQualifier(
-                          clazz.getType(TypingContext.empty))
+                        qualifier <-
+                          convertQualifier(clazz.getType(TypingContext.empty))
                       } yield qualifier
                   }
               }

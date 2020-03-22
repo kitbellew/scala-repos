@@ -205,7 +205,8 @@ object DependencyResolver {
     val conflicts =
       for {
         (_, deps) <- byRelPath
-        x <- deps if deps.exists(y => hasConflict(x, y))
+        x <- deps
+        if deps.exists(y => hasConflict(x, y))
       } yield x
 
     if (conflicts.nonEmpty)

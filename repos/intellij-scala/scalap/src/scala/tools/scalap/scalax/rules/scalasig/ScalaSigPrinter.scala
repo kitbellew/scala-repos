@@ -402,7 +402,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     val stream = new PrintStream(baos)
     val printer = new ScalaSigPrinter(stream, verbosity)
     var break = false
-    for (child <- c.children if !break) {
+    for (child <- c.children
+         if !break) {
       child match {
         case ms: MethodSymbol if ms.isParamAccessor && msymb.name == ms.name =>
           if (!ms.isPrivate || !ms.isLocal) {

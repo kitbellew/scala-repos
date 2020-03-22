@@ -177,11 +177,12 @@ class GradientBoostedTreesSuite
 
   test(
     "SPARK-5496: BoostingStrategy.defaultParams should recognize Classification") {
-    for (algo <- Seq(
-           "classification",
-           "Classification",
-           "regression",
-           "Regression")) {
+    for (algo <-
+           Seq(
+             "classification",
+             "Classification",
+             "regression",
+             "Regression")) {
       BoostingStrategy.defaultParams(algo)
     }
   }

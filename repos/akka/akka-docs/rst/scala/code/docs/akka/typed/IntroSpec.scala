@@ -92,10 +92,11 @@ class IntroSpec extends TypedSpec {
     val future: Future[Greeted] = system ? (Greet("world", _))
 
     for {
-      greeting <- future.recover {
-        case ex =>
-          ex.getMessage
-      }
+      greeting <-
+        future.recover {
+          case ex =>
+            ex.getMessage
+        }
       done <- {
         println(s"result: $greeting");
         system.terminate()

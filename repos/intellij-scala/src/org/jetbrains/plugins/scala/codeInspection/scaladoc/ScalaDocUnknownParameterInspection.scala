@@ -168,10 +168,11 @@ class ScalaDocUnknownParameterInspection extends LocalInspectionTool {
                     isOnTheFly))
             }
           case _ => //we can't have params/tparams here
-            for (tag <- s.findTagsByName(
-                   Set(
-                     MyScaladocParsing.PARAM_TAG,
-                     MyScaladocParsing.TYPE_PARAM_TAG).contains _)
+            for (tag <-
+                   s.findTagsByName(
+                     Set(
+                       MyScaladocParsing.PARAM_TAG,
+                       MyScaladocParsing.TYPE_PARAM_TAG).contains _)
                  if tag.isInstanceOf[ScDocTag]) {
               holder.registerProblem(
                 holder

@@ -301,17 +301,18 @@ object IO extends IOInstances {
     def after(hsIORef: IORef[List[RefCountedFinalizer]]) =
       for {
         hs <- hsIORef.read
-        _ <- hs.foldRight[IO[Unit]](IO.ioUnit) {
-          case (r, o) =>
-            for {
-              refCnt <- r.refcount.mod(_ - 1)
-              _ <-
-                if (refCnt == 0)
-                  r.finalizer
-                else
-                  IO.ioUnit
-            } yield ()
-        }
+        _ <-
+          hs.foldRight[IO[Unit]](IO.ioUnit) {
+            case (r, o) =>
+              for {
+                refCnt <- r.refcount.mod(_ - 1)
+                _ <-
+                  if (refCnt == 0)
+                    r.finalizer
+                  else
+                    IO.ioUnit
+              } yield ()
+          }
       } yield ()
     newIORef(List[RefCountedFinalizer]())
       .bracketIO(after)(s => r.apply.value.run(s))

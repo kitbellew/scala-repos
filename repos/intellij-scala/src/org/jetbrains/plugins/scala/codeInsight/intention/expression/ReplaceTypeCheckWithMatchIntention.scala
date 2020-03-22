@@ -35,8 +35,9 @@ class ReplaceTypeCheckWithMatchIntention extends PsiElementBaseIntentionAction {
       editor: Editor,
       element: PsiElement): Boolean = {
     for {
-      IsInstanceOfCall(iioCall) <- Option(
-        PsiTreeUtil.getParentOfType(element, classOf[ScGenericCall], false))
+      IsInstanceOfCall(iioCall) <-
+        Option(
+          PsiTreeUtil.getParentOfType(element, classOf[ScGenericCall], false))
       ifStmt <- Option(PsiTreeUtil.getParentOfType(iioCall, classOf[ScIfStmt]))
       condition <- ifStmt.condition
       if findIsInstanceOfCalls(condition, onlyFirst = false) contains iioCall
@@ -52,8 +53,9 @@ class ReplaceTypeCheckWithMatchIntention extends PsiElementBaseIntentionAction {
 
   def invoke(project: Project, editor: Editor, element: PsiElement) {
     for {
-      IsInstanceOfCall(iioCall) <- Option(
-        PsiTreeUtil.getParentOfType(element, classOf[ScGenericCall], false))
+      IsInstanceOfCall(iioCall) <-
+        Option(
+          PsiTreeUtil.getParentOfType(element, classOf[ScGenericCall], false))
       ifStmt <- Option(PsiTreeUtil.getParentOfType(iioCall, classOf[ScIfStmt]))
       condition <- ifStmt.condition
       if findIsInstanceOfCalls(condition, onlyFirst = false) contains iioCall

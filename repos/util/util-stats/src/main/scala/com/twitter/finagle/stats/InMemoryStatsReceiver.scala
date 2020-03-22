@@ -117,7 +117,8 @@ class InMemoryStatsReceiver extends StatsReceiver {
       p.printf("%s %d\n", k.mkString("/"), v: java.lang.Integer)
     for ((k, g) <- gauges)
       p.printf("%s %f\n", k.mkString("/"), g(): java.lang.Float)
-    for ((k, s) <- stats if s.size > 0)
+    for ((k, s) <- stats
+         if s.size > 0)
       p.printf("%s %f\n", k.mkString("/"), (s.sum / s.size): java.lang.Float)
   }
 

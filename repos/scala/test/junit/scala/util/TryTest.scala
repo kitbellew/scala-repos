@@ -10,21 +10,29 @@ import org.junit.Assert._
 class TryTest {
   @Test
   def withFilterFail(): Unit = {
-    val fail = for (x <- util.Try(1) if x > 1) yield x
+    val fail =
+      for (x <- util.Try(1)
+           if x > 1)
+        yield x
     assert(fail.isFailure)
   }
 
   @Test
   def withFilterSuccess(): Unit = {
-    val success1 = for (x <- util.Try(1) if x >= 1) yield x
+    val success1 =
+      for (x <- util.Try(1)
+           if x >= 1)
+        yield x
     assertEquals(success1, util.Success(1))
   }
 
   @Test
   def withFilterFlatMap(): Unit = {
     val successFlatMap =
-      for (x <- util.Try(1) if x >= 1;
-           y <- util.Try(2) if x < y)
+      for (x <- util.Try(1)
+           if x >= 1;
+           y <- util.Try(2)
+           if x < y)
         yield x
     assertEquals(successFlatMap, util.Success(1))
   }
@@ -32,7 +40,8 @@ class TryTest {
   @Test
   def withFilterForeach(): Unit = {
     var ok = false
-    for (x <- util.Try(1) if x == 1)
+    for (x <- util.Try(1)
+         if x == 1)
       ok = x == 1
     assert(ok)
   }

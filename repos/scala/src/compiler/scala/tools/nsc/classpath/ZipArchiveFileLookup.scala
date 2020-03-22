@@ -30,14 +30,16 @@ trait ZipArchiveFileLookup[FileEntryType <: ClassRepClassPathEntry]
     val prefix = PackageNameUtils.packagePrefix(inPackage)
     for {
       dirEntry <- findDirEntry(inPackage).toSeq
-      entry <- dirEntry.iterator if entry.isPackage
+      entry <- dirEntry.iterator
+      if entry.isPackage
     } yield PackageEntryImpl(prefix + entry.name)
   }
 
   protected def files(inPackage: String): Seq[FileEntryType] =
     for {
       dirEntry <- findDirEntry(inPackage).toSeq
-      entry <- dirEntry.iterator if isRequiredFileType(entry)
+      entry <- dirEntry.iterator
+      if isRequiredFileType(entry)
     } yield createFileEntry(entry)
 
   override private[nsc] def list(inPackage: String): FlatClassPathEntries = {

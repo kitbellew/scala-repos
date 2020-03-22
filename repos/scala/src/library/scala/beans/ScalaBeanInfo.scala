@@ -25,7 +25,8 @@ abstract class ScalaBeanInfo(
 
   private val pd = new Array[PropertyDescriptor](props.length / 3)
   private val md =
-    for (m <- clazz.getMethods if methods.exists(_ == m.getName))
+    for (m <- clazz.getMethods
+         if methods.exists(_ == m.getName))
       yield new MethodDescriptor(m)
 
   init()

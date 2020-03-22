@@ -50,11 +50,12 @@ class ScalaMoveDirectoryWithClassesHelper
 
           for {
             aClass <- classes
-            usage <- MoveClassesOrPackagesUtil.findUsages(
-              aClass,
-              searchInComments,
-              searchInNonJavaFiles,
-              aClass.name)
+            usage <-
+              MoveClassesOrPackagesUtil.findUsages(
+                aClass,
+                searchInComments,
+                searchInNonJavaFiles,
+                aClass.name)
           } {
             usages.add(usage)
           }

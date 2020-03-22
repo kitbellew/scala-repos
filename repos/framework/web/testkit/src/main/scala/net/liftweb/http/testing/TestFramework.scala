@@ -962,24 +962,26 @@ abstract class BaseResponse(
     for {
       b <- body
       nodeSeq <- PCDataXmlParser(new java.io.ByteArrayInputStream(b))
-      xml <- nodeSeq.toList match {
-        case (x: Elem) :: _ =>
-          Full(x)
-        case _ =>
-          Empty
-      }
+      xml <-
+        nodeSeq.toList match {
+          case (x: Elem) :: _ =>
+            Full(x)
+          case _ =>
+            Empty
+        }
     } yield xml
 
   lazy val html5AsXml: Box[Elem] =
     for {
       b <- body
       nodeSeq <- Html5.parse(new java.io.ByteArrayInputStream(b))
-      xml <- nodeSeq.toList match {
-        case (x: Elem) :: _ =>
-          Full(x)
-        case _ =>
-          Empty
-      }
+      xml <-
+        nodeSeq.toList match {
+          case (x: Elem) :: _ =>
+            Full(x)
+          case _ =>
+            Empty
+        }
     } yield xml
 
   /**

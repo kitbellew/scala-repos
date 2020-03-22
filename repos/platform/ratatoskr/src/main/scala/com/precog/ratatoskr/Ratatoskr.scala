@@ -1257,19 +1257,20 @@ object ImportTools extends Command with Logging {
       for {
         rootKey <- apiKeyManager.rootAPIKey
         rootGrantId <- apiKeyManager.rootGrantId
-        _ <- apiKeyManager.populateAPIKey(
-          None,
-          None,
-          rootKey,
-          key,
-          Set(rootGrantId)) onComplete {
-          case Left(error) =>
-            logger.error(
-              "Could not add grant " + rootGrantId + " to apiKey " + key,
-              error)
-          case Right(success) =>
-            logger.info("Updated API key record: " + success)
-        }
+        _ <-
+          apiKeyManager.populateAPIKey(
+            None,
+            None,
+            rootKey,
+            key,
+            Set(rootGrantId)) onComplete {
+            case Left(error) =>
+              logger.error(
+                "Could not add grant " + rootGrantId + " to apiKey " + key,
+                error)
+            case Right(success) =>
+              logger.info("Updated API key record: " + success)
+          }
       } yield key
 
     def logGrants(key: APIKey) =

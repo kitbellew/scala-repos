@@ -197,11 +197,12 @@ class AlgebraicTest extends SpireProperties {
   def genBigInt: Gen[BigInt] =
     for {
       bytes <- Gen.listOf(arbitrary[Byte])
-      signum <- arbitrary[Boolean].map(n =>
-        if (n)
-          -1
-        else
-          1)
+      signum <-
+        arbitrary[Boolean].map(n =>
+          if (n)
+            -1
+          else
+            1)
     } yield BigInt(
       signum,
       if (bytes.isEmpty)

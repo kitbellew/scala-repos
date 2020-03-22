@@ -238,11 +238,13 @@ abstract class MongoAccountManager(
     findAccountById(accountId).flatMap {
       case ot @ Some(account) =>
         for {
-          _ <- database(
-            insert(account.serialize.asInstanceOf[JObject])
-              .into(settings.deletedAccounts))
-          _ <- database(
-            remove.from(settings.accounts).where("accountId" === accountId))
+          _ <-
+            database(
+              insert(account.serialize.asInstanceOf[JObject])
+                .into(settings.deletedAccounts))
+          _ <-
+            database(
+              remove.from(settings.accounts).where("accountId" === accountId))
         } yield {
           ot
         }

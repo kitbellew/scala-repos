@@ -165,12 +165,13 @@ object MediaRangeSpec extends Specification {
     "gracefully handle invalid characters in tokens" in {
       for {
         c <- "\u0000\u007F (){}\\\"".toSeq
-        format <- Seq(
-          "fo%so/bar, text/plain;charset=utf-8",
-          "foo/ba%sr, text/plain;charset=utf-8",
-          "text/plain;pa%sram;charset=utf-8",
-          "text/plain;param=va%slue;charset=utf-8"
-        )
+        format <-
+          Seq(
+            "fo%so/bar, text/plain;charset=utf-8",
+            "foo/ba%sr, text/plain;charset=utf-8",
+            "text/plain;pa%sram;charset=utf-8",
+            "text/plain;param=va%slue;charset=utf-8"
+          )
       } yield {
         // Use URL encoder so we can see which ctl character it's using
         def description =

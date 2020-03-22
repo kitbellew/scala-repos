@@ -18,7 +18,8 @@ object EndpointsHelper {
     val tasksMap = taskTracker.tasksByAppSync
 
     val sb = new StringBuilder
-    for (app <- apps if app.ipAddress.isEmpty) {
+    for (app <- apps
+         if app.ipAddress.isEmpty) {
       val tasks = tasksMap.marathonAppTasks(app.id)
       val cleanId = app.id.safePath
 

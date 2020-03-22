@@ -28,7 +28,8 @@ object ScalaEditorFileSwapper {
       .instance(project)
       .getCachedClasses(psiFile.getResolveScope, fqn)
     var clazz: PsiClass = null
-    for (cl <- classes if clazz == null) {
+    for (cl <- classes
+         if clazz == null) {
       if (cl.getContainingFile == psiFile)
         clazz = cl
     }

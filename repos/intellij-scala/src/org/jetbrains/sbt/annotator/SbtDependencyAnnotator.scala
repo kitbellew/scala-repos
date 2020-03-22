@@ -75,8 +75,8 @@ class SbtDependencyAnnotator extends Annotator {
 
     for {
       literal @ ScLiteral(_) <- Option(element)
-      parentExpr @ ScInfixExpr(leftPart, operation, _) <- Option(
-        literal.getParent)
+      parentExpr @ ScInfixExpr(leftPart, operation, _) <-
+        Option(literal.getParent)
       if isOneOrTwoPercents(operation)
     } yield leftPart match {
       case _: ScLiteral =>

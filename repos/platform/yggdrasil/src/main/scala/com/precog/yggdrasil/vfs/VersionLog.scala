@@ -69,17 +69,18 @@ object VersionLog {
           for {
             jv <-
               JParser.parseFromFile(currentFile).leftMap(ioError).disjunction
-            version <- jv match {
-              case JString(`unsetSentinel`) =>
-                \/.left(
-                  NotFound(
-                    "No current data for the path %s exists; it has been archived."
-                      .format(dir)))
-              case other =>
-                other.validated[VersionEntry].disjunction leftMap { err =>
-                  Corrupt(err.message)
-                }
-            }
+            version <-
+              jv match {
+                case JString(`unsetSentinel`) =>
+                  \/.left(
+                    NotFound(
+                      "No current data for the path %s exists; it has been archived."
+                        .format(dir)))
+                case other =>
+                  other.validated[VersionEntry].disjunction leftMap { err =>
+                    Corrupt(err.message)
+                  }
+              }
           } yield version
         } else {
           \/.left(NotFound("No data found for path %s.".format(dir)))
@@ -110,12 +111,13 @@ object VersionLog {
         if (headFile.exists) {
           for {
             jv <- JParser.parseFromFile(headFile).leftMap(Error.thrown)
-            version <- jv match {
-              case JString(`unsetSentinel`) =>
-                Success(None)
-              case other =>
-                other.validated[VersionEntry].map(Some(_))
-            }
+            version <-
+              jv match {
+                case JString(`unsetSentinel`) =>
+                  Success(None)
+                case other =>
+                  other.validated[VersionEntry].map(Some(_))
+              }
           } yield version
         } else {
           Success(None)

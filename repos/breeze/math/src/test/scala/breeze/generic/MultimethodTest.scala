@@ -59,7 +59,8 @@ class MultimethodTest extends FunSuite with Checkers {
       'Woo
     })
     for (a <- all;
-         b <- all if (a, b) != (dv, dv)) {
+         b <- all
+         if (a, b) != (dv, dv)) {
       intercept[UnsupportedOperationException] {
         mm(a, b)
         assert(false, "Shouldn't be here!")

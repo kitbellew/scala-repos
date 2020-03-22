@@ -97,7 +97,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     // `callsties` map while iterating it.
     val toRewrite = mutable.ArrayBuffer.empty[Callsite]
     for (css <- callsites.valuesIterator;
-         cs <- css.valuesIterator if doRewriteTraitCallsite(cs))
+         cs <- css.valuesIterator
+         if doRewriteTraitCallsite(cs))
       toRewrite += cs
     toRewrite foreach rewriteFinalTraitMethodInvocation
   }
@@ -542,8 +543,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     // large methods are not added to the call graph.
     val analyzer = new AsmAnalyzer(callee, calleeDeclarationClass.internalName)
 
-    for (originalReturn <- callee.instructions.iterator().asScala if isReturn(
-           originalReturn)) {
+    for (originalReturn <- callee.instructions.iterator().asScala
+         if isReturn(originalReturn)) {
       val frame = analyzer.frameAt(originalReturn)
       var stackHeight = frame.getStackSize
 
@@ -966,16 +967,18 @@ class Inliner[BT <: BTypes](val btypes: BT) {
         case fi: FieldInsnNode =>
           val fieldRefClass = classBTypeFromParsedClassfile(fi.owner)
           for {
-            (fieldNode, fieldDeclClassNode) <- byteCodeRepository.fieldNode(
-              fieldRefClass.internalName,
-              fi.name,
-              fi.desc): Either[OptimizerWarning, (FieldNode, InternalName)]
+            (fieldNode, fieldDeclClassNode) <-
+              byteCodeRepository.fieldNode(
+                fieldRefClass.internalName,
+                fi.name,
+                fi.desc): Either[OptimizerWarning, (FieldNode, InternalName)]
             fieldDeclClass = classBTypeFromParsedClassfile(fieldDeclClassNode)
-            res <- memberIsAccessible(
-              fieldNode.access,
-              fieldDeclClass,
-              fieldRefClass,
-              destinationClass)
+            res <-
+              memberIsAccessible(
+                fieldNode.access,
+                fieldDeclClass,
+                fieldRefClass,
+                destinationClass)
           } yield {
             res
           }
@@ -1013,13 +1016,14 @@ class Inliner[BT <: BTypes](val btypes: BT) {
                   methodRefClass.internalName,
                   mi.name,
                   mi.desc): Either[OptimizerWarning, (MethodNode, InternalName)]
-              methodDeclClass = classBTypeFromParsedClassfile(
-                methodDeclClassNode)
-              res <- canInlineCall(
-                mi.getOpcode,
-                methodNode.access,
-                methodDeclClass,
-                methodRefClass)
+              methodDeclClass =
+                classBTypeFromParsedClassfile(methodDeclClassNode)
+              res <-
+                canInlineCall(
+                  mi.getOpcode,
+                  methodNode.access,
+                  methodDeclClass,
+                  methodRefClass)
             } yield {
               res
             }
@@ -1080,17 +1084,20 @@ class Inliner[BT <: BTypes](val btypes: BT) {
           val methodRefClass = classBTypeFromParsedClassfile(
             implMethod.getOwner)
           for {
-            (methodNode, methodDeclClassNode) <- byteCodeRepository.methodNode(
-              methodRefClass.internalName,
-              implMethod.getName,
-              implMethod
-                .getDesc): Either[OptimizerWarning, (MethodNode, InternalName)]
+            (methodNode, methodDeclClassNode) <-
+              byteCodeRepository.methodNode(
+                methodRefClass.internalName,
+                implMethod.getName,
+                implMethod.getDesc): Either[
+                OptimizerWarning,
+                (MethodNode, InternalName)]
             methodDeclClass = classBTypeFromParsedClassfile(methodDeclClassNode)
-            res <- memberIsAccessible(
-              methodNode.access,
-              methodDeclClass,
-              methodRefClass,
-              destinationClass)
+            res <-
+              memberIsAccessible(
+                methodNode.access,
+                methodDeclClass,
+                methodRefClass,
+                destinationClass)
           } yield {
             res
           }

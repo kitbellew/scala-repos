@@ -37,7 +37,8 @@ class JavaFunctionUsagesSearcher
           new TextOccurenceProcessor {
             def execute(element: PsiElement, offsetInElement: Int): Boolean = {
               val references = inReadAction(element.getReferences)
-              for (ref <- references if ref
+              for (ref <- references
+                   if ref
                      .getRangeInElement
                      .contains(offsetInElement) && !collectedReferences
                      .contains(ref)) {

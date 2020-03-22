@@ -390,7 +390,8 @@ object PowerIterationClustering extends Logging {
     var prevDelta = Double.MaxValue
     var diffDelta = Double.MaxValue
     var curG = g
-    for (iter <- 0 until maxIterations if math.abs(diffDelta) > tol) {
+    for (iter <- 0 until maxIterations
+         if math.abs(diffDelta) > tol) {
       val msgPrefix = s"Iteration $iter"
       // multiply W by vt
       val v = curG

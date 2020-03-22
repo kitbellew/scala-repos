@@ -256,7 +256,8 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
               .collect {
                 case c: ConfirmField =>
                   c
-              } if field.show_? && field.onConfirm_?
+              }
+          if field.show_? && field.onConfirm_?
         } yield ScreenFieldInfo(
           field,
           field.displayHtml,

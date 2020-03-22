@@ -522,7 +522,8 @@ trait TypeDiagnostics {
   /** The distinct pairs from an ordered list. */
   private def pairs[T <: Ordered[T]](xs: Seq[T]): Seq[(T, T)] = {
     for (el1 <- xs;
-         el2 <- xs; if el1 < el2)
+         el2 <- xs;
+         if el1 < el2)
       yield ((el1, el2))
   }
 
@@ -625,7 +626,8 @@ trait TypeDiagnostics {
           // Only record type references which don't originate within the
           // definition of the class being referenced.
           if (t.tpe ne null) {
-            for (tp <- t.tpe; if !treeTypes(tp) && !currentOwner
+            for (tp <- t.tpe;
+                 if !treeTypes(tp) && !currentOwner
                    .ownerChain
                    .contains(tp.typeSymbol)) {
               tp match {

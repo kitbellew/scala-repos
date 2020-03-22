@@ -28,7 +28,8 @@ class GCDTest extends FunSuite with Checkers {
     Arbitrary(
       for {
         n <- arbitrary[Long]
-        d <- arbitrary[Long] if d != 0
+        d <- arbitrary[Long]
+        if d != 0
       } yield Rational(n, d))
 
   def testGcd[A: EuclideanRing: IsReal: NumberTag](x: A, y: A): Boolean = {

@@ -47,7 +47,8 @@ class PortsMatcher(
       for {
         c <- app.container
         d <- c.docker
-        pms <- d.portMappings if pms.nonEmpty
+        pms <- d.portMappings
+        if pms.nonEmpty
       } yield pms
 
     (app.portNumbers, portMappings) match {

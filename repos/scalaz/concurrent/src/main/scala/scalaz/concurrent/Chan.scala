@@ -35,10 +35,11 @@ private[this] class ChanImpl[A](
   def write(a: A) =
     for {
       newHole <- newEmptyMVar[ChItem[A]]
-      _ <- for {
-        oldHole <- writeVar.take
-        _ <- oldHole.put(ChItem(a, newHole))
-        _ <- writeVar.put(newHole)
-      } yield ()
+      _ <-
+        for {
+          oldHole <- writeVar.take
+          _ <- oldHole.put(ChItem(a, newHole))
+          _ <- writeVar.put(newHole)
+        } yield ()
     } yield ()
 }

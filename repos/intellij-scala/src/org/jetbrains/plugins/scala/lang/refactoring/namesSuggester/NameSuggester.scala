@@ -65,7 +65,8 @@ object NameSuggester {
 
     val result =
       (
-        for (name <- names if name != "" && ScalaNamesUtil
+        for (name <- names
+             if name != "" && ScalaNamesUtil
                .isIdentifier(name) || name == "class")
           yield {
             if (name != "class")

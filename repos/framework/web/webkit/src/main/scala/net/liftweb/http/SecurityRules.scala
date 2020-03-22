@@ -357,19 +357,20 @@ object ContentSecurityPolicyViolation extends LazyLoggable {
       val violation =
         for {
           requestJson <- request.json
-          camelCasedJson = requestJson.transformField {
-            case JField("document-uri", content) =>
-              JField("documentUri", content)
-            case JField("blocked-uri", content) =>
-              JField("blockedUri", content)
-            case JField("violated-directive", content) =>
-              JField("violatedDirective", content)
-            case JField("original-policy", content) =>
-              JField("originalPolicy", content)
-          }
+          camelCasedJson =
+            requestJson.transformField {
+              case JField("document-uri", content) =>
+                JField("documentUri", content)
+              case JField("blocked-uri", content) =>
+                JField("blockedUri", content)
+              case JField("violated-directive", content) =>
+                JField("violatedDirective", content)
+              case JField("original-policy", content) =>
+                JField("originalPolicy", content)
+            }
           violationJson = camelCasedJson \ "csp-report"
-          extractedViolation <- tryo(
-            violationJson.extract[ContentSecurityPolicyViolation])
+          extractedViolation <-
+            tryo(violationJson.extract[ContentSecurityPolicyViolation])
         } yield {
           extractedViolation
         }

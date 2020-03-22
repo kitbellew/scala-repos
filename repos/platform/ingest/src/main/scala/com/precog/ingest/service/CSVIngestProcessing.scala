@@ -261,10 +261,11 @@ class CSVIngestProcessing(
       readerBuilder map { f =>
         for {
           (file, size) <- writeToFile(data)
-          result <- ingestSync(
-            f(new InputStreamReader(new FileInputStream(file), "UTF-8")),
-            durability.jobId,
-            StreamRef.forWriteMode(storeMode, false))
+          result <-
+            ingestSync(
+              f(new InputStreamReader(new FileInputStream(file), "UTF-8")),
+              durability.jobId,
+              StreamRef.forWriteMode(storeMode, false))
         } yield {
           file.delete()
           result

@@ -1671,8 +1671,9 @@ class LiftSession(
     for {
       template <-
         Templates(name, S.locale) ?~ ("Template " + name + " not found")
-      res <- findElem(
-        processSurroundAndInclude(name.mkString("/", "/", ""), template))
+      res <-
+        findElem(
+          processSurroundAndInclude(name.mkString("/", "/", ""), template))
     } yield res
   }
 
@@ -1756,7 +1757,8 @@ class LiftSession(
       whole: NodeSeq): NodeSeq = {
     (
       for {
-        nodeSeq <- S.currentSnippetNodeSeq if S.ignoreFailedSnippets
+        nodeSeq <- S.currentSnippetNodeSeq
+        if S.ignoreFailedSnippets
       } yield {
         // don't keep nailing the same snippet name if we just failed it
         (snippetName or S.currentSnippet).foreach(s => _lastFoundSnippet.set(s))
@@ -3296,8 +3298,9 @@ class LiftSession(
               func match {
                 case StreamRoundTrip(_, func) =>
                   try {
-                    for (v <- func.asInstanceOf[Function1[Any, Stream[Any]]](
-                           reified)) {
+                    for (v <-
+                           func.asInstanceOf[Function1[Any, Stream[Any]]](
+                             reified)) {
                       v match {
                         case jsCmd: JsCmd =>
                           ca ! jsCmd
@@ -3537,8 +3540,8 @@ private object SnippetNode {
 
       case elm: Elem => {
         for {
-          SnippetInformation(snippetName, lift) <- snippetInformationForElement(
-            elm)
+          SnippetInformation(snippetName, lift) <-
+            snippetInformationForElement(elm)
         } yield {
           val (par, nonLift) = liftAttrsAndParallel(elm.attributes)
           val newElm =

@@ -166,7 +166,8 @@ class ScalaControlFlowBuilder(
    **************************************/
   override def visitPatternDefinition(pattern: ScPatternDefinition) {
     pattern.expr.foreach(_.accept(this))
-    for (b <- pattern.bindings if policy.isElementAccepted(b)) {
+    for (b <- pattern.bindings
+         if policy.isElementAccepted(b)) {
       val instr = new DefinitionInstruction(inc, b, DefinitionType.VAL)
       checkPendingEdges(instr)
       addNode(instr)
@@ -175,7 +176,8 @@ class ScalaControlFlowBuilder(
 
   override def visitVariableDefinition(variable: ScVariableDefinition) {
     variable.expr.foreach(_.accept(this))
-    for (b <- variable.bindings if policy.isElementAccepted(b)) {
+    for (b <- variable.bindings
+         if policy.isElementAccepted(b)) {
       val instr = new DefinitionInstruction(inc, b, DefinitionType.VAR)
       checkPendingEdges(instr)
       addNode(instr)
@@ -232,7 +234,8 @@ class ScalaControlFlowBuilder(
   override def visitCaseClause(cc: ScCaseClause) {
     cc.pattern match {
       case Some(p) =>
-        for (b <- p.bindings if policy.isElementAccepted(b)) {
+        for (b <- p.bindings
+             if policy.isElementAccepted(b)) {
           val instr = new DefinitionInstruction(inc, b, DefinitionType.VAL)
           checkPendingEdges(instr)
           addNode(instr)

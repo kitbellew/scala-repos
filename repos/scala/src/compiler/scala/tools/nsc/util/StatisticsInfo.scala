@@ -37,7 +37,8 @@ abstract class StatisticsInfo {
         else
           Statistics.allQuantities
 
-      for (q <- quants if q.showAt(phase.name))
+      for (q <- quants
+           if q.showAt(phase.name))
         inform(q.line)
     }
 }

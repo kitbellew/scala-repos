@@ -93,7 +93,8 @@ class ScalaPullUpProcessor(
       ScalaChangeContextUtil.decodeContextInfo(movedDefinitions)
     }
 
-    for (tb <- sourceClass.extendsBlock.templateBody if tb.members.isEmpty) {
+    for (tb <- sourceClass.extendsBlock.templateBody
+         if tb.members.isEmpty) {
       tb.delete()
     }
 

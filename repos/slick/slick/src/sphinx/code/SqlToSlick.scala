@@ -309,7 +309,8 @@ object SqlToSlick extends App {
           // or equivalent for-expression:
           (
             for (p <- people;
-                 a <- addresses if p.addressId === a.id)
+                 a <- addresses
+                 if p.addressId === a.id)
               yield (p.name, a.city)
           ).result
         //#slickQueryImplicitJoin

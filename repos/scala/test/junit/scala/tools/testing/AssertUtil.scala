@@ -97,7 +97,8 @@ object AssertUtil {
       seen.keySet.asScala
     }
     body
-    for (r <- roots if wkref.nonEmpty) {
+    for (r <- roots
+         if wkref.nonEmpty) {
       assertFalse(s"Root $r held reference", refs(r) contains wkref.get)
     }
   }

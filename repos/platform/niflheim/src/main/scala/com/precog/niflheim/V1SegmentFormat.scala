@@ -96,25 +96,26 @@ object V1SegmentFormat extends SegmentFormat {
 
       for {
         header <- readSegmentId(channel)
-        segment <- header match {
-          case SegmentId(blockid, cpath, CBoolean) =>
-            readBoolean() map {
-              case (defined, length, values) =>
-                BooleanSegment(blockid, cpath, defined, values, length)
-            }
+        segment <-
+          header match {
+            case SegmentId(blockid, cpath, CBoolean) =>
+              readBoolean() map {
+                case (defined, length, values) =>
+                  BooleanSegment(blockid, cpath, defined, values, length)
+              }
 
-          case SegmentId(blockid, cpath, ctype: CValueType[a]) =>
-            readArray(ctype) map {
-              case (defined, values) =>
-                ArraySegment(blockid, cpath, ctype, defined, values)
-            }
+            case SegmentId(blockid, cpath, ctype: CValueType[a]) =>
+              readArray(ctype) map {
+                case (defined, values) =>
+                  ArraySegment(blockid, cpath, ctype, defined, values)
+              }
 
-          case SegmentId(blockid, cpath, ctype: CNullType) =>
-            readNull(ctype) map {
-              case (defined, length) =>
-                NullSegment(blockid, cpath, ctype, defined, length)
-            }
-        }
+            case SegmentId(blockid, cpath, ctype: CNullType) =>
+              readNull(ctype) map {
+                case (defined, length) =>
+                  NullSegment(blockid, cpath, ctype, defined, length)
+              }
+          }
       } yield segment
     }
   }
@@ -125,14 +126,15 @@ object V1SegmentFormat extends SegmentFormat {
         segment: Segment): Validation[IOException, PrecogUnit] = {
       for {
         _ <- writeSegmentId(channel, segment)
-        _ <- segment match {
-          case seg: ArraySegment[a] =>
-            writeArraySegment(channel, seg, getCodecFor(seg.ctype))
-          case seg: BooleanSegment =>
-            writeBooleanSegment(channel, seg)
-          case seg: NullSegment =>
-            writeNullSegment(channel, seg)
-        }
+        _ <-
+          segment match {
+            case seg: ArraySegment[a] =>
+              writeArraySegment(channel, seg, getCodecFor(seg.ctype))
+            case seg: BooleanSegment =>
+              writeBooleanSegment(channel, seg)
+            case seg: NullSegment =>
+              writeNullSegment(channel, seg)
+          }
       } yield PrecogUnit
     }
 

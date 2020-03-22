@@ -61,17 +61,18 @@ trait ArbitraryTreesAndNames {
       yield Modifiers(flagset)
 
   def genConstant =
-    for (value <- oneOf(
-           arbitrary[Byte],
-           arbitrary[Short],
-           arbitrary[Char],
-           arbitrary[Int],
-           arbitrary[Long],
-           arbitrary[Float],
-           arbitrary[Double],
-           arbitrary[Boolean],
-           arbitrary[String]
-         ))
+    for (value <-
+           oneOf(
+             arbitrary[Byte],
+             arbitrary[Short],
+             arbitrary[Char],
+             arbitrary[Int],
+             arbitrary[Long],
+             arbitrary[Float],
+             arbitrary[Double],
+             arbitrary[Boolean],
+             arbitrary[String]
+           ))
       yield Constant(value)
 
   def genAnnotated(size: Int, argGen: Int => Gen[Tree]) =
@@ -84,7 +85,8 @@ trait ArbitraryTreesAndNames {
       yield Alternative(trees)
 
   def genAppliedTypeTree(size: Int) =
-    for (tpt <- genTree(size - 1) if tpt.isType;
+    for (tpt <- genTree(size - 1)
+         if tpt.isType;
          args <- smallList(size, genTree(size - 1)))
       yield AppliedTypeTree(tpt, args)
 

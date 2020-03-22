@@ -147,12 +147,13 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
 
       list.addAll(range.map(toElem).sorted)
 
-      for (i <- Seq(
-             range.head,
-             range.last,
-             range(range.size / 3),
-             range(range.size / 2),
-             range(3 * range.size / 5))) {
+      for (i <-
+             Seq(
+               range.head,
+               range.last,
+               range(range.size / 3),
+               range(range.size / 2),
+               range(3 * range.size / 5))) {
         assertEquals(i, ju.Collections.binarySearch(list, toElem(i)))
       }
 
@@ -188,12 +189,13 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
 
       list.addAll(range.map(toElem).sortWith(cmpFun(_, _) < 0))
 
-      for (i <- Seq(
-             range.head,
-             range.last,
-             range(range.size / 3),
-             range(range.size / 2),
-             range(3 * range.size / 5))) {
+      for (i <-
+             Seq(
+               range.head,
+               range.last,
+               range(range.size / 3),
+               range(range.size / 2),
+               range(3 * range.size / 5))) {
         assertEquals(i, ju.Collections.binarySearch(list, toElem(i), cmp))
       }
 

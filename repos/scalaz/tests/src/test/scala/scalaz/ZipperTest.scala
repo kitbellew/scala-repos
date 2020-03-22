@@ -549,12 +549,14 @@ object ZipperTest extends SpecLite {
     for {
       leftSize <- Gen.choose(0, size - 2)
       rightSize = size - 1 - leftSize
-      lefts <- Gen.containerOfN[Stream, Int](
-        leftSize,
-        implicitly[Arbitrary[Int]].arbitrary)
-      rights <- Gen.containerOfN[Stream, Int](
-        rightSize,
-        implicitly[Arbitrary[Int]].arbitrary)
+      lefts <-
+        Gen.containerOfN[Stream, Int](
+          leftSize,
+          implicitly[Arbitrary[Int]].arbitrary)
+      rights <-
+        Gen.containerOfN[Stream, Int](
+          rightSize,
+          implicitly[Arbitrary[Int]].arbitrary)
       focus <- arbitrary[Int]
     } yield zipper(lefts, focus, rights)
 

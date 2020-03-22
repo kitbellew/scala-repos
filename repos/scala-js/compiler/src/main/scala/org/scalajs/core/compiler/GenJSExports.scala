@@ -411,12 +411,13 @@ trait GenJSExports extends SubComponent {
           if methods != varArgMeths.toSet
 
           // body of case to disambiguates methods with current count
-          caseBody = genExportSameArgc(
-            minArgc,
-            needsRestParam,
-            methods.toList,
-            0,
-            Some(argcs.min))
+          caseBody =
+            genExportSameArgc(
+              minArgc,
+              needsRestParam,
+              methods.toList,
+              0,
+              Some(argcs.min))
 
           // argc in reverse order
           argcList = argcs.toList.sortBy(-_)

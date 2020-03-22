@@ -1036,8 +1036,8 @@ trait BaseCometActor
 
     case ShutdownIfPastLifespan =>
       for {
-        ls <- lifespan if listeners
-          .isEmpty && (lastListenerTime + ls.millis + 1000L) < millis
+        ls <- lifespan
+        if listeners.isEmpty && (lastListenerTime + ls.millis + 1000L) < millis
       } {
         this ! ShutDown
       }

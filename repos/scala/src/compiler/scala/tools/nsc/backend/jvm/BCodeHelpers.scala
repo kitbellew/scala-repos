@@ -917,7 +917,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     def emitAnnotations(
         cw: asm.ClassVisitor,
         annotations: List[AnnotationInfo]) {
-      for (annot <- annotations; if shouldEmitAnnotation(annot)) {
+      for (annot <- annotations;
+           if shouldEmitAnnotation(annot)) {
         val AnnotationInfo(typ, args, assocs) = annot
         assert(args.isEmpty, args)
         val av = cw.visitAnnotation(descriptor(typ), isRuntimeVisible(annot))
@@ -931,7 +932,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     def emitAnnotations(
         mw: asm.MethodVisitor,
         annotations: List[AnnotationInfo]) {
-      for (annot <- annotations; if shouldEmitAnnotation(annot)) {
+      for (annot <- annotations;
+           if shouldEmitAnnotation(annot)) {
         val AnnotationInfo(typ, args, assocs) = annot
         assert(args.isEmpty, args)
         val av = mw.visitAnnotation(descriptor(typ), isRuntimeVisible(annot))
@@ -945,7 +947,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     def emitAnnotations(
         fw: asm.FieldVisitor,
         annotations: List[AnnotationInfo]) {
-      for (annot <- annotations; if shouldEmitAnnotation(annot)) {
+      for (annot <- annotations;
+           if shouldEmitAnnotation(annot)) {
         val AnnotationInfo(typ, args, assocs) = annot
         assert(args.isEmpty, args)
         val av = fw.visitAnnotation(descriptor(typ), isRuntimeVisible(annot))
@@ -1434,7 +1437,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
 
       var fieldList = List[String]()
 
-      for (f <- fieldSymbols if f.hasGetter;
+      for (f <- fieldSymbols
+           if f.hasGetter;
            g = f.getterIn(cls);
            s = f.setterIn(cls);
            if g.isPublic && !(f.name startsWith "$")) {

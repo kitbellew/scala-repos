@@ -270,8 +270,10 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
 
     val q1 =
       for {
-        a <- as if a.data === 2
-        b <- bs if b.id === a.id
+        a <- as
+        if a.data === 2
+        b <- bs
+        if b.id === a.id
       } yield (a, b)
 
     val q2 = as joinLeft bs
@@ -283,11 +285,12 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       r1: Set[(A, B)] <- q1.to[Set].result
       _ = r1 shouldBe Set((A(2, 2), B(2, Some("b"))))
       r2: Set[(A, Option[B])] <- q2.to[Set].result
-      _ = r2 shouldBe Set(
-        (A(1, 1), Some(B(1, Some("a")))),
-        (A(1, 1), Some(B(2, Some("b")))),
-        (A(2, 2), Some(B(1, Some("a")))),
-        (A(2, 2), Some(B(2, Some("b")))))
+      _ =
+        r2 shouldBe Set(
+          (A(1, 1), Some(B(1, Some("a")))),
+          (A(1, 1), Some(B(2, Some("b")))),
+          (A(2, 2), Some(B(1, Some("a")))),
+          (A(2, 2), Some(B(2, Some("b")))))
     } yield ()
   }
 
@@ -440,11 +443,13 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
     val q1 =
       (
         for {
-          id :: b :: s :: HNil <- (
-            for {
-              b <- bs
-            } yield b.id :: b.b :: b.s :: HNil
-          ) if !b
+          id :: b :: s :: HNil <-
+            (
+              for {
+                b <- bs
+              } yield b.id :: b.b :: b.s :: HNil
+            )
+          if !b
         } yield id :: b :: (s ++ s) :: HNil
       )
         .sortBy(h => h(2))

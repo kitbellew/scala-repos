@@ -306,7 +306,8 @@ private object GutterUtil {
   def collectOverridingMembers(
       members: ArrayBuffer[PsiElement],
       result: util.Collection[LineMarkerInfo[_ <: PsiElement]]) {
-    for (member <- members if !member.isInstanceOf[PsiMethod] || !member
+    for (member <- members
+         if !member.isInstanceOf[PsiMethod] || !member
            .asInstanceOf[PsiMethod]
            .isConstructor) {
       ProgressManager.checkCanceled()

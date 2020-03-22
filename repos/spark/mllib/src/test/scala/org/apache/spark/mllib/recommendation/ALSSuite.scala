@@ -107,7 +107,8 @@ object ALSSuite {
 
     val sampledRatings = {
       for (u <- 0 until users;
-           p <- 0 until products if rand.nextDouble() < samplingRate)
+           p <- 0 until products
+           if rand.nextDouble() < samplingRate)
         yield Rating(u, p, trueRatings(u, p))
     }
 

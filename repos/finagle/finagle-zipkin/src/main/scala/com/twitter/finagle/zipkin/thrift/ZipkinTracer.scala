@@ -116,12 +116,13 @@ object ZipkinTracer {
 
       def deserialize(buf: Buf) =
         for {
-          env <- Buf.Utf8.unapply(buf) match {
-            case None =>
-              Throw(new IllegalArgumentException("unknown format"))
-            case Some(str) =>
-              Try(Json.deserialize[Json.Envelope](str))
-          }
+          env <-
+            Buf.Utf8.unapply(buf) match {
+              case None =>
+                Throw(new IllegalArgumentException("unknown format"))
+              case Some(str) =>
+                Try(Json.deserialize[Json.Envelope](str))
+            }
           if env.id == id
         } yield {
           val when = Time.fromMilliseconds(env.when)

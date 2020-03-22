@@ -1235,7 +1235,8 @@ final class Replicator(settings: ReplicatorSettings)
     }
 
     if (subscribers.nonEmpty) {
-      for (key ← changed; if subscribers.contains(key);
+      for (key ← changed;
+           if subscribers.contains(key);
            subs ← subscribers.get(key))
         notify(key, subs)
     }

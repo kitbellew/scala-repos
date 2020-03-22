@@ -19,7 +19,10 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
     val dst2 = TableQuery(new TestTable(_, "dst2_q"))
     val dst3 = TableQuery(new TestTable(_, "dst3_q"))
 
-    val q2 = for (s <- src1 if s.id <= 2) yield s
+    val q2 =
+      for (s <- src1
+           if s.id <= 2)
+        yield s
     println("Insert 2: " + dst2.forceInsertStatementFor(q2))
     val q3 = (42, "X".bind)
     println("Insert 3: " + dst2.forceInsertStatementFor(q3))
@@ -75,26 +78,30 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
       (
         for {
           _ <- as.schema.create
-          _ <- (ins1 += ("a", "b")) map { id1: Int =>
-            id1 shouldBe 1
-          }
-          _ <- ifCap(jcap.returnInsertOther) {
-            (ins2 += ("c", "d")) map { id2: (Int, String) =>
-              id2 shouldBe (2, "c")
+          _ <-
+            (ins1 += ("a", "b")) map { id1: Int =>
+              id1 shouldBe 1
             }
-          }
-          _ <- ifNotCap(jcap.returnInsertOther) {
-            (ins1 += ("c", "d")) map { id2: Int =>
-              id2 shouldBe 2
+          _ <-
+            ifCap(jcap.returnInsertOther) {
+              (ins2 += ("c", "d")) map { id2: (Int, String) =>
+                id2 shouldBe (2, "c")
+              }
             }
-          }
+          _ <-
+            ifNotCap(jcap.returnInsertOther) {
+              (ins1 += ("c", "d")) map { id2: Int =>
+                id2 shouldBe 2
+              }
+            }
           _ <- (ins1 ++= Seq(("e", "f"), ("g", "h"))) map (_ shouldBe Seq(3, 4))
           _ <- (ins3 += ("i", "j")) map (_ shouldBe (5, "i", "j"))
-          _ <- ifCap(jcap.returnInsertOther) {
-            (ins4 += ("k", "l")) map { id5: (Int, String, String) =>
-              id5 shouldBe (6, "k", "l")
+          _ <-
+            ifCap(jcap.returnInsertOther) {
+              (ins4 += ("k", "l")) map { id5: (Int, String, String) =>
+                id5 shouldBe (6, "k", "l")
+              }
             }
-          }
         } yield ()
       ).withPinnedSession // Some database servers (e.g. DB2) preallocate ID blocks per session
     }
@@ -189,18 +196,19 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
             .sortBy(_.id)
             .result
             .map(_ shouldBe Seq((1, "d"), (2, "b"), (3, "c")))
-        _ <- ifCap(jcap.returnInsertKey) {
-          val q = ts returning ts.map(_.id)
-          for {
-            _ <- q.insertOrUpdate((0, "e")).map(_ shouldBe Some(4))
-            _ <- q.insertOrUpdate((1, "f")).map(_ shouldBe None)
-            _ <-
-              ts
-                .sortBy(_.id)
-                .result
-                .map(_ shouldBe Seq((1, "f"), (2, "b"), (3, "c"), (4, "e")))
-          } yield ()
-        }
+        _ <-
+          ifCap(jcap.returnInsertKey) {
+            val q = ts returning ts.map(_.id)
+            for {
+              _ <- q.insertOrUpdate((0, "e")).map(_ shouldBe Some(4))
+              _ <- q.insertOrUpdate((1, "f")).map(_ shouldBe None)
+              _ <-
+                ts
+                  .sortBy(_.id)
+                  .result
+                  .map(_ shouldBe Seq((1, "f"), (2, "b"), (3, "c"), (4, "e")))
+            } yield ()
+          }
       } yield ()
     ).withPinnedSession
   }

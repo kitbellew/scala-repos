@@ -584,7 +584,8 @@ private[http] object RequestVarHandler extends CoreRequestVarHandler {
     val cmp = Full(grp)
     for {
       bs <- backingStore.toList
-      (rv, _, _) <- bs.values if rv.snapshotGroup == cmp
+      (rv, _, _) <- bs.values
+      if rv.snapshotGroup == cmp
     } yield rv
   }
 }

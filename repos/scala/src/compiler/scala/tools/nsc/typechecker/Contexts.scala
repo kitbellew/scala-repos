@@ -1050,11 +1050,12 @@ trait Contexts {
         name: Name,
         pre: Type)(f: Symbol => Unit) =
       for {
-        sym <- importedAccessibleSymbol(
-          imp,
-          name,
-          requireExplicit = false,
-          record = false).alternatives
+        sym <-
+          importedAccessibleSymbol(
+            imp,
+            name,
+            requireExplicit = false,
+            record = false).alternatives
         if isQualifyingImplicit(name, sym, pre, imported = true)
       } f(sym)
 

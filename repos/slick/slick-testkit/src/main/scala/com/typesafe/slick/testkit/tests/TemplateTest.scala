@@ -22,35 +22,40 @@ class TemplateTest extends AsyncTest[RelationalTestDB] {
     lazy val orders = TableQuery[Orders]
 
     def userNameByID1(id: Int) =
-      for (u <- users if u.id === id.bind)
+      for (u <- users
+           if u.id === id.bind)
         yield u.first
     def q1 = userNameByID1(3)
 
     val userNameByID2 =
       for {
         id <- Parameters[Int]
-        u <- users if u.id === id
+        u <- users
+        if u.id === id
       } yield u.first
     val q2 = userNameByID2(3)
 
     val userNameByIDRange =
       for {
         (min, max) <- Parameters[(Int, Int)]
-        u <- users if u.id >= min && u.id <= max
+        u <- users
+        if u.id >= min && u.id <= max
       } yield u.first
     val q3 = userNameByIDRange(2, 5)
 
     val userNameByIDRangeAndProduct =
       for {
         (min, (max, product)) <- Parameters[(Int, (Int, String))]
-        u <- users if u.id >= min && u.id <= max && orders
+        u <- users
+        if u.id >= min && u.id <= max && orders
           .filter(o => (u.id === o.userID) && (o.product === product))
           .exists
       } yield u.first
     val q4 = userNameByIDRangeAndProduct(2, (5, "Product A"))
 
     def userNameByIDOrAll(id: Option[Int]) =
-      for (u <- users if id.map(u.id === _.bind).getOrElse(LiteralColumn(true)))
+      for (u <- users
+           if id.map(u.id === _.bind).getOrElse(LiteralColumn(true)))
         yield u.first
     val q5a = userNameByIDOrAll(Some(3))
     val q5b = userNameByIDOrAll(None)
@@ -59,14 +64,15 @@ class TemplateTest extends AsyncTest[RelationalTestDB] {
       _ <- (users.schema ++ orders.schema).create
       _ <- users.map(_.first) ++= Seq("Homer", "Marge", "Apu", "Carl", "Lenny")
       uids <- users.map(_.id).result
-      _ <- DBIO.seq(
-        uids.map(uid =>
-          orders.map(o => (o.userID, o.product)) += (
-            uid, if (uid < 4)
-              "Product A"
-            else
-              "Product B"
-          )): _*)
+      _ <-
+        DBIO.seq(
+          uids.map(uid =>
+            orders.map(o => (o.userID, o.product)) += (
+              uid, if (uid < 4)
+                "Product A"
+              else
+                "Product B"
+            )): _*)
       _ <- q1.result.map(_ shouldBe List("Apu"))
       _ <- q2.result.map(_ shouldBe List("Apu"))
       _ <- q3.result.map(_.toSet shouldBe Set("Marge", "Apu", "Carl", "Lenny"))

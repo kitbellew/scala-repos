@@ -45,9 +45,10 @@ class BernoulliTest
 
   implicit def arbDistr =
     Arbitrary {
-      for (p <- arbitrary[Double].map { x =>
-             math.abs(x) % 1.0 + 1e-4
-           })
+      for (p <-
+             arbitrary[Double].map { x =>
+               math.abs(x) % 1.0 + 1e-4
+             })
         yield new Bernoulli(p)
     }
 
