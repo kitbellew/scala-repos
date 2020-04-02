@@ -31,6 +31,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * Pavel.Fatin, 25.05.2010
   */
+
 trait ScopeAnnotator {
   private type Definitions = List[ScNamedElement]
   private val TypeParameters = """\[.*\]""".r

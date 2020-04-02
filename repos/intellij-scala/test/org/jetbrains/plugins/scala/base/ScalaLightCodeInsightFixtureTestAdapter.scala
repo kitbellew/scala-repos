@@ -24,6 +24,7 @@ import scala.collection.mutable.ListBuffer
   * User: Dmitry Naydanov
   * Date: 3/5/12
   */
+
 abstract class ScalaLightCodeInsightFixtureTestAdapter
     extends LightCodeInsightFixtureTestCase {
   protected val CARET_MARKER = ScalaLightCodeInsightFixtureTestAdapter

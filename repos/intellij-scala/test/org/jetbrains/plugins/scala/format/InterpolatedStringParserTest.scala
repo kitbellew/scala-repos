@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.ScInterpolatedStringLiteral
 /**
   * Pavel Fatin
   */
+
 class InterpolatedStringParserTest extends SimpleTestCase {
   def testEmpty() { assertMatches(parse("")) { case Nil => } }
 

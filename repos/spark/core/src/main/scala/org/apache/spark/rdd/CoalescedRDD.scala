@@ -160,6 +160,7 @@ private[spark] class CoalescedRDD[T: ClassTag](
   * according to locality. (contact alig for questions)
   *
   */
+
 private class PartitionCoalescer(
     maxPartitions: Int,
     prev: RDD[_],

@@ -19,6 +19,7 @@ package util
   *  @version 2.9
   *  @since   2.9
   */
+
 import java.lang.Integer.{rotateLeft => rotl}
 import scala.collection.Iterator
 

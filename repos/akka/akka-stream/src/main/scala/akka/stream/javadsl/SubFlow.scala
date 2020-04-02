@@ -378,6 +378,7 @@ class SubFlow[-In, +Out, +Mat](
     *
     * '''Cancels when''' downstream cancels
     */
+
   def sliding(
       n: Int,
       step: Int = 1): SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =

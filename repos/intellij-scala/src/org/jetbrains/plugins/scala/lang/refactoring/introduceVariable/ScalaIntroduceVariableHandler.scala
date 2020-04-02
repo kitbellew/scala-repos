@@ -24,6 +24,7 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.{
   * User: Alexander Podkhalyuzin
   * Date: 23.06.2008
   */
+
 class ScalaIntroduceVariableHandler
     extends RefactoringActionHandler
     with DialogConflictsReporter

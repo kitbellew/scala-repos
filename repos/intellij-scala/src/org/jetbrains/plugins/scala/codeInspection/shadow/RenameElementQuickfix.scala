@@ -18,6 +18,7 @@ import org.jetbrains.plugins.scala.extensions._
   * User: Alefas
   * Date: 06.02.12
   */
+
 class RenameElementQuickfix(myRef: PsiElement, name: String)
     extends AbstractFixOnPsiElement(name, myRef) {
   def doApplyFix(project: Project) {

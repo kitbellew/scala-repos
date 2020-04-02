@@ -44,6 +44,7 @@ import scala.collection.mutable
   * @author Pavel Fatin
   * @author Dmitry Naydanov
   */
+
 class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
     extends MultiHostInjector {
   override def elementsToInjectIn =

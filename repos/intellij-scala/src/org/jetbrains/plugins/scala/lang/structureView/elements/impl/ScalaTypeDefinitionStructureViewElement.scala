@@ -17,6 +17,7 @@ import _root_.scala.collection.mutable._
   * @author Alexander Podkhalyuzin
   * Date: 04.05.2008
   */
+
 class ScalaTypeDefinitionStructureViewElement(val element: ScTypeDefinition)
     extends ScalaStructureViewElement(element, false) {
 

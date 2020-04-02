@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.{
 /**
   * Pavel Fatin
   */
+
 class MutatorLikeMethodIsParameterlessInspection
     extends AbstractMethodSignatureInspection(
       "ScalaMutatorLikeMethodIsParameterless",

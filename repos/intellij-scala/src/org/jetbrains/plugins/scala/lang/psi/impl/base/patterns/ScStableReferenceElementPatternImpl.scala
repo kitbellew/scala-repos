@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 /**
   * @author ilyas
   */
+
 class ScStableReferenceElementPatternImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScStableReferenceElementPattern {

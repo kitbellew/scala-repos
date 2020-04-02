@@ -24,6 +24,7 @@ class ABC extends A with B with C {
      it helps make sure it still compiles.
 
 ****/
+
 object Gen {
   case class Tp(outer: String, elem: String) {
     override def toString = s"$outer { val y: $elem }"

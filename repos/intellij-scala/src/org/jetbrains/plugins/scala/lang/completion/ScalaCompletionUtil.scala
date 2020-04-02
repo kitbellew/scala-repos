@@ -31,6 +31,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Alexander Podkhalyuzin
   * Date: 21.05.2008.
   */
+
 object ScalaCompletionUtil {
   val PREFIX_COMPLETION_KEY: Key[Boolean] = Key.create("prefix.completion.key")
 

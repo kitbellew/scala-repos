@@ -48,6 +48,7 @@ import org.jetbrains.plugins.scala.lang.resolve.processor.CompletionProcessor
   * @author AlexanderPodkhalyuzin
   *         Date: 22.02.2008
   */
+
 class ScStableCodeReferenceElementImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ResolvableStableCodeReferenceElement {

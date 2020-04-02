@@ -5,6 +5,7 @@ import org.jetbrains.plugins.scala.annotator.{AnnotatorTestBase, Error}
 /**
   * Pavel Fatin
   */
+
 class ObjectCreationImpossibleTest
     extends AnnotatorTestBase(ObjectCreationImpossible) {
   def testFineNew() {

@@ -4,6 +4,7 @@ package extensions
 /**
   * Pavel Fatin
   */
+
 object && {
   def unapply[T](obj: T) = Some((obj, obj))
 }

@@ -32,6 +32,7 @@ import scala.collection.JavaConverters._
   * Source used to write some type T into a WritableSequenceFile using a codec on T
   * for serialization.
   */
+
 object BytesWritableCodec {
   def get =
     Bijection.build[Array[Byte], BytesWritable] { arr =>

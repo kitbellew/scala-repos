@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.util.IntentionUtils
   * @author Ksenia.Sautina
   * @since 5/12/12
   */
+
 object DeMorganLawIntention {
   def familyName = "DeMorgan Law"
 }

@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.{
   * @author Alexander Podkhalyuzin
   * Date: 07.03.2008
   */
+
 trait ScRefinement extends ScalaPsiElement {
   def holders: Seq[ScDeclaredElementsHolder] =
     findChildrenByClassScala(classOf[ScDeclaredElementsHolder]).toSeq

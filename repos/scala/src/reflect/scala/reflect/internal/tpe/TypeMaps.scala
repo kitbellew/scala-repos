@@ -356,6 +356,7 @@ private[internal] trait TypeMaps {
       }
     }
     */
+
   /** Used by existentialAbstraction.
     */
   class ExistentialExtrapolation(tparams: List[Symbol])

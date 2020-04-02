@@ -11,6 +11,7 @@ import com.intellij.psi.PsiDirectory
 /**
   * Pavel Fatin
   */
+
 class ScalaDefaultTemplatePropertiesProvider
     extends TemplatePackagePropertyProvider {
   private val QualifiedPackagePattern = "(.+)\\.(.+?)".r

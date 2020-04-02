@@ -6,6 +6,7 @@ import org.jetbrains.plugins.scala.lang.psi.types._
 /**
   * Pavel.Fatin, 18.05.2010
   */
+
 class DefaultTest extends ApplicabilityTestBase {
   def testFine() {
     assertProblems("(a: A = null)", "()") { case Nil                  => }

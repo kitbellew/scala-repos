@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.expressions.PostfixExpr
   * @author Alexander Podkhalyuzin
   * Date: 28.02.2008
   */
+
 object Guard {
   def parse(builder: ScalaPsiBuilder): Boolean =
     parse(builder, noIf = false) //deprecated if true

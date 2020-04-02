@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements._
 /**
   * Pavel Fatin
   */
+
 class AddTailRecursionAnnotationIntention
     extends PsiElementBaseIntentionAction {
   def getFamilyName = "Recursion"

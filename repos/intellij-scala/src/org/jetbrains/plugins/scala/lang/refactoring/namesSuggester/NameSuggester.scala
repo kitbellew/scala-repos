@@ -36,6 +36,7 @@ import scala.collection.mutable.ArrayBuffer
   * @author Alexander Podkhalyuzin
   * @since 26.06.2008
   */
+
 object NameSuggester {
   private def emptyValidator(project: Project) =
     new NameValidator {

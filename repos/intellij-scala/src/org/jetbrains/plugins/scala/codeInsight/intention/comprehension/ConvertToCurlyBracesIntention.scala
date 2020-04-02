@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.util.IntentionAvailabilityChecker
 /**
   * Pavel Fatin
   */
+
 class ConvertToCurlyBracesIntention extends PsiElementBaseIntentionAction {
   def getFamilyName = "Convert to curly braces"
 

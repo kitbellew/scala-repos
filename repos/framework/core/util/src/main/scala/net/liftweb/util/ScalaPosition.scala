@@ -33,11 +33,13 @@ package io
   *  }}}
   *  @author Burak Emir (translated from work by Matthias Zenger and others)
   */
+
 /**
   * This was made private in scala 2.11.0 but there is no alternative for us to use, so here, copy/paste for now.
   * We renamed it because having a private vs public class with the same name causes errors with the assembly plugin
   * and may/(will?) cause errors at runtime.
   */
+
 abstract class ScalaPosition {
 
   /** Definable behavior for overflow conditions.

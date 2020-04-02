@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScFunctionDefinition
   * User: Alexander Podkhalyuzin
   * Date: 22.12.2009
   */
+
 class ScalaHighlightExitPointsHandler(
     fun: ScFunctionDefinition,
     editor: Editor,

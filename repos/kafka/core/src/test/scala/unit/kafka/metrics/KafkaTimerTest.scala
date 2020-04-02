@@ -16,6 +16,7 @@ package kafka.metrics
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 import org.junit.Test
 import java.util.concurrent.TimeUnit
 import org.junit.Assert._

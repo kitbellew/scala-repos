@@ -8,6 +8,7 @@ Check the output:
   cat tutorial/data/jsonoutput0.tsv
 
 **/
+
 import com.twitter.scalding.{Job, Args, JsonLine, Tsv}
 
 class JsonTutorial0(args: Args) extends Job(args) {

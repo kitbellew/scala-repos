@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.ScModifierList
   * User: Alexander Podkhalyuzin
   * Date: 21.01.2009
   */
+
 class ScModifiersStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
     elemType: IStubElementType[_ <: StubElement[

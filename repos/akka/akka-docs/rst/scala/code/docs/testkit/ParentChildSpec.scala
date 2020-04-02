@@ -15,6 +15,7 @@ import akka.actor.ActorRefFactory
 /**
   * Parent-Child examples
   */
+
 //#test-example
 class Parent extends Actor {
   val child = context.actorOf(Props[Child], "child")
@@ -63,6 +64,7 @@ class GenericDependentParent(childMaker: ActorRefFactory => ActorRef)
 /**
   * Test specification
   */
+
 class MockedChild extends Actor {
   def receive = { case "ping" => sender ! "pong" }
 }

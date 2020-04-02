@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.debugger.{
   * Nikolay.Tropin
   * 12/9/13
   */
+
 class ScalaImportedEvaluationTest
     extends ScalaImportedEvaluationTestBase
     with ScalaVersion_2_11

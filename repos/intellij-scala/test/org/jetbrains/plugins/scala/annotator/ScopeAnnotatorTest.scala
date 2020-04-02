@@ -8,6 +8,7 @@ import org.junit.Assert
 /**
   * Pavel.Fatin, 18.05.2010
   */
+
 class ScopeAnnotatorTest extends SimpleTestCase {
   // TODO List of explicit clash groups, report scope
   // ("Foo is already defined as class Foo, object Foo in object Holder")

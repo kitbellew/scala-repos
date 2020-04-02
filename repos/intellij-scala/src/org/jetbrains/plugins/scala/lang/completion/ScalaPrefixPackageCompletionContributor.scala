@@ -34,6 +34,7 @@ import scala.collection.JavaConverters._
 /**
   * @author Nikolay.Tropin
   */
+
 class ScalaPrefixPackageCompletionContributor
     extends ScalaCompletionContributor {
   extend(

@@ -26,6 +26,7 @@ import SieveUtil._
   * it's not written in C/assembly. So it will probably never be truly
   * competitive, but I'd like us to do as well as possible.
   */
+
 /**
   * The Siever manages the segmented sieve process.
   *

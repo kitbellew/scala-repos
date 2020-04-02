@@ -6,6 +6,7 @@ import org.jetbrains.plugins.scala.codeInsight.ScalaCodeInsightTestBase
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaSomeSmartCompletionTest extends ScalaCodeInsightTestBase {
   def testSomeSmart1() {
     val fileText = """

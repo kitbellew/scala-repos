@@ -32,6 +32,7 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil
   * User: Alexander Podkhalyuzin
   * Date: 21.11.2008
   */
+
 class RenameScalaVariableProcessor
     extends RenameJavaMemberProcessor
     with ScalaRenameProcessor {

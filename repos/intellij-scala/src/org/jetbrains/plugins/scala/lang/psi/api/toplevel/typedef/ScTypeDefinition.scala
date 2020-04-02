@@ -20,6 +20,7 @@ import scala.collection.Seq
 /**
   * @author AlexanderPodkhalyuzin
   */
+
 trait ScTypeDefinition
     extends ScTemplateDefinition
     with ScMember

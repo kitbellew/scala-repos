@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScIdListStubImpl
   * User: Alexander Podkhalyuzin
   * Date: 19.07.2009
   */
+
 class ScIdListElementType[Func <: ScIdList]
     extends ScStubElementType[ScIdListStub, ScIdList]("id list") {
   def serialize(stub: ScIdListStub, dataStream: StubOutputStream): Unit = {}

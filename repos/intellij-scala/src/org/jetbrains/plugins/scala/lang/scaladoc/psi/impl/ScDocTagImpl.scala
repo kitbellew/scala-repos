@@ -18,6 +18,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocTag
   * User: Alexander Podkhalyuzin
   * Date: 22.07.2008
   */
+
 class ScDocTagImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScDocTag {

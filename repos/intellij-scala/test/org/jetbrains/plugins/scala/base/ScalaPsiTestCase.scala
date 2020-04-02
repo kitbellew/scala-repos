@@ -20,6 +20,7 @@ import org.jetbrains.plugins.scala.util.TestUtils
   * User: Alexander Podkhalyuzin
   * Date: 24.02.2009
   */
+
 abstract class ScalaPsiTestCase extends PsiTestCase {
   private val JDK_HOME = TestUtils.getDefaultJdk
 

@@ -10,6 +10,7 @@ import org.junit.Assert._
 /**
   * Pavel Fatin
   */
+
 class StringConcatenationFormatterTest extends SimpleTestCase {
   def testEmpty() { assertEquals("\"\"", format()) }
 

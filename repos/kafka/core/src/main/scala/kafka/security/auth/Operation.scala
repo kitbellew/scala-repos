@@ -21,6 +21,7 @@ import kafka.common.{BaseEnum, KafkaException}
 /**
   * Different operations a client may perform on kafka resources.
   */
+
 sealed trait Operation extends BaseEnum
 case object Read extends Operation {
   val name = "Read"

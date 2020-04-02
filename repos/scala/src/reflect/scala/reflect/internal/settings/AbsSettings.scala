@@ -11,6 +11,7 @@ package settings
   *  class with the intention of creating an ImmutableSettings which can be used
   *  interchangeably.   Except of course without the mutants.
   */
+
 trait AbsSettings {
   type Setting <: AbsSettingValue // Fix to the concrete Setting type
 

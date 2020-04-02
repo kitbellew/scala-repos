@@ -19,6 +19,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
   * User: Alefas
   * Date: 18.02.12
   */
+
 object JavaConversionUtil {
 
   val keywordAnnotations = Map(

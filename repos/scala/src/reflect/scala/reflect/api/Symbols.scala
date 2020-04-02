@@ -360,6 +360,7 @@ trait Symbols {
     def alternatives: List[Symbol]
 
     /******************* tests *******************/
+
     /** Does this symbol represent a synthetic (i.e. a compiler-generated) entity?
       *  Examples of synthetic entities are accessors for vals and vars
       *  or mixin constructors in trait implementation classes.
@@ -524,6 +525,7 @@ trait Symbols {
     def isJavaAnnotation: Boolean
 
     /******************* helpers *******************/
+
     /** Provides an alternate if symbol is a NoSymbol.
       *
       *  @group Helpers

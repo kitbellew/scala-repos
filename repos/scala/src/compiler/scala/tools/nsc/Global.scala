@@ -630,6 +630,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   /** The checkers are for validating the compiler data structures
     *  at phase boundaries.
     */
+
   /** Tree checker */
   object treeChecker extends {
     val global: Global.this.type = Global.this

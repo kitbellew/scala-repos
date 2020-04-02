@@ -28,6 +28,7 @@ import scala.collection.mutable
   * User: Alexander Podkhalyuzin
   * Date: 22.07.2008
   */
+
 class ScDocCommentImpl(text: CharSequence)
     extends LazyParseablePsiElement(
       ScalaDocElementTypes.SCALA_DOC_COMMENT,

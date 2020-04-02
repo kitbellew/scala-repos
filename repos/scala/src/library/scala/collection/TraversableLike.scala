@@ -309,6 +309,7 @@ trait TraversableLike[+A, +Repr]
     b.result
   }
     */
+
   /** Partitions this $coll in two ${coll}s according to a predicate.
     *
     *  @param p the predicate on which to partition.

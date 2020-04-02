@@ -27,6 +27,7 @@ import com.twitter.summingbird.builder.CompletedBuilder
   * @author Sam Ritchie
   * @author Ashu Singhal
   */
+
 // Main app class launching any summingbird job. storm.StormEnv
 // handles storm-specific job-launching, scalding.ScaldingEnv handles
 // Scalding.

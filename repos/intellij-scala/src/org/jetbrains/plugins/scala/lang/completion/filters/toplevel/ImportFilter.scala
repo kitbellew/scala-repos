@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.completion.ScalaCompletionUtil._
   * @author Alexander Podkhalyuzin
   * Date: 22.05.2008
   */
+
 class ImportFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
     if (context.isInstanceOf[PsiComment]) return false

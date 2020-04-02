@@ -11,6 +11,7 @@ import com.gravity.goose.Configuration
   * Date: 9/22/11
   * Integration test for Image Utilities helper methods
   */
+
 class ImageUtilsIT {
 
   @Test

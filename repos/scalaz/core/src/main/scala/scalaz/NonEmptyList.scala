@@ -86,6 +86,7 @@ final class NonEmptyList[A] private[scalaz] (val head: A, val tail: IList[A]) {
     (list.reverse: @unchecked) match { case ICons(x, xs) => nel(x, xs) }
 
   /** @since 7.0.2 */
+
   def sortBy[B](f: A => B)(implicit o: Order[B]): NonEmptyList[A] =
     (list.sortBy(f): @unchecked) match { case ICons(x, xs) => nel(x, xs) }
 

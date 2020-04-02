@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocMethodParameter
   * User: Alexander Podkhalyuzin
   * Date: 22.07.2008
   */
+
 class ScDocMethodParameterImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScDocMethodParameter {

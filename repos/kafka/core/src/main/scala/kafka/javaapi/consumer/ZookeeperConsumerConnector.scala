@@ -62,6 +62,7 @@ import scala.collection.JavaConverters._
   * Each consumer tracks the offset of the latest message consumed for each partition.
   *
   */
+
 private[kafka] class ZookeeperConsumerConnector(
     val config: ConsumerConfig,
     val enableFetcher: Boolean) // for testing only

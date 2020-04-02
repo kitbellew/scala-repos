@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 /**
   * Pavel Fatin
   */
+
 class AddCallParentheses(e: ScExpression)
     extends AbstractFixOnPsiElement("Add call parentheses", e) {
   def doApplyFix(project: Project) {

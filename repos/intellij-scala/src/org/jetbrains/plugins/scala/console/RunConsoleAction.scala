@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
   * User: Alexander Podkhalyuzin
   * Date: 06.03.2009
   */
+
 class RunConsoleAction extends AnAction {
   override def update(e: AnActionEvent) {
     val presentation = e.getPresentation

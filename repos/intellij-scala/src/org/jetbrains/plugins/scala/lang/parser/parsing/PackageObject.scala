@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.top.ObjectDef
 /**
   * @author ilyas
   */
+
 object PackageObject {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     val marker = builder.mark

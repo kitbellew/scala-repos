@@ -28,6 +28,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
 /**
   * @author Alexander Podkhalyuzin
   */
+
 //todo: possibly join with AttachSourcesNorificationProvider
 //todo: differences only in JavaEditorFileSwapper -> ScalaEditorFileSwapper
 class ScalaAttachSourcesNotificationProvider(

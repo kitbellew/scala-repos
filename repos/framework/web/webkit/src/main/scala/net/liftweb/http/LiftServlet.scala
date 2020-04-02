@@ -226,6 +226,7 @@ class LiftServlet extends Loggable {
   }
 
   /** To save memory these are only created once and should just be holders for functions **/
+
   object ShuttingDown extends ProcessingStep {
 
     def notFoundOrIgnore(

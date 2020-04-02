@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.lang.formatting.settings.ScalaCodeStyleSettin
   * User: Dmitry Naydanov
   * Date: 2/6/12
   */
+
 abstract class ScalaDocEnterActionTestBase
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   override protected def setUp(): Unit = {

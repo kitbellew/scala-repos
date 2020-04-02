@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScFieldIdStubImpl
   * User: Alexander Podkhalyuzin
   * Date: 19.07.2009
   */
+
 class ScFieldIdElementType[Func <: ScFieldId]
     extends ScStubElementType[ScFieldIdStub, ScFieldId]("field id") {
   def createStubImpl[ParentPsi <: PsiElement](

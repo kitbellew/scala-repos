@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTrait
   * User: Alexander Podkhalyuzin
   * Date: 02.06.2009
   */
+
 class AbstractValueInTraitInspection
     extends AbstractInspection(
       "ScalaAbstractValueInTrait",

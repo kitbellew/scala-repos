@@ -52,6 +52,7 @@ import scala.collection.mutable
   * Nikolay.Tropin
   * 6/3/13
   */
+
 class ScalaInplaceVariableIntroducer(
     project: Project,
     editor: Editor,

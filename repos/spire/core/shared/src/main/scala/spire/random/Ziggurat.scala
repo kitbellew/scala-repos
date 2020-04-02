@@ -10,6 +10,7 @@
 **      Redistribution and use permitted under the MIT license.         **
 **                                                                      **
 \************************************************************************/
+
 package spire
 package random
 

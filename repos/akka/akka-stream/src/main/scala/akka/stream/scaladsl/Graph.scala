@@ -550,6 +550,7 @@ object Partition {
   * '''Cancels when'''
   *   when all downstreams cancel
   */
+
 final class Partition[T](outputPorts: Int, partitioner: T ⇒ Int)
     extends GraphStage[UniformFanOutShape[T, T]] {
 

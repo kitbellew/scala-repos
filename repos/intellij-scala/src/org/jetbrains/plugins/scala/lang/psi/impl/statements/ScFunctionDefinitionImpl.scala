@@ -30,6 +30,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.{ScType, Unit}
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
   */
+
 class ScFunctionDefinitionImpl protected (
     stub: StubElement[ScFunction],
     nodeType: IElementType,

@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.util.IntentionUtils
   * @author Ksenia.Sautina
   * @since 6/20/12
   */
+
 object MakeExplicitAction {
   final val MAKE_EXPLICIT = "Make explicit"
   final val MAKE_EXPLICIT_STATICALLY = "Make explicit (Import method)"

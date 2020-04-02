@@ -5,6 +5,7 @@ package com.twitter.finagle.netty3.channel
   * management. For certain use cases, these both simplify state
   * machines and enhance composability.
   */
+
 import org.jboss.netty.channel._
 
 import com.twitter.concurrent.Serialized

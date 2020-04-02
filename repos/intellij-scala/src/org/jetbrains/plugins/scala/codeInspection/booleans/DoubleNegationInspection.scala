@@ -23,6 +23,7 @@ import scala.collection.mutable
   * Nikolay.Tropin
   * 4/23/13
   */
+
 class DoubleNegationInspection
     extends AbstractInspection("DoubleNegation", "Double negation") {
   def actionFor(holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {

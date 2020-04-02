@@ -25,6 +25,7 @@ import org.apache.commons.math3.distribution.{
   *
   * @author stucchio
   */
+
 class TriangularDistribution(a: Double, c: Double, b: Double)
     extends ApacheContinuousDistribution
     with Moments[Double, Double] {

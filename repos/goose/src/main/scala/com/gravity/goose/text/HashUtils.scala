@@ -15,6 +15,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package com.gravity.goose.text
 
 import java.security.MessageDigest
@@ -24,6 +25,7 @@ import java.security.MessageDigest
   * User: jim
   * Date: 8/14/11
   */
+
 object HashUtils {
 
   def md5(s: String): String = {

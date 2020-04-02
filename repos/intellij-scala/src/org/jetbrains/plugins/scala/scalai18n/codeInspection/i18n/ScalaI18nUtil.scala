@@ -37,6 +37,7 @@ import scala.collection.mutable
   * @author Ksenia.Sautina
   * @since 7/17/12
   */
+
 object ScalaI18nUtil {
   final val NULL: IProperty = new PropertyImpl(
     new PropertyStubImpl(null, null),

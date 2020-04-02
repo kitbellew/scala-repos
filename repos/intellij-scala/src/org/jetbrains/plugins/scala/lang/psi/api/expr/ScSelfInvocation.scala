@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypeResult
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
   */
+
 trait ScSelfInvocation extends ScalaPsiElement {
   def args: Option[ScArgumentExprList] = findChild(classOf[ScArgumentExprList])
 

@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.icons.Icons
   * User: Alexander Podkhalyuzin
   * Date: 04.02.2009
   */
+
 class ScalaScriptConfigurationType extends ConfigurationType {
   val confFactory = new ScalaScriptRunConfigurationFactory(this)
 

@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.icons.Icons
   * User: Alexander Podkhalyuzin
   * Date: 22.02.2009
   */
+
 class ScalaTestConfigurationType extends ConfigurationType {
 
   val confFactory = new ScalaTestRunConfigurationFactory(this)

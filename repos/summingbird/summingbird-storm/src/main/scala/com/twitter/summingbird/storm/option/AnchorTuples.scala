@@ -25,6 +25,7 @@ import java.io.Serializable
   *
   * @author Sam Ritchie
   */
+
 case class AnchorTuples(anchor: Boolean) extends Serializable
 
 object AnchorTuples {

@@ -6,6 +6,7 @@ import org.jetbrains.plugins.scala.lang.psi.{PsiElementMock => Psi}
 /**
   * Pavel.Fatin, 11.05.2010
   */
+
 class ParentsIteratorTest extends IteratorTestCase {
   def testEmpty() = { assertIterates("", "0") }
 

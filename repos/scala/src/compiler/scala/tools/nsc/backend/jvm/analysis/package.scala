@@ -230,6 +230,7 @@ package scala.tools.nsc.backend.jvm
   *
   * See code below.
   */
+
 /*
 object Test {
   val overwrite: Option[String] = null

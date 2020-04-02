@@ -9,6 +9,7 @@ import org.junit.Assert
   * User: Dmitry Naydanov
   * Date: 7/3/12
   */
+
 class InterpolatedStringsAnnotatorTest
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   private def collectAnnotatorMessages(text: String) = {

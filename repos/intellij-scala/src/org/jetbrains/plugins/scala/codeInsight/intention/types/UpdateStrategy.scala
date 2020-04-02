@@ -35,6 +35,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 /**
   * Pavel.Fatin, 28.04.2010
   */
+
 class AddOrRemoveStrategy(editor: Option[Editor]) extends UpdateStrategy(editor)
 
 object AddOrRemoveStrategy {

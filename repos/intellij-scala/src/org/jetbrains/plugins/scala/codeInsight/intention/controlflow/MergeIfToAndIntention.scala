@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   * @author Ksenia.Sautina
   * @since 6/6/12
   */
+
 object MergeIfToAndIntention {
   def familyName = "Merge nested Ifs to ANDed condition"
 }

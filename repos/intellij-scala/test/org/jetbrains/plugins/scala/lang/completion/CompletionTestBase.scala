@@ -21,6 +21,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
   * User: Alexander Podkhalyuzin
   * Date: 23.09.2009
   */
+
 abstract class CompletionTestBase
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   protected val caretMarker = "/*caret*/"

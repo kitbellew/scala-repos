@@ -22,6 +22,7 @@ import com.twitter.scalding.Args
 /**
   * @author Ian O Connell
   */
+
 trait StormExecutionConfig extends ChillExecutionConfig[Storm] {}
 
 object Executor {

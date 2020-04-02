@@ -24,6 +24,7 @@ import org.jetbrains.plugins.scala.lang.psi.light.{
   * User: Alexander Podkhalyuzin
   * Date: 08.09.2009
   */
+
 class JavaValsUsagesSearcher
     extends QueryExecutor[PsiReference, ReferencesSearch.SearchParameters] {
   def execute(

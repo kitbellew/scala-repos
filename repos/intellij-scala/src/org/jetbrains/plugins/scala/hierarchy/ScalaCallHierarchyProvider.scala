@@ -7,6 +7,7 @@ import com.intellij.psi.{PsiElement, PsiMethod}
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaCallHierarchyProvider extends JavaCallHierarchyProvider {
   override def browserActivated(hierarchyBrowser: HierarchyBrowser): Unit = {
     hierarchyBrowser.asInstanceOf[ScalaCallHierarchyBrowser]

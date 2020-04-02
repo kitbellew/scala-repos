@@ -15,6 +15,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package com.gravity.goose.text
 
 /**
@@ -23,6 +24,7 @@ package com.gravity.goose.text
   * Date: 5/13/11
   * Time: 12:11 AM
   */
+
 object string {
   def isNullOrEmpty(input: String): Boolean = {
     if (input == null) return true

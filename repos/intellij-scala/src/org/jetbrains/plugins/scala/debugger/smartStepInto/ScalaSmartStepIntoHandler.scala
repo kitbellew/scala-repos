@@ -47,6 +47,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Alexander Podkhalyuzin
   * Date: 26.01.12
   */
+
 class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
   override def findSmartStepTargets(
       position: SourcePosition): JList[SmartStepTarget] = {

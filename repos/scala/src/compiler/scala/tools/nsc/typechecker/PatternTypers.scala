@@ -31,6 +31,7 @@ import Mode._
   *    object Foo { def unapply(x: Any): Option[(Int, Int)] }
   *    object Foo { def unapplySeq(x: Any): Option[(Int, Int, Seq[Int])] }
   */
+
 trait PatternTypers {
   self: Analyzer =>
 

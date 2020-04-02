@@ -10,6 +10,7 @@ import com.intellij.openapi.project.Project
   * User: Alexander Podkhalyuzin
   * Date: 03.05.2009
   */
+
 class AbstractTestRunConfigurationEditor(
     project: Project,
     configuration: AbstractTestRunConfiguration)

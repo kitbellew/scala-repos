@@ -28,6 +28,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.ScType
 /**
   * Pavel Fatin
   */
+
 case class Dependency(
     kind: DependencyKind,
     source: PsiElement,

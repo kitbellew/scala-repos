@@ -19,6 +19,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScImportStmtStubImpl
   * User: Alexander Podkhalyuzin
   * Date: 18.06.2009
   */
+
 class ScImportStmtElementType[Func <: ScImportStmt]
     extends ScStubElementType[ScImportStmtStub, ScImportStmt](
       "import statement") {

@@ -43,16 +43,16 @@ class ForeignKeyTest extends AsyncTest[RelationalTestDB] {
         ("A ScalaQuery Update", Some(2))
       )
       q1 = (for {
-        p <- posts
-        c <- p.categoryJoin
-      } yield (p.id, c.id, c.name, p.title)).sortBy(_._1)
+          p <- posts
+          c <- p.categoryJoin
+        } yield (p.id, c.id, c.name, p.title)).sortBy(_._1)
       _ <-
         q1.map(p => (p._1, p._2)).result
           .map(_ shouldBe List((2, 1), (3, 2), (4, 3), (5, 2)))
       q2 = (for {
-        p <- posts
-        c <- p.categoryFK
-      } yield (p.id, c.id, c.name, p.title)).sortBy(_._1)
+          p <- posts
+          c <- p.categoryFK
+        } yield (p.id, c.id, c.name, p.title)).sortBy(_._1)
       _ <-
         q2.map(p => (p._1, p._2)).result
           .map(_ shouldBe List((2, 1), (3, 2), (4, 3), (5, 2)))
@@ -90,9 +90,9 @@ class ForeignKeyTest extends AsyncTest[RelationalTestDB] {
       _ <- bs ++= Seq((1, 2, "b12"), (3, 4, "b34"), (5, 6, "b56"))
       _ <- as ++= Seq((1, 2, "a12"), (3, 4, "a34"))
       q1 = (for {
-        a <- as
-        b <- a.bFK
-      } yield (a.s, b.s)).to[Set]
+          a <- as
+          b <- a.bFK
+        } yield (a.s, b.s)).to[Set]
       _ <- q1.result.map(_ shouldBe Set(("a12", "b12"), ("a34", "b34")))
     } yield ()
   }
@@ -119,20 +119,20 @@ class ForeignKeyTest extends AsyncTest[RelationalTestDB] {
       _ <- bs ++= Seq((1, 1), (2, 1), (3, 2))
       _ <- cs ++= Seq((1, 1), (2, 3))
       q1 = (for {
-        b <- bs
-        a <- b.a
-      } yield a.s).sorted
+          b <- bs
+          a <- b.a
+        } yield a.s).sorted
       _ <- q1.result.map(_ shouldBe List("a", "a", "b"))
       q2 = (for {
-        c <- cs
-        a <- c.a
-      } yield a.s).sorted
+          c <- cs
+          a <- c.a
+        } yield a.s).sorted
       _ <- q2.result.map(_ shouldBe List("a", "c"))
       q3 = (for {
-        b <- bs
-        c <- cs
-        a <- b.a & c.a
-      } yield a.s).sorted
+          b <- bs
+          c <- cs
+          a <- b.a & c.a
+        } yield a.s).sorted
       _ <- q3.result.map(_ shouldBe List("a", "a"))
     } yield ()
   }

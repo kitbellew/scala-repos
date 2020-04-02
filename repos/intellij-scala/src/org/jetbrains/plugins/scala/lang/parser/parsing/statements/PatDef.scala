@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.parser.util.ParserUtils
   * @author Alexander Podkhalyuzin
   * Date: 06.02.2008
   */
+
 /*
  * PatDef ::= Pattern2 {',' Pattern2} [':' Type] '=' Expr
  */

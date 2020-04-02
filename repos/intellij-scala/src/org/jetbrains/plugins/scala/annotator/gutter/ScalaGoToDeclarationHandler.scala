@@ -25,6 +25,7 @@ import org.jetbrains.plugins.scala.lang.resolve.ResolvableReferenceElement
   * User: Alexander Podkhalyuzin
   * Date: 22.11.2008
   */
+
 class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
 
   def getActionText(context: DataContext): String = null

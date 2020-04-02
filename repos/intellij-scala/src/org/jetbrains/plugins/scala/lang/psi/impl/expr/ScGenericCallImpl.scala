@@ -23,6 +23,7 @@ import org.jetbrains.plugins.scala.lang.resolve.{
   * @author Alexander Podkhalyuzin
   * Date: 06.03.2008
   */
+
 class ScGenericCallImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScGenericCall {

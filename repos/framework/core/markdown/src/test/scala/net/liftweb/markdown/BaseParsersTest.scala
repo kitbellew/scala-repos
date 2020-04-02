@@ -28,6 +28,7 @@ import org.junit.runner.RunWith
 /**
   * Tests basic parsers that are used by the more complex parsing steps.
   */
+
 @RunWith(classOf[JUnitRunner])
 class BaseParsersTest extends FlatSpec with ShouldMatchers with BaseParsers {
 

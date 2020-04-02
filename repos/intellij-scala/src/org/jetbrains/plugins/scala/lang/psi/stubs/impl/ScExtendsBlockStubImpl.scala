@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.templates.ScExtendsBloc
 /**
   * @author ilyas
   */
+
 class ScExtendsBlockStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
     elemType: IStubElementType[_ <: StubElement[

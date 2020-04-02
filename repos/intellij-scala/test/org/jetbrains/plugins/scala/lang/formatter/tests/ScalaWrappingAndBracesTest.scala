@@ -6,6 +6,7 @@ import org.jetbrains.plugins.scala.lang.formatter.AbstractScalaFormatterTestBase
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaWrappingAndBracesTest extends AbstractScalaFormatterTestBase {
   /* stub:
   def test {

@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.icons.Icons
 /**
   * @author ilyas
   */
+
 trait PsiMethodFake extends PsiMethod {
   def setName(name: String): PsiElement = null
 

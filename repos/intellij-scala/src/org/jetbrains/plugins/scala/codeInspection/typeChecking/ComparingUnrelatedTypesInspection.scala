@@ -26,6 +26,7 @@ import scala.annotation.tailrec
   * Nikolay.Tropin
   * 5/30/13
   */
+
 object ComparingUnrelatedTypesInspection {
   val inspectionName = InspectionBundle
     .message("comparing.unrelated.types.name")

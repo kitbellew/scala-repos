@@ -34,6 +34,7 @@ import scala.collection.mutable.ArrayBuffer
   * @author Ksenia.Sautina
   * @since 5/12/12
   */
+
 object IntentionUtils {
 
   def addNameToArgumentsFix(

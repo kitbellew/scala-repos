@@ -6,6 +6,7 @@ import org.jetbrains.plugins.scala.extensions._
 /**
   * @author Alexander Podkhalyuzin
   */
+
 abstract sealed class ValueUsed(val e: PsiNamedElement) {
   override def toString: String = e.name
 }

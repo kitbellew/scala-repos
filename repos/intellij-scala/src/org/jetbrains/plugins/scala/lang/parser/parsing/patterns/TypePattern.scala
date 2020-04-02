@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.types.{
   * @author Alexander Podkhalyuzin
   *         Date: 29.02.2008
   */
+
 /*
  * TypePattern ::= Type (but it can't be InfixType => Type (because case A => B => C?))
  */

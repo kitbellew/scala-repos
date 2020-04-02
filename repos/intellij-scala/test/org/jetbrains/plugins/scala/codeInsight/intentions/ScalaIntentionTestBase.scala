@@ -15,6 +15,7 @@ import scala.collection.JavaConversions._
   * @author Ksenia.Sautina
   * @since 4/11/12
   */
+
 abstract class ScalaIntentionTestBase
     extends ScalaLightCodeInsightFixtureTestAdapter {
   def familyName: String

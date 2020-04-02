@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.resolve.{
 /**
   * @author Alexander Podkhalyuzin
   */
+
 trait ScAssignStmt extends ScExpression {
   def getLExpression: ScExpression =
     findChildByClassScala(classOf[ScExpression])

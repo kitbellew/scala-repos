@@ -692,6 +692,7 @@ class SQLConf
     .synchronizedMap(new java.util.HashMap[String, String]())
 
   /** ************************ Spark SQL Params/Hints ******************* */
+
   def filesMaxPartitionBytes: Long = getConf(FILES_MAX_PARTITION_BYTES)
 
   def useCompression: Boolean = getConf(COMPRESS_CACHED)
@@ -788,6 +789,7 @@ class SQLConf
   override def orderByOrdinal: Boolean = getConf(ORDER_BY_ORDINAL)
 
   /** ********************** SQLConf functionality methods ************ */
+
   /** Set Spark SQL configuration properties. */
   def setConf(props: Properties): Unit =
     settings.synchronized {

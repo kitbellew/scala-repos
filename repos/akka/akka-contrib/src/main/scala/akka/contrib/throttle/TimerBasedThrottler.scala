@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.contrib.throttle
 
 import scala.concurrent.duration.{Duration, FiniteDuration}

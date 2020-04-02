@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
   * Nikolay.Tropin
   * 6/27/13
   */
+
 //test only removing clarifying paretheses here
 class RemoveUnnecessaryParenthesesIntentionTest extends ScalaIntentionTestBase {
   def familyName: String = RemoveUnnecessaryParenthesesIntention.familyName

@@ -15,6 +15,7 @@ import scala.reflect.{ClassTag, classTag}
 /**
   * Pavel.Fatin, 18.05.2010
   */
+
 abstract class SimpleTestCase extends UsefulTestCase {
   var fixture: CodeInsightTestFixture = null
 

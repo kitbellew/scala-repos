@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2010 Scalable Solutions AB <http://scalablesolutions.se>
   */
+
 package akka.remoteinterface
 
 import akka.japi.Creator
@@ -32,6 +33,7 @@ trait RemoteModule {
       : ConcurrentHashMap[String, () => AnyRef]
 
   /** Lookup methods **/
+
   private[akka] def findActorById(id: String): ActorRef = actors.get(id)
 
   private[akka] def findActorByUuid(uuid: String): ActorRef =
@@ -658,6 +660,7 @@ trait RemoteClientModule extends RemoteModule {
   def restartClientConnection(address: InetSocketAddress): Boolean
 
   /** Methods that needs to be implemented by a transport **/
+
   protected[akka] def typedActorFor[T](
       intfClass: Class[T],
       serviceId: String,

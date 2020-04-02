@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.patterns._
   * @author Alexander Podkhalyuzin
   * Date: 21.04.2008
   */
+
 object ScalaPatterns {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     builder.getTokenType match {

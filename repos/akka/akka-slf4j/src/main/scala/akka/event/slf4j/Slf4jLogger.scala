@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.event.slf4j
 
 import org.slf4j.{Logger ⇒ SLFLogger, LoggerFactory ⇒ SLFLoggerFactory}

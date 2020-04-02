@@ -23,6 +23,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.ScParamClauseStub
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
   */
+
 class ScParameterClauseImpl private (
     stub: StubElement[ScParameterClause],
     nodeType: IElementType,

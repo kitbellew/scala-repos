@@ -3,6 +3,7 @@ package com.twitter.finagle.thrift
 /**
   * A codec for the buffered (unframed) thrift transport.
   */
+
 import org.jboss.netty.channel.{Channel, ChannelHandlerContext}
 import org.jboss.netty.buffer.ChannelBuffer
 import org.jboss.netty.handler.codec.replay.{ReplayingDecoder, VoidEnum}

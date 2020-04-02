@@ -10,6 +10,7 @@ import breeze.numerics._
   *
   * @author chrismedrela
  **/
+
 class CubicInterpolatorTest extends FunSuite {
   val x = DenseVector(1.0, 2.0, 3.0, 5.0)
   val y = DenseVector(1.0, 5.0, 3.0, 7.0)

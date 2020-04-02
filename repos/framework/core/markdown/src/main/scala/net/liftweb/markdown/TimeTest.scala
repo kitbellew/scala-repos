@@ -25,6 +25,7 @@ import java.io.{InputStreamReader, FileInputStream, StringWriter}
   * Quick and dirty test for measuring the time of this Parser.
   * Contains hardcoded file paths, just ignore this, it will be removed soon.
   */
+
 trait TimedTransformer {
 
   /**

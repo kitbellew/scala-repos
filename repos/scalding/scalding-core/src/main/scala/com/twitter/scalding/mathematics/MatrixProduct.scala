@@ -19,6 +19,7 @@ package com.twitter.scalding.mathematics
 /**
   * Handles the implementation of various versions of MatrixProducts
   */
+
 import com.twitter.algebird.{Ring, Monoid, Group, Field}
 import com.twitter.scalding.RichPipe
 import com.twitter.scalding.Dsl._

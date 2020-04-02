@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.types._
   * User: Alexander Podkhalyuzin
   * Date: 02.06.2009
   */
+
 object InspectionsUtil {
   val ERROR_HANDLING = "(Scala) Error Handling"
 

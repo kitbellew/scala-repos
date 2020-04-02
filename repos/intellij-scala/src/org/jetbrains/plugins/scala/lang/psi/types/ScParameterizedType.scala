@@ -6,6 +6,7 @@ package types
 /**
   * @author ilyas
   */
+
 import com.intellij.openapi.project.Project
 import com.intellij.psi._
 import com.intellij.psi.search.GlobalSearchScope

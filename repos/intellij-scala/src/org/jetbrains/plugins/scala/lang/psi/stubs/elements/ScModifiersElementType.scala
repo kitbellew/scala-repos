@@ -20,6 +20,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScModifiersStubImpl
   * User: Alexander Podkhalyuzin
   * Date: 21.01.2009
   */
+
 class ScModifiersElementType(debugName: String)
     extends ScStubElementType[ScModifiersStub, ScModifierList](debugName) {
   def serialize(stub: ScModifiersStub, dataStream: StubOutputStream) {

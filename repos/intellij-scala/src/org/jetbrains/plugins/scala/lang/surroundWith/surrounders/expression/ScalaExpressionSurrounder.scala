@@ -9,6 +9,7 @@ package expression
   * Date: 09.01.2007
   *
   */
+
 import com.intellij.lang.ASTNode
 import com.intellij.lang.surroundWith.Surrounder
 import com.intellij.openapi.editor.Editor

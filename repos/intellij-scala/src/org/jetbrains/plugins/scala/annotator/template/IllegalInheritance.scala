@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 /**
   * Pavel Fatin
   */
+
 object IllegalInheritance extends AnnotatorPart[ScTemplateDefinition] {
   val Message = "Illegal inheritance, self-type %s does not conform to %s"
     .format(_: String, _: String)

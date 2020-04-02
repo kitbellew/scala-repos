@@ -8,6 +8,7 @@ import com.intellij.psi.{PsiElement, PsiFile}
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaBracePostFormatProcessor extends PostFormatProcessor {
   def processText(
       source: PsiFile,

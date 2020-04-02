@@ -1298,6 +1298,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * If a deferred snippet has a failure during render,
     * what should we display?
     */
+
   val deferredSnippetTimeout: FactoryMaker[NodeSeq] = new FactoryMaker(() => {
     if (Props.devMode) <div style="border: red solid 2px">
           A deferred snippet timed out during render.

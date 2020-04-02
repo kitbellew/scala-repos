@@ -9,6 +9,7 @@ import com.twitter.app.{Flaggable, GlobalFlag}
   *
   * Todo: Deprecate it once memcache has wily support (TRFC-434).
   */
+
 object localMemcachedPort
     extends GlobalFlag[Option[Int]](
       None,

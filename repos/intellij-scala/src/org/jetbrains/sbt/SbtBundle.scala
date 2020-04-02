@@ -9,6 +9,7 @@ import com.intellij.CommonBundle
   * @author Nikolay Obedin
   * @since 8/5/14.
   */
+
 object SbtBundle {
 
   def apply(key: String, params: AnyRef*) =

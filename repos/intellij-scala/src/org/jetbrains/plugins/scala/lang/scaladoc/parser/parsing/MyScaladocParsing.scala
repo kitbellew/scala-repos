@@ -19,6 +19,7 @@ import scala.collection.immutable.HashMap
   * User: Dmitry Naidanov
   * Date: 11/12/11
   */
+
 class MyScaladocParsing(private val psiBuilder: PsiBuilder)
     extends ScalaDocElementTypes {
   private var isInInlinedTag: Boolean = false

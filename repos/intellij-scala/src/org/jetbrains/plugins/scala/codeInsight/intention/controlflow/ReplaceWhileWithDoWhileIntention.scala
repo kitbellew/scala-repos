@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   * Nikolay.Tropin
   * 4/17/13
   */
+
 object ReplaceWhileWithDoWhileIntention {
   def familyName = "Replace while with do while"
 }

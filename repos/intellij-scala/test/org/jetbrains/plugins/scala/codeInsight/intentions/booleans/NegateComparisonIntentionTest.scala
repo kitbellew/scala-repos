@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
   * @author Ksenia.Sautina
   * @since 5/13/12
   */
+
 class NegateComparisonIntentionTest extends ScalaIntentionTestBase {
   def familyName = NegateComparisonIntention.familyName
 

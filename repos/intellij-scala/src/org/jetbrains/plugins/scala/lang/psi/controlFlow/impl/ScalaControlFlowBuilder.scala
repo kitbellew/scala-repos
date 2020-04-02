@@ -31,6 +31,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * @author ilyas
   */
+
 class ScalaControlFlowBuilder(
     startInScope: ScalaPsiElement,
     endInsScope: ScalaPsiElement,
@@ -146,6 +147,7 @@ class ScalaControlFlowBuilder(
   /**************************************
     * VISITOR METHODS
    **************************************/
+
   override def visitPatternDefinition(pattern: ScPatternDefinition) {
     pattern.expr.foreach(_.accept(this))
     for (b <- pattern.bindings if policy.isElementAccepted(b)) {

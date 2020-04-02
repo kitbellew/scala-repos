@@ -7,6 +7,7 @@ import collection.mutable.ArrayBuffer
   *
   * @author dlwh
   */
+
 class LPMaxFlow[N](val g: FlowGraph[N]) {
   import g._
   lazy val maxFlow: (Map[Edge, Double], Double) = {

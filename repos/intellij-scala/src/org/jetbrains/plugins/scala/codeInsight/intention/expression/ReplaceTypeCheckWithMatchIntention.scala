@@ -21,6 +21,7 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.InplaceRenameHelper
   * Nikolay.Tropin
   * 5/16/13
   */
+
 object ReplaceTypeCheckWithMatchIntention {
   def familyName = "Replace type check with pattern matching"
 }

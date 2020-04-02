@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.project._
 /**
   * Pavel Fatin
   */
+
 class NewPackageObjectAction
     extends CreateFromTemplateAction(
       FileTemplateManager.getDefaultInstance().getInternalTemplate(

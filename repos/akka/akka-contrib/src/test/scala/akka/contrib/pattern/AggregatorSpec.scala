@@ -20,6 +20,7 @@ import akka.actor._
   * This is based on Jamie Allen's tutorial at
   * http://jaxenter.com/tutorial-asynchronous-programming-with-akka-actors-46220.html
   */
+
 sealed trait AccountType
 case object Checking extends AccountType
 case object Savings extends AccountType

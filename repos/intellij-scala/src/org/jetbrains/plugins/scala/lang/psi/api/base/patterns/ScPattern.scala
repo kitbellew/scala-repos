@@ -58,6 +58,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * @author Alexander Podkhalyuzin
   */
+
 trait ScPattern extends ScalaPsiElement {
   def isIrrefutableFor(t: Option[ScType]): Boolean = false
 

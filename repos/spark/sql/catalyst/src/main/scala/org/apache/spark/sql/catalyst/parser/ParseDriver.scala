@@ -119,6 +119,7 @@ object ParseDriver extends Logging {
   * only accept capitalized tokens in case it is run from other tools like antlrworks which do not
   * have the ANTLRNoCaseStringStream implementation.
   */
+
 private[parser] class ANTLRNoCaseStringStream(input: String)
     extends ANTLRStringStream(input) {
   override def LA(i: Int): Int = {

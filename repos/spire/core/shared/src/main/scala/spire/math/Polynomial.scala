@@ -20,6 +20,7 @@ import spire.syntax.std.seq._
   * exponents given by Int values. Some operations require a Field[C]
   * to be in scope.
   */
+
 object Polynomial extends PolynomialInstances {
 
   def dense[@sp(Double) C: Semiring: Eq: ClassTag](

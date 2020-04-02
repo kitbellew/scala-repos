@@ -27,6 +27,7 @@ import scala.collection.mutable
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaGenerateAnonymousFunctionInsertHandler(
     params: Seq[ScType],
     braceArgs: Boolean)

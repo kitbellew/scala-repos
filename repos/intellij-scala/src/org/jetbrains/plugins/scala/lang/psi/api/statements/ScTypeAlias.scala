@@ -29,6 +29,7 @@ import scala.annotation.tailrec
   * Date: 22.02.2008
   * Time: 9:46:00
   */
+
 trait ScTypeAlias
     extends ScPolymorphicElement
     with ScMember

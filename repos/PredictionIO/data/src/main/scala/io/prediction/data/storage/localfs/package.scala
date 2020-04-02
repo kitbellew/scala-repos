@@ -12,6 +12,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package io.prediction.data.storage
 
 /** Local file system implementation of storage traits, supporting model data only

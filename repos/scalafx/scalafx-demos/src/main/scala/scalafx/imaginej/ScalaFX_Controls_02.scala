@@ -62,6 +62,7 @@ import scalafx.scene.text.Font
   *         http://docs.oracle.com/javafx/2.0/ui_controls/button.htm
   *
   */
+
 object ScalaFX_Controls_02 extends JFXApp {
   val label = new Label {
     font = Font.font("Times New Roman", 22)

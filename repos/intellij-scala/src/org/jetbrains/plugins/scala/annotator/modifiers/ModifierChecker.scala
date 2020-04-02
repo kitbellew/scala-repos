@@ -37,6 +37,7 @@ import scala.collection.mutable
   * @author Aleksander Podkhalyuzin
   * @since 25.03.2009
   */
+
 private[annotator] object ModifierChecker {
   def checkModifiers(ml: ScModifierList, holder: AnnotationHolder) {
     if (!ml.getParent.isInstanceOf[ScModifierListOwner]) { return }

@@ -99,6 +99,7 @@ trait DagOptimizer[P <: Platform[P]] {
       * All this shit is due to the scala compiler's inability to see the types
       * in case matches. I can see this is unneeded, why can't scala?
       */
+
     def source[T1 <: T](t: Source[P, T1]): (M, L[T]) = {
       val lit = ConstLit[T, N](t)
       (hm + (t -> lit), lit)

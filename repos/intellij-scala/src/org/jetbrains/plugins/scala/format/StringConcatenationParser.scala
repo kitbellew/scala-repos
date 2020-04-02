@@ -18,6 +18,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.{
 /**
   * Pavel Fatin
   */
+
 object StringConcatenationParser extends StringParser {
   def parse(element: PsiElement): Option[Seq[StringPart]] = {
     Some(element) collect {

@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 /**
   * @author Alexander Podkhalyuzin, ilyas
   */
+
 trait ScMatchStmt extends ScExpression {
   def expr: Option[ScExpression] = findChild(classOf[ScExpression])
 

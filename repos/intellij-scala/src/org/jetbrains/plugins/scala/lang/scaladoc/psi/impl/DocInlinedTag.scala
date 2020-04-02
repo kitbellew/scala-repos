@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocInlinedTag
   * User: Alexander Podkhalyuzin
   * Date: 22.07.2008
   */
+
 class ScDocInlinedTagImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScDocInlinedTag {

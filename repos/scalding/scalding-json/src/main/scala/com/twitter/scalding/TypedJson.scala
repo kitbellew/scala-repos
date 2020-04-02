@@ -22,6 +22,7 @@ import cascading.pipe.Pipe
   * We believe using a fixed schema, such as thrift or Avro is a much safer way to do long term productionized data
   * pipelines to minimize risks of incompatible changes to schema that render old data unreadable.
   */
+
 object TypedJson {
   private implicit val formats = native.Serialization.formats(NoTypeHints)
   private def caseClass2Json[A <: AnyRef](implicit

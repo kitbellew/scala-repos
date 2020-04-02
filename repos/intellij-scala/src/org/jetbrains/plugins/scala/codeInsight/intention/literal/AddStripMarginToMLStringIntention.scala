@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.util.MultilineStringUtil
   * User: Dmitry Naydanov
   * Date: 4/2/12
   */
+
 class AddStripMarginToMLStringIntention extends PsiElementBaseIntentionAction {
   def isAvailable(
       project: Project,

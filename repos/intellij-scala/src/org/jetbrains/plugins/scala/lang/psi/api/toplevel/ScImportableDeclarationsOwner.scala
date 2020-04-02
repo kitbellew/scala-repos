@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 /**
   * @author ilyas
   */
+
 trait ScImportableDeclarationsOwner extends ScalaPsiElement {
   self: ScTypedDefinition =>
 

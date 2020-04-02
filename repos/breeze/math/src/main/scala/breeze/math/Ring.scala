@@ -21,6 +21,7 @@ import breeze.linalg
   *
   * @author dlwh
   */
+
 trait Ring[@specialized(Int, Short, Long, Float, Double) V]
     extends Semiring[V] {
 

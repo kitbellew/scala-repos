@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.project._
   * User: Alexander Podkhalyuzin
   * Date: 10.02.2009
   */
+
 class ScalaConsoleRunConfigurationFactory(val typez: ConfigurationType)
     extends ConfigurationFactory(typez) {
   def createTemplateConfiguration(project: Project): RunConfiguration = {

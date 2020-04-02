@@ -17,6 +17,7 @@ package script
   *  @version 1.0, 10/05/2004
   *  @since   2.8
   */
+
 @deprecated("Scripting is deprecated.", "2.11.0")
 sealed abstract class Location
 

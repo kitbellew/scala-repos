@@ -36,7 +36,7 @@ object Test {
       assert(c == "2001")
     }
     for (Regex.Groups(a, b, c) <- (
-           Date findAllIn "1/1/2001 marks the start of the millennium. 31/12/2000 doesn't."
+             Date findAllIn "1/1/2001 marks the start of the millennium. 31/12/2000 doesn't."
          ).matchData) {
       assert(a == "1" || a == "31")
       assert(b == "1" || b == "12")

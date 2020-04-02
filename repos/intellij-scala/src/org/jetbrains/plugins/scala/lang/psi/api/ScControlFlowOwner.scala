@@ -18,6 +18,7 @@ import scala.collection.mutable
   * Represents elements with control flow cached
   * @author ilyas
   */
+
 trait ScControlFlowOwner extends ScalaPsiElement {
 
   private val myControlFlowCache = mutable

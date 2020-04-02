@@ -18,6 +18,7 @@ import scala.collection.mutable.ArrayBuffer
   * @author Ksenia.Sautina
   * @since 10/23/12
   */
+
 class WorksheetFoldingBuilder extends FoldingBuilder {
 
   def getPlaceholderText(node: ASTNode): String = {

@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.util.TestUtils
   * User: Alexander Podkhalyuzin
   * Date: 03.08.2009
   */
+
 abstract class ScalaFixtureTestCase extends CodeInsightFixtureTestCase {
 
   protected def rootPath = TestUtils.getTestDataPath + "/"

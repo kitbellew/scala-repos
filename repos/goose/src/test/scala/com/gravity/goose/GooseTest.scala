@@ -8,6 +8,7 @@ import org.junit.Assert._
   * User: jim
   * Date: 8/14/11
   */
+
 class GooseTest {
 
   @Test

@@ -28,9 +28,9 @@ private[forum] final class TopicApi(
       troll: Boolean): Fu[Option[(Categ, Topic, Paginator[Post])]] =
     for {
       data ← (for {
-        categ ← optionT(CategRepo bySlug categSlug)
-        topic ← optionT(TopicRepo(troll).byTree(categSlug, slug))
-      } yield categ -> topic).run
+          categ ← optionT(CategRepo bySlug categSlug)
+          topic ← optionT(TopicRepo(troll).byTree(categSlug, slug))
+        } yield categ -> topic).run
       res ← data ?? {
         case (categ, topic) =>
           lila.mon.forum.topic.view()

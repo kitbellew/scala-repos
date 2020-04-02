@@ -34,6 +34,7 @@ trait Function5[-T1, -T2, -T3, -T4, -T5, +R] extends AnyRef {
     *
     *  @return   a function `f` such that `f((x1, x2, x3, x4, x5)) == f(Tuple5(x1, x2, x3, x4, x5)) == apply(x1, x2, x3, x4, x5)`
     */
+
   @annotation.unspecialized
   def tupled: Tuple5[T1, T2, T3, T4, T5] => R = {
     case Tuple5(x1, x2, x3, x4, x5) => apply(x1, x2, x3, x4, x5)

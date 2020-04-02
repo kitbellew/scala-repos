@@ -47,6 +47,7 @@ import scala.util.Sorting
   * User: Alexander Podkhalyuzin
   * Date: 11.01.2010
   */
+
 object ScalaExtractMethodUtils {
   def createMethodFromSettings(
       settings: ScalaExtractMethodSettings): ScFunction = {

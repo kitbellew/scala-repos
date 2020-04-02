@@ -9,6 +9,7 @@ import org.junit.Assert
 /**
   * Pavel Fatin
   */
+
 class ScLiteralTest extends SimpleTestCase {
   def testNullLiteral() { assertTypeIs("null", types.Null) }
 

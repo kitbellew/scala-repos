@@ -12,6 +12,7 @@ import com.intellij.psi.javadoc.PsiDocTag
   * User: Alexander Podkhalyuzin
   * Date: 22.07.2008
   */
+
 trait ScDocTag extends ScalaPsiElement with PsiDocTag {
   def getCommentDataText(): String
 

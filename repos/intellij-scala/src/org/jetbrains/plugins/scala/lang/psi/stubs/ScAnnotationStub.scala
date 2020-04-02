@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScAnnotation
   * User: Alexander Podkhalyuzin
   * Date: 22.06.2009
   */
+
 trait ScAnnotationStub extends StubElement[ScAnnotation] {
   def getName: String
 

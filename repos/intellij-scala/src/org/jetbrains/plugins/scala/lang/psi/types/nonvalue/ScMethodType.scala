@@ -19,6 +19,7 @@ import scala.collection.immutable.{HashMap, HashSet}
 /**
   * @author ilyas
   */
+
 /**
   * This is internal type, no expression can have such type.
   */

@@ -22,6 +22,7 @@ import org.scalacheck.Prop
   *
   * @author dlwh
   */
+
 trait TensorSpaceTestBase[V, I, S] extends MutableModuleTestBase[V, S] {
   implicit val space: MutableEnumeratedCoordinateField[V, I, S]
 

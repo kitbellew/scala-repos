@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScFunction
   * User: Alexander Podkhalyuzin
   * Date: 14.10.2008
   */
+
 class ScFunctionNameIndex extends StringStubIndexExtension[ScFunction] {
   override def get(
       key: String,

@@ -257,7 +257,7 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
 
       for {
         _ <- (posts.schema ++ categories.schema ++ defaultTest
-          .schema ++ noDefaultTest.schema ++ typeTest.schema).create
+            .schema ++ noDefaultTest.schema ++ typeTest.schema).create
         _ <- createModel(ignoreInvalidDefaults = false).map(_.assertConsistency)
         tables <- tdb.profile.defaultTables
         _ <- createModel(Some(tables), ignoreInvalidDefaults = false)

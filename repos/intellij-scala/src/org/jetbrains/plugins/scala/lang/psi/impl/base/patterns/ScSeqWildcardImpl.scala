@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.patterns._
 /**
   * @author ilyas
   */
+
 class ScSeqWildcardImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScSeqWildcard {

@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.patterns.{
   * @author Alexander Podkhalyuzin
   * Date: 06.03.2008
   */
+
 /*
  * Enumerator ::= Generator
  *              | Guard

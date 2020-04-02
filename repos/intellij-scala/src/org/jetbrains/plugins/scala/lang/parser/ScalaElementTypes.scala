@@ -66,6 +66,7 @@ object ScalaElementTypes {
   /** ***********************************************************************************/
   /************************* PARAMETERS OF CLASS AND FUNCTIONS *************************/
   /** ***********************************************************************************/
+
   val PARAM_TYPE = new ScalaElementType("parameter type")
   val PARAM = new ScParameterElementType
   val PARAM_CLAUSE = new ScParamClauseElementType
@@ -116,6 +117,7 @@ object ScalaElementTypes {
   /** ***********************************************************************************/
   /*********************************** IDENTIFIER **************************************/
   /** ***********************************************************************************/
+
   val UNIT_EXPR = new ScalaElementType("unit expression")
   val IDENTIFIER_LIST = new ScIdListElementType
   val FIELD_ID = new ScFieldIdElementType
@@ -124,6 +126,7 @@ object ScalaElementTypes {
   /** ***********************************************************************************/
   /********************************* IMPORT GROUP **************************************/
   /** ***********************************************************************************/
+
   val IMPORT_SELECTOR = new ScImportSelectorElementType
   val IMPORT_SELECTORS = new ScImportSelectorsElementType
   val IMPORT_EXPR = new ScImportExprElementType
@@ -172,11 +175,13 @@ object ScalaElementTypes {
   /** ***********************************************************************************/
   /******************************* MODIFIERS AND ATTRIBUTES ****************************/
   /** ***********************************************************************************/
+
   /******************* modifiers **********************/
   val MODIFIERS = new ScModifiersElementType("moifiers")
   val ACCESS_MODIFIER = new ScAccessModifierElementType
 
   /******************* annotation *********************/
+
   val NAME_VALUE_PAIR = new ScalaElementType("name value pair")
   val ANNOTATION_EXPR = new ScalaElementType("annotation expression")
   val ANNOTATION = new ScAnnotationElementType
@@ -248,6 +253,7 @@ object ScalaElementTypes {
   /** ***********************************************************************************/
   /************************************** PATTERNS *************************************/
   /** ***********************************************************************************/
+
   val TUPLE_PATTERN = new ScalaElementType("Tuple Pattern")
   val SEQ_WILDCARD = new ScalaElementType("Sequence Wildcard")
   val CONSTRUCTOR_PATTERN = new ScalaElementType("Constructor Pattern")
@@ -268,6 +274,7 @@ object ScalaElementTypes {
   val PATTERN_IN_PARENTHESIS = new ScalaElementType("pattern in parenthesis")
 
   /************************************** TYPE PATTERNS ********************************/
+
   val ARG_TYPE_PATTERN = new ScalaElementType("Argument type pattern")
   val ARG_TYPE_PATTERNS = new ScalaElementType("Argument type patterns")
   val TYPE_PATTERN_ARGS = new ScalaElementType("Type pattern arguments")
@@ -280,6 +287,7 @@ object ScalaElementTypes {
   val REFINEMENT = new ScalaElementType("refinement")
 
   /*************************************** XML *************************************/
+
   val XML_EXPR = new ScalaElementType("Xml expr")
   val XML_START_TAG = new ScalaElementType("Xml start tag")
   val XML_END_TAG = new ScalaElementType("Xml end tag")

@@ -49,6 +49,7 @@ import scala.reflect.NameTransformer
 /**
   * @author Nikolay.Tropin
   */
+
 class ScalaCollectionRenderer
     extends CompoundReferenceRenderer(
       NodeRendererSettings.getInstance(),

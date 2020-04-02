@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.top.template.{
   * Date: 06.03.2008
   * Time: 9:31:16
   */
+
 /*
  * ClassTemplate ::= [EarlyDefs] ClassParents [TemplateBody]
  *                 | TemplateBody (for 'new' statement)

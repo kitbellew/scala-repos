@@ -793,6 +793,7 @@ trait ColumnarTableModule[M[+_]]
     /**
       * Folds over the table to produce a single value (stored in a singleton table).
       */
+
     def reduce[A](reducer: Reducer[A])(implicit monoid: Monoid[A]): M[A] = {
       def rec(stream: StreamT[M, A], acc: A): M[A] = {
         stream.uncons flatMap {

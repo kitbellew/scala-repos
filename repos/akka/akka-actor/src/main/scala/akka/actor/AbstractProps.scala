@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.actor
 
 import java.lang.reflect.{Modifier, ParameterizedType, TypeVariable}

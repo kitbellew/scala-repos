@@ -11,6 +11,7 @@ import scala.collection.Set
 /**
   * @author Alexander Podkhalyuzin
   */
+
 /**
   * This class mark processor that only implicit object important among all PsiClasses
   */

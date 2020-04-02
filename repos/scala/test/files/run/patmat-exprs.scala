@@ -102,6 +102,7 @@ trait Pattern {
     * Simple expression interpreter with some basic symbolic manipulation.
     * Able to evaluate derivatives.
     */
+
   trait Expr[T] {
 
     import Expr._

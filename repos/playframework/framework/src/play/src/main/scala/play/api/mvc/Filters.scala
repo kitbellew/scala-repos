@@ -127,6 +127,7 @@ class WithFilters(filters: EssentialFilter*) extends GlobalSettings {
 /**
   * Compose the action and the Filters to create a new Action
   */
+
 object FilterChain {
   def apply[A](
       action: EssentialAction,

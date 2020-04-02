@@ -9,6 +9,7 @@ import org.jetbrains.plugins.scala.finder.ScalaSourceFilterScope
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScClassNameInPackageIndex extends StringStubIndexExtension[PsiClass] {
   override def get(
       fqn: String,

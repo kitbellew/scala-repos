@@ -12,6 +12,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Alexander Podkhalyuzin
   * Date: 11.01.2010
   */
+
 class ScalaExtractMethodSettings(
     val methodName: String,
     val parameters: Array[ExtractMethodParameter],

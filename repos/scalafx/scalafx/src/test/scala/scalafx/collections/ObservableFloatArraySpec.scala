@@ -51,6 +51,7 @@ class ObservableFloatArraySpec
   /**
     * Test trait for instance testing.
     */
+
   trait InstanceTests {
     val array0: Array[Float] = Array.empty
     val array1 = Array(4.0f, 5.0f, 6.0f, 7.0f)

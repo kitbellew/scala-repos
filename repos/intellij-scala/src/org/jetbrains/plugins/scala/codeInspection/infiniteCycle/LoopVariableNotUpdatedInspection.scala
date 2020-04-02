@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScVariable
 /**
   * Pavel Fatin
   */
+
 class LoopVariableNotUpdatedInspection
     extends AbstractInspection(
       "LoopVariableNotUpdatedInspection",

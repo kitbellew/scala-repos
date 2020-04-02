@@ -24,6 +24,7 @@ import scala.util.control.NonFatal
   * currently throws if it's missing. The (temporary) "fix" is to populate this metadata
   * by setting all structOrUnionType fields to UNION.
   */
+
 /**
   * The same as ParquetScroogeScheme, but sets the record convert to Parquet346ScroogeRecordConverter
   */

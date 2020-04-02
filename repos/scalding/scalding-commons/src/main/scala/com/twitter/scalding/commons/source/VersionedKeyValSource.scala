@@ -39,6 +39,7 @@ import scala.collection.JavaConverters._
   * Source used to write key-value pairs as byte arrays into a versioned store.
   * Supports incremental updates via the monoid on V.
   */
+
 object VersionedKeyValSource {
   val defaultVersionsToKeep = 3
 

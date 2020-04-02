@@ -26,6 +26,7 @@ import com.twitter.util.Future
   * @author Sam Ritchie
   * @author Oscar Boykin
   */
+
 class SideEffectStore[K, V](store: MergeableStore[K, V])(
     sideEffectFn: K => Future[Unit])
     extends MergeableStore[K, V] {

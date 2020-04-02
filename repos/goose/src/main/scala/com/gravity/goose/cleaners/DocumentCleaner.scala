@@ -36,6 +36,7 @@ trait DocumentCleaner {
     * This is the cleaning phase that will try to remove comments, known ad junk, social networking divs
     * other things that are known to not be content related.
     */
+
   import DocumentCleaner._
 
   def clean(article: Article): Document = {

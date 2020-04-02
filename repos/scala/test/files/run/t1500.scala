@@ -5,6 +5,7 @@ object Test {
   /**
     *  Type inference overlooks constraints posed by type parameters in annotations on types.
     */
+
   val testCode = """
   
     class posingAs[A] extends annotation.TypeConstraint

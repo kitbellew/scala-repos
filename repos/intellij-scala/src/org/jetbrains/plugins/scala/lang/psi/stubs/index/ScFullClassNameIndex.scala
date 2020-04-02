@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.finder.ScalaSourceFilterScope
 /**
   * @author ilyas
   */
+
 class ScFullClassNameIndex extends IntStubIndexExtension[PsiClass] {
 
   override def get(

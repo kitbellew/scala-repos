@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.lang.psi.ScalaPsiElement
   * User: Dmitry Naidanov
   * Date: 11/14/11
   */
+
 trait ScDocSyntaxElement extends ScalaPsiElement {
   private var flags: Int = 0
 

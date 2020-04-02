@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 /**
   * Pavel Fatin
   */
+
 class FormattedStringParserTest extends SimpleTestCase {
   def testEmpty() { assertMatches(parse("")) { case Nil => } }
 

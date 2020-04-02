@@ -5,6 +5,7 @@ import com.intellij.psi.{PsiFile, PsiMember}
 /**
   * Pavel Fatin
   */
+
 object ContainingFile {
   def unapply(e: PsiMember): Option[PsiFile] = {
     if (e == null) { None }

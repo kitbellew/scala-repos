@@ -177,6 +177,7 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     Join w 2 ints codegen=false              7159 / 7224         14.6          68.3       1.0X
     Join w 2 ints codegen=true               1135 / 1197         92.4          10.8       6.3X
       */
+
     val dim3 = broadcast(
       sqlContext.range(M)
         .selectExpr("id as k1", "id as k2", "cast(id as string) as v"))
@@ -207,6 +208,7 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     outer join w long codegen=false        15280 / 16497          6.9         145.7       1.0X
     outer join w long codegen=true            769 /  796        136.3           7.3      19.9X
       */
+
     runBenchmark("semi join w long", N) {
       sqlContext.range(N)
         .join(dim, (col("id") bitwiseAND M) === col("k"), "leftsemi").count()
@@ -236,6 +238,7 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     merge join codegen=false                 1588 / 1880          1.3         757.1       1.0X
     merge join codegen=true                  1477 / 1531          1.4         704.2       1.1X
       */
+
     runBenchmark("sort merge join", N) {
       val df1 = sqlContext.range(N)
         .selectExpr(s"(id * 15485863) % ${N * 10} as k1")

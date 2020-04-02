@@ -1742,6 +1742,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       *  Expr ::= implicit Id => Expr
       *  }}}
       */
+
     def implicitClosure(start: Offset, location: Location): Tree = {
       val param0 = convertToParam {
         atPos(in.offset) {
@@ -2860,6 +2861,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       }
     }
       */
+
     /** {{{
       *  FunDef ::= FunSig [`:' Type] `=' [`macro'] Expr
       *          |  FunSig [nl] `{' Block `}'
@@ -3479,6 +3481,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       } (in.offset)
     }
       */
+
     def localDef(implicitMod: Int): List[Tree] = {
       val annots = annotations(skipNewLines = true)
       val pos = in.offset

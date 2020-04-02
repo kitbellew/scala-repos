@@ -18,6 +18,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.ScLiteral
   * User: Dmitry Naydanov
   * Date: 3/31/12
   */
+
 class InterpolatedStringEnterHandler extends EnterHandlerDelegateAdapter {
   override def preprocessEnter(
       file: PsiFile,

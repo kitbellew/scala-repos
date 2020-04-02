@@ -18,6 +18,7 @@ import org.junit.Assert
   * User: Dmitry Naydanov
   * Date: 12/17/11
   */
+
 class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   private def generateByElement(docElement: PsiElement, assumedText: String) {
     val generatedText = QuickDocTest.quickDocGenerator

@@ -18,6 +18,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScClassParentsImpl private (
     stub: StubElement[ScTemplateParents],
     nodeType: IElementType,

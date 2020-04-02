@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.{
 /**
   * @author Alexander Podkhalyuzin
   */
+
 trait ScTypeParam
     extends ScalaPsiElement
     with ScPolymorphicElement

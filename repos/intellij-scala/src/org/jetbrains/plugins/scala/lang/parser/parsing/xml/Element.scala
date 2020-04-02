@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.parser.util.ParserPatcher
   * @author Alexander Podkhalyuzin
   * Date: 18.04.2008
   */
+
 /*
  * Element::= EmptyElementTag
  *            | STag Content ETag

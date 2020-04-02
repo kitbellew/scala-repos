@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.imports.ScImportExpr
   * @author Ksenia.Sautina
   * @since 4/10/12
   */
+
 class SingleImportInspection extends LocalInspectionTool {
   override def isEnabledByDefault: Boolean = true
 

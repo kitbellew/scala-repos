@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 /**
   * Pavel Fatin
   */
+
 sealed trait StringPart
 
 case class Text(s: String) extends StringPart {

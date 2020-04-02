@@ -22,4 +22,5 @@ package com.gravity.goose.cleaners
   * User: jim
   * Date: 8/16/11
   */
+
 class StandardDocumentCleaner extends DocumentCleaner {}

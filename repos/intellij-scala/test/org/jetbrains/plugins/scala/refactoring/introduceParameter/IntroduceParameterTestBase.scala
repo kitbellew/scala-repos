@@ -28,6 +28,7 @@ import org.jetbrains.plugins.scala.util.ScalaUtils
 /**
   * @author Alexander Podkhalyuzin
   */
+
 abstract class IntroduceParameterTestBase
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   protected def folderPath = baseRootPath() + "introduceParameter/"

@@ -16,6 +16,7 @@ import scala.collection.mutable.ListBuffer
   * @author Alexander Podkhalyuzin
   * Date: 06.03.2008
   */
+
 trait ScUnderscoreSection extends ScExpression {
   def bindingExpr: Option[ScExpression] = {
     findChildByClassScala(classOf[ScExpression]) match {

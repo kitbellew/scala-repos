@@ -286,6 +286,7 @@ trait Counter2Ops {
       }
     }
   }*/
+
   implicit def canMultiplyC2C1[K1, K2, V](implicit
       semiring: Semiring[V]): OpMulMatrix.Impl2[Counter2[K1, K2, V], Counter[
     K2,

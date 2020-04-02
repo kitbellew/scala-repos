@@ -18,6 +18,7 @@ import scala.collection.mutable
 /**
   * @author ilyas
   */
+
 class ReachingDefsTest extends LightCodeInsightFixtureTestCase {
   protected override def getBasePath =
     TestUtils.getTestDataPath + "/dataFlow/reachingDefs/"

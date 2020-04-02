@@ -20,6 +20,7 @@ import org.jetbrains.plugins.scala.ScalaFileType
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaIsCommentComplete extends CommentCompleteHandler {
   def isApplicable(
       comment: PsiComment,

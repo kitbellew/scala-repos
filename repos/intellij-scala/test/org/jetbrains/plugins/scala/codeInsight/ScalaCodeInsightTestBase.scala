@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.base.ScalaLightPlatformCodeInsightTestCaseAda
 /**
   * @author Alexander Podkhalyuzin
   */
+
 abstract class ScalaCodeInsightTestBase
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   protected override def setUp() {

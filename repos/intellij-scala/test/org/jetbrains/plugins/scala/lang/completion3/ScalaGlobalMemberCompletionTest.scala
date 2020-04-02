@@ -9,6 +9,7 @@ import org.junit.Assert
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaGlobalMemberCompletionTest extends ScalaCodeInsightTestBase {
   protected override def rootPath(): String =
     baseRootPath() + "completion3/globalMember"

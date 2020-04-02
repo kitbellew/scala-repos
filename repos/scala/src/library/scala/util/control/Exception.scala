@@ -30,6 +30,7 @@ import scala.language.implicitConversions
   *
   *  @author Paul Phillips
   */
+
 object Exception {
   type Catcher[+T] = PartialFunction[Throwable, T]
 

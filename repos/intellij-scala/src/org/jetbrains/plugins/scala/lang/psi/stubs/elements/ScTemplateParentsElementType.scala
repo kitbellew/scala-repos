@@ -25,6 +25,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Alexander Podkhalyuzin
   * Date: 17.06.2009
   */
+
 abstract class ScTemplateParentsElementType[Func <: ScTemplateParents](
     debugName: String)
     extends ScStubElementType[ScTemplateParentsStub, ScTemplateParents](

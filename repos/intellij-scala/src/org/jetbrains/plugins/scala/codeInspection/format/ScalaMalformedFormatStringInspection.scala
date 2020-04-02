@@ -37,9 +37,11 @@ import org.jetbrains.plugins.scala.format.{Injection, Span, _}
 
   // Interpolated strings ...
   */
+
 /**
   * Pavel Fatin
   */
+
 class ScalaMalformedFormatStringInspection extends AbstractInspection {
   def actionFor(holder: ProblemsHolder) = {
     case element =>

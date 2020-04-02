@@ -11,6 +11,7 @@ import com.intellij.util.containers.WeakHashMap
   * @author Ksenia.Sautina
   * @since 7/27/12
   */
+
 object ScalaConsoleInfo {
   private val NULL = (null, null, null)
   private val allConsoles = new WeakHashMap[Project, List[(

@@ -18,6 +18,7 @@ import com.intellij.psi.codeStyle.{
   * User: Alexander Podkhalyuzin
   * Date: 28.07.2008
   */
+
 class ScalaCodeStyleSettingsProvider extends CodeStyleSettingsProvider {
   override def getConfigurableDisplayName: String =
     ScalaBundle.message("title.scala.settings")

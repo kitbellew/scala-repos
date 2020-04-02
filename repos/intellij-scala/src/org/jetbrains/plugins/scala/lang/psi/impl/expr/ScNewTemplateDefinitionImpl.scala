@@ -38,6 +38,7 @@ import scala.collection.mutable.ArrayBuffer
   * @author Alexander Podkhalyuzin
   * Date: 06.03.2008
   */
+
 class ScNewTemplateDefinitionImpl private (
     stub: StubElement[ScTemplateDefinition],
     nodeType: IElementType,

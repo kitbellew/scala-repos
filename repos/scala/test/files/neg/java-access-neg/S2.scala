@@ -5,6 +5,7 @@ import a.b.J
 
 /** Variations of java-access-pos with us in a nested package.
   */
+
 /** Declaring "override" all the time.
   */
 class S1 extends J {

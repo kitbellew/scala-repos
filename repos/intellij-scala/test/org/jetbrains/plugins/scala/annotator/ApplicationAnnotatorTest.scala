@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.Compatibility
 /**
   * Pavel.Fatin, 18.05.2010
   */
+
 class ApplicationAnnotatorTest extends SimpleTestCase {
   final val Header = """
   class Seq[+A] 

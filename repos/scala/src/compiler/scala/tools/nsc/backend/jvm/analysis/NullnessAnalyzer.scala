@@ -31,6 +31,7 @@ import BytecodeUtils._
   * to be null in one branch, not null in the other. This will make use of alias tracking as well.
   * We still have to figure out how to do this exactly in the analyzer framework.
   */
+
 /**
   * Represents the nullness state for a local variable or stack value.
   *

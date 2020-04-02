@@ -246,6 +246,7 @@ trait Types {
     def dealias: Type
 
     /******* popular methods from subclasses *******/
+
     /** List of type arguments ingrained in this type reference.
       *  Depending on your use case you might or might not want to call `dealias` first.
       *
@@ -353,6 +354,7 @@ trait Types {
     def finalResultType: Type
 
     /******************* helpers *******************/
+
     /** Provides an alternate if type is NoType.
       *
       *  @group Helpers

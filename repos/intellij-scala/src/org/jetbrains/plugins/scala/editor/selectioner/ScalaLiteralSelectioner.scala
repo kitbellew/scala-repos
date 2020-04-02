@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.ScLiteral
 /**
   * @author ilyas
   */
+
 class ScalaLiteralSelectioner extends ExtendWordSelectionHandlerBase {
   def canSelect(e: PsiElement) =
     isStringLiteral(e) || isStringLiteral(e.getParent)

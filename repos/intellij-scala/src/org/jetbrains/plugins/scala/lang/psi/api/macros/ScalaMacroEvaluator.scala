@@ -29,6 +29,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.ScType
   * @author Mikhail.Mutcianko
   * date 19.12.14
   */
+
 class ScalaMacroEvaluator(project: Project)
     extends ProjectComponent
     with ScalaMacroTypeable {

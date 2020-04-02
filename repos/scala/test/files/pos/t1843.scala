@@ -3,6 +3,7 @@
   * ... Or Will It?
   *
   */
+
 object Crash {
   trait UpdateType[A]
   case class StateUpdate[A](updateType: UpdateType[A], value: A)

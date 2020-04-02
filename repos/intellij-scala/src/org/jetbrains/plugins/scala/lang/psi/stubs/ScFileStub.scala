@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
 /**
   * @author ilyas
   */
+
 trait ScFileStub extends PsiClassHolderFileStub[ScalaFile] {
 
   def packageName: String

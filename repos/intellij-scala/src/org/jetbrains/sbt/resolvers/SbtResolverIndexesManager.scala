@@ -24,6 +24,7 @@ import scala.collection.mutable
   * @author Nikolay Obedin
   * @since 7/25/14.
   */
+
 class SbtResolverIndexesManager(val testIndexesDir: Option[File])
     extends Disposable {
   import org.jetbrains.sbt.resolvers.SbtResolverIndexesManager._

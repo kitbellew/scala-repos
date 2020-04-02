@@ -18,6 +18,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.templates.ScExtendsBloc
   * User: Alexander Podkhalyuzin
   * Date: 10.09.2008
   */
+
 class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
   override def select(
       e: PsiElement,

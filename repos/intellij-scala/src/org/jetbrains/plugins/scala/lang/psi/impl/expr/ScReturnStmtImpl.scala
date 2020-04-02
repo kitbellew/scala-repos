@@ -20,6 +20,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScReturnStmtImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScReturnStmt {

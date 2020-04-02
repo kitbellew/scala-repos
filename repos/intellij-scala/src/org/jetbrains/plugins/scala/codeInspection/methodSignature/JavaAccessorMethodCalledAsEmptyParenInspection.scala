@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.resolve.processor.CollectMethodsProcesso
 /**
   * Pavel Fatin
   */
+
 class JavaAccessorMethodCalledAsEmptyParenInspection
     extends AbstractMethodSignatureInspection(
       "ScalaJavaAccessorMethodCalledAsEmptyParen",

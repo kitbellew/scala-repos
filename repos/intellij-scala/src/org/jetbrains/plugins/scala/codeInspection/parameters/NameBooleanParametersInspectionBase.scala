@@ -23,6 +23,7 @@ import scala.collection.Seq
   * @author Ksenia.Sautina
   * @since 5/10/12
   */
+
 abstract class NameBooleanParametersInspectionBase extends LocalInspectionTool {
 
   override def buildVisitor(

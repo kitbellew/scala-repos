@@ -4,6 +4,7 @@ package breeze.interpolation
   *
   * @author chrismedrela
   */
+
 import scala.reflect.ClassTag
 
 import breeze.linalg._

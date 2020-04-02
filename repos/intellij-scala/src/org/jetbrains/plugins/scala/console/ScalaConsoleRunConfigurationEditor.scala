@@ -10,6 +10,7 @@ import com.intellij.openapi.project.Project
   * User: Alexander Podkhalyuzin
   * Date: 10.02.2009
   */
+
 class ScalaConsoleRunConfigurationEditor(
     project: Project,
     configuration: ScalaConsoleRunConfiguration)

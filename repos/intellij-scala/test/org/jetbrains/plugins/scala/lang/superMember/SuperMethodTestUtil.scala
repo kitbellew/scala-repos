@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScMember
   * User: Alexander Podkhalyuzin
   * Date: 15.11.2008
   */
+
 object SuperMethodTestUtil {
   def transform(myFile: PsiFile, offset: Int): String = {
     var resa = ""

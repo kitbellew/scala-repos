@@ -7,6 +7,7 @@ import org.jetbrains.plugins.scala.testingSupport.test.AbstractTestFramework
   * @author Ksenia.Sautina
   * @since 5/15/12
   */
+
 class Specs2TestFramework extends AbstractTestFramework {
 
   def getDefaultSuperClass: String = "org.specs2.mutable.Specification"

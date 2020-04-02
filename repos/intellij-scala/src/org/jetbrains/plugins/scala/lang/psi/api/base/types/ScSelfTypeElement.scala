@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.{
 /**
   * @author ilyas, Alexander Podkhalyuzin
   */
+
 trait ScSelfTypeElement extends ScNamedElement with ScTypedDefinition {
   def typeElement: Option[ScTypeElement]
 

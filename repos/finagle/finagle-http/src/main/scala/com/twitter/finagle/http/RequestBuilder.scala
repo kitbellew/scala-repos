@@ -79,6 +79,7 @@ case class FileElement(
   * for more involved requests. For example, it support easy creation of POST request to submit
   * multipart web forms with `buildMultipartPost` and default form post with `buildFormPost`.
   */
+
 /**
   * Factory for [[com.twitter.finagle.http.RequestBuilder]] instances
   */

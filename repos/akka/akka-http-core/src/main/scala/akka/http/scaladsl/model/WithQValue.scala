@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.http.scaladsl.model
 
 /** Helper trait for objects that allow creating new instances with a modified qValue. */

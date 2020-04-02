@@ -24,6 +24,7 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaRefactoringUtil
 /**
   * Pavel.Fatin, 16.04.2010
   */
+
 class ShowTypeInfoAction extends AnAction(ScalaBundle.message("type.info")) {
 
   override def update(e: AnActionEvent) {

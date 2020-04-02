@@ -7,6 +7,7 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil
 /**
   * Pavel Fatin
   */
+
 object InterpolatedStringFormatter extends StringFormatter {
   def format(parts: Seq[StringPart]) = {
     val toMultiline = parts.exists {

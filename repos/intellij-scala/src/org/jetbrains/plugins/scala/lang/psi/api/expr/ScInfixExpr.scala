@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.types.ScTypeArgs
 /**
   * @author Alexander Podkhalyuzin
   */
+
 trait ScInfixExpr extends ScExpression with ScSugarCallExpr {
   def lOp: ScExpression =
     findChildrenByClassScala(classOf[ScExpression]).apply(0)

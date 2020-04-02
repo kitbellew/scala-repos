@@ -21,6 +21,7 @@ import org.junit.Assert._
   * User: Alexander Podkhalyuzin
   * Date: 06.04.2010
   */
+
 abstract class ScalaExtractMethodTestBase
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   private val startMarker = "/*start*/"

@@ -24,6 +24,7 @@ import poly._
   *
   * @author Miles Sabin
   */
+
 /**
   * Type class representing one-level generic queries.
   */

@@ -3,6 +3,7 @@ package akka.remoteinterface
 /**
   * Copyright (C) 2009-2011 Scalable Solutions AB <http://scalablesolutions.se>
   */
+
 import akka.actor.Actor
 import akka.event.EventHandler
 

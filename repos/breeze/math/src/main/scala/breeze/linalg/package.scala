@@ -146,6 +146,7 @@ package object linalg {
     *
     * @author dlwh,dramage,retronym,afwlehmann,lancelet
     */
+
   private[linalg] def requireNonEmptyMatrix[V](mat: Matrix[V]): Unit =
     if (mat.cols == 0 || mat.rows == 0) throw new MatrixEmptyException
 

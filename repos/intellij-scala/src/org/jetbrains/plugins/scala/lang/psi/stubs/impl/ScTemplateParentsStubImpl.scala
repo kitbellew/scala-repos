@@ -17,6 +17,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 /**
   * User: Alexander Podkhalyuzin
   */
+
 class ScTemplateParentsStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
     elemType: IStubElementType[_ <: StubElement[

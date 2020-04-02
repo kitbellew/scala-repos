@@ -22,6 +22,7 @@ import org.jetbrains.plugins.scala.worksheet.ui.WorksheetEditorPrinter
   * @author Dmitry Naydanov
   * @since 10/17/12
   */
+
 class RunMacrosheetAction extends AnAction with TopComponentAction {
   def createBlankEditor(
       project: Project,

@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.debugger.evaluation.ScalaCodeFragment
 /**
   * Pavel Fatin
   */
+
 object ReportHighlightingErrorQuickFix extends IntentionAction {
   def getText: String = ScalaBundle.message("report.highlighting.error.fix")
 

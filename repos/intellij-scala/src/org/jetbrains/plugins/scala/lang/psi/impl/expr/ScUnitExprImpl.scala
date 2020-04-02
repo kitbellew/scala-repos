@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 /**
   * @author ilyas, Alexander Podkhalyuzin
   */
+
 class ScUnitExprImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScUnitExpr {

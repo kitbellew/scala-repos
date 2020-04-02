@@ -47,6 +47,7 @@ import scalafx.scene.{Group, Node, PerspectiveCamera, Scene, SceneAntialiasing}
   * @author Peter Pilgrim (peter)
   * @author JavaFX SDK Team
   */
+
 object CubeSampleDemo extends JFXApp {
 
   var animation: Timeline = _

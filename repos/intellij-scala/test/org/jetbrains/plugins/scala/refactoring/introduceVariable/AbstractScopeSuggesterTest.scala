@@ -23,6 +23,7 @@ import org.junit.Assert
   * Created by user
   * on 10/15/15
   */
+
 abstract class AbstractScopeSuggesterTest
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   val BEGIN_MARKER: String = "/*begin*/"

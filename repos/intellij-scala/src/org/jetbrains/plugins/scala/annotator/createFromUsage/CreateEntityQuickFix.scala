@@ -35,6 +35,7 @@ import scala.util.{Failure, Success, Try}
 /**
   * Pavel Fatin
   */
+
 abstract class CreateEntityQuickFix(
     ref: ScReferenceExpression,
     entity: String,

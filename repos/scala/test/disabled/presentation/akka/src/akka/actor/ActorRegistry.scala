@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2011 Scalable Solutions AB <http://scalablesolutions.se>
   */
+
 package akka.actor
 
 import scala.collection.mutable.{ListBuffer, Map}
@@ -34,6 +35,7 @@ case class ActorUnregistered(actor: ActorRef) extends ActorRegistryEvent
   *
   * @author <a href="http://jonasboner.com">Jonas Bon&#233;r</a>
   */
+
 final class ActorRegistry private[actor] () extends ListenerManagement {
 
   private val actorsByUUID = new ConcurrentHashMap[Uuid, ActorRef]

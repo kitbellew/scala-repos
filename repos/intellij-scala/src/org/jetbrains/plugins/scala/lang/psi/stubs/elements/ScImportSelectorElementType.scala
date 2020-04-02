@@ -20,6 +20,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScImportSelectorStubImpl
   * User: Alexander Podkhalyuzin
   * Date: 20.06.2009
   */
+
 class ScImportSelectorElementType[Func <: ScImportSelector]
     extends ScStubElementType[ScImportSelectorStub, ScImportSelector](
       "import selector") {

@@ -7,6 +7,7 @@ import org.jetbrains.plugins.scala.base.ScalaFixtureTestCase
   * @author Alefas
   * @since 05.04.12
   */
+
 class LexerPerformanceTest extends ScalaFixtureTestCase {
   def testPerformance() {
     val text = """

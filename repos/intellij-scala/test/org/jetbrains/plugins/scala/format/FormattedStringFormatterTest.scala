@@ -10,6 +10,7 @@ import org.junit.Assert._
 /**
   * Pavel Fatin
   */
+
 class FormattedStringFormatterTest extends SimpleTestCase {
   def testEmpty() { assertEquals(call("", ""), format()) }
 

@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
 /**
   * Pavel.Fatin, 21.07.2010
   */
+
 class StringLiteralProcessor extends CopyPastePreProcessor {
   def preprocessOnCopy(
       file: PsiFile,

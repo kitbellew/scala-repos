@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElement
 /**
   * @author ilyas
   */
+
 sealed abstract class TypeResult[+T] {
   def map[U](f: T => U): TypeResult[U]
   def flatMap[U](f: T => TypeResult[U]): TypeResult[U]

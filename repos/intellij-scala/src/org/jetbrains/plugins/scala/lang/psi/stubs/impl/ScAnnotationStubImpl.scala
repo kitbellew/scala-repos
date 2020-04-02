@@ -17,6 +17,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScAnnotationStubImpl.EMPT
   * User: Alexander Podkhalyuzin
   * Date: 22.06.2009
   */
+
 class ScAnnotationStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
     elemType: IStubElementType[_ <: StubElement[

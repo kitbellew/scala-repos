@@ -9,6 +9,7 @@ import com.intellij.psi.{PsiElement, PsiFile}
 /**
   * Pavel Fatin
   */
+
 class RemoveElementQuickFix(element: PsiElement, description: String)
     extends IntentionAction {
   def getText = description

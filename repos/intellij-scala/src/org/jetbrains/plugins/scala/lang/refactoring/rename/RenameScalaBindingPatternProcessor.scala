@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.{ScValue, ScVariable}
   * Nikolay.Tropin
   * 1/20/14
   */
+
 class RenameScalaBindingPatternProcessor
     extends RenamePsiElementProcessor
     with ScalaRenameProcessor {

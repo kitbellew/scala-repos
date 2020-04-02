@@ -87,6 +87,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Alexander Podkhalyuzin
   * Date: 23.06.2008
   */
+
 object ScalaRefactoringUtil {
   def trimSpacesAndComments(
       editor: Editor,

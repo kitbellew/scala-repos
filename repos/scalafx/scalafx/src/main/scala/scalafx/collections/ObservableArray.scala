@@ -384,6 +384,7 @@ abstract class ObservableArray[
     *
     * @return This $OA.
     */
+
   override def result() = this.asInstanceOf[T]
 
   /**
@@ -405,6 +406,7 @@ abstract class ObservableArray[
     *
     * @param op Function that will handle this $OA's modifications data, to be activated when some change is made.
     */
+
   def onChange(op: (T, ObservableArray.Change) => Unit) {
     delegate.addListener {
       new jfxc.ArrayChangeListener[D] {
@@ -429,6 +431,7 @@ abstract class ObservableArray[
     *
     * @param op Function that will handle this $OA's modifications data, to be activated when some change is made.
     */
+
   def onChange(op: => Unit) {
     delegate.addListener {
       new jfxc.ArrayChangeListener[D] {

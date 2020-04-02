@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScTypeAlias
   * User: Alexander Podkhalyuzin
   * Date: 18.10.2008
   */
+
 trait ScTypeAliasStub extends NamedStub[ScTypeAlias] with ScMemberOrLocal {
   def isDeclaration: Boolean
 

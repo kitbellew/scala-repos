@@ -20,6 +20,7 @@ import scala.collection.mutable
 /**
   * @author Alexander Podkhalyuzin
   */
+
 final class ScalaCallerMethodsTreeStructure(
     project: Project,
     method: PsiMethod,
