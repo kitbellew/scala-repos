@@ -28,6 +28,7 @@ import java.io.Serializable
   * @author Sam Ritchie
   * @author Ashu Singhal
   */
+
 /**
   * This workaround is necessary because val parameters can't be
   * call-by-name.  We pass a function so that the metrics aren't

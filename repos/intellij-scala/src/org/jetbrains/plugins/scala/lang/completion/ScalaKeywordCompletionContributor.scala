@@ -34,6 +34,7 @@ import org.jetbrains.plugins.scala.lang.completion.lookups.LookupElementManager
   * User: Alexander Podkhalyuzin
   * Date: 17.09.2009
   */
+
 class ScalaKeywordCompletionContributor extends ScalaCompletionContributor {
   private def registerStandardCompletion(
       filter: ElementFilter,

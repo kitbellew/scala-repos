@@ -7,6 +7,7 @@ import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
   * @author Ksenia.Sautina
   * @since 6/6/12
   */
+
 class MergeIfToOrIntentionTest extends ScalaIntentionTestBase {
   val familyName = MergeIfToOrIntention.familyName
 

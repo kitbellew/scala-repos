@@ -111,7 +111,8 @@ class ServerBuilderTest
     when(ctx.m.codec.protocolLibraryName).thenReturn("fancy")
 
     val cfServer: CodecFactory[String, String]#Server = {
-      (_: ServerCodecConfig) => ctx.m.codec
+      (_: ServerCodecConfig) =>
+        ctx.m.codec
     }
 
     ServerBuilder().name("test").codec(cfServer).bindTo(loopback).build(svc)

@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.runner.BaseRunConfiguration
   * User: Alexander Podkhalyuzin
   * Date: 10.02.2009
   */
+
 class ScalaConsoleRunConfiguration(
     project: Project,
     configurationFactory: ConfigurationFactory,

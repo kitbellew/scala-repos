@@ -35,6 +35,7 @@ import com.twitter.summingbird.batch.{BatchID, Timestamp}
   * @author Oscar Boykin
   * @author Ian O Connell
   */
+
 object SBChillRegistrar {
 
   def injectionRegistrar[T: Manifest: Codec]: InjectionRegistrar[T] =

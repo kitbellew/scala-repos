@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
   */
+
 trait ScClassParameter
     extends ScParameter
     with ScModifierListOwner

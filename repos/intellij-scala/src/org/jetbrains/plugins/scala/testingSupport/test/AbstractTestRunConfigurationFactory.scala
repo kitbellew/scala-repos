@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.project._
   * User: Alexander Podkhalyuzin
   * Date: 03.05.2009
   */
+
 abstract class AbstractTestRunConfigurationFactory(val typez: ConfigurationType)
     extends ConfigurationFactory(typez) {
   override def createConfiguration(

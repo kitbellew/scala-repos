@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
   * User: Dmitry Naydanov
   * Date: 3/31/12
   */
+
 class InsertGapIntoStringIntention extends PsiElementBaseIntentionAction {
   import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes._
 

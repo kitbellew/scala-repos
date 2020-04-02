@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.templates.ScExtendsBloc
 /**
   * @author ilyas
   */
+
 trait ScExtendsBlockStub extends StubElement[ScExtendsBlock] {
   def getBaseClasses: Array[String]
 }

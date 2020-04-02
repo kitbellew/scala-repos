@@ -133,7 +133,8 @@ object SphinxDoc {
           s.log)
       },
       sphinxInputs <<= (sphinxInputs, preprocess) map {
-        (inputs, preprocessed) => inputs.copy(src = preprocessed)
+        (inputs, preprocessed) =>
+          inputs.copy(src = preprocessed)
       }
     )) ++ Seq(cleanFiles <+= target in preprocess in Sphinx)
 }

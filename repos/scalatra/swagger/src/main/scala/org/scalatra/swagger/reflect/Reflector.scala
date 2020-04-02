@@ -269,7 +269,8 @@ object Reflector {
       Option(
         compClass
           .getMethod("%s$%d".format(ConstructorDefault, argIndex + 1))) map {
-        meth => () => meth.invoke(compObj)
+        meth => () =>
+          meth.invoke(compObj)
       }
     }
   }

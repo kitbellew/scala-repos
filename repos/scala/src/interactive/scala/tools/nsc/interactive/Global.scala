@@ -28,6 +28,7 @@ import scala.reflect.internal.Chars.isIdentifierStart
   * does not clear the comments table at every new typer run (those
   * being many and close between in this context).
   */
+
 trait CommentPreservingTypers extends Typers {
   self: Analyzer =>
 

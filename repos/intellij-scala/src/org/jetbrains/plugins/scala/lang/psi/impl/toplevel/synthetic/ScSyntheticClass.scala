@@ -216,7 +216,8 @@ class ScSyntheticFunction(
       Seq.empty)
 
   val typeParams: Seq[ScSyntheticTypeParameter] = typeParameterNames.map {
-    name => new ScSyntheticTypeParameter(manager, name, this)
+    name =>
+      new ScSyntheticTypeParameter(manager, name, this)
   }
   override def typeParameters = typeParams
 

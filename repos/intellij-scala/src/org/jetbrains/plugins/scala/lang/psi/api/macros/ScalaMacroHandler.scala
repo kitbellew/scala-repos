@@ -19,6 +19,7 @@ package org.jetbrains.plugins.scala.lang.psi.api.macros
   * @author Mikhail.Mutcianko
   *         date 22.12.14
   */
+
 trait ScalaMacroHandler extends ScalaMacroExpandable {
   def name: String
   def className: String

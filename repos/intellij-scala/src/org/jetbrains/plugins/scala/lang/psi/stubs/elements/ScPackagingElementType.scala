@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.packaging.ScPackaging
 /**
   * @author ilyas
   */
+
 class ScPackagingElementType
     extends ScPackageContainerElementType[ScPackaging]("packaging") {
 

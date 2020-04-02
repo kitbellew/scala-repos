@@ -4,6 +4,7 @@ package com.twitter.finagle.http.codec
   * A simple channel handler to respond to "Expect: Continue" from
   * clients. It responds unconditionally to these.
   */
+
 import org.jboss.netty.channel.{
   SimpleChannelUpstreamHandler,
   Channels,

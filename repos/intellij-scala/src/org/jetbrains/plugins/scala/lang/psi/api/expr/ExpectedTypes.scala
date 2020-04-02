@@ -42,6 +42,7 @@ import scala.collection.mutable.ArrayBuffer
   *
   * Utility object to calculate expected type of any expression
   */
+
 private[expr] object ExpectedTypes {
 
   /**

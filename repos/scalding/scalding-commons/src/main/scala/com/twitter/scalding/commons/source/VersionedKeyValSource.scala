@@ -39,6 +39,7 @@ import scala.collection.JavaConverters._
   * Source used to write key-value pairs as byte arrays into a versioned store.
   * Supports incremental updates via the monoid on V.
   */
+
 object VersionedKeyValSource {
   val defaultVersionsToKeep = 3
 
@@ -222,7 +223,8 @@ class VersionedKeyValSource[K, V](
 
   override def transformForRead(pipe: Pipe): Pipe = {
     pipe.flatMap((keyField, valField) -> (keyField, valField)) {
-      pair: (Array[Byte], Array[Byte]) => checkedInversion(pair)
+      pair: (Array[Byte], Array[Byte]) =>
+        checkedInversion(pair)
     }
   }
 

@@ -35,6 +35,7 @@ import scala.util.{Try, Success, Failure}
 /**
   * Tests for Summingbird's Storm planner.
   */
+
 class PlannerSpec extends WordSpec {
   implicit def extractor[T]: TimeExtractor[T] = TimeExtractor(_ => 0L)
   private type MemoryDag = Dag[Memory]

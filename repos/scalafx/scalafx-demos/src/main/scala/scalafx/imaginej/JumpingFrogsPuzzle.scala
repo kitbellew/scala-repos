@@ -53,6 +53,7 @@ import scalafx.scene.shape.{Circle, Rectangle}
 /**
   * @author Luc Duponcheel <luc.duponcheel@gmail.com>
   */
+
 object Constants {
   //
   // absolute

@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.debugger.{
 /**
   * @author Nikolay.Tropin
   */
+
 class GetAllClassesTest extends GetAllClassesTestBase with ScalaVersion_2_11
 
 class GetAllClassesTest_212

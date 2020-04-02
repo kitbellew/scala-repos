@@ -19,6 +19,7 @@ if one of the following applies:
      or O.this, for some class O enclosing the reference. In addition, the restrictions
      for unqualified protected apply.
   */
+
 object E {
   val e = new E
   import e._

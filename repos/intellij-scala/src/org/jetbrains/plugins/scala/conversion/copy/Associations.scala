@@ -9,6 +9,7 @@ import com.intellij.openapi.util.TextRange
 /**
   * Pavel Fatin
   */
+
 case class Associations(associations: Seq[Association])
     extends TextBlockTransferableData
     with Cloneable {

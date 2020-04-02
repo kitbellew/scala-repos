@@ -65,6 +65,7 @@ trait ProtoUser[T <: ProtoUser[T]] extends Record[T] {
     * }
     * </pre>
     */
+
   lazy val firstName: StringField[T] = new MyFirstName(this, 32)
 
   protected class MyFirstName(obj: T, size: Int)

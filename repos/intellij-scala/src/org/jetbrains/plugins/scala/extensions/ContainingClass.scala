@@ -5,6 +5,7 @@ import com.intellij.psi.{PsiClass, PsiMember}
 /**
   * Pavel Fatin
   */
+
 object ContainingClass {
   def unapply(e: PsiMember): Option[PsiClass] = {
     if (e == null) {

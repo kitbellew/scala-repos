@@ -44,6 +44,7 @@ trait BaseForeignKey extends BaseMappedField {
   /**
     * get the object referred to by this foreign key
     */
+
   def dbKeyToTable: BaseMetaMapper
 
   def dbKeyToColumn: BaseMappedField

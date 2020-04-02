@@ -381,6 +381,7 @@ object Spool {
     * *:: constructs and deconstructs deferred tails
     * **:: constructs and deconstructs eager tails
     */
+
   class Syntax[A](tail: => Future[Spool[A]]) {
     def *::(head: A): Spool[A] = new LazyCons(head, tail)
   }

@@ -55,6 +55,7 @@ import scala.util.{Failure, Success, Try}
 /**
   * Pavel Fatin
   */
+
 package object extensions {
   implicit class PsiMethodExt(val repr: PsiMethod) extends AnyVal {
     import org.jetbrains.plugins.scala.extensions.PsiMethodExt._

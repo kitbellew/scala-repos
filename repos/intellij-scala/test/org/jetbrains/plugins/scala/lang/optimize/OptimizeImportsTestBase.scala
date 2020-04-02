@@ -19,6 +19,7 @@ import org.jetbrains.plugins.scala.util.ScalaUtils
   * User: Alexander Podkhalyuzin
   * Date: 30.06.2009
   */
+
 abstract class OptimizeImportsTestBase
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
 

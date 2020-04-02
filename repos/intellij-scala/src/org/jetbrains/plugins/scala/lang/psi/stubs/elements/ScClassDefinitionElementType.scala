@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScClass
 /**
   * @author ilyas
   */
+
 class ScClassDefinitionElementType
     extends ScTemplateDefinitionElementType[ScClass]("class definition") {
 

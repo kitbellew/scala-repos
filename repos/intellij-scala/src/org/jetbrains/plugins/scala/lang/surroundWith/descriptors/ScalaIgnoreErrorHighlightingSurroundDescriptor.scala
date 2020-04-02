@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.lang.surroundWith.surrounders.errorHighlighti
   * @author Alefas
   * @since 10.04.12
   */
+
 class ScalaIgnoreErrorHighlightingSurroundDescriptor
     extends SurroundDescriptor {
   def getElementsToSurround(

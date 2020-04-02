@@ -26,6 +26,7 @@ import scala.collection.JavaConverters._
   * @author Sam Ritchie
   * @author Ashu Singhal
   */
+
 private[summingbird] object ConfigBijection {
   implicit val fromMap: Bijection[Map[String, AnyRef], Configuration] =
     new Bijection[Map[String, AnyRef], Configuration] {

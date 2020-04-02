@@ -13,6 +13,7 @@ import scala.annotation.tailrec
 /**
   * @author ilyas
   */
+
 //wrapper over an identifier for variable declarations 'var v : T'
 trait ScFieldId extends ScTypedDefinition {}
 

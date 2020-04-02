@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.params._
   * @author Alexander Podkhalyuzin
   * Date: 22.05.2008
   */
+
 class ModifiersFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
     if (context.isInstanceOf[PsiComment])

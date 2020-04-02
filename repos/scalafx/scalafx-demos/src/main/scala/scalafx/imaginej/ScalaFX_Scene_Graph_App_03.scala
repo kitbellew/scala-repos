@@ -56,6 +56,7 @@ import scalafx.scene.shape.Rectangle
   * http://docs.oracle.com/javafx/2.0/scenegraph/jfxpub-scenegraph.htm
   *
   */
+
 object ScalaFX_Scene_Graph_App_03 extends JFXApp {
   val rectangle =
     new Rectangle {

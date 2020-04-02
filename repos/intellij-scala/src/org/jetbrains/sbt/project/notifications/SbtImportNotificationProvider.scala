@@ -32,6 +32,7 @@ import scala.collection.mutable
   * @author Nikolay Obedin
   * @since 3/24/15.
   */
+
 abstract class SbtImportNotificationProvider(
     project: Project,
     notifications: EditorNotifications)

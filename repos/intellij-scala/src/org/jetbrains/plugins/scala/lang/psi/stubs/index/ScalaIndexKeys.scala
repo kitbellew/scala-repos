@@ -25,6 +25,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
 /**
   * @author ilyas
   */
+
 object ScalaIndexKeys {
   val ALL_CLASS_NAMES: StubIndexKey[String, PsiClass] = StubIndexKey
     .createIndexKey("sc.all.class.names")

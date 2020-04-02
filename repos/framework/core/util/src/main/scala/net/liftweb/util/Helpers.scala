@@ -30,6 +30,7 @@ import scala.xml._
   * <li>XML bindings
   * </ul>
   */
+
 object Helpers
     extends TimeHelpers
     with StringHelpers

@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.templates.ScExtendsBloc
   * User: Alexander Podkhalyuzin
   * Date: 24.10.2008
   */
+
 class ScDirectInheritorsIndex extends StringStubIndexExtension[ScExtendsBlock] {
   override def get(
       int: String,

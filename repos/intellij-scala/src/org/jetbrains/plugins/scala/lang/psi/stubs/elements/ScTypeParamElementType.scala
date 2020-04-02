@@ -22,6 +22,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Alexander Podkhalyuzin
   * Date: 17.06.2009
   */
+
 class ScTypeParamElementType[Func <: ScTypeParam]
     extends ScStubElementType[ScTypeParamStub, ScTypeParam]("type parameter") {
   def serialize(stub: ScTypeParamStub, dataStream: StubOutputStream) {

@@ -34,6 +34,7 @@ import scala.collection.mutable.{ArrayBuffer, ListBuffer}
   * User: Alexander Podkhalyuzin
   * Date: 30.11.2009
   */
+
 class JavaCopyPastePostProcessor
     extends SingularCopyPastePostProcessor[TextBlockTransferableData] {
   private val Log = Logger.getInstance(classOf[JavaCopyPastePostProcessor])

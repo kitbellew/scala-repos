@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.parser.ScalaElementTypes
 /**
   * @author ilyas
   */
+
 object DummyASTNode extends TreeElement(ScalaElementTypes.DUMMY_ELEMENT) {
   def getText: String = null
   def removeRange(firstNodeToRemove: ASTNode, firstNodeToKeep: ASTNode) {}

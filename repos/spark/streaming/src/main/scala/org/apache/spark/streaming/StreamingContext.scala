@@ -768,6 +768,7 @@ class StreamingContext private[streaming] (
   * StreamingContext object contains a number of utility functions related to the
   * StreamingContext class.
   */
+
 object StreamingContext extends Logging {
 
   /**

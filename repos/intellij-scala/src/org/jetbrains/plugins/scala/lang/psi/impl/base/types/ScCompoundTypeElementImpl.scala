@@ -19,6 +19,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.{
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScCompoundTypeElementImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScCompoundTypeElement {

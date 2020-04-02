@@ -7,6 +7,7 @@ import java.beans.Introspector
 /**
   * @author ilyas
   */
+
 object StringUtil {
 
   def trimStart(s: String, prefix: String) =

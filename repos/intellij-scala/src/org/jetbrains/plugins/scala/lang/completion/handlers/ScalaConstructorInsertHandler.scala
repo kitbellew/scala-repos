@@ -33,6 +33,7 @@ import org.jetbrains.plugins.scala.overrideImplement.ScalaOIUtil
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
   def handleInsert(context: InsertionContext, item: LookupElement) {
     val editor = context.getEditor

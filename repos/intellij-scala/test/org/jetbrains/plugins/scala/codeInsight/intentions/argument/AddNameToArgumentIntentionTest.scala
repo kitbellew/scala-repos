@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
   * @author Ksenia.Sautina
   * @since 5/14/12
   */
+
 class AddNameToArgumentIntentionTest extends ScalaIntentionTestBase {
   def familyName = AddNameToArgumentIntention.familyName
 

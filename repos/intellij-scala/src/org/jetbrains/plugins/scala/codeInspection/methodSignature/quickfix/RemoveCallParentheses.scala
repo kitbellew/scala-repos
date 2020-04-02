@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 /**
   * Pavel Fatin
   */
+
 class RemoveCallParentheses(call: ScMethodCall)
     extends AbstractFixOnPsiElement("Remove call parentheses", call) {
   def doApplyFix(project: Project) {

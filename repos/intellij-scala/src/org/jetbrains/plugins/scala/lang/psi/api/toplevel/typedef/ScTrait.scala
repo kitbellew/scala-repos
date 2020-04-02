@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
   * @author Alexander Podkhalyuzin
   * @since 20.02.2008
   */
+
 trait ScTrait extends ScTypeDefinition {
   def getTraitToken: PsiElement = findFirstChildByType(ScalaTokenTypes.kTRAIT)
   def getObjectClassOrTraitToken = getTraitToken

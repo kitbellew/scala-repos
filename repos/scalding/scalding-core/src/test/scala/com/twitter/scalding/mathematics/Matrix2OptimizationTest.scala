@@ -614,7 +614,8 @@ object Matrix2Props extends Properties("Matrix2") {
     * the same overall costs as what is estimated in the optimization procedure
     */
   property("evaluate function returns the same cost as optimize") = forAll {
-    (a: Matrix2[Any, Any, Double]) => optimize(a)._1 == evaluate(optimize(a)._2)
+    (a: Matrix2[Any, Any, Double]) =>
+      optimize(a)._1 == evaluate(optimize(a)._2)
   }
 
   /**
@@ -629,14 +630,16 @@ object Matrix2Props extends Properties("Matrix2") {
     }
 
   property("cost of a random plan is <= a random one") = forAll {
-    (a: Matrix2[Any, Any, Double]) => optimize(a)._1 <= evaluate(a)
+    (a: Matrix2[Any, Any, Double]) =>
+      optimize(a)._1 <= evaluate(a)
   }
 
   /**
     * Sanity check
     */
   property("optimizing an optimized plan does not change it") = forAll {
-    (a: Matrix2[Any, Any, Double]) => optimize(a) == optimize(optimize(a)._2)
+    (a: Matrix2[Any, Any, Double]) =>
+      optimize(a) == optimize(optimize(a)._2)
   }
 
 }

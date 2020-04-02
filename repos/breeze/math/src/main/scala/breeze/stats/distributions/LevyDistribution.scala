@@ -26,6 +26,7 @@ import org.apache.commons.math3.random.{RandomGenerator, JDKRandomGenerator}
   *
   * @author stucchio
   */
+
 class LevyDistribution(
     mu: Double,
     c: Double,

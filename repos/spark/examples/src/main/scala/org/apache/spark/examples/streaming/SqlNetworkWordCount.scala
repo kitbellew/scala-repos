@@ -37,6 +37,7 @@ import org.apache.spark.streaming.{Seconds, StreamingContext, Time}
   * and then run the example
   *    `$ bin/run-example org.apache.spark.examples.streaming.SqlNetworkWordCount localhost 9999`
   */
+
 object SqlNetworkWordCount {
   def main(args: Array[String]) {
     if (args.length < 2) {

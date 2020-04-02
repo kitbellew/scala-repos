@@ -6,6 +6,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScExpression
 /**
   * @author Nikolay.Tropin
   */
+
 object ReverseMap extends SimplificationType() {
   override def hint: String = InspectionBundle.message("replace.reverse.map")
 

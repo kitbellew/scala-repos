@@ -578,7 +578,8 @@ case class IdentityValueSortedReduce[K, V1](
         if (valueSort.isInstanceOf[OrderedSerialization[_]])
           gb.mapStream[Boxed[V1], V1](
             Grouped.valueField -> Grouped.valueField) {
-            it: Iterator[Boxed[V1]] => it.map(_.get)
+            it: Iterator[Boxed[V1]] =>
+              it.map(_.get)
           }
         else
           gb

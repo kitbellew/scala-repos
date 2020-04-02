@@ -74,7 +74,8 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
   private def SexpConsP: Rule1[SexpCons] =
     rule {
       LeftBrace ~ SexpP ~ Whitespace ~ '.' ~ Whitespace ~ SexpP ~ RightBrace ~> {
-        (x: Sexp, y: Sexp) => SexpCons(x, y)
+        (x: Sexp, y: Sexp) =>
+          SexpCons(x, y)
       }
     }
 

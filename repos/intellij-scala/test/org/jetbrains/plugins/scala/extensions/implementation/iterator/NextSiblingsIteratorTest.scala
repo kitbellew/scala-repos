@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 /**
   * Pavel.Fatin, 11.05.2010
   */
+
 class NextSiblingsIteratorTest extends IteratorTestCase {
   def testEmpty() = {
     assertIterates("", parse("0 (1.1)").getFirstChild)

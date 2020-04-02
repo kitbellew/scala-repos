@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.expressions.{
   * @author Alexander Podkhalyuzin
   * Date: 13.03.2008
   */
+
 object ConstrBlock {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     val constrExprMarker = builder.mark

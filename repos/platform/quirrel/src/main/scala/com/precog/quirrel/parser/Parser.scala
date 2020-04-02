@@ -94,7 +94,8 @@ trait Parser extends RegexParsers with Filters with AST {
       }
 
       | """observe\b""".r ~ "(" ~ expr ~ "," ~ expr ~ ")" ^# {
-        (loc, _, _, e1, _, e2, _) => Observe(loc, e1, e2)
+        (loc, _, _, e1, _, e2, _) =>
+          Observe(loc, e1, e2)
       }
 
       | """import\b""".r ~ importSpec ~ expr ^# { (loc, _, s, e) =>
@@ -163,7 +164,8 @@ trait Parser extends RegexParsers with Filters with AST {
       }
 
       | """if\b""".r ~ expr ~ """then\b""".r ~ expr ~ """else\b""".r ~ expr ^# {
-        (loc, _, e1, _, e2, _, e3) => Cond(loc, e1, e2, e3)
+        (loc, _, e1, _, e2, _, e3) =>
+          Cond(loc, e1, e2, e3)
       }
 
       | expr ~ """where\b""".r ~ expr ^# { (loc, e1, _, e2) =>
@@ -241,7 +243,8 @@ trait Parser extends RegexParsers with Filters with AST {
   ) filter (precedence & arrayDefDeref & relateRelate)
 
   private lazy val importSpec: Parser[ImportSpec] = (namespace ~ "::" ~ "*" ^^ {
-    (p, _, _) => WildcardImport(p)
+    (p, _, _) =>
+      WildcardImport(p)
   }
     | namespace ^^ SpecificImport)
 
@@ -262,7 +265,8 @@ trait Parser extends RegexParsers with Filters with AST {
       })
 
   private lazy val formals: Parser[Vector[String]] = (formals ~ "," ~ id ^^ {
-    (fs, _, f) => fs :+ f
+    (fs, _, f) =>
+      fs :+ f
   }
     | id ^^ {
       Vector(_)
@@ -277,7 +281,8 @@ trait Parser extends RegexParsers with Filters with AST {
       })
 
   private lazy val actuals: Parser[Vector[Expr]] = (actuals ~ "," ~ expr ^^ {
-    (es, _, e) => es :+ e
+    (es, _, e) =>
+      es :+ e
   }
     | expr ^^ {
       Vector(_)

@@ -82,7 +82,8 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
     }
 
     "not gzip responses when not requested" in withApplication(Ok("hello")) {
-      implicit mat => checkNotGzipped(route(FakeRequest()).get, "hello")
+      implicit mat =>
+        checkNotGzipped(route(FakeRequest()).get, "hello")
     }
 
     "not gzip HEAD requests" in withApplication(Ok) { implicit mat =>
@@ -93,11 +94,13 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
     }
 
     "not gzip no content responses" in withApplication(NoContent) {
-      implicit mat => checkNotGzipped(makeGzipRequest, "")
+      implicit mat =>
+        checkNotGzipped(makeGzipRequest, "")
     }
 
     "not gzip not modified responses" in withApplication(NotModified) {
-      implicit mat => checkNotGzipped(makeGzipRequest, "")
+      implicit mat =>
+        checkNotGzipped(makeGzipRequest, "")
     }
 
     "gzip chunked responses" in withApplication(

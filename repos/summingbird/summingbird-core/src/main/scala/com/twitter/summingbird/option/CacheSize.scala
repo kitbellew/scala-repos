@@ -28,6 +28,7 @@ import scala.util.Random
   * @author Sam Ritchie
   * @author Ashu Singhal
   */
+
 case class CacheSize(lowerBound: Int, fuzz: Double = 0.2)
     extends java.io.Serializable {
   private def getFuzz(base: Int): Int =

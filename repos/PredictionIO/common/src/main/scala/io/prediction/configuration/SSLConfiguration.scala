@@ -12,11 +12,13 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package io.prediction.configuration
 
 /**
   * Created by ykhodorkovsky on 2/26/16.
   */
+
 import java.io.FileInputStream
 import java.security.KeyStore
 import javax.net.ssl.{KeyManagerFactory, SSLContext, TrustManagerFactory}

@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocComment
   * User: Dmitry Naidanov
   * Date: 11/19/11
   */
+
 class ScalaDocParserErrorInspection extends LocalInspectionTool {
   override def isEnabledByDefault: Boolean = true
 

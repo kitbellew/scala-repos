@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.ScNamedElement
   * @author Alexander Podkhalyuzin
   * Date: 07.03.2008
   */
+
 class ScExistentialClauseImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScExistentialClause {

@@ -61,8 +61,7 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
 
     val aPinned =
       for {
-        _ <-
-          (
+        _ <- (
             for {
               p1 <- IsPinned
               s1 <- GetSession
@@ -73,7 +72,7 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
               _ = p2 shouldBe true
               _ = s1 shouldBe s2
             } yield ()
-          ).withPinnedSession
+        ).withPinnedSession
         p3 <- IsPinned
         _ = p3 shouldBe false
       } yield ()

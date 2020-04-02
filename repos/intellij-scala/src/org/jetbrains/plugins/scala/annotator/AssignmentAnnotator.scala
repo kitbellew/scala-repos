@@ -21,6 +21,7 @@ import org.jetbrains.plugins.scala.lang.resolve.ResolvableReferenceExpression
 /**
   * Pavel.Fatin, 31.05.2010
   */
+
 trait AssignmentAnnotator {
   def annotateAssignment(
       assignment: ScAssignStmt,

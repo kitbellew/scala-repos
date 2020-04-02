@@ -214,10 +214,9 @@ private[simul] final class SimulApi(
           .withSimulId(simul.id)
           .withId(pairing.gameId)
           .start
-      _ ←
-        (GameRepo insertDenormalized game2) >>-
-          onGameStart(game2.id) >>-
-          sendTo(simul.id, actorApi.StartGame(game2, simul.hostId))
+      _ ← (GameRepo insertDenormalized game2) >>-
+        onGameStart(game2.id) >>-
+        sendTo(simul.id, actorApi.StartGame(game2, simul.hostId))
     } yield game2 -> hostColor
 
   private def update(simul: Simul) =

@@ -21,6 +21,7 @@ import org.jetbrains.sbt.project.modifier.SimpleBuildFileModifier
   * @author Ksenia.Sautina
   * @since 5/18/12
   */
+
 abstract class AbstractTestFramework extends JavaTestFramework {
   def isTestMethod(element: PsiElement): Boolean = false
 

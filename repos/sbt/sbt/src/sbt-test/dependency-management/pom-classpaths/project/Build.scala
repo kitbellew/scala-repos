@@ -10,7 +10,8 @@ object MyBuild extends Build {
       scalaVersion := "2.9.0-1",
       check <<= checkTask,
       managedClasspath in Provided <<= (classpathTypes, update) map {
-        (cpts, report) => Classpaths.managedJars(Provided, cpts, report)
+        (cpts, report) =>
+          Classpaths.managedJars(Provided, cpts, report)
       }
   )
 

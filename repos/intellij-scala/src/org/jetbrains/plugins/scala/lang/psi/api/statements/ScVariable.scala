@@ -27,6 +27,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 /**
   * @author Alexander Podkhalyuzin
   */
+
 trait ScVariable
     extends ScBlockStatement
     with ScMember

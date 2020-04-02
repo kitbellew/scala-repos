@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScFunction
 /**
   * Pavel Fatin
   */
+
 class JavaMutatorMethodOverridenAsParameterlessInspection
     extends AbstractMethodSignatureInspection(
       "ScalaJavaMutatorMethodOverridenAsParameterless",

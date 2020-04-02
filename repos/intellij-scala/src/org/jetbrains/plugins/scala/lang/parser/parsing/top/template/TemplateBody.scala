@@ -14,6 +14,7 @@ import scala.annotation.tailrec
   * @author Alexander Podkhalyuzin
   * Date: 08.02.2008
   */
+
 /*
  *  TemplateBody ::= '{' [SelfType] TemplateStat {semi TemplateStat} '}'
  */

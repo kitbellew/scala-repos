@@ -15,6 +15,7 @@ import com.intellij.psi.{PsiClass, PsiElement, _};
 /**
   * @author ilyas
   */
+
 trait PsiClassFake extends PsiClass with PsiReferenceList {
   //todo: this methods from PsiReferenceList to avoid NPE. It's possible for asking different roles, so we can
   //todo: have problems for simple implementation of them

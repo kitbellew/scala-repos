@@ -21,6 +21,7 @@ import com.twitter.summingbird._
 /**
   * @author Ian O Connell
   */
+
 trait ExecutionConfig[P <: Platform[P]] {
   // User supplied name for this job
   def name: String

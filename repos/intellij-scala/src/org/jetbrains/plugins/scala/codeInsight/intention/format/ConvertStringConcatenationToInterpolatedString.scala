@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.project._
 /**
   * Pavel Fatin
   */
+
 class ConvertStringConcatenationToInterpolatedString
     extends AbstractFormatConversionIntention(
       "Convert to interpolated string",

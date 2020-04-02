@@ -3,6 +3,7 @@ package com.twitter.finagle.netty3.channel
 /**
   * Dispatches channel events to a {{com.twitter.concurrent.Broker}}.
   */
+
 import org.jboss.netty.channel._
 
 import com.twitter.concurrent.{Broker, Offer}

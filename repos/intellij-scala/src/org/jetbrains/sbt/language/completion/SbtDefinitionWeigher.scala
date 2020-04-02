@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.completion.lookups.ScalaLookupItem
   * @author Nikolay Obedin
   * @since 7/10/14
   */
+
 class SbtDefinitionWeigher extends CompletionWeigher {
   def weigh(
       element: LookupElement,

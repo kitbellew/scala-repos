@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.types.TypeArgs
   * @author AlexanderPodkhalyuzin
   * Date: 03.03.2008
   */
+
 /*
  * InfixExpr ::= PrefixExpr
  *             | InfixExpr id [TypeArgs] [nl] InfixExpr

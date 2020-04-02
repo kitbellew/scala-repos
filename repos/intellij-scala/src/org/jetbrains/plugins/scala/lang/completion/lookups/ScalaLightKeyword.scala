@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.ScalaPsiElement
   * @author Alefas
   * @since 27.03.12
   */
+
 class ScalaLightKeyword private (manager: PsiManager, text: String)
     extends LightElement(manager, ScalaFileType.SCALA_LANGUAGE)
     with ScalaPsiElement {

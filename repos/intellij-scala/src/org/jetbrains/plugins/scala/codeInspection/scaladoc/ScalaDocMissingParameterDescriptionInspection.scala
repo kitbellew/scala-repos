@@ -17,6 +17,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocTag
   * User: Dmitry Naydanov
   * Date: 12/17/11
   */
+
 class ScalaDocMissingParameterDescriptionInspection
     extends LocalInspectionTool {
 

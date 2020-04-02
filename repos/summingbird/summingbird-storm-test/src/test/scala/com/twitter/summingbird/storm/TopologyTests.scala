@@ -48,6 +48,7 @@ import scala.collection.mutable.{
 /**
   * Tests for Summingbird's Storm planner.
   */
+
 class TopologyTests extends WordSpec {
   import MapAlgebra.sparseEquiv
 

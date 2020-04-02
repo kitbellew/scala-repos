@@ -32,6 +32,7 @@ trait Product7[+T1, +T2, +T3, +T4, +T5, +T6, +T7] extends Any with Product {
     *  @return  same as `._(n+1)`, for example `productElement(0)` is the same as `._1`.
     *  @throws  IndexOutOfBoundsException
     */
+
   @throws(classOf[IndexOutOfBoundsException])
   override def productElement(n: Int) =
     n match {

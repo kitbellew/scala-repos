@@ -59,7 +59,8 @@ class RequireOrderedSerializationTest extends WordSpec with Matchers {
             TypedTsv[(String, String)]("input"),
             List(("a", "a"), ("b", "b")))
           .sink[(String, String)](TypedTsv[(String, String)]("output")) {
-            outBuf => ()
+            outBuf =>
+              ()
           }
           .run
           .finish
@@ -75,7 +76,8 @@ class RequireOrderedSerializationTest extends WordSpec with Matchers {
           TypedTsv[(String, String)]("input"),
           List(("a", "a"), ("a", "b"), ("b", "b")))
         .sink[(String, String)](TypedTsv[(String, String)]("output")) {
-          outBuf => outBuf.toSet shouldBe Set(("a", "b"), ("b", "b"))
+          outBuf =>
+            outBuf.toSet shouldBe Set(("a", "b"), ("b", "b"))
         }
         .run
         .finish

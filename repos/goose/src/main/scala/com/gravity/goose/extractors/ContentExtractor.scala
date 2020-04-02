@@ -200,6 +200,7 @@ trait ContentExtractor {
     * // todo refactor this long method
     * @return
     */
+
   def calculateBestNodeBasedOnClustering(article: Article): Option[Element] = {
     trace(logPrefix + "Starting to calculate TopNode")
     val doc = article.doc

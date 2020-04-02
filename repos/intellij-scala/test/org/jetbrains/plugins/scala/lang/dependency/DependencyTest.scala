@@ -8,6 +8,7 @@ import org.junit.Assert
 /**
   * Pavel Fatin
   */
+
 class DependencyTest extends SimpleTestCase {
   def testClass() {
     assertDependenciesAre("""

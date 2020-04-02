@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaDefaultFileTemplateUsageInspection extends LocalInspectionTool {
   override def isEnabledByDefault: Boolean = true
 

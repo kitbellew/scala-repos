@@ -9,6 +9,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.{ScDesignatorType, ScType}
 /**
   * Pavel Fatin
   */
+
 object FormattedStringFormatter extends StringFormatter {
   def format(parts: Seq[StringPart]) = {
     val bindings = parts.collect {

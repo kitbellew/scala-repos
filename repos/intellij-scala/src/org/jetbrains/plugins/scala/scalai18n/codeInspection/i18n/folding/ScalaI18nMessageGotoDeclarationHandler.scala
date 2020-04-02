@@ -17,6 +17,7 @@ import org.jetbrains.plugins.scala.scalai18n.codeInspection.i18n.ScalaI18nUtil
   * @author Ksenia.Sautina
   * @since 7/17/12
   */
+
 class ScalaI18nMessageGotoDeclarationHandler
     extends GotoDeclarationHandlerBase {
   private final val KEY: Key[FoldingBuilder] =

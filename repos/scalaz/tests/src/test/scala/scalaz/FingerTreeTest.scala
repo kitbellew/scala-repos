@@ -47,7 +47,8 @@ object FingerTreeTest extends SpecLite {
   }
 
   "converting a stream to a finger-tree and back produces an equal stream" ! forAll {
-    (stream: Stream[Int]) => streamToTree(stream).toStream must_=== (stream)
+    (stream: Stream[Int]) =>
+      streamToTree(stream).toStream must_=== (stream)
   }
 
   "appending two trees works correctly" ! forAll {

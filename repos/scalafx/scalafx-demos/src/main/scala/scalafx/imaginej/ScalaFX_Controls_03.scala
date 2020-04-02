@@ -56,6 +56,7 @@ import scalafx.scene.layout.{HBox, VBox}
   *         http://docs.oracle.com/javafx/2.0/ui_controls/radio-button.htm
   *
   */
+
 object ScalaFX_Controls_03 extends JFXApp {
 
   val theToggleGroup = new ToggleGroup {}

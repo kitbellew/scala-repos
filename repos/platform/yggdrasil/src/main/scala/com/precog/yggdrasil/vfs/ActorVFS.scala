@@ -403,16 +403,15 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         for {
           // it's necessary to group by path then traverse since each path will respond to ingest independently.
           // -- a bit of a leak of implementation detail, but that's the actor model for you.
-          allResults <-
-            (
+          allResults <- (
               data groupBy {
                 case (offset, msg) =>
                   msg.path
               }
-            ).toStream traverse {
-              case (path, subset) =>
-                (projectionsActor ? IngestData(subset)).mapTo[WriteResult]
-            }
+          ).toStream traverse {
+            case (path, subset) =>
+              (projectionsActor ? IngestData(subset)).mapTo[WriteResult]
+          }
         } yield {
           val errors: List[ResourceError] = allResults.toList collect {
             case PathOpFailure(_, error) =>
@@ -569,7 +568,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           "Received request to find metadata for path %s".format(path.path))
         val requestor = sender
         val eio = VFSPathUtils.currentPathMetadata(baseDir, path) map {
-          pathMetadata => requestor ! PathChildren(path, Set(pathMetadata))
+          pathMetadata =>
+            requestor ! PathChildren(path, Set(pathMetadata))
         } leftMap { error =>
           requestor ! PathOpFailure(path, error)
         }

@@ -381,7 +381,8 @@ object DBIOAction {
       f: (T, T) => T)(implicit
       ec: ExecutionContext): DBIOAction[T, NoStream, E] =
     actions.foldLeft[DBIOAction[T, NoStream, E]](DBIO.successful(zero)) {
-      (za, va) => za.flatMap(z => va.map(v => f(z, v)))
+      (za, va) =>
+        za.flatMap(z => va.map(v => f(z, v)))
     }
 
   /** A DBIOAction that pins the current session */

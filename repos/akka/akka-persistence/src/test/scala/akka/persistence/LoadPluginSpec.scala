@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.persistence
 
 import akka.persistence.journal.inmem.InmemJournal

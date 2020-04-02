@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.ValueClassType
 /**
   * Pavel Fatin
   */
+
 object FinalClassInheritance extends AnnotatorPart[ScTemplateDefinition] {
   def kind = classOf[ScTemplateDefinition]
 

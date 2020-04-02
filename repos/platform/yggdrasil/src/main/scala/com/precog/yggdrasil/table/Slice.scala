@@ -223,7 +223,8 @@ trait Slice {
                     .toArray
                 new HomogeneousArrayColumn[BigDecimal] {
                   private val cols: Array[Int => BigDecimal] = numcols map {
-                    x => x(_)
+                    x =>
+                      x(_)
                   }
 
                   val tpe = CArrayType(CNum)
@@ -726,7 +727,8 @@ trait Slice {
     new Slice {
       val size = indices.size
       val columns: Map[ColumnRef, Column] = source.columns lazyMapValues {
-        col => cf.util.RemapIndices(indices).apply(col).get
+        col =>
+          cf.util.RemapIndices(indices).apply(col).get
       }
     }
 
@@ -806,7 +808,8 @@ trait Slice {
 
       val size = source.size
       val columns: Map[ColumnRef, Column] = source.columns lazyMapValues {
-        col => cf.util.filter(0, source.size, defined)(col).get
+        col =>
+          cf.util.filter(0, source.size, defined)(col).get
       }
     }
   }
@@ -858,7 +861,8 @@ trait Slice {
 
       lazy val size = retained.size
       lazy val columns: Map[ColumnRef, Column] = source.columns lazyMapValues {
-        col => (col |> cf.util.RemapIndices(retained)).get
+        col =>
+          (col |> cf.util.RemapIndices(retained)).get
       }
     }
   }
@@ -951,7 +955,8 @@ trait Slice {
 
       lazy val size = retained.size
       lazy val columns: Map[ColumnRef, Column] = source.columns lazyMapValues {
-        col => (col |> cf.util.RemapIndices(retained)).get
+        col =>
+          (col |> cf.util.RemapIndices(retained)).get
       }
     }
   }

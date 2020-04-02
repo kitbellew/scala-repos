@@ -45,13 +45,12 @@ case class Wald(mean: Double, shape: Double)(implicit rand: RandBasis = Rand)
     for {
       nu <- rand.gaussian(0, 1)
       y = nu * nu
-      x =
-        (
+      x = (
           mean
             + mean * mean * y * 0.5 / shape
             - 0.5 * mean / shape * math
               .sqrt(4 * mean * shape * y + mean * mean * y * y)
-        )
+      )
       z <- rand.uniform
     } yield {
       if (z <= mean / (mean + x))

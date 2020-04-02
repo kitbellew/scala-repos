@@ -443,7 +443,8 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                             // Extra split/take at the end is because we can only map to column level. While hstore and json column types
                             // will end up with deepeer paths, they cannot be queried against in PostgreSQL
                             val columns = jTypeToProperties(tpe, Set()).map {
-                              c => c.split('.').head
+                              c =>
+                                c.split('.').head
                             }
                             val query = Query(
                               "SELECT %s FROM %s".format(

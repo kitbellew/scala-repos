@@ -262,7 +262,8 @@ trait ApiControllerBase extends ControllerBase {
   get("/api/v3/repos/:owner/:repository/labels/:labelName")(
     referrersOnly { repository =>
       getLabel(repository.owner, repository.name, params("labelName")).map {
-        label => JsonFormat(ApiLabel(label, RepositoryName(repository)))
+        label =>
+          JsonFormat(ApiLabel(label, RepositoryName(repository)))
       } getOrElse NotFound()
     })
 

@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
   * @author Ksenia.Sautina
   * @since 5/12/12
   */
+
 class DeMorganLawIntentionTest extends ScalaIntentionTestBase {
   def familyName = DeMorganLawIntention.familyName
 

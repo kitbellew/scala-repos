@@ -122,7 +122,8 @@ object JacksonParser extends Logging {
         val writer = new ByteArrayOutputStream()
         Utils
           .tryWithResource(factory.createGenerator(writer, JsonEncoding.UTF8)) {
-            generator => generator.copyCurrentStructure(parser)
+            generator =>
+              generator.copyCurrentStructure(parser)
           }
         UTF8String.fromBytes(writer.toByteArray)
 

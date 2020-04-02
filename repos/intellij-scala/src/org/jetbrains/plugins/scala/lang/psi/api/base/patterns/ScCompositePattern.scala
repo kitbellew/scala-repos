@@ -8,4 +8,5 @@ package patterns;
 /**
   * @author ilyas
   */
+
 trait ScCompositePattern extends ScPattern {}

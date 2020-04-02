@@ -34,15 +34,14 @@ final class JsonView(
         me ?? {
           PlayerRepo.playerInfo(tour.id, _)
         }
-      stand <-
-        (myInfo, page) match {
-          case (_, Some(p)) =>
-            standing(tour, p)
-          case (Some(i), _) =>
-            standing(tour, i.page)
-          case _ =>
-            standing(tour, 1)
-        }
+      stand <- (myInfo, page) match {
+        case (_, Some(p)) =>
+          standing(tour, p)
+        case (Some(i), _) =>
+          standing(tour, i.page)
+        case _ =>
+          standing(tour, 1)
+      }
       playerInfoJson <-
         playerInfoExt ?? { pie =>
           playerInfo(pie).map(_.some)

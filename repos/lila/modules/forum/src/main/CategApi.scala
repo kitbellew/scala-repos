@@ -12,8 +12,7 @@ private[forum] final class CategApi(env: Env) {
   def list(teams: Set[String], troll: Boolean): Fu[List[CategView]] =
     for {
       categs ← CategRepo withTeams teams
-      views ←
-        (
+      views ← (
           categs map { categ =>
             env.postApi get (categ lastPostId troll) map { topicPost =>
               CategView(
@@ -27,7 +26,7 @@ private[forum] final class CategApi(env: Env) {
                 troll)
             }
           }
-        ).sequenceFu
+      ).sequenceFu
     } yield views
 
   def teamNbPosts(slug: String): Fu[Int] = CategRepo nbPosts teamSlug(slug)

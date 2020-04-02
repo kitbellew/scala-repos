@@ -20,6 +20,7 @@ import org.jetbrains.plugins.scala.macroAnnotations.{Cached, ModCount}
 /**
   * @author ilyas, Alexander Podkhalyuzin
   */
+
 class ScTupleTypeElementImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScTupleTypeElement {

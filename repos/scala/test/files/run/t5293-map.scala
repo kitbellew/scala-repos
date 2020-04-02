@@ -41,7 +41,8 @@ object Test extends App {
   def benchScalaPar(values: Iterable[(Int, Int)]) = {
     bench("Scala ParMap") {
       val m = new scala.collection.parallel.mutable.ParHashMap[Int, Int] map {
-        x => x
+        x =>
+          x
       }
 
       m ++= values

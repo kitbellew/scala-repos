@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScNameValuePairImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScNameValuePair {

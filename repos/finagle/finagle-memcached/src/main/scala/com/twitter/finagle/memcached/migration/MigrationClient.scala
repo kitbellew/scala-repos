@@ -287,7 +287,8 @@ trait FallbackRead extends Client {
     frontResult flatMap {
       case frontR if (frontR.misses.nonEmpty || frontR.failures.nonEmpty) =>
         backendClient.getResult(frontR.misses ++ frontR.failures.keySet) map {
-          backR => combineGetResult(frontR, backR)
+          backR =>
+            combineGetResult(frontR, backR)
         }
       case frontR =>
         Future.value(frontR)

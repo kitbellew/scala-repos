@@ -35,6 +35,7 @@ import scala.collection.mutable.ArrayBuffer
   * @author Ksenia.Sautina
   * @since 4/13/12
   */
+
 object IntroduceExplicitParameterIntention {
   def familyName = "Introduce explicit parameter"
 }

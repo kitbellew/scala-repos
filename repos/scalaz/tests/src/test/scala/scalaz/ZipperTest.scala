@@ -518,7 +518,8 @@ object ZipperTest extends SpecLite {
   }
 
   "findBy if given a function that returns None should not return anything" ! forAll {
-    z: Zipper[Int] => z.findBy(z => None)(x => x == z.focus).isEmpty
+    z: Zipper[Int] =>
+      z.findBy(z => None)(x => x == z.focus).isEmpty
   }
 
   val intZipperWithExistingElement: Gen[(Zipper[Int], Int)] =
@@ -616,7 +617,8 @@ object ZipperTest extends SpecLite {
   }
 
   "positions should return a zippers with focus on this" ! forAll {
-    z: Zipper[Int] => z.positions.focus must_=== (z)
+    z: Zipper[Int] =>
+      z.positions.focus must_=== (z)
   }
 
   "positions should return a zippers with all possible positions of a zipper" ! forAll {

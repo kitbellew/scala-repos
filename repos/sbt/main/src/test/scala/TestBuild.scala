@@ -153,11 +153,10 @@ object TestBuild {
       (ref, mp) => Nil)
     lazy val allFullScopes: Seq[Scope] =
       for {
-        (ref, p) <-
-          (Global, root.root) +: allProjects.map {
-            case (ref, p) =>
-              (Select(ref), p)
-          }
+        (ref, p) <- (Global, root.root) +: allProjects.map {
+          case (ref, p) =>
+            (Select(ref), p)
+        }
         t <- Global +: tasks.map(t => Select(t.key))
         c <- Global +: p.configurations.map(c => Select(ConfigKey(c.name)))
       } yield Scope(project = ref, config = c, task = t, extra = Global)

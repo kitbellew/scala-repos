@@ -57,6 +57,7 @@ trait Function2[
     *
     *  @return   a function `f` such that `f((x1, x2)) == f(Tuple2(x1, x2)) == apply(x1, x2)`
     */
+
   @annotation.unspecialized
   def tupled: Tuple2[T1, T2] => R = {
     case Tuple2(x1, x2) =>

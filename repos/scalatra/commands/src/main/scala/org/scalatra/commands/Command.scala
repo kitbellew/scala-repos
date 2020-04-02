@@ -39,6 +39,7 @@ import org.scalatra.util.conversion._
   * @version 0.1
   *
   */
+
 trait Command extends BindingSyntax with ParamsValueReaderProperties {
 
   type CommandTypeConverterFactory[T] <: TypeConverterFactory[T]

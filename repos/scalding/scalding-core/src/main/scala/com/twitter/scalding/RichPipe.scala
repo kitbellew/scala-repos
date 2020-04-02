@@ -757,7 +757,8 @@ class RichPipe(val pipe: Pipe)
         crossWithSmaller(total)
       }
     ).map(Fields.merge(f, '__total_for_normalize__) -> f) {
-      args: (Double, Double) => args._1 / args._2
+      args: (Double, Double) =>
+        args._1 / args._2
     }
   }
 

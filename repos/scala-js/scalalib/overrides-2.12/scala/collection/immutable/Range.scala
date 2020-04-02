@@ -495,6 +495,7 @@ class Range(val start: Int, val end: Int, val step: Int)
   /** Note: hashCode can't be overridden without breaking Seq's
     *  equals contract.
     */
+
   override def toString() = {
     val endStr =
       if (numRangeElements > Range

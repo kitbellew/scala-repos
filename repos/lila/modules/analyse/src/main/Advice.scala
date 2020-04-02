@@ -76,10 +76,9 @@ private[analyse] object CpAdvice {
     for {
       cp ← prev.score map (_.ceiled.centipawns)
       infoCp ← info.score map (_.ceiled.centipawns)
-      delta =
-        (infoCp - cp) |> { d =>
-          info.color.fold(-d, d)
-        }
+      delta = (infoCp - cp) |> { d =>
+        info.color.fold(-d, d)
+      }
       nag ←
         cpNags find {
           case (d, n) =>

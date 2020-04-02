@@ -22,6 +22,7 @@ import org.jetbrains.plugins.scala.util.MultilineStringUtil._
   * User: Dmitry Naydanov
   * Date: 2/27/12
   */
+
 class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
   private var wasInMultilineString: Boolean = false
   private var whiteSpaceAfterCaret: String = ""

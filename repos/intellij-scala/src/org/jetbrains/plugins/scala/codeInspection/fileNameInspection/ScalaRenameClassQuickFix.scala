@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTypeDefinitio
   * User: Alexander Podkhalyuzin
   * Date: 03.07.2009
   */
+
 class ScalaRenameClassQuickFix(clazz: ScTypeDefinition, name: String)
     extends AbstractFixOnPsiElement(
       "Rename Type Definition " + clazz.name + " to " + name,

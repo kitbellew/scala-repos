@@ -29,6 +29,7 @@ import scala.collection.JavaConverters._
   * @author Nikolay Obedin
   * @since 7/23/15.
   */
+
 class SbtAnnotatorTest extends AnnotatorTestBase with MockSbt {
 
   def test_0_12_4(): Unit = runTest("0.12.4", Expectations.sbt012)

@@ -12,6 +12,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package io.prediction.controller
 
 /** Extends a data class with this trait if you want PredictionIO to

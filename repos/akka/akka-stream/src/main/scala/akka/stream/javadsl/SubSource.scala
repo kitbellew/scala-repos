@@ -327,6 +327,7 @@ class SubSource[+Out, +Mat](
     *
     * '''Cancels when''' downstream cancels
     */
+
   /**
     * Ensure stream boundedness by limiting the number of elements from upstream.
     * If the number of incoming elements exceeds max, it will signal

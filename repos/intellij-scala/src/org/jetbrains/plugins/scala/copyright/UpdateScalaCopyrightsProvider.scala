@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class UpdateScalaCopyrightsProvider extends UpdateCopyrightsProvider {
   def createInstance(
       project: Project,

@@ -22,6 +22,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.ScEarlyDefinitionsStub
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
   */
+
 class ScEarlyDefinitionsImpl private (
     stub: StubElement[ScEarlyDefinitions],
     nodeType: IElementType,

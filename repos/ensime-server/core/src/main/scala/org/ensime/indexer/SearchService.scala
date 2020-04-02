@@ -140,7 +140,8 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
       val checksLookup: Map[String, FileCheck] =
         checks.map(check => (check.filename -> check)).toMap
       val basesWithChecks: Set[(FileObject, Option[FileCheck])] = bases.map {
-        base => (base, checksLookup.get(base.getName().getURI()))
+        base =>
+          (base, checksLookup.get(base.getName().getURI()))
       }
       Future
         .sequence(

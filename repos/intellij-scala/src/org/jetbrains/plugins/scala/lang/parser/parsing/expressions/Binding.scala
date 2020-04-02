@@ -12,9 +12,11 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.types.ParamType
   * @author Aleksander Podkhalyuzin
   * @date 05.04.2009
   */
+
 /**
   * Binding ::= (id | '_') [':' Type]
   */
+
 object Binding {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     val paramMarker = builder.mark

@@ -6,6 +6,7 @@ import com.intellij.codeInsight.completion.CompletionType
   * @author Alefas
   * @since 23.03.12
   */
+
 class ScalaCompletionOrderTest
     extends ScalaCompletionSortingTestCase(
       CompletionType.BASIC,

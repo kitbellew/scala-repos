@@ -44,6 +44,7 @@ import scala.collection.mutable
 /**
   * Author: ilyas, alefas
   */
+
 trait ScBlock
     extends ScExpression
     with ScDeclarationSequenceHolder

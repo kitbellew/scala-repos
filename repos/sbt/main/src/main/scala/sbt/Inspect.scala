@@ -36,7 +36,8 @@ object Inspect {
   def allKeyParser(s: State): Parser[AttributeKey[_]] = {
     val keyMap = Project.structure(s).index.keyMap
     token(Space ~> (ID !!! "Expected key" examples keyMap.keySet)) flatMap {
-      key => Act.getKey(keyMap, key, idFun)
+      key =>
+        Act.getKey(keyMap, key, idFun)
     }
   }
   val spacedKeyParser: State => Parser[ScopedKey[_]] =

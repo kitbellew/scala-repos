@@ -28,6 +28,7 @@ import scala.collection.JavaConverters._
 /**
   * @author Nikolay.Tropin
   */
+
 abstract class ScalaSuppressByLineCommentFix(key: HighlightDisplayKey)
     extends SuppressByCommentFix(key, classOf[ScalaPsiElement]) {
   override def createSuppression(

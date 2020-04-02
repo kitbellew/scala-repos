@@ -27,6 +27,7 @@ import _root_.scala.collection.mutable.ListBuffer
   * @author Alexander Podkhalyuzin
   * Date: 13.03.2008
   */
+
 class ScExistentialTypeElementImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScExistentialTypeElement {

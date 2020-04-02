@@ -109,7 +109,8 @@ trait Formats {
 
   def customSerializer(implicit format: Formats) =
     customSerializers.foldLeft(Map(): PartialFunction[Any, JValue]) {
-      (acc, x) => acc.orElse(x.serialize)
+      (acc, x) =>
+        acc.orElse(x.serialize)
     }
 
   def customDeserializer(implicit format: Formats) =
@@ -209,12 +210,14 @@ trait TypeHints {
 
     override def deserialize: PartialFunction[(String, JObject), Any] =
       components.foldLeft[PartialFunction[(String, JObject), Any]](Map()) {
-        (result, cur) => result.orElse(cur.deserialize)
+        (result, cur) =>
+          result.orElse(cur.deserialize)
       }
 
     override def serialize: PartialFunction[Any, JObject] =
       components.foldLeft[PartialFunction[Any, JObject]](Map()) {
-        (result, cur) => result.orElse(cur.serialize)
+        (result, cur) =>
+          result.orElse(cur.serialize)
       }
   }
 }

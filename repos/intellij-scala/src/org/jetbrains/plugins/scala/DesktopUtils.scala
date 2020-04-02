@@ -16,6 +16,7 @@ import org.intellij.lang.annotations.Language
 /**
   * Pavel Fatin
   */
+
 object DesktopUtils {
   @Language("HTML")
   private val MessageFormat =

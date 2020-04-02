@@ -100,7 +100,8 @@ class DescriptorParser(val input: ParserInput) extends Parser {
     rule {
       zeroOrMore(
         capture(oneOrMore(DescriptorParser.PackageNamePredicate)) ~ '/') ~> {
-        seq: Seq[String] => PackageName(seq.toList)
+        seq: Seq[String] =>
+          PackageName(seq.toList)
       }
     }
 

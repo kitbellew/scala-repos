@@ -44,6 +44,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * @author ilyas
   */
+
 object ScProjectionType {
   def apply(
       projected: ScType,

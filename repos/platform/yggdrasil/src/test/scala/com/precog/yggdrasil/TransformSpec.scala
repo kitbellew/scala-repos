@@ -1452,6 +1452,7 @@ trait TransformSpec[M[+_]]
       array.concat(undefined) = array
       which is incorrect but is what the code currently does
         */
+
       val sample = SampleData(
         sample0.data flatMap { jv =>
           (jv \ "value") match {

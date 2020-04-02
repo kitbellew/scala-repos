@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScObject
   * User: Alexander Podkhalyuzin
   * Date: 05.01.12
   */
+
 class ScalaClassObjectWeigher extends ProximityWeigher {
   def weigh(element: PsiElement, location: ProximityLocation): Comparable[_] = {
     val elem = location.getPosition

@@ -126,7 +126,8 @@ class SearchServiceSpec
   }
 
   it should "not return results from instance fields" in withSearchService {
-    implicit service => searchesEmpty("java.awt.Point.x")
+    implicit service =>
+      searchesEmpty("java.awt.Point.x")
   }
 
   it should "return results from static methods" in withSearchService {

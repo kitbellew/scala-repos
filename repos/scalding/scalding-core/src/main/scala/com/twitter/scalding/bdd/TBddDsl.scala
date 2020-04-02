@@ -130,7 +130,8 @@ trait TBddDsl extends FieldConversions with TypedPipeOperationsConversions {
 
       // Add Sink
       jobTest.sink[OutputType](TypedText.tsv[OutputType]("output")) {
-        buffer: Buffer[OutputType] => assertion(buffer)
+        buffer: Buffer[OutputType] =>
+          assertion(buffer)
       }
 
       // Execute

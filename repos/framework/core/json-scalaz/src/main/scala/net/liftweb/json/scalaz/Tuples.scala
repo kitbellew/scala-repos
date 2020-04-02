@@ -44,7 +44,8 @@ trait Tuples {
         json match {
           case JArray(a :: b :: c :: _) =>
             (fromJSON[A](a) |@| fromJSON[B](b) |@| fromJSON[C](c)) {
-              (a, b, c) => (a, b, c)
+              (a, b, c) =>
+                (a, b, c)
             }
           case x =>
             UnexpectedJSONError(x, classOf[JArray]).fail.liftFailNel

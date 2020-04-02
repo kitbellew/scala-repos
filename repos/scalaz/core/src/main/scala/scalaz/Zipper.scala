@@ -475,7 +475,8 @@ sealed abstract class ZipperInstances {
             fa.rights match {
               case h2 #:: t2 =>
                 G.apply3(x, f(fa.focus), F.traverse1(OneAnd(h2, t2))(f)) {
-                  (l, z, r) => Zipper(l, z, r.head #:: r.tail)
+                  (l, z, r) =>
+                    Zipper(l, z, r.head #:: r.tail)
                 }
               case Stream.Empty =>
                 G.apply2(x, f(fa.focus)) { (l, z) =>
@@ -486,7 +487,8 @@ sealed abstract class ZipperInstances {
             fa.rights match {
               case h2 #:: t2 =>
                 G.apply2(f(fa.focus), F.traverse1(OneAnd(h2, t2))(f)) {
-                  (z, r) => Zipper(Stream.Empty, z, r.head #:: r.tail)
+                  (z, r) =>
+                    Zipper(Stream.Empty, z, r.head #:: r.tail)
                 }
               case Stream.Empty =>
                 G.map(f(fa.focus)) { z =>

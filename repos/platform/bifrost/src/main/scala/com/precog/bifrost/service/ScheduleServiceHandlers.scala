@@ -165,41 +165,36 @@ class AddScheduledQueryServiceHandler(
                       sreq.sink,
                       clock.instant))
 
-                readError =
-                  (!okToRead).option(
-                    nels(
-                      "The API Key does not have permission to execute %s"
-                        .format(sreq.source.path)))
-                writeError =
-                  (!okToWrite).option(
-                    nels(
-                      "The API Key does not have permission to write to %s as %s"
-                        .format(sreq.sink.path, authorities.render)))
+                readError = (!okToRead).option(
+                  nels(
+                    "The API Key does not have permission to execute %s"
+                      .format(sreq.source.path)))
+                writeError = (!okToWrite).option(
+                  nels(
+                    "The API Key does not have permission to write to %s as %s"
+                      .format(sreq.sink.path, authorities.render)))
 
-                taskId <-
-                  (readError |+| writeError) match {
-                    case None =>
-                      scheduler.addTask(
-                        Some(sreq.schedule),
-                        apiKey,
-                        authorities,
-                        sreq.context,
-                        sreq.source,
-                        sreq.sink,
-                        sreq.timeout) leftMap { error =>
-                        logger
-                          .error("Failure adding scheduled execution: " + error)
-                        HttpResponse(
-                          status = HttpStatus(InternalServerError),
-                          content = Some(
-                            "An error occurred scheduling your query"
-                              .serialize))
-                      }
+                taskId <- (readError |+| writeError) match {
+                  case None =>
+                    scheduler.addTask(
+                      Some(sreq.schedule),
+                      apiKey,
+                      authorities,
+                      sreq.context,
+                      sreq.source,
+                      sreq.sink,
+                      sreq.timeout) leftMap { error =>
+                      logger
+                        .error("Failure adding scheduled execution: " + error)
+                      HttpResponse(
+                        status = HttpStatus(InternalServerError),
+                        content = Some(
+                          "An error occurred scheduling your query".serialize))
+                    }
 
-                    case Some(errors) =>
-                      EitherT
-                        .left(M point forbidden(errors.list.mkString(", ")))
-                  }
+                  case Some(errors) =>
+                    EitherT.left(M point forbidden(errors.list.mkString(", ")))
+                }
               } yield {
                 HttpResponse(content = Some(taskId.serialize))
               }

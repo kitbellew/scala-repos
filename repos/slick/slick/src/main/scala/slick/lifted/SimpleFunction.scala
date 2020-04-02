@@ -123,7 +123,8 @@ object SimpleExpression {
   def nullary[R: TypedType](
       f: JdbcStatementBuilderComponent#QueryBuilder => Unit): Rep[R] = {
     val g = apply({
-      (ch: Seq[Node], qb: JdbcStatementBuilderComponent#QueryBuilder) => f(qb)
+      (ch: Seq[Node], qb: JdbcStatementBuilderComponent#QueryBuilder) =>
+        f(qb)
     });
     g.apply(Seq())
   }

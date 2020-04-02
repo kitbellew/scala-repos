@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.packaging._
   * @deprecated
   * Date : 04.05.2008
   */
+
 class ScalaPackagingItemPresentation(private val element: ScPackaging)
     extends ScalaItemPresentation(element) {
   def getPresentableText: String = {

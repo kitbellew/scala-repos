@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   * @author Ksenia.Sautina
   * @since 6/8/12
   */
+
 object RemoveRedundantElseIntention {
   def familyName = "Remove redundant Else"
 }

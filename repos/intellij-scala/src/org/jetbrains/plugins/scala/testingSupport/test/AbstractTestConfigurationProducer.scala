@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.util.ScalaConstantExpressionEvaluato
   * @author Ksenia.Sautina
   * @since 5/15/12
   */
+
 trait AbstractTestConfigurationProducer {
   private var myPsiElement: PsiElement = null
   private val constEvaluator = new ScalaConstantExpressionEvaluator

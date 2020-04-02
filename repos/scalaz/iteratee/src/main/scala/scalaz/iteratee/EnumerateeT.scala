@@ -195,6 +195,7 @@ trait EnumerateeTFunctions {
   def doneOr[O, I, F[_]: Applicative, A](
       f: (Input[I] => IterateeT[I, F, A]) => IterateeT[O, F, StepT[I, F, A]])
       : StepT[I, F, A] => IterateeT[O, F, StepT[I, F, A]] = {
-    (s: StepT[I, F, A]) => s.mapContOr(k => f(k), done(s, emptyInput))
+    (s: StepT[I, F, A]) =>
+      s.mapContOr(k => f(k), done(s, emptyInput))
   }
 }

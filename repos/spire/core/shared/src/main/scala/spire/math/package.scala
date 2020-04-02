@@ -259,6 +259,7 @@ package object math {
   /**
     * pow
     */
+
   // TODO: figure out how much precision we need from log(base) to
   // make the exp() have the right precision
   final def pow(base: BigDecimal, exponent: BigDecimal): BigDecimal =

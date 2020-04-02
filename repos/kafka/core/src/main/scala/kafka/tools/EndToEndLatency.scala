@@ -14,6 +14,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package kafka.tools
 
 import java.util.{Arrays, Properties}
@@ -35,6 +36,7 @@ import scala.collection.JavaConversions._
   *
   * e.g. [localhost:9092 test 10000 1 20]
   */
+
 object EndToEndLatency {
   private val timeout: Long = 60000
 

@@ -17,7 +17,8 @@ object TestProject extends Build {
     libraryDependencies <+= configuration(c =>
       "javax.servlet" % "servlet-api" % "2.5" % c.name),
     managedClasspath in Provided <<= (classpathTypes, update) map {
-      (cpts, report) => Classpaths.managedJars(Provided, cpts, report)
+      (cpts, report) =>
+        Classpaths.managedJars(Provided, cpts, report)
     },
     check <<= InputTask(_ =>
       Space ~> token(

@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScReferenceExpression
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaCompletionConfidence extends CompletionConfidence {
   override def shouldSkipAutopopup(
       contextElement: PsiElement,

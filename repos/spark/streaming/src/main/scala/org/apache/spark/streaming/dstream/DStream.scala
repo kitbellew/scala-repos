@@ -56,6 +56,7 @@ import org.apache.spark.util.{CallSite, Utils}
   *  - A time interval at which the DStream generates an RDD
   *  - A function that is used to generate an RDD after each time interval
   */
+
 abstract class DStream[T: ClassTag](
     @transient
     private[streaming] var ssc: StreamingContext)

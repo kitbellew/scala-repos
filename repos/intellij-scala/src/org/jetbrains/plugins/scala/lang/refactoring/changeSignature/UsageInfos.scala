@@ -36,6 +36,7 @@ import org.jetbrains.plugins.scala.lang.refactoring.changeSignature.changeInfo.S
   * Nikolay.Tropin
   * 2014-08-12
   */
+
 private[changeSignature] trait ScalaNamedElementUsageInfo {
   this: UsageInfo =>
 

@@ -9,6 +9,7 @@ import com.gravity.goose.text.StopWords
   * User: jim
   * Date: 8/16/11
   */
+
 class FileHelperTest {
 
   @Test

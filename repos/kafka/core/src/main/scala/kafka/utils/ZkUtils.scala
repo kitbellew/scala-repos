@@ -14,6 +14,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package kafka.utils
 
 import java.util.concurrent.CountDownLatch
@@ -1207,6 +1208,7 @@ object ZkPath {
   * if the session matches. If it does, then it returns OK,
   * and otherwise it fails the operation.
   */
+
 class ZKCheckedEphemeral(
     path: String,
     data: String,

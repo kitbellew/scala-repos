@@ -42,6 +42,7 @@ import _root_.scala.collection.mutable
   * User: Alexander Podkhalyuzin
   * Date: 17.08.2009
   */
+
 class ScalaFindUsagesHandler(
     element: PsiElement,
     factory: ScalaFindUsagesHandlerFactory)

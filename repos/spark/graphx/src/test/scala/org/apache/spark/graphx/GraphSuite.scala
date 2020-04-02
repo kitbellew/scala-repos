@@ -413,7 +413,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
       // outerJoinVertices changing type
       val reverseStarDegrees =
         reverseStar.outerJoinVertices(reverseStar.outDegrees) {
-          (vid, a, bOpt) => bOpt.getOrElse(0)
+          (vid, a, bOpt) =>
+            bOpt.getOrElse(0)
         }
       val neighborDegreeSums =
         GraphXUtils

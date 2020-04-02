@@ -25,6 +25,7 @@ import org.jetbrains.plugins.scala.lang.psi.types
   * @author Mikhail.Mutcianko
   *         date 22.12.14
   */
+
 case class MacroContext(place: PsiElement, expectedType: Option[ScType])
 
 trait ScalaMacroExpandable {

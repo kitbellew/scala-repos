@@ -83,7 +83,8 @@ object PlayerRepo {
     find(
       tourId,
       userId) flatten s"No such player: $tourId/$userId" flatMap f flatMap {
-      player => coll.update(selectId(player._id), player).void
+      player =>
+        coll.update(selectId(player._id), player).void
     }
 
   def playerInfo(tourId: String, userId: String): Fu[Option[PlayerInfo]] =

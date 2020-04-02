@@ -14,6 +14,7 @@ import _root_.scala.collection.mutable._
 /**
   * @author ilyas
   */
+
 class ScPatternArgumentListImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScPatternArgumentList {

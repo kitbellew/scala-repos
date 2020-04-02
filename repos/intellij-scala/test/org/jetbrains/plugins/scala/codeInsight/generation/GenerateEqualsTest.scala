@@ -5,6 +5,7 @@ package codeInsight.generation
   * Nikolay.Tropin
   * 8/23/13
   */
+
 class GenerateEqualsTest extends ScalaGenerateTestBase {
   val handler = new ScalaGenerateEqualsHandler
 

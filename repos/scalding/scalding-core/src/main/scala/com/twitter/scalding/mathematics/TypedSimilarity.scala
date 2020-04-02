@@ -24,6 +24,7 @@ import java.io.Serializable
   * @author Oscar Boykin
   * @author Kevin Lin
   */
+
 /**
   * Represents an Edge in a graph with some edge data
   */

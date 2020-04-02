@@ -21,6 +21,7 @@ import org.jetbrains.plugins.scala.project._
 /**
   * Pavel Fatin
   */
+
 class ServerMediator(project: Project) extends ProjectComponent {
 
   private def isScalaProject = project.hasScala

@@ -60,6 +60,7 @@ trait Function11[-T1, -T2, -T3, -T4, -T5, -T6, -T7, -T8, -T9, -T10, -T11, +R]
     *
     *  @return   a function `f` such that `f((x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11)) == f(Tuple11(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11)) == apply(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11)`
     */
+
   @annotation.unspecialized
   def tupled: Tuple11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11] => R = {
     case Tuple11(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11) =>

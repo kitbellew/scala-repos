@@ -9,6 +9,7 @@ import breeze.optimize.DiffFunction
   *
   * @author dlwh
   */
+
 case class Exponential(rate: Double)(implicit basis: RandBasis = Rand)
     extends ContinuousDistr[Double]
     with HasCdf

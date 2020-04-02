@@ -1131,7 +1131,8 @@ sealed abstract class MapInstances extends MapInstances0 {
             G.point(Tip())
           case Bin(kx, x, l, r) =>
             G.apply3(traverseImpl(l)(f), f(x), traverseImpl(r)(f)) {
-              (l2, x2, r2) => Bin(kx, x2, l2, r2)
+              (l2, x2, r2) =>
+                Bin(kx, x2, l2, r2)
             }
         }
 

@@ -7,6 +7,7 @@ import scala.collection.mutable
 /**
   * @author ilyas
   */
+
 final class DfaEngine[E](
     cfg: Seq[Instruction],
     dfa: DfaInstance[E],

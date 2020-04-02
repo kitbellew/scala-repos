@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.elements.wrappers.PsiFileStubW
 /**
   * @author ilyas
   */
+
 class ScFileStubImpl(file: ScalaFile)
     extends PsiFileStubWrapperImpl[ScalaFile](file)
     with ScFileStub {

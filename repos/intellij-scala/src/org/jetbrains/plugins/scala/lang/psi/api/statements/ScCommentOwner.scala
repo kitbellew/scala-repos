@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocComment
 /**
   * @author Nikolay.Tropin
   */
+
 trait ScCommentOwner {
   self: ScalaPsiElement =>
 

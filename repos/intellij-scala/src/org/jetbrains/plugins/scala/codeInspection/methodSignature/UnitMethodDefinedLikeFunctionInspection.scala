@@ -7,6 +7,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScFunctionDefinition
 /**
   * Pavel Fatin
   */
+
 class UnitMethodDefinedLikeFunctionInspection
     extends AbstractMethodSignatureInspection(
       "ScalaUnitMethodDefinedLikeFunction",

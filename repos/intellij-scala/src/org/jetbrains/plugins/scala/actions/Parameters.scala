@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScExpression
   * @author Ksenia.Sautina
   * @since 6/22/12
   */
+
 class Parameters(
     newExpression: PsiNamedElement,
     oldExpression: ScExpression,

@@ -40,6 +40,7 @@ trait Function6[-T1, -T2, -T3, -T4, -T5, -T6, +R] extends AnyRef {
     *
     *  @return   a function `f` such that `f((x1, x2, x3, x4, x5, x6)) == f(Tuple6(x1, x2, x3, x4, x5, x6)) == apply(x1, x2, x3, x4, x5, x6)`
     */
+
   @annotation.unspecialized
   def tupled: Tuple6[T1, T2, T3, T4, T5, T6] => R = {
     case Tuple6(x1, x2, x3, x4, x5, x6) =>

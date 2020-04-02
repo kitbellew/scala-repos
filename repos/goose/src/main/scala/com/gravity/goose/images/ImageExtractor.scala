@@ -25,6 +25,7 @@ import com.gravity.goose.utils.{Logging, CanLog}
   * User: jim
   * Date: 8/18/11
   */
+
 // represents a file stored on disk that we've downloaded
 case class LocallyStoredImage(
     imgSrc: String,

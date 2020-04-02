@@ -5,6 +5,7 @@
   *
   * @since 1.0
   */
+
 class Trac4409 {
 
   /**

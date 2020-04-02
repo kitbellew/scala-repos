@@ -729,7 +729,8 @@ trait SliceTransforms[M[+_]]
                     (),
                     { (_: Unit, slice: Slice) =>
                       mapper.map(slice.columns, 0 until slice.size) map {
-                        cols => ((), Slice(cols, slice.size))
+                        cols =>
+                          ((), Slice(cols, slice.size))
                       }
                     })
                 }

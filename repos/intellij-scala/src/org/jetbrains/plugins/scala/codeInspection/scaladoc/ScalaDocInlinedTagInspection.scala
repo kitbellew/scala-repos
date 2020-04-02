@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocInlinedTag
   * User: Dmitry Naidanov
   * Date: 11/21/11
   */
+
 class ScalaDocInlinedTagInspection extends LocalInspectionTool {
   override def isEnabledByDefault: Boolean = true
 

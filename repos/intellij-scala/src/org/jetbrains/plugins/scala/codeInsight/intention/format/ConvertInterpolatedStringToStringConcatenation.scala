@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.format.{
 /**
   * Pavel Fatin
   */
+
 class ConvertInterpolatedStringToStringConcatenation
     extends AbstractFormatConversionIntention(
       "Convert to string concatenation",

@@ -10,6 +10,7 @@ import org.junit.runner.RunWith
   *
   * @author dlwh
   */
+
 @RunWith(classOf[JUnitRunner])
 class LPMaxFlowTest extends FunSuite {
 

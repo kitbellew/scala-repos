@@ -10,6 +10,7 @@ import org.jsoup.nodes.Element
   * User: jim
   * Date: 8/19/11
   */
+
 object TestUtils {
 
   val staticHtmlDir = "/com/gravity/goose/statichtml/"

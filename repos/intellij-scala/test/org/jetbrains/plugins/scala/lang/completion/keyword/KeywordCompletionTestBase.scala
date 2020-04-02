@@ -20,6 +20,7 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil
 /**
   * @author Alexander Podkhalyuzin
   */
+
 abstract class KeywordCompletionTestBase
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   private val caretMarker = "/*caret*/"

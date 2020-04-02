@@ -4,6 +4,7 @@ package lang.dependency
 /**
   * Pavel Fatin
   */
+
 case class Path(entity: String, member: Option[String] = None) {
   def asString: String = asString(wildcardMembers = false)
 

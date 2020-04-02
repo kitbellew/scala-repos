@@ -49,6 +49,7 @@ import scala.collection.{Seq, Set}
 /**
   * @author ilyas, Alexander Podkhalyuzin
   */
+
 trait ScExpression
     extends ScBlockStatement
     with PsiAnnotationMemberValue

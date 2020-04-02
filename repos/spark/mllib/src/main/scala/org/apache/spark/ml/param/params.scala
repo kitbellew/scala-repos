@@ -250,7 +250,8 @@ object ParamValidators {
 
   /** Check that the array length is greater than lowerBound. */
   def arrayLengthGt[T](lowerBound: Double): Array[T] => Boolean = {
-    (value: Array[T]) => value.length > lowerBound
+    (value: Array[T]) =>
+      value.length > lowerBound
   }
 }
 

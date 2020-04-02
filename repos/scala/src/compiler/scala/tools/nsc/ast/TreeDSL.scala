@@ -13,6 +13,7 @@ import scala.language.implicitConversions
   *  code generating code should look a lot like the code it
   *  generates.
   */
+
 trait TreeDSL {
   val global: Global
 

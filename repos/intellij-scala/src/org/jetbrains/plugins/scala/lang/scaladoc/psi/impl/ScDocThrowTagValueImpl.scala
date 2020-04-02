@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocTagValue
   * User: Dmitry Naydanov
   * Date: 12/9/11
   */
+
 class ScDocThrowTagValueImpl(node: ASTNode)
     extends ScStableCodeReferenceElementImpl(node)
     with ScDocTagValue {

@@ -18,7 +18,8 @@ private object LatencyProfile {
     */
   def fromFile(path: java.net.URL): () => Duration = {
     val latencies = Source.fromURL(path).getLines.toIndexedSeq map {
-      line: String => Duration.fromNanoseconds((line.toDouble * 1000000).toLong)
+      line: String =>
+        Duration.fromNanoseconds((line.toDouble * 1000000).toLong)
     }
     val size = latencies.size
     var i = rng.nextInt(size)

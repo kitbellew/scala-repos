@@ -26,6 +26,7 @@ import org.apache.commons.math3.random.RandomGenerator
   *
   * @author stucchio
   */
+
 class CauchyDistribution(median: Double, scale: Double)(implicit
     rand: RandBasis = Rand)
     extends ApacheContinuousDistribution {

@@ -7,6 +7,7 @@ package expression;
 /**
   * @author Dmitry Krasilschikov, alefas
   */
+
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement

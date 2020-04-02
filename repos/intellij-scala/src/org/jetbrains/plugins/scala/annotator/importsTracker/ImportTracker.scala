@@ -13,6 +13,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ImportTracker {
   def registerUsedImports(file: ScalaFile, used: Set[ImportUsed]) {
     val refHolder = ScalaRefCountHolder.getInstance(file)

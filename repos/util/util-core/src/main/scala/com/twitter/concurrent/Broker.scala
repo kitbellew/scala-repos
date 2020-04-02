@@ -31,6 +31,7 @@ import com.twitter.util.{Await, Future, Promise}
   * BUGS: the implementation would be much simpler in the absence of
   * cancellation.
   */
+
 class Broker[T] {
   private[this] sealed trait State
   private[this] case object Quiet extends State

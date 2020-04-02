@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.util
 
 import java.nio.{ByteBuffer, ByteOrder}
@@ -552,6 +553,7 @@ object ByteIterator {
 /**
   * An iterator over a ByteString.
   */
+
 abstract class ByteIterator extends BufferedIterator[Byte] {
   def len: Int
 

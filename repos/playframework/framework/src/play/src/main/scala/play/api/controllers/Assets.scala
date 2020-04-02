@@ -543,7 +543,8 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
     import Implicits.trampoline
     val assetName: Option[String] = resourceNameAt(path, file)
     val assetInfoFuture: Future[Option[(AssetInfo, Boolean)]] = assetName.map {
-      name => assetInfoForRequest(request, name)
+      name =>
+        assetInfoForRequest(request, name)
     } getOrElse Future.successful(None)
 
     def notFound =

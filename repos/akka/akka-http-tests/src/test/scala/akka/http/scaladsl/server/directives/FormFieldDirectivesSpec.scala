@@ -53,7 +53,8 @@ class FormFieldDirectivesSpec extends RoutingSpec {
     "properly extract the value of www-urlencoded form fields" in {
       Post("/", urlEncodedForm) ~> {
         formFields('firstName, "age".as[Int], 'sex.?, "VIP" ? false) {
-          (firstName, age, sex, vip) ⇒ complete(firstName + age + sex + vip)
+          (firstName, age, sex, vip) ⇒
+            complete(firstName + age + sex + vip)
         }
       } ~> check {
         responseAs[String] shouldEqual "Mike42Nonefalse"
@@ -62,7 +63,8 @@ class FormFieldDirectivesSpec extends RoutingSpec {
     "properly extract the value of www-urlencoded form fields when an explicit unmarshaller is given" in {
       Post("/", urlEncodedForm) ~> {
         formFields('firstName, "age".as(HexInt), 'sex.?, "VIP" ? false) {
-          (firstName, age, sex, vip) ⇒ complete(firstName + age + sex + vip)
+          (firstName, age, sex, vip) ⇒
+            complete(firstName + age + sex + vip)
         }
       } ~> check {
         responseAs[String] shouldEqual "Mike66Nonefalse"
@@ -71,7 +73,8 @@ class FormFieldDirectivesSpec extends RoutingSpec {
     "properly extract the value of multipart form fields" in {
       Post("/", multipartForm) ~> {
         formFields('firstName, "age", 'sex.?, "VIP" ? nodeSeq) {
-          (firstName, age, sex, vip) ⇒ complete(firstName + age + sex + vip)
+          (firstName, age, sex, vip) ⇒
+            complete(firstName + age + sex + vip)
         }
       } ~> check {
         responseAs[String] shouldEqual "Mike<int>42</int>None<b>yes</b>"
@@ -92,7 +95,8 @@ class FormFieldDirectivesSpec extends RoutingSpec {
     "reject the request with a MissingFormFieldRejection if a required form field is missing" in {
       Post("/", urlEncodedForm) ~> {
         formFields('firstName, "age", 'sex, "VIP" ? false) {
-          (firstName, age, sex, vip) ⇒ complete(firstName + age + sex + vip)
+          (firstName, age, sex, vip) ⇒
+            complete(firstName + age + sex + vip)
         }
       } ~> check {
         rejection shouldEqual MissingFormFieldRejection("sex")
@@ -102,7 +106,8 @@ class FormFieldDirectivesSpec extends RoutingSpec {
       "Content-Type (or text/plain)" in {
       Post("/", multipartForm) ~> {
         formFields('firstName, "age", 'sex.?, "VIPBoolean" ? false) {
-          (firstName, age, sex, vip) ⇒ complete(firstName + age + sex + vip)
+          (firstName, age, sex, vip) ⇒
+            complete(firstName + age + sex + vip)
         }
       } ~> check {
         responseAs[String] shouldEqual "Mike<int>42</int>Nonetrue"
@@ -111,7 +116,8 @@ class FormFieldDirectivesSpec extends RoutingSpec {
     "work even if only a FromStringUnmarshaller is available for a multipart field with custom Content-Type" in {
       Post("/", multipartFormWithTextHtml) ~> {
         formFields(('firstName, "age", 'super ? false)) {
-          (firstName, age, vip) ⇒ complete(firstName + age + vip)
+          (firstName, age, vip) ⇒
+            complete(firstName + age + vip)
         }
       } ~> check {
         responseAs[String] shouldEqual "Mike<int>42</int>false"
@@ -120,7 +126,8 @@ class FormFieldDirectivesSpec extends RoutingSpec {
     "work even if only a FromEntityUnmarshaller is available for a www-urlencoded field" in {
       Post("/", urlEncodedFormWithVip) ~> {
         formFields('firstName, "age", 'sex.?, "super" ? nodeSeq) {
-          (firstName, age, sex, vip) ⇒ complete(firstName + age + sex + vip)
+          (firstName, age, sex, vip) ⇒
+            complete(firstName + age + sex + vip)
         }
       } ~> check {
         responseAs[String] shouldEqual "Mike42None<b>no</b>"

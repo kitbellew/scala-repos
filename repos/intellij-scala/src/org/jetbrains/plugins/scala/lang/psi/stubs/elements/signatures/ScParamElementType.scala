@@ -22,6 +22,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScParameterStubImpl
   * User: Alexander Podkhalyuzin
   * Date: 19.10.2008
   */
+
 abstract class ScParamElementType[Param <: ScParameter](debugName: String)
     extends ScStubElementType[ScParameterStub, ScParameter](debugName) {
   def createStubImpl[ParentPsi <: PsiElement](

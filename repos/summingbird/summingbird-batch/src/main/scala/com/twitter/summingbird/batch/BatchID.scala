@@ -44,6 +44,7 @@ import scala.collection.Iterator.iterate
   * @author Sam Ritchie
   * @author Ashu Singhal
   */
+
 object BatchID {
   import OrderedFromOrderingExt._
   implicit val equiv: Equiv[BatchID] = Equiv.by(_.id)

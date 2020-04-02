@@ -42,6 +42,7 @@ import scala.util.{Try => ScalaTry}
   * @author Sam Ritchie
   * @author Ashu Singhal
   */
+
 object VersionedBatchStore {
   def apply[K, V, K2, V2](rootPath: String, versionsToKeep: Int)(
       pack: (BatchID, (K, V)) => (K2, V2))(

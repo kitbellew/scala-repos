@@ -27,13 +27,12 @@ private[forum] final class TopicApi(
       page: Int,
       troll: Boolean): Fu[Option[(Categ, Topic, Paginator[Post])]] =
     for {
-      data ←
-        (
+      data ← (
           for {
             categ ← optionT(CategRepo bySlug categSlug)
             topic ← optionT(TopicRepo(troll).byTree(categSlug, slug))
           } yield categ -> topic
-        ).run
+      ).run
       res ←
         data ?? {
           case (categ, topic) =>

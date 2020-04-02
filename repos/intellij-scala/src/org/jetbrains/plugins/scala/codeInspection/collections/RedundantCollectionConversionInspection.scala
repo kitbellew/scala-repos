@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.{
 /**
   * @author Nikolay.Tropin
   */
+
 object RedundantCollectionConversion extends SimplificationType {
   override def hint: String =
     InspectionBundle.message("redundant.collection.conversion")

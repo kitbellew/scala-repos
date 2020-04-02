@@ -53,21 +53,24 @@ object Function {
   /** Uncurrying for functions of arity 3.
     */
   def uncurried[a1, a2, a3, b](f: a1 => a2 => a3 => b): (a1, a2, a3) => b = {
-    (x1, x2, x3) => f(x1)(x2)(x3)
+    (x1, x2, x3) =>
+      f(x1)(x2)(x3)
   }
 
   /** Uncurrying for functions of arity 4.
     */
   def uncurried[a1, a2, a3, a4, b](
       f: a1 => a2 => a3 => a4 => b): (a1, a2, a3, a4) => b = {
-    (x1, x2, x3, x4) => f(x1)(x2)(x3)(x4)
+    (x1, x2, x3, x4) =>
+      f(x1)(x2)(x3)(x4)
   }
 
   /** Uncurrying for functions of arity 5.
     */
   def uncurried[a1, a2, a3, a4, a5, b](
       f: a1 => a2 => a3 => a4 => a5 => b): (a1, a2, a3, a4, a5) => b = {
-    (x1, x2, x3, x4, x5) => f(x1)(x2)(x3)(x4)(x5)
+    (x1, x2, x3, x4, x5) =>
+      f(x1)(x2)(x3)(x4)(x5)
   }
 
   /** Tupling for functions of arity 2. This transforms a function
@@ -122,7 +125,8 @@ object Function {
     *  a triple of arguments into a ternary function which takes each argument separately.
     */
   def untupled[a1, a2, a3, b](f: Tuple3[a1, a2, a3] => b): (a1, a2, a3) => b = {
-    (x1, x2, x3) => f(Tuple3(x1, x2, x3))
+    (x1, x2, x3) =>
+      f(Tuple3(x1, x2, x3))
   }
 
   /** Un-tupling for functions of arity 4. This transforms a function taking
@@ -130,7 +134,8 @@ object Function {
     */
   def untupled[a1, a2, a3, a4, b](
       f: Tuple4[a1, a2, a3, a4] => b): (a1, a2, a3, a4) => b = {
-    (x1, x2, x3, x4) => f(Tuple4(x1, x2, x3, x4))
+    (x1, x2, x3, x4) =>
+      f(Tuple4(x1, x2, x3, x4))
   }
 
   /** Un-tupling for functions of arity 5. This transforms a function taking
@@ -138,6 +143,7 @@ object Function {
     */
   def untupled[a1, a2, a3, a4, a5, b](
       f: Tuple5[a1, a2, a3, a4, a5] => b): (a1, a2, a3, a4, a5) => b = {
-    (x1, x2, x3, x4, x5) => f(Tuple5(x1, x2, x3, x4, x5))
+    (x1, x2, x3, x4, x5) =>
+      f(Tuple5(x1, x2, x3, x4, x5))
   }
 }

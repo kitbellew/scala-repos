@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.remote
 
 import akka.testkit.AkkaSpec
@@ -231,7 +232,8 @@ class AccrualFailureDetectorSpec extends AkkaSpec("akka.loglevel = INFO") {
     "calculate correct mean and variance" in {
       val samples = Seq(100, 200, 125, 340, 130)
       val stats = (HeartbeatHistory(maxSampleSize = 20) /: samples) {
-        (stats, value) ⇒ stats :+ value
+        (stats, value) ⇒
+          stats :+ value
       }
       stats.mean should ===(179.0 +- 0.00001)
       stats.variance should ===(7584.0 +- 0.00001)

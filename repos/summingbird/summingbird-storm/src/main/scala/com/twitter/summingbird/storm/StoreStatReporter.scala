@@ -31,6 +31,7 @@ import com.twitter.util.{Promise, Future}
   *
   * @author Ian O Connell
   */
+
 class MergeableStatReporter[K, V](
     context: TopologyContext,
     val self: Mergeable[K, V])

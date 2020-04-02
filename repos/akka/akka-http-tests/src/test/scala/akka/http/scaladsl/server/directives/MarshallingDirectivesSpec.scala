@@ -225,7 +225,8 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
     }
     "convert the response content to an accepted charset" in {
       Get() ~> `Accept-Charset`(`UTF-8`) ~> completeWith(instanceOf[String]) {
-        prod ⇒ prod("Hällö")
+        prod ⇒
+          prod("Hällö")
       } ~> check {
         responseEntity shouldEqual HttpEntity(
           ContentType(`text/plain`, `UTF-8`),

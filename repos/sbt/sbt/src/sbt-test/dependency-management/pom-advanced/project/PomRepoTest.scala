@@ -10,7 +10,8 @@ object PomRepoTest extends Build {
       Resolver.sonatypeRepo("releases"),
       Resolver.sonatypeRepo("snapshots")),
     InputKey[Unit]("check-pom") <<= InputTask(_ => spaceDelimited("<args>")) {
-      result => (makePom, result, streams) map checkPomRepositories
+      result =>
+        (makePom, result, streams) map checkPomRepositories
     },
     makePomConfiguration <<= (makePomConfiguration, baseDirectory) {
       (conf, base) =>

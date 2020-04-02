@@ -35,6 +35,7 @@ import org.jetbrains.plugins.scala.lang.resolve.ScalaResolveResult
 /**
   * @author Alexander Podkhalyuzin, ilyas
   */
+
 class ScUnderscoreSectionImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScUnderscoreSection {

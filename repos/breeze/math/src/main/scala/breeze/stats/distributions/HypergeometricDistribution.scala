@@ -25,6 +25,7 @@ import org.apache.commons.math3.distribution.{
   *
   * @author stucchio
   */
+
 class HypergeometricDistribution(
     populationSize: Int,
     numberOfSuccesses: Int,

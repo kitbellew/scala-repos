@@ -30,7 +30,8 @@ object Video extends LilaController {
         control.query match {
           case Some(query) =>
             env.api.video.search(ctx.me, query, getInt("page") | 1) map {
-              videos => Ok(html.video.search(videos, control))
+              videos =>
+                Ok(html.video.search(videos, control))
             }
           case None =>
             env
@@ -72,7 +73,8 @@ object Video extends LilaController {
     Open { implicit ctx =>
       WithUserControl { control =>
         env.api.video.byAuthor(ctx.me, author, getInt("page") | 1) map {
-          videos => Ok(html.video.author(author, videos, control))
+          videos =>
+            Ok(html.video.author(author, videos, control))
         }
       }
     }

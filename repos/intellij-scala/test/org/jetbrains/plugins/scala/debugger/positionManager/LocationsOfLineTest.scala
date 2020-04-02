@@ -9,6 +9,7 @@ import org.jetbrains.plugins.scala.debugger.{
 /**
   * @author Nikolay.Tropin
   */
+
 class LocationOfLineTest extends LocationsOfLineTestBase with ScalaVersion_2_11
 
 class LocationOfLineTest_212

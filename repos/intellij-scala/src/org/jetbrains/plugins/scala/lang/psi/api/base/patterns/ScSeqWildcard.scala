@@ -8,4 +8,5 @@ package patterns
 /**
   * @author ilyas
   */
+
 trait ScSeqWildcard extends ScalaPsiElement {}

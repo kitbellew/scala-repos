@@ -40,6 +40,7 @@ import scala.collection.{Set, mutable}
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
   */
+
 trait ScReferenceElement
     extends ScalaPsiElement
     with ResolvableReferenceElement {

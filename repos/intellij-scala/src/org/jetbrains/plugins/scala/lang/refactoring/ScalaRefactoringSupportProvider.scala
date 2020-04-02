@@ -20,6 +20,7 @@ import org.jetbrains.plugins.scala.lang.refactoring.introduceVariable.ScalaIntro
   * User: Alexander Podkhalyuzin
   * Date: 29.03.2009
   */
+
 class ScalaRefactoringSupportProvider extends RefactoringSupportProvider {
   override def isInplaceRenameAvailable(
       element: PsiElement,

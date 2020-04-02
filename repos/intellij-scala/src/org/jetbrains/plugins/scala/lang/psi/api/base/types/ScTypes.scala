@@ -9,6 +9,7 @@ package types
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
   */
+
 trait ScTypes extends ScalaPsiElement {
   def types: Seq[ScTypeElement] =
     findChildrenByClassScala(classOf[ScTypeElement]).toSeq

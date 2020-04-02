@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
 /**
   * Pavel Fatin
   */
+
 trait AnnotatorPart[T <: ScalaPsiElement] {
   def kind: Class[T]
 

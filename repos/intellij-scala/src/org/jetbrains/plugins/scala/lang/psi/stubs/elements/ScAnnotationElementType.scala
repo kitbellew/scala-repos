@@ -26,6 +26,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.index.ScalaIndexKeys
   * User: Alexander Podkhalyuzin
   * Date: 22.06.2009
   */
+
 class ScAnnotationElementType[Func <: ScAnnotation]
     extends ScStubElementType[ScAnnotationStub, ScAnnotation]("annotation") {
   def serialize(stub: ScAnnotationStub, dataStream: StubOutputStream): Unit = {

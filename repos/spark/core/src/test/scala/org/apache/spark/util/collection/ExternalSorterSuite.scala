@@ -36,7 +36,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
 
   // Load defaults, otherwise SPARK_HOME is not found
   testWithMultipleSer("spilling in local cluster", loadDefaults = true) {
-    (conf: SparkConf) => testSpillingInLocalCluster(conf, 2)
+    (conf: SparkConf) =>
+      testSpillingInLocalCluster(conf, 2)
   }
 
   testWithMultipleSer(

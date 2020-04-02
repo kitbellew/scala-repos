@@ -320,7 +320,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
       f: FlatMapFunction2[java.util.Iterator[T], java.util.Iterator[U], V])
       : JavaRDD[V] = {
     def fn: (Iterator[T], Iterator[U]) => Iterator[V] = {
-      (x: Iterator[T], y: Iterator[U]) => f.call(x.asJava, y.asJava).asScala
+      (x: Iterator[T], y: Iterator[U]) =>
+        f.call(x.asJava, y.asJava).asScala
     }
     JavaRDD.fromRDD(
       rdd.zipPartitions(other.rdd)(fn)(other.classTag, fakeClassTag[V]))(

@@ -469,7 +469,8 @@ case class JsonTuple(children: Seq[Expression])
           if (parser.nextToken() != JsonToken.VALUE_NULL) {
             Utils.tryWithResource(
               jsonFactory.createGenerator(output, JsonEncoding.UTF8)) {
-              generator => copyCurrentStructure(generator, parser)
+              generator =>
+                copyCurrentStructure(generator, parser)
             }
 
             row(idx) = UTF8String.fromBytes(output.toByteArray)

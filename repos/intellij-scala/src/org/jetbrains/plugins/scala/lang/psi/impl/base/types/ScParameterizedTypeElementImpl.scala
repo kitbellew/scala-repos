@@ -29,6 +29,7 @@ import scala.annotation.tailrec
 /**
   * @author Alexander Podkhalyuzin, ilyas
   */
+
 class ScParameterizedTypeElementImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScParameterizedTypeElement {

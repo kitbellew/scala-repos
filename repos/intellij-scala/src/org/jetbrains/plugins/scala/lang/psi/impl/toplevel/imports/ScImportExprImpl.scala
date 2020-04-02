@@ -22,6 +22,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.ScImportExprStub
   * @author AlexanderPodkhalyuzin
   * Date: 20.02.2008
   */
+
 class ScImportExprImpl private (
     stub: StubElement[ScImportExpr],
     nodeType: IElementType,

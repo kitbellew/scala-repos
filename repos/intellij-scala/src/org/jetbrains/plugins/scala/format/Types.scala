@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.{ScDesignatorType, ScType}
 /**
   * Pavel Fatin
   */
+
 object Types {
   def valueOf(aType: ScType): Any =
     aType match {

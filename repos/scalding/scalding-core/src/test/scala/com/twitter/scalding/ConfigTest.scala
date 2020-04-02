@@ -102,7 +102,8 @@ object ConfigProps extends Properties("Config") {
     Arbitrary(Arbitrary.arbitrary[Map[String, String]].map(Config(_)))
 
   property(".+(k, v).get(k) == Some(v)") = forAll {
-    (c: Config, k: String, v: String) => (c + (k, v)).get(k) == Some(v)
+    (c: Config, k: String, v: String) =>
+      (c + (k, v)).get(k) == Some(v)
   }
   property(".-(k).get(k) == None") = forAll { (c: Config, k: String) =>
     (c - k).get(k) == None

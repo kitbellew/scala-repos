@@ -5,6 +5,7 @@ import com.intellij.psi.{PsiElement, PsiElementVisitor}
 /**
   * Pavel Fatin
   */
+
 class VisitorWrapper(action: PartialFunction[PsiElement, Any])
     extends PsiElementVisitor {
   override def visitElement(element: PsiElement) {

@@ -9,6 +9,7 @@ import org.jetbrains.plugins.scala.util.TestUtils
   * User: Alexander Podkhalyuzin
   * Date: 03.08.2009
   */
+
 class HighlightingPerformanceTest extends ScalaFixtureTestCase {
   def doTest(text: String, TIMEOUT: Int) {
     val file = PsiFileFactory

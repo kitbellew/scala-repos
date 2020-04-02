@@ -78,10 +78,9 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
       (
         for {
           _ <- as.schema.create
-          _ <-
-            (ins1 += ("a", "b")) map { id1: Int =>
-              id1 shouldBe 1
-            }
+          _ <- (ins1 += ("a", "b")) map { id1: Int =>
+            id1 shouldBe 1
+          }
           _ <-
             ifCap(jcap.returnInsertOther) {
               (ins2 += ("c", "d")) map { id2: (Int, String) =>

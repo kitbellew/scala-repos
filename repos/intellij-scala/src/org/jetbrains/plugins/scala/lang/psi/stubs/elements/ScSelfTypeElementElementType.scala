@@ -20,6 +20,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.index.ScSelfTypeInheritorsInde
   * User: Alexander Podkhalyuzin
   * Date: 19.06.2009
   */
+
 class ScSelfTypeElementElementType[Func <: ScSelfTypeElement]
     extends ScStubElementType[ScSelfTypeElementStub, ScSelfTypeElement](
       "self type element") {

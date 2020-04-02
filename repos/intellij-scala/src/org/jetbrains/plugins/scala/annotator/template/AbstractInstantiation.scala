@@ -9,6 +9,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTemplateDefin
 /**
   * Pavel Fatin
   */
+
 object AbstractInstantiation extends AnnotatorPart[ScTemplateDefinition] {
   def THIS = this
 

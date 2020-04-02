@@ -25,6 +25,7 @@ import org.apache.commons.math3.distribution.{
   *
   * @author stucchio
   */
+
 class WeibullDistribution(alpha: Double, beta: Double)
     extends ApacheContinuousDistribution {
   protected final val inner = new ApacheWeibullDistribution(alpha, beta)

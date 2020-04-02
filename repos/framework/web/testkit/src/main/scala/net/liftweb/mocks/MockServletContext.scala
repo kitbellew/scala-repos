@@ -57,6 +57,7 @@ import javax.servlet.http._
   *     assertTrue(output.toString.startsWith("<?xml"))
   *   }
   */
+
 /**
   * A Mock ServletContext. LiftFilter expects a ServletContext inside a FilterConfig
   *

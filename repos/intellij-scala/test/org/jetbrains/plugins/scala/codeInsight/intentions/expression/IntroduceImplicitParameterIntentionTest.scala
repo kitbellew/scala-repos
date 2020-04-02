@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
   * @author Ksenia.Sautina
   * @since 4/18/12
   */
+
 class IntroduceImplicitParameterIntentionTest extends ScalaIntentionTestBase {
   def familyName = IntroduceImplicitParameterIntention.familyName
 

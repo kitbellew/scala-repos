@@ -390,6 +390,7 @@ class SSLConfigParser(c: PlayConfig, classLoader: ClassLoader) {
   /**
     * Parses the "ws.ssl.trustManager" section of configuration.
     */
+
   def parseTrustManager(config: PlayConfig): TrustManagerConfig = {
     val algorithm =
       config.get[Option[String]]("algorithm") match {

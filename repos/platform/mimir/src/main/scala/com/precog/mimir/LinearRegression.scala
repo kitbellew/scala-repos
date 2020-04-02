@@ -87,6 +87,7 @@ trait LinearRegressionLibModule[M[+_]]
         * of the current window (i.e. the current Slice). In the future, we could let half-life,
         * or something related, be an optional parameter in the regression model.
         */
+
       /**
         * The following code will necessary when we have online models and users want to weight
         * the most recent data with a higher (or lower) weight than the data already seen.
@@ -106,6 +107,7 @@ trait LinearRegressionLibModule[M[+_]]
         }
       }
         */
+
       implicit def coeffMonoid =
         new Monoid[CoeffAcc] {
           def zero = CoeffAcc(Array.empty[Double], 0, Set.empty[Int])

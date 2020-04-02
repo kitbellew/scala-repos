@@ -94,7 +94,8 @@ class PageRank(args: Args) extends Job(args) {
       .read
       //Just to name the columns:
       .mapTo((0, 1, 2) -> (nodeCol, neighCol, pageRank)) {
-        input: (Long, String, Double) => input
+        input: (Long, String, Double) =>
+          input
       }
   }
 
@@ -103,6 +104,7 @@ class PageRank(args: Args) extends Job(args) {
     * the nodeset rows have the old page-rank, the edge rows are reversed, so we can get
     * the incoming page-rank from the nodes that point to each destination.
     */
+
   @tailrec
   final def doPageRank(steps: Int)(pagerank: RichPipe): RichPipe = {
     if (steps <= 0) {
@@ -187,7 +189,8 @@ class PageRank(args: Args) extends Job(args) {
         Tsv(args("input"))
           .read
           .mapTo((0, 1, 2) -> ('src0, 'dst0, 'rank0)) {
-            tup: (Long, String, Double) => tup
+            tup: (Long, String, Double) =>
+              tup
           }
           .joinWithSmaller('src0 -> 'src, pr)
           .mapTo(('rank0, 'rank) -> 'err) { ranks: (Double, Double) =>

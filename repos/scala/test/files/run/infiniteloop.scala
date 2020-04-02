@@ -1,4 +1,5 @@
 /** Tests the optimiser (not to loop on 'reverse'). */
+
 object Test extends App {
   def foo {
     val s3 = Stream.range(1, 1000) //100000 (ticket #153: Stackoverflow)

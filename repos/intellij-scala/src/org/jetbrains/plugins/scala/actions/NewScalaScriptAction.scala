@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.project._
 /**
   * Pavel Fatin
   */
+
 class NewScalaScriptAction
     extends CreateFromTemplateAction(
       FileTemplateManager

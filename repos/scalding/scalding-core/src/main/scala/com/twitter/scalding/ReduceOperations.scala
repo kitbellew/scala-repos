@@ -277,9 +277,11 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
     val midconv = implicitly[TupleConverter[List[T]]]
 
     mapReduceMap[T, List[T], R](fieldDef) { //Map
-      x => List(x)
+      x =>
+        List(x)
     } { //Reduce, note the bigger list is likely on the left, so concat into it:
-      (prev, current) => current ++ prev
+      (prev, current) =>
+        current ++ prev
     } {
       fn(_)
     }(conv, midset, midconv, setter)
@@ -476,7 +478,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
       tconv: TupleConverter[T],
       tset: TupleSetter[T]): Self = {
     mapReduceMap[(T, T), T, T](Fields.merge(left, right) -> result) {
-      init: (T, T) => ring.times(init._1, init._2)
+      init: (T, T) =>
+        ring.times(init._1, init._2)
     } { (left: T, right: T) =>
       ring.plus(left, right)
     } { result =>

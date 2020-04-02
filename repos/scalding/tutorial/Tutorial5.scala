@@ -44,6 +44,7 @@ Note that the line order may no longer be the same as the input file.
 That's parallelism, man.
 
 **/
+
 class Tutorial5(args: Args) extends Job(args) {
 
   /**
@@ -53,6 +54,7 @@ class Tutorial5(args: Args) extends Job(args) {
   the 'num field to be 'score. Also, we want to normalize
   the words to be lowercase.
   **/
+
   val scores = TextLine(args("words"))
     .read
     .rename('offset, 'score)

@@ -85,6 +85,7 @@ class GroupCoordinator(
     * NOTE: If a group lock and metadataLock are simultaneously needed,
     * be sure to acquire the group lock before metadataLock to prevent deadlock
     */
+
   /**
     * Startup logic executed at the same time when the server starts up.
     */

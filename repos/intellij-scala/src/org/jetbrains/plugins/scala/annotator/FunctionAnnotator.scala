@@ -27,6 +27,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.{
 /**
   * Pavel.Fatin, 18.05.2010
   */
+
 trait FunctionAnnotator {
   def annotateFunction(
       function: ScFunctionDefinition,

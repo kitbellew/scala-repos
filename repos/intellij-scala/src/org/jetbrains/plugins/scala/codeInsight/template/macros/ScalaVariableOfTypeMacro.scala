@@ -25,6 +25,7 @@ import _root_.scala.collection.mutable.ArrayBuffer
   * User: Alexander Podkhalyuzin
   * Date: 30.01.2009
   */
+
 /**
   * This class provides macros for live templates. Return elements
   * of given class type (or class types).

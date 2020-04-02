@@ -217,7 +217,8 @@ object ParameterDirectives extends ParameterDirectives {
     implicit def forRepVDR[T]: ParamDefAux[RepeatedValueUnmarshallerReceptacle[
       T], Directive1[Iterable[T]]] =
       extractParameter[RepeatedValueUnmarshallerReceptacle[T], Iterable[T]] {
-        rvr ⇒ repeatedFilter(rvr.name, rvr.um)
+        rvr ⇒
+          repeatedFilter(rvr.name, rvr.um)
       }
 
     //////////////////// tuple support ////////////////////

@@ -7,6 +7,7 @@ import org.jetbrains.plugins.scala.lang.psi.PsiElementMock
 /**
   * Pavel.Fatin, 11.05.2010
   */
+
 abstract class IteratorTestCase extends TestCase {
   protected def assertIterates(expectation: String, expression: String) {
     assertIterates(expectation, PsiElementMock.parse(expression))

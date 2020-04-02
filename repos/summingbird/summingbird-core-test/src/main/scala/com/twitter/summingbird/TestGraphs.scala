@@ -24,6 +24,7 @@ import org.scalacheck.Arbitrary
   * Helpful functions and test graphs designed to flex Summingbird
   * planners.
   */
+
 object TestGraphs {
   // implicit ordering on the either pair
   implicit def eitherOrd[T, U]: Ordering[Either[T, U]] =

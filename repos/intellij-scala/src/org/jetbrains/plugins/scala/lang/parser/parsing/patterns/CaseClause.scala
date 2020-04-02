@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.expressions.Block
   * @author Alexander Podkhalyuzin
   * Date: 28.02.2008
   */
+
 /*
  *  CaseClause ::= 'case' Pattern [Guard] '=>' Block
  */

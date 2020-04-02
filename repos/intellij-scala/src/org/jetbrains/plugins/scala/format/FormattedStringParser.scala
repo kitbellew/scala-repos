@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 /**
   * Pavel Fatin
   */
+
 object FormattedStringParser extends StringParser {
   private val FormatSpecifierPattern =
     "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])".r

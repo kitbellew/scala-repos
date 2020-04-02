@@ -474,6 +474,7 @@ class LogisticRegressionSuite
       * the same, and the solution should equal to the original solution multiple by the scaling
       * factor.
       */
+
     val nPoints = 10000
     val A = 2.0
     val B = -1.5
@@ -611,6 +612,7 @@ class LogisticRegressionSuite
       *    data.V4 -0.06463799
       *    data.V5 -0.29198337
       */
+
     val weightsR = Vectors.dense(
       Array(
         -0.5837166, 0.9285260, -0.3783612, -0.8123411, 2.6228269, -0.1691865,

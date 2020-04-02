@@ -18,6 +18,7 @@ object Test extends ScaladocModelTest {
       *  if the test fails, please update the correct qualified name of
       *  the type class in src/compiler/scala/tools/nsc/doc/Settings.scala
       *  in the knownTypeClasses map. Thank you! */
+
     val base = root
       ._package("scala")
       ._package("test")

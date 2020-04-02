@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.patterns.ScCaseClause
   * @author Alexander Podkhalyuzin
   * Date: 28.05.2008
   */
+
 class IfFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
     if (context.isInstanceOf[PsiComment])

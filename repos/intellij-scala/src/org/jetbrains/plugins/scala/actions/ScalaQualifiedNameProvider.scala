@@ -18,6 +18,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
   * @author Alefas
   * @since 25.06.12
   */
+
 class ScalaQualifiedNameProvider extends QualifiedNameProvider {
   def adjustElementToCopy(element: PsiElement) = null
 

@@ -46,6 +46,7 @@ import org.jetbrains.plugins.scala.worksheet.ui.WorksheetEditorPrinter
   * @author Dmitry Naydanov
   * @since 10/17/12
   */
+
 class RunWorksheetAction extends AnAction with TopComponentAction {
   def actionPerformed(e: AnActionEvent) {
     RunWorksheetAction.runCompiler(e.getProject, auto = false)

@@ -18,6 +18,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.index.ScalaIndexKeys
 /**
   * @author ilyas
   */
+
 abstract class ScPackageContainerElementType[TypeDef <: ScPackageContainer](
     debugName: String)
     extends ScStubElementType[ScPackageContainerStub, ScPackageContainer](

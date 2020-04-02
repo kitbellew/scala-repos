@@ -401,13 +401,12 @@ trait QuirrelCache extends AST {
 
         case ObjectDef(loc, props0) =>
           for {
-            props <-
-              (
+            props <- (
                 props0 map {
                   case (prop, expr) =>
                     repl(expr) map (prop -> _)
                 }: Vector[BindingS[(String, Expr)]]
-              ).sequence
+            ).sequence
           } yield ObjectDef(updateLoc(loc), props)
 
         case ArrayDef(loc, values0) =>

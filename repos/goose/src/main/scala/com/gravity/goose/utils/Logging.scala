@@ -15,6 +15,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package com.gravity.goose.utils
 
 import org.slf4j._
@@ -25,6 +26,7 @@ import java.text.MessageFormat
   * Date: 1/2/11
   * Time: 1:47 PM
   */
+
 /**
   * Trait that enables logging. String formatting is based on the Java MessageFormat object, NOT the
   * regular String.format.  See this documentation:

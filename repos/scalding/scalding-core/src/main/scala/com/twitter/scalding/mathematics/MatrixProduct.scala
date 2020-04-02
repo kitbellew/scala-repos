@@ -19,6 +19,7 @@ package com.twitter.scalding.mathematics
 /**
   * Handles the implementation of various versions of MatrixProducts
   */
+
 import com.twitter.algebird.{Ring, Monoid, Group, Field}
 import com.twitter.scalding.RichPipe
 import com.twitter.scalding.Dsl._
@@ -558,7 +559,8 @@ object MatrixProduct extends java.io.Serializable {
             getCrosser(right.sizeH)
               .apply(left.pipe, newRightPipe)
               .map(left.valS.append(getField(newRightFields, 1)) -> left.valS) {
-                pair: (ValT, ValT) => ring.times(pair._1, pair._2)
+                pair: (ValT, ValT) =>
+                  ring.times(pair._1, pair._2)
               }
           }
           .rename(getField(newRightFields, 0) -> newColSym)

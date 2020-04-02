@@ -196,36 +196,35 @@ trait StdLibStaticInlinerModule[M[+_]]
                     op2F2 = {
                       Some(_)
                     })
-                result <-
-                  (left2, right2) match {
-                    case (left2 @ Const(CUndefined), _) =>
-                      Some(Const(CUndefined)(left2.loc))
+                result <- (left2, right2) match {
+                  case (left2 @ Const(CUndefined), _) =>
+                    Some(Const(CUndefined)(left2.loc))
 
-                    case (_, right2 @ Const(CUndefined)) =>
-                      Some(Const(CUndefined)(right2.loc))
+                  case (_, right2 @ Const(CUndefined)) =>
+                    Some(Const(CUndefined)(right2.loc))
 
-                    case (
-                          left2 @ Const(leftValue),
-                          right2 @ Const(rightValue)) => {
-                      val result =
-                        for {
-                          // No Op1F1 that can be applied to a complex RValues
-                          leftCValue <- rValueToCValue(leftValue)
-                          rightCValue <- rValueToCValue(rightValue)
-                          col <-
-                            op2F2
-                              .f2(MorphContext(ctx, graph))
-                              .partialLeft(leftCValue)
-                              .apply(rightCValue)
-                          if col isDefinedAt 0
-                        } yield col cValue 0
+                  case (
+                        left2 @ Const(leftValue),
+                        right2 @ Const(rightValue)) => {
+                    val result =
+                      for {
+                        // No Op1F1 that can be applied to a complex RValues
+                        leftCValue <- rValueToCValue(leftValue)
+                        rightCValue <- rValueToCValue(rightValue)
+                        col <-
+                          op2F2
+                            .f2(MorphContext(ctx, graph))
+                            .partialLeft(leftCValue)
+                            .apply(rightCValue)
+                        if col isDefinedAt 0
+                      } yield col cValue 0
 
-                      Some(Const(result getOrElse CUndefined)(graph.loc))
-                    }
-
-                    case _ =>
-                      None
+                    Some(Const(result getOrElse CUndefined)(graph.loc))
                   }
+
+                  case _ =>
+                    None
+                }
               } yield result
 
             graphM getOrElse Join(op, sort, left2, right2)(graph.loc)

@@ -69,6 +69,7 @@ case class ScalaUDF(
     }.foreach(println)
 
     */
+
   // Accessors used in genCode
   def userDefinedFunc(): AnyRef = function
   def getChildren(): Seq[Expression] = children

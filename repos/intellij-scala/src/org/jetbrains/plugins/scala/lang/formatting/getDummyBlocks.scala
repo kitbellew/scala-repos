@@ -5,6 +5,7 @@ package formatting
 /**
   * @author ilyas
   */
+
 import _root_.java.util
 
 import com.intellij.formatting._

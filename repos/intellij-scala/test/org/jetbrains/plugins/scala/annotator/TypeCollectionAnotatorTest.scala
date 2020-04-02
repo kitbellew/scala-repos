@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.settings.ScalaProjectSettings
   * User: Dmitry Naydanov
   * Date: 3/26/12
   */
+
 class TypeCollectionAnotatorTest
     extends ScalaLightPlatformCodeInsightTestCaseAdapter
     with TestScalaProjectSettings {

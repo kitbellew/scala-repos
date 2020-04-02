@@ -8,6 +8,7 @@ class A {
   /** Target expression:
     *    List(new C1[String], new C2[String])
     */
+
   // Here's what would ideally be inferred.
   //
   // scala> :type List[Template[Container] with Container[String]](new C1[String], new C2[String])

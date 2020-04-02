@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory
 /**
   * @author Ian O Connell
   */
+
 trait ScaldingExecutionConfig extends ChillExecutionConfig[Scalding] {
   def getWaitingState(
       hadoopConfig: Configuration,

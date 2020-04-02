@@ -10,4 +10,5 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.ScFieldId
   * User: Alexander Podkhalyuzin
   * Date: 19.07.2009
   */
+
 trait ScFieldIdStub extends NamedStub[ScFieldId] {}

@@ -85,11 +85,13 @@ object MarkovChain {
         * T=&lt;Rand[U] becomes Seq[T]=&lt;Rand[Collection[U]]
         */
       def promoteIterable: Iterable[T] => Rand[Iterable[T]] = {
-        (t: Iterable[T]) => promote(t.map(k1));
+        (t: Iterable[T]) =>
+          promote(t.map(k1));
       }
 
       def lensed[U](implicit lens: Isomorphism[T, U]): U => Rand[U] = {
-        (u: U) => k1(lens.backward(u)).map(lens.forward _)
+        (u: U) =>
+          k1(lens.backward(u)).map(lens.forward _)
       }
     }
 
@@ -129,7 +131,8 @@ object MarkovChain {
         * T=&lt;Rand[U] becomes Seq[T]=&lt;Rand[Collection[U]]
         */
       def promoteIterable: (C, Iterable[T]) => Rand[Iterable[U]] = {
-        (c: C, t: Iterable[T]) => promote(t.map(t => k1(c, t)));
+        (c: C, t: Iterable[T]) =>
+          promote(t.map(t => k1(c, t)));
       }
     }
 

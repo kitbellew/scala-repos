@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
   * @author Ksenia.Sautina
   * @since 4/9/12
   */
+
 class ConvertToInfixExpressionIntentionTest extends ScalaIntentionTestBase {
   val familyName = ConvertToInfixExpressionIntention.familyName
 

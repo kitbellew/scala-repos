@@ -7,6 +7,7 @@ import scala.collection.mutable
 /**
   * Pavel.Fatin, 09.05.2010
   */
+
 class DepthFirstIterator(element: PsiElement, predicate: PsiElement => Boolean)
     extends Iterator[PsiElement] {
   private val stack = mutable.Stack[PsiElement](element)

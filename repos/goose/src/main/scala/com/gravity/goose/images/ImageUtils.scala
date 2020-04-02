@@ -22,6 +22,7 @@ package com.gravity.goose.images
   * User: jim
   * Date: 8/18/11
   */
+
 import javax.imageio.ImageIO
 import java.awt.color.CMMException
 import java.awt.image.BufferedImage

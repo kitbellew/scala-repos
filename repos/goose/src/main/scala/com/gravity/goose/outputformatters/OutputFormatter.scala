@@ -15,6 +15,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package com.gravity.goose.outputformatters
 
 import org.jsoup.nodes._
@@ -29,6 +30,7 @@ import org.slf4j.Logger
   * User: jim
   * Date: 8/17/11
   */
+
 trait OutputFormatter {
   val logPrefix = "outformat: "
 

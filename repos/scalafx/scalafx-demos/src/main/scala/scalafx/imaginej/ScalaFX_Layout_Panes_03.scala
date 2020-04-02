@@ -58,6 +58,7 @@ import scalafx.scene.text.{Font, FontWeight, Text}
   *         http://docs.oracle.com/javafx/2.0/layout/builtin_layouts.htm
   *
   */
+
 object ScalaFX_Layout_Panes_03 extends JFXApp {
   val current =
     new Button {

@@ -12,6 +12,7 @@ import collection.mutable.ListBuffer
   * Time: 3:34 PM
   *
   */
+
 /**
   * This trait is both a NodeSeq => NodeSeq and has the ability
   * to chain CssSel instances so that they can be applied
@@ -963,6 +964,7 @@ abstract class CssBindImpl(
 /**
   * Bridge from Java-land to Scala
   */
+
 final class CssJBridge extends CssBindImplicits {
   def sel(selector: String, value: String): CssSel = selector #> value
 

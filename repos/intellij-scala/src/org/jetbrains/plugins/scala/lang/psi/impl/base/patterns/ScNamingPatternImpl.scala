@@ -22,6 +22,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.{Bounds, ScType}
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScNamingPatternImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScNamingPattern {

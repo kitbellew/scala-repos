@@ -405,7 +405,8 @@ class Dataset[T] private[sql] (
       .executeCollect()
       .foreach {
         // scalastyle:off println
-        r => println(r.getString(0))
+        r =>
+          println(r.getString(0))
         // scalastyle:on println
       }
   }

@@ -22,6 +22,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.{ScType, Unit}
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScFunctionDeclarationImpl private (
     stub: StubElement[ScFunction],
     nodeType: IElementType,

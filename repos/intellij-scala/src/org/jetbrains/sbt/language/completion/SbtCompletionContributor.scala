@@ -43,6 +43,7 @@ import org.jetbrains.plugins.scala.lang.resolve.{
   * @author Nikolay Obedin
   * @since 7/10/14.
   */
+
 class SbtCompletionContributor extends ScalaCompletionContributor {
 
   val afterInfixOperator = PlatformPatterns

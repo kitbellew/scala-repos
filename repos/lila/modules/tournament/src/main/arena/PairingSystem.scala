@@ -25,9 +25,8 @@ object PairingSystem extends AbstractPairingSystem {
       lastOpponents <-
         PairingRepo
           .lastOpponents(tour.id, users.all, Math.min(100, users.size * 4))
-      onlyTwoActivePlayers <-
-        (tour.nbPlayers > 20)
-          .fold(fuccess(false), PlayerRepo.countActive(tour.id).map(2 ==))
+      onlyTwoActivePlayers <- (tour.nbPlayers > 20)
+        .fold(fuccess(false), PlayerRepo.countActive(tour.id).map(2 ==))
       data = Data(tour, lastOpponents, ranking, onlyTwoActivePlayers)
       preps <-
         if (lastOpponents.hash.isEmpty)

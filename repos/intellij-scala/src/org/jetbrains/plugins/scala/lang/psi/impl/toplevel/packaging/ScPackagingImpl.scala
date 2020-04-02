@@ -31,6 +31,7 @@ import scala.collection.mutable.ArrayBuffer
   * @author Alexander Podkhalyuzin, Pavel Fatin
   * Date: 20.02.2008
   */
+
 class ScPackagingImpl private (
     stub: StubElement[ScPackageContainer],
     nodeType: IElementType,

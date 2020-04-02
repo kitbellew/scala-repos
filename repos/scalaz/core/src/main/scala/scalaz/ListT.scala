@@ -3,6 +3,7 @@ package scalaz
 /**
   * ListT monad transformer.
   */
+
 final case class ListT[M[_], A](run: M[List[A]]) {
   def uncons(implicit M: Applicative[M]): M[Option[(A, ListT[M, A])]] = {
     M.map(run) { list =>

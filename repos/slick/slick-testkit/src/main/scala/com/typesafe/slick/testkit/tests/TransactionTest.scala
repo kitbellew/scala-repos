@@ -78,8 +78,7 @@ class TransactionTest extends AsyncTest[JdbcTestDB] {
         (
           for {
             ti1 <- getTI
-            _ <-
-              (
+            _ <- (
                 for {
                   _ <-
                     getTI.map(
@@ -100,7 +99,7 @@ class TransactionTest extends AsyncTest[JdbcTestDB] {
                         _ >= TransactionIsolation.ReadUncommitted.intValue
                       ))
                 } yield ()
-              ).withTransactionIsolation(TransactionIsolation.ReadUncommitted)
+            ).withTransactionIsolation(TransactionIsolation.ReadUncommitted)
             _ <- getTI.map(_ shouldBe ti1)
           } yield ()
         ).withPinnedSession

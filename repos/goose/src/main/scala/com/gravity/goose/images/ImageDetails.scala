@@ -22,6 +22,7 @@ package com.gravity.goose.images
   * User: jim
   * Date: 8/18/11
   */
+
 /**
   * holds the details of the result of inspecting an image
   * @author Jim Plush

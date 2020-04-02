@@ -9,6 +9,7 @@ package types
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
   */
+
 trait ScFunctionalTypeElement extends ScTypeElement {
   def paramTypeElement = findChildByClassScala(classOf[ScTypeElement])
 

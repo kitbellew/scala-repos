@@ -35,6 +35,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Alexander Podkhalyuzin
   * Date: 21.11.2008
   */
+
 class RenameScalaMethodProcessor
     extends RenameJavaMethodProcessor
     with ScalaRenameProcessor {

@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.expressions.Annotation
   * @author Alexander Podkhalyuzin
   * Date: 06.02.2008
   */
+
 /*
  * PatVarDef ::= {Annotation} {Modifier} 'val' PatDef |
  *               {Annotation} {Modifier} 'var' VarDef

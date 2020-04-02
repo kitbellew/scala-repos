@@ -24,6 +24,7 @@ import scala.collection.mutable
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaCodeFragment(project: Project, text: String) extends {
   private var vFile =
     new LightVirtualFile("Dummy.scala", ScalaFileType.SCALA_FILE_TYPE, text)

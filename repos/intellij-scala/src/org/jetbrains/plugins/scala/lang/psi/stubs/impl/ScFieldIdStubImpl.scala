@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.ScFieldId
   * User: Alexander Podkhalyuzin
   * Date: 19.07.2009
   */
+
 class ScFieldIdStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
     elemType: IStubElementType[_ <: StubElement[

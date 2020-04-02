@@ -7,6 +7,7 @@ package expr
 /**
   * @author Alexander Podkhalyuzin
   */
+
 trait ScGuard extends ScalaPsiElement {
   def expr: Option[ScExpression]
 

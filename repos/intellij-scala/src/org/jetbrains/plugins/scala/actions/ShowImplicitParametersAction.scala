@@ -56,6 +56,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Alefas
   * Date: 25.10.11
   */
+
 class ShowImplicitParametersAction
     extends AnAction("Show implicit parameters action") {
   override def update(e: AnActionEvent) {

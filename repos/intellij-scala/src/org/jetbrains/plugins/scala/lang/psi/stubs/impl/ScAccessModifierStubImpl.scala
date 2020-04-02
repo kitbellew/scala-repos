@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.ScAccessModifier
   * User: Alexander Podkhalyuzin
   * Date: 17.06.2009
   */
+
 class ScAccessModifierStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
     elemType: IStubElementType[_ <: StubElement[

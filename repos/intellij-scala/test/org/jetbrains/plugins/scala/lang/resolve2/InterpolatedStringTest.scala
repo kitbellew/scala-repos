@@ -5,6 +5,7 @@ package lang.resolve2
   * User: Dmitry Naydanov
   * Date: 4/2/12
   */
+
 class InterpolatedStringTest extends ResolveTestBase {
   override def folderPath: String = super.folderPath + "interpolatedString/"
 

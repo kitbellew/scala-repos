@@ -39,7 +39,8 @@ object Member {
     val troll = user.??(_.troll)
     playerIdOption
       .fold[Member](Watcher(channel, userId, color, troll, ip, userTv)) {
-        playerId => Owner(channel, userId, playerId, color, troll, ip)
+        playerId =>
+          Owner(channel, userId, playerId, color, troll, ip)
       }
   }
 }

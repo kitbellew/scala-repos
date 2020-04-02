@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
   * User: Alefas
   * Date: 27.03.12
   */
+
 class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
   def withRelativeImports(body: => Unit): Unit = {
     val settings: ScalaCodeStyleSettings = ScalaCodeStyleSettings

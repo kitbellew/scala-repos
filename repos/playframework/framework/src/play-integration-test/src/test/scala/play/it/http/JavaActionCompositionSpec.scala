@@ -42,7 +42,8 @@ object JavaActionCompositionSpec extends PlaySpecification with WsTestClient {
         override def action: Result = Results.ok()
       },
       Map("play.http.actionComposition.controllerAnnotationsFirst" -> "true")) {
-      response => response.body must beEqualTo("controlleraction")
+      response =>
+        response.body must beEqualTo("controlleraction")
     }
 
     "execute controller composition when action is not annotated" in makeRequest(
@@ -50,7 +51,8 @@ object JavaActionCompositionSpec extends PlaySpecification with WsTestClient {
         override def action: Result = Results.ok()
       },
       Map("play.http.actionComposition.controllerAnnotationsFirst" -> "true")) {
-      response => response.body must beEqualTo("controller")
+      response =>
+        response.body must beEqualTo("controller")
     }
   }
 
@@ -62,7 +64,8 @@ object JavaActionCompositionSpec extends PlaySpecification with WsTestClient {
       },
       Map(
         "play.http.actionComposition.controllerAnnotationsFirst" -> "false")) {
-      response => response.body must beEqualTo("actioncontroller")
+      response =>
+        response.body must beEqualTo("actioncontroller")
     }
 
     "execute action composition when controller is not annotated" in makeRequest(
@@ -72,7 +75,8 @@ object JavaActionCompositionSpec extends PlaySpecification with WsTestClient {
       },
       Map(
         "play.http.actionComposition.controllerAnnotationsFirst" -> "false")) {
-      response => response.body must beEqualTo("action")
+      response =>
+        response.body must beEqualTo("action")
     }
 
     "execute action composition first is the default" in makeRequest(

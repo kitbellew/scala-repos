@@ -62,7 +62,8 @@ object PromiseMock {
       new MockPromise[A]({
         (
             resolve: js.Function1[A | js.Thenable[A], _],
-            reject: js.Function1[Any, _]) => resolve(value)
+            reject: js.Function1[Any, _]) =>
+          resolve(value)
       })
     }
 
@@ -71,7 +72,8 @@ object PromiseMock {
       new MockPromise[Nothing]({
         (
             resolve: js.Function1[Nothing | js.Thenable[Nothing], _],
-            reject: js.Function1[Any, _]) => reject(reason)
+            reject: js.Function1[Any, _]) =>
+          reject(reason)
       })
     }
 

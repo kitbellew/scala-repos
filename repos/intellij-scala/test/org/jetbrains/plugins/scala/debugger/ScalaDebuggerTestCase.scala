@@ -50,6 +50,7 @@ import scala.util.{Failure, Success, Try}
   * User: Alefas
   * Date: 13.10.11
   */
+
 abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
 
   protected val bp = "<breakpoint>"

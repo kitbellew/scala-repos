@@ -615,7 +615,8 @@ trait ColumnarTableModuleSpec[M[+_]]
     "run" in {
       testSimpleCogroup(t =>
         t.logged(xlogger, "test-logging", "start stream", "end stream") {
-          slice => "size: " + slice.size
+          slice =>
+            "size: " + slice.size
         })
     }
   }

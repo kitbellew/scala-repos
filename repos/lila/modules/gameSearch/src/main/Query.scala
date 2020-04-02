@@ -119,7 +119,8 @@ object Query {
     "%d move{s}")
 
   val averageRatings = (RatingRange.min to RatingRange.max by 100).toList map {
-    e => e -> (e + " Rating")
+    e =>
+      e -> (e + " Rating")
   }
 
   val hasAis = List(0 -> "Human opponent", 1 -> "Computer opponent")

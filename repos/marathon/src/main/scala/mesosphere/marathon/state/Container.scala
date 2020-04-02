@@ -91,7 +91,8 @@ object Container {
     }
 
     val validMesosContainer: Validator[Container] = validator[Container] {
-      container => container.docker is empty
+      container =>
+        container.docker is empty
     }
 
     new Validator[Container] {

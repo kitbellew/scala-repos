@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.types.Type
   * @author Alexander Podkhalyuzin
   * Date: 06.03.2008
   */
+
 /*
  * TypeParam ::= {Annotation} (id | '_') [TypeParamClause] ['>:' Type] ['<:'Type] {'<%' Type} {':' Type}
  */

@@ -69,6 +69,7 @@ trait ProtoUser[T <: ProtoUser[T]]
     * }
     * </pre>
     */
+
   lazy val firstName: MappedString[T] = new MyFirstName(this, 32)
 
   protected class MyFirstName(obj: T, size: Int)

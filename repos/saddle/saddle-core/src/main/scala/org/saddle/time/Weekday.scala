@@ -13,6 +13,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
  **/
+
 package org.saddle.time
 
 /**
@@ -49,6 +50,7 @@ object Weekday {
   /**
     * Allow for implicit Weekday => WeekdayNum conversion: e.g., MO => MO(0)
     */
+
   implicit def w2wn(w: Weekday) = WeekdayNum(0, w)
 }
 

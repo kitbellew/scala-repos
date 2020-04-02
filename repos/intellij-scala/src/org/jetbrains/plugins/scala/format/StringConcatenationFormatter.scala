@@ -6,6 +6,7 @@ import com.intellij.openapi.util.text.StringUtil
 /**
   * Pavel Fatin
   */
+
 object StringConcatenationFormatter extends StringFormatter {
   def format(parts: Seq[StringPart]) = {
     if (parts.isEmpty)

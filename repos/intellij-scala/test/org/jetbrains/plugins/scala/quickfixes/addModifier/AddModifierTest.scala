@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.ScModifierListOwner
   * User: Alefas
   * Date: 20.10.11
   */
+
 class AddModifierTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   def doTest(
       fileText: String,

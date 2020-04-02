@@ -443,12 +443,11 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
     val q1 =
       (
         for {
-          id :: b :: s :: HNil <-
-            (
+          id :: b :: s :: HNil <- (
               for {
                 b <- bs
               } yield b.id :: b.b :: b.s :: HNil
-            )
+          )
           if !b
         } yield id :: b :: (s ++ s) :: HNil
       )

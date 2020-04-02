@@ -7,6 +7,7 @@ import scala.util.Random
   * according to Donald Knuth's algorithm as shown on Wikipedia's
   * Poisson Distribution page
   */
+
 class Poisson(fraction: Double, seed: Int) {
 
   val L = math.exp(-fraction)

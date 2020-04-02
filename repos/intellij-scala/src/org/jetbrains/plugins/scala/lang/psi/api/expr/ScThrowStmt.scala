@@ -7,6 +7,7 @@ package expr
 /**
   * @author Alexander Podkhalyuzin
   */
+
 trait ScThrowStmt extends ScExpression {
   override def accept(visitor: ScalaElementVisitor) =
     visitor.visitThrowExpression(this)

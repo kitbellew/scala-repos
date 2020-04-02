@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.ScType
 /**
   * @author ilyas
   */
+
 object Implicits {
 
   def get(t: ScType): Seq[ScType] = Nil

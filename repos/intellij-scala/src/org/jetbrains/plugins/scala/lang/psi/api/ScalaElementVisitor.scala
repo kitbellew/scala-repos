@@ -38,6 +38,7 @@ import scala.collection.mutable
   * @author ilyas
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaRecursiveElementVisitor extends ScalaElementVisitor {
   private val referencesStack = new mutable.Stack[ScReferenceElement]()
 

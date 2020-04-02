@@ -68,6 +68,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * @author Alexander Podkhalyuzin
   */
+
 //some functions are not PsiMethods and are e.g. not visible from java
 //see ScSyntheticFunction
 trait ScFun extends ScTypeParametersOwner {

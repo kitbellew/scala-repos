@@ -24,6 +24,7 @@ package com.twitter.summingbird.batch
   * @author Sam Ritchie
   * @author Ashu Singhal
   */
+
 class MillisecondBatcher(val durationMillis: Long) extends AbstractBatcher {
   require(durationMillis > 0, "a batch must have a non-zero size")
   def batchOf(t: Timestamp) = {

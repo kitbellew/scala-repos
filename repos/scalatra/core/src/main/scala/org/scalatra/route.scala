@@ -66,7 +66,8 @@ object Route {
   }
 
   def appendMatcher(matcher: RouteMatcher): RouteTransformer = {
-    (route: Route) => route.copy(routeMatchers = route.routeMatchers :+ matcher)
+    (route: Route) =>
+      route.copy(routeMatchers = route.routeMatchers :+ matcher)
   }
 
 }

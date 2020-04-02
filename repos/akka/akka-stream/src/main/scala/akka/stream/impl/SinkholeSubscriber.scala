@@ -11,6 +11,7 @@ import org.reactivestreams.{Subscriber, Subscription}
 /**
   * INTERNAL API
   */
+
 private[akka] final class SinkholeSubscriber[T](whenComplete: Promise[Done])
     extends Subscriber[T] {
   private[this] var running: Boolean = false

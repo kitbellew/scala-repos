@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.light.PsiClassWrapper
   * User: Alefas
   * Date: 18.02.12
   */
+
 class ScalaClassElementDescriptionProvider extends ElementDescriptionProvider {
   def getElementDescription(
       element: PsiElement,

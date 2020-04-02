@@ -24,6 +24,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
   * @author Alexander Podkhalyuzin
   * Date: 07.03.2008
   */
+
 class ScAnnotationImpl private (
     stub: StubElement[ScAnnotation],
     nodeType: IElementType,

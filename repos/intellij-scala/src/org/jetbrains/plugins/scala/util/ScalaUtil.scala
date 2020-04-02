@@ -12,6 +12,7 @@ import org.jetbrains.jps.incremental.scala.Client
   * User: Alexander Podkhalyuzin
   * Date: 16.11.11
   */
+
 object ScalaUtil {
   def writeAction[T](project: Project)(callback: => T): T = {
     ApplicationManager

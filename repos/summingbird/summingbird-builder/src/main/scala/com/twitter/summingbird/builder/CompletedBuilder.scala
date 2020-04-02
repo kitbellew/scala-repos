@@ -37,6 +37,7 @@ import java.io.Serializable
   * @author Sam Ritchie
   * @author Ashu Singhal
   */
+
 object CompletedBuilder {
   def injectionRegistrar[T: Manifest](injection: Injection[T, Array[Byte]]) =
     InjectionRegistrar(

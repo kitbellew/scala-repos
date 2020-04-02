@@ -4,6 +4,7 @@ package com.twitter.finagle.zipkin.thrift
   * The `Span` is the core datastructure in RPC tracing. It denotes the
   * issuance and handling of a single RPC request.
   */
+
 import com.twitter.finagle.thrift.thrift
 import com.twitter.finagle.tracing.TraceId
 

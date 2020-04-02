@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   * @author Ksenia.Sautina
   * @since 4/23/12
   */
+
 object ReplaceEqualsOrEqualityInInfixExprIntention {
   def familyName = "Replace equals or equality in infix expression"
 }

@@ -115,6 +115,7 @@ trait Mirrors extends api.Mirrors {
     // todo: get rid of most the methods here and keep just staticClass/Module/Package
 
     /************************ loaders of class symbols ************************/
+
     private def ensureClassSymbol(
         fullname: String,
         sym: Symbol): ClassSymbol = {
@@ -161,6 +162,7 @@ trait Mirrors extends api.Mirrors {
       }
 
     /************************ loaders of module symbols ************************/
+
     private def ensureModuleSymbol(
         fullname: String,
         sym: Symbol,
@@ -213,6 +215,7 @@ trait Mirrors extends api.Mirrors {
       }
 
     /************************ loaders of package symbols ************************/
+
     private def ensurePackageSymbol(
         fullname: String,
         sym: Symbol,
@@ -264,6 +267,7 @@ trait Mirrors extends api.Mirrors {
       }
 
     /************************ helpers ************************/
+
     def erasureName[T: ClassTag]: String = {
       /* We'd like the String representation to be a valid
        * scala type, so we have to decode the jvm's secret language.

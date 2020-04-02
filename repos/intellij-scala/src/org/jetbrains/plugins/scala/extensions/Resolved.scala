@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.lang.resolve.ScalaResolveResult
 /**
   * Pavel Fatin
   */
+
 object ResolvedWithSubst {
   def unapply(e: PsiReference): Option[(PsiElement, ScSubstitutor)] = {
     e match {

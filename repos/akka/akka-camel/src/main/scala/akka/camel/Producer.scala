@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.camel
 
 import akka.actor.{Props, NoSerializationVerificationNeeded, ActorRef, Actor}
@@ -107,6 +108,7 @@ trait ProducerSupport extends Actor with CamelSupport {
     * done. This method may be overridden by subtraits or subclasses (e.g. to forward responses to another
     * actor).
     */
+
   protected def routeResponse(msg: Any): Unit =
     if (!oneway)
       sender() ! transformResponse(msg)

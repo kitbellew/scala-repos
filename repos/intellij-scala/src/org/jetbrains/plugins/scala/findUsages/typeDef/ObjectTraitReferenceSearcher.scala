@@ -20,6 +20,7 @@ import org.jetbrains.plugins.scala.lang.psi.light.PsiClassWrapper
   * User: Alefas
   * Date: 18.02.12
   */
+
 class ObjectTraitReferenceSearcher
     extends QueryExecutor[PsiReference, ReferencesSearch.SearchParameters] {
   def execute(

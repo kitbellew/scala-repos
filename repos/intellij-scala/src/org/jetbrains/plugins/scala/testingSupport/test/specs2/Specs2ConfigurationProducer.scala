@@ -22,6 +22,7 @@ import org.jetbrains.plugins.scala.testingSupport.test.{
   * User: Alexander Podkhalyuzin
   * Date: 04.05.2009
   */
+
 class Specs2ConfigurationProducer extends {
   val confType = new Specs2ConfigurationType
   val confFactory = confType.confFactory

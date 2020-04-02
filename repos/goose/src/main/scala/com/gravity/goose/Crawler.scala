@@ -15,6 +15,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package com.gravity.goose
 
 import cleaners.{StandardDocumentCleaner, DocumentCleaner}
@@ -35,6 +36,7 @@ import com.gravity.goose.outputformatters.{
   * User: jim
   * Date: 8/18/11
   */
+
 case class CrawlCandidate(
     config: Configuration,
     url: String,

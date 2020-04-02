@@ -24,6 +24,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocComment
   * User: Dmitry Naydanov
   * Date: 11/26/11
   */
+
 class ScalaDocCompletionContributor extends ScalaCompletionContributor {
   extend(
     CompletionType.BASIC,

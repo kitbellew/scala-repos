@@ -26,6 +26,7 @@ import scala.language.postfixOps
   * This is used by the result classes of the block parsers to handle
   * Markdown within a block.
   */
+
 trait InlineParsers extends BaseParsers {
 
   /**

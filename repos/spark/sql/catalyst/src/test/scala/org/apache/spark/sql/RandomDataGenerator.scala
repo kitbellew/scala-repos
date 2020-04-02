@@ -273,7 +273,8 @@ object RandomDataGenerator {
         }
         case StructType(fields) => {
           val maybeFieldGenerators: Seq[Option[() => Any]] = fields.map {
-            field => forType(field.dataType, nullable = field.nullable, rand)
+            field =>
+              forType(field.dataType, nullable = field.nullable, rand)
           }
           if (maybeFieldGenerators.forall(_.isDefined)) {
             val fieldGenerators: Seq[() => Any] = maybeFieldGenerators

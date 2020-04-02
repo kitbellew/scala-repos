@@ -179,7 +179,8 @@ class AsyncTest {
         new js.Promise[Int]({
           (
               resolve: js.Function1[Int | js.Thenable[Int], _],
-              reject: js.Function1[Any, _]) => resolve(42)
+              reject: js.Function1[Any, _]) =>
+            resolve(42)
         })
 
       val f = p.toFuture
@@ -232,7 +233,8 @@ class AsyncTest {
         new js.Promise[Int]({
           (
               resolve: js.Function1[Int | js.Thenable[Int], _],
-              reject: js.Function1[Any, _]) => resolve(42)
+              reject: js.Function1[Any, _]) =>
+            resolve(42)
         })
 
       val f = Future {

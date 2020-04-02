@@ -17,6 +17,7 @@ import org.jetbrains.plugins.scala.util.ScalaUtils
   * User: Alexander Podkhalyuzin
   * Date: 12.08.2009
   */
+
 object PresentationUtil {
   def presentationString(obj: Any): String =
     presentationString(obj, ScSubstitutor.empty)

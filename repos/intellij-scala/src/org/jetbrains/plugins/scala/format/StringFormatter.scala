@@ -4,6 +4,7 @@ package format
 /**
   * Pavel Fatin
   */
+
 trait StringFormatter {
   def format(parts: Seq[StringPart]): String
 }

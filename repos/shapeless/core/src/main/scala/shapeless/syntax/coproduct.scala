@@ -39,6 +39,7 @@ final class CoproductOps[C <: Coproduct](val c: C)
   /**
     * Returns the tail of this `Coproduct`
     */
+
   def tail(implicit cc: IsCCons[C]): Option[cc.T] = cc.tail(c)
 
   /**

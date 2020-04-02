@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTypeDefinitio
 /**
   * @author ilyas
   */
+
 trait ScPackageContainer extends ScalaPsiElement {
 
   def prefix: String

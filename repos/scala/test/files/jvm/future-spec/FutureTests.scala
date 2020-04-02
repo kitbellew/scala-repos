@@ -360,12 +360,11 @@ class FutureTests extends MinimalScalaTest {
       val future2 =
         for {
           a <- future0.mapTo[Int]
-          b <-
-            (
+          b <- (
               Future {
                 (a * 2).toString
               }
-            ).mapTo[Int]
+          ).mapTo[Int]
           c <-
             Future {
               (7 * 2).toString

@@ -22,6 +22,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.index.ScAnnotatedMemberIndex
   * User: Alexander Podkhalyuzin
   * Date: 10.01.2009
   */
+
 class ScalaAnnotatedMembersSearcher
     extends QueryExecutor[PsiMember, AnnotatedElementsSearch.Parameters] {
 

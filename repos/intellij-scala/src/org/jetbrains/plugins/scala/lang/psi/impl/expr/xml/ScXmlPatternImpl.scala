@@ -27,6 +27,7 @@ import scala.collection.mutable.ArrayBuffer
   * @author Alexander Podkhalyuzin
   * Date: 21.04.2008
   */
+
 class ScXmlPatternImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScXmlPattern {

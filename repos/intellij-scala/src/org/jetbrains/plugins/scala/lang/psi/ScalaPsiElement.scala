@@ -144,6 +144,7 @@ trait ScalaPsiElement
   /**
     * Override in inheritors
     */
+
   def acceptChildren(visitor: ScalaElementVisitor) {
     for (c <- getChildren;
          if c.isInstanceOf[ScalaPsiElement]) {

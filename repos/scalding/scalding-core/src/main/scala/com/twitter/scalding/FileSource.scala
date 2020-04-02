@@ -319,8 +319,8 @@ abstract class FileSource
         if (strict && !files.forall(_.exists)) {
           throw new InvalidSourceException(
             "[" + this
-              .toString + s"] Data is missing from: ${localPaths.filterNot {
-              p => new java.io.File(p).exists
+              .toString + s"] Data is missing from: ${localPaths.filterNot { p =>
+              new java.io.File(p).exists
             }}")
         } else if (!files.exists(_.exists)) {
           throw new InvalidSourceException(
@@ -385,6 +385,7 @@ class ScaldingMultiSourceTap(
 /**
   * The fields here are ('offset, 'line)
   */
+
 trait TextSourceScheme extends SchemedSource {
   // The text-encoding to use when writing out the lines (default is UTF-8).
   val textEncoding: String = CHTextLine.DEFAULT_CHARSET
@@ -546,6 +547,7 @@ abstract class FixedPathSource(path: String*) extends FileSource {
 /**
   * Tab separated value source
   */
+
 case class Tsv(
     p: String,
     override val fields: Fields = Fields.ALL,

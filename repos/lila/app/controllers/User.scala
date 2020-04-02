@@ -376,7 +376,8 @@ object User extends LilaController {
       get("term", ctx.req)
         .filter(_.nonEmpty)
         .fold(BadRequest("No search term provided").fuccess: Fu[Result]) {
-          term => JsonOk(UserRepo usernamesLike term)
+          term =>
+            JsonOk(UserRepo usernamesLike term)
         }
     }
 }

@@ -16,6 +16,7 @@ import scala.annotation.tailrec
   * @author Alexander Podkhalyuzin
   *         Date: 05.02.2008
   */
+
 /*
  *  TopStat ::= {Annotation} {Modifier} -> TmplDef (it's mean that all parsed in TmplDef)
  *            | Import

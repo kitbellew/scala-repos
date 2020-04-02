@@ -68,7 +68,8 @@ class ShoppingCart(userId: String) extends Actor {
     case cmd @ AddItem(item) ⇒
       val update =
         Update(DataKey, LWWMap.empty[LineItem], writeMajority, Some(cmd)) {
-          cart ⇒ updateCart(cart, item)
+          cart ⇒
+            updateCart(cart, item)
         }
       replicator ! update
   }

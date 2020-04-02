@@ -1046,7 +1046,8 @@ private[optimizer] abstract class OptimizerCore(
         case (VarDef(Ident(name, originalName), vtpe, mutable, rhs)) :: rest =>
           pretransformExpr(rhs) { trhs =>
             withBinding(Binding(name, originalName, vtpe, mutable, trhs)) {
-              (restScope, cont1) => pretransformList(rest)(cont1)(restScope)
+              (restScope, cont1) =>
+                pretransformList(rest)(cont1)(restScope)
             }(cont)
           }
 
@@ -4263,7 +4264,8 @@ private[optimizer] abstract class OptimizerCore(
         value match {
           case PreTransBlock(stats, result) =>
             withNewLocalDef(binding.copy(value = result))(buildInner) {
-              tresult => cont(PreTransBlock(stats, tresult))
+              tresult =>
+                cont(PreTransBlock(stats, tresult))
             }
 
           case PreTransLocalDef(localDef) if !localDef.mutable =>

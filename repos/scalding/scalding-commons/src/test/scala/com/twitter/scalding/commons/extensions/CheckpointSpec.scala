@@ -23,6 +23,7 @@ import scala.collection.mutable.Buffer
 /**
   * @author Mike Jahr
   */
+
 class CheckpointJob(args: Args) extends Job(args) {
   implicit val implicitArgs: Args = args
 

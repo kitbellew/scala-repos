@@ -843,7 +843,8 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
   def splitAt(n: Int): (Repr, Repr) = {
     tasksupport.executeAndWaitResult(
       new SplitAt(n, combinerFactory, combinerFactory, splitter) mapResult {
-        p => (p._1.resultWithTaskSupport, p._2.resultWithTaskSupport)
+        p =>
+          (p._1.resultWithTaskSupport, p._2.resultWithTaskSupport)
       })
   }
 

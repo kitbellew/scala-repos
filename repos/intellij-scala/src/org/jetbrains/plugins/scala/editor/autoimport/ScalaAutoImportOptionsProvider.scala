@@ -7,6 +7,7 @@ import org.jetbrains.plugins.scala.settings.ScalaApplicationSettings
   * @author Alefas
   * @since 24.05.12
   */
+
 class ScalaAutoImportOptionsProvider extends AutoImportOptionsProvider {
   private var form: ScalaAutoImportOptionsProviderForm = null
 

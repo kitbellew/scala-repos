@@ -12,7 +12,8 @@ object PatternConstructionProps
   }
 
   property("unquote name and tree into bind") = forAll {
-    (name: TermName, tree: Tree) => pq"$name @ $tree" ≈ Bind(name, tree)
+    (name: TermName, tree: Tree) =>
+      pq"$name @ $tree" ≈ Bind(name, tree)
   }
 
   property("unquote type name into typed") = forAll { (name: TypeName) =>

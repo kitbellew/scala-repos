@@ -17,6 +17,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.impl._
   * User: Alexander Podkhalyuzin
   * Date: 22.07.2008
   */
+
 object ScalaDocPsiCreator {
   import org.jetbrains.plugins.scala.lang.scaladoc.parser.ScalaDocElementTypes._
   def createElement(node: ASTNode): PsiElement =

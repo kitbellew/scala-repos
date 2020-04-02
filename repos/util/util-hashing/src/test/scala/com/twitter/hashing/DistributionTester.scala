@@ -19,7 +19,8 @@ class DistributionTester[A](distributor: Distributor[A]) {
     }
     var frequencies = keysPerNode.values.toList
     frequencies ++= 0 until (distributor.nodeCount - frequencies.size) map {
-      _ => 0
+      _ =>
+        0
     }
     val average = frequencies.sum.toDouble / frequencies.size
     val diffs = frequencies.map { v =>

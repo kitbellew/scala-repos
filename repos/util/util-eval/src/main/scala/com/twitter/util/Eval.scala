@@ -105,7 +105,8 @@ class Eval(target: Option[File]) {
         new FilesystemResolver(new File(".")),
         new FilesystemResolver(new File("." + File.separator + "config"))) ++ (
         Option(System.getProperty("com.twitter.util.Eval.includePath")) map {
-          path => new FilesystemResolver(new File(path))
+          path =>
+            new FilesystemResolver(new File(path))
         }
       )))
 

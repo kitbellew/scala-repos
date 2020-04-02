@@ -83,6 +83,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
     *  because macro expansion needs some knowledge about the shape of macro impl's signature (which we can't pickle).
     *  Hence we precompute necessary stuff (e.g. the layout of type parameters) when compiling macro defs.
     */
+
   /** Represents all the information that a macro definition needs to know about its implementation.
     *  Includes a path to load the implementation via Java reflection,
     *  and various accounting information necessary when composing an argument list for the reflective invocation.

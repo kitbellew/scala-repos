@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   * User: Alefas
   * Date: 09.02.12
   */
+
 class ScalaUnnecessarySemicolonInspection extends LocalInspectionTool {
   override def isEnabledByDefault: Boolean = false
 

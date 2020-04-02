@@ -14,6 +14,7 @@ import breeze.linalg.axpy
   * @param maxIters user defined maximum iterations
   * @author tmyklebu debasish83
   */
+
 class NNLS(val maxIters: Int = -1) extends SerializableLogging {
   type BDM = DenseMatrix[Double]
   type BDV = DenseVector[Double]

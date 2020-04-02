@@ -1,6 +1,7 @@
 /** A bit down the road this test will examine
   *  the bytecode.
   */
+
 import scala.language.reflectiveCalls
 
 object Test {

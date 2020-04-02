@@ -69,7 +69,8 @@ class TlsEndpointVerificationSpec
       ) // example context does include custom CA
 
       whenReady(pipe(HttpRequest(uri = "https://hijack.de/")).failed, timeout) {
-        e ⇒ e shouldBe an[Exception]
+        e ⇒
+          e shouldBe an[Exception]
       }
     }
 

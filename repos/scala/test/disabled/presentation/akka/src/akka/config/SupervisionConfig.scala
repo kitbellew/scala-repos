@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2011 Scalable Solutions AB <http://scalablesolutions.se>
   */
+
 package akka.config
 
 import akka.dispatch.MessageDispatcher
@@ -29,7 +30,8 @@ object Supervision {
       maxRestartsHandler: (
           ActorRef,
           MaximumNumberOfRestartsWithinTimeRangeReached) => Unit = {
-        (aRef, max) => ()
+        (aRef, max) =>
+          ()
       })
       extends Server {
     //Java API

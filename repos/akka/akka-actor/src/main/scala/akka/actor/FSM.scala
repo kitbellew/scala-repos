@@ -375,6 +375,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     *                 DSL
     * ****************************************
     */
+
   /**
     * Insert a new StateFunction at the end of the processing chain for the
     * given state. If the stateTimeout parameter is set, entering this state

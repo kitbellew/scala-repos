@@ -81,7 +81,8 @@ trait Contexts {
           s.name != nme.WILDCARD && s.rename == nme.WILDCARD
 
         imp.tree.selectors filterNot (s => isMask(s) || used(s)) foreach {
-          sel => reporter.warning(imp posOf sel, "Unused import")
+          sel =>
+            reporter.warning(imp posOf sel, "Unused import")
         }
       }
       allUsedSelectors --= imps

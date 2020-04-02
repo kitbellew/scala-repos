@@ -4,6 +4,7 @@ package com.twitter.finagle.stats
   * Provides a `StatsReceiver` that prints nice summaries. Handy for
   * short-lived programs where you want summaries.
   */
+
 import com.google.common.util.concurrent.AtomicLongMap
 import com.google.common.cache.{CacheBuilder, CacheLoader}
 import scala.collection.JavaConverters._

@@ -30,6 +30,7 @@ import scala.collection.mutable
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaCodeFragmentFactory extends CodeFragmentFactory {
   def createCodeFragment(
       item: TextWithImports,

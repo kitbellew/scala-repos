@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.xml._
   * @author Alexander Podkhalyuzin
   * Date: 21.04.2008
   */
+
 class ScXmlStartTagImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScXmlStartTag {

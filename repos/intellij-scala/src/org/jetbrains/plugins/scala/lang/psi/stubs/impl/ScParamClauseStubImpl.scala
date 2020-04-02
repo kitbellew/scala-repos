@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.params.ScParameterCla
   * User: Alexander Podkhalyuzin
   * Date: 19.10.2008
   */
+
 class ScParamClauseStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
     elemType: IStubElementType[_ <: StubElement[

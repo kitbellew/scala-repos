@@ -7,6 +7,7 @@ import org.jetbrains.plugins.scala.base.ScalaLightCodeInsightFixtureTestAdapter
   * User: Dmitry Naydanov
   * Date: 2/27/12
   */
+
 class WikiPairedTagBackspaceTest
     extends ScalaLightCodeInsightFixtureTestAdapter {
 

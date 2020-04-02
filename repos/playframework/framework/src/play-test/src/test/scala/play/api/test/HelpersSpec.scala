@@ -23,7 +23,8 @@ class HelpersSpec extends Specification {
       inMemoryDatabaseConfiguration
         .get("db.test.driver") must beSome("org.h2.Driver")
       inMemoryDatabaseConfiguration.get("db.test.url") must beSome.which {
-        url => url.startsWith("jdbc:h2:mem:play-test-")
+        url =>
+          url.startsWith("jdbc:h2:mem:play-test-")
       }
     }
 

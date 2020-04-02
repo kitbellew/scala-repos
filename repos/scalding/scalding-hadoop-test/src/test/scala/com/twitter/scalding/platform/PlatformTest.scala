@@ -82,7 +82,8 @@ class TsvNoCacheJob(args: Args) extends Job(args) {
   dataInput
     .read
     .flatMap(new cascading.tuple.Fields(Integer.valueOf(0)) -> 'word) {
-      line: String => line.split("\\s")
+      line: String =>
+        line.split("\\s")
     }
     .groupBy('word) { group =>
       group.size

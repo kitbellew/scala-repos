@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.nonvalue.Parameter
 /**
   * Jason Zaugg
   */
+
 class PermuteArgumentsIntention extends PsiElementBaseIntentionAction {
   def getFamilyName = "Permute arguments"
 

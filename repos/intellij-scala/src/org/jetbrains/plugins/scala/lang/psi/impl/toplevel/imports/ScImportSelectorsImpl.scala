@@ -18,6 +18,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.ScImportSelectorsStub
   * @author Alexander Podkhalyuzin
   * Date: 20.02.2008
   */
+
 class ScImportSelectorsImpl private (
     stub: StubElement[ScImportSelectors],
     nodeType: IElementType,

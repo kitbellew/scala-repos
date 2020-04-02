@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTypeDefinitio
 /**
   * Pavel Fatin
   */
+
 class CreateApplyQuickFix(td: ScTypeDefinition, call: ScMethodCall) extends {
   val getFamilyName = "Create 'apply' method"
 } with CreateApplyOrUnapplyQuickFix(td) {

@@ -30,6 +30,7 @@ import java.util.Date
   * @author Sam Ritchie
   * @author Ashu Singhal
   */
+
 case class EventSource[T: Manifest](
     offline: Option[OfflineSource[T]],
     spout: Option[Spout[T]]) {

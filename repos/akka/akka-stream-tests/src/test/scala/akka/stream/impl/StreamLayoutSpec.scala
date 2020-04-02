@@ -135,7 +135,8 @@ class StreamLayoutSpec extends AkkaSpec {
       // this tests that the canary in to coal mine actually works
       val g =
         (1 to tooDeepForStack).foldLeft(Flow[Int].mapMaterializedValue(_ ⇒ 1)) {
-          (flow, i) ⇒ flow.mapMaterializedValue(x ⇒ x + i)
+          (flow, i) ⇒
+            flow.mapMaterializedValue(x ⇒ x + i)
         }
       a[StackOverflowError] shouldBe thrownBy {
         Fusing.aggressive(g)

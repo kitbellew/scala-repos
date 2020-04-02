@@ -849,7 +849,8 @@ trait BodyParsers {
     private def createBadResult(
         msg: String,
         statusCode: Int = BAD_REQUEST): RequestHeader => Future[Result] = {
-      request => LazyHttpErrorHandler.onClientError(request, statusCode, msg)
+      request =>
+        LazyHttpErrorHandler.onClientError(request, statusCode, msg)
     }
 
     /**

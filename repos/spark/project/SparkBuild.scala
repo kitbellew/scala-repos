@@ -665,7 +665,8 @@ object Assembly {
         }
     },
     jarName in (Test, assembly) <<= (version, moduleName, hadoopVersion) map {
-      (v, mName, hv) => s"${mName}-test-${v}.jar"
+      (v, mName, hv) =>
+        s"${mName}-test-${v}.jar"
     },
     mergeStrategy in assembly := {
       case PathList("org", "datanucleus", xs @ _*) =>

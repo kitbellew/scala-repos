@@ -440,22 +440,20 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
 
     val result =
       for {
-        timestamp <-
-          (obj \? "timestamp")
-            .map(_.validated[DateTime])
-            .sequence[
-              ({
-                type λ[α] = Validation[Error, α]
-              })#λ,
-              DateTime]
-        reason <-
-          (obj \? "reason")
-            .map(_.validated[String])
-            .sequence[
-              ({
-                type λ[α] = Validation[Error, α]
-              })#λ,
-              String]
+        timestamp <- (obj \? "timestamp")
+          .map(_.validated[DateTime])
+          .sequence[
+            ({
+              type λ[α] = Validation[Error, α]
+            })#λ,
+            DateTime]
+        reason <- (obj \? "reason")
+          .map(_.validated[String])
+          .sequence[
+            ({
+              type λ[α] = Validation[Error, α]
+            })#λ,
+            String]
       } yield (timestamp getOrElse (new DateTime), reason)
 
     result match {
@@ -633,7 +631,8 @@ class GetResultHandler(jobs: JobManager[Future])(implicit ctx: ExecutionContext)
                 case Right((mimeType, data)) =>
                   val headers =
                     mimeType.foldLeft(HttpHeaders.Empty) {
-                      (headers, mimeType) => headers + `Content-Type`(mimeType)
+                      (headers, mimeType) =>
+                        headers + `Content-Type`(mimeType)
                     }
                   HttpResponse[ByteChunk](OK, headers, Some(Right(data)))
               }

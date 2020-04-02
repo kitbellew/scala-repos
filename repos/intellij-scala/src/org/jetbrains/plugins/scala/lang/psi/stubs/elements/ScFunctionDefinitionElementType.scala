@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScFunction
   * User: Alexander Podkhalyuzin
   * Date: 14.10.2008
   */
+
 class ScFunctionDefinitionElementType
     extends ScFunctionElementType[ScFunction]("function definition") {
   def createElement(node: ASTNode): PsiElement =

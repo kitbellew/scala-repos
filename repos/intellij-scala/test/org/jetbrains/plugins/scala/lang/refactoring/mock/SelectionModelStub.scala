@@ -12,6 +12,7 @@ import com.intellij.openapi.editor.{
 /**
   * Pavel Fatin
   */
+
 class SelectionModelStub extends SelectionModel {
   def getTextAttributes: TextAttributes = null
 

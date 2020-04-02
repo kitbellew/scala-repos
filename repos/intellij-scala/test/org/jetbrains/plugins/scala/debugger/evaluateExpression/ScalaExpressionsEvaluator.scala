@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.debugger.{
   * User: Alefas
   * Date: 19.10.11
   */
+
 class ScalaExpressionsEvaluator
     extends ScalaExpressionsEvaluatorBase
     with ScalaVersion_2_11

@@ -23,7 +23,8 @@ import org.scalacheck.Prop.forAll
 object DistinctByProps extends Properties("CoGrouped.DistinctBy") {
 
   property("distinctBy never increases size") = forAll {
-    (l: List[Int], fn: Int => Byte) => distinctBy(l)(fn).size <= l.size
+    (l: List[Int], fn: Int => Byte) =>
+      distinctBy(l)(fn).size <= l.size
   }
   property("distinctBy.size == map(fn).toSet.size") = forAll {
     (l: List[Int], fn: Int => Byte) =>

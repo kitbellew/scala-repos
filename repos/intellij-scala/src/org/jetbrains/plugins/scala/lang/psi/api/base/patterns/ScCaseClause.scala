@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScExpression, ScGuard}
   * @author Alexander Podkhalyuzin
   * Date: 28.02.2008
   */
+
 trait ScCaseClause extends ScalaPsiElement {
   def pattern: Option[ScPattern] = findChild(classOf[ScPattern])
   def expr: Option[ScExpression] = findChild(classOf[ScExpression])

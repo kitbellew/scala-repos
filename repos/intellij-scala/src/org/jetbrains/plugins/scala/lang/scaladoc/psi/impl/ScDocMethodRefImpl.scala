@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocMethodRef
   * User: Alexander Podkhalyuzin
   * Date: 22.07.2008
   */
+
 class ScDocMethodRefImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScDocMethodRef {

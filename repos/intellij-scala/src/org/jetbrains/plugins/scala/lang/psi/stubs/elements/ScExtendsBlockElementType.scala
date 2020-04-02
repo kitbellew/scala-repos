@@ -19,6 +19,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.index.ScalaIndexKeys
 /**
   * @author ilyas
   */
+
 class ScExtendsBlockElementType
     extends ScStubElementType[ScExtendsBlockStub, ScExtendsBlock](
       "extends block") {

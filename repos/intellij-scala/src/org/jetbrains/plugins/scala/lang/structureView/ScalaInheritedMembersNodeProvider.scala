@@ -31,6 +31,7 @@ import org.jetbrains.plugins.scala.lang.structureView.elements.impl._
   * @author Alefas
   * @since 04.05.12
   */
+
 class ScalaInheritedMembersNodeProvider
     extends FileStructureNodeProvider[TreeElement] {
   def provideNodes(node: TreeElement): util.Collection[TreeElement] = {

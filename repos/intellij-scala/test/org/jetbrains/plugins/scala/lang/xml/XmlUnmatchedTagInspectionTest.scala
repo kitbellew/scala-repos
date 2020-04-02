@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.codeInspection.xml.ScalaXmlUnmatchedTagInspec
   * User: Dmitry Naydanov
   * Date: 4/9/12
   */
+
 class XmlUnmatchedTagInspectionTest
     extends ScalaLightCodeInsightFixtureTestAdapter {
   val noOpeningTagError = ScalaBundle.message("xml.no.opening.tag")
