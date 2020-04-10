@@ -114,12 +114,10 @@ class ModelCollectionSpec extends Specification {
     "collect models when provided as a list inside an option" in {
       val collected = Swagger.collectModels[OptionListThing](Set.empty)
       val r = collected.find(_.id == "OptionListThing")
-      r
-        .flatMap(
+      r.flatMap(
           _.properties.find(_._1 == "things").map(_._2.`type`)) must beSome(
         DataType[List[TaggedThing]])
-      r
-        .flatMap(
+      r.flatMap(
           _.properties.find(_._1 == "things").map(_._2.required)) must beSome(
         false)
     }

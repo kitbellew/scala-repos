@@ -686,8 +686,7 @@ trait ColumnarTableModule[M[+_]]
                 (indexedSource.index, projectedKeyIndices, groupKey)
               }).toList
 
-            M
-              .point(
+            M.point(
                 TableIndex.joinSubTables(subTableProjections).normalize
               ) // TODO: normalize necessary?
           }

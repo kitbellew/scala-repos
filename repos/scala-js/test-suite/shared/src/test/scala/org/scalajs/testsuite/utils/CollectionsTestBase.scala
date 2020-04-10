@@ -11,9 +11,7 @@ trait CollectionsTestBase {
   val range: Range = 0 to 30
 
   class A extends jl.Comparable[A] {
-    def compareTo(o: A): Int =
-      this
-        .##.compareTo(o.##)
+    def compareTo(o: A): Int = this.##.compareTo(o.##)
   }
 
   class B extends A

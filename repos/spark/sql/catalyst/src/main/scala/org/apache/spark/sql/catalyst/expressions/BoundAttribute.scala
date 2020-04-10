@@ -102,8 +102,7 @@ object BindReferences extends Logging {
             BoundReference(ordinal, a.dataType, input(ordinal).nullable)
           }
         }
-    }
-      .asInstanceOf[
+    }.asInstanceOf[
         A
       ] // Kind of a hack, but safe.  TODO: Tighten return type when possible.
   }

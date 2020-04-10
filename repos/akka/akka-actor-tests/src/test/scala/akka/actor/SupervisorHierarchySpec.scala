@@ -161,8 +161,7 @@ object SupervisorHierarchySpec {
         val log = l :+ Event("Failed in constructor", identityHashCode(this))
         stateCache.put(
           self.path,
-          hs
-            .copy(
+          hs.copy(
               log = log,
               failConstr = f.copy(failConstr = f.failConstr - 1)))
         throw f

@@ -196,8 +196,7 @@ object Util extends Build {
     resourceGenerators in Compile <+=
       (resourceManaged in Compile, name, version) map { (dir, name, ver) =>
         val file = dir / "com" / "twitter" / name / "build.properties"
-        val buildRev = Process("git" :: "rev-parse" :: "HEAD" :: Nil)
-          .!!.trim
+        val buildRev = Process("git" :: "rev-parse" :: "HEAD" :: Nil).!!.trim
         val buildName = new java.text.SimpleDateFormat("yyyyMMdd-HHmmss")
           .format(new java.util.Date)
         val contents =

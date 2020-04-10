@@ -179,8 +179,7 @@ object WriteInputFormatTestDataGenerator {
         val va = new DoubleArrayWritable
         va.set(v.map(new DoubleWritable(_)))
         (new IntWritable(k), va)
-    }
-      .saveAsNewAPIHadoopFile[SequenceFileOutputFormat[
+    }.saveAsNewAPIHadoopFile[SequenceFileOutputFormat[
         IntWritable,
         DoubleArrayWritable]](arrPath)
 

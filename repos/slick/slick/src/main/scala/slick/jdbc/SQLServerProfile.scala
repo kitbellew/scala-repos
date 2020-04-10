@@ -111,7 +111,7 @@ trait SQLServerProfile extends JdbcProfile {
         override def rawDefault =
           super.rawDefault.map(
             _.stripPrefix("(") // jtds
-            .stripPrefix("(").stripSuffix(")").stripSuffix(")"))
+              .stripPrefix("(").stripSuffix(")").stripSuffix(")"))
         override def default =
           rawDefault.map((_, tpe)).collect {
             case ("0", "Boolean") => Some(false)

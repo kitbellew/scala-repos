@@ -860,10 +860,9 @@ trait ScalatraBase
     */
   def multiParams(implicit request: HttpServletRequest): MultiParams = {
     val read = request.contains("MultiParamsRead")
-    val found =
-      request.get(MultiParamsKey) map (_.asInstanceOf[MultiParams] ++ (
-        if (read) Map.empty else request.multiParameters
-      ))
+    val found = request.get(MultiParamsKey) map (_
+      .asInstanceOf[MultiParams] ++ (if (read) Map.empty
+                                     else request.multiParameters))
     val multi = found getOrElse request.multiParameters
     request("MultiParamsRead") = new {}
     request(MultiParamsKey) = multi

@@ -142,8 +142,10 @@ trait MySQLProfile extends JdbcProfile {
           case None => defaultStringType match {
               case Some(s) => s
               case None =>
-                if (sym.flatMap(_.findColumnOption[
-                      RelationalProfile.ColumnOption.Default[_]]).isDefined ||
+                if (sym.flatMap(
+                      _.findColumnOption[
+                          RelationalProfile.ColumnOption.Default[_]])
+                      .isDefined ||
                     sym
                       .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])
                       .isDefined) "VARCHAR(254)"

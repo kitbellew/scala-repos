@@ -19,8 +19,8 @@ object Lexical {
     (CharsWhile(" ".toSet, min = 1) | Lexical.comment | "\\\n").rep)
 
   val identifier: P[Ast.identifier] = P(
-    (letter | "_") ~ (letter | digit | "_").rep)
-    .!.filter(!keywordList.contains(_)).map(Ast.identifier)
+    (letter | "_") ~ (letter | digit | "_").rep).!
+    .filter(!keywordList.contains(_)).map(Ast.identifier)
   val letter = P(lowercase | uppercase)
   val lowercase = P(CharIn('a' to 'z'))
   val uppercase = P(CharIn('A' to 'Z'))
@@ -83,8 +83,8 @@ object Lexical {
   val longinteger: P[BigInt] = P(integer ~ ("l" | "L"))
   val integer: P[BigInt] = P(
     octinteger | hexinteger | bininteger | decimalinteger)
-  val decimalinteger: P[BigInt] = P(nonzerodigit ~ digit.rep | "0")
-    .!.map(scala.BigInt(_))
+  val decimalinteger: P[BigInt] = P(nonzerodigit ~ digit.rep | "0").!
+    .map(scala.BigInt(_))
   val octinteger: P[BigInt] = P(
     "0" ~ ("o" | "O") ~ octdigit.rep(1).! | "0" ~ octdigit.rep(1).!)
     .map(scala.BigInt(_, 8))
@@ -98,12 +98,11 @@ object Lexical {
   val hexdigit: P0 = P(digit | CharIn('a' to 'f', 'A' to 'F'))
 
   val floatnumber: P[BigDecimal] = P(pointfloat | exponentfloat)
-  val pointfloat: P[BigDecimal] = P(intpart.? ~ fraction | intpart ~ ".")
-    .!.map(BigDecimal(_))
-  val exponentfloat: P[BigDecimal] = P((intpart | pointfloat) ~ exponent)
-    .!.map(BigDecimal(_))
-  val intpart: P[BigDecimal] = P(digit.rep(1))
-    .!.map(BigDecimal(_))
+  val pointfloat: P[BigDecimal] = P(intpart.? ~ fraction | intpart ~ ".").!
+    .map(BigDecimal(_))
+  val exponentfloat: P[BigDecimal] = P((intpart | pointfloat) ~ exponent).!
+    .map(BigDecimal(_))
+  val intpart: P[BigDecimal] = P(digit.rep(1)).!.map(BigDecimal(_))
   val fraction: P0 = P("." ~ digit.rep(1))
   val exponent: P0 = P(("e" | "E") ~ ("+" | "-").? ~ digit.rep(1))
 

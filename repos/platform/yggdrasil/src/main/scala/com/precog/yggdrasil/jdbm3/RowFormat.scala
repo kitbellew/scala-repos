@@ -642,7 +642,7 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
                 buffer: ByteBuffer,
                 pool: ByteBufferPool): Option[List[ByteBuffer]] = {
               (writers zip selCols) find (_._2.isDefinedAt(row)) map (_._1
-              .encode(row, buffer, pool)) getOrElse {
+                .encode(row, buffer, pool)) getOrElse {
                 val flag = SortingRowFormat.flagForCType(CUndefined)
                 if (buffer.remaining() > 0) {
                   buffer.put(flag)

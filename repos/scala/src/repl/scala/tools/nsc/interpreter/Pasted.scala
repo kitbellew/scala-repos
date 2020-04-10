@@ -62,9 +62,8 @@ abstract class Pasted(prompt: String) {
     val ActualPromptString = lines find matchesPrompt map (s =>
       if (matchesString(s, PromptString)) PromptString
       else AltPromptString) getOrElse PromptString
-    val cmds = lines reduceLeft append split ActualPromptString filterNot (
-      _.trim == ""
-    ) toList
+    val cmds = lines reduceLeft append split ActualPromptString filterNot (_
+      .trim == "") toList
 
     /** If it's a prompt or continuation line, strip the formatting bits and
       *  assemble the code.  Otherwise ship it off to be analyzed for res references

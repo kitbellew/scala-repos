@@ -352,8 +352,7 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
   protected[this] def bf2seq[S, That](bf: CanBuildFrom[Repr, S, That]) =
     new CanBuildFrom[Sequential, S, That] {
       def apply(from: Sequential) =
-        bf
-          .apply(
+        bf.apply(
             from.par.asInstanceOf[Repr]
           ) // !!! we only use this on `this.seq`, and know that `this.seq.par.getClass == this.getClass`
       def apply() = bf.apply()

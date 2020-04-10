@@ -131,7 +131,7 @@ object Tournament extends LilaController {
     OptionFuResult(PairingRepo.byTourUserNb(id, userId, nb)) { pairing =>
       GameRepo game pairing.id map {
         _.flatMap { Pov.ofUserId(_, userId) }
-        .fold(Redirect(routes.Tournament show id))(withPov)
+          .fold(Redirect(routes.Tournament show id))(withPov)
       }
     }
   }

@@ -133,8 +133,7 @@ class TypedPipeJoinWithDescriptionJob(args: Args) extends Job(args) {
   val y = TypedPipe.from[(Int, String)](List((1, "first")))
   val z = TypedPipe.from[(Int, Boolean)](List((2, true))).group
 
-  x
-    .hashJoin(
+  x.hashJoin(
       y
     ) // this triggers an implicit that somehow pushes the line number to the next one
     .withDescription("hashJoin").leftJoin(z).withDescription("leftJoin").values

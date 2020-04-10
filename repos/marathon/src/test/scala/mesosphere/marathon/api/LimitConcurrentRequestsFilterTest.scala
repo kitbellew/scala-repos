@@ -52,8 +52,7 @@ class LimitConcurrentRequestsFilterTest
     latch.await(5, TimeUnit.SECONDS) should be(
       true
     ) //make sure, first "request" has passed
-    rf
-      .doFilter(
+    rf.doFilter(
         request,
         response,
         chain

@@ -109,15 +109,11 @@ object ExampleTests extends TestSuite {
 
         val Parsed.Success(("aaa", "b", "c"), 5) = capture3.parse("aaabc")
 
-        val captureRep = P(
-          "a"
-            .!.rep ~ "b" ~ End)
+        val captureRep = P("a".!.rep ~ "b" ~ End)
 
         val Parsed.Success(Seq("a", "a", "a"), 4) = captureRep.parse("aaab")
 
-        val captureOpt = P(
-          "a".rep ~ "b"
-            .!.? ~ End)
+        val captureOpt = P("a".rep ~ "b".!.? ~ End)
 
         val Parsed.Success(Some("b"), 4) = captureOpt.parse("aaab")
       }
@@ -131,9 +127,7 @@ object ExampleTests extends TestSuite {
       }
 
       'lookahead {
-        val keyword = P(
-          ("hello" ~ &(" "))
-            .!.rep)
+        val keyword = P(("hello" ~ &(" ")).!.rep)
 
         val Parsed.Success(Seq("hello"), _) = keyword.parse("hello ")
         val Parsed.Success(Seq(), __) = keyword.parse("helloX")
@@ -229,9 +223,7 @@ object ExampleTests extends TestSuite {
         val Parsed.Success("123", _) = cw.parse("123 45")
       }
       'stringIn {
-        val si = P(
-          StringIn("cow", "cattle")
-            .!.rep)
+        val si = P(StringIn("cow", "cattle").!.rep)
 
         val Parsed.Success(Seq("cow", "cattle"), _) = si.parse("cowcattle")
         val Parsed.Success(Seq("cow"), _) = si.parse("cowmoo")
@@ -292,9 +284,7 @@ object ExampleTests extends TestSuite {
       }
       'delimiternocut {
         val digits = P(CharIn('0' to '9').rep(1))
-        val tuple = P(
-          "(" ~ digits
-            .!.rep(sep = ",") ~ ")")
+        val tuple = P("(" ~ digits.!.rep(sep = ",") ~ ")")
 
         val Parsed.Success(Seq("1", "23"), _) = tuple.parse("(1,23)")
 
@@ -306,9 +296,7 @@ object ExampleTests extends TestSuite {
       }
       'delimitercut {
         val digits = P(CharIn('0' to '9').rep(1))
-        val tuple = P(
-          "(" ~ digits
-            .!.rep(sep = "," ~/ Pass) ~ ")")
+        val tuple = P("(" ~ digits.!.rep(sep = "," ~/ Pass) ~ ")")
 
         val Parsed.Success(Seq("1", "23"), _) = tuple.parse("(1,23)")
 
@@ -320,9 +308,7 @@ object ExampleTests extends TestSuite {
       }
       'endcut {
         val digits = P(CharIn('0' to '9').rep(1))
-        val tuple = P(
-          "(" ~ digits
-            .!.rep(sep = ",".~/) ~ ")")
+        val tuple = P("(" ~ digits.!.rep(sep = ",".~/) ~ ")")
 
         val Parsed.Success(Seq("1", "23"), _) = tuple.parse("(1,23)")
 
@@ -360,8 +346,7 @@ object ExampleTests extends TestSuite {
         object Foo {
           import fastparse.all._
           val plus = P("+")
-          val num = P(CharIn('0' to '9').rep(1))
-            .!.map(_.toInt)
+          val num = P(CharIn('0' to '9').rep(1)).!.map(_.toInt)
           val side = P("(" ~ expr ~ ")" | num)
           val expr: P[Int] = P(side ~ plus ~ side).map { case (l, r) => l + r }
         }
@@ -375,8 +360,7 @@ object ExampleTests extends TestSuite {
         object Foo {
           import fastparse.all._
           val plus = P("+")
-          val num = P(CharIn('0' to '9').rep(1))
-            .!.map(_.toInt)
+          val num = P(CharIn('0' to '9').rep(1)).!.map(_.toInt)
           val side = P("(" ~/ expr ~ ")" | num)
           val expr: P[Int] = P(side ~ plus ~ side).map { case (l, r) => l + r }
         }
@@ -388,8 +372,7 @@ object ExampleTests extends TestSuite {
         object Foo {
           import fastparse.all._
           val plus = P("+")
-          val num = P(CharIn('0' to '9').rep(1))
-            .!.map(_.toInt)
+          val num = P(CharIn('0' to '9').rep(1)).!.map(_.toInt)
           val side = P("(" ~/ expr ~ ")" | num).log()
           val expr: P[Int] = P(side ~ plus ~ side).map { case (l, r) => l + r }
             .log()

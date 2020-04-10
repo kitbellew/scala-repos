@@ -228,7 +228,7 @@ trait ScTypePresentation {
           val paramClauses = funCopy.paramClauses.clauses.map(
             _.parameters.map(param =>
               ScalaDocumentationProvider.parseParameter(param, typeText0))
-            .mkString("(", ", ", ")")).mkString("")
+              .mkString("(", ", ", ")")).mkString("")
           val retType = if (!compType.equiv(rt)) typeText0(rt) else "this.type"
           val typeParams =
             if (funCopy.typeParameters.length > 0)

@@ -191,8 +191,7 @@ object OpenIDSpec extends Specification with Mockito {
         }
       }
       "use direct verification on the discovered endpoint" in {
-        ws
-          .urls(
+        ws.urls(
             1) must be equalTo "https://www.google.com/a/example.com/o8/ud?be=o8" // From the mock XRDS
       }
     }

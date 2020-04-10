@@ -104,7 +104,7 @@ object UserRepo {
       .collect[List]() map { docs =>
       docs.sortBy {
         _.getAs[BSONDocument](F.count).flatMap(_.getAs[BSONNumberLike]("game"))
-        .??(_.toInt)
+          .??(_.toInt)
       }.map(_.getAs[String]("_id")).flatten match {
         case List(u1, u2) => (u1, u2).some
         case _            => none
@@ -253,11 +253,10 @@ object UserRepo {
     checkPassword(Json.obj(F.email -> email), password)
 
   private def checkPassword(select: JsObject, password: String): Fu[Boolean] =
-    $projection.one(
-      select,
-      Seq("password", "salt", "enabled", "sha512", "email")) { obj =>
-      (AuthData.reader reads obj).asOpt
-    } map { _ ?? (data => data.enabled && data.compare(password)) }
+    $projection
+      .one(select, Seq("password", "salt", "enabled", "sha512", "email")) {
+        obj => (AuthData.reader reads obj).asOpt
+      } map { _ ?? (data => data.enabled && data.compare(password)) }
 
   def getPasswordHash(id: ID): Fu[Option[String]] =
     $primitive.one($select(id), "password")(_.asOpt[String])
@@ -352,7 +351,7 @@ object UserRepo {
       BSONDocument(s"${F.perfs}.${perfType.key}" -> true)).one[BSONDocument]
       .map {
         _.flatMap(_.getAs[BSONDocument](F.perfs))
-        .flatMap(_.getAs[Perf](perfType.key))
+          .flatMap(_.getAs[Perf](perfType.key))
       }
 
   def setSeenAt(id: ID) {

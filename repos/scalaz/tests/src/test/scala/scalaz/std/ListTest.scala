@@ -154,8 +154,7 @@ object ListTest extends SpecLite {
 
   "mapAccumRight" ! forAll { (xs: List[Int]) =>
     val f = (_: Int) + 1
-    xs
-      .mapAccumRight(
+    xs.mapAccumRight(
         List[Int](),
         (c: List[Int], a) => (c :+ a, f(a))) must_=== (xs.reverse, xs.map(f))
   }

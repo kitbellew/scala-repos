@@ -537,8 +537,7 @@ object SAbsoluteLayout {
       context: android.content.Context,
       defaultLayoutParam: SAbsoluteLayout => LP): SAbsoluteLayout = {
     val v = new SAbsoluteLayout
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -615,8 +614,7 @@ object SImageButton extends ImageViewCompanion[SImageButton] {
       context: android.content.Context,
       defaultLayoutParam: SImageButton => LP): SImageButton = {
     val v = new SImageButton
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -850,8 +848,7 @@ object SListView {
       context: android.content.Context,
       defaultLayoutParam: SListView => LP): SListView = {
     val v = new SListView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -933,8 +930,7 @@ object SEditText extends TextViewCompanion[SEditText] {
       context: android.content.Context,
       defaultLayoutParam: SEditText => LP): SEditText = {
     val v = new SEditText
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -1296,8 +1292,7 @@ object SImageView extends ImageViewCompanion[SImageView] {
       context: android.content.Context,
       defaultLayoutParam: SImageView => LP): SImageView = {
     val v = new SImageView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -1337,8 +1332,7 @@ object SAnalogClock {
       context: android.content.Context,
       defaultLayoutParam: SAnalogClock => LP): SAnalogClock = {
     val v = new SAnalogClock
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -1422,8 +1416,7 @@ object SMultiAutoCompleteTextView
       defaultLayoutParam: SMultiAutoCompleteTextView => LP)
       : SMultiAutoCompleteTextView = {
     val v = new SMultiAutoCompleteTextView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -1563,8 +1556,7 @@ object SDatePicker {
       context: android.content.Context,
       defaultLayoutParam: SDatePicker => LP): SDatePicker = {
     val v = new SDatePicker
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -1719,8 +1711,7 @@ class STableLayout()(implicit
     def parent = STableLayout.this
 
     def >> : V = {
-      v
-        .setLayoutParams(
+      v.setLayoutParams(
           this
         ) // triggers layout for v, see https://github.com/pocorall/scaloid/issues/144
       v
@@ -1733,8 +1724,7 @@ object STableLayout {
       context: android.content.Context,
       defaultLayoutParam: STableLayout => LP): STableLayout = {
     val v = new STableLayout
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -1975,8 +1965,7 @@ object STabHost {
       context: android.content.Context,
       defaultLayoutParam: STabHost => LP): STabHost = {
     val v = new STabHost
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -2143,8 +2132,7 @@ object SGridLayout {
       context: android.content.Context,
       defaultLayoutParam: SGridLayout => LP): SGridLayout = {
     val v = new SGridLayout
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -2270,8 +2258,7 @@ class SRadioGroup()(implicit
     def parent = SRadioGroup.this
 
     def >> : V = {
-      v
-        .setLayoutParams(
+      v.setLayoutParams(
           this
         ) // triggers layout for v, see https://github.com/pocorall/scaloid/issues/144
       v
@@ -2284,8 +2271,7 @@ object SRadioGroup {
       context: android.content.Context,
       defaultLayoutParam: SRadioGroup => LP): SRadioGroup = {
     val v = new SRadioGroup
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -2438,8 +2424,7 @@ object SRatingBar {
       context: android.content.Context,
       defaultLayoutParam: SRatingBar => LP): SRatingBar = {
     val v = new SRatingBar
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -2669,8 +2654,7 @@ object SSpinner {
       context: android.content.Context,
       defaultLayoutParam: SSpinner => LP): SSpinner = {
     val v = new SSpinner
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -2872,8 +2856,7 @@ object SGridView {
       context: android.content.Context,
       defaultLayoutParam: SGridView => LP): SGridView = {
     val v = new SGridView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -3092,8 +3075,7 @@ class SRelativeLayout()(implicit
     def parent = SRelativeLayout.this
 
     def >> : V = {
-      v
-        .setLayoutParams(
+      v.setLayoutParams(
           this
         ) // triggers layout for v, see https://github.com/pocorall/scaloid/issues/144
       v
@@ -3106,8 +3088,7 @@ object SRelativeLayout {
       context: android.content.Context,
       defaultLayoutParam: SRelativeLayout => LP): SRelativeLayout = {
     val v = new SRelativeLayout
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -3363,8 +3344,7 @@ object SNumberPicker {
       context: android.content.Context,
       defaultLayoutParam: SNumberPicker => LP): SNumberPicker = {
     val v = new SNumberPicker
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -3501,8 +3481,7 @@ object SChronometer extends TextViewCompanion[SChronometer] {
       context: android.content.Context,
       defaultLayoutParam: SChronometer => LP): SChronometer = {
     val v = new SChronometer
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -3638,8 +3617,7 @@ object SCheckedTextView extends TextViewCompanion[SCheckedTextView] {
       context: android.content.Context,
       defaultLayoutParam: SCheckedTextView => LP): SCheckedTextView = {
     val v = new SCheckedTextView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -3715,8 +3693,7 @@ object STwoLineListItem {
       context: android.content.Context,
       defaultLayoutParam: STwoLineListItem => LP): STwoLineListItem = {
     val v = new STwoLineListItem
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -3980,8 +3957,7 @@ object SImageSwitcher {
       context: android.content.Context,
       defaultLayoutParam: SImageSwitcher => LP): SImageSwitcher = {
     val v = new SImageSwitcher
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -4116,8 +4092,7 @@ object STimePicker {
       context: android.content.Context,
       defaultLayoutParam: STimePicker => LP): STimePicker = {
     val v = new STimePicker
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -4450,8 +4425,7 @@ object SExpandableListView {
       context: android.content.Context,
       defaultLayoutParam: SExpandableListView => LP): SExpandableListView = {
     val v = new SExpandableListView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -5158,8 +5132,7 @@ object SSeekBar {
       context: android.content.Context,
       defaultLayoutParam: SSeekBar => LP): SSeekBar = {
     val v = new SSeekBar
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -5340,8 +5313,7 @@ object SStackView {
       context: android.content.Context,
       defaultLayoutParam: SStackView => LP): SStackView = {
     val v = new SStackView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -5724,8 +5696,7 @@ object SViewAnimator {
       context: android.content.Context,
       defaultLayoutParam: SViewAnimator => LP): SViewAnimator = {
     val v = new SViewAnimator
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -6092,8 +6063,7 @@ object SCalendarView {
       context: android.content.Context,
       defaultLayoutParam: SCalendarView => LP): SCalendarView = {
     val v = new SCalendarView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -6808,8 +6778,7 @@ object STextSwitcher {
       context: android.content.Context,
       defaultLayoutParam: STextSwitcher => LP): STextSwitcher = {
     val v = new STextSwitcher
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -7080,8 +7049,7 @@ class SLinearLayout()(implicit
     def parent = SLinearLayout.this
 
     def >> : V = {
-      v
-        .setLayoutParams(
+      v.setLayoutParams(
           this
         ) // triggers layout for v, see https://github.com/pocorall/scaloid/issues/144
       v
@@ -7094,8 +7062,7 @@ object SLinearLayout {
       context: android.content.Context,
       defaultLayoutParam: SLinearLayout => LP): SLinearLayout = {
     val v = new SLinearLayout
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -7265,8 +7232,7 @@ object SZoomControls {
       context: android.content.Context,
       defaultLayoutParam: SZoomControls => LP): SZoomControls = {
     val v = new SZoomControls
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -7395,8 +7361,7 @@ object SDialerFilter {
       context: android.content.Context,
       defaultLayoutParam: SDialerFilter => LP): SDialerFilter = {
     val v = new SDialerFilter
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -7454,8 +7419,7 @@ object SRadioButton extends TextViewCompanion[SRadioButton] {
       context: android.content.Context,
       defaultLayoutParam: SRadioButton => LP): SRadioButton = {
     val v = new SRadioButton
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -7557,8 +7521,7 @@ object SQuickContactBadge extends ImageViewCompanion[SQuickContactBadge] {
       context: android.content.Context,
       defaultLayoutParam: SQuickContactBadge => LP): SQuickContactBadge = {
     val v = new SQuickContactBadge
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -7965,8 +7928,7 @@ object SSearchView {
       context: android.content.Context,
       defaultLayoutParam: SSearchView => LP): SSearchView = {
     val v = new SSearchView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -8024,8 +7986,7 @@ object SDigitalClock extends TextViewCompanion[SDigitalClock] {
       context: android.content.Context,
       defaultLayoutParam: SDigitalClock => LP): SDigitalClock = {
     val v = new SDigitalClock
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -8124,8 +8085,7 @@ object SToggleButton extends TextViewCompanion[SToggleButton] {
       context: android.content.Context,
       defaultLayoutParam: SToggleButton => LP): SToggleButton = {
     val v = new SToggleButton
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -8185,8 +8145,7 @@ object SButton extends TextViewCompanion[SButton] {
       context: android.content.Context,
       defaultLayoutParam: SButton => LP): SButton = {
     val v = new SButton
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -8247,8 +8206,7 @@ object SCheckBox extends TextViewCompanion[SCheckBox] {
       context: android.content.Context,
       defaultLayoutParam: SCheckBox => LP): SCheckBox = {
     val v = new SCheckBox
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -8326,8 +8284,7 @@ object SMediaController {
       context: android.content.Context,
       defaultLayoutParam: SMediaController => LP): SMediaController = {
     val v = new SMediaController
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -8380,8 +8337,7 @@ class STableRow()(implicit
     def parent = STableRow.this
 
     def >> : V = {
-      v
-        .setLayoutParams(
+      v.setLayoutParams(
           this
         ) // triggers layout for v, see https://github.com/pocorall/scaloid/issues/144
       v
@@ -8394,8 +8350,7 @@ object STableRow {
       context: android.content.Context,
       defaultLayoutParam: STableRow => LP): STableRow = {
     val v = new STableRow
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -8555,8 +8510,7 @@ object STabWidget {
       context: android.content.Context,
       defaultLayoutParam: STabWidget => LP): STabWidget = {
     val v = new STabWidget
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -8779,8 +8733,7 @@ object SVideoView {
       context: android.content.Context,
       defaultLayoutParam: SVideoView => LP): SVideoView = {
     val v = new SVideoView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -9186,8 +9139,7 @@ object SHorizontalScrollView {
       defaultLayoutParam: SHorizontalScrollView => LP)
       : SHorizontalScrollView = {
     val v = new SHorizontalScrollView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -9360,8 +9312,7 @@ object SProgressBar {
       context: android.content.Context,
       defaultLayoutParam: SProgressBar => LP): SProgressBar = {
     val v = new SProgressBar
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -9451,8 +9402,7 @@ object SScrollView {
       context: android.content.Context,
       defaultLayoutParam: SScrollView => LP): SScrollView = {
     val v = new SScrollView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -9528,8 +9478,7 @@ object SAdapterViewFlipper {
       context: android.content.Context,
       defaultLayoutParam: SAdapterViewFlipper => LP): SAdapterViewFlipper = {
     val v = new SAdapterViewFlipper
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -9807,8 +9756,7 @@ object SViewSwitcher {
       context: android.content.Context,
       defaultLayoutParam: SViewSwitcher => LP): SViewSwitcher = {
     val v = new SViewSwitcher
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -9888,8 +9836,7 @@ object SZoomButton extends ImageViewCompanion[SZoomButton] {
       context: android.content.Context,
       defaultLayoutParam: SZoomButton => LP): SZoomButton = {
     val v = new SZoomButton
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -10019,8 +9966,7 @@ object SGallery {
       context: android.content.Context,
       defaultLayoutParam: SGallery => LP): SGallery = {
     val v = new SGallery
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -10442,8 +10388,7 @@ trait TraitFrameLayout[This <: android.widget.FrameLayout]
     def parent = TraitFrameLayout.this
 
     def >> : V = {
-      v
-        .setLayoutParams(
+      v.setLayoutParams(
           this
         ) // triggers layout for v, see https://github.com/pocorall/scaloid/issues/144
       v
@@ -10536,8 +10481,7 @@ object SFrameLayout {
       context: android.content.Context,
       defaultLayoutParam: SFrameLayout => LP): SFrameLayout = {
     val v = new SFrameLayout
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -11997,8 +11941,7 @@ object STextView extends TextViewCompanion[STextView] {
       context: android.content.Context,
       defaultLayoutParam: STextView => LP): STextView = {
     val v = new STextView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -12167,8 +12110,7 @@ object SViewFlipper {
       context: android.content.Context,
       defaultLayoutParam: SViewFlipper => LP): SViewFlipper = {
     val v = new SViewFlipper
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -12793,8 +12735,7 @@ object SAutoCompleteTextView extends TextViewCompanion[SAutoCompleteTextView] {
       defaultLayoutParam: SAutoCompleteTextView => LP)
       : SAutoCompleteTextView = {
     val v = new SAutoCompleteTextView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -13065,8 +13006,7 @@ object SSwitch extends TextViewCompanion[SSwitch] {
       context: android.content.Context,
       defaultLayoutParam: SSwitch => LP): SSwitch = {
     val v = new SSwitch
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -13115,8 +13055,7 @@ object SVerticalLayout {
       context: android.content.Context,
       defaultLayoutParam: SLinearLayout => LP): SVerticalLayout = {
     val v = new SVerticalLayout
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 }
@@ -13131,8 +13070,7 @@ abstract class TextViewCompanion[T <: TextView: ClassTag] {
       defaultLayoutParam: T => LP): T = {
     val v = create()
     v text txt
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -13161,8 +13099,7 @@ abstract class TextViewCompanion[T <: TextView: ClassTag] {
     val v = create()
     v.text = text
     v.setOnClickListener(onClickListener)
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 }
@@ -13178,8 +13115,7 @@ abstract class ImageViewCompanion[T <: ImageView: ClassTag] {
       defaultLayoutParam: T => LP): T = {
     val v = create()
     v.imageDrawable = imageResource
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -13209,8 +13145,7 @@ abstract class ImageViewCompanion[T <: ImageView: ClassTag] {
     val v = create()
     v.imageDrawable = imageResource
     v.setOnClickListener(onClickListener)
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 }
@@ -13268,8 +13203,7 @@ object SExtractEditText extends TextViewCompanion[SExtractEditText] {
       context: android.content.Context,
       defaultLayoutParam: SExtractEditText => LP): SExtractEditText = {
     val v = new SExtractEditText
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -13848,8 +13782,7 @@ object SGLSurfaceView {
       context: android.content.Context,
       defaultLayoutParam: SGLSurfaceView => LP): SGLSurfaceView = {
     val v = new SGLSurfaceView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -13901,8 +13834,7 @@ object SAppWidgetHostView {
       context: android.content.Context,
       defaultLayoutParam: SAppWidgetHostView => LP): SAppWidgetHostView = {
     val v = new SAppWidgetHostView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -14454,8 +14386,7 @@ object SGestureOverlayView {
       context: android.content.Context,
       defaultLayoutParam: SGestureOverlayView => LP): SGestureOverlayView = {
     val v = new SGestureOverlayView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -14845,8 +14776,7 @@ object SWebView {
       context: android.content.Context,
       defaultLayoutParam: SWebView => LP): SWebView = {
     val v = new SWebView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 

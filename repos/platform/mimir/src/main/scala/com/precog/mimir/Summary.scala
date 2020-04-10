@@ -157,7 +157,7 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
 
         val resultTables: M[Seq[Table]] = tablesWithType flatMap {
           _.map { case (table, jtype) => reduceTable(table, jtype, ctx) }
-          .toStream.sequence map (_.toSeq)
+            .toStream.sequence map (_.toSeq)
         }
 
         val objectTables: M[Seq[Table]] = resultTables map {

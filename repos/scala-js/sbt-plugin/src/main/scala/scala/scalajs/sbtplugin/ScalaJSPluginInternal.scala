@@ -570,24 +570,21 @@ object ScalaJSPluginInternal {
         else true
       },
       scalaJSRequestsDOM := {
-        requiresDOM
-          .?.value
+        requiresDOM.?.value
           .getOrElse(jsDependencyManifests.value.data.exists(_.requiresDOM))
       },
-      resolvedJSEnv := jsEnv
-        .?.value.getOrElse {
-          if (scalaJSUseRhino.value) {
-            /* We take the semantics from the linker, since they depend on the
-             * stage. This way we are sure we agree on the semantics with the
-             * linker.
-             */
-            val semantics = scalaJSLinker.value.semantics
-            new RhinoJSEnv(semantics, withDOM = scalaJSRequestsDOM.value)
-          } else if (scalaJSRequestsDOM.value) {
-            new PhantomJSEnv(
-              jettyClassLoader = scalaJSPhantomJSClassLoader.value)
-          } else { new NodeJSEnv }
-        },
+      resolvedJSEnv := jsEnv.?.value.getOrElse {
+        if (scalaJSUseRhino.value) {
+          /* We take the semantics from the linker, since they depend on the
+           * stage. This way we are sure we agree on the semantics with the
+           * linker.
+           */
+          val semantics = scalaJSLinker.value.semantics
+          new RhinoJSEnv(semantics, withDOM = scalaJSRequestsDOM.value)
+        } else if (scalaJSRequestsDOM.value) {
+          new PhantomJSEnv(jettyClassLoader = scalaJSPhantomJSClassLoader.value)
+        } else { new NodeJSEnv }
+      },
       scalaJSJavaSystemProperties ++= {
         val javaSysPropsPattern = "-D([^=]*)=(.*)".r
         javaOptions.value.map {

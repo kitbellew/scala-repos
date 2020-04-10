@@ -76,11 +76,11 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
     result
       .count(
         _.agentInfo.attributes
-        .exists(_.getText.getValue == "rack-1")) should be(10)
+          .exists(_.getText.getValue == "rack-1")) should be(10)
     result
       .count(
         _.agentInfo.attributes
-        .exists(_.getText.getValue == "rack-2")) should be(10)
+          .exists(_.getText.getValue == "rack-2")) should be(10)
     result
       .count(
         _.agentInfo.attributes.exists(_.getText.getValue == "blue")) should be(

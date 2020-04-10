@@ -91,8 +91,7 @@ class ConfigSpec
           c.getDuration("shutdown-timeout", TimeUnit.MILLISECONDS) should ===(
             1 * 1000)
           c.getInt("throughput") should ===(5)
-          c
-            .getDuration(
+          c.getDuration(
               "throughput-deadline-time",
               TimeUnit.MILLISECONDS) should ===(0)
           c.getBoolean("attempt-teamwork") should ===(true)
@@ -164,8 +163,7 @@ class ConfigSpec
 
         {
           c.getInt("mailbox-capacity") should ===(1000)
-          c
-            .getDuration(
+          c.getDuration(
               "mailbox-push-timeout-time",
               TimeUnit.MILLISECONDS) should ===(10 * 1000)
           c.getString("mailbox-type") should ===(

@@ -170,8 +170,7 @@ private[internal] trait TypeMaps {
         case tv @ TypeVar(_, constr) =>
           if (constr.instValid) this(constr.inst)
           else
-            tv
-              .applyArgs(
+            tv.applyArgs(
                 mapOverArgs(tv.typeArgs, tv.params)
               ) //@M !args.isEmpty implies !typeParams.isEmpty
         case AnnotatedType(annots, atp) =>

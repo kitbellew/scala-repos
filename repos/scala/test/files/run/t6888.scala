@@ -13,11 +13,7 @@ class C {
 
 object Test extends App {
   val c = new C()
-  println(
-    c
-      .$.y)
-  println(
-    c
-      .$.abc$.xy)
+  println(c.$.y)
+  println(c.$.abc$.xy)
   println(new c.$.abc$().xy)
 }

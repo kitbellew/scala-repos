@@ -1425,9 +1425,8 @@ trait ScreenWizardRendered extends Loggable {
         bindErrors &
         funcSetChildren(_.fields, bindForm _)
 
-    val processed = S.session map (_.runTemplate(
-      "css-bound-screen",
-      allTemplate)) openOr (allTemplate)
+    val processed = S.session map (_
+      .runTemplate("css-bound-screen", allTemplate)) openOr (allTemplate)
 
     (savAdditionalFormBindings map (bindingFunc & _) openOr (bindingFunc))(
       processed)

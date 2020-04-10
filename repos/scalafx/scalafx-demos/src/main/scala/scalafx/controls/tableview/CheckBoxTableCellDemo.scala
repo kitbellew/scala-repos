@@ -63,7 +63,9 @@ object CheckBoxTableCellDemo extends JFXApp {
             // `scala.Boolean` type is different from `java.lang.Boolean`, but eventually represented the same way
             // by the compiler.
             cellValueFactory = _.value.selected
-            .asInstanceOf[ObservableValue[java.lang.Boolean, java.lang.Boolean]]
+              .asInstanceOf[ObservableValue[
+                java.lang.Boolean,
+                java.lang.Boolean]]
             cellFactory = CheckBoxTableCell.forTableColumn(this)
             editable = true
             prefWidth = 180

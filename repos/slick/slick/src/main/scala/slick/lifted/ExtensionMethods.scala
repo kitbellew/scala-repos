@@ -37,10 +37,7 @@ trait ColumnExtensionMethods[B1, P1] extends Any with ExtensionMethods[B1, P1] {
   def ===[P2, R](e: Rep[P2])(implicit om: o#arg[B1, P2]#to[Boolean, R]) =
     om.column(Library.==, n, e.toNode)
   def =!=[P2, R](e: Rep[P2])(implicit om: o#arg[B1, P2]#to[Boolean, R]) =
-    om.column(
-      Library.Not,
-      Library
-        .==.typed(om.liftedType, n, e.toNode))
+    om.column(Library.Not, Library.==.typed(om.liftedType, n, e.toNode))
 
   def <[P2, R](e: Rep[P2])(implicit om: o#arg[B1, P2]#to[Boolean, R]) =
     om.column(Library.<, n, e.toNode)

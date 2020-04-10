@@ -100,9 +100,8 @@ class HTTPRequestServlet(
   /**
     * The User-Agent of the request
     */
-  lazy val userAgent: Box[String] =
-    headers find (_.name equalsIgnoreCase "user-agent") flatMap (_.values
-    .headOption)
+  lazy val userAgent: Box[String] = headers find (_
+    .name equalsIgnoreCase "user-agent") flatMap (_.values.headOption)
 
   def remotePort: Int = req.getRemotePort
 
@@ -313,8 +312,7 @@ private class OfflineRequestSnapshot(
   /**
     * The User-Agent of the request
     */
-  lazy val userAgent: Box[String] =
-    headers find (_.name equalsIgnoreCase "user-agent") flatMap (_.values
-    .headOption)
+  lazy val userAgent: Box[String] = headers find (_
+    .name equalsIgnoreCase "user-agent") flatMap (_.values.headOption)
 
 }

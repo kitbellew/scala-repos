@@ -514,7 +514,7 @@ class AdminTest extends ZooKeeperTestHarness with Logging with RackAwareTest {
         () =>
           activeServers.forall(
             _.apis.metadataCache.getPartitionInfo(topic, partition).get
-            .leaderIsrAndControllerEpoch.leaderAndIsr.isr.size != 3),
+              .leaderIsrAndControllerEpoch.leaderAndIsr.isr.size != 3),
         "Topic test not created after timeout"
       )
       assertEquals(0, partitionsRemaining.size)
@@ -541,13 +541,13 @@ class AdminTest extends ZooKeeperTestHarness with Logging with RackAwareTest {
 
       assertTrue(servers.forall(
         _.apis.metadataCache.getPartitionInfo(topic, partition).get
-        .leaderIsrAndControllerEpoch.leaderAndIsr.leader == 0))
+          .leaderIsrAndControllerEpoch.leaderAndIsr.leader == 0))
       partitionsRemaining = controller.shutdownBroker(0)
       assertEquals(1, partitionsRemaining.size)
       // leader doesn't change since all the replicas are shut down
       assertTrue(servers.forall(
         _.apis.metadataCache.getPartitionInfo(topic, partition).get
-        .leaderIsrAndControllerEpoch.leaderAndIsr.leader == 0))
+          .leaderIsrAndControllerEpoch.leaderAndIsr.leader == 0))
     } finally { servers.foreach(_.shutdown()) }
   }
 

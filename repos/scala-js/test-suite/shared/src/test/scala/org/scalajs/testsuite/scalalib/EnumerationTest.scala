@@ -42,10 +42,7 @@ class EnumerationTest {
     val h = HelpLevel.Medium
     assertEquals("Medium", h.toString)
     assertEquals("Special", HelpLevel.Special.toString)
-    assertEquals(
-      "$div",
-      HelpLevel
-        ./.toString)
+    assertEquals("$div", HelpLevel./.toString)
   }
 
   @Test

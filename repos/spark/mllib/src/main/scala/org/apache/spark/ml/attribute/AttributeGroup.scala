@@ -77,7 +77,7 @@ class AttributeGroup private (
 
   private lazy val nameToIndex: Map[String, Int] = {
     attributes.map(_.view.flatMap { attr => attr.name.map(_ -> attr.index.get) }
-    .toMap).getOrElse(Map.empty)
+      .toMap).getOrElse(Map.empty)
   }
 
   /** Size of the attribute group. Returns -1 if the size is unknown. */

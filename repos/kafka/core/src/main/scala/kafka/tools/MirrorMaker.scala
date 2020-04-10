@@ -304,7 +304,7 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
           }
           if (customRebalanceListener.exists(
                 !_.isInstanceOf[
-                  org.apache.kafka.clients.consumer.ConsumerRebalanceListener]))
+                    org.apache.kafka.clients.consumer.ConsumerRebalanceListener]))
             throw new IllegalArgumentException(
               "The rebalance listener should be an instance of" +
                 "org.apache.kafka.clients.consumer.ConsumerRebalanceListner")

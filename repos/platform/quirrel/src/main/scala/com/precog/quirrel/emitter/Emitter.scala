@@ -578,8 +578,7 @@ trait Emitter
               case SolveBinding(solve) => {
                 emitOrDup(MarkTicVar(solve, name)) {
                   StateT.apply[Id, Emission, Unit] { e =>
-                    e
-                      .ticVars((solve, name))(
+                    e.ticVars((solve, name))(
                         e
                       ) // assert: this will work iff lexical scoping is working
                   }

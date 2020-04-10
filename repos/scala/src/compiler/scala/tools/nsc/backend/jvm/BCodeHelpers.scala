@@ -774,8 +774,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
                   const.value != null,
                   const
                 ) // TODO this invariant isn't documented in `case class Constant`
-                av
-                  .visit(
+                av.visit(
                     name,
                     const.stringValue
                   ) // `stringValue` special-cases null, but that execution path isn't exercised for a const with StringTag

@@ -88,8 +88,7 @@ object Leibniz extends LeibnizInstances {
   def trans[L, H >: L, A >: L <: H, B >: L <: H, C >: L <: H](
       f: Leibniz[L, H, B, C],
       g: Leibniz[L, H, A, B]): Leibniz[L, H, A, C] =
-    f
-      .subst[λ[`X >: L <: H` => Leibniz[L, H, A, X]]](
+    f.subst[λ[`X >: L <: H` => Leibniz[L, H, A, X]]](
         g
       ) // note kind-projector 0.5.2 cannot do super/subtype bounds
 

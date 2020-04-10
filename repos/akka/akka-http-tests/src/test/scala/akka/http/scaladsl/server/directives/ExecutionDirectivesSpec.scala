@@ -75,8 +75,7 @@ class ExecutionDirectivesSpec extends RoutingSpec {
 
       Get("/abc") ~> Accept(
         MediaTypes.`text/xml`,
-        MediaRanges
-          .`*/*`.withQValue(0f)) ~>
+        MediaRanges.`*/*`.withQValue(0f)) ~>
         get {
           handleExceptions(handler) { throw new RuntimeException("buh2") }
         } ~> check {

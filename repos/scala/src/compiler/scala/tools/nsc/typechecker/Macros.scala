@@ -656,9 +656,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
       if (Statistics.canEnable) Statistics.incCounter(macroExpandCount)
       try {
         withInfoLevel(nodePrinters.InfoLevel.Quiet) { // verbose printing might cause recursive macro expansions
-          if (expandee.symbol.isErroneous || (
-                expandee exists (_.isErroneous)
-              )) {
+          if (expandee.symbol.isErroneous || (expandee exists (_
+                .isErroneous))) {
             val reason =
               if (expandee.symbol.isErroneous)
                 "not found or incompatible macro implementation"

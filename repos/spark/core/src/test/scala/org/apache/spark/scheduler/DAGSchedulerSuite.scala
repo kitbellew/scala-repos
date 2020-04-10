@@ -177,7 +177,7 @@ class DAGSchedulerSuite
         blockIds: Array[BlockId]): IndexedSeq[Seq[BlockManagerId]] = {
       blockIds.map {
         _.asRDDId.map(id => (id.rddId -> id.splitIndex))
-        .flatMap(key => cacheLocations.get(key)).getOrElse(Seq())
+          .flatMap(key => cacheLocations.get(key)).getOrElse(Seq())
       }.toIndexedSeq
     }
     override def removeExecutor(execId: String) {

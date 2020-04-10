@@ -23,9 +23,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
   /* used in GenBCode: collects ClassDef symbols owning a main(Array[String]) method */
   private var entryPoints: List[Symbol] = Nil
   def getEntryPoints: List[Symbol] =
-    entryPoints sortBy (
-      "" + _.fullName
-    ) // For predictably ordered error messages.
+    entryPoints sortBy ("" + _
+      .fullName) // For predictably ordered error messages.
 
   protected def newTransformer(unit: CompilationUnit): Transformer =
     new CleanUpTransformer(unit)
@@ -409,9 +408,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
                   .symbol}\n  Overloads: $tpe\n  Arguments: " + ad.args
                   .map(_.tpe)
               )
-              alts filter (_.paramss.flatten.size == params.length) map (
-                _.tpe
-              ) match {
+              alts filter (_.paramss.flatten.size == params.length) map (_
+                .tpe) match {
                 case mt @ MethodType(mparams, resType) :: Nil =>
                   reporter.warning(
                     NoPosition,

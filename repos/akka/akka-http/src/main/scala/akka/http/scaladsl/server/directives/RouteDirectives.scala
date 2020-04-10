@@ -28,17 +28,17 @@ trait RouteDirectives {
   def redirect(uri: Uri, redirectionType: Redirection): StandardRoute =
     StandardRoute {
       _. //# red-impl
-      complete {
-        HttpResponse(
-          status = redirectionType,
-          headers = headers.Location(uri) :: Nil,
-          entity = redirectionType.htmlTemplate match {
-            case "" ⇒ HttpEntity.Empty
-            case template ⇒
-              HttpEntity(ContentTypes.`text/html(UTF-8)`, template format uri)
-          }
-        )
-      }
+        complete {
+          HttpResponse(
+            status = redirectionType,
+            headers = headers.Location(uri) :: Nil,
+            entity = redirectionType.htmlTemplate match {
+              case "" ⇒ HttpEntity.Empty
+              case template ⇒
+                HttpEntity(ContentTypes.`text/html(UTF-8)`, template format uri)
+            }
+          )
+        }
       //#
     }
 

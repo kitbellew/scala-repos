@@ -144,8 +144,7 @@ trait ScTypeDefinition
       obj.setSyntheticObject()
       obj.members.foreach {
         case s: ScFunctionDefinition =>
-          s
-            .setSynthetic(
+          s.setSynthetic(
               this
             ) // So we find the `apply` method in ScalaPsiUtil.syntheticParamForParam
           this match {

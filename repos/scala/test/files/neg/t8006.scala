@@ -1,7 +1,6 @@
 object X {
   val d = new D
-  d
-    .meth(
+  d.meth(
       value1 = 10,
       value2 = 100
     ) // two arguments here, but only one is allowed

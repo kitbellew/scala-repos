@@ -19,10 +19,8 @@ trait IssuesService {
   def getIssue(owner: String, repository: String, issueId: String)(implicit
       s: Session) =
     if (issueId forall (_.isDigit))
-      Issues filter (_.byPrimaryKey(
-        owner,
-        repository,
-        issueId.toInt)) firstOption
+      Issues filter (_
+        .byPrimaryKey(owner, repository, issueId.toInt)) firstOption
     else None
 
   def getComments(owner: String, repository: String, issueId: Int)(implicit
@@ -58,9 +56,8 @@ trait IssuesService {
       repository: String,
       issueId: Int,
       labelId: Int)(implicit s: Session) =
-    IssueLabels filter (
-      _.byPrimaryKey(owner, repository, issueId, labelId)
-    ) firstOption
+    IssueLabels filter (_
+      .byPrimaryKey(owner, repository, issueId, labelId)) firstOption
 
   /**
     * Returns the count of the search result against  issues.
@@ -387,9 +384,8 @@ trait IssuesService {
       repository: String,
       issueId: Int,
       labelId: Int)(implicit s: Session) =
-    IssueLabels filter (
-      _.byPrimaryKey(owner, repository, issueId, labelId)
-    ) delete
+    IssueLabels filter (_
+      .byPrimaryKey(owner, repository, issueId, labelId)) delete
 
   def createComment(
       owner: String,

@@ -457,8 +457,7 @@ object FirstOrderMinimizer {
           this.iterations(f.withRandomBatches(batchSize), init)(space)
         } else { iterations(f: DiffFunction[T], init) }
 
-      it
-        .asInstanceOf[Iterator[
+      it.asInstanceOf[Iterator[
           FirstOrderMinimizer[T, BatchDiffFunction[T]]#State]]
     }
 

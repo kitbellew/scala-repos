@@ -71,8 +71,8 @@ class PerAccountThreadPooling(accountFinder: AccountFinder[Future]) {
       case None => \/.left("Could not locate accountId for apiKey " + apiKey)
       case Some(accountId) =>
         \/.right(
-          asyncContextFor(accountId)
-        ) // FIXME: Which account should we use if there's more than one?
+            asyncContextFor(accountId)
+          ) // FIXME: Which account should we use if there's more than one?
     })
   }
 }

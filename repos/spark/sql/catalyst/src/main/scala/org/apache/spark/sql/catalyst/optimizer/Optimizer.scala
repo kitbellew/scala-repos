@@ -962,7 +962,7 @@ object PushPredicateThroughProject
 
         val (deterministic, nondeterministic) = andConditions.partition(
           _.collect { case a: Attribute if aliasMap.contains(a) => aliasMap(a) }
-          .forall(_.deterministic))
+            .forall(_.deterministic))
 
         // If there is no nondeterministic conditions, push down the whole condition.
         if (nondeterministic.isEmpty) {

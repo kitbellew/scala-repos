@@ -274,9 +274,8 @@ trait RepositoryService {
     */
   def getRepositoryNamesOfUser(userName: String)(implicit
       s: Session): List[String] =
-    Repositories filter (_.userName === userName.bind) map (
-      _.repositoryName
-    ) list
+    Repositories filter (_.userName === userName.bind) map (_
+      .repositoryName) list
 
   /**
     * Returns the specified repository information.

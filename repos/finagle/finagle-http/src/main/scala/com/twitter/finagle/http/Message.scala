@@ -95,8 +95,8 @@ abstract class Message extends HttpMessageProxy {
   def acceptMediaTypes: Seq[String] =
     accept.map {
       _.split(";", 2).headOption
-      .map(_.trim.toLowerCase) // media types are case-insensitive
-      .filter(_.nonEmpty) // skip blanks
+        .map(_.trim.toLowerCase) // media types are case-insensitive
+        .filter(_.nonEmpty) // skip blanks
     }.flatten
 
   /** Allow header */

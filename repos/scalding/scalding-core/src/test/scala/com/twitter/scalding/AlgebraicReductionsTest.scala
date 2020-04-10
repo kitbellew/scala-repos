@@ -21,7 +21,7 @@ class AlgebraJob(args: Args) extends Job(args) {
   Tsv("input", ('x, 'y, 'z, 'w)).map('w -> 'w) { w: Int => Set(w) }
     .groupBy('x) {
       _.sum[(Int, Int)](('y, 'z) -> ('sy, 'sz)).sum[Set[Int]]('w -> 'setw)
-      .times[(Int, Int)](('y, 'z) -> ('py, 'pz)).dot[Int]('y, 'z, 'ydotz)
+        .times[(Int, Int)](('y, 'z) -> ('py, 'pz)).dot[Int]('y, 'z, 'ydotz)
     }.write(Tsv("output"))
 }
 

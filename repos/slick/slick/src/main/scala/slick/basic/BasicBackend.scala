@@ -256,8 +256,7 @@ trait BasicBackend {
           if (streaming) {
             if (a.supportsStreaming)
               streamSynchronousDatabaseAction(
-                a
-                  .asInstanceOf[SynchronousDatabaseAction[
+                a.asInstanceOf[SynchronousDatabaseAction[
                     _,
                     _ <: NoStream,
                     This,

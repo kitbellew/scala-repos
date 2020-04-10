@@ -13,9 +13,8 @@ private[parser] trait ContentDispositionHeader {
   // http://tools.ietf.org/html/rfc6266#section-4.1
   def `content-disposition` =
     rule {
-      `disposition-type` ~ zeroOrMore(ws(';') ~ `disposition-parm`) ~ EOI ~> (
-        _.toMap
-      ) ~> (`Content-Disposition`(_, _))
+      `disposition-type` ~ zeroOrMore(ws(';') ~ `disposition-parm`) ~ EOI ~> (_
+        .toMap) ~> (`Content-Disposition`(_, _))
     }
 
   def `disposition-type` =

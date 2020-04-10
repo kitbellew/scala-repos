@@ -52,11 +52,7 @@ abstract class AbstractTable[T](
     tableTag match {
       case _: BaseTag =>
         val sym = new AnonSymbol
-        TableExpansion(
-          sym,
-          tableNode,
-          tableTag.taggedAs(Ref(sym))
-            .*.toNode)
+        TableExpansion(sym, tableNode, tableTag.taggedAs(Ref(sym)).*.toNode)
       case t: RefTag => t.path
     }
 
@@ -91,10 +87,9 @@ abstract class AbstractTable[T](
     val q = targetTableQuery.asInstanceOf[Query[TT, U, Seq]]
     val generator = new AnonSymbol
     val aliased = q.shaped.encodeRef(Ref(generator))
-    val fv = Library
-      .==.typed[Boolean](
-        unpackp.toNode(targetColumns(aliased.value)),
-        unpackp.toNode(sourceColumns))
+    val fv = Library.==.typed[Boolean](
+      unpackp.toNode(targetColumns(aliased.value)),
+      unpackp.toNode(sourceColumns))
     val fk = ForeignKey(
       name,
       toNode,

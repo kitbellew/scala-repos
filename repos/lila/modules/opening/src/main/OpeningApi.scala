@@ -81,7 +81,7 @@ private[opening] final class OpeningApi(
         Match(BSONDocument(Attempt.BSONFields.userId -> user.id)),
         List(Limit(max), playedIdsGroup)).map(
         _.documents.headOption.flatMap(_.getAs[BSONArray]("ids"))
-        .getOrElse(BSONArray()))
+          .getOrElse(BSONArray()))
     }
   }
 

@@ -111,8 +111,7 @@ trait Future[+T] extends Awaitable[T] {
       executor: ExecutionContext): Unit =
     onComplete {
       case Success(v) =>
-        pf
-          .applyOrElse[T, Any](
+        pf.applyOrElse[T, Any](
             v,
             Predef.conforms[T]
           ) // Exploiting the cached function to avoid MatchError
@@ -141,8 +140,7 @@ trait Future[+T] extends Awaitable[T] {
       executor: ExecutionContext): Unit =
     onComplete {
       case Failure(t) =>
-        pf
-          .applyOrElse[Throwable, Any](
+        pf.applyOrElse[Throwable, Any](
             t,
             Predef.conforms[Throwable]
           ) // Exploiting the cached function to avoid MatchError

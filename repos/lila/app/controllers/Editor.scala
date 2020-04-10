@@ -26,9 +26,8 @@ object Editor extends LilaController {
         val decodedFen = fenStr.map {
           java.net.URLDecoder.decode(_, "UTF-8").trim
         }.filter(_.nonEmpty)
-        val situation =
-          (decodedFen flatMap Forsyth.<<< map (_.situation)) | Situation(
-            chess.variant.Standard)
+        val situation = (decodedFen flatMap Forsyth.<<< map (_
+          .situation)) | Situation(chess.variant.Standard)
         val fen = Forsyth >> situation
         Ok(html.board.editor(
           situation,

@@ -70,7 +70,7 @@ trait ScalaClassLoader extends JClassLoader {
           if (maybes.size == 1) maybes.head
           else
             fail(s"Constructor must accept arg list (${args map (_.getClass
-            .getName) mkString ", "}): ${path}")
+              .getName) mkString ", "}): ${path}")
         }
         (ctor.newInstance(args: _*)).asInstanceOf[T]
       } else {

@@ -165,8 +165,8 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
   def foreach(
       f: (ArtifactInfo => Unit),
       progressIndicator: Option[ProgressIndicator]) {
-    progressIndicator foreach (_.setText2(SbtBundle(
-      "sbt.resolverIndexer.progress.converting")))
+    progressIndicator foreach (_
+      .setText2(SbtBundle("sbt.resolverIndexer.progress.converting")))
     val searcher = context.acquireIndexSearcher()
     try {
       val reader = searcher.getIndexReader
@@ -176,8 +176,8 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
         val info = IndexUtils
           .constructArtifactInfo(reader.document(i - 1), context)
         if (info != null) f(info)
-        progressIndicator foreach (_.setFraction(
-          0.5 + 0.5 * (i.toFloat / maxDoc)))
+        progressIndicator foreach (_
+          .setFraction(0.5 + 0.5 * (i.toFloat / maxDoc)))
       }
     } finally { context.releaseIndexSearcher(searcher) }
   }

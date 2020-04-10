@@ -20,7 +20,7 @@ object MVersionColumn {
   def getVersionColumns(table: MQName) =
     ResultSetAction[MVersionColumn](
       _.metaData
-      .getVersionColumns(table.catalog_?, table.schema_?, table.name)) { r =>
+        .getVersionColumns(table.catalog_?, table.schema_?, table.name)) { r =>
       MVersionColumn(
         r.skip.<<,
         r.<<,

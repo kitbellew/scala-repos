@@ -255,10 +255,9 @@ object ProcessKeeper {
   val PIDRE = """^\s*(\d+)\s+(\S*)$""".r
 
   def stopJavaProcesses(wantedMainClass: String): Unit = {
-    val pids = "jps -l"
-      .!!.split("\n").collect {
-        case PIDRE(pid, mainClass) if mainClass.contains(wantedMainClass) => pid
-      }
+    val pids = "jps -l".!!.split("\n").collect {
+      case PIDRE(pid, mainClass) if mainClass.contains(wantedMainClass) => pid
+    }
     if (pids.nonEmpty) {
       val killCommand = s"kill -9 ${pids.mkString(" ")}"
       log.warn(s"Left over processes, executing: $killCommand")

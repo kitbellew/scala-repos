@@ -1271,9 +1271,9 @@ trait Definitions extends api.StandardDefinitions {
       nme.asInstanceOf_,
       FINAL)(_.typeConstructor)
 
-    lazy val primitiveGetClassMethods = Set[Symbol](
-      Any_getClass,
-      AnyVal_getClass) ++ (ScalaValueClasses map (_.tpe member nme.getClass_))
+    lazy val primitiveGetClassMethods =
+      Set[Symbol](Any_getClass, AnyVal_getClass) ++ (ScalaValueClasses map (_
+        .tpe member nme.getClass_))
 
     lazy val getClassMethods: Set[Symbol] =
       primitiveGetClassMethods + Object_getClass

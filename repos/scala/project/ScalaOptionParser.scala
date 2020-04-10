@@ -69,9 +69,7 @@ object ScalaOptionParser {
         "=" ~ token(
           OptNotSpace,
           TokenCompletions.displayOnly("<property value>")))
-      concat(
-        PropName ~ EqualsValue
-          .?.map(_.getOrElse("")))
+      concat(PropName ~ EqualsValue.?.map(_.getOrElse("")))
     }
 
     val sourceFile = FileParser(GlobFilter("*.scala") | GlobFilter("*.java"))

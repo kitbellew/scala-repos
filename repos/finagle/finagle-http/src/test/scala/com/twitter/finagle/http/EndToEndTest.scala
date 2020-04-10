@@ -628,15 +628,13 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
 
       assert(st.counters(Seq(clientName, "failure_accrual", "removals")) == 1)
       assert(
-        st
-          .counters(
+        st.counters(
             Seq(
               clientName,
               "retries",
               "requeues")) == failureAccrualFailures - 1)
       assert(
-        st
-          .counters(
+        st.counters(
             Seq(
               clientName,
               "failures",

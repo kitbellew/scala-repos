@@ -139,8 +139,7 @@ object StepWise {
       copy(ops = Failure(
         timeout,
         (failed, value) ⇒
-          f
-            .asInstanceOf[(Failed, Any) ⇒ Failed.Decision](
+          f.asInstanceOf[(Failed, Any) ⇒ Failed.Decision](
               failed,
               value) -> value,
         getTrace()) :: ops)

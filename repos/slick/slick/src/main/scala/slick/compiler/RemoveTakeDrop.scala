@@ -49,19 +49,17 @@ class RemoveTakeDrop(
               b1,
               (t, d) match {
                 case (None, Some(d)) =>
-                  Library
-                    .>.typed[Boolean](Select(Ref(fs), ElementSymbol(2)), d)
+                  Library.>.typed[Boolean](Select(Ref(fs), ElementSymbol(2)), d)
                 case (Some(t), None) =>
-                  Library
-                    .<=.typed[Boolean](Select(Ref(fs), ElementSymbol(2)), t)
+                  Library.<=
+                    .typed[Boolean](Select(Ref(fs), ElementSymbol(2)), t)
                 case (Some(t), Some(d)) =>
                   Library.And.typed[Boolean](
-                    Library
-                      .>.typed[Boolean](Select(Ref(fs), ElementSymbol(2)), d),
-                    Library
-                      .<=.typed[Boolean](
-                        Select(Ref(fs), ElementSymbol(2)),
-                        constOp[Long]("+")(_ + _)(t, d)))
+                    Library.>
+                      .typed[Boolean](Select(Ref(fs), ElementSymbol(2)), d),
+                    Library.<=.typed[Boolean](
+                      Select(Ref(fs), ElementSymbol(2)),
+                      constOp[Long]("+")(_ + _)(t, d)))
                 case _ => throw new SlickException("Unexpected empty Take/Drop")
               }
             )

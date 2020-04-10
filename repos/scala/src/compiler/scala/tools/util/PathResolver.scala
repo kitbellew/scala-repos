@@ -173,9 +173,8 @@ object PathResolver {
         envOrSome("JDK_HOME", envOrNone("JAVA_HOME")) map (p => Path(p))
       val install = Some(Path(javaHome))
 
-      (home flatMap jarAt) orElse (install flatMap jarAt) orElse (
-        install map (_.parent) flatMap jarAt
-      ) orElse
+      (home flatMap jarAt) orElse (install flatMap jarAt) orElse (install map (_
+        .parent) flatMap jarAt) orElse
         (jdkDir flatMap deeply)
     }
     override def toString = s"""

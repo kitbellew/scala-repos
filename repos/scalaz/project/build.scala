@@ -140,8 +140,7 @@ object build extends Build {
         }
       Tests.Argument(TestFrameworks.ScalaCheck, scalacheckOptions: _*)
     },
-    isJSProject := isJSProject
-      .?.value.getOrElse(false),
+    isJSProject := isJSProject.?.value.getOrElse(false),
     genTypeClasses := {
       typeClasses.value.flatMap { tc =>
         val dir = name.value match {

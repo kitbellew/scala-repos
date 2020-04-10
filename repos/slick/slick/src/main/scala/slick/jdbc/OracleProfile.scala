@@ -185,10 +185,7 @@ trait OracleProfile extends JdbcProfile {
           b"\("
           val cols = (left.children zip right.children).force
           b.sep(cols, " and ") {
-            case (l, r) =>
-              expr(
-                Library
-                  .==.typed[Boolean](l, r))
+            case (l, r) => expr(Library.==.typed[Boolean](l, r))
           }
           b"\)"
         case Library.==(l, r)

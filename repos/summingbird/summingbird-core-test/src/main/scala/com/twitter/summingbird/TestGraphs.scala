@@ -251,10 +251,10 @@ object TestGraphs {
     val sumStream: Iterable[(Long, (K, (Option[JoinedU], JoinedU)))] = source1
       .flatMap(simpleFM1).toList.groupBy(_._1).mapValues {
         _.map { case (time, (k, joinedu)) => (k, joinedu) }.groupBy(_._1)
-        .mapValues { l => scanSum(l.iterator.map(_._2)).toList }.toIterable
-        .flatMap {
-          case (k, lv) => lv.map { case (optju, ju) => (k, (optju, ju)) }
-        }
+          .mapValues { l => scanSum(l.iterator.map(_._2)).toList }.toIterable
+          .flatMap {
+            case (k, lv) => lv.map { case (optju, ju) => (k, (optju, ju)) }
+          }
       }.toIterable.flatMap {
         case (time, lv) => lv.map {
             case (k, (optju, ju)) => (time, (k, (optju, ju)))

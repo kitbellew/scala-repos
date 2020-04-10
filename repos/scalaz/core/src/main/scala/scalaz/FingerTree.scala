@@ -1061,8 +1061,7 @@ sealed abstract class FingerTreeInstances {
       s: Functor[S]): Functor[ViewL[S, ?]] =
     new Functor[ViewL[S, ?]] {
       def map[A, B](t: ViewL[S, A])(f: A => B): ViewL[S, B] =
-        t
-          .fold(
+        t.fold(
             EmptyL[S, B],
             (x, xs) => OnL(f(x), s.map(xs)(f))
           ) //TODO define syntax for &: and :&

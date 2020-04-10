@@ -76,7 +76,7 @@ object DebuggerTestUtil {
       Option(new File(path)).filter(_.exists()).flatMap(
         _.listFiles().sortBy(_.getName).reverse.find(f =>
           f.getName.contains(suffix) && isJDK(new File(f, postfix)))
-        .map(new File(_, s"$postfix/jre").getAbsolutePath))
+          .map(new File(_, s"$postfix/jre").getAbsolutePath))
     }
     def currentJava() = {
       sys.props.get("java.version") match {

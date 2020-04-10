@@ -224,12 +224,10 @@ class StreamingContextSuite
     assert(
       sc.getLocalProperty(SparkContext.SPARK_JOB_GROUP_ID) === "non-streaming")
     assert(
-      sc
-        .getLocalProperty(
+      sc.getLocalProperty(
           SparkContext.SPARK_JOB_DESCRIPTION) === "non-streaming")
     assert(
-      sc
-        .getLocalProperty(
+      sc.getLocalProperty(
           SparkContext.SPARK_JOB_INTERRUPT_ON_CANCEL) === "true")
   }
 

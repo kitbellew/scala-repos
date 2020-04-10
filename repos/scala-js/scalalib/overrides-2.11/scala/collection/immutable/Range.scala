@@ -498,9 +498,8 @@ object Range {
       BigDecimal(toBD(start), toBD(end), toBD(step)) mapRange (_.doubleValue)
 
     def inclusive(start: Double, end: Double, step: Double) =
-      BigDecimal.inclusive(toBD(start), toBD(end), toBD(step)) mapRange (
-        _.doubleValue
-      )
+      BigDecimal.inclusive(toBD(start), toBD(end), toBD(step)) mapRange (_
+        .doubleValue)
   }
 
   // As there is no appealing default step size for not-really-integral ranges,

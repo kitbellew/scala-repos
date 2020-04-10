@@ -114,8 +114,7 @@ abstract class Taggers {
     try materializer
     catch {
       case ReificationException(pos, msg) =>
-        c
-          .abort(
+        c.abort(
             pos.asInstanceOf[c.Position],
             msg
           ) // this cast is a very small price for the sanity of exception handling

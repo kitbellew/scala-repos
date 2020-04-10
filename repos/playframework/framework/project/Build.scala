@@ -37,12 +37,10 @@ object BuildSettings {
 
   val snapshotBranch = {
     try {
-      val branch = "git rev-parse --abbrev-ref HEAD"
-        .!!.trim
+      val branch = "git rev-parse --abbrev-ref HEAD".!!.trim
       if (branch == "HEAD") {
         // not on a branch, get the hash
-        "git rev-parse HEAD"
-          .!!.trim
+        "git rev-parse HEAD".!!.trim
       } else branch
     } catch { case NonFatal(_) => "unknown" }
   }

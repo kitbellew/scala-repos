@@ -173,8 +173,7 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
                   model.items(i).categories.map { itemCat =>
                     // keep this item if has ovelap categories with the query
                     !(itemCat.toSet.intersect(cat).isEmpty)
-                  }
-                    .getOrElse(
+                  }.getOrElse(
                       false
                     ) // discard this item if it has no categories
                 }.getOrElse(true)

@@ -709,8 +709,8 @@ object Build extends sbt.Build {
       delambdafySetting,
       noClassFilesSettings,
       // The Scala lib is full of warnings we don't want to see
-      scalacOptions ~= (_.filterNot(
-        Set("-deprecation", "-unchecked", "-feature") contains _)),
+      scalacOptions ~= (_
+        .filterNot(Set("-deprecation", "-unchecked", "-feature") contains _)),
       // Tell the plugin to hack-fix bad classOf trees
       scalacOptions += "-P:scalajs:fixClassOf",
       artifactPath in fetchScalaSource :=
@@ -1203,7 +1203,7 @@ object Build extends sbt.Build {
     settings = commonSettings ++ myScalaJSSettings ++ testTagSettings ++ Seq(
       name := "Scala.js not IR checked tests",
       scalaJSOptimizerOptions ~= (_.withCheckScalaJSIR(false)
-      .withBypassLinkingErrors(true)),
+        .withBypassLinkingErrors(true)),
       publishArtifact in Compile := false
     )
   ).withScalaJSCompiler.dependsOn(library, jasmineTestFramework % "test")

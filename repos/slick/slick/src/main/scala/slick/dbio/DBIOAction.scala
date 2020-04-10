@@ -303,8 +303,8 @@ object DBIOAction {
         def run(context: BasicBackend#Context) = {
           g.foreach(
             _.asInstanceOf[
-              SynchronousDatabaseAction[Any, NoStream, BasicBackend, E]].run(
-              context))
+                SynchronousDatabaseAction[Any, NoStream, BasicBackend, E]].run(
+                context))
         }
         override def nonFusedEquivalentAction =
           AndThenAction[Unit, NoStream, E](g)
@@ -705,8 +705,7 @@ object SynchronousDatabaseAction {
             S2,
             B,
             E with E2](
-            as
-              .asInstanceOf[IndexedSeq[
+            as.asInstanceOf[IndexedSeq[
                 SynchronousDatabaseAction[Any, S2, B, E with E2]]] ++
               a.as
                 .asInstanceOf[IndexedSeq[
@@ -717,8 +716,7 @@ object SynchronousDatabaseAction {
             S2,
             B,
             E with E2](
-            as
-              .asInstanceOf[IndexedSeq[
+            as.asInstanceOf[IndexedSeq[
                 SynchronousDatabaseAction[Any, S2, B, E with E2]]] :+
               a.asInstanceOf[SynchronousDatabaseAction[Any, S2, B, E with E2]])
         case a => super.andThen(a)
@@ -764,8 +762,7 @@ object SynchronousDatabaseAction {
                 case NonFatal(ex) =>
                   try {
                     val a2 = f(Some(ex))
-                    a2
-                      .asInstanceOf[SynchronousDatabaseAction[
+                    a2.asInstanceOf[SynchronousDatabaseAction[
                         Any,
                         NoStream,
                         BasicBackend,
@@ -774,8 +771,7 @@ object SynchronousDatabaseAction {
                   throw ex
               }
             val a2 = f(None)
-            a2
-              .asInstanceOf[
+            a2.asInstanceOf[
                 SynchronousDatabaseAction[Any, NoStream, BasicBackend, Effect]]
               .run(context)
             res

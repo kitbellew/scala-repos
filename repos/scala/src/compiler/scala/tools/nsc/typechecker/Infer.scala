@@ -671,9 +671,8 @@ trait Infer extends Checkable {
         val loBounds = tparams map (_.info.bounds.lo)
         def containsAny(t: Type) =
           (t contains AnyClass) || (t contains AnyValClass)
-        val hasAny = pt :: restpe :: formals ::: argtpes ::: loBounds exists (
-          _.dealiasWidenChain exists containsAny
-        )
+        val hasAny = pt :: restpe :: formals ::: argtpes ::: loBounds exists (_
+          .dealiasWidenChain exists containsAny)
         !hasAny
       }
       def argumentPosition(idx: Int): Position =

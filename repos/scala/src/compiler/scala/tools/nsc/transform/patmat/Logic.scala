@@ -38,8 +38,8 @@ trait Logic extends Debugging {
       lineSep: String = "\n"): String = {
     val maxLen = max(xss map (_.length))
     val padded = xss map (xs => xs ++ List.fill(maxLen - xs.length)(null))
-    padded.transpose.map(alignedColumns).transpose map (_.mkString(
-      sep)) mkString (lineSep)
+    padded.transpose.map(alignedColumns).transpose map (_
+      .mkString(sep)) mkString (lineSep)
   }
 
   // ftp://ftp.cis.upenn.edu/pub/cis511/public_html/Spring04/chap3.pdf

@@ -116,8 +116,7 @@ class ZookeeperConsumerConnectorTest
         messages ++= ms
         import JavaConversions._
         javaProducer.send(
-          ms
-            .map(
+          ms.map(
               new KeyedMessage[Int, String](
                 topic,
                 partition,

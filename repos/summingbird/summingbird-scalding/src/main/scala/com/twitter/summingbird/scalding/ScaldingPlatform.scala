@@ -494,8 +494,7 @@ object Scalding {
                           ftpB
                         ) // extra producer for store, join the two FlowToPipes
                   }
-                }
-                  .getOrElse(leftPf.map { p =>
+                }.getOrElse(leftPf.map { p =>
                     p.map((_, TypedPipe.empty))
                   }) // no extra producer for store
                 servOut = flowToPipe.map {

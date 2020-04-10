@@ -287,9 +287,8 @@ final class JsonView(
       game: Game,
       forUser: Option[User]): Fu[Option[lila.chat.UserChat]] =
     forUser ?? { user =>
-      chatApi.userChat find s"${game.id}/w" map (_ forUser user.some) map (
-        _.some
-      )
+      chatApi.userChat find s"${game.id}/w" map (_ forUser user.some) map (_
+        .some)
     }
 
   private def getUsers(game: Game) =

@@ -164,8 +164,7 @@ object ScopeFilter {
   private[this] val getData: Initialize[Data] = Def.setting {
     val build = Keys.loadedBuild.value
     val scopes = Def.StaticScopes.value
-    val thisRef = Keys.thisProjectRef
-      .?.value
+    val thisRef = Keys.thisProjectRef.?.value
     val current = thisRef match {
       case Some(ProjectRef(uri, _)) => uri
       case None                     => build.root

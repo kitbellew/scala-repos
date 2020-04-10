@@ -112,8 +112,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
       val watcher = ArgumentCaptor.forClass(classOf[Watcher])
       val cb = ArgumentCaptor.forClass(classOf[AsyncCallback.StatCallback])
       when(
-        zk
-          .exists(
+        zk.exists(
             meq(path),
             watcher.capture(),
             cb.capture(),
@@ -156,8 +155,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
       val w = ArgumentCaptor.forClass(classOf[Watcher])
       val cb = ArgumentCaptor.forClass(classOf[AsyncCallback.Children2Callback])
       when(
-        zk
-          .getChildren(
+        zk.getChildren(
             meq(path),
             w.capture(),
             cb.capture(),
@@ -202,8 +200,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
       val w = ArgumentCaptor.forClass(classOf[Watcher])
       val cb = ArgumentCaptor.forClass(classOf[AsyncCallback.DataCallback])
       when(
-        zk
-          .getData(
+        zk.getData(
             meq(path),
             w.capture(),
             cb.capture(),
@@ -242,8 +239,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
     def sync(path: String)(wait: Future[Unit]) {
       val cb = ArgumentCaptor.forClass(classOf[AsyncCallback.VoidCallback])
       when(
-        zk
-          .sync(
+        zk.sync(
             meq(path),
             any[AsyncCallback.VoidCallback],
             meq(null))) thenAnswer answer[AsyncCallback.VoidCallback](1) {

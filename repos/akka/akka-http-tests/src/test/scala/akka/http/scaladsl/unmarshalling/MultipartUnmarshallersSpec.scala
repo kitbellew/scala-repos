@@ -434,7 +434,7 @@ class MultipartUnmarshallersSpec
       Await.result(
         x.fast.flatMap {
           _.parts.mapAsync(Int.MaxValue)(_ toStrict 1.second).grouped(100)
-          .runWith(Sink.head)
+            .runWith(Sink.head)
         }.fast.recover { case _: NoSuchElementException ⇒ Nil },
         1.second
       )

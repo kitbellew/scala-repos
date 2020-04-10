@@ -285,8 +285,7 @@ object BuiltinCommands {
       keepKeys: AttributeKey[_] => Boolean): Parser[String] =
     singleArgument(allTaskAndSettingKeys(s).filter(keepKeys).map(_.label).toSet)
   def verbosityParser: Parser[Int] =
-    success(1) | ((Space ~ "-") ~> ('v'.id
-      .+.map(_.size + 1) |
+    success(1) | ((Space ~ "-") ~> ('v'.id.+.map(_.size + 1) |
       ("V" ^^^ Int.MaxValue)))
   def taskDetail(keys: Seq[AttributeKey[_]]): Seq[(String, String)] =
     sortByLabel(withDescription(keys)) flatMap taskStrings

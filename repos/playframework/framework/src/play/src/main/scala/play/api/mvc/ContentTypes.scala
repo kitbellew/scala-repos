@@ -609,7 +609,7 @@ trait BodyParsers {
     def urlFormEncoded(maxLength: Int): BodyParser[Map[String, Seq[String]]] =
       when(
         _.contentType
-        .exists(_.equalsIgnoreCase("application/x-www-form-urlencoded")),
+          .exists(_.equalsIgnoreCase("application/x-www-form-urlencoded")),
         tolerantFormUrlEncoded(maxLength),
         createBadResult(
           "Expecting application/x-www-form-urlencoded body",

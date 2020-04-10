@@ -62,15 +62,13 @@ class StaticMemoryManagerSuite extends MemoryManagerSuite {
       mm.acquireExecutionMemory(10L, taskAttemptId, MemoryMode.ON_HEAP) === 10L)
     assert(mm.executionMemoryUsed === 10L)
     assert(
-      mm
-        .acquireExecutionMemory(
+      mm.acquireExecutionMemory(
           100L,
           taskAttemptId,
           MemoryMode.ON_HEAP) === 100L)
     // Acquire up to the max
     assert(
-      mm
-        .acquireExecutionMemory(
+      mm.acquireExecutionMemory(
           1000L,
           taskAttemptId,
           MemoryMode.ON_HEAP) === 890L)
@@ -144,16 +142,14 @@ class StaticMemoryManagerSuite extends MemoryManagerSuite {
     val (mm, ms) = makeThings(maxExecutionMem, maxStorageMem)
     // Only execution memory should increase
     assert(
-      mm
-        .acquireExecutionMemory(
+      mm.acquireExecutionMemory(
           100L,
           taskAttemptId,
           MemoryMode.ON_HEAP) === 100L)
     assert(mm.storageMemoryUsed === 0L)
     assert(mm.executionMemoryUsed === 100L)
     assert(
-      mm
-        .acquireExecutionMemory(
+      mm.acquireExecutionMemory(
           1000L,
           taskAttemptId,
           MemoryMode.ON_HEAP) === 100L)

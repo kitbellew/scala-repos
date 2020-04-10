@@ -812,8 +812,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         shutdownStatus ← shutdownAll(transportMapping.values)(_.shutdown())
       } yield flushStatus && shutdownStatus) pipeTo sender()
 
-      pendingReadHandoffs.valuesIterator foreach (_.disassociate(
-        AssociationHandle.Shutdown))
+      pendingReadHandoffs.valuesIterator foreach (_
+        .disassociate(AssociationHandle.Shutdown))
 
       // Ignore all other writes
       normalShutdown = true
@@ -1056,8 +1056,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
 
   override def postStop(): Unit = {
     pruneTimerCancellable.cancel()
-    pendingReadHandoffs.valuesIterator foreach (_.disassociate(
-      AssociationHandle.Shutdown))
+    pendingReadHandoffs.valuesIterator foreach (_
+      .disassociate(AssociationHandle.Shutdown))
 
     if (!normalShutdown) {
       // Remaining running endpoints are children, so they will clean up themselves.

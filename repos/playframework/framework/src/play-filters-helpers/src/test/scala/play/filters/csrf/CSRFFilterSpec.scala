@@ -83,7 +83,7 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
         case _ =>
           Action(
             _.body.asFormUrlEncoded.flatMap(_.get("foo")).flatMap(_.headOption)
-            .map(Results.Ok(_)).getOrElse(Results.NotFound))
+              .map(Results.Ok(_)).getOrElse(Results.NotFound))
       } {
         val token = crypto.generateSignedToken
         import play.api.Play.current

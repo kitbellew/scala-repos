@@ -266,8 +266,7 @@ object SViewPager {
       context: android.content.Context,
       defaultLayoutParam: SViewPager => LP): SViewPager = {
     val v = new SViewPager
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 

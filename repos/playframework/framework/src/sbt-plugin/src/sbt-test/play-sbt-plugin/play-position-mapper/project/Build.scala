@@ -31,9 +31,7 @@ object ApplicationBuild extends Build {
 
   import complete.DefaultParsers._
 
-  def simpleParser(state: State) =
-    Space ~> any
-      .+.map(_.mkString(""))
+  def simpleParser(state: State) = Space ~> any.+.map(_.mkString(""))
 
   def checkLogContains(msg: String): Task[Boolean] =
     task {

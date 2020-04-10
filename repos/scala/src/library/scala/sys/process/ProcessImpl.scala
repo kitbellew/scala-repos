@@ -256,9 +256,8 @@ private[process] trait ProcessImpl {
     }
     override def destroy() = {
       try {
-        outputThreads foreach (
-          _.interrupt()
-        ) // on destroy, don't bother consuming any more output
+        outputThreads foreach (_
+          .interrupt()) // on destroy, don't bother consuming any more output
         p.destroy()
       } finally inputThread.interrupt()
     }

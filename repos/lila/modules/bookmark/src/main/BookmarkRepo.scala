@@ -14,8 +14,7 @@ private[bookmark] object BookmarkRepo {
 
   def toggle(gameId: String, userId: String): Fu[Boolean] =
     $count exists selectId(gameId, userId) flatMap { e =>
-      e
-        .fold(
+      e.fold(
           remove(gameId, userId),
           add(gameId, userId, DateTime.now)) inject !e
     }

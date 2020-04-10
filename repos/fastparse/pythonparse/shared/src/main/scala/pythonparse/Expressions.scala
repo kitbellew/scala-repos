@@ -53,9 +53,7 @@ object Expressions {
 
   // Common operators, mapped from their
   // strings to their type-safe representations
-  def op[T](s: P0, rhs: T) =
-    s
-      .!.map(_ => rhs)
+  def op[T](s: P0, rhs: T) = s.!.map(_ => rhs)
   val LShift = op("<<", Ast.operator.LShift)
   val RShift = op(">>", Ast.operator.RShift)
   val Lt = op("<", Ast.cmpop.Lt)

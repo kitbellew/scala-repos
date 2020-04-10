@@ -267,10 +267,9 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
 
           literals filter {
             case interpolated: ScInterpolatedStringLiteral
-                if interpolated.reference exists (
-                  mapping containsKey _.getText
-                )  => true
-            case _ => false
+                if interpolated.reference exists (mapping containsKey _
+                  .getText) => true
+            case _          => false
           } foreach {
             case literal: ScInterpolatedStringLiteral =>
               val languageId = mapping get literal.reference.get.getText
@@ -420,9 +419,8 @@ object ScalaLanguageInjector {
   }
 
   def withInjectionSupport[T](action: LanguageInjectionSupport => T) =
-    Extensions getExtensions LanguageInjectionSupport.EP_NAME find (
-      _.getId == "scala"
-    ) map action
+    Extensions getExtensions LanguageInjectionSupport.EP_NAME find (_
+      .getId == "scala") map action
 
   def performSimpleInjection(
       literals: scala.Seq[ScLiteral],

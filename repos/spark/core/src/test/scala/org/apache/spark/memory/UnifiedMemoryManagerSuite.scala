@@ -59,15 +59,13 @@ class UnifiedMemoryManagerSuite
       mm.acquireExecutionMemory(10L, taskAttemptId, MemoryMode.ON_HEAP) === 10L)
     assert(mm.executionMemoryUsed === 10L)
     assert(
-      mm
-        .acquireExecutionMemory(
+      mm.acquireExecutionMemory(
           100L,
           taskAttemptId,
           MemoryMode.ON_HEAP) === 100L)
     // Acquire up to the max
     assert(
-      mm
-        .acquireExecutionMemory(
+      mm.acquireExecutionMemory(
           1000L,
           taskAttemptId,
           MemoryMode.ON_HEAP) === 890L)
@@ -142,8 +140,7 @@ class UnifiedMemoryManagerSuite
     assert(mm.storageMemoryUsed === 750L)
     // Execution needs to request 250 bytes to evict storage memory
     assert(
-      mm
-        .acquireExecutionMemory(
+      mm.acquireExecutionMemory(
           100L,
           taskAttemptId,
           MemoryMode.ON_HEAP) === 100L)
@@ -152,8 +149,7 @@ class UnifiedMemoryManagerSuite
     assertEvictBlocksToFreeSpaceNotCalled(ms)
     // Execution wants 200 bytes but only 150 are free, so storage is evicted
     assert(
-      mm
-        .acquireExecutionMemory(
+      mm.acquireExecutionMemory(
           200L,
           taskAttemptId,
           MemoryMode.ON_HEAP) === 200L)
@@ -175,8 +171,7 @@ class UnifiedMemoryManagerSuite
     // Execution cannot evict storage because the latter is within the storage fraction,
     // so grant only what's remaining without evicting anything, i.e. 1000 - 300 - 400 = 300
     assert(
-      mm
-        .acquireExecutionMemory(
+      mm.acquireExecutionMemory(
           400L,
           taskAttemptId,
           MemoryMode.ON_HEAP) === 300L)
@@ -200,8 +195,7 @@ class UnifiedMemoryManagerSuite
     // using it to expand the execution pool. Consequently, no storage memory was released
     // and the following call granted only 300 bytes to execution.
     assert(
-      mm
-        .acquireExecutionMemory(
+      mm.acquireExecutionMemory(
           500L,
           taskAttemptId,
           MemoryMode.ON_HEAP) === 500L)
@@ -217,8 +211,7 @@ class UnifiedMemoryManagerSuite
     val (mm, ms) = makeThings(maxMemory)
     // Acquire enough execution memory to exceed the execution region
     assert(
-      mm
-        .acquireExecutionMemory(
+      mm.acquireExecutionMemory(
           800L,
           taskAttemptId,
           MemoryMode.ON_HEAP) === 800L)
@@ -239,8 +232,7 @@ class UnifiedMemoryManagerSuite
     mm.releaseStorageMemory(maxMemory)
     // Acquire some execution memory again, but this time keep it within the execution region
     assert(
-      mm
-        .acquireExecutionMemory(
+      mm.acquireExecutionMemory(
           200L,
           taskAttemptId,
           MemoryMode.ON_HEAP) === 200L)

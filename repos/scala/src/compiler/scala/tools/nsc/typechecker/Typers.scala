@@ -1478,9 +1478,9 @@ trait Typers
 
       silent(
         _.adaptToMember(
-          qual,
-          HasMember(name),
-          reportAmbiguous = false)) orElse (errs =>
+            qual,
+            HasMember(name),
+            reportAmbiguous = false)) orElse (errs =>
         onError {
           if (reportAmbiguous) errs foreach (context issue _)
           setError(tree)
@@ -2021,9 +2021,8 @@ trait Typers
       for (tparam <- clazz.typeParams) {
         if (classinfo.expansiveRefs(tparam) contains tparam) {
           val newinfo = ClassInfoType(
-            classinfo.parents map (_.instantiateTypeParams(
-              List(tparam),
-              List(AnyRefTpe))),
+            classinfo.parents map (_
+              .instantiateTypeParams(List(tparam), List(AnyRefTpe))),
             classinfo.decls,
             clazz)
           clazz.setInfo {
@@ -2088,9 +2087,8 @@ trait Typers
       // might add default getters to this object. example: "object T; class T(x: Int = 1)"
       val linkedClass = companionSymbolOf(mdef.symbol, context)
       if (linkedClass != NoSymbol)
-        linkedClass.info.decl(nme.CONSTRUCTOR).alternatives foreach (
-          _.initialize
-        )
+        linkedClass.info.decl(nme.CONSTRUCTOR).alternatives foreach (_
+          .initialize)
 
       val clazz = mdef.symbol.moduleClass
       val typedMods = typedModifiers(mdef.mods)
@@ -6027,7 +6025,7 @@ trait Typers
             //openMacros exists (_.macroApplication.pos includes lit.pos)
             // tests whether the lit belongs to the expandee of an open macro
             openMacros exists (_.macroApplication.attachments
-            .get[MacroExpansionAttachment] match {
+              .get[MacroExpansionAttachment] match {
               case Some(MacroExpansionAttachment(_, t: Tree)) =>
                 t exists (_ == lit)
               case _ => false
@@ -6489,9 +6487,8 @@ trait Typers
           rhs1
         }
 
-      val isMacroBodyOkay = !ddef.symbol.isErroneous && !(
-        rhs1 exists (_.isErroneous)
-      ) && rhs1 != EmptyTree
+      val isMacroBodyOkay = !ddef.symbol.isErroneous && !(rhs1 exists (_
+        .isErroneous)) && rhs1 != EmptyTree
       val shouldInheritMacroImplReturnType = ddef.tpt.isEmpty
       if (isMacroBodyOkay && shouldInheritMacroImplReturnType) {
         val commonMessage =

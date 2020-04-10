@@ -369,8 +369,7 @@ class UriSpec extends WordSpec with Matchers {
     }
     "support the `endsWithSlash` predicate" in {
       Empty.endsWithSlash shouldBe false
-      Path
-        ./.endsWithSlash shouldBe true
+      Path./.endsWithSlash shouldBe true
       Path("abc").endsWithSlash shouldBe false
       Path("abc/").endsWithSlash shouldBe true
       Path("/abc").endsWithSlash shouldBe false
@@ -378,10 +377,8 @@ class UriSpec extends WordSpec with Matchers {
       Path("/abc/def/").endsWithSlash shouldBe true
     }
     "support the `dropChars` modifier" in {
-      Path
-        ./.dropChars(0) shouldEqual Path./
-      Path
-        ./.dropChars(1) shouldEqual Empty
+      Path./.dropChars(0) shouldEqual Path./
+      Path./.dropChars(1) shouldEqual Empty
       Path("/abc/def/").dropChars(0) shouldEqual Path("/abc/def/")
       Path("/abc/def/").dropChars(1) shouldEqual Path("abc/def/")
       Path("/abc/def/").dropChars(2) shouldEqual Path("bc/def/")

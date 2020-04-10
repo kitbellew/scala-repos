@@ -59,8 +59,7 @@ object Templates {
       val preparedTemplates: Seq[File] = prepareTemplates.value
       val syncTemplateDirValue: File = syncTemplateDir.value
       val mappings: Seq[(File, File)] = preparedTemplates.flatMap { template =>
-        (template
-          .***.filter(!_.isDirectory) x relativeTo(template)).map { f =>
+        (template.***.filter(!_.isDirectory) x relativeTo(template)).map { f =>
           (f._1, syncTemplateDirValue / template.getName / f._2)
         }
       }
@@ -95,9 +94,7 @@ object Templates {
       val mappings: Seq[(File, File)] = templateSourcesList.flatMap {
         case templateSources: TemplateSources =>
           val relativeMappings: Seq[(File, String)] = templateSources.sourceDirs
-            .flatMap(dir =>
-              dir
-                .***.filter(fileFilter(_)) x relativeTo(dir))
+            .flatMap(dir => dir.***.filter(fileFilter(_)) x relativeTo(dir))
           // Rebase the files onto the target directory, also filtering out ignored files
           relativeMappings.collect {
             case (orig, targ) if !ignore.contains(orig.getName) =>
@@ -170,14 +167,12 @@ object Templates {
       val distDir = target.value / "dist-templates"
       preparedTemplates.map { template =>
         val zipFile = distDir / (template.getName + ".zip")
-        val files = template
-          .***.filter(!_.isDirectory) x relativeTo(template)
+        val files = template.***.filter(!_.isDirectory) x relativeTo(template)
         IO.zip(files, zipFile)
         zipFile
       }
     },
-    gitHash := "git rev-parse HEAD"
-      .!!.trim,
+    gitHash := "git rev-parse HEAD".!!.trim,
     nonce := System.currentTimeMillis,
     S3.host in S3.upload := "downloads.typesafe.com.s3.amazonaws.com",
     S3.progress in S3.upload := true,

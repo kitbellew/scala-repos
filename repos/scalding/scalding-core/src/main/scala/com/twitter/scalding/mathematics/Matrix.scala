@@ -388,7 +388,7 @@ class Matrix[RowT, ColT, ValT](
         // Matrices are generally huge and cascading has problems with diverse key spaces and
         // mapside operations
         // TODO continually evaluate if this is needed to avoid OOM
-        .reducers(MatrixProduct.numOfReducers(sizeHint)).forceToReducers
+          .reducers(MatrixProduct.numOfReducers(sizeHint)).forceToReducers
       }
     }
     val newHint = sizeHint.setRows(1L)

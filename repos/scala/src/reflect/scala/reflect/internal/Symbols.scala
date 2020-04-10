@@ -2664,9 +2664,8 @@ trait Symbols extends api.Symbols {
     final def setterIn(
         base: Symbol,
         hasExpandedName: Boolean = needsExpandedSetterName): Symbol =
-      base.info decl setterNameInBase(base, hasExpandedName) filter (
-        _.hasAccessorFlag
-      )
+      base.info decl setterNameInBase(base, hasExpandedName) filter (_
+        .hasAccessorFlag)
 
     def needsExpandedSetterName =
       (if (isMethod) hasStableFlag && !isLazy else hasNoFlags(LAZY | MUTABLE))
@@ -3647,9 +3646,8 @@ trait Symbols extends api.Symbols {
       if (hasCompleteInfo) {
         val label = if (isAnonymousClass) "$anon:" else "refinement of"
         val parents = parentsString(
-          info.parents map functionNBaseType filterNot (
-            _.typeSymbol == SerializableClass
-          ))
+          info.parents map functionNBaseType filterNot (_
+            .typeSymbol == SerializableClass))
         s"<$label $parents>"
       } else if (isAnonymousClass) "$anon"
       else nameString

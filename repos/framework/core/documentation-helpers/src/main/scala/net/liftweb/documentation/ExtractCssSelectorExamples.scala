@@ -31,8 +31,7 @@ object ExtractCssSelectorExamples extends App {
           Full(docsFile)
             .filter(
               _.exists) ?~ s"'$docsFile' should be a directory, but does not exist."
-        )
-          .filter(
+        ).filter(
             _.isDirectory) ?~ s"'$docsFile' should be a directory, not a file.")
     } yield {
       for {

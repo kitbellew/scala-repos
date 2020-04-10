@@ -366,9 +366,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
         val clss = asScalaSet(r.getSubTypesOf(classOf[java.lang.Object]))
         val res = clss.toList.filter(isPublic).filter {
           !_.getName
-          .contains(
-            "$"
-          ) // excludes inner classes for now - let's deal with it later
+            .contains(
+              "$"
+            ) // excludes inner classes for now - let's deal with it later
         }.filter { n =>
           val name = n.toString
           !name.contains("webkit") || name
@@ -377,9 +377,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
             ) // excludes android.webkit.* in Android 2.1.1, which is deprecated
         }.filter {
           !_.getName
-          .contains(
-            "RemoteViewsService"
-          ) // excludes RemoteViewsService, because it is packaged weird place "android.view"
+            .contains(
+              "RemoteViewsService"
+            ) // excludes RemoteViewsService, because it is packaged weird place "android.view"
         }.filter(sourceExists).map(toAndroidClass).map(c => c.tpe.name -> c)
           .toMap
 

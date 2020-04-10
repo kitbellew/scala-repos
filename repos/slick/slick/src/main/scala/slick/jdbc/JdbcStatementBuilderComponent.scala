@@ -413,8 +413,7 @@ trait JdbcStatementBuilderComponent {
                 skipParens)
             case RewriteBooleans.ToRealBoolean(ch) =>
               expr(
-                Library
-                  .==.typed[Boolean](ch, LiteralNode(true).infer()),
+                Library.==.typed[Boolean](ch, LiteralNode(true).infer()),
                 skipParens)
             case Library.Exists(c: Comprehension) =>
               /* If tuples are not supported, selecting multiple individial columns

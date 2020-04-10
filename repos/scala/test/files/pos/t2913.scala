@@ -16,8 +16,7 @@ object Test {
   a.foo()
   a.foo(1)
 
-  a
-    .foo(
+  a.foo(
       ""
     ) // Without implicits, a type error regarding invalid argument types is generated at `""`. This is
   // the same position as an argument, so the 'second try' typing with an Implicit View is tried,
@@ -28,8 +27,7 @@ object Test {
   //
   // But perhaps the implementation was changed to solve See https://lampsvn.epfl.ch/trac/scala/ticket/1756
 
-  a
-    .foo(
+  a.foo(
       "a",
       "b"
     ) // Without implicits, a type error regarding invalid arity is generated at `foo(<error>"", "")`.

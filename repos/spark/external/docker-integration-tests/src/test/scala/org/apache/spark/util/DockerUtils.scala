@@ -31,14 +31,13 @@ private[spark] object DockerUtils {
     def findFromDockerMachine(): Option[String] = {
       sys.env.get("DOCKER_MACHINE_NAME").flatMap { name =>
         Try(
-          Seq("/bin/bash", "-c", s"docker-machine ip $name 2>/dev/null")
-            .!!.trim).toOption
+          Seq("/bin/bash", "-c", s"docker-machine ip $name 2>/dev/null").!!
+            .trim).toOption
       }
     }
     sys.env.get("DOCKER_IP").orElse(findFromDockerMachine()).orElse(
-      Try(
-        Seq("/bin/bash", "-c", "boot2docker ip 2>/dev/null")
-          .!!.trim).toOption).getOrElse {
+      Try(Seq("/bin/bash", "-c", "boot2docker ip 2>/dev/null").!!.trim)
+        .toOption).getOrElse {
       // This block of code is based on Utils.findLocalInetAddress(), but is modified to blacklist
       // certain interfaces.
       val address = InetAddress.getLocalHost

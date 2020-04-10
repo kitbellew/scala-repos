@@ -537,7 +537,7 @@ class SizeAveStdJob(args: Args) extends Job(args) {
   }.map('x -> 'x) { (x: Double) => (4 * x).toInt }.groupBy('x) {
     _.sizeAveStdev('y -> ('size, 'yave, 'ystdev))
     //Make sure this doesn't ruin the calculation
-    .sizeAveStdev('y -> ('size2, 'yave2, 'ystdev2)).average('y)
+      .sizeAveStdev('y -> ('size2, 'yave2, 'ystdev2)).average('y)
   }.project('x, 'size, 'yave, 'ystdev, 'y).write(Tsv(args("output")))
 }
 

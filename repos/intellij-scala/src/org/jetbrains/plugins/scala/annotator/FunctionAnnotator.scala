@@ -43,7 +43,7 @@ trait FunctionAnnotator {
 
     val tailrecAnnotation = function.annotations.find(
       _.typeElement.getType(TypingContext.empty).map(_.canonicalText)
-      .filter(_ == "_root_.scala.annotation.tailrec").isDefined)
+        .filter(_ == "_root_.scala.annotation.tailrec").isDefined)
 
     tailrecAnnotation.foreach { it =>
       if (!function.canBeTailRecursive) {

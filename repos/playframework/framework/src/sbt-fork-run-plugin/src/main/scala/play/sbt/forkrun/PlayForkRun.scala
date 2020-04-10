@@ -84,11 +84,7 @@ object PlayForkRun extends AutoPlugin {
 
   val allInput: Parser[String] = {
     import sbt.complete.DefaultParsers._
-    (token(Space) ~> token(
-      any
-        .*.string,
-      "<arg>"))
-      .?.map(_.fold("")(" ".+))
+    (token(Space) ~> token(any.*.string, "<arg>")).?.map(_.fold("")(" ".+))
   }
 
   def selectRunTask =

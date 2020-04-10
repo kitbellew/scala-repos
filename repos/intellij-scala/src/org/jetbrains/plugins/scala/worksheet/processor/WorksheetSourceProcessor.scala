@@ -354,9 +354,8 @@ object WorksheetSourceProcessor {
           tpe,
           { objectRes append withPrint(s"defined type alias ${tpe.name}") })
       case fun: ScFunction =>
-        val hadMods = fun.getModifierList.accessModifier map (
-          _.modifierFormattedText
-        ) getOrElse ""
+        val hadMods = fun.getModifierList.accessModifier map (_
+          .modifierFormattedText) getOrElse ""
 
         withPrecomputeLines(
           fun, {

@@ -10,9 +10,7 @@ object ParserUtil {
     p.map(x => x._1 + x._2)
   }
 
-  def Opt(a: Parser[String]) =
-    a
-      .?.map(_.getOrElse(""))
+  def Opt(a: Parser[String]) = a.?.map(_.getOrElse(""))
 
   val StringBasicNotStartingWithDash = notStartingWith(StringBasic, '-')
   val IsDirectoryFilter = new SimpleFileFilter(_.isDirectory)

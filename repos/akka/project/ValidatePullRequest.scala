@@ -178,8 +178,7 @@ object ValidatePullRequest extends AutoPlugin {
 
       // TODO could use jgit
       log.info(s"Diffing [$prId] to determine changed modules in PR...")
-      val diffOutput = s"git diff $target --name-only"
-        .!!.split("\n")
+      val diffOutput = s"git diff $target --name-only".!!.split("\n")
       val diffedModuleNames = diffOutput.map(l => l.trim).filter(l =>
         l.startsWith("akka-") ||
           (l.startsWith("project") && l != "project/MiMa.scala"))
@@ -188,8 +187,7 @@ object ValidatePullRequest extends AutoPlugin {
       val dirtyModuleNames: Set[String] =
         if (runningOnJenkins) Set.empty
         else {
-          val statusOutput = s"git status --short"
-            .!!.split("\n")
+          val statusOutput = s"git status --short".!!.split("\n")
           val dirtyDirectories = statusOutput
             .map(l ⇒ l.trim.dropWhile(_ != ' ').drop(1))
             .map(_.takeWhile(_ != '/'))

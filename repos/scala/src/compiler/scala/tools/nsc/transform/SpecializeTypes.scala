@@ -444,9 +444,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
   private def needsSpecialization(env: TypeEnv, sym: Symbol): Boolean =
     (!hasUnspecializableAnnotation(sym) && (specializedTypeVars(sym)
       .intersect(env.keySet).diff(wasSpecializedForTypeVars(sym)).nonEmpty
-      || sym.isClassConstructor && (
-        sym.enclClass.typeParams exists (_.isSpecialized)
-      )
+      || sym.isClassConstructor && (sym.enclClass.typeParams exists (_
+        .isSpecialized))
       || isNormalizedMember(sym) && info(sym).typeBoundsIn(env)))
 
   private def hasUnspecializableAnnotation(sym: Symbol): Boolean =
@@ -708,7 +707,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       def enterMember(sym: Symbol): Symbol = {
         typeEnv(sym) = fullEnv ++ typeEnv(sym) // append the full environment
         sym modifyInfo (_.substThis(clazz, sClass)
-        .instantiateTypeParams(oldClassTParams, newClassTParams map (_.tpe)))
+          .instantiateTypeParams(oldClassTParams, newClassTParams map (_.tpe)))
         // we remove any default parameters. At this point, they have been all
         // resolved by the type checker. Later on, erasure re-typechecks everything and
         // chokes if it finds default parameters for specialized members, even though
@@ -974,9 +973,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
 
                 typeEnv(specMember) = outerEnv ++ env
                 val tps1 = produceTypeParameters(tps, specMember, env)
-                tps1 foreach (
-                  _ modifyInfo (_.instantiateTypeParams(keys, vals))
-                )
+                tps1 foreach (_ modifyInfo (_
+                  .instantiateTypeParams(keys, vals)))
 
                 // the cloneInfo is necessary so that method parameter symbols are cloned at the new owner
                 val methodType = sym.info.resultType

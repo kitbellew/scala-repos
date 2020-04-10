@@ -205,7 +205,7 @@ object FilesystemIngestFailureLog {
               jv.validated[EventMessage.EventMessageExtraction]("message")(
                 IngestMessage.Extractor).flatMap {
                 _.map(Success(_))
-                .getOrElse(Failure(Invalid("Incomplete ingest message")))
+                  .getOrElse(Failure(Invalid("Incomplete ingest message")))
               }
 
             case "archive" => jv.validated[ArchiveMessage]("message")

@@ -831,7 +831,7 @@ private[scala] trait JavaMirrors
           val anns = jclazz.getAnnotations
           val result = anns find (_.annotationType == annotClass)
           if (result.isEmpty && (anns exists (_.annotationType
-              .getName == name)))
+                .getName == name)))
             throw new ClassNotFoundException(
               sm"""Mirror classloader mismatch: $jclazz (loaded by ${ReflectionUtils
                 .show(jclazz.getClassLoader)})

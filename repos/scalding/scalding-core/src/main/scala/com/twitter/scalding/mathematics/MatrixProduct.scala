@@ -573,7 +573,7 @@ object MatrixProduct extends java.io.Serializable {
               }
               // There is a low chance that many (row,col) keys are co-located, and the keyspace
               // is likely huge, just push to reducers
-              .forceToReducers.reducers(grpReds)
+                .forceToReducers.reducers(grpReds)
             }
         }
         // Keep the names from the left:

@@ -93,8 +93,8 @@ object ScalaJSGroupID {
 
     reify {
       val cross = {
-        if (keys.splice.jsDependencies
-              .?.value.isDefined) ScalaJSCrossVersion.binary
+        if (keys.splice.jsDependencies.?.value.isDefined)
+          ScalaJSCrossVersion.binary
         else CrossVersion.binary
       }
       ScalaJSGroupID.withCross(c.prefix.splice, artifactID.splice, cross)

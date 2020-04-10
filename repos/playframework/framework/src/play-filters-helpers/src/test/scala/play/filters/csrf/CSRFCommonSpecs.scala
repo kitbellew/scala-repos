@@ -84,13 +84,13 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
     "reject requests with nocheck header" in {
       csrfCheckRequest(
         _.withCookies("foo" -> "bar").withHeaders(HeaderName -> "nocheck")
-        .post(Map("foo" -> "bar")))(_.status must_== errorStatusCode)
+          .post(Map("foo" -> "bar")))(_.status must_== errorStatusCode)
     }
     "reject requests with ajax header" in {
       csrfCheckRequest(
         _.withCookies("foo" -> "bar")
-        .withHeaders("X-Requested-With" -> "a spoon")
-        .post(Map("foo" -> "bar")))(_.status must_== errorStatusCode)
+          .withHeaders("X-Requested-With" -> "a spoon").post(Map(
+            "foo" -> "bar")))(_.status must_== errorStatusCode)
     }
     "reject requests with different token in body" in {
       csrfCheckRequest(req =>
@@ -325,13 +325,13 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
       "accept requests with nocheck header" in {
         csrfCheckRequest(
           _.withCookies("foo" -> "bar").withHeaders(HeaderName -> "nocheck")
-          .post(Map("foo" -> "bar")))(_.status must_== OK)
+            .post(Map("foo" -> "bar")))(_.status must_== OK)
       }
       "accept requests with ajax header" in {
         csrfCheckRequest(
           _.withCookies("foo" -> "bar")
-          .withHeaders("X-Requested-With" -> "a spoon")
-          .post(Map("foo" -> "bar")))(_.status must_== OK)
+            .withHeaders("X-Requested-With" -> "a spoon")
+            .post(Map("foo" -> "bar")))(_.status must_== OK)
       }
     }
   }

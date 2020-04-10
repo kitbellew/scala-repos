@@ -387,7 +387,7 @@ trait Implicits {
             case List(sym) => sym.tpe match {
                 case MethodType(params, restpe)
                     if (params forall (_.tpe
-                    .isInstanceOf[BoundedWildcardType])) =>
+                      .isInstanceOf[BoundedWildcardType])) =>
                   Some((sym.name, params map (_.tpe.bounds.lo), restpe))
                 case _ => None
               }

@@ -161,8 +161,7 @@ private[sbt] object SettingCompletions {
         valueParser(defineKey, a, inputScopedKey(keyFilter(defineKey.key)))
     } yield () // parser is currently only for completion and the parsed data structures are not used
 
-    matched(full) | any
-      .+.string
+    matched(full) | any.+.string
   }
 
   /** Parser for a Scope+AttributeKey (ScopedKey). */

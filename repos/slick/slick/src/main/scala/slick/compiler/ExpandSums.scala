@@ -59,8 +59,7 @@ class ExpandSums extends Phase {
 
         // Primitive OptionFold -> translate to null check
         case OptionFold(from :@ OptionType.Primitive(_), ifEmpty, map, gen) =>
-          val pred = Library
-            .==.typed[Boolean](from, LiteralNode(null))
+          val pred = Library.==.typed[Boolean](from, LiteralNode(null))
           val n2 = (ifEmpty, map) match {
             case (LiteralNode(true), LiteralNode(false)) => pred
             case (LiteralNode(false), LiteralNode(true)) =>
@@ -78,8 +77,7 @@ class ExpandSums extends Phase {
         case OptionFold(from, ifEmpty, map, gen) =>
           multi = true
           val left = from.select(ElementSymbol(1)).infer()
-          val pred = Library
-            .==.typed[Boolean](left, LiteralNode(null))
+          val pred = Library.==.typed[Boolean](left, LiteralNode(null))
           val n2 = (ifEmpty, map) match {
             case (LiteralNode(true), LiteralNode(false)) => pred
             case (LiteralNode(false), LiteralNode(true)) =>
@@ -256,10 +254,9 @@ class ExpandSums extends Phase {
           val protoDisc = Select(ref, ElementSymbol(1)).infer()
           val rest = Select(ref, ElementSymbol(2))
           val disc = IfThenElse(ConstArray(
-            Library
-              .==.typed[Boolean](
-                silentCast(OptionType(protoDisc.nodeType), protoDisc),
-                LiteralNode(null)),
+            Library.==.typed[Boolean](
+              silentCast(OptionType(protoDisc.nodeType), protoDisc),
+              LiteralNode(null)),
             DiscNone,
             Disc1))
           ProductNode(ConstArray(disc, rest))

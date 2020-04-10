@@ -295,8 +295,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       dd: ModuleRevisionId): java.util.Map[String, String] = {
     val m = new java.util.HashMap[String, String]
     Option(
-      dd
-        .getExtraAttribute(
+      dd.getExtraAttribute(
           PomExtraDependencyAttributes.ScalaVersionKey)) foreach { sv =>
       m.put(SbtPomExtraProperties.POM_SCALA_VERSION, sv)
     }

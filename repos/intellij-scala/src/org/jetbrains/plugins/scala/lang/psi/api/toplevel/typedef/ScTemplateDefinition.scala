@@ -210,8 +210,7 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
 
   def allTypeAliases =
     TypeDefinitionMembers.getTypes(this).allFirstSeq().flatMap(n =>
-      n
-        .map {
+      n.map {
           case (_, x) => (x.info, x.substitutor)
         }) ++ syntheticTypeDefinitions.filter(!_.isObject)
       .map((_, ScSubstitutor.empty))

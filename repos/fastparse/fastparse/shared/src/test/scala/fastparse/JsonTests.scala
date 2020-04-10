@@ -51,8 +51,8 @@ object JsonTests extends TestSuite {
   val fractional = P("." ~ digits)
   val integral = P("0" | CharIn('1' to '9') ~ digits.?)
 
-  val number = P(CharIn("+-").? ~ integral ~ fractional.? ~ exponent.?)
-    .!.map(x => Js.Num(x.toDouble))
+  val number = P(CharIn("+-").? ~ integral ~ fractional.? ~ exponent.?).!
+    .map(x => Js.Num(x.toDouble))
 
   val `null` = P("null").map(_ => Js.Null)
   val `false` = P("false").map(_ => Js.False)

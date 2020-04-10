@@ -2419,8 +2419,7 @@ object SView {
       context: android.content.Context,
       defaultLayoutParam: SView => LP): SView = {
     val v = new SView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -3155,8 +3154,7 @@ object SSurfaceView {
       context: android.content.Context,
       defaultLayoutParam: SSurfaceView => LP): SSurfaceView = {
     val v = new SSurfaceView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 
@@ -3439,8 +3437,7 @@ object STextureView {
       context: android.content.Context,
       defaultLayoutParam: STextureView => LP): STextureView = {
     val v = new STextureView
-    v
-      .<<.parent.+=(v)
+    v.<<.parent.+=(v)
     v
   }
 

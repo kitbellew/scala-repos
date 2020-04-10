@@ -4773,7 +4773,7 @@ trait Types
       targs: List[Type]): List[TypeBounds] =
     mapList(tparams)(
       _.info.asSeenFrom(pre, owner).instantiateTypeParams(tparams, targs)
-      .bounds)
+        .bounds)
 
   def elimAnonymousClass(t: Type) =
     t match {
@@ -4823,8 +4823,9 @@ trait Types
         val pres = tps map (_.prefix) // prefix normalizes automatically
         val pre =
           if (variance.isPositive) lub(pres, depth) else glb(pres, depth)
-        val argss = tps map (_.normalize
-        .typeArgs) // symbol equality (of the tp in tps) was checked using typeSymbol, which normalizes, so should normalize before retrieving arguments
+        val argss = tps map (
+          _.normalize.typeArgs
+        ) // symbol equality (of the tp in tps) was checked using typeSymbol, which normalizes, so should normalize before retrieving arguments
         val capturedParams = new ListBuffer[Symbol]
         try {
           if (sym == ArrayClass && phase.erasedTypes) {

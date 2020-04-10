@@ -480,13 +480,9 @@ object Defaults extends BuildCommon {
   def transitiveUpdateTask: Initialize[Task[Seq[UpdateReport]]] = {
     import ScopeFilter.Make.{inDependencies => inDeps, _}
     val selectDeps = ScopeFilter(inDeps(ThisProject, includeRoot = false))
-    val allUpdates = update
-      .?.all(selectDeps)
+    val allUpdates = update.?.all(selectDeps)
     // If I am a "build" (a project inside project/) then I have a globalPluginUpdate.
-    Def.task {
-      allUpdates.value.flatten ++ globalPluginUpdate
-        .?.value
-    }
+    Def.task { allUpdates.value.flatten ++ globalPluginUpdate.?.value }
   }
 
   def watchSetting: Initialize[Watched] =
@@ -600,7 +596,7 @@ object Defaults extends BuildCommon {
           .toIterable).toMap,
       definedTests <<= detectTests,
       definedTestNames <<= definedTests map (_.map(_.name)
-      .distinct) storeAs definedTestNames triggeredBy compile,
+        .distinct) storeAs definedTestNames triggeredBy compile,
       testFilter in testQuick <<= testQuickFilter,
       executeTests <<= (
         streams in test,
@@ -1580,8 +1576,7 @@ object Classpaths {
     classpathConfiguration := findClasspathConfig(
       internalConfigurationMap.value,
       configuration.value,
-      classpathConfiguration
-        .?.value,
+      classpathConfiguration.?.value,
       update.value)
   )
   private[this] def classpaths: Seq[Setting[_]] =
@@ -2057,8 +2052,8 @@ object Classpaths {
 
   private[this] def sbtClassifiersGlobalDefaults =
     Defaults.globalDefaults(Seq(
-      transitiveClassifiers in updateSbtClassifiers ~= (_.filter(
-        _ != DocClassifier))))
+      transitiveClassifiers in updateSbtClassifiers ~= (_
+        .filter(_ != DocClassifier))))
   def sbtClassifiersTasks =
     sbtClassifiersGlobalDefaults ++ inTask(updateSbtClassifiers)(Seq(
       externalResolvers := {
@@ -2223,8 +2218,7 @@ object Classpaths {
       // Ivy logs are treated specially using sbt.UpdateConfiguration.logging.
       // This code bumps up the sbt.UpdateConfiguration.logging to Full when logLevel is Debug.
       import UpdateLogging.{Full, DownloadOnly, Default}
-      val uc = (logLevel in update)
-        .?.value orElse st.get(logLevel.key) match {
+      val uc = (logLevel in update).?.value orElse st.get(logLevel.key) match {
         case Some(Level.Debug) if uc0.logging == Default =>
           uc0.copy(logging = Full)
         case Some(x) if uc0.logging == Default =>

@@ -104,7 +104,7 @@ object JsonBodyParserSpec extends PlaySpecification {
 
       val fooParser = BodyParsers.parse.json.validate {
         _.validate[Foo].asEither.left
-        .map(e => BadRequest(JsError.toFlatJson(e)))
+          .map(e => BadRequest(JsError.toFlatJson(e)))
       }
       parse(
         """{"a":1,"b":"bar"}""",

@@ -273,12 +273,12 @@ object Extraction {
                     case (n, v) =>
                       val typeArgs = typeInfo.parameterizedType.map(
                         _.getActualTypeArguments.map(_.asInstanceOf[Class[_]])
-                        .toList.zipWithIndex.map {
-                          case (t, idx) =>
-                            if (t == classOf[java.lang.Object])
-                              ScalaSigReader.readField(name, a.getClass, idx)
-                            else t
-                        })
+                          .toList.zipWithIndex.map {
+                            case (t, idx) =>
+                              if (t == classOf[java.lang.Object])
+                                ScalaSigReader.readField(name, a.getClass, idx)
+                              else t
+                          })
                       val value = extract0(
                         v,
                         typeInfo.clazz,

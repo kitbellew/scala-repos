@@ -64,7 +64,7 @@ package scalaguide.akka {
 
       "allow binding actor factories" in new WithApplication(
         _.bindings(new factorymodules.MyModule)
-        .configure("my.config" -> "foo")) {
+          .configure("my.config" -> "foo")) {
         _ =>
         import play.api.inject.bind
         import akka.actor._

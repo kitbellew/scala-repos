@@ -249,8 +249,7 @@ final class Vector[+A] private[immutable] (
     val s = new Vector[B](startIndex, endIndex, idx)
     s.initFrom(this)
     s.dirty = dirty
-    s
-      .gotoPosWritable(
+    s.gotoPosWritable(
         focus,
         idx,
         focus ^ idx
@@ -335,8 +334,7 @@ final class Vector[+A] private[immutable] (
             s.initFrom(this)
             s.dirty = dirty
             s.shiftTopLevel(0, shiftBlocks) // shift right by n elements
-            s
-              .gotoPosWritable(
+            s.gotoPosWritable(
                 newFocus,
                 newBlockIndex,
                 newFocus ^ newBlockIndex

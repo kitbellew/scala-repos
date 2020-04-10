@@ -73,9 +73,7 @@ class ResolveZipJoins(rownumStyle: Boolean = false) extends Phase {
     val idxSym = new AnonSymbol
     val idxExpr =
       if (offset == 1L) RowNumber()
-      else
-        Library
-          .-.typed[Long](RowNumber(), LiteralNode(1L - offset))
+      else Library.-.typed[Long](RowNumber(), LiteralNode(1L - offset))
     val lbind = Bind(
       ls,
       Subquery(from, condBelow),
@@ -137,10 +135,8 @@ class ResolveZipJoins(rownumStyle: Boolean = false) extends Phase {
       l2,
       r2,
       JoinType.Inner,
-      Library
-        .==.typed[Boolean](
-          Select(Ref(jlsym), lisym),
-          Select(Ref(jrsym), risym)))
+      Library.==
+        .typed[Boolean](Select(Ref(jlsym), lisym), Select(Ref(jrsym), risym)))
     Bind(
       s1,
       j2,

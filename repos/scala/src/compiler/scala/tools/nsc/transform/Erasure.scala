@@ -1082,7 +1082,7 @@ abstract class Erasure
                     def alt1 = alts find (_.info.paramTypes.head =:= qual.tpe)
                     def alt2 =
                       ScalaRunTimeModule.info.member(nme.hash_) suchThat (_.info
-                      .paramTypes.head.typeSymbol == AnyClass)
+                        .paramTypes.head.typeSymbol == AnyClass)
                     val newTree = gen
                       .mkRuntimeCall(nme.hash_, qual :: Nil) setSymbol (
                       alt1 getOrElse alt2
@@ -1143,7 +1143,7 @@ abstract class Erasure
             val owner = sym.owner
             if (owner.isRefinementClass) {
               sym.allOverriddenSymbols filterNot (_.owner
-              .isRefinementClass) match {
+                .isRefinementClass) match {
                 case overridden :: _ =>
                   log(
                     s"${sym.fullLocationString} originates in refinement class - replacing with ${overridden.fullLocationString}.")

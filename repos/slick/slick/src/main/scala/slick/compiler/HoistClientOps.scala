@@ -230,8 +230,7 @@ class HoistClientOps extends Phase {
             recCh,
             { n =>
               IfThenElse(ConstArray(
-                Library
-                  .==.typed[Boolean](recTr(n), LiteralNode(null)),
+                Library.==.typed[Boolean](recTr(n), LiteralNode(null)),
                 r1,
                 r2))
             })

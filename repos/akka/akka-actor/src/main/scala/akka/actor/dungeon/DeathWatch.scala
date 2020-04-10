@@ -30,8 +30,7 @@ private[akka] trait DeathWatch {
       case a: InternalActorRef ⇒
         if (a != self && !watchingContains(a)) {
           maintainAddressTerminatedSubscription(a) {
-            a
-              .sendSystemMessage(
+            a.sendSystemMessage(
                 Watch(a, self)
               ) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
             watching += a
@@ -44,8 +43,7 @@ private[akka] trait DeathWatch {
     subject match {
       case a: InternalActorRef ⇒
         if (a != self && watchingContains(a)) {
-          a
-            .sendSystemMessage(
+          a.sendSystemMessage(
               Unwatch(a, self)
             ) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
           maintainAddressTerminatedSubscription(a) {

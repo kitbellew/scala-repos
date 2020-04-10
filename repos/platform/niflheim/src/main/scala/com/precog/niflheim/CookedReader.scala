@@ -158,8 +158,7 @@ final class CookedReader(
               ({ type λ[α] = ValidationNel[IOException, α] })#λ,
               Segment]
           v map (path -> _)
-        }
-          .sequence[
+        }.sequence[
             ({ type λ[α] = ValidationNel[IOException, α] })#λ,
             (ColumnRef, List[Segment])]
     }

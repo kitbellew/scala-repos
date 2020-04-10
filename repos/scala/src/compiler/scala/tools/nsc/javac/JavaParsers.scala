@@ -764,9 +764,8 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           if (in.token == ENUM || definesInterface(in.token))
             mods |= Flags.STATIC
           val decls = memberDecl(mods, parentToken)
-          (if (mods.hasStaticFlag || inInterface && !(
-                 decls exists (_.isInstanceOf[DefDef])
-               )) statics
+          (if (mods.hasStaticFlag || inInterface && !(decls exists (_
+                 .isInstanceOf[DefDef]))) statics
            else members) ++= decls
         }
       }
