@@ -167,8 +167,8 @@ class PerformanceSpec
   }
 
   def stressCommandsourcedPersistentActor(failAt: Option[Long]): Unit = {
-    val persistentActor = namedPersistentActor[
-      CommandsourcedTestPersistentActor]
+    val persistentActor =
+      namedPersistentActor[CommandsourcedTestPersistentActor]
     stressPersistentActor(persistentActor, failAt, "persistent commands")
   }
 
@@ -186,8 +186,8 @@ class PerformanceSpec
   }
 
   def stressStashingPersistentActor(): Unit = {
-    val persistentActor = namedPersistentActor[
-      StashingEventsourcedTestPersistentActor]
+    val persistentActor =
+      namedPersistentActor[StashingEventsourcedTestPersistentActor]
     val m = new Measure(loadCycles)
     m.startMeasure()
     val cmds = 1 to (loadCycles / 3) flatMap (_ ⇒ List("a", "b", "c"))

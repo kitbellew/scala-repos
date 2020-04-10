@@ -89,22 +89,16 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
     "Float")
 
   /** Typeable instance for `Double`. */
-  implicit val doubleTypeable
-      : Typeable[Double] = ValueTypeable[Double, jl.Double](
-    classOf[jl.Double],
-    "Double")
+  implicit val doubleTypeable: Typeable[Double] =
+    ValueTypeable[Double, jl.Double](classOf[jl.Double], "Double")
 
   /** Typeable instance for `Boolean`. */
-  implicit val booleanTypeable
-      : Typeable[Boolean] = ValueTypeable[Boolean, jl.Boolean](
-    classOf[jl.Boolean],
-    "Boolean")
+  implicit val booleanTypeable: Typeable[Boolean] =
+    ValueTypeable[Boolean, jl.Boolean](classOf[jl.Boolean], "Boolean")
 
   /** Typeable instance for `Unit`. */
-  implicit val unitTypeable
-      : Typeable[Unit] = ValueTypeable[Unit, runtime.BoxedUnit](
-    classOf[runtime.BoxedUnit],
-    "Unit")
+  implicit val unitTypeable: Typeable[Unit] =
+    ValueTypeable[Unit, runtime.BoxedUnit](classOf[runtime.BoxedUnit], "Unit")
 
   def isValClass[T](clazz: Class[T]) =
     (classOf[jl.Number] isAssignableFrom clazz) ||

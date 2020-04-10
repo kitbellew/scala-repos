@@ -508,127 +508,141 @@ class Generic1Tests {
     type LRepr[t] = scala.collection.immutable.::[t] :+: Nil.type :+: CNil
     type LS[t] = List[Set[t]]
 
-    val g0 = Generic1[
-      List,
-      ({
-        type λ[t[_]] = TC3[t, Option]
-      })#λ]
+    val g0 =
+      Generic1[
+        List,
+        ({
+          type λ[t[_]] = TC3[t, Option]
+        })#λ]
     implicitly[g0.R[Int] =:= LRepr[Int]]
     typed[TC3[LRepr, Option]](g0.fr)
 
-    val g1 = Generic1[
-      List,
-      ({
-        type λ[t[_]] = TC3[Option, t]
-      })#λ]
+    val g1 =
+      Generic1[
+        List,
+        ({
+          type λ[t[_]] = TC3[Option, t]
+        })#λ]
     implicitly[g1.R[Int] =:= LRepr[Int]]
     typed[TC3[Option, LRepr]](g1.fr)
 
-    val h0 = IsHCons1[
-      CRepr,
-      ({
-        type λ[t[_]] = TC3[t, Option]
-      })#λ,
-      Trivial1]
+    val h0 =
+      IsHCons1[
+        CRepr,
+        ({
+          type λ[t[_]] = TC3[t, Option]
+        })#λ,
+        Trivial1]
     typed[TC3[h0.H, Option]](h0.fh)
     typed[Trivial1[h0.T]](h0.ft)
 
-    val h1 = IsHCons1[
-      CRepr,
-      ({
-        type λ[t[_]] = TC3[Option, t]
-      })#λ,
-      Trivial1]
+    val h1 =
+      IsHCons1[
+        CRepr,
+        ({
+          type λ[t[_]] = TC3[Option, t]
+        })#λ,
+        Trivial1]
     typed[TC3[Option, h1.H]](h1.fh)
     typed[Trivial1[h1.T]](h1.ft)
 
-    val h2 = IsHCons1[
-      CRepr,
-      Trivial1,
-      ({
-        type λ[t[_]] = TC3[t, Option]
-      })#λ]
+    val h2 =
+      IsHCons1[
+        CRepr,
+        Trivial1,
+        ({
+          type λ[t[_]] = TC3[t, Option]
+        })#λ]
     typed[Trivial1[h2.H]](h2.fh)
     typed[TC3[h2.T, Option]](h2.ft)
 
-    val h3 = IsHCons1[
-      CRepr,
-      Trivial1,
-      ({
-        type λ[t[_]] = TC3[Option, t]
-      })#λ]
+    val h3 =
+      IsHCons1[
+        CRepr,
+        Trivial1,
+        ({
+          type λ[t[_]] = TC3[Option, t]
+        })#λ]
     typed[Trivial1[h3.H]](h3.fh)
     typed[TC3[Option, h3.T]](h3.ft)
 
-    val c0 = IsCCons1[
-      LRepr,
-      ({
-        type λ[t[_]] = TC3[t, Option]
-      })#λ,
-      Trivial1]
+    val c0 =
+      IsCCons1[
+        LRepr,
+        ({
+          type λ[t[_]] = TC3[t, Option]
+        })#λ,
+        Trivial1]
     typed[TC3[c0.H, Option]](c0.fh)
     typed[Trivial1[c0.T]](c0.ft)
 
-    val c1 = IsCCons1[
-      LRepr,
-      ({
-        type λ[t[_]] = TC3[Option, t]
-      })#λ,
-      Trivial1]
+    val c1 =
+      IsCCons1[
+        LRepr,
+        ({
+          type λ[t[_]] = TC3[Option, t]
+        })#λ,
+        Trivial1]
     typed[TC3[Option, c1.H]](c1.fh)
     typed[Trivial1[c1.T]](c1.ft)
 
-    val c2 = IsCCons1[
-      LRepr,
-      Trivial1,
-      ({
-        type λ[t[_]] = TC3[t, Option]
-      })#λ]
+    val c2 =
+      IsCCons1[
+        LRepr,
+        Trivial1,
+        ({
+          type λ[t[_]] = TC3[t, Option]
+        })#λ]
     typed[Trivial1[c2.H]](c2.fh)
     typed[TC3[c2.T, Option]](c2.ft)
 
-    val c3 = IsCCons1[
-      LRepr,
-      Trivial1,
-      ({
-        type λ[t[_]] = TC3[Option, t]
-      })#λ]
+    val c3 =
+      IsCCons1[
+        LRepr,
+        Trivial1,
+        ({
+          type λ[t[_]] = TC3[Option, t]
+        })#λ]
     typed[Trivial1[c3.H]](c3.fh)
     typed[TC3[Option, c3.T]](c3.ft)
 
-    val s0 = Split1[
-      LS,
-      ({
-        type λ[t[_]] = TC3[t, Option]
-      })#λ,
-      Trivial1]
+    val s0 =
+      Split1[
+        LS,
+        ({
+          type λ[t[_]] = TC3[t, Option]
+        })#λ,
+        Trivial1]
     typed[TC3[s0.O, Option]](s0.fo)
     typed[Trivial1[s0.I]](s0.fi)
 
-    val s1 = Split1[
-      LS,
-      ({
-        type λ[t[_]] = TC3[Option, t]
-      })#λ,
-      Trivial1]
+    val s1 =
+      Split1[
+        LS,
+        ({
+          type λ[t[_]] = TC3[Option, t]
+        })#λ,
+        Trivial1]
     typed[TC3[Option, s1.O]](s1.fo)
     typed[Trivial1[s1.I]](s1.fi)
 
-    val s2 = Split1[
-      LS,
-      Trivial1,
-      ({
-        type λ[t[_]] = TC3[t, Option]
-      })#λ]
+    val s2 =
+      Split1[
+        LS,
+        Trivial1,
+        ({
+          type λ[t[_]] = TC3[t, Option]
+        })#λ]
     typed[Trivial1[s2.O]](s2.fo)
     typed[TC3[s2.I, Option]](s2.fi)
 
-    val s3 = Split1[
-      LS,
-      Trivial1,
-      ({
-        type λ[t[_]] = TC3[Option, t]
-      })#λ]
+    val s3 =
+      Split1[
+        LS,
+        Trivial1,
+        ({
+          type λ[t[_]] = TC3[Option, t]
+        })#λ]
     typed[Trivial1[s3.O]](s3.fo)
     typed[TC3[Option, s3.I]](s3.fi)
   }

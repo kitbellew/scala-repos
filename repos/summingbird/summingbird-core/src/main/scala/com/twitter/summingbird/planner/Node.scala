@@ -120,11 +120,10 @@ case class Dag[P <: Platform[P]](
     nodes: List[Node[P]],
     nodeToName: Map[Node[P], String] = Map[Node[P], String](),
     nameToNode: Map[String, Node[P]] = Map[String, Node[P]](),
-    dependenciesOfM: Map[Node[P], List[Node[P]]] = Map[Node[P], List[
-      Node[P]]](),
-    dependantsOfM: Map[Node[P], List[Node[P]]] = Map[
-      Node[P],
-      List[Node[P]]]()) {
+    dependenciesOfM: Map[Node[P], List[Node[P]]] =
+      Map[Node[P], List[Node[P]]](),
+    dependantsOfM: Map[Node[P], List[Node[P]]] =
+      Map[Node[P], List[Node[P]]]()) {
 
   lazy val producerDependants = Dependants(tail)
 

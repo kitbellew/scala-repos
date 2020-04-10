@@ -31,8 +31,8 @@ private[netty4] class Netty4ChannelInitializer(
 
   val Logger(logger) = params[Logger]
   val Label(label) = params[Label]
-  val Transport
-    .Liveness(readTimeout, writeTimeout, _) = params[Transport.Liveness]
+  val Transport.Liveness(readTimeout, writeTimeout, _) =
+    params[Transport.Liveness]
   val Timer(timer) = params[Timer]
   val Stats(stats) = params[Stats]
 

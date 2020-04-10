@@ -60,12 +60,12 @@ private[finagle] case class Netty4Listener[In, Out](
   private[this] val PipelineInit(pipelineInit) = params[PipelineInit]
 
   // transport params
-  private[this] val Transport
-    .Liveness(_, _, keepAlive) = params[Transport.Liveness]
-  private[this] val Transport
-    .BufferSizes(sendBufSize, recvBufSize) = params[Transport.BufferSizes]
-  private[this] val Transport
-    .Options(noDelay, reuseAddr) = params[Transport.Options]
+  private[this] val Transport.Liveness(_, _, keepAlive) =
+    params[Transport.Liveness]
+  private[this] val Transport.BufferSizes(sendBufSize, recvBufSize) =
+    params[Transport.BufferSizes]
+  private[this] val Transport.Options(noDelay, reuseAddr) =
+    params[Transport.Options]
 
   // listener params
   private[this] val Listener.Backlog(backlog) = params[Listener.Backlog]

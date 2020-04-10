@@ -412,8 +412,8 @@ trait Definitions extends api.StandardDefinitions {
     lazy val InvocationTargetExceptionClass = getClassByName(
       sn.InvTargetException)
     lazy val MatchErrorClass = requiredClass[MatchError]
-    lazy val NonLocalReturnControlClass = requiredClass[
-      scala.runtime.NonLocalReturnControl[_]]
+    lazy val NonLocalReturnControlClass =
+      requiredClass[scala.runtime.NonLocalReturnControl[_]]
     lazy val NullPointerExceptionClass = getClassByName(sn.NPException)
     lazy val ThrowableClass = getClassByName(sn.Throwable)
     lazy val UninitializedErrorClass = requiredClass[UninitializedFieldError]
@@ -423,8 +423,8 @@ trait Definitions extends api.StandardDefinitions {
 
     // fundamental reference classes
     lazy val PartialFunctionClass = requiredClass[PartialFunction[_, _]]
-    lazy val AbstractPartialFunctionClass = requiredClass[
-      scala.runtime.AbstractPartialFunction[_, _]]
+    lazy val AbstractPartialFunctionClass =
+      requiredClass[scala.runtime.AbstractPartialFunction[_, _]]
     lazy val SymbolClass = requiredClass[scala.Symbol]
     lazy val StringClass = requiredClass[java.lang.String]
     lazy val StringModule = StringClass.linkedClassOfClass
@@ -459,21 +459,21 @@ trait Definitions extends api.StandardDefinitions {
       */
     lazy val SpecializableModule = requiredModule[Specializable]
 
-    lazy val ScalaRunTimeModule = requiredModule[
-      scala.runtime.ScalaRunTime.type]
+    lazy val ScalaRunTimeModule =
+      requiredModule[scala.runtime.ScalaRunTime.type]
     lazy val SymbolModule = requiredModule[scala.Symbol.type]
     def Symbol_apply = getMemberMethod(SymbolModule, nme.apply)
 
     // classes with special meanings
     lazy val StringAddClass = requiredClass[scala.runtime.StringAdd]
     lazy val ScalaNumberClass = requiredClass[scala.math.ScalaNumber]
-    lazy val TraitSetterAnnotationClass = requiredClass[
-      scala.runtime.TraitSetter]
+    lazy val TraitSetterAnnotationClass =
+      requiredClass[scala.runtime.TraitSetter]
     lazy val DelayedInitClass = requiredClass[scala.DelayedInit]
     def delayedInitMethod = getMemberMethod(DelayedInitClass, nme.delayedInit)
 
-    lazy val TypeConstraintClass = requiredClass[
-      scala.annotation.TypeConstraint]
+    lazy val TypeConstraintClass =
+      requiredClass[scala.annotation.TypeConstraint]
     lazy val SingletonClass =
       enterNewClass(
         ScalaPackageClass,
@@ -615,8 +615,8 @@ trait Definitions extends api.StandardDefinitions {
     // reflection / structural types
     lazy val SoftReferenceClass = requiredClass[java.lang.ref.SoftReference[_]]
     lazy val MethodClass = getClassByName(sn.MethodAsObject)
-    lazy val EmptyMethodCacheClass = requiredClass[
-      scala.runtime.EmptyMethodCache]
+    lazy val EmptyMethodCacheClass =
+      requiredClass[scala.runtime.EmptyMethodCache]
     lazy val MethodCacheClass = requiredClass[scala.runtime.MethodCache]
     def methodCache_find = getMemberMethod(MethodCacheClass, nme.find_)
     def methodCache_add = getMemberMethod(MethodCacheClass, nme.add_)
@@ -664,11 +664,11 @@ trait Definitions extends api.StandardDefinitions {
     ) // defined in scala-reflect.jar, so we need to be careful
     def UniverseInternal = getMemberValue(UniverseClass, nme.internal)
 
-    lazy val PartialManifestModule = requiredModule[
-      scala.reflect.ClassManifestFactory.type]
+    lazy val PartialManifestModule =
+      requiredModule[scala.reflect.ClassManifestFactory.type]
     lazy val FullManifestClass = requiredClass[scala.reflect.Manifest[_]]
-    lazy val FullManifestModule = requiredModule[
-      scala.reflect.ManifestFactory.type]
+    lazy val FullManifestModule =
+      requiredModule[scala.reflect.ManifestFactory.type]
     lazy val OptManifestClass = requiredClass[scala.reflect.OptManifest[_]]
     lazy val NoManifest = requiredModule[scala.reflect.NoManifest.type]
 
@@ -735,8 +735,8 @@ trait Definitions extends api.StandardDefinitions {
       BlackboxContextClass.map(sym => getTypeMember(sym, tpnme.WeakTypeTag))
     def MacroContextTreeType =
       BlackboxContextClass.map(sym => getTypeMember(sym, tpnme.Tree))
-    lazy val MacroImplAnnotation = requiredClass[
-      scala.reflect.macros.internal.macroImpl]
+    lazy val MacroImplAnnotation =
+      requiredClass[scala.reflect.macros.internal.macroImpl]
 
     lazy val StringContextClass = requiredClass[scala.StringContext]
 
@@ -763,10 +763,10 @@ trait Definitions extends api.StandardDefinitions {
       else
         NoSymbol
 
-    lazy val ScalaSignatureAnnotation = requiredClass[
-      scala.reflect.ScalaSignature]
-    lazy val ScalaLongSignatureAnnotation = requiredClass[
-      scala.reflect.ScalaLongSignature]
+    lazy val ScalaSignatureAnnotation =
+      requiredClass[scala.reflect.ScalaSignature]
+    lazy val ScalaLongSignatureAnnotation =
+      requiredClass[scala.reflect.ScalaLongSignature]
 
     lazy val MethodHandle = getClassIfDefined("java.lang.invoke.MethodHandle")
 
@@ -1569,8 +1569,8 @@ trait Definitions extends api.StandardDefinitions {
 
     // boxed classes
     lazy val ObjectRefClass = requiredClass[scala.runtime.ObjectRef[_]]
-    lazy val VolatileObjectRefClass = requiredClass[
-      scala.runtime.VolatileObjectRef[_]]
+    lazy val VolatileObjectRefClass =
+      requiredClass[scala.runtime.VolatileObjectRef[_]]
     lazy val RuntimeStaticsModule = getRequiredModule("scala.runtime.Statics")
     lazy val BoxesRunTimeModule = getRequiredModule(
       "scala.runtime.BoxesRunTime")
@@ -1592,46 +1592,46 @@ trait Definitions extends api.StandardDefinitions {
 
     // Annotation base classes
     lazy val AnnotationClass = requiredClass[scala.annotation.Annotation]
-    lazy val ClassfileAnnotationClass = requiredClass[
-      scala.annotation.ClassfileAnnotation]
-    lazy val StaticAnnotationClass = requiredClass[
-      scala.annotation.StaticAnnotation]
+    lazy val ClassfileAnnotationClass =
+      requiredClass[scala.annotation.ClassfileAnnotation]
+    lazy val StaticAnnotationClass =
+      requiredClass[scala.annotation.StaticAnnotation]
 
     // Java retention annotations
-    lazy val AnnotationRetentionAttr = requiredClass[
-      java.lang.annotation.Retention]
-    lazy val AnnotationRetentionPolicyAttr = requiredClass[
-      java.lang.annotation.RetentionPolicy]
+    lazy val AnnotationRetentionAttr =
+      requiredClass[java.lang.annotation.Retention]
+    lazy val AnnotationRetentionPolicyAttr =
+      requiredClass[java.lang.annotation.RetentionPolicy]
 
     // Annotations
     lazy val BridgeClass = requiredClass[scala.annotation.bridge]
     lazy val ElidableMethodClass = requiredClass[scala.annotation.elidable]
-    lazy val ImplicitNotFoundClass = requiredClass[
-      scala.annotation.implicitNotFound]
+    lazy val ImplicitNotFoundClass =
+      requiredClass[scala.annotation.implicitNotFound]
     lazy val ImplicitAmbiguousClass = getClassIfDefined(
       "scala.annotation.implicitAmbiguous")
-    lazy val MigrationAnnotationClass = requiredClass[
-      scala.annotation.migration]
+    lazy val MigrationAnnotationClass =
+      requiredClass[scala.annotation.migration]
     lazy val ScalaStrictFPAttr = requiredClass[scala.annotation.strictfp]
     lazy val SwitchClass = requiredClass[scala.annotation.switch]
     lazy val TailrecClass = requiredClass[scala.annotation.tailrec]
     lazy val VarargsClass = requiredClass[scala.annotation.varargs]
-    lazy val uncheckedStableClass = requiredClass[
-      scala.annotation.unchecked.uncheckedStable]
-    lazy val uncheckedVarianceClass = requiredClass[
-      scala.annotation.unchecked.uncheckedVariance]
+    lazy val uncheckedStableClass =
+      requiredClass[scala.annotation.unchecked.uncheckedStable]
+    lazy val uncheckedVarianceClass =
+      requiredClass[scala.annotation.unchecked.uncheckedVariance]
 
     lazy val BeanPropertyAttr = requiredClass[scala.beans.BeanProperty]
-    lazy val BooleanBeanPropertyAttr = requiredClass[
-      scala.beans.BooleanBeanProperty]
+    lazy val BooleanBeanPropertyAttr =
+      requiredClass[scala.beans.BooleanBeanProperty]
     lazy val CompileTimeOnlyAttr = getClassIfDefined(
       "scala.annotation.compileTimeOnly")
     lazy val DeprecatedAttr = requiredClass[scala.deprecated]
     lazy val DeprecatedNameAttr = requiredClass[scala.deprecatedName]
-    lazy val DeprecatedInheritanceAttr = requiredClass[
-      scala.deprecatedInheritance]
-    lazy val DeprecatedOverridingAttr = requiredClass[
-      scala.deprecatedOverriding]
+    lazy val DeprecatedInheritanceAttr =
+      requiredClass[scala.deprecatedInheritance]
+    lazy val DeprecatedOverridingAttr =
+      requiredClass[scala.deprecatedOverriding]
     lazy val NativeAttr = requiredClass[scala.native]
     lazy val RemoteAttr = requiredClass[scala.remote]
     lazy val ScalaInlineClass = requiredClass[scala.inline]
@@ -1659,9 +1659,10 @@ trait Definitions extends api.StandardDefinitions {
     lazy val SetterTargetClass = requiredClass[meta.setter]
     lazy val ObjectTargetClass = requiredClass[meta.companionObject]
     lazy val ClassTargetClass = requiredClass[meta.companionClass]
-    lazy val MethodTargetClass = requiredClass[
-      meta.companionMethod
-    ] // TODO: module, moduleClass? package, packageObject?
+    lazy val MethodTargetClass =
+      requiredClass[
+        meta.companionMethod
+      ] // TODO: module, moduleClass? package, packageObject?
     lazy val LanguageFeatureAnnot = requiredClass[meta.languageFeature]
 
     // Language features

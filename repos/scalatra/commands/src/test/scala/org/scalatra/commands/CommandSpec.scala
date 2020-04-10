@@ -219,8 +219,8 @@ class CommandSupportSpec extends Specification with Mockito {
     "provide a convention for request keys with commandRequestKey[T]" in {
 
       val page = new ScalatraPage
-      implicit val mockRequest
-          : HttpServletRequest = smartMock[HttpServletRequest]
+      implicit val mockRequest: HttpServletRequest =
+        smartMock[HttpServletRequest]
       val key = page.commandRequestKey[CommandSample]
       key must_== "_command_" + classOf[CommandSample].getName
 

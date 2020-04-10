@@ -1054,15 +1054,16 @@ class SparkContext(config: SparkConf)
       conf.setInt(
         FixedLengthBinaryInputFormat.RECORD_LENGTH_PROPERTY,
         recordLength)
-      val br = newAPIHadoopFile[
-        LongWritable,
-        BytesWritable,
-        FixedLengthBinaryInputFormat](
-        path,
-        classOf[FixedLengthBinaryInputFormat],
-        classOf[LongWritable],
-        classOf[BytesWritable],
-        conf = conf)
+      val br =
+        newAPIHadoopFile[
+          LongWritable,
+          BytesWritable,
+          FixedLengthBinaryInputFormat](
+          path,
+          classOf[FixedLengthBinaryInputFormat],
+          classOf[LongWritable],
+          classOf[BytesWritable],
+          conf = conf)
       val data = br.map {
         case (k, v) =>
           val bytes = v.getBytes

@@ -451,15 +451,16 @@ class SingletonTypeMacros(val c: whitebox.Context)
       val tc2 = tc2Tag.tpe.typeConstructor
       val s = sTag.tpe
 
-      val parent = weakTypeOf[WitnessWith[
-        ({
-          type λ[X] = TC2[S, X]
-        })#λ]].map {
-        case TypeRef(prefix, sym, args) if sym.isFreeType =>
-          internal.typeRef(NoPrefix, tc2.typeSymbol, args)
-        case tpe =>
-          tpe
-      }
+      val parent =
+        weakTypeOf[WitnessWith[
+          ({
+            type λ[X] = TC2[S, X]
+          })#λ]].map {
+          case TypeRef(prefix, sym, args) if sym.isFreeType =>
+            internal.typeRef(NoPrefix, tc2.typeSymbol, args)
+          case tpe =>
+            tpe
+        }
 
       val tci = appliedType(tc2, List(s, sTpe))
       val i = inferInstance(tci)

@@ -623,17 +623,18 @@ trait CommentFactoryBase {
 
     /** listStyle ::= '-' spc | '1.' spc | 'I.' spc | 'i.' spc | 'A.' spc | 'a.' spc
       * Characters used to build lists and their constructors */
-    protected val listStyles = Map[
-      String,
-      (Seq[Block] => Block)
-    ]( // TODO Should this be defined at some list companion?
-      "- " -> (UnorderedList(_)),
-      "1. " -> (OrderedList(_, "decimal")),
-      "I. " -> (OrderedList(_, "upperRoman")),
-      "i. " -> (OrderedList(_, "lowerRoman")),
-      "A. " -> (OrderedList(_, "upperAlpha")),
-      "a. " -> (OrderedList(_, "lowerAlpha"))
-    )
+    protected val listStyles =
+      Map[
+        String,
+        (Seq[Block] => Block)
+      ]( // TODO Should this be defined at some list companion?
+        "- " -> (UnorderedList(_)),
+        "1. " -> (OrderedList(_, "decimal")),
+        "I. " -> (OrderedList(_, "upperRoman")),
+        "i. " -> (OrderedList(_, "lowerRoman")),
+        "A. " -> (OrderedList(_, "upperAlpha")),
+        "a. " -> (OrderedList(_, "lowerAlpha"))
+      )
 
     /** Checks if the current line is formed with more than one space and one the listStyles */
     def checkList =

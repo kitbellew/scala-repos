@@ -185,10 +185,10 @@ object Netty3Listener {
     val ChannelFactory(cf) = params[ChannelFactory]
     val Netty3Timer(nettyTimer) = params[Netty3Timer]
     val Listener.Backlog(backlog) = params[Listener.Backlog]
-    val Transport
-      .BufferSizes(sendBufSize, recvBufSize) = params[Transport.BufferSizes]
-    val Transport.Liveness(readTimeout, writeTimeout, keepAlive) = params[
-      Transport.Liveness]
+    val Transport.BufferSizes(sendBufSize, recvBufSize) =
+      params[Transport.BufferSizes]
+    val Transport.Liveness(readTimeout, writeTimeout, keepAlive) =
+      params[Transport.Liveness]
     val Transport.TLSServerEngine(engine) = params[Transport.TLSServerEngine]
     val snooper =
       params[Transport.Verbose] match {

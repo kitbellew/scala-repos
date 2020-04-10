@@ -58,26 +58,28 @@ class AclCommandTest extends ZooKeeperTestHarness with Logging {
     GroupResources -> Array("--group", "testGroup-1", "--group", "testGroup-2")
   )
 
-  private val ResourceToOperations = Map[Set[
-    Resource], (Set[Operation], Array[String])](
-    TopicResources -> (
-      Set(Read, Write, Describe), Array(
-        "--operation",
-        "Read",
-        "--operation",
-        "Write",
-        "--operation",
-        "Describe")
-    ),
-    Set(Resource.ClusterResource) -> (
-      Set(Create, ClusterAction), Array(
-        "--operation",
-        "Create",
-        "--operation",
-        "ClusterAction")
-    ),
-    GroupResources -> (Set(Read).toSet[Operation], Array("--operation", "Read"))
-  )
+  private val ResourceToOperations =
+    Map[Set[Resource], (Set[Operation], Array[String])](
+      TopicResources -> (
+        Set(Read, Write, Describe), Array(
+          "--operation",
+          "Read",
+          "--operation",
+          "Write",
+          "--operation",
+          "Describe")
+      ),
+      Set(Resource.ClusterResource) -> (
+        Set(Create, ClusterAction), Array(
+          "--operation",
+          "Create",
+          "--operation",
+          "ClusterAction")
+      ),
+      GroupResources -> (
+        Set(Read).toSet[Operation], Array("--operation", "Read")
+      )
+    )
 
   private val ProducerResourceToAcls = Map[Set[Resource], Set[Acl]](
     TopicResources -> AclCommand
@@ -91,18 +93,18 @@ class AclCommandTest extends ZooKeeperTestHarness with Logging {
       .getAcls(Users, Allow, Set(Read, Describe), Hosts),
     GroupResources -> AclCommand.getAcls(Users, Allow, Set(Read), Hosts))
 
-  private val CmdToResourcesToAcl = Map[Array[String], Map[Set[Resource], Set[
-    Acl]]](
-    Array[String]("--producer") -> ProducerResourceToAcls,
-    Array[String]("--consumer") -> ConsumerResourceToAcls,
-    Array[String]("--producer", "--consumer") -> ConsumerResourceToAcls.map {
-      case (k, v) =>
-        k -> (
-          v ++
-            ProducerResourceToAcls.getOrElse(k, Set.empty[Acl])
-        )
-    }
-  )
+  private val CmdToResourcesToAcl =
+    Map[Array[String], Map[Set[Resource], Set[Acl]]](
+      Array[String]("--producer") -> ProducerResourceToAcls,
+      Array[String]("--consumer") -> ConsumerResourceToAcls,
+      Array[String]("--producer", "--consumer") -> ConsumerResourceToAcls.map {
+        case (k, v) =>
+          k -> (
+            v ++
+              ProducerResourceToAcls.getOrElse(k, Set.empty[Acl])
+          )
+      }
+    )
 
   @Test
   def testAclCli() {

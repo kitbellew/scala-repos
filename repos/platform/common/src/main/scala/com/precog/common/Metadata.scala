@@ -183,14 +183,10 @@ object BooleanValueStats extends MetadataType {
   implicit val iso = Iso
     .hlist(BooleanValueStats.apply _, BooleanValueStats.unapply _)
   val schemaV1 = "count" :: "trueCount" :: HNil
-  implicit val decomposerV1
-      : Decomposer[BooleanValueStats] = decomposerV[BooleanValueStats](
-    schemaV1,
-    Some("1.0".v))
-  implicit val extractorV1
-      : Extractor[BooleanValueStats] = extractorV[BooleanValueStats](
-    schemaV1,
-    Some("1.0".v))
+  implicit val decomposerV1: Decomposer[BooleanValueStats] =
+    decomposerV[BooleanValueStats](schemaV1, Some("1.0".v))
+  implicit val extractorV1: Extractor[BooleanValueStats] =
+    extractorV[BooleanValueStats](schemaV1, Some("1.0".v))
 }
 
 case class LongValueStats(count: Long, min: Long, max: Long)
@@ -220,14 +216,10 @@ case class LongValueStats(count: Long, min: Long, max: Long)
 object LongValueStats extends MetadataType {
   implicit val iso = Iso.hlist(LongValueStats.apply _, LongValueStats.unapply _)
   val schemaV1 = "count" :: "min" :: "max" :: HNil
-  implicit val decomposerV1
-      : Decomposer[LongValueStats] = decomposerV[LongValueStats](
-    schemaV1,
-    Some("1.0".v))
-  implicit val extractorV1
-      : Extractor[LongValueStats] = extractorV[LongValueStats](
-    schemaV1,
-    Some("1.0".v))
+  implicit val decomposerV1: Decomposer[LongValueStats] =
+    decomposerV[LongValueStats](schemaV1, Some("1.0".v))
+  implicit val extractorV1: Extractor[LongValueStats] =
+    extractorV[LongValueStats](schemaV1, Some("1.0".v))
 }
 
 case class DoubleValueStats(count: Long, min: Double, max: Double)
@@ -258,14 +250,10 @@ object DoubleValueStats extends MetadataType {
   implicit val iso = Iso
     .hlist(DoubleValueStats.apply _, DoubleValueStats.unapply _)
   val schemaV1 = "count" :: "min" :: "max" :: HNil
-  implicit val decomposerV1
-      : Decomposer[DoubleValueStats] = decomposerV[DoubleValueStats](
-    schemaV1,
-    Some("1.0".v))
-  implicit val extractorV1
-      : Extractor[DoubleValueStats] = extractorV[DoubleValueStats](
-    schemaV1,
-    Some("1.0".v))
+  implicit val decomposerV1: Decomposer[DoubleValueStats] =
+    decomposerV[DoubleValueStats](schemaV1, Some("1.0".v))
+  implicit val extractorV1: Extractor[DoubleValueStats] =
+    extractorV[DoubleValueStats](schemaV1, Some("1.0".v))
 }
 
 case class BigDecimalValueStats(count: Long, min: BigDecimal, max: BigDecimal)
@@ -296,14 +284,10 @@ object BigDecimalValueStats extends MetadataType {
   implicit val iso = Iso
     .hlist(BigDecimalValueStats.apply _, BigDecimalValueStats.unapply _)
   val schemaV1 = "count" :: "min" :: "max" :: HNil
-  implicit val decomposerV1
-      : Decomposer[BigDecimalValueStats] = decomposerV[BigDecimalValueStats](
-    schemaV1,
-    Some("1.0".v))
-  implicit val extractorV1
-      : Extractor[BigDecimalValueStats] = extractorV[BigDecimalValueStats](
-    schemaV1,
-    Some("1.0".v))
+  implicit val decomposerV1: Decomposer[BigDecimalValueStats] =
+    decomposerV[BigDecimalValueStats](schemaV1, Some("1.0".v))
+  implicit val extractorV1: Extractor[BigDecimalValueStats] =
+    extractorV[BigDecimalValueStats](schemaV1, Some("1.0".v))
 }
 
 case class StringValueStats(count: Long, min: String, max: String)
@@ -334,12 +318,8 @@ object StringValueStats extends MetadataType {
   implicit val iso = Iso
     .hlist(StringValueStats.apply _, StringValueStats.unapply _)
   val schemaV1 = "count" :: "min" :: "max" :: HNil
-  implicit val decomposerV1
-      : Decomposer[StringValueStats] = decomposerV[StringValueStats](
-    schemaV1,
-    Some("1.0".v))
-  implicit val extractorV1
-      : Extractor[StringValueStats] = extractorV[StringValueStats](
-    schemaV1,
-    Some("1.0".v))
+  implicit val decomposerV1: Decomposer[StringValueStats] =
+    decomposerV[StringValueStats](schemaV1, Some("1.0".v))
+  implicit val extractorV1: Extractor[StringValueStats] =
+    extractorV[StringValueStats](schemaV1, Some("1.0".v))
 }

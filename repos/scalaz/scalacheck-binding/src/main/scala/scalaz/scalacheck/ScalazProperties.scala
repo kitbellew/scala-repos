@@ -356,12 +356,8 @@ object ScalazProperties {
         e: Equal[F[Int]]): Properties =
       newProperties("cobind") { p =>
         p.include(functor.laws[F])
-        p.property("cobind associative") = cobindAssociative[
-          F,
-          Int,
-          Int,
-          Int,
-          Int]
+        p.property("cobind associative") =
+          cobindAssociative[F, Int, Int, Int, Int]
       }
   }
 
@@ -844,11 +840,9 @@ object ScalazProperties {
         el: Equal[(Int =>: Int) =>: Int],
         er: Equal[Int =>: (Int =>: Int)]): Properties =
       newProperties("associative") { p =>
-        p
-          .property("left and then right reassociation is identity") =
+        p.property("left and then right reassociation is identity") =
           leftRight[=>:, Int, Int, Int]
-        p
-          .property("right and then left reassociation is identity") =
+        p.property("right and then left reassociation is identity") =
           rightLeft[=>:, Int, Int, Int]
       }
   }

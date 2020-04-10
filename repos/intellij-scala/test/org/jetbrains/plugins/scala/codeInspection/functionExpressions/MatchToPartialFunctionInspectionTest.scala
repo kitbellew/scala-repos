@@ -10,8 +10,8 @@ import org.jetbrains.plugins.scala.codeInspection.ScalaLightInspectionFixtureTes
   */
 class MatchToPartialFunctionInspectionTest
     extends ScalaLightInspectionFixtureTestAdapter {
-  protected val classOfInspection: Class[_ <: LocalInspectionTool] = classOf[
-    MatchToPartialFunctionInspection]
+  protected val classOfInspection: Class[_ <: LocalInspectionTool] =
+    classOf[MatchToPartialFunctionInspection]
   protected val annotation: String =
     MatchToPartialFunctionInspection.inspectionName
 

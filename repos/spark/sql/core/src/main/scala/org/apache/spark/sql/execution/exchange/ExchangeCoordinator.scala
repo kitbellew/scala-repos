@@ -220,10 +220,10 @@ private[sql] class ExchangeCoordinator(
           new JHashMap[ShuffleExchange, ShuffledRowRDD](numExchanges)
 
         // Submit all map stages
-        val shuffleDependencies = ArrayBuffer[
-          ShuffleDependency[Int, InternalRow, InternalRow]]()
-        val submittedStageFutures = ArrayBuffer[SimpleFutureAction[
-          MapOutputStatistics]]()
+        val shuffleDependencies =
+          ArrayBuffer[ShuffleDependency[Int, InternalRow, InternalRow]]()
+        val submittedStageFutures =
+          ArrayBuffer[SimpleFutureAction[MapOutputStatistics]]()
         var i = 0
         while (i < numExchanges) {
           val exchange = exchanges(i)

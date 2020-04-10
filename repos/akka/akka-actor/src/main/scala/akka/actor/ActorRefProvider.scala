@@ -532,8 +532,8 @@ private[akka] class LocalActorRefProvider private[akka] (
     .getOrElse((p: ActorPath) ⇒ new DeadLetterActorRef(this, p, eventStream))
     .apply(rootPath / "deadLetters")
 
-  private[this] final val terminationPromise
-      : Promise[Terminated] = Promise[Terminated]()
+  private[this] final val terminationPromise: Promise[Terminated] =
+    Promise[Terminated]()
 
   def terminationFuture: Future[Terminated] = terminationPromise.future
 

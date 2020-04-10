@@ -23,12 +23,12 @@ private[netty4] object Netty4Transporter {
     new Transporter[In, Out] {
       def apply(addr: SocketAddress): Future[Transport[In, Out]] = {
         val Transport.Options(noDelay, reuseAddr) = params[Transport.Options]
-        val LatencyCompensation
-          .Compensation(compensation) = params[LatencyCompensation.Compensation]
-        val Transporter
-          .ConnectTimeout(connectTimeout) = params[Transporter.ConnectTimeout]
-        val Transport
-          .BufferSizes(sendBufSize, recvBufSize) = params[Transport.BufferSizes]
+        val LatencyCompensation.Compensation(compensation) =
+          params[LatencyCompensation.Compensation]
+        val Transporter.ConnectTimeout(connectTimeout) =
+          params[Transporter.ConnectTimeout]
+        val Transport.BufferSizes(sendBufSize, recvBufSize) =
+          params[Transport.BufferSizes]
 
         // max connect timeout is ~24.8 days
         val compensatedConnectTimeoutMs = (compensation + connectTimeout)

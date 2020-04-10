@@ -69,6 +69,6 @@ class ReflectGlobal(
   override implicit val MirrorTag: ClassTag[Mirror] = ClassTag[Mirror](
     classOf[Mirror])
   override type RuntimeClass = java.lang.Class[_]
-  override implicit val RuntimeClassTag
-      : ClassTag[RuntimeClass] = ClassTag[RuntimeClass](classOf[RuntimeClass])
+  override implicit val RuntimeClassTag: ClassTag[RuntimeClass] =
+    ClassTag[RuntimeClass](classOf[RuntimeClass])
 }

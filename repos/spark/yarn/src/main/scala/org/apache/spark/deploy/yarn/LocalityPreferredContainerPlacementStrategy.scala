@@ -123,8 +123,8 @@ private[yarn] class LocalityPreferredContainerPlacementStrategy(
     val requiredLocalityAwareContainerNum =
       numContainer - requiredLocalityFreeContainerNum
 
-    val containerLocalityPreferences = ArrayBuffer[
-      ContainerLocalityPreferences]()
+    val containerLocalityPreferences =
+      ArrayBuffer[ContainerLocalityPreferences]()
     if (requiredLocalityFreeContainerNum > 0) {
       for (i <- 0 until requiredLocalityFreeContainerNum) {
         containerLocalityPreferences += ContainerLocalityPreferences(

@@ -109,20 +109,22 @@ class MultiReaderTest
         .toMap
 
     lazy val mockClientBuilder = {
-      val result = mock[ClientBuilder[
-        Command,
-        Response,
-        Nothing,
-        ClientConfig.Yes,
-        ClientConfig.Yes]]
-
-      hosts.foreach { host =>
-        val mockHostClientBuilder = mock[ClientBuilder[
+      val result =
+        mock[ClientBuilder[
           Command,
           Response,
-          ClientConfig.Yes,
+          Nothing,
           ClientConfig.Yes,
           ClientConfig.Yes]]
+
+      hosts.foreach { host =>
+        val mockHostClientBuilder =
+          mock[ClientBuilder[
+            Command,
+            Response,
+            ClientConfig.Yes,
+            ClientConfig.Yes,
+            ClientConfig.Yes]]
         when(result.addrs(host)) thenReturn mockHostClientBuilder
 
         val queues = hostQueuesMap(host)
@@ -230,20 +232,22 @@ class MultiReaderTest
         .toMap
 
     lazy val mockClientBuilder = {
-      val result = mock[ClientBuilder[
-        Command,
-        Response,
-        Nothing,
-        ClientConfig.Yes,
-        ClientConfig.Yes]]
-
-      hosts.foreach { host =>
-        val mockHostClientBuilder = mock[ClientBuilder[
+      val result =
+        mock[ClientBuilder[
           Command,
           Response,
-          ClientConfig.Yes,
+          Nothing,
           ClientConfig.Yes,
           ClientConfig.Yes]]
+
+      hosts.foreach { host =>
+        val mockHostClientBuilder =
+          mock[ClientBuilder[
+            Command,
+            Response,
+            ClientConfig.Yes,
+            ClientConfig.Yes,
+            ClientConfig.Yes]]
         when(result.addrs(Address(host))) thenReturn mockHostClientBuilder
 
         val queues = hostQueuesMap(host)

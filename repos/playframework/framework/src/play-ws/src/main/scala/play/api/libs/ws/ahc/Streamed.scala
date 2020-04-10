@@ -30,9 +30,8 @@ private[play] object Streamed {
   def execute(
       client: AsyncHttpClient,
       request: Request): Future[StreamedResponse] = {
-    val promise = Promise[(
-        WSResponseHeaders,
-        Publisher[HttpResponseBodyPart])]()
+    val promise =
+      Promise[(WSResponseHeaders, Publisher[HttpResponseBodyPart])]()
     client.executeRequest(request, new DefaultStreamedAsyncHandler(promise))
     import play.api.libs.iteratee.Execution.Implicits.trampoline
     promise
@@ -59,9 +58,8 @@ private[play] object Streamed {
   @deprecated("2.5", "Use `execute()` instead.")
   def execute2(client: AsyncHttpClient, request: Request)
       : Future[(WSResponseHeaders, Enumerator[Array[Byte]])] = {
-    val promise = Promise[(
-        WSResponseHeaders,
-        Publisher[HttpResponseBodyPart])]()
+    val promise =
+      Promise[(WSResponseHeaders, Publisher[HttpResponseBodyPart])]()
     client.executeRequest(request, new DefaultStreamedAsyncHandler(promise))
     import play.api.libs.iteratee.Execution.Implicits.trampoline
     promise

@@ -13,9 +13,8 @@ private[akka] object WildcardTree {
 }
 private[akka] final case class WildcardTree[T](
     data: Option[T] = None,
-    children: Map[String, WildcardTree[T]] = HashMap[
-      String,
-      WildcardTree[T]]()) {
+    children: Map[String, WildcardTree[T]] =
+      HashMap[String, WildcardTree[T]]()) {
 
   def insert(elems: Iterator[String], d: T): WildcardTree[T] =
     if (!elems.hasNext) {

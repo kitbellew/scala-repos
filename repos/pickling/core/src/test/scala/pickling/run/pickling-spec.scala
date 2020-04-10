@@ -33,9 +33,8 @@ object PicklingSpec {
 
   case class WithIntArray(a: Array[Int])
 
-  implicit
-  val arbitraryWithIntArray: Arbitrary[WithIntArray] = Arbitrary[WithIntArray](
-    arbitrary[Array[Int]].map(WithIntArray(_)))
+  implicit val arbitraryWithIntArray: Arbitrary[WithIntArray] =
+    Arbitrary[WithIntArray](arbitrary[Array[Int]].map(WithIntArray(_)))
 
   case class Person(name: String, age: Int)
 

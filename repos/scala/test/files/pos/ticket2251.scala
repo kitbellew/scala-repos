@@ -37,8 +37,9 @@ lub of List(D, C) is B[_2] forSome { type _2 >: D with C{} <: B[_1] forSome { ty
   //        val data4: List[B[X] forSome { type X <: B[X] }] = List(new C, new D)
 
   // works
-  val data5 = List[
-    B[X] forSome {
-      type X <: B[X]
-    }](new C, new D)
+  val data5 =
+    List[
+      B[X] forSome {
+        type X <: B[X]
+      }](new C, new D)
 }

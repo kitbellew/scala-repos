@@ -12,14 +12,14 @@ trait TimeInstances0 {
 
   implicit val instantInstance: Order[Instant] = orderFromInt[Instant](
     _ compareTo _)
-  implicit val localDateTimeInstance
-      : Order[LocalDateTime] = orderFromInt[LocalDateTime](_ compareTo _)
-  implicit val offsetDateTimeInstance
-      : Order[OffsetDateTime] = orderFromInt[OffsetDateTime](_ compareTo _)
+  implicit val localDateTimeInstance: Order[LocalDateTime] =
+    orderFromInt[LocalDateTime](_ compareTo _)
+  implicit val offsetDateTimeInstance: Order[OffsetDateTime] =
+    orderFromInt[OffsetDateTime](_ compareTo _)
   implicit val offsetTimeInstance: Order[OffsetTime] = orderFromInt[OffsetTime](
     _ compareTo _)
-  implicit val zonedDateTime
-      : Order[ZonedDateTime] = orderFromInt[ZonedDateTime](_ compareTo _)
+  implicit val zonedDateTime: Order[ZonedDateTime] =
+    orderFromInt[ZonedDateTime](_ compareTo _)
   implicit val zoneOffsetInstance: Order[ZoneOffset] = orderFromInt[ZoneOffset](
     _ compareTo _)
 

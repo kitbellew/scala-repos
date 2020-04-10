@@ -144,8 +144,8 @@ object ThriftMux
 
     override protected lazy val Stats(stats) = params[Stats]
 
-    protected val Thrift.param.ProtocolFactory(protocolFactory) = params[
-      Thrift.param.ProtocolFactory]
+    protected val Thrift.param.ProtocolFactory(protocolFactory) =
+      params[Thrift.param.ProtocolFactory]
 
     def withParams(ps: Stack.Params): Client =
       copy(muxer = muxer.withParams(ps))
@@ -167,8 +167,8 @@ object ThriftMux
     def withProtocolFactory(pf: TProtocolFactory): Client =
       configured(Thrift.param.ProtocolFactory(pf))
 
-    private[this] val Thrift.param.ClientId(clientId) = params[
-      Thrift.param.ClientId]
+    private[this] val Thrift.param.ClientId(clientId) =
+      params[Thrift.param.ClientId]
 
     private[this] object ThriftMuxToMux
         extends Filter[ThriftClientRequest, Array[
@@ -329,8 +329,8 @@ object ThriftMux
     protected def newListener(): Listener[In, Out] = {
       val Stats(sr) = params[Stats]
       val scoped = sr.scope("thriftmux")
-      val Thrift.param.ProtocolFactory(pf) = params[
-        Thrift.param.ProtocolFactory]
+      val Thrift.param.ProtocolFactory(pf) =
+        params[Thrift.param.ProtocolFactory]
 
       // Create a Listener with a pipeline that can downgrade the connection
       // to vanilla thrift.
@@ -435,8 +435,8 @@ object ThriftMux
 
     def params: Stack.Params = muxer.params
 
-    protected val Thrift.param.ProtocolFactory(protocolFactory) = params[
-      Thrift.param.ProtocolFactory]
+    protected val Thrift.param.ProtocolFactory(protocolFactory) =
+      params[Thrift.param.ProtocolFactory]
 
     override val Thrift.param.MaxReusableBufferSize(maxThriftBufferSize) =
       params[Thrift.param.MaxReusableBufferSize]

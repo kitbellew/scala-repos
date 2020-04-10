@@ -24,10 +24,11 @@ object Test {
     //
     // We need to introduce the stricter inference rules gradually, probably
     // with a warning.
-    val m = implicitly[Monad[
-      ({
-        type f[+x] = (=> Any) => x
-      })#f]]
+    val m =
+      implicitly[Monad[
+        ({
+          type f[+x] = (=> Any) => x
+        })#f]]
     assert(m.foo[Int]((x => 0))(f => f(???)) == 0)
   }
 }

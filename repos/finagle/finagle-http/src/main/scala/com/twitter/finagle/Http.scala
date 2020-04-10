@@ -162,8 +162,8 @@ object Http
     protected type Out = Any
 
     protected def newTransporter(): Transporter[Any, Any] = {
-      val com.twitter.finagle.param.Label(label) = params[
-        com.twitter.finagle.param.Label]
+      val com.twitter.finagle.param.Label(label) =
+        params[com.twitter.finagle.param.Label]
       val codec = param
         .applyToCodec(params, http.Http())
         .client(ClientCodecConfig(label))
@@ -281,8 +281,8 @@ object Http
     protected type Out = Any
 
     protected def newListener(): Listener[Any, Any] = {
-      val com.twitter.finagle.param.Label(label) = params[
-        com.twitter.finagle.param.Label]
+      val com.twitter.finagle.param.Label(label) =
+        params[com.twitter.finagle.param.Label]
       val httpPipeline =
         param
           .applyToCodec(params, http.Http())

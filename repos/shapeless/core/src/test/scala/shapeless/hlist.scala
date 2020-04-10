@@ -657,8 +657,8 @@ class HListTests {
 
     implicitly[Unifier.Aux[Int :: String :: Int :: Int :: HNil, YYYY]]
 
-    val uapap = implicitly[
-      Unifier.Aux[Apple :: Pear :: Apple :: Pear :: HNil, FFFF]]
+    val uapap =
+      implicitly[Unifier.Aux[Apple :: Pear :: Apple :: Pear :: HNil, FFFF]]
     val unified1 = uapap(apap)
     typed[FFFF](unified1)
     val unified2 = apap.unify
@@ -2234,10 +2234,11 @@ class HListTests {
       ls)
 
     val withDuplicates = 1 :: 'a' :: 'b' :: HNil
-    val remover = implicitly[Remove.Aux[
-      Int :: Char :: Char :: HNil,
-      Char,
-      (Char, Int :: Char :: HNil)]]
+    val remover =
+      implicitly[Remove.Aux[
+        Int :: Char :: Char :: HNil,
+        Char,
+        (Char, Int :: Char :: HNil)]]
     assertTypedEquals[(Char, Int :: Char :: HNil)](
       ('a', 1 :: 'b' :: HNil),
       remover(withDuplicates))
@@ -2437,8 +2438,8 @@ class HListTests {
 
     val tf1 = implicitly[LeftFolder[HNil, String, combine.type]]
     val tf2 = implicitly[LeftFolder[Boolean :: HNil, Int, combine.type]]
-    val tf3 = implicitly[
-      LeftFolder[String :: Boolean :: HNil, Char, combine.type]]
+    val tf3 =
+      implicitly[LeftFolder[String :: Boolean :: HNil, Char, combine.type]]
 
     val l1 = "foo" :: true :: HNil
     val f1 = l1.foldLeft('o')(combine)

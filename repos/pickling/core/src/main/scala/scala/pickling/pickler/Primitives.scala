@@ -11,8 +11,8 @@ trait PrimitivePicklers {
     PrimitivePickler[Short]
   implicit val charPickler: Pickler[Char] with Unpickler[Char] =
     PrimitivePickler[Char]
-  implicit val intPickler
-      : Pickler[Int] with Unpickler[Int] = PrimitivePickler[Int]
+  implicit val intPickler: Pickler[Int] with Unpickler[Int] =
+    PrimitivePickler[Int]
   implicit val longPickler: Pickler[Long] with Unpickler[Long] =
     PrimitivePickler[Long]
   implicit val booleanPickler: Pickler[Boolean] with Unpickler[Boolean] =

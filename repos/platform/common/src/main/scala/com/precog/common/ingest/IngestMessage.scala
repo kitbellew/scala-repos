@@ -292,13 +292,9 @@ object StoreFileMessage {
   val schemaV1 =
     "apiKey" :: "path" :: "writeAs" :: "jobId" :: "eventId" :: "content" :: "timestamp" :: "streamRef" :: HNil
 
-  implicit val Decomposer
-      : Decomposer[StoreFileMessage] = decomposerV[StoreFileMessage](
-    schemaV1,
-    Some("1.0".v))
+  implicit val Decomposer: Decomposer[StoreFileMessage] =
+    decomposerV[StoreFileMessage](schemaV1, Some("1.0".v))
 
-  implicit val Extractor
-      : Extractor[StoreFileMessage] = extractorV[StoreFileMessage](
-    schemaV1,
-    Some("1.0".v))
+  implicit val Extractor: Extractor[StoreFileMessage] =
+    extractorV[StoreFileMessage](schemaV1, Some("1.0".v))
 }
