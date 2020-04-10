@@ -622,8 +622,8 @@ class SizeAveStdJob(args: Args) extends Job(args) {
     .groupBy('x) {
       _.sizeAveStdev('y -> ('size, 'yave, 'ystdev))
       //Make sure this doesn't ruin the calculation
-      .sizeAveStdev('y -> ('size2, 'yave2, 'ystdev2))
-      .average('y)
+        .sizeAveStdev('y -> ('size2, 'yave2, 'ystdev2))
+        .average('y)
     }
     .project('x, 'size, 'yave, 'ystdev, 'y)
     .write(Tsv(args("output")))
@@ -1036,7 +1036,7 @@ class ScanJob(args: Args) extends Job(args) {
   Tsv("in", ('x, 'y, 'z))
     .groupBy('x) {
       _.sortBy('y)
-      .scanLeft('y -> 'ys)(0) { (oldV: Int, newV: Int) => oldV + newV }
+        .scanLeft('y -> 'ys)(0) { (oldV: Int, newV: Int) => oldV + newV }
     }
     .project('x, 'ys, 'z)
     .map('z -> 'z) { z: Int => z } //Make sure the null z is converted to an int
@@ -1219,7 +1219,7 @@ class IterableSourceTest extends WordSpec with Matchers with FieldConversions {
 class HeadLastJob(args: Args) extends Job(args) {
   Tsv("input", ('x, 'y)).groupBy('x) {
     _.sortBy('y)
-    .head('y -> 'yh).last('y -> 'yl)
+      .head('y -> 'yh).last('y -> 'yl)
   }.write(Tsv("output"))
 }
 
@@ -1264,8 +1264,8 @@ class HeadLastUnsortedTest extends WordSpec with Matchers {
 class MkStringToListJob(args: Args) extends Job(args) {
   Tsv("input", ('x, 'y)).groupBy('x) {
     _.sortBy('y)
-    .mkString('y -> 'ystring, ",")
-    .toList[Int]('y -> 'ylist)
+      .mkString('y -> 'ystring, ",")
+      .toList[Int]('y -> 'ylist)
   }.write(Tsv("output"))
 }
 

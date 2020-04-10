@@ -130,10 +130,10 @@ object Constraints {
         value: String) =
       tasks.filter {
         _.agentInfo.attributes
-        .filter { y =>
-          y.getName == field &&
-          y.getText.getValue == value
-        }.nonEmpty
+          .filter { y =>
+            y.getName == field &&
+            y.getText.getValue == value
+          }.nonEmpty
       }
   }
 

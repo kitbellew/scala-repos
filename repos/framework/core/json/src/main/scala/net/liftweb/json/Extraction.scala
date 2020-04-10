@@ -284,9 +284,8 @@ object Extraction {
                   jsonFields.get(name).foreach {
                     case (n, v) =>
                       val typeArgs = typeInfo.parameterizedType
-                        .map(
-                          _.getActualTypeArguments.map(
-                            _.asInstanceOf[Class[_]]).toList.zipWithIndex
+                        .map(_.getActualTypeArguments.map(
+                          _.asInstanceOf[Class[_]]).toList.zipWithIndex
                           .map {
                             case (t, idx) =>
                               if (t == classOf[java.lang.Object])

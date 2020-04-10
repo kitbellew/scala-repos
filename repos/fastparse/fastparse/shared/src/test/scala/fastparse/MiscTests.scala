@@ -4,10 +4,10 @@ import utest._
 
 import scala.collection.mutable
 
-object MiscTests extends TestSuite{
+object MiscTests extends TestSuite {
 
-  val tests = TestSuite{
-    'toString{
+  val tests = TestSuite {
+    'toString {
       def check(p: fastparse.core.Parser[_], s: String) = {
         assert(p.toString == s.trim)
       }
@@ -27,29 +27,37 @@ object MiscTests extends TestSuite{
         // way each node's `ev` is called
         check("A" ~ ("B" ~ "C"), """ "A" ~ "B" ~ "C" """)
       }
-      'Mixed{
+      'Mixed {
         check(("A" ~ "B") | "C", """ "A" ~ "B" | "C" """)
         check("A" ~ ("B" | "C"), """ "A" ~ ("B" | "C")""")
         check(("A" | "B") ~ "C", """("A" | "B") ~ "C" """)
         check("A" | ("B" ~ "C"), """ "A" | "B" ~ "C" """)
       }
-      'rep{
+      'rep {
         check("A".rep, """ "A".rep """)
         check(("A" | "B").rep, """ ("A" | "B").rep """)
         check(("A".? | "B").rep, """ ("A".? | "B").rep """)
         check(("A".? | "B").rep(1), """ ("A".? | "B").rep(1) """)
-        check(("A".? | "B").rep(1, max = 2), """ ("A".? | "B").rep(1, max = 2) """)
-        check(("A".? | "B").rep(sep = "C"), """ ("A".? | "B").rep(sep = "C") """)
-        check(("A".? | "B").rep(sep = "C", max = 2), """ ("A".? | "B").rep(sep = "C", max = 2) """)
-        check(("A".? | "B").rep(1, sep="C" ~ "D" | "E"), """("A".? | "B").rep(1, sep = "C" ~ "D" | "E")""")
+        check(
+          ("A".? | "B").rep(1, max = 2),
+          """ ("A".? | "B").rep(1, max = 2) """)
+        check(
+          ("A".? | "B").rep(sep = "C"),
+          """ ("A".? | "B").rep(sep = "C") """)
+        check(
+          ("A".? | "B").rep(sep = "C", max = 2),
+          """ ("A".? | "B").rep(sep = "C", max = 2) """)
+        check(
+          ("A".? | "B").rep(1, sep = "C" ~ "D" | "E"),
+          """("A".? | "B").rep(1, sep = "C" ~ "D" | "E")""")
       }
-      'lookahead{
+      'lookahead {
         check(&("A") ~ "ABC", """&("A") ~ "ABC" """)
         check(!"A" ~ "ABC", """!("A") ~ "ABC" """)
         check("A".! ~ "ABC".!, """ "A" ~ "ABC" """)
       }
-      'named{
-        val Foo = P( "A" )
+      'named {
+        val Foo = P("A")
         check(Foo, """Foo""")
         check(End, """End""")
         check(Start, """Start""")
@@ -64,12 +72,12 @@ object MiscTests extends TestSuite{
         check(CharPred(_.isUpper), """CharPred(<function1>)""")
       }
     }
-    'logging{
+    'logging {
       val logged = mutable.Buffer.empty[String]
       implicit val logger = fastparse.Logger(logged.append(_))
 
-      val DeepFailure = P( "C" )
-      val Foo = P( (DeepFailure.log() | "A".log()) ~ "B".!.log() ).log()
+      val DeepFailure = P("C")
+      val Foo = P((DeepFailure.log() | "A".log()) ~ "B".!.log()).log()
 
       Foo.parse("AB")
 
@@ -89,8 +97,8 @@ object MiscTests extends TestSuite{
       assert(allLogged == expected)
     }
 
-    'flattening{
-      'either{
+    'flattening {
+      'either {
         val E = parsers.Combinators.Either
         // Need to be pulled out because it makes utest crash
         val expected = E("A", "B", "C", "D")
@@ -98,7 +106,7 @@ object MiscTests extends TestSuite{
         assert((("A" | "B") | ("C" | "D")) == expected)
         assert(("A" | ("B" | ("C" | "D"))) == expected)
       }
-      'sequence{
+      'sequence {
         val S = parsers.Combinators.Sequence
         val F = S.Flat
         def C(p: P0, b: Boolean = false) = S.Chain(p, b)(null)
@@ -111,22 +119,23 @@ object MiscTests extends TestSuite{
         )
       }
     }
-    'opaque{
-      def checkOpaqueness[T](p: Parser[T], strs: String*) = strs foreach { str =>
-        val failure = p.parse(str).asInstanceOf[Parsed.Failure]
-        assert(failure.index == 0)
-        assert(failure.extra.traced.traceParsers == Set(p))
-      }
-      'nocut{
+    'opaque {
+      def checkOpaqueness[T](p: Parser[T], strs: String*) =
+        strs foreach { str =>
+          val failure = p.parse(str).asInstanceOf[Parsed.Failure]
+          assert(failure.index == 0)
+          assert(failure.extra.traced.traceParsers == Set(p))
+        }
+      'nocut {
         val p = P("foo" ~ CharPred(_.isDigit).rep(1)).opaque("fooX")
         checkOpaqueness(p, "fo", "fooz")
       }
-      'cut{
+      'cut {
         val p = P("foo" ~/ CharPred(_.isDigit).rep(1)).opaque("fooX")
         checkOpaqueness(p, "fo", "fooz")
       }
     }
-    'wspStr{
+    'wspStr {
       val literal = wspStr("ab")
       val charLiteral = wspStr("a")
       assert(
@@ -134,19 +143,19 @@ object MiscTests extends TestSuite{
         charLiteral.isInstanceOf[parsers.Terminals.CharLiteral]
       )
     }
-    'failureget{
+    'failureget {
       val p = "A"
-      intercept[ParseError]{
+      intercept[ParseError] {
         p.parse("B").get
       }
 
     }
-    'formatParser{
+    'formatParser {
       assert(
         Parsed.Failure.formatParser("a", "", 0) == """"a":0:0""",
         Parsed.Failure.formatParser("A", "B", 0) == """"A":1:1""")
     }
-    'utils{
+    'utils {
       'trieNode {
         val names = (0 until 1000).map(_.toString.flatMap(_.toString * 5))
         val trie = new Utils.TrieNode(names)

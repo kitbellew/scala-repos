@@ -86,14 +86,14 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
     "reject requests with nocheck header" in {
       csrfCheckRequest(
         _.withCookies("foo" -> "bar")
-        .withHeaders(HeaderName -> "nocheck")
-        .post(Map("foo" -> "bar")))(_.status must_== errorStatusCode)
+          .withHeaders(HeaderName -> "nocheck")
+          .post(Map("foo" -> "bar")))(_.status must_== errorStatusCode)
     }
     "reject requests with ajax header" in {
       csrfCheckRequest(
         _.withCookies("foo" -> "bar")
-        .withHeaders("X-Requested-With" -> "a spoon")
-        .post(Map("foo" -> "bar")))(_.status must_== errorStatusCode)
+          .withHeaders("X-Requested-With" -> "a spoon")
+          .post(Map("foo" -> "bar")))(_.status must_== errorStatusCode)
     }
     "reject requests with different token in body" in {
       csrfCheckRequest(req =>
@@ -109,7 +109,7 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
     "reject requests with token in body but not in session" in {
       csrfCheckRequest(
         _.withSession("foo" -> "bar")
-        .post(Map("foo" -> "bar", TokenName -> generate))
+          .post(Map("foo" -> "bar", TokenName -> generate))
       )(_.status must_== errorStatusCode)
     }
 
@@ -331,14 +331,14 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
       "accept requests with nocheck header" in {
         csrfCheckRequest(
           _.withCookies("foo" -> "bar")
-          .withHeaders(HeaderName -> "nocheck")
-          .post(Map("foo" -> "bar")))(_.status must_== OK)
+            .withHeaders(HeaderName -> "nocheck")
+            .post(Map("foo" -> "bar")))(_.status must_== OK)
       }
       "accept requests with ajax header" in {
         csrfCheckRequest(
           _.withCookies("foo" -> "bar")
-          .withHeaders("X-Requested-With" -> "a spoon")
-          .post(Map("foo" -> "bar")))(_.status must_== OK)
+            .withHeaders("X-Requested-With" -> "a spoon")
+            .post(Map("foo" -> "bar")))(_.status must_== OK)
       }
     }
   }

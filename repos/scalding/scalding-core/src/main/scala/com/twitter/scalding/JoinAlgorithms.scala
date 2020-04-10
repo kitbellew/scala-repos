@@ -174,7 +174,7 @@ trait JoinAlgorithms {
       // Common case: no intersection in names: just CoGroup, which duplicates the grouping fields:
       pipe.coGroupBy(fs._1, joiners._1) {
         _.coGroup(fs._2, that, joiners._2)
-        .reducers(reducers)
+          .reducers(reducers)
       }
     } else if (joiners._1 == InnerJoinMode && joiners._2 == InnerJoinMode) {
       /*
@@ -186,7 +186,7 @@ trait JoinAlgorithms {
         renameCollidingFields(that, fs._2, intersection)
       pipe.coGroupBy(fs._1, joiners._1) {
         _.coGroup(newJoinFields, renamedThat, joiners._2)
-        .reducers(reducers)
+          .reducers(reducers)
       }.discard(temp)
     } else {
       throw new IllegalArgumentException(

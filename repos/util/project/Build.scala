@@ -5,17 +5,19 @@ import sbtunidoc.Plugin.unidocSettings
 import scoverage.ScoverageSbtPlugin
 
 object Util extends Build {
-  val branch = Process("git" :: "rev-parse" :: "--abbrev-ref" :: "HEAD" :: Nil).!!.trim
+  val branch = Process(
+    "git" :: "rev-parse" :: "--abbrev-ref" :: "HEAD" :: Nil).!!.trim
   val suffix = if (branch == "master") "" else "-SNAPSHOT"
 
   val libVersion = "6.33.0" + suffix
   val zkVersion = "3.5.0-alpha"
   val zkClientVersion = "0.0.79"
   val zkGroupVersion = "0.0.90"
-  val zkDependency = "org.apache.zookeeper" % "zookeeper" % zkVersion excludeAll(
-    ExclusionRule("com.sun.jdmk", "jmxtools"),
-    ExclusionRule("com.sun.jmx", "jmxri"),
-    ExclusionRule("javax.jms", "jms")
+  val zkDependency =
+    "org.apache.zookeeper" % "zookeeper" % zkVersion excludeAll (
+      ExclusionRule("com.sun.jdmk", "jmxtools"),
+      ExclusionRule("com.sun.jmx", "jmxri"),
+      ExclusionRule("javax.jms", "jms")
   )
 
   val parserCombinators = scalaVersion { sv =>
@@ -31,11 +33,12 @@ object Util extends Build {
       // Note: Add -deprecation when deprecated methods are removed
       "-unchecked",
       "-feature",
-      "-encoding", "utf8"
+      "-encoding",
+      "utf8"
     ) ++ (CrossVersion.partialVersion(sv) match {
       // Needs -missing-interpolator due to https://issues.scala-lang.org/browse/SI-8761
       case Some((2, x)) if x >= 11 => Seq("-Xlint:-missing-interpolator")
-      case _ => Seq("-Xlint")
+      case _                       => Seq("-Xlint")
     })
   }
 
@@ -45,32 +48,32 @@ object Util extends Build {
     scalaVersion := "2.11.7",
     crossScalaVersions := Seq("2.10.6", "2.11.7"),
     // Workaround for a scaladoc bug which causes it to choke on empty classpaths.
-    unmanagedClasspath in Compile += Attributed.blank(new java.io.File("doesnotexist")),
+    unmanagedClasspath in Compile += Attributed.blank(
+      new java.io.File("doesnotexist")),
     libraryDependencies ++= Seq(
       "junit" % "junit" % "4.8.1" % "test",
       "org.mockito" % "mockito-all" % "1.9.5" % "test",
       "org.scalatest" %% "scalatest" % "2.2.4" % "test"
     ),
-
     resolvers += "twitter repo" at "https://maven.twttr.com",
-
     ScoverageSbtPlugin.ScoverageKeys.coverageHighlighting := (
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, 10)) => false
-        case _ => true
+        case _             => true
       }
     ),
-
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
-
     // Note: Use -Xlint rather than -Xlint:unchecked when TestThriftStructure
     // warnings are resolved
-    javacOptions ++= Seq("-Xlint:unchecked", "-source", "1.7", "-target", "1.7"),
+    javacOptions ++= Seq(
+      "-Xlint:unchecked",
+      "-source",
+      "1.7",
+      "-target",
+      "1.7"),
     javacOptions in doc := Seq("-source", "1.7"),
-
     // This is bad news for things like com.twitter.util.Time
     parallelExecution in Test := false,
-
     // Sonatype publishing
     publishArtifact in Test := false,
     pomIncludeRepository := { _ => false },
@@ -101,14 +104,13 @@ object Util extends Build {
       if (v.trim.endsWith("SNAPSHOT"))
         Some("snapshots" at nexus + "content/repositories/snapshots")
       else
-        Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+        Some("releases" at nexus + "service/local/staging/deploy/maven2")
     },
-
     // Prevent eviction warnings
     dependencyOverrides <++= scalaVersion { vsn =>
       Set(
         "com.twitter.common.zookeeper" % "client" % zkClientVersion,
-        "com.twitter.common.zookeeper" % "group"  % zkGroupVersion
+        "com.twitter.common.zookeeper" % "group" % zkGroupVersion
       )
     }
   )
@@ -119,7 +121,7 @@ object Util extends Build {
     settings = Defaults.coreDefaultSettings ++
       sharedSettings ++
       unidocSettings
-  ) aggregate(
+  ) aggregate (
     utilFunction, utilRegistry, utilCore, utilCodec, utilCollection, utilCache, utilReflect,
     utilLint, utilLogging, utilTest, utilThrift, utilHashing, utilJvm, utilZk,
     utilZkCommon, utilZkTest, utilClassPreloader, utilBenchmark, utilApp,
@@ -141,10 +143,10 @@ object Util extends Build {
     settings = Defaults.coreDefaultSettings ++
       sharedSettings ++ JmhPlugin.projectSettings
   )
-  .enablePlugins(JmhPlugin)
-  .settings(
-    name := "util-benchmark"
-  ).dependsOn(utilCore, utilEvents, utilHashing, utilJvm, utilStats)
+    .enablePlugins(JmhPlugin)
+    .settings(
+      name := "util-benchmark"
+    ).dependsOn(utilCore, utilEvents, utilHashing, utilJvm, utilStats)
 
   lazy val utilCache = Project(
     id = "util-cache",
@@ -155,8 +157,8 @@ object Util extends Build {
     name := "util-cache",
     libraryDependencies ++= Seq(
       // NB: guava has a `provided` dep on jsr/javax packages, so we include them manually
-      "com.google.code.findbugs" % "jsr305"              % "2.0.1",
-      "com.google.guava"         % "guava"               % "16.0.1"
+      "com.google.code.findbugs" % "jsr305" % "2.0.1",
+      "com.google.guava" % "guava" % "16.0.1"
     )
   ).dependsOn(utilCore)
 
@@ -190,11 +192,11 @@ object Util extends Build {
     name := "util-collection",
     libraryDependencies ++= Seq(
       // NB: guava has a `provided` dep on jsr/javax packages, so we include them manually
-      "com.google.code.findbugs" % "jsr305"              % "2.0.1",
-      "javax.inject"             % "javax.inject"        % "1",
-      "com.google.guava"         % "guava"               % "16.0.1",
-      "commons-collections"      % "commons-collections" % "3.2.2",
-      "org.scalacheck"          %% "scalacheck"          % "1.12.2" % "test"
+      "com.google.code.findbugs" % "jsr305" % "2.0.1",
+      "javax.inject" % "javax.inject" % "1",
+      "com.google.guava" % "guava" % "16.0.1",
+      "commons-collections" % "commons-collections" % "3.2.2",
+      "org.scalacheck" %% "scalacheck" % "1.12.2" % "test"
     )
   ).dependsOn(utilCore % "compile->compile;test->test")
 
@@ -215,8 +217,10 @@ object Util extends Build {
       (resourceManaged in Compile, name, version) map { (dir, name, ver) =>
         val file = dir / "com" / "twitter" / name / "build.properties"
         val buildRev = Process("git" :: "rev-parse" :: "HEAD" :: Nil).!!.trim
-        val buildName = new java.text.SimpleDateFormat("yyyyMMdd-HHmmss").format(new java.util.Date)
-        val contents = s"name=$name\nversion=$ver\nbuild_revision=$buildRev\nbuild_name=$buildName"
+        val buildName = new java.text.SimpleDateFormat(
+          "yyyyMMdd-HHmmss").format(new java.util.Date)
+        val contents =
+          s"name=$name\nversion=$ver\nbuild_revision=$buildRev\nbuild_name=$buildName"
         IO.write(file, contents)
         Seq(file)
       }
@@ -260,10 +264,10 @@ object Util extends Build {
   ).settings(
     name := "util-reflect",
     libraryDependencies ++= Seq(
-      "asm"   % "asm"         % "3.3.1",
-      "asm"   % "asm-util"    % "3.3.1",
-      "asm"   % "asm-commons" % "3.3.1",
-      "cglib" % "cglib"       % "2.2.2"
+      "asm" % "asm" % "3.3.1",
+      "asm" % "asm-util" % "3.3.1",
+      "asm" % "asm-commons" % "3.3.1",
+      "cglib" % "cglib" % "2.2.2"
     )
   ).dependsOn(utilCore)
 
@@ -307,7 +311,6 @@ object Util extends Build {
     name := "util-logging"
   ).dependsOn(utilCore, utilApp, utilStats)
 
-
   lazy val utilRegistry = Project(
     id = "util-registry",
     base = file("util-registry"),
@@ -339,7 +342,6 @@ object Util extends Build {
     )
   ).dependsOn(utilCore, utilLogging)
 
-
   lazy val utilThrift = Project(
     id = "util-thrift",
     base = file("util-thrift"),
@@ -348,9 +350,9 @@ object Util extends Build {
   ).settings(
     name := "util-thrift",
     libraryDependencies ++= Seq(
-      "thrift"                     % "libthrift"        % "0.5.0",
-      "org.slf4j"                  % "slf4j-api"        % "1.7.7" % "provided",
-      "com.fasterxml.jackson.core" % "jackson-core"     % "2.4.4",
+      "thrift" % "libthrift" % "0.5.0",
+      "org.slf4j" % "slf4j-api" % "1.7.7" % "provided",
+      "com.fasterxml.jackson.core" % "jackson-core" % "2.4.4",
       "com.fasterxml.jackson.core" % "jackson-databind" % "2.4.4"
     )
   ).dependsOn(utilCodec)
@@ -375,15 +377,19 @@ object Util extends Build {
   ).settings(
     name := "util-zk-common",
     libraryDependencies ++= Seq(
-      "com.twitter.common.zookeeper" % "client"     % zkClientVersion,
-      "com.twitter.common.zookeeper" % "group"      % zkGroupVersion,
+      "com.twitter.common.zookeeper" % "client" % zkClientVersion,
+      "com.twitter.common.zookeeper" % "group" % zkGroupVersion,
       "com.twitter.common.zookeeper" % "server-set" % "1.0.103",
       zkDependency
     )
-  ).dependsOn(utilCore, utilLogging, utilZk,
+  ).dependsOn(
+    utilCore,
+    utilLogging,
+    utilZk,
     // These are depended on to provide transitive dependencies
     // that would otherwise cause incompatibilities. See above comment.
-    utilCollection, utilHashing
+    utilCollection,
+    utilHashing
   )
 
   lazy val utilZkTest = Project(

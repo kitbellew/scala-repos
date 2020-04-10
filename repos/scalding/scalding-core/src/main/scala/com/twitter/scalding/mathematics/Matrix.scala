@@ -395,8 +395,8 @@ class Matrix[RowT, ColT, ValT](
         // Matrices are generally huge and cascading has problems with diverse key spaces and
         // mapside operations
         // TODO continually evaluate if this is needed to avoid OOM
-        .reducers(MatrixProduct.numOfReducers(sizeHint))
-        .forceToReducers
+          .reducers(MatrixProduct.numOfReducers(sizeHint))
+          .forceToReducers
       }
     }
     val newHint = sizeHint.setRows(1L)
@@ -436,9 +436,10 @@ class Matrix[RowT, ColT, ValT](
       topRowWithTiny(k)
     } else {
       val newPipe = pipe.groupBy(rowSym) {
-        _.sortBy(valSym)
-        .reverse
-        .take(k)
+        _
+          .sortBy(valSym)
+          .reverse
+          .take(k)
       }
         .project(rowSym, colSym, valSym)
       new Matrix[RowT, ColT, ValT](
@@ -454,8 +455,9 @@ class Matrix[RowT, ColT, ValT](
       ord: Ordering[ValT]): Matrix[RowT, ColT, ValT] = {
     val topSym = Symbol(colSym.name + "_topK")
     val newPipe = pipe.groupBy(rowSym) {
-      _.sortWithTake((colSym, valSym) -> 'top_vals, k)(
-        (t0: (ColT, ValT), t1: (ColT, ValT)) => ord.gt(t0._2, t1._2))
+      _
+        .sortWithTake((colSym, valSym) -> 'top_vals, k)(
+          (t0: (ColT, ValT), t1: (ColT, ValT)) => ord.gt(t0._2, t1._2))
     }
       .flatMapTo((0, 1) -> (rowSym, topSym, valSym)) {
         imp: (RowT, List[(ColT, ValT)]) =>
@@ -1171,9 +1173,10 @@ class RowVector[ColT, ValT](
       ordValS.setComparator(fieldName, ord)
 
       val newPipe = pipe.groupAll {
-        _.sortBy(ordValS)
-        .reverse
-        .take(k)
+        _
+          .sortBy(ordValS)
+          .reverse
+          .take(k)
       }.project(colS, valS)
       new RowVector[ColT, ValT](
         colS,
@@ -1187,8 +1190,9 @@ class RowVector[ColT, ValT](
       ord: Ordering[ValT]): RowVector[ColT, ValT] = {
     val topSym = Symbol(colS.name + "_topK")
     val newPipe = pipe.groupAll {
-      _.sortWithTake((colS, valS) -> 'top_vals, k)(
-        (t0: (ColT, ValT), t1: (ColT, ValT)) => ord.gt(t0._2, t1._2))
+      _
+        .sortWithTake((colS, valS) -> 'top_vals, k)(
+          (t0: (ColT, ValT), t1: (ColT, ValT)) => ord.gt(t0._2, t1._2))
     }
       .flatMap('top_vals -> (topSym, valS)) { imp: List[(ColT, ValT)] => imp }
     new RowVector[ColT, ValT](
@@ -1306,9 +1310,10 @@ class ColVector[RowT, ValT](
     if (k < 1000) { topWithTiny(k) }
     else {
       val newPipe = pipe.groupAll {
-        _.sortBy(valS)
-        .reverse
-        .take(k)
+        _
+          .sortBy(valS)
+          .reverse
+          .take(k)
       }.project(rowS, valS)
       new ColVector[RowT, ValT](
         rowS,
@@ -1322,8 +1327,9 @@ class ColVector[RowT, ValT](
       ord: Ordering[ValT]): ColVector[RowT, ValT] = {
     val topSym = Symbol(rowS.name + "_topK")
     val newPipe = pipe.groupAll {
-      _.sortWithTake((rowS, valS) -> 'top_vals, k)(
-        (t0: (RowT, ValT), t1: (RowT, ValT)) => ord.gt(t0._2, t1._2))
+      _
+        .sortWithTake((rowS, valS) -> 'top_vals, k)(
+          (t0: (RowT, ValT), t1: (RowT, ValT)) => ord.gt(t0._2, t1._2))
     }
       .flatMap('top_vals -> (topSym, valS)) { imp: List[(RowT, ValT)] => imp }
     new ColVector[RowT, ValT](

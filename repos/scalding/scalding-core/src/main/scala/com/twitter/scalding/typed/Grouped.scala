@@ -636,8 +636,8 @@ case class ValueSortedReduce[K, V1, V2](
             reduceFn,
             Grouped.valueField),
           Fields.REPLACE))
-      .reducers(reducers.getOrElse(-1))
-      .setDescriptions(descriptions)
+        .reducers(reducers.getOrElse(-1))
+        .setDescriptions(descriptions)
     }
   }
 }
@@ -690,8 +690,8 @@ case class IteratorMappedReduce[K, V1, V2](
             reduceFn,
             Grouped.valueField),
           Fields.REPLACE))
-      .reducers(reducers.getOrElse(-1))
-      .setDescriptions(descriptions)
+        .reducers(reducers.getOrElse(-1))
+        .setDescriptions(descriptions)
     }
 
   override def joinFunction = {

@@ -245,11 +245,11 @@ abstract class FileSource
         val tryTtp = Try(TestTapFactory(this, hdfsScheme, sinkMode)).map {
           // these java types are invariant, so we cast here
           _.createTap(readOrWrite)
-          .asInstanceOf[Tap[Any, Any, Any]]
+            .asInstanceOf[Tap[Any, Any, Any]]
         }.orElse {
           Try(TestTapFactory(this, localScheme.getSourceFields, sinkMode)).map {
             _.createTap(readOrWrite)
-            .asInstanceOf[Tap[Any, Any, Any]]
+              .asInstanceOf[Tap[Any, Any, Any]]
           }
         }
 

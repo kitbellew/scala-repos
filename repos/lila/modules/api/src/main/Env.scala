@@ -53,7 +53,7 @@ final class Env(
     private val cache = lila.memo.MixedCache.single[Int](
       f = coll.find(BSONDocument("_id" -> "asset")).one[BSONDocument].map {
         _.flatMap(_.getAs[BSONNumberLike]("version"))
-        .fold(Net.AssetVersion)(_.toInt max Net.AssetVersion)
+          .fold(Net.AssetVersion)(_.toInt max Net.AssetVersion)
       },
       timeToLive = 30.seconds,
       default = Net.AssetVersion,

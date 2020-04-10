@@ -736,7 +736,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           val shuffleReadTimeProportion = toProportion(shuffleReadTime)
           val shuffleWriteTime =
             (metricsOpt.flatMap(_.shuffleWriteMetrics
-            .map(_.writeTime)).getOrElse(0L) / 1e6).toLong
+              .map(_.writeTime)).getOrElse(0L) / 1e6).toLong
           val shuffleWriteTimeProportion = toProportion(shuffleWriteTime)
 
           val serializationTime =

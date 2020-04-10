@@ -95,19 +95,19 @@ class LookupJoinedTest extends WordSpec with Matchers {
     }
     val serv = in1.groupBy(_._2).mapValues {
       _.toList
-      .sorted
-      .scanLeft(None: Option[(T, K, W)]) { (old, newer) =>
-        old.map {
-          case (_, _, w) => (newer._1, newer._2, Semigroup.plus(w, newer._3))
+        .sorted
+        .scanLeft(None: Option[(T, K, W)]) { (old, newer) =>
+          old.map {
+            case (_, _, w) => (newer._1, newer._2, Semigroup.plus(w, newer._3))
+          }
+            .orElse(Some(newer))
         }
-          .orElse(Some(newer))
-      }
-      .filter {
-        _.isDefined
-      }
-      .map {
-        _.get
-      }
+        .filter {
+          _.isDefined
+        }
+        .map {
+          _.get
+        }
     }.toMap // Force the map
 
     def lookup(t: T, k: K): Option[W] = {

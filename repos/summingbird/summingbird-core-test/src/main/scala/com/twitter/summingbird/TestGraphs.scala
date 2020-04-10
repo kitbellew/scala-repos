@@ -69,50 +69,50 @@ object TestGraphs {
       .groupBy(_._1)
       .mapValues {
         _.map(_._2).toList.sortBy(identity)
-        .scanLeft(
-          (
-            Option.empty[(Long, (U, Option[V]))],
-            Option.empty[(Long, (Option[V], V))])) {
-          case ((_, None), (time, Left(u))) =>
-            /*
-             * This is a lookup, but there is no value for this key
-             */
-            val joinResult = Some((time, (u, None)))
-            val sumResult =
-              Semigroup.sumOption(valuesFn(time, (u, None))).map(v =>
-                (time, (None, v._2)))
-            (joinResult, sumResult)
-          case ((_, Some((_, (optv, v)))), (time, Left(u))) =>
-            /*
-             * This is a lookup, and there is an existing value
-             */
-            val currentV =
-              Some(sum(optv, v)) // isn't u already a sum and optu prev value?
-            val joinResult = Some((time, (u, currentV)))
-            val sumResult =
-              Semigroup.sumOption(valuesFn(time, (u, currentV))).map(v =>
-                (time, (currentV, v._2)))
-            (joinResult, sumResult)
-          case ((_, None), (time, Right(v))) =>
-            /*
-             * This is merging in new data into the store not coming in from the service
-             * (either from the store history or from a merge after the leftJoin, but
-             * There was previously no data.
-             */
-            val joinResult = None
-            val sumResult = Some((time, (None, v)))
-            (joinResult, sumResult)
-          case ((_, Some((_, (optv, oldv)))), (time, Right(v))) =>
-            /*
-             * This is the case where we are updating a non-empty key. This should
-             * only be triggered by a merged data-stream after the join since
-             * store initialization
-             */
-            val joinResult = None
-            val currentV = Some(sum(optv, oldv))
-            val sumResult = Some((time, (currentV, v)))
-            (joinResult, sumResult)
-        }
+          .scanLeft(
+            (
+              Option.empty[(Long, (U, Option[V]))],
+              Option.empty[(Long, (Option[V], V))])) {
+            case ((_, None), (time, Left(u))) =>
+              /*
+               * This is a lookup, but there is no value for this key
+               */
+              val joinResult = Some((time, (u, None)))
+              val sumResult =
+                Semigroup.sumOption(valuesFn(time, (u, None))).map(v =>
+                  (time, (None, v._2)))
+              (joinResult, sumResult)
+            case ((_, Some((_, (optv, v)))), (time, Left(u))) =>
+              /*
+               * This is a lookup, and there is an existing value
+               */
+              val currentV =
+                Some(sum(optv, v)) // isn't u already a sum and optu prev value?
+              val joinResult = Some((time, (u, currentV)))
+              val sumResult =
+                Semigroup.sumOption(valuesFn(time, (u, currentV))).map(v =>
+                  (time, (currentV, v._2)))
+              (joinResult, sumResult)
+            case ((_, None), (time, Right(v))) =>
+              /*
+               * This is merging in new data into the store not coming in from the service
+               * (either from the store history or from a merge after the leftJoin, but
+               * There was previously no data.
+               */
+              val joinResult = None
+              val sumResult = Some((time, (None, v)))
+              (joinResult, sumResult)
+            case ((_, Some((_, (optv, oldv)))), (time, Right(v))) =>
+              /*
+               * This is the case where we are updating a non-empty key. This should
+               * only be triggered by a merged data-stream after the join since
+               * store initialization
+               */
+              val joinResult = None
+              val currentV = Some(sum(optv, oldv))
+              val sumResult = Some((time, (currentV, v)))
+              (joinResult, sumResult)
+          }
       }.toList
   }
 
@@ -302,12 +302,12 @@ object TestGraphs {
         .toList.groupBy(_._1)
         .mapValues {
           _.map { case (time, (k, joinedu)) => (k, joinedu) }
-          .groupBy(_._1)
-          .mapValues { l => scanSum(l.iterator.map(_._2)).toList }
-          .toIterable
-          .flatMap {
-            case (k, lv) => lv.map { case (optju, ju) => (k, (optju, ju)) }
-          }
+            .groupBy(_._1)
+            .mapValues { l => scanSum(l.iterator.map(_._2)).toList }
+            .toIterable
+            .flatMap {
+              case (k, lv) => lv.map { case (optju, ju) => (k, (optju, ju)) }
+            }
         }
         .toIterable
         .flatMap {
@@ -331,26 +331,26 @@ object TestGraphs {
         .groupBy(_._1)
         .mapValues {
           _.map(_._2).toList.sortBy(identity)
-          .scanLeft(
-            Option.empty[(Long, JoinedU)],
-            Option.empty[(Long, U, Option[JoinedU])]) {
-            case ((None, result), (time, Left(u))) => {
-              // The was no value previously
-              (None, Some((time, u, None)))
-            }
-            case ((prev @ Some((oldt, ju)), result), (time, Left(u))) => {
-              // gate the time for window join?
-              (prev, Some((time, u, Some(ju))))
-            }
-            case ((None, result), (time, Right(joined))) => {
-              (Some((time, joined)), None)
-            }
+            .scanLeft(
+              Option.empty[(Long, JoinedU)],
+              Option.empty[(Long, U, Option[JoinedU])]) {
+              case ((None, result), (time, Left(u))) => {
+                // The was no value previously
+                (None, Some((time, u, None)))
+              }
+              case ((prev @ Some((oldt, ju)), result), (time, Left(u))) => {
+                // gate the time for window join?
+                (prev, Some((time, u, Some(ju))))
+              }
+              case ((None, result), (time, Right(joined))) => {
+                (Some((time, joined)), None)
+              }
 
-            case ((Some((oldt, oldJ)), result), (time, Right(joined))) => {
-              val nextJoined = Semigroup.plus(oldJ, joined)
-              (Some((time, nextJoined)), None)
+              case ((Some((oldt, oldJ)), result), (time, Right(joined))) => {
+                val nextJoined = Semigroup.plus(oldJ, joined)
+                (Some((time, nextJoined)), None)
+              }
             }
-          }
         }.toList.flatMap {
           case (k, lv) => lv.map { case ((_, optuju)) => (k, optuju) }
         }

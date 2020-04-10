@@ -34,24 +34,31 @@ object ApplicationBuild extends Build {
 
   def simpleParser(state: State) = Space ~> any.+.map(_.mkString(""))
 
-  def checkLogContains(msg: String): Task[Boolean] = task {
-    if (!bufferLogger.messages.exists(_.contains(msg))) {
-      sys.error("Did not find log message:\n    '" + msg + "'\nin output:\n" + bufferLogger.messages.reverse.mkString("    ", "\n    ", ""))
+  def checkLogContains(msg: String): Task[Boolean] =
+    task {
+      if (!bufferLogger.messages.exists(_.contains(msg))) {
+        sys.error(
+          "Did not find log message:\n    '" + msg + "'\nin output:\n" + bufferLogger.messages.reverse.mkString(
+            "    ",
+            "\n    ",
+            ""))
+      }
+      true
     }
-    true
-  }
 
   val checkLogContainsTask = InputKey[Boolean]("checkLogContains") <<=
-    InputTask.separate[String, Boolean](simpleParser _)(state(s => checkLogContains))
+    InputTask.separate[String, Boolean](simpleParser _)(state(s =>
+      checkLogContains))
 
-  val compileIgnoreErrorsTask = TaskKey[Unit]("compileIgnoreErrors") <<= state.map { state =>
-    Project.runTask(compile in Compile, state)
-  }
+  val compileIgnoreErrorsTask =
+    TaskKey[Unit]("compileIgnoreErrors") <<= state.map { state =>
+      Project.runTask(compile in Compile, state)
+    }
 
   val main = Project(appName, file(".")).enablePlugins(PlayScala).settings(
     version := appVersion,
-    extraLoggers ~= { currentFunction =>
-      (key: ScopedKey[_]) => {
+    extraLoggers ~= { currentFunction => (key: ScopedKey[_]) =>
+      {
         bufferLogger +: currentFunction(key)
       }
     },
