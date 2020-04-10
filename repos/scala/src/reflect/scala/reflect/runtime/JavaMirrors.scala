@@ -177,7 +177,8 @@ private[scala] trait JavaMirrors
       abort(s"cannot reflect ${member.kindString} ${member
         .name}, because it's a member of a weak type ${freeType.name}")
     private def ErrorNonExistentField(sym: Symbol) =
-      abort(sm"""Scala field ${sym.name} of ${sym.owner} isn't represented as a Java field, nor does it have a
+      abort(
+        sm"""Scala field ${sym.name} of ${sym.owner} isn't represented as a Java field, nor does it have a
           |Java accessor method. One common reason for this is that it may be a private class parameter
           |not used outside the primary constructor.""")
 

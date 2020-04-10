@@ -26,7 +26,8 @@ class FileUploadExample
   }
 
   get("/") {
-    displayPage(<form action={url("/upload", includeServletPath = false)} method="post" enctype="multipart/form-data">
+    displayPage(
+      <form action={url("/upload", includeServletPath = false)} method="post" enctype="multipart/form-data">
         <p>File to upload: <input type="file" name="file"/></p>
         <p><input type="submit" value="Upload"/></p>
       </form>

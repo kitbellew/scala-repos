@@ -33,7 +33,9 @@ object SurviveNetworkInstabilityMultiJvmSpec extends MultiNodeConfig {
   val seventh = role("seventh")
   val eighth = role("eighth")
 
-  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString("""
+  commonConfig(
+    debugConfig(on = false).withFallback(ConfigFactory.parseString(
+      """
       akka.remote.system-message-buffer-size=100
       akka.remote.netty.tcp.connection-timeout = 10s
       """)).withFallback(MultiNodeClusterSpec.clusterConfig))

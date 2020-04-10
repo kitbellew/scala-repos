@@ -106,9 +106,8 @@ private[lobby] final class Lobby(
     case SocketUids(uids) =>
       val createdBefore = DateTime.now minusSeconds 5
       val hooks = {
-        (HookRepo notInUids uids).filter {
-          _.createdAt isBefore createdBefore
-        } ++ HookRepo.cleanupOld
+        (HookRepo notInUids uids)
+          .filter { _.createdAt isBefore createdBefore } ++ HookRepo.cleanupOld
       }.toSet
       // logger.debug(
       //   s"broom uids:${uids.size} before:${createdBefore} hooks:${hooks.map(_.id)}")

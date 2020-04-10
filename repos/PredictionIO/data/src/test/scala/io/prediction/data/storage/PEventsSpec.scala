@@ -126,9 +126,8 @@ class PEventsSpec extends Specification with TestEvents {
   def find(parEventClient: PEvents) = {
     val resultRDD: RDD[Event] = parEventClient.find(appId = appId)(sc)
 
-    val results = resultRDD.collect.toList.map {
-      _.copy(eventId = None)
-    } // ignore eventId
+    val results = resultRDD.collect.toList
+      .map { _.copy(eventId = None) } // ignore eventId
 
     results must containTheSameElementsAs(listOfEvents)
   }
@@ -137,9 +136,8 @@ class PEventsSpec extends Specification with TestEvents {
     val resultRDD: RDD[Event] = parEventClient
       .find(appId = appId, channelId = Some(channelId))(sc)
 
-    val results = resultRDD.collect.toList.map {
-      _.copy(eventId = None)
-    } // ignore eventId
+    val results = resultRDD.collect.toList
+      .map { _.copy(eventId = None) } // ignore eventId
 
     results must containTheSameElementsAs(listOfEventsChannel)
   }
@@ -177,9 +175,8 @@ class PEventsSpec extends Specification with TestEvents {
     // read back
     val resultRDD = parEventClient.find(appId = appId)(sc)
 
-    val results = resultRDD.collect.toList.map {
-      _.copy(eventId = None)
-    } // ignore eventId
+    val results = resultRDD.collect.toList
+      .map { _.copy(eventId = None) } // ignore eventId
 
     val expected = listOfEvents ++ written
 
@@ -195,9 +192,8 @@ class PEventsSpec extends Specification with TestEvents {
     val resultRDD = parEventClient
       .find(appId = appId, channelId = Some(channelId))(sc)
 
-    val results = resultRDD.collect.toList.map {
-      _.copy(eventId = None)
-    } // ignore eventId
+    val results = resultRDD.collect.toList
+      .map { _.copy(eventId = None) } // ignore eventId
 
     val expected = listOfEventsChannel ++ written
 

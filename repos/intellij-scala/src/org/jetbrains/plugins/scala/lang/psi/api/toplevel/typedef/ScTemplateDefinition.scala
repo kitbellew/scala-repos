@@ -285,9 +285,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
             TypeDefinitionMembers.getSignatures(c, Some(clazzType), this)
               .allFirstSeq().flatMap(_.filter {
                 case (_, n) => n.info.isInstanceOf[PhysicalSignature]
-              }).map {
-                case (_, n) => n.info.asInstanceOf[PhysicalSignature]
-              } ++
+              })
+              .map { case (_, n) => n.info.asInstanceOf[PhysicalSignature] } ++
               syntheticMethodsNoOverride
                 .map(new PhysicalSignature(_, ScSubstitutor.empty))
           case _ => allMethods

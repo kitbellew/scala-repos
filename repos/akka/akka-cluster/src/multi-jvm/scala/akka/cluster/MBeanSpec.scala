@@ -20,7 +20,9 @@ object MBeanMultiJvmSpec extends MultiNodeConfig {
   val third = role("third")
   val fourth = role("fourth")
 
-  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString("""
+  commonConfig(
+    debugConfig(on = false)
+      .withFallback(ConfigFactory.parseString("""
     akka.cluster.jmx.enabled = on
     akka.cluster.roles = [testNode]
     """)).withFallback(MultiNodeClusterSpec.clusterConfig))

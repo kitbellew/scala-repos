@@ -45,7 +45,9 @@ object ClusterRoundRobinMultiJvmSpec extends MultiNodeConfig {
   val third = role("third")
   val fourth = role("fourth")
 
-  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString("""
+  commonConfig(
+    debugConfig(on = false).withFallback(ConfigFactory.parseString(
+      """
       akka.actor.deployment {
         /router1 {
           router = round-robin-pool

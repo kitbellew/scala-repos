@@ -790,9 +790,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   def collectDelta(
       otherVersions: Map[Address, Long]): immutable.Iterable[Bucket] = {
     // missing entries are represented by version 0
-    val filledOtherVersions = myVersions.map {
-      case (k, _) ⇒ k -> 0L
-    } ++ otherVersions
+    val filledOtherVersions = myVersions
+      .map { case (k, _) ⇒ k -> 0L } ++ otherVersions
     var count = 0
     filledOtherVersions.collect {
       case (owner, v)

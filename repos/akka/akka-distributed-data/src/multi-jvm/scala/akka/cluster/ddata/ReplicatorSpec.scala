@@ -273,9 +273,9 @@ class ReplicatorSpec
     runOn(first) {
       replicator ! Update(KeyC, GCounter(), writeTwo)(_ + 30)
       expectMsg(UpdateSuccess(KeyC, None))
-      changedProbe.expectMsgPF() {
-        case c @ Changed(KeyC) ⇒ c.get(KeyC).value
-      } should be(30)
+      changedProbe
+        .expectMsgPF() { case c @ Changed(KeyC) ⇒ c.get(KeyC).value } should be(
+        30)
 
       replicator ! Update(KeyY, GCounter(), writeTwo)(_ + 30)
       expectMsg(UpdateSuccess(KeyY, None))
@@ -289,16 +289,16 @@ class ReplicatorSpec
       replicator ! Get(KeyC, ReadLocal)
       val c30 = expectMsgPF() { case g @ GetSuccess(KeyC, _) ⇒ g.get(KeyC) }
       c30.value should be(30)
-      changedProbe.expectMsgPF() {
-        case c @ Changed(KeyC) ⇒ c.get(KeyC).value
-      } should be(30)
+      changedProbe
+        .expectMsgPF() { case c @ Changed(KeyC) ⇒ c.get(KeyC).value } should be(
+        30)
 
       // replicate with gossip after WriteLocal
       replicator ! Update(KeyC, GCounter(), WriteLocal)(_ + 1)
       expectMsg(UpdateSuccess(KeyC, None))
-      changedProbe.expectMsgPF() {
-        case c @ Changed(KeyC) ⇒ c.get(KeyC).value
-      } should be(31)
+      changedProbe
+        .expectMsgPF() { case c @ Changed(KeyC) ⇒ c.get(KeyC).value } should be(
+        31)
 
       replicator ! Delete(KeyY, WriteLocal)
       expectMsg(DeleteSuccess(KeyY))
@@ -322,9 +322,9 @@ class ReplicatorSpec
           expectMsg(DataDeleted(KeyY))
         }
       }
-      changedProbe.expectMsgPF() {
-        case c @ Changed(KeyC) ⇒ c.get(KeyC).value
-      } should be(31)
+      changedProbe
+        .expectMsgPF() { case c @ Changed(KeyC) ⇒ c.get(KeyC).value } should be(
+        31)
     }
     enterBarrier("verified-c31")
 

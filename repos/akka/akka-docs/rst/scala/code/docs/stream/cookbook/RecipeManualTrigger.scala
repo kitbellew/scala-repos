@@ -24,9 +24,8 @@ class RecipeManualTrigger extends RecipeSpec {
           val zip = builder.add(Zip[Message, Trigger]())
           elements ~> zip.in0
           triggerSource ~> zip.in1
-          zip.out ~> Flow[(Message, Trigger)].map {
-            case (msg, trigger) => msg
-          } ~> sink
+          zip.out ~> Flow[(Message, Trigger)]
+            .map { case (msg, trigger) => msg } ~> sink
           ClosedShape
       })
       //#manually-triggered-stream

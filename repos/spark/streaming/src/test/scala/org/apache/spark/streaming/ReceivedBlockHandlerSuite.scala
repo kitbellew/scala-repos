@@ -121,9 +121,8 @@ class ReceivedBlockHandlerSuite
 
           // Verify that the store results are instances of BlockManagerBasedStoreResult
           assert(
-            storeResults.forall {
-              _.isInstanceOf[BlockManagerBasedStoreResult]
-            },
+            storeResults
+              .forall { _.isInstanceOf[BlockManagerBasedStoreResult] },
             "Unexpected store result type")
       }
     }

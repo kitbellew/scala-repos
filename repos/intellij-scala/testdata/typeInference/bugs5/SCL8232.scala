@@ -27,11 +27,8 @@ object Moo {
   def id[A](v: A): A = v
 
   implicit class ListEitherOps[E, A](self: List[Either[E, A]]) {
-    def sequence(
-        es: List[Either[E, A]]): Either[
-      E,
-      List[A]
-    ] = /*start*/ self.traverse(id) /*end*/ // Type mismatched
+    def sequence(es: List[Either[E, A]]): Either[E, List[A]] =
+      /*start*/ self.traverse(id) /*end*/ // Type mismatched
   }
 }
 //Either[E, List[A]]

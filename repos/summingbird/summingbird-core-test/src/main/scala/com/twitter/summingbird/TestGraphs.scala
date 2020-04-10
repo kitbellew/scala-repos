@@ -242,9 +242,10 @@ object TestGraphs {
       : (Map[K, JoinedU], Map[K, V]) = {
 
     val firstStore = MapAlgebra.sumByKey(
-      source1.flatMap(simpleFM1).map {
-        case (_, kju) => kju
-      } // drop the time from the key for the store
+      source1.flatMap(simpleFM1)
+        .map {
+          case (_, kju) => kju
+        } // drop the time from the key for the store
     )
 
     // create the delta stream
@@ -302,9 +303,8 @@ object TestGraphs {
 
     // compute the final store result after join
     val finalStore = MapAlgebra.sumByKey(
-      resultStream.flatMap(postJoinFn).map {
-        case (time, (k, v)) => (k, v)
-      } // drop the time
+      resultStream.flatMap(postJoinFn)
+        .map { case (time, (k, v)) => (k, v) } // drop the time
     )
     (firstStore, finalStore)
   }
@@ -405,9 +405,8 @@ object TestGraphs {
       leftStream.flatMap {
         case (k, opt) =>
           opt.map { case (time, (u, optv)) => (time, (k, (u, optv))) }
-      }.flatMap(flatMapFn(_)).map {
-        case (time, (k, v)) => (k, v)
-      } // drop the time
+      }.flatMap(flatMapFn(_))
+        .map { case (time, (k, v)) => (k, v) } // drop the time
     )
 
     // compute the final store result after join

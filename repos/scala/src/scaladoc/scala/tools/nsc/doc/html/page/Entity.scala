@@ -823,7 +823,9 @@ trait EntityPage extends HtmlPage {
           if (it.isEmpty) NodeSeq.Empty else gen
 
         val example = orEmpty(comment.example) {
-          <div class="block">Example{if (comment.example.length > 1) "s" else ""}:
+          <div class="block">Example{
+            if (comment.example.length > 1) "s" else ""
+          }:
                <ol>{
             val exampleXml: List[NodeSeq] =
               for (ex <- comment.example) yield <li class="cmt">{

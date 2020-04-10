@@ -366,9 +366,8 @@ class WebSocketClientSpec
           import GraphDSL.Implicits._
           Source.fromPublisher(netIn) ~> Flow[ByteString]
             .map(SessionBytes(null, _)) ~> client.in2
-          client.out1 ~> Flow[SslTlsOutbound].collect {
-            case SendBytes(x) ⇒ x
-          } ~> netOut.sink
+          client.out1 ~> Flow[SslTlsOutbound]
+            .collect { case SendBytes(x) ⇒ x } ~> netOut.sink
           client.out2 ~> clientImplementation ~> client.in1
           ClosedShape
       })

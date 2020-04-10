@@ -75,9 +75,10 @@ class RangeDirectivesSpec extends RoutingSpec with Inspectors with Inside {
       Get() ~> addHeader(Range(ByteRange(1, 2))) ~> Route
         .seal(wrs(reject())) ~> check {
         status == NotFound
-        headers.exists {
-          case `Content-Range`(_, _) ⇒ true; case _ ⇒ false
-        } shouldEqual false
+        headers
+          .exists {
+            case `Content-Range`(_, _) ⇒ true; case _ ⇒ false
+          } shouldEqual false
       }
     }
 
