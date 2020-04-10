@@ -68,7 +68,9 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
               (3, 2, Some(6), Some(10)))
         }
       }
-      .flatMap { _ => db.run(us.schema.create >> (us ++= Seq(1, 2, 3))) }
+      .flatMap { _ =>
+        db.run(us.schema.create >> (us ++= Seq(1, 2, 3)))
+      }
       .flatMap { _ =>
         val q2 = (for {
           u <- us
@@ -121,7 +123,9 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
         db.run(mark("q5", q5.result))
           .map(_ shouldBe Set((1, Some(1)), (1, Some(2)), (1, Some(3))))
       }
-      .flatMap { _ => db.run(us += 4) }
+      .flatMap { _ =>
+        db.run(us += 4)
+      }
       .flatMap { _ =>
         val q6 = ((for {
           (u, t) <- us joinLeft ts on (_.id === _.a)
@@ -374,7 +378,9 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       _ <- q2.result.map(_ shouldBe Nil)
       q4 =
         as.flatMap { t1 =>
-            bs.withFilter { t2 => t1.fkId === t2.id && t2.d === "" }
+            bs.withFilter { t2 =>
+                t1.fkId === t2.id && t2.d === ""
+              }
               .map(t2 => (t1, t2))
           }
           .groupBy { prop =>

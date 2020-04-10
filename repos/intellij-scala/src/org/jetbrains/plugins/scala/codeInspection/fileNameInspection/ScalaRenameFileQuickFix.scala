@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
   * User: Alexander Podkhalyuzin
   * Date: 03.07.2009
   */
+
 class ScalaRenameFileQuickFix(myFile: ScalaFile, name: String)
     extends AbstractFixOnPsiElement(
       "Rename File " + myFile.name + " to " + name,

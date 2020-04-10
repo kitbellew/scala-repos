@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.camel
 
 import language.postfixOps
@@ -394,7 +395,9 @@ object ProducerFeatureTest {
     override protected def transformOutgoingMessage(msg: Any) =
       msg match {
         case msg: CamelMessage ⇒
-          if (upper) msg.mapBody { body: String ⇒ body.toUpperCase }
+          if (upper) msg.mapBody { body: String ⇒
+            body.toUpperCase
+          }
           else msg
       }
   }

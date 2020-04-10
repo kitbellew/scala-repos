@@ -24,6 +24,7 @@ import org.jetbrains.plugins.scala.lang.resolve.ScalaResolveResult
   * @author Alefas
   * @since 26.05.12
   */
+
 class ReferenceMustBePrefixedInspection
     extends AbstractInspection(id, displayName) {
   def actionFor(holder: ProblemsHolder) = {

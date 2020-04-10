@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   * @author Ksenia.Sautina
   * @since 6/6/12
   */
+
 object SplitElseIfIntention {
   def familyName = "Split Else If"
 }

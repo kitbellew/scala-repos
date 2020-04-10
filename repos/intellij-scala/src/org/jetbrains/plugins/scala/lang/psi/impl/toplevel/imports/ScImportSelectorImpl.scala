@@ -24,6 +24,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.ScImportSelectorStub
   * @author Alexander Podkhalyuzin
   * Date: 20.02.2008
   */
+
 class ScImportSelectorImpl private (
     stub: StubElement[ScImportSelector],
     nodeType: IElementType,

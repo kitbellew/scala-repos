@@ -382,7 +382,9 @@ trait RepositoryService { self: AccountService =>
         } exists)
       }
       .sortBy(_.lastActivityDate desc)
-      .map { t => (t.userName, t.repositoryName) }
+      .map { t =>
+        (t.userName, t.repositoryName)
+      }
       .list
   }
 

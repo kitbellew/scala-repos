@@ -47,6 +47,7 @@ import breeze.util.Implicits._
   *
   * @author debasish83
   */
+
 class NonlinearMinimizer(
     proximal: Proximal,
     maxIters: Int = -1,

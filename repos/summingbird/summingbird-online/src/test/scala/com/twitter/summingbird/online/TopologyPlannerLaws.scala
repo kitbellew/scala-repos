@@ -90,11 +90,16 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
   }
 
   property("Must have at least one producer in each MemoryNode") = forAll {
-    (dag: MemoryDag) => dag.nodes.forall { n => n.members.size > 0 }
+    (dag: MemoryDag) =>
+      dag.nodes.forall { n =>
+        n.members.size > 0
+      }
   }
 
   property("If a Node contains a Summer, all other producers must be NOP's") =
-    forAll { (dag: MemoryDag) => summersOnlyShareNoOps(dag) }
+    forAll { (dag: MemoryDag) =>
+      summersOnlyShareNoOps(dag)
+    }
 
   property("The first producer in a online node cannot be a NamedProducer") =
     forAll { (dag: MemoryDag) =>
@@ -173,7 +178,8 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
         val success = firstP match {
           case Summer(_, _, _) =>
             dag.dependenciesOf(n).size > 0 && dag.dependenciesOf(n).forall {
-              otherN => otherN.isInstanceOf[FlatMapNode[_]]
+              otherN =>
+                otherN.isInstanceOf[FlatMapNode[_]]
             }
           case _ => true
         }

@@ -123,7 +123,9 @@ object Round extends LilaController with TheftPrevention {
   def others(gameId: String) =
     Open { implicit ctx =>
       OptionFuResult(GameRepo game gameId) { currentGame =>
-        otherPovs(currentGame) map { povs => Ok(html.round.others(povs)) }
+        otherPovs(currentGame) map { povs =>
+          Ok(html.round.others(povs))
+        }
       }
     }
 
@@ -284,12 +286,16 @@ object Round extends LilaController with TheftPrevention {
 
   def mini(gameId: String, color: String) =
     Open { implicit ctx =>
-      OptionOk(GameRepo.pov(gameId, color)) { pov => html.game.mini(pov) }
+      OptionOk(GameRepo.pov(gameId, color)) { pov =>
+        html.game.mini(pov)
+      }
     }
 
   def miniFullId(fullId: String) =
     Open { implicit ctx =>
-      OptionOk(GameRepo pov fullId) { pov => html.game.mini(pov) }
+      OptionOk(GameRepo pov fullId) { pov =>
+        html.game.mini(pov)
+      }
     }
 
   def atom(gameId: String, color: String) =

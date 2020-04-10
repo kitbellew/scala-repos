@@ -14,6 +14,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package kafka.zk
 
 import java.util.ArrayList
@@ -106,6 +107,7 @@ class ZKEphemeralTest(val secure: Boolean) extends ZooKeeperTestHarness {
   /*****
    ***** Tests for ZkWatchedEphemeral
    *****/
+
   /**
     * Tests basic creation
     */

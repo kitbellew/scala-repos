@@ -38,7 +38,9 @@ object MimeTypes {
       .flatMap { application =>
         application.configuration.getConfig("mimetype").map { config =>
           config.subKeys
-            .map { key => (key, config.getString(key)) }
+            .map { key =>
+              (key, config.getString(key))
+            }
             .collect {
               case ((key, Some(value))) =>
                 (key, value)

@@ -165,7 +165,9 @@ class FormatterTest extends WordSpec {
         in.regexSub("""FormatterTest.scala:\d+""".r) { m =>
             "FormatterTest.scala:NNN"
           }
-          .regexSub("""FormatterTest\$[\w\\$]+""".r) { m => "FormatterTest$$" }
+          .regexSub("""FormatterTest\$[\w\\$]+""".r) { m =>
+            "FormatterTest$$"
+          }
       }
 
       "simple" in {

@@ -346,6 +346,7 @@ object ZUnionStore extends ZStoreCompanion {
 /**
   * Helper Objects
   */
+
 case class ZRangeResults(entries: Array[ChannelBuffer], scores: Array[Double]) {
   def asTuples(): Seq[(ChannelBuffer, Double)] =
     (entries, scores).zipped.map { (entry, score) => (entry, score) }.toSeq
@@ -458,6 +459,7 @@ object ZMembers {
 /**
   * Helper Traits
   */
+
 abstract class ZStore extends KeysCommand {
   val destination: ChannelBuffer
   val numkeys: Int

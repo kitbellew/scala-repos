@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.top.template.{
   * @author Alexander Podkhalyuzin
   * Date: 06.02.2008
   */
+
 /*
  * ClassTemplateOpt ::= 'extends' ClassTemplate | [['extends'] TemplateBody]
  */

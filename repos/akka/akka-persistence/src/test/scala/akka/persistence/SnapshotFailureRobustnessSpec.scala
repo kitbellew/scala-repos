@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.persistence
 
 import java.io.IOException
@@ -65,7 +66,9 @@ object SnapshotFailureRobustnessSpec {
 
     override def receiveCommand = {
       case Cmd(payload) ⇒
-        persist(payload) { _ ⇒ probe ! s"${payload}-${lastSequenceNr}" }
+        persist(payload) { _ ⇒
+          probe ! s"${payload}-${lastSequenceNr}"
+        }
       case SnapshotOffer(md, s) ⇒ probe ! ((md, s))
       case other ⇒ probe ! other
     }

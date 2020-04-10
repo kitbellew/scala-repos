@@ -68,6 +68,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * @author Alexander Podkhalyuzin
   */
+
 //some functions are not PsiMethods and are e.g. not visible from java
 //see ScSyntheticFunction
 trait ScFun extends ScTypeParametersOwner {
@@ -154,7 +155,9 @@ trait ScFunction
   def removeAllClauses() {
     paramClauses.clauses.headOption
       .zip(paramClauses.clauses.lastOption)
-      .foreach { p => paramClauses.deleteChildRange(p._1, p._2) }
+      .foreach { p =>
+        paramClauses.deleteChildRange(p._1, p._2)
+      }
   }
 
   def isNative: Boolean = {

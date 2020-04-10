@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.ScSubstitutor
 /**
   * Pavel Fatin
   */
+
 object MultipleInheritance extends AnnotatorPart[ScTemplateDefinition] {
   def kind = classOf[ScTemplateDefinition]
 

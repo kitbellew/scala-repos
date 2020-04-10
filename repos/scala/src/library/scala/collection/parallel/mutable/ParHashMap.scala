@@ -154,7 +154,9 @@ class ParHashMap[K, V] private[collection] (
       if (e eq null) 0 else 1 + count(e.next)
     val expected = sizemap(i)
     val found = ((i * sizeMapBucketSize) until ((i + 1) * sizeMapBucketSize))
-      .foldLeft(0) { (acc, c) => acc + count(table(c)) }
+      .foldLeft(0) { (acc, c) =>
+        acc + count(table(c))
+      }
     if (found != expected)
       List("Found " + found + " elements, while sizemap showed " + expected)
     else Nil

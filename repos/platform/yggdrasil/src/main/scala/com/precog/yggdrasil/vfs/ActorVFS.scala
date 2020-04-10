@@ -382,8 +382,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           // it's necessary to group by path then traverse since each path will respond to ingest independently.
           // -- a bit of a leak of implementation detail, but that's the actor model for you.
           allResults <- (data groupBy {
-            case (offset, msg) => msg.path
-          }).toStream traverse {
+              case (offset, msg) => msg.path
+            }).toStream traverse {
             case (path, subset) =>
               (projectionsActor ? IngestData(subset)).mapTo[WriteResult]
           }
@@ -526,8 +526,11 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           "Received request to find metadata for path %s".format(path.path))
         val requestor = sender
         val eio = VFSPathUtils.currentPathMetadata(baseDir, path) map {
-          pathMetadata => requestor ! PathChildren(path, Set(pathMetadata))
-        } leftMap { error => requestor ! PathOpFailure(path, error) }
+          pathMetadata =>
+            requestor ! PathChildren(path, Set(pathMetadata))
+        } leftMap { error =>
+          requestor ! PathOpFailure(path, error)
+        }
 
         eio.run.unsafePerformIO
 
@@ -696,7 +699,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
           case NIHDBData(data) =>
             resourceBuilder.createNIHDB(versionDir(version), writeAs) flatMap {
-              _ traverse { nihdbr => nihdbr tap { _.db.insert(data) } }
+              _ traverse { nihdbr =>
+                nihdbr tap { _.db.insert(data) }
+              }
             }
         }
         _ <- created traverse { resource =>
@@ -941,7 +946,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
         case (offset, ArchiveMessage(apiKey, path, jobId, _, timestamp)) =>
           versionLog.clearHead >> IO(requestor ! UpdateSuccess(path))
-      } map { _ => PrecogUnit }
+      } map { _ =>
+        PrecogUnit
+      }
     }
 
     def versionOpt(version: Version) =

@@ -34,6 +34,7 @@ import com.github.nscala_time.time.Imports._
   * <code>maxTrainingWindowSize</code>. Suppose trainingWindowSize = 50 and testing set =
   * [100, 120), the training set draws data in time range [50, 100).
   */
+
 case class DataSourceParams(
     val appid: Int = 1008,
     val baseDate: DateTime,

@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.toplevel.templates.ScClassParen
   * User: Alexander Podkhalyuzin
   * Date: 17.06.2009
   */
+
 class ScClassParentsElementType
     extends ScTemplateParentsElementType[ScClassParents]("class parents") {
   def createPsi(stub: ScTemplateParentsStub): ScTemplateParents =

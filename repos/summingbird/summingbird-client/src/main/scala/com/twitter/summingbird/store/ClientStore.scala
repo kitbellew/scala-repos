@@ -29,6 +29,7 @@ import scala.collection.breakOut
   * @author Sam Ritchie
   * @author Ashu Singhal
   */
+
 object ClientStore {
   def apply[K, V](
       onlineStore: ReadableStore[(K, BatchID), V],

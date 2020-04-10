@@ -43,7 +43,9 @@ final class Analyser(
 
   def apply(gameId: String, sender: Work.Sender): Fu[Boolean] =
     GameRepo game gameId flatMap {
-      _ ?? { game => apply(game, sender) }
+      _ ?? { game =>
+        apply(game, sender)
+      }
     }
 
   private def makeWork(game: Game, sender: Work.Sender): Fu[Work.Analysis] =

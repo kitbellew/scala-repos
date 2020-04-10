@@ -23,7 +23,9 @@ case class Opening(
     val bestCp = moves.foldLeft(Int.MaxValue) {
       case (cp, move) => if (move.cp < cp) move.cp else cp
     }
-    moves.map { move => QualityMove(move, Quality(move.cp - bestCp)) }
+    moves.map { move =>
+      QualityMove(move, Quality(move.cp - bestCp))
+    }
   }
 
   def winPercent = if (attempts == 0) 0 else wins * 100 / attempts

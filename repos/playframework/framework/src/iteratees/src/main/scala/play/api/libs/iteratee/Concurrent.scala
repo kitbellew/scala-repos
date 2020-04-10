@@ -527,7 +527,9 @@ object Concurrent {
                 .swap(Future.successful(None))
                 .onComplete {
                   case Success(maybeK) =>
-                    maybeK.foreach { k => promise.success(k(Input.EOF)) }
+                    maybeK.foreach { k =>
+                      promise.success(k(Input.EOF))
+                    }
                   case Failure(e) => promise.failure(e)
                 }(dec)
             }

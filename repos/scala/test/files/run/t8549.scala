@@ -52,7 +52,9 @@ object Test extends App {
       s"  // Generated on $timestamp with Scala ${scala.util.Properties.versionString})"
     amend(file) { content =>
       content.lines.toList
-        .map { f => f.replaceAll("""^ +// Generated on.*""", newComment) }
+        .map { f =>
+          f.replaceAll("""^ +// Generated on.*""", newComment)
+        }
         .mkString("\n")
     }
   }

@@ -350,7 +350,9 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     ElementFilter
       .constructorsIn(info.getElements().getAllMembers(e))
       .map(methodInfo(_, relavence))
-      .map { m => m.copy(name = s) }
+      .map { m =>
+        m.copy(name = s)
+      }
       .toList
   }
 

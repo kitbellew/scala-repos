@@ -23,6 +23,7 @@ import com.twitter.finagle.{
   *   val service = serviceFactory()
   *   service(req) // where req is a Req and may have ShardableRequest mixed in
   */
+
 class ShardingService[Req, Rep](
     distributor: Distributor[Service[Req, Rep]],
     hash: Req => Option[Long]

@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.{
 /**
   * Pavel.Fatin, 28.04.2010
   */
+
 trait Strategy {
   def addToFunction(function: ScFunctionDefinition)
 

@@ -69,7 +69,9 @@ class ClusterClientStopSpec
   }
 
   def initialContacts =
-    Set(first, second).map { r ⇒ node(r) / "system" / "receptionist" }
+    Set(first, second).map { r ⇒
+      node(r) / "system" / "receptionist"
+    }
 
   "A Cluster Client" should {
 

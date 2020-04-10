@@ -24,6 +24,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTemplateDefin
   * User: Alexander Podkhalyuzin
   * Date: 22.12.2009
   */
+
 class ScalaHighlightUsagesHandlerFactory extends HighlightUsagesHandlerFactory {
   def createHighlightUsagesHandler(
       editor: Editor,

@@ -180,7 +180,9 @@ class VersionLog(
   }
 
   def addVersion(entry: VersionEntry): IO[PrecogUnit] =
-    allVersions.find(_ == entry) map { _ => IO(PrecogUnit) } getOrElse {
+    allVersions.find(_ == entry) map { _ =>
+      IO(PrecogUnit)
+    } getOrElse {
       logger.debug("Adding version entry: " + entry)
       IOUtils.writeToFile(
         entry.serialize.renderCompact + "\n",
@@ -212,7 +214,9 @@ class VersionLog(
         logger.debug("Setting HEAD to " + newHead)
         IOUtils.writeToFile(
           entry.serialize.renderCompact + "\n",
-          headFile) map { _ => currentVersion = Some(entry); }
+          headFile) map { _ =>
+          currentVersion = Some(entry);
+        }
       } flatMap {
         _.isEmpty.whenM(
           IO.throwIO(new IllegalStateException(

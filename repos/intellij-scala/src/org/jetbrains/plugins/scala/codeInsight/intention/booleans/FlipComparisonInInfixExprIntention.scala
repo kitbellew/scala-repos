@@ -17,6 +17,7 @@ import scala.collection.mutable
   * @author Ksenia.Sautina
   * @since 4/20/12
   */
+
 object FlipComparisonInInfixExprIntention {
   def familyName = "Flip comparison in infix expression."
 }

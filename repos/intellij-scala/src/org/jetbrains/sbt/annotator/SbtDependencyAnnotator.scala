@@ -26,6 +26,7 @@ import org.jetbrains.sbt.resolvers.{
   * @author Nikolay Obedin
   * @since 8/4/14.
   */
+
 class SbtDependencyAnnotator extends Annotator {
 
   private case class ArtifactInfo(

@@ -541,7 +541,9 @@ abstract class RDD[T: ClassTag](
       val normalizedCumWeights = weights.map(_ / sum).scanLeft(0.0d)(_ + _)
       normalizedCumWeights
         .sliding(2)
-        .map { x => randomSampleWithRange(x(0), x(1), seed) }
+        .map { x =>
+          randomSampleWithRange(x(0), x(1), seed)
+        }
         .toArray
     }
 
@@ -1312,7 +1314,9 @@ abstract class RDD[T: ClassTag](
       val countPartition: (TaskContext, Iterator[T]) => OpenHashMap[T, Long] = {
         (ctx, iter) =>
           val map = new OpenHashMap[T, Long]
-          iter.foreach { t => map.changeValue(t, 1L, _ + 1L) }
+          iter.foreach { t =>
+            map.changeValue(t, 1L, _ + 1L)
+          }
           map
       }
       val evaluator =

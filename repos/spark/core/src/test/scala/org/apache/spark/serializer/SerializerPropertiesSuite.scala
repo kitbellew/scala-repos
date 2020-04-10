@@ -105,7 +105,9 @@ object SerializerPropertiesSuite extends Assertions {
         baos.toByteArray.slice(itemStartOffset, itemEndOffset).clone()
       }
       val itemsAndSerializedItems: Seq[(Any, Array[Byte])] = {
-        val serItems = items.map { item => (item, serializeItem(item)) }
+        val serItems = items.map { item =>
+          (item, serializeItem(item))
+        }
         serStream.close()
         rand.shuffle(serItems)
       }

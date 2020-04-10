@@ -59,7 +59,9 @@ class NumberJoinTest extends WordSpec with Matchers {
 class SpillingJob(args: Args) extends Job(args) {
   TypedTsv[(Int, Int)]("input").read
     .rename((0, 1) -> ('n, 'v))
-    .groupBy('n) { group => group.spillThreshold(3).sum[Int]('v).size }
+    .groupBy('n) { group =>
+      group.spillThreshold(3).sum[Int]('v).size
+    }
     .write(Tsv("output"))
 }
 
@@ -1751,8 +1753,12 @@ class SampleWithReplacementTest extends WordSpec with Matchers {
   import com.twitter.scalding.mathematics.Poisson
 
   val p = new Poisson(1.0, 0)
-  val simulated =
-    (1 to 100).map { i => i -> p.nextInt }.filterNot(_._2 == 0).toSet
+  val simulated = (1 to 100)
+    .map { i =>
+      i -> p.nextInt
+    }
+    .filterNot(_._2 == 0)
+    .toSet
 
   "A SampleWithReplacementJob" should {
     JobTest(new SampleWithReplacementJob(_))

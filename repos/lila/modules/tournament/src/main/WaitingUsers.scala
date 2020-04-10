@@ -27,7 +27,9 @@ private[tournament] case class WaitingUsers(
   }
 
   def waitSecondsOf(userId: String) =
-    hash get userId map { d => nowSeconds - d.getSeconds }
+    hash get userId map { d =>
+      nowSeconds - d.getSeconds
+    }
 
   def waiting = {
     val since = date minusSeconds waitSeconds

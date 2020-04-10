@@ -45,6 +45,7 @@ import TestConfigurationUtil.isInheritor
   * User: Alexander Podkhalyuzin
   * Date: 08.05.2009
   */
+
 class ScalaTestConfigurationProducer extends {
   val confType = new ScalaTestConfigurationType
   val confFactory = confType.confFactory

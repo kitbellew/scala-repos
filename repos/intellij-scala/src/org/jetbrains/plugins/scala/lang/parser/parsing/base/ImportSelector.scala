@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
   * @author Alexander Podkhalyuzin
   * Date: 11.02.2008
   */
+
 object ImportSelector {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     val importSelectorMarker = builder.mark

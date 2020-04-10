@@ -135,7 +135,9 @@ abstract class MongoAccountManager(
 
         database(
           insert(account0.serialize.asInstanceOf[JObject])
-            .into(settings.accounts)) map { _ => account0 }
+            .into(settings.accounts)) map { _ =>
+          account0
+        }
       }
     } yield account
   }
@@ -220,7 +222,9 @@ abstract class MongoAccountManager(
           update(settings.accounts)
             .set(updateObj)
             .where("accountId" === account.accountId)
-        } map { _ => true }
+        } map { _ =>
+          true
+        }
 
       case None =>
         M.point(false)

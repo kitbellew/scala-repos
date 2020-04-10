@@ -15,6 +15,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package com.gravity.goose.outputformatters
 
 import com.gravity.goose.utils.Logging
@@ -24,4 +25,5 @@ import com.gravity.goose.utils.Logging
   * User: jim
   * Date: 8/17/11
   */
+
 object StandardOutputFormatter extends OutputFormatter with Logging

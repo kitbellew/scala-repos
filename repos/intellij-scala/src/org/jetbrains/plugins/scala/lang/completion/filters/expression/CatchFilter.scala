@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocComment
   * @author Alexander Podkhalyuzin
   * Date: 22.05.2008
   */
+
 class CatchFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
     if (context.isInstanceOf[PsiComment]) return false

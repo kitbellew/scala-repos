@@ -290,7 +290,9 @@ class MacroOrderingProperties
     import JavaStreamEnrichments._
 
     val baos = new ByteArrayOutputStream
-    t.foreach({ e => orderedBuffer.write(baos, e) })
+    t.foreach({ e =>
+      orderedBuffer.write(baos, e)
+    })
     baos.toInputStream
   }
 
@@ -324,7 +326,9 @@ class MacroOrderingProperties
   }
 
   def checkMany[T: Arbitrary](implicit obuf: OrderedSerialization[T]) =
-    forAll { i: List[(T, T)] => checkManyExplicit(i) }
+    forAll { i: List[(T, T)] =>
+      checkManyExplicit(i)
+    }
 
   def checkWithInputs[T](a: T, b: T)(implicit obuf: OrderedSerialization[T]) {
     val rta = rt(a) // before we do anything ensure these don't throw

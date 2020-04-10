@@ -224,7 +224,9 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
   override def addAcls(acls: Set[Acl], resource: Resource) {
     if (acls != null && acls.nonEmpty) {
       inWriteLock(lock) {
-        updateResourceAcls(resource) { currentAcls => currentAcls ++ acls }
+        updateResourceAcls(resource) { currentAcls =>
+          currentAcls ++ acls
+        }
       }
     }
   }

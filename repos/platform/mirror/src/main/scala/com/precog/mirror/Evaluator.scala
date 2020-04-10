@@ -294,7 +294,9 @@ trait EvaluatorModule
               val result =
                 values collect red.prepare reduceOption red orElse red.zero
 
-              result.toSeq map { v => (Vector(), v) }
+              result.toSeq map { v =>
+                (Vector(), v)
+              }
             }
 
             case _ => sys.error("todo")

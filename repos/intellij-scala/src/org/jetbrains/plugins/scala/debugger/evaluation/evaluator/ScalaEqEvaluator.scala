@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.debugger.evaluation.EvaluationException
   * User: Alexander Podkhalyuzin
   * Date: 08.11.11
   */
+
 class ScalaEqEvaluator(left: Evaluator, right: Evaluator) extends Evaluator {
   def evaluate(context: EvaluationContextImpl): AnyRef = {
     val leftResult = left.evaluate(context).asInstanceOf[Value]

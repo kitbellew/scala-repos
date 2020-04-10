@@ -40,10 +40,14 @@ object BodyParserSpec
   }
 
   def constant[A](a: A): BodyParser[A] =
-    BodyParser("constant") { request => Accumulator.done(Right(a)) }
+    BodyParser("constant") { request =>
+      Accumulator.done(Right(a))
+    }
 
   def simpleResult(s: Result): BodyParser[Any] =
-    BodyParser("simple result") { request => Accumulator.done(Left(s)) }
+    BodyParser("simple result") { request =>
+      Accumulator.done(Left(s))
+    }
 
   implicit val arbResult: Arbitrary[Result] =
     Arbitrary {
@@ -124,7 +128,9 @@ object BodyParserSpec
             .mapM(inc)(mapMEC)
             .mapM(dbl)(mapMEC)
         } must_== run {
-          constant(x).mapM { y => inc(y).flatMap(dbl)(flatMapPEC) }(mapMEC)
+          constant(x).mapM { y =>
+            inc(y).flatMap(dbl)(flatMapPEC)
+          }(mapMEC)
         }
       }
     }
@@ -158,7 +164,9 @@ object BodyParserSpec
             .validate(inc)
             .validate(dbl)
         } must_== run {
-          constant(x).validate { y => inc(y).right.flatMap(dbl) }
+          constant(x).validate { y =>
+            inc(y).right.flatMap(dbl)
+          }
         }
       }
     }
@@ -206,7 +214,9 @@ object BodyParserSpec
         run {
           constant(x).validateM(inc).validateM(dbl)
         } must_== run {
-          constant(x).validateM { y => Future.successful(Right((y + 1) * 2)) }
+          constant(x).validateM { y =>
+            Future.successful(Right((y + 1) * 2))
+          }
         }
       }
     }

@@ -15,6 +15,7 @@ import scala.annotation.tailrec
 /**
   * Jason Zaugg
   */
+
 class ImportAdditionalIdentifiersIntention
     extends PsiElementBaseIntentionAction {
   def getFamilyName = "Import additional identifiers"

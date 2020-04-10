@@ -109,7 +109,9 @@ object ISetTest extends SpecLite {
 
   "lookupIndex" ! forAll { a: ISet[Int] =>
     val l = a.toList
-    (0 until a.size) foreach { i => a.lookupIndex(l(i)) must_=== Some(i) }
+    (0 until a.size) foreach { i =>
+      a.lookupIndex(l(i)) must_=== Some(i)
+    }
     (0 until 5) foreach { _ =>
       val r = Random.nextInt()
       if (a.member(r))

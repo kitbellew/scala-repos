@@ -12,6 +12,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package io.prediction.workflow
 
 import java.net.URI
@@ -109,13 +110,21 @@ object CreateWorkflow extends Logging {
     opt[Unit]("stop-after-prepare") action { (x, c) =>
       c.copy(stopAfterPrepare = true)
     }
-    opt[String]("deploy-mode") action { (x, c) => c.copy(deployMode = x) }
-    opt[Int]("verbosity") action { (x, c) => c.copy(verbosity = x) }
-    opt[String]("engine-factory") action { (x, c) => c.copy(engineFactory = x) }
+    opt[String]("deploy-mode") action { (x, c) =>
+      c.copy(deployMode = x)
+    }
+    opt[Int]("verbosity") action { (x, c) =>
+      c.copy(verbosity = x)
+    }
+    opt[String]("engine-factory") action { (x, c) =>
+      c.copy(engineFactory = x)
+    }
     opt[String]("engine-params-key") action { (x, c) =>
       c.copy(engineParamsKey = x)
     }
-    opt[String]("log-file") action { (x, c) => c.copy(logFile = Some(x)) }
+    opt[String]("log-file") action { (x, c) =>
+      c.copy(logFile = Some(x))
+    }
     opt[String]("json-extractor") action { (x, c) =>
       c.copy(jsonExtractor = JsonExtractorOption.withName(x))
     }

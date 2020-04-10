@@ -39,6 +39,7 @@ import org.apache.http.client.methods.HttpGet
   * User: jim
   * Date: 8/18/11
   */
+
 case class DepthTraversal(node: Element, parentDepth: Int, siblingDepth: Int)
 
 /**
@@ -541,6 +542,7 @@ class StandardImageExtractor(
     * @param images
     * @return
     */
+
   private def downloadImagesAndGetResults(
       images: ArrayList[Element],
       depthLevel: Int): HashMap[Element, Float] = {

@@ -126,7 +126,9 @@ object WeightedPageRankFromMatrixSpec {
 
   def filledColumnVector(value: Double, size: Int): List[(Int, Double)] = {
     val vector = mutable.ListBuffer[(Int, Double)]()
-    (0 until size).foreach { row => vector += new Tuple2(row, value) }
+    (0 until size).foreach { row =>
+      vector += new Tuple2(row, value)
+    }
 
     vector.toList
   }

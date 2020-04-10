@@ -22,6 +22,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.xml.ScXmlPairedTag
   * User: Dmitry Naydanov
   * Date: 4/8/12
   */
+
 class XmlRenameHandler extends RenameHandler {
   def isAvailableOnDataContext(dataContext: DataContext): Boolean = {
     val editor = CommonDataKeys.EDITOR.getData(dataContext)

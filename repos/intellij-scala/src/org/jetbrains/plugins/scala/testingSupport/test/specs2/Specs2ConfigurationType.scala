@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.icons.Icons
   * User: Alexander Podkhalyuzin
   * Date: 03.05.2009
   */
+
 class Specs2ConfigurationType extends ConfigurationType {
 
   val confFactory = new Specs2RunConfigurationFactory(this)

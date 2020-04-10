@@ -8,6 +8,7 @@ import scala.{Double => double, Int => int}
 /**
   * @author Christoph Radig
   */
+
 trait Vector {
 
   def xd: double

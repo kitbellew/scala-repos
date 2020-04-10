@@ -688,7 +688,9 @@ private[deploy] class Worker(
       finishedApps -= id
       appDirectories.remove(id).foreach { dirList =>
         logInfo(s"Cleaning up local directories for application $id")
-        dirList.foreach { dir => Utils.deleteRecursively(new File(dir)) }
+        dirList.foreach { dir =>
+          Utils.deleteRecursively(new File(dir))
+        }
       }
       shuffleService.applicationRemoved(id)
     }

@@ -500,7 +500,9 @@ object GameRepo {
         )
       )
       .map(_.documents.flatMap { obj =>
-        obj.getAs[Int]("nb") map { nb => UidNb(~obj.getAs[String]("_id"), nb) }
+        obj.getAs[Int]("nb") map { nb =>
+          UidNb(~obj.getAs[String]("_id"), nb)
+        }
       })
   }
 

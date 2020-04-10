@@ -28,6 +28,7 @@ import org.apache.spark.scheduler.SchedulingMode.SchedulingMode
 /**
   * An Schedulable entity that represent collection of Pools or TaskSetManagers
   */
+
 private[spark] class Pool(
     val poolName: String,
     val schedulingMode: SchedulingMode,

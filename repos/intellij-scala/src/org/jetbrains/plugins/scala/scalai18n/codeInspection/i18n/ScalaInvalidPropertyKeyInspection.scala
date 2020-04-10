@@ -27,6 +27,7 @@ import scala.collection.mutable
   * @author Ksenia.Sautina
   * @since 7/17/12
   */
+
 class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
   @NotNull override def getGroupDisplayName: String = {
     GroupNames.INTERNATIONALIZATION_GROUP_NAME

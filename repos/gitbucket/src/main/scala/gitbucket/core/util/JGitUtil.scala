@@ -815,7 +815,9 @@ object JGitUtil {
         .setURI(from.toURI.toString)
         .setDirectory(to)
         .setBare(true)
-        .call) { git => setReceivePack(git.getRepository) }
+        .call) { git =>
+      setReceivePack(git.getRepository)
+    }
 
   def isEmpty(git: Git): Boolean =
     git.getRepository.resolve(Constants.HEAD) == null
@@ -943,7 +945,9 @@ object JGitUtil {
       treeWalk.addTree(revTree)
       treeWalk.setRecursive(true)
       getPathObjectId(path, treeWalk)
-    } flatMap { objectId => getContentFromId(git, objectId, fetchLargeFile) }
+    } flatMap { objectId =>
+      getContentFromId(git, objectId, fetchLargeFile)
+    }
   }
 
   def getContentInfo(
@@ -1015,7 +1019,9 @@ object JGitUtil {
   def getObjectLoaderFromId[A](git: Git, id: ObjectId)(
       f: ObjectLoader => A): Option[A] =
     try {
-      using(git.getRepository.getObjectDatabase) { db => Some(f(db.open(id))) }
+      using(git.getRepository.getObjectDatabase) { db =>
+        Some(f(db.open(id)))
+      }
     } catch {
       case e: MissingObjectException => None
     }

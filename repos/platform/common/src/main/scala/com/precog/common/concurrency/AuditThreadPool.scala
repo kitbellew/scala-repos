@@ -35,7 +35,9 @@ class AuditExecutor(
     idleTimeout: Long)
     extends Executor {
   private[this] val workQueue: BlockingQueue[Runnable] = maxQueueDepth
-    .map { depth => new ArrayBlockingQueue[Runnable](depth) }
+    .map { depth =>
+      new ArrayBlockingQueue[Runnable](depth)
+    }
     .getOrElse(new LinkedBlockingQueue[Runnable]())
 
   private[this] val threadCount = new AtomicInteger(minThreads)

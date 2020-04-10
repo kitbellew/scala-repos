@@ -20,6 +20,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScParamClauseStubImpl
   * User: Alexander Podkhalyuzin
   * Date: 19.10.2008
   */
+
 class ScParamClauseElementType
     extends ScStubElementType[ScParamClauseStub, ScParameterClause](
       "parameter clause") {

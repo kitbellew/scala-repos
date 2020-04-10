@@ -620,7 +620,9 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       }
 
     def sendJobs(): Unit = {
-      0 until settings.workBatchSize foreach { _ ⇒ send(createJob()) }
+      0 until settings.workBatchSize foreach { _ ⇒
+        send(createJob())
+      }
     }
 
     def createJob(): Job = {

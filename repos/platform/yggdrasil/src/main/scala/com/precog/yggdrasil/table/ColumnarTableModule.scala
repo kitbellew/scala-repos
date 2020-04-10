@@ -827,6 +827,7 @@ trait ColumnarTableModule[M[+_]]
     /**
       * Folds over the table to produce a single value (stored in a singleton table).
       */
+
     def reduce[A](reducer: Reducer[A])(implicit monoid: Monoid[A]): M[A] = {
       def rec(stream: StreamT[M, A], acc: A): M[A] = {
         stream.uncons flatMap {
@@ -854,7 +855,8 @@ trait ColumnarTableModule[M[+_]]
       val specTransform = SliceTransform.composeSliceTransform(spec)
       val compactTransform = {
         SliceTransform.composeSliceTransform(Leaf(Source)).zip(specTransform) {
-          (s1, s2) => s1.compact(s2, definedness)
+          (s1, s2) =>
+            s1.compact(s2, definedness)
         }
       }
       Table(Table.transformStream(compactTransform, slices), size).normalize
@@ -1641,7 +1643,9 @@ trait ColumnarTableModule[M[+_]]
               } map { M point _ }
             }
 
-            optM map { m => m map { Some(_) } } getOrElse {
+            optM map { m =>
+              m map { Some(_) }
+            } getOrElse {
               M.point(None)
             }
           }

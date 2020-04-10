@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.persistence.journal.leveldb
 
 import akka.actor._
@@ -45,7 +46,10 @@ object SharedLeveldbJournalSpec {
       case payload ⇒ probe ! payload
     }
     override def receiveCommand = {
-      case payload ⇒ persist(payload) { _ ⇒ probe ! payload }
+      case payload ⇒
+        persist(payload) { _ ⇒
+          probe ! payload
+        }
     }
   }
 

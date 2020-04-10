@@ -180,7 +180,8 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
       resourceMatch: ResourceMatcher.ResourceMatch): TaskOp = {
 
     val localVolumes: Iterable[Task.LocalVolume] = app.persistentVolumes.map {
-      volume => Task.LocalVolume(Task.LocalVolumeId(app.id, volume), volume)
+      volume =>
+        Task.LocalVolume(Task.LocalVolumeId(app.id, volume), volume)
     }
     val persistentVolumeIds = localVolumes.map(_.id)
     val task = Task.Reserved(

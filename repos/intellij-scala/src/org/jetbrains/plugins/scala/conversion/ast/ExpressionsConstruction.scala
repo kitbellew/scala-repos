@@ -4,6 +4,7 @@ package org.jetbrains.plugins.scala.conversion.ast
   * Created by Kate Ustyuzhanina
   * on 10/22/15
   */
+
 case class ArrayAccess(
     expression: IntermediateNode,
     idxExpression: IntermediateNode)

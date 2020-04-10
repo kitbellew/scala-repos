@@ -20,6 +20,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScAccessModifierStubImpl
   * User: Alexander Podkhalyuzin
   * Date: 17.06.2009
   */
+
 class ScAccessModifierElementType[Func <: ScAccessModifier]
     extends ScStubElementType[ScAccessModifierStub, ScAccessModifier](
       "access modifier") {

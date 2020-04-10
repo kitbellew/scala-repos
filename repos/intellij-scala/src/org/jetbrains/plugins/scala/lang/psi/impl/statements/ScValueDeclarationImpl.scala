@@ -24,6 +24,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
   * Date: 22.02.2008
   * Time: 9:55:28
   */
+
 class ScValueDeclarationImpl private (
     stub: StubElement[ScValue],
     nodeType: IElementType,

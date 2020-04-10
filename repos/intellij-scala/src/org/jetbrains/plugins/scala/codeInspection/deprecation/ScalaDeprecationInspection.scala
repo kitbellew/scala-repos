@@ -27,6 +27,7 @@ import org.jetbrains.plugins.scala.lang.resolve.ScalaResolveResult
   * User: Alexander Podkhalyuzin
   * Date: 13.04.2010
   */
+
 class ScalaDeprecationInspection extends LocalInspectionTool {
   override def buildVisitor(
       holder: ProblemsHolder,

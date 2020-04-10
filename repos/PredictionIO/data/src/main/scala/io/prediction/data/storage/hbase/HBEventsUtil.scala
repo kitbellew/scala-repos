@@ -12,6 +12,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package io.prediction.data.storage.hbase
 
 import io.prediction.data.storage.Event
@@ -51,9 +52,13 @@ object HBEventsUtil {
       namespace: String,
       appId: Int,
       channelId: Option[Int] = None): String = {
-    channelId.map { ch => s"${namespace}:events_${appId}_${ch}" }.getOrElse {
-      s"${namespace}:events_${appId}"
-    }
+    channelId
+      .map { ch =>
+        s"${namespace}:events_${appId}_${ch}"
+      }
+      .getOrElse {
+        s"${namespace}:events_${appId}"
+      }
   }
 
   // column names for "e" column family
@@ -191,7 +196,9 @@ object HBEventsUtil {
       addStringToE(colNames("properties"), write(event.properties.toJObject))
     }
 
-    event.prId.foreach { prId => addStringToE(colNames("prId"), prId) }
+    event.prId.foreach { prId =>
+      addStringToE(colNames("prId"), prId)
+    }
 
     addLongToE(colNames("eventTime"), event.eventTime.getMillis)
     val eventTimeZone = event.eventTime.getZone

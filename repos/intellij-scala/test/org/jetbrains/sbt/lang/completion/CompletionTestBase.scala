@@ -16,6 +16,7 @@ import org.jetbrains.sbt.resolvers.SbtResolverIndexesManager
   * @author Nikolay Obedin
   * @since 7/17/14.
   */
+
 abstract class CompletionTestBase
     extends completion.CompletionTestBase
     with MockSbt {

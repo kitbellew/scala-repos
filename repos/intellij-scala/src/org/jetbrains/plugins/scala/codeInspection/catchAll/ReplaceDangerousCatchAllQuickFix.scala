@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.patterns.{
   * @author Ksenia.Sautina
   * @since 6/25/12
   */
+
 class ReplaceDangerousCatchAllQuickFix(caseClause: ScCaseClause)
     extends AbstractFixOnPsiElement(
       ScalaBundle.message("specify.type.of.exception"),

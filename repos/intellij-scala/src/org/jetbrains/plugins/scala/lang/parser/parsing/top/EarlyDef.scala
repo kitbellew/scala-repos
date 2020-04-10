@@ -14,6 +14,7 @@ import scala.annotation.tailrec
   * @author Alexander Podkhalyuzin
   * Date: 06.02.2008
   */
+
 /*
  * EarlyDef ::= '{' [PatVarDef {semi PatVarDef}] '}' 'with'
  */

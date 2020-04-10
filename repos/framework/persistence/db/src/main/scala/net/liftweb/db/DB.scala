@@ -448,7 +448,9 @@ trait DB extends Loggable {
   }
 
   def exec[T](db: SuperConnection, query: String)(f: (ResultSet) => T): T =
-    statement(db) { st => f(st.executeQuery(query)) }
+    statement(db) { st =>
+      f(st.executeQuery(query))
+    }
 
   private def asString(
       pos: Int,

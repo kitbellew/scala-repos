@@ -76,13 +76,17 @@ object Stream {
     Json.obj(
       "id" -> bytes2base64(md5.digest(game.id getBytes "UTF-8") take 6),
       "ps" -> Json.toJson {
-        game.points.map { p => List(p.lat, p.lon) map truncate }
+        game.points.map { p =>
+          List(p.lat, p.lon) map truncate
+        }
       }
     )
 
   case class Point(lat: Double, lon: Double)
   def toPoint(ipLoc: IpLocation): Option[Point] =
-    ipLoc.geoPoint map { p => Point(p.latitude, p.longitude) }
+    ipLoc.geoPoint map { p =>
+      Point(p.latitude, p.longitude)
+    }
 
   sealed trait Event
   object Event {

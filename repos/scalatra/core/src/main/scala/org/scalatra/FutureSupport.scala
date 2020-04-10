@@ -70,7 +70,9 @@ trait FutureSupport extends AsyncSupport {
           if (gotResponseAlready.compareAndSet(false, true)) {
             withinAsyncContext(context) {
               try {
-                t map { result => renderResponse(result) } recover {
+                t map { result =>
+                  renderResponse(result)
+                } recover {
                   case e: HaltException =>
                     renderHaltException(e)
                   case e =>

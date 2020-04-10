@@ -27,6 +27,7 @@ import scala.collection.JavaConverters._
   * currently throws if it's missing. The (temporary) "fix" is to populate this metadata
   * by setting all structOrUnionType fields to UNION.
   */
+
 /**
   * The same as ParquetTBaseScheme, but sets the record convert to Parquet346TBaseRecordConverter
   */

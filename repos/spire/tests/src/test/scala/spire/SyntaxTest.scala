@@ -27,7 +27,9 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
   implicit def ArbNonZero[A: Ring: Eq: Arbitrary]: Arbitrary[NonZero[A]] = {
     Arbitrary(
       arbitrary[A]
-        .map { a => if (a === Ring[A].zero) Ring[A].one else a }
+        .map { a =>
+          if (a === Ring[A].zero) Ring[A].one else a
+        }
         .map(NonZero[A](_)))
   }
 
@@ -37,7 +39,9 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
   def ArbPositive[A: Ring: Eq: Signed: Arbitrary]: Arbitrary[Positive[A]] = {
     Arbitrary(
       arbitrary[A]
-        .map { a => if (a === Ring[A].zero) Ring[A].one else a.abs }
+        .map { a =>
+          if (a === Ring[A].zero) Ring[A].one else a.abs
+        }
         .filter(_.sign == Sign.Positive)
         .map(Positive(_)))
   }
@@ -85,7 +89,8 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
     testMultiplicativeMonoidSyntax(a, b)
   }))
   test("MultiplicativeGroup syntax")(check(forAll {
-    (a: Double, b: NonZero[Double]) => testMultiplicativeGroupSyntax(a, b.x)
+    (a: Double, b: NonZero[Double]) =>
+      testMultiplicativeGroupSyntax(a, b.x)
   }))
   test("Semiring syntax")(check(forAll { (a: Int, b: Int) =>
     testSemiringSyntax(a, b)

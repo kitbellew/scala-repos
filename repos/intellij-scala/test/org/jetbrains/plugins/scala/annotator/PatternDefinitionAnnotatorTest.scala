@@ -9,6 +9,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScPatternDefinition
 /**
   * Pavel.Fatin, 18.05.2010
   */
+
 class PatternDefinitionAnnotatorTest extends SimpleTestCase {
   final val Header =
     "class A; class B; object A extends A; object B extends B\n"

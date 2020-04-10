@@ -80,7 +80,9 @@ case class AddOneTsv(p: String)
     TupleConverter.asSuperConverter[(Int, String, String), U](
       implicitly[TupleConverter[(Int, String, String)]])
   override def transformForRead(p: Pipe) = {
-    p.mapTo((0, 1) -> ('one, 'two, 'three)) { t: (Int, String) => t :+ "1" }
+    p.mapTo((0, 1) -> ('one, 'two, 'three)) { t: (Int, String) =>
+      t :+ "1"
+    }
   }
 }
 

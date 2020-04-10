@@ -27,6 +27,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaBraceEnforcer(settings: CodeStyleSettings)
     extends ScalaRecursiveElementVisitor {
   private val myPostProcessor: PostFormatProcessorHelper =

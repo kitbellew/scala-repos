@@ -38,6 +38,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTypeDefinitio
 /**
   * @author Alexander Podkhalyuzin
   */
+
 object ScalaWrapManager {
   def suggestedWrap(
       block: ScalaBlock,

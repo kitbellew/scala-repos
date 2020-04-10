@@ -30,6 +30,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScMember
 /**
   * Pavel Fatin
   */
+
 class TypeAnnotationInspection extends AbstractInspection {
   def actionFor(holder: ProblemsHolder) = {
     case value: ScPatternDefinition

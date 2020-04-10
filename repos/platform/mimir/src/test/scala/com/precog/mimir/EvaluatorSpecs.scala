@@ -1961,7 +1961,9 @@ trait EvaluatorSpecs[M[+_]]
         Const(CTrue)(line),
         dag.AbsoluteLoad(Const(CString("clicks"))(line))(line))(line)
 
-      testEval(input) { result => result must haveSize(100) }
+      testEval(input) { result =>
+        result must haveSize(100)
+      }
     }
 
     "throw an exception from a failed assertion" in {
@@ -1971,8 +1973,9 @@ trait EvaluatorSpecs[M[+_]]
         Const(CFalse)(line),
         dag.AbsoluteLoad(Const(CString("clicks"))(line))(line))(line)
 
-      testEval(input) { result => result must haveSize(100) } must throwA[
-        FatalQueryException]
+      testEval(input) { result =>
+        result must haveSize(100)
+      } must throwA[FatalQueryException]
     }
 
     "fail an assertion according to forall semantics" in {
@@ -1982,8 +1985,9 @@ trait EvaluatorSpecs[M[+_]]
         dag.IUI(true, Const(CFalse)(line), Const(CTrue)(line))(line),
         dag.AbsoluteLoad(Const(CString("clicks"))(line))(line))(line)
 
-      testEval(input) { result => result must haveSize(100) } must throwA[
-        FatalQueryException]
+      testEval(input) { result =>
+        result must haveSize(100)
+      } must throwA[FatalQueryException]
     }
 
     "compute the set difference of two sets" in {
@@ -2062,7 +2066,9 @@ trait EvaluatorSpecs[M[+_]]
 
       val input = IUI(true, numbers, numbers)(line)
 
-      testEval(input) { result => result must haveSize(5) }
+      testEval(input) { result =>
+        result must haveSize(5)
+      }
     }
 
     "compute the iunion of two homogeneous sets" in {
@@ -2115,7 +2121,9 @@ trait EvaluatorSpecs[M[+_]]
         dag.AbsoluteLoad(Const(CString("/clicks"))(line))(line),
         dag.AbsoluteLoad(Const(CString("/hom/numbers3"))(line))(line))(line)
 
-      testEval(input) { result => result must haveSize(105) }
+      testEval(input) { result =>
+        result must haveSize(105)
+      }
     }
 
     "compute the iintersect of two nonintersecting sets of numbers" in {
@@ -2126,7 +2134,9 @@ trait EvaluatorSpecs[M[+_]]
         dag.AbsoluteLoad(Const(CString("/hom/numbers"))(line))(line),
         dag.AbsoluteLoad(Const(CString("/hom/numbers3"))(line))(line))(line)
 
-      testEval(input) { result => result must haveSize(0) }
+      testEval(input) { result =>
+        result must haveSize(0)
+      }
     }
 
     "compute the iintersect of two nonintersecting datasets" in {
@@ -2137,7 +2147,9 @@ trait EvaluatorSpecs[M[+_]]
         dag.AbsoluteLoad(Const(CString("/clicks"))(line))(line),
         dag.AbsoluteLoad(Const(CString("/hom/numbers3"))(line))(line))(line)
 
-      testEval(input) { result => result must haveSize(0) }
+      testEval(input) { result =>
+        result must haveSize(0)
+      }
     }
 
     "compute the iintersect of mod2 and mod3" in {
@@ -3188,7 +3200,9 @@ trait EvaluatorSpecs[M[+_]]
         id
       )(line)
 
-      testEval(input) { result => result must haveSize(100) }
+      testEval(input) { result =>
+        result must haveSize(100)
+      }
     }
 
     "split where commonalities are determined through object deref across extras" in {
@@ -3231,7 +3245,9 @@ trait EvaluatorSpecs[M[+_]]
         id
       )(line)
 
-      testEval(input) { results => results must not(beEmpty) }
+      testEval(input) { results =>
+        results must not(beEmpty)
+      }
     }
 
     "split where the commonality is an object concat" in {
@@ -3287,7 +3303,9 @@ trait EvaluatorSpecs[M[+_]]
         SplitGroup(1, data.identities, id)(line),
         id)(line)
 
-      testEval(input) { results => results must not(beEmpty) }
+      testEval(input) { results =>
+        results must not(beEmpty)
+      }
     }
 
     "memoize properly in a load" in {
@@ -3633,7 +3651,9 @@ trait EvaluatorSpecs[M[+_]]
 
       val input = Filter(IdentitySort, clicks, clicks)(line)
 
-      testEval(input) { result => result must haveSize(0) }
+      testEval(input) { result =>
+        result must haveSize(0)
+      }
     }
 
     "evaluate filter on the results of a histogram function" in {
@@ -4227,7 +4247,9 @@ trait EvaluatorSpecs[M[+_]]
         id
       )(line)
 
-      testEval(input) { resultsE => resultsE must haveSize(100) }
+      testEval(input) { resultsE =>
+        resultsE must haveSize(100)
+      }
     }
 
     "assign identities to the results of flatten" in {
@@ -4358,7 +4380,9 @@ trait EvaluatorSpecs[M[+_]]
             line),
           dag.Const(CLong(1))(line))(line))(line)
 
-      testEval(input) { resultsE => resultsE must haveSize(1) }
+      testEval(input) { resultsE =>
+        resultsE must haveSize(1)
+      }
     }
   }
 

@@ -355,7 +355,9 @@ trait Mapper[A <: Mapper[A]]
 
 trait LongKeyedMapper[OwnerType <: LongKeyedMapper[OwnerType]]
     extends KeyedMapper[Long, OwnerType]
-    with BaseLongKeyedMapper { self: OwnerType => }
+    with BaseLongKeyedMapper {
+  self: OwnerType =>
+}
 
 trait BaseKeyedMapper extends BaseMapper {
   type TheKeyType

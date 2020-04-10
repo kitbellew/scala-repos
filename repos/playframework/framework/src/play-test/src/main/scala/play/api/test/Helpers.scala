@@ -239,7 +239,9 @@ trait EssentialActionCaller {
     val newContentType =
       rh.headers.get(CONTENT_TYPE).fold(w.contentType)(_ => None)
     val rhWithCt = newContentType
-      .map { ct => rh.copy(headers = rh.headers.replace(CONTENT_TYPE -> ct)) }
+      .map { ct =>
+        rh.copy(headers = rh.headers.replace(CONTENT_TYPE -> ct))
+      }
       .getOrElse(rh)
 
     val requestBody = Source.single(w.transform(body))

@@ -37,7 +37,9 @@ class TupleAdderJob(args: Args) extends Job(args) {
 
   TypedText
     .tsv[(String, String)]("input")
-    .map { f => (1 +: f) ++ (2, 3) }
+    .map { f =>
+      (1 +: f) ++ (2, 3)
+    }
     .write(TypedText.tsv[(Int, String, String, Int, Int)]("output"))
 }
 
@@ -1027,7 +1029,9 @@ class TypedLookupJobTest extends WordSpec with Matchers {
         "correctly TypedPipe.hashLookup" in {
           val data = mk.groupBy(_._1)
           val correct = (-1 to 100)
-            .flatMap { k => data.get(k).getOrElse(List((k, ""))) }
+            .flatMap { k =>
+              data.get(k).getOrElse(List((k, "")))
+            }
             .toList
             .sorted
           outBuf should have size (correct.size)
@@ -1069,7 +1073,9 @@ class TypedLookupReduceJobTest extends WordSpec with Matchers {
               (k, v)
             }
           val correct = (-1 to 100)
-            .map { k => data.get(k).getOrElse((k, "")) }
+            .map { k =>
+              data.get(k).getOrElse((k, ""))
+            }
             .toList
             .sorted
           outBuf should have size (correct.size)
@@ -1250,7 +1256,9 @@ class TypedMultiSelfJoinJobTest extends WordSpec with Matchers {
           def group(it: Seq[(Int, Int)])(
               red: (Int, Int) => Int): Map[Int, Int] =
             it.groupBy(_._1)
-              .mapValues { kvs => kvs.map(_._2).reduce(red) }
+              .mapValues { kvs =>
+                kvs.map(_._2).reduce(red)
+              }
               .toMap
 
           val d0 = mk0.groupBy(_._1).mapValues(_.map { case (_, v) => v })
@@ -1303,7 +1311,9 @@ class TypedMapGroupTest extends WordSpec with Matchers {
         "correctly do a mapGroup" in {
           def mapGroup(it: Seq[(Int, Int)]): Map[Int, Int] =
             it.groupBy(_._1)
-              .mapValues { kvs => kvs.map { case (k, v) => k * v }.max }
+              .mapValues { kvs =>
+                kvs.map { case (k, v) => k * v }.max
+              }
               .toMap
           val correct = mapGroup(mk).toList.sorted
           outBuf should have size (correct.size)

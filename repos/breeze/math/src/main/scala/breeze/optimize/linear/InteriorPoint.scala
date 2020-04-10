@@ -22,6 +22,7 @@ object InteriorPoint {
     * @see http://www.doc.ic.ac.uk/~br/berc/pdiplin.pdf
     * @see http://www.ee.ucla.edu/ee236a/lectures/mpc.pdf
     */
+
   def minimize(
       A: DenseMatrix[Double],
       b: DenseVector[Double],

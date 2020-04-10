@@ -48,6 +48,7 @@ import scala.collection.{Seq, mutable}
   * User: Alexander Podkhalyuzin
   * Date: 31.10.2008
   */
+
 class ScalaLineMarkerProvider(
     daemonSettings: DaemonCodeAnalyzerSettings,
     colorsManager: EditorColorsManager)

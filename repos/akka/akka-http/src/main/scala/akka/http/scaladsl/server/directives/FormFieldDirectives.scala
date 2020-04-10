@@ -255,7 +255,9 @@ object FormFieldDirectives extends FormFieldDirectives {
           Future.sequence(form.fields.collect {
             case (`fieldName`, value) ⇒ fu(value)
           }))
-      }.flatMap { result ⇒ handleFieldResult(fieldName, result) }
+      }.flatMap { result ⇒
+        handleFieldResult(fieldName, result)
+      }
     implicit def forRepVR[T](implicit sfu: SFU, fu: FSFFU[T])
         : FieldDefAux[RepeatedValueReceptacle[T], Directive1[Iterable[T]]] =
       extractField[RepeatedValueReceptacle[T], Iterable[T]] { rvr ⇒

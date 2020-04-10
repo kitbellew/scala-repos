@@ -17,6 +17,7 @@ import org.jetbrains.plugins.scala.util.ScalaLanguageDerivative
   * User: Alexander Podkhalyuzin
   * Date: 31.05.2010
   */
+
 /**
   * See com.intellij.codeInsight.daemon.impl.RefCountHolder
   */

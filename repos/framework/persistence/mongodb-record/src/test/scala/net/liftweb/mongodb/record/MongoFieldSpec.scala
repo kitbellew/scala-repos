@@ -730,7 +730,9 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
       val recFromJson = rec.mandatoryJObjectField.setFromJValue(json)
 
       recFromJson.isDefined must_== true
-      recFromJson foreach { r => r must_== json }
+      recFromJson foreach { r =>
+        r must_== json
+      }
       success
     }
     "get set from JValue after BSON roundtrip" in {

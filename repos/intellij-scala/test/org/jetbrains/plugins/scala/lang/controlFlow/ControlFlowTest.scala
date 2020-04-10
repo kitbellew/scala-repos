@@ -13,6 +13,7 @@ import org.junit.Assert
 /**
   * @author ilyas
   */
+
 class ControlFlowTest extends LightCodeInsightFixtureTestCase {
   protected override def getBasePath =
     TestUtils.getTestDataPath + "/controlFlow/"

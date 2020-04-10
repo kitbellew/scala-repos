@@ -34,6 +34,7 @@ import scala.util.control.Exception.allCatch
   * @author Sam Ritchie
   * @author Ashu Singhal
   */
+
 // HDFSMetadata allows metadata about a versioned dataset to be stored
 // alongside that version. "versions" are really just timestamp folder
 // names guaranteed to appear in increasing order. The BatchIDs stored

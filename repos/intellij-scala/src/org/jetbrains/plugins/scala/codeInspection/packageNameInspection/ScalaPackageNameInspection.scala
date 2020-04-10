@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.util.IntentionAvailabilityChecker
   * User: Alexander Podkhalyuzin
   * Date: 08.07.2009
   */
+
 class ScalaPackageNameInspection extends LocalInspectionTool {
   override def isEnabledByDefault: Boolean = true
 

@@ -148,11 +148,12 @@ object Iteratee {
           t: E => TraversableOnce[B],
           bf: scala.collection.generic.CanBuildFrom[E, B, That])
           : Iteratee[E, That] = {
-        fold[E, Seq[E]](Seq.empty) { (els, chunk) => chunk +: els }(dec).map {
-          elts =>
-            val builder = bf()
-            elts.reverse.foreach(builder ++= _)
-            builder.result()
+        fold[E, Seq[E]](Seq.empty) { (els, chunk) =>
+          chunk +: els
+        }(dec).map { elts =>
+          val builder = bf()
+          elts.reverse.foreach(builder ++= _)
+          builder.result()
         }(dec)
       }
     }

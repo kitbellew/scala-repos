@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.util.ScalaUtils
   * User: Alexander Podkhalyuzin
   * Date: 08.07.2009
   */
+
 class ScalaRenamePackageQuickFix(myFile: ScalaFile, name: String)
     extends AbstractFixOnPsiElement(
       if (name == null || name.isEmpty) "Remove package statement"

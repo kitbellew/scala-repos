@@ -89,7 +89,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
         if (!literal.isInstanceOf[ScInterpolated]) return
         val index =
           literal.asInstanceOf[ScInterpolated].getInjections.lastIndexWhere {
-            expr => expr.getTextRange.getEndOffset <= contextStartOffset
+            expr =>
+              expr.getTextRange.getEndOffset <= contextStartOffset
           }
         val res =
           ScalaBasicCompletionContributor.getStartEndPointForInterpolatedString(

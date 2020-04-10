@@ -69,11 +69,15 @@ class ComplexCheck2
   }
 
   property("x + y = y + x") {
-    forAll { (x: C, y: C) => x + y shouldBe y + x }
+    forAll { (x: C, y: C) =>
+      x + y shouldBe y + x
+    }
   }
 
   property("x + (y + z) = (x + y) + z") {
-    forAll { (x: C, y: C, z: C) => x + (y + z) shouldBe (x + y) + z }
+    forAll { (x: C, y: C, z: C) =>
+      x + (y + z) shouldBe (x + y) + z
+    }
   }
 
   property("x + (-x) = x - x = 0") {
@@ -84,7 +88,9 @@ class ComplexCheck2
   }
 
   property("x * (y + z) = (x * y) + (x * z)") {
-    forAll { (x: C, y: C, z: C) => x * (y + z) shouldBe (x * y) + (x * z) }
+    forAll { (x: C, y: C, z: C) =>
+      x * (y + z) shouldBe (x * y) + (x * z)
+    }
   }
 
   property("x * 0 = 0 * x = 0") {
@@ -102,27 +108,39 @@ class ComplexCheck2
   }
 
   property("x * (y * z) = (x * y) * z") {
-    forAll { (x: C, y: C, z: C) => x * (y * z) shouldBe (x * y) * z }
+    forAll { (x: C, y: C, z: C) =>
+      x * (y * z) shouldBe (x * y) * z
+    }
   }
 
   property("x * y = y * x") {
-    forAll { (x: C, y: C) => x * y shouldBe y * x }
+    forAll { (x: C, y: C) =>
+      x * y shouldBe y * x
+    }
   }
 
   property("x / x = 1") {
-    forAll { (x: C) => if (x != zero) x / x shouldBe one }
+    forAll { (x: C) =>
+      if (x != zero) x / x shouldBe one
+    }
   }
 
   property("x^-1 = 1 / x") {
-    forAll { (x: C) => if (x != zero) x.reciprocal shouldBe one / x }
+    forAll { (x: C) =>
+      if (x != zero) x.reciprocal shouldBe one / x
+    }
   }
 
   property("x.pow(2) = x * x") {
-    forAll { (x: C) => x.pow(2) shouldBe x * x }
+    forAll { (x: C) =>
+      x.pow(2) shouldBe x * x
+    }
   }
 
   property("c = c.r iff c.isReal") {
-    forAll { (c: C) => c == c.real shouldBe c.isReal }
+    forAll { (c: C) =>
+      c == c.real shouldBe c.isReal
+    }
   }
 
   // import spire.compat._

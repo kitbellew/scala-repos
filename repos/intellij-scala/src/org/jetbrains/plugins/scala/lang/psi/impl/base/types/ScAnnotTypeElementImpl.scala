@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 /**
   * @author Alexander Podkhalyuzin, ilyas
   */
+
 class ScAnnotTypeElementImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScAnnotTypeElement {

@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.persistence.journal
 
 import akka.actor.Actor
@@ -29,7 +30,9 @@ private[akka] trait WriteJournalBase {
     eventAdapters
       .get(repr.payload.getClass)
       .fromJournal(repr.payload, repr.manifest)
-      .events map { adaptedPayload ⇒ repr.withPayload(adaptedPayload) }
+      .events map { adaptedPayload ⇒
+      repr.withPayload(adaptedPayload)
+    }
 
   /** INTERNAL API */
   private[akka] final def adaptToJournal(

@@ -29,6 +29,7 @@ import backtype.storm.metric.api.IMetric
   *
   * @author Ashutosh Singhal
   */
+
 case class StormMetric[+T <: IMetric](
     metric: T,
     name: String,

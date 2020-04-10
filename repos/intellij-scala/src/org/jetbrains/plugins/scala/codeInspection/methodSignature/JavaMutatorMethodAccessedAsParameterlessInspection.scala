@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.{ScalaPsiElement, ScalaPsiUtil}
 /**
   * Pavel Fatin
   */
+
 class JavaMutatorMethodAccessedAsParameterlessInspection
     extends AbstractMethodSignatureInspection(
       "ScalaJavaMutatorMethodAccessedAsParameterless",

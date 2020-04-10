@@ -34,6 +34,7 @@ import scala.concurrent.duration.Duration
 /**
   * Tests for Summingbird's in-memory planner.
   */
+
 class ConcurrentMemoryLaws extends WordSpec {
   // This is dangerous, obviously. The Memory platform tested here
   // doesn't perform any batching, so the actual time extraction isn't
@@ -68,7 +69,8 @@ class ConcurrentMemoryLaws extends WordSpec {
     new TestGraphs[ConcurrentMemory, T, K, V](new ConcurrentMemory)(() =>
       new ConcurrentHashMap[K, V]())(() => new LinkedBlockingQueue[T]())(
       Producer.source[ConcurrentMemory, T](_))(s => { k => Option(s.get(k)) })({
-      (f, items) => unorderedEq(empty(f), items)
+      (f, items) =>
+        unorderedEq(empty(f), items)
     })({ (p: ConcurrentMemory, plan: ConcurrentMemoryPlan) =>
       Await.result(plan.run, Duration.Inf)
     })

@@ -87,6 +87,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Alexander Podkhalyuzin
   * Date: 23.06.2008
   */
+
 object ScalaRefactoringUtil {
   def trimSpacesAndComments(
       editor: Editor,
@@ -622,7 +623,9 @@ object ScalaRefactoringUtil {
       editor: Editor): Seq[RangeHighlighter] = {
     highlightOccurrences(
       project,
-      occurrences.map({ el: PsiElement => el.getTextRange }),
+      occurrences.map({ el: PsiElement =>
+        el.getTextRange
+      }),
       editor)
   }
 

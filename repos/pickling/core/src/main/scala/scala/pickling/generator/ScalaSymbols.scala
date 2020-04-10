@@ -119,8 +119,9 @@ private[pickling] class IrScalaSymbols[
 
     // Here we only return "accessor" methods.
     override val methods: Seq[IrMethod] = {
-      (allMethods map { mth => new ScalaIrMethod(mth, this) })(
-        collection.breakOut)
+      (allMethods map { mth =>
+        new ScalaIrMethod(mth, this)
+      })(collection.breakOut)
     }
     override def fields: Seq[IrField] = {
       // TODO - It's possible some terms come from the constructor.  We don't really know if they are available at runtime

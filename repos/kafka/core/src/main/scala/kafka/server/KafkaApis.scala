@@ -14,6 +14,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package kafka.server
 
 import java.nio.ByteBuffer
@@ -324,7 +325,8 @@ class KafkaApis(
           new Resource(Group, offsetCommitRequest.groupId))) {
       val errorCode = new JShort(Errors.GROUP_AUTHORIZATION_FAILED.code)
       val results = offsetCommitRequest.offsetData.keySet.asScala.map {
-        topicPartition => (topicPartition, errorCode)
+        topicPartition =>
+          (topicPartition, errorCode)
       }.toMap
       val responseHeader = new ResponseHeader(header.correlationId)
       val responseBody = new OffsetCommitResponse(results.asJava)

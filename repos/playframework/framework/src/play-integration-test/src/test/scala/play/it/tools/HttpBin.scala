@@ -72,7 +72,9 @@ object HttpBinApplication {
 
   val getIp: Routes = {
     case GET(p"/ip") =>
-      Action { request => Ok(Json.obj("origin" -> request.remoteAddress)) }
+      Action { request =>
+        Ok(Json.obj("origin" -> request.remoteAddress))
+      }
   }
 
   val getUserAgent: Routes = {
@@ -91,27 +93,37 @@ object HttpBinApplication {
 
   val get: Routes = {
     case GET(p"/get") =>
-      Action { request => Ok(requestHeaderWriter.writes(request)) }
+      Action { request =>
+        Ok(requestHeaderWriter.writes(request))
+      }
   }
 
   val patch: Routes = {
     case PATCH(p"/patch") =>
-      Action { request => Ok(requestWriter.writes(request)) }
+      Action { request =>
+        Ok(requestWriter.writes(request))
+      }
   }
 
   val post: Routes = {
     case POST(p"/post") =>
-      Action { request => Ok(requestWriter.writes(request)) }
+      Action { request =>
+        Ok(requestWriter.writes(request))
+      }
   }
 
   val put: Routes = {
     case PUT(p"/put") =>
-      Action { request => Ok(requestWriter.writes(request)) }
+      Action { request =>
+        Ok(requestWriter.writes(request))
+      }
   }
 
   val delete: Routes = {
     case DELETE(p"/delete") =>
-      Action { request => Ok(requestHeaderWriter.writes(request)) }
+      Action { request =>
+        Ok(requestHeaderWriter.writes(request))
+      }
   }
 
   private def gzipFilter(mat: Materializer) = new GzipFilter()(mat)
@@ -160,9 +172,14 @@ object HttpBinApplication {
   val redirectTo: Routes = {
     case GET(p"/redirect-to") =>
       Action { request =>
-        request.queryString.get("url").map { u => Redirect(u.head) }.getOrElse {
-          BadRequest("")
-        }
+        request.queryString
+          .get("url")
+          .map { u =>
+            Redirect(u.head)
+          }
+          .getOrElse {
+            BadRequest("")
+          }
       }
   }
 
@@ -223,8 +240,9 @@ object HttpBinApplication {
       Action { request =>
         val body = requestHeaderWriter.writes(request).as[JsObject]
 
-        val content =
-          0.to(param.toInt).map { index => body ++ Json.obj("id" -> index) }
+        val content = 0.to(param.toInt).map { index =>
+          body ++ Json.obj("id" -> index)
+        }
 
         Ok.chunked(Source(content)).as("application/json")
       }

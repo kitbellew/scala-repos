@@ -615,7 +615,9 @@ class DefaultMessagesApi @Inject() (
   protected def loadAllMessages: Map[String, Map[String, String]] = {
     langs.availables
       .map(_.code)
-      .map { lang => (lang, loadMessages("messages." + lang)) }
+      .map { lang =>
+        (lang, loadMessages("messages." + lang))
+      }
       .toMap
       .+("default" -> loadMessages("messages"))
       .+("default.play" -> loadMessages("messages.default"))

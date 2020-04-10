@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScBlockExpr, ScExpression}
 /**
   * Pavel Fatin
   */
+
 object InterpolatedStringParser extends StringParser {
   private val FormatSpecifierPattern =
     "^%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])".r

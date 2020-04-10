@@ -55,6 +55,7 @@ import scala.collection.immutable.HashMap
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
   */
+
 class ScSimpleTypeElementImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScSimpleTypeElement {

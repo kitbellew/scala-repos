@@ -49,6 +49,7 @@ import org.apache.spark.rdd.RDD
   * For more theoretical background on the sampling techniques used here, please refer to
   * http://jmlr.org/proceedings/papers/v28/meng13a.html
   */
+
 private[spark] object StratifiedSamplingUtils extends Logging {
 
   /**

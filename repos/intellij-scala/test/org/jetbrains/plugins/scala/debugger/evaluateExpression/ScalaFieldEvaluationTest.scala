@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.debugger.{
   * User: Alefas
   * Date: 17.10.11
   */
+
 class ScalaFieldEvaluationTest
     extends ScalaFieldEvaluationTestBase
     with ScalaVersion_2_11

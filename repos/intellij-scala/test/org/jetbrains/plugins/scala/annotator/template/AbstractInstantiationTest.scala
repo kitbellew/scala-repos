@@ -5,6 +5,7 @@ import org.jetbrains.plugins.scala.annotator.{AnnotatorTestBase, Error}
 /**
   * Pavel Fatin
   */
+
 class AbstractInstantiationTest
     extends AnnotatorTestBase(AbstractInstantiation.THIS) {
   private val Message = "(\\w+\\s\\w+) is abstract; cannot be instantiated".r

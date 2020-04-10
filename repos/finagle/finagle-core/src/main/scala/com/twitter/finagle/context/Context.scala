@@ -238,6 +238,7 @@ final class MarshalledContext extends Context {
     * Keys in MarshalledContext must provide a marshaller
     * and unmarshaller.
     */
+
   abstract class Key[A](val id: String) {
 
     /**

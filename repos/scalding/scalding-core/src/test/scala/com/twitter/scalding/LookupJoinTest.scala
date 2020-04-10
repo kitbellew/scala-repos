@@ -26,7 +26,9 @@ object LookupJoinedTest {
   def genList(maxTime: Int, maxKey: Int, sz: Int): List[(Int, Int, Int)] = {
     val rng = new java.util.Random
     (0 until sz).view
-      .map { _ => (rng.nextInt(maxTime), rng.nextInt(maxKey), rng.nextInt) }
+      .map { _ =>
+        (rng.nextInt(maxTime), rng.nextInt(maxKey), rng.nextInt)
+      }
       .groupBy { case (t, k, v) => (t, k) }
       .mapValues(_.headOption.toList)
       .values

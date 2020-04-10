@@ -105,7 +105,8 @@ trait Formats { self: Formats =>
 
   def customSerializer(implicit format: Formats) =
     customSerializers.foldLeft(Map(): PartialFunction[Any, JValue]) {
-      (acc, x) => acc.orElse(x.serialize)
+      (acc, x) =>
+        acc.orElse(x.serialize)
     }
 
   def customDeserializer(implicit format: Formats) =

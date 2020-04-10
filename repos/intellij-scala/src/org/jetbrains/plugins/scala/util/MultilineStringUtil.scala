@@ -26,6 +26,7 @@ import scala.collection.mutable.ArrayBuffer
   * Nikolay.Tropin
   * 2014-03-13
   */
+
 object MultilineStringUtil {
   val multilineQuotes = "\"\"\""
   val multilineQuotesLength = multilineQuotes.length

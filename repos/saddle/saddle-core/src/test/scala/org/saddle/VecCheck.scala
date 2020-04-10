@@ -13,6 +13,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
  **/
+
 package org.saddle
 
 import org.specs2.mutable.Specification
@@ -99,7 +100,9 @@ class VecCheck extends Specification with ScalaCheck {
     }
 
     "zipmap works" in {
-      forAll { (v: Vec[Double]) => v.zipMap(v)(_ + _) must_== v * 2.0 }
+      forAll { (v: Vec[Double]) =>
+        v.zipMap(v)(_ + _) must_== v * 2.0
+      }
     }
 
     "dropNA works" in {
@@ -371,7 +374,9 @@ class VecCheck extends Specification with ScalaCheck {
     }
 
     "serialization works" in {
-      forAll { v: Vec[Double] => v must_== serializedCopy(v) }
+      forAll { v: Vec[Double] =>
+        v must_== serializedCopy(v)
+      }
     }
 
   }

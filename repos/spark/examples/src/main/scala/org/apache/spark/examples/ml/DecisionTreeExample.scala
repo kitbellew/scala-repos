@@ -139,9 +139,14 @@ object DecisionTreeExample {
       }
     }
 
-    parser.parse(args, defaultParams).map { params => run(params) }.getOrElse {
-      sys.exit(1)
-    }
+    parser
+      .parse(args, defaultParams)
+      .map { params =>
+        run(params)
+      }
+      .getOrElse {
+        sys.exit(1)
+      }
   }
 
   /** Load a dataset from the given path, using the given format */

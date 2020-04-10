@@ -25,7 +25,9 @@ object Pref extends LilaController {
   def formApply =
     AuthBody { implicit ctx => me =>
       implicit val req = ctx.body
-      FormFuResult(forms.pref) { err => fuccess(err.toString) } { data =>
+      FormFuResult(forms.pref) { err =>
+        fuccess(err.toString)
+      } { data =>
         api.setPref(data(ctx.pref), notifyChange = true) inject Ok("saved")
       }
     }
@@ -33,7 +35,9 @@ object Pref extends LilaController {
   def miniFormApply =
     AuthBody { implicit ctx => me =>
       implicit val req = ctx.body
-      FormFuResult(forms.miniPref) { err => fuccess("nope") } { data =>
+      FormFuResult(forms.miniPref) { err =>
+        fuccess("nope")
+      } { data =>
         api.setPref(data(ctx.pref), notifyChange = true) inject Ok("saved")
       }
     }
@@ -50,7 +54,9 @@ object Pref extends LilaController {
     }
 
   def saveTag(name: String, value: String) =
-    Auth { implicit ctx => me => api.saveTag(me, name, value) }
+    Auth { implicit ctx => me =>
+      api.saveTag(me, name, value)
+    }
 
   private lazy val setters = Map(
     "theme" -> (forms.theme -> save("theme") _),

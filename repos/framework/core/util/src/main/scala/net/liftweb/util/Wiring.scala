@@ -485,5 +485,7 @@ final case class FuncCell5[A, B, C, D, E, Z](
 
 private object WiringHelper {
   def max(a: Long, b: Long*): Long =
-    b.foldLeft(a) { (v1, v2) => if (v1 > v2) v1 else v2 }
+    b.foldLeft(a) { (v1, v2) =>
+      if (v1 > v2) v1 else v2
+    }
 }

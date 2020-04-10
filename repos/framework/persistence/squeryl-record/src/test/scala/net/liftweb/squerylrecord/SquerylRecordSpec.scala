@@ -484,7 +484,9 @@ class SquerylRecordSpec extends Specification with AroundExample {
         p2 must beSome[Array[Byte]]
         p2.get.size must_== p.size
 
-        (0 until p.size) map { i => p2.get(i) must_== p(i) }
+        (0 until p.size) map { i =>
+          p2.get(i) must_== p(i)
+        }
       }
       case None => e2.photo.get must beNone
     }

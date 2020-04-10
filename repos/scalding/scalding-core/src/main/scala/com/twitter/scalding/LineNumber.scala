@@ -40,7 +40,9 @@ object LineNumber {
     stack
       .drop(2)
       .dropWhile { ste =>
-        classPrefixes.exists { prefix => ste.getClassName.startsWith(prefix) }
+        classPrefixes.exists { prefix =>
+          ste.getClassName.startsWith(prefix)
+        }
       }
       .headOption
 

@@ -38,6 +38,7 @@ import org.jetbrains.plugins.scala.lang.psi.types._
   * @author Mikhail.Mutcianko
   *         date 22.12.14
   */
+
 object ShapelessForProduct extends ScalaMacroTypeable {
 
   override def checkMacro(

@@ -25,6 +25,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScSelfTypeElementImpl private (
     stub: StubElement[ScSelfTypeElement],
     nodeType: IElementType,

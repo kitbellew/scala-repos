@@ -8,6 +8,7 @@ import com.intellij.openapi.util.IconLoader
   * User: Alexander Podkhalyuzin
   * Date: 31.10.2008
   */
+
 object GutterIcons {
   val RECURSION_ICON =
     IconLoader.getIcon("/org/jetbrains/plugins/scala/gator/recursion.png")

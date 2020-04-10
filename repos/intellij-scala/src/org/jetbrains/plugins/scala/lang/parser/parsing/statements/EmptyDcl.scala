@@ -9,6 +9,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.expressions.Annotation
 /**
   * @author Alexander Podkhalyuzin
   */
+
 object EmptyDcl {
   def parse(builder: ScalaPsiBuilder): Boolean = parse(builder, isMod = true)
   def parse(builder: ScalaPsiBuilder, isMod: Boolean): Boolean = {

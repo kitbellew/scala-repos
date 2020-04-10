@@ -33,6 +33,7 @@ import twitter4j.json.DataObjectFactory
   * where serialization format depends on unstable parameters, like
   * the serializer registration order for the given Kryo instance.
   */
+
 object Serialization {
 
   /**

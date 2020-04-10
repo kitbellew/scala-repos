@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.packaging.ScPackaging
 /**
   * @author ilyas
   */
+
 trait ScalaFile
     extends ScalaPsiElement
     with ScToplevelElement

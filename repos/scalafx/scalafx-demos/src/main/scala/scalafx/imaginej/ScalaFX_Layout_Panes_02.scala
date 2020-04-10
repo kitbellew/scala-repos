@@ -57,6 +57,7 @@ import scalafx.scene.shape.Rectangle
   *         http://docs.oracle.com/javafx/2.0/layout/builtin_layouts.htm
   *
   */
+
 object ScalaFX_Layout_Panes_02 extends JFXApp {
   stage = new PrimaryStage {
     title = "ScalaFX Layout Panes 02"

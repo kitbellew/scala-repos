@@ -28,9 +28,10 @@ object Test extends std.TaskExtra {
   val f: Values => Any = {
     case (Value(aa), Value(bb), Value(cc)) => aa + " " + bb + " " + cc
     case x =>
-      val cs = x.productIterator.toList.collect {
-        case Inc(x) => x
-      } // workaround for double definition bug
+      val cs =
+        x.productIterator.toList.collect {
+          case Inc(x) => x
+        } // workaround for double definition bug
       throw Incomplete(None, causes = cs)
   }
   val d2 = t3(a, b2, c) mapR f

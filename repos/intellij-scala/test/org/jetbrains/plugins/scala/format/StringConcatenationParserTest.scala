@@ -6,6 +6,7 @@ import org.jetbrains.plugins.scala.base.SimpleTestCase
 /**
   * Pavel Fatin
   */
+
 class StringConcatenationParserTest extends SimpleTestCase {
   def testEmpty() {
 //    assertMatches(parse("")) {

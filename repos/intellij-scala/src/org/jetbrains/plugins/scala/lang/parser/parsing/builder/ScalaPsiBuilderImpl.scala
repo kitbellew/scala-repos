@@ -11,6 +11,7 @@ import scala.collection.mutable
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaPsiBuilderImpl(builder: PsiBuilder)
     extends PsiBuilderAdapter(builder)
     with ScalaPsiBuilder {

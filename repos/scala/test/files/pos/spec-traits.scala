@@ -15,7 +15,9 @@ class Bug3307 {
     block("abc")
   }
 
-  ({ () => f { implicit x => println(x) } })()
+  ({ () =>
+    f { implicit x => println(x) }
+  })()
 }
 
 // issue 3301

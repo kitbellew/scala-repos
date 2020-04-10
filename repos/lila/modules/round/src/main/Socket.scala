@@ -114,7 +114,9 @@ private[round] final class Socket(
     case PingVersion(uid, v) =>
       timeBomb.delay
       ping(uid)
-      ownerOf(uid) foreach { o => playerDo(o.color, _.ping) }
+      ownerOf(uid) foreach { o =>
+        playerDo(o.color, _.ping)
+      }
       withMember(uid) { member =>
         (history getEventsSince v).fold(resyncNow(member))(batch(member, _))
       }
@@ -220,7 +222,9 @@ private[round] final class Socket(
   }
 
   def notifyOwner[A: Writes](color: Color, t: String, data: A) {
-    ownerOf(color) foreach { m => m push makeMessage(t, data) }
+    ownerOf(color) foreach { m =>
+      m push makeMessage(t, data)
+    }
   }
 
   def notifyGone(color: Color, gone: Boolean) {

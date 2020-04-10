@@ -16,6 +16,7 @@ import _root_.scala.collection.mutable._
   * @deprecated
   * Date : 05.05.2008
   */
+
 class ScalaPackagingStructureViewElement(private val element: ScPackaging)
     extends ScalaStructureViewElement(element, false) {
   def getPresentation: ItemPresentation = {

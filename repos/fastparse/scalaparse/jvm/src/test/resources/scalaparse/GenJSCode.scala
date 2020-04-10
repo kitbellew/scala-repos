@@ -3670,7 +3670,9 @@ abstract class GenJSCode
         currentClassSym := sym
       ) {
         val (functionMakerBase, functionInfo, arity) =
-          tryGenAndRecordAnonFunctionClassGeneric(cd) { msg => return false }
+          tryGenAndRecordAnonFunctionClassGeneric(cd) { msg =>
+            return false
+          }
         val functionMaker = { capturedArgs: List[js.Tree] =>
           JSFunctionToScala(functionMakerBase(capturedArgs), arity)
         }

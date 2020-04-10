@@ -3,6 +3,7 @@ package org.jetbrains.plugins.scala.components.libinjection
 /**
   * Created by mucianm on 10.02.16.
   */
+
 import java.io.File
 
 import com.intellij.openapi.vfs.{VfsUtilCore, VirtualFile}

@@ -21,6 +21,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Alexander Podkhalyuzin
   * Date: 02.07.2009
   */
+
 class ScalaFileNameInspection extends LocalInspectionTool {
   override def isEnabledByDefault: Boolean = true
 

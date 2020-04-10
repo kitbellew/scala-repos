@@ -153,7 +153,9 @@ object PageRank extends Logging {
       prevRankGraph = rankGraph
       val rPrb = if (personalized) { (src: VertexId, id: VertexId) =>
         resetProb * delta(src, id)
-      } else { (src: VertexId, id: VertexId) => resetProb }
+      } else { (src: VertexId, id: VertexId) =>
+        resetProb
+      }
 
       rankGraph = rankGraph
         .joinVertices(rankUpdates) { (id, oldRank, msgSum) =>

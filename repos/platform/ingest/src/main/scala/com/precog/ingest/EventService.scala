@@ -214,7 +214,9 @@ trait EventService
                   shardProxy(state.shardClient)
               }
             } ->
-            stop { state => state.stop }
+            stop { state =>
+              state.stop
+            }
         }
       }
     }

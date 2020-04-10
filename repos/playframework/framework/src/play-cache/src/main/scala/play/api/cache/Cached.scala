@@ -232,7 +232,8 @@ final class CachedBuilder(
         .orElse {
           // Otherwise try to serve the resource from the cache, if it has not yet expired
           cache.get[SerializableResult](resultKey).map {
-            sr: SerializableResult => Accumulator.done(sr.result)
+            sr: SerializableResult =>
+              Accumulator.done(sr.result)
           }
         }
         .getOrElse {

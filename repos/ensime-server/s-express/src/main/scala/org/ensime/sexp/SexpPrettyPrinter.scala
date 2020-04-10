@@ -67,7 +67,9 @@ trait SexpPrettyPrinter extends SexpPrinter {
     }
 
   protected def printIndent(sb: StringBuilder, indent: Int): Unit =
-    (0 until indent) foreach { _ => sb.append(' ') }
+    (0 until indent) foreach { _ =>
+      sb.append(' ')
+    }
 
 }
 

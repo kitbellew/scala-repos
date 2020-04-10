@@ -20,6 +20,7 @@ import scala.collection.JavaConversions
   * User: Alexander Podkhalyuzin
   * Date: 31.05.2010
   */
+
 class ScalaAnnotatorHighlightVisitor(project: Project)
     extends HighlightVisitor {
   def order: Int = 0

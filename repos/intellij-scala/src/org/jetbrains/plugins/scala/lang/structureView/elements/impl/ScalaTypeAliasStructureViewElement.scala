@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.structureView.itemsPresentations.impl.Sc
   * User: Alexander Podkhalyuzin
   * Date: 31.07.2008
   */
+
 class ScalaTypeAliasStructureViewElement(
     private val element: ScTypeAlias,
     val isInherited: Boolean)

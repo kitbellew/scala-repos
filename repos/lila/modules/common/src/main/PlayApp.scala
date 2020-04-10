@@ -25,7 +25,10 @@ object PlayApp {
   def withApp[A](op: Application => A): A =
     Play.maybeApplication map op err "Play application is not started!"
 
-  def system = withApp { implicit app => play.api.libs.concurrent.Akka.system }
+  def system =
+    withApp { implicit app =>
+      play.api.libs.concurrent.Akka.system
+    }
 
   lazy val langs =
     loadConfig.getStringList("play.i18n.langs").toList map Lang.apply
@@ -51,7 +54,9 @@ object PlayApp {
   lazy val messages: Map[String, Map[String, String]] =
     langs
       .map(_.code)
-      .map { lang => (lang, loadMessages("messages." + lang)) }
+      .map { lang =>
+        (lang, loadMessages("messages." + lang))
+      }
       .toMap
       .+("default" -> loadMessages("messages"))
       .+("default.play" -> loadMessages("messages.default"))

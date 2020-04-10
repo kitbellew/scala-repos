@@ -54,7 +54,9 @@ case class Form[T](
     * Formats associated to this form, indexed by field name. *
     */
   val formats: Map[String, (String, Seq[Any])] = mapping.mappings
-    .map { m => m.key -> m.format }
+    .map { m =>
+      m.key -> m.format
+    }
     .collect {
       case (k, Some(f)) => k -> f
     }
@@ -895,7 +897,9 @@ case class OptionalMapping[T](
       .map(k => data.get(k).filterNot(_.isEmpty))
       .collect { case Some(v) => v }
       .headOption
-      .map { _ => wrapped.bind(data).right.map(Some(_)) }
+      .map { _ =>
+        wrapped.bind(data).right.map(Some(_))
+      }
       .getOrElse {
         Right(None)
       }

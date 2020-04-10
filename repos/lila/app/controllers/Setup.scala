@@ -37,7 +37,9 @@ object Setup extends LilaController with TheftPrevention {
     }
 
   def ai =
-    process(env.forms.ai) { config => implicit ctx => env.processor ai config }
+    process(env.forms.ai) { config => implicit ctx =>
+      env.processor ai config
+    }
 
   def friendForm(userId: Option[String]) =
     Open { implicit ctx =>

@@ -50,6 +50,7 @@ import scalafx.collections.ObservableBuffer.{Add, Remove, Reorder}
   *         http://docs.oracle.com/javafx/2.0/collections/jfxpub-collections.htm
   *
   */
+
 object ScalaFX_Collections_01 {
   private def changes01(observableStringBuffer: ObservableBuffer[String]) {
     println(

@@ -601,7 +601,8 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
     swaggerMeta(Symbols.Operation, op)
 
   protected def swaggerMeta(s: Symbol, v: Any): RouteTransformer = {
-    (route: Route) ⇒ route.copy(metadata = route.metadata + (s -> v))
+    (route: Route) ⇒
+      route.copy(metadata = route.metadata + (s -> v))
   }
   implicit def dataType2string(dt: DataType) = dt.name
 

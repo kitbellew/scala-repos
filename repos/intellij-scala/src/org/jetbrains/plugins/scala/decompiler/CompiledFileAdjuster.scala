@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile
 /**
   * @author ilyas
   */
+
 trait CompiledFileAdjuster {
 
   protected var sourceFileName: String = ""

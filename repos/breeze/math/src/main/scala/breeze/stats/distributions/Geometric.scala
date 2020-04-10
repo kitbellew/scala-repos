@@ -77,6 +77,8 @@ object Geometric
   def posterior(
       prior: conjugateFamily.Parameter,
       evidence: TraversableOnce[Int]) = {
-    evidence.foldLeft(prior) { (acc, x) => (acc._1 + 1, acc._2 + x) }
+    evidence.foldLeft(prior) { (acc, x) =>
+      (acc._1 + 1, acc._2 + x)
+    }
   }
 }

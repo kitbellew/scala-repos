@@ -22,6 +22,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.{
   * User: Alexander Podkhalyuzin
   * Date: 30.03.2009
   */
+
 object ScTypeUtil {
   //for java
   def presentableText(typez: ScType) = ScType.presentableText(typez)

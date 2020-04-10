@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.parser.util.ParserUtils
   * @author Alexander Podkhalyuzin
   * Date: 28.02.2008
   */
+
 /*
  * Refinement ::= [nl] '{' Refinestat {semi RefineStat} '}'
  */

@@ -719,7 +719,9 @@ trait HtmlFixer {
           e.attribute("type")
             .map(_.text)
             .filter(_ == "text/javascript")
-            .flatMap { a => if (e.attribute("src").isEmpty) Some(e) else None }
+            .flatMap { a =>
+              if (e.attribute("src").isEmpty) Some(e) else None
+            }
         }
         case _ => None
       }

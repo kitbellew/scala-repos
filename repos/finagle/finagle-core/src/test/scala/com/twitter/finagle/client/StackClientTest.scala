@@ -139,7 +139,9 @@ class StackClientTest
       var stack = ctx.client
         .configured(param.Label(name))
         .withStack(stk)
-      failFastOn.foreach { ffOn => stack = stack.configured(FailFast(ffOn)) }
+      failFastOn.foreach { ffOn =>
+        stack = stack.configured(FailFast(ffOn))
+      }
       val client = stack.newClient("/$/inet/localhost/0")
       new FactoryToService[String, String](client)
     }

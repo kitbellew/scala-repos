@@ -811,7 +811,8 @@ trait Emitter
                     // Run the StateT and preserve its marks
                     StateT.apply[Id, Emission, Unit] { e =>
                       val state = emitDispatch(d, let, dispatches) {
-                        dispatches => emitExpr(left, dispatches)
+                        dispatches =>
+                          emitExpr(left, dispatches)
                       }
                       val (e2, ()) = state(e)
                       (e2.copy(marks = e.marks), ())

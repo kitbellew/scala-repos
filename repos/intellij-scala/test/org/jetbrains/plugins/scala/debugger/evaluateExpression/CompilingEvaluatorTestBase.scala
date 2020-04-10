@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.debugger.{
 /**
   * @author Nikolay.Tropin
   */
+
 class CompilingEvaluatorTest
     extends CompilingEvaluatorTestBase
     with ScalaVersion_2_11

@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocTag
   * User: Dmitry Naydanov
   * Date: 2/1/12
   */
+
 class ScalaDocParamEnterHandlerDelegate extends EnterHandlerDelegateAdapter {
   override def postProcessEnter(
       file: PsiFile,

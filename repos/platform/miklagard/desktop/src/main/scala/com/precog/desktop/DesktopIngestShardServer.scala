@@ -188,7 +188,9 @@ object DesktopIngestShardServer
 
     val stoppable = Stoppable.fromFuture {
       platform.shutdown
-        .onComplete { _ => logger.info("Platform shutdown complete") }
+        .onComplete { _ =>
+          logger.info("Platform shutdown complete")
+        }
         .onFailure {
           case t: Throwable =>
             logger.error("Failure during platform shutdown", t)

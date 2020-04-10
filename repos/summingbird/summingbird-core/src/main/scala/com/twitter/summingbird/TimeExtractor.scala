@@ -20,6 +20,7 @@ package com.twitter.summingbird
   * TimeExtractor is really just a function, but we've used a
   * specialized type for implicit resolution and serializability.
   */
+
 object TimeExtractor {
   def apply[T](fn: T => Long): TimeExtractor[T] =
     new TimeExtractor[T] {

@@ -120,7 +120,9 @@ object Templates {
         case e: Elem if e.label == "html" => df(e.attributes)
         case _                            => None
       }
-      .flatMap { md => Helpers.findId(in, md.value.text) }
+      .flatMap { md =>
+        Helpers.findId(in, md.value.text)
+      }
       .headOption orElse
       in.flatMap {
           case e: Elem if e.label == "html" =>
@@ -147,7 +149,9 @@ object Templates {
             }
           case _ => None
         }
-        .flatMap { id => Helpers.findId(in, id) }
+        .flatMap { id =>
+          Helpers.findId(in, id)
+        }
         .headOption getOrElse in
   }
 
@@ -355,7 +359,9 @@ abstract class SnippetFailureException(msg: String)
       }
       .take(10)
       .toList
-      .map { e => <code><span><br/>{e.toString}</span></code> }
+      .map { e =>
+        <code><span><br/>{e.toString}</span></code>
+      }
 }
 
 class StateInStatelessException(msg: String)

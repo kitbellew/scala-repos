@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.params.ScParameter
   *  User: Alexander Podkhalyuzin
   *  Date: 27.09.2008
   */
+
 class ImplicitFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
     if (context.isInstanceOf[PsiComment]) return false

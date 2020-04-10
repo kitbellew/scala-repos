@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScCommentOwner
 /**
   * @author Nikolay.Tropin
   */
+
 object ScalaSuppressableInspectionTool {
   def findElementToolSuppressedIn(
       element: PsiElement,

@@ -120,9 +120,13 @@ class A18 {
 class A19 { ((x: String) =>
   x + "3")
 
-val x = { ((x: String) => x + "1") }
+val x = { ((x: String) =>
+  x + "1")
+}
 
-{ ((x: String) => x + "2") }
+{ ((x: String) =>
+  x + "2")
+}
 }
 
 class A20 { (s: String) =>

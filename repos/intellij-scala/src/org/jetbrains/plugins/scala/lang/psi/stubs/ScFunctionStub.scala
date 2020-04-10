@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScFunction
   * User: Alexander Podkhalyuzin
   * Date: 14.10.2008
   */
+
 trait ScFunctionStub extends NamedStub[ScFunction] with ScMemberOrLocal {
   def isImplicit: Boolean
 

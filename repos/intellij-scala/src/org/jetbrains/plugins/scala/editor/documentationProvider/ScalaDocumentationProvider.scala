@@ -67,6 +67,7 @@ import scala.collection.mutable
   * User: Alexander Podkhalyuzin
   * Date: 11.11.2008
   */
+
 class ScalaDocumentationProvider extends CodeDocumentationProvider {
   import org.jetbrains.plugins.scala.editor.documentationProvider.ScalaDocumentationProvider._
   def getDocumentationElementForLookupItem(

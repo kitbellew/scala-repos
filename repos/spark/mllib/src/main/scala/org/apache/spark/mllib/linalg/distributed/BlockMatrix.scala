@@ -210,7 +210,9 @@ class BlockMatrix @Since("1.3.0") (
             blockRowIndex.toLong * rowsPerBlock + m,
             blockColIndex.toLong * colsPerBlock + n)
       }
-      .reduce { (x0, x1) => (math.max(x0._1, x1._1), math.max(x0._2, x1._2)) }
+      .reduce { (x0, x1) =>
+        (math.max(x0._1, x1._1), math.max(x0._2, x1._2))
+      }
     if (nRows <= 0L) nRows = rows
     assert(
       rows <= nRows,

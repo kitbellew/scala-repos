@@ -195,7 +195,11 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     } else {
       model.productFeatures
         .mapValues { f =>
-          queryFeatures.map { qf => cosine(qf, f) }.reduce(_ + _)
+          queryFeatures
+            .map { qf =>
+              cosine(qf, f)
+            }
+            .reduce(_ + _)
         }
         .filter(_._2 > 0) // keep items with score > 0
         .collect()

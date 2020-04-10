@@ -137,13 +137,17 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
   def ensureIndex(keys: JObject, unique: Boolean): Unit = {
     val options = new BasicDBObject
     if (unique) options.put("unique", true)
-    useColl { coll => coll.createIndex(JObjectParser.parse(keys), options) }
+    useColl { coll =>
+      coll.createIndex(JObjectParser.parse(keys), options)
+    }
   }
 
   def createIndex(keys: JObject, unique: Boolean = false): Unit = {
     val options = new BasicDBObject
     if (unique) options.put("unique", true)
-    useColl { coll => coll.createIndex(JObjectParser.parse(keys), options) }
+    useColl { coll =>
+      coll.createIndex(JObjectParser.parse(keys), options)
+    }
   }
 
   /*

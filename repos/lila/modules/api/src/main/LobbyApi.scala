@@ -28,7 +28,9 @@ final class LobbyApi(
       getFilter(ctx) map {
       case (((hooks, seeks), povs), filter) =>
         Json.obj(
-          "me" -> ctx.me.map { u => Json.obj("username" -> u.username) },
+          "me" -> ctx.me.map { u =>
+            Json.obj("username" -> u.username)
+          },
           "version" -> lobbyVersion(),
           "hooks" -> JsArray(hooks map (_.render)),
           "seeks" -> JsArray(seeks map (_.render)),

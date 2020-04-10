@@ -42,15 +42,15 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       )
       // Implicit join
       q1 = (for {
-        c <- categories
-        p <- posts if c.id === p.category
-      } yield (p.id, c.id, c.name, p.title)).sortBy(_._1)
+          c <- categories
+          p <- posts if c.id === p.category
+        } yield (p.id, c.id, c.name, p.title)).sortBy(_._1)
       _ <- mark("q1", q1.map(p => (p._1, p._2)).result)
         .map(_ shouldBe List((2, 1), (3, 2), (4, 3), (5, 2)))
       // Explicit inner join
       q2 = (for {
-        (c, p) <- categories join posts on (_.id === _.category)
-      } yield (p.id, c.id, c.name, p.title)).sortBy(_._1)
+          (c, p) <- categories join posts on (_.id === _.category)
+        } yield (p.id, c.id, c.name, p.title)).sortBy(_._1)
       _ <-
         q2.map(p => (p._1, p._2))
           .result
@@ -58,16 +58,16 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       q3 = posts.flatMap(_.withCategory)
       _ <- mark("q3", q3.result).map(_ should (_.length == 20))
       q4 = (for {
-        a1 <- categories
-        a2 <- categories
-        a3 <- categories
-        a4 <- categories
-        if a1.id === a4.id
-      } yield a1.id).to[Set]
+          a1 <- categories
+          a2 <- categories
+          a3 <- categories
+          a4 <- categories
+          if a1.id === a4.id
+        } yield a1.id).to[Set]
       _ <- mark("q4", q4.result).map(_ shouldBe Set(1, 2, 3, 4))
       q5 = (for {
-        c <- categories
-      } yield (c, Rep.None[Int])).sortBy(_._1.id)
+          c <- categories
+        } yield (c, Rep.None[Int])).sortBy(_._1.id)
       _ <- mark("q5", q5.result.map(_.map(_._1._1)))
         .map(_ shouldBe List(1, 2, 3, 4))
     } yield ()
@@ -93,7 +93,7 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       _ = r1 shouldBe Set(("a", Some("a")), ("b", Some("b")), ("c", None))
       // Nested left outer, lift primitive value
       q2 = ((xs.map(_.b) joinLeft ys.map(_.b) on (_ === _)) joinLeft ys.map(
-        _.b) on (_._1 === _)).to[Set]
+          _.b) on (_._1 === _)).to[Set]
       r2 <- mark("q2", q2.result)
       r2t: Set[((String, Option[String]), Option[String])] = r2
       _ = r2 shouldBe Set(
@@ -153,7 +153,7 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       // Nested right outer, lift primitive value
       // (left-associative; not symmetrical to the nested left outer case)
       q7 = ((ys.map(_.b) joinRight xs.map(_.b) on (_ === _)) joinRight xs.map(
-        _.b) on (_._2 === _)).to[Set]
+          _.b) on (_._2 === _)).to[Set]
       r7 <- mark("q7", q7.result)
       rt: Set[(Option[(Option[String], String)], String)] = r7
       _ = r7 shouldBe Set(
@@ -190,7 +190,7 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       // Nested right outer, lift non-primitive value
       // (left-associative; not symmetrical to the nested left outer case)
       q10 = ((ys joinRight xs on (_.b === _.b)) joinRight xs on (_._1.map(
-        _.b) === _.b)).to[Set]
+          _.b) === _.b)).to[Set]
       r10 <- mark("q10", q10.result)
       r10t: Set[
         (Option[(Option[(Int, String)], (Int, String))], (Int, String))] = r10

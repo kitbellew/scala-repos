@@ -31,11 +31,13 @@ object ScalaPsiCreator {
       /*****************************************************/
       /********************** TOP **************************/
       /*****************************************************/
+
       case ScalaElementTypes.PACKAGING => new ScPackagingImpl(node)
 
       /***************************************************/
       /********************* IMPORT **********************/
       /***************************************************/
+
       case ScalaElementTypes.IMPORT_STMT      => new ScImportStmtImpl(node)
       case ScalaElementTypes.IMPORT_EXPR      => new ScImportExprImpl(node)
       case ScalaElementTypes.IMPORT_SELECTORS => new ScImportSelectorsImpl(node)
@@ -44,6 +46,7 @@ object ScalaPsiCreator {
       /***************************************************/
       /********************** DEF ************************/
       /***************************************************/
+
       case ScalaElementTypes.CLASS_DEF  => new ScClassImpl(node)
       case ScalaElementTypes.OBJECT_DEF => new ScObjectImpl(node)
       case ScalaElementTypes.TRAIT_DEF  => new ScTraitImpl(node)
@@ -55,6 +58,7 @@ object ScalaPsiCreator {
       /***************************************************/
       /******************** TEMPLATES ********************/
       /***************************************************/
+
       /******************* parents ****************/
       case ScalaElementTypes.CLASS_PARENTS => new ScClassParentsImpl(node)
       case ScalaElementTypes.TRAIT_PARENTS => new ScTraitParentsImpl(node)
@@ -65,6 +69,7 @@ object ScalaPsiCreator {
       /***************************************************/
       /*************** TEMPLATE STATEMENTS ***************/
       /***************************************************/
+
       /*************** DECLARATION ***************/
       case ScalaElementTypes.VALUE_DECLARATION =>
         new ScValueDeclarationImpl(node)
@@ -109,6 +114,7 @@ object ScalaPsiCreator {
       /***************************************************/
       /********* PARAMETERS AND TYPE PARAMETERS **********/
       /***************************************************/
+
       /******************** parameters *******************/
       case ScalaElementTypes.PARAM_CLAUSE  => new ScParameterClauseImpl(node)
       case ScalaElementTypes.PARAM_CLAUSES => new ScParametersImpl(node)
@@ -128,6 +134,7 @@ object ScalaPsiCreator {
       /***************************************************/
       /************* MODIFIERS AND ATTRIBUTES ************/
       /***************************************************/
+
       /************** modifiers **************/
       case ScalaElementTypes.MODIFIERS       => new ScModifierListImpl(node)
       case ScalaElementTypes.ACCESS_MODIFIER => new ScAccessModifierImpl(node)
@@ -156,6 +163,7 @@ object ScalaPsiCreator {
         new ScInterpolatedStringPartReference(node)
 
       /********************** TYPES ************************/
+
       case ScalaElementTypes.SIMPLE_TYPE => new ScSimpleTypeElementImpl(node)
       case ScalaElementTypes.TUPLE_TYPE  => new ScTupleTypeElementImpl(node)
       case ScalaElementTypes.TYPE_IN_PARENTHESIS =>
@@ -191,6 +199,7 @@ object ScalaPsiCreator {
     node.getElementType match {
 
       /******************* EXPRESSIONS*********************/
+
       case ScalaElementTypes.PARENT_EXPR => new ScParenthesisedExprImpl(node)
       case ScalaElementTypes.METHOD_CALL => new ScMethodCallImpl(node)
       case ScalaElementTypes.REFERENCE_EXPRESSION =>

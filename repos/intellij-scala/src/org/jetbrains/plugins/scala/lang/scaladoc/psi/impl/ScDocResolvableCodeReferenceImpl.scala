@@ -31,6 +31,7 @@ import org.jetbrains.plugins.scala.project._
   * User: Dmitry Naydanov
   * Date: 11/30/11
   */
+
 class ScDocResolvableCodeReferenceImpl(node: ASTNode)
     extends ScStableCodeReferenceElementImpl(node)
     with ScDocResolvableCodeReference {

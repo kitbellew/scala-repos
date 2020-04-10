@@ -9,6 +9,7 @@ import com.intellij.util.containers.WeakHashMap
   * @author Ksenia.Sautina
   * @since 12/19/12
   */
+
 object WorksheetViewerInfo {
   private val allViewers =
     new WeakHashMap[Editor, List[(Editor)]]()

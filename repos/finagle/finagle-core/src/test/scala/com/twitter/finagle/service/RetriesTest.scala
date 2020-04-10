@@ -235,7 +235,9 @@ class RetriesTest extends FunSuite {
   }
 
   private def nRetries(retriesStat: Seq[Float]): Int = {
-    retriesStat.foldLeft(0) { (sum, next) => sum + next.toInt }
+    retriesStat.foldLeft(0) { (sum, next) =>
+      sum + next.toInt
+    }
   }
 
   test("moduleWithRetryPolicy end to end to end with RetryBudget") {

@@ -2,6 +2,7 @@
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   * Copyright (C) 2012-2016 Eligotech BV.
   */
+
 package akka.persistence.journal
 
 import scala.concurrent.duration._
@@ -204,7 +205,9 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
               }.map(_ ⇒ highSeqNr)
             }
           }
-          .map { highSeqNr ⇒ RecoverySuccess(highSeqNr) }
+          .map { highSeqNr ⇒
+            RecoverySuccess(highSeqNr)
+          }
           .recover {
             case e ⇒ ReplayMessagesFailure(e)
           }

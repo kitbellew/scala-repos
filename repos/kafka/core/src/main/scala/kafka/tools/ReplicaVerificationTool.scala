@@ -14,6 +14,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package kafka.tools
 
 import joptsimple.OptionParser
@@ -51,6 +52,7 @@ import org.apache.kafka.common.protocol.Errors
   * 1. The tools needs all brokers to be up at startup time.
   * 2. The tool doesn't handle out of range offsets.
   */
+
 object ReplicaVerificationTool extends Logging {
   val clientId = "replicaVerificationTool"
   val dateFormatString = "yyyy-MM-dd HH:mm:ss,SSS"

@@ -290,7 +290,9 @@ class XorTTests extends CatsSuite {
   }
 
   test("merge with Id consistent with Xor merge") {
-    forAll { (x: XorT[Id, Int, Int]) => x.merge should ===(x.value.merge) }
+    forAll { (x: XorT[Id, Int, Int]) =>
+      x.merge should ===(x.value.merge)
+    }
   }
 
   test("to consistent with toOption") {

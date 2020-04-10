@@ -5,6 +5,7 @@ package implicits
 /**
   * @author Alexander Podkhalyuzin
   */
+
 import java.io.File
 
 import com.intellij.openapi.util.io.FileUtil
@@ -22,6 +23,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScExpression
   * User: Alexander Podkhalyuzin
   * Date: 10.03.2009
   */
+
 abstract class ImplicitsTestBase
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   private val startExprMarker = "/*start*/"

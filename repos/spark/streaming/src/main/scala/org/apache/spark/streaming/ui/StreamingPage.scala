@@ -513,7 +513,9 @@ private[ui] class StreamingPage(parent: StreamingTab)
       .orElse(listener.streamName(streamId))
       .getOrElse(s"Stream-$streamId")
     val receiverActive = receiverInfo
-      .map { info => if (info.active) "ACTIVE" else "INACTIVE" }
+      .map { info =>
+        if (info.active) "ACTIVE" else "INACTIVE"
+      }
       .getOrElse(emptyCell)
     val receiverLocation = receiverInfo
       .map { info =>

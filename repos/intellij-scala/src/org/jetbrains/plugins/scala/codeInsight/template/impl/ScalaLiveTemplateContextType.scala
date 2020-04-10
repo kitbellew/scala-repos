@@ -7,6 +7,7 @@ import com.intellij.codeInsight.template.FileTypeBasedContextType
   * User: Alexander Podkhalyuzin
   * Date: 30.01.2009
   */
+
 class ScalaLiveTemplateContextType
     extends FileTypeBasedContextType(
       "SCALA",

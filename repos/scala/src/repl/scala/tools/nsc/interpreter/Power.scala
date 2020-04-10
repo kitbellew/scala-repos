@@ -38,6 +38,7 @@ Lost after 18/flatten {
   method super$f
 }
   */
+
 /** A class for methods to be injected into the intp in power mode.
   */
 class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](

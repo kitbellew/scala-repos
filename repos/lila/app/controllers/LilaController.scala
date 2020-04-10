@@ -209,7 +209,9 @@ private[controllers] trait LilaController
     NoPlayban(NoCurrentGame(a))
 
   protected def JsonOk[A: Writes](fua: Fu[A]) =
-    fua map { a => Ok(Json toJson a) as JSON }
+    fua map { a =>
+      Ok(Json toJson a) as JSON
+    }
 
   protected def JsonOptionOk[A: Writes](fua: Fu[Option[A]])(implicit
       ctx: Context) =

@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
 /**
   * Pavel Fatin
   */
+
 object UndefinedMember extends AnnotatorPart[ScTemplateDefinition] {
   val Message = "Only classes can have declared but undefined members"
 

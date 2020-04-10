@@ -3,6 +3,7 @@ package com.twitter.finagle.thrift
 /**
   * Support for finagle tracing in thrift.
   */
+
 private[finagle] object ThriftTracing {
 
   /**

@@ -28,6 +28,7 @@ Check the output:
   cat tutorial/data/output2.txt
 
 **/
+
 class Tutorial2(args: Args) extends Job(args) {
 
   val input = TextLine("tutorial/data/hello.txt")

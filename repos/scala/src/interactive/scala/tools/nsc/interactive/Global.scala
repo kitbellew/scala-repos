@@ -28,6 +28,7 @@ import scala.reflect.internal.Chars.isIdentifierStart
   * does not clear the comments table at every new typer run (those
   * being many and close between in this context).
   */
+
 trait CommentPreservingTypers extends Typers {
   self: Analyzer =>
 
@@ -912,7 +913,9 @@ with ContextTrees with RichCompilationUnits with Picklers {
 
   private def withTempUnit[T](source: SourceFile)(
       f: RichCompilationUnit => T): T =
-    withTempUnits(List(source)) { srcToUnit => f(srcToUnit(source)) }
+    withTempUnits(List(source)) { srcToUnit =>
+      f(srcToUnit(source))
+    }
 
   /** Find a 'mirror' of symbol `sym` in unit `unit`. Pre: `unit is loaded. */
   private def findMirrorSymbol(
@@ -973,7 +976,9 @@ with ContextTrees with RichCompilationUnits with Picklers {
     informIDE("getLinkPos " + sym + " " + source)
     respond(response) {
       if (sym.owner.isClass) {
-        withTempUnit(source) { u => findMirrorSymbol(sym, u).pos }
+        withTempUnit(source) { u =>
+          findMirrorSymbol(sym, u).pos
+        }
       } else {
         debugLog("link not in class " + sym + " " + source + " " + sym.owner)
         NoPosition

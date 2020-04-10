@@ -157,6 +157,7 @@ object PathId {
     * Needed for AppDefinitionValidatorTest.testSchemaLessStrictForId.
     */
   val absolutePathValidator = isTrue[PathId]("Path needs to be absolute") {
-    path => path.absolute
+    path =>
+      path.absolute
   }
 }

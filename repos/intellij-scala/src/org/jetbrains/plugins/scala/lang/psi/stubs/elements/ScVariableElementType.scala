@@ -24,6 +24,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.index.ScalaIndexKeys
   * User: Alexander Podkhalyuzin
   * Date: 18.10.2008
   */
+
 abstract class ScVariableElementType[Variable <: ScVariable](debugName: String)
     extends ScStubElementType[ScVariableStub, ScVariable](debugName) {
   def createStubImpl[ParentPsi <: PsiElement](

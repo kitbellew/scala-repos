@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.util
 
 import java.io.{
@@ -473,7 +474,9 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
       }
       "calling foreach" in {
         check { a: ByteString ⇒
-          likeVector(a) { it ⇒ var acc = 0; it foreach { acc += _ }; acc }
+          likeVector(a) { it ⇒
+            var acc = 0; it foreach { acc += _ }; acc
+          }
         }
       }
       "calling foldLeft" in {
@@ -530,7 +533,9 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
       }
 
       "given all types of ByteString" in {
-        check { bs: ByteString ⇒ testSer(bs) }
+        check { bs: ByteString ⇒
+          testSer(bs)
+        }
       }
     }
   }
@@ -595,7 +600,9 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
       "calling toSeq" in { check { a: ByteString ⇒ likeVecIt(a) { _.toSeq } } }
       "calling foreach" in {
         check { a: ByteString ⇒
-          likeVecIt(a) { it ⇒ var acc = 0; it foreach { acc += _ }; acc }
+          likeVecIt(a) { it ⇒
+            var acc = 0; it foreach { acc += _ }; acc
+          }
         }
       }
       "calling foldLeft" in {

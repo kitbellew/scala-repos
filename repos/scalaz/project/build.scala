@@ -180,7 +180,9 @@ object build extends Build {
         .mkString(" with ")
       objects + "\n\n" + all
     },
-    typeClassTree <<= typeClasses map { tcs => tcs.map(_.doc).mkString("\n") },
+    typeClassTree <<= typeClasses map { tcs =>
+      tcs.map(_.doc).mkString("\n")
+    },
     showDoc in Compile <<= (doc in Compile, target in doc in Compile) map {
       (_, out) =>
         val index = out / "index.html"
@@ -204,7 +206,9 @@ object build extends Build {
       pushChanges
     ),
     releaseTagName := tagName.value,
-    pomIncludeRepository := { x => false },
+    pomIncludeRepository := { x =>
+      false
+    },
     pomExtra := (
       <url>http://scalaz.org</url>
         <licenses>

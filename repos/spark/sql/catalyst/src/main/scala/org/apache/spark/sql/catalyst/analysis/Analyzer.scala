@@ -637,7 +637,9 @@ class Analyzer(
             case expr =>
               deserializerToAttributes
                 .get(new TreeNodeRef(expr))
-                .map { attributes => resolveDeserializer(expr, attributes) }
+                .map { attributes =>
+                  resolveDeserializer(expr, attributes)
+                }
                 .getOrElse(expr)
           }
 

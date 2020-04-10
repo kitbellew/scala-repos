@@ -60,13 +60,17 @@ object MarkovChain {
       /**
         * Sequence two transitions together. This is Kliesli arrow composition.
         */
-      def >=>[V](k2: T => Rand[V]) = { (t: T) => k1(t).flatMap(k2); }
+      def >=>[V](k2: T => Rand[V]) = { (t: T) =>
+        k1(t).flatMap(k2);
+      }
 
       /**
         * Sequence two transitions together, in reverse order
         * This is Kliesli arrow composition.
         */
-      def <=<[V](k2: V => Rand[T]) = { (t: V) => k2(t).flatMap(k1); }
+      def <=<[V](k2: V => Rand[T]) = { (t: V) =>
+        k2(t).flatMap(k1);
+      }
 
       /**
         * Promotes a kernel to map over sequence.
@@ -85,7 +89,8 @@ object MarkovChain {
       }
 
       def lensed[U](implicit lens: Isomorphism[T, U]): U => Rand[U] = {
-        (u: U) => k1(lens.backward(u)).map(lens.forward _)
+        (u: U) =>
+          k1(lens.backward(u)).map(lens.forward _)
       }
     }
 
@@ -125,7 +130,8 @@ object MarkovChain {
         * T=&lt;Rand[U] becomes Seq[T]=&lt;Rand[Collection[U]]
         */
       def promoteIterable: (C, Iterable[T]) => Rand[Iterable[U]] = {
-        (c: C, t: Iterable[T]) => promote(t.map(t => k1(c, t)));
+        (c: C, t: Iterable[T]) =>
+          promote(t.map(t => k1(c, t)));
       }
     }
 

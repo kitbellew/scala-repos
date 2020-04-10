@@ -9,6 +9,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScObject
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScImplicitObjectKey extends StringStubIndexExtension[ScObject] {
 
   override def get(

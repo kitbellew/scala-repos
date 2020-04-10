@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.persistence
 
 import java.util.concurrent.atomic.AtomicInteger
@@ -516,11 +517,15 @@ object PersistentActorSpec {
         probe ! s
         persist(s + "-outer-1") { outer ⇒
           probe ! outer
-          persistAsync(s + "-inner-async-1") { inner ⇒ probe ! inner }
+          persistAsync(s + "-inner-async-1") { inner ⇒
+            probe ! inner
+          }
         }
         persist(s + "-outer-2") { outer ⇒
           probe ! outer
-          persistAsync(s + "-inner-async-2") { inner ⇒ probe ! inner }
+          persistAsync(s + "-inner-async-2") { inner ⇒
+            probe ! inner
+          }
         }
     }
   }
@@ -531,11 +536,15 @@ object PersistentActorSpec {
         probe ! s
         persistAsync(s + "-outer-async-1") { outer ⇒
           probe ! outer
-          persist(s + "-inner-1") { inner ⇒ probe ! inner }
+          persist(s + "-inner-1") { inner ⇒
+            probe ! inner
+          }
         }
         persistAsync(s + "-outer-async-2") { outer ⇒
           probe ! outer
-          persist(s + "-inner-2") { inner ⇒ probe ! inner }
+          persist(s + "-inner-2") { inner ⇒
+            probe ! inner
+          }
         }
     }
   }

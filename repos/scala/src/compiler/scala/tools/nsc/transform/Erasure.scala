@@ -496,7 +496,8 @@ abstract class Erasure
           exitingPostErasure(println(sm"""check bridge overrides in $bc
                 |${bc.info.nonPrivateDecl(bridge.name)}
                 |${site.memberType(bridge)}
-                |${site.memberType(bc.info.nonPrivateDecl(bridge.name) orElse IntClass)}
+                |${site.memberType(
+            bc.info.nonPrivateDecl(bridge.name) orElse IntClass)}
                 |${(bridge.matchingSymbol(bc, site))}"""))
 
         def overriddenBy(sym: Symbol) =

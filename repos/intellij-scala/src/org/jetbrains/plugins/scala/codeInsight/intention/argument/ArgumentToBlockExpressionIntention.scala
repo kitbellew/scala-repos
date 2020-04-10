@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.util.IntentionAvailabilityChecker
 /**
   * Pavel Fatin
   */
+
 class ArgumentToBlockExpressionIntention extends PsiElementBaseIntentionAction {
   def getFamilyName = "Convert to block expression"
 

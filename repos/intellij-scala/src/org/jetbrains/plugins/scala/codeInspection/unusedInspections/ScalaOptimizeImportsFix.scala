@@ -25,6 +25,7 @@ import scala.collection.JavaConversions._
   * User: Alexander Podkhalyuzin
   * Date: 02.07.2009
   */
+
 class ScalaOptimizeImportsFix extends IntentionAction with HighPriorityAction {
   def getText: String = QuickFixBundle.message("optimize.imports.fix")
 

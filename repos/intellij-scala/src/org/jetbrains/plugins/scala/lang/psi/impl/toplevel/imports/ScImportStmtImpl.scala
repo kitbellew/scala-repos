@@ -52,6 +52,7 @@ import scala.collection.mutable
   * @author Alexander Podkhalyuzin
   * Date: 20.02.2008
   */
+
 class ScImportStmtImpl private (
     stub: StubElement[ScImportStmt],
     nodeType: IElementType,

@@ -286,7 +286,9 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
     */
   def save(inst: BaseRecord): Boolean =
     saveOp(inst) {
-      useColl { coll => coll.save(inst.asDBObject) }
+      useColl { coll =>
+        coll.save(inst.asDBObject)
+      }
     }
 
   /**
@@ -294,7 +296,9 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
     */
   def save(inst: BaseRecord, concern: WriteConcern): Boolean =
     saveOp(inst) {
-      useColl { coll => coll.save(inst.asDBObject, concern) }
+      useColl { coll =>
+        coll.save(inst.asDBObject, concern)
+      }
     }
 
   /*

@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.cluster.singleton
 
 import akka.actor._
@@ -245,7 +246,9 @@ final class ClusterSingletonProxy(
     */
   def remove(m: Member): Unit = {
     if (matchingRole(m))
-      trackChange { () ⇒ membersByAge -= m }
+      trackChange { () ⇒
+        membersByAge -= m
+      }
   }
 
   def receive = {

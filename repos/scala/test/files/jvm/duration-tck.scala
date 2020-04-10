@@ -1,6 +1,7 @@
 /**
   *  Copyright (C) 2012 Typesafe Inc. <http://www.typesafe.com>
   */
+
 import scala.concurrent.duration._
 import scala.reflect._
 import scala.tools.partest.TestUtil.intercept

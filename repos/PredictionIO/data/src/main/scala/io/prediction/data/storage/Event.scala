@@ -12,6 +12,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package io.prediction.data.storage
 
 import io.prediction.annotation.DeveloperApi
@@ -142,7 +143,9 @@ object EventValidation {
     )
     require(
       e.targetEntityType
-        .map { t => (!isReservedPrefix(t) || isBuiltinEntityTypes(t)) }
+        .map { t =>
+          (!isReservedPrefix(t) || isBuiltinEntityTypes(t))
+        }
         .getOrElse(true),
       s"The targetEntityType ${e.targetEntityType.get} is not allowed. " +
         s"'pio_' is a reserved name prefix."

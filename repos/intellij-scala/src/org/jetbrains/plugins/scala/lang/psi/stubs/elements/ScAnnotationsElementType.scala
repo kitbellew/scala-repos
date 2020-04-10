@@ -19,6 +19,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScAnnotationsStubImpl
   * User: Alexander Podkhalyuzin
   * Date: 22.06.2009
   */
+
 class ScAnnotationsElementType[Func <: ScAnnotations]
     extends ScStubElementType[ScAnnotationsStub, ScAnnotations]("annotations") {
   def serialize(

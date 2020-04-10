@@ -99,7 +99,9 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
                 if (!entry.valid)
                   data.remove(key) // expired
                 entry.valid
-              } map { entry => Value(key, entry.value) }
+              } map { entry =>
+                Value(key, entry.value)
+              }
             }
           }
         )
@@ -140,7 +142,9 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
           }
         }
       case Decr(key, value) =>
-        map.lock(key) { data => apply(Incr(key, -value)) }
+        map.lock(key) { data =>
+          apply(Incr(key, -value))
+        }
       case Quit() =>
         NoOp()
     }
@@ -150,10 +154,15 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
     Values(
       keys.flatMap { key =>
         map.lock(key) { data =>
-          data.get(key).filter { entry => entry.valid }.map { entry =>
-            val value = entry.value
-            Value(key, value, Some(generateCasUnique(value)))
-          }
+          data
+            .get(key)
+            .filter { entry =>
+              entry.valid
+            }
+            .map { entry =>
+              val value = entry.value
+              Value(key, value, Some(generateCasUnique(value)))
+            }
         }
       }
     )

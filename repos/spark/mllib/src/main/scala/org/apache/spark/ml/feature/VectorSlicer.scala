@@ -112,7 +112,8 @@ final class VectorSlicer(override val uid: String)
     // Prepare output attributes
     val inds = getSelectedFeatureIndices(dataset.schema)
     val selectedAttrs: Option[Array[Attribute]] = inputAttr.attributes.map {
-      attrs => inds.map(index => attrs(index))
+      attrs =>
+        inds.map(index => attrs(index))
     }
     val outputAttr = selectedAttrs match {
       case Some(attrs) => new AttributeGroup($(outputCol), attrs)

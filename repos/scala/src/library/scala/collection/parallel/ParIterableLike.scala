@@ -881,7 +881,9 @@ trait ParIterableLike[
       val copyys = new Copy(combinerFactory, ys.splitter) mapResult {
         _.resultWithTaskSupport
       }
-      val copyall = (copyxs parallel copyys) { (xr, yr) => (xr, yr) }
+      val copyall = (copyxs parallel copyys) { (xr, yr) =>
+        (xr, yr)
+      }
       tasksupport.executeAndWaitResult(copyall)
     } else {
       val cntx = new DefaultSignalling with AtomicIndexFlag

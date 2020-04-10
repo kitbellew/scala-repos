@@ -5,6 +5,7 @@ package lang.scaladoc
   * User: Dmitry Naydanov
   * Date: 12/29/11
   */
+
 class DocStubGenerationTest extends ScalaDocEnterActionTestBase {
 
   import org.jetbrains.plugins.scala.lang.scaladoc.DocStubGenerationTest._

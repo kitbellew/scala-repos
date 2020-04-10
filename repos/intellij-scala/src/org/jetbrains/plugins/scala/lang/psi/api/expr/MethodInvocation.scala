@@ -38,6 +38,7 @@ import org.jetbrains.plugins.scala.project._
 /**
   * Pavel Fatin, Alexander Podkhalyuzin.
   */
+
 // A common trait for Infix, Postfix and Prefix expressions
 // and Method calls to handle them uniformly
 trait MethodInvocation extends ScExpression with ScalaPsiElement {

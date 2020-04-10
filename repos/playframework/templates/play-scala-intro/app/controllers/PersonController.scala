@@ -68,7 +68,9 @@ class PersonController @Inject() (
     */
   def getPersons =
     Action.async {
-      repo.list().map { people => Ok(Json.toJson(people)) }
+      repo.list().map { people =>
+        Ok(Json.toJson(people))
+      }
     }
 }
 

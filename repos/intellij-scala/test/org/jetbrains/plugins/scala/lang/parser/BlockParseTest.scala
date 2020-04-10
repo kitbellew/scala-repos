@@ -14,6 +14,7 @@ import org.junit.Assert
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class BlockParseTest extends SimpleTestCase {
   def parseBlock(s: String): PsiElement = {
     val fileFactory = PsiFileFactory.getInstance(fixture.getProject)

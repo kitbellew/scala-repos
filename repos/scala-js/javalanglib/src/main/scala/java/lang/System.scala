@@ -37,8 +37,12 @@ object System {
         global.performance.now().asInstanceOf[scala.Double]
       } else if (global.performance.selectDynamic("webkitNow")) { () =>
         global.performance.webkitNow().asInstanceOf[scala.Double]
-      } else { () => new js.Date().getTime() }
-    } else { () => new js.Date().getTime() }
+      } else { () =>
+        new js.Date().getTime()
+      }
+    } else { () =>
+      new js.Date().getTime()
+    }
   }
 
   def nanoTime(): scala.Long =

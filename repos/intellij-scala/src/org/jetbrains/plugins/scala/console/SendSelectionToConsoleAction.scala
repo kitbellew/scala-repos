@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
   * @author Ksenia.Sautina
   * @since 7/25/12
   */
+
 class SendSelectionToConsoleAction extends AnAction {
 
   override def update(e: AnActionEvent) {

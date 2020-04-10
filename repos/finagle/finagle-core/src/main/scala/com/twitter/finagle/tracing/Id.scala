@@ -10,6 +10,7 @@ import com.twitter.util.NonFatal
   * span, while TraceIds contain a span ID as well as context (parentId
   * and traceId).
   */
+
 final class SpanId(val self: Long) extends Proxy {
   def toLong = self
 

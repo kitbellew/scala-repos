@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package io.akka.integrationtest.http
 
 import com.typesafe.config.{ConfigFactory, Config}

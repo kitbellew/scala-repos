@@ -13,6 +13,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Dmitry Naydanov
   * Date: 3/2/12
   */
+
 class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
   val surrounders = Array[Surrounder](
     new ScalaDocWithBoldSurrounder,

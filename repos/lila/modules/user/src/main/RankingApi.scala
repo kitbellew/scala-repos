@@ -28,7 +28,9 @@ final class RankingApi(
     reactivemongo.bson.Macros.handler[Ranking]
 
   def save(userId: User.ID, perfType: Option[PerfType], perfs: Perfs): Funit =
-    perfType ?? { pt => save(userId, pt, perfs(pt)) }
+    perfType ?? { pt =>
+      save(userId, pt, perfs(pt))
+    }
 
   def save(userId: User.ID, perfType: PerfType, perf: Perf): Funit =
     (perf.nb >= 2) ?? coll
@@ -54,8 +56,12 @@ final class RankingApi(
           .remove(
             BSONDocument(
               "_id" -> BSONDocument("$in" -> PerfType.leaderboardable
-                .filter { pt => user.perfs(pt).nonEmpty }
-                .map { pt => s"${user.id}:${pt.id}" })
+                .filter { pt =>
+                  user.perfs(pt).nonEmpty
+                }
+                .map { pt =>
+                  s"${user.id}:${pt.id}"
+                })
             ))
           .void
       }
@@ -86,7 +92,8 @@ final class RankingApi(
 
     def of(userId: User.ID): Fu[Map[Perf.Key, Int]] =
       lila.common.Future.traverseSequentially(PerfType.leaderboardable) {
-        perf => cache(perf.id) map { _ get userId map (perf.key -> _) }
+        perf =>
+          cache(perf.id) map { _ get userId map (perf.key -> _) }
       } map (_.flatten.toMap)
 
     private val cache = AsyncCache[Perf.ID, Map[User.ID, Rank]](
@@ -154,7 +161,9 @@ final class RankingApi(
                 nb <- obj.getAs[NbUsers]("nb")
               } yield rating -> nb
             }.toMap
-            (800 to 2800 by Stat.group).map { r => hash.getOrElse(r, 0) }.toList
+            (800 to 2800 by Stat.group).map { r =>
+              hash.getOrElse(r, 0)
+            }.toList
           }
       }
   }

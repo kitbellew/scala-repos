@@ -24,4 +24,5 @@ import com.gravity.goose.utils.Logging
   * User: jim
   * Date: 8/15/11
   */
+
 object StandardContentExtractor extends ContentExtractor

@@ -115,5 +115,7 @@ object Message extends LilaController {
     }
 
   def markAsRead(id: String) =
-    AuthBody { implicit ctx => implicit me => api.markThreadAsRead(id, me) }
+    AuthBody { implicit ctx => implicit me =>
+      api.markThreadAsRead(id, me)
+    }
 }

@@ -4,6 +4,7 @@ package lang.dependency
 /**
   * Pavel Fatin
   */
+
 sealed trait DependencyKind
 
 object DependencyKind {

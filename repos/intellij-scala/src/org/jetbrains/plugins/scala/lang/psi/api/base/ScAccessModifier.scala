@@ -10,6 +10,7 @@ import com.intellij.psi.PsiNamedElement
   * @author Alexander Podkhalyuzin
   * Date: 07.03.2008
   */
+
 trait ScAccessModifier extends ScalaPsiElement {
   def scope: PsiNamedElement /* either ScTypeDefinition or PsiPackage */
 

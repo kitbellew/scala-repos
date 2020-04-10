@@ -68,7 +68,9 @@ class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(implicit
                       jobManager.listMessages(jobId, channels.Error, None)
                   } yield {
                     result.fold(
-                      { _ => HttpResponse[ByteChunk](NotFound) },
+                      { _ =>
+                        HttpResponse[ByteChunk](NotFound)
+                      },
                       {
                         case (mimeType0, data0) =>
                           val mimeType =

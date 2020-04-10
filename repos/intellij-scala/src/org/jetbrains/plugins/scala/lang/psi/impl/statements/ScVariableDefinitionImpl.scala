@@ -24,6 +24,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScVariableDefinitionImpl private (
     stub: StubElement[ScVariable],
     nodeType: IElementType,

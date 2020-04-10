@@ -19,6 +19,7 @@ package com.twitter.scalding.mathematics
 /**
   * Handles the implementation of various versions of MatrixProducts
   */
+
 import com.twitter.algebird.{Ring, Monoid, Group, Field}
 import com.twitter.scalding.RichPipe
 import com.twitter.scalding.Dsl._
@@ -185,7 +186,8 @@ object MatrixProduct extends java.io.Serializable {
       Matrix[Row, Col, ValT]] {
       def apply(left: LiteralScalar[ValT], right: Matrix[Row, Col, ValT]) = {
         val newPipe = right.pipe.map(right.valSym -> right.valSym) {
-          (v: ValT) => ring.times(left.value, v)
+          (v: ValT) =>
+            ring.times(left.value, v)
         }
         new Matrix[Row, Col, ValT](
           right.rowSym,
@@ -567,7 +569,8 @@ object MatrixProduct extends java.io.Serializable {
             getCrosser(right.sizeH)
               .apply(left.pipe, newRightPipe)
               .map(left.valS.append(getField(newRightFields, 1)) -> left.valS) {
-                pair: (ValT, ValT) => ring.times(pair._1, pair._2)
+                pair: (ValT, ValT) =>
+                  ring.times(pair._1, pair._2)
               }
           }
           .rename(getField(newRightFields, 0) -> newColSym)
@@ -611,7 +614,8 @@ object MatrixProduct extends java.io.Serializable {
               // Do the product:
               .map((left.valSym.append(
                 getField(newRightFields, 2))) -> left.valSym) {
-                pair: (ValT, ValT) => ring.times(pair._1, pair._2)
+                pair: (ValT, ValT) =>
+                  ring.times(pair._1, pair._2)
               }
               .groupBy(left.rowSym.append(getField(newRightFields, 1))) {
                 // We should use the size hints to set the number of reducers here
@@ -663,7 +667,9 @@ object MatrixProduct extends java.io.Serializable {
             .map(
               (left.valSym.append(getField(newRightFields, 2))) -> getField(
                 newRightFields,
-                2)) { pair: (ValT, ValT) => ring.times(pair._1, pair._2) }
+                2)) { pair: (ValT, ValT) =>
+              ring.times(pair._1, pair._2)
+            }
             // Keep the names from the right:
             .project(newRightFields)
             .rename(
@@ -724,7 +730,8 @@ object MatrixProduct extends java.io.Serializable {
               // Do the product:
               .map((left.valSym.append(
                 getField(newRightFields, 1))) -> left.valSym) {
-                pair: (ValT, ValT) => ring.times(pair._1, pair._2)
+                pair: (ValT, ValT) =>
+                  ring.times(pair._1, pair._2)
               }
           }
           // Keep the names from the left:

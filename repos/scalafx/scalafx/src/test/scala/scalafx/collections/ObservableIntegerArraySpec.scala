@@ -52,6 +52,7 @@ class ObservableIntegerArraySpec
   /**
     * Test trait for instance testing.
     */
+
   trait InstanceTests {
     val array0: Array[Int] = Array.empty
     val array1 = Array(4, 5, 6, 7)

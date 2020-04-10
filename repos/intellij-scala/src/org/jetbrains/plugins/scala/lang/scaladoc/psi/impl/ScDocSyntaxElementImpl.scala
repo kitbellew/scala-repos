@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocSyntaxElement
   * User: Dmitry Naidanov
   * Date: 11/14/11
   */
+
 class ScDocSyntaxElementImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScDocSyntaxElement {

@@ -107,7 +107,9 @@ object Tournament extends LilaController {
   def standing(id: String, page: Int) =
     Open { implicit ctx =>
       OptionFuResult(repo byId id) { tour =>
-        env.jsonView.standing(tour, page) map { data => Ok(data) as JSON }
+        env.jsonView.standing(tour, page) map { data =>
+          Ok(data) as JSON
+        }
       }
     }
 
@@ -121,7 +123,9 @@ object Tournament extends LilaController {
 
   def userGameNbMini(id: String, user: String, nb: Int) =
     Open { implicit ctx =>
-      withUserGameNb(id, user, nb) { pov => Ok(html.tournament.miniGame(pov)) }
+      withUserGameNb(id, user, nb) { pov =>
+        Ok(html.tournament.miniGame(pov))
+      }
     }
 
   def userGameNbShow(id: String, user: String, nb: Int) =
@@ -211,7 +215,9 @@ object Tournament extends LilaController {
 
   def websocket(id: String, apiVersion: Int) =
     SocketOption[JsValue] { implicit ctx =>
-      get("sri") ?? { uid => env.socketHandler.join(id, uid, ctx.me) }
+      get("sri") ?? { uid =>
+        env.socketHandler.join(id, uid, ctx.me)
+      }
     }
 
   private def chatOf(tour: lila.tournament.Tournament)(implicit ctx: Context) =

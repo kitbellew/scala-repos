@@ -91,7 +91,9 @@ class RPackageUtilsSuite
     val deps = Seq(dep1, dep2).mkString(",")
     IvyTestUtils.withRepository(main, Some(deps), None, withR = true) { repo =>
       val jars = Seq(main, dep1, dep2)
-        .map { c => getJarPath(c, new File(new URI(repo))) }
+        .map { c =>
+          getJarPath(c, new File(new URI(repo)))
+        }
         .mkString(",")
       RPackageUtils.checkAndBuildRPackage(
         jars,
@@ -113,7 +115,9 @@ class RPackageUtilsSuite
     val deps = Seq(dep1, dep2).mkString(",")
     IvyTestUtils.withRepository(main, Some(deps), None, withR = true) { repo =>
       val jars = Seq(main, dep1, dep2)
-        .map { c => getJarPath(c, new File(new URI(repo))) + "dummy" }
+        .map { c =>
+          getJarPath(c, new File(new URI(repo))) + "dummy"
+        }
         .mkString(",")
       RPackageUtils.checkAndBuildRPackage(
         jars,
@@ -121,7 +125,9 @@ class RPackageUtilsSuite
         verbose = true)
       val individualJars = jars.split(",")
       val output = lineBuffer.mkString("\n")
-      individualJars.foreach { jarFile => assert(output.contains(s"$jarFile")) }
+      individualJars.foreach { jarFile =>
+        assert(output.contains(s"$jarFile"))
+      }
     }
   }
 

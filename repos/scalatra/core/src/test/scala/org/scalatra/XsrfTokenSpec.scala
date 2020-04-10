@@ -27,7 +27,9 @@ object XsrfTokenSpec extends MutableScalatraSpec {
     response
       .getHeaderValues("Set-Cookie")
       .asScala
-      .flatMap { s => HttpCookie.parse(s).asScala.toList }
+      .flatMap { s =>
+        HttpCookie.parse(s).asScala.toList
+      }
       .find(_.getName == "XSRF-TOKEN")
       .map(_.getValue)
       .getOrElse("")

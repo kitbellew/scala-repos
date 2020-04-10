@@ -54,6 +54,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Alexander Podkhalyuzin
   * Date: 17.09.2009
   */
+
 class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
   import org.jetbrains.plugins.scala.lang.completion.ScalaSmartCompletionContributor._
 

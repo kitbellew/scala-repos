@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.ScType
   * User: Alefas
   * Date: 19.10.11
   */
+
 class ScalaLiteralEvaluator(value: AnyRef, tp: ScType) extends Evaluator {
   def evaluate(context: EvaluationContextImpl): AnyRef = {
     if (value == null) return null

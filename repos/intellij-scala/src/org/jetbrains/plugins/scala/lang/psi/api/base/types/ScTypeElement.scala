@@ -21,6 +21,7 @@ import org.jetbrains.plugins.scala.macroAnnotations.{
 /**
   * @author Alexander Podkhalyuzin
   */
+
 trait ScTypeElement extends ScalaPsiElement with TypingContextOwner {
   @CachedWithRecursionGuard[ScTypeElement](
     this,

@@ -10,6 +10,7 @@ import org.junit.Assert
   * User: Alexander Podkhalyuzin
   * Date: 28.10.11
   */
+
 class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   def testAfterPlaceholder() {
     val fileText =

@@ -361,9 +361,9 @@ trait QuirrelCache extends AST { parser: Parser =>
         case ObjectDef(loc, props0) =>
           for {
             props <- (props0 map {
-              case (prop, expr) =>
-                repl(expr) map (prop -> _)
-            }: Vector[BindingS[(String, Expr)]]).sequence
+                case (prop, expr) =>
+                  repl(expr) map (prop -> _)
+              }: Vector[BindingS[(String, Expr)]]).sequence
           } yield ObjectDef(updateLoc(loc), props)
 
         case ArrayDef(loc, values0) =>
@@ -499,7 +499,9 @@ trait QuirrelCache extends AST { parser: Parser =>
             bindRoot(root, root)
             root
           }
-      } map { expr => Set(expr) } getOrElse {
+      } map { expr =>
+        Set(expr)
+      } getOrElse {
         val exprs = f(query)
         if (exprs.size == 1) {
           val value = exprs.head

@@ -22,6 +22,7 @@ import org.jetbrains.plugins.scala.lang.resolve.ScalaResolveResult
   * User: Alexander Podkhalyuzin
   * Date: 15.09.2009
   */
+
 class ScalaChangeUtilSupport extends TreeCopyHandler {
   def encodeInformation(
       element: TreeElement,

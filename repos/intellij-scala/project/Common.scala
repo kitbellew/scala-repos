@@ -22,7 +22,8 @@ object Common {
       sdkDirectory: File,
       subdirectories: String*): Classpath = {
     val sdkPathFinder = subdirectories.foldLeft(PathFinder.empty) {
-      (finder, dir) => finder +++ (sdkDirectory / dir)
+      (finder, dir) =>
+        finder +++ (sdkDirectory / dir)
     }
     (sdkPathFinder * globFilter("*.jar")).classpath
   }

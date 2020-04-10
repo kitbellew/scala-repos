@@ -156,10 +156,16 @@ class DefaultSource extends FileFormat with DataSourceRegister {
     if (options.isCommentSet) {
       val comment = options.comment.toString
       rdd
-        .filter { line => line.trim.nonEmpty && !line.startsWith(comment) }
+        .filter { line =>
+          line.trim.nonEmpty && !line.startsWith(comment)
+        }
         .first()
     } else {
-      rdd.filter { line => line.trim.nonEmpty }.first()
+      rdd
+        .filter { line =>
+          line.trim.nonEmpty
+        }
+        .first()
     }
   }
 

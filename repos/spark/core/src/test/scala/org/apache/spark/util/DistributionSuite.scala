@@ -24,6 +24,7 @@ import org.apache.spark.SparkFunSuite
 /**
   *
   */
+
 class DistributionSuite extends SparkFunSuite with Matchers {
   test("summary") {
     val d = new Distribution((1 to 100).toArray.map { _.toDouble })

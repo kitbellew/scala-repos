@@ -110,8 +110,12 @@ case class SortMergeJoin(
     left.execute().zipPartitions(right.execute()) { (leftIter, rightIter) =>
       val boundCondition: (InternalRow) => Boolean = {
         condition
-          .map { cond => newPredicate(cond, left.output ++ right.output) }
-          .getOrElse { (r: InternalRow) => true }
+          .map { cond =>
+            newPredicate(cond, left.output ++ right.output)
+          }
+          .getOrElse { (r: InternalRow) =>
+            true
+          }
       }
       // An ordering that can be used to compare keys from both sides.
       val keyOrdering = newNaturalAscendingOrdering(leftKeys.map(_.dataType))

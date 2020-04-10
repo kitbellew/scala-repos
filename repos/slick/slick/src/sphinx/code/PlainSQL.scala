@@ -59,11 +59,15 @@ object PlainSQL extends App {
         insertCoffees,
         printAll,
         printParameterized,
-        coffeeByName("Colombian").map { s => println(s"Coffee Colombian: $s") },
+        coffeeByName("Colombian").map { s =>
+          println(s"Coffee Colombian: $s")
+        },
         deleteCoffee("Colombian").map { rows =>
           println(s"Deleted $rows rows")
         },
-        coffeeByName("Colombian").map { s => println(s"Coffee Colombian: $s") }
+        coffeeByName("Colombian").map { s =>
+          println(s"Coffee Colombian: $s")
+        }
       )
       db.run(a)
     }

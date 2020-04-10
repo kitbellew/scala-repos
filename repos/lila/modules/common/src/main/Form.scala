@@ -7,7 +7,9 @@ import play.api.libs.json._
 object Form {
 
   def options(it: Iterable[Int], pattern: String) =
-    it map { d => d -> (pluralize(pattern, d) format d) }
+    it map { d =>
+      d -> (pluralize(pattern, d) format d)
+    }
 
   def options(it: Iterable[Int], transformer: Int => Int, pattern: String) =
     it map { d =>
@@ -15,10 +17,14 @@ object Form {
     }
 
   def options(it: Iterable[Int], code: String, pattern: String) =
-    it map { d => (d + code) -> (pluralize(pattern, d) format d) }
+    it map { d =>
+      (d + code) -> (pluralize(pattern, d) format d)
+    }
 
   def optionsDouble(it: Iterable[Double], format: Double => String) =
-    it map { d => d -> format(d) }
+    it map { d =>
+      d -> format(d)
+    }
 
   def numberIn(choices: Iterable[(Int, String)]) =
     number.verifying(hasKey(choices, _))

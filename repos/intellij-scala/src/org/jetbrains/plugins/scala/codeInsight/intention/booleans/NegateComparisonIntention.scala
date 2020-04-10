@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.util.IntentionUtils
   * @author Ksenia.Sautina
   * @since 5/13/12
   */
+
 object NegateComparisonIntention {
   def familyName = "Negate comparison"
 }

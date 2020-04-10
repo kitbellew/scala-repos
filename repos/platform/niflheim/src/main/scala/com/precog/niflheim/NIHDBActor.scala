@@ -572,7 +572,8 @@ private[niflheim] object ProjectionState {
   def fromFile(input: File): IO[Validation[Error, ProjectionState]] =
     IO {
       JParser.parseFromFile(input).bimap(Extractor.Thrown(_), x => x).flatMap {
-        jv => jv.validated[ProjectionState]
+        jv =>
+          jv.validated[ProjectionState]
       }
     }
 

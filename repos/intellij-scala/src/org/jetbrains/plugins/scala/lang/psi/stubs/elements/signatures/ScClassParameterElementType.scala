@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.index.ScalaIndexKeys
   * User: Alexander Podkhalyuzin
   * Date: 19.10.2008
   */
+
 class ScClassParameterElementType
     extends ScParamElementType[ScClassParameter]("class parameter") {
 

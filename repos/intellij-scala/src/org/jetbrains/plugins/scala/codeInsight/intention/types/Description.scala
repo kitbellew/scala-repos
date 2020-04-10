@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.{
 /**
   * Pavel.Fatin, 28.04.2010
   */
+
 class Description(message: String => Unit) extends Strategy {
   def addToFunction(function: ScFunctionDefinition) {
     message("intention.type.annotation.function.add.text")

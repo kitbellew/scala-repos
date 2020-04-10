@@ -102,7 +102,9 @@ class DebugManager(
   }
 
   def disconnectDebugVM(): Unit = {
-    withVM { vm => vm.dispose() }
+    withVM { vm =>
+      vm.dispose()
+    }
     moveActiveBreaksToPending()
     maybeVM = None
     broadcaster ! DebugVMDisconnectEvent
@@ -133,7 +135,9 @@ class DebugManager(
   }
 
   private def handleRPCWithVM()(action: (VM => RpcResponse)): RpcResponse = {
-    withVM { vm => action(vm) }.getOrElse {
+    withVM { vm =>
+      action(vm)
+    }.getOrElse {
       log.warning("Could not access debug VM.")
       FalseResponse
     }
@@ -163,7 +167,9 @@ class DebugManager(
 
   def fromJvm: Receive = {
     case DebuggerShutdownEvent =>
-      withVM { vm => vm.dispose() }
+      withVM { vm =>
+        vm.dispose()
+      }
       context.stop(self)
 
     case DMClassPrepareEvent(prepareEvent, eventSet) =>
@@ -239,7 +245,9 @@ class DebugManager(
   }
 
   def disposeCurrentVM(): Unit = {
-    withVM { vm => vm.dispose() }
+    withVM { vm =>
+      vm.dispose()
+    }
   }
   def handleStartupFailure(e: Exception): RpcResponse = {
     maybeVM = None
@@ -288,7 +296,9 @@ class DebugManager(
     case DebugAttachReq(hostname, port) ⇒
       sender ! handleDebugAttachReq(hostname, port)
     case DebugActiveVmReq =>
-      sender ! handleRPCWithVM() { vm => TrueResponse }
+      sender ! handleRPCWithVM() { vm =>
+        TrueResponse
+      }
     case DebugStopReq =>
       sender ! handleRPCWithVM() { vm =>
         if (vm.mode.shouldExit) {

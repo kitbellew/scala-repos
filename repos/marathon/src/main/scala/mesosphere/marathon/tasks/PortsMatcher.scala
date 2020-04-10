@@ -235,7 +235,8 @@ object PortsMatcher {
           case None =>
           case Some(PortWithRole(role, _, reservation)) =>
             val portsForResource: Seq[PortWithRole] = resources.takeWhile {
-              port => port.role == role && port.reservation == reservation
+              port =>
+                port.role == role && port.reservation == reservation
             }
             import mesosphere.mesos.protos.Implicits._
             val resourceBuilder = RangesResource(

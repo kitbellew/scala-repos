@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.project._
   * @author Ksenia.Sautina
   * @since 10/30/12
   */
+
 class NewScalaWorksheetAction
     extends CreateFromTemplateAction(
       FileTemplateManager.getInstance().getInternalTemplate("Scala Worksheet"))

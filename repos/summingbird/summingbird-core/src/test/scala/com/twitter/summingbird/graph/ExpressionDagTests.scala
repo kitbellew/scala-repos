@@ -144,7 +144,8 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
   //Check the Node[T] <=> Id[T] is an Injection for all nodes reachable from the root
 
   property("toLiteral/Literal.evaluate is a bijection") = forAll(genForm) {
-    form => toLiteral.apply(form).evaluate == form
+    form =>
+      toLiteral.apply(form).evaluate == form
   }
 
   property("Going to ExpressionDag round trips") = forAll(genForm) { form =>

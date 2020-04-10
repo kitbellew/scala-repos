@@ -820,14 +820,18 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
     val n = 10
     val data = sc.parallelize(0 until n, 3)
     val ranked = data.zipWithIndex()
-    ranked.collect().foreach { x => assert(x._1 === x._2) }
+    ranked.collect().foreach { x =>
+      assert(x._1 === x._2)
+    }
   }
 
   test("zipWithIndex with a single partition") {
     val n = 10
     val data = sc.parallelize(0 until n, 1)
     val ranked = data.zipWithIndex()
-    ranked.collect().foreach { x => assert(x._1 === x._2) }
+    ranked.collect().foreach { x =>
+      assert(x._1 === x._2)
+    }
   }
 
   test("zipWithIndex chained with other RDDs (SPARK-4433)") {

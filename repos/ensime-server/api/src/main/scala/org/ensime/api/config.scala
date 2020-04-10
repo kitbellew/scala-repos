@@ -55,7 +55,9 @@ case class EnsimeConfig(
     }
 
   def allJars: Set[File] = {
-    modules.values.flatMap { m => m.compileDeps ::: m.testDeps }.toSet
+    modules.values.flatMap { m =>
+      m.compileDeps ::: m.testDeps
+    }.toSet
   } ++ javaLibs
 
   def allDocJars: Set[File] = modules.values.flatMap(_.docJars).toSet

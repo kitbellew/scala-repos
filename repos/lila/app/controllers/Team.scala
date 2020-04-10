@@ -227,7 +227,9 @@ object Team extends LilaController {
 
   def quit(id: String) =
     Auth { implicit ctx => implicit me =>
-      OptionResult(api quit id) { team => Redirect(routes.Team.show(team.id)) }
+      OptionResult(api quit id) { team =>
+        Redirect(routes.Team.show(team.id))
+      }
     }
 
   private def OnePerWeek[A <: Result](me: UserModel)(a: => Fu[A])(implicit

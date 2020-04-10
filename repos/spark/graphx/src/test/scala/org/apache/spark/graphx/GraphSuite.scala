@@ -97,7 +97,9 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
       }
       def nonemptyParts(graph: Graph[Int, Int]): RDD[List[Edge[Int]]] = {
         graph.edges.partitionsRDD
-          .mapPartitions { iter => Iterator(iter.next()._2.iterator.toList) }
+          .mapPartitions { iter =>
+            Iterator(iter.next()._2.iterator.toList)
+          }
           .filter(_.nonEmpty)
       }
       val identicalEdges = List((0L, 1L), (0L, 1L))

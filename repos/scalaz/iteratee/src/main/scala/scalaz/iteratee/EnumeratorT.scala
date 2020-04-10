@@ -37,7 +37,9 @@ trait EnumeratorT[E, F[_]] { self =>
     val iter = fold[G[EnumeratorT[B, F]], F, G[EnumeratorT[B, F]]](
       G.point(EnumeratorT.empty[B, F])) {
       case (acc, concat) =>
-        G.bind(acc) { en => G.map(concat) { append => en |+| append } }
+        G.bind(acc) { en =>
+          G.map(concat) { append => en |+| append }
+        }
     }
 
     (iter &= self.map(f)).run

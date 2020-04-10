@@ -507,7 +507,9 @@ trait BodyParsers {
     def empty: BodyParser[Unit] = ignore(Unit)
 
     def ignore[A](body: A): BodyParser[A] =
-      BodyParser("ignore") { request => Accumulator.done(Right(body)) }
+      BodyParser("ignore") { request =>
+        Accumulator.done(Right(body))
+      }
 
     // -- XML parser
 
@@ -538,7 +540,9 @@ trait BodyParsers {
                 // Otherwise, there should be no default, it will be detected by the XML parser.
               }
             )
-            .foreach { charset => inputSource.setEncoding(charset) }
+            .foreach { charset =>
+              inputSource.setEncoding(charset)
+            }
           Play.XML.load(inputSource)
       }
 
@@ -784,7 +788,9 @@ trait BodyParsers {
       * Allow to choose the right BodyParser parser to use by examining the request headers.
       */
     def using[A](f: RequestHeader => BodyParser[A]) =
-      BodyParser { request => f(request)(request) }
+      BodyParser { request =>
+        f(request)(request)
+      }
 
     /**
       * Create a conditional BodyParser.
@@ -806,7 +812,8 @@ trait BodyParsers {
     private def createBadResult(
         msg: String,
         statusCode: Int = BAD_REQUEST): RequestHeader => Future[Result] = {
-      request => LazyHttpErrorHandler.onClientError(request, statusCode, msg)
+      request =>
+        LazyHttpErrorHandler.onClientError(request, statusCode, msg)
     }
 
     /**

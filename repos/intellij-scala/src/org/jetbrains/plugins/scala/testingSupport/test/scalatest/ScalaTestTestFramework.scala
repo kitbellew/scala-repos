@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.testingSupport.test.AbstractTestFramework
   * @author Ksenia.Sautina
   * @since 5/15/12
   */
+
 class ScalaTestTestFramework extends AbstractTestFramework {
 
   def getDefaultSuperClass: String = {

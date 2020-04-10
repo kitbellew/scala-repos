@@ -153,7 +153,9 @@ trait SActivity
   }
 
   def onCreate(body: Option[Bundle] => Any) = {
-    val el = { () => body(AppHelpers.createBundle.value) }
+    val el = { () =>
+      body(AppHelpers.createBundle.value)
+    }
     onCreateBodies :+= el
     el
   }

@@ -217,7 +217,9 @@ trait ShardQueryExecutorPlatform[M[+_]]
               })
           }: _*)
 
-          table flatMap { tbl => mn(tbl.sort(sortKey, opts.sortOrder)) }
+          table flatMap { tbl =>
+            mn(tbl.sort(sortKey, opts.sortOrder))
+          }
         } else {
           table
         }
@@ -247,7 +249,9 @@ trait ShardQueryExecutorPlatform[M[+_]]
 
       try {
         val forest = compile(query)
-        val validForest = forest filter { tree => tree.errors forall isWarning }
+        val validForest = forest filter { tree =>
+          tree.errors forall isWarning
+        }
 
         if (validForest.size == 1) {
           val tree = validForest.head

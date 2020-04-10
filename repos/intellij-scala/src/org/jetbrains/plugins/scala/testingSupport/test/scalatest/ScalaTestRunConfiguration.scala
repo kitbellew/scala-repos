@@ -23,6 +23,7 @@ import org.jetbrains.plugins.scala.testingSupport.test._
   * @author Ksenia.Sautina
   * @since 5/17/12
   */
+
 class ScalaTestRunConfiguration(
     override val project: Project,
     override val configurationFactory: ConfigurationFactory,

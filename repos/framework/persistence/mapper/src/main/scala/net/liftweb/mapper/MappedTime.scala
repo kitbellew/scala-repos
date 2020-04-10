@@ -40,6 +40,7 @@ import xml.{Text, NodeSeq}
   * @see MappedDateTime
   * @see MappedDate
   */
+
 abstract class MappedTime[T <: Mapper[T]](val fieldOwner: T)
     extends MappedField[Date, T] {
   private val data = FatLazy(defaultValue)

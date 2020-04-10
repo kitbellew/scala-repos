@@ -221,7 +221,8 @@ object StandardTestDBs {
         ec: ExecutionContext): DBIO[Vector[String]] =
       ResultSetAction[(String, String, String, String)](
         _.conn.getMetaData().getTables(testDB, defaultSchema, null, null)).map {
-        ts => ts.map(_._3).sorted
+        ts =>
+          ts.map(_._3).sorted
       }
 
     override def dropUserArtifacts(implicit session: profile.Backend#Session) =

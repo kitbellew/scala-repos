@@ -34,8 +34,9 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
     "find an id" in {
       val xml = <foo><bar/>Dog<b><woof id="3"/></b></foo>
 
-      findBox(xml) { e => e.attribute("id").filter(_.text == "3").map(i => e) }
-        .openOrThrowException("Test") must ==/(<woof id="3"/>)
+      findBox(xml) { e =>
+        e.attribute("id").filter(_.text == "3").map(i => e)
+      }.openOrThrowException("Test") must ==/(<woof id="3"/>)
     }
 
     "not find an ide" in {

@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 /**
   * Pavel.Fatin, 11.05.2010
   */
+
 class DepthFirstIteratorTest extends TreeIteratorTestBase {
   def testLongReturn() = {
     assertIterates("0, 1.1, 2.1, 3.1, 1.2", "0 (1.1 (2.1 (3.1)), 1.2)")

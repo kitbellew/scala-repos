@@ -27,6 +27,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiManager
   * @author Ksenia.Sautina
   * @since 5/22/12
   */
+
 object TestConfigurationUtil {
 
   def packageSettings(

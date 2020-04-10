@@ -57,6 +57,7 @@ import scala.util.control.NonFatal
   * @author Sam Ritchie
   * @author Ashu Singhal
   */
+
 class Summer[Key, Value: Semigroup, Event, S, D, RC](
     @transient storeSupplier: MergeableStoreFactory[Key, Value],
     @transient flatMapOp: FlatMapOperation[
@@ -121,7 +122,9 @@ class Summer[Key, Value: Semigroup, Event, S, D, RC](
           (
             tups,
             beforeF
-              .flatMap { before => lockedOp.get.apply((k, (before, delta))) }
+              .flatMap { before =>
+                lockedOp.get.apply((k, (before, delta)))
+              }
               .onSuccess { _ => successHandlerOpt.get.handlerFn.apply() })
       }
       .toList

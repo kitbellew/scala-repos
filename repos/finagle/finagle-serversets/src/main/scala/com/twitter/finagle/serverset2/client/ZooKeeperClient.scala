@@ -49,6 +49,7 @@ private[serverset2] trait ZooKeeperClient extends Closable {
     *
     * @return a Future[Seq[String]] of ephemeral node paths.
     */
+
   def getEphemerals(): Future[Seq[String]]
 
   /**

@@ -325,7 +325,8 @@ trait ShardServiceCombinators
         delegate.service(
           request
             .copy(parameters = request.parameters + ('sync -> "async"))) map {
-          f => { (cred: (APIKey, AccountDetails)) => f(cred, Path(path)) }
+          f =>
+            { (cred: (APIKey, AccountDetails)) => f(cred, Path(path)) }
         }
       }
 

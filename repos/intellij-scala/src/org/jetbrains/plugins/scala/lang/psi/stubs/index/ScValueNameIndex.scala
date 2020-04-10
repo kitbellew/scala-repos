@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.params.ScClassParamet
   * User: Alexander Podkhalyuzin
   * Date: 17.10.2008
   */
+
 class ScValueNameIndex extends StringStubIndexExtension[ScValue] {
   override def get(
       key: String,

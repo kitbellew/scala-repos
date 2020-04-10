@@ -125,7 +125,9 @@ object Ratatoskr {
     if (args.length > 0) {
       commandMap
         .get(args(0))
-        .map { c => c.run(args.slice(1, args.length)) }
+        .map { c =>
+          c.run(args.slice(1, args.length))
+        }
         .getOrElse {
           die(usage("Unknown command: [%s]".format(args(0))))
         }
@@ -473,7 +475,9 @@ object KafkaTools extends Command {
                       if (path.length > 0) {
                         //println("Deleting from path " + path)
                         ReportState(index + 1, currentPathSize + (path -> 0L))
-                          .unsafeTap { newState => trackState(newState) }
+                          .unsafeTap { newState =>
+                            trackState(newState)
+                          }
                       } else {
                         state.inc
                       }

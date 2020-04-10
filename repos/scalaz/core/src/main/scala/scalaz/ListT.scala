@@ -3,6 +3,7 @@ package scalaz
 /**
   * ListT monad transformer.
   */
+
 final case class ListT[M[_], A](run: M[List[A]]) {
   def uncons(implicit M: Applicative[M]): M[Option[(A, ListT[M, A])]] = {
     M.map(run) { list =>
@@ -48,7 +49,9 @@ final case class ListT[M[_], A](run: M[List[A]]) {
 
   def ++(bs: => ListT[M, A])(implicit M: Bind[M]): ListT[M, A] =
     new ListT(M.bind(run) { list1 =>
-      M.map(bs.run) { list2 => list1 ++ list2 }
+      M.map(bs.run) { list2 =>
+        list1 ++ list2
+      }
     })
 
   def flatMap[B](f: A => ListT[M, B])(implicit M: Monad[M]): ListT[M, B] =

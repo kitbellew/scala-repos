@@ -918,4 +918,6 @@ object Future {
   * All callbacks provided to a `Future` end up going through `onComplete`, so this allows an
   * `ExecutionContext` to special-case callbacks that were executed by `Future` if desired.
   */
-trait OnCompleteRunnable { self: Runnable => }
+trait OnCompleteRunnable {
+  self: Runnable =>
+}

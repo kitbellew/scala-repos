@@ -15,6 +15,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package com.gravity.goose.utils
 
 import com.gravity.goose.text.{StringReplacement, HashUtils}
@@ -26,6 +27,7 @@ import org.apache.http.client.methods.HttpGet
   * User: jim
   * Date: 8/14/11
   */
+
 case class ParsingCandidate(urlString: String, linkhash: String, url: URL)
 
 object URLHelper extends Logging {

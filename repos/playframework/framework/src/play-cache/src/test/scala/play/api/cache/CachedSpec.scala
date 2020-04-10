@@ -164,7 +164,11 @@ class CachedSpec extends PlaySpecification {
 
   "Cached EssentialAction composition" should {
     "cache infinite ok results" in new WithApplication() {
-      val cacheOk = Cached.empty { x => x.uri }.includeStatus(200)
+      val cacheOk = Cached
+        .empty { x =>
+          x.uri
+        }
+        .includeStatus(200)
 
       val actionOk = cacheOk.build(dummyAction)
       val actionNotFound = cacheOk.build(notFoundAction)
@@ -183,7 +187,9 @@ class CachedSpec extends PlaySpecification {
     }
 
     "cache everything for infinite" in new WithApplication() {
-      val cache = Cached.everything { x => x.uri }
+      val cache = Cached.everything { x =>
+        x.uri
+      }
 
       val actionOk = cache.build(dummyAction)
       val actionNotFound = cache.build(notFoundAction)

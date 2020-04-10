@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.ScModifierListOwner
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaContainingClassWiegher extends CompletionWeigher {
   def weigh(
       element: LookupElement,

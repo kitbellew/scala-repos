@@ -88,7 +88,9 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
               scope(rightGen) = r
               asBoolean(run(by))
             }
-            .map { r => new ProductValue(Vector(l, r)) }
+            .map { r =>
+              new ProductValue(Vector(l, r))
+            }
         }
         scope.remove(leftGen)
         scope.remove(rightGen)
@@ -102,7 +104,9 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
               scope(rightGen) = r
               asBoolean(run(by))
             }
-            .map { r => new ProductValue(Vector(l, r)) }
+            .map { r =>
+              new ProductValue(Vector(l, r))
+            }
           if (inner.headOption.isEmpty)
             Vector(
               new ProductValue(
@@ -123,7 +127,9 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
               scope(leftGen) = l
               asBoolean(run(by))
             }
-            .map { l => new ProductValue(Vector(l, r)) }
+            .map { l =>
+              new ProductValue(Vector(l, r))
+            }
           if (inner.headOption.isEmpty)
             Vector(
               new ProductValue(
@@ -144,7 +150,9 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
               scope(rightGen) = r
               asBoolean(run(by))
             }
-            .map { r => new ProductValue(Vector(l, r)) }
+            .map { r =>
+              new ProductValue(Vector(l, r))
+            }
           if (inner.headOption.isEmpty)
             Vector(
               new ProductValue(

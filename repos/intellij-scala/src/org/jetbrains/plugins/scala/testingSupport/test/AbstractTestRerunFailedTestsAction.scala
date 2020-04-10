@@ -28,6 +28,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Alexander Podkhalyuzin
   * Date: 09.12.11
   */
+
 class AbstractTestRerunFailedTestsAction(
     consoleView: BaseTestsOutputConsoleView)
     extends AbstractRerunFailedTestsActionAdapter(consoleView) {

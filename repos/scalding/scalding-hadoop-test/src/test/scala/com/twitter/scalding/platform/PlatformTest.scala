@@ -127,7 +127,9 @@ class MultipleGroupByJob(args: Args) extends Job(args) {
     }
     .sumByKey[(String, String), Long](implicitly, stringTup2OrdSer, implicitly)
     .map(_._1._1)
-    .map { t => (t.toString, t) }
+    .map { t =>
+      (t.toString, t)
+    }
     .group
     .leftJoin(otherStream)
     .map(_._1)

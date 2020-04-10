@@ -33,15 +33,21 @@ object ParseDriver extends Logging {
 
   /** Create an LogicalPlan ASTNode from a SQL command. */
   def parsePlan(command: String, conf: ParserConf): ASTNode =
-    parse(command, conf) { parser => parser.statement().getTree }
+    parse(command, conf) { parser =>
+      parser.statement().getTree
+    }
 
   /** Create an Expression ASTNode from a SQL command. */
   def parseExpression(command: String, conf: ParserConf): ASTNode =
-    parse(command, conf) { parser => parser.singleNamedExpression().getTree }
+    parse(command, conf) { parser =>
+      parser.singleNamedExpression().getTree
+    }
 
   /** Create an TableIdentifier ASTNode from a SQL command. */
   def parseTableName(command: String, conf: ParserConf): ASTNode =
-    parse(command, conf) { parser => parser.singleTableName().getTree }
+    parse(command, conf) { parser =>
+      parser.singleTableName().getTree
+    }
 
   private def parse(command: String, conf: ParserConf)(
       toTree: SparkSqlParser => CommonTree): ASTNode = {
@@ -119,6 +125,7 @@ object ParseDriver extends Logging {
   * only accept capitalized tokens in case it is run from other tools like antlrworks which do not
   * have the ANTLRNoCaseStringStream implementation.
   */
+
 private[parser] class ANTLRNoCaseStringStream(input: String)
     extends ANTLRStringStream(input) {
   override def LA(i: Int): Int = {

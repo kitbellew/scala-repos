@@ -17,7 +17,9 @@ class MergeTest(args: Args) extends Job(args) {
         tup: (String, Long) => List(tup)
       } /* reduce */ { (l1: List[(String, Long)], l2: List[(String, Long)]) =>
         mergeSort2(l1, l2, 10, cmpTup)
-      } /* map2 */ { lout: List[(String, Long)] => lout }
+      } /* map2 */ { lout: List[(String, Long)] =>
+        lout
+      }
     }
     //Now expand out the list.
     .flatMap('list -> ('word, 'cnt)) { list: List[(String, Long)] => list }

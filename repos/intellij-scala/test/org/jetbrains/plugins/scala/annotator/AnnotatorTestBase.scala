@@ -12,6 +12,7 @@ import org.junit.Assert._
 /**
   * Pavel Fatin
   */
+
 abstract class AnnotatorTestBase[T <: ScalaPsiElement](
     annotator: AnnotatorPart[T])
     extends SimpleTestCase {

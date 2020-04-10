@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.injection.ScalaPatterns
   * @author Ksenia.Sautina
   * @since 7/17/12
   */
+
 class ScalaPropertiesReferenceContributor extends PsiReferenceContributor {
   private final val CLASS_REFERENCE_PROVIDER: JavaClassReferenceProvider =
     new JavaClassReferenceProvider {

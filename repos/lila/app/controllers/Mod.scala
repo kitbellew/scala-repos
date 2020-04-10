@@ -162,7 +162,9 @@ object Mod extends LilaController {
     )
 
   def ipIntel(ip: String) =
-    Secure(_.IpBan) { ctx => me => ipIntelCache(ip).map { Ok(_) } }
+    Secure(_.IpBan) { ctx => me =>
+      ipIntelCache(ip).map { Ok(_) }
+    }
 
   def redirect(username: String, mod: Boolean = true) =
     Redirect(routes.User.show(username).url + mod.??("?mod"))
@@ -192,6 +194,8 @@ object Mod extends LilaController {
   def search =
     Secure(_.UserSearch) { implicit ctx => me =>
       val query = (~get("q")).trim
-      Env.mod.search(query) map { users => html.mod.search(query, users) }
+      Env.mod.search(query) map { users =>
+        html.mod.search(query, users)
+      }
     }
 }

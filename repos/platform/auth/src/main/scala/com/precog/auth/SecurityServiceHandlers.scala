@@ -237,7 +237,7 @@ class SecurityServiceHandlers(
               .toSuccess(badRequest("Missing body content for grant creation."))
               .sequence[Future, JValue]
           response <- (for (apiKey <- apiKeyV; content <- contentV)
-            yield create(apiKey, content)).sequence[Future, R]
+              yield create(apiKey, content)).sequence[Future, R]
         } yield response.toEither.merge
       }
 
@@ -395,7 +395,7 @@ class SecurityServiceHandlers(
               .toSuccess(badRequest("Missing body content for grant creation."))
               .sequence[Future, JValue]
           response <- (for (parentId <- parentIdV; content <- contentV)
-            yield create(authAPIKey, parentId, content)).sequence[Future, R]
+              yield create(authAPIKey, parentId, content)).sequence[Future, R]
         } yield response.toEither.merge
       }
 
@@ -454,7 +454,8 @@ class SecurityServiceHandlers(
           case Success(at) =>
             apiKeyManager.validGrants(authAPIKey, Some(at)) map { grants =>
               val pathPermissions = grants flatMap (_.permissions) filter {
-                perm => (perm.path == path) || path.isChildOf(perm.path)
+                perm =>
+                  (perm.path == path) || path.isChildOf(perm.path)
               }
               ok(Some(pathPermissions))
             }

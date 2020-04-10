@@ -234,7 +234,9 @@ class BlockManagerReplicationSuite
   test("block replication - deterministic node selection") {
     val blockSize = 1000
     val storeSize = 10000
-    val stores = (1 to 5).map { i => makeBlockManager(storeSize, s"store$i") }
+    val stores = (1 to 5).map { i =>
+      makeBlockManager(storeSize, s"store$i")
+    }
     val storageLevel2x = StorageLevel.MEMORY_AND_DISK_2
     val storageLevel3x = StorageLevel(true, true, false, true, 3)
     val storageLevel4x = StorageLevel(true, true, false, true, 4)
@@ -493,7 +495,9 @@ class BlockManagerReplicationSuite
                 new Array[Byte](1000),
                 MEMORY_ONLY_SER)
             }
-            (1 to 10).foreach { i => testStore.removeBlock(s"dummy-block-$i") }
+            (1 to 10).foreach { i =>
+              testStore.removeBlock(s"dummy-block-$i")
+            }
 
             val newBlockStatusOption =
               master.getBlockStatus(blockId).get(testStore.blockManagerId)

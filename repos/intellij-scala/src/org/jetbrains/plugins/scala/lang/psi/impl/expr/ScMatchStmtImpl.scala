@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.{Bounds, Nothing, ScType}
   * @author Alexander Podkhalyuzin
   * Date: 06.03.2008
   */
+
 class ScMatchStmtImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScMatchStmt {

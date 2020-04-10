@@ -14,6 +14,7 @@ import scala.annotation.tailrec
   * @author Alexander Podkhalyuzin
   *         Date: 18.04.2008
   */
+
 /*
  *  ContentP ::= [CharData] {ContentP1 [CharData]}
  *

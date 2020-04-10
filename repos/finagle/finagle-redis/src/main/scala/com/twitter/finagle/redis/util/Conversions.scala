@@ -50,7 +50,9 @@ object StringToBytes {
   def apply(arg: String, charset: Charset = Charsets.Utf8) =
     arg.getBytes(charset)
   def fromList(args: List[String], charset: Charset = Charsets.Utf8) =
-    args.map { arg => arg.getBytes(charset) }
+    args.map { arg =>
+      arg.getBytes(charset)
+    }
 }
 object StringToChannelBuffer {
   def apply(string: String, charset: Charset = Charsets.Utf8) = {

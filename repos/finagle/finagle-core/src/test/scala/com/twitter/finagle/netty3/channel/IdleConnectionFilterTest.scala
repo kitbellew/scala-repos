@@ -81,7 +81,9 @@ class IdleConnectionFilterTest extends FunSuite with MockitoSugar {
     val spyFilter = Mockito.spy(new IdleConnectionFilter(underlying, threshold))
 
     assert(spyFilter.openConnections == 0)
-    (1 to threshold.lowWaterMark) map { _ => open(spyFilter) }
+    (1 to threshold.lowWaterMark) map { _ =>
+      open(spyFilter)
+    }
     assert(spyFilter.openConnections == threshold.lowWaterMark)
 
     // open must try to close an idle connection
@@ -157,7 +159,9 @@ class IdleConnectionFilterTest extends FunSuite with MockitoSugar {
       }
 
       // Simulate response from the server
-      responses foreach { f => f.setValue("toto") }
+      responses foreach { f =>
+        f.setValue("toto")
+      }
 
       // wait a long time
       t += threshold.idleTimeout * 3

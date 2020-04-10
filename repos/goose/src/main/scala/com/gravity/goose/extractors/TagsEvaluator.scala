@@ -8,6 +8,7 @@ import org.jsoup.nodes.Element
   * Date: 6/12/12
   * Time: 12:04 PM
   */
+
 class TagsEvaluator(tags: scala.collection.Set[String]) extends Evaluator {
   def matches(root: Element, element: Element) =
     tags.contains(element.tagName())

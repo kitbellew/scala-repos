@@ -22,6 +22,7 @@ import scala.collection.Seq
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
   */
+
 trait ScConstructor extends ScalaPsiElement {
   def typeElement: ScTypeElement
 

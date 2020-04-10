@@ -49,6 +49,7 @@ import scala.collection.immutable.HashSet
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
   */
+
 trait ScParameter
     extends ScTypedDefinition
     with ScModifierListOwner

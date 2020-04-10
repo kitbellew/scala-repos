@@ -295,7 +295,9 @@ trait TransSpecableModule[M[+_]]
           val dag.Const(cv: CValue) = node // TODO !!
 
           underN flatMap { under =>
-            leftMap(under) { spec => trans.ConstLiteral(cv, spec) }
+            leftMap(under) { spec =>
+              trans.ConstLiteral(cv, spec)
+            }
           }
         }
 

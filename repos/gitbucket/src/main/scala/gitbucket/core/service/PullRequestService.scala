@@ -21,7 +21,9 @@ trait PullRequestService { self: IssuesService =>
       PullRequests
         .filter(_.byPrimaryKey(owner, repository, issueId))
         .firstOption
-        .map { pullreq => (issue, pullreq) }
+        .map { pullreq =>
+          (issue, pullreq)
+        }
     }
 
   def updateCommitId(

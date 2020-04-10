@@ -294,8 +294,10 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
           }
       } { ws =>
         // #scalaws-process-xml
-        val futureResult: Future[scala.xml.NodeSeq] =
-          ws.url(url).get().map { response => response.xml \ "message" }
+        val futureResult: Future[scala.xml.NodeSeq] = ws.url(url).get().map {
+          response =>
+            response.xml \ "message"
+        }
         // #scalaws-process-xml
         await(futureResult).text must_== "Hello"
       }
@@ -465,7 +467,9 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       //#async-result
       def wsAction =
         Action.async {
-          ws.url(url).get().map { response => Ok(response.body) }
+          ws.url(url).get().map { response =>
+            Ok(response.body)
+          }
         }
       status(wsAction(FakeRequest())) must_== OK
       //#async-result

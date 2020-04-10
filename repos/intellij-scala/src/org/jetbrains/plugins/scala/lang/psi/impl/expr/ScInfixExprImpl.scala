@@ -21,6 +21,7 @@ import scala.collection.Seq
   * @author Alexander Podkhalyuzin
   * Date: 06.03.2008
   */
+
 class ScInfixExprImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScInfixExpr {

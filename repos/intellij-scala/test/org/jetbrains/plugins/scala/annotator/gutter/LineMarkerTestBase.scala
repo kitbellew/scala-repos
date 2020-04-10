@@ -19,6 +19,7 @@ import scala.io.Source
 /**
   * Pavel.Fatin, 14.01.2010
   */
+
 abstract class LineMarkerTestBase extends LightCodeInsightFixtureTestCase {
   val marker = "// -"
 

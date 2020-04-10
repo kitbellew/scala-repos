@@ -357,7 +357,8 @@ private object TraceInfo {
           SpanId.fromString(request.headers.get(Header.ParentSpanId))
 
         val sampled = Option(request.headers.get(Header.Sampled)) flatMap {
-          sampled => Try(sampled.toBoolean).toOption
+          sampled =>
+            Try(sampled.toBoolean).toOption
         }
 
         val flags = getFlags(request)

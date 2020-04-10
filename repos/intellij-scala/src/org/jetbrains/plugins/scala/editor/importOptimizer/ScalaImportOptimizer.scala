@@ -57,6 +57,7 @@ import scala.collection.{immutable, mutable}
   * User: Alexander Podkhalyuzin
   * Date: 16.06.2009
   */
+
 class ScalaImportOptimizer extends ImportOptimizer {
 
   import org.jetbrains.plugins.scala.editor.importOptimizer.ScalaImportOptimizer._

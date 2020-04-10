@@ -4,6 +4,7 @@
   *  the definition of apply would vary covariantly, and erasure won't consider it an
   *  override of the abstract apply, leading to an AbstractMethodError at runtime.
   */
+
 object Test {
 
   private val Max = 1000

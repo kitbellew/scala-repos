@@ -283,10 +283,14 @@ class WatermarkPoolTest extends FunSpec with MockitoSugar {
       // We can now fetch them again, incurring no additional object
       // creation.
       0 until 100 foreach { _ => Await.result(pool()) }
-      mocks foreach { service => verify(service, times(2)).status }
+      mocks foreach { service =>
+        verify(service, times(2)).status
+      }
 
       verify(factory, times(100))()
-      mocks foreach { service => verify(service, never()).close(any[Time]) }
+      mocks foreach { service =>
+        verify(service, never()).close(any[Time])
+      }
     }
   }
 

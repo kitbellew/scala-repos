@@ -108,11 +108,15 @@ class ULongTest
   }
 
   property("a.toString = a.toBigInt.toString") {
-    forAll { (n: ULong) => n.toString shouldBe n.toBigInt.toString }
+    forAll { (n: ULong) =>
+      n.toString shouldBe n.toBigInt.toString
+    }
   }
 
   property("toFloat") {
-    forAll { (n: ULong) => n.toFloat shouldBe n.toBigInt.toFloat }
+    forAll { (n: ULong) =>
+      n.toFloat shouldBe n.toBigInt.toFloat
+    }
   }
 
   property("toDouble") {
@@ -133,7 +137,9 @@ class UIntTest
   val one = UInt(1)
 
   property("n >= 0") {
-    forAll { (n: UInt) => n >= zero shouldBe true }
+    forAll { (n: UInt) =>
+      n >= zero shouldBe true
+    }
   }
 
   property("a + b == b + a") {
@@ -227,7 +233,9 @@ class UShortTest
   val one = UShort(1)
 
   property("n >= 0") {
-    forAll { (n: UShort) => n >= zero shouldBe true }
+    forAll { (n: UShort) =>
+      n >= zero shouldBe true
+    }
   }
 
   property("a + b == b + a") {
@@ -321,7 +329,9 @@ class UByteTest
   val one = UByte(1)
 
   property("n >= 0") {
-    forAll { (n: UByte) => n >= zero shouldBe true }
+    forAll { (n: UByte) =>
+      n >= zero shouldBe true
+    }
   }
 
   property("a + b == b + a") {

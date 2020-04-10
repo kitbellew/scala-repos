@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.ScTypeUtil.AliasType
   * User: Alexander Podkhalyuzin
   * Date: 28.04.2010
   */
+
 object Equivalence {
   def equiv(l: ScType, r: ScType): Boolean =
     equivInner(l, r, new ScUndefinedSubstitutor)._1

@@ -75,6 +75,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
 
   /** TODO - this is a lot of maps.
     */
+
   /** For a given class and concrete type arguments, give its specialized class */
   val specializedClass = perRunCaches.newMap[(Symbol, TypeEnv), Symbol]
 
@@ -2006,7 +2007,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
                     debuglog("created " + t)
                     reportError {
                       localTyper.typed(t)
-                    } { _ => super.transform(tree) }
+                    } { _ =>
+                      super.transform(tree)
+                    }
 
                   case fwd @ Forward(_) =>
                     debuglog("forward: " + fwd + ", " + ddef)
@@ -2018,7 +2021,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
                       "-->d completed forwarder to specialized overload: " + fwd.target + ": " + rhs1)
                     reportError {
                       localTyper.typed(deriveDefDef(tree)(_ => rhs1))
-                    } { _ => super.transform(tree) }
+                    } { _ =>
+                      super.transform(tree)
+                    }
 
                   case SpecializedAccessor(target) =>
                     val rhs1 =

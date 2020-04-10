@@ -9,7 +9,8 @@ trait ActivityService {
 
   def deleteOldActivities(limit: Int)(implicit s: Session): Int = {
     Activities.map(_.activityId).sortBy(_ desc).drop(limit).firstOption.map {
-      id => Activities.filter(_.activityId <= id.bind).delete
+      id =>
+        Activities.filter(_.activityId <= id.bind).delete
     } getOrElse 0
   }
 

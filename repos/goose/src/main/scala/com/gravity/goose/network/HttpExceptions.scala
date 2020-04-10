@@ -6,6 +6,7 @@ package com.gravity.goose.network
   * Date: 11/2/11
   * Time: 10:25 AM
   */
+
 class LoggableException(msg: String, innerEx: Exception = null)
     extends Exception(msg, innerEx) {
   override lazy val getMessage = {

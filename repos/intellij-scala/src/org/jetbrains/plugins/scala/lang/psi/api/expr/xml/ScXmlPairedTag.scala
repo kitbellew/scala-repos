@@ -9,6 +9,7 @@ import org.jetbrains.plugins.scala.lang.psi.ScalaPsiElement
   * User: Dmitry Naydanov
   * Date: 4/9/12
   */
+
 trait ScXmlPairedTag extends ScalaPsiElement {
   def getTagName =
     findChildrenByType(ScalaXmlTokenTypes.XML_NAME).headOption

@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScValue
   * User: Alexander Podkhalyuzin
   * Date: 17.10.2008
   */
+
 class ScValueDefinitionElementType
     extends ScValueElementType[ScValue]("value definition") {
   def createElement(node: ASTNode): PsiElement =

@@ -148,7 +148,9 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
       val stats = Await.result(client.stats())
       assert(stats != null)
       assert(!stats.isEmpty)
-      stats.foreach { stat => assert(stat.startsWith("STAT")) }
+      stats.foreach { stat =>
+        assert(stat.startsWith("STAT"))
+      }
     }
   }
 
@@ -217,7 +219,9 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
     // set values
     Await.result(
       Future.collect(
-        (0 to 20).map { i => client.set(s"foo$i", Buf.Utf8(s"bar$i")) }
+        (0 to 20).map { i =>
+          client.set(s"foo$i", Buf.Utf8(s"bar$i"))
+        }
       ),
       TimeOut)
 

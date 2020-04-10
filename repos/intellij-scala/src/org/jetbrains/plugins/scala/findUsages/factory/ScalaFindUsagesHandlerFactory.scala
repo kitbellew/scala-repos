@@ -27,6 +27,7 @@ import org.jetbrains.plugins.scala.{ScalaBundle, extensions}
   * User: Alexander Podkhalyuzin
   * Date: 17.08.2009
   */
+
 class ScalaFindUsagesHandlerFactory(project: Project)
     extends FindUsagesHandlerFactory {
 

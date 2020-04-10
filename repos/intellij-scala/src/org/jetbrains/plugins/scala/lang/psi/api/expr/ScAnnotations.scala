@@ -19,6 +19,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.{ScParameterizedType, ScType}
   * @author Alexander Podkhalyuzin
   *                         Date: 07.03.2008
   */
+
 trait ScAnnotations extends ScalaPsiElement with PsiReferenceList {
   def getReferenceElements = Array[PsiJavaCodeReferenceElement]()
 

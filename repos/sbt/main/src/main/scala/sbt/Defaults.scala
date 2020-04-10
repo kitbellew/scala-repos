@@ -732,7 +732,8 @@ object Defaults extends BuildCommon {
 
   def testExecutionTask(task: Scoped): Initialize[Task[Tests.Execution]] =
     (testOptions in task, parallelExecution in task, tags in task) map {
-      (opts, par, ts) => new Tests.Execution(opts, par, ts)
+      (opts, par, ts) =>
+        new Tests.Execution(opts, par, ts)
     }
 
   def testQuickFilter: Initialize[Task[Seq[String] => Seq[String => Boolean]]] =
@@ -2578,7 +2579,8 @@ object Classpaths {
 
   private[this] def productsImplTask: Initialize[Task[Seq[File]]] =
     (products.task, packageBin.task, exportJars) flatMap {
-      (psTask, pkgTask, useJars) => if (useJars) Seq(pkgTask).join else psTask
+      (psTask, pkgTask, useJars) =>
+        if (useJars) Seq(pkgTask).join else psTask
     }
 
   def constructBuildDependencies: Initialize[BuildDependencies] =
@@ -3154,7 +3156,8 @@ trait BuildExtra extends BuildCommon with DefExtra {
       mainClass: String,
       arguments: String*): Initialize[Task[Unit]] =
     (fullClasspath in config, runner in (config, run), streams) map {
-      (cp, r, s) => toError(r.run(mainClass, data(cp), arguments, s.log))
+      (cp, r, s) =>
+        toError(r.run(mainClass, data(cp), arguments, s.log))
     }
 
   def fullRunInputTask(

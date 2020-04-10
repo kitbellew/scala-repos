@@ -14,6 +14,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package kafka.admin
 
 import java.util.Properties
@@ -225,7 +226,9 @@ object ConsumerGroupCommand {
           .readDataMaybeNull(
             groupDirs.consumerOwnerDir + "/" + topicPartition.partition)
           ._1
-          .map { owner => topicPartition -> owner }
+          .map { owner =>
+            topicPartition -> owner
+          }
       }.toMap
       val partitionOffsets = getPartitionOffsets(
         group,

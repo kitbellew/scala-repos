@@ -9,6 +9,7 @@ import breeze.interpolation._
   *
   * @author chrismedrela
  **/
+
 class LinearInterpolatorTest extends FunSuite {
   test("basics") {
     val x = DenseVector(1.0, 2.0, 3.0)

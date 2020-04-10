@@ -18,7 +18,9 @@ final class JsonView {
       "description" -> D.Opening.description.body,
       "values" -> Dimension
         .valuesOf(D.Opening)
-        .filter { o => ecos contains o.eco }
+        .filter { o =>
+          ecos contains o.eco
+        }
         .map(Dimension.valueToJson(D.Opening))
     )
 
@@ -121,7 +123,9 @@ final class JsonView {
     }
 
   private implicit def positionWriter: Writes[Position] =
-    Writes { p => JsString(p.name) }
+    Writes { p =>
+      JsString(p.name)
+    }
 
   object chart {
     private implicit val xAxisWrites = Json.writes[Chart.Xaxis]

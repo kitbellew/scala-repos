@@ -23,6 +23,7 @@ import org.jetbrains.plugins.scala.util.IntentionAvailabilityChecker
 /**
   * Jason Zaugg
   */
+
 class RemoveBracesIntention extends PsiElementBaseIntentionAction {
   def getFamilyName = "Remove braces"
 

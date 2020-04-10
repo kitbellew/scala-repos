@@ -20,6 +20,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.lexer.docsyntax.ScaladocSyntaxE
   * User: Dmitry Naydanov
   * Date: 2/24/12
   */
+
 class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
   def beforeCharDeleted(c: Char, file: PsiFile, editor: Editor) {
     if (!file.isInstanceOf[ScalaFile]) return

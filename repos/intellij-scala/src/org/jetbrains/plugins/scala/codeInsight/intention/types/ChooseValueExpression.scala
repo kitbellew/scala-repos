@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.ScTypeText
   * Author: Svyatoslav Ilinskiy
   * Date: 22.12.15.
   */
+
 abstract class ChooseValueExpression[T](lookupItems: Seq[T], defaultItem: T)
     extends Expression {
   def lookupString(elem: T): String

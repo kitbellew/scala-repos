@@ -51,6 +51,7 @@ object LeftPartialAction {
   *
   * `(p <|+|? g.leftId).get === p`, the operation `<|+|?` being defined.
   */
+
 trait RightPartialAction[P, G] extends Any {
   def actrIsDefined(p: P, g: G): Boolean = partialActr(p, g).nonEmpty
   def partialActr(p: P, g: G): Opt[P]

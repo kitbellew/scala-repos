@@ -69,7 +69,9 @@ object CosineSimilarity {
         """.stripMargin)
     }
 
-    parser.parse(args, defaultParams).map { params => run(params) } getOrElse {
+    parser.parse(args, defaultParams).map { params =>
+      run(params)
+    } getOrElse {
       System.exit(1)
     }
   }

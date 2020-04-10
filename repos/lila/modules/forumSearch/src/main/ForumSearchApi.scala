@@ -19,7 +19,9 @@ final class ForumSearchApi(client: ESClient, postApi: PostApi)
 
   def store(post: Post) =
     postApi liteView post flatMap {
-      _ ?? { view => client.store(Id(view.post.id), toDoc(view)) }
+      _ ?? { view =>
+        client.store(Id(view.post.id), toDoc(view))
+      }
     }
 
   private def toDoc(view: PostLiteView) =

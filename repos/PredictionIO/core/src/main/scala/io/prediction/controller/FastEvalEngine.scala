@@ -12,6 +12,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package io.prediction.controller
 
 import io.prediction.core.BaseDataSource
@@ -169,7 +170,9 @@ object FastEvalEngineWorkflow {
     // Model Train
     val algoModelsMap: Map[EX, Map[AX, Any]] =
       getPreparatorResult(workflow, new PreparatorPrefix(prefix))
-        .mapValues { pd => algoMap.mapValues(_.trainBase(workflow.sc, pd)) }
+        .mapValues { pd =>
+          algoMap.mapValues(_.trainBase(workflow.sc, pd))
+        }
 
     // Predict
     val dataSourceResult =

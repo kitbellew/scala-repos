@@ -398,7 +398,9 @@ trait ActionBuilder[+R[_]] extends ActionFunction[Request, R] {
     */
   final def apply[A](bodyParser: BodyParser[A])(
       block: R[A] => Result): Action[A] =
-    async(bodyParser) { req: R[A] => Future.successful(block(req)) }
+    async(bodyParser) { req: R[A] =>
+      Future.successful(block(req))
+    }
 
   /**
     * Constructs an `Action` with default content.

@@ -30,6 +30,7 @@ import org.jetbrains.plugins.scala.util.TestUtils
   * User: Alexander Podkhalyuzin
   * Date: 10.03.2009
   */
+
 abstract class TypeInferenceTestBase
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   private val startExprMarker = "/*start*/"

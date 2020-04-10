@@ -4,6 +4,7 @@ package lang.refactoring
 /**
   * Pavel Fatin
   */
+
 class ScalaStatementMoverTest extends StatementMoverTestBase {
   def testSingleLineMember() {
     "|def a".moveUpIsDisabled()

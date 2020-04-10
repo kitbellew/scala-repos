@@ -448,6 +448,7 @@ trait {className}{covariantArgs} extends Any with Product {{
 }
 
 /** Abstract functions **/
+
 object AbstractFunctionZero extends AbstractFunction(0) {
   override def covariantSpecs = FunctionZero.covariantSpecs
 }

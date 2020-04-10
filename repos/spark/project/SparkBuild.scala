@@ -338,7 +338,9 @@ object SparkBuild extends PomBuild {
     ).contains(x)
   }
 
-  mimaProjects.foreach { x => enable(MimaBuild.mimaSettings(sparkHome, x))(x) }
+  mimaProjects.foreach { x =>
+    enable(MimaBuild.mimaSettings(sparkHome, x))(x)
+  }
 
   /* Unsafe settings */
   enable(Unsafe.settings)(unsafe)
@@ -637,7 +639,8 @@ object Assembly {
         }
     },
     jarName in (Test, assembly) <<= (version, moduleName, hadoopVersion) map {
-      (v, mName, hv) => s"${mName}-test-${v}.jar"
+      (v, mName, hv) =>
+        s"${mName}-test-${v}.jar"
     },
     mergeStrategy in assembly := {
       case PathList("org", "datanucleus", xs @ _*)    => MergeStrategy.discard
@@ -946,13 +949,17 @@ object TestSettings {
       TestFrameworks.ScalaTest,
       sys.props
         .get("test.exclude.tags")
-        .map { tags => tags.split(",").flatMap { tag => Seq("-l", tag) }.toSeq }
+        .map { tags =>
+          tags.split(",").flatMap { tag => Seq("-l", tag) }.toSeq
+        }
         .getOrElse(Nil): _*),
     testOptions in Test += Tests.Argument(
       TestFrameworks.JUnit,
       sys.props
         .get("test.exclude.tags")
-        .map { tags => Seq("--exclude-categories=" + tags) }
+        .map { tags =>
+          Seq("--exclude-categories=" + tags)
+        }
         .getOrElse(Nil): _*),
     // Show full stack trace and duration in test cases.
     testOptions in Test += Tests.Argument("-oDF"),

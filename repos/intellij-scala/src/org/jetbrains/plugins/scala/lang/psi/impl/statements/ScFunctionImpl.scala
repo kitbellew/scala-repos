@@ -22,6 +22,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.ScFunctionStub
 /**
   * @author ilyas
   */
+
 abstract class ScFunctionImpl protected (
     stub: StubElement[ScFunction],
     nodeType: IElementType,

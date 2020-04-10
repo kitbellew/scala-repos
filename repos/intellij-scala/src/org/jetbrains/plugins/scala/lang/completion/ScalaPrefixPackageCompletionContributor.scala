@@ -34,6 +34,7 @@ import scala.collection.JavaConverters._
 /**
   * @author Nikolay.Tropin
   */
+
 class ScalaPrefixPackageCompletionContributor
     extends ScalaCompletionContributor {
   extend(
@@ -105,7 +106,9 @@ object ScalaPrefixPackageCompletionContributor {
         resolveResult,
         isInImport = false,
         shouldImport = true)
-      lookupElems.foreach { le => le.elementToImport = pckg }
+      lookupElems.foreach { le =>
+        le.elementToImport = pckg
+      }
       result.addAllElements(lookupElems.asJava)
     }
 

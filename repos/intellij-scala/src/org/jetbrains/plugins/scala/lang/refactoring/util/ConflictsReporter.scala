@@ -15,6 +15,7 @@ import com.intellij.util.containers.MultiMap
 /**
   * @author Alexander Podkhalyuzin
   */
+
 trait ConflictsReporter {
   def reportConflicts(
       project: Project,

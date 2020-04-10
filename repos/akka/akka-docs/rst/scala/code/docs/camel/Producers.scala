@@ -65,7 +65,9 @@ object Producers {
       def endpointUri = uri
 
       def upperCase(msg: CamelMessage) =
-        msg.mapBody { body: String => body.toUpperCase }
+        msg.mapBody { body: String =>
+          body.toUpperCase
+        }
 
       override def transformOutgoingMessage(msg: Any) =
         msg match {

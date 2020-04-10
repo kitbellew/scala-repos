@@ -118,7 +118,9 @@ object I18n extends LilaController {
       context = context)
 
   def fetch(from: Int) =
-    Open { implicit ctx => JsonOk(env jsonFromVersion from) }
+    Open { implicit ctx =>
+      JsonOk(env jsonFromVersion from)
+    }
 
   def hideCalls =
     Open { implicit ctx =>

@@ -518,7 +518,9 @@ class IMain(
   // at a '*'.  So look at each subtree and find the earliest of all positions.
   private def earliestPosition(tree: Tree): Int = {
     var pos = Int.MaxValue
-    tree foreach { t => pos = math.min(pos, safePos(t, Int.MaxValue)) }
+    tree foreach { t =>
+      pos = math.min(pos, safePos(t, Int.MaxValue))
+    }
     pos
   }
 
@@ -1406,7 +1408,9 @@ class IMain(
     if (isReplDebug || isShow) {
       beSilentDuring(parse(code)) match {
         case parse.Success(ts) =>
-          ts foreach { t => withoutUnwrapping(echo(asCompactString(t))) }
+          ts foreach { t =>
+            withoutUnwrapping(echo(asCompactString(t)))
+          }
         case _ =>
       }
     }

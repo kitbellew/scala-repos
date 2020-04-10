@@ -7,6 +7,7 @@ import org.jetbrains.plugins.scala.settings._
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class EnablePerformanceProblemsQuickFix(project: Project)
     extends LocalQuickFix {
   val settings = ScalaProjectSettings.getInstance(project)

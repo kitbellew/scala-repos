@@ -53,7 +53,9 @@ case class Concat(children: Seq[Expression])
   override protected def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val evals = children.map(_.gen(ctx))
     val inputs = evals
-      .map { eval => s"${eval.isNull} ? null : ${eval.value}" }
+      .map { eval =>
+        s"${eval.isNull} ? null : ${eval.value}"
+      }
       .mkString(", ")
     evals.map(_.code).mkString("\n") + s"""
       boolean ${ev.isNull} = false;
@@ -107,7 +109,9 @@ case class ConcatWs(children: Seq[Expression])
       val evals = children.map(_.gen(ctx))
 
       val inputs = evals
-        .map { eval => s"${eval.isNull} ? (UTF8String) null : ${eval.value}" }
+        .map { eval =>
+          s"${eval.isNull} ? (UTF8String) null : ${eval.value}"
+        }
         .mkString(", ")
 
       evals.map(_.code).mkString("\n") + s"""

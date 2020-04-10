@@ -79,12 +79,14 @@ private class ClientEndpoint(
 
         val classPathConf = "spark.driver.extraClassPath"
         val classPathEntries = sys.props.get(classPathConf).toSeq.flatMap {
-          cp => cp.split(java.io.File.pathSeparator)
+          cp =>
+            cp.split(java.io.File.pathSeparator)
         }
 
         val libraryPathConf = "spark.driver.extraLibraryPath"
         val libraryPathEntries = sys.props.get(libraryPathConf).toSeq.flatMap {
-          cp => cp.split(java.io.File.pathSeparator)
+          cp =>
+            cp.split(java.io.File.pathSeparator)
         }
 
         val extraJavaOptsConf = "spark.driver.extraJavaOptions"

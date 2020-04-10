@@ -185,7 +185,9 @@ object ScalaSigEntryParsers extends RulesWithState with MemoisableRules {
 
   implicit def byteCodeEntryParser[A](
       rule: ScalaSigAttributeParsers.Parser[A]): EntryParser[A] =
-    apply { entry => rule(entry.byteCode) mapOut (entry setByteCode _) }
+    apply { entry =>
+      rule(entry.byteCode) mapOut (entry setByteCode _)
+    }
 
   def toEntry[A](index: Int) =
     apply { sigEntry => ScalaSigParsers.entry(index)(sigEntry.scalaSig) }

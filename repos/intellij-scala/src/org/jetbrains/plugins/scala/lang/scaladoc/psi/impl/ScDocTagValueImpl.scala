@@ -50,6 +50,7 @@ import scala.collection.mutable.ArrayBuilder
   * User: Dmitry Naydanov
   * Date: 11/23/11
   */
+
 class ScDocTagValueImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScDocTagValue

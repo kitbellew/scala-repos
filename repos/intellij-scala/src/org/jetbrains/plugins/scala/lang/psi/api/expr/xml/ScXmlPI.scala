@@ -9,4 +9,5 @@ package xml
   * @author Alexander Podkhalyuzin
   * Date: 21.04.2008
   */
+
 trait ScXmlPI extends ScalaPsiElement {}

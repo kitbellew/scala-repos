@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.http.scaladsl.marshalling
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -16,7 +17,9 @@ trait MultipartMarshallers {
       val mediaType = value.mediaType withBoundary boundary
       Marshalling.WithOpenCharset(
         mediaType,
-        { charset ⇒ value.toEntity(charset, boundary)(log) })
+        { charset ⇒
+          value.toEntity(charset, boundary)(log)
+        })
     }
 
   /**

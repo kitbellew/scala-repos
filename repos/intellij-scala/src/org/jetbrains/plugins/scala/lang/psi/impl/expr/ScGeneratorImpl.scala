@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScExpression, _}
   * @author Alexander Podkhalyuzin
   * Date: 07.03.2008
   */
+
 class ScGeneratorImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScGenerator {

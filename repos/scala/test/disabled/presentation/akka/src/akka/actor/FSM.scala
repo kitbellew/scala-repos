@@ -163,6 +163,7 @@ trait FSM[S, D] extends ListenerManagement {
     *                 DSL
     * ****************************************
     */
+
   /**
     * Insert a new StateFunction at the end of the processing chain for the
     * given state. If the stateTimeout parameter is set, entering this state
@@ -350,6 +351,7 @@ trait FSM[S, D] extends ListenerManagement {
     *                PRIVATE IMPLEMENTATION DETAILS
     * ****************************************************************
     */
+
   /*
    * FSM State data and current timeout handling
    */

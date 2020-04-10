@@ -295,7 +295,8 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
     val input = normalizedParCols
       .map { parCols =>
         val (inputPartCols, inputDataCols) = df.logicalPlan.output.partition {
-          attr => parCols.contains(attr.name)
+          attr =>
+            parCols.contains(attr.name)
         }
         Project(inputDataCols ++ inputPartCols, df.logicalPlan)
       }
@@ -313,13 +314,19 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
   }
 
   private def normalizedParCols: Option[Seq[String]] =
-    partitioningColumns.map { cols => cols.map(normalize(_, "Partition")) }
+    partitioningColumns.map { cols =>
+      cols.map(normalize(_, "Partition"))
+    }
 
   private def normalizedBucketColNames: Option[Seq[String]] =
-    bucketColumnNames.map { cols => cols.map(normalize(_, "Bucketing")) }
+    bucketColumnNames.map { cols =>
+      cols.map(normalize(_, "Bucketing"))
+    }
 
   private def normalizedSortColNames: Option[Seq[String]] =
-    sortColumnNames.map { cols => cols.map(normalize(_, "Sorting")) }
+    sortColumnNames.map { cols =>
+      cols.map(normalize(_, "Sorting"))
+    }
 
   private def getBucketSpec: Option[BucketSpec] = {
     if (sortColumnNames.isDefined) {

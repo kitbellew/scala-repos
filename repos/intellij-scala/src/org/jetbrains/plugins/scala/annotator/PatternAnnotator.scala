@@ -34,6 +34,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * Jason Zaugg
   */
+
 trait PatternAnnotator {
 
   def annotatePattern(

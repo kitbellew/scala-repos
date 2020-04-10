@@ -18,6 +18,7 @@ import scala.annotation.tailrec
   *         Date: 06.03.2008
   *         Time: 9:21:35
   */
+
 /*
  * SimpleExpr ::= 'new' (ClassTemplate | TemplateBody)
  *              | BlockExpr

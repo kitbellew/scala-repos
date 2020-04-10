@@ -19,6 +19,7 @@ import scala.collection.mutable.ArrayBuffer
   *
   * @author ilyas
   */
+
 trait ScToplevelElement extends ScalaPsiElement {
   def typeDefinitions: Seq[ScTypeDefinition] = {
     val buff = new ArrayBuffer[ScTypeDefinition]

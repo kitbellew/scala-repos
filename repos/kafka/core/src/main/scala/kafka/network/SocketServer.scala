@@ -14,6 +14,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package kafka.network
 
 import java.io.IOException
@@ -631,7 +632,9 @@ private[kafka] class Processor(
     * Close the selector and all open connections
     */
   private def closeAll() {
-    selector.channels.asScala.foreach { channel => close(selector, channel.id) }
+    selector.channels.asScala.foreach { channel =>
+      close(selector, channel.id)
+    }
     selector.close()
   }
 

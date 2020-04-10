@@ -99,7 +99,9 @@ class FileStoreHandler(
                 "\"%s\" is not a valid file name; please do not use characters which require URL encoding."
                   .format(fn0))
             }
-        } yield { (dir: Path) => dir / Path(fn0) }
+        } yield { (dir: Path) =>
+          dir / Path(fn0)
+        }
 
       case AccessMode.Replace =>
         fileName

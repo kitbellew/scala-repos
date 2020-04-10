@@ -47,7 +47,9 @@ class FoldableTestsAdditional extends CatsSuite {
 
   // exists method written in terms of foldRight
   def contains[F[_]: Foldable, A: Eq](as: F[A], goal: A): Eval[Boolean] =
-    as.foldRight(Now(false)) { (a, lb) => if (a === goal) Now(true) else lb }
+    as.foldRight(Now(false)) { (a, lb) =>
+      if (a === goal) Now(true) else lb
+    }
 
   test("Foldable[List]") {
     val F = Foldable[List]

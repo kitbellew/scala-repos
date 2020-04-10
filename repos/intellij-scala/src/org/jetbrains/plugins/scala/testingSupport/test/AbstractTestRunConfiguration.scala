@@ -58,6 +58,7 @@ import scala.collection.mutable.ArrayBuffer
   * @author Ksenia.Sautina
   * @since 5/15/12
   */
+
 abstract class AbstractTestRunConfiguration(
     val project: Project,
     val configurationFactory: ConfigurationFactory,

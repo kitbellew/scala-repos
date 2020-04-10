@@ -82,7 +82,9 @@ class RawReader private[niflheim] (val id: Long, val log: File, rs: Seq[JValue])
     handleNonempty
 
     val segs = pathConstraint
-      .map { cpaths => segments.a.filter { seg => cpaths(seg.cpath) } }
+      .map { cpaths =>
+        segments.a.filter { seg => cpaths(seg.cpath) }
+      }
       .getOrElse(segments.a.clone)
 
     Block(id, segs, isStable)

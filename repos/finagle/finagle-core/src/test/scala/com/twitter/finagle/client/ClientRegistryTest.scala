@@ -153,7 +153,9 @@ class ClientRegistryTest
         "maxWaiters" -> "2147483647"
       ).map { case (key, value) => Entry(prefix :+ key, value) }
 
-      expected.foreach { entry => assert(filtered.contains(entry)) }
+      expected.foreach { entry =>
+        assert(filtered.contains(entry))
+      }
     }
   })
 

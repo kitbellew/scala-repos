@@ -34,6 +34,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * @author ilyas
   */
+
 object ReachingDefintionsCollector {
 
   def collectVariableInfo(
@@ -138,7 +139,9 @@ object ReachingDefintionsCollector {
   private def filterByFragment(
       cfg: Seq[Instruction],
       fragment: Seq[PsiElement]) =
-    cfg.filter { i => i.element.exists(isInFragment(_, fragment)) }
+    cfg.filter { i =>
+      i.element.exists(isInFragment(_, fragment))
+    }
 
   def computeOutputVariables(
       innerInstructions: Seq[Instruction],

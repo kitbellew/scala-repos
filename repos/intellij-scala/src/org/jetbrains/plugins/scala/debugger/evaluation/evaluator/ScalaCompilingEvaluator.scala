@@ -41,6 +41,7 @@ import scala.collection.JavaConverters._
   * Nikolay.Tropin
   * 2014-10-09
   */
+
 class ScalaCompilingExpressionEvaluator(evaluator: ScalaCompilingEvaluator)
     extends ExpressionEvaluator {
   override def evaluate(context: EvaluationContext): Value =

@@ -733,6 +733,7 @@ private[spark] object JsonProtocolSuite extends Assertions {
   /** -------------------------------- *
    | Util methods for comparing events |
     * --------------------------------- */
+
   private[spark] def assertEquals(
       event1: SparkListenerEvent,
       event2: SparkListenerEvent) {
@@ -1007,6 +1008,7 @@ private[spark] object JsonProtocolSuite extends Assertions {
   /**
     * Use different names for methods we pass in to assertSeqEquals or assertOptionEquals
     */
+
   private def assertShuffleReadEquals(
       r1: ShuffleReadMetrics,
       r2: ShuffleReadMetrics) {
@@ -1048,6 +1050,7 @@ private[spark] object JsonProtocolSuite extends Assertions {
   /** ----------------------------------- *
    | Util methods for constructing events |
     * ------------------------------------ */
+
   private val properties = {
     val p = new Properties
     p.setProperty("Ukraine", "Kiev")
@@ -1196,6 +1199,7 @@ private[spark] object JsonProtocolSuite extends Assertions {
   /** --------------------------------------- *
    | JSON string representation of each event |
     * ---------------------------------------- */
+
   private val stageSubmittedJsonString =
     """
       |{

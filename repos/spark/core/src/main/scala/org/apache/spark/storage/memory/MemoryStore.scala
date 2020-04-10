@@ -408,7 +408,9 @@ private[spark] class MemoryStore(
             s"Will not store $id as it would require dropping another block " +
               "from the same RDD")
         }
-        selectedBlocks.foreach { id => blockManager.releaseLock(id) }
+        selectedBlocks.foreach { id =>
+          blockManager.releaseLock(id)
+        }
         0L
       }
     }

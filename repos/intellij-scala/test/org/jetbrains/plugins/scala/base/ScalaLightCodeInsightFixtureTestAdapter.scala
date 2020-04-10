@@ -24,6 +24,7 @@ import scala.collection.mutable.ListBuffer
   * User: Dmitry Naydanov
   * Date: 3/5/12
   */
+
 abstract class ScalaLightCodeInsightFixtureTestAdapter
     extends LightCodeInsightFixtureTestCase {
   protected val CARET_MARKER =
@@ -142,7 +143,9 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
       text: String,
       assumedText: String,
       charTyped: Char) {
-    performTest(text, assumedText) { () => myFixture.`type`(charTyped) }
+    performTest(text, assumedText) { () =>
+      myFixture.`type`(charTyped)
+    }
   }
 
   protected def checkGeneratedTextAfterBackspace(

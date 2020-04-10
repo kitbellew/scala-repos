@@ -1481,5 +1481,7 @@ object Quote {
   )
 
   implicit def quoteWriter: OWrites[Quote] =
-    OWrites { q => Json.obj("text" -> q.text, "author" -> q.author) }
+    OWrites { q =>
+      Json.obj("text" -> q.text, "author" -> q.author)
+    }
 }

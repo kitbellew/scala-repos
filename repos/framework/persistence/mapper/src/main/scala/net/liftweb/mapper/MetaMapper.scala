@@ -242,7 +242,9 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
   def findAllByPreparedStatementDb[T](
       dbId: ConnectionIdentifier,
       stmt: PreparedStatement)(f: A => Box[T]): List[T] = {
-    DB.exec(stmt) { rs => createInstances(dbId, rs, Empty, Empty, f) }
+    DB.exec(stmt) { rs =>
+      createInstances(dbId, rs, Empty, Empty, f)
+    }
   }
 
   def findAllByInsecureSqlDb(
@@ -261,7 +263,9 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
       checkedBy: IHaveValidatedThisSQL)(f: A => Box[T]): List[T] = {
     DB.use(dbId) { conn =>
       DB.prepareStatement(query, conn) { st =>
-        DB.exec(st) { rs => createInstances(dbId, rs, Empty, Empty, f) }
+        DB.exec(st) { rs =>
+          createInstances(dbId, rs, Empty, Empty, f)
+        }
       }
     }
   }
@@ -2003,7 +2007,9 @@ object NotIn {
       def notIn: Boolean = true
 
       val queryParams: List[QueryParam[InnerMapper]] =
-        qp.map { v => val r: QueryParam[InnerMapper] = v; r }.toList
+        qp.map { v =>
+          val r: QueryParam[InnerMapper] = v; r
+        }.toList
     }
   }
 
@@ -2027,7 +2033,9 @@ object NotIn {
       def notIn: Boolean = true
 
       val queryParams: List[QueryParam[InnerMapper]] = {
-        qp.map { v => val r: QueryParam[InnerMapper] = v; r }.toList
+        qp.map { v =>
+          val r: QueryParam[InnerMapper] = v; r
+        }.toList
       }
     }
   }
@@ -2053,7 +2061,9 @@ object In {
       def notIn: Boolean = false
 
       val queryParams: List[QueryParam[InnerMapper]] =
-        qp.map { v => val r: QueryParam[InnerMapper] = v; r }.toList
+        qp.map { v =>
+          val r: QueryParam[InnerMapper] = v; r
+        }.toList
     }
   }
 
@@ -2077,7 +2087,9 @@ object In {
       def notIn: Boolean = false
 
       val queryParams: List[QueryParam[InnerMapper]] = {
-        qp.map { v => val r: QueryParam[InnerMapper] = v; r }.toList
+        qp.map { v =>
+          val r: QueryParam[InnerMapper] = v; r
+        }.toList
       }
     }
   }

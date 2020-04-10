@@ -34,7 +34,9 @@ package object ssl {
   }
 
   def debugChain(chain: Array[X509Certificate]): Seq[String] = {
-    chain.map { cert => s"${cert.getSubjectDN.getName}" }
+    chain.map { cert =>
+      s"${cert.getSubjectDN.getName}"
+    }
   }
 
   def foldVersion[T](run16: => T, runHigher: => T): T = {

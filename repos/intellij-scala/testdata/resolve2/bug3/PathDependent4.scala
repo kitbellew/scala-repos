@@ -1,4 +1,6 @@
-trait C { self: Z => }
+trait C {
+  self: Z =>
+}
 
 trait K {
   self: Z =>

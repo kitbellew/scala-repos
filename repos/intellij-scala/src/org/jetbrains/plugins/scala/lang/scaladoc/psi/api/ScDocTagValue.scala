@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   * User: Dmitry Naydanov
   * Date: 11/23/11
   */
+
 trait ScDocTagValue
     extends PsiDocTagValue
     with PsiReference

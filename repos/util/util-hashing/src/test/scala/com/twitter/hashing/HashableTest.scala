@@ -20,7 +20,9 @@ class HashableTest extends FunSuite with GeneratorDrivenPropertyChecks {
   )
 
   def testConsistency[T](algo: Hashable[Array[Byte], T]) {
-    forAll { input: Array[Byte] => assert(algo(input) == algo(input)) }
+    forAll { input: Array[Byte] =>
+      assert(algo(input) == algo(input))
+    }
   }
 
   algorithms foreach { algo =>

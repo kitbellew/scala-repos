@@ -26,6 +26,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.ScPrimaryConstructorStub
   * @author Alexander Podkhalyuzin
   * Date: 07.03.2008
   */
+
 class ScPrimaryConstructorImpl private (
     stub: StubElement[ScPrimaryConstructor],
     nodeType: IElementType,

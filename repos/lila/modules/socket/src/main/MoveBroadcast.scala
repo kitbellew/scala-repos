@@ -29,14 +29,18 @@ private final class MoveBroadcast extends Actor {
             "fen" -> move.fen,
             "lm" -> move.move
           ))
-        mIds foreach { mId => members get mId foreach (_.member push msg) }
+        mIds foreach { mId =>
+          members get mId foreach (_.member push msg)
+        }
       }
 
     case StartWatching(uid, member, gameIds) =>
       members += (uid -> WatchingMember(
         member,
         gameIds ++ members.get(uid).??(_.gameIds)))
-      gameIds foreach { id => games += (id -> (~games.get(id) + uid)) }
+      gameIds foreach { id =>
+        games += (id -> (~games.get(id) + uid))
+      }
 
     case SocketLeave(uid, _) =>
       members get uid foreach { m =>

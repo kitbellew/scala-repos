@@ -5,6 +5,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTemplateDefin
 /**
   * Pavel Fatin
   */
+
 object SelfType {
   def unapply(definition: ScTemplateDefinition) = Some(definition.selfType)
 }

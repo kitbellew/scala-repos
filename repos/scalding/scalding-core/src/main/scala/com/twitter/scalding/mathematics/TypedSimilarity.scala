@@ -24,6 +24,7 @@ import java.io.Serializable
   * @author Oscar Boykin
   * @author Kevin Lin
   */
+
 /**
   * Represents an Edge in a graph with some edge data
   */
@@ -56,12 +57,16 @@ object GraphOperations extends Serializable {
   // Returns all Vertices with non-zero in-degree
   def withInDegree[N, E](g: TypedPipe[Edge[N, E]])(implicit
       ord: Ordering[N]): TypedPipe[Edge[N, (E, InDegree)]] =
-    joinAggregate(g.groupBy { _.to }) { it => InDegree(it.size) }
+    joinAggregate(g.groupBy { _.to }) { it =>
+      InDegree(it.size)
+    }
 
   // Returns all Vertices with non-zero out-degree
   def withOutDegree[N, E](g: TypedPipe[Edge[N, E]])(implicit
       ord: Ordering[N]): TypedPipe[Edge[N, (E, OutDegree)]] =
-    joinAggregate(g.groupBy { _.from }) { it => OutDegree(it.size) }
+    joinAggregate(g.groupBy { _.from }) { it =>
+      OutDegree(it.size)
+    }
 
   // Returns all Vertices with weights and non-zero norms
   def withInNorm[N, E](g: TypedPipe[Edge[N, Weight]])(implicit

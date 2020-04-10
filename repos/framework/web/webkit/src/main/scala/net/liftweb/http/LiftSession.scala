@@ -863,7 +863,9 @@ class LiftSession(
     def latestPostPageFunctions = {
       accessPostPageFuncs {
         val ret = postPageFunctions.get(rv)
-        ret.foreach { r => postPageFunctions += (rv -> r.updateLastSeen) }
+        ret.foreach { r =>
+          postPageFunctions += (rv -> r.updateLastSeen)
+        }
         ret
       }
     }

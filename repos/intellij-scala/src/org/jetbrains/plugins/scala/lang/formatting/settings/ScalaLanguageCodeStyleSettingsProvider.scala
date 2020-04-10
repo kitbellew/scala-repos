@@ -17,6 +17,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaLanguageCodeStyleSettingsProvider
     extends LanguageCodeStyleSettingsProvider {
   def getCodeSample(settingsType: SettingsType): String = {

@@ -24,7 +24,9 @@ package controllers {
       Action {
         Client
           .findById(id)
-          .map { client => Ok(views.html.Clients.display(client)) }
+          .map { client =>
+            Ok(views.html.Clients.display(client))
+          }
           .getOrElse(NotFound)
       }
     // #show-client-action
@@ -42,7 +44,9 @@ package controllers {
     def show(page: String) =
       Action {
         loadContentFromDatabase(page)
-          .map { htmlContent => Ok(htmlContent).as("text/html") }
+          .map { htmlContent =>
+            Ok(htmlContent).as("text/html")
+          }
           .getOrElse(NotFound)
       }
     // #show-page-action

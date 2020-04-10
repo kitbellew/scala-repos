@@ -44,6 +44,7 @@ import java.io.Serializable
   * @author Sam Ritchie
   * @author Ashu Singhal
   */
+
 object Batcher {
 
   /**

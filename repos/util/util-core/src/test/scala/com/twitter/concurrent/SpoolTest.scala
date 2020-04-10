@@ -184,7 +184,9 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
       val seq = Await.result(spool.toSeq)
 
       val flatSpool =
-        spool.flatMap { inner => Future.value(inner.toSpool) }
+        spool.flatMap { inner =>
+          Future.value(inner.toSpool)
+        }
 
       assert(Await.result(flatSpool.flatMap(_.toSeq)) == seq.flatten)
     }
@@ -408,16 +410,22 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
     }
 
     "map lazily" in {
-      applyLazily { spool => Future.value(spool.map(_ + 1)) }
+      applyLazily { spool =>
+        Future.value(spool.map(_ + 1))
+      }
     }
 
     "mapFuture lazily" in {
-      applyLazily { spool => spool.mapFuture(Future.value(_)) }
+      applyLazily { spool =>
+        spool.mapFuture(Future.value(_))
+      }
     }
 
     "flatMap lazily" in {
       applyLazily { spool =>
-        spool.flatMap { item => Future.value((item to (item + 5)).toSpool) }
+        spool.flatMap { item =>
+          Future.value((item to (item + 5)).toSpool)
+        }
       }
     }
 
@@ -445,7 +453,9 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
 
     "act eagerly when forced" in {
       val (spool, tailReached) =
-        applyLazily { spool => Future.value(spool.map(_ + 1)) }
+        applyLazily { spool =>
+          Future.value(spool.map(_ + 1))
+        }
       Await.ready { spool.map(_.force) }
       assert(tailReached.isDefined)
     }

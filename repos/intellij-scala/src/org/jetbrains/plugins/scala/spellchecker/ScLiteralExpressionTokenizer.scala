@@ -20,6 +20,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.ScLiteral
   * @author Ksenia.Sautina
   * @since 2/3/13
   */
+
 class ScLiteralExpressionTokenizer extends Tokenizer[ScLiteral] {
   def processTextWithEscapeSequences(
       element: ScLiteral,

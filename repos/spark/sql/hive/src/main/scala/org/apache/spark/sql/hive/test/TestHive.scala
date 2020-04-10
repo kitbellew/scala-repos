@@ -228,7 +228,9 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
   case class TestTable(name: String, commands: (() => Unit)*)
 
   protected[hive] implicit class SqlCmd(sql: String) {
-    def cmd: () => Unit = { () => new QueryExecution(sql).stringResult(): Unit }
+    def cmd: () => Unit = { () =>
+      new QueryExecution(sql).stringResult(): Unit
+    }
   }
 
   /**

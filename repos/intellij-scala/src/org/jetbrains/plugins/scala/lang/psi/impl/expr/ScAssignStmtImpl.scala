@@ -26,6 +26,7 @@ import org.jetbrains.plugins.scala.macroAnnotations.{Cached, ModCount}
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScAssignStmtImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScAssignStmt {

@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.ScTypePresentation
   * @author Aleksander Podkhalyuzin
   * Date: 25.03.2009
   */
+
 private[annotator] object AnnotatorUtils {
   def proccessError(
       error: String,

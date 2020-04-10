@@ -20,6 +20,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScImportExprStubImpl
   * User: Alexander Podkhalyuzin
   * Date: 20.06.2009
   */
+
 class ScImportExprElementType[Func <: ScImportExpr]
     extends ScStubElementType[ScImportExprStub, ScImportExpr](
       "import expression") {

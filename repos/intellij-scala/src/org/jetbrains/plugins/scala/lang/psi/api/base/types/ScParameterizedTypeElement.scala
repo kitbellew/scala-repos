@@ -9,6 +9,7 @@ package types
   * @author Alexander Podkhalyuzin
   * Date: 13.03.2008
   */
+
 trait ScParameterizedTypeElement extends ScTypeElement {
 
   def typeArgList: ScTypeArgs

@@ -111,7 +111,9 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
     val dest = s"localhost:$port"
 
     var clientStack = Thrift.client.withProtocolFactory(pf)
-    clientId.foreach { cId => clientStack = clientStack.withClientId(cId) }
+    clientId.foreach { cId =>
+      clientStack = clientStack.withClientId(cId)
+    }
 
     val builder = ClientBuilder()
       .stack(clientStack)

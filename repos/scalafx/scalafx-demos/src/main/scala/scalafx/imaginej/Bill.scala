@@ -44,4 +44,5 @@ import scalafx.beans.property.DoubleProperty
 /**
   * @author Luc Duponcheel <luc.duponcheel@gmail.com>
   */
+
 class Bill(val amountDue: DoubleProperty)

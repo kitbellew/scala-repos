@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.patterns._
   * @author Alexander Podkhalyuzin
   * Date: 28.02.2008
   */
+
 class ScTuplePatternImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScTuplePattern {

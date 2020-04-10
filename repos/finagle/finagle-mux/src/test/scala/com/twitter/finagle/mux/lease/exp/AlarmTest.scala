@@ -15,7 +15,9 @@ class AlarmTest extends FunSuite with LocalConductors {
 
     Time.withCurrentTimeFrozen { ctl =>
       localThread(conductor) {
-        Alarm.arm({ () => new DurationAlarm(5.seconds) })
+        Alarm.arm({ () =>
+          new DurationAlarm(5.seconds)
+        })
       }
 
       localThread(conductor) {
@@ -79,8 +81,12 @@ class AlarmTest extends FunSuite with LocalConductors {
       Time.withCurrentTimeFrozen { ctl =>
         localThread(conductor) {
           Alarm.armAndExecute(
-            { () => new DurationAlarm(5.seconds) },
-            { () => ctr += 1 })
+            { () =>
+              new DurationAlarm(5.seconds)
+            },
+            { () =>
+              ctr += 1
+            })
         }
 
         localThread(conductor) {
@@ -176,7 +182,9 @@ class AlarmTest extends FunSuite with LocalConductors {
       fakePool.setSnapshot(usage)
 
       localThread(conductor) {
-        Alarm.arm({ () => new BytesAlarm(ctr, () => 5.megabytes) })
+        Alarm.arm({ () =>
+          new BytesAlarm(ctr, () => 5.megabytes)
+        })
       }
 
       localThread(conductor) {

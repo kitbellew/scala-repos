@@ -2,6 +2,7 @@
   * 2014 Matt Seddon
   * This code is donated in full to the scala-js project.
   */
+
 package java.util
 
 import scalajs.js

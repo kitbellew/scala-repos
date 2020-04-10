@@ -418,8 +418,11 @@ class TrafficDistributorTest extends FunSuite {
   }
 
   test("increment weights on a shard")(new StringClient with StringServer {
-    val server = stringServer
-      .serve(":*", Service.mk { r: String => Future.value(r.reverse) })
+    val server = stringServer.serve(
+      ":*",
+      Service.mk { r: String =>
+        Future.value(r.reverse)
+      })
     val sr = new CumulativeGaugeInMemoryStatsReceiver()
     val addr = Address(server.boundAddress.asInstanceOf[InetSocketAddress])
     val va = Var[Addr](Addr.Bound(addr))
@@ -458,8 +461,11 @@ class TrafficDistributorTest extends FunSuite {
   })
 
   test("close a client")(new StringClient with StringServer {
-    val server = stringServer
-      .serve(":*", Service.mk { r: String => Future.value(r.reverse) })
+    val server = stringServer.serve(
+      ":*",
+      Service.mk { r: String =>
+        Future.value(r.reverse)
+      })
     val sr = new InMemoryStatsReceiver
     val addr = Address(server.boundAddress.asInstanceOf[InetSocketAddress])
     val va = Var[Addr](Addr.Bound(addr))

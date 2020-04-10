@@ -474,7 +474,9 @@ trait LinearRegressionSpecs[M[+_]]
     }
 
     val actualErrors: List[Seq[Double]] = thetas map { ts =>
-      combineResults(num, ts) map { arr => madMedian(arr)._1 }
+      combineResults(num, ts) map { arr =>
+        madMedian(arr)._1
+      }
     }
 
     val zipped = actualErrors zip errors

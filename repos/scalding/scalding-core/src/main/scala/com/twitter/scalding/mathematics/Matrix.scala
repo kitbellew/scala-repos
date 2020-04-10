@@ -48,6 +48,7 @@ import scala.annotation.tailrec
   * ColVector - handles matrices of col dimension one. It is the result of some of the matrix methods and has methods
   *  that return RowVector and diagonal matrix
   */
+
 // Implicit coversions
 // Add methods we want to add to pipes here:
 class MatrixPipeExtensions(pipe: Pipe) {
@@ -678,7 +679,9 @@ class Matrix[RowT, ColT, ValT](
   // This should only be called by def diagonal, which verifies that RowT == ColT
   protected lazy val mainDiagonal: DiagonalMatrix[RowT, ValT] = {
     val diagPipe = pipe
-      .filter(rowSym, colSym) { input: (RowT, RowT) => (input._1 == input._2) }
+      .filter(rowSym, colSym) { input: (RowT, RowT) =>
+        (input._1 == input._2)
+      }
       .project(rowSym, valSym)
     new DiagonalMatrix[RowT, ValT](
       rowSym,

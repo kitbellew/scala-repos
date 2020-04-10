@@ -59,8 +59,12 @@ object Test extends App {
         |${forceCode(
          "refChecks",
          typeOf[scala.reflect.internal.transform.RefChecks])}
-        |${forceCode("uncurry", typeOf[scala.reflect.internal.transform.UnCurry])}
-        |${forceCode("erasure", typeOf[scala.reflect.internal.transform.Erasure])}
+        |${forceCode(
+         "uncurry",
+         typeOf[scala.reflect.internal.transform.UnCurry])}
+        |${forceCode(
+         "erasure",
+         typeOf[scala.reflect.internal.transform.Erasure])}
         |  }
         |}""".stripMargin
 

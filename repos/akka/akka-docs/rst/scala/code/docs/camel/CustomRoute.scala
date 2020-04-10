@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package docs.camel
 
 import akka.camel.CamelMessage
@@ -18,7 +19,9 @@ object CustomRoute {
     class Responder extends Actor {
       def receive = {
         case msg: CamelMessage =>
-          sender() ! (msg.mapBody { body: String => "received %s" format body })
+          sender() ! (msg.mapBody { body: String =>
+            "received %s" format body
+          })
       }
     }
 

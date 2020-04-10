@@ -261,6 +261,7 @@ trait SyntheticMethods extends ast.TreeDSL {
       createMethod(nme.productAccessorName(num), accessor.tpe.resultType)(_ => REF(accessor))
     }
     ****/
+
     // methods for both classes and objects
     def productMethods = {
       List(

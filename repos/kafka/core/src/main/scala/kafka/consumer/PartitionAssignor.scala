@@ -14,6 +14,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package kafka.consumer
 
 import org.I0Itec.zkclient.ZkClient
@@ -77,6 +78,7 @@ class AssignmentContext(
   * a) Every topic has the same number of streams within a consumer instance
   * b) The set of subscribed topics is identical for every consumer instance within the group.
   */
+
 class RoundRobinAssignor() extends PartitionAssignor with Logging {
 
   def assign(ctx: AssignmentContext) = {

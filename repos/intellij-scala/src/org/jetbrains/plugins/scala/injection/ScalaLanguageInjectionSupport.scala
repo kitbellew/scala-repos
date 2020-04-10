@@ -6,6 +6,7 @@ import org.intellij.plugins.intelliLang.inject.AbstractLanguageInjectionSupport
 /**
   * Pavel Fatin
   */
+
 class ScalaLanguageInjectionSupport extends AbstractLanguageInjectionSupport {
   private final val SUPPORT_ID: String = "scala"
 

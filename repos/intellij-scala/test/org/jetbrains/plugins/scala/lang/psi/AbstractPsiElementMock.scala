@@ -7,6 +7,7 @@ import com.intellij.psi.{PsiElement, PsiElementVisitor, ResolveState}
 /**
   * Pavel.Fatin, 11.05.2010
   */
+
 abstract class AbstractPsiElementMock extends PsiElement {
   def getIcon(flags: Int) = null
 

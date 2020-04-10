@@ -271,7 +271,10 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions { x =>
   def fpow(y: Real): Real =
     y match {
       case Exact(n) => x.fpow(n)
-      case _        => Real({ p => x.fpow(Rational(y(p), SafeLong.two.pow(p)))(p) })
+      case _ =>
+        Real({ p =>
+          x.fpow(Rational(y(p), SafeLong.two.pow(p)))(p)
+        })
     }
 
   override def toString: String =

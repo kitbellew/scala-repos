@@ -218,7 +218,9 @@ trait Solver extends parser.AST with typer.Binder {
       val inRight = isSubtree(right)
 
       if (inLeft && inRight) {
-        val results = simplify(tree) map { xs => (inner(xs.head), xs) }
+        val results = simplify(tree) map { xs =>
+          (inner(xs.head), xs)
+        }
 
         results.foldLeft(const[Option[Expr], Expr](None) _) {
           case (acc, (f, trace)) =>

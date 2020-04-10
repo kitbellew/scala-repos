@@ -135,7 +135,9 @@ class ReceivedBlockHandlerSuite
   }
 
   test("BlockManagerBasedBlockHandler - handle errors in storing block") {
-    withBlockManagerBasedBlockHandler { handler => testErrorHandling(handler) }
+    withBlockManagerBasedBlockHandler { handler =>
+      testErrorHandling(handler)
+    }
   }
 
   test("WriteAheadLogBasedBlockHandler - store blocks") {
@@ -178,7 +180,9 @@ class ReceivedBlockHandlerSuite
   }
 
   test("WriteAheadLogBasedBlockHandler - handle errors in storing block") {
-    withWriteAheadLogBasedBlockHandler { handler => testErrorHandling(handler) }
+    withWriteAheadLogBasedBlockHandler { handler =>
+      testErrorHandling(handler)
+    }
   }
 
   test("WriteAheadLogBasedBlockHandler - clean old blocks") {

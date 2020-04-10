@@ -35,6 +35,7 @@ Run:
     --input tutorial/data/hello.txt \
     --output tutorial/data/execution_output.txt
 **/
+
 object MyExecJob extends ExecutionApp {
 
   override def job =

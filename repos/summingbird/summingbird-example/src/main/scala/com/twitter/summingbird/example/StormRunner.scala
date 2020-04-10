@@ -116,6 +116,7 @@ object StormRunner {
     * you all set up if you don't already have memcache installed
     * locally.)
     */
+
   def apply(args: Args): StormExecutionConfig = {
     new StormExecutionConfig {
       override val name = "SummingbirdExample"

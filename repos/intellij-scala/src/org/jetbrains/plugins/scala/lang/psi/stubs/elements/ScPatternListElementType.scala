@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScPatternListStubImpl
   * User: Alexander Podkhalyuzin
   * Date: 17.07.2009
   */
+
 class ScPatternListElementType[Func <: ScPatternList]
     extends ScStubElementType[ScPatternListStub, ScPatternList](
       "pattern list") {

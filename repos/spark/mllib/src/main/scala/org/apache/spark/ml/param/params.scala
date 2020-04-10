@@ -234,7 +234,8 @@ object ParamValidators {
 
   /** Check that the array length is greater than lowerBound. */
   def arrayLengthGt[T](lowerBound: Double): Array[T] => Boolean = {
-    (value: Array[T]) => value.length > lowerBound
+    (value: Array[T]) =>
+      value.length > lowerBound
   }
 }
 
@@ -911,7 +912,9 @@ final class ParamMap private[ml] (private val map: mutable.Map[Param[Any], Any])
   @varargs
   @Since("1.2.0")
   def put(paramPairs: ParamPair[_]*): this.type = {
-    paramPairs.foreach { p => map(p.param.asInstanceOf[Param[Any]]) = p.value }
+    paramPairs.foreach { p =>
+      map(p.param.asInstanceOf[Param[Any]]) = p.value
+    }
     this
   }
 

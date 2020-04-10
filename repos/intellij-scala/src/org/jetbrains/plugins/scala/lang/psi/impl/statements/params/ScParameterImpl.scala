@@ -31,6 +31,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScParameterImpl protected (
     stub: StubElement[ScParameter],
     nodeType: IElementType,

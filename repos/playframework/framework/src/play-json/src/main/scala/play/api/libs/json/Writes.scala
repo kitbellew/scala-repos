@@ -197,19 +197,25 @@ trait DefaultWrites {
     * Serializer for Array[T] types.
     */
   implicit def arrayWrites[T: ClassTag: Writes]: Writes[Array[T]] =
-    Writes[Array[T]] { ts => JsArray(ts.map(toJson(_)).toSeq) }
+    Writes[Array[T]] { ts =>
+      JsArray(ts.map(toJson(_)).toSeq)
+    }
 
   /**
     * Serializer for Map[String,V] types.
     */
   implicit def mapWrites[V: Writes]: OWrites[Map[String, V]] =
-    OWrites[Map[String, V]] { ts => JsObject(ts.mapValues(toJson(_)).toSeq) }
+    OWrites[Map[String, V]] { ts =>
+      JsObject(ts.mapValues(toJson(_)).toSeq)
+    }
 
   /**
     * Serializer for Traversables types.
     */
   implicit def traversableWrites[A: Writes] =
-    Writes[Traversable[A]] { as => JsArray(as.map(toJson(_)).toSeq) }
+    Writes[Traversable[A]] { as =>
+      JsArray(as.map(toJson(_)).toSeq)
+    }
 
   /**
     * Serializer for JsValues.

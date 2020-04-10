@@ -164,7 +164,9 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
     def nextRun(threshold: Date, task: ScheduledTask) = {
       task.repeat.flatMap { sched =>
         Option(sched.getNextValidTimeAfter(threshold))
-      } map { nextTime => (new DateTime(nextTime), task) }
+      } map { nextTime =>
+        (new DateTime(nextTime), task)
+      }
     }
 
     def rescheduleTasks(tasks: Seq[ScheduledTask]): Unit = {

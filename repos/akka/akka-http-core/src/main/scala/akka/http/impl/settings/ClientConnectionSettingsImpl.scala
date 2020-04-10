@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2014 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.http.impl.settings
 
 import java.util.Random

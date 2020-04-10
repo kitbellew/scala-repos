@@ -293,7 +293,9 @@ class ZkClientTest extends WordSpec with MockitoSugar {
               i += 1
               Future.exception(connectionLoss)
             }
-            .onSuccess { _ => fail("Unexpected success") }
+            .onSuccess { _ =>
+              fail("Unexpected success")
+            }
             .handle {
               case e: KeeperException.ConnectionLossException =>
                 assert(e == connectionLoss)
@@ -310,7 +312,9 @@ class ZkClientTest extends WordSpec with MockitoSugar {
               i += 1
               Future.Done
             }
-            .onSuccess { _ => assert(i == 1) })
+            .onSuccess { _ =>
+              assert(i == 1)
+            })
       }
 
       "convert exceptions to Futures" in {
@@ -323,7 +327,9 @@ class ZkClientTest extends WordSpec with MockitoSugar {
               i += 1
               throw rex
             }
-            .onSuccess { _ => fail("Unexpected success") }
+            .onSuccess { _ =>
+              fail("Unexpected success")
+            }
             .handle {
               case e: RuntimeException =>
                 assert(e == rex)
@@ -339,7 +345,9 @@ class ZkClientTest extends WordSpec with MockitoSugar {
               i += 1
               Future.exception(connectionLoss)
             }
-            .onSuccess { _ => fail("Shouldn't have succeeded") }
+            .onSuccess { _ =>
+              fail("Shouldn't have succeeded")
+            }
             .handle {
               case e: KeeperException.ConnectionLossException =>
                 assert(i == 1)
@@ -475,7 +483,8 @@ class ZkClientTest extends WordSpec with MockitoSugar {
             Future.exception(new KeeperException.NodeExistsException(childPath))
           }
           Await.ready(zkClient(path).create(data, child = Some("child")) map {
-            _ => fail("Unexpected success")
+            _ =>
+              fail("Unexpected success")
           } handle {
             case e: KeeperException.NodeExistsException =>
               assert(e.getPath == childPath)
@@ -957,7 +966,9 @@ class ZkClientTest extends WordSpec with MockitoSugar {
           Future.exception(new KeeperException.SystemErrorException)
         }
         Await.ready(
-          znode.sync() map { _ => fail("Unexpected success") } handle {
+          znode.sync() map { _ =>
+            fail("Unexpected success")
+          } handle {
             case e: KeeperException.SystemErrorException =>
               assert(e.getPath == znode.path)
           },

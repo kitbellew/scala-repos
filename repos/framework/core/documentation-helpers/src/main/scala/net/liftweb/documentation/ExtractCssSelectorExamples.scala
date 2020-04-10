@@ -28,10 +28,10 @@ object ExtractCssSelectorExamples extends App {
 
     for {
       docsDir <- ((Full(docsFile)
-        .filter(
-          _.exists) ?~ s"'$docsFile' should be a directory, but does not exist.")
-        .filter(
-          _.isDirectory) ?~ s"'$docsFile' should be a directory, not a file.")
+          .filter(
+            _.exists) ?~ s"'$docsFile' should be a directory, but does not exist.")
+          .filter(
+            _.isDirectory) ?~ s"'$docsFile' should be a directory, not a file.")
     } yield {
       for {
         file <- docsDir.listFiles.toList

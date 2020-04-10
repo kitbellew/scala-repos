@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.ScModifierListOwner
   * User: Alexander Podkhalyuzin
   * Date: 23.10.2008
   */
+
 class RemoveModifierQuickFix(method: ScModifierListOwner, modifier: String)
     extends IntentionAction {
   def getText: String = ScalaBundle.message("remove.modifier.fix", modifier)

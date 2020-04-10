@@ -99,8 +99,12 @@ abstract class ReadHandle {
         } else {
           Offer.never
         },
-        ack.recv { _ => loop(nwait - 1, closed) },
-        closeReq.recv { _ => loop(nwait, true) }
+        ack.recv { _ =>
+          loop(nwait - 1, closed)
+        },
+        closeReq.recv { _ =>
+          loop(nwait, true)
+        }
       )
     }
 
@@ -572,11 +576,15 @@ protected[kestrel] class ThriftConnectedClient(
 
   def flush(queueName: String): Future[Response] =
     withClient[Values](client =>
-      client.flushQueue(queueName).map { _ => Values(Nil) })
+      client.flushQueue(queueName).map { _ =>
+        Values(Nil)
+      })
 
   def delete(queueName: String): Future[Response] =
     withClient[Response](client =>
-      client.deleteQueue(queueName).map { _ => Deleted() })
+      client.deleteQueue(queueName).map { _ =>
+        Deleted()
+      })
 
   def set(
       queueName: String,
@@ -586,7 +594,9 @@ protected[kestrel] class ThriftConnectedClient(
     withClient[Response](client =>
       client
         .put(queueName, List(Buf.ByteBuffer.Owned.extract(value)), timeout)
-        .map { _ => Stored() })
+        .map { _ =>
+          Stored()
+        })
   }
 
   def get(

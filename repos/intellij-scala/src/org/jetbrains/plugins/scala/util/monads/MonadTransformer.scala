@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 /**
   * @author ilyas
   */
+
 trait MonadTransformer { self: PsiElement =>
 
   class MonadLike[+T](opt: Option[T])(implicit msg: String) {

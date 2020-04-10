@@ -297,6 +297,7 @@ trait Names extends api.Names {
       false
     }
     ****/
+
     /** @return the i'th Char of this name */
     final def charAt(i: Int): Char = chrs(index + i)
 

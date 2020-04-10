@@ -211,7 +211,9 @@ object FeatureVector {
     new OpMulMatrix.Impl2[DenseMatrix[T], FeatureVector, DenseVector[T]] {
       def apply(a: DenseMatrix[T], b: FeatureVector): DenseVector[T] = {
         val result = DenseVector.zeros[T](a.rows)
-        cforRange(0 until b.activeLength) { i => result += a(::, b(i)) }
+        cforRange(0 until b.activeLength) { i =>
+          result += a(::, b(i))
+        }
         result
       }
     }

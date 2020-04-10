@@ -202,7 +202,9 @@ class MongoAPIKeyManager(
       false)
     database(
       insert(apiKey.serialize.asInstanceOf[JObject])
-        .into(settings.apiKeys)) map { _ => apiKey }
+        .into(settings.apiKeys)) map { _ =>
+      apiKey
+    }
   }
 
   def createGrant(
@@ -314,7 +316,9 @@ class MongoAPIKeyManager(
       findAllMatching[Grant]("issuer", gid, collection)
 
   def addGrants(apiKey: APIKey, add: Set[GrantId]) =
-    updateAPIKey(apiKey) { r => Some(r.copy(grants = r.grants ++ add)) }
+    updateAPIKey(apiKey) { r =>
+      Some(r.copy(grants = r.grants ++ add))
+    }
 
   def removeGrants(apiKey: APIKey, remove: Set[GrantId]) =
     updateAPIKey(apiKey) { r =>

@@ -118,7 +118,8 @@ object CORSActionBuilderSpec extends CORSCommonSpec {
     running(_.routes {
       case (_, "/error") =>
         CORSActionBuilder(Configuration.reference ++ Configuration.from(conf)) {
-          req => throw sys.error("error")
+          req =>
+            throw sys.error("error")
         }
       case _ =>
         CORSActionBuilder(Configuration.reference ++ Configuration.from(conf))(
@@ -133,7 +134,9 @@ object CORSActionBuilderSpec extends CORSCommonSpec {
       case (_, "/error") =>
         CORSActionBuilder(
           Configuration.reference ++ Configuration.from(conf),
-          configPath = configPath) { req => throw sys.error("error") }
+          configPath = configPath) { req =>
+          throw sys.error("error")
+        }
       case _ =>
         CORSActionBuilder(
           Configuration.reference ++ Configuration.from(conf),

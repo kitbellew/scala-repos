@@ -7,6 +7,7 @@ import breeze.util.Opt
   *
   * @author ktakagaki
   */
+
 ///General options-related
 
 //Generic options with implicit specialization cannot be employed for case objects
@@ -103,6 +104,7 @@ object OptMethod {
 
   /**Option value: Convolve using FFT.*/
   case object FFT extends OptMethod
+
   /**Option value: Convolve using for loop.*/
 }
 

@@ -27,6 +27,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScPatternDefinitionImpl private (
     stub: StubElement[ScValue],
     nodeType: IElementType,

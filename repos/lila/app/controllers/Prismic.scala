@@ -47,7 +47,8 @@ object Prismic {
   def getBookmark(name: String) =
     fetchPrismicApi(true) flatMap { api =>
       api.bookmarks.get(name) ?? getDocument map2 {
-        (doc: io.prismic.Document) => doc -> makeLinkResolver(api)
+        (doc: io.prismic.Document) =>
+          doc -> makeLinkResolver(api)
       }
     } recover {
       case e: Exception =>

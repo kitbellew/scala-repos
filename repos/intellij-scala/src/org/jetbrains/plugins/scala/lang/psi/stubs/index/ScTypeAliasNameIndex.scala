@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScTypeAlias
   * User: Alexander Podkhalyuzin
   * Date: 18.10.2008
   */
+
 class ScTypeAliasNameIndex extends StringStubIndexExtension[ScTypeAlias] {
   override def get(
       key: String,

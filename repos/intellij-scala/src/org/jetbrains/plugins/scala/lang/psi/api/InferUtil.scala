@@ -50,6 +50,7 @@ import scala.util.control.ControlThrowable
 /**
   * @author Alexander Podkhalyuzin
   */
+
 object InferUtil {
   val notFoundParameterName = "NotFoundParameter239239239"
   val skipQualSet = Set(

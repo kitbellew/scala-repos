@@ -325,7 +325,9 @@ object Scalding {
     */
   def memoize[T](pf: PipeFactory[T]): PipeFactory[T] = {
     val memo = new Memo[T]
-    pf.map { rdr => Reader({ i => memo.getOrElseUpdate(i, rdr) }) }
+    pf.map { rdr =>
+      Reader({ i => memo.getOrElseUpdate(i, rdr) })
+    }
   }
 
   private def getOrElse[T <: AnyRef: ClassTag](
@@ -387,7 +389,9 @@ object Scalding {
       */
     def forceNode[U](p: PipeFactory[U]): PipeFactory[U] =
       if (forceFanOut || fanOuts(producer))
-        p.map { flowP => flowP.map { _.fork } }
+        p.map { flowP =>
+          flowP.map { _.fork }
+        }
       else
         p
 

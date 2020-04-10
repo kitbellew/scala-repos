@@ -237,7 +237,8 @@ object Validation {
   def configValueSet[T <: AnyRef](config: String*): Validator[T] =
     isTrue(
       s"""You have to supply ${config.mkString(", ")} on the command line.""") {
-      _ => config.forall(AllConf.suppliedOptionNames)
+      _ =>
+        config.forall(AllConf.suppliedOptionNames)
     }
 
   def isTrue[T](constraint: String)(test: T => Boolean): Validator[T] =

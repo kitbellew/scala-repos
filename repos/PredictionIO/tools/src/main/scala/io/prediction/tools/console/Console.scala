@@ -12,6 +12,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package io.prediction.tools.console
 
 import java.io.File
@@ -180,17 +181,22 @@ object Console extends Logging {
       note("")
       cmd("version")
         .text("Displays the version of this command line console.")
-        .action { (_, c) => c.copy(commands = c.commands :+ "version") }
+        .action { (_, c) =>
+          c.copy(commands = c.commands :+ "version")
+        }
       note("")
       cmd("help").action { (_, c) =>
         c.copy(commands = c.commands :+ "help")
       } children (
         arg[String]("<command>") optional ()
-          action { (x, c) => c.copy(commands = c.commands :+ x) }
+          action { (x, c) =>
+            c.copy(commands = c.commands :+ x)
+          }
       )
       note("")
       cmd("build").text("Build an engine at the current directory.").action {
-        (_, c) => c.copy(commands = c.commands :+ "build")
+        (_, c) =>
+          c.copy(commands = c.commands :+ "build")
       } children (
         opt[String]("sbt-extra") action { (x, c) =>
           c.copy(build = c.build.copy(sbtExtra = Some(x)))
@@ -211,7 +217,9 @@ object Console extends Logging {
       note("")
       cmd("unregister")
         .text("Unregister an engine at the current directory.")
-        .action { (_, c) => c.copy(commands = c.commands :+ "unregister") }
+        .action { (_, c) =>
+          c.copy(commands = c.commands :+ "unregister")
+        }
       note("")
       cmd("train")
         .text(
@@ -270,7 +278,9 @@ object Console extends Logging {
           "Kick off an evaluation using an engine. This will produce an\n" +
             "engine instance. This command will pass all pass-through\n" +
             "arguments to its underlying spark-submit command.")
-        .action { (_, c) => c.copy(commands = c.commands :+ "eval") } children (
+        .action { (_, c) =>
+          c.copy(commands = c.commands :+ "eval")
+        } children (
         arg[String]("<evaluation-class>") action { (x, c) =>
           c.copy(common = c.common.copy(evaluation = Some(x)))
         },
@@ -416,7 +426,9 @@ object Console extends Logging {
             "In addition, it also supports a second level of pass-through\n" +
             "arguments to the driver program, e.g.\n" +
             "pio run -- --master spark://localhost:7077 -- --driver-arg foo")
-        .action { (_, c) => c.copy(commands = c.commands :+ "run") } children (
+        .action { (_, c) =>
+          c.copy(commands = c.commands :+ "run")
+        } children (
         arg[String]("<main class>") action { (x, c) =>
           c.copy(mainClass = Some(x))
         } text ("Main class name of the driver program."),
@@ -433,7 +445,9 @@ object Console extends Logging {
       note("")
       cmd("status")
         .text("Displays status information about the PredictionIO system.")
-        .action { (_, c) => c.copy(commands = c.commands :+ "status") }
+        .action { (_, c) =>
+          c.copy(commands = c.commands :+ "status")
+        }
       note("")
       cmd("upgrade").text("Upgrade tool").action { (_, c) =>
         c.copy(commands = c.commands :+ "upgrade")
@@ -456,7 +470,8 @@ object Console extends Logging {
         c.copy(commands = c.commands :+ "app")
       } children (
         cmd("new").text("Create a new app key to app ID mapping.").action {
-          (_, c) => c.copy(commands = c.commands :+ "new")
+          (_, c) =>
+            c.copy(commands = c.commands :+ "new")
         } children (
           opt[Int]("id") action { (x, c) =>
             c.copy(app = c.app.copy(id = Some(x)))
@@ -513,7 +528,8 @@ object Console extends Logging {
         ),
         note(""),
         cmd("channel-new").text("Create a new channel for the app.").action {
-          (_, c) => c.copy(commands = c.commands :+ "channel-new")
+          (_, c) =>
+            c.copy(commands = c.commands :+ "channel-new")
         } children (
           arg[String]("<name>") action { (x, c) =>
             c.copy(app = c.app.copy(name = x))
@@ -524,7 +540,8 @@ object Console extends Logging {
         ),
         note(""),
         cmd("channel-delete").text("Delete a channel of the app.").action {
-          (_, c) => c.copy(commands = c.commands :+ "channel-delete")
+          (_, c) =>
+            c.copy(commands = c.commands :+ "channel-delete")
         } children (
           arg[String]("<name>") action { (x, c) =>
             c.copy(app = c.app.copy(name = x))
@@ -542,7 +559,8 @@ object Console extends Logging {
         c.copy(commands = c.commands :+ "accesskey")
       } children (
         cmd("new").text("Add allowed event(s) to an access key.").action {
-          (_, c) => c.copy(commands = c.commands :+ "new")
+          (_, c) =>
+            c.copy(commands = c.commands :+ "new")
         } children (
           opt[String]("key") action { (x, c) =>
             c.copy(accessKey = c.accessKey.copy(accessKey = x))
@@ -597,7 +615,9 @@ object Console extends Logging {
             c.copy(template = c.template.copy(email = Some(x)))
           }
         ),
-        cmd("list").action { (_, c) => c.copy(commands = c.commands :+ "list") }
+        cmd("list").action { (_, c) =>
+          c.copy(commands = c.commands :+ "list")
+        }
       )
       cmd("export").action { (_, c) =>
         c.copy(commands = c.commands :+ "export")
@@ -791,7 +811,9 @@ object Console extends Logging {
     withRegisteredManifest(
       ca.common.manifestJson,
       ca.common.engineId,
-      ca.common.engineVersion) { em => RunWorkflow.newRunWorkflow(ca, em) }
+      ca.common.engineVersion) { em =>
+      RunWorkflow.newRunWorkflow(ca, em)
+    }
   }
 
   def deploy(ca: ConsoleArgs): Int = {

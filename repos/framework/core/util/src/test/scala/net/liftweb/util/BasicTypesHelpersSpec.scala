@@ -115,7 +115,9 @@ object BasicTypesHelpersSpec extends Specification with DataTables {
         failure !! 0 |
         "3" !! 3 |
         "n" !! 0 |
-        date(3000) !! 3 | { (o: Any, result: Int) => toInt(o) must_== result }
+        date(3000) !! 3 | { (o: Any, result: Int) =>
+        toInt(o) must_== result
+      }
     }
 
     "have a toLong method converting any object to a reasonable Long value" in {

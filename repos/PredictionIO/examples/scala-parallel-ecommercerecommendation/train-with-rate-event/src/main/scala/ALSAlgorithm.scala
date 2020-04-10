@@ -236,7 +236,9 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val userFeature =
       model.userStringIntMap
         .get(query.user)
-        .map { userIndex => userFeatures.get(userIndex) }
+        .map { userIndex =>
+          userFeatures.get(userIndex)
+        }
         // flatten Option[Option[Array[Double]]] to Option[Array[Double]]
         .flatten
 

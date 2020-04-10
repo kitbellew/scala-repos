@@ -244,7 +244,9 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
         s"unsupported row format ${ioSchema.outputRowFormat}"))
 
     val outputSchema = plan.output
-      .map { attr => s"${attr.sql} ${attr.dataType.simpleString}" }
+      .map { attr =>
+        s"${attr.sql} ${attr.dataType.simpleString}"
+      }
       .mkString(", ")
 
     build(

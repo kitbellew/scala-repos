@@ -6,6 +6,7 @@ import org.jetbrains.plugins.scala.lang.formatter.AbstractScalaFormatterTestBase
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaBugsTest extends AbstractScalaFormatterTestBase {
   /* stub:
   def test {

@@ -7,6 +7,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScFunction
 /**
   * Pavel Fatin
   */
+
 class UnitMethodIsParameterlessInspection
     extends AbstractMethodSignatureInspection(
       "ScalaUnitMethodIsParameterless",

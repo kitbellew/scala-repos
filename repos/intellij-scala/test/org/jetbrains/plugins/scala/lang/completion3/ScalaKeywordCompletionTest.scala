@@ -8,6 +8,7 @@ import org.junit.Assert
   * User: Alexander Podkhalyuzin
   * Date: 04.01.12
   */
+
 class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
   def testPrivateVal() {
     val fileText =

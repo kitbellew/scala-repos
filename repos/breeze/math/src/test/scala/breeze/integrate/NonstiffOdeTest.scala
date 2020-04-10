@@ -11,6 +11,7 @@ import scala.math.Pi
   *
   * @author jaketimothy
  **/
+
 class NonstiffOdeTest extends FunSuite {
 
   // allowable percent difference

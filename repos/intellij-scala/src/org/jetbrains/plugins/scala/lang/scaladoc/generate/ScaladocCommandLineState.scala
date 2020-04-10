@@ -33,6 +33,7 @@ import scala.collection.mutable.ListBuffer
   * User: Dmitry Naidanov
   * Date: 12.10.11
   */
+
 class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
     extends JavaCommandLineState(env) {
   setConsoleBuilder(

@@ -14,6 +14,7 @@ import java.util.Date
   * User: jim
   * Date: 8/19/11
   */
+
 class ExtractionsTest {
 
   def getHtml(filename: String): String = {

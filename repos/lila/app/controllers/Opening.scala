@@ -64,7 +64,9 @@ object Opening extends LilaController {
     }
 
   def show(id: OpeningModel.ID) =
-    Open { implicit ctx => OptionFuOk(env.api.opening find id)(renderShow) }
+    Open { implicit ctx =>
+      OptionFuOk(env.api.opening find id)(renderShow)
+    }
 
   def history =
     Auth { implicit ctx => me =>

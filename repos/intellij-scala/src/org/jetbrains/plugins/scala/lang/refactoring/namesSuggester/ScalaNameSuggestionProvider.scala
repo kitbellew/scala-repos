@@ -21,6 +21,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
   * User: Alexander Podkhalyuzin
   * Date: 23.11.2008
   */
+
 class ScalaNameSuggestionProvider extends NameSuggestionProvider {
   def completeName(
       element: PsiElement,

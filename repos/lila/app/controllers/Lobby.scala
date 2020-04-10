@@ -45,7 +45,8 @@ object Lobby extends LilaController {
         api = _ =>
           ctx.me
             .fold(Env.lobby.seekApi.forAnon)(Env.lobby.seekApi.forUser) map {
-            seeks => Ok(JsArray(seeks.map(_.render)))
+            seeks =>
+              Ok(JsArray(seeks.map(_.render)))
           }
       )
     }

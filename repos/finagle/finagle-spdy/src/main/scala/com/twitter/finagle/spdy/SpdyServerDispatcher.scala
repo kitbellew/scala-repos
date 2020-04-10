@@ -11,7 +11,9 @@ class SpdyServerDispatcher(
     service: Service[HttpRequest, HttpResponse])
     extends Closable {
   private[this] def loop(): Unit = {
-    trans.read() onFailure { exc => service.close() } flatMap { req =>
+    trans.read() onFailure { exc =>
+      service.close()
+    } flatMap { req =>
       loop()
       trans.peerCertificate match {
         case None => service(req)
@@ -20,7 +22,11 @@ class SpdyServerDispatcher(
             service(req)
           }
       }
-    } flatMap { rep => trans.write(rep) } onFailure { _ => trans.close() }
+    } flatMap { rep =>
+      trans.write(rep)
+    } onFailure { _ =>
+      trans.close()
+    }
   }
 
   Local.letClear { loop() }

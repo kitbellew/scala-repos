@@ -39,8 +39,11 @@ class FutureTests extends MinimalScalaTest {
     "shouldHandleThrowables" in {
       val ms = new mutable.HashSet[Throwable]
         with mutable.SynchronizedSet[Throwable]
-      implicit val ec = scala.concurrent.ExecutionContext
-        .fromExecutor(new java.util.concurrent.ForkJoinPool(), { t => ms += t })
+      implicit val ec = scala.concurrent.ExecutionContext.fromExecutor(
+        new java.util.concurrent.ForkJoinPool(),
+        { t =>
+          ms += t
+        })
 
       class ThrowableTest(m: String) extends Throwable(m)
 
@@ -164,11 +167,10 @@ class FutureTests extends MinimalScalaTest {
         ECNotUsed(ec =>
           f.collect({ case _ => fail("collect should not have been called") })(
             ec)) eq f)
-      assert(
-        ECNotUsed(ec =>
-          f.zipWith(f)({ (_, _) =>
-            fail("zipWith should not have been called")
-          })(ec)) eq f)
+      assert(ECNotUsed(ec =>
+        f.zipWith(f)({ (_, _) =>
+          fail("zipWith should not have been called")
+        })(ec)) eq f)
     }
   }
 
@@ -648,11 +650,15 @@ class FutureTests extends MinimalScalaTest {
           add
         }
 
-      val futures = (0 to 9) map { idx => async(idx, idx * 20) }
+      val futures = (0 to 9) map { idx =>
+        async(idx, idx * 20)
+      }
       val folded = Future.fold(futures)(0)(_ + _)
       Await.result(folded, timeout) mustBe (45)
 
-      val futuresit = (0 to 9) map { idx => async(idx, idx * 20) }
+      val futuresit = (0 to 9) map { idx =>
+        async(idx, idx * 20)
+      }
       val foldedit = Future.fold(futures)(0)(_ + _)
       Await.result(foldedit, timeout) mustBe (45)
     }
@@ -664,7 +670,10 @@ class FutureTests extends MinimalScalaTest {
           Thread.sleep(wait)
           add
         }
-      def futures = (0 to 9) map { idx => async(idx, idx * 20) }
+      def futures =
+        (0 to 9) map { idx =>
+          async(idx, idx * 20)
+        }
       val folded = futures.foldLeft(Future(0)) {
         case (fr, fa) => for (r <- fr; a <- fa) yield (r + a)
       }
@@ -681,7 +690,10 @@ class FutureTests extends MinimalScalaTest {
               "shouldFoldResultsWithException: expected")
           add
         }
-      def futures = (0 to 9) map { idx => async(idx, idx * 10) }
+      def futures =
+        (0 to 9) map { idx =>
+          async(idx, idx * 10)
+        }
       val folded = Future.fold(futures)(0)(_ + _)
       intercept[IllegalArgumentException] {
         Await.result(folded, timeout)
@@ -736,7 +748,10 @@ class FutureTests extends MinimalScalaTest {
           else add
         }
       val timeout = 10000 millis
-      def futures = (1 to 10) map { idx => async(idx, idx * 10) }
+      def futures =
+        (1 to 10) map { idx =>
+          async(idx, idx * 10)
+        }
       val failed = Future.reduce(futures)(_ + _)
       intercept[IllegalArgumentException] {
         Await.result(failed, timeout)

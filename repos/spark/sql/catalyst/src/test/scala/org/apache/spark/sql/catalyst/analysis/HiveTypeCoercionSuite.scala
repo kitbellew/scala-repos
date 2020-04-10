@@ -113,7 +113,9 @@ class HiveTypeCoercionSuite extends PlanTest {
       FloatType,
       DoubleType,
       DecimalType.SYSTEM_DEFAULT,
-      DecimalType(10, 2)).foreach { tpe => shouldCast(tpe, NumericType, tpe) }
+      DecimalType(10, 2)).foreach { tpe =>
+      shouldCast(tpe, NumericType, tpe)
+    }
 
     shouldCast(
       ArrayType(StringType, false),

@@ -10,4 +10,5 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.templates.ScTemplateBod
   * User: Alexander Podkhalyuzin
   * Date: 17.06.2009
   */
+
 trait ScTemplateBodyStub extends StubElement[ScTemplateBody] {}

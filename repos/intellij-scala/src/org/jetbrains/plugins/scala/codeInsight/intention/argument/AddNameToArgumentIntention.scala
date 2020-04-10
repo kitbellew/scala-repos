@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.util.IntentionUtils
 /**
   * Jason Zaugg
   */
+
 object AddNameToArgumentIntention {
   def familyName = "Use named arguments"
 }

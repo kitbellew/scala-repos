@@ -48,7 +48,9 @@ class DefaultClientTest
 
   trait SourcedExceptionDispatcherHelper extends DispatcherHelper {
     val dispatcher: Transport[Int, Int] => Service[Int, Int] = { _ =>
-      Service.mk { _ => throw new SourcedException {} }
+      Service.mk { _ =>
+        throw new SourcedException {}
+      }
     }
   }
 

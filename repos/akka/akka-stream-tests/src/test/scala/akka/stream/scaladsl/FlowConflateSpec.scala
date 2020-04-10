@@ -177,7 +177,9 @@ class FlowConflateSpec extends AkkaSpec {
             exceptionLatch.open()
             throw TE("I hate even seed numbers")
           } else i
-        } { (sum, i) ⇒ sum + i }
+        } { (sum, i) ⇒
+          sum + i
+        }
         .withAttributes(supervisionStrategy(restartingDecider))
         .to(Sink.fromSubscriber(sinkProbe))
         .withAttributes(inputBuffer(initial = 1, max = 1))

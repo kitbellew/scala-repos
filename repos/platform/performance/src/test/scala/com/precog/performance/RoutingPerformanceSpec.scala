@@ -56,7 +56,9 @@ trait RoutingPerformanceSpec extends Specification with PerformanceSpec {
       val sampler =
         DistributedSampleSet(0, sampler = AdSamples.adCampaignSample)
 
-      val samples = 0.until(batchSize) map { _ => sampler.next._1 }
+      val samples = 0.until(batchSize) map { _ =>
+        sampler.next._1
+      }
 
       val seq = new AtomicInteger(0)
 

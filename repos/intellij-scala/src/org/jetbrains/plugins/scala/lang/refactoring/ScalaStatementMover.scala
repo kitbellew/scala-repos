@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScMember
 /**
   * Pavel Fatin
   */
+
 class ScalaStatementMover extends LineMover {
   private type ElementClass = Class[_ <: PsiElement]
 

@@ -13,18 +13,18 @@ private[forum] final class CategApi(env: Env) {
     for {
       categs ← CategRepo withTeams teams
       views ← (categs map { categ =>
-        env.postApi get (categ lastPostId troll) map { topicPost =>
-          CategView(
-            categ,
-            topicPost map {
-              _ match {
-                case (topic, post) =>
-                  (topic, post, env.postApi lastPageOf topic)
-              }
-            },
-            troll)
-        }
-      }).sequenceFu
+          env.postApi get (categ lastPostId troll) map { topicPost =>
+            CategView(
+              categ,
+              topicPost map {
+                _ match {
+                  case (topic, post) =>
+                    (topic, post, env.postApi lastPageOf topic)
+                }
+              },
+              troll)
+          }
+        }).sequenceFu
     } yield views
 
   def teamNbPosts(slug: String): Fu[Int] = CategRepo nbPosts teamSlug(slug)

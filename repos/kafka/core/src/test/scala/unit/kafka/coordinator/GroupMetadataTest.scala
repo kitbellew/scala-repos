@@ -14,6 +14,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package kafka.coordinator
 
 import org.junit.Assert._
@@ -267,7 +268,9 @@ class GroupMetadataTest extends JUnitSuite {
     val states: Set[GroupState] =
       Set(Stable, PreparingRebalance, AwaitingSync, Dead)
     val otherStates = states - targetState
-    otherStates.foreach { otherState => assertFalse(group.is(otherState)) }
+    otherStates.foreach { otherState =>
+      assertFalse(group.is(otherState))
+    }
     assertTrue(group.is(targetState))
   }
 }

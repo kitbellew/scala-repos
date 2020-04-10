@@ -31,7 +31,9 @@ class MiscDirectivesExamplesSpec extends RoutingSpec {
       path("even" / IntNumber) { i =>
         complete {
           // returns Some(evenNumberDescription) or None
-          Option(i).filter(_ % 2 == 0).map { num => s"Number $num is even." }
+          Option(i).filter(_ % 2 == 0).map { num =>
+            s"Number $num is even."
+          }
         }
       }
     }
@@ -69,11 +71,15 @@ class MiscDirectivesExamplesSpec extends RoutingSpec {
       Language("de") withQValue 0.5f)
 
     request ~> {
-      selectPreferredLanguage("en", "en-US") { lang ⇒ complete(lang.toString) }
+      selectPreferredLanguage("en", "en-US") { lang ⇒
+        complete(lang.toString)
+      }
     } ~> check { responseAs[String] shouldEqual "en-US" }
 
     request ~> {
-      selectPreferredLanguage("de-DE", "hu") { lang ⇒ complete(lang.toString) }
+      selectPreferredLanguage("de-DE", "hu") { lang ⇒
+        complete(lang.toString)
+      }
     } ~> check { responseAs[String] shouldEqual "de-DE" }
   }
   "validate-example" in {

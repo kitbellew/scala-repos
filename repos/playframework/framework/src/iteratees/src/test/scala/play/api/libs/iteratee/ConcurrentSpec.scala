@@ -238,7 +238,9 @@ object ConcurrentSpec
             c.push("foo")
             c.push("bar")
           },
-          onError = { (err, input) => error.success(err) })(unicastEC)
+          onError = { (err, input) =>
+            error.success(err)
+          })(unicastEC)
 
         enumerator |>> Cont {
           case Input.El(data) => Error(data, Input.Empty)
@@ -323,8 +325,9 @@ object ConcurrentSpec
 
     "perform patching in the correct ExecutionContext" in {
       mustExecute(1) { ppEC =>
-        val e =
-          Concurrent.patchPanel[Int] { pp => pp.patchIn(Enumerator.eof) }(ppEC)
+        val e = Concurrent.patchPanel[Int] { pp =>
+          pp.patchIn(Enumerator.eof)
+        }(ppEC)
         Await.result(e |>>> Iteratee.getChunks[Int], Duration.Inf) must equalTo(
           Nil)
       }

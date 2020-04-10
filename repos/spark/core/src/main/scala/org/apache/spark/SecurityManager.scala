@@ -178,6 +178,7 @@ import org.apache.spark.util.Utils
   *  settings inherited from the worker which spawned that executor. It can be accomplished by
   *  setting `spark.ssl.useNodeLocalConf` to `true`.
   */
+
 private[spark] class SecurityManager(sparkConf: SparkConf)
     extends Logging
     with SecretKeyHolder {

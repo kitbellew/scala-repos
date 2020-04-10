@@ -4,6 +4,7 @@ package org.jetbrains.plugins.scala.conversion
   * Created by Kate Ustyuzhanina
   * on 10/22/15
   */
+
 class PrettyPrinter {
   val printer = new StringBuilder()
 

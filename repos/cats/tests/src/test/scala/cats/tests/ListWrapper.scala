@@ -33,6 +33,7 @@ import org.scalacheck.Arbitrary.arbitrary
   * }
   * }}}
   */
+
 final case class ListWrapper[A](list: List[A]) extends AnyVal
 
 object ListWrapper {

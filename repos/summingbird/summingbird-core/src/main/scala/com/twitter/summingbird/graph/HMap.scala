@@ -77,7 +77,9 @@ sealed abstract class HMap[K[_], V[_]] {
     map
       .asInstanceOf[Map[K[Any], V[Any]]]
       .collectFirst(collector)
-      .map { kv => (this + kv, kv._1) }
+      .map { kv =>
+        (this + kv, kv._1)
+      }
   }
 
   def collect[R[_]](p: GenPartial[Pair, R]): Stream[R[_]] =

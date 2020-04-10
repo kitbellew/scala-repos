@@ -26,6 +26,7 @@ import scala.collection.JavaConversions._
   * User: Alexander Podkhalyuzin
   * Date: 04.02.2009
   */
+
 class ScalaScriptRunConfiguration(
     val project: Project,
     val configurationFactory: ConfigurationFactory,

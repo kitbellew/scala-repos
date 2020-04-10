@@ -23,7 +23,9 @@ class LAFutureSpec extends Specification {
       val transformedFuture = future.map(tranformThrowingException)
 
       var notifiedAboutFailure: Boolean = false
-      transformedFuture.onFail { _ => notifiedAboutFailure = true }
+      transformedFuture.onFail { _ =>
+        notifiedAboutFailure = true
+      }
 
       transformedFuture.get(timeout)
       notifiedAboutFailure shouldEqual true
@@ -38,7 +40,9 @@ class LAFutureSpec extends Specification {
       val transformedFuture = future.flatMap(tranformThrowingException)
 
       var notifiedAboutFailure: Boolean = false
-      transformedFuture.onFail { _ => notifiedAboutFailure = true }
+      transformedFuture.onFail { _ =>
+        notifiedAboutFailure = true
+      }
 
       transformedFuture.get(timeout)
       notifiedAboutFailure shouldEqual true

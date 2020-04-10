@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.overrideImplement.ScalaOIUtil
   * User: Alexander Podkhalyuzin
   * Date: 22.09.2008
   */
+
 class ImplementMethodsQuickFix(clazz: ScTemplateDefinition)
     extends IntentionAction {
   def getText: String = ScalaBundle.message("implement.methods.fix")

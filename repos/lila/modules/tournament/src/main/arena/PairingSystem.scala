@@ -138,8 +138,11 @@ object PairingSystem extends AbstractPairingSystem {
         players.filterNot { p =>
           combo.exists(c => c._1 == p || c._2 == p)
         } match {
-          case a :: rest => rest.map { b => (a, b) :: combo }
-          case _         => Nil
+          case a :: rest =>
+            rest.map { b =>
+              (a, b) :: combo
+            }
+          case _ => Nil
         }
 
       sealed trait FindBetter

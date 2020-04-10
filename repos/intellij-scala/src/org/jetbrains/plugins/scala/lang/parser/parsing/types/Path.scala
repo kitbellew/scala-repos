@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 /**
   * @author Alexander Podkhalyuzin
   */
+
 /*
  * Path ::= StableId
  *        | [id '.'] 'this'

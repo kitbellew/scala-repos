@@ -80,7 +80,10 @@ final case class Kleisli[M[_], A, B](run: A => M[B]) { self =>
   def rwst[W, S](implicit
       M: Functor[M],
       W: Monoid[W]): ReaderWriterStateT[M, A, W, S, B] =
-    ReaderWriterStateT((r, s) => M.map(self(r)) { b => (W.zero, b, s) })
+    ReaderWriterStateT((r, s) =>
+      M.map(self(r)) { b =>
+        (W.zero, b, s)
+      })
 
   def state(implicit M: Monad[M]): StateT[M, A, B] =
     StateT(a => M.map(run(a))((a, _)))

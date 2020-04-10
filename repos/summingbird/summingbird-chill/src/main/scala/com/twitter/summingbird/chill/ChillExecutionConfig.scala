@@ -22,6 +22,7 @@ import com.twitter.chill.IKryoRegistrar
 /**
   * @author Ian O Connell
   */
+
 trait ChillExecutionConfig[P <: Platform[P]] extends ExecutionConfig[P] {
   def registrars: List[IKryoRegistrar] = Nil
 }

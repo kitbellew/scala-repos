@@ -142,7 +142,9 @@ object KMeans {
             else go(s, nextC, nextP, step + 1)
         }
 
-    Execution.withId { implicit uid => go(Stat(key), clusters, points, 0) }
+    Execution.withId { implicit uid =>
+      go(Stat(key), clusters, points, 0)
+    }
   }
 
   def apply(k: Int, points: TypedPipe[Vector[Double]]): Execution[

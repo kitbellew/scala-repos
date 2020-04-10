@@ -19,6 +19,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 /**
   * Pavel Fatin
   */
+
 class ScalaRedundantCastInspection
     extends AbstractInspection("Redundant cast") {
   def actionFor(holder: ProblemsHolder) = {

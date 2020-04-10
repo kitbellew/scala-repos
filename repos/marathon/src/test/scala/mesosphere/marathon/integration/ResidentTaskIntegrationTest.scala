@@ -213,6 +213,7 @@ class ResidentTaskIntegrationTest
     *
     * (From http://mesos.apache.org/documentation/latest/authorization/)
     */
+
   ignore("taskLostBehavior = RELAUNCH_AFTER_TIMEOUT, timeout = 10s") { f =>
     Given("A resident app with 1 instance")
     When("The task is lost")

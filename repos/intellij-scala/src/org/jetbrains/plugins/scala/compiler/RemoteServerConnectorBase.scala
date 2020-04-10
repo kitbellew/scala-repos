@@ -18,6 +18,7 @@ import org.jetbrains.plugins.scala.project.settings.ScalaCompilerSettings
   * Nikolay.Tropin
   * 2014-10-07
   */
+
 abstract class RemoteServerConnectorBase(
     module: Module,
     filesToCompile: Seq[File],

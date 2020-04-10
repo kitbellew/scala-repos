@@ -29,7 +29,9 @@ class ParallelRangeCheck(val tasksupport: TaskSupport)
   override def instances(vals: Seq[Gen[Int]]): Gen[Seq[Int]] =
     sized { start =>
       sized { end =>
-        sized { step => new Range(start, end, if (step != 0) step else 1) }
+        sized { step =>
+          new Range(start, end, if (step != 0) step else 1)
+        }
       }
     }
 

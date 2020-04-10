@@ -972,7 +972,9 @@ case class Configuration(underlying: Config) {
         value
       }
       .orElse(getNanoseconds(key))
-      .map { value => new FiniteDuration(value, TimeUnit.NANOSECONDS) }
+      .map { value =>
+        new FiniteDuration(value, TimeUnit.NANOSECONDS)
+      }
   }
 
 }
@@ -1222,7 +1224,9 @@ private[play] object ConfigLoader {
         obj
           .keySet()
           .asScala
-          .map { key => key -> valueLoader.load(conf, key) }
+          .map { key =>
+            key -> valueLoader.load(conf, key)
+          }
           .toMap
       }
     }

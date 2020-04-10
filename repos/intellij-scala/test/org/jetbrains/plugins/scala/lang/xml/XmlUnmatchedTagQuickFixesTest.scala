@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.codeInspection.xml.ScalaXmlUnmatchedTagInspec
   * User: Dmitry Naydanov
   * Date: 4/13/12
   */
+
 class XmlUnmatchedTagQuickFixesTest
     extends ScalaLightCodeInsightFixtureTestAdapter {
   val renameOpeningQuickFixHint = ScalaBundle.message("xml.rename.opening.tag")

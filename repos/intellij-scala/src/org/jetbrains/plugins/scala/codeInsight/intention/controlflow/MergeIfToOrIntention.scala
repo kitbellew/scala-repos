@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   * @author Ksenia.Sautina
   * @since 6/6/12
   */
+
 object MergeIfToOrIntention {
   def familyName = "Merge equivalent Ifs to ORed condition"
 }
