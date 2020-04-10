@@ -19,10 +19,14 @@ object MemberWeaklyUpSpec extends MultiNodeConfig {
   val fourth = role("fourth")
   val fifth = role("fifth")
 
-  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString("""
+  commonConfig(
+    debugConfig(on = false)
+      .withFallback(
+        ConfigFactory.parseString("""
         akka.remote.retry-gate-closed-for = 3 s
         akka.cluster.allow-weakly-up-members = on
-        """)).withFallback(MultiNodeClusterSpec.clusterConfig))
+        """))
+      .withFallback(MultiNodeClusterSpec.clusterConfig))
 
   testTransport(on = true)
 }

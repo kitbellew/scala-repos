@@ -194,6 +194,7 @@ class SourceMapTest {
           "jsontext") == "{\"object with 1 member\":[\"array with 1 element\"]}")
       assert(get(json, 19) == "rosebud") /**/
     }
+
     /**/
   }
 }
@@ -330,6 +331,7 @@ trait Writer {
       case JsNull =>
         sb.append("null")
     }
+
   /**/
 }
 class Writer2 extends Writer {
@@ -342,6 +344,7 @@ class Writer2 extends Writer {
     writeToBuffer(v, sb)
     sb.toString
   }
+
   /**/
 }
 class Json extends Writer2 {
