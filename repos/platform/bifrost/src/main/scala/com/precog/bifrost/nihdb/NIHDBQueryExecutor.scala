@@ -128,7 +128,6 @@ trait NIHDBQueryExecutorComponent {
       with KafkaIngestActorProjectionSystem
       with GracefulStopSupport {
       platform =>
-
       type YggConfig = NIHDBQueryExecutorConfig
       val yggConfig =
         new NIHDBQueryExecutorConfig {

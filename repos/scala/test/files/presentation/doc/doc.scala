@@ -52,7 +52,6 @@ object Test extends InteractiveTest {
       with CommentFactoryBase
       with doc.ScaladocGlobalTrait {
       outer =>
-
       val global: this.type = this
 
       override lazy val analyzer =

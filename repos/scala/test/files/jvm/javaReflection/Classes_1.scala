@@ -15,7 +15,9 @@ class A {
     trait C
     object D
     new T {}
-    (() => "-1")
+    (
+        () =>
+          "-1")
     def f = {
       class KB
     }
@@ -25,7 +27,9 @@ class A {
   new T {}
 
   // anonymous function, not a member
-  (() => "1")
+  (
+      () =>
+        "1")
 
   def f = {
     class E
@@ -76,7 +80,9 @@ object AO {
   trait C
   object D
   new T {}
-  (() => "1")
+  (
+      () =>
+        "1")
 }
 
 trait AT {
@@ -84,5 +90,7 @@ trait AT {
   trait C
   object D
   new T {}
-  (() => "1")
+  (
+      () =>
+        "1")
 }
