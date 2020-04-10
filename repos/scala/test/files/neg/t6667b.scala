@@ -12,9 +12,7 @@ object Test {
       val value = 2
     }
 
-    new Object {
-      new Test()
-    }
+    new Object { new Test() }
     // compare with:
     new Test()
   }

@@ -99,8 +99,6 @@ object ScalaFX_Controls_01 extends JFXApp {
     title = "ScalaFX Controls 01"
     width = 500
     height = 180
-    scene = new Scene {
-      content = hBox
-    }
+    scene = new Scene { content = hBox }
   }
 }

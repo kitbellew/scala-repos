@@ -140,9 +140,7 @@ class TextAreaControls(target: TextArea)
       }
     })
 
-  val chbWrap = new CheckBox {
-    selected <==> target.wrapText
-  }
+  val chbWrap = new CheckBox { selected <==> target.wrapText }
 
   // TODO: Add a label indicating number of Paragraphs
   val lblParagraphs = new Label

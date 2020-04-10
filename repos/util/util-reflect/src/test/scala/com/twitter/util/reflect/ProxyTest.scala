@@ -23,10 +23,7 @@ object ProxySpec {
     def theVoid() = ()
     def theJavaVoid = null
     def aFuture = Future.value(2)
-    def aPromise =
-      new Promise[Int] {
-        setValue(2)
-      }
+    def aPromise = new Promise[Int] { setValue(2) }
   }
 
   class TestClass {

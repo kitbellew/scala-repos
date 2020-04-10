@@ -64,15 +64,11 @@ class EnsembleAccordion extends EnsembleExample {
           },
           new TitledPane {
             text = "Ensemble TextField 1"
-            children = new TextField {
-              promptText = "Hi! Scalafx Ensemble!"
-            }
+            children = new TextField { promptText = "Hi! Scalafx Ensemble!" }
           },
           new TitledPane {
             text = "Ensemble CheckBox 1"
-            children = new CheckBox {
-              text = "CheckBox 1"
-            }
+            children = new CheckBox { text = "CheckBox 1" }
           }
         )
       }

@@ -68,9 +68,7 @@ class EnsemblePagination extends EnsembleExample {
       }
 
     // Pagination with 7 pages and index starts at zero
-    val pagination = new Pagination(7, 0) {
-      pageFactory = createAnimalPage
-    }
+    val pagination = new Pagination(7, 0) { pageFactory = createAnimalPage }
 
     new VBox {
       vgrow = Priority.Always

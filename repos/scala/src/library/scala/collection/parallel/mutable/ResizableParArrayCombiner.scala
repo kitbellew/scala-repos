@@ -98,9 +98,7 @@ trait ResizableParArrayCombiner[T]
 object ResizableParArrayCombiner {
   def apply[T](
       c: ArrayBuffer[ExposedArrayBuffer[T]]): ResizableParArrayCombiner[T] = {
-    new {
-      val chain = c
-    } with ResizableParArrayCombiner[
+    new { val chain = c } with ResizableParArrayCombiner[
       T
     ] // was: with EnvironmentPassingCombiner[T, ParArray[T]]
   }

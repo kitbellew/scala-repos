@@ -63,9 +63,7 @@ object ContentFactory {
         inst.getContent
       }
 
-    val header = new Label(exampleName) {
-      styleClass += "page-header"
-    }
+    val header = new Label(exampleName) { styleClass += "page-header" }
 
     val sampleArea = new StackPane {
       children = sampleNode

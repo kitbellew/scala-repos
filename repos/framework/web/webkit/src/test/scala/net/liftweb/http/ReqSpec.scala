@@ -172,9 +172,7 @@ object ReqSpec extends Specification with XmlMatchers with Mockito {
       }
 
       "with invalid JSON and a text/json Content-Type should return a Failure" in new mockJsonReq(
-        "epic fail") {
-        req("text/json").json should beAnInstanceOf[Failure]
-      }
+        "epic fail") { req("text/json").json should beAnInstanceOf[Failure] }
     }
 
     "when forcing a request body JSON parse with forcedBodyAsJson" in {
@@ -191,9 +189,7 @@ object ReqSpec extends Specification with XmlMatchers with Mockito {
       }
 
       "with invalid JSON should return a Failure" in new mockJsonReq(
-        "epic fail") {
-        req("text/json").json should beAnInstanceOf[Failure]
-      }
+        "epic fail") { req("text/json").json should beAnInstanceOf[Failure] }
     }
 
     "when trying to XML parse the request body" in {

@@ -56,9 +56,7 @@ object RectangleDrawingDemo extends JFXApp {
     private var _start = new Point2D(0, 0)
     private var _end = new Point2D(0, 0)
 
-    val rectangle = new Rectangle {
-      fill = Color.Blue
-    }
+    val rectangle = new Rectangle { fill = Color.Blue }
 
     /** Update location of the rectangle proving two defining point (along the diameter) */
     def update(start: Point2D = _start, end: Point2D = _end) {

@@ -52,9 +52,7 @@ object SnapshotNPETester extends JFXApp {
     height = 300
     scene = new Scene(0, 0, true, SceneAntialiasing.Balanced) {
       camera = new PerspectiveCamera
-      root = new BorderPane {
-        center = mediaView
-      }
+      root = new BorderPane { center = mediaView }
     }
   }
 

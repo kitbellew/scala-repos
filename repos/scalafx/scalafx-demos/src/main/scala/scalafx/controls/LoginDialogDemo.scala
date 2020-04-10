@@ -69,12 +69,8 @@ object LoginDialogDemo extends JFXApp {
     dialog.dialogPane().buttonTypes = Seq(loginButtonType, ButtonType.Cancel)
 
     // Create the username and password labels and fields.
-    val username = new TextField() {
-      promptText = "Username"
-    }
-    val password = new PasswordField() {
-      promptText = "Password"
-    }
+    val username = new TextField() { promptText = "Username" }
+    val password = new PasswordField() { promptText = "Password" }
 
     val grid = new GridPane() {
       hgap = 10

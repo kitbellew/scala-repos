@@ -311,9 +311,8 @@ class SparkIMain(
   } with StructuredTypeStrings
 
   // NOTE: Exposed to repl package since used by SparkImports
-  private[repl] lazy val memberHandlers = new {
-    val intp: imain.type = imain
-  } with SparkMemberHandlers
+  private[repl] lazy val memberHandlers = new { val intp: imain.type = imain }
+  with SparkMemberHandlers
   import memberHandlers._
 
   /**

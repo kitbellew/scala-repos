@@ -65,9 +65,7 @@ object PaginationSample extends JFXApp {
     AnchorPane.setBottomAnchor(pagination, 10.0)
     AnchorPane.setLeftAnchor(pagination, 10.0)
 
-    new AnchorPane {
-      children = pagination
-    }
+    new AnchorPane { children = pagination }
   }
 
   val pagination = new Pagination(28, 0) {
@@ -78,9 +76,7 @@ object PaginationSample extends JFXApp {
 
   stage = new PrimaryStage {
     title = "PaginationSample by ScalaFX"
-    scene = new Scene {
-      content = anchor
-    }
+    scene = new Scene { content = anchor }
   }
 
 }

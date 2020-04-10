@@ -110,9 +110,7 @@ object Ensemble extends JFXApp {
                   "/scalafx/ensemble/images/logo.png"))
                 margin = Insets(0, 0, 0, 10)
               },
-              new Region {
-                minWidth = 300
-              },
+              new Region { minWidth = 300 },
               new Button {
                 minWidth = 120
                 minHeight = 66
@@ -121,9 +119,7 @@ object Ensemble extends JFXApp {
             )
           }
         }
-        center = new BorderPane {
-          center = splitPane
-        }
+        center = new BorderPane { center = splitPane }
         styleClass += "application"
       }
     }

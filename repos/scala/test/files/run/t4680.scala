@@ -45,9 +45,7 @@ object Test {
     p("new C { }")
     new C {}
     p("new C { 5 }")
-    new C {
-      5
-    }
+    new C { 5 }
 
     p("new D()")
     new D()
@@ -58,27 +56,17 @@ object Test {
       val x = 5
     }
     p("new { val x = 5 } with D()")
-    new {
-      val x = 5
-    } with D()
+    new { val x = 5 } with D()
 
     p("new E() { val x = 5 }")
     new E() {
       val x = 5
     }
     p("new { val x = 5 } with E()")
-    new {
-      val x = 5
-    } with E()
+    new { val x = 5 } with E()
     p("new { val x = 5 } with E() { }")
-    new {
-      val x = 5
-    } with E() {}
+    new { val x = 5 } with E() {}
     p("new { val x = 5 } with E() { 5 }")
-    new {
-      val x = 5
-    } with E() {
-      5
-    }
+    new { val x = 5 } with E() { 5 }
   }
 }

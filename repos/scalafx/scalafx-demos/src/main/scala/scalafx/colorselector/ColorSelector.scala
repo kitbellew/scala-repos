@@ -140,9 +140,7 @@ object ColorSelector extends JFXApp {
   // METHODS - END
 
   val rectangleRegion = new Region {
-    effect = new Reflection {
-      fraction = 0.45
-    }
+    effect = new Reflection { fraction = 0.45 }
     onMouseClicked = (event: MouseEvent) => {
       if ((event.getClickCount == 2) && (event.button == MouseButton.Primary)) {
         randomizeColors()
@@ -154,9 +152,7 @@ object ColorSelector extends JFXApp {
     "-fx-background-color: " + RgbFormatter
       .format(currentColor(), !this.chbDisableAlpha.selected.value)))
 
-  val controlRed = new SliderControl("R") {
-    value = 255
-  }
+  val controlRed = new SliderControl("R") { value = 255 }
   controlRed.value.onChange({
     changeColor()
     controlRed.changeColor(
@@ -168,9 +164,7 @@ object ColorSelector extends JFXApp {
     Color.rgb(controlRed.value.value.toInt, 0, 0),
     getForegroundColor(controlRed.value.value))
 
-  val controlGreen = new SliderControl("G") {
-    value = 255
-  }
+  val controlGreen = new SliderControl("G") { value = 255 }
   controlGreen.value.onChange({
     changeColor()
     controlGreen.changeColor(
@@ -182,9 +176,7 @@ object ColorSelector extends JFXApp {
     Color.rgb(0, controlGreen.value.value.toInt, 0),
     getForegroundColor(controlGreen.value.value))
 
-  val controlBlue = new SliderControl("B") {
-    value = 255
-  }
+  val controlBlue = new SliderControl("B") { value = 255 }
   controlBlue.value.onChange({
     changeColor()
     controlBlue
@@ -194,9 +186,7 @@ object ColorSelector extends JFXApp {
   controlBlue
     .changeColor(Color.rgb(0, 0, controlBlue.value.value.toInt), Color.White)
 
-  val controlAlpha = new SliderControl("A") {
-    value = 255
-  }
+  val controlAlpha = new SliderControl("A") { value = 255 }
   controlAlpha.value.onChange(changeColor())
   controlAlpha.selectedControl.onChange(controlSelected(controlAlpha))
   controlAlpha.disable.onChange({
@@ -230,9 +220,7 @@ object ColorSelector extends JFXApp {
     onAction = (event: ActionEvent) => formatColor()
   }
 
-  val chbDisableAlpha = new CheckBox {
-    selected <==> controlAlpha.disable
-  }
+  val chbDisableAlpha = new CheckBox { selected <==> controlAlpha.disable }
 
   val rectangleRowsConstraint = new RowConstraints {
     vgrow = Priority.Always
@@ -333,9 +321,7 @@ object ColorSelector extends JFXApp {
   }
   AnchorPane.setAnchors(pnlMain, 0, 0, 0, 0)
 
-  val mainScene = new Scene {
-    content = List(pnlMain0)
-  }
+  val mainScene = new Scene { content = List(pnlMain0) }
   pnlMain0.prefWidth <== mainScene.width
   pnlMain0.prefHeight <== mainScene.height
 

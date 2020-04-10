@@ -78,9 +78,7 @@ object TriangleMeshDemo extends JFXApp {
         translateZ = -700.0
       }
 
-      val ambientLight = new AmbientLight {
-        color = Color.White
-      }
+      val ambientLight = new AmbientLight { color = Color.White }
 
       root = new Group {
         children = new Group(shapes, pointLight, ambientLight)

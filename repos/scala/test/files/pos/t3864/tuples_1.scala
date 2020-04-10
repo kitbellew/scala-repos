@@ -70,9 +70,8 @@ trait Tuples {
   implicit def ToTuple15W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](
       t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O))
       : Tuple15W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O] =
-    new {
-      val value = t
-    } with Tuple15W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]
+    new { val value = t }
+    with Tuple15W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]
 
   trait Tuple16W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]
       extends EnrichedType[
@@ -175,9 +174,8 @@ trait Tuples {
   implicit def ToTuple16W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](
       t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P))
       : Tuple16W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P] =
-    new {
-      val value = t
-    } with Tuple16W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]
+    new { val value = t }
+    with Tuple16W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]
 
   trait Tuple17W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]
       extends EnrichedType[
@@ -302,9 +300,8 @@ trait Tuples {
   implicit def ToTuple17W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](
       t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q))
       : Tuple17W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q] =
-    new {
-      val value = t
-    } with Tuple17W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]
+    new { val value = t }
+    with Tuple17W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]
 
   trait Tuple18W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]
       extends EnrichedType[
@@ -453,9 +450,8 @@ trait Tuples {
   implicit def ToTuple18W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](
       t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R))
       : Tuple18W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R] =
-    new {
-      val value = t
-    } with Tuple18W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]
+    new { val value = t }
+    with Tuple18W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]
 
   trait Tuple19W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]
       extends EnrichedType[
@@ -629,9 +625,8 @@ trait Tuples {
       R,
       S](t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S))
       : Tuple19W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S] =
-    new {
-      val value = t
-    } with Tuple19W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]
+    new { val value = t }
+    with Tuple19W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]
 
   trait Tuple20W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]
       extends EnrichedType[
@@ -813,9 +808,8 @@ trait Tuples {
       S,
       T](t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T))
       : Tuple20W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T] =
-    new {
-      val value = t
-    } with Tuple20W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]
+    new { val value = t }
+    with Tuple20W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]
 
   trait Tuple21W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]
       extends EnrichedType[Tuple21[
@@ -1066,9 +1060,7 @@ trait Tuples {
         S,
         T,
         U] =
-    new {
-      val value = t
-    }
+    new { val value = t }
     with Tuple21W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]
 
   trait Tuple22W[
@@ -1332,9 +1324,7 @@ trait Tuples {
         T,
         U,
         V] =
-    new {
-      val value = t
-    } with Tuple22W[
+    new { val value = t } with Tuple22W[
       A,
       B,
       C,

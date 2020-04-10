@@ -60,9 +60,7 @@ object PasswordFieldTest extends JFXApp {
   }
 
   val mainPane = new BorderPane {
-    top = new FlowPane {
-      children = List(passwordField)
-    }
+    top = new FlowPane { children = List(passwordField) }
     center = controlsPane
     vgrow = Priority.Always
     hgrow = Priority.Always
@@ -83,9 +81,7 @@ object PasswordFieldTest extends JFXApp {
 class PasswordFieldControls(target: PasswordField)
     extends PropertiesNodes[PasswordField](target, "PasswordField Properties") {
 
-  val lblText = new Label {
-    text <== target.text
-  }
+  val lblText = new Label { text <== target.text }
 
   /**
     * It is not really working. Probably because when the button is clicked, password field lose its focus. To make Copy and cut work a possibility could be use

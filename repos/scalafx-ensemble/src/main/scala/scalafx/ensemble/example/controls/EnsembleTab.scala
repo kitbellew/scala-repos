@@ -70,15 +70,9 @@ class EnsembleTab extends EnsembleExample {
         new TabPane {
           minWidth = 400
           tabs = Seq(
-            new Tab {
-              text = "Tab 1"
-            },
-            new Tab {
-              text = "Tab 2"
-            },
-            new Tab {
-              text = "Tab 3"
-            })
+            new Tab { text = "Tab 1" },
+            new Tab { text = "Tab 2" },
+            new Tab { text = "Tab 3" })
           tabClosingPolicy = TabClosingPolicy.UNAVAILABLE
           side = Side.TOP
         }

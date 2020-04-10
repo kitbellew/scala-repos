@@ -10,9 +10,7 @@ object Test {
     }
 
     new CustomHashMap
-    new HashMap {
-      println(table.length)
-    }
+    new HashMap { println(table.length) }
 
     class CustomHashSet extends HashSet[Int] {
       override def initialSize = 96
@@ -21,9 +19,7 @@ object Test {
     }
 
     new CustomHashSet
-    new HashSet {
-      println(table.length)
-    }
+    new HashSet { println(table.length) }
   }
 
 }

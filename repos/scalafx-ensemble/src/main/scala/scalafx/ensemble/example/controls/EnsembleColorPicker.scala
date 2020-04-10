@@ -76,9 +76,7 @@ class EnsembleColorPicker extends EnsembleExample {
       hgrow = Priority.Always
       spacing = 50
       children = List(
-        new ToolBar {
-          content = colorPicker
-        },
+        new ToolBar { content = colorPicker },
         new VBox {
           alignment = Pos.Center
           spacing = 20

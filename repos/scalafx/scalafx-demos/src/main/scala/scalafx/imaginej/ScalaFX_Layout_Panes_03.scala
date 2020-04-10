@@ -75,18 +75,10 @@ object ScalaFX_Layout_Panes_03 extends JFXApp {
       text = "Data"
       font = Font.font("Amble CN", FontWeight.Bold, 14)
     },
-    new Text {
-      text = "  Sales"
-    },
-    new Text {
-      text = "  Marketing"
-    },
-    new Text {
-      text = "  Distribution"
-    },
-    new Text {
-      text = "  Costs"
-    }
+    new Text { text = "  Sales" },
+    new Text { text = "  Marketing" },
+    new Text { text = "  Distribution" },
+    new Text { text = "  Costs" }
   )
   stage = new PrimaryStage {
     title = "ScalaFX Layout Panes 03"

@@ -71,33 +71,13 @@ object SliderControlDemo extends JFXApp {
   }
 
   val pnlControls = new GridPane {
-    add(
-      new Label {
-        text = "Input Value"
-      },
-      0,
-      0)
+    add(new Label { text = "Input Value" }, 0, 0)
     add(txfInputValue, 1, 0)
-    add(
-      new Label {
-        text = "Output Value"
-      },
-      2,
-      0)
+    add(new Label { text = "Output Value" }, 2, 0)
     add(lblOutputValue, 3, 0)
-    add(
-      new Label {
-        text = "Selected"
-      },
-      0,
-      1)
+    add(new Label { text = "Selected" }, 0, 1)
     add(chbSelected, 1, 1)
-    add(
-      new Label {
-        text = "Disabled"
-      },
-      2,
-      1)
+    add(new Label { text = "Disabled" }, 2, 1)
     add(chbEnabled, 3, 1)
     padding = insets
   }
@@ -117,17 +97,13 @@ object SliderControlDemo extends JFXApp {
   }
   pnlControls.columnConstraints = List(ccOdd, ccEven, ccOdd, ccEven)
 
-  val box = new VBox(5.0) {
-    children = List(sliderControl, pnlControls)
-  }
+  val box = new VBox(5.0) { children = List(sliderControl, pnlControls) }
   VBox.setVgrow(sliderControl, Priority.Never)
   VBox.setVgrow(pnlControls, Priority.Always)
 
   val mainScene = new Scene {
     fill = Color.LightGray
-    content = new AnchorPane {
-      children = List(box)
-    }
+    content = new AnchorPane { children = List(box) }
   }
   box.prefWidth <== mainScene.width
   box.prefHeight <== mainScene.height

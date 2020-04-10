@@ -225,9 +225,8 @@ class IMain(
     val global: imain.global.type = imain.global
   } with StructuredTypeStrings
 
-  lazy val memberHandlers = new {
-    val intp: imain.type = imain
-  } with MemberHandlers
+  lazy val memberHandlers = new { val intp: imain.type = imain }
+  with MemberHandlers
   import memberHandlers._
 
   /** Temporarily be quiet */

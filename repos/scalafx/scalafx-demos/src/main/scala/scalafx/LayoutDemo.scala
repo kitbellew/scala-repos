@@ -39,28 +39,14 @@ import scalafx.scene.text.{Font, Text}
 
 object LayoutDemo extends JFXApp {
   val hello = new Accordion {
-    panes = List(new TitledPane {
-      content = new Label {
-        text = "Hello"
-      }
-    })
+    panes = List(new TitledPane { content = new Label { text = "Hello" } })
   }
 
   val hbox1 = new HBox {
-    children = List(
-      hello,
-      new Label {
-        text = "Goodbye"
-      })
+    children = List(hello, new Label { text = "Goodbye" })
   }
   val hbox2 = new HBox {
-    children = List(
-      new Circle {
-        radius = 20
-      },
-      new Label {
-        text = "Strange"
-      })
+    children = List(new Circle { radius = 20 }, new Label { text = "Strange" })
   }
 
   val charm = new Text("charm") {

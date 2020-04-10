@@ -42,15 +42,9 @@ class EnsembleProgressBar extends EnsembleExample {
       children = new VBox {
         spacing = 10
         children = List(
-          new ProgressBar {
-            maxWidth = 100
-          },
-          new ProgressBar {
-            maxWidth = 200
-          },
-          new ProgressBar {
-            maxWidth = 300
-          },
+          new ProgressBar { maxWidth = 100 },
+          new ProgressBar { maxWidth = 200 },
+          new ProgressBar { maxWidth = 300 },
           new ProgressBar {
             maxWidth = 100
             progress = 0.25

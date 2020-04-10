@@ -47,9 +47,7 @@ class EnsembleSepiaTone extends EnsembleExample {
       children = new ImageView {
         image = new Image(this.getClass.getResourceAsStream(
           "/scalafx/ensemble/images/boat.jpg"))
-        effect = new SepiaTone() {
-          level = 0.9d
-        }
+        effect = new SepiaTone() { level = 0.9d }
       }
     }
   }

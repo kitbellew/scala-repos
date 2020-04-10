@@ -7,11 +7,7 @@ abstract class foo(a: Int, b: Int) extends scala.DelayedInit {
 
 object Test {
   def main(args: Array[String]) {
-    new foo(1, 2) {
-      println("new foo(1, 2)")
-    }
-    new foo(b = 2, a = 1) {
-      println("new foo(b = 2, a = 1)")
-    }
+    new foo(1, 2) { println("new foo(1, 2)") }
+    new foo(b = 2, a = 1) { println("new foo(b = 2, a = 1)") }
   }
 }

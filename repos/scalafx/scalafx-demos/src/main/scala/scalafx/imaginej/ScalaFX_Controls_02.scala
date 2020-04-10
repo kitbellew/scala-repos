@@ -69,13 +69,9 @@ object ScalaFX_Controls_02 extends JFXApp {
     textFill = Color.web("#464646")
   }
 
-  val okImageView = new ImageView {
-    image = new Image(this, "images/ok.png")
-  }
+  val okImageView = new ImageView { image = new Image(this, "images/ok.png") }
 
-  val koImageView = new ImageView {
-    image = new Image(this, "images/ko.png")
-  }
+  val koImageView = new ImageView { image = new Image(this, "images/ko.png") }
 
   val okButton1 = new Button {
     graphic = okImageView
@@ -133,8 +129,6 @@ object ScalaFX_Controls_02 extends JFXApp {
     title = "ScalaFX Controls 02"
     width = 300
     height = 190
-    scene = new Scene {
-      content = vBox
-    }
+    scene = new Scene { content = vBox }
   }
 }

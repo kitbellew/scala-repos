@@ -49,9 +49,7 @@ class EnsembleHyperlink extends EnsembleExample {
       spacing = 10
       padding = Insets(20)
       children = List(
-        new Hyperlink {
-          text = "Hyperlink"
-        },
+        new Hyperlink { text = "Hyperlink" },
         new Hyperlink {
           text = "Hyperlink with Image"
           graphic = new ImageView {

@@ -60,9 +60,7 @@ import scalafx.scene.shape.Rectangle
 
 object ScalaFX_Controls_04 extends JFXApp {
 
-  val priorityLabel = new Label {
-    text = "Priority:"
-  }
+  val priorityLabel = new Label { text = "Priority:" }
 
   val theToggleGroup = new ToggleGroup {}
 
@@ -121,8 +119,6 @@ object ScalaFX_Controls_04 extends JFXApp {
     title = "ScalaFX Controls 04"
     width = 250
     height = 180
-    scene = new Scene {
-      content = vBox
-    }
+    scene = new Scene { content = vBox }
   }
 }

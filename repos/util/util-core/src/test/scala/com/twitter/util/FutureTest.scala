@@ -1337,11 +1337,7 @@ class FutureTest
         trait PollHelper {
           val p = new Promise[Int]
         }
-        "when waiting" in {
-          new PollHelper {
-            assert(p.poll == None)
-          }
-        }
+        "when waiting" in { new PollHelper { assert(p.poll == None) } }
 
         "when succeeding" in {
           new PollHelper {

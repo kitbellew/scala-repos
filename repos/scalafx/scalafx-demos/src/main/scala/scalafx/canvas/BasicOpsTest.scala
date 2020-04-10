@@ -61,8 +61,6 @@ object BasicOpsTest extends JFXApp {
 
   stage = new PrimaryStage {
     title = "Drawing Operations Test"
-    scene = new Scene {
-      content = canvas
-    }
+    scene = new Scene { content = canvas }
   }
 }

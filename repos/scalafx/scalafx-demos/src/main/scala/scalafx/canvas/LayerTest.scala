@@ -80,9 +80,7 @@ object LayerTest extends JFXApp {
   private val borderPane = new BorderPane()
   // Add Layers
   borderPane.top = cb
-  borderPane.center = new Pane {
-    children = List(layer1, layer2)
-  }
+  borderPane.center = new Pane { children = List(layer1, layer2) }
   layer1.toFront()
 
   private val root = new Group

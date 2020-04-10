@@ -472,9 +472,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   // I only changed analyzer.
   //
   // factory for phases: namer, packageobjects, typer
-  lazy val analyzer = new {
-    val global: Global.this.type = Global.this
-  } with Analyzer
+  lazy val analyzer = new { val global: Global.this.type = Global.this }
+  with Analyzer
 
   // phaseName = "patmat"
   object patmat extends {

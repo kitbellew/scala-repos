@@ -55,9 +55,7 @@ class PopupControlControls(target: PopupControl)
   super.addNode("Min Width", new SliderLabelControl(target.minWidth))
   super.addNode(
     "Max Width",
-    new SliderLabelControl(target.maxWidth) {
-      max = 200d
-    })
+    new SliderLabelControl(target.maxWidth) { max = 200d })
   super.addNode("Pref Height", new SliderLabelControl(target.prefHeight))
   super.addNode("Min Height", new SliderLabelControl(target.minHeight))
   super.addNode("Max Height", new SliderLabelControl(target.maxHeight))

@@ -35,28 +35,13 @@ import scalafx.scene.layout._
 
 object ControlsTest extends JFXApp {
 
-  val indicatorPane = new VBox {
-    children = List(new Label {
-      text = "LEFT"
+  val indicatorPane = new VBox { children = List(new Label { text = "LEFT" }) }
 
-    })
-  }
-
-  val controlsPane = new VBox {
-    children = List(new Label {
-      text = "RIGHT"
-    })
-  }
+  val controlsPane = new VBox { children = List(new Label { text = "RIGHT" }) }
 
   val centerPane = new BorderPane {
-    top = new Label {
-      text = "Label"
-    }
-    center = new StackPane {
-      children = List(new Button {
-        text = "Button"
-      })
-    }
+    top = new Label { text = "Label" }
+    center = new StackPane { children = List(new Button { text = "Button" }) }
   }
 
   val mainContent = new BorderPane {

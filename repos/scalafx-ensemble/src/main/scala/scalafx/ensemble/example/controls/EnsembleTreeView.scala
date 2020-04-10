@@ -43,12 +43,8 @@ class EnsembleTreeView extends EnsembleExample {
       root = new TreeItem[String]("Root Node") {
         expanded = true
         children = ObservableBuffer(
-          new TreeItem[String] {
-            value = "Node 1"
-          },
-          new TreeItem[String] {
-            value = "Node 2"
-          },
+          new TreeItem[String] { value = "Node 1" },
+          new TreeItem[String] { value = "Node 2" },
           new TreeItem[String] {
             value = "Node 3"
             children = ObservableBuffer(

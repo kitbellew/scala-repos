@@ -24,19 +24,13 @@ class FastTrack[MacrosAndAnalyzer <: Macros with Analyzer](
 
   private implicit def context2taggers(
       c0: MacroContext): Taggers { val c: c0.type } =
-    new {
-      val c: c0.type = c0
-    } with Taggers
+    new { val c: c0.type = c0 } with Taggers
   private implicit def context2macroimplementations(
       c0: MacroContext): FormatInterpolator { val c: c0.type } =
-    new {
-      val c: c0.type = c0
-    } with FormatInterpolator
+    new { val c: c0.type = c0 } with FormatInterpolator
   private implicit def context2quasiquote(
       c0: MacroContext): QuasiquoteImpls { val c: c0.type } =
-    new {
-      val c: c0.type = c0
-    } with QuasiquoteImpls
+    new { val c: c0.type = c0 } with QuasiquoteImpls
   private def makeBlackbox(sym: Symbol)(
       pf: PartialFunction[Applied, MacroContext => Tree]) =
     sym -> new FastTrackEntry(pf, isBlackbox = true)

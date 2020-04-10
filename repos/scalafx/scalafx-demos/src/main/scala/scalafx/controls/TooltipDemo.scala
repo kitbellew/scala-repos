@@ -61,9 +61,7 @@ object TooltipDemo extends JFXApp {
       new PopupControlControls(myTooltip))
   }
 
-  val mainPane = new VBox {
-    children = List(btnTooltip, controlsPane)
-  }
+  val mainPane = new VBox { children = List(btnTooltip, controlsPane) }
 
   stage = new JFXApp.PrimaryStage {
     title = "Tooltip Test"
@@ -101,9 +99,7 @@ class TooltipControls(target: Tooltip)
   }
 
   val originalText = target.text()
-  val txfText = new TextField {
-    text <==> target.text
-  }
+  val txfText = new TextField { text <==> target.text }
 
   val originalTextAlignment = target.textAlignment()
   val chbTextAlignment = new ChoiceBox[jfxst.TextAlignment] {
@@ -130,9 +126,7 @@ class TooltipControls(target: Tooltip)
   }
 
   val originalWrap = target.wrapText()
-  val chbWrap = new CheckBox {
-    selected <==> target.wrapText
-  }
+  val chbWrap = new CheckBox { selected <==> target.wrapText }
 
   override protected def resetProperties() {
     target.contentDisplay = originalContentDisplay

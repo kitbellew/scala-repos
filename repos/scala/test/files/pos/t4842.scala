@@ -8,10 +8,7 @@ class Blerg(x: AnyRef) {
   def this() = {
     this(new {
       class Bar {
-        println(Bar.this);
-        new {
-          println(Bar.this)
-        }
+        println(Bar.this); new { println(Bar.this) }
       }; new Bar
     }) // okay
   }
@@ -22,18 +19,13 @@ class Outer {
     def this() = {
       this(new {
         class Bar {
-          println(Bar.this);
-          new {
-            println(Bar.this)
-          }
+          println(Bar.this); new { println(Bar.this) }
         }; new Bar
       }) // okay
     }
 
     def this(x: Boolean) = {
-      this(new {
-        println(Outer.this)
-      }) // okay
+      this(new { println(Outer.this) }) // okay
     }
   }
 }

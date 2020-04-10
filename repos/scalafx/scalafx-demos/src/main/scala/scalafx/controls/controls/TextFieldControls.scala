@@ -35,9 +35,7 @@ import scalafx.scene.control.{ChoiceBox, TextField}
 class TextFieldControls(target: TextField)
     extends PropertiesNodes[TextField](target, "TextField Properties") {
 
-  val txfPromptText = new TextField {
-    text <==> target.promptText
-  }
+  val txfPromptText = new TextField { text <==> target.promptText }
 
   val chbPrefColumnCount = new ChoiceBox[Int] {
     items = ObservableBuffer[Int](

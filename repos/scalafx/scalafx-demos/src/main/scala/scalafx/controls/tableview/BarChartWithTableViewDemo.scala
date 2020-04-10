@@ -109,11 +109,7 @@ object BarChartWithTableViewDemo extends JFXApp {
       title = name
       initModality(Modality.WindowModal)
       initOwner(BarChartWithTableViewDemo.stage)
-      scene = new Scene {
-        root = new BorderPane {
-          center = tableView
-        }
-      }
+      scene = new Scene { root = new BorderPane { center = tableView } }
     }.showAndWait()
   }
 }

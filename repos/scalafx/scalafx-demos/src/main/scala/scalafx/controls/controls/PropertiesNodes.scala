@@ -145,9 +145,7 @@ abstract class PropertiesNodes[T](target: T, title: String) extends TitledPane {
     }
 
   protected def getLabel(property: StringProperty) =
-    new Label {
-      text <== property
-    }
+    new Label { text <== property }
 
   delegate.text = title
   content = controlsPane

@@ -228,9 +228,7 @@ abstract class FormatInterpolator {
     val Spec, Index, Flags, Width, Precision, CC = Value
   }
 
-  val stdContextTags = new {
-    val tc: c.type = c
-  } with StdContextTags
+  val stdContextTags = new { val tc: c.type = c } with StdContextTags
   import stdContextTags._
   val tagOfFormattable = typeTag[Formattable]
 

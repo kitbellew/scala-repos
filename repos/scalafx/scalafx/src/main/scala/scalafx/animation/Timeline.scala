@@ -58,9 +58,7 @@ object Timeline extends AnimationStatics {
   def apply(keyFrames: Seq[_ <: KeyFrame]) = {
     def kf = keyFrames
 
-    new Timeline {
-      keyFrames = kf
-    }
+    new Timeline { keyFrames = kf }
   }
 }
 

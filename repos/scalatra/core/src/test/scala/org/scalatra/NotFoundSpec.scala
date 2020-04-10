@@ -23,9 +23,7 @@ class NotFoundSpec extends ScalatraSpec {
   """
 
   addFilter(
-    new ScalatraFilter {
-      post("/filtered/get") { "wrong method" }
-    },
+    new ScalatraFilter { post("/filtered/get") { "wrong method" } },
     "/filtered/*")
 
   addServlet(

@@ -110,9 +110,7 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
     val css = this.getClass.getResource("AdvCandleStickChartSample.css")
       .toExternalForm
 
-    val xAxis = new NumberAxis("Day", 0, 32, 1) {
-      minorTickCount = 0
-    }
+    val xAxis = new NumberAxis("Day", 0, 32, 1) { minorTickCount = 0 }
     val yAxis = NumberAxis("Price")
 
     val seriesData = data.map { d =>
@@ -236,9 +234,7 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
       if (shouldAnimate) {
         candle.opacity = 0
         plotChildren += candle
-        new FadeTransition(500 ms, candle) {
-          toValue = 1
-        }.play()
+        new FadeTransition(500 ms, candle) { toValue = 1 }.play()
       } else { plotChildren += candle }
       if (series.node() != null) { series.node().toFront() }
     }
@@ -265,9 +261,7 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
         if (shouldAnimate) {
           candle.opacity = 0
           plotChildren += candle
-          val ft = new FadeTransition(500 ms, candle) {
-            toValue = 1
-          }
+          val ft = new FadeTransition(500 ms, candle) { toValue = 1 }
           ft.play()
         } else { plotChildren += candle }
       }
@@ -426,18 +420,12 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
     private val highValue = new Label()
     private val lowValue = new Label()
 
-    val open = new Label("OPEN:") {
-      styleClass += "candlestick-tooltip-label"
-    }
+    val open = new Label("OPEN:") { styleClass += "candlestick-tooltip-label" }
     val close = new Label("CLOSE:") {
       styleClass += "candlestick-tooltip-label"
     }
-    val high = new Label("HIGH:") {
-      styleClass += "candlestick-tooltip-label"
-    }
-    val low = new Label("LOW:") {
-      styleClass += "candlestick-tooltip-label"
-    }
+    val high = new Label("HIGH:") { styleClass += "candlestick-tooltip-label" }
+    val low = new Label("LOW:") { styleClass += "candlestick-tooltip-label" }
 
     GridPane.setConstraints(open, 0, 0)
     GridPane.setConstraints(openValue, 1, 0)

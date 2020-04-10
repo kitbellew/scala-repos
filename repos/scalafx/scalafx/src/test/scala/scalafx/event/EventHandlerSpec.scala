@@ -67,9 +67,7 @@ class EventHandlerSpec extends FlatSpec with RunOnApplicationThread {
   "`filterEvent`" should "create subscription and cancel for Event Filters" in {
 
     val button = new Button()
-    val group = new Group {
-      children = button
-    }
+    val group = new Group { children = button }
 
     var groupCounter = 0
     val groupSubscription = group.filterEvent(ActionEvent.Action) { () =>
@@ -106,9 +104,7 @@ class EventHandlerSpec extends FlatSpec with RunOnApplicationThread {
   "`filterEvent`" should "not consume events when not cancelled/active" in {
 
     val button = new Button()
-    val group = new Group {
-      children = button
-    }
+    val group = new Group { children = button }
 
     var groupCounter = 0
     var buttonCounter = 0

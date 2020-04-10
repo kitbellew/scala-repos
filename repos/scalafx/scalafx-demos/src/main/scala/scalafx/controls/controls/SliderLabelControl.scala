@@ -96,9 +96,7 @@ object SliderLabelControlDemo extends JFXApp {
   val value = new IntegerProperty(1.asInstanceOf[java.lang.Object], "value")
   //new DoubleProperty(x, "Value")
 
-  val lblValue = new Label {
-    text <== value.asString("%2d")
-  }
+  val lblValue = new Label { text <== value.asString("%2d") }
 
   val sldValue = new SliderLabelControl(value)
 
@@ -107,9 +105,7 @@ object SliderLabelControlDemo extends JFXApp {
     width = 200
     title = "Slider Label Control Demo"
     scene = new Scene {
-      content = new FlowPane {
-        children = List(lblValue, sldValue)
-      }
+      content = new FlowPane { children = List(lblValue, sldValue) }
     }
   }
 

@@ -96,11 +96,7 @@ class RouteTestServlet extends ScalatraServlet {
 class RouteTest extends ScalatraFunSuite {
   addServlet(classOf[RouteTestServlet], "/*")
 
-  addServlet(
-    new ScalatraServlet {
-      get("/") { "root" }
-    },
-    "/subcontext/*")
+  addServlet(new ScalatraServlet { get("/") { "root" } }, "/subcontext/*")
 
   test("routes can be a simple string") {
     get("/foo") { body should equal("matched simple string route") }

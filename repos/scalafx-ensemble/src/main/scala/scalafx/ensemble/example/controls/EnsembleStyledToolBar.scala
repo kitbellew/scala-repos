@@ -39,12 +39,8 @@ class EnsembleStyledToolBar extends EnsembleExample {
     val stdToolBar = new ToolBar {
       id = "standard"
       content = List(
-        new Button {
-          text = "Button 1"
-        },
-        new Button {
-          text = "Button 2"
-        },
+        new Button { text = "Button 1" },
+        new Button { text = "Button 2" },
         new Slider {})
     }
     //ToolBar Blue
@@ -52,12 +48,8 @@ class EnsembleStyledToolBar extends EnsembleExample {
       id = "blue"
       style = "-fx-base: dodgerblue"
       content = List(
-        new Button {
-          text = "Button 1"
-        },
-        new Button {
-          text = "Button 2"
-        },
+        new Button { text = "Button 1" },
+        new Button { text = "Button 2" },
         new Slider {})
     }
     //ToolBar Dark
@@ -65,12 +57,8 @@ class EnsembleStyledToolBar extends EnsembleExample {
       id = "dark"
       style = "-fx-base: #333333"
       content = List(
-        new Button {
-          text = "Button 1"
-        },
-        new Button {
-          text = "Button 2"
-        },
+        new Button { text = "Button 1" },
+        new Button { text = "Button 2" },
         new Slider {})
     }
 

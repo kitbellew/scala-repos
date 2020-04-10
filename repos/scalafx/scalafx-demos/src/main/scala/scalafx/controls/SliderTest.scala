@@ -40,9 +40,7 @@ import scalafx.util.converter.DoubleStringConverter
 
 object SliderTest extends JFXApp {
 
-  val slider = new Slider {
-    alignmentInParent = Pos.Center
-  }
+  val slider = new Slider { alignmentInParent = Pos.Center }
 
   val controlsPane = new VBox {
     spacing = 5
@@ -53,9 +51,7 @@ object SliderTest extends JFXApp {
   }
 
   val mainPane = new BorderPane {
-    top = new FlowPane {
-      children = List(slider)
-    }
+    top = new FlowPane { children = List(slider) }
     center = controlsPane
     vgrow = Priority.Always
     hgrow = Priority.Always
@@ -114,9 +110,7 @@ class SliderControls(target: Slider)
   } else { target.labelFormatter = new DoubleStringConverter })
 
   val originalMajorTickUnit = target.majorTickUnit.get()
-  val txfMajorTickUnit = new TextField {
-    text = originalMajorTickUnit.toString
-  }
+  val txfMajorTickUnit = new TextField { text = originalMajorTickUnit.toString }
   target.majorTickUnit
     .onChange(txfMajorTickUnit.text = target.majorTickUnit.get.toString)
   txfMajorTickUnit.onAction = handle {
@@ -124,9 +118,7 @@ class SliderControls(target: Slider)
   }
 
   val originalMax = target.max.get()
-  val txfMax = new TextField {
-    text = originalMax.toString
-  }
+  val txfMax = new TextField { text = originalMax.toString }
   target.max.onChange(txfMax.text = target.max.get.toString)
   txfMax.onAction = handle {
     fillDoublePropertyFromText(target.max, txfMax, false)
@@ -143,33 +135,23 @@ class SliderControls(target: Slider)
   }
 
   val originalMin = target.min.get()
-  val txfMin = new TextField {
-    text = originalMin.toString
-  }
+  val txfMin = new TextField { text = originalMin.toString }
   target.min.onChange(txfMin.text = target.min.get.toString)
   txfMin.onAction = handle {
     fillDoublePropertyFromText(target.min, txfMin, false)
   }
 
   val originalShowTickLabels = target.showTickLabels.get
-  val chbShowTickLabels = new CheckBox {
-    selected <==> target.showTickLabels
-  }
+  val chbShowTickLabels = new CheckBox { selected <==> target.showTickLabels }
 
   val originalShowTickMarks = target.showTickMarks.get
-  val chbShowTickMarks = new CheckBox {
-    selected <==> target.showTickMarks
-  }
+  val chbShowTickMarks = new CheckBox { selected <==> target.showTickMarks }
 
   val originalSnapToTicks = target.snapToTicks.get()
-  val chbSnapToTicks = new CheckBox {
-    selected <==> target.snapToTicks
-  }
+  val chbSnapToTicks = new CheckBox { selected <==> target.snapToTicks }
 
   val originalValueChanging = target.valueChanging.get()
-  val chbValueChanging = new CheckBox {
-    selected <==> target.valueChanging
-  }
+  val chbValueChanging = new CheckBox { selected <==> target.valueChanging }
 
   val originalOrientation = target.orientation.get()
   val tggOrientation = new ToggleGroup
@@ -203,9 +185,7 @@ class SliderControls(target: Slider)
   super.addNode("Value Changing", chbValueChanging)
   super.addNode(
     "Orientation",
-    new VBox {
-      children = List(rdbHorizontal, rdbVertical)
-    })
+    new VBox { children = List(rdbHorizontal, rdbVertical) })
 
   super.addNode(btnReset)
 

@@ -346,9 +346,8 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
   }
 
   lazy val rutil: ReplUtilities = new ReplUtilities {}
-  lazy val phased: Phased = new {
-    val global: intp.global.type = intp.global
-  } with Phased {}
+  lazy val phased: Phased = new { val global: intp.global.type = intp.global }
+  with Phased {}
 
   def unit(code: String) = newCompilationUnit(code)
   def trees(code: String) =

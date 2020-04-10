@@ -53,9 +53,7 @@ object MultipleShapeDrawingDemo extends JFXApp {
 
   /** Handles drawing of rectangles */
   object RectangleInteractor extends ShapeDrawInteractor {
-    val rectangle = new Rectangle {
-      fill = Color.web("RED", 0.5)
-    }
+    val rectangle = new Rectangle { fill = Color.web("RED", 0.5) }
 
     /** Update the shape using current `start` and `end` points. */
     override def update() {
@@ -68,9 +66,7 @@ object MultipleShapeDrawingDemo extends JFXApp {
 
   /** Handles drawing of ellipses */
   object EllipseInteractor extends ShapeDrawInteractor {
-    val ellipse = new Ellipse {
-      fill = Color.web("GREEN", 0.5)
-    }
+    val ellipse = new Ellipse { fill = Color.web("GREEN", 0.5) }
 
     /** Update the shape using current `start` and `end` points. */
     override def update() {

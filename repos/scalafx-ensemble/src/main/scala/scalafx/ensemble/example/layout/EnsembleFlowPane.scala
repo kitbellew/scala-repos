@@ -63,8 +63,6 @@ class EnsembleFlowPane extends EnsembleExample {
     }
 
     // Wrap in a Group to isolate from parent's layout parameters
-    new Group {
-      children = flowPane
-    }
+    new Group { children = flowPane }
   }
 }

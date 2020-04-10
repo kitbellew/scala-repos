@@ -98,9 +98,7 @@ object ScalaFX_Layout_Panes_05 extends JFXApp {
     children = List(
       currentButton,
       projectedButton,
-      new Rectangle {
-        width = 200
-      }, // hack
+      new Rectangle { width = 200 }, // hack
       stackPane)
   }
   val data = List(
@@ -108,18 +106,10 @@ object ScalaFX_Layout_Panes_05 extends JFXApp {
       font = Font.font("Amble CN", FontWeight.Bold, 14)
       text = "Data"
     },
-    new Text {
-      text = "  Sales"
-    },
-    new Text {
-      text = "  Marketing"
-    },
-    new Text {
-      text = "  Distribution"
-    },
-    new Text {
-      text = "  Costs"
-    }
+    new Text { text = "  Sales" },
+    new Text { text = "  Marketing" },
+    new Text { text = "  Distribution" },
+    new Text { text = "  Costs" }
   )
   val vBox = new VBox {
     spacing = 10
@@ -141,21 +131,13 @@ object ScalaFX_Layout_Panes_05 extends JFXApp {
     image = new Image(this, "images/icon.png")
   }
 
-  val oldAndNewText = new Text {
-    text = "Old and New"
-  }
+  val oldAndNewText = new Text { text = "Old and New" }
 
-  val oldText = new Text {
-    text = "Old\n20%"
-  }
+  val oldText = new Text { text = "Old\n20%" }
 
-  val newText = new Text {
-    text = "New\n80%"
-  }
+  val newText = new Text { text = "New\n80%" }
 
-  val newImageView = new ImageView {
-    image = new Image(this, "images/new.png")
-  }
+  val newImageView = new ImageView { image = new Image(this, "images/new.png") }
 
   val gridPane = new GridPane {
     hgap = 10

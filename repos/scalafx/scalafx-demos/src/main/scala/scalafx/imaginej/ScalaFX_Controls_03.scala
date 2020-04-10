@@ -101,8 +101,6 @@ object ScalaFX_Controls_03 extends JFXApp {
     title = "ScalaFX Controls 03"
     width = 250
     height = 150
-    scene = new Scene {
-      content = hBox
-    }
+    scene = new Scene { content = hBox }
   }
 }

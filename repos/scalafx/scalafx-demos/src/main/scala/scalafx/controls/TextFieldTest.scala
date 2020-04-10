@@ -56,9 +56,7 @@ object TextFieldTest extends JFXApp {
   }
 
   val mainPane = new BorderPane {
-    top = new FlowPane {
-      children = List(textField)
-    }
+    top = new FlowPane { children = List(textField) }
     center = controlsPane
     vgrow = Priority.Always
     hgrow = Priority.Always

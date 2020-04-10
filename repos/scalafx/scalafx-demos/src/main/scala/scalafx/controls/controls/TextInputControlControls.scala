@@ -39,17 +39,11 @@ class TextInputControlControls(target: TextInputControl)
     text = "Editable"
   }
 
-  val lblAnchor = new Label {
-    text <== target.anchor.asString
-  }
+  val lblAnchor = new Label { text <== target.anchor.asString }
 
-  val lblCaretPosition = new Label {
-    text <== target.caretPosition.asString
-  }
+  val lblCaretPosition = new Label { text <== target.caretPosition.asString }
 
-  val lblLength = new Label {
-    text <== target.length.asString
-  }
+  val lblLength = new Label { text <== target.length.asString }
 
   val lblSelectedTextLength = new Label
   target.selectedText.onChange(lblSelectedTextLength.text = target.selectedText

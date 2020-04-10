@@ -80,8 +80,6 @@ class EnsembleBubbleChart extends EnsembleExample {
         (59d, 34d, 12d)).map(toChartData)
     }
 
-    new BubbleChart(xAxis, yAxis) {
-      data() ++= Seq(series1, series2, series3)
-    }
+    new BubbleChart(xAxis, yAxis) { data() ++= Seq(series1, series2, series3) }
   }
 }

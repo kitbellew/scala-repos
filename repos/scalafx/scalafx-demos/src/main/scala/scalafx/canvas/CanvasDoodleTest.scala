@@ -63,9 +63,7 @@ object CanvasDoodleTest extends JFXApp {
 
   stage = new PrimaryStage {
     title = "Canvas Doodle Test"
-    scene = new Scene(400, 400) {
-      root = rootPane
-    }
+    scene = new Scene(400, 400) { root = rootPane }
   }
 
   canvas.translateX = 100

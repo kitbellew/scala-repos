@@ -60,8 +60,6 @@ object JavaFXAnimation extends JFXApp {
   }
   timeline.play()
   stage = new PrimaryStage {
-    scene = new Scene {
-      content = List(rect1, rect2)
-    }
+    scene = new Scene { content = List(rect1, rect2) }
   }
 }

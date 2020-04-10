@@ -54,9 +54,7 @@ class EnsembleHtmlEditor extends EnsembleExample {
       htmlText = initialText
     }
 
-    val htmlLabel = new Label {
-      wrapText = true
-    }
+    val htmlLabel = new Label { wrapText = true }
 
     new VBox {
       spacing = 5

@@ -51,15 +51,9 @@ class EnsembleHiddenSplitPane extends EnsembleExample {
       .getResource("/scalafx/ensemble/css/HiddenSplitPane.css").toExternalForm
 
     // Region that will be used in the split pane
-    val reg1 = new Region {
-      styleClass = List("rounded")
-    }
-    val reg2 = new Region {
-      styleClass = List("rounded")
-    }
-    val reg3 = new Region {
-      styleClass = List("rounded")
-    }
+    val reg1 = new Region { styleClass = List("rounded") }
+    val reg2 = new Region { styleClass = List("rounded") }
+    val reg3 = new Region { styleClass = List("rounded") }
 
     new StackPane {
       padding = Insets(20)

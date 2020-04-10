@@ -37,15 +37,9 @@ class EnsembleVBox extends EnsembleExample {
   def getContent = {
     // Checkboxes arranged vertically using VBox
     val label = Label("Select one or more vehicles:")
-    val checkBox1 = new CheckBox {
-      text = "Ford"
-    }
-    val checkBox2 = new CheckBox {
-      text = "Hyundai"
-    }
-    val checkBox3 = new CheckBox {
-      text = "Toyota"
-    }
+    val checkBox1 = new CheckBox { text = "Ford" }
+    val checkBox2 = new CheckBox { text = "Hyundai" }
+    val checkBox3 = new CheckBox { text = "Toyota" }
 
     new VBox {
       padding = Insets(20)

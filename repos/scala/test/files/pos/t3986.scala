@@ -1,7 +1,3 @@
 object Test {
-  def main(args: Array[String]) {
-    new {
-      val x = "abc"
-    } with AnyRef {}
-  }
+  def main(args: Array[String]) { new { val x = "abc" } with AnyRef {} }
 }

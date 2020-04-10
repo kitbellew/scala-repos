@@ -22,9 +22,7 @@ class LogRecordTest extends FunSuite {
 
   test("LogRecord should getClass properly") {
     Logger.withLoggers(Nil) {
-      new Foo {
-        assert(handler.get == "com.twitter.logging.Foo")
-      }
+      new Foo { assert(handler.get == "com.twitter.logging.Foo") }
     }
   }
 }

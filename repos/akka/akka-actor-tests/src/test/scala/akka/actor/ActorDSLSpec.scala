@@ -111,9 +111,7 @@ class ActorDSLSpec extends AkkaSpec {
 
     "support creating regular actors" in {
       //#simple-actor
-      val a = actor(new Act {
-        become { case "hello" ⇒ sender() ! "hi" }
-      })
+      val a = actor(new Act { become { case "hello" ⇒ sender() ! "hi" } })
       //#simple-actor
 
       implicit val i = inbox()

@@ -115,9 +115,7 @@ object CanvasTest extends JFXApp {
 
   stage = new PrimaryStage {
     title = "Canvas Test"
-    scene = new Scene(400, 400) {
-      content = canvas
-    }
+    scene = new Scene(400, 400) { content = canvas }
   }
 
 }

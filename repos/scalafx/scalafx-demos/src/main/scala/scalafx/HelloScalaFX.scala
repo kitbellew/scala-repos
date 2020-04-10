@@ -67,11 +67,7 @@ object HelloScalaFX extends JFXApp {
           fraction = 0.5
           topOffset = -5.0
           bottomOpacity = 0.75
-          input = new Lighting {
-            light = new Light.Distant {
-              elevation = 60
-            }
-          }
+          input = new Lighting { light = new Light.Distant { elevation = 60 } }
         }
       }
     }

@@ -33,9 +33,7 @@ class ConfigTest extends WordSpec with MockitoSugar with Matchers {
         var x = 10
         var y = computed(x * 2 + 5)
       }
-      val bar = new Foo {
-        x = 20
-      }
+      val bar = new Foo { x = 20 }
       assert(
         (bar.y: Int) == 45
       ) // use type annotation to force implicit conversion
@@ -58,9 +56,7 @@ class ConfigTest extends WordSpec with MockitoSugar with Matchers {
       "must return empty Seq when no values are missing" in {
         val foo = new Foo {
           x = 42
-          bar = new Bar {
-            z = 10
-          }
+          bar = new Bar { z = 10 }
         }
         assert(foo.missingValues == List())
       }
@@ -71,18 +67,14 @@ class ConfigTest extends WordSpec with MockitoSugar with Matchers {
       }
 
       "must find top-level and nested missing values" in {
-        val foo = new Foo {
-          bar = new Bar
-        }
+        val foo = new Foo { bar = new Bar }
         assert(foo.missingValues.sorted == Seq("x", "bar.z").sorted)
       }
 
       "must find nested missing values in optional sub-configs" in {
         val foo = new Foo {
           x = 3
-          bar = new Bar {
-            z = 1
-          }
+          bar = new Bar { z = 1 }
           baz = new Baz
         }
         assert(foo.missingValues.sorted == Seq("baz.w").sorted)
