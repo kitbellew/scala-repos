@@ -11,6 +11,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * @author ilyas
   */
+
 sealed class InstructionImpl(
     override val num: Int,
     val element: Option[ScalaPsiElement])

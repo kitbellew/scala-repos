@@ -161,7 +161,9 @@ sealed trait Spool[+A] {
   def mapFuture[B](f: A => Future[B]): Future[Spool[B]] = {
     if (isEmpty) Future.value(empty[B])
     else {
-      f(head) map { h => new LazyCons(h, tail flatMap (_ mapFuture f)) }
+      f(head) map { h =>
+        new LazyCons(h, tail flatMap (_ mapFuture f))
+      }
     }
   }
 
@@ -334,6 +336,7 @@ object Spool {
     * *:: constructs and deconstructs deferred tails
     * **:: constructs and deconstructs eager tails
     */
+
   class Syntax[A](tail: => Future[Spool[A]]) {
     def *::(head: A): Spool[A] = new LazyCons(head, tail)
   }

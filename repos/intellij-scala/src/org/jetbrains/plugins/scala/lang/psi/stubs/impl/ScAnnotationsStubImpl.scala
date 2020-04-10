@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScAnnotations
   * User: Alexander Podkhalyuzin
   * Date: 22.06.2009
   */
+
 class ScAnnotationsStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
     elemType: IStubElementType[

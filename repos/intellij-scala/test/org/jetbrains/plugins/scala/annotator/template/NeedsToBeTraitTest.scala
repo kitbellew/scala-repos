@@ -5,6 +5,7 @@ import org.jetbrains.plugins.scala.annotator.{AnnotatorTestBase, Error}
 /**
   * Pavel Fatin
   */
+
 class NeedsToBeTraitTest extends AnnotatorTestBase(NeedsToBeTrait) {
   private val Message = "Class (\\w+) needs to be trait to be mixed in".r
 

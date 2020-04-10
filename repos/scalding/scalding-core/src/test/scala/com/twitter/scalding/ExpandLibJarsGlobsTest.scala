@@ -72,7 +72,9 @@ class ExpandLibJarsGlobsTest extends WordSpec with Matchers {
         touch(tmpRoot1, s".myHidden.jar.myF_${idx}.jar")
       }
 
-      val jars2 = (0 until 1).map { idx => touch(tmpRoot2, s"myF_${idx}.jar") }
+      val jars2 = (0 until 1).map { idx =>
+        touch(tmpRoot2, s"myF_${idx}.jar")
+      }
 
       // Using wildcards for both
       val resultingLibJars1 = ExpandLibJarsGlobs(Array(

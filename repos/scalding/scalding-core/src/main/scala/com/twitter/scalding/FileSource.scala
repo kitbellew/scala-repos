@@ -98,7 +98,8 @@ trait LocalSourceOverride extends SchemedSource {
     */
   def createLocalTap(sinkMode: SinkMode): Tap[JobConf, _, _] = {
     val taps = localPaths.map {
-      p: String => CastFileTap(new FileTap(localScheme, p, sinkMode))
+      p: String =>
+        CastFileTap(new FileTap(localScheme, p, sinkMode))
     }.toList
 
     taps match {
@@ -350,6 +351,7 @@ class ScaldingMultiSourceTap(
 /**
   * The fields here are ('offset, 'line)
   */
+
 trait TextSourceScheme extends SchemedSource {
   // The text-encoding to use when writing out the lines (default is UTF-8).
   val textEncoding: String = CHTextLine.DEFAULT_CHARSET
@@ -505,6 +507,7 @@ abstract class FixedPathSource(path: String*) extends FileSource {
 /**
   * Tab separated value source
   */
+
 case class Tsv(
     p: String,
     override val fields: Fields = Fields.ALL,

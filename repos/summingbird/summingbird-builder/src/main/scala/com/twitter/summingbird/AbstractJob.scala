@@ -26,6 +26,7 @@ import com.twitter.chill.IKryoRegistrar
   * @author Sam Ritchie
   * @author Ashu Singhal
   */
+
 object AbstractJob {
   def apply(jobName: String, env: Env): AbstractJob =
     Class.forName(jobName)

@@ -318,7 +318,8 @@ object CustomSerializersSpec extends Specification with MongoTestKit {
       val vqb = Player.find(vikes.qb)
       vqb.isDefined must_== true
       vqb foreach {
-        p => p.name.value mustEqual "Brett Favre"
+        p =>
+          p.name.value mustEqual "Brett Favre"
       }
 
       // check the conversion functions
@@ -392,7 +393,8 @@ object CustomSerializersSpec extends Specification with MongoTestKit {
       val vqb = Player.find(vikes.qb)
       vqb.isDefined must_== true
       vqb foreach {
-        p => p.name.value mustEqual "Brett Favre"
+        p =>
+          p.name.value mustEqual "Brett Favre"
       }
 
       // check the conversion functions

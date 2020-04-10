@@ -9,6 +9,7 @@ import scala.util.Try
 /**
   * @author Nikolay.Tropin
   */
+
 class InvocationTemplate(nameCondition: String => Boolean) {
 
   private class Condition[T](f: T => Boolean) {

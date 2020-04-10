@@ -81,11 +81,14 @@ object SizeHintProps extends Properties("SizeHint") {
   }
 
   property("adding a finite hint to itself preserves size") = forAll {
-    (a: FiniteHint) => (a + a).total == a.total
+    (a: FiniteHint) =>
+      (a + a).total == a.total
   }
 
   property("hadamard product of a finite hint to itself preserves size") =
-    forAll { (a: FiniteHint) => (a #*# a).total == a.total }
+    forAll { (a: FiniteHint) =>
+      (a #*# a).total == a.total
+    }
 
   property("adding a sparse matrix to itself doesn't decrease size") = forAll {
     (a: SparseHint) =>

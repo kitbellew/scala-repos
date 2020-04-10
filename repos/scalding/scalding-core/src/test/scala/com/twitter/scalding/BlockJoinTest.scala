@@ -44,7 +44,9 @@ class InnerProductJob(args: Args) extends Job(args) {
       leftReplication = l,
       rightReplication = r,
       joiner = j)
-    .map(('s1, 's2) -> 'score) { v: (Int, Int) => v._1 * v._2 }
+    .map(('s1, 's2) -> 'score) { v: (Int, Int) =>
+      v._1 * v._2
+    }
     .groupBy('x1, 'x2) { _.sum[Double]('score) }
     .write(Tsv("output"))
 }
@@ -67,13 +69,17 @@ class BlockJoinPipeTest extends WordSpec with Matchers {
         .arg("left", left.toString)
         .arg("right", right.toString)
         .arg("joiner", joiner)
-        .sink[(Int, Int, Double)](Tsv("output")) { outBuf => callback(outBuf) }
+        .sink[(Int, Int, Double)](Tsv("output")) { outBuf =>
+          callback(outBuf)
+        }
         .run
         .finish
     }
 
     "correctly compute product with 1 left block and 1 right block" in {
-      runJobWithArguments() { outBuf => outBuf.toSet shouldBe correctOutput }
+      runJobWithArguments() { outBuf =>
+        outBuf.toSet shouldBe correctOutput
+      }
     }
 
     "correctly compute product with multiple left and right blocks" in {

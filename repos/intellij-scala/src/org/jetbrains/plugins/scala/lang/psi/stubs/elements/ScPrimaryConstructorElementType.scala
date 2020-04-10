@@ -19,6 +19,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScPrimaryConstructorStubI
   * User: Alexander Podkhalyuzin
   * Date: 17.06.2009
   */
+
 class ScPrimaryConstructorElementType[Func <: ScPrimaryConstructor]
     extends ScStubElementType[ScPrimaryConstructorStub, ScPrimaryConstructor](
       "primary constructor") {

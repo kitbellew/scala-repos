@@ -12,6 +12,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package io.prediction.data.storage
 
 import io.prediction.data.storage.hbase.HBLEvents
@@ -36,5 +37,7 @@ object StorageTestUtils {
   }
 
   def dropJDBCTable(table: String): Unit =
-    DB autoCommit { implicit s => SQL(s"drop table $table").execute().apply() }
+    DB autoCommit { implicit s =>
+      SQL(s"drop table $table").execute().apply()
+    }
 }

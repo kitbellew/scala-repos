@@ -740,6 +740,7 @@ trait DAG extends Instructions {
       *
       * @return A pair of the whole rewritten DAG and the rewritten scope node.
       */
+
     def substituteDown[S: ScopeUpdate, E: EditUpdate](
         scope: S,
         edit: (E, E)): (DepGraph, S) = {

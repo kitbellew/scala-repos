@@ -1092,7 +1092,8 @@ private[ui] class TaskDataSource(
     val maybeWriteTime = metrics.flatMap(_.shuffleWriteMetrics).map(_.writeTime)
     val writeTimeSortable = maybeWriteTime.getOrElse(0L)
     val writeTimeReadable = maybeWriteTime.map(t => t / (1000 * 1000)).map {
-      ms => if (ms == 0) "" else UIUtils.formatDuration(ms)
+      ms =>
+        if (ms == 0) "" else UIUtils.formatDuration(ms)
     }.getOrElse("")
 
     val maybeMemoryBytesSpilled = metrics.map(_.memoryBytesSpilled)

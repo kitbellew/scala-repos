@@ -90,7 +90,8 @@ trait SliceColumnarTableModule[M[+_]]
             (acc, proj) =>
               // FIXME: Can Schema.flatten return Option[Set[ColumnRef]] instead?
               val constraints: M[Option[Set[ColumnRef]]] = proj.structure.map {
-                struct => Some(Schema.flatten(tpe, struct.toList).toSet)
+                struct =>
+                  Some(Schema.flatten(tpe, struct.toList).toSet)
               }
 
               acc ++ StreamT.wrapEffect(constraints map { c =>

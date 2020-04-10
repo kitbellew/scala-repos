@@ -82,7 +82,8 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
     testMultiplicativeMonoidSyntax(a, b)
   }))
   test("MultiplicativeGroup syntax")(check(forAll {
-    (a: Double, b: NonZero[Double]) => testMultiplicativeGroupSyntax(a, b.x)
+    (a: Double, b: NonZero[Double]) =>
+      testMultiplicativeGroupSyntax(a, b.x)
   }))
   test("Semiring syntax")(check(forAll { (a: Int, b: Int) =>
     testSemiringSyntax(a, b)

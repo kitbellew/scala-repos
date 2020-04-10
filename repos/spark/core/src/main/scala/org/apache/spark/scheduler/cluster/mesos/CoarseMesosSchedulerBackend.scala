@@ -232,7 +232,9 @@ private[spark] class CoarseMesosSchedulerBackend(
       command.addUris(CommandInfo.URI.newBuilder().setValue(uri.get))
     }
 
-    conf.getOption("spark.mesos.uris").map { uris => setupUris(uris, command) }
+    conf.getOption("spark.mesos.uris").map { uris =>
+      setupUris(uris, command)
+    }
 
     command.build()
   }

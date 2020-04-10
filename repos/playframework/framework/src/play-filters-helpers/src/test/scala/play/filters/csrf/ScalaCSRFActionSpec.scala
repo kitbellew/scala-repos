@@ -41,7 +41,8 @@ object ScalaCSRFActionSpec extends CSRFCommonSpecs {
             csrfAddToken(Action {
               implicit req =>
                 CSRF.getToken.map {
-                  token => Results.Ok(token.value)
+                  token =>
+                    Results.Ok(token.value)
                 } getOrElse Results.NotFound
             })
         } {

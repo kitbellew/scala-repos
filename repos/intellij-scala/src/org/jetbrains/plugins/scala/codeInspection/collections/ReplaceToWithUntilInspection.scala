@@ -6,6 +6,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScExpression
 /**
   * @author Nikolay.Tropin
   */
+
 class ReplaceToWithUntilInspection extends OperationOnCollectionInspection {
   override def possibleSimplificationTypes: Array[SimplificationType] =
     Array(ReplaceToWithUntil)

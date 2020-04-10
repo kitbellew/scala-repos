@@ -70,7 +70,9 @@ trait IdSourceScannerModuleSpec[M[+_]]
 
       (idCols0 zip idCols1) map {
         case (idCol0, idCol1) =>
-          (0 until blockSize) foreach { row => idCol0(row) must_== idCol1(row) }
+          (0 until blockSize) foreach { row =>
+            idCol0(row) must_== idCol1(row)
+          }
       }
       ok
     }

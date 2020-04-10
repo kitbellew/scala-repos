@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.overrideImplement.{
 /**
   * Pavel Fatin
   */
+
 object ObjectCreationImpossible extends AnnotatorPart[ScTemplateDefinition] {
   def kind = classOf[ScTemplateDefinition]
 

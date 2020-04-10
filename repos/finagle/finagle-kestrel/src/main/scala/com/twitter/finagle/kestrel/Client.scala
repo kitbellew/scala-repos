@@ -99,8 +99,12 @@ abstract class ReadHandle {
         } else {
           Offer.never
         },
-        ack.recv { _ => loop(nwait - 1, closed) },
-        closeReq.recv { _ => loop(nwait, true) }
+        ack.recv { _ =>
+          loop(nwait - 1, closed)
+        },
+        closeReq.recv { _ =>
+          loop(nwait, true)
+        }
       )
     }
 

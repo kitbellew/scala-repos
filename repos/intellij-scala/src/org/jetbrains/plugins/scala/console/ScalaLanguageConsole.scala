@@ -29,6 +29,7 @@ import scala.collection.mutable
   * User: Alefas
   * Date: 18.10.11
   */
+
 class ScalaLanguageConsole(project: Project, title: String)
     extends LanguageConsoleImpl(project, title, ScalaFileType.SCALA_LANGUAGE) {
   private val textBuffer = new StringBuilder

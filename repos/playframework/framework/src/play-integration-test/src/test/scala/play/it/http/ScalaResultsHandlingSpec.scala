@@ -293,7 +293,8 @@ trait ScalaResultsHandlingSpec
         response.allHeaders.get(SET_COOKIE) must beSome.like {
           case rawCookieHeaders =>
             val decodedCookieHeaders: Set[Set[Cookie]] = rawCookieHeaders.map {
-              headerValue => Cookies.decodeSetCookieHeader(headerValue).to[Set]
+              headerValue =>
+                Cookies.decodeSetCookieHeader(headerValue).to[Set]
             }.to[Set]
             decodedCookieHeaders must_== (Set(
               Set(aCookie),

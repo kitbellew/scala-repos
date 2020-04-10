@@ -12,6 +12,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package io.prediction.tools
 
 import java.io.File
@@ -134,7 +135,8 @@ object Runner extends Logging {
     // Extra JARs that are needed by the driver
     val driverClassPathPrefix =
       argumentValue(ca.common.sparkPassThrough, "--driver-class-path") map {
-        v => Seq(v)
+        v =>
+          Seq(v)
       } getOrElse {
         Nil
       }

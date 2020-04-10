@@ -19,6 +19,7 @@ import scala.collection.mutable
   * @author Alefas
   * @since 02.04.12
   */
+
 class ScalaWrongMethodsUsageInspection extends LocalInspectionTool {
   override def isEnabledByDefault: Boolean = true
 

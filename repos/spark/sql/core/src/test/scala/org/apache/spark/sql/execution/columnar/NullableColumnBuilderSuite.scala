@@ -82,7 +82,9 @@ class NullableColumnBuilderSuite extends SparkFunSuite {
       val columnBuilder = TestNullableColumnBuilder(columnType)
       val randomRow = makeRandomRow(columnType)
 
-      (0 until 4).foreach { _ => columnBuilder.appendFrom(proj(randomRow), 0) }
+      (0 until 4).foreach { _ =>
+        columnBuilder.appendFrom(proj(randomRow), 0)
+      }
 
       val buffer = columnBuilder.build()
 

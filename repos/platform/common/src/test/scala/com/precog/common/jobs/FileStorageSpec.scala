@@ -60,7 +60,9 @@ trait FileStorageSpec[M[+_]] extends Specification {
   }
 
   def encode(s: StreamT[M, Array[Byte]]): M[String] =
-    s.foldLeft("") { (acc, bytes) => acc + new String(bytes, "UTF-8") }
+    s.foldLeft("") { (acc, bytes) =>
+      acc + new String(bytes, "UTF-8")
+    }
 
   "File storage" should {
     "save (and load) arbitrary file" in {

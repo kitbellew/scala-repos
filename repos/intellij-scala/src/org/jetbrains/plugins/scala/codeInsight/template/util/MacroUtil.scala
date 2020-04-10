@@ -25,6 +25,7 @@ import org.jetbrains.plugins.scala.lang.resolve.{ScalaResolveResult, StdKinds}
   * User: Alexander Podkhalyuzin
   * Date: 30.01.2009
   */
+
 object MacroUtil {
 
   /**

@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   * User: Alexander Podkhalyuzin
   * Date: 17.06.2009
   */
+
 class ScTypeParamStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
     elemType: IStubElementType[

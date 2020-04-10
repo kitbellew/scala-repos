@@ -107,7 +107,8 @@ class Eval(target: Option[File]) {
           new FilesystemResolver(new File("." + File.separator + "config"))
         ) ++ (
           Option(System.getProperty("com.twitter.util.Eval.includePath")) map {
-            path => new FilesystemResolver(new File(path))
+            path =>
+              new FilesystemResolver(new File(path))
           }
         )
       )
@@ -130,7 +131,9 @@ class Eval(target: Option[File]) {
     * run preprocessors on our string, returning a String that is the processed source
     */
   def sourceForString(code: String): String = {
-    preprocessors.foldLeft(code) { (acc, p) => p(acc) }
+    preprocessors.foldLeft(code) { (acc, p) =>
+      p(acc)
+    }
   }
 
   /**

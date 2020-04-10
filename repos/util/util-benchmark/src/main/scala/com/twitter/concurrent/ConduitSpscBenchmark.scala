@@ -133,7 +133,9 @@ class ConduitSpscBenchmark extends StdBenchAnnotations {
     if (spool.isEmpty) Future.value(b)
     else
       sink(spool.head).flatMap { newB =>
-        spool.tail.flatMap { tail => consumeSpool(tail, newB) }
+        spool.tail.flatMap { tail =>
+          consumeSpool(tail, newB)
+        }
       }
 
   @Benchmark

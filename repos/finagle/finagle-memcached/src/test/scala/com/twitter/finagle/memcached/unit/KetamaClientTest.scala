@@ -86,7 +86,9 @@ class KetamaClientTest extends FunSuite with MockitoSugar {
 
     info("release")
     ketamaClient.release()
-    clients.values foreach { client => verify(client, times(1)).close(any()) }
+    clients.values foreach { client =>
+      verify(client, times(1)).close(any())
+    }
   }
 
   test("interrupted request does not change ready") {

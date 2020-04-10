@@ -16,6 +16,7 @@ import com.intellij.psi.{
   * @author Alefas
   * @since 05.04.12
   */
+
 trait LightScalaMethod
 
 class LightMethodAdapter(

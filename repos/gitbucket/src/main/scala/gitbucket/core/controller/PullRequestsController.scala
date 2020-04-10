@@ -798,7 +798,8 @@ trait PullRequestsControllerBase extends ControllerBase {
 
       val commits =
         newGit.log.addRange(oldId, newId).call.iterator.asScala.map {
-          revCommit => new CommitInfo(revCommit)
+          revCommit =>
+            new CommitInfo(revCommit)
         }.toList.splitWith { (commit1, commit2) =>
           helpers.date(commit1.commitTime) == view.helpers.date(
             commit2.commitTime)

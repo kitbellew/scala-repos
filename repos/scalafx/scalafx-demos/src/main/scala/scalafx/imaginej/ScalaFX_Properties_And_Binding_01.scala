@@ -49,6 +49,7 @@ import scalafx.beans.property.DoubleProperty
   * http://docs.oracle.com/javafx/2.0/binding/jfxpub-binding.htm
   *
   */
+
 object ScalaFX_Properties_And_Binding_01 {
   def main(args: Array[String]) {
     val bill = new Bill(new DoubleProperty(null, "Bill"))

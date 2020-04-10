@@ -122,9 +122,12 @@ trait Plugin {
     (repositoryRoutings ++ repositoryRoutings(
       registry,
       context,
-      settings)).foreach { routing => registry.addRepositoryRouting(routing) }
+      settings)).foreach { routing =>
+      registry.addRepositoryRouting(routing)
+    }
     (receiveHooks ++ receiveHooks(registry, context, settings)).foreach {
-      receiveHook => registry.addReceiveHook(receiveHook)
+      receiveHook =>
+        registry.addReceiveHook(receiveHook)
     }
   }
 

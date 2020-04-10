@@ -12,7 +12,9 @@ final class IndexedContsT[W[_], M[_], R, O, A] private (
     run(W.point(x => M.point(x)))
 
   def map[B](f: A => B)(implicit W: Functor[W]): IndexedContsT[W, M, R, O, B] =
-    IndexedContsT { wbmo => run(W.map(wbmo)(f andThen _)) }
+    IndexedContsT { wbmo =>
+      run(W.map(wbmo)(f andThen _))
+    }
 
   def flatten[E, B](implicit
       ev: A =:= IndexedContsT[W, M, O, E, B],
@@ -21,7 +23,12 @@ final class IndexedContsT[W[_], M[_], R, O, A] private (
   def flatMap[E, B](f: A => IndexedContsT[W, M, O, E, B])(implicit
       W: Cobind[W]): IndexedContsT[W, M, R, E, B] =
     IndexedContsT { wbme =>
-      run(W.cobind(wbme) { wk => { a => f(a).run(wk) } })
+      run(W.cobind(wbme) {
+        wk =>
+          { a =>
+            f(a).run(wk)
+          }
+      })
     }
 
   def contramap[I](f: I => O)(implicit
@@ -32,12 +39,16 @@ final class IndexedContsT[W[_], M[_], R, O, A] private (
     }
 
   def imap[E](f: R => E)(implicit M: Functor[M]): IndexedContsT[W, M, E, O, A] =
-    IndexedContsT { wamo => M.map(run(wamo))(f) }
+    IndexedContsT { wamo =>
+      M.map(run(wamo))(f)
+    }
 
   def bimap[E, B](f: R => E, g: A => B)(implicit
       M: Functor[M],
       W: Functor[W]): IndexedContsT[W, M, E, O, B] =
-    IndexedContsT { wbmo => M.map(run(W.map(wbmo)(g andThen _)))(f) }
+    IndexedContsT { wbmo =>
+      M.map(run(W.map(wbmo)(g andThen _)))(f)
+    }
 
   def xmap[E, I](f: R => E, g: I => O)(implicit
       M: Functor[M],
@@ -99,7 +110,9 @@ trait IndexedContsTFunctions {
       M: Monad[M]): IndexedContsT[W, M, R, O, A] =
     IndexedContsT { k0 =>
       (f { a =>
-        IndexedContsT { k1 => M.bind(W.copoint(k0)(a))(W.copoint(k1)) }
+        IndexedContsT { k1 =>
+          M.bind(W.copoint(k0)(a))(W.copoint(k1))
+        }
       }).run_
     }
 
@@ -107,13 +120,19 @@ trait IndexedContsTFunctions {
       W: Comonad[W],
       WA: Applicative[W],
       M: Monad[M]): IndexedContsT[W, M, R, R, A] =
-    IndexedContsT { k => M.bind(v.run_)(W.copoint(k)) }
+    IndexedContsT { k =>
+      M.bind(v.run_)(W.copoint(k))
+    }
 
   def callCC[W[_], M[_], R, O, A, B](
       f: (A => IndexedContsT[W, M, O, O, B]) => IndexedContsT[W, M, R, O, A])(
       implicit W: Comonad[W]): IndexedContsT[W, M, R, O, A] =
     IndexedContsT { k =>
-      (f { a => IndexedContsT[W, M, O, O, B] { _ => W.copoint(k)(a) } }).run(k)
+      (f { a =>
+        IndexedContsT[W, M, O, O, B] { _ =>
+          W.copoint(k)(a)
+        }
+      }).run(k)
     }
 }
 

@@ -1065,7 +1065,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     sql(s"ADD FILE $testFile")
 
     val checkAddFileRDD = sparkContext.parallelize(1 to 2, 1).mapPartitions {
-      _ => Iterator.single(new File(SparkFiles.get("v1.txt")).canRead)
+      _ =>
+        Iterator.single(new File(SparkFiles.get("v1.txt")).canRead)
     }
 
     assert(checkAddFileRDD.first())

@@ -7,6 +7,7 @@ import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
   * @author Ksenia.Sautina
   * @since 6/8/12
   */
+
 class SplitIfIntentionTest extends ScalaIntentionTestBase {
   val familyName = SplitIfIntention.familyName
 

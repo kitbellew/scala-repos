@@ -18,6 +18,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
   * User: Alexander Podkhalyuzin
   * Date: 29.09.2008
   */
+
 class ScalaWithIfElseConditionSurrounder extends ScalaExpressionSurrounder {
   override def getTemplateAsString(elements: Array[PsiElement]): String =
     "if (" + super.getTemplateAsString(elements) + ") {}\nelse {}"

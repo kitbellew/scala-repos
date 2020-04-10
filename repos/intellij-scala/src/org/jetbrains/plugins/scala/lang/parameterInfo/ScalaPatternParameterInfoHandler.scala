@@ -35,6 +35,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Alexander Podkhalyuzin
   * Date: 22.02.2009
   */
+
 class ScalaPatternParameterInfoHandler
     extends ParameterInfoHandlerWithTabActionSupport[
       ScPatternArgumentList,

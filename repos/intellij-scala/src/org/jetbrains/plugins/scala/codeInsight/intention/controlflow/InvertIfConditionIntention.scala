@@ -19,6 +19,7 @@ import org.jetbrains.plugins.scala.util.IntentionUtils
   * @author Ksenia.Sautina
   * @since 6/6/12
   */
+
 object InvertIfConditionIntention {
   def familyName = "Invert If condition"
 }

@@ -21,6 +21,7 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil
 /**
   * Pavel Fatin
   */
+
 class RedundantBlockInspection extends AbstractInspection {
 
   def actionFor(holder: ProblemsHolder) = {

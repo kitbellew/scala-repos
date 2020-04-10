@@ -211,7 +211,8 @@ object Act {
       keys.filterNot(Util.hasHyphen)
     def keyParser(keys: Set[String]): Parser[AttributeKey[_]] =
       token(ID !!! "Expected key" examples dropHyphenated(keys)) flatMap {
-        keyString => getKey(keyMap, keyString, idFun)
+        keyString =>
+          getKey(keyMap, keyString, idFun)
       }
     keyParser(index.keys(proj, conf, task))
   }

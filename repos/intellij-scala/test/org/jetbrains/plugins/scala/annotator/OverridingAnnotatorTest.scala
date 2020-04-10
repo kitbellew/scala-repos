@@ -18,6 +18,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTypeDefinitio
   * User: Alexander Podkhalyuzin
   * Date: 30.01.12
   */
+
 class OverridingAnnotatorTest extends SimpleTestCase {
   final val Header = "\n"
 

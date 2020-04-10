@@ -8,6 +8,7 @@ package typedef
 /**
   * @author ilyas
   */
+
 import javax.swing.Icon
 
 import com.intellij.lang.ASTNode

@@ -168,7 +168,9 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
 
       // Set spark conf properties
       val conf = new SparkConf
-      properties.foreach { p => conf.set(p._1, p._2) }
+      properties.foreach { p =>
+        conf.set(p._1, p._2)
+      }
 
       // Create and test file appender
       val testOutputStream = new PipedOutputStream()

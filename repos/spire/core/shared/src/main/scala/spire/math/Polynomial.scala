@@ -20,6 +20,7 @@ import spire.syntax.std.seq._
   * exponents given by Int values. Some operations require a Field[C]
   * to be in scope.
   */
+
 object Polynomial extends PolynomialInstances {
 
   def dense[@sp(Double) C: Semiring: Eq: ClassTag](
@@ -214,7 +215,9 @@ trait Polynomial[@sp(Double) C] { lhs =>
     */
   def terms(implicit ring: Semiring[C], eq: Eq[C]): List[Term[C]] = {
     val lb = new scala.collection.mutable.ListBuffer[Term[C]]
-    foreachNonZero { (e, c) => lb += Term(c, e) }
+    foreachNonZero { (e, c) =>
+      lb += Term(c, e)
+    }
     lb.result()
   }
 
@@ -233,7 +236,9 @@ trait Polynomial[@sp(Double) C] { lhs =>
   def data(implicit ring: Semiring[C], eq: Eq[C]): Map[Int, C] = {
     val bldr = new scala.collection.mutable.MapBuilder[Int, C, Map[Int, C]](
       Map.empty[Int, C])
-    foreachNonZero { (e, c) => bldr += ((e, c)) }
+    foreachNonZero { (e, c) =>
+      bldr += ((e, c))
+    }
     bldr.result()
   }
 
@@ -270,7 +275,9 @@ trait Polynomial[@sp(Double) C] { lhs =>
     * it is zero. If this polynomial is zero, then this returns a zero term.
     */
   def minTerm(implicit ring: Semiring[C], eq: Eq[C]): Term[C] = {
-    foreachNonZero { (n, c) => return Term(c, n) }
+    foreachNonZero { (n, c) =>
+      return Term(c, n)
+    }
     Term(ring.zero, 0)
   }
 

@@ -450,7 +450,9 @@ trait IssuesService {
       content: Option[String])(implicit s: Session) =
     Issues
       .filter(_.byPrimaryKey(owner, repository, issueId))
-      .map { t => (t.title, t.content.?, t.updatedDate) }
+      .map { t =>
+        (t.title, t.content.?, t.updatedDate)
+      }
       .update(title, content, currentDate)
 
   def updateAssignedUserName(
@@ -472,7 +474,9 @@ trait IssuesService {
   def updateComment(commentId: Int, content: String)(implicit s: Session) =
     IssueComments
       .filter(_.byPrimaryKey(commentId))
-      .map { t => t.content -> t.updatedDate }
+      .map { t =>
+        t.content -> t.updatedDate
+      }
       .update(content, currentDate)
 
   def deleteComment(commentId: Int)(implicit s: Session) =
@@ -485,7 +489,9 @@ trait IssuesService {
       closed: Boolean)(implicit s: Session) =
     Issues
       .filter(_.byPrimaryKey(owner, repository, issueId))
-      .map { t => t.closed -> t.updatedDate }
+      .map { t =>
+        t.closed -> t.updatedDate
+      }
       .update(closed, currentDate)
 
   /**

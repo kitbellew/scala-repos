@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.persistence.journal.chaos
 
 import scala.collection.immutable
@@ -59,7 +60,9 @@ class ChaosJournal extends AsyncWriteJournal {
       persistenceId: String,
       toSequenceNr: Long): Future[Unit] = {
     try Future.successful {
-      (1L to toSequenceNr).foreach { snr ⇒ del(persistenceId, snr) }
+      (1L to toSequenceNr).foreach { snr ⇒
+        del(persistenceId, snr)
+      }
     } catch {
       case NonFatal(e) ⇒ Future.failed(e)
     }

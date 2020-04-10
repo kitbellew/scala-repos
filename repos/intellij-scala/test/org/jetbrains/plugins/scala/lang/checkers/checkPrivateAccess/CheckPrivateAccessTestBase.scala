@@ -20,6 +20,7 @@ import org.jetbrains.plugins.scala.lang.resolve.ResolveUtils
   * User: Alexander Podkhalyuzin
   * Date: 08.10.2009
   */
+
 abstract class CheckPrivateAccessTestBase
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   val refMarker = "/*ref*/"

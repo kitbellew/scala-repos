@@ -264,7 +264,9 @@ private[scalajs] final class ScalaJSClassEmitter(
       } else {
         val superCtorCall = tree.superClass.fold[js.Tree] {
           js.Skip()(tree.pos)
-        } { parentIdent => js.Apply(js.Super(), Nil) }
+        } { parentIdent =>
+          js.Apply(js.Super(), Nil)
+        }
         js.MethodDef(
           static = false,
           js.Ident("constructor"),
@@ -758,7 +760,9 @@ private[scalajs] final class ScalaJSClassEmitter(
       tree.superClass.fold[js.Tree] {
         if (isObjectClass) js.Null()
         else js.Undefined()
-      } { parent => envField("d", parent.name) }
+      } { parent =>
+        envField("d", parent.name)
+      }
     } else {
       js.Undefined()
     }

@@ -69,7 +69,9 @@ class RateControllerSuite extends TestSuiteBase {
       }
 
       // Verify multiple rate update
-      Seq(100, 200, 300).foreach { rate => updateRateAndVerify(rate) }
+      Seq(100, 200, 300).foreach { rate =>
+        updateRateAndVerify(rate)
+      }
     }
   }
 }

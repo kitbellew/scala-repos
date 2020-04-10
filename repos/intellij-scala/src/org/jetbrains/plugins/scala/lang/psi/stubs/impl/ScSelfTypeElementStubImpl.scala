@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.types.ScSelfTypeElement
   * User: Alexander Podkhalyuzin
   * Date: 19.06.2009
   */
+
 class ScSelfTypeElementStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
     elemType: IStubElementType[

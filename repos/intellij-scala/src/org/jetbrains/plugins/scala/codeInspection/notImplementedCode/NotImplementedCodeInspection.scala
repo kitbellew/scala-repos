@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.extensions._
 /**
   * Pavel Fatin
   */
+
 class NotImplementedCodeInspection extends AbstractInspection {
   def actionFor(holder: ProblemsHolder) = {
     case reference @ ReferenceTarget(Member("???", "scala.Predef")) =>

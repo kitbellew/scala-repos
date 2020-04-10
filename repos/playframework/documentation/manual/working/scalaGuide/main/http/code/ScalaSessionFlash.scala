@@ -114,7 +114,10 @@ package scalaguide.http.scalasessionflash {
 
       "access flash in template" in {
         //#flash-implicit-request
-        def index = Action { implicit request => Ok(views.html.index()) }
+        def index =
+          Action { implicit request =>
+            Ok(views.html.index())
+          }
         //#flash-implicit-request
 
         assertAction(index, OK, FakeRequest())(result =>

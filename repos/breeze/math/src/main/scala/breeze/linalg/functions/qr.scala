@@ -210,7 +210,9 @@ object qr extends UFunc {
 
       // Upper triangle
       cforRange(0 until mc) { i =>
-        cforRange(0 until min(i, A.cols)) { j => A(i, j) = 0.0 }
+        cforRange(0 until min(i, A.cols)) { j =>
+          A(i, j) = 0.0
+        }
       }
 
       (Q(::, 0 until mc), A(0 until mc, ::))
@@ -271,7 +273,9 @@ object qr extends UFunc {
 
       // Upper triangle
       cforRange(0 until mc) { i =>
-        cforRange(0 until min(i, A.cols)) { j => A(i, j) = 0.0f }
+        cforRange(0 until min(i, A.cols)) { j =>
+          A(i, j) = 0.0f
+        }
       }
 
       (Q(::, 0 until mc), A(0 until mc, ::))
@@ -354,7 +358,9 @@ object qrp extends UFunc {
       val R = DenseMatrix.zeros[Double](m, n)
 
       cforRange(0 until min(n, maxd)) { c =>
-        cforRange(0 to min(m, c)) { r => R(r, c) = AFact(r, c) }
+        cforRange(0 to min(m, c)) { r =>
+          R(r, c) = AFact(r, c)
+        }
       }
 
       //Get Q from the matrix returned by dgep3
@@ -385,7 +391,9 @@ object qrp extends UFunc {
       pvt -= 1
       val P = DenseMatrix.zeros[Int](n, n)
 
-      cforRange(0 until n) { i => P(pvt(i), i) = 1 }
+      cforRange(0 until n) { i =>
+        P(pvt(i), i) = 1
+      }
 
       QRP(Q, R, P, pvt)
     }

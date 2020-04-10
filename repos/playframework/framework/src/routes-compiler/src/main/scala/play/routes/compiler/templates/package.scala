@@ -52,7 +52,11 @@ package object templates {
     if (seq.isEmpty) {
       Nil
     } else {
-      Seq(f(seq.head), seq.tail.map { t => Seq(sep, f(t)) })
+      Seq(
+        f(seq.head),
+        seq.tail.map { t =>
+          Seq(sep, f(t))
+        })
     }
   }
 
@@ -248,7 +252,9 @@ package object templates {
       localNames: Map[String, String]) = {
     route.call.parameters.getOrElse(Nil).filter { p =>
       localNames.contains(p.name) && p.fixed.isDefined
-    }.map { p => p.name + " == " + p.fixed.get } match {
+    }.map { p =>
+      p.name + " == " + p.fixed.get
+    } match {
       case Nil      => ""
       case nonEmpty => "if " + nonEmpty.mkString(" && ")
     }

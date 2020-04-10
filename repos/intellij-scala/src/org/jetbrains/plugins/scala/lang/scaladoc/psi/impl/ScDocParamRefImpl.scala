@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocParamRef
   * User: Alexander Podkhalyuzin
   * Date: 22.07.2008
   */
+
 class ScDocParamRefImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScDocParamRef {

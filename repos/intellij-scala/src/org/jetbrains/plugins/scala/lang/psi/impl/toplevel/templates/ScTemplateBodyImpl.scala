@@ -32,6 +32,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.ScTemplateBodyStub
   * Date: 22.02.2008
   * Time: 9:38:04
   */
+
 class ScTemplateBodyImpl private (
     stub: StubElement[ScTemplateBody],
     nodeType: IElementType,

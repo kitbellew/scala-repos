@@ -24,6 +24,7 @@ import org.jetbrains.plugins.scala.lang.refactoring.move.ScalaMoveUtil
   * User: Alexander Podkhalyuzin
   * Date: 08.07.2009
   */
+
 class ScalaMoveToPackageQuickFix(myFile: ScalaFile, packQualName: String)
     extends AbstractFixOnPsiElement(
       s"Move File ${myFile.name} To Package " + packQualName,

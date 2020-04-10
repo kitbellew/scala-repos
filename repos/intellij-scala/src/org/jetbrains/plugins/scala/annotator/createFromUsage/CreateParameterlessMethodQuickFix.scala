@@ -5,6 +5,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScReferenceExpression
 /**
   * Pavel Fatin
   */
+
 class CreateParameterlessMethodQuickFix(ref: ScReferenceExpression)
     extends CreateEntityQuickFix(ref, "parameterless method", "def")
 

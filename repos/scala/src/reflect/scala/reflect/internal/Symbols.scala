@@ -1510,6 +1510,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     /**
       *  Symbol creation implementations.
       */
+
     protected def createAbstractTypeSymbol(
         name: TypeName,
         pos: Position,
@@ -2518,6 +2519,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       * (4) moduleClass
       * (5) companionSymbol
       */
+
     /** For a module: the class with the same name in the same package.
       *  For all others: NoSymbol
       *  Note: does not work for classes owned by methods, see Namers.companionClassOf
@@ -3513,6 +3515,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       * public class Test1<T extends Test3> {}
       * info for T in Test1 should be >: Nothing <: Test3[_]
       */
+
     if (Statistics.hotEnabled) Statistics.incCounter(typeSymbolCount)
   }
   implicit val TypeSymbolTag = ClassTag[TypeSymbol](classOf[TypeSymbol])

@@ -391,7 +391,9 @@ class Dataset[T] private[sql] (
     * @since 1.6.0
     */
   def dtypes: Array[(String, String)] =
-    schema.fields.map { field => (field.name, field.dataType.toString) }
+    schema.fields.map { field =>
+      (field.name, field.dataType.toString)
+    }
 
   /**
     * Returns all column names as an array.
@@ -1786,8 +1788,9 @@ class Dataset[T] private[sql] (
       case Column(expr: Expression) => expr
     }
     val attrs = this.logicalPlan.output
-    val colsAfterDrop =
-      attrs.filter { attr => attr != expression }.map(attr => Column(attr))
+    val colsAfterDrop = attrs.filter { attr =>
+      attr != expression
+    }.map(attr => Column(attr))
     select(colsAfterDrop: _*)
   }
 
@@ -2434,7 +2437,9 @@ class Dataset[T] private[sql] (
   private def withCallback[U](name: String, df: DataFrame)(
       action: DataFrame => U) = {
     try {
-      df.queryExecution.executedPlan.foreach { plan => plan.resetMetrics() }
+      df.queryExecution.executedPlan.foreach { plan =>
+        plan.resetMetrics()
+      }
       val start = System.nanoTime()
       val result = action(df)
       val end = System.nanoTime()
@@ -2450,7 +2455,9 @@ class Dataset[T] private[sql] (
   private def withTypedCallback[A, B](name: String, ds: Dataset[A])(
       action: Dataset[A] => B) = {
     try {
-      ds.queryExecution.executedPlan.foreach { plan => plan.resetMetrics() }
+      ds.queryExecution.executedPlan.foreach { plan =>
+        plan.resetMetrics()
+      }
       val start = System.nanoTime()
       val result = action(ds)
       val end = System.nanoTime()

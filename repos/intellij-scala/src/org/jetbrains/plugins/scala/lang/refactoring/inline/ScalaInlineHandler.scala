@@ -58,6 +58,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Alexander Podkhalyuzin
   * Date: 08.06.2009
   */
+
 class ScalaInlineHandler extends InlineHandler {
 
   private var occurrenceHighlighters: Seq[RangeHighlighter] = Seq.empty

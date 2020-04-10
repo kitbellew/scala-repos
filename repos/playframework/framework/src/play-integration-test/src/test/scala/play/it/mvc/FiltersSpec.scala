@@ -362,7 +362,9 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
     val expectedText = "This filter does not call next"
 
     def apply(next: EssentialAction) =
-      EssentialAction { request => Accumulator.done(Results.Ok(expectedText)) }
+      EssentialAction { request =>
+        Accumulator.done(Results.Ok(expectedText))
+      }
   }
 
   object SkipNextWithErrorFilter extends EssentialFilter {
@@ -380,7 +382,9 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
 
     def apply(next: EssentialAction) =
       EssentialAction { request =>
-        next(request).map { _ => throw new RuntimeException(expectedText) }(ec)
+        next(request).map { _ =>
+          throw new RuntimeException(expectedText)
+        }(ec)
       }
   }
 

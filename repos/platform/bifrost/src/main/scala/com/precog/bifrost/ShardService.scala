@@ -293,7 +293,9 @@ trait ShardService
                 }
             }
           } ->
-          stop { state: ShardState => state.stoppable }
+          stop { state: ShardState =>
+            state.stoppable
+          }
       }
     }
   }

@@ -14,7 +14,9 @@ object B extends Build {
     )
   )
   def addExtra(name: String, f: (State, Seq[File]) => State) =
-    Command.command(name) { s => f(s, (file("lib_managed") ** "*.jar").get) }
+    Command.command(name) { s =>
+      f(s, (file("lib_managed") ** "*.jar").get)
+    }
   def checkExtra =
     Command.command("check") { s =>
       val loader = Class.forName("org.apache.log4j.Level").getClassLoader

@@ -49,6 +49,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * @author Alexander.Podkhalyuzin
   */
+
 class ScClassImpl private (
     stub: StubElement[ScTemplateDefinition],
     nodeType: IElementType,

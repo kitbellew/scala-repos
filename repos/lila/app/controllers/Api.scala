@@ -31,7 +31,10 @@ object Api extends LilaController {
         )) as JSON
     }
 
-  def user(name: String) = ApiResult { implicit ctx => userApi one name }
+  def user(name: String) =
+    ApiResult { implicit ctx =>
+      userApi one name
+    }
 
   def users =
     ApiResult { implicit ctx =>

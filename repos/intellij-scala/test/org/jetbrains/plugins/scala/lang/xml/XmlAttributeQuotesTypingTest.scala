@@ -7,6 +7,7 @@ import org.jetbrains.plugins.scala.base.ScalaLightCodeInsightFixtureTestAdapter
   * User: Dmitry Naydanov
   * Date: 3/5/12
   */
+
 class XmlAttributeQuotesTypingTest
     extends ScalaLightCodeInsightFixtureTestAdapter {
 

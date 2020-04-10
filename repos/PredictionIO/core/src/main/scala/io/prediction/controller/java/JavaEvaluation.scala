@@ -12,6 +12,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package io.prediction.controller.java
 
 import io.prediction.controller.Evaluation
@@ -27,6 +28,7 @@ import scala.collection.JavaConversions.asScalaBuffer
   *
   * @group Evaluation
   */
+
 abstract class JavaEvaluation extends Evaluation {
 
   /** Set the [[BaseEngine]] and [[Metric]] for this [[Evaluation]]

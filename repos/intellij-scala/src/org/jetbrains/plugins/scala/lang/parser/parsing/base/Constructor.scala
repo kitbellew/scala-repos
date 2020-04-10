@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.types.{
 /**
   * @author AlexanderPodkhalyuzin
   */
+
 /*
  * Constr ::= AnnotType {ArgumentExprs}
  */

@@ -18,6 +18,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 /**
   * @author ilyas, Alexander Podkhalyuzin
   */
+
 class ScParenthesisedPatternImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScParenthesisedPattern {

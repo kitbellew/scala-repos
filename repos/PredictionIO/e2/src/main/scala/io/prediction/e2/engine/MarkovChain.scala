@@ -81,7 +81,9 @@ case class MarkovChainModel(
 
     // sum up to get the total probabilities
     (0 until currentState.size).map { index =>
-      nextStateVectors.map { vector => vector(index) }.sum
+      nextStateVectors.map { vector =>
+        vector(index)
+      }.sum
     }
   }
 }

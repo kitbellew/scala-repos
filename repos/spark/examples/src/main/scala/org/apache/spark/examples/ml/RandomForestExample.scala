@@ -148,7 +148,9 @@ object RandomForestExample {
       }
     }
 
-    parser.parse(args, defaultParams).map { params => run(params) }.getOrElse {
+    parser.parse(args, defaultParams).map { params =>
+      run(params)
+    }.getOrElse {
       sys.exit(1)
     }
   }

@@ -71,12 +71,14 @@ import com.twitter.algebird.Semigroup
   * right side will return None only if the key is absent,
   * else, the service will return Some(joinedV).
   */
+
 object LookupJoin extends Serializable {
 
   /**
     * This is the "infinite history" join and always joins regardless of how
     * much time is between the left and the right
     */
+
   def apply[T: Ordering, K: Ordering, V, JoinedV](
       left: TypedPipe[(T, (K, V))],
       right: TypedPipe[(T, (K, JoinedV))],

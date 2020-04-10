@@ -27,7 +27,8 @@ object IteratorSumLaws extends Properties("IteratorSumLaws") {
   import IteratorSums._
 
   property("groupedSum never increases size") = forAll {
-    (in: List[(Int, Long)]) => groupedSum(in.iterator).size <= in.size
+    (in: List[(Int, Long)]) =>
+      groupedSum(in.iterator).size <= in.size
   }
   property("groupedSum on a single key is <= 1 size") = forAll {
     (key0: Int, in: List[Long]) =>

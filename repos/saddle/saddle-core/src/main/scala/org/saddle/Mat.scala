@@ -13,6 +13,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
  **/
+
 package org.saddle
 
 import mat._
@@ -81,6 +82,7 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
     * Returns total number of entries in the matrix
     *
     */
+
   def length: Int = numRows * numCols
 
   /**

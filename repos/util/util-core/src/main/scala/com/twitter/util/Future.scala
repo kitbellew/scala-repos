@@ -1952,7 +1952,9 @@ abstract class Future[+A] extends Awaitable[A] {
     */
   def willEqual[B](that: Future[B]): Future[Boolean] = {
     this.transform { thisResult =>
-      that.transform { thatResult => Future.value(thisResult == thatResult) }
+      that.transform { thatResult =>
+        Future.value(thisResult == thatResult)
+      }
     }
   }
 

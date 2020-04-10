@@ -18,6 +18,7 @@ import scala.collection.mutable
   * @author Ksenia.Sautina
   * @since 4/20/12
   */
+
 object FlipComparisonInMethodCallExprIntention {
   def familyName = "Flip comparison in method call expression."
 }

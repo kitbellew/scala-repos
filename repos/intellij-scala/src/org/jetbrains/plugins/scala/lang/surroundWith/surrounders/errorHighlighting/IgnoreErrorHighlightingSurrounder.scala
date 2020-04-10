@@ -10,6 +10,7 @@ import com.intellij.psi.PsiElement
   * @author Alefas
   * @since 10.04.12
   */
+
 class IgnoreErrorHighlightingSurrounder extends Surrounder {
   def getTemplateDescription: String = "/*_*/.../*_*/"
 

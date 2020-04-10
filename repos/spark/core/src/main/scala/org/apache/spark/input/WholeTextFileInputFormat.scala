@@ -32,6 +32,7 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext
   * reading whole text files. Each file is read as key-value pair, where the key is the file path and
   * the value is the entire content of file.
   */
+
 private[spark] class WholeTextFileInputFormat
     extends CombineFileInputFormat[Text, Text]
     with Configurable {

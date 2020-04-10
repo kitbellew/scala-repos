@@ -223,6 +223,7 @@ object Liskov extends LiskovInstances {
   ): Leibniz[A,B] = Leibniz.force[A,B]
 
     */
+
   /**Unsafely force a claim that A is a subtype of B */
   def force[A, B]: A <~< B =
     new (A <~< B) {

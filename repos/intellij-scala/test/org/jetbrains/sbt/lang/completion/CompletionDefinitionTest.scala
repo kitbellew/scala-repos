@@ -5,6 +5,7 @@ package lang.completion
   * @author Nikolay Obedin
   * @since 7/17/14.
   */
+
 class CompletionDefinitionTest extends CompletionTestBase {
   def testObjectValues = doTest()
   def testLocalVars = doTest()

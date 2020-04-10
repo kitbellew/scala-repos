@@ -99,7 +99,8 @@ object MockWebSpec extends Specification {
       mockReq.body = ("name" -> "joe") ~ ("age" -> 35)
 
       testReq(mockReq) {
-        req => req.json_? must_== true
+        req =>
+          req.json_? must_== true
       }
     }
 

@@ -25,6 +25,7 @@ import scala.collection.mutable
   * @author Ksenia.Sautina
   * @since 4/18/12
   */
+
 object IntroduceImplicitParameterIntention {
   def familyName = "Introduce implicit parameter"
 

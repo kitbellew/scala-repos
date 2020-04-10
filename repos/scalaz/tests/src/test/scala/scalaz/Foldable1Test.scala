@@ -7,7 +7,8 @@ import org.scalacheck.Prop.forAll
 
 object Foldable1Test extends SpecLite {
   "maximum1" ! forAll {
-    (xs: NonEmptyList[Int]) => (xs.maximum1) must_=== (xs.list.toList.max)
+    (xs: NonEmptyList[Int]) =>
+      (xs.maximum1) must_=== (xs.list.toList.max)
   }
   "maximumOf1" ! forAll {
     (xs: NonEmptyList[Int]) =>
@@ -21,7 +22,8 @@ object Foldable1Test extends SpecLite {
         _._2)._1)
   }
   "minimum1" ! forAll {
-    (xs: NonEmptyList[Int]) => (xs.minimum1) must_=== (xs.list.toList.min)
+    (xs: NonEmptyList[Int]) =>
+      (xs.minimum1) must_=== (xs.list.toList.min)
   }
   "minimumOf1" ! forAll {
     (xs: NonEmptyList[Int]) =>

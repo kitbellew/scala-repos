@@ -11,6 +11,7 @@ import com.intellij.psi.tree.IElementType
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
   */
+
 trait ScModifierList extends ScalaPsiElement with PsiModifierList {
   def has(prop: IElementType): Boolean
 

@@ -38,7 +38,8 @@ object VectorTest extends SpecLite {
   }
 
   "initz" ! forAll {
-    (xs: Vector[Int]) => initz(xs) must_=== (xs.inits.toVector.reverse)
+    (xs: Vector[Int]) =>
+      initz(xs) must_=== (xs.inits.toVector.reverse)
   }
 
   "tailz" ! forAll {

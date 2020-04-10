@@ -72,7 +72,9 @@ private[finagle] abstract class CumulativeGauge {
 
   def getValue: Float = {
     var sum = 0f
-    get().foreach { g => sum += g.f() }
+    get().foreach { g =>
+      sum += g.f()
+    }
     sum
   }
 

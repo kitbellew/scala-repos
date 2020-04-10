@@ -63,7 +63,9 @@ class PowerIterationClusteringSuite
       .setMaxIterations(40)
       .run(sc.parallelize(similarities, 2))
     val predictions = Array.fill(2)(mutable.Set.empty[Long])
-    model.assignments.collect().foreach { a => predictions(a.cluster) += a.id }
+    model.assignments.collect().foreach { a =>
+      predictions(a.cluster) += a.id
+    }
     assert(predictions.toSet == Set((0 until n1).toSet, (n1 until n).toSet))
 
     val model2 = new PowerIterationClustering()
@@ -105,7 +107,9 @@ class PowerIterationClusteringSuite
       .setMaxIterations(40)
       .run(graph)
     val predictions = Array.fill(2)(mutable.Set.empty[Long])
-    model.assignments.collect().foreach { a => predictions(a.cluster) += a.id }
+    model.assignments.collect().foreach { a =>
+      predictions(a.cluster) += a.id
+    }
     assert(predictions.toSet == Set((0 until n1).toSet, (n1 until n).toSet))
 
     val model2 = new PowerIterationClustering()

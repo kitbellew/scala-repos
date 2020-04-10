@@ -13,6 +13,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
  **/
+
 package org.saddle
 
 import mat.MatMath
@@ -57,7 +58,9 @@ class MatCheck extends Specification with ScalaCheck {
     }
 
     "isSquare works" in {
-      forAll { (m: Mat[Double]) => m.isSquare must_== (m.numRows == m.numCols) }
+      forAll { (m: Mat[Double]) =>
+        m.isSquare must_== (m.numRows == m.numCols)
+      }
     }
 
     "map works" in {
@@ -141,7 +144,9 @@ class MatCheck extends Specification with ScalaCheck {
     }
 
     "rowsWithNA works (no NA)" in {
-      forAll { (m: Mat[Double]) => m.rowsWithNA must_== Set.empty[Double] }
+      forAll { (m: Mat[Double]) =>
+        m.rowsWithNA must_== Set.empty[Double]
+      }
     }
 
     "rowsWithNA works (with NA)" in {
@@ -156,12 +161,16 @@ class MatCheck extends Specification with ScalaCheck {
 
     "dropRowsWithNA works" in {
       implicit val arbMat = Arbitrary(MatArbitraries.matDoubleWithNA)
-      forAll { (m: Mat[Double]) => m.dropRowsWithNA must_== m.rdropNA.toMat }
+      forAll { (m: Mat[Double]) =>
+        m.dropRowsWithNA must_== m.rdropNA.toMat
+      }
     }
 
     "dropColsWithNA works" in {
       implicit val arbMat = Arbitrary(MatArbitraries.matDoubleWithNA)
-      forAll { (m: Mat[Double]) => m.dropColsWithNA must_== m.dropNA.toMat }
+      forAll { (m: Mat[Double]) =>
+        m.dropColsWithNA must_== m.dropNA.toMat
+      }
     }
 
     "cols works" in {
@@ -257,7 +266,9 @@ class MatCheck extends Specification with ScalaCheck {
   }
 
   "serialization works" in {
-    forAll { ma: Mat[Double] => ma must_== serializedCopy(ma) }
+    forAll { ma: Mat[Double] =>
+      ma must_== serializedCopy(ma)
+    }
   }
 
 }

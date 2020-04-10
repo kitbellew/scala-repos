@@ -62,6 +62,7 @@ import scalafx.scene.text.Font
   *         http://docs.oracle.com/javafx/2.0/ui_controls/button.htm
   *
   */
+
 object ScalaFX_Controls_02 extends JFXApp {
   val label = new Label {
     font = Font.font("Times New Roman", 22)
@@ -81,30 +82,35 @@ object ScalaFX_Controls_02 extends JFXApp {
     text = "Accept"
     style = "-fx-font: 22 arial; -fx-base: #b6e7c9;"
     onAction = {
-      (_: ActionEvent) => label.text = "Accepted"
+      (_: ActionEvent) =>
+        label.text = "Accepted"
     }
   }
 
   val okButton2 = new Button {
     text = "Accept"
     onAction = {
-      (_: ActionEvent) => label.text = "Accepted"
+      (_: ActionEvent) =>
+        label.text = "Accepted"
     }
   }
 
   val koButton1 = new Button {
     text = "Decline"
     onAction = {
-      (_: ActionEvent) => label.text = "Declined"
+      (_: ActionEvent) =>
+        label.text = "Declined"
     }
   }
 
   koButton1 addOnMouseEnteredHandler {
-    (_: MouseEvent) => koButton1.effect = new DropShadow()
+    (_: MouseEvent) =>
+      koButton1.effect = new DropShadow()
   }
 
   koButton1 addOnMouseExitedHandler {
-    (_: MouseEvent) => koButton1.effect = null
+    (_: MouseEvent) =>
+      koButton1.effect = null
   }
 
   val hBox1 = new HBox {
@@ -120,14 +126,16 @@ object ScalaFX_Controls_02 extends JFXApp {
   val okButton3 = new Button {
     graphic = okImageView
     onAction = {
-      (_: ActionEvent) => label.text = "Accepted"
+      (_: ActionEvent) =>
+        label.text = "Accepted"
     }
   }
 
   val koButton2 = new Button {
     graphic = koImageView
     onAction = {
-      (_: ActionEvent) => label.text = "Declined"
+      (_: ActionEvent) =>
+        label.text = "Declined"
     }
   }
 

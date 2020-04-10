@@ -15,7 +15,9 @@ final class ModApi(
     lilaBus: lila.common.Bus) {
 
   def toggleEngine(mod: String, username: String): Funit =
-    withUser(username) { user => setEngine(mod, username, !user.engine) }
+    withUser(username) { user =>
+      setEngine(mod, username, !user.engine)
+    }
 
   def setEngine(mod: String, username: String, v: Boolean): Funit =
     withUser(username) { user =>
@@ -40,7 +42,9 @@ final class ModApi(
     }
 
   def toggleBooster(mod: String, username: String): Funit =
-    withUser(username) { user => setBooster(mod, username, !user.booster) }
+    withUser(username) { user =>
+      setBooster(mod, username, !user.booster)
+    }
 
   def setBooster(mod: String, username: String, v: Boolean): Funit =
     withUser(username) { user =>

@@ -37,7 +37,9 @@ object User extends LilaController {
     }
 
   def show(username: String) =
-    OpenBody { implicit ctx => filter(username, none, 1) }
+    OpenBody { implicit ctx =>
+      filter(username, none, 1)
+    }
 
   def showMini(username: String) =
     Open { implicit ctx =>
@@ -66,7 +68,9 @@ object User extends LilaController {
     }
 
   def showFilter(username: String, filterName: String, page: Int) =
-    OpenBody { implicit ctx => filter(username, filterName.some, page) }
+    OpenBody { implicit ctx =>
+      filter(username, filterName.some, page)
+    }
 
   def online =
     Open { implicit req =>
@@ -273,7 +277,9 @@ object User extends LilaController {
                 ctx.userId ?? {
                   relationApi.fetchRelation(_, u.id)
                 } map { lila.relation.Related(u, nb.some, followable, _) }
-            }.sequenceFu map { relateds => html.user.opponents(user, relateds) }
+            }.sequenceFu map { relateds =>
+              html.user.opponents(user, relateds)
+            }
           }
         }
       }

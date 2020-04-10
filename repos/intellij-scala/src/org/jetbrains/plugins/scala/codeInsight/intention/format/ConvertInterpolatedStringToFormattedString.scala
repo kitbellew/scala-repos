@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.format.{
 /**
   * Pavel Fatin
   */
+
 class ConvertInterpolatedStringToFormattedString
     extends AbstractFormatConversionIntention(
       "Convert to formatted string",

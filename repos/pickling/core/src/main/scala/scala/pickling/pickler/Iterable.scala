@@ -126,7 +126,10 @@ object TravPickler {
         }
 
         (coll: Traversable[_]).asInstanceOf[Traversable[T]].foreach {
-          (elem: T) => builder putElement { b => elemPickler.pickle(elem, b) }
+          (elem: T) =>
+            builder putElement { b =>
+              elemPickler.pickle(elem, b)
+            }
         }
 
         builder.popHints()

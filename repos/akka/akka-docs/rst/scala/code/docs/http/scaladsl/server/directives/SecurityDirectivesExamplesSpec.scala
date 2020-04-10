@@ -25,7 +25,8 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
       Route.seal {
         path("secured") {
           authenticateBasic(realm = "secure site", myUserPassAuthenticator) {
-            userName => complete(s"The user is '$userName'")
+            userName =>
+              complete(s"The user is '$userName'")
           }
         }
       }
@@ -68,7 +69,8 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
       Route.seal {
         path("secured") {
           authenticateBasicPF(realm = "secure site", myUserPassAuthenticator) {
-            userName => complete(s"The user is '$userName'")
+            userName =>
+              complete(s"The user is '$userName'")
           }
         }
       }
@@ -227,7 +229,8 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
       Route.seal {
         path("secured") {
           authenticateOrRejectWithChallenge(myUserPassAuthenticator _) {
-            userName => complete("Authenticated!")
+            userName =>
+              complete("Authenticated!")
           }
         }
       }

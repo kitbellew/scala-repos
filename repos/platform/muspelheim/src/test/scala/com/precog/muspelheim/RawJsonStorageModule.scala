@@ -92,7 +92,8 @@ trait RawJsonStorageModule[M[+_]] { self =>
 
       val structure: Set[ColumnRef] =
         json.elements.foldLeft(Map.empty[ColumnRef, ArrayColumn[_]]) {
-          (acc, jv) => Slice.withIdsAndValues(jv, acc, 0, 1)
+          (acc, jv) =>
+            Slice.withIdsAndValues(jv, acc, 0, 1)
         }.keySet
       structures += (path -> structure)
     }

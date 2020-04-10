@@ -35,8 +35,9 @@ final class DataForm(
       case (key, Some(value)) => key -> value
     }
     messages.nonEmpty ?? TranslationRepo.nextId flatMap { id =>
-      val sorted =
-        (keys.keys map { key => messages find (_._1 == key.key) }).flatten
+      val sorted = (keys.keys map { key =>
+        messages find (_._1 == key.key)
+      }).flatten
       val translation = Translation(
         id = id,
         code = code,

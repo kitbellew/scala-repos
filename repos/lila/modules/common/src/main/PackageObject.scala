@@ -195,7 +195,9 @@ trait WithPlay { self: PackageObject =>
       }
 
     def prefixFailure(p: => String) =
-      fua mapFailure { e => common.LilaException(s"$p ${e.getMessage}") }
+      fua mapFailure { e =>
+        common.LilaException(s"$p ${e.getMessage}")
+      }
 
     def thenPp: Fu[A] =
       fua ~ {

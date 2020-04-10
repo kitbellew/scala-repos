@@ -14,6 +14,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package kafka.message
 
 import kafka.utils.{IteratorTemplate, Logging}
@@ -342,7 +343,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
   private def shallowValidBytes: Int = {
     if (shallowValidByteCount < 0) {
       this.shallowValidByteCount = this.internalIterator(isShallow = true).map {
-        messageAndOffset => MessageSet.entrySize(messageAndOffset.message)
+        messageAndOffset =>
+          MessageSet.entrySize(messageAndOffset.message)
       }.sum
     }
     shallowValidByteCount

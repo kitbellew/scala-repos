@@ -104,7 +104,9 @@ private[hive] object HiveShim {
           serDeProps
             .find(
               _._1 == AvroSerdeUtils.AvroTableProperties.SCHEMA_LITERAL.getPropName())
-            .foreach { kv => w.setFileSchema(new Schema.Parser().parse(kv._2)) }
+            .foreach { kv =>
+              w.setFileSchema(new Schema.Parser().parse(kv._2))
+            }
         }
       case _ =>
     }

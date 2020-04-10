@@ -83,7 +83,8 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
 
       // Static PageRank should only take 2 iterations to converge
       val notMatching = staticRanks1.innerZipJoin(staticRanks2) {
-        (vid, pr1, pr2) => if (pr1 != pr2) 1 else 0
+        (vid, pr1, pr2) =>
+          if (pr1 != pr2) 1 else 0
       }.map { case (vid, test) => test }.sum()
       assert(notMatching === 0)
 
@@ -117,7 +118,8 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
 
       // Static PageRank should only take 2 iterations to converge
       val notMatching = staticRanks1.innerZipJoin(staticRanks2) {
-        (vid, pr1, pr2) => if (pr1 != pr2) 1 else 0
+        (vid, pr1, pr2) =>
+          if (pr1 != pr2) 1 else 0
       }.map { case (vid, test) => test }.sum
       assert(notMatching === 0)
 

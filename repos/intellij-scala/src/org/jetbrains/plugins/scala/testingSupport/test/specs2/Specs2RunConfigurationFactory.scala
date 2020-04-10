@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.testingSupport.test.AbstractTestRunConfigurat
   * User: Alexander Podkhalyuzin
   * Date: 03.05.2009
   */
+
 class Specs2RunConfigurationFactory(override val typez: ConfigurationType)
     extends AbstractTestRunConfigurationFactory(typez) {
 

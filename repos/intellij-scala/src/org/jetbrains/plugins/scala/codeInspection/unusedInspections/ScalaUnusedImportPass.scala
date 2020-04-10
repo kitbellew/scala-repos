@@ -31,6 +31,7 @@ import org.jetbrains.plugins.scala.settings.ScalaApplicationSettings
   * User: Alexander Podkhalyuzin
   * Date: 15.06.2009
   */
+
 class ScalaUnusedImportPass(
     val file: PsiFile,
     editor: Editor,

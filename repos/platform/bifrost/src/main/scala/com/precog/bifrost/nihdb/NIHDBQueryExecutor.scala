@@ -125,7 +125,6 @@ trait NIHDBQueryExecutorComponent {
       with VFSColumnarTableModule
       with KafkaIngestActorProjectionSystem
       with GracefulStopSupport { platform =>
-
       type YggConfig = NIHDBQueryExecutorConfig
       val yggConfig = new NIHDBQueryExecutorConfig {
         override val config = config0.detach("queryExecutor")

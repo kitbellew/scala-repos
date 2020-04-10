@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaAnnotationSupport extends PsiAnnotationSupport {
   def createLiteralValue(value: String, context: PsiElement): PsiLiteral = {
     return ScalaPsiElementFactory.createExpressionFromText(

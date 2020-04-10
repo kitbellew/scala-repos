@@ -20,6 +20,7 @@ package breeze.util
   *
   * @author dlwh
   */
+
 object ReflectionUtil {
   def boxedFromPrimitive(c: Class[_]): Class[_] = {
     import java.lang._

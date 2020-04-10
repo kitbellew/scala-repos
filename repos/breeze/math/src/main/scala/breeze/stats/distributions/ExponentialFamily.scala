@@ -8,6 +8,7 @@ import optimize.DiffFunction
   *
   * @author dlwh
   */
+
 trait ExponentialFamily[D, T] {
   type Parameter;
   type SufficientStatistic <: distributions.SufficientStatistic[

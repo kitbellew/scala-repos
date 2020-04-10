@@ -44,7 +44,9 @@ object Blog extends LilaController {
       blogApi context ref flatMap { implicit prismic =>
         blogApi.recent(prismic.api, ref, 50) map {
           _ ?? (_.results)
-        } map { docs => Ok(views.xml.blog.atom(docs)) as XML }
+        } map { docs =>
+          Ok(views.xml.blog.atom(docs)) as XML
+        }
       }
     }
 

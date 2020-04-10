@@ -72,7 +72,9 @@ object DenseKMeans {
         .action((x, c) => c.copy(input = x))
     }
 
-    parser.parse(args, defaultParams).map { params => run(params) }.getOrElse {
+    parser.parse(args, defaultParams).map { params =>
+      run(params)
+    }.getOrElse {
       sys.exit(1)
     }
   }

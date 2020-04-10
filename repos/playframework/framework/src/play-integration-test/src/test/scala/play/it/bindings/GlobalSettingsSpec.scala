@@ -32,7 +32,8 @@ trait GlobalSettingsSpec
       block: String => T) = {
     implicit val port = testServerPort
     val additionalSettings = applicationGlobal.fold(Map.empty[String, String]) {
-      s: String => Map("application.global" -> s"play.it.bindings.$s")
+      s: String =>
+        Map("application.global" -> s"play.it.bindings.$s")
     } + ("play.http.requestHandler" -> "play.http.GlobalSettingsHttpRequestHandler")
     import play.api.inject._
     import play.api.routing.sird._
@@ -53,7 +54,9 @@ trait GlobalSettingsSpec
 
   "GlobalSettings filters" should {
     "not have X-Foo header when no Global is configured" in withServer(None)(
-      "/scala") { body => body must_== "null" }
+      "/scala") { body =>
+      body must_== "null"
+    }
     "have X-Foo header when Scala Global with filters is configured" in withServer(
       Some("FooFilteringScalaGlobal"))("/scala") { body =>
       body must_== "filter-constructor-called-by-scala-global"

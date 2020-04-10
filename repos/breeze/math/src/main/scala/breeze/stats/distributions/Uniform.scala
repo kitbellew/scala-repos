@@ -6,6 +6,7 @@ import breeze.numerics._
   *
   * @author dlwh
   */
+
 case class Uniform(low: Double, high: Double)(implicit rand: RandBasis = Rand)
     extends ContinuousDistr[Double]
     with Moments[Double, Double]

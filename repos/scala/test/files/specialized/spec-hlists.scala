@@ -1,6 +1,7 @@
 /** Test contributed by Stefan Zeiger showing that HLists can be
   *  specialized.
   */
+
 sealed trait HList {
   type Self <: HList
 

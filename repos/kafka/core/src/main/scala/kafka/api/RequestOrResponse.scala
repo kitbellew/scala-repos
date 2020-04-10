@@ -16,6 +16,7 @@ package kafka.api
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 import java.nio._
 import kafka.network.RequestChannel
 import kafka.utils.Logging

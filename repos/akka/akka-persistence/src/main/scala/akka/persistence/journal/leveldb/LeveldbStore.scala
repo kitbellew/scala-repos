@@ -2,6 +2,7 @@
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   * Copyright (C) 2012-2016 Eligotech BV.
   */
+
 package akka.persistence.journal.leveldb
 
 import java.io.File
@@ -89,7 +90,9 @@ private[persistence] trait LeveldbStore
     })
 
     if (hasPersistenceIdSubscribers) {
-      persistenceIds.foreach { pid ⇒ notifyPersistenceIdChange(pid) }
+      persistenceIds.foreach { pid ⇒
+        notifyPersistenceIdChange(pid)
+      }
     }
     if (hasTagSubscribers && allTags.nonEmpty)
       allTags.foreach(notifyTagChange)

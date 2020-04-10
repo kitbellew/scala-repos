@@ -29,6 +29,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.{Any, Nothing}
   * Date: 22.02.2008
   * Time: 9:54:54
   */
+
 class ScTypeAliasDeclarationImpl private (
     stub: StubElement[ScTypeAlias],
     nodeType: IElementType,

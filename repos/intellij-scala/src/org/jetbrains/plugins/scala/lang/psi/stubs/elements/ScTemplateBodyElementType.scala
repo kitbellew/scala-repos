@@ -19,6 +19,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScTemplateBodyStubImpl
   * User: Alexander Podkhalyuzin
   * Date: 17.06.2009
   */
+
 class ScTemplateBodyElementType[Func <: ScTemplateBody]
     extends ScStubElementType[ScTemplateBodyStub, ScTemplateBody](
       "template body") {

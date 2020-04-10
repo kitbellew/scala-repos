@@ -9,6 +9,7 @@ import org.junit.Assert
 /**
   * Pavel Fatin
   */
+
 class ScalaFileImplTest extends SimpleTestCase {
 //  def testStripPackages() {
 //    assertPackagesStrippedAs("", "")

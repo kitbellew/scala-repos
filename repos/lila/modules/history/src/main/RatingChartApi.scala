@@ -15,7 +15,9 @@ final class RatingChartApi(
     cacheTtl: FiniteDuration) {
 
   def apply(user: User): Fu[Option[String]] =
-    cache(user) map { chart => chart.nonEmpty option chart }
+    cache(user) map { chart =>
+      chart.nonEmpty option chart
+    }
 
   private val cache = mongoCache[User, String](
     prefix = "history:rating",
@@ -66,7 +68,9 @@ final class RatingChartApi(
             Horde,
             RacingKings,
             Crazyhouse,
-            Puzzle) map { pt => ratingsMapToJson(pt, history(pt)) }
+            Puzzle) map { pt =>
+            ratingsMapToJson(pt, history(pt))
+          }
         }
       }
     }

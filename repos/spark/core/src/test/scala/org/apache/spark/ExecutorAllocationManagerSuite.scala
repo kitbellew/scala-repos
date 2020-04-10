@@ -777,7 +777,9 @@ class ExecutorAllocationManagerSuite
     assert(addExecutors(manager) === 4)
     assert(addExecutors(manager) === 8)
     assert(numExecutorsTarget(manager) === 15)
-    (0 until 15).foreach { i => onExecutorAdded(manager, s"executor-$i") }
+    (0 until 15).foreach { i =>
+      onExecutorAdded(manager, s"executor-$i")
+    }
     assert(executorIds(manager).size === 15)
     sc.listenerBus.postToAll(SparkListenerStageCompleted(stage1))
 
@@ -823,7 +825,9 @@ class ExecutorAllocationManagerSuite
     schedule(manager)
     // Verify the initial number of executors is kept when no pending tasks
     assert(numExecutorsTarget(manager) === 3)
-    (0 until 3).foreach { i => onExecutorAdded(manager, s"executor-$i") }
+    (0 until 3).foreach { i =>
+      onExecutorAdded(manager, s"executor-$i")
+    }
 
     clock.advance(executorIdleTimeout * 1000)
 

@@ -9,11 +9,13 @@ object ListTTest extends SpecLite {
   type ListTOpt[A] = ListT[Option, A]
 
   "fromList / toList" ! forAll {
-    (ass: List[List[Int]]) => ListT.fromList(ass).toList must_=== (ass)
+    (ass: List[List[Int]]) =>
+      ListT.fromList(ass).toList must_=== (ass)
   }
 
   "filter all" ! forAll {
-    (ass: ListT[List, Int]) => ass.filter(_ => true) must_=== (ass)
+    (ass: ListT[List, Int]) =>
+      ass.filter(_ => true) must_=== (ass)
   }
 
   "filter none" ! forAll {
@@ -58,7 +60,8 @@ object ListTTest extends SpecLite {
   }
 
   "listT" ! forAll {
-    (ass: Option[List[Int]]) => ListT.listT(ass).run == ass
+    (ass: Option[List[Int]]) =>
+      ListT.listT(ass).run == ass
   }
 
   checkAll(equal.laws[ListTOpt[Int]])

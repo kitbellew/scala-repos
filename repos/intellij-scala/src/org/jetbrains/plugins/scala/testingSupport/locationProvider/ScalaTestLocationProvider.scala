@@ -23,6 +23,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.PhysicalSignature
   *
   * For Specs, Specs2 and ScalaTest
   */
+
 class ScalaTestLocationProvider extends SMTestLocator {
   private val SpecsHintPattern = """(\S+)\?filelocation=(.+):(.+)""".r
 

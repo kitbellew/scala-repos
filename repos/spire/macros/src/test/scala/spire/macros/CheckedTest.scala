@@ -42,7 +42,9 @@ class CheckedTest
   }
 
   test("Int negate overflow throws arithmetic exception") {
-    forAll("x") { (x: Int) => checkForIntOverflow(-BigInt(x), checked(-x)) }
+    forAll("x") { (x: Int) =>
+      checkForIntOverflow(-BigInt(x), checked(-x))
+    }
   }
 
   test("Int addition overflow throws arithmetic exception") {
@@ -84,7 +86,9 @@ class CheckedTest
   }
 
   test("Long negate overflow throws arithmetic exception") {
-    forAll("x") { (x: Long) => checkForLongOverflow(-BigInt(x), checked(-x)) }
+    forAll("x") { (x: Long) =>
+      checkForLongOverflow(-BigInt(x), checked(-x))
+    }
   }
 
   test("Long addition overflow throws arithmetic exception") {

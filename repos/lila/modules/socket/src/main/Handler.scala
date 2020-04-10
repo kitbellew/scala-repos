@@ -33,7 +33,9 @@ object Handler {
     def baseController(member: SocketMember): Controller = {
       case ("p", _) => socket ! Ping(uid)
       case ("following_onlines", _) =>
-        userId foreach { u => hub.actor.relation ! ReloadOnlineFriends(u) }
+        userId foreach { u =>
+          hub.actor.relation ! ReloadOnlineFriends(u)
+        }
       case ("startWatching", o) =>
         o str "d" foreach { ids =>
           hub.actor.moveBroadcast ! StartWatching(
@@ -90,7 +92,9 @@ object Handler {
                 Json.obj(
                   "dests" -> req.dests,
                   "path" -> req.path
-                ) ++ req.opening.?? { o => Json.obj("opening" -> o) })
+                ) ++ req.opening.?? { o =>
+                  Json.obj("opening" -> o)
+                })
             case None =>
               member push lila.socket.Socket.makeMessage(
                 "destsFailure",
@@ -104,7 +108,9 @@ object Handler {
       val control = controller orElse baseController(member)
       Iteratee.foreach[JsValue](jsv =>
         jsv.asOpt[JsObject] foreach { obj =>
-          obj str "t" foreach { t => control.lift(t -> obj) }
+          obj str "t" foreach { t =>
+            control.lift(t -> obj)
+          }
         }).map(_ => socket ! Quit(uid))
     }
 

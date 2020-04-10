@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.nonvalue.{
 /**
   * Pavel.Fatin, 02.06.2010
   */
+
 //TODO must be abstract with no description when completed
 sealed class ApplicabilityProblem(val description: String = "unknown")
 

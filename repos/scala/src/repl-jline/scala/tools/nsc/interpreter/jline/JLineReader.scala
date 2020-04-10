@@ -4,6 +4,7 @@
   * @author Stepan Koltsov
   * @author Adriaan Moors
   */
+
 package scala.tools.nsc.interpreter.jline
 
 import java.util.{Collection => JCollection, List => JList}

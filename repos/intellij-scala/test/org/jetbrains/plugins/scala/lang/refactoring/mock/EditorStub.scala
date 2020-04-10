@@ -19,6 +19,7 @@ import com.intellij.openapi.util.Key
 /**
   * Pavel Fatin
   */
+
 class EditorStub extends Editor {
   def putUserData[T](key: Key[T], value: T): Unit = {}
 

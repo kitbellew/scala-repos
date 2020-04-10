@@ -522,6 +522,7 @@ object DescriptiveStats {
     * by truncating the longer vector.
     * </p>
     */
+
   def meanAndCov[T](it1: TraversableOnce[T], it2: TraversableOnce[T])(implicit
       frac: Fractional[T]) = {
     implicit def t(it: TraversableOnce[T]) =
@@ -550,6 +551,7 @@ object DescriptiveStats {
     * by truncating the longer vector.
     * </p>
     */
+
   def cov[T](it1: Iterable[T], it2: Iterable[T])(implicit n: Fractional[T]) = {
     meanAndCov(it1, it2)._3
   }

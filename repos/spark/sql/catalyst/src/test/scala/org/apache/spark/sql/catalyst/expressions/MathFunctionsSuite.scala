@@ -68,7 +68,9 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
         checkEvaluation(c(Literal(value)), null, EmptyRow)
       }
     } else if (expectNaN) {
-      domain.foreach { value => checkNaN(c(Literal(value)), EmptyRow) }
+      domain.foreach { value =>
+        checkNaN(c(Literal(value)), EmptyRow)
+      }
     } else {
       domain.foreach { value =>
         checkEvaluation(c(Literal(value)), f(value), EmptyRow)

@@ -9,6 +9,7 @@ import org.jetbrains.plugins.scala.util.ScalaToolsFactory
   * User: Dmitry Naydanov
   * Date: 3/12/12
   */
+
 class SurroundWithWikiSyntaxTest
     extends ScalaLightCodeInsightFixtureTestAdapter {
   import org.jetbrains.plugins.scala.lang.scaladoc.SurroundWithWikiSyntaxTest._

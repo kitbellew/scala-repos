@@ -68,7 +68,9 @@ class AsyncRDDActionsSuite
     zeroPartRdd.foreachAsync(i => Unit).get()
 
     val accum = sc.accumulator(0)
-    sc.parallelize(1 to 1000, 3).foreachAsync { i => accum += 1 }.get()
+    sc.parallelize(1 to 1000, 3).foreachAsync { i =>
+      accum += 1
+    }.get()
     assert(accum.value === 1000)
   }
 

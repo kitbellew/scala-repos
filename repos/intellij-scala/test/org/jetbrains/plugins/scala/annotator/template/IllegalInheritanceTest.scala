@@ -5,6 +5,7 @@ import org.jetbrains.plugins.scala.annotator.{AnnotatorTestBase, Error}
 /**
   * Pavel Fatin
   */
+
 class IllegalInheritanceTest extends AnnotatorTestBase(IllegalInheritance) {
   def testFine() {
     assertNothing(messages("class C"))

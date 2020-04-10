@@ -96,7 +96,8 @@ trait PicklingTestUtils extends Specification {
       ev0: Pickler[Array[A]],
       ev1: Unpickler[Array[A]]): MatchResult[Any] =
     roundTripBase[Array[A]](x)((a, b) => (a.toList) must beEqualTo(b.toList)) {
-      (a, b) => a.getMessage must beEqualTo(b.getMessage)
+      (a, b) =>
+        a.getMessage must beEqualTo(b.getMessage)
     }
 
   def roundTrip[A: Pickler: Unpickler](x: A): MatchResult[Any] =

@@ -240,7 +240,9 @@ class RequestParamMap(val request: Request) extends ParamMap {
   private def jiterator(
       params: JMap[String, JList[String]]): Iterator[(String, String)] =
     params.entrySet.asScala.flatMap { entry =>
-      entry.getValue.asScala map { value => (entry.getKey, value) }
+      entry.getValue.asScala map { value =>
+        (entry.getKey, value)
+      }
     }.toIterator
 }
 

@@ -16,7 +16,9 @@ case class Perf(
   def intDeviation = glicko.deviation.toInt
 
   def progress: Int =
-    ~recent.headOption.flatMap { head => recent.lastOption map (head -) }
+    ~recent.headOption.flatMap { head =>
+      recent.lastOption map (head -)
+    }
 
   def add(g: Glicko, date: DateTime): Perf =
     copy(

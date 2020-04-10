@@ -156,7 +156,9 @@ object WritesSpec extends org.specs2.mutable.Specification {
   }
 
   "OWrites" should {
-    val writes = OWrites[Foo] { foo => Json.obj("bar" -> foo.bar) }
+    val writes = OWrites[Foo] { foo =>
+      Json.obj("bar" -> foo.bar)
+    }
     val time = System.currentTimeMillis()
 
     "be transformed with JsObject function" in {

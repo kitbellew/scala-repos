@@ -22,6 +22,7 @@ import org.jetbrains.plugins.scala.util.ScalaUtils
   * User: Alexander Podkhalyuzin
   * Date: 16.06.2009
   */
+
 abstract class InlineRefactoringTestBase
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   val caretMarker = "/*caret*/"

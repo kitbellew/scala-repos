@@ -153,7 +153,9 @@ case class HyperLogLogPlusPlus(
 
   /** Allocate enough words to store all registers. */
   override val aggBufferAttributes: Seq[AttributeReference] =
-    Seq.tabulate(numWords) { i => AttributeReference(s"MS[$i]", LongType)() }
+    Seq.tabulate(numWords) { i =>
+      AttributeReference(s"MS[$i]", LongType)()
+    }
 
   // Note: although this simply copies aggBufferAttributes, this common code can not be placed
   // in the superclass because that will lead to initialization ordering issues.

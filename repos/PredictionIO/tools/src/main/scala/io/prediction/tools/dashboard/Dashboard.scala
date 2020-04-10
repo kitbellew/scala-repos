@@ -12,6 +12,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package io.prediction.tools.dashboard
 
 import com.typesafe.config.ConfigFactory
@@ -48,7 +49,9 @@ object Dashboard extends Logging with SSLConfiguration {
       } text ("Port to bind to (default: 9000).")
     }
 
-    parser.parse(args, DashboardConfig()) map { dc => createDashboard(dc) }
+    parser.parse(args, DashboardConfig()) map { dc =>
+      createDashboard(dc)
+    }
   }
 
   def createDashboard(dc: DashboardConfig): Unit = {

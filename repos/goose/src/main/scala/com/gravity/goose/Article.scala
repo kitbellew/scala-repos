@@ -15,6 +15,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package com.gravity.goose
 
 import images.Image
@@ -27,6 +28,7 @@ import scala.collection._
   * User: jim
   * Date: 8/14/11
   */
+
 class Article {
 
   /**

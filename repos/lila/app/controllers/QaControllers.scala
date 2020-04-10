@@ -36,7 +36,9 @@ trait QaController extends LilaController {
     }
 
   protected def renderN00b(implicit ctx: Context) =
-    fetchPopular map { popular => Forbidden(views.html.qa.n00b(popular)) }
+    fetchPopular map { popular =>
+      Forbidden(views.html.qa.n00b(popular))
+    }
 
   protected def WithQuestion(id: QuestionId)(block: Question => Fu[Result])(
       implicit ctx: Context): Fu[Result] =

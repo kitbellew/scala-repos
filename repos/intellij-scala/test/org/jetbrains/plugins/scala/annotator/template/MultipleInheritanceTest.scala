@@ -5,6 +5,7 @@ import org.jetbrains.plugins.scala.annotator.{AnnotatorTestBase, Error}
 /**
   * Pavel Fatin
   */
+
 class MultipleInheritanceTest extends AnnotatorTestBase(MultipleInheritance) {
   private val Message = "Trait (\\w+) inherited multiple times".r
 

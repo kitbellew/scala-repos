@@ -19,6 +19,7 @@ import spire.std._
   * 5. Support for more operators?
   * 6. Start to worry about things like e.g. pow(BigInt, BigInt)
   */
+
 trait Numeric[@sp(Int, Long, Float, Double) A]
     extends Any
     with Ring[A]

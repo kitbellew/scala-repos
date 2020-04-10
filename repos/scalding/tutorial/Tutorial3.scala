@@ -37,6 +37,7 @@ You can also of course try this with other input parameters. For example:
     --input tutorial/data/output2.txt
 
 **/
+
 class Tutorial3(args: Args) extends Job(args) {
 
   /**

@@ -18,7 +18,9 @@ object TimerTest extends SpecLite {
       withTimer(timer => ())
     }
     "handle stop being called repeatedly" in {
-      withTimer { timer => timer.stop() }
+      withTimer { timer =>
+        timer.stop()
+      }
     }
     "valueWait produces a value after the specified timeout" in {
       withTimer { timer =>

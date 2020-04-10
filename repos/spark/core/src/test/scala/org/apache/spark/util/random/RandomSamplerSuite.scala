@@ -51,6 +51,7 @@ class RandomSamplerSuite extends SparkFunSuite with Matchers {
     * some probability.  Even when two distributions are the same, they will register as
     * different 10% of the time at a p-value of 0.1
     */
+
   // This D value is the precomputed KS statistic for p-value 0.1, sample size 1000:
   val sampleSize = 1000
   val D = 0.0544280747619

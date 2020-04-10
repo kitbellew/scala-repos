@@ -39,7 +39,9 @@ final class MapIntIntSeqPartialAction[A, SA <: SeqLike[A, SA]](implicit
     if (perm.isEmpty) return Opt(sa)
     if (perm.keys.max >= sa.size) return Opt.empty[SA]
     val builder = cbf()
-    cforRange(0 until sa.size) { k => builder += sa(perm.getOrElse(k, k)) }
+    cforRange(0 until sa.size) { k =>
+      builder += sa(perm.getOrElse(k, k))
+    }
     Opt(builder.result())
   }
   def partialActr(sa: SA, perm: Map[Int, Int]): Opt[SA] =

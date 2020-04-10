@@ -36,7 +36,9 @@ object TUtil {
 class TupleAdderJob(args: Args) extends Job(args) {
 
   TypedText.tsv[(String, String)]("input")
-    .map { f => (1 +: f) ++ (2, 3) }
+    .map { f =>
+      (1 +: f) ++ (2, 3)
+    }
     .write(TypedText.tsv[(Int, String, String, Int, Int)]("output"))
 }
 

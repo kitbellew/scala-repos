@@ -54,7 +54,9 @@ object PairingRepo {
       selectTourUser(tourId, userId),
       BSONDocument("_id" -> false, "u" -> true)
     ).cursor[BSONDocument]().collect[List]().map {
-      _.flatMap { doc => ~doc.getAs[List[String]]("u").filter(userId !=) }.toSet
+      _.flatMap { doc =>
+        ~doc.getAs[List[String]]("u").filter(userId !=)
+      }.toSet
     }
 
   def recentIdsByTourAndUserId(

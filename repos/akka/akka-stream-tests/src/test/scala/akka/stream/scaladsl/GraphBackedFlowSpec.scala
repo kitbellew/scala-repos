@@ -93,11 +93,13 @@ class GraphFlowSpec extends AkkaSpec {
         val probe = TestSubscriber.manualProbe[Int]()
 
         val flow1 = Flow.fromGraph(GraphDSL.create(partialGraph) {
-          implicit b ⇒ partial ⇒ FlowShape(partial.in, partial.out)
+          implicit b ⇒ partial ⇒
+            FlowShape(partial.in, partial.out)
         })
 
         val flow2 = Flow.fromGraph(GraphDSL.create(Flow[String].map(_.toInt)) {
-          implicit b ⇒ importFlow ⇒ FlowShape(importFlow.in, importFlow.out)
+          implicit b ⇒ importFlow ⇒
+            FlowShape(importFlow.in, importFlow.out)
         })
 
         source1.via(flow1).via(flow2).to(Sink.fromSubscriber(probe)).run()
@@ -174,7 +176,8 @@ class GraphFlowSpec extends AkkaSpec {
         })
 
         val flow = Flow.fromGraph(GraphDSL.create(Flow[String].map(_.toInt)) {
-          implicit b ⇒ importFlow ⇒ FlowShape(importFlow.in, importFlow.out)
+          implicit b ⇒ importFlow ⇒
+            FlowShape(importFlow.in, importFlow.out)
         })
 
         source.via(flow).to(Sink.fromSubscriber(probe)).run()
@@ -258,7 +261,8 @@ class GraphFlowSpec extends AkkaSpec {
         val probe = TestSubscriber.manualProbe[Int]()
 
         val flow = Flow.fromGraph(GraphDSL.create(partialGraph) {
-          implicit b ⇒ partial ⇒ FlowShape(partial.in, partial.out)
+          implicit b ⇒ partial ⇒
+            FlowShape(partial.in, partial.out)
         })
 
         val sink = Sink.fromGraph(GraphDSL.create(Flow[String].map(_.toInt)) {
@@ -325,7 +329,8 @@ class GraphFlowSpec extends AkkaSpec {
         val outSink = Sink.asPublisher[Int](false)
 
         val source = Source.fromGraph(GraphDSL.create(inSource) {
-          implicit b ⇒ src ⇒ SourceShape(src.out)
+          implicit b ⇒ src ⇒
+            SourceShape(src.out)
         })
 
         val sink = Sink.fromGraph(GraphDSL.create(outSink) { implicit b ⇒ snk ⇒

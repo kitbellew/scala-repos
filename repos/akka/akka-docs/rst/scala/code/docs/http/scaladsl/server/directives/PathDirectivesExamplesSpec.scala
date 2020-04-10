@@ -42,7 +42,9 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
 
   //# pathPrefixTest-, rawPathPrefix-, rawPathPrefixTest-, pathSuffix-, pathSuffixTest-
   val completeWithUnmatchedPath =
-    extractUnmatchedPath { p => complete(p.toString) }
+    extractUnmatchedPath { p =>
+      complete(p.toString)
+    }
 
   //#
 

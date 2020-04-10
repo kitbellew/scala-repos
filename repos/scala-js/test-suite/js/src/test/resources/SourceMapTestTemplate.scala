@@ -168,6 +168,7 @@ class SourceMapTest {
     val unparsed = json.write(parsed) /**/
     /**/
     val reparsed = json.read(unparsed) /**/
+
     for (json <- Seq(parsed, reparsed)) {
 
       /**/

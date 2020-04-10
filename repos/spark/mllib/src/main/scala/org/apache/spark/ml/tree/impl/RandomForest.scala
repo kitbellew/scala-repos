@@ -574,7 +574,8 @@ private[ml] object RandomForest extends Logging {
           // each node will have a nodeStatsAggregator
           val nodeStatsAggregators = Array.tabulate(numNodes) { nodeIndex =>
             val featuresForNode = nodeToFeaturesBc.value.flatMap {
-              nodeToFeatures => Some(nodeToFeatures(nodeIndex))
+              nodeToFeatures =>
+                Some(nodeToFeatures(nodeIndex))
             }
             new DTStatsAggregator(metadata, featuresForNode)
           }
@@ -592,7 +593,8 @@ private[ml] object RandomForest extends Logging {
       partitionAggregates.reduceByKey((a, b) => a.merge(b)).map {
         case (nodeIndex, aggStats) =>
           val featuresForNode = nodeToFeaturesBc.value.flatMap {
-            nodeToFeatures => Some(nodeToFeatures(nodeIndex))
+            nodeToFeatures =>
+              Some(nodeToFeatures(nodeIndex))
           }
 
           // find best split for each node

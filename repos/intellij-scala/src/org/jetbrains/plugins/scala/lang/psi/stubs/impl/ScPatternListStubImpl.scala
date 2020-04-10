@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.ScPatternList
   * User: Alexander Podkhalyuzin
   * Date: 17.07.2009
   */
+
 class ScPatternListStubImpl[ParentPsi <: PsiElement] private (
     parent: StubElement[ParentPsi],
     elemType: IStubElementType[

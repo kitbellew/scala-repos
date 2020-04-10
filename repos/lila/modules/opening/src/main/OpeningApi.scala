@@ -90,6 +90,8 @@ private[opening] final class OpeningApi(
       nameColl.find(
         BSONDocument("_id" -> fen),
         BSONDocument("_id" -> false)
-      ).one[BSONDocument] map { obj => ~obj.??(_.getAs[List[String]]("names")) }
+      ).one[BSONDocument] map { obj =>
+        ~obj.??(_.getAs[List[String]]("names"))
+      }
   }
 }

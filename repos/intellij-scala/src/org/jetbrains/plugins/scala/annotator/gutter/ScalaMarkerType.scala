@@ -41,6 +41,7 @@ import scala.collection.mutable
   * User: Alexander Podkhalyuzin
   * Date: 09.11.2008
   */
+
 object ScalaMarkerType {
   private def elemFor(element: PsiElement): PsiElement =
     element.getNode.getElementType match {

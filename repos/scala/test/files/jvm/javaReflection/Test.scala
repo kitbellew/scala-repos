@@ -49,6 +49,7 @@ getSimpleName / getCanonicalName / isAnonymousClass / isLocalClass / isSynthetic
     checks for the SYNTHETEIC flag, which does not seem to be added by scalac (maybe this
     will change some day).
   */
+
 object Test {
 
   def tr[T](m: => T): String =

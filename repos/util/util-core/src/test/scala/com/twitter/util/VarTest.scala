@@ -313,7 +313,9 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("Var not executing until observed") {
     val x = Var(0)
     val invertX = x map { i => 1 / i }
-    val result = x flatMap { i => if (i == 0) Var(0) else invertX }
+    val result = x flatMap { i =>
+      if (i == 0) Var(0) else invertX
+    }
 
     x() = 42
     x() = 0 // this should not throw an exception because there are no observers

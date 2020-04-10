@@ -91,7 +91,9 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
       resp.topicsMetadata.find(_.topic == topic).flatMap { tm: TopicMetadata =>
         tm.partitionsMetadata.find(_.partitionId == partition)
       }.foreach { pm: PartitionMetadata =>
-        pm.leader.foreach { leader => return Right((leader.host, leader.port)) }
+        pm.leader.foreach { leader =>
+          return Right((leader.host, leader.port))
+        }
       }
     }
     Left(errs)
@@ -107,7 +109,9 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
         tm.partitionsMetadata.flatMap { pm: PartitionMetadata =>
           val tp = TopicAndPartition(tm.topic, pm.partitionId)
           if (topicAndPartitions(tp)) {
-            pm.leader.map { l => tp -> (l.host -> l.port) }
+            pm.leader.map { l =>
+              tp -> (l.host -> l.port)
+            }
           } else {
             None
           }
@@ -192,7 +196,9 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
   }
 
   private def flip[K, V](m: Map[K, V]): Map[V, Seq[K]] =
-    m.groupBy(_._2).map { kv => kv._1 -> kv._2.keys.toSeq }
+    m.groupBy(_._2).map { kv =>
+      kv._1 -> kv._2.keys.toSeq
+    }
 
   def getLeaderOffsets(
       topicAndPartitions: Set[TopicAndPartition],
@@ -265,7 +271,9 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
       groupId,
       topicAndPartitions,
       consumerApiVersion).right.map { r =>
-      r.map { kv => kv._1 -> kv._2.offset }
+      r.map { kv =>
+        kv._1 -> kv._2.offset
+      }
     }
   }
 
@@ -323,7 +331,9 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
       offsets: Map[TopicAndPartition, Long],
       consumerApiVersion: Short
   ): Either[Err, Map[TopicAndPartition, Short]] = {
-    val meta = offsets.map { kv => kv._1 -> OffsetAndMetadata(kv._2) }
+    val meta = offsets.map { kv =>
+      kv._1 -> OffsetAndMetadata(kv._2)
+    }
     setConsumerOffsetMetadata(groupId, meta, consumerApiVersion)
   }
 

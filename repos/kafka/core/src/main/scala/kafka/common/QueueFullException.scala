@@ -16,6 +16,7 @@ package kafka.common
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 /* Indicates the queue for sending messages is full of unsent messages */
 class QueueFullException(message: String) extends RuntimeException(message) {
   def this() = this(null)

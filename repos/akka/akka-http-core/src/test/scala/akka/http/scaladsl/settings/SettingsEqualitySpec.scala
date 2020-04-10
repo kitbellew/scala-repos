@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.http.scaladsl.settings
 
 import com.typesafe.config.ConfigFactory

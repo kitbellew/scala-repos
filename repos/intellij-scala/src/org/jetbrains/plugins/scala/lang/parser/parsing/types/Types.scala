@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 /**
   * @author Alexander Podkhalyuzin
   */
+
 /*
  *  Types ::= Type {',' Type}
  */

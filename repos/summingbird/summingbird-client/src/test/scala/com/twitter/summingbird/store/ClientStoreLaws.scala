@@ -12,6 +12,7 @@ import org.scalacheck._
   * present in the map will be mapped to successful futures. Missing
   * keys are interpreted as failed futures.
   */
+
 case class TestStore[K, +V](m: Map[K, Option[V]]) extends ReadableStore[K, V] {
   override def get(k: K) =
     m.get(k).map { Future.value(_) }

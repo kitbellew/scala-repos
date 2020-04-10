@@ -41,7 +41,9 @@ class ScroogeMacrosUnitTests
     }
 
     "Should RT" in {
-      forAll { a1: TestLists => assert(oBufCompare(rt(a1), a1) == 0) }
+      forAll { a1: TestLists =>
+        assert(oBufCompare(rt(a1), a1) == 0)
+      }
     }
 
     "Should Compare Equal" in {

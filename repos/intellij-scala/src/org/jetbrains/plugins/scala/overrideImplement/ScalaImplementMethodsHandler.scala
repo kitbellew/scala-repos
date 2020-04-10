@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile
   * User: Alexander Podkhalyuzin
   * Date: 08.07.2008
   */
+
 class ScalaImplementMethodsHandler extends LanguageCodeInsightActionHandler {
   def startInWriteAction: Boolean = false
 

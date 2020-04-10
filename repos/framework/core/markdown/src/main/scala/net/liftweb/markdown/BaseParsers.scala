@@ -30,6 +30,7 @@ import collection.SortedMap
   * Provides general, small parsers that are used by other parsers.
   * Also contains parsers for XML elements.
   */
+
 trait BaseParsers extends RegexParsers {
 
   /////////////////////////////////////////

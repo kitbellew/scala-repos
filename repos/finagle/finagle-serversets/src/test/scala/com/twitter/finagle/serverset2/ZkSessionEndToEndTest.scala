@@ -119,7 +119,9 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
     }))
 
     @volatile var sessions = Seq[ZkSession]()
-    varZkSession.changes.register(Witness({ s => sessions = s +: sessions }))
+    varZkSession.changes.register(Witness({ s =>
+      sessions = s +: sessions
+    }))
 
     // Wait for the initial connect.
     eventually {

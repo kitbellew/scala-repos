@@ -205,7 +205,9 @@ class ParquetAvroCompatibilitySuite
 
       checkAnswer(
         sqlContext.read.parquet(path),
-        (0 until 10).map { i => Row(Seq.tabulate(3, 3)((i, j) => i * 3 + j)) })
+        (0 until 10).map { i =>
+          Row(Seq.tabulate(3, 3)((i, j) => i * 3 + j))
+        })
     }
   }
 

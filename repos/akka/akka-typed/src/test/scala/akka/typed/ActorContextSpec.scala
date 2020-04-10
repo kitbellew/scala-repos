@@ -273,8 +273,9 @@ class ActorContextSpec
     def `00 must canonicalize behaviors`(): Unit =
       sync(setup("ctx00") { (ctx, startWith) ⇒
         val self = ctx.self
-        startWith.keep { subj ⇒ subj ! Ping(self) }.expectMessageKeep(
-          500.millis) { (msg, subj) ⇒
+        startWith.keep { subj ⇒
+          subj ! Ping(self)
+        }.expectMessageKeep(500.millis) { (msg, subj) ⇒
           msg should ===(Pong1)
           subj ! Miss(self)
         }.expectMessageKeep(500.millis) { (msg, subj) ⇒
@@ -283,7 +284,9 @@ class ActorContextSpec
         }.expectMessage(500.millis) { (msg, subj) ⇒
           msg should ===(Renewed)
           subj ! Ping(self)
-        }.expectMessage(500.millis) { (msg, _) ⇒ msg should ===(Pong1) }
+        }.expectMessage(500.millis) { (msg, _) ⇒
+          msg should ===(Pong1)
+        }
       })
 
     def `01 must correctly wire the lifecycle hooks`(): Unit =
@@ -317,7 +320,9 @@ class ActorContextSpec
         startWith.keep { subj ⇒
           ctx.watch(subj)
           stop(subj)
-        }.expectTermination(500.millis) { (t, subj) ⇒ t.ref should ===(subj) }
+        }.expectTermination(500.millis) { (t, subj) ⇒
+          t.ref should ===(subj)
+        }
       })
 
     def `03 must restart and stop a child actor`(): Unit =
@@ -353,7 +358,9 @@ class ActorContextSpec
             else if (t.ref === subj) child
             else
               fail(s"expected termination of either $subj or $child but got $t")
-        }.expectTermination(500.millis) { (t, subj) ⇒ t.ref should ===(subj) }
+        }.expectTermination(500.millis) { (t, subj) ⇒
+          t.ref should ===(subj)
+        }
       })
 
     def `04 must stop a child actor`(): Unit =
@@ -370,7 +377,9 @@ class ActorContextSpec
         }.expectMessageKeep(500.millis) { (msg, child) ⇒
           msg should ===(Killed)
           ctx.watch(child)
-        }.expectTermination(500.millis) { (t, child) ⇒ t.ref should ===(child) }
+        }.expectTermination(500.millis) { (t, child) ⇒
+          t.ref should ===(child)
+        }
       })
 
     def `05 must reset behavior upon Restart`(): Unit =
@@ -425,14 +434,17 @@ class ActorContextSpec
             Failed.Stop
           }.expectMessageKeep(500.millis) { (msg, _) ⇒
             msg should ===(GotSignal(PostStop))
-          }.expectTermination(500.millis) { (t, subj) ⇒ t.ref should ===(subj) }
+          }.expectTermination(500.millis) { (t, subj) ⇒
+            t.ref should ===(subj)
+          }
       })
 
     def `08 must not stop non-child actor`(): Unit =
       sync(setup("ctx08") { (ctx, startWith) ⇒
         val self = ctx.self
         startWith.mkChild(Some("A"), ctx.spawnAdapter(ChildEvent), self) {
-          pair ⇒ (pair._1, pair._2, ctx.spawn(Props(behavior(ctx)), "A"))
+          pair ⇒
+            (pair._1, pair._2, ctx.spawn(Props(behavior(ctx)), "A"))
         }.expectMessage(500.millis) {
           case (msg, (subj, child, other)) ⇒
             msg should ===(GotSignal(PreStart))
@@ -574,8 +586,9 @@ class ActorContextSpec
 
     def `40 must create a working adapter`(): Unit =
       sync(setup("ctx40") { (ctx, startWith) ⇒
-        startWith.keep { subj ⇒ subj ! GetAdapter(ctx.self) }.expectMessage(
-          500.millis) { (msg, subj) ⇒
+        startWith.keep { subj ⇒
+          subj ! GetAdapter(ctx.self)
+        }.expectMessage(500.millis) { (msg, subj) ⇒
           val Adapter(adapter) = msg
           ctx.watch(adapter)
           adapter ! Ping(ctx.self)

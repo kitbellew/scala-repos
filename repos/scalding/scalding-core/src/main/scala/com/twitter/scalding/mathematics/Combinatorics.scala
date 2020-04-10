@@ -16,6 +16,7 @@ import cascading.pipe.Pipe
   *
   * @author : Krishnan Raman, kraman@twitter.com
   */
+
 object Combinatorics {
 
   /**
@@ -93,6 +94,7 @@ object Combinatorics {
     * Return a pipe with all nPk permutations, with k columns per row
     * For details, see combinations(...) above
     */
+
   def permutations[T](input: IndexedSeq[T], k: Int)(implicit
       flowDef: FlowDef,
       mode: Mode): Pipe = {
@@ -169,6 +171,7 @@ object Combinatorics {
     * This is at the heart of portfolio mgmt( Markowitz optimization), subset-sum, operations-research LP problems.
     *
     */
+
   def weightedSum(weights: IndexedSeq[Double], result: Double, error: Double)(
       implicit
       flowDef: FlowDef,

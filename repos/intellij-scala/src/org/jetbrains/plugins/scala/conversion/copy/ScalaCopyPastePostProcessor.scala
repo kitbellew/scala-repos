@@ -29,6 +29,7 @@ import scala.util.control.Breaks._
 /**
   * Pavel Fatin
   */
+
 class ScalaCopyPastePostProcessor
     extends SingularCopyPastePostProcessor[Associations] {
   private val Log = Logger.getInstance(getClass)

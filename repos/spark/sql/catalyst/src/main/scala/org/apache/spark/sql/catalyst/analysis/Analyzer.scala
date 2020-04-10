@@ -627,7 +627,8 @@ class Analyzer(
           o.transformExpressions {
             case expr =>
               deserializerToAttributes.get(new TreeNodeRef(expr)).map {
-                attributes => resolveDeserializer(expr, attributes)
+                attributes =>
+                  resolveDeserializer(expr, attributes)
               }.getOrElse(expr)
           }
 

@@ -14,7 +14,9 @@ object ViewExample extends App {
     def receiveCommand: Receive = {
       case payload: String =>
         println(s"persistentActor received ${payload} (nr = ${count})")
-        persist(payload + count) { evt => count += 1 }
+        persist(payload + count) { evt =>
+          count += 1
+        }
     }
 
     def receiveRecover: Receive = {

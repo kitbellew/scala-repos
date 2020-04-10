@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.debugger.{
   * User: Alefas
   * Date: 20.10.11
   */
+
 class ScalaThisAndSuperEvaluationTest
     extends ScalaThisAndSuperEvaluationTestBaseClass
     with ScalaVersion_2_11

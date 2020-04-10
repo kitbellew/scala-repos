@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
 /**
   * Pavel Fatin
   */
+
 trait PsiElementExtTrait {
   protected def repr: PsiElement
 

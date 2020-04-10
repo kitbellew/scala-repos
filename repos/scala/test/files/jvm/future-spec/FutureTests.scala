@@ -42,7 +42,8 @@ class FutureTests extends MinimalScalaTest {
       implicit val ec = scala.concurrent.ExecutionContext.fromExecutor(
         new java.util.concurrent.ForkJoinPool(),
         {
-          t => ms += t
+          t =>
+            ms += t
         })
 
       class ThrowableTest(m: String) extends Throwable(m)
@@ -167,11 +168,10 @@ class FutureTests extends MinimalScalaTest {
         ECNotUsed(ec =>
           f.collect({ case _ => fail("collect should not have been called") })(
             ec)) eq f)
-      assert(
-        ECNotUsed(ec =>
-          f.zipWith(f)({ (_, _) =>
-            fail("zipWith should not have been called")
-          })(ec)) eq f)
+      assert(ECNotUsed(ec =>
+        f.zipWith(f)({ (_, _) =>
+          fail("zipWith should not have been called")
+        })(ec)) eq f)
     }
   }
 

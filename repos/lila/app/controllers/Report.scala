@@ -15,7 +15,9 @@ object Report extends LilaController {
 
   def list =
     Secure(_.SeeReport) { implicit ctx => _ =>
-      api unprocessedAndRecent 50 map { reports => html.report.list(reports) }
+      api unprocessedAndRecent 50 map { reports =>
+        html.report.list(reports)
+      }
     }
 
   def process(id: String) =

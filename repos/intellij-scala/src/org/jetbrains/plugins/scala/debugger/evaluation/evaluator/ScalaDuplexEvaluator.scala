@@ -9,6 +9,7 @@ import org.jetbrains.plugins.scala.debugger.evaluation.EvaluationException
   * Nikolay.Tropin
   * 7/31/13
   */
+
 /**
   * Tries to use first evaluator first. If gets exception or null, uses second one.
   */

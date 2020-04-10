@@ -95,7 +95,9 @@ object CookiesSpec extends Specification {
       val c: Cookies = Cookies.fromCookieHeader(Some(headerString))
 
       var myCookie: Cookie = null
-      c.foreach { cookie => myCookie = cookie }
+      c.foreach { cookie =>
+        myCookie = cookie
+      }
       myCookie must beEqualTo(cookie1)
     }
   }

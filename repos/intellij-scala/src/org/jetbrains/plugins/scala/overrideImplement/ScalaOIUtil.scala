@@ -33,6 +33,7 @@ import scala.collection.mutable.ListBuffer
   * User: Alexander Podkhalyuzin
   * Date: 08.07.2008
   */
+
 object ScalaOIUtil {
 
   def toClassMember(

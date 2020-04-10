@@ -30,6 +30,7 @@ import com.twitter.summingbird.scalding.batch.BatchedSink
   * with one file per each batch ID. On the online side, this can be a
   * kestrel fanout or kafka topic.
   */
+
 // @deprecated("ignores time", "0.1.0")
 trait OfflineSink[Event] {
   def write(batchID: BatchID, pipe: TypedPipe[Event])(implicit

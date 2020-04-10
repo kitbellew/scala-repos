@@ -59,7 +59,9 @@ trait ActionLaws[G, A] extends Laws {
       name = "leftMonoidAction",
       sl = _.monoid(G0),
       parents = Seq(leftSemigroupAction),
-      "left identity" → forAll { (a: A) => (G0.id |+|> a) === a }
+      "left identity" → forAll { (a: A) =>
+        (G0.id |+|> a) === a
+      }
     )
 
   def rightMonoidAction(implicit G: RightAction[A, G], G0: Monoid[G]) =
@@ -67,7 +69,9 @@ trait ActionLaws[G, A] extends Laws {
       name = "rightMonoidAction",
       sl = _.monoid(G0),
       parents = Seq(rightSemigroupAction),
-      "right identity" → forAll { (a: A) => (a <|+| G0.id) === a }
+      "right identity" → forAll { (a: A) =>
+        (a <|+| G0.id) === a
+      }
     )
 
   def monoidAction(implicit G: Action[A, G], G0: Monoid[G]) =

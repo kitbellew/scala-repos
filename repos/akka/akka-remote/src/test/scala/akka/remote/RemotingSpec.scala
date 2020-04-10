@@ -288,7 +288,9 @@ class RemotingSpec
       }
 
       // then we shutdown all but one system to simulate broken connections
-      moreSystems foreach { sys ⇒ shutdown(sys) }
+      moreSystems foreach { sys ⇒
+        shutdown(sys)
+      }
 
       1 to n foreach { x ⇒
         aliveEcho ! "ping"

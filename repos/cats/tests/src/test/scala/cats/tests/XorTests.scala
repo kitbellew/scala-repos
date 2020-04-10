@@ -114,7 +114,9 @@ class XorTests extends CatsSuite {
   }
 
   test("fromTry is left for failed Try") {
-    forAll { t: Try[Int] => t.isFailure should ===(Xor.fromTry(t).isLeft) }
+    forAll { t: Try[Int] =>
+      t.isFailure should ===(Xor.fromTry(t).isLeft)
+    }
   }
 
   test("fromEither isRight consistent with Either.isRight") {
@@ -130,7 +132,9 @@ class XorTests extends CatsSuite {
   }
 
   test("double swap is identity") {
-    forAll { (x: Int Xor String) => x.swap.swap should ===(x) }
+    forAll { (x: Int Xor String) =>
+      x.swap.swap should ===(x)
+    }
   }
 
   test("swap negates isLeft/isRight") {
@@ -141,7 +145,9 @@ class XorTests extends CatsSuite {
   }
 
   test("isLeft consistent with isRight") {
-    forAll { (x: Int Xor String) => x.isLeft should !==(x.isRight) }
+    forAll { (x: Int Xor String) =>
+      x.isLeft should !==(x.isRight)
+    }
   }
 
   test("foreach is noop for left") {
@@ -231,7 +237,9 @@ class XorTests extends CatsSuite {
   }
 
   test("toIor then toXor is identity") {
-    forAll { (x: Int Xor String) => x.toIor.toXor should ===(x) }
+    forAll { (x: Int Xor String) =>
+      x.toIor.toXor should ===(x)
+    }
   }
 
   test("isLeft consistency") {
@@ -256,7 +264,9 @@ class XorTests extends CatsSuite {
   }
 
   test("to consistent with toList") {
-    forAll { (x: Int Xor String) => x.to[List, String] should ===(x.toList) }
+    forAll { (x: Int Xor String) =>
+      x.to[List, String] should ===(x.toList)
+    }
   }
 
   test("to consistent with toOption") {

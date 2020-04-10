@@ -37,7 +37,8 @@ class AppVersionsResource(
     authenticated(req) { implicit identity =>
       val id = appId.toRootPath
       withAuthorization(ViewApp, result(groupManager.app(id)), unknownApp(id)) {
-        _ => ok(jsonObjString("versions" -> service.listAppVersions(id).toSeq))
+        _ =>
+          ok(jsonObjString("versions" -> service.listAppVersions(id).toSeq))
       }
     }
 
@@ -54,6 +55,8 @@ class AppVersionsResource(
       withAuthorization(
         ViewApp,
         service.getApp(id, timestamp),
-        unknownApp(id, Some(timestamp))) { app => ok(jsonString(app)) }
+        unknownApp(id, Some(timestamp))) { app =>
+        ok(jsonString(app))
+      }
     }
 }

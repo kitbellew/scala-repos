@@ -34,7 +34,9 @@ final class DBModule extends Module {
   }
 
   private def namedDatabaseBindings(dbs: Set[String]): Seq[Binding[_]] =
-    dbs.toSeq.map { db => bindNamed(db).to(new NamedDatabaseProvider(db)) }
+    dbs.toSeq.map { db =>
+      bindNamed(db).to(new NamedDatabaseProvider(db))
+    }
 
   private def defaultDatabaseBinding(
       default: String,

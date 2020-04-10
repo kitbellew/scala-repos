@@ -25,6 +25,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   * User: Dmitry Naydanov
   * Date: 4/7/12
   */
+
 class ScalaXmlUnmatchedTagInspection extends LocalInspectionTool {
   override def isEnabledByDefault: Boolean = true
 

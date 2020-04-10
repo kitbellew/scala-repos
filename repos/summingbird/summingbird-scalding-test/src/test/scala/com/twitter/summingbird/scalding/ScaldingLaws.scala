@@ -62,6 +62,7 @@ import org.scalatest.WordSpec
 /**
   * Tests for Summingbird's Scalding planner.
   */
+
 class ScaldingLaws extends WordSpec {
   import MapAlgebra.sparseEquiv
 

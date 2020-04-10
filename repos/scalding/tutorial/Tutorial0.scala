@@ -37,6 +37,7 @@ And the output:
 The output should look just like the input, but with line numbers.
 More on this in part 1 of the tutorial.
 **/
+
 /**
 All jobs in scalding are represented by a subclass of com.twitter.scalding.Job.
 The constructor must take a single com.twitter.scalding.Args, even if, as here,

@@ -6,4 +6,5 @@ import org.jetbrains.plugins.scala.base.ScalaFixtureTestCase
   * User: Alefas
   * Date: 04.10.11
   */
+
 abstract class ScalaRenameTestBase extends ScalaFixtureTestCase {}

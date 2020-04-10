@@ -723,7 +723,9 @@ private[optimizer] abstract class OptimizerCore(
     trees match {
       case first :: rest =>
         pretransformExpr(first) { tfirst =>
-          pretransformExprs(rest) { trest => cont(tfirst :: trest) }
+          pretransformExprs(rest) { trest =>
+            cont(tfirst :: trest)
+          }
         }
 
       case Nil =>
@@ -738,7 +740,9 @@ private[optimizer] abstract class OptimizerCore(
       cont: (PreTransform, PreTransform) => TailRec[Tree])(implicit
       scope: Scope): TailRec[Tree] = {
     pretransformExpr(tree1) { ttree1 =>
-      pretransformExpr(tree2) { ttree2 => cont(ttree1, ttree2) }
+      pretransformExpr(tree2) { ttree2 =>
+        cont(ttree1, ttree2)
+      }
     }
   }
 
@@ -749,7 +753,9 @@ private[optimizer] abstract class OptimizerCore(
       cont: (PreTransform, List[PreTransform]) => TailRec[Tree])(implicit
       scope: Scope): TailRec[Tree] = {
     pretransformExpr(first) { tfirst =>
-      pretransformExprs(rest) { trest => cont(tfirst, trest) }
+      pretransformExprs(rest) { trest =>
+        cont(tfirst, trest)
+      }
     }
   }
 
@@ -980,7 +986,8 @@ private[optimizer] abstract class OptimizerCore(
         case (VarDef(Ident(name, originalName), vtpe, mutable, rhs)) :: rest =>
           pretransformExpr(rhs) { trhs =>
             withBinding(Binding(name, originalName, vtpe, mutable, trhs)) {
-              (restScope, cont1) => pretransformList(rest)(cont1)(restScope)
+              (restScope, cont1) =>
+                pretransformList(rest)(cont1)(restScope)
             }(cont)
           }
 
@@ -1169,7 +1176,9 @@ private[optimizer] abstract class OptimizerCore(
   private def pretransformNoLocalDef(tree: Tree)(
       cont: PreTransGenTree => TailRec[Tree])(implicit
       scope: Scope): TailRec[Tree] = {
-    pretransformExpr(tree) { ttree => cont(resolveLocalDef(ttree)) }
+    pretransformExpr(tree) { ttree =>
+      cont(resolveLocalDef(ttree))
+    }
   }
 
   /** Finishes a pretransform, either a statement or an expression. */
@@ -3806,7 +3815,8 @@ private[optimizer] abstract class OptimizerCore(
         value match {
           case PreTransBlock(stats, result) =>
             withNewLocalDef(binding.copy(value = result))(buildInner) {
-              tresult => cont(PreTransBlock(stats, tresult))
+              tresult =>
+                cont(PreTransBlock(stats, tresult))
             }
 
           case PreTransLocalDef(localDef) if !localDef.mutable =>

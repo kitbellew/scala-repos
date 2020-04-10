@@ -68,13 +68,17 @@ class RationalCheck
     (x + y) * z shouldBe x * z + y * z
   }
 
-  rat1("Round-trip to Real") { (x: Q) => x.toReal.toRational shouldBe x }
+  rat1("Round-trip to Real") { (x: Q) =>
+    x.toReal.toRational shouldBe x
+  }
 
   rat1("Round-trip to Algebraic") { (x: Q) =>
     x.toAlgebraic.toRational shouldBe Some(x)
   }
 
   property("Round-trip Double") {
-    forAll("x") { (n: Double) => Rational(n).toDouble == n }
+    forAll("x") { (n: Double) =>
+      Rational(n).toDouble == n
+    }
   }
 }

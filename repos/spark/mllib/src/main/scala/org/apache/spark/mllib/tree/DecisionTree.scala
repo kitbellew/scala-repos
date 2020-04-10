@@ -693,7 +693,8 @@ object DecisionTree extends Serializable with Logging {
           // each node will have a nodeStatsAggregator
           val nodeStatsAggregators = Array.tabulate(numNodes) { nodeIndex =>
             val featuresForNode = nodeToFeaturesBc.value.flatMap {
-              nodeToFeatures => Some(nodeToFeatures(nodeIndex))
+              nodeToFeatures =>
+                Some(nodeToFeatures(nodeIndex))
             }
             new DTStatsAggregator(metadata, featuresForNode)
           }
@@ -711,7 +712,8 @@ object DecisionTree extends Serializable with Logging {
           // each node will have a nodeStatsAggregator
           val nodeStatsAggregators = Array.tabulate(numNodes) { nodeIndex =>
             val featuresForNode = nodeToFeaturesBc.value.flatMap {
-              nodeToFeatures => Some(nodeToFeatures(nodeIndex))
+              nodeToFeatures =>
+                Some(nodeToFeatures(nodeIndex))
             }
             new DTStatsAggregator(metadata, featuresForNode)
           }

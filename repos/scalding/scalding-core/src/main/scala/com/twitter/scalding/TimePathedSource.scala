@@ -45,7 +45,9 @@ object TimePathedSource {
       tz: TimeZone): Iterable[String] =
     // This method is exhaustive, but too expensive for Cascading's JobConf writing.
     dateRange.each(duration)
-      .map { dr: DateRange => toPath(pattern, dr.start, tz) }
+      .map { dr: DateRange =>
+        toPath(pattern, dr.start, tz)
+      }
 
   /**
     * Gives all read paths in the given daterange.
@@ -83,7 +85,9 @@ abstract class TimeSeqPathedSource(
 
   override def hdfsPaths =
     patterns
-      .flatMap { pattern: String => Globifier(pattern)(tz).globify(dateRange) }
+      .flatMap { pattern: String =>
+        Globifier(pattern)(tz).globify(dateRange)
+      }
 
   /**
     * Override this if you have for instance an hourly pattern but want to run every 6 hours.
@@ -155,7 +159,9 @@ abstract class TimePathedSource(
 
   override def localPaths =
     patterns
-      .flatMap { pattern: String => Globifier(pattern)(tz).globify(dateRange) }
+      .flatMap { pattern: String =>
+        Globifier(pattern)(tz).globify(dateRange)
+      }
 }
 
 /*

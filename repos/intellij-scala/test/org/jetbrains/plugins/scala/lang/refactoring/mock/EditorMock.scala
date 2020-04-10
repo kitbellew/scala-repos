@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.impl.DocumentImpl
 /**
   * Pavel Fatin
   */
+
 class EditorMock(text: String, offset: Int) extends EditorStub {
   private val selection = new SelectionModelStub()
 

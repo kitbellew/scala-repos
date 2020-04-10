@@ -343,7 +343,9 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       relavence: Int): List[CompletionInfo] = {
     val s = e.getSimpleName.toString
     ElementFilter.constructorsIn(info.getElements().getAllMembers(e)).map(
-      methodInfo(_, relavence)).map { m => m.copy(name = s) }.toList
+      methodInfo(_, relavence)).map { m =>
+      m.copy(name = s)
+    }.toList
   }
 
   private def localTypeName(tm: TypeMirror) = {

@@ -25,6 +25,7 @@ import _root_.scala.util.Sorting
   * User: Alexander Podkhalyuzin
   * Date: 02.03.2009
   */
+
 abstract class FunctionParameterInfoTestBase
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   val caretMarker = "/*caret*/"

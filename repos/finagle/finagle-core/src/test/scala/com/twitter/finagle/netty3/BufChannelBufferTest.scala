@@ -1198,7 +1198,9 @@ class BufChannelBufferTest extends FunSuite with BeforeAndAfter {
     val wrapped = ChannelBuffers.wrappedBuffer(bytes)
     val bcb = new BufChannelBuffer(Buf.ByteArray.Owned(bytes))
     wrapped.writerIndex(0)
-    0.until(CAPACITY, 4) foreach { i => wrapped.writeInt(i) }
+    0.until(CAPACITY, 4) foreach { i =>
+      wrapped.writeInt(i)
+    }
     bcb.readByte()
     intercept[ReadOnlyBufferException] {
       bcb.discardReadBytes()

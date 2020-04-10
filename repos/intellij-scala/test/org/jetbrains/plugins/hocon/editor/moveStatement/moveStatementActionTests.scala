@@ -8,6 +8,7 @@ import org.junit.runners.AllTests
 /**
   * @author ghik
   */
+
 object HoconMoveStatementDownActionTest
     extends TestSuiteCompanion[HoconMoveStatementDownActionTest]
 

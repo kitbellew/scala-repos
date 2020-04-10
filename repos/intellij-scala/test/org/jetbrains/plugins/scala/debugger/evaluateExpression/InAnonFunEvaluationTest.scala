@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.debugger.{
   * Nikolay.Tropin
   * 8/2/13
   */
+
 class InAnonFunEvaluationTest
     extends InAnonFunEvaluationTestBase
     with ScalaVersion_2_11

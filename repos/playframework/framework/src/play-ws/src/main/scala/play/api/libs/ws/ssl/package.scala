@@ -35,7 +35,8 @@ package object ssl {
 
   def debugChain(chain: Array[X509Certificate]): Seq[String] = {
     chain.map {
-      cert => s"${cert.getSubjectDN.getName}"
+      cert =>
+        s"${cert.getSubjectDN.getName}"
     }
   }
 

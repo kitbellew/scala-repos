@@ -17,6 +17,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.search.ScalaOverridingMemberSea
 /**
   * User: Jason Zaugg
   */
+
 class RenameScalaTypeAliasProcessor
     extends RenameJavaMemberProcessor
     with ScalaRenameProcessor {

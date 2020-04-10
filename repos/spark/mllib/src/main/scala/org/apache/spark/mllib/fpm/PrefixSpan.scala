@@ -144,7 +144,11 @@ class PrefixSpan private (
     // Find frequent items.
     val freqItemAndCounts = data.flatMap { itemsets =>
       val uniqItems = mutable.Set.empty[Item]
-      itemsets.foreach { _.foreach { item => uniqItems += item } }
+      itemsets.foreach {
+        _.foreach { item =>
+          uniqItems += item
+        }
+      }
       uniqItems.toIterator.map((_, 1L))
     }.reduceByKey(_ + _)
       .filter {

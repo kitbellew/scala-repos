@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.expressions.Annotation
   * @author Alexander Podkhalyuzin
   * Date: 11.02.2008
   */
+
 /*
  * Dcl ::= [{Annotation} {Modifier}]
  *          ('val' ValDcl

@@ -29,8 +29,12 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec {
   }
   "formField" in {
     val route =
-      formField('color) { color => complete(s"The color is '$color'") } ~
-        formField('id.as[Int]) { id => complete(s"The id is '$id'") }
+      formField('color) { color =>
+        complete(s"The color is '$color'")
+      } ~
+        formField('id.as[Int]) { id =>
+          complete(s"The id is '$id'")
+        }
 
     // tests:
     Post("/", FormData("color" -> "blue")) ~> route ~> check {

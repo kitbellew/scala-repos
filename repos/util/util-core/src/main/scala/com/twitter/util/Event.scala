@@ -41,7 +41,9 @@ trait Event[+T] { self =>
   def collect[U](f: PartialFunction[T, U]): Event[U] =
     new Event[U] {
       def register(s: Witness[U]): Closable =
-        self.respond { t => f.runWith(s.notify)(t) }
+        self.respond { t =>
+          f.runWith(s.notify)(t)
+        }
     }
 
   /**

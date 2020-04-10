@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScPatternDefinition
 /**
   * Pavel.Fatin, 18.05.2010
   */
+
 trait PatternDefinitionAnnotator {
   def annotatePatternDefinition(
       definition: ScPatternDefinition,

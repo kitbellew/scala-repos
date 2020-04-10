@@ -11,6 +11,7 @@ import com.sun.jdi.BooleanValue
   * User: Alefas
   * Date: 19.10.11
   */
+
 class ScalaIfEvaluator(
     condition: Evaluator,
     ifBranch: Evaluator,

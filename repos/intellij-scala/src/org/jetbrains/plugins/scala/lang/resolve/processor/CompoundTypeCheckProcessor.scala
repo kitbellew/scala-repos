@@ -26,6 +26,7 @@ import org.jetbrains.plugins.scala.lang.resolve.{ResolveTargets, StdKinds}
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class CompoundTypeCheckSignatureProcessor(
     s: Signature,
     retType: ScType,

@@ -64,6 +64,7 @@ import scala.collection.mutable.ArrayBuffer
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
   */
+
 class ScConstructorImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScConstructor {

@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.persistence.serialization
 
 import akka.actor.{ActorPath, ExtendedActorSystem}
@@ -146,7 +147,9 @@ class MessageSerializer(val system: ExtendedActorSystem)
 
   private def atomicWriteBuilder(a: AtomicWrite) = {
     val builder = mf.AtomicWrite.newBuilder
-    a.payload.foreach { p ⇒ builder.addPayload(persistentMessageBuilder(p)) }
+    a.payload.foreach { p ⇒
+      builder.addPayload(persistentMessageBuilder(p))
+    }
     builder
   }
 

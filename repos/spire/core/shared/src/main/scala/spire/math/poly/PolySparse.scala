@@ -54,7 +54,9 @@ case class PolySparse[@sp(Double) C] private[spire] (
     } else {
       val cs = new Array[C](degree + 1)
       cfor(0)(_ < cs.length, _ + 1) { i => cs(i) = ring.zero }
-      cfor(0)(_ < exp.length, _ + 1) { i => cs(exp(i)) = coeff(i) }
+      cfor(0)(_ < exp.length, _ + 1) { i =>
+        cs(exp(i)) = coeff(i)
+      }
       cs
     }
 
@@ -198,7 +200,9 @@ case class PolySparse[@sp(Double) C] private[spire] (
       PolySparse.zero[C]
     } else {
       val cs = new Array[C](coeff.length)
-      cfor(0)(_ < cs.length, _ + 1) { i => cs(i) = k * coeff(i) }
+      cfor(0)(_ < cs.length, _ + 1) { i =>
+        cs(i) = k * coeff(i)
+      }
       new PolySparse(exp, cs)
     }
   }

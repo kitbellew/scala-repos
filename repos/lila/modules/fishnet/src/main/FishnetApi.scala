@@ -176,7 +176,8 @@ final class FishnetApi(
     Client.Skill.byKey(skill).fold(fufail[Unit](s"Invalid skill $skill")) {
       sk =>
         repo getClient key flatten s"No client with key $key" flatMap {
-          client => repo updateClient client.copy(skill = sk)
+          client =>
+            repo updateClient client.copy(skill = sk)
         }
     }
 }

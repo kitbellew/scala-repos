@@ -297,7 +297,9 @@ class MigrationTo0_13(taskRepository: TaskRepository, store: PersistentStore) {
       namesInOldFormat.foldLeft(Future.successful(())) { (f, nextKey) =>
         f.flatMap(_ => migrateKey(nextKey))
       }
-    }.map { _ => log.info("Completed 0.13 migration") }
+    }.map { _ =>
+      log.info("Completed 0.13 migration")
+    }
   }
 
   // including 0.12, task keys are in format task:appId:taskId – the appId is

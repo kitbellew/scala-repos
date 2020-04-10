@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocSyntaxElement
   * User: Dmitry Naidanov
   * Date: 11/21/11
   */
+
 class ScalaDocUnbalancedHeaderInspection extends LocalInspectionTool {
   override def buildVisitor(
       holder: ProblemsHolder,

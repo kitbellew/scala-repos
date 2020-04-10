@@ -33,6 +33,7 @@ import scala.collection.mutable
   * User: Dmitry Naidanov
   * Date: 11/21/11
   */
+
 class ScalaDocUnknownParameterInspection extends LocalInspectionTool {
   override def isEnabledByDefault: Boolean = true
 

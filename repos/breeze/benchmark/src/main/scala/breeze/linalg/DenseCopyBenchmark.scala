@@ -13,7 +13,9 @@ class DenseCopyBenchmark extends BreezeBenchmark {
 
   def timeSmallDVset(reps: Int) = {
     var sum = 0.0
-    cforRange(0 until reps) { rep => dv := dv2 }
+    cforRange(0 until reps) { rep =>
+      dv := dv2
+    }
     dv2
   }
 
@@ -21,7 +23,9 @@ class DenseCopyBenchmark extends BreezeBenchmark {
     cforRange(0 until reps) { rep =>
       val ad = dv.data
       val bd = dv2.data
-      cforRange(0 until dv.length) { i => ad(2 * i) = bd(2 * i) }
+      cforRange(0 until dv.length) { i =>
+        ad(2 * i) = bd(2 * i)
+      }
     }
     dv
   }

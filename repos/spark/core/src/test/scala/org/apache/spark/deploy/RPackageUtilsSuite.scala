@@ -121,7 +121,9 @@ class RPackageUtilsSuite
         verbose = true)
       val individualJars = jars.split(",")
       val output = lineBuffer.mkString("\n")
-      individualJars.foreach { jarFile => assert(output.contains(s"$jarFile")) }
+      individualJars.foreach { jarFile =>
+        assert(output.contains(s"$jarFile"))
+      }
     }
   }
 

@@ -7,6 +7,7 @@ import breeze.util.Opt
   *
   * @author ktakagaki
   */
+
 ///General options-related
 
 //Generic options with implicit specialization cannot be employed for case objects

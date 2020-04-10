@@ -10,6 +10,7 @@ import org.jetbrains.plugins.scala.debugger.{
 /**
   * @author Nikolay.Tropin
   */
+
 class StepIntoTest extends StepIntoTestBase with ScalaVersion_2_11
 class StepIntoTest_212 extends StepIntoTestBase with ScalaVersion_2_12
 

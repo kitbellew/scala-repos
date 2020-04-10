@@ -106,7 +106,9 @@ private[finagle] object TimerStats {
     }
 
     def wheelTimeouts: Try[Int] =
-      buckets.map { bs => bs.map(bucketTimeouts).sum }
+      buckets.map { bs =>
+        bs.map(bucketTimeouts).sum
+      }
 
     val timerTask = new netty.TimerTask {
       override def run(timeout: netty.Timeout): Unit = {

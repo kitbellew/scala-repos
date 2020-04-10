@@ -59,6 +59,7 @@ import scala.collection.Seq
   * User: Alexander Podkhalyuzin
   * Date: 18.01.2009
   */
+
 class ScalaFunctionParameterInfoHandler
     extends ParameterInfoHandlerWithTabActionSupport[
       PsiElement,

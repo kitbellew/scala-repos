@@ -88,7 +88,9 @@ object KleeneDemo {
 
       override def kplus(m: Matrix[A]) = {
         def f(k: Int, m: Matrix[A]) =
-          Matrix[A] { (x, y) => m(x, y) + m(k, y) * m(k, k).kstar * m(x, k) }
+          Matrix[A] { (x, y) =>
+            m(x, y) + m(k, y) * m(k, k).kstar * m(x, k)
+          }
         @tailrec def loop(m: Matrix[A], i: Int): Matrix[A] =
           if (i >= 0) loop(f(i, m), i - 1) else m
         loop(m, dim.n - 1)
@@ -145,7 +147,9 @@ object KleeneDemo {
       val n = dim.n
       val arr = new Array[A](n * n)
       cfor(0)(_ < n, _ + 1) { y =>
-        cfor(0)(_ < n, _ + 1) { x => arr(y * n + x) = f(x, y) }
+        cfor(0)(_ < n, _ + 1) { x =>
+          arr(y * n + x) = f(x, y)
+        }
       }
       new ArrayMatrix(arr)
     }
@@ -223,7 +227,9 @@ object KleeneDemo {
 
       override def kplus(m: Matrix[A]) = {
         def f(k: Int, m: Matrix[A]) =
-          Matrix[A] { (x, y) => m(x, y) + m(k, y) * m(k, k).kstar * m(x, k) }
+          Matrix[A] { (x, y) =>
+            m(x, y) + m(k, y) * m(k, k).kstar * m(x, k)
+          }
         @tailrec def loop(m: Matrix[A], i: Int): Matrix[A] =
           if (i >= 0) loop(f(i, m), i - 1) else m
         loop(m, dim.n - 1)
@@ -256,7 +262,9 @@ object KleeneDemo {
   }
   object LabeledGraph {
     def apply(m: Matrix[Boolean])(implicit dim: Dim) =
-      Matrix[Option[Edge]] { (x, y) => if (m(x, y)) Some(Edge(y, x)) else None }
+      Matrix[Option[Edge]] { (x, y) =>
+        if (m(x, y)) Some(Edge(y, x)) else None
+      }
   }
 
   /**

@@ -31,7 +31,9 @@ case class Thread(
   def nbUnread: Int = posts count (_.isUnRead)
 
   def firstPostUnreadBy(user: User): Option[Post] =
-    posts find { post => post.isUnRead && post.isByCreator != isCreator(user) }
+    posts find { post =>
+      post.isUnRead && post.isByCreator != isCreator(user)
+    }
 
   def userIds = List(creatorId, invitedId)
 

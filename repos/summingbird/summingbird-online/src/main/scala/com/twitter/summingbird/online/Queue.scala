@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger
   *
   * @author Oscar Boykin
   */
+
 object Queue {
 
   /**
@@ -145,6 +146,7 @@ abstract class Queue[T] {
     * Take items currently in the queue up to the max sequence size we want to return
     * Due to threading/muliple readers/writers this will not be an exact size
     */
+
   def take(maxSeqSize: Int): Seq[T] = trimTo(math.max(size - maxSeqSize, 0))
 
   /**

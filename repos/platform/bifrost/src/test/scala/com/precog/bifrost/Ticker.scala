@@ -63,7 +63,9 @@ class Ticker(ticks: AtomicLong) extends Actor {
       val t = ticks.get()
       schedule get t map { thunks =>
         schedule = schedule - t
-        thunks.reverse foreach { t => t() }
+        thunks.reverse foreach { t =>
+          t()
+        }
       } getOrElse {
         ticks.getAndIncrement()
       }

@@ -73,7 +73,9 @@ final class CookedReader(
   private def loadFromDisk(): Validation[IOException, CookedBlockMetadata] = {
     read(metadataFile) { channel =>
       val segsV = blockFormat.readCookedBlock(channel)
-      segsV foreach { segs0 => block = new SoftReference(segs0) }
+      segsV foreach { segs0 =>
+        block = new SoftReference(segs0)
+      }
       segsV
     }
   }
@@ -103,9 +105,9 @@ final class CookedReader(
 
   def snapshotRef(refConstraints: Option[Set[ColumnRef]]): Block = {
     val segments: Seq[Segment] = refConstraints map { refs =>
-      load(refs.toList).map({ segs => segs flatMap (_._2) }).valueOr { nel =>
-        throw nel.head
-      }
+      load(refs.toList).map({ segs =>
+        segs flatMap (_._2)
+      }).valueOr { nel => throw nel.head }
     } getOrElse {
       metadata.valueOr(throw _).segments map {
         case (segId, file0) =>

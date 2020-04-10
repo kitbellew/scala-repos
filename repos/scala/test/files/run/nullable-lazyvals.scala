@@ -2,6 +2,7 @@
   *  they are used only to initialize a lazy value, after the
   *  value has been initialized.
   */
+
 class Foo(param1: => Object, param2: => String) {
   lazy val field1 = param1
   lazy val field2 =

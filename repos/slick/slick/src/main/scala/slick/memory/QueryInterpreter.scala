@@ -86,7 +86,9 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
           run(right).asInstanceOf[Coll].filter { r =>
             scope(rightGen) = r
             asBoolean(run(by))
-          }.map { r => new ProductValue(Vector(l, r)) }
+          }.map { r =>
+            new ProductValue(Vector(l, r))
+          }
         }
         scope.remove(leftGen)
         scope.remove(rightGen)
@@ -97,7 +99,9 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
           val inner = run(right).asInstanceOf[Coll].filter { r =>
             scope(rightGen) = r
             asBoolean(run(by))
-          }.map { r => new ProductValue(Vector(l, r)) }
+          }.map { r =>
+            new ProductValue(Vector(l, r))
+          }
           if (inner.headOption.isEmpty)
             Vector(
               new ProductValue(
@@ -115,7 +119,9 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
           val inner = run(left).asInstanceOf[Coll].filter { l =>
             scope(leftGen) = l
             asBoolean(run(by))
-          }.map { l => new ProductValue(Vector(l, r)) }
+          }.map { l =>
+            new ProductValue(Vector(l, r))
+          }
           if (inner.headOption.isEmpty)
             Vector(
               new ProductValue(
@@ -133,7 +139,9 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
           val inner = run(right).asInstanceOf[Coll].filter { r =>
             scope(rightGen) = r
             asBoolean(run(by))
-          }.map { r => new ProductValue(Vector(l, r)) }
+          }.map { r =>
+            new ProductValue(Vector(l, r))
+          }
           if (inner.headOption.isEmpty)
             Vector(
               new ProductValue(

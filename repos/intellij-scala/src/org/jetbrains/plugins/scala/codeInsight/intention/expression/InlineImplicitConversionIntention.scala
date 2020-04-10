@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.util.IntentionUtils
   * @author Ksenia.Sautina
   * @since 5/4/12
   */
+
 object InlineImplicitConversionIntention {
   def familyName = "Provide implicit conversion"
 }

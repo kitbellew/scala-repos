@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._
   * @author Alexander Podkhalyuzin
   * Date: 06.03.2008
   */
+
 class ScBlockExprImpl(text: CharSequence)
     extends LazyParseablePsiElement(ScalaElementTypes.BLOCK_EXPR, text)
     with ScBlockExpr {

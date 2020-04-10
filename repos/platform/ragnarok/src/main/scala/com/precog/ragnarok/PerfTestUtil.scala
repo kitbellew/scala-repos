@@ -59,7 +59,9 @@ class PerfTestUtil(rootDir: File, runs: Int = 30) {
   }
 
   def ingest(path: String, file: File): Unit =
-    withRunner(config) { runner => runner.ingest(path, file).unsafePerformIO }
+    withRunner(config) { runner =>
+      runner.ingest(path, file).unsafePerformIO
+    }
 
   def test(query: String): String =
     withRunner(config) { runner =>

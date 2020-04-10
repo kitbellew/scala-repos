@@ -35,6 +35,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Alexander Podkhalyuzin
   * Date: 24.10.2008
   */
+
 object ScalaStubsUtil {
   def getClassInheritors(
       clazz: PsiClass,

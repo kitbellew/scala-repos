@@ -388,7 +388,9 @@ object PlayDocsValidation {
       Project.runTask(
         translationCodeSamplesReport,
         state.value).get._2.toEither.fold(
-        { incomplete => throw incomplete.directCause.get },
+        { incomplete =>
+          throw incomplete.directCause.get
+        },
         result => result)
     } else {
       file

@@ -30,6 +30,7 @@ import spire.syntax.cfor._
   * Array operations on generic arrays, a little faster in general, I hope.
   * @author dlwh
   */
+
 object ArrayUtil {
 
   def fill[V](a: Array[V], offset: Int, length: Int, v: V) {

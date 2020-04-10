@@ -13,6 +13,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
  **/
+
 package org.saddle.stats
 
 import org.specs2.mutable.Specification
@@ -32,6 +33,7 @@ class VecStatsCheck extends Specification with ScalaCheck {
   /**
     * Double Vectors
     */
+
   "Double Vec Tests" in {
 
     "take sum of a double vector with no NA's" in {
@@ -354,6 +356,7 @@ class VecStatsCheck extends Specification with ScalaCheck {
   /**
     * Long vectors
     */
+
   "Long Vec Tests" in {
 
     "take sum of a Long vector with no NA's" in {
@@ -642,6 +645,7 @@ class VecStatsCheck extends Specification with ScalaCheck {
   /**
     * Int vectors
     */
+
   "Int Vec Tests" in {
 
     "take sum of a Int vector with no NA's" in {

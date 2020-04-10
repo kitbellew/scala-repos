@@ -22,6 +22,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 /**
   * Pavel Fatin
   */
+
 class ScalaRedundantConversionInspection
     extends AbstractInspection("Redundant conversion") {
   def actionFor(holder: ProblemsHolder) = {

@@ -461,8 +461,9 @@ trait QuirrelCache extends AST { parser: Parser =>
 
     val result = for {
       expr <- repl(expr0)
-      _ <- StateT { s: List[Binding] => s.isEmpty.option((Nil, ())) }: BindingS[
-        Unit]
+      _ <- StateT { s: List[Binding] =>
+        s.isEmpty.option((Nil, ()))
+      }: BindingS[Unit]
     } yield expr
 
     result.eval(bindings)
@@ -482,7 +483,9 @@ trait QuirrelCache extends AST { parser: Parser =>
             bindRoot(root, root)
             root
           }
-      } map { expr => Set(expr) } getOrElse {
+      } map { expr =>
+        Set(expr)
+      } getOrElse {
         val exprs = f(query)
         if (exprs.size == 1) {
           val value = exprs.head

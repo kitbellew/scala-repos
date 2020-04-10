@@ -18,6 +18,7 @@ import org.jetbrains.plugins.scala.lang.refactoring.util._
   * @author Alexander Podkhalyuzin
   * @date 05.04.2009
   */
+
 object IntroduceVariableTestUtil {
   def extract1[T, U](x: (T, U)): T = x._1
 

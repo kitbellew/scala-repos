@@ -1,4 +1,5 @@
 /** Check protected accessors involving polymorphic methods. */
+
 package pkg2 {
 
   trait PresentationsX extends pkg1.Presentations {

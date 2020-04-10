@@ -290,7 +290,9 @@ object IListTest extends SpecLite {
     ns.lastOption must_=== ns.toList.lastOption
   }
 
-  "length" ! forAll { ns: IList[Int] => ns.length must_=== ns.toList.length }
+  "length" ! forAll { ns: IList[Int] =>
+    ns.length must_=== ns.toList.length
+  }
 
   // map is tested by functor laws
 
@@ -400,7 +402,9 @@ object IListTest extends SpecLite {
       ns: _*).toList
   }
 
-  "toList" ! forAll { ns: List[Int] => IList(ns: _*).toList must_=== ns }
+  "toList" ! forAll { ns: List[Int] =>
+    IList(ns: _*).toList must_=== ns
+  }
 
   "toMap" ! forAll { ps: List[(String, Int)] =>
     IList(ps: _*).toMap must_=== ==>>(ps: _*)
@@ -414,7 +418,9 @@ object IListTest extends SpecLite {
     IList(ns: _*).toStream must_=== ns.toStream
   }
 
-  "toVector" ! forAll { ns: Vector[Int] => IList(ns: _*).toVector must_=== ns }
+  "toVector" ! forAll { ns: Vector[Int] =>
+    IList(ns: _*).toVector must_=== ns
+  }
 
   "toZipper" ! forAll { ns: List[Int] =>
     IList(ns: _*).toZipper must_=== scalaz.std.stream.toZipper(ns.toStream)

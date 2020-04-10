@@ -578,7 +578,9 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * For each unload hook registered, run them during destroy()
     */
   private[http] def runUnloadHooks() {
-    unloadHooks.toList.foreach { f => tryo { f() } }
+    unloadHooks.toList.foreach { f =>
+      tryo { f() }
+    }
   }
 
   /**
@@ -1290,6 +1292,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * If a deferred snippet has a failure during render,
     * what should we display?
     */
+
   val deferredSnippetTimeout: FactoryMaker[NodeSeq] =
     new FactoryMaker(() => {
       if (Props.devMode)

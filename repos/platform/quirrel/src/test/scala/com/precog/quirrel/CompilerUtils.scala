@@ -26,7 +26,9 @@ import com.codecommit.gll._
 trait CompilerUtils extends Specification with Compiler with Errors {
   def compileSingle(str: LineStream): Expr = {
     val forest = compile(str)
-    val validForest = forest filter { tree => tree.errors forall isWarning }
+    val validForest = forest filter { tree =>
+      tree.errors forall isWarning
+    }
 
     if (validForest.size == 1) {
       validForest.head

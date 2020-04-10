@@ -245,6 +245,7 @@ class LiftServlet extends Loggable {
   }
 
   /** To save memory these are only created once and should just be holders for functions **/
+
   object ShuttingDown extends ProcessingStep {
 
     def notFoundOrIgnore(
@@ -789,7 +790,9 @@ class LiftServlet extends Loggable {
                   .flatMap { entries =>
                     entries
                       .find(_.requestVersion == handlerVersion)
-                      .map { entry => (entry, Right(entry.responseFuture)) }
+                      .map { entry =>
+                        (entry, Right(entry.responseFuture))
+                      }
                   }
                   .getOrElse {
                     val entry = newRequestInfo

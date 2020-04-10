@@ -89,7 +89,9 @@ trait StandardLiftables { self: Universe =>
     implicit def liftTuple2[T1, T2](implicit
         liftT1: Liftable[T1],
         liftT2: Liftable[T2]): Liftable[Tuple2[T1, T2]] =
-      Liftable { t => SyntacticTuple(liftT1(t._1) :: liftT2(t._2) :: Nil) }
+      Liftable { t =>
+        SyntacticTuple(liftT1(t._1) :: liftT2(t._2) :: Nil)
+      }
     implicit def liftTuple3[T1, T2, T3](implicit
         liftT1: Liftable[T1],
         liftT2: Liftable[T2],

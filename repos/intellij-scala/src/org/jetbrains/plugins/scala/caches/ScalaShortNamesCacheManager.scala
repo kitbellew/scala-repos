@@ -30,6 +30,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Alefas
   * Date: 09.02.12
   */
+
 class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
   private val LOG: Logger = Logger.getInstance(
     "#org.jetbrains.plugins.scala.caches.ScalaShortNamesCacheManager")

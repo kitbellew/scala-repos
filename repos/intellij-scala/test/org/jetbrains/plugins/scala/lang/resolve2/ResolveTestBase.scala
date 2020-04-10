@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.util.TestUtils.ScalaSdkVersion
 /**
   * Pavel.Fatin, 02.02.2010
   */
+
 abstract class ResolveTestBase extends ScalaResolveTestCase {
   val pattern = """/\*\s*(.*?)\s*\*/\s*""".r
   type Parameters = Map[String, String]

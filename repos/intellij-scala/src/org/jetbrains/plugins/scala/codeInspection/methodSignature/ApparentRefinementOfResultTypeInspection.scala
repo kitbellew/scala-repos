@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScFunctionDeclaration
 /**
   * Pavel Fatin
   */
+
 class ApparentRefinementOfResultTypeInspection
     extends AbstractMethodSignatureInspection(
       "ScalaApparentRefinementOfResultType",

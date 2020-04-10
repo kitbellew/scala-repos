@@ -9,6 +9,7 @@ import org.jetbrains.plugins.scala.lang.resolve.{ScalaResolveResult, StdKinds}
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class CollectMethodsProcessor(place: PsiElement, name: String)
     extends ResolveProcessor(StdKinds.methodsOnly, place, name) {
   override def execute(element: PsiElement, state: ResolveState): Boolean = {

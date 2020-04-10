@@ -119,7 +119,9 @@ class ClientDispatcher(
   import ClientDispatcher._
 
   override def apply(req: Request): Future[Result] =
-    connPhase flatMap { _ => super.apply(req) } onFailure {
+    connPhase flatMap { _ =>
+      super.apply(req)
+    } onFailure {
       // a LostSyncException represents a fatal state between
       // the client / server. The error is unrecoverable
       // so we close the service.
@@ -256,7 +258,9 @@ class ClientDispatcher(
         trans.read() flatMap { packet =>
           packet.body.headOption match {
             case Some(Packet.EofByte) =>
-              const(EOF(packet)) map { eof => (xs.reverse, eof) }
+              const(EOF(packet)) map { eof =>
+                (xs.reverse, eof)
+              }
             case Some(Packet.ErrorByte) =>
               const(Error(packet)) flatMap { err =>
                 val Error(code, state, msg) = err

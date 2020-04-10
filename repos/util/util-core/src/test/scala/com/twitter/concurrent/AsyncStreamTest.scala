@@ -279,7 +279,9 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
   }
 
   test("head") {
-    forAll { (a: List[Int]) => assert(await(fromSeq(a).head) == a.headOption) }
+    forAll { (a: List[Int]) =>
+      assert(await(fromSeq(a).head) == a.headOption)
+    }
   }
 
   test("isEmpty") {
@@ -334,7 +336,9 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
   }
 
   test("toSeq") {
-    forAll { (as: List[Int]) => assert(await(fromSeq(as).toSeq()) == as) }
+    forAll { (as: List[Int]) =>
+      assert(await(fromSeq(as).toSeq()) == as)
+    }
   }
 
   test("identity") {

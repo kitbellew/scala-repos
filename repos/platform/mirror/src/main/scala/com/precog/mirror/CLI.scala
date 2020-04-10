@@ -34,7 +34,9 @@ object CLI extends App with EvaluatorModule {
       _.errors filter isWarning
     } map showError foreach System.err.println
 
-    eval(filtered.head)(load) foreach { jv => println(jv.renderCompact) }
+    eval(filtered.head)(load) foreach { jv =>
+      println(jv.renderCompact)
+    }
   } else if (filtered.size > 1) {
     System.err.println("ambiguous compilation results")
     System.exit(-1)

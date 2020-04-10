@@ -15,6 +15,7 @@ import org.jetbrains.plugins.scala.util.IntentionAvailabilityChecker
 /**
   * Pavel Fatin
   */
+
 class BlockExpressionToArgumentIntention extends PsiElementBaseIntentionAction {
   def getFamilyName = "Convert to argument in parentheses"
 

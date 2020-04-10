@@ -48,13 +48,17 @@ object split extends UFunc {
         var lastN: Int = 0
         nSeq.foreach { n =>
           val chunk = new Array[T](n - lastN)
-          cforRange(lastN until n) { i => chunk(i - lastN) = v(i) }
+          cforRange(lastN until n) { i =>
+            chunk(i - lastN) = v(i)
+          }
           result += DenseVector[T](chunk)
           lastN = n
         }
         if (lastN < v.size) { //If we did not already add last chunk to result, do it now.
           val chunk = new Array[T](v.size - lastN)
-          cforRange(lastN until v.size) { i => chunk(i - lastN) = v(i) }
+          cforRange(lastN until v.size) { i =>
+            chunk(i - lastN) = v(i)
+          }
           result += DenseVector[T](chunk)
         }
         result

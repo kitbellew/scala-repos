@@ -13,6 +13,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
  **/
+
 package org.saddle
 
 import org.specs2.mutable.Specification
@@ -79,7 +80,9 @@ class FrameCheck extends Specification with ScalaCheck {
     }
 
     "serialization works" in {
-      forAll { f: Frame[Int, Int, Double] => f must_== serializedCopy(f) }
+      forAll { f: Frame[Int, Int, Double] =>
+        f must_== serializedCopy(f)
+      }
     }
 
   }

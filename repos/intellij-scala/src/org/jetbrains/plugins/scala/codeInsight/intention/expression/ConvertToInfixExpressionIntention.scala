@@ -19,6 +19,7 @@ import org.jetbrains.plugins.scala.util.{
   * @author Ksenia.Sautina
   * @since 4/9/12
   */
+
 object ConvertToInfixExpressionIntention {
   val familyName = "Convert to infix expression"
 }

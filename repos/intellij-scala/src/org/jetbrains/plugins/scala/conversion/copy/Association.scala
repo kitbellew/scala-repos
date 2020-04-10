@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.ScReferenceElement
 /**
   * Pavel Fatin
   */
+
 case class Association(kind: DependencyKind, var range: TextRange, path: Path) {
   def isSatisfiedIn(element: PsiElement): Boolean =
     element match {

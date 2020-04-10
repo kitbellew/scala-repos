@@ -215,7 +215,9 @@ class DeleteScheduledQueryServiceHandler[A](scheduler: Scheduler[Future])(
           DispatchError(BadRequest, "Invalid schedule Id \"%s\"".format(idStr))
       }
     } yield {
-      scheduler.deleteTask(id) map { _ => ok[String](None) } valueOr { error =>
+      scheduler.deleteTask(id) map { _ =>
+        ok[String](None)
+      } valueOr { error =>
         sys.error("todo")
       //serverError("An error occurred deleting your query", Some(error))
       }

@@ -23,6 +23,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 /**
   * @author ilyas
   */
+
 class ScFieldIdImpl private (
     stub: StubElement[ScFieldId],
     nodeType: IElementType,

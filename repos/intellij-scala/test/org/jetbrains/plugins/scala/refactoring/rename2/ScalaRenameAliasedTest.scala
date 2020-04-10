@@ -9,6 +9,7 @@ import org.junit.Assert
   * Tests functionality in [[org.jetbrains.plugins.scala.findUsages.ScalaAliasedImportedElementSearcher]]
   * and [[org.jetbrains.plugins.scala.lang.refactoring.rename.ScalaRenameUtil.filterAliasedReferences]]
   */
+
 class ScalaRenameAliasedTest extends ScalaRenameTestBase {
   def testRenameValAliased() {
     val fileText =

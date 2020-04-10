@@ -20,6 +20,7 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil
   * Nikolay.Tropin
   * 2014-06-10
   */
+
 class ScalaMethodFilter(
     function: ScMethodLike,
     callingExpressionLines: Range[Integer])

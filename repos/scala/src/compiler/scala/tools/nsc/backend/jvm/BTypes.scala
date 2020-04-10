@@ -887,6 +887,7 @@ abstract class BTypes {
     *
     * TODO: innerclass attributes on mirror class, bean info class
     */
+
   /**
     * A ClassBType represents a class or interface type. The necessary information to build a
     * ClassBType is extracted from compiler symbols and types, see BTypesFromSymbols.

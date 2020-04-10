@@ -237,7 +237,8 @@ trait Mapper[A <: Mapper[A]]
   def toForm(button: Box[String], f: A => Any): NodeSeq =
     getSingleton.toForm(this) ++
       S.fmapFunc((ignore: List[String]) => f(this)) {
-        (name: String) => (<input type='hidden' name={name} value="n/a" />)
+        (name: String) =>
+          (<input type='hidden' name={name} value="n/a" />)
       } ++
       (button.map(b =>
         getSingleton.formatFormElement(

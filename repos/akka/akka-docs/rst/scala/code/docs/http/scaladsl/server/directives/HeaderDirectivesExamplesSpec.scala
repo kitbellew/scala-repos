@@ -36,7 +36,9 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
     }
 
     val route =
-      headerValue(extractHostPort) { port => complete(s"The port was $port") }
+      headerValue(extractHostPort) { port =>
+        complete(s"The port was $port")
+      }
 
     // tests:
     Get("/") ~> Host("example.com", 5043) ~> route ~> check {
@@ -105,7 +107,9 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
     }
 
     val route =
-      headerValuePF(extractHostPort) { port => complete(s"The port was $port") }
+      headerValuePF(extractHostPort) { port =>
+        complete(s"The port was $port")
+      }
 
     // tests:
     Get("/") ~> Host("example.com", 5043) ~> route ~> check {

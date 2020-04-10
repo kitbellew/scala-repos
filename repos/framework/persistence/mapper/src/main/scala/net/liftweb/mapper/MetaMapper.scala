@@ -230,7 +230,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
   def findAllByPreparedStatement(
       f: SuperConnection => PreparedStatement): List[A] = {
     DB.use(dbDefaultConnectionIdentifier) {
-      conn => findAllByPreparedStatement(dbDefaultConnectionIdentifier, f(conn))
+      conn =>
+        findAllByPreparedStatement(dbDefaultConnectionIdentifier, f(conn))
     }
   }
 
@@ -266,7 +267,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
         DB.prepareStatement(query, conn) {
           st =>
             DB.exec(st) {
-              rs => createInstances(dbId, rs, Empty, Empty, f)
+              rs =>
+                createInstances(dbId, rs, Empty, Empty, f)
             }
         }
     }
@@ -1996,7 +1998,9 @@ object NotIn {
       def notIn: Boolean = true
 
       val queryParams: List[QueryParam[InnerMapper]] =
-        qp.map { v => val r: QueryParam[InnerMapper] = v; r }.toList
+        qp.map { v =>
+          val r: QueryParam[InnerMapper] = v; r
+        }.toList
     }
   }
 
@@ -2020,7 +2024,9 @@ object NotIn {
       def notIn: Boolean = true
 
       val queryParams: List[QueryParam[InnerMapper]] = {
-        qp.map { v => val r: QueryParam[InnerMapper] = v; r }.toList
+        qp.map { v =>
+          val r: QueryParam[InnerMapper] = v; r
+        }.toList
       }
     }
   }
@@ -2046,7 +2052,9 @@ object In {
       def notIn: Boolean = false
 
       val queryParams: List[QueryParam[InnerMapper]] =
-        qp.map { v => val r: QueryParam[InnerMapper] = v; r }.toList
+        qp.map { v =>
+          val r: QueryParam[InnerMapper] = v; r
+        }.toList
     }
   }
 
@@ -2070,7 +2078,9 @@ object In {
       def notIn: Boolean = false
 
       val queryParams: List[QueryParam[InnerMapper]] = {
-        qp.map { v => val r: QueryParam[InnerMapper] = v; r }.toList
+        qp.map { v =>
+          val r: QueryParam[InnerMapper] = v; r
+        }.toList
       }
     }
   }

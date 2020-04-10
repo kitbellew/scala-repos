@@ -543,7 +543,9 @@ private[deploy] class Master(
               // We just notify the worker to kill the driver here. The final bookkeeping occurs
               // on the return path when the worker submits a state change back to the master
               // to notify it that the driver was successfully killed.
-              d.worker.foreach { w => w.endpoint.send(KillDriver(driverId)) }
+              d.worker.foreach { w =>
+                w.endpoint.send(KillDriver(driverId))
+              }
             }
             // TODO: It would be nice for this to be a synchronous response
             val msg = s"Kill request for $driverId submitted"
@@ -891,7 +893,9 @@ private[deploy] class Master(
     // remove them.
     workers.filter { w =>
       (w.host == worker.host && w.port == worker.port) && (w.state == WorkerState.DEAD)
-    }.foreach { w => workers -= w }
+    }.foreach { w =>
+      workers -= w
+    }
 
     val workerAddress = worker.endpoint.address
     if (addressToWorker.contains(workerAddress)) {
@@ -1008,7 +1012,9 @@ private[deploy] class Master(
       schedule()
 
       // Tell all workers that the application has finished, so they can clean up any app state.
-      workers.foreach { w => w.endpoint.send(ApplicationFinished(app.id)) }
+      workers.foreach { w =>
+        w.endpoint.send(ApplicationFinished(app.id))
+      }
     }
   }
 

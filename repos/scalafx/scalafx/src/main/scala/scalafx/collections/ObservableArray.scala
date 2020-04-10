@@ -391,6 +391,7 @@ D <: jfxc.ObservableArray[D]](override val delegate: D)
     *
     * @return This $OA.
     */
+
   override def result() = this.asInstanceOf[T]
 
   /**
@@ -412,6 +413,7 @@ D <: jfxc.ObservableArray[D]](override val delegate: D)
     *
     * @param op Function that will handle this $OA's modifications data, to be activated when some change is made.
     */
+
   def onChange(op: (T, ObservableArray.Change) => Unit) {
     delegate.addListener {
       new jfxc.ArrayChangeListener[D] {
@@ -436,6 +438,7 @@ D <: jfxc.ObservableArray[D]](override val delegate: D)
     *
     * @param op Function that will handle this $OA's modifications data, to be activated when some change is made.
     */
+
   def onChange(op: => Unit) {
     delegate.addListener {
       new jfxc.ArrayChangeListener[D] {

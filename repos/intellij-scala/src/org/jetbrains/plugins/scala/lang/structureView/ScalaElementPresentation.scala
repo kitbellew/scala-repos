@@ -21,6 +21,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.{ScSubstitutor, ScType}
   * @author Alexander Podkhalyuzin
   * Date: 04.05.2008
   */
+
 object ScalaElementPresentation {
 
   //TODO refactor with name getters

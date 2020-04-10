@@ -58,12 +58,16 @@ class MarathonHealthCheckManager @Inject() (
     listActive(appId).map(_.healthCheck)
 
   protected[this] def listActive(appId: PathId): Set[ActiveHealthCheck] =
-    appHealthChecks.readLock { ahcs => ahcs(appId).values.flatten.toSet }
+    appHealthChecks.readLock { ahcs =>
+      ahcs(appId).values.flatten.toSet
+    }
 
   protected[this] def listActive(
       appId: PathId,
       appVersion: Timestamp): Set[ActiveHealthCheck] =
-    appHealthChecks.readLock { ahcs => ahcs(appId)(appVersion) }
+    appHealthChecks.readLock { ahcs =>
+      ahcs(appId)(appVersion)
+    }
 
   override def add(
       appId: PathId,

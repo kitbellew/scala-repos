@@ -19,6 +19,7 @@ import scala.annotation.tailrec
   * @author Alefas
   * @since 25.05.12
   */
+
 object ScalaProjectSettingsUtil {
   def isValidPackage(
       packageName: String,

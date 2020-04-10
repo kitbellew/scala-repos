@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
   * @author Alexander Podkhalyuzin
   * Date: 06.03.2008
   */
+
 trait ScEnumerator extends ScalaPsiElement with ScPatterned {
   def rvalue: ScExpression
 

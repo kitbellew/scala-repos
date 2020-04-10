@@ -22,6 +22,7 @@ package com.gravity.goose.images
   * User: jim
   * Date: 8/18/11
   */
+
 import org.apache.commons.io.IOUtils
 import org.apache.http.Header
 import org.apache.http.HttpEntity

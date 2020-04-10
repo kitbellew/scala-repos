@@ -962,6 +962,7 @@ class ClientBuilder[
     configured(Transporter.TrafficClass(value))
 
   /*** BUILD ***/
+
   // This is only used for client alterations outside of the stack.
   // a more ideal usage would be to retrieve the stats param inside your specific module
   // instead of using this statsReceiver as it keeps the params closer to where they're used

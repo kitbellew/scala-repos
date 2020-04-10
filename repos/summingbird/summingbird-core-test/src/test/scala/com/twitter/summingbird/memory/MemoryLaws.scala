@@ -31,6 +31,7 @@ import scala.collection.mutable.{
 /**
   * Tests for Summingbird's in-memory planner.
   */
+
 class MemoryLaws extends WordSpec {
   // This is dangerous, obviously. The Memory platform tested here
   // doesn't perform any batching, so the actual time extraction isn't
@@ -50,7 +51,8 @@ class MemoryLaws extends WordSpec {
       V: Monoid: Arbitrary: Equiv] =
     new TestGraphs[Memory, T, K, V](new Memory)(() => MutableMap.empty[K, V])(
       () => new BufferFunc[T])(Memory.toSource(_))(s => { s.get(_) })({
-      (f, items) => f.asInstanceOf[BufferFunc[T]].buf.toList == items
+      (f, items) =>
+        f.asInstanceOf[BufferFunc[T]].buf.toList == items
     })({ (p: Memory, plan: Memory#Plan[_]) => p.run(plan) })
 
   /**
@@ -291,7 +293,9 @@ class MemoryLaws extends WordSpec {
       val sinkBuffer = collection.mutable.Buffer[Int]()
       val source = Memory.toSource(List(1, 2))
       val store: Memory#Store[Int, Int] = collection.mutable.Map.empty[Int, Int]
-      val sink: Memory#Sink[Int] = { x: Int => sinkBuffer += x }
+      val sink: Memory#Sink[Int] = { x: Int =>
+        sinkBuffer += x
+      }
 
       val summed = source
         .map { v => (v, v) }

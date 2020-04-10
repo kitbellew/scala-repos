@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.ScPatternListStub
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
   */
+
 class ScPatternListImpl private (
     stub: StubElement[ScPatternList],
     nodeType: IElementType,

@@ -371,7 +371,8 @@ object PostgreSqlOldDriver extends BasePostgreSQLDriver {
     val pkValueQuery = genKeyNames.map(
       String.format("currval('%s_%s_seq')", tableName, _)).mkString(", ")
     DB.statement(conn) {
-      stmt => handler(Left(stmt.executeQuery("SELECT " + pkValueQuery)))
+      stmt =>
+        handler(Left(stmt.executeQuery("SELECT " + pkValueQuery)))
     }
   }
 }

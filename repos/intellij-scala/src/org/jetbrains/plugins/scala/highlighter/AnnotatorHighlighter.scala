@@ -48,6 +48,7 @@ import org.jetbrains.plugins.scala.settings.ScalaProjectSettings
   * User: Alexander Podkhalyuzin
   * Date: 17.07.2008
   */
+
 object AnnotatorHighlighter {
   private val JAVA_COLLECTIONS_BASES =
     List("java.util.Map", "java.util.Collection")

@@ -29,6 +29,7 @@ import org.jetbrains.plugins.scala.macroAnnotations.{ModCount, Cached}
   * Date: 22.02.2008
   * Time: 9:23:53
   */
+
 trait ScTemplateParents extends ScalaPsiElement {
   def typeElements: Seq[ScTypeElement]
   @Cached(false, ModCount.getBlockModificationCount, this)

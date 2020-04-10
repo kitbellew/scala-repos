@@ -37,7 +37,8 @@ object StreamTTest extends SpecLite {
   }
 
   "filter all" ! forAll {
-    (ass: StreamT[Stream, Int]) => ass.filter(_ => true) must_=== (ass)
+    (ass: StreamT[Stream, Int]) =>
+      ass.filter(_ => true) must_=== (ass)
   }
 
   "isEmpty" ! forAll {

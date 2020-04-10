@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.parser.util.ParserUtils._
   * @author Alexander Podkhalyuzin
   *         Date: 15.02.2008
   */
+
 /*
  *  typeArgs ::= '[' Types ']'
  */

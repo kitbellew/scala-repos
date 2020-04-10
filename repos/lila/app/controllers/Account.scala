@@ -94,7 +94,9 @@ object Account extends LilaController {
 
   def email =
     Auth { implicit ctx => me =>
-      emailForm(me) map { form => Ok(html.account.email(me, form)) }
+      emailForm(me) map { form =>
+        Ok(html.account.email(me, form))
+      }
     }
 
   def emailApply =
@@ -153,7 +155,10 @@ object Account extends LilaController {
       Env.tournament.api.withdrawAll(user) >>
       (Env.security disconnect user.id)
 
-  def kid = Auth { implicit ctx => me => Ok(html.account.kid(me)).fuccess }
+  def kid =
+    Auth { implicit ctx => me =>
+      Ok(html.account.kid(me)).fuccess
+    }
 
   def kidConfirm =
     Auth { ctx => me =>

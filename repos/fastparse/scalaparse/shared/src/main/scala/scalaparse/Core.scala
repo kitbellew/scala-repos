@@ -74,6 +74,7 @@ trait Core extends syntax.Literals {
   /**
     * helper printing function
     */
+
   val Id = P(WL ~ Identifiers.Id)
   val VarId = P(WL ~ Identifiers.VarId)
   val ExprLiteral = P(WL ~ Literals.Expr.Literal)

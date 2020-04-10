@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScPatternDefinition
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class ScalaConstantExpressionEvaluator extends ConstantExpressionEvaluator {
   def computeExpression(
       expression: PsiElement,

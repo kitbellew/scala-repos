@@ -29,7 +29,9 @@ class CacheTest extends FunSuite with MockitoSugar {
 
     objects foreach { cache.put(_) }
     assert(cache.size == 5)
-    objects take 5 foreach { obj => verify(evictor)(obj) }
+    objects take 5 foreach { obj =>
+      verify(evictor)(obj)
+    }
   }
 
   test("Cache(5, 5.seconds) should return objects in LIFO order") {

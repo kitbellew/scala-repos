@@ -57,6 +57,7 @@ import scala.util.control.NonFatal
   * @author Sam Ritchie
   * @author Ashu Singhal
   */
+
 class Summer[Key, Value: Semigroup, Event, S, D, RC](
     @transient storeSupplier: MergeableStoreFactory[Key, Value],
     @transient flatMapOp: FlatMapOperation[

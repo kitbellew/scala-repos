@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.util.IntentionAvailabilityChecker
 /**
   * Pavel.Fatin, 22.04.2010
   */
+
 class ToggleTypeAnnotation extends PsiElementBaseIntentionAction {
   def getFamilyName =
     ScalaBundle.message("intention.type.annotation.toggle.family")

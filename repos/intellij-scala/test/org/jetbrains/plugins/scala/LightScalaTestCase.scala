@@ -20,6 +20,7 @@ import scala.language.existentials
 /**
   * @author ilyas
   */
+
 abstract class LightScalaTestCase extends LightCodeInsightFixtureTestCase {
   override def getProjectDescriptor = LightScalaTestCase.SCALA_DESCRIPTOR
 

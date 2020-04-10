@@ -162,7 +162,8 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
     val jsonMarshaller: ToEntityMarshaller[Data] = jsonFormat2(Data.apply)
 
     val xmlMarshaller: ToEntityMarshaller[Data] = Marshaller.combined {
-      (data: Data) ⇒ <data><name>{data.name}</name><age>{data.age}</age></data>
+      (data: Data) ⇒
+        <data><name>{data.name}</name><age>{data.age}</age></data>
     }
 
     implicit val dataMarshaller: ToResponseMarshaller[Data] =

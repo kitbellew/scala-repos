@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 /**
   * Pavel Fatin
   */
+
 class LegacyStringFormattingInspection extends AbstractInspection {
   def actionFor(holder: ProblemsHolder) = {
     case element

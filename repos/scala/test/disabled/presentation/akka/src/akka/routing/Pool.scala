@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2011 Scalable Solutions AB <http://scalablesolutions.se>
   */
+
 package akka.routing
 
 import akka.actor.{Actor, ActorRef, PoisonPill}
@@ -24,6 +25,7 @@ import java.util.concurrent.TimeUnit
   *
   * @author Garrick Evans
   */
+
 object ActorPool {
   case object Stat
   case class Stats(size: Int)
@@ -110,6 +112,7 @@ trait DefaultActorPool extends ActorPool { this: Actor =>
   * Selectors
   *      These traits define how, when a message needs to be routed, delegate(s) are chosen from the pool
   */
+
 /**
   * Returns the set of delegates with the least amount of message backlog.
   */
@@ -162,6 +165,7 @@ trait RoundRobinSelector {
   * Capacitors
   *      These traits define how to alter the size of the pool
   */
+
 /**
   * Ensures a fixed number of delegates in the pool
   */
@@ -226,6 +230,7 @@ trait BoundedCapacityStrategy extends CapacityStrategy with BoundedCapacitor
   * Filters
   *  These traits refine the raw pressure reading into a more appropriate capacity delta.
   */
+
 /**
   * The basic filter trait that composes ramp-up and back-off subfiltering.
   */

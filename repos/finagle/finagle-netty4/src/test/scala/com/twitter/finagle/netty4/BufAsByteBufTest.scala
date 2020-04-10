@@ -1197,7 +1197,9 @@ class BufAsByteBufTest extends FunSuite with BeforeAndAfter {
     val wrapped = Unpooled.wrappedBuffer(bytes)
     val wrappedBuf = BufAsByteBuf.Owned(Buf.ByteArray.Owned(bytes))
     wrapped.writerIndex(0)
-    0.until(Capacity, 4).foreach { i => wrapped.writeInt(i) }
+    0.until(Capacity, 4).foreach { i =>
+      wrapped.writeInt(i)
+    }
     wrappedBuf.readByte()
     intercept[ReadOnlyBufferException] {
       wrappedBuf.discardReadBytes()

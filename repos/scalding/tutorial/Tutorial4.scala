@@ -33,6 +33,7 @@ Check the output:
   cat tutorial/data/output4.txt
 
 **/
+
 class Tutorial4(args: Args) extends Job(args) {
 
   //we probably don't need to bother with vals for input/output anymore

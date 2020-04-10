@@ -203,7 +203,9 @@ trait AccountService
                     "Request " + req + " could not be serviced.")
                 }
           } ->
-          stop { s: State => s.stop }
+          stop { s: State =>
+            s.stop
+          }
       }
     }
   }

@@ -24,7 +24,9 @@ object PromiseMock {
     } finally {
       oldPromise.fold {
         global.asInstanceOf[js.Dictionary[Any]].delete("Promise")
-      } { old => global.Promise = old }
+      } { old =>
+        global.Promise = old
+      }
     }
   }
 
@@ -59,7 +61,8 @@ object PromiseMock {
       new MockPromise[A]({
         (
             resolve: js.Function1[A | js.Thenable[A], _],
-            reject: js.Function1[Any, _]) => resolve(value)
+            reject: js.Function1[Any, _]) =>
+          resolve(value)
       })
     }
 
@@ -68,7 +71,8 @@ object PromiseMock {
       new MockPromise[Nothing]({
         (
             resolve: js.Function1[Nothing | js.Thenable[Nothing], _],
-            reject: js.Function1[Any, _]) => reject(reason)
+            reject: js.Function1[Any, _]) =>
+          reject(reason)
       })
     }
 
@@ -141,7 +145,9 @@ object PromiseMock {
           _]) = {
       tryCatchAny[Unit] {
         executor(resolve _, reject _)
-      } { e => reject(e) }
+      } { e =>
+        reject(e)
+      }
     }
 
     private[this] def fulfill(value: A): Unit = {
@@ -180,7 +186,9 @@ object PromiseMock {
               val thenActionFun = thenAction.asInstanceOf[js.Function]
               enqueue(() => promiseResolveThenableJob(thenable, thenActionFun))
             }
-          } { e => reject(e) }
+          } { e =>
+            reject(e)
+          }
         }
       }
     }
@@ -214,15 +222,21 @@ object PromiseMock {
             def doFulfilled(value: A): Unit = {
               tryCatchAny[Unit] {
                 innerResolve(onFulfilled(value))
-              } { e => innerReject(e) }
+              } { e =>
+                innerReject(e)
+              }
             }
 
             def doRejected(reason: Any): Unit = {
               tryCatchAny[Unit] {
                 onRejected.fold[Unit] {
                   innerReject(reason)
-                } { onRejectedFun => innerResolve(onRejectedFun(reason)) }
-              } { e => innerReject(e) }
+                } { onRejectedFun =>
+                  innerResolve(onRejectedFun(reason))
+                }
+              } { e =>
+                innerReject(e)
+              }
             }
 
             state match {

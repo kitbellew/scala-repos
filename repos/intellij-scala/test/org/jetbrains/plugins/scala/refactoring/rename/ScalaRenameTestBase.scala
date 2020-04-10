@@ -21,6 +21,7 @@ import org.jetbrains.plugins.scala.util.{ScalaUtils, TestUtils}
   * User: Alexander Podkhalyuzin
   * Date: 30.09.2009
   */
+
 abstract class ScalaRenameTestBase
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   val caretMarker = "/*caret*/"

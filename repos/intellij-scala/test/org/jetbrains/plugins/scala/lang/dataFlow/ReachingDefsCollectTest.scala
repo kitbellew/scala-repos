@@ -15,6 +15,7 @@ import scala.util.Sorting
 /**
   * @author ilyas
   */
+
 class ReachingDefsCollectTest extends LightScalaTestCase {
   override protected def getBasePath: String =
     TestUtils.getTestDataPath + "/dataFlow/reachingDefsCollect/"

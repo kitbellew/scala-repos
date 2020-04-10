@@ -40,7 +40,8 @@ object PlaySettings {
   /** Ask SBT to manage the classpath for the given configuration. */
   def manageClasspath(config: Configuration) =
     managedClasspath in config <<= (classpathTypes in config, update) map {
-      (ct, report) => Classpaths.managedJars(config, ct, report)
+      (ct, report) =>
+        Classpaths.managedJars(config, ct, report)
     }
 
   lazy val defaultSettings = Seq[Setting[_]](
@@ -223,7 +224,8 @@ object PlaySettings {
     mappings in Universal ++= {
       val pathFinder = baseDirectory.value * "README*"
       pathFinder.get map {
-        readmeFile: File => readmeFile -> readmeFile.getName
+        readmeFile: File =>
+          readmeFile -> readmeFile.getName
       }
     },
     // Adds the Play application directory to the command line args passed to Play

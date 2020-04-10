@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScIfStmt
   * User: Alexander Podkhalyuzin
   * Date: 05.10.2008
   */
+
 object FormatterUtil {
   def calcIndent(node: ASTNode): Int = {
     node.getTreeParent.getPsi match {

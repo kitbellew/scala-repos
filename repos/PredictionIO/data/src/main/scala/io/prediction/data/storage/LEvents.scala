@@ -12,6 +12,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package io.prediction.data.storage
 
 import io.prediction.annotation.DeveloperApi
@@ -250,7 +251,9 @@ trait LEvents {
       entityType = Some(entityType),
       entityId = Some(entityId),
       eventNames = Some(LEventAggregator.eventNames)
-    ).map { eventIt => LEventAggregator.aggregatePropertiesSingle(eventIt) }
+    ).map { eventIt =>
+      LEventAggregator.aggregatePropertiesSingle(eventIt)
+    }
   }
 
   // following is blocking

@@ -19,6 +19,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
   * @author Ksenia.Sautina
   * @since 6/29/12
   */
+
 object ExpandBooleanIntention {
   def familyName = "Expand Boolean"
 }

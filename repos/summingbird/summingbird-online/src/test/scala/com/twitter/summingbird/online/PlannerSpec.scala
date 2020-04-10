@@ -35,6 +35,7 @@ import scala.util.{Try, Success, Failure}
 /**
   * Tests for Summingbird's Storm planner.
   */
+
 class PlannerSpec extends WordSpec {
   implicit def extractor[T]: TimeExtractor[T] = TimeExtractor(_ => 0L)
   private type MemoryDag = Dag[Memory]
@@ -49,11 +50,13 @@ class PlannerSpec extends WordSpec {
 
   implicit val arbIntSource: Arbitrary[Producer[Memory, Int]] =
     Arbitrary(Gen.listOfN(100, Arbitrary.arbitrary[Int]).map {
-      x: List[Int] => Memory.toSource(x)
+      x: List[Int] =>
+        Memory.toSource(x)
     })
   implicit val arbTupleSource: Arbitrary[KeyedProducer[Memory, Int, Int]] =
     Arbitrary(Gen.listOfN(100, Arbitrary.arbitrary[(Int, Int)]).map {
-      x: List[(Int, Int)] => IdentityKeyedProducer(Memory.toSource(x))
+      x: List[(Int, Int)] =>
+        IdentityKeyedProducer(Memory.toSource(x))
     })
 
   def arbSource1 = sample[Producer[Memory, Int]]
@@ -65,17 +68,25 @@ class PlannerSpec extends WordSpec {
     val store3 = testStore
 
     val h = arbSource1.name("name1")
-      .flatMap { i: Int => List(i, i) }
+      .flatMap { i: Int =>
+        List(i, i)
+      }
       .name("name1PostFM")
     val h2 = arbSource2.name("name2")
-      .flatMap { tup: (Int, Int) => List(tup._1, tup._2) }.name("name2PostFM")
+      .flatMap { tup: (Int, Int) =>
+        List(tup._1, tup._2)
+      }.name("name2PostFM")
 
     val combined = h2.merge(h)
 
     val s1 = combined.name("combinedPipes")
-      .map { i: Int => (i, i * 2) }
+      .map { i: Int =>
+        (i, i * 2)
+      }
 
-    val s2 = combined.map { i: Int => (i, i * 3) }
+    val s2 = combined.map { i: Int =>
+      (i, i * 3)
+    }
 
     val tail = s1.sumByKey(store1)
       .name("Store one writter")
@@ -101,19 +112,29 @@ class PlannerSpec extends WordSpec {
     val store3 = testStore
 
     val h = arbSource1.name("name1")
-      .flatMap { i: Int => List(i, i) }
+      .flatMap { i: Int =>
+        List(i, i)
+      }
       .name("name1PostFM")
     val h2 = arbSource2.name("name2")
-      .flatMap { tup: (Int, Int) => List(tup._1, tup._2) }.name("name2PostFM")
+      .flatMap { tup: (Int, Int) =>
+        List(tup._1, tup._2)
+      }.name("name2PostFM")
 
     val combined = h2.merge(h)
 
     val s1 = combined.name("combinedPipes")
-      .map { i: Int => (i, i * 2) }
+      .map { i: Int =>
+        (i, i * 2)
+      }
 
-    val s2 = combined.map { i: Int => (i, i * 3) }
+    val s2 = combined.map { i: Int =>
+      (i, i * 3)
+    }
 
-    val s3 = combined.map { i: Int => (i, i * 4) }
+    val s3 = combined.map { i: Int =>
+      (i, i * 4)
+    }
 
     val tail = s1.sumByKey(store1)
       .name("Store one writter")

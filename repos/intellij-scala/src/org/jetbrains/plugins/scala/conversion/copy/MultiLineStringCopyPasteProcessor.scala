@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.util.MultilineStringUtil
   * User: Dmitry Naydanov
   * Date: 5/5/12
   */
+
 class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
   def preprocessOnCopy(
       file: PsiFile,

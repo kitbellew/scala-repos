@@ -30,8 +30,9 @@ import scala.language.experimental.{macros => sMacros}
 
 class CompareJob[T: OrderedSerialization](in: Iterable[T], args: Args)
     extends Job(args) {
-  TypedPipe.from(in).flatMap { i => (0 until 1).map(_ => i) }.map(
-    _ -> 1L).sumByKey.map {
+  TypedPipe.from(in).flatMap { i =>
+    (0 until 1).map(_ => i)
+  }.map(_ -> 1L).sumByKey.map {
     case (k, v) =>
       (k.hashCode, v)
   }.write(TypedTsv[(Int, Long)]("output"))
@@ -59,7 +60,9 @@ class PlatformTest
 
   def runCompareTest[T: OrderedSerialization](implicit
       iprov: InstanceProvider[T]) {
-    val input = (0 until 10000).map { idx => iprov.g(idx % 50) }
+    val input = (0 until 10000).map { idx =>
+      iprov.g(idx % 50)
+    }
 
     HadoopPlatformJobTest(new CompareJob[T](input, _), cluster)
       .sink(TypedTsv[(Int, Long)]("output")) { out =>

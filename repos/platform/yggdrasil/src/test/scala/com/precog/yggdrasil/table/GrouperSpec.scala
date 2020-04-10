@@ -137,7 +137,9 @@ trait GrouperSpec[M[+_]]
         val histoKeyInt = histoKey0.toInt
 
         gs1Json must not(beEmpty)
-        forall(gs1Json) { record => (record \ "value") mustEqual histoKey }
+        forall(gs1Json) { record =>
+          (record \ "value") mustEqual histoKey
+        }
 
         gs1Json.size must_== set.count(_ == histoKeyInt)
 

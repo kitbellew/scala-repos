@@ -75,7 +75,9 @@ trait Formats
   }
 
   implicit lazy val networkInfoProtocolWrites =
-    Writes[mesos.NetworkInfo.Protocol] { protocol => JsString(protocol.name) }
+    Writes[mesos.NetworkInfo.Protocol] { protocol =>
+      JsString(protocol.name)
+    }
 
   private[this] val allowedProtocolString =
     mesos.NetworkInfo.Protocol.values().toSeq.map(
@@ -339,7 +341,9 @@ trait DeploymentFormats {
   implicit lazy val ByteArrayFormat: Format[Array[Byte]] =
     Format(
       Reads.of[Seq[Int]].map(_.map(_.toByte).toArray),
-      Writes { xs => JsArray(xs.to[Seq].map(b => JsNumber(b.toInt))) }
+      Writes { xs =>
+        JsArray(xs.to[Seq].map(b => JsNumber(b.toInt)))
+      }
     )
 
   implicit lazy val GroupUpdateFormat: Format[GroupUpdate] = (
@@ -357,7 +361,9 @@ trait DeploymentFormats {
         .map(
           _.map { case (k, v) => new java.net.URL(k) -> v }
         ),
-      Writes[Map[java.net.URL, String]] { m => Json.toJson(m) }
+      Writes[Map[java.net.URL, String]] { m =>
+        Json.toJson(m)
+      }
     )
 
   implicit lazy val DeploymentActionWrites: Writes[DeploymentAction] = Writes {
@@ -794,7 +800,8 @@ trait AppAndGroupFormats {
   }
 
   implicit lazy val taskLostBehaviorWrites = Writes[TaskLostBehavior] {
-    taskLostBehavior => JsString(taskLostBehavior.name())
+    taskLostBehavior =>
+      JsString(taskLostBehavior.name())
   }
 
   implicit lazy val taskLostBehaviorReads = Reads[TaskLostBehavior] { json =>
@@ -1064,7 +1071,8 @@ trait AppAndGroupFormats {
     extraReads
       .filter(
         ValidationError("You cannot specify both uris and fetch fields")) {
-        extra => !(extra.uris.nonEmpty && extra.fetch.nonEmpty)
+        extra =>
+          !(extra.uris.nonEmpty && extra.fetch.nonEmpty)
       }
       .filter(
         ValidationError("You cannot specify both ports and port definitions")) {

@@ -59,6 +59,10 @@ class IntParallelArrayCheck(val tasksupport: TaskSupport)
   override def instances(vals: Seq[Gen[Int]]) =
     oneOf(
       super.instances(vals),
-      sized { sz => (0 until sz).toArray.toSeq },
-      sized { sz => (-sz until 0).toArray.toSeq })
+      sized { sz =>
+        (0 until sz).toArray.toSeq
+      },
+      sized { sz =>
+        (-sz until 0).toArray.toSeq
+      })
 }

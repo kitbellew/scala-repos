@@ -9,6 +9,7 @@ import sbt._
   * @author Miles Sabin
   * @author Kevin Wright
   */
+
 object Boilerplate {
   import scala.StringContext._
 

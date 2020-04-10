@@ -117,7 +117,9 @@ object LDAExample {
         .action((x, c) => c.copy(input = c.input :+ x))
     }
 
-    parser.parse(args, defaultParams).map { params => run(params) }.getOrElse {
+    parser.parse(args, defaultParams).map { params =>
+      run(params)
+    }.getOrElse {
       parser.showUsageAsError
       sys.exit(1)
     }

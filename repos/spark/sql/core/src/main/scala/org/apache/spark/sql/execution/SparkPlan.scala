@@ -293,7 +293,9 @@ abstract class SparkPlan
     val byteArrayRdd = getByteArrayRdd()
 
     val results = ArrayBuffer[InternalRow]()
-    byteArrayRdd.collect().foreach { bytes => decodeUnsafeRows(bytes, results) }
+    byteArrayRdd.collect().foreach { bytes =>
+      decodeUnsafeRows(bytes, results)
+    }
     results.toArray
   }
 
@@ -347,7 +349,9 @@ abstract class SparkPlan
           if (it.hasNext) it.next() else Array.empty,
         p)
 
-      res.foreach { r => decodeUnsafeRows(r.asInstanceOf[Array[Byte]], buf) }
+      res.foreach { r =>
+        decodeUnsafeRows(r.asInstanceOf[Array[Byte]], buf)
+      }
 
       partsScanned += p.size
     }

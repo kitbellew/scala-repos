@@ -115,7 +115,9 @@ class UnsafeRowSerializerSuite extends SparkFunSuite with LocalSparkContext {
       outputFile = File.createTempFile("test-unsafe-row-serializer-spill", "")
       // prepare data
       val converter = unsafeRowConverter(Array(IntegerType))
-      val data = (1 to 10000).iterator.map { i => (i, converter(Row(i))) }
+      val data = (1 to 10000).iterator.map { i =>
+        (i, converter(Row(i)))
+      }
       val taskMemoryManager = new TaskMemoryManager(sc.env.memoryManager, 0)
       val taskContext = new TaskContextImpl(
         0,

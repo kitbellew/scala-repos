@@ -58,6 +58,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * @author Alexander Podkhalyuzin
   */
+
 trait ScPattern extends ScalaPsiElement {
   def isIrrefutableFor(t: Option[ScType]): Boolean = false
 
@@ -307,7 +308,8 @@ trait ScPattern extends ScalaPsiElement {
             (lastArg +: BaseTypes.get(lastArg)).find {
               case ScParameterizedType(des, seqArgs) =>
                 seqArgs.length == 1 && ScType.extractClass(des).exists {
-                  clazz => clazz.qualifiedName == "scala.collection.Seq"
+                  clazz =>
+                    clazz.qualifiedName == "scala.collection.Seq"
                 }
               case _ => false
             } match {

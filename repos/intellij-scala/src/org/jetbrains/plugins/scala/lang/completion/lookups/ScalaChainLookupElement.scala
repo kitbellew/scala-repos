@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.completion.handlers.ScalaInsertHandler
   * @author Alefas
   * @since 31.03.12
   */
+
 class ScalaChainLookupElement(
     val prefix: ScalaLookupItem,
     val element: ScalaLookupItem)

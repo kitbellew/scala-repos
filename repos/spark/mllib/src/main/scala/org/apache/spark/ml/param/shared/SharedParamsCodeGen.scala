@@ -195,8 +195,9 @@ private[shared] object SharedParamsCodeGen {
     val T = param.valueTypeName
     val doc = param.doc
     val defaultValue = param.defaultValueStr
-    val defaultValueDoc =
-      defaultValue.map { v => s" (default: $v)" }.getOrElse("")
+    val defaultValueDoc = defaultValue.map { v =>
+      s" (default: $v)"
+    }.getOrElse("")
     val setDefault = defaultValue.map { v =>
       s"""
          |  setDefault($name, $v)

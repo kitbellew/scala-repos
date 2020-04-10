@@ -77,7 +77,9 @@ class FutureTest
             queue add promise
             promise
           }
-          iteration onSuccess { _ => complete = true } onFailure { f =>
+          iteration onSuccess { _ =>
+            complete = true
+          } onFailure { f =>
             failure = true
           }
           assert(complete == false)
@@ -155,7 +157,9 @@ class FutureTest
             promise
           }
 
-          iteration onSuccess { _ => complete = true } onFailure { f =>
+          iteration onSuccess { _ =>
+            complete = true
+          } onFailure { f =>
             failure = true
           }
           assert(complete == false)
@@ -982,7 +986,9 @@ class FutureTest
           def ret(): String = {
             val f = const.value(1).transform {
               case Return(v) =>
-                val fn = { () => return "OK" }
+                val fn = { () =>
+                  return "OK"
+                }
                 fn()
                 Future.value(ret())
               case Throw(t) => const.value(0)
@@ -1266,7 +1272,9 @@ class FutureTest
       "foreach" in {
         var wasCalledWith: Option[Int] = None
         val f = Future(1)
-        f foreach { i => wasCalledWith = Some(i) }
+        f foreach { i =>
+          wasCalledWith = Some(i)
+        }
         assert(wasCalledWith == Some(1))
       }
 
@@ -1284,7 +1292,9 @@ class FutureTest
         "when the result has not yet arrived it buffers computations" in {
           var wasCalledWith: Option[Int] = None
           val f = new Promise[Int]
-          f foreach { i => wasCalledWith = Some(i) }
+          f foreach { i =>
+            wasCalledWith = Some(i)
+          }
           assert(wasCalledWith == None)
           f() = Return(1)
           assert(wasCalledWith == Some(1))

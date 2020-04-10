@@ -353,7 +353,8 @@ abstract class SnippetFailureException(msg: String)
           !cn.startsWith("sun.")
         }
     }.take(10).toList.map {
-      e => <code><span><br/>{e.toString}</span></code>
+      e =>
+        <code><span><br/>{e.toString}</span></code>
     }
 }
 

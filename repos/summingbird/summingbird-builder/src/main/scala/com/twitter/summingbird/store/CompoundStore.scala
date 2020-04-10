@@ -28,6 +28,7 @@ import com.twitter.summingbird.scalding.batch.BatchedStore
   * @author Sam Ritchie
   * @author Ashu Singhal
   */
+
 class CompoundStore[K, V] private (
     @transient offline: Option[BatchedStore[K, V]],
     online: Option[() => Mergeable[(K, BatchID), V]])

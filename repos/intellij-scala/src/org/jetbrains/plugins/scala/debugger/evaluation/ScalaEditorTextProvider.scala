@@ -22,6 +22,7 @@ import scala.util.Try
   * @author Alefas
   * @since 15.05.12
   */
+
 class ScalaEditorTextProvider extends EditorTextProvider {
   def getEditorText(elementAtCaret: PsiElement): TextWithImports = {
     val result: String =

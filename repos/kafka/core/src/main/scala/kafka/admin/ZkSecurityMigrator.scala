@@ -14,6 +14,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+
 package kafka.admin
 
 import java.util.concurrent.LinkedBlockingQueue
@@ -58,6 +59,7 @@ import scala.concurrent.duration._
   * 3- Perform another rolling upgrade to remove the system property setting the
   * login file (java.security.auth.login.config).
   */
+
 object ZkSecurityMigrator extends Logging {
   val usageMessage =
     ("ZooKeeper Migration Tool Help. This tool updates the ACLs of "

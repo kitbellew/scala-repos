@@ -6,6 +6,7 @@ package surroundWith
   * User: Alexander Podkhalyuzin
   * Date: 08.11.2008
   */
+
 object SurroundWithTestUtil {
   val startMarker = "<start>"
   val endMarkers: Array[String] = Array[String](

@@ -66,7 +66,9 @@ final class Api(
 
   def locatedOpenSessions(userId: String, nb: Int): Fu[List[LocatedSession]] =
     Store.openSessions(userId, nb) map {
-      _.map { session => LocatedSession(session, geoIP(session.ip)) }
+      _.map { session =>
+        LocatedSession(session, geoIP(session.ip))
+      }
     }
 
   def dedup(userId: String, req: RequestHeader): Funit =

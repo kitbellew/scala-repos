@@ -34,6 +34,7 @@ package net.liftweb.markdown
   *
   * If you want line breaks after opening/closing block level tags, you have to add the newline yourself.
   */
+
 trait Decorator {
 
   /**

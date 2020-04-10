@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.overrideImplement.ScalaOIUtil._
 /**
   * Pavel Fatin
   */
+
 object NeedsToBeAbstract extends AnnotatorPart[ScTemplateDefinition] {
   def kind = classOf[ScTemplateDefinition]
 

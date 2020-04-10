@@ -253,6 +253,7 @@ class SparkIMain(
   private def isInitializeComplete = _initializeComplete
 
   /** the public, go through the future compiler */
+
   /**
     * The underlying compiler used to generate ASTs and execute code.
     */
@@ -365,6 +366,7 @@ class SparkIMain(
   }
 
   /** takes AnyRef because it may be binding a Throwable or an Exceptional */
+
   private def withLastExceptionLock[T](body: => T, alt: => T): T = {
     assert(bindExceptions, "withLastExceptionLock called incorrectly.")
     bindExceptions = false
@@ -753,7 +755,9 @@ class SparkIMain(
   // at a '*'.  So look at each subtree and find the earliest of all positions.
   private def earliestPosition(tree: Tree): Int = {
     var pos = Int.MaxValue
-    tree foreach { t => pos = math.min(pos, safePos(t, Int.MaxValue)) }
+    tree foreach { t =>
+      pos = math.min(pos, safePos(t, Int.MaxValue))
+    }
     pos
   }
 

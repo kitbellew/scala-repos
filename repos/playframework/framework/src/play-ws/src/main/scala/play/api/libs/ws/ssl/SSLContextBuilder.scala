@@ -156,7 +156,8 @@ class ConfigSSLContextBuilder(
       keyManagerConfig: KeyManagerConfig,
       algorithmChecker: AlgorithmChecker) = {
     val keyManagers = keyManagerConfig.keyStoreConfigs.map {
-      ksc => buildKeyManager(ksc, algorithmChecker)
+      ksc =>
+        buildKeyManager(ksc, algorithmChecker)
     }
     new CompositeX509KeyManager(keyManagers)
   }
@@ -191,7 +192,9 @@ class ConfigSSLContextBuilder(
   }
 
   def trustStoreBuilder(tsc: TrustStoreConfig): KeyStoreBuilder = {
-    tsc.filePath.map { f => fileBuilder(tsc.storeType, f, None) }.getOrElse {
+    tsc.filePath.map { f =>
+      fileBuilder(tsc.storeType, f, None)
+    }.getOrElse {
       val data = tsc.data.getOrElse(
         throw new IllegalStateException("No truststore builder found!"))
       stringBuilder(data)
@@ -283,7 +286,8 @@ class ConfigSSLContextBuilder(
   // submit a patch.
   def certificateRevocationList(sslConfig: SSLConfig): Option[Seq[CRL]] = {
     sslConfig.revocationLists.map {
-      urls => urls.map(generateCRLFromURL)
+      urls =>
+        urls.map(generateCRLFromURL)
     }
   }
 

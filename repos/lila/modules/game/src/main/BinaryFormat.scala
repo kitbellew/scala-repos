@@ -55,7 +55,9 @@ object BinaryFormat {
 
     def read(ba: ByteArray): Vector[MT] = {
       def dec(x: Int) = decodeMap get x getOrElse decodeMap(size - 1)
-      ba.value map toInt flatMap { k => Array(dec(k >> 4), dec(k & 15)) }
+      ba.value map toInt flatMap { k =>
+        Array(dec(k >> 4), dec(k & 15))
+      }
     }.toVector
   }
 

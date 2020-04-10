@@ -18,6 +18,7 @@ import org.jetbrains.plugins.scala.util.MultilineStringUtil
 /**
   * Pavel Fatin
   */
+
 abstract class AbstractFormatConversionIntention(
     name: String,
     parser: StringParser,

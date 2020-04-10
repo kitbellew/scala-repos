@@ -32,6 +32,7 @@ import com.twitter.summingbird.scalding._
   * @author Sam Ritchie
   * @author Ashu Singhal
   */
+
 object VersionedStore {
 
   /**

@@ -92,7 +92,9 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
   def get(key: Any): V = {
     entrySet.iterator.find(_.getKey === key).fold[V] {
       null.asInstanceOf[V]
-    } { entry => entry.getValue }
+    } { entry =>
+      entry.getValue
+    }
   }
 
   def put(key: K, value: V): V =

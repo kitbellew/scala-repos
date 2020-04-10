@@ -334,7 +334,9 @@ object SparkBuild extends PomBuild {
     ).contains(x)
   }
 
-  mimaProjects.foreach { x => enable(MimaBuild.mimaSettings(sparkHome, x))(x) }
+  mimaProjects.foreach { x =>
+    enable(MimaBuild.mimaSettings(sparkHome, x))(x)
+  }
 
   /* Unsafe settings */
   enable(Unsafe.settings)(unsafe)
@@ -626,7 +628,8 @@ object Assembly {
         }
     },
     jarName in (Test, assembly) <<= (version, moduleName, hadoopVersion) map {
-      (v, mName, hv) => s"${mName}-test-${v}.jar"
+      (v, mName, hv) =>
+        s"${mName}-test-${v}.jar"
     },
     mergeStrategy in assembly := {
       case PathList("org", "datanucleus", xs @ _*)    => MergeStrategy.discard

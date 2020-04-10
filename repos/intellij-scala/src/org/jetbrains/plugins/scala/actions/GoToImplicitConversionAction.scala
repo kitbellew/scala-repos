@@ -31,6 +31,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Alexander Podkhalyuzin
   * Date: 02.06.2010
   */
+
 object GoToImplicitConversionAction {
   var popup: JBPopup = null
 

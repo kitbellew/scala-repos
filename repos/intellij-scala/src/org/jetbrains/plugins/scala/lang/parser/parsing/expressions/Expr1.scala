@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.parser.util.{ParserPatcher, ParserUtils}
   * @author Alexander Podkhalyuzin
   * Date: 03.03.2008
   */
+
 /*
  * Expr1 ::= 'if' '(' Expr ')' {nl} Expr [[semi] else Expr]
  *         | 'while' '(' Expr ')' {nl} Expr

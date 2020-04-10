@@ -876,7 +876,9 @@ case class OptionalMapping[T](
       p == key || p.startsWith(key + ".") || p.startsWith(key + "[")).map(k =>
       data.get(k).filterNot(_.isEmpty)).collect {
       case Some(v) => v
-    }.headOption.map { _ => wrapped.bind(data).right.map(Some(_)) }.getOrElse {
+    }.headOption.map { _ =>
+      wrapped.bind(data).right.map(Some(_))
+    }.getOrElse {
       Right(None)
     }.right.flatMap(applyConstraints)
   }

@@ -16,6 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.{
 /**
   * Pavel Fatin
   */
+
 class NoTailRecursionAnnotationInspection
     extends AbstractInspection("No tail recursion annotation") {
   def actionFor(holder: ProblemsHolder) = {

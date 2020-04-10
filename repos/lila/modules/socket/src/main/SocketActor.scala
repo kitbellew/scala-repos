@@ -100,7 +100,9 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
   }
 
   def broom {
-    members.keys foreach { uid => if (!aliveUids.get(uid)) eject(uid) }
+    members.keys foreach { uid =>
+      if (!aliveUids.get(uid)) eject(uid)
+    }
   }
 
   def eject(uid: String) {

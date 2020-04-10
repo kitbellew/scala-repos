@@ -683,7 +683,9 @@ object WriteAheadLogSuite {
     if (allowBatching) {
       writeToStream(wrapArrayArrayByte(data.toArray[String]).array())
     } else {
-      data.foreach { item => writeToStream(Utils.serialize(item)) }
+      data.foreach { item =>
+        writeToStream(Utils.serialize(item))
+      }
     }
     writer.close()
     segments

@@ -117,7 +117,9 @@ trait BaseBlockStoreTestModule[M[+_]]
           }
         }
 
-        val slice = id map { key => findBlockAfter(key, slices) } getOrElse {
+        val slice = id map { key =>
+          findBlockAfter(key, slices)
+        } getOrElse {
           slices.headOption
         }
 

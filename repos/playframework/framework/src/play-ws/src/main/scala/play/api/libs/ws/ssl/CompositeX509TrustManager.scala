@@ -26,7 +26,8 @@ class CompositeX509TrustManager(
     logger.debug("getAcceptedIssuers: ")
     val certificates = ArrayBuffer[X509Certificate]()
     val exceptionList = withTrustManagers {
-      trustManager => certificates.appendAll(trustManager.getAcceptedIssuers)
+      trustManager =>
+        certificates.appendAll(trustManager.getAcceptedIssuers)
     }
     // getAcceptedIssuers should never throw an exception.
     if (!exceptionList.isEmpty) {

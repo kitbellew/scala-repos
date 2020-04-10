@@ -78,6 +78,7 @@ object Storm {
   /**
     * Below are factory methods for the input output types:
     */
+
   def sink[T](fn: => T => Future[Unit]): Storm#Sink[T] = new SinkFn(fn)
 
   def sinkIntoWritable[K, V](
@@ -372,9 +373,11 @@ abstract class Storm(
   /**
     * The following operations are public.
     */
+
   /**
     * Base storm config instances used by the Storm platform.
     */
+
   def genConfig(dag: Dag[Storm]) = {
     val config = new BacktypeStormConfig
     config.setFallBackOnJavaSerialization(false)

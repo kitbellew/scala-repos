@@ -113,7 +113,8 @@ object Test extends Properties("concurrent.TrieMap") {
 
       // fillers
       inParallel(p) {
-        idx => elementRange(idx, p, sz) foreach (i => ct.update(Wrap(i), i))
+        idx =>
+          elementRange(idx, p, sz) foreach (i => ct.update(Wrap(i), i))
       }
 
       // wait for checker to finish
@@ -140,7 +141,8 @@ object Test extends Properties("concurrent.TrieMap") {
       val ct = new TrieMap[Wrap, Int]
 
       inParallel(p) {
-        idx => for (i <- elementRange(idx, p, sz)) ct(Wrap(i)) = i
+        idx =>
+          for (i <- elementRange(idx, p, sz)) ct(Wrap(i)) = i
       }
 
       (0 until sz) forall {
@@ -154,7 +156,8 @@ object Test extends Properties("concurrent.TrieMap") {
       for (i <- 0 until sz) ct(Wrap(i)) = i
 
       inParallel(p) {
-        idx => for (i <- elementRange(idx, p, sz)) ct.remove(Wrap(i))
+        idx =>
+          for (i <- elementRange(idx, p, sz)) ct.remove(Wrap(i))
       }
 
       (0 until sz) forall {

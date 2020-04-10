@@ -140,7 +140,9 @@ class PolynomialCheck
     }
 
     property(s"$name p = p.reductum + p.maxTerm") {
-      forAll { (p: P) => p shouldBe p.reductum + Polynomial(p.maxTerm :: Nil) }
+      forAll { (p: P) =>
+        p shouldBe p.reductum + Polynomial(p.maxTerm :: Nil)
+      }
     }
   }
 
@@ -199,11 +201,15 @@ class PolynomialCheck
   }
 
   property("p.toSparse.toDense = p") {
-    forAll { (p: PolyDense[Rational]) => p.toSparse.toDense shouldBe p }
+    forAll { (p: PolyDense[Rational]) =>
+      p.toSparse.toDense shouldBe p
+    }
   }
 
   property("p.toDense.toSparse = p") {
-    forAll { (p: PolySparse[Rational]) => p.toDense.toSparse shouldBe p }
+    forAll { (p: PolySparse[Rational]) =>
+      p.toDense.toSparse shouldBe p
+    }
   }
 
   property("apply(p.toString).toDense = p") {
@@ -213,7 +219,9 @@ class PolynomialCheck
   }
 
   property("apply(p.toString) = p") {
-    forAll { (p: PolyDense[Rational]) => Polynomial(p.toString) shouldBe p }
+    forAll { (p: PolyDense[Rational]) =>
+      Polynomial(p.toString) shouldBe p
+    }
   }
 
   property("apply(r, 0) = r") {

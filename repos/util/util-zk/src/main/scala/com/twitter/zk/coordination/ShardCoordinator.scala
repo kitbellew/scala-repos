@@ -84,7 +84,9 @@ class ShardCoordinator(zk: ZkClient, path: String, numShards: Int) {
         case err: PermitMismatchException =>
           Future.exception(SemaphoreError(err))
         case err: PermitNodeException => Future.exception(SemaphoreError(err))
-      } onFailure { err => permit.release() }
+      } onFailure { err =>
+        permit.release()
+      }
     }
   }
 

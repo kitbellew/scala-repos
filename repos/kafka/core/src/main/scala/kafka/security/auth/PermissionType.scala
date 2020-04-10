@@ -21,6 +21,7 @@ import kafka.common.{BaseEnum, KafkaException}
 /**
   * PermissionType.
   */
+
 sealed trait PermissionType extends BaseEnum
 
 case object Allow extends PermissionType {

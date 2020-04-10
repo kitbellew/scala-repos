@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.util.ScalaStubsUtil
 /**
   * @author ilyas
   */
+
 class ScStubFileElementType(lang: Language)
     extends IStubFileElementWrapper[ScalaFile, ScFileStub]("scala.FILE", lang) {
 

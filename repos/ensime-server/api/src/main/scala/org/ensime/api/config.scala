@@ -28,7 +28,8 @@ case class EnsimeConfig(
     disableClassMonitoring: Boolean = false
 ) {
   (rootDir :: cacheDir :: javaHome :: referenceSourceRoots ::: javaLibs).foreach {
-    f => require(f.exists, "" + f + " is required but does not exist")
+    f =>
+      require(f.exists, "" + f + " is required but does not exist")
   }
 
   /* Proposed alternatives to the legacy wire format field names */
@@ -54,7 +55,9 @@ case class EnsimeConfig(
     }
 
   def allJars: Set[File] = {
-    modules.values.flatMap { m => m.compileDeps ::: m.testDeps }.toSet
+    modules.values.flatMap { m =>
+      m.compileDeps ::: m.testDeps
+    }.toSet
   } ++ javaLibs
 
   def allDocJars: Set[File] = modules.values.flatMap(_.docJars).toSet

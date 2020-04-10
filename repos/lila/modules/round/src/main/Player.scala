@@ -58,7 +58,9 @@ private[round] final class Player(
                         } inject progress.events
                       }
                     ) >>- promiseOption.foreach(_.success(()))
-              } addFailureEffect { e => promiseOption.foreach(_ failure e) }
+              } addFailureEffect { e =>
+              promiseOption.foreach(_ failure e)
+            }
           case Pov(game, _) if game.finished =>
             fufail(ClientError(s"$pov game is finished"))
           case Pov(game, _) if game.aborted =>

@@ -257,7 +257,8 @@ private object JNotifyFileWatchService {
             System.setProperty(
               "java.library.path", {
                 Option(System.getProperty("java.library.path")).map {
-                  existing => existing + java.io.File.pathSeparator + libs
+                  existing =>
+                    existing + java.io.File.pathSeparator + libs
                 }.getOrElse(libs)
               })
             val fieldSysPath =

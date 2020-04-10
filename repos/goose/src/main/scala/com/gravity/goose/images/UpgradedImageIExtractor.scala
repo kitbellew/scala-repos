@@ -20,6 +20,7 @@ import scala.util.parsing.json.{JSON, JSONObject}
   * User: jim
   * Date: 9/22/11
   */
+
 class UpgradedImageIExtractor(
     httpClient: HttpClient,
     article: Article,

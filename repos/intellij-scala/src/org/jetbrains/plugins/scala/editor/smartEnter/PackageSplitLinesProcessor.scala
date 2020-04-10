@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile
 /**
   * Pavel Fatin
   */
+
 class PackageSplitLinesProcessor extends SmartEnterProcessor {
   private val Package = "(\\s*)package .+".r
 

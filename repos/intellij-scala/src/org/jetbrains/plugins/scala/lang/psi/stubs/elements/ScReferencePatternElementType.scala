@@ -14,6 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScReferencePatternStubImp
   * User: Alexander Podkhalyuzin
   * Date: 17.07.2009
   */
+
 class ScReferencePatternElementType[Func <: ScReferencePattern]
     extends ScStubElementType[ScReferencePatternStub, ScReferencePattern](
       "reference pattern") {

@@ -8,6 +8,7 @@ import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
   * @author Ksenia.Sautina
   * @since 4/20/12
   */
+
 class ReplaceEqualsOrEqualityInInfixExprIntentionTest
     extends ScalaIntentionTestBase {
   val familyName = ReplaceEqualsOrEqualityInInfixExprIntention.familyName

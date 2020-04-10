@@ -1,6 +1,7 @@
 /** Cleaned up in october 2010 by paulp.
   *  Hey, we should get this working.
   */
+
 // Class hierarchy
 trait Term[a]
 

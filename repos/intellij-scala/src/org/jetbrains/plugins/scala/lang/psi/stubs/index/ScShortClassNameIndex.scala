@@ -9,6 +9,7 @@ import com.intellij.psi.stubs.StringStubIndexExtension
 /**
   * @author ilyas
   */
+
 class ScShortClassNameIndex extends StringStubIndexExtension[PsiClass] {
   def getKey = ScShortClassNameIndex.KEY
 }

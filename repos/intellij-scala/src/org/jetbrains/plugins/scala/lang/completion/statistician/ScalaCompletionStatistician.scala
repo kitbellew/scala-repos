@@ -17,6 +17,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTypeDefinitio
   * @author Alefas
   * @since 06.07.12
   */
+
 class ScalaCompletionStatistician extends CompletionStatistician {
   def serialize(
       element: LookupElement,

@@ -52,7 +52,8 @@ class LogDoubleTest extends FunSuite with Checkers {
     }
     check {
       Prop.forAll {
-        (d: Double, e: Double) => e <= 0 || (d.toLogDouble + e).value =~= d + e
+        (d: Double, e: Double) =>
+          e <= 0 || (d.toLogDouble + e).value =~= d + e
       }
     }
   }
@@ -65,7 +66,8 @@ class LogDoubleTest extends FunSuite with Checkers {
     }
     check {
       Prop.forAll {
-        (d: Double, e: Double) => e <= 0 || (d.toLogDouble * e).value =~= d * e
+        (d: Double, e: Double) =>
+          e <= 0 || (d.toLogDouble * e).value =~= d * e
       }
     }
   }
@@ -78,7 +80,8 @@ class LogDoubleTest extends FunSuite with Checkers {
     }
     check {
       Prop.forAll {
-        (d: Double, e: Double) => e <= 0 || (d.toLogDouble / e).value =~= d / e
+        (d: Double, e: Double) =>
+          e <= 0 || (d.toLogDouble / e).value =~= d / e
       }
     }
   }

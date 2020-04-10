@@ -392,7 +392,9 @@ private[sql] class DynamicPartitionWriterContainer(
   }
 
   private def getBucketIdFromKey(key: InternalRow): Option[Int] =
-    bucketSpec.map { _ => key.getInt(partitionColumns.length) }
+    bucketSpec.map { _ =>
+      key.getInt(partitionColumns.length)
+    }
 
   /**
     * Open and returns a new OutputWriter given a partition key and optional bucket id.

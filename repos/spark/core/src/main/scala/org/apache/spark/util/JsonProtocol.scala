@@ -61,6 +61,7 @@ private[spark] object JsonProtocol {
   /** ------------------------------------------------- *
     * JSON serialization methods for SparkListenerEvents |
     * -------------------------------------------------- */
+
   def sparkEventToJson(event: SparkListenerEvent): JValue = {
     event match {
       case stageSubmitted: SparkListenerStageSubmitted =>
@@ -266,6 +267,7 @@ private[spark] object JsonProtocol {
   /** ------------------------------------------------------------------- *
     * JSON serialization methods for classes SparkListenerEvents depend on |
     * -------------------------------------------------------------------- */
+
   def stageInfoToJson(stageInfo: StageInfo): JValue = {
     val rddInfo = JArray(stageInfo.rddInfos.map(rddInfoToJson).toList)
     val parentIds = JArray(stageInfo.parentIds.map(JInt(_)).toList)
@@ -490,13 +492,16 @@ private[spark] object JsonProtocol {
   /** ------------------------------ *
     * Util JSON serialization methods |
     * ------------------------------- */
+
   def mapToJson(m: Map[String, String]): JValue = {
     val jsonFields = m.map { case (k, v) => JField(k, JString(v)) }
     JObject(jsonFields.toList)
   }
 
   def propertiesToJson(properties: Properties): JValue = {
-    Option(properties).map { p => mapToJson(p.asScala) }.getOrElse(JNothing)
+    Option(properties).map { p =>
+      mapToJson(p.asScala)
+    }.getOrElse(JNothing)
   }
 
   def UUIDToJson(id: UUID): JValue = {
@@ -522,6 +527,7 @@ private[spark] object JsonProtocol {
   /** --------------------------------------------------- *
     * JSON deserialization methods for SparkListenerEvents |
     * ---------------------------------------------------- */
+
   def sparkEventFromJson(json: JValue): SparkListenerEvent = {
     val stageSubmitted =
       Utils.getFormattedClassName(SparkListenerStageSubmitted)
@@ -734,6 +740,7 @@ private[spark] object JsonProtocol {
   /** --------------------------------------------------------------------- *
     * JSON deserialization methods for classes SparkListenerEvents depend on |
     * ---------------------------------------------------------------------- */
+
   def stageInfoFromJson(json: JValue): StageInfo = {
     val stageId = (json \ "Stage ID").extract[Int]
     val attemptId = (json \ "Stage Attempt ID").extractOpt[Int].getOrElse(0)
@@ -1097,6 +1104,7 @@ private[spark] object JsonProtocol {
   /** -------------------------------- *
     * Util JSON deserialization methods |
     * --------------------------------- */
+
   def mapFromJson(json: JValue): Map[String, String] = {
     val jsonFields = json.asInstanceOf[JObject].obj
     jsonFields.map { case JField(k, JString(v)) => (k, v) }.toMap

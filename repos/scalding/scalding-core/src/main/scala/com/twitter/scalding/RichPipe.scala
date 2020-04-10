@@ -94,7 +94,9 @@ object RichPipe extends java.io.Serializable {
   }
 
   def setPipeDescriptionFrom(p: Pipe, ste: Option[StackTraceElement]): Pipe = {
-    ste.foreach { ste => setPipeDescriptions(p, List(ste.toString)) }
+    ste.foreach { ste =>
+      setPipeDescriptions(p, List(ste.toString))
+    }
     p
   }
 
@@ -703,7 +705,8 @@ class RichPipe(val pipe: Pipe)
        crossWithSmaller(total)
      })
       .map(Fields.merge(f, '__total_for_normalize__) -> f) {
-        args: (Double, Double) => args._1 / args._2
+        args: (Double, Double) =>
+          args._1 / args._2
       }
   }
 
@@ -819,7 +822,9 @@ class RichPipe(val pipe: Pipe)
     FlowStateMap.get(flowDef).foreach { fstm =>
       fstm.flowConfigUpdates.foreach {
         case (k, v) =>
-          allPipes.foreach { p => p.getStepConfigDef().setProperty(k, v) }
+          allPipes.foreach { p =>
+            p.getStepConfigDef().setProperty(k, v)
+          }
       }
     }
     pipe

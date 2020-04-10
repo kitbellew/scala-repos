@@ -18,6 +18,7 @@ import org.jetbrains.plugins.scala.lang.psi.{ScalaPsiElement, ScalaPsiUtil}
   * User: Alexander Podkhalyuzin
   * Date: 06.10.2008
   */
+
 class ScalaReadWriteAccessDetector extends ReadWriteAccessDetector {
   def getExpressionAccess(expression: PsiElement): Access = {
     expression match {

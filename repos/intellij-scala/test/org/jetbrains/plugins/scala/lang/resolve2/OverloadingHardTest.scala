@@ -3,6 +3,7 @@ package org.jetbrains.plugins.scala.lang.resolve2
 /**
   * @author Alexander Podkhalyuzin
   */
+
 class OverloadingHardTest extends ResolveTestBase {
   override def folderPath: String = {
     super.folderPath + "overloading/hardOverloadings/"

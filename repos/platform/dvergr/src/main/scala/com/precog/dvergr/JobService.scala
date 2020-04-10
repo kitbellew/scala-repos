@@ -137,7 +137,9 @@ trait JobService
                       }
                   }
               } ->
-              shutdown { state => close(state.resource) }
+              shutdown { state =>
+                close(state.resource)
+              }
         }
       }
     }

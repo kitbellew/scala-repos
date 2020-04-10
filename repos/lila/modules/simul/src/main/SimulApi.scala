@@ -60,7 +60,8 @@ private[simul] final class SimulApi(
       timeline ! (Propagate(
         SimulJoin(user.id, simul.id, simul.fullName)) toFollowersOf user.id)
       Variant(variantKey).filter(simul.variants.contains).fold(simul) {
-        variant => simul addApplicant SimulApplicant(SimulPlayer(user, variant))
+        variant =>
+          simul addApplicant SimulApplicant(SimulPlayer(user, variant))
       }
     }
   }
@@ -155,7 +156,9 @@ private[simul] final class SimulApi(
         Sequence(oldSimul.id) {
           repo.findCreated(oldSimul.id) flatMap {
             _ ?? { simul =>
-              (simul ejectCheater userId) ?? { simul2 => update(simul2).void }
+              (simul ejectCheater userId) ?? { simul2 =>
+                update(simul2).void
+              }
             }
           }
         }

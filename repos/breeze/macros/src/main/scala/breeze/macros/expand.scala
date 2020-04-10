@@ -80,7 +80,8 @@ object expand {
         val shouldValify = checkValify(c)(mods)
 
         val typesToUnrollAs: Map[c.Name, List[c.Type]] = typesToExpand.map {
-          td => (td.name: Name) -> typeMappings(c)(td)
+          td =>
+            (td.name: Name) -> typeMappings(c)(td)
         }.toMap
 
         val (valsToExpand, valsToLeave) =

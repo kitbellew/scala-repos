@@ -384,7 +384,9 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
     // non-unique index on dbtype
     val ixDbtype = ixs.find(dbo => dbo.get("name") == "dbtype_1")
     ixDbtype.isDefined must_== true
-    ixDbtype foreach { ix => ix.containsField("unique") must beFalse }
+    ixDbtype foreach { ix =>
+      ix.containsField("unique") must beFalse
+    }
 
     // build a TstCollection
     val info = TCInfo(203, 102, UUID.randomUUID)

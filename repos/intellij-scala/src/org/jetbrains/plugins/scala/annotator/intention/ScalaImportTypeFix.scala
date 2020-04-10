@@ -66,6 +66,7 @@ import scala.collection.mutable.ArrayBuffer
   * User: Alexander Podkhalyuzin
   * Date: 15.07.2009
   */
+
 class ScalaImportTypeFix(
     private var classes: Array[TypeToImport],
     ref: ScReferenceElement)

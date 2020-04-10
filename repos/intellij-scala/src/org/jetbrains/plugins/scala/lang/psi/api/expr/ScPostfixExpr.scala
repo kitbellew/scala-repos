@@ -8,6 +8,7 @@ package expr
   * @author Alexander Podkhalyuzin
   * Date: 06.03.2008
   */
+
 trait ScPostfixExpr extends ScExpression with ScSugarCallExpr {
   def operand = findChildrenByClassScala(classOf[ScExpression]).apply(0)
   def operation: ScReferenceExpression =

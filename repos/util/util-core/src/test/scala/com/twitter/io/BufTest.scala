@@ -174,7 +174,9 @@ class BufTest
       def slice(i: Int, j: Int) = throw new Exception("not implemented")
       def length = 12
       def write(output: Array[Byte], off: Int) =
-        (off until off + length) foreach { i => output(i) = 'a'.toByte }
+        (off until off + length) foreach { i =>
+          output(i) = 'a'.toByte
+        }
     }
 
     val Buf.Utf8(str) = buf

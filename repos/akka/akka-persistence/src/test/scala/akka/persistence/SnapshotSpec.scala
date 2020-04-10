@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
   */
+
 package akka.persistence
 
 import akka.actor._
@@ -46,7 +47,9 @@ object SnapshotSpec {
     override def receiveCommand = {
       case "done" ⇒ probe ! "done"
       case payload: String ⇒
-        persist(payload) { _ ⇒ probe ! s"${payload}-${lastSequenceNr}" }
+        persist(payload) { _ ⇒
+          probe ! s"${payload}-${lastSequenceNr}"
+        }
       case offer @ SnapshotOffer(md, s) ⇒ probe ! offer
       case other ⇒ probe ! other
     }

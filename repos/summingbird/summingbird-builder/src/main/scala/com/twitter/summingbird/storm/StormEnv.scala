@@ -28,6 +28,7 @@ import scala.collection.JavaConverters._
   * @author Sam Ritchie
   * @author Ashu Singhal
   */
+
 case class StormEnv(override val jobName: String, override val args: Args)
     extends Env(jobName) {
   def run() {
@@ -43,7 +44,9 @@ case class StormEnv(override val jobName: String, override val args: Args)
     Storm.remote(builder.opts)
       .withRegistrars(
         ajob.registrars ++ builder.registrar.getRegistrars.asScala)
-      .withConfigUpdater { c => c.updated(ajob.transformConfig(c.toMap)) }.run(
+      .withConfigUpdater { c =>
+        c.updated(ajob.transformConfig(c.toMap))
+      }.run(
         builder.node.name(builder.id).asInstanceOf[TailProducer[Storm, _]],
         classSuffix
       )

@@ -1939,7 +1939,9 @@ trait Types
     private def computeRefs() {
       refs = Array(Map(), Map())
       typeSymbol.typeParams foreach { tparam =>
-        parents foreach { p => enterRefs.enter(tparam, p) }
+        parents foreach { p =>
+          enterRefs.enter(tparam, p)
+        }
       }
       state = Initializing
     }
@@ -3998,6 +4000,7 @@ trait Types
       }
       refinedType(merge(tps), owner)
     */
+
   /** A creator for type applications */
   def appliedType(tycon: Type, args: List[Type]): Type = {
     if (args.isEmpty)
@@ -4613,6 +4616,7 @@ trait Types
     *  will serve better than isValueType(tp).
     */
   /** def isValueType(tp: Type) = isValueElseNonValue(tp) */
+
   /** SLS 3.3, Non-Value Types
     *  Is the given type definitely a non-value type, as defined in SLS 3.3?
     *  The specification-enumerated non-value types are method types, polymorphic
@@ -4623,6 +4627,7 @@ trait Types
     *  them as type arguments, but their precise status is unclear.
     */
   /** def isNonValueType(tp: Type) = !isValueElseNonValue(tp) */
+
   def isNonRefinementClassType(tpe: Type) =
     tpe match {
       case SingleType(_, sym) => sym.isModuleClass
@@ -4859,6 +4864,7 @@ trait Types
     }
   }
     */
+
   /** Are `syms1` and `syms2` parameter lists with pairwise equivalent types? */
   protected[internal] def matchingParams(
       syms1: List[Symbol],

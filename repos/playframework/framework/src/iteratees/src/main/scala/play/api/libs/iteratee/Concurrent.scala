@@ -515,7 +515,9 @@ object Concurrent {
             schedule {
               iteratee.single.swap(Future.successful(None)).onComplete {
                 case Success(maybeK) =>
-                  maybeK.foreach { k => promise.success(k(Input.EOF)) }
+                  maybeK.foreach { k =>
+                    promise.success(k(Input.EOF))
+                  }
                 case Failure(e) => promise.failure(e)
               }(dec)
             }
@@ -532,7 +534,8 @@ object Concurrent {
           def end() =
             schedule {
               iteratee.single.swap(Future.successful(None)).onComplete {
-                maybeK => maybeK.get.foreach(k => promise.success(Cont(k)))
+                maybeK =>
+                  maybeK.get.foreach(k => promise.success(Cont(k)))
               }(dec)
             }
 

@@ -27,6 +27,7 @@ import com.twitter.bijection.macros.impl.IsCaseClassImpl
   * This class contains the core macro implementations. This is in a separate module to allow it to be in
   * a separate compilation unit, which makes it easier to provide helper methods interfacing with macros.
   */
+
 object TupleConverterImpl {
   def caseClassTupleConverterImpl[T](c: Context)(implicit
       T: c.WeakTypeTag[T]): c.Expr[TupleConverter[T]] =

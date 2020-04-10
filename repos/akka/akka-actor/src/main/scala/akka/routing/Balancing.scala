@@ -112,7 +112,8 @@ final case class BalancingPool(
       context.self.path.elements.drop(1).mkString("/", "/", "")
     val deployPath =
       BalancingPoolDeploy.invalidConfigKeyChars.foldLeft(rawDeployPath) {
-        (replaced, c) ⇒ replaced.replace(c, '_')
+        (replaced, c) ⇒
+          replaced.replace(c, '_')
       }
     val dispatcherId = s"BalancingPool-$deployPath"
     def dispatchers = context.system.dispatchers

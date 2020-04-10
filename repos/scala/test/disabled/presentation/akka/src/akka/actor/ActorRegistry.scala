@@ -1,6 +1,7 @@
 /**
   * Copyright (C) 2009-2011 Scalable Solutions AB <http://scalablesolutions.se>
   */
+
 package akka.actor
 
 import scala.collection.mutable.{ListBuffer, Map}
@@ -34,6 +35,7 @@ case class ActorUnregistered(actor: ActorRef) extends ActorRegistryEvent
   *
   * @author <a href="http://jonasboner.com">Jonas Bon&#233;r</a>
   */
+
 final class ActorRegistry private[actor] () extends ListenerManagement {
 
   private val actorsByUUID = new ConcurrentHashMap[Uuid, ActorRef]
@@ -367,7 +369,9 @@ class Index[K <: AnyRef, V <: AnyRef: ArrayTag] {
     */
   def foreach(fun: (K, V) => Unit) {
     import scala.collection.JavaConversions._
-    container.entrySet foreach { (e) => e.getValue.foreach(fun(e.getKey, _)) }
+    container.entrySet foreach { (e) =>
+      e.getValue.foreach(fun(e.getKey, _))
+    }
   }
 
   /**

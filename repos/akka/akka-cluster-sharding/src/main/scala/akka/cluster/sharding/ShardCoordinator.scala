@@ -1090,7 +1090,9 @@ class DDataShardCoordinator(
       CoordinatorStateKey,
       LWWRegister(initEmptyState),
       WriteMajority(updatingStateTimeout),
-      Some(evt)) { reg ⇒ reg.withValue(s) }
+      Some(evt)) { reg ⇒
+      reg.withValue(s)
+    }
   }
 
 }

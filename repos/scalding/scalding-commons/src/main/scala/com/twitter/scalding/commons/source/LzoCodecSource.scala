@@ -23,6 +23,7 @@ import com.twitter.bijection.Injection
   * Source used to write some type T into an LZO-compressed SequenceFile using a
   * codec on T for serialization.
   */
+
 object LzoCodecSource {
   def apply[T](paths: String*)(implicit
       passedInjection: Injection[T, Array[Byte]]) =

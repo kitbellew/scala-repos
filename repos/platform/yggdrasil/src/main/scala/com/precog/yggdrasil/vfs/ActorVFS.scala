@@ -522,8 +522,11 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           "Received request to find metadata for path %s".format(path.path))
         val requestor = sender
         val eio = VFSPathUtils.currentPathMetadata(baseDir, path) map {
-          pathMetadata => requestor ! PathChildren(path, Set(pathMetadata))
-        } leftMap { error => requestor ! PathOpFailure(path, error) }
+          pathMetadata =>
+            requestor ! PathChildren(path, Set(pathMetadata))
+        } leftMap { error =>
+          requestor ! PathOpFailure(path, error)
+        }
 
         eio.run.unsafePerformIO
 
@@ -697,7 +700,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
           case NIHDBData(data) =>
             resourceBuilder.createNIHDB(versionDir(version), writeAs) flatMap {
-              _ traverse { nihdbr => nihdbr tap { _.db.insert(data) } }
+              _ traverse { nihdbr =>
+                nihdbr tap { _.db.insert(data) }
+              }
             }
         }
         _ <- created traverse { resource =>

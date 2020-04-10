@@ -72,7 +72,9 @@ package cleanup {
   @Singleton
   class MessageQueueConnection @Inject() (lifecycle: ApplicationLifecycle) {
     val connection = connectToMessageQueue()
-    lifecycle.addStopHook { () => Future.successful(connection.stop()) }
+    lifecycle.addStopHook { () =>
+      Future.successful(connection.stop())
+    }
 
     //...
   }

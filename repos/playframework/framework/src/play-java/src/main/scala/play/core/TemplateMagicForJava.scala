@@ -33,7 +33,9 @@ object PlayMagicForJava {
     new play.api.data.Field(
       null,
       jField.name,
-      jField.constraints.asScala.map { jT => jT._1 -> jT._2.asScala },
+      jField.constraints.asScala.map { jT =>
+        jT._1 -> jT._2.asScala
+      },
       Option(jField.format).map(f => f._1 -> f._2.asScala),
       jField.errors.asScala.map { jE =>
         play.api.data.FormError(

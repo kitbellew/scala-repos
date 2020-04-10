@@ -79,7 +79,9 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
   }
 
   def foldRight[B](z: => B)(f: (A, => B) => B)(implicit F: Foldable[F]) =
-    F.foldr(run, z) { a => b => f(a._2, b) }
+    F.foldr(run, z) { a => b =>
+      f(a._2, b)
+    }
 
   def bimap[C, D](f: W => C, g: A => D)(implicit F: Functor[F]) =
     writerT[F, C, D](F.map(run)({

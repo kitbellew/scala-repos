@@ -129,7 +129,9 @@ class WebAccountFinder(
         case HttpResponse(HttpStatus(OK, _), _, Some(jaccountId), _) =>
           logger.info("Got response for apiKey " + apiKey)
           (((_: Extractor.Error).message) <-: jaccountId.validated[
-            WrappedAccountId] :-> { wid => Some(wid.accountId) }).disjunction
+            WrappedAccountId] :-> { wid =>
+            Some(wid.accountId)
+          }).disjunction
 
         case HttpResponse(HttpStatus(OK, _), _, None, _) =>
           logger.warn("No account found for apiKey: " + apiKey)
@@ -178,6 +180,8 @@ class WebAccountFinder(
       "Basic " + new String(
         Base64.encodeBase64((user + ":" + password).getBytes("UTF-8")),
         "UTF-8"))
-    withJsonClient { client => f(client.header(auth)) }
+    withJsonClient { client =>
+      f(client.header(auth))
+    }
   }
 }

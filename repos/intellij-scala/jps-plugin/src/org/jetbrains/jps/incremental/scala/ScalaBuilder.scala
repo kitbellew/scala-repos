@@ -32,6 +32,7 @@ import _root_.scala.collection.JavaConverters._
   * Nikolay.Tropin
   * 11/19/13
   */
+
 object ScalaBuilder {
 
   def compile(

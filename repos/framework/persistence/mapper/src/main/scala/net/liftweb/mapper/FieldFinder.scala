@@ -87,7 +87,8 @@ class FieldFinder[T: ClassTag](
                     // with the name of this class or some superclass...
                     // basically, is an inner class of this class
                     getAllSupers(clz).find {
-                      c => inst.getClass.getName.startsWith(c.getName)
+                      c =>
+                        inst.getClass.getName.startsWith(c.getName)
                     }.isDefined
                   }
               }

@@ -30,6 +30,7 @@ import cascading.flow.FlowDef
   * Examples could be Keys which are Unique IDs, such as UserIDs,
   * content IDs, cryptographic hashes, etc...
   */
+
 trait SimpleService[K, V] extends ExternalService[K, V] {
 
   import Scalding.dateRangeInjection

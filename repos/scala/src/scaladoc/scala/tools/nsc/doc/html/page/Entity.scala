@@ -146,7 +146,8 @@ trait EntityPage extends HtmlPage {
       }
 
       val parentSub = parent.fold(Seq[TemplateEntity with MemberEntity](tpl)) {
-        p => p.templates.filter(_.isPackage).sortBy(_.name)
+        p =>
+          p.templates.filter(_.isPackage).sortBy(_.name)
       }
 
       // If current entity is a package, take its containing entities - otherwise take parent's containing entities

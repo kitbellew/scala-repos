@@ -422,8 +422,11 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
       tconv: TupleConverter[T],
       tset: TupleSetter[T]): Self = {
     mapReduceMap[(T, T), T, T](Fields.merge(left, right) -> result) {
-      init: (T, T) => ring.times(init._1, init._2)
-    } { (left: T, right: T) => ring.plus(left, right) } { result => result }
+      init: (T, T) =>
+        ring.times(init._1, init._2)
+    } { (left: T, right: T) =>
+      ring.plus(left, right)
+    } { result => result }
   }
 
   /**

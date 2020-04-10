@@ -28,7 +28,9 @@ class GaussianTest extends FunSuite {
       A: Field: NRoot: Trig: IsReal: Uniform: ClassTag] = {
     val gen = rng.Cmwc5.fromTime(42L)
     val gaussian = new MarsagliaGaussian[A]
-    checkGaussian[A] { (mean, stdDev) => gaussian(mean, stdDev)(gen) }
+    checkGaussian[A] { (mean, stdDev) =>
+      gaussian(mean, stdDev)(gen)
+    }
   }
 
   test("MarsagliaGaussian[Float] is normal")(checkMarsagliaGaussian[Float])

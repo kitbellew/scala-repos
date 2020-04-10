@@ -99,7 +99,9 @@ object Main extends LilaController {
     }
 
   def mobileUnregister =
-    Auth { implicit ctx => me => Env.push.unregisterDevices(me) }
+    Auth { implicit ctx => me =>
+      Env.push.unregisterDevices(me)
+    }
 
   def jslog(id: String) =
     Open { ctx =>

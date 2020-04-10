@@ -445,7 +445,8 @@ private[niflheim] class NIHDBActor private (
       current: Map[Int, Int],
       ids: Seq[Long]): Map[Int, Int] = {
     (current.toSeq ++ ids.map {
-      i => val EventId(p, s) = EventId.fromLong(i); (p -> s)
+      i =>
+        val EventId(p, s) = EventId.fromLong(i); (p -> s)
     }).groupBy(_._1).map { case (p, ids) => (p -> ids.map(_._2).max) }
   }
 
@@ -575,7 +576,8 @@ private[niflheim] object ProjectionState {
   def fromFile(input: File): IO[Validation[Error, ProjectionState]] =
     IO {
       JParser.parseFromFile(input).bimap(Extractor.Thrown(_), x => x).flatMap {
-        jv => jv.validated[ProjectionState]
+        jv =>
+          jv.validated[ProjectionState]
       }
     }
 

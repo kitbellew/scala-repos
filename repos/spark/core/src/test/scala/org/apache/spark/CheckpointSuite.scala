@@ -147,7 +147,9 @@ trait RDDCheckpointTester { self: SparkFunSuite =>
     val (rddSizeBeforeCheckpoint, partitionSizeBeforeCheckpoint) =
       getSerializedSizes(operatedRDD)
     // checkpoint the parent RDD, not the generated one
-    parentRDDs.foreach { rdd => checkpoint(rdd, reliableCheckpoint) }
+    parentRDDs.foreach { rdd =>
+      checkpoint(rdd, reliableCheckpoint)
+    }
     val result = collectFunc(operatedRDD) // force checkpointing
     operatedRDD.collect() // force re-initialization of post-checkpoint lazy variables
     val (rddSizeAfterCheckpoint, partitionSizeAfterCheckpoint) =

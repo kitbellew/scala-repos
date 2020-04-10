@@ -1707,7 +1707,9 @@ abstract class GenJSCode
             "Trying to generate `this` inside the body")
         }
         js.This()(currentClassType)
-      } { thisLocalIdent => js.VarRef(thisLocalIdent)(currentClassType) }
+      } { thisLocalIdent =>
+        js.VarRef(thisLocalIdent)(currentClassType)
+      }
     }
 
     /** Gen JS code for LabelDef
@@ -4413,7 +4415,9 @@ abstract class GenJSCode
         currentClassSym := sym
       ) {
         val (functionMakerBase, arity) =
-          tryGenAndRecordAnonFunctionClassGeneric(cd) { msg => return false }
+          tryGenAndRecordAnonFunctionClassGeneric(cd) { msg =>
+            return false
+          }
         val functionMaker = { capturedArgs: List[js.Tree] =>
           JSFunctionToScala(functionMakerBase(capturedArgs), arity)
         }

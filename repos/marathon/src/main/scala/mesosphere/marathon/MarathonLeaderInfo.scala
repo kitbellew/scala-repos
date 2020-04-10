@@ -37,7 +37,9 @@ class MarathonLeaderInfo @Inject() (
               log.error("error while getting current leader", e)
               None
           }
-        maybeLeaderData.map { data => new String(data, "UTF-8") }
+        maybeLeaderData.map { data =>
+          new String(data, "UTF-8")
+        }
       }
     }
 

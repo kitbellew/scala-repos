@@ -81,7 +81,9 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
   def genMaps(gen: Int => (Int, Int)): Array[Map[Int, Int]] = {
     val arr = new Array[Map[Int, Int]](numMaps)
     var i = 0
-    (0 until numMaps) foreach { i => arr(i) = Map((1 to mapSize) map gen: _*) }
+    (0 until numMaps) foreach { i =>
+      arr(i) = Map((1 to mapSize) map gen: _*)
+    }
     arr
   }
 

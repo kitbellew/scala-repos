@@ -163,7 +163,9 @@ class ClosureCleanerSuite2
     }
     val closure4 = (j: Int) => {
       (1 to j).flatMap { x =>
-        (1 to x).flatMap { y => (1 to y).map { z => z + 1 } }
+        (1 to x).flatMap { y =>
+          (1 to y).map { z => z + 1 }
+        }
       }
     }
     val inner1 = getInnerClosureClasses(closure1)
@@ -538,7 +540,9 @@ class ClosureCleanerSuite2
     val closure5 = (m: Int) => {
       (1 to m).foreach { x =>
         (1 to x).foreach { y =>
-          (1 to y).foreach { z => someSerializableValue }
+          (1 to y).foreach { z =>
+            someSerializableValue
+          }
         }
       }
     }
@@ -576,7 +580,9 @@ class ClosureCleanerSuite2
       val a = 1
       (1 to i).flatMap { x =>
         val b = a + 1
-        (1 to x).map { y => y + a + b + localValue }
+        (1 to x).map { y =>
+          y + a + b + localValue
+        }
       }
     }
 

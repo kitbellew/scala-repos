@@ -59,6 +59,7 @@ import org.slf4j.{Logger, LoggerFactory => LogManager}
   *
   * @author Mike Jahr
   */
+
 object Checkpoint {
   private val LOG: Logger = LogManager.getLogger(this.getClass)
 

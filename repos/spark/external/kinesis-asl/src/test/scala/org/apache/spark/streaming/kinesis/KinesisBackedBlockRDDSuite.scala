@@ -282,7 +282,9 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       testUtils.endpointUrl,
       blockIds,
       ranges)
-    val collectedData = rdd.map { bytes => new String(bytes).toInt }.collect()
+    val collectedData = rdd.map { bytes =>
+      new String(bytes).toInt
+    }.collect()
     assert(collectedData.toSet === testData.toSet)
 
     // Verify that the block fetching is skipped when isBlockValid is set to false.

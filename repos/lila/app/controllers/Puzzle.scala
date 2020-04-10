@@ -59,7 +59,8 @@ object Puzzle extends LilaController {
     Open { implicit ctx =>
       OptionFuOk(env.api.puzzle find id) { puzzle =>
         (ctx.me ?? { env.api.attempt.hasPlayed(_, puzzle) map (!_) }) flatMap {
-          asPlay => renderShow(puzzle, asPlay.fold("play", "try"))
+          asPlay =>
+            renderShow(puzzle, asPlay.fold("play", "try"))
         }
       }
     }

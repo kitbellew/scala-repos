@@ -13,6 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScVariable
   * User: Alexander Podkhalyuzin
   * Date: 18.10.2008
   */
+
 class ScVariableDefinitionElementType
     extends ScVariableElementType[ScVariable]("variable definition") {
   def createElement(node: ASTNode): PsiElement =

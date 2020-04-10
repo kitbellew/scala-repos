@@ -9,6 +9,7 @@ import com.gravity.goose.text.string
   * Date: 2/13/12
   * Time: 11:31 AM
   */
+
 class VoicesContentExtractor extends ContentExtractor {
   override def getTitle(article: Article): String = {
     try {

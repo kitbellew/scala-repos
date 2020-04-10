@@ -597,7 +597,9 @@ class RichPresentationCompiler(
 
   protected def reloadAndTypeFiles(sources: Iterable[SourceFile]) = {
     wrapReloadSources(sources.toList)
-    sources.foreach { s => wrapTypedTree(s, forceReload = true) }
+    sources.foreach { s =>
+      wrapTypedTree(s, forceReload = true)
+    }
   }
 
   override def askShutdown(): Unit = {

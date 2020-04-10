@@ -25,6 +25,7 @@ import org.jetbrains.plugins.scala.lang.refactoring.namesSuggester.NameSuggester
   * User: Alexander Podkhalyuzin
   * Date: 31.01.2009
   */
+
 /**
   * Macro for suggesting name.
   */

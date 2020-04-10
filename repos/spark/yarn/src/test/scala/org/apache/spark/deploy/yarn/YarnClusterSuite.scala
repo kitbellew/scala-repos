@@ -274,7 +274,9 @@ private object YarnClusterDriver extends Logging with Matchers {
     val listener = listeners(0)
     val executorInfos = listener.addedExecutorInfos.values
     assert(executorInfos.nonEmpty)
-    executorInfos.foreach { info => assert(info.logUrlMap.nonEmpty) }
+    executorInfos.foreach { info =>
+      assert(info.logUrlMap.nonEmpty)
+    }
 
     // If we are running in yarn-cluster mode, verify that driver logs links and present and are
     // in the expected format.

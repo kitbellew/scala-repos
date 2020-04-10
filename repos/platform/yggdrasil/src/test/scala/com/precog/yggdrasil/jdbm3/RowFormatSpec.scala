@@ -117,8 +117,9 @@ class RowFormatSpec
   }
 
   private def identityCols(len: Int): List[ColumnRef] =
-    (0 until len).map({ i => ColumnRef(CPath(CPathIndex(i)), CLong) })(
-      scala.collection.breakOut)
+    (0 until len).map({ i =>
+      ColumnRef(CPath(CPathIndex(i)), CLong)
+    })(scala.collection.breakOut)
 
   "IdentitiesRowFormat" should {
     "round-trip CLongs" in {

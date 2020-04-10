@@ -31,6 +31,7 @@ import util.parsing.combinator.{Parsers, RegexParsers}
   * A parser for the markdown language.
   * Works on pre-parsed lines that can be created by a LineParser.
   */
+
 trait BlockParsers extends Parsers {
   type Elem = MarkdownLine
   //why does this not allow us to access the lookup map in the lookup parser?

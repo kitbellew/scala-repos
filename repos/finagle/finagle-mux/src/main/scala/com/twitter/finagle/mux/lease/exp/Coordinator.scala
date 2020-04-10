@@ -43,7 +43,9 @@ private[lease] class Coordinator(
 
   def sleepUntilGc(gc: () => Unit, interval: Duration) {
     Alarm.armAndExecute(
-      { () => new GenerationAlarm(counter) min new IntervalAlarm(interval) },
+      { () =>
+        new GenerationAlarm(counter) min new IntervalAlarm(interval)
+      },
       gc)
   }
 
@@ -59,7 +61,9 @@ private[lease] class Coordinator(
     // TODO: wake up more often to see if the target
     // has changed.
     Alarm.armAndExecute(
-      { () => new BytesAlarm(counter, () => space.discount()) },
+      { () =>
+        new BytesAlarm(counter, () => space.discount())
+      },
       fn)
   }
 

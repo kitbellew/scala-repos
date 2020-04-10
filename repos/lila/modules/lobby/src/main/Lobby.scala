@@ -90,7 +90,9 @@ private[lobby] final class Lobby(
       NoPlayban(user.some) {
         lila.mon.lobby.seek.join()
         seekApi find seekId foreach {
-          _ foreach { seek => Biter(seek, user) pipeTo self }
+          _ foreach { seek =>
+            Biter(seek, user) pipeTo self
+          }
         }
       }
 

@@ -7,6 +7,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScFunctionDeclaration
 /**
   * Pavel Fatin
   */
+
 class UnitMethodDeclaredWithTypeAnnotationInspection
     extends AbstractMethodSignatureInspection(
       "ScalaUnitMethodDeclaredWithTypeAnnotation",

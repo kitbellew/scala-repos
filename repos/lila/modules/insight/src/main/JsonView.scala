@@ -120,7 +120,9 @@ final class JsonView {
     }
 
   private implicit def positionWriter: Writes[Position] =
-    Writes { p => JsString(p.name) }
+    Writes { p =>
+      JsString(p.name)
+    }
 
   object chart {
     private implicit val xAxisWrites = Json.writes[Chart.Xaxis]

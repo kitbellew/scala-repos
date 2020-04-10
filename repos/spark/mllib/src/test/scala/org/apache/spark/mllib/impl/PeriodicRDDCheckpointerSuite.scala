@@ -76,7 +76,9 @@ class PeriodicRDDCheckpointerSuite
     }
 
     checkpointer.deleteAllCheckpoints()
-    rddsToCheck.foreach { rdd => confirmCheckpointRemoved(rdd.rdd) }
+    rddsToCheck.foreach { rdd =>
+      confirmCheckpointRemoved(rdd.rdd)
+    }
 
     Utils.deleteRecursively(tempDir)
   }
@@ -91,7 +93,9 @@ private object PeriodicRDDCheckpointerSuite {
   }
 
   def checkPersistence(rdds: Seq[RDDToCheck], iteration: Int): Unit = {
-    rdds.foreach { g => checkPersistence(g.rdd, g.gIndex, iteration) }
+    rdds.foreach { g =>
+      checkPersistence(g.rdd, g.gIndex, iteration)
+    }
   }
 
   /**

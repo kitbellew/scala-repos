@@ -75,6 +75,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
 
   /** TODO - this is a lot of maps.
     */
+
   /** For a given class and concrete type arguments, give its specialized class */
   val specializedClass = perRunCaches.newMap[(Symbol, TypeEnv), Symbol]
 

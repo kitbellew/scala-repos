@@ -42,6 +42,7 @@ import scala.util.control.NonFatal
   * @author Ashu Singhal
   * @author Ian O Connell
   */
+
 // This is not a user settable variable.
 // Its supplied by the planning system usually to ensure its large enough to cover the space
 // used by the summers times some delta.

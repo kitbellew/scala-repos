@@ -24,6 +24,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
   * User: Alexander Podkhalyuzin
   * Date: 10.03.2009
   */
+
 abstract class TypeConformanceTestBase
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   def folderPath: String = baseRootPath() + "typeConformance/"

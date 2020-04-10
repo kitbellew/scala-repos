@@ -45,21 +45,33 @@ trait PimpedJson {
   implicit final class LilaPimpedJsValue(js: JsValue) {
 
     def str(key: String): Option[String] =
-      js.asOpt[JsObject] flatMap { obj => (obj \ key).asOpt[String] }
+      js.asOpt[JsObject] flatMap { obj =>
+        (obj \ key).asOpt[String]
+      }
 
     def int(key: String): Option[Int] =
-      js.asOpt[JsObject] flatMap { obj => (obj \ key).asOpt[Int] }
+      js.asOpt[JsObject] flatMap { obj =>
+        (obj \ key).asOpt[Int]
+      }
 
     def long(key: String): Option[Long] =
-      js.asOpt[JsObject] flatMap { obj => (obj \ key).asOpt[Long] }
+      js.asOpt[JsObject] flatMap { obj =>
+        (obj \ key).asOpt[Long]
+      }
 
     def boolean(key: String): Option[Boolean] =
-      js.asOpt[JsObject] flatMap { obj => (obj \ key).asOpt[Boolean] }
+      js.asOpt[JsObject] flatMap { obj =>
+        (obj \ key).asOpt[Boolean]
+      }
 
     def obj(key: String): Option[JsObject] =
-      js.asOpt[JsObject] flatMap { obj => (obj \ key).asOpt[JsObject] }
+      js.asOpt[JsObject] flatMap { obj =>
+        (obj \ key).asOpt[JsObject]
+      }
 
     def arr(key: String): Option[JsArray] =
-      js.asOpt[JsObject] flatMap { obj => (obj \ key).asOpt[JsArray] }
+      js.asOpt[JsObject] flatMap { obj =>
+        (obj \ key).asOpt[JsArray]
+      }
   }
 }

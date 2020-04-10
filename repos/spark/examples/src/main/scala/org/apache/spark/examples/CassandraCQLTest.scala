@@ -93,6 +93,7 @@ object CassandraCQLTest {
     CqlConfigHelper.setInputCQLPageRowSize(job.getConfiguration(), "3")
 
     /** CqlConfigHelper.setInputWhereClauses(job.getConfiguration(), "user_id='bob'") */
+
     /** An UPDATE writes one or more columns to a record in a Cassandra column family */
     val query =
       "UPDATE " + KeySpace + "." + OutputColumnFamily + " SET sale_count = ? "

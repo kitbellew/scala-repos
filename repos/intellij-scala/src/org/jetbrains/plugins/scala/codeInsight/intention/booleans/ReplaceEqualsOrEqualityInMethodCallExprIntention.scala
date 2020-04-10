@@ -18,6 +18,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   * @author Ksenia.Sautina
   * @since 4/23/12
   */
+
 object ReplaceEqualsOrEqualityInMethodCallExprIntention {
   def familyName = "Replace equals or equality in method call expression"
 }

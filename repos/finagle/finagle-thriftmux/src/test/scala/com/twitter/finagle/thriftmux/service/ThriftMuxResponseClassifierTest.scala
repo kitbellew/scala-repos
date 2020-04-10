@@ -66,7 +66,9 @@ class ThriftMuxResponseClassifierTest extends FunSuite {
 
   test("usingDeserializeCtx ignores exceptions during deserialization") {
     val toThrow = new RuntimeException("welp")
-    val throwingDeser = { bytes: Array[Byte] => throw toThrow }
+    val throwingDeser = { bytes: Array[Byte] =>
+      throw toThrow
+    }
 
     val input = "throw"
     val ctx = new DeserializeCtx(TestService.Query.Args(input), throwingDeser)

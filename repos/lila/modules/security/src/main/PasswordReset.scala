@@ -45,7 +45,9 @@ Please do not reply to this message; it was sent from an unmonitored email addre
 
     private def makeHash(msg: String) = Algo.hmac(secret).sha1(msg).hex take 14
     private def getPasswd(userId: User.ID) =
-      UserRepo getPasswordHash userId map { p => makeHash(~p) take 6 }
+      UserRepo getPasswordHash userId map { p =>
+        makeHash(~p) take 6
+      }
     private def makePayload(userId: String, passwd: String) =
       s"$userId$separator$passwd"
 

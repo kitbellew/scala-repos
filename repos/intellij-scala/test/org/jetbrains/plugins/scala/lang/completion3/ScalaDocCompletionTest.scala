@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.extensions._
   * User: Dmitry Naydanov
   * Date: 12/9/11
   */
+
 class ScalaDocCompletionTest extends ScalaCodeInsightTestBase {
   protected def genericCompletionComparison(
       initialText: String,

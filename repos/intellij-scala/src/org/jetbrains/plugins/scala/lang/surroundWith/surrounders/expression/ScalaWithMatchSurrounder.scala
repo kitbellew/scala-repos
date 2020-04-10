@@ -8,6 +8,7 @@ package expression
   * @author AlexanderPodkhalyuzin
   * Date: 28.04.2008
   */
+
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.{PsiElement, PsiWhiteSpace}

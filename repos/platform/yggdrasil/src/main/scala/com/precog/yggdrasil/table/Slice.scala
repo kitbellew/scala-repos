@@ -663,7 +663,8 @@ trait Slice { source =>
     new Slice {
       val size = indices.size
       val columns: Map[ColumnRef, Column] = source.columns lazyMapValues {
-        col => cf.util.RemapIndices(indices).apply(col).get
+        col =>
+          cf.util.RemapIndices(indices).apply(col).get
       }
     }
 

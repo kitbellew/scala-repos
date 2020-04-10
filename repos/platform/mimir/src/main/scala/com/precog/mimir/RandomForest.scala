@@ -655,7 +655,8 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             }
 
             val treesM: M[List[DecisionTree[A]]] = trainingSamples traverse {
-              table => withData(table)(makeTree)
+              table =>
+                withData(table)(makeTree)
             }
 
             def variance(values: List[Double]): Double = {
@@ -669,7 +670,8 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
             treesM flatMap { trees =>
               val forests: List[F] = (1 to numChunks).foldLeft(Nil: List[F]) {
-                (acc, i) => (forest(trees take (i * chunkSize)) |+| prev) :: acc
+                (acc, i) =>
+                  (forest(trees take (i * chunkSize)) |+| prev) :: acc
               }.reverse
 
               val errors: M[List[Double]] =

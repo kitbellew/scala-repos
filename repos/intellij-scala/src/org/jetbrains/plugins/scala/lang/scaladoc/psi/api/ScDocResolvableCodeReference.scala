@@ -11,6 +11,7 @@ import org.jetbrains.plugins.scala.lang.resolve.ResolvableStableCodeReferenceEle
   * User: Dmitry Naydanov
   * Date: 11/30/11
   */
+
 trait ScDocResolvableCodeReference
     extends ScalaPsiElement
     with ResolvableStableCodeReferenceElement {}

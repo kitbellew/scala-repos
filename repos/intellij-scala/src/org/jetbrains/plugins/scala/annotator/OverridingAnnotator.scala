@@ -32,6 +32,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.Signature
   * User: Alexander Podkhalyuzin
   * Date: 30.01.12
   */
+
 trait OverridingAnnotator {
   private def isConcreteElement(element: PsiElement): Boolean = {
     element match {

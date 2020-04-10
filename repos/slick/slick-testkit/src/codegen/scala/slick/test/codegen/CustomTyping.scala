@@ -15,8 +15,12 @@ object CustomTyping {
   }
 
   implicit val boolTypeMapper = MappedColumnType.base[Bool, Int](
-    { b => if (b == True) 1 else 0 },
-    { i => if (i == 1) True else False })
+    { b =>
+      if (b == True) 1 else 0
+    },
+    { i =>
+      if (i == 1) True else False
+    })
 
   type SimpleA = Tuple2[Bool, String]
   object SimpleA {

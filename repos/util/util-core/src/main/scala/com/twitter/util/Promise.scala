@@ -295,7 +295,9 @@ object Promise {
         new DetachablePromise[A](p.asInstanceOf[Promise[A]])
       case _ =>
         val p = new DetachableFuture[A]()
-        parent.respond { t => if (p.detach()) p.update(t) }
+        parent.respond { t =>
+          if (p.detach()) p.update(t)
+        }
         p
     }
 }

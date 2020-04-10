@@ -7,6 +7,7 @@ import com.intellij.openapi.util.text.StringUtil
   * User: Dmitry Naydanov
   * Date: 2/6/12
   */
+
 class DocParamDescrAlignmentTest extends ScalaDocEnterActionTestBase {
 
   import org.jetbrains.plugins.scala.lang.scaladoc.DocParamDescrAlignmentTest._

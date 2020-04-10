@@ -25,6 +25,7 @@ import org.apache.commons.math3.random.{
   *
   * @author stucchio
   */
+
 class VariableKernelEmpiricalDistribution(
     data: Array[Double],
     binCount: Int = ApacheEmpiricalDistribution.DEFAULT_BIN_COUNT)

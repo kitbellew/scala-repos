@@ -76,7 +76,9 @@ class DenseVectorBenchmark extends BreezeBenchmark with BuildsRandomVectors {
     runWith(reps, randomArray(4000)) { arr =>
       var sum = 0.0
       val d = arr.data
-      cforRange(0 until arr.length) { i => sum += d(i) }
+      cforRange(0 until arr.length) { i =>
+        sum += d(i)
+      }
       sum
     }
 

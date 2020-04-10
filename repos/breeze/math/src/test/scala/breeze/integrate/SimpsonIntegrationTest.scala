@@ -10,6 +10,7 @@ import breeze.numerics._
   *
   * @author chrismedrela
  **/
+
 class SimpsonIntegrationTest extends FunSuite {
   val f = (x: Double) => 2 * x
   val f2 = (x: Double) => x * x
