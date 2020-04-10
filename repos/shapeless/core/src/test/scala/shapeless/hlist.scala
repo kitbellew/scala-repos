@@ -2838,8 +2838,8 @@ class HListTests {
     assertTypedEquals[
       (I :: S :: D :: HNil) :: (S :: I :: D :: HNil) :: (S :: D :: I :: HNil) ::
         (
-        I :: D :: S :: HNil
-      ) :: (D :: I :: S :: HNil) :: (D :: S :: I :: HNil) :: HNil](
+          I :: D :: S :: HNil
+        ) :: (D :: I :: S :: HNil) :: (D :: S :: I :: HNil) :: HNil](
       (1 :: "foo" :: 2.0 :: HNil) ::
         ("foo" :: 1 :: 2.0 :: HNil) ::
         ("foo" :: 2.0 :: 1 :: HNil) ::
